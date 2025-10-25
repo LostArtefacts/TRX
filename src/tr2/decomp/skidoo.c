@@ -21,37 +21,37 @@
 #include <libtrx/game/spawn.h>
 #include <libtrx/utils.h>
 
-#define SKIDOO_RADIUS 500
-#define SKIDOO_SIDE 260
-#define SKIDOO_FRONT 550
-#define SKIDOO_SNOW 500
-#define SKIDOO_GET_OFF_DIST 330
-#define SKIDOO_TARGET_DIST (WALL_L * 2) // = 2048
+#define M_RADIUS 500
+#define M_SIDE 260
+#define M_FRONT 550
+#define M_SNOW 500
+#define M_GET_OFF_DIST 330
+#define M_TARGET_DIST (WALL_L * 2) // = 2048
 
-#define SKIDOO_ACCELERATION 10
-#define SKIDOO_SLOWDOWN 2
+#define M_ACCELERATION 10
+#define M_SLOWDOWN 2
 
-#define SKIDOO_SLIP 100
-#define SKIDOO_SLIP_SIDE 50
+#define M_SLIP 100
+#define M_SLIP_SIDE 50
 
-#define SKIDOO_MAX_BACK -30
-#define SKIDOO_BRAKE 5
-#define SKIDOO_REVERSE (-5)
-#define SKIDOO_UNDO_TURN (DEG_1 * 2) // = 364
-#define SKIDOO_TURN (DEG_1 / 2 + SKIDOO_UNDO_TURN) // = 455
-#define SKIDOO_MOMENTUM_TURN (DEG_1 * 3) // = 546
-#define SKIDOO_MAX_MOMENTUM_TURN (DEG_1 * 150) // = 27300
-#define SKIDOO_MIN_BOUNCE 50
-#define SKIDOO_MAX_KICK -80
+#define M_MAX_BACK -30
+#define M_BRAKE 5
+#define M_REVERSE (-5)
+#define M_UNDO_TURN (DEG_1 * 2) // = 364
+#define M_TURN (DEG_1 / 2 + M_UNDO_TURN) // = 455
+#define M_MOMENTUM_TURN (DEG_1 * 3) // = 546
+#define M_MAX_MOMENTUM_TURN (DEG_1 * 150) // = 27300
+#define M_MIN_BOUNCE 50
+#define M_MAX_KICK -80
 
 #define LF_SKIDOO_EXIT_END 59
 #define LF_SKIDOO_LET_GO_END 17
 
 typedef enum {
-    SKIDOO_GET_ON_NONE = 0,
+    M_GET_ON_NONE = 0,
     SKIDOO_GET_ON_LEFT = 1,
-    SKIDOO_GET_ON_RIGHT = 2,
-} SKIDOO_GET_ON_SIDE;
+    M_GET_ON_RIGHT = 2,
+} M_GET_ON_SIDE;
 
 typedef enum {
     // clang-format off
@@ -85,12 +85,12 @@ typedef enum {
 } LARA_ANIM_SKIDOO;
 
 BITE g_Skidoo_LeftGun = {
-    .pos = { .x = 219, .y = -71, .z = SKIDOO_FRONT },
+    .pos = { .x = 219, .y = -71, .z = M_FRONT },
     .mesh_num = 0,
 };
 
 BITE g_Skidoo_RightGun = {
-    .pos = { .x = -235, .y = -71, .z = SKIDOO_FRONT },
+    .pos = { .x = -235, .y = -71, .z = M_FRONT },
     .mesh_num = 0,
 };
 
@@ -99,7 +99,7 @@ static int32_t M_DoDynamics(
 {
     if (height > *out_y) {
         *out_y += fall_speed;
-        if (*out_y > height - SKIDOO_MIN_BOUNCE) {
+        if (*out_y > height - M_MIN_BOUNCE) {
             *out_y = height;
             return 0;
         }
@@ -107,7 +107,7 @@ static int32_t M_DoDynamics(
     }
 
     int32_t kick = 4 * (height - *out_y);
-    CLAMPL(kick, SKIDOO_MAX_KICK);
+    CLAMPL(kick, M_MAX_KICK);
     CLAMPG(*out_y, height);
     return fall_speed + ((kick - fall_speed) >> 3);
 }
@@ -131,16 +131,16 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
         return false;
     }
 
-    if (!Item_IsNearby(item, skidoo, SKIDOO_TARGET_DIST)) {
+    if (!Item_IsNearby(item, skidoo, M_TARGET_DIST)) {
         return false;
     }
 
-    if (!Item_TestBoundsCollide(item, skidoo, SKIDOO_RADIUS)) {
+    if (!Item_TestBoundsCollide(item, skidoo, M_RADIUS)) {
         return false;
     }
 
     if (item->object_id == O_SKIDOO_ARMED) {
-        SkidooArmed_Push(item, skidoo, SKIDOO_RADIUS);
+        SkidooArmed_Push(item, skidoo, M_RADIUS);
     } else if (is_availanche) {
         if (item->current_anim_state == TRAP_ACTIVATE) {
             Lara_TakeDamage(100, true);
@@ -180,25 +180,25 @@ int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
     if (!g_Input.action || lara->gun_status != LGS_ARMLESS || lara_item->gravity
         || (lara->water_status != LWS_ABOVE_WATER
             && lara->water_status != LWS_WADE)) {
-        return SKIDOO_GET_ON_NONE;
+        return M_GET_ON_NONE;
     }
 
     ITEM *const item = Item_Get(item_num);
     const int16_t angle = item->rot.y - lara_item->rot.y;
 
-    SKIDOO_GET_ON_SIDE get_on = SKIDOO_GET_ON_NONE;
+    M_GET_ON_SIDE get_on = M_GET_ON_NONE;
     if (angle > DEG_45 && angle < DEG_135) {
         get_on = SKIDOO_GET_ON_LEFT;
     } else if (angle > -DEG_135 && angle < -DEG_45) {
-        get_on = SKIDOO_GET_ON_RIGHT;
+        get_on = M_GET_ON_RIGHT;
     }
 
     if (!Item_TestBoundsCollide(item, lara_item, coll->radius)) {
-        return SKIDOO_GET_ON_NONE;
+        return M_GET_ON_NONE;
     }
 
     if (!Collide_TestCollision(item, lara_item)) {
-        return SKIDOO_GET_ON_NONE;
+        return M_GET_ON_NONE;
     }
 
     int16_t room_num = item->room_num;
@@ -207,7 +207,7 @@ int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
     const int32_t height =
         Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     if (height < -32000) {
-        return SKIDOO_GET_ON_NONE;
+        return M_GET_ON_NONE;
     }
 
     return get_on;
@@ -220,8 +220,8 @@ void Skidoo_Collision(
         return;
     }
 
-    const SKIDOO_GET_ON_SIDE get_on = Skidoo_CheckGetOn(item_num, coll);
-    if (get_on == SKIDOO_GET_ON_NONE) {
+    const M_GET_ON_SIDE get_on = Skidoo_CheckGetOn(item_num, coll);
+    if (get_on == M_GET_ON_NONE) {
         Object_Collision(item_num, lara_item, coll);
         return;
     }
@@ -293,11 +293,11 @@ void Skidoo_DoSnowEffect(const ITEM *const skidoo)
     const int32_t sx = Math_Sin(skidoo->rot.x);
     const int32_t sy = Math_Sin(skidoo->rot.y);
     const int32_t cy = Math_Cos(skidoo->rot.y);
-    const int32_t x = (SKIDOO_SIDE * (Random_GetDraw() - 0x4000)) >> 14;
+    const int32_t x = (M_SIDE * (Random_GetDraw() - 0x4000)) >> 14;
     EFFECT *const effect = Effect_Get(effect_num);
-    effect->pos.x = skidoo->pos.x - ((sy * SKIDOO_SNOW + cy * x) >> W2V_SHIFT);
-    effect->pos.y = skidoo->pos.y + ((sx * SKIDOO_SNOW) >> W2V_SHIFT);
-    effect->pos.z = skidoo->pos.z - ((cy * SKIDOO_SNOW - sy * x) >> W2V_SHIFT);
+    effect->pos.x = skidoo->pos.x - ((sy * M_SNOW + cy * x) >> W2V_SHIFT);
+    effect->pos.y = skidoo->pos.y + ((sx * M_SNOW) >> W2V_SHIFT);
+    effect->pos.z = skidoo->pos.z - ((cy * M_SNOW - sy * x) >> W2V_SHIFT);
     effect->room_num = skidoo->room_num;
     effect->object_id = O_SNOW_SPRITE;
     effect->frame_num = 0;
@@ -324,14 +324,10 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
     XYZ_32 bl_old;
     XYZ_32 br_old;
     XYZ_32 fr_old;
-    int32_t hfl_old =
-        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, -SKIDOO_SIDE, &fl_old);
-    int32_t hfr_old =
-        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, SKIDOO_SIDE, &fr_old);
-    int32_t hbl_old =
-        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, -SKIDOO_SIDE, &bl_old);
-    int32_t hbr_old =
-        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, SKIDOO_SIDE, &br_old);
+    int32_t hfl_old = Skidoo_TestHeight(skidoo, M_FRONT, -M_SIDE, &fl_old);
+    int32_t hfr_old = Skidoo_TestHeight(skidoo, M_FRONT, M_SIDE, &fr_old);
+    int32_t hbl_old = Skidoo_TestHeight(skidoo, -M_FRONT, -M_SIDE, &bl_old);
+    int32_t hbr_old = Skidoo_TestHeight(skidoo, -M_FRONT, M_SIDE, &br_old);
 
     XYZ_32 old = {
         .z = skidoo->pos.z,
@@ -347,29 +343,29 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
     if (skidoo->pos.y <= skidoo->floor - STEP_L) {
         skidoo->rot.y += skidoo_data->extra_rotation + skidoo_data->skidoo_turn;
     } else {
-        if (skidoo_data->skidoo_turn < -SKIDOO_UNDO_TURN) {
-            skidoo_data->skidoo_turn += SKIDOO_UNDO_TURN;
-        } else if (skidoo_data->skidoo_turn > SKIDOO_UNDO_TURN) {
-            skidoo_data->skidoo_turn -= SKIDOO_UNDO_TURN;
+        if (skidoo_data->skidoo_turn < -M_UNDO_TURN) {
+            skidoo_data->skidoo_turn += M_UNDO_TURN;
+        } else if (skidoo_data->skidoo_turn > M_UNDO_TURN) {
+            skidoo_data->skidoo_turn -= M_UNDO_TURN;
         } else {
             skidoo_data->skidoo_turn = 0;
         }
         skidoo->rot.y += skidoo_data->skidoo_turn + skidoo_data->extra_rotation;
 
         int16_t rot = skidoo->rot.y - skidoo_data->momentum_angle;
-        if (rot < -SKIDOO_MOMENTUM_TURN) {
-            if (rot < -SKIDOO_MAX_MOMENTUM_TURN) {
-                rot = -SKIDOO_MAX_MOMENTUM_TURN;
+        if (rot < -M_MOMENTUM_TURN) {
+            if (rot < -M_MAX_MOMENTUM_TURN) {
+                rot = -M_MAX_MOMENTUM_TURN;
                 skidoo_data->momentum_angle = skidoo->rot.y - rot;
             } else {
-                skidoo_data->momentum_angle -= SKIDOO_MOMENTUM_TURN;
+                skidoo_data->momentum_angle -= M_MOMENTUM_TURN;
             }
-        } else if (rot > SKIDOO_MOMENTUM_TURN) {
-            if (rot > SKIDOO_MAX_MOMENTUM_TURN) {
-                rot = SKIDOO_MAX_MOMENTUM_TURN;
+        } else if (rot > M_MOMENTUM_TURN) {
+            if (rot > M_MAX_MOMENTUM_TURN) {
+                rot = M_MAX_MOMENTUM_TURN;
                 skidoo_data->momentum_angle = skidoo->rot.y - rot;
             } else {
-                skidoo_data->momentum_angle += SKIDOO_MOMENTUM_TURN;
+                skidoo_data->momentum_angle += M_MOMENTUM_TURN;
             }
         } else {
             skidoo_data->momentum_angle = skidoo->rot.y;
@@ -382,14 +378,14 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
         (skidoo->speed * Math_Sin(skidoo_data->momentum_angle)) >> W2V_SHIFT;
 
     int32_t slip;
-    slip = (SKIDOO_SLIP * Math_Sin(skidoo->rot.x)) >> W2V_SHIFT;
-    if (ABS(slip) > SKIDOO_SLIP / 2) {
+    slip = (M_SLIP * Math_Sin(skidoo->rot.x)) >> W2V_SHIFT;
+    if (ABS(slip) > M_SLIP / 2) {
         skidoo->pos.z -= (slip * Math_Cos(skidoo->rot.y)) >> W2V_SHIFT;
         skidoo->pos.x -= (slip * Math_Sin(skidoo->rot.y)) >> W2V_SHIFT;
     }
 
-    slip = (SKIDOO_SLIP_SIDE * Math_Sin(skidoo->rot.z)) >> W2V_SHIFT;
-    if (ABS(slip) > SKIDOO_SLIP_SIDE / 2) {
+    slip = (M_SLIP_SIDE * Math_Sin(skidoo->rot.z)) >> W2V_SHIFT;
+    if (ABS(slip) > M_SLIP_SIDE / 2) {
         skidoo->pos.z -= (slip * Math_Sin(skidoo->rot.y)) >> W2V_SHIFT;
         skidoo->pos.x += (slip * Math_Cos(skidoo->rot.y)) >> W2V_SHIFT;
     }
@@ -408,23 +404,19 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
     XYZ_32 fl;
     XYZ_32 bl;
     XYZ_32 fr;
-    const int32_t hbl =
-        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, -SKIDOO_SIDE, &bl);
+    const int32_t hbl = Skidoo_TestHeight(skidoo, -M_FRONT, -M_SIDE, &bl);
     if (hbl < bl_old.y - STEP_L) {
         rot = Vehicle_DoShift(skidoo, &bl, &bl_old);
     }
-    const int32_t hbr =
-        Skidoo_TestHeight(skidoo, -SKIDOO_FRONT, SKIDOO_SIDE, &br);
+    const int32_t hbr = Skidoo_TestHeight(skidoo, -M_FRONT, M_SIDE, &br);
     if (hbr < br_old.y - STEP_L) {
         rot += Vehicle_DoShift(skidoo, &br, &br_old);
     }
-    const int32_t hfl =
-        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, -SKIDOO_SIDE, &fl);
+    const int32_t hfl = Skidoo_TestHeight(skidoo, M_FRONT, -M_SIDE, &fl);
     if (hfl < fl_old.y - STEP_L) {
         rot += Vehicle_DoShift(skidoo, &fl, &fl_old);
     }
-    const int32_t hfr =
-        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, SKIDOO_SIDE, &fr);
+    const int32_t hfr = Skidoo_TestHeight(skidoo, M_FRONT, M_SIDE, &fr);
     if (hfr < fr_old.y - STEP_L) {
         rot += Vehicle_DoShift(skidoo, &fr, &fr_old);
     }
@@ -449,8 +441,8 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
         const int32_t new_speed = (s * dx + c * dz) >> W2V_SHIFT;
 
         if (skidoo == Lara_Vehicle_GetItem()
-            && skidoo->speed > SKIDOO_MAX_SPEED + SKIDOO_ACCELERATION
-            && new_speed < skidoo->speed - SKIDOO_ACCELERATION) {
+            && skidoo->speed > SKIDOO_MAX_SPEED + M_ACCELERATION
+            && new_speed < skidoo->speed - M_ACCELERATION) {
             Lara_TakeDamage((skidoo->speed - new_speed) / 2, true);
         }
 
@@ -460,8 +452,8 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
             skidoo->speed = new_speed > 0 ? 0 : new_speed;
         }
 
-        if (skidoo->speed < SKIDOO_MAX_BACK) {
-            skidoo->speed = SKIDOO_MAX_BACK;
+        if (skidoo->speed < M_MAX_BACK) {
+            skidoo->speed = M_MAX_BACK;
         }
     }
 
@@ -484,22 +476,22 @@ int32_t Skidoo_UserControl(
 
         if ((g_Input.left && !g_Input.back)
             || (g_Input.right && g_Input.back)) {
-            skidoo_data->skidoo_turn -= SKIDOO_TURN;
+            skidoo_data->skidoo_turn -= M_TURN;
             CLAMPL(skidoo_data->skidoo_turn, -SKIDOO_MAX_TURN);
         }
 
         if ((g_Input.right && !g_Input.back)
             || (g_Input.left && g_Input.back)) {
-            skidoo_data->skidoo_turn += SKIDOO_TURN;
+            skidoo_data->skidoo_turn += M_TURN;
             CLAMPG(skidoo_data->skidoo_turn, SKIDOO_MAX_TURN);
         }
 
         if (g_Input.back) {
             if (skidoo->speed > 0) {
-                skidoo->speed -= SKIDOO_BRAKE;
+                skidoo->speed -= M_BRAKE;
             } else {
-                if (skidoo->speed > SKIDOO_MAX_BACK) {
-                    skidoo->speed += SKIDOO_REVERSE;
+                if (skidoo->speed > M_MAX_BACK) {
+                    skidoo->speed += M_REVERSE;
                 }
                 drive = true;
             }
@@ -515,10 +507,10 @@ int32_t Skidoo_UserControl(
 
             if (skidoo->speed < max_speed) {
                 skidoo->speed +=
-                    SKIDOO_ACCELERATION * skidoo->speed / (2 * max_speed)
-                    + SKIDOO_ACCELERATION / 2;
-            } else if (skidoo->speed > max_speed + SKIDOO_SLOWDOWN) {
-                skidoo->speed -= SKIDOO_SLOWDOWN;
+                    M_ACCELERATION * skidoo->speed / (2 * max_speed)
+                    + M_ACCELERATION / 2;
+            } else if (skidoo->speed > max_speed + M_SLOWDOWN) {
+                skidoo->speed -= M_SLOWDOWN;
             }
 
             drive = true;
@@ -527,8 +519,8 @@ int32_t Skidoo_UserControl(
             && (g_Input.left || g_Input.right)) {
             skidoo->speed = SKIDOO_MIN_SPEED;
             drive = true;
-        } else if (skidoo->speed > SKIDOO_SLOWDOWN) {
-            skidoo->speed -= SKIDOO_SLOWDOWN;
+        } else if (skidoo->speed > M_SLOWDOWN) {
+            skidoo->speed -= M_SLOWDOWN;
             if ((Random_GetDraw() & 0x7F) < skidoo->speed) {
                 drive = true;
             }
@@ -556,8 +548,8 @@ int32_t Skidoo_CheckGetOffOK(int32_t direction)
 
     const int32_t c = Math_Cos(rot);
     const int32_t s = Math_Sin(rot);
-    const int32_t x = skidoo->pos.x - ((SKIDOO_GET_OFF_DIST * s) >> W2V_SHIFT);
-    const int32_t z = skidoo->pos.z - ((SKIDOO_GET_OFF_DIST * c) >> W2V_SHIFT);
+    const int32_t x = skidoo->pos.x - ((M_GET_OFF_DIST * s) >> W2V_SHIFT);
+    const int32_t z = skidoo->pos.z - ((M_GET_OFF_DIST * c) >> W2V_SHIFT);
     const int32_t y = skidoo->pos.y;
 
     int16_t room_num = skidoo->room_num;
@@ -729,9 +721,9 @@ bool Skidoo_CheckGetOff(void)
         lara_item->goal_anim_state = LS(LS_STOP);
         lara_item->current_anim_state = LS(LS_STOP);
         lara_item->pos.x -=
-            (SKIDOO_GET_OFF_DIST * Math_Sin(lara_item->rot.y)) >> W2V_SHIFT;
+            (M_GET_OFF_DIST * Math_Sin(lara_item->rot.y)) >> W2V_SHIFT;
         lara_item->pos.z -=
-            (SKIDOO_GET_OFF_DIST * Math_Cos(lara_item->rot.y)) >> W2V_SHIFT;
+            (M_GET_OFF_DIST * Math_Cos(lara_item->rot.y)) >> W2V_SHIFT;
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
         Lara_Vehicle_SetIndex(NO_ITEM);
@@ -808,10 +800,8 @@ bool Skidoo_Control(void)
 
     XYZ_32 fl;
     XYZ_32 fr;
-    const int32_t hfl =
-        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, -SKIDOO_SIDE, &fl);
-    const int32_t hfr =
-        Skidoo_TestHeight(skidoo, SKIDOO_FRONT, SKIDOO_SIDE, &fr);
+    const int32_t hfl = Skidoo_TestHeight(skidoo, M_FRONT, -M_SIDE, &fl);
+    const int32_t hfr = Skidoo_TestHeight(skidoo, M_FRONT, M_SIDE, &fr);
 
     int16_t room_num = skidoo->room_num;
     const SECTOR *const sector =
@@ -881,8 +871,8 @@ bool Skidoo_Control(void)
         M_DoDynamics(height, skidoo->fall_speed, &skidoo->pos.y);
 
     height = (fr.y + fl.y) / 2;
-    const int16_t x_rot = Math_Atan(SKIDOO_FRONT, skidoo->pos.y - height);
-    const int16_t z_rot = Math_Atan(SKIDOO_SIDE, height - fl.y);
+    const int16_t x_rot = Math_Atan(M_FRONT, skidoo->pos.y - height);
+    const int16_t z_rot = Math_Atan(M_SIDE, height - fl.y);
     skidoo->rot.x += (x_rot - skidoo->rot.x) >> 1;
     skidoo->rot.z += (z_rot - skidoo->rot.z) >> 1;
 
