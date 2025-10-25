@@ -63,7 +63,7 @@ typedef enum {
     IDT_SAMPLE_INDICES   = 15,
     IDT_SAMPLE_DATA      = 16,
     IDT_FLOOR_EDITS      = 17,
-    IDT_ITEM_EDITS       = 18,
+    IDT_ITEM_POS_EDITS   = 18,
     IDT_MESH_EDITS       = 19,
     IDT_TEXTURE_EDITS    = 20,
     IDT_ROOM_EDIT_META   = 21,

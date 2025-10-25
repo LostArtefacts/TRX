@@ -3,7 +3,7 @@
 #include "game/items.h"
 #include "log.h"
 
-static void M_ItemEdits(
+static void M_ItemPosEdits(
     const INJECTION *const injection, const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
@@ -54,5 +54,5 @@ static void M_CameraEdits(
     }
 }
 
-REGISTER_INJECT_EDITOR(IDT_ITEM_EDITS, M_ItemEdits)
+REGISTER_INJECT_EDITOR(IDT_ITEM_POS_EDITS, M_ItemPosEdits)
 REGISTER_INJECT_EDITOR(IDT_CAMERA_EDITS, M_CameraEdits)
