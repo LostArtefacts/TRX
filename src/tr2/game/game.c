@@ -1,12 +1,10 @@
 #include "game/game.h"
 
-#include "game/inventory.h"
 #include "game/room_draw.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
-#include <libtrx/game/lara.h>
 #include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 

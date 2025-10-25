@@ -4,6 +4,7 @@
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/lara/draw.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/objects.h>
@@ -222,41 +223,20 @@ static void M_DrawSkybox(void)
         return;
     }
 
-    Output_SetupAboveWater(g_Camera.underwater);
-    Matrix_Push();
-    g_MatrixPtr->_03 = 0;
-    g_MatrixPtr->_13 = 0;
-    g_MatrixPtr->_23 = 0;
-
     const OBJECT *const skybox = Object_Get(O_SKYBOX);
-    Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
-    Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
-
-    Matrix_Pop();
+    if (skybox->loaded) {
+        Output_SetupAboveWater(g_Camera.underwater);
+        Matrix_Push();
+        g_MatrixPtr->_03 = 0;
+        g_MatrixPtr->_13 = 0;
+        g_MatrixPtr->_23 = 0;
+        Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
+        Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
+        Matrix_Pop();
+    }
 }
 
-void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
-{
-    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
-    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
-    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-
-    Room_DrawReset();
-
-    M_PrepareToDraw(base_room);
-    if (!Room_CheckOverlap(base_room, target_room)) {
-        M_PrepareToDraw(target_room);
-    }
-    M_DrawSkybox();
-
-    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
-        Room_DrawSingleRoom(Room_DrawGetRoom(i));
-    }
-    Output_SetupAboveWater(false);
-}
-
-void Room_DrawSingleRoom(const int16_t room_num)
+static void M_DrawSingleRoom(const int16_t room_num)
 {
     ROOM *const room = Room_Get(room_num);
     if (room->flags.underwater) {
@@ -327,4 +307,37 @@ void Room_DrawSingleRoom(const int16_t room_num)
     room->bound_bottom = Viewport_GetMinX(VIEWPORT_GAME);
     room->bound_right = Viewport_GetMinY(VIEWPORT_GAME);
     room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
+}
+
+void Room_DrawAllRooms(int16_t base_room, int16_t target_room)
+{
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+
+    Room_DrawReset();
+
+    M_PrepareToDraw(base_room);
+    if (!Room_CheckOverlap(base_room, target_room)) {
+        M_PrepareToDraw(target_room);
+    }
+    M_DrawSkybox();
+
+    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
+        M_DrawSingleRoom(Room_DrawGetRoom(i));
+    }
+
+    ITEM *const lara_item = Lara_GetItem();
+    if (Object_Get(O_LARA)->loaded) {
+        const ROOM *const lara_room = Room_Get(lara_item->room_num);
+        if (lara_room->flags.underwater) {
+            Output_SetupBelowWater(g_Camera.underwater);
+        } else {
+            Output_SetupAboveWater(g_Camera.underwater);
+        }
+        Lara_Draw(lara_item);
+    }
+
+    Output_SetupAboveWater(false);
 }
