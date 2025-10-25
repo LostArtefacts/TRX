@@ -14,22 +14,14 @@
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraPos);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
-static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap);
-static DECLARE_GF_EVENT_HANDLER(M_HandleMeshSwap);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
     [GFS_LOOP_GAME]        = M_HandlePlayLevel,
     [GFS_PLAY_MUSIC]       = M_HandlePlayMusic,
     [GFS_LEVEL_COMPLETE]   = M_HandleLevelComplete,
-    [GFS_SET_CAMERA_POS]   = M_HandleSetCameraPos,
-    [GFS_SET_CAMERA_ANGLE] = M_HandleSetCameraAngle,
     [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
-    [GFS_FLIP_MAP]         = M_HandleFlipMap,
-    [GFS_MESH_SWAP]        = M_HandleMeshSwap,
     // clang-format on
 };
 
@@ -151,33 +143,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     };
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraPos)
-{
-    if (seq_ctx != GFSC_STORY) {
-        GF_SET_CAMERA_POS_DATA *const data = event->data;
-        CINE_DATA *const cine_data = Camera_GetCineData();
-        if (data->x.set) {
-            cine_data->position.pos.x = (int32_t)(intptr_t)data->x.value;
-        }
-        if (data->y.set) {
-            cine_data->position.pos.y = (int32_t)(intptr_t)data->y.value;
-        }
-        if (data->z.set) {
-            cine_data->position.pos.z = (int32_t)(intptr_t)data->z.value;
-        }
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetCameraAngle)
-{
-    if (seq_ctx != GFSC_STORY) {
-        Camera_GetCineData()->position.target_angle =
-            (int32_t)(intptr_t)event->data;
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
@@ -185,24 +150,6 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
         Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
     }
     return gf_cmd;
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleFlipMap)
-{
-    if (seq_ctx != GFSC_STORY) {
-        Room_FlipMap();
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleMeshSwap)
-{
-    if (seq_ctx != GFSC_STORY) {
-        const GF_MESH_SWAP_DATA *const swap_data = event->data;
-        Object_SwapMesh(
-            swap_data->object1_id, swap_data->object2_id, swap_data->mesh_num);
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 void GF_PreSequenceHook(
