@@ -7,6 +7,7 @@
 #include <libtrx/game/camera.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
 
 void Game_Draw(const bool draw_overlay)
