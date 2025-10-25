@@ -10,7 +10,6 @@
     "savegame_fmt_bson": "save_demo_pc_%02d.dat",
 
     "injections": [
-        "data/injections/backpack.bin",
         "data/injections/braid.bin",
         "data/injections/bubbles.bin",
         "data/injections/gun_glow.bin",
