@@ -62,12 +62,8 @@ bool UI_Settings_EnemyHealthbar_IsAvailable(
 bool UI_Settings_AllyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-#if TR_VERSION == 1
-    return g_Config.ui.enemy_health_bar.show_mode == BSM_ALWAYS;
-#else
     return g_Config.ui.enemy_health_bar.show_mode == BSM_ALWAYS
         && g_Config.gameplay.enable_ally_targeting;
-#endif
 }
 
 bool UI_Settings_HealthbarColor_IsAvailable(

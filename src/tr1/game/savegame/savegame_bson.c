@@ -613,7 +613,7 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
                 && item->object_id == O_BACON_LARA) {
                 const int32_t status =
                     JSON_ObjectGetInt(item_obj, "bl_status", 0);
-                item->data = (void *)(intptr_t)status;
+                item->priv = (void *)(intptr_t)status;
             }
 
             if (header_version >= VERSION_12
@@ -1353,7 +1353,7 @@ static JSON_ARRAY *M_DumpItems(void)
             }
 
             if (item->object_id == O_BACON_LARA && item->data) {
-                const int32_t status = (int32_t)(intptr_t)item->data;
+                const int32_t status = (int32_t)(intptr_t)item->priv;
                 JSON_ObjectAppendInt(item_obj, "bl_status", status);
             }
 

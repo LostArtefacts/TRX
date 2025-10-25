@@ -3,6 +3,7 @@
 #include "game/creature.h"
 #include "game/lara.h"
 #include "game/objects.h"
+#include "game/pathing.h"
 #include "game/rooms.h"
 
 #define M_SMASH_JUMP_FRAME 1
@@ -16,7 +17,7 @@ static void M_Initialise(const int16_t item_num)
     OBJECT *const bacon_obj = Object_Get(O_BACON_LARA);
     bacon_obj->anim_idx = lara_obj->anim_idx;
     bacon_obj->frame_base = lara_obj->frame_base;
-    Item_Get(item_num)->data = nullptr;
+    Item_Get(item_num)->priv = nullptr;
 }
 
 static void M_Control(const int16_t item_num)
@@ -28,12 +29,19 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const ITEM *const lara_item = Lara_GetItem();
 
+    if (Item_IsTriggerActive(item)) {
+        if (!LOT_EnableBaddieAI(item_num, true)) {
+            return;
+        }
+        item->status = IS_ACTIVE;
+    }
+
     if (item->hit_points < LARA_MAX_HITPOINTS) {
         Lara_TakeDamage((LARA_MAX_HITPOINTS - item->hit_points) * 10, false);
         item->hit_points = LARA_MAX_HITPOINTS;
     }
 
-    if (!item->data) {
+    if (!item->priv) {
         int32_t x = 2 * m_AnchorX - lara_item->pos.x;
         int32_t y = lara_item->pos.y;
         int32_t z = 2 * m_AnchorZ - lara_item->pos.z;
@@ -67,12 +75,12 @@ static void M_Control(const int16_t item_num)
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity = true;
-            item->data = (void *)-1;
+            item->priv = (void *)-1;
             item->pos.y += 50;
         }
     }
 
-    if (item->data) {
+    if (item->priv) {
         Item_Animate(item);
 
         int32_t x = item->pos.x;
