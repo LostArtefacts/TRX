@@ -58,7 +58,7 @@ void Object_SetupAllObjects(void)
         obj->save_flags = false;
         obj->save_anim = false;
         obj->intelligent = false;
-        obj->smartness = 0x7FFF;
+        obj->smartness = -1;
 
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);

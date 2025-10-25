@@ -415,9 +415,9 @@ void Creature_Mood(
         break;
     }
 
-    case MOOD_ATTACK:
-        if (g_TRVersion >= 2
-            || Random_GetControl() < Object_Get(item->object_id)->smartness) {
+    case MOOD_ATTACK: {
+        const int32_t smartness = Object_Get(item->object_id)->smartness;
+        if (smartness < 0 || Random_GetControl() < smartness) {
             lot->target = enemy->pos;
             lot->required_box = enemy->box_num;
             if (lot->setup.fly != 0
@@ -426,6 +426,7 @@ void Creature_Mood(
             }
         }
         break;
+    }
 
     case MOOD_ESCAPE: {
         const int16_t box_num =
