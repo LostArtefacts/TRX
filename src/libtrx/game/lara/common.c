@@ -133,7 +133,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
 
     Lara_Control_Initialise(level->type, m_StartAnimState);
 
-    if (TR_VERSION == 2 && level->type == GFL_CUTSCENE) {
+    if (g_TRVersion == 2 && level->type == GFL_CUTSCENE) {
         for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
             Lara_Mesh_SwapSingle(i, O_LARA);
         }

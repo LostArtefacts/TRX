@@ -10,6 +10,7 @@
 #include "game/ui/elements/window.h"
 #include "game/ui/text.h"
 #include "utils.h"
+#include "version.h"
 
 void UI_Requester_Init(
     UI_REQUESTER_STATE *const s, const int32_t vis_rows, const int32_t max_rows,
@@ -149,11 +150,11 @@ void UI_EndRequester(const UI_REQUESTER_STATE *const s)
 
 void UI_BeginRequesterRow(const UI_REQUESTER_STATE *const s, const int32_t i)
 {
-    UI_BeginPad(0.0f, TR_VERSION == 1 ? -1.0f : 0.0f);
+    UI_BeginPad(0.0f, g_TRVersion == 1 ? -1.0f : 0.0f);
     if (UI_Requester_IsRowSelected(s, i)) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
-    UI_BeginPad(s->row_pad, TR_VERSION == 1 ? 1.0f : 0.0f);
+    UI_BeginPad(s->row_pad, g_TRVersion == 1 ? 1.0f : 0.0f);
 }
 
 void UI_EndRequesterRow(const UI_REQUESTER_STATE *const s, const int32_t i)
