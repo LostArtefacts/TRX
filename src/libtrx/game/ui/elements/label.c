@@ -56,11 +56,11 @@ void UI_LabelEx(const char *text, const UI_LABEL_SETTINGS settings)
             .layout = UI_LayoutBasic,
             .draw = M_Draw,
         },
-        sizeof(M_DATA) + strlen(text) + 1);
+        sizeof(M_DATA) + (text != nullptr ? strlen(text) + 1 : 1));
     M_DATA *const data = node->data;
     data->settings = settings;
     data->text = (char *)node->data + sizeof(M_DATA);
-    strcpy(data->text, text);
+    strcpy(data->text, text != nullptr ? text : "");
     UI_AddChild(node);
 }
 

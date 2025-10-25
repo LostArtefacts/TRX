@@ -246,9 +246,8 @@ typedef struct {
         int32_t turbo_speed;
         int32_t camera_speed;
         int32_t start_lara_hitpoints;
-#if TR_VERSION == 1
         int32_t maximum_save_slots;
-#else
+#if TR_VERSION > 1
         int32_t harpoon_recoil;
 #endif
 

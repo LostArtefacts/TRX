@@ -33,6 +33,7 @@ void Config_SanitizeCommon(void)
     CLAMP(g_Config.ui.pickup_scale, 0.5, 2.0);
     CLAMP(g_Config.visuals.fog_start, 1, 100);
     CLAMP(g_Config.visuals.fog_end, 1, 100);
+    CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
 
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;
