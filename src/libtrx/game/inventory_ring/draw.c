@@ -154,7 +154,7 @@ void InvRing_Draw(INV_RING *const ring)
 
     if (ring->mode == INV_TITLE_MODE) {
         Interpolation_Interpolate();
-    } else if (TR_VERSION == 1) { // TODO: allow players choosing background
+    } else if (g_TRVersion == 1) { // TODO: allow players choosing background
         Matrix_LookAt(
             g_InvRing_OldCamera.pos.x,
             g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,
