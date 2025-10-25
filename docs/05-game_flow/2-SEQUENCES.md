@@ -127,11 +127,6 @@ default game flow for examples.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>flip_map</code><strong>¹</strong></td>
-    <td colspan="2" align="center">N/A</td>
-    <td>Triggers the flip map.</td>
-  </tr>
-  <tr valign="top">
     <td rowspan="2">
       <a name="give-item"></a>
       <code>give_item</code>
@@ -157,20 +152,6 @@ default game flow for examples.
   </tr>
   <tr valign="top">
     <td><code>quantity</code></td>
-    <td>Integer</td>
-  </tr>
-  <tr valign="top">
-    <td rowspan="3"><code>mesh_swap</code><strong>¹</strong></td>
-    <td><code>object1_id</code></td>
-    <td>Integer</td>
-    <td rowspan="3">Swaps the given mesh ID between the given objects.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>object2_id</code></td>
-    <td>Integer</td>
-  </tr>
-  <tr valign="top">
-    <td><code>mesh_id</code></td>
     <td>Integer</td>
   </tr>
   <tr valign="top">
@@ -214,26 +195,6 @@ default game flow for examples.
   <tr valign="top">
     <td><code>remove_scions</code><strong>¹</strong></td>
     <td colspan="2" align="center">N/A</td>
-  </tr>
-  <tr valign="top">
-    <td rowspan="3"><code>set_cutscene_pos</code><strong>¹</strong></td>
-    <td><code><code>x</code></code></td>
-    <td>Integer</td>
-    <td rowspan="3">Sets the camera's position.</td>
-  </tr>
-  <tr valign="top">
-    <td><code><code>y</code></code></td>
-    <td>Integer</td>
-  </tr>
-  <tr valign="top">
-    <td><code><code>z</code></code></td>
-    <td>Integer</td>
-  </tr>
-  <tr valign="top">
-    <td><code>set_cutscene_angle</code></td>
-    <td><code>value</code></td>
-    <td>Integer</td>
-    <td>Sets the camera's angle.</td>
   </tr>
   <tr valign="top">
     <td><code>setup_bacon_lara</code></td>

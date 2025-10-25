@@ -19,7 +19,6 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_EXIT_TO_TITLE,     nullptr, nullptr },
 
     // Events with integer arguments
-    { GFS_SET_CAMERA_ANGLE,  M_HandleIntEvent, "angle" },
     { GFS_SET_START_ANIM,    M_HandleIntEvent, "anim" },
     { GFS_LOOP_GAME,         M_HandleIntEvent, "level_id" },
     { GFS_PLAY_CUTSCENE,     M_HandleIntEvent, "cutscene_id" },

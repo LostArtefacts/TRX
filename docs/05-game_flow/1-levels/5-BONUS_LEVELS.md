@@ -95,7 +95,6 @@ game will exit to title.
             "path": "data/bonuscut1.phd",
             "music_track": 23,
             "sequence": [
-                {"type": "set_cutscene_angle", "value": -23312},
                 {"type": "loop_game"},
             ],
         },
