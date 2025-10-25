@@ -39,6 +39,7 @@
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)
 - fixed Lara being able to push blocks through toggle opacity 1 portals (#4129)
 - fixed a crash if trying to kill an enemy by name but there is no naming definition for that object
+- fixed Lara being drawn if the explosion cheat has been used and Bacon Lara is active (#4148)
 - fixed ambient music not playing in demo levels (#4046, regression from 4.13)
 - fixed caustics stopping after spending roughly 12 minutes in a level (#4109, regression from 4.10)
 - fixed legacy UB crashing the game (#4113, regression from 4.12)
