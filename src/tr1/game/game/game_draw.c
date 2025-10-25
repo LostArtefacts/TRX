@@ -18,7 +18,7 @@ void Game_Draw(bool draw_overlay)
     Interpolation_Interpolate();
     Camera_Apply();
 
-    if (Object_Get(O_LARA)->loaded) {
+    if (GF_GetCurrentLevel()->type != GFL_CUTSCENE) {
         Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
 
         ITEM *const lara_item = Lara_GetItem();

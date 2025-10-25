@@ -135,42 +135,15 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
-      <code>backpack.bin</code>
-    </td>
-    <td>TR1</td>
-    <td rowspan="2">
-      Injects mesh edits for Lara's backback, such that it becomes shallower.
-      This is only applied when the braid is enabled, to avoid the braid
-      merging with the backpack. The different files are needed to address mesh
-      structure differences between cutscene and normal levels.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
-      <code>backpack_cut.bin</code>
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
       <code>braid.bin</code>
     </td>
-    <td rowspan="4">TR1</td>
-    <td rowspan="4">
+    <td rowspan="2">TR1</td>
+    <td rowspan="2">
       Injects a braid when the option for it is enabled. This also edits Lara's
-      head meshes (object 0 and object 4) to make the braid fit better. A golden
-      braid is also provided for the Midas Touch animation. Again, different
-      files are needed to cater for mesh differences between cutscene and normal
-      levels. The Lost Valley file comprises a head mesh edit for object 5 only.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
-      <code>braid_cut1.bin</code>
-    </td>
-  </tr>
-  <tr valign="top">
-    <td>
-      <code>braid_cut2_cut4.bin</code>
+      head meshes (object 0 and object 4) to make the braid fit better, and makes
+      her backback shallower to avoid overlapping the braid itself. A golden
+      braid is also provided for the Midas Touch animation. The Lost Valley file
+      comprises a head mesh edit for object <code>O_LARA_MISC</code> only.
     </td>
   </tr>
   <tr valign="top">

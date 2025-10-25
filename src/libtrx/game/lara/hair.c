@@ -17,7 +17,6 @@
 #define M_HAIR_OFFSET_Z (g_TRVersion == 1 ? -45 : -55)
 
 static bool m_IsFirstHair;
-static OBJECT_ID m_LaraType = O_LARA;
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
 static XYZ_32 m_HairVelocity[M_HAIR_SEGMENTS + 1];
 static HAIR_SEGMENT m_HairSegments[M_HAIR_SEGMENTS + 1];
@@ -37,7 +36,7 @@ static int16_t M_GetRoom(const XYZ_32 pos)
 static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    const OBJECT *const lara_obj = Object_Get(m_LaraType);
+    const OBJECT *const lara_obj = Object_Get(O_LARA);
 
     const LARA_POSE *const pose = Lara_Pose_Get();
     const XYZ_16 *mesh_rots = pose != nullptr ? pose->rots : frame->mesh_rots;
@@ -116,7 +115,7 @@ static void M_CalculateSpheres_I(
     const int32_t frac, const int32_t rate)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    const OBJECT *const lara_obj = Object_Get(m_LaraType);
+    const OBJECT *const lara_obj = Object_Get(O_LARA);
 
     const XYZ_16 *mesh_rots_1 = frame_1->mesh_rots;
     const XYZ_16 *mesh_rots_2 = frame_2->mesh_rots;
@@ -199,15 +198,12 @@ static void M_CalculateSpheres_I(
     Matrix_Interpolate();
 }
 
-void Lara_Hair_SetLaraType(const OBJECT_ID lara_type)
-{
-    m_LaraType = lara_type;
-}
-
 void Lara_Hair_Initialise(void)
 {
     const OBJECT *const obj = Object_Get(O_LARA_HAIR);
-    Lara_Hair_SetLaraType(O_LARA);
+    if (!obj->loaded) {
+        return;
+    }
 
     m_IsFirstHair = true;
     m_HairSegments[0].rot.x = -DEG_90;
@@ -443,7 +439,7 @@ void Lara_Hair_Draw(void)
 bool Lara_Hair_IsActive(void)
 {
     return g_Config.visuals.enable_braid && Object_Get(O_LARA_HAIR)->loaded
-        && Object_Get(m_LaraType)->loaded;
+        && Object_Get(O_LARA)->loaded;
 }
 
 int32_t Lara_Hair_GetSegmentCount(void)

@@ -61,8 +61,6 @@ typedef struct {
     struct {
         XYZ_32 pos;
         XYZ_16 rot;
-#if TR_VERSION == 2
         int16_t target_angle;
-#endif
     } position;
 } CINE_DATA;
