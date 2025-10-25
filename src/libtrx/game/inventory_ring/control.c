@@ -211,11 +211,9 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_PASSPORT_OPTION:
         switch (g_Passport.select_action) {
         case PASSPORT_ACTION_LOAD_GAME:
-#if TR_VERSION == 2
             if (apply_changes) {
                 Inv_RemoveAllItems();
             }
-#endif
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
                 .param = g_Passport.select_slot,
@@ -930,21 +928,19 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Fader_Init(
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
             M_INV_RING_FADE_TIME_FAST);
-    } else {
-#if TR_VERSION == 1
+    } else if (g_TRVersion == 1) {
         Output_UnloadBackground();
         Fader_Init(
             &ring->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK,
             M_INV_RING_FADE_TIME_FAST);
-#elif TR_VERSION == 2
+    } else if (g_TRVersion == 2) {
         Output_LoadBackgroundFromObject(
             g_Config.ui.inventory_background_style == BK_PATTERN_WAVE);
-#endif
     }
 
-#if TR_VERSION == 2
-    Viewport_AlterFOV(80 * DEG_1);
-#endif
+    if (g_TRVersion == 2) {
+        Viewport_AlterFOV(80 * DEG_1);
+    }
 
     return ring;
 }
