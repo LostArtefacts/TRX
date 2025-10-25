@@ -6,6 +6,7 @@
 #include "game/savegame.h"
 
 #include <libtrx/game/game_string_table.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/log.h>
 
 #include <stddef.h>
@@ -43,6 +44,12 @@ GF_COMMAND GF_DoLevelSequence(
         }
         current_level++;
     }
+}
+
+GF_COMMAND GF_PlayAvailableStory(const int32_t slot_num)
+{
+    Shell_ExitSystem("Not implemented");
+    return (GF_COMMAND) { .action = GF_NOOP };
 }
 
 bool GF_HasAvailableStory(const int32_t slot_num)
