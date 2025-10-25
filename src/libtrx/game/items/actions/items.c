@@ -29,6 +29,20 @@ static void M_InvisibilityOff(ITEM *const item)
     }
 }
 
+static void M_ShadowOn(ITEM *const item)
+{
+    if (item != nullptr) {
+        item->enable_shadow = true;
+    }
+}
+
+static void M_ShadowOff(ITEM *const item)
+{
+    if (item != nullptr) {
+        item->enable_shadow = false;
+    }
+}
+
 static void M_DynamicLightOn(ITEM *const item)
 {
     if (item != nullptr) {
@@ -77,6 +91,8 @@ static void M_SwapMeshesWithMeshSwap3(ITEM *const item)
 REGISTER_ITEM_ACTION(ITEM_ACTION_TURN_180, M_Turn180)
 REGISTER_ITEM_ACTION(ITEM_ACTION_INVISIBILITY_ON, M_InvisibilityOn)
 REGISTER_ITEM_ACTION(ITEM_ACTION_INVISIBILITY_OFF, M_InvisibilityOff)
+REGISTER_ITEM_ACTION(ITEM_ACTION_SHADOW_ON, M_ShadowOn)
+REGISTER_ITEM_ACTION(ITEM_ACTION_SHADOW_OFF, M_ShadowOff)
 REGISTER_ITEM_ACTION(ITEM_ACTION_DYNAMIC_LIGHT_ON, M_DynamicLightOn)
 REGISTER_ITEM_ACTION(ITEM_ACTION_DYNAMIC_LIGHT_OFF, M_DynamicLightOff)
 REGISTER_ITEM_ACTION(
