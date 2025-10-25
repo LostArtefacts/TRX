@@ -23,10 +23,8 @@
 
 #define M_DEFAULT_SFX_PATH "data/main.sfx"
 
-#if TR_VERSION == 1
 // TODO: refactor me
 extern void Stats_ObserveRoomsLoad(void);
-#endif
 
 typedef struct {
     int32_t game_index;
@@ -215,25 +213,23 @@ static void M_CompleteSetup(
 {
     BENCHMARK benchmark = Benchmark_Start();
 
-#if TR_VERSION == 1
     // We inject explosions sprites and sounds, although in the original game,
     // some levels lack them, resulting in no audio or visual effects when
     // killing mutants. This is to maintain that feature.
     Mutant_ToggleExplosions(Object_Get(O_EXPLOSION_1)->loaded);
-#endif
 
     Inject_AllInjections();
 
     Level_LoadAnimFrames(loader);
     Level_LoadAnimCommands();
-#if TR_VERSION == 1
-    M_MarkWaterEdgeVertices();
+    if (g_TRVersion == 1) {
+        M_MarkWaterEdgeVertices();
 
-    // Must be called post-injection to allow for floor data changes.
-    Stats_ObserveRoomsLoad();
-#else
-    Level_LoadWalkables();
-#endif
+        // Must be called post-injection to allow for floor data changes.
+        Stats_ObserveRoomsLoad();
+    } else {
+        Level_LoadWalkables();
+    }
     Level_LoadObjectsAndItems();
 
     // Configure enemies who carry and drop items
