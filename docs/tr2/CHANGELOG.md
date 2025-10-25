@@ -21,6 +21,7 @@
 - added an option to change max savegame slot count (Gameplay → General → Number of save slots)
 - added an option to turn off Inventory input buffering (Gameplay → Input → Buffering (Inventory))
 - added an option to turn on TR1-style F-keys input buffering (Gameplay → Input → Buffering (F-keys))
+- added an option to draw Shotgun flashes (Graphic Options → Visuals → Shotgun flash)
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)

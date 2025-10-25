@@ -35,6 +35,4 @@ X_UI_CFG_BOOL(visuals.enable_round_shadow,  SETTING_ENABLE_ROUND_SHADOW)
 X_UI_CFG_BOOL(visuals.enable_gun_lighting,  SETTING_ENABLE_GUN_LIGHTING)
 X_UI_CFG_BOOL(visuals.enable_fire_lighting, SETTING_ENABLE_FIRE_LIGHTING)
 
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(visuals.enable_shotgun_flash, SETTING_ENABLE_SHOTGUN_FLASH)
-#endif
