@@ -35,6 +35,7 @@
 - changed the debug position UI to no longer be hidden in photo mode
 - changed the unrestricted look mode option to include Lara being able to look freely while shooting an enemy (#4090)
 - changed the `ambient_tracks` property to be only available on the root level
+- changed the Pause key to no longer work when Lara's dead (similar to TR1)
 - removed the following game flow options:
     - `cmd_init`
     - `cmd_title`
