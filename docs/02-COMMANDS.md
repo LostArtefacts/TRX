@@ -92,12 +92,15 @@ whichever key you have bound, and not include it as part of the command itself.
 
 - `/debug on`  
   `/debug off`  
+  `/debug {option} on`  
+  `/debug {option} off`  
   Toggles debug mode, turning your screen into a glorious display of dev scribbles.
   - floor triggers - enemy skips incoming!
   - room portals - wait, there are _how_ many rooms?!
   - room clip rectangles – the source of developers nightmares.
   - object mesh spheres - see hitboxes in their natural habitat.
   - Lara's position and animation details - nerdy stats, you've gotta love them.
+  - bounding boxes – to marvel at the collision code.
 
 - `/speed`  
   `/speed {num}`  

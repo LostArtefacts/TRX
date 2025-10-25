@@ -22,6 +22,7 @@
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)
     - fixed ricochets not showing on slopes
+- changed the `/debug` command to accept optional option name argument (for example: `/debug pos 1`)
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
     - `flow.lockout_option_ring`
     - `flow.load_save_disabled`
