@@ -9,6 +9,8 @@
 #include "game/music/backend_files.h"
 #include "game/sound.h"
 #include "log.h"
+#include "vector.h"
+#include "version.h"
 
 static bool m_Initialised = false;
 static uint16_t m_MusicTrackFlags[MAX_MUSIC_TRACKS] = {};
@@ -26,32 +28,41 @@ static const MUSIC_BACKEND *m_Backend = nullptr;
 
 static const MUSIC_BACKEND *M_FindBackend(void)
 {
-    MUSIC_BACKEND *all_backends[] = {
-        Music_Backend_Files_Factory("music"),
-#if TR_VERSION == 2
-        Music_Backend_CDAudio_Factory("audio/cdaudio.wav"),
-        Music_Backend_CDAudio_Factory("audio/cdaudio.mp3"),
-#endif
-        nullptr,
-    };
+    VECTOR *all_backends = Vector_Create(sizeof(MUSIC_BACKEND *));
+    Vector_Add(
+        all_backends,
+        &(MUSIC_BACKEND *) { Music_Backend_Files_Factory("music") });
+    if (g_TRVersion == 2) {
+        Vector_Add(
+            all_backends,
+            &(MUSIC_BACKEND *) {
+                Music_Backend_CDAudio_Factory("audio/cdaudio.wav") });
+        Vector_Add(
+            all_backends,
+            &(MUSIC_BACKEND *) {
+                Music_Backend_CDAudio_Factory("audio/cdaudio.mp3") });
+    }
 
-    const MUSIC_BACKEND *result = nullptr;
-    for (MUSIC_BACKEND **backend_ptr = all_backends; *backend_ptr != nullptr;
-         backend_ptr++) {
-        if ((*backend_ptr)->init(*backend_ptr)) {
-            result = *backend_ptr;
+    const MUSIC_BACKEND *backend = nullptr;
+    for (int32_t i = 0; i < all_backends->count; i++) {
+        MUSIC_BACKEND *const tmp_backend =
+            *(MUSIC_BACKEND **)Vector_Get(all_backends, i);
+        if (tmp_backend->init(tmp_backend)) {
+            backend = tmp_backend;
             break;
         }
     }
 
-    for (MUSIC_BACKEND **backend_ptr = all_backends; *backend_ptr != nullptr;
-         backend_ptr++) {
-        if (*backend_ptr != result) {
-            (*backend_ptr)->shutdown(*backend_ptr);
+    for (int32_t i = 0; i < all_backends->count; i++) {
+        MUSIC_BACKEND *const tmp_backend =
+            *(MUSIC_BACKEND **)Vector_Get(all_backends, i);
+        if (tmp_backend != backend) {
+            tmp_backend->shutdown(tmp_backend);
         }
     }
+    Vector_Free(all_backends);
 
-    return result;
+    return backend;
 }
 
 static void M_StopActiveStream(void)
@@ -171,44 +182,44 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         return true;
     }
 
-#if TR_VERSION == 1
-    const MUSIC_TRX_ID track = Music_FromGameID(track_id);
-    // TODO: utilise secondary audio stream to allow playing high fidelity
-    // versions of these sounds.
-    if (g_Config.audio.fix_secrets_killing_music && track == MX_SECRET
-        && Sound_IsAvailable(SFX_SECRET)) {
-        return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
-    }
+    if (g_TRVersion == 1) {
+        const MUSIC_TRX_ID track = Music_FromGameID(track_id);
+        // TODO: utilise secondary audio stream to allow playing high fidelity
+        // versions of these sounds.
+        if (g_Config.audio.fix_secrets_killing_music && track == MX_SECRET
+            && Sound_IsAvailable(SFX_SECRET)) {
+            return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
+        }
 
-    if (g_Config.audio.fix_speeches_killing_music) {
-        SAMPLE_TRX_ID sample_id = SFX_INVALID;
-        switch (track) {
-        case MX_BALDY_SPEECH:
-            sample_id = SFX_BALDY_SPEECH;
-            break;
-        case MX_COWBOY_SPEECH:
-            sample_id = SFX_COWBOY_SPEECH;
-            break;
-        case MX_LARSON_SPEECH:
-            sample_id = SFX_LARSON_SPEECH;
-            break;
-        case MX_NATLA_SPEECH:
-            sample_id = SFX_NATLA_SPEECH;
-            break;
-        case MX_PIERRE_SPEECH:
-            sample_id = SFX_PIERRE_SPEECH;
-            break;
-        case MX_SKATEKID_SPEECH:
-            sample_id = SFX_SKATEKID_SPEECH;
-            break;
-        default:
-            break;
-        }
-        if (Sound_IsAvailable(sample_id)) {
-            return Sound_Effect(sample_id, nullptr, SPM_ALWAYS);
+        if (g_Config.audio.fix_speeches_killing_music) {
+            SAMPLE_TRX_ID sample_id = SFX_INVALID;
+            switch (track) {
+            case MX_BALDY_SPEECH:
+                sample_id = SFX_BALDY_SPEECH;
+                break;
+            case MX_COWBOY_SPEECH:
+                sample_id = SFX_COWBOY_SPEECH;
+                break;
+            case MX_LARSON_SPEECH:
+                sample_id = SFX_LARSON_SPEECH;
+                break;
+            case MX_NATLA_SPEECH:
+                sample_id = SFX_NATLA_SPEECH;
+                break;
+            case MX_PIERRE_SPEECH:
+                sample_id = SFX_PIERRE_SPEECH;
+                break;
+            case MX_SKATEKID_SPEECH:
+                sample_id = SFX_SKATEKID_SPEECH;
+                break;
+            default:
+                break;
+            }
+            if (Sound_IsAvailable(sample_id)) {
+                return Sound_Effect(sample_id, nullptr, SPM_ALWAYS);
+            }
         }
     }
-#endif
 
     M_StopActiveStream();
 
@@ -358,20 +369,21 @@ void Music_SetTrackFlags(const MUSIC_ID track_id, const uint16_t flags)
 
 MUSIC_ID Music_ConvertLegacyTrack(const MUSIC_ID track_id)
 {
-#if TR_VERSION == 1
-    return track_id;
-#else
-    const int8_t skipped_track_ids[] = { 2, 19, 20, 26, -1 };
-    int32_t idx = 0;
-    int32_t ret_track_id = 2;
+    if (g_TRVersion == 1) {
+        return track_id;
+    } else {
+        const int8_t skipped_track_ids[] = { 2, 19, 20, 26, -1 };
+        int32_t idx = 0;
+        int32_t ret_track_id = 2;
 
-    for (int32_t i = 2; i < track_id; i++) {
-        if ((skipped_track_ids[idx] >= 0) && (i == skipped_track_ids[idx])) {
-            idx++;
-        } else {
-            ret_track_id++;
+        for (int32_t i = 2; i < track_id; i++) {
+            if ((skipped_track_ids[idx] >= 0)
+                && (i == skipped_track_ids[idx])) {
+                idx++;
+            } else {
+                ret_track_id++;
+            }
         }
+        return ret_track_id;
     }
-    return ret_track_id;
-#endif
 }
