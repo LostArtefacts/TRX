@@ -293,8 +293,7 @@ void Game_ProcessInput(void)
         Lara_UseItem(O_LARGE_MEDIPACK_OPTION);
     }
 
-#if TR_VERSION == 1
-    if (g_Config.input.enable_buffering && Game_IsPlaying()) {
+    if (g_Config.input.enable_buffering_func_keys && Game_IsPlaying()) {
         if (g_Input.toggle_bilinear_filter) {
             M_FRAME_BUFFER(toggle_bilinear_filter);
         } else if (g_Input.toggle_trapezoid_filter) {
@@ -303,7 +302,6 @@ void Game_ProcessInput(void)
             M_FRAME_BUFFER(toggle_fps_counter);
         }
     }
-#endif
 
     if (g_InputDB.toggle_ui) {
         UI_ToggleState(&g_Config.ui.enable_game_ui);

@@ -35,8 +35,9 @@ X_UI_CFG_BOOL(gameplay.enable_target_change,       SETTING_ENABLE_TARGET_CHANGE)
 
 X_UI_CFG_BOOL(gameplay.enable_inverted_look,       SETTING_ENABLE_INVERTED_LOOK)
 X_UI_CFG_INT32(gameplay.camera_speed,              SETTING_CAMERA_SPEED, .min_value = 1, .max_value = 10)
+X_UI_CFG_BOOL(input.enable_buffering_func_keys,    SETTING_ENABLE_BUFFERING_FUNC_KEYS)
+X_UI_CFG_BOOL(input.enable_buffering_inventory,    SETTING_ENABLE_BUFFERING_INVENTORY)
 
 #if TR_VERSION == 1
-X_UI_CFG_BOOL(input.enable_buffering,              SETTING_ENABLE_BUFFERING)
 X_UI_CFG_BOOL(gameplay.fix_shotgun_targeting,      SETTING_FIX_SHOTGUN_TARGETING)
 #endif

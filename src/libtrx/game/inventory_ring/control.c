@@ -966,14 +966,9 @@ void InvRing_Close(INV_RING *const ring)
     }
     Output_UnloadBackground();
 
-// enable buffering
-#if TR_VERSION == 1
-    if (g_Config.input.enable_buffering) {
+    if (g_Config.input.enable_buffering_inventory) {
         g_OldInputDB = (INPUT_STATE) {};
     }
-#else
-    g_OldInputDB = (INPUT_STATE) {};
-#endif
 
     m_InvChosen = NO_OBJECT;
     Viewport_AlterFOV(ring->old_fov);
