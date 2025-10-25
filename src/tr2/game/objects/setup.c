@@ -4,7 +4,7 @@
 #include <libtrx/game/lara.h>
 #include <libtrx/game/pathing.h>
 
-#define DEFAULT_RADIUS 10
+#define M_DEFAULT_RADIUS 10
 
 static void M_SetupLara(void)
 {
@@ -45,9 +45,10 @@ void Object_SetupAllObjects(void)
         obj->collision_func = nullptr;
         obj->add_walkable_func = nullptr;
         obj->can_interpolate_func = Object_CanInterpolate;
+        obj->is_usable_func = nullptr;
         obj->hit_points = DONT_TARGET;
         obj->pivot_length = 0;
-        obj->radius = DEFAULT_RADIUS;
+        obj->radius = M_DEFAULT_RADIUS;
         obj->shadow_size = 0;
         obj->enable_interpolation = true;
         obj->lot_setup = g_LOT_Default;
@@ -57,6 +58,7 @@ void Object_SetupAllObjects(void)
         obj->save_flags = false;
         obj->save_anim = false;
         obj->intelligent = false;
+        obj->smartness = 0x7FFF;
 
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);
