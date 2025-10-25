@@ -283,6 +283,10 @@ int32_t Skidoo_TestHeight(
 
 void Skidoo_DoSnowEffect(const ITEM *const skidoo)
 {
+    if (!Object_Get(O_SNOW_SPRITE)->loaded) {
+        return;
+    }
+
     const int16_t effect_num = Effect_Create(skidoo->room_num);
     if (effect_num == NO_EFFECT) {
         return;

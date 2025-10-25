@@ -789,8 +789,11 @@ static JSON_ARRAY *M_DumpEffects(void)
 
     for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
          link_num = Effect_Get(link_num)->next_active) {
-        JSON_OBJECT *const fx_obj = JSON_ObjectNew();
         EFFECT *const effect = Effect_Get(link_num);
+        if (Object_ToGameID(effect->object_id) == -1) {
+            continue;
+        }
+        JSON_OBJECT *const fx_obj = JSON_ObjectNew();
         DUMP_XYZ(fx_obj, "pos", effect->pos);
         DUMP_XYZ(fx_obj, "rot", effect->rot);
         JSON_ObjectAppendInt(fx_obj, "room_number", effect->room_num);
