@@ -16,6 +16,7 @@
     - `flow.load_save_disabled`
     - `flow.play_any_level`
     - `flow.cheat_keys`
+- added `enable_debug_camera` setting that shows camera position in realtime (reachable via `/debug` and `/set`)
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed dart ricochets being placed mid-air (#4063)
