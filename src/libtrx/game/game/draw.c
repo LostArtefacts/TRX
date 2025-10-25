@@ -1,12 +1,10 @@
+#include "config.h"
+#include "game/camera.h"
 #include "game/game.h"
-
-#include "game/room_draw.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/camera.h>
-#include <libtrx/game/interpolation.h>
-#include <libtrx/game/output.h>
-#include <libtrx/game/overlay.h>
+#include "game/interpolation.h"
+#include "game/output.h"
+#include "game/overlay.h"
+#include "game/rooms.h"
 
 void Game_Draw(const bool draw_overlay)
 {

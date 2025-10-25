@@ -1,10 +1,10 @@
-#include "game/game.h"
 #include "game/game_flow/common.h"
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/vars.h"
 #include "game/level.h"
 #include "game/savegame.h"
 
+#include <libtrx/game/game.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/shell.h>
 #include <libtrx/log.h>
