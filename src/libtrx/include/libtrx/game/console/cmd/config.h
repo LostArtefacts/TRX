@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../config/option.h"
+#include "../../../vector.h"
 #include "../common.h"
 
 #include <stddef.h>
@@ -8,7 +9,13 @@
 char *Console_Cmd_Config_NormalizeKey(const char *key);
 bool Console_Cmd_Config_SetCurrentValue(
     const CONFIG_OPTION *option, const char *new_value);
-const CONFIG_OPTION *Console_Cmd_Config_GetOptionFromKey(const char *key);
+
+// Returns a vector of STRING_FUZZY_MATCH entries for the given key.
+// Caller must free the result with Vector_Free().
+VECTOR *Console_Cmd_Config_GetOptionsFromKey(const char *key);
+
+// Returns a pointer to a CONFIG_OPTION from a pointer into g_Config.
 const CONFIG_OPTION *Console_Cmd_Config_GetOptionFromTarget(const void *target);
+
 COMMAND_RESULT Console_Cmd_Config_Helper(
     const CONFIG_OPTION *option, const char *new_value);
