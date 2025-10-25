@@ -1,5 +1,7 @@
 #include "config.h"
 #include "debug.h"
+#include "game/output.h"
+#include "game/savegame.h"
 #include "game/shell.h"
 #include "log.h"
 #include "memory.h"
@@ -118,4 +120,34 @@ void Shell_ScheduleExit(void)
 bool Shell_IsExiting(void)
 {
     return m_IsExiting;
+}
+
+void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
+{
+    Shell_HandleCommonConfigChange(old, new);
+
+#define L_CHANGED(subject) (old->subject != new->subject)
+
+    if (L_CHANGED(rendering.upscaling_filter)
+        || L_CHANGED(rendering.enable_wireframe)
+        || L_CHANGED(rendering.wireframe_width)
+        || L_CHANGED(rendering.enable_vsync)
+        || L_CHANGED(rendering.anisotropy_filter)) {
+        Output_ApplyRenderSettings();
+    }
+
+#if TR_VERSION == 2
+    if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_ps1_fov)) {
+        if (Viewport_GetSystemFOV() == -1) {
+            Viewport_AlterFOV(-1);
+        }
+    }
+#endif
+
+    if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
+        Savegame_Shutdown();
+        Savegame_Init();
+        Savegame_ScanSavedGames();
+    }
+#undef L_CHANGED
 }
