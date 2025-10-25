@@ -184,8 +184,8 @@ static void M_DebugPosTopLeft(void)
     UI_BeginStack(UI_STACK_VERTICAL);
     if (g_Config.debug.enable_debug_pos) {
         UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d", lara->pos.x / WALL_L, lara->pos.y / WALL_L,
-            lara->pos.z / WALL_L)));
+            "%d, %d, %d / %d", lara->pos.x / WALL_L, lara->pos.y / WALL_L,
+            lara->pos.z / WALL_L, lara->room_num)));
         UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
             "%d°, %d°, %d°", (int32_t)lara->rot.x * 360 / DEG_360,
             (int32_t)lara->rot.y * 360 / DEG_360,
