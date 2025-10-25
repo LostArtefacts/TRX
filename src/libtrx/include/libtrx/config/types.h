@@ -85,9 +85,7 @@ typedef struct {
         bool enable_breeze;
         bool enable_gun_lighting;
         bool enable_fire_lighting;
-#if TR_VERSION == 1
         bool enable_shotgun_flash;
-#endif
         bool enable_round_shadow;
         bool enable_skybox;
         bool enable_ps1_crystals;

@@ -236,7 +236,6 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         break;
 
     case LGT_SHOTGUN:
-#if TR_VERSION == 1
         if (!g_Config.visuals.enable_shotgun_flash) {
             return;
         }
@@ -244,11 +243,7 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         len = 285;
         off = 0;
         break;
-#else
-        return;
-#endif
 
-#if TR_VERSION >= 2
     case LGT_M16:
         shade = 10 * 256;
         len = 400;
@@ -262,7 +257,6 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
             Object_DrawMesh(obj->mesh_idx, clip, false);
         }
         return;
-#endif
 
     case LGT_FLARE:
         Matrix_TranslateRel(11, 32, 80);
