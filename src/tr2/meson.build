@@ -102,7 +102,6 @@ sources = [
   'game/game_string.c',
   'game/gun/gun_rifle.c',
   'game/inventory.c',
-  'game/inventory_ring/vars.c',
   'game/level.c',
   'game/objects/common.c',
   'game/objects/creatures/skidoo_driver.c',

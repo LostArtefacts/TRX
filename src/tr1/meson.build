@@ -109,7 +109,6 @@ sources = [
   'game/game_string.c',
   'game/gun/gun_rifle.c',
   'game/inventory.c',
-  'game/inventory_ring/vars.c',
   'game/objects/common.c',
   'game/objects/setup.c',
   'game/option/option.c',

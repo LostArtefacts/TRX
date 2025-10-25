@@ -1,9 +1,8 @@
 #include "game/inventory.h"
 
-#include "game/inventory_ring/vars.h"
-
 #include <libtrx/game/game.h>
 #include <libtrx/game/gun.h>
+#include <libtrx/game/inventory_ring.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/objects/vars.h>
 
@@ -50,6 +49,14 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     }
 
     switch (obj_id) {
+    case O_COMPASS_OPTION:
+        Inv_InsertItem(&g_InvRing_Item_Compass);
+        return true;
+
+    case O_STOPWATCH_OPTION:
+        Inv_InsertItem(&g_InvRing_Item_Stopwatch);
+        return true;
+
     case O_PISTOL_ITEM:
     case O_PISTOL_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Pistols);
