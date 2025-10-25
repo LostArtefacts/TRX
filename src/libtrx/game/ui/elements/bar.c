@@ -6,6 +6,7 @@
 #include "game/ui/draw.h"
 #include "game/ui/helpers.h"
 #include "utils.h"
+#include "version.h"
 
 #define M_COLOR_STEPS 5
 
@@ -236,7 +237,7 @@ static void M_DrawFillPC(
         color = g_Config.ui.enemy_health_bar.color_allies;
         break;
     case UI_BAR_PROGRESS:
-        color = TR_VERSION == 2 ? BC_GREEN : BC_GOLD;
+        color = g_TRVersion == 2 ? BC_GREEN : BC_GOLD;
         break;
     case UI_BAR_NUMBER_OF:
         color = BC_GOLD;

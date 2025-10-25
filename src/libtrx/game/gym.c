@@ -8,10 +8,11 @@
 #include "game/music.h"
 #include "game/savegame.h"
 #include "game/stats.h"
+#include "version.h"
 
 #define NO_TIME (-1)
 
-static bool m_IsInventoryOpenEnabled = TR_VERSION == 2;
+static int32_t m_IsInventoryOpenEnabled = -1;
 static bool m_IsAssaultTimerDisplay = false;
 static bool m_IsAssaultTimerActive = false;
 static int16_t m_CompletionTimer = 0;
@@ -55,6 +56,9 @@ void Gym_SetInventoryOpenEnabled(const bool enabled)
 
 bool Gym_IsInventoryOpenEnabled(void)
 {
+    if (m_IsInventoryOpenEnabled == -1) {
+        m_IsInventoryOpenEnabled = g_TRVersion == 2;
+    }
     return m_IsInventoryOpenEnabled;
 }
 
@@ -131,7 +135,7 @@ void Gym_FinishAssault(void)
 
 bool Gym_HasAssaultStats(void)
 {
-    return TR_VERSION >= 2;
+    return g_TRVersion >= 2;
 }
 
 bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)

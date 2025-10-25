@@ -22,6 +22,7 @@
 #include "game/ui/elements/window.h"
 #include "game/viewport.h"
 #include "utils.h"
+#include "version.h"
 
 typedef enum {
     M_PHASE_NAVIGATE_LAYOUT,
@@ -208,11 +209,9 @@ static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
 static void M_ResetLayout(void *const arg)
 {
     const UI_CONTROLS_EDITOR_STATE *const s = arg;
-#if TR_VERSION == 1
-    Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_NORMAL);
-#else
-    Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
-#endif
+    Sound_Effect(
+        g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
+        SPM_NORMAL);
     Input_ResetLayout(s->backend, s->active_layout);
     Config_Update();
 }
@@ -220,11 +219,9 @@ static void M_ResetLayout(void *const arg)
 static void M_UnbindKey(void *const arg)
 {
     const UI_CONTROLS_EDITOR_STATE *const s = arg;
-#if TR_VERSION == 1
-    Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_NORMAL);
-#else
-    Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_NORMAL);
-#endif
+    Sound_Effect(
+        g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
+        SPM_NORMAL);
     Input_UnassignRole(s->backend, s->active_layout, s->active_role);
     Config_Update();
 }

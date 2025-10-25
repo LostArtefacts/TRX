@@ -4,6 +4,7 @@
 #include "game/lara/util.h"
 #include "game/rooms.h"
 #include "game/sound.h"
+#include "version.h"
 
 #define M_LF_WALK_STEP_L_START 0
 #define M_LF_WALK_STEP_L_NEAR_END 5
@@ -577,9 +578,9 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Death(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION >= 2
-    Sound_StopEffect(SFX_LARA_FALL);
-#endif
+    if (g_TRVersion >= 2) {
+        Sound_StopEffect(SFX_LARA_FALL);
+    }
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y;
     coll->bad_pos = STEPUP_HEIGHT;

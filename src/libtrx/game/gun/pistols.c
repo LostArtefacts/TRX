@@ -8,8 +8,9 @@
 #include "game/gun/vars.h"
 #include "game/lara/common.h"
 #include "game/sound.h"
+#include "version.h"
 
-#define M_ENABLE_FAST_UZI (TR_VERSION == 2)
+#define M_ENABLE_FAST_UZI (g_TRVersion == 2)
 
 typedef enum {
     // clang-format off
@@ -25,7 +26,7 @@ static bool m_SoundLeft = false;
 
 static bool M_EnableFastSound(const LARA_GUN_TYPE weapon_type)
 {
-    return TR_VERSION == 2 && weapon_type == LGT_UZIS;
+    return g_TRVersion == 2 && weapon_type == LGT_UZIS;
 }
 
 static void M_FireSound(const SAMPLE_TRX_ID sample_trx_id, const bool alternate)

@@ -225,14 +225,14 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
     switch (weapon_type) {
     case LGT_MAGNUMS:
         shade = SHADE_NEUTRAL;
-        len = TR_VERSION == 1 ? 155 : 215;
-        off = TR_VERSION == 1 ? 55 : 65;
+        len = g_TRVersion == 1 ? 155 : 215;
+        off = g_TRVersion == 1 ? 55 : 65;
         break;
 
     case LGT_UZIS:
         shade = 10 * 256;
-        len = TR_VERSION == 1 ? 180 : 200;
-        off = TR_VERSION == 1 ? 55 : 50;
+        len = g_TRVersion == 1 ? 180 : 200;
+        off = g_TRVersion == 1 ? 55 : 50;
         break;
 
     case LGT_SHOTGUN:
@@ -268,8 +268,8 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
 
     default:
         shade = SHADE_LOW;
-        len = TR_VERSION == 1 ? 155 : 185;
-        off = TR_VERSION == 1 ? 55 : 40;
+        len = g_TRVersion == 1 ? 155 : 185;
+        off = g_TRVersion == 1 ? 55 : 40;
         break;
     }
 
