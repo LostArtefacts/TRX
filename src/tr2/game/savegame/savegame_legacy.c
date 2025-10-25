@@ -2,9 +2,10 @@
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/inventory.h"
+#include "game/objects/vehicles/boat.h"
+#include "game/objects/vehicles/skidoo_common.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "global/types_decomp.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
@@ -284,16 +285,32 @@ static void M_ReadItems(void)
         }
 
         switch (item->object_id) {
-        case O_BOAT:
-            M_Read(item->data, sizeof(BOAT_INFO));
+        case O_BOAT: {
+            BOAT_INFO *const data = item->data;
+            data->boat_turn = M_ReadS32();
+            data->left_fallspeed = M_ReadS32();
+            data->right_fallspeed = M_ReadS32();
+            data->tilt_angle = M_ReadS16();
+            data->extra_rotation = M_ReadS16();
+            data->water = M_ReadS32();
+            data->pitch = M_ReadS32();
             break;
+        }
 
-        case O_SKIDOO_FAST:
-            M_Read(item->data, sizeof(SKIDOO_INFO));
+        case O_SKIDOO_FAST: {
+            SKIDOO_INFO *const data = item->data;
+            data->track_mesh = M_ReadS16();
+            data->skidoo_turn = M_ReadS32();
+            data->left_fallspeed = M_ReadS32();
+            data->right_fallspeed = M_ReadS32();
+            data->momentum_angle = M_ReadS16();
+            data->extra_rotation = M_ReadS16();
+            data->pitch = M_ReadS32();
             break;
+        }
 
         case O_LIFT: {
-            LIFT_INFO *data = item->data;
+            LIFT_INFO *const data = item->data;
             data->start_height = M_ReadS32();
             data->wait_time = M_ReadS32();
             break;

@@ -10,6 +10,16 @@
 #define SKIDOO_MAX_TURN (DEG_1 * 6) // = 1092
 #define SKIDOO_GUN_MESH 4
 
+typedef struct {
+    int16_t track_mesh;
+    int32_t skidoo_turn;
+    int32_t left_fallspeed;
+    int32_t right_fallspeed;
+    int16_t momentum_angle;
+    int16_t extra_rotation;
+    int32_t pitch;
+} SKIDOO_INFO;
+
 extern BITE g_Skidoo_LeftGun;
 extern BITE g_Skidoo_RightGun;
 
