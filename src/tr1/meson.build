@@ -120,7 +120,6 @@ sources = [
   'game/stats/common.c',
   'game/ui/dialogs/stats.c',
   'global/enum_map.c',
-  'global/vars.c',
   resources,
 ]
 

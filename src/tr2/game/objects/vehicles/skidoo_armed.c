@@ -1,5 +1,4 @@
 #include "game/objects/creatures/skidoo_driver.h"
-#include "global/vars.h"
 
 #include <libtrx/game/collision.h>
 #include <libtrx/game/lara.h>

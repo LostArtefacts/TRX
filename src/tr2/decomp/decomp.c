@@ -3,7 +3,6 @@
 #include "game/cutscene.h"
 #include "game/game_flow.h"
 #include "game/level.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>

@@ -429,6 +429,7 @@ sources = [
   'game/output/sources/ui.c',
   'game/output/state.c',
   'game/output/textures.c',
+  'game/output/vars.c',
   'game/output/vertex_range.c',
   'game/output/warmup.c',
   'game/overlay.c',
@@ -554,6 +555,7 @@ sources = [
   'strings/fuzzy_match.c',
   'thread_pool.c',
   'vector.c',
+  'version.c',
   'virtual_file.c',
 ]
 
