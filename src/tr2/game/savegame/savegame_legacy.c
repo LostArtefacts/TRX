@@ -564,17 +564,36 @@ static void M_WriteItems(void)
         }
 
         switch (item->object_id) {
-        case O_BOAT:
-            M_Write(item->data, sizeof(BOAT_INFO));
+        case O_BOAT: {
+            BOAT_INFO *const data = item->data;
+            M_WriteS32(data->boat_turn);
+            M_WriteS32(data->left_fallspeed);
+            M_WriteS32(data->right_fallspeed);
+            M_WriteS16(data->tilt_angle);
+            M_WriteS16(data->extra_rotation);
+            M_WriteS32(data->water);
+            M_WriteS32(data->pitch);
             break;
+        }
 
-        case O_SKIDOO_FAST:
-            M_Write(item->data, sizeof(SKIDOO_INFO));
+        case O_SKIDOO_FAST: {
+            SKIDOO_INFO *const data = item->data;
+            M_WriteS16(data->track_mesh);
+            M_WriteS32(data->skidoo_turn);
+            M_WriteS32(data->left_fallspeed);
+            M_WriteS32(data->right_fallspeed);
+            M_WriteS16(data->momentum_angle);
+            M_WriteS16(data->extra_rotation);
+            M_WriteS32(data->pitch);
             break;
+        }
 
-        case O_LIFT:
-            M_Write(item->data, sizeof(LIFT_INFO));
+        case O_LIFT: {
+            LIFT_INFO *const data = item->data;
+            M_WriteS32(data->start_height);
+            M_WriteS32(data->wait_time);
             break;
+        }
 
         default:
             break;
