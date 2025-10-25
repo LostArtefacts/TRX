@@ -25,6 +25,7 @@
     - `flow.demo_delay`
     - `gameplay.enable_killer_pushblocks`
 - changed Select Level and Story So Far features placement to the New Game menu
+- changed the input buffering option to separately tackle F-keys and Inventory (Gameplay → Input → Buffering (F-keys), Gameplay → Input → Buffering (Inventory))
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the FOV default increment from 10 to 5 (#4026)
 - changed the bar appearance labels to better align with expectations (#4025)

@@ -48,9 +48,8 @@ typedef struct {
         };
         bool enable_tr3_sidesteps;
         bool enable_responsive_passport;
-#if TR_VERSION == 1
-        bool enable_buffering;
-#endif
+        bool enable_buffering_func_keys;
+        bool enable_buffering_inventory;
         QUICK_GUNS_MODE quick_guns_mode;
     } input;
 
