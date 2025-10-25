@@ -141,6 +141,7 @@ sources = [
   'game/fader.c',
   'game/fmv.c',
   'game/game.c',
+  'game/game/draw.c',
   'game/game_buf.c',
   'game/game_flow/common.c',
   'game/game_flow/inventory.c',

@@ -1,6 +1,5 @@
 #include "game/demo.h"
 
-#include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
 #include "game/level.h"
@@ -10,6 +9,7 @@
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>

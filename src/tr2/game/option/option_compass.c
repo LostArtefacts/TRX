@@ -1,7 +1,7 @@
-#include "game/game.h"
 #include "game/option/option.h"
 #include "game/savegame.h"
 
+#include <libtrx/game/game.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/game/ui.h>
