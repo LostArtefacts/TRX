@@ -8,6 +8,7 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
 #include <libtrx/utils.h>
+#include <libtrx/version.h>
 
 #define M_MAX_BOUND_ROOMS 128
 
@@ -400,7 +401,7 @@ void Room_DrawAllRooms(const int16_t current_room)
 
     Room_GetBounds();
 
-    if (m_Outside) {
+    if (m_Outside || g_TRVersion == 1) {
         M_DrawSkybox();
     }
 

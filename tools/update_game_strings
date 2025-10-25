@@ -54,13 +54,17 @@ def get_strings_map(paths: list[Path]) -> dict[str, str]:
     return result
 
 
+def uniq[T](source: list[T]) -> list[T]:
+    return list(dict.fromkeys(source))
+
+
 def postprocess_object_strings(
     content: str,
     object_names_map: dict[str, list[str]],
 ) -> str:
     content_dict = load_json5_from_string(content)
     content_dict["objects"] = {
-        key: {"name": names[0]} if len(names) == 1 else {"names": names}
+        key: {"name": names[0]} if len(uniq(names)) == 1 else {"names": uniq(names)}
         for key, names in object_names_map.items()
     }
     return write_json_to_string(content_dict) + "\n"

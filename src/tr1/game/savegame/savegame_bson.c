@@ -17,6 +17,8 @@
 #include <libtrx/game/objects/traps/movable_block.h>
 #include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/objects/vars.h>
+#include <libtrx/game/objects/vehicles/boat.h>
+#include <libtrx/game/objects/vehicles/skidoo_common.h>
 #include <libtrx/game/pathing.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/json.h>
@@ -155,6 +157,8 @@ static bool M_IsValidItemObject(
         case O_CROCODILE: return initial_obj_id == O_ALLIGATOR;
         case O_RAT: return initial_obj_id == O_VOLE;
         case O_VOLE: return initial_obj_id == O_RAT;
+        // skidoo swaps
+        case O_SKIDOO_FAST: return initial_obj_id == O_SKIDOO_ARMED;
         // default
         default: return false;
     }
@@ -715,6 +719,53 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
         }
 
         switch (item->object_id) {
+        case O_BOAT: {
+            const JSON_OBJECT *const data_obj =
+                JSON_ObjectGetObject(item_obj, "data");
+            if (data_obj == nullptr) {
+                LOG_ERROR("Malformed save: missing boat data for item %d", i);
+                return false;
+            }
+            BOAT_INFO *const data = (BOAT_INFO *)item->data;
+            data->boat_turn =
+                JSON_ObjectGetInt(data_obj, "boat_turn", data->boat_turn);
+            data->left_fallspeed = JSON_ObjectGetInt(
+                data_obj, "left_fallspeed", data->left_fallspeed);
+            data->right_fallspeed = JSON_ObjectGetInt(
+                data_obj, "right_fallspeed", data->right_fallspeed);
+            data->tilt_angle =
+                JSON_ObjectGetInt(data_obj, "tilt_angle", data->tilt_angle);
+            data->extra_rotation = JSON_ObjectGetInt(
+                data_obj, "extra_rotation", data->extra_rotation);
+            data->water = JSON_ObjectGetInt(data_obj, "water", data->water);
+            data->pitch = JSON_ObjectGetInt(data_obj, "pitch", data->pitch);
+            break;
+        }
+
+        case O_SKIDOO_FAST: {
+            const JSON_OBJECT *const data_obj =
+                JSON_ObjectGetObject(item_obj, "data");
+            if (data_obj == nullptr) {
+                LOG_ERROR("Malformed save: missing skidoo data for item %d", i);
+                return false;
+            }
+            SKIDOO_INFO *const data = (SKIDOO_INFO *)item->data;
+            data->track_mesh =
+                JSON_ObjectGetInt(data_obj, "track_mesh", data->track_mesh);
+            data->skidoo_turn =
+                JSON_ObjectGetInt(data_obj, "skidoo_turn", data->skidoo_turn);
+            data->left_fallspeed = JSON_ObjectGetInt(
+                data_obj, "left_fallspeed", data->left_fallspeed);
+            data->right_fallspeed = JSON_ObjectGetInt(
+                data_obj, "right_fallspeed", data->right_fallspeed);
+            data->momentum_angle = JSON_ObjectGetInt(
+                data_obj, "momentum_angle", data->momentum_angle);
+            data->extra_rotation = JSON_ObjectGetInt(
+                data_obj, "extra_rotation", data->extra_rotation);
+            data->pitch = JSON_ObjectGetInt(data_obj, "pitch", data->pitch);
+            break;
+        }
+
         case O_LIFT: {
             JSON_OBJECT *const data_obj =
                 JSON_ObjectGetObject(item_obj, "data");
@@ -931,6 +982,10 @@ static bool M_LoadLara(
     lara->hit_effect = hit_effect && g_Config.gameplay.enable_enhanced_saves
         ? Effect_Get(hit_effect)
         : nullptr;
+
+    const int16_t vehicle_index = JSON_ObjectGetInt(
+        lara_obj, "vehicle_item_number", Lara_Vehicle_GetIndex());
+    Lara_Vehicle_SetIndex(vehicle_index);
 
     lara->flare.age = JSON_ObjectGetInt(lara_obj, "flare_age", lara->flare.age);
     lara->flare.frame_num =
@@ -1356,6 +1411,41 @@ static JSON_ARRAY *M_DumpItems(void)
         JSON_ObjectAppendArray(item_obj, "carried_items", carried_items_arr);
 
         switch (item->object_id) {
+        case O_BOAT: {
+            const BOAT_INFO *const data = (BOAT_INFO *)item->data;
+            JSON_OBJECT *const data_obj = JSON_ObjectNew();
+            JSON_ObjectAppendInt(data_obj, "boat_turn", data->boat_turn);
+            JSON_ObjectAppendInt(
+                data_obj, "left_fallspeed", data->left_fallspeed);
+            JSON_ObjectAppendInt(
+                data_obj, "right_fallspeed", data->right_fallspeed);
+            JSON_ObjectAppendInt(data_obj, "tilt_angle", data->tilt_angle);
+            JSON_ObjectAppendInt(
+                data_obj, "extra_rotation", data->extra_rotation);
+            JSON_ObjectAppendInt(data_obj, "water", data->water);
+            JSON_ObjectAppendInt(data_obj, "pitch", data->pitch);
+            JSON_ObjectAppendObject(item_obj, "data", data_obj);
+            break;
+        }
+
+        case O_SKIDOO_FAST: {
+            const SKIDOO_INFO *const data = (SKIDOO_INFO *)item->data;
+            JSON_OBJECT *const data_obj = JSON_ObjectNew();
+            JSON_ObjectAppendInt(data_obj, "track_mesh", data->track_mesh);
+            JSON_ObjectAppendInt(data_obj, "skidoo_turn", data->skidoo_turn);
+            JSON_ObjectAppendInt(
+                data_obj, "left_fallspeed", data->left_fallspeed);
+            JSON_ObjectAppendInt(
+                data_obj, "right_fallspeed", data->right_fallspeed);
+            JSON_ObjectAppendInt(
+                data_obj, "momentum_angle", data->momentum_angle);
+            JSON_ObjectAppendInt(
+                data_obj, "extra_rotation", data->extra_rotation);
+            JSON_ObjectAppendInt(data_obj, "pitch", data->pitch);
+            JSON_ObjectAppendObject(item_obj, "data", data_obj);
+            break;
+        }
+
         case O_LIFT: {
             LIFT_INFO *const data = (LIFT_INFO *)item->data;
             JSON_OBJECT *const data_obj = JSON_ObjectNew();
@@ -1505,6 +1595,8 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(lara_obj, "flare_age", lara->flare.age);
     JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare.frame_num);
     JSON_ObjectAppendBool(lara_obj, "flare_control_left", lara->flare.control);
+    JSON_ObjectAppendInt(
+        lara_obj, "vehicle_item_number", Lara_Vehicle_GetIndex());
 
     JSON_ObjectAppendInt(lara_obj, "mesh_effects", lara->mesh_effects);
     JSON_ARRAY *lara_meshes_arr = JSON_ArrayNew();
