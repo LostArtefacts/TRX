@@ -28,6 +28,25 @@ static void M_ItemPosEdits(
     }
 }
 
+static void M_ItemFlagEdits(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const int16_t item_num = VFile_ReadS16(injection->fp);
+        const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
+        const uint16_t flags = VFile_ReadU16(injection->fp);
+
+        if (item_num < 0 || item_num >= Item_GetTotalCount()) {
+            LOG_WARNING("Item number %d is out of level item range", item_num);
+            continue;
+        }
+
+        ITEM *const item = Item_Get(item_num);
+        item->object_id = obj_info.id;
+        item->flags = flags;
+    }
+}
+
 static void M_CameraEdits(
     const INJECTION *const injection, const int32_t data_count)
 {
@@ -55,4 +74,5 @@ static void M_CameraEdits(
 }
 
 REGISTER_INJECT_EDITOR(IDT_ITEM_POS_EDITS, M_ItemPosEdits)
+REGISTER_INJECT_EDITOR(IDT_ITEM_FLAG_EDITS, M_ItemFlagEdits)
 REGISTER_INJECT_EDITOR(IDT_CAMERA_EDITS, M_CameraEdits)
