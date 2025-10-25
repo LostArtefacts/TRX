@@ -27,9 +27,8 @@
 #include "game/stats.h"
 #include "game/viewport.h"
 #include "memory.h"
+#include "version.h"
 
-#define M_TITLE_RING_OBJECTS 6
-#define M_OPTION_RING_OBJECTS 5
 #define M_INV_RING_FADE_TIME_FAST                                              \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
 #define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25
@@ -837,12 +836,27 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     m_StartLevel = -1;
 
     if (mode == INV_TITLE_MODE) {
-        g_InvRing_Source[RT_OPTION].count = M_TITLE_RING_OBJECTS;
         InvRing_ShowVersionText();
         Savegame_ScanSavedGames();
     } else {
-        g_InvRing_Source[RT_OPTION].count = M_OPTION_RING_OBJECTS;
         InvRing_RemoveVersionText();
+    }
+
+    // Reset option ring
+    g_InvRing_Source[RT_OPTION].count = 0;
+    Inv_InsertItem(&g_InvRing_Item_Passport);
+    if (g_TRVersion == 1) {
+        Inv_InsertItem(&g_InvRing_Item_Controls);
+        Inv_InsertItem(&g_InvRing_Item_Sound);
+        Inv_InsertItem(&g_InvRing_Item_Graphics);
+    } else {
+        Inv_InsertItem(&g_InvRing_Item_Graphics);
+        Inv_InsertItem(&g_InvRing_Item_Controls);
+        Inv_InsertItem(&g_InvRing_Item_Sound);
+    }
+    Inv_InsertItem(&g_InvRing_Item_NatlasPDA);
+    if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr) {
+        Inv_InsertItem(&g_InvRing_Item_Photo);
     }
 
     g_InvRing_Source[RT_MAIN].current = 0;
@@ -854,10 +868,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
         g_InvRing_Source[RT_OPTION].qtys[i] = 1;
         InvRing_InitInvItem(g_InvRing_Source[RT_OPTION].items[i]);
-    }
-
-    if (GF_GetGymLevel() == nullptr) {
-        Inv_RemoveItem(O_PHOTO_OPTION);
     }
 
     if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr
