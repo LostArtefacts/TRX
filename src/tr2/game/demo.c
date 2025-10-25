@@ -16,6 +16,7 @@
 #include <libtrx/game/music.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/random.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/log.h>
 

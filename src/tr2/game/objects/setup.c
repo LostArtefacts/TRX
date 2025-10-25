@@ -1,8 +1,8 @@
 #include "game/objects/common.h"
-#include "global/types.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/lara.h>
+#include <libtrx/game/pathing.h>
 
 #define DEFAULT_RADIUS 10
 

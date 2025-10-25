@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../utils.h"
+#include "../const.h"
 
 #define FRONT_ARC DEG_90
 #define UNIT_SHADOW 256
