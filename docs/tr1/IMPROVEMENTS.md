@@ -250,6 +250,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed Lara using the wrong hit animation under certain scenarios based on her hit angle
 - fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them
 - fixed the positions of big pods in Atlantean levels and cutscenes
+- fixed Lara drifting during the Atlantis cutscene while the camera focuses in on Natla
 - improved vertex movement when looking through water portals
 
 ## Audio
