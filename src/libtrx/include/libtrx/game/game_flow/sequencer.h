@@ -19,6 +19,10 @@ GF_COMMAND GF_DoCutsceneSequence(int32_t cutscene_num);
 extern GF_COMMAND GF_InterpretSequence(
     const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg);
 
+extern GF_COMMAND GF_DoLevelSequence(
+    const GF_LEVEL *start_level, GF_SEQUENCE_CONTEXT seq_ctx);
+
+extern GF_COMMAND GF_PlayAvailableStory(int32_t slot_num);
 // ----------------------------------------------------------------------------
 // event handler stuff
 // ----------------------------------------------------------------------------

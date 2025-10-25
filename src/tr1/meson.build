@@ -115,7 +115,6 @@ sources = [
   'game/room_draw.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
-  'game/shell/common.c',
   'game/stats/common.c',
   'game/ui/dialogs/stats.c',
   'global/enum_map.c',
