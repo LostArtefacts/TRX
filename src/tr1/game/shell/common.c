@@ -1,6 +1,5 @@
 #include "game/game_flow.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
@@ -9,22 +8,24 @@
 #include <libtrx/game/game_string_manager.h>
 #include <libtrx/game/lua/common.h>
 #include <libtrx/game/output.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/gfx/context.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/strings.h>
+#include <libtrx/utils.h>
 
 static SDL_Window *m_Window = nullptr;
 
 static void M_CreateGameWindow(void)
 {
     m_Window = SDL_CreateWindow(
-        "TR1X", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720,
-        SDL_WINDOW_HIDDEN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE
-            | SDL_WINDOW_OPENGL);
+        PROJECT_NAME, g_Config.window.x, g_Config.window.y,
+        g_Config.window.width, g_Config.window.height,
+        SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
     if (m_Window == nullptr) {
-        Shell_ExitSystem("System Error: cannot create window");
+        Shell_ExitSystemFmt("Failed to create SDL window: %s", SDL_GetError());
     }
 }
 
@@ -61,17 +62,20 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         Output_ApplyRenderSettings();
     }
 
+#if TR_VERSION == 2
+    if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_ps1_fov)) {
+        if (Viewport_GetSystemFOV() == -1) {
+            Viewport_AlterFOV(-1);
+        }
+    }
+#endif
+
     if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
         Savegame_Shutdown();
         Savegame_Init();
         Savegame_ScanSavedGames();
     }
 #undef L_CHANGED
-}
-
-SDL_Window *Shell_GetWindow(void)
-{
-    return m_Window;
 }
 
 int32_t Shell_Main(const SHELL_ARGS *args)
@@ -109,6 +113,10 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         }
         Lua_FreeResult(&res);
     }
+
+#if TR_VERSION == 2
+    Level_Init();
+#endif
 
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
 
@@ -152,7 +160,11 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         }
 
         case GF_STORY_SO_FAR:
+#if TR_VERSION == 1
             gf_cmd = GF_PlayAvailableStory(gf_cmd.param);
+#else
+            Shell_ExitSystem("Not implemented");
+#endif
             break;
 
         case GF_START_CINE:
@@ -172,7 +184,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
             if (args->level_to_play != nullptr) {
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
             } else if (g_GameFlow.title_level == nullptr) {
-                Shell_ExitSystem("Title disabled");
+                Shell_ExitSystem("Missing title level");
             } else {
                 gf_cmd = GF_RunTitle();
             }
@@ -198,4 +210,9 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 void Shell_Shutdown(void)
 {
     Shell_ShutdownCommonModules();
+}
+
+SDL_Window *Shell_GetWindow(void)
+{
+    return m_Window;
 }

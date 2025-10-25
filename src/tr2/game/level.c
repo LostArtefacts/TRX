@@ -1,7 +1,6 @@
 #include "game/level.h"
 
 #include "game/savegame.h"
-#include "game/shell.h"
 #include "game/stats.h"
 
 #include <libtrx/benchmark.h>
@@ -9,6 +8,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/inject.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>

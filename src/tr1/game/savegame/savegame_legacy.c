@@ -3,7 +3,6 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 #include "game/stats.h"
 
 #include <libtrx/debug.h>
@@ -16,6 +15,7 @@
 #include <libtrx/game/objects/traps/sliding_pillar.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/pathing.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>

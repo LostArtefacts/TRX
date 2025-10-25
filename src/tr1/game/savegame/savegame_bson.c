@@ -3,7 +3,6 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 #include "game/stats.h"
 
 #include <libtrx/bson.h>
@@ -21,6 +20,7 @@
 #include <libtrx/game/objects/vehicles/skidoo_common.h>
 #include <libtrx/game/pathing.h>
 #include <libtrx/game/savegame/bson.h>
+#include <libtrx/game/shell.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
