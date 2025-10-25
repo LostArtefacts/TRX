@@ -1,7 +1,5 @@
 #include "game/option/option.h"
 
-#include "global/vars.h"
-
 #include <libtrx/game/input.h>
 #include <libtrx/game/option/compass.h>
 #include <libtrx/game/option/controls.h>

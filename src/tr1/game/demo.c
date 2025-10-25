@@ -6,7 +6,6 @@
 #include "game/game_string.h"
 #include "game/savegame.h"
 #include "game/shell.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>

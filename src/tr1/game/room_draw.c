@@ -2,7 +2,6 @@
 
 #include "game/effects.h"
 #include "game/shell.h"
-#include "global/vars.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
