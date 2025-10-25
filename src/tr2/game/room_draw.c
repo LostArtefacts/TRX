@@ -412,7 +412,7 @@ void Room_DrawAllRooms(const int16_t current_room)
 
     m_MidSort = 0;
     const ITEM *const lara_item = Lara_GetItem();
-    if (Object_Get(O_LARA)->loaded && !(lara_item->flags & IF_ONE_SHOT)) {
+    if (Object_Get(O_LARA)->loaded) {
         const ROOM *const lara_room = Room_Get(lara_item->room_num);
         if (lara_room->flags.underwater) {
             Output_SetupBelowWater(g_Camera.underwater);
