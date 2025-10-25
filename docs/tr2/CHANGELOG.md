@@ -18,6 +18,7 @@
 - added support for save crystals for level builders (slot 269, see catalogs)
 - added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (Graphics → Visuals → Pickup aids) (#4057)
 - added an option for animated interactions with pickups and switches (Gameplay → Controls → Animated interactions) (#4067)
+- added an option to change max savegame slot count (Gameplay → General → Number of save slots)
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)

@@ -266,5 +266,4 @@ void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
     CLAMP(g_Config.visuals.fov_value, 30, 150);
-    CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
 }

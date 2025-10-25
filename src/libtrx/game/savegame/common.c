@@ -332,6 +332,11 @@ void Savegame_Shutdown(void)
     Memory_FreePointer(&m_DefaultStats);
 }
 
+int32_t Savegame_GetSlotCount(void)
+{
+    return g_Config.gameplay.maximum_save_slots;
+}
+
 RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
 {
     ASSERT(m_ResumeInfo != nullptr);
