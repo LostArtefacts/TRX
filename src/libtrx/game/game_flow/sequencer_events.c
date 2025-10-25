@@ -8,6 +8,7 @@
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/phase.h"
 #include "log.h"
+#include "version.h"
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleExitToTitle);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene);
@@ -109,7 +110,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePicture)
         .display_time = data->display_time,
         .fade_in_time = data->fade_in_time,
         .fade_out_time = data->fade_out_time,
-        .display_time_includes_fades = TR_VERSION >= 2,
+        .display_time_includes_fades = g_TRVersion >= 2,
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Picture_Destroy(phase);
@@ -136,7 +137,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats)
 #endif
 
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
-        .background_type = (TR_VERSION == 1 || Game_IsInGym())
+        .background_type = (g_TRVersion == 1 || Game_IsInGym())
             ? BK_TRANSPARENT
             : g_Config.ui.stats_background_style,
         .level_num = -1,
