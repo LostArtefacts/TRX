@@ -4,6 +4,18 @@ local raw = trxc.rooms
 local getters = {
   underwater = raw.get_underwater,
   wind = raw.get_wind,
+  bounds = raw.get_bounds,
+  internal_bounds = function(self, key)
+    local bounds = raw.get_bounds(self)
+    return {
+      min_x = bounds.min_x + 1024,
+      min_y = bounds.min_y,
+      min_z = bounds.min_z + 1024,
+      max_x = bounds.max_x - 1024,
+      max_y = bounds.max_y,
+      max_z = bounds.max_z - 1024,
+    }
+  end,
 }
 
 local setters = {
