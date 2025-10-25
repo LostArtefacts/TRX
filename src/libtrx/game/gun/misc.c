@@ -447,14 +447,6 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 
     const int32_t max_dist = weapon->target_dist;
 
-#if TR_VERSION == 1
-    // This way of iteration properly lets Lara target mummy in Qualopec.
-    int16_t item_num = Item_GetNextActive();
-    while (item_num != NO_ITEM) {
-        ITEM *const item = Item_Get(item_num);
-        item_num = item->next_active;
-#else
-    // This way of iteration properly lets Lara damage black skidoo riders.
     for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
         const CREATURE *const creature = LOT_GetBaddieSlot(i);
         if (creature->item_num == NO_ITEM) {
@@ -462,7 +454,6 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
         }
 
         ITEM *const item = Item_Get(creature->item_num);
-#endif
         if (item->hit_points <= 0) {
             continue;
         }

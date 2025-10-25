@@ -228,9 +228,8 @@ typedef struct {
         bool enable_walk_to_items;
 #if TR_VERSION == 1
         bool restore_ps1_enemies;
-#else
-        bool enable_ally_targeting;
 #endif
+        bool enable_ally_targeting;
         bool enable_enemy_rotation;
         bool enable_killer_pushblocks;
 

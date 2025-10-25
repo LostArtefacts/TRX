@@ -5,6 +5,7 @@
 #include "game/lara.h"
 #include "game/math.h"
 #include "game/objects/common.h"
+#include "game/pathing.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "utils.h"
@@ -22,14 +23,19 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     item->touch_bits = 0;
     item->mesh_bits = 0xFFFF87FF;
-    item->data = GameBuf_Alloc(sizeof(int16_t), GBUF_CREATURE_DATA);
-    *(int16_t *)item->data = 0;
 }
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     int16_t head = 0;
+
+    if (Item_IsTriggerActive(item)) {
+        if (!LOT_EnableBaddieAI(item_num, true)) {
+            return;
+        }
+        item->status = IS_ACTIVE;
+    }
 
     if (item->current_anim_state == MUMMY_STATE_STOP) {
         const ITEM *const lara_item = Lara_GetItem();

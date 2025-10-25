@@ -3,6 +3,7 @@
 #include "game/camera.h"
 #include "game/effects.h"
 #include "game/objects.h"
+#include "game/pathing.h"
 #include "game/random.h"
 #include "game/rooms.h"
 #include "game/sound.h"
@@ -11,6 +12,13 @@ static void M_Control(const int16_t item_num)
 {
     static int32_t counter = 0;
     ITEM *const item = Item_Get(item_num);
+
+    if (Item_IsTriggerActive(item)) {
+        if (!LOT_EnableBaddieAI(item_num, true)) {
+            return;
+        }
+        item->status = IS_ACTIVE;
+    }
 
     if (item->hit_points > 0) {
         counter = 0;
