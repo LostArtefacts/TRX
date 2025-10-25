@@ -157,11 +157,8 @@ static void M_DoWakeEffect(const ITEM *const boat_item)
     g_MatrixPtr->_23 = 0;
     Output_CalculateLight(boat_item->pos, boat_item->room_num);
 
-    const OBJECT *const obj = Object_Get(O_WATER_SPRITE);
-    if (!obj->loaded) {
-        return;
-    }
-    const int16_t frame = (Random_GetDraw() * obj->mesh_count) >> 15;
+    const int16_t frame =
+        (Random_GetDraw() * Object_Get(O_WATER_SPRITE)->mesh_count) >> 15;
 
     for (int32_t i = 0; i < 3; i++) {
         const int16_t effect_num = Effect_Create(boat_item->room_num);
