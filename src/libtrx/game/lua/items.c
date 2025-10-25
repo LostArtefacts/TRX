@@ -164,8 +164,7 @@ static int M_L_ItemSetPos(lua_State *const L)
     lua_getfield(L, 2, "z");
     item->pos.z = luaL_checkinteger(L, -1);
     lua_pop(L, 1);
-    item->room_num =
-        Room_GetIndexFromPos(item->pos.x, item->pos.y, item->pos.z);
+    item->room_num = Room_GetIndexFromPos(item->pos);
     return 0;
 }
 

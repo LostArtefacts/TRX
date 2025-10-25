@@ -33,8 +33,7 @@ static void M_UpdateCutscene(const XYZ_32 base_pos, const int16_t angle)
 
 #undef SHIFT
 
-    const int16_t room_num =
-        Room_GetIndexFromPos(camera_pos.x, camera_pos.y, camera_pos.z);
+    const int16_t room_num = Room_GetIndexFromPos(camera_pos);
     if (room_num != NO_ROOM) {
         g_Camera.pos.room_num = room_num;
     }
