@@ -4,6 +4,14 @@ local raw = trxc.rooms
 local getters = {
   underwater = raw.get_underwater,
   wind = raw.get_wind,
+  flip_status = raw.get_flip_status,
+  flipped_room = function(self, key)
+    local flippped_room = raw.get_flipped_room(self)
+    if flipped_room == nil then
+      return nil
+    end
+    return trx.rooms[flipped_room.num]
+  end,
   bounds = raw.get_bounds,
   internal_bounds = function(self, key)
     local bounds = raw.get_bounds(self)
@@ -39,7 +47,10 @@ Room.__newindex = function(self, key, value)
 end
 
 -- rooms metatable - functions
-local fn = {}
+local fn = {
+  FlipStatus = raw.FlipStatus,
+  Room = Room,
+}
 
 function fn.get(arg)
   local idx = raw.get(arg)

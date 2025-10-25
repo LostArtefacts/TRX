@@ -26,7 +26,7 @@ static int M_L_RoomsCount(lua_State *const L)
 }
 
 // trxc.rooms.get(index) → int (1-based) or nil
-static int M_L_RoomsGet(lua_State *const L)
+static int M_L_RoomGet(lua_State *const L)
 {
     const int idx = luaL_checkinteger(L, 1);
     const ROOM *const room = Room_Get(idx - 1);
@@ -54,6 +54,26 @@ static int M_L_RoomGetWind(lua_State *const L)
     return 1;
 }
 
+// trxc.rooms.get_flip_status(index) → integer
+static int M_L_RoomGetFlipStatus(lua_State *const L)
+{
+    M_ROOM_GETTER(L);
+    lua_pushinteger(L, room->flip_status);
+    return 1;
+}
+
+// trxc.rooms.get_flip_room(index) → integer or nil
+static int M_L_RoomGetFlippedRoom(lua_State *const L)
+{
+    M_ROOM_GETTER(L);
+    if (room->flipped_room == NO_ROOM) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, room->flipped_room + 1);
+    }
+    return 1;
+}
+
 // trxc.rooms.set_underwater(index, bool)
 static int M_L_RoomSetUnderwater(lua_State *const L)
 {
@@ -71,7 +91,7 @@ static int M_L_RoomSetWind(lua_State *const L)
 }
 
 // trxc.rooms.get_bounds() → table
-static int M_L_RoomsBounds(lua_State *const L)
+static int M_L_RoomGetBounds(lua_State *const L)
 {
     M_ROOM_GETTER(L);
     const BOUNDS_32 bounds = Room_GetRoomBounds(idx - 1);
@@ -95,9 +115,19 @@ void LUA_CreateRooms(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
     lua_newtable(L);
+
+    lua_newtable(L);
+    lua_pushinteger(L, RFS_UNFLIPPED);
+    lua_setfield(L, -2, "UNFLIPPED");
+    lua_pushinteger(L, RFS_FLIPPED);
+    lua_setfield(L, -2, "FLIPPED");
+    lua_pushinteger(L, RFS_NONE);
+    lua_setfield(L, -2, "NONE");
+    lua_setfield(L, -2, "FlipStatus");
+
     lua_pushcfunction(L, M_L_RoomsCount);
     lua_setfield(L, -2, "count");
-    lua_pushcfunction(L, M_L_RoomsGet);
+    lua_pushcfunction(L, M_L_RoomGet);
     lua_setfield(L, -2, "get");
     lua_pushcfunction(L, M_L_RoomGetUnderwater);
     lua_setfield(L, -2, "get_underwater");
@@ -107,8 +137,12 @@ void LUA_CreateRooms(lua_State *const L)
     lua_setfield(L, -2, "set_underwater");
     lua_pushcfunction(L, M_L_RoomSetWind);
     lua_setfield(L, -2, "set_wind");
-    lua_pushcfunction(L, M_L_RoomsBounds);
+    lua_pushcfunction(L, M_L_RoomGetBounds);
     lua_setfield(L, -2, "get_bounds");
+    lua_pushcfunction(L, M_L_RoomGetFlipStatus);
+    lua_setfield(L, -2, "get_flip_status");
+    lua_pushcfunction(L, M_L_RoomGetFlippedRoom);
+    lua_setfield(L, -2, "get_flipped_room");
     lua_setfield(L, -2, "rooms");
     lua_pop(L, 1);
 }

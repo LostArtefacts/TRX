@@ -8,7 +8,15 @@ Module for inspecting all rooms in the current level.
 
 ### Structures
 
-- [lua]`trx.rooms.Room`
+- [lua]`trx.rooms.fn.FlipStatus`:
+    - `trx.rooms.fn.FlipStatus.NONE`  
+        This is a normal room.
+    - `trx.rooms.fn.FlipStatus.UNFLIPPED`  
+        This room is currently reachable by Lara.
+    - `trx.rooms.fn.FlipStatus.FLIPPED`  
+        This room is currently inactive and unreachable by Lara.
+
+- [lua]`trx.rooms.fn.Room`
 
     Represents a room.
 
@@ -23,6 +31,8 @@ Module for inspecting all rooms in the current level.
       - **`max_y`**: maximum y coordinate.
       - **`max_z`**: maximum z coordinate.
     - **`internal_bounds`**: similar to `bounds`, but excludes the outer sector.
+    - **`flip_status`**: current room flip status (see `trx.rooms.fn.FlipStatus`).
+    - **`flipped_room`**: linked flip room of this room.
 
     Writable properties:
     - `underwater`
@@ -35,7 +45,7 @@ Module for inspecting all rooms in the current level.
   Returns the total number of rooms.
 
 - [lua]`trx.rooms[num]`  
-  Retrieves the [lua]`trx.rooms.Room` at the given 1-based index, or `nil` if out of range.
+  Retrieves the [lua]`trx.rooms.fn.Room` at the given 1-based index, or `nil` if out of range.
 
 - [lua]`trx.rooms.fn.get(arg)`  
   Alias of `trx.rooms[arg]`.
