@@ -1478,8 +1478,11 @@ static JSON_ARRAY *M_DumpEffects(void)
 
     for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
          link_num = Effect_Get(link_num)->next_active) {
-        JSON_OBJECT *fx_obj = JSON_ObjectNew();
-        EFFECT *effect = Effect_Get(link_num);
+        EFFECT *const effect = Effect_Get(link_num);
+        if (Object_ToGameID(effect->object_id) == -1) {
+            continue;
+        }
+        JSON_OBJECT *const fx_obj = JSON_ObjectNew();
         JSON_ObjectAppendInt(fx_obj, "x", effect->pos.x);
         JSON_ObjectAppendInt(fx_obj, "y", effect->pos.y);
         JSON_ObjectAppendInt(fx_obj, "z", effect->pos.z);
