@@ -48,6 +48,7 @@
 - fixed select level feature to also be available to games started with `/play`
 - fixed select level feature slot status not updated on save
 - fixed "Story So Far..." showing loading screens
+- fixed photo mode camera clipping through overlapping rooms
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
