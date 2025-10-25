@@ -416,7 +416,7 @@ void Creature_Mood(
     }
 
     case MOOD_ATTACK:
-        if (TR_VERSION >= 2
+        if (g_TRVersion >= 2
             || Random_GetControl() < Object_Get(item->object_id)->smartness) {
             lot->target = enemy->pos;
             lot->required_box = enemy->box_num;

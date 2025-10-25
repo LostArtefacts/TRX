@@ -47,26 +47,28 @@ void Object_SetupAllObjects(void)
 {
     for (int i = O_FIRST; i < O_NUMBER_OF; i++) {
         OBJECT *const obj = Object_Get(i);
-        obj->intelligent = false;
+        obj->initialise_func = nullptr;
+        obj->control_func = nullptr;
+        obj->floor_height_func = nullptr;
+        obj->ceiling_height_func = nullptr;
+        obj->draw_func = Object_DrawAnimatingItem;
+        obj->collision_func = nullptr;
+        obj->add_walkable_func = nullptr;
+        obj->is_usable_func = nullptr;
+        obj->can_interpolate_func = Object_CanInterpolate;
+        obj->hit_points = DONT_TARGET;
+        obj->pivot_length = 0;
+        obj->radius = M_DEFAULT_RADIUS;
+        obj->shadow_size = 0;
+        obj->enable_interpolation = true;
+        obj->lot_setup = g_LOT_Default;
+
         obj->save_position = false;
         obj->save_hitpoints = false;
         obj->save_flags = false;
         obj->save_anim = false;
-        obj->initialise_func = nullptr;
-        obj->collision_func = nullptr;
-        obj->control_func = nullptr;
-        obj->draw_func = Object_DrawAnimatingItem;
-        obj->ceiling_height_func = nullptr;
-        obj->floor_height_func = nullptr;
-        obj->is_usable_func = nullptr;
-        obj->add_walkable_func = nullptr;
-        obj->can_interpolate_func = Object_CanInterpolate;
-        obj->pivot_length = 0;
-        obj->radius = M_DEFAULT_RADIUS;
-        obj->shadow_size = 0;
-        obj->hit_points = DONT_TARGET;
-        obj->enable_interpolation = true;
-        obj->lot_setup = g_LOT_Default;
+        obj->intelligent = false;
+        obj->smartness = 0x7FFF;
 
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);
