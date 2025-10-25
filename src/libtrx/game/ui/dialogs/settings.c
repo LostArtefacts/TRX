@@ -24,6 +24,7 @@
 #include "memory.h"
 #include "strings.h"
 #include "utils.h"
+#include "version.h"
 
 #include <math.h>
 
@@ -755,7 +756,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
     if (s->scroll.vis_items == 0) {
         UI_BeginResize(-1.0f, -1.0f);
         UI_BeginPad(
-            TR_VERSION == 1 ? -1.0f : 0.0f, TR_VERSION == 1 ? -1.0f : 0.0f);
+            g_TRVersion == 1 ? -1.0f : 0.0f, g_TRVersion == 1 ? -1.0f : 0.0f);
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_VERTICAL,
             .align = { .h = UI_STACK_H_ALIGN_CENTER },
@@ -782,12 +783,12 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         }
 
         UI_BeginPad(
-            TR_VERSION == 1 ? -1.0f : 0.0f, TR_VERSION == 1 ? -1.0f : 0.0f);
+            g_TRVersion == 1 ? -1.0f : 0.0f, g_TRVersion == 1 ? -1.0f : 0.0f);
         if (is_row_focused) {
             UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
         }
         UI_BeginPad(
-            (TR_VERSION == 1 ? 1.0f : 0.0f), TR_VERSION == 1 ? 1.0f : 0.0f);
+            (g_TRVersion == 1 ? 1.0f : 0.0f), g_TRVersion == 1 ? 1.0f : 0.0f);
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },

@@ -4,6 +4,7 @@
 #include "game/lara/util.h"
 #include "game/rooms.h"
 #include "game/sound.h"
+#include "version.h"
 
 // clang-format off
 #define M_LF_START_HANG    12
@@ -213,7 +214,7 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
         item->pos = coll->old;
     }
 
-    if (TR_VERSION >= 2 && coll->side_mid.floor > -STEP_L
+    if (g_TRVersion >= 2 && coll->side_mid.floor > -STEP_L
         && coll->side_mid.floor < STEP_L) {
         item->pos.y += coll->side_mid.floor;
     }

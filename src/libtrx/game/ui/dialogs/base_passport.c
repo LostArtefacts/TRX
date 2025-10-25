@@ -6,10 +6,11 @@
 #include "game/ui/elements/requester.h"
 #include "game/ui/elements/resize.h"
 #include "game/viewport.h"
+#include "version.h"
 
 static int32_t M_GetVisibleRows(void)
 {
-    if (TR_VERSION == 2) {
+    if (g_TRVersion == 2) {
         return 10;
     } else {
         const int32_t res_h = Scaler_CalcInverse(
@@ -31,8 +32,8 @@ void UI_BasePassportDialog_Init(
 {
     UI_Requester_Init(req, M_GetVisibleRows(), max_rows, true);
     req->row_pad = 4.0f;
-    req->row_spacing = TR_VERSION == 1 ? 2.0f : 3.0f;
-    req->show_arrows = TR_VERSION == 1;
+    req->row_spacing = g_TRVersion == 1 ? 2.0f : 3.0f;
+    req->show_arrows = g_TRVersion == 1;
     req->reserve_space = true;
 }
 
@@ -43,7 +44,7 @@ void UI_BasePassportDialog_Control(UI_REQUESTER_STATE *const req)
 
 void UI_BeginBasePassportDialog(void)
 {
-    const float modal_y = TR_VERSION == 1
+    const float modal_y = g_TRVersion == 1
         ? (g_Inv_Mode == INV_TITLE_MODE ? 0.72f : 0.55f)
         : (g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f);
     UI_BeginModal(0.5f, modal_y);

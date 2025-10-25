@@ -3,6 +3,7 @@
 #include "game/lara.h"
 #include "game/lara/util.h"
 #include "game/rooms.h"
+#include "version.h"
 
 // clang-format off
 #define M_CLIMB_SHIFT            70
@@ -352,7 +353,7 @@ static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
         break;
     }
 
-    if (TR_VERSION >= 2 || (hdif >= -STEP_L && hdif <= STEP_L)) {
+    if (g_TRVersion >= 2 || (hdif >= -STEP_L && hdif <= STEP_L)) {
         item->pos.y += hdif;
     }
 }
