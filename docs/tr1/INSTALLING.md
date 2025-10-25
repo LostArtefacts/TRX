@@ -139,11 +139,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── atlantis_fd.bin
 │   │   ├── atlantis_itemrots.bin
 │   │   ├── atlantis_textures.bin
-│   │   ├── backpack.bin
-│   │   ├── backpack_cut.bin
 │   │   ├── braid.bin
-│   │   ├── braid_cut1.bin
-│   │   ├── braid_cut2_cut4.bin
 │   │   ├── braid_valley.bin
 │   │   ├── bubbles.bin
 │   │   ├── cat_cameras.bin
@@ -163,7 +159,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── colosseum_itemrots.bin
 │   │   ├── colosseum_skybox.bin
 │   │   ├── colosseum_textures.bin
+│   │   ├── cut1_setup.bin
+│   │   ├── cut2_setup.bin
+│   │   ├── cut3_setup.bin
 │   │   ├── cut3_textures.bin
+│   │   ├── cut4_setup.bin
 │   │   ├── cut4_textures.bin
 │   │   ├── door58_frames.bin
 │   │   ├── door59_frames.bin
@@ -466,11 +466,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── atlantis_fd.bin
         │   │   ├── atlantis_itemrots.bin
         │   │   ├── atlantis_textures.bin
-        │   │   ├── backpack.bin
-        │   │   ├── backpack_cut.bin
         │   │   ├── braid.bin
-        │   │   ├── braid_cut1.bin
-        │   │   ├── braid_cut2_cut4.bin
         │   │   ├── braid_valley.bin
         │   │   ├── bubbles.bin
         │   │   ├── cat_cameras.bin
@@ -490,7 +486,11 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── colosseum_itemrots.bin
         │   │   ├── colosseum_skybox.bin
         │   │   ├── colosseum_textures.bin
+        │   │   ├── cut1_setup.bin
+        │   │   ├── cut2_setup.bin
+        │   │   ├── cut3_setup.bin
         │   │   ├── cut3_textures.bin
+        │   │   ├── cut4_setup.bin
         │   │   ├── cut4_textures.bin
         │   │   ├── door58_frames.bin
         │   │   ├── door59_frames.bin
