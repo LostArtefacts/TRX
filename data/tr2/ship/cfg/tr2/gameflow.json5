@@ -585,7 +585,6 @@
             "path": "data/cut1.tr2",
             "music_track": 2,
             "sequence": [
-                {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},
             ],
             "inherit_injections": false,
@@ -620,7 +619,6 @@
             "path": "data/cut4.tr2",
             "music_track": 26,
             "sequence": [
-                {"type": "set_cutscene_angle", "angle": 0},
                 {"type": "loop_game"},
             ],
             "inherit_injections": false,

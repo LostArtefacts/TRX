@@ -45,10 +45,12 @@ void CutscenePlayer1_Initialise(const int16_t item_num)
     Item_AddActive(item_num);
     ITEM *const item = Item_Get(item_num);
     CAMERA_INFO *const camera = Cutscene_GetCamera();
+    Camera_GetCineData()->position.target_angle = item->rot.y;
+    g_Camera.target_angle = item->rot.y;
     camera->pos.pos.x = item->pos.x;
     camera->pos.pos.y = item->pos.y;
     camera->pos.pos.z = item->pos.z;
-    camera->target_angle = Camera_GetCineData()->position.target_angle;
+    camera->target_angle = item->rot.y;
     camera->pos.room_num = item->room_num;
 
     item->rot.y = 0;
