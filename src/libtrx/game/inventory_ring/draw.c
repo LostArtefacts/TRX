@@ -10,7 +10,7 @@
 #include "game/matrix.h"
 #include "game/objects.h"
 #include "game/option.h"
-#include "game/option/compass.h"
+#include "game/option/stats.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -89,7 +89,9 @@ static void M_DrawItem(
     ANIM_FRAME *frame2;
     const int32_t frac = M_GetFrames(ring, inv_item, &frame1, &frame2, &rate);
     if (inv_item->object_id == O_COMPASS_OPTION) {
-        const int16_t extra_rotation[1] = { Option_Compass_GetNeedleAngle() };
+        const int16_t extra_rotation[1] = {
+            Option_Stats_GetCompassNeedleAngle()
+        };
         Object_GetBone(obj, 0)->rot.y = true;
         Object_DrawInterpolatedObject(
             obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,

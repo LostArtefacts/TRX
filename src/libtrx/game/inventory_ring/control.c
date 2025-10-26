@@ -16,9 +16,9 @@
 #include "game/lara.h"
 #include "game/music.h"
 #include "game/option.h"
-#include "game/option/compass.h"
 #include "game/option/examine.h"
 #include "game/option/passport.h"
+#include "game/option/stats.h"
 #include "game/output.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
@@ -403,7 +403,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         for (int i = 0; i < ring->number_of_objects; i++) {
             INVENTORY_ITEM *const inv_item = ring->list[i];
             if (inv_item->object_id == O_COMPASS_OPTION) {
-                Option_Compass_UpdateNeedle(inv_item);
+                Option_Stats_UpdateCompassNeedle(inv_item);
             }
         }
     }
