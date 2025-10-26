@@ -63,6 +63,24 @@ static void M_InitialisePlayer(const int16_t item_num)
     lara->hit_direction = DIR_UNKNOWN;
 }
 
+static void M_Skip(const int32_t frames)
+{
+    CINE_DATA *const cine_data = Camera_GetCineData();
+    cine_data->frame_idx += frames;
+    if (cine_data->frame_idx >= cine_data->frame_count) {
+        cine_data->frame_idx = cine_data->frame_count - 1;
+    }
+    for (int32_t i = 0; i < frames; i++) {
+        for (int32_t j = 0; j < Item_GetTotalCount(); j++) {
+            ITEM *const item = Item_Get(j);
+            if (item->object_id >= O_PLAYER_1 || item->object_id <= O_PLAYER_10
+                || item->object_id == O_LARA) {
+                Item_Animate(item);
+            }
+        }
+    }
+}
+
 bool Cutscene_Start(const int32_t level_num)
 {
     const GF_LEVEL *const level = GF_GetLevel(GFLT_CUTSCENES, level_num);
@@ -102,6 +120,8 @@ GF_COMMAND Cutscene_Control(void)
         if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;
         }
+    } else if (g_InputDB.menu_right) {
+        M_Skip(g_InputDB.slow ? LOGIC_FPS : LOGIC_FPS * 5);
     }
 
     Output_ResetDynamicLights();

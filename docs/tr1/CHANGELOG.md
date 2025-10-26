@@ -17,6 +17,7 @@
     - `flow.play_any_level`
     - `flow.cheat_keys`
 - added `enable_debug_camera` setting that shows camera position in realtime (reachable via `/debug` and `/set`)
+- added the ability to fast-forward through cutscenes with the right button (+5 s) or with slow+right (+1 s)
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed dart ricochets being placed mid-air (#4063)
