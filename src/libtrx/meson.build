@@ -355,6 +355,7 @@ sources = [
   'game/objects/general/gong.c',
   'game/objects/general/gong_bonger.c',
   'game/objects/general/grenade.c',
+  'game/objects/general/harpoon_bolt.c',
   'game/objects/general/keyhole.c',
   'game/objects/general/lara_alarm.c',
   'game/objects/general/lift.c',
