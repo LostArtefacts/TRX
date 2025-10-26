@@ -198,11 +198,14 @@ provided with the game achieves.
   </tr>
   <tr valign="top">
     <td>
+      <code>lara_guns.bin</code>
       <code>lara_gym_guns.bin</code>
     </td>
     <td>TR1</td>
     <td>
-      Injects all of Lara's weapons and weapon animations in TR1's gym level.
+      Replaces Lara's fixed shotgun-torso mesh with the TR2+ approach of an
+      independent resting gun mesh. The gym file injects all of Lara's weapons
+      and weapon animations in the gym level (for cheats only).
     </td>
   </tr>
   <tr valign="top">

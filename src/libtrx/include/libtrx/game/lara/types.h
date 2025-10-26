@@ -90,10 +90,9 @@ typedef struct {
 
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
-#if TR_VERSION >= 2
     OBJECT_ID back_gun_obj_id;
     int16_t gun_item_num;
-
+#if TR_VERSION >= 2
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;
     AMMO_INFO m16_ammo;

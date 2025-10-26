@@ -80,9 +80,7 @@ static void M_ResetGunStatus(void)
     lara_info->gun_status = LGS_ARMLESS;
     lara_info->gun_type = LGT_UNARMED;
     lara_info->request_gun_type = LGT_UNARMED;
-#if TR_VERSION >= 2
     lara_info->gun_item_num = NO_ITEM;
-#endif
     lara_info->gun_status = LGS_ARMLESS;
     lara_info->left_arm.frame_num = 0;
     lara_info->left_arm.lock = 0;
@@ -234,13 +232,10 @@ bool Lara_Cheat_EnterFlyMode(void)
     if (lara_info->extra_anim) {
         M_ResetGunStatus();
     }
-#if TR_VERSION == 1
-    const bool back_gun_test = false;
-#else
-    const bool back_gun_test = lara_info->back_gun_obj_id != O_LARA;
-#endif
+
     if (lara_info->gun_status == LGS_HANDS_BUSY
-        || (lara_info->gun_status == LGS_UNDRAW && back_gun_test)) {
+        || (lara_info->gun_status == LGS_UNDRAW
+            && lara_info->back_gun_obj_id != O_LARA)) {
         lara_info->gun_status = LGS_ARMLESS;
     }
 
@@ -268,6 +263,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->air = LARA_MAX_AIR;
     lara_info->death_timer = 0;
     lara_info->mesh_effects = 0;
+    Object_SetReflective(O_LARA_HAIR, false);
     lara_item->enable_shadow = true;
     lara_item->hit_points = LARA_MAX_HITPOINTS;
     lara_info->interact_target.item_num = NO_ITEM;
@@ -310,12 +306,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         lara_info->torso_rot.y = 0;
     }
 
-#if TR_VERSION == 1
-    const bool has_gun = false;
-#else
-    const bool has_gun = lara_info->gun_item_num != NO_ITEM;
-#endif
-    if (has_gun) {
+    if (lara_info->gun_item_num != NO_ITEM) {
         lara_info->gun_status = LGS_UNDRAW;
     } else {
         lara_info->gun_status = LGS_ARMLESS;

@@ -82,10 +82,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
         lara_item->hit_points = g_Config.gameplay.start_lara_hitpoints;
     }
 
-#if TR_VERSION >= 2
     lara_info->back_gun_obj_id = O_LARA;
     lara_info->gun_item_num = NO_ITEM;
-#endif
     lara_info->flare.age = 0;
     lara_info->flare.control = false;
     lara_info->flare.frame_num = 0;
@@ -153,7 +151,9 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
-    const bool hold_onto_guns = TR_VERSION == 1;
+    // TODO: handle (item creation) and port to TR2
+    const bool hold_onto_guns =
+        TR_VERSION == 1 && !Gun_IsRifleType(resume->equipped_gun_type);
 
     if (resume != nullptr) {
         lara_info->pistol_ammo.ammo = 1000;
