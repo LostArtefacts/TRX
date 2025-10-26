@@ -295,9 +295,6 @@
           "$ref": "#/definitions/seq_play_cutscene"
         },
         {
-          "$ref": "#/definitions/seq_set_cutscene_angle"
-        },
-        {
           "$ref": "#/definitions/seq_enable_sunset"
         },
         {
@@ -600,23 +597,6 @@
       },
       "required": [
         "type"
-      ],
-      "additionalProperties": false
-    },
-    "seq_set_cutscene_angle": {
-      "type": "object",
-      "description": "Sets the camera's angle.",
-      "properties": {
-        "type": {
-          "const": "set_cutscene_angle"
-        },
-        "angle": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "type",
-        "angle"
       ],
       "additionalProperties": false
     },
