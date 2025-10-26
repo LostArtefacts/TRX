@@ -3,14 +3,27 @@
 #include "game/game_flow/common.h"
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/vars.h"
+#include "game/game_string_table.h"
 #include "game/inventory.h"
 #include "game/inventory_ring/control.h"
+#include "game/level.h"
 #include "game/objects/vars.h"
 #include "game/phase.h"
 #include "game/savegame.h"
 #include "game/shell/common.h"
 #include "log.h"
 #include "memory.h"
+
+GF_COMMAND GF_RunTitle(void)
+{
+    Savegame_UnbindSlot();
+    GameStringTable_Apply(nullptr);
+    const GF_LEVEL *const title_level = GF_GetTitleLevel();
+    if (!Level_Initialise(title_level, GFSC_NORMAL)) {
+        return (GF_COMMAND) { .action = GF_EXIT_GAME };
+    }
+    return GF_ShowInventory(INV_TITLE_MODE);
+}
 
 GF_COMMAND GF_EnterPhotoMode(void)
 {
