@@ -5,9 +5,10 @@
 - added loading screens (Gameplay Options → General → Loading screens) (#1620)  
     Tomb Raider II 3×2 upscales done by Arsunt.  
     Tomb Raider II: The Golden Mask images done by Lito Perezito.
-- added restart level option when Lara dies (#1555)
-- added select level option (available under Look button – no UI for this yet, see #545)
-- added game mode selection to the play any level feature
+- added Restart Level option when Lara dies (#1555)
+- added Play Previous Levels feature (available in the New Game screen)
+- added Story So Far… feature (available in the New Game screen)
+- added game mode selection to the Play Any Level feature
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
 - added bounding box debugging (`/debug 1` or `/set debug-cuboids 1`)

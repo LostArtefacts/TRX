@@ -33,6 +33,15 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
 
+    if (seq_ctx == GFSC_STORY) {
+        const int32_t savegame_level_num = (int32_t)(intptr_t)seq_ctx_arg;
+        if (savegame_level_num == level->num) {
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        } else {
+            return (GF_COMMAND) { .action = GF_NOOP };
+        }
+    }
+
     if (Lara_GetItem() != nullptr) {
         Lara_Initialise(level);
     }
@@ -99,7 +108,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic)
 {
-    Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
+    if (seq_ctx != GFSC_STORY) {
+        Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
+    }
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
