@@ -1087,11 +1087,7 @@ void Level_AppendSpriteTextures(
 void Level_ReadSpriteSequences(
     const LEVEL_LOADER *const loader, VFILE *const file)
 {
-    int32_t max_obj_id = -1;
-    const int32_t object_count = M_GetObjectCount(loader);
-    for (OBJECT_ID obj_id = O_FIRST; obj_id <= object_count; obj_id++) {
-        max_obj_id = MAX(max_obj_id, Object_ToGameID(obj_id));
-    }
+    const int32_t max_obj_id = M_GetObjectCount(loader);
 
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sequences = VFile_ReadS32(file);
