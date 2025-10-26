@@ -10,6 +10,7 @@
 #include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
 #include "game/option/passport.h"
+#include "game/output.h"
 #include "game/phase.h"
 #include "game/savegame.h"
 #include "game/stats.h"
@@ -26,6 +27,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePicture);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats);
 static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats);
+static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 
@@ -50,6 +52,7 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_DISPLAY_PICTURE]   = M_HandlePicture,
     [GFS_LEVEL_STATS]       = M_HandleLevelStats,
     [GFS_TOTAL_STATS]       = M_HandleTotalStats,
+    [GFS_ENABLE_SUNSET]     = M_HandleEnableSunset,
     [GFS_SETUP_BACON_LARA]  = M_HandleSetupBaconLara,
     [GFS_DISABLE_FLOOR]     = M_HandleDisableFloor,
     // clang-format on
@@ -305,6 +308,15 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats)
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);
+    return gf_cmd;
+}
+
+static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
+{
+    GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    if (seq_ctx != GFSC_STORY) {
+        Output_SetSunsetEnabled(true);
+    }
     return gf_cmd;
 }
 

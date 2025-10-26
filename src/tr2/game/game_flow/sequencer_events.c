@@ -11,24 +11,13 @@
 #include <libtrx/game/option/passport.h>
 #include <libtrx/game/output.h>
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_ENABLE_SUNSET]    = M_HandleEnableSunset,
     [GFS_SET_START_ANIM]   = M_HandleSetStartAnim,
     // clang-format on
 };
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
-{
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY) {
-        Output_SetSunsetEnabled(true);
-    }
-    return gf_cmd;
-}
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
 {
