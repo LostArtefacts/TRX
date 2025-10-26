@@ -194,6 +194,7 @@ GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     }
     switch (seq_ctx) {
     case GFSC_SAVED:
+    case GFSC_RESTART:
     case GFSC_SELECT:
         return GFSC_NORMAL;
     default:
