@@ -96,7 +96,6 @@ sources = [
   'game/inventory.c',
   'game/level.c',
   'game/objects/common.c',
-  'game/objects/general/harpoon_bolt.c',
   'game/objects/general/zipline.c',
   'game/objects/setup.c',
   'game/savegame/savegame_bson.c',
