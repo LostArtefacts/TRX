@@ -130,6 +130,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── title_eu_gm.webp
 │   │   │   ├── title_us.webp
 │   │   │   └── title_us_gm.webp
+│   │   ├── china.webp
 │   │   ├── credit00_gm.webp
 │   │   ├── credit01.webp
 │   │   ├── credit02.webp
@@ -141,14 +142,25 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── credit07_gm.webp
 │   │   ├── credit08.webp
 │   │   ├── end.webp
+│   │   ├── gm_level1.webp
+│   │   ├── gm_level2.webp
+│   │   ├── gm_level3.webp
+│   │   ├── gm_level4.webp
+│   │   ├── gm_level5.webp
+│   │   ├── legal.webp
 │   │   ├── legal_eu.webp
 │   │   ├── legal_eu_gm.webp
 │   │   ├── legal_us.webp
 │   │   ├── legal_us_gm.webp
+│   │   ├── mansion.webp
+│   │   ├── rig.webp
+│   │   ├── tibet.webp
+│   │   ├── titan.webp
 │   │   ├── title_eu.webp
 │   │   ├── title_eu_gm.webp
 │   │   ├── title_us.webp
-│   │   └── title_us_gm.webp
+│   │   ├── title_us_gm.webp
+│   │   └── venice.webp
 │   ├── injections
 │   │   ├── barefoot_sfx.bin
 │   │   ├── barkhang_cameras.bin
@@ -532,6 +544,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   │   ├── title_eu_gm.webp
         │   │   │   ├── title_us.webp
         │   │   │   └── title_us_gm.webp
+        │   │   ├── china.webp
         │   │   ├── credit00_gm.webp
         │   │   ├── credit01.webp
         │   │   ├── credit02.webp
@@ -543,14 +556,25 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── credit07_gm.webp
         │   │   ├── credit08.webp
         │   │   ├── end.webp
+        │   │   ├── gm_level1.webp
+        │   │   ├── gm_level2.webp
+        │   │   ├── gm_level3.webp
+        │   │   ├── gm_level4.webp
+        │   │   ├── gm_level5.webp
+        │   │   ├── legal.webp
         │   │   ├── legal_eu.webp
         │   │   ├── legal_eu_gm.webp
         │   │   ├── legal_us.webp
         │   │   ├── legal_us_gm.webp
+        │   │   ├── mansion.webp
+        │   │   ├── rig.webp
+        │   │   ├── tibet.webp
+        │   │   ├── titan.webp
         │   │   ├── title_eu.webp
         │   │   ├── title_eu_gm.webp
         │   │   ├── title_us.webp
-        │   │   └── title_us_gm.webp
+        │   │   ├── title_us_gm.webp
+        │   │   └── venice.webp
         │   ├── injections
         │   │   ├── barefoot_sfx.bin
         │   │   ├── barkhang_cameras.bin
