@@ -1,10 +1,10 @@
 #include "game/stats.h"
 
-#include "game/game_flow.h"
 #include "game/savegame.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/game_flow.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/log.h>
 #include <libtrx/utils.h>

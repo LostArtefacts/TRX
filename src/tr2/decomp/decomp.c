@@ -1,13 +1,13 @@
 #include "decomp/decomp.h"
 
 #include "game/cutscene.h"
-#include "game/game_flow.h"
 #include "game/level.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/collision.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/game_flow.h>
 #include <libtrx/game/game_string_table.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>

@@ -1,9 +1,10 @@
+#include "game/game_flow/sequencer_events.h"
+
 #include "config.h"
 #include "debug.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/game_flow/sequencer.h"
-#include "game/game_flow/sequencer_priv.h"
 #include "game/game_flow/vars.h"
 #include "game/lara.h"
 #include "game/lua.h"
@@ -17,55 +18,53 @@
 #include "log.h"
 #include "version.h"
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleExitToTitle);
-static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene);
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayFMV);
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
-static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier);
-static DECLARE_GF_EVENT_HANDLER(M_HandlePicture);
-static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats);
-static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
-static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset);
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
-static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
+#define M_GF_HANDLER(name)                                                     \
+    static GF_COMMAND name(                                                    \
+        const GF_LEVEL *level, const GF_SEQUENCE_EVENT *event,                 \
+        GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg)
 
-static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
-    // clang-format off
-    [GFS_EXIT_TO_TITLE]     = M_HandleExitToTitle,
-    [GFS_LEVEL_COMPLETE]    = M_HandleLevelComplete,
-    [GFS_LOOP_GAME]         = M_HandlePlayLevel,
-    [GFS_PLAY_CUTSCENE]     = M_HandlePlayCutscene,
-    [GFS_PLAY_FMV]          = M_HandlePlayFMV,
-    [GFS_PLAY_MUSIC]        = M_HandlePlayMusic,
-    [GFS_ADD_ITEM]          = M_HandleInventoryModifier,
-    [GFS_REMOVE_WEAPONS]    = M_HandleInventoryModifier,
-    [GFS_REMOVE_AMMO]       = M_HandleInventoryModifier,
-    [GFS_REMOVE_MEDIPACKS]  = M_HandleInventoryModifier,
-    [GFS_REMOVE_SCIONS]     = M_HandleInventoryModifier,
-#if TR_VERSION > 1
-    [GFS_ADD_SECRET_REWARD] = M_HandleInventoryModifier,
-#endif
-    [GFS_REMOVE_FLARES]     = M_HandleInventoryModifier,
-    [GFS_LOADING_SCREEN]    = M_HandlePicture,
-    [GFS_DISPLAY_PICTURE]   = M_HandlePicture,
-    [GFS_LEVEL_STATS]       = M_HandleLevelStats,
-    [GFS_TOTAL_STATS]       = M_HandleTotalStats,
-    [GFS_SET_START_ANIM]    = M_HandleSetStartAnim,
-    [GFS_ENABLE_SUNSET]     = M_HandleEnableSunset,
-    [GFS_SETUP_BACON_LARA]  = M_HandleSetupBaconLara,
-    [GFS_DISABLE_FLOOR]     = M_HandleDisableFloor,
+// clang-format off
+#define X_EVENT_HANDLER_LIST \
+    X(GFS_EXIT_TO_TITLE,     M_HandleExitToTitle)                              \
+    X(GFS_LEVEL_COMPLETE,    M_HandleLevelComplete)                            \
+    X(GFS_LOOP_GAME,         M_HandlePlayLevel)                                \
+    X(GFS_PLAY_CUTSCENE,     M_HandlePlayCutscene)                             \
+    X(GFS_PLAY_FMV,          M_HandlePlayFMV)                                  \
+    X(GFS_PLAY_MUSIC,        M_HandlePlayMusic)                                \
+    X(GFS_ADD_ITEM,          M_HandleInventoryModifier)                        \
+    X(GFS_REMOVE_WEAPONS,    M_HandleInventoryModifier)                        \
+    X(GFS_REMOVE_AMMO,       M_HandleInventoryModifier)                        \
+    X(GFS_REMOVE_MEDIPACKS,  M_HandleInventoryModifier)                        \
+    X(GFS_REMOVE_SCIONS,     M_HandleInventoryModifier)                        \
+    X(GFS_ADD_SECRET_REWARD, M_HandleInventoryModifier)                        \
+    X(GFS_REMOVE_FLARES,     M_HandleInventoryModifier)                        \
+    X(GFS_LOADING_SCREEN,    M_HandlePicture)                                  \
+    X(GFS_DISPLAY_PICTURE,   M_HandlePicture)                                  \
+    X(GFS_LEVEL_STATS,       M_HandleLevelStats)                               \
+    X(GFS_TOTAL_STATS,       M_HandleTotalStats)                               \
+    X(GFS_SET_START_ANIM,    M_HandleSetStartAnim)                             \
+    X(GFS_ENABLE_SUNSET,     M_HandleEnableSunset)                             \
+    X(GFS_SETUP_BACON_LARA,  M_HandleSetupBaconLara)                           \
+    X(GFS_DISABLE_FLOOR,     M_HandleDisableFloor)
+// clang-format on
+
+#define X(id, name) M_GF_HANDLER(name);
+X_EVENT_HANDLER_LIST
+#undef X
+
+static GF_SEQUENCE_EVENT_HANDLER m_EventHandlers[GFS_NUMBER_OF] = {
+#define X(id, name) [id] = name,
+    X_EVENT_HANDLER_LIST
+#undef X
     // clang-format on
 };
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleExitToTitle)
+M_GF_HANDLER(M_HandleExitToTitle)
 {
     return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
+M_GF_HANDLER(M_HandleLevelComplete)
 {
     if (seq_ctx != GFSC_NORMAL) {
         return (GF_COMMAND) { .action = GF_NOOP };
@@ -97,7 +96,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
     };
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
+M_GF_HANDLER(M_HandlePlayLevel)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
 
@@ -179,7 +178,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene)
+M_GF_HANDLER(M_HandlePlayCutscene)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const int16_t cutscene_num = (int16_t)(intptr_t)event->data;
@@ -192,7 +191,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayFMV)
+M_GF_HANDLER(M_HandlePlayFMV)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const int16_t fmv_id = (int16_t)(intptr_t)event->data;
@@ -214,7 +213,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayFMV)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic)
+M_GF_HANDLER(M_HandlePlayMusic)
 {
     if (seq_ctx != GFSC_STORY) {
         Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
@@ -222,7 +221,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandlePicture)
+M_GF_HANDLER(M_HandlePicture)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (event->type == GFS_LOADING_SCREEN) {
@@ -258,13 +257,13 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePicture)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleInventoryModifier)
+M_GF_HANDLER(M_HandleInventoryModifier)
 {
     // handled in GF_InventoryModifier_Apply
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats)
+M_GF_HANDLER(M_HandleLevelStats)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_NORMAL) {
@@ -290,7 +289,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats)
+M_GF_HANDLER(M_HandleTotalStats)
 {
     GF_COMMAND gf_cmd = { .action = GF_EXIT_TO_TITLE };
     if (seq_ctx != GFSC_NORMAL) {
@@ -313,7 +312,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
+M_GF_HANDLER(M_HandleSetStartAnim)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
@@ -322,7 +321,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
+M_GF_HANDLER(M_HandleEnableSunset)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
@@ -331,7 +330,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
     return gf_cmd;
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
+M_GF_HANDLER(M_HandleSetupBaconLara)
 {
     // TODO: move me to lua!
     if (seq_ctx != GFSC_STORY) {
@@ -344,20 +343,13 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
+M_GF_HANDLER(M_HandleDisableFloor)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
         Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
     }
     return gf_cmd;
-}
-
-void GF_SetSequenceEventHandler(
-    const GF_SEQUENCE_EVENT_TYPE event_type,
-    const GF_SEQUENCE_EVENT_HANDLER event_handler)
-{
-    m_EventHandlers[event_type] = event_handler;
 }
 
 GF_SEQUENCE_EVENT_HANDLER GF_GetSequenceEventHandler(

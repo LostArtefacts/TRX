@@ -2,7 +2,7 @@
 
 #include "./types.h"
 
-extern void GF_Init(void);
+void GF_Init(void);
 void GF_Shutdown(void);
 
 void GF_OverrideCommand(GF_COMMAND action);
