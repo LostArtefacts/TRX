@@ -1,10 +1,10 @@
 #include "game/option/option_compass.h"
 
-#include "game/game.h"
 #include "game/game_flow.h"
 #include "game/game_string.h"
 
 #include <libtrx/config.h>
+#include <libtrx/game/game.h>
 #include <libtrx/game/input.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/ui.h>
