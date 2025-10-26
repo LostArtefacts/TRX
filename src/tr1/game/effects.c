@@ -2,12 +2,12 @@
 
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
-#include <libtrx/game/objects/vars.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/output.h>
 
 static EFFECT *m_Effects = nullptr;
-static int16_t m_NextEffectActive = NO_EFFECT;
 static int16_t m_NextEffectFree = NO_EFFECT;
+static int16_t m_NextEffectActive = NO_EFFECT;
 
 static void M_RemoveActive(const int16_t effect_num)
 {
@@ -105,9 +105,7 @@ int16_t Effect_Create(const int16_t room_num)
     effect->next_active = m_NextEffectActive;
     m_NextEffectActive = effect_num;
 
-#if TR_VERSION == 2
     effect->shade = SHADE_NEUTRAL;
-#endif
 
     return effect_num;
 }
@@ -154,6 +152,14 @@ void Effect_Draw(const int16_t effect_num)
         return;
     }
 
+    if (effect->object_id == O_GLOW) {
+        Output_DrawSprite(
+            effect->interp.result.pos.x, effect->interp.result.pos.y,
+            effect->interp.result.pos.z, Object_Get(O_GLOW)->mesh_idx,
+            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f });
+        return;
+    }
+
     if (obj->mesh_count < 0) {
         const RGB_F tint =
             Object_IsType(effect->object_id, g_WaterSpriteObjects)
@@ -162,7 +168,7 @@ void Effect_Draw(const int16_t effect_num)
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            SHADE_NEUTRAL, tint);
+            effect->shade, tint);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);
