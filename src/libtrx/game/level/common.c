@@ -506,6 +506,67 @@ void Level_ReadTexturePages(const LEVEL_LOADER *const loader, VFILE *const file)
     Benchmark_End(&benchmark, nullptr);
 }
 
+static XYZ_16 M_ComputePortalNormal(PORTAL *const p)
+{
+    // This fixes a bug in TombEditor where certain portals would get emitted
+    // with wrong normals. TE is guaranteed to emit normals with a good sign in
+    // the Y component, but for sloped ceiling portals, their X and Z
+    // compontents have the wrong sign.
+    //
+    // To fix this, we compute the normal the regular way. We don't know which
+    // way the portal faces, but since the Y component is guaranteed to be
+    // good, we can orient our vector using this information, which should fix
+    // the X/Z components.
+
+    ASSERT(p != nullptr);
+
+    // Geometric normal (ab × ac)
+    const XYZ_32 a = { p->vertex[0].x, p->vertex[0].y, p->vertex[0].z };
+    const XYZ_32 b = { p->vertex[1].x, p->vertex[1].y, p->vertex[1].z };
+    const XYZ_32 c = { p->vertex[2].x, p->vertex[2].y, p->vertex[2].z };
+    const XYZ_32 ab = { b.x - a.x, b.y - a.y, b.z - a.z };
+    const XYZ_32 ac = { c.x - a.x, c.y - a.y, c.z - a.z };
+    XYZ_32 n = {
+        (ab.y * ac.z) - (ab.z * ac.y),
+        (ab.z * ac.x) - (ab.x * ac.z),
+        (ab.x * ac.y) - (ab.y * ac.x),
+    };
+
+    // Degenerate guard
+    if (n.x == 0 && n.y == 0 && n.z == 0) {
+        return (XYZ_16) { .x = 0, .y = 1, .z = 0 };
+    }
+
+    // Integer normalization
+    const int32_t gx = ABS(n.x);
+    const int32_t gy = ABS(n.y);
+    const int32_t gz = ABS(n.z);
+    int32_t g = gx;
+    if (gy != 0) {
+        g = Math_GCD(g, gy);
+    }
+    if (gz != 0) {
+        g = Math_GCD(g, gz);
+    }
+    if (g == 0) {
+        g = 1;
+    }
+    n.x /= g;
+    n.y /= g;
+    n.z /= g;
+
+    // NOTE: we only care about horizontal portals.
+    if (p->normal.y == 0) {
+        return p->normal;
+    }
+    if (p->normal.y != n.y) {
+        n.x *= -1;
+        n.y *= -1;
+        n.z *= -1;
+    }
+    return (XYZ_16) { n.x, n.y, n.z };
+}
+
 void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -519,7 +580,6 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
 
     Room_InitialiseRooms(num_rooms);
     for (int32_t i = 0; i < num_rooms; i++) {
-        LOG_DEBUG("ROOM %d:", i);
         ROOM *const room = Room_Get(i);
 
         room->pos.x = VFile_ReadS32(file);
@@ -547,24 +607,6 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
                 for (int32_t k = 0; k < 4; k++) {
                     M_ReadVertex(&portal->vertex[k], file);
                 }
-                LOG_DEBUG(
-                    "  portal→%d: normal=%d,%d,%d vertices={{%d,%d,%d},{%d,%d,%d},{%d,%d,%d},{%d,%d,%d}}}",
-                    portal->room_num,
-                    portal->normal.x,
-                    portal->normal.y,
-                    portal->normal.z,
-                    portal->vertex[0].x,
-                    portal->vertex[0].y,
-                    portal->vertex[0].z,
-                    portal->vertex[1].x,
-                    portal->vertex[1].y,
-                    portal->vertex[1].z,
-                    portal->vertex[2].x,
-                    portal->vertex[2].y,
-                    portal->vertex[2].z,
-                    portal->vertex[3].x,
-                    portal->vertex[3].y,
-                    portal->vertex[3].z);
             }
         }
 
@@ -640,6 +682,23 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
 
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
+    }
+
+    for (int32_t i = 0; i < num_rooms; i++) {
+        ROOM *const room = Room_Get(i);
+        if (room->portals == nullptr) {
+            continue;
+        }
+        for (int32_t j = 0; j < room->portals->count; j++) {
+            PORTAL *const portal = &room->portals->portal[j];
+            const XYZ_16 new_normal = M_ComputePortalNormal(portal);
+            if (new_normal.x != portal->normal.x
+                || new_normal.y != portal->normal.y
+                || new_normal.z != portal->normal.z) {
+                LOG_WARNING("Fixed room %d, portal normal %d", i, j);
+                portal->normal = new_normal;
+            }
+        }
     }
 
     Room_InitialiseFlipStatus();

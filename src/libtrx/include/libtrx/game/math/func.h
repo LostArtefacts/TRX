@@ -14,6 +14,7 @@ DIRECTION Math_GetDirectionCone(int16_t angle, int16_t cone);
 int16_t Math_DirectionToAngle(DIRECTION dir);
 int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio);
 int32_t Math_FloorDiv(int32_t x, int32_t divisor);
+int32_t Math_GCD(int32_t a, int32_t b);
 
 int16_t XYZ_32_GetYaw(XYZ_32 pos);
 int16_t XYZ_32_GetPitch(XYZ_32 pos);
