@@ -67,6 +67,7 @@
 - fixed pistols disappearing from Lara's holsters in the cutscene following The Great Wall (#4145, regression from 0.9)
 - fixed photo mode camera clipping through overlapping rooms
 - fixed Lara's thigh meshes defaulting if entering the fly cheat while holding a flare and she doesn't currently have holstered weapons (#4143, regression from 1.3)
+- fixed weird clipping when moving through overlapping or dome portals (#2685)
 
 ## [1.5.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...tr2-1.5.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)

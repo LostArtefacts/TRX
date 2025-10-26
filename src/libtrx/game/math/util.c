@@ -99,6 +99,16 @@ int32_t Math_FloorDiv(const int32_t x, const int32_t divisor)
     return (x >= 0) ? x / divisor : -((-x + divisor - 1) / divisor);
 }
 
+int32_t Math_GCD(int32_t a, int32_t b)
+{
+    while (b != 0) {
+        int32_t t = b;
+        b = a % b;
+        a = t;
+    }
+    return a;
+}
+
 int16_t XYZ_32_GetYaw(const XYZ_32 pos)
 {
     return Math_Atan(pos.z, pos.x);
