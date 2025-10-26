@@ -32,6 +32,19 @@ static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
 static void M_SetBounds(
     const PORTAL *const portal, int32_t room_num, const ROOM *parent);
 
+static inline bool M_PortalFacesCamera(
+    const ROOM *const room, const PORTAL *const portal)
+{
+    // clang-format off
+    const XYZ_32 offset = {
+        .x = portal->normal.x * (room->pos.x + portal->vertex[0].x - g_W2VMatrix._03),
+        .y = portal->normal.y * (room->pos.y + portal->vertex[0].y - g_W2VMatrix._13),
+        .z = portal->normal.z * (room->pos.z + portal->vertex[0].z - g_W2VMatrix._23),
+    };
+    // clang-format on
+    return offset.x + offset.y + offset.z < 0;
+}
+
 static void M_GetBounds(void)
 {
     while (m_BoundStart != m_BoundEnd) {
@@ -67,17 +80,8 @@ static void M_GetBounds(void)
         Matrix_Push();
         Matrix_TranslateAbs32(room->pos);
         for (int32_t i = 0; i < room->portals->count; i++) {
-            const PORTAL *const portal = &room->portals->portal[i];
-
-            // clang-format off
-            const XYZ_32 offset = {
-                .x = portal->normal.x * (room->pos.x + portal->vertex[0].x - g_W2VMatrix._03),
-                .y = portal->normal.y * (room->pos.y + portal->vertex[0].y - g_W2VMatrix._13),
-                .z = portal->normal.z * (room->pos.z + portal->vertex[0].z - g_W2VMatrix._23),
-            };
-            // clang-format on
-
-            if (offset.x + offset.y + offset.z < 0) {
+            PORTAL *const portal = &room->portals->portal[i];
+            if (M_PortalFacesCamera(room, portal)) {
                 M_SetBounds(portal, portal->room_num, room);
             }
         }
@@ -242,9 +246,8 @@ static void M_DrawSkybox(void)
     }
 }
 
-static void M_DrawSingleRoom(const int16_t room_num)
+static void M_DrawSingleRoom(ROOM *const room)
 {
-    ROOM *const room = Room_Get(room_num);
     if (room->flags.underwater) {
         Output_SetupBelowWater(g_Camera.underwater);
     } else {
@@ -271,9 +274,6 @@ static void M_DrawSingleRoom(const int16_t room_num)
     } else {
         Output_SetupAboveWater(g_Camera.underwater);
     }
-
-    room->bind.active = false;
-    room->bind.drawn = false;
 
     Matrix_Push();
     Matrix_TranslateAbs32(room->pos);
@@ -406,7 +406,11 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     }
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
-        M_DrawSingleRoom(Room_DrawGetRoom(i));
+        const int16_t draw_room_num = Room_DrawGetRoom(i);
+        ROOM *const draw_room = Room_Get(draw_room_num);
+        M_DrawSingleRoom(draw_room);
+        draw_room->bind.active = false;
+        draw_room->bind.drawn = false;
     }
 
     const ITEM *const lara_item = Lara_GetItem();
