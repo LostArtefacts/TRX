@@ -99,7 +99,6 @@ sources = [
   init,
   'game/creature.c',
   'game/demo.c',
-  'game/effects.c',
   'game/game_string.c',
   'game/gun/gun_rifle.c',
   'game/inventory.c',
