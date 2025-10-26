@@ -9,6 +9,7 @@
 #include <libtrx/game/lua.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/option/passport.h>
+#include <libtrx/game/output.h>
 #include <libtrx/game/rooms.h>
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {};
@@ -17,6 +18,7 @@ void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
 {
     Room_SetAbyssHeight(0);
+    Output_SetSunsetEnabled(false);
     Lara_SetControllable(false);
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
