@@ -319,9 +319,6 @@ int32_t Lara_GetWaterDepth(
 
 bool Lara_IsM16Active(void)
 {
-#if TR_VERSION == 1
-    return false;
-#else
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->gun_item_num == NO_ITEM || lara->gun_type != LGT_M16) {
         return false;
@@ -330,7 +327,6 @@ bool Lara_IsM16Active(void)
     const ITEM *const item = Item_Get(lara->gun_item_num);
     return item->current_anim_state == 0 || item->current_anim_state == 2
         || item->current_anim_state == 4;
-#endif
 }
 
 void Lara_CatchFire(void)

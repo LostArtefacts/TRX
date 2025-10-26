@@ -956,6 +956,9 @@ static bool M_LoadLara(
         JSON_ObjectGetInt(lara_obj, "request_gun_type", lara->request_gun_type);
     lara->last_gun_type =
         JSON_ObjectGetInt(lara_obj, "last_gun_type", lara->request_gun_type);
+    // TODO: handle legacy
+    lara->back_gun_obj_id = Object_FromGameID(
+        JSON_ObjectGetInt(lara_obj, "back_gun_obj_id", lara->back_gun_obj_id));
     lara->calc_fall_speed =
         JSON_ObjectGetInt(lara_obj, "calc_fall_speed", lara->calc_fall_speed);
     lara->water_status =
@@ -1072,6 +1075,26 @@ static bool M_LoadLara(
     if (!M_LoadAmmo(
             JSON_ObjectGetObject(lara_obj, "shotgun"), &lara->shotgun_ammo)) {
         return false;
+    }
+
+    // TODO: handle legacy
+    const JSON_OBJECT *const weapon_obj =
+        JSON_ObjectGetObject(lara_obj, "weapon");
+    if (weapon_obj != nullptr) {
+        lara->gun_item_num = Item_Create();
+        ITEM *const weapon_item = Item_Get(lara->gun_item_num);
+        weapon_item->object_id = Object_FromGameID(
+            JSON_ObjectGetInt(weapon_obj, "obj_id", weapon_item->object_id));
+        weapon_item->anim_num =
+            JSON_ObjectGetInt(weapon_obj, "anim_num", weapon_item->anim_num);
+        weapon_item->frame_num =
+            JSON_ObjectGetInt(weapon_obj, "frame_num", weapon_item->frame_num);
+        weapon_item->current_anim_state = JSON_ObjectGetInt(
+            weapon_obj, "current_anim_state", weapon_item->current_anim_state);
+        weapon_item->goal_anim_state = JSON_ObjectGetInt(
+            weapon_obj, "goal_anim_state", weapon_item->goal_anim_state);
+        weapon_item->status = IS_ACTIVE;
+        weapon_item->room_num = NO_ROOM;
     }
 
     if (!M_LoadLOT(JSON_ObjectGetObject(lara_obj, "lot"), &lara->lot)) {
@@ -1580,6 +1603,8 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(lara_obj, "gun_type", lara->gun_type);
     JSON_ObjectAppendInt(lara_obj, "request_gun_type", lara->request_gun_type);
     JSON_ObjectAppendInt(lara_obj, "last_gun_type", lara->last_gun_type);
+    JSON_ObjectAppendInt(
+        lara_obj, "back_gun_obj_id", Object_ToGameID(lara->back_gun_obj_id));
     JSON_ObjectAppendInt(lara_obj, "calc_fall_speed", lara->calc_fall_speed);
     JSON_ObjectAppendInt(lara_obj, "water_status", lara->water_status);
     JSON_ObjectAppendInt(lara_obj, "pose_count", lara->pose_count);
@@ -1593,6 +1618,20 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);
     JSON_ObjectAppendBool(lara_obj, "burn", lara->burn);
     JSON_ObjectAppendInt(lara_obj, "climb_status", lara->climb_status);
+
+    if (lara->gun_item_num != NO_ITEM) {
+        JSON_OBJECT *const weapon_obj = JSON_ObjectNew();
+        const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
+        JSON_ObjectAppendInt(
+            weapon_obj, "obj_id", Object_ToGameID(weapon_item->object_id));
+        JSON_ObjectAppendInt(weapon_obj, "anim_num", weapon_item->anim_num);
+        JSON_ObjectAppendInt(weapon_obj, "frame_num", weapon_item->frame_num);
+        JSON_ObjectAppendInt(
+            weapon_obj, "current_anim_state", weapon_item->current_anim_state);
+        JSON_ObjectAppendInt(
+            weapon_obj, "goal_anim_state", weapon_item->goal_anim_state);
+        JSON_ObjectAppendObject(lara_obj, "weapon", weapon_obj);
+    }
 
     JSON_ObjectAppendInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
     JSON_ObjectAppendInt(

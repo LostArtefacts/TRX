@@ -29,6 +29,7 @@ static void M_Draw_I(
     const ITEM *const item, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
+    const bool is_lara = item == Lara_GetItem();
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
@@ -101,13 +102,12 @@ static void M_Draw_I(
     Output_DrawObjectMesh_I(lara->mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
-    if (item == Lara_GetItem()) {
+    if (is_lara) {
         Lara_Hair_Draw();
     }
     Matrix_Pop_I();
 
-#if TR_VERSION >= 2
-    if (lara->back_gun_obj_id != O_LARA) {
+    if (is_lara && lara->back_gun_obj_id != O_LARA) {
         Matrix_Push_I();
         const OBJECT *const back_obj = Object_Get(lara->back_gun_obj_id);
         const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
@@ -118,7 +118,6 @@ static void M_Draw_I(
         Object_DrawMesh(back_obj->mesh_idx + LM_HEAD, clip, true);
         Matrix_Pop_I();
     }
-#endif
 
     LARA_GUN_TYPE gun_type = LGT_UNARMED;
     if (lara->gun_status == LGS_READY || lara->gun_status == LGS_SPECIAL
@@ -364,8 +363,7 @@ void Lara_Draw(const ITEM *const item)
 
     Matrix_Pop();
 
-#if TR_VERSION >= 2
-    if (lara->back_gun_obj_id != O_LARA) {
+    if (is_lara && lara->back_gun_obj_id != O_LARA) {
         Matrix_Push();
         const OBJECT *const back_obj = Object_Get(lara->back_gun_obj_id);
         const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
@@ -375,7 +373,6 @@ void Lara_Draw(const ITEM *const item)
         Object_DrawMesh(back_obj->mesh_idx + LM_HEAD, clip, false);
         Matrix_Pop();
     }
-#endif
 
     LARA_GUN_TYPE gun_type = LGT_UNARMED;
     if (pose == nullptr

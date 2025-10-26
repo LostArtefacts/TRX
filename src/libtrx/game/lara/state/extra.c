@@ -95,6 +95,7 @@ static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
     case 135:
         lara->mesh_effects |= (1 << LM_TORSO);
         Lara_Mesh_SwapSingle(LM_TORSO, O_LARA_EXTRA);
+        lara->back_gun_obj_id = O_LARA;
         break;
 
     case 150:
@@ -256,9 +257,7 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
 
     if (Item_TestFrameEqual(item, M_LF_SHOWER_START)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION == 2
         lara->back_gun_obj_id = O_LARA;
-#endif
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
         Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
         Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);

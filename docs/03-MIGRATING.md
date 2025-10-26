@@ -15,6 +15,11 @@ title: Migrating levels
     - `demo_delay`
     - `enable_killer_pushblocks`
 
+2. **Lara shotgun animation**: 
+   Lara now uses the TR2+ approach of a separate shotgun mesh on her back. You
+   must use the `lara_guns.bin` injection or otherwise refer to 
+   https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/ASSETS.md
+
 ### Version 4.13 to 4.14
 
 1. **Update file paths**  
