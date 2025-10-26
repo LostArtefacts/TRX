@@ -1,7 +1,9 @@
 #include "game/game_flow/inventory.h"
 
+#include "config.h"
 #include "game/gun.h"
 #include "game/inventory.h"
+#include "game/objects.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
 
@@ -12,6 +14,20 @@ static bool m_RemoveAmmo = false;
 static bool m_RemoveFlares = false;
 static bool m_RemoveMedipacks = false;
 static bool m_RemoveScions = false;
+
+static bool M_CanHaveItem(const OBJECT_ID object_id)
+{
+    if (Object_IsType(object_id, g_GunObjects) && object_id != O_PISTOL_ITEM
+        && g_Config.gameplay.disable_extra_guns) {
+        return false;
+    }
+    if ((object_id == O_SMALL_MEDIPACK_ITEM
+         || object_id == O_LARGE_MEDIPACK_ITEM)
+        && g_Config.gameplay.disable_medpacks) {
+        return false;
+    }
+    return true;
+}
 
 static bool M_ResumeInfo_HasWeapon(
     const RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type)
@@ -96,15 +112,19 @@ static void M_ResumeInfo_AddItem(
 static void M_ModifyResumeInfo_GunOrAmmo(
     RESUME_INFO *const resume, const LARA_GUN_TYPE gun_type)
 {
-    const OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
-    const OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
+    const OBJECT_ID gun_object_id = Gun_GetGunObject(gun_type);
+    const OBJECT_ID ammo_object_id = Gun_GetAmmoObject(gun_type);
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
 
+    if (!M_CanHaveItem(gun_object_id) || !M_CanHaveItem(ammo_object_id)) {
+        return;
+    }
+
     M_ResumeInfo_AddAmmo(
-        resume, gun_type, ammo_qty * m_Add2InvItems[ammo_item]);
+        resume, gun_type, ammo_qty * m_Add2InvItems[ammo_object_id]);
     if (!M_ResumeInfo_HasWeapon(resume, gun_type)
-        && m_Add2InvItems[gun_item] > 0) {
+        && m_Add2InvItems[gun_object_id] > 0) {
         M_ResumeInfo_SetWeapon(resume, gun_type, true);
         M_ResumeInfo_AddAmmo(resume, gun_type, ammo_qty);
     }
@@ -113,67 +133,79 @@ static void M_ModifyResumeInfo_GunOrAmmo(
 static void M_ModifyResumeInfo_Item(
     RESUME_INFO *const resume, const OBJECT_ID object_id)
 {
+    if (!M_CanHaveItem(object_id)) {
+        return;
+    }
+
     M_ResumeInfo_AddItem(resume, object_id, m_Add2InvItems[object_id]);
 }
 
 static void M_ModifyInventory_GunOrAmmo(
     const GF_INV_TYPE type, const LARA_GUN_TYPE gun_type)
 {
-    const OBJECT_ID gun_item = Gun_GetGunObject(gun_type);
-    const OBJECT_ID ammo_item = Gun_GetAmmoObject(gun_type);
+    const OBJECT_ID gun_object_id = Gun_GetGunObject(gun_type);
+    const OBJECT_ID ammo_object_id = Gun_GetAmmoObject(gun_type);
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
 
-    if (Inv_RequestItem(gun_item)) {
+    if (!M_CanHaveItem(gun_object_id) || !M_CanHaveItem(ammo_object_id)) {
+        return;
+    }
+
+    if (Inv_RequestItem(gun_object_id)) {
         if (type == GF_INV_SECRET) {
-            ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_item];
-            for (int32_t i = 0; i < m_SecretInvItems[ammo_item]; i++) {
-                Overlay_AddDisplayPickup(ammo_item);
+            ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_object_id];
+            for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+                Overlay_AddDisplayPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
-            ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_item];
+            ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_object_id];
         }
     } else if (
-        (type == GF_INV_REGULAR && m_Add2InvItems[gun_item] > 0)
-        || (type == GF_INV_SECRET && m_SecretInvItems[gun_item] > 0)) {
+        (type == GF_INV_REGULAR && m_Add2InvItems[gun_object_id] > 0)
+        || (type == GF_INV_SECRET && m_SecretInvItems[gun_object_id] > 0)) {
 
-        Inv_AddItem(gun_item);
+        Inv_AddItem(gun_object_id);
 
         if (type == GF_INV_SECRET) {
-            ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_item];
-            Overlay_AddDisplayPickup(gun_item);
-            for (int32_t i = 0; i < m_SecretInvItems[ammo_item]; i++) {
-                Overlay_AddDisplayPickup(ammo_item);
+            ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_object_id];
+            Overlay_AddDisplayPickup(gun_object_id);
+            for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+                Overlay_AddDisplayPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
-            ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_item];
+            ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_object_id];
         }
     } else if (type == GF_INV_SECRET) {
-        for (int32_t i = 0; i < m_SecretInvItems[ammo_item]; i++) {
-            Inv_AddItem(ammo_item);
-            Overlay_AddDisplayPickup(ammo_item);
+        for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+            Inv_AddItem(ammo_object_id);
+            Overlay_AddDisplayPickup(ammo_object_id);
         }
     } else if (type == GF_INV_REGULAR) {
-        for (int32_t i = 0; i < m_Add2InvItems[ammo_item]; i++) {
-            Inv_AddItem(ammo_item);
+        for (int32_t i = 0; i < m_Add2InvItems[ammo_object_id]; i++) {
+            Inv_AddItem(ammo_object_id);
         }
     }
 }
 
 static void M_ModifyInventory_Item(
-    const GF_INV_TYPE type, const OBJECT_ID obj_id)
+    const GF_INV_TYPE type, const OBJECT_ID object_id)
 {
     int32_t qty = 0;
     if (type == GF_INV_SECRET) {
-        qty = m_SecretInvItems[obj_id];
+        qty = m_SecretInvItems[object_id];
     } else if (type == GF_INV_REGULAR) {
-        qty = m_Add2InvItems[obj_id];
+        qty = m_Add2InvItems[object_id];
+    }
+
+    // Check for gameplay mods from secret rewards
+    if (!M_CanHaveItem(object_id)) {
+        qty = 0;
     }
 
     for (int32_t i = 0; i < qty; i++) {
-        Inv_AddItem(obj_id);
-        if (type == GF_INV_SECRET) {
-            Overlay_AddDisplayPickup(obj_id);
+        if (Inv_AddItem(object_id) && type == GF_INV_SECRET) {
+            Overlay_AddDisplayPickup(object_id);
         }
     }
 }
