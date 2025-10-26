@@ -1,9 +1,9 @@
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/input.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
+#include "game/game_buf.h"
+#include "game/input.h"
+#include "game/lara.h"
+#include "game/math.h"
+#include "game/rooms.h"
+#include "game/sound.h"
 
 #define ZIPLINE_MAX_SPEED 100
 #define ZIPLINE_ACCELERATION 5
