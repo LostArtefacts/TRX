@@ -9,9 +9,6 @@ typedef struct {
     XYZ_16 rot;
     int16_t room_num;
     OBJECT_ID object_id;
-#if TR_VERSION == 1
-    int16_t next_draw;
-#endif
     int16_t next_free;
     int16_t next_active;
     int16_t speed;
