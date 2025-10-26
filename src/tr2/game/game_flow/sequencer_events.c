@@ -11,22 +11,10 @@
 #include <libtrx/game/option/passport.h>
 #include <libtrx/game/output.h>
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
-
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_SET_START_ANIM]   = M_HandleSetStartAnim,
     // clang-format on
 };
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim)
-{
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY) {
-        Lara_SetStartAnimState((LARA_EXTRA_STATE)(intptr_t)event->data);
-    }
-    return gf_cmd;
-}
 
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
@@ -34,7 +22,9 @@ void GF_PreSequenceHook(
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
     Lara_SetControllable(false);
+#if TR_VERSION == 2
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
+#endif
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
     }
