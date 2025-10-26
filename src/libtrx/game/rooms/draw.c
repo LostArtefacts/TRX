@@ -25,35 +25,25 @@ static int32_t m_OutsideLeft;
 static int32_t m_OutsideTop;
 static int32_t m_OutsideBottom;
 
-static int32_t m_MidSort = 0;
 static int32_t m_BoundStart;
 static int32_t m_BoundEnd;
 static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
 
 static void M_SetBounds(
-    const int16_t *obj_ptr, int32_t room_num, const ROOM *parent);
+    const PORTAL *const portal, int32_t room_num, const ROOM *parent);
 
 static void M_GetBounds(void)
 {
     while (m_BoundStart != m_BoundEnd) {
-        const int16_t room_num =
-            m_BoundRooms[m_BoundStart++ % M_MAX_BOUND_ROOMS];
+        const int16_t room_num = m_BoundRooms[m_BoundStart % M_MAX_BOUND_ROOMS];
+        m_BoundStart++;
         ROOM *const room = Room_Get(room_num);
-        room->bound_active &= ~2;
-        m_MidSort = (room->bound_active >> 8) + 1;
+        room->bound_active -= 2;
 
-        if (room->test_left < room->bound_left) {
-            room->bound_left = room->test_left;
-        }
-        if (room->test_top < room->bound_top) {
-            room->bound_top = room->test_top;
-        }
-        if (room->test_right > room->bound_right) {
-            room->bound_right = room->test_right;
-        }
-        if (room->test_bottom > room->bound_bottom) {
-            room->bound_bottom = room->test_bottom;
-        }
+        CLAMPG(room->bound_left, room->test_left);
+        CLAMPG(room->bound_top, room->test_top);
+        CLAMPL(room->bound_right, room->test_right);
+        CLAMPL(room->bound_bottom, room->test_bottom);
 
         if (!(room->bound_active & 1)) {
             Room_MarkToBeDrawn(room_num);
@@ -64,18 +54,10 @@ static void M_GetBounds(void)
         }
 
         if (!room->flags.inside || room->flags.outside) {
-            if (room->bound_left < m_OutsideLeft) {
-                m_OutsideLeft = room->bound_left;
-            }
-            if (room->bound_right > m_OutsideRight) {
-                m_OutsideRight = room->bound_right;
-            }
-            if (room->bound_top < m_OutsideTop) {
-                m_OutsideTop = room->bound_top;
-            }
-            if (room->bound_bottom > m_OutsideBottom) {
-                m_OutsideBottom = room->bound_bottom;
-            }
+            CLAMPG(m_OutsideLeft, room->bound_left);
+            CLAMPG(m_OutsideTop, room->bound_top);
+            CLAMPL(m_OutsideRight, room->bound_right);
+            CLAMPL(m_OutsideBottom, room->bound_bottom);
         }
 
         if (room->portals == nullptr) {
@@ -95,32 +77,26 @@ static void M_GetBounds(void)
             };
             // clang-format on
 
-            if (offset.x + offset.y + offset.z >= 0) {
-                continue;
+            if (offset.x + offset.y + offset.z < 0) {
+                M_SetBounds(portal, portal->room_num, room);
             }
-
-            M_SetBounds(&portal->normal.x, portal->room_num, room);
         }
         Matrix_Pop();
     }
 }
 
 static void M_SetBounds(
-    const int16_t *const obj_ptr, const int32_t room_num,
+    const PORTAL *const portal, const int32_t room_num,
     const ROOM *const parent)
 {
     ROOM *const room = Room_Get(room_num);
-    const PORTAL *const portal = (const PORTAL *)(obj_ptr - 1);
 
-    // clang-format off
-    if (room->bound_left <= parent->test_left &&
-        room->bound_right >= parent->test_right &&
-        room->bound_top <= parent->test_top &&
-        room->bound_bottom >= parent->test_bottom
-   ) {
+    if (room->bound_left <= parent->test_left
+        && room->bound_top <= parent->test_top
+        && room->bound_right >= parent->test_right
+        && room->bound_bottom >= parent->test_bottom) {
         return;
     }
-    // clang-format on
 
     const MATRIX *const m = g_MatrixPtr;
     int32_t left = parent->test_right;
@@ -129,7 +105,7 @@ static void M_SetBounds(
     int32_t top = parent->test_bottom;
 
     M_PORTAL_VBUF portal_vbuf[4];
-    int32_t z_behind = 0;
+    int32_t too_near = 0;
 
     for (int32_t i = 0; i < 4; i++) {
         M_PORTAL_VBUF *const dvbuf = &portal_vbuf[i];
@@ -145,14 +121,14 @@ static void M_SetBounds(
         dvbuf->zv = zv;
 
         if (zv <= 0) {
-            z_behind++;
+            too_near++;
             continue;
         }
 
         int32_t xs;
         int32_t ys;
         const int32_t zp = zv / g_PhdPersp;
-        if (zp) {
+        if (zp != 0) {
             xs = Viewport_GetCenterX(VIEWPORT_GAME) + xv / zp;
             ys = Viewport_GetCenterY(VIEWPORT_GAME) + yv / zp;
         } else {
@@ -174,16 +150,16 @@ static void M_SetBounds(
         }
     }
 
-    if (z_behind == 4) {
+    if (too_near == 4) {
         return;
     }
 
-    if (z_behind > 0) {
+    if (too_near > 0) {
         const M_PORTAL_VBUF *dest = &portal_vbuf[0];
         const M_PORTAL_VBUF *last = &portal_vbuf[3];
 
-        for (int32_t i = 0; i < 4; i++, last = dest++) {
-            if ((dest->zv < 0) == (last->zv < 0)) {
+        for (int32_t i = 0; i < 4; i++, last = dest, dest++) {
+            if ((dest->zv <= 0) == (last->zv <= 0)) {
                 continue;
             }
 
@@ -225,25 +201,17 @@ static void M_SetBounds(
     }
 
     if (room->bound_active & 2) {
-        if (left < room->test_left) {
-            room->test_left = left;
-        }
-        if (top < room->test_top) {
-            room->test_top = top;
-        }
-        if (right > room->test_right) {
-            room->test_right = right;
-        }
-        if (bottom > room->test_bottom) {
-            room->test_bottom = bottom;
-        }
+        CLAMPG(room->test_left, left);
+        CLAMPG(room->test_top, top);
+        CLAMPL(room->test_right, right);
+        CLAMPL(room->test_bottom, bottom);
     } else {
-        m_BoundRooms[m_BoundEnd++ % M_MAX_BOUND_ROOMS] = room_num;
+        m_BoundRooms[m_BoundEnd % M_MAX_BOUND_ROOMS] = room_num;
+        m_BoundEnd++;
         room->bound_active |= 2;
-        room->bound_active += (int16_t)(m_MidSort << 8);
         room->test_left = left;
-        room->test_right = right;
         room->test_top = top;
+        room->test_right = right;
         room->test_bottom = bottom;
     }
 }
@@ -255,9 +223,9 @@ static void M_DrawSkybox(void)
     }
 
     g_PhdLeft = m_OutsideLeft;
+    g_PhdTop = m_OutsideTop;
     g_PhdRight = m_OutsideRight;
     g_PhdBottom = m_OutsideBottom;
-    g_PhdTop = m_OutsideTop;
 
     const OBJECT *const skybox = Object_Get(O_SKYBOX);
     if (skybox->loaded) {
@@ -284,8 +252,8 @@ static void M_DrawSingleRoom(const int16_t room_num)
     }
 
     g_PhdLeft = room->bound_left;
-    g_PhdRight = room->bound_right;
     g_PhdTop = room->bound_top;
+    g_PhdRight = room->bound_right;
     g_PhdBottom = room->bound_bottom;
 
     if (g_Config.debug.enable_debug_room_clip) {
@@ -361,9 +329,9 @@ static void M_DrawSingleRoom(const int16_t room_num)
     Matrix_Pop();
 
     room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
-    room->bound_bottom = Viewport_GetMinX(VIEWPORT_GAME);
-    room->bound_right = Viewport_GetMinY(VIEWPORT_GAME);
     room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
+    room->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
+    room->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
 }
 
 void Room_DrawReset(void)
@@ -439,7 +407,6 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         M_DrawSingleRoom(Room_DrawGetRoom(i));
     }
 
-    m_MidSort = 0;
     const ITEM *const lara_item = Lara_GetItem();
     if (Object_Get(O_LARA)->loaded) {
         const ROOM *const lara_room = Room_Get(lara_item->room_num);
@@ -449,10 +416,6 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
             Output_SetupAboveWater(g_Camera.underwater);
         }
         Lara_Draw(lara_item);
-        m_MidSort = lara_room->bound_active >> 8;
-        if (m_MidSort) {
-            m_MidSort--;
-        }
     }
 
     Output_SetupAboveWater(false);
