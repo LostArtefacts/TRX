@@ -20,6 +20,9 @@ void GF_PreSequenceHook(
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
     Lara_SetControllable(false);
+#if TR_VERSION == 2
+    Lara_SetStartAnimState(LS_EXTRA_BREATH);
+#endif
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
     }
@@ -28,6 +31,7 @@ void GF_PreSequenceHook(
 GF_SEQUENCE_CONTEXT GF_SwitchSequenceContext(
     const GF_SEQUENCE_EVENT *const event, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
+    // Update sequence context if necessary
     if (event->type != GFS_LOOP_GAME) {
         return seq_ctx;
     }
