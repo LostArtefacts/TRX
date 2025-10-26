@@ -11,25 +11,15 @@
 #include <libtrx/game/option/passport.h>
 #include <libtrx/game/rooms.h>
 
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_PLAY_MUSIC]       = M_HandlePlayMusic,
     [GFS_LEVEL_COMPLETE]   = M_HandleLevelComplete,
     [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     // clang-format on
 };
-
-static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic)
-{
-    if (seq_ctx != GFSC_STORY) {
-        Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
-    }
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
 {
