@@ -1,9 +1,9 @@
 #include "game/effects.h"
 
-#include <libtrx/game/game_buf.h>
-#include <libtrx/game/matrix.h>
-#include <libtrx/game/objects.h>
-#include <libtrx/game/output.h>
+#include "game/game_buf.h"
+#include "game/matrix.h"
+#include "game/objects.h"
+#include "game/output.h"
 
 static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectFree = NO_EFFECT;
