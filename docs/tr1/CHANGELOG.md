@@ -53,6 +53,7 @@
 - fixed "Story So Far..." showing loading screens
 - fixed photo mode camera clipping through overlapping rooms
 - fixed matrix stack overflow crash when moving through overlapping or dome portals (#2685)
+- fixed bogus warnings about resume info in logs when playing cutscenes and in the title level
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
