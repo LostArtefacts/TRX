@@ -307,9 +307,6 @@
           "$ref": "#/definitions/seq_play_cutscene"
         },
         {
-          "$ref": "#/definitions/seq_set_cutscene_pos"
-        },
-        {
           "$ref": "#/definitions/seq_play_fmv"
         },
         {
@@ -317,9 +314,6 @@
         },
         {
           "$ref": "#/definitions/seq_give_item"
-        },
-        {
-          "$ref": "#/definitions/seq_mesh_swap"
         },
         {
           "$ref": "#/definitions/seq_play_music"
@@ -335,9 +329,6 @@
         },
         {
           "$ref": "#/definitions/seq_remove_scions"
-        },
-        {
-          "$ref": "#/definitions/seq_set_cutscene_angle"
         },
         {
           "$ref": "#/definitions/seq_setup_bacon_lara"
@@ -547,37 +538,6 @@
       ],
       "additionalProperties": false
     },
-    "seq_mesh_swap": {
-      "type": "object",
-      "description": "Swaps the given mesh ID between the given objects.",
-      "properties": {
-        "type": {
-          "const": "mesh_swap"
-        },
-        "object1_id": {
-          "type": [
-            "integer",
-            "string"
-          ]
-        },
-        "object2_id": {
-          "type": [
-            "integer",
-            "string"
-          ]
-        },
-        "mesh_id": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "type",
-        "object1_id",
-        "object2_id",
-        "mesh_id"
-      ],
-      "additionalProperties": false
-    },
     "seq_play_music": {
       "type": "object",
       "description": "Plays the given audio track.",
@@ -644,47 +604,6 @@
       },
       "required": [
         "type"
-      ],
-      "additionalProperties": false
-    },
-    "seq_set_cutscene_pos": {
-      "type": "object",
-      "description": "Sets the camera's position.",
-      "properties": {
-        "type": {
-          "const": "set_cutscene_pos"
-        },
-        "x": {
-          "type": "integer"
-        },
-        "y": {
-          "type": "integer"
-        },
-        "z": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "type",
-        "x",
-        "z"
-      ],
-      "additionalProperties": false
-    },
-    "seq_set_cutscene_angle": {
-      "type": "object",
-      "description": "Sets the camera's angle.",
-      "properties": {
-        "type": {
-          "const": "set_cutscene_angle"
-        },
-        "value": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "type",
-        "value"
       ],
       "additionalProperties": false
     },
