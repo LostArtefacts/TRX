@@ -175,9 +175,9 @@ typedef struct {
 
     struct {
         bool disable_healing_between_levels;
-#if TR_VERSION == 1
         bool disable_medpacks;
         bool disable_extra_guns;
+#if TR_VERSION == 1
         bool enable_deaths_counter;
 #endif
         bool enable_pickup_aids;

@@ -17,6 +17,8 @@
     This feature is experimental — some objects may not behave correctly. Please report any bugs encountered! 🩷  
     See [the documentation](../07-CATALOGS.md) for details.
 - added support for save crystals for level builders (slot 269, see catalogs)
+- added an option to disable all medipacks (Gameplay options → Mods → Remove medipacks)
+- added an option to disable all guns except Pistols (Gameplay options → Mods → Remove extra guns)
 - added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (Graphics → Visuals → Pickup aids) (#4057)
 - added an option for animated interactions with pickups and switches (Gameplay → Controls → Animated interactions) (#4067)
 - added an option to change max savegame slot count (Gameplay → General → Number of save slots)
