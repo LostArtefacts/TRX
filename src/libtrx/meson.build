@@ -375,6 +375,7 @@ sources = [
   'game/objects/general/window.c',
   'game/objects/general/zipline.c',
   'game/objects/names.c',
+  'game/objects/setup.c',
   'game/objects/traps/blade.c',
   'game/objects/traps/damocles_sword.c',
   'game/objects/traps/dart.c',
