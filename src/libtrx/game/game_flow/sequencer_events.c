@@ -27,6 +27,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePicture);
 static DECLARE_GF_EVENT_HANDLER(M_HandleLevelStats);
 static DECLARE_GF_EVENT_HANDLER(M_HandleTotalStats);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
+static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
@@ -50,6 +51,7 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     [GFS_LEVEL_STATS]       = M_HandleLevelStats,
     [GFS_TOTAL_STATS]       = M_HandleTotalStats,
     [GFS_SETUP_BACON_LARA]  = M_HandleSetupBaconLara,
+    [GFS_DISABLE_FLOOR]     = M_HandleDisableFloor,
     // clang-format on
 };
 
@@ -317,6 +319,15 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara)
         }
     }
     return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
+{
+    GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    if (seq_ctx != GFSC_STORY) {
+        Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
+    }
+    return gf_cmd;
 }
 
 void GF_SetSequenceEventHandler(
