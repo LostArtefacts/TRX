@@ -519,6 +519,7 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
 
     Room_InitialiseRooms(num_rooms);
     for (int32_t i = 0; i < num_rooms; i++) {
+        LOG_DEBUG("ROOM %d:", i);
         ROOM *const room = Room_Get(i);
 
         room->pos.x = VFile_ReadS32(file);
@@ -546,6 +547,24 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
                 for (int32_t k = 0; k < 4; k++) {
                     M_ReadVertex(&portal->vertex[k], file);
                 }
+                LOG_DEBUG(
+                    "  portal→%d: normal=%d,%d,%d vertices={{%d,%d,%d},{%d,%d,%d},{%d,%d,%d},{%d,%d,%d}}}",
+                    portal->room_num,
+                    portal->normal.x,
+                    portal->normal.y,
+                    portal->normal.z,
+                    portal->vertex[0].x,
+                    portal->vertex[0].y,
+                    portal->vertex[0].z,
+                    portal->vertex[1].x,
+                    portal->vertex[1].y,
+                    portal->vertex[1].z,
+                    portal->vertex[2].x,
+                    portal->vertex[2].y,
+                    portal->vertex[2].z,
+                    portal->vertex[3].x,
+                    portal->vertex[3].y,
+                    portal->vertex[3].z);
             }
         }
 
@@ -619,11 +638,6 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         room->flags.inside      = (flags & 0x40) != 0;
         // clang-format on
 
-        room->bound_active = 0;
-        room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
-        room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
-        room->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
-        room->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
     }
