@@ -189,7 +189,7 @@ default game flow for examples.
     <td colspan="2" align="center">N/A</td>
   </tr>
   <tr valign="top">
-    <td><code>remove_flares</code><strong>²</strong></td>
+    <td><code>remove_flares</code></td>
     <td colspan="2" align="center">N/A</td>
   </tr>
   <tr valign="top">
