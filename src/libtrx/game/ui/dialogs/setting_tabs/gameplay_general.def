@@ -12,8 +12,8 @@ X_UI_CFG_BOOL(gameplay.enable_save_crystals,        SETTING_ENABLE_SAVE_CRYSTALS
 X_UI_CFG_BOOL(gameplay.enable_auto_item_selection,  SETTING_ENABLE_AUTO_ITEM_SELECTION)
 X_UI_CFG_BOOL(gameplay.enable_item_examining,       SETTING_ENABLE_ITEM_EXAMINING)
 
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_compass_stats,        SETTING_ENABLE_COMPASS_STATS)
+#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_total_stats,          SETTING_ENABLE_TOTAL_STATS)
 #endif
 
