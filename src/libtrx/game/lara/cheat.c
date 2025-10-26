@@ -59,14 +59,12 @@ static void M_GiveAllMedpacksImpl(void)
 
 static void M_ReinitialiseGunMeshes(void)
 {
-#if TR_VERSION >= 2
     const bool has_flare = Lara_Flare_IsMeshActive();
     Lara_Mesh_Initialise(Game_GetCurrentLevel());
     Gun_InitialiseNewWeapon();
     if (has_flare) {
         Lara_Flare_DrawMeshes();
     }
-#endif
 }
 
 static void M_ResetGunStatus(void)
@@ -233,23 +231,18 @@ bool Lara_Cheat_EnterFlyMode(void)
 
     Viewport_AlterFOV(-1);
 
-#if TR_VERSION == 1
-    lara_info->request_gun_type = LGT_UNARMED;
-    if (lara_item->hit_points <= 0) {
-        lara_info->gun_status = LGS_ARMLESS;
-        Lara_Mesh_Initialise(GF_GetCurrentLevel());
-    }
-#else
     if (lara_info->extra_anim) {
         M_ResetGunStatus();
     }
-
+#if TR_VERSION == 1
+    const bool back_gun_test = false;
+#else
+    const bool back_gun_test = lara_info->back_gun_obj_id != O_LARA;
+#endif
     if (lara_info->gun_status == LGS_HANDS_BUSY
-        || (lara_info->gun_status == LGS_UNDRAW
-            && lara_info->back_gun_obj_id != O_LARA)) {
+        || (lara_info->gun_status == LGS_UNDRAW && back_gun_test)) {
         lara_info->gun_status = LGS_ARMLESS;
     }
-#endif
 
     lara_info->extra_anim = false;
     Lara_Vehicle_Dismount();
@@ -318,16 +311,16 @@ bool Lara_Cheat_ExitFlyMode(void)
     }
 
 #if TR_VERSION == 1
-    lara_info->gun_status = LGS_ARMLESS;
-    Lara_Mesh_Initialise(GF_GetCurrentLevel());
+    const bool has_gun = false;
 #else
-    if (lara_info->gun_item_num != NO_ITEM) {
+    const bool has_gun = lara_info->gun_item_num != NO_ITEM;
+#endif
+    if (has_gun) {
         lara_info->gun_status = LGS_UNDRAW;
     } else {
         lara_info->gun_status = LGS_ARMLESS;
         M_ReinitialiseGunMeshes();
     }
-#endif
 
     Console_Log(GS(OSD_FLY_MODE_OFF));
     return true;

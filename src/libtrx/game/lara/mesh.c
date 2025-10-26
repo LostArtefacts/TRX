@@ -54,7 +54,7 @@ void Lara_Mesh_Initialise(const GF_LEVEL *const level)
     Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
 
     const LARA_GUN_TYPE holster_gun = M_DetermineHolsterGun();
-    if (holster_gun != LGT_UNARMED) {
+    if (holster_gun != LGT_UNARMED && holster_gun != LGT_FLARE) {
         Gun_SetLaraHolsterLMesh(holster_gun);
         Gun_SetLaraHolsterRMesh(holster_gun);
     }
