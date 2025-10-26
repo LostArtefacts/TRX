@@ -152,4 +152,8 @@ typedef struct {
         bool inside;
         bool dynamic_lit;
     } flags;
+    struct {
+        bool active;
+        bool drawn;
+    } bind;
 } ROOM;
