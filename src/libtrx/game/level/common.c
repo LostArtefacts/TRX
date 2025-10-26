@@ -1558,21 +1558,6 @@ bool Level_Initialise(
         Random_SeedControl(0xD371F947);
     }
 
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    if (resume != nullptr) {
-        resume->stats.timer = 0;
-        resume->stats.secret_flags = 0;
-        resume->stats.secret_count = 0;
-#if TR_VERSION == 1
-        resume->stats.pickup_count = 0;
-#endif
-        resume->stats.kill_count = 0;
-        resume->stats.ammo_hits = 0;
-        resume->stats.ammo_used = 0;
-        resume->stats.medipacks_used = 0;
-        resume->stats.distance_travelled = 0;
-    }
-
     Game_SetIsLevelComplete(false);
     Game_FadeToBlack(-1);
     if (level->type != GFL_TITLE && level->type != GFL_DEMO) {
@@ -1582,6 +1567,24 @@ bool Level_Initialise(
         Game_SetCurrentLevel(level);
     }
     GF_SetCurrentLevel(level);
+
+    if (level->type != GFL_TITLE) {
+        // TODO: move me elsewhere
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        if (resume != nullptr) {
+            resume->stats.timer = 0;
+            resume->stats.secret_flags = 0;
+            resume->stats.secret_count = 0;
+#if TR_VERSION == 1
+            resume->stats.pickup_count = 0;
+#endif
+            resume->stats.kill_count = 0;
+            resume->stats.ammo_hits = 0;
+            resume->stats.ammo_used = 0;
+            resume->stats.medipacks_used = 0;
+            resume->stats.distance_travelled = 0;
+        }
+    }
 
     if (level == nullptr) {
         return false;
