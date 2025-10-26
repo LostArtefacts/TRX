@@ -45,14 +45,3 @@ GF_COMMAND GF_DoLevelSequence(
         current_level++;
     }
 }
-
-GF_COMMAND GF_PlayAvailableStory(const int32_t slot_num)
-{
-    Shell_ExitSystem("Not implemented");
-    return (GF_COMMAND) { .action = GF_NOOP };
-}
-
-bool GF_HasAvailableStory(const int32_t slot_num)
-{
-    return false;
-}

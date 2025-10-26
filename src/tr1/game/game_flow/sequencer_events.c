@@ -28,7 +28,6 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    const GF_LEVEL *const prev_level = GF_GetLevelBefore(level);
 
     if (seq_ctx == GFSC_STORY) {
         const int32_t savegame_level_num = (int32_t)(intptr_t)seq_ctx_arg;
@@ -112,7 +111,9 @@ static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayMusic)
 {
-    Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
+    if (seq_ctx != GFSC_STORY) {
+        Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
+    }
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 

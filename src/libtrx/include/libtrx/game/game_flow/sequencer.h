@@ -22,7 +22,7 @@ extern GF_COMMAND GF_InterpretSequence(
 extern GF_COMMAND GF_DoLevelSequence(
     const GF_LEVEL *start_level, GF_SEQUENCE_CONTEXT seq_ctx);
 
-extern GF_COMMAND GF_PlayAvailableStory(int32_t slot_num);
+GF_COMMAND GF_PlayAvailableStory(int32_t slot_num);
 // ----------------------------------------------------------------------------
 // event handler stuff
 // ----------------------------------------------------------------------------
