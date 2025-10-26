@@ -1,16 +1,23 @@
 #include "config.h"
+#include "debug.h"
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/game_flow/sequencer.h"
 #include "game/game_flow/sequencer_priv.h"
 #include "game/game_flow/vars.h"
+#include "game/lara.h"
+#include "game/lua.h"
 #include "game/music.h"
 #include "game/objects/creatures/bacon_lara.h"
+#include "game/option/passport.h"
 #include "game/phase.h"
+#include "game/savegame.h"
+#include "game/stats.h"
 #include "log.h"
 #include "version.h"
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleExitToTitle);
+static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayFMV);
 static DECLARE_GF_EVENT_HANDLER(M_HandlePicture);
@@ -22,6 +29,7 @@ static DECLARE_GF_EVENT_HANDLER(M_HandleSetupBaconLara);
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
     [GFS_EXIT_TO_TITLE]     = M_HandleExitToTitle,
+    [GFS_LOOP_GAME]         = M_HandlePlayLevel,
     [GFS_PLAY_CUTSCENE]     = M_HandlePlayCutscene,
     [GFS_PLAY_FMV]          = M_HandlePlayFMV,
     [GFS_ADD_ITEM]          = M_HandleInventoryModifier,
@@ -44,6 +52,88 @@ static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
 static DECLARE_GF_EVENT_HANDLER(M_HandleExitToTitle)
 {
     return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+}
+
+static DECLARE_GF_EVENT_HANDLER(M_HandlePlayLevel)
+{
+    GF_COMMAND gf_cmd = { .action = GF_NOOP };
+
+    if (seq_ctx == GFSC_STORY) {
+        const int32_t savegame_level_num = (int32_t)(intptr_t)seq_ctx_arg;
+        if (savegame_level_num == level->num) {
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        } else {
+            return (GF_COMMAND) { .action = GF_NOOP };
+        }
+    }
+
+    if (Lara_GetItem() != nullptr) {
+        Lara_Initialise(level);
+    }
+
+    if (level->music_track != MX_INACTIVE) {
+        Music_Stop();
+    }
+
+    Lua_FireEvent(LUA_EVENT_LEVEL_LOAD, level->num);
+
+    // post load
+    switch (seq_ctx) {
+    case GFSC_SAVED: {
+        const int16_t slot_num = Savegame_GetBoundSlot();
+        if (!Savegame_Load(slot_num)) {
+            LOG_ERROR("Failed to load save file!");
+            Game_SetCurrentLevel(nullptr);
+            GF_SetCurrentLevel(nullptr);
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
+        break;
+    }
+
+    default:
+        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
+            GF_InventoryModifier_Scan(Game_GetCurrentLevel());
+            GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
+        }
+        break;
+    }
+
+    if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+        Stats_CalculateStats();
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        if (resume != nullptr) {
+#if TR_VERSION == 1
+            resume->stats.max_pickup_count = Stats_GetMaxPickups();
+            resume->stats.max_kill_count = Stats_GetMaxKillables();
+#endif
+            resume->stats.max_secret_count = Stats_GetMaxSecrets();
+            resume->stats.all_secrets_mask = Stats_GetMaxSecretFlags();
+        }
+    }
+
+    Lua_FireEvent(LUA_EVENT_LEVEL_START, level->num);
+
+    g_Passport.ask_for_save = g_Config.gameplay.enable_save_crystals
+        && seq_ctx == GFSC_NORMAL
+        && GF_GetLevelTableType(level->type) == GFLT_MAIN
+        && level != GF_GetFirstLevel() && level != GF_GetGymLevel();
+
+    ASSERT(GF_GetCurrentLevel() == level);
+    if (level->type == GFL_DEMO) {
+        gf_cmd = GF_RunDemo(level->num);
+    } else if (level->type == GFL_CUTSCENE) {
+        gf_cmd = GF_RunCutscene(level->num);
+    } else {
+        if (seq_ctx != GFSC_SAVED && level != GF_GetFirstLevel()) {
+            Lara_RevertToPistolsIfNeeded();
+        }
+        gf_cmd = GF_RunGame(level, seq_ctx);
+    }
+    if (gf_cmd.action == GF_LEVEL_COMPLETE) {
+        gf_cmd.action = GF_NOOP;
+    }
+    return gf_cmd;
 }
 
 static DECLARE_GF_EVENT_HANDLER(M_HandlePlayCutscene)

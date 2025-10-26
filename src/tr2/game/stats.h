@@ -4,7 +4,6 @@
 #include <libtrx/game/items/types.h>
 #include <libtrx/game/stats.h>
 
-void Stats_CalculateStats(void);
 void Stats_MarkSecretCollected(const ITEM *item);
 FINAL_STATS Stats_ComputeFinalStats(GF_LEVEL_TYPE level_type);
 
