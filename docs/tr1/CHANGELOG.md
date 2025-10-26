@@ -39,6 +39,7 @@
 - changed the `ambient_tracks` property to be only available on the root level
 - changed cutscene data (e.g. `cut1.phd`, as opposed to in-game cinematics) to match TR2 format, where Lara (as `O_LARA`) must be defined as an item in the level file
 - changed the `-q`/`--quiet` argument to no longer silence warnings
+- changed the Remove shotguns, Remove Uzis and Remove Magnus into a single "Remove extra guns" option
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)
 - fixed Lara being able to push blocks through toggle opacity 1 portals (#4129)

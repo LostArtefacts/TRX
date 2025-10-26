@@ -86,17 +86,11 @@ void Object_SetupAllObjects(void)
         M_DisableObject(O_LARGE_MEDIPACK_ITEM);
     }
 
-    if (g_Config.gameplay.disable_magnums) {
+    if (g_Config.gameplay.disable_extra_guns) {
         M_DisableObject(O_MAGNUM_ITEM);
         M_DisableObject(O_MAGNUM_AMMO_ITEM);
-    }
-
-    if (g_Config.gameplay.disable_uzis) {
         M_DisableObject(O_UZI_ITEM);
         M_DisableObject(O_UZI_AMMO_ITEM);
-    }
-
-    if (g_Config.gameplay.disable_shotgun) {
         M_DisableObject(O_SHOTGUN_ITEM);
         M_DisableObject(O_SHOTGUN_AMMO_ITEM);
     }
