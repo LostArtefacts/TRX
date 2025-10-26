@@ -1,0 +1,10 @@
+#pragma once
+
+#include "../inventory_ring/types.h"
+
+extern void Option_Stats_Control(INVENTORY_ITEM *inv_item, bool is_busy);
+extern void Option_Stats_Draw(void);
+extern void Option_Stats_Close(void);
+
+void Option_Stats_UpdateCompassNeedle(const INVENTORY_ITEM *inv_item);
+int16_t Option_Stats_GetCompassNeedleAngle(void);

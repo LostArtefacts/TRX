@@ -1,13 +1,13 @@
 #include "game/option/common.h"
 
 #include "game/input.h"
-#include "game/option/compass.h"
 #include "game/option/controls.h"
 #include "game/option/examine.h"
 #include "game/option/gameplay.h"
 #include "game/option/graphics.h"
 #include "game/option/passport.h"
 #include "game/option/sound.h"
+#include "game/option/stats.h"
 
 void Option_Reset(void)
 {
@@ -35,7 +35,7 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         break;
     case O_COMPASS_OPTION:
     case O_STOPWATCH_OPTION:
-        Option_Compass_Control(inv_item, is_busy);
+        Option_Stats_Control(inv_item, is_busy);
         break;
     case O_PDA_OPTION:
         Option_Gameplay_Control(inv_item, is_busy);
@@ -115,7 +115,7 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
         break;
     case O_COMPASS_OPTION:
     case O_STOPWATCH_OPTION:
-        Option_Compass_Draw();
+        Option_Stats_Draw();
         break;
     case O_PDA_OPTION:
         Option_Gameplay_Draw(inv_item);
@@ -144,7 +144,7 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
         break;
     case O_COMPASS_OPTION:
     case O_STOPWATCH_OPTION:
-        Option_Compass_Close();
+        Option_Stats_Close();
         break;
     case O_PDA_OPTION:
         Option_Gameplay_Close();
