@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../game_flow/types.h"
 #include "../math.h"
 #include "./types.h"
 
@@ -17,6 +18,7 @@ bool Stats_AddSecret(int16_t secret_idx);
 extern uint32_t Stats_GetMaxSecretFlags(void);
 
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
+extern bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type);
 
 void Stats_AddMedipacksUsed(double medipack_value);
 void Stats_AddDeath(void);

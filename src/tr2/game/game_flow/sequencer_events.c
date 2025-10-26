@@ -11,51 +11,17 @@
 #include <libtrx/game/option/passport.h>
 #include <libtrx/game/output.h>
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete);
 static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset);
 static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
 static DECLARE_GF_EVENT_HANDLER(M_HandleSetStartAnim);
 
 static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
     // clang-format off
-    [GFS_LEVEL_COMPLETE]   = M_HandleLevelComplete,
     [GFS_ENABLE_SUNSET]    = M_HandleEnableSunset,
     [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
     [GFS_SET_START_ANIM]   = M_HandleSetStartAnim,
     // clang-format on
 };
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleLevelComplete)
-{
-    if (seq_ctx != GFSC_NORMAL) {
-        return (GF_COMMAND) { .action = GF_NOOP };
-    }
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    const GF_LEVEL *const next_level = GF_GetLevelAfter(current_level);
-
-    if (current_level == GF_GetLastLevel()) {
-        g_Config.profile.new_game_plus_unlock = true;
-        Config_Update();
-    }
-
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-    resume->flags.available = false;
-    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
-
-    if (next_level != nullptr) {
-        Savegame_PersistGameToCurrentInfo(next_level);
-    }
-    if (next_level == nullptr) {
-        return (GF_COMMAND) { .action = GF_NOOP };
-    }
-    if (next_level->type == GFL_BONUS && !bonus_level_unlock) {
-        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-    }
-    return (GF_COMMAND) {
-        .action = GF_START_GAME,
-        .param = next_level->num,
-    };
-}
 
 static DECLARE_GF_EVENT_HANDLER(M_HandleEnableSunset)
 {
