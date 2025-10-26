@@ -38,16 +38,16 @@ static void M_GetBounds(void)
         const int16_t room_num = m_BoundRooms[m_BoundStart % M_MAX_BOUND_ROOMS];
         m_BoundStart++;
         ROOM *const room = Room_Get(room_num);
-        room->bound_active -= 2;
+        room->bind.active = false;
 
         CLAMPG(room->bound_left, room->test_left);
         CLAMPG(room->bound_top, room->test_top);
         CLAMPL(room->bound_right, room->test_right);
         CLAMPL(room->bound_bottom, room->test_bottom);
 
-        if (!(room->bound_active & 1)) {
+        if (!room->bind.drawn) {
             Room_MarkToBeDrawn(room_num);
-            room->bound_active |= 1;
+            room->bind.drawn = 1;
             if (room->flags.outside) {
                 m_Outside = 1;
             }
@@ -200,7 +200,7 @@ static void M_SetBounds(
         return;
     }
 
-    if (room->bound_active & 2) {
+    if (room->bind.active) {
         CLAMPG(room->test_left, left);
         CLAMPG(room->test_top, top);
         CLAMPL(room->test_right, right);
@@ -208,7 +208,7 @@ static void M_SetBounds(
     } else {
         m_BoundRooms[m_BoundEnd % M_MAX_BOUND_ROOMS] = room_num;
         m_BoundEnd++;
-        room->bound_active |= 2;
+        room->bind.active = true;
         room->test_left = left;
         room->test_top = top;
         room->test_right = right;
@@ -272,7 +272,8 @@ static void M_DrawSingleRoom(const int16_t room_num)
         Output_SetupAboveWater(g_Camera.underwater);
     }
 
-    room->bound_active = 0;
+    room->bind.active = false;
+    room->bind.drawn = false;
 
     Matrix_Push();
     Matrix_TranslateAbs32(room->pos);
@@ -371,7 +372,8 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     room->test_top = Viewport_GetMinY(VIEWPORT_GAME);
     room->test_right = Viewport_GetMaxX(VIEWPORT_GAME);
     room->test_bottom = Viewport_GetMaxY(VIEWPORT_GAME);
-    room->bound_active = 2;
+    room->bind.active = true;
+    room->bind.drawn = false;
 
     g_PhdLeft = room->test_left;
     g_PhdTop = room->test_top;
