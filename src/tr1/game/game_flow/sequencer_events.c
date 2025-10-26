@@ -11,22 +11,7 @@
 #include <libtrx/game/option/passport.h>
 #include <libtrx/game/rooms.h>
 
-static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor);
-
-static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {
-    // clang-format off
-    [GFS_DISABLE_FLOOR]    = M_HandleDisableFloor,
-    // clang-format on
-};
-
-static DECLARE_GF_EVENT_HANDLER(M_HandleDisableFloor)
-{
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (seq_ctx != GFSC_STORY) {
-        Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
-    }
-    return gf_cmd;
-}
+static DECLARE_GF_EVENT_HANDLER((*m_EventHandlers[GFS_NUMBER_OF])) = {};
 
 void GF_PreSequenceHook(
     const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
