@@ -331,6 +331,9 @@
           "$ref": "#/definitions/seq_remove_scions"
         },
         {
+          "$ref": "#/definitions/seq_enable_sunset"
+        },
+        {
           "$ref": "#/definitions/seq_setup_bacon_lara"
         },
         {
@@ -600,6 +603,19 @@
       "properties": {
         "type": {
           "const": "remove_scions"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_enable_sunset": {
+      "type": "object",
+      "description": "Enables the sunset effect, like in Bartoli's Hideout. At present, this feature is hardcoded to gradually darken the game 40 minutes into playing a level.",
+      "properties": {
+        "type": {
+          "const": "enable_sunset"
         }
       },
       "required": [
