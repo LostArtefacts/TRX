@@ -193,6 +193,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── khamoon_textures.bin
 │   │   ├── lara_animations.bin
 │   │   ├── lara_flares.bin
+│   │   ├── lara_guns.bin
 │   │   ├── lara_gym_flares.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── midas_itemrots.bin
@@ -520,6 +521,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── khamoon_textures.bin
         │   │   ├── lara_animations.bin
         │   │   ├── lara_flares.bin
+        │   │   ├── lara_guns.bin
         │   │   ├── lara_gym_flares.bin
         │   │   ├── lara_gym_guns.bin
         │   │   ├── midas_itemrots.bin

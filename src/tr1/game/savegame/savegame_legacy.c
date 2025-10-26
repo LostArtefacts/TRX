@@ -325,6 +325,8 @@ static void M_ReadLara(LARA_INFO *const lara)
     M_ReadAmmoInfo(&lara->uzi_ammo);
     M_ReadAmmoInfo(&lara->shotgun_ammo);
     M_ReadLOT(&lara->lot);
+
+    // TODO: handle back_gun/gun_item_num
 }
 
 static void M_ReadResumeInfo(RESUME_INFO *const resume)

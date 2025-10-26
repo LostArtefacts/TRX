@@ -56,6 +56,7 @@
 - fixed matrix stack overflow crash when moving through overlapping or dome portals (#2685)
 - fixed bogus warnings about resume info in logs when playing cutscenes and in the title level
 - fixed invulnerability cheat not getting disabled during the demos
+- fixed Lara's braid remaining reflective if the fly cheat is used to resurrect her on the Midas hand
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
