@@ -334,6 +334,9 @@
           "$ref": "#/definitions/seq_enable_sunset"
         },
         {
+          "$ref": "#/definitions/seq_set_lara_start_anim"
+        },
+        {
           "$ref": "#/definitions/seq_setup_bacon_lara"
         },
         {
@@ -620,6 +623,23 @@
       },
       "required": [
         "type"
+      ],
+      "additionalProperties": false
+    },
+    "seq_set_lara_start_anim": {
+      "type": "object",
+      "description": "Applies the selected animation to Lara when the level begins. This is used, for example, in the Offshore Rig of Tomb Raider II.",
+      "properties": {
+        "type": {
+          "const": "set_lara_start_anim"
+        },
+        "anim": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "anim"
       ],
       "additionalProperties": false
     },
