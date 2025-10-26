@@ -169,13 +169,13 @@ GF_COMMAND GF_InterpretSequence(
     default:
         if (level->type == GFL_GYM) {
             Savegame_ResetCurrentInfo(level);
-        } else if (
-            prev_level != nullptr
-            && (level->type == GFL_NORMAL || level->type == GFL_BONUS)) {
-            Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
-        }
-        Savegame_ApplyLogicToCurrentInfo(level);
-        if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+        } else if (level->type == GFL_DEMO) {
+            Savegame_ApplyLogicToCurrentInfo(level);
+        } else if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
+            if (prev_level != nullptr) {
+                Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
+            }
+            Savegame_ApplyLogicToCurrentInfo(level);
             GF_InventoryModifier_Scan(level);
             GF_InventoryModifier_ApplyToResumeInfo(level);
         }

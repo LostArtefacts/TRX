@@ -347,6 +347,8 @@ RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
         return &m_ResumeInfo[level->num];
     } else if (level->type == GFL_DEMO) {
         return &m_ResumeInfo[GF_GetLevelTable(GFLT_MAIN)->count];
+    } else if (level->type == GFL_CUTSCENE) {
+        return nullptr;
     }
     LOG_WARNING(
         "Warning: unable to get resume info for level %d (type=%s)", level->num,
