@@ -1,4 +1,3 @@
-#include "game/game_flow.h"
 #include "game/objects/common.h"
 #include "game/savegame.h"
 #include "game/stats.h"
@@ -6,6 +5,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_buf.h>
+#include <libtrx/game/game_flow.h>
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/rooms.h>
 #include <libtrx/log.h>

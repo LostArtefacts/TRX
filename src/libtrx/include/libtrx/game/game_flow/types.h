@@ -179,6 +179,3 @@ typedef struct {
     // Path to a global Lua script executed after game initialization
     char *main_script_path;
 } GAME_FLOW;
-
-typedef GF_COMMAND (*GF_SEQUENCE_EVENT_HANDLER)(
-    const GF_LEVEL *, const GF_SEQUENCE_EVENT *, GF_SEQUENCE_CONTEXT, void *);
