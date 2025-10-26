@@ -3,11 +3,13 @@
 #include "debug.h"
 #include "enum_map.h"
 #include "game/game.h"
-#include "game/game_flow/sequencer_priv.h"
+#include "game/game_flow/sequencer_events.h"
 #include "game/inventory.h"
 #include "game/lara/common.h"
 #include "game/level.h"
 #include "game/lua.h"
+#include "game/output.h"
+#include "game/rooms.h"
 #include "game/savegame.h"
 
 static GF_COMMAND M_RunEvent(
@@ -36,6 +38,37 @@ static GF_COMMAND M_RunEvent(
     return gf_cmd;
 }
 
+static void M_PreSequenceHook(
+    const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
+{
+    Room_SetAbyssHeight(0);
+    Output_SetSunsetEnabled(false);
+    Lara_SetControllable(false);
+#if TR_VERSION == 2
+    Lara_SetStartAnimState(LS_EXTRA_BREATH);
+#endif
+    if (seq_ctx == GFSC_SAVED) {
+        Game_SetBonusFlag(GBF_NONE);
+    }
+}
+
+static GF_SEQUENCE_CONTEXT M_SwitchSequenceContext(
+    const GF_SEQUENCE_EVENT *const event, const GF_SEQUENCE_CONTEXT seq_ctx)
+{
+    // Update sequence context if necessary
+    if (event->type != GFS_LOOP_GAME) {
+        return seq_ctx;
+    }
+    switch (seq_ctx) {
+    case GFSC_SAVED:
+    case GFSC_RESTART:
+    case GFSC_SELECT:
+        return GFSC_NORMAL;
+    default:
+        return seq_ctx;
+    }
+}
+
 GF_COMMAND GF_InterpretSequence(
     const GF_LEVEL *const level, GF_SEQUENCE_CONTEXT seq_ctx,
     void *const seq_ctx_arg)
@@ -49,7 +82,7 @@ GF_COMMAND GF_InterpretSequence(
         return (GF_COMMAND) { .action = GF_NOOP };
     }
 
-    GF_PreSequenceHook(seq_ctx, seq_ctx_arg);
+    M_PreSequenceHook(seq_ctx, seq_ctx_arg);
 
     GF_COMMAND gf_cmd = { .action = GF_EXIT_TO_TITLE };
 
@@ -182,7 +215,7 @@ GF_COMMAND GF_InterpretSequence(
         }
 
         // Update sequence context if necessary
-        seq_ctx = GF_SwitchSequenceContext(event, seq_ctx);
+        seq_ctx = M_SwitchSequenceContext(event, seq_ctx);
     }
 
     LOG_DEBUG(

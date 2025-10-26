@@ -23,14 +23,3 @@ extern GF_COMMAND GF_DoLevelSequence(
     const GF_LEVEL *start_level, GF_SEQUENCE_CONTEXT seq_ctx);
 
 GF_COMMAND GF_PlayAvailableStory(int32_t slot_num);
-// ----------------------------------------------------------------------------
-// event handler stuff
-// ----------------------------------------------------------------------------
-
-#define DECLARE_GF_EVENT_HANDLER(name)                                         \
-    GF_COMMAND name(                                                           \
-        const GF_LEVEL *level, const GF_SEQUENCE_EVENT *event,                 \
-        GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg)
-
-void GF_SetSequenceEventHandler(
-    GF_SEQUENCE_EVENT_TYPE event_type, GF_SEQUENCE_EVENT_HANDLER);

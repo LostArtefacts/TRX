@@ -65,6 +65,10 @@ static void M_FreeFMVs(GAME_FLOW *const gf)
     gf->fmv_count = 0;
 }
 
+void GF_Init(void)
+{
+}
+
 void GF_Shutdown(void)
 {
     GAME_FLOW *const gf = &g_GameFlow;
