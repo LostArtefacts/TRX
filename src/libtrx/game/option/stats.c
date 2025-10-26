@@ -1,11 +1,11 @@
-#include "game/option/compass.h"
+#include "game/option/stats.h"
 
 #include "game/lara.h"
 
 static int16_t m_CompassNeedle = 0;
 static int16_t m_CompassSpeed = 0;
 
-void Option_Compass_UpdateNeedle(const INVENTORY_ITEM *const inv_item)
+void Option_Stats_UpdateCompassNeedle(const INVENTORY_ITEM *const inv_item)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item == nullptr) {
@@ -16,7 +16,7 @@ void Option_Compass_UpdateNeedle(const INVENTORY_ITEM *const inv_item)
     m_CompassNeedle += m_CompassSpeed;
 }
 
-int16_t Option_Compass_GetNeedleAngle(void)
+int16_t Option_Stats_GetCompassNeedleAngle(void)
 {
     return m_CompassNeedle;
 }

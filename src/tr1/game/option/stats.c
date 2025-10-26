@@ -1,4 +1,4 @@
-#include "game/option/option_compass.h"
+#include "game/option/stats.h"
 
 #include <libtrx/config.h>
 #include <libtrx/game/game.h>
@@ -41,7 +41,7 @@ static void M_Close(M_PRIV *const p)
     }
 }
 
-void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
+void Option_Stats_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     M_PRIV *const p = &m_Priv;
     if (is_busy) {
@@ -67,7 +67,7 @@ void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     }
 }
 
-void Option_Compass_Draw(void)
+void Option_Stats_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->is_ready) {
@@ -75,7 +75,7 @@ void Option_Compass_Draw(void)
     }
 }
 
-void Option_Compass_Close(void)
+void Option_Stats_Close(void)
 {
     M_PRIV *const p = &m_Priv;
     M_Close(p);

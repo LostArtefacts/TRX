@@ -100,7 +100,7 @@ sources = [
   'game/objects/general/harpoon_bolt.c',
   'game/objects/general/zipline.c',
   'game/objects/setup.c',
-  'game/option/option_compass.c',
+  'game/option/stats.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
   'game/stats.c',
