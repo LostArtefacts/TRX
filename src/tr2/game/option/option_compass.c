@@ -1,4 +1,5 @@
 #include "game/option/option_compass.h"
+
 #include "game/savegame.h"
 
 #include <libtrx/game/game.h>
