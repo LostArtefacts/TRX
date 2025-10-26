@@ -1,8 +1,7 @@
+#include "config.h"
+#include "game/lara.h"
 #include "game/objects/common.h"
-
-#include <libtrx/config.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/pathing.h>
+#include "game/pathing.h"
 
 #define M_DEFAULT_RADIUS 10
 
@@ -11,10 +10,10 @@ static void M_SetupLara(void)
     OBJECT *const obj = Object_Get(O_LARA);
     obj->initialise_func = Lara_InitialiseLoad;
     obj->can_interpolate_func = Lara_CanInterpolate;
-
-    obj->shadow_size = (UNIT_SHADOW / 16) * 10;
-    obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
     obj->draw_func = nullptr;
+
+    obj->shadow_size = (UNIT_SHADOW * 10) / 16;
+    obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
 
     obj->save_position = true;
     obj->save_hitpoints = true;
@@ -33,6 +32,18 @@ static void M_SetupSkybox(void)
     }
 }
 
+static void M_DisableObject(const OBJECT_ID obj_id)
+{
+    OBJECT *const obj = Object_Get(obj_id);
+    obj->initialise_func = nullptr;
+    obj->collision_func = nullptr;
+    obj->control_func = nullptr;
+    obj->draw_func = nullptr;
+    obj->floor_height_func = nullptr;
+    obj->ceiling_height_func = nullptr;
+    obj->add_walkable_func = nullptr;
+}
+
 void Object_SetupAllObjects(void)
 {
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
@@ -44,8 +55,8 @@ void Object_SetupAllObjects(void)
         obj->draw_func = Object_DrawAnimatingItem;
         obj->collision_func = nullptr;
         obj->add_walkable_func = nullptr;
-        obj->can_interpolate_func = Object_CanInterpolate;
         obj->is_usable_func = nullptr;
+        obj->can_interpolate_func = Object_CanInterpolate;
         obj->hit_points = DONT_TARGET;
         obj->pivot_length = 0;
         obj->radius = M_DEFAULT_RADIUS;
@@ -68,4 +79,26 @@ void Object_SetupAllObjects(void)
     M_SetupLara();
     M_SetupSkybox();
     Lara_Hair_Initialise();
+
+#if TR_VERSION == 1
+    if (g_Config.gameplay.disable_medpacks) {
+        M_DisableObject(O_SMALL_MEDIPACK_ITEM);
+        M_DisableObject(O_LARGE_MEDIPACK_ITEM);
+    }
+
+    if (g_Config.gameplay.disable_magnums) {
+        M_DisableObject(O_MAGNUM_ITEM);
+        M_DisableObject(O_MAGNUM_AMMO_ITEM);
+    }
+
+    if (g_Config.gameplay.disable_uzis) {
+        M_DisableObject(O_UZI_ITEM);
+        M_DisableObject(O_UZI_AMMO_ITEM);
+    }
+
+    if (g_Config.gameplay.disable_shotgun) {
+        M_DisableObject(O_SHOTGUN_ITEM);
+        M_DisableObject(O_SHOTGUN_AMMO_ITEM);
+    }
+#endif
 }
