@@ -1,9 +1,8 @@
 #include "game/effects.h"
 
-#include "game/objects/common.h"
-
 #include <libtrx/game/game_buf.h>
 #include <libtrx/game/matrix.h>
+#include <libtrx/game/objects.h>
 #include <libtrx/game/output.h>
 
 static EFFECT *m_Effects = nullptr;
@@ -18,31 +17,32 @@ static void M_RemoveActive(const int16_t effect_num)
         m_NextEffectActive = effect->next_active;
         return;
     }
-
     while (link_num != NO_EFFECT) {
-        if (m_Effects[link_num].next_active == effect_num) {
-            m_Effects[link_num].next_active = effect->next_active;
+        EFFECT *const fx_link = Effect_Get(link_num);
+        if (fx_link->next_active == effect_num) {
+            fx_link->next_active = effect->next_active;
             return;
         }
-        link_num = m_Effects[link_num].next_active;
+        link_num = fx_link->next_active;
     }
 }
 
 static void M_RemoveDrawn(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
-    int16_t link_num = Room_Get(effect->room_num)->effect_num;
+    ROOM *const room = Room_Get(effect->room_num);
+    int16_t link_num = room->effect_num;
     if (link_num == effect_num) {
-        Room_Get(effect->room_num)->effect_num = effect->next_free;
+        room->effect_num = effect->next_free;
         return;
     }
-
     while (link_num != NO_EFFECT) {
-        if (m_Effects[link_num].next_free == effect_num) {
-            m_Effects[link_num].next_free = effect->next_free;
+        EFFECT *const fx_link = Effect_Get(link_num);
+        if (fx_link->next_free == effect_num) {
+            fx_link->next_free = effect->next_free;
             return;
         }
-        link_num = m_Effects[link_num].next_free;
+        link_num = fx_link->next_free;
     }
 }
 
@@ -51,7 +51,6 @@ void Effect_InitialiseArray(void)
     m_Effects = GameBuf_Alloc(MAX_EFFECTS * sizeof(EFFECT), GBUF_EFFECTS);
     m_NextEffectFree = 0;
     m_NextEffectActive = NO_EFFECT;
-
     for (int32_t i = 0; i < MAX_EFFECTS - 1; i++) {
         EFFECT *const effect = Effect_Get(i);
         effect->next_free = i + 1;
@@ -105,10 +104,7 @@ int16_t Effect_Create(const int16_t room_num)
 
     effect->next_active = m_NextEffectActive;
     m_NextEffectActive = effect_num;
-
-#if TR_VERSION == 2
     effect->shade = SHADE_NEUTRAL;
-#endif
 
     return effect_num;
 }
@@ -164,10 +160,14 @@ void Effect_Draw(const int16_t effect_num)
     }
 
     if (obj->mesh_count < 0) {
+        const RGB_F tint =
+            Object_IsType(effect->object_id, g_WaterSpriteObjects)
+            ? (RGB_F) { 1.0f, 1.0f, 1.0f }
+            : Output_GetTint();
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f });
+            effect->shade, tint);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);
@@ -176,7 +176,7 @@ void Effect_Draw(const int16_t effect_num)
             Output_CalculateStaticLight(effect->shade);
             Object_DrawMesh(obj->mesh_idx, -1, false);
         } else {
-            Output_CalculateStaticLight(effect->shade);
+            Output_CalculateLight(effect->interp.result.pos, effect->room_num);
             Object_DrawMesh(effect->frame_num, -1, false);
         }
         Matrix_Pop();
