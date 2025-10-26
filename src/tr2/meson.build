@@ -96,7 +96,6 @@ sources = [
   'game/inventory.c',
   'game/level.c',
   'game/objects/common.c',
-  'game/objects/setup.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
   'game/stats.c',
