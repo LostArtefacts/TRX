@@ -3,7 +3,12 @@
 #include "../math.h"
 #include "./types.h"
 
+extern void Stats_CalculateStats(void);
 extern void Stats_ObserveItemsLoad(void);
+
+extern int32_t Stats_GetMaxPickups(void);
+extern int32_t Stats_GetMaxKillables(void);
+extern int32_t Stats_GetMaxSecrets(void);
 
 bool Stats_HasSecret(int16_t secret_idx);
 bool Stats_IsSecretValid(int16_t secret_idx);
