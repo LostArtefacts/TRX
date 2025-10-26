@@ -9,16 +9,52 @@ static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectActive = NO_EFFECT;
 static int16_t m_NextEffectFree = NO_EFFECT;
 
+static void M_RemoveActive(const int16_t effect_num)
+{
+    EFFECT *const effect = Effect_Get(effect_num);
+    int16_t link_num = m_NextEffectActive;
+    if (link_num == effect_num) {
+        m_NextEffectActive = effect->next_active;
+        return;
+    }
+    while (link_num != NO_EFFECT) {
+        EFFECT *const fx_link = Effect_Get(link_num);
+        if (fx_link->next_active == effect_num) {
+            fx_link->next_active = effect->next_active;
+            return;
+        }
+        link_num = fx_link->next_active;
+    }
+}
+
+static void M_RemoveDrawn(const int16_t effect_num)
+{
+    EFFECT *const effect = Effect_Get(effect_num);
+    ROOM *const room = Room_Get(effect->room_num);
+    int16_t link_num = room->effect_num;
+    if (link_num == effect_num) {
+        room->effect_num = effect->next_free;
+        return;
+    }
+    while (link_num != NO_EFFECT) {
+        EFFECT *const fx_link = Effect_Get(link_num);
+        if (fx_link->next_free == effect_num) {
+            fx_link->next_free = effect->next_free;
+            return;
+        }
+        link_num = fx_link->next_free;
+    }
+}
+
 void Effect_InitialiseArray(void)
 {
     m_Effects = GameBuf_Alloc(MAX_EFFECTS * sizeof(EFFECT), GBUF_EFFECTS);
-    m_NextEffectActive = NO_EFFECT;
     m_NextEffectFree = 0;
+    m_NextEffectActive = NO_EFFECT;
     for (int32_t i = 0; i < MAX_EFFECTS - 1; i++) {
-        m_Effects[i].next_draw = i + 1;
-        m_Effects[i].next_free = i + 1;
+        EFFECT *const effect = Effect_Get(i);
+        effect->next_free = i + 1;
     }
-    m_Effects[MAX_EFFECTS - 1].next_draw = NO_EFFECT;
     m_Effects[MAX_EFFECTS - 1].next_free = NO_EFFECT;
 }
 
@@ -26,12 +62,13 @@ void Effect_Control(void)
 {
     int16_t effect_num = m_NextEffectActive;
     while (effect_num != NO_EFFECT) {
-        EFFECT *effect = Effect_Get(effect_num);
+        const EFFECT *const effect = Effect_Get(effect_num);
         const OBJECT *const obj = Object_Get(effect->object_id);
+        const int16_t next = effect->next_active;
         if (obj->control_func != nullptr) {
             obj->control_func(effect_num);
         }
-        effect_num = effect->next_active;
+        effect_num = next;
     }
 }
 
@@ -50,84 +87,62 @@ int16_t Effect_GetActiveNum(void)
     return m_NextEffectActive;
 }
 
-int16_t Effect_Create(int16_t room_num)
+int16_t Effect_Create(const int16_t room_num)
 {
     int16_t effect_num = m_NextEffectFree;
     if (effect_num == NO_EFFECT) {
-        return effect_num;
+        return NO_EFFECT;
     }
 
-    EFFECT *effect = Effect_Get(effect_num);
+    EFFECT *const effect = Effect_Get(effect_num);
     m_NextEffectFree = effect->next_free;
 
     ROOM *const room = Room_Get(room_num);
     effect->room_num = room_num;
-    effect->next_draw = room->effect_num;
+    effect->next_free = room->effect_num;
     room->effect_num = effect_num;
 
     effect->next_active = m_NextEffectActive;
     m_NextEffectActive = effect_num;
 
+#if TR_VERSION == 2
+    effect->shade = SHADE_NEUTRAL;
+#endif
+
     return effect_num;
 }
 
-void Effect_Kill(int16_t effect_num)
+void Effect_Kill(const int16_t effect_num)
 {
-    EFFECT *effect = Effect_Get(effect_num);
-
-    if (m_NextEffectActive == effect_num) {
-        m_NextEffectActive = effect->next_active;
-    } else {
-        int16_t link_num = m_NextEffectActive;
-        while (link_num != NO_EFFECT) {
-            EFFECT *fx_link = Effect_Get(link_num);
-            if (fx_link->next_active == effect_num) {
-                fx_link->next_active = effect->next_active;
-            }
-            link_num = fx_link->next_active;
-        }
-    }
-
-    ROOM *const room = Room_Get(effect->room_num);
-    if (room->effect_num == effect_num) {
-        room->effect_num = effect->next_draw;
-    } else {
-        int16_t link_num = room->effect_num;
-        while (link_num != NO_EFFECT) {
-            EFFECT *fx_link = Effect_Get(link_num);
-            if (fx_link->next_draw == effect_num) {
-                fx_link->next_draw = effect->next_draw;
-                break;
-            }
-            link_num = fx_link->next_draw;
-        }
-    }
+    EFFECT *const effect = Effect_Get(effect_num);
+    M_RemoveActive(effect_num);
+    M_RemoveDrawn(effect_num);
 
     effect->next_free = m_NextEffectFree;
     m_NextEffectFree = effect_num;
 }
 
-void Effect_NewRoom(int16_t effect_num, int16_t room_num)
+void Effect_NewRoom(const int16_t effect_num, const int16_t room_num)
 {
-    EFFECT *effect = Effect_Get(effect_num);
+    EFFECT *const effect = Effect_Get(effect_num);
     ROOM *room = Room_Get(effect->room_num);
 
     int16_t link_num = room->effect_num;
     if (link_num == effect_num) {
-        room->effect_num = effect->next_draw;
+        room->effect_num = effect->next_free;
     } else {
-        for (; link_num != NO_EFFECT;
-             link_num = Effect_Get(link_num)->next_draw) {
-            if (Effect_Get(link_num)->next_draw == effect_num) {
-                Effect_Get(link_num)->next_draw = effect->next_draw;
+        while (link_num != NO_EFFECT) {
+            if (m_Effects[link_num].next_free == effect_num) {
+                m_Effects[link_num].next_free = effect->next_free;
                 break;
             }
+            link_num = m_Effects[link_num].next_free;
         }
     }
 
     room = Room_Get(room_num);
     effect->room_num = room_num;
-    effect->next_draw = room->effect_num;
+    effect->next_free = room->effect_num;
     room->effect_num = effect_num;
 }
 
@@ -151,17 +166,13 @@ void Effect_Draw(const int16_t effect_num)
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);
-        if (g_MatrixPtr->_23 > Output_GetNearZ()
-            && g_MatrixPtr->_23 < Output_GetFarZ()) {
-            Matrix_Rot16(effect->interp.result.rot);
-            if (obj->mesh_count) {
-                Output_CalculateStaticLight(effect->shade);
-                Object_DrawMesh(obj->mesh_idx, -1, false);
-            } else {
-                Output_CalculateLight(
-                    effect->interp.result.pos, effect->room_num);
-                Object_DrawMesh(effect->frame_num, -1, false);
-            }
+        Matrix_Rot16(effect->interp.result.rot);
+        if (obj->mesh_count != 0) {
+            Output_CalculateStaticLight(effect->shade);
+            Object_DrawMesh(obj->mesh_idx, -1, false);
+        } else {
+            Output_CalculateLight(effect->interp.result.pos, effect->room_num);
+            Object_DrawMesh(effect->frame_num, -1, false);
         }
         Matrix_Pop();
     }

@@ -61,7 +61,7 @@ void Effect_InitialiseArray(void)
 
 void Effect_Control(void)
 {
-    int16_t effect_num = Effect_GetActiveNum();
+    int16_t effect_num = m_NextEffectActive;
     while (effect_num != NO_EFFECT) {
         const EFFECT *const effect = Effect_Get(effect_num);
         const OBJECT *const obj = Object_Get(effect->object_id);
@@ -106,7 +106,9 @@ int16_t Effect_Create(const int16_t room_num)
     effect->next_active = m_NextEffectActive;
     m_NextEffectActive = effect_num;
 
+#if TR_VERSION == 2
     effect->shade = SHADE_NEUTRAL;
+#endif
 
     return effect_num;
 }
@@ -166,18 +168,17 @@ void Effect_Draw(const int16_t effect_num)
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
             effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f });
-        return;
-    }
-
-    Matrix_Push();
-    Matrix_TranslateAbs32(effect->interp.result.pos);
-    Matrix_Rot16(effect->interp.result.rot);
-    if (obj->mesh_count) {
-        Output_CalculateStaticLight(effect->shade);
-        Object_DrawMesh(obj->mesh_idx, -1, false);
     } else {
-        Output_CalculateStaticLight(effect->shade);
-        Object_DrawMesh(effect->frame_num, -1, false);
+        Matrix_Push();
+        Matrix_TranslateAbs32(effect->interp.result.pos);
+        Matrix_Rot16(effect->interp.result.rot);
+        if (obj->mesh_count != 0) {
+            Output_CalculateStaticLight(effect->shade);
+            Object_DrawMesh(obj->mesh_idx, -1, false);
+        } else {
+            Output_CalculateStaticLight(effect->shade);
+            Object_DrawMesh(effect->frame_num, -1, false);
+        }
+        Matrix_Pop();
     }
-    Matrix_Pop();
 }
