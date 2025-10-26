@@ -1,38 +1,42 @@
 #include "game/option/option_compass.h"
 
-#include "game/savegame.h"
-
+#include <libtrx/config.h>
 #include <libtrx/game/game.h>
+#include <libtrx/game/game_flow.h>
+#include <libtrx/game/gym.h>
 #include <libtrx/game/input.h>
+#include <libtrx/game/lara.h>
 #include <libtrx/game/sound.h>
 #include <libtrx/game/ui.h>
 
-#include <stdio.h>
-
 typedef struct {
-    bool ui_active;
+    bool is_ready;
     UI_STATS_DIALOG_STATE ui_state;
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
 
-static void M_Init(M_PRIV *const p)
+static void M_Init(M_PRIV *const p, INVENTORY_ITEM *const inv_item)
 {
-    p->ui_active = true;
+    if (inv_item->object_id == O_COMPASS_OPTION
+        && !g_Config.gameplay.enable_compass_stats) {
+        return;
+    }
+
+    p->is_ready = true;
     UI_StatsDialog_Init(
         &p->ui_state,
         (UI_STATS_DIALOG_ARGS) {
-            .mode = Game_IsInGym() ? UI_STATS_DIALOG_MODE_ASSAULT_COURSE
-                                   : UI_STATS_DIALOG_MODE_LEVEL,
-            .level_num = Game_GetCurrentLevel()->num,
+            .mode = UI_STATS_DIALOG_MODE_LEVEL,
             .style = UI_STATS_DIALOG_STYLE_BORDERED,
+            .level_num = Game_GetCurrentLevel()->num,
         });
 }
 
 static void M_Close(M_PRIV *const p)
 {
-    if (p->ui_active) {
-        p->ui_active = false;
+    if (p->is_ready) {
+        p->is_ready = false;
         UI_StatsDialog_Free(&p->ui_state);
     }
 }
@@ -44,17 +48,21 @@ void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         return;
     }
 
-    if (!p->ui_active) {
-        M_Init(p);
+    if (!p->is_ready) {
+        M_Init(p, inv_item);
     }
-    UI_StatsDialog_Control(&p->ui_state);
+    if (p->is_ready) {
+        UI_StatsDialog_Control(&p->ui_state);
+    }
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
         M_Close(p);
         inv_item->anim_direction = 1;
         inv_item->goal_frame = inv_item->frames_total - 1;
-        Sound_StopEffect(SFX_MENU_STOPWATCH);
-    } else {
+        if (inv_item->object_id == O_STOPWATCH_OPTION) {
+            Sound_StopEffect(SFX_MENU_STOPWATCH);
+        }
+    } else if (inv_item->object_id == O_STOPWATCH_OPTION) {
         Sound_Effect(SFX_MENU_STOPWATCH, 0, SPM_ALWAYS);
     }
 }
@@ -62,7 +70,7 @@ void Option_Compass_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 void Option_Compass_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->ui_active) {
+    if (p->is_ready) {
         UI_StatsDialog(&p->ui_state);
     }
 }

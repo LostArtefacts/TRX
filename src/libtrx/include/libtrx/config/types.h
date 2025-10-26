@@ -196,8 +196,8 @@ typedef struct {
         bool enable_cutscenes;
         bool enable_demo;
         bool enable_loading_screens;
-#if TR_VERSION == 1
         bool enable_compass_stats;
+#if TR_VERSION == 1
         bool enable_total_stats;
 #endif
 
