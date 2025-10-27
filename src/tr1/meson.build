@@ -98,7 +98,6 @@ endif
 sources = [
   init,
   'game/creature.c',
-  'game/demo.c',
   'game/game_string.c',
   'game/gun/gun_rifle.c',
   'game/objects/common.c',

@@ -1,17 +1,18 @@
 #include "game/demo.h"
 
-#include <libtrx/config.h>
-#include <libtrx/debug.h>
-#include <libtrx/game/camera.h>
-#include <libtrx/game/game.h>
-#include <libtrx/game/game_string.h>
-#include <libtrx/game/interpolation.h>
-#include <libtrx/game/lara.h>
-#include <libtrx/game/music.h>
-#include <libtrx/game/overlay.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/rooms.h>
-#include <libtrx/version.h>
+#include "config.h"
+#include "debug.h"
+#include "game/camera.h"
+#include "game/game.h"
+#include "game/game_buf.h"
+#include "game/game_string.h"
+#include "game/interpolation.h"
+#include "game/lara.h"
+#include "game/music.h"
+#include "game/overlay.h"
+#include "game/random.h"
+#include "game/rooms.h"
+#include "version.h"
 
 #define L_MODIFY_CONFIG()                                                      \
     X_PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);          \
@@ -41,6 +42,7 @@ typedef struct {
         CONFIG config;
         GAME_BONUS_FLAG bonus_flag;
     } old_config;
+    uint32_t *data;
 } M_PRIV;
 
 static int32_t m_LastDemoNum = 0;
@@ -64,6 +66,19 @@ static void M_RestoreConfig(M_PRIV *const p)
 #define X_PROCESS_CONFIG(var, value) g_Config.var = p->old_config.config.var;
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
+}
+
+void Demo_LoadData(VFILE *const file, const size_t size)
+{
+    M_PRIV *const p = &m_Priv;
+    if (size == 0) {
+        p->data = nullptr;
+    } else {
+        p->data =
+            GameBuf_Alloc((size + 1) * sizeof(uint32_t), GBUF_DEMO_BUFFER);
+        p->data[size] = -1;
+        VFile_Read(file, p->data, size);
+    }
 }
 
 bool Demo_GetInput(void)
@@ -144,8 +159,7 @@ bool Demo_Start(const int32_t level_num)
     // presses some other key.
     Input_Update();
 
-    const uint32_t *const data = Demo_GetData();
-    if (data == nullptr) {
+    if (p->data == nullptr) {
         LOG_ERROR("Level '%s' has no demo data", p->level->path);
         return false;
     }
@@ -154,7 +168,7 @@ bool Demo_Start(const int32_t level_num)
         Music_Play_Direct(p->level->music_track, MPM_LOOPED);
     }
 
-    p->demo_ptr = data;
+    p->demo_ptr = p->data;
 
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
