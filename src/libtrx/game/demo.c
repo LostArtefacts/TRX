@@ -33,7 +33,8 @@
         gameplay.wall_glitch_mode,                                             \
         g_TRVersion >= 2 ? WALL_GLITCH_TR2 : WALL_GLITCH_TR1);                 \
     X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_DRAW_ONLY);             \
-    X_PROCESS_CONFIG(visuals.enable_fire_lighting, false);
+    X_PROCESS_CONFIG(visuals.enable_fire_lighting, false);                     \
+    X_PROCESS_CONFIG(debug.enable_invulnerability, false);
 
 typedef struct {
     const uint32_t *demo_ptr;
