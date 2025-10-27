@@ -297,101 +297,6 @@ static bool M_LoadResumeInfo(
     return true;
 }
 
-static bool M_LoadDiscontinuedStartInfo(JSON_ARRAY *const start_arr)
-{
-    // This function solely exists for backward compatibility with 2.6 and 2.7
-    // saves.
-    if (!start_arr) {
-        LOG_ERROR(
-            "Malformed save: invalid or missing discontinued start array");
-        return false;
-    }
-    if ((signed)start_arr->length != GF_GetLevelTable(GFLT_MAIN)->count) {
-        LOG_ERROR(
-            "Malformed save: expected %d start info elements, got %d",
-            GF_GetLevelTable(GFLT_MAIN)->count, start_arr->length);
-        return false;
-    }
-    for (int i = 0; i < (signed)start_arr->length; i++) {
-        JSON_OBJECT *start_obj = JSON_ArrayGetObject(start_arr, i);
-        if (!start_obj) {
-            LOG_ERROR("Malformed save: invalid discontinued start info");
-            return false;
-        }
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        RESUME_INFO *const start = Savegame_GetCurrentInfo(level);
-        start->lara_hitpoints = JSON_ObjectGetInt(
-            start_obj, "lara_hitpoints",
-            g_Config.gameplay.start_lara_hitpoints);
-        start->pistol_ammo = JSON_ObjectGetInt(start_obj, "pistol_ammo", 0);
-        start->magnum_ammo = JSON_ObjectGetInt(start_obj, "magnum_ammo", 0);
-        start->uzi_ammo = JSON_ObjectGetInt(start_obj, "uzi_ammo", 0);
-        start->shotgun_ammo = JSON_ObjectGetInt(start_obj, "shotgun_ammo", 0);
-        start->small_medipacks = JSON_ObjectGetInt(start_obj, "num_medis", 0);
-        start->large_medipacks =
-            JSON_ObjectGetInt(start_obj, "num_big_medis", 0);
-        start->num_scions = JSON_ObjectGetInt(start_obj, "num_scions", 0);
-        start->gun_status = JSON_ObjectGetInt(start_obj, "gun_status", 0);
-        start->equipped_gun_type =
-            JSON_ObjectGetInt(start_obj, "gun_type", LGT_UNARMED);
-        start->holsters_gun_type = LGT_UNKNOWN;
-        start->back_gun_type = LGT_UNKNOWN;
-        start->flags.available = JSON_ObjectGetBool(start_obj, "available", 0);
-        start->flags.has_pistols =
-            JSON_ObjectGetBool(start_obj, "got_pistols", 0);
-        start->flags.has_magnums =
-            JSON_ObjectGetBool(start_obj, "got_magnums", 0);
-        start->flags.has_uzis = JSON_ObjectGetBool(start_obj, "got_uzis", 0);
-        start->flags.has_shotgun =
-            JSON_ObjectGetBool(start_obj, "got_shotgun", 0);
-        start->flags.costume = JSON_ObjectGetBool(start_obj, "costume", 0);
-    }
-    return true;
-}
-
-static bool M_LoadDiscontinuedEndInfo(JSON_ARRAY *end_arr)
-{
-    // This function solely exists for backward compatibility with 2.6 and 2.7
-    // saves.
-    if (!end_arr) {
-        LOG_ERROR("Malformed save: invalid or missing resume info array");
-        return false;
-    }
-    if ((signed)end_arr->length != GF_GetLevelTable(GFLT_MAIN)->count) {
-        LOG_ERROR(
-            "Malformed save: expected %d resume info elements, got %d",
-            GF_GetLevelTable(GFLT_MAIN)->count, end_arr->length);
-        return false;
-    }
-    for (int i = 0; i < (signed)end_arr->length; i++) {
-        JSON_OBJECT *end_obj = JSON_ArrayGetObject(end_arr, i);
-        if (!end_obj) {
-            LOG_ERROR("Malformed save: invalid resume info");
-            return false;
-        }
-
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        LEVEL_STATS *const end = &resume->stats;
-        end->timer = JSON_ObjectGetInt(end_obj, "timer", end->timer);
-        end->secret_flags =
-            JSON_ObjectGetInt(end_obj, "secrets", end->secret_flags);
-        Stats_UpdateSecrets(end);
-        end->kill_count = JSON_ObjectGetInt(end_obj, "kills", end->kill_count);
-        end->pickup_count =
-            JSON_ObjectGetInt(end_obj, "pickups", end->pickup_count);
-        end->max_secret_count =
-            JSON_ObjectGetInt(end_obj, "max_secrets", end->max_secret_count);
-        end->all_secrets_mask = JSON_ObjectGetInt(
-            end_obj, "all_secrets_mask", end->all_secrets_mask);
-        end->max_kill_count =
-            JSON_ObjectGetInt(end_obj, "max_kills", end->max_kill_count);
-        end->max_pickup_count =
-            JSON_ObjectGetInt(end_obj, "max_pickups", end->max_pickup_count);
-    }
-    return true;
-}
-
 static bool M_LoadMisc(
     JSON_OBJECT *const misc_obj, const uint16_t header_version)
 {
@@ -1779,15 +1684,6 @@ static bool M_LoadFromFile(MYFILE *const fp)
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. "
             "Checking if save is legacy.");
-        // Check for 2.6 and 2.7 legacy start and end info.
-        if (!M_LoadDiscontinuedStartInfo(
-                JSON_ObjectGetArray(root_obj, "start_info"))) {
-            goto cleanup;
-        }
-        if (!M_LoadDiscontinuedEndInfo(
-                JSON_ObjectGetArray(root_obj, "end_info"))) {
-            goto cleanup;
-        }
     }
 
     if (!M_LoadMisc(JSON_ObjectGetObject(root_obj, "misc"), version)) {
@@ -1864,15 +1760,6 @@ static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
         LOG_WARNING(
             "Failed to load RESUME_INFO current properly. Checking if "
             "save is legacy.");
-        // Check for 2.6 and 2.7 legacy start and end info.
-        if (!M_LoadDiscontinuedStartInfo(
-                JSON_ObjectGetArray(root_obj, "start_info"))) {
-            goto cleanup;
-        }
-        if (!M_LoadDiscontinuedEndInfo(
-                JSON_ObjectGetArray(root_obj, "end_info"))) {
-            goto cleanup;
-        }
     }
 
     ret = true;
