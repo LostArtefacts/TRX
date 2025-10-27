@@ -208,6 +208,26 @@ uint32_t Stats_GetMaxSecretFlags(void)
     return m_LevelMax.secret_flags;
 }
 
+void Stats_MarkSecretCollected(const ITEM *const item)
+{
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    resume->stats.secret_flags |= (uint32_t)(intptr_t)item->data;
+    Stats_UpdateSecrets(&resume->stats);
+}
+
+bool Stats_CheckAllLevelSecretsCollected(void)
+{
+    const RESUME_INFO *const resume =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    int32_t flags = resume->stats.secret_flags;
+    int32_t count = 0;
+    while (flags != 0) {
+        count += flags & 1;
+        flags >>= 1;
+    }
+    return count >= resume->stats.max_secret_count;
+}
+
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
 {
     FINAL_STATS final_stats = {};
