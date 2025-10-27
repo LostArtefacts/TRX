@@ -487,7 +487,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
     resume->back_gun_type = lara->back_gun_type;
-    if (TR_VERSION == 1 && lara->gun_status == LGS_READY) { // TODO: TR2
+    if (lara->gun_status == LGS_READY) {
         resume->gun_status = LGS_READY;
     } else {
         resume->gun_status = LGS_ARMLESS;

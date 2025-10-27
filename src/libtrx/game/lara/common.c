@@ -151,10 +151,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
-    // TODO: handle (item creation) and port to TR2
-    const bool hold_onto_guns =
-        TR_VERSION == 1 && !Gun_IsRifleType(resume->equipped_gun_type);
-
     if (resume != nullptr) {
         lara_info->pistol_ammo.ammo = 1000;
         if (resume->flags.has_pistols) {
@@ -225,7 +221,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         }
 #endif
 
-        if (hold_onto_guns) {
+        if (g_Config.gameplay.remember_gun_status) {
             lara_info->gun_status = resume->gun_status;
             lara_info->gun_type = resume->equipped_gun_type;
         }
@@ -234,18 +230,19 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         lara_info->back_gun_type = resume->back_gun_type;
     }
 
-    if (!hold_onto_guns) {
+    if (!g_Config.gameplay.remember_gun_status) {
         lara_info->gun_status = LGS_ARMLESS;
         lara_info->gun_type = lara_info->last_gun_type;
     }
     lara_info->request_gun_type = lara_info->last_gun_type;
     Lara_Mesh_Initialise(level);
     Gun_InitialiseNewWeapon();
+    Gun_EnsureReady();
 }
 
 void Lara_RevertToPistolsIfNeeded(void)
 {
-    if (!g_Config.gameplay.revert_to_pistols
+    if (g_Config.gameplay.remember_gun_status
         || !Inv_RequestItem(O_PISTOL_ITEM)) {
         return;
     }

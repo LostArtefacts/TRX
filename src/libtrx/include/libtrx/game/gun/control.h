@@ -8,3 +8,4 @@ int32_t Gun_FireWeapon(
     const int16_t *angles);
 
 void Gun_Control(void);
+void Gun_EnsureReady(void);
