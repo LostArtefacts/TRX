@@ -47,6 +47,7 @@
 - changed the `ambient_tracks` property to be only available on the root level
 - changed the Pause key to no longer work when Lara's dead (similar to TR1)
 - changed the `-q`/`--quiet` argument to no longer silence warnings
+- changed the `Remember Guns between Levels` option to also apply to whether or not Lara starts with those guns equipped
 - removed the following game flow options:
     - `cmd_init`
     - `cmd_title`
