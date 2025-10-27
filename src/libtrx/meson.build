@@ -228,6 +228,7 @@ sources = [
   'game/lara/vehicle.c',
   'game/level/common.c',
   'game/level/faces.c',
+  'game/level/loader.c',
   'game/level/reader.c',
   'game/level/reader_tr1.c',
   'game/level/reader_tr2.c',
