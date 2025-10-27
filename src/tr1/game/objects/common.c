@@ -1,9 +1,8 @@
 #include "game/objects/common.h"
 
-#include "game/inventory.h"
-
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
+#include <libtrx/game/inventory.h>
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
 

@@ -1,4 +1,3 @@
-#include "game/inventory.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 
@@ -8,6 +7,7 @@
 #include <libtrx/game/effects.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_flow.h>
+#include <libtrx/game/inventory.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/level.h>
 #include <libtrx/game/objects/general/pickup.h>
