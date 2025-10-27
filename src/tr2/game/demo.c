@@ -1,24 +1,16 @@
 #include "game/demo.h"
 
-#include "game/game_string.h"
-#include "game/level.h"
-#include "game/savegame.h"
-#include "game/stats.h"
-
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
 #include <libtrx/game/game.h>
-#include <libtrx/game/game_flow.h>
-#include <libtrx/game/input.h>
+#include <libtrx/game/game_string.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
 #include <libtrx/game/overlay.h>
 #include <libtrx/game/random.h>
 #include <libtrx/game/rooms.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/log.h>
 #include <libtrx/version.h>
 
 #define L_MODIFY_CONFIG()                                                      \
@@ -45,7 +37,6 @@
 typedef struct {
     const uint32_t *demo_ptr;
     const GF_LEVEL *level;
-
     struct {
         CONFIG config;
         GAME_BONUS_FLAG bonus_flag;
@@ -55,10 +46,10 @@ typedef struct {
 static int32_t m_LastDemoNum = 0;
 static M_PRIV m_Priv;
 
-static INPUT_STATE m_OldDemoInputDB = {};
-
 static void M_PrepareConfig(M_PRIV *const p)
 {
+    // Changing certains settings affects negatively the original game demo
+    // data, so temporarily turn off all relevant enhancements.
     p->old_config.config = g_Config;
     p->old_config.bonus_flag = Game_GetBonusFlag();
     Game_SetBonusFlag(GBF_NONE);
@@ -78,9 +69,6 @@ static void M_RestoreConfig(M_PRIV *const p)
 bool Demo_GetInput(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->demo_ptr == Demo_GetData()) {
-        m_OldDemoInputDB = (INPUT_STATE) {};
-    }
 
     union {
         uint32_t any;
@@ -107,12 +95,13 @@ bool Demo_GetInput(void)
             uint32_t load:         1;
             // clang-format on
         };
-    } demo_input = { .any = *p->demo_ptr++ };
+    } demo_input = { .any = *p->demo_ptr };
 
     if ((int32_t)demo_input.any == -1) {
         return false;
     }
 
+    // Translate demo inputs (that use hardcoded OG key layout) to TRX inputs.
     g_Input = (INPUT_STATE) {
         // clang-format off
         .forward      = demo_input.forward,
@@ -136,8 +125,7 @@ bool Demo_GetInput(void)
         // clang-format on
     };
 
-    g_InputDB.any = g_Input.any & ~m_OldDemoInputDB.any;
-    m_OldDemoInputDB = g_Input;
+    p->demo_ptr++;
     return true;
 }
 
@@ -150,6 +138,11 @@ bool Demo_Start(const int32_t level_num)
 
     M_PrepareConfig(p);
     Interpolation_Remember();
+
+    // Remember old inputs in case the demo was forcefully started with some
+    // keys pressed. In that case, it should only be stopped if the user
+    // presses some other key.
+    Input_Update();
 
     const uint32_t *const data = Demo_GetData();
     if (data == nullptr) {
@@ -179,13 +172,17 @@ bool Demo_Start(const int32_t level_num)
     lara_item->floor = Room_GetHeight(
         sector, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z);
 
-    lara->last_gun_type = *p->demo_ptr++;
+    if (g_TRVersion >= 2) {
+        lara->last_gun_type = *p->demo_ptr++;
+        Lara_Cheat_GetStuff();
+    } else {
+        lara->last_gun_type = LGT_PISTOLS;
+    }
 
-    g_OverlayFlag = 1;
-    Lara_Cheat_GetStuff();
+    Camera_Initialise();
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
-    Camera_Initialise();
+    g_OverlayFlag = 1;
 
     Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
     return true;
