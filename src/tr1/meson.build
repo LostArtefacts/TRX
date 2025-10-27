@@ -101,7 +101,6 @@ sources = [
   'game/demo.c',
   'game/game_string.c',
   'game/gun/gun_rifle.c',
-  'game/inventory.c',
   'game/objects/common.c',
   'game/objects/setup.c',
   'game/savegame/savegame_bson.c',
