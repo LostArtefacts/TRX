@@ -45,4 +45,7 @@ typedef enum {
 
     // Save and load MOVABLE_BLOCK_INFO in item->data.
     VERSION_12 = 12,
+
+    // Added back gun and gun item number properties to Lara.
+    VERSION_13 = 13,
 } SAVEGAME_VERSION;
