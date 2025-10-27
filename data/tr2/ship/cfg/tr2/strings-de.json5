@@ -344,7 +344,6 @@
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Fixt originale Fehler in 40 Faden, Das Wrack der Maria Doria und An Deck, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara, im Addon 'Die Goldene Maske', nicht mehr verfehlen.",
-        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "Fixt, dass beim abfeuern der Schrotflinte gelegentlich kein Mündungsfeuer oder Geräusch entsteht.",
         "STATS_AMMO_HITS": "Treffer",
         "STATS_AMMO_USED": "Benötigte Munition",
         "STATS_ASSAULT_FINISH": "Zeit",
