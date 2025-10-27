@@ -344,7 +344,6 @@
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques du 40 brasses, Épave du Maria Doria et Le Pont.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "\\{review}Corrige l'attaque de patte d'ours dans The Golden Mask pour qu'elle ne manque pas Lara.",
-        "SETTING_FIX_SHOTGUN_TARGETING_DESCRIPTION": "\\{review}Corrige le tir du fusil à pompe lorsqu'il est dégainé, qui échoue parfois à produire un éclair ou un son.",
         "STATS_AMMO_HITS": "\\{review}Coups",
         "STATS_AMMO_USED": "\\{review}Munitions utilisées",
         "STATS_ASSAULT_FINISH": "\\{review}Fin",

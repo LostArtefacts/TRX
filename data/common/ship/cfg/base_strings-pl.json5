@@ -543,7 +543,6 @@
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Naprawia rzadki problem pojawiający się, kiedy Lara zeskakuje z małych schodków, co skutkuje dziwną animacją biegu znaną jako stan QWOP.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Warstwowe dźwięki sekretów",
         "SETTING_FIX_SECRETS_KILLING_MUSIC_DESCRIPTION": "Sprawia, że podnoszenie sekretów nie zatrzymuje aktualnie odtwarzanej muzyki.",
-        "SETTING_FIX_SHOTGUN_TARGETING": "Ulepszone celowanie strzelbą",
         "SETTING_FIX_SPEECHES_KILLING_MUSIC": "Warstwowe wypowiedzi wrogów",
         "SETTING_FIX_SPEECHES_KILLING_MUSIC_DESCRIPTION": "Sprawia, że wypowiedzi wrogów nie zatrzymuje aktualnie odtwarzanej muzyki.",
         "SETTING_FIX_STEP_GLITCH": "Napraw glitch ze schodami",
