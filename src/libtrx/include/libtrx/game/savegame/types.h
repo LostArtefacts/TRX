@@ -5,7 +5,6 @@
 #include "../stats/types.h"
 
 typedef struct {
-    LEVEL_STATS stats;
     uint8_t small_medipacks;
     uint8_t large_medipacks;
     uint16_t pistol_ammo;
@@ -38,6 +37,9 @@ typedef struct {
         bool has_harpoon;
 #endif
     } flags;
+
+    LEVEL_STATS stats;
+    LEVEL_MAX_STATS max_stats;
 } RESUME_INFO;
 
 typedef struct {

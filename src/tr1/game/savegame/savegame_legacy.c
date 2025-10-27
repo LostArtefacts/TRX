@@ -1,5 +1,4 @@
 #include "game/savegame.h"
-#include "game/stats.h"
 
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
@@ -17,6 +16,7 @@
 #include <libtrx/game/objects/vars.h>
 #include <libtrx/game/pathing.h>
 #include <libtrx/game/shell.h>
+#include <libtrx/game/stats.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
 #include <libtrx/utils.h>

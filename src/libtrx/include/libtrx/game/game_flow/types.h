@@ -114,13 +114,13 @@ typedef struct {
 
     GF_LEVEL_SETTINGS settings;
 
-#if TR_VERSION == 1
     struct {
         uint32_t pickups;
         uint32_t kills;
         uint32_t secrets;
     } unobtainable;
 
+#if TR_VERSION == 1
     struct {
         int count;
         GF_DROP_ITEM_DATA *data;

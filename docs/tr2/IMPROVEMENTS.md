@@ -188,6 +188,10 @@
 - fixed Lara defaulting to pistols when starting Diving Area, if the player has not collected them in Offshore Rig
 
 ## Statistics
+- added ability to keep timer on in inventory
+- added optional deaths counter
+- added optional total pickups and kills per level
+- added unobtainable pickups, kills, and secrets stats support in the gameflow
 - fixed the dragon counting as more than one kill if allowed to revive
 - fixed enemies that are run over by the skidoo not being counted in the statistics
 - fixed the final two levels not allowing for secrets to be counted in the statistics

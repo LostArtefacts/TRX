@@ -642,7 +642,7 @@
         "SETTING_STATS_LEVEL_HEADER": "Àireamh-ìre",
         "SETTING_STATS_LEVEL_HEADER_DESCRIPTION": "Seallaidh seo àireamh na h-ìre làithreach aig mullach staitistig na h-ìre.",
         "SETTING_STAT_DETAIL_MODE": "Fiosrachadh staitistig",
-        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "Cuiridh seo modhan eadar-dhealaichte de staitistig an comas:\n\n- As lugha: marbhadh, togail, dìomhaireachdan, agus ùine.\n- Mionaideach: a h-uile rud roimhe agus luach as àirde de thogail/marbhadh san ìre.\n- Làn: a h-uile rud roimhe agus lòin cleachdte/buaidhte, pasganan slàinte, astar siubhail.",
+        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "\\{review}Leigeas diofar ìrean de mion-fhiosrachadh staitistige.\n\n- As ìsle: seallas an còmhradh staitistige tùsail.\n- Mion-fhiosraichte: seallas a h-uile stait bho as ìsle a bharrachd air na cunntasan as àirde ri taobh gach raon.\n- Làn: seallas a h-uile stait bho mion-fhiosraichte a bharrachd air sreathan ùra nach robh rim faighinn anns an còmhradh tùsail.",
         "SETTING_TARGET_MODE": "Modh glas armachd",
         "SETTING_TARGET_MODE_DESCRIPTION": "Cuiridh seo atharrachadh air mar a bhios armachd a' glasadh air targaidean:\n\n- Glas làn: cùm glasadh fiù 's ma thèideas an nàmhaid a-mach à sealladh (TR1-3).\n- Leth-ghlas: cùm glasadh nuair a tha an nàmhaid a-mach à sealladh, ach caill e ma bhàsaicheas e.\n- Gun ghlas: caill glasadh ma thèideas an nàmhaid a-mach à sealladh neo nuair a bhàsaicheas e (TR4+).",
         "SETTING_TEXTURE_FILTER": "Criathradh inneach",

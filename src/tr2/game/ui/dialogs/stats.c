@@ -2,13 +2,13 @@
 
 #include "game/game_string.h"
 #include "game/savegame.h"
-#include "game/stats.h"
 
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/const.h>
 #include <libtrx/game/game_flow.h>
 #include <libtrx/game/gym.h>
+#include <libtrx/game/stats.h>
 #include <libtrx/game/ui.h>
 #include <libtrx/strings.h>
 
@@ -21,20 +21,23 @@ typedef enum {
     M_ROW_TIMER,
     M_ROW_LEVEL_SECRETS,
     M_ROW_ALL_SECRETS,
+    M_ROW_PICKUPS,
+    M_ROW_DEATHS,
     M_ROW_KILLS,
+    M_ROW_AMMO,
     M_ROW_AMMO_USED,
     M_ROW_AMMO_HITS,
-    M_ROW_MEDIPACKS,
+    M_ROW_MEDIPACKS_USED,
     M_ROW_DISTANCE_TRAVELLED,
 } M_ROW_ROLE;
 
-static void M_FormatTime(char *const out, const int32_t total_frames)
+static const char *M_FormatTime(const int32_t total_frames)
 {
     const int32_t total_seconds = total_frames / LOGIC_FPS;
     const int32_t hours = total_seconds / 3600;
     const int32_t minutes = (total_seconds / 60) % 60;
     const int32_t seconds = total_seconds % 60;
-    sprintf(out, "%02d:%02d:%02d", hours, minutes, seconds);
+    return String_FormatStatic("%02d:%02d:%02d", hours, minutes, seconds);
 }
 
 static void M_FormatSecrets(
@@ -71,13 +74,14 @@ static void M_FormatSecrets(
     }
 }
 
-static void M_FormatDistance(char *const out, int32_t distance)
+static const char *M_FormatDistance(int32_t distance)
 {
     distance /= 445;
     if (distance < 1000) {
-        sprintf(out, "%dm", distance);
+        return String_FormatStatic("%dm", distance);
     } else {
-        sprintf(out, "%d.%02dkm", distance / 1000, (distance % 1000) / 10);
+        return String_FormatStatic(
+            "%d.%02dkm", distance / 1000, (distance % 1000) / 10);
     }
 }
 
@@ -97,9 +101,11 @@ static void M_Row(
 
 static void M_RowFromRole(
     const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
-    const STATS_COMMON *const stats)
+    const STATS_COMMON *const stats, const LEVEL_MAX_STATS *const max_stats)
 {
-    char buf[256];
+    const char *const num_fmt = g_Config.ui.stat_detail_mode == SDM_MINIMAL
+        ? GS(STATS_BASIC_FMT)
+        : GS(STATS_DETAIL_FMT);
 
     switch (role) {
     case M_ROW_LEVEL_COUNTER:
@@ -112,52 +118,104 @@ static void M_RowFromRole(
                 GF_GetLevelCount(GFLT_MAIN)));
         break;
 
-    case M_ROW_TIMER: {
-        M_FormatTime(buf, stats->timer);
-        M_Row(s, GS(STATS_TIME_TAKEN), buf);
+    case M_ROW_TIMER:
+        M_Row(s, GS(STATS_TIME_TAKEN), M_FormatTime(stats->timer));
         break;
-    }
 
     case M_ROW_LEVEL_SECRETS: {
+        char buf[256];
         M_FormatSecrets(buf, (LEVEL_STATS *)stats);
         M_Row(s, GS(STATS_SECRETS), buf);
         break;
     }
 
     case M_ROW_ALL_SECRETS:
-        sprintf(
-            buf, GS(STATS_DETAIL_FMT), stats->secret_count,
-            stats->max_secret_count);
-        M_Row(s, GS(STATS_SECRETS), buf);
+        M_Row(
+            s, GS(STATS_SECRETS),
+            String_FormatStatic(
+                num_fmt, stats->secret_count, max_stats->max_secret_count));
+        break;
+
+    case M_ROW_PICKUPS:
+        M_Row(
+            s, GS(STATS_PICKUPS),
+            String_FormatStatic(
+                num_fmt, stats->pickup_count, max_stats->max_pickup_count));
         break;
 
     case M_ROW_KILLS:
-        sprintf(buf, GS(STATS_BASIC_FMT), stats->kill_count);
-        M_Row(s, GS(STATS_KILLS), buf);
+        M_Row(
+            s, GS(STATS_KILLS),
+            String_FormatStatic(
+                num_fmt, stats->kill_count, max_stats->max_kill_count));
+        break;
+
+    case M_ROW_DEATHS:
+        M_Row(
+            s, GS(STATS_DEATHS),
+            String_FormatStatic(GS(STATS_BASIC_FMT), stats->death_count));
+        break;
+
+    case M_ROW_AMMO:
+        M_Row(
+            s, GS(STATS_AMMO),
+            String_FormatStatic(
+                GS(PAGINATION_NAV), stats->ammo_hits, stats->ammo_used));
         break;
 
     case M_ROW_AMMO_USED:
-        sprintf(buf, "%d", stats->ammo_used);
-        M_Row(s, GS(STATS_AMMO_USED), buf);
+        M_Row(
+            s, GS(STATS_AMMO_USED),
+            String_FormatStatic("%d", stats->ammo_used));
         break;
 
     case M_ROW_AMMO_HITS:
-        sprintf(buf, "%d", stats->ammo_hits);
-        M_Row(s, GS(STATS_AMMO_HITS), buf);
+        M_Row(
+            s, GS(STATS_AMMO_HITS),
+            String_FormatStatic("%d", stats->ammo_hits));
         break;
 
-    case M_ROW_MEDIPACKS:
-        sprintf(buf, "%.1f", stats->medipacks_used);
-        M_Row(s, GS(STATS_MEDIPACKS_USED), buf);
+    case M_ROW_MEDIPACKS_USED:
+        M_Row(
+            s, GS(STATS_MEDIPACKS_USED),
+            String_FormatStatic("%.1f", stats->medipacks_used));
         break;
 
     case M_ROW_DISTANCE_TRAVELLED:
-        M_FormatDistance(buf, stats->distance_travelled);
-        M_Row(s, GS(STATS_DISTANCE_TRAVELLED), buf);
+        M_Row(
+            s, GS(STATS_DISTANCE_TRAVELLED),
+            M_FormatDistance(stats->distance_travelled));
         break;
 
     default:
         break;
+    }
+}
+
+static void M_CommonRows(
+    const UI_STATS_DIALOG_STATE *const s, const STATS_COMMON *const stats,
+    const LEVEL_MAX_STATS *const max_stats)
+{
+    if (g_Config.ui.stat_detail_mode == SDM_FULL) {
+        M_RowFromRole(s, M_ROW_PICKUPS, stats, max_stats);
+    }
+    M_RowFromRole(s, M_ROW_KILLS, stats, max_stats);
+    if (g_Config.ui.stat_detail_mode == SDM_FULL) {
+        M_RowFromRole(s, M_ROW_AMMO, stats, max_stats);
+    } else {
+        M_RowFromRole(s, M_ROW_AMMO_USED, stats, max_stats);
+        M_RowFromRole(s, M_ROW_AMMO_HITS, stats, max_stats);
+    }
+    M_RowFromRole(s, M_ROW_MEDIPACKS_USED, stats, max_stats);
+    M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, stats, max_stats);
+
+    if (g_Config.ui.stat_detail_mode == SDM_FULL
+        && g_Config.gameplay.enable_deaths_counter && stats->death_count >= 0) {
+        // Always use sum of all levels for the deaths.
+        // Deaths get stored in the resume info for the level they happen
+        // on, so if the player dies in Vilcabamba and reloads Caves, they
+        // should still see an incremented death counter.
+        M_RowFromRole(s, M_ROW_DEATHS, stats, max_stats);
     }
 }
 
@@ -167,20 +225,18 @@ static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *const s)
         GF_GetLevel(GFLT_MAIN, s->args.level_num);
     const RESUME_INFO *const current_info =
         Savegame_GetCurrentInfo(current_level);
-    const STATS_COMMON *const stats = (STATS_COMMON *)&current_info->stats;
+    const STATS_COMMON *const stats =
+        (const STATS_COMMON *)&current_info->stats;
+    const LEVEL_MAX_STATS *const max_stats = &current_info->max_stats;
 
     if (g_Config.ui.enable_stats_level_header) {
-        M_RowFromRole(s, M_ROW_LEVEL_COUNTER, stats);
+        M_RowFromRole(s, M_ROW_LEVEL_COUNTER, stats, max_stats);
     }
-    M_RowFromRole(s, M_ROW_TIMER, stats);
-    if (stats->max_secret_count != 0) {
-        M_RowFromRole(s, M_ROW_LEVEL_SECRETS, stats);
+    M_RowFromRole(s, M_ROW_TIMER, stats, max_stats);
+    if (max_stats->max_secret_count != 0) {
+        M_RowFromRole(s, M_ROW_LEVEL_SECRETS, stats, max_stats);
     }
-    M_RowFromRole(s, M_ROW_KILLS, stats);
-    M_RowFromRole(s, M_ROW_AMMO_USED, stats);
-    M_RowFromRole(s, M_ROW_AMMO_HITS, stats);
-    M_RowFromRole(s, M_ROW_MEDIPACKS, stats);
-    M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, stats);
+    M_CommonRows(s, stats, max_stats);
 }
 
 static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *const s)
@@ -188,14 +244,13 @@ static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *const s)
     const GF_LEVEL_TYPE level_type =
         GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
     const FINAL_STATS final_stats = Stats_ComputeFinalStats(level_type);
-    const STATS_COMMON *const stats = (STATS_COMMON *)&final_stats;
-    M_RowFromRole(s, M_ROW_TIMER, stats);
-    M_RowFromRole(s, M_ROW_ALL_SECRETS, stats);
-    M_RowFromRole(s, M_ROW_KILLS, stats);
-    M_RowFromRole(s, M_ROW_AMMO_USED, stats);
-    M_RowFromRole(s, M_ROW_AMMO_HITS, stats);
-    M_RowFromRole(s, M_ROW_MEDIPACKS, stats);
-    M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, stats);
+    const STATS_COMMON *const stats = &final_stats.stats;
+    const LEVEL_MAX_STATS *const max_stats = &final_stats.max_stats;
+    M_RowFromRole(s, M_ROW_TIMER, stats, max_stats);
+    if (max_stats->max_secret_count != 0) {
+        M_RowFromRole(s, M_ROW_ALL_SECRETS, stats, max_stats);
+    }
+    M_CommonRows(s, stats, max_stats);
 }
 
 static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)

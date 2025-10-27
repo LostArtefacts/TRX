@@ -15,8 +15,6 @@
 #define EXTRA_ANIM_PEDESTAL_SCION 0
 #define LF_PICKUPSCION 44
 
-extern void Stats_AddPickup(void);
-
 static XYZ_32 m_Scion1_Position = { 0, 640, -310 };
 
 static const OBJECT_BOUNDS m_Scion1_Bounds = {
@@ -67,9 +65,7 @@ static void M_Collision(
             Inv_AddItem(item->object_id);
             item->status = IS_INVISIBLE;
             Item_RemoveDrawn(item_num);
-#if TR_VERSION == 1
             Stats_AddPickup();
-#endif
         }
     } else if (
         g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity

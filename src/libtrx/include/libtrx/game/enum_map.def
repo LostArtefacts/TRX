@@ -1,6 +1,6 @@
 #define X_INPUT_ROLE(role_name, state_name)                               \
     ENUM_MAP_DEFINE(INPUT_ROLE, role_name, #state_name)
-#include <libtrx/game/input/roles.def>
+#include "game/input/roles.def"
 #undef X_INPUT_ROLE
 
 ENUM_MAP_DEFINE(SCREENSHOT_FORMAT, SCREENSHOT_FORMAT_JPEG, "jpg")
@@ -158,3 +158,7 @@ ENUM_MAP_DEFINE(QUICK_GUNS_MODE, QUICK_GUNS_DRAW_AND_HOLSTER, "draw-and-holster"
 ENUM_MAP_DEFINE(TARGET_LOCK_MODE, TLM_FULL, "full-lock")
 ENUM_MAP_DEFINE(TARGET_LOCK_MODE, TLM_SEMI, "semi-lock")
 ENUM_MAP_DEFINE(TARGET_LOCK_MODE, TLM_NONE, "no-lock")
+
+ENUM_MAP_DEFINE(STAT_DETAIL_MODE, SDM_MINIMAL, "minimal")
+ENUM_MAP_DEFINE(STAT_DETAIL_MODE, SDM_DETAILED, "detailed")
+ENUM_MAP_DEFINE(STAT_DETAIL_MODE, SDM_FULL, "full")

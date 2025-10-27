@@ -23,7 +23,7 @@ static const char *M_FormatAvailable(void)
     char *ptr = buf;
     bool first = true;
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        if ((1 << i) & info->stats.all_secrets_mask) {
+        if ((1 << i) & info->max_stats.all_secrets_mask) {
             if (!first) {
                 ptr += sprintf(ptr, ", ");
             }
@@ -60,7 +60,7 @@ static void M_LogInvalid(const int32_t idx)
 
 static COMMAND_RESULT M_TakeSecret(const int32_t idx)
 {
-    if (Stats_TakeSecret(idx)) {
+    if (Stats_RemoveSecret(idx)) {
         Console_Log(
             GS(CMD_GIVE_SECRET_TAKEN), String_FormatStatic(M_FMT_NUM, idx + 1));
         return CR_SUCCESS;
@@ -89,7 +89,7 @@ static COMMAND_RESULT M_ListSecrets(void)
     Console_Log(
         strcmp(buf, "") == 0 ? GS(CMD_GIVE_SECRET_NONE)
                              : GS(CMD_GIVE_SECRET_LIST),
-        info->stats.secret_count, info->stats.max_secret_count, buf);
+        info->stats.secret_count, info->max_stats.max_secret_count, buf);
     return CR_SUCCESS;
 }
 
@@ -104,7 +104,7 @@ static COMMAND_RESULT M_GiveAllSecrets(void)
 static COMMAND_RESULT M_TakeAllSecrets(void)
 {
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        Stats_TakeSecret(i); // Not all `i` are valid, but it's handled inside
+        Stats_RemoveSecret(i); // Not all `i` are valid, but it's handled inside
     }
     return M_ListSecrets();
 }

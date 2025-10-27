@@ -23,9 +23,6 @@
 
 #define M_DEFAULT_SFX_PATH "data/main.sfx"
 
-// TODO: refactor me
-extern void Stats_ObserveRoomsLoad(void);
-
 typedef struct {
     int32_t game_index;
     int32_t file_index;
@@ -224,9 +221,6 @@ static void M_CompleteSetup(
     Level_LoadAnimCommands();
     if (g_TRVersion == 1) {
         M_MarkWaterEdgeVertices();
-
-        // Must be called post-injection to allow for floor data changes.
-        Stats_ObserveRoomsLoad();
     } else {
         Level_LoadWalkables();
     }
@@ -239,6 +233,10 @@ static void M_CompleteSetup(
     Level_LoadTexturePages(loader);
     Level_LoadPalettes();
     Level_LoadFaces();
+
+    // Must be done after doing the injections!
+    // (The Great Pyramid OG data misses the final secret trigger.)
+    Stats_ScanLevel();
 
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
     Output_DispatchLevelLoad();

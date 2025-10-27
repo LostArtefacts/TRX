@@ -1,6 +1,12 @@
 #include "enum_map.h"
 
+#include "config/types.h"
+#include "game/game_buf.h"
+#include "game/game_flow/types.h"
+#include "game/input.h"
+#include "game/objects/ids.h"
 #include "memory.h"
+#include "screenshot.h"
 #include "strings.h"
 
 #include <uthash.h>
@@ -155,4 +161,9 @@ VECTOR *EnumMap_ListValues(const char *const enum_type_name)
         }
     }
     return results;
+}
+
+void EnumMap_Init(void)
+{
+#include "game/enum_map.def"
 }

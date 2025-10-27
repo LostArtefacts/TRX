@@ -16,7 +16,11 @@
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
     This feature is experimental — some objects may not behave correctly. Please report any bugs encountered! 🩷  
     See [the documentation](../07-CATALOGS.md) for details.
-- added support for save crystals for level builders (slot 269, see catalogs)
+- added extended statistics support (#2578)
+    - added pickup count and death count support in the stats screen (Graphic Options → UI → Statistics details)
+    - added max pickup, secret and kills support (Graphic Options → UI → Statistics details)
+    - added deaths counter support (Gameplay Options → General → Count Lara's death)
+    - added unobtainable secrets, pickups and kills stats support in the gameflow
 - added an option to disable all medipacks (Gameplay options → Mods → Remove medipacks)
 - added an option to disable all guns except Pistols (Gameplay options → Mods → Remove extra guns)
 - added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (Graphics → Visuals → Pickup aids) (#4057)

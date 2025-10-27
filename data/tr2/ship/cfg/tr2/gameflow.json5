@@ -159,6 +159,7 @@
                 "data/injections/opera_music_tracks.bin",
                 "data/injections/opera_sfx.bin",
             ],
+            "unobtainable_kills": 1,
         },
 
         // 5. Offshore Rig
@@ -260,6 +261,7 @@
                 "data/injections/wreck_secret_fd.bin",
                 "data/injections/wreck_textures.bin",
             ],
+            "unobtainable_kills": 1,
         },
 
         // 9. Living Quarters
@@ -359,6 +361,7 @@
                 "data/injections/barkhang_pickup_meshes.bin",
                 "data/injections/barkhang_textures.bin",
             ],
+            "unobtainable_kills": 1,
         },
 
         // 13. Catacombs of the Talion
@@ -383,6 +386,7 @@
                 "data/injections/common_pickup_meshes.bin",
                 "data/injections/door108_sfx.bin",
             ],
+            "unobtainable_pickups": 1,
         },
 
         // 14. Ice Palace
@@ -434,6 +438,7 @@
                 "data/injections/xian_sfx.bin",
                 "data/injections/xian_textures.bin",
             ],
+            "unobtainable_pickups": 1,
         },
 
         // 16. Floating Islands

@@ -143,19 +143,6 @@ M_GF_HANDLER(M_HandlePlayLevel)
     }
     GF_DisableObjectsIfNeeded();
 
-    if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-        Stats_CalculateStats();
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        if (resume != nullptr) {
-#if TR_VERSION == 1
-            resume->stats.max_pickup_count = Stats_GetMaxPickups();
-            resume->stats.max_kill_count = Stats_GetMaxKillables();
-#endif
-            resume->stats.max_secret_count = Stats_GetMaxSecrets();
-            resume->stats.all_secrets_mask = Stats_GetMaxSecretFlags();
-        }
-    }
-
     Lua_FireEvent(LUA_EVENT_LEVEL_START, level->num);
 
     g_Passport.ask_for_save = g_Config.gameplay.enable_save_crystals

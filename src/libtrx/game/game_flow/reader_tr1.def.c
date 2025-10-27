@@ -101,14 +101,6 @@ static void M_LoadLevelGameSpecifics(
     GF_LEVEL *const level)
 {
     M_LoadSettings(ctx, jlvl_obj, &level->settings);
-
-    level->unobtainable.pickups =
-        JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
-    level->unobtainable.kills =
-        JSON_ObjectGetInt(jlvl_obj, "unobtainable_kills", 0);
-    level->unobtainable.secrets =
-        JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
-
     M_LoadLevelItemDrops(ctx, jlvl_obj, level);
 }
 

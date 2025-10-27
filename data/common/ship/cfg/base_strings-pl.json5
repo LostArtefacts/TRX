@@ -642,7 +642,7 @@
         "SETTING_STATS_LEVEL_HEADER": "Numer poziomu w statystykach",
         "SETTING_STATS_LEVEL_HEADER_DESCRIPTION": "Wyświetla numer bieżącego poziomu na ekranach statystyk.",
         "SETTING_STAT_DETAIL_MODE": "Poziom szczegółów statystyk",
-        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "Pozwala na różne poziomy szczegółowości statystyk.\n\n- Minimalne: pokazuje zabójstwa, zbiory, sekrety i czas trwania.\n- Rozszerzone: jw. + maksymalna liczbę znajdziek i zabójstw w każdym poziomie.\n- Pełne: jw. + użytą amunicję, liczbę trafień, użyte apteczki i przebytą odległość.",
+        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "\\{review}Pozwala na różne poziomy szczegółowości statystyk.\n\n- Minimalny: pokazuje oryginalne okno statystyk.\n- Szczegółowy: pokazuje wszystkie statystyki z minimalnego poziomu oraz maksymalne wartości obok każdego pola.\n- Pełny: pokazuje wszystkie statystyki ze szczegółowego poziomu oraz nowe wiersze niedostępne w oryginalnym oknie.",
         "SETTING_TARGET_MODE": "Tryb blokady broni",
         "SETTING_TARGET_MODE_DESCRIPTION": "Zmienia tryb, w jaki bronie blokują się na celach.\n\n- Całkowity: zawsze utrzymuje blokadę celu, nawet jeśli przeciwnik wyjdzie z pola widzenia lub zginie (tak jak w TR1-3).\n- Częściowy: utrzymuje blokadę celu, jeśli przeciwnik wyjdzie z pola widzenia, ale traci ją, kiedy przeciwnik zginie.\n- Brak: traci blokadę celu, kiedy przeciwnik wyjdzie z pola widzenia lub zginie (tak jak w TR4+).",
         "SETTING_TEXTURE_FILTER": "Filtr tekstur",

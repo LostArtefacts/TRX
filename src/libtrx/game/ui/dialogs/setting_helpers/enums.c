@@ -3,14 +3,12 @@
 #include "config.h"
 #include "game/lara/const.h"
 
-#if TR_VERSION == 1
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[] = {
     { SDM_MINIMAL, GS_ID(ENUM_STAT_DETAIL_MODE_MINIMAL) },
     { SDM_DETAILED, GS_ID(ENUM_STAT_DETAIL_MODE_DETAILED) },
     { SDM_FULL, GS_ID(ENUM_STAT_DETAIL_MODE_FULL) },
     { -1, nullptr },
 };
-#endif
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[] = {
     { TLM_FULL, GS_ID(ENUM_TARGET_LOCK_MODE_FULL) },

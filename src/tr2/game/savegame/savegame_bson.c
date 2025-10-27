@@ -60,6 +60,8 @@ static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
 static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
 static bool M_LoadFromFile(MYFILE *fp);
 static bool M_LoadOnlyResumeInfo(MYFILE *fp);
+static bool M_UpdateDeathCounters(
+    MYFILE *fp, int32_t level_num, int32_t death_count);
 
 static SAVEGAME_STRATEGY m_Strategy = {
     // clang-format off
@@ -71,7 +73,7 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .load_from_file_func = M_LoadFromFile,
     .save_to_file_func = M_SaveToFile,
     .load_only_resume_info_func = M_LoadOnlyResumeInfo,
-    .update_death_counters_func = nullptr,
+    .update_death_counters_func = M_UpdateDeathCounters,
     // clang-format on
 };
 
@@ -193,6 +195,9 @@ static JSON_OBJECT *M_DumpMisc(void)
     JSON_ObjectAppendBool(
         misc_obj, "are_monks_angry", Creature_AreAlliesHostile());
     JSON_ObjectAppendInt(misc_obj, "sunset_timer", Output_GetSunsetTimer());
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    JSON_ObjectAppendInt(misc_obj, "death_count", resume->stats.death_count);
     return misc_obj;
 }
 
@@ -209,6 +214,9 @@ static bool M_LoadMisc(JSON_OBJECT *const misc_obj)
     Creature_SetAlliesHostile(hostile);
     const int32_t sunset_timer = JSON_ObjectGetInt(misc_obj, "sunset_timer", 0);
     Output_SetSunsetTimer(sunset_timer);
+    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+    resume->stats.death_count = JSON_ObjectGetInt(misc_obj, "death_count", -1);
     return true;
 }
 
@@ -370,12 +378,9 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
             resume_obj, "distance_travelled", resume->stats.distance_travelled);
         JSON_ObjectAppendInt(resume_obj, "kills", resume->stats.kill_count);
         JSON_ObjectAppendInt(resume_obj, "secrets", resume->stats.secret_flags);
+        JSON_ObjectAppendInt(resume_obj, "pickups", resume->stats.pickup_count);
         JSON_ObjectAppendDouble(
             resume_obj, "medipacks_used", resume->stats.medipacks_used);
-        JSON_ObjectAppendInt(
-            resume_obj, "max_secrets", resume->stats.max_secret_count);
-        JSON_ObjectAppendInt(
-            resume_obj, "all_secrets_mask", resume->stats.all_secrets_mask);
         JSON_ArrayAppendObject(resume_arr, resume_obj);
     }
     return resume_arr;
@@ -449,15 +454,13 @@ static bool M_LoadResumeInfo(JSON_ARRAY *const resume_arr)
         resume->stats.distance_travelled =
             JSON_ObjectGetInt(resume_obj, "distance_travelled", 0);
         resume->stats.kill_count = JSON_ObjectGetInt(resume_obj, "kills", 0);
+        resume->stats.pickup_count = JSON_ObjectGetInt(
+            resume_obj, "pickups", resume->stats.pickup_count);
         resume->stats.secret_flags =
             JSON_ObjectGetInt(resume_obj, "secrets", 0);
         Stats_UpdateSecrets(&resume->stats);
         resume->stats.medipacks_used =
             JSON_ObjectGetDouble(resume_obj, "medipacks_used", 0);
-        resume->stats.max_secret_count =
-            JSON_ObjectGetInt(resume_obj, "max_secrets", 0);
-        resume->stats.all_secrets_mask =
-            JSON_ObjectGetInt(resume_obj, "all_secrets_mask", 0);
     }
 
     return true;
@@ -1654,6 +1657,35 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
     M_SaveRaw(fp, root, current_level->num);
     JSON_ValueFree(root);
+}
+
+static bool M_UpdateDeathCounters(
+    MYFILE *const fp, int32_t level_num, const int32_t death_count)
+{
+    bool result = false;
+    int32_t version;
+    JSON_VALUE *const root = M_ReadRaw(fp, &version);
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    if (root_obj == nullptr) {
+        LOG_ERROR("Cannot find the root object");
+        goto cleanup;
+    }
+
+    JSON_OBJECT *const misc_obj = JSON_ObjectGetObject(root_obj, "misc");
+    if (misc_obj == nullptr) {
+        LOG_ERROR("Cannot find the misc object");
+        goto cleanup;
+    }
+    JSON_ObjectEvictKey(misc_obj, "death_count");
+    JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
+
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    M_SaveRaw(fp, root, level_num);
+    result = true;
+
+cleanup:
+    JSON_ValueFree(root);
+    return result;
 }
 
 REGISTER_SAVEGAME_STRATEGY(m_Strategy)
