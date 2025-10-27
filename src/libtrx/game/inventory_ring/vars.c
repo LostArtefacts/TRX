@@ -1035,7 +1035,7 @@ INVENTORY_ITEM g_InvRing_Item_NatlasPDA = {
     .inv_pos = 204,
 };
 
-const INVENTORY_ITEM *g_InvRing_Items[] = {
+INVENTORY_ITEM *g_InvRing_Items[] = {
     // Items
     &g_InvRing_Item_SmallMedi,
     &g_InvRing_Item_LargeMedi,

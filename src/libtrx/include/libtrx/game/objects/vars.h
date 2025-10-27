@@ -12,6 +12,7 @@ extern const OBJECT_ID g_PickupObjects[];
 extern const OBJECT_ID g_SwitchObjects[];
 extern const OBJECT_ID g_ReceptacleObjects[];
 extern const OBJECT_ID g_GunObjects[];
+extern const OBJECT_ID g_GunAmmoObjects[];
 extern const OBJECT_ID g_DoorObjects[];
 extern const OBJECT_ID g_TrapdoorObjects[];
 extern const OBJECT_ID g_AnimObjects[];

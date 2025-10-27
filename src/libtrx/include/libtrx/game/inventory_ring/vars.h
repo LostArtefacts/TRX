@@ -6,7 +6,7 @@
 extern CAMERA_INFO g_InvRing_OldCamera;
 
 extern INV_RING_SOURCE g_InvRing_Source[RT_NUMBER_OF];
-extern const INVENTORY_ITEM *g_InvRing_Items[];
+extern INVENTORY_ITEM *g_InvRing_Items[];
 
 // Items
 extern INVENTORY_ITEM g_InvRing_Item_SmallMedi;

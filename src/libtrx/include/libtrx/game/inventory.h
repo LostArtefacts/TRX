@@ -8,9 +8,6 @@
 
 extern INVENTORY_MODE g_Inv_Mode;
 
-void Inv_AddGun(LARA_GUN_TYPE gun_type);
-void Inv_AddAmmo(LARA_GUN_TYPE gun_type);
-
 bool Inv_AddItemNTimes(OBJECT_ID obj_id, int32_t qty);
 OBJECT_ID Inv_GetItemOption(OBJECT_ID obj_id);
 void Inv_InsertItem(INVENTORY_ITEM *inv_item);
