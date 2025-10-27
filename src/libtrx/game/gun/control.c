@@ -390,6 +390,14 @@ void Gun_Control(void)
     }
 }
 
+void Gun_EnsureReady(void)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->gun_status == LGS_READY && Gun_IsRifleType(lara->gun_type)) {
+        Gun_Rifle_EnsureReady(lara->gun_type);
+    }
+}
+
 int32_t Gun_FireWeapon(
     const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
     const int16_t *const angles)

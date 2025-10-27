@@ -232,7 +232,7 @@ typedef struct {
         bool enable_timer_in_inventory;
         LOOK_MODE look_mode;
         bool enable_inverted_look;
-        bool revert_to_pistols;
+        bool remember_gun_status;
 
         int32_t turbo_speed;
         int32_t camera_speed;

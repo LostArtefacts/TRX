@@ -145,6 +145,17 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             g_Config.gameplay.fix_lara_pickup_embed = false;
         }
     }
+
+    // 1.6
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "revert_to_pistols");
+        if (JSON_ValueIsTrue(value)) {
+            g_Config.gameplay.remember_gun_status = false;
+        } else if (JSON_ValueIsFalse(value)) {
+            g_Config.gameplay.remember_gun_status = true;
+        }
+    }
 }
 
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)

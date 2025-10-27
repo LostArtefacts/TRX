@@ -620,7 +620,7 @@
         "SETTING_REFLECTIONS": "Reflections",
         "SETTING_REFLECTIONS_DESCRIPTION": "Enables reflections on certain objects.",
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS": "Remember guns between levels",
-        "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Makes Lara remember which gun she was using last in the previous level when starting a new level. If disabled, Lara will revert to pistols.",
+        "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Makes Lara remember which gun she was using last in the previous level when starting a new level. If disabled, Lara will revert to holstered pistols.",
         "SETTING_RESTORE_PS1_ENEMIES": "Restore PS1 enemies",
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the level.",
         "SETTING_SCREENSHOT_FORMAT": "Screenshot format",

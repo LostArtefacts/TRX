@@ -40,6 +40,7 @@
 - changed cutscene data (e.g. `cut1.phd`, as opposed to in-game cinematics) to match TR2 format, where Lara (as `O_LARA`) must be defined as an item in the level file
 - changed the `-q`/`--quiet` argument to no longer silence warnings
 - changed the Remove shotguns, Remove Uzis and Remove Magnus into a single "Remove extra guns" option
+- changed the `Remember Guns between Levels` option to also apply to whether or not Lara starts with those guns equipped
 - removed the `Enhanced shotgun targeting` option in favour of using the common weapon lock mode (Gameplay → Controls → Weapon lock mode)
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)

@@ -33,6 +33,19 @@ typedef enum {
 static bool m_M16Firing = false;
 static bool m_ReloadHarpoon = false;
 
+static M_ANIM M_GetReadyAnim(const LARA_GUN_TYPE weapon_type)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    switch (weapon_type) {
+    case LGT_HARPOON:
+        return lara->water_status == LWS_UNDERWATER ? LA_G_UAIM : LA_G_AIM;
+    case LGT_GRENADE:
+        return LA_G_DRAW;
+    default:
+        return LA_G_AIM;
+    }
+}
+
 static void M_AnimateGun(ITEM *const item)
 {
     // While the item is drawn in Lara_Draw, it needs a world position for
@@ -522,6 +535,19 @@ void Gun_Rifle_UndrawMeshes(const LARA_GUN_TYPE weapon_type)
     Gun_SetLaraBackMesh(weapon_type);
 }
 
+void Gun_Rifle_EnsureReady(const LARA_GUN_TYPE weapon_type)
+{
+    Gun_Rifle_Draw(weapon_type);
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const item = Item_Get(lara->gun_item_num);
+    const int16_t goal_anim = M_GetReadyAnim(weapon_type);
+
+    do {
+        Gun_Rifle_Draw(weapon_type);
+    } while (Item_GetRelativeAnim(item) != goal_anim);
+}
+
 void Gun_Rifle_LoadLegacy(const bool has_rifle)
 {
     // Applies to legacy TR1 saves where there was no concept of the back gun.
@@ -533,11 +559,7 @@ void Gun_Rifle_LoadLegacy(const bool has_rifle)
     if (lara->gun_type == LGT_SHOTGUN) {
         Gun_Rifle_UndrawMeshes(LGT_SHOTGUN);
         if (lara->gun_status == LGS_DRAW || lara->gun_status == LGS_READY) {
-            Gun_Rifle_Draw(LGT_SHOTGUN);
-            const ITEM *const item = Item_Get(lara->gun_item_num);
-            do {
-                Gun_Rifle_Draw(LGT_SHOTGUN);
-            } while (Item_GetRelativeAnim(item) != LA_G_AIM);
+            Gun_Rifle_EnsureReady(LGT_SHOTGUN);
         } else if (lara->gun_status == LGS_UNDRAW) {
             lara->gun_status = LGS_ARMLESS;
         }

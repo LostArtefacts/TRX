@@ -427,7 +427,7 @@ GS_DEFINE(SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION,       "Pauses game sound
 GS_DEFINE(SETTING_PS_UZI_SFX_DESCRIPTION,                     "Changes the uzi sound effects to match the PlayStation version.")
 GS_DEFINE(SETTING_QUICK_GUNS_MODE_DESCRIPTION,                "Controls the behavior of the quick gun equip keys.\n\n- Draw only: pressing a key will cause Lara to equip the assigned gun.\n- Draw or holster: same as above, plus Lara will undraw the assigned gun if she's currently carrying it.")
 GS_DEFINE(SETTING_REFLECTIONS_DESCRIPTION,                    "Enables reflections on certain objects.")
-GS_DEFINE(SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION,   "Makes Lara remember which gun she was using last in the previous level when starting a new level. If disabled, Lara will revert to pistols.")
+GS_DEFINE(SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION,   "Makes Lara remember which gun she was using last in the previous level when starting a new level. If disabled, Lara will revert to holstered pistols.")
 GS_DEFINE(SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION,            "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the level.")
 GS_DEFINE(SETTING_SCREENSHOT_FORMAT_DESCRIPTION,              "Screenshot file format.")
 GS_DEFINE(SETTING_SOUND_VOLUME_DESCRIPTION,                   "Adjusts sound effects volume.")
