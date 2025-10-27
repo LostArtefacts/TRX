@@ -492,6 +492,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 Sound_Effect(SFX_MENU_COMPASS, nullptr, SPM_ALWAYS);
                 break;
 
+            case O_STOPWATCH_OPTION:
+                break;
+
             case O_PHOTO_OPTION:
                 Sound_Effect(SFX_MENU_LARA_HOME, nullptr, SPM_ALWAYS);
                 break;
