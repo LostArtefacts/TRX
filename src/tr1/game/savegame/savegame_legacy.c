@@ -7,6 +7,7 @@
 #include <libtrx/game/effects.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_flow.h>
+#include <libtrx/game/gun/rifle.h>
 #include <libtrx/game/inventory.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/level.h>
@@ -326,7 +327,8 @@ static void M_ReadLara(LARA_INFO *const lara)
     M_ReadAmmoInfo(&lara->shotgun_ammo);
     M_ReadLOT(&lara->lot);
 
-    // TODO: handle back_gun/gun_item_num
+    const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
+    Gun_Rifle_LoadLegacy(has_rifle);
 }
 
 static void M_ReadResumeInfo(RESUME_INFO *const resume)

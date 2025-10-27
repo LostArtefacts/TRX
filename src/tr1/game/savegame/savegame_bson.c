@@ -9,6 +9,7 @@
 #include <libtrx/game/effects.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_flow.h>
+#include <libtrx/game/gun/rifle.h>
 #include <libtrx/game/inventory.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>
@@ -952,7 +953,6 @@ static bool M_LoadLara(
         JSON_ObjectGetInt(lara_obj, "request_gun_type", lara->request_gun_type);
     lara->last_gun_type =
         JSON_ObjectGetInt(lara_obj, "last_gun_type", lara->request_gun_type);
-    // TODO: handle legacy
     lara->back_gun_obj_id = Object_FromGameID(
         JSON_ObjectGetInt(lara_obj, "back_gun_obj_id", lara->back_gun_obj_id));
     lara->calc_fall_speed =
@@ -1073,24 +1073,29 @@ static bool M_LoadLara(
         return false;
     }
 
-    // TODO: handle legacy
-    const JSON_OBJECT *const weapon_obj =
-        JSON_ObjectGetObject(lara_obj, "weapon");
-    if (weapon_obj != nullptr) {
-        lara->gun_item_num = Item_Create();
-        ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        weapon_item->object_id = Object_FromGameID(
-            JSON_ObjectGetInt(weapon_obj, "obj_id", weapon_item->object_id));
-        weapon_item->anim_num =
-            JSON_ObjectGetInt(weapon_obj, "anim_num", weapon_item->anim_num);
-        weapon_item->frame_num =
-            JSON_ObjectGetInt(weapon_obj, "frame_num", weapon_item->frame_num);
-        weapon_item->current_anim_state = JSON_ObjectGetInt(
-            weapon_obj, "current_anim_state", weapon_item->current_anim_state);
-        weapon_item->goal_anim_state = JSON_ObjectGetInt(
-            weapon_obj, "goal_anim_state", weapon_item->goal_anim_state);
-        weapon_item->status = IS_ACTIVE;
-        weapon_item->room_num = NO_ROOM;
+    if (header_version < VERSION_13) {
+        const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
+        Gun_Rifle_LoadLegacy(has_rifle);
+    } else {
+        const JSON_OBJECT *const weapon_obj =
+            JSON_ObjectGetObject(lara_obj, "weapon");
+        if (weapon_obj != nullptr) {
+            lara->gun_item_num = Item_Create();
+            ITEM *const weapon_item = Item_Get(lara->gun_item_num);
+            weapon_item->object_id = Object_FromGameID(JSON_ObjectGetInt(
+                weapon_obj, "obj_id", weapon_item->object_id));
+            weapon_item->anim_num = JSON_ObjectGetInt(
+                weapon_obj, "anim_num", weapon_item->anim_num);
+            weapon_item->frame_num = JSON_ObjectGetInt(
+                weapon_obj, "frame_num", weapon_item->frame_num);
+            weapon_item->current_anim_state = JSON_ObjectGetInt(
+                weapon_obj, "current_anim_state",
+                weapon_item->current_anim_state);
+            weapon_item->goal_anim_state = JSON_ObjectGetInt(
+                weapon_obj, "goal_anim_state", weapon_item->goal_anim_state);
+            weapon_item->status = IS_ACTIVE;
+            weapon_item->room_num = NO_ROOM;
+        }
     }
 
     if (!M_LoadLOT(JSON_ObjectGetObject(lara_obj, "lot"), &lara->lot)) {
