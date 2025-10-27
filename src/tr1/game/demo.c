@@ -1,26 +1,16 @@
 #include "game/demo.h"
 
-#include "game/game_string.h"
-#include "game/savegame.h"
-
 #include <libtrx/config.h>
 #include <libtrx/debug.h>
 #include <libtrx/game/camera.h>
-#include <libtrx/game/effects.h>
 #include <libtrx/game/game.h>
-#include <libtrx/game/game_flow.h>
-#include <libtrx/game/input.h>
+#include <libtrx/game/game_string.h>
 #include <libtrx/game/interpolation.h>
 #include <libtrx/game/lara.h>
-#include <libtrx/game/level.h>
 #include <libtrx/game/music.h>
-#include <libtrx/game/output.h>
 #include <libtrx/game/overlay.h>
-#include <libtrx/game/phase.h>
 #include <libtrx/game/random.h>
-#include <libtrx/game/shell.h>
-#include <libtrx/game/sound.h>
-#include <libtrx/log.h>
+#include <libtrx/game/rooms.h>
 #include <libtrx/version.h>
 
 #define L_MODIFY_CONFIG()                                                      \
@@ -47,7 +37,10 @@
 typedef struct {
     const uint32_t *demo_ptr;
     const GF_LEVEL *level;
-    CONFIG old_config;
+    struct {
+        CONFIG config;
+        GAME_BONUS_FLAG bonus_flag;
+    } old_config;
 } M_PRIV;
 
 static int32_t m_LastDemoNum = 0;
@@ -57,7 +50,9 @@ static void M_PrepareConfig(M_PRIV *const p)
 {
     // Changing certains settings affects negatively the original game demo
     // data, so temporarily turn off all relevant enhancements.
-    p->old_config = g_Config;
+    p->old_config.config = g_Config;
+    p->old_config.bonus_flag = Game_GetBonusFlag();
+    Game_SetBonusFlag(GBF_NONE);
 #define X_PROCESS_CONFIG(var, value) g_Config.var = value;
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
@@ -65,13 +60,16 @@ static void M_PrepareConfig(M_PRIV *const p)
 
 static void M_RestoreConfig(M_PRIV *const p)
 {
-#define X_PROCESS_CONFIG(var, value) g_Config.var = p->old_config.var;
+    Game_SetBonusFlag(p->old_config.bonus_flag);
+#define X_PROCESS_CONFIG(var, value) g_Config.var = p->old_config.config.var;
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
 }
 
-static bool M_ProcessInput(M_PRIV *const p)
+bool Demo_GetInput(void)
 {
+    M_PRIV *const p = &m_Priv;
+
     union {
         uint32_t any;
         struct {
@@ -89,7 +87,8 @@ static bool M_ProcessInput(M_PRIV *const p)
             uint32_t step_left:    1;
             uint32_t step_right:   1;
             uint32_t roll:         1;
-            uint32_t _pad:         7;
+            uint32_t _pad:         6;
+            uint32_t use_flare:    1;
             uint32_t menu_confirm: 1;
             uint32_t menu_back:    1;
             uint32_t save:         1;
@@ -102,7 +101,7 @@ static bool M_ProcessInput(M_PRIV *const p)
         return false;
     }
 
-    // Translate demo inputs (that use TombATI key values) to TR1X inputs.
+    // Translate demo inputs (that use hardcoded OG key layout) to TRX inputs.
     g_Input = (INPUT_STATE) {
         // clang-format off
         .forward      = demo_input.forward,
@@ -118,6 +117,7 @@ static bool M_ProcessInput(M_PRIV *const p)
         .step_left    = demo_input.step_left,
         .step_right   = demo_input.step_right,
         .roll         = demo_input.roll,
+        .use_flare    = demo_input.use_flare,
         .menu_confirm = demo_input.menu_confirm,
         .menu_back    = demo_input.menu_back,
         .save         = demo_input.save,
@@ -137,13 +137,12 @@ bool Demo_Start(const int32_t level_num)
     ASSERT(GF_GetCurrentLevel() == p->level);
 
     M_PrepareConfig(p);
+    Interpolation_Remember();
 
     // Remember old inputs in case the demo was forcefully started with some
     // keys pressed. In that case, it should only be stopped if the user
     // presses some other key.
     Input_Update();
-
-    Interpolation_Remember();
 
     const uint32_t *const data = Demo_GetData();
     if (data == nullptr) {
@@ -155,8 +154,6 @@ bool Demo_Start(const int32_t level_num)
         Music_Play_Direct(p->level->music_track, MPM_LOOPED);
     }
 
-    g_OverlayFlag = 1;
-    Camera_Initialise();
     p->demo_ptr = data;
 
     ITEM *const lara_item = Lara_GetItem();
@@ -167,19 +164,25 @@ bool Demo_Start(const int32_t level_num)
     lara_item->rot.x = *p->demo_ptr++;
     lara_item->rot.y = *p->demo_ptr++;
     lara_item->rot.z = *p->demo_ptr++;
+
     int16_t room_num = *p->demo_ptr++;
-
     Item_UpdateRoom(lara->item_num, room_num);
-
     const SECTOR *const sector = Room_GetSector(
         lara_item->pos.x, lara_item->pos.y, lara_item->pos.z, &room_num);
     lara_item->floor = Room_GetHeight(
         sector, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z);
 
+    if (g_TRVersion >= 2) {
+        lara->last_gun_type = *p->demo_ptr++;
+        Lara_Cheat_GetStuff();
+    } else {
+        lara->last_gun_type = LGT_PISTOLS;
+    }
+
+    Camera_Initialise();
     Random_SeedDraw(0xD371F947);
     Random_SeedControl(0xD371F947);
-
-    lara->last_gun_type = LGT_PISTOLS;
+    g_OverlayFlag = 1;
 
     Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
     return true;
@@ -222,59 +225,7 @@ int32_t Demo_ChooseLevel(const int32_t demo_num)
 
 GF_COMMAND Demo_Control(void)
 {
-    Interpolation_Remember();
-    M_PRIV *const p = &m_Priv;
-
-    Input_Update();
-    Shell_ProcessInput();
-
-    if (g_InputDB.pause) {
-        PHASE *const subphase = Phase_Pause_Create();
-        const GF_COMMAND gf_cmd = PhaseExecutor_Run(subphase);
-        Phase_Pause_Destroy(subphase);
-        return gf_cmd;
-    } else if (g_InputDB.toggle_photo_mode) {
-        PHASE *const subphase = Phase_PhotoMode_Create();
-        const GF_COMMAND gf_cmd = PhaseExecutor_Run(subphase);
-        Phase_PhotoMode_Destroy(subphase);
-        return gf_cmd;
-    }
-
-    if (Game_IsLevelComplete() || g_InputDB.menu_confirm
-        || g_InputDB.menu_back) {
-        return (GF_COMMAND) {
-            .action = GF_EXIT_TO_TITLE,
-            .param = p->level->num,
-        };
-    }
-    g_Input.any = 0;
-    g_InputDB.any = 0;
-
-    if (!M_ProcessInput(p)) {
-        return (GF_COMMAND) {
-            .action = GF_EXIT_TO_TITLE,
-            .param = p->level->num,
-        };
-    }
-    Lara_Cheat_CheckKeys();
-
-    Game_ProcessInput();
-
-    Output_ResetDynamicLights();
-
-    Sound_ResetAmbient();
-    Item_Control();
-    Effect_Control();
-
-    Lara_Control();
-    Lara_Hair_Control(false);
-
-    Camera_Update();
-    ItemAction_RunActive();
-    Sound_UpdateEffects();
-    Output_AnimateTextures(1);
-
-    return (GF_COMMAND) { .action = GF_NOOP };
+    return Game_Control(true);
 }
 
 void Demo_StopFlashing(void)

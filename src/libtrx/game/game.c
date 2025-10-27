@@ -203,7 +203,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
         return GF_PauseGame();
     }
 
-#if TR_VERSION == 2
     if (demo_mode) {
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
@@ -213,7 +212,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
     }
-#endif
 
     if (lara->death_timer > DEATH_WAIT
         || (lara->death_timer > DEATH_WAIT_INPUT
