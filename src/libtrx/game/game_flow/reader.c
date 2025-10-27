@@ -541,6 +541,13 @@ static void M_LoadLevel(
         }
     }
 
+    level->unobtainable.pickups =
+        JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
+    level->unobtainable.kills =
+        JSON_ObjectGetInt(jlvl_obj, "unobtainable_kills", 0);
+    level->unobtainable.secrets =
+        JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
+
     M_CopyRootSettingsIntoLevel(ctx, &level->settings, &ctx->gf->settings);
     M_LoadLevelGameSpecifics(ctx, jlvl_obj, level);
 

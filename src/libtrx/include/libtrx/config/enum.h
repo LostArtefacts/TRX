@@ -117,10 +117,8 @@ typedef enum {
     TLM_NONE,
 } TARGET_LOCK_MODE;
 
-#if TR_VERSION == 1
 typedef enum {
     SDM_MINIMAL,
     SDM_DETAILED,
     SDM_FULL,
 } STAT_DETAIL_MODE;
-#endif

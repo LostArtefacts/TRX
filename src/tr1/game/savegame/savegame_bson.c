@@ -1,5 +1,4 @@
 #include "game/savegame.h"
-#include "game/stats.h"
 
 #include <libtrx/bson.h>
 #include <libtrx/config.h>
@@ -22,6 +21,7 @@
 #include <libtrx/game/pathing.h>
 #include <libtrx/game/savegame/bson.h>
 #include <libtrx/game/shell.h>
+#include <libtrx/game/stats.h>
 #include <libtrx/json.h>
 #include <libtrx/log.h>
 #include <libtrx/memory.h>
@@ -274,14 +274,6 @@ static bool M_LoadResumeInfo(
             JSON_ObjectGetInt(resume_obj, "kills", resume->stats.kill_count);
         resume->stats.pickup_count = JSON_ObjectGetInt(
             resume_obj, "pickups", resume->stats.pickup_count);
-        resume->stats.max_secret_count = JSON_ObjectGetInt(
-            resume_obj, "max_secrets", resume->stats.max_secret_count);
-        resume->stats.all_secrets_mask = JSON_ObjectGetInt(
-            resume_obj, "all_secrets_mask", resume->stats.all_secrets_mask);
-        resume->stats.max_kill_count = JSON_ObjectGetInt(
-            resume_obj, "max_kills", resume->stats.max_kill_count);
-        resume->stats.max_pickup_count = JSON_ObjectGetInt(
-            resume_obj, "max_pickups", resume->stats.max_pickup_count);
         if (header_version >= VERSION_7) {
             resume->stats.ammo_hits = JSON_ObjectGetInt(
                 resume_obj, "ammo_hits", resume->stats.ammo_hits);
@@ -1147,12 +1139,6 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
         JSON_ObjectAppendInt(resume_obj, "kills", resume->stats.kill_count);
         JSON_ObjectAppendInt(resume_obj, "secrets", resume->stats.secret_flags);
         JSON_ObjectAppendInt(resume_obj, "pickups", resume->stats.pickup_count);
-        JSON_ObjectAppendInt(
-            resume_obj, "max_kills", resume->stats.max_kill_count);
-        JSON_ObjectAppendInt(
-            resume_obj, "max_secrets", resume->stats.max_secret_count);
-        JSON_ObjectAppendInt(
-            resume_obj, "max_pickups", resume->stats.max_pickup_count);
         JSON_ArrayAppendObject(resume_arr, resume_obj);
         JSON_ObjectAppendInt(resume_obj, "ammo_hits", resume->stats.ammo_hits);
         JSON_ObjectAppendInt(resume_obj, "ammo_used", resume->stats.ammo_used);

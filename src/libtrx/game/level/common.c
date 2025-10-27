@@ -69,9 +69,7 @@ bool Level_Initialise(
             resume->stats.timer = 0;
             resume->stats.secret_flags = 0;
             resume->stats.secret_count = 0;
-#if TR_VERSION == 1
             resume->stats.pickup_count = 0;
-#endif
             resume->stats.kill_count = 0;
             resume->stats.ammo_hits = 0;
             resume->stats.ammo_used = 0;

@@ -147,6 +147,7 @@ static void M_ReadStats(LEVEL_STATS *const stats)
     stats->kill_count = M_ReadU16();
     stats->secret_flags = M_ReadU8();
     stats->medipacks_used = M_ReadU8() / 2.0f;
+    stats->death_count = -1;
     Stats_UpdateSecrets(stats);
 }
 
