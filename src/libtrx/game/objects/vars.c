@@ -272,6 +272,19 @@ const OBJECT_ID g_GunObjects[] = {
     // clang-format on
 };
 
+const OBJECT_ID g_GunAmmoObjects[] = {
+    // clang-format off
+    O_PISTOL_AMMO_ITEM,
+    O_SHOTGUN_AMMO_ITEM,
+    O_MAGNUM_AMMO_ITEM,
+    O_UZI_AMMO_ITEM,
+    O_HARPOON_AMMO_ITEM,
+    O_M16_AMMO_ITEM,
+    O_GRENADE_AMMO_ITEM,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const OBJECT_ID g_DoorObjects[] = {
     // clang-format off
     O_DOOR_TYPE_1,

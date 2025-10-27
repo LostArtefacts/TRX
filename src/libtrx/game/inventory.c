@@ -51,7 +51,7 @@ static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
-static void M_AddAmmo(const LARA_GUN_TYPE gun_type, const int32_t qty)
+static void M_IncreaseAmmo(const LARA_GUN_TYPE gun_type, const int32_t qty)
 {
     AMMO_INFO *const ammo = Gun_GetAmmoInfo(gun_type);
     ammo->ammo += qty;
@@ -69,7 +69,7 @@ static RING_TYPE M_GetRingType(const INVENTORY_ITEM *const inv_item)
     }
 }
 
-void Inv_AddGun(const LARA_GUN_TYPE gun_type)
+static void M_AddGun(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
@@ -77,9 +77,9 @@ void Inv_AddGun(const LARA_GUN_TYPE gun_type)
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     for (int32_t i = Inv_RequestItem(ammo_object); i > 0; i--) {
         Inv_RemoveItem(ammo_object);
-        M_AddAmmo(gun_type, ammo_qty);
+        M_IncreaseAmmo(gun_type, ammo_qty);
     }
-    M_AddAmmo(gun_type, ammo_qty);
+    M_IncreaseAmmo(gun_type, ammo_qty);
     Inv_InsertItem(M_GetGunInvItem(gun_type));
     if (lara->last_gun_type == LGT_UNARMED) {
         lara->last_gun_type = gun_type;
@@ -95,12 +95,12 @@ void Inv_AddGun(const LARA_GUN_TYPE gun_type)
     Item_GlobalReplace(gun_object, ammo_object);
 }
 
-void Inv_AddAmmo(const LARA_GUN_TYPE gun_type)
+static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     if (Inv_RequestItem(gun_object)) {
-        M_AddAmmo(gun_type, ammo_qty);
+        M_IncreaseAmmo(gun_type, ammo_qty);
     } else {
         Inv_InsertItem(M_GetAmmoInvItem(gun_type));
     }
@@ -245,93 +245,27 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
         }
     }
 
-    switch (obj_id) {
-    case O_COMPASS_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_Compass);
-        return true;
-
-    case O_STOPWATCH_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_Stopwatch);
-        return true;
-
-    case O_PISTOL_ITEM:
-    case O_PISTOL_OPTION:
+    // Pistols
+    if (inv_obj_id == O_PISTOL_OPTION) {
         Inv_InsertItem(&g_InvRing_Item_Pistols);
         if (lara->last_gun_type == LGT_UNARMED) {
             lara->last_gun_type = LGT_PISTOLS;
         }
         return true;
+    }
 
-    case O_SHOTGUN_ITEM:
-    case O_SHOTGUN_OPTION:
-        Inv_AddGun(LGT_SHOTGUN);
-        return false;
-
-    case O_MAGNUM_ITEM:
-    case O_MAGNUM_OPTION:
-        Inv_AddGun(LGT_MAGNUMS);
-        return false;
-
-    case O_UZI_ITEM:
-    case O_UZI_OPTION:
-        Inv_AddGun(LGT_UZIS);
-        return false;
-
-    case O_HARPOON_ITEM:
-    case O_HARPOON_OPTION:
-        Inv_AddGun(LGT_HARPOON);
-        return false;
-
-    case O_M16_ITEM:
-    case O_M16_OPTION:
-        Inv_AddGun(LGT_M16);
-        return false;
-
-    case O_GRENADE_ITEM:
-    case O_GRENADE_OPTION:
-        Inv_AddGun(LGT_GRENADE);
-        return false;
-
-    case O_SHOTGUN_AMMO_ITEM:
-    case O_SHOTGUN_AMMO_OPTION:
-        Inv_AddAmmo(LGT_SHOTGUN);
-        return false;
-
-    case O_MAGNUM_AMMO_ITEM:
-    case O_MAGNUM_AMMO_OPTION:
-        Inv_AddAmmo(LGT_MAGNUMS);
-        return false;
-
-    case O_UZI_AMMO_ITEM:
-    case O_UZI_AMMO_OPTION:
-        Inv_AddAmmo(LGT_UZIS);
-        return false;
-
-    case O_HARPOON_AMMO_ITEM:
-    case O_HARPOON_AMMO_OPTION:
-        Inv_AddAmmo(LGT_HARPOON);
-        return false;
-
-    case O_M16_AMMO_ITEM:
-    case O_M16_AMMO_OPTION:
-        Inv_AddAmmo(LGT_M16);
-        return false;
-
-    case O_GRENADE_AMMO_ITEM:
-    case O_GRENADE_AMMO_OPTION:
-        Inv_AddAmmo(LGT_GRENADE);
-        return false;
-
-    case O_SMALL_MEDIPACK_ITEM:
-    case O_SMALL_MEDIPACK_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_SmallMedi);
+    // Other guns
+    if (Object_IsType(obj_id, g_GunObjects)) {
+        M_AddGun(Gun_GetType(obj_id));
         return true;
-
-    case O_LARGE_MEDIPACK_ITEM:
-    case O_LARGE_MEDIPACK_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_LargeMedi);
+    }
+    if (Object_IsType(obj_id, g_GunAmmoObjects)) {
+        M_AddAmmo(
+            Gun_GetType(Object_GetCognateInverse(obj_id, g_GunAmmoObjectMap)));
         return true;
+    }
 
+    switch (obj_id) {
     case O_FLARES_ITEM:
     case O_FLARES_OPTION:
         for (int32_t i = 0; i < M_GetFlareQuantity(); i++) {
@@ -343,70 +277,20 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
         Inv_InsertItem(&g_InvRing_Item_Flare);
         return true;
 
-    case O_PUZZLE_ITEM_1:
-    case O_PUZZLE_OPTION_1:
-        Inv_InsertItem(&g_InvRing_Item_Puzzle1);
-        return true;
-
-    case O_PUZZLE_ITEM_2:
-    case O_PUZZLE_OPTION_2:
-        Inv_InsertItem(&g_InvRing_Item_Puzzle2);
-        return true;
-
-    case O_PUZZLE_ITEM_3:
-    case O_PUZZLE_OPTION_3:
-        Inv_InsertItem(&g_InvRing_Item_Puzzle3);
-        return true;
-
-    case O_PUZZLE_ITEM_4:
-    case O_PUZZLE_OPTION_4:
-        Inv_InsertItem(&g_InvRing_Item_Puzzle4);
-        return true;
-
-    case O_KEY_ITEM_1:
-    case O_KEY_OPTION_1:
-        Inv_InsertItem(&g_InvRing_Item_Key1);
-        return true;
-
-    case O_KEY_ITEM_2:
-    case O_KEY_OPTION_2:
-        Inv_InsertItem(&g_InvRing_Item_Key2);
-        return true;
-
-    case O_KEY_ITEM_3:
-    case O_KEY_OPTION_3:
-        Inv_InsertItem(&g_InvRing_Item_Key3);
-        return true;
-
-    case O_KEY_ITEM_4:
-    case O_KEY_OPTION_4:
-        Inv_InsertItem(&g_InvRing_Item_Key4);
-        return true;
-
-    case O_PICKUP_ITEM_1:
-    case O_PICKUP_OPTION_1:
-        Inv_InsertItem(&g_InvRing_Item_Pickup1);
-        return true;
-
-    case O_PICKUP_ITEM_2:
-    case O_PICKUP_OPTION_2:
-        Inv_InsertItem(&g_InvRing_Item_Pickup2);
-        return true;
-
-    case O_LEADBAR_ITEM:
-    case O_LEADBAR_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_LeadBar);
-        return true;
-
-    case O_SCION_ITEM_1:
-    case O_SCION_ITEM_2:
-    case O_SCION_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_Scion);
-        return true;
-
     default:
-        return false;
+        break;
     }
+
+    // Other cases
+    for (int32_t i = 0; g_InvRing_Items[i] != nullptr; i++) {
+        INVENTORY_ITEM *const inv_item = g_InvRing_Items[i];
+        if (inv_item->object_id == obj_id
+            || inv_item->object_id == inv_obj_id) {
+            Inv_InsertItem(inv_item);
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Inv_AddPickup(const ITEM *const item)
