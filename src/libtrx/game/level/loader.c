@@ -1263,11 +1263,7 @@ void Level_ReadDemoData(VFILE *const file)
     BENCHMARK benchmark = Benchmark_Start();
     const uint16_t size = VFile_ReadU16(file);
     LOG_INFO("demo buffer size: %d", size);
-    Demo_InitialiseData(size);
-    if (size != 0) {
-        uint32_t *const data = Demo_GetData();
-        VFile_Read(file, data, size);
-    }
+    Demo_LoadData(file, size);
     Benchmark_End(&benchmark, nullptr);
 }
 
