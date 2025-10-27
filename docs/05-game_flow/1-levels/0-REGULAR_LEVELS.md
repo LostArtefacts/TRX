@@ -197,21 +197,21 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>unobtainable_kills</code><strong>¹</strong></td>
+    <td><code>unobtainable_kills</code></td>
     <td>Integer</td>
     <td colspan="2">
       A count of enemies that will be excluded from kill statistics.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>unobtainable_pickups</code><strong>¹</strong></td>
+    <td><code>unobtainable_pickups</code></td>
     <td>Integer</td>
     <td colspan="2">
       A count of items that will be excluded from pickup statistics.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>unobtainable_secrets</code><strong>¹</strong></td>
+    <td><code>unobtainable_secrets</code></td>
     <td>Integer</td>
     <td colspan="2">
       A count of secrets that will be excluded from secret statistics. Useful for level demos.

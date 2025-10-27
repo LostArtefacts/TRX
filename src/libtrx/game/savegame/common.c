@@ -20,7 +20,6 @@
 static SAVEGAME_VERSION m_InitialVersion = VERSION_LEGACY;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
 static RESUME_INFO *m_ResumeInfo = nullptr;
-static STATS_COMMON *m_DefaultStats = nullptr;
 static int32_t m_SaveSlots = 0;
 static int32_t m_SavedGames = 0;
 static int32_t m_SaveCounter = 0;
@@ -30,6 +29,14 @@ static int32_t m_BoundSlot = -1;
 
 static int32_t m_StrategyCount = 0;
 static SAVEGAME_STRATEGY m_Strategies[MAX_STRATEGIES];
+
+static void M_CopyResumeInfo(
+    RESUME_INFO *const target, const RESUME_INFO *const source)
+{
+    const LEVEL_MAX_STATS max_stats = target->max_stats;
+    memcpy(target, source, sizeof(RESUME_INFO));
+    target->max_stats = max_stats;
+}
 
 static void M_ClearSlot(SAVEGAME_INFO *const savegame_info)
 {
@@ -329,7 +336,6 @@ void Savegame_Shutdown(void)
     M_ClearSlots();
     Memory_FreePointer(&m_ResumeInfo);
     Memory_FreePointer(&m_SavegameInfo);
-    Memory_FreePointer(&m_DefaultStats);
 }
 
 int32_t Savegame_GetSlotCount(void)
@@ -347,7 +353,7 @@ RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
         return &m_ResumeInfo[level->num];
     } else if (level->type == GFL_DEMO) {
         return &m_ResumeInfo[GF_GetLevelTable(GFLT_MAIN)->count];
-    } else if (level->type == GFL_CUTSCENE) {
+    } else if (level->type == GFL_CUTSCENE || level->type == GFL_TITLE) {
         return nullptr;
     }
     LOG_WARNING(
@@ -389,7 +395,7 @@ void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
 {
     LOG_INFO("Resetting resume info for level #%d", level->num);
     RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
-    memset(current, 0, sizeof(RESUME_INFO));
+    M_CopyResumeInfo(current, &(RESUME_INFO) {});
 }
 
 void Savegame_CarryCurrentInfoToNextLevel(
@@ -401,7 +407,7 @@ void Savegame_CarryCurrentInfoToNextLevel(
     RESUME_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
     RESUME_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
     if (src_resume != nullptr && dst_resume != nullptr) {
-        memcpy(dst_resume, src_resume, sizeof(RESUME_INFO));
+        M_CopyResumeInfo(dst_resume, src_resume);
     }
 }
 
@@ -599,12 +605,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 #endif
     }
 
-#if TR_VERSION == 2
-    const STATS_COMMON default_stats = Savegame_GetDefaultStats(level);
-    resume->stats.max_secret_count = default_stats.max_secret_count;
-    resume->stats.all_secrets_mask = default_stats.all_secrets_mask;
     resume->stats.secret_flags = 0;
-#endif
 
     M_DetermineLegacyGunTypes(resume);
 }
@@ -629,25 +630,6 @@ void Savegame_ProcessItemsBeforeLoad(void)
             obj->handle_save_func(item, SAVEGAME_STAGE_BEFORE_LOAD);
         }
     }
-}
-
-void Savegame_SetDefaultStats(
-    const GF_LEVEL *const level, const STATS_COMMON stats)
-{
-    if (m_DefaultStats == nullptr) {
-        m_DefaultStats = Memory_Alloc(
-            sizeof(STATS_COMMON) * GF_GetLevelTable(GFLT_MAIN)->count);
-    }
-    m_DefaultStats[level->num] = stats;
-}
-
-STATS_COMMON Savegame_GetDefaultStats(const GF_LEVEL *const level)
-{
-    if (m_DefaultStats == nullptr
-        || (level->type != GFL_NORMAL && level->type != GFL_BONUS)) {
-        return (STATS_COMMON) {};
-    }
-    return m_DefaultStats[level->num];
 }
 
 void Savegame_ScanSavedGames(void)

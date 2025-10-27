@@ -1254,7 +1254,6 @@ void Level_ReadItems(const LEVEL_LOADER *const loader, VFILE *const file)
     }
 
 finish:
-    Stats_ObserveItemsLoad();
     Benchmark_End(&benchmark, nullptr);
 }
 

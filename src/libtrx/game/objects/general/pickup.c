@@ -10,6 +10,7 @@
 #include "game/random.h"
 #include "game/rooms.h"
 #include "game/savegame.h"
+#include "game/stats.h"
 
 // clang-format off
 #define M_LF_PICKUP_ERASE       42
@@ -58,8 +59,6 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
 
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
-
-extern void Stats_AddPickup(void);
 
 static void M_Initialise(int16_t item_num)
 {
@@ -168,9 +167,7 @@ static void M_DoPickup(const int16_t item_num)
 
     Overlay_AddDisplayPickup(item->object_id);
     Inv_AddPickup(item);
-#if TR_VERSION == 1
     Stats_AddPickup();
-#endif
     // Notify Lua pickup listeners
     Lua_FireEvent(LUA_EVENT_PICKUP, item_num); // LUA uses 1-indexing
 

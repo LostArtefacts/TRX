@@ -31,9 +31,6 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
-// TODO: refactor
-extern void Level_Init(void);
-
 static const SHELL_ARGS *m_ShellArgs = nullptr;
 static SDL_Window *m_Window = nullptr;
 
@@ -276,10 +273,6 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         }
         Lua_FreeResult(&res);
     }
-
-#if TR_VERSION == 2
-    Level_Init();
-#endif
 
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
 

@@ -115,9 +115,7 @@ typedef struct {
         float pickup_scale;
 
         UI_STYLE menu_style;
-#if TR_VERSION == 1
         STAT_DETAIL_MODE stat_detail_mode;
-#endif
         bool enable_stats_level_header;
 
         BACKGROUND_TYPE inventory_background_style;
@@ -177,9 +175,7 @@ typedef struct {
         bool disable_healing_between_levels;
         bool disable_medpacks;
         bool disable_extra_guns;
-#if TR_VERSION == 1
         bool enable_deaths_counter;
-#endif
         bool enable_pickup_aids;
         bool enable_save_crystals;
         bool enable_enhanced_saves;

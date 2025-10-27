@@ -6,6 +6,7 @@
 #include "game/objects.h"
 #include "game/overlay.h"
 #include "game/savegame.h"
+#include "game/stats.h"
 
 static int8_t m_SecretInvItems[O_NUMBER_OF] = {};
 static int8_t m_Add2InvItems[O_NUMBER_OF] = {};
@@ -140,6 +141,12 @@ static void M_ModifyResumeInfo_Item(
     M_ResumeInfo_AddItem(resume, object_id, m_Add2InvItems[object_id]);
 }
 
+static void M_CollectNewPickup(const OBJECT_ID object_id)
+{
+    Overlay_AddDisplayPickup(object_id);
+    Stats_AddPickup();
+}
+
 static void M_ModifyInventory_GunOrAmmo(
     const GF_INV_TYPE type, const LARA_GUN_TYPE gun_type)
 {
@@ -156,7 +163,7 @@ static void M_ModifyInventory_GunOrAmmo(
         if (type == GF_INV_SECRET) {
             ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_object_id];
             for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
-                Overlay_AddDisplayPickup(ammo_object_id);
+                M_CollectNewPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
             ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_object_id];
@@ -169,9 +176,9 @@ static void M_ModifyInventory_GunOrAmmo(
 
         if (type == GF_INV_SECRET) {
             ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_object_id];
-            Overlay_AddDisplayPickup(gun_object_id);
+            M_CollectNewPickup(gun_object_id);
             for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
-                Overlay_AddDisplayPickup(ammo_object_id);
+                M_CollectNewPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
             ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_object_id];
@@ -179,7 +186,7 @@ static void M_ModifyInventory_GunOrAmmo(
     } else if (type == GF_INV_SECRET) {
         for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
             Inv_AddItem(ammo_object_id);
-            Overlay_AddDisplayPickup(ammo_object_id);
+            M_CollectNewPickup(ammo_object_id);
         }
     } else if (type == GF_INV_REGULAR) {
         for (int32_t i = 0; i < m_Add2InvItems[ammo_object_id]; i++) {
@@ -205,7 +212,7 @@ static void M_ModifyInventory_Item(
 
     for (int32_t i = 0; i < qty; i++) {
         if (Inv_AddItem(object_id) && type == GF_INV_SECRET) {
-            Overlay_AddDisplayPickup(object_id);
+            M_CollectNewPickup(object_id);
         }
     }
 }
@@ -228,8 +235,7 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
         const GF_SEQUENCE_EVENT *const event = &level->sequence.events[i];
         if (event->type == GFS_ADD_ITEM
             || event->type == GFS_ADD_SECRET_REWARD) {
-            const GF_ADD_ITEM_DATA *const data =
-                (const GF_ADD_ITEM_DATA *)event->data;
+            const GF_ADD_ITEM_DATA *const data = event->data;
             if (data->object_id < O_FIRST || data->object_id >= O_NUMBER_OF) {
                 continue;
             }
@@ -250,6 +256,24 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
             m_RemoveScions = true;
         }
     }
+}
+
+int32_t GF_GetSecretRewardCount(const GF_LEVEL *const level)
+{
+    int32_t sum = 0;
+    if (level == nullptr) {
+        return sum;
+    }
+    for (int32_t i = 0; i < level->sequence.length; i++) {
+        const GF_SEQUENCE_EVENT *const event = &level->sequence.events[i];
+        if (event->type == GFS_ADD_SECRET_REWARD) {
+            const GF_ADD_ITEM_DATA *const data = event->data;
+            if (data->inv_type == GF_INV_SECRET) {
+                sum += data->quantity;
+            }
+        }
+    }
+    return sum;
 }
 
 void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)

@@ -642,7 +642,7 @@
         "SETTING_STATS_LEVEL_HEADER": "Level-Zähler",
         "SETTING_STATS_LEVEL_HEADER_DESCRIPTION": "Zeigt die aktuelle Level-Nummer ganz oben in den Level-Statistiken an.",
         "SETTING_STAT_DETAIL_MODE": "Statistik-Details",
-        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "Erlaubt verschiedene Stufen von Statistik-Details.\n\n- Minimal: Zeigt getötete Gegner, Pickups, Geheimnisse und benötigte Spielzeit.\n- Detailliert: Zeigt alle Statistiken zur minimalen Anzahl der Pickups sowie auch die maximale Anzahl der Pickups und getöteter Gegner in jedem Level an.\n- Vollständig; Zeigt alle Statistiken von Detailiert, zusätzlich noch Schuss-zu-Treffer-Verhältnis, verwendete Munition und Verbände sowie die zurückgelegte Strecke an.",
+        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "\\{review}Ermöglicht verschiedene Detailstufen der Statistik.\n\n- Minimal: zeigt den ursprünglichen Statistikdialog.\n- Detailliert: zeigt alle Statistiken aus Minimal sowie die maximalen Werte neben jedem Feld.\n- Vollständig: zeigt alle Statistiken aus Detailliert sowie neue Zeilen, die im ursprünglichen Dialog nicht verfügbar sind.",
         "SETTING_TARGET_MODE": "Modis für automatische Anvisierung",
         "SETTING_TARGET_MODE_DESCRIPTION": "Ändert das automatische Anvisierungsverhalten von Laras Waffen gegenüber Zielen.\n\n- Volles Lock-On: Das Ziel immer bleibt anvisiert, selbst wenn sich der Feind außer Sicht ist oder stirbt (OG TR1-3).\n- Halbes Lock-On: Das Ziel bleibt anvisiert wenn der Feind sich außer Sicht bewegt, löst aber die Anvisierung sobald der Gegner stibt.\n- Kein Lock-On: Löse die Anvisierung sobald der Feind sich außer Sicht bewegt oder stibt (TR4+).",
         "SETTING_TEXTURE_FILTER": "Textur-Filter",

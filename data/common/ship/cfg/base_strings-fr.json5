@@ -642,7 +642,7 @@
         "SETTING_STATS_LEVEL_HEADER": "\\{review}En-tête des statistiques de niveau",
         "SETTING_STATS_LEVEL_HEADER_DESCRIPTION": "\\{review}Affiche le numéro de niveau actuel en haut des statistiques de niveau.",
         "SETTING_STAT_DETAIL_MODE": "Détail des statistiques",
-        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "Permet différents niveaux de détail des statistiques.\n- Minimal : indique les ennemis tués, les objets trouvés, les secrets et le temps passé.\n- Détaillé : indique toutes les statistiques de mode minimal ainsi que le nombre total d'objets à trouver et d'ennemis à tuer pour chaque niveau.\n- Complet : indique toutes les statistiques du mode détaillé ainsi que les tirs réussis, les munitions utilisées, les trousses de soin utilisées et la distance parcourue.",
+        "SETTING_STAT_DETAIL_MODE_DESCRIPTION": "\\{review}Permet différents niveaux de détail des statistiques.\n\n- Minimal : affiche la boîte de dialogue des statistiques originale.\n- Détail : affiche toutes les statistiques du mode minimal ainsi que les valeurs maximales près de chaque champ.\n- Complet : affiche toutes les statistiques du mode détail ainsi que de nouvelles lignes non disponibles dans la boîte de dialogue originale.",
         "SETTING_TARGET_MODE": "Mode de verrouillage",
         "SETTING_TARGET_MODE_DESCRIPTION": "Modifie le comportement de verrouillage des cibles.\n- Complet : Verrouille la cible même si elle sort du champ de vision ou meurt (TR1-3).\n- Hybride : Verrouille la cible si elle sort du champ de vision, mais déverrouille si elle meurt.\n- Aucun : Déverrouille la cible si elle sort du champ de vision ou meurt (TR4+).",
         "SETTING_TEXTURE_FILTER": "Filtre des texture",

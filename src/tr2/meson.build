@@ -91,13 +91,10 @@ sources = [
   init,
   'game/creature.c',
   'game/game_string.c',
-  'game/level.c',
   'game/objects/common.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
-  'game/stats.c',
   'game/ui/dialogs/stats.c',
-  'global/enum_map.c',
   resources,
 ]
 

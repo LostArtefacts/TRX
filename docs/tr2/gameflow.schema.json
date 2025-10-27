@@ -192,6 +192,32 @@
           "items": {
             "type": "string"
           }
+        },
+        "water_color": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "fog_start": {
+          "type": "number"
+        },
+        "fog_end": {
+          "type": "number"
+        },
+        "inherit_injections": {
+          "type": "boolean"
+        },
+        "unobtainable_pickups": {
+          "type": "integer"
+        },
+        "unobtainable_kills": {
+          "type": "integer"
+        },
+        "unobtainable_secrets": {
+          "type": "integer"
         }
       },
       "anyOf": [
