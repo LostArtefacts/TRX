@@ -202,11 +202,9 @@ typedef struct {
         bool enable_jump_twists;
         bool enable_uw_roll;
         bool enable_tr2_swimming;
-#if TR_VERSION == 1
         bool enable_wading;
         bool enable_tr2_swim_cancel;
         bool enable_tr2_jumping;
-#endif
         bool enable_swing_cancel;
         bool enable_smooth_wall_deflect;
         bool enable_lean_jumping;
@@ -240,9 +238,7 @@ typedef struct {
         int32_t camera_speed;
         int32_t start_lara_hitpoints;
         int32_t maximum_save_slots;
-#if TR_VERSION > 1
         int32_t harpoon_recoil;
-#endif
 
         JUMP_LOCK_MODE jump_lock_mode;
         TARGET_LOCK_MODE target_mode;
