@@ -18,6 +18,7 @@ bool Stats_AddSecret(int16_t secret_idx);
 extern uint32_t Stats_GetMaxSecretFlags(void);
 
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
+extern void Stats_MarkSecretCollected(const ITEM *item);
 extern bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type);
 
 void Stats_AddMedipacksUsed(double medipack_value);

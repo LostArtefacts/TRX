@@ -197,6 +197,17 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
         Inv_InsertItem(&g_InvRing_Item_Pickup2);
         return true;
 
+    case O_LEADBAR_ITEM:
+    case O_LEADBAR_OPTION:
+        Inv_InsertItem(&g_InvRing_Item_LeadBar);
+        return true;
+
+    case O_SCION_ITEM_1:
+    case O_SCION_ITEM_2:
+    case O_SCION_OPTION:
+        Inv_InsertItem(&g_InvRing_Item_Scion);
+        return true;
+
     default:
         return false;
     }

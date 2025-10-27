@@ -80,6 +80,21 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
         Inv_AddGun(LGT_UZIS);
         return false;
 
+    case O_HARPOON_ITEM:
+    case O_HARPOON_OPTION:
+        Inv_AddGun(LGT_HARPOON);
+        return false;
+
+    case O_M16_ITEM:
+    case O_M16_OPTION:
+        Inv_AddGun(LGT_M16);
+        return false;
+
+    case O_GRENADE_ITEM:
+    case O_GRENADE_OPTION:
+        Inv_AddGun(LGT_GRENADE);
+        return false;
+
     case O_SHOTGUN_AMMO_ITEM:
     case O_SHOTGUN_AMMO_OPTION:
         Inv_AddAmmo(LGT_SHOTGUN);
@@ -95,6 +110,21 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
         Inv_AddAmmo(LGT_UZIS);
         return false;
 
+    case O_HARPOON_AMMO_ITEM:
+    case O_HARPOON_AMMO_OPTION:
+        Inv_AddAmmo(LGT_HARPOON);
+        return false;
+
+    case O_M16_AMMO_ITEM:
+    case O_M16_AMMO_OPTION:
+        Inv_AddAmmo(LGT_M16);
+        return false;
+
+    case O_GRENADE_AMMO_ITEM:
+    case O_GRENADE_AMMO_OPTION:
+        Inv_AddAmmo(LGT_GRENADE);
+        return false;
+
     case O_SMALL_MEDIPACK_ITEM:
     case O_SMALL_MEDIPACK_OPTION:
         Inv_InsertItem(&g_InvRing_Item_SmallMedi);
@@ -103,6 +133,17 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     case O_LARGE_MEDIPACK_ITEM:
     case O_LARGE_MEDIPACK_OPTION:
         Inv_InsertItem(&g_InvRing_Item_LargeMedi);
+        return true;
+
+    case O_FLARES_ITEM:
+    case O_FLARES_OPTION:
+        for (int32_t i = 0; i < M_GetFlareQuantity(); i++) {
+            Inv_AddItem(O_FLARE_ITEM);
+        }
+        return true;
+
+    case O_FLARE_ITEM:
+        Inv_InsertItem(&g_InvRing_Item_Flare);
         return true;
 
     case O_PUZZLE_ITEM_1:
@@ -123,11 +164,6 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     case O_PUZZLE_ITEM_4:
     case O_PUZZLE_OPTION_4:
         Inv_InsertItem(&g_InvRing_Item_Puzzle4);
-        return true;
-
-    case O_LEADBAR_ITEM:
-    case O_LEADBAR_OPTION:
-        Inv_InsertItem(&g_InvRing_Item_LeadBar);
         return true;
 
     case O_KEY_ITEM_1:
@@ -160,31 +196,36 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
         Inv_InsertItem(&g_InvRing_Item_Pickup2);
         return true;
 
+    case O_LEADBAR_ITEM:
+    case O_LEADBAR_OPTION:
+        Inv_InsertItem(&g_InvRing_Item_LeadBar);
+        return true;
+
     case O_SCION_ITEM_1:
     case O_SCION_ITEM_2:
     case O_SCION_OPTION:
         Inv_InsertItem(&g_InvRing_Item_Scion);
         return true;
 
-    case O_FLARES_ITEM:
-    case O_FLARES_OPTION:
-        for (int32_t i = 0; i < M_GetFlareQuantity(); i++) {
-            Inv_AddItem(O_FLARE_ITEM);
-        }
-        return true;
-
-    case O_FLARE_ITEM:
-        Inv_InsertItem(&g_InvRing_Item_Flare);
-        return true;
-
     default:
         return false;
     }
-
-    return false;
 }
 
 bool Inv_AddPickup(const ITEM *const item)
 {
+    switch (item->object_id) {
+    case O_SECRET_1:
+    case O_SECRET_2:
+    case O_SECRET_3:
+        Stats_MarkSecretCollected(item);
+        if (Stats_CheckAllLevelSecretsCollected()) {
+            GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
+        }
+        return true;
+    default:
+        break;
+    }
+
     return Inv_AddItem(item->object_id);
 }
