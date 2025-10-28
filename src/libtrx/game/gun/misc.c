@@ -454,7 +454,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
         }
 
         ITEM *const item = Item_Get(creature->item_num);
-        if (item->hit_points <= 0) {
+        if (!Creature_IsTargetable(item)) {
             continue;
         }
 
