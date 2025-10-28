@@ -188,9 +188,9 @@ static void M_Control(const int16_t item_num)
 
         case PIERRE_STATE_SHOOT:
             if (!item->required_anim_state) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_PierreGun1, head, PIERRE_SHOT_DAMAGE / 2);
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_PierreGun2, head, PIERRE_SHOT_DAMAGE / 2);
                 item->required_anim_state = PIERRE_STATE_AIM;
             }

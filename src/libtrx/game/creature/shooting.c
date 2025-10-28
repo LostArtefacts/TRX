@@ -33,7 +33,7 @@ static void M_CalcShootVectors(
     target->z += (dist * Math_Cos(angle)) >> W2V_SHIFT;
 }
 
-bool Creature_ShootAtLara(
+bool Creature_Shoot(
     ITEM *const item, const AI_INFO *const info, const BITE *const gun,
     const int16_t extra_rotation, const int32_t damage)
 {

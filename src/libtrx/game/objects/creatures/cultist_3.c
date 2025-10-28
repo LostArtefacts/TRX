@@ -210,7 +210,7 @@ static void M_Control(const int16_t item_num)
                 left = info.angle;
             }
             if (creature->flags == 0) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_Cultist3LeftGun, head,
                     CULTIST_3_SHOT_DAMAGE);
                 creature->flags = 1;
@@ -223,7 +223,7 @@ static void M_Control(const int16_t item_num)
                 right = info.angle;
             }
             if (creature->flags == 0) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_Cultist3RightGun, head,
                     CULTIST_3_SHOT_DAMAGE);
                 creature->flags = 1;
@@ -235,9 +235,9 @@ static void M_Control(const int16_t item_num)
                 body = info.angle;
             }
             if (creature->flags == 0) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_Cultist3LeftGun, 0, CULTIST_3_SHOT_DAMAGE);
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_Cultist3RightGun, 0, CULTIST_3_SHOT_DAMAGE);
                 creature->flags = 1;
             }

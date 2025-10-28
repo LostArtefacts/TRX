@@ -133,7 +133,7 @@ static void M_Control(const int16_t item_num)
         case BALDY_STATE_SHOOT:
             if (!baldy->flags) {
                 info.distance /= 2;
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_BaldyGun, head, BALDY_SHOT_DAMAGE);
                 baldy->flags = 1;
             }

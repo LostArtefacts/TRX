@@ -144,7 +144,7 @@ static void M_Control(const int16_t item_num)
 
         case LARSON_STATE_SHOOT:
             if (!item->required_anim_state) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_LarsonGun, head, LARSON_SHOT_DAMAGE);
                 item->required_anim_state = LARSON_STATE_AIM;
             }

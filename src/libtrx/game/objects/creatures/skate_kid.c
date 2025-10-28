@@ -113,13 +113,13 @@ static void M_Control(const int16_t item_num)
         case SKATE_KID_STATE_SHOOT_1:
         case SKATE_KID_STATE_SHOOT_2:
             if (!kid->flags && Creature_CanTargetEnemy(item, &info)) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_KidGun1, head,
                     item->current_anim_state == SKATE_KID_STATE_SHOOT_1
                         ? SKATE_KID_STOP_SHOT_DAMAGE
                         : SKATE_KID_SKATE_SHOT_DAMAGE);
 
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_KidGun2, head,
                     item->current_anim_state == SKATE_KID_STATE_SHOOT_1
                         ? SKATE_KID_STOP_SHOT_DAMAGE

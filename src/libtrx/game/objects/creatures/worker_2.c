@@ -50,7 +50,7 @@ static void M_ShootAtLara(
         if (creature->flags != 0) {
             creature->flags--;
         } else {
-            Creature_ShootAtLara(
+            Creature_Shoot(
                 item, info, &m_Worker2Gun, head, WORKER_2_SHOOT_DAMAGE);
             creature->flags = 5;
         }
