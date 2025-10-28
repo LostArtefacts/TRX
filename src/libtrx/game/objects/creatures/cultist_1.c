@@ -195,7 +195,7 @@ static void M_Control(const int16_t item_num)
                 head = info.angle;
             }
             if (creature->flags == 0) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_Cultist1Gun, head, CULTIST_1_SHOOT_DAMAGE);
                 creature->flags = 1;
             }
@@ -206,7 +206,7 @@ static void M_Control(const int16_t item_num)
                 head = info.angle;
             }
             if (item->required_anim_state == CULTIST_1_STATE_EMPTY) {
-                if (!Creature_ShootAtLara(
+                if (!Creature_Shoot(
                         item, &info, &m_Cultist1Gun, head,
                         CULTIST_1_SHOOT_DAMAGE)) {
                     item->goal_anim_state = CULTIST_1_STATE_RUN;
