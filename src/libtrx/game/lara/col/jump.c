@@ -321,7 +321,8 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
     item->speed = 0;
-    if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED) {
+    if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED
+        || coll->side_front.type != COLL_FRONT) {
         Lara_Animate(item);
     }
 }
