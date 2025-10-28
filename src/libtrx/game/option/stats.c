@@ -11,7 +11,7 @@
 
 typedef struct {
     bool is_ready;
-    UI_STATS_DIALOG_STATE ui_state;
+    UI_STATS_DIALOG_STATE *ui_state;
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
@@ -26,22 +26,21 @@ static void M_Init(M_PRIV *const p, INVENTORY_ITEM *const inv_item)
     }
 
     p->is_ready = true;
-    UI_StatsDialog_Init(
-        &p->ui_state,
-        (UI_STATS_DIALOG_ARGS) {
-            .mode = Game_IsInGym() && Gym_HasAssaultStats()
-                ? UI_STATS_DIALOG_MODE_ASSAULT_COURSE
-                : UI_STATS_DIALOG_MODE_LEVEL,
-            .style = UI_STATS_DIALOG_STYLE_BORDERED,
-            .level_num = Game_GetCurrentLevel()->num,
-        });
+    p->ui_state = UI_StatsDialog_Init((UI_STATS_DIALOG_ARGS) {
+        .mode = Game_IsInGym() && Gym_HasAssaultStats()
+            ? UI_STATS_DIALOG_MODE_ASSAULT_COURSE
+            : UI_STATS_DIALOG_MODE_LEVEL,
+        .style = UI_STATS_DIALOG_STYLE_BORDERED,
+        .level_num = Game_GetCurrentLevel()->num,
+    });
 }
 
 static void M_Close(M_PRIV *const p)
 {
     if (p->is_ready) {
         p->is_ready = false;
-        UI_StatsDialog_Free(&p->ui_state);
+        UI_StatsDialog_Free(p->ui_state);
+        p->ui_state = nullptr;
     }
 }
 
@@ -56,7 +55,7 @@ void Option_Stats_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         M_Init(p, inv_item);
     }
     if (p->is_ready) {
-        UI_StatsDialog_Control(&p->ui_state);
+        UI_StatsDialog_Control(p->ui_state);
     }
 
     if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
@@ -75,7 +74,7 @@ void Option_Stats_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->is_ready) {
-        UI_StatsDialog(&p->ui_state);
+        UI_StatsDialog(p->ui_state);
     }
 }
 
