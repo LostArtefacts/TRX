@@ -1092,7 +1092,7 @@ bool Creature_IsAllyTargetingEnemy(const ITEM *const item)
 
 bool Creature_IsTargetable(const ITEM *const item)
 {
-    return item->hit_points != DONT_TARGET
+    return item->hit_points != DONT_TARGET && item->hit_points > 0
         && (!Object_Get(item->object_id)->intelligent
             || item->status == IS_ACTIVE)
         && (g_Config.gameplay.enable_ally_targeting || !Creature_IsAlly(item));
