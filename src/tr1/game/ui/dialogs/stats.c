@@ -7,13 +7,8 @@
 #include <libtrx/config.h>
 #include <libtrx/game/const.h>
 #include <libtrx/game/game_flow.h>
-#include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui/elements/anchor.h>
-#include <libtrx/game/ui/elements/frame.h>
-#include <libtrx/game/ui/elements/label.h>
-#include <libtrx/game/ui/elements/modal.h>
-#include <libtrx/game/ui/elements/stack.h>
-#include <libtrx/game/ui/elements/window.h>
+#include <libtrx/game/gym.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/strings.h>
 
 #include <stdio.h>
@@ -199,18 +194,53 @@ static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
     switch (s->args.mode) {
     case UI_STATS_DIALOG_MODE_LEVEL:
         return GF_GetLevel(GFLT_MAIN, s->args.level_num)->title;
-
     case UI_STATS_DIALOG_MODE_FINAL: {
         const GF_LEVEL_TYPE level_type =
             GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
-        if (level_type == GFL_BONUS) {
-            return GS(STATS_BONUS_STATISTICS);
-        }
-        return GS(STATS_FINAL_STATISTICS);
+        const char *const title = level_type == GFL_BONUS
+            ? GS(STATS_BONUS_STATISTICS)
+            : GS(STATS_FINAL_STATISTICS);
+        return title;
     }
+    case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
+        return GS(STATS_ASSAULT_TITLE);
     }
-
     return nullptr;
+}
+
+static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
+{
+    const ASSAULT_STATS stats = Gym_GetAssaultStats();
+    UI_BeginRequester(&s->assault_req, M_GetDialogTitle(s));
+    // ensure minimum dialog width
+    UI_Spacer(290.0f, 0.0f);
+    if (stats.entries[0].time == 0) {
+        UI_BeginAnchor(0.5f, 0.5f);
+        UI_Label(GS(STATS_ASSAULT_NO_TIMES_SET));
+        UI_EndAnchor();
+    } else {
+        const int32_t first = UI_Requester_GetFirstRow(&s->assault_req);
+        const int32_t last = UI_Requester_GetLastRow(&s->assault_req);
+        for (int32_t i = first; i < last; i++) {
+            if (stats.entries[i].time == 0) {
+                break;
+            }
+
+            char left_buf[32] = " ";
+            char right_buf[32] = " ";
+            sprintf(
+                left_buf, "%2d: %s %d", i + 1, GS(STATS_ASSAULT_FINISH),
+                stats.entries[i].attempt_num);
+
+            const int32_t sec = stats.entries[i].time / LOGIC_FPS;
+            sprintf(
+                right_buf, "%02d:%02d.%-2d", sec / 60, sec % 60,
+                stats.entries[i].time % LOGIC_FPS / (LOGIC_FPS / 10));
+
+            M_Row(s, left_buf, right_buf);
+        }
+    }
+    UI_EndRequester(&s->assault_req);
 }
 
 static void M_BeginDialog(const UI_STATS_DIALOG_STATE *const s)
@@ -262,6 +292,9 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
         break;
     case UI_STATS_DIALOG_MODE_FINAL:
         M_FinalStatsRows(s);
+        break;
+    case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
+        M_AssaultCourseStatsRows(s);
         break;
     }
 
