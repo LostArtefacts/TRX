@@ -80,6 +80,7 @@
 - fixed bogus warnings about resume info in logs when playing cutscenes and in the title level
 - fixed invulnerability cheat not getting disabled during the demos (regression from 1.3)
 - fixed disable targeting allies option not working (#4184, regression from 1.5)
+- fixed Lara losing forward momentum on springboards when the wall glitch mode option is set to `Fixed` (#4187, regression from 1.2)
 
 ## [1.5.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...tr2-1.5.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
