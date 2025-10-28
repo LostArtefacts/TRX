@@ -139,6 +139,10 @@ static bool M_IsValidItemObject(
     if (saved_obj_id == initial_obj_id) {
         return true;
     }
+    if (Object_IsType(initial_obj_id, g_GunObjects)
+        && Object_IsType(saved_obj_id, g_GunObjects)) {
+        return true;
+    }
 
     // clang-format off
     switch (saved_obj_id) {

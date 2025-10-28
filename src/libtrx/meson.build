@@ -150,6 +150,7 @@ sources = [
   'game/game_flow/sequencer.c',
   'game/game_flow/sequencer_events.c',
   'game/game_flow/sequencer_misc.c',
+  'game/game_flow/util.c',
   'game/game_flow/vars.c',
   'game/game_string.c',
   'game/game_string_manager.c',
