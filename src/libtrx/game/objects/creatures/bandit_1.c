@@ -151,7 +151,7 @@ static void M_Control(const int16_t item_num)
             if (info.ahead != 0) {
                 head = info.angle;
             }
-            if (!Creature_ShootAtLara(
+            if (!Creature_Shoot(
                     item, &info, &m_Bandit1Gun, head, BANDIT_1_SHOOT_DAMAGE)) {
                 item->goal_anim_state = BANDIT_1_STATE_WAIT;
             }
@@ -162,7 +162,7 @@ static void M_Control(const int16_t item_num)
             if (info.ahead != 0) {
                 head = info.angle;
             }
-            if (!Creature_ShootAtLara(
+            if (!Creature_Shoot(
                     item, &info, &m_Bandit1Gun, head, BANDIT_1_SHOOT_DAMAGE)) {
                 item->goal_anim_state = BANDIT_1_STATE_WALK;
             }

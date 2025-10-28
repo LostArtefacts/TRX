@@ -163,7 +163,7 @@ static void M_Control(const int16_t item_num)
                 head = info.angle;
             }
             if (creature->flags == 0) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_Worker1Gun, head, WORKER_1_SHOOT_DAMAGE);
                 creature->flags = 1;
             }
@@ -180,7 +180,7 @@ static void M_Control(const int16_t item_num)
                 head = info.angle;
             }
             if (creature->flags == 0) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_Worker1Gun, head, WORKER_1_SHOOT_DAMAGE);
                 creature->flags = 1;
             }

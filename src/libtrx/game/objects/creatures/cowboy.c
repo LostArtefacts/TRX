@@ -128,11 +128,11 @@ static void M_Control(const int16_t item_num)
 
         case COWBOY_STATE_SHOOT:
             if (!cowboy->flags) {
-                Creature_ShootAtLara(
+                Creature_Shoot(
                     item, &info, &m_CowboyGun1, head, COWBOY_SHOT_DAMAGE);
             } else if (cowboy->flags == 6) {
                 if (Creature_CanTargetEnemy(item, &info)) {
-                    Creature_ShootAtLara(
+                    Creature_Shoot(
                         item, &info, &m_CowboyGun2, head, COWBOY_SHOT_DAMAGE);
                 } else {
                     int16_t effect_num =

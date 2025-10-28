@@ -167,7 +167,7 @@ static void M_Control(const int16_t item_num)
                 head = info.angle;
             }
             if (creature->flags == 0) {
-                if (!Creature_ShootAtLara(
+                if (!Creature_Shoot(
                         item, &info, &m_Bandit2Gun, head, BANDIT_2_SHOOT_DAMAGE)
                     || Random_GetControl() < 0x2000) {
                     item->goal_anim_state = BANDIT_2_STATE_WAIT;
@@ -181,7 +181,7 @@ static void M_Control(const int16_t item_num)
                 head = info.angle;
             }
             if (creature->flags != 1) {
-                if (!Creature_ShootAtLara(
+                if (!Creature_Shoot(
                         item, &info, &m_Bandit2Gun, head,
                         BANDIT_2_SHOOT_DAMAGE)) {
                     item->goal_anim_state = BANDIT_2_STATE_WALK;
@@ -198,7 +198,7 @@ static void M_Control(const int16_t item_num)
                 head = info.angle;
             }
             if (creature->flags != 2) {
-                if (!Creature_ShootAtLara(
+                if (!Creature_Shoot(
                         item, &info, &m_Bandit2Gun, head,
                         BANDIT_2_SHOOT_DAMAGE)) {
                     item->goal_anim_state = BANDIT_2_STATE_WALK;
