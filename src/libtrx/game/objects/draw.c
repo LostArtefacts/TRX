@@ -6,6 +6,7 @@
 #include "game/objects/common.h"
 #include "game/output.h"
 #include "game/output/vars.h"
+#include "version.h"
 
 void Object_DrawUnclippedItem(const ITEM *const item)
 {
@@ -190,4 +191,25 @@ void Object_ApplyExtraRotation(
 
 #undef APPLY_ROTATION
     *extra_rotation = rot_ptr;
+}
+
+void Object_DrawSpriteItem(const ITEM *const item)
+{
+    const RGB_F tint = Output_GetTint();
+    SHADE shade = item->shade;
+    if (shade.value_1 < 0) {
+        shade.value_1 = SHADE_NEUTRAL;
+    }
+
+    if (g_TRVersion > 1) {
+        Output_CalculateStaticMeshLight(
+            item->interp.result.pos, shade, Room_Get(item->room_num));
+        shade.value_1 = Output_GetLightAdder() + SHADE_NEUTRAL;
+    }
+
+    const OBJECT *const obj = Object_Get(item->object_id);
+    Output_DrawSprite(
+        item->interp.result.pos.x, item->interp.result.pos.y,
+        item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
+        shade.value_1, tint);
 }
