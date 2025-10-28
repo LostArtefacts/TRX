@@ -90,7 +90,6 @@ endif
 sources = [
   init,
   'game/game_string.c',
-  'game/objects/common.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
   resources,

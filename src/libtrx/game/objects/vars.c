@@ -248,6 +248,13 @@ const OBJECT_ID g_PickupObjects[] = {
     // clang-format on
 };
 
+const OBJECT_ID g_ElevatedPickupObjects[] = {
+    // clang-format off
+    O_SCION_ITEM_1,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const OBJECT_ID g_SwitchObjects[] = {
     // clang-format off
     O_SWITCH_TYPE_AIRLOCK,

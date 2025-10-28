@@ -9,6 +9,7 @@ extern const OBJECT_ID g_AllyObjects[];
 extern const OBJECT_ID g_LoyalObjects[];
 extern const OBJECT_ID g_AllyTargetingEnemies[];
 extern const OBJECT_ID g_PickupObjects[];
+extern const OBJECT_ID g_ElevatedPickupObjects[];
 extern const OBJECT_ID g_SwitchObjects[];
 extern const OBJECT_ID g_ReceptacleObjects[];
 extern const OBJECT_ID g_GunObjects[];

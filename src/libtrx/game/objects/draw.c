@@ -2,11 +2,100 @@
 
 #include "config.h"
 #include "debug.h"
+#include "game/inventory.h"
 #include "game/matrix.h"
-#include "game/objects/common.h"
+#include "game/objects.h"
 #include "game/output.h"
 #include "game/output/vars.h"
 #include "version.h"
+
+static BOUNDS_16 M_GetBoundingBox(
+    const OBJECT *const obj, const ANIM_FRAME *const frame,
+    const uint32_t mesh_bits)
+{
+    const XYZ_16 *const mesh_rots =
+        frame != nullptr ? frame->mesh_rots : nullptr;
+
+    Matrix_PushUnit();
+    if (frame != nullptr) {
+        Matrix_TranslateRel16(frame->offset);
+    }
+    if (mesh_rots != nullptr) {
+        Matrix_Rot16(mesh_rots[0]);
+    }
+
+    BOUNDS_16 new_bounds = {
+        .min.x = 0x7FFF,
+        .min.y = 0x7FFF,
+        .min.z = 0x7FFF,
+        .max.x = -0x7FFF,
+        .max.y = -0x7FFF,
+        .max.z = -0x7FFF,
+    };
+
+    for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+        if (mesh_idx != 0) {
+            const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+            if (bone->matrix_pop) {
+                Matrix_Pop();
+            }
+
+            if (bone->matrix_push) {
+                Matrix_Push();
+            }
+
+            Matrix_TranslateRel32(bone->pos);
+            if (mesh_rots != nullptr) {
+                Matrix_Rot16(mesh_rots[mesh_idx]);
+            }
+        }
+
+        if (!(mesh_bits & (1 << mesh_idx))) {
+            continue;
+        }
+
+        const OBJECT_MESH *const mesh =
+            Object_GetMesh(obj->mesh_idx + mesh_idx);
+        for (int32_t i = 0; i < mesh->num_vertices; i++) {
+            // clang-format off
+            const XYZ_16 *const vertex = &mesh->vertices[i];
+            const MATRIX *const mptr = g_MatrixPtr;
+            const double xv = (
+                mptr->_00 * vertex->x +
+                mptr->_01 * vertex->y +
+                mptr->_02 * vertex->z +
+                mptr->_03
+            );
+            const double yv = (
+                mptr->_10 * vertex->x +
+                mptr->_11 * vertex->y +
+                mptr->_12 * vertex->z +
+                mptr->_13
+            );
+            double zv = (
+                mptr->_20 * vertex->x +
+                mptr->_21 * vertex->y +
+                mptr->_22 * vertex->z +
+                mptr->_23
+            );
+            // clang-format on
+
+            const int32_t x = ((int32_t)xv) >> W2V_SHIFT;
+            const int32_t y = ((int32_t)yv) >> W2V_SHIFT;
+            const int32_t z = ((int32_t)zv) >> W2V_SHIFT;
+
+            new_bounds.min.x = MIN(new_bounds.min.x, x);
+            new_bounds.min.y = MIN(new_bounds.min.y, y);
+            new_bounds.min.z = MIN(new_bounds.min.z, z);
+            new_bounds.max.x = MAX(new_bounds.max.x, x);
+            new_bounds.max.y = MAX(new_bounds.max.y, y);
+            new_bounds.max.z = MAX(new_bounds.max.z, z);
+        }
+    }
+
+    Matrix_Pop();
+    return new_bounds;
+}
 
 void Object_DrawUnclippedItem(const ITEM *const item)
 {
@@ -212,4 +301,83 @@ void Object_DrawSpriteItem(const ITEM *const item)
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
         shade.value_1, tint);
+}
+
+void Object_DrawPickupItem(const ITEM *const item)
+{
+    if ((item->flags & IF_INVISIBLE) != 0) {
+        return;
+    }
+
+    if (!g_Config.visuals.enable_3d_pickups
+        || !Object_Get(item->object_id)->loaded) {
+        Object_DrawSpriteItem(item);
+        return;
+    }
+
+    // Convert item to menu display item.
+    const OBJECT_ID inv_object_id = Inv_GetItemOption(item->object_id);
+    if (inv_object_id == NO_OBJECT) {
+        Object_DrawSpriteItem(item);
+        return;
+    }
+
+    const OBJECT *const obj = Object_Get(inv_object_id);
+    if (!obj->loaded || obj->mesh_count < 0) {
+        Object_DrawSpriteItem(item);
+        return;
+    }
+
+    // Standardize the bounds and offsets of all pickup items, and handle cases
+    // such as the prayer wheels in Barkhang Monastery, which have no frames.
+    const BOUNDS_16 bounds = M_GetBoundingBox(obj, nullptr, item->mesh_bits);
+    XYZ_16 offset = {};
+
+    const XYZ_16 *mesh_rots = nullptr;
+    if (obj->anim_idx != NO_ANIM) {
+        const ANIM_FRAME *const frame = obj->frame_base;
+        mesh_rots = frame->mesh_rots;
+        offset = frame->offset;
+        if (Object_IsType(item->object_id, g_ElevatedPickupObjects)) {
+            offset.y = (frame->bounds.min.y - frame->offset.y) / 2;
+        } else {
+            offset.y -= frame->bounds.max.y;
+        }
+    } else {
+        offset.y = (bounds.max.y - bounds.min.y) / -2;
+    }
+
+    Matrix_Push();
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_Rot16(item->interp.result.rot);
+    Matrix_TranslateRel16(offset);
+
+    Output_CalculateLight(item->pos, item->room_num);
+
+    const CLIP clip = Output_CheckBoundsClip(&bounds);
+    if (clip != CLIP_NOT_VISIBLE) {
+        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+            if (mesh_idx > 0) {
+                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+                if (bone->matrix_pop) {
+                    Matrix_Pop();
+                }
+                if (bone->matrix_push) {
+                    Matrix_Push();
+                }
+
+                Matrix_TranslateRel32(bone->pos);
+            }
+
+            if (mesh_rots != nullptr) {
+                Matrix_Rot16(mesh_rots[mesh_idx]);
+            }
+
+            if ((item->mesh_bits & (1 << mesh_idx)) != 0) {
+                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
+            }
+        }
+    }
+
+    Matrix_Pop();
 }
