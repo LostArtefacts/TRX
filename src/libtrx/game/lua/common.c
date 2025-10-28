@@ -136,8 +136,12 @@ static void M_RequireTRXModule(lua_State *const L, const char *name)
 static void M_LoadTRXModule(lua_State *const L, const char *const path)
 {
     LOG_DEBUG("Loading TRX module %s", path);
-    char *full_path =
-        File_GetFullPath(String_FormatStatic("scripting/trx/%s", path));
+    const char *const rel_path = String_FormatStatic("scripting/trx/%s", path);
+    char *full_path = File_GetFullPath(rel_path);
+    if (full_path == nullptr) {
+        LOG_ERROR("Script %s not found", rel_path);
+        return;
+    }
     char *name = M_DeriveTRXModuleName(path);
     M_RegisterTRXPreload(L, full_path, name);
     M_RequireTRXModule(L, name);
