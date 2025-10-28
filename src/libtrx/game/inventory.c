@@ -11,6 +11,14 @@
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 
+static OBJECT_ID M_ConvertToPickup(const OBJECT_ID object_id)
+{
+    if (Object_IsType(object_id, g_InvObjects)) {
+        return Object_GetCognateInverse(object_id, g_ItemToInvObjectMap);
+    }
+    return object_id;
+}
+
 static int32_t M_GetFlareQuantity(void)
 {
     return Game_IsBonusFlagSet(GBF_JAPANESE) ? FLARE_AMMO_JAPANESE_QTY
@@ -104,21 +112,21 @@ static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
     }
 }
 
-bool Inv_AddItemNTimes(const OBJECT_ID obj_id, const int32_t qty)
+bool Inv_AddItemNTimes(const OBJECT_ID object_id, const int32_t qty)
 {
     bool result = false;
     for (int32_t i = 0; i < qty; i++) {
-        result |= Inv_AddItem(obj_id);
+        result |= Inv_AddItem(object_id);
     }
     return result;
 }
 
-OBJECT_ID Inv_GetItemOption(const OBJECT_ID obj_id)
+OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 {
-    if (Object_IsType(obj_id, g_InvObjects)) {
-        return obj_id;
+    if (Object_IsType(object_id, g_InvObjects)) {
+        return object_id;
     }
-    return Object_GetCognate(obj_id, g_ItemToInvObjectMap);
+    return Object_GetCognate(object_id, g_ItemToInvObjectMap);
 }
 
 void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
@@ -141,13 +149,13 @@ void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
     source->count++;
 }
 
-bool Inv_RemoveItem(const OBJECT_ID obj_id)
+bool Inv_RemoveItem(const OBJECT_ID object_id)
 {
-    const OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
+    const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
-            if (source->items[i]->object_id != inv_obj_id) {
+            if (source->items[i]->object_id != inv_object_id) {
                 continue;
             }
 
@@ -174,14 +182,14 @@ bool Inv_RemoveItem(const OBJECT_ID obj_id)
     return false;
 }
 
-int32_t Inv_RequestItem(const OBJECT_ID obj_id)
+int32_t Inv_RequestItem(const OBJECT_ID object_id)
 {
-    const OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
+    const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
             if (source->items[i] != nullptr
-                && source->items[i]->object_id == inv_obj_id) {
+                && source->items[i]->object_id == inv_object_id) {
                 return source->qtys[i];
             }
         }
@@ -207,20 +215,21 @@ void Inv_RemoveAllItems(void)
     Inv_ClearSelection();
 }
 
-bool Inv_AddItem(const OBJECT_ID obj_id)
+bool Inv_AddItem(const OBJECT_ID object_id)
 {
-    const OBJECT_ID inv_obj_id = Inv_GetItemOption(obj_id);
+    const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
+    const OBJECT_ID pickup_object_id = M_ConvertToPickup(object_id);
     const OBJECT *const object =
-        Object_Get(inv_obj_id == NO_OBJECT ? obj_id : inv_obj_id);
+        Object_Get(inv_object_id == NO_OBJECT ? object_id : inv_object_id);
     if (!object->loaded) {
         return false;
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (Object_IsType(obj_id, g_GunObjects)) {
-        Gun_UpdateLaraMeshes(obj_id);
+    if (Object_IsType(pickup_object_id, g_GunObjects)) {
+        Gun_UpdateLaraMeshes(pickup_object_id);
         if (lara->gun_type == LGT_UNARMED) {
-            lara->gun_type = Gun_GetType(obj_id);
+            lara->gun_type = Gun_GetType(pickup_object_id);
             const bool hands_busy = lara->gun_status == LGS_HANDS_BUSY;
             lara->gun_status = LGS_ARMLESS;
             Gun_InitialiseNewWeapon();
@@ -233,9 +242,9 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
-            if (source->items[i]->object_id == inv_obj_id) {
+            if (source->items[i]->object_id == inv_object_id) {
                 const int32_t qty =
-                    obj_id == O_FLARES_ITEM ? M_GetFlareQuantity() : 1;
+                    object_id == O_FLARES_ITEM ? M_GetFlareQuantity() : 1;
                 source->qtys[i] += qty;
                 CLAMPG(source->qtys[i], MAX_QTY);
                 return true;
@@ -244,7 +253,7 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     }
 
     // Pistols
-    if (inv_obj_id == O_PISTOL_OPTION) {
+    if (inv_object_id == O_PISTOL_OPTION) {
         Inv_InsertItem(&g_InvRing_Item_Pistols);
         if (lara->last_gun_type == LGT_UNARMED) {
             lara->last_gun_type = LGT_PISTOLS;
@@ -253,37 +262,21 @@ bool Inv_AddItem(const OBJECT_ID obj_id)
     }
 
     // Other guns
-    if (Object_IsType(obj_id, g_GunObjects)) {
-        M_AddGun(Gun_GetType(obj_id));
+    if (Object_IsType(pickup_object_id, g_GunObjects)) {
+        M_AddGun(Gun_GetType(pickup_object_id));
         return true;
     }
-    if (Object_IsType(obj_id, g_GunAmmoObjects)) {
-        M_AddAmmo(
-            Gun_GetType(Object_GetCognateInverse(obj_id, g_GunAmmoObjectMap)));
+    if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
+        M_AddAmmo(Gun_GetType(
+            Object_GetCognateInverse(pickup_object_id, g_GunAmmoObjectMap)));
         return true;
-    }
-
-    switch (obj_id) {
-    case O_FLARES_ITEM:
-    case O_FLARES_OPTION:
-        for (int32_t i = 0; i < M_GetFlareQuantity(); i++) {
-            Inv_AddItem(O_FLARE_ITEM);
-        }
-        return true;
-
-    case O_FLARE_ITEM:
-        Inv_InsertItem(&g_InvRing_Item_Flare);
-        return true;
-
-    default:
-        break;
     }
 
     // Other cases
     for (int32_t i = 0; g_InvRing_Items[i] != nullptr; i++) {
         INVENTORY_ITEM *const inv_item = g_InvRing_Items[i];
-        if (inv_item->object_id == obj_id
-            || inv_item->object_id == inv_obj_id) {
+        if (inv_item->object_id == object_id
+            || inv_item->object_id == inv_object_id) {
             Inv_InsertItem(inv_item);
             return true;
         }
