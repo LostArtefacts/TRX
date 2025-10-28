@@ -816,6 +816,10 @@ static bool M_IsValidItemObject(
     if (saved_obj_id == initial_obj_id) {
         return true;
     }
+    if (Object_IsType(initial_obj_id, g_GunObjects)
+        && Object_IsType(saved_obj_id, g_GunObjects)) {
+        return true;
+    }
 
     // clang-format off
     switch (saved_obj_id) {
@@ -871,8 +875,9 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
             Object_FromGameID(JSON_ObjectGetInt(item_obj, "obj_num", -1));
         if (!M_IsValidItemObject(obj_id, item->object_id)) {
             LOG_ERROR(
-                "Malformed save: expected object %d, got %d", item->object_id,
-                obj_id);
+                "Malformed save: level has %d (%s), save has %d (%s)",
+                item->object_id, Object_GetName(item->object_id), obj_id,
+                Object_GetName(obj_id));
             return false;
         }
 
