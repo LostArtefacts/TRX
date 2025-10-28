@@ -102,7 +102,6 @@ sources = [
   'game/objects/common.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
-  'game/ui/dialogs/stats.c',
   resources,
 ]
 

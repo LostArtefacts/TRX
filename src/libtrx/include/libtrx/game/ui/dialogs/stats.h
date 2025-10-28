@@ -20,13 +20,9 @@ typedef struct {
     int32_t level_num;
 } UI_STATS_DIALOG_ARGS;
 
-typedef struct {
-    UI_STATS_DIALOG_ARGS args;
-    UI_REQUESTER_STATE assault_req;
-} UI_STATS_DIALOG_STATE;
+typedef struct UI_STATS_DIALOG_STATE UI_STATS_DIALOG_STATE;
 
-void UI_StatsDialog_Init(UI_STATS_DIALOG_STATE *s, UI_STATS_DIALOG_ARGS args);
+UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(UI_STATS_DIALOG_ARGS args);
 void UI_StatsDialog_Free(UI_STATS_DIALOG_STATE *s);
 int32_t UI_StatsDialog_Control(UI_STATS_DIALOG_STATE *s);
-
-extern void UI_StatsDialog(UI_STATS_DIALOG_STATE *s);
+void UI_StatsDialog(UI_STATS_DIALOG_STATE *s);
