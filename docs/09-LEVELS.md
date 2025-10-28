@@ -58,7 +58,7 @@ title: Level reference
 | 9  | Living Quarters          | `living.tr2`   | 16                    | 21                    | 3       |
 | 10 | The Deck                 | `deck.tr2`     | 35                    | 30                    | 3       |
 | 11 | Tibetan Foothills        | `skidoo.tr2`   | 31                    | 33                    | 3       |
-| 12 | Barkhang Monastery       | `monastry.tr2` | 49                    | 30 / 52<sup>[2]</sup> | 3       |
+| 12 | Barkhang Monastery       | `monastry.tr2` | 44                    | 30 / 52<sup>[2]</sup> | 3       |
 | 13 | Catacombs of the Talion  | `catacomb.tr2` | 39                    | 33                    | 3       |
 | 14 | Ice Palace               | `icecave.tr2`  | 33                    | 22                    | 3       |
 | 15 | Temple of Xian           | `emprtomb.tr2` | 39 / 40<sup>[3]</sup> | 37                    | 3       |

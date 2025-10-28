@@ -361,6 +361,7 @@
                 "data/injections/barkhang_pickup_meshes.bin",
                 "data/injections/barkhang_textures.bin",
             ],
+            "unobtainable_pickups": 2,
             "unobtainable_kills": 1,
         },
 
