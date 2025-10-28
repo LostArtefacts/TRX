@@ -29,7 +29,9 @@ static void M_Init(M_PRIV *const p, INVENTORY_ITEM *const inv_item)
     UI_StatsDialog_Init(
         &p->ui_state,
         (UI_STATS_DIALOG_ARGS) {
-            .mode = UI_STATS_DIALOG_MODE_LEVEL,
+            .mode = Game_IsInGym() && Gym_HasAssaultStats()
+                ? UI_STATS_DIALOG_MODE_ASSAULT_COURSE
+                : UI_STATS_DIALOG_MODE_LEVEL,
             .style = UI_STATS_DIALOG_STYLE_BORDERED,
             .level_num = Game_GetCurrentLevel()->num,
         });

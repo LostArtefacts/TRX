@@ -9,16 +9,7 @@
 #include <libtrx/game/const.h>
 #include <libtrx/game/game_flow.h>
 #include <libtrx/game/gym.h>
-#include <libtrx/game/ui/common.h>
-#include <libtrx/game/ui/elements/anchor.h>
-#include <libtrx/game/ui/elements/label.h>
-#include <libtrx/game/ui/elements/modal.h>
-#include <libtrx/game/ui/elements/pad.h>
-#include <libtrx/game/ui/elements/requester.h>
-#include <libtrx/game/ui/elements/resize.h>
-#include <libtrx/game/ui/elements/spacer.h>
-#include <libtrx/game/ui/elements/stack.h>
-#include <libtrx/game/ui/elements/window.h>
+#include <libtrx/game/ui.h>
 #include <libtrx/strings.h>
 
 #include <stdio.h>
