@@ -5,6 +5,7 @@
 #include "game/fmv.h"
 #include "game/game.h"
 #include "game/game_flow/sequencer.h"
+#include "game/game_flow/util.h"
 #include "game/game_flow/vars.h"
 #include "game/lara.h"
 #include "game/lua.h"
@@ -140,6 +141,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
         }
         break;
     }
+    GF_DisableObjectsIfNeeded();
 
     if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
         Stats_CalculateStats();
