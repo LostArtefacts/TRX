@@ -99,7 +99,6 @@ sources = [
   init,
   'game/creature.c',
   'game/game_string.c',
-  'game/objects/common.c',
   'game/savegame/savegame_bson.c',
   'game/savegame/savegame_legacy.c',
   'game/ui/dialogs/stats.c',

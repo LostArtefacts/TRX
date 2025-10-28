@@ -22,6 +22,7 @@
 - improved ricochets placement
     - fixed dart ricochets being placed mid-air (#4063)
     - fixed ricochets not showing on slopes
+- improved the positions of some 3D pickup items, such as the scion that Pierre drops
 - changed the `/debug` command to accept optional option name argument (for example: `/debug pos 1`)
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
     - `flow.demo_delay`
