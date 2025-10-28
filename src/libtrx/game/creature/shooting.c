@@ -1,15 +1,11 @@
 #include "game/creature.h"
-
-#include <libtrx/game/collision.h>
-#include <libtrx/game/creature.h>
-#include <libtrx/game/effects.h>
-#include <libtrx/game/gun.h>
-#include <libtrx/game/lara/common.h>
-#include <libtrx/game/los.h>
-#include <libtrx/game/math.h>
-#include <libtrx/game/random.h>
-#include <libtrx/game/spawn.h>
-#include <libtrx/utils.h>
+#include "game/effects.h"
+#include "game/gun.h"
+#include "game/lara.h"
+#include "game/objects/vars.h"
+#include "game/random.h"
+#include "game/spawn.h"
+#include "version.h"
 
 #define M_SHOOT_TARGETING_SPEED 300
 #define M_SHOOT_HIT_CHANCE 0x2000
@@ -47,25 +43,41 @@ bool Creature_ShootAtLara(
 
     bool is_targetable;
     bool is_hit;
-    if (info->distance > CREATURE_SHOOT_RANGE
-        || !Creature_CanTargetEnemy(item, info)) {
-        is_targetable = false;
-        is_hit = false;
-    } else {
-        int32_t distance =
-            (((target_item->speed * Math_Sin(info->enemy_facing)) >> W2V_SHIFT)
-             * CREATURE_SHOOT_RANGE)
-            / M_SHOOT_TARGETING_SPEED;
-        distance = info->distance + SQUARE(distance);
-        if (distance > CREATURE_SHOOT_RANGE) {
+    if (g_TRVersion == 1) {
+        // TR1 targeting is a bit dumb - eg with some minimal effort, Pierre
+        // can't reach Lara in Folly. This branch preserves this behavior.
+        if (info->distance > CREATURE_SHOOT_RANGE) {
+            is_targetable = false;
             is_hit = false;
         } else {
-            const int32_t chance = M_SHOOT_HIT_CHANCE
-                + (CREATURE_SHOOT_RANGE - info->distance)
-                    / (CREATURE_SHOOT_RANGE / 0x5000);
-            is_hit = Random_GetControl() < chance;
+            is_hit = Random_GetControl()
+                < ((CREATURE_SHOOT_RANGE - info->distance)
+                       / (CREATURE_SHOOT_RANGE / 0x7FFF)
+                   - CREATURE_MISS_CHANCE);
+            is_targetable = true;
         }
-        is_targetable = true;
+    } else {
+        if (info->distance > CREATURE_SHOOT_RANGE
+            || !Creature_CanTargetEnemy(item, info)) {
+            is_targetable = false;
+            is_hit = false;
+        } else {
+            int32_t distance =
+                (((target_item->speed * Math_Sin(info->enemy_facing))
+                  >> W2V_SHIFT)
+                 * CREATURE_SHOOT_RANGE)
+                / M_SHOOT_TARGETING_SPEED;
+            distance = info->distance + SQUARE(distance);
+            if (distance > CREATURE_SHOOT_RANGE) {
+                is_hit = false;
+            } else {
+                const int32_t chance = M_SHOOT_HIT_CHANCE
+                    + (CREATURE_SHOOT_RANGE - info->distance)
+                        / (CREATURE_SHOOT_RANGE / 0x5000);
+                is_hit = Random_GetControl() < chance;
+            }
+            is_targetable = true;
+        }
     }
 
     int16_t effect_num = NO_EFFECT;
