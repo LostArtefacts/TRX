@@ -6,23 +6,6 @@
 #include <libtrx/game/matrix.h>
 #include <libtrx/game/output.h>
 
-void Object_DrawSpriteItem(const ITEM *const item)
-{
-    SHADE shade = item->shade;
-    if (shade.value_1 < 0) {
-        shade.value_1 = SHADE_NEUTRAL;
-    }
-    Output_CalculateStaticMeshLight(
-        item->interp.result.pos, shade, Room_Get(item->room_num));
-
-    const OBJECT *const obj = Object_Get(item->object_id);
-
-    Output_DrawSprite(
-        item->interp.result.pos.x, item->interp.result.pos.y,
-        item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
-        Output_GetLightAdder() + SHADE_NEUTRAL, (RGB_F) { 1.0f, 1.0f, 1.0f });
-}
-
 void Object_DrawPickupItem(const ITEM *const item)
 {
     if (item->flags & IF_INVISIBLE) {
