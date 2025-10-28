@@ -169,6 +169,7 @@ GF_COMMAND GF_InterpretSequence(
     default:
         if (level->type == GFL_GYM) {
             Savegame_ResetCurrentInfo(level);
+            Savegame_ApplyLogicToCurrentInfo(level);
         } else if (level->type == GFL_DEMO) {
             Savegame_ApplyLogicToCurrentInfo(level);
         } else if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
