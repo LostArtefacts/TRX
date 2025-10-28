@@ -135,6 +135,7 @@ sources = [
   'game/console/history.c',
   'game/console/registry.c',
   'game/creature/common.c',
+  'game/creature/shooting.c',
   'game/cutscene.c',
   'game/demo.c',
   'game/effects.c',
