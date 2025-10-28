@@ -21,8 +21,14 @@ def main() -> None:
         version, compressed_size, uncompressed_size = struct.unpack(
             "III", handle.read(12)
         )
-        data = bson.loads(zlib.decompress(handle.read(uncompressed_size)))
+        data = bson.loads(zlib.decompress(handle.read(compressed_size)))
+        flags, counter, level_num, title_size = struct.unpack("I" * 4, handle.read(16))
+        title = handle.read(title_size)
         print(json.dumps(data, indent=4))
+        print("flags:", flags)
+        print("counter:", counter)
+        print("level_num:", level_num)
+        print("title:", title)
 
 
 if __name__ == "__main__":
