@@ -29,7 +29,5 @@
         {},
         {}
     ],
-    "game_strings": {
-        "STATS_DISTANCE_TRAVELLED": "Distance Travelled",
-    }
+    "game_strings": {}
 }

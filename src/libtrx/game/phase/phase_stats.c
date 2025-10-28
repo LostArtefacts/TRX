@@ -24,7 +24,7 @@ typedef struct {
     FADER back_fader;
     FADER top_fader;
     bool ui_active;
-    UI_STATS_DIALOG_STATE ui_state;
+    UI_STATS_DIALOG_STATE *ui_state;
 } M_PRIV;
 
 static bool M_IsFading(M_PRIV *const p)
@@ -84,18 +84,14 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         }
 
         p->ui_active = true;
-        UI_StatsDialog_Init(
-            &p->ui_state,
-            (UI_STATS_DIALOG_ARGS) {
-                .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
-                                                 : UI_STATS_DIALOG_MODE_LEVEL,
-                .style = p->args.use_bare_style
-                    ? UI_STATS_DIALOG_STYLE_BARE
-                    : UI_STATS_DIALOG_STYLE_BORDERED,
-                .level_num = p->args.level_num != -1
-                    ? p->args.level_num
-                    : Game_GetCurrentLevel()->num,
-            });
+        p->ui_state = UI_StatsDialog_Init((UI_STATS_DIALOG_ARGS) {
+            .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
+                                             : UI_STATS_DIALOG_MODE_LEVEL,
+            .style = p->args.use_bare_style ? UI_STATS_DIALOG_STYLE_BARE
+                                            : UI_STATS_DIALOG_STYLE_BORDERED,
+            .level_num = p->args.level_num != -1 ? p->args.level_num
+                                                 : Game_GetCurrentLevel()->num,
+        });
     }
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
@@ -106,7 +102,8 @@ static void M_End(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     if (p->ui_active) {
         p->ui_active = false;
-        UI_StatsDialog_Free(&p->ui_state);
+        UI_StatsDialog_Free(p->ui_state);
+        p->ui_state = nullptr;
     }
     Output_UnloadBackground();
 }
@@ -165,7 +162,7 @@ static void M_Draw(PHASE *const phase)
 
     UI_BeginFade(&p->top_fader, true);
     if (p->ui_active) {
-        UI_StatsDialog(&p->ui_state);
+        UI_StatsDialog(p->ui_state);
     }
     UI_EndFade();
 }
