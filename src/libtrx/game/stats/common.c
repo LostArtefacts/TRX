@@ -82,18 +82,17 @@ void Stats_MarkSecretCollected(const ITEM *const item)
     Stats_UpdateSecrets(&resume->stats);
 }
 
-bool Stats_CheckAllLevelSecretsCollected(void)
+bool Stats_CheckAllLevelSecretsPickedUp(void)
 {
     const RESUME_INFO *const resume =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     int32_t flags = resume->stats.secret_flags;
-    int32_t count = 0;
+    size_t count = 0;
     while (flags != 0) {
         count += flags & 1;
         flags >>= 1;
     }
-
-    return count >= resume->max_stats.max_secret_count;
+    return count >= resume->max_stats.max_pickup_secret_count;
 }
 
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
@@ -200,6 +199,7 @@ FINAL_STATS Stats_ComputeFinalStats(const GF_LEVEL_TYPE level_type)
         L_ADD(max_stats.max_kill_count);
         L_ADD(max_stats.max_pickup_count);
         L_ADD(max_stats.max_secret_count);
+        L_ADD(max_stats.max_pickup_secret_count);
 #undef L_ADD
     }
 

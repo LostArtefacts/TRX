@@ -13,7 +13,7 @@ OBJECT_ID Stats_GetSecretObject(int32_t secret_idx);
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
 void Stats_MarkSecretCollected(const ITEM *item);
 bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type);
-bool Stats_CheckAllLevelSecretsCollected(void);
+bool Stats_CheckAllLevelSecretsPickedUp(void);
 
 void Stats_UpdateTimer(void);
 void Stats_AddKill(void);
