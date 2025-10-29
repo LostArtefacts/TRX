@@ -1,4 +1,0 @@
-X_OBJ_NAME_DEFINE(O_SMALL_MEDIPACK_ITEM, "small_medipack", X_OBJ_NAMES("Small Medi Pack"))
-X_OBJ_NAME_DEFINE(O_LARGE_MEDIPACK_ITEM, "large_medipack", X_OBJ_NAMES("Large Medi Pack"))
-X_OBJ_NAME_DEFINE(O_MAGNUM_ITEM,         "magnums",        X_OBJ_NAMES("Magnums"))
-X_OBJ_NAME_DEFINE(O_MAGNUM_AMMO_ITEM,    "magnums_ammo",   X_OBJ_NAMES("Magnum Clips"))

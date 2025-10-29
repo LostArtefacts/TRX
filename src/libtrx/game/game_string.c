@@ -19,6 +19,16 @@ typedef struct {
 
 static M_STRING_ENTRY *m_StringTable = nullptr;
 
+void GameString_Init(void)
+{
+#include "game/game_string.def"
+}
+
+void GameString_Shutdown(void)
+{
+    GameString_Clear();
+}
+
 void GameString_Define(const char *const key, const char *value)
 {
     M_STRING_ENTRY *entry;
@@ -77,9 +87,4 @@ void GameString_Clear(void)
         Memory_Free(entry->slot);
         Memory_Free(entry);
     }
-}
-
-void GameString_Shutdown(void)
-{
-    GameString_Clear();
 }

@@ -223,7 +223,6 @@
         "MISC_EMPTY_SLOT_FMT": "- EMPLACEMENT VIDE -",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Génère un éclairage dynamique pour les coups de feu et les explosions, comme apparu depuis TR2.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques de La Citerne et de la Tombe de Tihocan.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Corrige l'attaque par coup de patte des ours pour qu'ils ne ratent pas Lara.",
         "STATS_AMMO": "TIRS RÉUSSIS/EFFECTUÉS",
         "STATS_AMMO_HITS": "\\{review}COUPS",
         "STATS_AMMO_USED": "\\{review}MUNITIONS UTILISÉES",

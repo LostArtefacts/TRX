@@ -223,7 +223,6 @@
         "MISC_EMPTY_SLOT_FMT": "- PUSTY SLOT %d -",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach, podobnie jak w TR2+.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Naprawia błędy oryginalnej gry w Rezerwuarze i Grobowcu Tihocana, gdzie glony w wodnych obszarach nie są animowane.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",
         "STATS_AMMO": "AMUNICJA/TRAFIENIA",
         "STATS_AMMO_HITS": "\\{review}TRAFIENIA",
         "STATS_AMMO_USED": "\\{review}ZUŻYTA AMUNICJA",

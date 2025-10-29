@@ -123,6 +123,7 @@
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Kamera w dół",
         "ENUM_INPUT_ROLE_CAMERA_FORWARD": "Kamera do przodu",
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Kamera w lewo",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Reset kamery",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Kamera w prawo",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Kamera w górę",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Zmień cel",
@@ -130,6 +131,10 @@
         "ENUM_INPUT_ROLE_DOWN": "Cofanie",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Wyciągnij broń",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Otwórz konsolę",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Wyposaż wyrzutnię granatów",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Wyposaż wyrzutnię harpunów",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "Wyposaż M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Wyposaż pistolety automatyczne",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Wyposaż pistolety",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Wyposaż strzelbę",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Wyposaż uzi",
@@ -424,6 +429,7 @@
         "SETTING_ENABLE_GAME_MODES": "Wybór trybu gry",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Pozwala na wybór opcji trybu przy rozpoczynaniu nowej gry.\n\n- Nowa Gra+: odblokowuje wszystkie bronie z nieskończoną amunicją; przeciwnicy mają podwójne zdrowie.\n- Japońska NG: bronie zadają podwójne obrażenia; znajdźki z flarami zawierają 8 flar zamiast 6.\n- Japońska NG+: połączenie Nowej Gry+ i Japońskiej NG.",
         "SETTING_ENABLE_GUN_LIGHTING": "Efekty świetlne broni",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
         "SETTING_ENABLE_IDLE_POSE_CAMERA": "Kamera bezczynności",
         "SETTING_ENABLE_IDLE_POSE_CAMERA_DESCRIPTION": "Dostosowuje kamerę tak, aby była skierowana na Larę podczas animacji bezczynności. Przycisk patrzenia resetuje kamerę.",
         "SETTING_ENABLE_INVERTED_LOOK": "Odwrócenie osi Y patrzenia",
@@ -515,8 +521,10 @@
         "SETTING_EXPOSUREBAR_SHOW_MODE_DESCRIPTION": "\\{review}Zmienia sposób wyświetlania paska ekspozycji na zimną wodę.\n\n- Domyślny: Pokazuje pasek w zimnej wodzie lub gdy Lara się regeneruje, oraz miga przy 20 % lub mniej.\n- Domyślny, bez migania: Jak domyślny, ale bez migania.\n- Tylko miganie: Pokazuje pasek *tylko* przy 20 % lub mniej (dla trybów wyzwania).\n- Nigdy: Nigdy nie pokazuje paska (dla trybów wyzwania).",
         "SETTING_FIX_ALLIGATOR_AI": "Napraw AI aligatorów",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Naprawia błąd w którym aligatory nie zadają obrażeń, jeśli Lara pozostaje nieruchomo w wodzie.",
-        "SETTING_FIX_ANIMATED_SPRITES": "Napraw animacji sprite'ów",
+        "SETTING_FIX_ANIMATED_SPRITES": "Napraw animacje sprite'ów",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Przywraca glonom efekt animacji w wodnych poziomach.",
         "SETTING_FIX_BEAR_AI": "Napraw AI niedźwiedzi",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",
         "SETTING_FIX_BRIDGE_COLLISION": "Napraw kolizję mostów",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Naprawia problem, w którym Lara nie może chwycić części niektórych mostów oraz krawędzi. Naprawia również problemy z kolizją mostów zwodzonych, pułapek i zwykłych mostów, gdy są nałożone na siebie, są przy zboczach lub blisko ziemi.",
         "SETTING_FIX_CHAINBLOCK_SECRET_SOUND": "Napraw dźwięku blokady łańcucha",
@@ -841,7 +849,7 @@
             "name": "Lew",
         },
         "lioness": {
-            "names": [
+            "name": [
                 "Lwica",
                 "Lew",
             ]
@@ -850,31 +858,31 @@
             "name": "Puma",
         },
         "ape": {
-            "names": [
+            "name": [
                 "Małpa",
                 "Goryl",
             ]
         },
         "rat": {
-            "names": [
+            "name": [
                 "Szczur",
                 "Szczur lądowy",
             ]
         },
         "vole": {
-            "names": [
+            "name": [
                 "Nornik",
                 "Szczur wodny",
             ]
         },
         "trex": {
-            "names": [
+            "name": [
                 "T-Rex",
                 "Tyranozaur",
             ]
         },
         "raptor": {
-            "names": [
+            "name": [
                 "Raptor",
                 "Welociraptor",
             ]
@@ -895,13 +903,13 @@
             "name": "Mumia",
         },
         "dino_mutant": {
-            "names": [
+            "name": [
                 "Dino mutant",
                 "Zmutowany dinozaur",
             ]
         },
         "fish_mutant": {
-            "names": [
+            "name": [
                 "Ryba mutant",
                 "Zmutowana ryba",
             ]
@@ -916,7 +924,7 @@
             "name": "Deskorolka",
         },
         "skate_kid": {
-            "names": [
+            "name": [
                 "Kid",
                 "Dzieciak na deskorolce",
             ]
@@ -973,13 +981,13 @@
             "name": "Spadający sufit 2",
         },
         "flame": {
-            "names": [
+            "name": [
                 "Płomień",
                 "Ogień",
             ]
         },
         "flame_emitter": {
-            "names": [
+            "name": [
                 "Emiter płomieni",
                 "Emiter ognia",
             ]
@@ -1120,14 +1128,14 @@
             "name": "Przesuwalny filar",
         },
         "switch_type_normal": {
-            "names": [
+            "name": [
                 "Dźwignia",
                 "Wajcha",
                 "Przełącznik",
             ]
         },
         "switch_type_uw": {
-            "names": [
+            "name": [
                 "Podwodna dźwignia",
                 "Podwodna wajcha",
                 "Podwodny przełącznik",
@@ -1143,7 +1151,7 @@
             "name": "Zapadnia 3",
         },
         "alphabet": {
-            "names": [
+            "name": [
                 "Literki",
                 "Alfabet",
             ]
@@ -1293,7 +1301,7 @@
             "name": "Czerwony skuter śnieżny",
         },
         "dog": {
-            "names": [
+            "name": [
                 "Pies",
                 "Doberman",
             ]
@@ -1392,19 +1400,19 @@
             "name": "Orzeł",
         },
         "bandit_1": {
-            "names": [
+            "name": [
                 "Najemnik 1",
                 "Zamaskowany oprych 1",
             ]
         },
         "bandit_2": {
-            "names": [
+            "name": [
                 "Najemnik 2",
                 "Zamaskowany oprych 2",
             ]
         },
         "bandit_2b": {
-            "names": [
+            "name": [
                 "Najemnik 3",
                 "Zamaskowany oprych 3",
             ]
@@ -1494,7 +1502,7 @@
             "name": "Pokretło",
         },
         "switch_type_button": {
-            "names": [
+            "name": [
                 "Przycisk",
                 "Przełącznik",
             ]

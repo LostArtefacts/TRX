@@ -123,6 +123,7 @@
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Abaisser la caméra",
         "ENUM_INPUT_ROLE_CAMERA_FORWARD": "Avancer la caméra",
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Caméra vers la gauche",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "\\{review}Réinitialisation de la caméra",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Caméra vers la droite",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Réhausser la caméra",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Changer de cible",
@@ -130,6 +131,10 @@
         "ENUM_INPUT_ROLE_DOWN": "Retour",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Dégainer",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Console de développement",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Équiper le lance-grenades",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Équiper le harpon",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Équiper le M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "\\{review}Équiper les pistolets automatiques",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "S'équiper des pistolets",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "S'équiper du fusil à pompe",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "S'équiper des Uzi",
@@ -424,6 +429,7 @@
         "SETTING_ENABLE_GAME_MODES": "Autres modes de jeu",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "\\{review}Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.",
         "SETTING_ENABLE_GUN_LIGHTING": "Éclairage des armes",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
         "SETTING_ENABLE_IDLE_POSE_CAMERA": "\\{review}Caméra pose",
         "SETTING_ENABLE_IDLE_POSE_CAMERA_DESCRIPTION": "\\{review}Ajuste la caméra pour qu'elle soit orientée vers Lara pendant sa animation de pose. Appuyer sur regarder pour réinitialiser la caméra.",
         "SETTING_ENABLE_INVERTED_LOOK": "Inversion verticale du mode regarder",
@@ -516,7 +522,9 @@
         "SETTING_FIX_ALLIGATOR_AI": "Corriger l'IA des aligators",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Corrige le fait que les alligators n'infligent aucun dégât si Lara reste immobile dans l'eau.",
         "SETTING_FIX_ANIMATED_SPRITES": "Corriger les sprites animées",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Corrige les sprites originaux des plantes sous-marines pour qu'ils s'animent correctement dans les zones aquatiques.",
         "SETTING_FIX_BEAR_AI": "Corriger l'IA des ours",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Corrige l'attaque par coup de patte des ours pour qu'ils ne ratent pas Lara.",
         "SETTING_FIX_BRIDGE_COLLISION": "Corriger la colision des ponts",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Corrige l'impossibilité pour Lara de s'accrocher à des certaines parties de ponts et les murs invisibles à leurs bordures. Corrige également les problèmes de colision pour les ponts-levis, les trappes et les ponts lorsqu'ils sont les uns au-dessus des autres, au-dessus de pentes, ou près du sol.",
         "SETTING_FIX_CHAINBLOCK_SECRET_SOUND": "Corriger le son de chaîne des blocs",
@@ -937,7 +945,7 @@
             "name": "\\{review}Émetteur de braise",
         },
         "falling_block_1": {
-            "names": [
+            "name": [
                 "\\{review}Bloc tombant 1",
                 "\\{review}Sol rétractable 1",
                 "\\{review}Tuiles rétractables 1",
@@ -950,13 +958,13 @@
             "name": "Plafond tombant 2",
         },
         "flame": {
-            "names": [
+            "name": [
                 "\\{review}Flamme",
                 "\\{review}Feu",
             ]
         },
         "flame_emitter": {
-            "names": [
+            "name": [
                 "\\{review}Émetteur de flamme",
                 "\\{review}Émetteur de feu",
             ]
@@ -974,7 +982,7 @@
             "name": "\\{review}Sac de sable",
         },
         "rolling_ball_1": {
-            "names": [
+            "name": [
                 "\\{review}Rocher 1",
                 "\\{review}Boule Roulante",
             ]
@@ -1049,25 +1057,25 @@
             "name": "\\{review}Trou de clé 4",
         },
         "movable_block_1": {
-            "names": [
+            "name": [
                 "\\{review}Bloc Poussé 1",
                 "\\{review}Bloc Mobile 1",
             ]
         },
         "movable_block_2": {
-            "names": [
+            "name": [
                 "\\{review}Bloc Poussé 2",
                 "\\{review}Bloc Mobile 2",
             ]
         },
         "movable_block_3": {
-            "names": [
+            "name": [
                 "\\{review}Bloc Poussé 3",
                 "\\{review}Bloc Mobile 3",
             ]
         },
         "movable_block_4": {
-            "names": [
+            "name": [
                 "\\{review}Bloc Poussé 4",
                 "\\{review}Bloc Mobile 4",
             ]
@@ -1112,13 +1120,13 @@
             "name": "Pilier coulissant",
         },
         "switch_type_normal": {
-            "names": [
+            "name": [
                 "\\{review}Levier",
                 "\\{review}Interrupteur",
             ]
         },
         "switch_type_uw": {
-            "names": [
+            "name": [
                 "\\{review}Levier sous-marin",
                 "\\{review}Interrupteur sous-marin",
             ]
@@ -1280,7 +1288,7 @@
             "name": "\\{review}Motoneige rouge",
         },
         "dog": {
-            "names": [
+            "name": [
                 "\\{review}Chien",
                 "\\{review}Doberman",
             ]
@@ -1379,19 +1387,19 @@
             "name": "\\{review}Aigle",
         },
         "bandit_1": {
-            "names": [
+            "name": [
                 "\\{review}Mercenaire 1",
                 "\\{review}Goon masqué 1",
             ]
         },
         "bandit_2": {
-            "names": [
+            "name": [
                 "\\{review}Mercenaire 2",
                 "\\{review}Goon masqué 2",
             ]
         },
         "bandit_2b": {
-            "names": [
+            "name": [
                 "\\{review}Mercenaire 3",
                 "\\{review}Goon masqué 3",
             ]
@@ -1415,14 +1423,14 @@
             "name": "\\{review}Plafond Épineux",
         },
         "falling_block_2": {
-            "names": [
+            "name": [
                 "\\{review}Bloc tombant 2",
                 "\\{review}Sol rétractable 2",
                 "\\{review}Tuiles rétractables 2",
             ]
         },
         "falling_block_3": {
-            "names": [
+            "name": [
                 "\\{review}Bloc tombant 3",
                 "\\{review}Sol rétractable 3",
                 "\\{review}Tuiles rétractables 3",
@@ -1460,13 +1468,13 @@
             "name": "\\{review}Ventilateur",
         },
         "rolling_ball_2": {
-            "names": [
+            "name": [
                 "\\{review}Rocher 2",
                 "\\{review}Boule Roulante 2",
             ]
         },
         "rolling_ball_3": {
-            "names": [
+            "name": [
                 "\\{review}Rocher 3",
                 "\\{review}Boule Roulante 3",
             ]
@@ -1496,7 +1504,7 @@
             "name": "\\{review}Interrupteur de Sas",
         },
         "switch_type_button": {
-            "names": [
+            "name": [
                 "\\{review}Bouton",
                 "\\{review}Bouton poussoir",
                 "\\{review}Interrupteur",
