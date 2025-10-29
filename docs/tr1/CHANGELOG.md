@@ -11,6 +11,7 @@
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
     This feature is experimental — some objects may not behave correctly. Please report any bugs encountered! 🩷  
     See [the documentation](../07-CATALOGS.md) for details.
+- added support for custom levels to use Lara's extra animations from TR2
 - added new hidden settings (available via LUA and the `/set` command):
     - `flow.lockout_option_ring`
     - `flow.load_save_disabled`

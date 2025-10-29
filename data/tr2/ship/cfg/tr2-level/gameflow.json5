@@ -16,6 +16,7 @@
         "data/injections/pickup_aid.bin",
         "data/injections/winston_model.bin",
         "data/injections/purple_crystal.bin",
+        "data/injections/lara_extra.bin",
     ],
 
     "levels": [

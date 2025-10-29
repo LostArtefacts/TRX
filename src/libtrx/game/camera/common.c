@@ -781,14 +781,10 @@ void Camera_ResetPosition(void)
     g_Camera.fixed_camera = false;
     g_Camera.additional_angle = 0;
     g_Camera.additional_elevation = 0;
-#if TR_VERSION == 1
-    g_Camera.type = CAM_CHASE;
-#else
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (!lara_info->extra_anim) {
         g_Camera.type = CAM_CHASE;
     }
-#endif
 }
 
 void Camera_Reset(void)

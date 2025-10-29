@@ -163,14 +163,12 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_AIRLOCK:
-#if TR_VERSION >= 2
         Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
         lara_item->current_anim_state = LS_EXTRA_BREATH;
         lara_item->goal_anim_state = LS_EXTRA_AIRLOCK;
         Item_Animate(lara_item);
         lara->extra_anim = true;
         lara->hit_direction = -1;
-#endif
         break;
 
     case O_SWITCH_TYPE_SMALL:

@@ -47,7 +47,10 @@ static void M_KillLara(const ITEM *const item)
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     Item_UpdateRoom(lara->item_num, item->room_num);
-    Item_SwitchToObjAnim(lara_item, LS_EXTRA_TREX_KILL, 0, O_LARA_EXTRA);
+    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LS_EXTRA_BREATH;
+    lara_item->goal_anim_state = LS_EXTRA_TREX_KILL;
+    Item_Animate(lara_item);
 
     lara_item->pos.x = item->pos.x;
     lara_item->pos.y = item->pos.y;
@@ -56,9 +59,7 @@ static void M_KillLara(const ITEM *const item)
     lara_item->rot.y = item->rot.y;
     lara_item->rot.z = 0;
     lara_item->gravity = 0;
-    lara_item->current_anim_state = LS(LS_SPECIAL);
-    lara_item->goal_anim_state = LS(LS_SPECIAL);
-    Lara_Mesh_SwapAll(O_LARA_EXTRA);
+    Lara_Mesh_SwapAll(O_LARA_EXTRA_SKIN_TREX);
 
     lara_item->hit_points = -1;
 

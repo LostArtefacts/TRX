@@ -14,6 +14,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_LEVEL_COMPLETE,   nullptr, nullptr },
 
     // Events with integer arguments
+    { GFS_SET_START_ANIM,   M_HandleIntEvent, "anim" },
     { GFS_LOOP_GAME,        M_HandleIntEvent, "level_id" },
     { GFS_PLAY_CUTSCENE,    M_HandleIntEvent, "cutscene_id" },
     { GFS_PLAY_FMV,         M_HandleIntEvent, "fmv_id" },

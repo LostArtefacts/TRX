@@ -65,28 +65,23 @@ typedef enum {
 
 // clang-format off
 typedef enum {
-    LS_EXTRA_BREATH      = 0,
-#if TR_VERSION == 1
-    // TODO: refactor extra animations. Use catalog?
-    LS_EXTRA_PLUNGER     = -1,
-    LS_EXTRA_GONG_BONG   = -1,
-    LS_EXTRA_YETI_KILL   = -1,
-    LS_EXTRA_PULL_DAGGER = -1,
-    LS_EXTRA_SHARK_KILL  = -1,
-    LS_EXTRA_FINAL_ANIM  = -1,
-    LS_EXTRA_TREX_KILL   = 1,
-#elif TR_VERSION == 2
-    LS_EXTRA_PLUNGER     = 1,
-    LS_EXTRA_YETI_KILL   = 2,
-    LS_EXTRA_SHARK_KILL  = 3,
-    LS_EXTRA_AIRLOCK     = 4,
-    LS_EXTRA_GONG_BONG   = 5,
-    LS_EXTRA_TREX_KILL   = 6,
-    LS_EXTRA_PULL_DAGGER = 7,
-    LS_EXTRA_START_ANIM  = 8,
-    LS_EXTRA_START_HOUSE = 9,
-    LS_EXTRA_FINAL_ANIM  = 10,
-#endif
+    LS_EXTRA_BREATH         = 0,
+    LS_EXTRA_TREX_KILL      = 1,
+    LS_EXTRA_SCION_PICKUP_1 = 2,
+    LS_EXTRA_USE_MIDAS      = 3,
+    LS_EXTRA_MIDAS_KILL     = 4,
+    LS_EXTRA_SCION_PICKUP_2 = 5,
+    LS_EXTRA_TORSO_KILL     = 6,
+    LS_EXTRA_PLUNGER        = 7,
+    LS_EXTRA_START_ANIM     = 8,
+    LS_EXTRA_AIRLOCK        = 9,
+    LS_EXTRA_SHARK_KILL     = 10,
+    LS_EXTRA_YETI_KILL      = 11,
+    LS_EXTRA_GONG_BONG      = 12,
+    LS_EXTRA_GUARD_KILL     = 13,
+    LS_EXTRA_PULL_DAGGER    = 14,
+    LS_EXTRA_START_HOUSE    = 15,
+    LS_EXTRA_END_HOUSE      = 16,
     LS_EXTRA_NUMBER_OF,
 } LARA_EXTRA_STATE;
 // clang-format on

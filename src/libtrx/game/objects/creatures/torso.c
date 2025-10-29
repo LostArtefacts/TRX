@@ -8,7 +8,6 @@
 #include "game/sound.h"
 #include "utils.h"
 
-#define EXTRA_ANIM_TORSO_SLAM 0
 #define TORSO_TURN_L_ANIM 8
 #define TORSO_DIE_ANIM 13
 #define TORSO_TURN_R_ANIM 17
@@ -48,10 +47,11 @@ typedef enum {
 static void M_KillLara(const ITEM *const item)
 {
     ITEM *const lara_item = Lara_GetItem();
-    Item_SwitchToObjAnim(lara_item, EXTRA_ANIM_TORSO_SLAM, 0, O_LARA_EXTRA);
+    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LS_EXTRA_BREATH;
+    lara_item->goal_anim_state = LS_EXTRA_TORSO_KILL;
+    Item_Animate(lara_item);
 
-    lara_item->current_anim_state = LS(LS_SPECIAL);
-    lara_item->goal_anim_state = LS(LS_SPECIAL);
     lara_item->room_num = item->room_num;
     lara_item->pos.x = item->pos.x;
     lara_item->pos.y = item->pos.y;
@@ -67,9 +67,6 @@ static void M_KillLara(const ITEM *const item)
     lara->air = -1;
     lara->gun_status = LGS_HANDS_BUSY;
     lara->gun_type = LGT_UNARMED;
-
-    g_Camera.target_distance = WALL_L * 2;
-    g_Camera.flags = CF_FOLLOW_CENTRE;
 }
 
 static void M_Control(const int16_t item_num)

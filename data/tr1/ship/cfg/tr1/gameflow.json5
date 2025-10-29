@@ -21,6 +21,7 @@
         "data/injections/sprite_alignment.bin",
         "data/injections/pda_model.bin",
         "data/injections/winston_model.bin",
+        "data/injections/lara_extra.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -302,6 +303,7 @@
                 "data/injections/door59_sfx.bin",
                 "data/injections/sanctuary_fd.bin",
                 "data/injections/sanctuary_itemrots.bin",
+                "data/injections/sanctuary_scion.bin",
                 "data/injections/sanctuary_textures.bin",
             ],
         },
