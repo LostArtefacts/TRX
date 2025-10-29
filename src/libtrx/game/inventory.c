@@ -1,6 +1,7 @@
 #include "game/inventory.h"
 
 #include "config.h"
+#include "debug.h"
 #include "game/game.h"
 #include "game/gun.h"
 #include "game/inventory_ring.h"
@@ -29,6 +30,7 @@ static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
+    case LGT_PISTOLS: return &g_InvRing_Item_Pistols;
     case LGT_SHOTGUN: return &g_InvRing_Item_Shotgun;
     case LGT_MAGNUMS: return &g_InvRing_Item_Magnums;
     case LGT_UZIS:    return &g_InvRing_Item_Uzis;
@@ -46,6 +48,7 @@ static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
+    case LGT_PISTOLS: return &g_InvRing_Item_PistolAmmo;
     case LGT_SHOTGUN: return &g_InvRing_Item_ShotgunAmmo;
     case LGT_MAGNUMS: return &g_InvRing_Item_MagnumAmmo;
     case LGT_UZIS:    return &g_InvRing_Item_UziAmmo;
@@ -131,6 +134,7 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 
 void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
 {
+    ASSERT(inv_item != nullptr);
     INV_RING_SOURCE *const source = &g_InvRing_Source[M_GetRingType(inv_item)];
 
     int32_t n;
