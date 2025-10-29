@@ -106,6 +106,11 @@ static bool M_IsBrokenTrack(const MUSIC_ID track_id)
 
 static bool M_IsAmbientTrack(const MUSIC_ID track_id)
 {
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->music_track == track_id) {
+        return true;
+    }
+
     const GF_AMBIENT_DATA *const ambient_data = &g_GameFlow.ambient_tracks;
     if (ambient_data == nullptr) {
         return false;

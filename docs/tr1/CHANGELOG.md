@@ -38,6 +38,7 @@
 - changed save crystal collision to make them easier to activate
 - changed the unrestricted look mode option to include Lara being able to look freely while shooting an enemy (#4090)
 - changed the `ambient_tracks` property to be only available on the root level
+- changed music triggers that match the level's default ambient track to automatically be treated as ambient if omitted from `ambient_tracks` (#4181)
 - changed cutscene data (e.g. `cut1.phd`, as opposed to in-game cinematics) to match TR2 format, where Lara (as `O_LARA`) must be defined as an item in the level file
 - changed the `-q`/`--quiet` argument to no longer silence warnings
 - changed the Remove shotguns, Remove Uzis and Remove Magnus into a single "Remove extra guns" option
