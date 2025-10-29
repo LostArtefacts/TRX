@@ -1520,6 +1520,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     int32_t version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &version);
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
     if (root_obj == nullptr) {
         LOG_ERROR("Malformed save: cannot parse BSON data");
         goto cleanup;
@@ -1553,7 +1554,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
 
-    if (!Savegame_BSON_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
+    if (!Savegame_BSON_LoadEffects(ctx)) {
         goto cleanup;
     }
 
@@ -1568,6 +1569,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     result = true;
 
 cleanup:
+    Savegame_BSON_FinishRead(ctx, result);
     JSON_ValueFree(root);
     return result;
 }
