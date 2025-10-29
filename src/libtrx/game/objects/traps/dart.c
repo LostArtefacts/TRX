@@ -16,7 +16,10 @@ static void M_Hit(const int16_t item_num, const XYZ_32 pos)
     Item_Kill(item_num);
     Sound_Effect(SFX_PROJECTILE_HIT, &item->pos, SPM_NORMAL);
 
-    const int16_t effect_num = Effect_Create(item->room_num);
+    int16_t room_num = item->room_num;
+    Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+
+    const int16_t effect_num = Effect_Create(room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->object_id = O_RICOCHET;
