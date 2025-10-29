@@ -123,6 +123,7 @@
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Camera Down",
         "ENUM_INPUT_ROLE_CAMERA_FORWARD": "Camera Forward",
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Camera Left",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Camera Reset",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Camera Right",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Camera Up",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Change Target",
@@ -130,6 +131,10 @@
         "ENUM_INPUT_ROLE_DOWN": "Back",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Draw Weapon",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Dev Console",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "Equip M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Automatic Pistols",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equip Pistols",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equip Shotgun",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equip Uzis",
@@ -424,6 +429,7 @@
         "SETTING_ENABLE_GAME_MODES": "Game mode selection",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.",
         "SETTING_ENABLE_GUN_LIGHTING": "Gun lighting",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated for gunshots and explosions.",
         "SETTING_ENABLE_IDLE_POSE_CAMERA": "Idle pose camera",
         "SETTING_ENABLE_IDLE_POSE_CAMERA_DESCRIPTION": "Adjusts the camera to face Lara during her idle pose animation. Pressing look will reset the camera.",
         "SETTING_ENABLE_INVERTED_LOOK": "Inverted look",
@@ -516,7 +522,9 @@
         "SETTING_FIX_ALLIGATOR_AI": "Fix alligator AI",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Fixes alligators dealing no damage if Lara remains still in the water.",
         "SETTING_FIX_ANIMATED_SPRITES": "Fix sprite animations",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixes original underwater plant sprites so they animate properly in water areas.",
         "SETTING_FIX_BEAR_AI": "Fix bear AI",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixes the bear pat attack so it does not miss Lara.",
         "SETTING_FIX_BRIDGE_COLLISION": "Fix bridge collision",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground.",
         "SETTING_FIX_CHAINBLOCK_SECRET_SOUND": "Fix chain block sound",
@@ -714,11 +722,20 @@
         "grenade": {
             "name": "Grenade",
         },
+        "small_medipack": {
+            "name": "Small Medipack",
+        },
+        "large_medipack": {
+            "name": "Large Medipack",
+        },
         "pistols": {
             "name": "Pistols",
         },
         "shotgun": {
             "name": "Shotgun",
+        },
+        "magnums": {
+            "name": "Automatic Pistols",
         },
         "uzis": {
             "name": "Uzis",
@@ -737,6 +754,9 @@
         },
         "shotgun_ammo": {
             "name": "Shotgun Shells",
+        },
+        "magnums_ammo": {
+            "name": "Automatic Pistol Clips",
         },
         "uzis_ammo": {
             "name": "Uzi Clips",
@@ -889,7 +909,7 @@
             "name": "Lion",
         },
         "lioness": {
-            "names": [
+            "name": [
                 "Lioness",
                 "Lion",
             ]
@@ -901,13 +921,13 @@
             "name": "Ape",
         },
         "rat": {
-            "names": [
+            "name": [
                 "Rat",
                 "Land Rat",
             ]
         },
         "vole": {
-            "names": [
+            "name": [
                 "Vole",
                 "Water Rat",
             ]
@@ -961,14 +981,14 @@
             "name": "Natla",
         },
         "torso": {
-            "names": [
+            "name": [
                 "Torso",
                 "Adam",
                 "Giant Mutant",
             ]
         },
         "dog": {
-            "names": [
+            "name": [
                 "Dog",
                 "Doberman",
             ]
@@ -1067,19 +1087,19 @@
             "name": "Eagle",
         },
         "bandit_1": {
-            "names": [
+            "name": [
                 "Mercenary 1",
                 "Masked Goon 1",
             ]
         },
         "bandit_2": {
-            "names": [
+            "name": [
                 "Mercenary 2",
                 "Masked Goon 2",
             ]
         },
         "bandit_2b": {
-            "names": [
+            "name": [
                 "Mercenary 3",
                 "Masked Goon 3",
             ]
@@ -1133,21 +1153,21 @@
             "name": "Ember Emitter",
         },
         "falling_block_1": {
-            "names": [
+            "name": [
                 "Falling Block 1",
                 "Collapsible Floor 1",
                 "Collapsible Tiles 1",
             ]
         },
         "falling_block_2": {
-            "names": [
+            "name": [
                 "Falling Block 2",
                 "Collapsible Floor 2",
                 "Collapsible Tiles 2",
             ]
         },
         "falling_block_3": {
-            "names": [
+            "name": [
                 "Falling Block 3",
                 "Collapsible Floor 3",
                 "Collapsible Tiles 3",
@@ -1160,13 +1180,13 @@
             "name": "Falling Ceiling 2",
         },
         "flame": {
-            "names": [
+            "name": [
                 "Flame",
                 "Fire",
             ]
         },
         "flame_emitter": {
-            "names": [
+            "name": [
                 "Flame Emitter",
                 "Fire Emitter",
             ]
@@ -1196,7 +1216,7 @@
             "name": "Aquatic Mine",
         },
         "pendulum_1": {
-            "names": [
+            "name": [
                 "Pendulum",
                 "Sandbax",
                 "Swinging axe",
@@ -1204,7 +1224,7 @@
             ]
         },
         "pendulum_2": {
-            "names": [
+            "name": [
                 "Pendulum",
                 "Sandbax",
                 "Swinging axe",
@@ -1224,19 +1244,19 @@
             "name": "Air Fan",
         },
         "rolling_ball_1": {
-            "names": [
+            "name": [
                 "Boulder 1",
                 "Rolling Ball 1",
             ]
         },
         "rolling_ball_2": {
-            "names": [
+            "name": [
                 "Boulder 2",
                 "Rolling Ball 2",
             ]
         },
         "rolling_ball_3": {
-            "names": [
+            "name": [
                 "Boulder 3",
                 "Rolling Ball 3",
             ]
@@ -1251,7 +1271,7 @@
             "name": "Spinning Blade",
         },
         "teeth_trap": {
-            "names": [
+            "name": [
                 "Teeth Trap",
                 "Clang-clang Door",
             ]
@@ -1332,25 +1352,25 @@
             "name": "Lift",
         },
         "movable_block_1": {
-            "names": [
+            "name": [
                 "Push Block 1",
                 "Movable Block 1",
             ]
         },
         "movable_block_2": {
-            "names": [
+            "name": [
                 "Push Block 2",
                 "Movable Block 2",
             ]
         },
         "movable_block_3": {
-            "names": [
+            "name": [
                 "Push Block 3",
                 "Movable Block 3",
             ]
         },
         "movable_block_4": {
-            "names": [
+            "name": [
                 "Push Block 4",
                 "Movable Block 4",
             ]
@@ -1401,14 +1421,14 @@
             "name": "Airlock Switch",
         },
         "switch_type_button": {
-            "names": [
+            "name": [
                 "Button",
                 "Push Button",
                 "Switch",
             ]
         },
         "switch_type_normal": {
-            "names": [
+            "name": [
                 "Lever",
                 "Switch",
             ]
@@ -1417,7 +1437,7 @@
             "name": "Small Switch",
         },
         "switch_type_uw": {
-            "names": [
+            "name": [
                 "Underwater Lever",
                 "Underwater Switch",
             ]

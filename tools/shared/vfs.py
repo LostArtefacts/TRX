@@ -18,7 +18,8 @@ class VirtualFilesystem:
     def put(self, path: Path, content: str) -> None:
         self.files[path] = content
 
-    def show_diff(self) -> None:
+    def show_diff(self) -> bool:
+        has_changes = False
         for path, new_content in self.files.items():
             if path.exists():
                 old_content = path.read_text()
@@ -39,6 +40,8 @@ class VirtualFilesystem:
                         )
                     )
                 )
+                has_changes = True
+        return has_changes
 
     def commit(self) -> None:
         for path, content in self.files.items():

@@ -123,6 +123,7 @@
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Camara Sios",
         "ENUM_INPUT_ROLE_CAMERA_FORWARD": "Camara air Adhart",
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Camara gu Chlì",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Ath-shuidhich an camara",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Camara gu Dheas",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Camara Suas",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Atharraich an Targaid",
@@ -130,6 +131,10 @@
         "ENUM_INPUT_ROLE_DOWN": "Air Ais",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Uidheamaich",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Consol Leasachaidh",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Uidheamaich Lannsair Grenèad",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Uidheamaich Harpùn",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "Uidheamaich M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Piostalan Fèin-obrachail",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Uidheamaich Piostalan",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Uidheamaich Gunna-sgaoil",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Uidheamaich Uzis",
@@ -424,6 +429,7 @@
         "SETTING_ENABLE_GAME_MODES": "Taghadh modh geama",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Leigeas le roghainnean Geama Ùr+ a bhith rim faotainn sa phasport aig toiseach a' gheama.\n\n- Geama Ùr+: fuasgladh nan armachd air fad le peilearan gun chrìoch; bidh HP dùbailte aig na nàimhdean.\n- GÙ Iapanach: bidh na h-armachd ag adhbhrachadh milleadh dùbailte, agus bheir togail lòchrain 8 seach 6.\n- GÙ+ Iapanach: measgachadh de GÙ+ is GÙ Iapanach.",
         "SETTING_ENABLE_GUN_LIGHTING": "Solais armachd",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Cuiridh seo solais beòthail ri losgadh agus spreadhadh.",
         "SETTING_ENABLE_IDLE_POSE_CAMERA": "Camara seasaimh",
         "SETTING_ENABLE_IDLE_POSE_CAMERA_DESCRIPTION": "Gluaisidh an camara gus aghaidh a thoirt air Lara rè a beòthalachd seasaimh. Put seall gus an camara a ath-shuidheachadh.",
         "SETTING_ENABLE_INVERTED_LOOK": "Sealladh ais-iompaichte",
@@ -516,7 +522,9 @@
         "SETTING_FIX_ALLIGATOR_AI": "Càraich AI ailigeutair",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Càradh far nach dèan ailigeutairean milleadh ma dh'fhanas Lara fhathast anns an uisge.",
         "SETTING_FIX_ANIMATED_SPRITES": "Càraich beòthachaidhean spraidean",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}A’ ceartachadh nan sprìodan lusan fo uisge tùsail gus an gluasad gu ceart ann an raointean uisge.",
         "SETTING_FIX_BEAR_AI": "Càraich AI mathain",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Càraichidh seo ionnsaigh a' mhathain gus nach caill e Lara.",
         "SETTING_FIX_BRIDGE_COLLISION": "Càraich buaidh dhrochaidean",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Càradh far nach urrainn do Lara grèim fhaighinn air cuid de dhrochaidean, agus bugan le ballachan neo-fhaicsinneach. Càraidh seo cuideachd duilgheadasan le drochaidean, dorsan-trapa is làr-lùbte nuair a tha iad air an cur thairis air chèile neo ri talamh claon.",
         "SETTING_FIX_CHAINBLOCK_SECRET_SOUND": "Càraich fuaim bloca slabhraidh",
@@ -832,7 +840,7 @@
             "name": "Ialtag",
         },
         "crocodile": {
-            "names": [
+            "name": [
                 "Crocadal",
                 "Crogall",
             ]
@@ -844,7 +852,7 @@
             "name": "Leòmhann",
         },
         "lioness": {
-            "names": [
+            "name": [
                 "Leòmhann-Boireann",
                 "Leòmhann",
             ]
@@ -856,25 +864,25 @@
             "name": "Apa",
         },
         "rat": {
-            "names": [
+            "name": [
                 "Radan",
                 "Radan-tìre",
             ]
         },
         "vole": {
-            "names": [
+            "name": [
                 "Luch-uisge",
                 "Radan-uisge",
             ]
         },
         "trex": {
-            "names": [
+            "name": [
                 "T-Rex",
                 "Dìneasair-mòr",
             ]
         },
         "raptor": {
-            "names": [
+            "name": [
                 "Raptor",
                 "Dìneasair-beag",
             ]
@@ -922,7 +930,7 @@
             "name": "Natla",
         },
         "torso": {
-            "names": [
+            "name": [
                 "Torsachan",
                 "Adhamh",
                 "Mùthaidh Mòr",
@@ -959,7 +967,7 @@
             "name": "Sgaoiladair Èibhleag",
         },
         "falling_block_1": {
-            "names": [
+            "name": [
                 "Bloc Tuiteamach 1",
                 "Làr Bristeach 1",
                 "Leacan Bristeach 1",
@@ -972,13 +980,13 @@
             "name": "Mullach Tuiteamach 2",
         },
         "flame": {
-            "names": [
+            "name": [
                 "Lasair",
                 "Teine",
             ]
         },
         "flame_emitter": {
-            "names": [
+            "name": [
                 "Sgaoiladair Lasair",
                 "Sgaoiladair Teine",
             ]
@@ -996,7 +1004,7 @@
             "name": "Poca-gainmhich",
         },
         "rolling_ball_1": {
-            "names": [
+            "name": [
                 "Ulbhag 1",
                 "Ball-rollaidh 1",
             ]
@@ -1005,7 +1013,7 @@
             "name": "Geugan",
         },
         "teeth_trap": {
-            "names": [
+            "name": [
                 "Ribe Fiaclan",
                 "Doras 'Clang-Clang'",
             ]
@@ -1074,25 +1082,25 @@
             "name": "Toll Iuchrach 4",
         },
         "movable_block_1": {
-            "names": [
+            "name": [
                 "Bloc Putaidh 1",
                 "Bloc Gluasadach 1",
             ]
         },
         "movable_block_2": {
-            "names": [
+            "name": [
                 "Bloc Putaidh 2",
                 "Bloc Gluasadach 2",
             ]
         },
         "movable_block_3": {
-            "names": [
+            "name": [
                 "Bloc Putaidh 3",
                 "Bloc Gluasadach 3",
             ]
         },
         "movable_block_4": {
-            "names": [
+            "name": [
                 "Bloc Putaidh 4",
                 "Bloc Gluasadach 4",
             ]
@@ -1137,13 +1145,13 @@
             "name": "Colbh Sleamhnachaidh",
         },
         "switch_type_normal": {
-            "names": [
+            "name": [
                 "Luaidhe",
                 "Suids",
             ]
         },
         "switch_type_uw": {
-            "names": [
+            "name": [
                 "Luaidhe fon-Uisge",
                 "Suids fon-Uisge",
             ]
@@ -1305,7 +1313,7 @@
             "name": "Cairt-shneachda Dhearg",
         },
         "dog": {
-            "names": [
+            "name": [
                 "Cù",
                 "Doberman",
             ]
@@ -1404,19 +1412,19 @@
             "name": "Iolaire",
         },
         "bandit_1": {
-            "names": [
+            "name": [
                 "Saighdear-duais 1",
                 "Ruspal le Masg 1",
             ]
         },
         "bandit_2": {
-            "names": [
+            "name": [
                 "Saighdear-duais 2",
                 "Ruspal le Masg 2",
             ]
         },
         "bandit_2b": {
-            "names": [
+            "name": [
                 "Saighdear-duais 3",
                 "Ruspal le Masg 3",
             ]
@@ -1440,14 +1448,14 @@
             "name": "Mullach-gheugan",
         },
         "falling_block_2": {
-            "names": [
+            "name": [
                 "Bloc Tuiteamach 2",
                 "Làr Bristeach 2",
                 "Leacan Bristeach 2",
             ]
         },
         "falling_block_3": {
-            "names": [
+            "name": [
                 "Bloc Tuiteamach 3",
                 "Làr Bristeach 3",
                 "Leacan Bristeach 3",
@@ -1485,13 +1493,13 @@
             "name": "Gaothran",
         },
         "rolling_ball_2": {
-            "names": [
+            "name": [
                 "Ulbhag 2",
                 "Ball-rollaidh 2",
             ]
         },
         "rolling_ball_3": {
-            "names": [
+            "name": [
                 "Ulbhag 3",
                 "Ball-rollaidh 3",
             ]
@@ -1521,7 +1529,7 @@
             "name": "Suids Stopadh-adhair",
         },
         "switch_type_button": {
-            "names": [
+            "name": [
                 "Putan",
                 "Suids",
             ]

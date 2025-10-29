@@ -1,4 +1,3 @@
-#include "game/game_string.h"
 #include "game/savegame.h"
 
 #include <libtrx/debug.h>
@@ -6,6 +5,7 @@
 #include <libtrx/game/carrier.h>
 #include <libtrx/game/game.h>
 #include <libtrx/game/game_flow.h>
+#include <libtrx/game/game_string.h>
 #include <libtrx/game/inventory.h>
 #include <libtrx/game/lara.h>
 #include <libtrx/game/music.h>

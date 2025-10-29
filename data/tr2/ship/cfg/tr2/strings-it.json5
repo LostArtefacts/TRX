@@ -335,12 +335,6 @@
         }
     },
     "game_strings": {
-        "ENUM_INPUT_ROLE_CAMERA_RESET": "Ripristina Telecamera",
-        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equipaggia Lanciagranate",
-        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equipaggia Fucile Subacqueo",
-        "ENUM_INPUT_ROLE_EQUIP_M16": "Equipaggia M16",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Pistole Automatiche",
-        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Risolve i problemi preesistenti nei livelli 'In Profondità', 'Relitto della Maria Doria' e 'Sul Ponte' per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Risolve il problema nel pacchetto di espansione La Maschera Dorata per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
     }

@@ -123,6 +123,7 @@
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Kamera runter",
         "ENUM_INPUT_ROLE_CAMERA_FORWARD": "Kamera Vorwärts",
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Kamera Links",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Kamera zurücksetzen",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Kamera Rechts",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Kamera Hoch",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Ziel wechseln",
@@ -130,6 +131,10 @@
         "ENUM_INPUT_ROLE_DOWN": "Zurück",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Waffe ziehen",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Entwickler-Konsole",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "M16-ausrüsten",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Automatik-Pistolen ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Pistolen ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Schrotflinte ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Uzis ausrüsten",
@@ -424,6 +429,7 @@
         "SETTING_ENABLE_GAME_MODES": "Spielmodi-Auswahl",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Erlaubt die Auswahl der 'Neues Spiel Plus'-Optionen im 'Neues Spiel' Ausweis-Menü.\n\n- Neues Spiel+: schaltet alle Waffen mit unendlich Munition frei; Feinde haben verdoppelte Lebenserenergie.\n- Japanisch NS: Waffen verursachen doppelten Schaden und Fackel-Pickups enhalten 8 statt 6 Fackeln.\n- Japanisch NS+: eine Kombination aus Neus Spiel+ und Japanisch NS.",
         "SETTING_ENABLE_GUN_LIGHTING": "Dynamisches Licht für Waffen",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
         "SETTING_ENABLE_IDLE_POSE_CAMERA": "\\{review}Leerlauf-Kamera",
         "SETTING_ENABLE_IDLE_POSE_CAMERA_DESCRIPTION": "\\{review}Passt die Kamera an, sodass sie während der Posenanimation auf Lara gerichtet ist. Durch Drücken von Schauen wird die Kamera zurückgesetzt.",
         "SETTING_ENABLE_INVERTED_LOOK": "Invertiertes Umsehen",
@@ -516,7 +522,9 @@
         "SETTING_FIX_ALLIGATOR_AI": "Fix: Alligator-AI",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Fixt, dass die Alligatoren keinen Schaden machen, wenn Lara sich im Wasser befindet und sich nicht bewegt.",
         "SETTING_FIX_ANIMATED_SPRITES": "Fix: Sprite-Animationen",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Behebt die ursprünglichen Unterwasser-Pflanzen-Sprites, sodass sie in Wasserbereichen richtig animiert werden.",
         "SETTING_FIX_BEAR_AI": "Fix: Bären-AI",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara nicht mehr verfehlen.",
         "SETTING_FIX_BRIDGE_COLLISION": "Fix: Brückenkollision",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Fixt, dass Lara nicht in der Lage ist, sich an einigen Teilen von Brücken festzuhalten und unsichtbare Wände an den Kanten. Fixt auch Kollisions-Fehler mit Zugbrücken, Falltüren, und Brücken, wenn sie übereinander gestapelt sind, über Schrägen, und nahe dem Boden.",
         "SETTING_FIX_CHAINBLOCK_SECRET_SOUND": "Fix: Falsch abspielender Sound",
@@ -841,7 +849,7 @@
             "name": "Löwe",
         },
         "lioness": {
-            "names": [
+            "name": [
                 "Löwin",
                 "Löwe",
             ]
@@ -853,13 +861,13 @@
             "name": "Affe",
         },
         "rat": {
-            "names": [
+            "name": [
                 "Ratte",
                 "Landratte",
             ]
         },
         "vole": {
-            "names": [
+            "name": [
                 "Wühlmaus",
                 "Wasserratte",
             ]
@@ -913,7 +921,7 @@
             "name": "Natla",
         },
         "torso": {
-            "names": [
+            "name": [
                 "Torso",
                 "Adam",
                 "Riesenmutant",
@@ -950,7 +958,7 @@
             "name": "Gluterzeuger",
         },
         "falling_block_1": {
-            "names": [
+            "name": [
                 "Fallender Block 1",
                 "Zerbrechbarer Boden 1",
                 "Zerbrechbare Kacheln 1",
@@ -963,13 +971,13 @@
             "name": "Fallende Decke 2",
         },
         "flame": {
-            "names": [
+            "name": [
                 "Flamme",
                 "Feuer",
             ]
         },
         "flame_emitter": {
-            "names": [
+            "name": [
                 "Flamenerzeuger",
                 "Feuererzeuger",
             ]
@@ -987,7 +995,7 @@
             "name": "Sandsack",
         },
         "rolling_ball_1": {
-            "names": [
+            "name": [
                 "Fels 1",
                 "Rollender Ball",
             ]
@@ -1062,25 +1070,25 @@
             "name": "Keyhole 4",
         },
         "movable_block_1": {
-            "names": [
+            "name": [
                 "Drückbarer Block 1",
                 "Bewegbarer Block 1",
             ]
         },
         "movable_block_2": {
-            "names": [
+            "name": [
                 "Drückbarer Block 2",
                 "Bewegbarer Block 2",
             ]
         },
         "movable_block_3": {
-            "names": [
+            "name": [
                 "Drückbarer Block 3",
                 "Bewegbarer Block 3",
             ]
         },
         "movable_block_4": {
-            "names": [
+            "name": [
                 "Drückbarer Block 4",
                 "Bewegbarer Block 4",
             ]
@@ -1125,13 +1133,13 @@
             "name": "Sliding Pillar",
         },
         "switch_type_normal": {
-            "names": [
+            "name": [
                 "Lever",
                 "Switch",
             ]
         },
         "switch_type_uw": {
-            "names": [
+            "name": [
                 "Underwater Lever",
                 "Underwater Switch",
             ]
@@ -1293,7 +1301,7 @@
             "name": "Rotes Schneemobil",
         },
         "dog": {
-            "names": [
+            "name": [
                 "Hund",
                 "Dobermann",
             ]
@@ -1392,19 +1400,19 @@
             "name": "Adler",
         },
         "bandit_1": {
-            "names": [
+            "name": [
                 "Söldner 1",
                 "Masked Goon 1",
             ]
         },
         "bandit_2": {
-            "names": [
+            "name": [
                 "Söldner 2",
                 "Maskierter Schläger 2",
             ]
         },
         "bandit_2b": {
-            "names": [
+            "name": [
                 "Söldner 3",
                 "Maskierter Schläger 3",
             ]
@@ -1428,14 +1436,14 @@
             "name": "Spiky Ceiling",
         },
         "falling_block_2": {
-            "names": [
+            "name": [
                 "Fallender Block 2",
                 "Zerbrechbarer Boden 2",
                 "Zerbrechbare Kacheln 2",
             ]
         },
         "falling_block_3": {
-            "names": [
+            "name": [
                 "Fallender Block 3",
                 "Zerbrechbarer Boden 3",
                 "Zerbrechbare Kacheln 3",
@@ -1473,13 +1481,13 @@
             "name": "Air Fan",
         },
         "rolling_ball_2": {
-            "names": [
+            "name": [
                 "Boulder 2",
                 "Rolling Ball 2",
             ]
         },
         "rolling_ball_3": {
-            "names": [
+            "name": [
                 "Boulder 3",
                 "Rolling Ball 3",
             ]
@@ -1509,7 +1517,7 @@
             "name": "Airlock Switch",
         },
         "switch_type_button": {
-            "names": [
+            "name": [
                 "Button",
                 "Push Button",
                 "Switch",

@@ -335,12 +335,6 @@
         }
     },
     "game_strings": {
-        "ENUM_INPUT_ROLE_CAMERA_RESET": "Kamera zurücksetzen",
-        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
-        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",
-        "ENUM_INPUT_ROLE_EQUIP_M16": "M16-ausrüsten",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Automatik-Pistolen ausrüsten",
-        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Fixt originale Fehler in 40 Faden, Das Wrack der Maria Doria und An Deck, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
         "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara, im Addon 'Die Goldene Maske', nicht mehr verfehlen.",
     }

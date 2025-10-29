@@ -158,24 +158,13 @@ The document is organized as follows:
     <td>
       <code>name</code>
     </td>
-    <td>String</td>
+    <td>String&nbsp;/&nbsp;String&nbsp;array</td>
     <td>No</td>
     <td colspan="2">
       Allows to rename any object, including key items and pickups.
-    </td>
-  </tr>
-
-  <tr valign="top">
-    <td>
-      <code>names</code>
-    </td>
-    <td>String</td>
-    <td>No</td>
-    <td colspan="2">
-      Allows to give more than a single name to any object. Objects that show
-      up in the inventory ring will use the first name. Other than that, the
-      additional names can be used with various console commands such as
-      <code>/tp</code> and <code>/give</code>.
+      Can be a list of strings – objects that show up in the inventory ring will
+      use the first name; the additional names can be used with various console
+      commands such as <code>/tp</code> and <code>/give</code>.
     </td>
   </tr>
 

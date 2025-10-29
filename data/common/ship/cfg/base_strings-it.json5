@@ -123,6 +123,7 @@
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Telecamera in Basso",
         "ENUM_INPUT_ROLE_CAMERA_FORWARD": "Telecamera Anteriore",
         "ENUM_INPUT_ROLE_CAMERA_LEFT": "Telecamera Sinistra",
+        "ENUM_INPUT_ROLE_CAMERA_RESET": "Ripristina Telecamera",
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Telecamera Destra",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Telecamera in Alto",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Cambia Bersaglio",
@@ -130,6 +131,10 @@
         "ENUM_INPUT_ROLE_DOWN": "Indietro",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Estrai Arma",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Apri Console",
+        "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equipaggia Lanciagranate",
+        "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equipaggia Fucile Subacqueo",
+        "ENUM_INPUT_ROLE_EQUIP_M16": "Equipaggia M16",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Pistole Automatiche",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equipaggia Pistole",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equipaggia Fucile a Pompa",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equipaggia Uzi",
@@ -424,6 +429,7 @@
         "SETTING_ENABLE_GAME_MODES": "Selezione modalità di gioco",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Consente di selezionare delle modalità di gioco aggiuntive dal menu passaporto.\n\n- Nuova Partita+: sblocca tutte le armi con munizioni infinite; i nemici hanno punti vita doppi.\n- NP giapponese: le armi causano il doppio dei danni; le scatole di razzi contengono 8 razzi di segnalazione anziché 6.\n- NP giapponese+: combinazione di Nuova Partita+ e NP giapponese.",
         "SETTING_ENABLE_GUN_LIGHTING": "Illuminazione spari",
+        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         "SETTING_ENABLE_IDLE_POSE_CAMERA": "Telecamera posa inattiva",
         "SETTING_ENABLE_IDLE_POSE_CAMERA_DESCRIPTION": "Regola la telecamera in modo che sia rivolta verso Lara mentre viene riprodotta la sua animazione di posa inattiva. Premi Guarda per reimpostare la telecamera.",
         "SETTING_ENABLE_INVERTED_LOOK": "Visuale invertita",
@@ -516,7 +522,9 @@
         "SETTING_FIX_ALLIGATOR_AI": "Correggi IA degli alligatori",
         "SETTING_FIX_ALLIGATOR_AI_DESCRIPTION": "Risolve il problema degli alligatori che non infliggono danni se Lara rimane ferma nell'acqua.",
         "SETTING_FIX_ANIMATED_SPRITES": "Correggi animazioni sprite",
+        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Corregge le sprite originali delle piante subacquee in modo che si animino correttamente nelle aree acquatiche.",
         "SETTING_FIX_BEAR_AI": "Correggi IA degli orsi",
+        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         "SETTING_FIX_BRIDGE_COLLISION": "Correggi collisione ponti",
         "SETTING_FIX_BRIDGE_COLLISION_DESCRIPTION": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendii o vicino al suolo.",
         "SETTING_FIX_CHAINBLOCK_SECRET_SOUND": "Correggi suono dei segreti",
@@ -841,7 +849,7 @@
             "name": "Leone",
         },
         "lioness": {
-            "names": [
+            "name": [
                 "Leonessa",
                 "Leone",
             ]
@@ -853,13 +861,13 @@
             "name": "Scimmia",
         },
         "rat": {
-            "names": [
+            "name": [
                 "Ratto",
                 "Ratto Terrestre",
             ]
         },
         "vole": {
-            "names": [
+            "name": [
                 "Arvicola",
                 "Ratto Acquatico",
             ]
@@ -913,7 +921,7 @@
             "name": "Natla",
         },
         "torso": {
-            "names": [
+            "name": [
                 "Torso",
                 "Adam",
                 "Mutante Gigante",
@@ -950,7 +958,7 @@
             "name": "Emettitore di Brace",
         },
         "falling_block_1": {
-            "names": [
+            "name": [
                 "Blocco Cedevole 1",
                 "Pavimento Fragile 1",
                 "Piastrelle Fragili 1",
@@ -963,13 +971,13 @@
             "name": "Soffitto Cedevole 2",
         },
         "flame": {
-            "names": [
+            "name": [
                 "Fiamma",
                 "Fuoco",
             ]
         },
         "flame_emitter": {
-            "names": [
+            "name": [
                 "Emettitore di Fiamme",
                 "Emettitore di Fuoco",
             ]
@@ -987,7 +995,7 @@
             "name": "Sacco di Sabbia",
         },
         "rolling_ball_1": {
-            "names": [
+            "name": [
                 "Masso 1",
                 "Masso Rotolante",
             ]
@@ -1062,25 +1070,25 @@
             "name": "Serratura 4",
         },
         "movable_block_1": {
-            "names": [
+            "name": [
                 "Blocco Spostabile 1",
                 "Blocco Movibile 1",
             ]
         },
         "movable_block_2": {
-            "names": [
+            "name": [
                 "Blocco Spostabile 2",
                 "Blocco Movibile 2",
             ]
         },
         "movable_block_3": {
-            "names": [
+            "name": [
                 "Blocco Spostabile 3",
                 "Blocco Movibile 3",
             ]
         },
         "movable_block_4": {
-            "names": [
+            "name": [
                 "Blocco Spostabile 4",
                 "Blocco Movibile 4",
             ]
@@ -1125,13 +1133,13 @@
             "name": "Pilastro Scorrevole",
         },
         "switch_type_normal": {
-            "names": [
+            "name": [
                 "Leva",
                 "Interruttore",
             ]
         },
         "switch_type_uw": {
-            "names": [
+            "name": [
                 "Leva Subacquea",
                 "Interruttore Subacqueo",
             ]
@@ -1293,7 +1301,7 @@
             "name": "Motoslitta Rossa",
         },
         "dog": {
-            "names": [
+            "name": [
                 "Cane",
                 "Dobermann",
             ]
@@ -1392,19 +1400,19 @@
             "name": "Aquila",
         },
         "bandit_1": {
-            "names": [
+            "name": [
                 "Mercenario 1",
                 "Scagnozzo Mascherato 1",
             ]
         },
         "bandit_2": {
-            "names": [
+            "name": [
                 "Mercenario 2",
                 "Scagnozzo Mascherato 2",
             ]
         },
         "bandit_2b": {
-            "names": [
+            "name": [
                 "Mercenario 3",
                 "Scagnozzo Mascherato 3",
             ]
@@ -1428,14 +1436,14 @@
             "name": "Soffitto con Spuntoni",
         },
         "falling_block_2": {
-            "names": [
+            "name": [
                 "Blocco Cedevole 2",
                 "Pavimento Fragile 2",
                 "Piastrelle Fragili 2",
             ]
         },
         "falling_block_3": {
-            "names": [
+            "name": [
                 "Blocco Cedevole 3",
                 "Pavimento Fragile 3",
                 "Piastrelle Fragili 3",
@@ -1473,13 +1481,13 @@
             "name": "Ventilatore d'Aria",
         },
         "rolling_ball_2": {
-            "names": [
+            "name": [
                 "Masso 2",
                 "Masso Rotolante 2",
             ]
         },
         "rolling_ball_3": {
-            "names": [
+            "name": [
                 "Masso 3",
                 "Masso Rotolante 3",
             ]
@@ -1509,7 +1517,7 @@
             "name": "Interruttore Camera Stagna",
         },
         "switch_type_button": {
-            "names": [
+            "name": [
                 "Pulsante",
                 "Pulsante a Pressione",
                 "Interruttore",
