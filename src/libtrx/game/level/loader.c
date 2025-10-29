@@ -667,6 +667,11 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         room->flags.inside      = (flags & 0x40) != 0;
         // clang-format on
 
+        room->bind.active = false;
+        room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
+        room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
+        room->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
+        room->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
     }
