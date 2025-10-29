@@ -467,6 +467,7 @@ sources = [
   'game/rooms/draw.c',
   'game/rooms/floor_data.c',
   'game/rooms/geometry.c',
+  'game/savegame/bson_read.c',
   'game/savegame/common.c',
   'game/scaler.c',
   'game/shell/args.c',

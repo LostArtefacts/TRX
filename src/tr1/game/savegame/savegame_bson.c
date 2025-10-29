@@ -40,7 +40,7 @@
 typedef struct {
     int16_t count;
     int16_t id_map[MAX_EFFECTS];
-} SAVEGAME_BSON_FX_ORDER;
+} M_FX_ORDER;
 
 #define DUMP_XYZ(obj, key, value)                                              \
     do {                                                                       \
@@ -120,7 +120,7 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
-static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *const order)
+static void M_GetFXOrder(M_FX_ORDER *const order)
 {
     order->count = 0;
     for (int32_t i = 0; i < MAX_EFFECTS; i++) {
@@ -700,56 +700,6 @@ static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
     return true;
 }
 
-static bool M_LoadEffects(JSON_ARRAY *fx_arr)
-{
-    if (!g_Config.gameplay.enable_enhanced_saves) {
-        return true;
-    }
-
-    if (!fx_arr) {
-        LOG_ERROR("Malformed save: invalid or missing effect array");
-        return false;
-    }
-
-    if ((signed)fx_arr->length >= MAX_EFFECTS) {
-        LOG_WARNING(
-            "Malformed save: expected a max of %d effect, got %d. effect over "
-            "the "
-            "maximum will not be created.",
-            MAX_EFFECTS - 1, fx_arr->length);
-    }
-
-    for (int i = 0; i < (signed)fx_arr->length; i++) {
-        JSON_OBJECT *fx_obj = JSON_ArrayGetObject(fx_arr, i);
-        if (!fx_obj) {
-            LOG_ERROR("Malformed save: invalid effect data");
-            return false;
-        }
-
-        const int16_t room_num = JSON_ObjectGetInt(fx_obj, "room_number", 0);
-        const int16_t effect_num = Effect_Create(room_num);
-        if (effect_num == NO_EFFECT) {
-            continue;
-        }
-        EFFECT *effect = Effect_Get(effect_num);
-        effect->pos.x = JSON_ObjectGetInt(fx_obj, "x", 0);
-        effect->pos.y = JSON_ObjectGetInt(fx_obj, "y", 0);
-        effect->pos.z = JSON_ObjectGetInt(fx_obj, "z", 0);
-        effect->rot.x = JSON_ObjectGetInt(fx_obj, "x_rot", 0);
-        effect->rot.y = JSON_ObjectGetInt(fx_obj, "y_rot", 0);
-        effect->rot.z = JSON_ObjectGetInt(fx_obj, "z_rot", 0);
-        effect->object_id =
-            Object_FromGameID(JSON_ObjectGetInt(fx_obj, "object_number", -1));
-        effect->speed = JSON_ObjectGetInt(fx_obj, "speed", 0);
-        effect->fall_speed = JSON_ObjectGetInt(fx_obj, "fall_speed", 0);
-        effect->frame_num = JSON_ObjectGetInt(fx_obj, "frame_number", 0);
-        effect->counter = JSON_ObjectGetInt(fx_obj, "counter", 0);
-        effect->shade = JSON_ObjectGetInt(fx_obj, "shade", 0);
-    }
-
-    return true;
-}
-
 static bool M_LoadArm(JSON_OBJECT *arm_obj, LARA_ARM *arm)
 {
     ASSERT(arm != nullptr);
@@ -1207,7 +1157,7 @@ static JSON_ARRAY *M_DumpItems(void)
 {
     Savegame_ProcessItemsBeforeSave();
 
-    SAVEGAME_BSON_FX_ORDER fx_order;
+    M_FX_ORDER fx_order;
     M_GetFXOrder(&fx_order);
 
     JSON_ARRAY *items_arr = JSON_ArrayNew();
@@ -1396,7 +1346,7 @@ static JSON_ARRAY *M_DumpEffects(void)
 {
     JSON_ARRAY *fx_arr = JSON_ArrayNew();
 
-    SAVEGAME_BSON_FX_ORDER fx_order;
+    M_FX_ORDER fx_order;
     M_GetFXOrder(&fx_order);
 
     for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
@@ -1694,10 +1644,8 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
 
-    if (version >= VERSION_3) {
-        if (!M_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
-            goto cleanup;
-        }
+    if (!Savegame_BSON_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
+        goto cleanup;
     }
 
     if (!M_LoadFlares(JSON_ObjectGetArray(root_obj, "flares"))) {
