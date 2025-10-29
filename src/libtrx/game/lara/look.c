@@ -52,9 +52,7 @@ static const LARA_TRX_STATE m_BlockingStates[] = {
 static const LARA_EXTRA_STATE m_PermittedExtraStates[] = {
     // clang-format off
     LS_EXTRA_BREATH,
-#if TR_VERSION == 2
     LS_EXTRA_AIRLOCK,
-#endif
     (LARA_EXTRA_STATE)-1,
     // clang-format on
 };

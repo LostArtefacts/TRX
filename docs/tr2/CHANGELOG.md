@@ -16,6 +16,7 @@
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
     This feature is experimental — some objects may not behave correctly. Please report any bugs encountered! 🩷  
     See [the documentation](../07-CATALOGS.md) for details.
+- added support for custom levels to use Lara's extra animations from TR1
 - added extended statistics support (#2578)
     - added pickup count and death count support in the stats screen (Graphic Options → UI → Statistics details)
     - added max pickup, secret and kills support (Graphic Options → UI → Statistics details)

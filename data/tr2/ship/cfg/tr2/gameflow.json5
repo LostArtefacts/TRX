@@ -34,6 +34,7 @@
         "data/injections/pickup_aid.bin",
         "data/injections/purple_crystal.bin",
         "data/injections/winston_model.bin",
+        "data/injections/lara_extra.bin",
     ],
 
     "levels": [
@@ -493,7 +494,7 @@
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/mansion.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "key_1"},
-                {"type": "set_lara_start_anim", "anim": 9},
+                {"type": "set_lara_start_anim", "anim": 15},
                 {"type": "remove_weapons"},
                 {"type": "remove_ammo"},
                 {"type": "remove_flares"},

@@ -207,10 +207,11 @@ static void M_UpdateEnvironment(void)
     const bool wading_enabled = g_Config.gameplay.enable_wading;
 #else
     const bool wading_enabled = true;
+#endif
     if (lara_info->extra_anim) {
         return;
     }
-#endif
+
     if (Lara_Vehicle_IsMounted()) {
         return;
     }
@@ -469,8 +470,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     Lara_Animate(item);
     const SECTOR *const sector = M_GetCurrentSector();
 
-    if ((g_TRVersion == 1 || !lara_info->extra_anim)
-        && lara_info->water_status != LWS_CHEAT) {
+    if (!lara_info->extra_anim && lara_info->water_status != LWS_CHEAT) {
         M_ObjectCollision(coll);
         if (!Lara_Vehicle_IsMounted() && !lara_info->extra_anim) {
             Lara_Col_Update(item, coll);
@@ -547,7 +547,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         >> W2V_SHIFT;
 
     const SECTOR *const sector = M_GetCurrentSector();
-    if (g_TRVersion == 1 || !lara_info->extra_anim) {
+    if (!lara_info->extra_anim) {
         M_ObjectCollision(coll);
     }
 
@@ -560,7 +560,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         }
     }
 
-    if (g_TRVersion == 1 || !lara_info->extra_anim) {
+    if (!lara_info->extra_anim) {
         Lara_Col_Update(item, coll);
     }
 

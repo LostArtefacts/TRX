@@ -20,6 +20,12 @@ title: Migrating levels
    must use the `lara_guns.bin` injection or otherwise refer to 
    https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/ASSETS.md
 
+3. **Lara extra animations**: 
+   Lara now uses the TR2+ approach of having defined state changes for extra
+   animations (scion pickups, Midas touch etc). You must use the `lara_extra.bin`
+   injection or otherwise refer to 
+   https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/ASSETS.md
+
 ### Version 4.13 to 4.14
 
 1. **Update file paths**  
@@ -100,6 +106,7 @@ title: Migrating levels
     - `demo_delay`
     - `cheat_keys`
     - `enable_killer_pushblocks`
+
 2. **Removed game flow settings**
     The following game flow features were removed and are no longer available:
     - `cmd_init`
@@ -110,6 +117,11 @@ title: Migrating levels
     - `cmd_demo_interrupt`
     - `single_level`
     - `is_demo_version`
+    
+3. **Lara extra animations**: 
+   Lara's extra animations have been combined with TR1. You must use the
+   `lara_extra.bin` injection or otherwise refer to 
+   https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/ASSETS.md
 
 ### Version 1.3 to 1.4
 

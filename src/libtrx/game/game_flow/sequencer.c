@@ -44,9 +44,7 @@ static void M_PreSequenceHook(
     Room_SetAbyssHeight(0);
     Output_SetSunsetEnabled(false);
     Lara_SetControllable(false);
-#if TR_VERSION == 2
     Lara_SetStartAnimState(LS_EXTRA_BREATH);
-#endif
     if (seq_ctx == GFSC_SAVED) {
         Game_SetBonusFlag(GBF_NONE);
     }

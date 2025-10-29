@@ -7,9 +7,11 @@
 #include "game/objects/effects/twinkle.h"
 #include "game/overlay.h"
 #include "game/rooms.h"
+#include "game/stats.h"
 #include "game/viewport.h"
 
 // clang-format off
+#define M_LF_PICKUPSCION               44
 #define M_LF_PICKUP_GOLD_BAR           113
 #define M_LF_SHARK_DEATH_END           56
 #define M_LF_SHARK_DEATH_TIMER_DELAY   25
@@ -33,9 +35,25 @@
 #define M_CAM_GONG_BONG_ANGLE         (-25 * DEG_1) // = -4550
 #define M_CAM_GONG_BONG_ELEVATION     (-20 * DEG_1) // = -3640
 #define M_CAM_GONG_BONG_DISTANCE      (3 * WALL_L)  // = 3072
-#define M_CAM_TREX_KILL_ANGLE         (170 * DEG_1) // = 30940
-#define M_CAM_TREX_KILL_ELEVATION     (-25 * DEG_1) // = -4550
+#define M_CAM_BEAST_KILL_ANGLE        (170 * DEG_1) // = 30940
+#define M_CAM_BEAST_KILL_ELEVATION    (-25 * DEG_1) // = -4550
+#define M_CAM_TORSO_KILL_DISTANCE     (2 * WALL_L)  // = 2048
 // clang-format on
+
+static void M_ScionPedestal(ITEM *const item, COLL_INFO *const coll)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (Item_TestFrameEqual(item, M_LF_PICKUPSCION)
+        && lara->interact_target.item_num != NO_ITEM) {
+        ITEM *const scion = Item_Get(lara->interact_target.item_num);
+        Overlay_AddDisplayPickup(scion->object_id);
+        Inv_AddItem(scion->object_id);
+        scion->status = IS_INVISIBLE;
+        Item_RemoveDrawn(lara->interact_target.item_num);
+        Stats_AddPickup();
+        lara->interact_target.item_num = NO_ITEM;
+    }
+}
 
 static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
 {
@@ -52,13 +70,13 @@ static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
+static void M_MidasKill(ITEM *const item, COLL_INFO *const coll)
 {
     item->gravity = false;
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
 
-    Object_SetReflective(O_LARA_EXTRA, true);
+    Object_SetReflective(O_LARA_EXTRA_SKIN_MIDAS, true);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t frame_num = Item_GetRelativeFrame(item);
@@ -66,72 +84,72 @@ static void M_DieMidas(ITEM *const item, COLL_INFO *const coll)
     case 5:
         lara->mesh_effects |= (1 << LM_FOOT_L);
         lara->mesh_effects |= (1 << LM_FOOT_R);
-        Lara_Mesh_SwapSingle(LM_FOOT_L, O_LARA_EXTRA);
-        Lara_Mesh_SwapSingle(LM_FOOT_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_FOOT_L, O_LARA_EXTRA_SKIN_MIDAS);
+        Lara_Mesh_SwapSingle(LM_FOOT_R, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 70:
         lara->mesh_effects |= (1 << LM_CALF_L);
-        Lara_Mesh_SwapSingle(LM_CALF_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_CALF_L, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 90:
         lara->mesh_effects |= (1 << LM_THIGH_L);
-        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 100:
         lara->mesh_effects |= (1 << LM_CALF_R);
-        Lara_Mesh_SwapSingle(LM_CALF_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_CALF_R, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 120:
         lara->mesh_effects |= (1 << LM_HIPS);
         lara->mesh_effects |= (1 << LM_THIGH_R);
-        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
-        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA_SKIN_MIDAS);
+        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 135:
         lara->mesh_effects |= (1 << LM_TORSO);
-        Lara_Mesh_SwapSingle(LM_TORSO, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_TORSO, O_LARA_EXTRA_SKIN_MIDAS);
         lara->back_gun_obj_id = O_LARA;
         break;
 
     case 150:
         lara->mesh_effects |= (1 << LM_UARM_L);
-        Lara_Mesh_SwapSingle(LM_UARM_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_UARM_L, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 163:
         lara->mesh_effects |= (1 << LM_LARM_L);
-        Lara_Mesh_SwapSingle(LM_LARM_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_LARM_L, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 174:
         lara->mesh_effects |= (1 << LM_HAND_L);
-        Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 186:
         lara->mesh_effects |= (1 << LM_UARM_R);
-        Lara_Mesh_SwapSingle(LM_UARM_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_UARM_R, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 195:
         lara->mesh_effects |= (1 << LM_LARM_R);
-        Lara_Mesh_SwapSingle(LM_LARM_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_LARM_R, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 218:
         lara->mesh_effects |= (1 << LM_HAND_R);
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_MIDAS);
         break;
 
     case 225:
         Object_SetReflective(O_LARA_HAIR, true);
         lara->mesh_effects |= (1 << LM_HEAD);
-        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA_EXTRA_SKIN_MIDAS);
         break;
     }
 
@@ -149,9 +167,7 @@ static void M_Breath(ITEM *const item, COLL_INFO *const coll)
     if (g_Camera.type != CAM_HEAVY) {
         g_Camera.type = CAM_CHASE;
     }
-#if TR_VERSION == 2
     Viewport_AlterFOV(-1);
-#endif
 }
 
 static void M_YetiKill(ITEM *const item, COLL_INFO *const coll)
@@ -198,15 +214,20 @@ static void M_GongBong(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_distance = M_CAM_GONG_BONG_DISTANCE;
 }
 
-static void M_DinoKill(ITEM *const item, COLL_INFO *const coll)
+static void M_BeastKill(ITEM *const item, COLL_INFO *const coll)
 {
     g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = M_CAM_TREX_KILL_ANGLE;
-    g_Camera.target_elevation = M_CAM_TREX_KILL_ELEVATION;
+    g_Camera.target_angle = M_CAM_BEAST_KILL_ANGLE;
+    g_Camera.target_elevation = M_CAM_BEAST_KILL_ELEVATION;
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->hit_direction = -1;
-    if (Item_TestFrameRange(item, 0, M_LF_TREX_DEATH_TIMER_DELAY)) {
-        lara->death_timer = 1;
+    lara->hit_direction = DIR_UNKNOWN;
+
+    if (item->current_anim_state == LS_EXTRA_TREX_KILL) {
+        if (Item_TestFrameRange(item, 0, M_LF_TREX_DEATH_TIMER_DELAY)) {
+            lara->death_timer = 1;
+        }
+    } else if (item->current_anim_state == LS_EXTRA_TORSO_KILL) {
+        g_Camera.target_distance = M_CAM_TORSO_KILL_DISTANCE;
     }
 }
 
@@ -238,8 +259,8 @@ static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_START_HOUSE_BEGIN)) {
         Music_Play(MX_REVEAL_2, MPM_ALWAYS);
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
-        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_DAGGER_2);
+        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA_SKIN_DAGGER_2);
     } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_DAGGER_STORED)) {
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
         Lara_Mesh_SwapSingle(LM_HIPS, O_LARA);
@@ -250,7 +271,7 @@ static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
+static void M_EndHouse(ITEM *const item, COLL_INFO *const coll)
 {
     item->hit_points = LARA_MAX_HITPOINTS;
     Lara_SetControllable(false);
@@ -260,7 +281,7 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
         lara->back_gun_obj_id = O_LARA;
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
         Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
-        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA);
+        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA_SKIN_DAGGER_2);
         Music_Play(MX_CUTSCENE_BATH, MPM_ALWAYS);
     } else if (Item_TestFrameEqual(item, M_LF_SHOWER_SHOTGUN_PICKUP)) {
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_SHOTGUN);
@@ -276,18 +297,19 @@ static void M_FinalAnim(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_USE_MIDAS,         M_UseMidas)
-REGISTER_LARA_STATE(LS_DIE_MIDAS,         M_DieMidas)
-#if TR_VERSION >= 2
-REGISTER_LARA_EXTRA(LS_EXTRA_BREATH,      M_Breath)
-REGISTER_LARA_EXTRA(LS_EXTRA_YETI_KILL,   M_YetiKill)
-REGISTER_LARA_EXTRA(LS_EXTRA_SHARK_KILL,  M_SharkKill)
-REGISTER_LARA_EXTRA(LS_EXTRA_AIRLOCK,     M_Airlock)
-REGISTER_LARA_EXTRA(LS_EXTRA_GONG_BONG,   M_GongBong)
-REGISTER_LARA_EXTRA(LS_EXTRA_TREX_KILL,   M_DinoKill)
-REGISTER_LARA_EXTRA(LS_EXTRA_PULL_DAGGER, M_PullDagger)
-REGISTER_LARA_EXTRA(LS_EXTRA_START_ANIM,  M_StartAnim)
-REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE, M_StartHouse)
-REGISTER_LARA_EXTRA(LS_EXTRA_FINAL_ANIM,  M_FinalAnim)
-#endif
+REGISTER_LARA_EXTRA(LS_EXTRA_BREATH,         M_Breath)
+REGISTER_LARA_EXTRA(LS_EXTRA_SCION_PICKUP_1, M_ScionPedestal)
+REGISTER_LARA_EXTRA(LS_EXTRA_USE_MIDAS,      M_UseMidas)
+REGISTER_LARA_EXTRA(LS_EXTRA_MIDAS_KILL,     M_MidasKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_YETI_KILL,      M_YetiKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_GUARD_KILL,     M_YetiKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_SHARK_KILL,     M_SharkKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_AIRLOCK,        M_Airlock)
+REGISTER_LARA_EXTRA(LS_EXTRA_GONG_BONG,      M_GongBong)
+REGISTER_LARA_EXTRA(LS_EXTRA_TREX_KILL,      M_BeastKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_TORSO_KILL,     M_BeastKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_PULL_DAGGER,    M_PullDagger)
+REGISTER_LARA_EXTRA(LS_EXTRA_START_ANIM,     M_StartAnim)
+REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE,    M_StartHouse)
+REGISTER_LARA_EXTRA(LS_EXTRA_END_HOUSE,      M_EndHouse)
 // clang-format on

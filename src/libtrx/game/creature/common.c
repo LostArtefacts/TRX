@@ -921,10 +921,8 @@ void Creature_SpecialKill(
     Item_SwitchToAnim(item, kill_anim, 0);
     item->current_anim_state = kill_state;
 
-#if TR_VERSION == 2
     Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
     lara_item->current_anim_state = LS_EXTRA_BREATH;
-#endif
     lara_item->goal_anim_state = lara_kill_state;
     lara_item->pos = item->pos;
     lara_item->rot = item->rot;
@@ -939,9 +937,7 @@ void Creature_SpecialKill(
 
     lara_item->goal_anim_state = lara_kill_state;
     lara_item->current_anim_state = lara_kill_state;
-#if TR_VERSION == 2
     lara->extra_anim = true;
-#endif
     lara->gun_status = LGS_HANDS_BUSY;
     lara->gun_type = LGT_UNARMED;
     lara->hit_direction = -1;

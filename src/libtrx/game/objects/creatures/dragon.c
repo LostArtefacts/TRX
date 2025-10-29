@@ -116,7 +116,7 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     lara->gun_status = LGS_HANDS_BUSY;
     lara->hit_direction = -1;
 
-    Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA);
+    Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_DAGGER_1);
 
     Camera_InvokeCinematic(lara_item, 0, 0);
 

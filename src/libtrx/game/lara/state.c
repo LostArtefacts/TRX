@@ -68,8 +68,7 @@ bool Lara_State_IsResponsive(const LARA_TRX_ANIMATION anim_idx)
 void Lara_State_Update(ITEM *const item, COLL_INFO *const coll)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (TR_VERSION >= 2 && lara->water_status != LWS_SURFACE
-        && lara->extra_anim) {
+    if (lara->water_status != LWS_SURFACE && lara->extra_anim) {
         if (m_ExtraRoutines[item->current_anim_state] != nullptr) {
             m_ExtraRoutines[item->current_anim_state](item, coll);
         }

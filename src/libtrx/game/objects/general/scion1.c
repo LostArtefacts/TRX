@@ -12,9 +12,6 @@
 #include "game/savegame.h"
 #include "game/stats.h"
 
-#define EXTRA_ANIM_PEDESTAL_SCION 0
-#define LF_PICKUPSCION 44
-
 static XYZ_32 m_Scion1_Position = { 0, 640, -310 };
 
 static const OBJECT_BOUNDS m_Scion1_Bounds = {
@@ -59,22 +56,14 @@ static void M_Collision(
         goto cleanup;
     }
 
-    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
-        if (Item_TestFrameEqual(lara_item, LF_PICKUPSCION)) {
-            Overlay_AddDisplayPickup(item->object_id);
-            Inv_AddItem(item->object_id);
-            item->status = IS_INVISIBLE;
-            Item_RemoveDrawn(item_num);
-            Stats_AddPickup();
-        }
-    } else if (
-        g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity
+    if (g_Input.action && lara->gun_status == LGS_ARMLESS && !lara_item->gravity
         && lara_item->current_anim_state == LS(LS_STOP)) {
+        lara->interact_target.item_num = item_num;
         Lara_AlignPosition(item, &m_Scion1_Position);
-        lara_item->current_anim_state = LS(LS_PICKUP);
-        lara_item->goal_anim_state = LS(LS_PICKUP);
-        Item_SwitchToObjAnim(
-            lara_item, EXTRA_ANIM_PEDESTAL_SCION, 0, O_LARA_EXTRA);
+        Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+        lara_item->current_anim_state = LS_EXTRA_BREATH;
+        lara_item->goal_anim_state = LS_EXTRA_SCION_PICKUP_1;
+        Item_Animate(lara_item);
         lara->gun_status = LGS_HANDS_BUSY;
         lara->extra_anim = true;
         Camera_InvokeCinematic(lara_item, 0, 0);

@@ -30,6 +30,7 @@
         "data/injections/lara_animations.bin",
         "data/injections/pda_model.bin",
         "data/injections/pickup_aid.bin",
+        "data/injections/lara_extra.bin",
     ],
 
     "levels": [

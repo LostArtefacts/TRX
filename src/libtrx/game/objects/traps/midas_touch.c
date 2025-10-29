@@ -10,11 +10,6 @@
 #define M_RANGE_H (STEP_L * 2)
 #define M_RANGE_V (STEP_L * 3)
 
-typedef enum {
-    M_ANIM_USE = 0,
-    M_ANIM_DIE = 1,
-} M_EXTRA_ANIM;
-
 static const OBJECT_BOUNDS m_MidasTouch_Bounds = {
     .shift = {
         .min = { .x = -700, .y = +384 - 100, .z = -700, },
@@ -36,10 +31,11 @@ static void M_KillLara(const ITEM *const item)
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    Item_SwitchToObjAnim(lara_item, M_ANIM_DIE, 0, O_LARA_EXTRA);
+    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LS_EXTRA_BREATH;
+    lara_item->goal_anim_state = LS_EXTRA_MIDAS_KILL;
+    Item_Animate(lara_item);
 
-    lara_item->current_anim_state = LS(LS_DIE_MIDAS);
-    lara_item->goal_anim_state = LS(LS_DIE_MIDAS);
     lara_item->hit_points = -1;
     lara_item->gravity = 0;
     lara->extra_anim = true;
@@ -95,9 +91,10 @@ static void M_Collision(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->interact_target.is_moving
         && lara->interact_target.item_num == item_num) {
-        lara_item->current_anim_state = LS(LS_USE_MIDAS);
-        lara_item->goal_anim_state = LS(LS_USE_MIDAS);
-        Item_SwitchToObjAnim(lara_item, M_ANIM_USE, 0, O_LARA_EXTRA);
+        Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+        lara_item->current_anim_state = LS_EXTRA_BREATH;
+        lara_item->goal_anim_state = LS_EXTRA_USE_MIDAS;
+        Item_Animate(lara_item);
         lara->extra_anim = true;
         lara->gun_status = LGS_HANDS_BUSY;
         lara->interact_target.is_moving = false;

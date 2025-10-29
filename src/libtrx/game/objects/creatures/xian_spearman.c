@@ -379,7 +379,7 @@ static void M_Control(const int16_t item_num)
     if (lara_was_alive && lara_item->hit_points <= 0) {
         Creature_SpecialKill(
             item, XIAN_SPEARMAN_ANIM_KILL, XIAN_SPEARMAN_STATE_KILL,
-            LS_EXTRA_YETI_KILL);
+            LS_EXTRA_GUARD_KILL);
         return;
     }
 
