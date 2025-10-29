@@ -295,7 +295,7 @@ bool Inv_AddPickup(const ITEM *const item)
     case O_SECRET_2:
     case O_SECRET_3:
         Stats_MarkSecretCollected(item);
-        if (Stats_CheckAllLevelSecretsCollected()) {
+        if (Stats_CheckAllLevelSecretsPickedUp()) {
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
         }
         return true;

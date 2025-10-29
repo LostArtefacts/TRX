@@ -1,8 +1,10 @@
 #include "config.h"
 #include "debug.h"
 #include "game/const.h"
+#include "game/game.h"
 #include "game/game_flow.h"
 #include "game/gym.h"
+#include "game/objects.h"
 #include "game/savegame.h"
 #include "game/stats.h"
 #include "game/ui.h"
@@ -38,6 +40,7 @@ typedef struct UI_STATS_DIALOG_STATE {
     UI_STATS_DIALOG_ARGS args;
     UI_REQUESTER_STATE assault_req;
     const M_LOOK *look;
+    bool has_floordata_secrets;
 } UI_STATS_DIALOG_STATE;
 
 static const M_LOOK m_Looks[TR_VERSION_COUNT] = {
@@ -89,7 +92,6 @@ static const char *M_FormatDistance(int32_t distance)
 static void M_FormatIconSecrets(
     char *const out, const LEVEL_STATS *const level_stats)
 {
-    // TODO: implement optional support for TR1-style secrets in TR2, see #2047
     char *ptr = out;
     int32_t num_secrets = 0;
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
@@ -105,10 +107,11 @@ static void M_FormatIconSecrets(
             continue;
         }
         const OBJECT_ID obj_id = Stats_GetSecretObject(i);
-        ASSERT(obj_id != NO_OBJECT);
-        ptr += sprintf(
-            ptr, has_secret ? "\\{secret %d}" : "\\{i}\\{secret %d}\\{/i}",
-            obj_id + 1 - O_SECRET_1);
+        if (obj_id != NO_OBJECT) {
+            ptr += sprintf(
+                ptr, has_secret ? "\\{secret %d}" : "\\{i}\\{secret %d}\\{/i}",
+                obj_id + 1 - O_SECRET_1);
+        }
         if (has_secret) {
             num_secrets++;
         }
@@ -166,6 +169,10 @@ static void M_RowFromRole(
         break;
 
     case M_ROW_ICON_SECRETS: {
+        if (s->has_floordata_secrets) {
+            M_RowFromRole(s, M_ROW_NUM_SECRETS, stats, max_stats);
+            break;
+        }
         char buf[256];
         M_FormatIconSecrets(buf, (LEVEL_STATS *)stats);
         M_Row(s, GS(STATS_SECRETS), buf);
@@ -176,8 +183,8 @@ static void M_RowFromRole(
         M_Row(
             s, GS(STATS_SECRETS),
             String_FormatStatic(
-                g_TRVersion == 1 ? GS(STATS_DETAIL_FMT) : num_fmt,
-                stats->secret_count, max_stats->max_secret_count));
+                GS(STATS_DETAIL_FMT), stats->secret_count,
+                max_stats->max_secret_count));
         break;
 
     case M_ROW_PICKUPS:
@@ -432,6 +439,17 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
     s->assault_req.reserve_space = true;
     s->args = args;
     s->look = &m_Looks[g_TRVersion - 1];
+
+    s->has_floordata_secrets = false;
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        if (max_stats->secret_objects[i].taken
+            && max_stats->secret_objects[i].assigned_object_id == NO_OBJECT) {
+            s->has_floordata_secrets = true;
+        }
+    }
+
     return s;
 }
 

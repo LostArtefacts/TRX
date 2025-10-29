@@ -31,6 +31,7 @@
 - added an option to draw Shotgun flashes (Graphic Options → Visuals → Shotgun flash)
 - added `enable_debug_camera` setting that shows camera position in realtime (reachable via `/debug` and `/set`)
 - added the ability to fast-forward through cutscenes with the right button (+5 s) or with slow+right (+1 s)
+- added support for TR1-like secret triggers (#2047)
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)

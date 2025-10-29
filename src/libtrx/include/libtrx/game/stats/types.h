@@ -5,12 +5,14 @@
 #include <stdint.h>
 
 typedef struct {
-    int32_t max_kill_count;
-    int32_t max_pickup_count;
-    int32_t max_secret_count;
-    int32_t all_secrets_mask;
+    size_t max_pickup_secret_count;
+    size_t max_kill_count;
+    size_t max_pickup_count;
+    size_t max_secret_count;
+    uint32_t all_secrets_mask;
 
     struct {
+        bool taken;
         OBJECT_ID assigned_object_id;
         int32_t item_num;
     } secret_objects[STATS_MAX_SECRETS];
