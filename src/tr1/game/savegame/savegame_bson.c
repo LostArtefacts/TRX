@@ -756,37 +756,6 @@ static bool M_LoadLOT(JSON_OBJECT *lot_obj, LOT_INFO *lot)
     return true;
 }
 
-static bool M_LoadFlares(JSON_ARRAY *const flares_arr)
-{
-    if (flares_arr == nullptr) {
-        return true;
-    }
-
-    for (int32_t i = 0; i < (signed)flares_arr->length; i++) {
-        JSON_OBJECT *const flare_obj = JSON_ArrayGetObject(flares_arr, i);
-        if (flare_obj == nullptr) {
-            LOG_ERROR("Malformed save: invalid flare data");
-            return false;
-        }
-
-        const int16_t item_num = Item_Create();
-        ITEM *const item = Item_Get(item_num);
-        item->object_id = O_FLARE_ITEM;
-        LOAD_XYZ(flare_obj, "pos", item->pos);
-        LOAD_XYZ(flare_obj, "rot", item->rot);
-        item->room_num =
-            JSON_ObjectGetInt(flare_obj, "room_num", item->room_num);
-        item->speed = JSON_ObjectGetInt(flare_obj, "speed", item->speed);
-        item->fall_speed =
-            JSON_ObjectGetInt(flare_obj, "fall_speed", item->fall_speed);
-        Item_Initialise(item_num);
-        Item_AddActive(item_num);
-        const int32_t flare_age = JSON_ObjectGetInt(flare_obj, "age", 0);
-        item->data = (void *)(intptr_t)flare_age;
-    }
-    return true;
-}
-
 static bool M_LoadLara(
     JSON_OBJECT *lara_obj, LARA_INFO *lara, uint16_t header_version)
 {
@@ -1648,8 +1617,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     if (!Savegame_BSON_LoadEffects(ctx)) {
         goto cleanup;
     }
-
-    if (!M_LoadFlares(JSON_ObjectGetArray(root_obj, "flares"))) {
+    if (!Savegame_BSON_LoadFlares(ctx)) {
         goto cleanup;
     }
 
