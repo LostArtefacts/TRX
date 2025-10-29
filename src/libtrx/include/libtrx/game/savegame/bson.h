@@ -1,6 +1,13 @@
 #pragma once
 
+#include "../../json.h"
+
 #include <stdint.h>
+
+// Start of helper functions ===================================================
+// TODO: make these private eventually.
+bool Savegame_BSON_LoadEffects(JSON_ARRAY *fx_arr);
+// End of helper functions =====================================================
 
 #pragma pack(push, 1)
 typedef struct {

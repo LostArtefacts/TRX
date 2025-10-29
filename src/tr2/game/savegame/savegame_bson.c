@@ -36,7 +36,7 @@
 typedef struct {
     int16_t count;
     int16_t id_map[MAX_EFFECTS];
-} SAVEGAME_BSON_FX_ORDER;
+} M_FX_ORDER;
 
 #define DUMP_XYZ(obj, key, value)                                              \
     do {                                                                       \
@@ -591,7 +591,7 @@ static bool M_LoadCameras(JSON_ARRAY *const cameras_arr)
     return true;
 }
 
-static void M_GetFXOrder(SAVEGAME_BSON_FX_ORDER *const order)
+static void M_GetFXOrder(M_FX_ORDER *const order)
 {
     order->count = 0;
     for (int32_t i = 0; i < MAX_EFFECTS; i++) {
@@ -609,7 +609,7 @@ static JSON_ARRAY *M_DumpItems(void)
 {
     Savegame_ProcessItemsBeforeSave();
 
-    SAVEGAME_BSON_FX_ORDER fx_order;
+    M_FX_ORDER fx_order;
     M_GetFXOrder(&fx_order);
 
     JSON_ARRAY *const items_arr = JSON_ArrayNew();
@@ -787,7 +787,7 @@ static JSON_ARRAY *M_DumpEffects(void)
 {
     JSON_ARRAY *const fx_arr = JSON_ArrayNew();
 
-    SAVEGAME_BSON_FX_ORDER fx_order;
+    M_FX_ORDER fx_order;
     M_GetFXOrder(&fx_order);
 
     for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
@@ -1143,53 +1143,6 @@ static bool M_LoadItems(JSON_ARRAY *const items_arr, uint16_t header_version)
             if (obj->handle_save_func != nullptr) {
                 obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
             }
-        }
-    }
-
-    return true;
-}
-
-static bool M_LoadEffects(JSON_ARRAY *const fx_arr)
-{
-    if (!g_Config.gameplay.enable_enhanced_saves) {
-        return true;
-    }
-
-    if (fx_arr == nullptr) {
-        // ..1.1 saves do not contain effects.
-        return true;
-    }
-
-    if ((signed)fx_arr->length >= MAX_EFFECTS) {
-        LOG_WARNING(
-            "Malformed save: expected a max of %d effect, got %d. effect over "
-            "the maximum will not be created.",
-            MAX_EFFECTS - 1, fx_arr->length);
-    }
-
-    for (int i = 0; i < (signed)fx_arr->length; i++) {
-        JSON_OBJECT *const fx_obj = JSON_ArrayGetObject(fx_arr, i);
-        if (fx_obj == nullptr) {
-            LOG_ERROR("Malformed save: invalid effect data");
-            return false;
-        }
-
-        const int16_t room_num =
-            JSON_ObjectGetInt(fx_obj, "room_number", NO_ROOM);
-        ASSERT(room_num != NO_ROOM);
-        const int16_t effect_num = Effect_Create(room_num);
-        if (effect_num != NO_EFFECT) {
-            EFFECT *const effect = Effect_Get(effect_num);
-            LOAD_XYZ(fx_obj, "pos", effect->pos);
-            LOAD_XYZ(fx_obj, "rot", effect->rot);
-            effect->room_num = room_num;
-            effect->object_id = Object_FromGameID(
-                JSON_ObjectGetInt(fx_obj, "object_number", NO_OBJECT));
-            effect->speed = JSON_ObjectGetInt(fx_obj, "speed", 0);
-            effect->fall_speed = JSON_ObjectGetInt(fx_obj, "fall_speed", 0);
-            effect->frame_num = JSON_ObjectGetInt(fx_obj, "frame_number", 0);
-            effect->counter = JSON_ObjectGetInt(fx_obj, "counter", 0);
-            effect->shade = JSON_ObjectGetInt(fx_obj, "shade", 0);
         }
     }
 
@@ -1600,7 +1553,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
 
-    if (!M_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
+    if (!Savegame_BSON_LoadEffects(JSON_ObjectGetArray(root_obj, "fx"))) {
         goto cleanup;
     }
 
