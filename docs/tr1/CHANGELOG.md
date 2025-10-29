@@ -55,7 +55,7 @@
 - fixed select level feature to also be available to games started with `/play`
 - fixed select level feature slot status not updated on save
 - fixed "Story So Far..." showing loading screens
-- fixed photo mode camera clipping through overlapping rooms
+- fixed photo mode camera clipping through overlapping rooms (#1674)
 - fixed matrix stack overflow crash when moving through overlapping or dome portals (#2685)
 - fixed bogus warnings about resume info in logs when playing cutscenes and in the title level
 - fixed Lara's braid remaining reflective if the fly cheat is used to resurrect her on the Midas hand
