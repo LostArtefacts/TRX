@@ -6,6 +6,7 @@
 #include "game/savegame/bson.h"
 #include "memory.h"
 #include "strings.h"
+#include "version.h"
 
 #define M_MAX_STACK_SIZE 10
 #define M_SHOULD(x)                                                            \
@@ -382,6 +383,24 @@ static bool M_ReadEffect(M_CONTEXT *const ctx)
     M_FINISH();
 }
 
+static bool M_ReadFlare(M_CONTEXT *const ctx)
+{
+    const int16_t item_num = Item_Create();
+    ITEM *const item = Item_Get(item_num);
+    item->object_id = O_FLARE_ITEM;
+    M_MUST(M_ReadPos(ctx, &item->pos));
+    M_MUST(M_ReadRot(ctx, &item->rot));
+    M_MUST(M_ReadNum(ctx, "room_num", &item->room_num));
+    Item_Initialise(item_num);
+    M_MUST(M_ReadNum(ctx, "speed", &item->speed));
+    M_MUST(M_ReadNum(ctx, "fall_speed", &item->fall_speed));
+    int32_t flare_age;
+    M_MUST(M_ReadNum(ctx, "age", &flare_age));
+    item->data = (void *)(intptr_t)flare_age;
+    Item_AddActive(item_num);
+    M_FINISH();
+}
+
 SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(JSON_VALUE *const root)
 {
     M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx));
@@ -420,6 +439,24 @@ bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *const ctx)
                 "extra effects will be ignored.",
                 MAX_EFFECTS - 1, i);
         }
+        M_MUST(M_Pop(ctx));
+    }
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *const ctx)
+{
+    if (g_TRVersion == 1) {
+        M_SHOULD(M_PushObject(ctx, "flares"));
+    } else {
+        M_MUST(M_PushObject(ctx, "flares"));
+    }
+    for (int32_t i = 0;; i++) {
+        if (!M_PushArrayElem(ctx, i)) {
+            break;
+        }
+        M_MUST(M_ReadFlare(ctx));
         M_MUST(M_Pop(ctx));
     }
     M_MUST(M_Pop(ctx));
