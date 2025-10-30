@@ -1140,6 +1140,14 @@ void Level_ReadPathingData(const LEVEL_LOADER *const loader, VFILE *const file)
             int16_t *const ground_zone =
                 Box_GetGroundZone(flip_status, zone_idx);
             VFile_Read(file, ground_zone, sizeof(int16_t) * num_boxes);
+
+            if (loader->game_version == 1 && zone_idx == 1) {
+                // TODO: remove once TombEditor is updated to generate the same
+                // number of zones as TR2 via injections. This allows enemies of
+                // type g_LOT_Climber to safely be used in TR1 in the meantime.
+                int16_t *const duped_zone = Box_GetGroundZone(flip_status, 3);
+                memcpy(duped_zone, ground_zone, sizeof(int16_t) * num_boxes);
+            }
         }
 
         int16_t *const fly_zone = Box_GetFlyZone(flip_status);
