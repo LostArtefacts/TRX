@@ -33,6 +33,7 @@ typedef enum {
 
     // Added the current ambient track to allow triggers to change it at
     // different stages of the level.
+    // TR2X 1.1 / TR1X 4.11
     VERSION_9 = 9,
 
     // Resolved an issue with TR1 game flow carried items and the NO_ROOM change

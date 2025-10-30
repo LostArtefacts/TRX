@@ -240,95 +240,6 @@ static JSON_OBJECT *M_DumpMusic(void)
     return music_obj;
 }
 
-static MUSIC_ID M_ConvertMusicTrack(
-    const MUSIC_ID track_id, const uint16_t header_version)
-{
-    if (track_id == MX_INACTIVE || header_version >= VERSION_11) {
-        return track_id;
-    }
-    return Music_ConvertLegacyTrack(track_id);
-}
-
-static bool M_LoadMusic(
-    JSON_OBJECT *const music_obj, const uint16_t header_version)
-{
-    if (music_obj == nullptr) {
-        LOG_ERROR("Malformed save: invalid or missing music info");
-        return false;
-    }
-
-    const JSON_ARRAY *const track_arr = JSON_ObjectGetArray(music_obj, "flags");
-    if (track_arr == nullptr) {
-        LOG_WARNING("Malformed save: invalid or missing music track array");
-        return true;
-    }
-
-    if ((signed)track_arr->length > MAX_MUSIC_TRACKS) {
-        LOG_WARNING(
-            "Malformed save: expected at most %d music track flags, got %d",
-            MAX_MUSIC_TRACKS, track_arr->length);
-        return true;
-    }
-
-    for (int32_t i = 0; i < (signed)track_arr->length; i++) {
-        const MUSIC_ID track_id = M_ConvertMusicTrack(i, header_version);
-        Music_SetTrackFlags(track_id, JSON_ArrayGetInt(track_arr, i, 0));
-    }
-
-    const JSON_OBJECT *const current_obj =
-        JSON_ObjectGetObject(music_obj, "current");
-    if (current_obj == nullptr) {
-        return true;
-    }
-
-    MUSIC_ID current_track =
-        JSON_ObjectGetInt(current_obj, "current_track", MX_INACTIVE);
-    MUSIC_ID ambient_track =
-        JSON_ObjectGetInt(current_obj, "current_ambient", MX_INACTIVE);
-    const double timestamp =
-        JSON_ObjectGetDouble(current_obj, "timestamp", -1.0);
-
-    if (header_version < VERSION_9) {
-        const bool legacy_ambient =
-            JSON_ObjectGetBool(current_obj, "is_ambient", false);
-        if (legacy_ambient && current_track != MX_INACTIVE) {
-            ambient_track = current_track;
-        }
-    }
-
-    // Added in 1.2 after removing OG music track shifting, so allowing previous
-    // saves to still load. Remove after a suitable period.
-    current_track = M_ConvertMusicTrack(current_track, header_version);
-    ambient_track = M_ConvertMusicTrack(ambient_track, header_version);
-
-    Music_Stop();
-    if (ambient_track != MX_INACTIVE) {
-        // Always restart the ambient as it may have changed based on the
-        // current position in the level.
-        Music_Play_Direct(ambient_track, MPM_LOOPED);
-    }
-
-    if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
-        return true;
-    }
-
-    const bool is_ambient =
-        current_track != MX_INACTIVE && current_track == ambient_track;
-    if (!is_ambient && current_track != MX_INACTIVE) {
-        Music_Play_Direct(current_track, MPM_ALWAYS);
-    }
-
-    const bool load_timestamp =
-        !is_ambient || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
-    if (load_timestamp && !Music_SeekTimestamp(timestamp)) {
-        LOG_WARNING(
-            "Could not load current track %d at timestamp %" PRId64 ".",
-            current_track, timestamp);
-    }
-
-    return true;
-}
-
 static JSON_ARRAY *M_DumpResumeInfo(void)
 {
     JSON_ARRAY *const resume_arr = JSON_ArrayNew();
@@ -1413,10 +1324,6 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
 
-    if (!M_LoadMusic(JSON_ObjectGetObject(root_obj, "music"), version)) {
-        goto cleanup;
-    }
-
     if (!M_LoadResumeInfo(JSON_ObjectGetArray(root_obj, "resume_info"))) {
         goto cleanup;
     }
@@ -1439,6 +1346,9 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
     if (!Savegame_BSON_LoadFlares(ctx)) {
+        goto cleanup;
+    }
+    if (!Savegame_BSON_LoadMusic(ctx, version)) {
         goto cleanup;
     }
 

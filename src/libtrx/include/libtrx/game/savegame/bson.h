@@ -14,6 +14,8 @@ bool Savegame_BSON_LoadFlipmaps(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *ctx);
+bool Savegame_BSON_LoadMusic(
+    SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
 // End of helper functions =====================================================
 
 #pragma pack(push, 1)

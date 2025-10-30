@@ -6,6 +6,7 @@
 #include "game/game_flow.h"
 #include "game/inventory.h"
 #include "game/lara.h"
+#include "game/music.h"
 #include "game/objects.h"
 #include "game/rooms.h"
 #include "game/savegame/bson.h"
@@ -18,6 +19,7 @@
     if (!(x)) {                                                                \
         goto success;                                                          \
     }
+#define M_OPTIONAL(x) (void)(x);
 #define M_MUST(x)                                                              \
     if (!(x)) {                                                                \
         goto fail;                                                             \
@@ -406,6 +408,98 @@ static bool M_ReadFlare(M_CONTEXT *const ctx)
     M_FINISH();
 }
 
+static MUSIC_ID M_ConvertMusicTrack(
+    const MUSIC_ID track_id, const uint16_t header_version)
+{
+    if (g_TRVersion == 1) {
+        return track_id;
+    }
+    // Added in TR2X 1.2 after removing OG music track shifting, so allowing
+    // previous saves to still load. Remove after a suitable period.
+    if (track_id == MX_INACTIVE || header_version >= VERSION_11) {
+        return track_id;
+    }
+    return Music_ConvertLegacyTrack(track_id);
+}
+
+static bool M_ReadMusicTracks(
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+{
+    MUSIC_ID current_track = MX_INACTIVE;
+    MUSIC_ID ambient_track = MX_INACTIVE;
+    double timestamp;
+    M_MUST(M_ReadNum(ctx, "current_track", &current_track));
+    M_OPTIONAL(M_ReadNum(ctx, "current_ambient", &ambient_track));
+    M_MUST(M_ReadNum(ctx, "timestamp", &timestamp));
+
+    // TR1X <=4.11 / TR2X <=1.1 fallback behavior
+    if (g_TRVersion == 1 && header_version < VERSION_9) {
+        bool legacy_ambient = false;
+        // TR1X <=4.5 has no is_ambient
+        M_OPTIONAL(M_ReadBool(ctx, "is_ambient", &legacy_ambient));
+        if (legacy_ambient && current_track != MX_INACTIVE) {
+            ambient_track = current_track;
+        }
+    }
+
+    current_track = M_ConvertMusicTrack(current_track, header_version);
+    ambient_track = M_ConvertMusicTrack(ambient_track, header_version);
+
+    Music_Stop();
+    if (ambient_track != MX_INACTIVE) {
+        // Always restart the ambient as it may have changed based on the
+        // current position in the level.
+        Music_Play_Direct(ambient_track, MPM_LOOPED);
+    }
+
+    if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
+        return true;
+    }
+
+    const bool is_ambient =
+        current_track != MX_INACTIVE && current_track == ambient_track;
+    if (!is_ambient && current_track != MX_INACTIVE) {
+        Music_Play_Direct(current_track, MPM_ALWAYS);
+    }
+
+    const bool load_timestamp =
+        !is_ambient || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
+    if (load_timestamp && !Music_SeekTimestamp(timestamp)) {
+        LOG_WARNING(
+            "Could not load current track %d at timestamp %" PRId64 ".",
+            current_track, timestamp);
+    }
+
+    M_FINISH();
+}
+
+static bool M_ReadMusicTrackFlags(SAVEGAME_BSON_READ_CONTEXT *const ctx)
+{
+#if TR_VERSION == 1
+    if (!g_Config.audio.load_music_triggers) {
+        return true;
+    }
+#endif
+
+    const int32_t count = M_GetArrayLength(ctx);
+    if (count > MAX_MUSIC_TRACKS) {
+        M_SetError(
+            ctx, "expected at most %d music track flags, got %d",
+            MAX_MUSIC_TRACKS, count);
+        M_FAIL();
+    }
+
+    for (int32_t i = 0; i < count; i++) {
+        M_MUST(M_PushArrayElem(ctx, i));
+        uint32_t flags;
+        M_MUST(M_ReadNumDirect(ctx, &flags));
+        Music_SetTrackFlags(i, flags);
+        M_MUST(M_Pop(ctx));
+    }
+
+    M_FINISH();
+}
+
 SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(JSON_VALUE *const root)
 {
     M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx));
@@ -518,7 +612,7 @@ bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *const ctx)
         return true;
     }
 
-    // TR1X ..v2.15.3, TR2X ..v1.1 may not have fx effects
+    // TR1X <=v2.15.3, TR2X <=v1.1 may not have fx effects
     M_SHOULD(M_PushObject(ctx, "fx"));
     for (int32_t i = 0;; i++) {
         if (!M_PushArrayElem(ctx, i)) {
@@ -553,5 +647,30 @@ bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *const ctx)
         M_MUST(M_Pop(ctx));
     }
     M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+bool Savegame_BSON_LoadMusic(
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+{
+    if (M_HasKey(ctx, "music_track_flags")) {
+        // TR1X <4.16
+        M_MUST(M_PushObject(ctx, "music_track_flags"));
+        M_MUST(M_ReadMusicTrackFlags(ctx));
+        M_MUST(M_Pop(ctx));
+        M_MUST(M_PushObject(ctx, "music"));
+        M_MUST(M_ReadMusicTracks(ctx, header_version));
+        M_MUST(M_Pop(ctx));
+    } else {
+        M_MUST(M_PushObject(ctx, "music"));
+        M_MUST(M_PushObject(ctx, "current"));
+        M_MUST(M_ReadMusicTracks(ctx, header_version));
+        M_MUST(M_Pop(ctx));
+        M_MUST(M_PushObject(ctx, "flags"));
+        M_MUST(M_ReadMusicTrackFlags(ctx));
+        M_MUST(M_Pop(ctx));
+        M_MUST(M_Pop(ctx));
+    }
+
     M_FINISH();
 }

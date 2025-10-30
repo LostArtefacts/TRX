@@ -866,81 +866,6 @@ static bool M_LoadLara(
     return true;
 }
 
-static bool M_LoadCurrentMusic(
-    JSON_OBJECT *music_obj, const uint16_t header_version)
-{
-    if (music_obj == nullptr) {
-        LOG_ERROR("Malformed save: invalid or missing music info");
-        return false;
-    }
-
-    const MUSIC_ID current_track =
-        JSON_ObjectGetInt(music_obj, "current_track", MX_INACTIVE);
-    MUSIC_ID ambient_track =
-        JSON_ObjectGetInt(music_obj, "current_ambient", MX_INACTIVE);
-    const double timestamp = JSON_ObjectGetDouble(music_obj, "timestamp", -1.0);
-
-    if (header_version < VERSION_9) {
-        const bool legacy_ambient =
-            JSON_ObjectGetBool(music_obj, "is_ambient", false);
-        if (legacy_ambient && current_track != MX_INACTIVE) {
-            ambient_track = current_track;
-        }
-    }
-
-    Music_Stop();
-    if (ambient_track != MX_INACTIVE) {
-        // Always restart the ambient as it may have changed based on the
-        // current position in the level.
-        Music_Play_Direct(ambient_track, MPM_LOOPED);
-    }
-
-    if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
-        return true;
-    }
-
-    const bool is_ambient =
-        current_track != MX_INACTIVE && current_track == ambient_track;
-    if (!is_ambient && current_track != MX_INACTIVE) {
-        Music_Play_Direct(current_track, MPM_ALWAYS);
-    }
-
-    const bool load_timestamp =
-        !is_ambient || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
-    if (load_timestamp && !Music_SeekTimestamp(timestamp)) {
-        LOG_WARNING(
-            "Could not load current track %d at timestamp %" PRId64 ".",
-            current_track, timestamp);
-    }
-
-    return true;
-}
-
-static bool M_LoadMusicTrackFlags(JSON_ARRAY *music_track_arr)
-{
-    if (!g_Config.audio.load_music_triggers) {
-        return true;
-    }
-
-    if (music_track_arr == nullptr) {
-        LOG_WARNING("Malformed save: invalid or missing music track array");
-        return true;
-    }
-
-    if ((signed)music_track_arr->length > MAX_MUSIC_TRACKS) {
-        LOG_WARNING(
-            "Malformed save: expected at most %d music track flags, got %d",
-            MAX_MUSIC_TRACKS, music_track_arr->length);
-        return true;
-    }
-
-    for (int32_t i = 0; i < (signed)music_track_arr->length; i++) {
-        Music_SetTrackFlags(i, JSON_ArrayGetInt(music_track_arr, i, 0));
-    }
-
-    return true;
-}
-
 static JSON_ARRAY *M_DumpResumeInfo(void)
 {
     JSON_ARRAY *resume_arr = JSON_ArrayNew();
@@ -1538,23 +1463,14 @@ static bool M_LoadFromFile(MYFILE *const fp)
     if (!Savegame_BSON_LoadFlares(ctx)) {
         goto cleanup;
     }
+    if (!Savegame_BSON_LoadMusic(ctx, version)) {
+        goto cleanup;
+    }
 
     if (!M_LoadLara(
             JSON_ObjectGetObject(root_obj, "lara"), Lara_GetLaraInfo(),
             version)) {
         goto cleanup;
-    }
-
-    if (version >= VERSION_3) {
-        if (!M_LoadCurrentMusic(
-                JSON_ObjectGetObject(root_obj, "music"), version)) {
-            goto cleanup;
-        }
-
-        if (!M_LoadMusicTrackFlags(
-                JSON_ObjectGetArray(root_obj, "music_track_flags"))) {
-            goto cleanup;
-        }
     }
 
     result = true;
