@@ -19,6 +19,7 @@
 #include "game/pathing.h"
 #include "game/rooms.h"
 #include "game/savegame.h"
+#include "game/stats.h"
 #include "memory.h"
 #include "strings.h"
 #include "version.h"
@@ -1013,6 +1014,79 @@ static bool M_ReadMusicTrackFlags(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     M_FINISH();
 }
 
+static bool M_ReadResumeInfo(
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, RESUME_INFO *const resume,
+    const uint16_t header_version)
+{
+    resume->lara_hitpoints = g_Config.gameplay.start_lara_hitpoints;
+    M_OPTIONAL(M_ReadNum(ctx, "lara_hitpoints", &resume->lara_hitpoints));
+
+    M_MUST(M_ReadNum(ctx, "gun_status", &resume->gun_status)); // LGS_ARMLESS
+    M_MUST(
+        M_ReadNum(ctx, "gun_type", &resume->equipped_gun_type)); // LGT_UNARMED
+
+    // TR1X <4.2
+    resume->holsters_gun_type = LGT_UNKNOWN;
+    M_OPTIONAL(M_ReadNum(ctx, "holsters_gun_type", &resume->holsters_gun_type));
+    // TR1X <4.2
+    resume->back_gun_type = LGT_UNKNOWN;
+    M_OPTIONAL(M_ReadNum(ctx, "back_gun_type", &resume->back_gun_type));
+
+#if TR_VERSION == 1
+    M_MUST(M_ReadBool(ctx, "costume", &resume->flags.costume));
+#endif
+
+    M_MUST(M_ReadNum(ctx, "pistol_ammo", &resume->pistol_ammo));
+    M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->magnum_ammo));
+    M_MUST(M_ReadNum(ctx, "uzi_ammo", &resume->uzi_ammo));
+    M_MUST(M_ReadNum(ctx, "shotgun_ammo", &resume->shotgun_ammo));
+#if TR_VERSION == 2
+    M_MUST(M_ReadNum(ctx, "m16_ammo", &resume->m16_ammo));
+    M_MUST(M_ReadNum(ctx, "grenade_ammo", &resume->grenade_ammo));
+    M_MUST(M_ReadNum(ctx, "harpoon_ammo", &resume->harpoon_ammo));
+#endif
+    M_MUST(M_ReadNum(ctx, "num_medis", &resume->small_medipacks));
+    M_MUST(M_ReadNum(ctx, "num_big_medis", &resume->large_medipacks));
+    // TR1X <4.16
+    M_OPTIONAL(M_ReadNum(ctx, "num_flares", &resume->flares));
+#if TR_VERSION == 1
+    M_MUST(M_ReadNum(ctx, "num_scions", &resume->num_scions));
+#endif
+
+    M_MUST(M_ReadBool(ctx, "available", &resume->flags.available));
+    if (M_HasKey(ctx, "got_pistols")) {
+        M_MUST(M_ReadBool(ctx, "got_pistols", &resume->flags.has_pistols));
+        M_MUST(M_ReadBool(ctx, "got_shotgun", &resume->flags.has_shotgun));
+        M_MUST(M_ReadBool(ctx, "got_magnums", &resume->flags.has_magnums));
+        M_MUST(M_ReadBool(ctx, "got_uzis", &resume->flags.has_uzis));
+    } else {
+        M_MUST(M_ReadBool(ctx, "has_pistols", &resume->flags.has_pistols));
+        M_MUST(M_ReadBool(ctx, "has_shotgun", &resume->flags.has_shotgun));
+        M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_magnums));
+        M_MUST(M_ReadBool(ctx, "has_uzis", &resume->flags.has_uzis));
+    }
+#if TR_VERSION == 2
+    M_MUST(M_ReadBool(ctx, "has_m16", &resume->flags.has_m16));
+    M_MUST(M_ReadBool(ctx, "has_grenade", &resume->flags.has_grenade));
+    M_MUST(M_ReadBool(ctx, "has_harpoon", &resume->flags.has_harpoon));
+#endif
+
+    M_MUST(M_ReadNum(ctx, "timer", &resume->stats.timer));
+    if (g_TRVersion == 2 || header_version >= VERSION_7) {
+        M_MUST(M_ReadNum(ctx, "ammo_hits", &resume->stats.ammo_hits));
+        M_MUST(M_ReadNum(ctx, "ammo_used", &resume->stats.ammo_used));
+        M_MUST(M_ReadNum(ctx, "medipacks_used", &resume->stats.medipacks_used));
+        M_MUST(M_ReadNum(
+            ctx, "distance_travelled", &resume->stats.distance_travelled));
+    }
+    M_MUST(M_ReadNum(ctx, "kills", &resume->stats.kill_count));
+    // TR2X <1.6
+    M_OPTIONAL(M_ReadNum(ctx, "pickups", &resume->stats.pickup_count));
+    M_MUST(M_ReadNum(ctx, "secrets", &resume->stats.secret_flags));
+    Stats_UpdateSecrets(&resume->stats);
+    M_FINISH();
+}
+
 SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(JSON_VALUE *const root)
 {
     M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx));
@@ -1217,5 +1291,34 @@ bool Savegame_BSON_LoadMusic(
         M_MUST(M_Pop(ctx));
     }
 
+    M_FINISH();
+}
+
+bool Savegame_BSON_LoadResumeInfoList(
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+{
+    if (M_HasKey(ctx, "current_info")) {
+        // TR1X <4.16
+        M_MUST(M_PushObject(ctx, "current_info"));
+    } else {
+        // TR2X <1.6
+        M_MUST(M_PushObject(ctx, "resume_info"));
+    }
+    const int32_t length = M_GetArrayLength(ctx);
+    const int32_t expected_length = GF_GetLevelTable(GFLT_MAIN)->count;
+    if (length != expected_length) {
+        M_SetError(
+            ctx, "expected %d resume info elements, got %d", expected_length,
+            length);
+        M_FAIL();
+    }
+    for (int32_t i = 0; i < length; i++) {
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        M_MUST(M_PushArrayElem(ctx, i));
+        M_MUST(M_ReadResumeInfo(ctx, resume, header_version));
+        M_MUST(M_Pop(ctx));
+    }
+    M_MUST(M_Pop(ctx));
     M_FINISH();
 }
