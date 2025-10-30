@@ -307,34 +307,6 @@ static bool M_LoadMisc(
     return true;
 }
 
-static bool M_LoadInventory(JSON_OBJECT *inv_obj)
-{
-    if (!inv_obj) {
-        LOG_ERROR("Malformed save: invalid or missing inventory info");
-        return false;
-    }
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    Lara_InitialiseInventory(current_level);
-    Inv_AddItemNTimes(
-        O_PICKUP_ITEM_1, JSON_ObjectGetInt(inv_obj, "pickup1", 0));
-    Inv_AddItemNTimes(
-        O_PICKUP_ITEM_2, JSON_ObjectGetInt(inv_obj, "pickup2", 0));
-    Inv_AddItemNTimes(
-        O_PUZZLE_ITEM_1, JSON_ObjectGetInt(inv_obj, "puzzle1", 0));
-    Inv_AddItemNTimes(
-        O_PUZZLE_ITEM_2, JSON_ObjectGetInt(inv_obj, "puzzle2", 0));
-    Inv_AddItemNTimes(
-        O_PUZZLE_ITEM_3, JSON_ObjectGetInt(inv_obj, "puzzle3", 0));
-    Inv_AddItemNTimes(
-        O_PUZZLE_ITEM_4, JSON_ObjectGetInt(inv_obj, "puzzle4", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM_1, JSON_ObjectGetInt(inv_obj, "key1", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM_2, JSON_ObjectGetInt(inv_obj, "key2", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM_3, JSON_ObjectGetInt(inv_obj, "key3", 0));
-    Inv_AddItemNTimes(O_KEY_ITEM_4, JSON_ObjectGetInt(inv_obj, "key4", 0));
-    Inv_AddItemNTimes(O_LEADBAR_ITEM, JSON_ObjectGetInt(inv_obj, "leadbar", 0));
-    return true;
-}
-
 static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj)
 {
     if (!flipmap_obj) {
@@ -1596,7 +1568,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
 
-    if (!M_LoadInventory(JSON_ObjectGetObject(root_obj, "inventory"))) {
+    if (!Savegame_BSON_LoadInventory(ctx)) {
         goto cleanup;
     }
 

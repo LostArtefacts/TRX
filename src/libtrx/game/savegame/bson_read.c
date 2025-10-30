@@ -1,6 +1,10 @@
 #include "config.h"
 #include "debug.h"
 #include "game/effects.h"
+#include "game/game.h"
+#include "game/game_flow.h"
+#include "game/inventory.h"
+#include "game/lara.h"
 #include "game/objects.h"
 #include "game/rooms.h"
 #include "game/savegame/bson.h"
@@ -417,6 +421,35 @@ void Savegame_BSON_FinishRead(
         LOG_ERROR("%s", ctx->error_msg);
     }
     Memory_Free(ctx);
+}
+
+bool Savegame_BSON_LoadInventory(SAVEGAME_BSON_READ_CONTEXT *const ctx)
+{
+    M_MUST(M_PushObject(ctx, "inventory"));
+    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+
+    struct {
+        OBJECT_ID object_id;
+        const char *const key;
+    } objects[] = {
+        { O_PICKUP_ITEM_1, "pickup1" }, { O_PICKUP_ITEM_2, "pickup2" },
+        { O_PUZZLE_ITEM_1, "puzzle1" }, { O_PUZZLE_ITEM_2, "puzzle2" },
+        { O_PUZZLE_ITEM_3, "puzzle3" }, { O_PUZZLE_ITEM_4, "puzzle4" },
+        { O_KEY_ITEM_1, "key1" },       { O_KEY_ITEM_2, "key2" },
+        { O_KEY_ITEM_3, "key3" },       { O_KEY_ITEM_4, "key4" },
+        { O_LEADBAR_ITEM, "leadbar" },  { NO_OBJECT, nullptr },
+    };
+
+    Lara_InitialiseInventory(current_level);
+    for (int32_t i = 0; objects[i].key != nullptr; i++) {
+        int16_t qty;
+        if (M_ReadNum(ctx, objects[i].key, &qty)) {
+            Inv_AddItemNTimes(objects[i].object_id, qty);
+        }
+    }
+
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
 }
 
 bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *const ctx)
