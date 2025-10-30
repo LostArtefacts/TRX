@@ -297,86 +297,6 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
     return resume_arr;
 }
 
-static bool M_LoadResumeInfo(JSON_ARRAY *const resume_arr)
-{
-    if (resume_arr == nullptr) {
-        LOG_ERROR("Malformed save: invalid or missing resume array");
-        return false;
-    }
-    const int32_t expected_length = GF_GetLevelTable(GFLT_MAIN)->count;
-    if ((signed)resume_arr->length != expected_length) {
-        LOG_ERROR(
-            "Malformed save: expected %d resume info elements, got %d",
-            expected_length, resume_arr->length);
-        return false;
-    }
-
-    for (int32_t i = 0; i < expected_length; i++) {
-        JSON_OBJECT *const resume_obj = JSON_ArrayGetObject(resume_arr, i);
-        if (resume_obj == nullptr) {
-            LOG_ERROR("Malformed save: invalid resume info");
-            return false;
-        }
-
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->lara_hitpoints = JSON_ObjectGetInt(
-            resume_obj, "lara_hitpoints",
-            g_Config.gameplay.start_lara_hitpoints);
-        resume->pistol_ammo = JSON_ObjectGetInt(resume_obj, "pistol_ammo", 0);
-        resume->magnum_ammo = JSON_ObjectGetInt(resume_obj, "magnum_ammo", 0);
-        resume->uzi_ammo = JSON_ObjectGetInt(resume_obj, "uzi_ammo", 0);
-        resume->shotgun_ammo = JSON_ObjectGetInt(resume_obj, "shotgun_ammo", 0);
-        resume->m16_ammo = JSON_ObjectGetInt(resume_obj, "m16_ammo", 0);
-        resume->grenade_ammo = JSON_ObjectGetInt(resume_obj, "grenade_ammo", 0);
-        resume->harpoon_ammo = JSON_ObjectGetInt(resume_obj, "harpoon_ammo", 0);
-        resume->small_medipacks = JSON_ObjectGetInt(resume_obj, "num_medis", 0);
-        resume->large_medipacks =
-            JSON_ObjectGetInt(resume_obj, "num_big_medis", 0);
-        resume->flares = JSON_ObjectGetInt(resume_obj, "num_flares", 0);
-        resume->num_scions = JSON_ObjectGetInt(resume_obj, "num_scions", 0);
-        resume->gun_status =
-            JSON_ObjectGetInt(resume_obj, "gun_status", LGS_ARMLESS);
-        resume->equipped_gun_type =
-            JSON_ObjectGetInt(resume_obj, "gun_type", LGT_UNARMED);
-        resume->holsters_gun_type =
-            JSON_ObjectGetInt(resume_obj, "holsters_gun_type", LGT_UNKNOWN);
-        resume->back_gun_type =
-            JSON_ObjectGetInt(resume_obj, "back_gun_type", LGT_UNKNOWN);
-
-        resume->flags.available =
-            JSON_ObjectGetBool(resume_obj, "available", 0);
-        resume->flags.has_pistols =
-            JSON_ObjectGetBool(resume_obj, "has_pistols", 0);
-        resume->flags.has_magnums =
-            JSON_ObjectGetBool(resume_obj, "has_magnums", 0);
-        resume->flags.has_uzis = JSON_ObjectGetBool(resume_obj, "has_uzis", 0);
-        resume->flags.has_shotgun =
-            JSON_ObjectGetBool(resume_obj, "has_shotgun", 0);
-        resume->flags.has_m16 = JSON_ObjectGetBool(resume_obj, "has_m16", 0);
-        resume->flags.has_grenade =
-            JSON_ObjectGetBool(resume_obj, "has_grenade", 0);
-        resume->flags.has_harpoon =
-            JSON_ObjectGetBool(resume_obj, "has_harpoon", 0);
-
-        resume->stats.timer = JSON_ObjectGetInt(resume_obj, "timer", 0);
-        resume->stats.ammo_hits = JSON_ObjectGetInt(resume_obj, "ammo_hits", 0);
-        resume->stats.ammo_used = JSON_ObjectGetInt(resume_obj, "ammo_used", 0);
-        resume->stats.distance_travelled =
-            JSON_ObjectGetInt(resume_obj, "distance_travelled", 0);
-        resume->stats.kill_count = JSON_ObjectGetInt(resume_obj, "kills", 0);
-        resume->stats.pickup_count = JSON_ObjectGetInt(
-            resume_obj, "pickups", resume->stats.pickup_count);
-        resume->stats.secret_flags =
-            JSON_ObjectGetInt(resume_obj, "secrets", 0);
-        Stats_UpdateSecrets(&resume->stats);
-        resume->stats.medipacks_used =
-            JSON_ObjectGetDouble(resume_obj, "medipacks_used", 0);
-    }
-
-    return true;
-}
-
 static JSON_OBJECT *M_DumpInventory(void)
 {
     JSON_OBJECT *const inv_obj = JSON_ObjectNew();
@@ -790,10 +710,9 @@ static bool M_LoadFromFile(MYFILE *const fp)
         goto cleanup;
     }
 
-    if (!M_LoadResumeInfo(JSON_ObjectGetArray(root_obj, "resume_info"))) {
+    if (!Savegame_BSON_LoadResumeInfoList(ctx, version)) {
         goto cleanup;
     }
-
     if (!Savegame_BSON_LoadInventory(ctx)) {
         goto cleanup;
     }
@@ -829,21 +748,13 @@ cleanup:
 
 static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
-    bool ret = false;
-
     int32_t version;
-    JSON_VALUE *root = M_ReadRaw(fp, &version);
-    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
-    if (root_obj == nullptr) {
-        LOG_ERROR("Malformed save: cannot parse BSON data");
-        goto cleanup;
-    }
-
-    ret = M_LoadResumeInfo(JSON_ObjectGetArray(root_obj, "resume_info"));
-
-cleanup:
+    JSON_VALUE *const root = M_ReadRaw(fp, &version);
+    SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
+    const bool result = Savegame_BSON_LoadResumeInfoList(ctx, version);
+    Savegame_BSON_FinishRead(ctx, result);
     JSON_ValueFree(root);
-    return ret;
+    return result;
 }
 
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
