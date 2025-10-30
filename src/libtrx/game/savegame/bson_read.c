@@ -1,5 +1,6 @@
 #include "config.h"
 #include "debug.h"
+#include "game/camera.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -487,6 +488,26 @@ bool Savegame_BSON_LoadFlipmaps(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     }
     M_MUST(M_Pop(ctx));
 
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *const ctx)
+{
+    M_MUST(M_PushObject(ctx, "cameras"));
+    const size_t count = M_GetArrayLength(ctx);
+    if (count != (size_t)Camera_GetFixedObjectCount()) {
+        M_SetError(
+            ctx, "expected %d cameras, got %d", Camera_GetFixedObjectCount(),
+            count);
+        M_FAIL();
+    }
+    for (size_t i = 0; i < count; i++) {
+        M_MUST(M_PushArrayElem(ctx, i));
+        OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
+        M_MUST(M_ReadNumDirect(ctx, &object->flags));
+        M_MUST(M_Pop(ctx));
+    }
     M_MUST(M_Pop(ctx));
     M_FINISH();
 }

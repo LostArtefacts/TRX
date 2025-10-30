@@ -11,6 +11,7 @@ SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(JSON_VALUE *root);
 void Savegame_BSON_FinishRead(SAVEGAME_BSON_READ_CONTEXT *ctx, bool success);
 bool Savegame_BSON_LoadInventory(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadFlipmaps(SAVEGAME_BSON_READ_CONTEXT *ctx);
+bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *ctx);
 // End of helper functions =====================================================
