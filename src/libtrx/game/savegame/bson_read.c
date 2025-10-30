@@ -5,6 +5,7 @@
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
+#include "game/gun.h"
 #include "game/inventory.h"
 #include "game/lara.h"
 #include "game/music.h"
@@ -379,6 +380,210 @@ static bool M_ReadObjectID(
     M_FINISH();
 }
 
+static bool M_ReadArm(
+    M_CONTEXT *const ctx, const char *const key, LARA_ARM *const arm)
+{
+    ASSERT(arm != nullptr);
+    M_MUST(M_PushObject(ctx, key));
+    // TR1X <4.16
+    M_OPTIONAL(M_ReadNum(ctx, "anim_num", &arm->anim_num));
+    M_MUST(M_ReadNum(ctx, "frame_num", &arm->frame_num));
+    M_MUST(M_ReadNum(ctx, "lock", &arm->lock));
+    M_MUST(M_ReadNum(ctx, "flash_gun", &arm->flash_gun));
+    M_MUST(M_ReadRot(ctx, &arm->rot));
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+static bool M_ReadAmmo(
+    M_CONTEXT *const ctx, const char *const key, AMMO_INFO *const ammo)
+{
+    ASSERT(ammo != nullptr);
+    M_MUST(M_PushObject(ctx, key));
+    M_MUST(M_ReadNum(ctx, "ammo", &ammo->ammo));
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+static bool M_ReadLOT(M_CONTEXT *const ctx, LOT_INFO *const lot)
+{
+    ASSERT(lot != nullptr);
+    M_MUST(M_ReadNum(ctx, "head", &lot->head));
+    M_MUST(M_ReadNum(ctx, "tail", &lot->tail));
+    M_MUST(M_ReadNum(ctx, "search_num", &lot->search_num));
+    M_MUST(M_ReadNum(ctx, "block_mask", &lot->setup.block_mask));
+    M_MUST(M_ReadNum(ctx, "step", &lot->setup.step));
+    M_MUST(M_ReadNum(ctx, "drop", &lot->setup.drop));
+    M_MUST(M_ReadNum(ctx, "fly", &lot->setup.fly));
+    M_MUST(M_ReadNum(ctx, "zone_count", &lot->zone_count));
+    M_MUST(M_ReadNum(ctx, "target_box", &lot->target_box));
+    M_MUST(M_ReadNum(ctx, "required_box", &lot->required_box));
+    M_MUST(M_ReadPos(ctx, &lot->target));
+    M_FINISH();
+}
+
+static bool M_ReadLara(M_CONTEXT *const ctx, const uint16_t header_version)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    ASSERT(lara != nullptr);
+
+    M_MUST(M_ReadNum(ctx, "item_number", &lara->item_num));
+    M_MUST(M_ReadNum(ctx, "gun_status", &lara->gun_status));
+    M_MUST(M_ReadNum(ctx, "gun_type", &lara->gun_type));
+    M_MUST(M_ReadNum(ctx, "request_gun_type", &lara->request_gun_type));
+    // TR1X <4.12
+    if (M_HasKey(ctx, "last_gun_type")) {
+        M_MUST(M_ReadNum(ctx, "last_gun_type", &lara->last_gun_type));
+    } else {
+        lara->last_gun_type = lara->request_gun_type;
+    }
+    // Only TR1X >= 4.16, TR2X >=* have new back-gun support
+    M_OPTIONAL(M_ReadObjectID(ctx, "back_gun_obj_id", &lara->back_gun_obj_id));
+    M_MUST(M_ReadNum(ctx, "calc_fall_speed", &lara->calc_fall_speed));
+    M_MUST(M_ReadNum(ctx, "water_status", &lara->water_status));
+    // Only TR1X >= 4.15, TR2X >=* has ladder support
+    M_OPTIONAL(M_ReadBool(ctx, "climb_status", &lara->climb_status));
+    M_MUST(M_ReadNum(ctx, "pose_count", &lara->pose_count));
+    M_MUST(M_ReadNum(ctx, "hit_frame", &lara->hit_frame));
+    M_MUST(M_ReadNum(ctx, "hit_direction", &lara->hit_direction));
+    M_MUST(M_ReadNum(ctx, "air", &lara->air));
+    // Only TR1X >=4.14, TR2X >=1.4 have sprint function
+    M_OPTIONAL(M_ReadNum(ctx, "sprint_timer", &lara->sprint_timer));
+    // Only TR1X >=4.16, TR2X >=1.6 have exposure bar function
+    M_OPTIONAL(M_ReadNum(ctx, "exposure_timer", &lara->exposure_timer));
+    M_MUST(M_ReadNum(ctx, "dive_count", &lara->dive_timer));
+    M_MUST(M_ReadNum(ctx, "death_count", &lara->death_timer));
+    M_MUST(M_ReadNum(ctx, "current_active", &lara->current_active));
+    // Only TR1X >=4.12, TR2X >=* have burn flag
+    M_OPTIONAL(M_ReadBool(ctx, "burn", &lara->burn));
+
+    M_MUST(M_ReadNum(ctx, "mesh_effects", &lara->mesh_effects));
+#if TR_VERSION == 2
+    M_MUST(M_ReadBool(ctx, "extra_anim", &lara->extra_anim));
+    M_OPTIONAL(M_ReadNum(ctx, "water_surface_dist", &lara->water_surface_dist));
+#endif
+
+    // Only TR1X >=4.8, TR2X >=* stores hit effect count information
+    M_OPTIONAL(M_ReadNum(ctx, "hit_effect_count", &lara->hit_effect_count));
+    // Only TR1X >=4.8, TR2X >=- stores hit effect information
+    int16_t hit_effect = NO_EFFECT;
+    M_OPTIONAL(M_ReadNum(ctx, "hit_effect", &hit_effect));
+    lara->hit_effect =
+        hit_effect != NO_EFFECT && g_Config.gameplay.enable_enhanced_saves
+        ? Effect_Get(hit_effect)
+        : nullptr;
+
+    const int16_t vehicle_idx = Lara_Vehicle_GetIndex();
+    // Only TR1X >=4.16, TR2X >=* stores vehicle information
+    M_OPTIONAL(M_ReadNum(ctx, "vehicle_item_number", &vehicle_idx));
+    Lara_Vehicle_SetIndex(vehicle_idx);
+
+    // Only TR1X >=4.16, TR2X >=* stores flares information
+    M_OPTIONAL(M_ReadNum(ctx, "flare_age", &lara->flare.age));
+    M_OPTIONAL(M_ReadNum(ctx, "flare_frame", &lara->flare.frame_num));
+    M_OPTIONAL(M_ReadBool(ctx, "flare_control_left", &lara->flare.control));
+
+    M_MUST(M_PushObject(ctx, "meshes"));
+    const int32_t mesh_count = M_GetArrayLength(ctx);
+    if (mesh_count != LM_NUMBER_OF) {
+        M_SetError(
+            ctx, "expected %d Lara meshes, got %d", LM_NUMBER_OF, mesh_count);
+        M_FAIL();
+    }
+    for (int32_t i = 0; i < mesh_count; i++) {
+        M_MUST(M_PushArrayElem(ctx, i));
+        int32_t idx = Object_GetMeshOffset(lara->mesh_ptrs[i]);
+        M_OPTIONAL(M_ReadNumDirect(ctx, &idx));
+        OBJECT_MESH *const mesh = Object_FindMesh(idx);
+        if (mesh != nullptr) {
+            lara->mesh_ptrs[i] = mesh;
+        } else {
+            LOG_WARNING("can't find mesh %d", idx);
+        }
+        M_MUST(M_Pop(ctx));
+    }
+    M_MUST(M_Pop(ctx));
+
+    lara->target = nullptr;
+    M_MUST(M_ReadNum(ctx, "target_angle1", &lara->target_angles[0]));
+    M_MUST(M_ReadNum(ctx, "target_angle2", &lara->target_angles[1]));
+    M_MUST(M_ReadNum(ctx, "turn_rate", &lara->turn_rate));
+    M_MUST(M_ReadNum(ctx, "move_angle", &lara->move_angle));
+#if TR_VERSION == 1
+    M_MUST(M_ReadNum(ctx, "head_rot.y", &lara->head_rot.y));
+    M_MUST(M_ReadNum(ctx, "head_rot.x", &lara->head_rot.x));
+    M_MUST(M_ReadNum(ctx, "head_rot.z", &lara->head_rot.z));
+    M_MUST(M_ReadNum(ctx, "torso_rot.y", &lara->torso_rot.y));
+    M_MUST(M_ReadNum(ctx, "torso_rot.x", &lara->torso_rot.x));
+    M_MUST(M_ReadNum(ctx, "torso_rot.z", &lara->torso_rot.z));
+#else
+    M_MUST(M_ReadXYZ16(ctx, "head_rot", &lara->head_rot));
+    M_MUST(M_ReadXYZ16(ctx, "torso_rot", &lara->torso_rot));
+#endif
+
+#if TR_VERSION == 1
+    if (header_version >= VERSION_7) {
+        // TR1X > 4.8
+        M_MUST(M_ReadNum(ctx, "last_pos.x", &lara->last_pos.x));
+        M_MUST(M_ReadNum(ctx, "last_pos.y", &lara->last_pos.y));
+        M_MUST(M_ReadNum(ctx, "last_pos.z", &lara->last_pos.z));
+    }
+#else
+    M_MUST(M_ReadXYZ32(ctx, "last_pos", &lara->last_pos));
+#endif
+
+    M_MUST(M_ReadArm(ctx, "left_arm", &lara->left_arm));
+    M_MUST(M_ReadArm(ctx, "right_arm", &lara->right_arm));
+    M_MUST(M_ReadAmmo(ctx, "pistols", &lara->pistol_ammo));
+    M_MUST(M_ReadAmmo(ctx, "magnums", &lara->magnum_ammo));
+    M_MUST(M_ReadAmmo(ctx, "uzis", &lara->uzi_ammo));
+    M_MUST(M_ReadAmmo(ctx, "shotgun", &lara->shotgun_ammo));
+#if TR_VERSION == 2
+    M_MUST(M_ReadAmmo(ctx, "harpoon", &lara->harpoon_ammo));
+    M_MUST(M_ReadAmmo(ctx, "grenade", &lara->grenade_ammo));
+    M_MUST(M_ReadAmmo(ctx, "m16", &lara->m16_ammo));
+#endif
+
+    if (g_TRVersion == 1 && header_version < VERSION_13) {
+        const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
+        Gun_Rifle_LoadLegacy(has_rifle);
+    } else if (M_HasKey(ctx, "weapon")) {
+        M_MUST(M_PushObject(ctx, "weapon"));
+        lara->gun_item_num = Item_Create();
+        ITEM *const weapon_item = Item_Get(lara->gun_item_num);
+        M_MUST(M_ReadObjectID(ctx, "obj_id", &weapon_item->object_id));
+        M_MUST(M_ReadNum(ctx, "anim_num", &weapon_item->anim_num));
+        M_MUST(M_ReadNum(ctx, "frame_num", &weapon_item->frame_num));
+        M_MUST(M_ReadNum(
+            ctx, "current_anim_state", &weapon_item->current_anim_state));
+        M_MUST(
+            M_ReadNum(ctx, "goal_anim_state", &weapon_item->goal_anim_state));
+        weapon_item->status = IS_ACTIVE;
+        weapon_item->room_num = NO_ROOM;
+        M_MUST(M_Pop(ctx));
+    }
+
+    if (g_TRVersion == 1) {
+        M_MUST(M_PushObject(ctx, "lot"));
+        M_MUST(M_ReadLOT(ctx, &lara->lot));
+        M_MUST(M_Pop(ctx));
+    }
+
+    if (M_HasKey(ctx, "interact_target.item_num")) {
+        // TR1X >4.4, TR2X >1.2
+        M_MUST(M_ReadNum(
+            ctx, "interact_target.item_num", &lara->interact_target.item_num));
+        M_MUST(M_ReadNum(
+            ctx, "interact_target.move_count",
+            &lara->interact_target.move_count));
+        M_MUST(M_ReadBool(
+            ctx, "interact_target.is_moving",
+            &lara->interact_target.is_moving));
+    }
+
+    M_FINISH();
+}
+
 static bool M_IsValidItemObject(
     const OBJECT_ID saved_obj_id, const OBJECT_ID initial_obj_id)
 {
@@ -468,6 +673,7 @@ static bool M_ReadItem(
 
     if (obj->save_hitpoints) {
         M_MUST(M_ReadNum(ctx, "hitpoints", &item->hit_points));
+        // TR1x >= 4.16, TR2X >=1.6 store max hit points information
         M_OPTIONAL(M_ReadNum(ctx, "max_hitpoints", &item->max_hit_points));
     }
 
@@ -909,6 +1115,15 @@ bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *const ctx)
         M_MUST(M_ReadNumDirect(ctx, &object->flags));
         M_MUST(M_Pop(ctx));
     }
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+bool Savegame_BSON_LoadLara(
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+{
+    M_MUST(M_PushObject(ctx, "lara"));
+    M_MUST(M_ReadLara(ctx, header_version));
     M_MUST(M_Pop(ctx));
     M_FINISH();
 }
