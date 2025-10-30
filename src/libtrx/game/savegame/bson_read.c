@@ -1,6 +1,7 @@
 #include "config.h"
 #include "debug.h"
 #include "game/camera.h"
+#include "game/carrier.h"
 #include "game/effects.h"
 #include "game/game.h"
 #include "game/game_flow.h"
@@ -8,11 +9,20 @@
 #include "game/lara.h"
 #include "game/music.h"
 #include "game/objects.h"
+#include "game/objects/general/lift.h"
+#include "game/objects/traps/movable_block.h"
+#include "game/objects/traps/sliding_pillar.h"
+#include "game/objects/vars.h"
+#include "game/objects/vehicles/boat.h"
+#include "game/objects/vehicles/skidoo_common.h"
+#include "game/pathing.h"
 #include "game/rooms.h"
-#include "game/savegame/bson.h"
+#include "game/savegame.h"
 #include "memory.h"
 #include "strings.h"
 #include "version.h"
+
+#define M_NO_ROOM_LEGACY 255
 
 #define M_MAX_STACK_SIZE 10
 #define M_SHOULD(x)                                                            \
@@ -369,6 +379,303 @@ static bool M_ReadObjectID(
     M_FINISH();
 }
 
+static bool M_IsValidItemObject(
+    const OBJECT_ID saved_obj_id, const OBJECT_ID initial_obj_id)
+{
+    if (saved_obj_id == initial_obj_id) {
+        return true;
+    }
+    if (Object_IsType(initial_obj_id, g_GunObjects)
+        && Object_IsType(saved_obj_id, g_GunObjects)) {
+        return true;
+    }
+
+    // clang-format off
+    switch (saved_obj_id) {
+        // used keyholes
+        case O_PUZZLE_DONE_1: return initial_obj_id == O_PUZZLE_HOLE_1;
+        case O_PUZZLE_DONE_2: return initial_obj_id == O_PUZZLE_HOLE_2;
+        case O_PUZZLE_DONE_3: return initial_obj_id == O_PUZZLE_HOLE_3;
+        case O_PUZZLE_DONE_4: return initial_obj_id == O_PUZZLE_HOLE_4;
+        // pickups
+        case O_PISTOL_AMMO_ITEM: return initial_obj_id == O_PISTOL_ITEM;
+        case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
+        case O_MAGNUM_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
+        case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
+        case O_HARPOON_AMMO_ITEM: return initial_obj_id == O_HARPOON_ITEM;
+        case O_M16_AMMO_ITEM: return initial_obj_id == O_M16_ITEM;
+        case O_GRENADE_AMMO_ITEM: return initial_obj_id == O_GRENADE_ITEM;
+        // dual-state animals
+        case O_ALLIGATOR: return initial_obj_id == O_CROCODILE;
+        case O_CROCODILE: return initial_obj_id == O_ALLIGATOR;
+        case O_RAT: return initial_obj_id == O_VOLE;
+        case O_VOLE: return initial_obj_id == O_RAT;
+        // skidoo swaps
+        case O_SKIDOO_FAST: return initial_obj_id == O_SKIDOO_ARMED;
+        // default
+        default: return false;
+    }
+    // clang-format on
+}
+
+static bool M_ReadItem(
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, const int16_t item_num,
+    const uint16_t header_version)
+{
+    ITEM *const item = Item_Get(item_num);
+
+    int16_t game_object_id = -1;
+    M_MUST(M_ReadNum(ctx, "obj_num", &game_object_id));
+    const OBJECT_ID object_id = Object_FromGameID(game_object_id);
+    const OBJECT *const obj = Object_Get(object_id);
+    item->object_id = object_id;
+    if (!M_IsValidItemObject(object_id, item->object_id)) {
+        M_SetError(
+            ctx, "level has %d (%s), save has %d (%s)", item->object_id,
+            Object_GetName(item->object_id), object_id,
+            Object_GetName(object_id));
+        M_FAIL();
+    }
+
+    // Not sure why some items do not have their their position saved,
+    // despite OBJECT telling them to.
+    if (obj->save_position && M_HasKey(ctx, "room_num")) {
+        M_MUST(M_ReadPos(ctx, &item->pos));
+        M_MUST(M_ReadRot(ctx, &item->rot));
+        M_MUST(M_ReadNum(ctx, "speed", &item->speed));
+        M_MUST(M_ReadNum(ctx, "fall_speed", &item->fall_speed));
+        int16_t room_num = NO_ROOM;
+        M_MUST(M_ReadNum(ctx, "room_num", &room_num));
+        if (room_num != NO_ROOM) {
+            Item_UpdateRoom(item_num, room_num);
+        }
+    }
+
+    if (obj->save_anim) {
+        M_MUST(M_ReadNum(ctx, "current_anim", &item->current_anim_state));
+        M_MUST(M_ReadNum(ctx, "goal_anim", &item->goal_anim_state));
+        M_MUST(M_ReadNum(ctx, "required_anim", &item->required_anim_state));
+        M_MUST(M_ReadNum(ctx, "anim_num", &item->anim_num));
+        M_MUST(M_ReadNum(ctx, "frame_num", &item->frame_num));
+
+        // Prevent issues with pre-injection saves and Lara's enhanced
+        // animation set.
+        if (item->object_id == O_LARA
+            && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
+            item->anim_num += obj->anim_idx;
+        }
+    }
+
+    if (obj->save_hitpoints) {
+        M_MUST(M_ReadNum(ctx, "hitpoints", &item->hit_points));
+        M_OPTIONAL(M_ReadNum(ctx, "max_hitpoints", &item->max_hit_points));
+    }
+
+    if (obj->save_flags) {
+        M_MUST(M_ReadNum(ctx, "flags", &item->flags));
+        M_MUST(M_ReadNum(ctx, "timer", &item->timer));
+
+        if ((item->flags & IF_KILLED) != 0) {
+            Item_Kill(item_num);
+            item->status = IS_DEACTIVATED;
+        } else {
+            bool is_active;
+            M_MUST(M_ReadBool(ctx, "active", &is_active));
+            if (is_active && !item->active) {
+                Item_AddActive(item_num);
+            }
+            M_MUST(M_ReadNum(ctx, "status", &item->status));
+            M_MUST(M_ReadBool(ctx, "gravity", &item->gravity));
+            M_OPTIONAL(M_ReadBool(ctx, "collidable", &item->collidable));
+        }
+
+        bool intelligent = obj->intelligent;
+        M_OPTIONAL(M_ReadBool(ctx, "intelligent", &intelligent));
+        if (intelligent) {
+            LOT_EnableBaddieAI(item_num, true);
+            CREATURE *const creature = item->data;
+            if (creature != nullptr) {
+                M_MUST(M_ReadNum(ctx, "head_rot", &creature->head_rotation));
+                M_MUST(M_ReadNum(ctx, "neck_rot", &creature->neck_rotation));
+                M_MUST(M_ReadNum(ctx, "max_turn", &creature->maximum_turn));
+                M_MUST(M_ReadNum(ctx, "creature_flags", &creature->flags));
+                M_MUST(M_ReadNum(ctx, "creature_mood", &creature->mood));
+            }
+        } else if (obj->intelligent) {
+            item->data = nullptr;
+#if TR_VERSION == 2
+            if (item->killed && item->hit_points <= 0
+                && !(item->flags & IF_KILLED)) {
+                item->next_active = Item_GetPrevActive();
+                Item_SetPrevActive(item_num);
+            }
+#endif
+        }
+    }
+
+    if (M_HasKey(ctx, "carried_items")) {
+        M_MUST(M_PushObject(ctx, "carried_items"));
+        CARRIED_ITEM *carried_item = item->carried_item;
+        for (int32_t j = 0;; j++) {
+            if (!M_PushArrayElem(ctx, j)) {
+                break;
+            }
+            if (carried_item == nullptr) {
+                M_SetError(ctx, "carried item mismatch");
+                M_FAIL();
+            }
+
+            int16_t game_object_id;
+            M_MUST(M_ReadNum(ctx, "object_id", &game_object_id));
+            carried_item->object_id = Object_FromGameID(game_object_id);
+
+            M_MUST(M_ReadPos(ctx, &carried_item->pos));
+            M_MUST(M_ReadNum(ctx, "y_rot", &carried_item->rot.y));
+            M_MUST(M_ReadNum(ctx, "room_num", &carried_item->room_num));
+            M_MUST(M_ReadNum(ctx, "fall_speed", &carried_item->fall_speed));
+            M_MUST(M_ReadNum(ctx, "status", &carried_item->status));
+
+#if TR_VERSION == 1
+            if (header_version < VERSION_10
+                && carried_item->room_num == M_NO_ROOM_LEGACY) {
+                carried_item->room_num = NO_ROOM;
+            }
+#endif
+
+            carried_item = carried_item->next_item;
+            M_MUST(M_Pop(ctx));
+        }
+        Carrier_TestItemDrops(item_num);
+        M_MUST(M_Pop(ctx));
+    } else {
+#if TR_VERSION == 1
+        if (header_version < VERSION_4) {
+            Carrier_TestLegacyDrops(item_num);
+        }
+#endif
+    }
+
+    switch (item->object_id) {
+    case O_BACON_LARA: {
+        if (g_TRVersion == 2 || header_version >= VERSION_5) {
+            int32_t status;
+            if (M_ReadNum(ctx, "bl_status", &status)) {
+                item->priv = (void *)(intptr_t)status;
+            }
+        }
+        break;
+    }
+
+    case O_FLAME_EMITTER: {
+        if ((g_TRVersion == 2 || header_version >= VERSION_3)
+            && g_Config.gameplay.enable_enhanced_saves) {
+            int32_t effect_num = NO_EFFECT;
+            M_OPTIONAL(M_ReadNum(ctx, "fx_num", &effect_num));
+            if (effect_num != -1) {
+                item->data = (void *)(intptr_t)(effect_num + 1);
+            }
+        }
+        break;
+    }
+
+    case O_MOVABLE_BLOCK_1:
+    case O_MOVABLE_BLOCK_2:
+    case O_MOVABLE_BLOCK_3:
+    case O_MOVABLE_BLOCK_4: {
+        if (header_version >= VERSION_12) {
+            M_MUST(M_PushObject(ctx, "data"));
+            MOVABLE_BLOCK_INFO *const data = item->data;
+            M_MUST(M_ReadNum(ctx, "counter_rot_0", &data->counter_rot[0]));
+            M_MUST(M_ReadNum(ctx, "counter_rot_1", &data->counter_rot[1]));
+            M_MUST(M_ReadNum(ctx, "counter_rot_2", &data->counter_rot[2]));
+            M_MUST(M_ReadNum(ctx, "original_rot", &data->original_rot));
+            M_MUST(M_ReadNum(ctx, "gravity_frames", &data->gravity_frames));
+            M_MUST(M_ReadBool(ctx, "is_push_pull", &data->is_push_pull));
+            M_MUST(
+                M_ReadBool(ctx, "is_forced_moving", &data->is_forced_moving));
+            M_MUST(M_ReadXYZ32(ctx, "linked", &data->linked.pos));
+            M_MUST(M_Pop(ctx));
+        } else {
+            // For old saves, guess linked sector is at item position.
+            MOVABLE_BLOCK_INFO *const data = item->data;
+            data->linked.pos = item->pos;
+            data->linked.room_num = item->room_num;
+        }
+        break;
+    }
+
+    case O_SLIDING_PILLAR:
+        if (header_version >= VERSION_12 && item->data != nullptr) {
+            M_MUST(M_PushObject(ctx, "data"));
+            SLIDING_PILLAR_INFO *const data = item->data;
+            M_MUST(M_ReadXYZ32(ctx, "linked", &data->linked.pos));
+            M_MUST(M_Pop(ctx));
+        } else {
+            // For old saves, guess linked sector is at item position.
+            SLIDING_PILLAR_INFO *const data = item->data;
+            data->linked.pos = item->pos;
+            data->linked.room_num = item->room_num;
+        }
+        break;
+
+    case O_BOAT: {
+        M_MUST(M_PushObject(ctx, "data"));
+        BOAT_INFO *const data = item->data;
+        M_MUST(M_ReadNum(ctx, "boat_turn", &data->boat_turn));
+        M_MUST(M_ReadNum(ctx, "left_fallspeed", &data->left_fallspeed));
+        M_MUST(M_ReadNum(ctx, "right_fallspeed", &data->right_fallspeed));
+        M_MUST(M_ReadNum(ctx, "tilt_angle", &data->tilt_angle));
+        M_MUST(M_ReadNum(ctx, "extra_rotation", &data->extra_rotation));
+        M_MUST(M_ReadNum(ctx, "water", &data->water));
+        M_MUST(M_ReadNum(ctx, "pitch", &data->pitch));
+        M_MUST(M_Pop(ctx));
+        break;
+    }
+
+    case O_SKIDOO_FAST: {
+        M_MUST(M_PushObject(ctx, "data"));
+        SKIDOO_INFO *const data = item->data;
+        M_MUST(M_ReadNum(ctx, "track_mesh", &data->track_mesh));
+        M_MUST(M_ReadNum(ctx, "skidoo_turn", &data->skidoo_turn));
+        M_MUST(M_ReadNum(ctx, "left_fallspeed", &data->left_fallspeed));
+        M_MUST(M_ReadNum(ctx, "right_fallspeed", &data->right_fallspeed));
+        M_MUST(M_ReadNum(ctx, "momentum_angle", &data->momentum_angle));
+        M_MUST(M_ReadNum(ctx, "extra_rotation", &data->extra_rotation));
+        M_MUST(M_ReadNum(ctx, "pitch", &data->pitch));
+        M_MUST(M_Pop(ctx));
+        break;
+    }
+
+    case O_LIFT: {
+        M_MUST(M_PushObject(ctx, "data"));
+        LIFT_INFO *const data = item->data;
+        M_MUST(M_ReadNum(ctx, "start_height", &data->start_height));
+        M_MUST(M_ReadNum(ctx, "wait_time", &data->wait_time));
+        if (header_version >= VERSION_12) {
+            M_MUST(M_ReadBool(ctx, "is_moving", &data->is_moving));
+            for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
+                const char *const pos_key = String_FormatStatic("linked_%d", j);
+                M_MUST(M_ReadXYZ32(ctx, pos_key, &data->linked[j].pos));
+            }
+        }
+        M_MUST(M_Pop(ctx));
+        break;
+    }
+
+    default:
+        break;
+    }
+
+#if TR_VERSION == 2
+    // TODO: make this call in both engines consistently
+    if (obj->handle_save_func != nullptr) {
+        obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
+    }
+#endif
+
+    M_FINISH();
+}
+
 static bool M_ReadEffect(M_CONTEXT *const ctx)
 {
     int32_t room_num = NO_ROOM;
@@ -602,6 +909,29 @@ bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *const ctx)
         M_MUST(M_ReadNumDirect(ctx, &object->flags));
         M_MUST(M_Pop(ctx));
     }
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+bool Savegame_BSON_LoadItems(
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+{
+    M_MUST(M_PushObject(ctx, "items"));
+    const int32_t count = M_GetArrayLength(ctx);
+    if (count != Item_GetLevelCount()) {
+        M_SetError(
+            ctx, "expected %d items, got %d", Item_GetLevelCount(), count);
+        M_FAIL();
+    }
+
+    Savegame_ProcessItemsBeforeLoad();
+
+    for (int32_t i = 0; i < count; i++) {
+        M_MUST(M_PushArrayElem(ctx, i));
+        M_MUST(M_ReadItem(ctx, i, header_version));
+        M_MUST(M_Pop(ctx));
+    }
+
     M_MUST(M_Pop(ctx));
     M_FINISH();
 }
