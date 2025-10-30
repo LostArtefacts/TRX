@@ -307,26 +307,6 @@ static bool M_LoadMisc(
     return true;
 }
 
-static bool M_LoadCameras(JSON_ARRAY *cameras_arr)
-{
-    if (!cameras_arr) {
-        LOG_ERROR("Malformed save: invalid or missing cameras array");
-        return false;
-    }
-    const int32_t num_cameras = Camera_GetFixedObjectCount();
-    if ((signed)cameras_arr->length != num_cameras) {
-        LOG_ERROR(
-            "Malformed save: expected %d cameras, got %d", num_cameras,
-            cameras_arr->length);
-        return false;
-    }
-    for (int32_t i = 0; i < num_cameras; i++) {
-        OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        object->flags = JSON_ArrayGetInt(cameras_arr, i, 0);
-    }
-    return true;
-}
-
 static bool M_LoadItems(JSON_ARRAY *items_arr, uint16_t header_version)
 {
     if (!items_arr) {
@@ -1542,8 +1522,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     if (!Savegame_BSON_LoadFlipmaps(ctx)) {
         goto cleanup;
     }
-
-    if (!M_LoadCameras(JSON_ObjectGetArray(root_obj, "cameras"))) {
+    if (!Savegame_BSON_LoadCameras(ctx)) {
         goto cleanup;
     }
 
