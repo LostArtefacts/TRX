@@ -452,6 +452,45 @@ bool Savegame_BSON_LoadInventory(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     M_FINISH();
 }
 
+bool Savegame_BSON_LoadFlipmaps(SAVEGAME_BSON_READ_CONTEXT *const ctx)
+{
+    M_MUST(M_PushObject(ctx, "flipmap"));
+
+    bool status;
+    M_MUST(M_ReadBool(ctx, "status", &status));
+    if (status) {
+        Room_FlipMap();
+    }
+
+    int32_t flip_effect;
+    int32_t flip_timer;
+    M_MUST(M_ReadNum(ctx, "effect", &flip_effect));
+    M_MUST(M_ReadNum(ctx, "timer", &flip_timer));
+    Room_SetFlipEffect(flip_effect);
+    Room_SetFlipTimer(flip_timer);
+
+    M_MUST(M_PushObject(ctx, "table"));
+    const size_t count = M_GetArrayLength(ctx);
+    if (count != MAX_FLIP_MAPS) {
+        M_SetError(
+            ctx, "expected %d flipmap elements, got %d", MAX_FLIP_MAPS, count);
+        M_FAIL();
+    }
+    for (size_t i = 0; i < count; i++) {
+        if (!M_PushArrayElem(ctx, i)) {
+            break;
+        }
+        uint32_t flags;
+        M_MUST(M_ReadNumDirect(ctx, &flags));
+        Room_SetFlipSlotFlags(i, flags << 8);
+        M_MUST(M_Pop(ctx));
+    }
+    M_MUST(M_Pop(ctx));
+
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
 bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
     if (!g_Config.gameplay.enable_enhanced_saves) {
