@@ -307,38 +307,6 @@ static bool M_LoadMisc(
     return true;
 }
 
-static bool M_LoadFlipmaps(JSON_OBJECT *flipmap_obj)
-{
-    if (!flipmap_obj) {
-        LOG_ERROR("Malformed save: invalid or missing flipmap info");
-        return false;
-    }
-
-    if (JSON_ObjectGetBool(flipmap_obj, "status", false)) {
-        Room_FlipMap();
-    }
-
-    Room_SetFlipEffect(JSON_ObjectGetInt(flipmap_obj, "effect", 0));
-    Room_SetFlipTimer(JSON_ObjectGetInt(flipmap_obj, "timer", 0));
-
-    JSON_ARRAY *flipmap_arr = JSON_ObjectGetArray(flipmap_obj, "table");
-    if (!flipmap_arr) {
-        LOG_ERROR("Malformed save: invalid or missing flipmap table");
-        return false;
-    }
-    if (flipmap_arr->length != MAX_FLIP_MAPS) {
-        LOG_ERROR(
-            "Malformed save: expected %d flipmap elements, got %d",
-            MAX_FLIP_MAPS, flipmap_arr->length);
-        return false;
-    }
-    for (int32_t i = 0; i < (signed)flipmap_arr->length; i++) {
-        Room_SetFlipSlotFlags(i, JSON_ArrayGetInt(flipmap_arr, i, 0) << 8);
-    }
-
-    return true;
-}
-
 static bool M_LoadCameras(JSON_ARRAY *cameras_arr)
 {
     if (!cameras_arr) {
@@ -1571,8 +1539,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     if (!Savegame_BSON_LoadInventory(ctx)) {
         goto cleanup;
     }
-
-    if (!M_LoadFlipmaps(JSON_ObjectGetObject(root_obj, "flipmap"))) {
+    if (!Savegame_BSON_LoadFlipmaps(ctx)) {
         goto cleanup;
     }
 
