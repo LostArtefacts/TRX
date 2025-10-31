@@ -36,23 +36,6 @@
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
-#define DUMP_XYZ(obj, key, value)                                              \
-    do {                                                                       \
-        JSON_OBJECT *const sub_obj = JSON_ObjectNew();                         \
-        JSON_ObjectAppendInt(sub_obj, "x", value.x);                           \
-        JSON_ObjectAppendInt(sub_obj, "y", value.y);                           \
-        JSON_ObjectAppendInt(sub_obj, "z", value.z);                           \
-        JSON_ObjectAppendObject(obj, key, sub_obj);                            \
-    } while (0)
-
-#define LOAD_XYZ(obj, key, value)                                              \
-    do {                                                                       \
-        const JSON_OBJECT *const sub_obj = JSON_ObjectGetObject(obj, key);     \
-        value.x = JSON_ObjectGetInt(sub_obj, "x", value.x);                    \
-        value.y = JSON_ObjectGetInt(sub_obj, "y", value.y);                    \
-        value.z = JSON_ObjectGetInt(sub_obj, "z", value.z);                    \
-    } while (0)
-
 static const char *M_GetSaveFilePattern(void);
 static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *savegame_info);
 static bool M_UpdateDeathCounters(
@@ -171,144 +154,6 @@ static JSON_OBJECT *M_DumpMisc(void)
     return misc_obj;
 }
 
-static JSON_OBJECT *M_DumpArm(LARA_ARM *arm)
-{
-    ASSERT(arm != nullptr);
-    JSON_OBJECT *arm_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(arm_obj, "anim_num", arm->anim_num);
-    JSON_ObjectAppendInt(arm_obj, "frame_num", arm->frame_num);
-    JSON_ObjectAppendInt(arm_obj, "lock", arm->lock);
-    JSON_ObjectAppendInt(arm_obj, "x_rot", arm->rot.x);
-    JSON_ObjectAppendInt(arm_obj, "y_rot", arm->rot.y);
-    JSON_ObjectAppendInt(arm_obj, "z_rot", arm->rot.z);
-    JSON_ObjectAppendInt(arm_obj, "flash_gun", arm->flash_gun);
-    return arm_obj;
-}
-
-static JSON_OBJECT *M_DumpAmmo(AMMO_INFO *ammo)
-{
-    ASSERT(ammo != nullptr);
-    JSON_OBJECT *ammo_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(ammo_obj, "ammo", ammo->ammo);
-    return ammo_obj;
-}
-
-static JSON_OBJECT *M_DumpLOT(LOT_INFO *lot)
-{
-    ASSERT(lot != nullptr);
-    JSON_OBJECT *lot_obj = JSON_ObjectNew();
-    // JSON_ObjectAppendInt(lot_obj, "node", lot->node);
-    JSON_ObjectAppendInt(lot_obj, "head", lot->head);
-    JSON_ObjectAppendInt(lot_obj, "tail", lot->tail);
-    JSON_ObjectAppendInt(lot_obj, "search_num", lot->search_num);
-    JSON_ObjectAppendInt(lot_obj, "block_mask", lot->setup.block_mask);
-    JSON_ObjectAppendInt(lot_obj, "step", lot->setup.step);
-    JSON_ObjectAppendInt(lot_obj, "drop", lot->setup.drop);
-    JSON_ObjectAppendInt(lot_obj, "fly", lot->setup.fly);
-    JSON_ObjectAppendInt(lot_obj, "zone_count", lot->zone_count);
-    JSON_ObjectAppendInt(lot_obj, "target_box", lot->target_box);
-    JSON_ObjectAppendInt(lot_obj, "required_box", lot->required_box);
-    JSON_ObjectAppendInt(lot_obj, "x", lot->target.x);
-    JSON_ObjectAppendInt(lot_obj, "y", lot->target.y);
-    JSON_ObjectAppendInt(lot_obj, "z", lot->target.z);
-    return lot_obj;
-}
-
-static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
-{
-    ASSERT(lara != nullptr);
-    JSON_OBJECT *lara_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(lara_obj, "item_number", lara->item_num);
-    JSON_ObjectAppendInt(lara_obj, "gun_status", lara->gun_status);
-    JSON_ObjectAppendInt(lara_obj, "gun_type", lara->gun_type);
-    JSON_ObjectAppendInt(lara_obj, "request_gun_type", lara->request_gun_type);
-    JSON_ObjectAppendInt(lara_obj, "last_gun_type", lara->last_gun_type);
-    JSON_ObjectAppendInt(
-        lara_obj, "back_gun_obj_id", Object_ToGameID(lara->back_gun_obj_id));
-    JSON_ObjectAppendInt(lara_obj, "calc_fall_speed", lara->calc_fall_speed);
-    JSON_ObjectAppendInt(lara_obj, "water_status", lara->water_status);
-    JSON_ObjectAppendInt(lara_obj, "pose_count", lara->pose_count);
-    JSON_ObjectAppendInt(lara_obj, "hit_frame", lara->hit_frame);
-    JSON_ObjectAppendInt(lara_obj, "hit_direction", lara->hit_direction);
-    JSON_ObjectAppendInt(lara_obj, "air", lara->air);
-    JSON_ObjectAppendInt(lara_obj, "sprint_timer", lara->sprint_timer);
-    JSON_ObjectAppendInt(lara_obj, "exposure_timer", lara->exposure_timer);
-    JSON_ObjectAppendInt(lara_obj, "dive_count", lara->dive_timer);
-    JSON_ObjectAppendInt(lara_obj, "death_count", lara->death_timer);
-    JSON_ObjectAppendInt(lara_obj, "current_active", lara->current_active);
-    JSON_ObjectAppendBool(lara_obj, "burn", lara->burn);
-    JSON_ObjectAppendInt(lara_obj, "climb_status", lara->climb_status);
-
-    if (lara->gun_item_num != NO_ITEM) {
-        JSON_OBJECT *const weapon_obj = JSON_ObjectNew();
-        const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        JSON_ObjectAppendInt(
-            weapon_obj, "obj_id", Object_ToGameID(weapon_item->object_id));
-        JSON_ObjectAppendInt(weapon_obj, "anim_num", weapon_item->anim_num);
-        JSON_ObjectAppendInt(weapon_obj, "frame_num", weapon_item->frame_num);
-        JSON_ObjectAppendInt(
-            weapon_obj, "current_anim_state", weapon_item->current_anim_state);
-        JSON_ObjectAppendInt(
-            weapon_obj, "goal_anim_state", weapon_item->goal_anim_state);
-        JSON_ObjectAppendObject(lara_obj, "weapon", weapon_obj);
-    }
-
-    JSON_ObjectAppendInt(lara_obj, "hit_effect_count", lara->hit_effect_count);
-    JSON_ObjectAppendInt(
-        lara_obj, "hit_effect",
-        lara->hit_effect ? Effect_GetNum(lara->hit_effect) : 0);
-
-    JSON_ObjectAppendInt(lara_obj, "flare_age", lara->flare.age);
-    JSON_ObjectAppendInt(lara_obj, "flare_frame", lara->flare.frame_num);
-    JSON_ObjectAppendBool(lara_obj, "flare_control_left", lara->flare.control);
-    JSON_ObjectAppendInt(
-        lara_obj, "vehicle_item_number", Lara_Vehicle_GetIndex());
-
-    JSON_ObjectAppendInt(lara_obj, "mesh_effects", lara->mesh_effects);
-    JSON_ARRAY *lara_meshes_arr = JSON_ArrayNew();
-    for (int i = 0; i < LM_NUMBER_OF; i++) {
-        JSON_ArrayAppendInt(
-            lara_meshes_arr, Object_GetMeshOffset(lara->mesh_ptrs[i]));
-    }
-    JSON_ObjectAppendArray(lara_obj, "meshes", lara_meshes_arr);
-
-    JSON_ObjectAppendInt(lara_obj, "target_angle1", lara->target_angles[0]);
-    JSON_ObjectAppendInt(lara_obj, "target_angle2", lara->target_angles[1]);
-    JSON_ObjectAppendInt(lara_obj, "turn_rate", lara->turn_rate);
-    JSON_ObjectAppendInt(lara_obj, "move_angle", lara->move_angle);
-    JSON_ObjectAppendInt(lara_obj, "head_rot.y", lara->head_rot.y);
-    JSON_ObjectAppendInt(lara_obj, "head_rot.x", lara->head_rot.x);
-    JSON_ObjectAppendInt(lara_obj, "head_rot.z", lara->head_rot.z);
-    JSON_ObjectAppendInt(lara_obj, "torso_rot.y", lara->torso_rot.y);
-    JSON_ObjectAppendInt(lara_obj, "torso_rot.x", lara->torso_rot.x);
-    JSON_ObjectAppendInt(lara_obj, "torso_rot.z", lara->torso_rot.z);
-
-    JSON_ObjectAppendObject(lara_obj, "left_arm", M_DumpArm(&lara->left_arm));
-    JSON_ObjectAppendObject(lara_obj, "right_arm", M_DumpArm(&lara->right_arm));
-    JSON_ObjectAppendObject(
-        lara_obj, "pistols", M_DumpAmmo(&lara->pistol_ammo));
-    JSON_ObjectAppendObject(
-        lara_obj, "magnums", M_DumpAmmo(&lara->magnum_ammo));
-    JSON_ObjectAppendObject(lara_obj, "uzis", M_DumpAmmo(&lara->uzi_ammo));
-    JSON_ObjectAppendObject(
-        lara_obj, "shotgun", M_DumpAmmo(&lara->shotgun_ammo));
-    JSON_ObjectAppendObject(lara_obj, "lot", M_DumpLOT(&lara->lot));
-
-    JSON_ObjectAppendInt(
-        lara_obj, "interact_target.item_num", lara->interact_target.item_num);
-    JSON_ObjectAppendInt(
-        lara_obj, "interact_target.move_count",
-        lara->interact_target.move_count);
-    JSON_ObjectAppendBool(
-        lara_obj, "interact_target.is_moving", lara->interact_target.is_moving);
-
-    JSON_ObjectAppendInt(lara_obj, "last_pos.x", lara->last_pos.x);
-    JSON_ObjectAppendInt(lara_obj, "last_pos.y", lara->last_pos.y);
-    JSON_ObjectAppendInt(lara_obj, "last_pos.z", lara->last_pos.z);
-
-    return lara_obj;
-}
-
 static const char *M_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_bson;
@@ -331,7 +176,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     Savegame_BSON_DumpCameras(ctx);
     Savegame_BSON_DumpItems(ctx);
     Savegame_BSON_DumpEffects(ctx);
-    JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));
+    Savegame_BSON_DumpLara(ctx);
     Savegame_BSON_DumpMusic(ctx);
     Savegame_BSON_DumpFlares(ctx);
 

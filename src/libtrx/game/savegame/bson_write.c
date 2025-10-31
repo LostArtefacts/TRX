@@ -5,6 +5,7 @@
 #include "game/effects.h"
 #include "game/inventory.h"
 #include "game/items.h"
+#include "game/lara.h"
 #include "game/music.h"
 #include "game/objects.h"
 #include "game/objects/general/lift.h"
@@ -359,6 +360,49 @@ static void M_WriteItem(
     }
 }
 
+static void M_WriteArm(
+    M_CONTEXT *const ctx, const char *const key, const LARA_ARM *const arm)
+{
+    ASSERT(arm != nullptr);
+    M_PushObject(ctx);
+    M_WriteNum(ctx, "anim_num", arm->anim_num);
+    M_WriteNum(ctx, "frame_num", arm->frame_num);
+    M_WriteNum(ctx, "lock", arm->lock);
+    M_WriteNum(ctx, "flash_gun", arm->flash_gun);
+    M_WriteXYZ16(ctx, "rot", arm->rot);
+    M_WriteNum(ctx, "x_rot", arm->rot.x);
+    M_WriteNum(ctx, "y_rot", arm->rot.y);
+    M_WriteNum(ctx, "z_rot", arm->rot.z);
+    M_PopAndSet(ctx, key);
+}
+
+static void M_WriteAmmo(
+    M_CONTEXT *const ctx, const char *const key, const AMMO_INFO *const ammo)
+{
+    ASSERT(ammo != nullptr);
+    M_PushObject(ctx);
+    M_WriteNum(ctx, "ammo", ammo->ammo);
+    M_PopAndSet(ctx, key);
+}
+
+static void M_WriteLOT(M_CONTEXT *const ctx, const LOT_INFO *const lot)
+{
+    ASSERT(lot != nullptr);
+    M_WriteNum(ctx, "head", lot->head);
+    M_WriteNum(ctx, "tail", lot->tail);
+    M_WriteNum(ctx, "search_num", lot->search_num);
+    M_WriteNum(ctx, "block_mask", lot->setup.block_mask);
+    M_WriteNum(ctx, "step", lot->setup.step);
+    M_WriteNum(ctx, "drop", lot->setup.drop);
+    M_WriteNum(ctx, "fly", lot->setup.fly);
+    M_WriteNum(ctx, "zone_count", lot->zone_count);
+    M_WriteNum(ctx, "target_box", lot->target_box);
+    M_WriteNum(ctx, "required_box", lot->required_box);
+    M_WriteNum(ctx, "x", lot->target.x);
+    M_WriteNum(ctx, "y", lot->target.y);
+    M_WriteNum(ctx, "z", lot->target.z);
+}
+
 SAVEGAME_BSON_WRITE_CONTEXT *Savegame_BSON_StartWrite(void)
 {
     M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx));
@@ -535,4 +579,117 @@ void Savegame_BSON_DumpItems(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
         M_PopAndAppend(ctx);
     }
     M_PopAndSet(ctx, "items");
+}
+
+void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    ASSERT(lara != nullptr);
+
+    M_PushObject(ctx);
+
+    M_WriteNum(ctx, "item_number", lara->item_num);
+    M_WriteNum(ctx, "gun_status", lara->gun_status);
+    M_WriteNum(ctx, "gun_type", lara->gun_type);
+    M_WriteNum(ctx, "request_gun_type", lara->request_gun_type);
+    M_WriteNum(ctx, "last_gun_type", lara->last_gun_type);
+    M_WriteNum(ctx, "back_gun_obj_id", Object_ToGameID(lara->back_gun_obj_id));
+    M_WriteNum(ctx, "calc_fall_speed", lara->calc_fall_speed);
+    M_WriteNum(ctx, "water_status", lara->water_status);
+    M_WriteBool(ctx, "climb_status", lara->climb_status);
+
+    M_WriteNum(ctx, "pose_count", lara->pose_count);
+    M_WriteNum(ctx, "hit_frame", lara->hit_frame);
+    M_WriteNum(ctx, "hit_direction", lara->hit_direction);
+    M_WriteNum(ctx, "hit_effect_count", lara->hit_effect_count);
+    M_WriteNum(
+        ctx, "hit_effect",
+        lara->hit_effect ? Effect_GetNum(lara->hit_effect) : 0);
+
+    M_WriteNum(ctx, "air", lara->air);
+    M_WriteNum(ctx, "sprint_timer", lara->sprint_timer);
+    M_WriteNum(ctx, "exposure_timer", lara->exposure_timer);
+    M_WriteNum(ctx, "dive_count", lara->dive_timer);
+    M_WriteNum(ctx, "death_count", lara->death_timer);
+
+    M_WriteNum(ctx, "current_active", lara->current_active);
+    M_WriteBool(ctx, "burn", lara->burn);
+    M_WriteNum(ctx, "water_surface_dist", lara->water_surface_dist);
+
+    M_WriteNum(ctx, "flare_age", lara->flare.age);
+    M_WriteNum(ctx, "flare_frame", lara->flare.frame_num);
+    M_WriteBool(ctx, "flare_control_left", lara->flare.control);
+    M_WriteBool(ctx, "extra_anim", lara->extra_anim);
+    M_WriteNum(ctx, "vehicle_item_number", Lara_Vehicle_GetIndex());
+
+    M_WriteNum(ctx, "mesh_effects", lara->mesh_effects);
+    M_PushArray(ctx);
+    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+        M_PushNum(ctx, Object_GetMeshOffset(lara->mesh_ptrs[i]));
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "meshes");
+
+    M_WriteNum(ctx, "target_angle1", lara->target_angles[0]);
+    M_WriteNum(ctx, "target_angle2", lara->target_angles[1]);
+    M_WriteNum(ctx, "turn_rate", lara->turn_rate);
+    M_WriteNum(ctx, "move_angle", lara->move_angle);
+    M_WriteXYZ16(ctx, "head_rot", lara->head_rot);
+    // TR1X <4.16
+    M_WriteNum(ctx, "head_rot.y", lara->head_rot.y);
+    M_WriteNum(ctx, "head_rot.x", lara->head_rot.x);
+    M_WriteNum(ctx, "head_rot.z", lara->head_rot.z);
+    M_WriteXYZ16(ctx, "torso_rot", lara->torso_rot);
+    // TR1X <4.16
+    M_WriteNum(ctx, "torso_rot.y", lara->torso_rot.y);
+    M_WriteNum(ctx, "torso_rot.x", lara->torso_rot.x);
+    M_WriteNum(ctx, "torso_rot.z", lara->torso_rot.z);
+    M_WriteXYZ32(ctx, "last_pos", lara->last_pos);
+    // TR1X <4.16
+    M_WriteNum(ctx, "last_pos.x", lara->last_pos.x);
+    M_WriteNum(ctx, "last_pos.y", lara->last_pos.y);
+    M_WriteNum(ctx, "last_pos.z", lara->last_pos.z);
+
+    M_WriteArm(ctx, "left_arm", &lara->left_arm);
+    M_WriteArm(ctx, "right_arm", &lara->right_arm);
+    M_WriteAmmo(ctx, "pistols", &lara->pistol_ammo);
+    M_WriteAmmo(ctx, "shotgun", &lara->shotgun_ammo);
+    M_WriteAmmo(ctx, "magnums", &lara->magnum_ammo);
+    M_WriteAmmo(ctx, "uzis", &lara->uzi_ammo);
+#if TR_VERSION == 2
+    M_WriteAmmo(ctx, "harpoon", &lara->harpoon_ammo);
+    M_WriteAmmo(ctx, "grenade", &lara->grenade_ammo);
+    M_WriteAmmo(ctx, "m16", &lara->m16_ammo);
+#endif
+
+    if (lara->gun_item_num != NO_ITEM) {
+        M_PushObject(ctx);
+        const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
+        M_WriteNum(ctx, "obj_id", Object_ToGameID(weapon_item->object_id));
+        M_WriteNum(ctx, "anim_num", weapon_item->anim_num);
+        M_WriteNum(ctx, "frame_num", weapon_item->frame_num);
+        M_WriteNum(ctx, "current_anim_state", weapon_item->current_anim_state);
+        M_WriteNum(ctx, "goal_anim_state", weapon_item->goal_anim_state);
+        M_PopAndSet(ctx, "weapon");
+    }
+
+    M_PushObject();
+    M_WriteNum(ctx, "item_num", lara->interact_target.item_num);
+    M_WriteNum(ctx, "move_count", lara->interact_target.move_count);
+    M_WriteBool(ctx, "is_moving", lara->interact_target.is_moving);
+    M_PopAndSet(ctx, "interact_target");
+    // TR1X <4.16, TR2X <1.6
+    M_WriteNum(ctx, "interact_target.item_num", lara->interact_target.item_num);
+    M_WriteNum(
+        ctx, "interact_target.move_count", lara->interact_target.move_count);
+    M_WriteBool(
+        ctx, "interact_target.is_moving", lara->interact_target.is_moving);
+
+#if TR_VERSION == 1
+    M_PushObject(ctx);
+    M_WriteLOT(ctx, &lara->lot);
+    M_PopAndSet(ctx, "lot");
+#endif
+
+    M_PopAndSet(ctx, "lara");
 }
