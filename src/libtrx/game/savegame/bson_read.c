@@ -16,6 +16,7 @@
 #include "game/objects/vars.h"
 #include "game/objects/vehicles/boat.h"
 #include "game/objects/vehicles/skidoo_common.h"
+#include "game/output.h"
 #include "game/pathing.h"
 #include "game/rooms.h"
 #include "game/savegame.h"
@@ -1319,6 +1320,39 @@ bool Savegame_BSON_LoadResumeInfoList(
         M_MUST(M_ReadResumeInfo(ctx, resume, header_version));
         M_MUST(M_Pop(ctx));
     }
+    M_MUST(M_Pop(ctx));
+    M_FINISH();
+}
+
+bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *const ctx)
+{
+    M_MUST(M_PushObject(ctx, "misc"));
+
+    {
+        bool bonus_flag = false;
+        M_OPTIONAL(M_ReadBool(ctx, "bonus_flag", &bonus_flag));
+        Game_SetBonusFlag(bonus_flag);
+    }
+
+    {
+        bool allies_hostile = false;
+        M_OPTIONAL(M_ReadBool(ctx, "are_monks_angry", &allies_hostile));
+        Creature_SetAlliesHostile(allies_hostile);
+    }
+
+    {
+        int32_t sunset_timer;
+        M_OPTIONAL(M_ReadNum(ctx, "sunset_timer", &sunset_timer));
+        Output_SetSunsetTimer(sunset_timer);
+    }
+
+    {
+        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        resume->stats.death_count = -1;
+        M_OPTIONAL(M_ReadNum(ctx, "death_count", &resume->stats.death_count));
+    }
+
     M_MUST(M_Pop(ctx));
     M_FINISH();
 }

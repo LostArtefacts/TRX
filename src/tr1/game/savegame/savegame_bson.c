@@ -176,24 +176,6 @@ static JSON_VALUE *M_ParseFromFile(MYFILE *fp, int32_t *version_out)
     return ret;
 }
 
-static bool M_LoadMisc(
-    JSON_OBJECT *const misc_obj, const uint16_t header_version)
-{
-    if (!misc_obj) {
-        LOG_ERROR("Malformed save: invalid or missing misc info");
-        return false;
-    }
-    const int32_t bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
-    Game_SetBonusFlag(bonus_flag);
-    if (header_version >= VERSION_4) {
-        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-        resume->stats.death_count =
-            JSON_ObjectGetInt(misc_obj, "death_count", -1);
-    }
-    return true;
-}
-
 static JSON_ARRAY *M_DumpResumeInfo(void)
 {
     JSON_ARRAY *resume_arr = JSON_ArrayNew();
@@ -751,17 +733,11 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
     int32_t version;
     JSON_VALUE *root = M_ParseFromFile(fp, &version);
-    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
     SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
-    if (root_obj == nullptr) {
-        LOG_ERROR("Malformed save: cannot parse BSON data");
+
+    if (!Savegame_BSON_LoadMisc(ctx)) {
         goto cleanup;
     }
-
-    if (!M_LoadMisc(JSON_ObjectGetObject(root_obj, "misc"), version)) {
-        goto cleanup;
-    }
-
     if (!Savegame_BSON_LoadResumeInfoList(ctx, version)) {
         goto cleanup;
     }

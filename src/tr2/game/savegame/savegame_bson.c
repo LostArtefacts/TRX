@@ -201,25 +201,6 @@ static JSON_OBJECT *M_DumpMisc(void)
     return misc_obj;
 }
 
-static bool M_LoadMisc(JSON_OBJECT *const misc_obj)
-{
-    if (misc_obj == nullptr) {
-        LOG_ERROR("Malformed save: invalid or missing misc info");
-        return false;
-    }
-
-    const int32_t bonus_flag = JSON_ObjectGetInt(misc_obj, "bonus_flag", 0);
-    Game_SetBonusFlag(bonus_flag);
-    const bool hostile = JSON_ObjectGetBool(misc_obj, "are_monks_angry", false);
-    Creature_SetAlliesHostile(hostile);
-    const int32_t sunset_timer = JSON_ObjectGetInt(misc_obj, "sunset_timer", 0);
-    Output_SetSunsetTimer(sunset_timer);
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-    resume->stats.death_count = JSON_ObjectGetInt(misc_obj, "death_count", -1);
-    return true;
-}
-
 static JSON_OBJECT *M_DumpMusic(void)
 {
     JSON_OBJECT *const music_obj = JSON_ObjectNew();
@@ -699,17 +680,11 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
     int32_t version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &version);
-    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
     SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
-    if (root_obj == nullptr) {
-        LOG_ERROR("Malformed save: cannot parse BSON data");
+
+    if (!Savegame_BSON_LoadMisc(ctx)) {
         goto cleanup;
     }
-
-    if (!M_LoadMisc(JSON_ObjectGetObject(root_obj, "misc"))) {
-        goto cleanup;
-    }
-
     if (!Savegame_BSON_LoadResumeInfoList(ctx, version)) {
         goto cleanup;
     }

@@ -22,6 +22,7 @@ bool Savegame_BSON_LoadMusic(
     SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
 bool Savegame_BSON_LoadResumeInfoList(
     SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
+bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *ctx);
 // End of helper functions =====================================================
 
 #pragma pack(push, 1)
