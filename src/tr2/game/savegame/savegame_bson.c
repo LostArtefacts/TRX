@@ -56,10 +56,7 @@ typedef struct {
     } while (0)
 
 static const char *M_GetSaveFilePattern(void);
-static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
 static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
-static bool M_LoadFromFile(MYFILE *fp);
-static bool M_LoadOnlyResumeInfo(MYFILE *fp);
 static bool M_UpdateDeathCounters(
     MYFILE *fp, int32_t level_num, int32_t death_count);
 
@@ -69,10 +66,10 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .allow_save = true,
     .format = SAVEGAME_FORMAT_BSON,
     .get_save_file_pattern_func = M_GetSaveFilePattern,
-    .fill_info_func = M_FillInfo,
-    .load_from_file_func = M_LoadFromFile,
+    .fill_info_func = Savegame_BSON_FillInfo,
+    .load_from_file_func = Savegame_BSON_LoadFromFile,
     .save_to_file_func = M_SaveToFile,
-    .load_only_resume_info_func = M_LoadOnlyResumeInfo,
+    .load_only_resume_info_func = Savegame_BSON_LoadOnlyResumeInfo,
     .update_death_counters_func = M_UpdateDeathCounters,
     // clang-format on
 };
@@ -80,29 +77,6 @@ static SAVEGAME_STRATEGY m_Strategy = {
 static const char *M_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_bson;
-}
-
-static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
-{
-    SAVEGAME_BSON_HEADER header;
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
-    info->initial_version = header.initial_version;
-    info->features.restart = true;
-    info->features.select_level = true;
-
-    File_Skip(fp, header.compressed_size);
-    SAVEGAME_BSON_EXTENDED_HEADER extra_header;
-    File_ReadData(fp, &extra_header, sizeof(extra_header));
-
-    info->counter = extra_header.counter;
-    info->level_num = extra_header.level_num;
-    if (extra_header.title_size >= (int32_t)File_Size(fp)) {
-        return false;
-    }
-    info->level_title = Memory_Alloc(extra_header.title_size + 1);
-    File_ReadData(fp, info->level_title, extra_header.title_size);
-    return true;
 }
 
 static void M_SaveRaw(
@@ -142,49 +116,6 @@ static void M_SaveRaw(
 
     Memory_FreePointer(&uncompressed);
     Memory_FreePointer(&compressed);
-}
-
-static JSON_VALUE *M_ParseFromBuffer(
-    const char *const buffer, int32_t *const version_out)
-{
-    const SAVEGAME_BSON_HEADER *const header = (SAVEGAME_BSON_HEADER *)buffer;
-    if (header->magic != SAVEGAME_BSON_MAGIC) {
-        LOG_ERROR("Invalid savegame magic");
-        return nullptr;
-    }
-
-    if (version_out != nullptr) {
-        *version_out = header->version;
-    }
-
-    const char *compressed = buffer + sizeof(SAVEGAME_BSON_HEADER);
-    char *uncompressed = Memory_Alloc(header->uncompressed_size);
-
-    uLongf uncompressed_size = header->uncompressed_size;
-    const int32_t error_code = uncompress(
-        (Bytef *)uncompressed, &uncompressed_size, (const Bytef *)compressed,
-        (uLongf)header->compressed_size);
-    if (error_code != Z_OK) {
-        LOG_ERROR("Failed to decompress the data (error %d)", error_code);
-        Memory_FreePointer(&uncompressed);
-        return nullptr;
-    }
-
-    JSON_VALUE *const root = BSON_Parse(uncompressed, uncompressed_size);
-    Memory_FreePointer(&uncompressed);
-    return root;
-}
-
-static JSON_VALUE *M_ReadRaw(MYFILE *const fp, int32_t *const version_out)
-{
-    const size_t buffer_size = File_Size(fp);
-    char *buffer = Memory_Alloc(buffer_size);
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, buffer, buffer_size);
-
-    JSON_VALUE *const result = M_ParseFromBuffer(buffer, version_out);
-    Memory_FreePointer(&buffer);
-    return result;
 }
 
 static JSON_OBJECT *M_DumpMisc(void)
@@ -674,64 +605,6 @@ static JSON_OBJECT *M_DumpLara(void)
     return lara_obj;
 }
 
-static bool M_LoadFromFile(MYFILE *const fp)
-{
-    bool result = false;
-
-    int32_t version = -1;
-    JSON_VALUE *const root = M_ReadRaw(fp, &version);
-    SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
-
-    if (!Savegame_BSON_LoadMisc(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadResumeInfoList(ctx, version)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadInventory(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadFlipmaps(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadCameras(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadItems(ctx, version)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadEffects(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadFlares(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadMusic(ctx, version)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadLara(ctx, version)) {
-        goto cleanup;
-    }
-
-    result = true;
-
-cleanup:
-    Savegame_BSON_FinishRead(ctx, result);
-    JSON_ValueFree(root);
-    return result;
-}
-
-static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
-{
-    int32_t version;
-    JSON_VALUE *const root = M_ReadRaw(fp, &version);
-    SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
-    const bool result = Savegame_BSON_LoadResumeInfoList(ctx, version);
-    Savegame_BSON_FinishRead(ctx, result);
-    JSON_ValueFree(root);
-    return result;
-}
-
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
@@ -758,7 +631,7 @@ static bool M_UpdateDeathCounters(
 {
     bool result = false;
     int32_t version;
-    JSON_VALUE *const root = M_ReadRaw(fp, &version);
+    JSON_VALUE *const root = Savegame_BSON_ReadRaw(fp, &version);
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
     if (root_obj == nullptr) {
         LOG_ERROR("Cannot find the root object");
