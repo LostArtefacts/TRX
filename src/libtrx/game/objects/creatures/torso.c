@@ -30,6 +30,10 @@
 #define TORSO_FRAME_TURN_R_END 22
 
 typedef enum {
+    TORSO_ANIM_KILL = 19,
+} M_ANIM;
+
+typedef enum {
     TORSO_STATE_EMPTY = 0,
     TORSO_STATE_STOP = 1,
     TORSO_STATE_TURN_L = 2,
@@ -43,31 +47,6 @@ typedef enum {
     TORSO_STATE_DEATH = 10,
     TORSO_STATE_KILL = 11,
 } TORSO_STATE;
-
-static void M_KillLara(const ITEM *const item)
-{
-    ITEM *const lara_item = Lara_GetItem();
-    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LS_EXTRA_BREATH;
-    lara_item->goal_anim_state = LS_EXTRA_TORSO_KILL;
-    Item_Animate(lara_item);
-
-    lara_item->room_num = item->room_num;
-    lara_item->pos.x = item->pos.x;
-    lara_item->pos.y = item->pos.y;
-    lara_item->pos.z = item->pos.z;
-    lara_item->rot.x = 0;
-    lara_item->rot.y = item->rot.y;
-    lara_item->rot.z = 0;
-    lara_item->gravity = 0;
-    lara_item->hit_points = -1;
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->extra_anim = true;
-    lara->air = -1;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->gun_type = LGT_UNARMED;
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -202,8 +181,9 @@ static void M_Control(const int16_t item_num)
         case TORSO_STATE_ATTACK_3:
             if ((item->touch_bits & TORSO_TRIGHT)
                 || lara_item->hit_points <= 0) {
-                item->goal_anim_state = TORSO_STATE_KILL;
-                M_KillLara(item);
+                Creature_SpecialKill(
+                    item, TORSO_ANIM_KILL, TORSO_STATE_KILL,
+                    LS_EXTRA_TORSO_KILL);
             }
             break;
 
