@@ -6,33 +6,30 @@
 
 #include <stdint.h>
 
-// Start of helper functions ===================================================
-// TODO: make these private eventually.
-JSON_VALUE *Savegame_BSON_ReadRaw(MYFILE *fp, int32_t *version_out);
-bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
-
+// Start of reader functions ===================================================
 typedef struct SAVEGAME_BSON_READ_CONTEXT SAVEGAME_BSON_READ_CONTEXT;
-SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(JSON_VALUE *root);
+SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(
+    JSON_VALUE *root, uint16_t version);
 void Savegame_BSON_FinishRead(SAVEGAME_BSON_READ_CONTEXT *ctx, bool success);
-bool Savegame_BSON_LoadLara(
-    SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
+
+bool Savegame_BSON_LoadLara(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadInventory(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadFlipmaps(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadItems(
-    SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
+bool Savegame_BSON_LoadItems(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadMusic(
-    SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
-bool Savegame_BSON_LoadResumeInfoList(
-    SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
+bool Savegame_BSON_LoadMusic(SAVEGAME_BSON_READ_CONTEXT *ctx);
+bool Savegame_BSON_LoadResumeInfoList(SAVEGAME_BSON_READ_CONTEXT *ctx);
 bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *ctx);
+// End of reader functions =====================================================
 
+// Start of writer functions ===================================================
 typedef struct SAVEGAME_BSON_WRITE_CONTEXT SAVEGAME_BSON_WRITE_CONTEXT;
 SAVEGAME_BSON_WRITE_CONTEXT *Savegame_BSON_StartWrite(void);
 void Savegame_BSON_FinishWrite(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 JSON_VALUE *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+
 void Savegame_BSON_DumpFlares(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
@@ -43,7 +40,7 @@ void Savegame_BSON_DumpItems(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpResumeInfoList(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-// End of helper functions =====================================================
+// End of writer functions =====================================================
 
 #pragma pack(push, 1)
 typedef struct {

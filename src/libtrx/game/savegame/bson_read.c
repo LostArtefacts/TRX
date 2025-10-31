@@ -54,6 +54,7 @@ typedef struct SAVEGAME_BSON_READ_CONTEXT {
     JSON_VALUE *stack[M_MAX_STACK_SIZE];
     JSON_VALUE *current;
     size_t current_pos;
+    uint16_t sg_version;
 } SAVEGAME_BSON_READ_CONTEXT;
 
 typedef SAVEGAME_BSON_READ_CONTEXT M_CONTEXT;
@@ -425,7 +426,7 @@ static bool M_ReadLOT(M_CONTEXT *const ctx, LOT_INFO *const lot)
     M_FINISH();
 }
 
-static bool M_ReadLara(M_CONTEXT *const ctx, const uint16_t header_version)
+static bool M_ReadLara(M_CONTEXT *const ctx)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     ASSERT(lara != nullptr);
@@ -525,7 +526,7 @@ static bool M_ReadLara(M_CONTEXT *const ctx, const uint16_t header_version)
 #endif
 
 #if TR_VERSION == 1
-    if (header_version >= VERSION_7) {
+    if (ctx->sg_version >= VERSION_7) {
         // TR1X > 4.8
         M_MUST(M_ReadNum(ctx, "last_pos.x", &lara->last_pos.x));
         M_MUST(M_ReadNum(ctx, "last_pos.y", &lara->last_pos.y));
@@ -547,7 +548,7 @@ static bool M_ReadLara(M_CONTEXT *const ctx, const uint16_t header_version)
     M_MUST(M_ReadAmmo(ctx, "m16", &lara->m16_ammo));
 #endif
 
-    if (g_TRVersion == 1 && header_version < VERSION_13) {
+    if (g_TRVersion == 1 && ctx->sg_version < VERSION_13) {
         const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
         Gun_Rifle_LoadLegacy(has_rifle);
     } else if (M_HasKey(ctx, "weapon")) {
@@ -627,8 +628,7 @@ static bool M_IsValidItemObject(
 }
 
 static bool M_ReadItem(
-    SAVEGAME_BSON_READ_CONTEXT *const ctx, const int16_t item_num,
-    const uint16_t header_version)
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
@@ -748,7 +748,7 @@ static bool M_ReadItem(
             M_MUST(M_ReadNum(ctx, "status", &carried_item->status));
 
 #if TR_VERSION == 1
-            if (header_version < VERSION_10
+            if (ctx->sg_version < VERSION_10
                 && carried_item->room_num == M_NO_ROOM_LEGACY) {
                 carried_item->room_num = NO_ROOM;
             }
@@ -761,7 +761,7 @@ static bool M_ReadItem(
         M_MUST(M_Pop(ctx));
     } else {
 #if TR_VERSION == 1
-        if (header_version < VERSION_4) {
+        if (ctx->sg_version < VERSION_4) {
             Carrier_TestLegacyDrops(item_num);
         }
 #endif
@@ -769,7 +769,7 @@ static bool M_ReadItem(
 
     switch (item->object_id) {
     case O_BACON_LARA: {
-        if (g_TRVersion == 2 || header_version >= VERSION_5) {
+        if (g_TRVersion == 2 || ctx->sg_version >= VERSION_5) {
             int32_t status;
             // TR1X <4.16, TR2X <1.6
             if (M_ReadNum(ctx, "bl_status", &status)) {
@@ -784,7 +784,7 @@ static bool M_ReadItem(
     }
 
     case O_FLAME_EMITTER: {
-        if ((g_TRVersion == 2 || header_version >= VERSION_3)
+        if ((g_TRVersion == 2 || ctx->sg_version >= VERSION_3)
             && g_Config.gameplay.enable_enhanced_saves) {
             int32_t effect_num = NO_EFFECT;
             // TR1X <4.16, TR2X <1.6
@@ -803,7 +803,7 @@ static bool M_ReadItem(
     case O_MOVABLE_BLOCK_2:
     case O_MOVABLE_BLOCK_3:
     case O_MOVABLE_BLOCK_4: {
-        if (header_version >= VERSION_12) {
+        if (ctx->sg_version >= VERSION_12) {
             M_MUST(M_PushObject(ctx, "data"));
             MOVABLE_BLOCK_INFO *const data = item->data;
             M_MUST(M_ReadNum(ctx, "counter_rot_0", &data->counter_rot[0]));
@@ -826,7 +826,7 @@ static bool M_ReadItem(
     }
 
     case O_SLIDING_PILLAR:
-        if (header_version >= VERSION_12 && item->data != nullptr) {
+        if (ctx->sg_version >= VERSION_12 && item->data != nullptr) {
             M_MUST(M_PushObject(ctx, "data"));
             SLIDING_PILLAR_INFO *const data = item->data;
             M_MUST(M_ReadXYZ32(ctx, "linked", &data->linked.pos));
@@ -872,7 +872,7 @@ static bool M_ReadItem(
         LIFT_INFO *const data = item->data;
         M_MUST(M_ReadNum(ctx, "start_height", &data->start_height));
         M_MUST(M_ReadNum(ctx, "wait_time", &data->wait_time));
-        if (header_version >= VERSION_12) {
+        if (ctx->sg_version >= VERSION_12) {
             M_MUST(M_ReadBool(ctx, "is_moving", &data->is_moving));
             for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
                 const char *const pos_key = String_FormatStatic("linked_%d", j);
@@ -937,21 +937,20 @@ static bool M_ReadFlare(M_CONTEXT *const ctx)
 }
 
 static MUSIC_ID M_ConvertMusicTrack(
-    const MUSIC_ID track_id, const uint16_t header_version)
+    const MUSIC_ID track_id, uint16_t sg_version)
 {
     if (g_TRVersion == 1) {
         return track_id;
     }
     // Added in TR2X 1.2 after removing OG music track shifting, so allowing
     // previous saves to still load. Remove after a suitable period.
-    if (track_id == MX_INACTIVE || header_version >= VERSION_11) {
+    if (track_id == MX_INACTIVE || sg_version >= VERSION_11) {
         return track_id;
     }
     return Music_ConvertLegacyTrack(track_id);
 }
 
-static bool M_ReadMusicTracks(
-    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+static bool M_ReadMusicTracks(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
     MUSIC_ID current_track = MX_INACTIVE;
     MUSIC_ID ambient_track = MX_INACTIVE;
@@ -961,7 +960,7 @@ static bool M_ReadMusicTracks(
     M_MUST(M_ReadNum(ctx, "timestamp", &timestamp));
 
     // TR1X <=4.11 / TR2X <=1.1 fallback behavior
-    if (g_TRVersion == 1 && header_version < VERSION_9) {
+    if (g_TRVersion == 1 && ctx->sg_version < VERSION_9) {
         bool legacy_ambient = false;
         // TR1X <=4.5 has no is_ambient
         M_OPTIONAL(M_ReadBool(ctx, "is_ambient", &legacy_ambient));
@@ -970,8 +969,8 @@ static bool M_ReadMusicTracks(
         }
     }
 
-    current_track = M_ConvertMusicTrack(current_track, header_version);
-    ambient_track = M_ConvertMusicTrack(ambient_track, header_version);
+    current_track = M_ConvertMusicTrack(current_track, ctx->sg_version);
+    ambient_track = M_ConvertMusicTrack(ambient_track, ctx->sg_version);
 
     Music_Stop();
     if (ambient_track != MX_INACTIVE) {
@@ -1029,8 +1028,7 @@ static bool M_ReadMusicTrackFlags(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 }
 
 static bool M_ReadResumeInfo(
-    SAVEGAME_BSON_READ_CONTEXT *const ctx, RESUME_INFO *const resume,
-    const uint16_t header_version)
+    SAVEGAME_BSON_READ_CONTEXT *const ctx, RESUME_INFO *const resume)
 {
     resume->lara_hitpoints = g_Config.gameplay.start_lara_hitpoints;
     M_OPTIONAL(M_ReadNum(ctx, "lara_hitpoints", &resume->lara_hitpoints));
@@ -1086,7 +1084,7 @@ static bool M_ReadResumeInfo(
 #endif
 
     M_MUST(M_ReadNum(ctx, "timer", &resume->stats.timer));
-    if (g_TRVersion == 2 || header_version >= VERSION_7) {
+    if (g_TRVersion == 2 || ctx->sg_version >= VERSION_7) {
         M_MUST(M_ReadNum(ctx, "ammo_hits", &resume->stats.ammo_hits));
         M_MUST(M_ReadNum(ctx, "ammo_used", &resume->stats.ammo_used));
         M_MUST(M_ReadNum(ctx, "medipacks_used", &resume->stats.medipacks_used));
@@ -1101,12 +1099,14 @@ static bool M_ReadResumeInfo(
     M_FINISH();
 }
 
-SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(JSON_VALUE *const root)
+SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(
+    JSON_VALUE *const root, const uint16_t sg_version)
 {
     M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx));
     ctx->stack[0] = root;
     ctx->current_pos = 0;
     ctx->current = ctx->stack[0];
+    ctx->sg_version = sg_version;
     return ctx;
 }
 
@@ -1207,17 +1207,15 @@ bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadLara(
-    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+bool Savegame_BSON_LoadLara(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
     M_MUST(M_PushObject(ctx, "lara"));
-    M_MUST(M_ReadLara(ctx, header_version));
+    M_MUST(M_ReadLara(ctx));
     M_MUST(M_Pop(ctx));
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadItems(
-    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+bool Savegame_BSON_LoadItems(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
     M_MUST(M_PushObject(ctx, "items"));
     const int32_t count = M_GetArrayLength(ctx);
@@ -1231,7 +1229,7 @@ bool Savegame_BSON_LoadItems(
 
     for (int32_t i = 0; i < count; i++) {
         M_MUST(M_PushArrayElem(ctx, i));
-        M_MUST(M_ReadItem(ctx, i, header_version));
+        M_MUST(M_ReadItem(ctx, i));
         M_MUST(M_Pop(ctx));
     }
 
@@ -1283,8 +1281,7 @@ bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadMusic(
-    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+bool Savegame_BSON_LoadMusic(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
     if (M_HasKey(ctx, "music_track_flags")) {
         // TR1X <4.16
@@ -1292,12 +1289,12 @@ bool Savegame_BSON_LoadMusic(
         M_MUST(M_ReadMusicTrackFlags(ctx));
         M_MUST(M_Pop(ctx));
         M_MUST(M_PushObject(ctx, "music"));
-        M_MUST(M_ReadMusicTracks(ctx, header_version));
+        M_MUST(M_ReadMusicTracks(ctx));
         M_MUST(M_Pop(ctx));
     } else {
         M_MUST(M_PushObject(ctx, "music"));
         M_MUST(M_PushObject(ctx, "current"));
-        M_MUST(M_ReadMusicTracks(ctx, header_version));
+        M_MUST(M_ReadMusicTracks(ctx));
         M_MUST(M_Pop(ctx));
         M_MUST(M_PushObject(ctx, "flags"));
         M_MUST(M_ReadMusicTrackFlags(ctx));
@@ -1308,8 +1305,7 @@ bool Savegame_BSON_LoadMusic(
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadResumeInfoList(
-    SAVEGAME_BSON_READ_CONTEXT *const ctx, const uint16_t header_version)
+bool Savegame_BSON_LoadResumeInfoList(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
     if (M_HasKey(ctx, "current_info")) {
         // TR1X <4.16
@@ -1330,7 +1326,7 @@ bool Savegame_BSON_LoadResumeInfoList(
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         M_MUST(M_PushArrayElem(ctx, i));
-        M_MUST(M_ReadResumeInfo(ctx, resume, header_version));
+        M_MUST(M_ReadResumeInfo(ctx, resume));
         M_MUST(M_Pop(ctx));
     }
     M_MUST(M_Pop(ctx));
