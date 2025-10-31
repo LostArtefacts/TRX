@@ -9,8 +9,6 @@
 // Start of helper functions ===================================================
 // TODO: make these private eventually.
 JSON_VALUE *Savegame_BSON_ReadRaw(MYFILE *fp, int32_t *version_out);
-bool Savegame_BSON_LoadFromFile(MYFILE *fp);
-bool Savegame_BSON_LoadOnlyResumeInfo(MYFILE *fp);
 bool Savegame_BSON_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
 
 typedef struct SAVEGAME_BSON_READ_CONTEXT SAVEGAME_BSON_READ_CONTEXT;
