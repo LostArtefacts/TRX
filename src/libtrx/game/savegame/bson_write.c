@@ -3,6 +3,7 @@
 #include "game/camera.h"
 #include "game/carrier.h"
 #include "game/effects.h"
+#include "game/game.h"
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/lara.h"
@@ -13,10 +14,12 @@
 #include "game/objects/traps/sliding_pillar.h"
 #include "game/objects/vehicles/boat.h"
 #include "game/objects/vehicles/skidoo_common.h"
+#include "game/output.h"
 #include "game/rooms.h"
 #include "game/savegame.h"
 #include "game/savegame/bson.h"
 #include "memory.h"
+#include "version.h"
 
 #define M_MAX_STACK_SIZE 10
 
@@ -80,6 +83,11 @@ static void M_PopAndAppend(M_CONTEXT *const ctx)
     M_Pop(ctx);
 }
 
+static void M_PushString(M_CONTEXT *const ctx, const char *const value)
+{
+    M_PushValue(ctx, JSON_ValueFromString(value));
+}
+
 static void M_PushBool(M_CONTEXT *const ctx, const bool value)
 {
     M_PushValue(ctx, JSON_ValueFromBool(value));
@@ -106,6 +114,13 @@ static void M_PushNum_Double(M_CONTEXT *const ctx, const double value)
         uint32_t: M_PushNum_Int,                                               \
         float: M_PushNum_Double,                                               \
         double: M_PushNum_Double)(ctx, value)
+
+static void M_WriteString(
+    M_CONTEXT *const ctx, const char *const key, const char *const value)
+{
+    M_PushString(ctx, value);
+    M_PopAndSet(ctx, key);
+}
 
 static void M_WriteBool(
     M_CONTEXT *const ctx, const char *const key, const bool value)
@@ -467,11 +482,10 @@ void Savegame_BSON_FinishWrite(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     Memory_Free(ctx);
 }
 
-JSON_OBJECT *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+JSON_VALUE *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
 {
-    JSON_OBJECT *const root_obj = JSON_ValueAsObject(ctx->stack[0]);
-    ASSERT(root_obj != nullptr);
-    return root_obj;
+    ASSERT(ctx->stack[0] != nullptr);
+    return ctx->stack[0];
 }
 
 void Savegame_BSON_DumpFlares(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
@@ -768,4 +782,22 @@ void Savegame_BSON_DumpResumeInfoList(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     }
     M_PopAndSet(ctx, "current_info");
 #endif
+}
+
+void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+
+    M_PushObject(ctx);
+    M_WriteString(ctx, "game_version", g_TRXVersion);
+    M_WriteNum(ctx, "bonus_flag", Game_GetBonusFlag());
+    M_WriteNum(ctx, "death_count", resume->stats.death_count);
+    M_WriteBool(ctx, "are_monks_angry", Creature_AreAlliesHostile());
+    M_WriteNum(ctx, "sunset_timer", Output_GetSunsetTimer());
+    M_PopAndSet(ctx, "misc");
+
+    M_WriteString(ctx, "level_title", level->title);
+    M_WriteNum(ctx, "save_counter", Savegame_GetCounter());
+    M_WriteNum(ctx, "level_num", level->num);
 }

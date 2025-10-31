@@ -34,7 +34,7 @@ bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *ctx);
 typedef struct SAVEGAME_BSON_WRITE_CONTEXT SAVEGAME_BSON_WRITE_CONTEXT;
 SAVEGAME_BSON_WRITE_CONTEXT *Savegame_BSON_StartWrite(void);
 void Savegame_BSON_FinishWrite(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-JSON_OBJECT *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+JSON_VALUE *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpFlares(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
@@ -44,6 +44,7 @@ void Savegame_BSON_DumpMusic(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpItems(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpResumeInfoList(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 // End of helper functions =====================================================
 
 #pragma pack(push, 1)

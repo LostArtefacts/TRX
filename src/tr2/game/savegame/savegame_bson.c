@@ -96,27 +96,12 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
-static JSON_OBJECT *M_DumpMisc(void)
-{
-    JSON_OBJECT *const misc_obj = JSON_ObjectNew();
-    JSON_ObjectAppendString(misc_obj, "game_version", g_TRXVersion);
-    JSON_ObjectAppendInt(misc_obj, "bonus_flag", Game_GetBonusFlag());
-    JSON_ObjectAppendBool(
-        misc_obj, "are_monks_angry", Creature_AreAlliesHostile());
-    JSON_ObjectAppendInt(misc_obj, "sunset_timer", Output_GetSunsetTimer());
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    JSON_ObjectAppendInt(misc_obj, "death_count", resume->stats.death_count);
-    return misc_obj;
-}
-
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     SAVEGAME_BSON_WRITE_CONTEXT *const ctx = Savegame_BSON_StartWrite();
-    JSON_OBJECT *const root_obj = Savegame_BSON_GetWriteRoot(ctx);
+    JSON_VALUE *const root = Savegame_BSON_GetWriteRoot(ctx);
 
-    JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
     Savegame_BSON_DumpResumeInfoList(ctx);
     Savegame_BSON_DumpInventory(ctx);
     Savegame_BSON_DumpFlipmaps(ctx);
@@ -126,8 +111,8 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     Savegame_BSON_DumpLara(ctx);
     Savegame_BSON_DumpMusic(ctx);
     Savegame_BSON_DumpFlares(ctx);
+    Savegame_BSON_DumpMisc(ctx);
 
-    JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
     M_SaveRaw(fp, root, current_level->num);
     Savegame_BSON_FinishWrite(ctx);
 }
