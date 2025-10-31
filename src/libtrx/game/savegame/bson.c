@@ -17,9 +17,16 @@
 #define M_MAGIC_TR2X MKTAG('T', '2', 'X', 'B')
 #define M_MAGIC_TRX MKTAG('T', 'R', 'X', 'S') // TODO: use this after TRX 1.0
 
+#define M_MUST(x)                                                              \
+    if (!(x)) {                                                                \
+        goto fail;                                                             \
+    }
+
 static const char *M_GetSaveFilePattern(void);
-static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
+static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
 static bool M_LoadFromFile(MYFILE *fp);
+static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
+static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
 static bool M_LoadOnlyResumeInfo(MYFILE *fp);
 static bool M_UpdateDeathCounters(
     MYFILE *fp, int32_t level_num, int32_t death_count);
@@ -29,12 +36,61 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .allow_save = true,
     .format = SAVEGAME_FORMAT_BSON,
     .get_save_file_pattern_func = M_GetSaveFilePattern,
-    .fill_info_func = Savegame_BSON_FillInfo,
+    .fill_info_func = M_FillInfo,
     .load_from_file_func = M_LoadFromFile,
     .save_to_file_func = M_SaveToFile,
     .load_only_resume_info_func = M_LoadOnlyResumeInfo,
     .update_death_counters_func = M_UpdateDeathCounters,
 };
+
+static const char *M_GetSaveFilePattern(void)
+{
+    return g_GameFlow.savegame_fmt_bson;
+}
+
+static JSON_VALUE *M_ParseFromBuffer(
+    const char *const buffer, int32_t *const version_out)
+{
+    const SAVEGAME_BSON_HEADER *const header = (SAVEGAME_BSON_HEADER *)buffer;
+    if (header->magic != M_MAGIC_TR1X && header->magic != M_MAGIC_TR2X
+        && header->magic != M_MAGIC_TRX) {
+        LOG_ERROR("Invalid savegame magic");
+        return nullptr;
+    }
+
+    if (version_out != nullptr) {
+        *version_out = header->version;
+    }
+
+    const char *const compressed = buffer + sizeof(SAVEGAME_BSON_HEADER);
+    char *uncompressed = Memory_Alloc(header->uncompressed_size);
+
+    uLongf uncompressed_size = header->uncompressed_size;
+    const int32_t error_code = uncompress(
+        (Bytef *)uncompressed, &uncompressed_size, (const Bytef *)compressed,
+        (uLongf)header->compressed_size);
+    if (error_code != Z_OK) {
+        LOG_ERROR("Failed to decompress the data (error %d)", error_code);
+        Memory_FreePointer(&uncompressed);
+        return nullptr;
+    }
+
+    JSON_VALUE *const root = BSON_Parse(uncompressed, uncompressed_size);
+    Memory_FreePointer(&uncompressed);
+    return root;
+}
+
+static JSON_VALUE *M_ReadRaw(MYFILE *const fp, int32_t *const version_out)
+{
+    const size_t buffer_size = File_Size(fp);
+    char *buffer = Memory_Alloc(buffer_size);
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_ReadData(fp, buffer, buffer_size);
+
+    JSON_VALUE *const result = M_ParseFromBuffer(buffer, version_out);
+    Memory_FreePointer(&buffer);
+    return result;
+}
 
 static void M_SaveRaw(
     MYFILE *const fp, const JSON_VALUE *const root, const int32_t level_num)
@@ -75,9 +131,32 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
-static const char *M_GetSaveFilePattern(void)
+static bool M_LoadFromFile(MYFILE *const fp)
 {
-    return g_GameFlow.savegame_fmt_bson;
+    bool result = false;
+
+    int32_t sg_version = -1;
+    JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
+    SAVEGAME_BSON_READ_CONTEXT *const ctx =
+        Savegame_BSON_StartRead(root, sg_version);
+
+    M_MUST(Savegame_BSON_LoadMisc(ctx));
+    M_MUST(Savegame_BSON_LoadResumeInfoList(ctx));
+    M_MUST(Savegame_BSON_LoadInventory(ctx));
+    M_MUST(Savegame_BSON_LoadFlipmaps(ctx));
+    M_MUST(Savegame_BSON_LoadCameras(ctx));
+    M_MUST(Savegame_BSON_LoadItems(ctx));
+    M_MUST(Savegame_BSON_LoadEffects(ctx));
+    M_MUST(Savegame_BSON_LoadFlares(ctx));
+    M_MUST(Savegame_BSON_LoadMusic(ctx));
+    M_MUST(Savegame_BSON_LoadLara(ctx));
+
+    result = true;
+
+fail:
+    Savegame_BSON_FinishRead(ctx, result);
+    JSON_ValueFree(root);
+    return result;
 }
 
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
@@ -101,125 +180,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     Savegame_BSON_FinishWrite(ctx);
 }
 
-static bool M_UpdateDeathCounters(
-    MYFILE *const fp, int32_t level_num, const int32_t death_count)
-{
-    bool result = false;
-    JSON_VALUE *const root = Savegame_BSON_ReadRaw(fp, nullptr);
-    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
-    if (root_obj == nullptr) {
-        LOG_ERROR("Cannot find the root object");
-        goto cleanup;
-    }
-
-    JSON_OBJECT *const misc_obj = JSON_ObjectGetObject(root_obj, "misc");
-    if (misc_obj == nullptr) {
-        LOG_ERROR("Cannot find the misc object");
-        goto cleanup;
-    }
-    JSON_ObjectEvictKey(misc_obj, "death_count");
-    JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
-
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    M_SaveRaw(fp, root, level_num);
-    result = true;
-
-cleanup:
-    JSON_ValueFree(root);
-    return result;
-}
-
-static JSON_VALUE *M_ParseFromBuffer(
-    const char *const buffer, int32_t *const version_out)
-{
-    const SAVEGAME_BSON_HEADER *const header = (SAVEGAME_BSON_HEADER *)buffer;
-    if (header->magic != M_MAGIC_TR1X && header->magic != M_MAGIC_TR2X
-        && header->magic != M_MAGIC_TRX) {
-        LOG_ERROR("Invalid savegame magic");
-        return nullptr;
-    }
-
-    if (version_out != nullptr) {
-        *version_out = header->version;
-    }
-
-    const char *const compressed = buffer + sizeof(SAVEGAME_BSON_HEADER);
-    char *uncompressed = Memory_Alloc(header->uncompressed_size);
-
-    uLongf uncompressed_size = header->uncompressed_size;
-    const int32_t error_code = uncompress(
-        (Bytef *)uncompressed, &uncompressed_size, (const Bytef *)compressed,
-        (uLongf)header->compressed_size);
-    if (error_code != Z_OK) {
-        LOG_ERROR("Failed to decompress the data (error %d)", error_code);
-        Memory_FreePointer(&uncompressed);
-        return nullptr;
-    }
-
-    JSON_VALUE *const root = BSON_Parse(uncompressed, uncompressed_size);
-    Memory_FreePointer(&uncompressed);
-    return root;
-}
-
-static bool M_LoadFromFile(MYFILE *const fp)
-{
-    bool result = false;
-
-    int32_t version = -1;
-    JSON_VALUE *const root = Savegame_BSON_ReadRaw(fp, &version);
-    SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
-
-    if (!Savegame_BSON_LoadMisc(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadResumeInfoList(ctx, version)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadInventory(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadFlipmaps(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadCameras(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadItems(ctx, version)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadEffects(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadFlares(ctx)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadMusic(ctx, version)) {
-        goto cleanup;
-    }
-    if (!Savegame_BSON_LoadLara(ctx, version)) {
-        goto cleanup;
-    }
-
-    result = true;
-
-cleanup:
-    Savegame_BSON_FinishRead(ctx, result);
-    JSON_ValueFree(root);
-    return result;
-}
-
-static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
-{
-    int32_t version;
-    JSON_VALUE *const root = Savegame_BSON_ReadRaw(fp, &version);
-    SAVEGAME_BSON_READ_CONTEXT *const ctx = Savegame_BSON_StartRead(root);
-    const bool result = Savegame_BSON_LoadResumeInfoList(ctx, version);
-    Savegame_BSON_FinishRead(ctx, result);
-    JSON_ValueFree(root);
-    return result;
-}
-
-bool Savegame_BSON_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
+static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     SAVEGAME_BSON_HEADER header;
     File_Seek(fp, 0, FILE_SEEK_SET);
@@ -242,7 +203,7 @@ bool Savegame_BSON_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     // recover the slot information from the bson structures
     bool result = false;
     File_Seek(fp, 0, FILE_SEEK_SET);
-    JSON_VALUE *root = Savegame_BSON_ReadRaw(fp, nullptr);
+    JSON_VALUE *root = M_ReadRaw(fp, nullptr);
     JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
     if (root_obj != nullptr) {
         info->counter = JSON_ObjectGetInt(root_obj, "save_counter", -1);
@@ -259,15 +220,43 @@ bool Savegame_BSON_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return result;
 }
 
-JSON_VALUE *Savegame_BSON_ReadRaw(MYFILE *const fp, int32_t *const version_out)
+static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
-    const size_t buffer_size = File_Size(fp);
-    char *buffer = Memory_Alloc(buffer_size);
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, buffer, buffer_size);
+    int32_t sg_version = -1;
+    JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
+    SAVEGAME_BSON_READ_CONTEXT *const ctx =
+        Savegame_BSON_StartRead(root, sg_version);
+    const bool result = Savegame_BSON_LoadResumeInfoList(ctx);
+    Savegame_BSON_FinishRead(ctx, result);
+    JSON_ValueFree(root);
+    return result;
+}
 
-    JSON_VALUE *const result = M_ParseFromBuffer(buffer, version_out);
-    Memory_FreePointer(&buffer);
+static bool M_UpdateDeathCounters(
+    MYFILE *const fp, int32_t level_num, const int32_t death_count)
+{
+    bool result = false;
+    JSON_VALUE *const root = M_ReadRaw(fp, nullptr);
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    if (root_obj == nullptr) {
+        LOG_ERROR("Cannot find the root object");
+        goto cleanup;
+    }
+
+    JSON_OBJECT *const misc_obj = JSON_ObjectGetObject(root_obj, "misc");
+    if (misc_obj == nullptr) {
+        LOG_ERROR("Cannot find the misc object");
+        goto cleanup;
+    }
+    JSON_ObjectEvictKey(misc_obj, "death_count");
+    JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
+
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    M_SaveRaw(fp, root, level_num);
+    result = true;
+
+cleanup:
+    JSON_ValueFree(root);
     return result;
 }
 
