@@ -469,6 +469,7 @@ sources = [
   'game/rooms/geometry.c',
   'game/savegame/bson.c',
   'game/savegame/bson_read.c',
+  'game/savegame/bson_write.c',
   'game/savegame/common.c',
   'game/scaler.c',
   'game/shell/args.c',

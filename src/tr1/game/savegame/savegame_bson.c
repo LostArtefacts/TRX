@@ -497,27 +497,6 @@ static JSON_OBJECT *M_DumpLOT(LOT_INFO *lot)
     return lot_obj;
 }
 
-static JSON_ARRAY *M_DumpFlares(void)
-{
-    JSON_ARRAY *const flares_arr = JSON_ArrayNew();
-    for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
-        const ITEM *const item = Item_Get(item_num);
-        if (!item->active || item->object_id != O_FLARE_ITEM) {
-            continue;
-        }
-
-        JSON_OBJECT *const flare_obj = JSON_ObjectNew();
-        DUMP_XYZ(flare_obj, "pos", item->pos);
-        DUMP_XYZ(flare_obj, "rot", item->rot);
-        JSON_ObjectAppendInt(flare_obj, "room_num", item->room_num);
-        JSON_ObjectAppendInt(flare_obj, "speed", item->speed);
-        JSON_ObjectAppendInt(flare_obj, "fall_speed", item->fall_speed);
-        JSON_ObjectAppendInt(flare_obj, "age", (intptr_t)item->data);
-        JSON_ArrayAppendObject(flares_arr, flare_obj);
-    }
-    return flares_arr;
-}
-
 static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
 {
     ASSERT(lara != nullptr);
@@ -643,7 +622,8 @@ static const char *M_GetSaveFilePattern(void)
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    JSON_OBJECT *root_obj = JSON_ObjectNew();
+    SAVEGAME_BSON_WRITE_CONTEXT *const ctx = Savegame_BSON_StartWrite();
+    JSON_OBJECT *const root_obj = Savegame_BSON_GetWriteRoot(ctx);
 
     JSON_ObjectAppendString(root_obj, "level_title", current_level->title);
     JSON_ObjectAppendInt(root_obj, "save_counter", Savegame_GetCounter());
@@ -656,17 +636,15 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
-    JSON_ObjectAppendArray(root_obj, "flares", M_DumpFlares());
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));
     JSON_ObjectAppendObject(root_obj, "music", M_DumpCurrentMusic());
     JSON_ObjectAppendArray(
         root_obj, "music_track_flags", M_DumpMusicTrackFlags());
+    Savegame_BSON_DumpFlares(ctx);
 
-    JSON_VALUE *root = JSON_ValueFromObject(root_obj);
+    JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
     M_SaveRaw(fp, root, SAVEGAME_CURRENT_VERSION, current_level->num);
-    JSON_ValueFree(root);
-
-    savegame_info->features.restart = true;
+    Savegame_BSON_FinishWrite(ctx);
 }
 
 static bool M_UpdateDeathCounters(

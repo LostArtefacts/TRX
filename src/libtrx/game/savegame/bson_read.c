@@ -319,7 +319,7 @@ L_DEFINE_M_READ_NUM(double, Double)
         double: M_ReadNum_Double)(ctx, key, (void *)(target_ptr))
 
 // =============================================================================
-// Start of SG data readers
+// End of internal helpers
 // =============================================================================
 
 static bool M_ReadXYZ32(

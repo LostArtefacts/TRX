@@ -30,6 +30,12 @@ bool Savegame_BSON_LoadMusic(
 bool Savegame_BSON_LoadResumeInfoList(
     SAVEGAME_BSON_READ_CONTEXT *ctx, uint16_t header_version);
 bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *ctx);
+
+typedef struct SAVEGAME_BSON_WRITE_CONTEXT SAVEGAME_BSON_WRITE_CONTEXT;
+SAVEGAME_BSON_WRITE_CONTEXT *Savegame_BSON_StartWrite(void);
+void Savegame_BSON_FinishWrite(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+JSON_OBJECT *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+void Savegame_BSON_DumpFlares(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 // End of helper functions =====================================================
 
 #pragma pack(push, 1)
