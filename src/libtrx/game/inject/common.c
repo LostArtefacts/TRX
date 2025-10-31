@@ -6,6 +6,7 @@
 #include "game/items.h"
 #include "game/level.h"
 #include "game/rooms.h"
+#include "game/savegame.h"
 #include "memory.h"
 #include "vector.h"
 #include "version.h"
@@ -51,8 +52,17 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
 #if TR_VERSION == 1
     case IFT_UZI_SFX:
         return g_Config.audio.enable_ps_uzi_sfx;
-    case IFT_PS1_ENEMY:
-        return g_Config.gameplay.restore_ps1_enemies;
+    case IFT_PS1_ENEMY: {
+        if (!g_Config.gameplay.restore_ps1_enemies) {
+            return false;
+        }
+        const SAVEGAME_INFO *const info =
+            Savegame_GetSavegameInfo(Savegame_GetBoundSlot());
+        if (info != nullptr && (info->initial_version == VERSION_LEGACY)) {
+            return false;
+        }
+        return true;
+    }
 #elif TR_VERSION == 2
     case IFT_BAREFOOT_SFX:
         return g_Config.audio.enable_barefoot_sfx;
