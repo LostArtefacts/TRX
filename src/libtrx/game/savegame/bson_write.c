@@ -4,6 +4,7 @@
 #include "game/effects.h"
 #include "game/inventory.h"
 #include "game/items.h"
+#include "game/music.h"
 #include "game/objects.h"
 #include "game/rooms.h"
 #include "game/savegame/bson.h"
@@ -294,4 +295,39 @@ void Savegame_BSON_DumpCameras(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
         M_PopAndAppend(ctx);
     }
     M_PopAndSet(ctx, "cameras");
+}
+
+void Savegame_BSON_DumpMusic(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    M_PushObject(ctx);
+    M_PushArray(ctx);
+    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+        M_PushNum(ctx, Music_GetTrackFlags(i));
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "flags");
+
+    const MUSIC_ID current_track = Music_GetCurrentPlayingTrack();
+    const MUSIC_ID current_ambient = Music_GetCurrentLoopedTrack();
+    // TR1X >=4.16, TR2X – music/current/…
+    M_PushObject(ctx);
+    M_WriteNum(ctx, "current_track", current_track);
+    M_WriteNum(ctx, "current_ambient", current_ambient);
+    M_WriteNum(ctx, "timestamp", Music_GetTimestamp());
+    M_PopAndSet(ctx, "current");
+
+    // TR1X <4.16 - music/…
+    M_WriteNum(ctx, "current_track", current_track);
+    M_WriteNum(ctx, "current_ambient", current_ambient);
+    M_WriteNum(ctx, "timestamp", Music_GetTimestamp());
+
+    M_PopAndSet(ctx, "music");
+
+    // TR1X <4.16
+    M_PushArray(ctx);
+    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+        M_PushNum(ctx, Music_GetTrackFlags(i));
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "music_track_flags");
 }

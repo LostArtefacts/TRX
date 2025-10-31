@@ -40,6 +40,7 @@ void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpFlipmaps(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpCameras(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+void Savegame_BSON_DumpMusic(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 // End of helper functions =====================================================
 
 #pragma pack(push, 1)
