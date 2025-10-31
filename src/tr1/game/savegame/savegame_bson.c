@@ -420,40 +420,6 @@ static JSON_ARRAY *M_DumpItems(void)
     return items_arr;
 }
 
-static JSON_ARRAY *M_DumpEffects(void)
-{
-    JSON_ARRAY *fx_arr = JSON_ArrayNew();
-
-    M_FX_ORDER fx_order;
-    M_GetFXOrder(&fx_order);
-
-    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
-         link_num = Effect_Get(link_num)->next_active) {
-        EFFECT *const effect = Effect_Get(link_num);
-        if (Object_ToGameID(effect->object_id) == -1) {
-            continue;
-        }
-        JSON_OBJECT *const fx_obj = JSON_ObjectNew();
-        JSON_ObjectAppendInt(fx_obj, "x", effect->pos.x);
-        JSON_ObjectAppendInt(fx_obj, "y", effect->pos.y);
-        JSON_ObjectAppendInt(fx_obj, "z", effect->pos.z);
-        JSON_ObjectAppendInt(fx_obj, "x_rot", effect->rot.x);
-        JSON_ObjectAppendInt(fx_obj, "y_rot", effect->rot.y);
-        JSON_ObjectAppendInt(fx_obj, "z_rot", effect->rot.z);
-        JSON_ObjectAppendInt(fx_obj, "room_number", effect->room_num);
-        JSON_ObjectAppendInt(
-            fx_obj, "object_number", Object_ToGameID(effect->object_id));
-        JSON_ObjectAppendInt(fx_obj, "speed", effect->speed);
-        JSON_ObjectAppendInt(fx_obj, "fall_speed", effect->fall_speed);
-        JSON_ObjectAppendInt(fx_obj, "frame_number", effect->frame_num);
-        JSON_ObjectAppendInt(fx_obj, "counter", effect->counter);
-        JSON_ObjectAppendInt(fx_obj, "shade", effect->shade);
-        JSON_ArrayAppendObject(fx_arr, fx_obj);
-    }
-
-    return fx_arr;
-}
-
 static JSON_OBJECT *M_DumpArm(LARA_ARM *arm)
 {
     ASSERT(arm != nullptr);
@@ -635,7 +601,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
-    JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
+    Savegame_BSON_DumpEffects(ctx);
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));
     JSON_ObjectAppendObject(root_obj, "music", M_DumpCurrentMusic());
     JSON_ObjectAppendArray(

@@ -441,36 +441,6 @@ static JSON_ARRAY *M_DumpItems(void)
     return items_arr;
 }
 
-static JSON_ARRAY *M_DumpEffects(void)
-{
-    JSON_ARRAY *const fx_arr = JSON_ArrayNew();
-
-    M_FX_ORDER fx_order;
-    M_GetFXOrder(&fx_order);
-
-    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
-         link_num = Effect_Get(link_num)->next_active) {
-        EFFECT *const effect = Effect_Get(link_num);
-        if (Object_ToGameID(effect->object_id) == -1) {
-            continue;
-        }
-        JSON_OBJECT *const fx_obj = JSON_ObjectNew();
-        DUMP_XYZ(fx_obj, "pos", effect->pos);
-        DUMP_XYZ(fx_obj, "rot", effect->rot);
-        JSON_ObjectAppendInt(fx_obj, "room_number", effect->room_num);
-        JSON_ObjectAppendInt(
-            fx_obj, "object_number", Object_ToGameID(effect->object_id));
-        JSON_ObjectAppendInt(fx_obj, "speed", effect->speed);
-        JSON_ObjectAppendInt(fx_obj, "fall_speed", effect->fall_speed);
-        JSON_ObjectAppendInt(fx_obj, "frame_number", effect->frame_num);
-        JSON_ObjectAppendInt(fx_obj, "counter", effect->counter);
-        JSON_ObjectAppendInt(fx_obj, "shade", effect->shade);
-        JSON_ArrayAppendObject(fx_arr, fx_obj);
-    }
-
-    return fx_arr;
-}
-
 static JSON_OBJECT *M_DumpArm(const LARA_ARM *const arm)
 {
     ASSERT(arm != nullptr);
@@ -597,7 +567,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
-    JSON_ObjectAppendArray(root_obj, "fx", M_DumpEffects());
+    Savegame_BSON_DumpEffects(ctx);
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara());
     Savegame_BSON_DumpFlares(ctx);
 
