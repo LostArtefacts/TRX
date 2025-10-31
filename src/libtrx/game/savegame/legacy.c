@@ -30,6 +30,8 @@
 
 #define M_LEGACY_TITLE_SIZE 75
 #define M_SAVE_CREATURE (1 << 7)
+#define M_LEGACY_NO_ROOM 255
+#define M_LEGACY_MAX_MUSIC_TRACKS 64
 
 #pragma pack(push, 1)
 typedef struct {
@@ -95,7 +97,6 @@ L_SPECIAL_READS
 #undef X_SPECIAL_READ
 #undef L_SPECIAL_READS
 
-#if TR_VERSION == 1
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
 static bool M_LoadFromFile(MYFILE *fp);
@@ -114,6 +115,8 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .update_death_counters_func = nullptr,
     // clang-format on
 };
+
+#if TR_VERSION == 1
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
@@ -363,7 +366,7 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
     // clang-format on
 }
 
-static void M_ReadResumeInfos(MYFILE *const fp)
+static void M_ReadResumeInfos(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
@@ -463,7 +466,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     M_Skip(M_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfos(fp);
+    M_ReadResumeInfos();
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->holsters_gun_type = LGT_UNKNOWN;
@@ -609,44 +612,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     return true;
 }
 
-static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
-{
-    char *buffer = Memory_Alloc(File_Size(fp));
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, buffer, File_Size(fp));
-
-    M_Reset(buffer);
-    M_Skip(M_LEGACY_TITLE_SIZE); // level title
-    M_Skip(sizeof(int32_t)); // save counter
-
-    M_ReadResumeInfos(fp);
-
-    Memory_FreePointer(&buffer);
-    return true;
-}
-
 #else
-
-    #define M_LEGACY_NO_ROOM 255
-    #define M_LEGACY_MAX_MUSIC_TRACKS 64
-
-static const char *M_GetSaveFilePattern(void);
-static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
-static bool M_LoadFromFile(MYFILE *fp);
-
-static SAVEGAME_STRATEGY m_Strategy = {
-    // clang-format off
-    .allow_load = true,
-    .allow_save = false,
-    .format = SAVEGAME_FORMAT_LEGACY,
-    .get_save_file_pattern_func = M_GetSaveFilePattern,
-    .fill_info_func = M_FillInfo,
-    .load_from_file_func = M_LoadFromFile,
-    .save_to_file_func = nullptr,
-    .load_only_resume_info_func = nullptr,
-    .update_death_counters_func = nullptr,
-    // clang-format on
-};
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, const ITEM *const item)
 {
@@ -1121,4 +1087,18 @@ static bool M_LoadFromFile(MYFILE *const fp)
 }
 
 #endif
+
+static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
+{
+    char *buffer = Memory_Alloc(File_Size(fp));
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_ReadData(fp, buffer, File_Size(fp));
+    M_Reset(buffer);
+    M_Skip(M_LEGACY_TITLE_SIZE); // level title
+    M_Skip(sizeof(int32_t)); // save counter
+    M_ReadResumeInfos();
+    Memory_FreePointer(&buffer);
+    return true;
+}
+
 REGISTER_SAVEGAME_STRATEGY(m_Strategy)
