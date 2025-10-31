@@ -1,6 +1,7 @@
 #include "config.h"
 #include "debug.h"
 #include "game/effects.h"
+#include "game/inventory.h"
 #include "game/items.h"
 #include "game/objects.h"
 #include "game/savegame/bson.h"
@@ -247,4 +248,21 @@ void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
         M_PopAndAppend(ctx);
     }
     M_PopAndSet(ctx, "fx");
+}
+
+void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    M_PushObject(ctx);
+    M_WriteNum(ctx, "pickup1", Inv_RequestItem(O_PICKUP_ITEM_1));
+    M_WriteNum(ctx, "pickup2", Inv_RequestItem(O_PICKUP_ITEM_2));
+    M_WriteNum(ctx, "puzzle1", Inv_RequestItem(O_PUZZLE_ITEM_1));
+    M_WriteNum(ctx, "puzzle2", Inv_RequestItem(O_PUZZLE_ITEM_2));
+    M_WriteNum(ctx, "puzzle3", Inv_RequestItem(O_PUZZLE_ITEM_3));
+    M_WriteNum(ctx, "puzzle4", Inv_RequestItem(O_PUZZLE_ITEM_4));
+    M_WriteNum(ctx, "key1", Inv_RequestItem(O_KEY_ITEM_1));
+    M_WriteNum(ctx, "key2", Inv_RequestItem(O_KEY_ITEM_2));
+    M_WriteNum(ctx, "key3", Inv_RequestItem(O_KEY_ITEM_3));
+    M_WriteNum(ctx, "key4", Inv_RequestItem(O_KEY_ITEM_4));
+    M_WriteNum(ctx, "leadbar", Inv_RequestItem(O_LEADBAR_ITEM));
+    M_PopAndSet(ctx, "inventory");
 }

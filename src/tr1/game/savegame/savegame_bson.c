@@ -190,23 +190,6 @@ static JSON_OBJECT *M_DumpMisc(void)
     return misc_obj;
 }
 
-static JSON_OBJECT *M_DumpInventory(void)
-{
-    JSON_OBJECT *inv_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(inv_obj, "pickup1", Inv_RequestItem(O_PICKUP_ITEM_1));
-    JSON_ObjectAppendInt(inv_obj, "pickup2", Inv_RequestItem(O_PICKUP_ITEM_2));
-    JSON_ObjectAppendInt(inv_obj, "puzzle1", Inv_RequestItem(O_PUZZLE_ITEM_1));
-    JSON_ObjectAppendInt(inv_obj, "puzzle2", Inv_RequestItem(O_PUZZLE_ITEM_2));
-    JSON_ObjectAppendInt(inv_obj, "puzzle3", Inv_RequestItem(O_PUZZLE_ITEM_3));
-    JSON_ObjectAppendInt(inv_obj, "puzzle4", Inv_RequestItem(O_PUZZLE_ITEM_4));
-    JSON_ObjectAppendInt(inv_obj, "key1", Inv_RequestItem(O_KEY_ITEM_1));
-    JSON_ObjectAppendInt(inv_obj, "key2", Inv_RequestItem(O_KEY_ITEM_2));
-    JSON_ObjectAppendInt(inv_obj, "key3", Inv_RequestItem(O_KEY_ITEM_3));
-    JSON_ObjectAppendInt(inv_obj, "key4", Inv_RequestItem(O_KEY_ITEM_4));
-    JSON_ObjectAppendInt(inv_obj, "leadbar", Inv_RequestItem(O_LEADBAR_ITEM));
-    return inv_obj;
-}
-
 static JSON_OBJECT *M_DumpFlipmaps(void)
 {
     JSON_OBJECT *flipmap_obj = JSON_ObjectNew();
@@ -597,7 +580,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
 
     JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
     JSON_ObjectAppendArray(root_obj, "current_info", M_DumpResumeInfo());
-    JSON_ObjectAppendObject(root_obj, "inventory", M_DumpInventory());
+    Savegame_BSON_DumpInventory(ctx);
     JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
