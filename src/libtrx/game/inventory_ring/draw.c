@@ -205,27 +205,6 @@ void InvRing_Draw(INV_RING *const ring)
         }
     }
 
-    if (ring->list != nullptr && !ring->rotating
-        && (ring->motion.status == RNG_OPEN
-            || ring->motion.status == RNG_SELECTING
-            || ring->motion.status == RNG_SELECTED
-            || ring->motion.status == RNG_DESELECTING
-            || ring->motion.status == RNG_DESELECT
-            || ring->motion.status == RNG_CLOSING_ITEM)) {
-        const INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
-        if (inv_item != nullptr) {
-            switch (inv_item->object_id) {
-            case O_SMALL_MEDIPACK_OPTION:
-            case O_LARGE_MEDIPACK_OPTION:
-                Overlay_ForceHealthBar(true);
-                break;
-
-            default:
-                break;
-            }
-        }
-    }
-
     Matrix_Pop();
     SceneCompositor_Flush();
     Viewport_AlterFOV(old_fov);
