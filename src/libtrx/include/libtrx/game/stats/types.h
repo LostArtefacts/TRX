@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../objects/ids.h"
 #include "./const.h"
 
 #include <stdint.h>

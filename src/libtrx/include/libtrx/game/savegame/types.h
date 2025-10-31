@@ -3,6 +3,7 @@
 #include "../../filesystem.h"
 #include "../lara/enum.h"
 #include "../stats/types.h"
+#include "./enum.h"
 
 typedef struct {
     uint8_t small_medipacks;
