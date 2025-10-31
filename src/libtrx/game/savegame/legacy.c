@@ -30,52 +30,72 @@
 
 #define M_LEGACY_TITLE_SIZE 75
 #define M_SAVE_CREATURE (1 << 7)
-#if TR_VERSION == 1
 
-    #define M_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
-
-    #pragma pack(push, 1)
+#pragma pack(push, 1)
 typedef struct {
     uint8_t num_pickup[2];
     uint8_t num_puzzle[4];
     uint8_t num_key[4];
+#if TR_VERSION == 1
     uint8_t num_leadbar;
     uint8_t dummy;
-} SAVEGAME_LEGACY_ITEM_STATS;
-    #pragma pack(pop)
+#else
+    uint16_t reserved;
+#endif
+} M_LEGACY_ITEM_STATS;
+#pragma pack(pop)
 
-static int32_t m_SGBufPos = 0;
-static char *m_SGBufPtr = nullptr;
+static int32_t m_BufPos = 0;
+static char *m_BufPtr = nullptr;
+
+#if TR_VERSION == 1
+    #define M_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
+#else
+    #define M_LEGACY_MAX_BUFFER_SIZE (1170 + 6272) // header + OG buffer size
+#endif
+
+static void M_Reset(char *const buffer)
+{
+    m_BufPos = 0;
+    m_BufPtr = buffer;
+}
 
 static void M_Read(void *const ptr, const size_t size)
 {
-    ASSERT(m_SGBufPos + size <= M_LEGACY_MAX_BUFFER_SIZE);
-    ASSERT(m_SGBufPtr != nullptr);
-    m_SGBufPos += size;
-    memcpy(ptr, m_SGBufPtr, size);
-    m_SGBufPtr += size;
+    ASSERT(m_BufPos + size <= M_LEGACY_MAX_BUFFER_SIZE);
+    ASSERT(m_BufPtr != nullptr);
+    m_BufPos += size;
+    memcpy(ptr, m_BufPtr, size);
+    m_BufPtr += size;
 }
 
-    #define X_SPECIAL_READ(name, type)                                         \
-        static type M_Read##name(void)                                         \
-        {                                                                      \
-            type result;                                                       \
-            M_Read(&result, sizeof(type));                                     \
-            return result;                                                     \
-        }
+static void M_Skip(const size_t size)
+{
+    m_BufPos += size;
+    m_BufPtr += size;
+}
 
-    #define L_SPECIAL_READS                                                    \
-        X_SPECIAL_READ(S8, int8_t)                                             \
-        X_SPECIAL_READ(S16, int16_t)                                           \
-        X_SPECIAL_READ(S32, int32_t)                                           \
-        X_SPECIAL_READ(U8, uint8_t)                                            \
-        X_SPECIAL_READ(U16, uint16_t)                                          \
-        X_SPECIAL_READ(U32, uint32_t)
+#define X_SPECIAL_READ(name, type)                                             \
+    static type M_Read##name(void)                                             \
+    {                                                                          \
+        type result;                                                           \
+        M_Read(&result, sizeof(type));                                         \
+        return result;                                                         \
+    }
+
+#define L_SPECIAL_READS                                                        \
+    X_SPECIAL_READ(S8, int8_t)                                                 \
+    X_SPECIAL_READ(S16, int16_t)                                               \
+    X_SPECIAL_READ(S32, int32_t)                                               \
+    X_SPECIAL_READ(U8, uint8_t)                                                \
+    X_SPECIAL_READ(U16, uint16_t)                                              \
+    X_SPECIAL_READ(U32, uint32_t)
 
 L_SPECIAL_READS
-    #undef X_SPECIAL_READ
-    #undef L_SPECIAL_READS
+#undef X_SPECIAL_READ
+#undef L_SPECIAL_READS
 
+#if TR_VERSION == 1
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
 static bool M_LoadFromFile(MYFILE *fp);
@@ -94,18 +114,6 @@ static SAVEGAME_STRATEGY m_Strategy = {
     .update_death_counters_func = nullptr,
     // clang-format on
 };
-
-static void M_Reset(char *buffer)
-{
-    m_SGBufPos = 0;
-    m_SGBufPtr = buffer;
-}
-
-static void M_Skip(const size_t size)
-{
-    m_SGBufPtr += size;
-    m_SGBufPos += size; // missing from OG
-}
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
@@ -184,7 +192,7 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     M_Skip(sizeof(uint16_t)); // current level
     M_Skip(sizeof(uint8_t)); // pickups
     M_Skip(sizeof(uint8_t)); // bonus_flag
-    M_Skip(sizeof(SAVEGAME_LEGACY_ITEM_STATS)); // item stats
+    M_Skip(sizeof(M_LEGACY_ITEM_STATS)); // item stats
     M_Skip(sizeof(int32_t)); // flipmap status
     M_Skip(MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
     M_Skip(Camera_GetFixedObjectCount() * sizeof(int16_t)); // cameras
@@ -479,8 +487,8 @@ static bool M_LoadFromFile(MYFILE *const fp)
     }
 
     Lara_InitialiseInventory(Game_GetCurrentLevel());
-    SAVEGAME_LEGACY_ITEM_STATS item_stats = {};
-    M_Read(&item_stats, sizeof(SAVEGAME_LEGACY_ITEM_STATS));
+    M_LEGACY_ITEM_STATS item_stats = {};
+    M_Read(&item_stats, sizeof(M_LEGACY_ITEM_STATS));
     Inv_AddItemNTimes(O_PICKUP_ITEM_1, item_stats.num_pickup[0]);
     Inv_AddItemNTimes(O_PICKUP_ITEM_2, item_stats.num_pickup[1]);
     Inv_AddItemNTimes(O_PUZZLE_ITEM_1, item_stats.num_puzzle[0]);
@@ -619,29 +627,8 @@ static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 
 #else
 
-    #define M_LEGACY_TOTAL_SIZE (1170 + 6272) // header + OG buffer size
     #define M_LEGACY_NO_ROOM 255
     #define M_LEGACY_MAX_MUSIC_TRACKS 64
-
-    #define M_SPECIAL_READ_WRITES                                              \
-        X_SPECIAL_READ_WRITE(S8, int8_t)                                       \
-        X_SPECIAL_READ_WRITE(S16, int16_t)                                     \
-        X_SPECIAL_READ_WRITE(S32, int32_t)                                     \
-        X_SPECIAL_READ_WRITE(U8, uint8_t)                                      \
-        X_SPECIAL_READ_WRITE(U16, uint16_t)                                    \
-        X_SPECIAL_READ_WRITE(U32, uint32_t)
-
-    #pragma pack(push, 1)
-typedef struct {
-    uint8_t num_pickup[2];
-    uint8_t num_puzzle[4];
-    uint8_t num_key[4];
-    uint16_t reserved;
-} SAVEGAME_LEGACY_ITEM_STATS;
-    #pragma pack(pop)
-
-static int32_t m_BufPos = 0;
-static char *m_BufPtr = nullptr;
 
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
@@ -671,36 +658,6 @@ static bool M_ItemHasSavePosition(
     const OBJECT *const obj, const ITEM *const item)
 {
     return obj->save_position && item->object_id != O_GONDOLA;
-}
-
-static void M_Reset(char *const buffer)
-{
-    m_BufPos = 0;
-    m_BufPtr = buffer;
-}
-
-static void M_Read(void *const ptr, const size_t size)
-{
-    ASSERT(m_BufPos + size <= M_LEGACY_TOTAL_SIZE);
-    m_BufPos += size;
-    memcpy(ptr, m_BufPtr, size);
-    m_BufPtr += size;
-}
-
-    #define X_SPECIAL_READ_WRITE(name, type)                                   \
-        static type M_Read##name(void)                                         \
-        {                                                                      \
-            type result;                                                       \
-            M_Read(&result, sizeof(type));                                     \
-            return result;                                                     \
-        }
-M_SPECIAL_READ_WRITES
-    #undef X_SPECIAL_READ_WRITE
-
-static void M_Skip(const size_t size)
-{
-    m_BufPos += size;
-    m_BufPtr += size;
 }
 
 static int16_t M_ReadRoomNum(void)
@@ -1101,8 +1058,8 @@ static bool M_LoadFromFile(MYFILE *const fp)
         Game_SetBonusFlag(GBF_NGPLUS);
     }
 
-    SAVEGAME_LEGACY_ITEM_STATS item_stats = {};
-    M_Read(&item_stats, sizeof(SAVEGAME_LEGACY_ITEM_STATS));
+    M_LEGACY_ITEM_STATS item_stats = {};
+    M_Read(&item_stats, sizeof(M_LEGACY_ITEM_STATS));
 
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     Lara_InitialiseInventory(current_level);
