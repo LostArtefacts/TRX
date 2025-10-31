@@ -403,6 +403,55 @@ static void M_WriteLOT(M_CONTEXT *const ctx, const LOT_INFO *const lot)
     M_WriteNum(ctx, "z", lot->target.z);
 }
 
+static void M_WriteResumeInfo(
+    M_CONTEXT *const ctx, const RESUME_INFO *const resume)
+{
+    M_WriteNum(ctx, "lara_hitpoints", resume->lara_hitpoints);
+    M_WriteNum(ctx, "pistol_ammo", resume->pistol_ammo);
+    M_WriteNum(ctx, "shotgun_ammo", resume->shotgun_ammo);
+    M_WriteNum(ctx, "magnum_ammo", resume->magnum_ammo);
+    M_WriteNum(ctx, "uzi_ammo", resume->uzi_ammo);
+#if TR_VERSION == 2
+    M_WriteNum(ctx, "m16_ammo", resume->m16_ammo);
+    M_WriteNum(ctx, "grenade_ammo", resume->grenade_ammo);
+    M_WriteNum(ctx, "harpoon_ammo", resume->harpoon_ammo);
+#endif
+    M_WriteNum(ctx, "num_medis", resume->small_medipacks);
+    M_WriteNum(ctx, "num_big_medis", resume->large_medipacks);
+    M_WriteNum(ctx, "num_flares", resume->flares);
+    M_WriteNum(ctx, "num_scions", resume->num_scions);
+    M_WriteNum(ctx, "gun_status", resume->gun_status);
+    M_WriteNum(ctx, "gun_type", resume->equipped_gun_type);
+    M_WriteNum(ctx, "holsters_gun_type", resume->holsters_gun_type);
+    M_WriteNum(ctx, "back_gun_type", resume->back_gun_type);
+
+    M_WriteBool(ctx, "available", resume->flags.available);
+    // TR1X <4.16
+    M_WriteBool(ctx, "got_pistols", resume->flags.has_pistols);
+    M_WriteBool(ctx, "got_shotgun", resume->flags.has_shotgun);
+    M_WriteBool(ctx, "got_magnums", resume->flags.has_magnums);
+    M_WriteBool(ctx, "got_uzis", resume->flags.has_uzis);
+    M_WriteBool(ctx, "has_pistols", resume->flags.has_pistols);
+    M_WriteBool(ctx, "has_shotgun", resume->flags.has_shotgun);
+    M_WriteBool(ctx, "has_magnums", resume->flags.has_magnums);
+    M_WriteBool(ctx, "has_uzis", resume->flags.has_uzis);
+#if TR_VERSION == 2
+    M_WriteBool(ctx, "has_m16", resume->flags.has_m16);
+    M_WriteBool(ctx, "has_grenade", resume->flags.has_grenade);
+    M_WriteBool(ctx, "has_harpoon", resume->flags.has_harpoon);
+#endif
+
+    M_WriteBool(ctx, "costume", resume->flags.costume);
+    M_WriteNum(ctx, "timer", resume->stats.timer);
+    M_WriteNum(ctx, "kills", resume->stats.kill_count);
+    M_WriteNum(ctx, "secrets", resume->stats.secret_flags);
+    M_WriteNum(ctx, "pickups", resume->stats.pickup_count);
+    M_WriteNum(ctx, "ammo_hits", resume->stats.ammo_hits);
+    M_WriteNum(ctx, "ammo_used", resume->stats.ammo_used);
+    M_WriteNum(ctx, "distance_travelled", resume->stats.distance_travelled);
+    M_WriteNum(ctx, "medipacks_used", resume->stats.medipacks_used);
+}
+
 SAVEGAME_BSON_WRITE_CONTEXT *Savegame_BSON_StartWrite(void)
 {
     M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx));
@@ -673,7 +722,7 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
         M_PopAndSet(ctx, "weapon");
     }
 
-    M_PushObject();
+    M_PushObject(ctx);
     M_WriteNum(ctx, "item_num", lara->interact_target.item_num);
     M_WriteNum(ctx, "move_count", lara->interact_target.move_count);
     M_WriteBool(ctx, "is_moving", lara->interact_target.is_moving);
@@ -692,4 +741,31 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
 #endif
 
     M_PopAndSet(ctx, "lara");
+}
+
+void Savegame_BSON_DumpResumeInfoList(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    const int32_t count = GF_GetLevelTable(GFLT_MAIN)->count;
+    M_PushArray(ctx);
+    for (int32_t i = 0; i < count; i++) {
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        M_PushObject(ctx);
+        M_WriteResumeInfo(ctx, resume);
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "resume_info");
+
+#if TR_VERSION == 1
+    // < TR1X <4.16
+    M_PushArray(ctx);
+    for (int32_t i = 0; i < count; i++) {
+        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        M_PushObject(ctx);
+        M_WriteResumeInfo(ctx, resume);
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "current_info");
+#endif
 }

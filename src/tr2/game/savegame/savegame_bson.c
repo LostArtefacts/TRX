@@ -110,63 +110,6 @@ static JSON_OBJECT *M_DumpMisc(void)
     return misc_obj;
 }
 
-static JSON_ARRAY *M_DumpResumeInfo(void)
-{
-    JSON_ARRAY *const resume_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        JSON_OBJECT *const resume_obj = JSON_ObjectNew();
-        JSON_ObjectAppendInt(
-            resume_obj, "lara_hitpoints", resume->lara_hitpoints);
-        JSON_ObjectAppendInt(resume_obj, "pistol_ammo", resume->pistol_ammo);
-        JSON_ObjectAppendInt(resume_obj, "magnum_ammo", resume->magnum_ammo);
-        JSON_ObjectAppendInt(resume_obj, "uzi_ammo", resume->uzi_ammo);
-        JSON_ObjectAppendInt(resume_obj, "shotgun_ammo", resume->shotgun_ammo);
-        JSON_ObjectAppendInt(resume_obj, "m16_ammo", resume->m16_ammo);
-        JSON_ObjectAppendInt(resume_obj, "grenade_ammo", resume->grenade_ammo);
-        JSON_ObjectAppendInt(resume_obj, "harpoon_ammo", resume->harpoon_ammo);
-        JSON_ObjectAppendInt(resume_obj, "num_medis", resume->small_medipacks);
-        JSON_ObjectAppendInt(
-            resume_obj, "num_big_medis", resume->large_medipacks);
-        JSON_ObjectAppendInt(resume_obj, "num_flares", resume->flares);
-        JSON_ObjectAppendInt(resume_obj, "num_scions", resume->num_scions);
-        JSON_ObjectAppendInt(resume_obj, "gun_status", resume->gun_status);
-        JSON_ObjectAppendInt(resume_obj, "gun_type", resume->equipped_gun_type);
-        JSON_ObjectAppendInt(
-            resume_obj, "holsters_gun_type", resume->holsters_gun_type);
-        JSON_ObjectAppendInt(
-            resume_obj, "back_gun_type", resume->back_gun_type);
-
-        JSON_ObjectAppendBool(resume_obj, "available", resume->flags.available);
-        JSON_ObjectAppendBool(
-            resume_obj, "has_pistols", resume->flags.has_pistols);
-        JSON_ObjectAppendBool(
-            resume_obj, "has_magnums", resume->flags.has_magnums);
-        JSON_ObjectAppendBool(resume_obj, "has_uzis", resume->flags.has_uzis);
-        JSON_ObjectAppendBool(
-            resume_obj, "has_shotgun", resume->flags.has_shotgun);
-        JSON_ObjectAppendBool(resume_obj, "has_m16", resume->flags.has_m16);
-        JSON_ObjectAppendBool(
-            resume_obj, "has_grenade", resume->flags.has_grenade);
-        JSON_ObjectAppendBool(
-            resume_obj, "has_harpoon", resume->flags.has_harpoon);
-
-        JSON_ObjectAppendInt(resume_obj, "timer", resume->stats.timer);
-        JSON_ObjectAppendInt(resume_obj, "ammo_hits", resume->stats.ammo_hits);
-        JSON_ObjectAppendInt(resume_obj, "ammo_used", resume->stats.ammo_used);
-        JSON_ObjectAppendInt(
-            resume_obj, "distance_travelled", resume->stats.distance_travelled);
-        JSON_ObjectAppendInt(resume_obj, "kills", resume->stats.kill_count);
-        JSON_ObjectAppendInt(resume_obj, "secrets", resume->stats.secret_flags);
-        JSON_ObjectAppendInt(resume_obj, "pickups", resume->stats.pickup_count);
-        JSON_ObjectAppendDouble(
-            resume_obj, "medipacks_used", resume->stats.medipacks_used);
-        JSON_ArrayAppendObject(resume_arr, resume_obj);
-    }
-    return resume_arr;
-}
-
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
@@ -174,7 +117,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_OBJECT *const root_obj = Savegame_BSON_GetWriteRoot(ctx);
 
     JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
-    JSON_ObjectAppendArray(root_obj, "resume_info", M_DumpResumeInfo());
+    Savegame_BSON_DumpResumeInfoList(ctx);
     Savegame_BSON_DumpInventory(ctx);
     Savegame_BSON_DumpFlipmaps(ctx);
     Savegame_BSON_DumpCameras(ctx);
