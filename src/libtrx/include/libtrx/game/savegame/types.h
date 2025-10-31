@@ -18,11 +18,9 @@ typedef struct {
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
     uint8_t num_scions;
-#if TR_VERSION > 1
     uint16_t m16_ammo;
     uint16_t grenade_ammo;
     uint16_t harpoon_ammo;
-#endif
     uint16_t flares;
 
     struct {
@@ -32,11 +30,9 @@ typedef struct {
         bool has_magnums;
         bool has_uzis;
         bool has_shotgun;
-#if TR_VERSION >= 2
         bool has_m16;
         bool has_grenade;
         bool has_harpoon;
-#endif
     } flags;
 
     LEVEL_STATS stats;
