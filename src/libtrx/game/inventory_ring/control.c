@@ -126,7 +126,7 @@ static void M_RingNotActive(
 
     case O_SMALL_MEDIPACK_OPTION:
     case O_LARGE_MEDIPACK_OPTION:
-        Overlay_SetHealthBarTimer(40);
+        Overlay_ForceHealthBar(true);
         if (qty > 1) {
             InvRing_ShowItemQuantity("%d", qty);
         }

@@ -388,7 +388,7 @@ void UI_Overlay_Control(UI_OVERLAY_STATE *const s)
     UI_Flash_Control(&s->flash_state);
 }
 
-void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *s, bool show)
+void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *const s, const bool show)
 {
     s->force_show_healthbar = show;
 }
