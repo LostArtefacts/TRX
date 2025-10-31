@@ -13,6 +13,7 @@
 #include "game/savegame.h"
 #include "memory.h"
 #include "strings.h"
+#include "version.h"
 
 #define MAX_STRATEGIES 2
 #define SAVES_DIR "saves"
@@ -585,7 +586,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->shotgun_ammo = 10000;
         resume->magnum_ammo = 10000;
         resume->uzi_ammo = 10000;
-        resume->flares = -1;
+        resume->flares = g_TRVersion == 1 ? 0 : -1;
 
 #if TR_VERSION == 1
         resume->equipped_gun_type = LGT_UZIS;
