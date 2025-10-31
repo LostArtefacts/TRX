@@ -93,29 +93,16 @@ static void M_PushLaraAway(
 
 static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
 {
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-
-    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LS_EXTRA_BREATH;
-    lara_item->goal_anim_state = LS_EXTRA_PULL_DAGGER;
-    lara_item->pos.x = dragon_back_item->pos.x;
-    lara_item->pos.y = dragon_back_item->pos.y;
-    lara_item->pos.z = dragon_back_item->pos.z;
-    lara_item->rot.y = dragon_back_item->rot.y;
-    lara_item->rot.x = dragon_back_item->rot.x;
-    lara_item->rot.z = dragon_back_item->rot.z;
+    lara_item->pos = dragon_back_item->pos;
+    lara_item->rot = dragon_back_item->rot;
     lara_item->fall_speed = 0;
     lara_item->gravity = 0;
     lara_item->speed = 0;
 
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
     Item_UpdateRoom(lara->item_num, dragon_back_item->room_num);
 
-    Item_Animate(lara_item);
-
-    lara->extra_anim = true;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->hit_direction = -1;
-
+    Lara_SwitchToExtraState(LS_EXTRA_PULL_DAGGER);
     Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_DAGGER_1);
 
     Camera_InvokeCinematic(lara_item, 0, 0);

@@ -31,18 +31,11 @@ static void M_KillLara(const ITEM *const item)
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LS_EXTRA_BREATH;
-    lara_item->goal_anim_state = LS_EXTRA_MIDAS_KILL;
-    Item_Animate(lara_item);
-
+    Lara_SwitchToExtraState(LS_EXTRA_MIDAS_KILL);
     lara_item->hit_points = -1;
     lara_item->gravity = 0;
-    lara->extra_anim = true;
-
-    lara->air = -1;
-    lara->gun_status = LGS_HANDS_BUSY;
     lara->gun_type = LGT_UNARMED;
+    lara->air = -1;
 
     Camera_InvokeCinematic(lara_item, 0, 0);
 }
@@ -91,12 +84,7 @@ static void M_Collision(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->interact_target.is_moving
         && lara->interact_target.item_num == item_num) {
-        Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-        lara_item->current_anim_state = LS_EXTRA_BREATH;
-        lara_item->goal_anim_state = LS_EXTRA_USE_MIDAS;
-        Item_Animate(lara_item);
-        lara->extra_anim = true;
-        lara->gun_status = LGS_HANDS_BUSY;
+        Lara_SwitchToExtraState(LS_EXTRA_USE_MIDAS);
         lara->interact_target.is_moving = false;
     }
 

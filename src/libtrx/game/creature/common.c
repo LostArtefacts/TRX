@@ -3,7 +3,7 @@
 #include "game/carrier.h"
 #include "game/creature.h"
 #include "game/game_flow.h"
-#include "game/lara/common.h"
+#include "game/lara.h"
 #include "game/los.h"
 #include "game/objects/vars.h"
 #include "game/pathing.h"
@@ -921,27 +921,18 @@ void Creature_SpecialKill(
     Item_SwitchToAnim(item, kill_anim, 0);
     item->current_anim_state = kill_state;
 
-    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LS_EXTRA_BREATH;
-    lara_item->goal_anim_state = lara_kill_state;
     lara_item->pos = item->pos;
     lara_item->rot = item->rot;
     lara_item->fall_speed = 0;
     lara_item->gravity = false;
     lara_item->speed = 0;
+    lara->air = -1;
+    lara->gun_type = LGT_UNARMED;
 
     int16_t room_num = item->room_num;
     Item_UpdateRoom(lara->item_num, room_num);
 
-    Item_Animate(lara_item);
-
-    lara_item->goal_anim_state = lara_kill_state;
-    lara_item->current_anim_state = lara_kill_state;
-    lara->extra_anim = true;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->gun_type = LGT_UNARMED;
-    lara->hit_direction = -1;
-    lara->air = -1;
+    Lara_SwitchToExtraState(lara_kill_state);
 
     g_Camera.pos.room_num = lara_item->room_num;
 }

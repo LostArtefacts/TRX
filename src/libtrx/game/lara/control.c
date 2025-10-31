@@ -719,12 +719,7 @@ void Lara_Control_Initialise(
     if ((level_type == GFL_NORMAL || level_type == GFL_BONUS)
         && start_state != LS_EXTRA_BREATH) {
         lara_info->water_status = LWS_ABOVE_WATER;
-        lara_info->gun_status = LGS_HANDS_BUSY;
-        lara_item->goal_anim_state = start_state;
-        lara_item->current_anim_state = LS_EXTRA_BREATH;
-        Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-        Lara_Animate(lara_item);
-        lara_info->extra_anim = true;
+        Lara_SwitchToExtraState(start_state);
         Camera_InvokeCinematic(lara_item, 0, 0);
     } else if (Room_Get(lara_item->room_num)->flags.underwater) {
         lara_info->water_status = LWS_UNDERWATER;
