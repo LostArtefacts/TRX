@@ -471,6 +471,7 @@ sources = [
   'game/savegame/bson_read.c',
   'game/savegame/bson_write.c',
   'game/savegame/common.c',
+  'game/savegame/legacy.c',
   'game/scaler.c',
   'game/shell/args.c',
   'game/shell/common.c',

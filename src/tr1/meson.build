@@ -97,7 +97,6 @@ endif
 
 sources = [
   init,
-  'game/savegame/savegame_legacy.c',
   resources,
 ]
 
