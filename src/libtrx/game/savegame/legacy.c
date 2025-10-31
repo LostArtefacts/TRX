@@ -162,7 +162,6 @@ static bool M_ItemHasSavePosition(const ITEM *const item)
     }
 }
 
-#if TR_VERSION == 1
 static bool M_NeedsBaconLaraFix(char *buffer)
 {
     // Heuristic for issue #261.
@@ -260,10 +259,13 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     return result;
 }
 
-static void M_ReadArm(LARA_ARM *const arm)
+static void M_ReadLaraArm(LARA_ARM *const arm)
 {
     M_Skip(sizeof(int32_t)); // frame_base is superfluous
     arm->frame_num = M_ReadS16();
+    if (g_TRVersion == 2) {
+        arm->anim_num = M_ReadS16();
+    }
     arm->lock = M_ReadS16();
     arm->rot.y = M_ReadS16();
     arm->rot.x = M_ReadS16();
@@ -274,26 +276,10 @@ static void M_ReadArm(LARA_ARM *const arm)
 static void M_ReadAmmoInfo(AMMO_INFO *const ammo_info)
 {
     ammo_info->ammo = M_ReadS32();
-    M_Skip(sizeof(int32_t)); // Legacy hits value
-    M_Skip(sizeof(int32_t)); // Legacy miss value
-}
-
-static void M_ReadLOT(LOT_INFO *const lot)
-{
-    M_Skip(4); // pointer to BOX_NODE
-    lot->head = M_ReadS16();
-    lot->tail = M_ReadS16();
-    lot->search_num = M_ReadU16();
-    lot->setup.block_mask = M_ReadU16();
-    lot->setup.step = M_ReadS16();
-    lot->setup.drop = M_ReadS16();
-    lot->setup.fly = M_ReadS16();
-    lot->zone_count = M_ReadS16();
-    lot->target_box = M_ReadS16();
-    lot->required_box = M_ReadS16();
-    lot->target.x = M_ReadS32();
-    lot->target.y = M_ReadS32();
-    lot->target.z = M_ReadS32();
+    if (g_TRVersion == 1) {
+        M_Skip(sizeof(int32_t)); // Legacy hits value
+        M_Skip(sizeof(int32_t)); // Legacy miss value
+    }
 }
 
 static void M_ReadLara(LARA_INFO *const lara)
@@ -302,9 +288,18 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->gun_status = M_ReadS16();
     lara->gun_type = M_ReadS16();
     lara->request_gun_type = M_ReadS16();
-    lara->last_gun_type = lara->request_gun_type;
+    if (g_TRVersion == 1) {
+        lara->last_gun_type = lara->request_gun_type;
+    } else {
+        lara->last_gun_type = M_ReadS16();
+    }
     lara->calc_fall_speed = M_ReadS16();
     lara->water_status = M_ReadS16();
+    if (g_TRVersion == 1) {
+        lara->climb_status = false;
+    } else {
+        lara->climb_status = M_ReadS16();
+    }
     lara->pose_count = M_ReadS16();
     lara->hit_frame = M_ReadS16();
     lara->hit_direction = M_ReadS16();
@@ -314,8 +309,31 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->current_active = M_ReadS16();
     lara->hit_effect_count = M_ReadS16();
 
+    if (g_TRVersion == 1) {
+        M_Skip(4); // pointer to EFFECT
+    }
     lara->hit_effect = nullptr;
-    M_Skip(4); // pointer to EFFECT
+
+    if (g_TRVersion == 2) {
+        lara->flare.age = M_ReadS16();
+        Lara_Vehicle_SetIndex(M_ReadS16());
+        lara->gun_item_num = M_ReadS16();
+        lara->back_gun_obj_id = Object_FromGameID(M_ReadS16());
+        lara->flare.frame_num = M_ReadS16();
+
+        const uint16_t flags = M_ReadU16();
+        // clang-format off
+        lara->flare.control = (flags & (1 << 0)) != 0;
+        lara->extra_anim    = (flags & (1 << 2)) != 0;
+        lara->burn          = (flags & (1 << 4)) != 0;
+        // clang-format on
+
+        lara->water_surface_dist = M_ReadS32();
+        lara->last_pos.x = M_ReadS32();
+        lara->last_pos.y = M_ReadS32();
+        lara->last_pos.z = M_ReadS32();
+        M_Skip(4);
+    }
 
     lara->mesh_effects = M_ReadS32();
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
@@ -325,11 +343,11 @@ static void M_ReadLara(LARA_INFO *const lara)
         }
     }
 
+    M_Skip(4); // target – raw pointer to ITEM
     lara->target = nullptr;
-    M_Skip(4); // pointer to ITEM
-
     lara->target_angles[0] = M_ReadS16();
     lara->target_angles[1] = M_ReadS16();
+
     lara->turn_rate = M_ReadS16();
     lara->move_angle = M_ReadS16();
     lara->head_rot.y = M_ReadS16();
@@ -339,18 +357,29 @@ static void M_ReadLara(LARA_INFO *const lara)
     lara->torso_rot.x = M_ReadS16();
     lara->torso_rot.z = M_ReadS16();
 
-    M_ReadArm(&lara->left_arm);
-    M_ReadArm(&lara->right_arm);
+    M_ReadLaraArm(&lara->left_arm);
+    M_ReadLaraArm(&lara->right_arm);
     M_ReadAmmoInfo(&lara->pistol_ammo);
     M_ReadAmmoInfo(&lara->magnum_ammo);
     M_ReadAmmoInfo(&lara->uzi_ammo);
     M_ReadAmmoInfo(&lara->shotgun_ammo);
-    M_ReadLOT(&lara->lot);
+    if (g_TRVersion == 2) {
+        M_ReadAmmoInfo(&lara->harpoon_ammo);
+        M_ReadAmmoInfo(&lara->grenade_ammo);
+        M_ReadAmmoInfo(&lara->m16_ammo);
+    }
+
+    if (g_TRVersion == 1) {
+        M_Skip(36); // Skip LOT for water currents
+    } else {
+        M_Skip(4);
+    }
 
     const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
     Gun_Rifle_LoadLegacy(has_rifle);
 }
 
+#if TR_VERSION == 1
 static void M_ReadResumeInfo(RESUME_INFO *const resume)
 {
     resume->pistol_ammo = M_ReadU16();
@@ -830,95 +859,6 @@ static void M_ReadItems(void)
             obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
     }
-}
-
-static void M_ReadLaraArm(LARA_ARM *const arm)
-{
-    M_ReadS32(); // arm frame_base is not required
-    arm->frame_num = M_ReadS16();
-    arm->anim_num = M_ReadS16();
-    arm->lock = M_ReadS16();
-    arm->rot.y = M_ReadS16();
-    arm->rot.x = M_ReadS16();
-    arm->rot.z = M_ReadS16();
-    arm->flash_gun = M_ReadS16();
-}
-
-static void M_ReadAmmoInfo(AMMO_INFO *const ammo_info)
-{
-    ammo_info->ammo = M_ReadS32();
-}
-
-static void M_ReadLara(LARA_INFO *const lara)
-{
-    lara->item_num = M_ReadS16();
-    lara->gun_status = M_ReadS16();
-    lara->gun_type = M_ReadS16();
-    lara->request_gun_type = M_ReadS16();
-    lara->last_gun_type = M_ReadS16();
-    lara->calc_fall_speed = M_ReadS16();
-    lara->water_status = M_ReadS16();
-    lara->climb_status = M_ReadS16();
-    lara->pose_count = M_ReadS16();
-    lara->hit_frame = M_ReadS16();
-    lara->hit_direction = M_ReadS16();
-    lara->air = M_ReadS16();
-    lara->dive_timer = M_ReadS16();
-    lara->death_timer = M_ReadS16();
-    lara->current_active = M_ReadS16();
-    lara->hit_effect_count = M_ReadS16();
-    lara->flare.age = M_ReadS16();
-    Lara_Vehicle_SetIndex(M_ReadS16());
-    lara->gun_item_num = M_ReadS16();
-    lara->back_gun_obj_id = Object_FromGameID(M_ReadS16());
-    lara->flare.frame_num = M_ReadS16();
-
-    const uint16_t flags = M_ReadU16();
-    // clang-format off
-    lara->flare.control = (flags & (1 << 0)) != 0;
-    lara->extra_anim    = (flags & (1 << 2)) != 0;
-    lara->burn          = (flags & (1 << 4)) != 0;
-    // clang-format on
-
-    lara->water_surface_dist = M_ReadS32();
-    lara->last_pos.x = M_ReadS32();
-    lara->last_pos.y = M_ReadS32();
-    lara->last_pos.z = M_ReadS32();
-    M_Skip(4);
-    lara->hit_effect = nullptr;
-    lara->mesh_effects = M_ReadU32();
-
-    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-        OBJECT_MESH *const mesh = Object_FindMesh(M_ReadS32() / 2);
-        if (mesh != nullptr) {
-            Lara_Mesh_Set(i, mesh);
-        }
-    }
-
-    M_Skip(4);
-    lara->target = nullptr;
-    lara->target_angles[0] = M_ReadS16();
-    lara->target_angles[1] = M_ReadS16();
-
-    lara->turn_rate = M_ReadS16();
-    lara->move_angle = M_ReadS16();
-    lara->head_rot.y = M_ReadS16();
-    lara->head_rot.x = M_ReadS16();
-    lara->head_rot.z = M_ReadS16();
-    lara->torso_rot.y = M_ReadS16();
-    lara->torso_rot.x = M_ReadS16();
-    lara->torso_rot.z = M_ReadS16();
-
-    M_ReadLaraArm(&lara->left_arm);
-    M_ReadLaraArm(&lara->right_arm);
-    M_ReadAmmoInfo(&lara->pistol_ammo);
-    M_ReadAmmoInfo(&lara->magnum_ammo);
-    M_ReadAmmoInfo(&lara->uzi_ammo);
-    M_ReadAmmoInfo(&lara->shotgun_ammo);
-    M_ReadAmmoInfo(&lara->harpoon_ammo);
-    M_ReadAmmoInfo(&lara->grenade_ammo);
-    M_ReadAmmoInfo(&lara->m16_ammo);
-    M_Skip(4);
 }
 
 static void M_ReadFlares(void)
