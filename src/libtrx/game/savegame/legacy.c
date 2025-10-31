@@ -1,29 +1,21 @@
 #include "debug.h"
 #include "game/camera.h"
 #include "game/carrier.h"
-#include "game/effects.h"
 #include "game/game.h"
-#include "game/game_flow.h"
-#include "game/game_string.h"
 #include "game/gun/rifle.h"
 #include "game/inventory.h"
 #include "game/lara.h"
-#include "game/level.h"
 #include "game/music.h"
 #include "game/objects/general/lift.h"
 #include "game/objects/general/pickup.h"
 #include "game/objects/traps/movable_block.h"
 #include "game/objects/traps/sliding_pillar.h"
-#include "game/objects/vars.h"
 #include "game/objects/vehicles/boat.h"
 #include "game/objects/vehicles/skidoo_common.h"
 #include "game/pathing.h"
 #include "game/savegame.h"
-#include "game/shell.h"
 #include "game/stats.h"
-#include "log.h"
 #include "memory.h"
-#include "utils.h"
 #include "version.h"
 
 #include <stdio.h>
@@ -38,20 +30,6 @@
 #else
     #define M_LEGACY_MAX_BUFFER_SIZE (1170 + 6272) // header + OG buffer size
 #endif
-
-#pragma pack(push, 1)
-typedef struct {
-    uint8_t num_pickup[2];
-    uint8_t num_puzzle[4];
-    uint8_t num_key[4];
-#if TR_VERSION == 1
-    uint8_t num_leadbar;
-    uint8_t dummy;
-#else
-    uint16_t reserved;
-#endif
-} M_LEGACY_ITEM_STATS;
-#pragma pack(pop)
 
 static int32_t m_BufPos = 0;
 static char *m_BufPtr = nullptr;
@@ -218,7 +196,7 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     M_Skip(sizeof(uint16_t)); // current level
     M_Skip(sizeof(uint8_t)); // pickups
     M_Skip(sizeof(uint8_t)); // bonus_flag
-    M_Skip(sizeof(M_LEGACY_ITEM_STATS)); // item stats
+    M_Skip(sizeof(12)); // item stats
     M_Skip(sizeof(int32_t)); // flipmap status
     M_Skip(MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
     M_Skip(Camera_GetFixedObjectCount() * sizeof(int16_t)); // cameras
@@ -296,8 +274,9 @@ static void M_ReadAmmoInfo(AMMO_INFO *const ammo_info)
     }
 }
 
-static void M_ReadLara(LARA_INFO *const lara)
+static void M_ReadLara(void)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->item_num = M_ReadS16();
     lara->gun_status = M_ReadS16();
     lara->gun_type = M_ReadS16();
@@ -733,82 +712,6 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return true;
 }
 
-#if TR_VERSION == 1
-static bool M_LoadFromFile(MYFILE *const fp)
-{
-    char *buffer = Memory_Alloc(File_Size(fp));
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, buffer, File_Size(fp));
-
-    m_SkipReadingBaconLara = M_NeedsBaconLaraFix(buffer);
-    if (m_SkipReadingBaconLara) {
-        LOG_INFO("Enabling Bacon Lara savegame fix");
-    }
-
-    M_Reset(buffer);
-    M_Skip(M_LEGACY_TITLE_SIZE); // level title
-    M_Skip(sizeof(int32_t)); // save counter
-
-    M_ReadResumeInfos();
-    M_ReadCurrentStats();
-
-    // Copy RESUME_INFO of "current position" level to the target level
-    {
-        const GF_LEVEL *const level = Game_GetCurrentLevel();
-        const GF_LEVEL *current_position = nullptr;
-        const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-        for (int32_t i = 0; i < level_table->count; i++) {
-            const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-            if (level->type == GFL_CURRENT) {
-                current_position = level;
-            }
-        }
-        if (current_position != nullptr) {
-            *Savegame_GetCurrentInfo(level) =
-                *Savegame_GetCurrentInfo(current_position);
-        }
-    }
-
-    Lara_InitialiseInventory(Game_GetCurrentLevel());
-    M_LEGACY_ITEM_STATS item_stats = {};
-    M_Read(&item_stats, sizeof(M_LEGACY_ITEM_STATS));
-    Inv_AddItemNTimes(O_PICKUP_ITEM_1, item_stats.num_pickup[0]);
-    Inv_AddItemNTimes(O_PICKUP_ITEM_2, item_stats.num_pickup[1]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, item_stats.num_puzzle[0]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, item_stats.num_puzzle[1]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, item_stats.num_puzzle[2]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, item_stats.num_puzzle[3]);
-    Inv_AddItemNTimes(O_KEY_ITEM_1, item_stats.num_key[0]);
-    Inv_AddItemNTimes(O_KEY_ITEM_2, item_stats.num_key[1]);
-    Inv_AddItemNTimes(O_KEY_ITEM_3, item_stats.num_key[2]);
-    Inv_AddItemNTimes(O_KEY_ITEM_4, item_stats.num_key[3]);
-    Inv_AddItemNTimes(O_LEADBAR_ITEM, item_stats.num_leadbar);
-
-    if (M_ReadS32() != 0) {
-        Room_FlipMap();
-    }
-
-    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        Room_SetFlipSlotFlags(i, M_ReadS8() << 8);
-    }
-
-    for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
-        OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        object->flags = M_ReadS16();
-    }
-
-    M_ReadItems();
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    M_ReadLara(lara);
-    Room_SetFlipEffect(M_ReadS32());
-    Room_SetFlipTimer(M_ReadS32());
-    Memory_FreePointer(&buffer);
-    return true;
-}
-
-#else
-
 static void M_ReadFlares(void)
 {
     const int32_t num_flares = M_ReadS32();
@@ -838,40 +741,65 @@ static bool M_LoadFromFile(MYFILE *const fp)
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, File_Size(fp));
 
+    m_SkipReadingBaconLara = M_NeedsBaconLaraFix(buffer);
+    if (m_SkipReadingBaconLara) {
+        LOG_INFO("Enabling Bacon Lara savegame fix");
+    }
+
     M_Reset(buffer);
-    M_Skip(M_LEGACY_TITLE_SIZE);
+    M_Skip(M_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
 
     M_ReadResumeInfos();
     M_ReadCurrentStats();
 
-    M_LEGACY_ITEM_STATS item_stats = {};
-    M_Read(&item_stats, sizeof(M_LEGACY_ITEM_STATS));
-
-    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    Lara_InitialiseInventory(current_level);
-    Inv_AddItemNTimes(O_PICKUP_ITEM_1, item_stats.num_pickup[0]);
-    Inv_AddItemNTimes(O_PICKUP_ITEM_2, item_stats.num_pickup[1]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, item_stats.num_puzzle[0]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, item_stats.num_puzzle[1]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, item_stats.num_puzzle[2]);
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, item_stats.num_puzzle[3]);
-    Inv_AddItemNTimes(O_KEY_ITEM_1, item_stats.num_key[0]);
-    Inv_AddItemNTimes(O_KEY_ITEM_2, item_stats.num_key[1]);
-    Inv_AddItemNTimes(O_KEY_ITEM_3, item_stats.num_key[2]);
-    Inv_AddItemNTimes(O_KEY_ITEM_4, item_stats.num_key[3]);
-
-    if (M_ReadS32()) {
-        Room_FlipMap();
+    // Copy RESUME_INFO of "current position" level to the target level
+    if (g_TRVersion == 1) {
+        const GF_LEVEL *const level = Game_GetCurrentLevel();
+        const GF_LEVEL *current_position = nullptr;
+        const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+        for (int32_t i = 0; i < level_table->count; i++) {
+            const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+            if (level->type == GFL_CURRENT) {
+                current_position = level;
+            }
+        }
+        if (current_position != nullptr) {
+            *Savegame_GetCurrentInfo(level) =
+                *Savegame_GetCurrentInfo(current_position);
+        }
     }
 
+    Lara_InitialiseInventory(Game_GetCurrentLevel());
+    Inv_AddItemNTimes(O_PICKUP_ITEM_1, M_ReadU8());
+    Inv_AddItemNTimes(O_PICKUP_ITEM_2, M_ReadU8());
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, M_ReadU8());
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, M_ReadU8());
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, M_ReadU8());
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, M_ReadU8());
+    Inv_AddItemNTimes(O_KEY_ITEM_1, M_ReadU8());
+    Inv_AddItemNTimes(O_KEY_ITEM_2, M_ReadU8());
+    Inv_AddItemNTimes(O_KEY_ITEM_3, M_ReadU8());
+    Inv_AddItemNTimes(O_KEY_ITEM_4, M_ReadU8());
+    if (g_TRVersion == 1) {
+        Inv_AddItemNTimes(O_LEADBAR_ITEM, M_ReadU8());
+        M_Skip(1); // reserved
+    } else {
+        M_Skip(2); // reserved
+    }
+
+    if (M_ReadS32() != 0) {
+        Room_FlipMap();
+    }
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
         Room_SetFlipSlotFlags(i, M_ReadS8() << 8);
     }
 
-    for (int32_t i = 0; i < M_LEGACY_MAX_MUSIC_TRACKS; i++) {
-        const int32_t track_id = Music_ConvertLegacyTrack(i);
-        Music_SetTrackFlags(track_id, M_ReadU16());
+    if (g_TRVersion == 2) {
+        for (int32_t i = 0; i < M_LEGACY_MAX_MUSIC_TRACKS; i++) {
+            const int32_t track_id = Music_ConvertLegacyTrack(i);
+            Music_SetTrackFlags(track_id, M_ReadU16());
+        }
     }
 
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
@@ -881,31 +809,33 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
     M_ReadItems();
 
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    M_ReadLara(lara);
-    if (lara->gun_item_num != NO_ITEM) {
-        lara->gun_item_num = Item_Create();
-        ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        weapon_item->object_id = Object_FromGameID(M_ReadS16());
-        weapon_item->anim_num = M_ReadS16();
-        weapon_item->frame_num = M_ReadS16();
-        weapon_item->current_anim_state = M_ReadS16();
-        weapon_item->goal_anim_state = M_ReadS16();
-        weapon_item->status = IS_ACTIVE;
-        weapon_item->room_num = NO_ROOM;
+    M_ReadLara();
+    if (g_TRVersion == 2) {
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        if (lara->gun_item_num != NO_ITEM) {
+            lara->gun_item_num = Item_Create();
+            ITEM *const weapon_item = Item_Get(lara->gun_item_num);
+            weapon_item->object_id = Object_FromGameID(M_ReadS16());
+            weapon_item->anim_num = M_ReadS16();
+            weapon_item->frame_num = M_ReadS16();
+            weapon_item->current_anim_state = M_ReadS16();
+            weapon_item->goal_anim_state = M_ReadS16();
+            weapon_item->status = IS_ACTIVE;
+            weapon_item->room_num = NO_ROOM;
+        }
     }
 
     Room_SetFlipEffect(M_ReadS32());
     Room_SetFlipTimer(M_ReadS32());
-    Creature_SetAlliesHostile(M_ReadS32() != 0);
 
-    M_ReadFlares();
+    if (g_TRVersion == 2) {
+        Creature_SetAlliesHostile(M_ReadS32() != 0);
+        M_ReadFlares();
+    }
 
     Memory_FreePointer(&buffer);
     return true;
 }
-
-#endif
 
 static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
