@@ -386,13 +386,21 @@ static void M_ReadLara(LARA_INFO *const lara)
 
 static void M_ReadStats(LEVEL_STATS *const stats)
 {
-    stats->timer = M_ReadU32();
-    stats->ammo_used = M_ReadU32();
-    stats->ammo_hits = M_ReadU32();
-    stats->distance_travelled = M_ReadU32();
-    stats->kill_count = M_ReadU16();
-    stats->secret_flags = M_ReadU8();
-    stats->medipacks_used = M_ReadU8() / 2.0f;
+    if (g_TRVersion == 1) {
+        stats->timer = M_ReadU32();
+        stats->kill_count = M_ReadU32();
+        stats->secret_flags = M_ReadU16();
+        M_Skip(2); // current level num
+        stats->pickup_count = M_ReadU8();
+    } else {
+        stats->timer = M_ReadU32();
+        stats->ammo_used = M_ReadU32();
+        stats->ammo_hits = M_ReadU32();
+        stats->distance_travelled = M_ReadU32();
+        stats->kill_count = M_ReadU16();
+        stats->secret_flags = M_ReadU8();
+        stats->medipacks_used = M_ReadU8() / 2.0f;
+    }
     stats->death_count = -1;
     Stats_UpdateSecrets(stats);
 }
@@ -462,31 +470,31 @@ static void M_ReadResumeInfos(void)
             M_ReadResumeInfo(&dummy_resume_info);
         }
     }
+}
 
+static void M_ReadCurrentStats(void)
+{
+    LEVEL_STATS current_stats = {};
+    M_ReadStats(&current_stats);
+
+    int16_t current_level_num;
     if (g_TRVersion == 1) {
-        const uint32_t temp_timer = M_ReadU32();
-        const uint32_t temp_kill_count = M_ReadU32();
-        const uint16_t temp_secret_flags = M_ReadU16();
-        const uint16_t current_level_num = M_ReadU16();
-        const uint8_t temp_pickup_count = M_ReadU8();
-        const uint8_t temp_flags = M_ReadU8();
+        M_Skip(-3);
+        current_level_num = M_ReadS16();
+        M_Skip(1);
+    } else {
+        current_level_num = M_ReadS16();
+    }
 
-        const GF_LEVEL *current_level = Game_GetCurrentLevel();
-        if (current_level != nullptr) {
-            RESUME_INFO *const resume_info =
-                Savegame_GetCurrentInfo(current_level);
-            resume_info->stats.timer = temp_timer;
-            resume_info->stats.kill_count = temp_kill_count;
-            resume_info->stats.secret_flags = temp_secret_flags;
-            Stats_UpdateSecrets(&resume_info->stats);
-            resume_info->stats.pickup_count = temp_pickup_count;
-            resume_info->stats.death_count = -1;
-        }
+    const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, current_level_num);
+    if (level != nullptr) {
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        resume->stats = current_stats;
+    }
 
-        const bool is_ng_plus = temp_flags != 0;
-        if (is_ng_plus) {
-            Game_SetBonusFlag(GBF_NGPLUS);
-        }
+    const bool is_ng_plus = M_ReadU8() != 0;
+    if (is_ng_plus) {
+        Game_SetBonusFlag(GBF_NGPLUS);
     }
 }
 
@@ -545,10 +553,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     M_Skip(sizeof(int32_t)); // save counter
 
     M_ReadResumeInfos();
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->holsters_gun_type = LGT_UNKNOWN;
-    lara->back_gun_type = LGT_UNKNOWN;
+    M_ReadCurrentStats();
 
     // Copy RESUME_INFO of "current position" level to the target level
     {
@@ -683,6 +688,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         Carrier_TestLegacyDrops(i);
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     M_ReadLara(lara);
     Room_SetFlipEffect(M_ReadS32());
     Room_SetFlipTimer(M_ReadS32());
@@ -921,19 +927,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     M_Skip(sizeof(int32_t)); // save counter
 
     M_ReadResumeInfos();
-    {
-        LEVEL_STATS current_stats = {};
-        M_ReadStats(&current_stats);
-        const int16_t current_level = M_ReadS16();
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, current_level);
-        RESUME_INFO *const current_info = Savegame_GetCurrentInfo(level);
-        current_info->stats = current_stats;
-    }
-
-    const bool is_ng_plus = M_ReadU8() != 0;
-    if (is_ng_plus) {
-        Game_SetBonusFlag(GBF_NGPLUS);
-    }
+    M_ReadCurrentStats();
 
     M_LEGACY_ITEM_STATS item_stats = {};
     M_Read(&item_stats, sizeof(M_LEGACY_ITEM_STATS));
@@ -973,10 +967,8 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     M_ReadLara(lara);
-
     if (lara->gun_item_num != NO_ITEM) {
         lara->gun_item_num = Item_Create();
-
         ITEM *const weapon_item = Item_Get(lara->gun_item_num);
         weapon_item->object_id = Object_FromGameID(M_ReadS16());
         weapon_item->anim_num = M_ReadS16();
