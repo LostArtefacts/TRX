@@ -927,7 +927,7 @@ void Creature_SpecialKill(
     lara_item->pos = item->pos;
     lara_item->rot = item->rot;
     lara_item->fall_speed = 0;
-    lara_item->gravity = 0;
+    lara_item->gravity = false;
     lara_item->speed = 0;
 
     int16_t room_num = item->room_num;

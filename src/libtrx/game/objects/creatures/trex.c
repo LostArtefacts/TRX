@@ -40,37 +40,12 @@ typedef enum {
     TREX_STATE_KILL = 8,
 } TREX_STATE;
 
-static void M_KillLara(const ITEM *const item)
+static void M_KillLara(ITEM *const item)
 {
-    // TODO: merge with Creature_SpecialKill
-    ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-
-    Item_UpdateRoom(lara->item_num, item->room_num);
-    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LS_EXTRA_BREATH;
-    lara_item->goal_anim_state = LS_EXTRA_TREX_KILL;
-    Item_Animate(lara_item);
-
-    lara_item->pos.x = item->pos.x;
-    lara_item->pos.y = item->pos.y;
-    lara_item->pos.z = item->pos.z;
-    lara_item->rot.x = 0;
-    lara_item->rot.y = item->rot.y;
-    lara_item->rot.z = 0;
-    lara_item->gravity = 0;
+    Lara_TakeDamage(TREX_BITE_DAMAGE, true);
+    Creature_SpecialKill(
+        item, TREX_ANIM_KILL, TREX_STATE_KILL, LS_EXTRA_TREX_KILL);
     Lara_Mesh_SwapAll(O_LARA_EXTRA_SKIN_TREX);
-
-    lara_item->hit_points = -1;
-
-    lara->extra_anim = true;
-    lara->air = -1;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->gun_type = LGT_UNARMED;
-
-    g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = 170 * DEG_1;
-    g_Camera.target_elevation = -25 * DEG_1;
 }
 
 static void M_Collision(
@@ -165,16 +140,7 @@ static void M_Control(const int16_t item_num)
 
         case TREX_STATE_ATTACK_2:
             if ((item->touch_bits & TREX_TOUCH_BITS) != 0) {
-                Lara_TakeDamage(TREX_BITE_DAMAGE, true);
-                if (g_TRVersion == 1) {
-                    item->goal_anim_state = TREX_STATE_KILL;
-                    M_KillLara(item);
-                } else {
-                    Creature_SpecialKill(
-                        item, TREX_ANIM_KILL, TREX_STATE_KILL,
-                        LS_EXTRA_TREX_KILL);
-                    return;
-                }
+                M_KillLara(item);
             }
             item->required_anim_state = TREX_STATE_WALK;
             break;
