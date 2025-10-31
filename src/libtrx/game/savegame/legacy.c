@@ -33,6 +33,11 @@
 #define M_SAVE_CREATURE (1 << 7)
 #define M_LEGACY_NO_ROOM 255
 #define M_LEGACY_MAX_MUSIC_TRACKS 64
+#if TR_VERSION == 1
+    #define M_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
+#else
+    #define M_LEGACY_MAX_BUFFER_SIZE (1170 + 6272) // header + OG buffer size
+#endif
 
 #pragma pack(push, 1)
 typedef struct {
@@ -50,12 +55,7 @@ typedef struct {
 
 static int32_t m_BufPos = 0;
 static char *m_BufPtr = nullptr;
-
-#if TR_VERSION == 1
-    #define M_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
-#else
-    #define M_LEGACY_MAX_BUFFER_SIZE (1170 + 6272) // header + OG buffer size
-#endif
+static bool m_SkipReadingBaconLara;
 
 static void M_Reset(char *const buffer)
 {
@@ -498,6 +498,171 @@ static void M_ReadCurrentStats(void)
     }
 }
 
+static int16_t M_ReadRoomNum(void)
+{
+    const int16_t room_num = M_ReadS16();
+    if (room_num == M_LEGACY_NO_ROOM) {
+        return NO_ROOM;
+    }
+    return room_num;
+}
+
+static void M_ReadItem(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    if (M_ItemHasSavePosition(item)) {
+        item->pos.x = M_ReadS32();
+        item->pos.y = M_ReadS32();
+        item->pos.z = M_ReadS32();
+        item->rot.x = M_ReadS16();
+        item->rot.y = M_ReadS16();
+        item->rot.z = M_ReadS16();
+        const int16_t room_num = M_ReadRoomNum();
+        item->speed = M_ReadS16();
+        item->fall_speed = M_ReadS16();
+
+        Item_UpdateRoom(item_num, room_num);
+    }
+
+    if (M_ItemHasSaveAnim(item)) {
+        item->current_anim_state = M_ReadS16();
+        item->goal_anim_state = M_ReadS16();
+        item->required_anim_state = M_ReadS16();
+        item->anim_num = M_ReadS16();
+        item->frame_num = M_ReadS16();
+
+        if (item->object_id == O_LARA
+            && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
+            item->anim_num += obj->anim_idx;
+        }
+    }
+
+    if (M_ItemHasHitPoints(item)) {
+        item->hit_points = M_ReadS16();
+    }
+
+    if (M_ItemHasSaveFlags(obj, item)
+        && (item->object_id != O_BACON_LARA || !m_SkipReadingBaconLara)) {
+        item->flags = M_ReadU16();
+        if (obj->intelligent && g_TRVersion == 2) {
+            M_Skip(sizeof(int16_t)); // legacy carried item
+        }
+        item->timer = M_ReadS16();
+
+        if (item->flags & IF_KILLED) {
+            Item_Kill(item_num);
+            item->status = IS_DEACTIVATED;
+        } else {
+            if ((item->flags & 0x01u) != 0 && !item->active) {
+                Item_AddActive(item_num);
+            }
+            item->status = (item->flags & 0x06u) >> 1;
+            if ((item->flags & 0x08u) != 0) {
+                item->gravity = true;
+            }
+            if ((item->flags & 0x10u) == 0) {
+                item->collidable = false;
+            }
+        }
+
+        if ((item->flags & M_SAVE_CREATURE) != 0) {
+            LOT_EnableBaddieAI(item_num, true);
+            CREATURE *const creature = item->data;
+            if (creature != nullptr) {
+                creature->head_rotation = M_ReadS16();
+                creature->neck_rotation = M_ReadS16();
+                creature->maximum_turn = M_ReadS16();
+                creature->flags = M_ReadS16();
+                creature->mood = M_ReadS32();
+            } else {
+                M_Skip(12);
+            }
+        } else if (obj->intelligent) {
+            item->data = nullptr;
+#if TR_VERSION == 2
+            if (item->killed && item->hit_points <= 0
+                && !(item->flags & IF_KILLED)) {
+                item->next_active = Item_GetPrevActive();
+                Item_SetPrevActive(item_num);
+            }
+#endif
+        }
+    }
+
+    switch (item->object_id) {
+    case O_MOVABLE_BLOCK_1:
+    case O_MOVABLE_BLOCK_2:
+    case O_MOVABLE_BLOCK_3:
+    case O_MOVABLE_BLOCK_4: {
+        MOVABLE_BLOCK_INFO *const data = item->data;
+        data->linked.pos = item->pos;
+        data->linked.room_num = item->room_num;
+        break;
+    }
+
+    case O_SLIDING_PILLAR: {
+        SLIDING_PILLAR_INFO *const data = item->data;
+        data->linked.pos = item->pos;
+        data->linked.room_num = item->room_num;
+        break;
+    }
+
+    case O_BOAT: {
+        BOAT_INFO *const data = item->data;
+        data->boat_turn = M_ReadS32();
+        data->left_fallspeed = M_ReadS32();
+        data->right_fallspeed = M_ReadS32();
+        data->tilt_angle = M_ReadS16();
+        data->extra_rotation = M_ReadS16();
+        data->water = M_ReadS32();
+        data->pitch = M_ReadS32();
+        break;
+    }
+
+    case O_SKIDOO_FAST: {
+        SKIDOO_INFO *const data = item->data;
+        data->track_mesh = M_ReadS16();
+        data->skidoo_turn = M_ReadS32();
+        data->left_fallspeed = M_ReadS32();
+        data->right_fallspeed = M_ReadS32();
+        data->momentum_angle = M_ReadS16();
+        data->extra_rotation = M_ReadS16();
+        data->pitch = M_ReadS32();
+        break;
+    }
+
+    case O_LIFT: {
+        LIFT_INFO *const data = item->data;
+        data->start_height = M_ReadS32();
+        data->wait_time = M_ReadS32();
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    if (g_TRVersion == 1) {
+        Carrier_TestLegacyDrops(item_num);
+    } else {
+        // TODO: consolidate where this function is called
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
+        }
+    }
+}
+
+static void M_ReadItems(void)
+{
+    Savegame_ProcessItemsBeforeLoad();
+
+    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
+        M_ReadItem(item_num);
+    }
+}
+
 #if TR_VERSION == 1
 static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
@@ -543,8 +708,8 @@ static bool M_LoadFromFile(MYFILE *const fp)
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, File_Size(fp));
 
-    bool skip_reading_bacon_lara = M_NeedsBaconLaraFix(buffer);
-    if (skip_reading_bacon_lara) {
+    m_SkipReadingBaconLara = M_NeedsBaconLaraFix(buffer);
+    if (m_SkipReadingBaconLara) {
         LOG_INFO("Enabling Bacon Lara savegame fix");
     }
 
@@ -600,93 +765,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         object->flags = M_ReadS16();
     }
 
-    Savegame_ProcessItemsBeforeLoad();
-
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (M_ItemHasSavePosition(item)) {
-            item->pos.x = M_ReadS32();
-            item->pos.y = M_ReadS32();
-            item->pos.z = M_ReadS32();
-            item->rot.x = M_ReadS16();
-            item->rot.y = M_ReadS16();
-            item->rot.z = M_ReadS16();
-            const int16_t room_num = M_ReadS16();
-            item->speed = M_ReadS16();
-            item->fall_speed = M_ReadS16();
-
-            Item_UpdateRoom(i, room_num);
-        }
-
-        if (M_ItemHasSaveAnim(item)) {
-            item->current_anim_state = M_ReadS16();
-            item->goal_anim_state = M_ReadS16();
-            item->required_anim_state = M_ReadS16();
-            item->anim_num = M_ReadS16();
-            item->frame_num = M_ReadS16();
-
-            if (item->object_id == O_LARA
-                && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
-                item->anim_num += obj->anim_idx;
-            }
-        }
-
-        if (M_ItemHasHitPoints(item)) {
-            item->hit_points = M_ReadS16();
-        }
-
-        if ((item->object_id != O_BACON_LARA || !skip_reading_bacon_lara)
-            && M_ItemHasSaveFlags(obj, item)) {
-            item->flags = M_ReadS16();
-            item->timer = M_ReadS16();
-
-            if (item->flags & IF_KILLED) {
-                Item_Kill(i);
-                item->status = IS_DEACTIVATED;
-            } else {
-                if ((item->flags & 1) && !item->active) {
-                    Item_AddActive(i);
-                }
-                item->status = (item->flags & 6) >> 1;
-                if (item->flags & 8) {
-                    item->gravity = true;
-                }
-                if (!(item->flags & 16)) {
-                    item->collidable = false;
-                }
-            }
-
-            if (item->flags & M_SAVE_CREATURE) {
-                LOT_EnableBaddieAI(i, 1);
-                CREATURE *const creature = item->data;
-                if (creature != nullptr) {
-                    creature->head_rotation = M_ReadS16();
-                    creature->neck_rotation = M_ReadS16();
-                    creature->maximum_turn = M_ReadS16();
-                    creature->flags = M_ReadS16();
-                    creature->mood = M_ReadS32();
-                } else {
-                    M_Skip(4 * 2 + 4);
-                }
-            } else if (obj->intelligent) {
-                item->data = nullptr;
-            }
-        }
-
-        if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
-            MOVABLE_BLOCK_INFO *const data = item->data;
-            data->linked.pos = item->pos;
-            data->linked.room_num = item->room_num;
-        } else if (item->object_id == O_SLIDING_PILLAR) {
-            SLIDING_PILLAR_INFO *const data = item->data;
-            data->linked.pos = item->pos;
-            data->linked.room_num = item->room_num;
-        }
-
-        Carrier_TestLegacyDrops(i);
-    }
+    M_ReadItems();
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     M_ReadLara(lara);
@@ -697,153 +776,6 @@ static bool M_LoadFromFile(MYFILE *const fp)
 }
 
 #else
-
-static int16_t M_ReadRoomNum(void)
-{
-    const int16_t room_num = M_ReadS16();
-    if (room_num == M_LEGACY_NO_ROOM) {
-        return NO_ROOM;
-    }
-    return room_num;
-}
-
-static void M_ReadItems(void)
-{
-    Savegame_ProcessItemsBeforeLoad();
-
-    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
-        ITEM *const item = Item_Get(item_num);
-        const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (M_ItemHasSavePosition(item)) {
-            item->pos.x = M_ReadS32();
-            item->pos.y = M_ReadS32();
-            item->pos.z = M_ReadS32();
-            item->rot.x = M_ReadS16();
-            item->rot.y = M_ReadS16();
-            item->rot.z = M_ReadS16();
-            int16_t room_num = M_ReadRoomNum();
-            item->speed = M_ReadS16();
-            item->fall_speed = M_ReadS16();
-
-            Item_UpdateRoom(item_num, room_num);
-        }
-
-        if (obj->save_anim) {
-            item->current_anim_state = M_ReadS16();
-            item->goal_anim_state = M_ReadS16();
-            item->required_anim_state = M_ReadS16();
-            item->anim_num = M_ReadS16();
-            item->frame_num = M_ReadS16();
-
-            if (item->object_id == O_LARA
-                && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
-                item->anim_num += obj->anim_idx;
-            }
-        }
-
-        if (obj->save_hitpoints) {
-            item->hit_points = M_ReadS16();
-        }
-
-        if (M_ItemHasSaveFlags(obj, item)) {
-            item->flags = M_ReadU16();
-
-            if (obj->intelligent) {
-                M_Skip(sizeof(int16_t)); // legacy carried item
-            }
-            item->timer = M_ReadS16();
-
-            if (item->flags & IF_KILLED) {
-                Item_Kill(item_num);
-                item->status = IS_DEACTIVATED;
-            } else {
-                if ((item->flags & 1) && !item->active) {
-                    Item_AddActive(item_num);
-                }
-
-                item->status = (item->flags & 6) >> 1;
-                if (item->flags & 8) {
-                    item->gravity = true;
-                }
-                if (!(item->flags & 0x10)) {
-                    item->collidable = false;
-                }
-            }
-
-            if ((item->flags & M_SAVE_CREATURE) != 0) {
-                LOT_EnableBaddieAI(item_num, true);
-                CREATURE *const creature = item->data;
-                if (creature != nullptr) {
-                    creature->head_rotation = M_ReadS16();
-                    creature->neck_rotation = M_ReadS16();
-                    creature->maximum_turn = M_ReadS16();
-                    creature->flags = M_ReadS16();
-                    creature->mood = M_ReadS32();
-                } else {
-                    M_Skip(12);
-                }
-            } else if (obj->intelligent) {
-                item->data = nullptr;
-                if (item->killed && item->hit_points <= 0
-                    && !(item->flags & IF_KILLED)) {
-                    item->next_active = Item_GetPrevActive();
-                    Item_SetPrevActive(item_num);
-                }
-            }
-        }
-
-        switch (item->object_id) {
-        case O_BOAT: {
-            BOAT_INFO *const data = item->data;
-            data->boat_turn = M_ReadS32();
-            data->left_fallspeed = M_ReadS32();
-            data->right_fallspeed = M_ReadS32();
-            data->tilt_angle = M_ReadS16();
-            data->extra_rotation = M_ReadS16();
-            data->water = M_ReadS32();
-            data->pitch = M_ReadS32();
-            break;
-        }
-
-        case O_SKIDOO_FAST: {
-            SKIDOO_INFO *const data = item->data;
-            data->track_mesh = M_ReadS16();
-            data->skidoo_turn = M_ReadS32();
-            data->left_fallspeed = M_ReadS32();
-            data->right_fallspeed = M_ReadS32();
-            data->momentum_angle = M_ReadS16();
-            data->extra_rotation = M_ReadS16();
-            data->pitch = M_ReadS32();
-            break;
-        }
-
-        case O_LIFT: {
-            LIFT_INFO *const data = item->data;
-            data->start_height = M_ReadS32();
-            data->wait_time = M_ReadS32();
-            break;
-        }
-
-        default:
-            break;
-        }
-
-        if (Object_IsType(item->object_id, g_MovableBlockObjects)) {
-            MOVABLE_BLOCK_INFO *const data = item->data;
-            data->linked.pos = item->pos;
-            data->linked.room_num = item->room_num;
-        } else if (item->object_id == O_SLIDING_PILLAR) {
-            SLIDING_PILLAR_INFO *const data = item->data;
-            data->linked.pos = item->pos;
-            data->linked.room_num = item->room_num;
-        }
-
-        if (obj->handle_save_func != nullptr) {
-            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
-        }
-    }
-}
 
 static void M_ReadFlares(void)
 {
