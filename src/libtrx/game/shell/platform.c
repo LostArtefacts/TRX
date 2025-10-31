@@ -12,29 +12,8 @@
 void Shell_SetupHiDPI(void)
 {
 #ifdef _WIN32
-    // Enable HiDPI mode in Windows to detect DPI scaling
-    typedef enum {
-        PROCESS_DPI_UNAWARE = 0,
-        PROCESS_SYSTEM_DPI_AWARE = 1,
-        PROCESS_PER_MONITOR_DPI_AWARE = 2
-    } PROCESS_DPI_AWARENESS;
-
-    // Windows 8.1 and later
-    void *const shcore_dll = SDL_LoadObject("SHCORE.DLL");
-    if (shcore_dll == nullptr) {
-        return;
-    }
-
-    #pragma GCC diagnostic ignored "-Wpedantic"
-    HRESULT(WINAPI * SetProcessDpiAwareness)
-    (PROCESS_DPI_AWARENESS) =
-        (HRESULT(WINAPI *)(PROCESS_DPI_AWARENESS))SDL_LoadFunction(
-            shcore_dll, "SetProcessDpiAwareness");
-    #pragma GCC diagnostic pop
-    if (SetProcessDpiAwareness == nullptr) {
-        return;
-    }
-    SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+    SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2");
+    SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "0");
 #endif
 }
 
