@@ -472,7 +472,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     if ((g_TRVersion == 1 || !lara_info->extra_anim)
         && lara_info->water_status != LWS_CHEAT) {
         M_ObjectCollision(coll);
-        if (!Lara_Vehicle_IsMounted()) {
+        if (!Lara_Vehicle_IsMounted() && !lara_info->extra_anim) {
             Lara_Col_Update(item, coll);
         }
     }
@@ -614,7 +614,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
     const SECTOR *const sector = M_GetCurrentSector();
 
     M_ObjectCollision(coll);
-    if (!Lara_Vehicle_IsMounted()) {
+    if (!Lara_Vehicle_IsMounted() && !lara_info->extra_anim) {
         Lara_Col_Update(item, coll);
     }
 
