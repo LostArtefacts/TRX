@@ -190,16 +190,6 @@ static JSON_OBJECT *M_DumpMisc(void)
     return misc_obj;
 }
 
-static JSON_ARRAY *M_DumpCameras(void)
-{
-    JSON_ARRAY *cameras_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
-        const OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        JSON_ArrayAppendInt(cameras_arr, object->flags);
-    }
-    return cameras_arr;
-}
-
 static JSON_ARRAY *M_DumpItems(void)
 {
     Savegame_ProcessItemsBeforeSave();
@@ -568,7 +558,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     JSON_ObjectAppendArray(root_obj, "current_info", M_DumpResumeInfo());
     Savegame_BSON_DumpInventory(ctx);
     Savegame_BSON_DumpFlipmaps(ctx);
-    JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
+    Savegame_BSON_DumpCameras(ctx);
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     Savegame_BSON_DumpEffects(ctx);
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));

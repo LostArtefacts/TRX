@@ -1,5 +1,6 @@
 #include "config.h"
 #include "debug.h"
+#include "game/camera.h"
 #include "game/effects.h"
 #include "game/inventory.h"
 #include "game/items.h"
@@ -281,4 +282,16 @@ void Savegame_BSON_DumpFlipmaps(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     }
     M_PopAndSet(ctx, "table");
     M_PopAndSet(ctx, "flipmap");
+}
+
+void Savegame_BSON_DumpCameras(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    M_PushArray(ctx);
+    JSON_ARRAY *const cameras_arr = JSON_ArrayNew();
+    for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
+        const OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
+        M_PushNum(ctx, object->flags);
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "cameras");
 }

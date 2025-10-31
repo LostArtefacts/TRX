@@ -209,16 +209,6 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
     return resume_arr;
 }
 
-static JSON_ARRAY *M_DumpCameras(void)
-{
-    JSON_ARRAY *const cameras_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
-        const OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        JSON_ArrayAppendInt(cameras_arr, object->flags);
-    }
-    return cameras_arr;
-}
-
 static void M_GetFXOrder(M_FX_ORDER *const order)
 {
     order->count = 0;
@@ -535,7 +525,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_ObjectAppendArray(root_obj, "resume_info", M_DumpResumeInfo());
     Savegame_BSON_DumpInventory(ctx);
     Savegame_BSON_DumpFlipmaps(ctx);
-    JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
+    Savegame_BSON_DumpCameras(ctx);
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     Savegame_BSON_DumpEffects(ctx);
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara());
