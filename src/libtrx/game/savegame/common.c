@@ -370,7 +370,9 @@ void Savegame_SetCurrentInfo(const int32_t current_slot, const int32_t src_slot)
 
 const SAVEGAME_INFO *Savegame_GetSavegameInfo(const int32_t slot_num)
 {
-    ASSERT(slot_num >= 0);
+    if (slot_num < 0 || slot_num >= m_SaveSlots) {
+        return nullptr;
+    }
     return &m_SavegameInfo[slot_num];
 }
 

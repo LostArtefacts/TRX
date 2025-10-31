@@ -65,6 +65,7 @@
 - fixed invulnerability cheat not getting disabled during the demos (regression from 4.13)
 - fixed health bar flicker on medi packs when cycling the inventory ring (#4211, regression from 4.14)
 - fixed title bar size being too small on HiDPI screens on Windows platform (#2837)
+- fixed crash when loading OG saves made in City of Khamoon, while the "Restore PS1 enemies" option is on (#4217, regression from 2.16)
 
 ## [4.15.1](https://github.com/LostArtefacts/TRX/compare/tr1-4.15...tr1-4.15.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)
