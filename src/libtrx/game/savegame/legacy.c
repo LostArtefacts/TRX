@@ -25,42 +25,62 @@
 #define M_SAVE_CREATURE (1 << 7)
 #define M_LEGACY_NO_ROOM 255
 #define M_LEGACY_MAX_MUSIC_TRACKS 64
-#if TR_VERSION == 1
-    #define M_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
-#else
-    #define M_LEGACY_MAX_BUFFER_SIZE (1170 + 6272) // header + OG buffer size
-#endif
+#define M_LEGACY_MAX_BUFFER_SIZE (20 * 1024)
 
-static int32_t m_BufPos = 0;
-static char *m_BufPtr = nullptr;
-static bool m_SkipReadingBaconLara;
+typedef struct {
+    int32_t buf_pos;
+    char *buf_ptr;
+    char *buffer;
+    bool skip_reading_bacon_lara;
+} M_CONTEXT;
 
-static void M_Reset(char *const buffer)
+// =============================================================================
+// Start of internal helpers
+// =============================================================================
+
+static M_CONTEXT *M_InitContext(MYFILE *const fp)
 {
-    m_BufPos = 0;
-    m_BufPtr = buffer;
+    const size_t size = File_Size(fp);
+    M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx) + size);
+    ctx->buf_pos = 0;
+    ctx->buffer = (char *)ctx + sizeof(*ctx);
+    ctx->buf_ptr = ctx->buffer;
+    File_Seek(fp, 0, FILE_SEEK_SET);
+    File_ReadData(fp, ctx->buffer, size);
+    return ctx;
 }
 
-static void M_Read(void *const ptr, const size_t size)
+void M_FreeContext(M_CONTEXT *const ctx)
 {
-    ASSERT(m_BufPos + size <= M_LEGACY_MAX_BUFFER_SIZE);
-    ASSERT(m_BufPtr != nullptr);
-    m_BufPos += size;
-    memcpy(ptr, m_BufPtr, size);
-    m_BufPtr += size;
+    Memory_Free(ctx);
 }
 
-static void M_Skip(const size_t size)
+static void M_Reset(M_CONTEXT *const ctx)
 {
-    m_BufPos += size;
-    m_BufPtr += size;
+    ctx->buf_pos = 0;
+    ctx->buf_ptr = ctx->buffer;
+}
+
+static void M_Read(M_CONTEXT *const ctx, void *const ptr, const size_t size)
+{
+    ASSERT(ctx->buf_pos + size <= M_LEGACY_MAX_BUFFER_SIZE);
+    ASSERT(ctx->buf_ptr != nullptr);
+    ctx->buf_pos += size;
+    memcpy(ptr, ctx->buf_ptr, size);
+    ctx->buf_ptr += size;
+}
+
+static void M_Skip(M_CONTEXT *const ctx, const size_t size)
+{
+    ctx->buf_pos += size;
+    ctx->buf_ptr += size;
 }
 
 #define X_SPECIAL_READ(name, type)                                             \
-    static type M_Read##name(void)                                             \
+    static type M_Read##name(M_CONTEXT *const ctx)                             \
     {                                                                          \
         type result;                                                           \
-        M_Read(&result, sizeof(type));                                         \
+        M_Read(ctx, &result, sizeof(type));                                    \
         return result;                                                         \
     }
 
@@ -75,6 +95,10 @@ static void M_Skip(const size_t size)
 L_SPECIAL_READS
 #undef X_SPECIAL_READ
 #undef L_SPECIAL_READS
+
+// =============================================================================
+// End of internal helpers
+// =============================================================================
 
 static const char *M_GetSaveFilePattern(void);
 static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *savegame_info);
@@ -154,7 +178,16 @@ static int32_t M_GetLevelCount(void)
     }
 }
 
-static bool M_NeedsBaconLaraFix(char *buffer)
+static int16_t M_ReadRoomNum(M_CONTEXT *const ctx)
+{
+    const int16_t room_num = M_ReadS16(ctx);
+    if (room_num == M_LEGACY_NO_ROOM) {
+        return NO_ROOM;
+    }
+    return room_num;
+}
+
+static bool M_NeedsBaconLaraFix(M_CONTEXT *const ctx)
 {
     // Heuristic for issue #261.
     // TR1X enables save_flags for Bacon Lara, but OG TombATI does not. As
@@ -168,38 +201,38 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     // save_flags for Bacon Lara or not. Since savegames only contain very
     // concise information, we must make an educated guess here.
 
-    ASSERT(buffer != nullptr);
+    ASSERT(ctx != nullptr);
+    M_Reset(ctx);
 
     bool result = false;
     if (g_TRVersion != 1 || Game_GetCurrentLevel()->num != 14) {
         return result;
     }
 
-    M_Reset(buffer);
-    M_Skip(M_LEGACY_TITLE_SIZE); // level title
-    M_Skip(sizeof(int32_t)); // save counter
+    M_Skip(ctx, M_LEGACY_TITLE_SIZE); // level title
+    M_Skip(ctx, sizeof(int32_t)); // save counter
     for (int32_t i = 0; i < M_GetLevelCount(); i++) {
-        M_Skip(sizeof(uint16_t)); // pistol ammo
-        M_Skip(sizeof(uint16_t)); // magnum ammo
-        M_Skip(sizeof(uint16_t)); // uzi ammo
-        M_Skip(sizeof(uint16_t)); // shotgun ammo
-        M_Skip(sizeof(uint8_t)); // small medis
-        M_Skip(sizeof(uint8_t)); // big medis
-        M_Skip(sizeof(uint8_t)); // scions
-        M_Skip(sizeof(int8_t)); // gun status
-        M_Skip(sizeof(int8_t)); // gun type
-        M_Skip(sizeof(uint16_t)); // flags
+        M_Skip(ctx, sizeof(uint16_t)); // pistol ammo
+        M_Skip(ctx, sizeof(uint16_t)); // magnum ammo
+        M_Skip(ctx, sizeof(uint16_t)); // uzi ammo
+        M_Skip(ctx, sizeof(uint16_t)); // shotgun ammo
+        M_Skip(ctx, sizeof(uint8_t)); // small medis
+        M_Skip(ctx, sizeof(uint8_t)); // big medis
+        M_Skip(ctx, sizeof(uint8_t)); // scions
+        M_Skip(ctx, sizeof(int8_t)); // gun status
+        M_Skip(ctx, sizeof(int8_t)); // gun type
+        M_Skip(ctx, sizeof(uint16_t)); // flags
     }
-    M_Skip(sizeof(uint32_t)); // timer
-    M_Skip(sizeof(uint32_t)); // kills
-    M_Skip(sizeof(uint16_t)); // secrets
-    M_Skip(sizeof(uint16_t)); // current level
-    M_Skip(sizeof(uint8_t)); // pickups
-    M_Skip(sizeof(uint8_t)); // bonus_flag
-    M_Skip(sizeof(12)); // item stats
-    M_Skip(sizeof(int32_t)); // flipmap status
-    M_Skip(MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
-    M_Skip(Camera_GetFixedObjectCount() * sizeof(int16_t)); // cameras
+    M_Skip(ctx, sizeof(uint32_t)); // timer
+    M_Skip(ctx, sizeof(uint32_t)); // kills
+    M_Skip(ctx, sizeof(uint16_t)); // secrets
+    M_Skip(ctx, sizeof(uint16_t)); // current level
+    M_Skip(ctx, sizeof(uint8_t)); // pickups
+    M_Skip(ctx, sizeof(uint8_t)); // bonus_flag
+    M_Skip(ctx, sizeof(12)); // item stats
+    M_Skip(ctx, sizeof(int32_t)); // flipmap status
+    M_Skip(ctx, MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
+    M_Skip(ctx, Camera_GetFixedObjectCount() * sizeof(int16_t)); // cameras
 
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
@@ -208,36 +241,36 @@ static bool M_NeedsBaconLaraFix(char *buffer)
         ITEM tmp_item = {};
 
         if (M_ItemHasSavePosition(item)) {
-            tmp_item.pos.x = M_ReadS32();
-            tmp_item.pos.y = M_ReadS32();
-            tmp_item.pos.z = M_ReadS32();
-            tmp_item.rot.x = M_ReadS16();
-            tmp_item.rot.y = M_ReadS16();
-            tmp_item.rot.z = M_ReadS16();
-            M_Skip(sizeof(int16_t));
-            tmp_item.speed = M_ReadS16();
-            tmp_item.fall_speed = M_ReadS16();
+            tmp_item.pos.x = M_ReadS32(ctx);
+            tmp_item.pos.y = M_ReadS32(ctx);
+            tmp_item.pos.z = M_ReadS32(ctx);
+            tmp_item.rot.x = M_ReadS16(ctx);
+            tmp_item.rot.y = M_ReadS16(ctx);
+            tmp_item.rot.z = M_ReadS16(ctx);
+            M_Skip(ctx, sizeof(int16_t));
+            tmp_item.speed = M_ReadS16(ctx);
+            tmp_item.fall_speed = M_ReadS16(ctx);
         }
         if (M_ItemHasSaveAnim(item)) {
-            tmp_item.current_anim_state = M_ReadS16();
-            tmp_item.goal_anim_state = M_ReadS16();
-            tmp_item.required_anim_state = M_ReadS16();
-            tmp_item.anim_num = M_ReadS16();
-            tmp_item.frame_num = M_ReadS16();
+            tmp_item.current_anim_state = M_ReadS16(ctx);
+            tmp_item.goal_anim_state = M_ReadS16(ctx);
+            tmp_item.required_anim_state = M_ReadS16(ctx);
+            tmp_item.anim_num = M_ReadS16(ctx);
+            tmp_item.frame_num = M_ReadS16(ctx);
         }
         if (M_ItemHasHitPoints(item)) {
-            tmp_item.hit_points = M_ReadS16();
+            tmp_item.hit_points = M_ReadS16(ctx);
         }
         if (M_ItemHasSaveFlags(obj, item)) {
-            tmp_item.flags = M_ReadS16();
-            tmp_item.timer = M_ReadS16();
+            tmp_item.flags = M_ReadS16(ctx);
+            tmp_item.timer = M_ReadS16(ctx);
             if (tmp_item.flags & M_SAVE_CREATURE) {
                 CREATURE tmp_creature;
-                tmp_creature.head_rotation = M_ReadS16();
-                tmp_creature.neck_rotation = M_ReadS16();
-                tmp_creature.maximum_turn = M_ReadS16();
-                tmp_creature.flags = M_ReadS16();
-                tmp_creature.mood = M_ReadS32();
+                tmp_creature.head_rotation = M_ReadS16(ctx);
+                tmp_creature.neck_rotation = M_ReadS16(ctx);
+                tmp_creature.maximum_turn = M_ReadS16(ctx);
+                tmp_creature.flags = M_ReadS16(ctx);
+                tmp_creature.mood = M_ReadS32(ctx);
             }
         }
 
@@ -251,177 +284,177 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     return result;
 }
 
-static void M_ReadLaraArm(LARA_ARM *const arm)
+static void M_ReadLaraArm(M_CONTEXT *const ctx, LARA_ARM *const arm)
 {
-    M_Skip(sizeof(int32_t)); // frame_base is superfluous
-    arm->frame_num = M_ReadS16();
+    M_Skip(ctx, sizeof(int32_t)); // frame_base is superfluous
+    arm->frame_num = M_ReadS16(ctx);
     if (g_TRVersion == 2) {
-        arm->anim_num = M_ReadS16();
+        arm->anim_num = M_ReadS16(ctx);
     }
-    arm->lock = M_ReadS16();
-    arm->rot.y = M_ReadS16();
-    arm->rot.x = M_ReadS16();
-    arm->rot.z = M_ReadS16();
-    arm->flash_gun = M_ReadS16();
+    arm->lock = M_ReadS16(ctx);
+    arm->rot.y = M_ReadS16(ctx);
+    arm->rot.x = M_ReadS16(ctx);
+    arm->rot.z = M_ReadS16(ctx);
+    arm->flash_gun = M_ReadS16(ctx);
 }
 
-static void M_ReadAmmoInfo(AMMO_INFO *const ammo_info)
+static void M_ReadAmmoInfo(M_CONTEXT *const ctx, AMMO_INFO *const ammo_info)
 {
-    ammo_info->ammo = M_ReadS32();
+    ammo_info->ammo = M_ReadS32(ctx);
     if (g_TRVersion == 1) {
-        M_Skip(sizeof(int32_t)); // Legacy hits value
-        M_Skip(sizeof(int32_t)); // Legacy miss value
+        M_Skip(ctx, sizeof(int32_t)); // Legacy hits value
+        M_Skip(ctx, sizeof(int32_t)); // Legacy miss value
     }
 }
 
-static void M_ReadLara(void)
+static void M_ReadLara(M_CONTEXT *const ctx)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->item_num = M_ReadS16();
-    lara->gun_status = M_ReadS16();
-    lara->gun_type = M_ReadS16();
-    lara->request_gun_type = M_ReadS16();
+    lara->item_num = M_ReadS16(ctx);
+    lara->gun_status = M_ReadS16(ctx);
+    lara->gun_type = M_ReadS16(ctx);
+    lara->request_gun_type = M_ReadS16(ctx);
     if (g_TRVersion == 1) {
         lara->last_gun_type = lara->request_gun_type;
     } else {
-        lara->last_gun_type = M_ReadS16();
+        lara->last_gun_type = M_ReadS16(ctx);
     }
-    lara->calc_fall_speed = M_ReadS16();
-    lara->water_status = M_ReadS16();
+    lara->calc_fall_speed = M_ReadS16(ctx);
+    lara->water_status = M_ReadS16(ctx);
     if (g_TRVersion == 1) {
         lara->climb_status = false;
     } else {
-        lara->climb_status = M_ReadS16();
+        lara->climb_status = M_ReadS16(ctx);
     }
-    lara->pose_count = M_ReadS16();
-    lara->hit_frame = M_ReadS16();
-    lara->hit_direction = M_ReadS16();
-    lara->air = M_ReadS16();
-    lara->dive_timer = M_ReadS16();
-    lara->death_timer = M_ReadS16();
-    lara->current_active = M_ReadS16();
-    lara->hit_effect_count = M_ReadS16();
+    lara->pose_count = M_ReadS16(ctx);
+    lara->hit_frame = M_ReadS16(ctx);
+    lara->hit_direction = M_ReadS16(ctx);
+    lara->air = M_ReadS16(ctx);
+    lara->dive_timer = M_ReadS16(ctx);
+    lara->death_timer = M_ReadS16(ctx);
+    lara->current_active = M_ReadS16(ctx);
+    lara->hit_effect_count = M_ReadS16(ctx);
 
     if (g_TRVersion == 1) {
-        M_Skip(4); // pointer to EFFECT
+        M_Skip(ctx, 4); // pointer to EFFECT
     }
     lara->hit_effect = nullptr;
 
     if (g_TRVersion == 2) {
-        lara->flare.age = M_ReadS16();
-        Lara_Vehicle_SetIndex(M_ReadS16());
-        lara->gun_item_num = M_ReadS16();
-        lara->back_gun_obj_id = Object_FromGameID(M_ReadS16());
-        lara->flare.frame_num = M_ReadS16();
+        lara->flare.age = M_ReadS16(ctx);
+        Lara_Vehicle_SetIndex(M_ReadS16(ctx));
+        lara->gun_item_num = M_ReadS16(ctx);
+        lara->back_gun_obj_id = Object_FromGameID(M_ReadS16(ctx));
+        lara->flare.frame_num = M_ReadS16(ctx);
 
-        const uint16_t flags = M_ReadU16();
+        const uint16_t flags = M_ReadU16(ctx);
         // clang-format off
         lara->flare.control = (flags & (1 << 0)) != 0;
         lara->extra_anim    = (flags & (1 << 2)) != 0;
         lara->burn          = (flags & (1 << 4)) != 0;
         // clang-format on
 
-        lara->water_surface_dist = M_ReadS32();
-        lara->last_pos.x = M_ReadS32();
-        lara->last_pos.y = M_ReadS32();
-        lara->last_pos.z = M_ReadS32();
-        M_Skip(4);
+        lara->water_surface_dist = M_ReadS32(ctx);
+        lara->last_pos.x = M_ReadS32(ctx);
+        lara->last_pos.y = M_ReadS32(ctx);
+        lara->last_pos.z = M_ReadS32(ctx);
+        M_Skip(ctx, 4);
     }
 
-    lara->mesh_effects = M_ReadS32();
+    lara->mesh_effects = M_ReadS32(ctx);
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-        OBJECT_MESH *const mesh = Object_FindMesh(M_ReadS32() / 2);
+        OBJECT_MESH *const mesh = Object_FindMesh(M_ReadS32(ctx) / 2);
         if (mesh != nullptr) {
             Lara_Mesh_Set(i, mesh);
         }
     }
 
-    M_Skip(4); // target – raw pointer to ITEM
+    M_Skip(ctx, 4); // target – raw pointer to ITEM
     lara->target = nullptr;
-    lara->target_angles[0] = M_ReadS16();
-    lara->target_angles[1] = M_ReadS16();
+    lara->target_angles[0] = M_ReadS16(ctx);
+    lara->target_angles[1] = M_ReadS16(ctx);
 
-    lara->turn_rate = M_ReadS16();
-    lara->move_angle = M_ReadS16();
-    lara->head_rot.y = M_ReadS16();
-    lara->head_rot.x = M_ReadS16();
-    lara->head_rot.z = M_ReadS16();
-    lara->torso_rot.y = M_ReadS16();
-    lara->torso_rot.x = M_ReadS16();
-    lara->torso_rot.z = M_ReadS16();
+    lara->turn_rate = M_ReadS16(ctx);
+    lara->move_angle = M_ReadS16(ctx);
+    lara->head_rot.y = M_ReadS16(ctx);
+    lara->head_rot.x = M_ReadS16(ctx);
+    lara->head_rot.z = M_ReadS16(ctx);
+    lara->torso_rot.y = M_ReadS16(ctx);
+    lara->torso_rot.x = M_ReadS16(ctx);
+    lara->torso_rot.z = M_ReadS16(ctx);
 
-    M_ReadLaraArm(&lara->left_arm);
-    M_ReadLaraArm(&lara->right_arm);
-    M_ReadAmmoInfo(&lara->pistol_ammo);
-    M_ReadAmmoInfo(&lara->magnum_ammo);
-    M_ReadAmmoInfo(&lara->uzi_ammo);
-    M_ReadAmmoInfo(&lara->shotgun_ammo);
+    M_ReadLaraArm(ctx, &lara->left_arm);
+    M_ReadLaraArm(ctx, &lara->right_arm);
+    M_ReadAmmoInfo(ctx, &lara->pistol_ammo);
+    M_ReadAmmoInfo(ctx, &lara->magnum_ammo);
+    M_ReadAmmoInfo(ctx, &lara->uzi_ammo);
+    M_ReadAmmoInfo(ctx, &lara->shotgun_ammo);
     if (g_TRVersion == 2) {
-        M_ReadAmmoInfo(&lara->harpoon_ammo);
-        M_ReadAmmoInfo(&lara->grenade_ammo);
-        M_ReadAmmoInfo(&lara->m16_ammo);
+        M_ReadAmmoInfo(ctx, &lara->harpoon_ammo);
+        M_ReadAmmoInfo(ctx, &lara->grenade_ammo);
+        M_ReadAmmoInfo(ctx, &lara->m16_ammo);
     }
 
     if (g_TRVersion == 1) {
-        M_Skip(36); // Skip LOT for water currents
+        M_Skip(ctx, 36); // Skip LOT for water currents
     } else {
-        M_Skip(4);
+        M_Skip(ctx, 4);
     }
 
     const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
     Gun_Rifle_LoadLegacy(has_rifle);
 }
 
-static void M_ReadStats(LEVEL_STATS *const stats)
+static void M_ReadStats(M_CONTEXT *const ctx, LEVEL_STATS *const stats)
 {
     if (g_TRVersion == 1) {
-        stats->timer = M_ReadU32();
-        stats->kill_count = M_ReadU32();
-        stats->secret_flags = M_ReadU16();
-        M_Skip(2); // current level num
-        stats->pickup_count = M_ReadU8();
+        stats->timer = M_ReadU32(ctx);
+        stats->kill_count = M_ReadU32(ctx);
+        stats->secret_flags = M_ReadU16(ctx);
+        M_Skip(ctx, 2); // current level num
+        stats->pickup_count = M_ReadU8(ctx);
     } else {
-        stats->timer = M_ReadU32();
-        stats->ammo_used = M_ReadU32();
-        stats->ammo_hits = M_ReadU32();
-        stats->distance_travelled = M_ReadU32();
-        stats->kill_count = M_ReadU16();
-        stats->secret_flags = M_ReadU8();
-        stats->medipacks_used = M_ReadU8() / 2.0f;
+        stats->timer = M_ReadU32(ctx);
+        stats->ammo_used = M_ReadU32(ctx);
+        stats->ammo_hits = M_ReadU32(ctx);
+        stats->distance_travelled = M_ReadU32(ctx);
+        stats->kill_count = M_ReadU16(ctx);
+        stats->secret_flags = M_ReadU8(ctx);
+        stats->medipacks_used = M_ReadU8(ctx) / 2.0f;
     }
     stats->death_count = -1;
     Stats_UpdateSecrets(stats);
 }
 
-static void M_ReadResumeInfo(RESUME_INFO *const resume)
+static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
 {
-    resume->pistol_ammo = M_ReadU16();
-    resume->magnum_ammo = M_ReadU16();
-    resume->uzi_ammo = M_ReadU16();
-    resume->shotgun_ammo = M_ReadU16();
+    resume->pistol_ammo = M_ReadU16(ctx);
+    resume->magnum_ammo = M_ReadU16(ctx);
+    resume->uzi_ammo = M_ReadU16(ctx);
+    resume->shotgun_ammo = M_ReadU16(ctx);
     if (g_TRVersion == 2) {
-        resume->m16_ammo = M_ReadU16();
-        resume->grenade_ammo = M_ReadU16();
-        resume->harpoon_ammo = M_ReadU16();
+        resume->m16_ammo = M_ReadU16(ctx);
+        resume->grenade_ammo = M_ReadU16(ctx);
+        resume->harpoon_ammo = M_ReadU16(ctx);
     }
-    resume->small_medipacks = M_ReadU8();
-    resume->large_medipacks = M_ReadU8();
+    resume->small_medipacks = M_ReadU8(ctx);
+    resume->large_medipacks = M_ReadU8(ctx);
     if (g_TRVersion == 1) {
-        resume->num_scions = M_ReadU8();
-        resume->gun_status = M_ReadS8();
-        resume->equipped_gun_type = M_ReadS8();
+        resume->num_scions = M_ReadU8(ctx);
+        resume->gun_status = M_ReadS8(ctx);
+        resume->equipped_gun_type = M_ReadS8(ctx);
         resume->holsters_gun_type = LGT_UNKNOWN;
         resume->back_gun_type = LGT_UNKNOWN;
     } else {
-        M_Skip(1); // legacy reserved value
-        resume->flares = M_ReadU8();
-        resume->gun_status = M_ReadU8();
-        resume->equipped_gun_type = M_ReadU8();
+        M_Skip(ctx, 1); // legacy reserved value
+        resume->flares = M_ReadU8(ctx);
+        resume->gun_status = M_ReadU8(ctx);
+        resume->equipped_gun_type = M_ReadU8(ctx);
         resume->holsters_gun_type = LGT_UNKNOWN;
         resume->back_gun_type = LGT_UNKNOWN;
     }
 
-    const uint16_t flags = M_ReadU16();
+    const uint16_t flags = M_ReadU16(ctx);
     // clang-format off
     resume->flags.available     = (flags & 0x01) != 0;
     resume->flags.has_pistols   = (flags & 0x02) != 0;
@@ -438,37 +471,37 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
     // clang-format on
 
     if (g_TRVersion == 2) {
-        M_Skip(sizeof(uint16_t));
-        M_ReadStats(&resume->stats);
+        M_Skip(ctx, sizeof(uint16_t));
+        M_ReadStats(ctx, &resume->stats);
     }
 }
 
-static void M_ReadResumeInfos(void)
+static void M_ReadResumeInfos(M_CONTEXT *const ctx)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < M_GetLevelCount(); i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
-            M_ReadResumeInfo(Savegame_GetCurrentInfo(level));
+            M_ReadResumeInfo(ctx, Savegame_GetCurrentInfo(level));
         } else {
             RESUME_INFO dummy_resume_info;
-            M_ReadResumeInfo(&dummy_resume_info);
+            M_ReadResumeInfo(ctx, &dummy_resume_info);
         }
     }
 }
 
-static void M_ReadCurrentStats(void)
+static void M_ReadCurrentStats(M_CONTEXT *const ctx)
 {
     LEVEL_STATS current_stats = {};
-    M_ReadStats(&current_stats);
+    M_ReadStats(ctx, &current_stats);
 
     int16_t current_level_num;
     if (g_TRVersion == 1) {
-        M_Skip(-3);
-        current_level_num = M_ReadS16();
-        M_Skip(1);
+        M_Skip(ctx, -3);
+        current_level_num = M_ReadS16(ctx);
+        M_Skip(ctx, 1);
     } else {
-        current_level_num = M_ReadS16();
+        current_level_num = M_ReadS16(ctx);
     }
 
     const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, current_level_num);
@@ -477,46 +510,37 @@ static void M_ReadCurrentStats(void)
         resume->stats = current_stats;
     }
 
-    const bool is_ng_plus = M_ReadU8() != 0;
+    const bool is_ng_plus = M_ReadU8(ctx) != 0;
     if (is_ng_plus) {
         Game_SetBonusFlag(GBF_NGPLUS);
     }
 }
 
-static int16_t M_ReadRoomNum(void)
-{
-    const int16_t room_num = M_ReadS16();
-    if (room_num == M_LEGACY_NO_ROOM) {
-        return NO_ROOM;
-    }
-    return room_num;
-}
-
-static void M_ReadItem(const int16_t item_num)
+static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (M_ItemHasSavePosition(item)) {
-        item->pos.x = M_ReadS32();
-        item->pos.y = M_ReadS32();
-        item->pos.z = M_ReadS32();
-        item->rot.x = M_ReadS16();
-        item->rot.y = M_ReadS16();
-        item->rot.z = M_ReadS16();
-        const int16_t room_num = M_ReadRoomNum();
-        item->speed = M_ReadS16();
-        item->fall_speed = M_ReadS16();
+        item->pos.x = M_ReadS32(ctx);
+        item->pos.y = M_ReadS32(ctx);
+        item->pos.z = M_ReadS32(ctx);
+        item->rot.x = M_ReadS16(ctx);
+        item->rot.y = M_ReadS16(ctx);
+        item->rot.z = M_ReadS16(ctx);
+        const int16_t room_num = M_ReadRoomNum(ctx);
+        item->speed = M_ReadS16(ctx);
+        item->fall_speed = M_ReadS16(ctx);
 
         Item_UpdateRoom(item_num, room_num);
     }
 
     if (M_ItemHasSaveAnim(item)) {
-        item->current_anim_state = M_ReadS16();
-        item->goal_anim_state = M_ReadS16();
-        item->required_anim_state = M_ReadS16();
-        item->anim_num = M_ReadS16();
-        item->frame_num = M_ReadS16();
+        item->current_anim_state = M_ReadS16(ctx);
+        item->goal_anim_state = M_ReadS16(ctx);
+        item->required_anim_state = M_ReadS16(ctx);
+        item->anim_num = M_ReadS16(ctx);
+        item->frame_num = M_ReadS16(ctx);
 
         if (item->object_id == O_LARA
             && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
@@ -525,16 +549,16 @@ static void M_ReadItem(const int16_t item_num)
     }
 
     if (M_ItemHasHitPoints(item)) {
-        item->hit_points = M_ReadS16();
+        item->hit_points = M_ReadS16(ctx);
     }
 
     if (M_ItemHasSaveFlags(obj, item)
-        && (item->object_id != O_BACON_LARA || !m_SkipReadingBaconLara)) {
-        item->flags = M_ReadU16();
+        && (item->object_id != O_BACON_LARA || !ctx->skip_reading_bacon_lara)) {
+        item->flags = M_ReadU16(ctx);
         if (obj->intelligent && g_TRVersion == 2) {
-            M_Skip(sizeof(int16_t)); // legacy carried item
+            M_Skip(ctx, sizeof(int16_t)); // legacy carried item
         }
-        item->timer = M_ReadS16();
+        item->timer = M_ReadS16(ctx);
 
         if (item->flags & IF_KILLED) {
             Item_Kill(item_num);
@@ -556,13 +580,13 @@ static void M_ReadItem(const int16_t item_num)
             LOT_EnableBaddieAI(item_num, true);
             CREATURE *const creature = item->data;
             if (creature != nullptr) {
-                creature->head_rotation = M_ReadS16();
-                creature->neck_rotation = M_ReadS16();
-                creature->maximum_turn = M_ReadS16();
-                creature->flags = M_ReadS16();
-                creature->mood = M_ReadS32();
+                creature->head_rotation = M_ReadS16(ctx);
+                creature->neck_rotation = M_ReadS16(ctx);
+                creature->maximum_turn = M_ReadS16(ctx);
+                creature->flags = M_ReadS16(ctx);
+                creature->mood = M_ReadS32(ctx);
             } else {
-                M_Skip(12);
+                M_Skip(ctx, 12);
             }
         } else if (obj->intelligent) {
             item->data = nullptr;
@@ -596,32 +620,32 @@ static void M_ReadItem(const int16_t item_num)
 
     case O_BOAT: {
         BOAT_INFO *const data = item->data;
-        data->boat_turn = M_ReadS32();
-        data->left_fallspeed = M_ReadS32();
-        data->right_fallspeed = M_ReadS32();
-        data->tilt_angle = M_ReadS16();
-        data->extra_rotation = M_ReadS16();
-        data->water = M_ReadS32();
-        data->pitch = M_ReadS32();
+        data->boat_turn = M_ReadS32(ctx);
+        data->left_fallspeed = M_ReadS32(ctx);
+        data->right_fallspeed = M_ReadS32(ctx);
+        data->tilt_angle = M_ReadS16(ctx);
+        data->extra_rotation = M_ReadS16(ctx);
+        data->water = M_ReadS32(ctx);
+        data->pitch = M_ReadS32(ctx);
         break;
     }
 
     case O_SKIDOO_FAST: {
         SKIDOO_INFO *const data = item->data;
-        data->track_mesh = M_ReadS16();
-        data->skidoo_turn = M_ReadS32();
-        data->left_fallspeed = M_ReadS32();
-        data->right_fallspeed = M_ReadS32();
-        data->momentum_angle = M_ReadS16();
-        data->extra_rotation = M_ReadS16();
-        data->pitch = M_ReadS32();
+        data->track_mesh = M_ReadS16(ctx);
+        data->skidoo_turn = M_ReadS32(ctx);
+        data->left_fallspeed = M_ReadS32(ctx);
+        data->right_fallspeed = M_ReadS32(ctx);
+        data->momentum_angle = M_ReadS16(ctx);
+        data->extra_rotation = M_ReadS16(ctx);
+        data->pitch = M_ReadS32(ctx);
         break;
     }
 
     case O_LIFT: {
         LIFT_INFO *const data = item->data;
-        data->start_height = M_ReadS32();
-        data->wait_time = M_ReadS32();
+        data->start_height = M_ReadS32(ctx);
+        data->wait_time = M_ReadS32(ctx);
         break;
     }
 
@@ -639,12 +663,35 @@ static void M_ReadItem(const int16_t item_num)
     }
 }
 
-static void M_ReadItems(void)
+static void M_ReadItems(M_CONTEXT *const ctx)
 {
     Savegame_ProcessItemsBeforeLoad();
 
     for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
-        M_ReadItem(item_num);
+        M_ReadItem(ctx, item_num);
+    }
+}
+
+static void M_ReadFlares(M_CONTEXT *const ctx)
+{
+    const int32_t num_flares = M_ReadS32(ctx);
+    for (int32_t i = 0; i < num_flares; i++) {
+        const int16_t item_num = Item_Create();
+        ITEM *const item = Item_Get(item_num);
+        item->object_id = O_FLARE_ITEM;
+        item->pos.x = M_ReadS32(ctx);
+        item->pos.y = M_ReadS32(ctx);
+        item->pos.z = M_ReadS32(ctx);
+        item->rot.x = M_ReadS16(ctx);
+        item->rot.y = M_ReadS16(ctx);
+        item->rot.z = M_ReadS16(ctx);
+        item->room_num = M_ReadRoomNum(ctx);
+        item->speed = M_ReadS16(ctx);
+        item->fall_speed = M_ReadS16(ctx);
+        Item_Initialise(item_num);
+        Item_AddActive(item_num);
+        const int32_t flare_age = M_ReadS32(ctx);
+        item->data = (void *)(intptr_t)flare_age;
     }
 }
 
@@ -712,46 +759,23 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return true;
 }
 
-static void M_ReadFlares(void)
-{
-    const int32_t num_flares = M_ReadS32();
-    for (int32_t i = 0; i < num_flares; i++) {
-        const int16_t item_num = Item_Create();
-        ITEM *const item = Item_Get(item_num);
-        item->object_id = O_FLARE_ITEM;
-        item->pos.x = M_ReadS32();
-        item->pos.y = M_ReadS32();
-        item->pos.z = M_ReadS32();
-        item->rot.x = M_ReadS16();
-        item->rot.y = M_ReadS16();
-        item->rot.z = M_ReadS16();
-        item->room_num = M_ReadRoomNum();
-        item->speed = M_ReadS16();
-        item->fall_speed = M_ReadS16();
-        Item_Initialise(item_num);
-        Item_AddActive(item_num);
-        const int32_t flare_age = M_ReadS32();
-        item->data = (void *)(intptr_t)flare_age;
-    }
-}
-
 static bool M_LoadFromFile(MYFILE *const fp)
 {
-    char *buffer = Memory_Alloc(File_Size(fp));
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, buffer, File_Size(fp));
+    M_CONTEXT *const ctx = M_InitContext(fp);
 
-    m_SkipReadingBaconLara = M_NeedsBaconLaraFix(buffer);
-    if (m_SkipReadingBaconLara) {
-        LOG_INFO("Enabling Bacon Lara savegame fix");
+    if (g_TRVersion == 1) {
+        ctx->skip_reading_bacon_lara = M_NeedsBaconLaraFix(ctx);
+        if (ctx->skip_reading_bacon_lara) {
+            LOG_INFO("Enabling Bacon Lara savegame fix");
+        }
     }
 
-    M_Reset(buffer);
-    M_Skip(M_LEGACY_TITLE_SIZE); // level title
-    M_Skip(sizeof(int32_t)); // save counter
+    M_Reset(ctx);
+    M_Skip(ctx, M_LEGACY_TITLE_SIZE); // level title
+    M_Skip(ctx, sizeof(int32_t)); // save counter
 
-    M_ReadResumeInfos();
-    M_ReadCurrentStats();
+    M_ReadResumeInfos(ctx);
+    M_ReadCurrentStats(ctx);
 
     // Copy RESUME_INFO of "current position" level to the target level
     if (g_TRVersion == 1) {
@@ -771,82 +795,79 @@ static bool M_LoadFromFile(MYFILE *const fp)
     }
 
     Lara_InitialiseInventory(Game_GetCurrentLevel());
-    Inv_AddItemNTimes(O_PICKUP_ITEM_1, M_ReadU8());
-    Inv_AddItemNTimes(O_PICKUP_ITEM_2, M_ReadU8());
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, M_ReadU8());
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, M_ReadU8());
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, M_ReadU8());
-    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, M_ReadU8());
-    Inv_AddItemNTimes(O_KEY_ITEM_1, M_ReadU8());
-    Inv_AddItemNTimes(O_KEY_ITEM_2, M_ReadU8());
-    Inv_AddItemNTimes(O_KEY_ITEM_3, M_ReadU8());
-    Inv_AddItemNTimes(O_KEY_ITEM_4, M_ReadU8());
+    Inv_AddItemNTimes(O_PICKUP_ITEM_1, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_PICKUP_ITEM_2, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_1, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_2, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_3, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_PUZZLE_ITEM_4, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_KEY_ITEM_1, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_KEY_ITEM_2, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_KEY_ITEM_3, M_ReadU8(ctx));
+    Inv_AddItemNTimes(O_KEY_ITEM_4, M_ReadU8(ctx));
     if (g_TRVersion == 1) {
-        Inv_AddItemNTimes(O_LEADBAR_ITEM, M_ReadU8());
-        M_Skip(1); // reserved
+        Inv_AddItemNTimes(O_LEADBAR_ITEM, M_ReadU8(ctx));
+        M_Skip(ctx, 1); // reserved
     } else {
-        M_Skip(2); // reserved
+        M_Skip(ctx, 2); // reserved
     }
 
-    if (M_ReadS32() != 0) {
+    if (M_ReadS32(ctx) != 0) {
         Room_FlipMap();
     }
     for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        Room_SetFlipSlotFlags(i, M_ReadS8() << 8);
+        Room_SetFlipSlotFlags(i, M_ReadS8(ctx) << 8);
     }
 
     if (g_TRVersion == 2) {
         for (int32_t i = 0; i < M_LEGACY_MAX_MUSIC_TRACKS; i++) {
             const int32_t track_id = Music_ConvertLegacyTrack(i);
-            Music_SetTrackFlags(track_id, M_ReadU16());
+            Music_SetTrackFlags(track_id, M_ReadU16(ctx));
         }
     }
 
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
         OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        object->flags = M_ReadS16();
+        object->flags = M_ReadS16(ctx);
     }
 
-    M_ReadItems();
+    M_ReadItems(ctx);
 
-    M_ReadLara();
+    M_ReadLara(ctx);
     if (g_TRVersion == 2) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         if (lara->gun_item_num != NO_ITEM) {
             lara->gun_item_num = Item_Create();
             ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-            weapon_item->object_id = Object_FromGameID(M_ReadS16());
-            weapon_item->anim_num = M_ReadS16();
-            weapon_item->frame_num = M_ReadS16();
-            weapon_item->current_anim_state = M_ReadS16();
-            weapon_item->goal_anim_state = M_ReadS16();
+            weapon_item->object_id = Object_FromGameID(M_ReadS16(ctx));
+            weapon_item->anim_num = M_ReadS16(ctx);
+            weapon_item->frame_num = M_ReadS16(ctx);
+            weapon_item->current_anim_state = M_ReadS16(ctx);
+            weapon_item->goal_anim_state = M_ReadS16(ctx);
             weapon_item->status = IS_ACTIVE;
             weapon_item->room_num = NO_ROOM;
         }
     }
 
-    Room_SetFlipEffect(M_ReadS32());
-    Room_SetFlipTimer(M_ReadS32());
+    Room_SetFlipEffect(M_ReadS32(ctx));
+    Room_SetFlipTimer(M_ReadS32(ctx));
 
     if (g_TRVersion == 2) {
-        Creature_SetAlliesHostile(M_ReadS32() != 0);
-        M_ReadFlares();
+        Creature_SetAlliesHostile(M_ReadS32(ctx) != 0);
+        M_ReadFlares(ctx);
     }
 
-    Memory_FreePointer(&buffer);
+    M_FreeContext(ctx);
     return true;
 }
 
 static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
-    char *buffer = Memory_Alloc(File_Size(fp));
-    File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, buffer, File_Size(fp));
-    M_Reset(buffer);
-    M_Skip(M_LEGACY_TITLE_SIZE); // level title
-    M_Skip(sizeof(int32_t)); // save counter
-    M_ReadResumeInfos();
-    Memory_FreePointer(&buffer);
+    M_CONTEXT *const ctx = M_InitContext(fp);
+    M_Skip(ctx, M_LEGACY_TITLE_SIZE); // level title
+    M_Skip(ctx, sizeof(int32_t)); // save counter
+    M_ReadResumeInfos(ctx);
+    M_FreeContext(ctx);
     return true;
 }
 
