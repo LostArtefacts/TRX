@@ -24,6 +24,7 @@
 #include "log.h"
 #include "memory.h"
 #include "utils.h"
+#include "version.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -116,8 +117,6 @@ static SAVEGAME_STRATEGY m_Strategy = {
     // clang-format on
 };
 
-#if TR_VERSION == 1
-
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
     // TR1X savegame files are enhanced to store more information by having
@@ -128,11 +127,17 @@ static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
     // save file alone. So the object IDs that got changed are listed here
     // to make sure the legacy savegame reader doesn't try to reach out for
     // information that's not there.
-    return (
-        obj->save_flags && item->object_id != O_EMBER_EMITTER
-        && item->object_id != O_FLAME_EMITTER && item->object_id != O_WATERFALL
-        && item->object_id != O_SCION_ITEM_1
-        && item->object_id != O_DART_EMITTER);
+    if (g_TRVersion == 1) {
+        return (
+            obj->save_flags && item->object_id != O_EMBER_EMITTER
+            && item->object_id != O_FLAME_EMITTER
+            && item->object_id != O_WATERFALL
+            && item->object_id != O_SCION_ITEM_1
+            && item->object_id != O_DART_EMITTER);
+    } else {
+        return obj->save_flags && item->object_id != O_WATERFALL
+            && item->object_id != O_DART;
+    }
 }
 
 static bool M_ItemHasSaveAnim(const ITEM *const item)
@@ -150,9 +155,14 @@ static bool M_ItemHasHitPoints(const ITEM *const item)
 static bool M_ItemHasSavePosition(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
-    return obj->save_position && obj->collision_func != Pickup_Collision;
+    if (g_TRVersion == 1) {
+        return obj->save_position && obj->collision_func != Pickup_Collision;
+    } else {
+        return obj->save_position && item->object_id != O_GONDOLA;
+    }
 }
 
+#if TR_VERSION == 1
 static bool M_NeedsBaconLaraFix(char *buffer)
 {
     // Heuristic for issue #261.
@@ -614,18 +624,6 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
 #else
 
-static bool M_ItemHasSaveFlags(const OBJECT *const obj, const ITEM *const item)
-{
-    return obj->save_flags && item->object_id != O_WATERFALL
-        && item->object_id != O_DART;
-}
-
-static bool M_ItemHasSavePosition(
-    const OBJECT *const obj, const ITEM *const item)
-{
-    return obj->save_position && item->object_id != O_GONDOLA;
-}
-
 static int16_t M_ReadRoomNum(void)
 {
     const int16_t room_num = M_ReadS16();
@@ -704,7 +702,7 @@ static void M_ReadItems(void)
         ITEM *const item = Item_Get(item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        if (M_ItemHasSavePosition(obj, item)) {
+        if (M_ItemHasSavePosition(item)) {
             item->pos.x = M_ReadS32();
             item->pos.y = M_ReadS32();
             item->pos.z = M_ReadS32();
