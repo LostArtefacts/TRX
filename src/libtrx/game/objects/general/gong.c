@@ -54,26 +54,16 @@ static void M_CreateGongBonger(ITEM *const lara_item)
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
     Lara_AlignPosition(receptacle_item, &m_Position);
-    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-    lara_item->current_anim_state = LS_EXTRA_BREATH;
-    if (receptacle_item->object_id == O_DETONATOR_BOX) {
-        lara_item->goal_anim_state = LS_EXTRA_PLUNGER;
-    } else {
-        lara_item->goal_anim_state = LS_EXTRA_GONG_BONG;
-        lara_item->rot.y += DEG_180;
-    }
-    Item_Animate(lara_item);
+    lara_item->rot.y += DEG_180;
 
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->extra_anim = true;
-    lara->gun_status = LGS_HANDS_BUSY;
-    lara->hit_direction = -1;
-
+    Lara_SwitchToExtraState(LS_EXTRA_GONG_BONG);
     if (Item_TestFrameEqual(lara_item, 0)) {
         M_ConsumeKeyItem(receptacle_item);
     }
 
     M_CreateGongBonger(lara_item);
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
     lara->interact_target.item_num = NO_ITEM;
 }

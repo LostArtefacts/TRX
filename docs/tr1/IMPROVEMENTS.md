@@ -248,6 +248,7 @@ Not all options are turned on by default. Refer to the ingame settings for detai
 - fixed being able to see the flipmap in Natla's Mines when moving the boat
 - fixed blood spawning on Lara from gunshots using incorrect positioning data
 - fixed Lara using the wrong hit animation under certain scenarios based on her hit angle
+- fixed Lara retaining her hit animation if nudged by an enemy at the same time as starting a special animation such as picking up a scion
 - fixed the collision box on some static meshes in Egypt to prevent the camera shaking when Lara walks by them
 - fixed the positions of big pods in Atlantean levels and cutscenes
 - fixed Lara drifting during the Atlantis cutscene while the camera focuses in on Natla

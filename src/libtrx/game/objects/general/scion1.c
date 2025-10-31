@@ -60,12 +60,7 @@ static void M_Collision(
         && lara_item->current_anim_state == LS(LS_STOP)) {
         lara->interact_target.item_num = item_num;
         Lara_AlignPosition(item, &m_Scion1_Position);
-        Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
-        lara_item->current_anim_state = LS_EXTRA_BREATH;
-        lara_item->goal_anim_state = LS_EXTRA_SCION_PICKUP_1;
-        Item_Animate(lara_item);
-        lara->gun_status = LGS_HANDS_BUSY;
-        lara->extra_anim = true;
+        Lara_SwitchToExtraState(LS_EXTRA_SCION_PICKUP_1);
         Camera_InvokeCinematic(lara_item, 0, 0);
     }
 cleanup:

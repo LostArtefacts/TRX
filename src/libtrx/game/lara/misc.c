@@ -402,3 +402,17 @@ bool Lara_HasExtraState(const LARA_EXTRA_STATE *const test_arr)
     }
     return false;
 }
+
+void Lara_SwitchToExtraState(const LARA_EXTRA_STATE goal_state)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    Item_SwitchToObjAnim(lara_item, LS_EXTRA_BREATH, 0, O_LARA_EXTRA);
+    lara_item->current_anim_state = LS_EXTRA_BREATH;
+    lara_item->goal_anim_state = goal_state;
+    Item_Animate(lara_item);
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->gun_status = LGS_HANDS_BUSY;
+    lara->hit_direction = DIR_UNKNOWN;
+    lara->extra_anim = true;
+}
