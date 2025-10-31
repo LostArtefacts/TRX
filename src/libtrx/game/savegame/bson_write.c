@@ -1,10 +1,17 @@
 #include "config.h"
 #include "debug.h"
+#include "game/effects.h"
 #include "game/items.h"
+#include "game/objects.h"
 #include "game/savegame/bson.h"
 #include "memory.h"
 
 #define M_MAX_STACK_SIZE 10
+
+typedef struct {
+    int16_t count;
+    int16_t id_map[MAX_EFFECTS];
+} M_FX_ORDER;
 
 typedef struct SAVEGAME_BSON_WRITE_CONTEXT {
     JSON_VALUE *stack[M_MAX_STACK_SIZE];
@@ -145,6 +152,20 @@ static void M_WriteXYZ16(
     M_PopAndSet(ctx, key);
 }
 
+static void M_GetFXOrder(M_FX_ORDER *const order)
+{
+    order->count = 0;
+    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
+        order->id_map[i] = -1;
+    }
+
+    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
+         link_num = Effect_Get(link_num)->next_active) {
+        order->id_map[link_num] = order->count;
+        order->count++;
+    }
+}
+
 SAVEGAME_BSON_WRITE_CONTEXT *Savegame_BSON_StartWrite(void)
 {
     M_CONTEXT *const ctx = Memory_Alloc(sizeof(*ctx));
@@ -185,4 +206,45 @@ void Savegame_BSON_DumpFlares(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
         M_PopAndAppend(ctx);
     }
     M_PopAndSet(ctx, "flares");
+}
+
+void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    M_FX_ORDER fx_order;
+    M_GetFXOrder(&fx_order);
+
+    M_PushArray(ctx);
+    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
+         link_num = Effect_Get(link_num)->next_active) {
+        EFFECT *const effect = Effect_Get(link_num);
+        if (Object_ToGameID(effect->object_id) == -1) {
+            continue;
+        }
+        M_PushObject(ctx);
+        M_WriteXYZ32(ctx, "pos", effect->pos);
+        M_WriteXYZ16(ctx, "rot", effect->rot);
+        // TR1X <4.16
+        M_WriteNum(ctx, "x", effect->pos.x);
+        M_WriteNum(ctx, "y", effect->pos.y);
+        M_WriteNum(ctx, "z", effect->pos.z);
+        M_WriteNum(ctx, "x_rot", effect->rot.x);
+        M_WriteNum(ctx, "y_rot", effect->rot.y);
+        M_WriteNum(ctx, "z_rot", effect->rot.z);
+
+        // TR1X <4.16, TR2X<1.6
+        M_WriteNum(ctx, "room_number", effect->room_num);
+        M_WriteNum(ctx, "room_num", effect->room_num);
+
+        // TR1X <4.16, TR2X<1.6
+        M_WriteNum(ctx, "object_number", Object_ToGameID(effect->object_id));
+        M_WriteNum(ctx, "object_id", Object_ToGameID(effect->object_id));
+
+        M_WriteNum(ctx, "speed", effect->speed);
+        M_WriteNum(ctx, "fall_speed", effect->fall_speed);
+        M_WriteNum(ctx, "frame_number", effect->frame_num);
+        M_WriteNum(ctx, "counter", effect->counter);
+        M_WriteNum(ctx, "shade", effect->shade);
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "fx");
 }
