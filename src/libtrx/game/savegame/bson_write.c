@@ -4,6 +4,7 @@
 #include "game/inventory.h"
 #include "game/items.h"
 #include "game/objects.h"
+#include "game/rooms.h"
 #include "game/savegame/bson.h"
 #include "memory.h"
 
@@ -265,4 +266,19 @@ void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "key4", Inv_RequestItem(O_KEY_ITEM_4));
     M_WriteNum(ctx, "leadbar", Inv_RequestItem(O_LEADBAR_ITEM));
     M_PopAndSet(ctx, "inventory");
+}
+
+void Savegame_BSON_DumpFlipmaps(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
+{
+    M_PushObject(ctx);
+    M_WriteBool(ctx, "status", Room_GetFlipStatus());
+    M_WriteNum(ctx, "effect", Room_GetFlipEffect());
+    M_WriteNum(ctx, "timer", Room_GetFlipTimer());
+    M_PushArray(ctx);
+    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
+        M_PushNum(ctx, Room_GetFlipSlotFlags(i) >> 8);
+        M_PopAndAppend(ctx);
+    }
+    M_PopAndSet(ctx, "table");
+    M_PopAndSet(ctx, "flipmap");
 }

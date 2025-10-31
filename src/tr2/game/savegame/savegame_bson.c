@@ -209,20 +209,6 @@ static JSON_ARRAY *M_DumpResumeInfo(void)
     return resume_arr;
 }
 
-static JSON_OBJECT *M_DumpFlipmaps(void)
-{
-    JSON_OBJECT *const flipmap_obj = JSON_ObjectNew();
-    JSON_ObjectAppendBool(flipmap_obj, "status", Room_GetFlipStatus());
-    JSON_ObjectAppendInt(flipmap_obj, "effect", Room_GetFlipEffect());
-    JSON_ObjectAppendInt(flipmap_obj, "timer", Room_GetFlipTimer());
-    JSON_ARRAY *const flipmap_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < MAX_FLIP_MAPS; i++) {
-        JSON_ArrayAppendInt(flipmap_arr, Room_GetFlipSlotFlags(i) >> 8);
-    }
-    JSON_ObjectAppendArray(flipmap_obj, "table", flipmap_arr);
-    return flipmap_obj;
-}
-
 static JSON_ARRAY *M_DumpCameras(void)
 {
     JSON_ARRAY *const cameras_arr = JSON_ArrayNew();
@@ -548,7 +534,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_ObjectAppendObject(root_obj, "music", M_DumpMusic());
     JSON_ObjectAppendArray(root_obj, "resume_info", M_DumpResumeInfo());
     Savegame_BSON_DumpInventory(ctx);
-    JSON_ObjectAppendObject(root_obj, "flipmap", M_DumpFlipmaps());
+    Savegame_BSON_DumpFlipmaps(ctx);
     JSON_ObjectAppendArray(root_obj, "cameras", M_DumpCameras());
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     Savegame_BSON_DumpEffects(ctx);
