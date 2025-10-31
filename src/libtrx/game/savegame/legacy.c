@@ -117,6 +117,11 @@ static SAVEGAME_STRATEGY m_Strategy = {
     // clang-format on
 };
 
+static const char *M_GetSaveFilePattern(void)
+{
+    return g_GameFlow.savegame_fmt_legacy;
+}
+
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
     // TR1X savegame files are enhanced to store more information by having
@@ -379,20 +384,46 @@ static void M_ReadLara(LARA_INFO *const lara)
     Gun_Rifle_LoadLegacy(has_rifle);
 }
 
-#if TR_VERSION == 1
+static void M_ReadStats(LEVEL_STATS *const stats)
+{
+    stats->timer = M_ReadU32();
+    stats->ammo_used = M_ReadU32();
+    stats->ammo_hits = M_ReadU32();
+    stats->distance_travelled = M_ReadU32();
+    stats->kill_count = M_ReadU16();
+    stats->secret_flags = M_ReadU8();
+    stats->medipacks_used = M_ReadU8() / 2.0f;
+    stats->death_count = -1;
+    Stats_UpdateSecrets(stats);
+}
+
 static void M_ReadResumeInfo(RESUME_INFO *const resume)
 {
     resume->pistol_ammo = M_ReadU16();
     resume->magnum_ammo = M_ReadU16();
     resume->uzi_ammo = M_ReadU16();
     resume->shotgun_ammo = M_ReadU16();
+    if (g_TRVersion == 2) {
+        resume->m16_ammo = M_ReadU16();
+        resume->grenade_ammo = M_ReadU16();
+        resume->harpoon_ammo = M_ReadU16();
+    }
     resume->small_medipacks = M_ReadU8();
     resume->large_medipacks = M_ReadU8();
-    resume->num_scions = M_ReadU8();
-    resume->gun_status = M_ReadS8();
-    resume->equipped_gun_type = M_ReadS8();
-    resume->holsters_gun_type = LGT_UNKNOWN;
-    resume->back_gun_type = LGT_UNKNOWN;
+    if (g_TRVersion == 1) {
+        resume->num_scions = M_ReadU8();
+        resume->gun_status = M_ReadS8();
+        resume->equipped_gun_type = M_ReadS8();
+        resume->holsters_gun_type = LGT_UNKNOWN;
+        resume->back_gun_type = LGT_UNKNOWN;
+    } else {
+        M_Skip(1); // legacy reserved value
+        resume->flares = M_ReadU8();
+        resume->gun_status = M_ReadU8();
+        resume->equipped_gun_type = M_ReadU8();
+        resume->holsters_gun_type = LGT_UNKNOWN;
+        resume->back_gun_type = LGT_UNKNOWN;
+    }
 
     const uint16_t flags = M_ReadU16();
     // clang-format off
@@ -401,57 +432,65 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
     resume->flags.has_magnums   = (flags & 0x04) != 0;
     resume->flags.has_uzis      = (flags & 0x08) != 0;
     resume->flags.has_shotgun   = (flags & 0x10) != 0;
-    resume->flags.costume       = (flags & 0x20) != 0;
+    if (g_TRVersion == 1) {
+        resume->flags.costume       = (flags & 0x20) != 0;
+    } else {
+        resume->flags.has_m16       = (flags & 0x20) != 0;
+        resume->flags.has_grenade   = (flags & 0x40) != 0;
+        resume->flags.has_harpoon   = (flags & 0x80) != 0;
+    }
     // clang-format on
+
+    if (g_TRVersion == 2) {
+        M_Skip(sizeof(uint16_t));
+        M_ReadStats(&resume->stats);
+    }
 }
 
 static void M_ReadResumeInfos(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
+    const int32_t table_count = g_TRVersion == 1
+        ? GF_GetLevelTable(GFLT_MAIN)->count
+        : 24; // TR2 has fixed length.
+    for (int32_t i = 0; i < table_count; i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
             M_ReadResumeInfo(Savegame_GetCurrentInfo(level));
-
-            // Gym and first level have special starting items.
-            if (level == GF_GetFirstLevel() || level == GF_GetGymLevel()) {
-                Savegame_ApplyLogicToCurrentInfo(level);
-            }
         } else {
             RESUME_INFO dummy_resume_info;
             M_ReadResumeInfo(&dummy_resume_info);
         }
     }
 
-    const uint32_t temp_timer = M_ReadU32();
-    const uint32_t temp_kill_count = M_ReadU32();
-    const uint16_t temp_secret_flags = M_ReadU16();
-    const uint16_t current_level_num = M_ReadU16();
-    const uint8_t temp_pickup_count = M_ReadU8();
-    const uint8_t temp_flags = M_ReadU8();
+    if (g_TRVersion == 1) {
+        const uint32_t temp_timer = M_ReadU32();
+        const uint32_t temp_kill_count = M_ReadU32();
+        const uint16_t temp_secret_flags = M_ReadU16();
+        const uint16_t current_level_num = M_ReadU16();
+        const uint8_t temp_pickup_count = M_ReadU8();
+        const uint8_t temp_flags = M_ReadU8();
 
-    const GF_LEVEL *current_level = Game_GetCurrentLevel();
-    if (current_level != nullptr) {
-        RESUME_INFO *const resume_info = Savegame_GetCurrentInfo(current_level);
-        resume_info->stats.timer = temp_timer;
-        resume_info->stats.kill_count = temp_kill_count;
-        resume_info->stats.secret_flags = temp_secret_flags;
-        Stats_UpdateSecrets(&resume_info->stats);
-        resume_info->stats.pickup_count = temp_pickup_count;
-        resume_info->stats.death_count = -1;
-    }
+        const GF_LEVEL *current_level = Game_GetCurrentLevel();
+        if (current_level != nullptr) {
+            RESUME_INFO *const resume_info =
+                Savegame_GetCurrentInfo(current_level);
+            resume_info->stats.timer = temp_timer;
+            resume_info->stats.kill_count = temp_kill_count;
+            resume_info->stats.secret_flags = temp_secret_flags;
+            Stats_UpdateSecrets(&resume_info->stats);
+            resume_info->stats.pickup_count = temp_pickup_count;
+            resume_info->stats.death_count = -1;
+        }
 
-    const bool is_ng_plus = temp_flags != 0;
-    if (is_ng_plus) {
-        Game_SetBonusFlag(GBF_NGPLUS);
+        const bool is_ng_plus = temp_flags != 0;
+        if (is_ng_plus) {
+            Game_SetBonusFlag(GBF_NGPLUS);
+        }
     }
 }
 
-static const char *M_GetSaveFilePattern(void)
-{
-    return g_GameFlow.savegame_fmt_legacy;
-}
-
+#if TR_VERSION == 1
 static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     File_Seek(fp, 0, SEEK_SET);
@@ -662,67 +701,6 @@ static int16_t M_ReadRoomNum(void)
     return room_num;
 }
 
-static void M_ReadStats(LEVEL_STATS *const stats)
-{
-    stats->timer = M_ReadU32();
-    stats->ammo_used = M_ReadU32();
-    stats->ammo_hits = M_ReadU32();
-    stats->distance_travelled = M_ReadU32();
-    stats->kill_count = M_ReadU16();
-    stats->secret_flags = M_ReadU8();
-    stats->medipacks_used = M_ReadU8() / 2.0f;
-    stats->death_count = -1;
-    Stats_UpdateSecrets(stats);
-}
-
-static void M_ReadResumeInfo(RESUME_INFO *const resume)
-{
-    resume->pistol_ammo = M_ReadU16();
-    resume->magnum_ammo = M_ReadU16();
-    resume->uzi_ammo = M_ReadU16();
-    resume->shotgun_ammo = M_ReadU16();
-    resume->m16_ammo = M_ReadU16();
-    resume->grenade_ammo = M_ReadU16();
-    resume->harpoon_ammo = M_ReadU16();
-    resume->small_medipacks = M_ReadU8();
-    resume->large_medipacks = M_ReadU8();
-    M_Skip(sizeof(uint8_t)); // legacy reserved value
-    resume->flares = M_ReadU8();
-    resume->gun_status = M_ReadU8();
-    resume->equipped_gun_type = M_ReadU8();
-    resume->holsters_gun_type = LGT_UNKNOWN;
-    resume->back_gun_type = LGT_UNKNOWN;
-
-    const uint16_t flags = M_ReadU16();
-    // clang-format off
-    resume->flags.available     = (flags & 0x01) != 0;
-    resume->flags.has_pistols   = (flags & 0x02) != 0;
-    resume->flags.has_magnums   = (flags & 0x04) != 0;
-    resume->flags.has_uzis      = (flags & 0x08) != 0;
-    resume->flags.has_shotgun   = (flags & 0x10) != 0;
-    resume->flags.has_m16       = (flags & 0x20) != 0;
-    resume->flags.has_grenade   = (flags & 0x40) != 0;
-    resume->flags.has_harpoon   = (flags & 0x80) != 0;
-    // clang-format on
-
-    M_Skip(sizeof(uint16_t));
-    M_ReadStats(&resume->stats);
-}
-
-static void M_ReadResumeInfos(void)
-{
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    for (int32_t i = 0; i < 24; i++) {
-        if (i < level_table->count) {
-            const GF_LEVEL *const level = &level_table->levels[i];
-            M_ReadResumeInfo(Savegame_GetCurrentInfo(level));
-        } else {
-            RESUME_INFO dummy_resume_info;
-            M_ReadResumeInfo(&dummy_resume_info);
-        }
-    }
-}
-
 static void M_ReadItems(void)
 {
     Savegame_ProcessItemsBeforeLoad();
@@ -882,11 +860,6 @@ static void M_ReadFlares(void)
         const int32_t flare_age = M_ReadS32();
         item->data = (void *)(intptr_t)flare_age;
     }
-}
-
-static const char *M_GetSaveFilePattern(void)
-{
-    return g_GameFlow.savegame_fmt_legacy;
 }
 
 static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
