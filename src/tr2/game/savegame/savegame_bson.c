@@ -132,26 +132,6 @@ static JSON_OBJECT *M_DumpMisc(void)
     return misc_obj;
 }
 
-static JSON_OBJECT *M_DumpMusic(void)
-{
-    JSON_OBJECT *const music_obj = JSON_ObjectNew();
-    JSON_ARRAY *const track_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
-        JSON_ArrayAppendInt(track_arr, Music_GetTrackFlags(i));
-    }
-    JSON_ObjectAppendArray(music_obj, "flags", track_arr);
-
-    const MUSIC_ID current_track = Music_GetCurrentPlayingTrack();
-    const MUSIC_ID current_ambient = Music_GetCurrentLoopedTrack();
-    JSON_OBJECT *const current_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(current_obj, "current_track", current_track);
-    JSON_ObjectAppendInt(current_obj, "current_ambient", current_ambient);
-    JSON_ObjectAppendDouble(current_obj, "timestamp", Music_GetTimestamp());
-    JSON_ObjectAppendObject(music_obj, "current", current_obj);
-
-    return music_obj;
-}
-
 static JSON_ARRAY *M_DumpResumeInfo(void)
 {
     JSON_ARRAY *const resume_arr = JSON_ArrayNew();
@@ -521,7 +501,6 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_OBJECT *const root_obj = Savegame_BSON_GetWriteRoot(ctx);
 
     JSON_ObjectAppendObject(root_obj, "misc", M_DumpMisc());
-    JSON_ObjectAppendObject(root_obj, "music", M_DumpMusic());
     JSON_ObjectAppendArray(root_obj, "resume_info", M_DumpResumeInfo());
     Savegame_BSON_DumpInventory(ctx);
     Savegame_BSON_DumpFlipmaps(ctx);
@@ -529,6 +508,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     Savegame_BSON_DumpEffects(ctx);
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara());
+    Savegame_BSON_DumpMusic(ctx);
     Savegame_BSON_DumpFlares(ctx);
 
     JSON_VALUE *const root = JSON_ValueFromObject(root_obj);

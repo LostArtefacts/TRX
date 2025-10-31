@@ -517,28 +517,6 @@ static JSON_OBJECT *M_DumpLara(LARA_INFO *lara)
     return lara_obj;
 }
 
-static JSON_OBJECT *M_DumpCurrentMusic(void)
-{
-    const MUSIC_ID current_track = Music_GetCurrentPlayingTrack();
-    const MUSIC_ID current_ambient = Music_GetCurrentLoopedTrack();
-    JSON_OBJECT *const current_music_obj = JSON_ObjectNew();
-    JSON_ObjectAppendInt(current_music_obj, "current_track", current_track);
-    JSON_ObjectAppendInt(current_music_obj, "current_ambient", current_ambient);
-    JSON_ObjectAppendDouble(
-        current_music_obj, "timestamp", Music_GetTimestamp());
-
-    return current_music_obj;
-}
-
-static JSON_ARRAY *M_DumpMusicTrackFlags(void)
-{
-    JSON_ARRAY *music_track_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
-        JSON_ArrayAppendInt(music_track_arr, Music_GetTrackFlags(i));
-    }
-    return music_track_arr;
-}
-
 static const char *M_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_bson;
@@ -562,9 +540,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
     Savegame_BSON_DumpEffects(ctx);
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));
-    JSON_ObjectAppendObject(root_obj, "music", M_DumpCurrentMusic());
-    JSON_ObjectAppendArray(
-        root_obj, "music_track_flags", M_DumpMusicTrackFlags());
+    Savegame_BSON_DumpMusic(ctx);
     Savegame_BSON_DumpFlares(ctx);
 
     JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
