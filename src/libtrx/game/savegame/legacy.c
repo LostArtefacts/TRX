@@ -167,6 +167,15 @@ static bool M_ItemHasSavePosition(const ITEM *const item)
     }
 }
 
+static int32_t M_GetLevelCount(void)
+{
+    if (g_TRVersion == 1) {
+        return GF_GetLevelTable(GFLT_MAIN)->count;
+    } else {
+        return 24;
+    }
+}
+
 static bool M_NeedsBaconLaraFix(char *buffer)
 {
     // Heuristic for issue #261.
@@ -184,14 +193,14 @@ static bool M_NeedsBaconLaraFix(char *buffer)
     ASSERT(buffer != nullptr);
 
     bool result = false;
-    if (Game_GetCurrentLevel()->num != 14) {
+    if (g_TRVersion != 1 || Game_GetCurrentLevel()->num != 14) {
         return result;
     }
 
     M_Reset(buffer);
     M_Skip(M_LEGACY_TITLE_SIZE); // level title
     M_Skip(sizeof(int32_t)); // save counter
-    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
+    for (int32_t i = 0; i < M_GetLevelCount(); i++) {
         M_Skip(sizeof(uint16_t)); // pistol ammo
         M_Skip(sizeof(uint16_t)); // magnum ammo
         M_Skip(sizeof(uint16_t)); // uzi ammo
@@ -458,10 +467,7 @@ static void M_ReadResumeInfo(RESUME_INFO *const resume)
 static void M_ReadResumeInfos(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-    const int32_t table_count = g_TRVersion == 1
-        ? GF_GetLevelTable(GFLT_MAIN)->count
-        : 24; // TR2 has fixed length.
-    for (int32_t i = 0; i < table_count; i++) {
+    for (int32_t i = 0; i < M_GetLevelCount(); i++) {
         if (i < level_table->count) {
             const GF_LEVEL *const level = &level_table->levels[i];
             M_ReadResumeInfo(Savegame_GetCurrentInfo(level));
@@ -663,45 +669,71 @@ static void M_ReadItems(void)
     }
 }
 
-#if TR_VERSION == 1
 static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     File_Seek(fp, 0, SEEK_SET);
 
-    char title[M_LEGACY_TITLE_SIZE];
-    File_ReadItems(fp, title, sizeof(char), M_LEGACY_TITLE_SIZE);
-    info->level_title = Memory_DupStr(title);
+    char level_title[M_LEGACY_TITLE_SIZE];
+    File_ReadData(fp, level_title, M_LEGACY_TITLE_SIZE);
+    info->level_title = Memory_DupStr(level_title);
+    info->counter = File_ReadS32(fp);
 
-    int32_t counter;
-    counter = File_ReadS32(fp);
-    info->counter = counter;
-
-    for (int32_t i = 0; i < GF_GetLevelTable(GFLT_MAIN)->count; i++) {
+    for (int32_t i = 0; i < M_GetLevelCount(); i++) {
         File_Skip(fp, sizeof(uint16_t)); // pistol ammo
         File_Skip(fp, sizeof(uint16_t)); // magnum ammo
         File_Skip(fp, sizeof(uint16_t)); // uzi ammo
         File_Skip(fp, sizeof(uint16_t)); // shotgun ammo
+        if (g_TRVersion == 2) {
+            File_Skip(fp, sizeof(uint16_t)); // m16 ammo
+            File_Skip(fp, sizeof(uint16_t)); // grenade ammo
+            File_Skip(fp, sizeof(uint16_t)); // harpoon ammo
+        }
         File_Skip(fp, sizeof(uint8_t)); // small medis
         File_Skip(fp, sizeof(uint8_t)); // big medis
-        File_Skip(fp, sizeof(uint8_t)); // scions
-        File_Skip(fp, sizeof(int8_t)); // gun status
-        File_Skip(fp, sizeof(int8_t)); // gun type
-        File_Skip(fp, sizeof(uint16_t)); // flags
+        if (g_TRVersion == 1) {
+            File_Skip(fp, sizeof(uint8_t)); // scions
+            File_Skip(fp, sizeof(int8_t)); // gun status
+            File_Skip(fp, sizeof(int8_t)); // gun type
+            File_Skip(fp, sizeof(uint16_t)); // flags
+        } else {
+            File_Skip(fp, sizeof(uint8_t)); // reserved
+            File_Skip(fp, sizeof(uint8_t)); // flares
+            File_Skip(fp, sizeof(int8_t)); // gun status
+            File_Skip(fp, sizeof(int8_t)); // gun type
+            File_Skip(fp, sizeof(uint16_t)); // flags
+            File_Skip(fp, sizeof(uint16_t)); // unused
+            File_Skip(fp, sizeof(uint32_t)); // timer
+            File_Skip(fp, sizeof(uint32_t)); // ammo used
+            File_Skip(fp, sizeof(uint32_t)); // hits
+            File_Skip(fp, sizeof(uint32_t)); // distance
+            File_Skip(fp, sizeof(uint16_t)); // kills
+            File_Skip(fp, sizeof(uint8_t)); // secret flags
+            File_Skip(fp, sizeof(uint8_t)); // medis used
+        }
     }
-    File_Skip(fp, sizeof(uint32_t)); // timer
-    File_Skip(fp, sizeof(uint32_t)); // kills
-    File_Skip(fp, sizeof(uint16_t)); // secrets
 
-    const uint16_t level_num = File_ReadS16(fp);
-    info->level_num = level_num;
+    if (g_TRVersion == 1) {
+        File_Skip(fp, sizeof(uint32_t)); // timer
+        File_Skip(fp, sizeof(uint32_t)); // kills
+        File_Skip(fp, sizeof(uint16_t)); // secrets
+    } else {
+        File_Skip(fp, sizeof(uint32_t)); // timer
+        File_Skip(fp, sizeof(uint32_t)); // ammo used
+        File_Skip(fp, sizeof(uint32_t)); // hits
+        File_Skip(fp, sizeof(uint32_t)); // distance
+        File_Skip(fp, sizeof(uint16_t)); // kills
+        File_Skip(fp, sizeof(uint8_t)); // secret flags
+        File_Skip(fp, sizeof(uint8_t)); // medis used
+    }
 
+    info->level_num = File_ReadS16(fp);
     info->initial_version = VERSION_LEGACY;
     info->features.restart = false;
     info->features.select_level = false;
-
     return true;
 }
 
+#if TR_VERSION == 1
 static bool M_LoadFromFile(MYFILE *const fp)
 {
     char *buffer = Memory_Alloc(File_Size(fp));
@@ -798,54 +830,6 @@ static void M_ReadFlares(void)
         const int32_t flare_age = M_ReadS32();
         item->data = (void *)(intptr_t)flare_age;
     }
-}
-
-static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
-{
-    char level_title[75];
-    File_ReadData(fp, level_title, 75);
-    savegame_info->level_title = Memory_DupStr(level_title);
-    savegame_info->counter = File_ReadS32(fp);
-
-    for (int32_t i = 0; i < 24; i++) {
-        File_Skip(fp, sizeof(uint16_t)); // pistol ammo
-        File_Skip(fp, sizeof(uint16_t)); // magnum ammo
-        File_Skip(fp, sizeof(uint16_t)); // uzi ammo
-        File_Skip(fp, sizeof(uint16_t)); // shotgun ammo
-        File_Skip(fp, sizeof(uint16_t)); // m16 ammo
-        File_Skip(fp, sizeof(uint16_t)); // grenade ammo
-        File_Skip(fp, sizeof(uint16_t)); // harpoon ammo
-        File_Skip(fp, sizeof(uint8_t)); // small medis
-        File_Skip(fp, sizeof(uint8_t)); // big medis
-        File_Skip(fp, sizeof(uint8_t)); // reserved
-        File_Skip(fp, sizeof(uint8_t)); // flares
-        File_Skip(fp, sizeof(int8_t)); // gun status
-        File_Skip(fp, sizeof(int8_t)); // gun type
-        File_Skip(fp, sizeof(uint16_t)); // flags
-        File_Skip(fp, sizeof(uint16_t)); // unused
-        File_Skip(fp, sizeof(uint32_t)); // timer
-        File_Skip(fp, sizeof(uint32_t)); // ammo used
-        File_Skip(fp, sizeof(uint32_t)); // hits
-        File_Skip(fp, sizeof(uint32_t)); // distance
-        File_Skip(fp, sizeof(uint16_t)); // kills
-        File_Skip(fp, sizeof(uint8_t)); // secret flags
-        File_Skip(fp, sizeof(uint8_t)); // medis used
-    }
-
-    File_Skip(fp, sizeof(uint32_t)); // timer
-    File_Skip(fp, sizeof(uint32_t)); // ammo used
-    File_Skip(fp, sizeof(uint32_t)); // hits
-    File_Skip(fp, sizeof(uint32_t)); // distance
-    File_Skip(fp, sizeof(uint16_t)); // kills
-    File_Skip(fp, sizeof(uint8_t)); // secret flags
-    File_Skip(fp, sizeof(uint8_t)); // medis used
-
-    savegame_info->level_num = File_ReadS16(fp);
-    savegame_info->initial_version = VERSION_LEGACY;
-    savegame_info->features.restart = false;
-    savegame_info->features.select_level = false;
-
-    return true;
 }
 
 static bool M_LoadFromFile(MYFILE *const fp)
