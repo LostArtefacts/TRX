@@ -426,11 +426,9 @@ static void M_WriteResumeInfo(
     M_WriteNum(ctx, "shotgun_ammo", resume->shotgun_ammo);
     M_WriteNum(ctx, "magnum_ammo", resume->magnum_ammo);
     M_WriteNum(ctx, "uzi_ammo", resume->uzi_ammo);
-#if TR_VERSION == 2
     M_WriteNum(ctx, "m16_ammo", resume->m16_ammo);
     M_WriteNum(ctx, "grenade_ammo", resume->grenade_ammo);
     M_WriteNum(ctx, "harpoon_ammo", resume->harpoon_ammo);
-#endif
     M_WriteNum(ctx, "num_medis", resume->small_medipacks);
     M_WriteNum(ctx, "num_big_medis", resume->large_medipacks);
     M_WriteNum(ctx, "num_flares", resume->flares);
@@ -450,11 +448,9 @@ static void M_WriteResumeInfo(
     M_WriteBool(ctx, "has_shotgun", resume->flags.has_shotgun);
     M_WriteBool(ctx, "has_magnums", resume->flags.has_magnums);
     M_WriteBool(ctx, "has_uzis", resume->flags.has_uzis);
-#if TR_VERSION == 2
     M_WriteBool(ctx, "has_m16", resume->flags.has_m16);
     M_WriteBool(ctx, "has_grenade", resume->flags.has_grenade);
     M_WriteBool(ctx, "has_harpoon", resume->flags.has_harpoon);
-#endif
 
     M_WriteBool(ctx, "costume", resume->flags.costume);
     M_WriteNum(ctx, "timer", resume->stats.timer);
@@ -719,11 +715,9 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteAmmo(ctx, "shotgun", &lara->shotgun_ammo);
     M_WriteAmmo(ctx, "magnums", &lara->magnum_ammo);
     M_WriteAmmo(ctx, "uzis", &lara->uzi_ammo);
-#if TR_VERSION == 2
     M_WriteAmmo(ctx, "harpoon", &lara->harpoon_ammo);
     M_WriteAmmo(ctx, "grenade", &lara->grenade_ammo);
     M_WriteAmmo(ctx, "m16", &lara->m16_ammo);
-#endif
 
     if (lara->gun_item_num != NO_ITEM) {
         M_PushObject(ctx);
@@ -748,11 +742,12 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteBool(
         ctx, "interact_target.is_moving", lara->interact_target.is_moving);
 
-#if TR_VERSION == 1
-    M_PushObject(ctx);
-    M_WriteLOT(ctx, &lara->lot);
-    M_PopAndSet(ctx, "lot");
-#endif
+    if (g_TRVersion == 1) {
+        // TR1X <4.16
+        M_PushObject(ctx);
+        M_WriteLOT(ctx, &lara->lot);
+        M_PopAndSet(ctx, "lot");
+    }
 
     M_PopAndSet(ctx, "lara");
 }
@@ -770,18 +765,18 @@ void Savegame_BSON_DumpResumeInfoList(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     }
     M_PopAndSet(ctx, "resume_info");
 
-#if TR_VERSION == 1
-    // < TR1X <4.16
-    M_PushArray(ctx);
-    for (int32_t i = 0; i < count; i++) {
-        const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        M_PushObject(ctx);
-        M_WriteResumeInfo(ctx, resume);
-        M_PopAndAppend(ctx);
+    if (g_TRVersion == 1) {
+        // < TR1X <4.16
+        M_PushArray(ctx);
+        for (int32_t i = 0; i < count; i++) {
+            const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
+            const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+            M_PushObject(ctx);
+            M_WriteResumeInfo(ctx, resume);
+            M_PopAndAppend(ctx);
+        }
+        M_PopAndSet(ctx, "current_info");
     }
-    M_PopAndSet(ctx, "current_info");
-#endif
 }
 
 void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)

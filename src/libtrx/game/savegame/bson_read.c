@@ -409,23 +409,6 @@ static bool M_ReadAmmo(
     M_FINISH();
 }
 
-static bool M_ReadLOT(M_CONTEXT *const ctx, LOT_INFO *const lot)
-{
-    ASSERT(lot != nullptr);
-    M_MUST(M_ReadNum(ctx, "head", &lot->head));
-    M_MUST(M_ReadNum(ctx, "tail", &lot->tail));
-    M_MUST(M_ReadNum(ctx, "search_num", &lot->search_num));
-    M_MUST(M_ReadNum(ctx, "block_mask", &lot->setup.block_mask));
-    M_MUST(M_ReadNum(ctx, "step", &lot->setup.step));
-    M_MUST(M_ReadNum(ctx, "drop", &lot->setup.drop));
-    M_MUST(M_ReadNum(ctx, "fly", &lot->setup.fly));
-    M_MUST(M_ReadNum(ctx, "zone_count", &lot->zone_count));
-    M_MUST(M_ReadNum(ctx, "target_box", &lot->target_box));
-    M_MUST(M_ReadNum(ctx, "required_box", &lot->required_box));
-    M_MUST(M_ReadPos(ctx, &lot->target));
-    M_FINISH();
-}
-
 static bool M_ReadLara(M_CONTEXT *const ctx)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -462,10 +445,8 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_OPTIONAL(M_ReadBool(ctx, "burn", &lara->burn));
 
     M_MUST(M_ReadNum(ctx, "mesh_effects", &lara->mesh_effects));
-#if TR_VERSION == 2
-    M_MUST(M_ReadBool(ctx, "extra_anim", &lara->extra_anim));
+    M_OPTIONAL(M_ReadBool(ctx, "extra_anim", &lara->extra_anim));
     M_OPTIONAL(M_ReadNum(ctx, "water_surface_dist", &lara->water_surface_dist));
-#endif
 
     // Only TR1X >=4.8, TR2X >=* stores hit effect count information
     M_OPTIONAL(M_ReadNum(ctx, "hit_effect_count", &lara->hit_effect_count));
@@ -513,28 +494,29 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_MUST(M_ReadNum(ctx, "target_angle2", &lara->target_angles[1]));
     M_MUST(M_ReadNum(ctx, "turn_rate", &lara->turn_rate));
     M_MUST(M_ReadNum(ctx, "move_angle", &lara->move_angle));
-#if TR_VERSION == 1
-    M_MUST(M_ReadNum(ctx, "head_rot.y", &lara->head_rot.y));
-    M_MUST(M_ReadNum(ctx, "head_rot.x", &lara->head_rot.x));
-    M_MUST(M_ReadNum(ctx, "head_rot.z", &lara->head_rot.z));
-    M_MUST(M_ReadNum(ctx, "torso_rot.y", &lara->torso_rot.y));
-    M_MUST(M_ReadNum(ctx, "torso_rot.x", &lara->torso_rot.x));
-    M_MUST(M_ReadNum(ctx, "torso_rot.z", &lara->torso_rot.z));
-#else
-    M_MUST(M_ReadXYZ16(ctx, "head_rot", &lara->head_rot));
-    M_MUST(M_ReadXYZ16(ctx, "torso_rot", &lara->torso_rot));
-#endif
-
-#if TR_VERSION == 1
-    if (ctx->sg_version >= VERSION_7) {
-        // TR1X > 4.8
-        M_MUST(M_ReadNum(ctx, "last_pos.x", &lara->last_pos.x));
-        M_MUST(M_ReadNum(ctx, "last_pos.y", &lara->last_pos.y));
-        M_MUST(M_ReadNum(ctx, "last_pos.z", &lara->last_pos.z));
+    if (M_HasKey(ctx, "head_rot.y")) {
+        // TR1X <4.16
+        M_MUST(M_ReadNum(ctx, "head_rot.y", &lara->head_rot.y));
+        M_MUST(M_ReadNum(ctx, "head_rot.x", &lara->head_rot.x));
+        M_MUST(M_ReadNum(ctx, "head_rot.z", &lara->head_rot.z));
+        M_MUST(M_ReadNum(ctx, "torso_rot.y", &lara->torso_rot.y));
+        M_MUST(M_ReadNum(ctx, "torso_rot.x", &lara->torso_rot.x));
+        M_MUST(M_ReadNum(ctx, "torso_rot.z", &lara->torso_rot.z));
+    } else {
+        M_MUST(M_ReadXYZ16(ctx, "head_rot", &lara->head_rot));
+        M_MUST(M_ReadXYZ16(ctx, "torso_rot", &lara->torso_rot));
     }
-#else
-    M_MUST(M_ReadXYZ32(ctx, "last_pos", &lara->last_pos));
-#endif
+
+    if (g_TRVersion == 1) {
+        if (ctx->sg_version >= VERSION_7) {
+            // TR1X > 4.8
+            M_MUST(M_ReadNum(ctx, "last_pos.x", &lara->last_pos.x));
+            M_MUST(M_ReadNum(ctx, "last_pos.y", &lara->last_pos.y));
+            M_MUST(M_ReadNum(ctx, "last_pos.z", &lara->last_pos.z));
+        }
+    } else {
+        M_MUST(M_ReadXYZ32(ctx, "last_pos", &lara->last_pos));
+    }
 
     M_MUST(M_ReadArm(ctx, "left_arm", &lara->left_arm));
     M_MUST(M_ReadArm(ctx, "right_arm", &lara->right_arm));
@@ -542,11 +524,10 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_MUST(M_ReadAmmo(ctx, "magnums", &lara->magnum_ammo));
     M_MUST(M_ReadAmmo(ctx, "uzis", &lara->uzi_ammo));
     M_MUST(M_ReadAmmo(ctx, "shotgun", &lara->shotgun_ammo));
-#if TR_VERSION == 2
-    M_MUST(M_ReadAmmo(ctx, "harpoon", &lara->harpoon_ammo));
-    M_MUST(M_ReadAmmo(ctx, "grenade", &lara->grenade_ammo));
-    M_MUST(M_ReadAmmo(ctx, "m16", &lara->m16_ammo));
-#endif
+    // TR1X <4.16
+    M_OPTIONAL(M_ReadAmmo(ctx, "harpoon", &lara->harpoon_ammo));
+    M_OPTIONAL(M_ReadAmmo(ctx, "grenade", &lara->grenade_ammo));
+    M_OPTIONAL(M_ReadAmmo(ctx, "m16", &lara->m16_ammo));
 
     if (g_TRVersion == 1 && ctx->sg_version < VERSION_13) {
         const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
@@ -564,12 +545,6 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
             M_ReadNum(ctx, "goal_anim_state", &weapon_item->goal_anim_state));
         weapon_item->status = IS_ACTIVE;
         weapon_item->room_num = NO_ROOM;
-        M_MUST(M_Pop(ctx));
-    }
-
-    if (g_TRVersion == 1) {
-        M_MUST(M_PushObject(ctx, "lot"));
-        M_MUST(M_ReadLOT(ctx, &lara->lot));
         M_MUST(M_Pop(ctx));
     }
 
@@ -747,12 +722,10 @@ static bool M_ReadItem(
             M_MUST(M_ReadNum(ctx, "fall_speed", &carried_item->fall_speed));
             M_MUST(M_ReadNum(ctx, "status", &carried_item->status));
 
-#if TR_VERSION == 1
-            if (ctx->sg_version < VERSION_10
+            if (g_TRVersion == 1 && ctx->sg_version < VERSION_10
                 && carried_item->room_num == M_NO_ROOM_LEGACY) {
                 carried_item->room_num = NO_ROOM;
             }
-#endif
 
             carried_item = carried_item->next_item;
             M_MUST(M_Pop(ctx));
@@ -760,11 +733,9 @@ static bool M_ReadItem(
         Carrier_TestItemDrops(item_num);
         M_MUST(M_Pop(ctx));
     } else {
-#if TR_VERSION == 1
-        if (ctx->sg_version < VERSION_4) {
+        if (g_TRVersion == 1 && ctx->sg_version < VERSION_4) {
             Carrier_TestLegacyDrops(item_num);
         }
-#endif
     }
 
     switch (item->object_id) {
@@ -887,12 +858,12 @@ static bool M_ReadItem(
         break;
     }
 
-#if TR_VERSION == 2
-    // TODO: make this call in both engines consistently
-    if (obj->handle_save_func != nullptr) {
-        obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
+    if (g_TRVersion == 2) {
+        // TODO: make this call in both engines consistently
+        if (obj->handle_save_func != nullptr) {
+            obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
+        }
     }
-#endif
 
     M_FINISH();
 }
@@ -1044,29 +1015,27 @@ static bool M_ReadResumeInfo(
     resume->back_gun_type = LGT_UNKNOWN;
     M_OPTIONAL(M_ReadNum(ctx, "back_gun_type", &resume->back_gun_type));
 
-#if TR_VERSION == 1
-    M_MUST(M_ReadBool(ctx, "costume", &resume->flags.costume));
-#endif
+    // TR2X <1.6
+    M_OPTIONAL(M_ReadBool(ctx, "costume", &resume->flags.costume));
 
     M_MUST(M_ReadNum(ctx, "pistol_ammo", &resume->pistol_ammo));
     M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->magnum_ammo));
     M_MUST(M_ReadNum(ctx, "uzi_ammo", &resume->uzi_ammo));
     M_MUST(M_ReadNum(ctx, "shotgun_ammo", &resume->shotgun_ammo));
-#if TR_VERSION == 2
-    M_MUST(M_ReadNum(ctx, "m16_ammo", &resume->m16_ammo));
-    M_MUST(M_ReadNum(ctx, "grenade_ammo", &resume->grenade_ammo));
-    M_MUST(M_ReadNum(ctx, "harpoon_ammo", &resume->harpoon_ammo));
-#endif
+    // TR1X <4.16
+    M_OPTIONAL(M_ReadNum(ctx, "m16_ammo", &resume->m16_ammo));
+    M_OPTIONAL(M_ReadNum(ctx, "grenade_ammo", &resume->grenade_ammo));
+    M_OPTIONAL(M_ReadNum(ctx, "harpoon_ammo", &resume->harpoon_ammo));
     M_MUST(M_ReadNum(ctx, "num_medis", &resume->small_medipacks));
     M_MUST(M_ReadNum(ctx, "num_big_medis", &resume->large_medipacks));
     // TR1X <4.16
     M_OPTIONAL(M_ReadNum(ctx, "num_flares", &resume->flares));
-#if TR_VERSION == 1
-    M_MUST(M_ReadNum(ctx, "num_scions", &resume->num_scions));
-#endif
+    // TR2X <1.6
+    M_OPTIONAL(M_ReadNum(ctx, "num_scions", &resume->num_scions));
 
     M_MUST(M_ReadBool(ctx, "available", &resume->flags.available));
     if (M_HasKey(ctx, "got_pistols")) {
+        // TR1X <4.16
         M_MUST(M_ReadBool(ctx, "got_pistols", &resume->flags.has_pistols));
         M_MUST(M_ReadBool(ctx, "got_shotgun", &resume->flags.has_shotgun));
         M_MUST(M_ReadBool(ctx, "got_magnums", &resume->flags.has_magnums));
@@ -1077,20 +1046,18 @@ static bool M_ReadResumeInfo(
         M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_magnums));
         M_MUST(M_ReadBool(ctx, "has_uzis", &resume->flags.has_uzis));
     }
-#if TR_VERSION == 2
-    M_MUST(M_ReadBool(ctx, "has_m16", &resume->flags.has_m16));
-    M_MUST(M_ReadBool(ctx, "has_grenade", &resume->flags.has_grenade));
-    M_MUST(M_ReadBool(ctx, "has_harpoon", &resume->flags.has_harpoon));
-#endif
+    // TR1X <4.16
+    M_OPTIONAL(M_ReadBool(ctx, "has_m16", &resume->flags.has_m16));
+    M_OPTIONAL(M_ReadBool(ctx, "has_grenade", &resume->flags.has_grenade));
+    M_OPTIONAL(M_ReadBool(ctx, "has_harpoon", &resume->flags.has_harpoon));
 
     M_MUST(M_ReadNum(ctx, "timer", &resume->stats.timer));
-    if (g_TRVersion == 2 || ctx->sg_version >= VERSION_7) {
-        M_MUST(M_ReadNum(ctx, "ammo_hits", &resume->stats.ammo_hits));
-        M_MUST(M_ReadNum(ctx, "ammo_used", &resume->stats.ammo_used));
-        M_MUST(M_ReadNum(ctx, "medipacks_used", &resume->stats.medipacks_used));
-        M_MUST(M_ReadNum(
-            ctx, "distance_travelled", &resume->stats.distance_travelled));
-    }
+    // TR1X <4.9
+    M_OPTIONAL(M_ReadNum(ctx, "ammo_hits", &resume->stats.ammo_hits));
+    M_OPTIONAL(M_ReadNum(ctx, "ammo_used", &resume->stats.ammo_used));
+    M_OPTIONAL(M_ReadNum(ctx, "medipacks_used", &resume->stats.medipacks_used));
+    M_OPTIONAL(M_ReadNum(
+        ctx, "distance_travelled", &resume->stats.distance_travelled));
     M_MUST(M_ReadNum(ctx, "kills", &resume->stats.kill_count));
     // TR2X <1.6
     M_OPTIONAL(M_ReadNum(ctx, "pickups", &resume->stats.pickup_count));
