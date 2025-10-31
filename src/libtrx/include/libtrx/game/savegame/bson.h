@@ -37,6 +37,7 @@ void Savegame_BSON_FinishWrite(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 JSON_OBJECT *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpFlares(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
 // End of helper functions =====================================================
 
 #pragma pack(push, 1)
