@@ -36,11 +36,6 @@
 
 #define SAVEGAME_BSON_MAGIC MKTAG('T', '1', 'M', 'B')
 
-typedef struct {
-    int16_t count;
-    int16_t id_map[MAX_EFFECTS];
-} M_FX_ORDER;
-
 #define DUMP_XYZ(obj, key, value)                                              \
     do {                                                                       \
         JSON_OBJECT *const sub_obj = JSON_ObjectNew();                         \
@@ -116,20 +111,6 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
-static void M_GetFXOrder(M_FX_ORDER *const order)
-{
-    order->count = 0;
-    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
-        order->id_map[i] = -1;
-    }
-
-    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
-         link_num = Effect_Get(link_num)->next_active) {
-        order->id_map[link_num] = order->count;
-        order->count++;
-    }
-}
-
 static JSON_ARRAY *M_DumpResumeInfo(void)
 {
     JSON_ARRAY *resume_arr = JSON_ArrayNew();
@@ -188,195 +169,6 @@ static JSON_OBJECT *M_DumpMisc(void)
     const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     JSON_ObjectAppendInt(misc_obj, "death_count", resume->stats.death_count);
     return misc_obj;
-}
-
-static JSON_ARRAY *M_DumpItems(void)
-{
-    Savegame_ProcessItemsBeforeSave();
-
-    M_FX_ORDER fx_order;
-    M_GetFXOrder(&fx_order);
-
-    JSON_ARRAY *items_arr = JSON_ArrayNew();
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        JSON_OBJECT *item_obj = JSON_ObjectNew();
-        const ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-
-        JSON_ObjectAppendInt(
-            item_obj, "obj_num", Object_ToGameID(item->object_id));
-
-        if (obj->save_position) {
-            JSON_ObjectAppendInt(item_obj, "x", item->pos.x);
-            JSON_ObjectAppendInt(item_obj, "y", item->pos.y);
-            JSON_ObjectAppendInt(item_obj, "z", item->pos.z);
-            JSON_ObjectAppendInt(item_obj, "x_rot", item->rot.x);
-            JSON_ObjectAppendInt(item_obj, "y_rot", item->rot.y);
-            JSON_ObjectAppendInt(item_obj, "z_rot", item->rot.z);
-            JSON_ObjectAppendInt(item_obj, "room_num", item->room_num);
-            JSON_ObjectAppendInt(item_obj, "speed", item->speed);
-            JSON_ObjectAppendInt(item_obj, "fall_speed", item->fall_speed);
-        }
-
-        if (obj->save_anim) {
-            JSON_ObjectAppendInt(
-                item_obj, "current_anim", item->current_anim_state);
-            JSON_ObjectAppendInt(item_obj, "goal_anim", item->goal_anim_state);
-            JSON_ObjectAppendInt(
-                item_obj, "required_anim", item->required_anim_state);
-            JSON_ObjectAppendInt(item_obj, "anim_num", item->anim_num);
-            JSON_ObjectAppendInt(item_obj, "frame_num", item->frame_num);
-        }
-
-        if (obj->save_hitpoints) {
-            JSON_ObjectAppendInt(item_obj, "hitpoints", item->hit_points);
-            JSON_ObjectAppendInt(
-                item_obj, "max_hitpoints", item->max_hit_points);
-        }
-
-        if (obj->save_flags) {
-            JSON_ObjectAppendInt(item_obj, "flags", item->flags);
-            JSON_ObjectAppendInt(item_obj, "status", item->status);
-            JSON_ObjectAppendBool(item_obj, "active", item->active);
-            JSON_ObjectAppendBool(item_obj, "gravity", item->gravity);
-            JSON_ObjectAppendBool(item_obj, "collidable", item->collidable);
-            JSON_ObjectAppendBool(
-                item_obj, "intelligent", obj->intelligent && item->data);
-            JSON_ObjectAppendInt(item_obj, "timer", item->timer);
-            if (obj->intelligent && item->data) {
-                CREATURE *creature = item->data;
-                JSON_ObjectAppendInt(
-                    item_obj, "head_rot", creature->head_rotation);
-                JSON_ObjectAppendInt(
-                    item_obj, "neck_rot", creature->neck_rotation);
-                JSON_ObjectAppendInt(
-                    item_obj, "max_turn", creature->maximum_turn);
-                JSON_ObjectAppendInt(
-                    item_obj, "creature_flags", creature->flags);
-                JSON_ObjectAppendInt(item_obj, "creature_mood", creature->mood);
-            }
-
-            if (item->object_id == O_FLAME_EMITTER && item->data) {
-                int32_t effect_num = (int32_t)(intptr_t)item->data - 1;
-                effect_num = fx_order.id_map[effect_num];
-                JSON_ObjectAppendInt(item_obj, "fx_num", effect_num);
-            }
-
-            if (item->object_id == O_BACON_LARA && item->data) {
-                const int32_t status = (int32_t)(intptr_t)item->priv;
-                JSON_ObjectAppendInt(item_obj, "bl_status", status);
-            }
-
-            if (Object_IsType(item->object_id, g_MovableBlockObjects)
-                && item->data != nullptr) {
-                MOVABLE_BLOCK_INFO *const data = item->data;
-                JSON_OBJECT *const data_obj = JSON_ObjectNew();
-                JSON_ObjectAppendInt(
-                    data_obj, "counter_rot_0", data->counter_rot[0]);
-                JSON_ObjectAppendInt(
-                    data_obj, "counter_rot_1", data->counter_rot[1]);
-                JSON_ObjectAppendInt(
-                    data_obj, "counter_rot_2", data->counter_rot[2]);
-                JSON_ObjectAppendInt(
-                    data_obj, "original_rot", data->original_rot);
-                JSON_ObjectAppendInt(
-                    data_obj, "gravity_frames", data->gravity_frames);
-                JSON_ObjectAppendBool(
-                    data_obj, "is_push_pull", data->is_push_pull);
-                JSON_ObjectAppendBool(
-                    data_obj, "is_forced_moving", data->is_forced_moving);
-                DUMP_XYZ(data_obj, "linked", data->linked);
-                JSON_ObjectAppendObject(item_obj, "data", data_obj);
-            }
-
-            if (item->object_id == O_SLIDING_PILLAR && item->data != nullptr) {
-                SLIDING_PILLAR_INFO *const data = item->data;
-                JSON_OBJECT *const data_obj = JSON_ObjectNew();
-                DUMP_XYZ(data_obj, "linked", data->linked);
-                JSON_ObjectAppendObject(item_obj, "data", data_obj);
-            }
-        }
-
-        JSON_ARRAY *carried_items_arr = JSON_ArrayNew();
-
-        const CARRIED_ITEM *drop_item = item->carried_item;
-        while (drop_item) {
-            JSON_OBJECT *drop_obj = JSON_ObjectNew();
-            JSON_ObjectAppendInt(
-                drop_obj, "object_id", Object_ToGameID(drop_item->object_id));
-            JSON_ObjectAppendInt(drop_obj, "x", drop_item->pos.x);
-            JSON_ObjectAppendInt(drop_obj, "y", drop_item->pos.y);
-            JSON_ObjectAppendInt(drop_obj, "z", drop_item->pos.z);
-            JSON_ObjectAppendInt(drop_obj, "y_rot", drop_item->rot.y);
-            JSON_ObjectAppendInt(drop_obj, "room_num", drop_item->room_num);
-            JSON_ObjectAppendInt(drop_obj, "fall_speed", drop_item->fall_speed);
-
-            DROP_STATUS status = Carrier_GetSaveStatus(drop_item);
-            JSON_ObjectAppendInt(drop_obj, "status", status);
-
-            JSON_ArrayAppendObject(carried_items_arr, drop_obj);
-            drop_item = drop_item->next_item;
-        }
-
-        JSON_ObjectAppendArray(item_obj, "carried_items", carried_items_arr);
-
-        switch (item->object_id) {
-        case O_BOAT: {
-            const BOAT_INFO *const data = (BOAT_INFO *)item->data;
-            JSON_OBJECT *const data_obj = JSON_ObjectNew();
-            JSON_ObjectAppendInt(data_obj, "boat_turn", data->boat_turn);
-            JSON_ObjectAppendInt(
-                data_obj, "left_fallspeed", data->left_fallspeed);
-            JSON_ObjectAppendInt(
-                data_obj, "right_fallspeed", data->right_fallspeed);
-            JSON_ObjectAppendInt(data_obj, "tilt_angle", data->tilt_angle);
-            JSON_ObjectAppendInt(
-                data_obj, "extra_rotation", data->extra_rotation);
-            JSON_ObjectAppendInt(data_obj, "water", data->water);
-            JSON_ObjectAppendInt(data_obj, "pitch", data->pitch);
-            JSON_ObjectAppendObject(item_obj, "data", data_obj);
-            break;
-        }
-
-        case O_SKIDOO_FAST: {
-            const SKIDOO_INFO *const data = (SKIDOO_INFO *)item->data;
-            JSON_OBJECT *const data_obj = JSON_ObjectNew();
-            JSON_ObjectAppendInt(data_obj, "track_mesh", data->track_mesh);
-            JSON_ObjectAppendInt(data_obj, "skidoo_turn", data->skidoo_turn);
-            JSON_ObjectAppendInt(
-                data_obj, "left_fallspeed", data->left_fallspeed);
-            JSON_ObjectAppendInt(
-                data_obj, "right_fallspeed", data->right_fallspeed);
-            JSON_ObjectAppendInt(
-                data_obj, "momentum_angle", data->momentum_angle);
-            JSON_ObjectAppendInt(
-                data_obj, "extra_rotation", data->extra_rotation);
-            JSON_ObjectAppendInt(data_obj, "pitch", data->pitch);
-            JSON_ObjectAppendObject(item_obj, "data", data_obj);
-            break;
-        }
-
-        case O_LIFT: {
-            LIFT_INFO *const data = (LIFT_INFO *)item->data;
-            JSON_OBJECT *const data_obj = JSON_ObjectNew();
-            JSON_ObjectAppendInt(data_obj, "start_height", data->start_height);
-            JSON_ObjectAppendInt(data_obj, "wait_time", data->wait_time);
-            JSON_ObjectAppendBool(data_obj, "is_moving", data->is_moving);
-            for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
-                const char *const pos_key = String_FormatStatic("linked_%d", j);
-                DUMP_XYZ(data_obj, pos_key, data->linked[j]);
-            }
-            JSON_ObjectAppendObject(item_obj, "data", data_obj);
-            break;
-        }
-
-        default:
-            break;
-        }
-
-        JSON_ArrayAppendObject(items_arr, item_obj);
-    }
-    return items_arr;
 }
 
 static JSON_OBJECT *M_DumpArm(LARA_ARM *arm)
@@ -537,7 +329,7 @@ static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const savegame_info)
     Savegame_BSON_DumpInventory(ctx);
     Savegame_BSON_DumpFlipmaps(ctx);
     Savegame_BSON_DumpCameras(ctx);
-    JSON_ObjectAppendArray(root_obj, "items", M_DumpItems());
+    Savegame_BSON_DumpItems(ctx);
     Savegame_BSON_DumpEffects(ctx);
     JSON_ObjectAppendObject(root_obj, "lara", M_DumpLara(Lara_GetLaraInfo()));
     Savegame_BSON_DumpMusic(ctx);

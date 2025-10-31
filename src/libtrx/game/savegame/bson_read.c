@@ -350,6 +350,7 @@ static bool M_ReadPos(M_CONTEXT *const ctx, XYZ_32 *const target)
 {
     ASSERT(target != nullptr);
     if (M_HasKey(ctx, "x")) {
+        // TR1X <4.16
         M_MUST(M_ReadNum(ctx, "x", &target->x));
         M_MUST(M_ReadNum(ctx, "y", &target->y));
         M_MUST(M_ReadNum(ctx, "z", &target->z));
@@ -363,7 +364,7 @@ static bool M_ReadRot(M_CONTEXT *const ctx, XYZ_16 *const target)
 {
     ASSERT(target != nullptr);
     if (M_HasKey(ctx, "x_rot")) {
-        // TR1X <=v4.15
+        // TR1X <v4.16
         M_MUST(M_ReadNum(ctx, "x_rot", &target->x));
         M_MUST(M_ReadNum(ctx, "y_rot", &target->y));
         M_MUST(M_ReadNum(ctx, "z_rot", &target->z));
@@ -632,7 +633,10 @@ static bool M_ReadItem(
     ITEM *const item = Item_Get(item_num);
 
     int16_t game_object_id = -1;
-    M_MUST(M_ReadNum(ctx, "obj_num", &game_object_id));
+    if (!M_ReadNum(ctx, "object_id", &game_object_id)) {
+        // TR1X <4.16, TR2X <1.6
+        M_MUST(M_ReadNum(ctx, "obj_num", &game_object_id));
+    }
     const OBJECT_ID object_id = Object_FromGameID(game_object_id);
     const OBJECT *const obj = Object_Get(object_id);
     item->object_id = object_id;
@@ -767,8 +771,13 @@ static bool M_ReadItem(
     case O_BACON_LARA: {
         if (g_TRVersion == 2 || header_version >= VERSION_5) {
             int32_t status;
+            // TR1X <4.16, TR2X <1.6
             if (M_ReadNum(ctx, "bl_status", &status)) {
                 item->priv = (void *)(intptr_t)status;
+            } else if (M_PushObject(ctx, "data")) {
+                M_MUST(M_ReadNum(ctx, "status", &status));
+                item->priv = (void *)(intptr_t)status;
+                M_MUST(M_Pop(ctx));
             }
         }
         break;
@@ -778,9 +787,13 @@ static bool M_ReadItem(
         if ((g_TRVersion == 2 || header_version >= VERSION_3)
             && g_Config.gameplay.enable_enhanced_saves) {
             int32_t effect_num = NO_EFFECT;
-            M_OPTIONAL(M_ReadNum(ctx, "fx_num", &effect_num));
-            if (effect_num != -1) {
+            // TR1X <4.16, TR2X <1.6
+            if (M_ReadNum(ctx, "fx_num", &effect_num)) {
                 item->data = (void *)(intptr_t)(effect_num + 1);
+            } else if (M_PushObject(ctx, "data")) {
+                M_MUST(M_ReadNum(ctx, "fx_num", &effect_num));
+                item->data = (void *)(intptr_t)(effect_num + 1);
+                M_MUST(M_Pop(ctx));
             }
         }
         break;
