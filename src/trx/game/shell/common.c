@@ -136,13 +136,11 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         Output_ApplyRenderSettings();
     }
 
-#if TR_VERSION == 2
-    if (L_CHANGED(visuals.fov) || L_CHANGED(visuals.use_ps1_fov)) {
+    if (L_CHANGED(visuals.fov)) {
         if (Viewport_GetSystemFOV() == -1) {
-            Viewport_AlterFOV(-1);
+            Viewport_AlterFOV(-1, FOV_MODE_GAME);
         }
     }
-#endif
 
     if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
         Savegame_Shutdown();

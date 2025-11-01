@@ -167,7 +167,7 @@ static void M_Breath(ITEM *const item, COLL_INFO *const coll)
     if (g_Camera.type != CAM_HEAVY) {
         g_Camera.type = CAM_CHASE;
     }
-    Viewport_AlterFOV(-1);
+    Viewport_AlterFOV(-1, FOV_MODE_GAME);
 }
 
 static void M_YetiKill(ITEM *const item, COLL_INFO *const coll)
@@ -267,7 +267,7 @@ static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
         Inv_AddItem(O_PUZZLE_ITEM_1);
     } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_END)) {
         g_Camera.type = CAM_CHASE;
-        Viewport_AlterFOV(-1);
+        Viewport_AlterFOV(-1, FOV_MODE_GAME);
     }
 }
 

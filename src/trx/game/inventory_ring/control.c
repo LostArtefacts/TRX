@@ -25,7 +25,6 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/game/viewport.h>
 #include <trx/memory.h>
 #include <trx/version.h>
 
@@ -811,10 +810,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         return nullptr;
     }
 
-    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
-    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
-    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     m_InvChosen = NO_OBJECT;
 
     g_InvRing_OldCamera = g_Camera;
@@ -872,7 +867,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     INV_RING *const ring = Memory_Alloc(sizeof(INV_RING));
     ring->mode = mode;
-    ring->old_fov = Viewport_GetSystemFOV();
 
     switch (mode) {
     case INV_TITLE_MODE:
@@ -925,10 +919,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
             g_Config.ui.inventory_background_style == BK_PATTERN_WAVE);
     }
 
-    if (g_TRVersion == 2) {
-        Viewport_AlterFOV(80 * DEG_1);
-    }
-
     return ring;
 }
 
@@ -954,7 +944,6 @@ void InvRing_Close(INV_RING *const ring)
     }
 
     m_InvChosen = NO_OBJECT;
-    Viewport_AlterFOV(ring->old_fov);
     Memory_Free(ring);
 }
 

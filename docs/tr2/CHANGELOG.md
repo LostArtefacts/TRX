@@ -57,6 +57,8 @@
 - changed the `-q`/`--quiet` argument to no longer silence warnings
 - changed the `Remember Guns between Levels` option to also apply to whether or not Lara starts with those guns equipped
 - changed sprites to respect the water tint if placed underwater
+- changed the FOV formula to be consistent between games
+    - removed "Use PS1 FOV" option
 - removed the following game flow options:
     - `cmd_init`
     - `cmd_title`

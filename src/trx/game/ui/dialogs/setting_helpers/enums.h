@@ -30,6 +30,7 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLookEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BackgroundStyleEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_FOVModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MenuStyleEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LightingContrastEnumEntries[];

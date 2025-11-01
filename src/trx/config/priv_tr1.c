@@ -278,5 +278,4 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 void Config_Sanitize(void)
 {
     Config_SanitizeCommon();
-    CLAMP(g_Config.visuals.fov_value, 30, 150);
 }

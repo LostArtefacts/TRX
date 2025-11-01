@@ -20,7 +20,6 @@
 #include <trx/version.h>
 
 #define M_CAMERA_2_RING 598
-#define M_PASSPORT_FOV (g_TRVersion == 1 ? 65 : 80)
 
 static int32_t M_GetFrames(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
@@ -174,7 +173,8 @@ void InvRing_Draw(INV_RING *const ring)
     }
 
     const int16_t old_fov = Viewport_GetSystemFOV();
-    Viewport_AlterFOV(M_PASSPORT_FOV * DEG_1);
+    const FOV_MODE old_fov_mode = Viewport_GetFOVMode();
+    Viewport_AlterFOV(FOV_VALUE_PASSPORT * DEG_1, FOV_MODE_PASSPORT);
     Output_ApplyFOV();
 
     XYZ_32 view_pos;
@@ -207,7 +207,7 @@ void InvRing_Draw(INV_RING *const ring)
 
     Matrix_Pop();
     SceneCompositor_Flush();
-    Viewport_AlterFOV(old_fov);
+    Viewport_AlterFOV(old_fov, old_fov_mode);
 
     if (ring->motion.status == RNG_SELECTED) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];

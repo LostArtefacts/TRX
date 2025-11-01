@@ -98,11 +98,6 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 #define READ_FALLBACK_BOOL(target, key)                                        \
     target = JSON_ObjectGetBool(parent_obj, key, target)
 
-    // ..0.10
-    READ_FALLBACK_BOOL(g_Config.visuals.use_ps1_fov, "use_pcx_fov");
-    // ..1.5
-    READ_FALLBACK_BOOL(g_Config.visuals.use_ps1_fov, "use_psx_fov");
-
     // ..1.1
     {
         const JSON_VALUE *const value =
@@ -185,5 +180,4 @@ void Config_Sanitize(void)
         && g_Config.rendering.aspect_mode != AM_16_10) {
         g_Config.rendering.aspect_mode = AM_4_3;
     }
-    CLAMP(g_Config.visuals.fov, 30, 150);
 }

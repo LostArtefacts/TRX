@@ -1,6 +1,15 @@
 #pragma once
 
+#include <trx/config/enum.h>
+
 #include <stdint.h>
+
+typedef enum {
+    FOV_MODE_VERTICAL,
+    FOV_MODE_HORIZONTAL,
+    FOV_MODE_PC,
+    FOV_MODE_PS1,
+} FOV_MODE;
 
 typedef enum {
     VIEWPORT_WINDOW,
@@ -44,8 +53,11 @@ int16_t Viewport_GetUserFOV(void);
 // the player choice.
 int16_t Viewport_GetEffectiveFOV(void);
 
+// Returns the current FOV formula.
+FOV_MODE Viewport_GetFOVMode(void);
+
 // Sets the system FOV. Set to -1 to fallback to player FOV.
-void Viewport_AlterFOV(int16_t view_angle);
+void Viewport_AlterFOV(int16_t view_angle, FOV_MODE fov_mode);
 
 // TODO: decide what to do with this function
 void Viewport_Reset(void);

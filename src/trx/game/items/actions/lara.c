@@ -18,7 +18,7 @@ static void M_Normal(ITEM *const item)
     item->goal_anim_state = LS(LS_STOP);
     Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
     g_Camera.type = CAM_CHASE;
-    Viewport_AlterFOV(-1);
+    Viewport_AlterFOV(-1, FOV_MODE_GAME);
 }
 
 static void M_HandsFree(ITEM *const item)

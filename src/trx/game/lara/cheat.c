@@ -231,7 +231,7 @@ bool Lara_Cheat_EnterFlyMode(void)
         return false;
     }
 
-    Viewport_AlterFOV(-1);
+    Viewport_AlterFOV(-1, FOV_MODE_GAME);
 
     if (lara_info->extra_anim) {
         M_ResetGunStatus();
@@ -393,7 +393,7 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
         Interpolation_CommitLara();
     } else {
         g_Camera.type = CAM_CHASE;
-        Viewport_AlterFOV(-1);
+        Viewport_AlterFOV(-1, FOV_MODE_GAME);
         Camera_ResetPosition();
     }
 

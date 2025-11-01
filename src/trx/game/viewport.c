@@ -1,12 +1,10 @@
 #include <trx/game/viewport.h>
 
 #include <trx/config.h>
-#include <trx/game/math/const.h>
+#include <trx/game/const.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/shell.h>
 #include <trx/log.h>
-
-#define M_INITIAL_FOV 65
 
 #define L_DEFAULT_VIEWPORT                                                     \
     { .width = SHELL_HEADLESS_WIDTH, .height = SHELL_HEADLESS_HEIGHT }
@@ -18,7 +16,8 @@ static VIEWPORT_RECT m_Rects[VIEWPORT_NUMBER_OF] = {
 };
 #undef L_DEFAULT_VIEWPORT
 
-static int16_t m_CurrentFOV = M_INITIAL_FOV;
+static int16_t m_CurrentFOV = 65;
+static FOV_MODE m_CurrentFOVMode = FOV_MODE_GAME;
 
 void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
 {
@@ -81,11 +80,7 @@ int16_t Viewport_GetSystemFOV(void)
 
 int16_t Viewport_GetUserFOV(void)
 {
-#if TR_VERSION == 1
-    return g_Config.visuals.fov_value * DEG_1;
-#elif TR_VERSION == 2
     return g_Config.visuals.fov * DEG_1;
-#endif
 }
 
 int16_t Viewport_GetEffectiveFOV(void)
@@ -189,9 +184,15 @@ void Viewport_Reset(void)
     Viewport_Debug();
 }
 
-void Viewport_AlterFOV(int16_t fov)
+FOV_MODE Viewport_GetFOVMode(void)
+{
+    return m_CurrentFOVMode;
+}
+
+void Viewport_AlterFOV(const int16_t fov, const FOV_MODE fov_mode)
 {
     m_CurrentFOV = fov;
+    m_CurrentFOVMode = fov_mode;
 }
 
 void Viewport_Debug(void)

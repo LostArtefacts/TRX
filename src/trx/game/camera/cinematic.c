@@ -5,6 +5,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
+#include <trx/version.h>
 
 static CINE_FRAME *m_CineFrames = nullptr;
 static CINE_DATA m_CineData = {};
@@ -43,7 +44,7 @@ static void M_UpdateCutscene(const XYZ_32 base_pos, const int16_t angle)
     g_Camera.roll = frame->roll;
     g_Camera.shift = 0;
 
-    Viewport_AlterFOV(frame->fov);
+    Viewport_AlterFOV(frame->fov, FOV_MODE_CUTSCENE);
 }
 
 void Camera_InitialiseCineFrames(const int32_t num_frames)
