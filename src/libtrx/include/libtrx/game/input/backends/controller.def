@@ -1,5 +1,0 @@
-#if TR_VERSION == 1
-    #include "game/input/backends/controller_tr1.def"
-#elif TR_VERSION == 2
-    #include "game/input/backends/controller_tr2.def"
-#endif
