@@ -33,6 +33,7 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
     switch (type) {
     case IFT_GENERAL:
     case IFT_LARA_ANIMS:
+    case IFT_BRAID:
         return true;
     case IFT_FLOOR_DATA:
         return g_Config.gameplay.fix_floor_data_issues;
@@ -47,8 +48,6 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
             && g_Config.visuals.enable_ps1_crystals;
     case IFT_SKYBOX:
         return true;
-    case IFT_BRAID:
-        return g_Config.visuals.enable_braid;
 #if TR_VERSION == 1
     case IFT_UZI_SFX:
         return g_Config.audio.enable_ps_uzi_sfx;

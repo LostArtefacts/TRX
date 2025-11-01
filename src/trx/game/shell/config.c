@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/game_string_manager.h>
+#include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
@@ -176,6 +177,10 @@ void Shell_HandleCommonConfigChange(
         || L_CHANGED(visuals.water_color.g) || L_CHANGED(visuals.water_color.b)
         || L_CHANGED(visuals.water_color.r)) {
         Output_ApplyLevelSettings();
+    }
+
+    if (L_CHANGED(visuals.enable_braid)) {
+        Lara_Mesh_UpdateHair(false);
     }
 #undef L_CHANGED
 }
