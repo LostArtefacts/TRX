@@ -31,7 +31,6 @@ typedef struct {
     int32_t buf_pos;
     char *buf_ptr;
     char *buffer;
-    bool skip_reading_bacon_lara;
 } M_CONTEXT;
 
 // =============================================================================
@@ -140,7 +139,8 @@ static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
             && item->object_id != O_FLAME_EMITTER
             && item->object_id != O_WATERFALL
             && item->object_id != O_SCION_ITEM_1
-            && item->object_id != O_DART_EMITTER);
+            && item->object_id != O_DART_EMITTER
+            && item->object_id != O_BACON_LARA);
     } else {
         return obj->save_flags && item->object_id != O_WATERFALL
             && item->object_id != O_DART;
@@ -185,103 +185,6 @@ static int16_t M_ReadRoomNum(M_CONTEXT *const ctx)
         return NO_ROOM;
     }
     return room_num;
-}
-
-static bool M_NeedsBaconLaraFix(M_CONTEXT *const ctx)
-{
-    // Heuristic for issue #261.
-    // TR1X enables save_flags for Bacon Lara, but OG TombATI does not. As
-    // a consequence, Atlantis saves made with OG TombATI (which includes the
-    // ones available for download on Stella's website) have different layout
-    // than the saves made with TR1X. This was discovered after it was too
-    // late to make a backwards incompatible change. At the same time, enabling
-    // save_flags for Bacon Lara is desirable, as not doing this causes her to
-    // freeze when the player reloads a save made in her room. This function is
-    // used to determine whether the save about to be loaded includes
-    // save_flags for Bacon Lara or not. Since savegames only contain very
-    // concise information, we must make an educated guess here.
-
-    ASSERT(ctx != nullptr);
-    M_Reset(ctx);
-
-    bool result = false;
-    if (g_TRVersion != 1 || Game_GetCurrentLevel()->num != 14) {
-        return result;
-    }
-
-    M_Skip(ctx, M_LEGACY_TITLE_SIZE); // level title
-    M_Skip(ctx, sizeof(int32_t)); // save counter
-    for (int32_t i = 0; i < M_GetLevelCount(); i++) {
-        M_Skip(ctx, sizeof(uint16_t)); // pistol ammo
-        M_Skip(ctx, sizeof(uint16_t)); // magnum ammo
-        M_Skip(ctx, sizeof(uint16_t)); // uzi ammo
-        M_Skip(ctx, sizeof(uint16_t)); // shotgun ammo
-        M_Skip(ctx, sizeof(uint8_t)); // small medis
-        M_Skip(ctx, sizeof(uint8_t)); // big medis
-        M_Skip(ctx, sizeof(uint8_t)); // scions
-        M_Skip(ctx, sizeof(int8_t)); // gun status
-        M_Skip(ctx, sizeof(int8_t)); // gun type
-        M_Skip(ctx, sizeof(uint16_t)); // flags
-    }
-    M_Skip(ctx, sizeof(uint32_t)); // timer
-    M_Skip(ctx, sizeof(uint32_t)); // kills
-    M_Skip(ctx, sizeof(uint16_t)); // secrets
-    M_Skip(ctx, sizeof(uint16_t)); // current level
-    M_Skip(ctx, sizeof(uint8_t)); // pickups
-    M_Skip(ctx, sizeof(uint8_t)); // bonus_flag
-    M_Skip(ctx, sizeof(12)); // item stats
-    M_Skip(ctx, sizeof(int32_t)); // flipmap status
-    M_Skip(ctx, MAX_FLIP_MAPS * sizeof(int8_t)); // flipmap table
-    M_Skip(ctx, Camera_GetFixedObjectCount() * sizeof(int16_t)); // cameras
-
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-
-        ITEM tmp_item = {};
-
-        if (M_ItemHasSavePosition(item)) {
-            tmp_item.pos.x = M_ReadS32(ctx);
-            tmp_item.pos.y = M_ReadS32(ctx);
-            tmp_item.pos.z = M_ReadS32(ctx);
-            tmp_item.rot.x = M_ReadS16(ctx);
-            tmp_item.rot.y = M_ReadS16(ctx);
-            tmp_item.rot.z = M_ReadS16(ctx);
-            M_Skip(ctx, sizeof(int16_t));
-            tmp_item.speed = M_ReadS16(ctx);
-            tmp_item.fall_speed = M_ReadS16(ctx);
-        }
-        if (M_ItemHasSaveAnim(item)) {
-            tmp_item.current_anim_state = M_ReadS16(ctx);
-            tmp_item.goal_anim_state = M_ReadS16(ctx);
-            tmp_item.required_anim_state = M_ReadS16(ctx);
-            tmp_item.anim_num = M_ReadS16(ctx);
-            tmp_item.frame_num = M_ReadS16(ctx);
-        }
-        if (M_ItemHasHitPoints(item)) {
-            tmp_item.hit_points = M_ReadS16(ctx);
-        }
-        if (M_ItemHasSaveFlags(obj, item)) {
-            tmp_item.flags = M_ReadS16(ctx);
-            tmp_item.timer = M_ReadS16(ctx);
-            if (tmp_item.flags & M_SAVE_CREATURE) {
-                CREATURE tmp_creature;
-                tmp_creature.head_rotation = M_ReadS16(ctx);
-                tmp_creature.neck_rotation = M_ReadS16(ctx);
-                tmp_creature.maximum_turn = M_ReadS16(ctx);
-                tmp_creature.flags = M_ReadS16(ctx);
-                tmp_creature.mood = M_ReadS32(ctx);
-            }
-        }
-
-        // check for exceptionally high item positions.
-        if ((ABS(tmp_item.pos.x) | ABS(tmp_item.pos.y) | ABS(tmp_item.pos.z))
-            & 0xFF000000) {
-            result = true;
-        }
-    }
-
-    return result;
 }
 
 static void M_ReadLaraArm(M_CONTEXT *const ctx, LARA_ARM *const arm)
@@ -552,8 +455,7 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
         item->hit_points = M_ReadS16(ctx);
     }
 
-    if (M_ItemHasSaveFlags(obj, item)
-        && (item->object_id != O_BACON_LARA || !ctx->skip_reading_bacon_lara)) {
+    if (M_ItemHasSaveFlags(obj, item)) {
         item->flags = M_ReadU16(ctx);
         if (obj->intelligent && g_TRVersion == 2) {
             M_Skip(ctx, sizeof(int16_t)); // legacy carried item
@@ -762,13 +664,6 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 static bool M_LoadFromFile(MYFILE *const fp)
 {
     M_CONTEXT *const ctx = M_InitContext(fp);
-
-    if (g_TRVersion == 1) {
-        ctx->skip_reading_bacon_lara = M_NeedsBaconLaraFix(ctx);
-        if (ctx->skip_reading_bacon_lara) {
-            LOG_INFO("Enabling Bacon Lara savegame fix");
-        }
-    }
 
     M_Reset(ctx);
     M_Skip(ctx, M_LEGACY_TITLE_SIZE); // level title
