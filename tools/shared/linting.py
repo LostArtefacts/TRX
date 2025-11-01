@@ -94,7 +94,7 @@ def lint_meson_build_sort_order(
 ) -> Iterable[LintWarning]:
     if path.name != "meson.build" or path.parent.name == "dwarfstack":
         return
-    pattern = re.compile(r"\bsources\s*=\s*\[(.*?)\]", re.S)
+    pattern = re.compile(r"\bcommon_sources\s*=\s*\[(.*?)\]", re.S)
     match = pattern.search(path.read_text())
 
     if not match:

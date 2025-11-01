@@ -1,0 +1,730 @@
+project(
+  'TRX',
+  'c',
+  default_options: [
+    'c_std=c2x',
+    'warning_level=3',
+  ],
+  meson_version: '>=1.3.0',
+)
+
+
+fs = import('fs')
+
+staticdeps = get_option('staticdeps')
+# Always dynamically link on macOS
+if host_machine.system() == 'darwin'
+  staticdeps = false
+endif
+
+c_compiler = meson.get_compiler('c')
+git = find_program('git', required: true)
+python3 = find_program('python3', required: true)
+
+build_opts = [
+  '-Wno-unused',
+  '-Wno-unused-parameter',
+  '-Wno-microsoft-anon-tag',
+  '-Wno-gnu-binary-literal',
+  '-Wno-gnu-empty-initializer',
+  '-Wno-gnu-zero-variadic-macro-arguments',
+  '-DMESON_BUILD',
+  '-DGLEW_NO_GLU',
+  '-DSDL_MAIN_HANDLED',
+  '-fms-extensions',
+  '-fno-omit-frame-pointer',
+  '-fmacro-prefix-map=@0@/='.format(
+    fs.relative_to(meson.current_source_dir() / 'libtrx', meson.global_build_root())
+  ),
+  '-DDWST_STATIC',
+  '-DPCRE2_STATIC',
+  '-DPCRE2_CODE_UNIT_WIDTH=8',
+  '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
+]
+
+add_project_arguments(build_opts, language: 'c')
+
+null_dep = dependency('', required: false)
+dep_avcodec = dependency('libavcodec', static: staticdeps)
+dep_avformat = dependency('libavformat', static: staticdeps)
+dep_avutil = dependency('libavutil', static: staticdeps)
+dep_sdl2 = dependency('SDL2', static: staticdeps)
+dep_glew = dependency('glew', static: staticdeps)
+dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
+dep_backtrace = c_compiler.find_library('backtrace', static: true, required: false)
+dep_swscale = dependency('libswscale', static: staticdeps)
+dep_swresample = dependency('libswresample', static: staticdeps)
+dep_lua = dependency('lua', static: staticdeps)
+c_compiler.check_header('uthash.h', required: true)
+dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : false)
+
+dep_zlib = null_dep
+if not staticdeps
+  dep_zlib = dependency('zlib', static: staticdeps)
+endif
+
+if host_machine.system() == 'windows'
+  dep_opengl = c_compiler.find_library('opengl32')
+else
+  dep_opengl = dependency('GL')
+endif
+
+dependencies = [
+  dep_avcodec,
+  dep_avformat,
+  dep_avutil,
+  dep_backtrace,
+  dep_glew,
+  dep_lua,
+  dep_mathlibrary,
+  dep_opengl,
+  dep_pcre2,
+  dep_sdl2,
+  dep_swresample,
+  dep_swscale,
+  dep_zlib,
+]
+
+common_sources = [
+  'libtrx/benchmark.c',
+  'libtrx/config/common.c',
+  'libtrx/config/file.c',
+  'libtrx/config/map.c',
+  'libtrx/config/priv.c',
+  'libtrx/config/vars.c',
+  'libtrx/engine/audio.c',
+  'libtrx/engine/audio_sample.c',
+  'libtrx/engine/audio_stream.c',
+  'libtrx/engine/image.c',
+  'libtrx/engine/video.c',
+  'libtrx/enum_map.c',
+  'libtrx/event_manager.c',
+  'libtrx/filesystem.c',
+  'libtrx/game/anims/commands.c',
+  'libtrx/game/anims/common.c',
+  'libtrx/game/anims/frames.c',
+  'libtrx/game/camera/cinematic.c',
+  'libtrx/game/camera/common.c',
+  'libtrx/game/camera/fixed.c',
+  'libtrx/game/camera/photo_mode.c',
+  'libtrx/game/camera/vars.c',
+  'libtrx/game/carrier.c',
+  'libtrx/game/catalog.c',
+  'libtrx/game/clock/common.c',
+  'libtrx/game/clock/timer.c',
+  'libtrx/game/clock/turbo.c',
+  'libtrx/game/collision.c',
+  'libtrx/game/console/cmd/clear.c',
+  'libtrx/game/console/cmd/config.c',
+  'libtrx/game/console/cmd/debug.c',
+  'libtrx/game/console/cmd/die.c',
+  'libtrx/game/console/cmd/easy_config.c',
+  'libtrx/game/console/cmd/end_level.c',
+  'libtrx/game/console/cmd/exit_game.c',
+  'libtrx/game/console/cmd/exit_to_title.c',
+  'libtrx/game/console/cmd/flipmap.c',
+  'libtrx/game/console/cmd/flood.c',
+  'libtrx/game/console/cmd/fly.c',
+  'libtrx/game/console/cmd/give_item.c',
+  'libtrx/game/console/cmd/give_secret.c',
+  'libtrx/game/console/cmd/heal.c',
+  'libtrx/game/console/cmd/help.c',
+  'libtrx/game/console/cmd/immune.c',
+  'libtrx/game/console/cmd/inf_sprint.c',
+  'libtrx/game/console/cmd/kill.c',
+  'libtrx/game/console/cmd/load_game.c',
+  'libtrx/game/console/cmd/lua.c',
+  'libtrx/game/console/cmd/music.c',
+  'libtrx/game/console/cmd/play_cutscene.c',
+  'libtrx/game/console/cmd/play_demo.c',
+  'libtrx/game/console/cmd/play_gym.c',
+  'libtrx/game/console/cmd/play_level.c',
+  'libtrx/game/console/cmd/pos.c',
+  'libtrx/game/console/cmd/save_game.c',
+  'libtrx/game/console/cmd/screenshot.c',
+  'libtrx/game/console/cmd/set_health.c',
+  'libtrx/game/console/cmd/sfx.c',
+  'libtrx/game/console/cmd/speed.c',
+  'libtrx/game/console/cmd/strings.c',
+  'libtrx/game/console/cmd/teleport.c',
+  'libtrx/game/console/cmd/winston.c',
+  'libtrx/game/console/common.c',
+  'libtrx/game/console/history.c',
+  'libtrx/game/console/registry.c',
+  'libtrx/game/creature/common.c',
+  'libtrx/game/creature/shooting.c',
+  'libtrx/game/cutscene.c',
+  'libtrx/game/demo.c',
+  'libtrx/game/effects.c',
+  'libtrx/game/events.c',
+  'libtrx/game/fader.c',
+  'libtrx/game/fmv.c',
+  'libtrx/game/game.c',
+  'libtrx/game/game/draw.c',
+  'libtrx/game/game_buf.c',
+  'libtrx/game/game_flow/common.c',
+  'libtrx/game/game_flow/inventory.c',
+  'libtrx/game/game_flow/reader.c',
+  'libtrx/game/game_flow/sequencer.c',
+  'libtrx/game/game_flow/sequencer_events.c',
+  'libtrx/game/game_flow/sequencer_misc.c',
+  'libtrx/game/game_flow/util.c',
+  'libtrx/game/game_flow/vars.c',
+  'libtrx/game/game_string.c',
+  'libtrx/game/game_string_manager.c',
+  'libtrx/game/game_string_table/common.c',
+  'libtrx/game/game_string_table/priv.c',
+  'libtrx/game/game_string_table/reader.c',
+  'libtrx/game/gun/common.c',
+  'libtrx/game/gun/control.c',
+  'libtrx/game/gun/misc.c',
+  'libtrx/game/gun/pistols.c',
+  'libtrx/game/gun/rifle.c',
+  'libtrx/game/gun/vars.c',
+  'libtrx/game/gym.c',
+  'libtrx/game/inject/common.c',
+  'libtrx/game/inject/data/anims.c',
+  'libtrx/game/inject/data/camera.c',
+  'libtrx/game/inject/data/meshes.c',
+  'libtrx/game/inject/data/objects.c',
+  'libtrx/game/inject/data/sound.c',
+  'libtrx/game/inject/data/textures.c',
+  'libtrx/game/inject/editor.c',
+  'libtrx/game/inject/editors/anims.c',
+  'libtrx/game/inject/editors/floor_data.c',
+  'libtrx/game/inject/editors/items.c',
+  'libtrx/game/inject/editors/meshes.c',
+  'libtrx/game/inject/editors/objects.c',
+  'libtrx/game/inject/editors/rooms.c',
+  'libtrx/game/inject/editors/textures.c',
+  'libtrx/game/inject/testers/items.c',
+  'libtrx/game/inject/testers/rooms.c',
+  'libtrx/game/inject/utils.c',
+  'libtrx/game/input/backends/controller.c',
+  'libtrx/game/input/backends/internal.c',
+  'libtrx/game/input/backends/keyboard.c',
+  'libtrx/game/input/common.c',
+  'libtrx/game/input/update.c',
+  'libtrx/game/interpolation.c',
+  'libtrx/game/inventory.c',
+  'libtrx/game/inventory_ring/control.c',
+  'libtrx/game/inventory_ring/draw.c',
+  'libtrx/game/inventory_ring/priv.c',
+  'libtrx/game/inventory_ring/vars.c',
+  'libtrx/game/items/actions/common.c',
+  'libtrx/game/items/actions/effects.c',
+  'libtrx/game/items/actions/general.c',
+  'libtrx/game/items/actions/ids.c',
+  'libtrx/game/items/actions/items.c',
+  'libtrx/game/items/actions/lara.c',
+  'libtrx/game/items/anim.c',
+  'libtrx/game/items/col.c',
+  'libtrx/game/items/common.c',
+  'libtrx/game/items/utils.c',
+  'libtrx/game/items/walkable.c',
+  'libtrx/game/lara/cheat.c',
+  'libtrx/game/lara/cheat_keys.c',
+  'libtrx/game/lara/col.c',
+  'libtrx/game/lara/col/climb.c',
+  'libtrx/game/lara/col/jump.c',
+  'libtrx/game/lara/col/land.c',
+  'libtrx/game/lara/col/swim.c',
+  'libtrx/game/lara/common.c',
+  'libtrx/game/lara/control.c',
+  'libtrx/game/lara/draw.c',
+  'libtrx/game/lara/flare.c',
+  'libtrx/game/lara/hair.c',
+  'libtrx/game/lara/look.c',
+  'libtrx/game/lara/mesh.c',
+  'libtrx/game/lara/misc.c',
+  'libtrx/game/lara/pose.c',
+  'libtrx/game/lara/state.c',
+  'libtrx/game/lara/state/climb.c',
+  'libtrx/game/lara/state/extra.c',
+  'libtrx/game/lara/state/jump.c',
+  'libtrx/game/lara/state/land.c',
+  'libtrx/game/lara/state/swim.c',
+  'libtrx/game/lara/vehicle.c',
+  'libtrx/game/level/common.c',
+  'libtrx/game/level/faces.c',
+  'libtrx/game/level/loader.c',
+  'libtrx/game/level/reader.c',
+  'libtrx/game/level/reader_tr1.c',
+  'libtrx/game/level/reader_tr2.c',
+  'libtrx/game/level/settings.c',
+  'libtrx/game/los.c',
+  'libtrx/game/lua/common.c',
+  'libtrx/game/lua/config.c',
+  'libtrx/game/lua/console.c',
+  'libtrx/game/lua/events.c',
+  'libtrx/game/lua/game.c',
+  'libtrx/game/lua/items.c',
+  'libtrx/game/lua/lara.c',
+  'libtrx/game/lua/log.c',
+  'libtrx/game/lua/music.c',
+  'libtrx/game/lua/rooms.c',
+  'libtrx/game/lua/sound.c',
+  'libtrx/game/math/trig.c',
+  'libtrx/game/math/util.c',
+  'libtrx/game/matrix.c',
+  'libtrx/game/music/backend_cdaudio.c',
+  'libtrx/game/music/backend_files.c',
+  'libtrx/game/music/common.c',
+  'libtrx/game/music/ids.c',
+  'libtrx/game/objects/col.c',
+  'libtrx/game/objects/common.c',
+  'libtrx/game/objects/creatures/ape.c',
+  'libtrx/game/objects/creatures/bacon_lara.c',
+  'libtrx/game/objects/creatures/baldy.c',
+  'libtrx/game/objects/creatures/bandit_1.c',
+  'libtrx/game/objects/creatures/bandit_2.c',
+  'libtrx/game/objects/creatures/barracuda.c',
+  'libtrx/game/objects/creatures/bartoli.c',
+  'libtrx/game/objects/creatures/bat.c',
+  'libtrx/game/objects/creatures/bear.c',
+  'libtrx/game/objects/creatures/big_eel.c',
+  'libtrx/game/objects/creatures/big_spider.c',
+  'libtrx/game/objects/creatures/bird.c',
+  'libtrx/game/objects/creatures/bird_guardian.c',
+  'libtrx/game/objects/creatures/centaur.c',
+  'libtrx/game/objects/creatures/centaur_statue.c',
+  'libtrx/game/objects/creatures/cowboy.c',
+  'libtrx/game/objects/creatures/crocodile.c',
+  'libtrx/game/objects/creatures/cultist_1.c',
+  'libtrx/game/objects/creatures/cultist_2.c',
+  'libtrx/game/objects/creatures/cultist_3.c',
+  'libtrx/game/objects/creatures/diver.c',
+  'libtrx/game/objects/creatures/dog.c',
+  'libtrx/game/objects/creatures/dragon.c',
+  'libtrx/game/objects/creatures/eel.c',
+  'libtrx/game/objects/creatures/jelly.c',
+  'libtrx/game/objects/creatures/larson.c',
+  'libtrx/game/objects/creatures/lion.c',
+  'libtrx/game/objects/creatures/monk.c',
+  'libtrx/game/objects/creatures/mouse.c',
+  'libtrx/game/objects/creatures/mummy.c',
+  'libtrx/game/objects/creatures/mutant.c',
+  'libtrx/game/objects/creatures/natla.c',
+  'libtrx/game/objects/creatures/pierre.c',
+  'libtrx/game/objects/creatures/pod.c',
+  'libtrx/game/objects/creatures/raptor.c',
+  'libtrx/game/objects/creatures/rat.c',
+  'libtrx/game/objects/creatures/shark.c',
+  'libtrx/game/objects/creatures/skate_kid.c',
+  'libtrx/game/objects/creatures/skidoo_driver.c',
+  'libtrx/game/objects/creatures/spider.c',
+  'libtrx/game/objects/creatures/tiger.c',
+  'libtrx/game/objects/creatures/torso.c',
+  'libtrx/game/objects/creatures/trex.c',
+  'libtrx/game/objects/creatures/winston.c',
+  'libtrx/game/objects/creatures/wolf.c',
+  'libtrx/game/objects/creatures/worker_1.c',
+  'libtrx/game/objects/creatures/worker_2.c',
+  'libtrx/game/objects/creatures/worker_3.c',
+  'libtrx/game/objects/creatures/xian_common.c',
+  'libtrx/game/objects/creatures/xian_knight.c',
+  'libtrx/game/objects/creatures/xian_spearman.c',
+  'libtrx/game/objects/creatures/yeti.c',
+  'libtrx/game/objects/draw.c',
+  'libtrx/game/objects/effects/blood.c',
+  'libtrx/game/objects/effects/body_part.c',
+  'libtrx/game/objects/effects/bubble.c',
+  'libtrx/game/objects/effects/dart_effect.c',
+  'libtrx/game/objects/effects/ember.c',
+  'libtrx/game/objects/effects/explosion.c',
+  'libtrx/game/objects/effects/flame.c',
+  'libtrx/game/objects/effects/glow.c',
+  'libtrx/game/objects/effects/gun_flash.c',
+  'libtrx/game/objects/effects/hot_liquid.c',
+  'libtrx/game/objects/effects/missile.c',
+  'libtrx/game/objects/effects/missile_common.c',
+  'libtrx/game/objects/effects/missile_flame.c',
+  'libtrx/game/objects/effects/missile_harpoon.c',
+  'libtrx/game/objects/effects/missile_knife.c',
+  'libtrx/game/objects/effects/natla_gun.c',
+  'libtrx/game/objects/effects/pickup_aid.c',
+  'libtrx/game/objects/effects/ricochet.c',
+  'libtrx/game/objects/effects/snow_sprite.c',
+  'libtrx/game/objects/effects/splash.c',
+  'libtrx/game/objects/effects/twinkle.c',
+  'libtrx/game/objects/effects/water_sprite.c',
+  'libtrx/game/objects/general/alarm_sound.c',
+  'libtrx/game/objects/general/bell.c',
+  'libtrx/game/objects/general/big_bowl.c',
+  'libtrx/game/objects/general/bird_tweeter.c',
+  'libtrx/game/objects/general/boat.c',
+  'libtrx/game/objects/general/bridge_common.c',
+  'libtrx/game/objects/general/bridge_flat.c',
+  'libtrx/game/objects/general/bridge_tilt1.c',
+  'libtrx/game/objects/general/bridge_tilt2.c',
+  'libtrx/game/objects/general/cabin.c',
+  'libtrx/game/objects/general/camera_target.c',
+  'libtrx/game/objects/general/clock_chimes.c',
+  'libtrx/game/objects/general/cog.c',
+  'libtrx/game/objects/general/combat_end.c',
+  'libtrx/game/objects/general/copter.c',
+  'libtrx/game/objects/general/cutscene_player.c',
+  'libtrx/game/objects/general/detonator_box.c',
+  'libtrx/game/objects/general/ding_dong.c',
+  'libtrx/game/objects/general/door.c',
+  'libtrx/game/objects/general/drawbridge.c',
+  'libtrx/game/objects/general/earthquake.c',
+  'libtrx/game/objects/general/final_cutscene.c',
+  'libtrx/game/objects/general/flare_item.c',
+  'libtrx/game/objects/general/general.c',
+  'libtrx/game/objects/general/gong.c',
+  'libtrx/game/objects/general/gong_bonger.c',
+  'libtrx/game/objects/general/grenade.c',
+  'libtrx/game/objects/general/harpoon_bolt.c',
+  'libtrx/game/objects/general/keyhole.c',
+  'libtrx/game/objects/general/lara_alarm.c',
+  'libtrx/game/objects/general/lift.c',
+  'libtrx/game/objects/general/mini_copter.c',
+  'libtrx/game/objects/general/moving_bar.c',
+  'libtrx/game/objects/general/pickup.c',
+  'libtrx/game/objects/general/puzzle_hole.c',
+  'libtrx/game/objects/general/save_crystal.c',
+  'libtrx/game/objects/general/scion1.c',
+  'libtrx/game/objects/general/scion3.c',
+  'libtrx/game/objects/general/scion4.c',
+  'libtrx/game/objects/general/scion_holder.c',
+  'libtrx/game/objects/general/sphere_of_doom.c',
+  'libtrx/game/objects/general/switch.c',
+  'libtrx/game/objects/general/trapdoor.c',
+  'libtrx/game/objects/general/waterfall.c',
+  'libtrx/game/objects/general/window.c',
+  'libtrx/game/objects/general/zipline.c',
+  'libtrx/game/objects/names.c',
+  'libtrx/game/objects/setup.c',
+  'libtrx/game/objects/traps/blade.c',
+  'libtrx/game/objects/traps/damocles_sword.c',
+  'libtrx/game/objects/traps/dart.c',
+  'libtrx/game/objects/traps/dart_emitter.c',
+  'libtrx/game/objects/traps/dying_monk.c',
+  'libtrx/game/objects/traps/ember_emitter.c',
+  'libtrx/game/objects/traps/falling_block.c',
+  'libtrx/game/objects/traps/falling_ceiling.c',
+  'libtrx/game/objects/traps/flame_emitter.c',
+  'libtrx/game/objects/traps/gondola.c',
+  'libtrx/game/objects/traps/hook.c',
+  'libtrx/game/objects/traps/icicle.c',
+  'libtrx/game/objects/traps/killer_statue.c',
+  'libtrx/game/objects/traps/lava_wedge.c',
+  'libtrx/game/objects/traps/lightning_emitter.c',
+  'libtrx/game/objects/traps/midas_touch.c',
+  'libtrx/game/objects/traps/mine.c',
+  'libtrx/game/objects/traps/movable_block.c',
+  'libtrx/game/objects/traps/pendulum.c',
+  'libtrx/game/objects/traps/power_saw.c',
+  'libtrx/game/objects/traps/propeller.c',
+  'libtrx/game/objects/traps/rolling_ball.c',
+  'libtrx/game/objects/traps/sliding_pillar.c',
+  'libtrx/game/objects/traps/spike_ceiling.c',
+  'libtrx/game/objects/traps/spike_wall.c',
+  'libtrx/game/objects/traps/spikes.c',
+  'libtrx/game/objects/traps/spinning_blade.c',
+  'libtrx/game/objects/traps/springboard.c',
+  'libtrx/game/objects/traps/teeth_trap.c',
+  'libtrx/game/objects/traps/thors_hammer.c',
+  'libtrx/game/objects/vars.c',
+  'libtrx/game/objects/vehicles/boat.c',
+  'libtrx/game/objects/vehicles/common.c',
+  'libtrx/game/objects/vehicles/skidoo_armed.c',
+  'libtrx/game/objects/vehicles/skidoo_common.c',
+  'libtrx/game/objects/vehicles/skidoo_fast.c',
+  'libtrx/game/option/common.c',
+  'libtrx/game/option/controls.c',
+  'libtrx/game/option/examine.c',
+  'libtrx/game/option/gameplay.c',
+  'libtrx/game/option/graphics.c',
+  'libtrx/game/option/passport.c',
+  'libtrx/game/option/sound.c',
+  'libtrx/game/option/stats.c',
+  'libtrx/game/output/background.c',
+  'libtrx/game/output/common.c',
+  'libtrx/game/output/draw.c',
+  'libtrx/game/output/func.c',
+  'libtrx/game/output/lights.c',
+  'libtrx/game/output/mesh_batcher/batcher.c',
+  'libtrx/game/output/mesh_batcher/mesh.c',
+  'libtrx/game/output/mesh_batcher/mesh_builder.c',
+  'libtrx/game/output/scene_compositor.c',
+  'libtrx/game/output/shader.c',
+  'libtrx/game/output/sources/background.c',
+  'libtrx/game/output/sources/lightnings.c',
+  'libtrx/game/output/sources/misc.c',
+  'libtrx/game/output/sources/objects.c',
+  'libtrx/game/output/sources/rooms.c',
+  'libtrx/game/output/sources/rooms_debug.c',
+  'libtrx/game/output/sources/shadows.c',
+  'libtrx/game/output/sources/sprites.c',
+  'libtrx/game/output/sources/ui.c',
+  'libtrx/game/output/state.c',
+  'libtrx/game/output/textures.c',
+  'libtrx/game/output/vars.c',
+  'libtrx/game/output/vertex_range.c',
+  'libtrx/game/output/warmup.c',
+  'libtrx/game/overlay.c',
+  'libtrx/game/packer.c',
+  'libtrx/game/pathing/box.c',
+  'libtrx/game/pathing/lot.c',
+  'libtrx/game/pathing/vars.c',
+  'libtrx/game/phase/executor.c',
+  'libtrx/game/phase/phase_cutscene.c',
+  'libtrx/game/phase/phase_demo.c',
+  'libtrx/game/phase/phase_game.c',
+  'libtrx/game/phase/phase_inventory.c',
+  'libtrx/game/phase/phase_pause.c',
+  'libtrx/game/phase/phase_photo_mode.c',
+  'libtrx/game/phase/phase_picture.c',
+  'libtrx/game/phase/phase_stats.c',
+  'libtrx/game/photo_mode.c',
+  'libtrx/game/random.c',
+  'libtrx/game/rooms/common.c',
+  'libtrx/game/rooms/draw.c',
+  'libtrx/game/rooms/floor_data.c',
+  'libtrx/game/rooms/geometry.c',
+  'libtrx/game/savegame/bson.c',
+  'libtrx/game/savegame/bson_read.c',
+  'libtrx/game/savegame/bson_write.c',
+  'libtrx/game/savegame/common.c',
+  'libtrx/game/scaler.c',
+  'libtrx/game/shell/args.c',
+  'libtrx/game/shell/common.c',
+  'libtrx/game/shell/config.c',
+  'libtrx/game/shell/events.c',
+  'libtrx/game/shell/flow.c',
+  'libtrx/game/shell/input.c',
+  'libtrx/game/shell/main.c',
+  'libtrx/game/shell/platform.c',
+  'libtrx/game/sound/common.c',
+  'libtrx/game/sound/ids.c',
+  'libtrx/game/spawn.c',
+  'libtrx/game/stats/common.c',
+  'libtrx/game/stats/scan.c',
+  'libtrx/game/test_recorder.c',
+  'libtrx/game/test_replay.c',
+  'libtrx/game/ui/common.c',
+  'libtrx/game/ui/dialogs/base_passport.c',
+  'libtrx/game/ui/dialogs/controls.c',
+  'libtrx/game/ui/dialogs/controls_backend.c',
+  'libtrx/game/ui/dialogs/controls_editor.c',
+  'libtrx/game/ui/dialogs/gameplay_settings.c',
+  'libtrx/game/ui/dialogs/graphic_settings.c',
+  'libtrx/game/ui/dialogs/new_game.c',
+  'libtrx/game/ui/dialogs/pause.c',
+  'libtrx/game/ui/dialogs/photo_mode.c',
+  'libtrx/game/ui/dialogs/play_any_level.c',
+  'libtrx/game/ui/dialogs/save_slot.c',
+  'libtrx/game/ui/dialogs/select_level.c',
+  'libtrx/game/ui/dialogs/setting_helpers/enums.c',
+  'libtrx/game/ui/dialogs/setting_helpers/handlers.c',
+  'libtrx/game/ui/dialogs/setting_helpers/handlers_language.c',
+  'libtrx/game/ui/dialogs/settings.c',
+  'libtrx/game/ui/dialogs/sound_settings.c',
+  'libtrx/game/ui/dialogs/stats.c',
+  'libtrx/game/ui/dialogs/text.c',
+  'libtrx/game/ui/draw.c',
+  'libtrx/game/ui/elements/ammo_label.c',
+  'libtrx/game/ui/elements/anchor.c',
+  'libtrx/game/ui/elements/bar.c',
+  'libtrx/game/ui/elements/bar_enemy_hp.c',
+  'libtrx/game/ui/elements/bar_lara_air.c',
+  'libtrx/game/ui/elements/bar_lara_exposure.c',
+  'libtrx/game/ui/elements/bar_lara_hp.c',
+  'libtrx/game/ui/elements/bar_lara_sprint.c',
+  'libtrx/game/ui/elements/button_label.c',
+  'libtrx/game/ui/elements/fade.c',
+  'libtrx/game/ui/elements/fixed.c',
+  'libtrx/game/ui/elements/flash.c',
+  'libtrx/game/ui/elements/fps_counter.c',
+  'libtrx/game/ui/elements/frame.c',
+  'libtrx/game/ui/elements/hide.c',
+  'libtrx/game/ui/elements/horizontal_line.c',
+  'libtrx/game/ui/elements/label.c',
+  'libtrx/game/ui/elements/modal.c',
+  'libtrx/game/ui/elements/offset.c',
+  'libtrx/game/ui/elements/pad.c',
+  'libtrx/game/ui/elements/progress_button.c',
+  'libtrx/game/ui/elements/prompt.c',
+  'libtrx/game/ui/elements/requester.c',
+  'libtrx/game/ui/elements/resize.c',
+  'libtrx/game/ui/elements/row_arrows.c',
+  'libtrx/game/ui/elements/scrollable_area.c',
+  'libtrx/game/ui/elements/spacer.c',
+  'libtrx/game/ui/elements/span.c',
+  'libtrx/game/ui/elements/stack.c',
+  'libtrx/game/ui/elements/tab_switch.c',
+  'libtrx/game/ui/elements/window.c',
+  'libtrx/game/ui/events.c',
+  'libtrx/game/ui/helpers.c',
+  'libtrx/game/ui/hud/console.c',
+  'libtrx/game/ui/hud/console_logs.c',
+  'libtrx/game/ui/hud/overlay.c',
+  'libtrx/game/ui/scrollable.c',
+  'libtrx/game/ui/text.c',
+  'libtrx/game/viewport.c',
+  'libtrx/gfx/2d/2d_renderer.c',
+  'libtrx/gfx/2d/2d_surface.c',
+  'libtrx/gfx/context.c',
+  'libtrx/gfx/gl/buffer.c',
+  'libtrx/gfx/gl/fbo.c',
+  'libtrx/gfx/gl/program.c',
+  'libtrx/gfx/gl/sampler.c',
+  'libtrx/gfx/gl/texture.c',
+  'libtrx/gfx/gl/track.c',
+  'libtrx/gfx/gl/utils.c',
+  'libtrx/gfx/gl/vertex_array.c',
+  'libtrx/gfx/renderer.c',
+  'libtrx/gfx/screenshot.c',
+  'libtrx/json/bson_parse.c',
+  'libtrx/json/bson_write.c',
+  'libtrx/json/json_base.c',
+  'libtrx/json/json_parse.c',
+  'libtrx/json/json_write.c',
+  'libtrx/json_file.c',
+  'libtrx/log.c',
+  'libtrx/memory.c',
+  'libtrx/screenshot.c',
+  'libtrx/strings/case_funcs.c',
+  'libtrx/strings/common.c',
+  'libtrx/strings/fuzzy_match.c',
+  'libtrx/thread_pool.c',
+  'libtrx/vector.c',
+  'libtrx/version.c',
+  'libtrx/virtual_file.c',
+]
+
+
+if dep_backtrace.found() and host_machine.system() == 'linux'
+  common_sources += ['libtrx/log_linux.c']
+elif host_machine.system() == 'windows'
+  common_sources += ['libtrx/log_windows.c']
+  dwarfstack = subproject('dwarfstack', default_options: ['warning_level=0'])
+  dep_dwarfstack = dwarfstack.get_variable('dep_dwarfstack')
+  dep_dbghelp = c_compiler.find_library('dbghelp')
+  dependencies += [dep_dbghelp, dep_dwarfstack]
+else
+  common_sources += ['libtrx/log_unknown.c']
+endif
+
+link_args = []
+if host_machine.system() == 'windows'
+  link_args += ['-static']
+endif
+
+
+
+#################################################################################
+# TR1X
+#################################################################################
+
+# autogenerated files
+tr1_init = custom_target(
+  'tr1_fake_init',
+  output: ['tr1_init.c'],
+  command: [python3, meson.project_source_root() + '/../tools/generate_init', '-o', meson.current_build_dir() / '@OUTPUT0@'],
+  build_always_stale: true,
+)
+tr1_version_rc = custom_target(
+  'tr1_fake_version',
+  output: ['tr1_version.rc'],
+  command: [python3, meson.project_source_root() + '/../tools/generate_rcfile', '-o', '@OUTPUT0@'],
+  build_always_stale: true,
+)
+tr1_icon_rc = custom_target(
+  'tr1_fake_icon',
+  output: ['tr1_icon.rc'],
+  command: [python3, meson.project_source_root() + '/../tools/generate_rcfile', '-o', '@OUTPUT0@'],
+)
+
+tr1_resources = []
+if host_machine.system() == 'windows'
+  windows = import('windows')
+  tr1_resources = [
+    windows.compile_resources(tr1_version_rc),
+    windows.compile_resources(tr1_icon_rc),
+  ]
+endif
+
+tr1_sources = common_sources + [tr1_init, tr1_resources]
+
+executable(
+  'TR1X',
+  tr1_sources,
+  dependencies: dependencies,
+  include_directories: ['libtrx/', 'libtrx/include/libtrx/'],
+  link_args: link_args,
+  win_subsystem: 'windows',
+  install: true,
+  install_tag: 'tr1',
+  c_args: ['-DTR_VERSION=1'],
+)
+
+if host_machine.system() == 'darwin'
+  install_subdir('../data/tr1/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr1')
+  install_subdir('../data/tr1/ship/data', install_dir : 'Contents/Resources', install_tag: 'tr1')
+  install_subdir('../data/common/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr1')
+  install_subdir('../data/common/ship/shaders', install_dir : 'Contents/Resources', install_tag: 'tr1')
+  install_data('../data/tr1/mac/icon.icns', install_dir : 'Contents/Resources', install_tag: 'tr1')
+  install_data('../data/tr1/mac/Info.plist', install_dir : 'Contents', install_tag: 'tr1')
+  meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR1X', install_tag: 'tr1')
+endif
+
+
+
+#################################################################################
+# TR2X
+#################################################################################
+
+# autogenerated files
+tr2_init = custom_target(
+  'tr2_fake_init',
+  output: ['tr2_init.c'],
+  command: [python3, meson.project_source_root() + '/../tools/generate_init', '-o', meson.current_build_dir() / '@OUTPUT0@'],
+  build_always_stale: true,
+)
+tr2_version_rc = custom_target(
+  'tr2_fake_version',
+  output: ['tr2_version.rc'],
+  command: [python3, meson.project_source_root() + '/../tools/generate_rcfile', '-o', '@OUTPUT0@'],
+  build_always_stale: true,
+)
+tr2_icon_rc = custom_target(
+  'tr2_fake_icon',
+  output: ['tr2_icon.rc'],
+  command: [python3, meson.project_source_root() + '/../tools/generate_rcfile', '-o', '@OUTPUT0@'],
+)
+
+tr2_resources = []
+if host_machine.system() == 'windows'
+  windows = import('windows')
+  version_resource = windows.compile_resources(tr2_version_rc)
+  icon_resource = windows.compile_resources(tr2_icon_rc)
+  tr2_resources = [version_resource, icon_resource]
+endif
+
+tr2_sources = common_sources + [tr2_init, tr2_resources]
+
+executable(
+  'TR2X',
+  tr2_sources,
+  name_prefix: '',
+  link_args: link_args,
+  dependencies: dependencies,
+  include_directories: ['libtrx/', 'libtrx/include/libtrx/'],
+  win_subsystem: 'windows',
+  install: true,
+  install_tag: 'tr2',
+  c_args: ['-DTR_VERSION=2'],
+)
+
+if host_machine.system() == 'darwin'
+  install_subdir('../data/tr2/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr2')
+  install_subdir('../data/tr2/ship/data', install_dir : 'Contents/Resources', install_tag: 'tr2')
+  install_subdir('../data/common/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr2')
+  install_subdir('../data/common/ship/shaders', install_dir : 'Contents/Resources', install_tag: 'tr2')
+  install_data('../data/tr2/mac/icon.icns', install_dir : 'Contents/Resources', install_tag: 'tr2')
+  install_data('../data/tr2/mac/Info.plist', install_dir : 'Contents', install_tag: 'tr2')
+  meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR2X', install_tag: 'tr2')
+endif

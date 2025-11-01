@@ -25,16 +25,13 @@ class ProjectPaths(BasePaths):
 
         self.data_dir = DATA_DIR / folder_name
         self.shipped_data_dir = self.data_dir / "ship"
-        self.src_dir = SRC_DIR / folder_name
         self.tools_dir = TOOLS_DIR / folder_name
         self.docs_dir = DOCS_DIR / folder_name
         self.changelog_path = self.docs_dir / "CHANGELOG.md"
 
 
 TR1Paths = ProjectPaths(folder_name="tr1")
-
 TR2Paths = ProjectPaths(folder_name="tr2")
-TR2Paths.progress_file = TR2Paths.docs_dir / "symbols.txt"
 
 CommonPaths = BasePaths()
 CommonPaths.data_dir = DATA_DIR / "common"

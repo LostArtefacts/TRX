@@ -1,7 +1,9 @@
-TR1X_runtime.json5
 TR1X.dll
 TR1X.exe
 TR1X.log
+TR2X.dll
+TR2X.exe
+TR2X.log
 
 # Docker builds garbage
 /build
@@ -10,6 +12,8 @@ TR1X.log
 /workflow
 /TR1X*.zip
 /TR1X*.exe
+/TR2X*.zip
+/TR2X*.exe
 __pycache__/
 
 # VS garbage
@@ -33,9 +37,6 @@ Release/
 # libtrx artefacts
 **/subprojects/packagecache/
 **/subprojects/dwarfstack-*/
-src/tr1/subprojects/dwarfstack.wrap
-src/tr2/subprojects/dwarfstack.wrap
-
 data/tr1/ship/data/images/
 data/tr2/ship/data/images/
 data/tr2/ship/data/level1.tr2

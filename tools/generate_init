@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import argparse
+import re
 from pathlib import Path
 
 from shared.versioning import generate_version
 
 TEMPLATE = """
-const char *g_TRXVersion = "TR1X {version}";
+const char *g_TRXVersion = "TR{game_version}X {version}";
 """.lstrip()
 
 
@@ -15,20 +16,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def get_init_c() -> str:
-    return TEMPLATE.format(version=generate_version(1))
+def get_init_c(game_version: int) -> str:
+    return TEMPLATE.format(
+        game_version=game_version, version=generate_version(game_version)
+    )
 
 
-def update_init_c(output_path: Path) -> None:
-    new_text = get_init_c()
+def update_init_c(game_version: int, output_path: Path) -> None:
+    new_text = get_init_c(game_version=game_version)
     if not output_path.exists() or output_path.read_text() != new_text:
         output_path.write_text(new_text)
 
 
 def main() -> None:
     args = parse_args()
+    game_version = int(re.search(r"tr(\d)_", str(args.output)).group(1))
     if args.output:
-        update_init_c(output_path=args.output)
+        update_init_c(game_version=game_version, output_path=args.output)
     else:
         print(get_init_c(), end="")
 
