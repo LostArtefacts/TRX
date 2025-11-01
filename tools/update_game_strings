@@ -163,7 +163,7 @@ class RunContext:
             if path.suffix in [".c", ".h", ".def"]
         ]
         self.game_strings_def_path = (
-            CommonPaths.include_dir / "game/game_string.def"
+            CommonPaths.src_dir / "game/game_string.def"
         )
         self.game_strings_dict = get_strings_map(self.game_strings_def_path)
         self.used_game_strings = sum(

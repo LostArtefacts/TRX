@@ -1,0 +1,17 @@
+X_GLYPH_DEFINE("\n", GLYPH_NEW_LINE, 0, -1)
+X_GLYPH_DEFINE("\f", GLYPH_NEW_PAGE, 0, -1)
+X_GLYPH_DEFINE(" ", GLYPH_SPACE, 0, -1)
+X_GLYPH_DEFINE(" ", GLYPH_NORMAL, M_WORD_SPACING, -1)
+X_GLYPH_DEFINE("\\{i}", GLYPH_VISIBILITY_MARKER, 0, 0)
+X_GLYPH_DEFINE("\\{/i}", GLYPH_VISIBILITY_MARKER, 0, 1)
+X_GLYPH_DEFINE("\\{dim}", GLYPH_DIM_MARKER, 0, 1)
+X_GLYPH_DEFINE("\\{/dim}", GLYPH_DIM_MARKER, 0, 0)
+
+#if TR_VERSION == 1
+    #include <trx/game/ui/text_tr1.def>
+#elif TR_VERSION == 2
+    #include <trx/game/ui/text_tr2.def>
+    X_GLYPH_DEFINE("\\{secret 1}", GLYPH_SECRET, 16, 0)
+    X_GLYPH_DEFINE("\\{secret 2}", GLYPH_SECRET, 16, 1)
+    X_GLYPH_DEFINE("\\{secret 3}", GLYPH_SECRET, 16, 2)
+#endif

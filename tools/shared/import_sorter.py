@@ -48,9 +48,9 @@ def sort_imports_single_file(
             "external": set(),
         }
         for include in includes:
-            if include.strip('"') == own_include:
+            if include.strip('"<>') == own_include:
                 groups["self"].add(include)
-            elif include.startswith("<libtrx"):
+            elif include.startswith("<trx"):
                 groups["shared"].add(include)
             elif include.startswith("<"):
                 groups["external"].add(include)

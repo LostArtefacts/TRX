@@ -1,0 +1,36 @@
+#pragma once
+
+#include <trx/config/option.h>
+#include <trx/enum_map.h>
+#include <trx/game/gym.h>
+#include <trx/json.h>
+#include <trx/vector.h>
+
+#include <stdint.h>
+
+typedef struct {
+    const char *default_path;
+    const char *enforced_path;
+    void (*action)(JSON_OBJECT *root_obj);
+    VECTOR *enforced_targets;
+    VECTOR *hidden_targets;
+} CONFIG_IO_ARGS;
+
+bool ConfigFile_Read(const CONFIG_IO_ARGS *control);
+bool ConfigFile_Write(const CONFIG_IO_ARGS *control);
+
+void ConfigFile_LoadOptions(
+    JSON_OBJECT *root_obj, const CONFIG_OPTION *options);
+void ConfigFile_DumpOptions(
+    JSON_OBJECT *root_obj, const CONFIG_OPTION *options);
+
+int ConfigFile_ReadEnum(
+    JSON_OBJECT *obj, const char *name, int default_value,
+    const char *enum_name);
+void ConfigFile_WriteEnum(
+    JSON_OBJECT *obj, const char *name, int value, const char *enum_name);
+
+bool ConfigFile_LoadAssaultStats(
+    JSON_OBJECT *root_obj, ASSAULT_STATS *assault_stats);
+bool ConfigFile_DumpAssaultStats(
+    JSON_OBJECT *root_obj, const ASSAULT_STATS *assault_stats);
