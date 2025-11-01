@@ -44,6 +44,7 @@ static void M_CreateGameWindow(void)
     if (m_Window == nullptr) {
         Shell_ExitSystemFmt("Failed to create SDL window: %s", SDL_GetError());
     }
+    Shell_EnableThemeSupport(m_Window);
 }
 
 static void M_CreateGLContext(void)
