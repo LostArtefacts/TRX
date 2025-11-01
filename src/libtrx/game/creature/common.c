@@ -278,7 +278,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     info->enemy_facing = angle - enemy->rot.y + DEG_180;
     info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
     info->bite = info->ahead && ABS(enemy->pos.y - item->pos.y) <= STEP_L
-        && (TR_VERSION == 1 || enemy->hit_points > 0);
+        && (g_TRVersion == 1 || enemy->hit_points > 0);
 }
 
 bool Creature_EnsureHabitat(
