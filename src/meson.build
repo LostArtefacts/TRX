@@ -34,7 +34,7 @@ build_opts = [
   '-fms-extensions',
   '-fno-omit-frame-pointer',
   '-fmacro-prefix-map=@0@/='.format(
-    fs.relative_to(meson.current_source_dir() / 'libtrx', meson.global_build_root())
+    fs.relative_to(meson.current_source_dir() / 'trx', meson.global_build_root())
   ),
   '-DDWST_STATIC',
   '-DPCRE2_STATIC',
