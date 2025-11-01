@@ -126,14 +126,12 @@ static void M_FireM16(const bool running)
         lara->left_arm.rot.x,
     };
 
-    if (g_Config.gameplay.fix_m16_accuracy) {
-        if (running) {
-            g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 12;
-            g_Weapons[LGT_M16].damage = 1;
-        } else {
-            g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 4;
-            g_Weapons[LGT_M16].damage = 3;
-        }
+    if (g_Config.gameplay.fix_m16_accuracy && running) {
+        g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 12;
+        g_Weapons[LGT_M16].damage = 1;
+    } else {
+        g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 4;
+        g_Weapons[LGT_M16].damage = 3;
     }
 
     if (Gun_FireWeapon(LGT_M16, lara->target, lara_item, angles)) {
