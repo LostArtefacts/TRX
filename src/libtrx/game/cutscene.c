@@ -73,7 +73,8 @@ static void M_Skip(const int32_t frames)
     for (int32_t i = 0; i < frames; i++) {
         for (int32_t j = 0; j < Item_GetTotalCount(); j++) {
             ITEM *const item = Item_Get(j);
-            if (item->object_id >= O_PLAYER_1 || item->object_id <= O_PLAYER_10
+            if ((item->object_id >= O_PLAYER_1
+                 && item->object_id <= O_PLAYER_10)
                 || item->object_id == O_LARA) {
                 Item_Animate(item);
             }
