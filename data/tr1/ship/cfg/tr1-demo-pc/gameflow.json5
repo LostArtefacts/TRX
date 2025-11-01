@@ -55,4 +55,13 @@
             ],
         },
     ],
+
+    "hidden_config": [
+        "enable_item_examining",
+        "enemy_healthbar_color_allies",
+        "exposurebar_color",
+        "exposurebar_location",
+        "exposurebar_show_mode",
+        "fix_m16_accuracy",
+    ],
 }

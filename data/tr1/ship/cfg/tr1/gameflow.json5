@@ -543,5 +543,6 @@
         "exposurebar_color",
         "exposurebar_location",
         "exposurebar_show_mode",
+        "fix_m16_accuracy",
     ],
 }

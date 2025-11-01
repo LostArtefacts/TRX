@@ -34,20 +34,24 @@ static void M_GiveAllGunsImpl(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool bonus_flag = Game_IsBonusFlagSet(GBF_NGPLUS);
     Inv_AddItem(O_PISTOL_ITEM);
-    Inv_AddItem(O_SHOTGUN_ITEM);
-    Inv_AddItem(O_MAGNUM_ITEM);
-    Inv_AddItem(O_UZI_ITEM);
-    lara_info->shotgun_ammo.ammo = bonus_flag ? 10001 : 300;
-    lara_info->magnum_ammo.ammo = bonus_flag ? 10001 : 1000;
-    lara_info->uzi_ammo.ammo = bonus_flag ? 10001 : 2000;
-#if TR_VERSION >= 2
-    Inv_AddItem(O_HARPOON_ITEM);
-    Inv_AddItem(O_M16_ITEM);
-    Inv_AddItem(O_GRENADE_ITEM);
-    lara_info->harpoon_ammo.ammo = bonus_flag ? 10001 : 300;
-    lara_info->m16_ammo.ammo = bonus_flag ? 10001 : 300;
-    lara_info->grenade_ammo.ammo = bonus_flag ? 10001 : 300;
-#endif
+    if (Inv_AddItem(O_SHOTGUN_ITEM)) {
+        lara_info->shotgun_ammo.ammo = bonus_flag ? 10001 : 300;
+    }
+    if (Inv_AddItem(O_MAGNUM_ITEM)) {
+        lara_info->magnum_ammo.ammo = bonus_flag ? 10001 : 1000;
+    }
+    if (Inv_AddItem(O_UZI_ITEM)) {
+        lara_info->uzi_ammo.ammo = bonus_flag ? 10001 : 2000;
+    }
+    if (Inv_AddItem(O_HARPOON_ITEM)) {
+        lara_info->harpoon_ammo.ammo = bonus_flag ? 10001 : 300;
+    }
+    if (Inv_AddItem(O_M16_ITEM)) {
+        lara_info->m16_ammo.ammo = bonus_flag ? 10001 : 300;
+    }
+    if (Inv_AddItem(O_GRENADE_ITEM)) {
+        lara_info->grenade_ammo.ammo = bonus_flag ? 10001 : 300;
+    }
 }
 
 static void M_GiveAllMedpacksImpl(void)

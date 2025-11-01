@@ -12,27 +12,19 @@
 #define FLARE_AMMO_QTY 6
 #define FLARE_AMMO_JAPANESE_QTY 8
 
-#if TR_VERSION == 1
-    #define MAGNUM_AMMO_CLIP 25
-    #define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2) // = 50
+#define MAGNUM_AMMO_CLIP (g_TRVersion == 1 ? 25 : 20)
+#define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2) // = 50 (TR1), 40 (TR2)
 
-    #define UZI_AMMO_CLIP 50
-    #define UZI_AMMO_QTY (UZI_AMMO_CLIP * 2) // = 100
-#elif TR_VERSION == 2
-    #define MAGNUM_AMMO_CLIP 20
-    #define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2) // = 40
+#define UZI_AMMO_CLIP (g_TRVersion == 1 ? 50 : 40)
+#define UZI_AMMO_QTY (UZI_AMMO_CLIP * 2) // = 100 (TR1), 80 (TR2)
 
-    #define UZI_AMMO_CLIP 40
-    #define UZI_AMMO_QTY (UZI_AMMO_CLIP * 2) // =  80
+#define M16_AMMO_CLIP 40
+#define M16_AMMO_QTY M16_AMMO_CLIP // = 40
 
-    #define M16_AMMO_CLIP 40
-    #define M16_AMMO_QTY M16_AMMO_CLIP // = 40
+#define HARPOON_AMMO_CLIP 3
+#define HARPOON_AMMO_QTY HARPOON_AMMO_CLIP // = 3
+#define HARPOON_BOLT_SPEED 150
 
-    #define HARPOON_AMMO_CLIP 3
-    #define HARPOON_AMMO_QTY HARPOON_AMMO_CLIP // = 3
-    #define HARPOON_BOLT_SPEED 150
-
-    #define GRENADE_AMMO_CLIP 1
-    #define GRENADE_AMMO_QTY (GRENADE_AMMO_CLIP * 2) // = 2
-    #define GRENADE_SPEED 200
-#endif
+#define GRENADE_AMMO_CLIP 1
+#define GRENADE_AMMO_QTY (GRENADE_AMMO_CLIP * 2) // = 2
+#define GRENADE_SPEED 200

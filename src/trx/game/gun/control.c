@@ -19,6 +19,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
+#include <trx/version.h>
 
 static struct {
     LARA_GUN_TYPE gun_type;
@@ -37,11 +38,7 @@ static struct {
 
 static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
 {
-#if TR_VERSION == 1
-    return false;
-#else
     return gun_type == LGT_HARPOON;
-#endif
 }
 
 static bool M_IsTooSubmerged(const LARA_GUN_TYPE gun_type)
@@ -283,11 +280,9 @@ void Gun_Control(void)
             break;
 
         case LGT_SHOTGUN:
-#if TR_VERSION >= 2
         case LGT_M16:
         case LGT_GRENADE:
         case LGT_HARPOON:
-#endif
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
             }
@@ -315,11 +310,9 @@ void Gun_Control(void)
             break;
 
         case LGT_SHOTGUN:
-#if TR_VERSION >= 2
         case LGT_M16:
         case LGT_GRENADE:
         case LGT_HARPOON:
-#endif
             Gun_Rifle_Undraw(lara->gun_type);
             break;
 
@@ -349,9 +342,9 @@ void Gun_Control(void)
 
             if (ammo->ammo <= 0) {
                 ammo->ammo = 0;
-#if TR_VERSION >= 2
-                Sound_Effect(SFX_CLICK, &lara_item->pos, SPM_NORMAL);
-#endif
+                if (g_TRVersion >= 2) {
+                    Sound_Effect(SFX_CLICK, &lara_item->pos, SPM_NORMAL);
+                }
                 lara->request_gun_type =
                     Inv_RequestItem(O_PISTOL_ITEM) ? LGT_PISTOLS : LGT_UNARMED;
                 break;
@@ -366,11 +359,9 @@ void Gun_Control(void)
             break;
 
         case LGT_SHOTGUN:
-#if TR_VERSION >= 2
         case LGT_M16:
         case LGT_GRENADE:
         case LGT_HARPOON:
-#endif
             Gun_Rifle_Control(lara->gun_type);
             break;
 
@@ -411,14 +402,14 @@ int32_t Gun_FireWeapon(
     }
     if (ammo->ammo <= 0) {
         ammo->ammo = 0;
-#if TR_VERSION == 1
-        Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
-        if (Inv_RequestItem(O_PISTOL_ITEM)) {
-            lara->request_gun_type = LGT_PISTOLS;
-        } else {
-            lara->gun_status = LGS_UNDRAW;
+        if (g_TRVersion == 1) {
+            Sound_Effect(SFX_LARA_EMPTY, &src->pos, SPM_NORMAL);
+            if (Inv_RequestItem(O_PISTOL_ITEM)) {
+                lara->request_gun_type = LGT_PISTOLS;
+            } else {
+                lara->gun_status = LGS_UNDRAW;
+            }
         }
-#endif
         return 0;
     }
     ammo->ammo--;
@@ -464,18 +455,19 @@ int32_t Gun_FireWeapon(
 
     if (best_sphere < 0) {
         const int32_t dist = weapon->target_dist;
-        GAME_VECTOR hit_pos = {
-#if TR_VERSION == 1
-            .x = start.x + g_MatrixPtr->_20,
-            .y = start.y + g_MatrixPtr->_21,
-            .z = start.z + g_MatrixPtr->_22,
-#else
-            .x = start.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT),
-            .y = start.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT),
-            .z = start.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT),
-#endif
-            .room_num = start.room_num,
-        };
+        GAME_VECTOR hit_pos = g_TRVersion == 1
+            ? (GAME_VECTOR) {
+                .x = start.x + g_MatrixPtr->_20,
+                .y = start.y + g_MatrixPtr->_21,
+                .z = start.z + g_MatrixPtr->_22,
+                .room_num = start.room_num,
+            }
+            : (GAME_VECTOR) {
+                .x = start.x + ((dist * g_MatrixPtr->_20) >> W2V_SHIFT),
+                .y = start.y + ((dist * g_MatrixPtr->_21) >> W2V_SHIFT),
+                .z = start.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT),
+                .room_num = start.room_num,
+            };
         Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
         const bool object_on_los = LOS_Check(&start, &hit_pos, true);
         if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos)
@@ -486,19 +478,19 @@ int32_t Gun_FireWeapon(
             Spawn_RicochetRay(start, hit_pos);
         }
         return -1;
-    } else {
-        Stats_AddAmmoHits();
-        GAME_VECTOR hit_pos = {
-            .x = start.x + ((best_dist * g_MatrixPtr->_20) >> W2V_SHIFT),
-            .y = start.y + ((best_dist * g_MatrixPtr->_21) >> W2V_SHIFT),
-            .z = start.z + ((best_dist * g_MatrixPtr->_22) >> W2V_SHIFT),
-            .room_num = src->room_num,
-        };
-        Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
-        Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
-        Gun_HitTarget(
-            target, &start, &hit_pos,
-            weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
-        return 1;
     }
+
+    Stats_AddAmmoHits();
+    GAME_VECTOR hit_pos = {
+        .x = start.x + ((best_dist * g_MatrixPtr->_20) >> W2V_SHIFT),
+        .y = start.y + ((best_dist * g_MatrixPtr->_21) >> W2V_SHIFT),
+        .z = start.z + ((best_dist * g_MatrixPtr->_22) >> W2V_SHIFT),
+        .room_num = src->room_num,
+    };
+    Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
+    Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
+    Gun_HitTarget(
+        target, &start, &hit_pos,
+        weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
+    return 1;
 }

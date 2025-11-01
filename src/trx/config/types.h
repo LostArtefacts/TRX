@@ -248,9 +248,7 @@ typedef struct {
         bool fix_alligator_ai;
         bool disable_trex_collision;
         bool change_pierre_spawn;
-#if TR_VERSION == 2
         bool fix_m16_accuracy;
-#endif
         bool fix_flare_throw_priority;
         bool fix_free_flare_glitch;
         bool fix_walk_run_jump;

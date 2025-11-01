@@ -117,7 +117,6 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
     }
 }
 
-#if TR_VERSION == 2
 static void M_FireM16(const bool running)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -270,12 +269,10 @@ static void M_FireGrenade(void)
     }
     Stats_AddAmmoUsed();
 }
-#endif
 
 static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
 {
     switch (weapon_type) {
-#if TR_VERSION >= 2
     case LGT_HARPOON:
         M_FireHarpoon();
         break;
@@ -287,7 +284,6 @@ static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
     case LGT_M16:
         M_FireM16(running);
         break;
-#endif
     default:
         if (!running) {
             M_FireGeneric(weapon_type);

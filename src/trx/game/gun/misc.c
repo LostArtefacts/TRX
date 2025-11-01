@@ -18,29 +18,23 @@
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
 
-#if TR_VERSION >= 2
-    #define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
-    #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
-#endif
+#define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
+#define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 
 static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
 
-#if TR_VERSION >= 2
 // TODO: meh
 extern void Window_Smash(int16_t item_num);
-#endif
 
 static void M_SmashItem(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
     switch (item->object_id) {
-#if TR_VERSION >= 2
     case O_WINDOW_1:
         Window_Smash(item_num);
         break;
-#endif
 
     case O_BELL:
         if (item->status != IS_ACTIVE) {
@@ -198,11 +192,9 @@ void Gun_InitialiseNewWeapon(void)
             break;
 
         case LGT_SHOTGUN:
-#if TR_VERSION >= 2
         case LGT_M16:
         case LGT_GRENADE:
         case LGT_HARPOON:
-#endif
             Gun_Rifle_DrawMeshes(lara->gun_type);
             break;
 
@@ -296,14 +288,12 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 
     if (!lara_has_rifle && obj_id == O_SHOTGUN_ITEM) {
         back_gun_type = LGT_SHOTGUN;
-#if TR_VERSION >= 2
     } else if (!lara_has_rifle && obj_id == O_HARPOON_ITEM) {
         back_gun_type = LGT_HARPOON;
     } else if (!lara_has_rifle && obj_id == O_M16_ITEM) {
         back_gun_type = LGT_M16;
     } else if (!lara_has_rifle && obj_id == O_GRENADE_ITEM) {
         back_gun_type = LGT_GRENADE;
-#endif
     } else if (!lara_has_pistols && obj_id == O_PISTOL_ITEM) {
         holsters_gun_type = LGT_PISTOLS;
     } else if (!lara_has_pistols && obj_id == O_MAGNUM_ITEM) {
@@ -378,7 +368,6 @@ void Gun_HitTarget(
         }
     }
 
-#if TR_VERSION == 1
     if (item->hit_points > 0) {
         switch (item->object_id) {
         case O_WOLF:
@@ -410,7 +399,7 @@ void Gun_HitTarget(
             break;
         }
     }
-#else
+
     if (!Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
         CREATURE *const creature = item->data;
         creature->flags += damage;
@@ -419,7 +408,6 @@ void Gun_HitTarget(
             Creature_SetAlliesHostile(true);
         }
     }
-#endif
 }
 
 void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
@@ -489,14 +477,18 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
             m_TargetList[num_targets] = item;
             num_targets++;
             const int16_t y_rot = ABS(angles[0]);
-#if TR_VERSION == 1
-            if (y_rot < best_y_rot) {
-#else
-            if (y_rot < best_y_rot + M_NEAR_ANGLE && dist < best_dist) {
-#endif
-                best_dist = dist;
-                best_y_rot = y_rot;
-                best_target = item;
+            if (g_TRVersion == 1) {
+                if (y_rot < best_y_rot) {
+                    best_dist = dist;
+                    best_y_rot = y_rot;
+                    best_target = item;
+                }
+            } else {
+                if (y_rot < best_y_rot + M_NEAR_ANGLE && dist < best_dist) {
+                    best_dist = dist;
+                    best_y_rot = y_rot;
+                    best_target = item;
+                }
             }
         }
     }

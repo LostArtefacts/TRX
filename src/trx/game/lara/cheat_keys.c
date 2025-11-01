@@ -34,25 +34,27 @@ static void M_CompleteLevel(void)
 static void M_GiveItems(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    Inv_AddItem(O_SHOTGUN_ITEM);
-    Inv_AddItem(O_MAGNUM_ITEM);
-    Inv_AddItem(O_UZI_ITEM);
-    lara_info->shotgun_ammo.ammo = 500;
-    lara_info->magnum_ammo.ammo = 500;
-    lara_info->uzi_ammo.ammo = 5000;
-#if TR_VERSION >= 2
-    Inv_AddItem(O_HARPOON_ITEM);
-    Inv_AddItem(O_GRENADE_ITEM);
-    Inv_AddItem(O_M16_ITEM);
-    lara_info->grenade_ammo.ammo = 5000;
-    lara_info->m16_ammo.ammo = 5000;
-    lara_info->harpoon_ammo.ammo = 5000;
-    for (int32_t i = 0; i < 50; i++) {
-        Inv_AddItem(O_SMALL_MEDIPACK_ITEM);
-        Inv_AddItem(O_LARGE_MEDIPACK_ITEM);
-        Inv_AddItem(O_FLARE_ITEM);
+    if (Inv_AddItem(O_SHOTGUN_ITEM)) {
+        lara_info->shotgun_ammo.ammo = 500;
     }
-#endif
+    if (Inv_AddItem(O_MAGNUM_ITEM)) {
+        lara_info->magnum_ammo.ammo = 500;
+    }
+    if (Inv_AddItem(O_UZI_ITEM)) {
+        lara_info->uzi_ammo.ammo = 5000;
+    }
+    if (Inv_AddItem(O_HARPOON_ITEM)) {
+        lara_info->harpoon_ammo.ammo = 5000;
+    }
+    if (Inv_AddItem(O_GRENADE_ITEM)) {
+        lara_info->grenade_ammo.ammo = 5000;
+    }
+    if (Inv_AddItem(O_M16_ITEM)) {
+        lara_info->m16_ammo.ammo = 5000;
+    }
+    Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 50);
+    Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 50);
+    Inv_AddItemNTimes(O_FLARE_ITEM, 50);
     Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_ALWAYS);
 }
 
