@@ -147,7 +147,7 @@ static void M_MidasKill(ITEM *const item, COLL_INFO *const coll)
         break;
 
     case 225:
-        Object_SetReflective(O_LARA_HAIR, true);
+        Object_SetReflective(O_LARA_HAIR_SWAP, true);
         lara->mesh_effects |= (1 << LM_HEAD);
         Lara_Mesh_SwapSingle(LM_HEAD, O_LARA_EXTRA_SKIN_MIDAS);
         break;

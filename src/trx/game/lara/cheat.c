@@ -263,7 +263,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->air = LARA_MAX_AIR;
     lara_info->death_timer = 0;
     lara_info->mesh_effects = 0;
-    Object_SetReflective(O_LARA_HAIR, false);
+    Object_SetReflective(O_LARA_HAIR_SWAP, false);
     lara_item->enable_shadow = true;
     lara_item->hit_points = LARA_MAX_HITPOINTS;
     lara_info->interact_target.item_num = NO_ITEM;
