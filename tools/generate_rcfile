@@ -2,7 +2,7 @@
 import argparse
 from pathlib import Path
 
-from shared.paths import TR2Paths
+from shared.paths import DATA_DIR
 from shared.versioning import generate_version
 
 
@@ -18,18 +18,18 @@ def write_rc_template(
     template = input_path.read_text()
     template = template.replace("{version}", version)
     template = template.replace(
-        "{icon_path}", str(TR2Paths.data_dir / "icon.ico")
+        "{icon_path}", str(DATA_DIR / input_path.parent.name / 'icon.ico')
     )
     output_path.write_text(template)
 
 
 def main() -> None:
     args = parse_args()
-    version = generate_version(2)
+    version = generate_version(1)
 
     for output_path in args.output or []:
         write_rc_template(
-            input_path=TR2Paths.data_dir / output_path.name,
+            input_path=DATA_DIR / output_path.name.replace('_', '/'),
             output_path=output_path,
             version=version,
         )

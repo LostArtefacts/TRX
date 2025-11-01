@@ -25,44 +25,6 @@ def main() -> None:
         ]
 
     sort_imports(
-        paths=[
-            path for path in paths if path.is_relative_to(TR1Paths.src_dir)
-        ],
-        root_dir=TR1Paths.src_dir,
-        system_include_dirs=[SRC_DIR],
-        own_include_map={
-            "game/game/game.c": "game/game.h",
-            "game/game/game_cutscene.c": "game/game.h",
-            "game/game/game_demo.c": "game/game.h",
-            "game/game/game_draw.c": "game/game.h",
-            "game/game/game_pause.c": "game/game.h",
-            "game/lara/lara.c": "game/lara.h",
-            "game/option/option.c": "game/option.h",
-            "game/savegame/savegame.c": "game/savegame.h",
-        },
-        fix_map={"libavcodec/version_major.h": "libavcodec/version.h"},
-        forced_order=[],
-    )
-
-    sort_imports(
-        paths=[
-            path for path in paths if path.is_relative_to(TR2Paths.src_dir)
-        ],
-        root_dir=TR2Paths.src_dir,
-        system_include_dirs=[SRC_DIR],
-        own_include_map={
-            "game/music/music_main.c": "game/music.h",
-        },
-        fix_map={},
-        forced_order=[
-            "<mmeapi.h>",
-            "<dsound.h>",
-        "<ddrawi.h>",
-        "<d3dhal.h>"
-        ],
-    )
-
-    sort_imports(
         paths=[path for path in paths if path.is_relative_to(SHARED_SRC_DIR)],
         root_dir=SHARED_SRC_DIR,
         system_include_dirs=[],

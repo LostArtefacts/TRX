@@ -97,7 +97,7 @@ class BuildOptions(BaseOptions):
 
     @property
     def build_target(self) -> Path:
-        return Path(f"src/tr{self.tr_version}")
+        return Path(f"src/")
 
 
 def compress_exe(options: BuildOptions, path: Path) -> None:
@@ -147,7 +147,7 @@ class BuildCommand(BaseCommand):
                 command.extend(["--pkg-config-path", pkg_config_path])
             check_call(command)
 
-        check_call(["meson", "compile"], cwd=options.build_root)
+        check_call(["meson", "compile", f"TR{args.tr_version}X"], cwd=options.build_root)
 
         if options.target == "release":
             for exe_path in options.compressable_exes:
