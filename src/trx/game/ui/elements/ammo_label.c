@@ -46,7 +46,6 @@ void UI_AmmoLabel(void)
             string = String_FormatStatic(
                 "%6d", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
             break;
-#if TR_VERSION >= 2
         case LGT_M16:
             string = String_FormatStatic("%6d", lara->m16_ammo.ammo);
             break;
@@ -56,7 +55,6 @@ void UI_AmmoLabel(void)
         case LGT_HARPOON:
             string = String_FormatStatic("%6d", lara->harpoon_ammo.ammo);
             break;
-#endif
         default:
             return;
         }

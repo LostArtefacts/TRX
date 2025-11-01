@@ -190,7 +190,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
         Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
         Inv_AddItemNTimes(O_SCION_ITEM_1, resume->num_scions);
-#if TR_VERSION > 1
         if (resume->flags.has_m16) {
             Inv_AddItem(O_M16_ITEM);
             lara_info->m16_ammo.ammo = resume->m16_ammo;
@@ -219,7 +218,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
                 O_HARPOON_AMMO_ITEM, resume->harpoon_ammo / HARPOON_AMMO_QTY);
             lara_info->harpoon_ammo.ammo = 0;
         }
-#endif
 
         if (g_Config.gameplay.remember_gun_status) {
             lara_info->gun_status = resume->gun_status;
@@ -294,7 +292,6 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         request_gun_type = LGT_UZIS;
         break;
 
-#if TR_VERSION >= 2
     case O_HARPOON_ITEM:
     case O_HARPOON_OPTION:
         request_gun_type = LGT_HARPOON;
@@ -309,7 +306,6 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_GRENADE_OPTION:
         request_gun_type = LGT_GRENADE;
         break;
-#endif
 
     case O_FLARES_ITEM:
     case O_FLARES_OPTION:

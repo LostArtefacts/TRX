@@ -66,35 +66,20 @@ static void M_RingNotActive(
     const int32_t qty = Inv_RequestItem(inv_item->object_id);
 
     switch (inv_item->object_id) {
-#if TR_VERSION == 1
     case O_SHOTGUN_OPTION:
         M_ShowAmmoQuantity(
-            "%5d \\{ammo shotgun}",
+            g_TRVersion == 1 ? "%5d \\{ammo shotgun}" : "%5d",
             lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
         break;
     case O_MAGNUM_OPTION:
-        M_ShowAmmoQuantity("%5d \\{ammo magnums}", lara->magnum_ammo.ammo);
+        M_ShowAmmoQuantity(
+            g_TRVersion == 1 ? "%5d \\{ammo magnums}" : "%5d",
+            lara->magnum_ammo.ammo);
         break;
     case O_UZI_OPTION:
-        M_ShowAmmoQuantity("%5d \\{ammo uzis}", lara->uzi_ammo.ammo);
-        break;
-
-    case O_SHOTGUN_AMMO_OPTION:
-        InvRing_ShowItemQuantity("%d", qty * SHOTGUN_SHELL_COUNT);
-        break;
-    case O_MAGNUM_AMMO_OPTION:
-    case O_UZI_AMMO_OPTION:
-        InvRing_ShowItemQuantity("%d", qty * 2);
-        break;
-#else
-    case O_SHOTGUN_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
-        break;
-    case O_MAGNUM_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->magnum_ammo.ammo);
-        break;
-    case O_UZI_OPTION:
-        M_ShowAmmoQuantity("%5d", lara->uzi_ammo.ammo);
+        M_ShowAmmoQuantity(
+            g_TRVersion == 1 ? "%5d \\{ammo uzis}" : "%5d",
+            lara->uzi_ammo.ammo);
         break;
     case O_HARPOON_OPTION:
         M_ShowAmmoQuantity("%5d", lara->harpoon_ammo.ammo);
@@ -107,18 +92,17 @@ static void M_RingNotActive(
         break;
 
     case O_SHOTGUN_AMMO_OPTION:
-        M_ShowAmmoQuantity("%d", SHOTGUN_SHELL_COUNT * qty);
+        M_ShowAmmoQuantity("%d", qty * SHOTGUN_SHELL_COUNT);
         break;
     case O_MAGNUM_AMMO_OPTION:
     case O_UZI_AMMO_OPTION:
     case O_HARPOON_AMMO_OPTION:
     case O_M16_AMMO_OPTION:
-        M_ShowAmmoQuantity("%d", 2 * qty);
+        M_ShowAmmoQuantity("%d", qty * 2);
         break;
     case O_GRENADE_AMMO_OPTION:
         M_ShowAmmoQuantity("%d", qty);
         break;
-#endif
 
     case O_FLARES_OPTION:
         M_ShowAmmoQuantity("%d", qty);

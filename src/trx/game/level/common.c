@@ -24,17 +24,13 @@ void Level_Unload(void)
 
     Lara_InitialiseLoad(NO_ITEM);
 
-#if TR_VERSION == 2
     Gym_ResetAssault();
     Creature_SetAlliesHostile(false);
-#endif
     Object_Reset();
     Camera_Reset();
     Walkable_Reset();
 
-#if TR_VERSION == 2
     Output_SetSunsetTimer(0);
-#endif
     Output_DispatchLevelUnload();
 
     Music_SetVolume(g_Config.audio.music_volume);

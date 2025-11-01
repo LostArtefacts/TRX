@@ -34,11 +34,9 @@ static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
     case LGT_SHOTGUN: return &g_InvRing_Item_Shotgun;
     case LGT_MAGNUMS: return &g_InvRing_Item_Magnums;
     case LGT_UZIS:    return &g_InvRing_Item_Uzis;
-    #if TR_VERSION >= 2
     case LGT_HARPOON: return &g_InvRing_Item_Harpoon;
     case LGT_M16:     return &g_InvRing_Item_M16;
     case LGT_GRENADE: return &g_InvRing_Item_Grenade;
-    #endif
     default:          return nullptr;
     }
     // clang-format on
@@ -52,11 +50,9 @@ static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
     case LGT_SHOTGUN: return &g_InvRing_Item_ShotgunAmmo;
     case LGT_MAGNUMS: return &g_InvRing_Item_MagnumAmmo;
     case LGT_UZIS:    return &g_InvRing_Item_UziAmmo;
-    #if TR_VERSION >= 2
     case LGT_HARPOON: return &g_InvRing_Item_HarpoonAmmo;
     case LGT_M16:     return &g_InvRing_Item_M16Ammo;
     case LGT_GRENADE: return &g_InvRing_Item_GrenadeAmmo;
-    #endif
     default:          return nullptr;
     }
     // clang-format on

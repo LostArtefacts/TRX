@@ -194,11 +194,9 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
             resume->holsters_gun_type = resume->equipped_gun_type;
             break;
         case LGT_SHOTGUN:
-#if TR_VERSION >= 2
         case LGT_M16:
         case LGT_GRENADE:
         case LGT_HARPOON:
-#endif
             if (resume->flags.has_pistols) {
                 resume->holsters_gun_type = LGT_PISTOLS;
             } else if (resume->flags.has_magnums) {
@@ -218,16 +216,13 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
         resume->back_gun_type = LGT_UNARMED;
         if (resume->flags.has_shotgun) {
             resume->back_gun_type = LGT_SHOTGUN;
-        }
-#if TR_VERSION >= 2
-        else if (resume->flags.has_m16) {
+        } else if (resume->flags.has_m16) {
             resume->back_gun_type = LGT_M16;
         } else if (resume->flags.has_grenade) {
             resume->back_gun_type = LGT_GRENADE;
         } else if (resume->flags.has_harpoon) {
             resume->back_gun_type = LGT_HARPOON;
         }
-#endif
     }
 }
 
@@ -465,7 +460,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
     resume->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
-#if TR_VERSION > 1
+
     if (Inv_RequestItem(O_M16_ITEM)) {
         resume->flags.has_m16 = true;
         resume->m16_ammo = lara->m16_ammo.ammo;
@@ -491,7 +486,6 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->grenade_ammo =
             Inv_RequestItem(O_GRENADE_AMMO_ITEM) * GRENADE_AMMO_QTY;
     }
-#endif
 
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
@@ -519,29 +513,29 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
 
     if (level == GF_GetGymLevel()) {
         resume->flags.available = true;
-        resume->flags.costume = TR_VERSION == 1;
+        resume->flags.costume = g_TRVersion == 1;
 
         resume->flags.has_pistols = false;
         resume->flags.has_shotgun = false;
         resume->flags.has_magnums = false;
         resume->flags.has_uzis = false;
+        resume->flags.has_harpoon = false;
+        resume->flags.has_m16 = false;
+        resume->flags.has_grenade = false;
 
-        resume->small_medipacks = 0;
-        resume->large_medipacks = 0;
-        resume->flares = 0;
         resume->pistol_ammo = 0;
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
         resume->uzi_ammo = 0;
-        resume->num_scions = 0;
-#if TR_VERSION > 1
-        resume->flags.has_harpoon = false;
-        resume->flags.has_m16 = false;
-        resume->flags.has_grenade = false;
         resume->harpoon_ammo = 0;
         resume->m16_ammo = 0;
         resume->grenade_ammo = 0;
-#endif
+
+        resume->small_medipacks = 0;
+        resume->large_medipacks = 0;
+        resume->num_scions = 0;
+        resume->flares = 0;
+
         resume->equipped_gun_type = LGT_UNARMED;
         resume->holsters_gun_type = LGT_UNARMED;
         resume->back_gun_type = LGT_UNARMED;

@@ -39,11 +39,9 @@ static bool M_ResumeInfo_HasWeapon(
     case LGT_MAGNUMS: return resume->flags.has_magnums;
     case LGT_UZIS:    return resume->flags.has_uzis;
     case LGT_SHOTGUN: return resume->flags.has_shotgun;
-#if TR_VERSION >= 2
     case LGT_HARPOON: return resume->flags.has_harpoon;
     case LGT_M16:     return resume->flags.has_m16;
     case LGT_GRENADE: return resume->flags.has_grenade;
-#endif
     default: return false;
         // clang-format on
     }
@@ -59,11 +57,9 @@ static void M_ResumeInfo_SetWeapon(
     case LGT_MAGNUMS: resume->flags.has_magnums = has_weapon; break;
     case LGT_UZIS:    resume->flags.has_uzis = has_weapon; break;
     case LGT_SHOTGUN: resume->flags.has_shotgun = has_weapon; break;
-#if TR_VERSION >= 2
     case LGT_HARPOON: resume->flags.has_harpoon = has_weapon; break;
     case LGT_M16:     resume->flags.has_m16 = has_weapon; break;
     case LGT_GRENADE: resume->flags.has_grenade = has_weapon; break;
-#endif
     default: break;
         // clang-format on
     }
@@ -78,11 +74,9 @@ static void M_ResumeInfo_AddAmmo(
     case LGT_MAGNUMS: resume->magnum_ammo += ammo_qty; break;
     case LGT_UZIS:    resume->uzi_ammo += ammo_qty; break;
     case LGT_SHOTGUN: resume->shotgun_ammo += ammo_qty; break;
-#if TR_VERSION >= 2
     case LGT_HARPOON: resume->harpoon_ammo += ammo_qty; break;
     case LGT_M16:     resume->m16_ammo += ammo_qty; break;
     case LGT_GRENADE: resume->grenade_ammo += ammo_qty; break;
-#endif
     default: break;
         // clang-format on
     }
@@ -285,11 +279,9 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->flags.has_magnums = false;
         resume->flags.has_uzis = false;
         resume->flags.has_shotgun = false;
-#if TR_VERSION >= 2
         resume->flags.has_m16 = false;
         resume->flags.has_grenade = false;
         resume->flags.has_harpoon = false;
-#endif
         resume->holsters_gun_type = LGT_UNARMED;
         resume->back_gun_type = LGT_UNARMED;
         resume->equipped_gun_type = LGT_UNARMED;
@@ -308,11 +300,9 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->magnum_ammo = 0;
         resume->uzi_ammo = 0;
         resume->shotgun_ammo = 0;
-#if TR_VERSION >= 2
         resume->m16_ammo = 0;
         resume->grenade_ammo = 0;
         resume->harpoon_ammo = 0;
-#endif
     }
 
     if (m_RemoveScions) {
@@ -335,11 +325,9 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_MAGNUMS);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_UZIS);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_SHOTGUN);
-#if TR_VERSION == 2
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_HARPOON);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_M16);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_GRENADE);
-#endif
 
     M_ModifyResumeInfo_Item(resume, O_SMALL_MEDIPACK_ITEM);
     M_ModifyResumeInfo_Item(resume, O_LARGE_MEDIPACK_ITEM);
@@ -366,11 +354,9 @@ void GF_InventoryModifier_Apply(
         M_ModifyInventory_GunOrAmmo(type, LGT_MAGNUMS);
         M_ModifyInventory_GunOrAmmo(type, LGT_UZIS);
         M_ModifyInventory_GunOrAmmo(type, LGT_SHOTGUN);
-#if TR_VERSION == 2
         M_ModifyInventory_GunOrAmmo(type, LGT_HARPOON);
         M_ModifyInventory_GunOrAmmo(type, LGT_M16);
         M_ModifyInventory_GunOrAmmo(type, LGT_GRENADE);
-#endif
     }
 
     M_ModifyInventory_Item(type, O_PICKUP_ITEM_1);
