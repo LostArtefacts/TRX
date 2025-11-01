@@ -1,5 +1,6 @@
 #include <trx/game/camera/photo_mode.h>
 
+#include <trx/config.h>
 #include <trx/game/camera/common.h>
 #include <trx/game/camera/const.h>
 #include <trx/game/camera/enum.h>
@@ -13,11 +14,6 @@
 #include <trx/game/viewport.h>
 #include <trx/utils.h>
 
-#if TR_VERSION == 1
-// TODO: remove this call when consolidating the viewport API
-extern void Output_ApplyFOV(void);
-#endif
-
 #define MIN_PHOTO_FOV 10
 #define MAX_PHOTO_FOV 150
 #define PHOTO_ROT_SHIFT (DEG_1 * 4)
@@ -29,24 +25,18 @@ extern void Output_ApplyFOV(void);
 
 static int32_t m_PhotoSpeed = 0;
 static int32_t m_OriginalFOV;
+static FOV_MODE m_OriginalFOVMode;
 static CAMERA_INFO m_OriginalCamera = {};
 static int32_t m_CurrentFOV;
+static FOV_MODE m_CurrentFOVMode;
 static CAMERA_INFO m_StartingCamera = {};
 static struct {
     bool is_chunky;
     int32_t fov;
+    FOV_MODE fov_mode;
     CAMERA_INFO camera;
 } m_PreviousState;
 static BOUNDS_32 m_WorldBounds = {};
-
-// TODO: remove this wrapper when consolidating the viewport API
-static void M_SetFOV(const int32_t fov)
-{
-    Viewport_AlterFOV(fov);
-#if TR_VERSION == 1
-    Output_ApplyFOV();
-#endif
-}
 
 static void M_ResetCamera(const bool exiting)
 {
@@ -54,7 +44,7 @@ static void M_ResetCamera(const bool exiting)
     g_Camera = exiting ? m_OriginalCamera : m_StartingCamera;
     // ensure Camera_EnsureEnvironment() picks up the flag change
     g_Camera.underwater = camera.underwater;
-    M_SetFOV(m_OriginalFOV);
+    Viewport_AlterFOV(m_OriginalFOV, m_OriginalFOVMode);
     m_CurrentFOV = m_OriginalFOV / DEG_1;
 }
 
@@ -285,7 +275,7 @@ static bool M_HandleFOVInputs(void)
         m_CurrentFOV++;
     }
     CLAMP(m_CurrentFOV, MIN_PHOTO_FOV, MAX_PHOTO_FOV);
-    M_SetFOV(m_CurrentFOV * DEG_1);
+    Viewport_AlterFOV(m_CurrentFOV * DEG_1, m_CurrentFOVMode);
     return true;
 }
 
@@ -305,7 +295,9 @@ void Camera_PhotoMode_Enter(void)
     m_StartingCamera = g_Camera;
 
     m_OriginalFOV = Viewport_GetEffectiveFOV();
+    m_OriginalFOVMode = Viewport_GetFOVMode();
     m_CurrentFOV = m_OriginalFOV / DEG_1;
+    m_CurrentFOVMode = m_OriginalFOVMode;
     g_Camera.type = CAM_PHOTO_MODE;
     const int32_t border = WALL_L * 5;
     m_WorldBounds = Room_GetWorldBounds();
@@ -321,7 +313,7 @@ void Camera_PhotoMode_Enter(void)
 void Camera_PhotoMode_Exit(void)
 {
     Lara_Pose_Clear();
-    M_SetFOV(m_OriginalFOV);
+    Viewport_AlterFOV(m_OriginalFOV, m_OriginalFOVMode);
     M_ResetCamera(true);
 }
 
@@ -363,6 +355,7 @@ void Camera_PhotoMode_Pause(void)
     m_PreviousState.camera = g_Camera;
     m_PreviousState.is_chunky = Camera_IsChunky();
     m_PreviousState.fov = Viewport_GetSystemFOV();
+    m_PreviousState.fov_mode = Viewport_GetFOVMode();
     g_Camera = m_OriginalCamera;
 }
 
@@ -370,5 +363,5 @@ void Camera_PhotoMode_Resume(void)
 {
     g_Camera = m_PreviousState.camera;
     Camera_SetChunky(m_PreviousState.is_chunky);
-    M_SetFOV(m_PreviousState.fov);
+    Viewport_AlterFOV(m_PreviousState.fov, m_PreviousState.fov_mode);
 }

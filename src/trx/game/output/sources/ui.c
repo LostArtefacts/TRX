@@ -11,8 +11,6 @@
 #include <trx/utils.h>
 #include <trx/vector.h>
 
-#define M_PICKUPS_FOV 65
-
 typedef struct {
     XYZW_F pos;
     OUTPUT_UVW uvw;

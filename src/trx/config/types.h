@@ -68,13 +68,7 @@ typedef struct {
         bool enable_fade_effects;
         bool enable_exit_fade_effects;
 
-#if TR_VERSION == 1
-        int32_t fov_value;
-        bool fov_vertical;
-#else
         int32_t fov;
-        bool use_ps1_fov;
-#endif
 
         CAMERA_MODE camera_mode;
         float brightness;

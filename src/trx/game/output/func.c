@@ -109,22 +109,25 @@ void Output_ApplyFOV(void)
     const int32_t sh = Viewport_GetHeight(VIEWPORT_GAME);
     const float aspect = sw / (float)sh;
 
-#if TR_VERSION == 1
-    // In places that use GAME_FOV, it can be safely changed to user's choice.
-    // But for cinematics, the FOV value chosen by devs needs to stay
-    // unchanged, otherwise the game renders the low camera in the Lost Valley
-    // cutscene wrong.
-    if (g_Config.visuals.fov_vertical) {
+    int32_t fov_width;
+    switch (Viewport_GetFOVMode()) {
+    case FOV_MODE_VERTICAL: {
         const float fov_rad_h = fov * M_PI / (180 * DEG_1);
         const float fov_rad_v = 2 * atan(aspect * tan(fov_rad_h / 2));
         fov = round((fov_rad_v / M_PI) * (180 * DEG_1));
+        fov_width = sw;
+        break;
     }
-
-    const int32_t fov_width = sw;
-#else
-    const int32_t adjust = g_Config.visuals.use_ps1_fov ? 200 : 240;
-    const int32_t fov_width = sw * ((4.0f / 3.0f) / aspect) * 240 / adjust;
-#endif
+    case FOV_MODE_HORIZONTAL:
+        fov_width = sw;
+        break;
+    case FOV_MODE_PC:
+        fov_width = sw * ((4.0f / 3.0f) / aspect);
+        break;
+    case FOV_MODE_PS1:
+        fov_width = sw * ((4.0f / 3.0f) / aspect) * 240 / 200;
+        break;
+    }
 
     const int16_t c = Math_Cos(fov / 2);
     const int16_t s = Math_Sin(fov / 2);

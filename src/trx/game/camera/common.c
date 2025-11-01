@@ -9,6 +9,7 @@
 #include <trx/game/los.h>
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
+#include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -72,10 +73,6 @@ static const double m_ManualCameraMultiplier[11] = {
 static BOX_INFO m_FixedBox = {};
 static bool m_IsChunky = false;
 static bool m_IsInitialised = false;
-#if TR_VERSION == 2
-// TODO: consolidate with Viewport API
-extern int32_t g_PhdPersp;
-#endif
 
 static M_SETTINGS M_GetSettings(void)
 {
@@ -748,9 +745,6 @@ void Camera_Initialise(void)
     g_Camera.last = NO_CAMERA;
     g_Camera.underwater = false;
     Camera_ResetPosition();
-#if TR_VERSION == 2
-    Viewport_AlterFOV(-1);
-#endif
     Camera_Update();
     m_IsInitialised = true;
 }

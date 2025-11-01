@@ -155,21 +155,28 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
     const float fov = Viewport_GetEffectiveFOV() * M_PI / (float)DEG_180;
 
     float f_x, f_y;
-
-#if TR_VERSION == 1
-    if (g_Config.visuals.fov_vertical) {
-        f_y = 1.0f / tanf(fov * 0.5f);
-        f_x = f_y / aspect;
-    } else {
+    switch (Viewport_GetFOVMode()) {
+    case FOV_MODE_HORIZONTAL:
         f_x = 1.0f / tanf(fov * 0.5f);
         f_y = f_x * aspect;
+        break;
+    case FOV_MODE_VERTICAL:
+        f_y = 1.0f / tanf(fov * 0.5f);
+        f_x = f_y / aspect;
+        break;
+    case FOV_MODE_PC: {
+        const float persp = ((4.0f / 3.0f) / aspect);
+        f_x = persp / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+        break;
     }
-#else
-    const float adjust = g_Config.visuals.use_ps1_fov ? 200.0f : 240.0f;
-    const float persp = ((4.0f / 3.0f) / aspect) * (240.0f / adjust);
-    f_x = persp / tanf(fov * 0.5f);
-    f_y = f_x * aspect;
-#endif
+    case FOV_MODE_PS1: {
+        const float persp = ((4.0f / 3.0f) / aspect) * (240.0f / 200.0f);
+        f_x = persp / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+        break;
+    }
+    }
 
     const float near_z = Output_GetNearZ();
     const float far_z = Output_GetFarZ();

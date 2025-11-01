@@ -160,11 +160,7 @@ void Shell_HandleCommonConfigChange(
         || L_CHANGED(window.width) || L_CHANGED(window.height)
         || L_CHANGED(window.fs_width) || L_CHANGED(window.fs_height)
         || L_CHANGED(rendering.upscaling_factor) || L_CHANGED(rendering.borders)
-        || L_CHANGED(rendering.aspect_mode)
-#if TR_VERSION >= 2
-        || L_CHANGED(visuals.use_ps1_fov)
-#endif
-    ) {
+        || L_CHANGED(rendering.aspect_mode)) {
         if (!m_IgnoreConfigChanges) {
             Shell_SyncToWindow();
         }

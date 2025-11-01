@@ -12,14 +12,7 @@ X_UI_CFG_RGB888(visuals.fog_color,          SETTING_FOG_COLOR_B, 2, .custom_hand
 
 X_UI_CFG_ENUM(visuals.camera_mode,          SETTING_CAMERA_MODE, .misc = UI_Settings_CameraModeEnumEntries)
 
-#if TR_VERSION == 1
-X_UI_CFG_INT32(visuals.fov_value,           SETTING_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 5)
-X_UI_CFG_BOOL(visuals.fov_vertical,         SETTING_FOV_VERTICAL)
-
-#elif TR_VERSION == 2
 X_UI_CFG_INT32(visuals.fov,                 SETTING_FOV, .min_value = 30, .max_value = 150, .delta_slow = 1, .delta_fast = 5)
-X_UI_CFG_BOOL(visuals.use_ps1_fov,          SETTING_USE_PS1_FOV)
-#endif
 
 X_UI_CFG_BOOL(visuals.enable_reflections,   SETTING_REFLECTIONS)
 X_UI_CFG_BOOL(visuals.enable_skybox,        SETTING_ENABLE_SKYBOX)
