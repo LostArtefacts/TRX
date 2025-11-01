@@ -45,6 +45,7 @@
 - changed the `-q`/`--quiet` argument to no longer silence warnings
 - changed the Remove shotguns, Remove Uzis and Remove Magnus into a single "Remove extra guns" option
 - changed the `Remember Guns between Levels` option to also apply to whether or not Lara starts with those guns equipped
+- changed toggling Lara's braid in-game to swap out her head and torso meshes appropriately without the need to reload the level (#2399)
 - removed the `Enhanced shotgun targeting` option in favour of using the common weapon lock mode (Gameplay → Controls → Weapon lock mode)
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
 - fixed a crash in custom levels if a flip effect that expects to act on an item is used in a regular trigger (#4085)

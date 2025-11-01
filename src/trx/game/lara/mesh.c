@@ -1,9 +1,19 @@
 #include <trx/game/lara/mesh.h>
 
+#include <trx/config.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/savegame.h>
+
+typedef enum {
+    BRAID_TORSO,
+    BRAID_HEAD_NORMAL,
+    BRAID_HEAD_UZI,
+    BRAID_HEAD_TREX,
+} M_BRAID_BODY_MESH;
+
+static bool m_BraidStatus = false;
 
 static LARA_GUN_TYPE M_DetermineHolsterGun(void)
 {
@@ -45,6 +55,49 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
     return LGT_UNARMED;
 }
 
+static void M_SwapHairParts(void)
+{
+    Object_SwapMeshEx(O_LARA, O_LARA_HAIR_BODY_SWAP, LM_TORSO, BRAID_TORSO);
+    Object_SwapMeshEx(
+        O_LARA, O_LARA_HAIR_BODY_SWAP, LM_HEAD, BRAID_HEAD_NORMAL);
+    Object_SwapMeshEx(
+        O_LARA_UZIS, O_LARA_HAIR_BODY_SWAP, LM_HEAD, BRAID_HEAD_UZI);
+    Object_SwapMeshEx(
+        O_LARA_EXTRA_SKIN_TREX, O_LARA_HAIR_BODY_SWAP, LM_HEAD,
+        BRAID_HEAD_TREX);
+}
+
+static OBJECT_ID M_GetTargetMesh(const LARA_MESH mesh_idx)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const item = Lara_GetItem();
+
+    if (lara->extra_anim) {
+        switch (item->current_anim_state) {
+        case LS_EXTRA_TREX_KILL:
+            return O_LARA_EXTRA_SKIN_TREX;
+        case LS_EXTRA_MIDAS_KILL:
+            if ((lara->mesh_effects & (1 << mesh_idx)) != 0) {
+                return O_LARA_EXTRA_SKIN_MIDAS;
+            }
+        default:
+            break;
+        }
+        return O_LARA;
+    }
+
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume != nullptr && resume->flags.costume && mesh_idx != LM_HEAD) {
+        // For the context of replacing Lara's meshes when the braid has been
+        // toggled, all meshes in the gym outfit apart from her head must remain
+        // as the default.
+        return O_LARA_EXTRA;
+    }
+
+    return O_LARA;
+}
+
 void Lara_Mesh_Initialise(const GF_LEVEL *const level)
 {
     const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
@@ -67,6 +120,21 @@ void Lara_Mesh_Initialise(const GF_LEVEL *const level)
     if (resume != nullptr && resume->equipped_gun_type == LGT_FLARE) {
         Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_FLARE);
     }
+
+    m_BraidStatus = false;
+    Lara_Mesh_UpdateHair(false);
+}
+
+void Lara_Mesh_UpdateHair(const bool enforce)
+{
+    if (m_BraidStatus != g_Config.visuals.enable_braid
+        || (m_BraidStatus && enforce)) {
+        M_SwapHairParts();
+        m_BraidStatus = g_Config.visuals.enable_braid;
+    }
+
+    Lara_Mesh_SwapSingle(LM_TORSO, M_GetTargetMesh(LM_TORSO));
+    Lara_Mesh_SwapSingle(LM_HEAD, M_GetTargetMesh(LM_HEAD));
 }
 
 void Lara_Mesh_SwapSingle(const LARA_MESH mesh, const OBJECT_ID obj_id)

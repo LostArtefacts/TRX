@@ -51,6 +51,9 @@ void Object_SetMeshOffset(OBJECT_MESH *mesh, int32_t data_offset);
 OBJECT_MESH *Object_GetMesh(int32_t index);
 void Object_SwapMesh(
     OBJECT_ID object1_id, OBJECT_ID object2_id, int32_t mesh_num);
+void Object_SwapMeshEx(
+    OBJECT_ID object1_id, OBJECT_ID object2_id, int32_t mesh_num1,
+    int32_t mesh_num2);
 
 ANIM *Object_GetAnim(const OBJECT *obj, int32_t anim_idx);
 ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);

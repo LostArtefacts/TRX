@@ -179,15 +179,24 @@ void Object_SwapMesh(
     const OBJECT_ID object1_id, const OBJECT_ID object2_id,
     const int32_t mesh_num)
 {
+    Object_SwapMeshEx(object1_id, object2_id, mesh_num, mesh_num);
+}
+
+void Object_SwapMeshEx(
+    const OBJECT_ID object1_id, const OBJECT_ID object2_id,
+    const int32_t mesh_num1, const int32_t mesh_num2)
+{
     const OBJECT *const obj1 = Object_Get(object1_id);
     const OBJECT *const obj2 = Object_Get(object2_id);
+    if (!obj1->loaded || !obj2->loaded) {
+        return;
+    }
 
-    SWAP(
-        m_MeshPointers[obj1->mesh_idx + mesh_num],
-        m_MeshPointers[obj2->mesh_idx + mesh_num]);
+    const int32_t mesh_idx1 = obj1->mesh_idx + mesh_num1;
+    const int32_t mesh_idx2 = obj2->mesh_idx + mesh_num2;
+    SWAP(m_MeshPointers[mesh_idx1], m_MeshPointers[mesh_idx2]);
 
-    Output_DispatchObjectMeshSwap(
-        obj1->mesh_idx + mesh_num, obj2->mesh_idx + mesh_num);
+    Output_DispatchObjectMeshSwap(mesh_idx1, mesh_idx2);
 }
 
 ANIM *Object_GetAnim(const OBJECT *const obj, const int32_t anim_idx)

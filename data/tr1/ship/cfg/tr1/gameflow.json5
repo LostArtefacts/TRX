@@ -121,7 +121,6 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/braid_valley.bin",
                 "data/injections/valley_fd.bin",
                 "data/injections/valley_itemrots.bin",
                 "data/injections/valley_skybox.bin",
@@ -435,7 +434,6 @@
             "path": "data/level3a.phd",
             "music_track": 57,
             "injections": [
-                "data/injections/braid_valley.bin",
                 "data/injections/valley_itemrots.bin",
                 "data/injections/valley_skybox.bin",
                 "data/injections/valley_textures.bin",

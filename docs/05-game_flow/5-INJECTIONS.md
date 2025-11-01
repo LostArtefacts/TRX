@@ -137,18 +137,12 @@ provided with the game achieves.
     <td>
       <code>braid.bin</code>
     </td>
-    <td rowspan="2">TR1</td>
-    <td rowspan="2">
-      Injects a braid when the option for it is enabled. This also edits Lara's
-      head meshes (object 0 and object 4) to make the braid fit better, and makes
-      her backback shallower to avoid overlapping the braid itself. A golden
-      braid is also provided for the Midas Touch animation. The Lost Valley file
-      comprises a head mesh edit for object <code>O_LARA_MISC</code> only.
-    </td>
-  </tr>
-  <tr valign="top">
+    <td>TR1</td>
     <td>
-      <code>braid_valley.bin</code>
+      Injects a braid when the option for it is enabled. This also provides mesh
+      swaps for Lara's head to make the braid fit better, and to make her
+      backback shallower to avoid overlapping the braid itself. A golden braid
+      is provided for the Midas Touch animation.
     </td>
   </tr>
   <tr valign="top">
