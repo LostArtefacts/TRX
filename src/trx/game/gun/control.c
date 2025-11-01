@@ -28,12 +28,10 @@ static struct {
     { .gun_type = LGT_SHOTGUN, .input_role = INPUT_ROLE_EQUIP_SHOTGUN },
     { .gun_type = LGT_MAGNUMS, .input_role = INPUT_ROLE_EQUIP_MAGNUMS },
     { .gun_type = LGT_UZIS, .input_role = INPUT_ROLE_EQUIP_UZIS },
-#if TR_VERSION >= 2
     { .gun_type = LGT_HARPOON, .input_role = INPUT_ROLE_EQUIP_HARPOON },
     { .gun_type = LGT_M16, .input_role = INPUT_ROLE_EQUIP_M16 },
     { .gun_type = LGT_GRENADE,
       .input_role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
-#endif
     { .gun_type = LGT_UNKNOWN, .input_role = (INPUT_ROLE)-1 },
 };
 

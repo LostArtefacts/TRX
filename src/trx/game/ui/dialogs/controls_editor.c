@@ -72,11 +72,9 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_EQUIP_SHOTGUN },
                 { .role = INPUT_ROLE_EQUIP_MAGNUMS },
                 { .role = INPUT_ROLE_EQUIP_UZIS },
-#if TR_VERSION >= 2
                 { .role = INPUT_ROLE_EQUIP_HARPOON },
                 { .role = INPUT_ROLE_EQUIP_M16 },
                 { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
-#endif
                 { .role = (INPUT_ROLE)-1 },
             },
     },
@@ -135,33 +133,6 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 };
 
-static int32_t M_GetVisibleRows(void);
-
-static INPUT_ROLE M_GetInputRole(
-    const UI_CONTROLS_EDITOR_GROUP *group, int32_t row);
-static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *group);
-static void M_ResetLayout(void *s);
-static void M_UnbindKey(void *s);
-static bool M_CanResetLayout(const UI_CONTROLS_EDITOR_STATE *s);
-static bool M_CanUnbindKey(const UI_CONTROLS_EDITOR_STATE *s);
-static void M_CheckResetKeys(UI_CONTROLS_EDITOR_STATE *s);
-static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *s);
-static UI_CONTROLS_CHOICE M_NavigateGroup(UI_CONTROLS_EDITOR_STATE *s);
-static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *s);
-static UI_CONTROLS_CHOICE M_NavigateInputsDebounce(UI_CONTROLS_EDITOR_STATE *s);
-static UI_CONTROLS_CHOICE M_Listen(UI_CONTROLS_EDITOR_STATE *s);
-static UI_CONTROLS_CHOICE M_ListenDebounce(UI_CONTROLS_EDITOR_STATE *s);
-
-static void M_CurrentLayout(const UI_CONTROLS_EDITOR_STATE *s);
-static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *s);
-static void M_InputChoice(
-    UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_ROW *row);
-static void M_InputLabel(
-    const UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_ROW *row);
-static void M_Group(
-    UI_CONTROLS_EDITOR_STATE *s, const UI_CONTROLS_EDITOR_GROUP *group);
-static void M_Footer(UI_CONTROLS_EDITOR_STATE *s);
-
 static int32_t M_GetVisibleRows(void)
 {
     const int32_t res_h =
@@ -191,19 +162,37 @@ static int32_t M_GetVisibleRows(void)
     }
 }
 
+// Locate the index-th role row that is usable; sentinel if none.
+static const UI_CONTROLS_EDITOR_ROW *M_GetInputRow(
+    const UI_CONTROLS_EDITOR_GROUP *const group, const int32_t index)
+{
+    int32_t found = 0;
+    for (int32_t i = 0; group->rows[i].role != (INPUT_ROLE)-1; i++) {
+        if (Input_IsRoleUsable(group->rows[i].role)) {
+            if (found == index) {
+                return &group->rows[i];
+            }
+            found++;
+        }
+    }
+    return nullptr;
+}
+
 static INPUT_ROLE M_GetInputRole(
     const UI_CONTROLS_EDITOR_GROUP *const group, const int32_t row)
 {
-    return group->rows[row].role;
+    return M_GetInputRow(group, row)->role;
 }
 
 static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
 {
-    int32_t row = 0;
-    while (M_GetInputRole(group, row) != (INPUT_ROLE)-1) {
-        row++;
+    int32_t count = 0;
+    for (int32_t i = 0; group->rows[i].role != (INPUT_ROLE)-1; i++) {
+        if (Input_IsRoleUsable(group->rows[i].role)) {
+            count++;
+        }
     }
-    return row;
+    return count;
 }
 
 static void M_ResetLayout(void *const arg)
@@ -451,7 +440,7 @@ static void M_Group(
             continue;
         }
 
-        const UI_CONTROLS_EDITOR_ROW *const row = &group->rows[row_idx];
+        const UI_CONTROLS_EDITOR_ROW *const row = M_GetInputRow(group, row_idx);
         UI_BeginStack(UI_STACK_HORIZONTAL);
         UI_BeginResize(s->input_size, -1.0f);
         UI_BeginAnchor(0.0f, 0.5f);

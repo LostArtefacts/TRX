@@ -126,3 +126,7 @@ const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod);
 // Returns true if parsing succeeded, false otherwise.
 bool Input_ParseKeyDesc(
     const char *desc, SDL_Scancode *scancode, SDL_Keymod *mod);
+
+// Returns whether a role is usable in the current game.
+// (For example, the Harpoon Gun quick draw role is unavailable in TR1.)
+bool Input_IsRoleUsable(INPUT_ROLE role);

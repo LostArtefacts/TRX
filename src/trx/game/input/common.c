@@ -6,6 +6,7 @@
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
 #include <trx/strings.h>
+#include <trx/version.h>
 
 #include <SDL2/SDL_keyboard.h>
 #include <ctype.h>
@@ -435,4 +436,19 @@ bool Input_ParseKeyDesc(
     *scancode = SDL_GetScancodeFromName(keystr);
     *mod = m;
     return *scancode != SDL_SCANCODE_UNKNOWN;
+}
+
+bool Input_IsRoleUsable(const INPUT_ROLE role)
+{
+    if (g_TRVersion == 1) {
+        switch (role) {
+        case INPUT_ROLE_EQUIP_HARPOON:
+        case INPUT_ROLE_EQUIP_M16:
+        case INPUT_ROLE_EQUIP_GRENADE_LAUNCHER:
+            return false;
+        default:
+            break;
+        }
+    }
+    return true;
 }
