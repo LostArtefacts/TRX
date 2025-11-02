@@ -2,17 +2,14 @@
 
 #include <trx/config/types.h>
 #include <trx/game/ui/common.h>
+#include <trx/version.h>
 
 // shared properties of common ingame bars
 #define UI_BAR_WIDTH 208.0f
 #define UI_BAR_HEIGHT 18.0f
 #define UI_BAR_BORDER 2.0f
 #define UI_BAR_PADDING 2.0f
-#if TR_VERSION == 1
-    #define UI_BAR_BLINK_THRESHOLD 0.2f
-#else
-    #define UI_BAR_BLINK_THRESHOLD 0.25f
-#endif
+#define UI_BAR_BLINK_THRESHOLD (g_TRVersion == 1 ? 0.2f : 0.25f)
 
 typedef enum {
     UI_BAR_LARA_HP,
