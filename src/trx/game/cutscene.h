@@ -8,4 +8,4 @@ void Cutscene_End(void);
 GF_COMMAND Cutscene_Control(void);
 void Cutscene_Draw(void);
 
-extern CAMERA_INFO *Cutscene_GetCamera(void);
+CAMERA_INFO *Cutscene_GetCamera(void);

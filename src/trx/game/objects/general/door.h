@@ -7,4 +7,4 @@ typedef enum {
     DOOR_STATE_OPEN = 1,
 } DOOR_STATE;
 
-extern void Door_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
+void Door_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);

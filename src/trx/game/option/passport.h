@@ -21,6 +21,6 @@ typedef struct {
 
 extern PASSPORT g_Passport; // TODO: meh
 
-extern void Option_Passport_Control(INVENTORY_ITEM *inv_item, bool is_busy);
-extern void Option_Passport_Draw(INVENTORY_ITEM *inv_item);
-extern void Option_Passport_Close(void);
+void Option_Passport_Control(INVENTORY_ITEM *inv_item, bool is_busy);
+void Option_Passport_Draw(INVENTORY_ITEM *inv_item);
+void Option_Passport_Close(void);
