@@ -15,10 +15,8 @@
 #include <trx/memory.h>
 #include <trx/strings.h>
 
-#if TR_VERSION == 2
 extern bool CombatEnd_IsWaitingForBoss(void);
 extern OBJECT_ID CombatEnd_GetBossType(void);
-#endif
 
 static bool M_CanTargetObjectCreature(const OBJECT_ID obj_id)
 {
@@ -81,12 +79,10 @@ static COMMAND_RESULT M_KillAllEnemies(void)
         if (!Creature_IsHostile(item)) {
             continue;
         }
-#if TR_VERSION == 2
         if (item->object_id == CombatEnd_GetBossType()
             && CombatEnd_IsWaitingForBoss()) {
             continue;
         }
-#endif
         if (Lara_Cheat_KillEnemy(item_num)) {
             num_killed++;
         }
