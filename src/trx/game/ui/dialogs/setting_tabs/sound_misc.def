@@ -1,8 +1,6 @@
 X_UI_CFG_BOOL(audio.enable_music_in_menu,               SETTING_ENABLE_MUSIC_IN_MENU)
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(audio.fix_secrets_killing_music,          SETTING_FIX_SECRETS_KILLING_MUSIC)
 X_UI_CFG_BOOL(audio.fix_speeches_killing_music,         SETTING_FIX_SPEECHES_KILLING_MUSIC)
-#endif
 
 X_UI_CFG_BOOL_INV(audio.enable_music_in_inventory,      SETTING_PAUSE_MUSIC_IN_INVENTORY)
 X_UI_CFG_ENUM(audio.music_load_condition,               SETTING_MUSIC_LOAD_CONDITION, .misc = UI_Settings_MusicLoadConditionEnumEntries)

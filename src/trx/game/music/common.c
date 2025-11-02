@@ -187,42 +187,40 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         return true;
     }
 
-    if (g_TRVersion == 1) {
-        const MUSIC_TRX_ID track = Music_FromGameID(track_id);
-        // TODO: utilise secondary audio stream to allow playing high fidelity
-        // versions of these sounds.
-        if (g_Config.audio.fix_secrets_killing_music && track == MX_SECRET
-            && Sound_IsAvailable(SFX_SECRET)) {
-            return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
-        }
+    const MUSIC_TRX_ID track = Music_FromGameID(track_id);
+    // TODO: utilise secondary audio stream to allow playing high fidelity
+    // versions of these sounds.
+    if (g_Config.audio.fix_secrets_killing_music && track == MX_SECRET
+        && Sound_IsAvailable(SFX_SECRET)) {
+        return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
+    }
 
-        if (g_Config.audio.fix_speeches_killing_music) {
-            SAMPLE_TRX_ID sample_id = SFX_TRX_INVALID;
-            switch (track) {
-            case MX_BALDY_SPEECH:
-                sample_id = SFX_BALDY_SPEECH;
-                break;
-            case MX_COWBOY_SPEECH:
-                sample_id = SFX_COWBOY_SPEECH;
-                break;
-            case MX_LARSON_SPEECH:
-                sample_id = SFX_LARSON_SPEECH;
-                break;
-            case MX_NATLA_SPEECH:
-                sample_id = SFX_NATLA_SPEECH;
-                break;
-            case MX_PIERRE_SPEECH:
-                sample_id = SFX_PIERRE_SPEECH;
-                break;
-            case MX_SKATEKID_SPEECH:
-                sample_id = SFX_SKATEKID_SPEECH;
-                break;
-            default:
-                break;
-            }
-            if (Sound_IsAvailable(sample_id)) {
-                return Sound_Effect(sample_id, nullptr, SPM_ALWAYS);
-            }
+    if (g_Config.audio.fix_speeches_killing_music) {
+        SAMPLE_TRX_ID sample_id = SFX_TRX_INVALID;
+        switch (track) {
+        case MX_BALDY_SPEECH:
+            sample_id = SFX_BALDY_SPEECH;
+            break;
+        case MX_COWBOY_SPEECH:
+            sample_id = SFX_COWBOY_SPEECH;
+            break;
+        case MX_LARSON_SPEECH:
+            sample_id = SFX_LARSON_SPEECH;
+            break;
+        case MX_NATLA_SPEECH:
+            sample_id = SFX_NATLA_SPEECH;
+            break;
+        case MX_PIERRE_SPEECH:
+            sample_id = SFX_PIERRE_SPEECH;
+            break;
+        case MX_SKATEKID_SPEECH:
+            sample_id = SFX_SKATEKID_SPEECH;
+            break;
+        default:
+            break;
+        }
+        if (Sound_IsAvailable(sample_id)) {
+            return Sound_Effect(sample_id, nullptr, SPM_ALWAYS);
         }
     }
 

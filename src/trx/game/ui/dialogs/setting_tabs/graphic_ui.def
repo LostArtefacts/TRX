@@ -8,10 +8,8 @@ X_UI_CFG_ENUM(ui.menu_style,                    SETTING_MENU_STYLE, .misc = UI_S
 X_UI_CFG_ENUM(ui.stat_detail_mode,              SETTING_STAT_DETAIL_MODE, .misc = UI_Settings_StatDetailModeEnumEntries)
 X_UI_CFG_BOOL(ui.enable_stats_level_header,     SETTING_STATS_LEVEL_HEADER)
 
-#if TR_VERSION == 2
 X_UI_CFG_ENUM(ui.inventory_background_style,    SETTING_INVENTORY_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries)
 X_UI_CFG_ENUM(ui.stats_background_style,        SETTING_STATS_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries)
-#endif
 
 X_UI_CFG_BOOL(visuals.enable_fade_effects,      SETTING_ENABLE_FADE_EFFECTS)
 X_UI_CFG_BOOL(visuals.enable_exit_fade_effects, SETTING_ENABLE_EXIT_FADE_EFFECTS, .custom_handler = { .is_available = UI_Settings_EnableExitFadeEffects_IsAvailable })
