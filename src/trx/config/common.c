@@ -16,18 +16,12 @@ static VECTOR *m_HiddenOptions = nullptr;
 
 static EVENT_MANAGER *m_EventManager = nullptr;
 
-void Config_Init(void)
+__attribute__((constructor)) static void M_Init(void)
 {
     m_EventManager = EventManager_Create();
-
-    const CONFIG_OPTION *option = Config_GetOptionMap();
-    while (option->target != nullptr) {
-        Config_RestoreOptionDefault(option->target);
-        option++;
-    }
 }
 
-void Config_Shutdown(void)
+__attribute__((destructor)) static void M_Shutdown(void)
 {
     EventManager_Free(m_EventManager);
     m_EventManager = nullptr;
@@ -42,6 +36,15 @@ void Config_Shutdown(void)
     if (m_HiddenOptions != nullptr) {
         Vector_Free(m_HiddenOptions);
         m_HiddenOptions = nullptr;
+    }
+}
+
+void Config_ApplyDefaultSettings(void)
+{
+    const CONFIG_OPTION *option = Config_GetOptionMap();
+    while (option->target != nullptr) {
+        Config_RestoreOptionDefault(option->target);
+        option++;
     }
 }
 

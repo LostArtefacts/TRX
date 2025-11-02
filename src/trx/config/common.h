@@ -6,9 +6,7 @@
 
 #include <stdint.h>
 
-void Config_Init(void);
-void Config_Shutdown(void);
-
+void Config_ApplyDefaultSettings(void);
 bool Config_Read(const char *default_path, const char *enforced_path);
 bool Config_Write(void);
 bool Config_Update(void);
