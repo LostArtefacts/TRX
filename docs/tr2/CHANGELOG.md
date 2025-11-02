@@ -22,6 +22,7 @@
     - added max pickup, secret and kills support (Graphic Options → UI → Statistics details)
     - added deaths counter support (Gameplay Options → General → Count Lara's death)
     - added unobtainable secrets, pickups and kills stats support in the gameflow
+- added an option to disable final statistics (Gameplay options → General → Final statistics screen)
 - added an option to disable all medipacks (Gameplay options → Mods → Remove medipacks)
 - added an option to disable all guns except Pistols (Gameplay options → Mods → Remove extra guns)
 - added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (Graphics → Visuals → Pickup aids) (#4057)

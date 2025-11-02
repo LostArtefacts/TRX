@@ -181,9 +181,7 @@ typedef struct {
         bool enable_demo;
         bool enable_loading_screens;
         bool enable_compass_stats;
-#if TR_VERSION == 1
         bool enable_total_stats;
-#endif
 
         bool enable_jump_twists;
         bool enable_uw_roll;

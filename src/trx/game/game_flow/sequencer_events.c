@@ -284,11 +284,9 @@ M_GF_HANDLER(M_HandleTotalStats)
     if (seq_ctx != GFSC_NORMAL) {
         return gf_cmd;
     }
-#if TR_VERSION == 1
     if (!g_Config.gameplay.enable_total_stats) {
         return gf_cmd;
     }
-#endif
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .background_type = BK_IMAGE,
         .background_path = event->data,
