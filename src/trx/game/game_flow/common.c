@@ -33,14 +33,12 @@ static void M_FreeLevel(GF_LEVEL *const level)
     M_FreeInjections(&level->injections);
     M_FreeSequence(&level->sequence);
 
-#if TR_VERSION == 1
     if (level->item_drops.count > 0) {
         for (int32_t i = 0; i < level->item_drops.count; i++) {
             Memory_FreePointer(&level->item_drops.data[i].object_ids);
         }
         Memory_FreePointer(&level->item_drops.data);
     }
-#endif
     Memory_FreePointer(&level->settings.sfx_path);
 }
 
