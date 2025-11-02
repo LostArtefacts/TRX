@@ -38,6 +38,7 @@
 - added support to disable wading, like TR1 (Gameplay → Controls → Wading) (hidden by default)
 - added support to disable responsive running jumps, like TR1 (Gameplay → Controls → Responsive jumping)
 - added support to disable responsive swim cancel, like TR1 (Gameplay → Controls → Responsive swim cancel)
+- added support for game-flow defined enemy item drops, similar to OG TR1 levels; regular level-defined drops will continue to work normally
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)

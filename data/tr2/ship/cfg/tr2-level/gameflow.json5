@@ -6,6 +6,8 @@
     "savegame_fmt_bson": "save_tr2_custom_%02d.dat",
 
     "demo_version": false,
+    "enable_tr2_item_drops": true,
+    "convert_dropped_guns": true,
 
     "sfx_path": "data/main.sfx",
     "injections": [

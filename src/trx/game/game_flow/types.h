@@ -92,13 +92,11 @@ typedef struct {
     } cold_water;
 } GF_LEVEL_SETTINGS;
 
-#if TR_VERSION == 1
 typedef struct {
     int32_t enemy_num;
     int32_t count;
     int16_t *object_ids;
 } GF_DROP_ITEM_DATA;
-#endif
 
 typedef struct {
     int32_t num;
@@ -120,12 +118,10 @@ typedef struct {
         uint32_t secrets;
     } unobtainable;
 
-#if TR_VERSION == 1
     struct {
-        int count;
+        int32_t count;
         GF_DROP_ITEM_DATA *data;
     } item_drops;
-#endif
 } GF_LEVEL;
 
 typedef struct {
@@ -158,10 +154,8 @@ typedef struct {
     // global settings
     struct {
         char *main_menu_background_path;
-#if TR_VERSION == 1
         bool enable_tr2_item_drops;
         bool convert_dropped_guns;
-#endif
         GF_AMBIENT_DATA ambient_tracks;
     };
 

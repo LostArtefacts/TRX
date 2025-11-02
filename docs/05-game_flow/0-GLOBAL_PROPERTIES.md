@@ -153,7 +153,7 @@ remains distinct for each game.
     <td>Boolean</td>
     <td>
       Forces enemies who are placed in the same position as pickup items to
-      carry those items and drop them when killed, similar to TR2+. See
+      carry those items and drop them when killed (OG TR2+ behavior). See
       <a href="./1-levels/4-ITEM_DROPS.md">Item drops</a> for full details.
     </td>
   </tr>

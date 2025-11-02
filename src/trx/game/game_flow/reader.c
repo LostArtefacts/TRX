@@ -13,6 +13,7 @@
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -180,11 +181,62 @@ static void M_LoadSettings(
     }
 }
 
-#if TR_VERSION == 1
-    #include <trx/game/game_flow/reader_tr1.def.c>
-#elif TR_VERSION == 2
-    #include <trx/game/game_flow/reader_tr2.def.c>
-#endif
+static void M_LoadLevelItemDrops(
+    const M_CONTEXT *const ctx, JSON_OBJECT *const jlvl_obj,
+    GF_LEVEL *const level)
+{
+    JSON_ARRAY *const drops = JSON_ObjectGetArray(jlvl_obj, "item_drops");
+    level->item_drops.count = 0;
+
+    if (drops != nullptr && ctx->gf->enable_tr2_item_drops) {
+        LOG_WARNING(
+            "TR2 item drops are enabled: gameflow-defined drops for level "
+            "%d will be ignored",
+            level->num);
+        return;
+    }
+    if (drops == nullptr) {
+        return;
+    }
+
+    level->item_drops.count = (signed)drops->length;
+    level->item_drops.data =
+        Memory_Alloc(sizeof(GF_DROP_ITEM_DATA) * (signed)drops->length);
+
+    for (int32_t i = 0; i < level->item_drops.count; i++) {
+        GF_DROP_ITEM_DATA *data = &level->item_drops.data[i];
+        JSON_OBJECT *jlvl_data = JSON_ArrayGetObject(drops, i);
+
+        data->enemy_num =
+            JSON_ObjectGetInt(jlvl_data, "enemy_num", JSON_INVALID_NUMBER);
+        if (data->enemy_num == JSON_INVALID_NUMBER) {
+            Shell_ExitSystemFmt(
+                "%s, level %d, item drop %d: 'enemy_num' must be a number",
+                ctx->script_path, level->num, i);
+        }
+
+        JSON_ARRAY *object_arr = JSON_ObjectGetArray(jlvl_data, "object_ids");
+        if (!object_arr) {
+            Shell_ExitSystemFmt(
+                "%s, level %d, item drop %d: 'object_ids' must be an array",
+                ctx->script_path, level->num, i);
+        }
+
+        data->count = (signed)object_arr->length;
+        data->object_ids = Memory_Alloc(sizeof(int16_t) * data->count);
+        for (int32_t j = 0; j < data->count; j++) {
+            const OBJECT_ID id =
+                M_GetObjectFromJSONValue(JSON_ArrayGetValue(object_arr, j));
+            if (id == NO_OBJECT) {
+                Shell_ExitSystemFmt(
+                    "%s, level %d, item drop %d, index %d: 'object_id' "
+                    "must be a valid object id",
+                    ctx->script_path, level->num, i, j);
+            }
+            data->object_ids[j] = (int16_t)id;
+        }
+    }
+}
 
 static void M_CopyRootSettingsIntoLevel(
     const M_CONTEXT *const ctx, GF_LEVEL_SETTINGS *const dst,
@@ -194,7 +246,7 @@ static void M_CopyRootSettingsIntoLevel(
     dst->sfx_path = nullptr;
 }
 
-static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
+static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 {
     const char *tmp_s =
         JSON_ObjectGetString(obj, "main_menu_picture", JSON_INVALID_STRING);
@@ -241,6 +293,11 @@ static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
             }
         }
     }
+
+    ctx->gf->enable_tr2_item_drops =
+        JSON_ObjectGetBool(obj, "enable_tr2_item_drops", g_TRVersion > 1);
+    ctx->gf->convert_dropped_guns =
+        JSON_ObjectGetBool(obj, "convert_dropped_guns", g_TRVersion > 1);
 }
 
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
@@ -592,8 +649,9 @@ static void M_LoadLevel(
         JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
 
     M_CopyRootSettingsIntoLevel(ctx, &level->settings, &ctx->gf->settings);
-    M_LoadLevelGameSpecifics(ctx, jlvl_obj, level);
 
+    M_LoadSettings(ctx, jlvl_obj, &level->settings);
+    M_LoadLevelItemDrops(ctx, jlvl_obj, level);
     M_LoadLevelSequence(ctx, jlvl_obj, level);
     M_LoadLevelInjections(ctx, jlvl_obj, level);
 }
@@ -705,8 +763,9 @@ void GF_LoadFromString(
         script_path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(doc);
 
-    M_LoadCommonRoot(&ctx, root_obj);
     M_LoadRoot(&ctx, root_obj);
+    M_LoadSettings(&ctx, root_obj, &ctx.gf->settings);
+    M_LoadGlobalInjections(&ctx, root_obj);
     M_LoadLevels(&ctx, root_obj);
     M_LoadCutscenes(&ctx, root_obj);
     M_LoadDemos(&ctx, root_obj);
