@@ -694,6 +694,17 @@ static int M_GetNumberSize(M_STATE *state)
                    || ('A' <= src[offset] && src[offset] <= 'F'))) {
             offset++;
         }
+    } else if (
+        (JSON_PARSE_FLAGS_ALLOW_BINARY_NUMBERS & flags_bitset)
+        && (offset + 1 < size) && ('0' == src[offset])
+        && (('b' == src[offset + 1]) || ('B' == src[offset + 1]))) {
+        /* skip the leading 0b that identifies a binary number. */
+        offset += 2;
+
+        /* consume binary digits. */
+        while ((offset < size) && ('0' <= src[offset] && src[offset] <= '1')) {
+            offset++;
+        }
     } else {
         int found_sign = 0;
         int inf_or_nan = 0;
@@ -1417,6 +1428,18 @@ static void M_HandleNumber(M_STATE *state, JSON_NUMBER *number)
                        || ('a' <= src[offset] && src[offset] <= 'f')
                        || ('A' <= src[offset] && src[offset] <= 'F')
                        || ('x' == src[offset]) || ('X' == src[offset]))) {
+                data[bytes_written++] = src[offset++];
+            }
+        }
+    }
+
+    if (JSON_PARSE_FLAGS_ALLOW_BINARY_NUMBERS & flags_bitset) {
+        if (('0' == src[offset])
+            && (('b' == src[offset + 1]) || ('b' == src[offset + 1]))) {
+            /* consume binary digits. */
+            while ((offset < size)
+                   && (('0' <= src[offset] && src[offset] <= '1')
+                       || ('b' == src[offset]) || ('B' == src[offset]))) {
                 data[bytes_written++] = src[offset++];
             }
         }
