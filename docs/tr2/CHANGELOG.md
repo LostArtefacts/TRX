@@ -41,6 +41,7 @@
 - improved ricochets placement
     - fixed disc ricochets being placed inside walls (#4063)
     - fixed ricochets not showing on slopes
+- improved the quality of the PS1 barefoot SFX (#4024)
 - changed the `/debug` command to accept optional option name argument (for example: `/debug pos 1`)
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
     - `flow.lockout_option_ring`
