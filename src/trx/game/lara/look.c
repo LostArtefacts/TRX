@@ -5,15 +5,12 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 // clang-format off
-#if TR_VERSION == 1
-    #define M_MAX_HEAD_ROTATION      (50 * DEG_1)            // = 9100
-#else
-    #define M_MAX_HEAD_ROTATION      (44 * DEG_1)            // = 8008
-#endif
+#define M_MAX_HEAD_ROTATION          ((g_TRVersion == 1 ? 50 : 44) * DEG_1) // = 9100 (TR1), 8008 (TR2)
 #define M_HEAD_TURN                  (2 * DEG_1)             // = 364
-#define M_MIN_HEAD_ROTATION          (-M_MAX_HEAD_ROTATION)  // = -8008
+#define M_MIN_HEAD_ROTATION          (-M_MAX_HEAD_ROTATION)  // = -9100 (TR1), -8008 (TR2)
 #define M_MAX_HEAD_TILT              (22 * DEG_1)            // = 4004
 #define M_MIN_HEAD_TILT              (-42 * DEG_1)           // = -7644
 #define M_HEAD_TURN_SURF             (3 * DEG_1)             // = 546
