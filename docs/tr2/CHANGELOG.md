@@ -17,6 +17,8 @@
     This feature is experimental — some objects may not behave correctly. Please report any bugs encountered! 🩷  
     See [the documentation](../07-CATALOGS.md) for details.
 - added support for custom levels to use Lara's extra animations from TR1
+- added an option to use TR1-style inventory ring backgrounds (Graphic Options → UI → Inventory background) (#3923)
+- added an option to use TR1-style statistics dialog backgrounds (Graphic Options → UI → Stats background) (#3923)
 - added extended statistics support (#2578)
     - added pickup count and death count support in the stats screen (Graphic Options → UI → Statistics details)
     - added max pickup, secret and kills support (Graphic Options → UI → Statistics details)
@@ -25,7 +27,7 @@
 - added an option to disable final statistics (Gameplay options → General → Final statistics screen)
 - added an option to disable all medipacks (Gameplay options → Mods → Remove medipacks)
 - added an option to disable all guns except Pistols (Gameplay options → Mods → Remove extra guns)
-- added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (Graphics → Visuals → Pickup aids) (#4057)
+- added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (Graphic Options → Visuals → Pickup aids) (#4057)
 - added an option for animated interactions with pickups and switches (Gameplay → Controls → Animated interactions) (#4067)
 - added an option to change max savegame slot count (Gameplay → General → Number of save slots)
 - added an option to turn off Inventory input buffering (Gameplay → Input → Buffering (Inventory))

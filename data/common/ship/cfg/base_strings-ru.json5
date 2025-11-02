@@ -112,6 +112,7 @@
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Крен и тангаж",
         "ENUM_BK_PATTERN_STATIC": "\\{review}Статический",
         "ENUM_BK_PATTERN_WAVE": "\\{review}Волна",
+        "ENUM_BK_TRANSPARENT": "\\{review}Прозрачный",
         "ENUM_CAMERA_MODE_TR1": "TR1",
         "ENUM_CAMERA_MODE_TR2": "TR2",
         "ENUM_INPUT_ROLE_ACTION": "Действие",

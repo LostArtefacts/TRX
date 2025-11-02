@@ -112,6 +112,7 @@
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "Rothladh is claonadh",
         "ENUM_BK_PATTERN_STATIC": "Statach",
         "ENUM_BK_PATTERN_WAVE": "Crathadh",
+        "ENUM_BK_TRANSPARENT": "\\{review}Soilleir",
         "ENUM_CAMERA_MODE_TR1": "TR1",
         "ENUM_CAMERA_MODE_TR2": "TR2",
         "ENUM_INPUT_ROLE_ACTION": "Gnìomh",
