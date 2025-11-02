@@ -49,9 +49,7 @@ static void M_Tread(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
     coll->enable_hit = 0;
-#endif
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
         item->current_anim_state = LS(LS_WATER_ROLL);
@@ -83,9 +81,7 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
     coll->enable_hit = 0;
-#endif
 
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
         item->current_anim_state = LS(LS_WATER_ROLL);
@@ -122,9 +118,8 @@ static void M_Glide(ITEM *item, COLL_INFO *coll)
         return;
     }
 
-#if TR_VERSION == 1
     coll->enable_hit = 0;
-#endif
+
     if (g_Config.gameplay.enable_uw_roll && g_Input.roll) {
         item->current_anim_state = LS(LS_WATER_ROLL);
         Item_SwitchToAnim(item, LA(LA_UNDERWATER_ROLL_START), 0);
@@ -152,9 +147,7 @@ static void M_TreadSurface(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
     coll->enable_hit = 0;
-#endif
 
     if (g_Input.look) {
         Lara_Look_UpDown();
@@ -202,9 +195,8 @@ static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
     coll->enable_hit = 0;
-#endif
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->dive_timer = 0;
     if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
@@ -228,9 +220,8 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-#if TR_VERSION == 1
     coll->enable_hit = 0;
-#endif
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->dive_timer = 0;
 
@@ -274,9 +265,7 @@ static void M_Dive(ITEM *const item, COLL_INFO *const coll)
 
 static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
     coll->enable_hit = 0;
-#endif
     item->gravity = false;
     item->fall_speed -= 8;
     CLAMPL(item->fall_speed, 0);
