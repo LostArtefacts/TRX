@@ -10,6 +10,7 @@
 #include <trx/game/rooms.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -202,7 +203,7 @@ void Item_Initialise(const int16_t item_num)
     if ((item->flags & IF_INVISIBLE) != 0) {
         item->status = IS_INVISIBLE;
         item->flags &= ~IF_INVISIBLE;
-    } else if (TR_VERSION >= 2 && obj->intelligent) {
+    } else if (g_TRVersion >= 2 && obj->intelligent) {
         item->status = IS_INVISIBLE;
     }
 
