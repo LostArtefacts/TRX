@@ -259,11 +259,8 @@ M_GF_HANDLER(M_HandleLevelStats)
         return gf_cmd;
     }
 
-#if TR_VERSION == 1
-    const bool use_bare_style = g_Config.ui.stat_detail_mode != SDM_FULL;
-#else
-    const bool use_bare_style = false;
-#endif
+    const bool use_bare_style =
+        g_TRVersion == 1 && g_Config.ui.stat_detail_mode != SDM_FULL;
 
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .background_type = (g_TRVersion == 1 || Game_IsInGym())
