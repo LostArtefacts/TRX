@@ -15,7 +15,8 @@ static char *M_CreateRangeString(void)
 
     int32_t prev = -1;
     int32_t start = -1;
-    for (int32_t i = 0; i <= SFX_NUMBER_OF; i++) {
+    const SAMPLE_ID max_id = Sound_GetMaxDirectSampleID();
+    for (SAMPLE_ID i = 0; i <= max_id; i++) {
         const bool valid = Sound_IsAvailable_Direct(i);
 
         if (valid && start == -1) {

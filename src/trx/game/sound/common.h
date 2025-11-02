@@ -41,6 +41,10 @@ SAMPLE_INFO *Sound_GetOrCreateSample(SAMPLE_ID sample_id);
 bool Sound_IsAvailable_Direct(SAMPLE_ID sample_id);
 bool Sound_IsAvailable(SAMPLE_TRX_ID sample_id);
 
+// Get the maximum direct SAMPLE_ID loaded for playback.
+// Returns SFX_INVALID if no samples are available.
+SAMPLE_ID Sound_GetMaxDirectSampleID(void);
+
 // Play a sample with the given number.
 // pos is an optional argument that takes the world position to play the sound
 // at and can be nullptr.
