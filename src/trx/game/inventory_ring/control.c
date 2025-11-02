@@ -912,12 +912,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Fader_Init(
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
             M_INV_RING_FADE_TIME_FAST);
-    } else if (g_TRVersion == 1) {
+    } else if (g_Config.ui.inventory_background_style == BK_TRANSPARENT) {
         Output_UnloadBackground();
         Fader_Init(
             &ring->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK,
             M_INV_RING_FADE_TIME_FAST);
-    } else if (g_TRVersion == 2) {
+    } else {
         Output_LoadBackgroundFromObject(
             g_Config.ui.inventory_background_style == BK_PATTERN_WAVE);
     }

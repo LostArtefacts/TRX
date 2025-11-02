@@ -112,6 +112,7 @@
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "Rotaz. e inclinaz.",
         "ENUM_BK_PATTERN_STATIC": "Statico",
         "ENUM_BK_PATTERN_WAVE": "Ondeggiante",
+        "ENUM_BK_TRANSPARENT": "\\{review}Trasparente",
         "ENUM_CAMERA_MODE_TR1": "TR1",
         "ENUM_CAMERA_MODE_TR2": "TR2",
         "ENUM_INPUT_ROLE_ACTION": "Azione",

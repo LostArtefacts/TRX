@@ -112,6 +112,7 @@
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Roulis et tangage",
         "ENUM_BK_PATTERN_STATIC": "\\{review}Statique",
         "ENUM_BK_PATTERN_WAVE": "\\{review}Vague",
+        "ENUM_BK_TRANSPARENT": "\\{review}Transparent",
         "ENUM_CAMERA_MODE_TR1": "TR1",
         "ENUM_CAMERA_MODE_TR2": "TR2",
         "ENUM_INPUT_ROLE_ACTION": "Action",
