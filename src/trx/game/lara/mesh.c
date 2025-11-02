@@ -95,7 +95,14 @@ static OBJECT_ID M_GetTargetMesh(const LARA_MESH mesh_idx)
     return O_LARA;
 }
 
-void Lara_Mesh_Initialise(const GF_LEVEL *const level)
+static void M_InitialiseCutsceneLevel(void)
+{
+    Lara_Mesh_SwapAll(O_LARA);
+    Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_PISTOLS);
+    Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_PISTOLS);
+}
+
+static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
 {
     const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
 
@@ -116,6 +123,15 @@ void Lara_Mesh_Initialise(const GF_LEVEL *const level)
 
     if (resume != nullptr && resume->equipped_gun_type == LGT_FLARE) {
         Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_FLARE);
+    }
+}
+
+void Lara_Mesh_Initialise(const GF_LEVEL *const level)
+{
+    if (level->type == GFL_CUTSCENE) {
+        M_InitialiseCutsceneLevel();
+    } else {
+        M_InitialiseNormalLevel(level);
     }
 
     m_BraidStatus = false;

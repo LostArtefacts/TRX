@@ -132,12 +132,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     Lara_Control_Initialise(level->type, m_StartAnimState);
 
     if (level->type == GFL_CUTSCENE) {
-        for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-            Lara_Mesh_SwapSingle(i, O_LARA);
-        }
-
-        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_PISTOLS);
-        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_PISTOLS);
+        Lara_Mesh_Initialise(level);
         lara_info->gun_status = LGS_ARMLESS;
     } else {
         Lara_InitialiseInventory(level);
