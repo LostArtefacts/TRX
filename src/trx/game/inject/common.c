@@ -48,9 +48,9 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
             && g_Config.visuals.enable_ps1_crystals;
     case IFT_SKYBOX:
         return true;
+    case IFT_PS1_SFX:
+        return g_Config.audio.enable_ps1_sfx;
 #if TR_VERSION == 1
-    case IFT_UZI_SFX:
-        return g_Config.audio.enable_ps_uzi_sfx;
     case IFT_PS1_ENEMY: {
         if (!g_Config.gameplay.restore_ps1_enemies) {
             return false;
@@ -62,9 +62,6 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
         }
         return true;
     }
-#elif TR_VERSION == 2
-    case IFT_BAREFOOT_SFX:
-        return g_Config.audio.enable_barefoot_sfx;
 #endif
     default:
         return false;
