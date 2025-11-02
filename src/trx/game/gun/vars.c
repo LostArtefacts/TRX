@@ -1,134 +1,104 @@
 #include <trx/game/gun/vars.h>
 
+#include <trx/enum_map.h>
+#include <trx/game/catalog.h>
 #include <trx/game/const.h>
-#include <trx/game/sound.h>
+#include <trx/game/shell.h>
+#include <trx/json_file.h>
+#include <trx/log.h>
 
-WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
-    [LGT_UNARMED] = {
-        .sample_num = SFX_LARA_NO,
-    },
+WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 
-    [LGT_PISTOLS] = {
-        .lock_angles = { -60 * DEG_1, +60 * DEG_1, -60 * DEG_1, +60 * DEG_1 },
-        .left_angles = { -170 * DEG_1, +60 * DEG_1, -80 * DEG_1, +80 * DEG_1 },
-        .right_angles = { -60 * DEG_1, +170 * DEG_1, -80 * DEG_1, +80 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 8 * DEG_1,
-        .gun_height = 650,
-        .damage = 1,
-        .target_dist = 8 * WALL_L,
-        .recoil_frame = 9,
-        .flash_time = 3,
-        .sample_num = SFX_LARA_PISTOLS,
-    },
+void Gun_LoadVars(const char *const path)
+{
+    JSON_VALUE *const root =
+        JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    if (root_obj == nullptr) {
+        Shell_ExitSystemFmt("invalid weapons vars file: %s", path);
+    }
 
-    [LGT_MAGNUMS] = {
-        .lock_angles = { -60 * DEG_1, +60 * DEG_1, -60 * DEG_1, +60 * DEG_1 },
-        .left_angles = { -170 * DEG_1, +60 * DEG_1, -80 * DEG_1, +80 * DEG_1 },
-        .right_angles = { -60 * DEG_1, +170 * DEG_1, -80 * DEG_1, +80 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 8 * DEG_1,
-        .gun_height = 650,
-        .damage = 2,
-        .target_dist = 8 * WALL_L,
-        .recoil_frame = 9,
-        .flash_time = 3,
-        .sample_num = SFX_LARA_MAGNUMS,
-    },
+    for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
+         elem = elem->next) {
+        const char *const name = elem->name->string;
+        const int32_t type = ENUM_MAP_GET(LARA_GUN_TYPE, name, -1);
+        if (type < 0 || type >= NUM_WEAPONS) {
+            Shell_ExitSystemFmt("unknown weapon type '%s' in %s", name, path);
+        }
 
-    [LGT_UZIS] = {
-        .lock_angles = { -60 * DEG_1, +60 * DEG_1, -60 * DEG_1, +60 * DEG_1 },
-        .left_angles = { -170 * DEG_1, +60 * DEG_1, -80 * DEG_1, +80 * DEG_1 },
-        .right_angles = { -60 * DEG_1, +170 * DEG_1, -80 * DEG_1, +80 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 8 * DEG_1,
-        .gun_height = 650,
-        .damage = 1,
-        .target_dist = 8 * WALL_L,
-        .recoil_frame = 3,
-#if TR_VERSION == 1
-        .flash_time = 2,
-#else
-        .flash_time = 3,
-#endif
-        .sample_num = SFX_LARA_UZI_FIRE,
-    },
+        JSON_OBJECT *const obj = JSON_ValueAsObject(elem->value);
 
-    [LGT_SHOTGUN] = {
-        .lock_angles = { -60 * DEG_1, +60 * DEG_1, -55 * DEG_1, +55 * DEG_1 },
-        .left_angles = { -80 * DEG_1, +80 * DEG_1, -65 * DEG_1, +65 * DEG_1 },
-        .right_angles = { -80 * DEG_1, +80 * DEG_1, -65 * DEG_1, +65 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 0,
-        .gun_height = 500,
-#if TR_VERSION == 1
-        .damage = 4,
-#else
-        .damage = 3,
-#endif
-        .target_dist = 8 * WALL_L,
-        .recoil_frame = 9,
-        .flash_time = 3,
-        .sample_num = SFX_LARA_SHOTGUN,
-    },
+        // lock_angles
+        JSON_ARRAY *arr = JSON_ObjectGetArray(obj, "lock_angles");
+        if (arr != nullptr) {
+            if (arr->length != 4) {
+                Shell_ExitSystemFmt(
+                    "invalid 'lock_angles' for '%s' in %s", name, path);
+            }
+            for (size_t i = 0; i < 4; i++) {
+                g_Weapons[type].lock_angles[i] =
+                    JSON_ArrayGetInt(arr, i, g_Weapons[type].lock_angles[i])
+                    * DEG_1;
+            }
+        }
 
-#if TR_VERSION >= 2
-    [LGT_M16] = {
-        .lock_angles = { -60 * DEG_1, +60 * DEG_1, -55 * DEG_1, +55 * DEG_1 },
-        .left_angles = { -80 * DEG_1, +80 * DEG_1, -65 * DEG_1, +65 * DEG_1 },
-        .right_angles = { -80 * DEG_1, +80 * DEG_1, -65 * DEG_1, +65 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 4 * DEG_1,
-        .gun_height = 500,
-        .damage = 3,
-        .target_dist = 12 * WALL_L,
-        .recoil_frame = 0,
-        .flash_time = 3,
-        .sample_num = 0,
-    },
+        arr = JSON_ObjectGetArray(obj, "left_angles");
+        if (arr != nullptr) {
+            if (arr->length != 4) {
+                Shell_ExitSystemFmt(
+                    "invalid 'left_angles' for '%s' in %s", name, path);
+            }
+            for (size_t i = 0; i < 4; i++) {
+                g_Weapons[type].left_angles[i] =
+                    JSON_ArrayGetInt(arr, i, g_Weapons[type].left_angles[i])
+                    * DEG_1;
+            }
+        }
 
-    [LGT_GRENADE] = {
-        .lock_angles = { -60 * DEG_1, +60 * DEG_1, -55 * DEG_1, +55 * DEG_1 },
-        .left_angles = { -80 * DEG_1, +80 * DEG_1, -65 * DEG_1, +65 * DEG_1 },
-        .right_angles = { -80 * DEG_1, +80 * DEG_1, -65 * DEG_1, +65 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 8 * DEG_1,
-        .gun_height = 500,
-        .damage = 30,
-        .target_dist = 8 * WALL_L,
-        .recoil_frame = 0,
-        .flash_time = 2,
-        .sample_num = 0,
-    },
+        // right_angles
+        arr = JSON_ObjectGetArray(obj, "right_angles");
+        if (arr != nullptr) {
+            if (arr->length != 4) {
+                Shell_ExitSystemFmt(
+                    "invalid 'right_angles' for '%s' in %s", name, path);
+            }
+            for (size_t i = 0; i < 4; i++) {
+                g_Weapons[type].right_angles[i] =
+                    JSON_ArrayGetInt(arr, i, g_Weapons[type].right_angles[i])
+                    * DEG_1;
+            }
+        }
 
-    [LGT_HARPOON] = {
-        .lock_angles = { -60 * DEG_1, +60 * DEG_1, -65 * DEG_1, +65 * DEG_1 },
-        .left_angles = { -80 * DEG_1, +80 * DEG_1, -75 * DEG_1, +75 * DEG_1 },
-        .right_angles = { -80 * DEG_1, +80 * DEG_1, -75 * DEG_1, +75 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 8 * DEG_1,
-        .gun_height = 500,
-        .damage = 4,
-        .target_dist = 8 * WALL_L,
-        .recoil_frame = 0,
-        .flash_time = 2,
-        .sample_num = 0,
-    },
+        // scalar properties
+        g_Weapons[type].aim_speed =
+            JSON_ObjectGetInt(obj, "aim_speed", g_Weapons[type].aim_speed)
+            * DEG_1;
+        g_Weapons[type].shot_accuracy =
+            JSON_ObjectGetInt(
+                obj, "shot_accuracy", g_Weapons[type].shot_accuracy)
+            * DEG_1;
+        g_Weapons[type].gun_height =
+            JSON_ObjectGetInt(obj, "gun_height", g_Weapons[type].gun_height);
+        g_Weapons[type].damage =
+            JSON_ObjectGetInt(obj, "damage", g_Weapons[type].damage);
+        float dist = JSON_ObjectGetDouble(
+            obj, "target_dist", (float)g_Weapons[type].target_dist / WALL_L);
+        g_Weapons[type].target_dist = (int32_t)(dist * WALL_L);
+        g_Weapons[type].recoil_frame = JSON_ObjectGetInt(
+            obj, "recoil_frame", g_Weapons[type].recoil_frame);
+        g_Weapons[type].flash_time =
+            JSON_ObjectGetInt(obj, "flash_time", g_Weapons[type].flash_time);
+        // sample_num
+        const char *const sample =
+            JSON_ObjectGetString(obj, "sample_num", JSON_INVALID_STRING);
+        CATALOG_ID sample_id;
+        if (!Catalog_NameToEnum(CATALOG_SAMPLES, sample, &sample_id)) {
+            LOG_WARNING(
+                "unknown sample '%s' for '%s' in %s", sample, name, path);
+        } else {
+            g_Weapons[type].sample_num = sample_id;
+        }
+    }
 
-    [LGT_FLARE] = {},
-
-    [LGT_SKIDOO] = {
-        .lock_angles = { -30 * DEG_1, 30 * DEG_1, -55 * DEG_1, 55 * DEG_1 },
-        .left_angles = { -30 * DEG_1, 30 * DEG_1, -55 * DEG_1, 55 * DEG_1 },
-        .right_angles = { -30 * DEG_1, 30 * DEG_1, -55 * DEG_1, 55 * DEG_1 },
-        .aim_speed = 10 * DEG_1,
-        .shot_accuracy = 8 * DEG_1,
-        .gun_height = 400,
-        .damage = 3,
-        .target_dist = 8 * WALL_L,
-        .recoil_frame = 0,
-        .flash_time = 2,
-        .sample_num = SFX_LARA_UZI_FIRE,
-    },
-#endif
-};
+    JSON_ValueFree(root);
+}
