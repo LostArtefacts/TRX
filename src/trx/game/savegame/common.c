@@ -159,21 +159,17 @@ static void M_LoadPostprocess(void)
         if (obj->save_flags != 0) {
             item->flags &= 0xFF00;
         }
-#if TR_VERSION == 1
-        if (obj->handle_save_func != nullptr) {
+        // TODO: make this engine-agnostic
+        if (g_TRVersion == 1 && obj->handle_save_func != nullptr) {
             obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
         }
-#endif
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-#if TR_VERSION == 1
     if (Game_GetBonusFlag() != GBF_NONE) {
         g_Config.profile.new_game_plus_unlock = true;
         Config_Update();
     }
-    LOT_ClearLOT(&lara->lot);
-#endif
     if (lara->burn && !g_Config.gameplay.enable_enhanced_saves) {
         lara->burn = false;
         Lara_CatchFire();
@@ -561,14 +557,12 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->magnum_ammo = 0;
         resume->uzi_ammo = 0;
         resume->num_scions = 0;
-#if TR_VERSION > 1
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
         resume->flags.has_grenade = false;
         resume->harpoon_ammo = 0;
         resume->m16_ammo = 0;
         resume->grenade_ammo = 0;
-#endif
         resume->equipped_gun_type = LGT_PISTOLS;
         resume->holsters_gun_type = LGT_PISTOLS;
         resume->back_gun_type = LGT_UNARMED;
@@ -580,28 +574,27 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_shotgun = true;
         resume->flags.has_magnums = true;
         resume->flags.has_uzis = true;
+        resume->flags.has_m16 = true;
+        resume->flags.has_grenade = true;
+        resume->flags.has_harpoon = true;
 
         resume->shotgun_ammo = 10000;
         resume->magnum_ammo = 10000;
         resume->uzi_ammo = 10000;
         resume->flares = g_TRVersion == 1 ? 0 : -1;
 
-#if TR_VERSION == 1
-        resume->equipped_gun_type = LGT_UZIS;
-        resume->holsters_gun_type = LGT_UZIS;
-        resume->back_gun_type = LGT_SHOTGUN;
-#else
-        resume->flags.has_m16 = true;
-        resume->flags.has_grenade = true;
-        resume->flags.has_harpoon = true;
         resume->m16_ammo = 10000;
         resume->grenade_ammo = 10000;
         resume->harpoon_ammo = 10000;
 
-        resume->equipped_gun_type = LGT_GRENADE;
+        if (g_TRVersion == 1) {
+            resume->equipped_gun_type = LGT_UZIS;
+            resume->back_gun_type = LGT_SHOTGUN;
+        } else {
+            resume->equipped_gun_type = LGT_GRENADE;
+            resume->back_gun_type = LGT_GRENADE;
+        }
         resume->holsters_gun_type = LGT_PISTOLS;
-        resume->back_gun_type = LGT_GRENADE;
-#endif
     }
 
     resume->stats.secret_flags = 0;
