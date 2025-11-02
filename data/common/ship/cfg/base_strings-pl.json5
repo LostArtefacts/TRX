@@ -496,7 +496,7 @@
         "SETTING_ENABLE_TR2_SWIMMING": "Zwinniejsze pływanie",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "Powoduje, że Lara przyspiesza płynniej, ale wolniej podczas obracania pod wodą (tak jak w TR2+). Wyłączenie tej opcji zapewni Larze szybszą prędkość skrętu (tak jak w TR1).",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Mniejszy dryf pod wodą",
-        "SETTING_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Pozwala Larze na bardziej responsywne zatrzymanie się pod wodą po zwolnieniu klawisza pływania (tak jak w TR2+).",
+        "SETTING_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Pozwala Larze na bardziej responsywne zatrzymanie się pod wodą po zwolnieniu klawisza pływania.",
         "SETTING_ENABLE_TR3_SIDESTEPS": "Ulepszone kroki w bok",
         "SETTING_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Umożliwia chodzenie w bok w stylu TR3+, tj. shift+strzałki kierunkowe. Naturalnie, przyciski dedykowane do kroków w bok nadal będą działać.",
         "SETTING_ENABLE_UNDERWATER_ANIM_SFX": "Efekty dźwiękowe pod wodą",
