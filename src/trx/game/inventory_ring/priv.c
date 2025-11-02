@@ -144,7 +144,7 @@ void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
     inv_item->current_frame = 0;
     inv_item->goal_frame = 0;
     inv_item->x_rot_pt = 0;
-    inv_item->x_rot = 0;
+    inv_item->x_rot = inv_item->x_rot_nosel;
     inv_item->y_rot = 0;
     inv_item->y_trans = 0;
     inv_item->z_trans = 0;
