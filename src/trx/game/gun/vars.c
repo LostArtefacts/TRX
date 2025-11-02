@@ -91,12 +91,14 @@ void Gun_LoadVars(const char *const path)
         // sample_num
         const char *const sample =
             JSON_ObjectGetString(obj, "sample_num", JSON_INVALID_STRING);
-        CATALOG_ID sample_id;
-        if (!Catalog_NameToEnum(CATALOG_SAMPLES, sample, &sample_id)) {
-            LOG_WARNING(
-                "unknown sample '%s' for '%s' in %s", sample, name, path);
-        } else {
-            g_Weapons[type].sample_num = sample_id;
+        if (sample != JSON_INVALID_STRING && sample[0] != '\0') {
+            CATALOG_ID sample_id;
+            if (!Catalog_NameToEnum(CATALOG_SAMPLES, sample, &sample_id)) {
+                LOG_WARNING(
+                    "unknown sample '%s' for '%s' in %s", sample, name, path);
+            } else {
+                g_Weapons[type].sample_num = sample_id;
+            }
         }
     }
 
