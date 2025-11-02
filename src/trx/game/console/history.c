@@ -6,6 +6,7 @@
 #include <trx/strings.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
+#include <trx/version.h>
 
 #define MAX_HISTORY_ENTRIES 30
 
@@ -14,7 +15,7 @@ VECTOR *m_History = nullptr;
 static const char *M_GetPath(void)
 {
     return String_FormatStatic(
-        "%s/%s_console_history.json5", Shell_GetConfigDir(), PROJECT_NAME);
+        "%s/TR%dX_console_history.json5", Shell_GetConfigDir(), g_TRVersion);
 }
 
 static void M_LoadFromJSON(JSON_VALUE *const doc)
