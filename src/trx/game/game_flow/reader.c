@@ -48,24 +48,40 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
 
 static void M_LoadGlobalInjections(const M_CONTEXT *ctx, JSON_OBJECT *obj);
-static void M_LoadCommonSettings(
-    const M_CONTEXT *ctx, JSON_OBJECT *obj, GF_LEVEL_SETTINGS *settings);
 
-#if TR_VERSION == 1
-    #include <trx/game/game_flow/reader_tr1.def.c>
-#elif TR_VERSION == 2
-    #include <trx/game/game_flow/reader_tr2.def.c>
-#endif
+static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
+    // clang-format off
+    // Events without arguments
+    { GFS_ENABLE_SUNSET,     nullptr, nullptr },
+    { GFS_REMOVE_WEAPONS,    nullptr, nullptr },
+    { GFS_REMOVE_SCIONS,     nullptr, nullptr },
+    { GFS_REMOVE_AMMO,       nullptr, nullptr },
+    { GFS_REMOVE_FLARES,     nullptr, nullptr },
+    { GFS_REMOVE_MEDIPACKS,  nullptr, nullptr },
+    { GFS_LEVEL_COMPLETE,    nullptr, nullptr },
+    { GFS_LEVEL_STATS,       nullptr, nullptr },
+    { GFS_EXIT_TO_TITLE,     nullptr, nullptr },
 
-static void M_CopyRootSettingsIntoLevel(
-    const M_CONTEXT *const ctx, GF_LEVEL_SETTINGS *const dst,
-    const GF_LEVEL_SETTINGS *const src)
-{
-    *dst = *src;
-#if TR_VERSION == 2
-    dst->sfx_path = nullptr;
-#endif
-}
+    // Events with integer arguments
+    { GFS_SET_START_ANIM,    M_HandleIntEvent, "anim" },
+    { GFS_LOOP_GAME,         M_HandleIntEvent, "level_id" },
+    { GFS_PLAY_CUTSCENE,     M_HandleIntEvent, "cutscene_id" },
+    { GFS_PLAY_FMV,          M_HandleIntEvent, "fmv_id" },
+    { GFS_PLAY_MUSIC,        M_HandleIntEvent, "music_track" },
+    { GFS_SETUP_BACON_LARA,  M_HandleIntEvent, "anchor_room" },
+    { GFS_DISABLE_FLOOR,     M_HandleIntEvent, "height" },
+
+    // Special cases with custom handlers
+    { GFS_LOADING_SCREEN,    M_HandlePictureEvent, nullptr },
+    { GFS_DISPLAY_PICTURE,   M_HandlePictureEvent, nullptr },
+    { GFS_TOTAL_STATS,       M_HandleTotalStatsEvent, nullptr },
+    { GFS_ADD_ITEM,          M_HandleAddItemEvent, nullptr },
+    { GFS_ADD_SECRET_REWARD, M_HandleAddItemEvent, nullptr },
+
+    // Sentinel to mark the end of the table
+    { (GF_SEQUENCE_EVENT_TYPE)-1, nullptr, nullptr },
+    // clang-format on
+};
 
 static bool M_ParseRGB888(JSON_VALUE *const value, RGB_888 *const target)
 {
@@ -96,7 +112,12 @@ static bool M_ParseRGB888(JSON_VALUE *const value, RGB_888 *const target)
     return false;
 }
 
-static void M_LoadCommonSettings(
+static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
+{
+    return m_SequenceEventHandlers;
+}
+
+static void M_LoadSettings(
     const M_CONTEXT *const ctx, JSON_OBJECT *const obj,
     GF_LEVEL_SETTINGS *const settings)
 {
@@ -149,6 +170,28 @@ static void M_LoadCommonSettings(
             settings->cold_water.value = value;
         }
     }
+
+    {
+        const char *tmp_s =
+            JSON_ObjectGetString(obj, "sfx_path", JSON_INVALID_STRING);
+        if (tmp_s != JSON_INVALID_STRING) {
+            settings->sfx_path = Memory_DupStr(tmp_s);
+        }
+    }
+}
+
+#if TR_VERSION == 1
+    #include <trx/game/game_flow/reader_tr1.def.c>
+#elif TR_VERSION == 2
+    #include <trx/game/game_flow/reader_tr2.def.c>
+#endif
+
+static void M_CopyRootSettingsIntoLevel(
+    const M_CONTEXT *const ctx, GF_LEVEL_SETTINGS *const dst,
+    const GF_LEVEL_SETTINGS *const src)
+{
+    *dst = *src;
+    dst->sfx_path = nullptr;
 }
 
 static void M_LoadCommonRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
