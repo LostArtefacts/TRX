@@ -971,11 +971,9 @@ static bool M_ReadMusicTracks(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 
 static bool M_ReadMusicTrackFlags(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
-#if TR_VERSION == 1
     if (!g_Config.audio.load_music_triggers) {
         return true;
     }
-#endif
 
     const int32_t count = M_GetArrayLength(ctx);
     if (count > MAX_MUSIC_TRACKS) {
