@@ -19,10 +19,6 @@
       "type": "boolean",
       "description": "Legacy demo version flag (scheduled for removal)."
     },
-    "secret_track": {
-      "type": "integer",
-      "description": "Music track to play when a secret is found. -1 to disable."
-    },
     "title": {
       "$ref": "#/definitions/title",
       "description": "Configuration for the title screen."

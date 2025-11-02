@@ -117,11 +117,16 @@ title: Migrating levels
     - `cmd_demo_interrupt`
     - `single_level`
     - `is_demo_version`
-    
+
 3. **Lara extra animations**: 
    Lara's extra animations have been combined with TR1. You must use the
    `lara_extra.bin` injection or otherwise refer to 
    https://github.com/LostArtefacts/TRXInjectionTool/blob/main/docs/ASSETS.md
+
+4. **Secret track**:
+   The setting `secret_track` is no longer present – the engine will always
+   play `MX_SECRET` track. To change its slot, please refer to the
+   `catalog_music.csv` file.
 
 ### Version 1.3 to 1.4
 

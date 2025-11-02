@@ -165,13 +165,6 @@ typedef struct {
         GF_AMBIENT_DATA ambient_tracks;
     };
 
-#if TR_VERSION == 2
-    // music
-    struct {
-        MUSIC_ID secret_track;
-    };
-#endif
-
     // other data
     GF_LEVEL_SETTINGS settings;
     INJECTION_DATA injections;
