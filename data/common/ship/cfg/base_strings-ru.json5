@@ -492,7 +492,7 @@
         "SETTING_ENABLE_TOTAL_STATS": "Экран финальной статистики",
         "SETTING_ENABLE_TOTAL_STATS_DESCRIPTION": "Включает экран общей статистики игры, который воспроизводится после титров.",
         "SETTING_ENABLE_TR2_JUMPING": "Отзывчивые прыжки",
-        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "Позволяет Ларе прыгать в любой точке во время бега, аналогично TR2+.",
+        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "\\{review}Позволяет Ларе прыгать в любой точке во время бега.",
         "SETTING_ENABLE_TR2_SWIMMING": "Плавное плавание",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "Добавляет кривую ускорения скорости поворота Лары под водой для более плавного движения, как в оригинальной версии TR2+. Отключение этой опции увеличит скорость поворота Лары под водой, как в оригинальной версии TR1.",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Отзывчивая отмена плавания",

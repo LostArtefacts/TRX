@@ -492,7 +492,7 @@
         "SETTING_ENABLE_TOTAL_STATS": "Finale Statistik-Anzeige",
         "SETTING_ENABLE_TOTAL_STATS_DESCRIPTION": "Aktiviert die Erstellung einer Gesamtstatistik vom ganzen Spiel, die nach dem Abspielen der Credits angezeigt wird.",
         "SETTING_ENABLE_TR2_JUMPING": "Reaktionsschnelleres Springen",
-        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "Erlaubt Lara, während des Rennens jederzeit zu springen, ähnlich wie in TR2+.",
+        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "\\{review}Erlaubt Lara, während des Rennens jederzeit zu springen.",
         "SETTING_ENABLE_TR2_SWIMMING": "Flüssiges Schwimmverhalten",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "Verpasst Laras Drehgeschwindigkeit unter Wasser eine Beschleunigungskurve für ein runderes Steuerungsverhalten, ähnlich wie in TR2+.",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Reaktionsschneller Schwimm-Abbruch",

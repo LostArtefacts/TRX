@@ -492,7 +492,7 @@
         "SETTING_ENABLE_TOTAL_STATS": "Sgrion staitistig deireannach",
         "SETTING_ENABLE_TOTAL_STATS_DESCRIPTION": "Cuiridh seo sgrion staitistig iomlan air adhart às dèidh nan creideasan.",
         "SETTING_ENABLE_TR2_JUMPING": "Leum freagairteach",
-        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "Leigidh le Lara leum aig àm sam bith nuair a tha i a' ruith, coltach ri TR2+.",
+        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "Leigidh le Lara leum aig àm sam bith nuair a tha i a' ruith.",
         "SETTING_ENABLE_TR2_SWIMMING": "Snàmh rèidh",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "Cuiridh seo lùb luathaidh air tionndadh Lara fon uisge airson gluasad nas rèidh, mar ann an TR2 bho thùs.",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Stad snàmh freagairteach",
