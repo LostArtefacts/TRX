@@ -54,9 +54,6 @@ typedef struct {
     uint16_t tex_page;
     int32_t uv_count;
     TEXTURE_UV uv[4];
-#if TR_VERSION == 2
-    TEXTURE_UV uv_backup[4];
-#endif
 } OBJECT_TEXTURE;
 
 typedef struct {
