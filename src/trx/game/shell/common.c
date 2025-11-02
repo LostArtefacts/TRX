@@ -28,6 +28,11 @@ static void M_ShowFatalError(const char *const message)
     Shell_Terminate(1);
 }
 
+const char *Shell_GetConfigDir(void)
+{
+    return "cfg";
+}
+
 void Shell_Terminate(int32_t exit_code)
 {
     Shell_Shutdown();

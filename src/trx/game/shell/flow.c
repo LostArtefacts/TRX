@@ -30,6 +30,7 @@
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #include <SDL2/SDL.h>
 #include <stdio.h>
@@ -184,6 +185,16 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
         Shell_ExitSystem("--headless can only be used with --test-replay");
     }
 
+    if (args->mod == nullptr) {
+        Shell_ExitSystem("Missing gameflow file");
+    }
+    // Set the g_TRVersion early. Later on it will be overriden by the
+    // level loader, but this lets the game load good config defaults.
+    g_TRVersion = args->engine_version != 0 ? args->engine_version
+                                            : args->mod->engine_version;
+    LOG_INFO("Engine version: %d", g_TRVersion);
+    Config_ApplyDefaultSettings();
+
     M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false);
     M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false);
     M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv", true);
@@ -259,7 +270,8 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 
     GameStringManager_ClearSourceFiles();
     GameStringManager_AddSourceFile(Shell_GetCommonStringsPath(), false);
-    GameStringManager_AddSourceFile(Shell_GetBaseGameStringsPath(), false);
+    GameStringManager_AddSourceFile(
+        Shell_GetBaseGameStringsPath(args->mod), false);
     GameStringManager_AddSourceFile(Shell_GetGameStringsPath(args->mod), true);
     GameStringManager_DiscoverLanguages();
     GameStringManager_ReloadLanguage(g_Config.language);
