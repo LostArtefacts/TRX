@@ -172,6 +172,7 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     }
 
     // ..4.16
+    READ_FALLBACK_BOOL(g_Config.audio.enable_ps1_sfx, "enable_ps_uzi_sfx");
     READ_FALLBACK_BOOL(
         g_Config.audio.fix_chainblock_secret_sound, "fix_tihocan_secret_sound");
     READ_FALLBACK_BOOL(

@@ -13,7 +13,7 @@ typedef enum {
     IFT_GENERAL           = 0,
     IFT_BRAID             = 1,
     IFT_TEXTURE_FIX       = 2,
-    IFT_UZI_SFX           = 3,
+    IFT_PS1_SFX           = 3,
     IFT_FLOOR_DATA        = 4,
     IFT_LARA_ANIMS        = 5,
     IFT_ITEM_POSITION     = 6,
@@ -21,8 +21,7 @@ typedef enum {
     IFT_ALTER_ANIM_SPRITE = 8,
     IFT_SKYBOX            = 9,
     IFT_PS1_CRYSTAL       = 10,
-    IFT_BAREFOOT_SFX      = 11,
-    IFT_NUMBER_OF         = 12,
+    IFT_NUMBER_OF         = 11,
 } INJECTION_FILE_TYPE;
 
 typedef enum {

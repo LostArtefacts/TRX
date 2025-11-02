@@ -150,14 +150,10 @@ typedef struct {
 #endif
         bool enable_music_in_menu;
         bool enable_music_in_inventory;
-#if TR_VERSION == 1
-        bool enable_ps_uzi_sfx;
-#endif
+        bool enable_ps1_sfx;
         bool enable_pitched_sounds;
 #if TR_VERSION == 1
         bool load_music_triggers;
-#else
-        bool enable_barefoot_sfx;
 #endif
         bool enable_underwater_anim_sfx;
         bool mute_out_of_focus;

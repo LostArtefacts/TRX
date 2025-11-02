@@ -143,6 +143,8 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 
     // 1.6
     {
+        READ_FALLBACK_BOOL(
+            g_Config.audio.enable_ps1_sfx, "enable_barefoot_sfx");
         const JSON_VALUE *const value =
             JSON_ObjectGetValue(parent_obj, "revert_to_pistols");
         if (JSON_ValueIsTrue(value)) {
