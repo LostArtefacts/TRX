@@ -62,6 +62,14 @@
         "$ref": "#/definitions/fmv"
       }
     },
+    "convert_dropped_guns": {
+      "type": "boolean",
+      "description": "Forces guns dropped by enemies to be converted to the equivalent ammo if Lara already has the gun."
+    },
+    "enable_tr2_item_drops": {
+      "type": "boolean",
+      "description": "Forces enemies who are placed in the same position as pickup items to carry those items and drop them when killed."
+    },
     "enforced_config": {
       "type": "object",
       "description": "Overrides for any regular game config settings.",

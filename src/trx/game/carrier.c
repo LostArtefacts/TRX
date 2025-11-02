@@ -175,7 +175,6 @@ static void M_InitialiseDataDrops(void)
 
 static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
 {
-#if TR_VERSION == 1
     int32_t total_item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < level->item_drops.count; i++) {
         const GF_DROP_ITEM_DATA *const data = &level->item_drops.data[i];
@@ -237,19 +236,16 @@ static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
             }
         }
     }
-#endif
 }
 
 void Carrier_InitialiseLevel(const GF_LEVEL *const level)
 {
     m_AnimatingCount = 0;
-#if TR_VERSION == 1
-    if (!g_GameFlow.enable_tr2_item_drops) {
+    if (g_GameFlow.enable_tr2_item_drops) {
+        M_InitialiseDataDrops();
+    } else {
         M_InitialiseGameFlowDrops(level);
-        return;
     }
-#endif
-    M_InitialiseDataDrops();
 }
 
 int32_t Carrier_GetItemCount(const int16_t item_num)
@@ -310,13 +306,11 @@ void Carrier_TestItemDrops(const int16_t item_num)
         }
 
         OBJECT_ID obj_id = item->object_id;
-#if TR_VERSION == 1
         if (g_GameFlow.convert_dropped_guns
             && Object_IsType(obj_id, g_GunObjects) && Inv_RequestItem(obj_id)
             && obj_id != O_PISTOL_ITEM) {
             obj_id = Object_GetCognate(obj_id, g_GunAmmoObjectMap);
         }
-#endif
 
         if (item->spawn_num == NO_ITEM) {
             // This is a gameflow-defined drop, so a spawn number is required.

@@ -15,7 +15,7 @@ Item drops can be defined in two ways. If `enable_tr2_item_drops` is `true`,
 then custom level builders can add items directly to the level file, setting
 their position to be the same as the enemies who should drop them.
 
-For the original levels, `enable_tr2_item_drops` is `false`. Item drops are
+For the original TR1 levels, `enable_tr2_item_drops` is `false`. Item drops are
 instead defined in the `item_drops` section of a level's definition by creating
 objects with the following parameter structure. You can define at most one entry
 per enemy, but that definition can have as many drop items as necessary (within

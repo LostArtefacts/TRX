@@ -7,6 +7,8 @@
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "demo_version": false,
+    "enable_tr2_item_drops": true,
+    "convert_dropped_guns": true,
 
     "title": {
         "path": "data/title.tr2",
