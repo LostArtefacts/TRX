@@ -286,16 +286,18 @@ def sync_base_strings(ctx: RunContext) -> None:
     ctx.base.main.data["game_strings"] = new
     for key in changed:
         for file in ctx.base.translations.values():
-            file.data.setdefault("game_strings", {})[key] = REVIEW_MARKER
+            if not file.extends:
+                file.data.setdefault("game_strings", {})[key] = REVIEW_MARKER
         for gs in ctx.mods.values():
             if gs.main.data.get("game_strings", {}).get(key):
                 gs.main.data.setdefault("game_strings", {})[
                     key
                 ] = REVIEW_MARKER
                 for file in gs.translations.values():
-                    file.data.setdefault("game_strings", {})[
-                        key
-                    ] = REVIEW_MARKER
+                    if not file.extends:
+                        file.data.setdefault("game_strings", {})[
+                            key
+                        ] = REVIEW_MARKER
 
     old = ctx.base.main.data.get("objects", {})
     new = ctx.object_names_dict
