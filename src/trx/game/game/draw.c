@@ -1,10 +1,23 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
-#include <trx/game/game.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
-#include <trx/game/rooms.h>
+#include <trx/game/ui.h>
+
+static FADER m_Fader;
+
+void Game_FadeToBlack(const int32_t duration)
+{
+    Fader_Init(
+        &m_Fader, FADER_TRANSPARENT, FADER_BLACK, duration / (float)LOGIC_FPS);
+}
+
+void Game_DrawFade(void)
+{
+    UI_BeginFade(&m_Fader, true);
+    UI_EndFade();
+}
 
 void Game_Draw(const bool draw_overlay)
 {
