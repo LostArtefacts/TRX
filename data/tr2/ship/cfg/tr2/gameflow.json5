@@ -7,7 +7,6 @@
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "demo_version": false,
-    "secret_track": 43,
 
     "title": {
         "path": "data/title.tr2",

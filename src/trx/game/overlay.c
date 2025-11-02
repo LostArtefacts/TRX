@@ -62,7 +62,6 @@ static float M_Ease(float current, const float start, const float goal)
     }
 }
 
-#if TR_VERSION == 2
 static void M_DrawAssaultTimer(void)
 {
     if (!Game_IsInGym() || !Gym_IsAssaultTimerDisplay()) {
@@ -123,7 +122,6 @@ static void M_DrawAssaultTimer(void)
             glyph_info[glyph_type].width, SCALER_TARGET_ASSAULT_DIGITS);
     }
 }
-#endif
 
 static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
 {
@@ -280,9 +278,7 @@ void Overlay_DrawGameInfo(void)
 {
     if (Game_IsPlaying()) {
         M_DrawPickups();
-#if TR_VERSION == 2
         M_DrawAssaultTimer();
-#endif
     }
 }
 
@@ -340,11 +336,9 @@ void Overlay_SetBottomTextPtr(const char *const *const ptr, const bool flash)
 
 void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
 {
-#if TR_VERSION == 2
     if (Object_IsType(obj_id, g_SecretObjects)) {
-        Music_Play_Direct(g_GameFlow.secret_track, MPM_ALWAYS);
+        Music_Play(MX_SECRET, MPM_ALWAYS);
     }
-#endif
 
     int32_t grid_x = -1;
     int32_t grid_y = -1;

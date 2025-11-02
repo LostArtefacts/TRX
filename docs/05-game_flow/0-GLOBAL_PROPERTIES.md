@@ -261,7 +261,6 @@ remains distinct for each game.
     "savegame_fmt_bson": "save_tr2_%02d.dat",
 
     "demo_version": false,
-    "secret_track": 43,
 
     "title": {
         "path": "data/title.tr2",
@@ -340,13 +339,6 @@ remains distinct for each game.
     <td><code>savegame_fmt_legacy</code></td>
     <td>String<strong>*</strong></td>
     <td>Path pattern to look for the original savegame files.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>secret_track</code></td>
-    <td>Integer</td>
-    <td>
-      Music track to play when a secret is found. -1 to not play anything.
-    </td>
   </tr>
   <tr valign="top">
     <td><code>sfx_path</code></td>

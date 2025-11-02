@@ -70,8 +70,5 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
 {
     ctx->gf->settings = m_DefaultSettings;
     M_LoadSettings(ctx, obj, &ctx->gf->settings);
-
-    ctx->gf->secret_track = JSON_ObjectGetInt(obj, "secret_track", MX_INACTIVE);
-
     M_LoadGlobalInjections(ctx, obj);
 }
