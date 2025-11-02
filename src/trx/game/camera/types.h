@@ -33,9 +33,7 @@ typedef struct {
     // used for the manual camera control
     int16_t additional_angle;
     int16_t additional_elevation;
-#if TR_VERSION == 2
     XYZ_32 mic_pos;
-#endif
 
     struct {
         struct {

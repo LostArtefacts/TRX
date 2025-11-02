@@ -76,13 +76,14 @@ static bool M_ProcessOutcome(const ITEM *const lara_item)
     }
 
     const LARA_STATE state = lara_item->current_anim_state;
+    bool gun_status_check;
     bool explode_status_check;
     if (g_TRVersion == 1) {
-        const bool gun_status_check = true;
+        gun_status_check = true;
         explode_status_check = state == LS(LS_SWAN_DIVE);
     } else {
         const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-        const bool gun_status_check = m_InitialGunType == LGT_FLARE
+        gun_status_check = m_InitialGunType == LGT_FLARE
             && lara_info->gun_type == m_InitialGunType;
         explode_status_check =
             state == LS(LS_JUMP_FORWARD) || state == LS(LS_JUMP_BACK);

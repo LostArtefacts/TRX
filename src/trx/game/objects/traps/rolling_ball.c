@@ -40,15 +40,16 @@ static void M_Roll(ITEM *const item)
         Sound_Effect(SFX_ROLLING_BALL_3_ROLL, &item->pos, SPM_NORMAL);
     }
 
-#if TR_VERSION == 2
-    const int32_t dist = Math_Sqrt(
-        (g_Camera.mic_pos.z - item->pos.z) * (g_Camera.mic_pos.z - item->pos.z)
-        + (g_Camera.mic_pos.x - item->pos.x)
-            * (g_Camera.mic_pos.x - item->pos.x));
-    if (dist < M_SHAKE_RANGE) {
-        g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
+    if (g_TRVersion == 2) {
+        const int32_t dist = Math_Sqrt(
+            (g_Camera.mic_pos.z - item->pos.z)
+                * (g_Camera.mic_pos.z - item->pos.z)
+            + (g_Camera.mic_pos.x - item->pos.x)
+                * (g_Camera.mic_pos.x - item->pos.x));
+        if (dist < M_SHAKE_RANGE) {
+            g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
+        }
     }
-#endif
 }
 
 static bool M_TestStop(const ITEM *const item)
