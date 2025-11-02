@@ -253,6 +253,9 @@ int JSON_ValueGetInt(const JSON_VALUE *const value, const int d)
     if (strncmp(s, "0x", 2) == 0 || strncmp(s, "0X", 2) == 0) {
         return strtol(s, nullptr, 16);
     }
+    if (strncmp(s, "0b", 2) == 0 || strncmp(s, "0B", 2) == 0) {
+        return strtol(s + 2, nullptr, 2);
+    }
     return atoi(s);
 }
 
