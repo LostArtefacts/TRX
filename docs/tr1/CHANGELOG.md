@@ -43,6 +43,7 @@
 - changed music triggers that match the level's default ambient track to automatically be treated as ambient if omitted from `ambient_tracks` (#4181)
 - changed cutscene data (e.g. `cut1.phd`, as opposed to in-game cinematics) to match TR2 format, where Lara (as `O_LARA`) must be defined as an item in the level file
 - changed the `-q`/`--quiet` argument to no longer silence warnings
+- changed the bars options to be placed in its own tab
 - changed the Remove shotguns, Remove Uzis and Remove Magnus into a single "Remove extra guns" option
 - changed the `Remember Guns between Levels` option to also apply to whether or not Lara starts with those guns equipped
 - changed toggling Lara's braid in-game to swap out her head and torso meshes appropriately without the need to reload the level (#2399)

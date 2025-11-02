@@ -14,6 +14,11 @@ static UI_SETTINGS_OPTION m_UIOptions[] = {
     { .target = nullptr },
 };
 
+static const UI_SETTINGS_OPTION m_UIBarsOptions[] = {
+#include <trx/game/ui/dialogs/setting_tabs/graphic_ui_bars.def>
+    { .target = nullptr },
+};
+
 static const UI_SETTINGS_OPTION m_RenderOptions[] = {
 #include <trx/game/ui/dialogs/setting_tabs/graphic_rendering.def>
     { .target = nullptr },
@@ -22,6 +27,7 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
 static const UI_SETTINGS_TAB m_Tabs[] = {
     { GS_ID(GRAPHIC_SETTINGS_VISUALS_TAB), m_VisualsOptions },
     { GS_ID(GRAPHIC_SETTINGS_UI_TAB), m_UIOptions },
+    { GS_ID(GRAPHIC_SETTINGS_UI_BARS_TAB), m_UIBarsOptions },
     { GS_ID(GRAPHIC_SETTINGS_RENDERING_TAB), m_RenderOptions },
 };
 
