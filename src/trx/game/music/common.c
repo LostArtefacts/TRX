@@ -97,7 +97,7 @@ static bool M_IsBrokenTrack(const MUSIC_ID track_id)
     if (track_id < 0) {
         return true;
     }
-    if (TR_VERSION > 1) {
+    if (g_TRVersion > 1) {
         return false;
     }
     const MUSIC_TRX_ID track = Music_FromGameID(track_id);
