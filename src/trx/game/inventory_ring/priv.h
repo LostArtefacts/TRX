@@ -60,4 +60,4 @@ void InvRing_DrawUI(INV_RING *ring);
 void InvRing_UpdateInventoryItem(
     const INV_RING *ring, INVENTORY_ITEM *inv_item, int32_t num_frames);
 
-extern bool InvRing_IsOptionLockedOut(void);
+bool InvRing_IsOptionLockedOut(void);
