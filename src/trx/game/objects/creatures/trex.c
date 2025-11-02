@@ -51,12 +51,10 @@ static void M_KillLara(ITEM *const item)
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-#if TR_VERSION == 1
     if (g_Config.gameplay.disable_trex_collision
         && Item_Get(item_num)->hit_points <= 0) {
         return;
     }
-#endif
 
     Creature_Collision(item_num, lara_item, coll);
 }
