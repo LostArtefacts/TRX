@@ -1,16 +1,21 @@
 #include <trx/game/console/history.h>
 
+#include <trx/game/shell.h>
 #include <trx/json_file.h>
 #include <trx/memory.h>
+#include <trx/strings.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
-
-#include <string.h>
 
 #define MAX_HISTORY_ENTRIES 30
 
 VECTOR *m_History = nullptr;
-static const char *m_Path = "cfg/" PROJECT_NAME "_console_history.json5";
+
+static const char *M_GetPath(void)
+{
+    return String_FormatStatic(
+        "%s/%s_console_history.json5", Shell_GetConfigDir(), PROJECT_NAME);
+}
 
 static void M_LoadFromJSON(JSON_VALUE *const doc)
 {
@@ -48,7 +53,7 @@ static JSON_VALUE *M_DumpToJSON(void)
 void Console_History_Init(void)
 {
     m_History = Vector_Create(sizeof(char *));
-    JSON_VALUE *const doc = JSONFile_Read(m_Path);
+    JSON_VALUE *const doc = JSONFile_Read(M_GetPath());
     if (doc != nullptr) {
         M_LoadFromJSON(doc);
         JSON_ValueFree(doc);
@@ -63,7 +68,7 @@ void Console_History_Shutdown(void)
 
     JSON_VALUE *const doc = M_DumpToJSON();
     if (doc != nullptr) {
-        JSONFile_Write(m_Path, doc);
+        JSONFile_Write(M_GetPath(), doc);
         JSON_ValueFree(doc);
     }
 
