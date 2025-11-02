@@ -7,6 +7,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 static void M_GetJointAbsPosition_I(
     XYZ_32 *const vec, const ANIM_FRAME *const frame1,
@@ -174,7 +175,7 @@ void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
     lara_info->hit_direction = Math_GetDirection(hit_angle);
     if (lara_info->hit_frame == 0) {
         Sound_Effect(
-            TR_VERSION == 1 ? SFX_LARA_BODYSL : SFX_LARA_INJURY,
+            g_TRVersion == 1 ? SFX_LARA_BODYSL : SFX_LARA_INJURY,
             &lara_item->pos, SPM_NORMAL);
     }
     lara_info->hit_frame++;

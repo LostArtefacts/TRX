@@ -4,8 +4,10 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 // clang-format off
+#define M_SCREAM_SPEED          (DAMAGE_START + DAMAGE_LENGTH) // = 154
 #define M_JUMP_TURN             ((DEG_1 * 1) + LARA_TURN_UNDO) // = 546
 #define M_FAST_FALL_SPEED       (FAST_FALL_SPEED + 3)          // = 131
 #define M_SWING_FAST_FALL_SPEED (M_FAST_FALL_SPEED + 2)        // = 133
@@ -193,11 +195,8 @@ static void M_FastDive(ITEM *item, COLL_INFO *coll)
 static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
 {
     item->speed = item->speed * 95 / 100;
-#if TR_VERSION == 1
-    const bool scream = item->fall_speed >= DAMAGE_START + DAMAGE_LENGTH;
-#else
-    const bool scream = item->fall_speed == DAMAGE_START + DAMAGE_LENGTH;
-#endif
+    const bool scream = g_TRVersion == 1 ? (item->fall_speed >= M_SCREAM_SPEED)
+                                         : (item->fall_speed == M_SCREAM_SPEED);
     if (scream && !g_Config.debug.enable_invulnerability) {
         Sound_Effect(SFX_LARA_FALL, &item->pos, SPM_NORMAL);
     }
