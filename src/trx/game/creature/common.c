@@ -12,6 +12,7 @@
 #include <trx/game/rooms.h>
 #include <trx/log.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #define M_FLOAT_SPEED 32
 #define M_MAX_DISTANCE (WALL_L * 30)
@@ -21,11 +22,8 @@
 #define M_TARGET_TOLERANCE 0x400000
 #define M_MAX_TILT (3 * DEG_1) // = 546
 #define M_MAX_HEAD_CHANGE (5 * DEG_1) // = 910
-#if TR_VERSION == 1
-    #define M_HEAD_ARC FRONT_ARC
-#elif TR_VERSION >= 2
-    #define M_HEAD_ARC 0x3000 // = 12288
-#endif
+#define M_HEAD_ARC                                                             \
+    (g_TRVersion == 1 ? FRONT_ARC : 0x3000) // = 16384 (TR1), 12288 (TR2)
 #define M_MAX_X_ROT (20 * DEG_1) // = 3640
 
 static bool m_AlliesHostile = false;
@@ -60,13 +58,11 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
 
         ITEM *const target = Item_Get(target_item_num);
         const OBJECT_ID obj_id = target->object_id;
-#if TR_VERSION == 2
         if (goody && !Creature_IsAllyTargetingEnemy(target)) {
             continue;
         } else if (!goody && !Creature_IsAlly(target)) {
             continue;
         }
-#endif
 
         const int32_t dx = (target->pos.x - item->pos.x) >> 6;
         const int32_t dy = (target->pos.y - item->pos.y) >> 6;
@@ -311,7 +307,7 @@ void Creature_Mood(
     }
 
     LOT_INFO *const lot = &creature->lot;
-    const ITEM *enemy = TR_VERSION >= 2 ? creature->enemy : Lara_GetItem();
+    const ITEM *enemy = creature->enemy;
     if (lot->node[item->box_num].search_num
         == (lot->search_num | BOX_BLOCKED_SEARCH)) {
         lot->required_box = NO_BOX;
@@ -404,9 +400,8 @@ void Creature_Mood(
         const int16_t box_num =
             lot->node[lot->zone_count * Random_GetControl() / 0x7FFF].box_num;
         if (Box_ValidBox(item, info->zone_num, box_num)) {
-            if (Box_StalkBox(item, enemy, box_num)
-                && (TR_VERSION == 1
-                    || (creature->enemy != nullptr && enemy->hit_points > 0))) {
+            if (Box_StalkBox(item, enemy, box_num) && creature->enemy != nullptr
+                && enemy->hit_points > 0) {
                 Box_TargetBox(lot, box_num);
                 creature->mood = MOOD_STALK;
             } else if (lot->required_box == NO_BOX) {
@@ -643,7 +638,7 @@ void Creature_Collision(
         return;
     }
 
-    if (TR_VERSION >= 2
+    if (g_TRVersion >= 2
         && (lara->water_status == LWS_UNDERWATER
             || lara->water_status == LWS_SURFACE)) {
         return;
@@ -651,7 +646,7 @@ void Creature_Collision(
 
     Lara_Push(
         item, coll,
-        (TR_VERSION >= 2 || item->hit_points > 0) ? coll->enable_hit : false,
+        (g_TRVersion >= 2 || item->hit_points > 0) ? coll->enable_hit : false,
         false);
 }
 
@@ -670,7 +665,7 @@ bool Creature_Animate(
 
     const int16_t *const zone = Box_GetLotZone(lot);
 
-    if (TR_VERSION >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
+    if (g_TRVersion >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
         int16_t room_num = item->room_num;
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         Item_UpdateRoom(item_num, room_num);
@@ -871,7 +866,7 @@ bool Creature_Animate(
         item->floor = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
 
         int16_t angle = item->speed ? Math_Atan(item->speed, -dy) : 0;
-        if (TR_VERSION >= 2) {
+        if (g_TRVersion >= 2) {
             CLAMP(angle, -M_MAX_X_ROT, M_MAX_X_ROT);
         }
 
@@ -903,7 +898,7 @@ bool Creature_Animate(
         // water, its effects behave still as though in a dry room.
         Room_GetSector(
             item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z, &room_num);
-        if (TR_VERSION >= 2 && Room_Get(room_num)->flags.underwater) {
+        if (g_TRVersion >= 2 && Room_Get(room_num)->flags.underwater) {
             item->hit_points = 0;
         }
     }
