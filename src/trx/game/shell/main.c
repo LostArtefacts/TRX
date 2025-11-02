@@ -13,6 +13,8 @@ int main(int argc, char *argv[])
     for (int32_t i = 1; i < argc; i++) {
         Vector_Add(raw_args, &argv[i]);
     }
+
+    Shell_ScanAvailableMods();
     SHELL_ARGS *const args = Shell_ParseArgs(raw_args);
     if (args == nullptr) {
         Vector_Free(raw_args);

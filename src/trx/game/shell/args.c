@@ -9,26 +9,17 @@
 #include <stdio.h>
 #include <string.h>
 
-#define M_BASE_MOD (g_TRVersion == 1 ? SHELL_MOD_TR1_OG : SHELL_MOD_TR2_OG)
-
-static const char *m_ModDirs[] = {
-    [SHELL_MOD_TR1_OG] = "tr1",
-    [SHELL_MOD_TR1_UB] = "tr1-ub",
-    [SHELL_MOD_TR1_DEMO_PC] = "tr1-demo-pc",
-    [SHELL_MOD_TR1_CUSTOM_LEVEL] = "tr1-level",
-    [SHELL_MOD_TR2_OG] = "tr2",
-    [SHELL_MOD_TR2_GM] = "tr2-gm",
-    [SHELL_MOD_TR2_CUSTOM_LEVEL] = "tr2-level",
-};
-
 static void M_ShowHelp(void)
 {
     puts("Currently available options:");
     puts("");
-    if (g_TRVersion == 1) {
+    if (Shell_GetModByName("tr1-ub") != nullptr) {
         puts("-g/--gold: launch The Unfinished Business expansion pack.");
+    }
+    if (Shell_GetModByName("tr1-demo-pc") != nullptr) {
         puts("   --demo-pc: launch the PC demo level file.");
-    } else if (g_TRVersion == 2) {
+    }
+    if (Shell_GetModByName("tr2-gm") != nullptr) {
         puts("-g/--gold: launch The Golden Mask expansion pack.");
     }
     puts("-l/--level <PATH>: launch a specific level file.");
@@ -43,17 +34,13 @@ static void M_ShowHelp(void)
         "frame.");
 }
 
-const char *Shell_GetConfigDir(void)
-{
-    return "cfg";
-}
-
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 {
     SHELL_ARGS *out_args = Memory_Alloc(sizeof(SHELL_ARGS));
     out_args->save_to_load = -1;
     out_args->level_to_select = -1;
     out_args->original_args = args;
+    out_args->engine_version = 0;
 
     // First pass: set the engine version
     for (int32_t i = 0; args != nullptr && i < args->count; i++) {
@@ -61,13 +48,13 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         const char *const next_arg =
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
         if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
-            String_ParseInteger(next_arg, &g_TRVersion);
-            CLAMP(g_TRVersion, 1, 2);
+            String_ParseInteger(next_arg, &out_args->engine_version);
+            CLAMP(out_args->engine_version, 1, 2);
             i++;
         }
     }
 
-    out_args->mod = M_BASE_MOD;
+    out_args->mod = Shell_GetModByType(MOD_BASE_GAME, out_args->engine_version);
 
     // Second pass: remaining options
     for (int32_t i = 0; args != nullptr && i < args->count; i++) {
@@ -86,13 +73,14 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
         if (!strcmp(arg, "-g") || !strcmp(arg, "--gold")
             || !strcmp(arg, "-gold")) {
-            out_args->mod =
-                g_TRVersion == 1 ? SHELL_MOD_TR1_UB : SHELL_MOD_TR2_GM;
+            out_args->mod = Shell_GetModByType(
+                MOD_EXPANSION_PACK, out_args->engine_version);
         }
-        if (g_TRVersion == 1
-            && (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc"))) {
-            out_args->mod = SHELL_MOD_TR1_DEMO_PC;
+
+        if (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc")) {
+            out_args->mod = Shell_GetModByName("tr1-demo-pc");
         }
+
         if ((!strcmp(arg, "-l") || !strcmp(arg, "--level"))
             && next_arg != nullptr) {
             int32_t lvnum = -1;
@@ -100,8 +88,8 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 out_args->level_to_select = lvnum;
             } else {
                 out_args->level_to_play = next_arg;
-                out_args->mod = g_TRVersion == 1 ? SHELL_MOD_TR1_CUSTOM_LEVEL
-                                                 : SHELL_MOD_TR2_CUSTOM_LEVEL;
+                out_args->mod = Shell_GetModByType(
+                    MOD_DIRECT_LEVEL, out_args->engine_version);
             }
             i++;
         }
@@ -140,27 +128,4 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     }
 
     return out_args;
-}
-
-const char *Shell_GetCommonStringsPath(void)
-{
-    return String_FormatStatic("%s/base_strings.json5", Shell_GetConfigDir());
-}
-
-const char *Shell_GetBaseGameStringsPath(void)
-{
-    return String_FormatStatic(
-        "%s/%s/strings.json5", Shell_GetConfigDir(), m_ModDirs[M_BASE_MOD]);
-}
-
-const char *Shell_GetGameStringsPath(const SHELL_MOD mod)
-{
-    return String_FormatStatic(
-        "%s/%s/strings.json5", Shell_GetConfigDir(), m_ModDirs[mod]);
-}
-
-const char *Shell_GetGameFlowPath(const SHELL_MOD mod)
-{
-    return String_FormatStatic(
-        "%s/%s/gameflow.json5", Shell_GetConfigDir(), m_ModDirs[mod]);
 }
