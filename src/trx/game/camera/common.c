@@ -654,11 +654,9 @@ static void M_Fixed(void)
         .z = fixed->z,
         .room_num = fixed->data,
     };
-#if TR_VERSION >= 2
-    if (!LOS_Check(&g_Camera.target, &target, false)) {
+    if (g_TRVersion >= 2 && !LOS_Check(&g_Camera.target, &target, false)) {
         M_ShiftClamp(&target, STEP_L);
     }
-#endif
 
     g_Camera.fixed_camera = true;
     M_Move(&target, g_Camera.speed);
@@ -828,11 +826,6 @@ finish:
 void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 {
     int16_t target_ok = 2;
-#if TR_VERSION == 1
-    const bool fix_glide_cameras = false;
-#else
-    const bool fix_glide_cameras = g_Config.visuals.fix_glide_cameras;
-#endif
 
     const TRIGGER_CMD *cmd = trigger->command;
     for (; cmd != nullptr; cmd = cmd->next_cmd) {
@@ -848,7 +841,8 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
                     target_ok = 0;
                 } else {
                     g_Camera.type = CAM_FIXED;
-                    if (fix_glide_cameras && cam_data->glide != 0) {
+                    if (g_Config.visuals.fix_glide_cameras
+                        && cam_data->glide != 0) {
                         g_Camera.speed = cam_data->glide + 1;
                     }
                     target_ok = 1;
@@ -869,14 +863,13 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
                 && g_Camera.item != g_Camera.last_item))) {
         g_Camera.item = nullptr;
     }
-#if TR_VERSION >= 2
+
     // TODO: check if this can be removed from TR2 during camera module merge.
     // It is required not to be present in TR1 otherwise heavy triggers (that
     // don't have camera data) can cancel active cameras triggered by Lara.
-    if (g_Camera.num == -1 && g_Camera.timer > 0) {
+    if (g_TRVersion >= 2 && g_Camera.num == -1 && g_Camera.timer > 0) {
         g_Camera.timer = -1;
     }
-#endif
 }
 
 void Camera_EnsureEnvironment(void)
@@ -1058,10 +1051,10 @@ void Camera_Update(void)
         g_Camera.target_elevation = g_Camera.additional_elevation;
         g_Camera.target_distance = M_CHASE_ELEVATION;
         g_Camera.flags = CF_NORMAL;
-#if TR_VERSION >= 2
-        const M_SETTINGS settings = M_GetSettings();
-        g_Camera.speed = settings.chase_speed;
-#endif
+        if (g_TRVersion >= 2) {
+            const M_SETTINGS settings = M_GetSettings();
+            g_Camera.speed = settings.chase_speed;
+        }
     }
     Camera_SetChunky(false);
     if (m_IsInitialised) {

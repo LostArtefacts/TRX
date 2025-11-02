@@ -82,11 +82,9 @@ static void M_FixGlideCamera(
     if (sector == nullptr || sector->trigger == nullptr) {
         return;
     }
-#if TR_VERSION >= 2
     if (!g_Config.visuals.fix_glide_cameras) {
         return;
     }
-#endif
 
     const TRIGGER_CMD *cmd = sector->trigger->command;
     for (; cmd != nullptr; cmd = cmd->next_cmd) {
