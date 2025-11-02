@@ -5,6 +5,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #define BOX_OVERLAP_BITS 0x3FFF
 #define BOX_SEARCH_NUMBER 0x7FFF
@@ -98,7 +99,7 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 
     for (int32_t i = 0; i < expansion; i++) {
         if (lot->head == NO_BOX) {
-            if (TR_VERSION >= 2) {
+            if (g_TRVersion >= 2) {
                 lot->tail = NO_BOX;
             }
             return false;
@@ -200,7 +201,7 @@ void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
     const BOX_INFO *const box = Box_GetBox(box_num);
 
     // TODO: determine if the shift is essential
-    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
     lot->target.z = box->left + WALL_L / 2
         + (Random_GetControl() * (box->right + shift - box->left - WALL_L)
            >> 15);
@@ -221,13 +222,13 @@ bool Box_StalkBox(
     const BOX_INFO *const box = Box_GetBox(box_num);
 
     // TODO: determine if the shift is essential
-    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
     const int32_t z = ((box->left + box->right + shift) >> 1) - enemy->pos.z;
     const int32_t x = ((box->top + box->bottom + shift) >> 1) - enemy->pos.x;
-    const int32_t x_range = TR_VERSION >= 2
+    const int32_t x_range = g_TRVersion >= 2
         ? box->bottom + shift - box->top + CREATURE_STALK_DIST
         : CREATURE_STALK_DIST;
-    const int32_t z_range = TR_VERSION >= 2
+    const int32_t z_range = g_TRVersion >= 2
         ? box->right + shift - box->left + CREATURE_STALK_DIST
         : CREATURE_STALK_DIST;
     if (x > x_range || x < -x_range || z > z_range || z < -z_range) {
@@ -254,7 +255,7 @@ bool Box_EscapeBox(
     const BOX_INFO *const box = Box_GetBox(box_num);
 
     // TODO: determine if the shift is essential
-    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
     const int32_t x = ((box->top + box->bottom + shift) >> 1) - enemy->pos.x;
     const int32_t z = ((box->left + box->right + shift) >> 1) - enemy->pos.z;
     if (x > -CREATURE_ESCAPE_DIST && x < CREATURE_ESCAPE_DIST
@@ -281,7 +282,7 @@ bool Box_ValidBox(
     }
 
     // TODO: determine if the shift is essential
-    const int32_t shift = TR_VERSION >= 2 ? 1 : 0;
+    const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
     return !(
         item->pos.z > box->left && item->pos.z < box->right + shift
         && item->pos.x > box->top && item->pos.x < box->bottom + shift);
