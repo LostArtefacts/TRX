@@ -48,12 +48,7 @@ typedef struct {
     uint16_t lava_is_pit:        1; // 0x04 4
     uint16_t enable_baddie_push: 1; // 0x08 8
     uint16_t enable_hit:         1; // 0x10 16
-#if TR_VERSION == 1
     uint16_t pad:                11;
-#elif TR_VERSION == 2
-    uint16_t hit_ceiling:        1; // 0x20 32
-    uint16_t pad:                10;
-#endif
     // clang-format on
 } COLL_INFO;
 
