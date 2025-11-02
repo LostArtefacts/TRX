@@ -71,9 +71,7 @@ typedef enum {
     TO_CD = 8,
     TO_FLIPEFFECT = 9,
     TO_SECRET = 10,
-#if TR_VERSION == 2
     TO_BODY_BAG = 11,
-#endif
 } TRIGGER_OBJECT;
 
 typedef enum {

@@ -55,9 +55,7 @@ typedef struct {
     bool collidable;
     bool looked_at;
     bool dynamic_light;
-#if TR_VERSION == 2
-    bool killed;
-#endif
+    bool clear_body;
 
     struct {
         struct {

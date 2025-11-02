@@ -690,13 +690,11 @@ static bool M_ReadItem(
             }
         } else if (obj->intelligent) {
             item->data = nullptr;
-#if TR_VERSION == 2
-            if (item->killed && item->hit_points <= 0
-                && !(item->flags & IF_KILLED)) {
+            if (item->clear_body && item->hit_points <= 0
+                && (item->flags & IF_KILLED) == 0) {
                 item->next_active = Item_GetPrevActive();
                 Item_SetPrevActive(item_num);
             }
-#endif
         }
     }
 
