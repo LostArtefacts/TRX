@@ -1,4 +1,3 @@
-X_CFG_BOOL(audio.enable_lara_mic,               false)
 X_CFG_BOOL(visuals.fix_glide_cameras,           true)
 X_CFG_ENUM(gameplay.jump_lock_mode,             JUMP_LOCK_LEGACY, JUMP_LOCK_MODE)
 X_CFG_ENUM(visuals.camera_mode,                 CAMERA_MODE_TR2, CAMERA_MODE)

@@ -783,6 +783,7 @@ void Camera_ResetPosition(void)
 
 void Camera_Reset(void)
 {
+    g_Camera.mic_pos.room_num = NO_ROOM;
     g_Camera.pos.room_num = NO_ROOM;
 }
 
@@ -880,21 +881,20 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 
 void Camera_EnsureEnvironment(void)
 {
-    if (g_Camera.pos.room_num == NO_ROOM) {
-        return;
+    if (g_Camera.mic_pos.room_num != NO_ROOM) {
+        const ROOM *const room = Room_Get(g_Camera.mic_pos.room_num);
+        if (room->flags.underwater) {
+            M_AdjustMusicVolume(true);
+            Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
+        } else {
+            M_AdjustMusicVolume(false);
+            Sound_StopEffect(SFX_UNDERWATER);
+        }
     }
 
-    const ROOM *const room = Room_Get(g_Camera.pos.room_num);
-    if (room->flags.underwater) {
-        M_AdjustMusicVolume(true);
-        Sound_Effect(SFX_UNDERWATER, nullptr, SPM_ALWAYS);
-        g_Camera.underwater = true;
-    } else {
-        M_AdjustMusicVolume(false);
-        if (g_Camera.underwater) {
-            Sound_StopEffect(SFX_UNDERWATER);
-            g_Camera.underwater = false;
-        }
+    if (g_Camera.pos.room_num != NO_ROOM) {
+        const ROOM *const room = Room_Get(g_Camera.pos.room_num);
+        g_Camera.underwater = room->flags.underwater;
     }
 }
 
@@ -1071,24 +1071,28 @@ void Camera_Update(void)
 
 void Camera_UpdateMicPosition(void)
 {
-#if TR_VERSION == 2
     if (g_Config.audio.enable_lara_mic) {
         const LARA_INFO *const lara_info = Lara_GetLaraInfo();
         const ITEM *const lara_item = Lara_GetItem();
         g_Camera.actual_angle =
             lara_info->torso_rot.y + lara_info->head_rot.y + lara_item->rot.y;
-        g_Camera.mic_pos = lara_item->pos;
+        g_Camera.mic_pos.pos = lara_item->pos;
+        g_Camera.mic_pos.room_num = lara_item->room_num;
     } else {
         g_Camera.actual_angle = Math_Atan(
             g_Camera.target.z - g_Camera.pos.z,
             g_Camera.target.x - g_Camera.pos.x);
-        g_Camera.mic_pos.x = g_Camera.pos.x
-            + ((g_PhdPersp * Math_Sin(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.z = g_Camera.pos.z
-            + ((g_PhdPersp * Math_Cos(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.y = g_Camera.pos.y;
+        if (g_TRVersion == 1) {
+            g_Camera.mic_pos = g_Camera.pos;
+        } else {
+            g_Camera.mic_pos.pos.x = g_Camera.pos.x
+                + ((g_PhdPersp * Math_Sin(g_Camera.actual_angle)) >> W2V_SHIFT);
+            g_Camera.mic_pos.pos.z = g_Camera.pos.z
+                + ((g_PhdPersp * Math_Cos(g_Camera.actual_angle)) >> W2V_SHIFT);
+            g_Camera.mic_pos.pos.y = g_Camera.pos.y;
+            g_Camera.mic_pos.room_num = g_Camera.pos.room_num;
+        }
     }
-#endif
 }
 
 void Camera_MoveManual(void)
