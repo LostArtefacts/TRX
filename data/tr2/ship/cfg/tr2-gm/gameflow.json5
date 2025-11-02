@@ -197,5 +197,6 @@
         "enable_reflections",
         "fix_chainblock_secret_sound",
         "enable_compass_stats",
+        "enable_wading",
     ],
 }

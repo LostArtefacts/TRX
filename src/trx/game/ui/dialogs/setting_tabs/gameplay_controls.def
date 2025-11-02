@@ -27,8 +27,8 @@ X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        SETTING_ENABLE_TR2_SWIMMING)
 
 #if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     SETTING_ENABLE_TR2_SWIM_CANCEL)
-X_UI_CFG_BOOL(gameplay.enable_wading,              SETTING_ENABLE_WADING)
 #endif
+X_UI_CFG_BOOL(gameplay.enable_wading,              SETTING_ENABLE_WADING)
 
 X_UI_CFG_ENUM(gameplay.target_mode,                SETTING_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)
 X_UI_CFG_BOOL(gameplay.enable_target_change,       SETTING_ENABLE_TARGET_CHANGE)

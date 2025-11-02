@@ -504,7 +504,7 @@
         "SETTING_ENABLE_UW_ROLL": "Underwater roll",
         "SETTING_ENABLE_UW_ROLL_DESCRIPTION": "Allows Lara to roll while underwater.",
         "SETTING_ENABLE_WADING": "Wading",
-        "SETTING_ENABLE_WADING_DESCRIPTION": "Allows Lara to wade through shallow water, similar to TR2+, rather than becoming stuck on the water surface.",
+        "SETTING_ENABLE_WADING_DESCRIPTION": "Allows Lara to wade through shallow water, rather than becoming stuck on the water surface.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Animated interactions",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Makes Lara walk to pickups and switches when nearby instead of teleporting to them.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Enemy bar color",

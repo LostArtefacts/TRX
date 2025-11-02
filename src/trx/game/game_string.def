@@ -371,7 +371,7 @@ GS_DEFINE(SETTING_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION,         "Allows Lara to st
 GS_DEFINE(SETTING_ENABLE_TR3_SIDESTEPS_DESCRIPTION,           "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work.")
 GS_DEFINE(SETTING_ENABLE_UNDERWATER_ANIM_SFX_DESCRIPTION,     "Allows control over playing specific animation sound effects - for objects such as doors and trapdoors - when the camera is underwater.")
 GS_DEFINE(SETTING_ENABLE_UW_ROLL_DESCRIPTION,                 "Allows Lara to roll while underwater.")
-GS_DEFINE(SETTING_ENABLE_WADING_DESCRIPTION,                  "Allows Lara to wade through shallow water, similar to TR2+, rather than becoming stuck on the water surface.")
+GS_DEFINE(SETTING_ENABLE_WADING_DESCRIPTION,                  "Allows Lara to wade through shallow water, rather than becoming stuck on the water surface.")
 GS_DEFINE(SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION,           "Makes Lara walk to pickups and switches when nearby instead of teleporting to them.")
 GS_DEFINE(SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION,          "Color of the enemy healthbar.")
 GS_DEFINE(SETTING_ENEMY_HEALTHBAR_LOCATION_DESCRIPTION,       "Location where the enemy healthbar is displayed.")

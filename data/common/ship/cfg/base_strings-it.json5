@@ -504,7 +504,7 @@
         "SETTING_ENABLE_UW_ROLL": "Capriola sott'acqua",
         "SETTING_ENABLE_UW_ROLL_DESCRIPTION": "Permette a Lara di eseguire capriole mentre è sott'acqua.",
         "SETTING_ENABLE_WADING": "Guadare",
-        "SETTING_ENABLE_WADING_DESCRIPTION": "Permette a Lara di guadare acque poco profonde, simile a TR2+, invece di rimanere bloccata sulla superficie dell'acqua.",
+        "SETTING_ENABLE_WADING_DESCRIPTION": "\\{review}Permette a Lara di guadare acque poco profonde, invece di rimanere bloccata sulla superficie dell'acqua.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Interazioni animate",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Fa in modo che Lara si avvicini agli oggetti, alle leve e agli interruttori quando questi sono nelle vicinanze, invece di teletrasportarsi su di loro.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Colore barra nemici",

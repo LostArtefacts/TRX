@@ -504,7 +504,7 @@
         "SETTING_ENABLE_UW_ROLL": "Переворот под водой",
         "SETTING_ENABLE_UW_ROLL_DESCRIPTION": "Позволяет Ларе переворачиваться под водой.",
         "SETTING_ENABLE_WADING": "Идти вброд",
-        "SETTING_ENABLE_WADING_DESCRIPTION": "Позволяет Ларе преодолевать неглубокую воду, подобно TR2+, а не застревать на поверхности воды.",
+        "SETTING_ENABLE_WADING_DESCRIPTION": "\\{review}Позволяет Ларе преодолевать неглубокую воду, а не застревать на поверхности воды.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Анимированные взаимодействия",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Лара подходит к предметам и переключателям, когда они находятся поблизости, вместо телепортации к ним.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Цвет шкалы здоровья врагов",

@@ -6,15 +6,6 @@
 
 #define M_HEIGHT_SURF 700
 
-static bool M_IsWadingEnabled(void)
-{
-#if TR_VERSION == 1
-    return g_Config.gameplay.enable_wading;
-#else
-    return true;
-#endif
-}
-
 static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
 {
     if (coll->coll_type == COLL_FRONT || coll->side_mid.type == HT_BIG_SLOPE
@@ -160,12 +151,11 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
 
 static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
 {
-    const bool enable_wading = M_IsWadingEnabled();
     LARA_INFO *const lara = Lara_GetLaraInfo();
     coll->facing = lara->move_angle;
 
     int32_t obj_height = M_HEIGHT_SURF;
-    if (enable_wading) {
+    if (g_Config.gameplay.enable_wading) {
         obj_height += 100;
     }
     Collide_GetCollisionInfo(
@@ -199,7 +189,7 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (enable_wading) {
+    if (g_Config.gameplay.enable_wading) {
         M_TestWaterStepOut(item, coll);
     } else {
         M_TestWaterClimbOut(item, coll);
@@ -212,7 +202,7 @@ static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y;
     coll->bad_neg = -STEPUP_HEIGHT;
     M_CommonSurface(item, coll);
-    if (M_IsWadingEnabled()) {
+    if (g_Config.gameplay.enable_wading) {
         M_TestWaterClimbOut(item, coll);
     }
 }
@@ -241,7 +231,6 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 {
-    const bool enable_wading = M_IsWadingEnabled();
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->rot.x < -DEG_90 || item->rot.x > DEG_90) {
         lara->move_angle = item->rot.y + DEG_180;
@@ -252,7 +241,7 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
     coll->facing = lara->move_angle;
 
     int32_t height;
-    if (enable_wading) {
+    if (g_Config.gameplay.enable_wading) {
         height = (LARA_HEIGHT * Math_Sin(item->rot.x)) >> W2V_SHIFT;
         if (height < 0) {
             height = -height;
@@ -308,7 +297,8 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
         item->pos.y = coll->side_mid.floor + item->pos.y;
     }
 
-    if (enable_wading && lara->water_status != LWS_CHEAT && !lara->extra_anim) {
+    if (g_Config.gameplay.enable_wading && lara->water_status != LWS_CHEAT
+        && !lara->extra_anim) {
         M_TestWaterDepth(item, coll);
     }
 }
