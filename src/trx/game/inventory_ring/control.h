@@ -15,5 +15,4 @@ void InvRing_SetRequestedObjectID(OBJECT_ID obj_id);
 
 void InvRing_RemoveAllText(void);
 
-void InvRing_LoadVars(const char *path);
 INVENTORY_ITEM *InvRing_GetByObjectID(OBJECT_ID object_id);
