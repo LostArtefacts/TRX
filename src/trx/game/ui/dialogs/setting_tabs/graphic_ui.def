@@ -1,37 +1,12 @@
 X_UI_CFG_STRING(language,                       SETTING_UI_LANGUAGE, .custom_handler = { .format_value = UI_Settings_Language_FormatValue, .can_change_value = UI_Settings_Language_CanChangeValue, .request_change_value = UI_Settings_Language_RequestChangeValue })
 
 X_UI_CFG_FLOAT_PERCENT(ui.text_scale,           SETTING_UI_TEXT_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
-X_UI_CFG_FLOAT_PERCENT(ui.bar_scale,            SETTING_UI_BAR_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
 X_UI_CFG_FLOAT_PERCENT(ui.pickup_scale,         SETTING_UI_PICKUP_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
 X_UI_CFG_BOOL(ui.enable_wraparound,             SETTING_UI_SCROLL_WRAPAROUND)
 
 X_UI_CFG_ENUM(ui.menu_style,                    SETTING_MENU_STYLE, .misc = UI_Settings_MenuStyleEnumEntries)
 X_UI_CFG_ENUM(ui.stat_detail_mode,              SETTING_STAT_DETAIL_MODE, .misc = UI_Settings_StatDetailModeEnumEntries)
 X_UI_CFG_BOOL(ui.enable_stats_level_header,     SETTING_STATS_LEVEL_HEADER)
-
-X_UI_CFG_ENUM(ui.bar_look,                      SETTING_BAR_LOOK, .misc = UI_Settings_BarLookEnumEntries)
-X_UI_CFG_BOOL(ui.enable_smooth_bars,            SETTING_ENABLE_SMOOTH_BARS)
-
-X_UI_CFG_ENUM(ui.lara_health_bar.show_mode,     SETTING_HEALTHBAR_SHOW_MODE, .misc = UI_Settings_HealthBarShowModeEnumEntries)
-X_UI_CFG_ENUM(ui.lara_health_bar.location,      SETTING_HEALTHBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Healthbar_IsAvailable })
-X_UI_CFG_ENUM(ui.lara_health_bar.color,         SETTING_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_HealthbarColor_IsAvailable })
-
-X_UI_CFG_ENUM(ui.lara_air_bar.show_mode,        SETTING_AIRBAR_SHOW_MODE, .misc = UI_Settings_AirBarShowModeEnumEntries)
-X_UI_CFG_ENUM(ui.lara_air_bar.location,         SETTING_AIRBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Airbar_IsAvailable })
-X_UI_CFG_ENUM(ui.lara_air_bar.color,            SETTING_AIRBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_AirbarColor_IsAvailable })
-
-X_UI_CFG_ENUM(ui.lara_sprint_bar.show_mode,     SETTING_SPRINTBAR_SHOW_MODE, .misc = UI_Settings_SprintBarShowModeEnumEntries, .custom_handler = { .is_available = UI_Settings_Sprint_IsAvailable })
-X_UI_CFG_ENUM(ui.lara_sprint_bar.location,      SETTING_SPRINTBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Sprintbar_IsAvailable })
-X_UI_CFG_ENUM(ui.lara_sprint_bar.color,         SETTING_SPRINTBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_SprintbarColor_IsAvailable })
-
-X_UI_CFG_ENUM(ui.lara_exposure_bar.show_mode,   SETTING_EXPOSUREBAR_SHOW_MODE, .misc = UI_Settings_ExposureBarShowModeEnumEntries)
-X_UI_CFG_ENUM(ui.lara_exposure_bar.location,    SETTING_EXPOSUREBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Exposurebar_IsAvailable })
-X_UI_CFG_ENUM(ui.lara_exposure_bar.color,       SETTING_EXPOSUREBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_ExposurebarColor_IsAvailable })
-
-X_UI_CFG_ENUM(ui.enemy_health_bar.show_mode,    SETTING_ENEMY_HEALTHBAR_SHOW_MODE, .misc = UI_Settings_EnemyHealthBarShowModeEnumEntries)
-X_UI_CFG_ENUM(ui.enemy_health_bar.location,     SETTING_ENEMY_HEALTHBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_EnemyHealthbar_IsAvailable })
-X_UI_CFG_ENUM(ui.enemy_health_bar.color,        SETTING_ENEMY_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_EnemyHealthbarColor_IsAvailable })
-X_UI_CFG_ENUM(ui.enemy_health_bar.color_allies, SETTING_ALLY_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_AllyHealthbarColor_IsAvailable })
 
 #if TR_VERSION == 2
 X_UI_CFG_ENUM(ui.inventory_background_style,    SETTING_INVENTORY_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries)
