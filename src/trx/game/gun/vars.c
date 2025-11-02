@@ -9,8 +9,30 @@
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 
+static void M_ReadAngles(
+    JSON_OBJECT *const obj, const char *const name, const char *const path,
+    const char *const key, int16_t *const angles)
+{
+    JSON_ARRAY *const arr = JSON_ObjectGetArray(obj, "lock_angles");
+    if (arr == nullptr) {
+        return;
+    }
+    if (arr->length != 4) {
+        Shell_ExitSystemFmt("invalid 'lock_angles' for '%s' in %s", name, path);
+    }
+    for (size_t i = 0; i < 4; i++) {
+        angles[i] = JSON_ArrayGetInt(arr, i, angles[i]) * DEG_1;
+    }
+}
+
 void Gun_LoadVars(const char *const path)
 {
+#define L_READ_ANGLE(name, target)                                             \
+    target = JSON_ObjectGetInt(obj, name, target) * DEG_1;
+#define L_READ_DIST(name, target)                                              \
+    target = JSON_ObjectGetDouble(obj, name, target / (float)WALL_L) * WALL_L;
+#define L_READ_INT(name, target) target = JSON_ObjectGetInt(obj, name, target)
+
     JSON_VALUE *const root =
         JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
@@ -28,66 +50,23 @@ void Gun_LoadVars(const char *const path)
 
         JSON_OBJECT *const obj = JSON_ValueAsObject(elem->value);
 
-        // lock_angles
-        JSON_ARRAY *arr = JSON_ObjectGetArray(obj, "lock_angles");
-        if (arr != nullptr) {
-            if (arr->length != 4) {
-                Shell_ExitSystemFmt(
-                    "invalid 'lock_angles' for '%s' in %s", name, path);
-            }
-            for (size_t i = 0; i < 4; i++) {
-                g_Weapons[type].lock_angles[i] =
-                    JSON_ArrayGetInt(arr, i, g_Weapons[type].lock_angles[i])
-                    * DEG_1;
-            }
-        }
-
-        arr = JSON_ObjectGetArray(obj, "left_angles");
-        if (arr != nullptr) {
-            if (arr->length != 4) {
-                Shell_ExitSystemFmt(
-                    "invalid 'left_angles' for '%s' in %s", name, path);
-            }
-            for (size_t i = 0; i < 4; i++) {
-                g_Weapons[type].left_angles[i] =
-                    JSON_ArrayGetInt(arr, i, g_Weapons[type].left_angles[i])
-                    * DEG_1;
-            }
-        }
-
-        // right_angles
-        arr = JSON_ObjectGetArray(obj, "right_angles");
-        if (arr != nullptr) {
-            if (arr->length != 4) {
-                Shell_ExitSystemFmt(
-                    "invalid 'right_angles' for '%s' in %s", name, path);
-            }
-            for (size_t i = 0; i < 4; i++) {
-                g_Weapons[type].right_angles[i] =
-                    JSON_ArrayGetInt(arr, i, g_Weapons[type].right_angles[i])
-                    * DEG_1;
-            }
-        }
+        // angles
+        M_ReadAngles(
+            obj, name, path, "lock_angles", g_Weapons[type].lock_angles);
+        M_ReadAngles(
+            obj, name, path, "left_angles", g_Weapons[type].left_angles);
+        M_ReadAngles(
+            obj, name, path, "right_angles", g_Weapons[type].right_angles);
 
         // scalar properties
-        g_Weapons[type].aim_speed =
-            JSON_ObjectGetInt(obj, "aim_speed", g_Weapons[type].aim_speed)
-            * DEG_1;
-        g_Weapons[type].shot_accuracy =
-            JSON_ObjectGetInt(
-                obj, "shot_accuracy", g_Weapons[type].shot_accuracy)
-            * DEG_1;
-        g_Weapons[type].gun_height =
-            JSON_ObjectGetInt(obj, "gun_height", g_Weapons[type].gun_height);
-        g_Weapons[type].damage =
-            JSON_ObjectGetInt(obj, "damage", g_Weapons[type].damage);
-        float dist = JSON_ObjectGetDouble(
-            obj, "target_dist", (float)g_Weapons[type].target_dist / WALL_L);
-        g_Weapons[type].target_dist = (int32_t)(dist * WALL_L);
-        g_Weapons[type].recoil_frame = JSON_ObjectGetInt(
-            obj, "recoil_frame", g_Weapons[type].recoil_frame);
-        g_Weapons[type].flash_time =
-            JSON_ObjectGetInt(obj, "flash_time", g_Weapons[type].flash_time);
+        L_READ_ANGLE("aim_speed", g_Weapons[type].aim_speed);
+        L_READ_ANGLE("shot_accuracy", g_Weapons[type].shot_accuracy);
+        L_READ_INT("gun_height", g_Weapons[type].gun_height);
+        L_READ_INT("damage", g_Weapons[type].damage);
+        L_READ_DIST("target_dist", g_Weapons[type].target_dist);
+        L_READ_INT("recoil_frame", g_Weapons[type].recoil_frame);
+        L_READ_INT("flash_time", g_Weapons[type].flash_time);
+
         // sample_num
         const char *const sample =
             JSON_ObjectGetString(obj, "sample_num", JSON_INVALID_STRING);
@@ -103,4 +82,7 @@ void Gun_LoadVars(const char *const path)
     }
 
     JSON_ValueFree(root);
+#undef L_READ_ANGLE
+#undef L_READ_DIST
+#undef L_READ_INT
 }
