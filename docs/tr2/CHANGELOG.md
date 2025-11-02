@@ -101,6 +101,7 @@
 - fixed title bar size being too small on HiDPI screens on Windows platform (#2837)
 - fixed the M16 accuracy option not taking effect until restarting the game (#4227, regression from 0.3)
 - fixed incorrect keys object orientation in the inventory ring (#4239, regression from 0.3)
+- fixed underwater hum when Microphone near Lara option is on (#2188)
 
 ## [1.5.1](https://github.com/LostArtefacts/TRX/compare/tr2-1.5...tr2-1.5.1) - 2025-10-10
 - changed the examine dialog to be usable with non-puzzle items (#4009)

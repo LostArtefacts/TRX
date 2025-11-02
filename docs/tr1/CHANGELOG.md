@@ -19,6 +19,7 @@
     - `flow.cheat_keys`
 - added `enable_debug_camera` setting that shows camera position in realtime (reachable via `/debug` and `/set`)
 - added the ability to fast-forward through cutscenes with the right button (+5 s) or with slow+right (+1 s)
+- added the ability for the sound system to use Lara's position instead of camera's position (#1438) (Sound Options → Misc → Microphone near Lara)
 - added support for dark theme on Windows
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved ricochets placement

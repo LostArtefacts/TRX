@@ -16,9 +16,7 @@ typedef struct {
     int32_t target_distance;
     int32_t target_square;
     int16_t target_angle;
-#if TR_VERSION == 2
     int16_t actual_angle;
-#endif
     int16_t target_elevation;
     int16_t num;
     int16_t last;
@@ -33,7 +31,7 @@ typedef struct {
     // used for the manual camera control
     int16_t additional_angle;
     int16_t additional_elevation;
-    XYZ_32 mic_pos;
+    GAME_VECTOR mic_pos;
 
     struct {
         struct {

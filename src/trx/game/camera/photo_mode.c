@@ -340,6 +340,7 @@ void Camera_PhotoMode_Update(void)
     changed |= M_HandleTargetRotationInputs();
 
     if (changed) {
+        g_Camera.mic_pos = g_Camera.pos;
         M_ClampCameraPos();
         M_UpdateCameraRooms();
     }
