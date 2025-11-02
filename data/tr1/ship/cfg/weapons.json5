@@ -1,0 +1,61 @@
+{
+    "LGT_UNARMED": {
+        "sample_num": "SFX_LARA_NO",
+    },
+
+    "LGT_PISTOLS": {
+        "lock_angles": [-60, +60, -60, +60],
+        "left_angles": [-170, +60, -80, +80],
+        "right_angles": [-60, +170, -80, +80],
+        "aim_speed": 10,
+        "shot_accuracy": 8,
+        "gun_height": 650,
+        "damage": 1,
+        "target_dist": 8.0,
+        "recoil_frame": 9,
+        "flash_time": 3,
+        "sample_num": "SFX_LARA_PISTOLS",
+    },
+
+    "LGT_MAGNUMS": {
+        "lock_angles": [-60, +60, -60, +60],
+        "left_angles": [-170, +60, -80, +80],
+        "right_angles": [-60, +170, -80, +80],
+        "aim_speed": 10,
+        "shot_accuracy": 8,
+        "gun_height": 650,
+        "damage": 2,
+        "target_dist": 8.0,
+        "recoil_frame": 9,
+        "flash_time": 3,
+        "sample_num": "SFX_LARA_MAGNUMS",
+    },
+
+    "LGT_UZIS": {
+        "lock_angles": [-60, +60, -60, +60],
+        "left_angles": [-170, +60, -80, +80],
+        "right_angles": [-60, +170, -80, +80],
+        "aim_speed": 10,
+        "shot_accuracy": 8,
+        "gun_height": 650,
+        "damage": 1,
+        "target_dist": 8.0,
+        "recoil_frame": 3,
+        "flash_time": 2,
+        "sample_num": "SFX_LARA_UZI_FIRE",
+    },
+
+    "LGT_SHOTGUN": {
+        "lock_angles": [-60, +60, -55, +55],
+        "left_angles": [-80, +80, -65, +65],
+        "right_angles": [-80, +80, -65, +65],
+        "aim_speed": 10,
+        "shot_accuracy": 0,
+        "gun_height": 500,
+        "damage": 4,
+        "target_dist": 8.0,
+        "recoil_frame": 9,
+        "flash_time": 3,
+        "sample_num": "SFX_LARA_SHOTGUN",
+    },
+}
