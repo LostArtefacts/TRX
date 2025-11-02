@@ -246,7 +246,14 @@ const JSON_NUMBER *JSON_ValueGetNumber(const JSON_VALUE *const value)
 int JSON_ValueGetInt(const JSON_VALUE *const value, const int d)
 {
     const JSON_NUMBER *const num = M_ValueAsNumber(value);
-    return num != nullptr ? atoi(num->number) : d;
+    if (num == nullptr) {
+        return d;
+    }
+    const char *const s = num->number;
+    if (strncmp(s, "0x", 2) == 0 || strncmp(s, "0X", 2) == 0) {
+        return strtol(s, nullptr, 16);
+    }
+    return atoi(s);
 }
 
 int64_t JSON_ValueGetInt64(const JSON_VALUE *const value, const int64_t d)
