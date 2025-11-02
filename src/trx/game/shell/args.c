@@ -11,16 +11,14 @@
 
 #define M_BASE_MOD (g_TRVersion == 1 ? SHELL_MOD_TR1_OG : SHELL_MOD_TR2_OG)
 
-static const char *const m_CommonStringsPath = "cfg/base_strings.json5";
-
 static const char *m_ModDirs[] = {
-    [SHELL_MOD_TR1_OG] = "cfg/tr1",
-    [SHELL_MOD_TR1_UB] = "cfg/tr1-ub",
-    [SHELL_MOD_TR1_DEMO_PC] = "cfg/tr1-demo-pc",
-    [SHELL_MOD_TR1_CUSTOM_LEVEL] = "cfg/tr1-level",
-    [SHELL_MOD_TR2_OG] = "cfg/tr2",
-    [SHELL_MOD_TR2_GM] = "cfg/tr2-gm",
-    [SHELL_MOD_TR2_CUSTOM_LEVEL] = "cfg/tr2-level",
+    [SHELL_MOD_TR1_OG] = "tr1",
+    [SHELL_MOD_TR1_UB] = "tr1-ub",
+    [SHELL_MOD_TR1_DEMO_PC] = "tr1-demo-pc",
+    [SHELL_MOD_TR1_CUSTOM_LEVEL] = "tr1-level",
+    [SHELL_MOD_TR2_OG] = "tr2",
+    [SHELL_MOD_TR2_GM] = "tr2-gm",
+    [SHELL_MOD_TR2_CUSTOM_LEVEL] = "tr2-level",
 };
 
 static void M_ShowHelp(void)
@@ -43,6 +41,11 @@ static void M_ShowHelp(void)
     puts(
         "--debug-render-performance: output diagnostic information after each "
         "frame.");
+}
+
+const char *Shell_GetConfigDir(void)
+{
+    return "cfg";
 }
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
@@ -141,20 +144,23 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 
 const char *Shell_GetCommonStringsPath(void)
 {
-    return m_CommonStringsPath;
+    return String_FormatStatic("%s/base_strings.json5", Shell_GetConfigDir());
 }
 
 const char *Shell_GetBaseGameStringsPath(void)
 {
-    return String_FormatStatic("%s/strings.json5", m_ModDirs[M_BASE_MOD]);
+    return String_FormatStatic(
+        "%s/%s/strings.json5", Shell_GetConfigDir(), m_ModDirs[M_BASE_MOD]);
 }
 
 const char *Shell_GetGameStringsPath(const SHELL_MOD mod)
 {
-    return String_FormatStatic("%s/strings.json5", m_ModDirs[mod]);
+    return String_FormatStatic(
+        "%s/%s/strings.json5", Shell_GetConfigDir(), m_ModDirs[mod]);
 }
 
 const char *Shell_GetGameFlowPath(const SHELL_MOD mod)
 {
-    return String_FormatStatic("%s/gameflow.json5", m_ModDirs[mod]);
+    return String_FormatStatic(
+        "%s/%s/gameflow.json5", Shell_GetConfigDir(), m_ModDirs[mod]);
 }

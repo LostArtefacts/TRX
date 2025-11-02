@@ -105,11 +105,6 @@ static void M_LoadCatalog(
     }
 }
 
-const char *Shell_GetConfigDir(void)
-{
-    return "cfg";
-}
-
 const SHELL_ARGS *Shell_GetArgs(void)
 {
     return m_ShellArgs;

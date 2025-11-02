@@ -7,15 +7,21 @@
 #include <trx/game/items.h>
 #include <trx/game/lara/hair.h>
 #include <trx/game/objects.h>
+#include <trx/game/shell.h>
 #include <trx/json_file.h>
 #include <trx/memory.h>
+#include <trx/strings.h>
 #include <trx/vector.h>
 
 #define M_NO_POSE (-1)
 
-static const char *const m_Path = "cfg/poses.json5";
 static VECTOR *m_Poses = nullptr;
 static int32_t m_ActivePose = M_NO_POSE;
+
+static const char *M_GetPath(void)
+{
+    return String_FormatStatic("%s/poses.json5", Shell_GetConfigDir());
+}
 
 static bool M_ReadXYZ16(JSON_VALUE *const value, XYZ_16 *const target)
 {
@@ -41,7 +47,7 @@ static void M_LoadPoses(void)
     m_Poses = Vector_Create(sizeof(LARA_POSE));
     ASSERT(m_Poses != nullptr);
 
-    JSON_VALUE *const doc = JSONFile_Read(m_Path);
+    JSON_VALUE *const doc = JSONFile_Read(M_GetPath());
     JSON_ARRAY *const poses = JSON_ValueAsArray(doc);
     if (poses == nullptr) {
         LOG_WARNING("Error while reading poses: root object must be an array");
