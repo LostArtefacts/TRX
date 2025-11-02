@@ -2,8 +2,11 @@
 #include <trx/config/option.h>
 #include <trx/config/types.h>
 #include <trx/config/vars.h>
+#include <trx/debug.h>
 #include <trx/enum_map.h>
+#include <trx/game/lara/const.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #define X_CFG_BOOL(target_, default_value_)                                    \
     { .name = QUOTE(target_),                                                  \
@@ -64,9 +67,17 @@
       .default_value = default_value_,                                         \
       .param = nullptr },
 
-static const CONFIG_OPTION m_ConfigOptionMap[] = {
-#include <trx/config/map.def>
-    {}, // sentinel
+static const CONFIG_OPTION *m_ConfigOptionMap[TR_VERSION_COUNT] = {
+    [0] =
+        (CONFIG_OPTION[]) {
+#include <trx/config/map_tr1.def>
+            {}, // sentinel
+        },
+    [1] =
+        (CONFIG_OPTION[]) {
+#include <trx/config/map_tr2.def>
+            {}, // sentinel
+        },
 };
 
 #undef X_CFG_BOOL
@@ -81,7 +92,8 @@ static const CONFIG_OPTION m_ConfigOptionMap[] = {
 
 const CONFIG_OPTION *Config_GetOptionMap(void)
 {
-    return m_ConfigOptionMap;
+    ASSERT(g_TRVersion >= 1 && g_TRVersion <= 2);
+    return m_ConfigOptionMap[g_TRVersion - 1];
 }
 
 const char *Config_ResolveOptionName(const char *option_name)

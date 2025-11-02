@@ -87,9 +87,7 @@ typedef struct {
         bool fix_item_rots;
         bool fix_animated_sprites;
         bool fix_texture_issues;
-#if TR_VERSION == 2
         bool fix_glide_cameras;
-#endif
 
         RGB_888 water_color;
         bool fog_transparency;
@@ -151,9 +149,7 @@ typedef struct {
         bool enable_music_in_inventory;
         bool enable_ps1_sfx;
         bool enable_pitched_sounds;
-#if TR_VERSION == 1
         bool load_music_triggers;
-#endif
         bool enable_underwater_anim_sfx;
         bool mute_out_of_focus;
 

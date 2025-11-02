@@ -121,7 +121,6 @@ static void M_InitModules(void)
     GameString_Init();
     GameStringManager_Init();
     EnumMap_Init();
-    Config_Init();
     UI_Init();
     Console_Init();
     Overlay_Init();
@@ -168,7 +167,6 @@ static void M_ShutdownModules(void)
     GameBuf_Shutdown();
     Catalog_Shutdown();
 
-    Config_Shutdown();
     EnumMap_Shutdown();
     Log_Shutdown();
 }
