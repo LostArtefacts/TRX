@@ -115,7 +115,7 @@ bool Input_AssignToJSONObject(
 
 INPUT_STATE Input_GetDebounced(const INPUT_STATE input);
 
-extern const char *Input_GetRoleName(INPUT_ROLE role);
+const char *Input_GetRoleName(INPUT_ROLE role);
 
 // Serialize a scancode and modifier mask into a human-readable key
 // description, e.g. "ctrl+shift+up". The returned string must not be held onto.

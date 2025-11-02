@@ -12,12 +12,12 @@ typedef struct {
     int32_t h;
 } SHELL_SIZE;
 
-extern void Shell_Shutdown(void);
+void Shell_Shutdown(void);
 
-extern SDL_Window *Shell_GetWindow(void);
+SDL_Window *Shell_GetWindow(void);
 const char *Shell_GetConfigDir(void);
 
-extern int32_t Shell_Main(const SHELL_ARGS *args);
+int32_t Shell_Main(const SHELL_ARGS *args);
 void Shell_Terminate(int32_t exit_code);
 void Shell_ExitSystem(const char *message);
 void Shell_ExitSystemFmt(const char *fmt, ...);

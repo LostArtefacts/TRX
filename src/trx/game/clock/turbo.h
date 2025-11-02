@@ -7,7 +7,7 @@
 
 void Clock_CycleTurboSpeed(bool forward);
 
-extern int32_t Clock_GetTurboSpeed(void);
-extern void Clock_SetTurboSpeed(int32_t value);
+int32_t Clock_GetTurboSpeed(void);
+void Clock_SetTurboSpeed(int32_t value);
 
 double Clock_GetSpeedMultiplier(void);

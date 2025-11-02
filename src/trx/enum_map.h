@@ -16,7 +16,7 @@
 #define ENUM_MAP_NAME(enum_type_name) #enum_type_name
 
 // The function to put the EnumMap_Define calls in.
-extern void EnumMap_Init(void);
+void EnumMap_Init(void);
 
 void EnumMap_Shutdown(void);
 

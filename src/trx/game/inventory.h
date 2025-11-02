@@ -16,5 +16,5 @@ int32_t Inv_RequestItem(OBJECT_ID obj_id);
 void Inv_ClearSelection(void);
 void Inv_RemoveAllItems(void);
 
-extern bool Inv_AddItem(OBJECT_ID obj_id);
-extern bool Inv_AddPickup(const ITEM *item);
+bool Inv_AddItem(OBJECT_ID obj_id);
+bool Inv_AddPickup(const ITEM *item);

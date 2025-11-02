@@ -60,7 +60,7 @@ void Savegame_CarryCurrentInfoToNextLevel(
 void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
 
-extern int32_t Savegame_GetSlotCount(void);
+int32_t Savegame_GetSlotCount(void);
 
 #define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
     __attribute__((__constructor__)) static void M_Register(void)              \
