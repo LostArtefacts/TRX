@@ -29,12 +29,8 @@ typedef struct {
 } M_SAMPLE_ENTRY;
 
 const LEVEL_LOADER *g_LevelLoaders[] = {
-#if DEBUG || TR_VERSION == 1
     &g_LevelLoaderTR1X, &g_LevelLoaderTR1, &g_LevelLoaderTR1DemoPC,
-#endif
-#if DEBUG || TR_VERSION == 2
     &g_LevelLoaderTR2X, &g_LevelLoaderTR2,
-#endif
 };
 
 static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
