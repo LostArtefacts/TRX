@@ -496,7 +496,7 @@
         "SETTING_ENABLE_TR2_SWIMMING": "Nage fluide",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "\\{review}Applique une accélération progressive aux rotations de Lara sous l'eau pour un mouvement plus naturel, comme c'est fait depuis TR2. Désactiver cette option donnera à Lara une vitesse de rotation plus rapide, comme dans TR1 d'origine.",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Arrêt de nage réactif",
-        "SETTING_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Permet à Lara de s'arrêter de manière plus réactive sous l'eau lorsque la touche de nage est relâchée, comme possible depuis TR2.",
+        "SETTING_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Permet à Lara de s'arrêter de manière plus réactive sous l'eau lorsque la touche de nage est relâchée.",
         "SETTING_ENABLE_TR3_SIDESTEPS": "Pas de côtés améliorés",
         "SETTING_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Permet d'effectuer des pas de côtés comme à partir de TR3 (exemple : Maj + touches directionelles). Les touches dédiées restent fonctionnelles.",
         "SETTING_ENABLE_UNDERWATER_ANIM_SFX": "\\{review}SFX anim. sous l'eau",

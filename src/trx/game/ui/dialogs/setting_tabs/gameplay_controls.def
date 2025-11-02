@@ -21,10 +21,7 @@ X_UI_CFG_BOOL(gameplay.enable_smooth_wall_deflect, SETTING_ENABLE_SMOOTH_WALL_DE
 X_UI_CFG_BOOL(gameplay.enable_step_roll_boost,     SETTING_ENABLE_STEP_ROLL_BOOST)
 X_UI_CFG_BOOL(gameplay.enable_uw_roll,             SETTING_ENABLE_UW_ROLL)
 X_UI_CFG_BOOL(gameplay.enable_tr2_swimming,        SETTING_ENABLE_TR2_SWIMMING)
-
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_tr2_swim_cancel,     SETTING_ENABLE_TR2_SWIM_CANCEL)
-#endif
 X_UI_CFG_BOOL(gameplay.enable_wading,              SETTING_ENABLE_WADING)
 
 X_UI_CFG_ENUM(gameplay.target_mode,                SETTING_TARGET_MODE, .misc = UI_Settings_TargetModeEnumEntries)

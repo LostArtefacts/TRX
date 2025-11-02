@@ -99,15 +99,11 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (!g_Input.jump) {
-#if TR_VERSION == 1
         item->goal_anim_state =
             LS(g_Config.gameplay.enable_tr2_swim_cancel
                        && Lara_State_IsResponsive(LA_UNDERWATER_SWIM_FORWARD)
                    ? LS_RESPONSIVE
                    : LS_GLIDE);
-#else
-        item->goal_anim_state = LS(LS_GLIDE);
-#endif
     }
 }
 

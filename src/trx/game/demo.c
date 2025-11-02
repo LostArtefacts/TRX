@@ -18,7 +18,7 @@
     X_PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);          \
     X_PROCESS_CONFIG(gameplay.enable_target_change, false);                    \
     X_PROCESS_CONFIG(gameplay.enable_tr2_jumping, g_TRVersion >= 2);           \
-    X_PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, false);                  \
+    X_PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, g_TRVersion >= 2);       \
     X_PROCESS_CONFIG(gameplay.enable_tr2_swimming, g_TRVersion >= 2);          \
     X_PROCESS_CONFIG(gameplay.enable_wading, g_TRVersion >= 2);                \
     X_PROCESS_CONFIG(gameplay.enable_walk_to_items, false);                    \

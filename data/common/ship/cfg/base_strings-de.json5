@@ -496,7 +496,7 @@
         "SETTING_ENABLE_TR2_SWIMMING": "Flüssiges Schwimmverhalten",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "Verpasst Laras Drehgeschwindigkeit unter Wasser eine Beschleunigungskurve für ein runderes Steuerungsverhalten, ähnlich wie in TR2+.",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Reaktionsschneller Schwimm-Abbruch",
-        "SETTING_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Erlaubt Lara, unter Wasser schneller stoppen zu können, wenn die Springen-Taste losgelassen wird, ähnlich wie in TR2+.",
+        "SETTING_ENABLE_TR2_SWIM_CANCEL_DESCRIPTION": "Erlaubt Lara, unter Wasser schneller stoppen zu können, wenn die Springen-Taste losgelassen wird.",
         "SETTING_ENABLE_TR3_SIDESTEPS": "Erweiterte Seit-Schritte",
         "SETTING_ENABLE_TR3_SIDESTEPS_DESCRIPTION": "Aktiviert Seitschritte im Stil von TR3+, e. g. Shift + Richtungspfeile. Deaktiviert die Seitschritt-Tasten.",
         "SETTING_ENABLE_UNDERWATER_ANIM_SFX": "Tauch-Animations Sounds",
