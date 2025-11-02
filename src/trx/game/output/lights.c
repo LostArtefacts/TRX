@@ -5,6 +5,7 @@
 #include <trx/game/random.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
+#include <trx/version.h>
 
 #define M_LIGHT_CYCLE 32
 #define M_MAX_ROOM_LIGHT_UNIT (0x2000 / (M_LIGHT_CYCLE / 2))
@@ -56,7 +57,7 @@ static void M_CalculateBrightestLight(
         return;
     }
 
-    const int32_t ambient = TR_VERSION == 1 ? (SHADE_MAX - room->ambient) : 0;
+    const int32_t ambient = g_TRVersion == 1 ? (SHADE_MAX - room->ambient) : 0;
     for (int32_t i = 0; i < room->num_lights; i++) {
         const LIGHT *const light = &room->lights[i];
         const int32_t dx = pos.x - light->pos.x;
@@ -115,7 +116,7 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
     int32_t dynamic_adder = M_CalculateDynamicLight(pos, &brightest_light);
 
     adder = (adder + dynamic_adder) / 2;
-    if (TR_VERSION == 1 && (room->num_lights > 0 || dynamic_adder > 0)) {
+    if (g_TRVersion == 1 && (room->num_lights > 0 || dynamic_adder > 0)) {
         adder += (SHADE_MAX - room->ambient) / 2;
     }
 
@@ -126,7 +127,7 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
         global_adder = room->ambient;
         global_divider = 0;
     } else {
-        if (TR_VERSION == 1) {
+        if (g_TRVersion == 1) {
             global_adder = SHADE_MAX - adder;
             const int32_t divider = brightest_light.shade == adder
                 ? adder
@@ -358,7 +359,7 @@ void Output_AnimateLights(const int32_t num_frames)
 {
     m_WibbleOffset += num_frames;
     m_WibbleOffset %= M_LIGHT_CYCLE;
-    if (TR_VERSION == 2) {
+    if (g_TRVersion == 2) {
         m_RoomLightShades[RLM_FLICKER] = Random_GetDraw() % M_LIGHT_CYCLE;
         m_RoomLightShades[RLM_GLOW] = (M_LIGHT_CYCLE - 1)
                 * (Math_Sin((m_WibbleOffset * DEG_360) / M_LIGHT_CYCLE)
