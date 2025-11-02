@@ -216,7 +216,8 @@
           "type": "integer"
         },
         "sfx_path": {
-          "type": "string"
+          "type": "string",
+          "description": "Path to the sound effects (.sfx) file to use in the game."
         },
         "sequence": {
           "type": "array",

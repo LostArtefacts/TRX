@@ -40,9 +40,8 @@ static void M_FreeLevel(GF_LEVEL *const level)
         }
         Memory_FreePointer(&level->item_drops.data);
     }
-#else
-    Memory_FreePointer(&level->settings.sfx_path);
 #endif
+    Memory_FreePointer(&level->settings.sfx_path);
 }
 
 static void M_FreeLevelTable(GF_LEVEL_TABLE *const level_table)
@@ -88,9 +87,7 @@ void GF_Shutdown(void)
     Memory_FreePointer(&gf->savegame_fmt_legacy);
     Memory_FreePointer(&gf->savegame_fmt_bson);
     Memory_FreePointer(&gf->ambient_tracks.ids);
-#if TR_VERSION == 2
     Memory_FreePointer(&gf->settings.sfx_path);
-#endif
     Memory_FreePointer(&gf->main_script_path);
     Memory_FreePointer(&gf->path);
 }
