@@ -73,6 +73,10 @@ class GameStringFile:
     path: Path
     data: dict[str, Any]
 
+    @property
+    def extends(self) -> str | None:
+        return self.data.get("extends")
+
     def __init__(self, path: Path, data: dict[str, Any]) -> None:
         self.path = path
         self.data = data
@@ -185,14 +189,14 @@ class RunContext:
 class BaseResolver:
     """Base logic for filling missing game_strings translations."""
 
-    def __init__(self, base_data: Any, trans_data: Any) -> None:
-        self.base_data = base_data
-        self.trans_data = trans_data
+    def __init__(self, base_file: GameStringFile, trans_file: GameStringFile) -> None:
+        self.base_file = base_file
+        self.trans_file = trans_file
 
     def fill(self) -> Any:
-        base_gs = self.base_data.get("game_strings", {})
-        trans_gs = self.trans_data.setdefault("game_strings", {})
-        source = trans_gs if self.trans_data.get("extends") else base_gs
+        base_gs = self.base_file.data.get("game_strings", {})
+        trans_gs = self.trans_file.data.setdefault("game_strings", {})
+        source = trans_gs if self.trans_file.extends else base_gs
         missing = {
             key: clean(base_gs.get(key))
             for key in source
@@ -201,14 +205,14 @@ class BaseResolver:
         for chunk in chunks(list(missing.items()), n=50):
             filled = self.fill_chunk(chunk)
             trans_gs.update(filled)
-        return self.trans_data
+        return self.trans_file.data
 
 
 class AIResolver(BaseResolver):
     def __init__(
-        self, base_data: Any, trans_data: Any, target_lang: str, model: str
+        self, base_file: Any, trans_file: GameStringFile, target_lang: str, model: str
     ) -> None:
-        super().__init__(base_data, trans_data)
+        super().__init__(base_file, trans_file)
         self.target_lang = target_lang
         self.model = model
         try:
@@ -317,18 +321,17 @@ def sync_base_strings(ctx: RunContext) -> None:
 def resolve_missing_translations(ctx: RunContext) -> None:
     """Fill missing translations from base and mods."""
     for gs in (ctx.base, *ctx.mods.values()):
-        base_data = gs.main.data
+        base_file = gs.main
         for lang, trans_file in gs.translations.items():
-            trans_data = trans_file.data
             if ctx.args.fill:
                 resolver = AIResolver(
-                    base_data,
-                    trans_data,
+                    base_file,
+                    trans_file,
                     target_lang=lang,
                     model=ctx.args.model,
                 )
             else:
-                resolver = BlankResolver(base_data, trans_data)
+                resolver = BlankResolver(base_file, trans_file)
             merged = resolver.fill()
             trans_file.data = merged
 
