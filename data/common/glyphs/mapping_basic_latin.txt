@@ -29,7 +29,7 @@ U+0078:x N manual_sprite("glyphs.png", 218, 59,  11, 18, index=49)
 U+0079:y N manual_sprite("glyphs.png", 229, 59,  11, 18, index=50)
 U+007A:z N manual_sprite("glyphs.png", 240, 59,  11, 18, index=51)
 
-# ASCII A-z
+# ASCII A-Z
 U+0041:A N manual_sprite("glyphs.png", 65,  23,  17, 18, index=0) expand(-1)
 U+0042:B N manual_sprite("glyphs.png", 82,  23,  13, 18, index=1)
 U+0043:C N manual_sprite("glyphs.png", 95,  23,  13, 18, index=2)
