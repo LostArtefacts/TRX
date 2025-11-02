@@ -13,9 +13,7 @@ X_UI_CFG_BOOL(gameplay.enable_auto_item_selection,  SETTING_ENABLE_AUTO_ITEM_SEL
 X_UI_CFG_BOOL(gameplay.enable_item_examining,       SETTING_ENABLE_ITEM_EXAMINING)
 
 X_UI_CFG_BOOL(gameplay.enable_compass_stats,        SETTING_ENABLE_COMPASS_STATS)
-#if TR_VERSION == 1
 X_UI_CFG_BOOL(gameplay.enable_total_stats,          SETTING_ENABLE_TOTAL_STATS)
-#endif
 
 X_UI_CFG_BOOL(gameplay.enable_timer_in_inventory,   SETTING_ENABLE_TIMER_IN_INVENTORY)
 X_UI_CFG_BOOL(gameplay.enable_deaths_counter,       SETTING_ENABLE_DEATHS_COUNTER)
