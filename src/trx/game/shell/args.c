@@ -48,16 +48,12 @@ static void M_ShowHelp(void)
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 {
     SHELL_ARGS *out_args = Memory_Alloc(sizeof(SHELL_ARGS));
-    out_args->mod = M_BASE_MOD;
     out_args->save_to_load = -1;
     out_args->level_to_select = -1;
     out_args->original_args = args;
-    if (args == nullptr) {
-        return out_args;
-    }
 
     // First pass: set the engine version
-    for (int32_t i = 0; i < args->count; i++) {
+    for (int32_t i = 0; args != nullptr && i < args->count; i++) {
         const char *const arg = *(char **)Vector_Get(args, i);
         const char *const next_arg =
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
@@ -68,7 +64,10 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
     }
 
-    for (int32_t i = 0; i < args->count; i++) {
+    out_args->mod = M_BASE_MOD;
+
+    // Second pass: remaining options
+    for (int32_t i = 0; args != nullptr && i < args->count; i++) {
         const char *const arg = *(char **)Vector_Get(args, i);
         const char *const next_arg =
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
@@ -136,6 +135,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             out_args->quiet = true;
         }
     }
+
     return out_args;
 }
 
