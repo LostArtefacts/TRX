@@ -441,6 +441,21 @@ bool Sound_IsAvailable(const SAMPLE_TRX_ID sample_id)
     return Sound_IsAvailable_Direct(Sound_ToGameID(sample_id));
 }
 
+// Get the maximum direct SAMPLE_ID loaded for playback.
+// Returns SFX_INVALID if no samples are available.
+SAMPLE_ID Sound_GetMaxDirectSampleID(void)
+{
+    M_SAMPLE_ENTRY *entry, *tmp;
+    SAMPLE_ID max_id = SFX_INVALID;
+    HASH_ITER(hh, m_SampleMap, entry, tmp)
+    {
+        if (entry->sample_id > max_id) {
+            max_id = entry->sample_id;
+        }
+    }
+    return max_id;
+}
+
 void Sound_InitialiseSources(const int32_t num_sources)
 {
     m_SourceCount = num_sources;
