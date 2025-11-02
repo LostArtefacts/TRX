@@ -12,23 +12,11 @@ bool UI_LaraExposureBar(const bool blink_state)
         return false;
     }
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    const bool is_blinking =
-        lara->exposure_timer <= LARA_MAX_EXPOSURE * UI_BAR_BLINK_THRESHOLD
-        && g_Config.ui.lara_exposure_bar.show_mode != BSM_PS1;
+    const bool is_blinking = g_Config.ui.enable_bar_flashing
+        && lara->exposure_timer <= LARA_MAX_EXPOSURE * UI_BAR_BLINK_THRESHOLD;
 
-    bool show = lara->exposure_timer < LARA_MAX_EXPOSURE;
-    switch (g_Config.ui.lara_exposure_bar.show_mode) {
-    case BSM_DEFAULT:
-        break;
-    case BSM_FLASHING_ONLY:
-        show &= is_blinking;
-        break;
-    case BSM_NEVER:
-        show = false;
-        break;
-    default:
-        break;
-    }
+    const bool show =
+        g_Config.ui.show_bars && lara->exposure_timer < LARA_MAX_EXPOSURE;
     if (!show) {
         return false;
     }

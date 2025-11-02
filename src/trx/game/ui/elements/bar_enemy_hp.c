@@ -17,20 +17,16 @@ bool UI_EnemyHealthBar(void)
     const OBJECT *const obj = Object_Get(target->object_id);
     const bool is_ally = Object_IsType(target->object_id, g_AllyObjects);
 
-    bool show = false;
+    bool show = g_Config.ui.show_bars;
     switch (g_Config.ui.enemy_health_bar.show_mode) {
-    case BSM_DEFAULT:
-    case BSM_PS1:
     case BSM_NEVER:
-        show = false;
+        show &= false;
         break;
-    case BSM_FLASHING_ONLY:
-    case BSM_FLASHING_OR_DEFAULT:
     case BSM_ALWAYS:
-        show = true;
+        show &= true;
         break;
     case BSM_BOSS_ONLY:
-        show = Object_IsType(target->object_id, g_BossObjects);
+        show &= Object_IsType(target->object_id, g_BossObjects);
         break;
     }
     if (!show) {

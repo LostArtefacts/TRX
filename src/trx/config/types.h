@@ -117,8 +117,9 @@ typedef struct {
 
         bool enable_smooth_bars;
         BAR_LOOK bar_look;
+        bool show_bars;
+        bool enable_bar_flashing;
         struct {
-            BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
             BAR_COLOR color;
         } lara_health_bar, lara_air_bar, lara_sprint_bar, lara_exposure_bar;

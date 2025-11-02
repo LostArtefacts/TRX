@@ -37,37 +37,44 @@ bool UI_Settings_Sprint_IsAvailable(const UI_SETTINGS_OPTION *const option)
     return g_Config.gameplay.enable_sprint;
 }
 
+bool UI_Settings_Bar_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.ui.show_bars;
+}
+
 bool UI_Settings_Healthbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.ui.lara_health_bar.show_mode != BSM_NEVER;
+    return UI_Settings_Bar_IsAvailable(option);
 }
 
 bool UI_Settings_Airbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.ui.lara_air_bar.show_mode != BSM_NEVER;
+    return UI_Settings_Bar_IsAvailable(option);
 }
 
 bool UI_Settings_Sprintbar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return UI_Settings_Sprint_IsAvailable(option)
-        && g_Config.ui.lara_sprint_bar.show_mode != BSM_NEVER;
+        && UI_Settings_Bar_IsAvailable(option);
 }
 
 bool UI_Settings_Exposurebar_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.ui.lara_exposure_bar.show_mode != BSM_NEVER;
+    return UI_Settings_Bar_IsAvailable(option);
 }
 
 bool UI_Settings_EnemyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.ui.enemy_health_bar.show_mode != BSM_NEVER;
+    return UI_Settings_Bar_IsAvailable(option)
+        && g_Config.ui.enemy_health_bar.show_mode != BSM_NEVER;
 }
 
 bool UI_Settings_AllyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.ui.enemy_health_bar.show_mode == BSM_ALWAYS
+    return UI_Settings_Bar_IsAvailable(option)
+        && g_Config.ui.enemy_health_bar.show_mode == BSM_ALWAYS
         && g_Config.gameplay.enable_ally_targeting;
 }
 

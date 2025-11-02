@@ -62,32 +62,6 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 #define READ_FALLBACK_INT(target, key)                                         \
     target = JSON_ObjectGetInt(parent_obj, key, target)
 
-    // 0.10..4.0.3: enable_enemy_healthbar
-    {
-        const JSON_VALUE *const value =
-            JSON_ObjectGetValue(parent_obj, "enable_enemy_healthbar");
-        if (JSON_ValueIsTrue(value)) {
-            g_Config.ui.enemy_health_bar.show_mode = BSM_ALWAYS;
-        } else if (JSON_ValueIsFalse(value)) {
-            g_Config.ui.enemy_health_bar.show_mode = BSM_NEVER;
-        }
-    }
-
-    // ..4.1.2: healthbar_show_mode, airbar_show_mode, enemy_healthbar_show_mode
-    {
-        g_Config.ui.lara_health_bar.show_mode = ConfigFile_ReadEnum(
-            parent_obj, "healthbar_showing_mode",
-            g_Config.ui.lara_health_bar.show_mode,
-            ENUM_MAP_NAME(BAR_SHOW_MODE));
-        g_Config.ui.lara_air_bar.show_mode = ConfigFile_ReadEnum(
-            parent_obj, "airbar_showing_mode",
-            g_Config.ui.lara_air_bar.show_mode, ENUM_MAP_NAME(BAR_SHOW_MODE));
-        g_Config.ui.enemy_health_bar.show_mode = ConfigFile_ReadEnum(
-            parent_obj, "enemy_healthbar_showing_mode",
-            g_Config.ui.enemy_health_bar.show_mode,
-            ENUM_MAP_NAME(BAR_SHOW_MODE));
-    }
-
     // 2.16..4.5.1 load_current_music
     {
         const JSON_VALUE *const value =

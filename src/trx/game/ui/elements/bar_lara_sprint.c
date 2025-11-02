@@ -12,16 +12,8 @@ bool UI_LaraSprintBar(void)
         return false;
     }
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    bool show = lara->sprint_timer < LARA_MAX_SPRINT;
-    switch (g_Config.ui.lara_sprint_bar.show_mode) {
-    case BSM_DEFAULT:
-        break;
-    case BSM_NEVER:
-        show = false;
-        break;
-    default:
-        break;
-    }
+    const bool show =
+        g_Config.ui.show_bars && lara->sprint_timer < LARA_MAX_SPRINT;
     if (!show) {
         return false;
     }

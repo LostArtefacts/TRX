@@ -18,11 +18,6 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_HealthBarShowModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_AirBarShowModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_SprintBarShowModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY
-    UI_Settings_ExposureBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_EnemyHealthBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[];

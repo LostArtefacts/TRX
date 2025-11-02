@@ -12,22 +12,11 @@ bool UI_LaraAirBar(const bool blink_state)
         return false;
     }
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    const bool is_blinking = lara->air <= LARA_MAX_AIR * UI_BAR_BLINK_THRESHOLD;
-
-    bool show = lara->water_status == LWS_UNDERWATER
-        || lara->water_status == LWS_SURFACE;
-    switch (g_Config.ui.lara_air_bar.show_mode) {
-    case BSM_DEFAULT:
-        break;
-    case BSM_FLASHING_ONLY:
-        show &= is_blinking;
-        break;
-    case BSM_NEVER:
-        show = false;
-        break;
-    default:
-        break;
-    }
+    const bool is_blinking = g_Config.ui.enable_bar_flashing
+        && lara->air <= LARA_MAX_AIR * UI_BAR_BLINK_THRESHOLD;
+    const bool show = g_Config.ui.show_bars
+        && (lara->water_status == LWS_UNDERWATER
+            || lara->water_status == LWS_SURFACE);
     if (!show) {
         return false;
     }

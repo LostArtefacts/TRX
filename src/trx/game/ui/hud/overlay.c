@@ -71,10 +71,7 @@ static bool M_LaraHealthBar(
     if (!g_Config.ui.enable_game_ui) {
         return false;
     }
-    return UI_LaraHealthBar(
-        s->blink.state,
-        s->force_show_healthbar ? BSM_ALWAYS
-                                : g_Config.ui.lara_health_bar.show_mode);
+    return UI_LaraHealthBar(s->blink.state, s->force_show_healthbar);
 }
 
 static bool M_LaraAirBar(

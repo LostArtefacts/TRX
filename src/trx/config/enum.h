@@ -25,12 +25,8 @@ typedef enum {
 } BAR_LOCATION;
 
 typedef enum {
-    BSM_DEFAULT,
-    BSM_FLASHING_OR_DEFAULT,
-    BSM_FLASHING_ONLY,
-    BSM_ALWAYS,
     BSM_NEVER,
-    BSM_PS1,
+    BSM_ALWAYS,
     BSM_BOSS_ONLY,
 } BAR_SHOW_MODE;
 
