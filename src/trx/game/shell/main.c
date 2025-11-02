@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    char *log_path = File_GetFullPath(PROJECT_NAME ".log");
+    char *log_path = File_GetFullPath("TRX.log");
     Log_Init(log_path, args->quiet ? LOG_LEVEL_WARNING : LOG_LEVEL_MAX);
     Memory_FreePointer(&log_path);
 

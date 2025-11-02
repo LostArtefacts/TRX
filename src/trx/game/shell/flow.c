@@ -41,8 +41,8 @@ static SDL_Window *m_Window = nullptr;
 static void M_CreateGameWindow(void)
 {
     m_Window = SDL_CreateWindow(
-        PROJECT_NAME, g_Config.window.x, g_Config.window.y,
-        g_Config.window.width, g_Config.window.height,
+        "TRX", g_Config.window.x, g_Config.window.y, g_Config.window.width,
+        g_Config.window.height,
         SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
     if (m_Window == nullptr) {
@@ -218,7 +218,7 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
     } else {
         Config_Read(
             String_FormatStatic(
-                "%s/%s.json5", Shell_GetConfigDir(), PROJECT_NAME),
+                "%s/TR%dX.json5", Shell_GetConfigDir(), g_TRVersion),
             Shell_GetGameFlowPath(args->mod));
 
         if (args->test_record_path != nullptr) {
