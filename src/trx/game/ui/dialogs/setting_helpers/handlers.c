@@ -126,11 +126,7 @@ bool UI_Settings_FixStepGlitch_IsAvailable(
 bool UI_Settings_FixWadeWallHit_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-#if TR_VERSION == 1
     return g_Config.gameplay.enable_wading;
-#else
-    return true;
-#endif
 }
 
 bool UI_Settings_PauseMusicInInventory_IsAvailable(

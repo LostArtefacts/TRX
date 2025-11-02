@@ -504,7 +504,7 @@
         "SETTING_ENABLE_UW_ROLL": "Roulade sous-marine",
         "SETTING_ENABLE_UW_ROLL_DESCRIPTION": "\\{review}Permet à Lara de faire une roulade pour se retourner sous l'eau.",
         "SETTING_ENABLE_WADING": "Patauger",
-        "SETTING_ENABLE_WADING_DESCRIPTION": "Permet à Lara de patauger dans les eaux peu profondes, comme possible depuis TR2, plutôt que de rester bloquée à la surface.",
+        "SETTING_ENABLE_WADING_DESCRIPTION": "\\{review}Permet à Lara de patauger dans les eaux peu profondes, plutôt que de rester bloquée à la surface.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Animées les placements",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Fait marcher Lara vers les objets et interrupteurs à proximité, au lieu de se téléporter vers eux.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Couleur de la barre des ennemis",

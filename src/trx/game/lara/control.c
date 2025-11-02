@@ -203,11 +203,6 @@ static void M_UpdateEnvironment(void)
 {
     ITEM *const item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-#if TR_VERSION == 1
-    const bool wading_enabled = g_Config.gameplay.enable_wading;
-#else
-    const bool wading_enabled = true;
-#endif
     if (lara_info->extra_anim) {
         return;
     }
@@ -227,7 +222,7 @@ static void M_UpdateEnvironment(void)
     lara_info->water_surface_dist = -water_height_diff;
 
     // Create splash if Lara lands in wading height water. TR3+ feature.
-    if (wading_enabled) {
+    if (g_Config.gameplay.enable_wading) {
         const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
         if (item->pos.y + bounds->min.y <= water_height
             && item->pos.y + bounds->max.y >= water_height
@@ -238,13 +233,14 @@ static void M_UpdateEnvironment(void)
 
     switch (lara_info->water_status) {
     case LWS_ABOVE_WATER: {
-        if (wading_enabled
+        if (g_Config.gameplay.enable_wading
             && (water_height_diff == NO_HEIGHT
                 || water_height_diff < M_WADE_DEPTH)) {
             break;
         }
 
-        if (wading_enabled && water_depth <= M_SWIM_DEPTH - STEP_L) {
+        if (g_Config.gameplay.enable_wading
+            && water_depth <= M_SWIM_DEPTH - STEP_L) {
             if (water_height_diff > M_WADE_DEPTH) {
                 lara_info->water_status = LWS_WADE;
                 if (!item->gravity) {
@@ -332,7 +328,8 @@ static void M_UpdateEnvironment(void)
             break;
         }
 
-        if (wading_enabled && water_height_diff > M_WADE_DEPTH) {
+        if (g_Config.gameplay.enable_wading
+            && water_height_diff > M_WADE_DEPTH) {
             lara_info->water_status = LWS_WADE;
             Item_SwitchToAnim(item, LA(LA_STAND_IDLE), 0);
             item->current_anim_state = LS(LS_STOP);
