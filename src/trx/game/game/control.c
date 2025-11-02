@@ -34,9 +34,6 @@ int32_t g_OverlayFlag = 0;
 bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
-#if TR_VERSION == 1
-    Game_FadeToBlack(-1);
-#endif
 
     g_OverlayFlag = 1;
     Camera_Initialise();
