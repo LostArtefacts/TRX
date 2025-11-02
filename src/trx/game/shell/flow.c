@@ -10,6 +10,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/game_string.h>
 #include <trx/game/game_string_manager.h>
+#include <trx/game/inventory_ring.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
@@ -193,6 +194,8 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
     M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv", false);
     M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false);
     M_LoadCatalog(CATALOG_ITEM_ACTIONS, "catalog_item_actions.csv", false);
+    InvRing_LoadVars(
+        String_FormatStatic("%s/inv_ring.json5", Shell_GetConfigDir()));
 
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);

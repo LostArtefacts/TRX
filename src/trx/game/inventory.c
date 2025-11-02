@@ -5,7 +5,6 @@
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory_ring.h>
-#include <trx/game/inventory_ring/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/stats.h>
@@ -30,13 +29,13 @@ static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
-    case LGT_PISTOLS: return &g_InvRing_Item_Pistols;
-    case LGT_SHOTGUN: return &g_InvRing_Item_Shotgun;
-    case LGT_MAGNUMS: return &g_InvRing_Item_Magnums;
-    case LGT_UZIS:    return &g_InvRing_Item_Uzis;
-    case LGT_HARPOON: return &g_InvRing_Item_Harpoon;
-    case LGT_M16:     return &g_InvRing_Item_M16;
-    case LGT_GRENADE: return &g_InvRing_Item_Grenade;
+    case LGT_PISTOLS: return InvRing_GetByObjectID(O_PISTOL_OPTION);
+    case LGT_SHOTGUN: return InvRing_GetByObjectID(O_SHOTGUN_OPTION);
+    case LGT_MAGNUMS: return InvRing_GetByObjectID(O_MAGNUM_OPTION);
+    case LGT_UZIS:    return InvRing_GetByObjectID(O_UZI_OPTION);
+    case LGT_HARPOON: return InvRing_GetByObjectID(O_HARPOON_OPTION);
+    case LGT_M16:     return InvRing_GetByObjectID(O_M16_OPTION);
+    case LGT_GRENADE: return InvRing_GetByObjectID(O_GRENADE_OPTION);
     default:          return nullptr;
     }
     // clang-format on
@@ -46,13 +45,13 @@ static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
 {
     // clang-format off
     switch (gun_type) {
-    case LGT_PISTOLS: return &g_InvRing_Item_PistolAmmo;
-    case LGT_SHOTGUN: return &g_InvRing_Item_ShotgunAmmo;
-    case LGT_MAGNUMS: return &g_InvRing_Item_MagnumAmmo;
-    case LGT_UZIS:    return &g_InvRing_Item_UziAmmo;
-    case LGT_HARPOON: return &g_InvRing_Item_HarpoonAmmo;
-    case LGT_M16:     return &g_InvRing_Item_M16Ammo;
-    case LGT_GRENADE: return &g_InvRing_Item_GrenadeAmmo;
+    case LGT_PISTOLS: return InvRing_GetByObjectID(O_PISTOL_AMMO_OPTION);
+    case LGT_SHOTGUN: return InvRing_GetByObjectID(O_SHOTGUN_AMMO_OPTION);
+    case LGT_MAGNUMS: return InvRing_GetByObjectID(O_MAGNUM_AMMO_OPTION);
+    case LGT_UZIS:    return InvRing_GetByObjectID(O_UZI_AMMO_OPTION);
+    case LGT_HARPOON: return InvRing_GetByObjectID(O_HARPOON_AMMO_OPTION);
+    case LGT_M16:     return InvRing_GetByObjectID(O_M16_AMMO_OPTION);
+    case LGT_GRENADE: return InvRing_GetByObjectID(O_GRENADE_AMMO_OPTION);
     default:          return nullptr;
     }
     // clang-format on
@@ -254,7 +253,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
 
     // Pistols
     if (inv_object_id == O_PISTOL_OPTION) {
-        Inv_InsertItem(&g_InvRing_Item_Pistols);
+        Inv_InsertItem(InvRing_GetByObjectID(O_PISTOL_OPTION));
         if (lara->last_gun_type == LGT_UNARMED) {
             lara->last_gun_type = LGT_PISTOLS;
         }
@@ -273,8 +272,9 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     // Other cases
-    for (int32_t i = 0; g_InvRing_Items[i] != nullptr; i++) {
-        INVENTORY_ITEM *const inv_item = g_InvRing_Items[i];
+    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
+        INVENTORY_ITEM *const inv_item =
+            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
         if (inv_item->object_id == object_id
             || inv_item->object_id == inv_object_id) {
             Inv_InsertItem(inv_item);

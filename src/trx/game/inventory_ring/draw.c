@@ -118,9 +118,11 @@ static void M_DrawItem(
 
 const INVENTORY_ITEM *InvRing_GetInvItem(const OBJECT_ID obj_id)
 {
-    for (int32_t i = 0; g_InvRing_Items[i] != nullptr; i++) {
-        if (g_InvRing_Items[i]->object_id == obj_id) {
-            return g_InvRing_Items[i];
+    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
+        INVENTORY_ITEM *const item =
+            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
+        if (item->object_id == obj_id) {
+            return item;
         }
     }
     return nullptr;
