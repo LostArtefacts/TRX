@@ -42,6 +42,12 @@
     - fixed disc ricochets being placed inside walls (#4063)
     - fixed ricochets not showing on slopes
 - improved the quality of the PS1 barefoot SFX (#4024)
+- improved bar setting UIs in various ways
+    - added two new options: "Show bars" on/off, and "Flash bars" on/off
+    - changed the bars options to be placed in its own tab
+    - changed the appearance labels to better align with expectations (#4025)
+    - removed the look modes for every bar (except enemy bars that retain the "boss only" setting)
+    - fixed health bar flicker on medi packs when cycling the inventory ring (#4211, regression from 1.4)
 - changed the `/debug` command to accept optional option name argument (for example: `/debug pos 1`)
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
     - `flow.lockout_option_ring`
@@ -51,18 +57,16 @@
     - `flow.cheat_keys`
     - `gameplay.enable_killer_pushblocks`
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
-- changed the FOV default increment from 10 to 5 (#4026)
-- changed the bar appearance labels to better align with expectations (#4025)
 - changed the debug position UI to no longer be hidden in photo mode
 - changed the unrestricted look mode option to include Lara being able to look freely while shooting an enemy (#4090)
 - changed the `ambient_tracks` property to be only available on the root level
 - changed music triggers that match the level's default ambient track to automatically be treated as ambient if omitted from `ambient_tracks` (#4181)
 - changed the Pause key to no longer work when Lara's dead (similar to TR1)
 - changed the `-q`/`--quiet` argument to no longer silence warnings
-- changed the bars options to be placed in its own tab
 - changed the `Remember Guns between Levels` option to also apply to whether or not Lara starts with those guns equipped
 - changed sprites to respect the water tint if placed underwater
 - changed the FOV formula to be consistent between games
+    - changed the FOV default increment from 10 to 5 (#4026)
     - removed "Use PS1 FOV" option
 - removed the following game flow options:
     - `cmd_init`
@@ -93,7 +97,6 @@
 - fixed invulnerability cheat not getting disabled during the demos (regression from 1.3)
 - fixed disable targeting allies option not working (#4184, regression from 1.5)
 - fixed Lara losing forward momentum on springboards when the wall glitch mode option is set to `Fixed` (#4187, regression from 1.2)
-- fixed health bar flicker on medi packs when cycling the inventory ring (#4211, regression from 1.4)
 - fixed title bar size being too small on HiDPI screens on Windows platform (#2837)
 - fixed the M16 accuracy option not taking effect until restarting the game (#4227, regression from 0.3)
 - fixed incorrect keys object orientation in the inventory ring (#4239, regression from 0.3)

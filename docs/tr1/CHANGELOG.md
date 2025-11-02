@@ -26,6 +26,12 @@
     - fixed ricochets not showing on slopes
 - improved the positions of some 3D pickup items, such as the scion that Pierre drops
 - improved the quality of the PS1 Uzi SFX (#4024)
+- improved bar setting UIs in various ways
+    - added two new options: "Show bars" on/off, and "Flash bars" on/off
+    - changed the bars options to be placed in its own tab
+    - changed the appearance labels to better align with expectations (#4025)
+    - removed the look modes for every bar (except enemy bars that retain the "boss only" setting)
+    - fixed health bar flicker on medi packs when cycling the inventory ring (#4211, regression from 4.14)
 - changed the `/debug` command to accept optional option name argument (for example: `/debug pos 1`)
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):
     - `flow.demo_delay`
@@ -33,8 +39,6 @@
 - changed Select Level and Story So Far features placement to the New Game menu
 - changed the input buffering option to separately tackle F-keys and Inventory (Gameplay → Input → Buffering (F-keys), Gameplay → Input → Buffering (Inventory))
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
-- changed the FOV default increment from 10 to 5 (#4026)
-- changed the bar appearance labels to better align with expectations (#4025)
 - changed exploded meshes to trigger a splash effect when they hit water, similar to TR2
 - changed LOS algorithm to TR2+ implementation
 - changed the debug position UI to no longer be hidden in photo mode
@@ -44,11 +48,11 @@
 - changed music triggers that match the level's default ambient track to automatically be treated as ambient if omitted from `ambient_tracks` (#4181)
 - changed cutscene data (e.g. `cut1.phd`, as opposed to in-game cinematics) to match TR2 format, where Lara (as `O_LARA`) must be defined as an item in the level file
 - changed the `-q`/`--quiet` argument to no longer silence warnings
-- changed the bars options to be placed in its own tab
 - changed the Remove shotguns, Remove Uzis and Remove Magnus into a single "Remove extra guns" option
 - changed the `Remember Guns between Levels` option to also apply to whether or not Lara starts with those guns equipped
 - changed toggling Lara's braid in-game to swap out her head and torso meshes appropriately without the need to reload the level (#2399)
 - changed the FOV formula to be consistent between games
+    - changed the FOV default increment from 10 to 5 (#4026)
     - removed "Vertical FOV" option
 - removed the `Enhanced shotgun targeting` option in favour of using the common weapon lock mode (Gameplay → Controls → Weapon lock mode)
 - fixed missing footstep sound effects when Lara climbs off a ladder and when she finishes a handstand (#4030)
@@ -69,7 +73,6 @@
 - fixed bogus warnings about resume info in logs when playing cutscenes and in the title level
 - fixed Lara's braid remaining reflective if the fly cheat is used to resurrect her on the Midas hand
 - fixed invulnerability cheat not getting disabled during the demos (regression from 4.13)
-- fixed health bar flicker on medi packs when cycling the inventory ring (#4211, regression from 4.14)
 - fixed title bar size being too small on HiDPI screens on Windows platform (#2837)
 - fixed crash when loading OG saves made in City of Khamoon, while the "Restore PS1 enemies" option is on (#4217, regression from 2.16)
 - fixed the jump lock mode UI option remaining visible when responsive jumping is disabled (#4027, regression from 4.13)

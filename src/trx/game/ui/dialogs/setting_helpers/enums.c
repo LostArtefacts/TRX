@@ -45,42 +45,10 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[] = {
     { -1, nullptr },
 };
 
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_HealthBarShowModeEnumEntries[] = {
-    { BSM_DEFAULT, GS_ID(ENUM_BAR_MODE_DEFAULT) },
-    { BSM_PS1, GS_ID(ENUM_BAR_MODE_PS1) },
-    { BSM_FLASHING_OR_DEFAULT, GS_ID(ENUM_BAR_MODE_FLASHING_OR_DEFAULT) },
-    { BSM_FLASHING_ONLY, GS_ID(ENUM_BAR_MODE_FLASHING_ONLY) },
-    { BSM_ALWAYS, GS_ID(ENUM_BAR_MODE_ALWAYS) },
-    { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
-    { -1, nullptr },
-};
-
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_AirBarShowModeEnumEntries[] = {
-    { BSM_DEFAULT, GS_ID(ENUM_BAR_MODE_DEFAULT) },
-    { BSM_PS1, GS_ID(ENUM_BAR_MODE_PS1) },
-    { BSM_FLASHING_ONLY, GS_ID(ENUM_BAR_MODE_FLASHING_ONLY) },
-    { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
-    { -1, nullptr },
-};
-
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_SprintBarShowModeEnumEntries[] = {
-    { BSM_DEFAULT, GS_ID(ENUM_BAR_MODE_DEFAULT) },
-    { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
-    { -1, nullptr },
-};
-
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_ExposureBarShowModeEnumEntries[] = {
-    { BSM_DEFAULT, GS_ID(ENUM_BAR_MODE_DEFAULT) },
-    { BSM_PS1, GS_ID(ENUM_BAR_MODE_PS1) },
-    { BSM_FLASHING_ONLY, GS_ID(ENUM_BAR_MODE_FLASHING_ONLY) },
-    { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
-    { -1, nullptr },
-};
-
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_EnemyHealthBarShowModeEnumEntries[] = {
-    { BSM_ALWAYS, GS_ID(ENUM_BAR_MODE_ALWAYS) },
     { BSM_NEVER, GS_ID(ENUM_BAR_MODE_NEVER) },
     { BSM_BOSS_ONLY, GS_ID(ENUM_BAR_MODE_BOSS_ONLY) },
+    { BSM_ALWAYS, GS_ID(ENUM_BAR_MODE_ALWAYS) },
     { -1, nullptr },
 };
 

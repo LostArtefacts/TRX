@@ -19,7 +19,7 @@ void UI_LaraHealthBar_SetTimer(const int16_t timer)
     m_HitTimer = timer;
 }
 
-bool UI_LaraHealthBar(const bool blink_state, const BAR_SHOW_MODE show_mode)
+bool UI_LaraHealthBar(const bool blink_state, const bool force)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item == nullptr) {
@@ -35,27 +35,13 @@ bool UI_LaraHealthBar(const bool blink_state, const BAR_SHOW_MODE show_mode)
         m_HitTimer = 40;
     }
 
-    const bool is_blinking =
-        health <= LARA_MAX_HITPOINTS * UI_BAR_BLINK_THRESHOLD;
+    const bool is_blinking = g_Config.ui.enable_bar_flashing
+        && health <= LARA_MAX_HITPOINTS * UI_BAR_BLINK_THRESHOLD;
     const bool is_recently_hurt = m_HitTimer > 0;
-    bool show =
-        is_recently_hurt || health <= 0 || lara->gun_status == LGS_READY;
-    switch (show_mode) {
-    case BSM_FLASHING_OR_DEFAULT:
-        show |= is_blinking;
-        break;
-    case BSM_FLASHING_ONLY:
-        show = is_blinking;
-        break;
-    case BSM_ALWAYS:
-        show = true;
-        break;
-    case BSM_NEVER:
-        show = false;
-        break;
-    default:
-        break;
-    }
+    const bool show = force
+        || (g_Config.ui.show_bars
+            && (is_recently_hurt || health <= 0 || lara->gun_status == LGS_READY
+                || is_blinking));
     if (!show) {
         return false;
     }
