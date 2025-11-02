@@ -618,11 +618,9 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
         }
 
-#if TR_VERSION == 2
         case TO_BODY_BAG:
             Item_ClearKilled();
             break;
-#endif
 
         default:
             break;

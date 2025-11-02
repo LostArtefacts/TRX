@@ -192,13 +192,11 @@ void Item_Initialise(const int16_t item_num)
     item->enable_interpolation = true;
     item->enable_shadow = true;
 
-#if TR_VERSION >= 2
-    item->killed = false;
+    item->clear_body = false;
     if ((item->flags & IF_KILLED) != 0) {
-        item->killed = true;
+        item->clear_body = true;
         item->flags &= ~IF_KILLED;
     }
-#endif
 
     if ((item->flags & IF_INVISIBLE) != 0) {
         item->status = IS_INVISIBLE;
