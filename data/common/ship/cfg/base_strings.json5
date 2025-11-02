@@ -492,7 +492,7 @@
         "SETTING_ENABLE_TOTAL_STATS": "Final statistics screen",
         "SETTING_ENABLE_TOTAL_STATS_DESCRIPTION": "Enables a total game statistics screen that plays after the credits.",
         "SETTING_ENABLE_TR2_JUMPING": "Responsive jumping",
-        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "Allows Lara to jump at any point while running, similar to TR2+.",
+        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "Allows Lara to jump at any point while running.",
         "SETTING_ENABLE_TR2_SWIMMING": "Smooth swimming",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "Gives Lara's underwater turn rate an acceleration curve for smoother movement, as per TR2+ originally. Disabling this option will give Lara a snappier turn rate, per original TR1.",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Responsive swim cancel",

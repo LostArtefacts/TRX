@@ -27,6 +27,11 @@ bool UI_Settings_EnableBreeze_IsAvailable(
     return g_Config.visuals.enable_braid;
 }
 
+bool UI_Settings_ResponsiveJumping_IsAvailable(const UI_SETTINGS_OPTION *option)
+{
+    return g_Config.gameplay.enable_tr2_jumping;
+}
+
 bool UI_Settings_Sprint_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.gameplay.enable_sprint;

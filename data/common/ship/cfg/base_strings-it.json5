@@ -492,7 +492,7 @@
         "SETTING_ENABLE_TOTAL_STATS": "Schermata statistiche finali",
         "SETTING_ENABLE_TOTAL_STATS_DESCRIPTION": "Abilita la schermata delle statistiche totali di gioco che viene visualizzata dopo i titoli di coda.",
         "SETTING_ENABLE_TR2_JUMPING": "Salti reattivi",
-        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "Permette a Lara di saltare in qualsiasi momento mentre corre, in modo simile a TR2+.",
+        "SETTING_ENABLE_TR2_JUMPING_DESCRIPTION": "\\{review}Permette a Lara di saltare in qualsiasi momento mentre corre.",
         "SETTING_ENABLE_TR2_SWIMMING": "Nuoto naturale",
         "SETTING_ENABLE_TR2_SWIMMING_DESCRIPTION": "Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, come in TR2+. Disabilitando questa opzione, Lara avrà una velocità di virata più rapida, come in TR1.",
         "SETTING_ENABLE_TR2_SWIM_CANCEL": "Annullamento reattivo nuoto",

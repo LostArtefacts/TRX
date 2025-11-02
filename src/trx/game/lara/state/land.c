@@ -137,12 +137,8 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         CLAMPG(item->rot.z, +LARA_LEAN_MAX);
     }
 
-#if TR_VERSION == 1
     const bool responsive_jumping =
         g_Config.gameplay.enable_tr2_jumping && Lara_State_IsResponsive(LA_RUN);
-#else
-    const bool responsive_jumping = true;
-#endif
     if (responsive_jumping) {
         const int16_t unlock_frame =
             m_JumpLockFrames[g_Config.gameplay.jump_lock_mode];
@@ -158,12 +154,8 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.jump && m_JumpPermitted && !item->gravity) {
-#if TR_VERSION == 1
         item->goal_anim_state =
             LS(responsive_jumping ? LS_RESPONSIVE : LS_JUMP_FORWARD);
-#else
-        item->goal_anim_state = LS(LS_JUMP_FORWARD);
-#endif
     } else if (g_Input.forward) {
         if (lara->water_status == LWS_WADE) {
             item->goal_anim_state = LS(LS_WADE);
