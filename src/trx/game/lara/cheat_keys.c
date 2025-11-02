@@ -4,6 +4,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_MIN_TURN 94208
 
@@ -75,16 +76,17 @@ static bool M_ProcessOutcome(const ITEM *const lara_item)
     }
 
     const LARA_STATE state = lara_item->current_anim_state;
-#if TR_VERSION == 1
-    const bool gun_status_check = true;
-    const bool explode_status_check = state == LS(LS_SWAN_DIVE);
-#else
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    const bool gun_status_check = m_InitialGunType == LGT_FLARE
-        && lara_info->gun_type == m_InitialGunType;
-    const bool explode_status_check =
-        state == LS(LS_JUMP_FORWARD) || state == LS(LS_JUMP_BACK);
-#endif
+    bool explode_status_check;
+    if (g_TRVersion == 1) {
+        const bool gun_status_check = true;
+        explode_status_check = state == LS(LS_SWAN_DIVE);
+    } else {
+        const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+        const bool gun_status_check = m_InitialGunType == LGT_FLARE
+            && lara_info->gun_type == m_InitialGunType;
+        explode_status_check =
+            state == LS(LS_JUMP_FORWARD) || state == LS(LS_JUMP_BACK);
+    }
 
     if (state == LS(LS_JUMP_FORWARD) && gun_status_check) {
         M_CompleteLevel();
