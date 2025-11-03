@@ -445,6 +445,77 @@ const OBJECT_ID g_WaterSpriteObjects[] = {
     // clang-format on
 };
 
+const OBJECT_ID g_GameSpriteObjects[] = {
+    // clang-format off
+    O_PISTOL_ITEM,
+    O_SHOTGUN_ITEM,
+    O_MAGNUM_ITEM,
+    O_UZI_ITEM,
+    O_HARPOON_ITEM,
+    O_M16_ITEM,
+    O_GRENADE_ITEM,
+    O_PISTOL_AMMO_ITEM,
+    O_SHOTGUN_AMMO_ITEM,
+    O_MAGNUM_AMMO_ITEM,
+    O_UZI_AMMO_ITEM,
+    O_HARPOON_AMMO_ITEM,
+    O_M16_AMMO_ITEM,
+    O_GRENADE_AMMO_ITEM,
+    O_EXPLOSIVE_ITEM,
+
+    O_SMALL_MEDIPACK_ITEM,
+    O_LARGE_MEDIPACK_ITEM,
+    O_FLARES_ITEM,
+
+    O_PUZZLE_ITEM_1,
+    O_PUZZLE_ITEM_2,
+    O_PUZZLE_ITEM_3,
+    O_PUZZLE_ITEM_4,
+    O_KEY_ITEM_1,
+    O_KEY_ITEM_2,
+    O_KEY_ITEM_3,
+    O_KEY_ITEM_4,
+    O_PICKUP_ITEM_1,
+    O_PICKUP_ITEM_2,
+    O_LEADBAR_ITEM,
+    O_SCION_ITEM_1,
+    O_SCION_ITEM_2,
+
+    O_SECRET_1,
+    O_SECRET_2,
+    O_SECRET_3,
+
+    O_EXPLOSION_1,
+    O_EXPLOSION_2,
+    O_SPLASH_1,
+    O_SPLASH_2,
+    O_BUBBLE_1,
+    O_BUBBLE_2,
+    O_BLOOD_1,
+    O_BLOOD_2,
+    O_DART_EFFECT,
+    O_RICOCHET,
+    O_TWINKLE,
+    O_DUST,
+    O_EMBER,
+    O_FLAME,
+    O_PICKUP_AID,
+    O_GLOW,
+    O_WATER_SPRITE,
+    O_SNOW_SPRITE,
+    O_HOT_LIQUID,
+
+    O_GLOW_RESERVED,
+    O_FX_RESERVED,
+
+    O_ALPHABET,
+    O_TEXT_BOX,
+    O_ASSAULT_DIGITS,
+
+    NO_OBJECT,
+    // clang-format on
+};
+
 const GAME_OBJECT_PAIR g_GunAmmoObjectMap[] = {
     // clang-format off
     { O_PISTOL_ITEM, O_PISTOL_AMMO_ITEM },

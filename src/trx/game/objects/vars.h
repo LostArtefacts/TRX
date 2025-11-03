@@ -24,6 +24,7 @@ extern const OBJECT_ID g_BossObjects[];
 extern const OBJECT_ID g_PlaceholderObjects[];
 extern const OBJECT_ID g_SecretObjects[];
 extern const OBJECT_ID g_MovableBlockObjects[];
+extern const OBJECT_ID g_GameSpriteObjects[];
 
 extern const GAME_OBJECT_PAIR g_GunAmmoObjectMap[];
 extern const GAME_OBJECT_PAIR g_ItemToInvObjectMap[];
