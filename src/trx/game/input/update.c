@@ -11,8 +11,7 @@ static void M_UpdateFromBackend(
     INPUT_STATE *const s, const INPUT_BACKEND_IMPL *const backend,
     const int32_t layout)
 {
-#define X_INPUT_ROLE(role, state)                                              \
-    s->state |= Input_IsRoleUsable(role) && backend->is_pressed(layout, role);
+#define X_INPUT_ROLE(role, state) s->state |= backend->is_pressed(layout, role);
 #include <trx/game/input/roles.def>
 #undef X_INPUT_ROLE
     backend->custom_update(s, layout);

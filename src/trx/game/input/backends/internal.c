@@ -8,13 +8,13 @@ void Input_ConflictHelper(
         INPUT_LAYOUT layout, INPUT_ROLE role, bool conflict))
 {
     for (INPUT_ROLE role1 = 0; role1 < INPUT_ROLE_NUMBER_OF; role1++) {
-        if (!Input_IsRoleUsable(role1) || !Input_IsRoleRebindable(role1)) {
+        if (!Input_IsRoleRebindable(role1)) {
             continue;
         }
 
         bool conflict = false;
         for (INPUT_ROLE role2 = 0; role2 < INPUT_ROLE_NUMBER_OF; role2++) {
-            if (!Input_IsRoleUsable(role2) || !Input_IsRoleRebindable(role2)) {
+            if (!Input_IsRoleRebindable(role2)) {
                 continue;
             }
 

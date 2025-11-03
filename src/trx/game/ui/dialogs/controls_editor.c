@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/const.h>
 #include <trx/game/game_string.h>
+#include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/scaler.h>
 #include <trx/game/shell.h>
@@ -33,11 +34,6 @@ typedef enum {
     M_PHASE_LISTEN_DEBOUNCE,
     M_PHASE_EXIT,
 } M_PHASE;
-
-static bool M_AreCheatsEnabled(void)
-{
-    return g_Config.gameplay.enable_cheats;
-}
 
 static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     {
@@ -90,14 +86,10 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_CAMERA_RIGHT },
                 { .role = INPUT_ROLE_CAMERA_FORWARD },
                 { .role = INPUT_ROLE_CAMERA_BACK },
-                { .role = INPUT_ROLE_FLY_CHEAT,
-                  .is_available = M_AreCheatsEnabled },
-                { .role = INPUT_ROLE_ITEM_CHEAT,
-                  .is_available = M_AreCheatsEnabled },
-                { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT,
-                  .is_available = M_AreCheatsEnabled },
-                { .role = INPUT_ROLE_TURBO_CHEAT,
-                  .is_available = M_AreCheatsEnabled },
+                { .role = INPUT_ROLE_FLY_CHEAT },
+                { .role = INPUT_ROLE_ITEM_CHEAT },
+                { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT },
+                { .role = INPUT_ROLE_TURBO_CHEAT },
                 { .role = (INPUT_ROLE)-1 },
             },
     },
@@ -162,18 +154,38 @@ static int32_t M_GetVisibleRows(void)
     }
 }
 
+static bool M_IsRoleUsable(const INPUT_ROLE role)
+{
+    switch (role) {
+    case INPUT_ROLE_USE_FLARE:
+        return g_Weapons[LGT_FLARE].is_available;
+    case INPUT_ROLE_EQUIP_HARPOON:
+        return g_Weapons[LGT_HARPOON].is_available;
+    case INPUT_ROLE_EQUIP_M16:
+        return g_Weapons[LGT_M16].is_available;
+    case INPUT_ROLE_EQUIP_GRENADE_LAUNCHER:
+        return g_Weapons[LGT_GRENADE].is_available;
+    case INPUT_ROLE_FLY_CHEAT:
+    case INPUT_ROLE_ITEM_CHEAT:
+    case INPUT_ROLE_LEVEL_SKIP_CHEAT:
+    case INPUT_ROLE_TURBO_CHEAT:
+        return g_Config.gameplay.enable_cheats;
+    default:
+        break;
+    }
+    return true;
+}
+
 // Locate the index-th role row that is usable; sentinel if none.
 static const UI_CONTROLS_EDITOR_ROW *M_GetInputRow(
     const UI_CONTROLS_EDITOR_GROUP *const group, const int32_t index)
 {
     int32_t found = 0;
     for (int32_t i = 0; group->rows[i].role != (INPUT_ROLE)-1; i++) {
-        if (Input_IsRoleUsable(group->rows[i].role)) {
-            if (found == index) {
-                return &group->rows[i];
-            }
-            found++;
+        if (found == index) {
+            return &group->rows[i];
         }
+        found++;
     }
     return nullptr;
 }
@@ -188,9 +200,7 @@ static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
 {
     int32_t count = 0;
     for (int32_t i = 0; group->rows[i].role != (INPUT_ROLE)-1; i++) {
-        if (Input_IsRoleUsable(group->rows[i].role)) {
-            count++;
-        }
+        count++;
     }
     return count;
 }
@@ -386,7 +396,7 @@ static void M_InputLabel(
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
     const char *const role_name = Input_GetRoleName(row->role);
-    if (row->is_available != nullptr && !row->is_available()) {
+    if (!M_IsRoleUsable(row->role)) {
         UI_LabelFmt("\\{dim}%s\\{/dim}", role_name);
     } else {
         UI_Label(role_name);
@@ -415,7 +425,7 @@ static void M_InputChoice(
         Input_GetKeyName(s->backend, s->active_layout, row->role);
     if (key_name == nullptr) {
         UI_Label("");
-    } else if (row->is_available != nullptr && !row->is_available()) {
+    } else if (!M_IsRoleUsable(row->role)) {
         UI_LabelFmt("\\{dim}%s\\{/dim}", key_name);
     } else {
         UI_Label(key_name);

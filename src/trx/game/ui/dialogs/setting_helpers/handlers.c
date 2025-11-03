@@ -1,6 +1,7 @@
 #include <trx/game/ui/dialogs/setting_helpers/handlers.h>
 
 #include <trx/config.h>
+#include <trx/game/gun.h>
 #include <trx/game/music.h>
 #include <trx/game/sound.h>
 
@@ -158,4 +159,19 @@ bool UI_Settings_Volume_RequestChange(
     }
     Sound_Effect(SFX_MENU_PASSPORT, nullptr, SPM_ALWAYS);
     return true;
+}
+
+bool UI_Settings_Flare_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Weapons[LGT_FLARE].is_available;
+}
+
+bool UI_Settings_Harpoon_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Weapons[LGT_HARPOON].is_available;
+}
+
+bool UI_Settings_M16_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Weapons[LGT_M16].is_available;
 }
