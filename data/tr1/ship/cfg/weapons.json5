@@ -3,6 +3,10 @@
         "sample_num": "SFX_LARA_NO",
     },
 
+    "LGT_FLARE": {
+        "is_available": false,
+    },
+
     "LGT_PISTOLS": {
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],
@@ -71,6 +75,7 @@
         "recoil_frame": 0,
         "flash_time": 3,
         "sample_num": "",
+        "is_available": false,
     },
 
     "LGT_GRENADE": {
@@ -85,6 +90,7 @@
         "recoil_frame": 0,
         "flash_time": 2,
         "sample_num": "",
+        "is_available": false,
     },
 
     "LGT_HARPOON": {
@@ -99,5 +105,6 @@
         "recoil_frame": 0,
         "flash_time": 2,
         "sample_num": "",
+        "is_available": false,
     },
 }

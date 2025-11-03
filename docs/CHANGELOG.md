@@ -44,7 +44,8 @@
 
 **TR1**:
 - added a new easter egg command
-- added support for flares (#4121)
+- added support for flares (for OG levels, use `/give flare`) (#4121)
+- added support for TR2 weapons (for OG levels, use `/give moreguns`)
 - added support for custom levels to use Lara's extra animations from TR2
 - added new hidden settings (available via LUA and the `/set` command):
     - `flow.lockout_option_ring`

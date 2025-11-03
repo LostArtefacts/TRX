@@ -13,6 +13,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/viewport.h>
 #include <trx/vector.h>
+#include <trx/version.h>
 
 static void M_GiveAllKeysImpl(void)
 {
@@ -29,34 +30,36 @@ static void M_GiveAllKeysImpl(void)
     Inv_AddItem(O_LEADBAR_ITEM);
 }
 
-static void M_GiveAllGunsImpl(void)
+static void M_GiveAllGunsImpl(const bool ignore_exclusions)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool bonus_flag = Game_IsBonusFlagSet(GBF_NGPLUS);
     Inv_AddItem(O_PISTOL_ITEM);
-    if (Inv_AddItem(O_SHOTGUN_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_SHOTGUN, ignore_exclusions)) {
         lara_info->shotgun_ammo.ammo = bonus_flag ? 10001 : 300;
     }
-    if (Inv_AddItem(O_MAGNUM_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_MAGNUMS, ignore_exclusions)) {
         lara_info->magnum_ammo.ammo = bonus_flag ? 10001 : 1000;
     }
-    if (Inv_AddItem(O_UZI_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_UZIS, ignore_exclusions)) {
         lara_info->uzi_ammo.ammo = bonus_flag ? 10001 : 2000;
     }
-    if (Inv_AddItem(O_HARPOON_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_HARPOON, ignore_exclusions)) {
         lara_info->harpoon_ammo.ammo = bonus_flag ? 10001 : 300;
     }
-    if (Inv_AddItem(O_M16_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_M16, ignore_exclusions)) {
         lara_info->m16_ammo.ammo = bonus_flag ? 10001 : 300;
     }
-    if (Inv_AddItem(O_GRENADE_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_GRENADE, ignore_exclusions)) {
         lara_info->grenade_ammo.ammo = bonus_flag ? 10001 : 300;
     }
 }
 
 static void M_GiveAllMedpacksImpl(void)
 {
-    Inv_AddItemNTimes(O_FLARES_ITEM, 10);
+    if (g_Weapons[LGT_FLARE].is_available) {
+        Inv_AddItemNTimes(O_FLARES_ITEM, 10);
+    }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 10);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 10);
 }
@@ -111,17 +114,32 @@ bool Lara_Cheat_GiveAllKeys(void)
     return true;
 }
 
-bool Lara_Cheat_GiveAllGuns(void)
+bool Lara_Cheat_GiveAllGuns(const bool ignore_exclusions)
 {
     if (Lara_GetItem() == nullptr) {
         return false;
     }
 
-    M_GiveAllGunsImpl();
+    M_GiveAllGunsImpl(ignore_exclusions);
 
     Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
     Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
     return true;
+}
+
+bool Lara_Cheat_GiveGun(
+    const LARA_GUN_TYPE gun_type, const bool ignore_exclusions)
+{
+    const OBJECT_ID gun_object_id = Gun_GetGunObject(gun_type);
+    if (gun_object_id == NO_OBJECT) {
+        return false;
+    }
+
+    if (!ignore_exclusions && !g_Weapons[gun_type].is_available) {
+        return false;
+    }
+
+    return Inv_AddItem(gun_object_id);
 }
 
 bool Lara_Cheat_GiveAllItems(void)
@@ -130,7 +148,7 @@ bool Lara_Cheat_GiveAllItems(void)
         return false;
     }
 
-    M_GiveAllGunsImpl();
+    M_GiveAllGunsImpl(false);
     M_GiveAllKeysImpl();
     M_GiveAllMedpacksImpl();
 
@@ -141,7 +159,7 @@ bool Lara_Cheat_GiveAllItems(void)
 
 void Lara_Cheat_GetStuff(void)
 {
-    M_GiveAllGunsImpl();
+    M_GiveAllGunsImpl(false);
     M_GiveAllMedpacksImpl();
 }
 

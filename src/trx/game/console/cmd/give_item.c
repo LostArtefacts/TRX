@@ -22,18 +22,28 @@ static bool M_CanTargetObjectPickup(const OBJECT_ID obj_id)
                g_PickupObjects);
 }
 
+static bool M_Match(const COMMAND_CONTEXT *const ctx, const char *const cmd)
+{
+    return String_Equivalent(ctx->prefix, cmd)
+        || String_Equivalent(ctx->args, cmd);
+}
+
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (!Game_IsPlayable()) {
         return CR_UNAVAILABLE;
     }
 
-    if (String_Equivalent(ctx->args, "keys")) {
+    if (M_Match(ctx, "keys")) {
         return Lara_Cheat_GiveAllKeys() ? CR_SUCCESS : CR_FAILURE;
     }
 
-    if (String_Equivalent(ctx->args, "guns")) {
-        return Lara_Cheat_GiveAllGuns() ? CR_SUCCESS : CR_FAILURE;
+    if (M_Match(ctx, "guns")) {
+        return Lara_Cheat_GiveAllGuns(false) ? CR_SUCCESS : CR_FAILURE;
+    }
+
+    if (M_Match(ctx, "moreguns")) {
+        return Lara_Cheat_GiveAllGuns(true) ? CR_SUCCESS : CR_FAILURE;
     }
 
     if (String_Equivalent(ctx->args, "all")) {
@@ -77,4 +87,5 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("give", M_Entrypoint, GS_ID(CONSOLE_HELP_GIVE))
+REGISTER_CONSOLE_COMMAND(
+    "give|keys|(?:more)?guns", M_Entrypoint, GS_ID(CONSOLE_HELP_GIVE))
