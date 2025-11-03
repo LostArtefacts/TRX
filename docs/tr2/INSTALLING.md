@@ -49,6 +49,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── catalog_music.csv
 │   ├── catalog_objects.csv
 │   ├── catalog_samples.csv
+│   ├── inv_ring.json5
 │   ├── poses.json5
 │   ├── tr2
 │   │   ├── gameflow.json5
@@ -75,7 +76,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   └── strings.json5
-│   └── TR2X.json5*
+│   ├── TR2X.json5*
+│   └── weapons.json5
 ├── data
 │   ├── assault.tr2
 │   ├── boat.tr2
@@ -186,6 +188,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── common_pickup_meshes.bin
 │   │   ├── common_pickup_meshes_gm.bin
 │   │   ├── cut2_textures.bin
+│   │   ├── cut3_setup.bin
 │   │   ├── cut3_textures.bin
 │   │   ├── cut4_textures.bin
 │   │   ├── dagger_sprite.bin
@@ -247,6 +250,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lair_music_tracks.bin
 │   │   ├── lair_textures.bin
 │   │   ├── lara_animations.bin
+│   │   ├── lara_extra.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_house_guns.bin
 │   │   ├── lara_vegas_guns.bin
@@ -464,6 +468,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── catalog_music.csv
         │   ├── catalog_objects.csv
         │   ├── catalog_samples.csv
+        │   ├── inv_ring.json5
         │   ├── poses.json5
         │   ├── tr2
         │   │   ├── gameflow.json5
@@ -482,14 +487,15 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── strings-it.json5
         │   │   ├── strings-pl.json5
         │   │   └── strings.json5
-        │   └── tr2-level
-        │       ├── gameflow.json5
-        │       ├── strings-de.json5
-        │       ├── strings-fr.json5
-        │       ├── strings-gd.json5
-        │       ├── strings-it.json5
-        │       ├── strings-pl.json5
-        │       └── strings.json5
+        │   ├── tr2-level
+        │   │   ├── gameflow.json5
+        │   │   ├── strings-de.json5
+        │   │   ├── strings-fr.json5
+        │   │   ├── strings-gd.json5
+        │   │   ├── strings-it.json5
+        │   │   ├── strings-pl.json5
+        │   │   └── strings.json5
+        │   └── weapons.json5
         ├── data
         │   ├── assault.tr2
         │   ├── boat.tr2
@@ -600,6 +606,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── common_pickup_meshes.bin
         │   │   ├── common_pickup_meshes_gm.bin
         │   │   ├── cut2_textures.bin
+        │   │   ├── cut3_setup.bin
         │   │   ├── cut3_textures.bin
         │   │   ├── cut4_textures.bin
         │   │   ├── dagger_sprite.bin
@@ -661,6 +668,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lair_music_tracks.bin
         │   │   ├── lair_textures.bin
         │   │   ├── lara_animations.bin
+        │   │   ├── lara_extra.bin
         │   │   ├── lara_gym_guns.bin
         │   │   ├── lara_house_guns.bin
         │   │   ├── lara_vegas_guns.bin

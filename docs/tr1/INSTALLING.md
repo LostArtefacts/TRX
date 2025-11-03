@@ -66,6 +66,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── catalog_music.csv
 │   ├── catalog_objects.csv
 │   ├── catalog_samples.csv
+│   ├── inv_ring.json5
 │   ├── poses.json5
 │   ├── tr1
 │   │   ├── gameflow.json5
@@ -104,7 +105,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-pl.json5
 │   │   ├── strings-ru.json5
 │   │   └── strings.json5
-│   └── TR1X.json5*
+│   ├── TR1X.json5*
+│   └── weapons.json5
 ├── data
 │   ├── cat.phd
 │   ├── cut1.phd
@@ -140,7 +142,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── atlantis_itemrots.bin
 │   │   ├── atlantis_textures.bin
 │   │   ├── braid.bin
-│   │   ├── braid_valley.bin
 │   │   ├── bubbles.bin
 │   │   ├── cat_cameras.bin
 │   │   ├── cat_fd.bin
@@ -192,6 +193,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── khamoon_mummy.bin
 │   │   ├── khamoon_textures.bin
 │   │   ├── lara_animations.bin
+│   │   ├── lara_extra.bin
 │   │   ├── lara_flares.bin
 │   │   ├── lara_guns.bin
 │   │   ├── lara_gym_flares.bin
@@ -224,6 +226,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── qualopec_textures.bin
 │   │   ├── sanctuary_fd.bin
 │   │   ├── sanctuary_itemrots.bin
+│   │   ├── sanctuary_scion.bin
 │   │   ├── sanctuary_textures.bin
 │   │   ├── scion_collision.bin
 │   │   ├── skate_kid_sfx.bin
@@ -395,6 +398,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── catalog_music.csv
         │   ├── catalog_objects.csv
         │   ├── catalog_samples.csv
+        │   ├── inv_ring.json5
         │   ├── poses.json5
         │   ├── tr1
         │   │   ├── gameflow.json5
@@ -424,15 +428,16 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── strings-pl.json5
         │   │   ├── strings-ru.json5
         │   │   └── strings.json5
-        │   └── tr1-ub
-        │       ├── gameflow.json5
-        │       ├── strings-de.json5
-        │       ├── strings-fr.json5
-        │       ├── strings-gd.json5
-        │       ├── strings-it.json5
-        │       ├── strings-pl.json5
-        │       ├── strings-ru.json5
-        │       └── strings.json5
+        │   ├── tr1-ub
+        │   │   ├── gameflow.json5
+        │   │   ├── strings-de.json5
+        │   │   ├── strings-fr.json5
+        │   │   ├── strings-gd.json5
+        │   │   ├── strings-it.json5
+        │   │   ├── strings-pl.json5
+        │   │   ├── strings-ru.json5
+        │   │   └── strings.json5
+        │   └── weapons.json5
         ├── data
         │   ├── cat.phd
         │   ├── cut1.phd
@@ -468,7 +473,6 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── atlantis_itemrots.bin
         │   │   ├── atlantis_textures.bin
         │   │   ├── braid.bin
-        │   │   ├── braid_valley.bin
         │   │   ├── bubbles.bin
         │   │   ├── cat_cameras.bin
         │   │   ├── cat_fd.bin
@@ -520,6 +524,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── khamoon_mummy.bin
         │   │   ├── khamoon_textures.bin
         │   │   ├── lara_animations.bin
+        │   │   ├── lara_extra.bin
         │   │   ├── lara_flares.bin
         │   │   ├── lara_guns.bin
         │   │   ├── lara_gym_flares.bin
@@ -552,6 +557,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── qualopec_textures.bin
         │   │   ├── sanctuary_fd.bin
         │   │   ├── sanctuary_itemrots.bin
+        │   │   ├── sanctuary_scion.bin
         │   │   ├── sanctuary_textures.bin
         │   │   ├── scion_collision.bin
         │   │   ├── skate_kid_sfx.bin

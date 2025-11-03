@@ -618,6 +618,7 @@
             "sequence": [{"type": "loop_game"}],
             "inherit_injections": false,
             "injections": [
+                "data/injections/cut3_setup.bin",
                 "data/injections/cut3_textures.bin",
                 "data/injections/font.bin",
                 "data/injections/photo.bin",
