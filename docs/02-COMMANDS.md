@@ -33,8 +33,9 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/give {item_name}`  
   `/give {num} {item_name}`  
   `/give all`  
-  `/give guns`  
-  `/give keys`  
+  `/give guns` or `/guns`  
+  `/give moreguns` or `/moreguns`  
+  `/give keys` or `/keys`  
   Gives Lara an item. Try `/give guns` to arm her to the teeth, and `/give keys` to get her all important puzzle items. Ain't nobody got time for searching!
 
 - `/secret`  

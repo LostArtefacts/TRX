@@ -1,6 +1,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
 #include <trx/game/objects/general/window.h>
@@ -75,8 +76,8 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        if ((!target_obj->intelligent || target_item->status == IS_INVISIBLE
-             || target_obj->collision_func == nullptr)) {
+        if (target_item->status == IS_INVISIBLE
+            || target_obj->collision_func == nullptr) {
             continue;
         }
 
@@ -115,11 +116,12 @@ static void M_Control(const int16_t item_num)
 
         explode = true;
 
-        if (!target_obj->intelligent || target_item->status != IS_ACTIVE) {
+        if (target_item->status != IS_ACTIVE) {
             continue;
         }
 
-        Gun_HitTarget(target_item, nullptr, nullptr, 30);
+        Gun_HitTarget(
+            target_item, nullptr, nullptr, g_Weapons[LGT_GRENADE].damage);
         Stats_AddAmmoHits();
 
         if (target_item->hit_points <= 0) {

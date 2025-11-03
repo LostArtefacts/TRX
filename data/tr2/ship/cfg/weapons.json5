@@ -3,6 +3,9 @@
         "sample_num": "SFX_LARA_NO",
     },
 
+    "LGT_FLARE": {
+    },
+
     "LGT_PISTOLS": {
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],

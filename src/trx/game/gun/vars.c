@@ -79,6 +79,9 @@ void Gun_LoadVars(const char *const path)
                 g_Weapons[type].sample_num = sample_id;
             }
         }
+
+        g_Weapons[type].is_available =
+            JSON_ObjectGetBool(obj, "is_available", true);
     }
 
     JSON_ValueFree(root);

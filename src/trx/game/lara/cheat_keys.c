@@ -1,6 +1,7 @@
 #include <trx/game/lara/cheat_keys.h>
 
 #include <trx/game/game.h>
+#include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/sound.h>
@@ -35,27 +36,29 @@ static void M_CompleteLevel(void)
 static void M_GiveItems(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (Inv_AddItem(O_SHOTGUN_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_SHOTGUN, false)) {
         lara_info->shotgun_ammo.ammo = 500;
     }
-    if (Inv_AddItem(O_MAGNUM_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_MAGNUMS, false)) {
         lara_info->magnum_ammo.ammo = 500;
     }
-    if (Inv_AddItem(O_UZI_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_UZIS, false)) {
         lara_info->uzi_ammo.ammo = 5000;
     }
-    if (Inv_AddItem(O_HARPOON_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_HARPOON, false)) {
         lara_info->harpoon_ammo.ammo = 5000;
     }
-    if (Inv_AddItem(O_GRENADE_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_GRENADE, false)) {
         lara_info->grenade_ammo.ammo = 5000;
     }
-    if (Inv_AddItem(O_M16_ITEM)) {
+    if (Lara_Cheat_GiveGun(LGT_M16, false)) {
         lara_info->m16_ammo.ammo = 5000;
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 50);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 50);
-    Inv_AddItemNTimes(O_FLARE_ITEM, 50);
+    if (g_Weapons[LGT_FLARE].is_available) {
+        Inv_AddItemNTimes(O_FLARE_ITEM, 50);
+    }
     Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_ALWAYS);
 }
 

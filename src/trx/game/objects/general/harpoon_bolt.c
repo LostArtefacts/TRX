@@ -80,7 +80,7 @@ static void M_Control(const int16_t item_num)
             continue;
         }
 
-        if (target_obj->intelligent && target_item->status == IS_ACTIVE) {
+        if (target_item->status == IS_ACTIVE) {
             Spawn_BloodBath(
                 item->pos.x, item->pos.y, item->pos.z, 0, 0, item->room_num, 5);
             Gun_HitTarget(
