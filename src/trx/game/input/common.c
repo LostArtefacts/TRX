@@ -437,18 +437,3 @@ bool Input_ParseKeyDesc(
     *mod = m;
     return *scancode != SDL_SCANCODE_UNKNOWN;
 }
-
-bool Input_IsRoleUsable(const INPUT_ROLE role)
-{
-    if (g_TRVersion == 1) {
-        switch (role) {
-        case INPUT_ROLE_EQUIP_HARPOON:
-        case INPUT_ROLE_EQUIP_M16:
-        case INPUT_ROLE_EQUIP_GRENADE_LAUNCHER:
-            return false;
-        default:
-            break;
-        }
-    }
-    return true;
-}

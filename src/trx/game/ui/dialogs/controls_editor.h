@@ -14,7 +14,6 @@
 
 typedef struct {
     INPUT_ROLE role;
-    bool (*is_available)(void);
 } UI_CONTROLS_EDITOR_ROW;
 
 typedef struct {
