@@ -939,6 +939,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
 
     switch (item->object_id) {
     case O_DRAGON_FRONT:
+    case O_TORSO:
         item->hit_points = 0;
         return;
 

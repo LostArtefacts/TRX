@@ -5,6 +5,7 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/pistols.h>
 #include <trx/game/gun/rifle.h>
+#include <trx/game/gun/vars.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -41,6 +42,10 @@ static void M_SmashItem(const int16_t item_num)
             item->status = IS_ACTIVE;
             Item_AddActive(item_num);
         }
+        break;
+
+    case O_SCION_ITEM_3:
+        Gun_HitTarget(item, nullptr, nullptr, item->hit_points);
         break;
 
     default:

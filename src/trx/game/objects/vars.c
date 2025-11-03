@@ -577,6 +577,7 @@ const OBJECT_ID g_ShatterableObjects[] = {
 const OBJECT_ID g_SmashableObjects[] = {
     // clang-format off
     O_BELL,
+    O_SCION_ITEM_3,
     NO_OBJECT,
     // clang-format on
 };
