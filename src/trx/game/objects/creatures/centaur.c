@@ -146,7 +146,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 400;
     obj->radius = CENTAUR_RADIUS;
     obj->smartness = CENTAUR_SMARTNESS;
-    obj->lot_setup = g_LOT_Beast;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_BEAST);
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;

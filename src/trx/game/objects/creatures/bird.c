@@ -164,7 +164,7 @@ static void M_SetupEagle(OBJECT *const obj)
     obj->radius = BIRD_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
-    obj->lot_setup = g_LOT_Flyer;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
 
     obj->intelligent = true;
     obj->save_position = true;
@@ -187,7 +187,7 @@ static void M_SetupCrow(OBJECT *const obj)
     obj->radius = BIRD_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
-    obj->lot_setup = g_LOT_Flyer;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
 
     obj->intelligent = true;
     obj->save_position = true;

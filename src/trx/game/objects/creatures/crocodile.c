@@ -336,7 +336,7 @@ static void M_SetupAlligator(OBJECT *const obj)
     obj->hit_points = ALLIGATOR_HITPOINTS;
     obj->radius = ALLIGATOR_RADIUS;
     obj->smartness = ALLIGATOR_SMARTNESS;
-    obj->lot_setup = g_LOT_Flyer;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
 }
 
 REGISTER_OBJECT(O_ALLIGATOR, M_SetupAlligator)

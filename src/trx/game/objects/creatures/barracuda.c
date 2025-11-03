@@ -138,7 +138,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = BARRACUDA_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 200;
-    obj->lot_setup = g_LOT_Flyer;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
 
     obj->intelligent = true;
     obj->save_position = true;

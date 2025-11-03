@@ -307,7 +307,7 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = YETI_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 100;
-    obj->lot_setup = g_LOT_Climber;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_CLIMBER);
 
     obj->intelligent = true;
     obj->save_position = true;

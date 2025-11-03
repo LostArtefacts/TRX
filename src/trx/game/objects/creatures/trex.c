@@ -177,7 +177,7 @@ static void M_Setup(OBJECT *const obj)
     obj->shadow_size = g_TRVersion == 1 ? UNIT_SHADOW / 4 : UNIT_SHADOW / 2;
     obj->pivot_length = g_TRVersion == 1 ? 2000 : 1800;
     obj->smartness = TREX_SMARTNESS;
-    obj->lot_setup = g_LOT_Beast;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_BEAST);
 
     obj->intelligent = true;
     obj->save_position = true;

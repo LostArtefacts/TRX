@@ -50,7 +50,7 @@ void Object_SetupAllObjects(void)
         obj->radius = M_DEFAULT_RADIUS;
         obj->shadow_size = 0;
         obj->enable_interpolation = true;
-        obj->lot_setup = g_LOT_Default;
+        obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
 
         obj->save_position = false;
         obj->save_hitpoints = false;
