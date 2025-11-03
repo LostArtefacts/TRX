@@ -3,7 +3,7 @@ HOST_USER_UID := `id -u`
 HOST_USER_GID := `id -g`
 DOCKER_IMAGE_VERSION := "20251017.rev1"
 
-default: (tr1-build-win "debug") (tr2-build-win "debug")
+default: (trx-build-win "debug")
 
 _docker_push tag:
     docker push {{tag}}:{{DOCKER_IMAGE_VERSION}}
@@ -56,14 +56,17 @@ import "justfile.tr2"
 download-assets tr_version='all':
     tools/download_assets {{tr_version}}
 
-output-release-name tr_version:
-    tools/output_release_name {{tr_version}}
+output-release-name:
+    tools/output_release_name
 
-output-current-version tr_version:
-    tools/get_version {{tr_version}}
+output-current-version *args:
+    tools/get_version {{args}}
 
-output-current-changelog tr_version:
-    tools/output_current_changelog {{tr_version}}
+output-current-changelog *args:
+    tools/output_current_changelog {{args}}
+
+output-package-name *args:
+    tools/output_package_name {{args}}
 
 clean:
     -find build/ -type f -delete
@@ -80,3 +83,6 @@ lint-format:
 
 [group('lint')]
 lint: (lint-imports) (lint-format)
+
+trx-build-linux target='debug': (image-linux "0") (_docker_run "rrdash/trx-linux" "build" "--target" target)
+trx-build-win target='debug': (image-win "0") (_docker_run "rrdash/trx-win" "build" "--target" target)

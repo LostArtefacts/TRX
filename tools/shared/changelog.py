@@ -32,14 +32,20 @@ def get_youtube_id(url: str) -> str | None:
     return None
 
 
-def get_current_version_changelog(changelog_path: Path) -> Changelog:
+def get_current_version_changelog(
+    changelog_path: Path, skip_unstable: bool
+) -> Changelog:
     sections = [
         section.strip()
         for section in re.split(
             "^(?=##)", changelog_path.read_text(), flags=re.M
         )
-        if re.search(r"- \w", section)
+        if section
     ]
+
+    if skip_unstable and sections and "[unreleased]" in sections[0].lower():
+        sections.pop(0)
+
     if sections:
         section_lines = sections[0].splitlines()
         header = section_lines.pop(0)

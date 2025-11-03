@@ -285,7 +285,6 @@ to the `stable` branch with the help of GitHub actions.
 The general workflow is this:
 
 ```console
-TR_VERSION=...
 RELEASE_VERSION=...
 
 # Switch to the stable branch.
@@ -295,10 +294,10 @@ git checkout stable
 git merge develop
 
 # Create a special commit `docs: release X.Y.Z` marking the release in the
-# relevant changelog file. Then tag it with `tr1-X.Y.Z` or `tr2-X.Y.Z`.
+# relevant changelog file. Then tag it with `trx-X.Y.Z`.Y.Z`.
 # You can do that by hand, or run the command below:
-tools/release commit ${TR_VERSION} ${RELEASE_VERSION}
-tools/release tag ${TR_VERSION} ${RELEASE_VERSION}
+tools/release commit ${RELEASE_VERSION}
+tools/release tag ${RELEASE_VERSION}
 
 # Review the changelog content.
 
@@ -309,8 +308,8 @@ git checkout develop
 git merge --ff stable
 
 # Review both branches and changes. If everything is okay, push to GitHub.
-# You can do this by hand: git push origin develop stable tr1-X.Y.Z, or:
-# tools/release push ${TR_VERSION} ${RELEASE_VERSION}
+# You can do this by hand: git push origin develop stable trx-X.Y.Z, or:
+# tools/release push ${RELEASE_VERSION}
 ```
 
 ### Hotfixes

@@ -7,6 +7,7 @@ from pathlib import Path
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=f"Create a DMG installer.")
     parser.add_argument("-a", "--app-name")
+    parser.add_argument("-d", "--dmg-name", type=Path)
     parser.add_argument("-i", "--icon-path", type=Path)
     return parser.parse_args()
 
@@ -45,12 +46,11 @@ def create_dmg(app_name: str, dmg_name: str, icon_path: Path, app_bundle_path: P
 def main() -> None:
     args = parse_args()
 
-    dmg_name = Path(f"{args.app_name}-Installer.dmg")
-    if dmg_name.is_file():
-        dmg_name.unlink()
+    if args.dmg_name.is_file():
+        args.dmg_name.unlink()
 
     app_bundle_path = Path(f"/tmp/{args.app_name}.app")
-    create_dmg(args.app_name, dmg_name, args.icon_path, app_bundle_path)
+    create_dmg(args.app_name, args.dmg_name, args.icon_path, app_bundle_path)
 
 
 if __name__ == "__main__":

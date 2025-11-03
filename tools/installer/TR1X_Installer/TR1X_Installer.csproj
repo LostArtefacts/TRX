@@ -51,6 +51,6 @@
     <Resource Include="Resources\TR1X.png" />
     <EmbeddedResource Include="Resources\const.json" />
     <EmbeddedResource Include="Resources\Lang\en.json" />
-    <EmbeddedResource Include="Resources\release.zip" />
+    <EmbeddedResource Include="Resources\release.zip" Condition="Exists('Resources\release.zip')" />
   </ItemGroup>
 </Project>

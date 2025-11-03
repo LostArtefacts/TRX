@@ -1,26 +1,27 @@
 import argparse
 import os
+import shutil
 from dataclasses import dataclass, fields
 from pathlib import Path
 from subprocess import check_call, run
 from typing import Any, Self
 
 from shared.packaging import create_zip
-from shared.versioning import generate_version
+from shared.paths import TOOLS_DIR
+from shared.versioning import generate_package_name, generate_version
 
 
 @dataclass
 class BaseOptions:
     platform: str
-    tr_version: int
 
     @property
     def build_root(self) -> Path:
-        return Path(f"/app/build/tr{self.tr_version}/{self.platform}/")
+        return Path(f"/app/build/trx/{self.platform}/")
 
     @property
     def version(self) -> str:
-        return generate_version(self.tr_version)
+        return generate_version()
 
     @classmethod
     def from_args(cls, args: argparse.Namespace) -> Self:
@@ -34,17 +35,21 @@ class BaseOptions:
 
 @dataclass
 class PackageOptions(BaseOptions):
+    tr_version: int
+    platform: str
+
     @property
-    def release_zip_filename(self) -> Path:
-        platform = self.platform
-        if platform == "win":
-            platform = "windows"
-        return Path(
-            f"TR{self.tr_version}X-{self.version}-{platform.title()}.zip"
+    def default_stem(self) -> Path:
+        return generate_package_name(
+            engine_version=self.version,
+            platform=self.platform,
+            game_version=self.tr_version,
         )
 
     @property
     def ship_dirs(self) -> list[Path]:
+        if self.platform == "win-installer":
+            return []
         return [
             Path(f"/app/data/common/ship/"),
             Path(f"/app/data/tr{self.tr_version}/ship/"),
@@ -53,18 +58,21 @@ class PackageOptions(BaseOptions):
     @property
     def release_zip_files(self) -> list[tuple[Path, str]]:
         if self.platform == "linux":
-            return [
-                (
-                    self.build_root / f"TR{self.tr_version}X",
-                    f"TR{self.tr_version}X",
-                )
-            ]
+            return [(self.build_root / f"TRX", f"TRX")]
 
         elif self.platform == "win":
+            return [(self.build_root / f"TRX.exe", f"TRX.exe")]
+        elif self.platform == "win-installer":
             return [
                 (
-                    self.build_root / f"TR{self.tr_version}X.exe",
-                    f"TR{self.tr_version}X.exe",
+                    TOOLS_DIR
+                    / f"installer/out/TR{self.tr_version}X_Installer.exe",
+                    generate_package_name(
+                        engine_version=self.version,
+                        platform=self.platform,
+                        game_version=self.tr_version,
+                    )
+                    + ".exe",
                 )
             ]
 
@@ -90,9 +98,9 @@ class BuildOptions(BaseOptions):
     @property
     def compressable_exes(self) -> list[Path]:
         if self.platform == "linux":
-            return [self.build_root / f"TR{self.tr_version}X"]
+            return [self.build_root / f"TRX"]
         elif self.platform == "win":
-            return [self.build_root / f"TR{self.tr_version}X.exe"]
+            return [self.build_root / f"TRX.exe"]
         return []
 
     @property
@@ -122,7 +130,6 @@ class BuildCommand(BaseCommand):
 
     def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument("--platform")
-        parser.add_argument("--tr-version", type=int, required=True)
         parser.add_argument(
             "--target",
             choices=["debug", "release", "debugoptim"],
@@ -147,7 +154,7 @@ class BuildCommand(BaseCommand):
                 command.extend(["--pkg-config-path", pkg_config_path])
             check_call(command)
 
-        check_call(["meson", "compile", f"TR{args.tr_version}X"], cwd=options.build_root)
+        check_call(["meson", "compile", f"TRX"], cwd=options.build_root)
 
         if options.target == "release":
             for exe_path in options.compressable_exes:
@@ -158,15 +165,22 @@ class PackageCommand(BaseCommand):
     name = "package"
 
     def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("--platform")
         parser.add_argument("--tr-version", type=int, required=True)
         parser.add_argument("-o", "--output", type=Path)
+        parser.add_argument("--no-zip", action="store_true")
 
     def run(self, args: argparse.Namespace) -> None:
         options = PackageOptions.from_args(args)
         if args.output:
             zip_path = args.output
+            if zip_path.suffix.lower() != ".zip" and not args.no_zip:
+                zip_path /= options.default_stem + ".zip"
         else:
-            zip_path = options.release_zip_filename
+            if args.no_zip:
+                zip_path = output.default_stem
+            else:
+                zip_path = output.default_stem + ".zip"
 
         source_files = [
             *[
@@ -178,7 +192,14 @@ class PackageCommand(BaseCommand):
             *options.release_zip_files,
         ]
 
-        create_zip(zip_path, source_files)
+        if args.no_zip:
+            for src_path, dst_name in source_files:
+                dst_path = zip_path / dst_name
+                dst_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(src_path, dst_path)
+        else:
+            zip_path.parent.mkdir(parents=True, exist_ok=True)
+            create_zip(zip_path, source_files)
         print(f"Created {zip_path}")
 
 

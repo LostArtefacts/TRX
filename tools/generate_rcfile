@@ -25,7 +25,7 @@ def write_rc_template(
 
 def main() -> None:
     args = parse_args()
-    version = generate_version(1)
+    version = generate_version()
 
     for output_path in args.output or []:
         write_rc_template(

@@ -3,10 +3,6 @@ name: Create a new release
 on:
   workflow_call:
     inputs:
-      changelog_game_version:
-        type: string
-        description: "Game version to build the changelog from"
-        required: true
       draft:
         type: boolean
         description: "Draft"
@@ -42,13 +38,20 @@ jobs:
       - name: "Prepare release data"
         id: prepare_release_data
         run: |
-          echo -n "release_name=" >> $GITHUB_OUTPUT
-          just output-release-name ${{ inputs.changelog_game_version }} >> $GITHUB_OUTPUT
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          just output-current-changelog ${{ inputs.changelog_game_version }} >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          if [ "${{ inputs.prerelease }}" = "1" ] || [ "${{ inputs.prerelease }}" = "true" ]; then
+            echo "release_name=Development snapshot" >> $GITHUB_OUTPUT
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            just output-current-changelog >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo -n "release_name=" >> $GITHUB_OUTPUT
+            just output-release-name >> $GITHUB_OUTPUT
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            just output-current-changelog --stable >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
 
-      - name: "Download built game assets"
+      - name: "Download built assets"
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
