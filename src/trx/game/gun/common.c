@@ -176,8 +176,7 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
     ASSERT(obj_id != NO_OBJECT);
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     lara_info->back_gun_obj_id = obj_id;
-    lara_info->back_gun_type =
-        weapon_type == LGT_UNARMED ? lara_info->last_gun_type : weapon_type;
+    lara_info->back_gun_type = weapon_type;
 }
 
 void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
