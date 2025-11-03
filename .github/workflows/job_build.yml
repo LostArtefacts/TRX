@@ -1,0 +1,70 @@
+name: Build TRX and the installer
+
+on:
+  workflow_call:
+    inputs:
+      platform:
+        type: string
+        description: "Platform to build for"
+        required: true
+      target:
+        type: string
+        description: "Target to build for"
+        required: true
+      zip:
+        type: boolean
+        description: "Pack the artifacts into zip"
+        required: true
+
+jobs:
+  build:
+    name: Build release assets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install dependencies
+        uses: taiki-e/install-action@just
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - id: vars
+        name: Prepare variables
+        run: |
+          echo "version=$(just output-current-version)" >> $GITHUB_OUTPUT
+          echo "tr1_dir=build/artifacts/tr1/" >> $GITHUB_OUTPUT
+          echo "tr2_dir=build/artifacts/tr2/" >> $GITHUB_OUTPUT
+          echo "tr1_asset=$(just output-package-name --game 1 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
+          echo "tr2_asset=$(just output-package-name --game 2 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
+
+      - name: Download large assets
+        if: ${{ inputs.target == 'release' }}
+        run: |
+          just download-assets 1
+          just download-assets 2
+
+      - name: Package asset (${{ inputs.platform }})
+        run: |
+          if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
+            just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}"
+            just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}"
+          else
+            just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}" --no-zip
+            just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}" --no-zip
+          fi
+
+      - name: Upload artifacts (tr1)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.tr1_asset }}
+          path: ${{ steps.vars.outputs.tr1_dir }}
+
+      - name: Upload artifacts (tr2)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.tr2_asset }}
+          path: ${{ steps.vars.outputs.tr2_dir }}

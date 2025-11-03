@@ -36,5 +36,6 @@ CommonPaths = BasePaths()
 CommonPaths.data_dir = DATA_DIR / "common"
 CommonPaths.shipped_data_dir = CommonPaths.data_dir / "ship"
 CommonPaths.src_dir = SHARED_SRC_DIR
+CommonPaths.changelog_path = DOCS_DIR / "CHANGELOG.md"
 
 PROJECT_PATHS = {1: TR1Paths, 2: TR2Paths}

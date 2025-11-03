@@ -24,7 +24,13 @@ env:
 
 jobs:
   build:
-    name: Build release assets (mac)
+    strategy:
+      matrix:
+        game:
+          - { version: 1 }
+          - { version: 2 }
+
+    name: Build release assets
     runs-on: macos-14
     continue-on-error: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
     steps:
@@ -34,9 +40,6 @@ jobs:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
         run: |
-          echo ${{ secrets.MACOS_KEYCHAIN_PWD }}
-          echo ${{ secrets.MACOS_CERTIFICATE }}
-          echo ${{ secrets.MACOS_CERTIFICATE_PWD }}
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           echo -n "$MACOS_CERTIFICATE" | base64 --decode -o $CERTIFICATE_PATH
@@ -53,6 +56,14 @@ jobs:
           submodules: 'true'
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - id: vars
+        name: Prepare variables
+        run: |
+          echo "version=$(tools/get_version)" >> $GITHUB_OUTPUT
+          echo "tag=tr${{matrix.game.version}}" >> $GITHUB_OUTPUT
+          echo "name=TR${{matrix.game.version}}X" >> $GITHUB_OUTPUT
+          echo "asset_name=$(tools/output_package_name --game ${{matrix.game.version}} --platform mac)" >> $GITHUB_OUTPUT
 
       - name: Extend PATH for MacPorts
         run: |
@@ -97,43 +108,43 @@ jobs:
 
       - name: Download large assets
         #if: ${{ inputs.target == 'release' }}
-        run: tools/download_assets 1
+        run: tools/download_assets ${{ matrix.game.version }}
 
       - name: Build arm64 and create app bundle
         env:
           CC: clang
         run: |
           BUILD_DIR=build-arm64
-          BUILD_OPTIONS="src --prefix=/tmp/TR1X.app --bindir=Contents/MacOS --buildtype ${{ inputs.target }}"
+          BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --buildtype ${{ inputs.target }}"
           meson setup $BUILD_DIR $BUILD_OPTIONS
-          meson install -C $BUILD_DIR --tags tr1
+          meson install -C $BUILD_DIR --tags "${{ steps.vars.outputs.tag }},common"
 
       - name: Build x86-64
         env:
           CC: clang
         run: |
           BUILD_DIR=build-x86-64
-          BUILD_OPTIONS="src --prefix=/tmp/TR1X.app --bindir=Contents/MacOS --cross-file tools/shared/mac/x86-64_cross_file.txt --buildtype ${{ inputs.target }}"
+          BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --cross-file tools/shared/mac/x86-64_cross_file.txt --buildtype ${{ inputs.target }}"
           meson setup $BUILD_DIR $BUILD_OPTIONS
           meson compile -C $BUILD_DIR
 
       - name: Fuse universal executable
         run: |
-          BUNDLE_EXEC_DIR=/tmp/TR1X.app/Contents/MacOS
+          BUNDLE_EXEC_DIR=/tmp/${{ steps.vars.outputs.name }}.app/Contents/MacOS
 
           # Fuse executable and move it into the app bundle.
-          lipo -create build-x86-64/TR1X $BUNDLE_EXEC_DIR/TR1X -output $BUNDLE_EXEC_DIR/TR1X_universal
-          mv $BUNDLE_EXEC_DIR/TR1X_universal $BUNDLE_EXEC_DIR/TR1X
+          lipo -create build-x86-64/TRX $BUNDLE_EXEC_DIR/TRX -output $BUNDLE_EXEC_DIR/TRX_universal
+          mv $BUNDLE_EXEC_DIR/TRX_universal $BUNDLE_EXEC_DIR/TRX
 
           # Update dynamic library links in the fused executable.
-          ./tools/shared/mac/bundle_dylibs -a TR1X --links-only
+          ./tools/shared/mac/bundle_dylibs -a ${{ steps.vars.outputs.name }} --links-only
 
       - name: Sign app bundle
         run: |
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | awk -F'"' '{print $2}')
-          xattr -cr /tmp/TR1X.app
-          /usr/bin/codesign --force --deep --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v /tmp/TR1X.app
+          xattr -cr /tmp/${{ steps.vars.outputs.name }}.app
+          /usr/bin/codesign --force --deep --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v /tmp/${{ steps.vars.outputs.name }}.app
 
       - name: Create, sign and notarize disk image
         env:
@@ -143,21 +154,17 @@ jobs:
         run: |
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | awk -F'"' '{print $2}')
-          tools/shared/mac/create_installer -a TR1X -i data/tr1/mac/icon.icns
-          xattr -cr TR1X-Installer.dmg
-          /usr/bin/codesign --force --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v TR1X-Installer.dmg
-          xcrun notarytool submit --wait --apple-id "$MACOS_APPLEID" --password "$MACOS_APP_PWD" --team-id "$MACOS_TEAMID" TR1X-Installer.dmg
-          xcrun stapler staple -v TR1X-Installer.dmg
-          mv TR1X-Installer.dmg "TR1X-$(tools/get_version 1)-Installer.dmg"
-
-      - id: vars
-        name: Prepare variables
-        run: echo "version=$(tools/get_version 1)" >> $GITHUB_OUTPUT
+          DMG_NAME="${{ steps.vars.outputs.asset_name }}.dmg"
+          tools/shared/mac/create_installer -a ${{ steps.vars.outputs.name }} -i "data/${{ steps.vars.outputs.tag }}/mac/icon.icns" -d "${DMG_NAME}"
+          xattr -cr "${DMG_NAME}"
+          /usr/bin/codesign --force --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v "${DMG_NAME}"
+          xcrun notarytool submit --wait --apple-id "$MACOS_APPLEID" --password "$MACOS_APP_PWD" --team-id "$MACOS_TEAMID" "${DMG_NAME}"
+          xcrun stapler staple -v "${DMG_NAME}"
 
       - name: Upload signed+notarized installer image
         uses: actions/upload-artifact@v4
         with:
-          name: TR1X-${{ steps.vars.outputs.version }}-mac
+          name: ${{ steps.vars.outputs.asset_name }}
           path: |
             *.dmg
           compression-level: 0 # .dmg is already compressed.

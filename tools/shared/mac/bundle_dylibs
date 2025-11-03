@@ -86,7 +86,7 @@ def main() -> None:
     args = parse_args()
 
     app_bundle_path = Path(f"/tmp/{args.app_name}.app")
-    app_binary_path = app_bundle_path / f"Contents/MacOS/{args.app_name}"
+    app_binary_path = app_bundle_path / f"Contents/MacOS/TRX"
     frameworks_path = app_bundle_path / "Contents/Frameworks"
 
     if args.copy_only or not args.links_only:

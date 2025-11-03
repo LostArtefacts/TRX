@@ -7,7 +7,7 @@ from typing import Any
 
 from shared.changelog import update_changelog_to_new_version
 from shared.git import Git
-from shared.paths import PROJECT_PATHS
+from shared.paths import CommonPaths
 
 
 @dataclass
@@ -24,7 +24,6 @@ class BaseCommand:
         self.git = git
 
     def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument("game_version", choices=[1, 2], type=int)
         parser.add_argument("version")
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
@@ -52,13 +51,13 @@ class CommitCommand(BaseCommand):
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
         old_tag = self.git.get_branch_version(
-            pattern=f"tr{args.game_version}-*",
+            pattern=f"trx-*",
             branch="origin/stable",
             abbrev=0,
         )
-        new_tag = f"tr{args.game_version}-{args.version}"
+        new_tag = f"trx-{args.version}"
 
-        changelog_path = PROJECT_PATHS[args.game_version].changelog_path
+        changelog_path = CommonPaths.changelog_path
         old_changelog = changelog_path.read_text()
         new_changelog = update_changelog_to_new_version(
             old_changelog,
@@ -87,7 +86,7 @@ class CommitCommand(BaseCommand):
 
         changelog_path.write_text(new_changelog)
         self.git.add(changelog_path)
-        self.git.commit(f"docs/tr{args.game_version}: release {args.version}")
+        self.git.commit(f"docs: release {args.version}")
 
 
 class TagCommand(BaseCommand):
@@ -95,7 +94,7 @@ class TagCommand(BaseCommand):
     help = "Tag the current commit with the target version"
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
-        new_tag = f"tr{args.game_version}-{args.version}"
+        new_tag = f"trx-{args.version}"
         self.git.delete_tag(new_tag)
         self.git.create_tag(new_tag)
 
@@ -116,7 +115,7 @@ class PushCommand(BaseCommand):
         )
 
     def run(self, args: argparse.Namespace, options: Options) -> None:
-        new_tag = f"tr{args.game_version}-{args.version}"
+        new_tag = f"trx-{args.version}"
         self.git.push(
             "origin",
             ["develop", "stable", new_tag],
