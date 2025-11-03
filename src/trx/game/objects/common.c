@@ -62,6 +62,9 @@ STATIC_OBJECT_3D *Object_Get3DStatic(const int32_t static_id)
 
 STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
 {
+    if (static_id < 0 || static_id >= MAX_STATIC_OBJECTS_2D) {
+        return nullptr;
+    }
     return &m_StaticObjects2D[static_id];
 }
 

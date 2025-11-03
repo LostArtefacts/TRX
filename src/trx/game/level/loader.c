@@ -30,19 +30,6 @@
 
 static LEVEL_INFO m_Info = {};
 
-static size_t M_GetObjectCount(const LEVEL_LOADER *const loader)
-{
-    switch (loader->game_version) {
-    case 1:
-        return 191;
-    case 2:
-        return 265;
-    default:
-        ASSERT_FAIL();
-    }
-    return 0;
-}
-
 static size_t M_GetSampleCount(const LEVEL_LOADER *const loader)
 {
     switch (loader->game_version) {
@@ -1079,30 +1066,37 @@ void Level_AppendSpriteTextures(
 void Level_ReadSpriteSequences(
     const LEVEL_LOADER *const loader, VFILE *const file)
 {
-    const int32_t max_obj_id = M_GetObjectCount(loader);
-
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sequences = VFile_ReadS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
+
+    int32_t static_id = 0;
     for (int32_t i = 0; i < num_sequences; i++) {
         const int32_t id = VFile_ReadS32(file);
         const int16_t num_meshes = VFile_ReadS16(file);
         const int16_t mesh_idx = VFile_ReadS16(file);
 
-        if (id >= 0 && id < max_obj_id) {
-            OBJECT *const obj = Object_GetByGameID(id);
-            ASSERT(obj != nullptr);
+        // In OG, a sprite was determined as either a game or static type based
+        // on the original total game object count. As IDs are freely assignable
+        // in TRX, a defined list of game sprites must instead be referred to.
+        const OBJECT_ID object_id = Object_FromGameID(id);
+        if (object_id != NO_OBJECT
+            && Object_IsType(object_id, g_GameSpriteObjects)) {
+            OBJECT *const obj = Object_Get(object_id);
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx;
             obj->anim_idx = NO_ANIM;
             obj->loaded = true;
-        } else if (id - max_obj_id < MAX_STATIC_OBJECTS_2D) {
-            STATIC_OBJECT_2D *const obj = Object_Get2DStatic(id - max_obj_id);
+        } else {
+            STATIC_OBJECT_2D *const obj = Object_Get2DStatic(static_id);
+            if (obj == nullptr) {
+                Shell_ExitSystemFmt("Invalid sprite slot (%d)", id);
+                break;
+            }
             obj->frame_count = ABS(num_meshes);
             obj->texture_idx = mesh_idx;
             obj->loaded = true;
-        } else {
-            Shell_ExitSystemFmt("Invalid sprite slot (%d)", id);
+            static_id++;
         }
     }
 
