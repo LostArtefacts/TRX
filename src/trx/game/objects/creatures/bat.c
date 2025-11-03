@@ -138,7 +138,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = BAT_HITPOINTS;
     obj->radius = BAT_RADIUS;
     obj->smartness = BAT_SMARTNESS;
-    obj->lot_setup = g_LOT_Flyer;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;

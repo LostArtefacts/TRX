@@ -217,7 +217,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 375;
     obj->radius = WOLF_RADIUS;
     obj->smartness = WOLF_SMARTNESS;
-    obj->lot_setup = g_LOT_Quadruped;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_QUADRUPED);
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;

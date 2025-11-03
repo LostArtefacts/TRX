@@ -327,7 +327,7 @@ static void M_Setup(OBJECT *const obj)
     obj->pivot_length = 150;
     obj->radius = FLYER_RADIUS;
     obj->smartness = FLYER_SMARTNESS;
-    obj->lot_setup = g_LOT_Beast;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_BEAST);
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
@@ -346,7 +346,7 @@ static void M_Setup2(OBJECT *const obj)
     obj->setup_func = M_Setup2;
     obj->initialise_func = M_Initialise2;
     obj->smartness = WARRIOR2_SMARTNESS;
-    obj->lot_setup = g_LOT_Default;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
 }
 
 static void M_Setup3(OBJECT *const obj)
@@ -357,7 +357,7 @@ static void M_Setup3(OBJECT *const obj)
     *obj = *Object_Get(O_WARRIOR_1);
     obj->setup_func = M_Setup3;
     obj->initialise_func = M_Initialise2;
-    obj->lot_setup = g_LOT_Default;
+    obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
 }
 
 void Mutant_ToggleExplosions(bool enable)

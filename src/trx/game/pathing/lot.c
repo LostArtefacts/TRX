@@ -11,6 +11,62 @@
 static int32_t m_SlotsUsed = 0;
 static CREATURE *m_BaddieSlots = nullptr;
 
+LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
+{
+    switch (type) {
+    case LOT_SETUP_DEFAULT:
+        return (LOT_SETUP) {
+            .step = STEP_L,
+            .drop = g_TRVersion == 1 ? -STEP_L : -STEP_L * 2,
+            .fly = 0,
+            .block_mask = BOX_BLOCKED,
+        };
+
+    case LOT_SETUP_BEAST:
+        return (LOT_SETUP) {
+            .step = STEP_L,
+            .drop = g_TRVersion == 1 ? -STEP_L : -STEP_L * 2,
+            .fly = 0,
+            .block_mask = BOX_BLOCKABLE,
+        };
+
+    case LOT_SETUP_QUADRUPED:
+        return (LOT_SETUP) {
+            .step = STEP_L,
+            .drop = -WALL_L,
+            .fly = 0,
+            .block_mask = BOX_BLOCKED,
+        };
+
+    case LOT_SETUP_JUMPER:
+        return (LOT_SETUP) {
+            .step = WALL_L / 2,
+            .drop = -WALL_L,
+            .fly = 0,
+            .block_mask = BOX_BLOCKED,
+        };
+
+    case LOT_SETUP_CLIMBER:
+        return (LOT_SETUP) {
+            .step = WALL_L,
+            .drop = -WALL_L,
+            .fly = 0,
+            .block_mask = BOX_BLOCKED,
+        };
+
+    case LOT_SETUP_FLYER:
+        return (LOT_SETUP) {
+            .step = WALL_L * 20,
+            .drop = -WALL_L * 20,
+            .fly = STEP_L / 16,
+            .block_mask = BOX_BLOCKED,
+        };
+    }
+
+    ASSERT_FAIL();
+    return (LOT_SETUP) {};
+}
+
 void LOT_InitialiseArray(void)
 {
     m_BaddieSlots =

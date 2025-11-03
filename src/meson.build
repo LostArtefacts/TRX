@@ -469,7 +469,6 @@ common_sources = [
   'trx/game/packer.c',
   'trx/game/pathing/box.c',
   'trx/game/pathing/lot.c',
-  'trx/game/pathing/vars.c',
   'trx/game/phase/executor.c',
   'trx/game/phase/phase_cutscene.c',
   'trx/game/phase/phase_demo.c',
