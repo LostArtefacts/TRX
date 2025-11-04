@@ -29,6 +29,23 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
     Item_Kill(grenade_item_num);
 }
 
+static bool M_CanExplodeTarget(const ITEM *const item)
+{
+    // TODO: as some creatures have more than one death animation, have a
+    // way to expose those specific ones for checking, or delegate
+    // responsibility directly to the objects.
+    const OBJECT *const object = Object_Get(item->object_id);
+    const ITEM_ACTION action = ItemAction_ToGameID(ITEM_ACTION_FINISH_LEVEL);
+    for (int32_t i = 0; i < object->anim_count; i++) {
+        const ANIM *const anim = Object_GetAnim(object, i);
+        if (Anim_HasFXCommand(anim, action)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -124,11 +141,8 @@ static void M_Control(const int16_t item_num)
             target_item, nullptr, nullptr, g_Weapons[LGT_GRENADE].damage);
         Stats_AddAmmoHits();
 
-        if (target_item->hit_points <= 0) {
-            if (target_item->object_id != O_DRAGON_FRONT
-                && target_item->object_id != O_BIRD_GUARDIAN) {
-                Creature_Die(target_item_num, true);
-            }
+        if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
+            Creature_Die(target_item_num, true);
         }
     }
 

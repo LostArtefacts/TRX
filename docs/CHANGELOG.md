@@ -135,6 +135,7 @@
     - `is_demo_version`
 - fixed the new game modes dialog requiring the Action key to show up (TR2 dialogs don't need this.)
 - fixed Lara's pistols not being removed from holsters when she equips during a cutscene (#4136)
+- fixed potential softlocks in custom levels with enemies who have end-level flip effects but the player uses the grenade launcher to kill them (#4261)
 - fixed Lara not having holstered pistols after she changes costumes in the Diving Area cutscene (#4142)
 - fixed ambient music not playing in demo levels (#4046, regression from 1.3)
 - fixed twists not adhering to original game movement (#4078, regression from 1.4)
