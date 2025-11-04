@@ -13,12 +13,12 @@ static void M_ReadAngles(
     JSON_OBJECT *const obj, const char *const name, const char *const path,
     const char *const key, int16_t *const angles)
 {
-    JSON_ARRAY *const arr = JSON_ObjectGetArray(obj, "lock_angles");
+    JSON_ARRAY *const arr = JSON_ObjectGetArray(obj, key);
     if (arr == nullptr) {
         return;
     }
     if (arr->length != 4) {
-        Shell_ExitSystemFmt("invalid 'lock_angles' for '%s' in %s", name, path);
+        Shell_ExitSystemFmt("invalid '%s' for '%s' in %s", key, name, path);
     }
     for (size_t i = 0; i < 4; i++) {
         angles[i] = JSON_ArrayGetInt(arr, i, angles[i]) * DEG_1;
