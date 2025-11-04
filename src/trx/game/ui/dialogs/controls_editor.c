@@ -176,26 +176,6 @@ static bool M_IsRoleUsable(const INPUT_ROLE role)
     return true;
 }
 
-// Locate the index-th role row that is usable; sentinel if none.
-static const UI_CONTROLS_EDITOR_ROW *M_GetInputRow(
-    const UI_CONTROLS_EDITOR_GROUP *const group, const int32_t index)
-{
-    int32_t found = 0;
-    for (int32_t i = 0; group->rows[i].role != (INPUT_ROLE)-1; i++) {
-        if (found == index) {
-            return &group->rows[i];
-        }
-        found++;
-    }
-    return nullptr;
-}
-
-static INPUT_ROLE M_GetInputRole(
-    const UI_CONTROLS_EDITOR_GROUP *const group, const int32_t row)
-{
-    return M_GetInputRow(group, row)->role;
-}
-
 static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
 {
     int32_t count = 0;
@@ -275,11 +255,11 @@ static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *const s)
         && g_Config.ui.enable_wraparound) {
         s->phase = M_PHASE_NAVIGATE_INPUTS;
         UI_Scrollable_SelectLastItem(&s->scroll);
-        s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
+        s->active_role = s->active_group->rows[s->scroll.sel_item].role;
     } else {
         return UI_CONTROLS_CHOICE_NOOP;
     }
-    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
+    s->active_role = s->active_group->rows[s->scroll.sel_item].role;
     return UI_CONTROLS_CHOICE_NOOP;
 }
 
@@ -298,11 +278,11 @@ static UI_CONTROLS_CHOICE M_NavigateGroup(UI_CONTROLS_EDITOR_STATE *const s)
     } else if (g_InputDB.menu_down && s->active_layout != 0) {
         s->phase = M_PHASE_NAVIGATE_INPUTS;
         UI_Scrollable_SelectFirstItem(&s->scroll);
-        s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
+        s->active_role = s->active_group->rows[s->scroll.sel_item].role;
     } else if (g_InputDB.menu_up) {
         s->phase = M_PHASE_NAVIGATE_LAYOUT;
     }
-    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
+    s->active_role = s->active_group->rows[s->scroll.sel_item].role;
     return UI_CONTROLS_CHOICE_NOOP;
 }
 
@@ -330,7 +310,7 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
     } else {
         return UI_CONTROLS_CHOICE_NOOP;
     }
-    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
+    s->active_role = s->active_group->rows[s->scroll.sel_item].role;
     return UI_CONTROLS_CHOICE_NOOP;
 }
 
@@ -450,7 +430,7 @@ static void M_Group(
             continue;
         }
 
-        const UI_CONTROLS_EDITOR_ROW *const row = M_GetInputRow(group, row_idx);
+        const UI_CONTROLS_EDITOR_ROW *const row = &group->rows[row_idx];
         UI_BeginStack(UI_STACK_HORIZONTAL);
         UI_BeginResize(s->input_size, -1.0f);
         UI_BeginAnchor(0.0f, 0.5f);
@@ -539,7 +519,7 @@ void UI_ControlsEditor_Init(
     s->scroll.sel_item = 0;
     s->scroll.vis_items = MIN(s->max_group_items, M_GetVisibleRows());
     s->scroll.max_items = M_GetInputRoleCount(s->active_group);
-    s->active_role = M_GetInputRole(s->active_group, s->scroll.sel_item);
+    s->active_role = s->active_group->rows[s->scroll.sel_item].role;
 
     s->label_size = 0.0f;
     for (int32_t i = 0; i < INPUT_ROLE_NUMBER_OF; i++) {
