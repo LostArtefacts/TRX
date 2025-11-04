@@ -78,6 +78,12 @@ bool Anim_HasChange(const ANIM *const anim, const int16_t goal_state_id)
     return false;
 }
 
+bool Anim_HasFXCommand(const ANIM *const anim, const int16_t fx_num)
+{
+    return Anim_HasFXCommandBetween(
+        anim, fx_num, 0, anim->frame_end - anim->frame_base);
+}
+
 bool Anim_HasFXCommandBetween(
     const ANIM *const anim, const int16_t fx_num, const int32_t frame_a,
     const int32_t frame_b)
