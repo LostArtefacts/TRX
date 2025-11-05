@@ -32,6 +32,7 @@
         "data/injections/pda_model.bin",
         "data/injections/pickup_aid.bin",
         "data/injections/lara_extra.bin",
+        "data/injections/lara_rifle_sfx.bin",
     ],
 
     "levels": [
