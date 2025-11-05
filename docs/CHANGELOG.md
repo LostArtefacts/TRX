@@ -78,6 +78,7 @@
 - fixed select level feature slot status not updated on save
 - fixed "Story So Far..." showing loading screens
 - fixed matrix stack overflow crash when moving through overlapping or dome portals (#2685)
+- fixed the gun-draw SFX playing when holstering the shotgun (#3755)
 - fixed Lara's braid remaining reflective if the fly cheat is used to resurrect her on the Midas hand
 - fixed invulnerability cheat not getting disabled during the demos (regression from 4.13)
 - fixed crash when loading OG saves made in City of Khamoon, while the "Restore PS1 enemies" option is on (#4217, regression from 2.16)
@@ -148,6 +149,8 @@
 - fixed weird clipping when moving through overlapping or dome portals (#2685)
 - fixed Lara reloading the harpoon gun if she draws the weapon and does not have any harpoons (#4259)
 - fixed Lara holding on to the grenade launcher for too long when undrawing it (#3474)
+- fixed the holster SFX playing when drawing rifle type weapons (#3755)
+- fixed missing SFX in the harpoon drawing and undrawing animations (#3755)
 - fixed invulnerability cheat not getting disabled during the demos (regression from 1.3)
 - fixed disable targeting allies option not working (#4184, regression from 1.5)
 - fixed Lara losing forward momentum on springboards when the wall glitch mode option is set to `Fixed` (#4187, regression from 1.2)
