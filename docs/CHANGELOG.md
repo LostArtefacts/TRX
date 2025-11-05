@@ -147,6 +147,7 @@
 - fixed wrong lighting of exploded body parts
 - fixed weird clipping when moving through overlapping or dome portals (#2685)
 - fixed Lara reloading the harpoon gun if she draws the weapon and does not have any harpoons (#4259)
+- fixed Lara holding on to the grenade launcher for too long when undrawing it (#3474)
 - fixed invulnerability cheat not getting disabled during the demos (regression from 1.3)
 - fixed disable targeting allies option not working (#4184, regression from 1.5)
 - fixed Lara losing forward momentum on springboards when the wall glitch mode option is set to `Fixed` (#4187, regression from 1.2)
