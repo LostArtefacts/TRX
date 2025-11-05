@@ -146,6 +146,7 @@
 - fixed Lara's thigh meshes defaulting if entering the fly cheat while holding a flare and she doesn't currently have holstered weapons (#4143, regression from 1.3)
 - fixed wrong lighting of exploded body parts
 - fixed weird clipping when moving through overlapping or dome portals (#2685)
+- fixed Lara reloading the harpoon gun if she draws the weapon and does not have any harpoons (#4259)
 - fixed invulnerability cheat not getting disabled during the demos (regression from 1.3)
 - fixed disable targeting allies option not working (#4184, regression from 1.5)
 - fixed Lara losing forward momentum on springboards when the wall glitch mode option is set to `Fixed` (#4187, regression from 1.2)

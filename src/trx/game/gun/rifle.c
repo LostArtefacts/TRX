@@ -211,10 +211,10 @@ finish:
             lara->harpoon_ammo.ammo++;
         }
     } else if ((lara->harpoon_ammo.ammo % recoil) == 0) {
-        m_ReloadHarpoon = true;
         if (is_ngplus) {
             lara->harpoon_ammo.ammo += recoil;
         }
+        m_ReloadHarpoon = lara->harpoon_ammo.ammo > 0;
     }
 }
 
