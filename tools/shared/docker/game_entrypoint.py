@@ -177,10 +177,11 @@ class PackageCommand(BaseCommand):
             if zip_path.suffix.lower() != ".zip" and not args.no_zip:
                 zip_path /= options.default_stem + ".zip"
         else:
+            zip_path = Path()
             if args.no_zip:
-                zip_path = output.default_stem
+                zip_path /= options.default_stem
             else:
-                zip_path = output.default_stem + ".zip"
+                zip_path /= options.default_stem + ".zip"
 
         source_files = [
             *[
