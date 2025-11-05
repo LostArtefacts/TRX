@@ -13,9 +13,11 @@
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
 
-#define M_EQUIP_ANIM 1
-#define M_DRAW_FRAME 10
-#define M_UNDRAW_FRAME 21
+typedef struct {
+    int16_t equip_anim_idx;
+    int16_t draw_frame;
+    int16_t undraw_frame;
+} M_ANIM_SETUP;
 
 typedef enum {
     LA_G_AIM = 0,
@@ -30,8 +32,25 @@ typedef enum {
     LA_G_SURF_UNDRAW = 9,
 } M_ANIM;
 
+static const M_ANIM_SETUP m_RegularSetup = {
+    .equip_anim_idx = 1,
+    .draw_frame = 10,
+    .undraw_frame = 21,
+};
+
+static const M_ANIM_SETUP m_GrenadeSetup = {
+    .equip_anim_idx = 0,
+    .draw_frame = 13,
+    .undraw_frame = 14,
+};
+
 static bool m_M16Firing = false;
 static bool m_ReloadHarpoon = false;
+
+static M_ANIM_SETUP M_GetSetup(const LARA_GUN_TYPE weapon_type)
+{
+    return weapon_type == LGT_GRENADE ? m_GrenadeSetup : m_RegularSetup;
+}
 
 static M_ANIM M_GetReadyAnim(const LARA_GUN_TYPE weapon_type)
 {
@@ -431,19 +450,16 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
 void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
 {
     ITEM *item;
-
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    const M_ANIM_SETUP setup = M_GetSetup(weapon_type);
+
     if (lara->gun_item_num != NO_ITEM) {
         item = Item_Get(lara->gun_item_num);
     } else {
         lara->gun_item_num = Item_Create();
         item = Item_Get(lara->gun_item_num);
         item->object_id = Gun_GetWeaponAnim(weapon_type);
-        if (weapon_type == LGT_GRENADE) {
-            Item_SwitchToObjAnim(item, 0, 0, O_LARA_GRENADE);
-        } else {
-            Item_SwitchToAnim(item, M_EQUIP_ANIM, 0);
-        }
+        Item_SwitchToAnim(item, setup.equip_anim_idx, 0);
         item->goal_anim_state = LA_G_DRAW;
         item->current_anim_state = LA_G_DRAW;
         item->status = IS_ACTIVE;
@@ -458,7 +474,7 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
     if (item->current_anim_state == LA_G_AIM
         || item->current_anim_state == LA_G_UAIM) {
         M_Ready(weapon_type);
-    } else if (Item_TestFrameEqual(item, M_DRAW_FRAME)) {
+    } else if (Item_TestFrameEqual(item, setup.draw_frame)) {
         Gun_Rifle_DrawMeshes(weapon_type);
     } else if (lara->water_status == LWS_UNDERWATER) {
         item->goal_anim_state = LA_G_UAIM;
@@ -486,6 +502,7 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
     }
     M_AnimateGun(item);
 
+    const M_ANIM_SETUP setup = M_GetSetup(weapon_type);
     if (item->status == IS_DEACTIVATED) {
         Item_Kill(lara->gun_item_num);
         lara->gun_item_num = NO_ITEM;
@@ -497,7 +514,7 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
         lara->right_arm.lock = 0;
     } else if (
         item->current_anim_state == LA_G_UNDRAW
-        && Item_TestFrameEqual(item, M_UNDRAW_FRAME)) {
+        && Item_TestFrameEqual(item, setup.undraw_frame)) {
         Gun_Rifle_UndrawMeshes(weapon_type);
     }
 
