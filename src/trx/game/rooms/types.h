@@ -151,6 +151,7 @@ typedef struct {
         bool wind;
         bool inside;
         bool dynamic_lit;
+        bool overlapping;
     } flags;
     struct {
         bool active;

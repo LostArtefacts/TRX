@@ -314,8 +314,8 @@ void Output_EnableScissor(
     VIEWPORT_RECT scissor = {
         .x = window.x + (x * scale_x) - border,
         .y = window.y + (game.h - y) * scale_y - border,
-        .w = w * scale_x + border * 2,
-        .h = h * scale_y + border * 2,
+        .w = MAX(1, w * scale_x + border * 2),
+        .h = MAX(1, h * scale_y + border * 2),
     };
 
     glEnable(GL_SCISSOR_TEST);

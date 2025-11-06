@@ -246,6 +246,21 @@ static void M_DrawSkybox(void)
     }
 }
 
+static void M_SetScissor(const ROOM *const room)
+{
+    if (room != nullptr) {
+        g_PhdLeft = room->bound_left;
+        g_PhdTop = room->bound_top;
+        g_PhdRight = room->bound_right;
+        g_PhdBottom = room->bound_bottom;
+    } else {
+        g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+        g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+        g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+        g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+    }
+}
+
 static void M_DrawSingleRoom(ROOM *const room)
 {
     if (room->flags.underwater) {
@@ -254,10 +269,13 @@ static void M_DrawSingleRoom(ROOM *const room)
         Output_SetupAboveWater(g_Camera.underwater);
     }
 
-    g_PhdLeft = room->bound_left;
-    g_PhdTop = room->bound_top;
-    g_PhdRight = room->bound_right;
-    g_PhdBottom = room->bound_bottom;
+    if (!room->flags.overlapping) {
+        room->bound_left = Viewport_GetMinX(VIEWPORT_GAME);
+        room->bound_top = Viewport_GetMinY(VIEWPORT_GAME);
+        room->bound_right = Viewport_GetMaxX(VIEWPORT_GAME);
+        room->bound_bottom = Viewport_GetMaxY(VIEWPORT_GAME);
+    }
+    M_SetScissor(room);
 
     if (g_Config.debug.enable_debug_room_clip) {
         Output_DrawScreenFrame(
@@ -277,11 +295,6 @@ static void M_DrawSingleRoom(ROOM *const room)
 
     Matrix_Push();
     Matrix_TranslateAbs32(room->pos);
-
-    g_PhdLeft = room->bound_left;
-    g_PhdTop = room->bound_top;
-    g_PhdRight = room->bound_right;
-    g_PhdBottom = room->bound_bottom;
 
     for (int32_t i = 0; i < room->num_static_meshes; i++) {
         const STATIC_MESH *const mesh = &room->static_meshes[i];
@@ -315,11 +328,6 @@ static void M_DrawSingleRoom(ROOM *const room)
         item_num = item->next_item;
     }
 
-    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
-    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
-    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-
     int16_t effect_num = room->effect_num;
     while (effect_num != NO_EFFECT) {
         const EFFECT *const effect = Effect_Get(effect_num);
@@ -329,6 +337,7 @@ static void M_DrawSingleRoom(ROOM *const room)
 
     Matrix_Pop();
 
+    M_SetScissor(nullptr);
     room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
     room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
     room->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
