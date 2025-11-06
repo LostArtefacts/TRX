@@ -305,11 +305,6 @@ static void M_DrawSingleRoom(ROOM *const room)
         Matrix_Pop();
     }
 
-    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
-    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
-    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
-    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-
     int16_t item_num = room->item_num;
     while (item_num != NO_ITEM) {
         const ITEM *const item = Item_Get(item_num);
@@ -319,6 +314,11 @@ static void M_DrawSingleRoom(ROOM *const room)
         }
         item_num = item->next_item;
     }
+
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
 
     int16_t effect_num = room->effect_num;
     while (effect_num != NO_EFFECT) {
