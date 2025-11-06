@@ -99,7 +99,9 @@ static void M_SetBounds(
         && room->bound_top <= parent->test_top
         && room->bound_right >= parent->test_right
         && room->bound_bottom >= parent->test_bottom) {
-        return;
+        if (!room->flags.protruding_items) {
+            return;
+        }
     }
 
     const MATRIX *const m = g_MatrixPtr;
@@ -155,7 +157,9 @@ static void M_SetBounds(
     }
 
     if (too_near == 4) {
-        return;
+        if (!room->flags.protruding_items) {
+            return;
+        }
     }
 
     if (too_near > 0) {
@@ -201,7 +205,9 @@ static void M_SetBounds(
     }
 
     if (left >= right || top >= bottom) {
-        return;
+        if (!room->flags.protruding_items) {
+            return;
+        }
     }
 
     if (room->bind.active) {

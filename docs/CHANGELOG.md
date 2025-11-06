@@ -23,6 +23,7 @@
     - changed the appearance labels to better align with expectations (#4025)
     - removed the look modes for every bar (except enemy bars that retain the "boss only" setting)
     - fixed health bar flicker on medi packs when cycling the inventory ring (#4211, regression from TR1X 4.14 / TR2X 1.4)
+- improved room scheduler to try and draw objects from rooms to which all portals appear offscreen (#2005)
 - changed the `/debug` command to accept optional option name argument (for example: `/debug pos 1`)
 - changed dart emitters and disc emitters to have separate slots (so with catalogs, both can be used in the same level simultaneously)
 - changed the debug position UI to no longer be hidden in photo mode
