@@ -13,6 +13,9 @@ typedef struct {
     int32_t gun_height;
     int32_t damage;
     int32_t target_dist;
+    int16_t equip_anim_idx;
+    int16_t draw_frame;
+    int16_t undraw_frame;
     int16_t recoil_frame;
     int16_t flash_time;
     SAMPLE_TRX_ID sample_num;
