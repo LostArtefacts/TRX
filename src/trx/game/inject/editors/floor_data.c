@@ -341,6 +341,11 @@ static void M_FloorDataEdits(
             case FET_CLIMB:
                 M_SetSectorClimbability(injection, sector);
                 break;
+            case FET_DELETE_TRIGGER:
+                if (sector != nullptr) {
+                    sector->trigger = nullptr;
+                }
+                break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
                 break;
