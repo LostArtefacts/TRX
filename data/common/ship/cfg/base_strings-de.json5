@@ -618,8 +618,7 @@
         "SETTING_REFLECTIONS": "Reflektionen",
         "SETTING_REFLECTIONS_DESCRIPTION": "Aktiviert Reflektionen auf bestimmten Objekten.",
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS": "Waffen zwischen den Leveln merken",
-        "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Bringt Lara dazu, sich zu erinnern, welche Waffe sie als Letztes im vorherigen Level verwendet hat, wenn ein neues Level beginnt. Bei Deaktivierung wird Lara auf geholsterte Pistolen zurückgreifen."
-        "SETTING_RESTORE_PS1_ENEMIES": "PS1 Feinde wiederherstellen",
+        "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Bringt Lara dazu, sich zu erinnern, welche Waffe sie als Letztes im vorherigen Level verwendet hat, wenn ein neues Level beginnt. Bei Deaktivierung wird Lara auf geholsterte Pistolen zurückgreifen.",
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Fügt die Mumie in Raum 25 ein, welche in der Playstation-Version von City of Khamoon erscheint.\nEine Veränderung dieser Option erfordert einen Neustart des Levels.",
         "SETTING_SCREENSHOT_FORMAT": "Bildschirmfoto-Format",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Dateiformat des Bildschirmfotos.",
