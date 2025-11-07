@@ -30,6 +30,7 @@ typedef struct {
     int16_t room_num;
     XYZ_16 normal;
     XYZ_16 vertex[4];
+    BOUNDS_32 bounds;
 } PORTAL;
 
 typedef struct {

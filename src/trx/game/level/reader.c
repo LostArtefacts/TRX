@@ -225,6 +225,7 @@ static void M_CompleteSetup(
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level);
 
+    Level_LoadRooms();
     Level_LoadTextures();
     Level_LoadTexturePages(loader);
     Level_LoadPalettes();
