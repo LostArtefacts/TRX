@@ -310,7 +310,7 @@ void Object_DrawPickupItem(const ITEM *const item)
     }
 
     if (!g_Config.visuals.enable_3d_pickups
-        || !Object_Get(item->object_id)->loaded) {
+        && Object_Get(item->object_id)->loaded) {
         Object_DrawSpriteItem(item);
         return;
     }
