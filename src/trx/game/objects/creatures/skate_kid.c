@@ -139,11 +139,11 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-static void M_Draw(const ITEM *const item)
+static bool M_Draw(const ITEM *const item)
 {
-    Object_DrawAnimatingItem(item);
+    const bool result = Object_DrawAnimatingItem(item);
     if (!Object_Get(O_SKATEBOARD)->loaded) {
-        return;
+        return result;
     }
 
     const int16_t relative_anim = Item_GetRelativeAnim(item);
@@ -154,6 +154,7 @@ static void M_Draw(const ITEM *const item)
 
     ((ITEM *)item)->object_id = O_SKATEKID;
     Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
+    return result;
 }
 
 static void M_Setup(OBJECT *const obj)

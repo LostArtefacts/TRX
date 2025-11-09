@@ -94,7 +94,7 @@ static void M_Control(const int16_t item_num)
     item->data = (void *)(intptr_t)flare_age;
 }
 
-static void M_Draw(const ITEM *const item)
+static bool M_Draw(const ITEM *const item)
 {
     int32_t rate;
     ANIM_FRAME *frames[2];
@@ -128,6 +128,7 @@ static void M_Draw(const ITEM *const item)
         }
     }
     Matrix_Pop();
+    return true;
 }
 
 void Flare_GenerateEffects(

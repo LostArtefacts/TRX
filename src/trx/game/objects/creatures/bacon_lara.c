@@ -105,11 +105,10 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-static void M_Draw(const ITEM *const item)
+static bool M_Draw(const ITEM *const item)
 {
     if (item->current_anim_state == LS(LS_DEATH)) {
-        Object_DrawAnimatingItem(item);
-        return;
+        return Object_DrawAnimatingItem(item);
     }
 
     OBJECT_MESH *old_mesh_ptrs[LM_NUMBER_OF];
@@ -124,6 +123,7 @@ static void M_Draw(const ITEM *const item)
     for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
         Lara_Mesh_Set(mesh, old_mesh_ptrs[mesh]);
     }
+    return true;
 }
 
 static void M_Setup(OBJECT *const obj)

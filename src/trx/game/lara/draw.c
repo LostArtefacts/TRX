@@ -25,7 +25,7 @@ static void M_DrawBodyPart(
     }
 }
 
-static void M_Draw_I(
+static bool M_Draw_I(
     const ITEM *const item, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
@@ -47,7 +47,7 @@ static void M_Draw_I(
     const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
-        return;
+        return false;
     }
 
     if (g_Config.debug.enable_debug_cuboids) {
@@ -258,14 +258,15 @@ static void M_Draw_I(
 
     Matrix_Pop();
     Matrix_Pop();
+    return true;
 }
 
-void Lara_Draw(const ITEM *const item)
+bool Lara_Draw(const ITEM *const item)
 {
     const bool is_lara = item == Lara_GetItem();
     if (is_lara
         && (item->status == IS_INVISIBLE || (item->flags & IF_ONE_SHOT) != 0)) {
-        return;
+        return false;
     }
 
     const int32_t top = g_PhdTop;
@@ -307,7 +308,7 @@ void Lara_Draw(const ITEM *const item)
     const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
-        return;
+        return false;
     }
 
     if (g_Config.debug.enable_debug_cuboids) {
@@ -531,4 +532,5 @@ finish:
     g_PhdRight = right;
     g_PhdTop = top;
     g_PhdBottom = bottom;
+    return true;
 }

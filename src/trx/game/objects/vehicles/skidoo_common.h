@@ -41,4 +41,4 @@ void Skidoo_Explode(const ITEM *skidoo);
 bool Skidoo_CheckGetOff(void);
 void Skidoo_Guns(void);
 bool Skidoo_Control(void);
-void Skidoo_Draw(const ITEM *item);
+bool Skidoo_Draw(const ITEM *item);

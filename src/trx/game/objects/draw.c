@@ -97,7 +97,7 @@ static BOUNDS_16 M_GetBoundingBox(
     return new_bounds;
 }
 
-void Object_DrawUnclippedItem(const ITEM *const item)
+bool Object_DrawUnclippedItem(const ITEM *const item)
 {
     const int32_t left = g_PhdLeft;
     const int32_t top = g_PhdTop;
@@ -115,6 +115,7 @@ void Object_DrawUnclippedItem(const ITEM *const item)
     g_PhdTop = top;
     g_PhdRight = right;
     g_PhdBottom = bottom;
+    return true;
 }
 
 void Object_DrawMesh(
@@ -149,7 +150,7 @@ void Object_DrawStaticObject(
     Matrix_Pop();
 }
 
-void Object_DrawAnimatingItem(const ITEM *item)
+bool Object_DrawAnimatingItem(const ITEM *item)
 {
     ANIM_FRAME *frames[2];
     int32_t rate;
@@ -167,7 +168,7 @@ void Object_DrawAnimatingItem(const ITEM *item)
     const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
-        return;
+        return false;
     }
 
     Output_CalculateObjectLighting(item, &frames[0]->bounds);
@@ -180,6 +181,7 @@ void Object_DrawAnimatingItem(const ITEM *item)
         Output_DrawCuboid(&frames[0]->bounds);
     }
     Matrix_Pop();
+    return true;
 }
 
 void Object_DrawInterpolatedObject(
@@ -282,7 +284,7 @@ void Object_ApplyExtraRotation(
     *extra_rotation = rot_ptr;
 }
 
-void Object_DrawSpriteItem(const ITEM *const item)
+bool Object_DrawSpriteItem(const ITEM *const item)
 {
     const RGB_F tint = Output_GetTint();
     SHADE shade = item->shade;
@@ -301,31 +303,29 @@ void Object_DrawSpriteItem(const ITEM *const item)
         item->interp.result.pos.x, item->interp.result.pos.y,
         item->interp.result.pos.z, obj->mesh_idx - item->frame_num,
         shade.value_1, tint);
+    return true;
 }
 
-void Object_DrawPickupItem(const ITEM *const item)
+bool Object_DrawPickupItem(const ITEM *const item)
 {
     if ((item->flags & IF_INVISIBLE) != 0) {
-        return;
+        return false;
     }
 
     if (!g_Config.visuals.enable_3d_pickups
         && Object_Get(item->object_id)->loaded) {
-        Object_DrawSpriteItem(item);
-        return;
+        return Object_DrawSpriteItem(item);
     }
 
     // Convert item to menu display item.
     const OBJECT_ID inv_object_id = Inv_GetItemOption(item->object_id);
     if (inv_object_id == NO_OBJECT) {
-        Object_DrawSpriteItem(item);
-        return;
+        return Object_DrawSpriteItem(item);
     }
 
     const OBJECT *const obj = Object_Get(inv_object_id);
     if (!obj->loaded || obj->mesh_count < 0) {
-        Object_DrawSpriteItem(item);
-        return;
+        return Object_DrawSpriteItem(item);
     }
 
     // Standardize the bounds and offsets of all pickup items, and handle cases
@@ -380,4 +380,5 @@ void Object_DrawPickupItem(const ITEM *const item)
     }
 
     Matrix_Pop();
+    return true;
 }

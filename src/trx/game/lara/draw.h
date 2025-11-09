@@ -2,4 +2,4 @@
 
 #include <trx/game/items/types.h>
 
-void Lara_Draw(const ITEM *item);
+bool Lara_Draw(const ITEM *item);
