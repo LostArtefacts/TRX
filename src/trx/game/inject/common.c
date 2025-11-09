@@ -27,6 +27,7 @@ static int32_t m_DataCounts[IDT_NUMBER_OF] = {};
 static VECTOR *m_RoomMeta = nullptr;
 static LEVEL_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
+static size_t m_PaletteMapSize = 0;
 
 static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
 {
@@ -141,6 +142,7 @@ static void M_ReadVFile(
     const char *const inj_name =
         file_name == nullptr ? M_VIRTUAL_NAME : file_name;
     char *payload = nullptr;
+    injection->path = Memory_DupStr(inj_name);
 
     const uint32_t magic = VFile_ReadU32(file);
     if (magic != INJECTION_MAGIC) {
@@ -257,11 +259,13 @@ void Inject_RegisterPaletteMap(const uint16_t *palette_map, const int32_t size)
 {
     Memory_FreePointer(&m_PaletteMap);
     m_PaletteMap = Memory_Alloc(size * sizeof(int16_t));
+    m_PaletteMapSize = size;
     memcpy(m_PaletteMap, palette_map, size * sizeof(int16_t));
 }
 
 uint16_t Inject_GetPaletteIndex(const uint16_t index)
 {
+    ASSERT(index < m_PaletteMapSize);
     return m_PaletteMap == nullptr ? 0 : m_PaletteMap[index];
 }
 
@@ -276,7 +280,8 @@ void Inject_InitLevel(const GF_LEVEL *const level)
 
     m_Injections = Memory_Alloc(sizeof(INJECTION) * m_NumInjections);
     for (int32_t i = 0; i < m_NumInjections; i++) {
-        M_LoadFromFile(&m_Injections[i], level->injections.data_paths[i]);
+        INJECTION *const injection = &m_Injections[i];
+        M_LoadFromFile(injection, level->injections.data_paths[i]);
     }
 
     Benchmark_End(&benchmark, nullptr);
@@ -313,6 +318,8 @@ void Inject_AllInjections(void)
             continue;
         }
 
+        LOG_DEBUG("Processing %s", injection->path);
+
         // Cache the current status to allow individual handlers to increment
         // counts but still have access to current indices as required.
         m_CachedInfo = *Level_GetInfo();
@@ -345,10 +352,11 @@ void Inject_Cleanup(void)
     BENCHMARK benchmark = Benchmark_Start();
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
-        const INJECTION *const injection = &m_Injections[i];
+        INJECTION *const injection = &m_Injections[i];
         if (injection->fp != nullptr) {
             VFile_Close(injection->fp);
         }
+        Memory_FreePointer(&injection->path);
     }
 
     for (int32_t i = 0; i < IDT_NUMBER_OF; i++) {
