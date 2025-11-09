@@ -934,7 +934,7 @@ bool Skidoo_Control(void)
     return Skidoo_CheckGetOff();
 }
 
-void Skidoo_Draw(const ITEM *const item)
+bool Skidoo_Draw(const ITEM *const item)
 {
     int32_t track_mesh_status = 0;
     const SKIDOO_INFO *const skidoo_data = item->data;
@@ -968,7 +968,7 @@ void Skidoo_Draw(const ITEM *const item)
     const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
-        return;
+        return false;
     }
 
     Output_CalculateObjectLighting(item, &frames[0]->bounds);
@@ -1024,4 +1024,5 @@ void Skidoo_Draw(const ITEM *const item)
     }
 
     Matrix_Pop();
+    return true;
 }

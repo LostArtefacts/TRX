@@ -258,7 +258,7 @@ static void M_DrawBolts(const ITEM *const item)
     }
 }
 
-static void M_Draw(const ITEM *const item)
+static bool M_Draw(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(O_LIGHTNING_EMITTER);
     ANIM_FRAME *frmptr[2];
@@ -271,7 +271,7 @@ static void M_Draw(const ITEM *const item)
     const CLIP clip = Output_CheckBoundsClip(&frmptr[0]->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
-        return;
+        return false;
     }
 
     Output_CalculateObjectLighting(item, &frmptr[0]->bounds);
@@ -281,6 +281,7 @@ static void M_Draw(const ITEM *const item)
     Matrix_Pop();
 
     M_DrawBolts(item);
+    return true;
 }
 
 static void M_Setup(OBJECT *const obj)

@@ -389,12 +389,12 @@ static const OBJECT_BOUNDS *M_Bounds(void)
     return &m_MovableBlock_Bounds;
 }
 
-static void M_Draw(const ITEM *const item)
+static bool M_Draw(const ITEM *const item)
 {
     if (item->status == IS_ACTIVE) {
-        Object_DrawUnclippedItem(item);
+        return Object_DrawUnclippedItem(item);
     } else {
-        Object_DrawAnimatingItem(item);
+        return Object_DrawAnimatingItem(item);
     }
 }
 

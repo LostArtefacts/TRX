@@ -5,7 +5,7 @@
 #include <trx/game/output.h>
 
 // TODO: this duplicates Object_DrawAnimatingItem almost entirely
-void XianWarrior_Draw(const ITEM *item)
+bool XianWarrior_Draw(const ITEM *item)
 {
     ANIM_FRAME *frames[2];
     int32_t rate;
@@ -23,7 +23,7 @@ void XianWarrior_Draw(const ITEM *item)
     const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
-        return;
+        return false;
     }
 
     Output_CalculateObjectLighting(item, &frames[0]->bounds);
@@ -98,4 +98,5 @@ void XianWarrior_Draw(const ITEM *item)
     }
 
     Matrix_Pop();
+    return true;
 }

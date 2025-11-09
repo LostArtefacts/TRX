@@ -68,7 +68,7 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-static void M_Draw(const ITEM *const item)
+static bool M_Draw(const ITEM *const item)
 {
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
@@ -93,6 +93,7 @@ static void M_Draw(const ITEM *const item)
     }
 
     Matrix_Pop();
+    return true;
 }
 
 static void M_SetupBase(OBJECT *const obj, const bool transparent)
