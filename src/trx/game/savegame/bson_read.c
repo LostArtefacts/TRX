@@ -962,8 +962,8 @@ static bool M_ReadMusicTracks(SAVEGAME_BSON_READ_CONTEXT *const ctx)
         !is_ambient || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
     if (load_timestamp && !Music_SeekTimestamp(timestamp)) {
         LOG_WARNING(
-            "Could not load current track %d at timestamp %" PRId64 ".",
-            current_track, timestamp);
+            "Could not load current track %d at timestamp %lf.", current_track,
+            timestamp);
     }
 
     M_FINISH();
