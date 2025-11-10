@@ -186,6 +186,7 @@ static void M_Control(const int16_t item_num)
         }
     }
     Item_Animate(item);
+    Item_UpdateRoom(item_num, item->room_num);
 }
 
 static void M_Setup(OBJECT *const obj)

@@ -21,6 +21,35 @@ static int16_t m_NextItemActive = NO_ITEM;
 static int16_t m_PrevItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 
+static inline bool M_ItemBoundsIntersectsPortal(
+    const ITEM *item, const ROOM *room, const PORTAL *const portal)
+{
+    // Axis-aligned bound intersection; ignores item rotation.
+    const BOUNDS_16 *const frame_bounds = &Item_GetBestFrame(item)->bounds;
+    if (frame_bounds == nullptr) {
+        return false;
+    }
+    const BOUNDS_32 bounds = {
+        .min = {
+            item->pos.x + frame_bounds->min.x,
+            item->pos.y + frame_bounds->min.y,
+            item->pos.z + frame_bounds->min.z,
+        },
+        .max = {
+            item->pos.x + frame_bounds->max.x,
+            item->pos.y + frame_bounds->max.y,
+            item->pos.z + frame_bounds->max.z,
+        },
+    };
+
+    if (Bounds_32_Intersect(&bounds, &portal->bounds)) {
+        return true;
+    }
+
+    const BOUNDS_32 room_bounds = Room_GetRoomBounds(Room_Get(item->room_num));
+    return !Bounds_32_Intersect(&bounds, &room_bounds);
+}
+
 void Item_InitialiseItems(const int32_t num_items)
 {
     m_Items = GameBuf_Alloc(sizeof(ITEM) * MAX_ITEMS, GBUF_ITEMS);
@@ -229,6 +258,10 @@ void Item_Initialise(const int16_t item_num)
     if (obj->initialise_func != nullptr) {
         obj->initialise_func(item_num);
     }
+
+    if (item->room_num != NO_ROOM) {
+        Room_AddDrawnItem(item->room_num, item_num);
+    }
 }
 
 void Item_Control(void)
@@ -303,6 +336,14 @@ void Item_RemoveDrawn(const int16_t item_num)
     }
 
     ROOM *const room = Room_Get(item->room_num);
+    Room_RemoveDrawnItem(item->room_num, item_num);
+    if (room->portals != nullptr) {
+        for (int32_t i = 0; i < room->portals->count; i++) {
+            const PORTAL *const portal = &room->portals->portal[i];
+            Room_RemoveDrawnItem(portal->room_num, item_num);
+        }
+    }
+
     int16_t link_num = room->item_num;
     if (link_num == item_num) {
         room->item_num = item->next_item;
@@ -352,37 +393,60 @@ void Item_AddActive(const int16_t item_num)
 void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
 {
     ITEM *const item = &m_Items[item_num];
-    if (item->room_num == room_num) {
-        return;
+    const int16_t old_room_num = item->room_num;
+
+    // Add to new-room draw queues (including portal rooms)
+    // draw queue removal for primary room and portal rooms
+    if (old_room_num != NO_ROOM) {
+        Room_RemoveDrawnItem(old_room_num, item_num);
+        const ROOM *const room = Room_Get(old_room_num);
+        if (room != nullptr && room->portals != nullptr) {
+            for (int32_t i = 0; i < room->portals->count; i++) {
+                Room_RemoveDrawnItem(
+                    room->portals->portal[i].room_num, item_num);
+            }
+        }
     }
-
-    ROOM *room = nullptr;
-
-    if (item->room_num != NO_ROOM) {
-        room = Room_Get(item->room_num);
-
-        int16_t link_num = room->item_num;
-        if (link_num == item_num) {
-            room->item_num = item->next_item;
-        } else {
-            while (link_num != NO_ITEM) {
-                if (m_Items[link_num].next_item == item_num) {
-                    m_Items[link_num].next_item = item->next_item;
-                    break;
+    if (room_num != NO_ROOM) {
+        Room_AddDrawnItem(room_num, item_num);
+        const ROOM *const neighbor_room = Room_Get(room_num);
+        if (neighbor_room != nullptr && neighbor_room->portals != nullptr) {
+            for (int32_t i = 0; i < neighbor_room->portals->count; i++) {
+                const PORTAL *const portal = &neighbor_room->portals->portal[i];
+                if (M_ItemBoundsIntersectsPortal(item, neighbor_room, portal)) {
+                    Room_AddDrawnItem(portal->room_num, item_num);
                 }
-                link_num = m_Items[link_num].next_item;
             }
         }
     }
 
-    if (room_num == NO_ROOM) {
-        Item_RemoveDrawn(item_num);
-        item->room_num = NO_ROOM;
-    } else {
-        room = Room_Get(room_num);
-        item->room_num = room_num;
-        item->next_item = room->item_num;
-        room->item_num = item_num;
+    if (old_room_num != room_num) {
+        ROOM *room = nullptr;
+        if (old_room_num != NO_ROOM) {
+            room = Room_Get(old_room_num);
+            int16_t link_num = room->item_num;
+            if (link_num == item_num) {
+                room->item_num = item->next_item;
+            } else {
+                while (link_num != NO_ITEM) {
+                    if (m_Items[link_num].next_item == item_num) {
+                        m_Items[link_num].next_item = item->next_item;
+                        break;
+                    }
+                    link_num = m_Items[link_num].next_item;
+                }
+            }
+        }
+
+        if (room_num == NO_ROOM) {
+            Item_RemoveDrawn(item_num);
+            item->room_num = NO_ROOM;
+        } else {
+            room = Room_Get(room_num);
+            item->room_num = room_num;
+            item->next_item = room->item_num;
+            room->item_num = item_num;
+        }
     }
 }
 

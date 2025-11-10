@@ -64,4 +64,8 @@ typedef struct {
             XYZ_16 rot;
         } result, prev;
     } interp;
+
+    struct {
+        bool drawn;
+    } bind;
 } ITEM;
