@@ -8,6 +8,8 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <string.h>
+
 #define M_MAX_BOUND_ROOMS 128
 
 typedef struct {
@@ -15,6 +17,61 @@ typedef struct {
     int32_t yv;
     int32_t zv;
 } M_PORTAL_VBUF;
+
+static inline void M_DrawSet_Init(ROOM_DRAWSET *const s)
+{
+    s->count = 0;
+    memset(s->bits, 0, sizeof(s->bits));
+}
+
+static inline bool M_DrawSet_Has(
+    const ROOM_DRAWSET *const s, const int16_t item_num)
+{
+    const uint32_t w = item_num >> 6;
+    const uint32_t b = item_num & 63;
+    return (s->bits[w] >> b) & 1ULL;
+}
+
+static inline bool M_DrawSet_Add(ROOM_DRAWSET *const s, const int16_t item_num)
+{
+    const uint32_t w = item_num >> 6;
+    const uint32_t b = item_num & 63;
+    const uint64_t mask = 1ULL << b;
+    if (s->bits[w] & mask) {
+        return false;
+    }
+    s->bits[w] |= mask;
+    s->count++;
+    return true;
+}
+
+static inline bool M_DrawSet_Remove(
+    ROOM_DRAWSET *const s, const int16_t item_num)
+{
+    const uint32_t w = item_num >> 6;
+    const uint32_t b = item_num & 63;
+    const uint64_t mask = 1ULL << b;
+    if (!(s->bits[w] & mask)) {
+        return false;
+    }
+    s->bits[w] &= ~mask;
+    s->count--;
+    return true;
+}
+
+static inline void M_DrawSet_ForEach(
+    const ROOM_DRAWSET *const s, void (*const fn)(int16_t item, void *ud),
+    void *ud)
+{
+    for (uint32_t w = 0; w < ROOM_DRAWSET_WORDS; w++) {
+        uint64_t x = s->bits[w];
+        while (x != 0ULL) {
+            const uint32_t b = __builtin_ctzll(x);
+            fn((int16_t)((w << 6) + b), ud);
+            x &= x - 1; // clear lowest set bit
+        }
+    }
+}
 
 static int32_t m_DrawCount = 0;
 static int16_t m_RoomsToDraw[MAX_ROOMS_TO_DRAW] = {};
@@ -246,6 +303,16 @@ static void M_DrawSkybox(void)
     }
 }
 
+static void M_DrawRoomItem(const int16_t item_num, void *const ud)
+{
+    ITEM *const item = Item_Get(item_num);
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (!item->bind.drawn && item->status != IS_INVISIBLE
+        && obj->draw_func != nullptr) {
+        item->bind.drawn |= obj->draw_func(item);
+    }
+}
+
 static void M_DrawSingleRoom(ROOM *const room)
 {
     if (room->flags.underwater) {
@@ -305,20 +372,12 @@ static void M_DrawSingleRoom(ROOM *const room)
         Matrix_Pop();
     }
 
+    M_DrawSet_ForEach(&room->drawn_items, M_DrawRoomItem, nullptr);
+
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
     g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
     g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
-
-    int16_t item_num = room->item_num;
-    while (item_num != NO_ITEM) {
-        const ITEM *const item = Item_Get(item_num);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (item->status != IS_INVISIBLE && obj->draw_func != nullptr) {
-            obj->draw_func(item);
-        }
-        item_num = item->next_item;
-    }
 
     int16_t effect_num = room->effect_num;
     while (effect_num != NO_EFFECT) {
@@ -405,6 +464,10 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         M_DrawSkybox();
     }
 
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        Item_Get(i)->bind.drawn = false;
+    }
+
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
         const int16_t draw_room_num = Room_DrawGetRoom(i);
         ROOM *const draw_room = Room_Get(draw_room_num);
@@ -425,4 +488,20 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     }
 
     Output_SetupAboveWater(false);
+}
+
+void Room_AddDrawnItem(const int16_t room_num, const int16_t item_num)
+{
+    if (room_num != NO_ROOM) {
+        ROOM *const room = Room_Get(room_num);
+        M_DrawSet_Add(&room->drawn_items, item_num);
+    }
+}
+
+void Room_RemoveDrawnItem(const int16_t room_num, const int16_t item_num)
+{
+    if (room_num != NO_ROOM) {
+        ROOM *const room = Room_Get(room_num);
+        M_DrawSet_Remove(&room->drawn_items, item_num);
+    }
 }

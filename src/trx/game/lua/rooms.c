@@ -94,7 +94,7 @@ static int M_L_RoomSetWind(lua_State *const L)
 static int M_L_RoomGetBounds(lua_State *const L)
 {
     M_ROOM_GETTER(L);
-    const BOUNDS_32 bounds = Room_GetRoomBounds(idx - 1);
+    const BOUNDS_32 bounds = Room_GetRoomBounds(Room_Get(idx - 1));
     lua_newtable(L);
     lua_pushinteger(L, bounds.min.x);
     lua_setfield(L, -2, "min_x");

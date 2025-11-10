@@ -225,20 +225,19 @@ static bool M_IsPortalSolid(
     }
 }
 
-BOUNDS_32 Room_GetRoomBounds(const int16_t room_num)
+BOUNDS_32 Room_GetRoomBounds(const ROOM *const room)
 {
-    const ROOM *const room = Room_Get(room_num);
     ASSERT(room != nullptr);
     return (BOUNDS_32) {
         .min = {
-            .x = room->pos.x,
+            .x = room->pos.x + WALL_L,
             .y = room->max_ceiling,
-            .z = room->pos.z,
+            .z = room->pos.z + WALL_L,
         },
         .max = {
-            .x = room->pos.x + room->size.x * WALL_L,
+            .x = room->pos.x + room->size.x * WALL_L - WALL_L,
             .y = room->min_floor,
-            .z = room->pos.z + room->size.z * WALL_L,
+            .z = room->pos.z + room->size.z * WALL_L - WALL_L,
         },
     };
 }

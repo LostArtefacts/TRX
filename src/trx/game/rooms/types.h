@@ -1,8 +1,11 @@
 #pragma once
 
+#include <trx/game/items/const.h>
 #include <trx/game/math.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/types.h>
+
+#define ROOM_DRAWSET_WORDS (MAX_ITEMS / 64)
 
 typedef struct TRIGGER_CMD {
     TRIGGER_OBJECT type;
@@ -117,6 +120,11 @@ typedef struct {
 } STATIC_MESH;
 
 typedef struct {
+    uint64_t bits[ROOM_DRAWSET_WORDS];
+    uint16_t count;
+} ROOM_DRAWSET;
+
+typedef struct {
     ROOM_MESH mesh;
     PORTALS *portals;
     SECTOR *sectors;
@@ -153,8 +161,11 @@ typedef struct {
         bool inside;
         bool dynamic_lit;
     } flags;
+
     struct {
         bool active;
         bool drawn;
     } bind;
+
+    ROOM_DRAWSET drawn_items;
 } ROOM;

@@ -142,6 +142,9 @@ void Room_FlipMap(void)
 
         room->item_num = flipped->item_num;
         room->effect_num = flipped->effect_num;
+        memcpy(
+            &room->drawn_items, &flipped->drawn_items,
+            sizeof(room->drawn_items));
 
         M_AddFlipItems(room);
     }
@@ -223,17 +226,16 @@ int32_t Room_GetAdjoiningRooms(
 
 bool Room_PointInside(const ROOM *const room, const XYZ_32 point)
 {
-    const int16_t room_num = Room_GetNumber(room);
-    if (room_num == NO_ROOM) {
+    if (room == nullptr) {
         return false;
     }
-    const BOUNDS_32 bounds = Room_GetRoomBounds(room_num);
-    const int32_t x1 = bounds.min.x + WALL_L;
+    const BOUNDS_32 bounds = Room_GetRoomBounds(room);
+    const int32_t x1 = bounds.min.x;
     const int32_t y1 = bounds.min.y;
-    const int32_t z1 = bounds.min.z + WALL_L;
-    const int32_t x2 = bounds.max.x - WALL_L;
+    const int32_t z1 = bounds.min.z;
+    const int32_t x2 = bounds.max.x;
     const int32_t y2 = bounds.max.y;
-    const int32_t z2 = bounds.max.z - WALL_L;
+    const int32_t z2 = bounds.max.z;
     if (point.x >= x1 && point.x < x2 && point.y >= y1 && point.y <= y2
         && point.z >= z1 && point.z < z2) {
         const SECTOR *sector = Room_GetWorldSector(room, point.x, point.z);
@@ -283,7 +285,7 @@ BOUNDS_32 Room_GetWorldBounds(void)
         .max.y = -MAX_HEIGHT,
     };
     for (int32_t i = 0; i < Room_GetCount(); i++) {
-        const BOUNDS_32 room_bounds = Room_GetRoomBounds(i);
+        const BOUNDS_32 room_bounds = Room_GetRoomBounds(Room_Get(i));
         world_bounds.min.x = MIN(world_bounds.min.x, room_bounds.min.x);
         world_bounds.max.x = MAX(world_bounds.max.x, room_bounds.max.x);
         world_bounds.min.z = MIN(world_bounds.min.z, room_bounds.min.z);
@@ -313,8 +315,8 @@ void Room_GetNearbyRooms(
 
 bool Room_CheckOverlap(const int16_t room_num_0, const int16_t room_num_1)
 {
-    const BOUNDS_32 room_0_bounds = Room_GetRoomBounds(room_num_0);
-    const BOUNDS_32 room_1_bounds = Room_GetRoomBounds(room_num_1);
+    const BOUNDS_32 room_0_bounds = Room_GetRoomBounds(Room_Get(room_num_0));
+    const BOUNDS_32 room_1_bounds = Room_GetRoomBounds(Room_Get(room_num_1));
 
     // clang-format off
     return (

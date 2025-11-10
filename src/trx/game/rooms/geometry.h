@@ -2,7 +2,7 @@
 
 #include <trx/game/rooms/types.h>
 
-BOUNDS_32 Room_GetRoomBounds(int16_t room);
+BOUNDS_32 Room_GetRoomBounds(const ROOM *room);
 SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num);
 SECTOR *Room_GetSectorOnWalkable(
     int32_t x, int32_t y, int32_t z, int16_t *room_num);
