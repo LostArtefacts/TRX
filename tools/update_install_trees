@@ -251,7 +251,7 @@ def tr1_files_win() -> Iterable[Path]:
 
 def tr1_files_mac() -> Iterable[Path]:
     yield Path("Contents/_CodeSignature")
-    yield Path("Contents/Framworks")
+    yield Path("Contents/Frameworks")
     yield Path("Contents/info.plist")
     yield Path("Contents/MacOS")
     yield from (Path("Contents/Resources/") / sub for sub in tr1_ship_files())
@@ -279,7 +279,7 @@ def tr2_files_win() -> Iterable[Path]:
 
 def tr2_files_mac() -> Iterable[Path]:
     yield Path("Contents/_CodeSignature")
-    yield Path("Contents/Framworks")
+    yield Path("Contents/Frameworks")
     yield Path("Contents/info.plist")
     yield Path("Contents/MacOS")
     yield from (Path("Contents/Resources/") / sub for sub in tr2_ship_files())

@@ -253,6 +253,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lara_extra.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_house_guns.bin
+│   │   ├── lara_rifle_sfx.bin
 │   │   ├── lara_vegas_guns.bin
 │   │   ├── living_deck_goon_sfx.bin
 │   │   ├── living_fd.bin
@@ -449,7 +450,7 @@ If you install everything correctly, your game directory should look more or les
 <pre><code>.
 └── Contents
     ├── _CodeSignature
-    ├── Framworks
+    ├── Frameworks
     ├── info.plist
     ├── MacOS
     └── Resources
@@ -671,6 +672,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lara_extra.bin
         │   │   ├── lara_gym_guns.bin
         │   │   ├── lara_house_guns.bin
+        │   │   ├── lara_rifle_sfx.bin
         │   │   ├── lara_vegas_guns.bin
         │   │   ├── living_deck_goon_sfx.bin
         │   │   ├── living_fd.bin
