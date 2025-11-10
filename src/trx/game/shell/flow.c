@@ -122,7 +122,6 @@ static void M_InitModules(void)
     GameStringManager_Init();
     EnumMap_Init();
     UI_Init();
-    Console_Init();
     Overlay_Init();
     GameEvent_Init();
 
@@ -192,6 +191,7 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
                                             : args->mod->engine_version;
     LOG_INFO("Engine version: %d", g_TRVersion);
     Config_ApplyDefaultSettings();
+    Console_Init();
 
     M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false);
     M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false);
