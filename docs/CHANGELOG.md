@@ -14,6 +14,7 @@
 - added the ability to fast-forward through cutscenes with the right button (+5 s) or with slow+right (+1 s)
 - added support for dark theme on Windows
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
+- improved rendering of statics and items in overlapping rooms (#2005)
 - improved ricochets placement
     - fixed dart and disc ricochets being placed mid-air (#4063)
     - fixed ricochets not showing on slopes
@@ -41,6 +42,7 @@
 - fixed photo mode camera clipping through overlapping rooms (#1674)
 - fixed bogus warnings about resume info in logs when playing cutscenes and in the title level
 - fixed title bar size being too small on HiDPI screens on Windows platform (#2837)
+- fixed statics and items not getting rendered when all portals leading to them are offscreen (#2005)
 
 **TR1**:
 - added a new easter egg command
