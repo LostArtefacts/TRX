@@ -3,6 +3,7 @@
 - changed ember emitters in TR2 to use the `SFX_LAVA_FOUNTAIN` sample (#4376)
 - changed the following trap types to support being reset (#3993)
   - collapsible tiles
+  - ember emitters
   - pendulums
   - spike ceilings
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
