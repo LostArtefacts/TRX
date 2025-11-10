@@ -487,6 +487,7 @@ const OBJECT_ID g_GameSpriteObjects[] = {
 
     O_EXPLOSION_1,
     O_EXPLOSION_2,
+    O_MISSILE_FLAME,
     O_SPLASH_1,
     O_SPLASH_2,
     O_BUBBLE_1,
