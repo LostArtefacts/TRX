@@ -58,6 +58,7 @@ public class TR2XInstallSource : GenericInstallSource
 
     public override bool IsGameFound(string sourceDirectory)
     {
-        return File.Exists(Path.Combine(sourceDirectory, "TR2X.exe"));
+        return File.Exists(Path.Combine(sourceDirectory, "TRX.exe"))
+            || File.Exists(Path.Combine(sourceDirectory, "TR2X.exe"));
     }
 }
