@@ -352,15 +352,15 @@ If you install everything correctly, your game directory should look more or les
 │   ├── common.glsl
 │   ├── fbo.glsl
 │   └── meshes.glsl
-└── TR1X.exe</code></pre>
+└── TRX.exe</code></pre>
 </details>
 
 *\* Will not be present until the game has been launched.*
 
 ## Playing the game
 
-- To play the game, run `TR1X.exe`.
-- To play the Unfinished Business expansion pack, run `TR1X.exe --gold`.
+- To play the game, run `TRX.exe`.
+- To play the Unfinished Business expansion pack, run `TRX.exe --gold`.
 
 # macOS
 

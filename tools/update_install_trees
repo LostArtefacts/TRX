@@ -243,7 +243,7 @@ def tr1_ship_files() -> Iterable[Path]:
 
 
 def tr1_files_win() -> Iterable[Path]:
-    yield Path("TR1X.exe")
+    yield Path("TRX.exe")
     yield Path("cfg/TR1X.json5*")
     yield from tr1_og_files()
     yield from tr1_ship_files()
@@ -271,7 +271,7 @@ def tr2_ship_files() -> Iterable[Path]:
 
 
 def tr2_files_win() -> Iterable[Path]:
-    yield Path("TR2X.exe")
+    yield Path("TRX.exe")
     yield Path("cfg/TR2X.json5*")
     yield from tr2_og_files()
     yield from tr2_ship_files()

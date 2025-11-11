@@ -60,6 +60,8 @@ public class TR1XInstallSource : BaseInstallSource
 
     public override bool IsGameFound(string sourceDirectory)
     {
-        return File.Exists(Path.Combine(sourceDirectory, "TR1X.exe")) || File.Exists(Path.Combine(sourceDirectory, "Tomb1Main.exe"));
+        return File.Exists(Path.Combine(sourceDirectory, "TRX.exe"))
+            || File.Exists(Path.Combine(sourceDirectory, "TR1X.exe"))
+            || File.Exists(Path.Combine(sourceDirectory, "Tomb1Main.exe"));
     }
 }

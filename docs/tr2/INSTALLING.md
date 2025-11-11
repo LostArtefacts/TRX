@@ -423,15 +423,15 @@ If you install everything correctly, your game directory should look more or les
 │   ├── common.glsl
 │   ├── fbo.glsl
 │   └── meshes.glsl
-└── TR2X.exe</code></pre>
+└── TRX.exe</code></pre>
 </details>
 
 *\* Will not be present until the game has been launched.*
 
 ## Playing the game
 
-- To play the game, run `TR2X.exe`.
-- To play the Golden Mask expansion pack, run `TR2X.exe --gold`.
+- To play the game, run `TRX.exe`.
+- To play the Golden Mask expansion pack, run `TRX.exe --gold`.
 
 # macOS
 
