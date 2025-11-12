@@ -32,7 +32,7 @@ static const MUSIC_BACKEND *M_FindBackend(void)
     Vector_Add(
         all_backends,
         &(MUSIC_BACKEND *) { Music_Backend_Files_Factory("music") });
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         Vector_Add(
             all_backends,
             &(MUSIC_BACKEND *) {

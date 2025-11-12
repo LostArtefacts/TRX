@@ -191,7 +191,7 @@ static void M_ReadLaraArm(M_CONTEXT *const ctx, LARA_ARM *const arm)
 {
     M_Skip(ctx, sizeof(int32_t)); // frame_base is superfluous
     arm->frame_num = M_ReadS16(ctx);
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         arm->anim_num = M_ReadS16(ctx);
     }
     arm->lock = M_ReadS16(ctx);
@@ -243,7 +243,7 @@ static void M_ReadLara(M_CONTEXT *const ctx)
     }
     lara->hit_effect = nullptr;
 
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         lara->flare.age = M_ReadS16(ctx);
         Lara_Vehicle_SetIndex(M_ReadS16(ctx));
         lara->gun_item_num = M_ReadS16(ctx);
@@ -292,7 +292,7 @@ static void M_ReadLara(M_CONTEXT *const ctx)
     M_ReadAmmoInfo(ctx, &lara->magnum_ammo);
     M_ReadAmmoInfo(ctx, &lara->uzi_ammo);
     M_ReadAmmoInfo(ctx, &lara->shotgun_ammo);
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         M_ReadAmmoInfo(ctx, &lara->harpoon_ammo);
         M_ReadAmmoInfo(ctx, &lara->grenade_ammo);
         M_ReadAmmoInfo(ctx, &lara->m16_ammo);
@@ -335,7 +335,7 @@ static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
     resume->magnum_ammo = M_ReadU16(ctx);
     resume->uzi_ammo = M_ReadU16(ctx);
     resume->shotgun_ammo = M_ReadU16(ctx);
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         resume->m16_ammo = M_ReadU16(ctx);
         resume->grenade_ammo = M_ReadU16(ctx);
         resume->harpoon_ammo = M_ReadU16(ctx);
@@ -373,7 +373,7 @@ static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
     }
     // clang-format on
 
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         M_Skip(ctx, sizeof(uint16_t));
         M_ReadStats(ctx, &resume->stats);
     }
@@ -457,7 +457,7 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
 
     if (M_ItemHasSaveFlags(obj, item)) {
         item->flags = M_ReadU16(ctx);
-        if (obj->intelligent && g_TRVersion == 2) {
+        if (obj->intelligent && g_TRVersion >= 2) {
             M_Skip(ctx, sizeof(int16_t)); // legacy carried item
         }
         item->timer = M_ReadS16(ctx);
@@ -609,7 +609,7 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
         File_Skip(fp, sizeof(uint16_t)); // magnum ammo
         File_Skip(fp, sizeof(uint16_t)); // uzi ammo
         File_Skip(fp, sizeof(uint16_t)); // shotgun ammo
-        if (g_TRVersion == 2) {
+        if (g_TRVersion >= 2) {
             File_Skip(fp, sizeof(uint16_t)); // m16 ammo
             File_Skip(fp, sizeof(uint16_t)); // grenade ammo
             File_Skip(fp, sizeof(uint16_t)); // harpoon ammo
@@ -712,7 +712,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
         Room_SetFlipSlotFlags(i, M_ReadS8(ctx) << 8);
     }
 
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         for (int32_t i = 0; i < M_LEGACY_MAX_MUSIC_TRACKS; i++) {
             const int32_t track_id = Music_ConvertLegacyTrack(i);
             Music_SetTrackFlags(track_id, M_ReadU16(ctx));
@@ -727,7 +727,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     M_ReadItems(ctx);
 
     M_ReadLara(ctx);
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         if (lara->gun_item_num != NO_ITEM) {
             lara->gun_item_num = Item_Create();
@@ -745,7 +745,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
     Room_SetFlipEffect(M_ReadS32(ctx));
     Room_SetFlipTimer(M_ReadS32(ctx));
 
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         Creature_SetAlliesHostile(M_ReadS32(ctx) != 0);
         M_ReadFlares(ctx);
     }

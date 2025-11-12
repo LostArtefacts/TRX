@@ -582,7 +582,7 @@ static void M_Chase(const ITEM *const item)
     };
 
     const M_SETTINGS settings = M_GetSettings();
-    const int16_t speed = g_TRVersion == 2 || g_Camera.fixed_camera
+    const int16_t speed = g_TRVersion >= 2 || g_Camera.fixed_camera
         ? g_Camera.speed
         : settings.chase_speed;
     M_SmartShift(&target, M_Shift);

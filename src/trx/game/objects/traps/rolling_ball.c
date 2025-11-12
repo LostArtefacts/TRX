@@ -40,7 +40,7 @@ static void M_Roll(ITEM *const item)
         Sound_Effect(SFX_ROLLING_BALL_3_ROLL, &item->pos, SPM_NORMAL);
     }
 
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         const int32_t dist = Math_Sqrt(
             (g_Camera.mic_pos.z - item->pos.z)
                 * (g_Camera.mic_pos.z - item->pos.z)

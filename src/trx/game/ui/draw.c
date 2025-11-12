@@ -252,7 +252,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
             op->x0, op->y - e, op->x1, op->y, op->z, cl, cl, cl, cl);
         M_DrawScreenQuad(
             op->x0, op->y, op->x1, op->y + e, op->z, cd, cd, cd, cd);
-    } else if (g_TRVersion == 2 && op->ui_style == UI_STYLE_PC) {
+    } else if (g_TRVersion >= 2 && op->ui_style == UI_STYLE_PC) {
         const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
         M_DrawScreenSprite(
             op->x0, op->y, op->z, (op->x1 - op->x0) * PHD_ONE / 8, PHD_ONE,
@@ -274,7 +274,7 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP_TEXT_RECT *const op)
     int32_t x1 = op->x1;
     int32_t y0 = op->y0;
     int32_t y1 = op->y1;
-    if (g_TRVersion == 2 && op->ui_style == UI_STYLE_PC) {
+    if (g_TRVersion >= 2 && op->ui_style == UI_STYLE_PC) {
         const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
 
         const int32_t offset = 4;

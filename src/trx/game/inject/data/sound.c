@@ -65,7 +65,7 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
                     sample_info->number + j, data, sample_length);
                 Memory_Free(data);
             }
-        } else if (g_TRVersion == 2) {
+        } else if (g_TRVersion >= 2) {
             VFile_Skip(chunk.injection->fp, sizeof(int32_t));
         }
     }

@@ -11,9 +11,9 @@
 static void M_UpArrow(const UI_SCROLLABLE *const s)
 {
     UI_BeginHide(s->first_item == 0);
-    UI_Spacer(0.0f, g_TRVersion == 2 ? 6.0f : 4.0f);
+    UI_Spacer(0.0f, g_TRVersion >= 2 ? 6.0f : 4.0f);
     UI_BeginAnchor(0.5f, 0.5f);
-    UI_BeginFixed(0.5f, g_TRVersion == 2 ? 0.7f : 0.9f);
+    UI_BeginFixed(0.5f, g_TRVersion >= 2 ? 0.7f : 0.9f);
     UI_LabelEx("\\{arrow up}", (UI_LABEL_SETTINGS) { .scale = 0.7 });
     UI_EndFixed();
     UI_EndAnchor();
@@ -29,7 +29,7 @@ static void M_DownArrow(const UI_SCROLLABLE *const s)
     UI_EndFixed();
     UI_EndAnchor();
     UI_EndHide();
-    UI_Spacer(0.0f, g_TRVersion == 2 ? 6.0f : 4.0f);
+    UI_Spacer(0.0f, g_TRVersion >= 2 ? 6.0f : 4.0f);
 }
 
 void UI_BeginScrollableArea(const UI_SCROLLABLE *const s, const bool force_show)

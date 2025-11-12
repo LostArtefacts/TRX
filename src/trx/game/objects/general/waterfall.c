@@ -16,7 +16,7 @@ static void M_Control(const int16_t item_num)
 
     const ITEM *const lara_item = Lara_GetItem();
     Output_CalculateLight(item->pos, item->room_num);
-    if (g_TRVersion == 2 && Item_IsNearby(item, lara_item, M_RANGE)) {
+    if (g_TRVersion >= 2 && Item_IsNearby(item, lara_item, M_RANGE)) {
         Sound_Effect(SFX_WATERFALL_LOOP, &item->pos, SPM_NORMAL);
     }
 

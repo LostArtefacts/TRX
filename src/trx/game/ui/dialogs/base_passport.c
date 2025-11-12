@@ -10,7 +10,7 @@
 
 static int32_t M_GetVisibleRows(void)
 {
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         return 10;
     } else {
         const int32_t res_h = Scaler_CalcInverse(

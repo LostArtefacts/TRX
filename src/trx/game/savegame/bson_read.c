@@ -738,7 +738,7 @@ static bool M_ReadItem(
 
     switch (item->object_id) {
     case O_BACON_LARA: {
-        if (g_TRVersion == 2 || ctx->sg_version >= VERSION_5) {
+        if (g_TRVersion >= 2 || ctx->sg_version >= VERSION_5) {
             int32_t status;
             // TR1X <4.16, TR2X <1.6
             if (M_ReadNum(ctx, "bl_status", &status)) {
@@ -753,7 +753,7 @@ static bool M_ReadItem(
     }
 
     case O_FLAME_EMITTER: {
-        if ((g_TRVersion == 2 || ctx->sg_version >= VERSION_3)
+        if ((g_TRVersion >= 2 || ctx->sg_version >= VERSION_3)
             && g_Config.gameplay.enable_enhanced_saves) {
             int32_t effect_num = NO_EFFECT;
             // TR1X <4.16, TR2X <1.6
@@ -856,7 +856,7 @@ static bool M_ReadItem(
         break;
     }
 
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         // TODO: make this call in both engines consistently
         if (obj->handle_save_func != nullptr) {
             obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);

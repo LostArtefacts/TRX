@@ -57,7 +57,7 @@ void Gym_SetInventoryOpenEnabled(const bool enabled)
 bool Gym_IsInventoryOpenEnabled(void)
 {
     if (m_IsInventoryOpenEnabled == -1) {
-        m_IsInventoryOpenEnabled = g_TRVersion == 2;
+        m_IsInventoryOpenEnabled = g_TRVersion >= 2;
     }
     return m_IsInventoryOpenEnabled;
 }

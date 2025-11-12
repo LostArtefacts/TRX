@@ -292,7 +292,7 @@ static void M_AddRoomStatic3D(const INJECTION *const injection)
     mesh->pos.z = VFile_ReadS32(injection->fp);
     mesh->rot.y = VFile_ReadS16(injection->fp);
     mesh->shade.value_1 = VFile_ReadS16(injection->fp);
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         mesh->shade.value_2 = mesh->shade.value_1;
     }
     mesh->static_num = VFile_ReadS16(injection->fp);
@@ -320,7 +320,7 @@ static void M_EditRoomStatic3D(const INJECTION *const injection)
     mesh->pos.z = VFile_ReadS32(injection->fp);
     mesh->rot.y = VFile_ReadS16(injection->fp);
     mesh->shade.value_1 = VFile_ReadS16(injection->fp);
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         mesh->shade.value_2 = mesh->shade.value_1;
     }
 }
