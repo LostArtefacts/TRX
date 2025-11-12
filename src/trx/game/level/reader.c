@@ -10,6 +10,7 @@
 #include <trx/game/level.h>
 #include <trx/game/level/reader_tr1.h>
 #include <trx/game/level/reader_tr2.h>
+#include <trx/game/level/reader_tr3.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/mutant.h>
 #include <trx/game/output.h>
@@ -30,7 +31,7 @@ typedef struct {
 
 const LEVEL_LOADER *g_LevelLoaders[] = {
     &g_LevelLoaderTR1X, &g_LevelLoaderTR1, &g_LevelLoaderTR1DemoPC,
-    &g_LevelLoaderTR2X, &g_LevelLoaderTR2,
+    &g_LevelLoaderTR2X, &g_LevelLoaderTR2, &g_LevelLoaderTR3,
 };
 
 static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)

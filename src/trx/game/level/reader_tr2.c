@@ -11,22 +11,22 @@ static bool M_Probe(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     // TODO: clang-format <20 formats this wrongly
     // clang-format off
-#define L_TRY_OR_FAIL(call)                                                      \
+#define L_TRY_OR_FAIL(call)                                                    \
     if (!call) {                                                               \
         return false;                                                          \
     }
 #define L_SKIP(size) L_TRY_OR_FAIL(VFile_TrySkip(file, size));
-#define L_SKIP_ARR_S32(size)                                              \
+#define L_SKIP_ARR_S32(size)                                                   \
     {                                                                          \
         int32_t num;                                                           \
-        L_TRY_OR_FAIL(VFile_TryReadS32(file, &num));                             \
-        L_SKIP(num * size);                          \
+        L_TRY_OR_FAIL(VFile_TryReadS32(file, &num));                           \
+        L_SKIP(num * size);                                                    \
     }
-#define L_SKIP_ARR_U16(size)                                              \
+#define L_SKIP_ARR_U16(size)                                                   \
     {                                                                          \
         uint16_t num;                                                          \
-        L_TRY_OR_FAIL(VFile_TryReadU16(file, &num));                             \
-        L_SKIP(num * size);                          \
+        L_TRY_OR_FAIL(VFile_TryReadU16(file, &num));                           \
+        L_SKIP(num * size);                                                    \
     }
     // clang-format on
 
@@ -124,7 +124,7 @@ static bool M_Load(const LEVEL_LOADER *const loader, VFILE *const file)
     Level_ReadAnimBones(file);
     Level_ReadAnimFrames(file);
 
-    Level_ReadObjects(file);
+    Level_ReadObjects(loader, file);
     Level_ReadStaticObjects(file);
     Level_ReadObjectTextures(file);
 

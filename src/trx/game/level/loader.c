@@ -36,6 +36,7 @@ static size_t M_GetSampleCount(const LEVEL_LOADER *const loader)
     case 1:
         return 256;
     case 2:
+    case 3:
         return 370;
     default:
         ASSERT_FAIL();
@@ -228,7 +229,7 @@ static void M_ReadFace4(FACE4 *const face, VFILE *const file)
         face->texture_zw[i].z = 1.0f;
         face->texture_zw[i].w = 1.0f;
     }
-    face->texture_idx = VFile_ReadU16(file);
+    face->texture_idx = VFile_ReadU16(file) & 0x7FFF;
     face->enable_reflections = false;
 }
 
@@ -237,7 +238,7 @@ static void M_ReadFace3(FACE3 *const face, VFILE *const file)
     for (int32_t i = 0; i < 3; i++) {
         face->vertices[i] = VFile_ReadU16(file);
     }
-    face->texture_idx = VFile_ReadU16(file);
+    face->texture_idx = VFile_ReadU16(file) & 0x7FFF;
     face->enable_reflections = false;
 }
 
@@ -258,15 +259,28 @@ static void M_ReadRoomMesh(
         for (int32_t i = 0; i < room->mesh.num_vertices; i++) {
             ROOM_VERTEX *const vertex = &room->mesh.vertices[i];
             M_ReadVertex(&vertex->pos, file);
-            vertex->light_base = VFile_ReadS16(file);
             if (loader->game_version == 1) {
+                vertex->light_base = VFile_ReadS16(file);
                 vertex->is_wibble_disabled = false;
                 vertex->light_adder = vertex->light_base;
-            } else {
+            } else if (loader->game_version == 2) {
+                vertex->light_base = VFile_ReadS16(file);
                 vertex->light_table_value = VFile_ReadU8(file);
                 const uint8_t flags = VFile_ReadU8(file);
                 vertex->is_wibble_disabled = (flags & 0x80u) != 0u;
                 vertex->light_adder = VFile_ReadS16(file);
+            } else if (loader->game_version == 3) {
+                // TODO: add support for RGB colours. Currently this converts
+                // back to the shader value.
+                VFile_Skip(file, 4);
+                const uint16_t color = VFile_ReadU16(file);
+                const uint16_t r = ((color & 0x7C00) >> 10);
+                const uint16_t g = ((color & 0x03E0) >> 5);
+                const uint16_t b = ((color & 0x001F));
+                const uint16_t avg = ((r + g + b) / 3);
+                vertex->light_base = 0x1FFF - (avg << 7);
+                vertex->is_wibble_disabled = false;
+                vertex->light_adder = vertex->light_base;
             }
         }
     }
@@ -593,7 +607,16 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         for (int32_t i = 0; i < sector_count; i++) {
             SECTOR *const sector = &room->sectors[i];
             sector->idx = VFile_ReadU16(file);
-            sector->box = VFile_ReadS16(file);
+            if (loader->game_version == 3) {
+                uint16_t misc_info = VFile_ReadU16(file);
+                sector->fx = (uint8_t)(misc_info & 0x0F);
+                sector->box = (int16_t)((misc_info & 0x7FF0) >> 4);
+                sector->stopper = (bool)((misc_info & 0x8000) >> 15);
+            } else {
+                sector->fx = 0;
+                sector->box = VFile_ReadS16(file);
+                sector->stopper = false;
+            }
             sector->portal_room.pit = VFile_ReadU8(file);
             sector->floor.height = VFile_ReadS8(file) * STEP_L;
             sector->portal_room.sky = VFile_ReadU8(file);
@@ -609,8 +632,10 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         room->ambient = VFile_ReadS16(file);
         if (loader->game_version == 1) {
             room->light_mode = RLM_NORMAL;
-        } else {
+        } else if (loader->game_version == 2) {
             VFile_Skip(file, sizeof(int16_t)); // Unused second ambient
+            room->light_mode = VFile_ReadS16(file);
+        } else {
             room->light_mode = VFile_ReadS16(file);
         }
 
@@ -623,7 +648,7 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
             M_ReadPosition(&light->pos, file);
             M_ReadShade(loader, &light->shade, file);
             light->falloff.value_1 = VFile_ReadS32(file);
-            if (loader->game_version == 2) {
+            if (loader->game_version >= 2) {
                 light->falloff.value_2 = VFile_ReadS32(file);
             }
         }
@@ -661,6 +686,12 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         room->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
+
+        if (loader->game_version == 3) {
+            room->water_scheme = VFile_ReadU8(file);
+            room->reverb_info = VFile_ReadU8(file);
+            VFile_Skip(file, 1);
+        }
     }
 
     for (int32_t i = 0; i < num_rooms; i++) {
@@ -954,16 +985,21 @@ void Level_LoadAnimFrames(const LEVEL_LOADER *const loader)
     Memory_FreePointer(&m_Info.anims.frames);
 }
 
-void Level_ReadObjects(VFILE *const file)
+void Level_ReadObjects(const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
         const int32_t game_obj_id = VFile_ReadS32(file);
-        OBJECT *const obj = Object_GetByGameID(game_obj_id);
+        OBJECT *obj = Object_GetByGameID(game_obj_id);
         if (obj == nullptr) {
-            Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
+            if (loader->game_version == 3) {
+                // TODO: remove this check after we implement the items
+                obj = &(OBJECT) {};
+            } else {
+                Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
+            }
         }
         obj->mesh_count = VFile_ReadS16(file);
         obj->mesh_idx = VFile_ReadS16(file);
@@ -1250,8 +1286,14 @@ void Level_ReadItems(const LEVEL_LOADER *const loader, VFILE *const file)
         const int16_t obj_id = VFile_ReadS16(file);
         item->object_id = Object_FromGameID(obj_id);
         if (item->object_id == NO_OBJECT) {
-            Shell_ExitSystemFmt("Bad object number (%d) on item %d", obj_id, i);
-            goto finish;
+            if (loader->game_version == 3) {
+                // TODO: remove this check after we implement the items
+                item->object_id = O_DUMMY;
+            } else {
+                Shell_ExitSystemFmt(
+                    "Bad object number (%d) on item %d", obj_id, i);
+                goto finish;
+            }
         }
 
         item->room_num = VFile_ReadS16(file);
@@ -1309,9 +1351,23 @@ void Level_ReadSamples(const LEVEL_LOADER *const loader, VFILE *const file)
             Sound_GetOrCreateSample(sample_lut_inv[i]);
         ASSERT(sample_info != nullptr);
         sample_info->number = VFile_ReadS16(file);
-        sample_info->volume = VFile_ReadS16(file);
-        sample_info->randomness = VFile_ReadS16(file);
+
+        if (loader->game_version >= 3) {
+            sample_info->volume = VFile_ReadU8(file) << 8;
+            VFile_Skip(file, 1);
+        } else {
+            sample_info->volume = VFile_ReadU16(file);
+        }
+
+        if (loader->game_version >= 3) {
+            sample_info->randomness = VFile_ReadU8(file) << 8;
+            VFile_Skip(file, 1);
+        } else {
+            sample_info->randomness = VFile_ReadU16(file);
+        }
+
         sample_info->flags.all = VFile_ReadU16(file);
+
         Sound_ReserveSampleData(
             sample_info->number, sample_info->flags.num_samples);
         if (loader->game_version == 1) {
@@ -1428,10 +1484,10 @@ void Level_LoadTexturePages(const LEVEL_LOADER *const loader)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_pages = m_Info.textures.page_count;
-    Output_InitialiseTexturePages(num_pages, loader->game_version == 2);
+    Output_InitialiseTexturePages(num_pages, loader->game_version >= 2);
 
     for (int32_t i = 0; i < num_pages; i++) {
-        if (loader->game_version == 2) {
+        if (loader->game_version >= 2) {
             uint8_t *const target_8 = Output_GetTexturePage8(i);
             const uint8_t *const source_8 =
                 &m_Info.textures.pages_24[i * TEXTURE_PAGE_SIZE];

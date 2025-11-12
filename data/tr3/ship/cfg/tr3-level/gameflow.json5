@@ -1,0 +1,30 @@
+{
+    // This file is used to enable the -l argument support.
+
+    "main_menu_picture": "todo.webp",
+    "savegame_fmt_legacy": "savegame_custom.%d",
+    "savegame_fmt_bson": "save_tr3_custom_%02d.dat",
+
+    "demo_version": false,
+    "enable_tr2_item_drops": true,
+    "convert_dropped_guns": true,
+
+    "sfx_path": "data/main.sfx",
+    "injections": [
+        "data/injections/font.bin",
+        "data/injections/lara_animations.bin",
+        "data/injections/pda_model.bin",
+        "data/injections/lara_extra.bin",
+    ],
+
+    "levels": [
+        {
+            "path": "PLACEHOLDER",
+            "music_track": -1,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "level_stats"},
+            ],
+        },
+    ],
+}

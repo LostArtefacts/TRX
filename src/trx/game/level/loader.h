@@ -17,7 +17,7 @@ void Level_ReadAnimRanges(VFILE *file);
 void Level_ReadAnimCommands(VFILE *file);
 void Level_ReadAnimBones(VFILE *file);
 void Level_ReadAnimFrames(VFILE *file);
-void Level_ReadObjects(VFILE *file);
+void Level_ReadObjects(const LEVEL_LOADER *loader, VFILE *file);
 void Level_ReadStaticObjects(VFILE *file);
 void Level_ReadObjectTextures(VFILE *file);
 void Level_ReadSpriteTextures(VFILE *file);

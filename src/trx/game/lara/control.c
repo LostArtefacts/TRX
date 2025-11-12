@@ -224,7 +224,7 @@ static void M_UpdateEnvironment(void)
     // Create splash if Lara lands in wading height water. TR3+ feature.
     if (g_Config.gameplay.enable_wading) {
         const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
-        if (item->pos.y + bounds->min.y <= water_height
+        if (bounds != nullptr && item->pos.y + bounds->min.y <= water_height
             && item->pos.y + bounds->max.y >= water_height
             && item->fall_speed > 0 && water_depth < M_SWIM_DEPTH - STEP_L) {
             Spawn_Splash(item);
