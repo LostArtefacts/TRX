@@ -49,7 +49,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
         if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
             String_ParseInteger(next_arg, &out_args->engine_version);
-            CLAMP(out_args->engine_version, 1, 2);
+            CLAMP(out_args->engine_version, 1, 3);
             i++;
         }
     }

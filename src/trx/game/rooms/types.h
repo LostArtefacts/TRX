@@ -78,6 +78,8 @@ typedef struct {
     } portal_room;
     SURFACE floor;
     SURFACE ceiling;
+    uint8_t fx;
+    bool stopper;
 } SECTOR;
 
 typedef struct {
@@ -168,4 +170,6 @@ typedef struct {
     } bind;
 
     ROOM_DRAWSET drawn_items;
+    uint8_t water_scheme;
+    uint8_t reverb_info;
 } ROOM;

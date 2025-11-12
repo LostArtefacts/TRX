@@ -35,6 +35,14 @@ static SHELL_MOD m_KnownMods[] = {
       .mod_type = MOD_DIRECT_LEVEL,
       .engine_version = 2,
       .base_mod = "tr2" },
+    { .name = "tr3",
+      .mod_type = MOD_BASE_GAME,
+      .engine_version = 3,
+      .base_mod = nullptr },
+    { .name = "tr3-level",
+      .mod_type = MOD_DIRECT_LEVEL,
+      .engine_version = 3,
+      .base_mod = "tr3" },
     { .name = nullptr }, // sentinel
 };
 
