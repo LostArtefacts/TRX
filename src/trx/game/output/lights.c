@@ -359,7 +359,7 @@ void Output_AnimateLights(const int32_t num_frames)
 {
     m_WibbleOffset += num_frames;
     m_WibbleOffset %= M_LIGHT_CYCLE;
-    if (g_TRVersion == 2) {
+    if (g_TRVersion >= 2) {
         m_RoomLightShades[RLM_FLICKER] = Random_GetDraw() % M_LIGHT_CYCLE;
         m_RoomLightShades[RLM_GLOW] = (M_LIGHT_CYCLE - 1)
                 * (Math_Sin((m_WibbleOffset * DEG_360) / M_LIGHT_CYCLE)

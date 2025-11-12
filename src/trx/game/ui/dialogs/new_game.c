@@ -141,7 +141,7 @@ void UI_NewGame(UI_NEW_GAME_STATE *const s)
                 || opt->choice == UI_NEW_GAME_CHOICE_STORY_SO_FAR)) {
             // TODO: do not hardcode the numbers (they come from
             // UI_BeginWindowBody)
-            UI_BeginPad(g_TRVersion == 2 ? -7.0f : -10.0f, 4.0f);
+            UI_BeginPad(g_TRVersion >= 2 ? -7.0f : -10.0f, 4.0f);
             UI_HorizontalLine();
             UI_EndPad();
             line_drawn = true;

@@ -21,7 +21,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawSpriteItem;
-    obj->semi_transparent = g_TRVersion == 2;
+    obj->semi_transparent = g_TRVersion >= 2;
 }
 
 REGISTER_OBJECT(O_DART_EFFECT, M_Setup)

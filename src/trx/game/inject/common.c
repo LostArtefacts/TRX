@@ -43,7 +43,7 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
     case IFT_TEXTURE_FIX:
         return g_Config.visuals.fix_texture_issues;
     case IFT_ALTER_ANIM_SPRITE:
-        return g_Config.visuals.fix_animated_sprites == (g_TRVersion == 2);
+        return g_Config.visuals.fix_animated_sprites == (g_TRVersion >= 2);
     case IFT_PS1_CRYSTAL:
         return g_Config.gameplay.enable_save_crystals
             && g_Config.visuals.enable_ps1_crystals;
@@ -121,7 +121,7 @@ static void M_InitialiseBlock(
                     m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
                     VFile_Skip(file, sizeof(char) * sample_length);
                 }
-            } else if (g_TRVersion == 2) {
+            } else if (g_TRVersion >= 2) {
                 VFile_Skip(file, sizeof(uint32_t));
             }
         }

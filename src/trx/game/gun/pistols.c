@@ -10,7 +10,7 @@
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
-#define M_ENABLE_FAST_UZI (g_TRVersion == 2)
+#define M_ENABLE_FAST_UZI (g_TRVersion >= 2)
 
 typedef enum {
     // clang-format off
@@ -26,7 +26,7 @@ static bool m_SoundLeft = false;
 
 static bool M_EnableFastSound(const LARA_GUN_TYPE weapon_type)
 {
-    return g_TRVersion == 2 && weapon_type == LGT_UZIS;
+    return g_TRVersion >= 2 && weapon_type == LGT_UZIS;
 }
 
 static void M_FireSound(const SAMPLE_TRX_ID sample_trx_id, const bool alternate)

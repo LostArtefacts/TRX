@@ -108,7 +108,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
             && (g_InputDB.menu_confirm || g_InputDB.menu_back)
             && !g_Input.fly_cheat)
         || g_OverlayFlag == 2) {
-        if (demo_mode || (g_TRVersion == 2 && Game_IsInGym())) {
+        if (demo_mode || (g_TRVersion >= 2 && Game_IsInGym())) {
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
         if (g_OverlayFlag == 2) {
