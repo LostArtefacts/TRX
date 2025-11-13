@@ -170,7 +170,7 @@ static void M_DecideRequestedWeapon(void)
         if (lara->gun_type == LGT_FLARE) {
             lara->gun_status = LGS_UNDRAW;
         } else if (
-            Inv_RequestItem(O_FLARES_ITEM)
+            Inv_RequestItem(O_FLAREBOX_ITEM)
             && (!g_Config.gameplay.fix_free_flare_glitch
                 || lara_item->current_anim_state != LS(LS_PICKUP))) {
             lara->request_gun_type = LGT_FLARE;
@@ -207,7 +207,7 @@ static void M_DrawRequestedWeapon(void)
 static void M_TryUndrawWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_Input.use_flare && Inv_RequestItem(O_FLARES_ITEM)) {
+    if (g_Input.use_flare && Inv_RequestItem(O_FLAREBOX_ITEM)) {
         lara->request_gun_type = LGT_FLARE;
     }
     if (M_NeedToUndraw()) {

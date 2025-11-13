@@ -302,8 +302,8 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         request_gun_type = LGT_GRENADE;
         break;
 
-    case O_FLARES_ITEM:
-    case O_FLARES_OPTION:
+    case O_FLAREBOX_ITEM:
+    case O_FLAREBOX_OPTION:
         lara_info->request_gun_type = LGT_FLARE;
         break;
 

@@ -220,7 +220,7 @@ void Lara_Flare_Draw(void)
     } else if (frame_num == LF_FL_DRAW_GOT_IT) {
         Lara_Flare_DrawMeshes();
         if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
-            Inv_RemoveItem(O_FLARES_ITEM);
+            Inv_RemoveItem(O_FLAREBOX_ITEM);
         }
     } else if (frame_num >= LF_FL_IGNITE && frame_num <= LF_FL_2_HOLD - 2) {
         if (frame_num == LF_FL_IGNITE) {

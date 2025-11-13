@@ -58,7 +58,7 @@ static void M_GiveAllGunsImpl(const bool ignore_exclusions)
 static void M_GiveAllMedpacksImpl(void)
 {
     if (g_Weapons[LGT_FLARE].is_available) {
-        Inv_AddItemNTimes(O_FLARES_ITEM, 10);
+        Inv_AddItemNTimes(O_FLAREBOX_ITEM, 10);
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 10);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 10);

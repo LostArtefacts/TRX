@@ -243,7 +243,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         for (int32_t i = 0; i < source->count; i++) {
             if (source->items[i]->object_id == inv_object_id) {
                 const int32_t qty =
-                    object_id == O_FLARES_ITEM ? M_GetFlareQuantity() : 1;
+                    object_id == O_FLAREBOX_ITEM ? M_GetFlareQuantity() : 1;
                 source->qtys[i] += qty;
                 CLAMPG(source->qtys[i], MAX_QTY);
                 return true;
