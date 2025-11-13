@@ -37,7 +37,6 @@ typedef struct {
 
     float depth_adjustment;
     bool enable_reflections;
-    bool disable_transparency_sort;
 } OBJECT_MESH;
 
 typedef struct {

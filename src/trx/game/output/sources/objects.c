@@ -75,7 +75,7 @@ static void M_AddObjectFace3(
         face->palette_idx, flags, nullptr);
     MeshBuilder_AddFace3(
         builder,
-        !obj_mesh->disable_transparency_sort && (flags & VERT_FLAT_SHADED) == 0
+        (flags & VERT_FLAT_SHADED) == 0
             && Output_Textures_IsObjectTextureTransparent(face->texture_idx),
         face->double_sided);
 }
@@ -89,7 +89,7 @@ static void M_AddObjectFace4(
         face->palette_idx, flags, face->texture_zw);
     MeshBuilder_AddFace4(
         builder,
-        !obj_mesh->disable_transparency_sort && (flags & VERT_FLAT_SHADED) == 0
+        (flags & VERT_FLAT_SHADED) == 0
             && Output_Textures_IsObjectTextureTransparent(face->texture_idx),
         face->double_sided);
 }
