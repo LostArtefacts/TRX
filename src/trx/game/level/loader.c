@@ -267,24 +267,22 @@ static void M_ReadRoomMesh(
                 vertex->light_base = VFile_ReadS16(file);
                 vertex->is_wibble_disabled = false;
                 vertex->light_adder = vertex->light_base;
+                vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
             } else if (loader->game_version == 2) {
                 vertex->light_base = VFile_ReadS16(file);
                 vertex->light_table_value = VFile_ReadU8(file);
                 const uint8_t flags = VFile_ReadU8(file);
                 vertex->is_wibble_disabled = (flags & 0x80u) != 0u;
                 vertex->light_adder = VFile_ReadS16(file);
+                vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
             } else if (loader->game_version == 3) {
-                // TODO: add support for RGB colours. Currently this converts
-                // back to the shader value.
-                VFile_Skip(file, 4);
-                const uint16_t color = VFile_ReadU16(file);
-                const uint16_t r = ((color & 0x7C00) >> 10);
-                const uint16_t g = ((color & 0x03E0) >> 5);
-                const uint16_t b = ((color & 0x001F));
-                const uint16_t avg = ((r + g + b) / 3);
-                vertex->light_base = 0x1FFF - (avg << 7);
+                VFile_Skip(file, 2); // attributes - TODO: support
+                VFile_Skip(file, 2); // lighting - unused in TR3
+                vertex->color = M_ARGB1555To8888(VFile_ReadU16(file));
+                vertex->color.a = 255;
+                vertex->light_base = 0;
+                vertex->light_adder = 0;
                 vertex->is_wibble_disabled = false;
-                vertex->light_adder = vertex->light_base;
             }
         }
     }
