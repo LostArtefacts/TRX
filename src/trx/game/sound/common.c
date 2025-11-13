@@ -23,14 +23,12 @@ typedef enum {
 
 #define M_DECIBEL_LUT_SIZE 512
 #define M_SOUND_CLOSE_RANGE (1 * WALL_L)
-#define M_SOUND_FAR_RANGE ((g_TRVersion == 1 ? 8 : 10) * WALL_L)
 
 #define M_MAX_ACTIVE_SOUNDS AUDIO_MAX_ACTIVE_SAMPLES
 #define M_SOUND_RANGE_MULT_CONSTANT 4
-#define M_SOUND_MAX_VOLUME                                                     \
-    ((M_SOUND_FAR_RANGE * M_SOUND_RANGE_MULT_CONSTANT) - 1)
+#define M_SOUND_MAX_VOLUME 0x8000
 #define M_SOUND_MAX_PITCH_CHANGE 6000
-#define M_SOUND_MAX_VOLUME_CHANGE 0x2000
+#define M_SOUND_MAX_VOLUME_CHANGE (g_TRVersion >= 3 ? 0x1000 : 0x2000)
 
 typedef struct {
     SAMPLE_ID sample_id;
@@ -97,7 +95,8 @@ static float M_ConvertPitch(const int32_t pitch)
     return pitch / 0x10000.p0;
 }
 
-static int32_t M_GetDistance(const XYZ_32 *const pos)
+static int32_t M_GetDistance(
+    const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
 {
     if (pos == nullptr) {
         return 0;
@@ -105,38 +104,36 @@ static int32_t M_GetDistance(const XYZ_32 *const pos)
     const int32_t dx = pos->x - g_Camera.mic_pos.x;
     const int32_t dy = pos->y - g_Camera.mic_pos.y;
     const int32_t dz = pos->z - g_Camera.mic_pos.z;
-    if (ABS(dx) > M_SOUND_FAR_RANGE || ABS(dy) > M_SOUND_FAR_RANGE
-        || ABS(dz) > M_SOUND_FAR_RANGE) {
+    if (ABS(dx) > sample->range || ABS(dy) > sample->range
+        || ABS(dz) > sample->range) {
         return INT32_MAX;
     }
-    uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-    if (distance > SQUARE(M_SOUND_FAR_RANGE)) {
+    const uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+    if (distance > SQUARE(sample->range)) {
         return INT32_MAX;
     } else if (distance < SQUARE(M_SOUND_CLOSE_RANGE)) {
-        distance = 0;
+        return 0;
     } else {
-        distance = Math_Sqrt(distance) - M_SOUND_CLOSE_RANGE;
+        return Math_Sqrt(distance) - M_SOUND_CLOSE_RANGE;
     }
-    return distance;
 }
 
 static int32_t M_GetVolume(
     const SAMPLE_INFO *const sample, const int32_t distance, const bool random)
 {
     if (g_TRVersion == 1) {
-        int32_t volume =
-            sample->volume - distance * M_SOUND_RANGE_MULT_CONSTANT;
+        int32_t volume = sample->volume - distance * 4;
         if (random && sample->flags.randomize_volume) {
-            volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
+            volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE / 0x8000;
         }
         return volume;
     } else {
         int32_t volume = sample->volume;
         if (random && sample->flags.randomize_volume) {
-            volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE >> 15;
+            volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE / 0x8000;
         }
         const int32_t attenuation =
-            SQUARE(distance) / (SQUARE(M_SOUND_FAR_RANGE) / 0x10000);
+            SQUARE(distance) / (SQUARE(sample->range) / 0x10000);
         return (volume * (0x10000 - attenuation)) / 0x10000;
     }
 }
@@ -145,6 +142,7 @@ static int32_t M_GetPitch(const SAMPLE_INFO *const sample, const uint32_t flags)
 {
     int32_t pitch = (flags & SPM_PITCH) != 0 ? (flags >> 8) & 0xFFFFFF
                                              : SOUND_DEFAULT_PITCH;
+    pitch += sample->pitch << 9;
     if (!g_Config.audio.enable_pitched_sounds) {
         return pitch;
     }
@@ -161,7 +159,7 @@ static int32_t M_GetPan(
     if (pos == nullptr) {
         return 0;
     }
-    const int32_t distance = M_GetDistance(pos);
+    const int32_t distance = M_GetDistance(sample, pos);
     if (distance > 0 && !sample->flags.no_pan) {
         if (g_TRVersion == 1) {
             const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -283,7 +281,7 @@ static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *const sound)
 
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
 {
-    const int32_t distance = M_GetDistance(sound->pos_ptr);
+    const int32_t distance = M_GetDistance(sound->sample, sound->pos_ptr);
     if (distance == INT32_MAX) {
         sound->volume = 0;
         return;
@@ -501,7 +499,7 @@ bool Sound_Effect_Direct(
         return false;
     }
 
-    const int32_t distance = M_GetDistance(pos);
+    const int32_t distance = M_GetDistance(sample, pos);
     if (distance == INT32_MAX) {
         return false;
     }

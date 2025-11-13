@@ -1,4 +1,5 @@
 #include <trx/debug.h>
+#include <trx/game/const.h>
 #include <trx/game/inject.h>
 #include <trx/game/sound.h>
 #include <trx/memory.h>
@@ -17,6 +18,12 @@ static void M_HandleSFXData(const INJECTION_CHUNK chunk)
 
         SAMPLE_INFO *const sample_info = Sound_GetOrCreateSample(sfx_id);
         sample_info->volume = VFile_ReadS16(chunk.injection->fp);
+        sample_info->pitch = 0;
+        if (g_TRVersion >= 2) {
+            sample_info->range = 10 * WALL_L; // TODO: support TR3
+        } else if (g_TRVersion == 1) {
+            sample_info->range = 8 * WALL_L;
+        }
         sample_info->randomness = VFile_ReadS16(chunk.injection->fp);
         sample_info->flags.all = VFile_ReadU16(chunk.injection->fp);
         if (g_TRVersion == 1) {

@@ -7,7 +7,9 @@
 typedef struct {
     int16_t number;
     int16_t volume;
+    int32_t range;
     int32_t randomness;
+    uint8_t pitch;
     union {
         struct {
             uint16_t mode_bits : 2;
