@@ -61,14 +61,14 @@ LARA_GUN_TYPE Gun_GetType(const OBJECT_ID obj_id)
 {
     // clang-format off
     switch (obj_id) {
-    case O_PISTOL_ITEM:  return LGT_PISTOLS;
-    case O_MAGNUM_ITEM:  return LGT_MAGNUMS;
-    case O_UZI_ITEM:     return LGT_UZIS;
-    case O_SHOTGUN_ITEM: return LGT_SHOTGUN;
-    case O_HARPOON_ITEM: return LGT_HARPOON;
-    case O_M16_ITEM:     return LGT_M16;
-    case O_GRENADE_ITEM: return LGT_GRENADE;
-    default:             return LGT_UNARMED;
+    case O_PISTOL_ITEM:      return LGT_PISTOLS;
+    case O_MAGNUM_ITEM:      return LGT_MAGNUMS;
+    case O_UZI_ITEM:         return LGT_UZIS;
+    case O_SHOTGUN_ITEM:     return LGT_SHOTGUN;
+    case O_HARPOON_ITEM:     return LGT_HARPOON;
+    case O_M16_ITEM:         return LGT_M16;
+    case O_GRENADE_GUN_ITEM: return LGT_GRENADE;
+    default:                 return LGT_UNARMED;
     }
     // clang-format on
 }
@@ -83,7 +83,7 @@ OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
     case LGT_SHOTGUN: return O_SHOTGUN_ITEM;
     case LGT_HARPOON: return O_HARPOON_ITEM;
     case LGT_M16:     return O_M16_ITEM;
-    case LGT_GRENADE: return O_GRENADE_ITEM;
+    case LGT_GRENADE: return O_GRENADE_GUN_ITEM;
     default:          return NO_OBJECT;
     }
     // clang-format on

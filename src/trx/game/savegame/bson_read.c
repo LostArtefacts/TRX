@@ -588,7 +588,7 @@ static bool M_IsValidItemObject(
         case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
         case O_HARPOON_AMMO_ITEM: return initial_obj_id == O_HARPOON_ITEM;
         case O_M16_AMMO_ITEM: return initial_obj_id == O_M16_ITEM;
-        case O_GRENADE_AMMO_ITEM: return initial_obj_id == O_GRENADE_ITEM;
+        case O_GRENADE_AMMO_ITEM: return initial_obj_id == O_GRENADE_GUN_ITEM;
         // dual-state animals
         case O_ALLIGATOR: return initial_obj_id == O_CROCODILE;
         case O_CROCODILE: return initial_obj_id == O_ALLIGATOR;
