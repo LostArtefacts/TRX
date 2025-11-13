@@ -30,7 +30,7 @@
     },
 
     {
-        "object_id": "O_FLARES_OPTION",
+        "object_id": "O_FLAREBOX_OPTION",
         "frames_total": 31,
         "open_frame": 30,
         "anim_direction": 1,

@@ -103,7 +103,7 @@ static void M_RingNotActive(
         M_ShowAmmoQuantity("%d", qty);
         break;
 
-    case O_FLARES_OPTION:
+    case O_FLAREBOX_OPTION:
         M_ShowAmmoQuantity("%d", qty);
         break;
 
@@ -265,7 +265,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_GRENADE_GUN_OPTION:
     case O_SMALL_MEDIPACK_OPTION:
     case O_LARGE_MEDIPACK_OPTION:
-    case O_FLARES_OPTION:
+    case O_FLAREBOX_OPTION:
     case O_KEY_OPTION_1:
     case O_KEY_OPTION_2:
     case O_KEY_OPTION_3:

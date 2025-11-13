@@ -94,8 +94,8 @@ static void M_ResumeInfo_AddItem(
     case O_LARGE_MEDIPACK_OPTION:
         resume->large_medipacks += qty;
         break;
-    case O_FLARES_ITEM:
-    case O_FLARES_OPTION:
+    case O_FLAREBOX_ITEM:
+    case O_FLAREBOX_OPTION:
     case O_FLARE_ITEM:
         resume->flares += qty;
         break;
