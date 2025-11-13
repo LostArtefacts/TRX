@@ -76,10 +76,14 @@ static void M_HandleSpriteSequences(
         const int16_t mesh_idx = VFile_ReadS16(injection->fp);
 
         if (obj_info.type == OBJ_TYPE_OBJECT) {
-            OBJECT *const obj = Object_Get(obj_info.id);
-            obj->mesh_count = num_meshes;
-            obj->mesh_idx = mesh_idx + level_info->textures.sprite_count;
-            obj->loaded = true;
+            OBJECT *const obj = Object_TryGet(obj_info.id);
+            if (obj == nullptr) {
+                LOG_WARNING("Invalid object %d", obj_info.id);
+            } else {
+                obj->mesh_count = num_meshes;
+                obj->mesh_idx = mesh_idx + level_info->textures.sprite_count;
+                obj->loaded = true;
+            }
         } else if (obj_info.type == OBJ_TYPE_STATIC2D) {
             STATIC_OBJECT_2D *const obj = Object_Get2DStatic(obj_info.id);
             obj->frame_count = ABS(num_meshes);
