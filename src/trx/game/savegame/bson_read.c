@@ -10,6 +10,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/creatures/cobra.h>
 #include <trx/game/objects/general/lift.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
@@ -832,6 +833,14 @@ static bool M_ReadItem(
         M_MUST(M_ReadNum(ctx, "momentum_angle", &data->momentum_angle));
         M_MUST(M_ReadNum(ctx, "extra_rotation", &data->extra_rotation));
         M_MUST(M_ReadNum(ctx, "pitch", &data->pitch));
+        M_MUST(M_Pop(ctx));
+        break;
+    }
+
+    case O_COBRA: {
+        M_MUST(M_PushObject(ctx, "data"));
+        const COBRA_INFO *const data = item->priv;
+        M_MUST(M_ReadNum(ctx, "hit_points", &data->hit_points));
         M_MUST(M_Pop(ctx));
         break;
     }

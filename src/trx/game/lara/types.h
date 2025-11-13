@@ -49,6 +49,7 @@ typedef struct {
     int16_t death_timer;
     int16_t sprint_timer;
     int16_t exposure_timer;
+    int16_t poison;
     int32_t idle_timer;
     int16_t current_active;
     LOT_INFO lot;
