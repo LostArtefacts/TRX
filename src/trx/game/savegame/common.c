@@ -476,7 +476,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
             Inv_RequestItem(O_HARPOON_AMMO_ITEM) * HARPOON_AMMO_QTY;
     }
 
-    if (Inv_RequestItem(O_GRENADE_ITEM)) {
+    if (Inv_RequestItem(O_GRENADE_GUN_ITEM)) {
         resume->flags.has_grenade = true;
         resume->grenade_ammo = lara->grenade_ammo.ammo;
     } else {
