@@ -18,7 +18,7 @@ typedef struct {
         int32_t object_count;
         int32_t sprite_count;
         int32_t page_count;
-        uint8_t *pages_24;
+        uint8_t *pages_8;
         RGBA_8888 *pages_32;
     } textures;
 

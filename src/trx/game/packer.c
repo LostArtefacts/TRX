@@ -59,7 +59,7 @@ static TEX_CONTAINER *m_Queue = nullptr;
 
 static void M_PreparePaletteLUT(void)
 {
-    if (m_Data->level.pages_24 == nullptr) {
+    if (m_Data->level.pages_8 == nullptr) {
         return;
     }
 
@@ -290,11 +290,10 @@ static bool M_PackContainerAt(
 
     const uint8_t *source_page_24 = nullptr;
     uint8_t *level_page_24 = nullptr;
-    if (m_Data->level.pages_24 != nullptr) {
+    if (m_Data->level.pages_8 != nullptr) {
         source_page_24 =
-            &m_Data->source.pages_24[source_page_index * TEXTURE_PAGE_SIZE];
-        level_page_24 =
-            &m_Data->level.pages_24[page->index * TEXTURE_PAGE_SIZE];
+            &m_Data->source.pages_8[source_page_index * TEXTURE_PAGE_SIZE];
+        level_page_24 = &m_Data->level.pages_8[page->index * TEXTURE_PAGE_SIZE];
     }
 
     int32_t old_pixel, new_pixel;
@@ -353,12 +352,12 @@ static void M_AllocateNewPage(void)
         memset(level_page, 0, TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
     }
 
-    if (m_Data->level.pages_24 != nullptr) {
-        m_Data->level.pages_24 = Memory_Realloc(
-            m_Data->level.pages_24,
+    if (m_Data->level.pages_8 != nullptr) {
+        m_Data->level.pages_8 = Memory_Realloc(
+            m_Data->level.pages_8,
             TEXTURE_PAGE_SIZE * new_count * sizeof(uint8_t));
         uint8_t *const level_page =
-            &m_Data->level.pages_24[(new_count - 1) * TEXTURE_PAGE_SIZE];
+            &m_Data->level.pages_8[(new_count - 1) * TEXTURE_PAGE_SIZE];
         memset(level_page, 0, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
     }
 }

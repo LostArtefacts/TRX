@@ -464,14 +464,14 @@ void Level_ReadTexturePages(const LEVEL_LOADER *const loader, VFILE *const file)
     const int32_t texture_size_32_bit =
         (num_pages + extra_pages) * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888);
 
-    m_Info.textures.pages_24 = Memory_Alloc(texture_size_8_bit);
-    VFile_Read(file, m_Info.textures.pages_24, num_pages * TEXTURE_PAGE_SIZE);
+    m_Info.textures.pages_8 = Memory_Alloc(texture_size_8_bit);
+    VFile_Read(file, m_Info.textures.pages_8, num_pages * TEXTURE_PAGE_SIZE);
 
     m_Info.textures.pages_32 = Memory_Alloc(texture_size_32_bit);
     RGBA_8888 *output = m_Info.textures.pages_32;
 
     if (loader->game_version == 1) {
-        const uint8_t *input = m_Info.textures.pages_24;
+        const uint8_t *input = m_Info.textures.pages_8;
         for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
             const uint8_t index = *input++;
             const RGB_888 pix = m_Info.palette.data_24[index];
@@ -1492,7 +1492,7 @@ void Level_LoadTexturePages(const LEVEL_LOADER *const loader)
         if (loader->game_version >= 2) {
             uint8_t *const target_8 = Output_GetTexturePage8(i);
             const uint8_t *const source_8 =
-                &m_Info.textures.pages_24[i * TEXTURE_PAGE_SIZE];
+                &m_Info.textures.pages_8[i * TEXTURE_PAGE_SIZE];
             memcpy(target_8, source_8, TEXTURE_PAGE_SIZE * sizeof(uint8_t));
         }
 
@@ -1520,7 +1520,7 @@ void Level_LoadTexturePages(const LEVEL_LOADER *const loader)
     }
     Benchmark_End(&benchmark, "premultiplied alpha");
 
-    Memory_FreePointer(&m_Info.textures.pages_24);
+    Memory_FreePointer(&m_Info.textures.pages_8);
     Memory_FreePointer(&m_Info.textures.pages_32);
     Benchmark_End(&benchmark, nullptr);
 }
