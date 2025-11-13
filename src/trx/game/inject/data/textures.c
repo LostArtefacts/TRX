@@ -53,7 +53,7 @@ static void M_HandleTexturePages(
         data_count * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
 
     uint8_t *output_8 =
-        &info->textures.pages_24[info->textures.page_count * TEXTURE_PAGE_SIZE];
+        &info->textures.pages_8[info->textures.page_count * TEXTURE_PAGE_SIZE];
     uint8_t *input_8 = Memory_Alloc(data_count * TEXTURE_PAGE_SIZE);
     VFile_Read(injection->fp, input_8, data_count * TEXTURE_PAGE_SIZE);
 

@@ -8,7 +8,7 @@ typedef struct {
     struct {
         int32_t page_count;
         RGBA_8888 *pages_32;
-        uint8_t *pages_24;
+        uint8_t *pages_8;
         RGB_888 *palette_24;
     } source, level;
     int32_t object_count;
