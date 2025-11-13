@@ -435,6 +435,7 @@ OBJECT_ID Lara_GetAnimationObject(void)
 
 void Lara_Animate(ITEM *const item)
 {
+    const ROOM *const room = Room_Get(item->room_num);
     LARA_INFO *const lara = Lara_GetLaraInfo();
     item->frame_num++;
 
@@ -504,7 +505,8 @@ void Lara_Animate(ITEM *const item)
             const ANIM_COMMAND_ENVIRONMENT type = data->environment;
             const int32_t height = lara->water_surface_dist;
             if ((type == ACE_WATER && (height >= 0 || height == NO_HEIGHT))
-                || (type == ACE_LAND && height < 0 && height != NO_HEIGHT)) {
+                || (type == ACE_LAND && height < 0 && height != NO_HEIGHT
+                    && !room->flags.swamp)) {
                 break;
             }
 
@@ -517,21 +519,35 @@ void Lara_Animate(ITEM *const item)
         }
     }
 
-    if (item->gravity) {
-        int32_t speed = anim->velocity
-            + anim->acceleration * (item->frame_num - anim->frame_base - 1);
+    const int32_t rel_frame = item->frame_num - anim->frame_base;
+    if (!item->gravity) {
+        int32_t speed = anim->velocity;
+        if (lara->water_status == LWS_WADE && room->flags.swamp) {
+            speed /= 2;
+            speed += (anim->acceleration * rel_frame) / 4;
+        } else {
+            speed += anim->acceleration * rel_frame;
+        }
+        item->speed = (int16_t)(speed >> 16);
+    } else if (room->flags.swamp) {
+        item->speed -= item->speed >> 3;
+        if (ABS(item->speed) < 8) {
+            item->speed = 0;
+            item->gravity = false;
+        }
+        if (item->fall_speed > 128) {
+            item->fall_speed /= 2;
+        }
+        item->fall_speed -= item->fall_speed / 4;
+        CLAMPL(item->fall_speed, 4);
+    } else {
+        int32_t speed = anim->velocity + anim->acceleration * (rel_frame - 1);
         item->speed -= (int16_t)(speed >> 16);
         speed += anim->acceleration;
         item->speed += (int16_t)(speed >> 16);
 
         item->fall_speed += item->fall_speed < FAST_FALL_SPEED ? GRAVITY : 1;
         item->pos.y += item->fall_speed;
-    } else {
-        int32_t speed = anim->velocity;
-        if (anim->acceleration != 0) {
-            speed += anim->acceleration * (item->frame_num - anim->frame_base);
-        }
-        item->speed = (int16_t)(speed >> 16);
     }
 
     item->pos.x += (item->speed * Math_Sin(lara->move_angle)) >> W2V_SHIFT;

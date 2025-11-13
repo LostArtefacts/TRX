@@ -868,11 +868,12 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     const int32_t front_ceiling = coll->side_front.ceiling;
     const bool slope = ABS(left_floor - right_floor) >= SLOPE_DIF;
     const int32_t mid = STEP_L / 2;
+    const ROOM *const room = Room_Get(item->room_num);
 
     if (front_floor >= -STEP_L * 2 - mid && front_floor <= -STEP_L * 2 + mid) {
         if (slope || front_floor - front_ceiling < 0
-            || left_floor - left_ceiling < 0
-            || right_floor - right_ceiling < 0) {
+            || left_floor - left_ceiling < 0 || right_floor - right_ceiling < 0
+            || (room->flags.swamp && lara->water_surface_dist < -768)) {
             return false;
         }
         item->goal_anim_state = LS(LS_STOP);
@@ -883,8 +884,8 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     } else if (
         front_floor >= -STEP_L * 3 - mid && front_floor <= -STEP_L * 3 + mid) {
         if (slope || front_floor - front_ceiling < 0
-            || left_floor - left_ceiling < 0
-            || right_floor - right_ceiling < 0) {
+            || left_floor - left_ceiling < 0 || right_floor - right_ceiling < 0
+            || (room->flags.swamp && lara->water_surface_dist < -768)) {
             return false;
         }
         item->goal_anim_state = LS(LS_STOP);
@@ -895,6 +896,9 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     } else if (
         !slope && front_floor >= -STEP_L * 7 - mid
         && front_floor <= -STEP_L * 4 + mid) {
+        if (room->flags.swamp) {
+            return false;
+        }
         item->goal_anim_state = LS(LS_JUMP_UP);
         item->current_anim_state = LS(LS_STOP);
         Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);

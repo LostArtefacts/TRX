@@ -293,10 +293,10 @@ int32_t Lara_GetWaterDepth(
         room = Room_Get(room_num);
     }
 
-    if (room->flags.underwater) {
+    if (room->flags.underwater || room->flags.swamp) {
         while (sector->portal_room.sky != NO_ROOM) {
             room = Room_Get(sector->portal_room.sky);
-            if (!room->flags.underwater) {
+            if (!room->flags.underwater && !room->flags.swamp) {
                 const int32_t water_height = sector->ceiling.height;
                 sector = Room_GetSector(x, y, z, &room_num);
                 return Room_GetHeight(sector, x, y, z) - water_height;
@@ -308,7 +308,7 @@ int32_t Lara_GetWaterDepth(
 
     while (sector->portal_room.pit != NO_ROOM) {
         room = Room_Get(sector->portal_room.pit);
-        if (room->flags.underwater) {
+        if (room->flags.underwater || room->flags.swamp) {
             const int32_t water_height = sector->floor.height;
             sector = Room_GetSector(x, y, z, &room_num);
             return Room_GetHeight(sector, x, y, z) - water_height;

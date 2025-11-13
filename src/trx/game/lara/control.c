@@ -20,12 +20,13 @@
 #define M_COLL_DIST         CREATURE_TARGET_DIST // = 4096
 #define M_MOVE_TIMEOUT      90
 #define M_UW_DAMAGE         5
+#define M_SWAMP_DAMAGE      10
 #define M_DIVE_TILT_MED     (45 * DEG_1)         // = 8190
 #define M_DIVE_TILT_MAX     (85 * DEG_1)         // = 15470
 #define M_DIVE_TILT_MAX_ALT (100 * DEG_1)        // = 18200
 #define M_RADIUS_SURF       LARA_RADIUS          // = 100
 #define M_RADIUS_UW         300
-#define M_WADE_DEPTH        384
+#define M_WADE_DEPTH        (g_TRVersion == 3 ? 256 : 384)
 #define M_SWIM_DEPTH        730
 #define M_LEAN_UNDO_SURF    (LARA_LEAN_UNDO * 2) // = 364
 #define M_LEAN_UNDO_UW      M_LEAN_UNDO_SURF     // = 364
@@ -212,7 +213,6 @@ static void M_UpdateEnvironment(void)
     }
 
     const ROOM *const room = Room_Get(item->room_num);
-    const bool room_submerged = room->flags.underwater;
     const int32_t water_depth = Lara_GetWaterDepth(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
     const int32_t water_height = Room_GetWaterHeight(
@@ -239,50 +239,59 @@ static void M_UpdateEnvironment(void)
             break;
         }
 
-        if (g_Config.gameplay.enable_wading
-            && water_depth <= M_SWIM_DEPTH - STEP_L) {
-            if (water_height_diff > M_WADE_DEPTH) {
-                lara_info->water_status = LWS_WADE;
-                if (!item->gravity) {
-                    item->goal_anim_state = LS(LS_STOP);
+        if (water_depth > M_SWIM_DEPTH - STEP_L && !room->flags.swamp) {
+            if (room->flags.underwater) {
+                lara_info->air = LARA_MAX_AIR;
+                lara_info->water_status = LWS_UNDERWATER;
+                item->gravity = false;
+                item->pos.y += 100;
+                Lara_UpdateRoomToHeight(0);
+                Sound_StopEffect(SFX_LARA_FALL);
+                if (item->current_anim_state == LS(LS_SWAN_DIVE)) {
+                    item->rot.x = -M_DIVE_TILT_MED;
+                    item->goal_anim_state = LS(LS_DIVE);
+                    Lara_Animate(item);
+                    item->fall_speed *= 2;
+                } else if (item->current_anim_state == LS(LS_FAST_DIVE)) {
+                    item->rot.x = -M_DIVE_TILT_MAX;
+                    item->goal_anim_state = LS(LS_DIVE);
+                    Lara_Animate(item);
+                    item->fall_speed *= 2;
+                } else {
+                    item->rot.x = -M_DIVE_TILT_MED;
+                    Item_SwitchToAnim(item, LA(LA_FREEFALL_TO_UNDERWATER), 0);
+                    item->current_anim_state = LS(LS_DIVE);
+                    item->goal_anim_state = LS(LS_SWIM);
+                    item->fall_speed = (item->fall_speed * 3) / 2;
                 }
+                lara_info->head_rot.x = 0;
+                lara_info->head_rot.y = 0;
+                lara_info->torso_rot.x = 0;
+                lara_info->torso_rot.y = 0;
+                Spawn_Splash(item);
             }
-        } else if (room_submerged) {
-            lara_info->air = LARA_MAX_AIR;
-            lara_info->water_status = LWS_UNDERWATER;
-            item->gravity = false;
-            item->pos.y += 100;
-            Lara_UpdateRoomToHeight(0);
-            Sound_StopEffect(SFX_LARA_FALL);
-            if (item->current_anim_state == LS(LS_SWAN_DIVE)) {
-                item->rot.x = -M_DIVE_TILT_MED;
-                item->goal_anim_state = LS(LS_DIVE);
-                Lara_Animate(item);
-                item->fall_speed *= 2;
-            } else if (item->current_anim_state == LS(LS_FAST_DIVE)) {
-                item->rot.x = -M_DIVE_TILT_MAX;
-                item->goal_anim_state = LS(LS_DIVE);
-                Lara_Animate(item);
-                item->fall_speed *= 2;
-            } else {
-                item->rot.x = -M_DIVE_TILT_MED;
-                Item_SwitchToAnim(item, LA(LA_FREEFALL_TO_UNDERWATER), 0);
-                item->current_anim_state = LS(LS_DIVE);
-                item->goal_anim_state = LS(LS_SWIM);
-                item->fall_speed = (item->fall_speed * 3) / 2;
+        } else if (
+            g_Config.gameplay.enable_wading
+            && water_height_diff > M_WADE_DEPTH) {
+            lara_info->water_status = LWS_WADE;
+            if (!item->gravity) {
+                item->goal_anim_state = LS(LS_STOP);
+            } else if (room->flags.swamp) {
+                if (item->current_anim_state == LS(LS_SWAN_DIVE)
+                    || item->current_anim_state == LS(LS_FAST_DIVE)) {
+                    item->pos.y = water_height + 1000;
+                }
+                Item_SwitchToAnim(item, LA(LA_WADE), 0);
+                item->current_anim_state = LS(LS_WADE);
+                item->goal_anim_state = LS(LS_WADE);
             }
-            lara_info->head_rot.x = 0;
-            lara_info->head_rot.y = 0;
-            lara_info->torso_rot.x = 0;
-            lara_info->torso_rot.y = 0;
-            Spawn_Splash(item);
         }
 
         break;
     }
 
     case LWS_UNDERWATER: {
-        if (room_submerged) {
+        if (room->flags.underwater) {
             break;
         }
 
@@ -324,7 +333,7 @@ static void M_UpdateEnvironment(void)
     }
 
     case LWS_SURFACE: {
-        if (room_submerged) {
+        if (room->flags.underwater) {
             break;
         }
 
@@ -364,7 +373,7 @@ static void M_UpdateEnvironment(void)
             if (item->current_anim_state == LS(LS_WADE)) {
                 item->goal_anim_state = LS(LS_RUN);
             }
-        } else if (water_height_diff > M_SWIM_DEPTH) {
+        } else if (water_height_diff > M_SWIM_DEPTH && !room->flags.swamp) {
             lara_info->water_status = LWS_SURFACE;
             item->pos.y += 1 - water_height_diff;
 
@@ -667,10 +676,22 @@ static void M_HandleEnvironment(void)
 
     switch (lara_info->water_status) {
     case LWS_ABOVE_WATER:
-    case LWS_WADE:
-        lara_info->air = LARA_MAX_AIR;
+    case LWS_WADE: {
+        const ROOM *const room = Room_Get(item->room_num);
+        if (room->flags.swamp && lara_info->water_surface_dist < -775) {
+            if (item->hit_points >= 0) {
+                lara_info->air -= 6;
+                if (lara_info->air < 0) {
+                    lara_info->air = -1;
+                    Lara_TakeDamage(M_SWAMP_DAMAGE, false);
+                }
+            }
+        } else {
+            lara_info->air = LARA_MAX_AIR;
+        }
         M_HandleAboveWater(&coll);
         break;
+    }
 
     case LWS_UNDERWATER:
         if (item->hit_points >= 0) {

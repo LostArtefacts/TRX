@@ -164,6 +164,7 @@ typedef struct {
         bool wind;
         bool inside;
         bool dynamic_lit;
+        bool swamp;
     } flags;
 
     struct {

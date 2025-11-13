@@ -531,11 +531,11 @@ int32_t Room_GetWaterHeight(
         room_num = sector->portal_room.wall;
     } while (room_num != NO_ROOM);
 
-    if (room->flags.underwater) {
+    if (room->flags.underwater || room->flags.swamp) {
         while (sector->portal_room.sky != NO_ROOM
                && !M_IsPortalSolid(sector->ceiling, x, z)) {
             room = Room_Get(sector->portal_room.sky);
-            if (!room->flags.underwater) {
+            if (!room->flags.underwater && !room->flags.swamp) {
                 break;
             }
             sector = Room_GetWorldSector(room, x, z);
@@ -545,7 +545,7 @@ int32_t Room_GetWaterHeight(
         while (sector->portal_room.pit != NO_ROOM
                && !M_IsPortalSolid(sector->floor, x, z)) {
             room = Room_Get(sector->portal_room.pit);
-            if (room->flags.underwater) {
+            if (room->flags.underwater || room->flags.swamp) {
                 return M_GetSurfaceHeight(sector->floor, x, z, true);
             }
             sector = Room_GetWorldSector(room, x, z);

@@ -165,6 +165,11 @@ static bool M_TestSlide(ITEM *const item, COLL_INFO *const coll)
         return false;
     }
 
+    const ROOM *const room = Room_Get(item->room_num);
+    if (room->flags.swamp) {
+        return false;
+    }
+
     int16_t angle = 0;
     if (coll->tilt_x > 2) {
         angle = -DEG_90;
@@ -390,7 +395,16 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (!M_TestSlide(item, coll)) {
+    if (M_TestSlide(item, coll)) {
+        return;
+    }
+
+    const ROOM *const room = Room_Get(item->room_num);
+    if (coll->side_mid.floor >= 0 && room->flags.swamp) {
+        item->pos.y += 2;
+    } else if (lara->water_status == LWS_WADE && coll->side_mid.floor >= 50) {
+        item->pos.y += 50;
+    } else {
         item->pos.y += coll->side_mid.floor;
     }
 }
@@ -513,7 +527,9 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Config.gameplay.fix_step_glitch && coll->side_mid.floor > 100) {
+    const ROOM *const room = Room_Get(item->room_num);
+    if (!room->flags.swamp && g_Config.gameplay.fix_step_glitch
+        && coll->side_mid.floor > 100) {
         item->current_anim_state = LS(LS_JUMP_FORWARD);
         item->goal_anim_state = LS(LS_JUMP_FORWARD);
         Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
@@ -523,7 +539,12 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     }
 
     Lara_Col_Shift(coll);
-    item->pos.y += coll->side_mid.floor;
+    if (room->flags.swamp && coll->side_mid.floor >= 0) {
+        item->pos.y += 2;
+        CLAMPG(item->pos.y, item->floor);
+    } else {
+        item->pos.y += coll->side_mid.floor;
+    }
 }
 
 static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
@@ -563,16 +584,24 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 0;
     M_Default(item, coll);
 
-    if (coll->side_mid.floor <= 100) {
-        if (!M_TestSlide(item, coll)) {
-            item->pos.y += coll->side_mid.floor;
-        }
-    } else {
+    const ROOM *const room = Room_Get(item->room_num);
+    if (coll->side_mid.floor > 100 && !room->flags.swamp) {
         Item_SwitchToAnim(item, LA(LA_FALL_START), 0);
         item->current_anim_state = LS(LS_JUMP_FORWARD);
         item->goal_anim_state = LS(LS_JUMP_FORWARD);
         item->gravity = true;
         item->fall_speed = 0;
+        return;
+    }
+
+    if (M_TestSlide(item, coll)) {
+        return;
+    }
+
+    if (coll->side_mid.floor < 0 || !room->flags.swamp) {
+        item->pos.y += coll->side_mid.floor;
+    } else {
+        item->pos.y += 2;
     }
 }
 
@@ -729,6 +758,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    const ROOM *const room = Room_Get(item->room_num);
     if (M_DeflectEdge(item, coll)) {
         item->rot.z = 0;
         if (g_Config.gameplay.fix_wade_wall_hit
@@ -736,7 +766,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
                 || coll->side_front.type == HT_SPLIT_TRI)
             && coll->side_front.floor < -STEP_L * 5 / 2
             && coll->old_anim_state == LS(LS_WADE)
-            && Item_TestAnimEqual(item, LA(LA_WADE))) {
+            && Item_TestAnimEqual(item, LA(LA_WADE)) && !room->flags.swamp) {
             item->current_anim_state = LS(LS_SPLAT);
             if (Item_TestFrameRange(item, M_LF_WADE_L_START, M_LF_WADE_L_END)) {
                 Item_SwitchToAnim(item, LA(LA_WALL_SMASH_LEFT), 0);
@@ -750,12 +780,12 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
         M_CollideStop(item, coll);
     }
 
-    if (M_Fallen(item, coll)) {
+    if (!room->flags.swamp && M_Fallen(item, coll)) {
         return;
     }
 
     if (coll->side_mid.floor >= -STEPUP_HEIGHT
-        && coll->side_mid.floor < -STEP_L / 2) {
+        && coll->side_mid.floor < -STEP_L / 2 && !room->flags.swamp) {
         if (Item_TestFrameRange(
                 item, M_LF_WADE_STEP_L_START, M_LF_WADE_STEP_L_END)) {
             Item_SwitchToAnim(item, LA(LA_RUN_UP_STEP_LEFT), 0);
@@ -768,7 +798,13 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    item->pos.y += MIN(coll->side_mid.floor, 50);
+    if (coll->side_mid.floor >= 50 && !room->flags.swamp) {
+        item->pos.y += 50;
+    } else if (coll->side_mid.floor < 0 || !room->flags.swamp) {
+        item->pos.y += coll->side_mid.floor;
+    } else {
+        item->pos.y += 2;
+    }
 }
 
 static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
