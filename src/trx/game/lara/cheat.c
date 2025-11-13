@@ -308,15 +308,17 @@ bool Lara_Cheat_ExitFlyMode(void)
     }
 
     const ROOM *const room = Room_Get(lara_item->room_num);
-    const bool room_submerged = room->flags.underwater;
     const int16_t water_height = Room_GetWaterHeight(
         lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
         lara_item->room_num);
 
-    if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {
+    if (room->flags.underwater
+        || (water_height != NO_HEIGHT && water_height > 0
+            && !room->flags.swamp)) {
         lara_info->water_status = LWS_UNDERWATER;
     } else {
-        lara_info->water_status = LWS_ABOVE_WATER;
+        lara_info->water_status =
+            room->flags.swamp ? LWS_WADE : LWS_ABOVE_WATER;
         Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
         lara_item->goal_anim_state = LS(LS_STOP);
         lara_item->current_anim_state = LS(LS_STOP);

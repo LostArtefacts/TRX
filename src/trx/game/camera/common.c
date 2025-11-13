@@ -209,6 +209,11 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
 
     room = Room_Get(target->room_num);
     sector = Room_GetWorldSector(room, target->x, target->z);
+    if (room->flags.swamp) {
+        target->y = room->max_ceiling - STEP_L;
+        sector =
+            Room_GetSector(target->x, target->y, target->z, &target->room_num);
+    }
 
     if (target->z < box->left || target->z > box->right || target->x < box->top
         || target->x > box->bottom) {

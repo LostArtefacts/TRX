@@ -20,6 +20,12 @@
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    const ROOM *const room = Room_Get(item->room_num);
+    if (room->flags.swamp) {
+        Item_Kill(item_num);
+        return;
+    }
+
     if (item->fall_speed) {
         item->rot.x += DEG_1 * 3;
         item->rot.z += DEG_1 * 5;
@@ -34,7 +40,7 @@ static void M_Control(const int16_t item_num)
     item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
     item->pos.x += (item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
 
-    if (Room_Get(item->room_num)->flags.underwater) {
+    if (room->flags.underwater) {
         item->fall_speed += (5 - item->fall_speed) / 2;
         item->speed = item->speed + (5 - item->speed) / 2;
     } else {

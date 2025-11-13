@@ -16,7 +16,7 @@ bool UI_LaraAirBar(const bool blink_state)
         && lara->air <= LARA_MAX_AIR * UI_BAR_BLINK_THRESHOLD;
     const bool show = g_Config.ui.show_bars
         && (lara->water_status == LWS_UNDERWATER
-            || lara->water_status == LWS_SURFACE);
+            || lara->water_status == LWS_SURFACE || lara->air < LARA_MAX_AIR);
     if (!show) {
         return false;
     }

@@ -4,6 +4,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 
 // clang-format off
 #define M_LF_ROLL                  2
@@ -178,26 +179,48 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     g_Camera.target_elevation = CAM_WADE_ELEVATION;
-    if (g_Input.left) {
-        lara->turn_rate -= LARA_TURN_RATE;
-        CLAMPL(lara->turn_rate, -M_FAST_TURN);
-        item->rot.z -= LARA_LEAN_RATE;
-        CLAMPL(item->rot.z, -LARA_LEAN_MAX);
-    } else if (g_Input.right) {
-        lara->turn_rate += LARA_TURN_RATE;
-        CLAMPG(lara->turn_rate, M_FAST_TURN);
-        item->rot.z += LARA_LEAN_RATE;
-        CLAMPG(item->rot.z, LARA_LEAN_MAX);
-    }
 
-    if (g_Input.forward) {
-        if (lara->water_status != LWS_ABOVE_WATER) {
+    const ROOM *const room = Room_Get(item->room_num);
+    if (room->flags.swamp) {
+        if (g_Input.left) {
+            lara->turn_rate -= LARA_TURN_RATE;
+            CLAMPL(lara->turn_rate, -LARA_SLOW_TURN);
+            item->rot.z -= LARA_LEAN_RATE;
+            CLAMPL(item->rot.z, -LARA_LEAN_MAX / 2);
+        } else if (g_Input.right) {
+            lara->turn_rate += LARA_TURN_RATE;
+            CLAMPG(lara->turn_rate, LARA_SLOW_TURN);
+            item->rot.z += LARA_LEAN_RATE;
+            CLAMPG(item->rot.z, LARA_LEAN_MAX / 2);
+        }
+
+        if (g_Input.forward) {
             item->goal_anim_state = LS(LS_WADE);
         } else {
-            item->goal_anim_state = LS(LS_RUN);
+            item->goal_anim_state = LS(LS_STOP);
         }
     } else {
-        item->goal_anim_state = LS(LS_STOP);
+        if (g_Input.left) {
+            lara->turn_rate -= LARA_TURN_RATE;
+            CLAMPL(lara->turn_rate, -M_FAST_TURN);
+            item->rot.z -= LARA_LEAN_RATE;
+            CLAMPL(item->rot.z, -LARA_LEAN_MAX);
+        } else if (g_Input.right) {
+            lara->turn_rate += LARA_TURN_RATE;
+            CLAMPG(lara->turn_rate, M_FAST_TURN);
+            item->rot.z += LARA_LEAN_RATE;
+            CLAMPG(item->rot.z, LARA_LEAN_MAX);
+        }
+
+        if (g_Input.forward) {
+            if (lara->water_status != LWS_ABOVE_WATER) {
+                item->goal_anim_state = LS(LS_WADE);
+            } else {
+                item->goal_anim_state = LS(LS_RUN);
+            }
+        } else {
+            item->goal_anim_state = LS(LS_STOP);
+        }
     }
 }
 
@@ -260,7 +283,14 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (g_Input.step_left) {
+    const ROOM *const room = Room_Get(item->room_num);
+    if (room->flags.swamp) {
+        if (g_Input.left) {
+            item->goal_anim_state = LS(LS_TURN_LEFT);
+        } else if (g_Input.right) {
+            item->goal_anim_state = LS(LS_TURN_RIGHT);
+        }
+    } else if (g_Input.step_left) {
         item->goal_anim_state = LS(LS_STEP_LEFT);
     } else if (g_Input.step_right) {
         item->goal_anim_state = LS(LS_STEP_RIGHT);
@@ -271,12 +301,12 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (lara->water_status == LWS_WADE) {
-        if (g_Input.jump) {
+        if (g_Input.jump && !room->flags.swamp) {
             item->goal_anim_state = LS(LS_COMPRESS);
         }
 
         if (g_Input.forward) {
-            if (g_Input.slow) {
+            if (room->flags.swamp || g_Input.slow) {
                 M_Wade(item, coll);
             } else {
                 M_Walk(item, coll);
