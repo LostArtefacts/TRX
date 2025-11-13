@@ -275,7 +275,10 @@ void Room_PopulateSectorData(
             break;
 
         case FT_DOOR:
-            sector->portal_room.wall = *data++;
+            const int16_t portal_room = *data++;
+            if (sector->portal_room.wall == NO_ROOM) {
+                sector->portal_room.wall = portal_room;
+            }
             break;
 
         case FT_LAVA:
