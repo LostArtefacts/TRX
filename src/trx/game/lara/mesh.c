@@ -128,6 +128,12 @@ static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
 
 void Lara_Mesh_Initialise(const GF_LEVEL *const level)
 {
+    const OBJECT *const skin_obj = Object_Get(O_LARA_SKIN);
+    if (skin_obj->loaded) {
+        OBJECT *const lara_obj = Object_Get(O_LARA);
+        lara_obj->mesh_idx = skin_obj->mesh_idx;
+    }
+
     if (level->type == GFL_CUTSCENE) {
         M_InitialiseCutsceneLevel();
     } else {
