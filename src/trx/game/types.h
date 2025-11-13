@@ -41,6 +41,7 @@ typedef struct {
     // that cannot be really shared between vertices
     TEXTURE_ZW_F texture_zw[4];
 
+    bool double_sided;
     bool enable_reflections;
 } FACE4;
 
@@ -50,5 +51,7 @@ typedef struct {
         uint16_t palette_idx;
     };
     uint16_t vertices[3];
+
+    bool double_sided;
     bool enable_reflections;
 } FACE3;

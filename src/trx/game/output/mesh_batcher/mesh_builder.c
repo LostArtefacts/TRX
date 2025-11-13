@@ -14,9 +14,13 @@ struct MESH_BUILDER {
 };
 
 static const size_t m_Size3 = 3;
+static const size_t m_Size3D = 6;
 static const size_t m_Size4 = 6;
+static const size_t m_Size4D = 12;
 static const int32_t m_Indices3[] = { 0, 2, 1 };
+static const int32_t m_Indices3D[] = { 0, 2, 1, 1, 2, 0 };
 static const int32_t m_Indices4[] = { 0, 2, 1, 0, 3, 2 };
+static const int32_t m_Indices4D[] = { 0, 2, 1, 0, 3, 2, 2, 3, 0, 1, 2, 0 };
 
 static void M_EnsureMesh(MESH_BUILDER *const builder)
 {
@@ -110,14 +114,26 @@ void MeshBuilder_AddFace(
     builder->pending_vertex_count = 0;
 }
 
-void MeshBuilder_AddFace3(MESH_BUILDER *const builder, const bool transparent)
+void MeshBuilder_AddFace3(
+    MESH_BUILDER *const builder, const bool transparent,
+    const bool double_sided)
 {
-    MeshBuilder_AddFace(builder, transparent, m_Indices3, m_Size3);
+    if (double_sided) {
+        MeshBuilder_AddFace(builder, transparent, m_Indices3D, m_Size3D);
+    } else {
+        MeshBuilder_AddFace(builder, transparent, m_Indices3, m_Size3);
+    }
 }
 
-void MeshBuilder_AddFace4(MESH_BUILDER *const builder, const bool transparent)
+void MeshBuilder_AddFace4(
+    MESH_BUILDER *const builder, const bool transparent,
+    const bool double_sided)
 {
-    MeshBuilder_AddFace(builder, transparent, m_Indices4, m_Size4);
+    if (double_sided) {
+        MeshBuilder_AddFace(builder, transparent, m_Indices4D, m_Size4D);
+    } else {
+        MeshBuilder_AddFace(builder, transparent, m_Indices4, m_Size4);
+    }
 }
 
 void MeshBuilder_AddFan(MESH_BUILDER *const builder, const bool transparent)
@@ -167,7 +183,7 @@ void MeshBuilder_AddRoomSprite(
         };
         MeshBuilder_AddVertex(builder, &vertex);
     }
-    MeshBuilder_AddFace4(builder, true);
+    MeshBuilder_AddFace4(builder, true, false);
 }
 
 void MeshBuilder_AdjustDepth(MESH_BUILDER *const builder, const float depth)

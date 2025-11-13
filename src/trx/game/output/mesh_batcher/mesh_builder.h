@@ -25,10 +25,12 @@ void MeshBuilder_AddFace(
     size_t idx_count);
 
 // Add a triangle face using the last three vertices added.
-void MeshBuilder_AddFace3(MESH_BUILDER *builder, bool transparent);
+void MeshBuilder_AddFace3(
+    MESH_BUILDER *builder, bool transparent, bool double_sided);
 
 // Add a quad face (split internally) using the last four vertices added.
-void MeshBuilder_AddFace4(MESH_BUILDER *builder, bool transparent);
+void MeshBuilder_AddFace4(
+    MESH_BUILDER *builder, bool transparent, bool double_sided);
 
 // Add a triangle fan face using the last vertices added: a center followed by
 // ring vertices.

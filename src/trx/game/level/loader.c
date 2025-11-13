@@ -229,7 +229,9 @@ static void M_ReadFace4(FACE4 *const face, VFILE *const file)
         face->texture_zw[i].z = 1.0f;
         face->texture_zw[i].w = 1.0f;
     }
-    face->texture_idx = VFile_ReadU16(file) & 0x7FFF;
+    const uint16_t texture_idx = VFile_ReadU16(file);
+    face->texture_idx = texture_idx & 0x7FFF;
+    face->double_sided = (texture_idx & 0x8000) != 0;
     face->enable_reflections = false;
 }
 
@@ -238,7 +240,9 @@ static void M_ReadFace3(FACE3 *const face, VFILE *const file)
     for (int32_t i = 0; i < 3; i++) {
         face->vertices[i] = VFile_ReadU16(file);
     }
-    face->texture_idx = VFile_ReadU16(file) & 0x7FFF;
+    const uint16_t texture_idx = VFile_ReadU16(file);
+    face->texture_idx = texture_idx & 0x7FFF;
+    face->double_sided = (texture_idx & 0x8000) != 0;
     face->enable_reflections = false;
 }
 

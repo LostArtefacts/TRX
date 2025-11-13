@@ -59,7 +59,8 @@ static void M_AddRoomFace3(
         builder, 3, face->texture_idx, face->vertices, nullptr,
         room->mesh.vertices);
     MeshBuilder_AddFace3(
-        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx),
+        face->double_sided);
 }
 
 static void M_AddRoomFace4(
@@ -70,7 +71,8 @@ static void M_AddRoomFace4(
         builder, 4, face->texture_idx, face->vertices, face->texture_zw,
         room->mesh.vertices);
     MeshBuilder_AddFace4(
-        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx));
+        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx),
+        face->double_sided);
 }
 
 static int16_t M_ShadeCaustics(
