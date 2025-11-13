@@ -41,7 +41,7 @@ static void M_AddRoomVerts(
             .flags = flags,
             .uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i),
             .shade = room_vert->light_adder,
-            .color = { 255, 255, 255, 255 },
+            .color = room_vert->color,
             .trapezoid_ratio = {
                 [0] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].z : 1.0f,
                 [1] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].w : 1.0f,

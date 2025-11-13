@@ -94,6 +94,7 @@ typedef struct {
     int16_t light_adder;
     bool is_wibble_disabled;
     uint8_t light_table_value;
+    RGBA_8888 color;
 } ROOM_VERTEX;
 
 typedef struct {
@@ -117,6 +118,7 @@ typedef struct {
     struct {
         int16_t y;
     } rot;
+    RGBA_8888 color;
     SHADE shade;
     int16_t static_num;
 } STATIC_MESH;
