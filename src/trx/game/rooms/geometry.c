@@ -67,6 +67,23 @@ static int16_t M_GetUnsplitSurfaceHeight(
 static int16_t M_GetSplitCeilingHeight(
     const SURFACE surface, const int32_t x, const int32_t z)
 {
+    if (Camera_IsChunky()) {
+        int32_t height_adj = surface.split.h2;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+
+        int16_t ch2 = surface.height;
+        int16_t ch1 = ch2 + (height_adj << 8);
+
+        height_adj = surface.split.h1;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+        ch2 += height_adj << 8;
+        return MAX(ch1, ch2);
+    }
+
     const int32_t dx = x & M_WALL_MASK;
     const int32_t dz = z & M_WALL_MASK;
     const int16_t t0 = -surface.split.tilts[0];
@@ -116,6 +133,24 @@ static int16_t M_GetSplitCeilingHeight(
         h2 = t3 - t2;
     }
 
+    if (h1 < 0) {
+        height += M_NEG_TILT(h1, z);
+    } else {
+        height -= M_POS_TILT(h1, z);
+    }
+
+    if (h2 < 0) {
+        height += M_POS_TILT(h2, x);
+    } else {
+        height -= M_NEG_TILT(h2, x);
+    }
+
+    return height;
+}
+
+static int16_t M_GetSplitFloorHeight(
+    const SURFACE surface, const int32_t x, const int32_t z)
+{
     if (Camera_IsChunky()) {
         int32_t height_adj = surface.split.h2;
         if ((height_adj & 0x10) != 0) {
@@ -130,31 +165,9 @@ static int16_t M_GetSplitCeilingHeight(
             height_adj |= 0xFFF0;
         }
         ch2 += height_adj << 8;
-        if (ch1 > ch2) {
-            height = ch1;
-        } else {
-            height = ch2;
-        }
-    } else {
-        if (h1 < 0) {
-            height += M_NEG_TILT(h1, z);
-        } else {
-            height -= M_POS_TILT(h1, z);
-        }
-
-        if (h2 < 0) {
-            height += M_POS_TILT(h2, x);
-        } else {
-            height -= M_NEG_TILT(h2, x);
-        }
+        return MIN(ch1, ch2);
     }
 
-    return height;
-}
-
-static int16_t M_GetSplitFloorHeight(
-    const SURFACE surface, const int32_t x, const int32_t z)
-{
     const int32_t dx = x & M_WALL_MASK;
     const int32_t dz = z & M_WALL_MASK;
     const int16_t t0 = surface.split.tilts[0];
@@ -204,44 +217,22 @@ static int16_t M_GetSplitFloorHeight(
         h2 = t0 - t1;
     }
 
-    if (Camera_IsChunky()) {
-        int32_t height_adj = surface.split.h2;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
+    if (ABS(h1) > 2 || ABS(h2) > 2) {
+        m_HeightType = HT_DIAGONAL;
+    } else if (m_HeightType != HT_SPLIT_TRI) {
+        m_HeightType = HT_SMALL_SLOPE;
+    }
 
-        int16_t ch2 = surface.height;
-        int16_t ch1 = ch2 + (height_adj << 8);
-
-        height_adj = surface.split.h1;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-        ch2 += height_adj << 8;
-
-        if (ch1 < ch2) {
-            height = ch1;
-        } else {
-            height = ch2;
-        }
+    if (h1 < 0) {
+        height -= M_NEG_TILT(h1, z);
     } else {
-        if (ABS(h1) > 2 || ABS(h2) > 2) {
-            m_HeightType = HT_DIAGONAL;
-        } else if (m_HeightType != HT_SPLIT_TRI) {
-            m_HeightType = HT_SMALL_SLOPE;
-        }
+        height += M_POS_TILT(h1, z);
+    }
 
-        if (h1 < 0) {
-            height -= M_NEG_TILT(h1, z);
-        } else {
-            height += M_POS_TILT(h1, z);
-        }
-
-        if (h2 < 0) {
-            height -= M_NEG_TILT(h2, x);
-        } else {
-            height += M_POS_TILT(h2, x);
-        }
+    if (h2 < 0) {
+        height -= M_NEG_TILT(h2, x);
+    } else {
+        height += M_POS_TILT(h2, x);
     }
 
     return height;
