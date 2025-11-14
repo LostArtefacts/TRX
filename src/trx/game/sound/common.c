@@ -495,8 +495,14 @@ bool Sound_Effect_Direct(
         return false;
     }
 
-    if (sample->randomness && Random_GetDraw() > sample->randomness) {
-        return false;
+    if (sample->randomness) {
+        int32_t r = Random_GetDraw();
+        if (g_TRVersion >= 3) {
+            r &= 0xFF;
+        }
+        if (r > sample->randomness) {
+            return false;
+        }
     }
 
     const int32_t distance = M_GetDistance(sample, pos);
