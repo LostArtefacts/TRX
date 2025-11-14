@@ -8,14 +8,14 @@ static uint16_t *M_GetRoomTexture(
     const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
 {
     const ROOM *const room = Room_Get(room_num);
-    if (face_type == FT_TEXTURED_QUAD && face_index < room->mesh.num_face4s) {
-        FACE4 *const face = &room->mesh.face4s[face_index];
+    if (face_type == FT_TEXTURED_QUAD && face_index < room->mesh.face4s.count) {
+        FACE *const face = &room->mesh.face4s.data[face_index];
         return &face->texture_idx;
     }
 
     if (face_type == FT_TEXTURED_TRIANGLE
-        && face_index < room->mesh.num_face3s) {
-        FACE3 *const face = &room->mesh.face3s[face_index];
+        && face_index < room->mesh.face3s.count) {
+        FACE *const face = &room->mesh.face3s.data[face_index];
         return &face->texture_idx;
     }
 
@@ -53,24 +53,24 @@ static uint16_t *M_GetRoomFaceVertices(
 
     const ROOM *const room = Room_Get(room_num);
     if (face_type == FT_TEXTURED_QUAD) {
-        if (face_index < 0 || face_index >= room->mesh.num_face4s) {
+        if (face_index < 0 || face_index >= room->mesh.face4s.count) {
             LOG_WARNING(
                 "Face4 index %d, room %d is invalid", face_index, room_num);
             return nullptr;
         }
 
-        FACE4 *const face = &room->mesh.face4s[face_index];
+        FACE *const face = &room->mesh.face4s.data[face_index];
         return (uint16_t *)(void *)&face->vertices;
     }
 
     if (face_type == FT_TEXTURED_TRIANGLE) {
-        if (face_index < 0 || face_index >= room->mesh.num_face3s) {
+        if (face_index < 0 || face_index >= room->mesh.face3s.count) {
             LOG_WARNING(
                 "Face3 index %d, room %d is invalid", face_index, room_num);
             return nullptr;
         }
 
-        FACE3 *const face = &room->mesh.face3s[face_index];
+        FACE *const face = &room->mesh.face3s.data[face_index];
         return (uint16_t *)(void *)&face->vertices;
     }
 
@@ -209,19 +209,25 @@ static void M_AddRoomFace(const INJECTION *const injection)
     ROOM *const room = Room_Get(target_room);
     uint16_t *face_vertices;
     if (face_type == FT_TEXTURED_QUAD) {
-        FACE4 *const face = &room->mesh.face4s[room->mesh.num_face4s];
+        FACE *const face = &room->mesh.face4s.data[room->mesh.face4s.count];
         face->texture_idx = *source_texture;
+        face->vertex_count = 4;
         for (int32_t i = 0; i < 4; i++) {
             face->texture_zw[i].z = 1.0f;
             face->texture_zw[i].w = 1.0f;
         }
         face_vertices = face->vertices;
-        room->mesh.num_face4s++;
+        room->mesh.face4s.count++;
     } else {
-        FACE3 *const face = &room->mesh.face3s[room->mesh.num_face3s];
+        FACE *const face = &room->mesh.face3s.data[room->mesh.face3s.count];
+        face->vertex_count = 3;
         face->texture_idx = *source_texture;
         face_vertices = face->vertices;
-        room->mesh.num_face3s++;
+        for (int32_t i = 0; i < 3; i++) {
+            face->texture_zw[i].z = 1.0f;
+            face->texture_zw[i].w = 1.0f;
+        }
+        room->mesh.face3s.count++;
     }
 
     for (int32_t i = 0; i < num_vertices; i++) {
@@ -273,11 +279,11 @@ static void M_AddRoomStatic2D(const INJECTION *const injection)
     }
 
     ROOM *const room = Room_Get(target_room);
-    ROOM_SPRITE *const sprite = &room->mesh.sprites[room->mesh.num_sprites];
+    ROOM_SPRITE *const sprite =
+        &room->mesh.sprites.data[room->mesh.sprites.count];
     sprite->vertex = vertex;
     sprite->texture = obj->texture_idx + frame_idx;
-
-    room->mesh.num_sprites++;
+    room->mesh.sprites.count++;
 }
 
 static void M_AddRoomStatic3D(const INJECTION *const injection)

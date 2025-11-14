@@ -23,21 +23,11 @@ static void M_AlignTextureReferences(
     }
     Vector_Add(m_ProcessedMeshes, (void *)mesh);
 
-    for (int32_t j = 0; j < mesh->num_tex_face4s; j++) {
-        mesh->tex_face4s[j].texture_idx += tex_info_base;
+    for (int32_t j = 0; j < mesh->tex_faces.count; j++) {
+        mesh->tex_faces.data[j].texture_idx += tex_info_base;
     }
-
-    for (int32_t j = 0; j < mesh->num_tex_face3s; j++) {
-        mesh->tex_face3s[j].texture_idx += tex_info_base;
-    }
-
-    for (int32_t j = 0; j < mesh->num_flat_face4s; j++) {
-        FACE4 *const face = &mesh->flat_face4s[j];
-        face->palette_idx = Inject_GetPaletteIndex(face->palette_idx);
-    }
-
-    for (int32_t j = 0; j < mesh->num_flat_face3s; j++) {
-        FACE3 *const face = &mesh->flat_face3s[j];
+    for (int32_t j = 0; j < mesh->flat_faces.count; j++) {
+        FACE *const face = &mesh->flat_faces.data[j];
         face->palette_idx = Inject_GetPaletteIndex(face->palette_idx);
     }
 }

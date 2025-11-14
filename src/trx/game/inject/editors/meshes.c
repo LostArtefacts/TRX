@@ -52,42 +52,31 @@ static uint16_t *M_GetMeshTexture(const FACE_EDIT *const edit)
         Object_GetMesh(obj->mesh_idx + edit->source_identifier);
 
     if (edit->face_type == FT_TEXTURED_QUAD) {
-        FACE4 *const face = &mesh->tex_face4s[edit->face_index];
+        FACE *const face = &mesh->tex_face4s.data[edit->face_index];
         return &face->texture_idx;
     }
-
     if (edit->face_type == FT_TEXTURED_TRIANGLE) {
-        FACE3 *const face = &mesh->tex_face3s[edit->face_index];
+        FACE *const face = &mesh->tex_face3s.data[edit->face_index];
         return &face->texture_idx;
     }
 
     if (edit->face_type == FT_COLOURED_QUAD) {
-        FACE4 *const face = &mesh->flat_face4s[edit->face_index];
+        FACE *const face = &mesh->flat_face4s.data[edit->face_index];
         return &face->palette_idx;
     }
-
     if (edit->face_type == FT_COLOURED_TRIANGLE) {
-        FACE3 *const face = &mesh->flat_face3s[edit->face_index];
+        FACE *const face = &mesh->flat_face3s.data[edit->face_index];
         return &face->palette_idx;
     }
 
     return nullptr;
 }
 
-static void M_ApplyFace4Edit(
-    const FACE_EDIT *const edit, FACE4 *const faces, const uint16_t texture)
+static void M_ApplyFaceEdit(
+    const FACE_EDIT *const edit, FACE *const faces, const uint16_t texture)
 {
     for (int32_t i = 0; i < edit->target_count; i++) {
-        FACE4 *const face = &faces[edit->targets[i]];
-        face->texture_idx = texture;
-    }
-}
-
-static void M_ApplyFace3Edit(
-    const FACE_EDIT *const edit, FACE3 *const faces, const uint16_t texture)
-{
-    for (int32_t i = 0; i < edit->target_count; i++) {
-        FACE3 *const face = &faces[edit->targets[i]];
+        FACE *const face = &faces[edit->targets[i]];
         face->texture_idx = texture;
     }
 }
@@ -142,16 +131,16 @@ static void M_ApplyMeshEdit(const MESH_EDIT *const edit)
 
         switch (face_edit->face_type) {
         case FT_TEXTURED_QUAD:
-            M_ApplyFace4Edit(face_edit, mesh->tex_face4s, texture);
+            M_ApplyFaceEdit(face_edit, mesh->tex_face4s.data, texture);
             break;
         case FT_TEXTURED_TRIANGLE:
-            M_ApplyFace3Edit(face_edit, mesh->tex_face3s, texture);
+            M_ApplyFaceEdit(face_edit, mesh->tex_face3s.data, texture);
             break;
         case FT_COLOURED_QUAD:
-            M_ApplyFace4Edit(face_edit, mesh->flat_face4s, texture);
+            M_ApplyFaceEdit(face_edit, mesh->flat_face4s.data, texture);
             break;
         case FT_COLOURED_TRIANGLE:
-            M_ApplyFace3Edit(face_edit, mesh->flat_face3s, texture);
+            M_ApplyFaceEdit(face_edit, mesh->flat_face3s.data, texture);
             break;
         }
     }

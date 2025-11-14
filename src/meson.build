@@ -247,7 +247,6 @@ common_sources = [
   'trx/game/lara/state/swim.c',
   'trx/game/lara/vehicle.c',
   'trx/game/level/common.c',
-  'trx/game/level/faces.c',
   'trx/game/level/loader.c',
   'trx/game/level/reader.c',
   'trx/game/level/reader_tr1.c',

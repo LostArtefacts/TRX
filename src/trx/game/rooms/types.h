@@ -104,13 +104,15 @@ typedef struct {
 
 typedef struct {
     int16_t num_vertices;
-    int16_t num_face4s;
-    int16_t num_face3s;
-    int16_t num_sprites;
+    struct {
+        int16_t count;
+        FACE *data;
+    } all_faces, face4s, face3s;
+    struct {
+        int16_t count;
+        ROOM_SPRITE *data;
+    } sprites;
     ROOM_VERTEX *vertices;
-    FACE4 *face4s;
-    FACE3 *face3s;
-    ROOM_SPRITE *sprites;
 } ROOM_MESH;
 
 typedef struct {
