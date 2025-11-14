@@ -151,6 +151,9 @@ static void M_Draw3DPickups(const M_PRIV *const p)
         p->objects_source->render_pass(p->objects_source, SCENE_PASS_OPAQUE);
         p->objects_source->render_pass(
             p->objects_source, SCENE_PASS_TRANSPARENT);
+        glBlendFunc(GL_ONE, GL_ONE);
+        p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_ADD);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         if (p->objects_source->render_end != nullptr) {
             p->objects_source->render_end(p->objects_source);
         }
