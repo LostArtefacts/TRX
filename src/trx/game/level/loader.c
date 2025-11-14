@@ -1366,7 +1366,7 @@ void Level_ReadSamples(const LEVEL_LOADER *const loader, VFILE *const file)
         }
 
         if (loader->game_version >= 3) {
-            sample_info->randomness = VFile_ReadU8(file) << 8;
+            sample_info->randomness = VFile_ReadU8(file);
             sample_info->pitch = VFile_ReadU8(file);
         } else {
             sample_info->randomness = VFile_ReadU16(file);
