@@ -278,6 +278,30 @@ static void M_SetSectorClimbability(
     }
 }
 
+static void M_SetSectorTriangulation(
+    const INJECTION *const injection, SECTOR *const sector)
+{
+    const int32_t type = VFile_ReadS32(injection->fp);
+
+#define L_TRIANGULATE(test_type, surface)                                      \
+    do {                                                                       \
+        if ((type & (1 << test_type)) != 0) {                                  \
+            const int16_t func_data = VFile_ReadS16(injection->fp);            \
+            const int16_t tilt_data = VFile_ReadS16(injection->fp);            \
+            if (sector != nullptr) {                                           \
+                sector->surface.tilt = 0;                                      \
+                Room_ReadTriangulation(                                        \
+                    &sector->surface, func_data, tilt_data);                   \
+            }                                                                  \
+        }                                                                      \
+    } while (0)
+
+    L_TRIANGULATE(SURFACE_FLOOR, floor);
+    L_TRIANGULATE(SURFACE_CEILING, ceiling);
+
+#undef L_TRIANGULATE
+}
+
 static void M_FloorDataEdits(
     const INJECTION *const injection, const int32_t data_count)
 {
@@ -341,6 +365,9 @@ static void M_FloorDataEdits(
                 break;
             case FET_CLIMB:
                 M_SetSectorClimbability(injection, sector);
+                break;
+            case FET_TRIANGULATE:
+                M_SetSectorTriangulation(injection, sector);
                 break;
             case FET_DELETE_TRIGGER:
                 if (sector != nullptr) {

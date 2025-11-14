@@ -102,6 +102,7 @@ typedef enum {
     FET_PORTALS           = 10,
     FET_CLIMB             = 11,
     FET_DELETE_TRIGGER    = 12,
+    FET_TRIANGULATE       = 13,
 } FLOOR_EDIT_TYPE;
 
 typedef enum {
