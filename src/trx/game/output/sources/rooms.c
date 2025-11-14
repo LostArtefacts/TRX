@@ -57,17 +57,9 @@ static void M_AddRoomFace(
     M_AddRoomVerts(
         builder, face->vertex_count, face->texture_idx, face->vertices,
         face->texture_zw, room->mesh.vertices);
-    if (face->vertex_count == 4) {
-        MeshBuilder_AddFace4(
-            builder,
-            Output_Textures_IsObjectTextureTransparent(face->texture_idx),
-            face->double_sided);
-    } else {
-        MeshBuilder_AddFace3(
-            builder,
-            Output_Textures_IsObjectTextureTransparent(face->texture_idx),
-            face->double_sided);
-    }
+    MeshBuilder_AddFan(
+        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx),
+        face->double_sided);
 }
 
 static int16_t M_ShadeCaustics(

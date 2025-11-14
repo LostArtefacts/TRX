@@ -24,17 +24,11 @@ void MeshBuilder_AddFace(
     MESH_BUILDER *builder, bool transparent, const int32_t *indices,
     size_t idx_count);
 
-// Add a triangle face using the last three vertices added.
-void MeshBuilder_AddFace3(
-    MESH_BUILDER *builder, bool transparent, bool double_sided);
-
-// Add a quad face (split internally) using the last four vertices added.
-void MeshBuilder_AddFace4(
-    MESH_BUILDER *builder, bool transparent, bool double_sided);
-
 // Add a triangle fan face using the last vertices added: a center followed by
-// ring vertices.
-void MeshBuilder_AddFan(MESH_BUILDER *builder, bool transparent);
+// ring vertices.If double_sided is true, generates mirrored winding
+// for backfaces as well.
+void MeshBuilder_AddFan(
+    MESH_BUILDER *builder, bool transparent, bool double_sided);
 
 // Applies invisible z offset to all vertices that helps with the z-fighting.
 void MeshBuilder_AdjustDepth(MESH_BUILDER *builder, float depth);
