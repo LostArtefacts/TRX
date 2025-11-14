@@ -46,7 +46,9 @@ char *GFX_GL_Program_PreprocessShader(const char *content, GLenum type)
     char *common = nullptr;
     File_Load("shaders/common.glsl", &common, nullptr);
 
-    const char *version_ogl33c = "#version 330 core\n";
+    const char *version_ogl33c =
+        "#version 330 core\n"
+        "#extension GL_ARB_shader_storage_buffer_object : require\n";
     const char *define_vertex = "#define VERTEX\n";
     const char *define_fragment = "#define FRAGMENT\n";
     const char *define_ogl33c = "#define OGL33C\n";
@@ -183,14 +185,6 @@ GLint GFX_GL_Program_UniformLocation(GFX_GL_PROGRAM *program, const char *name)
     return location;
 }
 
-void GFX_GL_Program_Uniform3f(
-    GFX_GL_PROGRAM *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2)
-{
-    ASSERT(program != nullptr);
-    GFX_TRACK_UNIFORM(glUniform3f, loc, v0, v1, v2);
-    GFX_GL_CheckError();
-}
-
 void GFX_GL_Program_Uniform4f(
     GFX_GL_PROGRAM *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2,
     GLfloat v3)
@@ -219,14 +213,5 @@ void GFX_GL_Program_Uniform2f(
 {
     ASSERT(program != nullptr);
     GFX_TRACK_UNIFORM(glUniform2f, loc, v0, v1);
-    GFX_GL_CheckError();
-}
-
-void GFX_GL_Program_UniformMatrix4fv(
-    GFX_GL_PROGRAM *program, GLint loc, GLsizei count, GLboolean transpose,
-    const GLfloat *value)
-{
-    ASSERT(program != nullptr);
-    GFX_TRACK_UNIFORM(glUniformMatrix4fv, loc, count, transpose, value);
     GFX_GL_CheckError();
 }

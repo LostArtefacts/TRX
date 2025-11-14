@@ -39,7 +39,6 @@ static void M_SetupShaderForScene(
     OUTPUT_SHADER *const shader, const GFX_TEXTURE_FILTER filter,
     const bool lighting)
 {
-    Output_Shader_UploadSmoothingEnabled(shader, filter == GFX_TF_BILINEAR);
     Output_Shader_UploadPerspProjectionMatrix(shader);
     Output_Shader_UploadLightingMode(
         shader, lighting ? LIGHTING_MODE_FULL : LIGHTING_MODE_OFF);
@@ -48,7 +47,6 @@ static void M_SetupShaderForScene(
 static void M_SetupShaderForUI(
     OUTPUT_SHADER *const shader, const GFX_TEXTURE_FILTER filter)
 {
-    Output_Shader_UploadSmoothingEnabled(shader, filter == GFX_TF_BILINEAR);
     Output_Shader_UploadOrthoProjectionMatrix(shader);
     Output_Shader_UploadLightingMode(shader, LIGHTING_MODE_ONLY_SHADES);
 }
@@ -112,8 +110,6 @@ static bool M_IsAnySourceDirty(const M_PRIV *const p)
 
 static void M_PrepareScene(const M_PRIV *const p)
 {
-    OUTPUT_SHADER *const shader = Output_GetMeshShader();
-
 #ifndef __APPLE__
     glLineWidth(g_Config.rendering.wireframe_width);
     GFX_GL_CheckError();

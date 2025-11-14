@@ -11,12 +11,12 @@ void main(void) {
 
 #elif defined(FRAGMENT)
 
-uniform sampler2D tex0;
+uniform sampler2D uTex0;
 
 in vec2 vertTexCoords;
 out vec4 outColor;
 
 void main(void) {
-    outColor = texture(tex0, vertTexCoords);
+    outColor = texture(uTex0, vertTexCoords);
 }
 #endif
