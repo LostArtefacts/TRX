@@ -49,7 +49,7 @@ typedef struct WALKABLE {
 
 typedef struct {
     SPLIT_TYPE type;
-    uint8_t tilts[4];
+    int16_t tilts[4];
     int8_t h1;
     int8_t h2;
 } SPLIT;

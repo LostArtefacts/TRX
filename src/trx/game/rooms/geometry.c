@@ -64,96 +64,183 @@ static int16_t M_GetUnsplitSurfaceHeight(
     return height;
 }
 
-static int16_t M_GetSplitSurfaceHeight(
+static int16_t M_GetSplitCeilingHeight(
     const SURFACE surface, const int32_t x, const int32_t z)
 {
-    const SPLIT split = surface.split;
-    const bool is_ceiling = surface.type == SURFACE_CEILING;
-    int16_t height = surface.height;
     const int32_t dx = x & M_WALL_MASK;
     const int32_t dz = z & M_WALL_MASK;
-    int32_t x_off, z_off;
+    const int16_t t0 = -surface.split.tilts[0];
+    const int16_t t1 = -surface.split.tilts[1];
+    const int16_t t2 = -surface.split.tilts[2];
+    const int16_t t3 = -surface.split.tilts[3];
 
-    const bool is_nesw =
-        (split.type == SPLIT_NESW_SOLID || split.type == SPLIT_NESW_PORTAL_SE
-         || split.type == SPLIT_NESW_PORTAL_NW);
-    const bool is_first_tri = is_nesw ? (dx <= dz) : (dx <= WALL_L - dz);
-    const int32_t h = is_first_tri ? split.h2 : split.h1;
+    int16_t height = surface.height;
+    int16_t h1;
+    int16_t h2;
 
-    const int32_t height_adj = ((h & 0x10) != 0) ? (h | 0xFFF0) : h;
-    height += height_adj << 8;
-
-    if (is_nesw) {
-        if (is_first_tri) {
-            x_off = split.tilts[is_ceiling ? 1 : 2]
-                - split.tilts[is_ceiling ? 2 : 1];
-            z_off = split.tilts[is_ceiling ? 1 : 3]
-                - split.tilts[is_ceiling ? 0 : 2];
+    if (surface.split.type == SPLIT_NWSE_SOLID
+        || surface.split.type == SPLIT_NWSE_PORTAL_SW
+        || surface.split.type == SPLIT_NWSE_PORTAL_NE) {
+        if (dx <= WALL_L - dz) {
+            int32_t height_adj = surface.split.h2;
+            if ((height_adj & 0x10) != 0) {
+                height_adj |= 0xFFF0;
+            }
+            height += height_adj << 8;
+            h1 = t2 - t1;
+            h2 = t3 - t2;
         } else {
-            x_off = split.tilts[is_ceiling ? 0 : 3]
-                - split.tilts[is_ceiling ? 3 : 0];
-            z_off = split.tilts[is_ceiling ? 2 : 0]
-                - split.tilts[is_ceiling ? 3 : 1];
+            int32_t height_adj = surface.split.h1;
+            if ((height_adj & 0x10) != 0) {
+                height_adj |= 0xFFF0;
+            }
+            height += height_adj << 8;
+            h1 = t3 - t0;
+            h2 = t0 - t1;
         }
+    } else if (dx <= dz) {
+        int32_t height_adj = surface.split.h2;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+        height += height_adj << 8;
+        h1 = t2 - t1;
+        h2 = t0 - t1;
     } else {
-        if (is_first_tri) {
-            x_off = split.tilts[is_ceiling ? 1 : 2]
-                - split.tilts[is_ceiling ? 2 : 1];
-            z_off = split.tilts[is_ceiling ? 2 : 0]
-                - split.tilts[is_ceiling ? 3 : 1];
-        } else {
-            x_off = split.tilts[is_ceiling ? 0 : 3]
-                - split.tilts[is_ceiling ? 3 : 0];
-            z_off = split.tilts[is_ceiling ? 1 : 3]
-                - split.tilts[is_ceiling ? 0 : 2];
+        int32_t height_adj = surface.split.h1;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
         }
-    }
-
-    if (!is_ceiling) {
-        m_HeightType = HT_SPLIT_TRI;
+        height += height_adj << 8;
+        h1 = t3 - t0;
+        h2 = t3 - t2;
     }
 
     if (Camera_IsChunky()) {
-        const int32_t h1 = (split.h1 & 0x10) ? (split.h1 | 0xFFF0) : split.h1;
-        const int32_t h2 = (split.h2 & 0x10) ? (split.h2 | 0xFFF0) : split.h2;
-        const int32_t ch1 = surface.height + (h2 << 8);
-        const int32_t ch2 = surface.height + (h1 << 8);
-        if (is_ceiling) {
-            height = (ch1 > ch2) ? ch1 : ch2;
+        int32_t height_adj = surface.split.h2;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+
+        int16_t ch2 = surface.height;
+        int16_t ch1 = ch2 + (height_adj << 8);
+
+        height_adj = surface.split.h1;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+        ch2 += height_adj << 8;
+        if (ch1 > ch2) {
+            height = ch1;
         } else {
-            height = (ch1 < ch2) ? ch1 : ch2;
+            height = ch2;
         }
     } else {
-        if (is_ceiling) {
-            if (x_off < 0) {
-                height += M_NEG_TILT(x_off, z);
-            } else {
-                height -= M_POS_TILT(x_off, z);
-            }
-
-            if (z_off < 0) {
-                height += M_POS_TILT(z_off, x);
-            } else {
-                height -= M_NEG_TILT(z_off, x);
-            }
+        if (h1 < 0) {
+            height += M_NEG_TILT(h1, z);
         } else {
-            if (ABS(x_off) > 2 || ABS(z_off) > 2) {
-                m_HeightType = HT_DIAGONAL;
-            } else if (m_HeightType != HT_SPLIT_TRI) {
-                m_HeightType = HT_SMALL_SLOPE;
-            }
+            height -= M_POS_TILT(h1, z);
+        }
 
-            if (x_off < 0) {
-                height -= M_NEG_TILT(x_off, z);
-            } else {
-                height += M_POS_TILT(x_off, z);
-            }
+        if (h2 < 0) {
+            height += M_POS_TILT(h2, x);
+        } else {
+            height -= M_NEG_TILT(h2, x);
+        }
+    }
 
-            if (z_off < 0) {
-                height -= M_NEG_TILT(z_off, x);
-            } else {
-                height += M_POS_TILT(z_off, x);
+    return height;
+}
+
+static int16_t M_GetSplitFloorHeight(
+    const SURFACE surface, const int32_t x, const int32_t z)
+{
+    const int32_t dx = x & M_WALL_MASK;
+    const int32_t dz = z & M_WALL_MASK;
+    const int16_t t0 = surface.split.tilts[0];
+    const int16_t t1 = surface.split.tilts[1];
+    const int16_t t2 = surface.split.tilts[2];
+    const int16_t t3 = surface.split.tilts[3];
+
+    int16_t height = surface.height;
+    int16_t h1;
+    int16_t h2;
+
+    if (surface.split.type == SPLIT_NWSE_SOLID
+        || surface.split.type == SPLIT_NWSE_PORTAL_SW
+        || surface.split.type == SPLIT_NWSE_PORTAL_NE) {
+        if (dx <= WALL_L - dz) {
+            int32_t height_adj = surface.split.h2;
+            if ((height_adj & 0x10) != 0) {
+                height_adj |= 0xFFF0;
             }
+            height += height_adj << 8;
+            h1 = t2 - t1;
+            h2 = t0 - t1;
+        } else {
+            int32_t height_adj = surface.split.h1;
+            if ((height_adj & 0x10) != 0) {
+                height_adj |= 0xFFF0;
+            }
+            height += height_adj << 8;
+            h1 = t3 - t0;
+            h2 = t3 - t2;
+        }
+    } else if (dx <= dz) {
+        int32_t height_adj = surface.split.h2;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+        height += height_adj << 8;
+        h1 = t2 - t1;
+        h2 = t3 - t2;
+    } else {
+        int32_t height_adj = surface.split.h1;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+        height += height_adj << 8;
+        h1 = t3 - t0;
+        h2 = t0 - t1;
+    }
+
+    if (Camera_IsChunky()) {
+        int32_t height_adj = surface.split.h2;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+
+        int16_t ch2 = surface.height;
+        int16_t ch1 = ch2 + (height_adj << 8);
+
+        height_adj = surface.split.h1;
+        if ((height_adj & 0x10) != 0) {
+            height_adj |= 0xFFF0;
+        }
+        ch2 += height_adj << 8;
+
+        if (ch1 < ch2) {
+            height = ch1;
+        } else {
+            height = ch2;
+        }
+    } else {
+        if (ABS(h1) > 2 || ABS(h2) > 2) {
+            m_HeightType = HT_DIAGONAL;
+        } else if (m_HeightType != HT_SPLIT_TRI) {
+            m_HeightType = HT_SMALL_SLOPE;
+        }
+
+        if (h1 < 0) {
+            height -= M_NEG_TILT(h1, z);
+        } else {
+            height += M_POS_TILT(h1, z);
+        }
+
+        if (h2 < 0) {
+            height -= M_NEG_TILT(h2, x);
+        } else {
+            height += M_POS_TILT(h2, x);
         }
     }
 
@@ -164,9 +251,13 @@ static int16_t M_GetSurfaceHeight(
     const SURFACE surface, const int32_t x, const int32_t z,
     const bool fix_tilts)
 {
-    return surface.is_split
-        ? M_GetSplitSurfaceHeight(surface, x, z)
-        : M_GetUnsplitSurfaceHeight(surface, x, z, fix_tilts);
+    if (!surface.is_split) {
+        return M_GetUnsplitSurfaceHeight(surface, x, z, fix_tilts);
+    }
+
+    return surface.type == SURFACE_CEILING
+        ? M_GetSplitCeilingHeight(surface, x, z)
+        : M_GetSplitFloorHeight(surface, x, z);
 }
 
 static int16_t M_GetSplitTiltType(
