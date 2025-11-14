@@ -20,10 +20,7 @@ static M_PRIV m_Priv = {};
 
 static SCENE_PASS M_GetScenePass(const FACE *const face)
 {
-    if (Output_Textures_IsObjectTextureTransparent(face->texture_idx)) {
-        return SCENE_PASS_TRANSPARENT;
-    }
-    return SCENE_PASS_OPAQUE;
+    return Output_Textures_GetObjectTextureScenePass(face->texture_idx);
 }
 
 static void M_AddRoomVerts(
@@ -39,7 +36,8 @@ static void M_AddRoomVerts(
         if (room_vert->is_wibble_disabled) {
             flags |= VERT_NO_CAUSTICS;
         }
-        if (!Output_Textures_IsObjectTextureTransparent(texture_idx)) {
+        if (Output_Textures_GetObjectTextureScenePass(texture_idx)
+            == SCENE_PASS_OPAQUE) {
             flags |= VERT_NO_ALPHA_DISCARD;
         }
 
@@ -244,4 +242,5 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
     };
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BLEND_ADD);
 }

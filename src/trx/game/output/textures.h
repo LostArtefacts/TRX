@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/output/scene_source.h>
 #include <trx/game/output/types.h>
 #include <trx/gfx/gl/utils.h>
 
@@ -35,7 +36,7 @@ int32_t Output_Textures_GetSpriteUVWIndex(
 OUTPUT_UVW Output_Textures_GetUVW(int32_t uvw_idx);
 OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(int32_t uvw_idx);
 bool Output_Textures_IsObjectTextureAnimated(int32_t texture_idx);
-bool Output_Textures_IsObjectTextureTransparent(int32_t texture_idx);
+SCENE_PASS Output_Textures_GetObjectTextureScenePass(int32_t texture_idx);
 bool Output_Textures_IsSpriteTextureAnimated(int32_t sprite_idx);
 uint16_t Output_Textures_GetSpriteTextureFlags(int32_t sprite_idx);
 void Output_Textures_SetSpriteTextureFlags(int32_t sprite_idx, uint16_t flags);

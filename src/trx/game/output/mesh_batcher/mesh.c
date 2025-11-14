@@ -10,7 +10,8 @@ OUTPUT_MESH *Output_Mesh_Create(void)
     mesh->vertices = Vector_Create(sizeof(OUTPUT_MESH_VERTEX));
     mesh->animated_vertices = Vector_Create(sizeof(OUTPUT_VERTEX_RANGE));
     mesh->transparent_faces = Vector_Create(sizeof(OUTPUT_MESH_FACE));
-    mesh->all_vertex_indices = Vector_Create(sizeof(uint32_t));
+    mesh->opaque_vertex_indices = Vector_Create(sizeof(uint32_t));
+    mesh->blend_add_vertex_indices = Vector_Create(sizeof(uint32_t));
     mesh->sealed = false;
     return mesh;
 }
@@ -24,8 +25,11 @@ void Output_Mesh_Destroy(OUTPUT_MESH *const mesh)
     if (mesh->transparent_faces != nullptr) {
         Vector_Free(mesh->transparent_faces);
     }
-    if (mesh->all_vertex_indices != nullptr) {
-        Vector_Free(mesh->all_vertex_indices);
+    if (mesh->opaque_vertex_indices != nullptr) {
+        Vector_Free(mesh->opaque_vertex_indices);
+    }
+    if (mesh->blend_add_vertex_indices != nullptr) {
+        Vector_Free(mesh->blend_add_vertex_indices);
     }
     Memory_ArenaFree(&mesh->allocator);
     Memory_Free(mesh);

@@ -22,6 +22,7 @@ typedef enum {
 typedef enum {
     DRAW_OPAQUE = 0,
     DRAW_COLOR_KEY = 1,
+    DRAW_BLEND_ADD = 2,
 } DRAW_TYPE;
 
 typedef struct {
