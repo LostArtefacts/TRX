@@ -21,19 +21,17 @@ typedef struct {
     int32_t radius;
     int16_t num_lights;
     int16_t num_vertices;
-    int16_t num_tex_face4s;
-    int16_t num_tex_face3s;
-    int16_t num_flat_face4s;
-    int16_t num_flat_face3s;
     union {
         XYZ_16 *normals;
         int16_t *lights;
     } lighting;
     XYZ_16 *vertices;
-    FACE4 *tex_face4s;
-    FACE3 *tex_face3s;
-    FACE4 *flat_face4s;
-    FACE3 *flat_face3s;
+
+    struct {
+        int16_t count;
+        FACE *data;
+    } all_faces, tex_faces, tex_face4s, tex_face3s, flat_faces, flat_face4s,
+        flat_face3s;
 
     float depth_adjustment;
     bool enable_reflections;

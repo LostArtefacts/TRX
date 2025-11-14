@@ -31,6 +31,8 @@ typedef struct {
 } OBJECT_VECTOR;
 
 typedef struct {
+    int32_t vertex_count;
+
     union {
         uint16_t texture_idx;
         uint16_t palette_idx;
@@ -43,15 +45,4 @@ typedef struct {
 
     bool double_sided;
     bool enable_reflections;
-} FACE4;
-
-typedef struct {
-    union {
-        uint16_t texture_idx;
-        uint16_t palette_idx;
-    };
-    uint16_t vertices[3];
-
-    bool double_sided;
-    bool enable_reflections;
-} FACE3;
+} FACE;

@@ -66,32 +66,20 @@ static void M_AddObjectVerts(
     }
 }
 
-static void M_AddObjectFace3(
+static void M_AddObjectFace(
     MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
-    const FACE3 *const face, const uint16_t flags)
+    const FACE *const face, const uint16_t flags)
 {
     M_AddObjectVerts(
-        builder, 3, obj_mesh, face->vertices, face->texture_idx,
-        face->palette_idx, flags, nullptr);
-    MeshBuilder_AddFace3(
-        builder,
-        (flags & VERT_FLAT_SHADED) == 0
-            && Output_Textures_IsObjectTextureTransparent(face->texture_idx),
-        face->double_sided);
-}
-
-static void M_AddObjectFace4(
-    MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
-    const FACE4 *const face, const uint16_t flags)
-{
-    M_AddObjectVerts(
-        builder, 4, obj_mesh, face->vertices, face->texture_idx,
-        face->palette_idx, flags, face->texture_zw);
-    MeshBuilder_AddFace4(
-        builder,
-        (flags & VERT_FLAT_SHADED) == 0
-            && Output_Textures_IsObjectTextureTransparent(face->texture_idx),
-        face->double_sided);
+        builder, face->vertex_count, obj_mesh, face->vertices,
+        face->texture_idx, face->palette_idx, flags, face->texture_zw);
+    const bool transparent = (flags & VERT_FLAT_SHADED) == 0
+        && Output_Textures_IsObjectTextureTransparent(face->texture_idx);
+    if (face->vertex_count == 4) {
+        MeshBuilder_AddFace4(builder, transparent, face->double_sided);
+    } else {
+        MeshBuilder_AddFace3(builder, transparent, face->double_sided);
+    }
 }
 
 static int32_t *M_PrepareLightIndexMap(
@@ -99,36 +87,12 @@ static int32_t *M_PrepareLightIndexMap(
 {
     int32_t v = 0;
     int32_t *const light_idx_map = Memory_Alloc(sizeof(int32_t) * vertex_count);
-#define L_SET(v, j) light_idx_map[v] = face->vertices[j];
-    for (int32_t i = 0; i < obj_mesh->num_tex_face4s; i++) {
-        const FACE4 *const face = &obj_mesh->tex_face4s[i];
-        for (int32_t j = 0; j < 4; j++) {
-            L_SET(v, j);
-            v++;
+    for (int32_t i = 0; i < obj_mesh->all_faces.count; i++) {
+        const FACE *const face = &obj_mesh->all_faces.data[i];
+        for (int32_t j = 0; j < face->vertex_count; j++) {
+            light_idx_map[v++] = face->vertices[j];
         }
     }
-    for (int32_t i = 0; i < obj_mesh->num_tex_face3s; i++) {
-        const FACE3 *const face = &obj_mesh->tex_face3s[i];
-        for (int32_t j = 0; j < 3; j++) {
-            L_SET(v, j);
-            v++;
-        }
-    }
-    for (int32_t i = 0; i < obj_mesh->num_flat_face4s; i++) {
-        const FACE4 *const face = &obj_mesh->flat_face4s[i];
-        for (int32_t j = 0; j < 4; j++) {
-            L_SET(v, j);
-            v++;
-        }
-    }
-    for (int32_t i = 0; i < obj_mesh->num_flat_face3s; i++) {
-        const FACE3 *const face = &obj_mesh->flat_face3s[i];
-        for (int32_t j = 0; j < 3; j++) {
-            L_SET(v, j);
-            v++;
-        }
-    }
-#undef L_SET
     return light_idx_map;
 }
 
@@ -147,22 +111,13 @@ static void M_PrepareMeshes(M_PRIV *const p)
             flags |= VERT_REFLECTIVE;
         }
 
-        for (int32_t j = 0; j < obj_mesh->num_tex_face4s; j++) {
-            M_AddObjectFace4(
-                builder, obj_mesh, &obj_mesh->tex_face4s[j], flags);
+        for (int32_t j = 0; j < obj_mesh->tex_faces.count; j++) {
+            M_AddObjectFace(
+                builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags);
         }
-        for (int32_t j = 0; j < obj_mesh->num_tex_face3s; j++) {
-            M_AddObjectFace3(
-                builder, obj_mesh, &obj_mesh->tex_face3s[j], flags);
-        }
-        for (int32_t j = 0; j < obj_mesh->num_flat_face4s; j++) {
-            M_AddObjectFace4(
-                builder, obj_mesh, &obj_mesh->flat_face4s[j],
-                flags | VERT_FLAT_SHADED);
-        }
-        for (int32_t j = 0; j < obj_mesh->num_flat_face3s; j++) {
-            M_AddObjectFace3(
-                builder, obj_mesh, &obj_mesh->flat_face3s[j],
+        for (int32_t j = 0; j < obj_mesh->flat_faces.count; j++) {
+            M_AddObjectFace(
+                builder, obj_mesh, &obj_mesh->flat_faces.data[j],
                 flags | VERT_FLAT_SHADED);
         }
 

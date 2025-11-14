@@ -230,7 +230,6 @@ static void M_CompleteSetup(
     Level_LoadTextures();
     Level_LoadTexturePages(loader);
     Level_LoadPalettes();
-    Level_LoadFaces();
 
     // Must be done after doing the injections!
     // (The Great Pyramid OG data misses the final secret trigger.)

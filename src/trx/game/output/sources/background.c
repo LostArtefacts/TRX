@@ -170,11 +170,11 @@ void Output_LoadBackgroundFromObject(const bool wave)
         }
 
         const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
-        if (mesh->num_tex_face4s < 1) {
+        if (mesh->tex_face4s.count < 1) {
             return;
         }
 
-        const int32_t texture_idx = mesh->tex_face4s[0].texture_idx;
+        const int32_t texture_idx = mesh->tex_face4s.data[0].texture_idx;
         const OBJECT_TEXTURE *const texture =
             Output_GetObjectTexture(texture_idx);
         ASSERT(texture != nullptr);

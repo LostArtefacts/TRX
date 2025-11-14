@@ -43,36 +43,31 @@ static void M_AddRoomVerts(
             .shade = room_vert->light_adder,
             .color = room_vert->color,
             .trapezoid_ratio = {
-                [0] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].z : 1.0f,
-                [1] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].w : 1.0f,
+                [0] = trapezoid_ratio[i].z,
+                [1] = trapezoid_ratio[i].w,
             },
         };
         MeshBuilder_AddVertex(builder, &vertex);
     }
 }
 
-static void M_AddRoomFace3(
-    MESH_BUILDER *const builder, const FACE3 *const face,
-    const ROOM *const room)
+static void M_AddRoomFace(
+    MESH_BUILDER *const builder, const FACE *const face, const ROOM *const room)
 {
     M_AddRoomVerts(
-        builder, 3, face->texture_idx, face->vertices, nullptr,
-        room->mesh.vertices);
-    MeshBuilder_AddFace3(
-        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx),
-        face->double_sided);
-}
-
-static void M_AddRoomFace4(
-    MESH_BUILDER *const builder, const FACE4 *const face,
-    const ROOM *const room)
-{
-    M_AddRoomVerts(
-        builder, 4, face->texture_idx, face->vertices, face->texture_zw,
-        room->mesh.vertices);
-    MeshBuilder_AddFace4(
-        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx),
-        face->double_sided);
+        builder, face->vertex_count, face->texture_idx, face->vertices,
+        face->texture_zw, room->mesh.vertices);
+    if (face->vertex_count == 4) {
+        MeshBuilder_AddFace4(
+            builder,
+            Output_Textures_IsObjectTextureTransparent(face->texture_idx),
+            face->double_sided);
+    } else {
+        MeshBuilder_AddFace3(
+            builder,
+            Output_Textures_IsObjectTextureTransparent(face->texture_idx),
+            face->double_sided);
+    }
 }
 
 static int16_t M_ShadeCaustics(
@@ -108,8 +103,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     }
 
     // Quads
-    for (int32_t i = 0; i < room->mesh.num_face4s; i++) {
-        const FACE4 *const face = &room->mesh.face4s[i];
+    for (int32_t i = 0; i < room->mesh.face4s.count; i++) {
+        const FACE *const face = &room->mesh.face4s.data[i];
         for (int32_t j = 0; j < 4; j++) {
             vertex->shade = room->mesh.vertices[face->vertices[j]].light_adder;
             vertex->shade = M_ShadeCaustics(
@@ -119,8 +114,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     }
 
     // Triangles
-    for (int32_t i = 0; i < room->mesh.num_face3s; i++) {
-        const FACE3 *const face = &room->mesh.face3s[i];
+    for (int32_t i = 0; i < room->mesh.face3s.count; i++) {
+        const FACE *const face = &room->mesh.face3s.data[i];
         for (int32_t j = 0; j < 3; j++) {
             vertex->shade = room->mesh.vertices[face->vertices[j]].light_adder;
             vertex->shade = M_ShadeCaustics(
@@ -130,8 +125,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     }
 
     // Sprites
-    for (int32_t i = 0; i < room->mesh.num_sprites; i++) {
-        const ROOM_SPRITE *const room_sprite = &room->mesh.sprites[i];
+    for (int32_t i = 0; i < room->mesh.sprites.count; i++) {
+        const ROOM_SPRITE *const room_sprite = &room->mesh.sprites.data[i];
         for (int32_t j = 0; j < 4; j++) {
             vertex->shade =
                 room->mesh.vertices[room_sprite->vertex].light_adder;
@@ -148,17 +143,14 @@ static void M_PrepareMeshes(M_PRIV *const p)
     MESH_BUILDER *const builder = MeshBuilder_Create();
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
-        for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
-            M_AddRoomFace4(builder, &room->mesh.face4s[j], room);
-        }
-        for (int32_t j = 0; j < room->mesh.num_face3s; j++) {
-            M_AddRoomFace3(builder, &room->mesh.face3s[j], room);
+        for (int32_t j = 0; j < room->mesh.all_faces.count; j++) {
+            M_AddRoomFace(builder, &room->mesh.all_faces.data[j], room);
         }
 
         int32_t stack = 0;
         XYZ_16 prev_pos = { -1, -1, -1 };
-        for (int32_t j = 0; j < room->mesh.num_sprites; j++) {
-            const ROOM_SPRITE *const sprite = &room->mesh.sprites[j];
+        for (int32_t j = 0; j < room->mesh.sprites.count; j++) {
+            const ROOM_SPRITE *const sprite = &room->mesh.sprites.data[j];
             const ROOM_VERTEX *const vert =
                 &room->mesh.vertices[sprite->vertex];
             if (vert->pos.x == prev_pos.x && vert->pos.z == prev_pos.z) {

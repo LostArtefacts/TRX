@@ -51,7 +51,6 @@ void Level_LoadRooms(void);
 void Level_LoadTextures(void);
 void Level_LoadTexturePages(const LEVEL_LOADER *loader);
 void Level_LoadPalettes(void);
-void Level_LoadFaces(void);
 void Level_LoadAnimCommands(void);
 void Level_LoadAnimFrames(const LEVEL_LOADER *loader);
 void Level_LoadObjectsAndItems(void);

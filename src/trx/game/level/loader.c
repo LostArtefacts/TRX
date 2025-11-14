@@ -66,7 +66,7 @@ static RGBA_8888 M_ARGB1555To8888(const uint16_t argb1555)
     };
 }
 
-static void M_FixTrapezoidRatios(FACE4 *const face, const XYZ_16 vertices[4])
+static void M_FixTrapezoidRatios(FACE *const face, const XYZ_16 vertices[4])
 {
     // This function attempts to correct texture coordinate ratios for a
     // quadrilateral so the GPU, which typically renders a quad as two
@@ -222,23 +222,14 @@ static void M_ReadVertex(XYZ_16 *const vertex, VFILE *const file)
     vertex->z = VFile_ReadS16(file);
 }
 
-static void M_ReadFace4(FACE4 *const face, VFILE *const file)
+static void M_ReadFace(
+    FACE *const face, const size_t vertex_count, VFILE *const file)
 {
-    for (int32_t i = 0; i < 4; i++) {
+    face->vertex_count = vertex_count;
+    for (size_t i = 0; i < vertex_count; i++) {
         face->vertices[i] = VFile_ReadU16(file);
         face->texture_zw[i].z = 1.0f;
         face->texture_zw[i].w = 1.0f;
-    }
-    const uint16_t texture_idx = VFile_ReadU16(file);
-    face->texture_idx = texture_idx & 0x7FFF;
-    face->double_sided = (texture_idx & 0x8000) != 0;
-    face->enable_reflections = false;
-}
-
-static void M_ReadFace3(FACE3 *const face, VFILE *const file)
-{
-    for (int32_t i = 0; i < 3; i++) {
-        face->vertices[i] = VFile_ReadU16(file);
     }
     const uint16_t texture_idx = VFile_ReadU16(file);
     face->texture_idx = texture_idx & 0x7FFF;
@@ -252,7 +243,7 @@ static void M_ReadRoomMesh(
 {
     ROOM *const room = Room_Get(room_num);
     const uint32_t mesh_length = VFile_ReadU32(file);
-    size_t start_pos = VFile_GetPos(file);
+    const size_t start_pos = VFile_GetPos(file);
 
     {
         room->mesh.num_vertices = VFile_ReadS16(file);
@@ -288,34 +279,42 @@ static void M_ReadRoomMesh(
     }
 
     {
-        room->mesh.num_face4s = VFile_ReadS16(file);
-        const int32_t alloc_count = room->mesh.num_face4s + inj_data.num_quads;
-        room->mesh.face4s =
-            GameBuf_Alloc(sizeof(FACE4) * alloc_count, GBUF_ROOM_MESH);
-        for (int32_t i = 0; i < room->mesh.num_face4s; i++) {
-            M_ReadFace4(&room->mesh.face4s[i], file);
+        room->mesh.face4s.count = VFile_ReadS16(file);
+        const size_t pos = VFile_GetPos(file);
+        VFile_Skip(file, 10 * room->mesh.face4s.count);
+        room->mesh.face3s.count = VFile_ReadS16(file);
+        VFile_SetPos(file, pos);
+
+        room->mesh.all_faces.count = room->mesh.face4s.count
+            + inj_data.num_quads + room->mesh.face3s.count
+            + inj_data.num_triangles;
+        FACE *face_ptr = GameBuf_Alloc(
+            sizeof(FACE) * room->mesh.all_faces.count, GBUF_ROOM_MESH);
+
+        room->mesh.all_faces.data = face_ptr;
+        room->mesh.face4s.data = face_ptr;
+        for (int32_t i = 0; i < room->mesh.face4s.count; i++) {
+            M_ReadFace(face_ptr++, 4, file);
         }
+        face_ptr += inj_data.num_quads;
+
+        VFile_Skip(file, 2);
+
+        room->mesh.face3s.data = face_ptr;
+        for (int32_t i = 0; i < room->mesh.face3s.count; i++) {
+            M_ReadFace(face_ptr++, 3, file);
+        }
+        face_ptr += inj_data.num_quads;
     }
 
     {
-        room->mesh.num_face3s = VFile_ReadS16(file);
+        room->mesh.sprites.count = VFile_ReadS16(file);
         const int32_t alloc_count =
-            room->mesh.num_face3s + inj_data.num_triangles;
-        room->mesh.face3s =
-            GameBuf_Alloc(sizeof(FACE4) * alloc_count, GBUF_ROOM_MESH);
-        for (int32_t i = 0; i < room->mesh.num_face3s; i++) {
-            M_ReadFace3(&room->mesh.face3s[i], file);
-        }
-    }
-
-    {
-        room->mesh.num_sprites = VFile_ReadS16(file);
-        const int32_t alloc_count =
-            room->mesh.num_sprites + inj_data.num_static_2ds;
-        room->mesh.sprites =
+            room->mesh.sprites.count + inj_data.num_static_2ds;
+        room->mesh.sprites.data =
             GameBuf_Alloc(sizeof(ROOM_SPRITE) * alloc_count, GBUF_ROOM_MESH);
-        for (int32_t i = 0; i < room->mesh.num_sprites; i++) {
-            ROOM_SPRITE *const sprite = &room->mesh.sprites[i];
+        for (int32_t i = 0; i < room->mesh.sprites.count; i++) {
+            ROOM_SPRITE *const sprite = &room->mesh.sprites.data[i];
             sprite->vertex = VFile_ReadU16(file);
             sprite->texture = VFile_ReadU16(file);
         }
@@ -362,39 +361,49 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
     }
 
     {
-        mesh->num_tex_face4s = VFile_ReadS16(file);
-        mesh->tex_face4s =
-            GameBuf_Alloc(sizeof(FACE4) * mesh->num_tex_face4s, GBUF_MESHES);
-        for (int32_t i = 0; i < mesh->num_tex_face4s; i++) {
-            M_ReadFace4(&mesh->tex_face4s[i], file);
-        }
-    }
+        mesh->tex_face4s.count = VFile_ReadS16(file);
+        size_t pos = VFile_GetPos(file);
+        VFile_Skip(file, 10 * mesh->tex_face4s.count);
+        mesh->tex_face3s.count = VFile_ReadS16(file);
+        VFile_Skip(file, 8 * mesh->tex_face3s.count);
+        mesh->flat_face4s.count = VFile_ReadS16(file);
+        VFile_Skip(file, 10 * mesh->flat_face4s.count);
+        mesh->flat_face3s.count = VFile_ReadS16(file);
+        VFile_SetPos(file, pos);
 
-    {
-        mesh->num_tex_face3s = VFile_ReadS16(file);
-        mesh->tex_face3s =
-            GameBuf_Alloc(sizeof(FACE3) * mesh->num_tex_face3s, GBUF_MESHES);
-        for (int32_t i = 0; i < mesh->num_tex_face3s; i++) {
-            M_ReadFace3(&mesh->tex_face3s[i], file);
-        }
-    }
+        mesh->tex_faces.count = mesh->tex_face4s.count + mesh->tex_face3s.count;
+        mesh->flat_faces.count =
+            mesh->flat_face4s.count + mesh->flat_face3s.count;
+        mesh->all_faces.count = mesh->tex_faces.count + mesh->flat_faces.count;
+        FACE *face_ptr =
+            GameBuf_Alloc(sizeof(FACE) * mesh->all_faces.count, GBUF_MESHES);
 
-    {
-        mesh->num_flat_face4s = VFile_ReadS16(file);
-        mesh->flat_face4s =
-            GameBuf_Alloc(sizeof(FACE4) * mesh->num_flat_face4s, GBUF_MESHES);
-        for (int32_t i = 0; i < mesh->num_flat_face4s; i++) {
-            M_ReadFace4(&mesh->flat_face4s[i], file);
+        mesh->all_faces.data = face_ptr;
+        mesh->tex_faces.data = face_ptr;
+        mesh->tex_face4s.data = face_ptr;
+        for (int32_t i = 0; i < mesh->tex_face4s.count; i++) {
+            M_ReadFace(face_ptr++, 4, file);
         }
-    }
+        VFile_Skip(file, 2);
 
-    {
-        mesh->num_flat_face3s = VFile_ReadS16(file);
-        mesh->flat_face3s =
-            GameBuf_Alloc(sizeof(FACE3) * mesh->num_flat_face3s, GBUF_MESHES);
-        for (int32_t i = 0; i < mesh->num_flat_face3s; i++) {
-            M_ReadFace3(&mesh->flat_face3s[i], file);
+        mesh->tex_face3s.data = face_ptr;
+        for (int32_t i = 0; i < mesh->tex_face3s.count; i++) {
+            M_ReadFace(face_ptr++, 3, file);
         }
+        VFile_Skip(file, 2);
+
+        mesh->flat_faces.data = face_ptr;
+        mesh->flat_face4s.data = face_ptr;
+        for (int32_t i = 0; i < mesh->flat_face4s.count; i++) {
+            M_ReadFace(face_ptr++, 4, file);
+        }
+        VFile_Skip(file, 2);
+
+        mesh->flat_face3s.data = face_ptr;
+        for (int32_t i = 0; i < mesh->flat_face3s.count; i++) {
+            M_ReadFace(face_ptr++, 3, file);
+        }
+        VFile_Skip(file, 2);
     }
 }
 
@@ -1441,8 +1450,8 @@ void Level_LoadTextures(void)
 {
     for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
         const ROOM *const room = Room_Get(room_num);
-        for (int32_t j = 0; j < room->mesh.num_face3s; j++) {
-            const FACE3 *const face = &room->mesh.face3s[j];
+        for (int32_t j = 0; j < room->mesh.face3s.count; j++) {
+            const FACE *const face = &room->mesh.face3s.data[j];
             OBJECT_TEXTURE *const texture =
                 Output_GetObjectTexture(face->texture_idx);
             texture->uv_count = 3;
@@ -1451,8 +1460,8 @@ void Level_LoadTextures(void)
 
     for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
         const OBJECT_MESH *const mesh = Object_GetMesh(i);
-        for (int32_t j = 0; j < mesh->num_tex_face3s; j++) {
-            const FACE3 *const face = &mesh->tex_face3s[j];
+        for (int32_t j = 0; j < mesh->tex_face3s.count; j++) {
+            const FACE *const face = &mesh->tex_face3s.data[j];
             OBJECT_TEXTURE *const texture =
                 Output_GetObjectTexture(face->texture_idx);
             texture->uv_count = 3;
@@ -1461,8 +1470,8 @@ void Level_LoadTextures(void)
 
     for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
         ROOM *const room = Room_Get(room_num);
-        for (int32_t j = 0; j < room->mesh.num_face4s; j++) {
-            FACE4 *const face = &room->mesh.face4s[j];
+        for (int32_t j = 0; j < room->mesh.face4s.count; j++) {
+            FACE *const face = &room->mesh.face4s.data[j];
             XYZ_16 vertices[4] = {
                 room->mesh.vertices[face->vertices[0]].pos,
                 room->mesh.vertices[face->vertices[1]].pos,
@@ -1475,8 +1484,8 @@ void Level_LoadTextures(void)
 
     for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
         const OBJECT_MESH *const mesh = Object_GetMesh(i);
-        for (int32_t j = 0; j < mesh->num_tex_face4s; j++) {
-            FACE4 *const face = &mesh->tex_face4s[j];
+        for (int32_t j = 0; j < mesh->tex_face4s.count; j++) {
+            FACE *const face = &mesh->tex_face4s.data[j];
             XYZ_16 vertices[4] = {
                 mesh->vertices[face->vertices[0]],
                 mesh->vertices[face->vertices[1]],
