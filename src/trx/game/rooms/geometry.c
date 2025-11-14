@@ -266,26 +266,26 @@ SECTOR *Room_GetSector(
 
     ASSERT(sector != nullptr);
 
-    if (y >= sector->floor.height) {
-        while (sector->portal_room.pit != NO_ROOM
-               && !M_IsPortalSolid(sector->floor, x, z)) {
+    if (y >= M_GetSurfaceHeight(sector->floor, x, z, true)) {
+        do {
+            if (sector->portal_room.pit == NO_ROOM
+                || M_IsPortalSolid(sector->floor, x, z)) {
+                break;
+            }
             *room_num = sector->portal_room.pit;
             const ROOM *const room = Room_Get(*room_num);
             sector = Room_GetWorldSector(room, x, z);
-            if (y < sector->floor.height) {
+        } while (y >= M_GetSurfaceHeight(sector->floor, x, z, true));
+    } else if (y < M_GetSurfaceHeight(sector->ceiling, x, z, true)) {
+        do {
+            if (sector->portal_room.sky == NO_ROOM
+                || M_IsPortalSolid(sector->ceiling, x, z)) {
                 break;
             }
-        }
-    } else if (y < sector->ceiling.height) {
-        while (sector->portal_room.sky != NO_ROOM
-               && !M_IsPortalSolid(sector->ceiling, x, z)) {
             *room_num = sector->portal_room.sky;
             const ROOM *const room = Room_Get(sector->portal_room.sky);
             sector = Room_GetWorldSector(room, x, z);
-            if (y >= sector->ceiling.height) {
-                break;
-            }
-        }
+        } while (y < M_GetSurfaceHeight(sector->ceiling, x, z, true));
     }
 
     return sector;
