@@ -96,58 +96,6 @@ static const int16_t *M_ReadTrigger(
     return data;
 }
 
-static void M_ReadTriangulation(
-    SURFACE *const surface, const int16_t func_data, const int16_t tilt_data)
-{
-    switch (M_ENTRY_TYPE(func_data)) {
-    case FT_FLOOR_NWSE_SOLID:
-    case FT_ROOF_NWSE_SOLID:
-        surface->split.type = SPLIT_NWSE_SOLID;
-        break;
-    case FT_FLOOR_NESW_SOLID:
-    case FT_ROOF_NESW_SOLID:
-        surface->split.type = SPLIT_NESW_SOLID;
-        break;
-    case FT_FLOOR_NWSE_PORTAL_SW:
-    case FT_ROOF_NWSE_PORTAL_SW:
-        surface->split.type = SPLIT_NWSE_PORTAL_SW;
-        break;
-    case FT_FLOOR_NWSE_PORTAL_NE:
-    case FT_ROOF_NWSE_PORTAL_NE:
-        surface->split.type = SPLIT_NWSE_PORTAL_NE;
-        break;
-    case FT_FLOOR_NESW_PORTAL_SE:
-    case FT_ROOF_NESW_PORTAL_SE:
-        surface->split.type = SPLIT_NESW_PORTAL_SE;
-        break;
-    case FT_FLOOR_NESW_PORTAL_NW:
-    case FT_ROOF_NESW_PORTAL_NW:
-        surface->split.type = SPLIT_NESW_PORTAL_NW;
-        break;
-    default:
-        return;
-    }
-
-    surface->is_split = true;
-    surface->split.h1 = (func_data & 0x03E0) >> 5;
-    surface->split.h2 = (func_data & 0x7C00) >> 10;
-    if ((surface->split.h1 & 0x10) != 0) {
-        surface->split.h1 |= 0xFFF0;
-    }
-    if ((surface->split.h2 & 0x10) != 0) {
-        surface->split.h2 |= 0xFFF0;
-    }
-    surface->split.h1 <<= 8;
-    surface->split.h2 <<= 8;
-
-    for (int32_t i = 0; i < 4; i++) {
-        surface->split.tilts[i] = (tilt_data >> (i * 4)) & 0xF;
-        if (surface->type == SURFACE_CEILING) {
-            surface->split.tilts[i] *= -1;
-        }
-    }
-}
-
 static bool M_TestLava(const ITEM *const item)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -311,7 +259,7 @@ void Room_PopulateSectorData(
         case FT_FLOOR_NWSE_PORTAL_NE:
         case FT_FLOOR_NESW_PORTAL_SE:
         case FT_FLOOR_NESW_PORTAL_NW:
-            M_ReadTriangulation(&sector->floor, fd_entry, *data++);
+            Room_ReadTriangulation(&sector->floor, fd_entry, *data++);
             break;
 
         case FT_ROOF_NWSE_SOLID:
@@ -320,13 +268,65 @@ void Room_PopulateSectorData(
         case FT_ROOF_NWSE_PORTAL_NE:
         case FT_ROOF_NESW_PORTAL_NW:
         case FT_ROOF_NESW_PORTAL_SE:
-            M_ReadTriangulation(&sector->ceiling, fd_entry, *data++);
+            Room_ReadTriangulation(&sector->ceiling, fd_entry, *data++);
             break;
 
         default:
             break;
         }
     } while (!M_IS_DONE(fd_entry));
+}
+
+void Room_ReadTriangulation(
+    SURFACE *const surface, const int16_t func_data, const int16_t tilt_data)
+{
+    switch (M_ENTRY_TYPE(func_data)) {
+    case FT_FLOOR_NWSE_SOLID:
+    case FT_ROOF_NWSE_SOLID:
+        surface->split.type = SPLIT_NWSE_SOLID;
+        break;
+    case FT_FLOOR_NESW_SOLID:
+    case FT_ROOF_NESW_SOLID:
+        surface->split.type = SPLIT_NESW_SOLID;
+        break;
+    case FT_FLOOR_NWSE_PORTAL_SW:
+    case FT_ROOF_NWSE_PORTAL_SW:
+        surface->split.type = SPLIT_NWSE_PORTAL_SW;
+        break;
+    case FT_FLOOR_NWSE_PORTAL_NE:
+    case FT_ROOF_NWSE_PORTAL_NE:
+        surface->split.type = SPLIT_NWSE_PORTAL_NE;
+        break;
+    case FT_FLOOR_NESW_PORTAL_SE:
+    case FT_ROOF_NESW_PORTAL_SE:
+        surface->split.type = SPLIT_NESW_PORTAL_SE;
+        break;
+    case FT_FLOOR_NESW_PORTAL_NW:
+    case FT_ROOF_NESW_PORTAL_NW:
+        surface->split.type = SPLIT_NESW_PORTAL_NW;
+        break;
+    default:
+        return;
+    }
+
+    surface->is_split = true;
+    surface->split.h1 = (func_data & 0x03E0) >> 5;
+    surface->split.h2 = (func_data & 0x7C00) >> 10;
+    if ((surface->split.h1 & 0x10) != 0) {
+        surface->split.h1 |= 0xFFF0;
+    }
+    if ((surface->split.h2 & 0x10) != 0) {
+        surface->split.h2 |= 0xFFF0;
+    }
+    surface->split.h1 <<= 8;
+    surface->split.h2 <<= 8;
+
+    for (int32_t i = 0; i < 4; i++) {
+        surface->split.tilts[i] = (tilt_data >> (i * 4)) & 0xF;
+        if (surface->type == SURFACE_CEILING) {
+            surface->split.tilts[i] *= -1;
+        }
+    }
 }
 
 void Room_TestTriggers(const ITEM *const item)
