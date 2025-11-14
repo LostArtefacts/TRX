@@ -28,10 +28,19 @@
 #define MAX_WIBBLE 2
 #define PI 3.1415926538
 
-uniform float uTime;
-uniform float uTimeInGame;
-uniform float uBrightnessMultiplier;
-uniform vec2 uViewportSize;
+layout(std140, binding = 0) uniform Globals {
+    mat4 uMatView;
+    vec4 uFogColor;
+    vec2 uFogDistance; // x = fog start, y = fog end
+    vec2 uViewportSize;
+    float uTime;
+    float uTimeInGame;
+    float uBrightnessMultiplier;
+    int uBillboardLockMode;
+    int uLightingContrast;
+    int uTrapezoidFilterEnabled; // bool
+    int uReflectionsEnabled; // bool
+};
 
 vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
 {
@@ -39,41 +48,41 @@ vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
     return clamp(uv, atlasSize.xy + epsilon, atlasSize.zw - epsilon);
 }
 
-vec3 waterWibble(vec4 position, vec2 viewportSize, float time)
+vec3 waterWibble(vec4 position)
 {
     // get screen coordinates
     vec3 ndc = position.xyz / position.w; //perspective divide/normalize
     vec2 viewportCoord = ndc.xy * 0.5 + 0.5; //ndc is -1 to 1 in GL. scale for 0 to 1
-    vec2 viewportPixelCoord = viewportCoord * viewportSize;
+    vec2 viewportPixelCoord = viewportCoord * uViewportSize;
 
-    viewportPixelCoord.x += sin((time + viewportPixelCoord.y) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
-    viewportPixelCoord.y += sin((time + viewportPixelCoord.x) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+    viewportPixelCoord.x += sin((uTimeInGame + viewportPixelCoord.y) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+    viewportPixelCoord.y += sin((uTimeInGame + viewportPixelCoord.x) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
 
     // reverse transform
-    viewportCoord = viewportPixelCoord / viewportSize;
+    viewportCoord = viewportPixelCoord / uViewportSize;
     ndc.xy = (viewportCoord - 0.5) * 2.0;
     return ndc * position.w;
 }
 
-vec4 applyFog(vec4 color, float depth, vec2 fogDistance, vec4 fogColor)
+vec4 applyFog(vec4 color, float depth)
 {
-    float fogBegin = fogDistance.x;
-    float fogEnd = fogDistance.y;
+    float fogBegin = uFogDistance.x;
+    float fogEnd = uFogDistance.y;
     if (depth < fogBegin) {
         return color;
     } else if (depth >= fogEnd) {
-        return fogColor;
+        return uFogColor;
     } else {
-        return mix(color, fogColor, (depth - fogBegin) / (fogEnd - fogBegin));
+        return mix(color, uFogColor, (depth - fogBegin) / (fogEnd - fogBegin));
     }
 }
 
-vec3 applyShade(vec3 color, float shade, int lightingContrast)
+vec3 applyShade(vec3 color, float shade)
 {
-    if (lightingContrast == LIGHTING_CONTRAST_MEDIUM) {
+    if (uLightingContrast == LIGHTING_CONTRAST_MEDIUM) {
         shade = max(shade, SHADE_HIGH);
     }
-    if (lightingContrast == LIGHTING_CONTRAST_LOW) {
+    if (uLightingContrast == LIGHTING_CONTRAST_LOW) {
         shade = max(shade, SHADE_NEUTRAL);
     }
 

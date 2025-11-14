@@ -11,9 +11,9 @@
 #define WAVE_ORBIT_RADIUS 0.2
 #define WAVE_FPS_DRIFT 25 / 30
 
-#ifdef VERTEX
-
 uniform int uEffect;
+
+#ifdef VERTEX
 
 layout(location = 0) in vec2 inPosition;
 layout(location = 1) in vec2 inTexCoords;
@@ -51,9 +51,8 @@ void main() {
 
 #elif defined(FRAGMENT)
 
-uniform sampler2D texMain;
+uniform sampler2D uTexMain;
 uniform vec4 uTexSize;
-uniform int uEffect;
 
 in vec2 vertTexCoords;
 in vec2 vertCoords;
@@ -64,7 +63,7 @@ void main(void) {
     vec2 uv = vertTexCoords;
     uv = clampTexAtlas(uv, uTexSize);
 
-    outColor = texture(texMain, uv);
+    outColor = texture(uTexMain, uv);
 
     if ((uEffect & EFFECT_WAVE) != 0) {
         outColor.rgb *= vertLight;

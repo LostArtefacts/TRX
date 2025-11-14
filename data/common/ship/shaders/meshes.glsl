@@ -1,6 +1,3 @@
-uniform int uBillboardLockMode;
-uniform int uLightingContrast;
-
 vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 modelView, mat4 projection, int lockMode)
 {
     if (lockMode == BILLBOARD_LOCK_ROLL) {
@@ -49,9 +46,7 @@ vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 modelView, mat
 #ifdef VERTEX
 
 uniform mat4 uMatProjection;
-uniform mat4 uMatView;
 uniform mat4 uMatModelView;
-uniform bool uTrapezoidFilterEnabled;
 uniform bool uWibbleEffect;
 
 layout(location = 0) in vec4 inPosition;
@@ -96,7 +91,7 @@ void main(void) {
         && (inFlags & VERT_NO_CAUSTICS) == 0u
         && (inFlags & VERT_BILLBOARD) == 0u)
     ) {
-        gl_Position.xyz = waterWibble(gl_Position, uViewportSize, uTimeInGame);
+        gl_Position.xyz = waterWibble(gl_Position);
     }
 
     gFlags = inFlags;
@@ -104,7 +99,7 @@ void main(void) {
     gTexUV = inUVW.xy;
     gTexLayer = int(inUVW.z);
     gTrapezoidRatios = inTrapezoidRatios;
-    if (uTrapezoidFilterEnabled) {
+    if (uTrapezoidFilterEnabled != 0) {
         gTexUV *= inTrapezoidRatios;
     }
     gShade = inShade;
@@ -115,13 +110,8 @@ void main(void) {
 
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
-uniform bool uSmoothingEnabled;
-uniform bool uTrapezoidFilterEnabled;
 uniform int uLightingMode;
-uniform bool uReflectionsEnabled;
 uniform vec3 uGlobalTint;
-uniform vec2 uFogDistance; // x = fog start, y = fog end
-uniform vec4 uFogColor;
 uniform bool uDiscardAlpha;
 
 in vec4 gEyePos;
@@ -140,7 +130,7 @@ void main(void) {
 
     if ((gFlags & VERT_FLAT_SHADED) == 0u && gTexLayer >= 0) {
         vec3 texCoords = vec3(gTexUV.x, gTexUV.y, gTexLayer);
-        if (uTrapezoidFilterEnabled) {
+        if (uTrapezoidFilterEnabled != 0) {
             texCoords.xy /= gTrapezoidRatios;
         }
         texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
@@ -159,18 +149,18 @@ void main(void) {
         texColor.rgb *= texColor.a;
     }
 
-    if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled) {
+    if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0) {
         texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
     }
 
     if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingMode != LIGHTING_MODE_OFF) {
-        texColor.rgb = applyShade(texColor.rgb, gShade, uLightingContrast);
+        texColor.rgb = applyShade(texColor.rgb, gShade);
     }
 
     texColor.rgb *= uGlobalTint;
 
     if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingMode == LIGHTING_MODE_FULL) {
-        texColor = applyFog(texColor, gEyePos.z, uFogDistance, uFogColor);
+        texColor = applyFog(texColor, gEyePos.z);
     }
 
     texColor.rgb *= uBrightnessMultiplier;
