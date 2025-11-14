@@ -177,7 +177,6 @@ static void M_RenderPass(
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS);
     glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
 
-    glDepthMask(GL_FALSE);
     for (int32_t i = 0; i < p->scheduled->count; i++) {
         const M_INSTANCE *const instance = Vector_Get(p->scheduled, i);
         const M_ROOM_MESH *const mesh =
@@ -201,7 +200,6 @@ static void M_RenderPass(
             glEnable(GL_DEPTH_TEST);
         }
     }
-    glDepthMask(GL_TRUE);
 }
 
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)

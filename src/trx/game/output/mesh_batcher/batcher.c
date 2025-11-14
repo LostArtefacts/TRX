@@ -39,6 +39,7 @@ typedef struct M_MESH_BUF_BINDING {
     int32_t vertex_count;
     UT_hash_handle hh;
     GLuint opaque_ebo;
+    GLuint blend_add_ebo;
 } M_MESH_BUF_BINDING;
 
 typedef struct {
@@ -189,14 +190,27 @@ static void M_DrawOpaqueVertices(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
     glDrawElementsBaseVertex(
-        GL_TRIANGLES, inst->mesh->all_vertex_indices->count, GL_UNSIGNED_INT,
+        GL_TRIANGLES, inst->mesh->opaque_vertex_indices->count, GL_UNSIGNED_INT,
         nullptr, bind->vertex_start);
     GFX_GL_CheckError();
-    g_GFX_Metrics.opaque_vert_count += inst->mesh->all_vertex_indices->count;
+    g_GFX_Metrics.opaque_vert_count += inst->mesh->opaque_vertex_indices->count;
+}
+
+static void M_DrawBlendAddVertices(
+    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+{
+    M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->blend_add_ebo);
+    glDrawElementsBaseVertex(
+        GL_TRIANGLES, inst->mesh->blend_add_vertex_indices->count,
+        GL_UNSIGNED_INT, nullptr, bind->vertex_start);
+    GFX_GL_CheckError();
+    g_GFX_Metrics.blend_add_vert_count +=
+        inst->mesh->blend_add_vertex_indices->count;
 }
 
 static void M_DrawOpaqueInstance(
-    const MESH_BATCHER *const batcher, MESH_INSTANCE *const inst)
+    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
 {
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
@@ -227,15 +241,34 @@ static void M_DrawOpaqueInstance(
     }
 }
 
+static void M_DrawBlendAddInstance(
+    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+{
+    M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
+    ASSERT(bind != nullptr);
+
+    Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
+    Output_Shader_UploadTint(batcher->shader, inst->tint);
+    Output_Shader_UploadWibbleEffect(batcher->shader, false);
+
+    if (inst->enable_scissor) {
+        Output_EnableScissor(
+            inst->scissor.x, inst->scissor.y, inst->scissor.width,
+            inst->scissor.height);
+    }
+    M_DrawBlendAddVertices(batcher, inst);
+    if (inst->enable_scissor) {
+        Output_DisableScissor();
+    }
+}
+
 static void M_OpaquePass(
     const MESH_BATCHER *const batcher, const SCENE_PASS pass)
 {
-    float depth_adjust = 0.0f;
-    VECTOR *const staged = batcher->staged[pass];
-
     glBindVertexArray(batcher->partial_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
 
+    VECTOR *const staged = batcher->staged[pass];
     for (int32_t i = 0; i < staged->count; i++) {
         MESH_INSTANCE *const inst = Vector_Get(staged, i);
         const MATRIX *const m = &inst->matrix;
@@ -258,7 +291,7 @@ static void M_OpaquePass(
                 bind->vertex_count * sizeof(M_MESH_SHADE), bind->shade_data);
         }
 
-        if (inst->mesh->all_vertex_indices->count != 0) {
+        if (inst->mesh->opaque_vertex_indices->count != 0) {
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
             M_DrawOpaqueInstance(batcher, inst);
         }
@@ -289,6 +322,26 @@ static void M_OpaquePass(
                     .vertex_start = vertex_start,
                     .vertex_count = vertex_count,
                 });
+        }
+    }
+
+    Output_AdjustDepth(0.0f, 0.0f);
+}
+
+static void M_BlendAddPass(const MESH_BATCHER *const batcher)
+{
+    VECTOR *const staged = batcher->staged[SCENE_PASS_BLEND_ADD];
+
+    glBindVertexArray(batcher->partial_vao);
+
+    for (int32_t i = 0; i < staged->count; i++) {
+        const MESH_INSTANCE *const inst = Vector_Get(staged, i);
+        const M_MESH_BUF_BINDING *const bind =
+            M_GetBinding(batcher, inst->mesh);
+
+        if (inst->mesh->blend_add_vertex_indices->count != 0) {
+            Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
+            M_DrawBlendAddInstance(batcher, inst);
         }
     }
     Output_AdjustDepth(0.0f, 0.0f);
@@ -344,6 +397,8 @@ static void M_RenderPass(
     } else if (pass == SCENE_PASS_TRANSPARENT) {
         M_SortTransparentFaces(batcher);
         M_TransparentPass(batcher);
+    } else if (pass == SCENE_PASS_BLEND_ADD) {
+        M_BlendAddPass(batcher);
     }
 }
 
@@ -535,6 +590,10 @@ void MeshBatcher_RemoveMesh(
         glDeleteBuffers(1, &bind->opaque_ebo);
         bind->opaque_ebo = 0;
     }
+    if (bind->blend_add_ebo != 0) {
+        glDeleteBuffers(1, &bind->blend_add_ebo);
+        bind->blend_add_ebo = 0;
+    }
     Memory_Free(bind->geom_data);
     Memory_Free(bind->tex_data);
     Memory_Free(bind->shade_data);
@@ -553,6 +612,8 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
     M_MESH_BUF_BINDING *const bind = Memory_Alloc(sizeof(M_MESH_BUF_BINDING));
     bind->mesh = mesh;
     bind->vertex_count = mesh->vertices->count;
+    bind->opaque_ebo = 0;
+    bind->blend_add_ebo = 0;
     const OUTPUT_MESH_VERTEX *const vertices = Vector_GetData(mesh->vertices);
 
     bind->geom_data = Memory_Alloc(sizeof(M_MESH_GEOM) * bind->vertex_count);
@@ -617,8 +678,16 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
         GFX_TRACK_DATA(
             glBufferData, GL_ELEMENT_ARRAY_BUFFER,
-            bind->mesh->all_vertex_indices->count * sizeof(uint32_t),
-            Vector_GetData(bind->mesh->all_vertex_indices), GL_STATIC_DRAW);
+            bind->mesh->opaque_vertex_indices->count * sizeof(uint32_t),
+            Vector_GetData(bind->mesh->opaque_vertex_indices), GL_STATIC_DRAW);
+
+        glGenBuffers(1, &bind->blend_add_ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->blend_add_ebo);
+        GFX_TRACK_DATA(
+            glBufferData, GL_ELEMENT_ARRAY_BUFFER,
+            bind->mesh->blend_add_vertex_indices->count * sizeof(uint32_t),
+            Vector_GetData(bind->mesh->blend_add_vertex_indices),
+            GL_STATIC_DRAW);
     }
 }
 

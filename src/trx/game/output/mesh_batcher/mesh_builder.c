@@ -68,7 +68,9 @@ void MeshBuilder_AddFace(
     const size_t idx_count)
 {
     ASSERT(builder != nullptr);
-    ASSERT((pass == SCENE_PASS_TRANSPARENT) || (pass == SCENE_PASS_OPAQUE));
+    ASSERT(
+        (pass == SCENE_PASS_TRANSPARENT) || (pass == SCENE_PASS_OPAQUE)
+        || (pass == SCENE_PASS_BLEND_ADD));
     M_EnsureMesh(builder);
     ASSERT(builder->mesh != nullptr);
     ASSERT(!builder->mesh->sealed);
@@ -98,10 +100,18 @@ void MeshBuilder_AddFace(
         }
         Vector_Add(builder->mesh->transparent_faces, &face);
     }
-    for (size_t i = 0; i < idx_count; i++) {
-        Vector_Add(
-            builder->mesh->all_vertex_indices,
-            &(uint32_t) { start + indices[i] });
+    if (pass == SCENE_PASS_BLEND_ADD) {
+        for (size_t i = 0; i < idx_count; i++) {
+            Vector_Add(
+                builder->mesh->blend_add_vertex_indices,
+                &(uint32_t) { start + indices[i] });
+        }
+    } else {
+        for (size_t i = 0; i < idx_count; i++) {
+            Vector_Add(
+                builder->mesh->opaque_vertex_indices,
+                &(uint32_t) { start + indices[i] });
+        }
     }
     builder->pending_vertex_count = 0;
 }

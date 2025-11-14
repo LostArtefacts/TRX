@@ -28,10 +28,7 @@ static SCENE_PASS M_GetScenePass(const FACE *const face, const uint16_t flags)
     if ((flags & VERT_FLAT_SHADED) != 0) {
         return SCENE_PASS_OPAQUE;
     }
-    if (Output_Textures_IsObjectTextureTransparent(face->texture_idx)) {
-        return SCENE_PASS_TRANSPARENT;
-    }
-    return SCENE_PASS_OPAQUE;
+    return Output_Textures_GetObjectTextureScenePass(face->texture_idx);
 }
 
 static void M_AddObjectVerts(
@@ -49,7 +46,9 @@ static void M_AddObjectVerts(
         } else {
             color = Output_RGB2RGBA(Output_GetPaletteColor16(palette_idx >> 8));
         }
-    } else if (!Output_Textures_IsObjectTextureTransparent(texture_idx)) {
+    } else if (
+        Output_Textures_GetObjectTextureScenePass(texture_idx)
+        == SCENE_PASS_OPAQUE) {
         flags |= VERT_NO_ALPHA_DISCARD;
     }
 
@@ -284,6 +283,7 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool skybox)
     } else {
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
+        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BLEND_ADD);
     }
 }
 

@@ -108,10 +108,10 @@ static void M_Draw(PHASE *const phase)
         char buffer[80];
         const GFX_METRICS metrics = GFX_Track_GetMetrics();
         sprintf(
-            buffer, "%.03f KB T:%d U:%d Vo:%d Vt:%d",
+            buffer, "%.03f KB T:%d U:%d Vo:%d Vt:%d Vb:%d",
             metrics.buffer_total_bytes / 1024.0f, metrics.buffer_transfer_count,
             metrics.uniform_changes, metrics.opaque_vert_count,
-            metrics.trans_vert_count);
+            metrics.trans_vert_count, metrics.blend_add_vert_count);
         Benchmark_End(&benchmark, buffer);
     }
 

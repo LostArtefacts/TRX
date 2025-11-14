@@ -502,9 +502,17 @@ uint16_t Output_Textures_GetSpriteTextureFlags(const int32_t texture_idx)
     return VERT_BILLBOARD | m_Priv.uvws.flags_sprites[texture_idx];
 }
 
-bool Output_Textures_IsObjectTextureTransparent(const int32_t texture_idx)
+SCENE_PASS Output_Textures_GetObjectTextureScenePass(const int32_t texture_idx)
 {
-    return Output_GetObjectTexture(texture_idx)->draw_type == DRAW_COLOR_KEY;
+    switch (Output_GetObjectTexture(texture_idx)->draw_type) {
+    case DRAW_OPAQUE:
+        return SCENE_PASS_OPAQUE;
+    case DRAW_COLOR_KEY:
+        return SCENE_PASS_TRANSPARENT;
+    case DRAW_BLEND_ADD:
+        return SCENE_PASS_BLEND_ADD;
+    }
+    return SCENE_PASS_OPAQUE;
 }
 
 void Output_Textures_ApplyRenderSettings(void)
