@@ -18,6 +18,14 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static SCENE_PASS M_GetScenePass(const FACE *const face)
+{
+    if (Output_Textures_IsObjectTextureTransparent(face->texture_idx)) {
+        return SCENE_PASS_TRANSPARENT;
+    }
+    return SCENE_PASS_OPAQUE;
+}
+
 static void M_AddRoomVerts(
     MESH_BUILDER *const builder, const size_t vtx_count,
     const int32_t texture_idx, const uint16_t *const face_vertices,
@@ -57,9 +65,7 @@ static void M_AddRoomFace(
     M_AddRoomVerts(
         builder, face->vertex_count, face->texture_idx, face->vertices,
         face->texture_zw, room->mesh.vertices);
-    MeshBuilder_AddFan(
-        builder, Output_Textures_IsObjectTextureTransparent(face->texture_idx),
-        face->double_sided);
+    MeshBuilder_AddFan(builder, M_GetScenePass(face), face->double_sided);
 }
 
 static int16_t M_ShadeCaustics(

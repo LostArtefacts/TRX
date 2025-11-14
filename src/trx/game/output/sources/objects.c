@@ -23,6 +23,17 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static SCENE_PASS M_GetScenePass(const FACE *const face, const uint16_t flags)
+{
+    if ((flags & VERT_FLAT_SHADED) != 0) {
+        return SCENE_PASS_OPAQUE;
+    }
+    if (Output_Textures_IsObjectTextureTransparent(face->texture_idx)) {
+        return SCENE_PASS_TRANSPARENT;
+    }
+    return SCENE_PASS_OPAQUE;
+}
+
 static void M_AddObjectVerts(
     MESH_BUILDER *const builder, const size_t vtx_count,
     const OBJECT_MESH *const obj_mesh, const uint16_t *vertices,
@@ -73,9 +84,8 @@ static void M_AddObjectFace(
     M_AddObjectVerts(
         builder, face->vertex_count, obj_mesh, face->vertices,
         face->texture_idx, face->palette_idx, flags, face->texture_zw);
-    const bool transparent = (flags & VERT_FLAT_SHADED) == 0
-        && Output_Textures_IsObjectTextureTransparent(face->texture_idx);
-    MeshBuilder_AddFan(builder, transparent, face->double_sided);
+    MeshBuilder_AddFan(
+        builder, M_GetScenePass(face, flags), face->double_sided);
 }
 
 static int32_t *M_PrepareLightIndexMap(
