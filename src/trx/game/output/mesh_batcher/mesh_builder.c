@@ -64,10 +64,11 @@ void MeshBuilder_AddVertex(
 }
 
 void MeshBuilder_AddFace(
-    MESH_BUILDER *const builder, const bool transparent, const int32_t *indices,
+    MESH_BUILDER *const builder, const SCENE_PASS pass, const int32_t *indices,
     const size_t idx_count)
 {
     ASSERT(builder != nullptr);
+    ASSERT((pass == SCENE_PASS_TRANSPARENT) || (pass == SCENE_PASS_OPAQUE));
     M_EnsureMesh(builder);
     ASSERT(builder->mesh != nullptr);
     ASSERT(!builder->mesh->sealed);
@@ -85,7 +86,7 @@ void MeshBuilder_AddFace(
     centroid.x /= (float)vtx_count;
     centroid.y /= (float)vtx_count;
     centroid.z /= (float)vtx_count;
-    if (transparent) {
+    if (pass == SCENE_PASS_TRANSPARENT) {
         OUTPUT_MESH_FACE face = {
             .vertex_count = idx_count,
             .mesh_centroid = centroid,
@@ -106,8 +107,7 @@ void MeshBuilder_AddFace(
 }
 
 void MeshBuilder_AddFan(
-    MESH_BUILDER *const builder, const bool transparent,
-    const bool double_sided)
+    MESH_BUILDER *const builder, const SCENE_PASS pass, const bool double_sided)
 {
     ASSERT(builder != nullptr);
     M_EnsureMesh(builder);
@@ -128,7 +128,7 @@ void MeshBuilder_AddFan(
         }
     }
     MeshBuilder_AddFace(
-        builder, transparent, Vector_GetData(builder->indices),
+        builder, pass, Vector_GetData(builder->indices),
         builder->indices->count);
     Vector_Clear(builder->indices);
 }
@@ -162,7 +162,7 @@ void MeshBuilder_AddRoomSprite(
         };
         MeshBuilder_AddVertex(builder, &vertex);
     }
-    MeshBuilder_AddFan(builder, true, false);
+    MeshBuilder_AddFan(builder, SCENE_PASS_TRANSPARENT, false);
 }
 
 void MeshBuilder_AdjustDepth(MESH_BUILDER *const builder, const float depth)

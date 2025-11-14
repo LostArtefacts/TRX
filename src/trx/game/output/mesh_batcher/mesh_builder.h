@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/output/mesh_batcher/mesh.h>
+#include <trx/game/output/scene_source.h>
 #include <trx/game/rooms/types.h>
 
 // Opaque builder for incrementally constructing an OUTPUT_MESH.
@@ -18,17 +19,16 @@ void MeshBuilder_Destroy(MESH_BUILDER *builder);
 void MeshBuilder_AddVertex(
     MESH_BUILDER *builder, const OUTPUT_MESH_VERTEX *vertex);
 
-// Add a face using the recently added vertices. transparent=true records it in
-// the transparent face list, false in opaque indices.
+// Add a face using the recently added vertices.
 void MeshBuilder_AddFace(
-    MESH_BUILDER *builder, bool transparent, const int32_t *indices,
+    MESH_BUILDER *builder, SCENE_PASS pass, const int32_t *indices,
     size_t idx_count);
 
 // Add a triangle fan face using the last vertices added: a center followed by
 // ring vertices.If double_sided is true, generates mirrored winding
 // for backfaces as well.
 void MeshBuilder_AddFan(
-    MESH_BUILDER *builder, bool transparent, bool double_sided);
+    MESH_BUILDER *builder, SCENE_PASS pass, bool double_sided);
 
 // Applies invisible z offset to all vertices that helps with the z-fighting.
 void MeshBuilder_AdjustDepth(MESH_BUILDER *builder, float depth);
