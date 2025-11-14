@@ -252,6 +252,6 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
         .update_light_func = M_UpdateShades,
         .update_light_func_data = (void *)room,
     };
-    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
 }

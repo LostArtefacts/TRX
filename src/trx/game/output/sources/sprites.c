@@ -111,6 +111,6 @@ void OutputSource_Sprites_Stage(int32_t sprite_idx, int16_t shade, RGB_F tint)
         .update_light_func_data = (void *)(intptr_t)shade,
     };
 
-    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
 }
