@@ -75,11 +75,7 @@ static void M_AddObjectFace(
         face->texture_idx, face->palette_idx, flags, face->texture_zw);
     const bool transparent = (flags & VERT_FLAT_SHADED) == 0
         && Output_Textures_IsObjectTextureTransparent(face->texture_idx);
-    if (face->vertex_count == 4) {
-        MeshBuilder_AddFace4(builder, transparent, face->double_sided);
-    } else {
-        MeshBuilder_AddFace3(builder, transparent, face->double_sided);
-    }
+    MeshBuilder_AddFan(builder, transparent, face->double_sided);
 }
 
 static int32_t *M_PrepareLightIndexMap(
