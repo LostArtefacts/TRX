@@ -68,19 +68,8 @@ static int16_t M_GetSplitCeilingHeight(
     const SURFACE surface, const int32_t x, const int32_t z)
 {
     if (Camera_IsChunky()) {
-        int32_t height_adj = surface.split.h2;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-
-        int16_t ch2 = surface.height;
-        int16_t ch1 = ch2 + (height_adj << 8);
-
-        height_adj = surface.split.h1;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-        ch2 += height_adj << 8;
+        const int16_t ch1 = surface.height + surface.split.h2;
+        const int16_t ch2 = surface.height + surface.split.h1;
         return MAX(ch1, ch2);
     }
 
@@ -99,36 +88,20 @@ static int16_t M_GetSplitCeilingHeight(
         || surface.split.type == SPLIT_NWSE_PORTAL_SW
         || surface.split.type == SPLIT_NWSE_PORTAL_NE) {
         if (dx <= WALL_L - dz) {
-            int32_t height_adj = surface.split.h2;
-            if ((height_adj & 0x10) != 0) {
-                height_adj |= 0xFFF0;
-            }
-            height += height_adj << 8;
+            height += surface.split.h2;
             h1 = t2 - t1;
             h2 = t3 - t2;
         } else {
-            int32_t height_adj = surface.split.h1;
-            if ((height_adj & 0x10) != 0) {
-                height_adj |= 0xFFF0;
-            }
-            height += height_adj << 8;
+            height += surface.split.h1;
             h1 = t3 - t0;
             h2 = t0 - t1;
         }
     } else if (dx <= dz) {
-        int32_t height_adj = surface.split.h2;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-        height += height_adj << 8;
+        height += surface.split.h2;
         h1 = t2 - t1;
         h2 = t0 - t1;
     } else {
-        int32_t height_adj = surface.split.h1;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-        height += height_adj << 8;
+        height += surface.split.h1;
         h1 = t3 - t0;
         h2 = t3 - t2;
     }
@@ -152,19 +125,8 @@ static int16_t M_GetSplitFloorHeight(
     const SURFACE surface, const int32_t x, const int32_t z)
 {
     if (Camera_IsChunky()) {
-        int32_t height_adj = surface.split.h2;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-
-        int16_t ch2 = surface.height;
-        int16_t ch1 = ch2 + (height_adj << 8);
-
-        height_adj = surface.split.h1;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-        ch2 += height_adj << 8;
+        const int16_t ch1 = surface.height + surface.split.h2;
+        const int16_t ch2 = surface.height + surface.split.h1;
         return MIN(ch1, ch2);
     }
 
@@ -183,36 +145,20 @@ static int16_t M_GetSplitFloorHeight(
         || surface.split.type == SPLIT_NWSE_PORTAL_SW
         || surface.split.type == SPLIT_NWSE_PORTAL_NE) {
         if (dx <= WALL_L - dz) {
-            int32_t height_adj = surface.split.h2;
-            if ((height_adj & 0x10) != 0) {
-                height_adj |= 0xFFF0;
-            }
-            height += height_adj << 8;
+            height += surface.split.h2;
             h1 = t2 - t1;
             h2 = t0 - t1;
         } else {
-            int32_t height_adj = surface.split.h1;
-            if ((height_adj & 0x10) != 0) {
-                height_adj |= 0xFFF0;
-            }
-            height += height_adj << 8;
+            height += surface.split.h1;
             h1 = t3 - t0;
             h2 = t3 - t2;
         }
     } else if (dx <= dz) {
-        int32_t height_adj = surface.split.h2;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-        height += height_adj << 8;
+        height += surface.split.h2;
         h1 = t2 - t1;
         h2 = t3 - t2;
     } else {
-        int32_t height_adj = surface.split.h1;
-        if ((height_adj & 0x10) != 0) {
-            height_adj |= 0xFFF0;
-        }
-        height += height_adj << 8;
+        height += surface.split.h1;
         h1 = t3 - t0;
         h2 = t0 - t1;
     }

@@ -131,6 +131,15 @@ static void M_ReadTriangulation(
     surface->is_split = true;
     surface->split.h1 = (func_data & 0x03E0) >> 5;
     surface->split.h2 = (func_data & 0x7C00) >> 10;
+    if ((surface->split.h1 & 0x10) != 0) {
+        surface->split.h1 |= 0xFFF0;
+    }
+    if ((surface->split.h2 & 0x10) != 0) {
+        surface->split.h2 |= 0xFFF0;
+    }
+    surface->split.h1 <<= 8;
+    surface->split.h2 <<= 8;
+
     for (int32_t i = 0; i < 4; i++) {
         surface->split.tilts[i] = (tilt_data >> (i * 4)) & 0xF;
     }
