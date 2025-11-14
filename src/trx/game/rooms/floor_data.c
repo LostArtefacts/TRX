@@ -142,6 +142,9 @@ static void M_ReadTriangulation(
 
     for (int32_t i = 0; i < 4; i++) {
         surface->split.tilts[i] = (tilt_data >> (i * 4)) & 0xF;
+        if (surface->type == SURFACE_CEILING) {
+            surface->split.tilts[i] *= -1;
+        }
     }
 }
 
