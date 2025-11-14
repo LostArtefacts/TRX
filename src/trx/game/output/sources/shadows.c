@@ -91,5 +91,5 @@ void OutputSource_Shadows_StageShadow(void)
     // XXX: Mesh batcher currently collects the transparent faces for the
     // transparent pass in the opaque pass, so the shadow, even though
     // transparent, needs to be staged in the opaque pass to work.
-    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_MESHES);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
 }
