@@ -238,7 +238,7 @@ void Output_Shader_UploadPerspProjectionMatrix(
     Output_GetPerspProjectionMatrix(projection);
     GFX_TRACK_UNIFORM(
         glUniformMatrix4fv, shader->uniforms[M_UNIFORM_PROJECTION_MATRIX], 1,
-        GL_TRUE, &projection[0][0]);
+        GL_FALSE, &projection[0][0]);
 }
 
 void Output_Shader_UploadOrthoProjectionMatrix(
@@ -248,7 +248,7 @@ void Output_Shader_UploadOrthoProjectionMatrix(
     Output_GetOrthoProjectionMatrix(projection);
     GFX_TRACK_UNIFORM(
         glUniformMatrix4fv, shader->uniforms[M_UNIFORM_PROJECTION_MATRIX], 1,
-        GL_TRUE, &projection[0][0]);
+        GL_FALSE, &projection[0][0]);
 }
 
 void Output_Shader_UploadAlphaDiscard(
