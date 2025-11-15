@@ -72,6 +72,7 @@ static void M_ReinitialiseGunMeshes(void)
     if (has_flare) {
         Lara_Flare_DrawMeshes();
     }
+    Lara_Mesh_UpdateHair(true);
 }
 
 static void M_ResetGunStatus(void)
