@@ -103,7 +103,7 @@ void Output_DrawShadow(
     const int32_t z_size = (z_1 - z_0) * size / 1024;
 
     Matrix_Push();
-    *g_MatrixPtr = g_W2VMatrix;
+    *g_MatrixPtr = g_ViewMatrix;
     *g_WMatrixPtr = g_IDMatrix;
     Matrix_TranslateAbs(
         item->interp.result.pos.x, item->interp.result.floor,

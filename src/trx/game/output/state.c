@@ -270,7 +270,7 @@ void Output_RotateLight(const int16_t pitch, const int16_t yaw)
     const int32_t x = TRIGMULT2(cp, sy);
     const int32_t y = -sp;
     const int32_t z = TRIGMULT2(cp, cy);
-    const MATRIX *const m = &g_W2VMatrix;
+    const MATRIX *const m = &g_ViewMatrix;
     m_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
     m_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
     m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;

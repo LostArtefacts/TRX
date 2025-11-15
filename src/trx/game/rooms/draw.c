@@ -94,9 +94,9 @@ static inline bool M_PortalFacesCamera(
 {
     // clang-format off
     const XYZ_32 offset = {
-        .x = portal->normal.x * (room->pos.x + portal->vertex[0].x - g_W2VMatrix._03),
-        .y = portal->normal.y * (room->pos.y + portal->vertex[0].y - g_W2VMatrix._13),
-        .z = portal->normal.z * (room->pos.z + portal->vertex[0].z - g_W2VMatrix._23),
+        .x = portal->normal.x * (room->pos.x + portal->vertex[0].x - g_ViewPos.x),
+        .y = portal->normal.y * (room->pos.y + portal->vertex[0].y - g_ViewPos.y),
+        .z = portal->normal.z * (room->pos.z + portal->vertex[0].z - g_ViewPos.z),
     };
     // clang-format on
     return offset.x + offset.y + offset.z < 0;

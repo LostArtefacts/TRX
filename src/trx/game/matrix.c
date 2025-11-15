@@ -21,7 +21,8 @@ static MATRIX m_WIMMatrixStack[MAX_NESTED_MATRICES] = {};
 
 MATRIX *g_MatrixPtr = &m_MatrixStack[0];
 MATRIX *g_WMatrixPtr = &m_WMatrixStack[0];
-MATRIX g_W2VMatrix = {};
+
+XYZ_32 g_ViewPos = {};
 MATRIX g_ViewMatrix = {};
 MATRIX g_IDMatrix = {
     // clang-format off
@@ -410,27 +411,23 @@ void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
     const int32_t sz = Math_Sin(rot->z);
     const int32_t cz = Math_Cos(rot->z);
 
-    g_W2VMatrix._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
-    g_W2VMatrix._01 = TRIGMULT2(cx, sz);
-    g_W2VMatrix._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
-    g_W2VMatrix._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
-    g_W2VMatrix._11 = TRIGMULT2(cx, cz);
-    g_W2VMatrix._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
-    g_W2VMatrix._20 = TRIGMULT2(cx, sy);
-    g_W2VMatrix._21 = -sx;
-    g_W2VMatrix._22 = TRIGMULT2(cx, cy);
-    g_W2VMatrix._03 = pos->x;
-    g_W2VMatrix._13 = pos->y;
-    g_W2VMatrix._23 = pos->z;
-
-    g_ViewMatrix = g_W2VMatrix;
+    g_ViewPos = *pos;
+    g_ViewMatrix._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+    g_ViewMatrix._01 = TRIGMULT2(cx, sz);
+    g_ViewMatrix._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+    g_ViewMatrix._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+    g_ViewMatrix._11 = TRIGMULT2(cx, cz);
+    g_ViewMatrix._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+    g_ViewMatrix._20 = TRIGMULT2(cx, sy);
+    g_ViewMatrix._21 = -sx;
+    g_ViewMatrix._22 = TRIGMULT2(cx, cy);
     g_ViewMatrix._03 = 0;
     g_ViewMatrix._13 = 0;
     g_ViewMatrix._23 = 0;
     M_TranslateRel(&g_ViewMatrix, (XYZ_32) { -pos->x, -pos->y, -pos->z });
 
     g_MatrixPtr = &m_MatrixStack[0];
-    m_MatrixStack[0] = g_W2VMatrix;
+    m_MatrixStack[0] = g_ViewMatrix;
 
     g_WMatrixPtr = &m_WMatrixStack[0];
     g_WMatrixPtr[0] = g_IDMatrix;
@@ -540,9 +537,9 @@ void Matrix_TranslateRel32(const XYZ_32 offset)
 void Matrix_TranslateAbs(const int32_t x, const int32_t y, const int32_t z)
 {
     MATRIX *const mptr = g_MatrixPtr;
-    const int32_t dx = x - g_W2VMatrix._03;
-    const int32_t dy = y - g_W2VMatrix._13;
-    const int32_t dz = z - g_W2VMatrix._23;
+    const int32_t dx = x - g_ViewPos.x;
+    const int32_t dy = y - g_ViewPos.y;
+    const int32_t dz = z - g_ViewPos.z;
     mptr->_03 = dx * mptr->_00 + dy * mptr->_01 + dz * mptr->_02;
     mptr->_13 = dx * mptr->_10 + dy * mptr->_11 + dz * mptr->_12;
     mptr->_23 = dx * mptr->_20 + dy * mptr->_21 + dz * mptr->_22;
