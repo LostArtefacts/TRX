@@ -296,7 +296,10 @@ static void M_ReadRoomMesh(
         for (int32_t i = 0; i < room->mesh.face4s.count; i++) {
             M_ReadFace(face_ptr++, 4, file);
         }
-        face_ptr += inj_data.num_quads;
+        for (int32_t i = 0; i < inj_data.num_quads; i++) {
+            face_ptr->vertex_count = 4;
+            face_ptr++;
+        }
 
         VFile_Skip(file, 2);
 
@@ -304,7 +307,10 @@ static void M_ReadRoomMesh(
         for (int32_t i = 0; i < room->mesh.face3s.count; i++) {
             M_ReadFace(face_ptr++, 3, file);
         }
-        face_ptr += inj_data.num_quads;
+        for (int32_t i = 0; i < inj_data.num_triangles; i++) {
+            face_ptr->vertex_count = 3;
+            face_ptr++;
+        }
     }
 
     {
