@@ -291,10 +291,8 @@ static void M_DrawSkybox(void)
     const OBJECT *const skybox = Object_Get(O_SKYBOX);
     if (skybox->loaded) {
         Output_SetupAboveWater(g_Camera.underwater);
-        Matrix_Push();
-        g_MatrixPtr->_03 = 0;
-        g_MatrixPtr->_13 = 0;
-        g_MatrixPtr->_23 = 0;
+        Matrix_PushUnit();
+        Matrix_TranslateAbs32(g_ViewPos);
         Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
         Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
         Matrix_Pop();

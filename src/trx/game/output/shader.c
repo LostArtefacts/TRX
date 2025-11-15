@@ -9,7 +9,7 @@
 #include <trx/memory.h>
 
 #define M_GLOBAL_MEMBERS                                                       \
-    X_DECLARE_MEMBER(float, mat_view, [4][4])                                  \
+    X_DECLARE_MEMBER(float, mat_proj_ortho, [4][4])                            \
     X_DECLARE_MEMBER(float, fog_color, [4])                                    \
     X_DECLARE_MEMBER(float, fog_distance, [2])                                 \
     X_DECLARE_MEMBER(float, viewport_size, [2])                                \
@@ -27,8 +27,9 @@ typedef enum {
     M_UNIFORM_LIGHTING_MODE,
     M_UNIFORM_ALPHA_DISCARD,
     M_UNIFORM_GLOBAL_TINT,
-    M_UNIFORM_PROJECTION_MATRIX,
-    M_UNIFORM_VIEW_MODEL_MATRIX,
+    M_UNIFORM_MODEL_MATRIX,
+    M_UNIFORM_VIEW_MATRIX,
+    M_UNIFORM_PROJECTION_MODE,
     M_UNIFORM_WIBBLE_EFFECT,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
@@ -39,12 +40,20 @@ typedef struct {
     M_GLOBAL_MEMBERS
 #undef X_DECLARE_MEMBER
 } M_UNIFORM_GLOBALS;
+
+typedef struct {
+    float mat_proj_persp[4][4];
+    float mat_view[4][4];
+} M_UNIFORM_MATRICES;
 #pragma pack(pop)
 
 struct OUTPUT_SHADER {
     GFX_GL_PROGRAM program;
     GLint uniforms[M_UNIFORM_NUMBER_OF];
-    GLuint ubo_globals;
+    struct {
+        GLuint globals;
+        GLuint matrices;
+    } ubo;
 
     bool is_wibble_effect;
     bool is_alpha_discard_enabled;
@@ -149,11 +158,18 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     GFX_GL_Program_FragmentData(&shader->program, "outColor");
     GFX_GL_Program_Link(&shader->program);
 
-    glGenBuffers(1, &shader->ubo_globals);
-    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo_globals);
+    glGenBuffers(2, &shader->ubo.globals);
+    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.globals);
     glBufferData(
         GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_GLOBALS), nullptr, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, shader->ubo_globals);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, shader->ubo.globals);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.matrices);
+    glBufferData(
+        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_MATRICES), nullptr,
+        GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, shader->ubo.matrices);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 #if 0
@@ -166,8 +182,9 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_TEX_ENV_MAP] = "uTexEnvMap",
         [M_UNIFORM_LIGHTING_MODE] = "uLightingMode",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
-        [M_UNIFORM_PROJECTION_MATRIX] = "uMatProjection",
-        [M_UNIFORM_VIEW_MODEL_MATRIX] = "uMatViewModel",
+        [M_UNIFORM_MODEL_MATRIX] = "uMatModel",
+        [M_UNIFORM_VIEW_MATRIX] = "uMatView",
+        [M_UNIFORM_PROJECTION_MODE] = "uProjectionMode",
         [M_UNIFORM_WIBBLE_EFFECT] = "uWibbleEffect",
         [M_UNIFORM_ALPHA_DISCARD] = "uDiscardAlpha",
     };
@@ -217,38 +234,38 @@ void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
             Output_GetFogColor().a,
         },
     };
-    M_FillMatrix(globals.mat_view, &g_W2VMatrix);
+    Output_GetOrthoProjectionMatrix(globals.mat_proj_ortho);
 
-    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo_globals);
+    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.globals);
     GFX_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(globals), &globals);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void Output_Shader_UploadViewModelMatrix(
+void Output_Shader_UploadModelMatrix(
     const OUTPUT_SHADER *const shader, const MATRIX *const source)
 {
-    M_UploadMatrix(shader, M_UNIFORM_VIEW_MODEL_MATRIX, source);
+    M_UploadMatrix(shader, M_UNIFORM_MODEL_MATRIX, source);
 }
 
-void Output_Shader_UploadPerspProjectionMatrix(
-    const OUTPUT_SHADER *const shader)
+void Output_Shader_UploadViewMatrix(
+    const OUTPUT_SHADER *const shader, const MATRIX *const matrix)
 {
-    GLfloat projection[4][4];
-    Output_GetPerspProjectionMatrix(projection);
-    GFX_TRACK_UNIFORM(
-        glUniformMatrix4fv, shader->uniforms[M_UNIFORM_PROJECTION_MATRIX], 1,
-        GL_FALSE, &projection[0][0]);
+    M_UNIFORM_MATRICES matrices = {};
+    Output_GetPerspProjectionMatrix(matrices.mat_proj_persp);
+    M_FillMatrix(matrices.mat_view, matrix);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.matrices);
+    GFX_TRACK_SUBDATA(
+        glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(matrices), &matrices);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void Output_Shader_UploadOrthoProjectionMatrix(
-    const OUTPUT_SHADER *const shader)
+void Output_Shader_UploadProjectionMode(
+    const OUTPUT_SHADER *const shader, const PROJECTION_MODE mode)
 {
-    GLfloat projection[4][4];
-    Output_GetOrthoProjectionMatrix(projection);
     GFX_TRACK_UNIFORM(
-        glUniformMatrix4fv, shader->uniforms[M_UNIFORM_PROJECTION_MATRIX], 1,
-        GL_FALSE, &projection[0][0]);
+        glUniform1i, shader->uniforms[M_UNIFORM_PROJECTION_MODE], mode);
 }
 
 void Output_Shader_UploadAlphaDiscard(

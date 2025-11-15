@@ -193,7 +193,7 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
         return;
     }
 
-    const MATRIX *const matrix = &inst->matrix;
+    const MATRIX *const matrix = &inst->cwmatrix;
     int32_t ls_adder = inst->ls_adder;
     int32_t ls_divider = inst->ls_divider;
     XYZ_32 ls_vector_view = inst->ls_vector_view;
@@ -268,7 +268,8 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool skybox)
 
     const MESH_INSTANCE inst = {
         .mesh = batch->mesh_batch,
-        .matrix = *g_MatrixPtr,
+        .cwmatrix = *g_MatrixPtr,
+        .wmatrix = *g_WMatrixPtr,
         .tint = Output_GetTint(),
         .wibble = false,
         .water_effect = Output_GetWaterEffect(),

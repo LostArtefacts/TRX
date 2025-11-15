@@ -76,8 +76,8 @@ void Output_WarmUp(void)
         g_Config.rendering.sprite_lock_mode;
 
     Output_Shader_Bind(shader);
-    Output_Shader_UploadOrthoProjectionMatrix(shader);
-    Output_Shader_UploadViewModelMatrix(shader, &g_IDMatrix);
+    Output_Shader_UploadProjectionMode(shader, PROJECTION_MODE_ORTHOGRAPHIC);
+    Output_Shader_UploadModelMatrix(shader, &g_IDMatrix);
 
     SDL_GL_SetSwapInterval(0);
     GFX_Context_Clear();

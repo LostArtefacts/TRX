@@ -226,7 +226,8 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
     OUTPUT_MESH *const mesh = p->meshes[Room_GetNumber(room)];
     const MESH_INSTANCE inst = {
         .mesh = mesh,
-        .matrix = *g_MatrixPtr,
+        .cwmatrix = *g_MatrixPtr,
+        .wmatrix = *g_WMatrixPtr,
         .tint = Output_GetTint(),
         .wibble = Output_GetWibbleEffect(),
         .water_effect = Output_GetWaterEffect(),

@@ -27,21 +27,28 @@ typedef enum {
     // clang-format on
 } OUTPUT_MESH_ATTRIBUTE;
 
+typedef enum {
+    PROJECTION_MODE_PERSPECTIVE = 0,
+    PROJECTION_MODE_ORTHOGRAPHIC = 1,
+} PROJECTION_MODE;
+
 typedef struct OUTPUT_SHADER OUTPUT_SHADER;
 
 OUTPUT_SHADER *Output_Shader_Create(const char *path);
 void Output_Shader_Free(OUTPUT_SHADER *shader);
 void Output_Shader_Bind(const OUTPUT_SHADER *shader);
 void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *shader);
-void Output_Shader_UploadPerspProjectionMatrix(const OUTPUT_SHADER *shader);
-void Output_Shader_UploadOrthoProjectionMatrix(const OUTPUT_SHADER *shader);
+void Output_Shader_UploadProjectionMode(
+    const OUTPUT_SHADER *shader, PROJECTION_MODE mode);
+void Output_Shader_UploadViewMatrix(
+    const OUTPUT_SHADER *shader, const MATRIX *matrix);
 
 void Output_Shader_UploadLightingMode(
     const OUTPUT_SHADER *shader, LIGHTING_MODE mode);
 void Output_Shader_UploadAlphaDiscard(OUTPUT_SHADER *shader, bool is_enabled);
 
 // TODO: these could could use UBOs
-void Output_Shader_UploadViewModelMatrix(
+void Output_Shader_UploadModelMatrix(
     const OUTPUT_SHADER *shader, const MATRIX *source);
 void Output_Shader_UploadWibbleEffect(OUTPUT_SHADER *shader, bool is_enabled);
 void Output_Shader_UploadTint(OUTPUT_SHADER *shader, RGB_F tint);

@@ -199,8 +199,7 @@ static void M_RenderPass(
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     if (p->vertices->count > 0) {
-        Output_Shader_UploadViewModelMatrix(
-            Output_GetMeshShader(), &g_IDMatrix);
+        Output_Shader_UploadModelMatrix(Output_GetMeshShader(), &g_IDMatrix);
         M_DrawVertices(p);
     }
 }

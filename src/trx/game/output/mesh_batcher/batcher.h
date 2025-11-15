@@ -7,7 +7,8 @@
 typedef struct MESH_INSTANCE {
     OUTPUT_MESH *mesh;
 
-    MATRIX matrix;
+    MATRIX cwmatrix;
+    MATRIX wmatrix;
     RGB_F tint;
     bool wibble;
 

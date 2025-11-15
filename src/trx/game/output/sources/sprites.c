@@ -93,16 +93,17 @@ void OutputSource_Sprites_Stage(int32_t sprite_idx, int16_t shade, RGB_F tint)
     M_PRIV *const p = &m_Priv;
     OUTPUT_MESH *mesh = p->meshes[sprite_idx];
 
-    if (memcmp(&p->last_matrix, g_MatrixPtr, sizeof(MATRIX)) == 0) {
+    if (memcmp(&p->last_matrix, g_WMatrixPtr, sizeof(MATRIX)) == 0) {
         p->stack++;
     } else {
         p->stack = 0;
     }
-    p->last_matrix = *g_MatrixPtr;
+    p->last_matrix = *g_WMatrixPtr;
 
     const MESH_INSTANCE inst = {
         .mesh = mesh,
-        .matrix = *g_MatrixPtr,
+        .cwmatrix = *g_MatrixPtr,
+        .wmatrix = *g_WMatrixPtr,
         .depth_adjust = p->stack * -0.005f,
         .tint = tint,
         .wibble = false,

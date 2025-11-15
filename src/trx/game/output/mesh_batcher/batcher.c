@@ -163,10 +163,10 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
     for (int32_t i = 0; i < n; i++) {
         // clang-format off
         bptr->sort_key = (
-            bptr->inst->matrix._20 * (int32_t)bptr->face->mesh_centroid.x +
-            bptr->inst->matrix._21 * (int32_t)bptr->face->mesh_centroid.y +
-            bptr->inst->matrix._22 * (int32_t)bptr->face->mesh_centroid.z +
-            bptr->inst->matrix._23);
+            bptr->inst->cwmatrix._20 * (int32_t)bptr->face->mesh_centroid.x +
+            bptr->inst->cwmatrix._21 * (int32_t)bptr->face->mesh_centroid.y +
+            bptr->inst->cwmatrix._22 * (int32_t)bptr->face->mesh_centroid.z +
+            bptr->inst->cwmatrix._23);
         // clang-format on
         bptr++;
     }
@@ -204,7 +204,7 @@ static void M_DrawOpaqueInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
+    Output_Shader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_Shader_UploadTint(batcher->shader, inst->tint);
 
     if (inst->enable_scissor) {
@@ -236,7 +236,7 @@ static void M_DrawBlendAddInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
+    Output_Shader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_Shader_UploadTint(batcher->shader, inst->tint);
     Output_Shader_UploadWibbleEffect(batcher->shader, false);
 
@@ -260,7 +260,6 @@ static void M_OpaquePass(
     VECTOR *const staged = batcher->staged[pass];
     for (int32_t i = 0; i < staged->count; i++) {
         MESH_INSTANCE *const inst = Vector_Get(staged, i);
-        const MATRIX *const m = &inst->matrix;
         const M_MESH_BUF_BINDING *const bind =
             M_GetBinding(batcher, inst->mesh);
 
@@ -359,7 +358,7 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
 
         if (sort_ptr->inst != inst) {
             inst = sort_ptr->inst;
-            Output_Shader_UploadViewModelMatrix(batcher->shader, &inst->matrix);
+            Output_Shader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
             Output_Shader_UploadTint(batcher->shader, inst->tint);
             Output_Shader_UploadWibbleEffect(batcher->shader, inst->wibble);
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);

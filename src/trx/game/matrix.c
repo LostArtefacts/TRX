@@ -22,6 +22,7 @@ static MATRIX m_WIMMatrixStack[MAX_NESTED_MATRICES] = {};
 MATRIX *g_MatrixPtr = &m_MatrixStack[0];
 MATRIX *g_WMatrixPtr = &m_WMatrixStack[0];
 MATRIX g_W2VMatrix = {};
+MATRIX g_ViewMatrix = {};
 MATRIX g_IDMatrix = {
     // clang-format off
     ._00 = 1 << W2V_SHIFT, ._01 = 0, ._02 = 0, ._03 = 0,
@@ -422,6 +423,12 @@ void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
     g_W2VMatrix._13 = pos->y;
     g_W2VMatrix._23 = pos->z;
 
+    g_ViewMatrix = g_W2VMatrix;
+    g_ViewMatrix._03 = 0;
+    g_ViewMatrix._13 = 0;
+    g_ViewMatrix._23 = 0;
+    M_TranslateRel(&g_ViewMatrix, (XYZ_32) { -pos->x, -pos->y, -pos->z });
+
     g_MatrixPtr = &m_MatrixStack[0];
     m_MatrixStack[0] = g_W2VMatrix;
 
@@ -539,7 +546,7 @@ void Matrix_TranslateAbs(const int32_t x, const int32_t y, const int32_t z)
     mptr->_03 = dx * mptr->_00 + dy * mptr->_01 + dz * mptr->_02;
     mptr->_13 = dx * mptr->_10 + dy * mptr->_11 + dz * mptr->_12;
     mptr->_23 = dx * mptr->_20 + dy * mptr->_21 + dz * mptr->_22;
-    M_TranslateSet(g_WMatrixPtr, (XYZ_32){x, y, z});
+    M_TranslateSet(g_WMatrixPtr, (XYZ_32) { x, y, z });
 }
 
 void Matrix_TranslateAbs16(const XYZ_16 offset)
