@@ -28,6 +28,7 @@ typedef struct {
 } MATRIX;
 
 extern MATRIX *g_MatrixPtr;
+extern MATRIX *g_WMatrixPtr;
 extern MATRIX g_W2VMatrix;
 extern MATRIX g_IDMatrix;
 

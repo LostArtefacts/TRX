@@ -39,6 +39,7 @@ static bool M_Draw_I(
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;
+    MATRIX wsaved_matrix = *g_WMatrixPtr;
 
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
@@ -102,6 +103,7 @@ static bool M_Draw_I(
     Output_DrawObjectMesh_I(lara->mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
+    *g_WMatrixPtr = wsaved_matrix;
     if (is_lara) {
         Lara_Hair_Draw();
     }
@@ -181,6 +183,7 @@ static bool M_Draw_I(
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
+            wsaved_matrix = *g_WMatrixPtr;
         }
         Matrix_Pop_I();
 
@@ -204,6 +207,7 @@ static bool M_Draw_I(
         }
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
+            *g_WMatrixPtr = wsaved_matrix;
             Gun_DrawFlash(gun_type, clip);
         }
         Matrix_Pop();
@@ -234,6 +238,7 @@ static bool M_Draw_I(
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
+            wsaved_matrix = *g_WMatrixPtr;
         }
         Matrix_Pop_I();
 
@@ -246,6 +251,7 @@ static bool M_Draw_I(
 
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
+            *g_WMatrixPtr = wsaved_matrix;
             Gun_DrawFlash(gun_type, clip);
         }
         Matrix_Pop();
@@ -300,11 +306,13 @@ bool Lara_Draw(const ITEM *const item)
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;
+    MATRIX wsaved_matrix = *g_WMatrixPtr;
 
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
     const MATRIX item_matrix = *g_MatrixPtr;
+    const MATRIX item_wmatrix = *g_WMatrixPtr;
     const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
@@ -358,6 +366,7 @@ bool Lara_Draw(const ITEM *const item)
     Output_DrawObjectMesh(lara->mesh_ptrs[LM_HEAD], clip);
 
     *g_MatrixPtr = saved_matrix;
+    *g_WMatrixPtr = wsaved_matrix;
     if (is_lara) {
         Lara_Hair_Draw();
     }
@@ -429,6 +438,15 @@ bool Lara_Draw(const ITEM *const item)
         g_MatrixPtr->_20 = item_matrix._20;
         g_MatrixPtr->_21 = item_matrix._21;
         g_MatrixPtr->_22 = item_matrix._22;
+        g_WMatrixPtr->_00 = item_wmatrix._00;
+        g_WMatrixPtr->_01 = item_wmatrix._01;
+        g_WMatrixPtr->_02 = item_wmatrix._02;
+        g_WMatrixPtr->_10 = item_wmatrix._10;
+        g_WMatrixPtr->_11 = item_wmatrix._11;
+        g_WMatrixPtr->_12 = item_wmatrix._12;
+        g_WMatrixPtr->_20 = item_wmatrix._20;
+        g_WMatrixPtr->_21 = item_wmatrix._21;
+        g_WMatrixPtr->_22 = item_wmatrix._22;
         Matrix_Rot16(lara->right_arm.interp.result.rot);
         if (pose == nullptr) {
             const ANIM *const anim = Anim_GetAnim(lara->right_arm.anim_num);
@@ -445,6 +463,7 @@ bool Lara_Draw(const ITEM *const item)
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
+            wsaved_matrix = *g_WMatrixPtr;
         }
         Matrix_Pop();
 
@@ -459,6 +478,15 @@ bool Lara_Draw(const ITEM *const item)
         g_MatrixPtr->_20 = item_matrix._20;
         g_MatrixPtr->_21 = item_matrix._21;
         g_MatrixPtr->_22 = item_matrix._22;
+        g_WMatrixPtr->_00 = item_wmatrix._00;
+        g_WMatrixPtr->_01 = item_wmatrix._01;
+        g_WMatrixPtr->_02 = item_wmatrix._02;
+        g_WMatrixPtr->_10 = item_wmatrix._10;
+        g_WMatrixPtr->_11 = item_wmatrix._11;
+        g_WMatrixPtr->_12 = item_wmatrix._12;
+        g_WMatrixPtr->_20 = item_wmatrix._20;
+        g_WMatrixPtr->_21 = item_wmatrix._21;
+        g_WMatrixPtr->_22 = item_wmatrix._22;
         Matrix_Rot16(lara->left_arm.interp.result.rot);
         if (pose == nullptr) {
             const ANIM *const anim = Anim_GetAnim(lara->left_arm.anim_num);
@@ -478,6 +506,7 @@ bool Lara_Draw(const ITEM *const item)
         }
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
+            *g_WMatrixPtr = wsaved_matrix;
             Gun_DrawFlash(gun_type, clip);
         }
 
@@ -503,6 +532,7 @@ bool Lara_Draw(const ITEM *const item)
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
+            wsaved_matrix = *g_WMatrixPtr;
         }
         Matrix_Pop();
 
@@ -513,6 +543,7 @@ bool Lara_Draw(const ITEM *const item)
 
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
+            *g_WMatrixPtr = wsaved_matrix;
             Gun_DrawFlash(gun_type, clip);
         }
 

@@ -70,20 +70,21 @@ static void M_Control(const int16_t item_num)
 
 static bool M_Draw(const ITEM *const item)
 {
+    const int32_t radius = item->timer << 6;
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_RotY(item->interp.result.rot.y);
 
-    MATRIX *const mptr = g_MatrixPtr;
-    mptr->_00 = (mptr->_00 * item->timer) >> 8;
-    mptr->_01 = (mptr->_01 * item->timer) >> 8;
-    mptr->_02 = (mptr->_02 * item->timer) >> 8;
-    mptr->_10 = (mptr->_10 * item->timer) >> 8;
-    mptr->_11 = (mptr->_11 * item->timer) >> 8;
-    mptr->_12 = (mptr->_12 * item->timer) >> 8;
-    mptr->_20 = (mptr->_20 * item->timer) >> 8;
-    mptr->_21 = (mptr->_21 * item->timer) >> 8;
-    mptr->_22 = (mptr->_22 * item->timer) >> 8;
+    MATRIX *const mptr = g_WMatrixPtr;
+    mptr->_00 = ((int64_t)mptr->_00 * radius) >> W2V_SHIFT;
+    mptr->_01 = ((int64_t)mptr->_01 * radius) >> W2V_SHIFT;
+    mptr->_02 = ((int64_t)mptr->_02 * radius) >> W2V_SHIFT;
+    mptr->_10 = ((int64_t)mptr->_10 * radius) >> W2V_SHIFT;
+    mptr->_11 = ((int64_t)mptr->_11 * radius) >> W2V_SHIFT;
+    mptr->_12 = ((int64_t)mptr->_12 * radius) >> W2V_SHIFT;
+    mptr->_20 = ((int64_t)mptr->_20 * radius) >> W2V_SHIFT;
+    mptr->_21 = ((int64_t)mptr->_21 * radius) >> W2V_SHIFT;
+    mptr->_22 = ((int64_t)mptr->_22 * radius) >> W2V_SHIFT;
 
     const ANIM_FRAME *const frame_ptr = Item_GetAnim(item)->frame_ptr;
     const CLIP clip = Output_CheckBoundsClip(&frame_ptr->bounds);

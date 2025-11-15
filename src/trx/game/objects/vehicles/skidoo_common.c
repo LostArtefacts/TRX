@@ -312,6 +312,7 @@ void Skidoo_DoSnowEffect(const ITEM *const skidoo)
     }
 
     g_MatrixPtr->_23 = 0;
+    g_WMatrixPtr->_23 = 0;
 
     Output_CalculateLight(effect->pos, effect->room_num);
     effect->shade = Output_GetLightAdder() - 512;

@@ -246,9 +246,7 @@ void Lara_Hair_Control(const bool in_cutscene)
     }
 
     Matrix_PushUnit();
-    g_MatrixPtr->_03 = lara_item->pos.x << W2V_SHIFT;
-    g_MatrixPtr->_13 = lara_item->pos.y << W2V_SHIFT;
-    g_MatrixPtr->_23 = lara_item->pos.z << W2V_SHIFT;
+    Matrix_TranslateSet(lara_item->pos.x, lara_item->pos.y, lara_item->pos.z);
     Matrix_Rot16(lara_item->rot);
 
     if (frac == 0 || Lara_Pose_Get() != nullptr) {
@@ -279,9 +277,7 @@ void Lara_Hair_Control(const bool in_cutscene)
             HAIR_SEGMENT *const s = &m_HairSegments[i];
 
             Matrix_PushUnit();
-            g_MatrixPtr->_03 = ps->pos.x << W2V_SHIFT;
-            g_MatrixPtr->_13 = ps->pos.y << W2V_SHIFT;
-            g_MatrixPtr->_23 = ps->pos.z << W2V_SHIFT;
+            Matrix_TranslateSet(ps->pos.x, ps->pos.y, ps->pos.z);
             Matrix_RotY(ps->rot.y);
             Matrix_RotX(ps->rot.x);
             Matrix_TranslateRel32(bone->pos);

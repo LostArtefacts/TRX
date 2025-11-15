@@ -104,6 +104,7 @@ void Output_DrawShadow(
 
     Matrix_Push();
     *g_MatrixPtr = g_W2VMatrix;
+    *g_WMatrixPtr = g_IDMatrix;
     Matrix_TranslateAbs(
         item->interp.result.pos.x, item->interp.result.floor,
         item->interp.result.pos.z);
