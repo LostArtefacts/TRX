@@ -17,7 +17,6 @@
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
-#include <trx/game/output/warmup.h>
 #include <trx/game/shell.h>
 #include <trx/gfx/context.h>
 
@@ -43,7 +42,6 @@ void Output_Init(void)
 
     Output_InitLight();
     Output_InitBackground();
-    Output_WarmUp();
 
     Output_ApplyRenderSettings();
 }
