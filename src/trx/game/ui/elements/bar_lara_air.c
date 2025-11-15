@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/const.h>
+#include <trx/game/rooms.h>
 #include <trx/game/ui/elements/bar.h>
 
 bool UI_LaraAirBar(const bool blink_state)
@@ -14,9 +15,11 @@ bool UI_LaraAirBar(const bool blink_state)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const bool is_blinking = g_Config.ui.enable_bar_flashing
         && lara->air <= LARA_MAX_AIR * UI_BAR_BLINK_THRESHOLD;
+    const ROOM *const room = Room_Get(lara_item->room_num);
     const bool show = g_Config.ui.show_bars
         && (lara->water_status == LWS_UNDERWATER
-            || lara->water_status == LWS_SURFACE || lara->air < LARA_MAX_AIR);
+            || lara->water_status == LWS_SURFACE
+            || (room->flags.swamp && lara->air < LARA_MAX_AIR));
     if (!show) {
         return false;
     }
