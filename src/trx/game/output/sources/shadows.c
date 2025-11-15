@@ -43,12 +43,6 @@ static OUTPUT_MESH *M_GenerateShadow(
     return MeshBuilder_Seal(builder);
 }
 
-static int32_t M_TransparentSort(
-    const MESH_INSTANCE *const inst, const OUTPUT_MESH_FACE *const face)
-{
-    return 0; // Always draw shadows last.
-}
-
 void OutputSource_Shadows_Init(MESH_BATCHER *const batcher)
 {
     M_PRIV *const p = &m_Priv;
@@ -86,7 +80,6 @@ void OutputSource_Shadows_StageShadow(void)
         .mesh = mesh,
         .matrix = *g_MatrixPtr,
         .tint = { 1.0f, 1.0f, 1.0f },
-        .transparent_sort_func = M_TransparentSort,
     };
     // XXX: Mesh batcher currently collects the transparent faces for the
     // transparent pass in the opaque pass, so the shadow, even though

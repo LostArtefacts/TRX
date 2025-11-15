@@ -21,8 +21,6 @@ typedef struct MESH_INSTANCE {
     float depth_adjust;
     VIEWPORT_RECT scissor;
 
-    int32_t (*transparent_sort_func)(
-        const struct MESH_INSTANCE *inst, const OUTPUT_MESH_FACE *face);
     void (*update_light_func)(struct MESH_INSTANCE *inst, void *user_data);
     void *update_light_func_data;
     bool water_effect; // helper for the update_light_func
