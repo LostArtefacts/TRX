@@ -56,6 +56,8 @@
     - `flow.play_any_level`
     - `flow.cheat_keys`
 - added the ability for the sound system to use Lara's position instead of camera's position (#1438) (Sound Options → Misc → Microphone near Lara)
+- added an option to use TR2-style inventory ring backgrounds in custom levels (Graphic Options → UI → Inventory background) (#4264)
+- added an option to use TR2-style statistics dialog backgrounds in custom levels (Graphic Options → UI → Stats background) (#4264)
 - improved the positions of some 3D pickup items, such as the scion that Pierre drops
 - improved the quality of the PS1 Uzi SFX (#4024)
 - changed the following game flow options to become hidden settings (available via LUA and the `/set` command):

@@ -156,40 +156,35 @@ bool Output_LoadBackgroundFromImage(const IMAGE *const image)
 
 void Output_LoadBackgroundFromObject(const bool wave)
 {
-    if (g_TRVersion == 1) {
-        m_Priv.type = BK_TRANSPARENT;
-    } else {
-        if (m_Priv.surface != nullptr) {
-            GFX_2D_Surface_Free(m_Priv.surface);
-            m_Priv.surface = nullptr;
-        }
+    if (m_Priv.surface != nullptr) {
+        GFX_2D_Surface_Free(m_Priv.surface);
+        m_Priv.surface = nullptr;
+    }
 
-        const OBJECT *const obj = Object_Get(O_INV_BACKGROUND);
-        if (!obj->loaded) {
-            return;
-        }
+    const OBJECT *const obj = Object_Get(O_INV_BACKGROUND);
+    if (!obj->loaded) {
+        return;
+    }
 
-        const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
-        if (mesh->tex_face4s.count < 1) {
-            return;
-        }
+    const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
+    if (mesh->tex_face4s.count < 1) {
+        return;
+    }
 
-        const int32_t texture_idx = mesh->tex_face4s.data[0].texture_idx;
-        const OBJECT_TEXTURE *const texture =
-            Output_GetObjectTexture(texture_idx);
-        ASSERT(texture != nullptr);
-        const int32_t repeat_y = 6;
-        const int32_t repeat_x = repeat_y * Viewport_GetWidth(VIEWPORT_GAME)
-            / (float)Viewport_GetHeight(VIEWPORT_GAME);
-        m_Priv.type = wave ? BK_PATTERN_WAVE : BK_PATTERN_STATIC;
+    const int32_t texture_idx = mesh->tex_face4s.data[0].texture_idx;
+    const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(texture_idx);
+    ASSERT(texture != nullptr);
+    const int32_t repeat_y = 6;
+    const int32_t repeat_x = repeat_y * Viewport_GetWidth(VIEWPORT_GAME)
+        / (float)Viewport_GetHeight(VIEWPORT_GAME);
+    m_Priv.type = wave ? BK_PATTERN_WAVE : BK_PATTERN_STATIC;
 
-        const RGBA_8888 *const page =
-            Output_GetTexturePage32(texture->tex_page);
-        if (page == nullptr) {
-            return;
-        }
+    const RGBA_8888 *const page = Output_GetTexturePage32(texture->tex_page);
+    if (page == nullptr) {
+        return;
+    }
 
-        GFX_2D_SURFACE_DESC desc = {
+    GFX_2D_SURFACE_DESC desc = {
         .width = TEXTURE_PAGE_WIDTH,
         .height = TEXTURE_PAGE_HEIGHT,
         .bit_count = 32,
@@ -215,23 +210,20 @@ void Output_LoadBackgroundFromObject(const bool wave)
         },
         .pitch = TEXTURE_PAGE_WIDTH * 2,
     };
-        const OUTPUT_TEXTURE_SIZE size =
-            Output_Textures_GetAtlasSize(texture_idx);
-        GFX_2D_Renderer_Upload(m_Priv.renderer, &desc, (uint8_t *)page);
-        GFX_2D_Renderer_SetRepeat(m_Priv.renderer, repeat_x, repeat_y);
-        GFX_2D_Renderer_SetTextureSize(
-            m_Priv.renderer,
-            &(GFX_TEXTURE_SIZE) {
-                .x0 = size.x0,
-                .y0 = size.y0,
-                .x1 = size.x1,
-                .y1 = size.y1,
-            });
-        GFX_2D_Renderer_SetEffect(
-            m_Priv.renderer,
-            wave ? GFX_2D_EFFECT_WAVE : GFX_2D_EFFECT_VIGNETTE);
-        Output_RefreshBackgroundScaling();
-    }
+    const OUTPUT_TEXTURE_SIZE size = Output_Textures_GetAtlasSize(texture_idx);
+    GFX_2D_Renderer_Upload(m_Priv.renderer, &desc, (uint8_t *)page);
+    GFX_2D_Renderer_SetRepeat(m_Priv.renderer, repeat_x, repeat_y);
+    GFX_2D_Renderer_SetTextureSize(
+        m_Priv.renderer,
+        &(GFX_TEXTURE_SIZE) {
+            .x0 = size.x0,
+            .y0 = size.y0,
+            .x1 = size.x1,
+            .y1 = size.y1,
+        });
+    GFX_2D_Renderer_SetEffect(
+        m_Priv.renderer, wave ? GFX_2D_EFFECT_WAVE : GFX_2D_EFFECT_VIGNETTE);
+    Output_RefreshBackgroundScaling();
 }
 
 void Output_UnloadBackground(void)

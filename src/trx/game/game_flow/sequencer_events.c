@@ -263,9 +263,8 @@ M_GF_HANDLER(M_HandleLevelStats)
         g_TRVersion == 1 && g_Config.ui.stat_detail_mode != SDM_FULL;
 
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
-        .background_type = (g_TRVersion == 1 || Game_IsInGym())
-            ? BK_TRANSPARENT
-            : g_Config.ui.stats_background_style,
+        .background_type = Game_IsInGym() ? BK_TRANSPARENT
+                                          : g_Config.ui.stats_background_style,
         .level_num = -1,
         .show_final_stats = false,
         .use_bare_style = use_bare_style,
