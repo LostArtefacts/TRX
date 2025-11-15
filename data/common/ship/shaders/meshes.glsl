@@ -1,26 +1,26 @@
-vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 modelView, mat4 projection, int lockMode)
+vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 viewModel, mat4 projection, int lockMode)
 {
     if (lockMode == BILLBOARD_LOCK_ROLL) {
-        vec3 camForward = vec3(modelView[0][2], modelView[1][2], modelView[2][2]);
+        vec3 camForward = vec3(viewModel[0][2], viewModel[1][2], viewModel[2][2]);
         vec3 up = vec3(0.0, 1.0, 0.0);
         vec3 right = normalize(cross(up, camForward));
         up = normalize(cross(camForward, right));
         pos.xyz += displacement.x * right + displacement.y * up;
-        return modelView * vec4(pos, 1.0);
+        return viewModel * vec4(pos, 1.0);
 
     } else if (lockMode == BILLBOARD_LOCK_ROLL_PITCH) {
         vec3 up = vec3(0.0, 1.0, 0.0);
-        vec3 camForward = normalize(vec3(modelView[0][2], modelView[1][2], modelView[2][2]));
+        vec3 camForward = normalize(vec3(viewModel[0][2], viewModel[1][2], viewModel[2][2]));
         vec3 fHoriz = camForward - up * dot(camForward, up);
         vec3 right = (length(fHoriz) < 1e-5)
-            ? normalize(vec3(modelView[0][0], modelView[1][0], modelView[2][0]))
+            ? normalize(vec3(viewModel[0][0], viewModel[1][0], viewModel[2][0]))
             : normalize(cross(up, fHoriz));
         pos.xyz += displacement.x * right + displacement.y * up;
-        return modelView * vec4(pos, 1.0);
+        return viewModel * vec4(pos, 1.0);
 
     } else if (lockMode == BILLBOARD_LOCK_PERSPECTIVE) {
         vec3 up = vec3(0.0, 1.0, 0.0);
-        // compute camera yaw-forward (lock pitch and roll)
+        // compute view yaw-forward (lock pitch and roll)
         vec3 camForward = normalize(vec3(view[0][2], view[1][2], view[2][2]));
         vec3 fHoriz = camForward - up * dot(camForward, up);
         vec3 forwardYaw = (length(fHoriz) < 1e-5)
@@ -28,7 +28,7 @@ vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 modelView, mat
             : normalize(fHoriz);
         vec3 camRight = normalize(cross(forwardYaw, up));
         // gentle yaw based on screen X towards center
-        vec4 clipPos = projection * modelView * vec4(pos, 1.0);
+        vec4 clipPos = projection * viewModel * vec4(pos, 1.0);
         float ndcX = clipPos.x / clipPos.w;
         float invLen = inversesqrt(1.0 + ndcX * ndcX);
         float cosAng = invLen;
@@ -36,17 +36,17 @@ vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 modelView, mat
         vec3 forwardDir = cosAng * forwardYaw - sinAng * camRight;
         vec3 rightDir = normalize(cross(up, forwardDir));
         pos.xyz += displacement.x * rightDir + displacement.y * up;
-        return modelView * vec4(pos, 1.0);
+        return viewModel * vec4(pos, 1.0);
 
     } else {
-        return (modelView * vec4(pos, 1.0)) + vec4(displacement.xy, 0, 0);
+        return (viewModel * vec4(pos, 1.0)) + vec4(displacement.xy, 0, 0);
     }
 }
 
 #ifdef VERTEX
 
 uniform mat4 uMatProjection;
-uniform mat4 uMatModelView;
+uniform mat4 uMatViewModel;
 uniform bool uWibbleEffect;
 
 layout(location = 0) in vec4 inPosition;
@@ -73,12 +73,12 @@ void main(void) {
 
     if ((inFlags & VERT_ABS_SPRITE) != 0u) {
         eyePos = offsetBillboard(
-            inPosition.xyz, inNormal.xy, uMatView, uMatModelView, uMatProjection, BILLBOARD_LOCK_NONE);
+            inPosition.xyz, inNormal.xy, uMatView, uMatViewModel, uMatProjection, BILLBOARD_LOCK_NONE);
     } else if ((inFlags & VERT_BILLBOARD) != 0u) {
         eyePos = offsetBillboard(
-            inPosition.xyz, inNormal.xy, uMatView, uMatModelView, uMatProjection, uBillboardLockMode);
+            inPosition.xyz, inNormal.xy, uMatView, uMatViewModel, uMatProjection, uBillboardLockMode);
     } else {
-        eyePos = uMatModelView * vec4(inPosition.xyz, 1.0);
+        eyePos = uMatViewModel * vec4(inPosition.xyz, 1.0);
     }
 
     gEyePos = eyePos;

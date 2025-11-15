@@ -167,7 +167,7 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_LIGHTING_MODE] = "uLightingMode",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
         [M_UNIFORM_PROJECTION_MATRIX] = "uMatProjection",
-        [M_UNIFORM_VIEW_MODEL_MATRIX] = "uMatModelView",
+        [M_UNIFORM_VIEW_MODEL_MATRIX] = "uMatViewModel",
         [M_UNIFORM_WIBBLE_EFFECT] = "uWibbleEffect",
         [M_UNIFORM_ALPHA_DISCARD] = "uDiscardAlpha",
     };
