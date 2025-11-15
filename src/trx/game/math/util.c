@@ -152,6 +152,11 @@ bool XYZ_32_AreEquivalent(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
     return pos1->x == pos2->x && pos1->y == pos2->y && pos1->z == pos2->z;
 }
 
+XYZ_32 XYZ_32_From16(const XYZ_16 src)
+{
+    return (XYZ_32) { src.x, src.y, src.z };
+}
+
 float XYZ_F_DotProduct(const XYZ_F a, const XYZ_F b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
