@@ -1,6 +1,7 @@
 #include <trx/game/output/state.h>
 
 #include <trx/config.h>
+#include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/scene_compositor.h>
@@ -176,6 +177,8 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
         f_y = f_x * aspect;
         break;
     }
+    default:
+        ASSERT_FAIL();
     }
 
     const float near_z = Output_GetNearZ();

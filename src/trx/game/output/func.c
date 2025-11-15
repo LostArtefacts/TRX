@@ -1,6 +1,7 @@
 #include <trx/game/output/func.h>
 
 #include <trx/config.h>
+#include <trx/debug.h>
 #include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/const.h>
@@ -127,6 +128,8 @@ void Output_ApplyFOV(void)
     case FOV_MODE_PS1:
         fov_width = sw * ((4.0f / 3.0f) / aspect) * 240 / 200;
         break;
+    default:
+        ASSERT_FAIL();
     }
 
     const int16_t c = Math_Cos(fov / 2);

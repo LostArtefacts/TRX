@@ -320,13 +320,13 @@ void Lara_Flare_Undraw(void)
 
 void Lara_Flare_Dispose(const bool thrown)
 {
+    const ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
     const int16_t item_num = Item_Create();
     if (item_num == NO_ITEM) {
         goto finish;
     }
-
-    const ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     ITEM *const item = Item_Get(item_num);
     item->object_id = O_FLARE_ITEM;

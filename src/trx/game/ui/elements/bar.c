@@ -239,7 +239,7 @@ static void M_DrawFillPC(
     case UI_BAR_PROGRESS:
         color = g_TRVersion >= 2 ? BC_GREEN : BC_GOLD;
         break;
-    case UI_BAR_NUMBER_OF:
+    default:
         color = BC_GOLD;
         break;
     }
