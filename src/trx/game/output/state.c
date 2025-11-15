@@ -198,11 +198,11 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
     output[2][0] = 0.0f;
     output[2][1] = 0.0f;
     output[2][2] = 0.005 + res_z / near_z;
-    output[2][3] = -res_z / (float)(1 << W2V_SHIFT);
+    output[2][3] = 1.0f;
 
     output[3][0] = 0.0f;
     output[3][1] = 0.0f;
-    output[3][2] = 1.0f;
+    output[3][2] = -res_z / (float)(1 << W2V_SHIFT);
     output[3][3] = 0.0f;
 }
 
@@ -218,21 +218,21 @@ void Output_GetOrthoProjectionMatrix(GLfloat output[][4])
     output[0][0] = 2.0f / (right - left);
     output[0][1] = 0.0f;
     output[0][2] = 0.0f;
-    output[0][3] = -(right + left) / (right - left);
+    output[0][3] = 0.0f;
 
     output[1][0] = 0.0f;
     output[1][1] = 2.0f / (top - bottom);
     output[1][2] = 0.0f;
-    output[1][3] = -(top + bottom) / (top - bottom);
+    output[1][3] = 0.0f;
 
     output[2][0] = 0.0f;
     output[2][1] = 0.0f;
     output[2][2] = 2.0f / (far - near);
-    output[2][3] = -(far + near) / (far - near);
+    output[2][3] = 0.0f;
 
-    output[3][0] = 0.0f;
-    output[3][1] = 0.0f;
-    output[3][2] = 0.0f;
+    output[3][0] = -(right + left) / (right - left);
+    output[3][1] = -(top + bottom) / (top - bottom);
+    output[3][2] = -(far + near) / (far - near);
     output[3][3] = 1.0f;
 }
 
