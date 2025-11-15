@@ -211,11 +211,19 @@ static void M_AddRoomFace(const INJECTION *const injection)
     if (face_type == FT_TEXTURED_QUAD) {
         FACE *const face = &room->mesh.face4s.data[room->mesh.face4s.count];
         face->texture_idx = *source_texture;
+        for (int32_t i = 0; i < face->vertex_count; i++) {
+            face->texture_zw[i].z = 1.0f;
+            face->texture_zw[i].w = 1.0f;
+        }
         face_vertices = face->vertices;
         room->mesh.face4s.count++;
     } else {
         FACE *const face = &room->mesh.face3s.data[room->mesh.face3s.count];
         face->vertex_count = 3;
+        for (int32_t i = 0; i < face->vertex_count; i++) {
+            face->texture_zw[i].z = 1.0f;
+            face->texture_zw[i].w = 1.0f;
+        }
         face->texture_idx = *source_texture;
         face_vertices = face->vertices;
         room->mesh.face3s.count++;
