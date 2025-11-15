@@ -536,13 +536,11 @@ void Matrix_TranslateRel32(const XYZ_32 offset)
 
 void Matrix_TranslateAbs(const int32_t x, const int32_t y, const int32_t z)
 {
-    MATRIX *const mptr = g_MatrixPtr;
-    const int32_t dx = x - g_ViewPos.x;
-    const int32_t dy = y - g_ViewPos.y;
-    const int32_t dz = z - g_ViewPos.z;
-    mptr->_03 = dx * mptr->_00 + dy * mptr->_01 + dz * mptr->_02;
-    mptr->_13 = dx * mptr->_10 + dy * mptr->_11 + dz * mptr->_12;
-    mptr->_23 = dx * mptr->_20 + dy * mptr->_21 + dz * mptr->_22;
+    MATRIX *const m = g_MatrixPtr;
+    const MATRIX *const v = &g_ViewMatrix;
+    m->_03 = x * v->_00 + y * v->_01 + z * v->_02 + v->_03;
+    m->_13 = x * v->_10 + y * v->_11 + z * v->_12 + v->_13;
+    m->_23 = x * v->_20 + y * v->_21 + z * v->_22 + v->_23;
     M_TranslateSet(g_WMatrixPtr, (XYZ_32) { x, y, z });
 }
 
