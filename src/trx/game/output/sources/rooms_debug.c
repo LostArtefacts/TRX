@@ -181,7 +181,7 @@ static void M_RenderPass(
         const M_INSTANCE *const instance = Vector_Get(p->scheduled, i);
         const M_ROOM_MESH *const mesh =
             &p->meshes[Room_GetNumber(instance->room)];
-        Output_Shader_UploadViewModelMatrix(p->shader, &instance->matrix);
+        Output_Shader_UploadModelMatrix(p->shader, &instance->matrix);
         if (g_Config.debug.enable_debug_triggers) {
             glDrawArrays(
                 GL_TRIANGLES, mesh->triggers.vertex_start,
@@ -275,5 +275,5 @@ void OutputSource_RoomsDebug_StageRoom(const ROOM *const room)
 {
     M_PRIV *const p = &m_Priv;
     Vector_Add(
-        p->scheduled, &(M_INSTANCE) { .room = room, .matrix = *g_MatrixPtr });
+        p->scheduled, &(M_INSTANCE) { .room = room, .matrix = *g_WMatrixPtr });
 }

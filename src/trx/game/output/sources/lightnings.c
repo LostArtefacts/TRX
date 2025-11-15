@@ -30,25 +30,18 @@ static void M_GenerateLightningSegment(
     const RGBA_8888 white = { 255, 255, 255, 128 };
     const int32_t w = segment->thickness / 2;
 
-    Matrix_Push();
-    Matrix_TranslateAbs32(segment->from);
     const XYZW_F pos_0 = {
-        .x = g_MatrixPtr->_03 >> W2V_SHIFT,
-        .y = g_MatrixPtr->_13 >> W2V_SHIFT,
-        .z = g_MatrixPtr->_23 >> W2V_SHIFT,
+        .x = segment->from.x,
+        .y = segment->from.y,
+        .z = segment->from.z,
         .w = 0.0f,
     };
-    Matrix_Pop();
-
-    Matrix_Push();
-    Matrix_TranslateAbs32(segment->to);
     const XYZW_F pos_1 = {
-        .x = g_MatrixPtr->_03 >> W2V_SHIFT,
-        .y = g_MatrixPtr->_13 >> W2V_SHIFT,
-        .z = g_MatrixPtr->_23 >> W2V_SHIFT,
+        .x = segment->to.x,
+        .y = segment->to.y,
+        .z = segment->to.z,
         .w = 0.0f,
     };
-    Matrix_Pop();
 
     // 2 quads side-to-side (blue-white) (white-blue);
     // double-sided so that visible from both sides
@@ -125,7 +118,7 @@ static void M_RenderPass(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_STATIC_DRAW);
 
-    Output_Shader_UploadViewModelMatrix(p->shader, &g_IDMatrix);
+    Output_Shader_UploadModelMatrix(p->shader, &g_IDMatrix);
     glDrawArrays(GL_TRIANGLES, 0, p->vertices->count);
     GFX_GL_CheckError();
 }

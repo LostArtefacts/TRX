@@ -144,7 +144,7 @@ static void M_DrawScheduled(M_PRIV *const p, VECTOR *const scheduled)
 {
     for (int32_t i = 0; i < scheduled->count; i++) {
         const M_INSTANCE *const instance = Vector_Get(scheduled, i);
-        Output_Shader_UploadViewModelMatrix(p->shader, &instance->matrix);
+        Output_Shader_UploadModelMatrix(p->shader, &instance->matrix);
         const OUTPUT_VERTEX_RANGE *const range =
             &p->primitive_ranges[instance->prim_type];
         glDrawArrays(GL_TRIANGLES, range->vertex_start, range->vertex_count);
@@ -291,7 +291,7 @@ void OutputSource_Misc_StageSphere(void)
 {
     M_PRIV *const p = &m_Priv;
     M_INSTANCE inst = {
-        .matrix = *g_MatrixPtr,
+        .matrix = *g_WMatrixPtr,
         .prim_type = M_PRIMITIVE_SPHERE,
     };
     Vector_Add(p->scheduled_spheres, &inst);
@@ -301,7 +301,7 @@ void OutputSource_Misc_StageCuboid(void)
 {
     M_PRIV *const p = &m_Priv;
     M_INSTANCE inst = {
-        .matrix = *g_MatrixPtr,
+        .matrix = *g_WMatrixPtr,
         .prim_type = M_PRIMITIVE_CUBOID,
     };
     Vector_Add(p->scheduled_cuboids, &inst);

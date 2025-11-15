@@ -36,18 +36,17 @@ static void M_SetSamplerFilter(
 }
 
 static void M_SetupShaderForScene(
-    OUTPUT_SHADER *const shader, const GFX_TEXTURE_FILTER filter,
-    const bool lighting)
+    OUTPUT_SHADER *const shader, const bool lighting)
 {
-    Output_Shader_UploadPerspProjectionMatrix(shader);
+    Output_Shader_UploadProjectionMode(shader, PROJECTION_MODE_PERSPECTIVE);
     Output_Shader_UploadLightingMode(
         shader, lighting ? LIGHTING_MODE_FULL : LIGHTING_MODE_OFF);
 }
 
-static void M_SetupShaderForUI(
-    OUTPUT_SHADER *const shader, const GFX_TEXTURE_FILTER filter)
+static void M_SetupShaderForUI(OUTPUT_SHADER *const shader)
 {
-    Output_Shader_UploadOrthoProjectionMatrix(shader);
+    Output_Shader_UploadViewMatrix(shader, &g_IDMatrix);
+    Output_Shader_UploadProjectionMode(shader, PROJECTION_MODE_ORTHOGRAPHIC);
     Output_Shader_UploadLightingMode(shader, LIGHTING_MODE_ONLY_SHADES);
 }
 
@@ -119,6 +118,10 @@ static void M_PrepareScene(const M_PRIV *const p)
     glSamplerParameterf(
         p->sampler_id, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         g_Config.rendering.anisotropy_filter);
+
+    OUTPUT_SHADER *const shader = Output_GetMeshShader();
+    Output_Shader_Bind(shader);
+    Output_Shader_UploadCommonUniforms(shader);
 }
 
 static void M_RenderScenePasses(const M_PRIV *const p)
@@ -133,11 +136,9 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     M_SetSamplerFilter(p->sampler_id, g_Config.rendering.texture_filter);
 
     Output_Shader_Bind(shader);
-    Output_Shader_UploadCommonUniforms(shader);
+    Output_Shader_UploadViewMatrix(shader, &g_ViewMatrix);
     M_BindTextures(p);
-    M_SetupShaderForScene(
-        shader, g_Config.rendering.texture_filter,
-        g_Config.rendering.enable_lighting);
+    M_SetupShaderForScene(shader, g_Config.rendering.enable_lighting);
     M_SetBlendModeForScene(wireframe);
 
     glDisable(GL_DEPTH_TEST);
@@ -172,7 +173,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
 
     if (M_IsSourceDirty(p, SCENE_PASS_UI)) {
         M_SetSamplerFilter(p->sampler_id, g_Config.rendering.ui_filter);
-        M_SetupShaderForUI(shader, g_Config.rendering.ui_filter);
+        M_SetupShaderForUI(shader);
         M_SetBlendModeForUI();
 
         glClear(GL_DEPTH_BUFFER_BIT);

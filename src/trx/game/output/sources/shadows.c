@@ -78,7 +78,8 @@ void OutputSource_Shadows_StageShadow(void)
         g_Config.visuals.enable_round_shadow ? p->mesh_high : p->mesh_low;
     const MESH_INSTANCE inst = {
         .mesh = mesh,
-        .matrix = *g_MatrixPtr,
+        .cwmatrix = *g_MatrixPtr,
+        .wmatrix = *g_WMatrixPtr,
         .tint = { 1.0f, 1.0f, 1.0f },
     };
     // XXX: Mesh batcher currently collects the transparent faces for the
