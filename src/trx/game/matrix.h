@@ -29,7 +29,7 @@ typedef struct {
 
 extern MATRIX *g_MatrixPtr;
 extern MATRIX *g_WMatrixPtr;
-extern MATRIX g_W2VMatrix;
+extern XYZ_32 g_ViewPos;
 extern MATRIX g_ViewMatrix;
 extern MATRIX g_IDMatrix;
 
