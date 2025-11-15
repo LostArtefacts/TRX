@@ -1,47 +1,37 @@
-vec4 offsetBillboard(vec3 pos, vec2 displacement, mat4 view, mat4 viewModel, mat4 projection, int lockMode)
+vec4 offsetBillboard(vec3 pos, vec2 disp, mat4 view, mat4 model, mat4 proj, int mode)
 {
-    if (lockMode == BILLBOARD_LOCK_ROLL) {
-        vec3 camForward = vec3(viewModel[0][2], viewModel[1][2], viewModel[2][2]);
-        vec3 up = vec3(0.0, 1.0, 0.0);
-        vec3 right = normalize(cross(up, camForward));
-        up = normalize(cross(camForward, right));
-        pos.xyz += displacement.x * right + displacement.y * up;
-        return viewModel * vec4(pos, 1.0);
+    const vec3 worldUp = vec3(0,1,0);
 
-    } else if (lockMode == BILLBOARD_LOCK_ROLL_PITCH) {
-        vec3 up = vec3(0.0, 1.0, 0.0);
-        vec3 camForward = normalize(vec3(viewModel[0][2], viewModel[1][2], viewModel[2][2]));
-        vec3 fHoriz = camForward - up * dot(camForward, up);
-        vec3 right = (length(fHoriz) < 1e-5)
-            ? normalize(vec3(viewModel[0][0], viewModel[1][0], viewModel[2][0]))
-            : normalize(cross(up, fHoriz));
-        pos.xyz += displacement.x * right + displacement.y * up;
-        return viewModel * vec4(pos, 1.0);
-
-    } else if (lockMode == BILLBOARD_LOCK_PERSPECTIVE) {
-        vec3 up = vec3(0.0, 1.0, 0.0);
-        // compute view yaw-forward (lock pitch and roll)
-        vec3 camForward = normalize(vec3(view[0][2], view[1][2], view[2][2]));
-        vec3 fHoriz = camForward - up * dot(camForward, up);
-        vec3 forwardYaw = (length(fHoriz) < 1e-5)
-            ? normalize(vec3(view[0][0], view[1][0], view[2][0]))
-            : normalize(fHoriz);
-        vec3 camRight = normalize(cross(forwardYaw, up));
-        // gentle yaw based on screen X towards center
-        vec4 clipPos = projection * viewModel * vec4(pos, 1.0);
-        float ndcX = clipPos.x / clipPos.w;
-        float invLen = inversesqrt(1.0 + ndcX * ndcX);
-        float cosAng = invLen;
-        float sinAng = ndcX * invLen;
-        vec3 forwardDir = cosAng * forwardYaw - sinAng * camRight;
-        vec3 rightDir = normalize(cross(up, forwardDir));
-        pos.xyz += displacement.x * rightDir + displacement.y * up;
-        return viewModel * vec4(pos, 1.0);
-
+    vec3 right, up;
+    if (mode == BILLBOARD_LOCK_NONE) {
+        right = normalize(vec3(view[0][0], view[1][0], view[2][0]));
+        up    = normalize(vec3(view[0][1], view[1][1], view[2][1]));
     } else {
-        return (viewModel * vec4(pos, 1.0)) + vec4(displacement.xy, 0, 0);
+        // Base forward for all locked modes
+        vec3 forward = -normalize(vec3(view[0][2], view[1][2], view[2][2]));
+
+        if (mode != BILLBOARD_LOCK_ROLL) {
+            // Kill pitch if requested by any cylindrical/perspective mode
+            forward = normalize(vec3(forward.x, 0.0, forward.z));
+        }
+
+        if (mode == BILLBOARD_LOCK_PERSPECTIVE) {
+            vec4 clip     = proj * view * model * vec4(pos,1);
+            float ndcX    = clip.x / clip.w;
+            vec3 yawRight = normalize(cross(forward, worldUp));
+            float inv     = inversesqrt(1.0 + ndcX * ndcX);
+            forward       = normalize(inv * forward - (ndcX * inv) * yawRight);
+        }
+
+        right = normalize(cross(forward, worldUp));
+        up    = normalize(cross(right, forward));
     }
+
+    vec4 wp = model * vec4(pos,1);
+    wp.xyz += disp.x * right + disp.y * up;
+    return view * wp;
 }
+
 
 #ifdef VERTEX
 
@@ -74,10 +64,10 @@ void main(void) {
 
     if ((inFlags & VERT_ABS_SPRITE) != 0u) {
         eyePos = offsetBillboard(
-            inPosition.xyz, inNormal.xy, uMatView, uMatView * uMatModel, matProjection, BILLBOARD_LOCK_NONE);
+            inPosition.xyz, inNormal.xy, uMatView, uMatModel, matProjection, BILLBOARD_LOCK_NONE);
     } else if ((inFlags & VERT_BILLBOARD) != 0u) {
         eyePos = offsetBillboard(
-            inPosition.xyz, inNormal.xy, uMatView, uMatView * uMatModel, matProjection, uBillboardLockMode);
+            inPosition.xyz, inNormal.xy, uMatView, uMatModel, matProjection, uBillboardLockMode);
     } else {
         eyePos = uMatView * uMatModel * vec4(inPosition.xyz, 1.0);
     }
