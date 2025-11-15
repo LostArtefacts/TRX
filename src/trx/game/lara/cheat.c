@@ -89,7 +89,6 @@ static void M_ResetGunStatus(void)
     lara_info->gun_type = LGT_UNARMED;
     lara_info->request_gun_type = LGT_UNARMED;
     lara_info->gun_item_num = NO_ITEM;
-    lara_info->gun_status = LGS_ARMLESS;
     lara_info->left_arm.frame_num = 0;
     lara_info->left_arm.lock = 0;
     lara_info->right_arm.frame_num = 0;
@@ -254,6 +253,10 @@ bool Lara_Cheat_EnterFlyMode(void)
 
     if (lara_info->extra_anim) {
         M_ResetGunStatus();
+    } else if (Gun_IsRifleType(lara_info->gun_type)) {
+        while (lara_info->gun_item_num != NO_ITEM) {
+            Gun_Rifle_Undraw(lara_info->gun_type);
+        }
     }
 
     if (lara_info->gun_status == LGS_HANDS_BUSY
