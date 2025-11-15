@@ -105,7 +105,7 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
 void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
     UI_BeginBasePassportDialog();
-    const char *title;
+    const char *title = nullptr;
     switch (s->type) {
     case UI_SAVE_SLOT_DIALOG_SAVE_GAME:
         title = GS(PASSPORT_SAVE_GAME);
