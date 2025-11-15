@@ -44,6 +44,7 @@
 - fixed bogus warnings about resume info in logs when playing cutscenes and in the title level
 - fixed title bar size being too small on HiDPI screens on Windows platform (#2837)
 - fixed statics and items not getting rendered when all portals leading to them are offscreen (#2005)
+- fixed Lara's arms getting stuck in the M16 gun firing animation while she dies (#4130)
 
 **TR1**:
 - added a new easter egg command
