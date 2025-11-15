@@ -8,6 +8,19 @@
 #include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
 
+#define M_GLOBAL_MEMBERS                                                       \
+    X_DECLARE_MEMBER(float, mat_view, [4][4])                                  \
+    X_DECLARE_MEMBER(float, fog_color, [4])                                    \
+    X_DECLARE_MEMBER(float, fog_distance, [2])                                 \
+    X_DECLARE_MEMBER(float, viewport_size, [2])                                \
+    X_DECLARE_MEMBER(float, time)                                              \
+    X_DECLARE_MEMBER(float, time_in_game)                                      \
+    X_DECLARE_MEMBER(float, brightness_multiplier)                             \
+    X_DECLARE_MEMBER(int, billboard_lock_mode)                                 \
+    X_DECLARE_MEMBER(int, lighting_contrast)                                   \
+    X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
+    X_DECLARE_MEMBER(int, reflections_enabled)
+
 typedef enum {
     M_UNIFORM_TEX_ATLAS,
     M_UNIFORM_TEX_ENV_MAP,
@@ -22,17 +35,9 @@ typedef enum {
 
 #pragma pack(push, 1)
 typedef struct {
-    GLfloat mat_view[4][4];
-    GLfloat fog_color[4];
-    GLfloat fog_distance[2];
-    GLfloat viewport_size[2];
-    GLfloat time;
-    GLfloat time_in_game;
-    GLfloat brightness_multiplier;
-    GLint billboard_lock_mode;
-    GLint lighting_contrast;
-    GLint trapezoid_filter_enabled;
-    GLint reflections_enabled;
+#define X_DECLARE_MEMBER(a, b, ...) a b __VA_ARGS__;
+    M_GLOBAL_MEMBERS
+#undef X_DECLARE_MEMBER
 } M_UNIFORM_GLOBALS;
 #pragma pack(pop)
 
@@ -45,6 +50,60 @@ struct OUTPUT_SHADER {
     bool is_alpha_discard_enabled;
     RGB_F tint;
 };
+
+static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
+{
+    // Prints memory layout of the specific UBO in the GPU
+
+    // Get the block name
+    GLint name_len = 0;
+    glGetActiveUniformBlockiv(
+        program_id, block_idx, GL_UNIFORM_BLOCK_NAME_LENGTH, &name_len);
+    char *const block_name = Memory_Alloc(name_len);
+    glGetActiveUniformBlockName(
+        program_id, block_idx, name_len, nullptr, block_name);
+
+    // Get all uniforms within that block
+    GLint uniform_count = 0;
+    glGetActiveUniformBlockiv(
+        program_id, block_idx, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS,
+        &uniform_count);
+    GLuint *const uniform_indices =
+        Memory_Alloc(sizeof(GLuint) * uniform_count);
+    glGetActiveUniformBlockiv(
+        program_id, block_idx, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES,
+        (GLint *)uniform_indices);
+
+    // Query offsets
+    GLint *const offsets = Memory_Alloc(sizeof(GLint) * uniform_count);
+    glGetActiveUniformsiv(
+        program_id, uniform_count, uniform_indices, GL_UNIFORM_OFFSET, offsets);
+
+    // Print block name and all members
+    LOG_DEBUG("Uniform Block %u: %s", block_idx, block_name);
+    for (GLint i = 0; i < uniform_count; ++i) {
+        char name[256];
+        GLsizei length;
+        glGetActiveUniformName(
+            program_id, uniform_indices[i], sizeof(name), &length, name);
+        LOG_DEBUG("  %s → offset %d", name, offsets[i]);
+    }
+
+    // Cleanup
+    Memory_Free(offsets);
+    Memory_Free(uniform_indices);
+    Memory_Free(block_name);
+}
+
+static void M_DebugGlobals(void)
+{
+    // Prints memory layout of the Globals C struct
+    LOG_DEBUG("C");
+#define X_DECLARE_MEMBER(a, b, ...)                                            \
+    LOG_DEBUG("  %s → offset %d", #b, offsetof(M_UNIFORM_GLOBALS, b));
+    M_GLOBAL_MEMBERS
+#undef X_DECLARE_MEMBER
+}
 
 static void M_FillMatrix(GLfloat m[4][4], const MATRIX *const source)
 {
@@ -96,6 +155,11 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_GLOBALS), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, shader->ubo_globals);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+#if 0
+    M_DebugUBO(shader->program.id, 0);
+    M_DebugGlobals();
+#endif
 
     const char *const uniform_names[] = {
         [M_UNIFORM_TEX_ATLAS] = "uTexAtlas",
