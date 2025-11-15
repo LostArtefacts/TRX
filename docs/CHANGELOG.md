@@ -14,6 +14,7 @@
 - added the ability to fast-forward through cutscenes with the right button (+5 s) or with slow+right (+1 s)
 - added support for dark theme on Windows
 - added support for triangular geometry
+- added support for additive blending in textures
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved rendering of statics and items in overlapping rooms (#2005)
 - improved ricochets placement

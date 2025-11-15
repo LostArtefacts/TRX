@@ -6,7 +6,7 @@ title: Migrating levels
 
 ## TR1X
 
-### Version 4.15 to 4.16
+### Version 4.15 to TRX 1.0
 
 1. **Game flow options moved to the config module**:
     Certain settings are no longer part of the game flow spec and instead
@@ -94,7 +94,7 @@ title: Migrating levels
 
 ## TR2X
 
-### Version 1.5 to 1.6
+### Version 1.5 to TRX 1.0
 
 1. **Game flow options moved to the config module**:
     Certain settings are no longer part of the game flow spec and instead
