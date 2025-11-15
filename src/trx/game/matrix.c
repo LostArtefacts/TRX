@@ -11,12 +11,16 @@
 #define MAX_NESTED_MATRICES 32
 
 static MATRIX m_MatrixStack[MAX_MATRICES] = {};
+static MATRIX m_WMatrixStack[MAX_MATRICES] = {};
 static int32_t m_IMRate = 0;
 static int32_t m_IMFrac = 0;
 static MATRIX *m_IMMatrixPtr = nullptr;
+static MATRIX *m_WIMMatrixPtr = nullptr;
 static MATRIX m_IMMatrixStack[MAX_NESTED_MATRICES] = {};
+static MATRIX m_WIMMatrixStack[MAX_NESTED_MATRICES] = {};
 
 MATRIX *g_MatrixPtr = &m_MatrixStack[0];
+MATRIX *g_WMatrixPtr = &m_WMatrixStack[0];
 MATRIX g_W2VMatrix = {};
 MATRIX g_IDMatrix = {
     // clang-format off
@@ -393,11 +397,11 @@ static void M_Interpolate(
 void Matrix_ResetStack(void)
 {
     g_MatrixPtr = &m_MatrixStack[0];
+    g_WMatrixPtr = &m_WMatrixStack[0];
 }
 
 void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
 {
-    g_MatrixPtr = &m_MatrixStack[0];
     const int32_t sx = Math_Sin(rot->x);
     const int32_t cx = Math_Cos(rot->x);
     const int32_t sy = Math_Sin(rot->y);
@@ -405,19 +409,24 @@ void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
     const int32_t sz = Math_Sin(rot->z);
     const int32_t cz = Math_Cos(rot->z);
 
-    m_MatrixStack[0]._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
-    m_MatrixStack[0]._01 = TRIGMULT2(cx, sz);
-    m_MatrixStack[0]._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
-    m_MatrixStack[0]._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
-    m_MatrixStack[0]._11 = TRIGMULT2(cx, cz);
-    m_MatrixStack[0]._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
-    m_MatrixStack[0]._20 = TRIGMULT2(cx, sy);
-    m_MatrixStack[0]._21 = -sx;
-    m_MatrixStack[0]._22 = TRIGMULT2(cx, cy);
-    m_MatrixStack[0]._03 = pos->x;
-    m_MatrixStack[0]._13 = pos->y;
-    m_MatrixStack[0]._23 = pos->z;
-    g_W2VMatrix = m_MatrixStack[0];
+    g_W2VMatrix._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+    g_W2VMatrix._01 = TRIGMULT2(cx, sz);
+    g_W2VMatrix._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+    g_W2VMatrix._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+    g_W2VMatrix._11 = TRIGMULT2(cx, cz);
+    g_W2VMatrix._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+    g_W2VMatrix._20 = TRIGMULT2(cx, sy);
+    g_W2VMatrix._21 = -sx;
+    g_W2VMatrix._22 = TRIGMULT2(cx, cy);
+    g_W2VMatrix._03 = pos->x;
+    g_W2VMatrix._13 = pos->y;
+    g_W2VMatrix._23 = pos->z;
+
+    g_MatrixPtr = &m_MatrixStack[0];
+    m_MatrixStack[0] = g_W2VMatrix;
+
+    g_WMatrixPtr = &m_WMatrixStack[0];
+    g_WMatrixPtr[0] = g_IDMatrix;
 }
 
 bool Matrix_Push(void)
@@ -425,8 +434,13 @@ bool Matrix_Push(void)
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
         return false;
     }
+    if (g_WMatrixPtr + 1 - m_WMatrixStack >= MAX_MATRICES) {
+        return false;
+    }
     g_MatrixPtr++;
     g_MatrixPtr[0] = g_MatrixPtr[-1];
+    g_WMatrixPtr++;
+    g_WMatrixPtr[0] = g_WMatrixPtr[-1];
     return true;
 }
 
@@ -435,14 +449,20 @@ bool Matrix_PushUnit(void)
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
         return false;
     }
+    if (g_WMatrixPtr + 1 - m_WMatrixStack >= MAX_MATRICES) {
+        return false;
+    }
     g_MatrixPtr++;
     *g_MatrixPtr = g_IDMatrix;
+    g_WMatrixPtr++;
+    *g_WMatrixPtr = g_IDMatrix;
     return true;
 }
 
 void Matrix_Pop(void)
 {
     g_MatrixPtr--;
+    g_WMatrixPtr--;
 }
 
 void Matrix_Scale(const int32_t scale)
@@ -455,36 +475,43 @@ void Matrix_Scale(const int32_t scale)
 void Matrix_ScaleX(const int32_t scale)
 {
     M_ScaleX(g_MatrixPtr, scale);
+    M_ScaleX(g_WMatrixPtr, scale);
 }
 
 void Matrix_ScaleY(const int32_t scale)
 {
     M_ScaleY(g_MatrixPtr, scale);
+    M_ScaleY(g_WMatrixPtr, scale);
 }
 
 void Matrix_ScaleZ(const int32_t scale)
 {
     M_ScaleZ(g_MatrixPtr, scale);
+    M_ScaleZ(g_WMatrixPtr, scale);
 }
 
 void Matrix_RotX(const int16_t angle)
 {
     M_RotX(g_MatrixPtr, angle);
+    M_RotX(g_WMatrixPtr, angle);
 }
 
 void Matrix_RotY(const int16_t angle)
 {
     M_RotY(g_MatrixPtr, angle);
+    M_RotY(g_WMatrixPtr, angle);
 }
 
 void Matrix_RotZ(const int16_t angle)
 {
     M_RotZ(g_MatrixPtr, angle);
+    M_RotZ(g_WMatrixPtr, angle);
 }
 
 void Matrix_Rot16(const XYZ_16 rotation)
 {
     M_RotYXZ(g_MatrixPtr, rotation);
+    M_RotYXZ(g_WMatrixPtr, rotation);
 }
 
 void Matrix_TranslateRel(const int32_t dx, const int32_t dy, const int32_t dz)
@@ -500,6 +527,7 @@ void Matrix_TranslateRel16(const XYZ_16 offset)
 void Matrix_TranslateRel32(const XYZ_32 offset)
 {
     M_TranslateRel(g_MatrixPtr, offset);
+    M_TranslateRel(g_WMatrixPtr, offset);
 }
 
 void Matrix_TranslateAbs(const int32_t x, const int32_t y, const int32_t z)
@@ -511,6 +539,7 @@ void Matrix_TranslateAbs(const int32_t x, const int32_t y, const int32_t z)
     mptr->_03 = dx * mptr->_00 + dy * mptr->_01 + dz * mptr->_02;
     mptr->_13 = dx * mptr->_10 + dy * mptr->_11 + dz * mptr->_12;
     mptr->_23 = dx * mptr->_20 + dy * mptr->_21 + dz * mptr->_22;
+    M_TranslateSet(g_WMatrixPtr, (XYZ_32){x, y, z});
 }
 
 void Matrix_TranslateAbs16(const XYZ_16 offset)
@@ -526,6 +555,7 @@ void Matrix_TranslateAbs32(const XYZ_32 offset)
 void Matrix_TranslateSet(const int32_t x, const int32_t y, const int32_t z)
 {
     M_TranslateSet(g_MatrixPtr, (XYZ_32) { x, y, z });
+    M_TranslateSet(g_WMatrixPtr, (XYZ_32) { x, y, z });
 }
 
 void Matrix_InitInterpolate(const int32_t frac, const int32_t rate)
@@ -534,16 +564,20 @@ void Matrix_InitInterpolate(const int32_t frac, const int32_t rate)
     m_IMRate = rate;
     m_IMMatrixPtr = &m_IMMatrixStack[0];
     *m_IMMatrixPtr = *g_MatrixPtr;
+    m_WIMMatrixPtr = &m_WIMMatrixStack[0];
+    *m_WIMMatrixPtr = *g_WMatrixPtr;
 }
 
 void Matrix_Interpolate(void)
 {
     M_Interpolate(g_MatrixPtr, m_IMMatrixPtr, g_MatrixPtr);
+    M_Interpolate(g_WMatrixPtr, m_WIMMatrixPtr, g_WMatrixPtr);
 }
 
 void Matrix_InterpolateArm(void)
 {
     M_InterpolateArm(g_MatrixPtr, m_IMMatrixPtr);
+    M_InterpolateArm(g_WMatrixPtr, m_WIMMatrixPtr);
 }
 
 void Matrix_Push_I(void)
@@ -551,12 +585,15 @@ void Matrix_Push_I(void)
     Matrix_Push();
     m_IMMatrixPtr[1] = m_IMMatrixPtr[0];
     m_IMMatrixPtr++;
+    m_WIMMatrixPtr[1] = m_WIMMatrixPtr[0];
+    m_WIMMatrixPtr++;
 }
 
 void Matrix_Pop_I(void)
 {
     Matrix_Pop();
     m_IMMatrixPtr--;
+    m_WIMMatrixPtr--;
 }
 
 void Matrix_TranslateRel_I(const int32_t x, const int32_t y, const int32_t z)
@@ -572,7 +609,9 @@ void Matrix_TranslateRel16_I(const XYZ_16 offset)
 void Matrix_TranslateRel32_I(const XYZ_32 offset)
 {
     M_TranslateRel(g_MatrixPtr, offset);
+    M_TranslateRel(g_WMatrixPtr, offset);
     M_TranslateRel(m_IMMatrixPtr, offset);
+    M_TranslateRel(m_WIMMatrixPtr, offset);
 }
 
 void Matrix_TranslateRel_ID(
@@ -590,37 +629,49 @@ void Matrix_TranslateRel16_ID(const XYZ_16 offset_1, const XYZ_16 offset_2)
 void Matrix_TranslateRel32_ID(const XYZ_32 offset_1, const XYZ_32 offset_2)
 {
     M_TranslateRel(g_MatrixPtr, offset_1);
+    M_TranslateRel(g_WMatrixPtr, offset_1);
     M_TranslateRel(m_IMMatrixPtr, offset_2);
+    M_TranslateRel(m_WIMMatrixPtr, offset_2);
 }
 
 void Matrix_RotY_I(const int16_t angle)
 {
     M_RotY(g_MatrixPtr, angle);
+    M_RotY(g_WMatrixPtr, angle);
     M_RotY(m_IMMatrixPtr, angle);
+    M_RotY(m_WIMMatrixPtr, angle);
 }
 
 void Matrix_RotX_I(const int16_t angle)
 {
     M_RotX(g_MatrixPtr, angle);
+    M_RotX(g_WMatrixPtr, angle);
     M_RotX(m_IMMatrixPtr, angle);
+    M_RotX(m_WIMMatrixPtr, angle);
 }
 
 void Matrix_RotZ_I(const int16_t angle)
 {
     M_RotZ(g_MatrixPtr, angle);
+    M_RotZ(g_WMatrixPtr, angle);
     M_RotZ(m_IMMatrixPtr, angle);
+    M_RotZ(m_WIMMatrixPtr, angle);
 }
 
 void Matrix_Rot16_I(const XYZ_16 rotation)
 {
     M_RotYXZ(g_MatrixPtr, rotation);
+    M_RotYXZ(g_WMatrixPtr, rotation);
     M_RotYXZ(m_IMMatrixPtr, rotation);
+    M_RotYXZ(m_WIMMatrixPtr, rotation);
 }
 
 void Matrix_Rot16_ID(const XYZ_16 rotation_1, const XYZ_16 rotation_2)
 {
     M_RotYXZ(g_MatrixPtr, rotation_1);
+    M_RotYXZ(g_WMatrixPtr, rotation_1);
     M_RotYXZ(m_IMMatrixPtr, rotation_2);
+    M_RotYXZ(m_WIMMatrixPtr, rotation_2);
 }
 
 void Matrix_LookAt(

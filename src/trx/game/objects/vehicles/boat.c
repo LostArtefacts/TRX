@@ -155,6 +155,7 @@ static int32_t M_TestWaterHeight(
 static void M_DoWakeEffect(const ITEM *const boat_item)
 {
     g_MatrixPtr->_23 = 0;
+    g_WMatrixPtr->_23 = 0;
     Output_CalculateLight(boat_item->pos, boat_item->room_num);
 
     const int16_t frame =
