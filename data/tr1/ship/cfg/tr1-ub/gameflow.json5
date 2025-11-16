@@ -26,6 +26,7 @@
 
     "enforced_config": {
         "enable_save_crystals": false,
+        "fix_water_exit": false,
     },
 
     "title": {
@@ -154,6 +155,7 @@
         "enable_loading_screens", // UB has no loading screens yet
         "enable_reflections",     // UB has no reflective objects
         "enemy_healthbar_color_allies", // UB has no allies
+        "fix_water_exit",
         "change_pierre_spawn",
         "fix_bear_ai",
         "restore_ps1_enemies",

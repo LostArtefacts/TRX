@@ -91,6 +91,7 @@
 - fixed crash when loading OG saves made in City of Khamoon, while the "Restore PS1 enemies" option is on (#4217, regression from 2.16)
 - fixed the jump lock mode UI option remaining visible when responsive jumping is disabled (#4027, regression from 4.13)
 - fixed a slight misalignment in the PDA in its open state (#4247)
+- fixed Lara being unable to exit the water in (for example) room 41 of Return to Egypt (#4315, regression from 4.12)
 
 **TR2**:
 - added loading screens (Gameplay Options → General → Loading screens) (#1620)  
