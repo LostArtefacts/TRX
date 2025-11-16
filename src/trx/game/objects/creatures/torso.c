@@ -48,6 +48,14 @@ typedef enum {
     TORSO_STATE_KILL = 11,
 } TORSO_STATE;
 
+static void M_KillLara(ITEM *const item)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    Lara_TakeDamage(lara_item->hit_points, true);
+    Creature_SpecialKill(
+        item, TORSO_ANIM_KILL, TORSO_STATE_KILL, LS_EXTRA_TORSO_KILL);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -181,9 +189,7 @@ static void M_Control(const int16_t item_num)
         case TORSO_STATE_ATTACK_3:
             if ((item->touch_bits & TORSO_TRIGHT)
                 || lara_item->hit_points <= 0) {
-                Creature_SpecialKill(
-                    item, TORSO_ANIM_KILL, TORSO_STATE_KILL,
-                    LS_EXTRA_TORSO_KILL);
+                M_KillLara(item);
             }
             break;
 
