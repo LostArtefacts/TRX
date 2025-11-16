@@ -24,6 +24,12 @@ typedef struct {
     float trapezoid_ratio[2];
 } M_MESH_TEXTURE;
 
+typedef struct {
+    M_MESH_GEOM geom;
+    M_MESH_TEXTURE tex;
+    M_MESH_SHADE shade;
+} M_MESH_FULL;
+
 typedef struct M_MESH_BUF_BINDING {
     OUTPUT_MESH *mesh;
     M_MESH_GEOM *geom_data;
@@ -40,8 +46,8 @@ typedef struct {
     int32_t sort_key;
     const MESH_INSTANCE *inst;
     const OUTPUT_MESH_FACE *face;
-    int32_t index_start;
-    int32_t index_count;
+    int32_t vertex_start;
+    int32_t vertex_count;
 } M_FACE_SORT;
 
 typedef struct MESH_BATCHER {
@@ -60,9 +66,9 @@ typedef struct MESH_BATCHER {
     GLuint shade_vbo;
 
     VECTOR *transparent_sort; // M_FACE_SORT
-    VECTOR *transparent_indices; // uint32_t
-
-    GLuint transparent_ebo;
+    VECTOR *transparent_vertices; // M_MESH_FULL
+    GLuint full_vao;
+    GLuint full_vbo;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -289,22 +295,26 @@ static void M_OpaquePass(
             const OUTPUT_MESH_FACE *const face =
                 Vector_Get(inst->mesh->transparent_faces, j);
 
-            const int32_t index_start = batcher->transparent_indices->count;
+            const int32_t vertex_start = batcher->transparent_vertices->count;
             for (int32_t k = 0; k < face->vertex_count; k++) {
-                const uint32_t global_idx =
-                    bind->vertex_start + face->vertex_indices[k];
-                Vector_Add(batcher->transparent_indices, &global_idx);
+                const int32_t l = face->vertex_indices[k];
+                const M_MESH_FULL v = {
+                    .geom = bind->geom_data[l],
+                    .tex = bind->tex_data[l],
+                    .shade = bind->shade_data[l],
+                };
+                Vector_Add(batcher->transparent_vertices, &v);
             }
-            const int32_t index_count =
-                batcher->transparent_indices->count - index_start;
+            const int32_t vertex_count =
+                batcher->transparent_vertices->count - vertex_start;
 
             Vector_Add(
                 batcher->transparent_sort,
                 &(M_FACE_SORT) {
                     .inst = inst,
                     .face = face,
-                    .index_start = index_start,
-                    .index_count = index_count,
+                    .vertex_start = vertex_start,
+                    .vertex_count = vertex_count,
                 });
         }
     }
@@ -333,29 +343,20 @@ static void M_BlendAddPass(const MESH_BATCHER *const batcher)
 
 static void M_TransparentPass(const MESH_BATCHER *const batcher)
 {
-    if (batcher->transparent_sort->count == 0) {
-        return;
-    }
-
-    // Upload indices only
-    glBindVertexArray(batcher->partial_vao);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->transparent_ebo);
+    glBindVertexArray(batcher->full_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, batcher->full_vbo);
     GFX_TRACK_DATA(
-        glBufferData, GL_ELEMENT_ARRAY_BUFFER,
-        batcher->transparent_indices->count * sizeof(uint32_t),
-        Vector_GetData(batcher->transparent_indices), GL_DYNAMIC_DRAW);
+        glBufferData, GL_ARRAY_BUFFER,
+        batcher->transparent_vertices->count * sizeof(M_MESH_FULL),
+        Vector_GetData(batcher->transparent_vertices), GL_STATIC_DRAW);
 
     const MESH_INSTANCE *inst = nullptr;
-    int32_t last_base_vertex = -1;
-
     for (int32_t i = 0; i < batcher->transparent_sort->count; i++) {
         const M_FACE_SORT *const sort_ptr =
             Vector_Get(batcher->transparent_sort, i);
-
-        if (sort_ptr->index_count == 0) {
+        if (sort_ptr->face->vertex_count == 0) {
             continue;
         }
-
         if (sort_ptr->inst != inst) {
             inst = sort_ptr->inst;
             Output_Shader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
@@ -363,17 +364,10 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
             Output_Shader_UploadWibbleEffect(batcher->shader, inst->wibble);
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
         }
-
-        // indices live in the EBO starting at index_start
-        const void *index_offset =
-            (void *)(intptr_t)(sort_ptr->index_start * sizeof(uint32_t));
-
-        glDrawElements(
-            GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT, index_offset);
-
-        g_GFX_Metrics.trans_vert_count += sort_ptr->index_count;
+        glDrawArrays(
+            GL_TRIANGLES, sort_ptr->vertex_start, sort_ptr->vertex_count);
+        g_GFX_Metrics.trans_vert_count += sort_ptr->face->vertex_count;
     }
-
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
@@ -383,7 +377,7 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
     for (int32_t pass = 0; pass < SCENE_PASS_COUNT; pass++) {
         Vector_Clear(batcher->staged[pass]);
     }
-    Vector_Clear(batcher->transparent_indices);
+    Vector_Clear(batcher->transparent_vertices);
     Vector_Clear(batcher->transparent_sort);
 }
 
@@ -406,7 +400,7 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const MESH_BATCHER *const batcher = source->priv;
     return batcher->staged[pass]->count > 0
-        || (batcher->transparent_indices->count > 0
+        || (batcher->transparent_vertices->count > 0
             && pass == SCENE_PASS_TRANSPARENT);
 }
 
@@ -436,12 +430,13 @@ MESH_BATCHER *MeshBatcher_Create(void)
     batcher->source.priv = batcher;
 
     batcher->transparent_sort = Vector_Create(sizeof(M_FACE_SORT));
-    batcher->transparent_indices = Vector_Create(sizeof(uint32_t));
+    batcher->transparent_vertices = Vector_Create(sizeof(M_MESH_FULL));
 
     glGenVertexArrays(1, &batcher->partial_vao);
     glGenBuffers(1, &batcher->geom_vbo);
     glGenBuffers(1, &batcher->tex_vbo);
     glGenBuffers(1, &batcher->shade_vbo);
+    glGenBuffers(1, &batcher->full_vbo);
 
     glBindVertexArray(batcher->partial_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->geom_vbo);
@@ -485,7 +480,44 @@ MESH_BATCHER *MeshBatcher_Create(void)
         OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_SHORT_GL, GL_FALSE,
         sizeof(M_MESH_SHADE), 0);
 
-    glGenBuffers(1, &batcher->transparent_ebo);
+    glGenVertexArrays(1, &batcher->full_vao);
+    glBindVertexArray(batcher->full_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, batcher->full_vbo);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_POS);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_NORMAL);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, geom.pos));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, geom.normal));
+    glVertexAttribIPointer(
+        OUTPUT_MESH_ATTR_FLAGS, 1, OUTPUT_USHORT_GL, sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, geom.flags));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE,
+        sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, geom.color));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, tex.uvw));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_TEXTURE_SIZE, 4, GL_FLOAT, GL_FALSE,
+        sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, tex.texture_size));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 2, GL_FLOAT, GL_FALSE,
+        sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, tex.trapezoid_ratio));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_SHORT_GL, GL_FALSE,
+        sizeof(M_MESH_FULL), (void *)(intptr_t)offsetof(M_MESH_FULL, shade));
 
     return batcher;
 }
@@ -497,6 +529,10 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
     if (batcher->partial_vao != 0) {
         glDeleteVertexArrays(1, &batcher->partial_vao);
         batcher->partial_vao = 0;
+    }
+    if (batcher->full_vao != 0) {
+        glDeleteVertexArrays(1, &batcher->full_vao);
+        batcher->full_vao = 0;
     }
     if (batcher->geom_vbo != 0) {
         glDeleteBuffers(1, &batcher->geom_vbo);
@@ -510,18 +546,22 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
         glDeleteBuffers(1, &batcher->shade_vbo);
         batcher->shade_vbo = 0;
     }
+    if (batcher->full_vbo != 0) {
+        glDeleteBuffers(1, &batcher->full_vbo);
+        batcher->full_vbo = 0;
+    }
     ASSERT(batcher->bindings->count == 0);
     if (batcher->bindings != nullptr) {
         Vector_Free(batcher->bindings);
         batcher->bindings = nullptr;
     }
-    if (batcher->transparent_ebo != 0) {
-        glDeleteBuffers(1, &batcher->transparent_ebo);
-        batcher->transparent_ebo = 0;
+    if (batcher->transparent_sort != nullptr) {
+        Vector_Free(batcher->transparent_sort);
+        batcher->transparent_sort = nullptr;
     }
-    if (batcher->transparent_indices != nullptr) {
-        Vector_Free(batcher->transparent_indices);
-        batcher->transparent_indices = nullptr;
+    if (batcher->transparent_vertices != nullptr) {
+        Vector_Free(batcher->transparent_vertices);
+        batcher->transparent_vertices = nullptr;
     }
     for (int32_t pass = 0; pass < SCENE_PASS_COUNT; pass++) {
         if (batcher->staged[pass] != nullptr) {
