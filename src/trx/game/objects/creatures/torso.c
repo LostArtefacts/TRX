@@ -8,45 +8,51 @@
 #include <trx/game/sound.h>
 #include <trx/utils.h>
 
-#define TORSO_TURN_L_ANIM 8
-#define TORSO_DIE_ANIM 13
-#define TORSO_TURN_R_ANIM 17
-#define TORSO_PART_DAMAGE 250
-#define TORSO_ATTACK_DAMAGE 500
-#define TORSO_TOUCH_DAMAGE 5
-#define TORSO_NEED_TURN (DEG_1 * 45) // = 8190
-#define TORSO_TURN (DEG_1 * 3) // = 546
-#define TORSO_ATTACK_RANGE SQUARE(2600) // = 6760000
-#define TORSO_CLOSE_RANGE SQUARE(2250) // = 5062500
-#define TORSO_TLEFT 0x7FF0
-#define TORSO_TRIGHT 0x3FF8000
-#define TORSO_TOUCH (TORSO_TLEFT | TORSO_TRIGHT)
-#define TORSO_HITPOINTS 500
-#define TORSO_RADIUS (WALL_L / 3) // = 341
-#define TORSO_SMARTNESS 0x7FFF
-#define TORSO_FRAME_TURN_L_START 14
-#define TORSO_FRAME_TURN_L_END 22
-#define TORSO_FRAME_TURN_R_START 17
-#define TORSO_FRAME_TURN_R_END 22
+// clang-format off
+#define M_PART_DAMAGE        250
+#define M_ATTACK_DAMAGE      500
+#define M_TOUCH_DAMAGE       5
+#define M_NEED_TURN          (DEG_1 * 45) // = 8190
+#define M_TURN               (DEG_1 * 3) // = 546
+#define M_ATTACK_RANGE       SQUARE(2600) // = 6760000
+#define M_CLOSE_RANGE        SQUARE(2250) // = 5062500
+#define M_TOUCH_LEFT         0x7FF0
+#define M_TOUCH_RIGHT        0x3FF8000
+#define M_TOUCH              (M_TOUCH_LEFT | M_TOUCH_RIGHT)
+#define M_HITPOINTS          500
+#define M_RADIUS             (WALL_L / 3) // = 341
+#define M_SMARTNESS          0x7FFF
+#define M_FRAME_TURN_L_START 14
+#define M_FRAME_TURN_L_END   22
+#define M_FRAME_TURN_R_START 17
+#define M_FRAME_TURN_R_END   22
+// clang-format on
 
 typedef enum {
-    TORSO_ANIM_KILL = 19,
+    // clang-format off
+    TORSO_ANIM_TURN_L = 8,
+    TORSO_ANIM_DIE    = 13,
+    TORSO_ANIM_TURN_R = 17,
+    TORSO_ANIM_KILL   = 19,
+    // clang-format on
 } M_ANIM;
 
 typedef enum {
-    TORSO_STATE_EMPTY = 0,
-    TORSO_STATE_STOP = 1,
-    TORSO_STATE_TURN_L = 2,
-    TORSO_STATE_TURN_R = 3,
+    // clang-format off
+    TORSO_STATE_EMPTY    = 0,
+    TORSO_STATE_STOP     = 1,
+    TORSO_STATE_TURN_L   = 2,
+    TORSO_STATE_TURN_R   = 3,
     TORSO_STATE_ATTACK_1 = 4,
     TORSO_STATE_ATTACK_2 = 5,
     TORSO_STATE_ATTACK_3 = 6,
-    TORSO_STATE_FORWARD = 7,
-    TORSO_STATE_SET = 8,
-    TORSO_STATE_FALL = 9,
-    TORSO_STATE_DEATH = 10,
-    TORSO_STATE_KILL = 11,
-} TORSO_STATE;
+    TORSO_STATE_FORWARD  = 7,
+    TORSO_STATE_SET      = 8,
+    TORSO_STATE_FALL     = 9,
+    TORSO_STATE_DEATH    = 10,
+    TORSO_STATE_KILL     = 11,
+    // clang-format on
+} M_STATE;
 
 static void M_KillLara(ITEM *const item)
 {
@@ -74,7 +80,7 @@ static void M_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != TORSO_STATE_DEATH) {
             item->current_anim_state = TORSO_STATE_DEATH;
-            Item_SwitchToAnim(item, TORSO_DIE_ANIM, 0);
+            Item_SwitchToAnim(item, TORSO_ANIM_DIE, 0);
         }
     } else {
         AI_INFO info;
@@ -92,7 +98,7 @@ static void M_Control(const int16_t item_num)
             - item->rot.y;
 
         if (item->touch_bits) {
-            Lara_TakeDamage(TORSO_TOUCH_DAMAGE, true);
+            Lara_TakeDamage(M_TOUCH_DAMAGE, true);
         }
 
         switch (item->current_anim_state) {
@@ -107,19 +113,19 @@ static void M_Control(const int16_t item_num)
             }
 
             torso->flags = 0;
-            if (angle > TORSO_NEED_TURN) {
+            if (angle > M_NEED_TURN) {
                 item->goal_anim_state = TORSO_STATE_TURN_R;
-            } else if (angle < -TORSO_NEED_TURN) {
+            } else if (angle < -M_NEED_TURN) {
                 item->goal_anim_state = TORSO_STATE_TURN_L;
-            } else if (info.distance >= TORSO_ATTACK_RANGE) {
+            } else if (info.distance >= M_ATTACK_RANGE) {
                 item->goal_anim_state = TORSO_STATE_FORWARD;
-            } else if (lara_item->hit_points > TORSO_ATTACK_DAMAGE) {
+            } else if (lara_item->hit_points > M_ATTACK_DAMAGE) {
                 if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = TORSO_STATE_ATTACK_1;
                 } else {
                     item->goal_anim_state = TORSO_STATE_ATTACK_2;
                 }
-            } else if (info.distance < TORSO_CLOSE_RANGE) {
+            } else if (info.distance < M_CLOSE_RANGE) {
                 item->goal_anim_state = TORSO_STATE_ATTACK_3;
             } else {
                 item->goal_anim_state = TORSO_STATE_FORWARD;
@@ -127,17 +133,17 @@ static void M_Control(const int16_t item_num)
             break;
 
         case TORSO_STATE_FORWARD:
-            if (angle < -TORSO_TURN) {
-                item->goal_anim_state -= TORSO_TURN;
-            } else if (angle > TORSO_TURN) {
-                item->goal_anim_state += TORSO_TURN;
+            if (angle < -M_TURN) {
+                item->goal_anim_state -= M_TURN;
+            } else if (angle > M_TURN) {
+                item->goal_anim_state += M_TURN;
             } else {
                 item->goal_anim_state += angle;
             }
 
-            if (angle > TORSO_NEED_TURN || angle < -TORSO_NEED_TURN) {
+            if (angle > M_NEED_TURN || angle < -M_NEED_TURN) {
                 item->goal_anim_state = TORSO_STATE_STOP;
-            } else if (info.distance < TORSO_ATTACK_RANGE) {
+            } else if (info.distance < M_ATTACK_RANGE) {
                 item->goal_anim_state = TORSO_STATE_STOP;
             }
             break;
@@ -146,13 +152,13 @@ static void M_Control(const int16_t item_num)
             if (!torso->flags) {
                 torso->flags = item->frame_num;
             } else if (
-                Item_TestAnimEqual(item, TORSO_TURN_L_ANIM)
+                Item_TestAnimEqual(item, TORSO_ANIM_TURN_L)
                 && Item_TestFrameRange(
-                    item, TORSO_FRAME_TURN_L_START, TORSO_FRAME_TURN_L_END)) {
+                    item, M_FRAME_TURN_L_START, M_FRAME_TURN_L_END)) {
                 item->rot.y -= DEG_1 * 9;
             }
 
-            if (angle > -TORSO_NEED_TURN) {
+            if (angle > -M_NEED_TURN) {
                 item->goal_anim_state = TORSO_STATE_STOP;
             }
             break;
@@ -161,33 +167,33 @@ static void M_Control(const int16_t item_num)
             if (!torso->flags) {
                 torso->flags = item->frame_num;
             } else if (
-                Item_TestAnimEqual(item, TORSO_TURN_R_ANIM)
+                Item_TestAnimEqual(item, TORSO_ANIM_TURN_R)
                 && Item_TestFrameRange(
-                    item, TORSO_FRAME_TURN_R_START, TORSO_FRAME_TURN_R_END)) {
+                    item, M_FRAME_TURN_R_START, M_FRAME_TURN_R_END)) {
                 item->rot.y += DEG_1 * 14;
             }
 
-            if (angle < TORSO_NEED_TURN) {
+            if (angle < M_NEED_TURN) {
                 item->goal_anim_state = TORSO_STATE_STOP;
             }
             break;
 
         case TORSO_STATE_ATTACK_1:
-            if (!torso->flags && (item->touch_bits & TORSO_TRIGHT)) {
-                Lara_TakeDamage(TORSO_ATTACK_DAMAGE, true);
+            if (!torso->flags && (item->touch_bits & M_TOUCH_RIGHT)) {
+                Lara_TakeDamage(M_ATTACK_DAMAGE, true);
                 torso->flags = 1;
             }
             break;
 
         case TORSO_STATE_ATTACK_2:
-            if (!torso->flags && (item->touch_bits & TORSO_TOUCH)) {
-                Lara_TakeDamage(TORSO_ATTACK_DAMAGE, true);
+            if (!torso->flags && (item->touch_bits & M_TOUCH)) {
+                Lara_TakeDamage(M_ATTACK_DAMAGE, true);
                 torso->flags = 1;
             }
             break;
 
         case TORSO_STATE_ATTACK_3:
-            if ((item->touch_bits & TORSO_TRIGHT)
+            if ((item->touch_bits & M_TOUCH_RIGHT)
                 || lara_item->hit_points <= 0) {
                 M_KillLara(item);
             }
@@ -217,7 +223,7 @@ static void M_Control(const int16_t item_num)
 
     if (item->status == IS_DEACTIVATED) {
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
-        Item_Explode(item_num, -1, TORSO_PART_DAMAGE);
+        Item_Explode(item_num, -1, M_PART_DAMAGE);
         Room_TestTriggers(item);
 
         Item_Kill(item_num);
@@ -234,9 +240,9 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = TORSO_HITPOINTS;
-    obj->radius = TORSO_RADIUS;
-    obj->smartness = TORSO_SMARTNESS;
+    obj->hit_points = M_HITPOINTS;
+    obj->radius = M_RADIUS;
+    obj->smartness = M_SMARTNESS;
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;
