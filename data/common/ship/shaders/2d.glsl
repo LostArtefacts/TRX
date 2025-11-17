@@ -1,3 +1,5 @@
+#include "common.glsl"
+
 #define EFFECT_NONE 0
 #define EFFECT_VIGNETTE 1
 #define EFFECT_WAVE 2
@@ -77,4 +79,5 @@ void main(void) {
 
     outColor.rgb *= uBrightnessMultiplier;
 }
+
 #endif
