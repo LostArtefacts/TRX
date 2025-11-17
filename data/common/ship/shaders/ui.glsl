@@ -57,4 +57,5 @@ void main(void) {
     texColor.rgb *= uBrightnessMultiplier;
     outColor = texColor;
 }
+
 #endif
