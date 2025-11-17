@@ -95,13 +95,16 @@ void main(void) {
     }
     gShade = inShade;
     gColor = inColor;
+
+    if (uLightingEnabled == 0) {
+        gShade = SHADE_NEUTRAL;
+    }
 }
 
 #elif defined(FRAGMENT)
 
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
-uniform int uLightingMode;
 uniform vec3 uGlobalTint;
 uniform bool uDiscardAlpha;
 
@@ -144,13 +147,13 @@ void main(void) {
         texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
     }
 
-    if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingMode != LIGHTING_MODE_OFF) {
+    if ((gFlags & VERT_NO_LIGHTING) == 0u) {
         texColor.rgb = applyShade(texColor.rgb, gShade);
     }
 
     texColor.rgb *= uGlobalTint;
 
-    if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingMode == LIGHTING_MODE_FULL) {
+    if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
         texColor = applyFog(texColor, gEyePos.z);
     }
 

@@ -11,10 +11,6 @@
 #define VERT_ABS_SPRITE       0x20u
 #define VERT_NO_ALPHA_DISCARD 0x40u
 
-#define LIGHTING_MODE_OFF         0
-#define LIGHTING_MODE_ONLY_SHADES 1
-#define LIGHTING_MODE_FULL        2
-
 #define LIGHTING_CONTRAST_LOW    0
 #define LIGHTING_CONTRAST_MEDIUM 1
 #define LIGHTING_CONTRAST_HIGH   2
@@ -37,6 +33,7 @@ layout(std140) uniform Globals {
     float uBrightnessMultiplier;
     int uBillboardLockMode;
     int uLightingContrast;
+    int uLightingEnabled; // bool
     int uTrapezoidFilterEnabled; // bool
     int uReflectionsEnabled; // bool
 };

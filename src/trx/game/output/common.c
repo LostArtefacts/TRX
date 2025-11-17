@@ -22,7 +22,8 @@
 
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_UNIFORMS *m_Uniforms = nullptr;
-static OUTPUT_SHADER *m_Shader = nullptr;
+static OUTPUT_SHADER *m_ShaderWorld = nullptr;
+static OUTPUT_SHADER *m_ShaderUI = nullptr;
 
 void Output_Init(void)
 {
@@ -30,7 +31,8 @@ void Output_Init(void)
     Output_Textures_Init();
 
     m_Uniforms = Output_Uniforms_Create();
-    m_Shader = Output_Shader_Create("shaders/meshes.glsl");
+    m_ShaderWorld = Output_Shader_Create("shaders/meshes.glsl");
+    m_ShaderUI = Output_Shader_Create("shaders/ui.glsl");
     m_Batcher = MeshBatcher_Create();
     SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
     OutputSource_Rooms_Init(m_Batcher);
@@ -59,9 +61,13 @@ void Output_Shutdown(void)
     OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
 
-    if (m_Shader != nullptr) {
-        Output_Shader_Free(m_Shader);
-        m_Shader = nullptr;
+    if (m_ShaderWorld != nullptr) {
+        Output_Shader_Free(m_ShaderWorld);
+        m_ShaderWorld = nullptr;
+    }
+    if (m_ShaderUI != nullptr) {
+        Output_Shader_Free(m_ShaderUI);
+        m_ShaderUI = nullptr;
     }
     if (m_Uniforms != nullptr) {
         Output_Uniforms_Free(m_Uniforms);
@@ -91,7 +97,12 @@ const OUTPUT_UNIFORMS *Output_GetUniforms(void)
 
 OUTPUT_SHADER *Output_GetMeshShader(void)
 {
-    return m_Shader;
+    return m_ShaderWorld;
+}
+
+OUTPUT_SHADER *Output_GetUIShader(void)
+{
+    return m_ShaderUI;
 }
 
 void Output_BeginScene(void)
@@ -135,7 +146,7 @@ void Output_ApplyRenderSettings(void)
     Output_Textures_ApplyRenderSettings();
     Output_ApplyLevelSettings();
 
-    if (m_Shader == nullptr) {
+    if (m_ShaderWorld == nullptr) {
         return;
     }
 

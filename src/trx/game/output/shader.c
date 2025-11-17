@@ -11,7 +11,6 @@
 typedef enum {
     M_UNIFORM_TEX_ATLAS,
     M_UNIFORM_TEX_ENV_MAP,
-    M_UNIFORM_LIGHTING_MODE,
     M_UNIFORM_ALPHA_DISCARD,
     M_UNIFORM_GLOBAL_TINT,
     M_UNIFORM_MODEL_MATRIX,
@@ -106,7 +105,6 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     const char *const uniform_names[] = {
         [M_UNIFORM_TEX_ATLAS] = "uTexAtlas",
         [M_UNIFORM_TEX_ENV_MAP] = "uTexEnvMap",
-        [M_UNIFORM_LIGHTING_MODE] = "uLightingMode",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
         [M_UNIFORM_MODEL_MATRIX] = "uMatModel",
         [M_UNIFORM_VIEW_MATRIX] = "uMatView",
@@ -183,11 +181,4 @@ void Output_Shader_UploadTint(OUTPUT_SHADER *const shader, const RGB_F tint)
         glUniform3f, shader->uniforms[M_UNIFORM_GLOBAL_TINT], tint.r, tint.g,
         tint.b);
     shader->tint = tint;
-}
-
-void Output_Shader_UploadLightingMode(
-    const OUTPUT_SHADER *const shader, const LIGHTING_MODE mode)
-{
-    GFX_TRACK_UNIFORM(
-        glUniform1i, shader->uniforms[M_UNIFORM_LIGHTING_MODE], mode);
 }

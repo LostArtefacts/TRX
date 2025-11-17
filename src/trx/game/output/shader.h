@@ -33,12 +33,11 @@ OUTPUT_SHADER *Output_Shader_Create(const char *path);
 void Output_Shader_Free(OUTPUT_SHADER *shader);
 void Output_Shader_Bind(const OUTPUT_SHADER *shader);
 
-void Output_Shader_UploadLightingMode(
-    const OUTPUT_SHADER *shader, LIGHTING_MODE mode);
-void Output_Shader_UploadAlphaDiscard(OUTPUT_SHADER *shader, bool is_enabled);
-
 // TODO: these could could use UBOs
 void Output_Shader_UploadModelMatrix(
     const OUTPUT_SHADER *shader, const MATRIX *source);
 void Output_Shader_UploadWibbleEffect(OUTPUT_SHADER *shader, bool is_enabled);
+void Output_Shader_UploadAlphaDiscard(OUTPUT_SHADER *shader, bool is_enabled);
 void Output_Shader_UploadTint(OUTPUT_SHADER *shader, RGB_F tint);
+void Output_MeshShader_UploadAlphaDiscard(
+    OUTPUT_SHADER *shader, bool is_enabled);

@@ -36,21 +36,7 @@ static void M_SetSamplerFilter(
     glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, gl_filter);
 }
 
-static void M_SetupShaderForScene(
-    OUTPUT_SHADER *const shader, const bool lighting)
-{
-    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
-    Output_Shader_UploadLightingMode(
-        shader, lighting ? LIGHTING_MODE_FULL : LIGHTING_MODE_OFF);
-}
-
-static void M_SetupShaderForUI(OUTPUT_SHADER *const shader)
-{
-    Output_Uniforms_UploadOrthoMatrix(Output_GetUniforms());
-    Output_Shader_UploadLightingMode(shader, LIGHTING_MODE_ONLY_SHADES);
-}
-
-static void M_BindTextures(const M_PRIV *p)
+static void M_BindTextures(const M_PRIV *const p)
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
@@ -58,16 +44,25 @@ static void M_BindTextures(const M_PRIV *p)
     glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
 }
 
-static void M_SetBlendModeForScene(bool wireframe)
+static void M_SetupScene(const M_PRIV *const p)
 {
+    Output_Shader_Bind(Output_GetMeshShader());
+    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, wireframe ? GL_ZERO : GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(
+        GL_ONE,
+        g_Config.rendering.enable_wireframe ? GL_ZERO : GL_ONE_MINUS_SRC_ALPHA);
+    M_SetSamplerFilter(p->sampler_id, g_Config.rendering.texture_filter);
 }
 
-static void M_SetBlendModeForUI(void)
+static void M_SetupUI(const M_PRIV *const p)
 {
+    Output_Shader_Bind(Output_GetUIShader());
+    Output_Uniforms_UploadOrthoMatrix(Output_GetUniforms());
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    M_SetSamplerFilter(p->sampler_id, g_Config.rendering.ui_filter);
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
@@ -128,23 +123,20 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         return;
     }
 
-    OUTPUT_SHADER *const shader = Output_GetMeshShader();
-    const bool wireframe = g_Config.rendering.enable_wireframe;
-
-    M_SetSamplerFilter(p->sampler_id, g_Config.rendering.texture_filter);
-
-    Output_Shader_Bind(shader);
     M_BindTextures(p);
-    M_SetupShaderForScene(shader, g_Config.rendering.enable_lighting);
-    M_SetBlendModeForScene(wireframe);
+    M_SetupScene(p);
 
     glDisable(GL_DEPTH_TEST);
     if (M_IsSourceDirty(p, SCENE_PASS_BACKGROUND)) {
         M_RenderSourcePass(p, SCENE_PASS_BACKGROUND);
     }
 
+    OUTPUT_SHADER *const shader = Output_GetMeshShader();
     Output_Shader_Bind(shader);
-    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+
+    glPolygonMode(
+        GL_FRONT_AND_BACK,
+        g_Config.rendering.enable_wireframe ? GL_LINE : GL_FILL);
 
     if (M_IsSourceDirty(p, SCENE_PASS_SKYBOX)) {
         M_RenderSourcePass(p, SCENE_PASS_SKYBOX);
@@ -169,11 +161,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     }
 
     if (M_IsSourceDirty(p, SCENE_PASS_UI)) {
-        M_SetSamplerFilter(p->sampler_id, g_Config.rendering.ui_filter);
-        M_SetupShaderForUI(shader);
-        M_SetBlendModeForUI();
-
-        glClear(GL_DEPTH_BUFFER_BIT);
+        M_SetupUI(p);
         M_RenderSourcePass(p, SCENE_PASS_UI);
     }
 }

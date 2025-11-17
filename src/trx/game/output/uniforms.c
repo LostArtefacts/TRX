@@ -18,6 +18,7 @@
     X_DECLARE_MEMBER(float, brightness_multiplier)                             \
     X_DECLARE_MEMBER(int, billboard_lock_mode)                                 \
     X_DECLARE_MEMBER(int, lighting_contrast)                                   \
+    X_DECLARE_MEMBER(int, lighting_enabled)                                    \
     X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
     X_DECLARE_MEMBER(int, reflections_enabled)
 
@@ -69,6 +70,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         },
         .billboard_lock_mode = g_Config.rendering.sprite_lock_mode,
         .lighting_contrast = g_Config.rendering.lighting_contrast,
+        .lighting_enabled = g_Config.rendering.enable_lighting,
         .trapezoid_filter_enabled = g_Config.rendering.enable_trapezoid_filter,
         .reflections_enabled = g_Config.visuals.enable_reflections,
         .fog_distance = {Output_GetFogStart(), Output_GetFogEnd()},
