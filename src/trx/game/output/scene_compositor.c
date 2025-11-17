@@ -39,15 +39,14 @@ static void M_SetSamplerFilter(
 static void M_SetupShaderForScene(
     OUTPUT_SHADER *const shader, const bool lighting)
 {
-    Output_Shader_UploadProjectionMode(shader, PROJECTION_MODE_PERSPECTIVE);
+    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
     Output_Shader_UploadLightingMode(
         shader, lighting ? LIGHTING_MODE_FULL : LIGHTING_MODE_OFF);
 }
 
 static void M_SetupShaderForUI(OUTPUT_SHADER *const shader)
 {
-    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_IDMatrix);
-    Output_Shader_UploadProjectionMode(shader, PROJECTION_MODE_ORTHOGRAPHIC);
+    Output_Uniforms_UploadOrthoMatrix(Output_GetUniforms());
     Output_Shader_UploadLightingMode(shader, LIGHTING_MODE_ONLY_SHADES);
 }
 
@@ -135,7 +134,6 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     M_SetSamplerFilter(p->sampler_id, g_Config.rendering.texture_filter);
 
     Output_Shader_Bind(shader);
-    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
     M_BindTextures(p);
     M_SetupShaderForScene(shader, g_Config.rendering.enable_lighting);
     M_SetBlendModeForScene(wireframe);
