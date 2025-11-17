@@ -11,6 +11,7 @@
 typedef struct {
     GLint location;
     GLenum type;
+    GLsizei size;
     char name[64];
     UT_hash_handle hh;
 } M_UNIFORM;
@@ -109,8 +110,8 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         GLsizei len;
         GLchar name[64];
         glGetActiveUniform(
-            shader->program.id, i, sizeof(name), &len, nullptr, &uniform->type,
-            name);
+            shader->program.id, i, sizeof(name), &len, &uniform->size,
+            &uniform->type, name);
 
         uniform->location = glGetUniformLocation(shader->program.id, name);
         strncpy(uniform->name, name, sizeof(uniform->name));
