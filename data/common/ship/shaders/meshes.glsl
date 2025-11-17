@@ -1,3 +1,5 @@
+#include "common.glsl"
+
 vec4 offsetBillboard(vec3 pos, vec2 disp, mat4 view, mat4 model, mat4 proj, int mode)
 {
     const vec3 worldUp = vec3(0,1,0);

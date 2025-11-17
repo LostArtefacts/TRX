@@ -19,4 +19,5 @@ out vec4 outColor;
 void main(void) {
     outColor = texture(uTex0, vertTexCoords);
 }
+
 #endif
