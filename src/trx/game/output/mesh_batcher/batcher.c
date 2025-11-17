@@ -2,7 +2,7 @@
 
 #include <trx/debug.h>
 #include <trx/game/output.h>
-#include <trx/game/output/shader.h>
+#include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
@@ -60,7 +60,7 @@ typedef struct MESH_BATCHER {
     M_MESH_BUF_BINDING *binding_map;
     VECTOR *staged[SCENE_PASS_COUNT];
 
-    OUTPUT_SHADER *shader;
+    OUTPUT_MESH_SHADER *shader;
     GLuint partial_vao;
     GLuint geom_vbo;
     GLuint tex_vbo;
@@ -211,8 +211,8 @@ static void M_DrawOpaqueInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    Output_Shader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
-    Output_Shader_UploadTint(batcher->shader, inst->tint);
+    Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
+    Output_MeshShader_UploadTint(batcher->shader, inst->tint);
 
     if (inst->enable_scissor) {
         Output_EnableScissor(
@@ -221,14 +221,14 @@ static void M_DrawOpaqueInstance(
     }
 
     if (inst->wibble) {
-        Output_Shader_UploadWibbleEffect(batcher->shader, false);
+        Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
         glDepthMask(GL_FALSE);
         M_DrawOpaqueVertices(batcher, inst);
         glDepthMask(GL_TRUE);
-        Output_Shader_UploadWibbleEffect(batcher->shader, true);
+        Output_MeshShader_UploadWibbleEffect(batcher->shader, true);
         M_DrawOpaqueVertices(batcher, inst);
     } else {
-        Output_Shader_UploadWibbleEffect(batcher->shader, false);
+        Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
         M_DrawOpaqueVertices(batcher, inst);
     }
 
@@ -243,9 +243,9 @@ static void M_DrawBlendAddInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    Output_Shader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
-    Output_Shader_UploadTint(batcher->shader, inst->tint);
-    Output_Shader_UploadWibbleEffect(batcher->shader, false);
+    Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
+    Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+    Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
 
     if (inst->enable_scissor) {
         Output_EnableScissor(
@@ -360,9 +360,10 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
         }
         if (sort_ptr->inst != inst) {
             inst = sort_ptr->inst;
-            Output_Shader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
-            Output_Shader_UploadTint(batcher->shader, inst->tint);
-            Output_Shader_UploadWibbleEffect(batcher->shader, inst->wibble);
+            Output_MeshShader_UploadModelMatrix(
+                batcher->shader, &inst->wmatrix);
+            Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+            Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
         }
         glDrawArrays(

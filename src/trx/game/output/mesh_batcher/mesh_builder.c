@@ -2,7 +2,7 @@
 
 #include <trx/debug.h>
 #include <trx/game/output/mesh_batcher/mesh.h>
-#include <trx/game/output/shader.h>
+#include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/memory.h>

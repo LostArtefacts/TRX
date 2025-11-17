@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/matrix.h>
+#include <trx/game/output/shaders/generic.h>
 #include <trx/game/output/types.h>
 
 // clang-format off
@@ -27,17 +28,17 @@ typedef enum {
     // clang-format on
 } OUTPUT_MESH_ATTRIBUTE;
 
-typedef struct OUTPUT_SHADER OUTPUT_SHADER;
+typedef struct OUTPUT_MESH_SHADER OUTPUT_MESH_SHADER;
 
-OUTPUT_SHADER *Output_Shader_Create(const char *path);
-void Output_Shader_Free(OUTPUT_SHADER *shader);
-void Output_Shader_Bind(const OUTPUT_SHADER *shader);
+OUTPUT_MESH_SHADER *Output_MeshShader_Create(void);
+void Output_MeshShader_Free(OUTPUT_MESH_SHADER *shader);
+void Output_MeshShader_Bind(const OUTPUT_MESH_SHADER *shader);
 
 // TODO: these could could use UBOs
-void Output_Shader_UploadModelMatrix(
-    const OUTPUT_SHADER *shader, const MATRIX *source);
-void Output_Shader_UploadWibbleEffect(OUTPUT_SHADER *shader, bool is_enabled);
-void Output_Shader_UploadAlphaDiscard(OUTPUT_SHADER *shader, bool is_enabled);
-void Output_Shader_UploadTint(OUTPUT_SHADER *shader, RGB_F tint);
+void Output_MeshShader_UploadModelMatrix(
+    const OUTPUT_MESH_SHADER *shader, const MATRIX *source);
+void Output_MeshShader_UploadWibbleEffect(
+    OUTPUT_MESH_SHADER *shader, bool is_enabled);
+void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *shader, RGB_F tint);
 void Output_MeshShader_UploadAlphaDiscard(
-    OUTPUT_SHADER *shader, bool is_enabled);
+    OUTPUT_MESH_SHADER *shader, bool is_enabled);

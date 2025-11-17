@@ -3,7 +3,8 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
-#include <trx/game/output/shader.h>
+#include <trx/game/output/shaders/mesh.h>
+#include <trx/game/output/shaders/ui.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/shell.h>
@@ -46,7 +47,7 @@ static void M_BindTextures(const M_PRIV *const p)
 
 static void M_SetupScene(const M_PRIV *const p)
 {
-    Output_Shader_Bind(Output_GetMeshShader());
+    Output_MeshShader_Bind(Output_GetMeshShader());
     Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
     glEnable(GL_BLEND);
     glBlendFunc(
@@ -57,7 +58,7 @@ static void M_SetupScene(const M_PRIV *const p)
 
 static void M_SetupUI(const M_PRIV *const p)
 {
-    Output_Shader_Bind(Output_GetUIShader());
+    Output_UIShader_Bind(Output_GetUIShader());
     Output_Uniforms_UploadOrthoMatrix(Output_GetUniforms());
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -67,14 +68,14 @@ static void M_SetupUI(const M_PRIV *const p)
 
 static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
 {
-    OUTPUT_SHADER *const shader = Output_GetMeshShader();
+    OUTPUT_MESH_SHADER *const shader = Output_GetMeshShader();
     for (int32_t i = 0; i < p->sources->count; i++) {
         const SCENE_SOURCE *const source =
             *(SCENE_SOURCE **)Vector_Get(p->sources, i);
         if (source->is_dirty != nullptr && source->is_dirty(source, pass)) {
             ASSERT(source->render_pass != nullptr);
-            Output_Shader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
-            Output_Shader_UploadWibbleEffect(shader, false);
+            Output_MeshShader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
+            Output_MeshShader_UploadWibbleEffect(shader, false);
             source->render_pass(source, pass);
         }
     }
@@ -131,8 +132,8 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         M_RenderSourcePass(p, SCENE_PASS_BACKGROUND);
     }
 
-    OUTPUT_SHADER *const shader = Output_GetMeshShader();
-    Output_Shader_Bind(shader);
+    OUTPUT_MESH_SHADER *const shader = Output_GetMeshShader();
+    Output_MeshShader_Bind(shader);
 
     glPolygonMode(
         GL_FRONT_AND_BACK,
@@ -148,9 +149,9 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         || M_IsSourceDirty(p, SCENE_PASS_TRANSPARENT)
         || M_IsSourceDirty(p, SCENE_PASS_BLEND_ADD)) {
         glEnable(GL_CULL_FACE);
-        Output_Shader_UploadAlphaDiscard(shader, true);
+        Output_MeshShader_UploadAlphaDiscard(shader, true);
         M_RenderSourcePass(p, SCENE_PASS_OPAQUE);
-        Output_Shader_UploadAlphaDiscard(shader, false);
+        Output_MeshShader_UploadAlphaDiscard(shader, false);
         glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         M_RenderSourcePass(p, SCENE_PASS_TRANSPARENT);

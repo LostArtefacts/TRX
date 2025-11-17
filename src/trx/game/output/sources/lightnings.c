@@ -14,7 +14,7 @@ typedef struct {
 
 typedef struct {
     SCENE_SOURCE source;
-    OUTPUT_SHADER *shader;
+    OUTPUT_MESH_SHADER *shader;
     VECTOR *vertices;
     VECTOR *scheduled;
     GLuint vao;
@@ -118,7 +118,7 @@ static void M_RenderPass(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_STATIC_DRAW);
 
-    Output_Shader_UploadModelMatrix(p->shader, &g_IDMatrix);
+    Output_MeshShader_UploadModelMatrix(p->shader, &g_IDMatrix);
     glDrawArrays(GL_TRIANGLES, 0, p->vertices->count);
     GFX_GL_CheckError();
 }

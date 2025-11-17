@@ -27,7 +27,7 @@ typedef struct {
 
 typedef struct {
     SCENE_SOURCE source;
-    OUTPUT_SHADER *shader;
+    OUTPUT_MESH_SHADER *shader;
     OUTPUT_VERTEX_RANGE primitive_ranges[M_PRIMITIVE_NUMBER_OF];
     VECTOR *vertices;
     VECTOR *scheduled;
@@ -144,7 +144,7 @@ static void M_DrawScheduled(M_PRIV *const p, VECTOR *const scheduled)
 {
     for (int32_t i = 0; i < scheduled->count; i++) {
         const M_INSTANCE *const instance = Vector_Get(scheduled, i);
-        Output_Shader_UploadModelMatrix(p->shader, &instance->matrix);
+        Output_MeshShader_UploadModelMatrix(p->shader, &instance->matrix);
         const OUTPUT_VERTEX_RANGE *const range =
             &p->primitive_ranges[instance->prim_type];
         glDrawArrays(GL_TRIANGLES, range->vertex_start, range->vertex_count);

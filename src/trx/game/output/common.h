@@ -1,7 +1,8 @@
 #pragma once
 
 #include <trx/game/objects/types.h>
-#include <trx/game/output/shader.h>
+#include <trx/game/output/shaders/mesh.h>
+#include <trx/game/output/shaders/ui.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
@@ -11,8 +12,8 @@ void Output_Shutdown(void);
 bool Output_IsHeadless(void);
 
 const OUTPUT_UNIFORMS *Output_GetUniforms(void);
-OUTPUT_SHADER *Output_GetMeshShader(void);
-OUTPUT_SHADER *Output_GetUIShader(void);
+OUTPUT_MESH_SHADER *Output_GetMeshShader(void);
+OUTPUT_UI_SHADER *Output_GetUIShader(void);
 
 void Output_BeginScene(void);
 void Output_EndScene(void);
