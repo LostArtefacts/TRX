@@ -2,12 +2,15 @@
 
 #include <trx/game/objects/types.h>
 #include <trx/game/output/shader.h>
+#include <trx/game/output/uniforms.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
 
 void Output_Init(void);
 void Output_Shutdown(void);
 bool Output_IsHeadless(void);
+
+const OUTPUT_UNIFORMS *Output_GetUniforms(void);
 OUTPUT_SHADER *Output_GetMeshShader(void);
 
 void Output_BeginScene(void);

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <trx/game/matrix.h>
+
+#include <GL/glew.h>
+
 #define OUTPUT_QUAD_VERTICES 6
 #define OUTPUT_TRI_VERTICES 3
 
@@ -34,3 +38,5 @@
 #endif
 
 #undef L_ATI_FIX
+
+void Output_FillMatrix(GLfloat m[4][4], const MATRIX *source);

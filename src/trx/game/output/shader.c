@@ -1,25 +1,12 @@
 #include <trx/game/output/shader.h>
 
-#include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
+#include <trx/game/output/utils.h>
 #include <trx/game/viewport.h>
 #include <trx/gfx/gl/program.h>
 #include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
-
-#define M_GLOBAL_MEMBERS                                                       \
-    X_DECLARE_MEMBER(float, mat_proj_ortho, [4][4])                            \
-    X_DECLARE_MEMBER(float, fog_color, [4])                                    \
-    X_DECLARE_MEMBER(float, fog_distance, [2])                                 \
-    X_DECLARE_MEMBER(float, viewport_size, [2])                                \
-    X_DECLARE_MEMBER(float, time)                                              \
-    X_DECLARE_MEMBER(float, time_in_game)                                      \
-    X_DECLARE_MEMBER(float, brightness_multiplier)                             \
-    X_DECLARE_MEMBER(int, billboard_lock_mode)                                 \
-    X_DECLARE_MEMBER(int, lighting_contrast)                                   \
-    X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
-    X_DECLARE_MEMBER(int, reflections_enabled)
 
 typedef enum {
     M_UNIFORM_TEX_ATLAS,
@@ -34,26 +21,9 @@ typedef enum {
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
-#pragma pack(push, 1)
-typedef struct {
-#define X_DECLARE_MEMBER(a, b, ...) a b __VA_ARGS__;
-    M_GLOBAL_MEMBERS
-#undef X_DECLARE_MEMBER
-} M_UNIFORM_GLOBALS;
-
-typedef struct {
-    float mat_proj_persp[4][4];
-    float mat_view[4][4];
-} M_UNIFORM_MATRICES;
-#pragma pack(pop)
-
 struct OUTPUT_SHADER {
     GFX_GL_PROGRAM program;
     GLint uniforms[M_UNIFORM_NUMBER_OF];
-    struct {
-        GLuint globals;
-        GLuint matrices;
-    } ubo;
 
     bool is_wibble_effect;
     bool is_alpha_discard_enabled;
@@ -104,50 +74,6 @@ static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
     Memory_Free(block_name);
 }
 
-static void M_DebugGlobals(void)
-{
-    // Prints memory layout of the Globals C struct
-    LOG_DEBUG("C");
-#define X_DECLARE_MEMBER(a, b, ...)                                            \
-    LOG_DEBUG("  %s → offset %d", #b, offsetof(M_UNIFORM_GLOBALS, b));
-    M_GLOBAL_MEMBERS
-#undef X_DECLARE_MEMBER
-}
-
-static void M_FillMatrix(GLfloat m[4][4], const MATRIX *const source)
-{
-    m[0][0] = source->_00 / (float)(1 << W2V_SHIFT);
-    m[0][1] = source->_10 / (float)(1 << W2V_SHIFT);
-    m[0][2] = source->_20 / (float)(1 << W2V_SHIFT);
-    m[0][3] = 0.0;
-
-    m[1][0] = source->_01 / (float)(1 << W2V_SHIFT);
-    m[1][1] = source->_11 / (float)(1 << W2V_SHIFT);
-    m[1][2] = source->_21 / (float)(1 << W2V_SHIFT);
-    m[1][3] = 0.0;
-
-    m[2][0] = source->_02 / (float)(1 << W2V_SHIFT);
-    m[2][1] = source->_12 / (float)(1 << W2V_SHIFT);
-    m[2][2] = source->_22 / (float)(1 << W2V_SHIFT);
-    m[2][3] = 0.0;
-
-    m[3][0] = source->_03 / (float)(1 << W2V_SHIFT);
-    m[3][1] = source->_13 / (float)(1 << W2V_SHIFT);
-    m[3][2] = source->_23 / (float)(1 << W2V_SHIFT);
-    m[3][3] = 1.0;
-}
-
-static void M_UploadMatrix(
-    const OUTPUT_SHADER *const shader, const M_UNIFORM target,
-    const MATRIX *const source)
-{
-    GLfloat m[4][4];
-    M_FillMatrix(m, source);
-
-    GFX_TRACK_UNIFORM(
-        glUniformMatrix4fv, shader->uniforms[target], 1, GL_FALSE, &m[0][0]);
-}
-
 OUTPUT_SHADER *Output_Shader_Create(const char *const path)
 {
     OUTPUT_SHADER *const shader = Memory_Alloc(sizeof(OUTPUT_SHADER));
@@ -158,23 +84,8 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     GFX_GL_Program_FragmentData(&shader->program, "outColor");
     GFX_GL_Program_Link(&shader->program);
 
-    glGenBuffers(2, &shader->ubo.globals);
-    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.globals);
-    glBufferData(
-        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_GLOBALS), nullptr, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, shader->ubo.globals);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.matrices);
-    glBufferData(
-        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_MATRICES), nullptr,
-        GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, shader->ubo.matrices);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
 #if 0
     M_DebugUBO(shader->program.id, 0);
-    M_DebugGlobals();
 #endif
 
     const char *const uniform_names[] = {
@@ -195,8 +106,8 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     }
 
     GFX_GL_Program_Bind(&shader->program);
-    glUniform1i(shader->uniforms[M_UNIFORM_TEX_ATLAS], 0);
-    glUniform1i(shader->uniforms[M_UNIFORM_TEX_ENV_MAP], 1);
+    GFX_TRACK_UNIFORM(glUniform1i, shader->uniforms[M_UNIFORM_TEX_ATLAS], 0);
+    GFX_TRACK_UNIFORM(glUniform1i, shader->uniforms[M_UNIFORM_TEX_ENV_MAP], 1);
     return shader;
 }
 
@@ -210,55 +121,20 @@ void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
 {
     ASSERT(shader != nullptr);
     GFX_GL_Program_Bind(&shader->program);
-}
-
-void Output_Shader_UploadCommonUniforms(const OUTPUT_SHADER *const shader)
-{
-    M_UNIFORM_GLOBALS globals = {
-        .time = Output_GetTime(),
-        .time_in_game = Output_GetTimeInGame(),
-        .brightness_multiplier = g_Config.visuals.brightness,
-        .viewport_size = {
-            (float)Viewport_GetWidth(VIEWPORT_GAME),
-            (float)Viewport_GetHeight(VIEWPORT_GAME),
-        },
-        .billboard_lock_mode = g_Config.rendering.sprite_lock_mode,
-        .lighting_contrast = g_Config.rendering.lighting_contrast,
-        .trapezoid_filter_enabled = g_Config.rendering.enable_trapezoid_filter,
-        .reflections_enabled = g_Config.visuals.enable_reflections,
-        .fog_distance = {Output_GetFogStart(), Output_GetFogEnd()},
-        .fog_color = {
-            Output_GetFogColor().r,
-            Output_GetFogColor().g,
-            Output_GetFogColor().b,
-            Output_GetFogColor().a,
-        },
-    };
-    Output_GetOrthoProjectionMatrix(globals.mat_proj_ortho);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.globals);
-    GFX_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(globals), &globals);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms->general);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, uniforms->matrices);
 }
 
 void Output_Shader_UploadModelMatrix(
     const OUTPUT_SHADER *const shader, const MATRIX *const source)
 {
-    M_UploadMatrix(shader, M_UNIFORM_MODEL_MATRIX, source);
-}
+    GLfloat m[4][4];
+    Output_FillMatrix(m, source);
 
-void Output_Shader_UploadViewMatrix(
-    const OUTPUT_SHADER *const shader, const MATRIX *const matrix)
-{
-    M_UNIFORM_MATRICES matrices = {};
-    Output_GetPerspProjectionMatrix(matrices.mat_proj_persp);
-    M_FillMatrix(matrices.mat_view, matrix);
-
-    glBindBuffer(GL_UNIFORM_BUFFER, shader->ubo.matrices);
-    GFX_TRACK_SUBDATA(
-        glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(matrices), &matrices);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    GFX_TRACK_UNIFORM(
+        glUniformMatrix4fv, shader->uniforms[M_UNIFORM_MODEL_MATRIX], 1,
+        GL_FALSE, &m[0][0]);
 }
 
 void Output_Shader_UploadProjectionMode(

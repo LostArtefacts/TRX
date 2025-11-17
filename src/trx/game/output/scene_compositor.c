@@ -5,6 +5,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/shader.h>
 #include <trx/game/output/textures.h>
+#include <trx/game/output/uniforms.h>
 #include <trx/game/shell.h>
 #include <trx/gfx/context.h>
 #include <trx/vector.h>
@@ -45,7 +46,7 @@ static void M_SetupShaderForScene(
 
 static void M_SetupShaderForUI(OUTPUT_SHADER *const shader)
 {
-    Output_Shader_UploadViewMatrix(shader, &g_IDMatrix);
+    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_IDMatrix);
     Output_Shader_UploadProjectionMode(shader, PROJECTION_MODE_ORTHOGRAPHIC);
     Output_Shader_UploadLightingMode(shader, LIGHTING_MODE_ONLY_SHADES);
 }
@@ -119,9 +120,7 @@ static void M_PrepareScene(const M_PRIV *const p)
         p->sampler_id, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         g_Config.rendering.anisotropy_filter);
 
-    OUTPUT_SHADER *const shader = Output_GetMeshShader();
-    Output_Shader_Bind(shader);
-    Output_Shader_UploadCommonUniforms(shader);
+    Output_Uniforms_UploadGeneral(Output_GetUniforms());
 }
 
 static void M_RenderScenePasses(const M_PRIV *const p)
@@ -136,7 +135,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     M_SetSamplerFilter(p->sampler_id, g_Config.rendering.texture_filter);
 
     Output_Shader_Bind(shader);
-    Output_Shader_UploadViewMatrix(shader, &g_ViewMatrix);
+    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
     M_BindTextures(p);
     M_SetupShaderForScene(shader, g_Config.rendering.enable_lighting);
     M_SetBlendModeForScene(wireframe);

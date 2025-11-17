@@ -3,6 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/output/shader.h>
+#include <trx/game/output/uniforms.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/memory.h>
