@@ -11,6 +11,18 @@
 #include <trx/utils.h>
 #include <trx/vector.h>
 
+// GL attribute mapping in the shader
+typedef enum {
+    // clang-format off
+    M_ATTR_POS = 0,
+    M_ATTR_UVW = 1,
+    M_ATTR_TEXTURE_SIZE = 2,
+    M_ATTR_FLAGS = 3,
+    M_ATTR_COLOR = 4,
+    M_ATTR_SHADE = 5,
+    // clang-format on
+} M_VERTEX_ATTR;
+
 typedef struct {
     XYZW_F pos;
     OUTPUT_UVW uvw;
@@ -93,6 +105,8 @@ static float M_Get3DPickupScale(
 
 static void M_Draw3DPickups(const M_PRIV *const p)
 {
+    Output_Shader_Bind(Output_GetMeshShader());
+
     for (int32_t i = 0; i < p->scheduled_pickups->count; i++) {
         if (p->objects_source->render_begin != nullptr) {
             p->objects_source->render_begin(p->objects_source);
@@ -164,8 +178,6 @@ static void M_DrawVertices(const M_PRIV *const p)
 {
     glBindVertexArray(p->vao);
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
-    glVertexAttrib3f(OUTPUT_MESH_ATTR_NORMAL, 0.0f, 0.0f, 0.0f);
-    glVertexAttrib2f(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 1.0f, 1.0f);
     GFX_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_STATIC_DRAW);
@@ -191,16 +203,15 @@ static void M_RenderPass(
         return;
     }
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if (p->vertices->count > 0) {
+        M_DrawVertices(p);
+    }
+
     if (p->scheduled_pickups->count > 0) {
         glEnable(GL_CULL_FACE);
         M_Draw3DPickups(p);
         glDisable(GL_CULL_FACE);
-    }
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    if (p->vertices->count > 0) {
-        Output_Shader_UploadModelMatrix(Output_GetMeshShader(), &g_IDMatrix);
-        M_DrawVertices(p);
     }
 }
 
@@ -228,31 +239,29 @@ void OutputSource_UI_Init(void)
     glGenBuffers(1, &p->vbo);
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
 
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_POS);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
-    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_NORMAL);
-    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
+    glEnableVertexAttribArray(M_ATTR_POS);
+    glEnableVertexAttribArray(M_ATTR_UVW);
+    glEnableVertexAttribArray(M_ATTR_COLOR);
+    glEnableVertexAttribArray(M_ATTR_SHADE);
+    glEnableVertexAttribArray(M_ATTR_TEXTURE_SIZE);
+    glEnableVertexAttribArray(M_ATTR_FLAGS);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        M_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        M_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, uvw));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
+        M_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, color));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_USHORT_GL, GL_FALSE, sizeof(M_VERTEX),
+        M_ATTR_SHADE, 1, OUTPUT_USHORT_GL, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, shade));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_TEXTURE_SIZE, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        M_ATTR_TEXTURE_SIZE, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, texture_size));
     glVertexAttribIPointer(
-        OUTPUT_MESH_ATTR_FLAGS, 1, OUTPUT_USHORT_GL, sizeof(M_VERTEX),
+        M_ATTR_FLAGS, 1, OUTPUT_USHORT_GL, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, flags));
 }
 
@@ -295,7 +304,7 @@ void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)
         vertices[i].texture_size.y0 = v0;
         vertices[i].texture_size.x1 = u1;
         vertices[i].texture_size.y1 = v1;
-        vertices[i].flags = VERT_NO_CAUSTICS;
+        vertices[i].flags = 0;
     }
 
 #define L_SET(vtx_idx, x_, y_, u_, v_)                                         \
@@ -324,8 +333,7 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
         vertices[i].pos.z = quad.z;
         vertices[i].pos.w = 0.0f;
         vertices[i].shade = SHADE_NEUTRAL;
-        vertices[i].flags =
-            VERT_NO_LIGHTING | VERT_FLAT_SHADED | VERT_NO_CAUSTICS;
+        vertices[i].flags = VERT_FLAT_SHADED;
     }
 
 #define L_SET(vtx_idx, x_, y_, color_)                                         \

@@ -12,6 +12,7 @@ bool Output_IsHeadless(void);
 
 const OUTPUT_UNIFORMS *Output_GetUniforms(void);
 OUTPUT_SHADER *Output_GetMeshShader(void);
+OUTPUT_SHADER *Output_GetUIShader(void);
 
 void Output_BeginScene(void);
 void Output_EndScene(void);
