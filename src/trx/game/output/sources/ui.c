@@ -105,7 +105,7 @@ static float M_Get3DPickupScale(
 
 static void M_Draw3DPickups(const M_PRIV *const p)
 {
-    Output_Shader_Bind(Output_GetMeshShader());
+    Output_MeshShader_Bind(Output_GetMeshShader());
 
     for (int32_t i = 0; i < p->scheduled_pickups->count; i++) {
         if (p->objects_source->render_begin != nullptr) {

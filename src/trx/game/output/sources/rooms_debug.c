@@ -27,7 +27,7 @@ typedef struct {
 
 typedef struct {
     SCENE_SOURCE source;
-    OUTPUT_SHADER *shader;
+    OUTPUT_MESH_SHADER *shader;
     VECTOR *vertices;
     size_t mesh_count;
     M_ROOM_MESH *meshes;
@@ -181,7 +181,7 @@ static void M_RenderPass(
         const M_INSTANCE *const instance = Vector_Get(p->scheduled, i);
         const M_ROOM_MESH *const mesh =
             &p->meshes[Room_GetNumber(instance->room)];
-        Output_Shader_UploadModelMatrix(p->shader, &instance->matrix);
+        Output_MeshShader_UploadModelMatrix(p->shader, &instance->matrix);
         if (g_Config.debug.enable_debug_triggers) {
             glDrawArrays(
                 GL_TRIANGLES, mesh->triggers.vertex_start,

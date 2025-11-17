@@ -1,11 +1,9 @@
-#include <trx/game/output/shader.h>
+#include <trx/game/output/shaders/generic.h>
 
 #include <trx/debug.h>
 #include <trx/game/output.h>
-#include <trx/game/output/utils.h>
 #include <trx/game/viewport.h>
 #include <trx/gfx/gl/program.h>
-#include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
 
 #include <uthash.h>
@@ -23,10 +21,6 @@ struct OUTPUT_SHADER {
     int32_t count;
     M_UNIFORM *uniforms;
     M_UNIFORM *uniform_hash;
-
-    bool is_wibble_effect;
-    bool is_alpha_discard_enabled;
-    RGB_F tint;
 };
 
 static const char *const m_UniformBlocks[] = {
@@ -34,18 +28,6 @@ static const char *const m_UniformBlocks[] = {
     "Matrices",
     nullptr,
 };
-
-static GLint M_Uniform_Lookup(
-    const OUTPUT_SHADER *const shader, const char *const name)
-{
-    M_UNIFORM *uniform = nullptr;
-    HASH_FIND_STR(shader->uniform_hash, name, uniform);
-    if (uniform == nullptr) {
-        LOG_ERROR("Uniform %s not found", name);
-        return -1;
-    }
-    return uniform->location;
-}
 
 static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
 {
@@ -136,8 +118,6 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
     }
 
     GFX_GL_Program_Bind(&shader->program);
-    GFX_TRACK_UNIFORM(glUniform1i, M_Uniform_Lookup(shader, "uTexAtlas"), 0);
-    GFX_TRACK_UNIFORM(glUniform1i, M_Uniform_Lookup(shader, "uTexEnvMap"), 1);
     return shader;
 }
 
@@ -162,47 +142,14 @@ void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uniforms->matrices);
 }
 
-void Output_Shader_UploadModelMatrix(
-    const OUTPUT_SHADER *const shader, const MATRIX *const source)
+GLint Output_Shader_LookupUniform(
+    const OUTPUT_SHADER *const shader, const char *const name)
 {
-    GLfloat m[4][4];
-    Output_FillMatrix(m, source);
-
-    GFX_TRACK_UNIFORM(
-        glUniformMatrix4fv, M_Uniform_Lookup(shader, "uMatModel"), 1, GL_FALSE,
-        &m[0][0]);
-}
-
-void Output_Shader_UploadAlphaDiscard(
-    OUTPUT_SHADER *const shader, const bool is_enabled)
-{
-    if (is_enabled == shader->is_alpha_discard_enabled) {
-        return;
+    M_UNIFORM *uniform = nullptr;
+    HASH_FIND_STR(shader->uniform_hash, name, uniform);
+    if (uniform == nullptr) {
+        LOG_ERROR("Uniform %s not found", name);
+        return -1;
     }
-    GFX_TRACK_UNIFORM(
-        glUniform1i, M_Uniform_Lookup(shader, "uDiscardAlpha"), is_enabled);
-    shader->is_alpha_discard_enabled = is_enabled;
-}
-
-void Output_Shader_UploadWibbleEffect(
-    OUTPUT_SHADER *const shader, const bool is_enabled)
-{
-    if (is_enabled == shader->is_wibble_effect) {
-        return;
-    }
-    GFX_TRACK_UNIFORM(
-        glUniform1i, M_Uniform_Lookup(shader, "uWibbleEffect"), is_enabled);
-    shader->is_wibble_effect = is_enabled;
-}
-
-void Output_Shader_UploadTint(OUTPUT_SHADER *const shader, const RGB_F tint)
-{
-    if (tint.r == shader->tint.r && tint.g == shader->tint.g
-        && tint.b == shader->tint.b) {
-        return;
-    }
-    GFX_TRACK_UNIFORM(
-        glUniform3f, M_Uniform_Lookup(shader, "uGlobalTint"), tint.r, tint.g,
-        tint.b);
-    shader->tint = tint;
+    return uniform->location;
 }
