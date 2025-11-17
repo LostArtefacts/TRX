@@ -46,6 +46,8 @@
 - fixed title bar size being too small on HiDPI screens on Windows platform (#2837)
 - fixed statics and items not getting rendered when all portals leading to them are offscreen (#2005)
 - fixed Lara's arms getting stuck in the M16 gun firing animation while she dies (#4130)
+- fixed Lara jittering in the QWOP state
+- fixed doors and trapdoors not interpolating when using the door cheat
 
 **TR1**:
 - added a new easter egg command
