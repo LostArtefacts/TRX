@@ -149,7 +149,7 @@ static void M_Init(GFX_RENDERER *const renderer, const GFX_CONFIG *const config)
     GFX_GL_Program_Link(&p->program);
     GFX_GL_Program_Bind(&p->program);
     GFX_GL_Program_Uniform1i(
-        &p->program, GFX_GL_Program_UniformLocation(&p->program, "tex0"), 0);
+        &p->program, GFX_GL_Program_UniformLocation(&p->program, "uTex0"), 0);
 
     VIEWPORT_RECT rect;
     rect = Viewport_GetRect(VIEWPORT_GAME);

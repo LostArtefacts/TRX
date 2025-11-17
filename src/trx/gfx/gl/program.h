@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 
 typedef struct {
+    char *path;
     bool initialized;
     GLuint id;
 } GFX_GL_PROGRAM;

@@ -128,7 +128,7 @@ static char *M_Preprocess(const char *content, GLenum type)
     return processed_content;
 }
 
-bool GFX_GL_Program_Init(GFX_GL_PROGRAM *program)
+bool GFX_GL_Program_Init(GFX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     program->id = glCreateProgram();
@@ -140,9 +140,10 @@ bool GFX_GL_Program_Init(GFX_GL_PROGRAM *program)
     return true;
 }
 
-void GFX_GL_Program_Close(GFX_GL_PROGRAM *program)
+void GFX_GL_Program_Close(GFX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
+    Memory_FreePointer(&program->path);
     if (program->id) {
         glDeleteProgram(program->id);
         GFX_GL_CheckError();
@@ -162,6 +163,9 @@ void GFX_GL_Program_AttachShader(
 {
     ASSERT(program != nullptr);
     ASSERT(path != nullptr);
+
+    Memory_FreePointer(&program->path);
+    program->path = Memory_DupStr(path);
 
     GLuint shader_id = glCreateShader(type);
     GFX_GL_CheckError();
@@ -204,9 +208,10 @@ void GFX_GL_Program_AttachShader(
         GFX_GL_CheckError();
 
         if (info_log[0]) {
-            Shell_ExitSystemFmt("Shader compilation failed:\n%s", info_log);
+            Shell_ExitSystemFmt(
+                "%s: compilation failed\n%s", program->path, info_log);
         } else {
-            Shell_ExitSystemFmt("Shader compilation failed.");
+            Shell_ExitSystemFmt("%s: compilation failed.", program->path);
         }
     }
 
@@ -219,7 +224,7 @@ void GFX_GL_Program_AttachShader(
     GFX_GL_CheckError();
 }
 
-void GFX_GL_Program_Link(GFX_GL_PROGRAM *program)
+void GFX_GL_Program_Link(GFX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     glLinkProgram(program->id);
@@ -236,48 +241,53 @@ void GFX_GL_Program_Link(GFX_GL_PROGRAM *program)
             program->id, info_log_size, &info_log_size, info_log);
         GFX_GL_CheckError();
         if (info_log[0]) {
-            Shell_ExitSystemFmt("Shader linking failed:\n%s", info_log);
+            Shell_ExitSystemFmt(
+                "%s: shader linking failed\n%s", program->path, info_log);
         } else {
-            Shell_ExitSystemFmt("Shader linking failed.");
+            Shell_ExitSystemFmt("%s: shader linking failed", program->path);
         }
     }
 }
 
-void GFX_GL_Program_FragmentData(GFX_GL_PROGRAM *program, const char *name)
+void GFX_GL_Program_FragmentData(
+    GFX_GL_PROGRAM *const program, const char *const name)
 {
     ASSERT(program != nullptr);
     glBindFragDataLocation(program->id, 0, name);
     GFX_GL_CheckError();
 }
 
-GLint GFX_GL_Program_UniformLocation(GFX_GL_PROGRAM *program, const char *name)
+GLint GFX_GL_Program_UniformLocation(
+    GFX_GL_PROGRAM *const program, const char *const name)
 {
     ASSERT(program != nullptr);
     GLint location = glGetUniformLocation(program->id, name);
     GFX_GL_CheckError();
     if (location == -1) {
-        LOG_INFO("Shader uniform not found: %s", name);
+        LOG_INFO("%s: uniform not found (%s)", program->path, name);
     }
     return location;
 }
 
 void GFX_GL_Program_Uniform4f(
-    GFX_GL_PROGRAM *program, GLint loc, GLfloat v0, GLfloat v1, GLfloat v2,
-    GLfloat v3)
+    GFX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0,
+    const GLfloat v1, const GLfloat v2, const GLfloat v3)
 {
     ASSERT(program != nullptr);
     GFX_TRACK_UNIFORM(glUniform4f, loc, v0, v1, v2, v3);
     GFX_GL_CheckError();
 }
 
-void GFX_GL_Program_Uniform1i(GFX_GL_PROGRAM *program, GLint loc, GLint v0)
+void GFX_GL_Program_Uniform1i(
+    GFX_GL_PROGRAM *const program, const GLint loc, const GLint v0)
 {
     ASSERT(program != nullptr);
     GFX_TRACK_UNIFORM(glUniform1i, loc, v0);
     GFX_GL_CheckError();
 }
 
-void GFX_GL_Program_Uniform1f(GFX_GL_PROGRAM *program, GLint loc, GLfloat v0)
+void GFX_GL_Program_Uniform1f(
+    GFX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0)
 {
     ASSERT(program != nullptr);
     GFX_TRACK_UNIFORM(glUniform1f, loc, v0);
@@ -285,7 +295,8 @@ void GFX_GL_Program_Uniform1f(GFX_GL_PROGRAM *program, GLint loc, GLfloat v0)
 }
 
 void GFX_GL_Program_Uniform2f(
-    GFX_GL_PROGRAM *program, GLint loc, GLfloat v0, GLfloat v1)
+    GFX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0,
+    const GLfloat v1)
 {
     ASSERT(program != nullptr);
     GFX_TRACK_UNIFORM(glUniform2f, loc, v0, v1);

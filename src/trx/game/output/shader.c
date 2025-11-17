@@ -14,7 +14,6 @@ typedef enum {
     M_UNIFORM_ALPHA_DISCARD,
     M_UNIFORM_GLOBAL_TINT,
     M_UNIFORM_MODEL_MATRIX,
-    M_UNIFORM_VIEW_MATRIX,
     M_UNIFORM_WIBBLE_EFFECT,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
@@ -107,7 +106,6 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_TEX_ENV_MAP] = "uTexEnvMap",
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
         [M_UNIFORM_MODEL_MATRIX] = "uMatModel",
-        [M_UNIFORM_VIEW_MATRIX] = "uMatView",
         [M_UNIFORM_WIBBLE_EFFECT] = "uWibbleEffect",
         [M_UNIFORM_ALPHA_DISCARD] = "uDiscardAlpha",
     };
