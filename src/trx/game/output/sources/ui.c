@@ -19,7 +19,6 @@ typedef enum {
     M_ATTR_TEXTURE_SIZE = 2,
     M_ATTR_FLAGS = 3,
     M_ATTR_COLOR = 4,
-    M_ATTR_SHADE = 5,
     // clang-format on
 } M_VERTEX_ATTR;
 
@@ -28,7 +27,6 @@ typedef struct {
     OUTPUT_UVW uvw;
     OUTPUT_TEXTURE_SIZE texture_size;
     OUTPUT_USHORT flags;
-    OUTPUT_SHORT shade;
     RGBA_8888 color;
 } M_VERTEX;
 
@@ -242,7 +240,6 @@ void OutputSource_UI_Init(void)
     glEnableVertexAttribArray(M_ATTR_POS);
     glEnableVertexAttribArray(M_ATTR_UVW);
     glEnableVertexAttribArray(M_ATTR_COLOR);
-    glEnableVertexAttribArray(M_ATTR_SHADE);
     glEnableVertexAttribArray(M_ATTR_TEXTURE_SIZE);
     glEnableVertexAttribArray(M_ATTR_FLAGS);
     glVertexAttribPointer(
@@ -254,9 +251,6 @@ void OutputSource_UI_Init(void)
     glVertexAttribPointer(
         M_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, color));
-    glVertexAttribPointer(
-        M_ATTR_SHADE, 1, OUTPUT_USHORT_GL, GL_FALSE, sizeof(M_VERTEX),
-        (void *)(intptr_t)offsetof(M_VERTEX, shade));
     glVertexAttribPointer(
         M_ATTR_TEXTURE_SIZE, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, texture_size));
@@ -294,11 +288,10 @@ void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)
     for (int32_t i = 0; i < 4; i++) {
         vertices[i].pos.z = sprite.z;
         vertices[i].pos.w = 0.0f;
-        vertices[i].color.r = sprite.color.r;
-        vertices[i].color.g = sprite.color.g;
-        vertices[i].color.b = sprite.color.b;
-        vertices[i].color.a = sprite.color.a;
-        vertices[i].shade = sprite.shade;
+        vertices[i].color.r = sprite.color.r * 255.0f;
+        vertices[i].color.g = sprite.color.g * 255.0f;
+        vertices[i].color.b = sprite.color.b * 255.0f;
+        vertices[i].color.a = sprite.color.a * 255.0f;
         vertices[i].uvw.w = sprite_tex->tex_page;
         vertices[i].texture_size.x0 = u0;
         vertices[i].texture_size.y0 = v0;
@@ -332,17 +325,13 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
     for (int32_t i = 0; i < 4; i++) {
         vertices[i].pos.z = quad.z;
         vertices[i].pos.w = 0.0f;
-        vertices[i].shade = SHADE_NEUTRAL;
         vertices[i].flags = VERT_FLAT_SHADED;
     }
 
 #define L_SET(vtx_idx, x_, y_, color_)                                         \
     vertices[vtx_idx].pos.x = x_;                                              \
     vertices[vtx_idx].pos.y = y_;                                              \
-    vertices[vtx_idx].color.r = color_.r;                                      \
-    vertices[vtx_idx].color.g = color_.g;                                      \
-    vertices[vtx_idx].color.b = color_.b;                                      \
-    vertices[vtx_idx].color.a = color_.a;
+    vertices[vtx_idx].color = color_;
     L_SET(0, quad.x0, quad.y0, quad.tl);
     L_SET(1, quad.x1, quad.y0, quad.tr);
     L_SET(2, quad.x1, quad.y1, quad.br);

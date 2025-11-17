@@ -24,7 +24,7 @@ typedef struct {
     int32_t x1, y1;
     int32_t z;
     int16_t shade;
-    RGBA_8888 color;
+    RGBA_F color;
 } OUTPUT_UI_SPRITE;
 
 typedef struct {

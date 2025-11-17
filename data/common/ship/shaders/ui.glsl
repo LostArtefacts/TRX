@@ -7,14 +7,12 @@ layout(location = 1) in vec3 inUVW;
 layout(location = 2) in vec4 inTextureSize;
 layout(location = 3) in uint inFlags;
 layout(location = 4) in vec4 inColor;
-layout(location = 5) in float inShade;
 
 out vec3 gNormal;
 flat out uint gFlags;
 flat out int gTexLayer;
 out vec2 gTexUV;
 flat out vec4 gAtlasSize;
-out float gShade;
 out vec4 gColor;
 
 void main(void) {
@@ -23,7 +21,6 @@ void main(void) {
     gAtlasSize = inTextureSize;
     gTexUV = inUVW.xy;
     gTexLayer = int(inUVW.z);
-    gShade = inShade;
     gColor = inColor;
 }
 
@@ -35,7 +32,6 @@ flat in uint gFlags;
 flat in int gTexLayer;
 in vec2 gTexUV;
 flat in vec4 gAtlasSize;
-in float gShade;
 in vec4 gColor;
 out vec4 outColor;
 
@@ -53,7 +49,6 @@ void main(void) {
         texColor.rgb *= texColor.a;
     }
 
-    texColor.rgb = applyShade(texColor.rgb, gShade);
     texColor.rgb *= uBrightnessMultiplier;
     outColor = texColor;
 }

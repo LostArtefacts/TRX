@@ -124,7 +124,7 @@ void Output_DrawLightningSegment(const LIGHTNING_SEGMENT segment)
 
 void Output_DrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
-    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade)
+    const int32_t scale_v, const int32_t sprite_idx, const RGBA_F color)
 {
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_idx);
     const int32_t x0 = sx + (scale_h * sprite->x0 / PHD_ONE);
@@ -138,8 +138,7 @@ void Output_DrawScreenSprite(
         .x1 = x1,
         .y1 = y1,
         .z = Output_GetNearZ_UI() + z,
-        .shade = shade,
-        .color = { 255, 255, 255, 255 },
+        .color = color,
     });
 }
 

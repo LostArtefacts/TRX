@@ -21,7 +21,7 @@ void Output_DrawBlackRectangle(int32_t opacity);
 // UI
 void Output_DrawScreenSprite(
     int32_t sx, int32_t sy, int32_t sz, int32_t scale_h, int32_t scale_v,
-    int32_t sprite_idx, int16_t shade);
+    int32_t sprite_idx, RGBA_F color);
 void Output_DrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 color);
 void Output_DrawScreenGradientQuad(

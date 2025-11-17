@@ -115,6 +115,18 @@ vec4 applyFog(vec4 color, float depth)
     }
 }
 
+vec3 applyShade(vec3 color, float shade)
+{
+    if (uLightingContrast == LIGHTING_CONTRAST_MEDIUM) {
+        shade = max(shade, SHADE_HIGH);
+    }
+    if (uLightingContrast == LIGHTING_CONTRAST_LOW) {
+        shade = max(shade, SHADE_NEUTRAL);
+    }
+
+    return color * (2.0 - (shade / SHADE_NEUTRAL));
+}
+
 void main(void) {
     vec4 texColor = gColor;
 
