@@ -9,6 +9,7 @@
 #include <trx/vector.h>
 #include <trx/version.h>
 
+#define M_WHITE ((RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f })
 #define M_OUTLINE_THICKNESS 0.75f
 #define M_SCHEDULE_OP(draw_func, type, ...)                                    \
     do {                                                                       \
@@ -146,7 +147,7 @@ typedef struct {
 typedef struct {
     M_DRAW_OP base;
     int32_t sx, sy, z, scale_h, scale_v, sprite_idx;
-    int16_t shade;
+    RGBA_F color;
 } M_DRAW_OP_SPRITE;
 
 typedef struct {
@@ -196,9 +197,9 @@ static void M_DrawScreenQuad(
 
 static void M_DrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t sz, const int32_t scale_h,
-    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade)
+    const int32_t scale_v, const int32_t sprite_idx, const RGBA_F color)
 {
-    Output_DrawScreenSprite(sx, sy, sz, scale_h, scale_v, sprite_idx, shade);
+    Output_DrawScreenSprite(sx, sy, sz, scale_h, scale_v, sprite_idx, color);
 }
 
 static void M_DrawScreenGradientBox(
@@ -276,7 +277,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
         const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
         M_DrawScreenSprite(
             op->x0, op->y, op->z, (op->x1 - op->x0) * PHD_ONE / 8, PHD_ONE,
-            mesh_idx + 4, SHADE_NEUTRAL);
+            mesh_idx + 4, M_WHITE);
     } else {
         const float e = Scaler_Calc(M_OUTLINE_THICKNESS, SCALER_TARGET_TEXT);
         M_DrawScreenQuad(
@@ -309,23 +310,19 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP_TEXT_RECT *const op)
 
         // Corners
         M_DrawScreenSprite(
-            x0, y0, op->z, scale_h, scale_v, mesh_idx + 0, SHADE_NEUTRAL);
+            x0, y0, op->z, scale_h, scale_v, mesh_idx + 0, M_WHITE);
         M_DrawScreenSprite(
-            x1, y0, op->z, scale_h, scale_v, mesh_idx + 1, SHADE_NEUTRAL);
+            x1, y0, op->z, scale_h, scale_v, mesh_idx + 1, M_WHITE);
         M_DrawScreenSprite(
-            x1, y1, op->z, scale_h, scale_v, mesh_idx + 2, SHADE_NEUTRAL);
+            x1, y1, op->z, scale_h, scale_v, mesh_idx + 2, M_WHITE);
         M_DrawScreenSprite(
-            x0, y1, op->z, scale_h, scale_v, mesh_idx + 3, SHADE_NEUTRAL);
+            x0, y1, op->z, scale_h, scale_v, mesh_idx + 3, M_WHITE);
 
         // Lines
-        M_DrawScreenSprite(
-            x0, y0, op->z, w, scale_v, mesh_idx + 4, SHADE_NEUTRAL);
-        M_DrawScreenSprite(
-            x1, y0, op->z, scale_h, h, mesh_idx + 5, SHADE_NEUTRAL);
-        M_DrawScreenSprite(
-            x0, y1, op->z, w, scale_v, mesh_idx + 6, SHADE_NEUTRAL);
-        M_DrawScreenSprite(
-            x0, y0, op->z, scale_h, h, mesh_idx + 7, SHADE_NEUTRAL);
+        M_DrawScreenSprite(x0, y0, op->z, w, scale_v, mesh_idx + 4, M_WHITE);
+        M_DrawScreenSprite(x1, y0, op->z, scale_h, h, mesh_idx + 5, M_WHITE);
+        M_DrawScreenSprite(x0, y1, op->z, w, scale_v, mesh_idx + 6, M_WHITE);
+        M_DrawScreenSprite(x0, y0, op->z, scale_h, h, mesh_idx + 7, M_WHITE);
         return;
     }
 
@@ -366,7 +363,7 @@ static void M_DrawOp_Sprite(const M_DRAW_OP_SPRITE *const op)
 {
     Output_DrawScreenSprite(
         op->sx, op->sy, op->z, op->scale_h, op->scale_v, op->sprite_idx,
-        op->shade);
+        op->color);
 }
 
 static void M_DrawOp_Quad(const M_DRAW_OP_QUAD *const op)
@@ -418,12 +415,12 @@ void UI_ScheduleDrawTextOutline(
 
 void UI_ScheduleDrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
-    const int32_t scale_v, const int32_t sprite_idx, const int16_t shade)
+    const int32_t scale_v, const int32_t sprite_idx, const RGBA_F color)
 {
     M_SCHEDULE_OP(
         M_DrawOp_Sprite, M_DRAW_OP_SPRITE, .sx = sx, .sy = sy, .z = z,
         .scale_h = scale_h, .scale_v = scale_v, .sprite_idx = sprite_idx,
-        .shade = shade);
+        .color = color);
 }
 
 void UI_ScheduleDrawScreenFlatQuad(

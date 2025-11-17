@@ -332,7 +332,7 @@ static void M_Process(
     const UI_TEXT_SETTINGS settings, const float base_x, const float base_y,
     float (*const scale_func)(float),
     void (*const draw_func)(
-        int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int16_t))
+        int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, RGBA_F))
 {
     if (text == nullptr) {
         return;
@@ -391,7 +391,8 @@ static void M_Process(
             goto loop_end;
         }
 
-        const int16_t shade = dimmed ? 0x1600 : SHADE_NEUTRAL;
+        const RGBA_F color = dimmed ? (RGBA_F) { 0.6f, 0.6f, 0.6f, 1.0f }
+                                    : (RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f };
 
         if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
@@ -408,7 +409,7 @@ static void M_Process(
             if (visible && draw_func != nullptr) {
                 draw_func(
                     x + scale_func(10), y, z, output_scale, output_scale,
-                    sprite_idx, shade);
+                    sprite_idx, color);
             }
             x += glyph->width * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
@@ -424,14 +425,14 @@ static void M_Process(
                 y + (glyph->combine_with.offset_y * scale / UI_TEXT_BASE_SCALE);
             draw_func(
                 cx, cy, 0, scale, scale,
-                obj->mesh_idx + glyph->combine_with.mesh_idx, shade);
+                obj->mesh_idx + glyph->combine_with.mesh_idx, color);
         }
 
         if (obj->loaded && glyph->mesh_idx >= 0
             && glyph->mesh_idx < ABS(obj->mesh_count) && visible
             && draw_func != nullptr) {
             draw_func(
-                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx, shade);
+                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx, color);
         }
 
         if (glyph->role != GLYPH_COMBINING) {

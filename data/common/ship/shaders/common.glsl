@@ -44,15 +44,3 @@ vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
     float epsilon = 0.5 / 256.0;
     return clamp(uv, atlasSize.xy + epsilon, atlasSize.zw - epsilon);
 }
-
-vec3 applyShade(vec3 color, float shade)
-{
-    if (uLightingContrast == LIGHTING_CONTRAST_MEDIUM) {
-        shade = max(shade, SHADE_HIGH);
-    }
-    if (uLightingContrast == LIGHTING_CONTRAST_LOW) {
-        shade = max(shade, SHADE_NEUTRAL);
-    }
-
-    return color * (2.0 - (shade / SHADE_NEUTRAL));
-}

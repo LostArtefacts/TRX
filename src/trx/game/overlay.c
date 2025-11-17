@@ -117,7 +117,8 @@ static void M_DrawAssaultTimer(void)
             glyph_info[glyph_type].offset, SCALER_TARGET_ASSAULT_DIGITS);
         UI_ScheduleDrawScreenSprite(
             x, y, 0, scale_h, scale_v,
-            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, SHADE_NEUTRAL);
+            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num,
+            (RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f });
         x += Scaler_Calc(
             glyph_info[glyph_type].width, SCALER_TARGET_ASSAULT_DIGITS);
     }
