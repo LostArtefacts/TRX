@@ -2,11 +2,11 @@
 
 #ifdef VERTEX
 
-#include "billboard.glsl"
-#include "lights.glsl"
-
 uniform mat4 uMatModel;
 uniform bool uWibbleEffect;
+
+#include "billboard.glsl"
+#include "lights.glsl"
 
 layout(location = 0) in vec4 inPosition;
 layout(location = 1) in vec4 inNormal;
@@ -84,7 +84,12 @@ void main(void) {
     if (uLightingEnabled == 0) {
         gShade = SHADE_NEUTRAL;
     } else if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        float newShade = light(inShade2, gFlags, inNormal.xyz, worldPos, inNormal.w);
+        float newShade = light(
+            inShade2,
+            gFlags,
+            inNormal.xyz,
+            worldPos,
+            inNormal.w);
 
         if (uUseNewLighting == 0) {
             // OG lighting, untextured

@@ -5,14 +5,16 @@
 #include <trx/game/output/types.h>
 
 // clang-format off
-#define VERT_NO_CAUSTICS       0b0000'0001 // = 0x01
-#define VERT_FLAT_SHADED       0b0000'0010 // = 0x02
-#define VERT_REFLECTIVE        0b0000'0100 // = 0x04
-#define VERT_NO_LIGHTING       0b0000'1000 // = 0x08
-#define VERT_BILLBOARD         0b0001'0000 // = 0x10
-#define VERT_ABS_SPRITE        0b0010'0000 // = 0x20
-#define VERT_NO_ALPHA_DISCARD  0b0100'0000 // = 0x40
-#define VERT_USE_DYNAMIC_LIGHT 0b1000'0000 // = 0x80
+#define VERT_NO_CAUSTICS       0b0000'0000'0001 // = 0x0001
+#define VERT_FLAT_SHADED       0b0000'0000'0010 // = 0x0002
+#define VERT_REFLECTIVE        0b0000'0000'0100 // = 0x0004
+#define VERT_NO_LIGHTING       0b0000'0000'1000 // = 0x0008
+#define VERT_BILLBOARD         0b0000'0001'0000 // = 0x0010
+#define VERT_ABS_SPRITE        0b0000'0010'0000 // = 0x0020
+#define VERT_NO_ALPHA_DISCARD  0b0000'0100'0000 // = 0x0040
+#define VERT_USE_DYNAMIC_LIGHT 0b0000'1000'0000 // = 0x0080
+#define VERT_USE_OBJECT_LIGHT  0b0001'0000'0000 // = 0x0100
+#define VERT_USE_OWN_LIGHT     0b0010'0000'0000 // = 0x0200
 // clang-format on
 
 // GL attribute mapping in the shader

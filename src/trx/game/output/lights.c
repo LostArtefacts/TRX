@@ -130,10 +130,10 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
             const int32_t divider = brightest_light.shade == adder
                 ? adder
                 : brightest_light.shade - adder;
-            global_divider = (1 << (W2V_SHIFT + 12)) / divider;
+            global_divider = (1 << W2V_SHIFT) * SHADE_NEUTRAL / divider;
         } else {
             global_adder = room->ambient - adder;
-            global_divider = (1 << (W2V_SHIFT + 12)) / adder;
+            global_divider = (1 << W2V_SHIFT) * SHADE_NEUTRAL / adder;
         }
         int16_t angles[2];
         Math_GetVectorAngles(
@@ -346,6 +346,17 @@ int32_t Output_GetSunsetDuration(void)
 void Output_SetSunsetEnabled(const bool enabled)
 {
     m_IsSunsetEnabled = enabled;
+}
+
+int16_t Output_GetSkyShade(void)
+{
+    if (!m_IsSunsetEnabled) {
+        return SHADE_NEUTRAL;
+    }
+    float sunset_progress =
+        Output_GetTimeInGame() / (float)Output_GetSunsetDuration();
+    CLAMP(sunset_progress, 0.0f, 1.0f);
+    return SHADE_NEUTRAL + SHADE_SUNSET * sunset_progress;
 }
 
 void Output_AnimateLights(const int32_t num_frames)

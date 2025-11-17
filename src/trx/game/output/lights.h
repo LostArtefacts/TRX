@@ -17,6 +17,7 @@ void Output_LightRoom(ROOM *room);
 
 int32_t Output_GetSunsetDuration(void);
 void Output_SetSunsetEnabled(bool enabled);
+int16_t Output_GetSkyShade(void);
 
 void Output_ResetDynamicLights(void);
 void Output_AddDynamicLight(XYZ_32 pos, int32_t intensity, int32_t falloff);

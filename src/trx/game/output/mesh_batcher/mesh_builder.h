@@ -41,4 +41,4 @@ OUTPUT_MESH *MeshBuilder_Seal(MESH_BUILDER *builder);
 // Utility method to add a quad representing a room sprite.
 void MeshBuilder_AddRoomSprite(
     MESH_BUILDER *builder, const ROOM_SPRITE *room_sprite, const ROOM *room,
-    float depth_adjust);
+    float depth_adjust, uint16_t extra_flags);

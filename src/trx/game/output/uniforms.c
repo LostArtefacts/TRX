@@ -9,6 +9,7 @@
 #include <trx/gfx/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
+#include <trx/utils.h>
 #include <trx/vector.h>
 
 #define M_GLOBAL_MEMBERS                                                       \
@@ -51,6 +52,13 @@ typedef struct {
     int _pad[2];
     M_UNIFORM_LIGHT lights[M_MAX_LIGHTS];
 } M_UNIFORM_LIGHTS;
+
+typedef struct {
+    float adder;
+    float divider;
+    float _pad[2];
+    float vector_view[4];
+} M_UNIFORM_LS;
 #pragma pack(pop)
 
 static void M_FillLight(
@@ -123,6 +131,7 @@ void Output_Uniforms_UploadRoomLights(
 {
     M_UNIFORM_LIGHTS lights = {};
 
+    // Only dynamic lights for now.
     M_UNIFORM_LIGHT *dst_light = lights.lights;
     if (room == nullptr) {
         lights.room_light_mode = RLM_SUNSET;
@@ -146,10 +155,26 @@ void Output_Uniforms_UploadRoomLights(
     GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, size, &lights);
 }
 
+void Output_Uniforms_UploadCPULight(
+    const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
+{
+    M_UNIFORM_LS ls = {};
+    ls.adder = info->ls_adder;
+    ls.divider = info->ls_divider / (float)(1 << (W2V_SHIFT));
+    ls.vector_view[0] = info->ls_vector_view.x;
+    ls.vector_view[1] = info->ls_vector_view.y;
+    ls.vector_view[2] = info->ls_vector_view.z;
+    ls.vector_view[3] = 0;
+
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
+    GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);
+    GFX_GL_CheckError();
+}
+
 OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
 {
     OUTPUT_UNIFORMS *const uniforms = Memory_Alloc(sizeof(OUTPUT_UNIFORMS));
-    glGenBuffers(3, &uniforms->general);
+    glGenBuffers(4, &uniforms->general);
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
     glBufferData(
         GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_GENERAL), nullptr, GL_DYNAMIC_DRAW);
@@ -165,6 +190,12 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
     glBufferData(
         GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_LIGHTS), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, uniforms->lights);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
+    glBufferData(
+        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_LS), nullptr, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
+    GFX_GL_CheckError();
 
     return uniforms;
 }

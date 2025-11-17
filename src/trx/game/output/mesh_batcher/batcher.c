@@ -229,6 +229,7 @@ static void M_DrawOpaqueInstance(
         M_SyncRoom(batcher, inst->room);
     }
 
+    Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
 
@@ -266,6 +267,7 @@ static void M_DrawBlendAddInstance(
         M_SyncRoom(batcher, inst->room);
     }
 
+    Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
     Output_MeshShader_UploadWaterEffect(batcher->shader, false);
@@ -383,6 +385,8 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
         }
         if (sort_ptr->inst != inst) {
             inst = sort_ptr->inst;
+            Output_Uniforms_UploadCPULight(
+                Output_GetUniforms(), &inst->light_info);
             Output_MeshShader_UploadModelMatrix(
                 batcher->shader, &inst->wmatrix);
             Output_MeshShader_UploadTint(batcher->shader, inst->tint);

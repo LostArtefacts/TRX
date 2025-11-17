@@ -126,8 +126,8 @@ void Shell_ProcessInput(void)
 
     if (g_InputDB.switch_new_lighting) {
         g_Config.debug.use_new_lighting += g_Input.slow ? -1 : 1;
-        g_Config.debug.use_new_lighting += 4;
-        g_Config.debug.use_new_lighting %= 4;
+        g_Config.debug.use_new_lighting += 2;
+        g_Config.debug.use_new_lighting %= 2;
         Console_Log("New lighting: %d", g_Config.debug.use_new_lighting);
     }
 

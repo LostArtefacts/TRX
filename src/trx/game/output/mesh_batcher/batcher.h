@@ -2,22 +2,22 @@
 
 #include <trx/game/output/mesh_batcher/mesh.h>
 #include <trx/game/output/scene_source.h>
+#include <trx/game/output/uniforms.h>
 #include <trx/game/rooms/types.h>
 #include <trx/game/viewport.h>
 
 typedef struct MESH_INSTANCE {
     OUTPUT_MESH *mesh;
 
+    // TODO: use gl_InstanceID some day for this
+    // and glMultiDrawArraysIndirect
     MATRIX cwmatrix;
     MATRIX wmatrix;
     const ROOM *room;
     RGB_F tint;
     bool wibble;
 
-    // TODO: remove these
-    int32_t ls_adder;
-    int32_t ls_divider;
-    XYZ_32 ls_vector_view;
+    OUTPUT_LIGHT_INFO light_info;
 
     bool enable_scissor;
     bool disable_z_writes;

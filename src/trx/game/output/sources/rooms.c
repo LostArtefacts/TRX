@@ -140,7 +140,8 @@ static void M_PrepareMeshes(M_PRIV *const p)
             } else {
                 stack = 0;
             }
-            MeshBuilder_AddRoomSprite(builder, sprite, room, stack * -0.005f);
+            MeshBuilder_AddRoomSprite(
+                builder, sprite, room, stack * -0.005f, VERT_USE_DYNAMIC_LIGHT);
             prev_pos = vert->pos;
         }
 

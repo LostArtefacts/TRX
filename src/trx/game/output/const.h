@@ -10,6 +10,8 @@
 #define SHADE_MAX 0x1FFF
 #define SHADE_LOW 0x1400
 #define SHADE_NEUTRAL 0x1000
+#define SHADE_FLARE 0x800
+#define SHADE_SUNSET 0x400
 
 #define WIBBLE_SIZE 32
 

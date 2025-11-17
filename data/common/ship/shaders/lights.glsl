@@ -19,6 +19,12 @@ layout(std140) uniform Lights {
     Light uLights[MAX_LIGHTS];
 };
 
+layout(std140) uniform LightSource {
+    float uLightAdder;
+    float uLightDivider;
+    vec4 uLightVectorSource;
+};
+
 int lightFlicker(float t) {
     float h = fract(sin(t * 593.123) * 43758.5453);
     return int(h * 32.0);
@@ -70,6 +76,17 @@ float lightWaterCaustics(float shade, vec3 vtxPos)
     return clamp(shade + sin(angle) * float(SHADE_CAUSTICS), 0.0, float(SHADE_MAX));
 }
 
+float lightObjects(vec3 rawNormal, vec4 vertexPos)
+{
+    float lightAdder = uLightAdder;
+    if (uLightDivider != 0) {
+        vec3 L = mat3(transpose(uMatView * uMatModel)) * uLightVectorSource.xyz / uLightDivider;
+        lightAdder += dot(L, rawNormal.xyz / (1 << 14)) / 4;
+        lightAdder = clamp(lightAdder, 0, SHADE_MAX);
+    }
+    return lightAdder;
+}
+
 float lightDynamic(float baseLight, vec4 vertexPos)
 {
     float lightAdder = baseLight;
@@ -96,13 +113,19 @@ float lightDynamic(float baseLight, vec4 vertexPos)
 
 float light(float shade, uint flags, vec3 normal, vec4 pos, float phase)
 {
-    if (uWaterEffect) {
-        shade = lightWaterCaustics(shade, pos.xyz);
-    }
-
-    if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
-        shade = lightDynamic(shade, pos);
-        shade += lightRoom(uRoomLightMode, uTimeInGame, phase);
+    if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
+        shade = uLightAdder + shade;
+    } else if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
+        shade = lightObjects(normal, pos);
+    } else {
+        if (uWaterEffect) {
+            shade = lightWaterCaustics(shade, pos.xyz);
+        }
+        if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
+            shade = lightDynamic(shade, pos);
+            shade += lightRoom(uRoomLightMode, uTimeInGame, phase);
+        }
+        shade = clamp(shade, 0, SHADE_MAX);
     }
 
     return shade;

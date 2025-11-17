@@ -157,7 +157,7 @@ static bool M_Draw_I(
             Matrix_TranslateRel_I(11, 32, 80);
             Matrix_RotX_I(-90 * DEG_1);
             Matrix_RotY_I(2 * Random_GetDraw());
-            Output_CalculateStaticLight(2048);
+            Output_CalculateStaticLight(SHADE_FLARE);
             Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, true);
         }
         Matrix_Pop();

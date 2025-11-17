@@ -25,10 +25,7 @@ struct OUTPUT_SHADER {
 };
 
 static const char *const m_UniformBlocks[] = {
-    "Globals",
-    "Matrices",
-    "Lights",
-    nullptr,
+    "Globals", "Matrices", "Lights", "LightSource", nullptr,
 };
 
 static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
@@ -142,6 +139,9 @@ void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
     const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms->general);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uniforms->matrices);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, uniforms->lights);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
+    GFX_GL_CheckError();
 }
 
 GLint Output_Shader_LookupUniform(
