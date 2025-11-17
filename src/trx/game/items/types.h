@@ -26,6 +26,7 @@ typedef struct {
     int16_t required_anim_state;
     int16_t anim_num;
     int16_t frame_num;
+    int16_t prev_frame_num;
     int16_t room_num;
     int16_t next_item;
     int16_t next_active;

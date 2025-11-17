@@ -644,6 +644,8 @@ static bool M_ReadItem(
         M_MUST(M_ReadNum(ctx, "required_anim", &item->required_anim_state));
         M_MUST(M_ReadNum(ctx, "anim_num", &item->anim_num));
         M_MUST(M_ReadNum(ctx, "frame_num", &item->frame_num));
+        // TRX >= 1.0 stores previous frame for interpolation checks
+        M_OPTIONAL(M_ReadNum(ctx, "prev_frame_num", &item->prev_frame_num));
 
         // Prevent issues with pre-injection saves and Lara's enhanced
         // animation set.

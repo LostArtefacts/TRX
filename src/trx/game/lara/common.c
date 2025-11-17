@@ -397,6 +397,10 @@ void Lara_SetControllable(const bool controllable)
 bool Lara_CanInterpolate(
     const ITEM *const item, const int32_t frame_a, const int32_t frame_b)
 {
+    if (item->frame_num == item->prev_frame_num) {
+        return false;
+    }
+
     const LARA_ANIMATION anim_idx = Item_GetRelativeAnim(item);
     if (!M_IsInvalidInterpAnim(LA_U(anim_idx))) {
         return true;
@@ -437,6 +441,7 @@ void Lara_Animate(ITEM *const item)
 {
     const ROOM *const room = Room_Get(item->room_num);
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    item->prev_frame_num = item->frame_num;
     item->frame_num++;
 
     const ANIM *anim = Item_GetAnim(item);

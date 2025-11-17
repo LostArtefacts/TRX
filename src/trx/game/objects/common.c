@@ -255,9 +255,9 @@ int16_t Object_FindReceptacle(const OBJECT_ID object_id)
 bool Object_CanInterpolate(
     const ITEM *const item, const int32_t frame_a, const int32_t frame_b)
 {
-    return item->active && item->status == IS_ACTIVE
-        && item->enable_interpolation
-        && Object_Get(item->object_id)->enable_interpolation;
+    const OBJECT *const obj = Object_Get(item->object_id);
+    return item->enable_interpolation && obj->enable_interpolation
+        && item->prev_frame_num != item->frame_num;
 }
 
 void Object_SetReflective(const OBJECT_ID obj_id, const bool enabled)

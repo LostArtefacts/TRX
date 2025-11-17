@@ -226,6 +226,7 @@ static void M_WriteItem(
         M_WriteNum(ctx, "required_anim", item->required_anim_state);
         M_WriteNum(ctx, "anim_num", item->anim_num);
         M_WriteNum(ctx, "frame_num", item->frame_num);
+        M_WriteNum(ctx, "prev_frame_num", item->prev_frame_num);
     }
 
     if (obj->save_hitpoints) {

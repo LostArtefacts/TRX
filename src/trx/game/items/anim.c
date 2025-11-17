@@ -170,6 +170,7 @@ void Item_Animate(ITEM *const item)
 {
     item->hit_status = false;
     item->touch_bits = 0;
+    item->prev_frame_num = item->frame_num;
     item->frame_num++;
 
     const ANIM *anim = Item_GetAnim(item);
