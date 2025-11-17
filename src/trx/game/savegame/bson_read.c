@@ -1326,7 +1326,7 @@ bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     {
         int32_t sunset_timer;
         M_OPTIONAL(M_ReadNum(ctx, "sunset_timer", &sunset_timer));
-        Output_SetSunsetTimer(sunset_timer);
+        Output_SetTimeInGame(sunset_timer);
     }
 
     {

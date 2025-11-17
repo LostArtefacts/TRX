@@ -30,7 +30,7 @@ void Level_Unload(void)
     Camera_Reset();
     Walkable_Reset();
 
-    Output_SetSunsetTimer(0);
+    Output_SetTimeInGame(0.0f);
     Output_DispatchLevelUnload();
 
     Music_SetVolume(g_Config.audio.music_volume);

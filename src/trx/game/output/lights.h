@@ -15,8 +15,6 @@ void Output_LightRoomVertices(const ROOM *room);
 void Output_LightRoom(ROOM *room);
 
 int32_t Output_GetSunsetDuration(void);
-int32_t Output_GetSunsetTimer(void);
-void Output_SetSunsetTimer(int32_t timer);
 void Output_SetSunsetEnabled(bool enabled);
 
 void Output_ResetDynamicLights(void);

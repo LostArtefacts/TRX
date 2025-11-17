@@ -20,7 +20,6 @@ typedef struct {
 } M_ROOM_LIGHT_TABLE;
 
 static bool m_IsSunsetEnabled = false;
-static int32_t m_SunsetTimer = 0;
 static int32_t m_WibbleOffset = 0;
 static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static M_ROOM_LIGHT_TABLE m_RoomLightTables[M_LIGHT_CYCLE] = {};
@@ -340,16 +339,6 @@ int32_t Output_GetSunsetDuration(void)
     return 20 * 60 * LOGIC_FPS; // = 20 minutes / 36000 frames
 }
 
-int32_t Output_GetSunsetTimer(void)
-{
-    return m_SunsetTimer;
-}
-
-void Output_SetSunsetTimer(const int32_t timer)
-{
-    m_SunsetTimer = timer;
-}
-
 void Output_SetSunsetEnabled(const bool enabled)
 {
     m_IsSunsetEnabled = enabled;
@@ -367,10 +356,10 @@ void Output_AnimateLights(const int32_t num_frames)
             >> 15;
 
         if (m_IsSunsetEnabled) {
-            m_SunsetTimer += num_frames;
-            CLAMPG(m_SunsetTimer, Output_GetSunsetDuration());
-            m_RoomLightShades[RLM_SUNSET] = m_SunsetTimer * (M_LIGHT_CYCLE - 1)
-                / Output_GetSunsetDuration();
+            int32_t sunset_timer = Output_GetTimeInGame();
+            CLAMPG(sunset_timer, Output_GetSunsetDuration());
+            m_RoomLightShades[RLM_SUNSET] =
+                sunset_timer * (M_LIGHT_CYCLE - 1) / Output_GetSunsetDuration();
         }
     }
 }

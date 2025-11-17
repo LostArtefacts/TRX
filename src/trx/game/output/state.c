@@ -42,6 +42,11 @@ float Output_GetTimeInGame(void)
     return m_TimeInGame;
 }
 
+void Output_SetTimeInGame(const float time)
+{
+    m_TimeInGame = time;
+}
+
 int32_t Output_GetNearZ(void)
 {
     return 20 << W2V_SHIFT;

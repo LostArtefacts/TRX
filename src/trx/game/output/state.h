@@ -14,6 +14,7 @@ void Output_GetOrthoProjectionMatrix(GLfloat output[][4]);
 void Output_SetTime(float time);
 float Output_GetTime(void);
 float Output_GetTimeInGame(void);
+void Output_SetTimeInGame(float time);
 
 void Output_SetupBelowWater(bool is_underwater);
 void Output_SetupAboveWater(bool is_underwater);
