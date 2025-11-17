@@ -171,6 +171,7 @@ static void M_Shutdown(GFX_RENDERER *renderer)
 
     GFX_GL_FBO_Close(&p->geometry_fbo);
     GFX_GL_FBO_Close(&p->ui_fbo);
+    GFX_GL_Program_Close(&p->program);
     GFX_GL_VertexArray_Close(&p->vertex_array);
 
     Memory_FreePointer(&renderer->priv);
