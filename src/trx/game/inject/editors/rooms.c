@@ -250,6 +250,7 @@ static void M_AddRoomVertex(const INJECTION *const injection)
     vertex->pos = pos;
     vertex->light_base = shade;
     vertex->light_adder = shade;
+    vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
     room->mesh.num_vertices++;
 }
 
