@@ -31,7 +31,7 @@
 #define MAX_WIBBLE 2
 #define PI 3.1415926538
 
-layout(std140, binding = 0) uniform Globals {
+layout(std140) uniform Globals {
     mat4 uMatProjOrtho;
     vec4 uFogColor;
     vec2 uFogDistance; // x = fog start, y = fog end
@@ -45,7 +45,7 @@ layout(std140, binding = 0) uniform Globals {
     int uReflectionsEnabled; // bool
 };
 
-layout(std140, binding = 1) uniform Matrices {
+layout(std140) uniform Matrices {
     mat4 uMatProjPersp;
     mat4 uMatView;
 };

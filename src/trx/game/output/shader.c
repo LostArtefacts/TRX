@@ -30,6 +30,12 @@ struct OUTPUT_SHADER {
     RGB_F tint;
 };
 
+static const char *const m_UniformBlocks[] = {
+    "Globals",
+    "Matrices",
+    nullptr,
+};
+
 static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
 {
     // Prints memory layout of the specific UBO in the GPU
@@ -87,6 +93,16 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
 #if 0
     M_DebugUBO(shader->program.id, 0);
 #endif
+
+    // Bind uniform blocks to UBO binding points
+    const GLuint program_id = shader->program.id;
+    for (int32_t i = 0; m_UniformBlocks[i] != nullptr; i++) {
+        GLuint block_index =
+            glGetUniformBlockIndex(program_id, m_UniformBlocks[i]);
+        if (block_index != GL_INVALID_INDEX) {
+            glUniformBlockBinding(program_id, block_index, i);
+        }
+    }
 
     const char *const uniform_names[] = {
         [M_UNIFORM_TEX_ATLAS] = "uTexAtlas",
