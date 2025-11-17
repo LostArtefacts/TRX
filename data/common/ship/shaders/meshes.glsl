@@ -1,41 +1,8 @@
 #include "common.glsl"
 
-vec4 offsetBillboard(vec3 pos, vec2 disp, mat4 view, mat4 model, mat4 proj, int mode)
-{
-    const vec3 worldUp = vec3(0,1,0);
-
-    vec3 right, up;
-    if (mode == BILLBOARD_LOCK_NONE) {
-        right = normalize(vec3(view[0][0], view[1][0], view[2][0]));
-        up    = normalize(vec3(view[0][1], view[1][1], view[2][1]));
-    } else {
-        // Base forward for all locked modes
-        vec3 forward = -normalize(vec3(view[0][2], view[1][2], view[2][2]));
-
-        if (mode != BILLBOARD_LOCK_ROLL) {
-            // Kill pitch if requested by any cylindrical/perspective mode
-            forward = normalize(vec3(forward.x, 0.0, forward.z));
-        }
-
-        if (mode == BILLBOARD_LOCK_PERSPECTIVE) {
-            vec4 clip     = proj * view * model * vec4(pos,1);
-            float ndcX    = clip.x / clip.w;
-            vec3 yawRight = normalize(cross(forward, worldUp));
-            float inv     = inversesqrt(1.0 + ndcX * ndcX);
-            forward       = normalize(inv * forward - (ndcX * inv) * yawRight);
-        }
-
-        right = normalize(cross(forward, worldUp));
-        up    = normalize(cross(right, forward));
-    }
-
-    vec4 wp = model * vec4(pos,1);
-    wp.xyz += disp.x * right + disp.y * up;
-    return view * wp;
-}
-
-
 #ifdef VERTEX
+
+#include "billboard.glsl"
 
 uniform mat4 uMatModel;
 uniform bool uWibbleEffect;
@@ -58,6 +25,22 @@ flat out vec4 gAtlasSize;
 out vec2 gTrapezoidRatios;
 out float gShade;
 out vec4 gColor;
+
+vec3 waterWibble(vec4 position)
+{
+    // get screen coordinates
+    vec3 ndc = position.xyz / position.w; //perspective divide/normalize
+    vec2 viewportCoord = ndc.xy * 0.5 + 0.5; //ndc is -1 to 1 in GL. scale for 0 to 1
+    vec2 viewportPixelCoord = viewportCoord * uViewportSize;
+
+    viewportPixelCoord.x += sin((uTimeInGame + viewportPixelCoord.y) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+    viewportPixelCoord.y += sin((uTimeInGame + viewportPixelCoord.x) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+
+    // reverse transform
+    viewportCoord = viewportPixelCoord / uViewportSize;
+    ndc.xy = (viewportCoord - 0.5) * 2.0;
+    return ndc * position.w;
+}
 
 void main(void) {
     vec4 eyePos;
@@ -119,6 +102,19 @@ in vec4 gColor;
 in vec2 gTrapezoidRatios;
 out vec4 outColor;
 
+vec4 applyFog(vec4 color, float depth)
+{
+    float fogBegin = uFogDistance.x;
+    float fogEnd = uFogDistance.y;
+    if (depth < fogBegin) {
+        return color;
+    } else if (depth >= fogEnd) {
+        return uFogColor;
+    } else {
+        return mix(color, uFogColor, (depth - fogBegin) / (fogEnd - fogBegin));
+    }
+}
+
 void main(void) {
     vec4 texColor = gColor;
 
@@ -161,4 +157,5 @@ void main(void) {
 
     outColor = texColor;
 }
+
 #endif
