@@ -46,12 +46,9 @@ char *GFX_GL_Program_PreprocessShader(const char *content, GLenum type)
     char *common = nullptr;
     File_Load("shaders/common.glsl", &common, nullptr);
 
-    const char *version_ogl33c =
-        "#version 330 core\n"
-        "#extension GL_ARB_shader_storage_buffer_object : require\n";
+    const char *version_ogl33c = "#version 330 core\n";
     const char *define_vertex = "#define VERTEX\n";
     const char *define_fragment = "#define FRAGMENT\n";
-    const char *define_ogl33c = "#define OGL33C\n";
 
     size_t bufsize = strlen(content) + 1;
     if (common != nullptr) {
@@ -59,7 +56,6 @@ char *GFX_GL_Program_PreprocessShader(const char *content, GLenum type)
     }
 
     bufsize += strlen(version_ogl33c);
-    bufsize += strlen(define_ogl33c);
 
     if (type == GL_VERTEX_SHADER) {
         bufsize += strlen(define_vertex);
@@ -69,7 +65,6 @@ char *GFX_GL_Program_PreprocessShader(const char *content, GLenum type)
 
     char *processed_content = Memory_Alloc(bufsize);
     strcpy(processed_content, version_ogl33c);
-    strcat(processed_content, define_ogl33c);
 
     if (common != nullptr) {
         strcat(processed_content, common);
