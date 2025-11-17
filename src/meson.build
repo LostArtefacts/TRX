@@ -465,6 +465,8 @@ common_sources = [
   'trx/game/output/sources/ui.c',
   'trx/game/output/state.c',
   'trx/game/output/textures.c',
+  'trx/game/output/uniforms.c',
+  'trx/game/output/utils.c',
   'trx/game/output/vars.c',
   'trx/game/output/vertex_range.c',
   'trx/game/overlay.c',

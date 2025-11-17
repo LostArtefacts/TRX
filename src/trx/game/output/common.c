@@ -21,6 +21,7 @@
 #include <trx/gfx/context.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;
+static OUTPUT_UNIFORMS *m_Uniforms = nullptr;
 static OUTPUT_SHADER *m_Shader = nullptr;
 
 void Output_Init(void)
@@ -28,6 +29,7 @@ void Output_Init(void)
     SceneCompositor_Init();
     Output_Textures_Init();
 
+    m_Uniforms = Output_Uniforms_Create();
     m_Shader = Output_Shader_Create("shaders/meshes.glsl");
     m_Batcher = MeshBatcher_Create();
     SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
@@ -61,6 +63,10 @@ void Output_Shutdown(void)
         Output_Shader_Free(m_Shader);
         m_Shader = nullptr;
     }
+    if (m_Uniforms != nullptr) {
+        Output_Uniforms_Free(m_Uniforms);
+        m_Uniforms = nullptr;
+    }
     if (m_Batcher != nullptr) {
         MeshBatcher_Destroy(m_Batcher);
         m_Batcher = nullptr;
@@ -76,6 +82,11 @@ void Output_Shutdown(void)
 bool Output_IsHeadless(void)
 {
     return Shell_GetArgs()->headless;
+}
+
+const OUTPUT_UNIFORMS *Output_GetUniforms(void)
+{
+    return m_Uniforms;
 }
 
 OUTPUT_SHADER *Output_GetMeshShader(void)
