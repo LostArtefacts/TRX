@@ -24,15 +24,11 @@
 #define BILLBOARD_LOCK_ROLL_PITCH  2
 #define BILLBOARD_LOCK_PERSPECTIVE 3
 
-#define PROJECTION_MODE_PERSPECTIVE 0
-#define PROJECTION_MODE_ORTHOGRAPHIC 1
-
 #define WIBBLE_SIZE 32
 #define MAX_WIBBLE 2
 #define PI 3.1415926538
 
 layout(std140) uniform Globals {
-    mat4 uMatProjOrtho;
     vec4 uFogColor;
     vec2 uFogDistance; // x = fog start, y = fog end
     vec2 uViewportSize;
@@ -46,11 +42,9 @@ layout(std140) uniform Globals {
 };
 
 layout(std140) uniform Matrices {
-    mat4 uMatProjPersp;
+    mat4 uMatProj;
     mat4 uMatView;
 };
-
-uniform int uProjectionMode;
 
 vec2 clampTexAtlas(vec2 uv, vec4 atlasSize)
 {

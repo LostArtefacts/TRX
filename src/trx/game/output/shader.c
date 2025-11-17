@@ -16,7 +16,6 @@ typedef enum {
     M_UNIFORM_GLOBAL_TINT,
     M_UNIFORM_MODEL_MATRIX,
     M_UNIFORM_VIEW_MATRIX,
-    M_UNIFORM_PROJECTION_MODE,
     M_UNIFORM_WIBBLE_EFFECT,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
@@ -111,7 +110,6 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         [M_UNIFORM_GLOBAL_TINT] = "uGlobalTint",
         [M_UNIFORM_MODEL_MATRIX] = "uMatModel",
         [M_UNIFORM_VIEW_MATRIX] = "uMatView",
-        [M_UNIFORM_PROJECTION_MODE] = "uProjectionMode",
         [M_UNIFORM_WIBBLE_EFFECT] = "uWibbleEffect",
         [M_UNIFORM_ALPHA_DISCARD] = "uDiscardAlpha",
     };
@@ -151,13 +149,6 @@ void Output_Shader_UploadModelMatrix(
     GFX_TRACK_UNIFORM(
         glUniformMatrix4fv, shader->uniforms[M_UNIFORM_MODEL_MATRIX], 1,
         GL_FALSE, &m[0][0]);
-}
-
-void Output_Shader_UploadProjectionMode(
-    const OUTPUT_SHADER *const shader, const PROJECTION_MODE mode)
-{
-    GFX_TRACK_UNIFORM(
-        glUniform1i, shader->uniforms[M_UNIFORM_PROJECTION_MODE], mode);
 }
 
 void Output_Shader_UploadAlphaDiscard(

@@ -27,18 +27,11 @@ typedef enum {
     // clang-format on
 } OUTPUT_MESH_ATTRIBUTE;
 
-typedef enum {
-    PROJECTION_MODE_PERSPECTIVE = 0,
-    PROJECTION_MODE_ORTHOGRAPHIC = 1,
-} PROJECTION_MODE;
-
 typedef struct OUTPUT_SHADER OUTPUT_SHADER;
 
 OUTPUT_SHADER *Output_Shader_Create(const char *path);
 void Output_Shader_Free(OUTPUT_SHADER *shader);
 void Output_Shader_Bind(const OUTPUT_SHADER *shader);
-void Output_Shader_UploadProjectionMode(
-    const OUTPUT_SHADER *shader, PROJECTION_MODE mode);
 
 void Output_Shader_UploadLightingMode(
     const OUTPUT_SHADER *shader, LIGHTING_MODE mode);
