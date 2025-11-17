@@ -802,7 +802,7 @@ void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "bonus_flag", Game_GetBonusFlag());
     M_WriteNum(ctx, "death_count", resume->stats.death_count);
     M_WriteBool(ctx, "are_monks_angry", Creature_AreAlliesHostile());
-    M_WriteNum(ctx, "sunset_timer", Output_GetSunsetTimer());
+    M_WriteNum(ctx, "sunset_timer", Output_GetTimeInGame());
     M_PopAndSet(ctx, "misc");
 
     M_WriteString(ctx, "level_title", level->title);
