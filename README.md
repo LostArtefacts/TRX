@@ -1,6 +1,12 @@
 <div align="center">
 <h1>TRX – Tomb Raider I & II: Community Edition</h1>
 
+<p align="center">
+  <a href="https://lostartefacts.dev/">
+    <img src="data/trx/icon.png" style="width: 128px;" alt="TRX logo"/>
+  </a>
+</p>
+
 <a href="https://github.com/LostArtefacts/TRX/releases?q=tr1x+prerelease%3Afalse&expanded=true">
     <img src="data/download_tr1x.svg"/>
 </a>
@@ -11,53 +17,63 @@
 
 <hr/>
 
-Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1** and **Tomb Raider 2**, respectively. Both projects aim to enhance these classic games through decompilation and the implementation of open-source alternatives to proprietary components.
+Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1** and **Tomb Raider 2**. TRX aims to enhance these classic games through decompilation and the implementation of open-source alternatives to proprietary components. TRX is a single engine capable of running TR1, TR2, and custom levels respecting each of the distinct, classic engines' mechanics.
 
-## TR1X - Tomb Raider 1
-### Showcase
+## Showcase
 <table>
     <tr>
         <th>
-            Restored braid
-            <img src="docs/tr1/showcase/braid.jpg"/>
+            Restored braid in TR1
+            <img src="docs/showcase/braid.jpg"/>
         </th>
         <th>
             Enemy health bar and UI scaling
-            <img src="docs/tr1/showcase/enemy_health_bar_and_scaling.jpg"/>
+            <img src="docs/showcase/enemy_health_bar_and_scaling.jpg"/>
         </th>
     </tr>
     <tr>
         <th>
-            3D pickups
-            <img src="docs/tr1/showcase/3d_pickups.jpg"/>
+            Photo mode
+            <img src="docs/showcase/photo_mode.webp"/>
         </th>
         <th>
+            3D pickups
+            <img src="docs/showcase/3d_pickups.jpg"/>
+        </th>
+    </tr>
+    <tr>
+        <th>
             Skybox support
-            <img src="docs/tr1/showcase/skybox.jpg"/>
+            <img src="docs/showcase/skybox.jpg"/>
+        </th>
+        <th>
+            Updated moveset including sprint
+            <img src="docs/showcase/sprint.webp"/>
         </th>
     </tr>
     <tr>
         <th>
             Customizable draw distance
-            <img src="docs/tr1/showcase/draw_distance.webp"/>
+            <img src="docs/showcase/draw_distance.webp"/>
         </th>
         <th>
             Developer console
-            <img src="docs/tr1/showcase/console.webp"/>
+            <img src="docs/showcase/console.webp"/>
         </th>
     </tr>
     <tr>
         <th>
-            Free camera
-            <img src="docs/tr1/showcase/free_camera.jpg"/>
+            Detailed level stats
+            <img src="docs/showcase/compass_stats.jpg"/>
         </th>
         <th>
-            PS1 UI and new graphics options
-            <img src="docs/tr1/showcase/ps1_ui_and_gfx.jpg"/>
+            PS1 UI and expanded options
+            <img src="docs/showcase/ps1_ui_and_options.webp"/>
         </th>
     </tr>
 </table>
 
+## TR1X - Tomb Raider 1
 ### Download
 Download the latest release:
 
@@ -68,13 +84,9 @@ Download the latest release:
 See [the changelog](docs/tr1/CHANGELOG.md).
 
 ### Install Instructions
-Please refer to the [detailed documentation](docs/tr1/).
+Please refer to the [detailed documentation](docs/tr1/INSTALLING.md).
 
 ## TR2X - Tomb Raider 2
-### Decompilation Progress
-Decompilation is currently complete, and we're shifting our focus towards
-enriching the game with new features.
-
 ### Download
 Download the latest release:
 
@@ -85,33 +97,52 @@ Download the latest release:
 See [the changelog](docs/tr2/CHANGELOG.md).
 
 ### Install Instructions
-Please refer to the [detailed documentation](docs/tr2/).
+Please refer to the [detailed documentation](docs/tr2/INSTALLING.md).
 
 
 ## Q&A
 
-1. **Is the game fully playable from beginning to the end?**
+1. **Are TR1 and TR2 fully playable from beginning to end?**
 
     By all means! If you encounter a bug, please file a ticket.
 
-2. **Can we get HD textures? Reflections? Other visual updates?**
+2. **Can we get HD textures? What about other visual updates?**
 
-    We hope so! Being able to introduce skyboxes to TR1 showed that quite
-    literally sky is the limit. But great stuff takes time.
+    Regarding HD texture packs, that feature is not currently planned.
+
+    As for other visual updates, being able to introduce reflections and
+    skyboxes shows that quite literally sky is the limit. TRX is constantly
+    getting new rendering improvements and texture fixes. But great stuff
+    takes time.
 
 4. **Can I play this on Mac, Linux, Android...?**
 
-    Currently supported platforms include Windows, Linux and macOS for both
-    TR1X and TR2X.
+    Currently supported platforms include Windows, Linux and macOS.
 
-5. **What's the relation to TR2Main?**
+5. **Can I play this with a controller?**
 
-    Originally founded as TR1Main in 2021, our project flourished independently
-    without sharing the code, with the shared brand concept existing only as an
-    idea. To better represent this, we rebranded to Tomb1Main. In 2023, we
-    further refined our identity by adopting the name TR1X. Meanwhile, TR2Main
-    follows a completely separate and unique path, unconnected to our
-    development work.
+    TRX supports a wide variety of controllers out of the box with no
+    additional software required. The keyboard or controller controls
+    can be fully customized in the Controls menu with multiple layouts.
+
+6. **What about TR3 support?**
+
+    The team is hard at work continuing to polish TRX for TR1 and TR2 as well
+    as adding featuers for custom levels. At the same time, work has started on
+    adding TR3 features into TRX, but there is no estimated completion date.
+
+## Website
+The Lost Artefacts team is a small, passionate community of developers and
+creators with a deep love for the classic Tomb Raider titles. Our team builds
+and maintains freeware fan projects that celebrate Lara Croft's iconic
+adventures. Visit the website by clicking the logo below for more information
+on TRX and its documentation as well as other Tomb Raider projects.
+
+<p align="left">
+  <a href="https://lostartefacts.dev/">
+    <img src="data/lostartefacts.png" style="width: 128px;" alt="TRX logo"/>
+  </a>
+</p>
 
 ## Credits
 
