@@ -61,7 +61,8 @@ static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data)
     CLAMP(shade, 0, SHADE_MAX);
     OUTPUT_MESH_VERTEX *const vertices = Vector_GetData(inst->mesh->vertices);
     for (int32_t i = 0; i < inst->mesh->vertices->count; i++) {
-        vertices[i].shade = shade;
+        vertices[i].shade1 = shade;
+        vertices[i].shade2 = shade;
     }
 }
 

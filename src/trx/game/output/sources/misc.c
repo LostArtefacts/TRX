@@ -183,7 +183,8 @@ static void M_RenderPass(
     glVertexAttribI1ui(
         OUTPUT_MESH_ATTR_FLAGS,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS);
-    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE1, SHADE_NEUTRAL);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE2, SHADE_NEUTRAL);
     M_DrawScheduled(p, p->scheduled);
 
     if (p->scheduled_spheres->count > 0) {
@@ -242,7 +243,8 @@ void OutputSource_Misc_Init(void)
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
-    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE1);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE2);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));

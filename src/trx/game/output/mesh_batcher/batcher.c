@@ -10,7 +10,10 @@
 
 #include <uthash.h>
 
-typedef OUTPUT_SHORT M_MESH_SHADE;
+typedef struct {
+    OUTPUT_SHORT shade1;
+    OUTPUT_SHORT shade2;
+} M_MESH_SHADE;
 
 typedef struct {
     XYZW_F pos;
@@ -107,7 +110,8 @@ static void M_FillTexture(
 static void M_FillShade(
     M_MESH_SHADE *const shade, const OUTPUT_MESH_VERTEX *const vertex)
 {
-    *shade = vertex->shade;
+    shade->shade1 = vertex->shade1;
+    shade->shade2 = vertex->shade2;
 }
 
 static void M_AnimateBinding(
@@ -477,10 +481,14 @@ MESH_BATCHER *MeshBatcher_Create(void)
         (void *)(intptr_t)offsetof(M_MESH_TEXTURE, trapezoid_ratio));
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE1);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE2);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_SHORT_GL, GL_FALSE,
-        sizeof(M_MESH_SHADE), 0);
+        OUTPUT_MESH_ATTR_SHADE1, 1, OUTPUT_SHORT_GL, GL_FALSE,
+        sizeof(M_MESH_SHADE), (void *)(intptr_t)offsetof(M_MESH_SHADE, shade1));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_SHADE2, 1, OUTPUT_SHORT_GL, GL_FALSE,
+        sizeof(M_MESH_SHADE), (void *)(intptr_t)offsetof(M_MESH_SHADE, shade2));
 
     glGenVertexArrays(1, &batcher->full_vao);
     glBindVertexArray(batcher->full_vao);
@@ -492,7 +500,8 @@ MESH_BATCHER *MeshBatcher_Create(void)
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE1);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE2);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
         (void *)(intptr_t)offsetof(M_MESH_FULL, geom.pos));
@@ -518,8 +527,13 @@ MESH_BATCHER *MeshBatcher_Create(void)
         sizeof(M_MESH_FULL),
         (void *)(intptr_t)offsetof(M_MESH_FULL, tex.trapezoid_ratio));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_SHORT_GL, GL_FALSE,
-        sizeof(M_MESH_FULL), (void *)(intptr_t)offsetof(M_MESH_FULL, shade));
+        OUTPUT_MESH_ATTR_SHADE1, 1, OUTPUT_SHORT_GL, GL_FALSE,
+        sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, shade.shade1));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_SHADE2, 1, OUTPUT_SHORT_GL, GL_FALSE,
+        sizeof(M_MESH_FULL),
+        (void *)(intptr_t)offsetof(M_MESH_FULL, shade.shade2));
 
     return batcher;
 }

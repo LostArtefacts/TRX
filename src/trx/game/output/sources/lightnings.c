@@ -107,7 +107,8 @@ static void M_RenderPass(
         OUTPUT_MESH_ATTR_FLAGS,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS | VERT_BILLBOARD
             | VERT_ABS_SPRITE);
-    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE1, SHADE_NEUTRAL);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE2, SHADE_NEUTRAL);
 
     for (int32_t i = 0; i < p->scheduled->count; i++) {
         const LIGHTNING_SEGMENT *const segment = Vector_Get(p->scheduled, i);
@@ -162,7 +163,8 @@ void OutputSource_Lightnings_Init(void)
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, color));
-    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE1);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE2);
 }
 
 void OutputSource_Lightnings_Shutdown(void)

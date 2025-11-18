@@ -167,7 +167,8 @@ void MeshBuilder_AddRoomSprite(
             .flags = Output_Textures_GetSpriteTextureFlags(texture_idx),
             .color = { 255, 255, 255, 255 },
             .uvw_idx = Output_Textures_GetSpriteUVWIndex(texture_idx, j),
-            .shade = room_vert->light_adder,
+            .shade1 = room_vert->light_adder,
+            .shade2 = room_vert->light_adder,
             .trapezoid_ratio = { 1.0f, 1.0f },
         };
         MeshBuilder_AddVertex(builder, &vertex);

@@ -3,6 +3,7 @@
 #ifdef VERTEX
 
 #include "billboard.glsl"
+#include "lights.glsl"
 
 uniform mat4 uMatModel;
 uniform bool uWibbleEffect;
@@ -14,7 +15,8 @@ layout(location = 3) in vec4 inTextureSize;
 layout(location = 4) in vec2 inTrapezoidRatios;
 layout(location = 5) in uint inFlags;
 layout(location = 6) in vec4 inColor;
-layout(location = 7) in float inShade;
+layout(location = 7) in float inShade1;
+layout(location = 8) in float inShade2;
 
 out vec4 gEyePos;
 out vec3 gNormal;
@@ -43,8 +45,9 @@ vec3 waterWibble(vec4 position)
 }
 
 void main(void) {
-    vec4 eyePos;
+    vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
 
+    vec4 eyePos;
     if ((inFlags & VERT_ABS_SPRITE) != 0u) {
         eyePos = offsetBillboard(
             inPosition.xyz, inNormal.xy, uMatView, uMatModel, uMatProj, BILLBOARD_LOCK_NONE);
@@ -52,7 +55,7 @@ void main(void) {
         eyePos = offsetBillboard(
             inPosition.xyz, inNormal.xy, uMatView, uMatModel, uMatProj, uBillboardLockMode);
     } else {
-        eyePos = uMatView * uMatModel * vec4(inPosition.xyz, 1.0);
+        eyePos = uMatView * worldPos;
     }
 
     gEyePos = eyePos;
@@ -76,11 +79,27 @@ void main(void) {
     if (uTrapezoidFilterEnabled != 0) {
         gTexUV *= inTrapezoidRatios;
     }
-    gShade = inShade;
+    gShade = inShade1;
     gColor = inColor;
 
     if (uLightingEnabled == 0) {
         gShade = SHADE_NEUTRAL;
+    } else if ((gFlags & VERT_NO_LIGHTING) == 0u) {
+        float newShade = light(inShade2, gFlags, inNormal.xyz, worldPos);
+
+        if (uUseNewLighting == 0) {
+            // OG lighting, untextured
+            gFlags |= VERT_FLAT_SHADED;
+        } else if (uUseNewLighting == 1) {
+            // New lighting, untextured
+            gFlags |= VERT_FLAT_SHADED;
+            gShade = newShade;
+        } else if (uUseNewLighting == 2) {
+            // OG lighting, textured
+        } else if (uUseNewLighting == 3) {
+            // New lighting, textured
+            gShade = newShade;
+        }
     }
 }
 

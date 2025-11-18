@@ -66,3 +66,5 @@ X_INPUT_ROLE(INPUT_ROLE_CAMERA_RIGHT,            camera_right)
 X_INPUT_ROLE(INPUT_ROLE_CAMERA_UP,               camera_up)
 X_INPUT_ROLE(INPUT_ROLE_CAMERA_DOWN,             camera_down)
 X_INPUT_ROLE(INPUT_ROLE_CAMERA_RESET,            camera_reset)
+
+X_INPUT_ROLE(INPUT_ROLE_SWITCH_NEW_LIGHTING,     switch_new_lighting)

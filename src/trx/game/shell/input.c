@@ -124,6 +124,13 @@ void Shell_ProcessInput(void)
         M_CycleBorders();
     }
 
+    if (g_InputDB.switch_new_lighting) {
+        g_Config.debug.use_new_lighting += g_Input.slow ? -1 : 1;
+        g_Config.debug.use_new_lighting += 4;
+        g_Config.debug.use_new_lighting %= 4;
+        Console_Log("New lighting: %d", g_Config.debug.use_new_lighting);
+    }
+
     if (g_InputDB.turbo_cheat && g_Config.gameplay.enable_cheats) {
         Clock_CycleTurboSpeed(!g_Input.slow);
     }

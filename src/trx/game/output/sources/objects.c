@@ -65,7 +65,8 @@ static void M_AddObjectVerts(
             .normal = { .x = normal.x, .y = normal.y, .z = normal.z },
             .flags = flags,
             .uvw_idx = uvw_idx,
-            .shade = SHADE_NEUTRAL,
+            .shade1 = SHADE_NEUTRAL,
+            .shade2 = SHADE_NEUTRAL,
             .color = color,
             .trapezoid_ratio = {
                 [0] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].z : 1.0f,
@@ -168,7 +169,8 @@ static void M_UpdateShadesSkybox(
     const int16_t shade =
         g_Config.rendering.enable_lighting ? p->skybox_shade : SHADE_NEUTRAL;
     for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-        vertices[i].shade = shade;
+        vertices[i].shade1 = shade;
+        vertices[i].shade2 = shade;
     }
 }
 
@@ -188,7 +190,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
 
     if (!g_Config.rendering.enable_lighting) {
         for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-            vertices[i].shade = SHADE_NEUTRAL;
+            vertices[i].shade1 = SHADE_NEUTRAL;
+            vertices[i].shade2 = SHADE_NEUTRAL;
         }
         return;
     }
@@ -203,13 +206,15 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
             const int32_t j = light_idx_map[i];
             int16_t shade = ls_adder + mesh->lighting.lights[j];
             CLAMP(shade, 0, SHADE_MAX);
-            vertices[i].shade = shade;
+            vertices[i].shade1 = shade;
+            vertices[i].shade2 = shade;
         }
     } else if (ls_divider == 0) {
         int16_t shade = ls_adder;
         CLAMP(shade, 0, SHADE_MAX);
         for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-            vertices[i].shade = shade;
+            vertices[i].shade1 = shade;
+            vertices[i].shade2 = shade;
         }
     } else {
         // clang-format off
@@ -238,7 +243,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
             int16_t shade = ls_adder
                 + ((normal->x * xv + normal->y * yv + normal->z * zv) >> 16);
             CLAMP(shade, 0, SHADE_MAX);
-            vertices[i].shade = shade;
+            vertices[i].shade1 = shade;
+            vertices[i].shade2 = shade;
         }
     }
 }

@@ -24,7 +24,8 @@ typedef enum {
     OUTPUT_MESH_ATTR_TRAPEZOID_RATIO = 4,
     OUTPUT_MESH_ATTR_FLAGS           = 5,
     OUTPUT_MESH_ATTR_COLOR           = 6,
-    OUTPUT_MESH_ATTR_SHADE           = 7,
+    OUTPUT_MESH_ATTR_SHADE1          = 7,
+    OUTPUT_MESH_ATTR_SHADE2          = 8,
     // clang-format on
 } OUTPUT_MESH_ATTRIBUTE;
 

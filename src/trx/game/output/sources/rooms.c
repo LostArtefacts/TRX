@@ -46,7 +46,8 @@ static void M_AddRoomVerts(
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
             .flags = flags,
             .uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i),
-            .shade = room_vert->light_adder,
+            .shade1 = room_vert->light_adder,
+            .shade2 = room_vert->light_adder,
             .color = room_vert->color,
             .trapezoid_ratio = {
                 [0] = trapezoid_ratio[i].z,
@@ -93,7 +94,8 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
 
     if (!g_Config.rendering.enable_lighting) {
         for (int32_t i = 0; i < mesh->vertices->count; i++) {
-            vertex[i].shade = SHADE_NEUTRAL;
+            vertex[i].shade1 = SHADE_NEUTRAL;
+            vertex[i].shade2 = SHADE_NEUTRAL;
         }
         return;
     }
@@ -102,9 +104,10 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     for (int32_t i = 0; i < room->mesh.face4s.count; i++) {
         const FACE *const face = &room->mesh.face4s.data[i];
         for (int32_t j = 0; j < 4; j++) {
-            vertex->shade = room->mesh.vertices[face->vertices[j]].light_adder;
-            vertex->shade = M_ShadeCaustics(
-                p, room, inst->water_effect, vertex->shade, face->vertices[j]);
+            vertex->shade1 = room->mesh.vertices[face->vertices[j]].light_adder;
+            vertex->shade1 = M_ShadeCaustics(
+                p, room, inst->water_effect, vertex->shade1, face->vertices[j]);
+            vertex->shade2 = vertex->shade1;
             vertex++;
         }
     }
@@ -113,9 +116,10 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     for (int32_t i = 0; i < room->mesh.face3s.count; i++) {
         const FACE *const face = &room->mesh.face3s.data[i];
         for (int32_t j = 0; j < 3; j++) {
-            vertex->shade = room->mesh.vertices[face->vertices[j]].light_adder;
-            vertex->shade = M_ShadeCaustics(
-                p, room, inst->water_effect, vertex->shade, face->vertices[j]);
+            vertex->shade1 = room->mesh.vertices[face->vertices[j]].light_adder;
+            vertex->shade1 = M_ShadeCaustics(
+                p, room, inst->water_effect, vertex->shade1, face->vertices[j]);
+            vertex->shade2 = vertex->shade1;
             vertex++;
         }
     }
@@ -124,7 +128,9 @@ static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
     for (int32_t i = 0; i < room->mesh.sprites.count; i++) {
         const ROOM_SPRITE *const room_sprite = &room->mesh.sprites.data[i];
         for (int32_t j = 0; j < 4; j++) {
-            vertex->shade =
+            vertex->shade1 =
+                room->mesh.vertices[room_sprite->vertex].light_adder;
+            vertex->shade2 =
                 room->mesh.vertices[room_sprite->vertex].light_adder;
             vertex++;
         }

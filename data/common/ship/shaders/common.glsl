@@ -32,6 +32,7 @@ layout(std140) uniform Globals {
     int uLightingEnabled; // bool
     int uTrapezoidFilterEnabled; // bool
     int uReflectionsEnabled; // bool
+    int uUseNewLighting; // bool
 };
 
 layout(std140) uniform Matrices {
