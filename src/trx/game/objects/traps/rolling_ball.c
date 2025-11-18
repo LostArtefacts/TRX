@@ -118,6 +118,7 @@ static void M_Reset(ITEM *const item)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    item->enable_interpolation = item->status == IS_ACTIVE;
 
     if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
         M_Reset(item);
