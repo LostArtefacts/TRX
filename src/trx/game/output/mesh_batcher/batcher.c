@@ -17,7 +17,7 @@ typedef struct {
 
 typedef struct {
     XYZW_F pos;
-    XYZ_F normal;
+    XYZW_F normal;
     OUTPUT_USHORT flags;
     RGBA_8888 color;
 } M_MESH_GEOM;
@@ -73,6 +73,7 @@ typedef struct MESH_BATCHER {
     VECTOR *transparent_vertices; // M_MESH_FULL
     GLuint full_vao;
     GLuint full_vbo;
+    const ROOM *last_room;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -90,7 +91,10 @@ static void M_FillGeometry(
     geom->pos.y = vertex->pos.y;
     geom->pos.z = vertex->pos.z;
     geom->pos.w = vertex->pos.w;
-    geom->normal = vertex->normal;
+    geom->normal.x = vertex->normal.x;
+    geom->normal.y = vertex->normal.y;
+    geom->normal.z = vertex->normal.z;
+    geom->normal.w = vertex->light_table_idx;
     geom->color = vertex->color;
     geom->flags = vertex->flags;
 }
@@ -112,6 +116,12 @@ static void M_FillShade(
 {
     shade->shade1 = vertex->shade1;
     shade->shade2 = vertex->shade2;
+}
+
+static void M_SyncRoom(MESH_BATCHER *const batcher, const ROOM *const room)
+{
+    batcher->last_room = room;
+    Output_Uniforms_UploadRoomLights(Output_GetUniforms(), room);
 }
 
 static void M_AnimateBinding(
@@ -210,10 +220,14 @@ static void M_DrawBlendAddVertices(
 }
 
 static void M_DrawOpaqueInstance(
-    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+    MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
 {
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
+
+    if (batcher->last_room != inst->room) {
+        M_SyncRoom(batcher, inst->room);
+    }
 
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
@@ -224,6 +238,7 @@ static void M_DrawOpaqueInstance(
             inst->scissor.height);
     }
 
+    Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
     if (inst->wibble) {
         Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
         glDepthMask(GL_FALSE);
@@ -242,13 +257,18 @@ static void M_DrawOpaqueInstance(
 }
 
 static void M_DrawBlendAddInstance(
-    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+    MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
 {
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
+    if (batcher->last_room != inst->room) {
+        M_SyncRoom(batcher, inst->room);
+    }
+
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+    Output_MeshShader_UploadWaterEffect(batcher->shader, false);
     Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
 
     if (inst->enable_scissor) {
@@ -262,8 +282,7 @@ static void M_DrawBlendAddInstance(
     }
 }
 
-static void M_OpaquePass(
-    const MESH_BATCHER *const batcher, const SCENE_PASS pass)
+static void M_OpaquePass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
 {
     glBindVertexArray(batcher->partial_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
@@ -327,7 +346,7 @@ static void M_OpaquePass(
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
-static void M_BlendAddPass(const MESH_BATCHER *const batcher)
+static void M_BlendAddPass(MESH_BATCHER *const batcher)
 {
     VECTOR *const staged = batcher->staged[SCENE_PASS_BLEND_ADD];
 
@@ -346,7 +365,7 @@ static void M_BlendAddPass(const MESH_BATCHER *const batcher)
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
-static void M_TransparentPass(const MESH_BATCHER *const batcher)
+static void M_TransparentPass(MESH_BATCHER *const batcher)
 {
     glBindVertexArray(batcher->full_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->full_vbo);
@@ -367,8 +386,13 @@ static void M_TransparentPass(const MESH_BATCHER *const batcher)
             Output_MeshShader_UploadModelMatrix(
                 batcher->shader, &inst->wmatrix);
             Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+            Output_MeshShader_UploadWaterEffect(
+                batcher->shader, inst->water_effect);
             Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
+            if (batcher->last_room != inst->room) {
+                M_SyncRoom(batcher, inst->room);
+            }
         }
         glDrawArrays(
             GL_TRIANGLES, sort_ptr->vertex_start, sort_ptr->vertex_count);
@@ -385,6 +409,7 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
     }
     Vector_Clear(batcher->transparent_vertices);
     Vector_Clear(batcher->transparent_sort);
+    batcher->last_room = nullptr;
 }
 
 static void M_RenderPass(
@@ -455,7 +480,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
         (void *)(intptr_t)offsetof(M_MESH_GEOM, pos));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
+        OUTPUT_MESH_ATTR_NORMAL, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_GEOM),
         (void *)(intptr_t)offsetof(M_MESH_GEOM, normal));
     glVertexAttribIPointer(
         OUTPUT_MESH_ATTR_FLAGS, 1, OUTPUT_USHORT_GL, sizeof(M_MESH_GEOM),
@@ -506,7 +531,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
         (void *)(intptr_t)offsetof(M_MESH_FULL, geom.pos));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
+        OUTPUT_MESH_ATTR_NORMAL, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
         (void *)(intptr_t)offsetof(M_MESH_FULL, geom.normal));
     glVertexAttribIPointer(
         OUTPUT_MESH_ATTR_FLAGS, 1, OUTPUT_USHORT_GL, sizeof(M_MESH_FULL),

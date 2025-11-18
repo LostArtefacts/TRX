@@ -20,7 +20,6 @@ typedef struct {
 } M_ROOM_LIGHT_TABLE;
 
 static bool m_IsSunsetEnabled = false;
-static int32_t m_WibbleOffset = 0;
 static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static M_ROOM_LIGHT_TABLE m_RoomLightTables[M_LIGHT_CYCLE] = {};
 static VECTOR *m_DynamicLights = nullptr;
@@ -306,6 +305,11 @@ void Output_ResetDynamicLights(void)
     Vector_Clear(m_DynamicLights);
 }
 
+VECTOR *Output_GetDynamicLights(void)
+{
+    return m_DynamicLights;
+}
+
 void Output_AddDynamicLight(
     const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
 {
@@ -346,13 +350,11 @@ void Output_SetSunsetEnabled(const bool enabled)
 
 void Output_AnimateLights(const int32_t num_frames)
 {
-    m_WibbleOffset += num_frames;
-    m_WibbleOffset %= M_LIGHT_CYCLE;
+    const int32_t time = ((int32_t)Output_GetTimeInGame()) % M_LIGHT_CYCLE;
     if (g_TRVersion >= 2) {
         m_RoomLightShades[RLM_FLICKER] = Random_GetDraw() % M_LIGHT_CYCLE;
         m_RoomLightShades[RLM_GLOW] = (M_LIGHT_CYCLE - 1)
-                * (Math_Sin((m_WibbleOffset * DEG_360) / M_LIGHT_CYCLE)
-                   + 0x4000)
+                * (Math_Sin((time * DEG_360) / M_LIGHT_CYCLE) + 0x4000)
             >> 15;
 
         if (m_IsSunsetEnabled) {

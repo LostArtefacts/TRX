@@ -27,6 +27,7 @@ struct OUTPUT_SHADER {
 static const char *const m_UniformBlocks[] = {
     "Globals",
     "Matrices",
+    "Lights",
     nullptr,
 };
 

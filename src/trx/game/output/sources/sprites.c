@@ -2,6 +2,7 @@
 
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/output/scene_compositor.h>
+#include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
@@ -111,6 +112,7 @@ void OutputSource_Sprites_Stage(int32_t sprite_idx, int16_t shade, RGB_F tint)
         .water_effect = false,
         .update_light_func = M_UpdateShades,
         .update_light_func_data = (void *)(intptr_t)shade,
+        .room = Output_GetCurrentRoom(),
     };
 
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);

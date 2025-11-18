@@ -2,6 +2,7 @@
 
 #include <trx/game/output/mesh_batcher/mesh.h>
 #include <trx/game/output/scene_source.h>
+#include <trx/game/rooms/types.h>
 #include <trx/game/viewport.h>
 
 typedef struct MESH_INSTANCE {
@@ -9,6 +10,7 @@ typedef struct MESH_INSTANCE {
 
     MATRIX cwmatrix;
     MATRIX wmatrix;
+    const ROOM *room;
     RGB_F tint;
     bool wibble;
 

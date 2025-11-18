@@ -14,11 +14,11 @@
 // GL attribute mapping in the shader
 typedef enum {
     // clang-format off
-    M_ATTR_POS = 0,
-    M_ATTR_UVW = 1,
+    M_ATTR_POS          = 0,
+    M_ATTR_UVW          = 1,
     M_ATTR_TEXTURE_SIZE = 2,
-    M_ATTR_FLAGS = 3,
-    M_ATTR_COLOR = 4,
+    M_ATTR_FLAGS        = 3,
+    M_ATTR_COLOR        = 4,
     // clang-format on
 } M_VERTEX_ATTR;
 
@@ -210,6 +210,7 @@ static void M_RenderPass(
         glEnable(GL_CULL_FACE);
         M_Draw3DPickups(p);
         glDisable(GL_CULL_FACE);
+        Output_UIShader_Bind(Output_GetUIShader());
     }
 }
 

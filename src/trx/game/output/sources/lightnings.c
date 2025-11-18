@@ -8,7 +8,7 @@
 
 typedef struct {
     XYZW_F pos;
-    XYZ_F normal;
+    XYZW_F normal;
     RGBA_8888 color;
 } M_VERTEX;
 
@@ -48,28 +48,28 @@ static void M_GenerateLightningSegment(
     const M_VERTEX vertices[4][4] = {
         // clang-format off
         {
-            { .pos = pos_0, .normal = { 0, 0, 0 }, .color = white },
-            { .pos = pos_1, .normal = { 0, 0, 0 }, .color = white },
-            { .pos = pos_1, .normal = { w, 0, 0 }, .color = blue },
-            { .pos = pos_0, .normal = { w, 0, 0 }, .color = blue },
+            { .pos = pos_0, .normal = { 0, 0, 0, 0 }, .color = white },
+            { .pos = pos_1, .normal = { 0, 0, 0, 0 }, .color = white },
+            { .pos = pos_1, .normal = { w, 0, 0, 0 }, .color = blue },
+            { .pos = pos_0, .normal = { w, 0, 0, 0 }, .color = blue },
         },
         {
-            { .pos = pos_0, .normal = { 0, 0, 0 }, .color = white },
-            { .pos = pos_1, .normal = { 0, 0, 0 }, .color = white },
-            { .pos = pos_1, .normal = { -w, 0, 0 }, .color = blue },
-            { .pos = pos_0, .normal = { -w, 0, 0 }, .color = blue },
+            { .pos = pos_0, .normal = { 0, 0, 0, 0 }, .color = white },
+            { .pos = pos_1, .normal = { 0, 0, 0, 0 }, .color = white },
+            { .pos = pos_1, .normal = { -w, 0, 0, 0 }, .color = blue },
+            { .pos = pos_0, .normal = { -w, 0, 0, 0 }, .color = blue },
         },
         {
-            { .pos = pos_0, .normal = { 0, 0, 0 }, .color = white },
-            { .pos = pos_0, .normal = { w, 0, 0 }, .color = blue },
-            { .pos = pos_1, .normal = { w, 0, 0 }, .color = blue },
-            { .pos = pos_1, .normal = { 0, 0, 0 }, .color = white },
+            { .pos = pos_0, .normal = { 0, 0, 0, 0 }, .color = white },
+            { .pos = pos_0, .normal = { w, 0, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { w, 0, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { 0, 0, 0, 0 }, .color = white },
         },
         {
-            { .pos = pos_0, .normal = { 0, 0, 0 }, .color = white },
-            { .pos = pos_0, .normal = { -w, 0, 0 }, .color = blue },
-            { .pos = pos_1, .normal = { -w, 0, 0 }, .color = blue },
-            { .pos = pos_1, .normal = { 0, 0, 0 }, .color = white },
+            { .pos = pos_0, .normal = { 0, 0, 0, 0 }, .color = white },
+            { .pos = pos_0, .normal = { -w, 0, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { -w, 0, 0, 0 }, .color = blue },
+            { .pos = pos_1, .normal = { 0, 0, 0, 0 }, .color = white },
         },
         // clang-format on
     };
@@ -99,7 +99,7 @@ static void M_RenderPass(
 
     glBindVertexArray(p->vao);
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
-    glVertexAttrib3f(OUTPUT_MESH_ATTR_NORMAL, 0.0f, 0.0f, 0.0f);
+    glVertexAttrib4f(OUTPUT_MESH_ATTR_NORMAL, 0.0f, 0.0f, 0.0f, 0.0f);
     glVertexAttrib3f(OUTPUT_MESH_ATTR_UVW, 0.0f, 0.0f, 0.0f);
     glVertexAttrib4f(OUTPUT_MESH_ATTR_TEXTURE_SIZE, 0.0f, 0.0f, 1.0f, 1.0f);
     glVertexAttrib2f(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 1.0f, 1.0f);
@@ -158,7 +158,7 @@ void OutputSource_Lightnings_Init(void)
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        OUTPUT_MESH_ATTR_NORMAL, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, normal));
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),

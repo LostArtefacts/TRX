@@ -9,7 +9,7 @@ uniform mat4 uMatModel;
 uniform bool uWibbleEffect;
 
 layout(location = 0) in vec4 inPosition;
-layout(location = 1) in vec3 inNormal;
+layout(location = 1) in vec4 inNormal;
 layout(location = 2) in vec3 inUVW;
 layout(location = 3) in vec4 inTextureSize;
 layout(location = 4) in vec2 inTrapezoidRatios;
@@ -30,17 +30,16 @@ out vec4 gColor;
 
 vec3 waterWibble(vec4 position)
 {
-    // get screen coordinates
-    vec3 ndc = position.xyz / position.w; //perspective divide/normalize
-    vec2 viewportCoord = ndc.xy * 0.5 + 0.5; //ndc is -1 to 1 in GL. scale for 0 to 1
-    vec2 viewportPixelCoord = viewportCoord * uViewportSize;
+    vec3 ndc = position.xyz / position.w;
+    vec2 screenPos = ndc.xy * 0.5 + 0.5;
+    vec2 pixelPos = screenPos * uViewportSize;
 
-    viewportPixelCoord.x += sin((uTimeInGame + viewportPixelCoord.y) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
-    viewportPixelCoord.y += sin((uTimeInGame + viewportPixelCoord.x) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+    pixelPos.x += sin((uTimeInGame + pixelPos.y) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
+    pixelPos.y += sin((uTimeInGame + pixelPos.x) * 2.0 * PI / WIBBLE_SIZE) * MAX_WIBBLE;
 
     // reverse transform
-    viewportCoord = viewportPixelCoord / uViewportSize;
-    ndc.xy = (viewportCoord - 0.5) * 2.0;
+    screenPos = pixelPos / uViewportSize;
+    ndc.xy = (screenPos - 0.5) * 2.0;
     return ndc * position.w;
 }
 
@@ -59,7 +58,7 @@ void main(void) {
     }
 
     gEyePos = eyePos;
-    gNormal = inNormal;
+    gNormal = inNormal.xyz;
     gl_Position = uMatProj * eyePos;
     gl_Position.z += inPosition.w;
 
@@ -85,7 +84,7 @@ void main(void) {
     if (uLightingEnabled == 0) {
         gShade = SHADE_NEUTRAL;
     } else if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        float newShade = light(inShade2, gFlags, inNormal.xyz, worldPos);
+        float newShade = light(inShade2, gFlags, inNormal.xyz, worldPos, inNormal.w);
 
         if (uUseNewLighting == 0) {
             // OG lighting, untextured

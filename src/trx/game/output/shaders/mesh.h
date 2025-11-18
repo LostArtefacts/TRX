@@ -5,13 +5,14 @@
 #include <trx/game/output/types.h>
 
 // clang-format off
-#define VERT_NO_CAUSTICS      0b0000'0001 // = 0x01
-#define VERT_FLAT_SHADED      0b0000'0010 // = 0x02
-#define VERT_REFLECTIVE       0b0000'0100 // = 0x04
-#define VERT_NO_LIGHTING      0b0000'1000 // = 0x08
-#define VERT_BILLBOARD        0b0001'0000 // = 0x10
-#define VERT_ABS_SPRITE       0b0010'0000 // = 0x20
-#define VERT_NO_ALPHA_DISCARD 0b0100'0000 // = 0x40
+#define VERT_NO_CAUSTICS       0b0000'0001 // = 0x01
+#define VERT_FLAT_SHADED       0b0000'0010 // = 0x02
+#define VERT_REFLECTIVE        0b0000'0100 // = 0x04
+#define VERT_NO_LIGHTING       0b0000'1000 // = 0x08
+#define VERT_BILLBOARD         0b0001'0000 // = 0x10
+#define VERT_ABS_SPRITE        0b0010'0000 // = 0x20
+#define VERT_NO_ALPHA_DISCARD  0b0100'0000 // = 0x40
+#define VERT_USE_DYNAMIC_LIGHT 0b1000'0000 // = 0x80
 // clang-format on
 
 // GL attribute mapping in the shader
@@ -38,6 +39,8 @@ void Output_MeshShader_Bind(const OUTPUT_MESH_SHADER *shader);
 // TODO: these could could use UBOs
 void Output_MeshShader_UploadModelMatrix(
     const OUTPUT_MESH_SHADER *shader, const MATRIX *source);
+void Output_MeshShader_UploadWaterEffect(
+    OUTPUT_MESH_SHADER *shader, bool is_enabled);
 void Output_MeshShader_UploadWibbleEffect(
     OUTPUT_MESH_SHADER *shader, bool is_enabled);
 void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *shader, RGB_F tint);

@@ -3,6 +3,7 @@
 #include <trx/game/objects/types.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
+#include <trx/vector.h>
 
 void Output_InitLight(void);
 void Output_ShutdownLight(void);
@@ -19,5 +20,6 @@ void Output_SetSunsetEnabled(bool enabled);
 
 void Output_ResetDynamicLights(void);
 void Output_AddDynamicLight(XYZ_32 pos, int32_t intensity, int32_t falloff);
+VECTOR *Output_GetDynamicLights(void);
 
 void Output_AnimateLights(int32_t num_frames);

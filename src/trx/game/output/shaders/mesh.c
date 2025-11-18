@@ -6,6 +6,7 @@
 
 struct OUTPUT_MESH_SHADER {
     OUTPUT_SHADER *base;
+    bool is_water_effect;
     bool is_wibble_effect;
     bool is_alpha_discard_enabled;
     RGB_F tint;
@@ -56,6 +57,18 @@ void Output_MeshShader_UploadAlphaDiscard(
         glUniform1i, Output_Shader_LookupUniform(shader->base, "uDiscardAlpha"),
         is_enabled);
     shader->is_alpha_discard_enabled = is_enabled;
+}
+
+void Output_MeshShader_UploadWaterEffect(
+    OUTPUT_MESH_SHADER *const shader, const bool is_enabled)
+{
+    if (is_enabled == shader->is_water_effect) {
+        return;
+    }
+    GFX_TRACK_UNIFORM(
+        glUniform1i, Output_Shader_LookupUniform(shader->base, "uWaterEffect"),
+        is_enabled);
+    shader->is_water_effect = is_enabled;
 }
 
 void Output_MeshShader_UploadWibbleEffect(

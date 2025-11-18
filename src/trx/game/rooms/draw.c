@@ -313,6 +313,7 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
 
 static void M_DrawSingleRoom(ROOM *const room)
 {
+    Output_SetCurrentRoom(room);
     if (room->flags.underwater) {
         Output_SetupBelowWater(g_Camera.underwater);
     } else {
