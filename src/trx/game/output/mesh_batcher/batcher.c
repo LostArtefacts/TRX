@@ -10,10 +10,7 @@
 
 #include <uthash.h>
 
-typedef struct {
-    OUTPUT_SHORT shade1;
-    OUTPUT_SHORT shade2;
-} M_MESH_SHADE;
+typedef OUTPUT_SHORT M_MESH_SHADE;
 
 typedef struct {
     XYZW_F pos;
@@ -114,8 +111,7 @@ static void M_FillTexture(
 static void M_FillShade(
     M_MESH_SHADE *const shade, const OUTPUT_MESH_VERTEX *const vertex)
 {
-    shade->shade1 = vertex->shade1;
-    shade->shade2 = vertex->shade2;
+    *shade = vertex->shade;
 }
 
 static void M_SyncRoom(MESH_BATCHER *const batcher, const ROOM *const room)
@@ -294,22 +290,6 @@ static void M_OpaquePass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
         MESH_INSTANCE *const inst = Vector_Get(staged, i);
         const M_MESH_BUF_BINDING *const bind =
             M_GetBinding(batcher, inst->mesh);
-
-        // Update lighting data. The updates are done on the models rather than
-        // instances, so that we do not have to allocate vertex data memory for
-        // instances on every stage.
-        if (inst->update_light_func != nullptr) {
-            inst->update_light_func(inst, inst->update_light_func_data);
-            const OUTPUT_MESH_VERTEX *const vertices =
-                Vector_GetData(inst->mesh->vertices);
-            for (int32_t j = 0; j < bind->vertex_count; j++) {
-                M_FillShade(&bind->shade_data[j], &vertices[j]);
-            }
-            GFX_TRACK_SUBDATA(
-                glBufferSubData, GL_ARRAY_BUFFER,
-                bind->vertex_start * sizeof(M_MESH_SHADE),
-                bind->vertex_count * sizeof(M_MESH_SHADE), bind->shade_data);
-        }
 
         if (inst->mesh->opaque_vertex_indices->count != 0) {
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
@@ -510,14 +490,10 @@ MESH_BATCHER *MeshBatcher_Create(void)
         (void *)(intptr_t)offsetof(M_MESH_TEXTURE, trapezoid_ratio));
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE1);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE2);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE1, 1, OUTPUT_SHORT_GL, GL_FALSE,
-        sizeof(M_MESH_SHADE), (void *)(intptr_t)offsetof(M_MESH_SHADE, shade1));
-    glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE2, 1, OUTPUT_SHORT_GL, GL_FALSE,
-        sizeof(M_MESH_SHADE), (void *)(intptr_t)offsetof(M_MESH_SHADE, shade2));
+        OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_SHORT_GL, GL_FALSE,
+        sizeof(M_MESH_SHADE), 0);
 
     glGenVertexArrays(1, &batcher->full_vao);
     glBindVertexArray(batcher->full_vao);
@@ -529,8 +505,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE1);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE2);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_MESH_FULL),
         (void *)(intptr_t)offsetof(M_MESH_FULL, geom.pos));
@@ -556,13 +531,8 @@ MESH_BATCHER *MeshBatcher_Create(void)
         sizeof(M_MESH_FULL),
         (void *)(intptr_t)offsetof(M_MESH_FULL, tex.trapezoid_ratio));
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE1, 1, OUTPUT_SHORT_GL, GL_FALSE,
-        sizeof(M_MESH_FULL),
-        (void *)(intptr_t)offsetof(M_MESH_FULL, shade.shade1));
-    glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE2, 1, OUTPUT_SHORT_GL, GL_FALSE,
-        sizeof(M_MESH_FULL),
-        (void *)(intptr_t)offsetof(M_MESH_FULL, shade.shade2));
+        OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_SHORT_GL, GL_FALSE,
+        sizeof(M_MESH_FULL), (void *)(intptr_t)offsetof(M_MESH_FULL, shade));
 
     return batcher;
 }

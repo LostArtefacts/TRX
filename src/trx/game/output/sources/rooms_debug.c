@@ -175,8 +175,7 @@ static void M_RenderPass(
     glVertexAttribI1ui(
         OUTPUT_MESH_ATTR_FLAGS,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS);
-    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE1, SHADE_NEUTRAL);
-    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE2, SHADE_NEUTRAL);
+    glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
 
     for (int32_t i = 0; i < p->scheduled->count; i++) {
         const M_INSTANCE *const instance = Vector_Get(p->scheduled, i);
@@ -232,8 +231,7 @@ void OutputSource_RoomsDebug_Init(void)
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_FLAGS);
-    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE1);
-    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE2);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));

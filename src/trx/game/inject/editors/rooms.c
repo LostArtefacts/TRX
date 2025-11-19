@@ -123,7 +123,6 @@ static void M_AlterRoomVertex(const INJECTION *const injection)
     vertex->pos.y += y_change;
     vertex->pos.z += z_change;
     vertex->light_base += shade_change;
-    vertex->light_adder = vertex->light_base;
 }
 
 static void M_SetVertexFlags(const INJECTION *const injection)
@@ -249,7 +248,6 @@ static void M_AddRoomVertex(const INJECTION *const injection)
     ROOM_VERTEX *const vertex = &room->mesh.vertices[room->mesh.num_vertices];
     vertex->pos = pos;
     vertex->light_base = shade;
-    vertex->light_adder = shade;
     vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
     room->mesh.num_vertices++;
 }

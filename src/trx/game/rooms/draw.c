@@ -333,7 +333,6 @@ static void M_DrawSingleRoom(ROOM *const room)
     }
 
     Matrix_TranslateAbs32(room->pos);
-    Output_LightRoom(room);
     Output_DrawRoom(room, false);
 
     if (room->flags.underwater) {

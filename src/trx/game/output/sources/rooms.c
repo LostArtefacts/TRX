@@ -45,8 +45,7 @@ static void M_AddRoomFace(
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
             .flags = flags,
             .uvw_idx = Output_Textures_GetObjectUVWIndex(face->texture_idx, i),
-            .shade1 = room_vert->light_adder,
-            .shade2 = room_vert->light_adder,
+            .shade = room_vert->light_base,
             .light_table_idx = room_vert->light_table_value,
             .color = room_vert->color,
             .trapezoid_ratio = {
@@ -75,46 +74,6 @@ static int16_t M_ShadeCaustics(
         CLAMPG(source, SHADE_MAX);
     }
     return source;
-}
-
-static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
-{
-    M_PRIV *const p = &m_Priv;
-    const ROOM *const room = user_data;
-    OUTPUT_MESH *const mesh = p->meshes[Room_GetNumber(room)];
-    OUTPUT_MESH_VERTEX *vertex = Vector_GetData(mesh->vertices);
-
-    // Quads
-    for (int32_t i = 0; i < room->mesh.face4s.count; i++) {
-        const FACE *const face = &room->mesh.face4s.data[i];
-        for (int32_t j = 0; j < 4; j++) {
-            vertex->shade1 = room->mesh.vertices[face->vertices[j]].light_adder;
-            vertex->shade1 = M_ShadeCaustics(
-                p, room, inst->water_effect, vertex->shade1, face->vertices[j]);
-            vertex++;
-        }
-    }
-
-    // Triangles
-    for (int32_t i = 0; i < room->mesh.face3s.count; i++) {
-        const FACE *const face = &room->mesh.face3s.data[i];
-        for (int32_t j = 0; j < 3; j++) {
-            vertex->shade1 = room->mesh.vertices[face->vertices[j]].light_adder;
-            vertex->shade1 = M_ShadeCaustics(
-                p, room, inst->water_effect, vertex->shade1, face->vertices[j]);
-            vertex++;
-        }
-    }
-
-    // Sprites
-    for (int32_t i = 0; i < room->mesh.sprites.count; i++) {
-        const ROOM_SPRITE *const room_sprite = &room->mesh.sprites.data[i];
-        for (int32_t j = 0; j < 4; j++) {
-            vertex->shade1 =
-                room->mesh.vertices[room_sprite->vertex].light_adder;
-            vertex++;
-        }
-    }
 }
 
 static void M_PrepareMeshes(M_PRIV *const p)
@@ -225,8 +184,6 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
             .width = room->bound_right - room->bound_left,
             .height = room->bound_bottom - room->bound_top,
         },
-        .update_light_func = M_UpdateShades,
-        .update_light_func_data = (void *)room,
         .room = Output_GetCurrentRoom(),
     };
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);

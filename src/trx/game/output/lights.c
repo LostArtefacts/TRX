@@ -221,63 +221,6 @@ void Output_CalculateObjectLighting(
     Output_CalculateLight(pos, item->room_num);
 }
 
-void Output_LightRoom(ROOM *const room)
-{
-    if (room->light_mode != RLM_NORMAL) {
-        Output_LightRoomVertices(room);
-    } else if (room->flags.dynamic_lit) {
-        for (int32_t i = 0; i < room->mesh.num_vertices; i++) {
-            ROOM_VERTEX *const vtx = &room->mesh.vertices[i];
-            vtx->light_adder = vtx->light_base;
-        }
-        room->flags.dynamic_lit = false;
-    }
-
-    const int32_t x_min = WALL_L;
-    const int32_t z_min = WALL_L;
-    const int32_t x_max = (room->size.x - 1) * WALL_L;
-    const int32_t z_max = (room->size.z - 1) * WALL_L;
-
-    for (int32_t i = 0; i < m_DynamicLights->count; i++) {
-        const LIGHT *const light = Vector_Get(m_DynamicLights, i);
-        const int32_t x = light->pos.x - room->pos.x;
-        const int32_t y = light->pos.y;
-        const int32_t z = light->pos.z - room->pos.z;
-        const int32_t radius = 1 << light->falloff.value_1;
-        if (x - radius > x_max || z - radius > z_max || x + radius < x_min
-            || z + radius < z_min) {
-            continue;
-        }
-
-        room->flags.dynamic_lit = true;
-
-        for (int32_t j = 0; j < room->mesh.num_vertices; j++) {
-            ROOM_VERTEX *const v = &room->mesh.vertices[j];
-            if (v->light_adder == 0) {
-                continue;
-            }
-
-            const int32_t dx = v->pos.x - x;
-            const int32_t dy = v->pos.y - y;
-            const int32_t dz = v->pos.z - z;
-            if (dx < -radius || dx > radius || dy < -radius || dy > radius
-                || dz < -radius || dz > radius) {
-                continue;
-            }
-
-            const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-            if (dist > SQUARE(radius)) {
-                continue;
-            }
-
-            const int32_t shade = (1 << light->shade.value_1)
-                - (dist >> (2 * light->falloff.value_1 - light->shade.value_1));
-            v->light_adder -= shade;
-            CLAMPL(v->light_adder, 0);
-        }
-    }
-}
-
 void Output_InitLight(void)
 {
     if (m_DynamicLights == nullptr) {
@@ -324,18 +267,6 @@ void Output_AddDynamicLight(
 int32_t Output_GetRoomLightShade(const ROOM_LIGHT_MODE mode)
 {
     return m_RoomLightShades[mode];
-}
-
-void Output_LightRoomVertices(const ROOM *const room)
-{
-    const M_ROOM_LIGHT_TABLE *const light_table =
-        &m_RoomLightTables[m_RoomLightShades[room->light_mode]];
-    for (int32_t i = 0; i < room->mesh.num_vertices; i++) {
-        ROOM_VERTEX *const vtx = &room->mesh.vertices[i];
-        const int32_t wibble =
-            light_table->table[vtx->light_table_value % M_LIGHT_CYCLE];
-        vtx->light_adder = vtx->light_base + wibble;
-    }
 }
 
 int32_t Output_GetSunsetDuration(void)

@@ -58,16 +58,6 @@ static void M_FreeMeshes(M_PRIV *const p)
     }
 }
 
-static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data)
-{
-    int16_t shade = (int16_t)(intptr_t)user_data;
-    CLAMP(shade, 0, SHADE_MAX);
-    OUTPUT_MESH_VERTEX *const vertices = Vector_GetData(inst->mesh->vertices);
-    for (int32_t i = 0; i < inst->mesh->vertices->count; i++) {
-        vertices[i].shade1 = shade;
-    }
-}
-
 void OutputSource_Sprites_Init(MESH_BATCHER *batcher)
 {
     m_Priv.batcher = batcher;
@@ -111,8 +101,6 @@ void OutputSource_Sprites_Stage(int32_t sprite_idx, int16_t shade, RGB_F tint)
         .tint = tint,
         .wibble = false,
         .water_effect = false,
-        .update_light_func = M_UpdateShades,
-        .update_light_func_data = (void *)(intptr_t)shade,
         .room = Output_GetCurrentRoom(),
         .light_info = {
             .ls_adder = shade,

@@ -12,8 +12,6 @@ void Output_CalculateStaticLight(int16_t adder);
 void Output_CalculateStaticMeshLight(XYZ_32 pos, SHADE shade, const ROOM *room);
 void Output_CalculateObjectLighting(const ITEM *item, const BOUNDS_16 *bounds);
 int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);
-void Output_LightRoomVertices(const ROOM *room);
-void Output_LightRoom(ROOM *room);
 
 int32_t Output_GetSunsetDuration(void);
 void Output_SetSunsetEnabled(bool enabled);

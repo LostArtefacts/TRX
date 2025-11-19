@@ -16,6 +16,7 @@ typedef struct MESH_INSTANCE {
     const ROOM *room;
     RGB_F tint;
     bool wibble;
+    bool water_effect;
 
     OUTPUT_LIGHT_INFO light_info;
 
@@ -23,10 +24,6 @@ typedef struct MESH_INSTANCE {
     bool disable_z_writes;
     float depth_adjust;
     VIEWPORT_RECT scissor;
-
-    void (*update_light_func)(struct MESH_INSTANCE *inst, void *user_data);
-    void *update_light_func_data;
-    bool water_effect; // helper for the update_light_func
 } MESH_INSTANCE;
 
 typedef struct MESH_BATCHER MESH_BATCHER;

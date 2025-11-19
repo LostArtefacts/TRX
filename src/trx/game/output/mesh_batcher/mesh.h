@@ -21,8 +21,7 @@ typedef struct {
     uint16_t flags;
     int16_t uvw_idx;
     float trapezoid_ratio[2];
-    int16_t shade1;
-    int16_t shade2;
+    int16_t shade;
     RGBA_8888 color;
     uint8_t light_table_idx;
 } OUTPUT_MESH_VERTEX;

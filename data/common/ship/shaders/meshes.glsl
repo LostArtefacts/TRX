@@ -15,8 +15,7 @@ layout(location = 3) in vec4 inTextureSize;
 layout(location = 4) in vec2 inTrapezoidRatios;
 layout(location = 5) in uint inFlags;
 layout(location = 6) in vec4 inColor;
-layout(location = 7) in float inShade1;
-layout(location = 8) in float inShade2;
+layout(location = 7) in float inShade;
 
 out vec4 gEyePos;
 out vec3 gNormal;
@@ -71,26 +70,7 @@ void main(void) {
     if (uLightingEnabled == 0) {
         gShade = SHADE_NEUTRAL;
     } else if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        float newShade = light(
-            inShade2,
-            gFlags,
-            inNormal.xyz,
-            worldPos,
-            inNormal.w);
-
-        if (uUseNewLighting == 0) {
-            // OG lighting, untextured
-            gFlags |= VERT_FLAT_SHADED;
-        } else if (uUseNewLighting == 1) {
-            // New lighting, untextured
-            gFlags |= VERT_FLAT_SHADED;
-            gShade = newShade;
-        } else if (uUseNewLighting == 2) {
-            // OG lighting, textured
-        } else if (uUseNewLighting == 3) {
-            // New lighting, textured
-            gShade = newShade;
-        }
+        gShade = light(inShade, gFlags, inNormal.xyz, worldPos, inNormal.w);
     }
 }
 

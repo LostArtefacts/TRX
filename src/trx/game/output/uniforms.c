@@ -24,8 +24,7 @@
     X_DECLARE_MEMBER(int, billboard_lock_mode)                                 \
     X_DECLARE_MEMBER(int, lighting_enabled)                                    \
     X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
-    X_DECLARE_MEMBER(int, reflections_enabled)                                 \
-    X_DECLARE_MEMBER(int, use_new_lighting)
+    X_DECLARE_MEMBER(int, reflections_enabled)
 
 #pragma pack(push, 4)
 typedef struct {
@@ -123,7 +122,6 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .lighting_enabled = g_Config.rendering.enable_lighting,
         .trapezoid_filter_enabled = g_Config.rendering.enable_trapezoid_filter,
         .reflections_enabled = g_Config.visuals.enable_reflections,
-        .use_new_lighting = g_Config.debug.use_new_lighting,
         .fog_distance = {Output_GetFogStart(), Output_GetFogEnd()},
         .fog_color = {
             Output_GetFogColor().r,

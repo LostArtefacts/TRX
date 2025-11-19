@@ -270,7 +270,6 @@ typedef struct {
         bool enable_review_markers;
         bool enable_invulnerability;
         bool enable_endless_sprint;
-        int use_new_lighting;
     } debug;
 
     struct {
