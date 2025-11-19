@@ -68,14 +68,11 @@ static void M_SetupUI(const M_PRIV *const p)
 
 static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
 {
-    OUTPUT_MESH_SHADER *const shader = Output_GetMeshShader();
     for (int32_t i = 0; i < p->sources->count; i++) {
         const SCENE_SOURCE *const source =
             *(SCENE_SOURCE **)Vector_Get(p->sources, i);
         if (source->is_dirty != nullptr && source->is_dirty(source, pass)) {
             ASSERT(source->render_pass != nullptr);
-            Output_MeshShader_UploadTint(shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
-            Output_MeshShader_UploadWibbleEffect(shader, false);
             source->render_pass(source, pass);
         }
     }
