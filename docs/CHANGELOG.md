@@ -48,6 +48,7 @@
 - fixed Lara's arms getting stuck in the M16 gun firing animation while she dies (#4130)
 - fixed Lara jittering in the QWOP state
 - fixed doors and trapdoors not interpolating when using the door cheat
+- fixed credit images and loading images showing black screen if the file is missing (#4325)
 
 **TR1**:
 - added a new easter egg command
