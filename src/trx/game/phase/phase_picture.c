@@ -28,7 +28,12 @@ static void M_FadeOut(M_PRIV *const p)
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    Output_LoadBackgroundFromFile(p->args.file_name);
+    if (!Output_LoadBackgroundFromFile(p->args.file_name)) {
+        return (PHASE_CONTROL) {
+            .action = PHASE_ACTION_END,
+            .gf_cmd = { .action = GF_NOOP },
+        };
+    }
     Fader_Init(&p->fader, FADER_BLACK, FADER_TRANSPARENT, p->args.fade_in_time);
     ClockTimer_Sync(&p->timer);
     return (PHASE_CONTROL) {};
