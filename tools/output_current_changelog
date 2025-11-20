@@ -24,7 +24,7 @@ def output_changelog(changelog: Changelog, commit_hash: str) -> None:
         print()
 
     if changelog.body:
-        print(changelog.body)
+        print(changelog.body.strip())
     else:
         print("(no changes yet)")
 
