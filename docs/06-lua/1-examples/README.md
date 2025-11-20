@@ -54,6 +54,7 @@ This will change the color to crimson red if Lara is in room 15, and
 demonstrates how to throttle updates to only happen if Lara goes from one room
 to another.
 
+```lua
 local last_room = 0
 
 trx.events.on_control(function()
@@ -67,3 +68,4 @@ trx.events.on_control(function()
     end
   end
 end)
+```
