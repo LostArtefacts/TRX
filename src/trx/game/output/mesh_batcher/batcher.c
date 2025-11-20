@@ -32,9 +32,13 @@ typedef struct M_MESH_BUF_BINDING {
     M_MESH_SHADE *shade_data;
     int32_t vertex_start;
     int32_t vertex_count;
+
+    int32_t opaque_index_start;
+    int32_t opaque_index_count;
+    int32_t blend_add_index_start;
+    int32_t blend_add_index_count;
+
     UT_hash_handle hh;
-    GLuint opaque_ebo;
-    GLuint blend_add_ebo;
 } M_MESH_BUF_BINDING;
 
 typedef struct {
@@ -63,6 +67,11 @@ typedef struct MESH_BATCHER {
     VECTOR *transparent_sort; // M_FACE_SORT
     VECTOR *transparent_indices; // uint32_t
     GLuint transparent_ebo;
+    GLuint opaque_ebo;
+    GLuint blend_add_ebo;
+
+    int32_t opaque_total_indices;
+    int32_t blend_add_total_indices;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -185,25 +194,30 @@ static void M_DrawOpaqueVertices(
     const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
 {
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
+    const void *indices_offset =
+        (void *)(intptr_t)(bind->opaque_index_start * sizeof(uint32_t));
     glDrawElementsBaseVertex(
-        GL_TRIANGLES, inst->mesh->opaque_vertex_indices->count, GL_UNSIGNED_INT,
-        nullptr, bind->vertex_start);
+        GL_TRIANGLES, bind->opaque_index_count, GL_UNSIGNED_INT,
+        indices_offset, // Offset in EBO
+        bind->vertex_start // Offset in VBO (baseVertex)
+    );
     GFX_GL_CheckError();
-    g_GFX_Metrics.opaque_vert_count += inst->mesh->opaque_vertex_indices->count;
+    g_GFX_Metrics.opaque_vert_count += bind->opaque_index_count;
 }
 
 static void M_DrawBlendAddVertices(
     const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
 {
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->blend_add_ebo);
+    const void *indices_offset =
+        (void *)(intptr_t)(bind->blend_add_index_start * sizeof(uint32_t));
     glDrawElementsBaseVertex(
-        GL_TRIANGLES, inst->mesh->blend_add_vertex_indices->count,
-        GL_UNSIGNED_INT, nullptr, bind->vertex_start);
+        GL_TRIANGLES, bind->blend_add_index_count, GL_UNSIGNED_INT,
+        indices_offset, // Offset in EBO
+        bind->vertex_start // Offset in VBO (baseVertex)
+    );
     GFX_GL_CheckError();
-    g_GFX_Metrics.blend_add_vert_count +=
-        inst->mesh->blend_add_vertex_indices->count;
+    g_GFX_Metrics.blend_add_vert_count += bind->blend_add_index_count;
 }
 
 static void M_DrawOpaqueInstance(
@@ -273,6 +287,7 @@ static void M_OpaquePass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
 
     glBindVertexArray(batcher->partial_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->opaque_ebo);
     for (int32_t i = 0; i < staged->count; i++) {
         MESH_INSTANCE *const inst = Vector_Get(staged, i);
         const M_MESH_BUF_BINDING *const bind =
@@ -316,6 +331,7 @@ static void M_BlendAddPass(MESH_BATCHER *const batcher)
     VECTOR *const staged = batcher->staged[SCENE_PASS_BLEND_ADD];
 
     glBindVertexArray(batcher->partial_vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->blend_add_ebo);
     for (int32_t i = 0; i < staged->count; i++) {
         const MESH_INSTANCE *const inst = Vector_Get(staged, i);
         const M_MESH_BUF_BINDING *const bind =
@@ -491,6 +507,8 @@ MESH_BATCHER *MeshBatcher_Create(void)
         sizeof(M_MESH_SHADE), 0);
 
     glGenBuffers(1, &batcher->transparent_ebo);
+    glGenBuffers(1, &batcher->opaque_ebo);
+    glGenBuffers(1, &batcher->blend_add_ebo);
 
     return batcher;
 }
@@ -524,6 +542,14 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
         glDeleteBuffers(1, &batcher->transparent_ebo);
         batcher->transparent_ebo = 0;
     }
+    if (batcher->opaque_ebo != 0) {
+        glDeleteBuffers(1, &batcher->opaque_ebo);
+        batcher->opaque_ebo = 0;
+    }
+    if (batcher->blend_add_ebo != 0) {
+        glDeleteBuffers(1, &batcher->blend_add_ebo);
+        batcher->blend_add_ebo = 0;
+    }
     if (batcher->transparent_indices != nullptr) {
         Vector_Free(batcher->transparent_indices);
         batcher->transparent_indices = nullptr;
@@ -545,14 +571,6 @@ void MeshBatcher_RemoveMesh(
     if (bind == nullptr) {
         return;
     }
-    if (bind->opaque_ebo != 0) {
-        glDeleteBuffers(1, &bind->opaque_ebo);
-        bind->opaque_ebo = 0;
-    }
-    if (bind->blend_add_ebo != 0) {
-        glDeleteBuffers(1, &bind->blend_add_ebo);
-        bind->blend_add_ebo = 0;
-    }
     Memory_Free(bind->geom_data);
     Memory_Free(bind->tex_data);
     Memory_Free(bind->shade_data);
@@ -571,10 +589,9 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
     M_MESH_BUF_BINDING *const bind = Memory_Alloc(sizeof(M_MESH_BUF_BINDING));
     bind->mesh = mesh;
     bind->vertex_count = mesh->vertices->count;
-    bind->opaque_ebo = 0;
-    bind->blend_add_ebo = 0;
-    const OUTPUT_MESH_VERTEX *const vertices = Vector_GetData(mesh->vertices);
 
+    // 1. Copy Vertex Data
+    const OUTPUT_MESH_VERTEX *const vertices = Vector_GetData(mesh->vertices);
     bind->geom_data = Memory_Alloc(sizeof(M_MESH_GEOM) * bind->vertex_count);
     bind->tex_data = Memory_Alloc(sizeof(M_MESH_TEXTURE) * bind->vertex_count);
     bind->shade_data = Memory_Alloc(sizeof(M_MESH_SHADE) * bind->vertex_count);
@@ -584,10 +601,21 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
         M_FillShade(&bind->shade_data[i], &vertices[i]);
     }
 
+    // 2. Assign Vertex Offsets
     bind->vertex_start = batcher->vertex_count;
     batcher->vertex_count += bind->vertex_count;
 
-    // Prevent the same mesh from being added twice to a mesh batcher
+    // 3. Assign Index Offsets
+    // Opaque
+    bind->opaque_index_count = mesh->opaque_vertex_indices->count;
+    bind->opaque_index_start = batcher->opaque_total_indices;
+    batcher->opaque_total_indices += bind->opaque_index_count;
+    // Blend/Add
+    bind->blend_add_index_count = mesh->blend_add_vertex_indices->count;
+    bind->blend_add_index_start = batcher->blend_add_total_indices;
+    batcher->blend_add_total_indices += bind->blend_add_index_count;
+
+    // Prevent double add
     mesh->sealed = 2;
 
     Vector_Add(batcher->bindings, &bind);
@@ -611,9 +639,9 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
     GFX_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
-        batcher->vertex_count * sizeof(M_MESH_SHADE), nullptr,
-        GL_DYNAMIC_DRAW); // shades are always dynamic for now
+        batcher->vertex_count * sizeof(M_MESH_SHADE), nullptr, GL_STATIC_DRAW);
 
+    // Upload vertex data
     for (int32_t i = 0; i < batcher->bindings->count; i++) {
         M_MESH_BUF_BINDING *const bind =
             *(M_MESH_BUF_BINDING **)Vector_Get(batcher->bindings, i);
@@ -632,22 +660,51 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
             glBufferSubData, GL_ARRAY_BUFFER,
             bind->vertex_start * sizeof(M_MESH_SHADE),
             bind->vertex_count * sizeof(M_MESH_SHADE), bind->shade_data);
-
-        glGenBuffers(1, &bind->opaque_ebo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->opaque_ebo);
-        GFX_TRACK_DATA(
-            glBufferData, GL_ELEMENT_ARRAY_BUFFER,
-            bind->mesh->opaque_vertex_indices->count * sizeof(uint32_t),
-            Vector_GetData(bind->mesh->opaque_vertex_indices), GL_STATIC_DRAW);
-
-        glGenBuffers(1, &bind->blend_add_ebo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bind->blend_add_ebo);
-        GFX_TRACK_DATA(
-            glBufferData, GL_ELEMENT_ARRAY_BUFFER,
-            bind->mesh->blend_add_vertex_indices->count * sizeof(uint32_t),
-            Vector_GetData(bind->mesh->blend_add_vertex_indices),
-            GL_STATIC_DRAW);
     }
+
+    // Allocate CPU scratch memory for the combined indices
+    uint32_t *opaque_indices =
+        Memory_Alloc(batcher->opaque_total_indices * sizeof(uint32_t));
+    uint32_t *blend_indices =
+        Memory_Alloc(batcher->blend_add_total_indices * sizeof(uint32_t));
+
+    // Flatten the data
+    for (int32_t i = 0; i < batcher->bindings->count; i++) {
+        M_MESH_BUF_BINDING *const bind =
+            *(M_MESH_BUF_BINDING **)Vector_Get(batcher->bindings, i);
+
+        // Copy Opaque Indices
+        if (bind->opaque_index_count > 0) {
+            memcpy(
+                &opaque_indices[bind->opaque_index_start],
+                Vector_GetData(bind->mesh->opaque_vertex_indices),
+                bind->opaque_index_count * sizeof(uint32_t));
+        }
+
+        // Copy Blend Indices
+        if (bind->blend_add_index_count > 0) {
+            memcpy(
+                &blend_indices[bind->blend_add_index_start],
+                Vector_GetData(bind->mesh->blend_add_vertex_indices),
+                bind->blend_add_index_count * sizeof(uint32_t));
+        }
+    }
+
+    // Upload to GPU
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->opaque_ebo);
+    GFX_TRACK_DATA(
+        glBufferData, GL_ELEMENT_ARRAY_BUFFER,
+        batcher->opaque_total_indices * sizeof(uint32_t), opaque_indices,
+        GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->blend_add_ebo);
+    GFX_TRACK_DATA(
+        glBufferData, GL_ELEMENT_ARRAY_BUFFER,
+        batcher->blend_add_total_indices * sizeof(uint32_t), blend_indices,
+        GL_STATIC_DRAW);
+
+    Memory_FreePointer(&opaque_indices);
+    Memory_FreePointer(&blend_indices);
 }
 
 void MeshBatcher_UpdateMeshGeometry(
