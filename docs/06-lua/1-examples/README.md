@@ -59,9 +59,9 @@ local last_room = 0
 
 trx.events.on_control(function()
   local lara = trx.lara.item
-  if lara.room ~= last_room then
-    last_room = lara.room
-    if lara.room == 15 then
+  if lara.room_num ~= last_room then
+    last_room = lara.room_num
+    if lara.room_num == 15 then
       trx.config.set("visuals.water_color", "ff0000")
     else
       trx.config.set("visuals.water_color", "0000ff")
