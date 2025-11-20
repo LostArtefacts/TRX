@@ -49,6 +49,7 @@
 - fixed Lara jittering in the QWOP state
 - fixed doors and trapdoors not interpolating when using the door cheat
 - fixed credit images and loading images showing black screen if the file is missing (#4325)
+- fixed caustics not affecting underwater plant sprites (#4317)
 
 **TR1**:
 - added a new easter egg command
