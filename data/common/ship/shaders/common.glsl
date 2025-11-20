@@ -4,7 +4,6 @@
 #define WIBBLE_SIZE 32
 #define MAX_WIBBLE  2
 
-#define SHADE_HIGH     0x800
 #define SHADE_NEUTRAL  0x1000
 #define SHADE_MAX      0x1FFF
 #define SHADE_CAUSTICS 0x300
@@ -32,8 +31,8 @@ layout(std140) uniform Globals {
     float uTimeInGame;
     float uBrightnessMultiplier;
     float uSunsetDuration;
+    float uMinShade;
     int uBillboardLockMode;
-    int uLightingContrast;
     int uLightingEnabled; // bool
     int uTrapezoidFilterEnabled; // bool
     int uReflectionsEnabled; // bool

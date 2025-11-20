@@ -9,8 +9,8 @@ uniform bool uWaterEffect;
 
 struct Light {
     vec4 pos;
-    int shade;
-    int falloff;
+    float shade;
+    float falloff;
 };
 
 layout(std140) uniform Lights {
@@ -38,7 +38,7 @@ int lightGlow(float time) {
 }
 
 int lightSunset(float time) {
-    float sunsetProgress = clamp(time / uSunsetDuration, 0.0, 1.0);
+    float sunsetProgress = clamp(time / max(1, uSunsetDuration), 0.0, 1.0);
     return int(sunsetProgress * 31.0);
 }
 
@@ -93,18 +93,14 @@ float lightDynamic(float baseLight, vec4 vertexPos)
     for (int i = 0; i < uNumLights; i++) {
         Light light = uLights[i];
         vec3 dist = light.pos.xyz - vertexPos.xyz;
-        float radius = float(1 << light.falloff);
-        if (any(greaterThan(abs(dist), vec3(radius)))) {
-            continue;
-        }
-
+        float radius = exp2(light.falloff);
         float distSq = dot(dist, dist);
         if (distSq > radius * radius) {
             continue;
         }
 
-        float maxShade = float(1 << light.shade);
-        float distTerm = distSq / float(1 << (2 * light.falloff - light.shade));
+        float maxShade = exp2(light.shade);
+        float distTerm = distSq / exp2(2 * light.falloff - light.shade);
         float shade = maxShade - distTerm;
         lightAdder -= shade;
     }

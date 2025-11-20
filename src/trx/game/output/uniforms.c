@@ -20,8 +20,8 @@
     X_DECLARE_MEMBER(float, time_in_game)                                      \
     X_DECLARE_MEMBER(float, brightness_multiplier)                             \
     X_DECLARE_MEMBER(float, sunset_duration)                                   \
+    X_DECLARE_MEMBER(float, min_shade)                                         \
     X_DECLARE_MEMBER(int, billboard_lock_mode)                                 \
-    X_DECLARE_MEMBER(int, lighting_contrast)                                   \
     X_DECLARE_MEMBER(int, lighting_enabled)                                    \
     X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
     X_DECLARE_MEMBER(int, reflections_enabled)                                 \
@@ -41,9 +41,9 @@ typedef struct {
 
 typedef struct {
     float pos[4];
-    int shade;
-    int falloff;
-    int _pad[2];
+    float shade;
+    float falloff;
+    float _pad[2];
 } M_UNIFORM_LIGHT;
 
 typedef struct {
@@ -70,6 +70,18 @@ static void M_FillLight(
     dst_light->pos[3] = 0.0f;
     dst_light->shade = src_light->shade.value_1;
     dst_light->falloff = src_light->falloff.value_1;
+}
+
+static int16_t M_GetMinShade(void)
+{
+    switch (g_Config.rendering.lighting_contrast) {
+    case LIGHTING_CONTRAST_LOW:
+        return SHADE_NEUTRAL;
+    case LIGHTING_CONTRAST_MEDIUM:
+        return SHADE_HIGH;
+    default:
+        return 0;
+    }
 }
 
 void Output_Uniforms_UploadOrthoMatrix(const OUTPUT_UNIFORMS *const uniforms)
@@ -106,8 +118,8 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
             (float)Viewport_GetWidth(VIEWPORT_GAME),
             (float)Viewport_GetHeight(VIEWPORT_GAME),
         },
+        .min_shade = M_GetMinShade(),
         .billboard_lock_mode = g_Config.rendering.sprite_lock_mode,
-        .lighting_contrast = g_Config.rendering.lighting_contrast,
         .lighting_enabled = g_Config.rendering.enable_lighting,
         .trapezoid_filter_enabled = g_Config.rendering.enable_trapezoid_filter,
         .reflections_enabled = g_Config.visuals.enable_reflections,
