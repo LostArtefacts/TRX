@@ -2,6 +2,7 @@
 
 #include <trx/colors.h>
 #include <trx/game/math/types.h>
+#include <trx/game/rooms.h>
 
 #include <GL/glew.h>
 
@@ -36,6 +37,9 @@ int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
 int32_t Output_GetNearZ_UI(void);
 int32_t Output_GetFarZ_UI(void);
+
+void Output_SetCurrentRoom(const ROOM *room_num);
+const ROOM *Output_GetCurrentRoom(void);
 
 int32_t Output_GetLightAdder(void);
 int32_t Output_GetLightDivider(void);

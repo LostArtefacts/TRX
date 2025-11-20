@@ -91,7 +91,6 @@ typedef struct {
 typedef struct {
     XYZ_16 pos;
     int16_t light_base;
-    int16_t light_adder;
     bool is_wibble_disabled;
     uint8_t light_table_value;
     RGBA_8888 color;

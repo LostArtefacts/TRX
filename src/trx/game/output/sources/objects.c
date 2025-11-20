@@ -1,6 +1,7 @@
 #include <trx/game/output/sources/objects.h>
 
 #include <trx/config.h>
+#include <trx/debug.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
@@ -23,6 +24,16 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static bool M_IsMeshSkybox(const int32_t mesh_idx)
+{
+    const OBJECT *const object = Object_Get(O_SKYBOX);
+    if (!object->loaded) {
+        return false;
+    }
+    return mesh_idx >= object->mesh_idx
+        && mesh_idx < object->mesh_idx + object->mesh_count;
+}
+
 static SCENE_PASS M_GetScenePass(const FACE *const face, const uint16_t flags)
 {
     if ((flags & VERT_FLAT_SHADED) != 0) {
@@ -31,34 +42,44 @@ static SCENE_PASS M_GetScenePass(const FACE *const face, const uint16_t flags)
     return Output_Textures_GetObjectTextureScenePass(face->texture_idx);
 }
 
-static void M_AddObjectVerts(
-    MESH_BUILDER *const builder, const size_t vtx_count,
-    const OBJECT_MESH *const obj_mesh, const uint16_t *vertices,
-    const uint16_t texture_idx, const uint16_t palette_idx, uint16_t flags,
-    const TEXTURE_ZW_F *const trapezoid_ratio)
+static void M_AddObjectFace(
+    MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
+    const FACE *const face, uint16_t flags)
 {
     RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
     int16_t uvw_idx = -1;
 
     if (flags & VERT_FLAT_SHADED) {
         if (g_TRVersion == 1) {
-            color = Output_RGB2RGBA(Output_GetPaletteColor8(palette_idx));
+            color = Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
         } else {
-            color = Output_RGB2RGBA(Output_GetPaletteColor16(palette_idx >> 8));
+            color = Output_RGB2RGBA(
+                Output_GetPaletteColor16(face->palette_idx >> 8));
         }
     } else if (
-        Output_Textures_GetObjectTextureScenePass(texture_idx)
+        Output_Textures_GetObjectTextureScenePass(face->texture_idx)
         == SCENE_PASS_OPAQUE) {
         flags |= VERT_NO_ALPHA_DISCARD;
     }
 
-    for (size_t i = 0; i < vtx_count; i++) {
-        const XYZ_16 normal = vertices[i] < obj_mesh->num_lights
-            ? obj_mesh->lighting.normals[vertices[i]]
-            : (XYZ_16) {};
-        const XYZ_16 *const pos = &obj_mesh->vertices[vertices[i]];
+    if (obj_mesh->num_lights <= 0) {
+        flags |= VERT_USE_OWN_LIGHT;
+    } else {
+        flags |= VERT_USE_OBJECT_LIGHT;
+    }
+
+    for (int32_t i = 0; i < face->vertex_count; i++) {
+        const int32_t shade = obj_mesh->num_lights <= 0
+                && face->vertices[i] < -obj_mesh->num_lights
+            ? obj_mesh->lighting.lights[face->vertices[i]]
+            : SHADE_NEUTRAL;
+        const XYZ_16 normal = face->vertices[i] < obj_mesh->num_lights
+            ? obj_mesh->lighting.normals[face->vertices[i]]
+            : (XYZ_16) { 1, 0, 0 };
+        const XYZ_16 *const pos = &obj_mesh->vertices[face->vertices[i]];
+
         if ((flags & VERT_FLAT_SHADED) == 0) {
-            uvw_idx = Output_Textures_GetObjectUVWIndex(texture_idx, i);
+            uvw_idx = Output_Textures_GetObjectUVWIndex(face->texture_idx, i);
         }
         const OUTPUT_MESH_VERTEX vertex = {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
@@ -68,21 +89,12 @@ static void M_AddObjectVerts(
             .shade = SHADE_NEUTRAL,
             .color = color,
             .trapezoid_ratio = {
-                [0] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].z : 1.0f,
-                [1] = trapezoid_ratio != nullptr ? trapezoid_ratio[i].w : 1.0f,
+                [0] = face->texture_zw[i].z,
+                [1] = face->texture_zw[i].w,
             },
         };
         MeshBuilder_AddVertex(builder, &vertex);
     }
-}
-
-static void M_AddObjectFace(
-    MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
-    const FACE *const face, const uint16_t flags)
-{
-    M_AddObjectVerts(
-        builder, face->vertex_count, obj_mesh, face->vertices,
-        face->texture_idx, face->palette_idx, flags, face->texture_zw);
     MeshBuilder_AddFan(
         builder, M_GetScenePass(face, flags), face->double_sided);
 }
@@ -116,6 +128,9 @@ static void M_PrepareMeshes(M_PRIV *const p)
             flags |= VERT_REFLECTIVE;
         }
 
+        if (M_IsMeshSkybox(i)) {
+            flags |= VERT_USE_OWN_LIGHT;
+        }
         for (int32_t j = 0; j < obj_mesh->tex_faces.count; j++) {
             M_AddObjectFace(
                 builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags);
@@ -172,77 +187,6 @@ static void M_UpdateShadesSkybox(
     }
 }
 
-static void M_UpdateShades(MESH_INSTANCE *const inst, void *const user_data)
-{
-    const OBJECT_MESH *const mesh = user_data;
-    const M_PRIV *const p = &m_Priv;
-
-    M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
-    if (batch->mesh_batch == nullptr) {
-        return;
-    }
-    OUTPUT_MESH_VERTEX *const vertices =
-        Vector_GetData(batch->mesh_batch->vertices);
-
-    int32_t *const light_idx_map = batch->light_idx_map;
-
-    if (!g_Config.rendering.enable_lighting) {
-        for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-            vertices[i].shade = SHADE_NEUTRAL;
-        }
-        return;
-    }
-
-    const MATRIX *const matrix = &inst->cwmatrix;
-    int32_t ls_adder = inst->ls_adder;
-    int32_t ls_divider = inst->ls_divider;
-    XYZ_32 ls_vector_view = inst->ls_vector_view;
-
-    if (mesh->num_lights <= 0) {
-        for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-            const int32_t j = light_idx_map[i];
-            int16_t shade = ls_adder + mesh->lighting.lights[j];
-            CLAMP(shade, 0, SHADE_MAX);
-            vertices[i].shade = shade;
-        }
-    } else if (ls_divider == 0) {
-        int16_t shade = ls_adder;
-        CLAMP(shade, 0, SHADE_MAX);
-        for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-            vertices[i].shade = shade;
-        }
-    } else {
-        // clang-format off
-        const int32_t xv = (
-            matrix->_00 * ls_vector_view.x +
-            matrix->_10 * ls_vector_view.y +
-            matrix->_20 * ls_vector_view.z
-        ) / ls_divider;
-
-        const int32_t yv = (
-            matrix->_01 * ls_vector_view.x +
-            matrix->_11 * ls_vector_view.y +
-            matrix->_21 * ls_vector_view.z
-        ) / ls_divider;
-
-        const int32_t zv = (
-            matrix->_02 * ls_vector_view.x +
-            matrix->_12 * ls_vector_view.y +
-            matrix->_22 * ls_vector_view.z
-        ) / ls_divider;
-        // clang-format on
-
-        for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-            const int32_t j = light_idx_map[i];
-            const XYZ_16 *const normal = &mesh->lighting.normals[j];
-            int16_t shade = ls_adder
-                + ((normal->x * xv + normal->y * yv + normal->z * zv) >> 16);
-            CLAMP(shade, 0, SHADE_MAX);
-            vertices[i].shade = shade;
-        }
-    }
-}
-
 static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
 {
     uint16_t mask = VERT_REFLECTIVE | VERT_NO_LIGHTING;
@@ -272,12 +216,13 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool skybox)
         .wmatrix = *g_WMatrixPtr,
         .tint = Output_GetTint(),
         .wibble = false,
-        .water_effect = Output_GetWaterEffect(),
-        .ls_adder = Output_GetLightAdder(),
-        .ls_divider = Output_GetLightDivider(),
-        .ls_vector_view = Output_GetLightVectorView(),
-        .update_light_func = skybox ? M_UpdateShadesSkybox : M_UpdateShades,
-        .update_light_func_data = (void *)mesh,
+        .water_effect = false,
+        .light_info = {
+            .ls_adder = Output_GetLightAdder(),
+            .ls_divider = Output_GetLightDivider(),
+            .ls_vector_view = Output_GetLightVectorView(),
+        },
+        .room = Output_GetCurrentRoom(),
     };
     if (skybox) {
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_SKYBOX);

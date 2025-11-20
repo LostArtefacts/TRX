@@ -294,6 +294,7 @@ static void M_DrawSkybox(void)
         Matrix_PushUnit();
         Matrix_TranslateAbs32(g_ViewPos);
         Matrix_Rot16(skybox->frame_base->mesh_rots[0]);
+        Output_CalculateStaticLight(Output_GetSkyShade());
         Output_DrawSkybox(Object_GetMesh(skybox->mesh_idx));
         Matrix_Pop();
     } else {
@@ -313,6 +314,7 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
 
 static void M_DrawSingleRoom(ROOM *const room)
 {
+    Output_SetCurrentRoom(room);
     if (room->flags.underwater) {
         Output_SetupBelowWater(g_Camera.underwater);
     } else {
@@ -331,7 +333,6 @@ static void M_DrawSingleRoom(ROOM *const room)
     }
 
     Matrix_TranslateAbs32(room->pos);
-    Output_LightRoom(room);
     Output_DrawRoom(room, false);
 
     if (room->flags.underwater) {
@@ -482,6 +483,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         } else {
             Output_SetupAboveWater(g_Camera.underwater);
         }
+        Output_SetCurrentRoom(lara_room);
         Lara_Draw(lara_item);
     }
 

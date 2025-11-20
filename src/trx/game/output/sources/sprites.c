@@ -2,6 +2,8 @@
 
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/output/scene_compositor.h>
+#include <trx/game/output/shaders/mesh.h>
+#include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
@@ -36,7 +38,8 @@ static void M_PrepareMeshes(M_PRIV *const p)
         ROOM_VERTEX fake_vert = {};
         const ROOM fake_room = { .mesh = { .vertices = &fake_vert } };
         ROOM_SPRITE fake_sprite = { .texture = (uint16_t)i, .vertex = 0 };
-        MeshBuilder_AddRoomSprite(builder, &fake_sprite, &fake_room, 0.0f);
+        MeshBuilder_AddRoomSprite(
+            builder, &fake_sprite, &fake_room, 0.0f, VERT_USE_OWN_LIGHT);
         OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
         MeshBatcher_AddMesh(p->batcher, mesh);
         p->meshes[i] = mesh;
@@ -52,16 +55,6 @@ static void M_FreeMeshes(M_PRIV *const p)
             Output_Mesh_Destroy(p->meshes[i]);
         }
         Memory_FreePointer(&p->meshes);
-    }
-}
-
-static void M_UpdateShades(MESH_INSTANCE *inst, void *user_data)
-{
-    int16_t shade = (int16_t)(intptr_t)user_data;
-    CLAMP(shade, 0, SHADE_MAX);
-    OUTPUT_MESH_VERTEX *const vertices = Vector_GetData(inst->mesh->vertices);
-    for (int32_t i = 0; i < inst->mesh->vertices->count; i++) {
-        vertices[i].shade = shade;
     }
 }
 
@@ -108,8 +101,12 @@ void OutputSource_Sprites_Stage(int32_t sprite_idx, int16_t shade, RGB_F tint)
         .tint = tint,
         .wibble = false,
         .water_effect = false,
-        .update_light_func = M_UpdateShades,
-        .update_light_func_data = (void *)(intptr_t)shade,
+        .room = Output_GetCurrentRoom(),
+        .light_info = {
+            .ls_adder = shade,
+            .ls_divider = 0,
+            .ls_vector_view = {},
+        },
     };
 
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);

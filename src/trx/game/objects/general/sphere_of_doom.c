@@ -75,7 +75,18 @@ static bool M_Draw(const ITEM *const item)
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_RotY(item->interp.result.rot.y);
 
-    MATRIX *const mptr = g_WMatrixPtr;
+    MATRIX *mptr = g_WMatrixPtr;
+    mptr->_00 = ((int64_t)mptr->_00 * radius) >> W2V_SHIFT;
+    mptr->_01 = ((int64_t)mptr->_01 * radius) >> W2V_SHIFT;
+    mptr->_02 = ((int64_t)mptr->_02 * radius) >> W2V_SHIFT;
+    mptr->_10 = ((int64_t)mptr->_10 * radius) >> W2V_SHIFT;
+    mptr->_11 = ((int64_t)mptr->_11 * radius) >> W2V_SHIFT;
+    mptr->_12 = ((int64_t)mptr->_12 * radius) >> W2V_SHIFT;
+    mptr->_20 = ((int64_t)mptr->_20 * radius) >> W2V_SHIFT;
+    mptr->_21 = ((int64_t)mptr->_21 * radius) >> W2V_SHIFT;
+    mptr->_22 = ((int64_t)mptr->_22 * radius) >> W2V_SHIFT;
+
+    mptr = g_MatrixPtr;
     mptr->_00 = ((int64_t)mptr->_00 * radius) >> W2V_SHIFT;
     mptr->_01 = ((int64_t)mptr->_01 * radius) >> W2V_SHIFT;
     mptr->_02 = ((int64_t)mptr->_02 * radius) >> W2V_SHIFT;

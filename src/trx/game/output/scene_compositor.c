@@ -113,6 +113,8 @@ static void M_PrepareScene(const M_PRIV *const p)
         g_Config.rendering.anisotropy_filter);
 
     Output_Uniforms_UploadGeneral(Output_GetUniforms());
+    Output_Uniforms_UploadRoomLights(Output_GetUniforms(), nullptr);
+    Output_SetCurrentRoom(nullptr);
 }
 
 static void M_RenderScenePasses(const M_PRIV *const p)

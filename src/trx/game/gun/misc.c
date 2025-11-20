@@ -259,7 +259,7 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         Matrix_TranslateRel(11, 32, 80);
         Matrix_RotX(-DEG_90);
         Matrix_RotY(2 * Random_GetDraw());
-        Output_CalculateStaticLight(2048);
+        Output_CalculateStaticLight(SHADE_FLARE);
         Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
         return;
 

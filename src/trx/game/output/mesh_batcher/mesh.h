@@ -23,6 +23,7 @@ typedef struct {
     float trapezoid_ratio[2];
     int16_t shade;
     RGBA_8888 color;
+    uint8_t light_table_idx;
 } OUTPUT_MESH_VERTEX;
 
 // Describes a contiguous block of vertices belonging to one face,

@@ -145,7 +145,8 @@ void MeshBuilder_AddFan(
 
 void MeshBuilder_AddRoomSprite(
     MESH_BUILDER *const builder, const ROOM_SPRITE *const room_sprite,
-    const ROOM *const room, const float depth_adjust)
+    const ROOM *const room, const float depth_adjust,
+    const uint16_t extra_flags)
 {
     const int16_t texture_idx = room_sprite->texture;
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(texture_idx);
@@ -164,10 +165,11 @@ void MeshBuilder_AddRoomSprite(
         const OUTPUT_MESH_VERTEX vertex = {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z, .w = depth_adjust },
             .normal = { .x = normal[j].x, .y = normal[j].y, .z = 0.0f },
-            .flags = Output_Textures_GetSpriteTextureFlags(texture_idx),
+            .flags = Output_Textures_GetSpriteTextureFlags(texture_idx)
+                | extra_flags,
             .color = { 255, 255, 255, 255 },
             .uvw_idx = Output_Textures_GetSpriteUVWIndex(texture_idx, j),
-            .shade = room_vert->light_adder,
+            .shade = room_vert->light_base,
             .trapezoid_ratio = { 1.0f, 1.0f },
         };
         MeshBuilder_AddVertex(builder, &vertex);

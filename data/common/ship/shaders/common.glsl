@@ -4,17 +4,20 @@
 #define WIBBLE_SIZE 32
 #define MAX_WIBBLE  2
 
-#define SHADE_HIGH    0x800
-#define SHADE_NEUTRAL 0x1000
-#define SHADE_MAX     0x1FFF
+#define SHADE_NEUTRAL  0x1000
+#define SHADE_MAX      0x1FFF
+#define SHADE_CAUSTICS 0x300
 
-#define VERT_NO_CAUSTICS      0x01u
-#define VERT_FLAT_SHADED      0x02u
-#define VERT_REFLECTIVE       0x04u
-#define VERT_NO_LIGHTING      0x08u
-#define VERT_BILLBOARD        0x10u
-#define VERT_ABS_SPRITE       0x20u
-#define VERT_NO_ALPHA_DISCARD 0x40u
+#define VERT_NO_CAUSTICS       0x0001u
+#define VERT_FLAT_SHADED       0x0002u
+#define VERT_REFLECTIVE        0x0004u
+#define VERT_NO_LIGHTING       0x0008u
+#define VERT_BILLBOARD         0x0010u
+#define VERT_ABS_SPRITE        0x0020u
+#define VERT_NO_ALPHA_DISCARD  0x0040u
+#define VERT_USE_DYNAMIC_LIGHT 0x0080u
+#define VERT_USE_OBJECT_LIGHT  0x0100u
+#define VERT_USE_OWN_LIGHT     0x0200u
 
 #define LIGHTING_CONTRAST_LOW    0
 #define LIGHTING_CONTRAST_MEDIUM 1
@@ -27,8 +30,9 @@ layout(std140) uniform Globals {
     float uTime;
     float uTimeInGame;
     float uBrightnessMultiplier;
+    float uSunsetDuration;
+    float uMinShade;
     int uBillboardLockMode;
-    int uLightingContrast;
     int uLightingEnabled; // bool
     int uTrapezoidFilterEnabled; // bool
     int uReflectionsEnabled; // bool
