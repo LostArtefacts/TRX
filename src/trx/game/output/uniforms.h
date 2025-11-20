@@ -16,6 +16,7 @@ typedef struct {
     GLuint matrices;
     GLuint lights;
     GLuint ls;
+    void *priv;
 } OUTPUT_UNIFORMS;
 
 OUTPUT_UNIFORMS *Output_Uniforms_Create(void);
