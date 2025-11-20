@@ -59,7 +59,7 @@ void main(void) {
 
     gFlags = inFlags;
     gAtlasSize = inTextureSize;
-    gTexLayer = int(inUVW.z);
+    gTexLayer = (gFlags & VERT_FLAT_SHADED) == 0u ? int(inUVW.z) : -1;
     gTrapezoidRatios = inTrapezoidRatios;
     gTexUV = inUVW.xy;
     if (uTrapezoidFilterEnabled != 0) {
@@ -103,7 +103,7 @@ void main(void) {
     vec4 texColor = gColor;
 
     // Texturing and base color
-    if ((gFlags & VERT_FLAT_SHADED) == 0u && gTexLayer >= 0) {
+    if (gTexLayer >= 0) {
         vec3 texCoords = vec3(gTexUV.x, gTexUV.y, gTexLayer);
         if (uTrapezoidFilterEnabled != 0) {
             texCoords.xy /= gTrapezoidRatios;
