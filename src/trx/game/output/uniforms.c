@@ -60,6 +60,11 @@ typedef struct {
 } M_UNIFORM_LS;
 #pragma pack(pop)
 
+typedef struct {
+    M_UNIFORM_LIGHTS last_lights;
+    OUTPUT_LIGHT_INFO last_light_info;
+} M_PRIV;
+
 static void M_FillLight(
     M_UNIFORM_LIGHT *const dst_light, const LIGHT *const src_light)
 {
@@ -161,6 +166,12 @@ void Output_Uniforms_UploadRoomLights(
     const size_t size = offsetof(M_UNIFORM_LIGHTS, lights)
         + lights.num_lights * sizeof(M_UNIFORM_LIGHT);
 
+    M_PRIV *const priv = uniforms->priv;
+    if (memcmp(&priv->last_lights, &lights, sizeof(lights)) == 0) {
+        return;
+    }
+    memcpy(&priv->last_lights, &lights, sizeof(lights));
+
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->lights);
     GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, size, &lights);
 }
@@ -168,6 +179,12 @@ void Output_Uniforms_UploadRoomLights(
 void Output_Uniforms_UploadCPULight(
     const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
 {
+    M_PRIV *const priv = uniforms->priv;
+    if (memcmp(&priv->last_light_info, info, sizeof(*info)) == 0) {
+        return;
+    }
+    memcpy(&priv->last_light_info, info, sizeof(*info));
+
     M_UNIFORM_LS ls = {};
     ls.adder = info->ls_adder;
     ls.divider = info->ls_divider / (float)(1 << (W2V_SHIFT));
@@ -183,7 +200,8 @@ void Output_Uniforms_UploadCPULight(
 
 OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
 {
-    OUTPUT_UNIFORMS *const uniforms = Memory_Alloc(sizeof(OUTPUT_UNIFORMS));
+    OUTPUT_UNIFORMS *const uniforms =
+        Memory_Alloc(sizeof(OUTPUT_UNIFORMS) + sizeof(M_PRIV));
     glGenBuffers(4, &uniforms->general);
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
     glBufferData(
@@ -207,6 +225,7 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
     GFX_GL_CheckError();
 
+    uniforms->priv = (char *)uniforms + sizeof(OUTPUT_UNIFORMS);
     return uniforms;
 }
 

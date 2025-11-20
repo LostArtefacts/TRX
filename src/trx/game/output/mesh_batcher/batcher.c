@@ -63,8 +63,6 @@ typedef struct MESH_BATCHER {
     VECTOR *transparent_sort; // M_FACE_SORT
     VECTOR *transparent_indices; // uint32_t
     GLuint transparent_ebo;
-
-    const ROOM *last_room;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -110,7 +108,6 @@ static void M_FillShade(
 
 static void M_SyncRoom(MESH_BATCHER *const batcher, const ROOM *const room)
 {
-    batcher->last_room = room;
     Output_Uniforms_UploadRoomLights(Output_GetUniforms(), room);
 }
 
@@ -215,9 +212,7 @@ static void M_DrawOpaqueInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    if (batcher->last_room != inst->room) {
-        M_SyncRoom(batcher, inst->room);
-    }
+    M_SyncRoom(batcher, inst->room);
 
     Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
@@ -253,9 +248,7 @@ static void M_DrawBlendAddInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    if (batcher->last_room != inst->room) {
-        M_SyncRoom(batcher, inst->room);
-    }
+    M_SyncRoom(batcher, inst->room);
 
     Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
@@ -276,10 +269,10 @@ static void M_DrawBlendAddInstance(
 
 static void M_OpaquePass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
 {
+    VECTOR *const staged = batcher->staged[pass];
+
     glBindVertexArray(batcher->partial_vao);
     glBindBuffer(GL_ARRAY_BUFFER, batcher->shade_vbo);
-
-    VECTOR *const staged = batcher->staged[pass];
     for (int32_t i = 0; i < staged->count; i++) {
         MESH_INSTANCE *const inst = Vector_Get(staged, i);
         const M_MESH_BUF_BINDING *const bind =
@@ -323,7 +316,6 @@ static void M_BlendAddPass(MESH_BATCHER *const batcher)
     VECTOR *const staged = batcher->staged[SCENE_PASS_BLEND_ADD];
 
     glBindVertexArray(batcher->partial_vao);
-
     for (int32_t i = 0; i < staged->count; i++) {
         const MESH_INSTANCE *const inst = Vector_Get(staged, i);
         const M_MESH_BUF_BINDING *const bind =
@@ -334,6 +326,7 @@ static void M_BlendAddPass(MESH_BATCHER *const batcher)
             M_DrawBlendAddInstance(batcher, inst);
         }
     }
+
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
@@ -373,9 +366,7 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
                 batcher->shader, inst->water_effect);
             Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-            if (batcher->last_room != inst->room) {
-                M_SyncRoom(batcher, inst->room);
-            }
+            M_SyncRoom(batcher, inst->room);
         }
 
         // indices live in the EBO starting at index_start
@@ -399,7 +390,6 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
     }
     Vector_Clear(batcher->transparent_indices);
     Vector_Clear(batcher->transparent_sort);
-    batcher->last_room = nullptr;
 }
 
 static void M_RenderPass(
