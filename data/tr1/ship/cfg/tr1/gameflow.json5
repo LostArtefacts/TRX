@@ -396,7 +396,7 @@
         // Level 21: Current Position
         // This level is necessary to read TombATI's save files!
         // OG has a special level called LV_CURRENT to handle save/load logic.
-        // TR1X does away without this hack. However, the existing save games
+        // TRX does away without this hack. However, the existing save games
         // expect the level count to match, otherwise the game will crash.
         // Hence this dummy level.
         {

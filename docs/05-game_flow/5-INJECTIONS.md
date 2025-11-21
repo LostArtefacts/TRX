@@ -228,7 +228,7 @@ provided with the game achieves.
     <td>
       Injects an animation command for the bird guardian to end the level on the
       final frame of its death animation. The original hard-coded end-level
-      behaviour is removed in TR2X.
+      behaviour is removed in TRX.
     </td>
   </tr>
   <tr valign="top">

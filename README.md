@@ -7,11 +7,8 @@
   </a>
 </p>
 
-<a href="https://github.com/LostArtefacts/TRX/releases?q=tr1x+prerelease%3Afalse&expanded=true">
-    <img src="data/download_tr1x.svg"/>
-</a>
-<a href="https://github.com/LostArtefacts/TRX/releases?q=tr2x+prerelease%3Afalse&expanded=true">
-    <img src="data/download_tr2x.svg"/>
+<a href="https://github.com/LostArtefacts/TRX/releases?q=prerelease%3Afalse&expanded=true">
+    <img src="data/download_trx.svg"/>
 </a>
 </div>
 
@@ -73,31 +70,22 @@ Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1** and
     </tr>
 </table>
 
-## TR1X - Tomb Raider 1
-### Download
-Download the latest release:
+## Download
+Download the latest TRX release for TR1 or TR2:
 
-<a href="https://github.com/LostArtefacts/TRX/releases?q=tr1x+prerelease%3Afalse&expanded=true">
-    <img src="data/download_tr1x.svg"/>
+<a href="https://github.com/LostArtefacts/TRX/releases?q=prerelease%3Afalse&expanded=true">
+    <img src="data/download_trx.svg"/>
 </a>
 
-See [the changelog](docs/tr1/CHANGELOG.md).
+### Tomb Raider 1
+* For installation instructions, refer to the [detailed documentation](docs/tr1/INSTALLING.md).
+* Check out the [list of improvements](docs/tr1/IMPROVEMENTS.md) to see a detailed list of all fixes and features, many of which are optional.
+* See the [changelog](docs/tr1/CHANGELOG.md) for a version history.
 
-### Install Instructions
-Please refer to the [detailed documentation](docs/tr1/INSTALLING.md).
-
-## TR2X - Tomb Raider 2
-### Download
-Download the latest release:
-
-<a href="https://github.com/LostArtefacts/TRX/releases?q=tr2x+prerelease%3Afalse&expanded=true">
-    <img src="data/download_tr2x.svg"/>
-</a>
-
-See [the changelog](docs/tr2/CHANGELOG.md).
-
-### Install Instructions
-Please refer to the [detailed documentation](docs/tr2/INSTALLING.md).
+### Tomb Raider 2
+* For installation instructions, refer to the [detailed documentation](docs/tr2/INSTALLING.md).
+* Check out the [list of improvements](docs/tr2/IMPROVEMENTS.md) to see a detailed list of all fixes and features, many of which are optional.
+* See the [changelog](docs/tr2/CHANGELOG.md) for a version history.
 
 
 ## Q&A
@@ -111,7 +99,7 @@ Please refer to the [detailed documentation](docs/tr2/INSTALLING.md).
     Regarding HD texture packs, that feature is not currently planned.
 
     As for other visual updates, being able to introduce reflections and
-    skyboxes shows that quite literally sky is the limit. TRX is constantly
+    skyboxes shows that quite literally the sky is the limit. TRX is constantly
     getting new rendering improvements and texture fixes. But great stuff
     takes time.
 
@@ -128,7 +116,7 @@ Please refer to the [detailed documentation](docs/tr2/INSTALLING.md).
 6. **What about TR3 support?**
 
     The team is hard at work continuing to polish TRX for TR1 and TR2 as well
-    as adding featuers for custom levels. At the same time, work has started on
+    as adding features for custom levels. At the same time, work has started on
     adding TR3 features into TRX, but there is no estimated completion date.
 
 ## Website

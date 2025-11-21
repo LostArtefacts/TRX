@@ -1,4 +1,4 @@
-name: Build TR1X and the installer (macOS)
+name: Build TRX and the installer (macOS)
 
 on:
   workflow_call:

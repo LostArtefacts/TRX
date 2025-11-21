@@ -337,5 +337,7 @@ patch version.
 - Statue: centaur statues from the entrance of Tihocan's Tomb
 - Bacon Lara: the doppelgänger Lara in the Atlantis level
 - Torso/Adam: the big boss mutant from The Great Pyramid level
-- Tomb1Main: the previous name of this TR1X project
+- Tomb1Main: the previous name of the TR1X project
+- TR1X: the previous name of this TRX project targeting TR1
+- TR2X: the previous name of this TRX project targeting TR2
 - T1M: short hand of Tomb1Main
