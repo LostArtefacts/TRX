@@ -47,10 +47,7 @@ void Output_DrawBlackRectangle(const int32_t opacity)
 void Output_DrawRoom(const ROOM *const room, const bool is_outside)
 {
     OutputSource_Rooms_StageRoom(room);
-    if (g_Config.debug.enable_debug_triggers
-        || g_Config.debug.enable_debug_portals) {
-        OutputSource_RoomsDebug_StageRoom(room);
-    }
+    OutputSource_RoomsDebug_StageRoom(room);
 }
 
 void Output_DrawSprite(

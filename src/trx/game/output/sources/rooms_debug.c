@@ -166,11 +166,6 @@ static void M_RenderPass(
         return;
     }
 
-    if (!g_Config.debug.enable_debug_triggers
-        && !g_Config.debug.enable_debug_portals) {
-        return;
-    }
-
     glBindVertexArray(p->vao);
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
     glVertexAttrib4f(OUTPUT_MESH_ATTR_NORMAL, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -278,6 +273,11 @@ void OutputSource_RoomsDebug_ObserveRoomFlip(const ROOM *const room)
 
 void OutputSource_RoomsDebug_StageRoom(const ROOM *const room)
 {
+    if (!g_Config.debug.enable_debug_triggers
+        && !g_Config.debug.enable_debug_portals) {
+        return;
+    }
+
     M_PRIV *const p = &m_Priv;
     Vector_Add(
         p->scheduled, &(M_INSTANCE) { .room = room, .matrix = *g_WMatrixPtr });
