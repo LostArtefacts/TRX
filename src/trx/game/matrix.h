@@ -13,18 +13,7 @@ typedef struct QUATERNION {
 } QUATERNION;
 
 typedef struct {
-    int32_t _00;
-    int32_t _01;
-    int32_t _02;
-    int32_t _03;
-    int32_t _10;
-    int32_t _11;
-    int32_t _12;
-    int32_t _13;
-    int32_t _20;
-    int32_t _21;
-    int32_t _22;
-    int32_t _23;
+    int64_t _00, _01, _02, _03, _10, _11, _12, _13, _20, _21, _22, _23;
 } MATRIX;
 
 extern MATRIX *g_MatrixPtr;
