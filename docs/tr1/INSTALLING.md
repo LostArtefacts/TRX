@@ -349,9 +349,12 @@ If you install everything correctly, your game directory should look more or les
 │       └── sound.lua
 ├── shaders
 │   ├── 2d.glsl
+│   ├── billboard.glsl
 │   ├── common.glsl
 │   ├── fbo.glsl
-│   └── meshes.glsl
+│   ├── lights.glsl
+│   ├── meshes.glsl
+│   └── ui.glsl
 └── TRX.exe</code></pre>
 </details>
 
@@ -681,9 +684,12 @@ If you install everything correctly, your game directory should look more or les
         │       └── sound.lua
         └── shaders
             ├── 2d.glsl
+            ├── billboard.glsl
             ├── common.glsl
             ├── fbo.glsl
-            └── meshes.glsl</code></pre>
+            ├── lights.glsl
+            ├── meshes.glsl
+            └── ui.glsl</code></pre>
 </details>
 
 *\* Will not be present until the game has been launched.*
