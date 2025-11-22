@@ -86,7 +86,7 @@ static void M_AddObjectFace(
             .normal = { .x = normal.x, .y = normal.y, .z = normal.z },
             .flags = flags,
             .uvw_idx = uvw_idx,
-            .shade = SHADE_NEUTRAL,
+            .shade = shade,
             .color = color,
             .trapezoid_ratio = {
                 [0] = face->texture_zw[i].z,
