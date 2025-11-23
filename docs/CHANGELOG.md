@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/tr1-4.15.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0...develop) - ××××-××-××
+
+## [1.0](https://github.com/LostArtefacts/TRX/compare/76109a8855da99f3304ca4d9a3f5882dada2dd40...trx-1.0) - 2025-11-23
+Showcase: https://youtu.be/vVU9vbUXTXc
 **Common**:
 - added LUA scripting engine
     Supports basic events, item interactions, teleporting and much more.
