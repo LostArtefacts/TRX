@@ -16,7 +16,7 @@ static bool M_ShouldPlaySFXAlways(
         return true;
     }
 
-    if (item->object_id == O_LARA_HARPOON) {
+    if (item->object_id == O_LARA_HARPOON_GUN) {
         return true;
     }
 
