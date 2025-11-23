@@ -1029,7 +1029,8 @@ void Level_ReadObjects(const LEVEL_LOADER *const loader, VFILE *const file)
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_ReadStaticObjects(VFILE *const file)
+void Level_ReadStaticObjects(
+    const LEVEL_LOADER *const loader, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
@@ -1052,6 +1053,9 @@ void Level_ReadStaticObjects(VFILE *const file)
         const uint16_t flags = VFile_ReadU16(file);
         obj->collidable = (flags & 1) == 0;
         obj->visible = (flags & 2) != 0;
+        if (loader->game_version >= 3) {
+            obj->collidable = true;
+        }
     }
 
     Benchmark_End(&benchmark, nullptr);
