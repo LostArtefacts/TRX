@@ -224,9 +224,6 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
     }
 
     // TR1X ..4.15, TR2X 1.5
-    if (JSON_ObjectGetValue(parent_obj, "master_volume") == nullptr) {
-        g_Config.audio.master_volume = 1.0;
-    }
     if (JSON_ObjectGetValue(parent_obj, "ambient_volume") == nullptr) {
         g_Config.audio.ambient_volume = g_Config.audio.music_volume;
     }
