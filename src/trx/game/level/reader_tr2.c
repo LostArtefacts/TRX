@@ -125,7 +125,7 @@ static bool M_Load(const LEVEL_LOADER *const loader, VFILE *const file)
     Level_ReadAnimFrames(file);
 
     Level_ReadObjects(loader, file);
-    Level_ReadStaticObjects(file);
+    Level_ReadStaticObjects(loader, file);
     Level_ReadObjectTextures(file);
 
     Level_ReadSpriteTextures(file);
