@@ -6,7 +6,7 @@ title: Getting started
 
 You'll need:
 
-- A TR1X or TR2X build from the latest develop branch that adds Lua scripting.
+- A TR1 or TR2 TRX build from the latest develop branch that adds Lua scripting.
 - Familiarity with the game flow JSON format.
 
 ### Quick steps

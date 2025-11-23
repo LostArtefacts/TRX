@@ -125,7 +125,7 @@ static const char *M_GetSaveFilePattern(void)
 
 static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 {
-    // TR1X savegame files are enhanced to store more information by having
+    // TR1 TRX savegame files are enhanced to store more information by having
     // changed the save_flags bit for certain item types. However, legacy
     // TombATI saves do not contain the information that's associated with
     // these flags for these enhanced items. The way they are structured,

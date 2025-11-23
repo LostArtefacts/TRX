@@ -1,9 +1,9 @@
-# TR1X building toolchain.
+# TRX building toolchain.
 #
 # This is a multi-stage Docker image. It is designed to keep the final image
 # size low. Each stage builds an external dependency. The final stage takes the
 # artifacts (binaries, includes etc.) from previous stages and installs all the
-# tools necessary to build TR1X.
+# tools necessary to build TRX.
 
 # MinGW
 FROM ubuntu:latest AS mingw
@@ -166,7 +166,7 @@ COPY tools/shared/docker/lua.pc /ext/lib/pkgconfig/lua.pc
 
 
 
-# TR1X
+# TRX
 FROM mingw
 
 # set the build dir - actual files are mounted with a Docker volume

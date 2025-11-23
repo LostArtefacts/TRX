@@ -21,7 +21,7 @@ Please include:
     - Exact TRX version (found in the `.exe` properties, logs, or title screen)
 
 3. **Logs**
-    - The full TR1X.log or TR2X.log from your game folder
+    - The full TRX.log from your game folder
 
 4. **Description**
    - Steps to reproduce (e.g. *"Load Level 3, go to the upper balcony, pull the lever."*)  

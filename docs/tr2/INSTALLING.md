@@ -1,8 +1,8 @@
-# Windows / Linux
+# Windows (installer)
 
-## Installing (simplified – Windows only)
+## Installing (simplified)
 
-1. Download the TR2X installer.
+1. Download the latest TRX installer for TR2 (e.g. `TRX-1.0-Windows_Installer-tr2.exe`).
 2. Mark the installer EXE as safe to run:
     - Right-click on the `.exe`.
     - Go to properties.
@@ -10,17 +10,19 @@
 3. Run the installer and proceed with the steps.
 
 > [!NOTE]
-> When downloading TR2X, you might see a warning from Windows Defender, your browser, or another security tool. Modern antivirus systems use AI‑based heuristics – they flag anything uncommon or unsigned as suspicious, even if it's perfectly safe. TR2X can trigger these alerts because:
+> When downloading TRX, you might see a warning from Windows Defender, your browser, or another security tool. Modern antivirus systems use AI‑based heuristics – they flag anything uncommon or unsigned as suspicious, even if it's perfectly safe. TRX can trigger these alerts because:
 >
 > - It isn't signed with a costly commercial certificate.
 > - It's a niche, community‑built project, so not widely recognized.
 > - It's a custom build, not from the Microsoft Store.
 >
-> Don't worry: TR2X is open‑source, and you can inspect the code yourself on [GitHub](https://github.com/LostArtefacts/TRX/).
+> Don't worry: TRX is open‑source, and you can inspect the code yourself on [GitHub](https://github.com/LostArtefacts/TRX/).
+
+# Windows / Linux
 
 ## Installing (manual)
 
-1. Download the TR2X zip file.
+1. Download the TRX zip file.
 2. Extract the zip file into a directory of your choice.  
      Make sure you choose to overwrite existing directories and files.
 3. If installing for the first time – put your original game files into the target directory.
@@ -440,7 +442,7 @@ If you install everything correctly, your game directory should look more or les
 
 ## Installing
 
-1. Download the `TR2X-Installer.dmg` installer image. Mount the image and drag TR2X to the Applications folder.
+1. Download the latest TRX for TR2 installer image (e.g `TRX-0.1-Mac-tr2.dmg`). Mount the image and drag TR2X to the Applications folder.
 2. Run TR2X from the Applications folder. This will show you an error dialog about missing game data files. This is expected at this point, as you have not copied them in yet. However, it's important to run the app first to allow macOS to verify the app bundle's signature.
 3. Find TR2X in your Applications folder. Right-click it and click "Show Package Contents".
 4. Copy your Tomb Raider 2 game data files into `Contents/Resources`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)

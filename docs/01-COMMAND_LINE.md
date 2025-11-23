@@ -10,7 +10,7 @@ Currently the following command line interface options are available:
   Runs the Unfinished Business or the Golden Mask expansion pack, depending
   on the game.
 
-- `--demo-pc` (legacy: `-demo_pc`) (TR1X only)  
+- `--demo-pc` (legacy: `-demo_pc`) (TR1 only)  
   Runs the PC demo level.
 
 - `-l <path|num>`, `--level <path|num>`  

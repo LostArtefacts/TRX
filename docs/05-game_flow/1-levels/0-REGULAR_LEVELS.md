@@ -99,7 +99,7 @@ Following are each of the properties available within a level.
     <td>
       One level of this type is necessary to read TombATI's save files. OG has a
       special level called <code>LV_CURRENT</code> to handle save/load logic.
-      TR1X does away with this hack. However, the existing save games expect the
+      TRX does away with this hack. However, the existing save games expect the
       level count to match, otherwise the game will crash.
     </td>
   </tr>
