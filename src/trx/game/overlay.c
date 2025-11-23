@@ -145,7 +145,7 @@ static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
         .y1 = y + (sprite->y1 - sprite->y0) * scale,
         .z = Output_GetNearZ_UI(),
         .shade = SHADE_NEUTRAL,
-        .color = { 255, 255, 255, 255 },
+        .color = { 1.0f, 1.0f, 1.0f, 1.0f },
     });
 }
 

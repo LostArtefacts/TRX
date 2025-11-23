@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0...develop) - ××××-××-××
+- fixed 2D sprites not appearing in the UI (#4338, regression since 1.0)
 
 ## [1.0](https://github.com/LostArtefacts/TRX/compare/76109a8855da99f3304ca4d9a3f5882dada2dd40...trx-1.0) - 2025-11-23
 Showcase: https://youtu.be/vVU9vbUXTXc
