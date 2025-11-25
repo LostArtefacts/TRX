@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0.1...develop) - ××××-××-××
+
+## [1.0.1](https://github.com/LostArtefacts/TRX/compare/trx-1.0...trx-1.0.1) - 2025-11-25
 - changed default master volume to 80% in TR2 to match TR1 (#4337)
 - fixed 2D sprites not appearing in the UI (#4338, regression since 1.0)
 
