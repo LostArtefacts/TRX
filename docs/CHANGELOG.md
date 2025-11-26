@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...develop) - ××××-××-××
+
+## [1.0.2](https://github.com/LostArtefacts/TRX/compare/trx-1.0.1...trx-1.0.2) - 2025-11-26
 - fixed Lara being unable to interact with keyholes after picking up an item if animated interactions are enabled (#4342, regression from 1.0)
 
 ## [1.0.1](https://github.com/LostArtefacts/TRX/compare/trx-1.0...trx-1.0.1) - 2025-11-25
