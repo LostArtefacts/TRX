@@ -29,7 +29,9 @@
 
     **Steam / GOG users**
 
-    1. Extract the original `GAME.BIN` file using a tool such as UltraISO to your target directory.
+    1. Extract the original `GAME.BIN` / `GAME.GOG` file to your target directory.  
+        On Windows, this can be done with tools like UltraISO or UniExtract.  
+        On Linux, this can be done with `innoextract`, `bin2iso` and `7z`.
     2. Get the music files – unfortunately, neither GOG nor Steam ship these assets.
         - You can download the music files from the link below.  
             https://lostartefacts.dev/aux/tr1x/music.zip  
