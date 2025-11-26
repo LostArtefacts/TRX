@@ -258,6 +258,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
     if (lara_item->current_anim_state == LS(LS_PICKUP)) {
         if (Item_TestFrameEqual(lara_item, M_LF_PICKUP_ERASE)) {
             M_GetAllAtLaraPos(item);
+            lara->interact_target.item_num = NO_ITEM;
         }
         goto cleanup;
     }
