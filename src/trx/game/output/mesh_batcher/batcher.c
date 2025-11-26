@@ -626,7 +626,7 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
     glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.shade);
     GFX_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
-        batcher->vertex_count * sizeof(M_MESH_SHADE), nullptr, GL_STATIC_DRAW);
+        batcher->vertex_count * sizeof(M_MESH_SHADE), nullptr, GL_DYNAMIC_DRAW);
 
     // Upload vertex data
     for (int32_t i = 0; i < batcher->bindings->count; i++) {
