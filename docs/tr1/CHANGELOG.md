@@ -121,7 +121,7 @@ Showcase: https://www.youtube.com/watch?v=iV8G9lhxVQ8
 - fixed French translations containing Italian text in some cases (#3567)
 - fixed the camera remaining locked on moving lava if it touches Lara when she is immune (#3578)
 - fixed several issues with door data
-    - fixed missing door/trapdoor sound effects; refer to `IMPROVEMENTS.md` for details (#3408, #3374, #3617, #3619)
+    - fixed missing door/trapdoor sound effects (#3408, #3374, #3617, #3619)
     - fixed animation frames in doors in St. Francis' Folly, Tomb of Tihocan and Sanctuary of the Scion (#3661)
     - fixed the cameras for doors 81 in Tomb of Tihocan and 1 in Sanctuary of the Scion only showing once (#3661)
 - fixed the passport having an invisible back page, noticeable when opening/closing it (#2051)

@@ -79,12 +79,10 @@ Download the latest TRX release for TR1 or TR2:
 
 ### Tomb Raider 1
 * For installation instructions, refer to the [detailed documentation](docs/tr1/INSTALLING.md).
-* Check out the [list of improvements](docs/tr1/IMPROVEMENTS.md) to see a detailed list of all fixes and features, many of which are optional.
 * See the [changelog](docs/tr1/CHANGELOG.md) for a version history.
 
 ### Tomb Raider 2
 * For installation instructions, refer to the [detailed documentation](docs/tr2/INSTALLING.md).
-* Check out the [list of improvements](docs/tr2/IMPROVEMENTS.md) to see a detailed list of all fixes and features, many of which are optional.
 * See the [changelog](docs/tr2/CHANGELOG.md) for a version history.
 
 
