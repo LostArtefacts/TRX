@@ -21,6 +21,7 @@
 
 **TR1**:
 - added the ability to use flames on Pendulums, similar to TR3
+- changed skyboxes in TR1 to be drawn only if the appropriate room flag is set
 - fixed Scion taking damage before activation (regression from 1.0)
 
 **TR2**:

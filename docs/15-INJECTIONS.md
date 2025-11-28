@@ -140,7 +140,7 @@ generally be removed from your custom gameflow unless you know what you're doing
 | `*_music_tracks.bin`     | TR2      | Trigger adjustments to convert music track numbers to match file names (OG levels only).    |
 | `*_pickup_meshes.bin`    | TR1, TR2 | Pickup mesh edits (e.g., rescaling keys / specific pickups).                                |
 | `*_sfx.bin`              | TR1, TR2 | Various SFX fixes/additions.                                                                |
-| `*_skybox.bin`           | TR1      | Predefined skybox model injected into specific levels.                                      |
+| `*_skybox.bin`           | TR1      | Predefined skybox injected into specific levels, and specific rooms marked to use it.       |
 | `*_textures.bin`         | TR1, TR2 | Texture fixes in original levels (e.g., gaps, wrong colors).                                |
 | `cistern_plants.bin`     | TR1      | Disables animation on sprite ID 193 in The Cistern and Tomb of Tihocan.                     |
 | `khamoon_mummy.bin`      | TR1      | Mummy in City of Khamoon room 25 (present on PS1, missing on PC).                           |

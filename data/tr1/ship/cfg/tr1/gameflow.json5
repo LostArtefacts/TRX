@@ -249,7 +249,7 @@
             ],
             "injections": [
                 "cistern_plants.bin",
-                "colosseum_skybox.bin",
+                "tihocan_skybox.bin",
                 "door60_frames.bin",
                 "tihocan_fd.bin",
                 "tihocan_itemrots.bin",

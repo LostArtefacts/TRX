@@ -480,7 +480,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 
     M_GetBounds();
 
-    if (g_TRVersion == 1 || m_Outside) {
+    if (m_Outside) {
         M_DrawSkybox();
     }
 
