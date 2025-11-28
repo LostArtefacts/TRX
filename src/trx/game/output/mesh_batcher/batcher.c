@@ -285,9 +285,9 @@ static void M_DrawBlendAddInstance(
     }
 }
 
-static void M_OpaquePass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
+static void M_OpaquePass(MESH_BATCHER *const batcher)
 {
-    VECTOR *const staged = batcher->staged[pass];
+    VECTOR *const staged = batcher->staged[SCENE_PASS_OPAQUE];
 
     glBindVertexArray(batcher->vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.opaque);
@@ -416,8 +416,8 @@ static void M_RenderPass(
 {
     MESH_BATCHER *const batcher = source->priv;
 
-    if (pass == SCENE_PASS_OPAQUE || pass == SCENE_PASS_SKYBOX) {
-        M_OpaquePass(batcher, pass);
+    if (pass == SCENE_PASS_OPAQUE) {
+        M_OpaquePass(batcher);
     } else if (pass == SCENE_PASS_TRANSPARENT) {
         M_SortTransparentFaces(batcher);
         M_TransparentPass(batcher);

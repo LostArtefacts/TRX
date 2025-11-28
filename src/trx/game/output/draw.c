@@ -82,6 +82,7 @@ void Output_DrawSkybox(const OBJECT_MESH *const mesh)
     CLAMP(sunset_progress, 0.0f, 1.0f);
     OutputSource_Objects_StageSkyboxMesh(
         mesh, SHADE_NEUTRAL + SHADE_SUNSET * sunset_progress);
+    SceneCompositor_Flush();
 }
 
 void Output_DrawShadow(

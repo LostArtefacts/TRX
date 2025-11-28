@@ -202,7 +202,7 @@ static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
     }
 }
 
-static void M_Stage(const OBJECT_MESH *const mesh, const bool skybox)
+static void M_Stage(const OBJECT_MESH *const mesh)
 {
     M_PRIV *const p = &m_Priv;
     M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
@@ -224,13 +224,9 @@ static void M_Stage(const OBJECT_MESH *const mesh, const bool skybox)
         },
         .room = Output_GetCurrentRoom(),
     };
-    if (skybox) {
-        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_SKYBOX);
-    } else {
-        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
-        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
-        MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BLEND_ADD);
-    }
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);
+    MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BLEND_ADD);
 }
 
 void OutputSource_Objects_Init(MESH_BATCHER *const batcher)
@@ -290,12 +286,12 @@ void OutputSource_Objects_StageSkyboxMesh(
 {
     M_PRIV *const p = &m_Priv;
     p->skybox_shade = shade;
-    M_Stage(mesh, true);
+    M_Stage(mesh);
 }
 
 void OutputSource_Objects_StageObjectMesh(const OBJECT_MESH *const mesh)
 {
-    M_Stage(mesh, false);
+    M_Stage(mesh);
 }
 
 const SCENE_SOURCE *OutputSource_Objects_GetSource(void)
