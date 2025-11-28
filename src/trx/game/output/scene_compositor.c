@@ -138,9 +138,6 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         GL_FRONT_AND_BACK,
         g_Config.rendering.enable_wireframe ? GL_LINE : GL_FILL);
 
-    if (M_IsSourceDirty(p, SCENE_PASS_SKYBOX)) {
-        M_RenderSourcePass(p, SCENE_PASS_SKYBOX);
-    }
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_POLYGON_OFFSET_FILL);
 
