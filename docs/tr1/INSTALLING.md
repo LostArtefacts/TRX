@@ -254,6 +254,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── stronghold_textures.bin
 │   │   ├── tihocan_fd.bin
 │   │   ├── tihocan_itemrots.bin
+│   │   ├── tihocan_skybox.bin
 │   │   ├── tihocan_textures.bin
 │   │   ├── title_textures.bin
 │   │   ├── uzi_sfx.bin
@@ -596,6 +597,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── stronghold_textures.bin
         │   │   ├── tihocan_fd.bin
         │   │   ├── tihocan_itemrots.bin
+        │   │   ├── tihocan_skybox.bin
         │   │   ├── tihocan_textures.bin
         │   │   ├── title_textures.bin
         │   │   ├── uzi_sfx.bin
