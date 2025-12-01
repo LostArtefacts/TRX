@@ -5,6 +5,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun/const.h>
+#include <trx/game/gun/vars.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -574,18 +575,18 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_shotgun = true;
         resume->flags.has_magnums = true;
         resume->flags.has_uzis = true;
-        resume->flags.has_m16 = true;
-        resume->flags.has_grenade = true;
-        resume->flags.has_harpoon = true;
+        resume->flags.has_m16 = g_Weapons[LGT_M16].is_available;
+        resume->flags.has_grenade = g_Weapons[LGT_GRENADE].is_available;
+        resume->flags.has_harpoon = g_Weapons[LGT_HARPOON].is_available;
 
         resume->shotgun_ammo = 10000;
         resume->magnum_ammo = 10000;
         resume->uzi_ammo = 10000;
         resume->flares = g_TRVersion == 1 ? 0 : -1;
 
-        resume->m16_ammo = 10000;
-        resume->grenade_ammo = 10000;
-        resume->harpoon_ammo = 10000;
+        resume->m16_ammo = resume->flags.has_m16 ? 10000 : 0;
+        resume->grenade_ammo = resume->flags.has_grenade ? 10000 : 0;
+        resume->harpoon_ammo = resume->flags.has_harpoon ? 10000 : 0;
 
         if (g_TRVersion == 1) {
             resume->equipped_gun_type = LGT_UZIS;
