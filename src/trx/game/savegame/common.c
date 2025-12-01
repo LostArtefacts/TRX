@@ -591,11 +591,12 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         if (g_TRVersion == 1) {
             resume->equipped_gun_type = LGT_UZIS;
             resume->back_gun_type = LGT_SHOTGUN;
+            resume->holsters_gun_type = LGT_UZIS;
         } else {
             resume->equipped_gun_type = LGT_GRENADE;
             resume->back_gun_type = LGT_GRENADE;
+            resume->holsters_gun_type = LGT_PISTOLS;
         }
-        resume->holsters_gun_type = LGT_PISTOLS;
     }
 
     resume->stats.secret_flags = 0;
