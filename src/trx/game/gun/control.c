@@ -75,7 +75,7 @@ static bool M_CanEquip(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->request_gun_type == LGT_FLARE) {
-        return true;
+        return lara->gun_type != LGT_FLARE;
     }
     if (Lara_Vehicle_IsMounted()) {
         return false;
