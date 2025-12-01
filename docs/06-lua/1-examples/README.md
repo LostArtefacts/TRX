@@ -6,17 +6,28 @@ title: Examples
 
 ### Adjusting enemy HP
 
-This will adjust all bats starting HP to be 20 hitpoints.
+This example sets all bats to start with 20 hitpoints, and all wolves to start
+with 30 hitpoints. Simply adjust the lookup table to fit your needs.
 
 ```lua
-local O_BAT = 9;
+-- Object IDs for enemies
+local O_WOLF = 7
+local O_BAT = 9
 
+-- Lookup table mapping object IDs to HP
+local hp_lut = {
+  [O_WOLF] = 30,
+  [O_BAT] = 20,
+}
+
+-- Adjust HP of enemies when the level loads
 trx.events.on_level_load(function(level)
   for i = 1, #trx.items do
     local item = trx.items[i]
-    if item.object_id == O_BAT then
-      item.hit_points = 20
-      item.max_hit_points = 20
+    local hp = hp_lut[item.object_id]
+    if hp ~= nil then
+      item.hit_points = hp
+      item.max_hit_points = hp
     end
   end
 end)

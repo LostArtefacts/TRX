@@ -24,6 +24,7 @@ remains distinct for each game.
     "fog_color": [0.0, 0.0, 0.0],
     "fog_start": 22.0,
     "fog_end": 30.0,
+    "ambient_tracks": [57, 58, 59, 60],
     "injections": [
         "data/global_injection1.bin",
         "data/global_injection2.bin",
