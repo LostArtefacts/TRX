@@ -192,6 +192,7 @@ static void M_ResetLayout(void *const arg)
         g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
         SPM_NORMAL);
     Input_ResetLayout(s->backend, s->active_layout);
+    g_Config.dirty = true;
     Config_Update();
 }
 
@@ -202,6 +203,7 @@ static void M_UnbindKey(void *const arg)
         g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
         SPM_NORMAL);
     Input_UnassignRole(s->backend, s->active_layout, s->active_role);
+    g_Config.dirty = true;
     Config_Update();
 }
 
