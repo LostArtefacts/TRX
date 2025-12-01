@@ -37,7 +37,7 @@ provided with the game achieves.
     <td>
       <code>*_cameras.bin</code>
     </td>
-    <td>TR1</td>
+    <td>TR1, TR2</td>
     <td>
       Injects positional adjustments for cameras that can otherwise cause visual
       issues, such as in Temple of the Cat.
@@ -116,7 +116,7 @@ provided with the game achieves.
     <td>
       <code>*_textures.bin</code>
     </td>
-    <td>TR1</td>
+    <td>TR1, TR2</td>
     <td>
       Injects fixes for texture issues in the original levels, such as gaps in
       the walls or wrongly colored models. Refer to the README for a full list
@@ -245,7 +245,7 @@ provided with the game achieves.
     <td>
       <code>pickup_aid.bin</code>
     </td>
-    <td>TR1</td>
+    <td>TR1, TR2</td>
     <td>
       Injects a sprite sequence similar to the Midas twinkle effect, which is
       used when the option for pickup aids is enabled. Custom levels should

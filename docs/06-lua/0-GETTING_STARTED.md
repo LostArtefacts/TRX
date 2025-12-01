@@ -17,8 +17,11 @@ Add per-level scripts in a level object:
 {
     "levels": [
         // …,
-        "script": "data/scripts/level1.lua",
-        // …,
+        {
+            "script": "data/scripts/level1.lua",
+            // …,
+        },
+        // …
     ],
     // …
 }
@@ -36,7 +39,7 @@ end)
 Start the game. In the logs, you should see the following:
 
 ```
-INF | 2025-10-04 12:12:23.155 [cfg/tr1/level1.lua:4:?] hello from caves
+INF | 2025-10-04 12:12:23.155 [data/scripts/level1.lua:2:?] hello from level 1!
 ```
 
 ---

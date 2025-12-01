@@ -142,12 +142,13 @@ default game flow for examples.
     <td>Integer</td>
   </tr>
   <tr valign="top">
-    <td rowspan="2"><code>add_secret_reward</code><strong>²</strong></td>
+    <td rowspan="2"><code>add_secret_reward</code></td>
     <td><code>object_id</code></td>
     <td>Integer / String</td>
     <td rowspan="2">
       Adds the specified item to the current level's list of rewards for
-      collecting all secrets.
+      collecting all secrets. This applies when using the TR2 style of specific
+      secret item pickups as opposed to floor-data defined triggers only.
     </td>
   </tr>
   <tr valign="top">
@@ -193,7 +194,7 @@ default game flow for examples.
     <td colspan="2" align="center">N/A</td>
   </tr>
   <tr valign="top">
-    <td><code>remove_scions</code><strong>¹</strong></td>
+    <td><code>remove_scions</code></td>
     <td colspan="2" align="center">N/A</td>
   </tr>
   <tr valign="top">
@@ -215,7 +216,7 @@ default game flow for examples.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>set_lara_start_anim</code><strong>²</strong></td>
+    <td><code>set_lara_start_anim</code></td>
     <td><code>value</code></td>
     <td>Integer</td>
     <td>
@@ -237,5 +238,4 @@ default game flow for examples.
   </tr>
 </table>
 
-**¹** Tomb Raider 1 only.  
 **²** Tomb Raider 2 only.

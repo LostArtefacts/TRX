@@ -181,7 +181,7 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>item_drops</code><strong>¹</strong></td>
+    <td><code>item_drops</code></td>
     <td>Object array</td>
     <td colspan="2">
       Instructions to allocate items to enemies who will drop those items when
@@ -218,7 +218,7 @@ Following are each of the properties available within a level.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>water_color</code><strong>¹</strong></td>
+    <td><code>water_color</code></td>
     <td>Float array or hex string</td>
     <td colspan="2">
       Can be customized per level. See <a href="../0-GLOBAL_PROPERTIES.md#water-color">the global property</a> for
@@ -228,5 +228,4 @@ Following are each of the properties available within a level.
 </table>
 
 **\*** Required property.  
-**¹** Tomb Raider 1 only.
 **²** Tomb Raider 2 only.
