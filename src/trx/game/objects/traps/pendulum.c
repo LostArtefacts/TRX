@@ -5,7 +5,13 @@
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
-#define M_DAMAGE (g_TRVersion == 1 ? 100 : 50)
+#define M_AXE_DAMAGE 100
+#define M_PENDULUM_DAMAGE 50
+
+static inline int16_t M_GetDamage(const OBJECT_ID obj_id)
+{
+    return obj_id == O_SWINGING_AXE ? M_AXE_DAMAGE : M_PENDULUM_DAMAGE;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -26,7 +32,8 @@ static void M_Control(const int16_t item_num)
     }
 
     if (working && item->touch_bits != 0) {
-        Lara_TakeDamage(M_DAMAGE, true);
+        const int16_t damage = M_GetDamage(item->object_id);
+        Lara_TakeDamage(damage, true);
 
         const ITEM *const lara_item = Lara_GetItem();
         const XYZ_32 pos = {
@@ -46,15 +53,26 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupCommon(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->collision_func =
-        g_TRVersion == 1 ? Object_Collision_Trap : Object_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
     obj->save_anim = true;
 }
 
-REGISTER_OBJECT(O_PENDULUM_1, M_Setup)
-REGISTER_OBJECT(O_PENDULUM_2, M_Setup)
+static void M_SetupAxe(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+    obj->collision_func = Object_Collision_Trap;
+}
+
+static void M_SetupPendulum(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+    obj->collision_func = Object_Collision;
+}
+
+REGISTER_OBJECT(O_SWINGING_AXE, M_SetupAxe)
+REGISTER_OBJECT(O_PENDULUM_1, M_SetupPendulum)
+REGISTER_OBJECT(O_PENDULUM_2, M_SetupPendulum)

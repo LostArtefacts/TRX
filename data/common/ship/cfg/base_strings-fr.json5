@@ -1467,6 +1467,9 @@
                 "\\{review}Boule Roulante 3",
             ]
         },
+        "swinging_axe": {
+            "name": "\\{review}Hache Oscillante",
+        },
         "spike_wall": {
             "name": "\\{review}Mur de Pics",
         },
