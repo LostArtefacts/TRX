@@ -16,10 +16,14 @@ static inline int16_t M_GetDamage(const OBJECT_ID obj_id)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    item->enable_interpolation = true;
 
-    const bool working =
-        g_TRVersion != 1 || item->current_anim_state == TRAP_WORKING;
-    if (g_TRVersion == 1) {
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const ANIM *const base_anim = Object_GetAnim(obj, 0);
+
+    bool working;
+    if (Anim_HasChange(base_anim, TRAP_WORKING)) {
+        working = item->current_anim_state == TRAP_WORKING;
         if (Item_IsTriggerActive(item)) {
             if (item->current_anim_state == TRAP_SET) {
                 item->goal_anim_state = TRAP_WORKING;
@@ -28,6 +32,15 @@ static void M_Control(const int16_t item_num)
             if (item->current_anim_state == TRAP_WORKING) {
                 item->goal_anim_state = TRAP_SET;
             }
+        }
+    } else {
+        working = true;
+        if (!Item_IsTriggerActive(item) && Item_TestFrameEqual(item, -1)) {
+            Item_SwitchToAnim(item, 0, 0);
+            item->status = IS_INACTIVE;
+            Item_RemoveActive(item_num);
+            item->enable_interpolation = false;
+            return;
         }
     }
 
