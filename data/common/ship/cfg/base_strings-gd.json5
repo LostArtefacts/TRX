@@ -1492,6 +1492,9 @@
                 "Ball-rollaidh 3",
             ]
         },
+        "swinging_axe": {
+            "name": "Tuagh",
+        },
         "spike_wall": {
             "name": "Balla-gheugan",
         },

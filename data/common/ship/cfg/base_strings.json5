@@ -1206,16 +1206,14 @@
         "pendulum_1": {
             "name": [
                 "Pendulum",
-                "Sandbax",
-                "Swinging axe",
+                "Sandbag",
                 "Swinging box",
             ]
         },
         "pendulum_2": {
             "name": [
                 "Pendulum",
-                "Sandbax",
-                "Swinging axe",
+                "Sandbag",
                 "Swinging box",
             ]
         },
@@ -1257,6 +1255,9 @@
         },
         "spinning_blade": {
             "name": "Spinning Blade",
+        },
+        "swinging_axe": {
+            "name": "Swinging Axe",
         },
         "teeth_trap": {
             "name": [

@@ -1480,6 +1480,9 @@
                 "Masso Rotolante 3",
             ]
         },
+        "swinging_axe": {
+            "name": "\\{review}Ascia Oscillante",
+        },
         "spike_wall": {
             "name": "Muro con Spuntoni",
         },

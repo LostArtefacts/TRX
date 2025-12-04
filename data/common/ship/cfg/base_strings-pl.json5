@@ -1465,6 +1465,9 @@
         "rolling_ball_3": {
             "name": "Głaz 3",
         },
+        "swinging_axe": {
+            "name": "\\{review}Kołysząca się siekiera",
+        },
         "spike_wall": {
             "name": "Ściana z kolcami",
         },
