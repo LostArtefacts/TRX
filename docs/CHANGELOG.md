@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0.3...develop) - ××××-××-××
 - changed the swinging axe to be defined separately from other pendulums (use object `O_SWINGING_AXE` in catalogs)
 - changed all pendulum types to be able to be antitriggered (#3993)
+- fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed skybox faces with transparent pixels always rendering in front of all other faces (#4351, regression from 1.0)
 - fixed unbound inputs not being saved between game launches (#4360, regression from TR1X 4.14/TR2X 1.4)
 - fixed Lara drawing a flare when the draw weapons input is pressed, and she already has an active flare but no weapons (#4361, regression from TR2X 1.4)
