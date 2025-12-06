@@ -269,7 +269,8 @@ static bool M_Draw_I(
 
 bool Lara_Draw(const ITEM *const item)
 {
-    const bool is_lara = item == Lara_GetItem();
+    const ITEM *const lara_item = Lara_GetItem();
+    const bool is_lara = item == lara_item;
     if (is_lara
         && (item->status == IS_INVISIBLE || (item->flags & IF_ONE_SHOT) != 0)) {
         return false;
@@ -289,7 +290,7 @@ bool Lara_Draw(const ITEM *const item)
     ANIM_FRAME *frames[2];
     if (lara->hit_direction < 0) {
         int32_t rate;
-        const int32_t frac = Item_GetFrames(item, frames, &rate);
+        const int32_t frac = Item_GetFrames(lara_item, frames, &rate);
         if (frac != 0 && Lara_Pose_Get() == nullptr) {
             M_Draw_I(item, frames[0], frames[1], frac, rate);
             goto finish;

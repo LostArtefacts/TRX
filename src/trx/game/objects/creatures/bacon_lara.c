@@ -41,7 +41,7 @@ static void M_Control(const int16_t item_num)
         item->hit_points = LARA_MAX_HITPOINTS;
     }
 
-    if (!item->priv) {
+    if (item->priv == nullptr) {
         int32_t x = 2 * m_AnchorX - lara_item->pos.x;
         int32_t y = lara_item->pos.y;
         int32_t z = 2 * m_AnchorZ - lara_item->pos.z;
@@ -80,7 +80,7 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (item->priv) {
+    if (item->priv != nullptr) {
         Item_Animate(item);
 
         int32_t x = item->pos.x;
@@ -107,7 +107,7 @@ static void M_Control(const int16_t item_num)
 
 static bool M_Draw(const ITEM *const item)
 {
-    if (item->current_anim_state == LS(LS_DEATH)) {
+    if (item->priv != nullptr || item->current_anim_state == LS(LS_DEATH)) {
         return Object_DrawAnimatingItem(item);
     }
 
