@@ -6,6 +6,7 @@
   - Damocles swords
   - ember emitters
   - falling ceiling
+  - hooks
   - lava wedge
   - pendulums
   - spike ceilings
