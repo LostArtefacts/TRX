@@ -1,4 +1,5 @@
 #include <trx/game/lara.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -8,10 +9,8 @@
 #define M_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define M_DAMAGE 100
 
-static void M_Initialise(const int16_t item_num)
+static void M_Reset(ITEM *const item)
 {
-    ITEM *const item = Item_Get(item_num);
-    item->rot.y = Random_GetControl();
     item->required_anim_state = (Random_GetControl() - 0x4000) / 16;
     item->fall_speed = 50;
 
@@ -21,9 +20,28 @@ static void M_Initialise(const int16_t item_num)
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 }
 
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->rot.y = Random_GetControl();
+
+    Trap_Initialise(item_num);
+    M_Reset(item);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    if (!Item_IsTriggerActive(item)) {
+        Trap_Reset(item);
+        M_Reset(item);
+        return;
+    }
+
+    if (item->status == IS_DEACTIVATED) {
+        return;
+    }
+
     if (item->gravity) {
         item->rot.y += item->required_anim_state;
         item->fall_speed += item->fall_speed < FAST_FALL_SPEED ? GRAVITY : 1;
@@ -45,7 +63,6 @@ static void M_Control(const int16_t item_num)
             item->pos.y = item->floor + 10;
             item->gravity = false;
             item->status = IS_DEACTIVATED;
-            Item_RemoveActive(item_num);
         }
     } else if (item->pos.y != item->floor) {
         item->rot.y += item->required_anim_state;
