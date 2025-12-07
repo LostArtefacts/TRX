@@ -2,13 +2,19 @@
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 
-#define LAVA_WEDGE_SPEED 25
+#define M_SPEED 25
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+
+    if (!Item_IsTriggerActive(item)) {
+        Trap_Reset(item);
+        return;
+    }
 
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
@@ -20,19 +26,19 @@ static void M_Control(const int16_t item_num)
 
         switch (item->rot.y) {
         case 0:
-            item->pos.z += LAVA_WEDGE_SPEED;
+            item->pos.z += M_SPEED;
             z += 2 * WALL_L;
             break;
         case -DEG_180:
-            item->pos.z -= LAVA_WEDGE_SPEED;
+            item->pos.z -= M_SPEED;
             z -= 2 * WALL_L;
             break;
         case DEG_90:
-            item->pos.x += LAVA_WEDGE_SPEED;
+            item->pos.x += M_SPEED;
             x += 2 * WALL_L;
             break;
         default:
-            item->pos.x -= LAVA_WEDGE_SPEED;
+            item->pos.x -= M_SPEED;
             x -= 2 * WALL_L;
             break;
         }
@@ -68,6 +74,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->save_position = true;

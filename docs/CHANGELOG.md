@@ -5,6 +5,7 @@
   - collapsible tiles
   - ember emitters
   - falling ceiling
+  - lava wedge
   - pendulums
   - spike ceilings
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
