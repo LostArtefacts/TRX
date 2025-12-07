@@ -4,6 +4,7 @@
 - changed the following trap types to support being reset (#3993)
   - collapsible tiles
   - ember emitters
+  - falling ceiling
   - pendulums
   - spike ceilings
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
