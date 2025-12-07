@@ -1,4 +1,5 @@
 #include <trx/game/lara.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 
 #define M_DAMAGE 300
@@ -17,7 +18,9 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
+        if (!Item_IsTriggerActive(item)) {
+            Trap_Reset(item);
+        }
         return;
     }
 
@@ -39,6 +42,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision_Trap;
     obj->save_position = true;
