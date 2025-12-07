@@ -10,6 +10,7 @@
   - icicles
   - lava wedge
   - pendulums
+  - pushblocks (via timed triggers only)
   - spike ceilings
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items in TR1 rather than directly on top (#4374)
