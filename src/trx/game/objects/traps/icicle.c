@@ -1,8 +1,9 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 
-#define ICICLE_HIT_DAMAGE 200
+#define M_DAMAGE 200
 
 typedef enum {
     // clang-format off
@@ -11,7 +12,13 @@ typedef enum {
     ICICLE_FALL  = 2,
     ICICLE_LAND  = 3,
     // clang-format on
-} ICICLE_STATE;
+} M_STATE;
+
+static void M_Reset(ITEM *const item)
+{
+    item->mesh_bits = 0xFFFFFFFF;
+    Trap_Reset(item);
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -28,7 +35,7 @@ static void M_Control(const int16_t item_num)
             item->fall_speed = 50;
         }
         if (item->touch_bits != 0) {
-            Lara_TakeDamage(ICICLE_HIT_DAMAGE, true);
+            Lara_TakeDamage(M_DAMAGE, true);
         }
         break;
 
@@ -39,7 +46,9 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
+        if (!Item_IsTriggerActive(item)) {
+            M_Reset(item);
+        }
         return;
     }
 
@@ -62,6 +71,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision_Trap;
     obj->save_position = true;

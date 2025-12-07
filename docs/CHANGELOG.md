@@ -7,6 +7,7 @@
   - ember emitters
   - falling ceiling
   - hooks
+  - icicles
   - lava wedge
   - pendulums
   - spike ceilings
