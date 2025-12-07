@@ -1,5 +1,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
@@ -66,9 +67,17 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        item->enable_interpolation = item->status == IS_ACTIVE;
+    }
+}
+
 static void M_SetupCommon(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->handle_save_func = M_HandleSave;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
     obj->save_anim = true;
