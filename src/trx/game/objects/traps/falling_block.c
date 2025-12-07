@@ -1,5 +1,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
 #include <trx/vector.h>
@@ -19,6 +20,8 @@ static void M_CalculateOrigin(ITEM *const item)
 
 static void M_Initialise(const int16_t item_num)
 {
+    Trap_Initialise(item_num);
+
     ITEM *const item = Item_Get(item_num);
     M_CalculateOrigin(item);
 }
@@ -101,7 +104,9 @@ static void M_Control(const int16_t item_num)
 
     Item_Animate(item);
     if (item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
+        if (!Item_IsTriggerActive(item)) {
+            Trap_Reset(item);
+        }
         return;
     }
 
