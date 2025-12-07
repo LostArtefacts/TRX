@@ -3,6 +3,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -11,16 +12,6 @@
 
 #define M_DAMAGE_AIR 100
 #define M_SHAKE_RANGE (WALL_L * 10) // = 10240
-
-static void M_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    GAME_VECTOR *const data =
-        GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_ITEM_DATA);
-    data->pos = item->pos;
-    data->room_num = item->room_num;
-    item->data = data;
-}
 
 static void M_Roll(ITEM *const item)
 {
@@ -91,37 +82,13 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
     item->touch_bits = 0;
 }
 
-static void M_Reset(ITEM *const item)
-{
-    const int16_t item_num = Item_GetIndex(item);
-    const GAME_VECTOR *const data = item->data;
-
-    item->status = IS_INACTIVE;
-    item->pos = data->pos;
-    if (item->room_num != data->room_num) {
-        Item_RemoveDrawn(item_num);
-        ROOM *const room = Room_Get(data->room_num);
-        item->next_item = room->item_num;
-        room->item_num = item_num;
-        item->room_num = data->room_num;
-    }
-
-    item->goal_anim_state = TRAP_SET;
-    item->current_anim_state = TRAP_SET;
-    Item_SwitchToAnim(item, 0, 0);
-    item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
-    item->current_anim_state = item->goal_anim_state;
-    item->required_anim_state = TRAP_SET;
-    Item_RemoveActive(item_num);
-}
-
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->enable_interpolation = item->status == IS_ACTIVE;
 
     if (item->status == IS_DEACTIVATED && !Item_IsTriggerActive(item)) {
-        M_Reset(item);
+        Trap_Reset(item);
         return;
     }
 
@@ -238,7 +205,7 @@ static void M_Collision(
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
+    obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
     obj->save_position = true;
