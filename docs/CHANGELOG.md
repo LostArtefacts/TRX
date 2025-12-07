@@ -4,6 +4,7 @@
 - changed the following trap types to support being reset (#3993)
   - collapsible tiles
   - pendulums
+  - spike ceilings
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items in TR1 rather than directly on top (#4374)
 - fixed skybox faces with transparent pixels always rendering in front of all other faces (#4351, regression from 1.0)

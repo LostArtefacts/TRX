@@ -1,5 +1,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
@@ -40,8 +41,9 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    const bool is_trigger_active = Item_IsTriggerActive(item);
-    if (is_trigger_active && item->status != IS_DEACTIVATED) {
+    if (!Item_IsTriggerActive(item)) {
+        Trap_Reset(item);
+    } else if (item->status != IS_DEACTIVATED) {
         M_Move(item_num);
     }
 
@@ -52,6 +54,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = Trap_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision_Trap;
     obj->save_position = true;
