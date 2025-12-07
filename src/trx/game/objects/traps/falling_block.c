@@ -3,21 +3,30 @@
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
 #include <trx/vector.h>
-#include <trx/version.h>
 
-static int32_t M_GetOrigin(const OBJECT_ID obj_id)
+static int32_t M_GetOrigin(const ITEM *const item)
 {
-    if (g_TRVersion == 1) {
-        return -STEP_L * 2;
-    } else {
-        return obj_id == O_FALLING_BLOCK_3 ? -WALL_L : -STEP_L * 2;
-    }
+    return (int32_t)(intptr_t)item->priv;
+}
+
+static void M_CalculateOrigin(ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const ANIM *const anim = Object_GetAnim(obj, 0);
+    const ANIM_FRAME *const frame = &anim->frame_ptr[0];
+    item->priv = (void *)(intptr_t)ROUND_TO_CLICK_SIGNED(frame->offset.y);
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_CalculateOrigin(item);
 }
 
 static void M_DropStack(const ITEM *const item)
 {
-    const int32_t origin = M_GetOrigin(item->object_id);
-    XYZ_32 drop_pos = {
+    const int32_t origin = M_GetOrigin(item);
+    const XYZ_32 drop_pos = {
         .x = item->pos.x,
         .y = item->pos.y + origin,
         .z = item->pos.z,
@@ -29,7 +38,7 @@ static int16_t M_GetFloorHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    const int32_t origin = M_GetOrigin(item->object_id);
+    const int32_t origin = M_GetOrigin(item);
     if (y <= item->pos.y + origin
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
@@ -42,7 +51,7 @@ static int16_t M_GetCeilingHeight(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
 {
-    const int32_t origin = M_GetOrigin(item->object_id);
+    const int32_t origin = M_GetOrigin(item);
     if (y > item->pos.y + origin
         && (item->current_anim_state == TRAP_SET
             || item->current_anim_state == TRAP_ACTIVATE)) {
@@ -60,7 +69,7 @@ static void M_AddWalkable(const int16_t item_num)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    const int32_t origin = M_GetOrigin(item->object_id);
+    const int32_t origin = M_GetOrigin(item);
 
     switch (item->current_anim_state) {
     case TRAP_SET:
@@ -114,6 +123,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
