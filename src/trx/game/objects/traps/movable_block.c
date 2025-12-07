@@ -574,6 +574,24 @@ static void M_Collision(
     }
 }
 
+static void M_ResetPosition(ITEM *const item)
+{
+    const int16_t item_num = Item_GetIndex(item);
+    const GAME_VECTOR linked_pos = M_GetLinked(item);
+    const GAME_VECTOR initial_pos = M_GetInitial(item);
+
+    MovableBlock_UpdateBox(item, false);
+    item->pos = initial_pos.pos;
+    Item_UpdateRoom(item_num, initial_pos.room_num);
+    Walkable_Reposition(item_num, linked_pos, initial_pos);
+    M_SetLinked(item);
+    MovableBlock_UpdateBox(item, true);
+
+    Item_RemoveActive(item_num);
+    item->timer = -1;
+    item->status = IS_INACTIVE;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -582,12 +600,17 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
+    if (item->timer > 0 && !M_IsPushPull(item) && !M_IsForcedMoving(item)) {
+        M_ResetPosition(item);
+        return;
+    }
+
     if (M_GetGravityFrames(item) > 0) {
         M_SetGravityFrames(item, M_GetGravityFrames(item) - 1);
         return;
     }
 
-    if (item->flags & IF_ONE_SHOT) {
+    if ((item->flags & IF_ONE_SHOT) != 0) {
         Item_Kill(item_num);
         Walkable_Remove(item_num);
         MovableBlock_UpdateBox(item, false);
