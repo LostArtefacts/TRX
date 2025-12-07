@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0.3...develop) - ××××-××-××
 - changed the swinging axe to be defined separately from other pendulums (use object `O_SWINGING_AXE` in catalogs)
 - changed all pendulum types to be able to be antitriggered (#3993)
+- changed ember emitters in TR2 to use the `SFX_LAVA_FOUNTAIN` sample (#4376)
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items in TR1 rather than directly on top (#4374)
 - fixed skybox faces with transparent pixels always rendering in front of all other faces (#4351, regression from 1.0)

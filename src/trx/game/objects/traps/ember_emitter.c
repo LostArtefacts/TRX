@@ -2,7 +2,6 @@
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
-#include <trx/version.h>
 
 static void M_Control(const int16_t item_num)
 {
@@ -19,11 +18,7 @@ static void M_Control(const int16_t item_num)
     effect->fall_speed = Random_GetControl() / -200;
     effect->frame_num = (-4 * Random_GetControl()) / 0x7FFF;
     effect->object_id = O_EMBER;
-    if (g_TRVersion == 1) {
-        Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
-    } else {
-        Sound_Effect(SFX_SANDBAG_HIT, &item->pos, SPM_NORMAL);
-    }
+    Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
 }
 
 static void M_Setup(OBJECT *const obj)
