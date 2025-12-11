@@ -1,6 +1,7 @@
 #include <trx/benchmark.h>
 #include <trx/debug.h>
 #include <trx/game/carrier.h>
+#include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
@@ -141,7 +142,7 @@ static void M_CheckTriggers(
 
             default:
                 // Add killable if object triggered
-                if (Object_IsType(item->object_id, g_EnemyObjects)) {
+                if (Creature_IsHostile(item)) {
                     M_IncludeKillableItem(stats, item_num);
                 }
                 break;

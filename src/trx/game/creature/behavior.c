@@ -21,7 +21,7 @@ void Creature_SetAlliesHostile(bool enable)
 bool Creature_IsHostile(const ITEM *const item)
 {
     return Object_IsType(item->object_id, g_EnemyObjects)
-        || (Creature_AreAlliesHostile() && Creature_IsAlly(item));
+        && (!Creature_IsAlly(item) || Creature_AreAlliesHostile());
 }
 
 bool Creature_IsAlly(const ITEM *const item)

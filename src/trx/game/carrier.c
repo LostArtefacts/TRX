@@ -54,7 +54,6 @@ static bool M_IsCarrierType(const OBJECT_ID obj_id)
     // also creates issues with /kill, hence a separate check is required here.
     is_enemy &= obj_id != O_EEL && obj_id != O_BIG_EEL;
     is_enemy &= obj_id != O_SKIDOO_DRIVER;
-    is_enemy |= Object_IsType(obj_id, g_AllyObjects);
     is_enemy |= obj_id == O_DRAGON_BACK || obj_id == O_SKIDOO_ARMED;
     return is_enemy;
 }
