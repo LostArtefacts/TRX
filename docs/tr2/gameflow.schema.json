@@ -176,6 +176,10 @@
         "type": {
           "type": "string"
         },
+        "script": {
+          "type": "string",
+          "description": "Path to a Lua script executed after loading this level."
+        },
         "path": {
           "type": "string"
         },
@@ -210,9 +214,6 @@
         },
         "fog_end": {
           "type": "number"
-        },
-        "inherit_injections": {
-          "type": "boolean"
         },
         "unobtainable_pickups": {
           "type": "integer"
