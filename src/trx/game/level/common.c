@@ -7,6 +7,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/lara.h>
 #include <trx/game/level.h>
+#include <trx/game/lua.h>
 #include <trx/game/music.h>
 #include <trx/game/option.h>
 #include <trx/game/output.h>
@@ -79,6 +80,7 @@ bool Level_Initialise(
     }
 
     Level_Unload();
+    Lua_FireEvent(LUA_EVENT_LEVEL_INIT, level->num);
     Level_Load(level);
 
     GameStringTable_Apply(level);

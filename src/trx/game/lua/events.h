@@ -6,6 +6,7 @@
 
 // Event types for Lua listeners
 typedef enum {
+    LUA_EVENT_LEVEL_INIT,
     LUA_EVENT_LEVEL_START,
     LUA_EVENT_LEVEL_LOAD,
     LUA_EVENT_PICKUP,
