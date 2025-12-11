@@ -8,6 +8,7 @@ Lua scripts can listen for game events using the global `events` API.
 
 ### API
 
+- [lua]`trx.events.on_level_init(callback)` 
 - [lua]`trx.events.on_level_start(callback)`  
 - [lua]`trx.events.on_level_load(callback)`  
 - [lua]`trx.events.on_pickup(callback)`  
@@ -18,6 +19,12 @@ Lua scripts can listen for game events using the global `events` API.
   Remove a previously registered event handler.
 
 ### Events
+
+#### `on_level_init`
+Happens prior to loading the level file.
+
+Arguments:
+- `level_num`
 
 #### `on_level_start`
 Happens after the level finishes loading, prior to loading information from a
@@ -52,17 +59,21 @@ Arguments: none
 ### Examples
 
 ```lua
+trx.events.on_level_init(function(level_num)
+  -- handle level initialisation
+end)
+
 trx.events.on_level_load(function(level_num)
   -- handle level load
-end
+end)
 
 trx.events.on_pickup(function(item_num)
   trx.console.log(trx.items[item_num].object_id)
-end
+end)
 
 local control_handler = trx.events.on_control(function()
   -- handle control loop event
-end
+end)
 -- detach a handler
 trx.events.detach(control_handler)
 ```

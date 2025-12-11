@@ -106,6 +106,8 @@ void LUA_CreateEvents(lua_State *const L)
     lua_setfield(L, -2, "detach");
 
     lua_newtable(L);
+    lua_pushinteger(L, LUA_EVENT_LEVEL_INIT);
+    lua_setfield(L, -2, "LEVEL_INIT");
     lua_pushinteger(L, LUA_EVENT_LEVEL_START);
     lua_setfield(L, -2, "LEVEL_START");
     lua_pushinteger(L, LUA_EVENT_LEVEL_LOAD);
