@@ -19,6 +19,7 @@
         "data/injections/purple_crystal.bin",
         "data/injections/lara_extra.bin",
         "data/injections/lara_rifle_sfx.bin",
+        "data/injections/secret_models_og.bin",
     ],
 
     "levels": [
