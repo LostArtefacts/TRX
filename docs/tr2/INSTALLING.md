@@ -285,6 +285,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── rig_pickup_meshes.bin
 │   │   ├── rig_textures.bin
 │   │   ├── seaweed_collision.bin
+│   │   ├── secret_models_gm.bin
+│   │   ├── secret_models_og.bin
 │   │   ├── shark_sfx.bin
 │   │   ├── tibet_fd.bin
 │   │   ├── tibet_itemrots.bin
@@ -707,6 +709,8 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── rig_pickup_meshes.bin
         │   │   ├── rig_textures.bin
         │   │   ├── seaweed_collision.bin
+        │   │   ├── secret_models_gm.bin
+        │   │   ├── secret_models_og.bin
         │   │   ├── shark_sfx.bin
         │   │   ├── tibet_fd.bin
         │   │   ├── tibet_itemrots.bin

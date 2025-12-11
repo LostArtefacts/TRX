@@ -565,6 +565,9 @@ const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
     { O_LEADBAR_ITEM, O_LEADBAR_OPTION },
     { O_SCION_ITEM_1, O_SCION_OPTION },
     { O_SCION_ITEM_2, O_SCION_OPTION },
+    { O_SECRET_1, O_SECRET_1_OPTION },
+    { O_SECRET_2, O_SECRET_2_OPTION },
+    { O_SECRET_3, O_SECRET_3_OPTION },
     { NO_OBJECT, NO_OBJECT },
     // clang-format on
 };

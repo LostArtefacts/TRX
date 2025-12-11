@@ -290,4 +290,13 @@ provided with the game achieves.
       Fixes the seaweed in Living Quarters blocking Lara from exiting the water.
     </td>
   </tr>
+  <tr valign="top">
+    <td>
+      <code>secret_models_*.bin</code>
+    </td>
+    <td>TR2</td>
+    <td>
+      Injects 3D models for the secret pickups in OG and Golden Mask.
+    </td>
+  </tr>
 </table>
