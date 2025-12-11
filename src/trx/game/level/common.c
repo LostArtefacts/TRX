@@ -25,7 +25,7 @@ void Level_Unload(void)
     Lara_InitialiseLoad(NO_ITEM);
 
     Gym_ResetAssault();
-    Creature_SetAlliesHostile(false);
+    Creature_Reset();
     Object_Reset();
     Camera_Reset();
     Walkable_Reset();
