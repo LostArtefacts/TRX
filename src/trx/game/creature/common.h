@@ -29,6 +29,7 @@ void Creature_Die(int16_t item_num, bool explode);
 int32_t Creature_Vault(
     int16_t item_num, int16_t angle, int32_t vault, int32_t shift);
 
+void Creature_Reset(void);
 bool Creature_AreAlliesHostile(void);
 void Creature_SetAlliesHostile(bool enable);
 bool Creature_IsAlive(const ITEM *item);
