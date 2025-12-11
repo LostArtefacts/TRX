@@ -215,6 +215,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── door111_sfx.bin
 │   │   ├── explosion.bin
 │   │   ├── fathoms_goon_sfx.bin
+│   │   ├── fathoms_itemrots.bin
 │   │   ├── fathoms_music_tracks.bin
 │   │   ├── fathoms_plants.bin
 │   │   ├── fathoms_secret_fd.bin
@@ -259,6 +260,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lara_vegas_guns.bin
 │   │   ├── living_deck_goon_sfx.bin
 │   │   ├── living_fd.bin
+│   │   ├── living_itemrots.bin
 │   │   ├── living_music_tracks.bin
 │   │   ├── living_pickup_meshes.bin
 │   │   ├── living_secret_fd.bin
@@ -298,6 +300,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── vegas_music_tracks.bin
 │   │   ├── vegas_textures.bin
 │   │   ├── venice_fd.bin
+│   │   ├── venice_itemrots.bin
 │   │   ├── venice_music_tracks.bin
 │   │   ├── venice_textures.bin
 │   │   ├── wall_cameras.bin
@@ -639,6 +642,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── door111_sfx.bin
         │   │   ├── explosion.bin
         │   │   ├── fathoms_goon_sfx.bin
+        │   │   ├── fathoms_itemrots.bin
         │   │   ├── fathoms_music_tracks.bin
         │   │   ├── fathoms_plants.bin
         │   │   ├── fathoms_secret_fd.bin
@@ -683,6 +687,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lara_vegas_guns.bin
         │   │   ├── living_deck_goon_sfx.bin
         │   │   ├── living_fd.bin
+        │   │   ├── living_itemrots.bin
         │   │   ├── living_music_tracks.bin
         │   │   ├── living_pickup_meshes.bin
         │   │   ├── living_secret_fd.bin
@@ -722,6 +727,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── vegas_music_tracks.bin
         │   │   ├── vegas_textures.bin
         │   │   ├── venice_fd.bin
+        │   │   ├── venice_itemrots.bin
         │   │   ├── venice_music_tracks.bin
         │   │   ├── venice_textures.bin
         │   │   ├── wall_cameras.bin
