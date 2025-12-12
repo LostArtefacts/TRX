@@ -256,6 +256,7 @@ common_sources = [
   'trx/game/level/rooms.c',
   'trx/game/level/settings.c',
   'trx/game/los.c',
+  'trx/game/lua/catalog.c',
   'trx/game/lua/common.c',
   'trx/game/lua/config.c',
   'trx/game/lua/console.c',

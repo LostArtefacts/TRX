@@ -7,7 +7,7 @@ title: Logging
 Lua scripts can log with contextual source info via the global `Log` module.
 Each call records the Lua script filename, function name, and line number. The
 results are logged to the standard output in the console as well as the
-`TR*X.log` file in the installation directory.
+`TRX.log` file in the installation directory.
 
 ### Functions
 
