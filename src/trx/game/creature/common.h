@@ -36,6 +36,8 @@ bool Creature_IsAlive(const ITEM *item);
 bool Creature_IsHostile(const ITEM *item);
 bool Creature_IsAlly(const ITEM *item);
 bool Creature_IsAllyTargetingEnemy(const ITEM *item);
+void Creature_AddAlly(OBJECT_ID obj_id);
+void Creature_AddAllyTargetingEnemy(OBJECT_ID obj_id);
 bool Creature_IsTargetable(const ITEM *item);
 
 int16_t Creature_Effect(

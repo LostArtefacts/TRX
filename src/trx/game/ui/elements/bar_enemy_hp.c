@@ -14,8 +14,7 @@ bool UI_EnemyHealthBar(void)
     if (target == nullptr) {
         return false;
     }
-    const OBJECT *const obj = Object_Get(target->object_id);
-    const bool is_ally = Object_IsType(target->object_id, g_AllyObjects);
+    const bool is_ally = Creature_IsAlly(target);
 
     bool show = g_Config.ui.show_bars;
     switch (g_Config.ui.enemy_health_bar.show_mode) {

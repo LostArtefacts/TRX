@@ -356,6 +356,7 @@
         // 12. Barkhang Monastery
         {
             "path": "data/monastry.tr2",
+            "script": "data/scripts/monastry.lua",
             "music_track": -1,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},

@@ -4,6 +4,15 @@ title: Migrating levels
 
 # Migration guide for level builders
 
+## TRX
+
+### Version 1.0 to 1.1
+
+1. **Ally and ally target behavior moved to Lua**:  
+    Monks being allies and bandits being enemies who will target allies is no
+    longer hardcoded and instead must be defined in Lua. Refer to the game flow
+    and linked script files of the original levels for reference.
+
 ## TR1X
 
 ### Version 4.15 to TRX 1.0
