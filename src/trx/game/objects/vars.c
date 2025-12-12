@@ -48,7 +48,7 @@ const OBJECT_ID g_ReceptacleObjects[] = {
     // clang-format on
 };
 
-const OBJECT_ID g_EnemyObjects[] = {
+const OBJECT_ID g_CreatureObjects[] = {
     // clang-format off
     O_ALLIGATOR,
     O_APE,

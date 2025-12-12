@@ -20,7 +20,7 @@ extern OBJECT_ID CombatEnd_GetBossType(void);
 
 static bool M_CanTargetObjectCreature(const OBJECT_ID obj_id)
 {
-    return (Object_IsType(obj_id, g_EnemyObjects)
+    return (Object_IsType(obj_id, g_CreatureObjects)
             || Object_IsType(obj_id, g_LoyalObjects))
         && Object_Get(obj_id)->loaded;
 }
