@@ -118,7 +118,7 @@ static int M_L_ItemGetStatus(lua_State *const L)
 static int M_L_ItemGetObjectId(lua_State *const L)
 {
     M_ITEM_GETTER(L);
-    lua_pushinteger(L, Object_ToGameID(item->object_id));
+    lua_pushinteger(L, item->object_id);
     return 1;
 }
 

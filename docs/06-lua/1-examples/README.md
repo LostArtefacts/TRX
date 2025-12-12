@@ -10,14 +10,10 @@ This example sets all bats to start with 20 hitpoints, and all wolves to start
 with 30 hitpoints. Simply adjust the lookup table to fit your needs.
 
 ```lua
--- Object IDs for enemies
-local O_WOLF = 7
-local O_BAT = 9
-
 -- Lookup table mapping object IDs to HP
 local hp_lut = {
-  [O_WOLF] = 30,
-  [O_BAT] = 20,
+  [trx.catalog.objects.O_WOLF] = 30,
+  [trx.catalog.objects.O_BAT] = 20,
 }
 
 -- Adjust HP of enemies when the level loads
