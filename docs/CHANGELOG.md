@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0.3...develop) - ××××-××-××
 - added the ability to control whether or not allies are hostile towards Lara via Lua (#3873)
+- added the ability to control via Lua which enemies are allies and which are ones that will fight with allies (#3873)
 - added support for 3D secret objects, and provided defaults for OG levels in TR2 (#4380)
 - added catalog object IDs to Lua
 - changed the swinging axe to be defined separately from other pendulums (use object `O_SWINGING_AXE` in catalogs)

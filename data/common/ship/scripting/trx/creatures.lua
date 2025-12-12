@@ -1,6 +1,9 @@
 local raw = trxc.creatures
 
-local creatures = {}
+local creatures = {
+  add_ally = raw.add_ally,
+  add_ally_target = raw.add_ally_target,
+}
 
 local getters = {
   hostile_allies = raw.are_allies_hostile,

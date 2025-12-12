@@ -43,6 +43,7 @@
         // 1. The Cold War
         {
             "path": "data/level1.tr2",
+            "script": "data/scripts/level1.lua",
             "music_track": 29,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -92,6 +93,7 @@
         // 3. Furnace of the Gods
         {
             "path": "data/level3.tr2",
+            "script": "data/scripts/level3.lua",
             "music_track": 55,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level3.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -113,6 +115,7 @@
         // 4. Kingdom
         {
             "path": "data/level4.tr2",
+            "script": "data/scripts/level4.lua",
             "music_track": 27,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level4.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},

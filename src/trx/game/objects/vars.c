@@ -136,27 +136,10 @@ const OBJECT_ID g_WaterObjects[] = {
     // clang-format on
 };
 
-const OBJECT_ID g_AllyObjects[] = {
-    // clang-format off
-    O_MONK_1,
-    O_MONK_2,
-    O_MONK_3,
-    NO_OBJECT,
-    // clang-format on
-};
-
 const OBJECT_ID g_LoyalObjects[] = {
     // clang-format off
     O_LARA,
     O_WINSTON,
-    NO_OBJECT,
-    // clang-format on
-};
-
-const OBJECT_ID g_AllyTargetingEnemies[] = {
-    // clang-format off
-    O_BANDIT_1,
-    O_BANDIT_2,
     NO_OBJECT,
     // clang-format on
 };
