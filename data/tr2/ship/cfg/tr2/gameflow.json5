@@ -189,6 +189,7 @@
                 "data/injections/rig_music_tracks.bin",
                 "data/injections/rig_pickup_meshes.bin",
                 "data/injections/rig_textures.bin",
+                "data/injections/scuba_sfx.bin",
             ],
         },
 
@@ -214,6 +215,7 @@
                 "data/injections/diving_sfx.bin",
                 "data/injections/diving_textures.bin",
                 "data/injections/door108_sfx.bin",
+                "data/injections/scuba_sfx.bin",
             ],
         },
 
@@ -239,6 +241,7 @@
                 "data/injections/fathoms_secret_fd.bin",
                 "data/injections/fathoms_plants.bin",
                 "data/injections/fathoms_textures.bin",
+                "data/injections/scuba_sfx.bin",
             ],
         },
 
@@ -257,6 +260,7 @@
             ],
             "injections": [
                 "data/injections/barefoot_sfx.bin",
+                "data/injections/scuba_sfx.bin",
                 "data/injections/wreck_cameras.bin",
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
@@ -293,6 +297,7 @@
                 "data/injections/living_sfx.bin",
                 "data/injections/living_textures.bin",
                 "data/injections/seaweed_collision.bin",
+                "data/injections/scuba_sfx.bin",
             ],
         },
 
@@ -321,6 +326,7 @@
                 "data/injections/deck_textures.bin",
                 "data/injections/door110_sfx.bin",
                 "data/injections/living_deck_goon_sfx.bin",
+                "data/injections/scuba_sfx.bin",
             ],
         },
 
@@ -564,6 +570,7 @@
             ],
             "injections": [
                 "data/injections/barefoot_sfx.bin",
+                "data/injections/scuba_sfx.bin",
                 "data/injections/wreck_fd.bin",
                 "data/injections/wreck_goon_sfx.bin",
                 "data/injections/wreck_itemrots.bin",
