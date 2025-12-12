@@ -12,3 +12,4 @@ NamespaceIndentation: None
 PenaltyReturnTypeOnItsOwnLine: 1000
 PointerAlignment: Right
 SortIncludes: false
+InsertBraces: true

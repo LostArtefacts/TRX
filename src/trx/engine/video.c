@@ -1476,8 +1476,9 @@ static int M_AudioOpen(
         return -1;
     }
     while (next_sample_rate_idx
-           && next_sample_rates[next_sample_rate_idx] >= wanted_spec.freq)
+           && next_sample_rates[next_sample_rate_idx] >= wanted_spec.freq) {
         next_sample_rate_idx--;
+    }
     wanted_spec.format = AUDIO_S16SYS;
     wanted_spec.silence = 0;
     wanted_spec.samples = FFMAX(
@@ -1523,8 +1524,9 @@ static int M_AudioOpen(
     audio_hw_params->freq = spec.freq;
     if (av_channel_layout_copy(
             &audio_hw_params->ch_layout, wanted_channel_layout)
-        < 0)
+        < 0) {
         return -1;
+    }
     audio_hw_params->frame_size = av_samples_get_buffer_size(
         nullptr, audio_hw_params->ch_layout.nb_channels, 1,
         audio_hw_params->fmt, 1);

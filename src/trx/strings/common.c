@@ -360,8 +360,9 @@ void String_StylizeSmallDigitsInto(
             if (i + f_len <= src_len
                 && memcmp(src + i, replacements[r].from, f_len) == 0) {
                 // Account for the delta: new length minus old length.
-                if (t_len > f_len)
+                if (t_len > f_len) {
                     extra += (t_len - f_len);
+                }
                 i += f_len; // Skip past this match.
                 matched = true;
                 break;
