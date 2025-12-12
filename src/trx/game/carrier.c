@@ -46,11 +46,11 @@ static ITEM *M_GetCarrier(const int16_t item_num)
 
 static bool M_IsCarrierType(const OBJECT_ID obj_id)
 {
-    bool is_enemy = Object_IsType(obj_id, g_EnemyObjects);
+    bool is_enemy = Object_IsType(obj_id, g_CreatureObjects);
     // Eels are hostile but cannot be killed, so must be excluded. Monks may be
     // allocated drop items whether or not they are hostile. Drop items must be
     // assigned to the skidoo and not the rider to avoid issues with /kill, and
-    // O_DRAGON_BACK is the active dragon, but having this in g_EnemyObjects
+    // O_DRAGON_BACK is the active dragon, but having this in g_CreatureObjects
     // also creates issues with /kill, hence a separate check is required here.
     is_enemy &= obj_id != O_EEL && obj_id != O_BIG_EEL;
     is_enemy &= obj_id != O_SKIDOO_DRIVER;

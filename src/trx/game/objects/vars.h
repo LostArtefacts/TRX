@@ -3,7 +3,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/ids.h>
 
-extern const OBJECT_ID g_EnemyObjects[];
+extern const OBJECT_ID g_CreatureObjects[];
 extern const OBJECT_ID g_WaterObjects[];
 extern const OBJECT_ID g_AllyObjects[];
 extern const OBJECT_ID g_LoyalObjects[];
