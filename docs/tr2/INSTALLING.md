@@ -286,6 +286,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── rig_music_tracks.bin
 │   │   ├── rig_pickup_meshes.bin
 │   │   ├── rig_textures.bin
+│   │   ├── scuba_sfx.bin
 │   │   ├── seaweed_collision.bin
 │   │   ├── secret_models_gm.bin
 │   │   ├── secret_models_og.bin
@@ -713,6 +714,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── rig_music_tracks.bin
         │   │   ├── rig_pickup_meshes.bin
         │   │   ├── rig_textures.bin
+        │   │   ├── scuba_sfx.bin
         │   │   ├── seaweed_collision.bin
         │   │   ├── secret_models_gm.bin
         │   │   ├── secret_models_og.bin
