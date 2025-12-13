@@ -207,8 +207,6 @@ class LinkSource(BaseSource):
 class CombineSource(BaseSource):
     """A source merging two glyphs into one."""
 
-    has_own_index = False
-
     def __init__(
         self,
         ctx: ParserContext,
@@ -224,28 +222,40 @@ class CombineSource(BaseSource):
         self.offset_y = offset_y
         self.align = align
 
+        self.index: int | None = None
         self.glyph1_source: BaseSource | None = None
         self.glyph2_source: BaseSource | None = None
-
-    @property
-    def index(self) -> int | None:
-        assert self.glyph1_source
-        return self.glyph1_source.index
-
-    @index.setter
-    def index(self, value: int | None) -> None:
-        raise NotImplementedError("not implemented")
+        self._cached_render: tuple[np.ndarray, Rect] | None = None
 
     def load(self) -> tuple[np.ndarray, Rect]:
         assert self.glyph1_source is not None
-        return self.glyph1_source.load()
+        assert self.glyph2_source is not None
+
+        if self._cached_render is not None:
+            return self._cached_render
+
+        main_pixels, main_bbox = self.glyph1_source.load()
+        combining_pixels, combining_bbox = self.glyph2_source.load()
+        offset_x, offset_y = self._compute_offset(main_bbox, combining_bbox)
+        composed_pixels, composed_bbox = self._compose_pixels(
+            main_pixels,
+            main_bbox,
+            combining_pixels,
+            combining_bbox,
+            offset_x,
+            offset_y,
+        )
+        self._cached_render = (composed_pixels, composed_bbox)
+        return self._cached_render
 
     def get_offset(self) -> tuple[int, int]:
         assert self.glyph1_source
         assert self.glyph2_source
         _, main_bbox = self.glyph1_source.load()
         _, combining_bbox = self.glyph2_source.load()
+        return self._compute_offset(main_bbox, combining_bbox)
 
+    def _compute_offset(self, main_bbox: Rect, combining_bbox: Rect) -> tuple[int, int]:
         offset_x = self.offset_x
         offset_y = self.offset_y
 
@@ -259,6 +269,66 @@ class CombineSource(BaseSource):
         elif self.align == "bottom":
             offset_y += main_bbox.y + main_bbox.h - combining_bbox.y
         return offset_x, offset_y
+
+    def _compose_pixels(
+        self,
+        main_pixels: np.ndarray,
+        main_bbox: Rect,
+        combining_pixels: np.ndarray,
+        combining_bbox: Rect,
+        offset_x: int,
+        offset_y: int,
+    ) -> tuple[np.ndarray, Rect]:
+        combining_left = combining_bbox.x + offset_x
+        combining_top = combining_bbox.y + offset_y
+
+        left = min(main_bbox.x, combining_left)
+        top = min(main_bbox.y, combining_top)
+        right = max(main_bbox.x + main_bbox.w, combining_left + combining_bbox.w)
+        bottom = max(main_bbox.y + main_bbox.h, combining_top + combining_bbox.h)
+
+        width = right - left
+        height = bottom - top
+        canvas = np.zeros((height, width, 4), dtype=np.uint8)
+
+        base_x = main_bbox.x - left
+        base_y = main_bbox.y - top
+        accent_x = combining_left - left
+        accent_y = combining_top - top
+
+        canvas[
+            base_y : base_y + main_bbox.h,
+            base_x : base_x + main_bbox.w,
+        ] = main_pixels
+        self._alpha_blit(canvas, combining_pixels, accent_x, accent_y)
+
+        return canvas, Rect(x=left, y=top, w=width, h=height)
+
+    @staticmethod
+    def _alpha_blit(
+        dst: np.ndarray,
+        src: np.ndarray,
+        dst_x: int,
+        dst_y: int,
+    ) -> None:
+        height, width, _ = src.shape
+        region = dst[dst_y : dst_y + height, dst_x : dst_x + width]
+
+        src_rgb = src[:, :, :3].astype(np.float32) / 255.0
+        src_alpha = src[:, :, 3:4].astype(np.float32) / 255.0
+        dst_rgb = region[:, :, :3].astype(np.float32) / 255.0
+        dst_alpha = region[:, :, 3:4].astype(np.float32) / 255.0
+
+        out_alpha = src_alpha + dst_alpha * (1.0 - src_alpha)
+        safe_alpha = np.where(out_alpha == 0.0, 1.0, out_alpha)
+        out_rgb = (
+            src_rgb * src_alpha + dst_rgb * dst_alpha * (1.0 - src_alpha)
+        ) / safe_alpha
+
+        region[:, :, :3] = np.clip(out_rgb * 255.0, 0, 255).astype(np.uint8)
+        region[:, :, 3] = np.clip(out_alpha * 255.0, 0, 255).astype(np.uint8)[
+            :, :, 0
+        ]
 
 
 class BaseModifier:
