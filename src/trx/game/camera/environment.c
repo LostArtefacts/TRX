@@ -10,6 +10,12 @@
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
+typedef enum {
+    TARGET_UNKNOWN,
+    TARGET_INVALID,
+    TARGET_VALID,
+} M_TARGET_STATUS;
+
 static void M_AdjustMusicVolume(const bool is_underwater)
 {
     if (!Game_IsPlaying()) {
@@ -27,46 +33,67 @@ static void M_AdjustMusicVolume(const bool is_underwater)
     Music_SetVolume(base_volume * multiplier);
 }
 
+static inline M_TARGET_STATUS M_HandleCameraTrigger(
+    const TRIGGER_CMD *const cmd)
+{
+    const TRIGGER_CAMERA_DATA *const cam_data =
+        (TRIGGER_CAMERA_DATA *)cmd->parameter;
+    if (cam_data->camera_num != g_Camera.last) {
+        return TARGET_INVALID;
+    }
+
+    g_Camera.num = cam_data->camera_num;
+
+    if (g_Camera.timer < 0 || g_Camera.type == CAM_LOOK
+        || g_Camera.type == CAM_COMBAT) {
+        g_Camera.timer = -1;
+        return TARGET_INVALID;
+    }
+
+    g_Camera.type = CAM_FIXED;
+    if (g_Config.visuals.fix_glide_cameras && cam_data->glide != 0) {
+        g_Camera.speed = cam_data->glide + 1;
+    }
+
+    return TARGET_VALID;
+}
+
+static inline void M_HandleTargetTrigger(const TRIGGER_CMD *const cmd)
+{
+    if (g_Camera.type != CAM_LOOK && g_Camera.type != CAM_COMBAT) {
+        g_Camera.item = Item_Get((int16_t)(intptr_t)cmd->parameter);
+    }
+}
+
+static inline void M_ValidateTriggerTarget(const M_TARGET_STATUS status)
+{
+    if (g_Camera.item == nullptr) {
+        return;
+    }
+
+    const bool is_new_item = g_Camera.item != g_Camera.last_item;
+    const bool item_was_looked_at = g_Camera.item->looked_at;
+
+    const bool should_clear = (status == TARGET_INVALID)
+        || (status == TARGET_UNKNOWN && item_was_looked_at && is_new_item);
+    if (should_clear) {
+        g_Camera.item = nullptr;
+    }
+}
+
 void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 {
-    int16_t target_ok = 2;
-
-    const TRIGGER_CMD *cmd = trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
+    M_TARGET_STATUS status = TARGET_UNKNOWN;
+    for (const TRIGGER_CMD *cmd = trigger->command; cmd != nullptr;
+         cmd = cmd->next_cmd) {
         if (cmd->type == TO_CAMERA) {
-            const TRIGGER_CAMERA_DATA *const cam_data =
-                (TRIGGER_CAMERA_DATA *)cmd->parameter;
-            if (cam_data->camera_num == g_Camera.last) {
-                g_Camera.num = cam_data->camera_num;
-
-                if (g_Camera.timer < 0 || g_Camera.type == CAM_LOOK
-                    || g_Camera.type == CAM_COMBAT) {
-                    g_Camera.timer = -1;
-                    target_ok = 0;
-                } else {
-                    g_Camera.type = CAM_FIXED;
-                    if (g_Config.visuals.fix_glide_cameras
-                        && cam_data->glide != 0) {
-                        g_Camera.speed = cam_data->glide + 1;
-                    }
-                    target_ok = 1;
-                }
-            } else {
-                target_ok = 0;
-            }
+            status = M_HandleCameraTrigger(cmd);
         } else if (cmd->type == TO_TARGET) {
-            if (g_Camera.type != CAM_LOOK && g_Camera.type != CAM_COMBAT) {
-                g_Camera.item = Item_Get((int16_t)(intptr_t)cmd->parameter);
-            }
+            M_HandleTargetTrigger(cmd);
         }
     }
 
-    if (g_Camera.item != nullptr
-        && (target_ok == 0
-            || (target_ok == 2 && g_Camera.item->looked_at
-                && g_Camera.item != g_Camera.last_item))) {
-        g_Camera.item = nullptr;
-    }
+    M_ValidateTriggerTarget(status);
 
     if (g_Config.visuals.camera_mode != CAMERA_MODE_TR1 && g_Camera.num == -1
         && g_Camera.timer > 0) {
