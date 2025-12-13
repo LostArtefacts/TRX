@@ -182,10 +182,8 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
         g_Camera.item = nullptr;
     }
 
-    // TODO: check if this can be removed from TR2 during camera module merge.
-    // It is required not to be present in TR1 otherwise heavy triggers (that
-    // don't have camera data) can cancel active cameras triggered by Lara.
-    if (g_TRVersion >= 2 && g_Camera.num == -1 && g_Camera.timer > 0) {
+    if (g_Config.visuals.camera_mode != CAMERA_MODE_TR1 && g_Camera.num == -1
+        && g_Camera.timer > 0) {
         g_Camera.timer = -1;
     }
 }
@@ -371,7 +369,7 @@ void Camera_Update(void)
         g_Camera.target_elevation = g_Camera.additional_elevation;
         g_Camera.target_distance = M_CHASE_ELEVATION;
         g_Camera.flags = CF_NORMAL;
-        if (g_TRVersion >= 2) {
+        if (g_Config.visuals.camera_mode != CAMERA_MODE_TR1) {
             g_Camera.speed = strategy->get_chase_speed_func();
         }
     }
