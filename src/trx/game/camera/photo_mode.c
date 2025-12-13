@@ -1,10 +1,7 @@
 #include <trx/game/camera/photo_mode.h>
 
 #include <trx/config.h>
-#include <trx/game/camera/common.h>
-#include <trx/game/camera/const.h>
-#include <trx/game/camera/enum.h>
-#include <trx/game/camera/vars.h>
+#include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/math.h>
