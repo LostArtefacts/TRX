@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/config/types.h>
+#include <trx/game/camera/types.h>
 #include <trx/game/rooms/types.h>
 
 void Camera_Update(void);
@@ -14,3 +16,11 @@ void Camera_ResetPosition(void);
 void Camera_Reset(void);
 void Camera_ClampInterpResult(void);
 void Camera_RefreshFromTrigger(const TRIGGER *trigger);
+
+void Camera_RegisterStrategy(CAMERA_MODE mode, CAMERA_STRATEGY strategy);
+
+#define REGISTER_CAMERA(mode, strategy)                                        \
+    __attribute__((constructor)) static void M_RegisterCamera##mode(void)      \
+    {                                                                          \
+        Camera_RegisterStrategy(mode, strategy);                               \
+    }

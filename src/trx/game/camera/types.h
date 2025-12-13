@@ -4,6 +4,16 @@
 #include <trx/game/types.h>
 
 typedef struct {
+    int16_t (*get_chase_speed_func)(void);
+    void (*chase_func)(const ITEM *item);
+    void (*combat_func)(const ITEM *item);
+    void (*look_func)(const ITEM *item);
+    void (*fixed_func)(void);
+    void (*clamp_result_func)(void);
+    void (*reset_func)(void);
+} CAMERA_STRATEGY;
+
+typedef struct {
     GAME_VECTOR pos;
     GAME_VECTOR target;
     CAMERA_TYPE type;
