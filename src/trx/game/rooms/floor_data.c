@@ -513,7 +513,8 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
             g_Camera.num = cam_data->camera_num;
 
-            if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
+            if ((g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT)
+                && !Camera_IsLocked(g_Camera.num)) {
                 break;
             }
 
