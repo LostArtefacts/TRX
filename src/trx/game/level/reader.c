@@ -18,6 +18,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/version.h>
@@ -230,6 +231,8 @@ static void M_CompleteSetup(
     Level_LoadTextures();
     Level_LoadTexturePages(loader);
     Level_LoadPalettes();
+
+    UI_LoadText();
 
     // Must be done after doing the injections!
     // (The Great Pyramid OG data misses the final secret trigger.)
