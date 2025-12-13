@@ -26,6 +26,8 @@ typedef struct {
     bool test_shift_pair;
     bool clip_shift_height;
     bool test_early_lb_shift;
+    bool use_fixed_los_check;
+    bool override_chase_speed;
 } M_SETTINGS;
 
 static const M_SETTINGS m_CameraSettings[CAMERA_MODE_NUMBER_OF] = {
@@ -36,6 +38,8 @@ static const M_SETTINGS m_CameraSettings[CAMERA_MODE_NUMBER_OF] = {
         .test_shift_pair = false,
         .clip_shift_height = false,
         .test_early_lb_shift = true,
+        .use_fixed_los_check = false,
+        .override_chase_speed = false,
     },
     [CAMERA_MODE_TR2] = {
         .chase_speed = 10,
@@ -44,6 +48,8 @@ static const M_SETTINGS m_CameraSettings[CAMERA_MODE_NUMBER_OF] = {
         .test_shift_pair = true,
         .clip_shift_height = true,
         .test_early_lb_shift = false,
+        .use_fixed_los_check = true,
+        .override_chase_speed = true,
     },
 };
 
@@ -531,7 +537,7 @@ static void M_Chase(const ITEM *const item)
     };
 
     const M_SETTINGS settings = M_GetSettings();
-    const int16_t speed = g_TRVersion >= 2 || g_Camera.fixed_camera
+    const int16_t speed = settings.override_chase_speed || g_Camera.fixed_camera
         ? g_Camera.speed
         : settings.chase_speed;
     M_SmartShift(&target, M_Shift);
@@ -603,7 +609,10 @@ static void M_Fixed(void)
         .z = fixed->z,
         .room_num = fixed->data,
     };
-    if (g_TRVersion >= 2 && !LOS_Check(&g_Camera.target, &target, false)) {
+
+    const M_SETTINGS settings = M_GetSettings();
+    if (settings.use_fixed_los_check
+        && !LOS_Check(&g_Camera.target, &target, false)) {
         M_ShiftClamp(&target, STEP_L);
     }
 
