@@ -78,12 +78,8 @@ typedef struct {
 } M_TEXT_MAP_ENTRY;
 
 static M_GLYPH_INFO m_Glyphs[] = {
-#define X_GLYPH_DEFINE(text_, role_, width_, mesh_idx_, ...)                   \
-    { .text = text_,                                                           \
-      .role = role_,                                                           \
-      .width = width_,                                                         \
-      .mesh_idx = mesh_idx_,                                                   \
-      __VA_ARGS__ },
+#define X_GLYPH_DEFINE(text_, role_, mesh_idx_, ...)                           \
+    { .text = text_, .role = role_, .mesh_idx = mesh_idx_, __VA_ARGS__ },
 #include <trx/game/ui/text.def>
     { .text = nullptr }, // guard
 };
@@ -99,6 +95,35 @@ static float M_ScaleScreen(const float value)
 static float M_ScaleNeutral(const float value)
 {
     return value * g_Config.ui.text_scale;
+}
+
+static int32_t M_GetGlyphWidth(const M_GLYPH_INFO *const glyph)
+{
+    // Non-breaking space
+    if (strcmp(glyph->text, " ") == 0) {
+        return M_WORD_SPACING;
+    }
+
+    if (glyph->role == GLYPH_SECRET) {
+        return 16;
+    }
+
+    if (glyph->mesh_idx != -1
+        && (glyph->role == GLYPH_NORMAL || glyph->role == GLYPH_COMPOUND
+            || glyph->role == GLYPH_REVIEW_MARKER)) {
+        const OBJECT *const obj = Object_Get(O_ALPHABET);
+        if (!obj->loaded) {
+            return 0;
+        }
+        const SPRITE_TEXTURE *const sprite =
+            Output_GetSpriteTexture(obj->mesh_idx + glyph->mesh_idx);
+        if (sprite == nullptr) {
+            return 0;
+        }
+        return sprite->width / 255;
+    }
+
+    return 0;
 }
 
 static const M_GLYPH_INFO **M_Decompose(
@@ -493,6 +518,14 @@ void UI_InitText(void)
         HASH_ADD_KEYPTR(
             hh, m_GlyphMap, input_glyph->text, strlen(input_glyph->text),
             entry);
+    }
+}
+
+void UI_LoadText(void)
+{
+    for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
+         glyph_ptr++) {
+        glyph_ptr->width = M_GetGlyphWidth(glyph_ptr);
     }
 }
 

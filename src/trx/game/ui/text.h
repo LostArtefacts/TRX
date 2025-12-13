@@ -15,6 +15,9 @@ typedef struct {
 void UI_InitText(void);
 void UI_ShutdownText(void);
 
+// Observe level load to establish glyph widths.
+void UI_LoadText(void);
+
 // Draw the given text at screen coordinates (x, y) with specified settings.
 void UI_Text_Draw(
     const char *text, float x, float y, UI_TEXT_SETTINGS settings);

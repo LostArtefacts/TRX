@@ -295,10 +295,6 @@ class Glyph:
     extra_x: int = 0
     extra_y: int = 0
 
-    def get_width(self) -> int:
-        _, bbox = self.source.load()
-        return (bbox.w if self.glyph_class != "c" else 0) + self.extra_width
-
     def __str__(self) -> str:
         if len(self.text) == 1:
             return f"U+{ord(self.text):04X}:{self.text}"

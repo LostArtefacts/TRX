@@ -110,7 +110,6 @@ def generate_def_file(output_path: Path, glyphs: list[Glyph]):
                     "C": "GLYPH_COMPOUND",
                     "R": "GLYPH_REVIEW_MARKER",
                 }[glyph.glyph_class],
-                str(glyph.get_width()),
                 str(glyph.source.index),
             ]
 
