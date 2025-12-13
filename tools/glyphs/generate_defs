@@ -98,31 +98,16 @@ def generate_def_file(output_path: Path, glyphs: list[Glyph]):
         """
     ).strip()
 
+    class_map = {"R": "GLYPH_REVIEW_MARKER"}
+
     with output_path.open("w") as handle:
         print(header, file=handle)
-
         for glyph in glyphs:
             args = [
                 json.dumps(glyph.text, ensure_ascii=False),
-                {
-                    "N": "GLYPH_NORMAL",
-                    "c": "GLYPH_COMBINING",
-                    "C": "GLYPH_COMPOUND",
-                    "R": "GLYPH_REVIEW_MARKER",
-                }[glyph.glyph_class],
+                class_map.get(glyph.glyph_class, 'GLYPH_NORMAL'),
                 str(glyph.source.index),
             ]
-
-            if isinstance(glyph.source, CombineSource):
-                assert glyph.glyph_class == "C", f"{glyph} has wrong class"
-                offset_x, offset_y = glyph.source.get_offset()
-                args.append(
-                    ".combine_with = {.mesh_idx = %d, .offset_x = %d, .offset_y = %d}"
-                    % (glyph.source.glyph2_source.index, offset_x, offset_y)
-                )
-            else:
-                assert glyph.glyph_class != "C", f"{glyph} has wrong class"
-
             print("X_GLYPH_DEFINE(" + ", ".join(args) + ")", file=handle)
 
     print("Saved", output_path)

@@ -31,10 +31,6 @@ typedef enum {
     GLYPH_NEW_LINE,
     // Marker used in the examine item dialog and others to force a new page.
     GLYPH_NEW_PAGE,
-    // Accent/diacritic modifier to another character.
-    GLYPH_COMBINING,
-    // Character that needs to be combined with an accent/diacritic.
-    GLYPH_COMPOUND,
     // Icon for collectible secrets, taking the sprite from O_SECRET
     GLYPH_SECRET,
     // Icon requesting translators to verify AI-translated text.
@@ -56,13 +52,6 @@ typedef struct {
         int32_t mesh_idx;
         INPUT_ROLE input_role; // for role == GLYPH_INPUT
     };
-
-    // For compound accents or combined glyphs
-    struct {
-        int32_t mesh_idx;
-        int32_t offset_x;
-        int32_t offset_y;
-    } combine_with;
 } M_GLYPH_INFO;
 
 typedef struct {
@@ -78,8 +67,8 @@ typedef struct {
 } M_TEXT_MAP_ENTRY;
 
 static M_GLYPH_INFO m_Glyphs[] = {
-#define X_GLYPH_DEFINE(text_, role_, mesh_idx_, ...)                           \
-    { .text = text_, .role = role_, .mesh_idx = mesh_idx_, __VA_ARGS__ },
+#define X_GLYPH_DEFINE(text_, role_, mesh_idx_)                                \
+    { .text = text_, .role = role_, .mesh_idx = mesh_idx_ },
 #include <trx/game/ui/text.def>
     { .text = nullptr }, // guard
 };
@@ -109,7 +98,7 @@ static int32_t M_GetGlyphWidth(const M_GLYPH_INFO *const glyph)
     }
 
     if (glyph->mesh_idx != -1
-        && (glyph->role == GLYPH_NORMAL || glyph->role == GLYPH_COMPOUND
+        && (glyph->role == GLYPH_NORMAL
             || glyph->role == GLYPH_REVIEW_MARKER)) {
         const OBJECT *const obj = Object_Get(O_ALPHABET);
         if (!obj->loaded) {
@@ -440,19 +429,6 @@ static void M_Process(
             goto loop_end;
         }
 
-        if (glyph->role == GLYPH_COMPOUND && obj->loaded
-            && glyph->combine_with.mesh_idx >= 0
-            && glyph->combine_with.mesh_idx < ABS(obj->mesh_count) && visible
-            && draw_func != nullptr) {
-            const float cx =
-                x + (glyph->combine_with.offset_x * scale / UI_TEXT_BASE_SCALE);
-            const float cy =
-                y + (glyph->combine_with.offset_y * scale / UI_TEXT_BASE_SCALE);
-            draw_func(
-                cx, cy, 0, scale, scale,
-                obj->mesh_idx + glyph->combine_with.mesh_idx, color);
-        }
-
         if (obj->loaded && glyph->mesh_idx >= 0
             && glyph->mesh_idx < ABS(obj->mesh_count) && visible
             && draw_func != nullptr) {
@@ -460,14 +436,12 @@ static void M_Process(
                 x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx, color);
         }
 
-        if (glyph->role != GLYPH_COMBINING) {
-            float spacing = glyph->width;
-            if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
-                && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
-                spacing += M_LETTER_SPACING;
-            }
-            x += spacing * scale / UI_TEXT_BASE_SCALE;
+        float spacing = glyph->width;
+        if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
+            && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
+            spacing += M_LETTER_SPACING;
         }
+        x += spacing * scale / UI_TEXT_BASE_SCALE;
 
     loop_end:
         max_width = MAX(max_width, x);
@@ -510,9 +484,6 @@ void UI_InitText(void)
         input_glyph->role = GLYPH_INPUT;
         input_glyph->width = 0;
         input_glyph->input_role = role;
-        input_glyph->combine_with.mesh_idx = -1;
-        input_glyph->combine_with.offset_x = 0;
-        input_glyph->combine_with.offset_y = 0;
         M_GLYPH_MAP_ENTRY *entry = Memory_Alloc(sizeof(*entry));
         entry->glyph = input_glyph;
         HASH_ADD_KEYPTR(
