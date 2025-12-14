@@ -7,7 +7,8 @@ title: Examples
 ### Adjusting enemy HP
 
 This example sets all bats to start with 20 hitpoints, and all wolves to start
-with 30 hitpoints. Simply adjust the lookup table to fit your needs.
+with 30 hitpoints. Simply adjust the lookup table to fit your needs. Refer to
+[this section](../../14-ENEMY_DEFAULTS.md) as a reference for original values.
 
 ```lua
 -- Lookup table mapping object IDs to HP
