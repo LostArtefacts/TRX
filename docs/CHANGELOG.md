@@ -4,6 +4,7 @@
 - added support for 3D secret objects, and provided defaults for OG levels in TR2 (#4380)
 - added catalog object IDs to Lua
 - added support for locked cameras, similar to TR4+ (#2040)
+- added support to use `O_DINO_WARRIOR` and `O_FISH` as aliases for `O_TREX` and `O_BARRACUDA` respectively
 - changed the swinging axe to be defined separately from other pendulums (use object `O_SWINGING_AXE` in catalogs)
 - changed ember emitters in TR2 to use the `SFX_LAVA_FOUNTAIN` sample (#4376)
 - changed the following trap types to support being reset (#3993)

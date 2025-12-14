@@ -190,3 +190,4 @@ static void M_Setup(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_TREX, M_Setup)
+REGISTER_OBJECT(O_DINO_WARRIOR, M_Setup)
