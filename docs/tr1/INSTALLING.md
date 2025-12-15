@@ -341,8 +341,10 @@ If you install everything correctly, your game directory should look more or les
 │   └── track60.flac
 ├── scripting
 │   └── trx
+│       ├── catalog.lua
 │       ├── config.lua
 │       ├── console.lua
+│       ├── creatures.lua
 │       ├── events.lua
 │       ├── game.lua
 │       ├── items.lua
@@ -676,8 +678,10 @@ If you install everything correctly, your game directory should look more or les
         │   └── track60.flac
         ├── scripting
         │   └── trx
+        │       ├── catalog.lua
         │       ├── config.lua
         │       ├── console.lua
+        │       ├── creatures.lua
         │       ├── events.lua
         │       ├── game.lua
         │       ├── items.lua

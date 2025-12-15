@@ -337,6 +337,11 @@ If you install everything correctly, your game directory should look more or les
 │   ├── opera.tr2
 │   ├── platform.tr2
 │   ├── rig.tr2
+│   ├── scripts
+│   │   ├── level1.lua
+│   │   ├── level3.lua
+│   │   ├── level4.lua
+│   │   └── monastry.lua
 │   ├── skidoo.tr2
 │   ├── title.tr2
 │   ├── title_gm.tr2
@@ -416,8 +421,10 @@ If you install everything correctly, your game directory should look more or les
 │   └── 61.mp3
 ├── scripting
 │   └── trx
+│       ├── catalog.lua
 │       ├── config.lua
 │       ├── console.lua
+│       ├── creatures.lua
 │       ├── events.lua
 │       ├── game.lua
 │       ├── items.lua
@@ -765,6 +772,11 @@ If you install everything correctly, your game directory should look more or les
         │   ├── opera.tr2
         │   ├── platform.tr2
         │   ├── rig.tr2
+        │   ├── scripts
+        │   │   ├── level1.lua
+        │   │   ├── level3.lua
+        │   │   ├── level4.lua
+        │   │   └── monastry.lua
         │   ├── skidoo.tr2
         │   ├── title.tr2
         │   ├── title_gm.tr2
@@ -845,8 +857,10 @@ If you install everything correctly, your game directory should look more or les
         │   └── 61.mp3
         ├── scripting
         │   └── trx
+        │       ├── catalog.lua
         │       ├── config.lua
         │       ├── console.lua
+        │       ├── creatures.lua
         │       ├── events.lua
         │       ├── game.lua
         │       ├── items.lua
