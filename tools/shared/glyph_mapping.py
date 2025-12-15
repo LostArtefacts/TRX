@@ -112,7 +112,6 @@ class BaseSource:
     """Contains information how to render the given glyph."""
 
     index: int | None = None
-    has_own_index: bool = True
 
     def load(self) -> tuple[np.ndarray, Rect]:
         """A method to load sprite pixels and the glyph bounding box."""
@@ -199,9 +198,11 @@ class LinkSource(BaseSource):
 
     ctx: ParserContext
     link_to: str
+    linked_source: BaseSource | None = None
     index: int | None = None
 
-    has_own_index = False
+    def load(self) -> tuple[np.ndarray, Rect]:
+        return self.linked_source.load()
 
 
 class CombineSource(BaseSource):
@@ -453,7 +454,7 @@ def _read_mapping(ctx, filename: str = "mapping.txt") -> list[Glyph]:
 
 def reindex_sprites(glyphs: list[Glyph]) -> None:
     """Assign linearly sprite indices to sprites that do not have them."""
-    sources = [g.source for g in glyphs if g.source.has_own_index]
+    sources = [g.source for g in glyphs]
     index = max((s.index for s in sources if s.index is not None), default=-1)
     for source in sources:
         if source.index is None:
@@ -471,7 +472,7 @@ def resolve_links(glyphs: list[Glyph]) -> None:
     glyph_map = {glyph.text: glyph for glyph in glyphs}
     for glyph in glyphs:
         if isinstance(glyph.source, LinkSource):
-            glyph.source = glyph_map[glyph.source.link_to].source
+            glyph.source.linked_source = glyph_map[glyph.source.link_to].source
     for glyph in glyphs:
         if isinstance(glyph.source, CombineSource):
             glyph.source.glyph1_source = glyph_map[glyph.source.glyph1].source
