@@ -22,7 +22,7 @@ GLYPH_GRAMMAR = Lark(
     command: glyph_text _WS GLYPH_CLASS _WS source_func (_WS modifier_func)* _NL
 
     glyph_text: unicode_definition | quoted_string
-    GLYPH_CLASS: "N" | "C" | "c" | "R"
+    GLYPH_CLASS: "T" | "I" | "C" | "c" | "R"
     unicode_definition: "U+" /[0-9A-F]{4}/ ":" /./
     number: /-?\d+/
     quoted_string: QUOTED_STRING

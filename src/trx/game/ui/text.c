@@ -60,8 +60,10 @@ static RGB_F m_ColorDark[] = {
 };
 
 typedef enum {
-    // Normal character.
-    GLYPH_NORMAL,
+    // A text character.
+    GLYPH_TEXT,
+    // An icon.
+    GLYPH_ICON,
     // Spacing between words.
     GLYPH_SPACE,
     // Line break.
@@ -86,7 +88,6 @@ typedef struct {
     const char *text;
     M_GLYPH_ROLE role;
     int32_t width;
-
     union {
         int32_t mesh_idx;
         INPUT_ROLE input_role; // for role == GLYPH_INPUT
@@ -137,7 +138,7 @@ static int32_t M_GetGlyphWidth(const M_GLYPH_INFO *const glyph)
     }
 
     if (glyph->mesh_idx != -1
-        && (glyph->role == GLYPH_NORMAL
+        && (glyph->role == GLYPH_TEXT || glyph->role == GLYPH_ICON
             || glyph->role == GLYPH_REVIEW_MARKER)) {
         const OBJECT *const obj = Object_Get(O_ALPHABET);
         if (!obj->loaded) {
