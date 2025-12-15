@@ -21,6 +21,43 @@
 
 #define M_LETTER_SPACING 0.5f
 #define M_WORD_SPACING 6.0f
+#define M_DIM_COLOR 12
+
+static RGB_F m_ColorLight[] = {
+    // clang-format off
+    [0]  = { 1.0f,   1.0f,   1.0f },
+    [1]  = { 1.375,  1.375,  0.0f },
+    [2]  = { 1.25,   1.25,   1.25 },
+    [3]  = { 2.0f,   0.75f,  0.75f },
+    [4]  = { 1.0f,   1.0f,   2.0f },
+    [5]  = { 1.5f,   1.0f,   0.5f },
+    [6]  = { 1.5f,   1.5f,   0.75f },
+    [7]  = { 0.0f,   1.5f,   0.0f },
+    [8]  = { 0.0f,   1.5f,   0.0f },
+    [9]  = { 1.0f,   0.0f,   0.0f },
+    [10] = { 1.0f,   1.0f,   0.0f },
+    [11] = { 1.0f,   0.5f,   0.5f },
+    [12] = { 0.5f,   0.5f,   0.5f },
+    // clang-format on
+};
+
+static RGB_F m_ColorDark[] = {
+    // clang-format off
+    [0]  = { 1.0f,   1.0f,   1.0f },
+    [1]  = { 0.625f, 0.625f, 0.0f },
+    [2]  = { 0.1875, 0.1875, 0.1875 },
+    [3]  = { 0.1875, 0.0f,   0.0f },
+    [4]  = { 0.0f,   0.0f,   0.1875 },
+    [5]  = { 0.5f,   0.125f, 0.0f },
+    [6]  = { 0.125f, 0.125f, 0.125f },
+    [7]  = { 0.0f,   0.5f,   0.0f },
+    [8]  = { 0.0f,   0.5f,   0.0f },
+    [9]  = { 0.5f,   0.0f,   0.0f },
+    [10] = { 0.5f,   0.5f,   0.0f },
+    [11] = { 0.5f,   0.125f, 0.125f },
+    [12] = { 0.5f,   0.5f,   0.5f },
+    // clang-format on
+};
 
 typedef enum {
     // Normal character.
@@ -39,6 +76,8 @@ typedef enum {
     GLYPH_VISIBILITY_MARKER,
     // Marker that toggles the dimming of the following text.
     GLYPH_DIM_MARKER,
+    // Marker that changes the color of the following text.
+    GLYPH_COLOR_MARKER,
     // Glyph that dynamically expands a key role to its current key icon.
     GLYPH_INPUT,
 } M_GLYPH_ROLE;
@@ -346,7 +385,7 @@ static void M_Process(
     const UI_TEXT_SETTINGS settings, const float base_x, const float base_y,
     float (*const scale_func)(float),
     void (*const draw_func)(
-        int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, RGBA_F))
+        int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, const RGBA_F[4]))
 {
     if (text == nullptr) {
         return;
@@ -366,8 +405,10 @@ static void M_Process(
     float max_width = 0.0f;
     const float start_x = x;
 
+    int32_t color_idx = 0;
+    int32_t prev_color_idx = color_idx;
     bool visible = true;
-    bool dimmed = false;
+
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
         const M_GLYPH_INFO *const glyph = M_GetResolvedGlyph(*glyph_ptr);
@@ -386,7 +427,22 @@ static void M_Process(
         }
 
         if (glyph->role == GLYPH_DIM_MARKER) {
-            dimmed = glyph->mesh_idx;
+            if (glyph->mesh_idx != 0) {
+                prev_color_idx = color_idx;
+                color_idx = M_DIM_COLOR;
+            } else {
+                color_idx = prev_color_idx;
+            }
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_COLOR_MARKER) {
+            if (glyph->mesh_idx != -1) {
+                prev_color_idx = color_idx;
+                color_idx = glyph->mesh_idx;
+            } else {
+                color_idx = prev_color_idx;
+            }
             goto loop_end;
         }
 
@@ -405,8 +461,12 @@ static void M_Process(
             goto loop_end;
         }
 
-        const RGBA_F color = dimmed ? (RGBA_F) { 0.6f, 0.6f, 0.6f, 1.0f }
-                                    : (RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f };
+        const RGBA_F colors[4] = {
+            Output_RGB2RGBA_F(m_ColorLight[color_idx]),
+            Output_RGB2RGBA_F(m_ColorLight[color_idx]),
+            Output_RGB2RGBA_F(m_ColorDark[color_idx]),
+            Output_RGB2RGBA_F(m_ColorDark[color_idx]),
+        };
 
         if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
@@ -423,7 +483,7 @@ static void M_Process(
             if (visible && draw_func != nullptr) {
                 draw_func(
                     x + scale_func(10), y, z, output_scale, output_scale,
-                    sprite_idx, color);
+                    sprite_idx, colors);
             }
             x += glyph->width * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
@@ -433,7 +493,7 @@ static void M_Process(
             && glyph->mesh_idx < ABS(obj->mesh_count) && visible
             && draw_func != nullptr) {
             draw_func(
-                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx, color);
+                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx, colors);
         }
 
         float spacing = glyph->width;

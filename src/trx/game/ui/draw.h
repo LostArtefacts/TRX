@@ -14,7 +14,7 @@ void UI_ScheduleDrawTextOutline(
     TEXT_STYLE text_style);
 void UI_ScheduleDrawScreenSprite(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
-    int32_t sprite_idx, RGBA_F color);
+    int32_t sprite_idx, const RGBA_F colors[4]);
 void UI_ScheduleDrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 color);
 void UI_ScheduleDrawScreenGradientQuad(

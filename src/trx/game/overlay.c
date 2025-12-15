@@ -99,6 +99,13 @@ static void M_DrawAssaultTimer(void)
     int32_t x = Viewport_GetCenterX(VIEWPORT_UI)
         - Scaler_Calc(50, SCALER_TARGET_ASSAULT_DIGITS);
 
+    const RGBA_F neutral[4] = {
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+    };
+
     for (char *c = buffer; *c != '\0'; c++) {
         ASSAULT_GLYPH_TYPE glyph_type;
         int32_t mesh_num;
@@ -117,8 +124,7 @@ static void M_DrawAssaultTimer(void)
             glyph_info[glyph_type].offset, SCALER_TARGET_ASSAULT_DIGITS);
         UI_ScheduleDrawScreenSprite(
             x, y, 0, scale_h, scale_v,
-            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num,
-            (RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f });
+            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, neutral);
         x += Scaler_Calc(
             glyph_info[glyph_type].width, SCALER_TARGET_ASSAULT_DIGITS);
     }
@@ -145,7 +151,12 @@ static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
         .y1 = y + (sprite->y1 - sprite->y0) * scale,
         .z = Output_GetNearZ_UI(),
         .shade = SHADE_NEUTRAL,
-        .color = { 1.0f, 1.0f, 1.0f, 1.0f },
+        .color = {
+            [0] = { 1.0f, 1.0f, 1.0f, 1.0f },
+            [1] = { 1.0f, 1.0f, 1.0f, 1.0f },
+            [2] = { 1.0f, 1.0f, 1.0f, 1.0f },
+            [3] = { 1.0f, 1.0f, 1.0f, 1.0f },
+        },
     });
 }
 

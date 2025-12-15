@@ -27,7 +27,7 @@ typedef struct {
     OUTPUT_UVW uvw;
     OUTPUT_TEXTURE_SIZE texture_size;
     OUTPUT_USHORT flags;
-    RGBA_8888 color;
+    RGBA_F color;
 } M_VERTEX;
 
 typedef struct {
@@ -40,6 +40,16 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
+
+static RGBA_F M_ToRGBA_F(const RGBA_8888 color)
+{
+    return (RGBA_F) {
+        .r = color.r / 255.0f,
+        .g = color.g / 255.0f,
+        .b = color.b / 255.0f,
+        .a = color.a / 255.0f,
+    };
+}
 
 VIEWPORT_RECT OutputSource_UI_GetPickupRect(
     const OUTPUT_UI_PICKUP *const pickup)
@@ -250,7 +260,7 @@ void OutputSource_UI_Init(void)
         M_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, uvw));
     glVertexAttribPointer(
-        M_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
+        M_ATTR_COLOR, 4, GL_FLOAT, GL_TRUE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, color));
     glVertexAttribPointer(
         M_ATTR_TEXTURE_SIZE, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
@@ -289,10 +299,7 @@ void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)
     for (int32_t i = 0; i < 4; i++) {
         vertices[i].pos.z = sprite.z;
         vertices[i].pos.w = 0.0f;
-        vertices[i].color.r = sprite.color.r * 255.0f;
-        vertices[i].color.g = sprite.color.g * 255.0f;
-        vertices[i].color.b = sprite.color.b * 255.0f;
-        vertices[i].color.a = sprite.color.a * 255.0f;
+        vertices[i].color = sprite.color[i];
         vertices[i].uvw.w = sprite_tex->tex_page;
         vertices[i].texture_size.x0 = u0;
         vertices[i].texture_size.y0 = v0;
@@ -332,7 +339,7 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
 #define L_SET(vtx_idx, x_, y_, color_)                                         \
     vertices[vtx_idx].pos.x = x_;                                              \
     vertices[vtx_idx].pos.y = y_;                                              \
-    vertices[vtx_idx].color = color_;
+    vertices[vtx_idx].color = M_ToRGBA_F(color_);
     L_SET(0, quad.x0, quad.y0, quad.tl);
     L_SET(1, quad.x1, quad.y0, quad.tr);
     L_SET(2, quad.x1, quad.y1, quad.br);
