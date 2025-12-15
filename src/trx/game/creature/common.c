@@ -564,6 +564,13 @@ void Creature_Underwater(ITEM *const item, const int32_t depth)
     }
 }
 
+bool Creature_IsFloating(const ITEM *const item)
+{
+    return Object_IsType(item->object_id, g_WaterObjects)
+        && Object_Get(item->object_id)->intelligent
+        && item->hit_points == DONT_TARGET;
+}
+
 bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
 {
     const CREATURE *const creature = item->data;
