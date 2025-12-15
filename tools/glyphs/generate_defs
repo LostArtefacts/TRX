@@ -33,7 +33,6 @@ def pack_sprites(
     glyph_with_sources = {
         glyph.source.index: (glyph, glyph.source)
         for glyph in glyphs
-        if glyph.source.has_own_index
     }
 
     packer = rectpack.newPacker(rotation=False)
