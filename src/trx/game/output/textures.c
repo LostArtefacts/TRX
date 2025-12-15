@@ -693,8 +693,12 @@ ANIMATED_TEXTURE_RANGE *Output_GetAnimatedTextureRange(const int32_t range_idx)
 
 RGBA_8888 Output_RGB2RGBA(const RGB_888 color)
 {
-    RGBA_8888 ret = { .r = color.r, .g = color.g, .b = color.b, .a = 255 };
-    return ret;
+    return (RGBA_8888) { .r = color.r, .g = color.g, .b = color.b, .a = 255 };
+}
+
+RGBA_F Output_RGB2RGBA_F(const RGB_F color)
+{
+    return (RGBA_F) { .r = color.r, .g = color.g, .b = color.b, .a = 1.0f };
 }
 
 int16_t Output_FindColor8(const RGB_888 color)
