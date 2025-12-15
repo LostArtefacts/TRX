@@ -62,7 +62,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         const char *const next_arg =
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
 
-        if (!strcmp(arg, "-e") || !strcmp(arg, "-engine")) {
+        if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
             i++;
         }
 
