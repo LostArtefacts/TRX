@@ -13,6 +13,7 @@
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #include <ctype.h>
 #include <stdio.h>
@@ -22,42 +23,7 @@
 #define M_LETTER_SPACING 0.5f
 #define M_WORD_SPACING 6.0f
 #define M_DIM_COLOR 12
-
-static RGB_F m_ColorLight[] = {
-    // clang-format off
-    [0]  = { 1.0f,   1.0f,   1.0f },
-    [1]  = { 1.375,  1.375,  0.0f },
-    [2]  = { 1.25,   1.25,   1.25 },
-    [3]  = { 2.0f,   0.75f,  0.75f },
-    [4]  = { 1.0f,   1.0f,   2.0f },
-    [5]  = { 1.5f,   1.0f,   0.5f },
-    [6]  = { 1.5f,   1.5f,   0.75f },
-    [7]  = { 0.0f,   1.5f,   0.0f },
-    [8]  = { 0.0f,   1.5f,   0.0f },
-    [9]  = { 1.0f,   0.0f,   0.0f },
-    [10] = { 1.0f,   1.0f,   0.0f },
-    [11] = { 1.0f,   0.5f,   0.5f },
-    [12] = { 0.5f,   0.5f,   0.5f },
-    // clang-format on
-};
-
-static RGB_F m_ColorDark[] = {
-    // clang-format off
-    [0]  = { 1.0f,   1.0f,   1.0f },
-    [1]  = { 0.625f, 0.625f, 0.0f },
-    [2]  = { 0.1875, 0.1875, 0.1875 },
-    [3]  = { 0.1875, 0.0f,   0.0f },
-    [4]  = { 0.0f,   0.0f,   0.1875 },
-    [5]  = { 0.5f,   0.125f, 0.0f },
-    [6]  = { 0.125f, 0.125f, 0.125f },
-    [7]  = { 0.0f,   0.5f,   0.0f },
-    [8]  = { 0.0f,   0.5f,   0.0f },
-    [9]  = { 0.5f,   0.0f,   0.0f },
-    [10] = { 0.5f,   0.5f,   0.0f },
-    [11] = { 0.5f,   0.125f, 0.125f },
-    [12] = { 0.5f,   0.5f,   0.5f },
-    // clang-format on
-};
+#define M_MAX_COLOR 13
 
 typedef enum {
     // A text character.
@@ -116,6 +82,44 @@ static M_GLYPH_INFO m_Glyphs[] = {
 static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
 static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
 
+static RGB_888 m_ColorLight[M_MAX_COLOR] = {
+    // clang-format off
+    [0]  = { 0xFF, 0xFF, 0xFF },
+    [1]  = { 0xB0, 0xB0, 0x00 },
+    [2]  = { 0xA0, 0xA0, 0xA0 },
+    [3]  = { 0xFF, 0x60, 0x60 },
+    [4]  = { 0x80, 0x80, 0xFF },
+    [5]  = { 0xC0, 0x80, 0x40 },
+    [6]  = { 0xB6, 0xD1, 0x64 },
+    [7]  = { 0xC0, 0xFF, 0xC0 },
+    [8]  = { 0xFF, 0xFF, 0xFF },
+    [9]  = { 0xFF, 0x00, 0xFF },
+    [10] = { 0xFF, 0x00, 0xFF },
+    [11] = { 0xFF, 0x00, 0xFF },
+    [12] = { 0x80, 0x80, 0x80 },
+    // clang-format on
+};
+
+static RGB_888 m_ColorDark[M_MAX_COLOR] = {
+    // clang-format off
+    [0]  = { 0x80, 0x80, 0x80 },
+    [1]  = { 0x50, 0x50, 0x00 },
+    [2]  = { 0x18, 0x18, 0x18 },
+    [3]  = { 0x18, 0x00, 0x00 },
+    [4]  = { 0x00, 0x00, 0x18 },
+    [5]  = { 0x40, 0x10, 0x00 },
+    [6]  = { 0xB6, 0x20, 0x13 },
+    [7]  = { 0xC0, 0xFF, 0xC0 },
+    [8]  = { 0xFF, 0xFF, 0xFF },
+    [9]  = { 0x3F, 0x00, 0x3F },
+    [10] = { 0x3F, 0x00, 0x3F },
+    [11] = { 0x3F, 0x00, 0x3F },
+    [12] = { 0x80, 0x80, 0x80 },
+    // clang-format on
+};
+
+static RGBA_F m_TextColor[M_MAX_COLOR][4] = {};
+
 static float M_ScaleScreen(const float value)
 {
     return Scaler_Calc(value, SCALER_TARGET_TEXT);
@@ -124,6 +128,16 @@ static float M_ScaleScreen(const float value)
 static float M_ScaleNeutral(const float value)
 {
     return value * g_Config.ui.text_scale;
+}
+
+static RGBA_F M_ToRGBA_F(const RGB_888 color)
+{
+    return (RGBA_F) {
+        .r = color.r / 255.0f,
+        .g = color.g / 255.0f,
+        .b = color.b / 255.0f,
+        .a = 1.0f,
+    };
 }
 
 static int32_t M_GetGlyphWidth(const M_GLYPH_INFO *const glyph)
@@ -462,13 +476,6 @@ static void M_Process(
             goto loop_end;
         }
 
-        const RGBA_F colors[4] = {
-            Output_RGB2RGBA_F(m_ColorLight[color_idx]),
-            Output_RGB2RGBA_F(m_ColorLight[color_idx]),
-            Output_RGB2RGBA_F(m_ColorDark[color_idx]),
-            Output_RGB2RGBA_F(m_ColorDark[color_idx]),
-        };
-
         if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
                 Object_Get(O_SECRET_1 + glyph->mesh_idx)->mesh_idx;
@@ -484,7 +491,7 @@ static void M_Process(
             if (visible && draw_func != nullptr) {
                 draw_func(
                     x + scale_func(10), y, z, output_scale, output_scale,
-                    sprite_idx, colors);
+                    sprite_idx, m_TextColor[color_idx]);
             }
             x += glyph->width * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
@@ -494,7 +501,8 @@ static void M_Process(
             && glyph->mesh_idx < ABS(obj->mesh_count) && visible
             && draw_func != nullptr) {
             draw_func(
-                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx, colors);
+                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
+                m_TextColor[color_idx]);
         }
 
         float spacing = glyph->width;
@@ -555,6 +563,18 @@ void UI_InitText(void)
 
 void UI_LoadText(void)
 {
+    for (int32_t i = 0; i < M_MAX_COLOR; i++) {
+        m_TextColor[i][0] = M_ToRGBA_F(m_ColorLight[i]);
+        m_TextColor[i][1] = M_ToRGBA_F(m_ColorLight[i]);
+        if (g_TRVersion == 3) {
+            m_TextColor[i][2] = M_ToRGBA_F(m_ColorDark[i]);
+            m_TextColor[i][3] = M_ToRGBA_F(m_ColorDark[i]);
+        } else {
+            m_TextColor[i][2] = M_ToRGBA_F(m_ColorLight[i]);
+            m_TextColor[i][3] = M_ToRGBA_F(m_ColorLight[i]);
+        }
+    }
+
     for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
          glyph_ptr++) {
         glyph_ptr->width = M_GetGlyphWidth(glyph_ptr);
