@@ -97,14 +97,20 @@ def generate_def_file(output_path: Path, glyphs: list[Glyph]):
         """
     ).strip()
 
-    class_map = {"R": "GLYPH_REVIEW_MARKER"}
+    class_map = {
+        "R": "GLYPH_REVIEW_MARKER",
+        "T": "GLYPH_TEXT",
+        "C": "GLYPH_TEXT",
+        "c": "GLYPH_TEXT",
+        "I": "GLYPH_ICON",
+    }
 
     with output_path.open("w") as handle:
         print(header, file=handle)
         for glyph in glyphs:
             args = [
                 json.dumps(glyph.text, ensure_ascii=False),
-                class_map.get(glyph.glyph_class, 'GLYPH_NORMAL'),
+                class_map[glyph.glyph_class],
                 str(glyph.source.index),
             ]
             print("X_GLYPH_DEFINE(" + ", ".join(args) + ")", file=handle)
