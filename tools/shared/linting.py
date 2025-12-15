@@ -135,7 +135,10 @@ def get_project_game_strings_path(
 
 def lint_game_flow_schema(context: LintContext):
     for project, paths in PROJECT_PATHS.items():
-        schema = load_json5(paths.docs_dir / "gameflow.schema.json")
+        schema_path = paths.docs_dir / "gameflow.schema.json"
+        if not schema_path.exists():
+            continue
+        schema = load_json5(schema_path)
         validator_cls = jsonschema.validators.validator_for(schema)
         validator = validator_cls(schema=schema)
         game_flow_paths = paths.shipped_data_dir.rglob("**/gameflow.json5")

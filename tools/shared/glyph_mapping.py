@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import ast
 import json
@@ -8,11 +10,13 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
+from shared.paths import DATA_DIR
+
 # pip install rectpack numpy lark Pillow
 import numpy as np
 import rectpack
 from lark import Lark, Transformer
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 GLYPH_GRAMMAR = Lark(
     r"""
@@ -27,12 +31,13 @@ GLYPH_GRAMMAR = Lark(
     number: /-?\d+/
     quoted_string: QUOTED_STRING
 
-    source_func: grid_sprite_func | manual_sprite_func | image_func | combine_func | link_func
+    source_func: grid_sprite_func | manual_sprite_func | image_func | combine_func | link_func | render_func
     grid_sprite_func: "grid_sprite" func_params
     manual_sprite_func: "manual_sprite" func_params
     image_func: "image" func_params
     combine_func: "combine" func_params
     link_func: "link" func_params
+    render_func: "render" func_params
 
     modifier_func: expand_func | translate_func
     expand_func: "expand" func_params
@@ -113,7 +118,7 @@ class BaseSource:
 
     index: int | None = None
 
-    def load(self) -> tuple[np.ndarray, Rect]:
+    def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
         """A method to load sprite pixels and the glyph bounding box."""
         raise NotImplementedError("not implemented")
 
@@ -129,7 +134,7 @@ class GridSpriteSource(BaseSource):
     cell_size: int = 20
     index: int | None = None
 
-    def load(self) -> tuple[np.ndarray, Rect]:
+    def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
         src_pixels = load_image(self.ctx.input_dir / self.filename)
         x = self.cell_size * self.cell_x
         y = self.cell_size * self.cell_y
@@ -158,7 +163,7 @@ class ManualSpriteSource(BaseSource):
     h: int
     index: int | None = None
 
-    def load(self) -> tuple[np.ndarray, Rect]:
+    def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
         src_pixels = load_image(self.ctx.input_dir / self.filename)
         cell_pixels = src_pixels[
             self.y : self.y + self.h, self.x : self.x + self.w
@@ -185,10 +190,64 @@ class ImageSource(BaseSource):
     y2: int
     index: int | None = None
 
-    def load(self) -> tuple[np.ndarray, Rect]:
+    def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
         pixels = load_image(self.ctx.input_dir / self.filename)
         bbox = Rect(self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1)
         assert bbox.w == pixels.shape[1]
+        return pixels, bbox
+
+
+@dataclass
+class RenderSource(BaseSource):
+    """A fresh rendering source for the glyph."""
+
+    ctx: ParserContext
+    font: str
+    index: int | None = None
+    offset_x: int = 0
+    offset_y: int = 0
+
+    def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
+        text = glyph.text
+
+        offset = -23
+        font_size = 18
+        pad = 5
+        font = ImageFont.truetype(DATA_DIR / self.font, font_size)
+
+        # Measure text
+        dummy = Image.new("RGBA", (1, 1))
+        draw = ImageDraw.Draw(dummy)
+        x, y, w, h = draw.textbbox((0, 0), text, font=font)
+
+        img = Image.new("RGBA", (w + pad * 2, h + pad * 2))
+
+        # Shadow
+        img_black = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        draw_b = ImageDraw.Draw(img_black)
+        draw_b.fontmode = "L"
+        draw_b.text((pad + 1, pad + 1), text, font=font, fill=(0, 0, 0, 255))
+
+        # Fill
+        img_white = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        draw_w = ImageDraw.Draw(img_white)
+        draw_w.fontmode = "L"
+        # Draw twice to establish a stronger weight
+        draw_w.text((pad, pad), text, font=font, fill=(255, 255, 255, 255))
+        draw_w.text((pad, pad), text, font=font, fill=(255, 255, 255, 255))
+
+        # Composite both layers in order
+        img.alpha_composite(img_black)
+        img.alpha_composite(img_white)
+
+        # Trim transparent margins
+        cell_pixels = np.array(img)
+        pixels, removed = trim_transparent_pixels(cell_pixels)
+        bbox = Rect(
+            x=self.offset_x + x,
+            y=self.offset_y + offset + removed[0],
+            w=img.width + 1 - removed[2] - removed[3],
+            h=img.height + 1 - removed[1] - removed[0])
         return pixels, bbox
 
 
@@ -201,8 +260,8 @@ class LinkSource(BaseSource):
     linked_source: BaseSource | None = None
     index: int | None = None
 
-    def load(self) -> tuple[np.ndarray, Rect]:
-        return self.linked_source.load()
+    def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
+        return self.linked_source.load(glyph)
 
 
 class CombineSource(BaseSource):
@@ -228,15 +287,15 @@ class CombineSource(BaseSource):
         self.glyph2_source: BaseSource | None = None
         self._cached_render: tuple[np.ndarray, Rect] | None = None
 
-    def load(self) -> tuple[np.ndarray, Rect]:
+    def load(self, glyph: Glyph) -> tuple[np.ndarray, Rect]:
         assert self.glyph1_source is not None
         assert self.glyph2_source is not None
 
         if self._cached_render is not None:
             return self._cached_render
 
-        main_pixels, main_bbox = self.glyph1_source.load()
-        combining_pixels, combining_bbox = self.glyph2_source.load()
+        main_pixels, main_bbox = self.glyph1_source.load(glyph)
+        combining_pixels, combining_bbox = self.glyph2_source.load(glyph)
         offset_x, offset_y = self._compute_offset(main_bbox, combining_bbox)
         composed_pixels, composed_bbox = self._compose_pixels(
             main_pixels,
@@ -248,13 +307,6 @@ class CombineSource(BaseSource):
         )
         self._cached_render = (composed_pixels, composed_bbox)
         return self._cached_render
-
-    def get_offset(self) -> tuple[int, int]:
-        assert self.glyph1_source
-        assert self.glyph2_source
-        _, main_bbox = self.glyph1_source.load()
-        _, combining_bbox = self.glyph2_source.load()
-        return self._compute_offset(main_bbox, combining_bbox)
 
     def _compute_offset(self, main_bbox: Rect, combining_bbox: Rect) -> tuple[int, int]:
         offset_x = self.offset_x
@@ -333,7 +385,7 @@ class CombineSource(BaseSource):
 
 
 class BaseModifier:
-    def modify_glyph(self, glyph: "Glyph") -> None:
+    def modify_glyph(self, glyph: Glyph) -> None:
         pass
 
 
@@ -341,7 +393,7 @@ class BaseModifier:
 class ExpandModifier(BaseModifier):
     w: int = 0
 
-    def modify_glyph(self, glyph: "Glyph") -> None:
+    def modify_glyph(self, glyph: Glyph) -> None:
         glyph.extra_width += self.w
 
 
@@ -350,7 +402,7 @@ class TranslateModifier(BaseModifier):
     x: int = 0
     y: int = 0
 
-    def modify_glyph(self, glyph: "Glyph") -> None:
+    def modify_glyph(self, glyph: Glyph) -> None:
         glyph.extra_x += self.x
         glyph.extra_y += self.y
 
@@ -435,6 +487,7 @@ class GlyphParser(Transformer):
     image_func = lambda self, items: (ImageSource, *items[0])
     combine_func = lambda self, items: (CombineSource, *items[0])
     link_func = lambda self, items: (LinkSource, *items[0])
+    render_func = lambda self, items: (RenderSource, *items[0])
 
     def modifier_func(self, items):
         func, args, kwargs = items[0]
