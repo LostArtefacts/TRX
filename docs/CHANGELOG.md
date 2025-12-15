@@ -28,6 +28,7 @@
 - fixed Lara drawing a flare when the draw weapons input is pressed, and she already has an active flare but no weapons (#4361, regression from TR2X 1.4)
 - fixed Lara automatically being given TR2 weapons in TR1 NG+ when playing the OG levels (#4365, regression from 1.0)
 - fixed Lara's pistol holster meshes appearing in TR1 NG+ in place of her Uzi holster meshes (#4368, regression from 1.0)
+- fixed wading splashes spawning when using the fly cheat (#4400, regression from 1.0)
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)

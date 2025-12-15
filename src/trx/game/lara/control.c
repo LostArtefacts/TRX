@@ -222,7 +222,8 @@ static void M_UpdateEnvironment(void)
     lara_info->water_surface_dist = -water_height_diff;
 
     // Create splash if Lara lands in wading height water. TR3+ feature.
-    if (g_Config.gameplay.enable_wading) {
+    if (g_Config.gameplay.enable_wading
+        && lara_info->water_status != LWS_CHEAT) {
         const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
         if (bounds != nullptr && item->pos.y + bounds->min.y <= water_height
             && item->pos.y + bounds->max.y >= water_height
