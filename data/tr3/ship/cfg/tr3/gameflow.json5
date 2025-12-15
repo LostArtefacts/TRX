@@ -6,17 +6,23 @@
     "savegame_fmt_legacy": "savegame.%d",
     "savegame_fmt_bson": "save_tr3_%02d.dat",
 
-    "demo_version": false,
     "enable_tr2_item_drops": true,
     "convert_dropped_guns": true,
 
     "title": {
         "path": "data/title.tr2",
-        "music_track": 60,
+        "music_track": 5,
         "sequence": [
+            {"type": "play_fmv", "fmv_id": 0},
+            {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
     },
+
+    "ambient_tracks": [
+        26, 27, 28, 29, 30, 31, 32, 33, 34,
+        35, 36, 73, 74, 75, 76, 77, 78,
+    ],
 
     "sfx_path": "data/main.sfx",
     "injections": [
@@ -37,15 +43,387 @@
                 {"type": "level_stats"},
             ],
         },
-    ],
 
-    "demos": [
+        // 1. Jungle
+        {
+            "path": "data/jungle.tr2",
+            "music_track": 34,
+            "sequence": [
+                {"type": "give_item", "object_id": "small_medipack"},
+                {"type": "give_item", "object_id": "large_medipack"},
+                {"type": "give_item", "object_id": "flare", "quantity": 2},
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 0},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 2. Temple Ruins
+        {
+            "path": "data/temple.tr2",
+            "music_track": 34,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 1},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 3. The River Ganges
+        {
+            "path": "data/quadchas.tr2",
+            "music_track": 34,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 4. Caves of Kaliya
+        {
+            "path": "data/tonyboss.tr2",
+            "music_track": 30,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_fmv", "fmv_id": 2},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 5. Coastal Village
+        {
+            "path": "data/shore.tr2",
+            "music_track": 32,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 2},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 6. Crash Site
+        {
+            "path": "data/crash.tr2",
+            "music_track": 33,
+            "sequence": [
+                {"type": "give_item", "object_id": "pickup_1", "quantity": 1},
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 3},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 7. Madubu Gorge
+        {
+            "path": "data/rapids.tr2",
+            "music_track": 36,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 8. Temple of Puna
+        {
+            "path": "data/triboss.tr2",
+            "music_track": 30,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 9. Thames Wharf
+        {
+            "path": "data/roofs.tr2",
+            "music_track": 73,
+            "sequence": [
+                {"type": "disable_floor", "height": 1792},
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 4},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 10. Aldwych
+        {
+            "path": "data/sewer.tr2",
+            "music_track": 74,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 5},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 11. Lud's Gate
+        {
+            "path": "data/tower.tr2",
+            "music_track": 31,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 6},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 12. City
+        {
+            "path": "data/office.tr2",
+            "music_track": 78,
+            "sequence": [
+                {"type": "disable_floor", "height": 5120},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 13. Nevada Desert
+        {
+            "path": "data/nevada.tr2",
+            "music_track": 33,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 7},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 14. High Security Compound
+        {
+            "path": "data/compound.tr2",
+            "music_track": 27,
+            "sequence": [
+                {"type": "remove_weapons"},
+                {"type": "remove_ammo"},
+                {"type": "remove_medipacks"},
+                {"type": "remove_flares"},
+                {"type": "give_item", "object_id": "small_medipack", "quantity": 1},
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 8},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 15. Area 51
+        {
+            "path": "data/area51.tr2",
+            "music_track": 27,
+            "sequence": [
+                {"type": "give_item", "object_id": "pistols", "quantity": 1},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 16. Antarctica
+        {
+            "path": "data/antarc.tr2",
+            "music_track": 28,
+            "cold_water": true,
+            "sequence": [
+                {"type": "play_fmv", "fmv_id": 3},
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 9},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 17. RX-Tech Mines
+        {
+            "path": "data/mines.tr2",
+            "music_track": 30,
+            "cold_water": true,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 18. Lost City of Tinnos
+        {
+            "path": "data/city.tr2",
+            "music_track": 26,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_cutscene", "cutscene_id": 10},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 19. Meteorite Cavern
+        {
+            "path": "data/chamber.tr2",
+            "music_track": 26,
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "play_fmv", "fmv_id": 4},
+                {"type": "play_music", "music_track": 121},
+                {"type": "display_picture", "credit": true, "path": "data/images/end.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit01.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit02.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit03.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit04.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit05.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit06.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit07.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit08.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit09.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "total_stats", "background_path": "data/images/end2.webp"},
+                {"type": "level_complete"},
+            ],
+        },
+
+        // 20. All Hallows
+        {
+            "type": "bonus",
+            "path": "data/stpaul.tr2",
+            "music_track": 30,
+            "sequence": [
+                {"type": "disable_floor", "height": 10000},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+        },
     ],
 
     "cutscenes": [
+        // Cutscene 1
+        {
+            "path": "cuts/cut6.tr2",
+            "music_track": 64,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 2
+        {
+            "path": "cuts/cut9.tr2",
+            "music_track": 69,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 3
+        {
+            "path": "cuts/cut1.tr2",
+            "music_track": 68,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 4
+        {
+            "path": "cuts/cut4.tr2",
+            "music_track": 65,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 5
+        {
+            "path": "cuts/cut2.tr2",
+            "music_track": 67,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 6
+        {
+            "path": "cuts/cut5.tr2",
+            "music_track": 63,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 7
+        {
+            "path": "cuts/cut11.tr2",
+            "music_track": 71,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 8
+        {
+            "path": "cuts/cut7.tr2",
+            "music_track": 72,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 9
+        {
+            "path": "cuts/cut8.tr2",
+            "music_track": 70,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 10
+        {
+            "path": "cuts/cut3.tr2",
+            "music_track": 62,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
+        // Cutscene 11
+        {
+            "path": "cuts/cut12.tr2",
+            "music_track": 66,
+            "sequence": [
+                {"type": "loop_game"},
+            ],
+        },
     ],
 
     "fmvs": [
+        {"path": "fmv/logo.rpl", "legal": true},
+        {"path": "fmv/intr_eng.rpl"},
+        {"path": "fmv/sail_eng.rpl"},
+        {"path": "fmv/crsh_eng.rpl"},
+        {"path": "fmv/endgame.rpl"},
     ],
 
     "hidden_config": [
