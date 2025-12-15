@@ -149,6 +149,7 @@ common_sources = [
   'trx/game/console/cmd/speed.c',
   'trx/game/console/cmd/strings.c',
   'trx/game/console/cmd/teleport.c',
+  'trx/game/console/cmd/test_text.c',
   'trx/game/console/cmd/winston.c',
   'trx/game/console/common.c',
   'trx/game/console/history.c',
