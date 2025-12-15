@@ -23,6 +23,7 @@
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items in TR1 rather than directly on top (#4374)
 - fixed the scuba diver's death SFX not playing (#4386)
+- fixed several OG texture issues in Caves (rooms 0, 1, 2, 6, 24, 30 and 32)
 - fixed skybox faces with transparent pixels always rendering in front of all other faces (#4351, regression from 1.0)
 - fixed unbound inputs not being saved between game launches (#4360, regression from TR1X 4.14/TR2X 1.4)
 - fixed Lara drawing a flare when the draw weapons input is pressed, and she already has an active flare but no weapons (#4361, regression from TR2X 1.4)
