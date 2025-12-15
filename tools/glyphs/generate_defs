@@ -37,7 +37,7 @@ def pack_sprites(
 
     packer = rectpack.newPacker(rotation=False)
     for sprite_index, (glyph, source) in glyph_with_sources.items():
-        pixels, _ = source.load()
+        pixels, _ = source.load(glyph)
         height, width, _ = pixels.shape
         packer.add_rect(width + padding * 2, height + padding * 2, sprite_index)
     packer.add_bin(page_size, page_size, count=float("inf"))
@@ -55,7 +55,7 @@ def pack_sprites(
             height = rect.height - padding * 2
             glyph, source = glyph_with_sources[rect.rid]
 
-            pixels, bbox = source.load()
+            pixels, bbox = source.load(glyph)
 
             dst_pixels[
                 dst_y : dst_y + height,

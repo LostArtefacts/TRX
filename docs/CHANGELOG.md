@@ -33,6 +33,9 @@
 - fixed wading splashes spawning when using the fly cheat (#4400, regression from 1.0)
 - fixed grenades not exploding floating water creatures (#4399, regression from TR2X 1.3)
 
+**TR3**:
+- added support for the serif font (no colors just yet)
+
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)
 

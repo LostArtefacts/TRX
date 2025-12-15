@@ -157,6 +157,7 @@ class RunContext:
         self.mods = {
             f"tr{game}-{mod_path.name}": GameStringSet(vfs, mod_path)
             for game, paths in PROJECT_PATHS.items()
+            if game != 3
             for mod_path in paths.shipped_data_dir.glob("cfg/*")
             if mod_path.is_dir()
         }
