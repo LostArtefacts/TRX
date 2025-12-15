@@ -65,7 +65,7 @@ static inline void M_HandleTargetTrigger(const TRIGGER_CMD *const cmd)
     const bool is_look_or_combat =
         g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT;
     const bool is_locked = Camera_IsLocked(g_Camera.num);
-    if (!is_look_or_combat || is_locked || g_Camera.num == NO_CAMERA) {
+    if (!is_look_or_combat || is_locked) {
         g_Camera.item = Item_Get((int16_t)(intptr_t)cmd->parameter);
     }
 }
