@@ -42,6 +42,7 @@
 - fixed vertex lighting and stretched textures in Lara's Home room 28 and Home Sweet Home room 27
 - fixed z-fighting on fences in Barkhang Monastery
 - fixed missing oxygen tanks in Offshore Rig room 82
+- fixed the monk in the Diving Area cutscene not having a complete death animation
 
 **TR3**:
 - added support for the serif font (no colors just yet)
