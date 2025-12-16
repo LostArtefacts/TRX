@@ -39,6 +39,7 @@
 - fixed a missing trigger for tiger 6 in Ice Palace (#4390)
 - fixed missing music triggers in Venice room 11 and Floating Islands room 80
 - fixed a missing death tile in Floating Islands room 91
+- fixed vertex lighting and stretched textures in Lara's Home room 28 and Home Sweet Home room 27
 
 **TR3**:
 - added support for the serif font (no colors just yet)
