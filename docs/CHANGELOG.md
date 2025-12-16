@@ -41,6 +41,7 @@
 - fixed a missing death tile in Floating Islands room 91
 - fixed vertex lighting and stretched textures in Lara's Home room 28 and Home Sweet Home room 27
 - fixed z-fighting on fences in Barkhang Monastery
+- fixed missing oxygen tanks in Offshore Rig room 82
 
 **TR3**:
 - added support for the serif font (no colors just yet)
