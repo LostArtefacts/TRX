@@ -36,6 +36,9 @@
 **TR2**:
 - changed ember emitters to use the `SFX_LAVA_FOUNTAIN` sample (#4376)
 - fixed the scuba diver's death SFX not playing (#4386)
+- fixed a missing trigger for tiger 6 in Ice Palace (#4390)
+- fixed missing music triggers in Venice room 11 and Floating Islands room 80
+- fixed a missing death tile in Floating Islands room 91
 
 **TR3**:
 - added support for the serif font (no colors just yet)
