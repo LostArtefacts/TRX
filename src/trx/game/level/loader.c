@@ -27,6 +27,7 @@
 #include <string.h>
 
 #define M_NO_ROOM_LEGACY 255
+#define M_NO_BOX_TR3_LEGACY 0x7FF
 
 static LEVEL_INFO m_Info = {};
 
@@ -627,6 +628,9 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
                 sector->fx = (uint8_t)(misc_info & 0x0F);
                 sector->box = (int16_t)((misc_info & 0x7FF0) >> 4);
                 sector->stopper = (bool)((misc_info & 0x8000) >> 15);
+                if (sector->box == M_NO_BOX_TR3_LEGACY) {
+                    sector->box = NO_BOX;
+                }
             } else {
                 sector->fx = 0;
                 sector->box = VFile_ReadS16(file);
