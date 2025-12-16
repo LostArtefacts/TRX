@@ -40,6 +40,7 @@
 - fixed missing music triggers in Venice room 11 and Floating Islands room 80
 - fixed a missing death tile in Floating Islands room 91
 - fixed vertex lighting and stretched textures in Lara's Home room 28 and Home Sweet Home room 27
+- fixed z-fighting on fences in Barkhang Monastery
 
 **TR3**:
 - added support for the serif font (no colors just yet)
