@@ -335,6 +335,11 @@
             "sequence": [
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/cut6_setup.bin",
+                "data/injections/font.bin",
+            ],
         },
         // Cutscene 2
         {
@@ -342,6 +347,10 @@
             "music_track": 69,
             "sequence": [
                 {"type": "loop_game"},
+            ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
             ],
         },
         // Cutscene 3
@@ -351,6 +360,10 @@
             "sequence": [
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
+            ],
         },
         // Cutscene 4
         {
@@ -358,6 +371,10 @@
             "music_track": 65,
             "sequence": [
                 {"type": "loop_game"},
+            ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
             ],
         },
         // Cutscene 5
@@ -367,6 +384,11 @@
             "sequence": [
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/cut2_setup.bin",
+                "data/injections/font.bin",
+            ],
         },
         // Cutscene 6
         {
@@ -374,6 +396,10 @@
             "music_track": 63,
             "sequence": [
                 {"type": "loop_game"},
+            ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
             ],
         },
         // Cutscene 7
@@ -383,6 +409,10 @@
             "sequence": [
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
+            ],
         },
         // Cutscene 8
         {
@@ -390,6 +420,10 @@
             "music_track": 72,
             "sequence": [
                 {"type": "loop_game"},
+            ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
             ],
         },
         // Cutscene 9
@@ -399,6 +433,10 @@
             "sequence": [
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
+            ],
         },
         // Cutscene 10
         {
@@ -407,6 +445,10 @@
             "sequence": [
                 {"type": "loop_game"},
             ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
+            ],
         },
         // Cutscene 11
         {
@@ -414,6 +456,10 @@
             "music_track": 66,
             "sequence": [
                 {"type": "loop_game"},
+            ],
+            "inherit_injections": false,
+            "injections": [
+                "data/injections/font.bin",
             ],
         },
     ],
