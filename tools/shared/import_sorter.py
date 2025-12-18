@@ -1,5 +1,6 @@
 import functools
 import re
+from collections.abc import Iterable
 from pathlib import Path
 from shutil import which
 from subprocess import run
@@ -7,8 +8,8 @@ from subprocess import run
 from shared.files import find_versioned_files
 
 
-def custom_sort(source: list[str], forced_order: list[str]) -> list[str]:
-    def key_func(item: str) -> tuple[int, int, str]:
+def custom_sort(source: Iterable[str], forced_order: list[str]) -> list[str]:
+    def key_func(item: str) -> tuple[str, int]:
         if item in forced_order:
             return (forced_order[0], forced_order.index(item))
         return (item, 0)

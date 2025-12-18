@@ -1,5 +1,6 @@
 from pathlib import Path
-from subprocess import check_output, run
+from subprocess import CompletedProcess, check_output, run
+from typing import Any
 
 
 class Git:
@@ -78,10 +79,10 @@ class Git:
             ]
         ).stdout.strip()
 
-    def grab_output(self, *args, **kwargs):
+    def grab_output(self, *args: Any, **kwargs: Any) -> CompletedProcess:
         return run(
             *args, **kwargs, capture_output=True, text=True, cwd=self.repo_dir
         )
 
-    def check_output(self, *args, **kwargs):
-        return check_output(*args, **kwargs, cwd=self.repo_dir)
+    def check_output(self, *args: Any, **kwargs: Any) -> None:
+        check_output(*args, **kwargs, cwd=self.repo_dir)
