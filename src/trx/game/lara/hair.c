@@ -22,17 +22,6 @@ static XYZ_32 m_HairVelocity[M_HAIR_SEGMENTS + 1];
 static HAIR_SEGMENT m_HairSegments[M_HAIR_SEGMENTS + 1];
 static int32_t m_HairWind;
 
-static int16_t M_GetRoom(const XYZ_32 pos)
-{
-    if (g_TRVersion == 1) {
-        const int16_t room_num = Room_GetIndexFromPos(pos);
-        if (room_num != NO_ROOM) {
-            return room_num;
-        }
-    }
-    return Lara_GetItem()->room_num;
-}
-
 static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -295,7 +284,6 @@ void Lara_Hair_Control(const bool in_cutscene)
     int16_t room_num = lara_item->room_num;
     int32_t water_height;
     if (in_cutscene) {
-        room_num = M_GetRoom(pos);
         water_height = NO_HEIGHT;
     } else {
         water_height = Room_GetWaterHeight(
