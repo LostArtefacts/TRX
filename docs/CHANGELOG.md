@@ -44,7 +44,7 @@
 - fixed missing music triggers in Venice room 11 and Floating Islands room 80
 - fixed a missing death tile in Floating Islands room 91
 - fixed vertex lighting and stretched textures in Lara's Home room 28 and Home Sweet Home room 27
-- fixed z-fighting on fences in Barkhang Monastery
+- fixed z-fighting on fences in Barkhang Monastery and gondola poles in Venice
 - fixed missing oxygen tanks in Offshore Rig room 82
 - fixed the monk in the Diving Area cutscene not having a complete death animation
 
