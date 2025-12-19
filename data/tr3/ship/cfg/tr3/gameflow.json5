@@ -2,7 +2,7 @@
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
 
-    "main_menu_picture": "todo.webp",
+    "main_menu_picture": "data/images/title_eu.webp",
     "savegame_fmt_legacy": "savegame.%d",
     "savegame_fmt_bson": "save_tr3_%02d.dat",
 
@@ -13,6 +13,7 @@
         "path": "data/title.tr2",
         "music_track": 5,
         "sequence": [
+            {"type": "display_picture", "path": "data/images/legal_eu.webp", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
@@ -39,6 +40,7 @@
             "path": "data/house.tr2",
             "music_track": -1,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/house.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
@@ -49,6 +51,7 @@
             "path": "data/jungle.tr2",
             "music_track": 34,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},
                 {"type": "give_item", "object_id": "flare", "quantity": 2},
@@ -65,6 +68,7 @@
             "path": "data/temple.tr2",
             "music_track": 34,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 1},
                 {"type": "play_music", "music_track": 14},
@@ -78,6 +82,7 @@
             "path": "data/quadchas.tr2",
             "music_track": 34,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
@@ -90,6 +95,7 @@
             "path": "data/tonyboss.tr2",
             "music_track": 30,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_fmv", "fmv_id": 2},
                 {"type": "play_music", "music_track": 14},
@@ -103,6 +109,7 @@
             "path": "data/shore.tr2",
             "music_track": 32,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 2},
                 {"type": "play_music", "music_track": 14},
@@ -116,6 +123,7 @@
             "path": "data/crash.tr2",
             "music_track": 33,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "pickup_1", "quantity": 1},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 3},
@@ -130,6 +138,7 @@
             "path": "data/rapids.tr2",
             "music_track": 36,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
@@ -142,6 +151,7 @@
             "path": "data/triboss.tr2",
             "music_track": 30,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
@@ -154,6 +164,7 @@
             "path": "data/roofs.tr2",
             "music_track": 73,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 1792},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 4},
@@ -168,6 +179,7 @@
             "path": "data/sewer.tr2",
             "music_track": 74,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 5},
                 {"type": "play_music", "music_track": 14},
@@ -181,6 +193,7 @@
             "path": "data/tower.tr2",
             "music_track": 31,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 6},
                 {"type": "play_music", "music_track": 14},
@@ -194,6 +207,7 @@
             "path": "data/office.tr2",
             "music_track": 78,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 5120},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
@@ -207,6 +221,7 @@
             "path": "data/nevada.tr2",
             "music_track": 33,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 7},
                 {"type": "play_music", "music_track": 14},
@@ -220,6 +235,7 @@
             "path": "data/compound.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "remove_weapons"},
                 {"type": "remove_ammo"},
                 {"type": "remove_medipacks"},
@@ -238,6 +254,7 @@
             "path": "data/area51.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "pistols", "quantity": 1},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
@@ -252,6 +269,7 @@
             "music_track": 28,
             "cold_water": true,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 3},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 9},
@@ -267,6 +285,7 @@
             "music_track": 30,
             "cold_water": true,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
@@ -279,6 +298,7 @@
             "path": "data/city.tr2",
             "music_track": 26,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 10},
                 {"type": "play_music", "music_track": 14},
@@ -292,6 +312,7 @@
             "path": "data/chamber.tr2",
             "music_track": 26,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
@@ -307,7 +328,7 @@
                 {"type": "display_picture", "credit": true, "path": "data/images/credit07.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "data/images/credit08.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "data/images/credit09.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "total_stats", "background_path": "data/images/end2.webp"},
+                {"type": "total_stats", "background_path": "data/images/theend2.webp"},
                 {"type": "level_complete"},
             ],
         },
@@ -318,6 +339,7 @@
             "path": "data/stpaul.tr2",
             "music_track": 30,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 10000},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
