@@ -8,6 +8,7 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <stdlib.h>
 #include <string.h>
 
 #define M_MAX_BOUND_ROOMS 128
@@ -85,6 +86,28 @@ static int32_t m_OutsideBottom;
 static int32_t m_BoundStart;
 static int32_t m_BoundEnd;
 static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
+
+static int M_SortRoomsCmp(const void *const a_ptr, const void *const b_ptr)
+{
+    const int16_t a_room_num = *(const int16_t *)a_ptr;
+    const int16_t b_room_num = *(const int16_t *)b_ptr;
+    if (a_room_num == b_room_num) {
+        return 0;
+    }
+
+    const ROOM *const a_room = Room_Get(a_room_num);
+    const ROOM *const b_room = Room_Get(b_room_num);
+    const bool a_underwater = a_room->flags.underwater;
+    const bool b_underwater = b_room->flags.underwater;
+    if (a_underwater != b_underwater) {
+        return a_underwater ? -1 : 1;
+    }
+    if (a_room_num < b_room_num) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
 
 static void M_SetBounds(
     const PORTAL *const portal, int32_t room_num, const ROOM *parent);
@@ -461,6 +484,12 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 
     if (g_TRVersion == 1 || m_Outside) {
         M_DrawSkybox();
+    }
+
+    if (m_DrawCount > 1) {
+        qsort(
+            m_RoomsToDraw, (size_t)m_DrawCount, sizeof(m_RoomsToDraw[0]),
+            M_SortRoomsCmp);
     }
 
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
