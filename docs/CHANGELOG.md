@@ -26,6 +26,7 @@
 - fixed Lara drawing a flare when the draw weapons input is pressed, and she already has an active flare but no weapons (#4361, regression from TR2X 1.4)
 - fixed wading splashes spawning when using the fly cheat (#4400, regression from 1.0)
 - fixed grenades not exploding floating water creatures (#4399, regression from TR2X 1.3)
+- fixed water enemies not getting tinted when dead and floating (#4407, regression from 1.0)
 
 **TR1**:
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items rather than directly on top (#4374)
