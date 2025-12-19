@@ -49,6 +49,10 @@
 - fixed the monk in the Diving Area cutscene not having a complete death animation
 
 **TR3**:
+- added high-resolutions 16:9 and 4:3 loading screens
+- added high-resolutions 16:9 and 4:3 title and game end screens
+- added high-resolutions 16:9 and 4:3 credit images
+    To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - added support for the serif font (no colors just yet)
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
