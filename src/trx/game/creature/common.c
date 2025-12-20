@@ -535,9 +535,8 @@ void Creature_Float(const int16_t item_num)
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
     if (item->pos.y > wh) {
         item->pos.y -= M_FLOAT_SPEED;
-    } else if (item->pos.y < wh) {
-        item->pos.y = wh;
     }
+    CLAMPL(item->pos.y, wh);
 
     Item_Animate(item);
 
