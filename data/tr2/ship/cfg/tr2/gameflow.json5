@@ -459,6 +459,7 @@
         // 16. Floating Islands
         {
             "path": "data/floating.tr2",
+            "script": "data/scripts/floating.lua",
             "music_track": 55,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
