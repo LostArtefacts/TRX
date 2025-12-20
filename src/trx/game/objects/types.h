@@ -35,6 +35,7 @@ typedef struct {
 
     float depth_adjustment;
     bool enable_reflections;
+    bool enable_caustics;
 } OBJECT_MESH;
 
 typedef struct {

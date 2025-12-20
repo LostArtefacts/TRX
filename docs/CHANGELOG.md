@@ -5,6 +5,7 @@
 - added catalog object IDs to Lua
 - added support for locked cameras, similar to TR4+ (#2040)
 - added support to use `O_DINO_WARRIOR` and `O_FISH` as aliases for `O_TREX` and `O_BARRACUDA` respectively
+- changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)
 - changed the swinging axe to be defined separately from other pendulums (use object `O_SWINGING_AXE` in catalogs)
 - changed the following trap types to support being reset (#3993)
   - collapsible tiles

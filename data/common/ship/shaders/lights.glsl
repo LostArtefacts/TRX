@@ -114,14 +114,15 @@ float light(float shade, uint flags, vec3 normal, vec4 pos, float phase)
     } else if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
         shade = lightObjects(normal, pos);
     } else {
-        if (uWaterEffect) {
-            shade = lightWaterCaustics(shade, pos.xyz);
-        }
         if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
             shade = lightDynamic(shade, pos);
             shade += lightRoom(uRoomLightMode, uTimeInGame, phase);
         }
         shade = clamp(shade, 0, SHADE_MAX);
+    }
+
+    if (uWaterEffect) {
+        shade = lightWaterCaustics(shade, pos.xyz);
     }
 
     return shade;
