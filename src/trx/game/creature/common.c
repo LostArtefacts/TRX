@@ -643,9 +643,8 @@ void Creature_Collision(
         return;
     }
 
-    if (g_TRVersion >= 2
-        && (lara->water_status == LWS_UNDERWATER
-            || lara->water_status == LWS_SURFACE)) {
+    if (lara->water_status == LWS_UNDERWATER
+        || lara->water_status == LWS_SURFACE) {
         return;
     }
 

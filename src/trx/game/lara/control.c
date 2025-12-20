@@ -505,7 +505,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
     coll->slopes_are_pits = 0;
     coll->lava_is_pit = 0;
     coll->enable_hit = 0;
-    coll->enable_baddie_push = 0;
+    coll->enable_baddie_push = 1;
 
     Lara_Look_Update();
     Lara_State_Update(item, coll);
