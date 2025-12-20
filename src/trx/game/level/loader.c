@@ -23,7 +23,6 @@
 #include <trx/utils.h>
 #include <trx/vector.h>
 
-#include <SDL2/SDL_cpuinfo.h>
 #include <string.h>
 
 #define M_NO_ROOM_LEGACY 255
@@ -1532,9 +1531,7 @@ void Level_LoadTexturePages(const LEVEL_LOADER *const loader)
 
     {
         int32_t *pages = Memory_Alloc(num_pages * sizeof(int32_t));
-        const int num_threads = SDL_GetCPUCount();
-        THREAD_POOL *const pool =
-            ThreadPool_Create(num_threads > 0 ? num_threads : 1);
+        THREAD_POOL *const pool = ThreadPool_Create(-1);
         for (int32_t i = 0; i < num_pages; i++) {
             pages[i] = i;
         }

@@ -8,6 +8,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/memory.h>
+#include <trx/thread_pool.h>
 #include <trx/vector.h>
 #include <trx/version.h>
 
@@ -16,6 +17,11 @@
 
 #define M_INJECTION_CURRENT_VERSION 5
 #define M_VIRTUAL_NAME "virtual_injection"
+
+typedef struct {
+    INJECTION *injection;
+    const char *path;
+} M_LOAD_JOB;
 
 static bool (*m_Testers[ITT_NUMBER_OF])(
     const INJECTION_CONTEXT *, const INJECTION *injection) = {};
@@ -204,6 +210,22 @@ static void M_ReadVFile(
     }
 
     injection->fp = VFile_CreateFromBuffer(payload, uncompressed_size);
+    if (m_Context.mode != INJECTION_MODE_STATS) {
+        LOG_INFO("%s queued for injection", inj_name);
+    }
+
+cleanup:
+    Memory_FreePointer(&payload);
+    VFile_Close(file);
+}
+
+static void M_InitialiseInjection(INJECTION *const injection)
+{
+    if (!injection->relevant || injection->fp == nullptr) {
+        return;
+    }
+
+    VFile_SetPos(injection->fp, 0);
 
     {
         // Tests are executed after the main level data is loaded.
@@ -221,13 +243,6 @@ static void M_ReadVFile(
     }
 
     VFile_SetPos(injection->fp, 0);
-    if (m_Context.mode != INJECTION_MODE_STATS) {
-        LOG_INFO("%s queued for injection", inj_name);
-    }
-
-cleanup:
-    Memory_FreePointer(&payload);
-    VFile_Close(file);
 }
 
 static void M_LoadFromFile(
@@ -240,6 +255,12 @@ static void M_LoadFromFile(
     }
 
     M_ReadVFile(injection, file, file_name);
+}
+
+static void M_LoadInjectionJob(void *const user_data)
+{
+    const M_LOAD_JOB *const job = user_data;
+    M_LoadFromFile(job->injection, job->path);
 }
 
 static bool M_IsApplicable(const INJECTION *const injection)
@@ -301,9 +322,30 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
     BENCHMARK benchmark = Benchmark_Start();
 
     m_Injections = Memory_Alloc(sizeof(INJECTION) * m_NumInjections);
+    if (m_NumInjections > 1) {
+        M_LOAD_JOB *const jobs =
+            Memory_Alloc(sizeof(M_LOAD_JOB) * m_NumInjections);
+
+        THREAD_POOL *const pool = ThreadPool_Create(-1);
+        ASSERT(pool != nullptr);
+        for (int32_t i = 0; i < m_NumInjections; i++) {
+            jobs[i] = (M_LOAD_JOB) {
+                .injection = &m_Injections[i],
+                .path = level->injections.data_paths[i],
+            };
+            ThreadPool_AddJob(pool, M_LoadInjectionJob, &jobs[i]);
+        }
+
+        ThreadPool_Wait(pool);
+        ThreadPool_Destroy(pool);
+
+        Memory_Free(jobs);
+    } else {
+        M_LoadFromFile(&m_Injections[0], level->injections.data_paths[0]);
+    }
+
     for (int32_t i = 0; i < m_NumInjections; i++) {
-        INJECTION *const injection = &m_Injections[i];
-        M_LoadFromFile(injection, level->injections.data_paths[i]);
+        M_InitialiseInjection(&m_Injections[i]);
     }
 
     if (m_Context.mode != INJECTION_MODE_STATS) {
@@ -317,6 +359,7 @@ void Inject_AppendInjection(VFILE *const file)
         Memory_Realloc(m_Injections, sizeof(INJECTION) * (m_NumInjections + 1));
     INJECTION *const injection = &m_Injections[m_NumInjections++];
     M_ReadVFile(injection, file, nullptr);
+    M_InitialiseInjection(injection);
 }
 
 void Inject_AllInjections(void)
