@@ -305,7 +305,8 @@ static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *const s)
         Savegame_GetCurrentInfo(current_level);
     const STATS_COMMON *const stats =
         (const STATS_COMMON *)&current_info->stats;
-    const LEVEL_MAX_STATS *const max_stats = &current_info->max_stats;
+    const LEVEL_MAX_STATS *const max_stats =
+        Stats_GetLevelMaxStats(current_level);
 
     if (g_Config.ui.enable_stats_level_header) {
         M_RowFromRole(s, M_ROW_LEVEL_COUNTER, stats, max_stats);

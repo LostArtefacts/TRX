@@ -13,7 +13,6 @@
 #include <trx/game/gun.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara/pose.h>
-#include <trx/game/level.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
 #include <trx/game/option.h>
@@ -24,6 +23,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/shell/platform.h>
 #include <trx/game/sound.h>
+#include <trx/game/stats.h>
 #include <trx/game/test_recorder.h>
 #include <trx/game/test_replay.h>
 #include <trx/gfx/context.h>
@@ -287,7 +287,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         Lua_FreeResult(&res);
     }
 
-    Level_CalculateMaxStats();
+    Stats_CalculateMaxStats();
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
 
     bool loop_continue = !Shell_IsExiting();
