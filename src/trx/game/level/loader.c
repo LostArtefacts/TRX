@@ -1380,7 +1380,7 @@ void Level_ReadSamples(const LEVEL_LOADER *const loader, VFILE *const file)
         sample_info->number = VFile_ReadS16(file);
 
         if (loader->game_version >= 3) {
-            sample_info->volume = VFile_ReadU8(file) << 8;
+            sample_info->volume = VFile_ReadU8(file) << 7;
             sample_info->range = VFile_ReadU8(file) * WALL_L;
         } else if (loader->game_version == 2) {
             sample_info->volume = VFile_ReadU16(file);
@@ -1392,7 +1392,7 @@ void Level_ReadSamples(const LEVEL_LOADER *const loader, VFILE *const file)
 
         if (loader->game_version >= 3) {
             sample_info->randomness = VFile_ReadU8(file);
-            sample_info->pitch = VFile_ReadU8(file);
+            sample_info->pitch = VFile_ReadS8(file);
         } else {
             sample_info->randomness = VFile_ReadU16(file);
             sample_info->pitch = 0;
