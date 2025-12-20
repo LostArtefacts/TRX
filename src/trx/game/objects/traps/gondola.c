@@ -3,7 +3,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
-#define GONDOLA_SINK_SPEED 50
+#define M_SINK_SPEED 50
+#define M_SINK_ROOM_SHIFT (STEP_L * 3 / 2)
 
 static void M_Control(const int16_t item_num)
 {
@@ -18,13 +19,17 @@ static void M_Control(const int16_t item_num)
         break;
 
     case GONDOLA_STATE_SINK: {
-        gondola->pos.y = gondola->pos.y + GONDOLA_SINK_SPEED;
+        gondola->pos.y = gondola->pos.y + M_SINK_SPEED;
+        const ANIM_FRAME *const frame = Item_GetBestFrame(gondola);
+        const int16_t room_shift = frame->bounds.min.y + M_SINK_ROOM_SHIFT;
         int16_t room_num = gondola->room_num;
         const SECTOR *const sector = Room_GetSector(
-            gondola->pos.x, gondola->pos.y, gondola->pos.z, &room_num);
+            gondola->pos.x, gondola->pos.y + room_shift, gondola->pos.z,
+            &room_num);
         const int32_t height = Room_GetHeight(
             sector, gondola->pos.x, gondola->pos.y, gondola->pos.z);
         gondola->floor = height;
+        Item_UpdateRoom(item_num, room_num);
 
         if (gondola->pos.y >= height) {
             gondola->goal_anim_state = GONDOLA_STATE_LAND;
