@@ -234,10 +234,6 @@ static void M_CompleteSetup(
 
     UI_LoadText();
 
-    // Must be done after doing the injections!
-    // (The Great Pyramid OG data misses the final secret trigger.)
-    Stats_ScanLevel(GF_GetCurrentLevel());
-
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
     Output_DispatchLevelLoad();
     if (loader->game_version == 1) {
