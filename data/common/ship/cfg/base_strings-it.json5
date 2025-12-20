@@ -620,7 +620,7 @@
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS": "Ricorda armi tra livelli",
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Fa sì che Lara ricordi quale arma ha usato per ultima nel livello precedente quando inizia un nuovo livello. Se disabilitato, Lara tornerà ad avere nella fondina le sue pistole.",
         "SETTING_RESTORE_PS1_ENEMIES": "Ripristina nemici PS1",
-        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Aggiunge la mummia che appare nella versione PlayStation della Città di Khamoon, stanza 25.\nLa modifica di questa opzione richiederà il riavvio del livello.",
+        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}Aggiunge la mummia che appare nella versione PlayStation di City of Khamoon, stanza 25.\nModificare questa opzione richiederà il riavvio del gioco.",
         "SETTING_SCREENSHOT_FORMAT": "Formato cattura schermo",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Formato del file da utilizzare per le istantanee dello schermo.",
         "SETTING_SHOW_BARS": "Mostra barre",

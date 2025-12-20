@@ -620,7 +620,7 @@
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS": "Zapamiętuj broń między poziomami",
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Włączenie tej opcji sprawi, że Lara zapamięta wybór broni z poprzedniego poziomu. W przeciwnym wypadku Lara zawsze będzie wracać do pistoletów, domyślnie schowanych w kaburach.",
         "SETTING_RESTORE_PS1_ENEMIES": "Przywróć przeciwników z PS1",
-        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Dodaje mumie, która pojawia się w wersji PlayStation w Mieście Khamoon, pomieszczenie 25. Zmiana tej opcji wymaga ponownego uruchomienia poziomu.",
+        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}Dodaje mumię, która pojawia się w wersji na PlayStation w City of Khamoon, pokój 25.\nZmiana tej opcji wymaga ponownego uruchomienia gry.",
         "SETTING_SCREENSHOT_FORMAT": "Format zrzutów ekranu",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Format pliku użyty do zapisu zrzutów ekranu.",
         "SETTING_SHOW_BARS": "Pokaż paski",

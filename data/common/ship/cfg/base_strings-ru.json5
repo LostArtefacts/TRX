@@ -620,7 +620,7 @@
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS": "Помнить оружие между уровнями",
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "\\{review}При переходе на новый уровень Лара запоминает, каким оружием она пользовалась в последний раз на предыдущем уровне. Если отключить, Лара вернётся к пистолетам в кобуре.",
         "SETTING_RESTORE_PS1_ENEMIES": "Восстановить врагов PS1",
-        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Добавляет мумию, которая появляется на уровне Город Хамун в версии игры для PlayStation, комната 25.\nИзменение этой опции потребует перезапуска уровня.",
+        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}Добавляет мумию, которая появляется в версии для PlayStation в городе Хамун, комната 25.\nДля применения изменений потребуется перезапустить игру.",
         "SETTING_SCREENSHOT_FORMAT": "Формат снимка экрана",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Формат снимка экрана.",
         "SETTING_SHOW_BARS": "\\{review}Показать полосы",
