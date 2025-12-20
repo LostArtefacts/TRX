@@ -129,6 +129,11 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 
 void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
 {
+    Inv_InsertItemEx(inv_item, 1);
+}
+
+void Inv_InsertItemEx(INVENTORY_ITEM *const inv_item, const int32_t qty)
+{
     ASSERT(inv_item != nullptr);
     INV_RING_SOURCE *const source = &g_InvRing_Source[M_GetRingType(inv_item)];
 
@@ -144,7 +149,7 @@ void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
         source->qtys[i + 1] = source->qtys[i];
     }
     source->items[n] = inv_item;
-    source->qtys[n] = 1;
+    source->qtys[n] = MIN(qty, MAX_QTY);
     source->count++;
 }
 
@@ -238,12 +243,11 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         }
     }
 
+    const int32_t qty = object_id == O_FLAREBOX_ITEM ? M_GetFlareQuantity() : 1;
     for (RING_TYPE ring_type = 0; ring_type < RT_NUMBER_OF; ring_type++) {
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
             if (source->items[i]->object_id == inv_object_id) {
-                const int32_t qty =
-                    object_id == O_FLAREBOX_ITEM ? M_GetFlareQuantity() : 1;
                 source->qtys[i] += qty;
                 CLAMPG(source->qtys[i], MAX_QTY);
                 return true;
@@ -277,7 +281,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
             *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
         if (inv_item->object_id == object_id
             || inv_item->object_id == inv_object_id) {
-            Inv_InsertItem(inv_item);
+            Inv_InsertItemEx(inv_item, qty);
             return true;
         }
     }
