@@ -1,3 +1,5 @@
+#include <trx/game/objects/creatures/pod.h>
+
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
@@ -17,25 +19,7 @@ static void M_Initialise(const int16_t item_num)
     const int16_t bug_item_num = Item_CreateLevelItem();
     if (bug_item_num != NO_ITEM) {
         ITEM *const bug = Item_Get(bug_item_num);
-
-        switch ((item->flags & IF_CODE_BITS) >> 9) {
-        case 1:
-            bug->object_id = O_WARRIOR_2;
-            break;
-        case 2:
-            bug->object_id = O_CENTAUR;
-            break;
-        case 4:
-            bug->object_id = O_TORSO;
-            break;
-        case 8:
-            bug->object_id = O_WARRIOR_3;
-            break;
-        default:
-            bug->object_id = O_WARRIOR_1;
-            break;
-        }
-
+        bug->object_id = Pod_GetBugObjectID(item);
         bug->room_num = item->room_num;
         bug->pos.x = item->pos.x;
         bug->pos.y = item->pos.y;
@@ -119,6 +103,22 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->save_anim = true;
     obj->save_flags = true;
+}
+
+OBJECT_ID Pod_GetBugObjectID(const ITEM *const item)
+{
+    switch ((item->flags & IF_CODE_BITS) >> 9) {
+    case 1:
+        return O_WARRIOR_2;
+    case 2:
+        return O_CENTAUR;
+    case 4:
+        return O_TORSO;
+    case 8:
+        return O_WARRIOR_3;
+    default:
+        return O_WARRIOR_1;
+    }
 }
 
 REGISTER_OBJECT(O_PODS, M_Setup)

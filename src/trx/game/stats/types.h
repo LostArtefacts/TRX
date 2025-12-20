@@ -3,6 +3,7 @@
 #include <trx/game/objects/ids.h>
 #include <trx/game/stats/const.h>
 
+#include <stddef.h>
 #include <stdint.h>
 
 typedef struct {
@@ -11,6 +12,11 @@ typedef struct {
     size_t max_pickup_count;
     size_t max_secret_count;
     uint32_t all_secrets_mask;
+
+    struct {
+        int32_t item_num;
+        uint32_t secret_mask;
+    } secret_item_masks[STATS_MAX_SECRETS];
 
     struct {
         bool taken;

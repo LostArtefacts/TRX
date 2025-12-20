@@ -24,6 +24,7 @@ title: Level reference
 | 13 | Natla's Mines          | `level10a.phd` | 30                    | 3                     | 3               | 7             |
 | 14 | Atlantis               | `level10b.phd` | 50                    | 32                    | 3               | 7             |
 | 15 | The Great Pyramid      | `level10c.phd` | 31                    | 6                     | 3<sup>[5]</sup> | 4             |
+| -  | Total                  | -              | 355                   | 294 / 295             | 45              | 72            |
 
 - <sup>[1]</sup>: extra mummy kill in the Tomb of Qualopec.
 - <sup>[2]</sup>: bat with a missing trigger in the OG.
@@ -40,6 +41,7 @@ title: Level reference
 | 2  | Temple of the Cat    | `cat.phd`   | 63      | 44    | 4       |
 | 3  | Atlantean Stronghold | `end.phd`   | 63      | 31    | 2       |
 | 4  | The Hive             | `end2.phd`  | 60      | 41    | 1       |
+| -  | Total                | -           | 239     | 157   | 10      |
 
 
 ## Tomb Raider II
@@ -65,6 +67,7 @@ title: Level reference
 | 16 | Floating Islands         | `floating.tr2` | 39                    | 26                    | 3       |
 | 17 | The Dragon's Lair        | `xian.tr2`     | 25                    | 11                    | -       |
 | 18 | Home Sweet Home          | `house.tr2`    | 45                    | 16                    | -       |
+| -  | Total                    | -              | 580                   | 494 / 516             | 48      |
 
 - <sup>[1]</sup>: shark in an unreachable room (possible to kill with extreme patience)
 - <sup>[2]</sup>: hostiles vs. hostiles and allies
@@ -80,6 +83,7 @@ title: Level reference
 | 3  | Furnace of the Gods | `level3.tr2` | 64                    | 38 / 41<sup>[1]</sup> | 3         |
 | 4  | Kingdom             | `level4.tr2` | 50 / 52<sup>[2]</sup> | 25 / 29<sup>[1]</sup> | 3         |
 | 5  | Nightmare in Vegas  | `level5.tr2` | 75                    | 23                    | 3         |
+| -  | Total               | -            | 329 / 331             | 187 / 199             | 15        |
 
 - <sup>[1]</sup>: hostiles vs. hostiles and allies
 - <sup>[2]</sup>: additional drops from allies

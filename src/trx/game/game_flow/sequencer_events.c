@@ -80,7 +80,7 @@ M_GF_HANDLER(M_HandleLevelComplete)
 
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
     resume->flags.available = true;
-    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected(GFL_NORMAL);
+    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected();
 
     if (next_level != nullptr) {
         Savegame_PersistGameToCurrentInfo(next_level);

@@ -5,7 +5,7 @@
 
 #define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
 
-void Inject_InitLevel(const GF_LEVEL *level);
+void Inject_InitLevel(const GF_LEVEL *level, INJECTION_MODE mode);
 void Inject_AppendInjection(VFILE *file);
 void Inject_AllInjections(void);
 void Inject_Cleanup(void);
@@ -19,9 +19,10 @@ uint16_t Inject_GetPaletteIndex(uint16_t index);
 
 void Inject_RegisterTester(
     const INJECTION_TEST_TYPE type,
-    bool (*test_func)(const INJECTION *injection));
+    bool (*test_func)(const INJECTION_CONTEXT *, const INJECTION *injection));
 void Inject_RegisterHandler(
-    INJECTION_CHUNK_TYPE type, void (*handle_func)(INJECTION_CHUNK chunk));
+    INJECTION_CHUNK_TYPE type,
+    void (*handle_func)(const INJECTION_CONTEXT *, INJECTION_CHUNK chunk));
 
 #define REGISTER_INJECT_TESTER(test_type, test_func)                           \
     __attribute__((                                                            \

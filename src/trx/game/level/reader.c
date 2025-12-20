@@ -162,7 +162,7 @@ const LEVEL_LOADER *Level_GuessLoader(VFILE *const file)
     BENCHMARK benchmark = Benchmark_Start();
     for (int32_t i = 0; g_LevelLoaders[i] != nullptr; i++) {
         const LEVEL_LOADER *const loader = g_LevelLoaders[i];
-        if (loader->probe(loader, file)) {
+        if (loader->probe(loader, file, LEVEL_PROBE_MINIMAL)) {
             result = loader;
             break;
         }
@@ -236,7 +236,7 @@ static void M_CompleteSetup(
 
     // Must be done after doing the injections!
     // (The Great Pyramid OG data misses the final secret trigger.)
-    Stats_ScanLevel();
+    Stats_ScanLevel(GF_GetCurrentLevel());
 
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
     Output_DispatchLevelLoad();
@@ -254,7 +254,7 @@ void Level_Load(const GF_LEVEL *const level)
     LOG_INFO("%d (%s)", level->num, level->path);
     BENCHMARK benchmark = Benchmark_Start();
 
-    Inject_InitLevel(level);
+    Inject_InitLevel(level, INJECTION_MODE_FULL);
     const LEVEL_LOADER *const loader = M_LoadFromFile(level);
     M_CompleteSetup(loader, level);
     Inject_Cleanup();

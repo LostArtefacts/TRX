@@ -13,6 +13,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara/pose.h>
+#include <trx/game/level.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
 #include <trx/game/option.h>
@@ -286,6 +287,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         Lua_FreeResult(&res);
     }
 
+    Level_CalculateMaxStats();
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
 
     bool loop_continue = !Shell_IsExiting();

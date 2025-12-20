@@ -95,9 +95,9 @@ bool Stats_CheckAllLevelSecretsPickedUp(void)
     return count >= resume->max_stats.max_pickup_secret_count;
 }
 
-bool Stats_CheckAllSecretsCollected(GF_LEVEL_TYPE level_type)
+bool Stats_CheckAllSecretsCollected(void)
 {
-    const FINAL_STATS final_stats = Stats_ComputeFinalStats(level_type);
+    const FINAL_STATS final_stats = Stats_ComputeFinalStats(false);
     return final_stats.stats.secret_count
         >= final_stats.max_stats.max_secret_count;
 }
@@ -175,17 +175,22 @@ void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
     }
 }
 
-FINAL_STATS Stats_ComputeFinalStats(const GF_LEVEL_TYPE level_type)
+FINAL_STATS Stats_ComputeFinalStats(const bool include_bonus_levels)
 {
     FINAL_STATS result = {};
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];
-        if (level->type != level_type) {
+        if (!(level->type == GFL_NORMAL
+              || (level->type == GFL_BONUS && include_bonus_levels))) {
             continue;
         }
 
         const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        if (resume == nullptr) {
+            continue;
+        }
+
 #define L_ADD(prop) result.prop += resume->prop;
         L_ADD(stats.kill_count);
         L_ADD(stats.pickup_count);
@@ -216,4 +221,25 @@ OBJECT_ID Stats_GetSecretObject(const int32_t secret_idx)
     ASSERT(stats != nullptr);
     ASSERT(secret_idx >= 0 && secret_idx < STATS_MAX_SECRETS);
     return stats->secret_objects[secret_idx].assigned_object_id;
+}
+
+uint32_t Stats_GetSecretMaskForItem(
+    const GF_LEVEL *const level, const int16_t item_num)
+{
+    if (level == nullptr) {
+        return 0;
+    }
+
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    if (max_stats == nullptr) {
+        return 0;
+    }
+
+    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        if (max_stats->secret_item_masks[i].item_num == item_num) {
+            return max_stats->secret_item_masks[i].secret_mask;
+        }
+    }
+
+    return 0;
 }

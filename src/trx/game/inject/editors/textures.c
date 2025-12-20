@@ -5,7 +5,8 @@
 #include <trx/memory.h>
 
 static void M_TextureEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     const LEVEL_INFO *const level_info = Level_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
@@ -40,7 +41,8 @@ static void M_TextureEdits(
 }
 
 static void M_SpriteEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);

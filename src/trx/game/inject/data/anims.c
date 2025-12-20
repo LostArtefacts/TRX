@@ -5,7 +5,8 @@
 #include <trx/game/objects.h>
 #include <trx/memory.h>
 
-static void M_HandleAnimData(const INJECTION_CHUNK chunk)
+static void M_HandleAnimData(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
@@ -15,6 +16,11 @@ static void M_HandleAnimData(const INJECTION_CHUNK chunk)
             VFile_ReadS32(chunk.injection->fp);
         const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
         const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            VFile_Skip(chunk.injection->fp, data_size);
+            continue;
+        }
 
         switch (data_type) {
         case IDT_ANIMS: {
@@ -91,7 +97,8 @@ static void M_HandleAnimData(const INJECTION_CHUNK chunk)
 }
 
 static void M_CommandEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
     int16_t cmd_idx = cached_info.anims.command_count;
@@ -102,7 +109,7 @@ static void M_CommandEdits(
         const int32_t num_anim_cmds = VFile_ReadS32(injection->fp);
 
         const OBJECT *const obj = Object_Get(obj_info.id);
-        if (!obj->loaded) {
+        if (ctx->mode == INJECTION_MODE_STATS || !obj->loaded) {
             continue;
         }
 

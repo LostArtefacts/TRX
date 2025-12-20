@@ -46,6 +46,13 @@ static void M_HandleTexturePages(
     const INJECTION *const injection, const int32_t data_count)
 {
     LEVEL_INFO *const info = Level_GetInfo();
+    if (info->textures.pages_32 == nullptr) {
+        VFile_Skip(
+            injection->fp, data_count * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
+        VFile_Skip(injection->fp, data_count * TEXTURE_PAGE_SIZE);
+        return;
+    }
+
     RGBA_8888 *const output_32 =
         &info->textures.pages_32[info->textures.page_count * TEXTURE_PAGE_SIZE];
     VFile_Read(
@@ -96,13 +103,19 @@ static void M_HandleSpriteSequences(
     }
 }
 
-static void M_HandleTextureData(const INJECTION_CHUNK chunk)
+static void M_HandleTextureData(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
         const INJECTION_DATA_TYPE data_type =
             VFile_ReadS32(chunk.injection->fp);
         const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
         const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            VFile_Skip(chunk.injection->fp, data_size);
+            continue;
+        }
 
         switch (data_type) {
         case IDT_PALETTE:
@@ -119,7 +132,8 @@ static void M_HandleTextureData(const INJECTION_CHUNK chunk)
     }
 }
 
-static void M_HandleTextureInfo(const INJECTION_CHUNK chunk)
+static void M_HandleTextureInfo(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     LEVEL_INFO *const level_info = Level_GetInfo();
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
@@ -130,6 +144,11 @@ static void M_HandleTextureInfo(const INJECTION_CHUNK chunk)
             VFile_ReadS32(chunk.injection->fp);
         const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
         const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            VFile_Skip(chunk.injection->fp, data_size);
+            continue;
+        }
 
         switch (data_type) {
         case IDT_OBJECT_TEXTURES:

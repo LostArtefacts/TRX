@@ -9,7 +9,9 @@
 
 #define M_SAMPLE_COUNT 256
 
-static bool M_Probe(const LEVEL_LOADER *const loader, VFILE *const file)
+static bool M_Probe(
+    const LEVEL_LOADER *const loader, VFILE *const file,
+    const LEVEL_PROBE_MODE mode)
 {
     // TODO: clang-format <20 formats this wrongly
     // clang-format off
@@ -43,26 +45,31 @@ static bool M_Probe(const LEVEL_LOADER *const loader, VFILE *const file)
     L_SKIP_ARR_S32(TEXTURE_PAGE_SIZE); // textures
     L_SKIP(4);
 
-    uint16_t room_count;
-    L_TRY_OR_FAIL(VFile_TryReadU16(file, &room_count));
-    for (int32_t i = 0; i < room_count; i++) {
-        L_SKIP(16);
-        L_SKIP_ARR_S32(2); // meshes
-        L_SKIP_ARR_U16(32); // portals
+    if (mode == LEVEL_PROBE_MINIMAL) {
+        uint16_t room_count;
+        L_TRY_OR_FAIL(VFile_TryReadU16(file, &room_count));
+        for (int32_t i = 0; i < room_count; i++) {
+            L_SKIP(16);
+            L_SKIP_ARR_S32(2); // meshes
+            L_SKIP_ARR_U16(32); // portals
 
-        int16_t size_z;
-        int16_t size_x;
-        L_TRY_OR_FAIL(VFile_TryReadS16(file, &size_z));
-        L_TRY_OR_FAIL(VFile_TryReadS16(file, &size_x));
-        L_SKIP(size_z * size_x * 8);
-        L_SKIP(2);
+            int16_t size_z;
+            int16_t size_x;
+            L_TRY_OR_FAIL(VFile_TryReadS16(file, &size_z));
+            L_TRY_OR_FAIL(VFile_TryReadS16(file, &size_x));
+            L_SKIP(size_z * size_x * 8);
+            L_SKIP(2);
 
-        L_SKIP_ARR_U16(18); // lights
-        L_SKIP_ARR_U16(18); // static meshes
-        L_SKIP(4);
+            L_SKIP_ARR_U16(18); // lights
+            L_SKIP_ARR_U16(18); // static meshes
+            L_SKIP(4);
+        }
+
+        L_SKIP_ARR_S32(2); // floor data
+    } else {
+        Level_ReadRooms(loader, file);
     }
 
-    L_SKIP_ARR_S32(2); // floor data
     L_SKIP_ARR_S32(2); // object meshes
     L_SKIP_ARR_S32(4); // object mesh pointers
     L_SKIP_ARR_S32(32); // animations
@@ -71,7 +78,13 @@ static bool M_Probe(const LEVEL_LOADER *const loader, VFILE *const file)
     L_SKIP_ARR_S32(2); // animation commands
     L_SKIP_ARR_S32(4); // animation bones
     L_SKIP_ARR_S32(2); // animation frames
-    L_SKIP_ARR_S32(18); // objects
+
+    if (mode == LEVEL_PROBE_MINIMAL) {
+        L_SKIP_ARR_S32(18); // objects
+    } else {
+        Level_ReadObjects(loader, file);
+    }
+
     L_SKIP_ARR_S32(32); // static objects
     L_SKIP_ARR_S32(20); // textures
     L_SKIP_ARR_S32(16); // sprites
@@ -91,7 +104,12 @@ static bool M_Probe(const LEVEL_LOADER *const loader, VFILE *const file)
     L_SKIP(box_count * 12); // zones
 
     L_SKIP_ARR_S32(2); // animated texture ranges
-    L_SKIP_ARR_S32(22); // items
+
+    if (mode == LEVEL_PROBE_MINIMAL) {
+        L_SKIP_ARR_S32(22); // items
+    } else {
+        Level_ReadItems(loader, file);
+    }
 
     L_SKIP(32 * 256); // light table
 
