@@ -263,24 +263,11 @@ void Stats_ScanLevel(const GF_LEVEL *const level)
 {
     ASSERT(level != nullptr);
     BENCHMARK benchmark = Benchmark_Start();
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    if (resume == nullptr) {
-        return;
-    }
-    M_CalculateStats(&resume->max_stats);
-    resume->max_stats.max_pickup_count += GF_GetSecretRewardCount(level);
-    resume->max_stats.max_pickup_count -= level->unobtainable.pickups;
-    resume->max_stats.max_kill_count -= level->unobtainable.kills;
-    resume->max_stats.max_secret_count -= level->unobtainable.secrets;
+    LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    M_CalculateStats(max_stats);
+    max_stats->max_pickup_count += GF_GetSecretRewardCount(level);
+    max_stats->max_pickup_count -= level->unobtainable.pickups;
+    max_stats->max_kill_count -= level->unobtainable.kills;
+    max_stats->max_secret_count -= level->unobtainable.secrets;
     Benchmark_End(&benchmark, nullptr);
-}
-
-const LEVEL_MAX_STATS *Stats_GetLevelMaxStats(const GF_LEVEL *const level)
-{
-    // fetch precomputed max stats from savegame resume info
-    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    if (resume == nullptr) {
-        return nullptr;
-    }
-    return &resume->max_stats;
 }

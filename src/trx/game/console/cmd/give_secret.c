@@ -16,14 +16,15 @@
 
 static const char *M_FormatAvailable(void)
 {
-    RESUME_INFO *const info = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    ASSERT(info != nullptr);
+    LEVEL_MAX_STATS *const max_stats =
+        Stats_GetLevelMaxStats(Game_GetCurrentLevel());
+    ASSERT(max_stats != nullptr);
 
     char buf[128] = {};
     char *ptr = buf;
     bool first = true;
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        if ((1 << i) & info->max_stats.all_secrets_mask) {
+        if ((1 << i) & max_stats->all_secrets_mask) {
             if (!first) {
                 ptr += sprintf(ptr, ", ");
             }
@@ -82,6 +83,9 @@ static COMMAND_RESULT M_GiveSecret(const int32_t idx)
 
 static COMMAND_RESULT M_ListSecrets(void)
 {
+    const LEVEL_MAX_STATS *const max_stats =
+        Stats_GetLevelMaxStats(Game_GetCurrentLevel());
+    ASSERT(max_stats != nullptr);
     RESUME_INFO *const info = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     ASSERT(info != nullptr);
 
@@ -89,7 +93,7 @@ static COMMAND_RESULT M_ListSecrets(void)
     Console_Log(
         strcmp(buf, "") == 0 ? GS(CMD_GIVE_SECRET_NONE)
                              : GS(CMD_GIVE_SECRET_LIST),
-        info->stats.secret_count, info->max_stats.max_secret_count, buf);
+        info->stats.secret_count, max_stats->max_secret_count, buf);
     return CR_SUCCESS;
 }
 

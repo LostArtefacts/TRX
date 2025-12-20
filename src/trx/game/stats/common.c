@@ -8,22 +8,25 @@
 
 bool Stats_IsSecretValid(const int16_t secret_idx)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
     const uint32_t secret_mask = 1 << secret_idx;
-    return (secret_mask & resume->max_stats.all_secrets_mask) != 0;
+    return (secret_mask & max_stats->all_secrets_mask) != 0;
 }
 
 bool Stats_HasSecret(const int16_t secret_idx)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
     const uint32_t secret_mask = 1 << secret_idx;
-    if ((secret_mask & resume->max_stats.all_secrets_mask) == 0) {
+    if ((secret_mask & max_stats->all_secrets_mask) == 0) {
         return false;
     }
     return (resume->stats.secret_flags & secret_mask) != 0;
@@ -31,12 +34,14 @@ bool Stats_HasSecret(const int16_t secret_idx)
 
 bool Stats_RemoveSecret(const int16_t secret_idx)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
     const uint32_t secret_mask = 1 << secret_idx;
-    if ((secret_mask & resume->max_stats.all_secrets_mask) == 0) {
+    if ((secret_mask & max_stats->all_secrets_mask) == 0) {
         return false;
     }
     if (!(resume->stats.secret_flags & secret_mask)) {
@@ -50,12 +55,14 @@ bool Stats_RemoveSecret(const int16_t secret_idx)
 
 bool Stats_AddSecret(const int16_t secret_idx)
 {
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS) {
         return false;
     }
     const uint32_t secret_mask = 1 << secret_idx;
-    if ((secret_mask & resume->max_stats.all_secrets_mask) == 0) {
+    if ((secret_mask & max_stats->all_secrets_mask) == 0) {
         return false;
     }
     if (resume->stats.secret_flags & secret_mask) {
@@ -84,15 +91,16 @@ void Stats_MarkSecretCollected(const ITEM *const item)
 
 bool Stats_CheckAllLevelSecretsPickedUp(void)
 {
-    const RESUME_INFO *const resume =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+    const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
     int32_t flags = resume->stats.secret_flags;
     size_t count = 0;
     while (flags != 0) {
         count += flags & 1;
         flags >>= 1;
     }
-    return count >= resume->max_stats.max_pickup_secret_count;
+    return count >= max_stats->max_pickup_secret_count;
 }
 
 bool Stats_CheckAllSecretsCollected(void)
@@ -187,25 +195,29 @@ FINAL_STATS Stats_ComputeFinalStats(const bool include_bonus_levels)
         }
 
         const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        if (resume == nullptr) {
-            continue;
+        if (resume != nullptr) {
+#define L_ADD(prop) result.stats.prop += resume->stats.prop;
+            L_ADD(kill_count);
+            L_ADD(pickup_count);
+            L_ADD(secret_count);
+            L_ADD(timer);
+            L_ADD(ammo_hits);
+            L_ADD(ammo_used);
+            L_ADD(medipacks_used);
+            L_ADD(distance_travelled);
+            L_ADD(death_count);
+#undef L_ADD
         }
 
-#define L_ADD(prop) result.prop += resume->prop;
-        L_ADD(stats.kill_count);
-        L_ADD(stats.pickup_count);
-        L_ADD(stats.secret_count);
-        L_ADD(stats.timer);
-        L_ADD(stats.ammo_hits);
-        L_ADD(stats.ammo_used);
-        L_ADD(stats.medipacks_used);
-        L_ADD(stats.distance_travelled);
-        L_ADD(stats.death_count);
-        L_ADD(max_stats.max_kill_count);
-        L_ADD(max_stats.max_pickup_count);
-        L_ADD(max_stats.max_secret_count);
-        L_ADD(max_stats.max_pickup_secret_count);
+        const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
+        if (max_stats != nullptr) {
+#define L_ADD(prop) result.max_stats.prop += max_stats->prop;
+            L_ADD(max_kill_count);
+            L_ADD(max_pickup_count);
+            L_ADD(max_secret_count);
+            L_ADD(max_pickup_secret_count);
 #undef L_ADD
+        }
     }
 
     return result;

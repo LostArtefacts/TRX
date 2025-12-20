@@ -1,6 +1,7 @@
-#include <trx/game/level/stats.h>
+#include <trx/game/stats/init.h>
 
 #include <trx/benchmark.h>
+#include <trx/debug.h>
 #include <trx/game/carrier.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
@@ -11,12 +12,34 @@
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
 #include <trx/log.h>
+#include <trx/memory.h>
 #include <trx/virtual_file.h>
 
-void Level_CalculateMaxStats(void)
+static LEVEL_MAX_STATS *m_Stats = nullptr;
+
+__attribute__((destructor)) static void M_Shutdown(void)
 {
-    BENCHMARK benchmark = Benchmark_Start();
+    if (m_Stats != nullptr) {
+        Memory_Free(m_Stats);
+        m_Stats = nullptr;
+    }
+}
+
+LEVEL_MAX_STATS *Stats_GetLevelMaxStats(const GF_LEVEL *const level)
+{
+    ASSERT(m_Stats != nullptr);
+    return &m_Stats[level->num];
+}
+
+void Stats_CalculateMaxStats(void)
+{
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+
+    if (m_Stats == nullptr) {
+        m_Stats = Memory_Alloc(sizeof(LEVEL_MAX_STATS) * level_table->count);
+    }
+
+    BENCHMARK benchmark = Benchmark_Start();
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         if (level->type != GFL_NORMAL && level->type != GFL_BONUS) {

@@ -35,9 +35,7 @@ static SAVEGAME_STRATEGY m_Strategies[MAX_STRATEGIES];
 static void M_CopyResumeInfo(
     RESUME_INFO *const target, const RESUME_INFO *const source)
 {
-    const LEVEL_MAX_STATS max_stats = target->max_stats;
     memcpy(target, source, sizeof(RESUME_INFO));
-    target->max_stats = max_stats;
 }
 
 static void M_ClearSlot(SAVEGAME_INFO *const savegame_info)

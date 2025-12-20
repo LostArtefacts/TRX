@@ -36,7 +36,6 @@ typedef struct {
     } flags;
 
     LEVEL_STATS stats;
-    LEVEL_MAX_STATS max_stats;
 } RESUME_INFO;
 
 typedef struct {
