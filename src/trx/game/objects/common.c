@@ -185,6 +185,21 @@ void Object_SwapMesh(
     Object_SwapMeshEx(object1_id, object2_id, mesh_num, mesh_num);
 }
 
+void Object_SwapAllMeshes(
+    const OBJECT_ID object1_id, const OBJECT_ID object2_id)
+{
+    const OBJECT *const obj1 = Object_Get(object1_id);
+    const OBJECT *const obj2 = Object_Get(object2_id);
+    if (!obj1->loaded || !obj2->loaded) {
+        return;
+    }
+
+    const int32_t mesh_count = MIN(obj1->mesh_count, obj2->mesh_count);
+    for (int32_t i = 0; i < mesh_count; i++) {
+        Object_SwapMeshEx(object1_id, object2_id, i, i);
+    }
+}
+
 void Object_SwapMeshEx(
     const OBJECT_ID object1_id, const OBJECT_ID object2_id,
     const int32_t mesh_num1, const int32_t mesh_num2)

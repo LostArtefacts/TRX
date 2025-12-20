@@ -270,6 +270,7 @@ common_sources = [
   'trx/game/lua/lara.c',
   'trx/game/lua/log.c',
   'trx/game/lua/music.c',
+  'trx/game/lua/objects.c',
   'trx/game/lua/rooms.c',
   'trx/game/lua/sound.c',
   'trx/game/math/trig.c',

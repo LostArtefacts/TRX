@@ -3,6 +3,7 @@
 - added the ability to control via Lua which enemies are allies and which are ones that will fight with allies (#3873)
 - added support for 3D secret objects, and provided defaults for OG levels in TR2 (#4380)
 - added catalog object IDs to Lua
+- added the ability to swap meshes in Lua
 - added support for locked cameras, similar to TR4+ (#2040)
 - added support to use `O_DINO_WARRIOR` and `O_FISH` as aliases for `O_TREX` and `O_BARRACUDA` respectively
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)
