@@ -2,6 +2,7 @@
 
 #include <trx/memory.h>
 
+#include <SDL2/SDL_cpuinfo.h>
 #include <SDL2/SDL_thread.h>
 
 typedef struct JOB {
@@ -56,11 +57,15 @@ static int32_t M_WorkerThread(void *const arg)
     return 0;
 }
 
-THREAD_POOL *ThreadPool_Create(const size_t num_threads)
+THREAD_POOL *ThreadPool_Create(int32_t num_threads)
 {
     if (num_threads <= 0) {
-        return nullptr;
+        num_threads = SDL_GetCPUCount();
+        if (num_threads <= 0) {
+            num_threads = 1;
+        }
     }
+
     THREAD_POOL *const pool = Memory_Alloc(sizeof(*pool));
     pool->threads = Memory_Alloc(sizeof(SDL_Thread *) * num_threads);
     pool->num_threads = num_threads;
@@ -71,7 +76,7 @@ THREAD_POOL *ThreadPool_Create(const size_t num_threads)
     pool->stop = false;
     pool->working_count = 0;
 
-    for (size_t i = 0; i < num_threads; i++) {
+    for (int32_t i = 0; i < num_threads; i++) {
         pool->threads[i] = SDL_CreateThread(M_WorkerThread, "worker", pool);
     }
     return pool;
