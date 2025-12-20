@@ -10,8 +10,6 @@
 
 typedef struct {
     MESH_BATCHER *batcher;
-    int32_t shade_table[WIBBLE_SIZE];
-    int32_t caustics_table[WIBBLE_SIZE];
     size_t mesh_count;
     OUTPUT_MESH **meshes;
 } M_PRIV;
@@ -56,24 +54,6 @@ static void M_AddRoomFace(
         MeshBuilder_AddVertex(builder, &vertex);
     }
     MeshBuilder_AddFan(builder, M_GetScenePass(face), face->double_sided);
-}
-
-static int16_t M_ShadeCaustics(
-    const M_PRIV *const p, const ROOM *const room, const bool is_water_effect,
-    int16_t source, int32_t vtx_idx)
-{
-    if (is_water_effect) {
-        const uint8_t caustic =
-            p->caustics_table
-                [(room->mesh.num_vertices - vtx_idx) % WIBBLE_SIZE];
-        source +=
-            p->shade_table
-                [((int32_t)Output_GetTimeInGame() + caustic) % WIBBLE_SIZE];
-        CLAMP(source, 0, SHADE_MAX);
-    } else {
-        CLAMPG(source, SHADE_MAX);
-    }
-    return source;
 }
 
 static void M_PrepareMeshes(M_PRIV *const p)
@@ -131,11 +111,6 @@ void OutputSource_Rooms_Init(MESH_BATCHER *const batcher)
 {
     M_PRIV *const p = &m_Priv;
     p->batcher = batcher;
-    for (int32_t i = 0; i < WIBBLE_SIZE; i++) {
-        const int16_t angle = (i * DEG_360) / WIBBLE_SIZE;
-        p->shade_table[i] = Math_Sin(angle) * SHADE_CAUSTICS >> W2V_SHIFT;
-        p->caustics_table[i] = (Random_GetDraw() >> 5) - 0x01FF;
-    }
 }
 
 void OutputSource_Rooms_Shutdown(void)
