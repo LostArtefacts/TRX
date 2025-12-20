@@ -4,7 +4,8 @@
 #include <trx/log.h>
 
 static void M_ItemPosEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
         const int16_t item_num = VFile_ReadS16(injection->fp);
@@ -29,7 +30,8 @@ static void M_ItemPosEdits(
 }
 
 static void M_ItemFlagEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
         const int16_t item_num = VFile_ReadS16(injection->fp);
@@ -48,7 +50,8 @@ static void M_ItemFlagEdits(
 }
 
 static void M_CameraEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
         const int16_t camera_num = VFile_ReadS16(injection->fp);

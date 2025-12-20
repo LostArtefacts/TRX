@@ -98,7 +98,8 @@ static void M_ReadStaticObject3D(const INJECTION_CHUNK chunk)
     M_AlignTextureReferences(mesh, cached_info.textures.object_count);
 }
 
-static void M_HandleObjectData(const INJECTION_CHUNK chunk)
+static void M_HandleObjectData(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     m_ProcessedMeshes = Vector_Create(sizeof(OBJECT_MESH *));
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
@@ -106,6 +107,11 @@ static void M_HandleObjectData(const INJECTION_CHUNK chunk)
             VFile_ReadS32(chunk.injection->fp);
         const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
         const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            VFile_Skip(chunk.injection->fp, data_size);
+            continue;
+        }
 
         for (int32_t j = 0; j < data_count; j++) {
             switch (data_type) {

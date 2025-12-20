@@ -326,7 +326,8 @@ static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *const s)
 {
     const GF_LEVEL_TYPE level_type =
         GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
-    const FINAL_STATS final_stats = Stats_ComputeFinalStats(level_type);
+    const FINAL_STATS final_stats =
+        Stats_ComputeFinalStats(level_type == GFL_BONUS);
     const STATS_COMMON *const stats = &final_stats.stats;
     const LEVEL_MAX_STATS *const max_stats = &final_stats.max_stats;
 

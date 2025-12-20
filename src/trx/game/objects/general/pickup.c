@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/effects.h>
+#include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -64,6 +65,13 @@ static void M_Initialise(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->priv = (void *)(intptr_t)(-1);
+
+    if (Object_IsType(item->object_id, g_SecretObjects)) {
+        const GF_LEVEL *const level = Game_GetCurrentLevel();
+        item->data =
+            (void *)(intptr_t)Stats_GetSecretMaskForItem(level, item_num);
+    }
+
     if (item->status != IS_INVISIBLE) {
         Item_AddActive(item_num);
     }

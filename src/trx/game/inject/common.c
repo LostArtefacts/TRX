@@ -17,9 +17,12 @@
 #define M_INJECTION_CURRENT_VERSION 5
 #define M_VIRTUAL_NAME "virtual_injection"
 
-static bool (*m_Testers[ITT_NUMBER_OF])(const INJECTION *injection) = {};
-static void (*m_Handlers[ICT_NUMBER_OF])(INJECTION_CHUNK chunk) = {};
+static bool (*m_Testers[ITT_NUMBER_OF])(
+    const INJECTION_CONTEXT *, const INJECTION *injection) = {};
+static void (*m_Handlers[ICT_NUMBER_OF])(
+    const INJECTION_CONTEXT *, INJECTION_CHUNK chunk) = {};
 
+static INJECTION_CONTEXT m_Context = {};
 static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = nullptr;
 
@@ -29,28 +32,42 @@ static LEVEL_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
 static size_t m_PaletteMapSize = 0;
 
-static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
+static bool M_IsRelevant(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_FILE_TYPE type)
 {
+    const bool stats = (ctx->mode == INJECTION_MODE_STATS);
+
+    if (stats) {
+        return type == IFT_GENERAL || type == IFT_FLOOR_DATA
+            || type == IFT_PS1_ENEMY;
+    }
+
     switch (type) {
     case IFT_GENERAL:
     case IFT_LARA_ANIMS:
     case IFT_BRAID:
+    case IFT_SKYBOX:
         return true;
+
     case IFT_FLOOR_DATA:
         return g_Config.gameplay.fix_floor_data_issues;
+
     case IFT_ITEM_POSITION:
         return g_Config.visuals.fix_item_rots;
+
     case IFT_TEXTURE_FIX:
         return g_Config.visuals.fix_texture_issues;
+
     case IFT_ALTER_ANIM_SPRITE:
         return g_Config.visuals.fix_animated_sprites == (g_TRVersion >= 2);
+
     case IFT_PS1_CRYSTAL:
         return g_Config.gameplay.enable_save_crystals
             && g_Config.visuals.enable_ps1_crystals;
-    case IFT_SKYBOX:
-        return true;
+
     case IFT_PS1_SFX:
         return g_Config.audio.enable_ps1_sfx;
+
     case IFT_PS1_ENEMY: {
         if (!g_Config.gameplay.restore_ps1_enemies) {
             return false;
@@ -62,6 +79,7 @@ static bool M_IsRelevant(const INJECTION_FILE_TYPE type)
         }
         return true;
     }
+
     default:
         return false;
     }
@@ -164,7 +182,7 @@ static void M_ReadVFile(
         goto cleanup;
     }
 
-    injection->relevant = M_IsRelevant(injection->type);
+    injection->relevant = M_IsRelevant(&m_Context, injection->type);
     if (!injection->relevant) {
         goto cleanup;
     }
@@ -203,7 +221,9 @@ static void M_ReadVFile(
     }
 
     VFile_SetPos(injection->fp, 0);
-    LOG_INFO("%s queued for injection", inj_name);
+    if (m_Context.mode != INJECTION_MODE_STATS) {
+        LOG_INFO("%s queued for injection", inj_name);
+    }
 
 cleanup:
     Memory_FreePointer(&payload);
@@ -235,7 +255,7 @@ static bool M_IsApplicable(const INJECTION *const injection)
             applicable = false;
             break;
         } else {
-            applicable &= m_Testers[type](injection);
+            applicable &= m_Testers[type](&m_Context, injection);
         }
     }
 
@@ -244,13 +264,14 @@ static bool M_IsApplicable(const INJECTION *const injection)
 
 void Inject_RegisterTester(
     const INJECTION_TEST_TYPE type,
-    bool (*test_func)(const INJECTION *injection))
+    bool (*test_func)(const INJECTION_CONTEXT *, const INJECTION *injection))
 {
     m_Testers[type] = test_func;
 }
 
 void Inject_RegisterHandler(
-    const INJECTION_CHUNK_TYPE type, void (*handle_func)(INJECTION_CHUNK chunk))
+    const INJECTION_CHUNK_TYPE type,
+    void (*handle_func)(const INJECTION_CONTEXT *, INJECTION_CHUNK chunk))
 {
     m_Handlers[type] = handle_func;
 }
@@ -269,8 +290,9 @@ uint16_t Inject_GetPaletteIndex(const uint16_t index)
     return m_PaletteMap == nullptr ? 0 : m_PaletteMap[index];
 }
 
-void Inject_InitLevel(const GF_LEVEL *const level)
+void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
 {
+    m_Context.mode = mode;
     m_NumInjections = level->injections.count;
     if (m_NumInjections == 0) {
         return;
@@ -284,7 +306,9 @@ void Inject_InitLevel(const GF_LEVEL *const level)
         M_LoadFromFile(injection, level->injections.data_paths[i]);
     }
 
-    Benchmark_End(&benchmark, nullptr);
+    if (m_Context.mode != INJECTION_MODE_STATS) {
+        Benchmark_End(&benchmark, nullptr);
+    }
 }
 
 void Inject_AppendInjection(VFILE *const file)
@@ -318,7 +342,9 @@ void Inject_AllInjections(void)
             continue;
         }
 
-        LOG_DEBUG("Processing %s", injection->path);
+        if (m_Context.mode != INJECTION_MODE_STATS) {
+            LOG_DEBUG("Processing %s", injection->path);
+        }
 
         // Cache the current status to allow individual handlers to increment
         // counts but still have access to current indices as required.
@@ -334,13 +360,15 @@ void Inject_AllInjections(void)
                 continue;
             }
 
-            m_Handlers[chunk.type](chunk);
+            m_Handlers[chunk.type](&m_Context, chunk);
         }
 
         ASSERT(VFile_GetPos(injection->fp) == injection->fp->size);
     }
 
-    Benchmark_End(&benchmark, nullptr);
+    if (m_Context.mode != INJECTION_MODE_STATS) {
+        Benchmark_End(&benchmark, nullptr);
+    }
 }
 
 void Inject_Cleanup(void)

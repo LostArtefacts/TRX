@@ -147,7 +147,8 @@ static void M_ApplyMeshEdit(const MESH_EDIT *const edit)
 }
 
 static void M_MeshEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
         MESH_EDIT edit = {
@@ -188,7 +189,9 @@ static void M_MeshEdits(
             vertex_edit->shift.z = VFile_ReadS16(injection->fp);
         }
 
-        M_ApplyMeshEdit(&edit);
+        if (ctx->mode != INJECTION_MODE_STATS) {
+            M_ApplyMeshEdit(&edit);
+        }
 
         for (int32_t j = 0; j < edit.face_edit_count; j++) {
             FACE_EDIT *face_edit = &edit.face_edits[j];
@@ -201,7 +204,8 @@ static void M_MeshEdits(
 }
 
 static void M_Object3DEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
         const int32_t obj_id = VFile_ReadS32(injection->fp);

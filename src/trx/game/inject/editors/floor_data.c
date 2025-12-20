@@ -69,8 +69,13 @@ static void M_SetMusicOneShot(const SECTOR *const sector)
 }
 
 static void M_FixGlideCamera(
-    const INJECTION *const injection, const SECTOR *const sector)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const SECTOR *const sector)
 {
+    if (ctx->mode == INJECTION_MODE_STATS) {
+        VFile_Skip(injection->fp, 8);
+        return;
+    }
     const uint8_t camera_timer = VFile_ReadU8(injection->fp);
     const uint8_t glide_timer = VFile_ReadU8(injection->fp);
     const XYZ_16 camera_shift = {
@@ -235,9 +240,11 @@ static void M_SectorOverwrite(
 }
 
 static void M_FixZones(
-    const INJECTION *const injection, const SECTOR *const sector)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const SECTOR *const sector)
 {
-    if (sector == nullptr || sector->box == NO_BOX) {
+    if (ctx->mode == INJECTION_MODE_STATS || sector == nullptr
+        || sector->box == NO_BOX) {
         VFile_Skip(
             injection->fp, 2 * sizeof(int16_t) * (Box_GetZoneCount() + 1));
         return;
@@ -303,7 +310,8 @@ static void M_SetSectorTriangulation(
 }
 
 static void M_FloorDataEdits(
-    const INJECTION *const injection, const int32_t data_count)
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
         const int16_t room_num = VFile_ReadS16(injection->fp);
@@ -340,7 +348,7 @@ static void M_FloorDataEdits(
                 M_SetMusicOneShot(sector);
                 break;
             case FET_GLIDE_CAMERA:
-                M_FixGlideCamera(injection, sector);
+                M_FixGlideCamera(ctx, injection, sector);
                 break;
             case FET_FD_INSERT:
                 M_InsertFloorData(injection, sector);
@@ -358,7 +366,7 @@ static void M_FloorDataEdits(
                 M_SectorOverwrite(injection, sector);
                 break;
             case FET_ZONE_FIX:
-                M_FixZones(injection, sector);
+                M_FixZones(ctx, injection, sector);
                 break;
             case FET_PORTALS:
                 M_SetSectorPortals(injection, sector);

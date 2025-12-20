@@ -2,7 +2,9 @@
 
 void Inject_RegisterEditor(
     INJECTION_DATA_TYPE type,
-    void (*handle_func)(const INJECTION *injection, int32_t element_count));
+    void (*handle_func)(
+        const INJECTION_CONTEXT *ctx, const INJECTION *injection,
+        int32_t element_count));
 
 #define REGISTER_INJECT_EDITOR(data_type, handle_func)                         \
     __attribute__((                                                            \

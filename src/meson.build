@@ -258,6 +258,7 @@ common_sources = [
   'trx/game/level/reader_tr3.c',
   'trx/game/level/rooms.c',
   'trx/game/level/settings.c',
+  'trx/game/level/stats.c',
   'trx/game/los.c',
   'trx/game/lua/catalog.c',
   'trx/game/lua/common.c',

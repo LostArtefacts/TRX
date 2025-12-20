@@ -21,13 +21,19 @@ static void M_HandleCineFrames(
     }
 }
 
-static void M_HandleCameraData(const INJECTION_CHUNK chunk)
+static void M_HandleCameraData(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
         const INJECTION_DATA_TYPE data_type =
             VFile_ReadS32(chunk.injection->fp);
         const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
         const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            VFile_Skip(chunk.injection->fp, data_size);
+            continue;
+        }
 
         switch (data_type) {
         case IDT_CINEMATIC_FRAMES:

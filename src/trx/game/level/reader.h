@@ -5,10 +5,9 @@
 // V2 level loading facilities
 
 typedef enum {
-    LEVEL_LOAD2_PROBE,
-    LEVEL_LOAD2_SLIM,
-    LEVEL_LOAD2_FULL,
-} LEVEL_LOAD2_MODE;
+    LEVEL_PROBE_MINIMAL,
+    LEVEL_PROBE_STATS,
+} LEVEL_PROBE_MODE;
 
 typedef enum {
     LEVEL_LAYOUT_UNKNOWN = -1,
@@ -25,7 +24,8 @@ typedef enum {
 typedef struct LEVEL_LOADER {
     int32_t game_version;
     LEVEL_LAYOUT layout;
-    bool (*probe)(const struct LEVEL_LOADER *, VFILE *file);
+    bool (*probe)(
+        const struct LEVEL_LOADER *, VFILE *file, LEVEL_PROBE_MODE mode);
     bool (*load)(const struct LEVEL_LOADER *, VFILE *file);
 } LEVEL_LOADER;
 

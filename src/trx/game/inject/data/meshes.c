@@ -2,7 +2,8 @@
 #include <trx/game/inject.h>
 #include <trx/memory.h>
 
-static void M_HandleMeshData(const INJECTION_CHUNK chunk)
+static void M_HandleMeshData(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     int32_t mesh_ptr_count = 0;
     int32_t *mesh_indices = nullptr;
@@ -13,6 +14,11 @@ static void M_HandleMeshData(const INJECTION_CHUNK chunk)
             VFile_ReadS32(chunk.injection->fp);
         const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
         const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            VFile_Skip(chunk.injection->fp, data_size);
+            continue;
+        }
 
         switch (data_type) {
         case IDT_MESH_POINTERS: {

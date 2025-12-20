@@ -1,13 +1,15 @@
 #include <trx/game/inject.h>
 #include <trx/game/rooms.h>
 
-static bool M_TestRoomCount(const INJECTION *const injection)
+static bool M_TestRoomCount(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection)
 {
     const int32_t num_rooms = VFile_ReadS32(injection->fp);
     return num_rooms == Room_GetCount();
 }
 
-static bool M_TestRoomMeta(const INJECTION *const injection)
+static bool M_TestRoomMeta(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection)
 {
     const int32_t room_num = VFile_ReadS32(injection->fp);
     const int32_t x_pos = VFile_ReadS32(injection->fp);

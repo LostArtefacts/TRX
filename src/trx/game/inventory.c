@@ -290,17 +290,12 @@ bool Inv_AddItem(const OBJECT_ID object_id)
 
 bool Inv_AddPickup(const ITEM *const item)
 {
-    switch (item->object_id) {
-    case O_SECRET_1:
-    case O_SECRET_2:
-    case O_SECRET_3:
+    if (Object_IsType(item->object_id, g_SecretObjects)) {
         Stats_MarkSecretCollected(item);
         if (Stats_CheckAllLevelSecretsPickedUp()) {
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
         }
         return true;
-    default:
-        break;
     }
 
     return Inv_AddItem(item->object_id);

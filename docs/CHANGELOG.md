@@ -21,6 +21,7 @@
 - changed the fonts to no longer use hardcoded character widths
 - changed the fonts to use dedicated sprites for accented characters instead of composing them at runtime
 - changed the fonts to use dedicated sprites for similar-looking characters instead of using aliases
+- fixed broken final statistic counters (#4432, regression from 1.0)
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed gondolas not being drawn with an underwater tint when they have sunk (#4428)
 - fixed skybox faces with transparent pixels always rendering in front of all other faces (#4351, regression from 1.0)

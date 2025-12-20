@@ -6,6 +6,10 @@
 #include <trx/virtual_file.h>
 
 typedef struct {
+    INJECTION_MODE mode;
+} INJECTION_CONTEXT;
+
+typedef struct {
     char *path;
     VFILE *fp;
     INJECTION_VERSION version;

@@ -5,7 +5,8 @@
 #include <trx/memory.h>
 #include <trx/version.h>
 
-static void M_HandleSFXData(const INJECTION_CHUNK chunk)
+static void M_HandleSFXData(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     ASSERT(chunk.num_blocks == 1);
     const INJECTION_DATA_TYPE data_type = VFile_ReadS32(chunk.injection->fp);

@@ -2,9 +2,11 @@
 #include <trx/log.h>
 
 static void (*m_Handlers[IDT_NUMBER_OF])(
-    const INJECTION *injection, int32_t element_count) = {};
+    const INJECTION_CONTEXT *ctx, const INJECTION *injection,
+    int32_t element_count) = {};
 
-static void M_HandleDataEdits(const INJECTION_CHUNK chunk)
+static void M_HandleDataEdits(
+    const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
         const INJECTION_DATA_TYPE data_type =
@@ -18,14 +20,16 @@ static void M_HandleDataEdits(const INJECTION_CHUNK chunk)
             }
             VFile_Skip(chunk.injection->fp, data_size);
         } else {
-            m_Handlers[data_type](chunk.injection, data_count);
+            m_Handlers[data_type](ctx, chunk.injection, data_count);
         }
     }
 }
 
 void Inject_RegisterEditor(
     const INJECTION_DATA_TYPE type,
-    void (*handle_func)(const INJECTION *injection, int32_t element_count))
+    void (*handle_func)(
+        const INJECTION_CONTEXT *ctx, const INJECTION *injection,
+        int32_t element_count))
 {
     m_Handlers[type] = handle_func;
 }

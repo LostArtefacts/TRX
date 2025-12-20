@@ -7,6 +7,7 @@
 #include <trx/game/items.h>
 #include <trx/game/level.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/creatures/pod.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
@@ -31,8 +32,8 @@ static void M_IncludeKillableItem(
         LOG_TRACE(
             "+%d pickups from carrier %d", Carrier_GetItemCount(item_num),
             item_num);
+        stats->max_pickup_count += Carrier_GetItemCount(item_num);
     }
-    stats->max_pickup_count += Carrier_GetItemCount(item_num);
 }
 
 static uint32_t M_ReserveSecretConcreteBit(
@@ -110,12 +111,9 @@ static void M_CheckTriggers(
             case O_PODS:
             case O_BIG_POD:
                 // Check for only valid pods
-                if (item->data != nullptr) {
-                    const int16_t bug_item_num = (intptr_t)item->data;
-                    const ITEM *const bug_item = Item_Get(bug_item_num);
-                    if (Object_Get(bug_item->object_id)->loaded) {
-                        M_IncludeKillableItem(stats, item_num);
-                    }
+                const OBJECT_ID object_id = Pod_GetBugObjectID(item);
+                if (Object_Get(object_id)->loaded) {
+                    M_IncludeKillableItem(stats, item_num);
                 }
                 break;
 
@@ -125,7 +123,8 @@ static void M_CheckTriggers(
                 if (Object_Get(O_DRAGON_BACK)->loaded
                     && Object_Get(O_DRAGON_FRONT)->loaded) {
                     M_IncludeKillableItem(stats, item_num);
-                    if (Object_Get(O_PUZZLE_ITEM_2)->loaded) {
+                    if (Object_Get(O_PUZZLE_OPTION_2)->loaded
+                        || Object_Get(O_PUZZLE_ITEM_2)->loaded) {
                         LOG_TRACE("+1 pickup from dragon");
                         stats->max_pickup_count++;
                     }
@@ -167,6 +166,9 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
 {
     memset(stats, 0, sizeof(*stats));
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+        stats->secret_item_masks[i].item_num = NO_ITEM;
+        stats->secret_item_masks[i].secret_mask = 0;
+
         stats->secret_objects[i].assigned_object_id = NO_OBJECT;
         stats->secret_objects[i].item_num = NO_ITEM;
         stats->secret_objects[i].taken = false;
@@ -234,19 +236,31 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
         }
     }
 
-    // Assign secret items their bits so they know which secret to set on pickup
+    // Assign secret items their bits so they know which secret to set on
+    // pickup. NOTE: Do not persist to item->data here. This scan runs at game
+    // launch to compute max stats; later, gameplay level loads restore
+    // item->data using cached info in LEVEL_MAX_STATS.
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        ITEM *const item = Item_Get(stats->secret_objects[i].item_num);
-        if (item != nullptr) {
-            item->data = (void *)(intptr_t)M_ReserveSecretUnusedBit(
-                stats, stats->secret_objects[i].assigned_object_id);
+        const int32_t item_num = stats->secret_objects[i].item_num;
+        if (item_num == NO_ITEM) {
+            continue;
+        }
+
+        const uint32_t secret_mask = M_ReserveSecretUnusedBit(
+            stats, stats->secret_objects[i].assigned_object_id);
+
+        for (int32_t j = 0; j < STATS_MAX_SECRETS; j++) {
+            if (stats->secret_item_masks[j].item_num == NO_ITEM) {
+                stats->secret_item_masks[j].item_num = item_num;
+                stats->secret_item_masks[j].secret_mask = secret_mask;
+                break;
+            }
         }
     }
 }
 
-void Stats_ScanLevel(void)
+void Stats_ScanLevel(const GF_LEVEL *const level)
 {
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
     ASSERT(level != nullptr);
     BENCHMARK benchmark = Benchmark_Start();
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
@@ -258,15 +272,6 @@ void Stats_ScanLevel(void)
     resume->max_stats.max_pickup_count -= level->unobtainable.pickups;
     resume->max_stats.max_kill_count -= level->unobtainable.kills;
     resume->max_stats.max_secret_count -= level->unobtainable.secrets;
-    LOG_INFO("Scanned level %s:", level->title);
-    LOG_INFO(
-        "  Max secrets = %d (%d pickups, %d sectors)",
-        resume->max_stats.max_secret_count,
-        resume->max_stats.max_pickup_secret_count,
-        resume->max_stats.max_secret_count
-            - resume->max_stats.max_pickup_secret_count);
-    LOG_INFO("  Max pickups = %d", resume->max_stats.max_pickup_count);
-    LOG_INFO("  Max kills = %d", resume->max_stats.max_kill_count);
     Benchmark_End(&benchmark, nullptr);
 }
 
