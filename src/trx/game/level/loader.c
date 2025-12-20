@@ -337,6 +337,7 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, VFILE *const file)
     VFile_Skip(file, sizeof(int16_t));
 
     mesh->enable_reflections = false;
+    mesh->enable_caustics = false;
     mesh->depth_adjustment = 0.005;
 
     {
@@ -1060,6 +1061,8 @@ void Level_ReadStaticObjects(
         if (loader->game_version >= 3) {
             obj->collidable = true;
         }
+
+        Object_GetMesh(obj->mesh_idx)->enable_caustics = true;
     }
 
     Benchmark_End(&benchmark, nullptr);
