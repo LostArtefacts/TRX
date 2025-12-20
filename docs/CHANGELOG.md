@@ -21,6 +21,7 @@
 - changed the fonts to use dedicated sprites for accented characters instead of composing them at runtime
 - changed the fonts to use dedicated sprites for similar-looking characters instead of using aliases
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
+- fixed gondolas not being drawn with an underwater tint when they have sunk (#4428)
 - fixed skybox faces with transparent pixels always rendering in front of all other faces (#4351, regression from 1.0)
 - fixed unbound inputs not being saved between game launches (#4360, regression from TR1X 4.14/TR2X 1.4)
 - fixed Lara drawing a flare when the draw weapons input is pressed, and she already has an active flare but no weapons (#4361, regression from TR2X 1.4)
