@@ -620,7 +620,7 @@
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS": "Cuimhnich armachd eadar ìrean",
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Cuiridh seo air Lara cuimhne dè an armachd a bh'aice mu dheireadh nuair a thòisicheas i ìre ùr. Mur tèid seo a chomasachadh, tillidh i gu piostalan nan dìollaid.",
         "SETTING_RESTORE_PS1_ENEMIES": "Aisig nàimhdean PS1",
-        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Cuiridh seo spaoileadan ann an City of Khamoon (PS1), seòmar 25. Feumaidh ath-thòiseachadh an ìre gus obraicheas seo.",
+        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}A’ cur ris an mummy a tha a’ nochdadh anns an dreach PlayStation de City of Khamoon, seòmar 25.\nFeumaidh atharrachadh air an roghainn seo ath-thòiseachadh a’ gheama.",
         "SETTING_SCREENSHOT_FORMAT": "Fòrmat glacadh-sgrìn",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Fòrmat fhaidhle airson glacadh-sgrìn.",
         "SETTING_SHOW_BARS": "\\{review}Seall bàraichean",
