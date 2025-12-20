@@ -27,6 +27,7 @@
 - fixed wading splashes spawning when using the fly cheat (#4400, regression from 1.0)
 - fixed grenades not exploding floating water creatures (#4399, regression from TR2X 1.3)
 - fixed water enemies not getting tinted when dead and floating (#4407, regression from 1.0)
+- fixed Lara not colliding with mines/gondolas when underwater (#4424, regression from TR2X 1.3)
 
 **TR1**:
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items rather than directly on top (#4374)
