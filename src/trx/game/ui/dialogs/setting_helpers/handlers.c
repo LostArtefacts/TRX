@@ -1,8 +1,10 @@
 #include <trx/game/ui/dialogs/setting_helpers/handlers.h>
 
 #include <trx/config.h>
+#include <trx/config/enum.h>
 #include <trx/game/gun.h>
 #include <trx/game/music.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
 
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
@@ -146,6 +148,15 @@ bool UI_Settings_PauseMusicInInventory_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.audio.enable_music_in_inventory;
+}
+
+bool UI_Settings_BackgroundStyle_IsEnumValueAvailable(
+    const UI_SETTINGS_OPTION *const option, const int32_t value)
+{
+    if (value == BK_PATTERN_STATIC || value == BK_PATTERN_WAVE) {
+        return Object_Get(O_INV_BACKGROUND)->loaded;
+    }
+    return true;
 }
 
 bool UI_Settings_Volume_RequestChange(
