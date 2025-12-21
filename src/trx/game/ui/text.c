@@ -26,6 +26,12 @@
 #define M_MAX_COLOR 13
 
 typedef enum {
+    M_FONT_DEFAULT = 0,
+    M_FONT_SMALL = 1,
+    M_FONT_COUNT,
+} M_FONT;
+
+typedef enum {
     // A text character.
     GLYPH_TEXT,
     // An icon.
@@ -46,6 +52,10 @@ typedef enum {
     GLYPH_DIM_MARKER,
     // Marker that changes the color of the following text.
     GLYPH_COLOR_MARKER,
+    // Marker that changes the font of the following text.
+    // - mesh_idx = 0: default font (O_ALPHABET).
+    // - mesh_idx = 1: default font (O_ALPHABET_SMALL).
+    GLYPH_FONT_MARKER,
     // Glyph that dynamically expands a key role to its current key icon.
     GLYPH_INPUT,
 } M_GLYPH_ROLE;
@@ -53,7 +63,7 @@ typedef enum {
 typedef struct {
     const char *text;
     M_GLYPH_ROLE role;
-    int32_t width;
+    int32_t width[M_FONT_COUNT];
     union {
         int32_t mesh_idx;
         INPUT_ROLE input_role; // for role == GLYPH_INPUT
@@ -81,6 +91,11 @@ static M_GLYPH_INFO m_Glyphs[] = {
 
 static M_GLYPH_MAP_ENTRY *m_GlyphMap = nullptr;
 static M_TEXT_MAP_ENTRY *m_TextMap = nullptr;
+
+OBJECT_ID m_FontObjects[M_FONT_COUNT] = {
+    [M_FONT_DEFAULT] = O_ALPHABET,
+    [M_FONT_SMALL] = O_ALPHABET_SMALL,
+};
 
 static RGB_888 m_ColorLight[M_MAX_COLOR] = {
     // clang-format off
@@ -140,7 +155,8 @@ static RGBA_F M_ToRGBA_F(const RGB_888 color)
     };
 }
 
-static int32_t M_GetGlyphWidth(const M_GLYPH_INFO *const glyph)
+static int32_t M_GetGlyphWidth(
+    const M_FONT font, const M_GLYPH_INFO *const glyph)
 {
     // Non-breaking space
     if (strcmp(glyph->text, " ") == 0) {
@@ -154,7 +170,7 @@ static int32_t M_GetGlyphWidth(const M_GLYPH_INFO *const glyph)
     if (glyph->mesh_idx != -1
         && (glyph->role == GLYPH_TEXT || glyph->role == GLYPH_ICON
             || glyph->role == GLYPH_REVIEW_MARKER)) {
-        const OBJECT *const obj = Object_Get(O_ALPHABET);
+        const OBJECT *const obj = Object_Get(m_FontObjects[font]);
         if (!obj->loaded) {
             return 0;
         }
@@ -272,6 +288,8 @@ static size_t M_WordWrap(
     }                                                                          \
     out_len += strlen(part);
 
+    M_FONT current_font = M_FONT_DEFAULT;
+
     // Iterate glyphs for wrapping
     for (size_t i = 0; i < glyph_count; i++) {
         const M_GLYPH_INFO *const glyph = M_GetResolvedGlyph(glyphs[i]);
@@ -279,7 +297,9 @@ static size_t M_WordWrap(
             continue;
         }
 
-        if (glyph->role == GLYPH_NEW_LINE) {
+        if (glyph->role == GLYPH_FONT_MARKER) {
+            current_font = glyph->mesh_idx;
+        } else if (glyph->role == GLYPH_NEW_LINE) {
             L_CONCAT_CHAR('\n')
             cur_width = 0.0f;
             in_bullet = false;
@@ -329,7 +349,8 @@ static size_t M_WordWrap(
             // Compute width (sum widths + spacing)
             float word_width = 0.0f;
             for (size_t j = i; j < i + word_len; j++) {
-                word_width += glyphs[j]->width + M_LETTER_SPACING;
+                word_width += M_LETTER_SPACING;
+                word_width += glyphs[j]->width[current_font];
             }
             if (word_width > 0) {
                 word_width -= M_LETTER_SPACING;
@@ -353,7 +374,8 @@ static size_t M_WordWrap(
                     for (size_t j = i; j < i + word_len; j++) {
                         const M_GLYPH_INFO *const glyph = glyphs[j];
                         const float glyph_width =
-                            (glyph->width + M_LETTER_SPACING) * scale_f;
+                            (glyph->width[current_font] + M_LETTER_SPACING)
+                            * scale_f;
                         if (cur_width + glyph_width > max_width) {
                             L_CONCAT_CHAR('\n')
                             cur_width = 0.0f;
@@ -409,7 +431,6 @@ static void M_Process(
     const M_GLYPH_INFO **glyphs = M_DecomposeWithCache(text, nullptr);
     ASSERT(glyphs != nullptr);
 
-    const OBJECT *const obj = Object_Get(O_ALPHABET);
     const float scale = scale_func(UI_TEXT_BASE_SCALE * settings.scale);
 
     float x = scale_func(base_x / g_Config.ui.text_scale);
@@ -420,6 +441,7 @@ static void M_Process(
     float max_width = 0.0f;
     const float start_x = x;
 
+    M_FONT current_font = M_FONT_DEFAULT;
     int32_t color_idx = 0;
     int32_t prev_color_idx = color_idx;
     bool visible = true;
@@ -438,6 +460,11 @@ static void M_Process(
 
         if (glyph->role == GLYPH_VISIBILITY_MARKER) {
             visible = glyph->mesh_idx;
+            goto loop_end;
+        }
+
+        if (glyph->role == GLYPH_FONT_MARKER) {
+            current_font = glyph->mesh_idx;
             goto loop_end;
         }
 
@@ -486,17 +513,18 @@ static void M_Process(
             const float input_scale_v =
                 settings.scale / (sprite->y1 - sprite->y0);
             const float input_scale = MIN(input_scale_h, input_scale_v);
-            const float output_scale =
-                scale_func(UI_TEXT_BASE_SCALE * glyph->width * input_scale);
+            const float output_scale = scale_func(
+                UI_TEXT_BASE_SCALE * glyph->width[current_font] * input_scale);
             if (visible && draw_func != nullptr) {
                 draw_func(
                     x + scale_func(10), y, z, output_scale, output_scale,
                     sprite_idx, m_TextColor[color_idx]);
             }
-            x += glyph->width * scale / UI_TEXT_BASE_SCALE;
+            x += glyph->width[current_font] * scale / UI_TEXT_BASE_SCALE;
             goto loop_end;
         }
 
+        const OBJECT *const obj = Object_Get(m_FontObjects[current_font]);
         if (obj->loaded && glyph->mesh_idx >= 0
             && glyph->mesh_idx < ABS(obj->mesh_count) && visible
             && draw_func != nullptr) {
@@ -505,7 +533,7 @@ static void M_Process(
                 m_TextColor[color_idx]);
         }
 
-        float spacing = glyph->width;
+        float spacing = glyph->width[current_font];
         if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
             && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
             spacing += M_LETTER_SPACING;
@@ -551,8 +579,10 @@ void UI_InitText(void)
         M_GLYPH_INFO *input_glyph = Memory_Alloc(sizeof(*input_glyph));
         input_glyph->text = String_Format("\\{input %s}", role_str);
         input_glyph->role = GLYPH_INPUT;
-        input_glyph->width = 0;
         input_glyph->input_role = role;
+        for (M_FONT font = 0; font < M_FONT_COUNT; font++) {
+            input_glyph->width[font] = 0;
+        }
         M_GLYPH_MAP_ENTRY *entry = Memory_Alloc(sizeof(*entry));
         entry->glyph = input_glyph;
         HASH_ADD_KEYPTR(
@@ -575,9 +605,11 @@ void UI_LoadText(void)
         }
     }
 
-    for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
-         glyph_ptr++) {
-        glyph_ptr->width = M_GetGlyphWidth(glyph_ptr);
+    for (M_FONT font = 0; font < M_FONT_COUNT; font++) {
+        for (M_GLYPH_INFO *glyph_ptr = m_Glyphs; glyph_ptr->text != nullptr;
+             glyph_ptr++) {
+            glyph_ptr->width[font] = M_GetGlyphWidth(font, glyph_ptr);
+        }
     }
 }
 

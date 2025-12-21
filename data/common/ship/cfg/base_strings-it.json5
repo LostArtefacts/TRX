@@ -1687,6 +1687,9 @@
         },
         "winston": {
             "name": "Winston",
+        },
+        "alphabet_small": {
+            "name": "\\{review}Carattere piccolo",
         }
     }
 }

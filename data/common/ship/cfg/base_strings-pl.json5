@@ -1140,10 +1140,7 @@
             "name": "Zapadnia 3",
         },
         "alphabet": {
-            "name": [
-                "Literki",
-                "Alfabet",
-            ]
+            "name": "\\{review}Czcionka domyślna",
         },
         "blood_1": {
             "name": "Krew 1",
@@ -1648,6 +1645,9 @@
         },
         "water_sprite": {
             "name": "Ślad łodzi",
+        },
+        "alphabet_small": {
+            "name": "\\{review}Mała czcionka",
         }
     }
 }

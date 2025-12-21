@@ -56,12 +56,10 @@ void UI_AmmoLabel(void)
 
     const char *string = nullptr;
     if (icon_str != nullptr) {
-        string = String_FormatStatic("%6d %s", ammo, icon_str);
+        string = String_FormatStatic("\\{small}%6d %s", ammo, icon_str);
     } else {
-        string = String_FormatStatic("%6d", ammo);
+        string = String_FormatStatic("\\{small}%6d", ammo);
     }
 
-    UI_LabelEx(
-        String_StylizeSmallDigitsStatic(string),
-        (UI_LABEL_SETTINGS) { .scale = 1.5f });
+    UI_LabelEx(string, (UI_LABEL_SETTINGS) { .scale = 1.5f });
 }

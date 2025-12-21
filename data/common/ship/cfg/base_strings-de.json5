@@ -1143,7 +1143,7 @@
             "name": "Falltür 3",
         },
         "alphabet": {
-            "name": "Alphabet",
+            "name": "\\{review}Standard Schriftart",
         },
         "blood_1": {
             "name": "Blut 1",
@@ -1664,6 +1664,9 @@
         },
         "water_sprite": {
             "name": "Boat Wake",
+        },
+        "alphabet_small": {
+            "name": "\\{review}Kleine Schriftart",
         }
     }
 }

@@ -39,5 +39,12 @@
         "SETTING_WATER_COLOR_R_DESCRIPTION": "Red component of the water colour.",
         "STATS_DISTANCE_TRAVELLED": "Distance Travelled",
     },
-    "objects": {}
+    "objects": {
+        "alphabet": {
+            "name": "\\{review}Default font",
+        },
+        "alphabet_small": {
+            "name": "\\{review}Small font",
+        }
+    }
 }

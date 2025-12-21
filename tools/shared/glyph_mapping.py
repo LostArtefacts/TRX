@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from collections import defaultdict
 import argparse
 import ast
 import json
@@ -23,9 +24,10 @@ GLYPH_GRAMMAR = Lark(
     start: (command | include | _EMPTY_LINE | _COMMENT)*
 
     include: "include" _WS quoted_string
-    command: glyph_text _WS GLYPH_CLASS _WS source_func (_WS modifier_func)* _NL
+    command: glyph_text _WS font_idx _WS GLYPH_CLASS _WS source_func (_WS modifier_func)* _NL
 
     glyph_text: unicode_definition | quoted_string
+    font_idx: number
     GLYPH_CLASS: "T" | "I" | "C" | "c" | "R"
     unicode_definition: "U+" /[0-9A-F]{4}/ ":" /./
     number: /-?\d+/
@@ -411,6 +413,7 @@ class TranslateModifier(BaseModifier):
 class Glyph:
     text: str
     glyph_class: str
+    font_idx: int
     source: BaseSource
     modifiers: list[BaseModifier]
 
@@ -432,6 +435,7 @@ class GlyphParser(Transformer):
         return super().__init__()
 
     GLYPH_CLASS = lambda self, items: items[0]
+    font_idx = lambda self, items: items[0]
 
     glyph_text = lambda self, items: items[0]
     arglist = lambda self, items: items
@@ -468,10 +472,11 @@ class GlyphParser(Transformer):
         return _read_mapping(self.ctx, filename=items[0])
 
     def command(self, items):
-        text, glyph_class, source, *modifiers = items
+        text, font_idx, glyph_class, source, *modifiers = items
         return [
             Glyph(
                 text=text,
+                font_idx=font_idx,
                 glyph_class=glyph_class,
                 source=source,
                 modifiers=modifiers,
@@ -506,30 +511,71 @@ def _read_mapping(ctx, filename: str = "mapping.txt") -> list[Glyph]:
 
 
 def reindex_sprites(glyphs: list[Glyph]) -> None:
-    """Assign linearly sprite indices to sprites that do not have them."""
-    sources = [g.source for g in glyphs]
-    index = max((s.index for s in sources if s.index is not None), default=-1)
+    """Assign sprite indices; non-default fonts reuse base font indices."""
+    font_glyphs_map: dict[int, list[Glyph]] = defaultdict(list)
+    for glyph in glyphs:
+        font_glyphs_map[glyph.font_idx].append(glyph)
+
+    base_glyphs = font_glyphs_map[0]
+    sources = [g.source for g in base_glyphs]
+
+    used = sorted({s.index for s in sources if s.index is not None})
+    next_index = 0
+
     for source in sources:
         if source.index is None:
-            index += 1
-            source.index = index
-    indices = [-1 if (v := source.index) is None else v for source in sources]
-    assert len(set(indices)) == len(indices), "Duplicate sprite indices found!"
-    assert sorted(indices)[-1] + 1 == len(
-        indices
-    ), "Found gaps in sprite indices!"
+            while next_index in used:
+                next_index += 1
+            source.index = next_index
+            used.append(next_index)
+            used.sort()
+
+    base_index_map = {glyph.text: glyph.source.index for glyph in base_glyphs}
+    for glyph in glyphs:
+        if glyph.font_idx == 0:
+            continue
+        base_idx = base_index_map.get(glyph.text)
+        if base_idx is None:
+            raise ValueError(
+                f"Glyph {glyph.text} (font {glyph.font_idx}) missing base font index"
+            )
+        glyph.source.index = base_idx
+
+    for font_idx, font_glyphs in font_glyphs_map.items():
+        sources = [g.source for g in font_glyphs]
+        indices = [source.index for source in sources]
+        if indices:
+            assert len(set(indices)) == len(indices), "Duplicate sprite indices found!"
+            if font_idx == 0:
+                assert sorted(indices)[-1] + 1 == len(indices), "Found gaps in sprite indices!"
 
 
 def resolve_links(glyphs: list[Glyph]) -> None:
     """Resolve glyph sources so that they know of their source sprites."""
-    glyph_map = {glyph.text: glyph for glyph in glyphs}
+
+    def _lookup(text: str, font_idx: int) -> Glyph:
+        glyph = glyph_map.get((text, font_idx))
+        if glyph is not None:
+            return glyph
+        glyph = glyph_map.get((text, 0))
+        if glyph is not None:
+            return glyph
+        raise KeyError(f"Unable to resolve glyph {text} (font {font_idx})")
+
+    glyph_map = {(glyph.text, glyph.font_idx): glyph for glyph in glyphs}
     for glyph in glyphs:
         if isinstance(glyph.source, LinkSource):
-            glyph.source.linked_source = glyph_map[glyph.source.link_to].source
+            glyph.source.linked_source = _lookup(
+                glyph.source.link_to, glyph.font_idx
+            ).source
     for glyph in glyphs:
         if isinstance(glyph.source, CombineSource):
-            glyph.source.glyph1_source = glyph_map[glyph.source.glyph1].source
-            glyph.source.glyph2_source = glyph_map[glyph.source.glyph2].source
+            glyph.source.glyph1_source = _lookup(
+                glyph.source.glyph1, glyph.font_idx
+            ).source
+            glyph.source.glyph2_source = _lookup(
+                glyph.source.glyph2, glyph.font_idx
+            ).source
 
 
 def apply_modifiers(glyphs: list[Glyph]) -> None:

@@ -1155,7 +1155,7 @@
             "name": "Làr-lùbte 3",
         },
         "alphabet": {
-            "name": "Aibidil",
+            "name": "\\{review}Clò àbhaisteach",
         },
         "blood_1": {
             "name": "Fuil 1",
@@ -1675,6 +1675,9 @@
         },
         "water_sprite": {
             "name": "Rotal Bàta",
+        },
+        "alphabet_small": {
+            "name": "\\{review}Clò beag",
         }
     }
 }

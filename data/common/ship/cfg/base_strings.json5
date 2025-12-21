@@ -1460,7 +1460,10 @@
             "name": "Alarm",
         },
         "alphabet": {
-            "name": "Alphabet",
+            "name": "Default font",
+        },
+        "alphabet_small": {
+            "name": "Small font",
         },
         "assault_digits": {
             "name": "Assault Digits",

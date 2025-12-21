@@ -43,15 +43,3 @@ const char *String_FormatStatic(const char *fmt, ...);
 
 // Like String_FormatStatic, but accepts a va_list of arguments.
 const char *String_FormatStaticV(const char *fmt, va_list args);
-
-// ============================================================================
-
-// Wraps every ASCII digit in "\\{small digit N}" tags into a specified string
-// buffer. If the buffer is too small, reallocates it to fit the string.
-void String_StylizeSmallDigitsInto(
-    char **target_buf, size_t *target_cap, const char *text);
-
-// Like String_StylizeSmallDigitsInto, but writes into a static buffer that
-// grows as needed. The caller must not free() the result; it will be freed on
-// program exit.
-const char *String_StylizeSmallDigitsStatic(const char *text);

@@ -427,8 +427,8 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
 
 void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
 {
-    const char *const tmp = String_FormatStatic(fmt, qty);
-    String_StylizeSmallDigitsInto(&m_CountText, &m_CountTextCap, tmp);
+    const char *const full_fmt = String_FormatStatic("\\{small}%s", fmt);
+    String_FormatInto(&m_CountText, &m_CountTextCap, full_fmt, qty);
 }
 
 void InvRing_DrawUI(INV_RING *const ring)
