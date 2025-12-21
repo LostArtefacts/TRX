@@ -22,6 +22,7 @@
         "inherit_injections": false,
         "injections": [
             "data/injections/font.bin",
+            "data/injections/inv_background.bin",
             "data/injections/pda_model.bin",
             "data/injections/title_textures.bin",
         ]
