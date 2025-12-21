@@ -323,6 +323,7 @@ const OBJECT_ID g_AnimObjects[] = {
 const OBJECT_ID g_NullObjects[] = {
     // clang-format off
     O_ALPHABET,
+    O_ALPHABET_SMALL,
     O_ASSAULT_DIGITS,
     O_BLOOD_1,
     O_BLOOD_2,
@@ -497,6 +498,7 @@ const OBJECT_ID g_GameSpriteObjects[] = {
     O_FX_RESERVED,
 
     O_ALPHABET,
+    O_ALPHABET_SMALL,
     O_TEXT_BOX,
     O_ASSAULT_DIGITS,
 

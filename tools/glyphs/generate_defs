@@ -24,6 +24,7 @@ from shared.paths import PROJECT_PATHS, REPO_DIR, SHARED_SRC_DIR
 def pack_sprites(
     glyphs: list[Glyph],
     output_dir: Path,
+    font_idx: int,
     page_size: int = 256,
     padding: int = 1,
 ):
@@ -34,6 +35,9 @@ def pack_sprites(
         glyph.source.index: (glyph, glyph.source)
         for glyph in glyphs
     }
+    if len(glyph_with_sources) == 0:
+        print(f"No glyphs for font {font_idx}, skipping sprite packing.")
+        return None
 
     packer = rectpack.newPacker(rotation=False)
     for sprite_index, (glyph, source) in glyph_with_sources.items():
@@ -45,7 +49,12 @@ def pack_sprites(
 
     injector_mappings: list[dict] = []
     for dst_page_num, bin in enumerate(packer):
-        output_path = output_dir / f"alpha_sprites_{dst_page_num:02d}.png"
+        if font_idx == 0:
+            output_path = output_dir / f"alpha_sprites_{dst_page_num:02d}.png"
+        else:
+            output_path = output_dir / (
+                f"alpha_sprites_font{font_idx}_{dst_page_num:02d}.png"
+            )
         dst_pixels = np.zeros((page_size, page_size, 4))
 
         for rect in bin:
@@ -81,9 +90,13 @@ def pack_sprites(
         image.save(output_path)
         print("Created a sprite sheet for injector in", output_path)
 
-    output_path = output_dir / "glyph_info.json"
-    output_path.write_text(json.dumps(injector_mappings))
-    print("Saved mappings for injector to", output_path)
+    if font_idx == 0:
+        info_path = output_dir / "glyph_info.json"
+    else:
+        info_path = output_dir / f"glyph_info_font{font_idx}.json"
+    info_path.write_text(json.dumps(injector_mappings))
+    print("Saved mappings for injector to", info_path)
+    return info_path
 
 
 def generate_def_file(output_path: Path, glyphs: list[Glyph]):
@@ -134,8 +147,13 @@ def main() -> None:
 
     glyphs = get_glyph_map(input_dir)
 
-    pack_sprites(glyphs, output_dir=injector_output_dir)
-    generate_def_file(def_path, glyphs)
+    fonts = sorted({glyph.font_idx for glyph in glyphs})
+    for font_idx in fonts:
+        font_glyphs = [glyph for glyph in glyphs if glyph.font_idx == font_idx]
+        pack_sprites(font_glyphs, output_dir=injector_output_dir, font_idx=font_idx)
+
+    default_glyphs = [glyph for glyph in glyphs if glyph.font_idx == 0]
+    generate_def_file(def_path, default_glyphs)
 
 
 if __name__ == "__main__":

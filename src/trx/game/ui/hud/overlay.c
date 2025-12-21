@@ -180,28 +180,31 @@ static void M_DebugPosTopLeft(void)
     UI_EndStack();
     UI_BeginStack(UI_STACK_VERTICAL);
     if (g_Config.debug.enable_debug_pos) {
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d / %d", lara->pos.x / WALL_L, lara->pos.y / WALL_L,
-            lara->pos.z / WALL_L, lara->room_num)));
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d°, %d°, %d°", (int32_t)lara->rot.x * 360 / DEG_360,
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d / %d", lara->pos.x / WALL_L,
+            lara->pos.y / WALL_L, lara->pos.z / WALL_L, lara->room_num));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d°, %d°, %d°", (int32_t)lara->rot.x * 360 / DEG_360,
             (int32_t)lara->rot.y * 360 / DEG_360,
-            (int32_t)lara->rot.z * 360 / DEG_360)));
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d", vehicle != nullptr ? vehicle->speed : lara->speed,
-            vehicle != nullptr ? vehicle->fall_speed : lara->fall_speed)));
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d", obj_id, Item_GetRelativeObjAnim(lara, obj_id),
-            Item_GetRelativeFrame(lara))));
+            (int32_t)lara->rot.z * 360 / DEG_360));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d",
+            vehicle != nullptr ? vehicle->speed : lara->speed,
+            vehicle != nullptr ? vehicle->fall_speed : lara->fall_speed));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d", obj_id,
+            Item_GetRelativeObjAnim(lara, obj_id),
+            Item_GetRelativeFrame(lara)));
     }
     if (g_Config.debug.enable_debug_camera) {
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d / %d", g_Camera.pos.x / WALL_L, g_Camera.pos.y / WALL_L,
-            g_Camera.pos.z / WALL_L, g_Camera.pos.room_num)));
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d / %d", g_Camera.target.x / WALL_L,
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d / %d", g_Camera.pos.x / WALL_L,
+            g_Camera.pos.y / WALL_L, g_Camera.pos.z / WALL_L,
+            g_Camera.pos.room_num));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d / %d", g_Camera.target.x / WALL_L,
             g_Camera.target.y / WALL_L, g_Camera.target.z / WALL_L,
-            g_Camera.target.room_num)));
+            g_Camera.target.room_num));
     }
     UI_EndStack();
     UI_EndStack();
@@ -219,17 +222,18 @@ static void M_DebugPosTopRight(void)
         .align = { .h = UI_STACK_H_ALIGN_RIGHT },
     });
     if (g_Config.debug.enable_debug_pos) {
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d", lara->pos.x, lara->pos.y, lara->pos.z)));
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d", lara->rot.x, lara->rot.y, lara->rot.z)));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d", lara->pos.x, lara->pos.y, lara->pos.z));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d", lara->rot.x, lara->rot.y, lara->rot.z));
     }
     if (g_Config.debug.enable_debug_camera) {
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d", g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z)));
-        UI_Label(String_StylizeSmallDigitsStatic(String_FormatStatic(
-            "%d, %d, %d", g_Camera.target.x, g_Camera.target.y,
-            g_Camera.target.z)));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d", g_Camera.pos.x, g_Camera.pos.y,
+            g_Camera.pos.z));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d, %d", g_Camera.target.x, g_Camera.target.y,
+            g_Camera.target.z));
     }
     if (g_Config.debug.enable_invulnerability) {
         UI_LabelEx(

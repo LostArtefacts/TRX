@@ -1130,7 +1130,7 @@
             "name": "Trappe 3",
         },
         "alphabet": {
-            "name": "\\{review}Alphabet",
+            "name": "\\{review}Police par défaut",
         },
         "blood_1": {
             "name": "\\{review}Sang 1",
@@ -1651,6 +1651,9 @@
         },
         "water_sprite": {
             "name": "\\{review}Sillage de Bateau",
+        },
+        "alphabet_small": {
+            "name": "\\{review}Petite police",
         }
     }
 }

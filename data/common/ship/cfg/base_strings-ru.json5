@@ -1140,7 +1140,7 @@
             "name": "Люк 3",
         },
         "alphabet": {
-            "name": "Алфавит",
+            "name": "\\{review}Шрифт по умолчанию",
         },
         "blood_1": {
             "name": "Кровь 1",
@@ -1671,6 +1671,9 @@
         },
         "water_sprite": {
             "name": "\\{review}След лодки",
+        },
+        "alphabet_small": {
+            "name": "\\{review}Маленький шрифт",
         }
     }
 }
