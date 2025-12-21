@@ -921,6 +921,11 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Fader_Init(
             &ring->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK,
             M_INV_RING_FADE_TIME_FAST);
+    } else if (ring->background_style == BK_MONOCHROME) {
+        Output_Background_LoadMono();
+        Fader_Init(
+            &ring->back_fader, FADER_TRANSPARENT, FADER_BLACK,
+            M_INV_RING_FADE_TIME_FAST);
     } else {
         Output_LoadBackgroundFromObject(
             ring->background_style == BK_PATTERN_WAVE);

@@ -17,6 +17,7 @@ typedef enum {
     M_UNIFORM_TEXTURE_SIZE,
     M_UNIFORM_EFFECT,
     M_UNIFORM_OPACITY,
+    M_UNIFORM_DESATURATION,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -55,6 +56,7 @@ struct GFX_2D_RENDERER {
     GFX_2D_EFFECT effect;
 
     float opacity;
+    float desaturation;
 
     bool use_external_texture;
     GLuint external_texture_id;
@@ -119,6 +121,7 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
 
     r->effect = GFX_2D_EFFECT_NONE;
     r->opacity = 1.0f;
+    r->desaturation = 0.0f;
     r->repeat.x = 1;
     r->repeat.y = 1;
     r->quad.x0 = 0.0f;
@@ -165,6 +168,7 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         { M_UNIFORM_TEXTURE_SIZE, "uTexSize" },
         { M_UNIFORM_EFFECT, "uEffect" },
         { M_UNIFORM_OPACITY, "uOpacity" },
+        { M_UNIFORM_DESATURATION, "uDesaturation" },
         { -1, nullptr },
     };
     for (int32_t i = 0; uniforms[i].name != nullptr; i++) {
@@ -180,6 +184,8 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     GFX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
     GFX_GL_Program_Uniform1f(
         &r->program, r->loc[M_UNIFORM_OPACITY], r->opacity);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_DESATURATION], r->desaturation);
     GFX_GL_CheckError();
 
     return r;
@@ -351,6 +357,19 @@ void GFX_2D_Renderer_SetOpacity(GFX_2D_RENDERER *const r, const float opacity)
         GFX_GL_Program_Uniform1f(
             &r->program, r->loc[M_UNIFORM_OPACITY], opacity);
         r->opacity = opacity;
+    }
+}
+
+void GFX_2D_Renderer_SetDesaturation(
+    GFX_2D_RENDERER *const r, const float desaturation)
+{
+    ASSERT(r != nullptr);
+
+    if (r->desaturation != desaturation) {
+        GFX_GL_Program_Bind(&r->program);
+        GFX_GL_Program_Uniform1f(
+            &r->program, r->loc[M_UNIFORM_DESATURATION], desaturation);
+        r->desaturation = desaturation;
     }
 }
 
