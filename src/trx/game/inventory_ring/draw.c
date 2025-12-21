@@ -17,9 +17,36 @@
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 #include <trx/game/viewport.h>
+#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_CAMERA_2_RING 598
+
+static bool M_IsEnterTransition(const INV_RING *const ring)
+{
+    return ring->motion.status == RNG_OPENING;
+}
+
+static bool M_IsExitTransition(const INV_RING *const ring)
+{
+    return ring->motion.status == RNG_EXITING_INVENTORY
+        || ring->motion.status == RNG_FADING_OUT
+        || ring->motion.status == RNG_DONE
+        || (ring->motion.status == RNG_CLOSING
+            && (ring->motion.status_target == RNG_FADING_OUT
+                || ring->motion.status_target == RNG_DONE));
+}
+
+static float M_GetMotionProgress(
+    const int16_t frames_remaining, const int16_t total_frames)
+{
+    if (total_frames == 0) {
+        return 1.0f;
+    }
+    float result = frames_remaining / (float)total_frames;
+    CLAMP(result, 0.0f, 1.0f);
+    return result;
+}
 
 static int32_t M_GetFrames(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
@@ -157,21 +184,30 @@ void InvRing_Draw(INV_RING *const ring)
 
     if (ring->mode == INV_TITLE_MODE) {
         Interpolation_Interpolate();
-    } else if (g_Config.ui.inventory_background_style == BK_TRANSPARENT) {
-        Matrix_LookAt(
-            g_InvRing_OldCamera.pos.x,
-            g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,
-            g_InvRing_OldCamera.pos.z, g_InvRing_OldCamera.target.x,
-            g_InvRing_OldCamera.target.y, g_InvRing_OldCamera.target.z, 0);
+    } else {
+        if (!ring->snapshot_captured || M_IsExitTransition(ring)) {
+            Matrix_LookAt(
+                g_InvRing_OldCamera.pos.x,
+                g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,
+                g_InvRing_OldCamera.pos.z, g_InvRing_OldCamera.target.x,
+                g_InvRing_OldCamera.target.y, g_InvRing_OldCamera.target.z, 0);
 
-        Interpolation_Disable();
-        Game_Draw(false);
-        Interpolation_Enable();
+            Interpolation_Disable();
+            Game_Draw(false);
+            Interpolation_Enable();
+            Output_Background_EnableSnapshot(true);
+            Output_Background_CaptureSnapshotScene();
+            ring->snapshot_captured = true;
+            Output_SwitchViewport(VIEWPORT_GAME);
+            Viewport_Init(-1, -1, -1, -1);
+        } else {
+            Output_Background_EnableSnapshot(true);
+        }
 
-        Fader_Draw(&ring->back_fader);
-        SceneCompositor_Flush();
-
-        Viewport_Init(-1, -1, -1, -1);
+        const float overlay_opacity =
+            Fader_GetRealValue(&ring->back_fader) / 255.0f;
+        Output_Background_SetOverlayOpacity(overlay_opacity);
+        Output_DrawBackground();
     }
 
     const int16_t old_fov = Viewport_GetSystemFOV();

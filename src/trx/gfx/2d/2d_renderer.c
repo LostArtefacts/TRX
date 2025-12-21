@@ -16,6 +16,7 @@ typedef enum {
     M_UNIFORM_TEXTURE_MAIN,
     M_UNIFORM_TEXTURE_SIZE,
     M_UNIFORM_EFFECT,
+    M_UNIFORM_OPACITY,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -52,6 +53,11 @@ struct GFX_2D_RENDERER {
     } quad;
 
     GFX_2D_EFFECT effect;
+
+    float opacity;
+
+    bool use_external_texture;
+    GLuint external_texture_id;
 
     // shader variable locations
     GLint loc[M_UNIFORM_NUMBER_OF];
@@ -112,6 +118,7 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     const GFX_CONFIG *const config = GFX_Context_GetConfig();
 
     r->effect = GFX_2D_EFFECT_NONE;
+    r->opacity = 1.0f;
     r->repeat.x = 1;
     r->repeat.y = 1;
     r->quad.x0 = 0.0f;
@@ -122,6 +129,8 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     r->vertices = nullptr;
     r->vertex_count = 6;
     r->vertex_format.initialized = false;
+    r->use_external_texture = false;
+    r->external_texture_id = 0;
 
     GFX_GL_Buffer_Init(&r->surface_buffer, GL_ARRAY_BUFFER);
     GFX_GL_Buffer_Bind(&r->surface_buffer);
@@ -155,6 +164,7 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         { M_UNIFORM_TEXTURE_MAIN, "uTexMain" },
         { M_UNIFORM_TEXTURE_SIZE, "uTexSize" },
         { M_UNIFORM_EFFECT, "uEffect" },
+        { M_UNIFORM_OPACITY, "uOpacity" },
         { -1, nullptr },
     };
     for (int32_t i = 0; uniforms[i].name != nullptr; i++) {
@@ -168,6 +178,8 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     GFX_GL_Program_Uniform4f(
         &r->program, r->loc[M_UNIFORM_TEXTURE_SIZE], 0.0f, 0.0f, 1.0f, 1.0f);
     GFX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_OPACITY], r->opacity);
     GFX_GL_CheckError();
 
     return r;
@@ -227,9 +239,52 @@ void GFX_2D_Renderer_Upload(
 
     r->ready = true;
     r->desc = *desc;
+    r->use_external_texture = false;
+    r->external_texture_id = 0;
     if (reupload_vert) {
         M_UploadVertices(r);
     }
+}
+
+void GFX_2D_Renderer_SetExternalTexture(
+    GFX_2D_RENDERER *const r, const GLuint texture_id, const int32_t width,
+    const int32_t height, const bool flip_y)
+{
+    ASSERT(r != nullptr);
+    r->use_external_texture = true;
+    r->external_texture_id = texture_id;
+
+    const float v0 = flip_y ? 1.0f : 0.0f;
+    const float v1 = flip_y ? 0.0f : 1.0f;
+    GFX_2D_SURFACE_DESC desc = {
+        .width = width,
+        .height = height,
+        .bit_count = 32,
+        .tex_format = GL_RGBA,
+        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
+        .uv = {
+            { 0.0f, v0 },
+            { 1.0f, v0 },
+            { 1.0f, v1 },
+            { 0.0f, v1 },
+        },
+        .pitch = width * 4,
+    };
+
+    const bool reupload_vert =
+        memcmp(r->desc.uv, desc.uv, sizeof(desc.uv)) != 0 || !r->ready;
+    r->ready = true;
+    r->desc = desc;
+    if (reupload_vert) {
+        M_UploadVertices(r);
+    }
+}
+
+void GFX_2D_Renderer_ClearExternalTexture(GFX_2D_RENDERER *const r)
+{
+    ASSERT(r != nullptr);
+    r->use_external_texture = false;
+    r->external_texture_id = 0;
 }
 
 void GFX_2D_Renderer_SetTextureSize(
@@ -287,6 +342,18 @@ void GFX_2D_Renderer_SetEffect(GFX_2D_RENDERER *const r, const uint32_t effect)
     }
 }
 
+void GFX_2D_Renderer_SetOpacity(GFX_2D_RENDERER *const r, const float opacity)
+{
+    ASSERT(r != nullptr);
+
+    if (r->opacity != opacity) {
+        GFX_GL_Program_Bind(&r->program);
+        GFX_GL_Program_Uniform1f(
+            &r->program, r->loc[M_UNIFORM_OPACITY], opacity);
+        r->opacity = opacity;
+    }
+}
+
 void GFX_2D_Renderer_Render(GFX_2D_RENDERER *const r)
 {
     ASSERT(r != nullptr);
@@ -298,10 +365,14 @@ void GFX_2D_Renderer_Render(GFX_2D_RENDERER *const r)
     GFX_GL_VertexArray_Bind(&r->vertex_format);
 
     glActiveTexture(GL_TEXTURE0);
-    GFX_GL_Texture_Bind(&r->surface_texture);
+    if (r->use_external_texture) {
+        glBindTexture(GL_TEXTURE_2D, r->external_texture_id);
+    } else {
+        GFX_GL_Texture_Bind(&r->surface_texture);
+    }
 
-    GLboolean blend = glIsEnabled(GL_BLEND);
-    if (blend) {
+    const GLboolean was_blend_enabled = glIsEnabled(GL_BLEND);
+    if (was_blend_enabled) {
         glDisable(GL_BLEND);
     }
 
@@ -309,12 +380,64 @@ void GFX_2D_Renderer_Render(GFX_2D_RENDERER *const r)
     glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    GLboolean depth_test = glIsEnabled(GL_DEPTH_TEST);
-    if (depth_test) {
+    const GLboolean was_depth_test_enabled = glIsEnabled(GL_DEPTH_TEST);
+    if (was_depth_test_enabled) {
         glDisable(GL_DEPTH_TEST);
     }
 
     glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
     glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
+    if (was_depth_test_enabled) {
+        glEnable(GL_DEPTH_TEST);
+    }
+    if (was_blend_enabled) {
+        glEnable(GL_BLEND);
+    }
+    GFX_GL_CheckError();
+}
+
+void GFX_2D_Renderer_RenderWithBlend(GFX_2D_RENDERER *const r)
+{
+    ASSERT(r != nullptr);
+
+    GFX_GL_Program_Bind(&r->program);
+    GFX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
+    GFX_GL_Buffer_Bind(&r->surface_buffer);
+    GFX_GL_VertexArray_Bind(&r->vertex_format);
+
+    glActiveTexture(GL_TEXTURE0);
+    if (r->use_external_texture) {
+        glBindTexture(GL_TEXTURE_2D, r->external_texture_id);
+    } else {
+        GFX_GL_Texture_Bind(&r->surface_texture);
+    }
+
+    const GLboolean was_blend_enabled = glIsEnabled(GL_BLEND);
+    GLint prev_blend_src = 0;
+    GLint prev_blend_dst = 0;
+    glGetIntegerv(GL_BLEND_SRC_RGB, &prev_blend_src);
+    glGetIntegerv(GL_BLEND_DST_RGB, &prev_blend_dst);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+    GLint bound_polygon_mode[2];
+    glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    const GLboolean was_depth_test_enabled = glIsEnabled(GL_DEPTH_TEST);
+    if (was_depth_test_enabled) {
+        glDisable(GL_DEPTH_TEST);
+    }
+
+    glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
+
+    glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
+    if (was_depth_test_enabled) {
+        glEnable(GL_DEPTH_TEST);
+    }
+    glBlendFunc(prev_blend_src, prev_blend_dst);
+    if (!was_blend_enabled) {
+        glDisable(GL_BLEND);
+    }
     GFX_GL_CheckError();
 }

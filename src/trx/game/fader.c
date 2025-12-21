@@ -49,6 +49,14 @@ int32_t Fader_GetCurrentValue(const FADER *const fader)
         }
         return FADER_TRANSPARENT;
     }
+    return Fader_GetRealValue(fader);
+}
+
+int32_t Fader_GetRealValue(const FADER *const fader)
+{
+    if (!g_Config.visuals.enable_fade_effects || fader->args.duration == 0.0) {
+        return fader->args.target;
+    }
     const double elapsed_time = ClockTimer_PeekElapsed(&fader->timer);
     const double target_time = fader->args.duration;
     double ratio = elapsed_time / target_time;

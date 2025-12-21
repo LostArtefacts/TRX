@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/config/enum.h>
 #include <trx/game/fader.h>
 #include <trx/game/inventory_ring/enum.h>
 #include <trx/game/math.h>
@@ -113,4 +114,7 @@ typedef struct {
     CLOCK_TIMER motion_timer;
     FADER top_fader;
     FADER back_fader;
+
+    BACKGROUND_TYPE background_style;
+    bool snapshot_captured;
 } INV_RING;
