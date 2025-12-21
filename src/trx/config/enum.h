@@ -12,6 +12,7 @@ typedef enum {
     BK_PATTERN_STATIC,
     BK_PATTERN_WAVE,
     BK_IMAGE,
+    BK_MONOCHROME,
 } BACKGROUND_TYPE;
 
 typedef enum {

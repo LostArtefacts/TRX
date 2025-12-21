@@ -121,14 +121,17 @@ static void M_RenderPass(const SCENE_SOURCE *src, SCENE_PASS pass)
         GFX_2D_Renderer_SetRepeat(m_Priv.snapshot_renderer, 1, 1);
         GFX_2D_Renderer_SetTextureSize(m_Priv.snapshot_renderer, nullptr);
         GFX_2D_Renderer_SetOpacity(m_Priv.snapshot_renderer, 1.0f);
+        GFX_2D_Renderer_SetDesaturation(
+            m_Priv.snapshot_renderer, m_Priv.snapshot_desaturation);
         GFX_2D_Renderer_Render(m_Priv.snapshot_renderer);
     }
 
     const bool use_blend =
         m_Priv.snapshot_enabled || m_Priv.overlay_opacity < 1.0f;
-    if (m_Priv.type != BK_TRANSPARENT) {
+    if (m_Priv.type != BK_TRANSPARENT && m_Priv.type != BK_MONOCHROME) {
         GFX_2D_Renderer_SetOpacity(
             m_Priv.overlay_renderer, m_Priv.overlay_opacity);
+        GFX_2D_Renderer_SetDesaturation(m_Priv.overlay_renderer, 0.0f);
         if (use_blend) {
             GFX_2D_Renderer_RenderWithBlend(m_Priv.overlay_renderer);
         } else {
@@ -146,6 +149,7 @@ static void M_RenderPass(const SCENE_SOURCE *src, SCENE_PASS pass)
         GFX_2D_Renderer_SetTextureSize(m_Priv.snapshot_renderer, nullptr);
         GFX_2D_Renderer_SetOpacity(
             m_Priv.snapshot_renderer, m_Priv.dim_opacity);
+        GFX_2D_Renderer_SetDesaturation(m_Priv.snapshot_renderer, 0.0f);
         GFX_2D_Renderer_RenderWithBlend(m_Priv.snapshot_renderer);
     }
 
@@ -397,6 +401,12 @@ void Output_DrawBackground(void)
     }
 }
 
+void Output_Background_LoadMono(void)
+{
+    Output_UnloadBackground();
+    m_Priv.type = BK_MONOCHROME;
+}
+
 void Output_Background_EnableSnapshot(const bool enable)
 {
     m_Priv.snapshot_enabled = enable;
@@ -434,6 +444,8 @@ void Output_Background_SetOverlayOpacity(float opacity)
 
     if (m_Priv.type == BK_TRANSPARENT) {
         m_Priv.dim_opacity = opacity;
+    } else if (m_Priv.type == BK_MONOCHROME) {
+        m_Priv.snapshot_desaturation = opacity;
     } else {
         m_Priv.overlay_opacity = opacity;
     }

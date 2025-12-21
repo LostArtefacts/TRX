@@ -110,6 +110,7 @@
         "ENUM_BILLBOARD_LOCK_PERSPECTIVE": "Sealladh",
         "ENUM_BILLBOARD_LOCK_ROLL": "Rothladh",
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "Rothladh is claonadh",
+        "ENUM_BK_MONOCHROME": "\\{review}Aon-dhathach",
         "ENUM_BK_PATTERN_STATIC": "Statach",
         "ENUM_BK_PATTERN_WAVE": "Crathadh",
         "ENUM_BK_TRANSPARENT": "\\{review}Soilleir",

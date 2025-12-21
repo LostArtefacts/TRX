@@ -110,6 +110,7 @@
         "ENUM_BILLBOARD_LOCK_PERSPECTIVE": "Perspective",
         "ENUM_BILLBOARD_LOCK_ROLL": "Roll",
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "Roll & pitch",
+        "ENUM_BK_MONOCHROME": "Monochrome",
         "ENUM_BK_PATTERN_STATIC": "Static",
         "ENUM_BK_PATTERN_WAVE": "Wave",
         "ENUM_BK_TRANSPARENT": "Transparent",

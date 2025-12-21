@@ -110,6 +110,7 @@
         "ENUM_BILLBOARD_LOCK_PERSPECTIVE": "\\{review}Perspective",
         "ENUM_BILLBOARD_LOCK_ROLL": "\\{review}Roulis",
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Roulis et tangage",
+        "ENUM_BK_MONOCHROME": "\\{review}Monochrome",
         "ENUM_BK_PATTERN_STATIC": "\\{review}Statique",
         "ENUM_BK_PATTERN_WAVE": "\\{review}Vague",
         "ENUM_BK_TRANSPARENT": "\\{review}Transparent",

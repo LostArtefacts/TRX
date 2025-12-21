@@ -7,6 +7,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/output/background.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 #include <trx/memory.h>
@@ -36,6 +37,8 @@ static void M_FadeIn(M_PRIV *const p)
 {
     if (p->args.background_path != nullptr) {
         Fader_Init(&p->top_fader, FADER_BLACK, FADER_TRANSPARENT, 1.0);
+    } else if (p->args.background_type == BK_MONOCHROME) {
+        Fader_Init(&p->back_fader, FADER_TRANSPARENT, FADER_BLACK, 0.5);
     } else {
         Fader_Init(&p->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK, 0.5);
     }
@@ -68,6 +71,13 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         || p->args.background_type == BK_PATTERN_WAVE) {
         Output_LoadBackgroundFromObject(
             p->args.background_type == BK_PATTERN_WAVE);
+    } else if (p->args.background_type == BK_MONOCHROME) {
+        Interpolation_Disable();
+        Game_Draw(false);
+        Interpolation_Enable();
+        Output_Background_EnableSnapshot(true);
+        Output_Background_CaptureSnapshotScene();
+        Output_Background_LoadMono();
     } else {
         Output_UnloadBackground();
     }
@@ -154,11 +164,22 @@ static void M_Draw(PHASE *const phase)
         Interpolation_Disable();
         Game_Draw(false);
         Interpolation_Enable();
+
+        UI_BeginFade(&p->back_fader, false);
+        UI_EndFade();
+    } else if (p->args.background_type == BK_MONOCHROME) {
+        const float overlay_opacity =
+            Fader_GetRealValue(&p->back_fader) / 255.0f;
+        Output_Background_SetOverlayOpacity(overlay_opacity);
+        Output_DrawBackground();
+
+        // We never draw this fader. Make sure M_IsFading doesn't wait forever.
+        p->back_fader.target_drawn = true;
     } else {
         Output_DrawBackground();
+        UI_BeginFade(&p->back_fader, false);
+        UI_EndFade();
     }
-    UI_BeginFade(&p->back_fader, false);
-    UI_EndFade();
 
     UI_BeginFade(&p->top_fader, true);
     if (p->ui_active) {
