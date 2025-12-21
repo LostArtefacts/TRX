@@ -38,6 +38,7 @@
 - fixed water enemies appearing untinted for a frame after dying and moving to the water surface (#4420, regression from TR2X 0.1)
 
 **TR1**:
+- added the ability to change inventory and statistics background styles (pattern + wave are not implemented in TR1)
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items rather than directly on top (#4374)
 - fixed several OG texture issues in Caves (rooms 0, 1, 2, 6, 24, 30 and 32)
 - fixed Lara automatically being given TR2 weapons in NG+ when playing the OG levels (#4365, regression from 1.0)
