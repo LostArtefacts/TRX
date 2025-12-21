@@ -79,6 +79,47 @@ static int32_t M_GetVisibleRows(void)
     }
 }
 
+static bool M_IsEnumEntryAvailable(
+    const UI_SETTINGS_OPTION *const option,
+    const UI_SETTINGS_ENUM_ENTRY *const entry)
+{
+    if (entry == nullptr || entry->value == -1) {
+        return false;
+    }
+    if (option->custom_handler.is_enum_value_available == nullptr) {
+        return true;
+    }
+    return option->custom_handler.is_enum_value_available(option, entry->value);
+}
+
+static bool M_HasAvailableEnumValue(const UI_SETTINGS_OPTION *const option)
+{
+    const UI_SETTINGS_ENUM_ENTRY *entry =
+        (UI_SETTINGS_ENUM_ENTRY *)option->misc;
+    if (entry == nullptr) {
+        return false;
+    }
+    while (entry->value != -1) {
+        if (M_IsEnumEntryAvailable(option, entry)) {
+            return true;
+        }
+        entry++;
+    }
+    return false;
+}
+
+static bool M_IsOptionHidden(const UI_SETTINGS_OPTION *const option)
+{
+    if (Config_IsOptionHidden(option->target)) {
+        return true;
+    }
+    if (option->option_type == COT_ENUM && option->misc != nullptr
+        && !M_HasAvailableEnumValue(option)) {
+        return true;
+    }
+    return false;
+}
+
 // Map a visible row index to the corresponding option, skipping hidden ones.
 static const UI_SETTINGS_OPTION *M_GetOptionByRow(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
@@ -86,7 +127,7 @@ static const UI_SETTINGS_OPTION *M_GetOptionByRow(
     int32_t count = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
         const UI_SETTINGS_OPTION *const opt = &s->options[i];
-        if (Config_IsOptionHidden(opt->target)) {
+        if (M_IsOptionHidden(opt)) {
             continue;
         }
         if (count == row_idx) {
@@ -132,6 +173,26 @@ static M_ENUM_LOOKUP M_GetEnumEntry(const UI_SETTINGS_OPTION *const option)
         result.count++;
     }
     return result;
+}
+
+static int32_t M_FindNextAvailableEnumPosition(
+    const UI_SETTINGS_OPTION *const option,
+    const M_ENUM_LOOKUP *const enum_lookup, const int32_t dir)
+{
+    if (enum_lookup->position < 0 || enum_lookup->count <= 0 || dir == 0) {
+        return -1;
+    }
+    const UI_SETTINGS_ENUM_ENTRY *const entries = option->misc;
+    const int32_t step = dir < 0 ? -1 : 1;
+
+    for (int32_t pos = enum_lookup->position + step;
+         pos >= 0 && pos < enum_lookup->count; pos += step) {
+        if (M_IsEnumEntryAvailable(option, &entries[pos])) {
+            return pos;
+        }
+    }
+
+    return -1;
 }
 
 static const char *M_FormatRowValue(
@@ -227,7 +288,13 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     case COT_ENUM: {
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
+        const int32_t current_value = *(int32_t *)option->target;
         while (entry->value != -1) {
+            const bool is_current = entry->value == current_value;
+            if (!is_current && !M_IsEnumEntryAvailable(option, entry)) {
+                entry++;
+                continue;
+            }
             const char *const value = GameString_Get(entry->name);
             const float value_w = UI_Label_MeasureW(value);
             result = MAX(result, value_w);
@@ -296,12 +363,7 @@ static bool M_CanChangeValue(
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
         ASSERT(enum_lookup.entry != nullptr);
-        if (dir < 0) {
-            return enum_lookup.position > 0;
-        } else if (dir > 0) {
-            return enum_lookup.position < enum_lookup.count - 1;
-        }
-        break;
+        return M_FindNextAvailableEnumPosition(option, &enum_lookup, dir) >= 0;
     }
 
     default:
@@ -431,7 +493,7 @@ static void M_RecomputeSizes(UI_SETTINGS_STATE *const s)
 {
     int32_t row_count = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
-        if (!Config_IsOptionHidden(s->options[i].target)) {
+        if (!M_IsOptionHidden(&s->options[i])) {
             row_count++;
         }
     }
@@ -503,7 +565,7 @@ UI_SETTINGS_STATE *UI_Settings_Init(
     s->options = options;
     s->max_group_items = 0;
     for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
-        if (!Config_IsOptionHidden(s->options[i].target)) {
+        if (!M_IsOptionHidden(&s->options[i])) {
             s->max_group_items++;
         }
     }
@@ -527,7 +589,7 @@ UI_SETTINGS_STATE *UI_Settings_InitWithTabs(
     for (int32_t i = 0; i < tab_count; i++) {
         int32_t tab_items = 0;
         for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
-            if (!Config_IsOptionHidden(tabs[i].options[j].target)) {
+            if (!M_IsOptionHidden(&tabs[i].options[j])) {
                 tab_items++;
             }
         }
@@ -548,7 +610,7 @@ UI_SETTINGS_STATE *UI_Settings_InitWithTabs(
     for (int32_t i = 0; i < tab_count; i++) {
         int32_t tab_items = 0;
         for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
-            if (!Config_IsOptionHidden(tabs[i].options[j].target)) {
+            if (!M_IsOptionHidden(&tabs[i].options[j])) {
                 tab_items++;
             }
         }
@@ -715,10 +777,12 @@ void UI_Settings_RequestChange(
     }
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
-        const UI_SETTINGS_ENUM_ENTRY *const next_entry =
-            &((UI_SETTINGS_ENUM_ENTRY *)
-                  option->misc)[enum_lookup.position + delta];
-        *(int32_t *)option->target = next_entry->value;
+        const int32_t next_pos =
+            M_FindNextAvailableEnumPosition(option, &enum_lookup, delta);
+        if (next_pos >= 0) {
+            const UI_SETTINGS_ENUM_ENTRY *const entries = option->misc;
+            *(int32_t *)option->target = entries[next_pos].value;
+        }
         break;
     }
     case COT_STRING:
