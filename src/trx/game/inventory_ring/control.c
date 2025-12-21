@@ -870,6 +870,10 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     INV_RING *const ring = Memory_Alloc(sizeof(INV_RING));
     ring->mode = mode;
+    ring->background_style = mode == INV_TITLE_MODE
+        ? BK_IMAGE
+        : g_Config.ui.inventory_background_style;
+    ring->snapshot_captured = false;
 
     switch (mode) {
     case INV_TITLE_MODE:
@@ -912,14 +916,17 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Fader_Init(
             &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
             M_INV_RING_FADE_TIME_FAST);
-    } else if (g_Config.ui.inventory_background_style == BK_TRANSPARENT) {
+    } else if (ring->background_style == BK_TRANSPARENT) {
         Output_UnloadBackground();
         Fader_Init(
             &ring->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK,
             M_INV_RING_FADE_TIME_FAST);
     } else {
         Output_LoadBackgroundFromObject(
-            g_Config.ui.inventory_background_style == BK_PATTERN_WAVE);
+            ring->background_style == BK_PATTERN_WAVE);
+        Fader_Init(
+            &ring->back_fader, FADER_TRANSPARENT, FADER_BLACK,
+            M_INV_RING_FADE_TIME_FAST);
     }
 
     return ring;
@@ -941,6 +948,7 @@ void InvRing_Close(INV_RING *const ring)
         Sound_StopAll();
     }
     Output_UnloadBackground();
+    Output_Background_EnableSnapshot(false);
 
     if (g_Config.input.enable_buffering_inventory) {
         g_OldInputDB = (INPUT_STATE) {};

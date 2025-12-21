@@ -184,10 +184,7 @@ void Output_DispatchLevelUnload(void)
     OutputSource_Rooms_ObserveLevelUnload();
     OutputSource_RoomsDebug_ObserveLevelUnload();
     OutputSource_Sprites_ObserveLevelUnload();
-    if (Output_GetBackgroundType() == BK_PATTERN_STATIC
-        || Output_GetBackgroundType() == BK_PATTERN_WAVE) {
-        Output_UnloadBackground();
-    }
+    Output_UnloadBackground();
 }
 
 void Output_DispatchRoomFlip(const ROOM *room)

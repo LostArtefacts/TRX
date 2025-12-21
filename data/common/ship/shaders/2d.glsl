@@ -14,6 +14,7 @@
 #define WAVE_FPS_DRIFT 25 / 30
 
 uniform int uEffect;
+uniform float uOpacity;
 
 #ifdef VERTEX
 
@@ -78,6 +79,10 @@ void main(void) {
     }
 
     outColor.rgb *= uBrightnessMultiplier;
+
+    outColor.a *= clamp(uOpacity, 0.0, 1.0);
+    // Output premultiplied alpha so callers can use (ONE, ONE_MINUS_SRC_ALPHA).
+    outColor.rgb *= outColor.a;
 }
 
 #endif

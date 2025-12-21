@@ -34,6 +34,13 @@ void GFX_2D_Renderer_Destroy(GFX_2D_RENDERER *renderer);
 void GFX_2D_Renderer_Upload(
     GFX_2D_RENDERER *renderer, GFX_2D_SURFACE_DESC *desc, const uint8_t *data);
 
+// Use an external GL texture instead of the internally managed one.
+// When enabled, the renderer uses a full [0,1] UV mapping by default.
+void GFX_2D_Renderer_SetExternalTexture(
+    GFX_2D_RENDERER *renderer, GLuint texture_id, int32_t width, int32_t height,
+    bool flip_y);
+void GFX_2D_Renderer_ClearExternalTexture(GFX_2D_RENDERER *renderer);
+
 // Set the normalized screen-space quad for rendering.
 // Coordinates are in [0,1] where (0,0) is top-left and (1,1) is bottom-right.
 void GFX_2D_Renderer_SetQuad(
@@ -44,4 +51,7 @@ void GFX_2D_Renderer_SetTextureSize(
     GFX_2D_RENDERER *renderer, const GFX_TEXTURE_SIZE *size);
 void GFX_2D_Renderer_SetEffect(GFX_2D_RENDERER *renderer, uint32_t effect);
 
+void GFX_2D_Renderer_SetOpacity(GFX_2D_RENDERER *renderer, float opacity);
+
 void GFX_2D_Renderer_Render(GFX_2D_RENDERER *renderer);
+void GFX_2D_Renderer_RenderWithBlend(GFX_2D_RENDERER *renderer);

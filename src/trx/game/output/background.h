@@ -16,5 +16,11 @@ void Output_UnloadBackground(void);
 
 void Output_DrawBackground(void);
 
+// Scene-only snapshot background composited in SCENE_PASS_BACKGROUND.
+void Output_Background_EnableSnapshot(bool enable);
+bool Output_Background_IsSnapshotEnabled(void);
+void Output_Background_CaptureSnapshotScene(void);
+void Output_Background_SetOverlayOpacity(float opacity);
+
 void Output_RefreshBackgroundScaling(void);
 void Output_ClearLastBackgroundPath(void);

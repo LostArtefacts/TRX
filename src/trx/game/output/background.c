@@ -198,30 +198,38 @@ void Output_ReloadBackgroundImage(void)
 {
     Output_RefreshBackgroundScaling();
 
-    if (Output_GetBackgroundType() == BK_PATTERN_STATIC
-        || Output_GetBackgroundType() == BK_PATTERN_WAVE) {
+    switch (Output_GetBackgroundType()) {
+    case BK_PATTERN_STATIC:
+    case BK_PATTERN_WAVE:
         Output_LoadBackgroundFromObject(
             Output_GetBackgroundType() == BK_PATTERN_WAVE);
-        return;
-    }
+        break;
 
-    if (m_LastPath == nullptr) {
+    case BK_IMAGE: {
+        if (m_LastPath == nullptr) {
+            Output_UnloadBackground();
+            return;
+        }
+
+        const M_CANDIDATE *const best =
+            M_PickBestCandidate(M_GetScreenAspectRatio());
+        if (best != nullptr) {
+            if (m_LastCandidateName != nullptr
+                && String_Equivalent(best->path, m_LastCandidateName)) {
+                return;
+            }
+            if (M_LoadCandidate(best)) {
+                return;
+            }
+        }
+
         Output_UnloadBackground();
-        return;
+        break;
     }
 
-    const M_CANDIDATE *best = M_PickBestCandidate(M_GetScreenAspectRatio());
-    if (best != nullptr) {
-        if (m_LastCandidateName != nullptr
-            && String_Equivalent(best->path, m_LastCandidateName)) {
-            return;
-        }
-        if (M_LoadCandidate(best)) {
-            return;
-        }
+    default:
+        break;
     }
-
-    Output_UnloadBackground();
 }
 
 void Output_ClearLastBackgroundPath(void)
