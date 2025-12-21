@@ -17,8 +17,8 @@
 #include <trx/version.h>
 
 static void M_DrawScreenQuad(
-    const int32_t x0, const int32_t y0, const int32_t x1, const int32_t y1,
-    const int32_t z, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
+    const float x0, const float y0, const float x1, const float y1,
+    const float z, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
     const RGBA_8888 br)
 {
     OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
