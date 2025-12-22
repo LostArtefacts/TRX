@@ -16,6 +16,7 @@
 uniform int uEffect;
 uniform float uOpacity;
 uniform float uDesaturation;
+uniform float uBrightnessScale;
 
 #ifdef VERTEX
 
@@ -79,7 +80,7 @@ void main(void) {
         outColor *= vec4(lightV, lightV, lightV, 1.0);
     }
 
-    outColor.rgb *= uBrightnessMultiplier;
+    outColor.rgb *= uBrightnessMultiplier * uBrightnessScale;
 
     // Optional desaturation (0 = original, 1 = monochrome).
     if (uDesaturation != 0.0) {

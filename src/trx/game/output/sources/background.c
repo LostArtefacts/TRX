@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/background.h>
@@ -28,6 +29,7 @@ typedef struct {
     int32_t snapshot_height;
     float snapshot_desaturation;
     bool snapshot_has_content;
+    float snapshot_brightness;
 
     GFX_GL_TEXTURE solid_black_texture;
     float overlay_opacity;
@@ -175,6 +177,7 @@ void Output_InitBackground(void)
     m_Priv.snapshot_height = 0;
     m_Priv.snapshot_desaturation = 0.0f;
     m_Priv.snapshot_has_content = false;
+    m_Priv.snapshot_brightness = 1.0f;
     m_Priv.overlay_opacity = 1.0f;
     m_Priv.dim_opacity = 0.0f;
     m_Priv.snapshot_texture = (GFX_GL_TEXTURE) { .initialized = false };
@@ -416,6 +419,7 @@ void Output_Background_EnableSnapshot(const bool enable)
     m_Priv.snapshot_enabled = enable;
     if (!enable) {
         m_Priv.snapshot_has_content = false;
+        GFX_2D_Renderer_SetBrightnessScale(m_Priv.snapshot_renderer, 1.0f);
     }
 }
 
@@ -444,6 +448,12 @@ void Output_Background_CaptureSnapshotScene(void)
         m_Priv.snapshot_height);
     GFX_GL_CheckError();
     m_Priv.snapshot_has_content = true;
+
+    // Remove the captured brightness so we can reapply the current multiplier.
+    m_Priv.snapshot_brightness = g_Config.visuals.brightness;
+    CLAMPL(m_Priv.snapshot_brightness, 0.001f);
+    GFX_2D_Renderer_SetBrightnessScale(
+        m_Priv.snapshot_renderer, 1.0f / m_Priv.snapshot_brightness);
 }
 
 void Output_Background_SetOverlayOpacity(float opacity)
