@@ -22,7 +22,12 @@ void Output_Background_LoadMono(void);
 void Output_Background_EnableSnapshot(bool enable);
 bool Output_Background_IsSnapshotEnabled(void);
 void Output_Background_CaptureSnapshotScene(void);
+void Output_Background_CaptureSnapshotPresented(void);
 void Output_Background_SetOverlayOpacity(float opacity);
+
+// Captures the current geometry FBO into an internal texture and fades it out
+// on top of the scene (SCENE_PASS_UI), underneath the UI viewport.
+void Output_Background_BeginTransitionFadeOut(double duration);
 
 void Output_RefreshBackgroundScaling(void);
 void Output_ClearLastBackgroundPath(void);

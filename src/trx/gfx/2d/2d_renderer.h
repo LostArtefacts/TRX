@@ -28,6 +28,13 @@ typedef enum {
 
 typedef struct GFX_2D_RENDERER GFX_2D_RENDERER;
 
+typedef enum {
+    GFX_2D_FIT_STRETCH,
+    GFX_2D_FIT_LETTERBOX,
+    GFX_2D_FIT_CROP,
+    GFX_2D_FIT_SMART,
+} GFX_2D_FIT_MODE;
+
 GFX_2D_RENDERER *GFX_2D_Renderer_Create(void);
 void GFX_2D_Renderer_Destroy(GFX_2D_RENDERER *renderer);
 
@@ -41,11 +48,6 @@ void GFX_2D_Renderer_SetExternalTexture(
     bool flip_y);
 void GFX_2D_Renderer_ClearExternalTexture(GFX_2D_RENDERER *renderer);
 
-// Set the normalized screen-space quad for rendering.
-// Coordinates are in [0,1] where (0,0) is top-left and (1,1) is bottom-right.
-void GFX_2D_Renderer_SetQuad(
-    GFX_2D_RENDERER *renderer, float x0, float y0, float x1, float y1);
-
 void GFX_2D_Renderer_SetRepeat(GFX_2D_RENDERER *renderer, int32_t x, int32_t y);
 void GFX_2D_Renderer_SetTextureSize(
     GFX_2D_RENDERER *renderer, const GFX_TEXTURE_SIZE *size);
@@ -56,6 +58,11 @@ void GFX_2D_Renderer_SetDesaturation(
     GFX_2D_RENDERER *renderer, float desaturation);
 void GFX_2D_Renderer_SetBrightnessScale(
     GFX_2D_RENDERER *renderer, float brightness_scale);
+
+void GFX_2D_Renderer_SetFit(
+    GFX_2D_RENDERER *renderer, GFX_2D_FIT_MODE fit_mode, float src_w,
+    float src_h);
+void GFX_2D_Renderer_ClearFit(GFX_2D_RENDERER *renderer);
 
 void GFX_2D_Renderer_Render(GFX_2D_RENDERER *renderer);
 void GFX_2D_Renderer_RenderWithBlend(GFX_2D_RENDERER *renderer);

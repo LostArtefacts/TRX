@@ -8,6 +8,7 @@ typedef struct {
     double fade_in_time;
     double fade_out_time;
     bool display_time_includes_fades;
+    bool loading_pic;
 } PHASE_PICTURE_ARGS;
 
 PHASE *Phase_Picture_Create(PHASE_PICTURE_ARGS args);

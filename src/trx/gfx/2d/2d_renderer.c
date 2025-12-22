@@ -19,6 +19,8 @@ typedef enum {
     M_UNIFORM_OPACITY,
     M_UNIFORM_DESATURATION,
     M_UNIFORM_BRIGHTNESS_SCALE,
+    M_UNIFORM_FIT_MODE,
+    M_UNIFORM_SRC_ASPECT,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -49,16 +51,14 @@ struct GFX_2D_RENDERER {
         int32_t y;
     } repeat;
 
-    // Normalized quad coordinates for rendering: x0,y0 to x1,y1 in [0,1].
-    struct {
-        float x0, y0, x1, y1;
-    } quad;
-
     GFX_2D_EFFECT effect;
 
     float opacity;
     float desaturation;
     float brightness_scale;
+
+    GFX_2D_FIT_MODE fit_mode;
+    float src_aspect;
 
     bool use_external_texture;
     GLuint external_texture_id;
@@ -91,17 +91,13 @@ static void M_UploadVertices(GFX_2D_RENDERER *const r)
     for (int32_t y = 0; y < r->repeat.y; y++) {
         for (int32_t x = 0; x < r->repeat.x; x++) {
             for (int32_t i = 0; i < 6; i++) {
-
                 const float x_factor = (float)x / (float)r->repeat.x;
                 const float y_factor = (float)y / (float)r->repeat.y;
                 const float x_offset = 1.0f / (float)r->repeat.x;
                 const float y_offset = 1.0f / (float)r->repeat.y;
 
-                // Apply quad scaling according to normalized coordinates
-                const float px = m_Vertices[i].pos.x * x_offset + x_factor;
-                const float py = m_Vertices[i].pos.y * y_offset + y_factor;
-                ptr->pos.x = r->quad.x0 + (r->quad.x1 - r->quad.x0) * px;
-                ptr->pos.y = r->quad.y0 + (r->quad.y1 - r->quad.y0) * py;
+                ptr->pos.x = m_Vertices[i].pos.x * x_offset + x_factor;
+                ptr->pos.y = m_Vertices[i].pos.y * y_offset + y_factor;
                 ptr->uv.u = r->desc.uv[mapping[i]].u;
                 ptr->uv.v = r->desc.uv[mapping[i]].v;
 
@@ -127,10 +123,9 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     r->brightness_scale = 1.0f;
     r->repeat.x = 1;
     r->repeat.y = 1;
-    r->quad.x0 = 0.0f;
-    r->quad.y0 = 0.0f;
-    r->quad.x1 = 1.0f;
-    r->quad.y1 = 1.0f;
+
+    r->fit_mode = GFX_2D_FIT_STRETCH;
+    r->src_aspect = 1.0f;
 
     r->vertices = nullptr;
     r->vertex_count = 6;
@@ -173,6 +168,8 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         { M_UNIFORM_OPACITY, "uOpacity" },
         { M_UNIFORM_DESATURATION, "uDesaturation" },
         { M_UNIFORM_BRIGHTNESS_SCALE, "uBrightnessScale" },
+        { M_UNIFORM_FIT_MODE, "uFitMode" },
+        { M_UNIFORM_SRC_ASPECT, "uSrcAspect" },
         { -1, nullptr },
     };
     for (int32_t i = 0; uniforms[i].name != nullptr; i++) {
@@ -192,6 +189,10 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         &r->program, r->loc[M_UNIFORM_DESATURATION], r->desaturation);
     GFX_GL_Program_Uniform1f(
         &r->program, r->loc[M_UNIFORM_BRIGHTNESS_SCALE], r->brightness_scale);
+    GFX_GL_Program_Uniform1i(
+        &r->program, r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
     GFX_GL_CheckError();
 
     return r;
@@ -327,22 +328,6 @@ void GFX_2D_Renderer_SetRepeat(
     M_UploadVertices(r);
 }
 
-void GFX_2D_Renderer_SetQuad(
-    GFX_2D_RENDERER *const r, const float x0, const float y0, const float x1,
-    const float y1)
-{
-    ASSERT(r != nullptr);
-    if (r->quad.x0 == x0 && r->quad.y0 == y0 && r->quad.x1 == x1
-        && r->quad.y1 == y1) {
-        return;
-    }
-    r->quad.x0 = x0;
-    r->quad.y0 = y0;
-    r->quad.x1 = x1;
-    r->quad.y1 = y1;
-    M_UploadVertices(r);
-}
-
 void GFX_2D_Renderer_SetEffect(GFX_2D_RENDERER *const r, const uint32_t effect)
 {
     ASSERT(r != nullptr);
@@ -390,6 +375,47 @@ void GFX_2D_Renderer_SetBrightnessScale(
             &r->program, r->loc[M_UNIFORM_BRIGHTNESS_SCALE], brightness_scale);
         r->brightness_scale = brightness_scale;
     }
+}
+
+void GFX_2D_Renderer_SetFit(
+    GFX_2D_RENDERER *const r, const GFX_2D_FIT_MODE fit_mode, const float src_w,
+    const float src_h)
+{
+    ASSERT(r != nullptr);
+
+    if (src_w <= 0.0f || src_h <= 0.0f) {
+        GFX_2D_Renderer_ClearFit(r);
+        return;
+    }
+    const float src_aspect = src_w / src_h;
+    if (r->fit_mode == fit_mode && r->src_aspect == src_aspect) {
+        return;
+    }
+
+    r->fit_mode = fit_mode;
+    r->src_aspect = src_aspect;
+
+    GFX_GL_Program_Bind(&r->program);
+    GFX_GL_Program_Uniform1i(
+        &r->program, r->loc[M_UNIFORM_FIT_MODE], (int32_t)fit_mode);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_SRC_ASPECT], src_aspect);
+}
+
+void GFX_2D_Renderer_ClearFit(GFX_2D_RENDERER *const r)
+{
+    ASSERT(r != nullptr);
+    if (r->fit_mode == GFX_2D_FIT_STRETCH && r->src_aspect == 1.0f) {
+        return;
+    }
+
+    r->fit_mode = GFX_2D_FIT_STRETCH;
+    r->src_aspect = 1.0f;
+    GFX_GL_Program_Bind(&r->program);
+    GFX_GL_Program_Uniform1i(
+        &r->program, r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
 }
 
 void GFX_2D_Renderer_Render(GFX_2D_RENDERER *const r)
