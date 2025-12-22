@@ -566,6 +566,7 @@ common_sources = [
   'trx/game/ui/elements/resize.c',
   'trx/game/ui/elements/row_arrows.c',
   'trx/game/ui/elements/scrollable_area.c',
+  'trx/game/ui/elements/sleek_bar.c',
   'trx/game/ui/elements/spacer.c',
   'trx/game/ui/elements/span.c',
   'trx/game/ui/elements/stack.c',
