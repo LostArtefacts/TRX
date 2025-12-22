@@ -27,6 +27,7 @@ typedef struct {
     int32_t snapshot_width;
     int32_t snapshot_height;
     float snapshot_desaturation;
+    bool snapshot_has_content;
 
     GFX_GL_TEXTURE solid_black_texture;
     float overlay_opacity;
@@ -65,8 +66,9 @@ static void M_EnsureSnapshotTexture(void)
         return;
     }
 
-    if (m_Priv.snapshot_texture.initialized && m_Priv.snapshot_width == w
-        && m_Priv.snapshot_height == h) {
+    // Keep existing contents during live screens (e.g. inventory/stats) even
+    // if the viewport changes, to avoid wiping the snapshot on resize.
+    if (m_Priv.snapshot_texture.initialized && m_Priv.snapshot_has_content) {
         return;
     }
 
@@ -172,6 +174,7 @@ void Output_InitBackground(void)
     m_Priv.snapshot_width = 0;
     m_Priv.snapshot_height = 0;
     m_Priv.snapshot_desaturation = 0.0f;
+    m_Priv.snapshot_has_content = false;
     m_Priv.overlay_opacity = 1.0f;
     m_Priv.dim_opacity = 0.0f;
     m_Priv.snapshot_texture = (GFX_GL_TEXTURE) { .initialized = false };
@@ -391,6 +394,7 @@ void Output_UnloadBackground(void)
     m_Priv.type = BK_TRANSPARENT;
     m_Priv.overlay_opacity = 1.0f;
     m_Priv.dim_opacity = 0.0f;
+    m_Priv.snapshot_has_content = false;
 }
 
 void Output_DrawBackground(void)
@@ -410,6 +414,9 @@ void Output_Background_LoadMono(void)
 void Output_Background_EnableSnapshot(const bool enable)
 {
     m_Priv.snapshot_enabled = enable;
+    if (!enable) {
+        m_Priv.snapshot_has_content = false;
+    }
 }
 
 bool Output_Background_IsSnapshotEnabled(void)
@@ -436,6 +443,7 @@ void Output_Background_CaptureSnapshotScene(void)
         GL_TEXTURE_2D, 0, 0, 0, 0, 0, m_Priv.snapshot_width,
         m_Priv.snapshot_height);
     GFX_GL_CheckError();
+    m_Priv.snapshot_has_content = true;
 }
 
 void Output_Background_SetOverlayOpacity(float opacity)

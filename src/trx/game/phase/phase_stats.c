@@ -75,9 +75,9 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         Interpolation_Disable();
         Game_Draw(false);
         Interpolation_Enable();
+        Output_Background_LoadMono();
         Output_Background_EnableSnapshot(true);
         Output_Background_CaptureSnapshotScene();
-        Output_Background_LoadMono();
     } else {
         Output_UnloadBackground();
     }
