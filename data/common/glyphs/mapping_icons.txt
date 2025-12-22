@@ -21,4 +21,4 @@
 "\\{ammo uzis}"       0 I grid_sprite("buttons.png", 9, 1, index=105)
 "\\{arrow up}"        0 I grid_sprite("buttons.png", 8, 2, index=80)
 "\\{arrow down}"      0 I grid_sprite("buttons.png", 9, 2, index=81) translate(y=-2)
-"\\{review}"          0 I grid_sprite("buttons.png", 7, 2)
+"\\{review}"          0 R grid_sprite("buttons.png", 7, 2)
