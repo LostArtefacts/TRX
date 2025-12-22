@@ -1,10 +1,11 @@
 #include <trx/game/ui/elements/progress_button.h>
 
 #include <trx/game/const.h>
-#include <trx/game/ui/elements/bar.h>
+#include <trx/game/ui/elements/hide.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/pad.h>
-#include <trx/game/ui/elements/span.h>
+#include <trx/game/ui/elements/sleek_bar.h>
+#include <trx/game/ui/elements/stack.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 
@@ -66,21 +67,26 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
         String_FormatStatic(GS(MISC_HOLD_FMT), key_name);
 
     const float pad[2] = { 6.0f, 3.0f };
+    const float spacing = 2.0f;
+    const float progress =
+        (s->hold_timer - M_HOLD_TIMER_DEBUFF) / (float)M_HOLD_TIMER_MAX;
 
-    UI_BeginPad(0.0f, -pad[1]);
-    UI_BeginSpan();
-    if (s->hold_timer >= M_HOLD_TIMER_DEBUFF) {
-        UI_Bar((UI_BAR_SETTINGS) {
-            .type = UI_BAR_PROGRESS,
-            .value = s->hold_timer - M_HOLD_TIMER_DEBUFF,
-            .max_value = M_HOLD_TIMER_MAX,
-            .w = 0.0, // Span will make it expand anyway!
-            .h = 0.0,
-        });
-    }
     UI_BeginPad(pad[0], pad[1]);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = {
+            .h = UI_STACK_H_ALIGN_SPAN,
+            .v = UI_STACK_V_ALIGN_TOP,
+        },
+        .spacing = {
+            .h = 0.0f,
+            .v = spacing,
+        },
+    });
     UI_LabelFmt("%s: %s", GameString_Get(s->text), value_label);
-    UI_EndPad();
-    UI_EndSpan();
+    UI_BeginHide(progress < 0.0f);
+    UI_SleekBar(progress);
+    UI_EndHide();
+    UI_EndStack();
     UI_EndPad();
 }
