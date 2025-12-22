@@ -60,6 +60,68 @@ static void M_EnsureReadback(const int32_t w, const int32_t h)
     m_Priv.readback_bytes = bytes;
 }
 
+static void M_ResizeSnapshotTexture(const int32_t width, const int32_t height)
+{
+    if (!m_Priv.snapshot_texture.initialized || width <= 0 || height <= 0
+        || m_Priv.snapshot_width <= 0 || m_Priv.snapshot_height <= 0) {
+        return;
+    }
+
+    GFX_GL_TEXTURE resized_texture;
+    GFX_GL_Texture_Init(&resized_texture, GL_TEXTURE_2D);
+    GFX_GL_Texture_Bind(&resized_texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+        nullptr);
+
+    GLuint read_fbo = 0;
+    GLuint draw_fbo = 0;
+    glGenFramebuffers(1, &read_fbo);
+    glGenFramebuffers(1, &draw_fbo);
+
+    GLint prev_read_fbo = 0;
+    GLint prev_draw_fbo = 0;
+    GLint prev_read_buffer = 0;
+    GLint prev_draw_buffer = 0;
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prev_read_fbo);
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prev_draw_fbo);
+    glGetIntegerv(GL_READ_BUFFER, &prev_read_buffer);
+    glGetIntegerv(GL_DRAW_BUFFER, &prev_draw_buffer);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, read_fbo);
+    glFramebufferTexture2D(
+        GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+        m_Priv.snapshot_texture.id, 0);
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, draw_fbo);
+    glFramebufferTexture2D(
+        GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+        resized_texture.id, 0);
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
+    glBlitFramebuffer(
+        0, 0, m_Priv.snapshot_width, m_Priv.snapshot_height, 0, 0, width,
+        height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)prev_read_fbo);
+    glReadBuffer(prev_read_buffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, (GLuint)prev_draw_fbo);
+    glDrawBuffer(prev_draw_buffer);
+    glDeleteFramebuffers(1, &read_fbo);
+    glDeleteFramebuffers(1, &draw_fbo);
+
+    GFX_GL_Texture_Close(&m_Priv.snapshot_texture);
+    m_Priv.snapshot_texture = resized_texture;
+    m_Priv.snapshot_width = width;
+    m_Priv.snapshot_height = height;
+    GFX_GL_CheckError();
+}
+
 static void M_EnsureSnapshotTexture(void)
 {
     const int32_t w = Viewport_GetWidth(VIEWPORT_GAME);
@@ -71,6 +133,9 @@ static void M_EnsureSnapshotTexture(void)
     // Keep existing contents during live screens (e.g. inventory/stats) even
     // if the viewport changes, to avoid wiping the snapshot on resize.
     if (m_Priv.snapshot_texture.initialized && m_Priv.snapshot_has_content) {
+        if (m_Priv.snapshot_width != w || m_Priv.snapshot_height != h) {
+            M_ResizeSnapshotTexture(w, h);
+        }
         return;
     }
 
