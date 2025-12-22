@@ -155,6 +155,11 @@ static RGBA_F M_ToRGBA_F(const RGB_888 color)
     };
 }
 
+static int32_t M_HasGlyph(const M_FONT font, const M_GLYPH_INFO *const glyph)
+{
+    return glyph->width[font] > 0;
+}
+
 static int32_t M_GetGlyphWidth(
     const M_FONT font, const M_GLYPH_INFO *const glyph)
 {
@@ -170,14 +175,21 @@ static int32_t M_GetGlyphWidth(
     if (glyph->mesh_idx != -1
         && (glyph->role == GLYPH_TEXT || glyph->role == GLYPH_ICON
             || glyph->role == GLYPH_REVIEW_MARKER)) {
-        const OBJECT *const obj = Object_Get(m_FontObjects[font]);
-        if (!obj->loaded) {
-            return 0;
+        const OBJECT *const object = Object_Get(m_FontObjects[font]);
+        if (!object->loaded) {
+            return -1;
+        }
+        if (glyph->mesh_idx >= ABS(object->mesh_count)) {
+            return -1;
         }
         const SPRITE_TEXTURE *const sprite =
-            Output_GetSpriteTexture(obj->mesh_idx + glyph->mesh_idx);
+            Output_GetSpriteTexture(object->mesh_idx + glyph->mesh_idx);
         if (sprite == nullptr) {
-            return 0;
+            return -1;
+        }
+        if (sprite->x1 - sprite->x0 == 0 && sprite->width / 255 == 1) {
+            // Just a placeholder glyph necessary for indexing of other glyphs
+            return -1;
         }
         return sprite->width / 255;
     }
@@ -524,16 +536,19 @@ static void M_Process(
             goto loop_end;
         }
 
-        const OBJECT *const obj = Object_Get(m_FontObjects[current_font]);
-        if (obj->loaded && glyph->mesh_idx >= 0
-            && glyph->mesh_idx < ABS(obj->mesh_count) && visible
-            && draw_func != nullptr) {
+        M_FONT glyph_font = current_font;
+        if (glyph_font == M_FONT_SMALL && !M_HasGlyph(glyph_font, glyph)) {
+            glyph_font = M_FONT_DEFAULT;
+        }
+
+        if (visible && draw_func != nullptr) {
+            const OBJECT *object = Object_Get(m_FontObjects[glyph_font]);
             draw_func(
-                x, y, z, scale, scale, obj->mesh_idx + glyph->mesh_idx,
+                x, y, z, scale, scale, object->mesh_idx + glyph->mesh_idx,
                 m_TextColor[color_idx]);
         }
 
-        float spacing = glyph->width[current_font];
+        float spacing = glyph->width[glyph_font];
         if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
             && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
             spacing += M_LETTER_SPACING;
