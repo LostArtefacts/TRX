@@ -110,7 +110,7 @@
         "ENUM_BILLBOARD_LOCK_PERSPECTIVE": "Prospettiva",
         "ENUM_BILLBOARD_LOCK_ROLL": "Rotazione",
         "ENUM_BILLBOARD_LOCK_ROLL_PITCH": "Rotaz. e inclinaz.",
-        "ENUM_BK_MONOCHROME": "\\{review}Monocromatico",
+        "ENUM_BK_MONOCHROME": "Monocromatico",
         "ENUM_BK_PATTERN_STATIC": "Statico",
         "ENUM_BK_PATTERN_WAVE": "Ondeggiante",
         "ENUM_BK_TRANSPARENT": "Trasparente",
@@ -621,7 +621,7 @@
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS": "Ricorda armi tra livelli",
         "SETTING_REMEMBER_GUNS_BETWEEN_LEVELS_DESCRIPTION": "Fa sì che Lara ricordi quale arma ha usato per ultima nel livello precedente quando inizia un nuovo livello. Se disabilitato, Lara tornerà ad avere nella fondina le sue pistole.",
         "SETTING_RESTORE_PS1_ENEMIES": "Ripristina nemici PS1",
-        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}Aggiunge la mummia che appare nella versione PlayStation di City of Khamoon, stanza 25.\nModificare questa opzione richiederà il riavvio del gioco.",
+        "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon', stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
         "SETTING_SCREENSHOT_FORMAT": "Formato cattura schermo",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Formato del file da utilizzare per le istantanee dello schermo.",
         "SETTING_SHOW_BARS": "Mostra barre",
@@ -711,20 +711,53 @@
         "grenade": {
             "name": "Granata",
         },
+        "small_medipack": {
+            "name": "Kit Medico Piccolo",
+        },
+        "large_medipack": {
+            "name": "Kit Medico Grande",
+        },
         "pistols": {
             "name": "Pistole",
         },
         "shotgun": {
             "name": "Fucile a Pompa",
         },
+        "magnums": {
+            "name": "Pistole Automatiche",
+        },
         "uzis": {
             "name": "Uzi",
+        },
+        "harpoon_gun": {
+            "name": "Fucile Subacqueo",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "grenade_launcher": {
+            "name": "Lanciagranate",
+        },
+        "pistols_ammo": {
+            "name": "Caricatori per Pistole",
         },
         "shotgun_ammo": {
             "name": "Cartucce per Fucile a Pompa",
         },
+        "magnums_ammo": {
+            "name": "Caricatori per Pistole Automatiche",
+        },
         "uzis_ammo": {
             "name": "Caricatori per Uzi",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Arpioni",
+        },
+        "m16_ammo": {
+            "name": "Caricatori per M16",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Granate",
         },
         "pickup_1": {
             "name": "Oggetto Recuperabile 1",
@@ -762,8 +795,17 @@
         "scion": {
             "name": "Scion",
         },
+        "secret_1": {
+            "name": "Segreto 1",
+        },
+        "secret_2": {
+            "name": "Segreto 2",
+        },
+        "secret_3": {
+            "name": "Segreto 3",
+        },
         "compass": {
-            "name": "Statistiche",
+            "name": "Bussola",
         },
         "stopwatch": {
             "name": "Statistiche",
@@ -807,11 +849,29 @@
         "lara_uzis": {
             "name": "Animazione Uzi",
         },
+        "lara_m16": {
+            "name": "Animazione M16",
+        },
+        "lara_grenade": {
+            "name": "Animazione Lanciagranate",
+        },
+        "lara_harpoon": {
+            "name": "Animazione Fucile Subacqueo",
+        },
         "lara_flare": {
             "name": "Animazione Razzo di Segnalazione",
         },
         "lara_extra": {
             "name": "Animazione Aggiuntiva di Lara",
+        },
+        "lara_skidoo": {
+            "name": "Animazione Motoslitta",
+        },
+        "lara_boat": {
+            "name": "Animazione Barca",
+        },
+        "skidoo_fast": {
+            "name": "Motoslitta Rossa",
         },
         "boat": {
             "name": "Barca",
@@ -915,379 +975,6 @@
                 "Adam",
                 "Mutante Gigante",
             ]
-        },
-        "centaur_statue": {
-            "name": "Statua",
-        },
-        "pods": {
-            "name": "Guscio",
-        },
-        "big_pod": {
-            "name": "Guscio Grande",
-        },
-        "damocles_sword": {
-            "name": "Spada di Damocle",
-        },
-        "dart": {
-            "name": "Dardo",
-        },
-        "dart_emitter": {
-            "name": "Emettitore di Dardi",
-        },
-        "disc": {
-            "name": "Disco",
-        },
-        "disc_emitter": {
-            "name": "Emettitore di Dischi",
-        },
-        "ember": {
-            "name": "Brace",
-        },
-        "ember_emitter": {
-            "name": "Emettitore di Brace",
-        },
-        "falling_block_1": {
-            "name": [
-                "Blocco Cedevole 1",
-                "Pavimento Fragile 1",
-                "Piastrelle Fragili 1",
-            ]
-        },
-        "falling_ceiling_1": {
-            "name": "Soffitto Cedevole 1",
-        },
-        "falling_ceiling_2": {
-            "name": "Soffitto Cedevole 2",
-        },
-        "flame": {
-            "name": [
-                "Fiamma",
-                "Fuoco",
-            ]
-        },
-        "flame_emitter": {
-            "name": [
-                "Emettitore di Fiamme",
-                "Emettitore di Fuoco",
-            ]
-        },
-        "lava_wedge": {
-            "name": "Cascata di Lava",
-        },
-        "lightning_emitter": {
-            "name": "Emettitore di Fulmini",
-        },
-        "midas_touch": {
-            "name": "Mano di Mida",
-        },
-        "pendulum_1": {
-            "name": "Sacco di Sabbia",
-        },
-        "rolling_ball_1": {
-            "name": [
-                "Masso 1",
-                "Masso Rotolante",
-            ]
-        },
-        "spikes": {
-            "name": "Spuntoni",
-        },
-        "teeth_trap": {
-            "name": "Trappola con Spuntoni",
-        },
-        "thors_handle": {
-            "name": "Manico del Martello di Thor",
-        },
-        "thors_head": {
-            "name": "Martello di Thor",
-        },
-        "bridge_flat": {
-            "name": "Ponte Piano",
-        },
-        "bridge_tilt_1": {
-            "name": "Ponte Inclinato 1",
-        },
-        "bridge_tilt_2": {
-            "name": "Ponte Inclinato 2",
-        },
-        "cog_1": {
-            "name": "Ingranaggio 1",
-        },
-        "cog_2": {
-            "name": "Ingranaggio 2",
-        },
-        "cog_3": {
-            "name": "Ingranaggio 3",
-        },
-        "door_1": {
-            "name": "Porta 1",
-        },
-        "door_2": {
-            "name": "Porta 2",
-        },
-        "door_3": {
-            "name": "Porta 3",
-        },
-        "door_4": {
-            "name": "Porta 4",
-        },
-        "door_5": {
-            "name": "Porta 5",
-        },
-        "door_6": {
-            "name": "Porta 6",
-        },
-        "door_7": {
-            "name": "Porta 7",
-        },
-        "door_8": {
-            "name": "Porta 8",
-        },
-        "drawbridge": {
-            "name": "Ponte Levatoio",
-        },
-        "key_hole_1": {
-            "name": "Serratura 1",
-        },
-        "key_hole_2": {
-            "name": "Serratura 2",
-        },
-        "key_hole_3": {
-            "name": "Serratura 3",
-        },
-        "key_hole_4": {
-            "name": "Serratura 4",
-        },
-        "movable_block_1": {
-            "name": [
-                "Blocco Spostabile 1",
-                "Blocco Movibile 1",
-            ]
-        },
-        "movable_block_2": {
-            "name": [
-                "Blocco Spostabile 2",
-                "Blocco Movibile 2",
-            ]
-        },
-        "movable_block_3": {
-            "name": [
-                "Blocco Spostabile 3",
-                "Blocco Movibile 3",
-            ]
-        },
-        "movable_block_4": {
-            "name": [
-                "Blocco Spostabile 4",
-                "Blocco Movibile 4",
-            ]
-        },
-        "moving_bar": {
-            "name": "Barra Mobile",
-        },
-        "portacabin": {
-            "name": "Cabina Portatile",
-        },
-        "puzzle_done_1": {
-            "name": "Serratura Enigma 1 (Usato)",
-        },
-        "puzzle_done_2": {
-            "name": "Serratura Enigma 2 (Usato)",
-        },
-        "puzzle_done_3": {
-            "name": "Serratura Enigma 3 (Usato)",
-        },
-        "puzzle_done_4": {
-            "name": "Serratura Enigma 4 (Usato)",
-        },
-        "puzzle_hole_1": {
-            "name": "Serratura Enigma 1 (Vuoto)",
-        },
-        "puzzle_hole_2": {
-            "name": "Serratura Enigma 2 (Vuoto)",
-        },
-        "puzzle_hole_3": {
-            "name": "Serratura Enigma 3 (Vuoto)",
-        },
-        "puzzle_hole_4": {
-            "name": "Serratura Enigma 4 (Vuoto)",
-        },
-        "save_crystal": {
-            "name": "Cristallo di Salvataggio",
-        },
-        "scion_holder": {
-            "name": "Supporto Scion",
-        },
-        "sliding_pillar": {
-            "name": "Pilastro Scorrevole",
-        },
-        "switch_type_normal": {
-            "name": [
-                "Leva",
-                "Interruttore",
-            ]
-        },
-        "switch_type_uw": {
-            "name": [
-                "Leva Subacquea",
-                "Interruttore Subacqueo",
-            ]
-        },
-        "trapdoor_1": {
-            "name": "Botola 1",
-        },
-        "trapdoor_2": {
-            "name": "Botola 2",
-        },
-        "trapdoor_3": {
-            "name": "Botola 3",
-        },
-        "alphabet": {
-            "name": "Alfabeto",
-        },
-        "blood_1": {
-            "name": "Sangue 1",
-        },
-        "blood_2": {
-            "name": "Sangue 2",
-        },
-        "body_part": {
-            "name": "Parte del Corpo",
-        },
-        "bubble_1": {
-            "name": "Bolla 1",
-        },
-        "bubble_2": {
-            "name": "Bolla 2",
-        },
-        "bubble_emitter": {
-            "name": "Emettitore di Bolle",
-        },
-        "camera_target": {
-            "name": "Obiettivo Telecamera",
-        },
-        "dart_effect": {
-            "name": "Effetto Dardo",
-        },
-        "dust": {
-            "name": "Polvere",
-        },
-        "earthquake": {
-            "name": "Terremoto",
-        },
-        "explosion_1": {
-            "name": "Esplosione 1",
-        },
-        "explosion_2": {
-            "name": "Esplosione 2",
-        },
-        "flare_fire": {
-            "name": "Scintille Fiamma",
-        },
-        "glow": {
-            "name": "Bagliore",
-        },
-        "gun_flash": {
-            "name": "Lampo Pistola",
-        },
-        "missile_1": {
-            "name": "Missile 1",
-        },
-        "missile_2": {
-            "name": "Missile 2",
-        },
-        "missile_3": {
-            "name": "Missile 3",
-        },
-        "missile_4": {
-            "name": "Missile 4",
-        },
-        "missile_5": {
-            "name": "Missile 5",
-        },
-        "pickup_aid": {
-            "name": "Segnalazione Oggetti",
-        },
-        "player_1": {
-            "name": "Attore Intermezzo 1",
-        },
-        "player_2": {
-            "name": "Attore Intermezzo 2",
-        },
-        "player_3": {
-            "name": "Attore Intermezzo 3",
-        },
-        "player_4": {
-            "name": "Attore Intermezzo 4",
-        },
-        "ricochet": {
-            "name": "Ricochet",
-        },
-        "skybox": {
-            "name": "Cielo",
-        },
-        "splash_1": {
-            "name": "Increspatura Acqua 1",
-        },
-        "splash_2": {
-            "name": "Increspatura Acqua 2",
-        },
-        "twinkle": {
-            "name": "Scintille",
-        },
-        "waterfall": {
-            "name": "Foschia Cascata",
-        },
-        "winston": {
-            "name": "Winston",
-        },
-        "harpoon_gun": {
-            "name": "Fucile Subacqueo",
-        },
-        "m16": {
-            "name": "M16",
-        },
-        "grenade_launcher": {
-            "name": "Lanciagranate",
-        },
-        "pistols_ammo": {
-            "name": "Caricatori per Pistole",
-        },
-        "harpoon_gun_ammo": {
-            "name": "Arpioni",
-        },
-        "m16_ammo": {
-            "name": "Caricatori per M16",
-        },
-        "grenade_launcher_ammo": {
-            "name": "Granate",
-        },
-        "secret_1": {
-            "name": "Segreto 1",
-        },
-        "secret_2": {
-            "name": "Segreto 2",
-        },
-        "secret_3": {
-            "name": "Segreto 3",
-        },
-        "lara_m16": {
-            "name": "Animazione M16",
-        },
-        "lara_grenade": {
-            "name": "Animazione Lanciagranate",
-        },
-        "lara_harpoon": {
-            "name": "Animazione Fucile Subacqueo",
-        },
-        "lara_skidoo": {
-            "name": "Animazione Motoslitta",
-        },
-        "lara_boat": {
-            "name": "Animazione Barca",
-        },
-        "skidoo_fast": {
-            "name": "Motoslitta Rossa",
         },
         "dog": {
             "name": [
@@ -1418,11 +1105,48 @@
         "monk_2": {
             "name": "Monaco 2",
         },
+        "centaur_statue": {
+            "name": "Statua Centauro",
+        },
+        "pods": {
+            "name": "Guscio",
+        },
+        "big_pod": {
+            "name": "Guscio Grande",
+        },
         "blade": {
             "name": "Lama a Parete",
         },
         "ceiling_spikes": {
             "name": "Soffitto con Spuntoni",
+        },
+        "damocles_sword": {
+            "name": "Spada di Damocle",
+        },
+        "dart": {
+            "name": "Dardo",
+        },
+        "dart_emitter": {
+            "name": "Emettitore di Dardi",
+        },
+        "disc": {
+            "name": "Disco",
+        },
+        "disc_emitter": {
+            "name": "Emettitore di Dischi",
+        },
+        "ember": {
+            "name": "Brace",
+        },
+        "ember_emitter": {
+            "name": "Emettitore di Brace",
+        },
+        "falling_block_1": {
+            "name": [
+                "Blocco Cedevole 1",
+                "Pavimento Fragile 1",
+                "Piastrelle Fragili 1",
+            ]
         },
         "falling_block_2": {
             "name": [
@@ -1439,6 +1163,24 @@
                 "Tavole Allentate",
             ]
         },
+        "falling_ceiling_1": {
+            "name": "Soffitto Cedevole 1",
+        },
+        "falling_ceiling_2": {
+            "name": "Soffitto Cedevole 2",
+        },
+        "flame": {
+            "name": [
+                "Fiamma",
+                "Fuoco",
+            ]
+        },
+        "flame_emitter": {
+            "name": [
+                "Emettitore di Fiamme",
+                "Emettitore di Fuoco",
+            ]
+        },
         "gondola": {
             "name": "Gondola",
         },
@@ -1451,11 +1193,31 @@
         "killer_statue": {
             "name": "Statua con Spada",
         },
+        "lava_wedge": {
+            "name": "Cascata di Lava",
+        },
+        "lightning_emitter": {
+            "name": "Emettitore di Fulmini",
+        },
+        "midas_touch": {
+            "name": "Mano di Mida",
+        },
         "mine": {
-            "name": "Mina Navale",
+            "name": "Miniera Acquatica",
+        },
+        "pendulum_1": {
+            "name": [
+                "Pendolo",
+                "Sacco di Sabbia",
+                "Scatola Oscillante",
+            ]
         },
         "pendulum_2": {
-            "name": "Scatola Oscillante",
+            "name": [
+                "Pendolo",
+                "Sacco di Sabbia",
+                "Scatola Oscillante",
+            ]
         },
         "power_saw": {
             "name": "Sega Elettrica",
@@ -1464,10 +1226,16 @@
             "name": "Elica Aeroplano",
         },
         "propeller_2": {
-            "name": "Elica Subacquea",
+            "name": "Elica Sott'acqua",
         },
         "propeller_3": {
             "name": "Ventilatore d'Aria",
+        },
+        "rolling_ball_1": {
+            "name": [
+                "Masso 1",
+                "Masso Rotolante 1",
+            ]
         },
         "rolling_ball_2": {
             "name": [
@@ -1481,8 +1249,8 @@
                 "Masso Rotolante 3",
             ]
         },
-        "swinging_axe": {
-            "name": "\\{review}Ascia Oscillante",
+        "spikes": {
+            "name": "Spuntoni",
         },
         "spike_wall": {
             "name": "Muro con Spuntoni",
@@ -1490,17 +1258,152 @@
         "spinning_blade": {
             "name": "Lama Rotante",
         },
+        "swinging_axe": {
+            "name": "Ascia Oscillante",
+        },
+        "teeth_trap": {
+            "name": [
+                "Trappola con Spuntoni",
+                "Porta che sbatte",
+            ]
+        },
+        "thors_handle": {
+            "name": "Manico del Martello di Thor",
+        },
+        "thors_head": {
+            "name": "Martello di Thor",
+        },
         "bell": {
             "name": "Campana",
         },
         "big_bowl": {
             "name": "Ciotola di Lava",
         },
+        "bridge_flat": {
+            "name": "Ponte Piano",
+        },
+        "bridge_tilt_1": {
+            "name": "Ponte Inclinato 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Ponte Inclinato 2",
+        },
+        "cog_1": {
+            "name": "Ingranaggio 1",
+        },
+        "cog_2": {
+            "name": "Ingranaggio 2",
+        },
+        "cog_3": {
+            "name": "Ingranaggio 3",
+        },
+        "door_1": {
+            "name": "Porta 1",
+        },
+        "door_2": {
+            "name": "Porta 2",
+        },
+        "door_3": {
+            "name": "Porta 3",
+        },
+        "door_4": {
+            "name": "Porta 4",
+        },
+        "door_5": {
+            "name": "Porta 5",
+        },
+        "door_6": {
+            "name": "Porta 6",
+        },
+        "door_7": {
+            "name": "Porta 7",
+        },
+        "door_8": {
+            "name": "Porta 8",
+        },
+        "drawbridge": {
+            "name": "Ponte Levatoio",
+        },
         "general": {
             "name": "Minisommergibile",
         },
+        "key_hole_1": {
+            "name": "Serratura 1",
+        },
+        "key_hole_2": {
+            "name": "Serratura 2",
+        },
+        "key_hole_3": {
+            "name": "Serratura 3",
+        },
+        "key_hole_4": {
+            "name": "Serratura 4",
+        },
         "lift": {
             "name": "Ascensore",
+        },
+        "movable_block_1": {
+            "name": [
+                "Blocco Spostabile 1",
+                "Blocco Movibile 1",
+            ]
+        },
+        "movable_block_2": {
+            "name": [
+                "Blocco Spostabile 2",
+                "Blocco Movibile 2",
+            ]
+        },
+        "movable_block_3": {
+            "name": [
+                "Blocco Spostabile 3",
+                "Blocco Movibile 3",
+            ]
+        },
+        "movable_block_4": {
+            "name": [
+                "Blocco Spostabile 4",
+                "Blocco Movibile 4",
+            ]
+        },
+        "moving_bar": {
+            "name": "Barra Mobile",
+        },
+        "portacabin": {
+            "name": "Cabina Portatile",
+        },
+        "puzzle_done_1": {
+            "name": "Serratura Enigma 1 (Usato)",
+        },
+        "puzzle_done_2": {
+            "name": "Serratura Enigma 2 (Usato)",
+        },
+        "puzzle_done_3": {
+            "name": "Serratura Enigma 3 (Usato)",
+        },
+        "puzzle_done_4": {
+            "name": "Serratura Enigma 4 (Usato)",
+        },
+        "puzzle_hole_1": {
+            "name": "Serratura Enigma 1 (Vuoto)",
+        },
+        "puzzle_hole_2": {
+            "name": "Serratura Enigma 2 (Vuoto)",
+        },
+        "puzzle_hole_3": {
+            "name": "Serratura Enigma 3 (Vuoto)",
+        },
+        "puzzle_hole_4": {
+            "name": "Serratura Enigma 4 (Vuoto)",
+        },
+        "save_crystal": {
+            "name": "Cristallo di Salvataggio",
+        },
+        "scion_holder": {
+            "name": "Supporto Scion",
+        },
+        "sliding_pillar": {
+            "name": "Pilastro Scorrevole",
         },
         "springboard": {
             "name": "Trampolino",
@@ -1515,8 +1418,29 @@
                 "Interruttore",
             ]
         },
+        "switch_type_normal": {
+            "name": [
+                "Leva",
+                "Interruttore",
+            ]
+        },
         "switch_type_small": {
             "name": "Interruttore Piccolo",
+        },
+        "switch_type_uw": {
+            "name": [
+                "Leva Subacquea",
+                "Interruttore Subacqueo",
+            ]
+        },
+        "trapdoor_1": {
+            "name": "Botola 1",
+        },
+        "trapdoor_2": {
+            "name": "Botola 2",
+        },
+        "trapdoor_3": {
+            "name": "Botola 3",
         },
         "window_1": {
             "name": "Finestra Frangibile 1",
@@ -1536,6 +1460,9 @@
         "alarm_sound": {
             "name": "Allarme",
         },
+        "alphabet": {
+            "name": "Alfabeto",
+        },
         "assault_digits": {
             "name": "Cifre Corso d'Assalto",
         },
@@ -1545,8 +1472,29 @@
         "bird_tweeter_2": {
             "name": "Uccelli Canterini",
         },
+        "blood_1": {
+            "name": "Sangue 1",
+        },
+        "blood_2": {
+            "name": "Sangue 2",
+        },
         "boat_bits": {
             "name": "Pezzi di Barca",
+        },
+        "body_part": {
+            "name": "Parte del Corpo",
+        },
+        "bubble_1": {
+            "name": "Bolla 1",
+        },
+        "bubble_2": {
+            "name": "Bolla 2",
+        },
+        "bubble_emitter": {
+            "name": "Emettitore di Bolle",
+        },
+        "camera_target": {
+            "name": "Obiettivo Telecamera",
         },
         "clock_chimes": {
             "name": "Orologio Covo di Bartoli",
@@ -1559,6 +1507,9 @@
         },
         "cut_shotgun": {
             "name": "Animazione Fucile nella Doccia",
+        },
+        "dart_effect": {
+            "name": "Effetto Dardo",
         },
         "detonator_box": {
             "name": "Detonatore",
@@ -1575,11 +1526,29 @@
         "dragon_bones_3": {
             "name": "Retro Ossa del Drago",
         },
+        "dust": {
+            "name": "Polvere",
+        },
         "dying_monk": {
             "name": "Monaco Morente",
         },
+        "earthquake": {
+            "name": "Terremoto",
+        },
+        "explosion_1": {
+            "name": "Esplosione 1",
+        },
+        "explosion_2": {
+            "name": "Esplosione 2",
+        },
+        "flare_fire": {
+            "name": "Scintille Fiamma",
+        },
         "fx_reserved": {
             "name": "Disco Grigio",
+        },
+        "glow": {
+            "name": "Bagliore",
         },
         "glow_reserved": {
             "name": "Bagliore Mappa",
@@ -1589,6 +1558,9 @@
         },
         "gong_bonger": {
             "name": "Martello del Gong",
+        },
+        "gun_flash": {
+            "name": "Lampo Pistola",
         },
         "harpoon_bolt": {
             "name": "Dardo Arpione",
@@ -1617,6 +1589,21 @@
         "mini_copter": {
             "name": "Elicottero 2",
         },
+        "missile_1": {
+            "name": "Missile 1",
+        },
+        "missile_2": {
+            "name": "Missile 2",
+        },
+        "missile_3": {
+            "name": "Missile 3",
+        },
+        "missile_4": {
+            "name": "Missile 4",
+        },
+        "missile_5": {
+            "name": "Missile 5",
+        },
         "missile_flame": {
             "name": "Missile Fiamma",
         },
@@ -1625,6 +1612,21 @@
         },
         "missile_knife": {
             "name": "Missile Coltello",
+        },
+        "pickup_aid": {
+            "name": "Segnalazione Oggetti",
+        },
+        "player_1": {
+            "name": "Attore Intermezzo 1",
+        },
+        "player_2": {
+            "name": "Attore Intermezzo 2",
+        },
+        "player_3": {
+            "name": "Attore Intermezzo 3",
+        },
+        "player_4": {
+            "name": "Attore Intermezzo 4",
         },
         "player_5": {
             "name": "Attore Intermezzo 5",
@@ -1644,8 +1646,14 @@
         "player_10": {
             "name": "Attore Intermezzo 10",
         },
+        "ricochet": {
+            "name": "Rimbalzo",
+        },
         "skidoo_track": {
-            "name": "Traccia Motoslitta",
+            "name": "Tracciato Motoslitta",
+        },
+        "skybox": {
+            "name": "Cielo",
         },
         "snow_sprite": {
             "name": "Scia Motoslitta",
@@ -1659,11 +1667,26 @@
         "sphere_of_doom_3": {
             "name": "Esplosione Drago 3",
         },
+        "splash_1": {
+            "name": "Increspatura Acqua 1",
+        },
+        "splash_2": {
+            "name": "Increspatura Acqua 2",
+        },
         "text_box": {
             "name": "Casella Interfaccia",
         },
+        "twinkle": {
+            "name": "Scintille",
+        },
+        "waterfall": {
+            "name": "Foschia Cascata",
+        },
         "water_sprite": {
             "name": "Scia Barca",
+        },
+        "winston": {
+            "name": "Winston",
         }
     }
 }
