@@ -195,6 +195,11 @@ class BaseResolver:
         self.trans_file = trans_file
 
     def fill(self) -> Any:
+        self.fill_base_strings()
+        self.fill_object_names()
+        return self.trans_file.data
+
+    def fill_base_strings(self) -> None:
         base_gs = self.base_file.data.get("game_strings", {})
         trans_gs = self.trans_file.data.setdefault("game_strings", {})
         source = trans_gs if self.trans_file.extends else base_gs
@@ -206,7 +211,23 @@ class BaseResolver:
         for chunk in chunks(list(missing.items()), n=50):
             filled = self.fill_chunk(chunk)
             trans_gs.update(filled)
-        return self.trans_file.data
+
+    def fill_object_names(self) -> None:
+        base_objs = self.base_file.data.get("objects", {})
+        trans_objs = self.trans_file.data.setdefault("objects", {})
+        missing_objs = {}
+        for key, obj in base_objs.items():
+            base_name = obj.get("name")
+            if isinstance(base_name, list) and base_name:
+                base_name = base_name[0]  # Only take the first
+            if key in trans_objs and not clean(trans_objs[key].get("name")):
+                missing_objs[key] = clean(base_name)
+        for chunk in chunks(list(missing_objs.items()), n=50):
+            filled = dict(self.fill_chunk(chunk))
+            for k, v in filled.items():
+                trans_objs.setdefault(k, {})["name"] = v
+        if not self.trans_file.data["objects"]:
+            del self.trans_file.data["objects"]
 
 
 class AIResolver(BaseResolver):
@@ -230,7 +251,7 @@ class AIResolver(BaseResolver):
             Translate the user-provided JSON to language '{self.target_lang}'
             for a Tomb Raider game."""
 
-    def fill_chunk(self, chunk: list[tuple[str, str]]) -> None:
+    def fill_chunk(self, chunk: list[tuple[str, str]]) -> list[tuple[str, str]]:
         import openai
 
         keys = [row[0] for row in chunk]
@@ -255,7 +276,7 @@ class AIResolver(BaseResolver):
         except Exception as e:
             sys.exit(f"Error parsing AI response: {e}\n{buf}")
         parsed = [REVIEW_MARKER + (text or "") for text in parsed]
-        return zip(keys, parsed, strict=True)
+        return list(zip(keys, parsed, strict=True))
 
 
 class BlankResolver(BaseResolver):
