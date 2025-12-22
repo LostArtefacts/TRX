@@ -36,6 +36,7 @@
 - fixed Lara not colliding with mines/gondolas when underwater (#4424, regression from TR2X 1.3)
 - fixed flare box pickups containig only one flare if Lara has none in her inventory at that time (#4423, regression from 1.0)
 - fixed water enemies appearing untinted for a frame after dying and moving to the water surface (#4420, regression from TR2X 0.1)
+- fixed the interactive fly cheat breaking with animated interactions enabled (#4444, regression from TR1X 4.14)
 
 **TR1**:
 - added the ability to change inventory and statistics background styles (pattern + wave are not implemented in TR1)

@@ -717,10 +717,10 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool walk_to_items = g_Config.gameplay.enable_walk_to_items
         && ref_item->object_id != O_FLARE_ITEM;
+    const bool lara_on_land = lara_info->water_status != LWS_UNDERWATER
+        && lara_info->water_status != LWS_CHEAT;
     const int32_t velocity =
-        walk_to_items && lara_info->water_status != LWS_UNDERWATER
-        ? M_MOVE_ANIM_VELOCITY
-        : M_MOVE_SPEED;
+        walk_to_items && lara_on_land ? M_MOVE_ANIM_VELOCITY : M_MOVE_SPEED;
 
     ITEM *const lara_item = Lara_GetItem();
     const XYZ_16 new_rot = ref_item->rot;
@@ -770,7 +770,7 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
     }
 
     if (walk_to_items && !lara_info->interact_target.is_moving) {
-        if (lara_info->water_status != LWS_UNDERWATER) {
+        if (lara_on_land) {
             const int16_t step_to_anim_num[4] = {
                 LA(LA_SIDE_STEP_LEFT),
                 LA(LA_WALK_FORWARD),
