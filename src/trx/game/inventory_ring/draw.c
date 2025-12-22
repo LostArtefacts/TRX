@@ -208,6 +208,7 @@ void InvRing_Draw(INV_RING *const ring)
             Fader_GetRealValue(&ring->back_fader) / 255.0f;
         Output_Background_SetOverlayOpacity(overlay_opacity);
         Output_DrawBackground();
+        ring->back_fader.target_drawn = true;
     }
 
     const int16_t old_fov = Viewport_GetSystemFOV();
