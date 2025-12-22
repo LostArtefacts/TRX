@@ -18,6 +18,7 @@ typedef enum {
     M_UNIFORM_EFFECT,
     M_UNIFORM_OPACITY,
     M_UNIFORM_DESATURATION,
+    M_UNIFORM_BRIGHTNESS_SCALE,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -57,6 +58,7 @@ struct GFX_2D_RENDERER {
 
     float opacity;
     float desaturation;
+    float brightness_scale;
 
     bool use_external_texture;
     GLuint external_texture_id;
@@ -122,6 +124,7 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     r->effect = GFX_2D_EFFECT_NONE;
     r->opacity = 1.0f;
     r->desaturation = 0.0f;
+    r->brightness_scale = 1.0f;
     r->repeat.x = 1;
     r->repeat.y = 1;
     r->quad.x0 = 0.0f;
@@ -169,6 +172,7 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         { M_UNIFORM_EFFECT, "uEffect" },
         { M_UNIFORM_OPACITY, "uOpacity" },
         { M_UNIFORM_DESATURATION, "uDesaturation" },
+        { M_UNIFORM_BRIGHTNESS_SCALE, "uBrightnessScale" },
         { -1, nullptr },
     };
     for (int32_t i = 0; uniforms[i].name != nullptr; i++) {
@@ -186,6 +190,8 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         &r->program, r->loc[M_UNIFORM_OPACITY], r->opacity);
     GFX_GL_Program_Uniform1f(
         &r->program, r->loc[M_UNIFORM_DESATURATION], r->desaturation);
+    GFX_GL_Program_Uniform1f(
+        &r->program, r->loc[M_UNIFORM_BRIGHTNESS_SCALE], r->brightness_scale);
     GFX_GL_CheckError();
 
     return r;
@@ -370,6 +376,19 @@ void GFX_2D_Renderer_SetDesaturation(
         GFX_GL_Program_Uniform1f(
             &r->program, r->loc[M_UNIFORM_DESATURATION], desaturation);
         r->desaturation = desaturation;
+    }
+}
+
+void GFX_2D_Renderer_SetBrightnessScale(
+    GFX_2D_RENDERER *const r, const float brightness_scale)
+{
+    ASSERT(r != nullptr);
+
+    if (r->brightness_scale != brightness_scale) {
+        GFX_GL_Program_Bind(&r->program);
+        GFX_GL_Program_Uniform1f(
+            &r->program, r->loc[M_UNIFORM_BRIGHTNESS_SCALE], brightness_scale);
+        r->brightness_scale = brightness_scale;
     }
 }
 
