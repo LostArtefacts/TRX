@@ -42,10 +42,10 @@ void Output_Init(void)
     OutputSource_Lightnings_Init();
     OutputSource_Shadows_Init(m_Batcher);
     OutputSource_Misc_Init();
-    OutputSource_UI_Init();
 
     Output_InitLight();
     Output_InitBackground();
+    OutputSource_UI_Init();
 
     Output_ApplyRenderSettings();
 }

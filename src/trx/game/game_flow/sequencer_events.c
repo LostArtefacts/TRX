@@ -240,6 +240,7 @@ M_GF_HANDLER(M_HandlePicture)
         .fade_in_time = data->fade_in_time,
         .fade_out_time = data->fade_out_time,
         .display_time_includes_fades = g_TRVersion >= 2,
+        .loading_pic = event->type == GFS_LOADING_SCREEN,
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Picture_Destroy(phase);
