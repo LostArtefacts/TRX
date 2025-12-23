@@ -21,8 +21,9 @@
 
 #define M_GF_HANDLER(name)                                                     \
     static GF_COMMAND name(                                                    \
-        const GF_LEVEL *level, const GF_SEQUENCE_EVENT *event,                 \
-        GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg)
+        const GF_LEVEL *const level, const GF_SEQUENCE *const sequence,        \
+        const int32_t event_idx, const GF_SEQUENCE_CONTEXT seq_ctx,            \
+        void *const seq_ctx_arg)
 
 // clang-format off
 #define X_EVENT_HANDLER_LIST \
@@ -170,6 +171,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
 M_GF_HANDLER(M_HandlePlayCutscene)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     const int16_t cutscene_num = (int16_t)(intptr_t)event->data;
     if (seq_ctx != GFSC_SAVED && g_Config.gameplay.enable_cutscenes) {
         gf_cmd = GF_DoCutsceneSequence(cutscene_num);
@@ -183,6 +185,7 @@ M_GF_HANDLER(M_HandlePlayCutscene)
 M_GF_HANDLER(M_HandlePlayFMV)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     const int16_t fmv_id = (int16_t)(intptr_t)event->data;
     if (seq_ctx == GFSC_SAVED) {
         return gf_cmd;
@@ -205,6 +208,7 @@ M_GF_HANDLER(M_HandlePlayFMV)
 M_GF_HANDLER(M_HandlePlayMusic)
 {
     if (seq_ctx != GFSC_STORY) {
+        const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
         Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ALWAYS);
     }
     return (GF_COMMAND) { .action = GF_NOOP };
@@ -213,6 +217,11 @@ M_GF_HANDLER(M_HandlePlayMusic)
 M_GF_HANDLER(M_HandlePicture)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
+    const GF_SEQUENCE_EVENT *const prev_event =
+        event_idx > 0 ? &sequence->events[event_idx - 1] : nullptr;
+    const bool is_after_fmv =
+        prev_event != nullptr && prev_event->type == GFS_PLAY_FMV;
     if (event->type == GFS_LOADING_SCREEN) {
         if (!g_Config.gameplay.enable_loading_screens) {
             return gf_cmd;
@@ -241,6 +250,7 @@ M_GF_HANDLER(M_HandlePicture)
         .fade_out_time = data->fade_out_time,
         .display_time_includes_fades = g_TRVersion >= 2,
         .loading_pic = event->type == GFS_LOADING_SCREEN,
+        .block_cross_fade_in = is_after_fmv,
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Picture_Destroy(phase);
@@ -284,6 +294,7 @@ M_GF_HANDLER(M_HandleTotalStats)
     if (!g_Config.gameplay.enable_total_stats) {
         return gf_cmd;
     }
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .background_type = BK_IMAGE,
         .background_path = event->data,
@@ -299,6 +310,7 @@ M_GF_HANDLER(M_HandleTotalStats)
 M_GF_HANDLER(M_HandleSetStartAnim)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     if (seq_ctx != GFSC_STORY) {
         Lara_SetStartAnimState((LARA_EXTRA_STATE)(intptr_t)event->data);
     }
@@ -318,6 +330,7 @@ M_GF_HANDLER(M_HandleSetupBaconLara)
 {
     // TODO: move me to lua!
     if (seq_ctx != GFSC_STORY) {
+        const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
         const int32_t anchor_room = (int32_t)(intptr_t)event->data;
         if (!BaconLara_InitialiseAnchor(anchor_room)) {
             LOG_ERROR("Could not anchor Bacon Lara to room %d", anchor_room);
@@ -331,6 +344,7 @@ M_GF_HANDLER(M_HandleDisableFloor)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_STORY) {
+        const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
         Room_SetAbyssHeight((int16_t)(intptr_t)event->data);
     }
     return gf_cmd;

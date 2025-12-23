@@ -17,7 +17,6 @@ typedef struct {
     FADER fader;
     CLOCK_TIMER timer;
     PHASE_PICTURE_ARGS args;
-    bool snapshot_enabled;
     bool has_drawn;
 } M_PRIV;
 
@@ -37,18 +36,10 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         };
     }
 
-    if (p->args.loading_pic) {
+    if (p->args.loading_pic && !p->args.block_cross_fade_in) {
         Output_Overlay_CaptureSnapshot();
-        p->snapshot_enabled = true;
-    } else {
-        p->snapshot_enabled = false;
     }
-
-    if (p->args.loading_pic) {
-        Fader_InitTo(&p->fader, 0.0f, 1.0f, p->args.fade_in_time);
-    } else {
-        Fader_InitTo(&p->fader, 1.0f, 0.0f, p->args.fade_in_time);
-    }
+    Fader_InitTo(&p->fader, 1.0f, 0.0f, p->args.fade_in_time);
     ClockTimer_Sync(&p->timer);
     return (PHASE_CONTROL) {};
 }
@@ -56,7 +47,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    p->snapshot_enabled = false;
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -73,7 +63,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         } else if (!Fader_IsActive(&p->fader)) {
             p->state = STATE_DISPLAY;
             ClockTimer_Sync(&p->timer);
-            p->snapshot_enabled = false;
         }
         break;
 
@@ -92,7 +81,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     case STATE_FADE_OUT:
         if (p->args.loading_pic && p->has_drawn) {
             Output_Overlay_BeginTransitionFadeOut(
-                p->args.fade_out_time, Fader_GetCurrentValue(&p->fader));
+                p->args.fade_out_time, 1.0f - Fader_GetCurrentValue(&p->fader));
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = GF_NOOP },
@@ -116,10 +105,11 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     const float progress = Fader_GetCurrentValue(&p->fader);
-    if (p->args.loading_pic) {
+    if (p->args.loading_pic
+        && (p->state != STATE_FADE_IN || !p->args.block_cross_fade_in)) {
         Output_Overlay_DrawImage(p->args.file_name);
-        if (p->snapshot_enabled && p->state == STATE_FADE_IN) {
-            Output_Overlay_DrawSnapshot(1.0f - progress);
+        if (p->state == STATE_FADE_IN) {
+            Output_Overlay_DrawSnapshot(progress);
         }
     } else {
         Output_Overlay_DrawImage(p->args.file_name);
@@ -134,7 +124,6 @@ PHASE *Phase_Picture_Create(const PHASE_PICTURE_ARGS args)
     M_PRIV *const p = Memory_Alloc(sizeof(M_PRIV));
     p->args = args;
     p->state = STATE_FADE_IN;
-    p->snapshot_enabled = false;
     p->has_drawn = false;
     phase->priv = p;
     phase->start = M_Start;
