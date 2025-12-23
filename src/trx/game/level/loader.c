@@ -1381,12 +1381,9 @@ void Level_ReadSamples(const LEVEL_LOADER *const loader, VFILE *const file)
         if (loader->game_version >= 3) {
             sample_info->volume = VFile_ReadU8(file) << 7;
             sample_info->range = VFile_ReadU8(file) * WALL_L;
-        } else if (loader->game_version == 2) {
+        } else {
             sample_info->volume = VFile_ReadU16(file);
             sample_info->range = 10 * WALL_L;
-        } else if (loader->game_version == 1) {
-            sample_info->volume = VFile_ReadU16(file);
-            sample_info->range = 8 * WALL_L;
         }
 
         if (loader->game_version >= 3) {
