@@ -121,21 +121,18 @@ static int32_t M_GetDistance(
 static int32_t M_GetVolume(
     const SAMPLE_INFO *const sample, const int32_t distance, const bool random)
 {
-    if (g_TRVersion == 1) {
-        int32_t volume = sample->volume - distance * 4;
-        if (random && sample->flags.randomize_volume) {
-            volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE / 0x8000;
-        }
-        return volume;
-    } else {
-        int32_t volume = sample->volume;
-        if (random && sample->flags.randomize_volume) {
-            volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE / 0x8000;
-        }
-        const int32_t attenuation =
-            SQUARE(distance) / (SQUARE(sample->range) / 0x10000);
-        return (volume * (0x10000 - attenuation)) / 0x10000;
+    int32_t volume = sample->volume;
+    if (random && sample->flags.randomize_volume) {
+        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE / 0x8000;
     }
+
+    if (g_TRVersion == 1) {
+        return volume - distance * 3.5f;
+    }
+
+    const int32_t attenuation =
+        SQUARE(distance) / (SQUARE(sample->range) / 0x10000);
+    return (volume * (0x10000 - attenuation)) / 0x10000;
 }
 
 static int32_t M_GetPitch(const SAMPLE_INFO *const sample, const uint32_t flags)
@@ -161,18 +158,9 @@ static int32_t M_GetPan(
     }
     const int32_t distance = M_GetDistance(sample, pos);
     if (distance > 0 && !sample->flags.no_pan) {
-        if (g_TRVersion == 1) {
-            const LARA_INFO *const lara = Lara_GetLaraInfo();
-            const ITEM *const lara_item = Lara_GetItem();
-            int16_t angle =
-                Math_Atan(pos->z - lara_item->pos.z, pos->x - lara_item->pos.x);
-            angle -= lara_item->rot.y + lara->torso_rot.y + lara->head_rot.y;
-            return angle;
-        } else {
-            const int32_t dx = pos->x - g_Camera.mic_pos.x;
-            const int32_t dz = pos->z - g_Camera.mic_pos.z;
-            return (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
-        }
+        const int32_t dx = pos->x - g_Camera.mic_pos.x;
+        const int32_t dz = pos->z - g_Camera.mic_pos.z;
+        return (int16_t)Math_Atan(dz, dx) - g_Camera.actual_angle;
     }
     return 0;
 }

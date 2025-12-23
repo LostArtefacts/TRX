@@ -45,6 +45,7 @@
 - fixed several OG texture issues in Caves (rooms 0, 1, 2, 6, 24, 30 and 32)
 - fixed Lara automatically being given TR2 weapons in NG+ when playing the OG levels (#4365, regression from 1.0)
 - fixed Lara's pistol holster meshes appearing in NG+ in place of her Uzi holster meshes (#4368, regression from 1.0)
+- fixed Lara's footstep sounds being very quiet when weapons are equipped (#4451, regression from 1.0)
 
 **TR2**:
 - added high-resolution 16:9 and 4:3 loading screens
