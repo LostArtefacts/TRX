@@ -22,7 +22,6 @@
 #include <trx/game/ui/elements/bar_lara_air.h>
 #include <trx/game/ui/elements/bar_lara_hp.h>
 #include <trx/game/ui/elements/button_label.h>
-#include <trx/game/ui/elements/fade.h>
 #include <trx/game/ui/elements/fixed.h>
 #include <trx/game/ui/elements/flash.h>
 #include <trx/game/ui/elements/fps_counter.h>

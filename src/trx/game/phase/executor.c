@@ -11,6 +11,7 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
@@ -63,7 +64,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     if (Shell_IsExiting() && !m_Exiting) {
         m_Exiting = true;
         if (g_Config.visuals.enable_exit_fade_effects) {
-            Fader_Init(&m_ExitFader, FADER_ANY, FADER_BLACK, 1.0 / 3.0);
+            Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
         }
     } else if (m_Exiting && !Fader_IsActive(&m_ExitFader)) {
         return (PHASE_CONTROL) {
@@ -88,20 +89,20 @@ static void M_Draw(PHASE *const phase)
     Output_BeginScene();
     Output_SwitchViewport(VIEWPORT_GAME);
     UI_BeginScene();
-    UI_BeginFade(&m_ExitFader, true);
     if (phase != nullptr && phase->draw != nullptr) {
         phase->draw(phase);
     }
 
     Overlay_Draw();
     Console_Draw();
-    UI_EndFade();
     UI_EndScene();
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_Draw();
 
     Output_Flush();
+    Output_Overlay_DrawBlackRectangle(
+        Fader_GetCurrentValue(&m_ExitFader), true);
     Output_EndScene();
 
     if (Shell_GetArgs()->debug_render_performance) {

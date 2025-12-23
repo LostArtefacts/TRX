@@ -15,7 +15,6 @@
 
 uniform int uEffect;
 uniform float uOpacity;
-uniform float uDesaturation;
 uniform float uBrightnessScale;
 uniform int uFitMode;      // 0=stretch,1=letterbox,2=crop,3=smart
 uniform float uSrcAspect;  // src_w/src_h
@@ -143,13 +142,6 @@ void main(void) {
     }
 
     outColor.rgb *= uBrightnessMultiplier * uBrightnessScale;
-
-    // Optional desaturation (0 = original, 1 = monochrome).
-    if (uDesaturation != 0.0) {
-        const vec3 luma = vec3(0.2126, 0.7152, 0.0722);
-        float y = dot(outColor.rgb, luma) * 0.5;
-        outColor.rgb = mix(outColor.rgb, vec3(y), clamp(uDesaturation, 0.0, 1.0));
-    }
 
     outColor.a *= clamp(uOpacity, 0.0, 1.0);
     // Output premultiplied alpha so callers can use (ONE, ONE_MINUS_SRC_ALPHA).

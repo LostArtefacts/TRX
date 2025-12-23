@@ -24,6 +24,8 @@ void Output_SetWaterColor(RGB_888 color);
 RGB_F Output_GetTint(void);
 bool Output_GetWaterEffect(void);
 bool Output_GetWibbleEffect(void);
+float Output_GetDesaturation(void);
+void Output_SetDesaturation(float desaturation);
 
 RGBA_F Output_GetFogColor(void);
 int32_t Output_GetFogStart(void);

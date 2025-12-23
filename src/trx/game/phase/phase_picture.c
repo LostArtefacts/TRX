@@ -3,9 +3,7 @@
 #include <trx/game/fader.h>
 #include <trx/game/input.h>
 #include <trx/game/output.h>
-#include <trx/game/output/background.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui.h>
 #include <trx/memory.h>
 
 typedef enum {
@@ -20,37 +18,36 @@ typedef struct {
     CLOCK_TIMER timer;
     PHASE_PICTURE_ARGS args;
     bool snapshot_enabled;
-    bool end_requested;
     bool has_drawn;
 } M_PRIV;
 
 static void M_FadeOut(M_PRIV *const p)
 {
     p->state = STATE_FADE_OUT;
-    Fader_Init(&p->fader, FADER_ANY, FADER_BLACK, p->args.fade_out_time);
+    Fader_InitFromCurrentHold(&p->fader, 1.0f, p->args.fade_out_time, 0.1f);
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    if (!Output_LoadBackgroundFromFile(p->args.file_name)) {
+    if (!Output_Overlay_LoadImage(p->args.file_name)) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
             .gf_cmd = { .action = GF_NOOP },
         };
     }
 
-    Output_Background_EnableSnapshot(true);
-    Output_Background_CaptureSnapshotPresented();
-    p->snapshot_enabled = true;
-    Output_Background_SetOverlayOpacity(0.0f);
+    if (p->args.loading_pic) {
+        Output_Overlay_CaptureSnapshot();
+        p->snapshot_enabled = true;
+    } else {
+        p->snapshot_enabled = false;
+    }
 
     if (p->args.loading_pic) {
-        Fader_Init(
-            &p->fader, FADER_TRANSPARENT, FADER_BLACK, p->args.fade_in_time);
+        Fader_InitTo(&p->fader, 0.0f, 1.0f, p->args.fade_in_time);
     } else {
-        Fader_Init(
-            &p->fader, FADER_BLACK, FADER_TRANSPARENT, p->args.fade_in_time);
+        Fader_InitTo(&p->fader, 1.0f, 0.0f, p->args.fade_in_time);
     }
     ClockTimer_Sync(&p->timer);
     return (PHASE_CONTROL) {};
@@ -59,11 +56,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    if (p->snapshot_enabled) {
-        Output_Background_EnableSnapshot(false);
-        p->snapshot_enabled = false;
-    }
-    Output_UnloadBackground();
+    p->snapshot_enabled = false;
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -71,9 +64,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Input_Update();
     Shell_ProcessInput();
-
-    const int32_t fade_value = Fader_GetRealValue(&p->fader);
-    p->fader.target_drawn |= fade_value == p->fader.args.target;
 
     switch (p->state) {
     case STATE_FADE_IN:
@@ -83,10 +73,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         } else if (!Fader_IsActive(&p->fader)) {
             p->state = STATE_DISPLAY;
             ClockTimer_Sync(&p->timer);
-            if (p->snapshot_enabled) {
-                Output_Background_EnableSnapshot(false);
-                p->snapshot_enabled = false;
-            }
+            p->snapshot_enabled = false;
         }
         break;
 
@@ -104,7 +91,8 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     case STATE_FADE_OUT:
         if (p->args.loading_pic && p->has_drawn) {
-            Output_Background_BeginTransitionFadeOut(p->args.fade_out_time);
+            Output_Overlay_BeginTransitionFadeOut(
+                p->args.fade_out_time, Fader_GetCurrentValue(&p->fader));
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = GF_NOOP },
@@ -127,20 +115,15 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+    const float progress = Fader_GetCurrentValue(&p->fader);
     if (p->args.loading_pic) {
-        if (p->state == STATE_FADE_IN) {
-            const float overlay_opacity =
-                Fader_GetRealValue(&p->fader) / 255.0f;
-            Output_Background_SetOverlayOpacity(overlay_opacity);
-        } else {
-            Output_Background_SetOverlayOpacity(1.0f);
+        Output_Overlay_DrawImage(p->args.file_name);
+        if (p->snapshot_enabled && p->state == STATE_FADE_IN) {
+            Output_Overlay_DrawSnapshot(1.0f - progress);
         }
-        Output_DrawBackground();
     } else {
-        Output_Background_SetOverlayOpacity(1.0f);
-        Output_DrawBackground();
-        UI_BeginFade(&p->fader, false);
-        UI_EndFade();
+        Output_Overlay_DrawImage(p->args.file_name);
+        Output_Overlay_DrawBlackRectangle(progress, false);
     }
     p->has_drawn = true;
 }
@@ -152,7 +135,6 @@ PHASE *Phase_Picture_Create(const PHASE_PICTURE_ARGS args)
     p->args = args;
     p->state = STATE_FADE_IN;
     p->snapshot_enabled = false;
-    p->end_requested = false;
     p->has_drawn = false;
     phase->priv = p;
     phase->start = M_Start;

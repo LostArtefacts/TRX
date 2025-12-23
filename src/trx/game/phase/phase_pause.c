@@ -1,10 +1,9 @@
 #include <trx/game/phase/phase_pause.h>
 
+#include <trx/game/const.h>
 #include <trx/game/fader.h>
-#include <trx/game/game.h>
 #include <trx/game/game_string.h>
 #include <trx/game/input.h>
-#include <trx/game/interpolation.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
@@ -15,7 +14,7 @@
 
 #include <stdint.h>
 
-#define FADE_TIME 0.4
+#define M_FADE_TIME 0.4
 
 typedef enum {
     STATE_FADE_IN,
@@ -31,7 +30,7 @@ typedef struct {
         UI_PAUSE_STATE state;
     } ui;
     GF_ACTION action;
-    FADER back_fader;
+    FADER fader;
 } M_PRIV;
 
 static void M_RemoveText(M_PRIV *const p)
@@ -42,8 +41,7 @@ static void M_RemoveText(M_PRIV *const p)
 static void M_FadeIn(M_PRIV *const p)
 {
     p->state = STATE_FADE_IN;
-    Fader_Init(
-        &p->back_fader, FADER_TRANSPARENT, FADER_ALMOST_BLACK, FADE_TIME);
+    Fader_InitTo(&p->fader, 0.0f, 1.0f, M_FADE_TIME);
 }
 
 static void M_FadeOut(M_PRIV *const p)
@@ -51,9 +49,10 @@ static void M_FadeOut(M_PRIV *const p)
     M_RemoveText(p);
     p->ui.is_ready = false;
     if (p->action == GF_NOOP) {
-        Fader_Init(&p->back_fader, FADER_ANY, FADER_TRANSPARENT, FADE_TIME);
+        Fader_InitFromCurrent(&p->fader, 0.0f, M_FADE_TIME);
     } else {
-        Fader_Init(&p->back_fader, FADER_ANY, FADER_BLACK, FADE_TIME);
+        Fader_InitFromCurrentHold(
+            &p->fader, 1.0f, M_FADE_TIME, 3.0 / (double)LOGIC_FPS);
     }
     p->state = STATE_FADE_OUT;
 }
@@ -116,7 +115,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         if (g_InputDB.pause) {
             M_ReturnToGame(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        } else if (!Fader_IsActive(&p->back_fader)) {
+        } else if (!Fader_IsActive(&p->fader)) {
             p->state = STATE_WAIT;
             M_CreateText(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
@@ -151,7 +150,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     }
 
     case STATE_FADE_OUT:
-        if (!Fader_IsActive(&p->back_fader)) {
+        if (!Fader_IsActive(&p->fader)) {
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = p->action },
@@ -167,11 +166,9 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
-    Interpolation_Disable();
-    Game_Draw(false);
-    Interpolation_Enable();
-    UI_BeginFade(&p->back_fader, false);
-    UI_EndFade();
+    Output_Overlay_DrawGame();
+    Output_Overlay_DrawBlackRectangle(
+        Fader_GetCurrentValue(&p->fader) * 0.75f, false);
 
     if (p->state == STATE_ASK) {
         UI_Pause(&p->ui.state);

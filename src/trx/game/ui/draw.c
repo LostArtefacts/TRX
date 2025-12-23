@@ -153,11 +153,6 @@ typedef struct {
 } M_DRAW_OP_QUAD;
 
 typedef struct {
-    M_DRAW_OP base;
-    FADER *fader;
-} M_DRAW_OP_FADER;
-
-typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
     VECTOR *ops;
 } M_PRIV;
@@ -410,11 +405,6 @@ static void M_DrawOp_Quad(const M_DRAW_OP_QUAD *const op)
         op->x0, op->y0, op->x1, op->y1, op->z, op->tl, op->tr, op->bl, op->br);
 }
 
-static void M_DrawOp_Fader(const M_DRAW_OP_FADER *const op)
-{
-    Fader_Draw(op->fader);
-}
-
 // Allocate a new deferred draw operation in the arena.
 static inline void *M_ArenaAlloc(const size_t sz)
 {
@@ -549,11 +539,6 @@ void UI_ScheduleDrawHorizontalLine(
             .y = y,
             .z = z,
         }));
-}
-
-void UI_ScheduleFaderDraw(FADER *const fader)
-{
-    M_SCHEDULE_OP(M_DrawOp_Fader, ((M_DRAW_OP_FADER) { .fader = fader }));
 }
 
 void UI_InitDraw(void)

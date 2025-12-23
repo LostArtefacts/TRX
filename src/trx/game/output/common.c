@@ -2,7 +2,6 @@
 
 #include <trx/config.h>
 #include <trx/game/level.h>
-#include <trx/game/output/background.h>
 #include <trx/game/output/func.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/mesh_batcher/batcher.h>
@@ -10,6 +9,7 @@
 #include <trx/game/output/sources/lightnings.h>
 #include <trx/game/output/sources/misc.h>
 #include <trx/game/output/sources/objects.h>
+#include <trx/game/output/sources/overlay.h>
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/sources/rooms_debug.h>
 #include <trx/game/output/sources/shadows.h>
@@ -42,9 +42,9 @@ void Output_Init(void)
     OutputSource_Lightnings_Init();
     OutputSource_Shadows_Init(m_Batcher);
     OutputSource_Misc_Init();
+    OutputSource_Overlay_Init();
 
     Output_InitLight();
-    Output_InitBackground();
     OutputSource_UI_Init();
 
     Output_ApplyRenderSettings();
@@ -60,6 +60,7 @@ void Output_Shutdown(void)
     OutputSource_Lightnings_Shutdown();
     OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
+    OutputSource_Overlay_Shutdown();
 
     if (m_ShaderWorld != nullptr) {
         Output_MeshShader_Free(m_ShaderWorld);
@@ -80,7 +81,6 @@ void Output_Shutdown(void)
 
     Output_Textures_Shutdown();
     Output_ShutdownLight();
-    Output_ShutdownBackground();
 
     GFX_Context_Detach();
 }
@@ -184,7 +184,6 @@ void Output_DispatchLevelUnload(void)
     OutputSource_Rooms_ObserveLevelUnload();
     OutputSource_RoomsDebug_ObserveLevelUnload();
     OutputSource_Sprites_ObserveLevelUnload();
-    Output_UnloadBackground();
 }
 
 void Output_DispatchRoomFlip(const ROOM *room)

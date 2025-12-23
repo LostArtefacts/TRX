@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/output/common.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
@@ -32,6 +33,7 @@ static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
 static bool m_IsSkyboxEnabled = false;
+static float m_Desaturation = 0.0f;
 
 float Output_GetTime(void)
 {
@@ -125,6 +127,22 @@ bool Output_GetWaterEffect(void)
 bool Output_GetWibbleEffect(void)
 {
     return m_IsWibbleEffect;
+}
+
+float Output_GetDesaturation(void)
+{
+    return m_Desaturation;
+}
+
+void Output_SetDesaturation(const float desaturation)
+{
+    m_Desaturation = desaturation;
+    CLAMP(m_Desaturation, 0.0f, 1.0f);
+
+    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
+    if (uniforms != nullptr) {
+        Output_Uniforms_UploadGeneral(uniforms);
+    }
 }
 
 void Output_SetFogColor(const RGBA_8888 color)

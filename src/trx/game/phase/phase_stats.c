@@ -6,8 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
-#include <trx/game/interpolation.h>
-#include <trx/game/output/background.h>
+#include <trx/game/output.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 #include <trx/memory.h>
@@ -28,7 +27,7 @@ typedef struct {
     UI_STATS_DIALOG_STATE *ui_state;
 } M_PRIV;
 
-static bool M_IsFading(M_PRIV *const p)
+static bool M_IsFading(const M_PRIV *const p)
 {
     return Fader_IsActive(&p->top_fader) || Fader_IsActive(&p->back_fader);
 }
@@ -36,20 +35,18 @@ static bool M_IsFading(M_PRIV *const p)
 static void M_FadeIn(M_PRIV *const p)
 {
     if (p->args.background_path != nullptr) {
-        Fader_Init(&p->top_fader, FADER_BLACK, FADER_TRANSPARENT, 1.0);
-    } else if (p->args.background_type == BK_MONOCHROME) {
-        Fader_Init(&p->back_fader, FADER_TRANSPARENT, FADER_BLACK, 0.5);
+        Fader_InitTo(&p->back_fader, 1.0f, 0.0f, 1.0);
     } else {
-        Fader_Init(&p->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK, 0.5);
+        Fader_InitTo(&p->back_fader, 0.0f, 1.0f, 0.5);
     }
 }
 
-static void M_FadeOut(M_PRIV *const p, const bool force)
+static void M_FadeOut(M_PRIV *const p)
 {
-    if ((p->args.background_type != BK_PATTERN_STATIC
-         && p->args.background_type != BK_PATTERN_WAVE)
-        || force) {
-        Fader_Init(&p->top_fader, FADER_ANY, FADER_BLACK, 0.5);
+    if (p->args.background_type != BK_PATTERN_STATIC
+        && p->args.background_type != BK_PATTERN_WAVE) {
+        Output_Overlay_CaptureSnapshot();
+        Fader_InitFromCurrentHold(&p->top_fader, 1.0f, 0.5f, 0.1f);
         p->state = STATE_FADE_OUT;
     } else {
         p->state = STATE_FINISH;
@@ -60,30 +57,25 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
-    if (p->args.background_type == BK_IMAGE) {
+    switch (p->args.background_type) {
+    case BK_IMAGE:
         if (p->args.background_path == nullptr) {
             LOG_WARNING("Trying to load empty background image");
-        } else {
-            Output_LoadBackgroundFromFile(p->args.background_path);
+        } else if (!Output_Overlay_LoadImage(p->args.background_path)) {
+            LOG_WARNING(
+                "Failed to load background image: %s", p->args.background_path);
         }
-    } else if (
-        p->args.background_type == BK_PATTERN_STATIC
-        || p->args.background_type == BK_PATTERN_WAVE) {
-        Output_LoadBackgroundFromObject(
-            p->args.background_type == BK_PATTERN_WAVE);
-    } else if (p->args.background_type == BK_MONOCHROME) {
-        Interpolation_Disable();
-        Game_Draw(false);
-        Interpolation_Enable();
-        Output_Background_LoadMono();
-        Output_Background_EnableSnapshot(true);
-        Output_Background_CaptureSnapshotScene();
-    } else {
-        Output_UnloadBackground();
+        break;
+
+    case BK_PATTERN_STATIC:
+    case BK_PATTERN_WAVE:
+    case BK_MONOCHROME:
+    case BK_TRANSPARENT:
+        break;
     }
 
     if (Game_IsInGym()) {
-        M_FadeOut(p, false);
+        M_FadeOut(p);
     } else {
         if (p->args.background_type == BK_PATTERN_STATIC
             || p->args.background_type == BK_PATTERN_WAVE) {
@@ -115,7 +107,6 @@ static void M_End(PHASE *const phase)
         UI_StatsDialog_Free(p->ui_state);
         p->ui_state = nullptr;
     }
-    Output_UnloadBackground();
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -129,13 +120,13 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         if (!M_IsFading(p)) {
             p->state = STATE_DISPLAY;
         } else if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-            M_FadeOut(p, false);
+            M_FadeOut(p);
         }
         break;
 
     case STATE_DISPLAY:
         if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-            M_FadeOut(p, false);
+            M_FadeOut(p);
         }
         break;
 
@@ -160,32 +151,45 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
-    if (p->args.background_type == BK_TRANSPARENT) {
-        Interpolation_Disable();
-        Game_Draw(false);
-        Interpolation_Enable();
-
-        UI_BeginFade(&p->back_fader, false);
-        UI_EndFade();
-    } else if (p->args.background_type == BK_MONOCHROME) {
-        const float overlay_opacity =
-            Fader_GetRealValue(&p->back_fader) / 255.0f;
-        Output_Background_SetOverlayOpacity(overlay_opacity);
-        Output_DrawBackground();
-
-        // We never draw this fader. Make sure M_IsFading doesn't wait forever.
-        p->back_fader.target_drawn = true;
-    } else {
-        Output_DrawBackground();
-        UI_BeginFade(&p->back_fader, false);
-        UI_EndFade();
+    const float top_opacity = Fader_GetCurrentValue(&p->top_fader);
+    if (top_opacity > 0.0f) {
+        Output_Overlay_DrawSnapshot(1.0f);
+        Output_Overlay_DrawBlackRectangle(top_opacity, false);
+        return;
     }
 
-    UI_BeginFade(&p->top_fader, true);
+    const float progress = Fader_GetCurrentValue(&p->back_fader);
+    switch (p->args.background_type) {
+    case BK_TRANSPARENT:
+        Output_Overlay_DrawGame();
+        Output_Overlay_DrawBlackRectangle(progress * 0.5, false);
+        break;
+
+    case BK_MONOCHROME: {
+        Output_Overlay_DrawGameMono(progress);
+        break;
+    }
+
+    case BK_IMAGE:
+        if (p->args.background_path != nullptr) {
+            Output_Overlay_DrawImage(p->args.background_path);
+        }
+        Output_Overlay_DrawBlackRectangle(progress, false);
+        break;
+
+    case BK_PATTERN_STATIC:
+    case BK_PATTERN_WAVE:
+        Output_Overlay_DrawPattern(p->args.background_type == BK_PATTERN_WAVE);
+        Output_Overlay_DrawBlackRectangle(progress, false);
+        break;
+
+    default:
+        break;
+    }
+
     if (p->ui_active) {
         UI_StatsDialog(p->ui_state);
     }
-    UI_EndFade();
 }
 
 PHASE *Phase_Stats_Create(const PHASE_STATS_ARGS args)

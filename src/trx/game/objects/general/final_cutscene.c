@@ -2,8 +2,10 @@
 #include <trx/game/game.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/combat_end.h>
+#include <trx/game/output.h>
 
-#define M_CUTSCENE_DURATION (11.5 * LOGIC_FPS)
+#define M_CUTSCENE_DURATION (15 * LOGIC_FPS)
+#define M_FADE_DURATION (3 * LOGIC_FPS)
 
 static int32_t m_FadeTimer = -1;
 
@@ -16,9 +18,6 @@ static void M_Control(const int16_t item_num)
 
         if (m_FadeTimer == -1) {
             m_FadeTimer = M_CUTSCENE_DURATION;
-        } else if (m_FadeTimer == 1) {
-            Game_FadeToBlack(3 * LOGIC_FPS);
-            m_FadeTimer--;
         } else if (m_FadeTimer > 0) {
             m_FadeTimer--;
         }
@@ -28,9 +27,22 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+static bool M_Draw(const ITEM *const item)
+{
+    Object_DrawAnimatingItem(item);
+
+    if (m_FadeTimer < 0 || m_FadeTimer > M_FADE_DURATION) {
+        return true;
+    }
+    const float opacity = 1.0f - (m_FadeTimer / (float)M_FADE_DURATION);
+    Output_Overlay_DrawBlackRectangle(opacity, false);
+    return true;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->draw_func = M_Draw;
     obj->save_flags = true;
     obj->save_anim = true;
 }

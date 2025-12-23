@@ -62,7 +62,6 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     ASSERT(p->ring != nullptr);
-    Output_DrawBackground();
     InvRing_Draw(p->ring);
 }
 

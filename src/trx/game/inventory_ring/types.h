@@ -116,5 +116,5 @@ typedef struct {
     FADER back_fader;
 
     BACKGROUND_TYPE background_style;
-    bool snapshot_captured;
+    const char *background_path;
 } INV_RING;

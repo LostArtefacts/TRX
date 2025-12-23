@@ -4,32 +4,28 @@
 
 #include <stdint.h>
 
-#define FADER_ANY (-1)
-#define FADER_TRANSPARENT 0
-#define FADER_SEMI_BLACK 127
-#define FADER_ALMOST_BLACK 192
-#define FADER_BLACK 255
-
 typedef struct {
-    int32_t initial;
-    int32_t target;
+    bool from_current;
+    float initial;
+    float target;
 
     // This value controls how much to keep the last frame after the animation
     // is done (1.0 = one second).
-    double debuff;
-    double duration;
+    float debuff;
+    float duration;
 } FADER_ARGS;
 
 typedef struct {
     FADER_ARGS args;
     CLOCK_TIMER timer;
-    bool target_drawn;
 } FADER;
 
-void Fader_InitEx(FADER *fader, FADER_ARGS args);
-void Fader_Init(FADER *fader, int32_t initial, int32_t target, double duration);
+void Fader_InitTo(FADER *fader, float initial, float target, float duration);
+void Fader_InitToHold(
+    FADER *fader, float initial, float target, float duration, float debuff);
+void Fader_InitFromCurrent(FADER *fader, float target, float duration);
+void Fader_InitFromCurrentHold(
+    FADER *fader, float target, float duration, float debuff);
 bool Fader_IsActive(const FADER *fader);
 
-int32_t Fader_GetCurrentValue(const FADER *fader);
-int32_t Fader_GetRealValue(const FADER *fader);
-void Fader_Draw(FADER *fader);
+float Fader_GetCurrentValue(const FADER *fader);

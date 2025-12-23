@@ -2,18 +2,20 @@
 
 #include <trx/config.h>
 #include <trx/game/clock.h>
-#include <trx/game/output.h>
 #include <trx/game/shell.h>
 #include <trx/utils.h>
 
-void Fader_InitEx(FADER *const fader, FADER_ARGS args)
+static void M_Init(FADER *const fader, FADER_ARGS args)
 {
-    if (args.initial == FADER_ANY) {
+    CLAMP(args.initial, 0.0f, 1.0f);
+    CLAMP(args.target, 0.0f, 1.0f);
+
+    if (args.from_current) {
         args.initial = Fader_GetCurrentValue(fader);
 
         // Reduce duration proportionally to how close the initial value is to
         // the target.
-        double ratio = ABS(args.target - args.initial) / 128.0;
+        float ratio = ABS(args.target - args.initial);
         CLAMP(ratio, 0.0, 1.0);
         args.duration *= ratio;
         if (ratio < 1.0) {
@@ -21,66 +23,90 @@ void Fader_InitEx(FADER *const fader, FADER_ARGS args)
         }
     }
 
-    fader->target_drawn = false;
     fader->args = args;
     ClockTimer_Sync(&fader->timer);
 }
 
-void Fader_Init(
-    FADER *fader, const int32_t initial, const int32_t target,
-    const double duration)
+void Fader_InitTo(
+    FADER *const fader, const float initial, const float target,
+    const float duration)
 {
-    Fader_InitEx(
+    M_Init(
         fader,
         (FADER_ARGS) {
+            .from_current = false,
             .initial = initial,
             .target = target,
             .duration = duration,
-            .debuff = target == FADER_BLACK ? 3.0 / (double)LOGIC_FPS : 0,
+            .debuff = 0.0,
         });
 }
 
-int32_t Fader_GetCurrentValue(const FADER *const fader)
+void Fader_InitToHold(
+    FADER *const fader, const float initial, const float target,
+    const float duration, const float debuff)
 {
-    if (!g_Config.visuals.enable_fade_effects || fader->args.duration == 0.0) {
-        if (fader->args.target == FADER_SEMI_BLACK
-            || fader->args.target == FADER_ALMOST_BLACK) {
-            return fader->args.target;
-        }
-        return FADER_TRANSPARENT;
-    }
-    return Fader_GetRealValue(fader);
+    M_Init(
+        fader,
+        (FADER_ARGS) {
+            .from_current = false,
+            .initial = initial,
+            .target = target,
+            .duration = duration,
+            .debuff = debuff,
+        });
 }
 
-int32_t Fader_GetRealValue(const FADER *const fader)
+void Fader_InitFromCurrent(
+    FADER *const fader, const float target, const float duration)
 {
-    if (!g_Config.visuals.enable_fade_effects || fader->args.duration == 0.0) {
+    M_Init(
+        fader,
+        (FADER_ARGS) {
+            .from_current = true,
+            .initial = 0.0f,
+            .target = target,
+            .duration = duration,
+            .debuff = 0.0,
+        });
+}
+
+void Fader_InitFromCurrentHold(
+    FADER *const fader, const float target, const float duration,
+    const float debuff)
+{
+    M_Init(
+        fader,
+        (FADER_ARGS) {
+            .from_current = true,
+            .initial = 0.0f,
+            .target = target,
+            .duration = duration,
+            .debuff = debuff,
+        });
+}
+
+float Fader_GetCurrentValue(const FADER *const fader)
+{
+    if (!g_Config.visuals.enable_fade_effects || fader->args.duration <= 0.0) {
         return fader->args.target;
     }
-    const double elapsed_time = ClockTimer_PeekElapsed(&fader->timer);
-    const double target_time = fader->args.duration;
-    double ratio = elapsed_time / target_time;
+    const float elapsed_time = ClockTimer_PeekElapsed(&fader->timer);
+    const float target_time = fader->args.duration;
+    float ratio = elapsed_time / target_time;
     CLAMP(ratio, 0.0, 1.0);
-    return fader->args.initial
-        + (fader->args.target - fader->args.initial) * ratio;
+    float value = fader->args.initial
+        + (fader->args.target - fader->args.initial) * (float)ratio;
+    CLAMP(value, 0.0f, 1.0f);
+    return value;
 }
 
 bool Fader_IsActive(const FADER *const fader)
 {
-    if (!g_Config.visuals.enable_fade_effects) {
+    if (!g_Config.visuals.enable_fade_effects || fader->args.duration <= 0.0) {
         return false;
     }
-    if (fader->args.duration <= 0.0) {
-        return false;
-    }
-    return !fader->target_drawn;
-}
-
-void Fader_Draw(FADER *const fader)
-{
-    const int32_t current = Fader_GetCurrentValue(fader);
-    fader->target_drawn |= current == fader->args.target;
-    if (current != 0) {
-        Output_DrawBlackRectangle(current);
-    }
+    const float elapsed_time = ClockTimer_PeekElapsed(&fader->timer);
+    const float target_time = fader->args.duration + fader->args.debuff;
+    return elapsed_time < target_time;
 }
