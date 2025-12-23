@@ -9,7 +9,7 @@
 #include <trx/game/math.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/names.h>
-#include <trx/game/output.h>
+#include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>

@@ -12,10 +12,8 @@
 #include <trx/game/option.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output.h>
-#include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui.h>
 #include <trx/game/viewport.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -183,33 +181,48 @@ void InvRing_Draw(INV_RING *const ring)
     ring->camera.pos.z = ring->radius + M_CAMERA_2_RING;
 
     if (ring->mode == INV_TITLE_MODE) {
+        if (ring->background_path != nullptr) {
+            Output_Overlay_DrawImage(ring->background_path);
+        }
         Interpolation_Interpolate();
     } else {
-        if (!ring->snapshot_captured || M_IsExitTransition(ring)) {
-            Matrix_LookAt(
-                g_InvRing_OldCamera.pos.x,
-                g_InvRing_OldCamera.pos.y + g_InvRing_OldCamera.shift,
-                g_InvRing_OldCamera.pos.z, g_InvRing_OldCamera.target.x,
-                g_InvRing_OldCamera.target.y, g_InvRing_OldCamera.target.z, 0);
+        const float opacity = Fader_GetCurrentValue(&ring->back_fader);
 
-            Interpolation_Disable();
-            Game_Draw(false);
-            Interpolation_Enable();
-            Output_Background_EnableSnapshot(true);
-            Output_Background_CaptureSnapshotScene();
-            ring->snapshot_captured = true;
-            Output_SwitchViewport(VIEWPORT_GAME);
-            Viewport_Init(-1, -1, -1, -1);
-        } else {
-            Output_Background_EnableSnapshot(true);
+        switch (ring->background_style) {
+        case BK_TRANSPARENT:
+            Output_Overlay_DrawGame();
+            Output_Overlay_DrawBlackRectangle(opacity * 0.5f, false);
+            break;
+
+        case BK_MONOCHROME:
+            Output_Overlay_DrawGameMono(opacity);
+            break;
+
+        case BK_PATTERN_STATIC:
+        case BK_PATTERN_WAVE:
+            if (opacity < 1.0f) {
+                Output_Overlay_DrawGame();
+            }
+            Output_Overlay_DrawPatternOpacity(
+                ring->background_style == BK_PATTERN_WAVE, opacity);
+            break;
+
+        case BK_IMAGE:
+            if (ring->background_path != nullptr
+                && Output_Overlay_LoadImage(ring->background_path)) {
+                Output_Overlay_DrawImage(ring->background_path);
+                Output_Overlay_DrawBlackRectangle(1.0f - opacity, false);
+            } else {
+                Output_Overlay_DrawBlackRectangle(1.0f, false);
+            }
+            break;
+
+        default:
+            Output_Overlay_DrawGame();
+            break;
         }
-
-        const float overlay_opacity =
-            Fader_GetRealValue(&ring->back_fader) / 255.0f;
-        Output_Background_SetOverlayOpacity(overlay_opacity);
-        Output_DrawBackground();
-        ring->back_fader.target_drawn = true;
     }
+    Output_Flush();
 
     const int16_t old_fov = Viewport_GetSystemFOV();
     const FOV_MODE old_fov_mode = Viewport_GetFOVMode();
@@ -256,6 +269,6 @@ void InvRing_Draw(INV_RING *const ring)
         Option_Draw(inv_item);
     }
 
-    UI_BeginFade(&ring->top_fader, true);
-    UI_EndFade();
+    Output_Overlay_DrawBlackRectangle(
+        Fader_GetCurrentValue(&ring->top_fader), true);
 }

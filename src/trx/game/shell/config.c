@@ -25,7 +25,6 @@ void Shell_RefreshRendererViewport(void)
 {
     Viewport_Reset();
     m_ViewportSize = Shell_GetCurrentSize();
-    Output_ReloadBackgroundImage();
 }
 
 void Shell_SyncToWindow(void)

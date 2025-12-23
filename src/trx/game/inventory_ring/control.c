@@ -19,7 +19,7 @@
 #include <trx/game/option/examine.h>
 #include <trx/game/option/passport.h>
 #include <trx/game/option/stats.h>
-#include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
@@ -29,8 +29,8 @@
 #include <trx/version.h>
 
 #define M_INV_RING_FADE_TIME_FAST                                              \
-    (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (double)LOGIC_FPS)
-#define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25
+    (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (float)LOGIC_FPS)
+#define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25f
 #define M_RING_SWITCH_FRAMES (96 / 2)
 #define M_SELECTING_FRAMES (32 / 2)
 
@@ -324,14 +324,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     if (ring->motion.status == RNG_FADING_OUT) {
         if (!Fader_IsActive(&ring->back_fader)
             && !Fader_IsActive(&ring->top_fader)) {
-            Fader_InitEx(
-                &ring->top_fader,
-                (FADER_ARGS) {
-                    .initial = FADER_ANY,
-                    .target = FADER_BLACK,
-                    .duration = M_INV_RING_FADE_TIME_TITLE_FINISH,
-                    .debuff = 1. / (double)LOGIC_FPS,
-                });
+            Fader_InitFromCurrentHold(
+                &ring->top_fader, 1.0f, M_INV_RING_FADE_TIME_TITLE_FINISH,
+                1.0f / (float)LOGIC_FPS);
         }
 
         if (Fader_IsActive(&ring->top_fader)
@@ -426,9 +421,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             } else {
                 InvRing_MotionSetup(
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
-                Fader_Init(
-                    &ring->back_fader, FADER_ANY, FADER_TRANSPARENT,
-                    M_INV_RING_FADE_TIME_FAST);
+                Fader_InitFromCurrent(
+                    &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
@@ -752,9 +746,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 // Fade to game. Do it as soon as the ring starts to close.
                 InvRing_MotionSetup(
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
-                Fader_Init(
-                    &ring->back_fader, FADER_ANY, FADER_TRANSPARENT,
-                    M_INV_RING_FADE_TIME_FAST);
+                Fader_InitFromCurrent(
+                    &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
@@ -873,7 +866,9 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     ring->background_style = mode == INV_TITLE_MODE
         ? BK_IMAGE
         : g_Config.ui.inventory_background_style;
-    ring->snapshot_captured = false;
+    ring->background_path = ring->background_style == BK_IMAGE
+        ? g_GameFlow.main_menu_background_path
+        : nullptr;
 
     switch (mode) {
     case INV_TITLE_MODE:
@@ -912,26 +907,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     Interpolation_Remember();
 
     if (mode == INV_TITLE_MODE) {
-        Output_LoadBackgroundFromFile(g_GameFlow.main_menu_background_path);
-        Fader_Init(
-            &ring->top_fader, FADER_BLACK, FADER_TRANSPARENT,
-            M_INV_RING_FADE_TIME_FAST);
-    } else if (ring->background_style == BK_TRANSPARENT) {
-        Output_UnloadBackground();
-        Fader_Init(
-            &ring->back_fader, FADER_TRANSPARENT, FADER_SEMI_BLACK,
-            M_INV_RING_FADE_TIME_FAST);
-    } else if (ring->background_style == BK_MONOCHROME) {
-        Output_Background_LoadMono();
-        Fader_Init(
-            &ring->back_fader, FADER_TRANSPARENT, FADER_BLACK,
-            M_INV_RING_FADE_TIME_FAST);
+        if (ring->background_path != nullptr) {
+            Output_Overlay_LoadImage(ring->background_path);
+        }
+        Fader_InitTo(&ring->top_fader, 1.0f, 0.0f, M_INV_RING_FADE_TIME_FAST);
     } else {
-        Output_LoadBackgroundFromObject(
-            ring->background_style == BK_PATTERN_WAVE);
-        Fader_Init(
-            &ring->back_fader, FADER_TRANSPARENT, FADER_BLACK,
-            M_INV_RING_FADE_TIME_FAST);
+        Fader_InitTo(&ring->back_fader, 0.0f, 1.0f, M_INV_RING_FADE_TIME_FAST);
     }
 
     return ring;
@@ -952,8 +933,6 @@ void InvRing_Close(INV_RING *const ring)
         Music_Stop();
         Sound_StopAll();
     }
-    Output_UnloadBackground();
-    Output_Background_EnableSnapshot(false);
 
     if (g_Config.input.enable_buffering_inventory) {
         g_OldInputDB = (INPUT_STATE) {};

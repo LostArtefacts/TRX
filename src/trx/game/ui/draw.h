@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trx/game/fader.h>
 #include <trx/game/output/draw.h>
 
 // Schedule deferred UI draw operations to be executed by UI_Draw().
@@ -22,7 +21,6 @@ void UI_ScheduleDrawScreenGradientQuad(
     RGBA_8888 tr, RGBA_8888 bl, RGBA_8888 br);
 void UI_ScheduleDrawHorizontalLine(
     UI_STYLE ui_style, int32_t x0, int32_t x1, int32_t y, int32_t z);
-void UI_ScheduleFaderDraw(FADER *fader);
 
 void UI_InitDraw(void);
 void UI_ShutdownDraw(void);

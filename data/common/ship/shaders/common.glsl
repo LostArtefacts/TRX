@@ -30,6 +30,7 @@ layout(std140) uniform Globals {
     float uTime;
     float uTimeInGame;
     float uBrightnessMultiplier;
+    float uDesaturation;
     float uSunsetDuration;
     float uMinShade;
     int uBillboardLockMode;

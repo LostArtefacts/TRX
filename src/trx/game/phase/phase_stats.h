@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/output.h>
+#include <trx/config/enum.h>
 #include <trx/game/phase/types.h>
 
 typedef struct {

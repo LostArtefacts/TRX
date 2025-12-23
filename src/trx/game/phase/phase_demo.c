@@ -1,12 +1,12 @@
 #include <trx/game/phase/phase_demo.h>
 
 #include <trx/game/demo.h>
+#include <trx/game/fader.h>
 #include <trx/game/game.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory_ring.h>
-#include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui.h>
 #include <trx/memory.h>
 
 typedef enum {
@@ -18,7 +18,7 @@ typedef enum {
 typedef struct {
     STATE state;
     int32_t level_num;
-    FADER top_fader;
+    FADER fader;
     GF_COMMAND exit_gf_cmd;
 } M_PRIV;
 
@@ -72,7 +72,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         if (gf_cmd.action != GF_NOOP) {
             p->state = STATE_FADE_OUT;
             p->exit_gf_cmd = gf_cmd;
-            Fader_Init(&p->top_fader, FADER_ANY, FADER_BLACK, 0.5);
+            Fader_InitToHold(&p->fader, 0.0f, 1.0f, 0.5f, 0.1f);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
         }
         break;
@@ -80,7 +80,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     case STATE_FADE_OUT:
         Game_SetIsPlaying(false);
         Demo_StopFlashing();
-        if (!Fader_IsActive(&p->top_fader)) {
+        if (!Fader_IsActive(&p->fader)) {
             p->state = STATE_FINISH;
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
         }
@@ -108,8 +108,8 @@ static void M_Draw(PHASE *const phase)
     if (p->state == STATE_FADE_OUT) {
         Interpolation_Enable();
     }
-    UI_BeginFade(&p->top_fader, false);
-    UI_EndFade();
+
+    Output_Overlay_DrawBlackRectangle(Fader_GetCurrentValue(&p->fader), true);
 }
 
 PHASE *Phase_Demo_Create(const int32_t level_num)
