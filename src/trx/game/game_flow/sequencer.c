@@ -13,10 +13,12 @@
 #include <trx/game/savegame.h>
 
 static GF_COMMAND M_RunEvent(
-    const GF_LEVEL *const level, const GF_SEQUENCE_EVENT *const event,
-    const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
+    const GF_LEVEL *const level, const GF_SEQUENCE *const sequence,
+    const int32_t event_idx, const GF_SEQUENCE_CONTEXT seq_ctx,
+    void *const seq_ctx_arg)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     LOG_DEBUG(
         "event type=%s(%d) data=0x%x",
         ENUM_MAP_TO_STRING(GF_SEQUENCE_EVENT_TYPE, event->type), event->type,
@@ -28,7 +30,7 @@ static GF_COMMAND M_RunEvent(
         return gf_cmd;
     }
 
-    gf_cmd = event_handler(level, event, seq_ctx, seq_ctx_arg);
+    gf_cmd = event_handler(level, sequence, event_idx, seq_ctx, seq_ctx_arg);
     LOG_DEBUG(
         "event type=%s(%d) data=0x%x finished, result: action=%s, "
         "param=%d",
@@ -208,7 +210,7 @@ GF_COMMAND GF_InterpretSequence(
     const GF_SEQUENCE *const sequence = &level->sequence;
     for (int32_t i = 0; i < sequence->length; i++) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[i];
-        gf_cmd = M_RunEvent(level, event, seq_ctx, seq_ctx_arg);
+        gf_cmd = M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg);
         if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;
         }

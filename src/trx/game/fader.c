@@ -16,10 +16,10 @@ static void M_Init(FADER *const fader, FADER_ARGS args)
         // Reduce duration proportionally to how close the initial value is to
         // the target.
         float ratio = ABS(args.target - args.initial);
-        CLAMP(ratio, 0.0, 1.0);
+        CLAMP(ratio, 0.0f, 1.0f);
         args.duration *= ratio;
-        if (ratio < 1.0) {
-            args.debuff = 0;
+        if (ratio < 1.0f) {
+            args.debuff = 0.0f;
         }
     }
 
@@ -38,7 +38,7 @@ void Fader_InitTo(
             .initial = initial,
             .target = target,
             .duration = duration,
-            .debuff = 0.0,
+            .debuff = 0.0f,
         });
 }
 
@@ -67,7 +67,7 @@ void Fader_InitFromCurrent(
             .initial = 0.0f,
             .target = target,
             .duration = duration,
-            .debuff = 0.0,
+            .debuff = 0.0f,
         });
 }
 
