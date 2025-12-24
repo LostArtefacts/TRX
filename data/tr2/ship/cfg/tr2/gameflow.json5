@@ -548,6 +548,7 @@
             "path": "data/boat.tr2",
             "music_track": -1,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "magnums_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "level_complete"},
@@ -566,6 +567,7 @@
             "path": "data/keel.tr2",
             "music_track": 27,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
                 {"type": "loop_game"},
@@ -589,6 +591,7 @@
             "path": "data/skidoo.tr2",
             "music_track": 29,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_4"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
                 {"type": "loop_game"},
