@@ -59,6 +59,7 @@
 - fixed z-fighting on fences in Barkhang Monastery and gondola poles in Venice
 - fixed missing oxygen tanks in Offshore Rig room 82
 - fixed the monk in the Diving Area cutscene not having a complete death animation
+- fixed demos not using loading screens
 
 **TR3**:
 - added monochrome inventory backgrounds
