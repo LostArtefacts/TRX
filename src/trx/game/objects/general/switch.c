@@ -82,7 +82,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     item->flags |= IF_CODE_BITS;
     if (!Item_IsTriggerActive(item)) {
-        item->goal_anim_state = SWITCH_STATE_ON;
+        item->goal_anim_state = SWITCH_STATE_OFF;
         item->timer = 0;
     }
     Item_Animate(item);
@@ -136,7 +136,7 @@ static bool M_MoveLaraControlled(
     return Lara_MovePosition(item, &move_vector);
 }
 
-static void M_SwitchOn(ITEM *const switch_item, ITEM *const lara_item)
+static void M_TurnSwitchOn(ITEM *const switch_item, ITEM *const lara_item)
 {
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_SMALL:
@@ -153,10 +153,10 @@ static void M_SwitchOn(ITEM *const switch_item, ITEM *const lara_item)
     }
 
     lara_item->current_anim_state = LS(LS_SWITCH_ON);
-    switch_item->goal_anim_state = SWITCH_STATE_OFF;
+    switch_item->goal_anim_state = SWITCH_STATE_ON;
 }
 
-static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
+static void M_TurnSwitchOff(ITEM *const switch_item, ITEM *const lara_item)
 {
     lara_item->current_anim_state = LS(LS_SWITCH_OFF);
 
@@ -179,7 +179,7 @@ static void M_SwitchOff(ITEM *const switch_item, ITEM *const lara_item)
         break;
     }
 
-    switch_item->goal_anim_state = SWITCH_STATE_ON;
+    switch_item->goal_anim_state = SWITCH_STATE_OFF;
 }
 
 static void M_CollisionControlled(
@@ -203,10 +203,10 @@ static void M_CollisionControlled(
 
         if (Lara_TestPosition(item, &col_bounds)) {
             if (M_MoveLaraControlled(item, bounds)) {
-                if (item->current_anim_state == SWITCH_STATE_ON) {
-                    M_SwitchOn(item, lara_item);
+                if (item->current_anim_state == SWITCH_STATE_OFF) {
+                    M_TurnSwitchOn(item, lara_item);
                 } else {
-                    M_SwitchOff(item, lara_item);
+                    M_TurnSwitchOff(item, lara_item);
                 }
                 lara->head_rot.x = 0;
                 lara->head_rot.y = 0;
@@ -254,16 +254,16 @@ static void M_Collision(
     }
 
     if (item->object_id == O_SWITCH_TYPE_AIRLOCK
-        && item->current_anim_state == SWITCH_STATE_ON) {
+        && item->current_anim_state == SWITCH_STATE_OFF) {
         return;
     }
 
     M_AlignLara(lara_item, item);
 
-    if (item->current_anim_state == SWITCH_STATE_ON) {
-        M_SwitchOn(item, lara_item);
+    if (item->current_anim_state == SWITCH_STATE_OFF) {
+        M_TurnSwitchOn(item, lara_item);
     } else {
-        M_SwitchOff(item, lara_item);
+        M_TurnSwitchOff(item, lara_item);
     }
 
     if (!lara->extra_anim) {
@@ -295,8 +295,8 @@ static void M_CollisionUW(
         return;
     }
 
-    if (item->current_anim_state != SWITCH_STATE_OFF
-        && item->current_anim_state != SWITCH_STATE_ON) {
+    if (item->current_anim_state != SWITCH_STATE_ON
+        && item->current_anim_state != SWITCH_STATE_OFF) {
         return;
     }
 
@@ -309,10 +309,10 @@ static void M_CollisionUW(
     lara_item->goal_anim_state = LS(LS_TREAD);
     lara->gun_status = LGS_HANDS_BUSY;
 
-    if (item->current_anim_state == SWITCH_STATE_ON) {
-        item->goal_anim_state = SWITCH_STATE_OFF;
-    } else {
+    if (item->current_anim_state == SWITCH_STATE_OFF) {
         item->goal_anim_state = SWITCH_STATE_ON;
+    } else {
+        item->goal_anim_state = SWITCH_STATE_OFF;
     }
     item->status = IS_ACTIVE;
     Item_AddActive(item_num);
@@ -358,7 +358,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
             return false;
         } else if (
             (item->flags & IF_ONE_SHOT) != 0
-            || item->current_anim_state == SWITCH_STATE_OFF) {
+            || item->current_anim_state == SWITCH_STATE_ON) {
             return false;
         }
 
@@ -370,7 +370,7 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
         return false;
     }
 
-    if (item->current_anim_state == SWITCH_STATE_OFF && timer > 0) {
+    if (item->current_anim_state == SWITCH_STATE_ON && timer > 0) {
         item->timer = timer;
         if (timer != 1) {
             item->timer *= LOGIC_FPS;
