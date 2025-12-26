@@ -507,7 +507,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 (TRIGGER_CAMERA_DATA *)cmd->parameter;
             OBJECT_VECTOR *const camera =
                 Camera_GetFixedObject(cam_data->camera_num);
-            if (camera->flags & IF_ONE_SHOT) {
+            if ((camera->flags & IF_ONE_SHOT) != 0) {
                 break;
             }
 
@@ -522,7 +522,8 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 break;
             }
 
-            if (trigger->type == TT_SWITCH && trigger->timer && switch_off) {
+            if (trigger->type == TT_SWITCH && trigger->timer != 0
+                && switch_off) {
                 break;
             }
 

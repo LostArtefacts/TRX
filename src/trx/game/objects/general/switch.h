@@ -3,8 +3,8 @@
 #include <stdint.h>
 
 typedef enum {
-    SWITCH_STATE_OFF = 0,
-    SWITCH_STATE_ON = 1,
+    SWITCH_STATE_ON = 0,
+    SWITCH_STATE_OFF = 1,
     SWITCH_STATE_LINK = 2,
 } SWITCH_STATE;
 
