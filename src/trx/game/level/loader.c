@@ -1061,7 +1061,7 @@ void Level_ReadStaticObjects(
             obj->collidable = true;
         }
 
-        Object_GetMesh(obj->mesh_idx)->enable_caustics = true;
+        Object_GetMesh(obj->mesh_idx)->enable_caustics = obj->visible;
     }
 
     Benchmark_End(&benchmark, nullptr);
