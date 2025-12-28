@@ -266,8 +266,8 @@ static void M_ReadRoomMesh(
                 vertex->light_base = VFile_ReadS16(file);
                 vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
             } else if (loader->game_version == 3) {
-                VFile_Skip(file, 2); // attributes - TODO: support
                 VFile_Skip(file, 2); // lighting - unused in TR3
+                VFile_Skip(file, 2); // attributes (water caustics)
                 vertex->color = M_ARGB1555To8888(VFile_ReadU16(file));
                 vertex->color.a = 255;
                 vertex->light_base = 0;
