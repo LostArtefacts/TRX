@@ -29,14 +29,14 @@ static void M_AddRoomFace(
             &room->mesh.vertices[face->vertices[i]];
 
         uint16_t flags = 0;
-        if (room_vert->is_wibble_disabled) {
-            flags |= VERT_NO_CAUSTICS;
+        if (room_vert->flags.disable_wibble) {
+            flags |= VERT_NO_WIBBLE;
         }
-        if ((room_vert->caustics_flags & 0x2000u) != 0u) {
-            flags |= VERT_TR3_CAUSTICS_A;
+        if (room_vert->flags.move) {
+            flags |= VERT_MOVE;
         }
-        if ((room_vert->caustics_flags & 0x4000u) != 0u) {
-            flags |= VERT_TR3_CAUSTICS_B;
+        if (room_vert->flags.glow) {
+            flags |= VERT_GLOW;
         }
         if (Output_Textures_GetObjectTextureScenePass(face->texture_idx)
             == SCENE_PASS_OPAQUE) {
@@ -65,9 +65,6 @@ static void M_AddRoomFace(
 static int32_t M_GetWaterEffect(const ROOM *const room)
 {
     if (g_TRVersion >= 3) {
-        if (!room->flags.underwater && !room->flags.swamp) {
-            return 0;
-        }
         return 2 + (int32_t)room->water_scheme;
     }
     return Output_GetWaterEffect() ? 1 : 0;

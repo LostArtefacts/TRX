@@ -146,9 +146,9 @@ static void M_SetVertexFlags(const INJECTION *const injection)
 
     ROOM_VERTEX *const vertex = &room->mesh.vertices[target_vertex];
     if (g_TRVersion == 1) {
-        vertex->is_wibble_disabled = (flags & 0x2000u) != 0u;
+        vertex->flags.disable_wibble = (flags & 0x2000u) != 0u;
     } else {
-        vertex->is_wibble_disabled = (flags & 0x8000u) != 0u;
+        vertex->flags.disable_wibble = (flags & 0x8000u) != 0u;
         vertex->light_table_value = flags & 0xFF;
     }
 }
@@ -248,9 +248,10 @@ static void M_AddRoomVertex(const INJECTION *const injection)
     ROOM_VERTEX *const vertex = &room->mesh.vertices[room->mesh.num_vertices];
     vertex->pos = pos;
     vertex->light_base = shade;
-    vertex->is_wibble_disabled = false;
+    vertex->flags.disable_wibble = false;
+    vertex->flags.move = false;
+    vertex->flags.glow = false;
     vertex->light_table_value = 0;
-    vertex->caustics_flags = 0;
     vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
     room->mesh.num_vertices++;
 }
