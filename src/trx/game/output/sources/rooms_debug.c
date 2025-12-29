@@ -174,7 +174,7 @@ static void M_RenderPass(
     glVertexAttrib2f(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 1.0f, 1.0f);
     glVertexAttribI1ui(
         OUTPUT_MESH_ATTR_FLAGS,
-        VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS);
+        VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE);
     glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
 
     for (int32_t i = 0; i < p->scheduled->count; i++) {

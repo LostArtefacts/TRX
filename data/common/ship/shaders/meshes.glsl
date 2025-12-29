@@ -40,20 +40,24 @@ vec3 waterWibble(vec4 position)
 
 vec4 waterWibbleTR3(vec4 worldPos, int waterScheme)
 {
-    if (waterScheme > 0) {
-        return worldPos;
-    }
+    const float amplitude[22] = float[](
+        16.0,  0.0,   0.0,   0.0,   0.0,
+        16.0,  16.0,  16.0,  16.0,
+        53.0,  53.0,  53.0,  53.0,
+        90.0,  90.0,  90.0,  90.0,
+        127.0, 127.0, 127.0, 127.0,
+        0.0);
     float posPhase = (worldPos.x + worldPos.z) / 1024.0;
     float rnd = (fract(sin(dot(worldPos.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453)) * 1023.0 - 511.0;
-    float angle = radians(360.0 * mod((uTimeInGame + posPhase + rnd) / float(64.0), 1.0));
-    worldPos.y += sin(angle) * 16;
+    float angle = radians(360.0 * (mod(uTimeInGame / 64.0, 1.0) + posPhase + rnd));
+    worldPos.y += sin(angle) * amplitude[clamp(waterScheme, 0, 21)];
     return worldPos;
 }
 
 void main(void) {
     vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
 
-    if ((inFlags & VERT_TR3_CAUSTICS_A) != 0u) {
+    if ((inFlags & VERT_MOVE) != 0u) {
         worldPos = waterWibbleTR3(worldPos, uWaterEffect - 2);
     }
 
@@ -69,7 +73,7 @@ void main(void) {
     gl_Position.z += inPosition.w;
 
     // Apply water wibble effect only to non-sprite vertices
-    if (uWibbleEffect && (inFlags & (VERT_NO_CAUSTICS | VERT_BILLBOARD)) == 0u) {
+    if (uWibbleEffect && (inFlags & (VERT_NO_WIBBLE | VERT_BILLBOARD)) == 0u) {
         gl_Position.xyz = waterWibble(gl_Position);
     }
 

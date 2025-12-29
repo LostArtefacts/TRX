@@ -90,11 +90,14 @@ typedef struct {
 
 typedef struct {
     XYZ_16 pos;
-    int16_t light_base;
-    bool is_wibble_disabled;
-    uint8_t light_table_value;
-    uint16_t caustics_flags;
     RGBA_8888 color;
+    int16_t light_base;
+    uint8_t light_table_value;
+    struct {
+        bool disable_wibble;
+        bool move;
+        bool glow;
+    } flags;
 } ROOM_VERTEX;
 
 typedef struct {

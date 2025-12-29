@@ -74,6 +74,7 @@
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - added support for the serif font (no colors just yet)
 - fixed sample reading to support correct pitch and volume
+- fixed pool edges shifting along with the water effect
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)

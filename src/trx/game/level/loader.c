@@ -256,24 +256,28 @@ static void M_ReadRoomMesh(
             M_ReadVertex(&vertex->pos, file);
             if (loader->game_version == 1) {
                 vertex->light_base = VFile_ReadS16(file);
-                vertex->is_wibble_disabled = false;
-                vertex->caustics_flags = 0;
+                vertex->flags.disable_wibble = false;
+                vertex->flags.move = false;
+                vertex->flags.glow = false;
                 vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
             } else if (loader->game_version == 2) {
                 VFile_Skip(file, 2);
                 vertex->light_table_value = VFile_ReadU8(file);
                 const uint8_t flags = VFile_ReadU8(file);
-                vertex->is_wibble_disabled = (flags & 0x80u) != 0u;
-                vertex->caustics_flags = 0;
+                vertex->flags.disable_wibble = (flags & 0x80u) != 0u;
+                vertex->flags.move = false;
+                vertex->flags.glow = false;
                 vertex->light_base = VFile_ReadS16(file);
                 vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
             } else if (loader->game_version == 3) {
                 VFile_Skip(file, 2); // lighting - unused in TR3
-                vertex->caustics_flags = VFile_ReadU16(file); // water caustics
+                const uint16_t flags = VFile_ReadU16(file);
+                vertex->flags.disable_wibble = (flags & 0x8000u) != 0u;
+                vertex->flags.move = (flags & 0x2000u) != 0u;
+                vertex->flags.glow = (flags & 0x4000u) != 0u;
                 vertex->color = M_ARGB1555To8888(VFile_ReadU16(file));
                 vertex->color.a = 255;
                 vertex->light_base = 0;
-                vertex->is_wibble_disabled = false;
             }
         }
     }

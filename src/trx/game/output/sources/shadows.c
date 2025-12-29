@@ -21,7 +21,7 @@ static OUTPUT_MESH *M_GenerateShadow(
     const OUTPUT_MESH_VERTEX center = {
         .pos = { 0.0f, (float)y, 0.0f, 0.0f },
         .normal = { 0.0f, 0.0f, 0.0f },
-        .flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_CAUSTICS,
+        .flags = VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE,
         .uvw_idx = -1,
         .trapezoid_ratio = { 1.0f, 1.0f },
         .shade = SHADE_NEUTRAL,

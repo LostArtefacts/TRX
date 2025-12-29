@@ -8,7 +8,7 @@
 #define SHADE_MAX      0x1FFF
 #define SHADE_CAUSTICS 0x300
 
-#define VERT_NO_CAUSTICS       0x0001u
+#define VERT_NO_WIBBLE         0x0001u
 #define VERT_FLAT_SHADED       0x0002u
 #define VERT_REFLECTIVE        0x0004u
 #define VERT_NO_LIGHTING       0x0008u
@@ -18,8 +18,8 @@
 #define VERT_USE_DYNAMIC_LIGHT 0x0080u
 #define VERT_USE_OBJECT_LIGHT  0x0100u
 #define VERT_USE_OWN_LIGHT     0x0200u
-#define VERT_TR3_CAUSTICS_A    0x0400u
-#define VERT_TR3_CAUSTICS_B    0x0800u
+#define VERT_MOVE              0x0400u
+#define VERT_GLOW              0x0800u
 
 #define LIGHTING_CONTRAST_LOW    0
 #define LIGHTING_CONTRAST_MEDIUM 1
