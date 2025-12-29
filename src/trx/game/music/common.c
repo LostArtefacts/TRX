@@ -6,6 +6,7 @@
 #include <trx/game/level.h>
 #include <trx/game/music.h>
 #include <trx/game/music/backend_cdaudio.h>
+#include <trx/game/music/backend_cdaudio_wad.h>
 #include <trx/game/music/backend_files.h>
 #include <trx/game/sound.h>
 #include <trx/log.h>
@@ -41,6 +42,12 @@ static const MUSIC_BACKEND *M_FindBackend(void)
             all_backends,
             &(MUSIC_BACKEND *) {
                 Music_Backend_CDAudio_Factory("audio/cdaudio.mp3") });
+    }
+    if (g_TRVersion >= 3) {
+        Vector_Add(
+            all_backends,
+            &(MUSIC_BACKEND *) {
+                Music_Backend_CDAudioWad_Factory("audio/cdaudio.wad") });
     }
 
     const MUSIC_BACKEND *backend = nullptr;

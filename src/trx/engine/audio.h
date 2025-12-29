@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL_audio.h>
 #include <libavutil/samplefmt.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #define AUDIO_MAX_SAMPLES 1000
@@ -20,6 +21,7 @@ bool Audio_IsMuted(void);
 bool Audio_Stream_Pause(int32_t sound_id);
 bool Audio_Stream_Unpause(int32_t sound_id);
 int32_t Audio_Stream_CreateFromFile(const char *path);
+int32_t Audio_Stream_CreateFromMemory(uint8_t *data, size_t size);
 bool Audio_Stream_Close(int32_t sound_id);
 bool Audio_Stream_IsLooped(int32_t sound_id);
 bool Audio_Stream_SetVolume(int32_t sound_id, float volume);
