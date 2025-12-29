@@ -194,6 +194,8 @@ static bool M_DecodeFrame(AUDIO_STREAM_SOUND *stream)
         }
     }
 
+    // av_read_frame() overwrites the packet; always unref any previous content.
+    av_packet_unref(stream->av.packet);
     int32_t error_code =
         av_read_frame(stream->av.format_ctx, stream->av.packet);
 
@@ -636,16 +638,16 @@ int32_t Audio_Stream_CreateFromMemory(uint8_t *const data, const size_t size)
             return AUDIO_NO_SOUND;
         }
 
-        AVFormatContext *fmt_ctx = avformat_alloc_context();
-        if (fmt_ctx == nullptr) {
+        stream->av.format_ctx = avformat_alloc_context();
+        if (stream->av.format_ctx == nullptr) {
             Audio_Stream_Close(sound_id);
             return AUDIO_NO_SOUND;
         }
-        fmt_ctx->pb = stream->avio_ctx;
-        fmt_ctx->flags |= AVFMT_FLAG_CUSTOM_IO;
+        stream->av.format_ctx->pb = stream->avio_ctx;
+        stream->av.format_ctx->flags |= AVFMT_FLAG_CUSTOM_IO;
 
-        int32_t error_code =
-            avformat_open_input(&fmt_ctx, nullptr, nullptr, nullptr);
+        int32_t error_code = avformat_open_input(
+            &stream->av.format_ctx, nullptr, nullptr, nullptr);
         if (error_code != 0) {
             LOG_ERROR(
                 "Error while opening audio memory stream: %s",
@@ -654,7 +656,8 @@ int32_t Audio_Stream_CreateFromMemory(uint8_t *const data, const size_t size)
             return AUDIO_NO_SOUND;
         }
 
-        if (!M_InitialiseFromFormatContext(sound_id, fmt_ctx)) {
+        if (!M_InitialiseFromFormatContext(sound_id, stream->av.format_ctx)) {
+            Audio_Stream_Close(sound_id);
             return AUDIO_NO_SOUND;
         }
 
@@ -690,13 +693,14 @@ bool Audio_Stream_Close(int32_t sound_id)
         stream->av.format_ctx = nullptr;
     }
 
-    if (stream->avio_ctx) {
+    if (stream->avio_ctx != nullptr) {
+        av_freep(&stream->avio_ctx->buffer);
         avio_context_free(&stream->avio_ctx);
         stream->avio_ctx = nullptr;
-    }
-    if (stream->avio_ctx_buffer != nullptr) {
+    } else if (stream->avio_ctx_buffer != nullptr) {
         av_freep(&stream->avio_ctx_buffer);
     }
+    stream->avio_ctx_buffer = nullptr;
 
     if (stream->src_type == M_STREAM_SRC_MEMORY && stream->src != nullptr) {
         M_MEM_SOURCE *const src = stream->src;

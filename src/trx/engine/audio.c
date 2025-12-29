@@ -35,7 +35,7 @@ bool Audio_Init(void)
         return true;
     }
 
-    int32_t result = SDL_Init(SDL_INIT_AUDIO);
+    int32_t result = SDL_InitSubSystem(SDL_INIT_AUDIO);
     if (result < 0) {
         LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
         return false;
@@ -84,11 +84,12 @@ bool Audio_Shutdown(void)
         SDL_CloseAudioDevice(g_AudioDeviceID);
         g_AudioDeviceID = 0;
     }
-
     Memory_FreePointer(&m_MixBuffer);
 
     Audio_Sample_Shutdown();
     Audio_Stream_Shutdown();
+
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
     return true;
 }
 
