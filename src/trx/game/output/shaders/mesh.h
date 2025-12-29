@@ -15,6 +15,8 @@
 #define VERT_USE_DYNAMIC_LIGHT 0b0000'1000'0000 // = 0x0080
 #define VERT_USE_OBJECT_LIGHT  0b0001'0000'0000 // = 0x0100
 #define VERT_USE_OWN_LIGHT     0b0010'0000'0000 // = 0x0200
+#define VERT_TR3_CAUSTICS_A    0b0100'0000'0000 // = 0x0400
+#define VERT_TR3_CAUSTICS_B    0b1000'0000'0000 // = 0x0800
 // clang-format on
 
 // GL attribute mapping in the shader
@@ -41,7 +43,7 @@ void Output_MeshShader_Bind(const OUTPUT_MESH_SHADER *shader);
 void Output_MeshShader_UploadModelMatrix(
     const OUTPUT_MESH_SHADER *shader, const MATRIX *source);
 void Output_MeshShader_UploadWaterEffect(
-    OUTPUT_MESH_SHADER *shader, bool is_enabled);
+    OUTPUT_MESH_SHADER *shader, int32_t water_effect);
 void Output_MeshShader_UploadWibbleEffect(
     OUTPUT_MESH_SHADER *shader, bool is_enabled);
 void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *shader, RGB_F tint);

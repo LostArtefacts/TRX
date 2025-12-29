@@ -100,7 +100,7 @@ void OutputSource_Sprites_Stage(int32_t sprite_idx, int16_t shade, RGB_F tint)
         .depth_adjust = p->stack * -0.005f,
         .tint = tint,
         .wibble = false,
-        .water_effect = false,
+        .water_effect = 0,
         .room = Output_GetCurrentRoom(),
         .light_info = {
             .ls_adder = shade,

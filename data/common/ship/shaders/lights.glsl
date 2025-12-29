@@ -5,7 +5,7 @@
 #define RLM_GLOW    2
 #define RLM_SUNSET  3
 
-uniform bool uWaterEffect;
+uniform int uWaterEffect;
 
 struct Light {
     vec4 pos;
@@ -121,7 +121,7 @@ float light(float shade, uint flags, vec3 normal, vec4 pos, float phase)
         shade = clamp(shade, 0, SHADE_MAX);
     }
 
-    if (uWaterEffect) {
+    if (uWaterEffect == 1) {
         shade = lightWaterCaustics(shade, pos.xyz);
     }
 

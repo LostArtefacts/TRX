@@ -66,6 +66,7 @@
 - fixed demos not using loading screens
 
 **TR3**:
+- added swamp and water surfaces wave effect
 - added cdaudio.wad music playback support
 - added monochrome inventory backgrounds
 - added high-resolutions 16:9 and 4:3 loading screens
