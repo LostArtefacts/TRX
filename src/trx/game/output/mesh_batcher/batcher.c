@@ -541,6 +541,10 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
         Vector_Free(batcher->transparent_indices);
         batcher->transparent_indices = nullptr;
     }
+    if (batcher->transparent_sort != nullptr) {
+        Vector_Free(batcher->transparent_sort);
+        batcher->transparent_sort = nullptr;
+    }
     for (int32_t pass = 0; pass < SCENE_PASS_COUNT; pass++) {
         if (batcher->staged[pass] != nullptr) {
             Vector_Free(batcher->staged[pass]);
