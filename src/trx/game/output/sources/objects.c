@@ -216,7 +216,8 @@ static void M_Stage(const OBJECT_MESH *const mesh)
         .wmatrix = *g_WMatrixPtr,
         .tint = Output_GetTint(),
         .wibble = false,
-        .water_effect = mesh->enable_caustics && Output_GetWaterEffect(),
+        .water_effect =
+            (mesh->enable_caustics && Output_GetWaterEffect()) ? 1 : 0,
         .light_info = {
             .ls_adder = Output_GetLightAdder(),
             .ls_divider = Output_GetLightDivider(),

@@ -32,6 +32,12 @@ static void M_AddRoomFace(
         if (room_vert->is_wibble_disabled) {
             flags |= VERT_NO_CAUSTICS;
         }
+        if ((room_vert->caustics_flags & 0x2000u) != 0u) {
+            flags |= VERT_TR3_CAUSTICS_A;
+        }
+        if ((room_vert->caustics_flags & 0x4000u) != 0u) {
+            flags |= VERT_TR3_CAUSTICS_B;
+        }
         if (Output_Textures_GetObjectTextureScenePass(face->texture_idx)
             == SCENE_PASS_OPAQUE) {
             flags |= VERT_NO_ALPHA_DISCARD;
@@ -54,6 +60,17 @@ static void M_AddRoomFace(
         MeshBuilder_AddVertex(builder, &vertex);
     }
     MeshBuilder_AddFan(builder, M_GetScenePass(face), face->double_sided);
+}
+
+static int32_t M_GetWaterEffect(const ROOM *const room)
+{
+    if (g_TRVersion >= 3) {
+        if (!room->flags.underwater && !room->flags.swamp) {
+            return 0;
+        }
+        return 2 + (int32_t)room->water_scheme;
+    }
+    return Output_GetWaterEffect() ? 1 : 0;
 }
 
 static void M_PrepareMeshes(M_PRIV *const p)
@@ -151,7 +168,7 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
         .wmatrix = *g_WMatrixPtr,
         .tint = Output_GetTint(),
         .wibble = Output_GetWibbleEffect(),
-        .water_effect = Output_GetWaterEffect(),
+        .water_effect = M_GetWaterEffect(room),
         .enable_scissor = true,
         .scissor = {
             .x = room->bound_left,

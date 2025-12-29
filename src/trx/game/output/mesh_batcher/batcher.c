@@ -271,7 +271,7 @@ static void M_DrawBlendAddInstance(
     Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
-    Output_MeshShader_UploadWaterEffect(batcher->shader, false);
+    Output_MeshShader_UploadWaterEffect(batcher->shader, 0);
     Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
 
     if (inst->enable_scissor) {

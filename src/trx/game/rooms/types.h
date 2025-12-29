@@ -93,6 +93,7 @@ typedef struct {
     int16_t light_base;
     bool is_wibble_disabled;
     uint8_t light_table_value;
+    uint16_t caustics_flags;
     RGBA_8888 color;
 } ROOM_VERTEX;
 

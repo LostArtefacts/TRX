@@ -38,8 +38,24 @@ vec3 waterWibble(vec4 position)
     return ndc * position.w;
 }
 
+vec4 waterWibbleTR3(vec4 worldPos, int waterScheme)
+{
+    if (waterScheme > 0) {
+        return worldPos;
+    }
+    float posPhase = (worldPos.x + worldPos.z) / 1024.0;
+    float rnd = (fract(sin(dot(worldPos.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453)) * 1023.0 - 511.0;
+    float angle = radians(360.0 * mod((uTimeInGame + posPhase + rnd) / float(64.0), 1.0));
+    worldPos.y += sin(angle) * 16;
+    return worldPos;
+}
+
 void main(void) {
     vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
+
+    if ((inFlags & VERT_TR3_CAUSTICS_A) != 0u) {
+        worldPos = waterWibbleTR3(worldPos, uWaterEffect - 2);
+    }
 
     if ((inFlags & (VERT_ABS_SPRITE | VERT_BILLBOARD)) != 0u) {
         int lockMode = (inFlags & VERT_ABS_SPRITE) != 0u ? BILLBOARD_LOCK_NONE : uBillboardLockMode;
@@ -52,7 +68,7 @@ void main(void) {
     gl_Position = uMatProj * gEyePos;
     gl_Position.z += inPosition.w;
 
-    // apply water wibble effect only to non-sprite vertices
+    // Apply water wibble effect only to non-sprite vertices
     if (uWibbleEffect && (inFlags & (VERT_NO_CAUSTICS | VERT_BILLBOARD)) == 0u) {
         gl_Position.xyz = waterWibble(gl_Position);
     }

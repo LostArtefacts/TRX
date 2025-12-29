@@ -11,6 +11,7 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/viewport.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 static float m_Time = 0.0f;
 static float m_TimeInGame = 0.0f;
@@ -108,14 +109,14 @@ void Output_SetFogEnd(const int32_t dist)
 void Output_SetupBelowWater(const bool underwater)
 {
     m_IsWaterEffect = true;
-    m_IsWibbleEffect = !underwater;
+    m_IsWibbleEffect = g_TRVersion < 3 && !underwater;
     m_IsShadeEffect = true;
 }
 
 void Output_SetupAboveWater(const bool underwater)
 {
     m_IsWaterEffect = false;
-    m_IsWibbleEffect = underwater;
+    m_IsWibbleEffect = g_TRVersion < 3 && underwater;
     m_IsShadeEffect = underwater;
 }
 

@@ -248,6 +248,9 @@ static void M_AddRoomVertex(const INJECTION *const injection)
     ROOM_VERTEX *const vertex = &room->mesh.vertices[room->mesh.num_vertices];
     vertex->pos = pos;
     vertex->light_base = shade;
+    vertex->is_wibble_disabled = false;
+    vertex->light_table_value = 0;
+    vertex->caustics_flags = 0;
     vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
     room->mesh.num_vertices++;
 }

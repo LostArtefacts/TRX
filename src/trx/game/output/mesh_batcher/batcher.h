@@ -6,6 +6,8 @@
 #include <trx/game/rooms/types.h>
 #include <trx/game/viewport.h>
 
+#include <stdint.h>
+
 typedef struct MESH_INSTANCE {
     OUTPUT_MESH *mesh;
 
@@ -16,7 +18,7 @@ typedef struct MESH_INSTANCE {
     const ROOM *room;
     RGB_F tint;
     bool wibble;
-    bool water_effect;
+    int32_t water_effect;
 
     OUTPUT_LIGHT_INFO light_info;
 

@@ -6,7 +6,7 @@
 
 struct OUTPUT_MESH_SHADER {
     OUTPUT_SHADER *base;
-    bool is_water_effect;
+    int32_t water_effect;
     bool is_wibble_effect;
     bool is_alpha_discard_enabled;
     RGB_F tint;
@@ -15,6 +15,10 @@ struct OUTPUT_MESH_SHADER {
 OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
 {
     OUTPUT_MESH_SHADER *const shader = Memory_Alloc(sizeof(*shader));
+    shader->water_effect = -1;
+    shader->is_wibble_effect = false;
+    shader->is_alpha_discard_enabled = false;
+    shader->tint = (RGB_F) { 0.0f, 0.0f, 0.0f };
     shader->base = Output_Shader_Create("shaders/meshes.glsl");
     GFX_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(shader->base, "uTexAtlas"), 0);
@@ -60,15 +64,15 @@ void Output_MeshShader_UploadAlphaDiscard(
 }
 
 void Output_MeshShader_UploadWaterEffect(
-    OUTPUT_MESH_SHADER *const shader, const bool is_enabled)
+    OUTPUT_MESH_SHADER *const shader, const int32_t water_effect)
 {
-    if (is_enabled == shader->is_water_effect) {
+    if (water_effect == shader->water_effect) {
         return;
     }
     GFX_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(shader->base, "uWaterEffect"),
-        is_enabled);
-    shader->is_water_effect = is_enabled;
+        water_effect);
+    shader->water_effect = water_effect;
 }
 
 void Output_MeshShader_UploadWibbleEffect(
