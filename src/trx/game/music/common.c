@@ -194,6 +194,15 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         return true;
     }
 
+    if (is_looped && m_TrackCurrent != MX_INACTIVE) {
+        // OG TR3 behaviour: do not interrupt a regular track when the ambient
+        // changes; remember the new ambient and restore it when the track ends.
+        m_TrackDelayed = MX_INACTIVE;
+        m_TrackLooped = track_id;
+        m_TrackLastLooped = track_id;
+        return true;
+    }
+
     const MUSIC_TRX_ID track = Music_FromGameID(track_id);
     // TODO: utilise secondary audio stream to allow playing high fidelity
     // versions of these sounds.
