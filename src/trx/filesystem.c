@@ -62,6 +62,9 @@ static FILE *M_UTF8Fopen(const char *path, const char *mode)
 #else
 static FILE *M_UTF8Fopen(const char *path, const char *mode)
 {
+    if (path == nullptr || mode == nullptr) {
+        return nullptr;
+    }
     return fopen(path, mode);
 }
 #endif
@@ -81,6 +84,9 @@ static void M_PathAppendPart(char *const path, const char *const part)
 
 static bool M_ExistsRaw(const char *path)
 {
+    if (path == nullptr) {
+        return false;
+    }
     FILE *fp = M_UTF8Fopen(path, "rb");
     if (fp) {
         fclose(fp);
