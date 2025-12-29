@@ -65,6 +65,7 @@
 - fixed demos not using loading screens
 
 **TR3**:
+- added cdaudio.wad music playback support
 - added monochrome inventory backgrounds
 - added high-resolutions 16:9 and 4:3 loading screens
 - added high-resolutions 16:9 and 4:3 title and game end screens

@@ -277,6 +277,7 @@ common_sources = [
   'trx/game/math/util.c',
   'trx/game/matrix.c',
   'trx/game/music/backend_cdaudio.c',
+  'trx/game/music/backend_cdaudio_wad.c',
   'trx/game/music/backend_files.c',
   'trx/game/music/common.c',
   'trx/game/music/ids.c',
