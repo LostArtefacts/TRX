@@ -533,7 +533,6 @@ static void M_DrawOp_BlackRectangle(const M_DRAW_OP_BLACK_RECTANGLE *const op)
     GFX_2D_Renderer_SetRepeat(p->renderer, 1, 1);
     GFX_2D_Renderer_SetTextureSize(p->renderer, nullptr);
     GFX_2D_Renderer_SetOpacity(p->renderer, op->opacity);
-    GFX_2D_Renderer_SetDesaturation(p->renderer, 0.0f);
     GFX_2D_Renderer_RenderWithBlend(p->renderer);
 }
 
@@ -557,7 +556,6 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
         GFX_2D_Renderer_ClearFit(p->image.renderer);
     }
     GFX_2D_Renderer_SetOpacity(p->image.renderer, op->opacity);
-    GFX_2D_Renderer_SetDesaturation(p->image.renderer, 0.0f);
     if (op->opacity >= 1.0f) {
         GFX_2D_Renderer_Render(p->image.renderer);
     } else {
@@ -582,7 +580,6 @@ static void M_DrawOp_Snapshot(const M_DRAW_OP_SNAPSHOT *const op)
     GFX_2D_Renderer_SetTextureSize(p->snapshot.renderer, nullptr);
     GFX_2D_Renderer_ClearFit(p->snapshot.renderer);
     GFX_2D_Renderer_SetOpacity(p->snapshot.renderer, op->opacity);
-    GFX_2D_Renderer_SetDesaturation(p->snapshot.renderer, 0.0f);
     GFX_2D_Renderer_RenderWithBlend(p->snapshot.renderer);
 }
 
@@ -683,7 +680,6 @@ static void M_DrawOp_Pattern(const M_DRAW_OP_PATTERN *const op)
         op->wave ? GFX_2D_EFFECT_WAVE : GFX_2D_EFFECT_VIGNETTE);
     GFX_2D_Renderer_ClearFit(p->pattern.renderer);
     GFX_2D_Renderer_SetOpacity(p->pattern.renderer, op->opacity);
-    GFX_2D_Renderer_SetDesaturation(p->pattern.renderer, 0.0f);
     if (op->opacity >= 1.0f) {
         GFX_2D_Renderer_Render(p->pattern.renderer);
     } else {

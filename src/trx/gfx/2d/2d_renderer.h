@@ -54,8 +54,6 @@ void GFX_2D_Renderer_SetTextureSize(
 void GFX_2D_Renderer_SetEffect(GFX_2D_RENDERER *renderer, uint32_t effect);
 
 void GFX_2D_Renderer_SetOpacity(GFX_2D_RENDERER *renderer, float opacity);
-void GFX_2D_Renderer_SetDesaturation(
-    GFX_2D_RENDERER *renderer, float desaturation);
 void GFX_2D_Renderer_SetBrightnessScale(
     GFX_2D_RENDERER *renderer, float brightness_scale);
 
