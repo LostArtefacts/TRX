@@ -17,7 +17,6 @@ typedef enum {
     M_UNIFORM_TEXTURE_SIZE,
     M_UNIFORM_EFFECT,
     M_UNIFORM_OPACITY,
-    M_UNIFORM_DESATURATION,
     M_UNIFORM_BRIGHTNESS_SCALE,
     M_UNIFORM_FIT_MODE,
     M_UNIFORM_SRC_ASPECT,
@@ -54,7 +53,6 @@ struct GFX_2D_RENDERER {
     GFX_2D_EFFECT effect;
 
     float opacity;
-    float desaturation;
     float brightness_scale;
 
     GFX_2D_FIT_MODE fit_mode;
@@ -119,7 +117,6 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
 
     r->effect = GFX_2D_EFFECT_NONE;
     r->opacity = 1.0f;
-    r->desaturation = 0.0f;
     r->brightness_scale = 1.0f;
     r->repeat.x = 1;
     r->repeat.y = 1;
@@ -166,7 +163,6 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
         { M_UNIFORM_TEXTURE_SIZE, "uTexSize" },
         { M_UNIFORM_EFFECT, "uEffect" },
         { M_UNIFORM_OPACITY, "uOpacity" },
-        { M_UNIFORM_DESATURATION, "uDesaturation" },
         { M_UNIFORM_BRIGHTNESS_SCALE, "uBrightnessScale" },
         { M_UNIFORM_FIT_MODE, "uFitMode" },
         { M_UNIFORM_SRC_ASPECT, "uSrcAspect" },
@@ -185,8 +181,6 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     GFX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
     GFX_GL_Program_Uniform1f(
         &r->program, r->loc[M_UNIFORM_OPACITY], r->opacity);
-    GFX_GL_Program_Uniform1f(
-        &r->program, r->loc[M_UNIFORM_DESATURATION], r->desaturation);
     GFX_GL_Program_Uniform1f(
         &r->program, r->loc[M_UNIFORM_BRIGHTNESS_SCALE], r->brightness_scale);
     GFX_GL_Program_Uniform1i(
@@ -348,19 +342,6 @@ void GFX_2D_Renderer_SetOpacity(GFX_2D_RENDERER *const r, const float opacity)
         GFX_GL_Program_Uniform1f(
             &r->program, r->loc[M_UNIFORM_OPACITY], opacity);
         r->opacity = opacity;
-    }
-}
-
-void GFX_2D_Renderer_SetDesaturation(
-    GFX_2D_RENDERER *const r, const float desaturation)
-{
-    ASSERT(r != nullptr);
-
-    if (r->desaturation != desaturation) {
-        GFX_GL_Program_Bind(&r->program);
-        GFX_GL_Program_Uniform1f(
-            &r->program, r->loc[M_UNIFORM_DESATURATION], desaturation);
-        r->desaturation = desaturation;
     }
 }
 
