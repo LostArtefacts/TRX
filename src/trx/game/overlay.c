@@ -318,31 +318,17 @@ void Overlay_ShowVersion(const bool show)
     }
 }
 
-void Overlay_SetTopText(const char *const text, const bool flash)
+void Overlay_SetTopText(const OVERLAY_TEXT text)
 {
     if (m_UI != nullptr) {
-        UI_Overlay_SetTopText(m_UI, text, flash);
+        UI_Overlay_SetTopText(m_UI, text);
     }
 }
 
-void Overlay_SetBottomText(const char *const text, const bool flash)
+void Overlay_SetBottomText(const OVERLAY_TEXT text)
 {
     if (m_UI != nullptr) {
-        UI_Overlay_SetBottomText(m_UI, text, flash);
-    }
-}
-
-void Overlay_SetTopTextPtr(const char *const *const ptr, const bool flash)
-{
-    if (m_UI != nullptr) {
-        UI_Overlay_SetTopTextPtr(m_UI, ptr, flash);
-    }
-}
-
-void Overlay_SetBottomTextPtr(const char *const *const ptr, const bool flash)
-{
-    if (m_UI != nullptr) {
-        UI_Overlay_SetBottomTextPtr(m_UI, ptr, flash);
+        UI_Overlay_SetBottomText(m_UI, text);
     }
 }
 

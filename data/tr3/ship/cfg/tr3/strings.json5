@@ -279,4 +279,10 @@
             "name": "MP5 Clips",
         },
     },
+    "game_strings": {
+        "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
+        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
+        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
+        "OVERLAY_ITEM_COUNT_FMT": "%s",
+    }
 }

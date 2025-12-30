@@ -1,6 +1,7 @@
 #include <trx/game/ui/elements/ammo_label.h>
 
 #include <trx/game/game.h>
+#include <trx/game/game_string.h>
 #include <trx/game/gun/const.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/ui/elements/label.h>
@@ -54,12 +55,14 @@ void UI_AmmoLabel(void)
         return;
     }
 
-    const char *string = nullptr;
+    const char *inner_text = nullptr;
     if (icon_str != nullptr) {
-        string = String_FormatStatic("\\{small}%6d %s", ammo, icon_str);
+        inner_text = String_FormatStatic("%6d %s", ammo, icon_str);
     } else {
-        string = String_FormatStatic("\\{small}%6d", ammo);
+        inner_text = String_FormatStatic("%6d", ammo);
     }
+    const char *const outer_text =
+        String_FormatStatic(GS(OVERLAY_ITEM_COUNT_FMT), inner_text);
 
-    UI_LabelEx(string, (UI_LABEL_SETTINGS) { .scale = 1.5f });
+    UI_LabelEx(outer_text, (UI_LABEL_SETTINGS) { .scale = 1.5f });
 }

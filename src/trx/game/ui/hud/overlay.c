@@ -7,6 +7,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_string.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/names.h>
 #include <trx/game/scaler.h>
 #include <trx/game/ui/elements/ammo_label.h>
 #include <trx/game/ui/elements/bar.h>
@@ -38,11 +39,8 @@ typedef struct UI_OVERLAY_STATE {
     bool force_show_healthbar;
     bool show_arrows[6];
     bool show_version;
-    struct {
-        const char *one_off;
-        const char *const *live_ptr;
-        bool flash_enabled;
-    } top_text, bottom_text;
+    UI_OVERLAY_TEXT top_text;
+    UI_OVERLAY_TEXT bottom_text;
     UI_FLASH_STATE flash_state;
 } UI_OVERLAY_STATE;
 
@@ -117,6 +115,39 @@ static bool M_LaraExposureBar(
         return false;
     }
     return UI_LaraExposureBar(s->blink.state);
+}
+
+static const char *M_ResolveOverlayTextRaw(const UI_OVERLAY_TEXT *const t)
+{
+    if (t == nullptr) {
+        return nullptr;
+    }
+
+    switch (t->kind) {
+    case UI_OVERLAY_TEXT_NONE:
+        return nullptr;
+    case UI_OVERLAY_TEXT_LITERAL:
+        return t->literal;
+    case UI_OVERLAY_TEXT_GS_KEY:
+        return GameString_Get(t->gs_key);
+    case UI_OVERLAY_TEXT_OBJECT_NAME:
+        return Object_GetName(t->object_id);
+    }
+    return nullptr;
+}
+
+static const char *M_ResolveOverlayText(const UI_OVERLAY_TEXT *const t)
+{
+    const char *const raw = M_ResolveOverlayTextRaw(t);
+    if (raw == nullptr) {
+        return nullptr;
+    }
+
+    if (t->fmt_gs_key == nullptr) {
+        return raw;
+    }
+
+    return String_FormatStatic(GameString_Get(t->fmt_gs_key), raw);
 }
 
 static bool M_EnemyHealthBar(const BAR_LOCATION location)
@@ -280,8 +311,7 @@ static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
     UI_BeginOverlayRegion(0.5f, 0.0f);
     M_RegionBars(s, BL_TOP_CENTER);
     {
-        const char *const txt =
-            s->top_text.live_ptr ? *s->top_text.live_ptr : s->top_text.one_off;
+        const char *const txt = M_ResolveOverlayText(&s->top_text);
         if (txt != nullptr) {
             if (s->top_text.flash_enabled) {
                 UI_BeginFlash(&s->flash_state);
@@ -323,9 +353,7 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(0.5f, 1.0f);
     {
-        const char *const txt = s->bottom_text.live_ptr
-            ? *s->bottom_text.live_ptr
-            : s->bottom_text.one_off;
+        const char *const txt = M_ResolveOverlayText(&s->bottom_text);
         if (txt != nullptr) {
             if (s->bottom_text.flash_enabled) {
                 UI_BeginFlash(&s->flash_state);
@@ -441,33 +469,13 @@ void UI_Overlay_ShowVersion(UI_OVERLAY_STATE *const s, const bool show)
 }
 
 void UI_Overlay_SetTopText(
-    UI_OVERLAY_STATE *const s, const char *const text, const bool flash)
+    UI_OVERLAY_STATE *const s, const UI_OVERLAY_TEXT text)
 {
-    s->top_text.one_off = text;
-    s->top_text.live_ptr = nullptr;
-    s->top_text.flash_enabled = flash;
+    s->top_text = text;
 }
 
 void UI_Overlay_SetBottomText(
-    UI_OVERLAY_STATE *const s, const char *const text, const bool flash)
+    UI_OVERLAY_STATE *const s, const UI_OVERLAY_TEXT text)
 {
-    s->bottom_text.one_off = text;
-    s->bottom_text.live_ptr = nullptr;
-    s->bottom_text.flash_enabled = flash;
-}
-
-void UI_Overlay_SetTopTextPtr(
-    UI_OVERLAY_STATE *const s, const char *const *const ptr, const bool flash)
-{
-    s->top_text.one_off = nullptr;
-    s->top_text.live_ptr = ptr;
-    s->top_text.flash_enabled = flash;
-}
-
-void UI_Overlay_SetBottomTextPtr(
-    UI_OVERLAY_STATE *const s, const char *const *const ptr, const bool flash)
-{
-    s->bottom_text.one_off = nullptr;
-    s->bottom_text.live_ptr = ptr;
-    s->bottom_text.flash_enabled = flash;
+    s->bottom_text = text;
 }
