@@ -261,13 +261,13 @@ static void M_ReadRoomMesh(
                 vertex->flags.glow = false;
                 vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
             } else if (loader->game_version == 2) {
-                VFile_Skip(file, 2);
+                vertex->light_base = VFile_ReadS16(file);
                 vertex->light_table_value = VFile_ReadU8(file);
                 const uint8_t flags = VFile_ReadU8(file);
                 vertex->flags.disable_wibble = (flags & 0x80u) != 0u;
                 vertex->flags.move = false;
                 vertex->flags.glow = false;
-                vertex->light_base = VFile_ReadS16(file);
+                VFile_Skip(file, 2);
                 vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
             } else if (loader->game_version == 3) {
                 VFile_Skip(file, 2); // lighting - unused in TR3
