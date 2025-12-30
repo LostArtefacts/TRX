@@ -30,6 +30,7 @@
 - fixed broken final statistic counters (#4432, regression from 1.0)
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed gondolas not being drawn with an underwater tint when they have sunk (#4428)
+- fixed the teleport-to-item command not succeeding if used in succession with the same type and an out of bounds item is encountered (#4468)
 - fixed skybox faces with transparent pixels always rendering in front of all other faces (#4351, regression from 1.0)
 - fixed unbound inputs not being saved between game launches (#4360, regression from TR1X 4.14/TR2X 1.4)
 - fixed Lara drawing a flare when the draw weapons input is pressed, and she already has an active flare but no weapons (#4361, regression from TR2X 1.4)
