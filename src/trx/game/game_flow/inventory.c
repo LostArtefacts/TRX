@@ -37,6 +37,7 @@ static bool M_ResumeInfo_HasWeapon(
         // clang-format off
     case LGT_PISTOLS: return resume->flags.has_pistols;
     case LGT_MAGNUMS: return resume->flags.has_magnums;
+    case LGT_AUTOS:   return resume->flags.has_autos;
     case LGT_UZIS:    return resume->flags.has_uzis;
     case LGT_SHOTGUN: return resume->flags.has_shotgun;
     case LGT_HARPOON: return resume->flags.has_harpoon;
@@ -55,6 +56,7 @@ static void M_ResumeInfo_SetWeapon(
         // clang-format off
     case LGT_PISTOLS: resume->flags.has_pistols = has_weapon; break;
     case LGT_MAGNUMS: resume->flags.has_magnums = has_weapon; break;
+    case LGT_AUTOS:   resume->flags.has_autos = has_weapon; break;
     case LGT_UZIS:    resume->flags.has_uzis = has_weapon; break;
     case LGT_SHOTGUN: resume->flags.has_shotgun = has_weapon; break;
     case LGT_HARPOON: resume->flags.has_harpoon = has_weapon; break;
@@ -72,6 +74,7 @@ static void M_ResumeInfo_AddAmmo(
     switch (gun_type) {
         // clang-format off
     case LGT_MAGNUMS: resume->magnum_ammo += ammo_qty; break;
+    case LGT_AUTOS:   resume->autos_ammo += ammo_qty; break;
     case LGT_UZIS:    resume->uzi_ammo += ammo_qty; break;
     case LGT_SHOTGUN: resume->shotgun_ammo += ammo_qty; break;
     case LGT_HARPOON: resume->harpoon_ammo += ammo_qty; break;
@@ -277,6 +280,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     if (m_RemoveWeapons) {
         resume->flags.has_pistols = false;
         resume->flags.has_magnums = false;
+        resume->flags.has_autos = false;
         resume->flags.has_uzis = false;
         resume->flags.has_shotgun = false;
         resume->flags.has_m16 = false;
@@ -298,6 +302,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     if (m_RemoveAmmo) {
         resume->pistol_ammo = 0;
         resume->magnum_ammo = 0;
+        resume->autos_ammo = 0;
         resume->uzi_ammo = 0;
         resume->shotgun_ammo = 0;
         resume->m16_ammo = 0;
@@ -323,6 +328,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_PISTOLS);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_MAGNUMS);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_AUTOS);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_UZIS);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_SHOTGUN);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_HARPOON);
@@ -352,6 +358,7 @@ void GF_InventoryModifier_Apply(
         }
 
         M_ModifyInventory_GunOrAmmo(type, LGT_MAGNUMS);
+        M_ModifyInventory_GunOrAmmo(type, LGT_AUTOS);
         M_ModifyInventory_GunOrAmmo(type, LGT_UZIS);
         M_ModifyInventory_GunOrAmmo(type, LGT_SHOTGUN);
         M_ModifyInventory_GunOrAmmo(type, LGT_HARPOON);

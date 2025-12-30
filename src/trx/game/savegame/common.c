@@ -187,6 +187,7 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
         switch (resume->equipped_gun_type) {
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
+        case LGT_AUTOS:
         case LGT_UZIS:
             resume->holsters_gun_type = resume->equipped_gun_type;
             break;
@@ -198,6 +199,8 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
                 resume->holsters_gun_type = LGT_PISTOLS;
             } else if (resume->flags.has_magnums) {
                 resume->holsters_gun_type = LGT_MAGNUMS;
+            } else if (resume->flags.has_autos) {
+                resume->holsters_gun_type = LGT_AUTOS;
             } else if (resume->flags.has_uzis) {
                 resume->holsters_gun_type = LGT_UZIS;
             } else {
@@ -447,6 +450,15 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
             Inv_RequestItem(O_MAGNUM_AMMO_ITEM) * MAGNUM_AMMO_QTY;
     }
 
+    if (Inv_RequestItem(O_AUTOS_ITEM)) {
+        resume->flags.has_autos = true;
+        resume->autos_ammo = lara->autos_ammo.ammo;
+    } else {
+        resume->flags.has_autos = false;
+        resume->autos_ammo =
+            Inv_RequestItem(O_AUTOS_AMMO_ITEM) * AUTOS_AMMO_QTY;
+    }
+
     if (Inv_RequestItem(O_UZI_ITEM)) {
         resume->flags.has_uzis = true;
         resume->uzi_ammo = lara->uzi_ammo.ammo;
@@ -515,6 +527,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_pistols = false;
         resume->flags.has_shotgun = false;
         resume->flags.has_magnums = false;
+        resume->flags.has_autos = false;
         resume->flags.has_uzis = false;
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
@@ -523,6 +536,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->pistol_ammo = 0;
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
+        resume->autos_ammo = 0;
         resume->uzi_ammo = 0;
         resume->harpoon_ammo = 0;
         resume->m16_ammo = 0;
@@ -546,6 +560,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_pistols = true;
         resume->flags.has_shotgun = false;
         resume->flags.has_magnums = false;
+        resume->flags.has_autos = false;
         resume->flags.has_uzis = false;
 
         resume->small_medipacks = 0;
@@ -554,6 +569,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->pistol_ammo = 1000;
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
+        resume->autos_ammo = 0;
         resume->uzi_ammo = 0;
         resume->num_scions = 0;
         resume->flags.has_harpoon = false;
@@ -571,14 +587,16 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
         resume->flags.has_pistols = true;
         resume->flags.has_shotgun = true;
-        resume->flags.has_magnums = true;
+        resume->flags.has_magnums = g_Weapons[LGT_MAGNUMS].is_available;
+        resume->flags.has_autos = g_Weapons[LGT_AUTOS].is_available;
         resume->flags.has_uzis = true;
         resume->flags.has_m16 = g_Weapons[LGT_M16].is_available;
         resume->flags.has_grenade = g_Weapons[LGT_GRENADE].is_available;
         resume->flags.has_harpoon = g_Weapons[LGT_HARPOON].is_available;
 
         resume->shotgun_ammo = 10000;
-        resume->magnum_ammo = 10000;
+        resume->magnum_ammo = resume->flags.has_magnums ? 10000 : 0;
+        resume->autos_ammo = resume->flags.has_autos ? 10000 : 0;
         resume->uzi_ammo = 10000;
         resume->flares = g_TRVersion == 1 ? 0 : -1;
 

@@ -162,6 +162,16 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             lara_info->magnum_ammo.ammo = 0;
         }
 
+        if (resume->flags.has_autos) {
+            Inv_AddItem(O_AUTOS_ITEM);
+            lara_info->autos_ammo.ammo = resume->autos_ammo;
+            Item_GlobalReplace(O_AUTOS_ITEM, O_AUTOS_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_AUTOS_AMMO_ITEM, resume->autos_ammo / AUTOS_AMMO_QTY);
+            lara_info->autos_ammo.ammo = 0;
+        }
+
         if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
             lara_info->uzi_ammo.ammo = resume->uzi_ammo;
@@ -280,6 +290,11 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_MAGNUM_ITEM:
     case O_MAGNUM_OPTION:
         request_gun_type = LGT_MAGNUMS;
+        break;
+
+    case O_AUTOS_ITEM:
+    case O_AUTOS_OPTION:
+        request_gun_type = LGT_AUTOS;
         break;
 
     case O_UZI_ITEM:

@@ -326,12 +326,6 @@
         },
         "large_medipack": {
             "name": "Großes Medi-Pack",
-        },
-        "magnums": {
-            "name": "Automatik",
-        },
-        "magnums_ammo": {
-            "name": "Automatik-Munition",
         }
     },
     "game_strings": {

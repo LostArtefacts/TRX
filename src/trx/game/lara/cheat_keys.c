@@ -42,6 +42,9 @@ static void M_GiveItems(void)
     if (Lara_Cheat_GiveGun(LGT_MAGNUMS, false)) {
         lara_info->magnum_ammo.ammo = 500;
     }
+    if (Lara_Cheat_GiveGun(LGT_AUTOS, false)) {
+        lara_info->autos_ammo.ammo = 500;
+    }
     if (Lara_Cheat_GiveGun(LGT_UZIS, false)) {
         lara_info->uzi_ammo.ammo = 5000;
     }

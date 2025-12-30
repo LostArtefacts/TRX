@@ -129,10 +129,11 @@
         "ENUM_INPUT_ROLE_DOWN": "Back",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Draw Weapon",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Dev Console",
+        "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Equip Automatic Pistols",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Equip M16",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Automatic Pistols",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equip Pistols",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equip Shotgun",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equip Uzis",
@@ -728,6 +729,9 @@
             "name": "Shotgun",
         },
         "magnums": {
+            "name": "Magnums",
+        },
+        "autos": {
             "name": "Automatic Pistols",
         },
         "uzis": {
@@ -749,6 +753,9 @@
             "name": "Shotgun Shells",
         },
         "magnums_ammo": {
+            "name": "Magnum Clips",
+        },
+        "autos_ammo": {
             "name": "Automatic Pistol Clips",
         },
         "uzis_ammo": {
@@ -849,6 +856,9 @@
         },
         "lara_magnums": {
             "name": "Magnums Animation",
+        },
+        "lara_autos": {
+            "name": "Automatic Pistols Animation",
         },
         "lara_uzis": {
             "name": "Uzis Animation",

@@ -186,11 +186,7 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
     if (args->mod == nullptr) {
         Shell_ExitSystem("Missing gameflow file");
     }
-    // Set the g_TRVersion early. Later on it will be overriden by the
-    // level loader, but this lets the game load good config defaults.
-    g_TRVersion = args->engine_version != 0 ? args->engine_version
-                                            : args->mod->engine_version;
-    LOG_INFO("Engine version: %d", g_TRVersion);
+
     Config_ApplyDefaultSettings();
     Console_Init();
 
@@ -254,6 +250,12 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 {
     ASSERT(args != nullptr);
     LOG_INFO("Game directory: %s", File_GetGameDirectory());
+
+    // Set the g_TRVersion early. Later on it will be overriden by the
+    // level loader, but this lets the game load good config defaults.
+    g_TRVersion = args->engine_version != 0 ? args->engine_version
+                                            : args->mod->engine_version;
+    LOG_INFO("Engine version: %d", g_TRVersion);
 
     M_InitModules();
     args = M_PrepareSystem(args);

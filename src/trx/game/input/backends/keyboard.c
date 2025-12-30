@@ -1,6 +1,7 @@
 #include <trx/game/input/backends/keyboard.h>
 
 #include <trx/game/input/backends/internal.h>
+#include <trx/version.h>
 
 #include <SDL2/SDL_keyboard.h>
 
@@ -365,12 +366,34 @@ static void M_ResetLayout(const INPUT_LAYOUT layout)
     M_CheckConflicts(layout);
 }
 
+static BUILTIN_KEYBOARD_LAYOUT *M_GetBuiltInLayout(const INPUT_ROLE role)
+{
+    for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
+        BUILTIN_KEYBOARD_LAYOUT *const builtin = &m_BuiltinLayout[i];
+        if (builtin->role == role) {
+            return builtin;
+        }
+    }
+    return nullptr;
+}
+
+static void M_HandleBuiltInDefaults(void)
+{
+    if (g_TRVersion == 2) {
+        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_MAGNUMS)->scancode =
+            SDL_SCANCODE_UNKNOWN;
+        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_AUTOS)->scancode = SDL_SCANCODE_3;
+    }
+}
+
 static void M_Init(void)
 {
     // first, reset the roles to null
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         m_Layout[INPUT_LAYOUT_DEFAULT][role] = SDL_SCANCODE_UNKNOWN;
     }
+    // allow specific engines to re-assign default bindings
+    M_HandleBuiltInDefaults();
     // then load actually defined default bindings
     for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
         const BUILTIN_KEYBOARD_LAYOUT *const builtin = &m_BuiltinLayout[i];

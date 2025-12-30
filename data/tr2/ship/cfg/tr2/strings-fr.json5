@@ -326,12 +326,6 @@
         },
         "large_medipack": {
             "name": "\\{review}Grand medipack",
-        },
-        "magnums": {
-            "name": "\\{review}Pistolets automatiques",
-        },
-        "magnums_ammo": {
-            "name": "\\{review}Chargeurs de pistolet automatique",
         }
     },
     "game_strings": {

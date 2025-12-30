@@ -32,6 +32,21 @@
         "recoil_frame": 9,
         "flash_time": 3,
         "sample_num": "SFX_LARA_MAGNUMS",
+        "is_available": false,
+    },
+
+    "LGT_AUTOS": {
+        "lock_angles": [-60, +60, -60, +60],
+        "left_angles": [-170, +60, -80, +80],
+        "right_angles": [-60, +170, -80, +80],
+        "aim_speed": 10,
+        "shot_accuracy": 8,
+        "gun_height": 650,
+        "damage": 2,
+        "target_dist": 8.0,
+        "recoil_frame": 9,
+        "flash_time": 3,
+        "sample_num": "SFX_LARA_AUTOS",
     },
 
     "LGT_UZIS": {

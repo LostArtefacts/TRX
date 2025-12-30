@@ -129,10 +129,11 @@
         "ENUM_INPUT_ROLE_DOWN": "Zurück",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Waffe ziehen",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Entwickler-Konsole",
+        "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Automatik-Pistolen ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",
         "ENUM_INPUT_ROLE_EQUIP_M16": "M16-ausrüsten",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Automatik-Pistolen ausrüsten",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Magnums ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Pistolen ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Schrotflinte ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Uzis ausrüsten",
@@ -807,6 +808,9 @@
         },
         "lara_magnums": {
             "name": "Magnum-Animation",
+        },
+        "lara_autos": {
+            "name": "\\{review}Animation automatischer Pistolen",
         },
         "lara_uzis": {
             "name": "Uzi-Animation",
@@ -1671,6 +1675,18 @@
         },
         "alphabet_small": {
             "name": "\\{review}Kleine Schriftart",
+        },
+        "magnums": {
+            "name": "Magnums",
+        },
+        "autos": {
+            "name": "Automatik",
+        },
+        "magnums_ammo": {
+            "name": "Magnum Munition",
+        },
+        "autos_ammo": {
+            "name": "Automatik-Munition",
         }
     }
 }

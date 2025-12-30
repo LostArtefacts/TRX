@@ -326,12 +326,6 @@
         },
         "large_medipack": {
             "name": "Kit Medico Grande",
-        },
-        "magnums": {
-            "name": "Pistole Automatiche",
-        },
-        "magnums_ammo": {
-            "name": "Caricatori per Pistole Automatiche",
         }
     },
     "game_strings": {

@@ -210,16 +210,9 @@
         },
         "large_medipack": {
             "name": "Large Medi Pack",
-        },
-        "magnums": {
-            "name": "Magnums",
-        },
-        "magnums_ammo": {
-            "name": "Magnum Clips",
         }
     },
     "game_strings": {
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
         "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated for gunshots and explosions, similar to TR2+.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate.",

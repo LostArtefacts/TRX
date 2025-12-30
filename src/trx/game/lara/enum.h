@@ -99,6 +99,7 @@ typedef enum {
     LGT_HARPOON = 7,
     LGT_FLARE   = 8,
     LGT_SKIDOO  = 9,
+    LGT_AUTOS   = 10,
     NUM_WEAPONS,
 } LARA_GUN_TYPE;
 // clang-format on

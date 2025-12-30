@@ -12,8 +12,11 @@
 #define FLARE_AMMO_QTY 6
 #define FLARE_AMMO_JAPANESE_QTY 8
 
-#define MAGNUM_AMMO_CLIP (g_TRVersion == 1 ? 25 : 20)
-#define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2) // = 50 (TR1), 40 (TR2)
+#define MAGNUM_AMMO_CLIP 25
+#define MAGNUM_AMMO_QTY (MAGNUM_AMMO_CLIP * 2) // = 50
+
+#define AUTOS_AMMO_CLIP 20
+#define AUTOS_AMMO_QTY (AUTOS_AMMO_CLIP * 2) // = 40
 
 #define UZI_AMMO_CLIP (g_TRVersion == 1 ? 50 : 40)
 #define UZI_AMMO_QTY (UZI_AMMO_CLIP * 2) // = 100 (TR1), 80 (TR2)

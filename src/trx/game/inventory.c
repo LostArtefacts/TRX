@@ -36,6 +36,7 @@ static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
     case LGT_HARPOON: return InvRing_GetByObjectID(O_HARPOON_OPTION);
     case LGT_M16:     return InvRing_GetByObjectID(O_M16_OPTION);
     case LGT_GRENADE: return InvRing_GetByObjectID(O_GRENADE_GUN_OPTION);
+    case LGT_AUTOS:   return InvRing_GetByObjectID(O_AUTOS_OPTION);
     default:          return nullptr;
     }
     // clang-format on
@@ -52,6 +53,7 @@ static INVENTORY_ITEM *M_GetAmmoInvItem(const LARA_GUN_TYPE gun_type)
     case LGT_HARPOON: return InvRing_GetByObjectID(O_HARPOON_AMMO_OPTION);
     case LGT_M16:     return InvRing_GetByObjectID(O_M16_AMMO_OPTION);
     case LGT_GRENADE: return InvRing_GetByObjectID(O_GRENADE_AMMO_OPTION);
+    case LGT_AUTOS:   return InvRing_GetByObjectID(O_AUTOS_AMMO_OPTION);
     default:          return nullptr;
     }
     // clang-format on
