@@ -41,9 +41,9 @@ static void M_CalculateBrightestLight(
             const int32_t dist = (SQUARE(dx) + SQUARE(dy) + SQUARE(dz)) >> 12;
 
             const int32_t shade_1 =
-                falloff_1 * light->shade.value_1 / (falloff_1 + dist);
+                falloff_1 * light->shade.value_1 / MAX(1, falloff_1 + dist);
             const int32_t shade_2 =
-                falloff_2 * light->shade.value_2 / (falloff_2 + dist);
+                falloff_2 * light->shade.value_2 / MAX(1, falloff_2 + dist);
             const int32_t shade = shade_1
                 + (shade_2 - shade_1) * light_shade / (M_LIGHT_CYCLE - 1);
 

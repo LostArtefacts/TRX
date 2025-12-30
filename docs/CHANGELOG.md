@@ -43,6 +43,7 @@
 - fixed the interactive fly cheat breaking with animated interactions enabled (#4444, regression from TR1X 4.14)
 - fixed switch triggers using an incorrect state check, which could result in fixed camera behavior that deviated from OG (#4456, regression from 1.0)
 - fixed ambient music triggers to no longer kill active normal music tracks (#4463)
+- fixed game crashing when Lara passes through light sources in certain levels
 
 **TR1**:
 - added the ability to change inventory and statistics background styles (pattern + wave are not implemented in TR1)
@@ -69,6 +70,7 @@
 - fixed the monk in the Diving Area cutscene not having a complete death animation
 - fixed demos not using loading screens
 - fixed reading room lights for custom TR2 levels (regression from 1.0)
+- fixed game crashing when Lara passes through light sources in levels compiled with dxtre3D
 
 **TR3**:
 - added swamp and water surfaces wave effect
