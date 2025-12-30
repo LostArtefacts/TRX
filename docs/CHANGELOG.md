@@ -56,6 +56,7 @@
 - added high-resolution 16:9 and 4:3 loading screens
 - added high-resolution 16:9 and 4:3 game end screen
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
+- added Magnums to the `/moreguns` console command
 - changed ember emitters to use the `SFX_LAVA_FOUNTAIN` sample (#4376)
 - fixed the scuba diver's death SFX not playing (#4386)
 - fixed a missing trigger for tiger 6 in Ice Palace (#4390)
