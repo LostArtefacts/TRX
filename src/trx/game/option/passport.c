@@ -100,7 +100,7 @@ static void M_InitText(void)
 {
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
-    Overlay_SetBottomText(nullptr, false);
+    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
 }
 
 static void M_FreeDialogs(M_NAV_FRAME *const frame)
@@ -137,7 +137,7 @@ static void M_RemoveAllText(void)
     m_Priv.error_msg = nullptr;
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
-    Overlay_SetBottomText(nullptr, false);
+    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
 }
 
 static M_PAGE *M_TryGetActivePage(void)
@@ -182,7 +182,11 @@ static void M_SyncArrowsVisibility(void)
 static void M_ChangePageTextContent(const char *const content)
 {
     InvRing_RemoveAllText();
-    Overlay_SetBottomText(content, false);
+    Overlay_SetBottomText((OVERLAY_TEXT) {
+        .kind = UI_OVERLAY_TEXT_LITERAL,
+        .literal = content,
+        .fmt_gs_key = GS_ID(INVENTORY_RING_OBJECT_NAME_FMT),
+    });
 }
 
 static M_PAGE_NUMBER M_GetCurrentPage(const INVENTORY_ITEM *const inv_item)

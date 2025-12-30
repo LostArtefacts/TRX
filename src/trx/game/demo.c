@@ -199,7 +199,11 @@ bool Demo_Start(const int32_t level_num)
     Random_SeedControl(0xD371F947);
     g_OverlayFlag = 1;
 
-    Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
+    Overlay_SetBottomText((OVERLAY_TEXT) {
+        .kind = UI_OVERLAY_TEXT_GS_KEY,
+        .gs_key = GS_ID(MISC_DEMO_MODE),
+        .flash_enabled = true,
+    });
     return true;
 }
 
@@ -207,7 +211,7 @@ void Demo_End(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
-    Overlay_SetBottomText(nullptr, false);
+    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
     Music_Stop();
 }
 
@@ -215,14 +219,18 @@ void Demo_Pause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_RestoreConfig(p);
-    Overlay_SetBottomText(nullptr, false);
+    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
 }
 
 void Demo_Unpause(void)
 {
     M_PRIV *const p = &m_Priv;
     M_PrepareConfig(p);
-    Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), true);
+    Overlay_SetBottomText((OVERLAY_TEXT) {
+        .kind = UI_OVERLAY_TEXT_GS_KEY,
+        .gs_key = GS_ID(MISC_DEMO_MODE),
+        .flash_enabled = true,
+    });
 }
 
 int32_t Demo_ChooseLevel(const int32_t demo_num)
@@ -245,5 +253,9 @@ GF_COMMAND Demo_Control(void)
 
 void Demo_StopFlashing(void)
 {
-    Overlay_SetBottomTextPtr(GS_PTR(MISC_DEMO_MODE), false);
+    Overlay_SetBottomText((OVERLAY_TEXT) {
+        .kind = UI_OVERLAY_TEXT_GS_KEY,
+        .gs_key = GS_ID(MISC_DEMO_MODE),
+        .flash_enabled = false,
+    });
 }

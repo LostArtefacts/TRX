@@ -2,7 +2,27 @@
 
 // Ingame user interface display widget.
 
+#include <trx/game/objects/types.h>
 #include <trx/game/ui/common.h>
+
+typedef enum {
+    UI_OVERLAY_TEXT_NONE = 0,
+    UI_OVERLAY_TEXT_LITERAL,
+    UI_OVERLAY_TEXT_GS_KEY,
+    UI_OVERLAY_TEXT_OBJECT_NAME,
+} UI_OVERLAY_TEXT_KIND;
+
+typedef struct {
+    UI_OVERLAY_TEXT_KIND kind;
+    // Optional GS key of a %s format wrapper applied at draw time.
+    const char *fmt_gs_key;
+    bool flash_enabled;
+    union {
+        const char *literal;
+        const char *gs_key;
+        OBJECT_ID object_id;
+    };
+} UI_OVERLAY_TEXT;
 
 typedef enum {
     UI_OVERLAY_ARROW_TL, // top-left screen corner
@@ -29,14 +49,5 @@ void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *s, bool show);
 void UI_Overlay_ShowArrow(
     UI_OVERLAY_STATE *s, UI_OVERLAY_ARROW arrow, bool show);
 void UI_Overlay_ShowVersion(UI_OVERLAY_STATE *s, bool show);
-void UI_Overlay_SetTopText(UI_OVERLAY_STATE *s, const char *text, bool flash);
-
-void UI_Overlay_SetBottomText(
-    UI_OVERLAY_STATE *s, const char *text, bool flash);
-
-// Like UI_Overlay_SetTopText(), but takes a stable indirect pointer.
-void UI_Overlay_SetTopTextPtr(
-    UI_OVERLAY_STATE *s, const char *const *ptr, bool flash);
-// Like UI_Overlay_SetBottomText(), but takes a stable indirect pointer.
-void UI_Overlay_SetBottomTextPtr(
-    UI_OVERLAY_STATE *s, const char *const *ptr, bool flash);
+void UI_Overlay_SetTopText(UI_OVERLAY_STATE *s, UI_OVERLAY_TEXT text);
+void UI_Overlay_SetBottomText(UI_OVERLAY_STATE *s, UI_OVERLAY_TEXT text);

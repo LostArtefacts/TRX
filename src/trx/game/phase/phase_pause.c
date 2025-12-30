@@ -35,7 +35,7 @@ typedef struct {
 
 static void M_RemoveText(M_PRIV *const p)
 {
-    Overlay_SetBottomText(nullptr, false);
+    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
 }
 
 static void M_FadeIn(M_PRIV *const p)
@@ -80,7 +80,10 @@ static void M_ExitToTitle(M_PRIV *const p)
 
 static void M_CreateText(M_PRIV *const p)
 {
-    Overlay_SetBottomTextPtr(GS_PTR(PAUSE_PAUSED), false);
+    Overlay_SetBottomText((OVERLAY_TEXT) {
+        .kind = UI_OVERLAY_TEXT_GS_KEY,
+        .gs_key = GS_ID(PAUSE_PAUSED),
+    });
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)

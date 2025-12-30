@@ -8,7 +8,6 @@
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/math.h>
 #include <trx/game/music.h>
-#include <trx/game/objects/names.h>
 #include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
 #include <trx/game/sound.h>
@@ -422,12 +421,17 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
     if (inv_item->object_id == O_PASSPORT_OPTION) {
         return;
     }
-    Overlay_SetBottomTextPtr(Object_GetNamePtr(inv_item->object_id), false);
+    Overlay_SetBottomText((OVERLAY_TEXT) {
+        .kind = UI_OVERLAY_TEXT_OBJECT_NAME,
+        .object_id = inv_item->object_id,
+        .fmt_gs_key = GS_ID(INVENTORY_RING_OBJECT_NAME_FMT),
+    });
 }
 
 void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
 {
-    const char *const full_fmt = String_FormatStatic("\\{small}%s", fmt);
+    const char *const full_fmt =
+        String_FormatStatic(GS(INVENTORY_RING_ITEM_COUNT_FMT), fmt);
     String_FormatInto(&m_CountText, &m_CountTextCap, full_fmt, qty);
 }
 
@@ -454,7 +458,7 @@ void InvRing_DrawUI(INV_RING *const ring)
 
 void InvRing_RemoveItemTexts(void)
 {
-    Overlay_SetBottomText(nullptr, false);
+    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
     if (m_CountText != nullptr) {
         strcpy(m_CountText, "");
     }
@@ -468,17 +472,33 @@ void InvRing_ShowHeader(INV_RING *const ring)
 
     switch (ring->type) {
     case RT_MAIN:
-        Overlay_SetTopTextPtr(GS_PTR(HEADING_INVENTORY), false);
+        Overlay_SetTopText((OVERLAY_TEXT) {
+            .kind = UI_OVERLAY_TEXT_GS_KEY,
+            .gs_key = GS_ID(INVENTORY_RING_HEADING_INVENTORY),
+            .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+        });
         break;
     case RT_OPTION:
         if (ring->mode == INV_DEATH_MODE) {
-            Overlay_SetTopTextPtr(GS_PTR(HEADING_GAME_OVER), false);
+            Overlay_SetTopText((OVERLAY_TEXT) {
+                .kind = UI_OVERLAY_TEXT_GS_KEY,
+                .gs_key = GS_ID(INVENTORY_RING_HEADING_GAME_OVER),
+                .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+            });
         } else {
-            Overlay_SetTopTextPtr(GS_PTR(HEADING_OPTION), false);
+            Overlay_SetTopText((OVERLAY_TEXT) {
+                .kind = UI_OVERLAY_TEXT_GS_KEY,
+                .gs_key = GS_ID(INVENTORY_RING_HEADING_OPTION),
+                .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+            });
         }
         break;
     case RT_KEYS:
-        Overlay_SetTopTextPtr(GS_PTR(HEADING_ITEMS), false);
+        Overlay_SetTopText((OVERLAY_TEXT) {
+            .kind = UI_OVERLAY_TEXT_GS_KEY,
+            .gs_key = GS_ID(INVENTORY_RING_HEADING_ITEMS),
+            .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+        });
         break;
     case RT_NUMBER_OF:
         break;
@@ -502,7 +522,7 @@ void InvRing_ShowHeader(INV_RING *const ring)
 
 void InvRing_RemoveHeader(void)
 {
-    Overlay_SetTopText(nullptr, false);
+    Overlay_SetTopText((OVERLAY_TEXT) { 0 });
     Overlay_ShowArrow(UI_OVERLAY_ARROW_TL, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_TR, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BL, false);

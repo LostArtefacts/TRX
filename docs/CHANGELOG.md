@@ -73,7 +73,8 @@
 - added high-resolutions 16:9 and 4:3 title and game end screens
 - added high-resolutions 16:9 and 4:3 credit images
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
-- added support for the serif font (no colors just yet)
+- added support for the serif font
+- added support for colored text (Assault Course colors not yet implemented)
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect
 
