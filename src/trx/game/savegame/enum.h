@@ -49,4 +49,7 @@ typedef enum {
 
     // Added back gun and gun item number properties to Lara.
     VERSION_13 = 13,
+
+    // Separated Magnums and Automatic Pistols.
+    VERSION_14 = 14,
 } SAVEGAME_VERSION;

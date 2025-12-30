@@ -129,10 +129,11 @@
         "ENUM_INPUT_ROLE_DOWN": "Retour",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Dégainer",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Console de développement",
+        "ENUM_INPUT_ROLE_EQUIP_AUTOS": "\\{review}Équiper les pistolets automatiques",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Équiper le lance-grenades",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Équiper le harpon",
         "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Équiper le M16",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "\\{review}Équiper les pistolets automatiques",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "S'équiper des magnums",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "S'équiper des pistolets",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "S'équiper du fusil à pompe",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "S'équiper des Uzi",
@@ -807,6 +808,9 @@
         },
         "lara_magnums": {
             "name": "\\{review}Animation des magnums",
+        },
+        "lara_autos": {
+            "name": "\\{review}Animation des pistolets automatiques",
         },
         "lara_uzis": {
             "name": "\\{review}Animation des uzis",
@@ -1658,6 +1662,18 @@
         },
         "alphabet_small": {
             "name": "\\{review}Petite police",
+        },
+        "magnums": {
+            "name": "Magnums",
+        },
+        "autos": {
+            "name": "\\{review}Pistolets automatiques",
+        },
+        "magnums_ammo": {
+            "name": "Chargeurs pour Magnums",
+        },
+        "autos_ammo": {
+            "name": "\\{review}Chargeurs de pistolet automatique",
         }
     }
 }

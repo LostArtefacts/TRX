@@ -221,6 +221,15 @@ static void M_ReadLara(M_CONTEXT *const ctx)
         lara->last_gun_type = lara->request_gun_type;
     } else {
         lara->last_gun_type = M_ReadS16(ctx);
+        if (lara->gun_type == LGT_MAGNUMS) {
+            lara->gun_type = LGT_AUTOS;
+        }
+        if (lara->last_gun_type == LGT_MAGNUMS) {
+            lara->last_gun_type = LGT_AUTOS;
+        }
+        if (lara->request_gun_type == LGT_MAGNUMS) {
+            lara->request_gun_type = LGT_AUTOS;
+        }
     }
     lara->calc_fall_speed = M_ReadS16(ctx);
     lara->water_status = M_ReadS16(ctx);
@@ -289,7 +298,11 @@ static void M_ReadLara(M_CONTEXT *const ctx)
     M_ReadLaraArm(ctx, &lara->left_arm);
     M_ReadLaraArm(ctx, &lara->right_arm);
     M_ReadAmmoInfo(ctx, &lara->pistol_ammo);
-    M_ReadAmmoInfo(ctx, &lara->magnum_ammo);
+    if (g_TRVersion == 1) {
+        M_ReadAmmoInfo(ctx, &lara->magnum_ammo);
+    } else {
+        M_ReadAmmoInfo(ctx, &lara->autos_ammo);
+    }
     M_ReadAmmoInfo(ctx, &lara->uzi_ammo);
     M_ReadAmmoInfo(ctx, &lara->shotgun_ammo);
     if (g_TRVersion >= 2) {
@@ -332,7 +345,11 @@ static void M_ReadStats(M_CONTEXT *const ctx, LEVEL_STATS *const stats)
 static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
 {
     resume->pistol_ammo = M_ReadU16(ctx);
-    resume->magnum_ammo = M_ReadU16(ctx);
+    if (g_TRVersion == 1) {
+        resume->magnum_ammo = M_ReadU16(ctx);
+    } else {
+        resume->autos_ammo = M_ReadU16(ctx);
+    }
     resume->uzi_ammo = M_ReadU16(ctx);
     resume->shotgun_ammo = M_ReadU16(ctx);
     if (g_TRVersion >= 2) {
@@ -353,6 +370,9 @@ static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
         resume->flares = M_ReadU8(ctx);
         resume->gun_status = M_ReadU8(ctx);
         resume->equipped_gun_type = M_ReadU8(ctx);
+        if (resume->equipped_gun_type == LGT_MAGNUMS) {
+            resume->equipped_gun_type = LGT_AUTOS;
+        }
         resume->holsters_gun_type = LGT_UNKNOWN;
         resume->back_gun_type = LGT_UNKNOWN;
     }
@@ -361,12 +381,13 @@ static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
     // clang-format off
     resume->flags.available     = (flags & 0x01) != 0;
     resume->flags.has_pistols   = (flags & 0x02) != 0;
-    resume->flags.has_magnums   = (flags & 0x04) != 0;
     resume->flags.has_uzis      = (flags & 0x08) != 0;
     resume->flags.has_shotgun   = (flags & 0x10) != 0;
     if (g_TRVersion == 1) {
+        resume->flags.has_magnums   = (flags & 0x04) != 0;
         resume->flags.costume       = (flags & 0x20) != 0;
     } else {
+        resume->flags.has_autos     = (flags & 0x04) != 0;
         resume->flags.has_m16       = (flags & 0x20) != 0;
         resume->flags.has_grenade   = (flags & 0x40) != 0;
         resume->flags.has_harpoon   = (flags & 0x80) != 0;

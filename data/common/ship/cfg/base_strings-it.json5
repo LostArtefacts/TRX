@@ -129,10 +129,11 @@
         "ENUM_INPUT_ROLE_DOWN": "Indietro",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Estrai Arma",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Apri Console",
+        "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Equipaggia Pistole Automatiche",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equipaggia Lanciagranate",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equipaggia Fucile Subacqueo",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Equipaggia M16",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Pistole Automatiche",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Magnum",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equipaggia Pistole",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equipaggia Fucile a Pompa",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equipaggia Uzi",
@@ -728,7 +729,7 @@
             "name": "Fucile a Pompa",
         },
         "magnums": {
-            "name": "Pistole Automatiche",
+            "name": "Magnum",
         },
         "uzis": {
             "name": "Uzi",
@@ -749,7 +750,7 @@
             "name": "Cartucce per Fucile a Pompa",
         },
         "magnums_ammo": {
-            "name": "Caricatori per Pistole Automatiche",
+            "name": "Caricatori per Magnum",
         },
         "uzis_ammo": {
             "name": "Caricatori per Uzi",
@@ -849,6 +850,9 @@
         },
         "lara_magnums": {
             "name": "Animazione Magnum",
+        },
+        "lara_autos": {
+            "name": "\\{review}Animazione delle pistole automatiche",
         },
         "lara_uzis": {
             "name": "Animazione Uzi",
@@ -1694,6 +1698,12 @@
         },
         "alphabet_small": {
             "name": "\\{review}Carattere piccolo",
+        },
+        "autos": {
+            "name": "Pistole Automatiche",
+        },
+        "autos_ammo": {
+            "name": "Caricatori per Pistole Automatiche",
         }
     }
 }

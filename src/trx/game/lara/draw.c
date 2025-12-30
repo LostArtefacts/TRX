@@ -165,6 +165,7 @@ static bool M_Draw_I(
 
     case LGT_PISTOLS:
     case LGT_MAGNUMS:
+    case LGT_AUTOS:
     case LGT_UZIS: {
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_R - 1].pos);
@@ -427,6 +428,7 @@ bool Lara_Draw(const ITEM *const item)
 
     case LGT_PISTOLS:
     case LGT_MAGNUMS:
+    case LGT_AUTOS:
     case LGT_UZIS: {
         Matrix_Push();
         Matrix_TranslateRel32(bone[LM_UARM_R - 1].pos);

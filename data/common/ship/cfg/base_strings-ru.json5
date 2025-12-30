@@ -129,10 +129,11 @@
         "ENUM_INPUT_ROLE_DOWN": "Назад",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Оружие",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Консоль разработчика",
+        "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Оснастить автоматические пистолеты",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Оснастить гранатомет",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Оснастить гарпуном",
         "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Оснастить M16",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "\\{review}Оснастить автоматические пистолеты",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Магнумы",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Пистолеты",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Дробовик",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Узи",
@@ -807,6 +808,9 @@
         },
         "lara_magnums": {
             "name": "Анимация магнумов",
+        },
+        "lara_autos": {
+            "name": "\\{review}Анимация автоматических пистолетов",
         },
         "lara_uzis": {
             "name": "Анимация узи",
@@ -1678,6 +1682,18 @@
         },
         "alphabet_small": {
             "name": "\\{review}Маленький шрифт",
+        },
+        "magnums": {
+            "name": "Магнумы",
+        },
+        "autos": {
+            "name": "\\{review}Автоматические пистолеты",
+        },
+        "magnums_ammo": {
+            "name": "Обоймы для магнума",
+        },
+        "autos_ammo": {
+            "name": "\\{review}Обоймы для автоматических пистолетов",
         }
     }
 }

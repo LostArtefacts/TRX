@@ -419,6 +419,17 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_MUST(M_ReadNum(ctx, "gun_status", &lara->gun_status));
     M_MUST(M_ReadNum(ctx, "gun_type", &lara->gun_type));
     M_MUST(M_ReadNum(ctx, "request_gun_type", &lara->request_gun_type));
+
+    // TRX <1.1
+    if (g_TRVersion == 2 && ctx->sg_version < VERSION_14) {
+        if (lara->gun_type == LGT_MAGNUMS) {
+            lara->gun_type = LGT_AUTOS;
+        }
+        if (lara->request_gun_type == LGT_MAGNUMS) {
+            lara->request_gun_type = LGT_AUTOS;
+        }
+    }
+
     // TR1X <4.12
     if (M_HasKey(ctx, "last_gun_type")) {
         M_MUST(M_ReadNum(ctx, "last_gun_type", &lara->last_gun_type));
@@ -530,6 +541,9 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_OPTIONAL(M_ReadAmmo(ctx, "grenade", &lara->grenade_ammo));
     M_OPTIONAL(M_ReadAmmo(ctx, "m16", &lara->m16_ammo));
 
+    // TRX <1.1
+    M_OPTIONAL(M_ReadAmmo(ctx, "autos", &lara->autos_ammo));
+
     if (g_TRVersion == 1 && ctx->sg_version < VERSION_13) {
         const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
         Gun_Rifle_LoadLegacy(has_rifle);
@@ -586,6 +600,7 @@ static bool M_IsValidItemObject(
         case O_PISTOL_AMMO_ITEM: return initial_obj_id == O_PISTOL_ITEM;
         case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
         case O_MAGNUM_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
+        case O_AUTOS_AMMO_ITEM: return initial_obj_id == O_AUTOS_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
         case O_HARPOON_AMMO_ITEM: return initial_obj_id == O_HARPOON_ITEM;
         case O_M16_AMMO_ITEM: return initial_obj_id == O_M16_ITEM;
@@ -1018,6 +1033,17 @@ static bool M_ReadResumeInfo(
     // TR1X <4.2
     resume->holsters_gun_type = LGT_UNKNOWN;
     M_OPTIONAL(M_ReadNum(ctx, "holsters_gun_type", &resume->holsters_gun_type));
+
+    // TRX <1.1
+    if (g_TRVersion == 2 && ctx->sg_version < VERSION_14) {
+        if (resume->equipped_gun_type == LGT_MAGNUMS) {
+            resume->equipped_gun_type = LGT_AUTOS;
+        }
+        if (resume->holsters_gun_type == LGT_MAGNUMS) {
+            resume->holsters_gun_type = LGT_AUTOS;
+        }
+    }
+
     // TR1X <4.2
     resume->back_gun_type = LGT_UNKNOWN;
     M_OPTIONAL(M_ReadNum(ctx, "back_gun_type", &resume->back_gun_type));
@@ -1026,9 +1052,21 @@ static bool M_ReadResumeInfo(
     M_OPTIONAL(M_ReadBool(ctx, "costume", &resume->flags.costume));
 
     M_MUST(M_ReadNum(ctx, "pistol_ammo", &resume->pistol_ammo));
-    M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->magnum_ammo));
     M_MUST(M_ReadNum(ctx, "uzi_ammo", &resume->uzi_ammo));
     M_MUST(M_ReadNum(ctx, "shotgun_ammo", &resume->shotgun_ammo));
+
+    // TRX <1.1
+    if (ctx->sg_version < VERSION_14) {
+        if (g_TRVersion == 1) {
+            M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->magnum_ammo));
+        } else {
+            M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->autos_ammo));
+        }
+    } else {
+        M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->magnum_ammo));
+        M_MUST(M_ReadNum(ctx, "autos_ammo", &resume->autos_ammo));
+    }
+
     // TR1X <4.16
     M_OPTIONAL(M_ReadNum(ctx, "m16_ammo", &resume->m16_ammo));
     M_OPTIONAL(M_ReadNum(ctx, "grenade_ammo", &resume->grenade_ammo));
@@ -1045,18 +1083,33 @@ static bool M_ReadResumeInfo(
         // TR1X <4.16
         M_MUST(M_ReadBool(ctx, "got_pistols", &resume->flags.has_pistols));
         M_MUST(M_ReadBool(ctx, "got_shotgun", &resume->flags.has_shotgun));
-        M_MUST(M_ReadBool(ctx, "got_magnums", &resume->flags.has_magnums));
+        if (g_TRVersion == 1) {
+            M_MUST(M_ReadBool(ctx, "got_magnums", &resume->flags.has_magnums));
+        } else {
+            M_MUST(M_ReadBool(ctx, "got_magnums", &resume->flags.has_autos));
+        }
         M_MUST(M_ReadBool(ctx, "got_uzis", &resume->flags.has_uzis));
     } else {
         M_MUST(M_ReadBool(ctx, "has_pistols", &resume->flags.has_pistols));
         M_MUST(M_ReadBool(ctx, "has_shotgun", &resume->flags.has_shotgun));
-        M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_magnums));
         M_MUST(M_ReadBool(ctx, "has_uzis", &resume->flags.has_uzis));
     }
     // TR1X <4.16
     M_OPTIONAL(M_ReadBool(ctx, "has_m16", &resume->flags.has_m16));
     M_OPTIONAL(M_ReadBool(ctx, "has_grenade", &resume->flags.has_grenade));
     M_OPTIONAL(M_ReadBool(ctx, "has_harpoon", &resume->flags.has_harpoon));
+
+    // TRX <1.1
+    if (ctx->sg_version < VERSION_14) {
+        if (g_TRVersion == 1) {
+            M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_magnums));
+        } else {
+            M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_autos));
+        }
+    } else {
+        M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_magnums));
+        M_MUST(M_ReadBool(ctx, "has_autos", &resume->flags.has_autos));
+    }
 
     M_MUST(M_ReadNum(ctx, "timer", &resume->stats.timer));
     // TR1X <4.9

@@ -67,6 +67,7 @@ typedef struct {
     LARA_ARM right_arm;
     AMMO_INFO pistol_ammo;
     AMMO_INFO magnum_ammo;
+    AMMO_INFO autos_ammo;
     AMMO_INFO uzi_ammo;
     AMMO_INFO shotgun_ammo;
 

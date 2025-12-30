@@ -210,16 +210,9 @@
         },
         "large_medipack": {
             "name": "Duża apteczka",
-        },
-        "magnums": {
-            "name": "Magnumy",
-        },
-        "magnums_ammo": {
-            "name": "Magazynki do magnumów",
         }
     },
     "game_strings": {
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Wyposaż magnumy",
         "MISC_EMPTY_SLOT_FMT": "- PUSTY SLOT %d -",
         "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach, podobnie jak w TR2+.",
         "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Naprawia błędy oryginalnej gry w Rezerwuarze i Grobowcu Tihocana, gdzie glony w wodnych obszarach nie są animowane.",

@@ -29,6 +29,7 @@ OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
         switch (gun_type) {
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
+        case LGT_AUTOS:
         case LGT_UZIS:
             return O_LARA_PISTOLS;
         default:
@@ -46,6 +47,7 @@ OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
     case LGT_UNARMED: return O_LARA;
     case LGT_PISTOLS: return O_LARA_PISTOLS;
     case LGT_MAGNUMS: return O_LARA_MAGNUMS;
+    case LGT_AUTOS:   return O_LARA_AUTOS;
     case LGT_UZIS:    return O_LARA_UZIS;
     case LGT_SHOTGUN: return O_LARA_SHOTGUN;
     case LGT_M16:     return O_LARA_M16;
@@ -63,6 +65,7 @@ LARA_GUN_TYPE Gun_GetType(const OBJECT_ID obj_id)
     switch (obj_id) {
     case O_PISTOL_ITEM:      return LGT_PISTOLS;
     case O_MAGNUM_ITEM:      return LGT_MAGNUMS;
+    case O_AUTOS_ITEM:       return LGT_AUTOS;
     case O_UZI_ITEM:         return LGT_UZIS;
     case O_SHOTGUN_ITEM:     return LGT_SHOTGUN;
     case O_HARPOON_ITEM:     return LGT_HARPOON;
@@ -79,6 +82,7 @@ OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
     switch (gun_type) {
     case LGT_PISTOLS: return O_PISTOL_ITEM;
     case LGT_MAGNUMS: return O_MAGNUM_ITEM;
+    case LGT_AUTOS:   return O_AUTOS_ITEM;
     case LGT_UZIS:    return O_UZI_ITEM;
     case LGT_SHOTGUN: return O_SHOTGUN_ITEM;
     case LGT_HARPOON: return O_HARPOON_ITEM;
@@ -95,6 +99,7 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     switch (gun_type) {
     case LGT_PISTOLS: return O_PISTOL_AMMO_ITEM;
     case LGT_MAGNUMS: return O_MAGNUM_AMMO_ITEM;
+    case LGT_AUTOS:   return O_AUTOS_AMMO_ITEM;
     case LGT_UZIS:    return O_UZI_AMMO_ITEM;
     case LGT_SHOTGUN: return O_SHOTGUN_AMMO_ITEM;
     case LGT_HARPOON: return O_HARPOON_AMMO_ITEM;
@@ -111,6 +116,7 @@ int32_t Gun_GetAmmoQuantity(const LARA_GUN_TYPE gun_type)
     switch (gun_type) {
     case LGT_PISTOLS: return 1;
     case LGT_MAGNUMS: return MAGNUM_AMMO_QTY;
+    case LGT_AUTOS:   return AUTOS_AMMO_QTY;
     case LGT_UZIS:    return UZI_AMMO_QTY;
     case LGT_SHOTGUN: return SHOTGUN_AMMO_QTY;
     case LGT_HARPOON: return HARPOON_AMMO_QTY;
@@ -131,6 +137,7 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
     switch (gun_type) {
     case LGT_PISTOLS: return &lara_info->pistol_ammo;
     case LGT_MAGNUMS: return &lara_info->magnum_ammo;
+    case LGT_AUTOS:   return &lara_info->autos_ammo;
     case LGT_UZIS:    return &lara_info->uzi_ammo;
     case LGT_SHOTGUN: return &lara_info->shotgun_ammo;
     case LGT_HARPOON: return &lara_info->harpoon_ammo;

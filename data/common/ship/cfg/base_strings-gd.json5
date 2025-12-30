@@ -129,10 +129,11 @@
         "ENUM_INPUT_ROLE_DOWN": "Air Ais",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Uidheamaich",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Consol Leasachaidh",
+        "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Uidheamaich Piostalan Fèin-obrachail",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Uidheamaich Lannsair Grenèad",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Uidheamaich Harpùn",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Uidheamaich M16",
-        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Piostalan Fèin-obrachail",
+        "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Magnuman",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Uidheamaich Piostalan",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Uidheamaich Gunna-sgaoil",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Uidheamaich Uzis",
@@ -806,6 +807,9 @@
             "name": "Beòthalachd Gunna-sgaoil",
         },
         "lara_magnums": {
+            "name": "Beòthalachd Magnuman",
+        },
+        "lara_autos": {
             "name": "Beòthalachd Piostalan Fèin-obrachail",
         },
         "lara_uzis": {
@@ -1682,6 +1686,18 @@
         },
         "alphabet_small": {
             "name": "\\{review}Clò beag",
+        },
+        "magnums": {
+            "name": "Magnuman",
+        },
+        "autos": {
+            "name": "Piostalan Fèin-obrachail",
+        },
+        "magnums_ammo": {
+            "name": "Lòin Magnum",
+        },
+        "autos_ammo": {
+            "name": "Lòin Gunna Fèin-obrachail",
         }
     }
 }

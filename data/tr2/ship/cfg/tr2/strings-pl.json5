@@ -326,12 +326,6 @@
         },
         "large_medipack": {
             "name": "Duża apteczka",
-        },
-        "magnums": {
-            "name": "Pistolety automatyczne",
-        },
-        "magnums_ammo": {
-            "name": "Magazynki do pistoletów automatycznych",
         }
     },
     "game_strings": {

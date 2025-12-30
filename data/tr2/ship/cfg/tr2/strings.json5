@@ -326,12 +326,6 @@
         },
         "large_medipack": {
             "name": "Large Medipack",
-        },
-        "magnums": {
-            "name": "Automatic Pistols",
-        },
-        "magnums_ammo": {
-            "name": "Automatic Pistol Clips",
         }
     },
     "game_strings": {
