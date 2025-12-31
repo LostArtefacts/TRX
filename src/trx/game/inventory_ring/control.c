@@ -78,6 +78,9 @@ static void M_RingNotActive(
     case O_AUTOS_OPTION:
         M_ShowAmmoQuantity("%5d", lara->autos_ammo.ammo);
         break;
+    case O_DESERT_EAGLE_OPTION:
+        M_ShowAmmoQuantity("%5d", lara->desert_eagle_ammo.ammo);
+        break;
     case O_UZI_OPTION:
         M_ShowAmmoQuantity(
             g_TRVersion == 1 ? "%5d \\{ammo uzis}" : "%5d",
@@ -98,6 +101,7 @@ static void M_RingNotActive(
         break;
     case O_MAGNUM_AMMO_OPTION:
     case O_AUTOS_AMMO_OPTION:
+    case O_DESERT_EAGLE_AMMO_OPTION:
     case O_UZI_AMMO_OPTION:
     case O_HARPOON_AMMO_OPTION:
     case O_M16_AMMO_OPTION:
@@ -264,6 +268,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_SHOTGUN_OPTION:
     case O_MAGNUM_OPTION:
     case O_AUTOS_OPTION:
+    case O_DESERT_EAGLE_OPTION:
     case O_UZI_OPTION:
     case O_HARPOON_OPTION:
     case O_M16_OPTION:
@@ -489,6 +494,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             case O_SHOTGUN_OPTION:
             case O_MAGNUM_OPTION:
             case O_AUTOS_OPTION:
+            case O_DESERT_EAGLE_OPTION:
             case O_UZI_OPTION:
             case O_HARPOON_OPTION:
             case O_M16_OPTION:

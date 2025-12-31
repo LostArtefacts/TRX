@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Estrai Arma",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Apri Console",
         "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Equipaggia Pistole Automatiche",
+        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Equipaggia Desert Eagle",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equipaggia Lanciagranate",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equipaggia Fucile Subacqueo",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Equipaggia M16",
@@ -853,6 +854,9 @@
         },
         "lara_autos": {
             "name": "\\{review}Animazione delle pistole automatiche",
+        },
+        "lara_desert_eagle": {
+            "name": "\\{review}Animazione della Desert Eagle",
         },
         "lara_uzis": {
             "name": "Animazione Uzi",
@@ -1704,6 +1708,12 @@
         },
         "autos_ammo": {
             "name": "Caricatori per Pistole Automatiche",
+        },
+        "desert_eagle": {
+            "name": "\\{review}Desert Eagle",
+        },
+        "desert_eagle_ammo": {
+            "name": "\\{review}Caricatori della Desert Eagle",
         }
     }
 }

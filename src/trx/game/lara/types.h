@@ -68,6 +68,7 @@ typedef struct {
     AMMO_INFO pistol_ammo;
     AMMO_INFO magnum_ammo;
     AMMO_INFO autos_ammo;
+    AMMO_INFO desert_eagle_ammo;
     AMMO_INFO uzi_ammo;
     AMMO_INFO shotgun_ammo;
 

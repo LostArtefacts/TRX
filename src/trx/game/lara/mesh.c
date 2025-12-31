@@ -28,6 +28,8 @@ static LARA_GUN_TYPE M_DetermineHolsterGun(void)
             return LGT_MAGNUMS;
         } else if (Inv_RequestItem(O_AUTOS_ITEM)) {
             return LGT_AUTOS;
+        } else if (Inv_RequestItem(O_DESERT_EAGLE_ITEM)) {
+            return LGT_DESERT_EAGLE;
         } else if (Inv_RequestItem(O_UZI_ITEM)) {
             return LGT_UZIS;
         }

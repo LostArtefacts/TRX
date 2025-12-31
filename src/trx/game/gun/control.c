@@ -29,6 +29,8 @@ static struct {
     { .gun_type = LGT_SHOTGUN, .input_role = INPUT_ROLE_EQUIP_SHOTGUN },
     { .gun_type = LGT_MAGNUMS, .input_role = INPUT_ROLE_EQUIP_MAGNUMS },
     { .gun_type = LGT_AUTOS, .input_role = INPUT_ROLE_EQUIP_AUTOS },
+    { .gun_type = LGT_DESERT_EAGLE,
+      .input_role = INPUT_ROLE_EQUIP_DESERT_EAGLE },
     { .gun_type = LGT_UZIS, .input_role = INPUT_ROLE_EQUIP_UZIS },
     { .gun_type = LGT_HARPOON, .input_role = INPUT_ROLE_EQUIP_HARPOON },
     { .gun_type = LGT_M16, .input_role = INPUT_ROLE_EQUIP_M16 },
@@ -274,6 +276,7 @@ void Gun_Control(void)
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
         case LGT_AUTOS:
+        case LGT_DESERT_EAGLE:
         case LGT_UZIS:
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
                 g_Camera.type = CAM_COMBAT;
@@ -308,6 +311,7 @@ void Gun_Control(void)
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
         case LGT_AUTOS:
+        case LGT_DESERT_EAGLE:
         case LGT_UZIS:
             Gun_Pistols_Undraw(lara->gun_type);
             break;
@@ -358,6 +362,7 @@ void Gun_Control(void)
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
         case LGT_AUTOS:
+        case LGT_DESERT_EAGLE:
         case LGT_UZIS:
             Gun_Pistols_Control(lara->gun_type);
             break;

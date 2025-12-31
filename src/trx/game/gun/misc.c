@@ -193,6 +193,7 @@ void Gun_InitialiseNewWeapon(void)
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
         case LGT_AUTOS:
+        case LGT_DESERT_EAGLE:
         case LGT_UZIS:
             Gun_Pistols_DrawMeshes(lara->gun_type);
             break;
@@ -229,6 +230,7 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         break;
 
     case LGT_AUTOS:
+    case LGT_DESERT_EAGLE:
         shade = SHADE_NEUTRAL;
         len = 215;
         off = 65;
@@ -295,7 +297,7 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
         || Inv_RequestItem(O_GRENADE_GUN_ITEM);
     const bool lara_has_pistols = Inv_RequestItem(O_PISTOL_ITEM)
         || Inv_RequestItem(O_MAGNUM_ITEM) || Inv_RequestItem(O_AUTOS_ITEM)
-        || Inv_RequestItem(O_UZI_ITEM);
+        || Inv_RequestItem(O_DESERT_EAGLE_ITEM) || Inv_RequestItem(O_UZI_ITEM);
 
     LARA_GUN_TYPE back_gun_type = LGT_UNARMED;
     LARA_GUN_TYPE holsters_gun_type = LGT_UNARMED;
@@ -314,6 +316,8 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
         holsters_gun_type = LGT_MAGNUMS;
     } else if (!lara_has_pistols && obj_id == O_AUTOS_ITEM) {
         holsters_gun_type = LGT_AUTOS;
+    } else if (!lara_has_pistols && obj_id == O_DESERT_EAGLE_ITEM) {
+        holsters_gun_type = LGT_DESERT_EAGLE;
     } else if (!lara_has_pistols && obj_id == O_UZI_ITEM) {
         holsters_gun_type = LGT_UZIS;
     }

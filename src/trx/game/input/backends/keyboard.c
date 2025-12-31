@@ -383,6 +383,11 @@ static void M_HandleBuiltInDefaults(void)
         M_GetBuiltInLayout(INPUT_ROLE_EQUIP_MAGNUMS)->scancode =
             SDL_SCANCODE_UNKNOWN;
         M_GetBuiltInLayout(INPUT_ROLE_EQUIP_AUTOS)->scancode = SDL_SCANCODE_3;
+    } else if (g_TRVersion == 3) {
+        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_MAGNUMS)->scancode =
+            SDL_SCANCODE_UNKNOWN;
+        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_DESERT_EAGLE)->scancode =
+            SDL_SCANCODE_3;
     }
 }
 

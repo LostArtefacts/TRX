@@ -266,12 +266,6 @@
         "large_medipack": {
             "name": "Large Medi Pack",
         },
-        "magnums": {
-            "name": "Desert Eagle",
-        },
-        "magnums_ammo": {
-            "name": "Desert Eagle Clips",
-        },
         "m16": {
             "name": "MP5",
         },

@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Draw Weapon",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Dev Console",
         "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Equip Automatic Pistols",
+        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "Equip Desert Eagle",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Equip M16",
@@ -734,6 +735,9 @@
         "autos": {
             "name": "Automatic Pistols",
         },
+        "desert_eagle": {
+            "name": "Desert Eagle",
+        },
         "uzis": {
             "name": "Uzis",
         },
@@ -757,6 +761,9 @@
         },
         "autos_ammo": {
             "name": "Automatic Pistol Clips",
+        },
+        "desert_eagle_ammo": {
+            "name": "Desert Eagle Clips",
         },
         "uzis_ammo": {
             "name": "Uzi Clips",
@@ -859,6 +866,9 @@
         },
         "lara_autos": {
             "name": "Automatic Pistols Animation",
+        },
+        "lara_desert_eagle": {
+            "name": "Desert Eagle Animation",
         },
         "lara_uzis": {
             "name": "Uzis Animation",
