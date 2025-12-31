@@ -172,6 +172,17 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             lara_info->autos_ammo.ammo = 0;
         }
 
+        if (resume->flags.has_desert_eagle) {
+            Inv_AddItem(O_DESERT_EAGLE_ITEM);
+            lara_info->desert_eagle_ammo.ammo = resume->desert_eagle_ammo;
+            Item_GlobalReplace(O_DESERT_EAGLE_ITEM, O_DESERT_EAGLE_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_DESERT_EAGLE_AMMO_ITEM,
+                resume->desert_eagle_ammo / DESERT_EAGLE_AMMO_QTY);
+            lara_info->desert_eagle_ammo.ammo = 0;
+        }
+
         if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
             lara_info->uzi_ammo.ammo = resume->uzi_ammo;
@@ -295,6 +306,11 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_AUTOS_ITEM:
     case O_AUTOS_OPTION:
         request_gun_type = LGT_AUTOS;
+        break;
+
+    case O_DESERT_EAGLE_ITEM:
+    case O_DESERT_EAGLE_OPTION:
+        request_gun_type = LGT_DESERT_EAGLE;
         break;
 
     case O_UZI_ITEM:

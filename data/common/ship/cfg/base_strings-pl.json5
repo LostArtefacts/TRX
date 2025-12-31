@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Wyciągnij broń",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Otwórz konsolę",
         "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Wyposaż pistolety automatyczne",
+        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Wyposaż Desert Eagle",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Wyposaż wyrzutnię granatów",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Wyposaż wyrzutnię harpunów",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Wyposaż M16",
@@ -811,6 +812,9 @@
         },
         "lara_autos": {
             "name": "\\{review}Animacja pistoletów automatycznych",
+        },
+        "lara_desert_eagle": {
+            "name": "\\{review}Animacja Desert Eagle",
         },
         "lara_uzis": {
             "name": "Animacja uzi",
@@ -1668,6 +1672,12 @@
         },
         "autos_ammo": {
             "name": "Magazynki do pistoletów automatycznych",
+        },
+        "desert_eagle": {
+            "name": "\\{review}Desert Eagle",
+        },
+        "desert_eagle_ammo": {
+            "name": "\\{review}Magazynki do Desert Eagle",
         }
     }
 }

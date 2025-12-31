@@ -201,6 +201,8 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
                 resume->holsters_gun_type = LGT_MAGNUMS;
             } else if (resume->flags.has_autos) {
                 resume->holsters_gun_type = LGT_AUTOS;
+            } else if (resume->flags.has_desert_eagle) {
+                resume->holsters_gun_type = LGT_DESERT_EAGLE;
             } else if (resume->flags.has_uzis) {
                 resume->holsters_gun_type = LGT_UZIS;
             } else {
@@ -459,6 +461,15 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
             Inv_RequestItem(O_AUTOS_AMMO_ITEM) * AUTOS_AMMO_QTY;
     }
 
+    if (Inv_RequestItem(O_DESERT_EAGLE_ITEM)) {
+        resume->flags.has_desert_eagle = true;
+        resume->desert_eagle_ammo = lara->desert_eagle_ammo.ammo;
+    } else {
+        resume->flags.has_desert_eagle = false;
+        resume->desert_eagle_ammo =
+            Inv_RequestItem(O_DESERT_EAGLE_AMMO_ITEM) * DESERT_EAGLE_AMMO_QTY;
+    }
+
     if (Inv_RequestItem(O_UZI_ITEM)) {
         resume->flags.has_uzis = true;
         resume->uzi_ammo = lara->uzi_ammo.ammo;
@@ -589,6 +600,8 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_shotgun = true;
         resume->flags.has_magnums = g_Weapons[LGT_MAGNUMS].is_available;
         resume->flags.has_autos = g_Weapons[LGT_AUTOS].is_available;
+        resume->flags.has_desert_eagle =
+            g_Weapons[LGT_DESERT_EAGLE].is_available;
         resume->flags.has_uzis = true;
         resume->flags.has_m16 = g_Weapons[LGT_M16].is_available;
         resume->flags.has_grenade = g_Weapons[LGT_GRENADE].is_available;
@@ -597,6 +610,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->shotgun_ammo = 10000;
         resume->magnum_ammo = resume->flags.has_magnums ? 10000 : 0;
         resume->autos_ammo = resume->flags.has_autos ? 10000 : 0;
+        resume->desert_eagle_ammo = resume->flags.has_desert_eagle ? 10000 : 0;
         resume->uzi_ammo = 10000;
         resume->flares = g_TRVersion == 1 ? 0 : -1;
 

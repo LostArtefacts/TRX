@@ -11,6 +11,7 @@ typedef struct {
     uint16_t pistol_ammo;
     uint16_t magnum_ammo;
     uint16_t autos_ammo;
+    uint16_t desert_eagle_ammo;
     uint16_t uzi_ammo;
     uint16_t shotgun_ammo;
     int32_t lara_hitpoints;
@@ -30,6 +31,7 @@ typedef struct {
         bool has_pistols;
         bool has_magnums;
         bool has_autos;
+        bool has_desert_eagle;
         bool has_uzis;
         bool has_shotgun;
         bool has_m16;

@@ -543,6 +543,7 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
 
     // TRX <1.1
     M_OPTIONAL(M_ReadAmmo(ctx, "autos", &lara->autos_ammo));
+    M_OPTIONAL(M_ReadAmmo(ctx, "desert_eagle", &lara->desert_eagle_ammo));
 
     if (g_TRVersion == 1 && ctx->sg_version < VERSION_13) {
         const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
@@ -601,6 +602,7 @@ static bool M_IsValidItemObject(
         case O_SHOTGUN_AMMO_ITEM: return initial_obj_id == O_SHOTGUN_ITEM;
         case O_MAGNUM_AMMO_ITEM: return initial_obj_id == O_MAGNUM_ITEM;
         case O_AUTOS_AMMO_ITEM: return initial_obj_id == O_AUTOS_ITEM;
+        case O_DESERT_EAGLE_AMMO_ITEM: return initial_obj_id == O_DESERT_EAGLE_ITEM;
         case O_UZI_AMMO_ITEM: return initial_obj_id == O_UZI_ITEM;
         case O_HARPOON_AMMO_ITEM: return initial_obj_id == O_HARPOON_ITEM;
         case O_M16_AMMO_ITEM: return initial_obj_id == O_M16_ITEM;
@@ -1065,6 +1067,7 @@ static bool M_ReadResumeInfo(
     } else {
         M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->magnum_ammo));
         M_MUST(M_ReadNum(ctx, "autos_ammo", &resume->autos_ammo));
+        M_MUST(M_ReadNum(ctx, "desert_eagle_ammo", &resume->desert_eagle_ammo));
     }
 
     // TR1X <4.16
@@ -1109,6 +1112,8 @@ static bool M_ReadResumeInfo(
     } else {
         M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_magnums));
         M_MUST(M_ReadBool(ctx, "has_autos", &resume->flags.has_autos));
+        M_MUST(M_ReadBool(
+            ctx, "has_desert_eagle", &resume->flags.has_desert_eagle));
     }
 
     M_MUST(M_ReadNum(ctx, "timer", &resume->stats.timer));

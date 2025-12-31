@@ -18,6 +18,9 @@
 #define AUTOS_AMMO_CLIP 20
 #define AUTOS_AMMO_QTY (AUTOS_AMMO_CLIP * 2) // = 40
 
+#define DESERT_EAGLE_AMMO_CLIP 10
+#define DESERT_EAGLE_AMMO_QTY DESERT_EAGLE_AMMO_CLIP // = 10
+
 #define UZI_AMMO_CLIP (g_TRVersion == 1 ? 50 : 40)
 #define UZI_AMMO_QTY (UZI_AMMO_CLIP * 2) // = 100 (TR1), 80 (TR2)
 

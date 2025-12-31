@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Waffe ziehen",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Entwickler-Konsole",
         "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Automatik-Pistolen ausrüsten",
+        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Desert Eagle ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",
         "ENUM_INPUT_ROLE_EQUIP_M16": "M16-ausrüsten",
@@ -811,6 +812,9 @@
         },
         "lara_autos": {
             "name": "\\{review}Animation automatischer Pistolen",
+        },
+        "lara_desert_eagle": {
+            "name": "\\{review}Animation der Desert Eagle",
         },
         "lara_uzis": {
             "name": "Uzi-Animation",
@@ -1687,6 +1691,12 @@
         },
         "autos_ammo": {
             "name": "Automatik-Munition",
+        },
+        "desert_eagle": {
+            "name": "\\{review}Desert Eagle",
+        },
+        "desert_eagle_ammo": {
+            "name": "\\{review}Magazine der Desert Eagle",
         }
     }
 }

@@ -166,11 +166,17 @@ static bool M_Draw_I(
     case LGT_PISTOLS:
     case LGT_MAGNUMS:
     case LGT_AUTOS:
+    case LGT_DESERT_EAGLE:
     case LGT_UZIS: {
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_R - 1].pos);
         Matrix_InterpolateArm();
-        Matrix_Rot16(lara->right_arm.interp.result.rot);
+        if (gun_type == LGT_DESERT_EAGLE) {
+            Matrix_Rot16(lara->interp.result.torso_rot);
+        } else {
+            Matrix_Rot16(lara->right_arm.interp.result.rot);
+        }
+
         const ANIM *anim = Anim_GetAnim(lara->right_arm.anim_num);
         mesh_rots_1 =
             lara->right_arm
@@ -191,7 +197,12 @@ static bool M_Draw_I(
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_L - 1].pos);
         Matrix_InterpolateArm();
-        Matrix_Rot16(lara->left_arm.interp.result.rot);
+        if (gun_type == LGT_DESERT_EAGLE) {
+            Matrix_Rot16(lara->interp.result.torso_rot);
+        } else {
+            Matrix_Rot16(lara->left_arm.interp.result.rot);
+        }
+
         anim = Anim_GetAnim(lara->left_arm.anim_num);
         mesh_rots_1 =
             lara->left_arm
@@ -429,6 +440,7 @@ bool Lara_Draw(const ITEM *const item)
     case LGT_PISTOLS:
     case LGT_MAGNUMS:
     case LGT_AUTOS:
+    case LGT_DESERT_EAGLE:
     case LGT_UZIS: {
         Matrix_Push();
         Matrix_TranslateRel32(bone[LM_UARM_R - 1].pos);
@@ -450,7 +462,12 @@ bool Lara_Draw(const ITEM *const item)
         g_WMatrixPtr->_20 = item_wmatrix._20;
         g_WMatrixPtr->_21 = item_wmatrix._21;
         g_WMatrixPtr->_22 = item_wmatrix._22;
-        Matrix_Rot16(lara->right_arm.interp.result.rot);
+
+        if (gun_type == LGT_DESERT_EAGLE) {
+            Matrix_Rot16(lara->interp.result.torso_rot);
+        } else {
+            Matrix_Rot16(lara->right_arm.interp.result.rot);
+        }
         if (pose == nullptr) {
             const ANIM *const anim = Anim_GetAnim(lara->right_arm.anim_num);
             mesh_rots =
@@ -490,7 +507,12 @@ bool Lara_Draw(const ITEM *const item)
         g_WMatrixPtr->_20 = item_wmatrix._20;
         g_WMatrixPtr->_21 = item_wmatrix._21;
         g_WMatrixPtr->_22 = item_wmatrix._22;
-        Matrix_Rot16(lara->left_arm.interp.result.rot);
+
+        if (gun_type == LGT_DESERT_EAGLE) {
+            Matrix_Rot16(lara->interp.result.torso_rot);
+        } else {
+            Matrix_Rot16(lara->left_arm.interp.result.rot);
+        }
         if (pose == nullptr) {
             const ANIM *const anim = Anim_GetAnim(lara->left_arm.anim_num);
             mesh_rots =

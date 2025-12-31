@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Оружие",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Консоль разработчика",
         "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Оснастить автоматические пистолеты",
+        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Оснастить Дезерт Игл",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Оснастить гранатомет",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Оснастить гарпуном",
         "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Оснастить M16",
@@ -811,6 +812,9 @@
         },
         "lara_autos": {
             "name": "\\{review}Анимация автоматических пистолетов",
+        },
+        "lara_desert_eagle": {
+            "name": "\\{review}Анимация Дезерт Игл",
         },
         "lara_uzis": {
             "name": "Анимация узи",
@@ -1694,6 +1698,12 @@
         },
         "autos_ammo": {
             "name": "\\{review}Обоймы для автоматических пистолетов",
+        },
+        "desert_eagle": {
+            "name": "\\{review}Дезерт Игл",
+        },
+        "desert_eagle_ammo": {
+            "name": "\\{review}Магазины Дезерт Игл",
         }
     }
 }

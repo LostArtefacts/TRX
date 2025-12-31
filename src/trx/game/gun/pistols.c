@@ -44,6 +44,20 @@ static const M_FRAME_SETUP m_DefaultSetup = {
     .recoil.end = LF_G_RECOIL_END,
 };
 
+static const M_FRAME_SETUP m_DesertEagleSetup = {
+    .aim.start = LF_G_AIM_START,
+    .aim.bend = LF_G_AIM_BEND,
+    .aim.extend = 6,
+    .aim.end = 7,
+    .undraw.start = 8,
+    .undraw.bend = 9,
+    .undraw.end = 14,
+    .draw.start = 15,
+    .draw.end = 28,
+    .recoil.start = 29,
+    .recoil.end = 44,
+};
+
 static bool m_SoundRight = false;
 static bool m_SoundLeft = false;
 
@@ -66,7 +80,8 @@ static void M_FireSound(const SAMPLE_TRX_ID sample_trx_id, const bool alternate)
 
 static const M_FRAME_SETUP *M_GetSetup(const LARA_GUN_TYPE weapon_type)
 {
-    return &m_DefaultSetup;
+    return weapon_type == LGT_DESERT_EAGLE ? &m_DesertEagleSetup
+                                           : &m_DefaultSetup;
 }
 
 static void M_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
@@ -90,7 +105,8 @@ static void M_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
         return;
     }
 
-    const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
+    const OBJECT_ID obj_id = Gun_GetLaraAnim(lara->gun_type);
+    const OBJECT *const obj = Object_Get(obj_id);
     const ANIM *const anim = Object_GetAnim(obj, anim_idx);
     arm->anim_num = obj->anim_idx + anim_idx;
     arm->frame_num = frame;
@@ -128,7 +144,8 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             if (g_Input.action) {
                 angles[0] = lara->right_arm.rot.y + lara_item->rot.y;
                 angles[1] = lara->right_arm.rot.x;
-                if (Gun_FireWeapon(
+                if (weapon_type != LGT_DESERT_EAGLE
+                    && Gun_FireWeapon(
                         weapon_type, lara->target, lara_item, angles)) {
                     lara->right_arm.flash_gun = weapon->flash_time;
                     if (!sound_already) {
@@ -179,7 +196,12 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             angles[0] = lara->left_arm.rot.y + lara_item->rot.y;
             angles[1] = lara->left_arm.rot.x;
             if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
-                lara->left_arm.flash_gun = weapon->flash_time;
+                if (weapon_type == LGT_DESERT_EAGLE) {
+                    lara->right_arm.flash_gun = weapon->flash_time;
+                } else {
+                    lara->left_arm.flash_gun = weapon->flash_time;
+                }
+
                 if (!sound_already) {
                     M_FireSound(weapon->sample_num, false);
                 }
@@ -217,11 +239,22 @@ void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
     }
 
     Gun_AimWeapon(weapon, &lara->left_arm);
-    Gun_AimWeapon(weapon, &lara->right_arm);
+    if (weapon_type != LGT_DESERT_EAGLE) {
+        Gun_AimWeapon(weapon, &lara->right_arm);
+    }
 
     const bool lock_head = g_Config.gameplay.look_mode != LOOK_MODE_UNRESTRICTED
         || g_Camera.type != CAM_LOOK;
-    if (lara->left_arm.lock && !lara->right_arm.lock) {
+    if (weapon_type == LGT_DESERT_EAGLE) {
+        if (lara->left_arm.lock) {
+            lara->torso_rot.x = lara->left_arm.rot.x;
+            lara->torso_rot.y = lara->left_arm.rot.y;
+            if (lock_head) {
+                lara->head_rot.x = 0;
+                lara->head_rot.y = 0;
+            }
+        }
+    } else if (lara->left_arm.lock && !lara->right_arm.lock) {
         if (lock_head) {
             lara->head_rot.x = lara->left_arm.rot.x / 2;
             lara->head_rot.y = lara->left_arm.rot.y / 2;
@@ -373,17 +406,21 @@ void Gun_Pistols_Ready(const LARA_GUN_TYPE weapon_type)
 
 void Gun_Pistols_DrawMeshes(const LARA_GUN_TYPE weapon_type)
 {
-    Gun_SetLaraHandLMesh(weapon_type);
     Gun_SetLaraHandRMesh(weapon_type);
-    Gun_SetLaraHolsterLMesh(LGT_UNARMED);
     Gun_SetLaraHolsterRMesh(LGT_UNARMED);
+    if (weapon_type != LGT_DESERT_EAGLE) {
+        Gun_SetLaraHandLMesh(weapon_type);
+        Gun_SetLaraHolsterLMesh(LGT_UNARMED);
+    }
 }
 
 void Gun_Pistols_UndrawMeshLeft(const LARA_GUN_TYPE weapon_type)
 {
-    Gun_SetLaraHandLMesh(LGT_UNARMED);
-    Gun_SetLaraHolsterLMesh(weapon_type);
-    Sound_Effect(SFX_LARA_HOLSTER, &Lara_GetItem()->pos, SPM_NORMAL);
+    if (weapon_type != LGT_DESERT_EAGLE) {
+        Gun_SetLaraHandLMesh(LGT_UNARMED);
+        Gun_SetLaraHolsterLMesh(weapon_type);
+        Sound_Effect(SFX_LARA_HOLSTER, &Lara_GetItem()->pos, SPM_NORMAL);
+    }
 }
 
 void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)

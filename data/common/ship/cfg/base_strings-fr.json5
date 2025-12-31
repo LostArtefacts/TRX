@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Dégainer",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Console de développement",
         "ENUM_INPUT_ROLE_EQUIP_AUTOS": "\\{review}Équiper les pistolets automatiques",
+        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Équiper le Desert Eagle",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Équiper le lance-grenades",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Équiper le harpon",
         "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Équiper le M16",
@@ -811,6 +812,9 @@
         },
         "lara_autos": {
             "name": "\\{review}Animation des pistolets automatiques",
+        },
+        "lara_desert_eagle": {
+            "name": "\\{review}Animation du Desert Eagle",
         },
         "lara_uzis": {
             "name": "\\{review}Animation des uzis",
@@ -1674,6 +1678,12 @@
         },
         "autos_ammo": {
             "name": "\\{review}Chargeurs de pistolet automatique",
+        },
+        "desert_eagle": {
+            "name": "\\{review}Desert Eagle",
+        },
+        "desert_eagle_ammo": {
+            "name": "\\{review}Chargeurs du Desert Eagle",
         }
     }
 }

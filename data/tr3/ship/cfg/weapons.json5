@@ -20,18 +20,18 @@
         "sample_num": "SFX_LARA_PISTOLS",
     },
 
-    "LGT_MAGNUMS": {
+    "LGT_DESERT_EAGLE": {
         "lock_angles": [-60, +60, -60, +60],
-        "left_angles": [-170, +60, -80, +80],
-        "right_angles": [-60, +170, -80, +80],
+        "left_angles": [-10, +10, -80, +80],
+        "right_angles": [0, 0, 0, 0],
         "aim_speed": 10,
-        "shot_accuracy": 8,
+        "shot_accuracy": 4,
         "gun_height": 650,
-        "damage": 2,
+        "damage": 21,
         "target_dist": 8.0,
-        "recoil_frame": 9,
+        "recoil_frame": 16,
         "flash_time": 3,
-        "sample_num": "SFX_LARA_MAGNUMS",
+        "sample_num": "SFX_LARA_DESERT_EAGLE",
     },
 
     "LGT_UZIS": {
