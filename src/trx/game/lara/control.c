@@ -14,6 +14,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
+#include <trx/game/water_fx.h>
 
 // clang-format off
 #define M_MAX_COLL_ROOMS    20
@@ -221,9 +222,12 @@ static void M_UpdateEnvironment(void)
         water_height == NO_HEIGHT ? NO_HEIGHT : item->pos.y - water_height;
     lara_info->water_surface_dist = -water_height_diff;
 
-    // Create splash if Lara lands in wading height water. TR3+ feature.
-    if (g_Config.gameplay.enable_wading
+    if (g_TRVersion == 3) {
+        WaterFX_WadeSplash(item, water_height, water_depth);
+    } else if (
+        g_Config.gameplay.enable_wading
         && lara_info->water_status != LWS_CHEAT) {
+        // Create splash if Lara lands in wading height water. TR3+ feature.
         const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
         if (bounds != nullptr && item->pos.y + bounds->min.y <= water_height
             && item->pos.y + bounds->max.y >= water_height

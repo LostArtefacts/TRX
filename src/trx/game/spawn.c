@@ -9,6 +9,8 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/water_fx.h>
+#include <trx/version.h>
 
 #define M_SHARD_SPEED 250
 #define M_ROCKET_SPEED 220
@@ -52,6 +54,11 @@ XYZ_32 Spawn_GetRayPos(
 
 void Spawn_Splash(const ITEM *const item)
 {
+    if (g_TRVersion == 3) {
+        WaterFX_Splash(item);
+        return;
+    }
+
     const int32_t water_height = Room_GetWaterHeight(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
     int16_t room_num = item->room_num;

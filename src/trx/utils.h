@@ -5,6 +5,7 @@
 #define CONCAT_(a, b) a##b
 #define CONCAT(a, b) CONCAT_(a, b)
 
+#define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
 #define SQUARE(A) ((A) * (A))
 #ifndef ABS
     #define ABS(x) (((x) < 0) ? (-(x)) : (x))
