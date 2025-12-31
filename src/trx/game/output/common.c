@@ -10,6 +10,7 @@
 #include <trx/game/output/sources/misc.h>
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/output/sources/overlay.h>
+#include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/sources/rooms_debug.h>
 #include <trx/game/output/sources/shadows.h>
@@ -40,6 +41,7 @@ void Output_Init(void)
     OutputSource_Objects_Init(m_Batcher);
     OutputSource_Sprites_Init(m_Batcher);
     OutputSource_Lightnings_Init();
+    OutputSource_PolyFX_Init();
     OutputSource_Shadows_Init(m_Batcher);
     OutputSource_Misc_Init();
     OutputSource_Overlay_Init();
@@ -58,6 +60,7 @@ void Output_Shutdown(void)
     OutputSource_Objects_Shutdown();
     OutputSource_Sprites_Shutdown();
     OutputSource_Lightnings_Shutdown();
+    OutputSource_PolyFX_Shutdown();
     OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
     OutputSource_Overlay_Shutdown();

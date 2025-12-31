@@ -5,6 +5,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
+#include <trx/game/water_fx.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
@@ -487,6 +488,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     }
 
     Output_SetupAboveWater(false);
+    WaterFX_Draw();
 }
 
 void Room_AddDrawnItem(const int16_t room_num, const int16_t item_num)
