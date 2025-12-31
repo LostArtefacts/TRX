@@ -228,6 +228,7 @@ static bool M_Draw_I(
 
     case LGT_SHOTGUN:
     case LGT_M16:
+    case LGT_MP5:
     case LGT_GRENADE:
     case LGT_HARPOON: {
         Matrix_Push_I();
@@ -541,6 +542,7 @@ bool Lara_Draw(const ITEM *const item)
 
     case LGT_SHOTGUN:
     case LGT_M16:
+    case LGT_MP5:
     case LGT_GRENADE:
     case LGT_HARPOON: {
         Matrix_Push();

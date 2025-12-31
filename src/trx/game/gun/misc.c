@@ -200,6 +200,7 @@ void Gun_InitialiseNewWeapon(void)
 
         case LGT_SHOTGUN:
         case LGT_M16:
+        case LGT_MP5:
         case LGT_GRENADE:
         case LGT_HARPOON:
             Gun_Rifle_DrawMeshes(lara->gun_type);
@@ -265,6 +266,22 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         }
         return;
 
+    case LGT_MP5:
+        shade = 10 * 256;
+        len = 332;
+        off = 96;
+        Matrix_TranslateRel(0, len, off);
+        Matrix_RotX(-85 * DEG_1);
+        Matrix_RotZ(
+            ((2 * Random_GetDraw()) & 0x4000) + (Random_GetDraw() & 0xFFF)
+            + 0x1800);
+        Output_CalculateStaticLight(shade);
+        const OBJECT *const flash_obj = Object_Get(O_M16_FLASH);
+        if (flash_obj->loaded) {
+            Object_DrawMesh(flash_obj->mesh_idx, clip, false);
+        }
+        return;
+
     case LGT_FLARE:
         Matrix_TranslateRel(11, 32, 80);
         Matrix_RotX(-DEG_90);
@@ -294,7 +311,7 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 {
     const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM)
         || Inv_RequestItem(O_HARPOON_ITEM) || Inv_RequestItem(O_M16_ITEM)
-        || Inv_RequestItem(O_GRENADE_GUN_ITEM);
+        || Inv_RequestItem(O_MP5_ITEM) || Inv_RequestItem(O_GRENADE_GUN_ITEM);
     const bool lara_has_pistols = Inv_RequestItem(O_PISTOL_ITEM)
         || Inv_RequestItem(O_MAGNUM_ITEM) || Inv_RequestItem(O_AUTOS_ITEM)
         || Inv_RequestItem(O_DESERT_EAGLE_ITEM) || Inv_RequestItem(O_UZI_ITEM);
@@ -308,6 +325,8 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
         back_gun_type = LGT_HARPOON;
     } else if (!lara_has_rifle && obj_id == O_M16_ITEM) {
         back_gun_type = LGT_M16;
+    } else if (!lara_has_rifle && obj_id == O_MP5_ITEM) {
+        back_gun_type = LGT_MP5;
     } else if (!lara_has_rifle && obj_id == O_GRENADE_GUN_ITEM) {
         back_gun_type = LGT_GRENADE;
     } else if (!lara_has_pistols && obj_id == O_PISTOL_ITEM) {

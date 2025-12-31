@@ -51,6 +51,9 @@ void UI_AmmoLabel(void)
     case LGT_M16:
         ammo = lara->m16_ammo.ammo;
         break;
+    case LGT_MP5:
+        ammo = lara->mp5_ammo.ammo;
+        break;
     case LGT_GRENADE:
         ammo = lara->grenade_ammo.ammo;
         break;

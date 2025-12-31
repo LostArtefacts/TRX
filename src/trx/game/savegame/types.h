@@ -21,6 +21,7 @@ typedef struct {
     LARA_GUN_TYPE back_gun_type;
     uint8_t num_scions;
     uint16_t m16_ammo;
+    uint16_t mp5_ammo;
     uint16_t grenade_ammo;
     uint16_t harpoon_ammo;
     uint16_t flares;
@@ -35,6 +36,7 @@ typedef struct {
         bool has_uzis;
         bool has_shotgun;
         bool has_m16;
+        bool has_mp5;
         bool has_grenade;
         bool has_harpoon;
     } flags;

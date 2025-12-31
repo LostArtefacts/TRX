@@ -188,11 +188,13 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
         case LGT_PISTOLS:
         case LGT_MAGNUMS:
         case LGT_AUTOS:
+        case LGT_DESERT_EAGLE:
         case LGT_UZIS:
             resume->holsters_gun_type = resume->equipped_gun_type;
             break;
         case LGT_SHOTGUN:
         case LGT_M16:
+        case LGT_MP5:
         case LGT_GRENADE:
         case LGT_HARPOON:
             if (resume->flags.has_pistols) {
@@ -220,6 +222,8 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
             resume->back_gun_type = LGT_SHOTGUN;
         } else if (resume->flags.has_m16) {
             resume->back_gun_type = LGT_M16;
+        } else if (resume->flags.has_mp5) {
+            resume->back_gun_type = LGT_MP5;
         } else if (resume->flags.has_grenade) {
             resume->back_gun_type = LGT_GRENADE;
         } else if (resume->flags.has_harpoon) {
@@ -489,6 +493,14 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM) * M16_AMMO_QTY;
     }
 
+    if (Inv_RequestItem(O_MP5_ITEM)) {
+        resume->flags.has_mp5 = true;
+        resume->mp5_ammo = lara->mp5_ammo.ammo;
+    } else {
+        resume->flags.has_mp5 = false;
+        resume->mp5_ammo = Inv_RequestItem(O_MP5_AMMO_ITEM) * MP5_AMMO_QTY;
+    }
+
     if (Inv_RequestItem(O_HARPOON_ITEM)) {
         resume->flags.has_harpoon = true;
         resume->harpoon_ammo = lara->harpoon_ammo.ammo;
@@ -539,18 +551,22 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_shotgun = false;
         resume->flags.has_magnums = false;
         resume->flags.has_autos = false;
+        resume->flags.has_desert_eagle = false;
         resume->flags.has_uzis = false;
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
+        resume->flags.has_mp5 = false;
         resume->flags.has_grenade = false;
 
         resume->pistol_ammo = 0;
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
         resume->autos_ammo = 0;
+        resume->desert_eagle_ammo = 0;
         resume->uzi_ammo = 0;
         resume->harpoon_ammo = 0;
         resume->m16_ammo = 0;
+        resume->mp5_ammo = 0;
         resume->grenade_ammo = 0;
 
         resume->small_medipacks = 0;
@@ -572,6 +588,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_shotgun = false;
         resume->flags.has_magnums = false;
         resume->flags.has_autos = false;
+        resume->flags.has_desert_eagle = false;
         resume->flags.has_uzis = false;
 
         resume->small_medipacks = 0;
@@ -581,13 +598,16 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->shotgun_ammo = 0;
         resume->magnum_ammo = 0;
         resume->autos_ammo = 0;
+        resume->desert_eagle_ammo = 0;
         resume->uzi_ammo = 0;
         resume->num_scions = 0;
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
+        resume->flags.has_mp5 = false;
         resume->flags.has_grenade = false;
         resume->harpoon_ammo = 0;
         resume->m16_ammo = 0;
+        resume->mp5_ammo = 0;
         resume->grenade_ammo = 0;
         resume->equipped_gun_type = LGT_PISTOLS;
         resume->holsters_gun_type = LGT_PISTOLS;
@@ -604,6 +624,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
             g_Weapons[LGT_DESERT_EAGLE].is_available;
         resume->flags.has_uzis = true;
         resume->flags.has_m16 = g_Weapons[LGT_M16].is_available;
+        resume->flags.has_mp5 = g_Weapons[LGT_MP5].is_available;
         resume->flags.has_grenade = g_Weapons[LGT_GRENADE].is_available;
         resume->flags.has_harpoon = g_Weapons[LGT_HARPOON].is_available;
 
@@ -615,6 +636,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flares = g_TRVersion == 1 ? 0 : -1;
 
         resume->m16_ammo = resume->flags.has_m16 ? 10000 : 0;
+        resume->mp5_ammo = resume->flags.has_mp5 ? 10000 : 0;
         resume->grenade_ammo = resume->flags.has_grenade ? 10000 : 0;
         resume->harpoon_ammo = resume->flags.has_harpoon ? 10000 : 0;
 

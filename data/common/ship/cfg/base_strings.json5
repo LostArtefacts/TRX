@@ -135,6 +135,7 @@
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Equip M16",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
+        "ENUM_INPUT_ROLE_EQUIP_MP5": "Equip MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equip Pistols",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equip Shotgun",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equip Uzis",
@@ -548,8 +549,8 @@
         "SETTING_FIX_ITEM_ROTS_DESCRIPTION": "Fixes original issues with some incorrectly rotated pickups when using the 3D pickups option.",
         "SETTING_FIX_LARA_PICKUP_EMBED": "Fix pickup embed glitch",
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "Fixes Lara sometimes drifting into walls when collecting underwater items, and fixes Lara embedding under steeply sloped ceilings when picking up an item above water.",
-        "SETTING_FIX_M16_ACCURACY": "Fix M16 accuracy",
-        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Fixes the accuracy of the M16 while Lara is running.",
+        "SETTING_FIX_M16_ACCURACY": "Fix M16/MP5 accuracy",
+        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Fixes the accuracy of the M16/MP5 while Lara is running.",
         "SETTING_FIX_QWOP_GLITCH": "Fix QWOP glitch",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Fixes Lara jumping on small steps sometimes resulting in a weird running animation, known as a QWOP state.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Layered secret music",
@@ -747,6 +748,9 @@
         "m16": {
             "name": "M16",
         },
+        "mp5": {
+            "name": "MP5",
+        },
         "grenade_launcher": {
             "name": "Grenade Launcher",
         },
@@ -773,6 +777,9 @@
         },
         "m16_ammo": {
             "name": "M16 Clips",
+        },
+        "mp5_ammo": {
+            "name": "MP5 Clips",
         },
         "grenade_launcher_ammo": {
             "name": "Grenades",
@@ -875,6 +882,9 @@
         },
         "lara_m16": {
             "name": "M16 Animation",
+        },
+        "lara_mp5": {
+            "name": "MP5 Animation",
         },
         "lara_grenade": {
             "name": "Grenade Launcher Animation",

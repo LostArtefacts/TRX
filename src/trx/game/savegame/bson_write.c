@@ -442,6 +442,7 @@ static void M_WriteResumeInfo(
     M_WriteNum(ctx, "desert_eagle_ammo", resume->desert_eagle_ammo);
     M_WriteNum(ctx, "uzi_ammo", resume->uzi_ammo);
     M_WriteNum(ctx, "m16_ammo", resume->m16_ammo);
+    M_WriteNum(ctx, "mp5_ammo", resume->mp5_ammo);
     M_WriteNum(ctx, "grenade_ammo", resume->grenade_ammo);
     M_WriteNum(ctx, "harpoon_ammo", resume->harpoon_ammo);
     M_WriteNum(ctx, "num_medis", resume->small_medipacks);
@@ -466,6 +467,7 @@ static void M_WriteResumeInfo(
     M_WriteBool(ctx, "has_desert_eagle", resume->flags.has_desert_eagle);
     M_WriteBool(ctx, "has_uzis", resume->flags.has_uzis);
     M_WriteBool(ctx, "has_m16", resume->flags.has_m16);
+    M_WriteBool(ctx, "has_mp5", resume->flags.has_mp5);
     M_WriteBool(ctx, "has_grenade", resume->flags.has_grenade);
     M_WriteBool(ctx, "has_harpoon", resume->flags.has_harpoon);
 
@@ -737,6 +739,7 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteAmmo(ctx, "harpoon", &lara->harpoon_ammo);
     M_WriteAmmo(ctx, "grenade", &lara->grenade_ammo);
     M_WriteAmmo(ctx, "m16", &lara->m16_ammo);
+    M_WriteAmmo(ctx, "mp5", &lara->mp5_ammo);
 
     if (lara->gun_item_num != NO_ITEM) {
         M_PushObject(ctx);

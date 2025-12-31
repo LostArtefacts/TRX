@@ -122,7 +122,7 @@
     },
 
     {
-        "object_id": "O_M16_OPTION",
+        "object_id": "O_MP5_OPTION",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -219,7 +219,7 @@
     },
 
     {
-        "object_id": "O_M16_AMMO_OPTION",
+        "object_id": "O_MP5_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,

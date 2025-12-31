@@ -43,6 +43,7 @@ static bool M_ResumeInfo_HasWeapon(
     case LGT_SHOTGUN:      return resume->flags.has_shotgun;
     case LGT_HARPOON:      return resume->flags.has_harpoon;
     case LGT_M16:          return resume->flags.has_m16;
+    case LGT_MP5:          return resume->flags.has_mp5;
     case LGT_GRENADE:      return resume->flags.has_grenade;
     default: return false;
         // clang-format on
@@ -63,6 +64,7 @@ static void M_ResumeInfo_SetWeapon(
     case LGT_SHOTGUN:      resume->flags.has_shotgun = has_weapon; break;
     case LGT_HARPOON:      resume->flags.has_harpoon = has_weapon; break;
     case LGT_M16:          resume->flags.has_m16 = has_weapon; break;
+    case LGT_MP5:          resume->flags.has_mp5 = has_weapon; break;
     case LGT_GRENADE:      resume->flags.has_grenade = has_weapon; break;
     default: break;
         // clang-format on
@@ -82,6 +84,7 @@ static void M_ResumeInfo_AddAmmo(
     case LGT_SHOTGUN:      resume->shotgun_ammo += ammo_qty; break;
     case LGT_HARPOON:      resume->harpoon_ammo += ammo_qty; break;
     case LGT_M16:          resume->m16_ammo += ammo_qty; break;
+    case LGT_MP5:          resume->mp5_ammo += ammo_qty; break;
     case LGT_GRENADE:      resume->grenade_ammo += ammo_qty; break;
     default: break;
         // clang-format on
@@ -284,9 +287,11 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->flags.has_pistols = false;
         resume->flags.has_magnums = false;
         resume->flags.has_autos = false;
+        resume->flags.has_desert_eagle = false;
         resume->flags.has_uzis = false;
         resume->flags.has_shotgun = false;
         resume->flags.has_m16 = false;
+        resume->flags.has_mp5 = false;
         resume->flags.has_grenade = false;
         resume->flags.has_harpoon = false;
         resume->holsters_gun_type = LGT_UNARMED;
@@ -306,9 +311,11 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->pistol_ammo = 0;
         resume->magnum_ammo = 0;
         resume->autos_ammo = 0;
+        resume->desert_eagle_ammo = 0;
         resume->uzi_ammo = 0;
         resume->shotgun_ammo = 0;
         resume->m16_ammo = 0;
+        resume->mp5_ammo = 0;
         resume->grenade_ammo = 0;
         resume->harpoon_ammo = 0;
     }
@@ -337,6 +344,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_SHOTGUN);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_HARPOON);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_M16);
+    M_ModifyResumeInfo_GunOrAmmo(resume, LGT_MP5);
     M_ModifyResumeInfo_GunOrAmmo(resume, LGT_GRENADE);
 
     M_ModifyResumeInfo_Item(resume, O_SMALL_MEDIPACK_ITEM);
@@ -368,6 +376,7 @@ void GF_InventoryModifier_Apply(
         M_ModifyInventory_GunOrAmmo(type, LGT_SHOTGUN);
         M_ModifyInventory_GunOrAmmo(type, LGT_HARPOON);
         M_ModifyInventory_GunOrAmmo(type, LGT_M16);
+        M_ModifyInventory_GunOrAmmo(type, LGT_MP5);
         M_ModifyInventory_GunOrAmmo(type, LGT_GRENADE);
     }
 

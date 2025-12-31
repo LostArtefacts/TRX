@@ -135,6 +135,7 @@
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Equipaggia Fucile Subacqueo",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Equipaggia M16",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Magnum",
+        "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}Equipaggia MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equipaggia Pistole",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equipaggia Fucile a Pompa",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equipaggia Uzi",
@@ -548,8 +549,8 @@
         "SETTING_FIX_ITEM_ROTS_DESCRIPTION": "Risolve i problemi relativi all'orientamento errato di alcuni oggetti quando viene utilizzata l'opzione Oggetti 3D nei livelli originali.",
         "SETTING_FIX_LARA_PICKUP_EMBED": "Correggi errore di raccolta",
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "Risolve i problemi per cui Lara a volte scivola contro i muri quando raccoglie oggetti sott’acqua, e per cui si incastra sotto i soffitti fortemente inclinati quando raccoglie gli oggetti sopra l'acqua.",
-        "SETTING_FIX_M16_ACCURACY": "Correggi precisione M16",
-        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Corregge la precisione della mira dell'M16 mentre Lara corre.",
+        "SETTING_FIX_M16_ACCURACY": "\\{review}Correggi precisione M16/MP5",
+        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Corregge la precisione della mira dell'M16/MP5 mentre Lara corre.",
         "SETTING_FIX_QWOP_GLITCH": "Correggi errore QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Risolve il problema per cui a volte Lara, saltando da piccoli gradini, provoca una strana animazione di corsa nota come stato QWOP.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Musica segreti in polifonia",
@@ -863,6 +864,9 @@
         },
         "lara_m16": {
             "name": "Animazione M16",
+        },
+        "lara_mp5": {
+            "name": "\\{review}Animazione MP5",
         },
         "lara_grenade": {
             "name": "Animazione Lanciagranate",
@@ -1714,6 +1718,12 @@
         },
         "desert_eagle_ammo": {
             "name": "\\{review}Caricatori della Desert Eagle",
+        },
+        "mp5": {
+            "name": "\\{review}MP5",
+        },
+        "mp5_ammo": {
+            "name": "\\{review}Caricatori per MP5",
         }
     }
 }

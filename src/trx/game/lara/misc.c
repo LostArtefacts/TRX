@@ -322,8 +322,8 @@ bool Lara_IsM16Active(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     ITEM *const lara_item = Lara_GetItem();
-    if (lara->gun_item_num == NO_ITEM || lara->gun_type != LGT_M16
-        || lara_item->hit_points <= 0) {
+    if (lara->gun_item_num == NO_ITEM || lara_item->hit_points <= 0
+        || (lara->gun_type != LGT_M16 && lara->gun_type != LGT_MP5)) {
         return false;
     }
 

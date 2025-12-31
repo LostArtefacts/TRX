@@ -135,6 +135,7 @@
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "\\{review}Оснастить гарпуном",
         "ENUM_INPUT_ROLE_EQUIP_M16": "\\{review}Оснастить M16",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Магнумы",
+        "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}Оснастить MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Пистолеты",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Дробовик",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Узи",
@@ -548,8 +549,8 @@
         "SETTING_FIX_ITEM_ROTS_DESCRIPTION": "Исправляет проблемы с некоторыми неправильно повёрнутыми предметами при использовании опции 3D-предметов.",
         "SETTING_FIX_LARA_PICKUP_EMBED": "\\{review}Исправлен баг подбора",
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "\\{review}Исправляет ошибку, из-за которой Лара иногда проскальзывала в стены при сборе предметов под водой, а также при сборе предметов над водой под крутыми наклонными потолками.",
-        "SETTING_FIX_M16_ACCURACY": "Исправить точность M16",
-        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Исправлять точность стрельбы из М16 во время бега Лары.",
+        "SETTING_FIX_M16_ACCURACY": "\\{review}Исправить точность M16/MP5",
+        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Исправлять точность стрельбы из М16/MP5 во время бега Лары.",
         "SETTING_FIX_QWOP_GLITCH": "Исправить QWOP-состояние",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Исправляет странную анимацию бега, известную как QWOP-состояние, которое иногда возникает, когда Лара приземляется на пол во время прыжка.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Исправить звук секрета",
@@ -1283,6 +1284,9 @@
         "lara_m16": {
             "name": "\\{review}Анимация M16",
         },
+        "lara_mp5": {
+            "name": "\\{review}Анимация MP5",
+        },
         "lara_grenade": {
             "name": "\\{review}Анимация гранатомёта",
         },
@@ -1704,6 +1708,12 @@
         },
         "desert_eagle_ammo": {
             "name": "\\{review}Магазины Дезерт Игл",
+        },
+        "mp5": {
+            "name": "\\{review}MP5",
+        },
+        "mp5_ammo": {
+            "name": "\\{review}Магазины для MP5",
         }
     }
 }

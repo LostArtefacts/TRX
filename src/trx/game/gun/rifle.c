@@ -113,7 +113,7 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
     }
 }
 
-static void M_FireM16(const bool running)
+static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -123,15 +123,15 @@ static void M_FireM16(const bool running)
     };
 
     if (g_Config.gameplay.fix_m16_accuracy && running) {
-        g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 12;
-        g_Weapons[LGT_M16].damage = 1;
+        g_Weapons[weapon_type].shot_accuracy = DEG_1 * 12;
+        g_Weapons[weapon_type].damage = 1;
     } else {
-        g_Weapons[LGT_M16].shot_accuracy = DEG_1 * 4;
-        g_Weapons[LGT_M16].damage = 3;
+        g_Weapons[weapon_type].shot_accuracy = DEG_1 * 4;
+        g_Weapons[weapon_type].damage = 3;
     }
 
-    if (Gun_FireWeapon(LGT_M16, lara->target, lara_item, angles)) {
-        lara->right_arm.flash_gun = g_Weapons[LGT_M16].flash_time;
+    if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
+        lara->right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
     }
 }
 
@@ -276,7 +276,8 @@ static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
         }
         break;
     case LGT_M16:
-        M_FireM16(running);
+    case LGT_MP5:
+        M_FireM16(running, weapon_type);
         break;
     default:
         if (!running) {
@@ -291,7 +292,8 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    const bool running = weapon_type == LGT_M16 && lara_item->speed != 0;
+    const bool running = (weapon_type == LGT_M16 || weapon_type == LGT_MP5)
+        && lara_item->speed != 0;
     ITEM *const item = Item_Get(lara->gun_item_num);
 
     switch (item->current_anim_state) {
@@ -339,6 +341,13 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                             Sound_Effect(
                                 SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
                             m_M16Firing = true;
+                        } else if (weapon_type == LGT_MP5) {
+                            Sound_Effect(
+                                SFX_EXPLOSION_1, &lara_item->pos,
+                                0x5000000 | SPM_PITCH);
+                            Sound_Effect(
+                                SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
+                            m_M16Firing = true;
                         }
                         item->goal_anim_state = LA_G_RECOIL;
                     }
@@ -348,11 +357,23 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             }
 
             if (item->goal_anim_state != LA_G_RECOIL && m_M16Firing) {
-                Sound_Effect(SFX_M16_STOP, &lara_item->pos, SPM_NORMAL);
+                if (weapon_type == LGT_M16) {
+                    Sound_Effect(SFX_M16_STOP, &lara_item->pos, SPM_NORMAL);
+                } else {
+                    Sound_Effect(
+                        SFX_EXPLOSION_1, &lara_item->pos,
+                        0x5000000 | SPM_PITCH);
+                }
                 m_M16Firing = false;
             }
         } else if (m_M16Firing) {
-            Sound_Effect(SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
+            if (weapon_type == LGT_M16) {
+                Sound_Effect(SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
+            } else if (weapon_type == LGT_MP5) {
+                Sound_Effect(
+                    SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
+                Sound_Effect(SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
+            }
         } else if (
             weapon_type == LGT_SHOTGUN && !g_Input.action
             && !lara->left_arm.lock) {
@@ -376,8 +397,14 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             }
         }
 
-        if (weapon_type == LGT_M16 && item->goal_anim_state == LA_G_URECOIL) {
-            Sound_Effect(SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
+        if (item->goal_anim_state == LA_G_URECOIL) {
+            if (weapon_type == LGT_M16) {
+                Sound_Effect(SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
+            } else if (weapon_type == LGT_MP5) {
+                Sound_Effect(
+                    SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
+                Sound_Effect(SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
+            }
         }
         break;
 
@@ -419,7 +446,8 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
     M_Animate(weapon_type);
 
     if (lara->right_arm.flash_gun
-        && (weapon_type == LGT_SHOTGUN || weapon_type == LGT_M16)) {
+        && (weapon_type == LGT_SHOTGUN || weapon_type == LGT_M16
+            || weapon_type == LGT_MP5)) {
         Gun_AddDynamicLight();
     }
 }
