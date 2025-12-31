@@ -135,6 +135,7 @@
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Uidheamaich Harpùn",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Uidheamaich M16",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Magnuman",
+        "ENUM_INPUT_ROLE_EQUIP_MP5": "Uidheamaich MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Uidheamaich Piostalan",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Uidheamaich Gunna-sgaoil",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Uidheamaich Uzis",
@@ -548,8 +549,8 @@
         "SETTING_FIX_ITEM_ROTS_DESCRIPTION": "Càradh bugan far a bheil cuid de thogailtean air an tionndadh gu ceàrr le togailtean 3D air a chomasachadh.",
         "SETTING_FIX_LARA_PICKUP_EMBED": "Càraich cath-thogail",
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "Càradh far am bi Lara uaireannan a' gluasad a-steach gu ballachan nuair a tha i a' togail rudeigin fon uisge, agus os cionn uisge fo mhullaichean cas leathann.",
-        "SETTING_FIX_M16_ACCURACY": "Càraich cruinneas M16",
-        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Càradh cruinneas M16 fhad 's a tha Lara a' ruith.",
+        "SETTING_FIX_M16_ACCURACY": "Càraich cruinneas M16/MP5",
+        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Càradh cruinneas M16/MP5 fhad 's a tha Lara a' ruith.",
         "SETTING_FIX_QWOP_GLITCH": "Càraich glitch QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Càradh glitch - ris an canar QWOP - far am bi Lara a' leum air ceumannan beaga agus a' toiseachadh gluasad gu neònach tron làr.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Ceòl dìomhaireachd ioma-fhilleadh",
@@ -1298,6 +1299,9 @@
         "lara_m16": {
             "name": "Beòthalachd M16",
         },
+        "lara_mp5": {
+            "name": "Beòthalachd MP5",
+        },
         "lara_grenade": {
             "name": "Beòthalachd Lannsair Grenèad",
         },
@@ -1708,6 +1712,12 @@
         },
         "desert_eagle_ammo": {
             "name": "Lòin an Desert Eagle",
+        },
+        "mp5": {
+            "name": "MP5",
+        },
+        "mp5_ammo": {
+            "name": "Lòin MP5",
         }
     }
 }

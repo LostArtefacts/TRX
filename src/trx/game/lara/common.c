@@ -215,6 +215,15 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             lara_info->m16_ammo.ammo = 0;
         }
 
+        if (resume->flags.has_mp5) {
+            Inv_AddItem(O_MP5_ITEM);
+            lara_info->mp5_ammo.ammo = resume->mp5_ammo;
+            Item_GlobalReplace(O_MP5_ITEM, O_MP5_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(O_MP5_AMMO_ITEM, resume->mp5_ammo / MP5_AMMO_QTY);
+            lara_info->mp5_ammo.ammo = 0;
+        }
+
         if (resume->flags.has_grenade) {
             Inv_AddItem(O_GRENADE_GUN_ITEM);
             lara_info->grenade_ammo.ammo = resume->grenade_ammo;
@@ -326,6 +335,11 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_M16_ITEM:
     case O_M16_OPTION:
         request_gun_type = LGT_M16;
+        break;
+
+    case O_MP5_ITEM:
+    case O_MP5_OPTION:
+        request_gun_type = LGT_MP5;
         break;
 
     case O_GRENADE_GUN_ITEM:

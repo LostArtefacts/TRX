@@ -34,6 +34,7 @@ static struct {
     { .gun_type = LGT_UZIS, .input_role = INPUT_ROLE_EQUIP_UZIS },
     { .gun_type = LGT_HARPOON, .input_role = INPUT_ROLE_EQUIP_HARPOON },
     { .gun_type = LGT_M16, .input_role = INPUT_ROLE_EQUIP_M16 },
+    { .gun_type = LGT_MP5, .input_role = INPUT_ROLE_EQUIP_MP5 },
     { .gun_type = LGT_GRENADE,
       .input_role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
     { .gun_type = LGT_UNKNOWN, .input_role = (INPUT_ROLE)-1 },
@@ -286,6 +287,7 @@ void Gun_Control(void)
 
         case LGT_SHOTGUN:
         case LGT_M16:
+        case LGT_MP5:
         case LGT_GRENADE:
         case LGT_HARPOON:
             if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
@@ -318,6 +320,7 @@ void Gun_Control(void)
 
         case LGT_SHOTGUN:
         case LGT_M16:
+        case LGT_MP5:
         case LGT_GRENADE:
         case LGT_HARPOON:
             Gun_Rifle_Undraw(lara->gun_type);
@@ -369,6 +372,7 @@ void Gun_Control(void)
 
         case LGT_SHOTGUN:
         case LGT_M16:
+        case LGT_MP5:
         case LGT_GRENADE:
         case LGT_HARPOON:
             Gun_Rifle_Control(lara->gun_type);

@@ -72,6 +72,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_EQUIP_UZIS },
                 { .role = INPUT_ROLE_EQUIP_HARPOON },
                 { .role = INPUT_ROLE_EQUIP_M16 },
+                { .role = INPUT_ROLE_EQUIP_MP5 },
                 { .role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
                 { .role = (INPUT_ROLE)-1 },
             },
@@ -171,6 +172,8 @@ static bool M_IsRoleUsable(const INPUT_ROLE role)
         return g_Weapons[LGT_HARPOON].is_available;
     case INPUT_ROLE_EQUIP_M16:
         return g_Weapons[LGT_M16].is_available;
+    case INPUT_ROLE_EQUIP_MP5:
+        return g_Weapons[LGT_MP5].is_available;
     case INPUT_ROLE_EQUIP_GRENADE_LAUNCHER:
         return g_Weapons[LGT_GRENADE].is_available;
     case INPUT_ROLE_FLY_CHEAT:

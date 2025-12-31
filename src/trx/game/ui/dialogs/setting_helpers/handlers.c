@@ -184,5 +184,5 @@ bool UI_Settings_Harpoon_IsAvailable(const UI_SETTINGS_OPTION *const option)
 
 bool UI_Settings_M16_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
-    return g_Weapons[LGT_M16].is_available;
+    return g_Weapons[LGT_M16].is_available || g_Weapons[LGT_MP5].is_available;
 }

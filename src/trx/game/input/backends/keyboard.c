@@ -388,6 +388,9 @@ static void M_HandleBuiltInDefaults(void)
             SDL_SCANCODE_UNKNOWN;
         M_GetBuiltInLayout(INPUT_ROLE_EQUIP_DESERT_EAGLE)->scancode =
             SDL_SCANCODE_3;
+        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_M16)->scancode =
+            SDL_SCANCODE_UNKNOWN;
+        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_MP5)->scancode = SDL_SCANCODE_6;
     }
 }
 

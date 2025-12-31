@@ -98,6 +98,7 @@ typedef struct {
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;
     AMMO_INFO m16_ammo;
+    AMMO_INFO mp5_ammo;
     struct {
         bool control;
         int16_t age;

@@ -11,6 +11,7 @@
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)
 - changed Magnums and Automatic Pistols to be separate objects, so both can appear in the same level (#4475)
+- changed the M16 and MP5 to be separate objects, so both can appear in the same level
 - changed the swinging axe to be defined separately from other pendulums (use object `O_SWINGING_AXE` in catalogs)
 - changed the following trap types to support being reset (#3993)
   - collapsible tiles
@@ -85,6 +86,8 @@
 - added support for the serif font
 - added support for colored text (Assault Course colors not yet implemented)
 - added Desert Eagle control
+- added MP5 control
+- added an option to fix the MP5 accuracy while running
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect
 

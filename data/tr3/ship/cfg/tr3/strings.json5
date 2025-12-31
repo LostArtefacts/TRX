@@ -266,12 +266,6 @@
         "large_medipack": {
             "name": "Large Medi Pack",
         },
-        "m16": {
-            "name": "MP5",
-        },
-        "m16_ammo": {
-            "name": "MP5 Clips",
-        },
     },
     "game_strings": {
         "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
