@@ -61,6 +61,7 @@
 - fixed Lara's footstep sounds being very quiet when weapons are equipped (#4451, regression from 1.0)
 
 **TR2**:
+- added unused gym voice line at level start if Lara has any logged assault course attempts (#2822)
 - added high-resolution 16:9 and 4:3 loading screens
 - added high-resolution 16:9 and 4:3 game end screen
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.

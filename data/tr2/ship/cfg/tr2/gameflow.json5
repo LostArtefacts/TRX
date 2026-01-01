@@ -46,6 +46,7 @@
         {
             "type": "gym",
             "path": "data/assault.tr2",
+            "script": "data/scripts/assault.lua",
             "music_track": -1,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/mansion.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
