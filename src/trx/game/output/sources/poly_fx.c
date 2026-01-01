@@ -365,13 +365,13 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     int32_t sw = (int32_t)spark->size.width;
     int32_t sh = (int32_t)spark->size.height;
 
-    const bool use_def = (spark->flags & SPARK_F_DEF) != 0U;
+    const bool use_sprite = (spark->flags & SPARK_F_SPRITE) != 0U;
     if ((spark->flags & SPARK_F_SCALE) != 0U) {
         const int32_t scalar = spark->scalar;
         sw = (int32_t)(((((int64_t)sw * g_PhdPersp) << scalar) / vpos_z));
         sh = (int32_t)(((((int64_t)sh * g_PhdPersp) << scalar) / vpos_z));
 
-        if (use_def) {
+        if (use_sprite) {
             const int32_t max_w = (int32_t)spark->size.width << scalar;
             const int32_t max_h = (int32_t)spark->size.height << scalar;
             int32_t min_wh = 4;
@@ -417,7 +417,7 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     uint16_t flags =
         VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_BILLBOARD | VERT_ABS_SPRITE;
     int32_t sprite_idx = spark->sprite_idx;
-    if ((spark->flags & SPARK_F_DEF) == 0U) {
+    if ((spark->flags & SPARK_F_SPRITE) == 0U) {
         flags |= VERT_FLAT_SHADED;
         sprite_idx = -1;
     }
