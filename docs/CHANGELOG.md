@@ -72,6 +72,7 @@
 - fixed the monk in the Diving Area cutscene not having a complete death animation
 - fixed demos not using loading screens
 - fixed reading room lights for custom TR2 levels (regression from 1.0)
+- fixed the switch in room 46 of Opera House randomly disappearing
 - fixed game crashing when Lara passes through light sources in levels compiled with dxtre3D
 
 **TR3**:
