@@ -49,6 +49,7 @@
 - fixed game crashing when Lara passes through light sources in certain levels
 - fixed waterfall mist not brightening when holding a flare (#4486)
 - fixed resetting camera in the photo mode not clearing the underwater tint
+- fixed developer console text editing (backspace, moving the caret) doing weird things with Unicode characters
 
 **TR1**:
 - added the ability to change inventory and statistics background styles (pattern + wave are not implemented in TR1)
