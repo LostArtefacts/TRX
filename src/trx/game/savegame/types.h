@@ -23,6 +23,7 @@ typedef struct {
     uint16_t m16_ammo;
     uint16_t mp5_ammo;
     uint16_t grenade_ammo;
+    uint16_t rocket_ammo;
     uint16_t harpoon_ammo;
     uint16_t flares;
 
@@ -38,6 +39,7 @@ typedef struct {
         bool has_m16;
         bool has_mp5;
         bool has_grenade;
+        bool has_rocket;
         bool has_harpoon;
     } flags;
 

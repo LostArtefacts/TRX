@@ -137,6 +137,7 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Магнумы",
         "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}Оснастить MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Пистолеты",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Экипировать ракетную установку",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Дробовик",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Узи",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Чит Полёт",
@@ -1290,6 +1291,9 @@
         "lara_grenade": {
             "name": "\\{review}Анимация гранатомёта",
         },
+        "lara_rocket": {
+            "name": "\\{review}Анимация ракетной установки",
+        },
         "lara_harpoon": {
             "name": "\\{review}Анимация гарпуна",
         },
@@ -1714,6 +1718,15 @@
         },
         "mp5_ammo": {
             "name": "\\{review}Магазины для MP5",
+        },
+        "rocket_launcher": {
+            "name": "\\{review}Ракетная установка",
+        },
+        "rocket_launcher_ammo": {
+            "name": "\\{review}Ракеты",
+        },
+        "rocket": {
+            "name": "\\{review}Ракета",
         }
     }
 }

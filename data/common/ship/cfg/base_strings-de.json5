@@ -137,6 +137,7 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Magnums ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}MP5 ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Pistolen ausrüsten",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Raketenwerfer ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Schrotflinte ausrüsten",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Uzis ausrüsten",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Flug-Cheat",
@@ -1293,6 +1294,9 @@
         "lara_grenade": {
             "name": "Grantenwerfer-Animation",
         },
+        "lara_rocket": {
+            "name": "\\{review}Animation des Raketenwerfers",
+        },
         "lara_harpoon": {
             "name": "Harpunen-Animation",
         },
@@ -1707,6 +1711,15 @@
         },
         "mp5_ammo": {
             "name": "\\{review}MP5-Munition",
+        },
+        "rocket_launcher": {
+            "name": "\\{review}Raketenwerfer",
+        },
+        "rocket_launcher_ammo": {
+            "name": "\\{review}Raketen",
+        },
+        "rocket": {
+            "name": "\\{review}Rakete",
         }
     }
 }

@@ -97,6 +97,7 @@ typedef struct {
     int16_t gun_item_num;
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;
+    AMMO_INFO rocket_ammo;
     AMMO_INFO m16_ammo;
     AMMO_INFO mp5_ammo;
     struct {

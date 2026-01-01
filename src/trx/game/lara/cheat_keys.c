@@ -57,6 +57,9 @@ static void M_GiveItems(void)
     if (Lara_Cheat_GiveGun(LGT_GRENADE, false)) {
         lara_info->grenade_ammo.ammo = 5000;
     }
+    if (Lara_Cheat_GiveGun(LGT_ROCKET, false)) {
+        lara_info->rocket_ammo.ammo = 5000;
+    }
     if (Lara_Cheat_GiveGun(LGT_M16, false)) {
         lara_info->m16_ammo.ammo = 5000;
     }

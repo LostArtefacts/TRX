@@ -202,6 +202,7 @@ void Gun_InitialiseNewWeapon(void)
         case LGT_M16:
         case LGT_MP5:
         case LGT_GRENADE:
+        case LGT_ROCKET:
         case LGT_HARPOON:
             Gun_Rifle_DrawMeshes(lara->gun_type);
             break;
@@ -311,7 +312,8 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 {
     const bool lara_has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM)
         || Inv_RequestItem(O_HARPOON_ITEM) || Inv_RequestItem(O_M16_ITEM)
-        || Inv_RequestItem(O_MP5_ITEM) || Inv_RequestItem(O_GRENADE_GUN_ITEM);
+        || Inv_RequestItem(O_MP5_ITEM) || Inv_RequestItem(O_GRENADE_GUN_ITEM)
+        || Inv_RequestItem(O_ROCKET_GUN_ITEM);
     const bool lara_has_pistols = Inv_RequestItem(O_PISTOL_ITEM)
         || Inv_RequestItem(O_MAGNUM_ITEM) || Inv_RequestItem(O_AUTOS_ITEM)
         || Inv_RequestItem(O_DESERT_EAGLE_ITEM) || Inv_RequestItem(O_UZI_ITEM);
@@ -329,6 +331,8 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
         back_gun_type = LGT_MP5;
     } else if (!lara_has_rifle && obj_id == O_GRENADE_GUN_ITEM) {
         back_gun_type = LGT_GRENADE;
+    } else if (!lara_has_rifle && obj_id == O_ROCKET_GUN_ITEM) {
+        back_gun_type = LGT_ROCKET;
     } else if (!lara_has_pistols && obj_id == O_PISTOL_ITEM) {
         holsters_gun_type = LGT_PISTOLS;
     } else if (!lara_has_pistols && obj_id == O_MAGNUM_ITEM) {

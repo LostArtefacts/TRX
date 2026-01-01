@@ -57,6 +57,9 @@ void UI_AmmoLabel(void)
     case LGT_GRENADE:
         ammo = lara->grenade_ammo.ammo;
         break;
+    case LGT_ROCKET:
+        ammo = lara->rocket_ammo.ammo;
+        break;
     case LGT_HARPOON:
         ammo = lara->harpoon_ammo.ammo;
         break;

@@ -275,6 +275,9 @@ static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
             M_FireGrenade();
         }
         break;
+    case LGT_ROCKET:
+        // TODO
+        break;
     case LGT_M16:
     case LGT_MP5:
         M_FireM16(running, weapon_type);

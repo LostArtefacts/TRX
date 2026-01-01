@@ -137,6 +137,7 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equipaggia Magnum",
         "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}Equipaggia MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equipaggia Pistole",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Equipaggia il lanciarazzi",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equipaggia Fucile a Pompa",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equipaggia Uzi",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Trucco Volo",
@@ -870,6 +871,9 @@
         },
         "lara_grenade": {
             "name": "Animazione Lanciagranate",
+        },
+        "lara_rocket": {
+            "name": "\\{review}Animazione del lanciarazzi",
         },
         "lara_harpoon": {
             "name": "Animazione Fucile Subacqueo",
@@ -1724,6 +1728,15 @@
         },
         "mp5_ammo": {
             "name": "\\{review}Caricatori per MP5",
+        },
+        "rocket_launcher": {
+            "name": "\\{review}Lanciarazzi",
+        },
+        "rocket_launcher_ammo": {
+            "name": "\\{review}Razzi",
+        },
+        "rocket": {
+            "name": "\\{review}Razzo",
         }
     }
 }

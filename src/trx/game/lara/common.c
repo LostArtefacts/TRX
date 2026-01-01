@@ -234,6 +234,16 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             lara_info->grenade_ammo.ammo = 0;
         }
 
+        if (resume->flags.has_rocket) {
+            Inv_AddItem(O_ROCKET_GUN_ITEM);
+            lara_info->rocket_ammo.ammo = resume->rocket_ammo;
+            Item_GlobalReplace(O_ROCKET_GUN_ITEM, O_ROCKET_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_ROCKET_AMMO_ITEM, resume->rocket_ammo / ROCKET_AMMO_QTY);
+            lara_info->rocket_ammo.ammo = 0;
+        }
+
         if (resume->flags.has_harpoon) {
             Inv_AddItem(O_HARPOON_ITEM);
             lara_info->harpoon_ammo.ammo = resume->harpoon_ammo;
@@ -345,6 +355,11 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     case O_GRENADE_GUN_ITEM:
     case O_GRENADE_GUN_OPTION:
         request_gun_type = LGT_GRENADE;
+        break;
+
+    case O_ROCKET_GUN_ITEM:
+    case O_ROCKET_GUN_OPTION:
+        request_gun_type = LGT_ROCKET;
         break;
 
     case O_FLAREBOX_ITEM:

@@ -40,7 +40,7 @@
         "z_trans_sel": 296,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 8,
+        "inv_pos": 9,
     },
 
     {
@@ -118,7 +118,7 @@
         "z_trans_sel": 296,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 7,
+        "inv_pos": 8,
     },
 
     {
@@ -138,7 +138,7 @@
     },
 
     {
-        "object_id": "O_GRENADE_GUN_OPTION",
+        "object_id": "O_ROCKET_GUN_OPTION",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -151,6 +151,22 @@
         "meshes_sel": -1,
         "meshes_drawn": -1,
         "inv_pos": 6,
+    },
+
+    {
+        "object_id": "O_GRENADE_GUN_OPTION",
+        "frames_total": 12,
+        "open_frame": 11,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "x_rot_sel": -224,
+        "y_rot_sel": 14336,
+        "y_trans_sel": 56,
+        "z_trans_sel": 296,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 7,
     },
 
     {
@@ -215,7 +231,7 @@
         "z_trans_sel": 296,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 7,
+        "inv_pos": 8,
     },
 
     {
@@ -232,7 +248,7 @@
     },
 
     {
-        "object_id": "O_GRENADE_AMMO_OPTION",
+        "object_id": "O_ROCKET_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -242,6 +258,19 @@
         "meshes_sel": -1,
         "meshes_drawn": -1,
         "inv_pos": 6,
+    },
+
+    {
+        "object_id": "O_GRENADE_AMMO_OPTION",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "x_rot_sel": -3808,
+        "z_trans_sel": 296,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 7,
     },
 
     {

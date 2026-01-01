@@ -16,6 +16,7 @@ X_OBJ_NAME_DEFINE(O_HARPOON_ITEM,      "harpoon_gun",      X_OBJ_NAMES("Harpoon 
 X_OBJ_NAME_DEFINE(O_M16_ITEM,          "m16",              X_OBJ_NAMES("M16"))
 X_OBJ_NAME_DEFINE(O_MP5_ITEM,          "mp5",              X_OBJ_NAMES("MP5"))
 X_OBJ_NAME_DEFINE(O_GRENADE_GUN_ITEM,  "grenade_launcher", X_OBJ_NAMES("Grenade Launcher"))
+X_OBJ_NAME_DEFINE(O_ROCKET_GUN_ITEM,   "rocket_launcher",  X_OBJ_NAMES("Rocket Launcher"))
 
 // Ammo
 X_OBJ_NAME_DEFINE(O_PISTOL_AMMO_ITEM,       "pistols_ammo",          X_OBJ_NAMES("Pistol Clips"))
@@ -28,6 +29,7 @@ X_OBJ_NAME_DEFINE(O_HARPOON_AMMO_ITEM,      "harpoon_gun_ammo",      X_OBJ_NAMES
 X_OBJ_NAME_DEFINE(O_M16_AMMO_ITEM,          "m16_ammo",              X_OBJ_NAMES("M16 Clips"))
 X_OBJ_NAME_DEFINE(O_MP5_AMMO_ITEM,          "mp5_ammo",              X_OBJ_NAMES("MP5 Clips"))
 X_OBJ_NAME_DEFINE(O_GRENADE_AMMO_ITEM,      "grenade_launcher_ammo", X_OBJ_NAMES("Grenades"))
+X_OBJ_NAME_DEFINE(O_ROCKET_AMMO_ITEM,       "rocket_launcher_ammo",  X_OBJ_NAMES("Rockets"))
 
 // Pickups
 X_OBJ_NAME_DEFINE(O_PICKUP_ITEM_1, "pickup_1", X_OBJ_NAMES("Pickup Item 1"))
@@ -77,6 +79,7 @@ X_OBJ_ALIAS_DEFINE(O_HARPOON_OPTION,      O_HARPOON_ITEM)
 X_OBJ_ALIAS_DEFINE(O_M16_OPTION,          O_M16_ITEM)
 X_OBJ_ALIAS_DEFINE(O_MP5_OPTION,          O_MP5_ITEM)
 X_OBJ_ALIAS_DEFINE(O_GRENADE_GUN_OPTION,  O_GRENADE_GUN_ITEM)
+X_OBJ_ALIAS_DEFINE(O_ROCKET_GUN_OPTION,  O_ROCKET_GUN_ITEM)
 
 // Inventory ring - ammo
 X_OBJ_ALIAS_DEFINE(O_PISTOL_AMMO_OPTION,       O_PISTOL_AMMO_ITEM)
@@ -89,6 +92,7 @@ X_OBJ_ALIAS_DEFINE(O_HARPOON_AMMO_OPTION,      O_HARPOON_AMMO_ITEM)
 X_OBJ_ALIAS_DEFINE(O_M16_AMMO_OPTION,          O_M16_AMMO_ITEM)
 X_OBJ_ALIAS_DEFINE(O_MP5_AMMO_OPTION,          O_MP5_AMMO_ITEM)
 X_OBJ_ALIAS_DEFINE(O_GRENADE_AMMO_OPTION,      O_GRENADE_AMMO_ITEM)
+X_OBJ_ALIAS_DEFINE(O_ROCKET_AMMO_OPTION,      O_ROCKET_AMMO_ITEM)
 
 // Inventory ring - pickups
 X_OBJ_ALIAS_DEFINE(O_PUZZLE_OPTION_1,       O_PUZZLE_ITEM_1)
@@ -116,6 +120,7 @@ X_OBJ_NAME_DEFINE(O_LARA_UZIS,             "lara_uzis",             X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_LARA_M16,              "lara_m16",              X_OBJ_NAMES("M16 Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_MP5,              "lara_mp5",              X_OBJ_NAMES("MP5 Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_GRENADE_GUN,      "lara_grenade",          X_OBJ_NAMES("Grenade Launcher Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_GRENADE_GUN,      "lara_rocket",           X_OBJ_NAMES("Rocket Launcher Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_HARPOON_GUN,      "lara_harpoon",          X_OBJ_NAMES("Harpoon Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_FLARE,            "lara_flare",            X_OBJ_NAMES("Flare Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_EXTRA,            "lara_extra",            X_OBJ_NAMES("Lara's Extra Animation"))
@@ -364,6 +369,7 @@ X_OBJ_NAME_DEFINE(O_PLAYER_7,              "player_7",              X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PLAYER_8,              "player_8",              X_OBJ_NAMES("Cutscene Actor 8"))
 X_OBJ_NAME_DEFINE(O_PLAYER_9,              "player_9",              X_OBJ_NAMES("Cutscene Actor 9"))
 X_OBJ_NAME_DEFINE(O_PLAYER_10,             "player_10",             X_OBJ_NAMES("Cutscene Actor 10"))
+X_OBJ_NAME_DEFINE(O_ROCKET,                "rocket",                X_OBJ_NAMES("Rocket"))
 X_OBJ_NAME_DEFINE(O_RICOCHET,              "ricochet",              X_OBJ_NAMES("Ricochet"))
 X_OBJ_NAME_DEFINE(O_SKIDOO_TRACK,          "skidoo_track",          X_OBJ_NAMES("Snowmobile Track"))
 X_OBJ_NAME_DEFINE(O_SKYBOX,                "skybox",                X_OBJ_NAMES("Skybox"))

@@ -196,6 +196,7 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
         case LGT_M16:
         case LGT_MP5:
         case LGT_GRENADE:
+        case LGT_ROCKET:
         case LGT_HARPOON:
             if (resume->flags.has_pistols) {
                 resume->holsters_gun_type = LGT_PISTOLS;
@@ -226,6 +227,8 @@ static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
             resume->back_gun_type = LGT_MP5;
         } else if (resume->flags.has_grenade) {
             resume->back_gun_type = LGT_GRENADE;
+        } else if (resume->flags.has_rocket) {
+            resume->back_gun_type = LGT_ROCKET;
         } else if (resume->flags.has_harpoon) {
             resume->back_gun_type = LGT_HARPOON;
         }
@@ -519,6 +522,15 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
             Inv_RequestItem(O_GRENADE_AMMO_ITEM) * GRENADE_AMMO_QTY;
     }
 
+    if (Inv_RequestItem(O_ROCKET_GUN_ITEM)) {
+        resume->flags.has_rocket = true;
+        resume->rocket_ammo = lara->rocket_ammo.ammo;
+    } else {
+        resume->flags.has_rocket = false;
+        resume->rocket_ammo =
+            Inv_RequestItem(O_ROCKET_AMMO_ITEM) * ROCKET_AMMO_QTY;
+    }
+
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
     resume->back_gun_type = lara->back_gun_type;
@@ -557,6 +569,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_m16 = false;
         resume->flags.has_mp5 = false;
         resume->flags.has_grenade = false;
+        resume->flags.has_rocket = false;
 
         resume->pistol_ammo = 0;
         resume->shotgun_ammo = 0;
@@ -568,6 +581,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->m16_ammo = 0;
         resume->mp5_ammo = 0;
         resume->grenade_ammo = 0;
+        resume->rocket_ammo = 0;
 
         resume->small_medipacks = 0;
         resume->large_medipacks = 0;
@@ -605,10 +619,12 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_m16 = false;
         resume->flags.has_mp5 = false;
         resume->flags.has_grenade = false;
+        resume->flags.has_rocket = false;
         resume->harpoon_ammo = 0;
         resume->m16_ammo = 0;
         resume->mp5_ammo = 0;
         resume->grenade_ammo = 0;
+        resume->rocket_ammo = 0;
         resume->equipped_gun_type = LGT_PISTOLS;
         resume->holsters_gun_type = LGT_PISTOLS;
         resume->back_gun_type = LGT_UNARMED;
@@ -626,6 +642,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->flags.has_m16 = g_Weapons[LGT_M16].is_available;
         resume->flags.has_mp5 = g_Weapons[LGT_MP5].is_available;
         resume->flags.has_grenade = g_Weapons[LGT_GRENADE].is_available;
+        resume->flags.has_rocket = g_Weapons[LGT_ROCKET].is_available;
         resume->flags.has_harpoon = g_Weapons[LGT_HARPOON].is_available;
 
         resume->shotgun_ammo = 10000;
@@ -638,6 +655,7 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->m16_ammo = resume->flags.has_m16 ? 10000 : 0;
         resume->mp5_ammo = resume->flags.has_mp5 ? 10000 : 0;
         resume->grenade_ammo = resume->flags.has_grenade ? 10000 : 0;
+        resume->rocket_ammo = resume->flags.has_rocket ? 10000 : 0;
         resume->harpoon_ammo = resume->flags.has_harpoon ? 10000 : 0;
 
         if (g_TRVersion == 1) {
@@ -645,8 +663,13 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
             resume->back_gun_type = LGT_SHOTGUN;
             resume->holsters_gun_type = LGT_UZIS;
         } else {
-            resume->equipped_gun_type = LGT_GRENADE;
-            resume->back_gun_type = LGT_GRENADE;
+            if (g_TRVersion == 2) {
+                resume->equipped_gun_type = LGT_GRENADE;
+                resume->back_gun_type = LGT_GRENADE;
+            } else {
+                resume->equipped_gun_type = LGT_ROCKET;
+                resume->back_gun_type = LGT_ROCKET;
+            }
             resume->holsters_gun_type = LGT_PISTOLS;
         }
     }

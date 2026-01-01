@@ -137,6 +137,7 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
         "ENUM_INPUT_ROLE_EQUIP_MP5": "Equip MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Equip Pistols",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Equip Rocket Launcher",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Equip Shotgun",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Equip Uzis",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Fly Cheat",
@@ -754,6 +755,9 @@
         "grenade_launcher": {
             "name": "Grenade Launcher",
         },
+        "rocket_launcher": {
+            "name": "Rocket Launcher",
+        },
         "pistols_ammo": {
             "name": "Pistol Clips",
         },
@@ -783,6 +787,9 @@
         },
         "grenade_launcher_ammo": {
             "name": "Grenades",
+        },
+        "rocket_launcher_ammo": {
+            "name": "Rockets",
         },
         "pickup_1": {
             "name": "Pickup Item 1",
@@ -888,6 +895,9 @@
         },
         "lara_grenade": {
             "name": "Grenade Launcher Animation",
+        },
+        "lara_rocket": {
+            "name": "Rocket Launcher Animation",
         },
         "lara_harpoon": {
             "name": "Harpoon Animation",
@@ -1681,6 +1691,9 @@
         },
         "player_10": {
             "name": "Cutscene Actor 10",
+        },
+        "rocket": {
+            "name": "Rocket",
         },
         "ricochet": {
             "name": "Ricochet",
