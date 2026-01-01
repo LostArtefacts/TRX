@@ -239,10 +239,10 @@ void Sparks_Control(void)
         }
 
         if ((sptr->flags & SPARK_F_ROTATE) != 0U) {
-            sptr->rot_ang = (sptr->rot_ang + sptr->rot_add) & 0xFFF;
+            sptr->rot_angle = (sptr->rot_angle + sptr->rot_add) & 0xFFF;
         }
 
-        if ((sptr->flags & SPARK_F_ALTDEF) != 0U) {
+        if ((sptr->flags & SPARK_F_ALT_SPRITE) != 0U) {
             const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
             if (explosion->loaded) {
                 const int32_t base = explosion->mesh_idx;
@@ -506,7 +506,7 @@ void Sparks_TriggerBubble(
         .life = 128,
         .s_life = 128,
         .flags =
-            SPARK_F_ATTACHED_POS | SPARK_F_FX | SPARK_F_DEF | SPARK_F_SCALE,
+            SPARK_F_ATTACHED_POS | SPARK_F_FX | SPARK_F_SPRITE | SPARK_F_SCALE,
         .effect_num = effect_num,
         .sprite_idx = bubble_obj->mesh_idx,
         .pos = { .x = 0, .y = 0, .z = 0 },
