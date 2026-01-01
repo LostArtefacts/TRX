@@ -8,7 +8,8 @@ typedef enum {
 } ASPECT_MODE;
 
 typedef enum {
-    BK_TRANSPARENT,
+    BK_TRANSPARENT_MEDIUM,
+    BK_TRANSPARENT_DARK,
     BK_PATTERN_STATIC,
     BK_PATTERN_WAVE,
     BK_IMAGE,
