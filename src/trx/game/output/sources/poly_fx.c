@@ -403,9 +403,9 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     const RGBA_8888 world_color[4] = { color, color, color, color };
 
     if ((spark->flags & SPARK_F_ROTATE) != 0U) {
-        const int32_t angle = (int32_t)(spark->rot_ang & 0xFFF) << 4;
-        const float s = (float)Math_Sin(angle) / 8192.0f;
-        const float c = (float)Math_Cos(angle) / 8192.0f;
+        const int32_t angle = (int32_t)spark->rot_angle * DEG_180 / 0xFFF.p0;
+        const float s = Math_Sin(angle) / (float)(1 << W2V_SHIFT);
+        const float c = Math_Cos(angle) / (float)(1 << W2V_SHIFT);
         for (int32_t i = 0; i < 4; i++) {
             const float x = disp[i][0];
             const float y = disp[i][1];
