@@ -318,12 +318,14 @@ void Camera_PhotoMode_Update(void)
 {
     M_HandleFOVInputs();
 
+    bool changed = false;
+
     if (g_InputDB.camera_reset) {
         M_ResetCamera(false);
         g_Camera.type = CAM_PHOTO_MODE;
+        changed = true;
     }
 
-    bool changed = false;
     changed |= M_HandleShiftInputs();
     changed |= M_HandleRotationInputs();
 
