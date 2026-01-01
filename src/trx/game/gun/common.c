@@ -25,18 +25,15 @@ void Gun_AddDynamicLight(void)
 
 OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
 {
-    if (g_TRVersion == 1) {
-        switch (gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_AUTOS:
-        case LGT_UZIS:
-            return O_LARA_PISTOLS;
-        default:
-            break;
-        }
+    switch (gun_type) {
+    case LGT_PISTOLS:
+    case LGT_MAGNUMS:
+    case LGT_AUTOS:
+    case LGT_UZIS:
+        return O_LARA_PISTOLS;
+    default:
+        return Gun_GetWeaponAnim(gun_type);
     }
-    return Gun_GetWeaponAnim(gun_type);
 }
 
 OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
