@@ -621,6 +621,8 @@
         "SETTING_MUSIC_VOLUME_DESCRIPTION": "Regola il volume della musica.",
         "SETTING_MUTE_OUT_OF_FOCUS": "Disattiva se in secondo piano",
         "SETTING_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Disattiva tutta la musica e gli effetti sonori quando la finestra del gioco non è in primo piano.",
+        "SETTING_PAUSE_BACKGROUND_STYLE": "\\{review}Pausa sfondo",
+        "SETTING_PAUSE_BACKGROUND_STYLE_DESCRIPTION": "\\{review}Modifica il modo in cui lo sfondo della schermata di pausa viene visualizzato.",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY": "Ferma musica nell'inventario",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Mette in pausa i suoni di gioco, la musica e i suoni ambientali nella schermata dell'inventario.",
         "SETTING_QUICK_GUNS_MODE": "Equipaggiamento rapido armi",

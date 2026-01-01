@@ -621,6 +621,8 @@
         "SETTING_MUSIC_VOLUME_DESCRIPTION": "\\{review}A’ cur tomhas ciùil an àite.",
         "SETTING_MUTE_OUT_OF_FOCUS": "Balbhaich fuaim gun fòcas",
         "SETTING_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Balbhaichidh seo a h-uile phìos ciùil is buaidh-fuaim nuair nach eil uinneag a' gheama ann am fòcas.",
+        "SETTING_PAUSE_BACKGROUND_STYLE": "\\{review}Cuir an cùl-raon air fois",
+        "SETTING_PAUSE_BACKGROUND_STYLE_DESCRIPTION": "\\{review}Bidh seo ag atharrachadh mar a thèid cùl-raon sgrìn-fosglaidh a thaisbeanadh.",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY": "Stad ceòl sa chlàr-seilbhe",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Cuiridh seo ceòl is fuaimean àrainneachdail 'nan stad san sgrion chlàr-seilbhe.",
         "SETTING_QUICK_GUNS_MODE": "Iuchraichean luatha armachd",

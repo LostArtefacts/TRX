@@ -1,5 +1,6 @@
 #include <trx/game/phase/phase_pause.h>
 
+#include <trx/config.h>
 #include <trx/game/const.h>
 #include <trx/game/fader.h>
 #include <trx/game/game_string.h>
@@ -169,9 +170,37 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
-    Output_Overlay_DrawGame();
-    Output_Overlay_DrawBlackRectangle(
-        Fader_GetCurrentValue(&p->fader) * 0.8f, false);
+    const float progress = Fader_GetCurrentValue(&p->fader);
+    switch (g_Config.ui.pause_background_style) {
+    case BK_TRANSPARENT_MEDIUM:
+        Output_Overlay_DrawGame();
+        Output_Overlay_DrawBlackRectangle(progress * 0.5f, false);
+        break;
+
+    case BK_TRANSPARENT_DARK:
+        Output_Overlay_DrawGame();
+        Output_Overlay_DrawBlackRectangle(progress * 0.8f, false);
+        break;
+
+    case BK_MONOCHROME:
+        Output_Overlay_DrawGameMono(progress);
+        break;
+
+    case BK_PATTERN_STATIC:
+    case BK_PATTERN_WAVE:
+        if (progress < 1.0f) {
+            Output_Overlay_DrawGame();
+        }
+        Output_Overlay_DrawPatternOpacity(
+            g_Config.ui.pause_background_style == BK_PATTERN_WAVE, progress);
+        break;
+
+    case BK_IMAGE:
+    default:
+        Output_Overlay_DrawGame();
+        Output_Overlay_DrawBlackRectangle(progress * 0.8f, false);
+        break;
+    }
 
     if (p->state == STATE_ASK) {
         UI_Pause(&p->ui.state);

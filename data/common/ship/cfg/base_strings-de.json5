@@ -621,6 +621,8 @@
         "SETTING_MUSIC_VOLUME_DESCRIPTION": "\\{review}Passt die Musiklautstärke an.",
         "SETTING_MUTE_OUT_OF_FOCUS": "Ton stummschalten bei Fokusverlust",
         "SETTING_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Schaltet alle Musik und Soundeffekte stumm wenn das Fenster des Spiels nicht fokusiert ist.",
+        "SETTING_PAUSE_BACKGROUND_STYLE": "\\{review}Pause-Hintergrund",
+        "SETTING_PAUSE_BACKGROUND_STYLE_DESCRIPTION": "\\{review}Ändert die Art und Weise, wie der Hintergrund für den Pausenbildschirm angezeigt wird.",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY": "Musik im Inventar pausieren",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Pausiert Spiel-Sounds, Umgebungsgeräusche und Musik im Inventar-Fenster.",
         "SETTING_QUICK_GUNS_MODE": "Schnell-Zieh-Tasten",

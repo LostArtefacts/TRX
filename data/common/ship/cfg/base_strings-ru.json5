@@ -621,6 +621,8 @@
         "SETTING_MUSIC_VOLUME_DESCRIPTION": "\\{review}Регулирует громкость музыки.",
         "SETTING_MUTE_OUT_OF_FOCUS": "Отключить звук при потере фокуса",
         "SETTING_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Отключать всю музыку и звуковые эффекты, когда окно игры не активно.",
+        "SETTING_PAUSE_BACKGROUND_STYLE": "\\{review}Пауза фона",
+        "SETTING_PAUSE_BACKGROUND_STYLE_DESCRIPTION": "\\{review}Изменяет способ отображения фона на экране паузы.",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY": "Остановить музыку в инвентаре",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Останавливать игровые звуки, фоновую музыку и музыку на экране инвентаря.",
         "SETTING_QUICK_GUNS_MODE": "Быстрые клавиши оружия",
