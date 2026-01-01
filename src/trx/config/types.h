@@ -112,6 +112,7 @@ typedef struct {
 
         BACKGROUND_TYPE inventory_background_style;
         BACKGROUND_TYPE stats_background_style;
+        BACKGROUND_TYPE pause_background_style;
 
         bool enable_smooth_bars;
         BAR_LOOK bar_look;

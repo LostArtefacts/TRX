@@ -2,6 +2,7 @@
 - added a fade-in and fade-out effect to patterned inventory backgrounds
 - added the ability to use monochrome image for inventory and statistic screens backgrounds
 - added the ability to use very dark image for inventory and statistic screens backgrounds (#4469)
+- added the ability to change pause screen background
 - added the ability to control whether or not allies are hostile towards Lara via Lua (#3873)
 - added the ability to control via Lua which enemies are allies and which are ones that will fight with allies (#3873)
 - added support for 3D secret objects, and provided defaults for OG levels in TR2 (#4380)

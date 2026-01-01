@@ -621,6 +621,8 @@
         "SETTING_MUSIC_VOLUME_DESCRIPTION": "Adjusts music volume.",
         "SETTING_MUTE_OUT_OF_FOCUS": "Mute audio when focus lost",
         "SETTING_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Mutes all music and sound effects when the game window is not focused.",
+        "SETTING_PAUSE_BACKGROUND_STYLE": "Pause background",
+        "SETTING_PAUSE_BACKGROUND_STYLE_DESCRIPTION": "Changes the way the background for the pause screen is displayed.",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY": "Pause music in inventory",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Pauses game sounds, ambient and music in the inventory screen.",
         "SETTING_QUICK_GUNS_MODE": "Quick gun keys",

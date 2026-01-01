@@ -10,6 +10,7 @@ X_UI_CFG_BOOL(ui.enable_stats_level_header,     SETTING_STATS_LEVEL_HEADER)
 
 X_UI_CFG_ENUM(ui.inventory_background_style,    SETTING_INVENTORY_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries, .custom_handler = { .is_enum_value_available = UI_Settings_BackgroundStyle_IsEnumValueAvailable })
 X_UI_CFG_ENUM(ui.stats_background_style,        SETTING_STATS_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries, .custom_handler = { .is_enum_value_available = UI_Settings_BackgroundStyle_IsEnumValueAvailable })
+X_UI_CFG_ENUM(ui.pause_background_style,        SETTING_PAUSE_BACKGROUND_STYLE, .misc = UI_Settings_BackgroundStyleEnumEntries, .custom_handler = { .is_enum_value_available = UI_Settings_BackgroundStyle_IsEnumValueAvailable })
 
 X_UI_CFG_BOOL(visuals.enable_fade_effects,      SETTING_ENABLE_FADE_EFFECTS)
 X_UI_CFG_BOOL(visuals.enable_exit_fade_effects, SETTING_ENABLE_EXIT_FADE_EFFECTS, .custom_handler = { .is_available = UI_Settings_EnableExitFadeEffects_IsAvailable })

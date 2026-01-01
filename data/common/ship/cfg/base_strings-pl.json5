@@ -131,14 +131,14 @@
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Wyciągnij broń",
         "ENUM_INPUT_ROLE_ENTER_CONSOLE": "Otwórz konsolę",
         "ENUM_INPUT_ROLE_EQUIP_AUTOS": "Wyposaż pistolety automatyczne",
-        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Wyposaż Desert Eagle",
+        "ENUM_INPUT_ROLE_EQUIP_DESERT_EAGLE": "Wyposaż Desert Eagle",
         "ENUM_INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Wyposaż wyrzutnię granatów",
         "ENUM_INPUT_ROLE_EQUIP_HARPOON": "Wyposaż wyrzutnię harpunów",
         "ENUM_INPUT_ROLE_EQUIP_M16": "Wyposaż M16",
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Wyposaż magnumy",
-        "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}Wyposaż MP5",
+        "ENUM_INPUT_ROLE_EQUIP_MP5": "Wyposaż MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Wyposaż pistolety",
-        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Wyposaż wyrzutnię rakiet",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Wyposaż wyrzutnię rakiet",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Wyposaż strzelbę",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Wyposaż uzi",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Włącz cheat na latanie",
@@ -551,8 +551,8 @@
         "SETTING_FIX_ITEM_ROTS_DESCRIPTION": "Naprawia problemy z oryginalnej gry zw. z nieprawidłowo obróconymi przedmiotami podczas korzystania z opcji rysowania znajdziek jako obiekty 3D.",
         "SETTING_FIX_LARA_PICKUP_EMBED": "Napraw podnoszenie przedmiotów",
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "Naprawia problem, w wyniku którego gra umieszczała Larę wewnątrz ścian podczas zbierania przedmiotów pod wodą lub pod stromymi sufitami.",
-        "SETTING_FIX_M16_ACCURACY": "\\{review}Napraw celność M16/MP5",
-        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Naprawia celność M16/MP5, gdy Lara biegnie.",
+        "SETTING_FIX_M16_ACCURACY": "Napraw celność M16/MP5",
+        "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Naprawia celność M16/MP5 podczas biegania.",
         "SETTING_FIX_QWOP_GLITCH": "Napraw glitch QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Naprawia rzadki problem pojawiający się, kiedy Lara zeskakuje z małych schodków, co skutkuje dziwną animacją biegu znaną jako stan QWOP.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Warstwowe dźwięki sekretów",
@@ -621,6 +621,8 @@
         "SETTING_MUSIC_VOLUME_DESCRIPTION": "Reguluje głośność muzyki.",
         "SETTING_MUTE_OUT_OF_FOCUS": "Wycisz dźwięk po zminimalizowaniu",
         "SETTING_MUTE_OUT_OF_FOCUS_DESCRIPTION": "Wycisza muzykę i efekty dźwiękowe, kiedy okno gry jest nieaktywne.",
+        "SETTING_PAUSE_BACKGROUND_STYLE": "Tło pauzy",
+        "SETTING_PAUSE_BACKGROUND_STYLE_DESCRIPTION": "Zmienia sposób wyświetlania tła na ekranie pauzy.",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY": "Wstrzymaj muzykę w ekwipunku",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Wstrzymuje dźwięki gry, dźwięki otoczenia i muzykę na ekranie ekwipunku.",
         "SETTING_QUICK_GUNS_MODE": "Szybkie klawisze broni",
@@ -1155,7 +1157,7 @@
             "name": "Zapadnia 3",
         },
         "alphabet": {
-            "name": "\\{review}Czcionka domyślna",
+            "name": "Domyślna czcionka",
         },
         "blood_1": {
             "name": "Krew 1",
@@ -1287,13 +1289,13 @@
             "name": "Animacja M16",
         },
         "lara_mp5": {
-            "name": "\\{review}Animacja MP5",
+            "name": "Animacja MP5",
         },
         "lara_grenade": {
             "name": "Animacja wyrzutni granatów",
         },
         "lara_rocket": {
-            "name": "\\{review}Animacja wyrzutni rakiet",
+            "name": "Animacja wyrzutni rakiet",
         },
         "lara_harpoon": {
             "name": "Animacja wyrzutni harpunów",
@@ -1668,7 +1670,7 @@
             "name": "Ślad łodzi",
         },
         "alphabet_small": {
-            "name": "\\{review}Mała czcionka",
+            "name": "Mała czcionka",
         },
         "magnums": {
             "name": "Magnumy",
@@ -1677,31 +1679,31 @@
             "name": "Pistolety automatyczne",
         },
         "magnums_ammo": {
-            "name": "Magazynki do magnumów",
+            "name": "Amunicja do magnumów",
         },
         "autos_ammo": {
-            "name": "Magazynki do pistoletów automatycznych",
+            "name": "Amunicja do pistoletów automatycznych",
         },
         "desert_eagle": {
-            "name": "\\{review}Desert Eagle",
+            "name": "Desert Eagle",
         },
         "desert_eagle_ammo": {
-            "name": "\\{review}Magazynki do Desert Eagle",
+            "name": "Amunicja do Desert Eagle",
         },
         "mp5": {
-            "name": "\\{review}MP5",
+            "name": "MP5",
         },
         "mp5_ammo": {
-            "name": "\\{review}Magazynki do MP5",
+            "name": "Amunicja do MP5",
         },
         "rocket_launcher": {
-            "name": "\\{review}Wyrzutnia rakiet",
+            "name": "Wyrzutnia rakiet",
         },
         "rocket_launcher_ammo": {
-            "name": "\\{review}Rakiety",
+            "name": "Rakiety",
         },
         "rocket": {
-            "name": "\\{review}Rakieta",
+            "name": "Rakieta",
         }
     }
 }

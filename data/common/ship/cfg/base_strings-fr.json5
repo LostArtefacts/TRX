@@ -621,6 +621,8 @@
         "SETTING_MUSIC_VOLUME_DESCRIPTION": "\\{review}Ajuste le volume de la musique.",
         "SETTING_MUTE_OUT_OF_FOCUS": "\\{review}Couper le son lorsque la fenêtre perd le focus",
         "SETTING_MUTE_OUT_OF_FOCUS_DESCRIPTION": "\\{review}Coupe toute la musique et les effets sonores lorsque la fenêtre du jeu n'est pas au premier plan.",
+        "SETTING_PAUSE_BACKGROUND_STYLE": "\\{review}Pause en arrière-plan",
+        "SETTING_PAUSE_BACKGROUND_STYLE_DESCRIPTION": "\\{review}Modifie la façon dont l'arrière-plan de l'écran de pause est affiché.",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY": "Suspendre la musique dans l'inventaire",
         "SETTING_PAUSE_MUSIC_IN_INVENTORY_DESCRIPTION": "Suspend les effets sonores du jeu, l'ambiance et la musique dans l'écran d'inventaire.",
         "SETTING_QUICK_GUNS_MODE": "\\{review}Touches de l'arme rapide",
