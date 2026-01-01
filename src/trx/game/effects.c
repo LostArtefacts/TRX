@@ -164,10 +164,15 @@ void Effect_Draw(const int16_t effect_num)
             Object_IsType(effect->object_id, g_WaterSpriteObjects)
             ? (RGB_F) { 1.0f, 1.0f, 1.0f }
             : Output_GetTint();
+        int16_t shade = effect->shade;
+        if (shade == -1) {
+            Output_CalculateLight(effect->pos, effect->room_num);
+            shade = Output_GetLightAdder();
+        }
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            effect->shade, tint);
+            shade, tint);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);

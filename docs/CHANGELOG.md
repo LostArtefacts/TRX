@@ -44,6 +44,7 @@
 - fixed switch triggers using an incorrect state check, which could result in fixed camera behavior that deviated from OG (#4456, regression from 1.0)
 - fixed ambient music triggers to no longer kill active normal music tracks (#4463)
 - fixed game crashing when Lara passes through light sources in certain levels
+- fixed waterfall mist not brightening when holding a flare (#4486)
 
 **TR1**:
 - added the ability to change inventory and statistics background styles (pattern + wave are not implemented in TR1)
