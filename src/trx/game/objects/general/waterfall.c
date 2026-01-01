@@ -1,6 +1,5 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
@@ -15,7 +14,6 @@ static void M_Control(const int16_t item_num)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    Output_CalculateLight(item->pos, item->room_num);
     if (g_TRVersion >= 2 && Item_IsNearby(item, lara_item, M_RANGE)) {
         Sound_Effect(SFX_WATERFALL_LOOP, &item->pos, SPM_NORMAL);
     }
@@ -31,7 +29,7 @@ static void M_Control(const int16_t item_num)
             item->pos.z + ((Random_GetDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
         effect->speed = 0;
         effect->frame_num = 0;
-        effect->shade = Output_GetLightAdder();
+        effect->shade = -1;
     }
 }
 
