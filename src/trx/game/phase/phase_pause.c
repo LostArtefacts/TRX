@@ -171,7 +171,7 @@ static void M_Draw(PHASE *const phase)
 
     Output_Overlay_DrawGame();
     Output_Overlay_DrawBlackRectangle(
-        Fader_GetCurrentValue(&p->fader) * 0.75f, false);
+        Fader_GetCurrentValue(&p->fader) * 0.8f, false);
 
     if (p->state == STATE_ASK) {
         UI_Pause(&p->ui.state);

@@ -189,9 +189,14 @@ void InvRing_Draw(INV_RING *const ring)
         const float opacity = Fader_GetCurrentValue(&ring->back_fader);
 
         switch (ring->background_style) {
-        case BK_TRANSPARENT:
+        case BK_TRANSPARENT_MEDIUM:
             Output_Overlay_DrawGame();
             Output_Overlay_DrawBlackRectangle(opacity * 0.5f, false);
+            break;
+
+        case BK_TRANSPARENT_DARK:
+            Output_Overlay_DrawGame();
+            Output_Overlay_DrawBlackRectangle(opacity * 0.8f, false);
             break;
 
         case BK_MONOCHROME:

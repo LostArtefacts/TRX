@@ -70,7 +70,8 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     case BK_PATTERN_STATIC:
     case BK_PATTERN_WAVE:
     case BK_MONOCHROME:
-    case BK_TRANSPARENT:
+    case BK_TRANSPARENT_MEDIUM:
+    case BK_TRANSPARENT_DARK:
         break;
     }
 
@@ -160,9 +161,14 @@ static void M_Draw(PHASE *const phase)
 
     const float progress = Fader_GetCurrentValue(&p->back_fader);
     switch (p->args.background_type) {
-    case BK_TRANSPARENT:
+    case BK_TRANSPARENT_MEDIUM:
         Output_Overlay_DrawGame();
-        Output_Overlay_DrawBlackRectangle(progress * 0.5, false);
+        Output_Overlay_DrawBlackRectangle(progress * 0.5f, false);
+        break;
+
+    case BK_TRANSPARENT_DARK:
+        Output_Overlay_DrawGame();
+        Output_Overlay_DrawBlackRectangle(progress * 0.8f, false);
         break;
 
     case BK_MONOCHROME: {
