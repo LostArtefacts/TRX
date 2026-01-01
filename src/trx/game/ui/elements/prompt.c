@@ -39,18 +39,49 @@ static void M_Layout(
     caret->ops.layout(caret, x + caret_pos, y, w, h);
 }
 
+static int32_t M_GetPrevCaretPos(
+    const char *const text, const int32_t caret_pos)
+{
+    if (caret_pos <= 0) {
+        return 0;
+    }
+
+    const char *const caret_ptr = text + caret_pos;
+    const char *p = text;
+    const char *prev = text;
+
+    while (p < caret_ptr) {
+        prev = p;
+        p += String_GetCharByteSize(p);
+    }
+
+    return (int32_t)(prev - text);
+}
+
+static int32_t M_GetNextCaretPos(
+    const char *const text, const int32_t caret_pos)
+{
+    const size_t text_len = strlen(text);
+    if ((size_t)caret_pos >= text_len) {
+        return (int32_t)text_len;
+    }
+
+    int32_t next_pos =
+        caret_pos + (int32_t)String_GetCharByteSize(text + caret_pos);
+    if ((size_t)next_pos > text_len) {
+        next_pos = (int32_t)text_len;
+    }
+    return next_pos;
+}
+
 static void M_MoveCaretLeft(UI_PROMPT_STATE *const s)
 {
-    if (s->caret_pos > 0) {
-        s->caret_pos--;
-    }
+    s->caret_pos = M_GetPrevCaretPos(s->current_text, s->caret_pos);
 }
 
 static void M_MoveCaretRight(UI_PROMPT_STATE *const s)
 {
-    if (s->caret_pos < (int32_t)strlen(s->current_text)) {
-        s->caret_pos++;
-    }
+    s->caret_pos = M_GetNextCaretPos(s->current_text, s->caret_pos);
 }
 
 static void M_MoveCaretStart(UI_PROMPT_STATE *const s)
@@ -69,10 +100,16 @@ static void M_DeleteCharBack(UI_PROMPT_STATE *const s)
         return;
     }
 
+    const int32_t delete_start =
+        M_GetPrevCaretPos(s->current_text, s->caret_pos);
+    if (delete_start >= s->caret_pos || delete_start < 0) {
+        return;
+    }
+
     memmove(
-        s->current_text + s->caret_pos - 1, s->current_text + s->caret_pos,
-        strlen(s->current_text) + 1 - s->caret_pos);
-    s->caret_pos--;
+        s->current_text + delete_start, s->current_text + s->caret_pos,
+        strlen(s->current_text) + 1 - (size_t)s->caret_pos);
+    s->caret_pos = delete_start;
 }
 
 static void M_Clear(UI_PROMPT_STATE *const s)
