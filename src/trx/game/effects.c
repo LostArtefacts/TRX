@@ -4,6 +4,8 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
+#include <trx/game/sparks.h>
+#include <trx/version.h>
 
 static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectFree = NO_EFFECT;
@@ -112,6 +114,7 @@ int16_t Effect_Create(const int16_t room_num)
 void Effect_Kill(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
+    Sparks_DetachEffect(effect_num);
     M_RemoveActive(effect_num);
     M_RemoveDrawn(effect_num);
 
@@ -148,6 +151,12 @@ void Effect_Draw(const int16_t effect_num)
     const EFFECT *const effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
     if (!obj->loaded) {
+        return;
+    }
+
+    // TR3 uses BUBBLES1 as a dummy effect carrier and renders the bubble via
+    // an attached spark; keep TR1/TR2 legacy bubble rendering intact.
+    if (g_TRVersion == 3 && effect->object_id == O_BUBBLE_1) {
         return;
     }
 

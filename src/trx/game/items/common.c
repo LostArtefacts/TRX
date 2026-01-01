@@ -8,6 +8,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/output/const.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sparks.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -282,6 +283,7 @@ void Item_Control(void)
 
 void Item_Kill(const int16_t item_num)
 {
+    Sparks_DetachItem(item_num);
     Item_RemoveActive(item_num);
     Item_RemoveDrawn(item_num);
 

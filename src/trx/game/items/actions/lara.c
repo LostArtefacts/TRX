@@ -5,6 +5,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/game/viewport.h>
+#include <trx/version.h>
 
 static void M_Normal(ITEM *const item)
 {
@@ -93,7 +94,8 @@ static void M_Bubbles(ITEM *const item)
         return;
     }
 
-    const int32_t count = (Random_GetDraw() * 3) / 0x8000;
+    const int32_t count = g_TRVersion == 3 ? (Random_GetControl() & 3) + 2
+                                           : (Random_GetDraw() * 3) / 0x8000;
     if (count == 0) {
         return;
     }
@@ -102,6 +104,7 @@ static void M_Bubbles(ITEM *const item)
 
     XYZ_32 offset = { .x = 0, .y = 0, .z = 50 };
     Collide_GetJointAbsPosition(item, &offset, LM_HEAD);
+
     for (int32_t i = 0; i < count; i++) {
         Spawn_Bubble(&offset, item->room_num);
     }
