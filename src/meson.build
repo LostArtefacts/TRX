@@ -516,6 +516,7 @@ common_sources = [
   'trx/game/shell/platform.c',
   'trx/game/sound/common.c',
   'trx/game/sound/ids.c',
+  'trx/game/sparks.c',
   'trx/game/spawn.c',
   'trx/game/stats/common.c',
   'trx/game/stats/init.c',

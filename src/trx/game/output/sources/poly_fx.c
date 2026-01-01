@@ -1,12 +1,13 @@
 #include <trx/game/output/sources/poly_fx.h>
 
-#include <trx/game/matrix.h>
+#include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/utils.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/game/sparks.h>
+#include <trx/utils.h>
 #include <trx/vector.h>
 
 #include <stddef.h>
@@ -27,7 +28,9 @@ typedef struct {
 typedef struct {
     int32_t sprite_idx;
     XYZ_32 world_pos[4];
+    float disp[4][2];
     RGBA_8888 color[4];
+    uint16_t flags;
 } M_QUAD;
 
 typedef struct {
@@ -103,16 +106,22 @@ static void M_SortQuads(M_PRIV *const p, const VECTOR *const scheduled)
 
 static void M_EmitQuadVertices(M_PRIV *const p, const M_QUAD *const quad)
 {
-    const uint16_t flags = VERT_NO_LIGHTING | VERT_NO_WIBBLE;
+    const uint16_t flags = quad->flags;
 
     int32_t uvw_idx[4];
     OUTPUT_UVW uvw[4];
     OUTPUT_TEXTURE_SIZE texture_size[4];
     for (int32_t i = 0; i < 4; i++) {
-        uvw_idx[i] =
-            Output_Textures_GetSpriteUVWIndex(quad->sprite_idx, (int16_t)i);
-        uvw[i] = Output_Textures_GetUVW(uvw_idx[i]);
-        texture_size[i] = Output_Textures_GetAtlasSize(uvw_idx[i] / 4);
+        if (quad->sprite_idx >= 0) {
+            uvw_idx[i] =
+                Output_Textures_GetSpriteUVWIndex(quad->sprite_idx, (int16_t)i);
+            uvw[i] = Output_Textures_GetUVW(uvw_idx[i]);
+            texture_size[i] = Output_Textures_GetAtlasSize(uvw_idx[i] / 4);
+        } else {
+            uvw_idx[i] = 0;
+            uvw[i] = (OUTPUT_UVW) { 0.0f, 0.0f, 0.0f };
+            texture_size[i] = (OUTPUT_TEXTURE_SIZE) { 0.0f, 0.0f, 0.0f, 0.0f };
+        }
     }
 
     const int32_t tri_idx[2][OUTPUT_QUAD_VERTICES] = {
@@ -130,7 +139,12 @@ static void M_EmitQuadVertices(M_PRIV *const p, const M_QUAD *const quad)
                     .z = (float)quad->world_pos[corner].z,
                     .w = 0.0f,
                 },
-                .normal = { 0.0f, 0.0f, 0.0f, 0.0f },
+                .normal = {
+                    .x = quad->disp[corner][0],
+                    .y = quad->disp[corner][1],
+                    .z = 0.0f,
+                    .w = 0.0f,
+                },
                 .uvw = uvw[corner],
                 .texture_size = texture_size[corner],
                 .trapezoid_ratio = { 1.0f, 1.0f },
@@ -286,13 +300,19 @@ void OutputSource_PolyFX_Shutdown(void)
 }
 
 static void M_StageQuad(
-    const int32_t sprite_idx, const XYZ_32 world_pos[4],
-    const RGBA_8888 color[4], VECTOR *const target)
+    const int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
+    const RGBA_8888 color[4], const uint16_t flags, VECTOR *const target)
 {
     M_QUAD quad;
     quad.sprite_idx = sprite_idx;
     memcpy(quad.world_pos, world_pos, sizeof(quad.world_pos));
+    if (disp != nullptr) {
+        memcpy(quad.disp, disp, sizeof(quad.disp));
+    } else {
+        memset(quad.disp, 0, sizeof(quad.disp));
+    }
     memcpy(quad.color, color, sizeof(quad.color));
+    quad.flags = flags;
     Vector_Add(target, &quad);
 }
 
@@ -301,7 +321,9 @@ void OutputSource_PolyFX_StageSpriteQuadWorldTransparent(
     const RGBA_8888 color[4])
 {
     M_PRIV *const p = &m_Priv;
-    M_StageQuad(sprite_idx, world_pos, color, p->scheduled_transparent);
+    M_StageQuad(
+        sprite_idx, world_pos, nullptr, color,
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, p->scheduled_transparent);
 }
 
 void OutputSource_PolyFX_StageSpriteQuadWorldBlendAdd(
@@ -309,5 +331,104 @@ void OutputSource_PolyFX_StageSpriteQuadWorldBlendAdd(
     const RGBA_8888 color[4])
 {
     M_PRIV *const p = &m_Priv;
-    M_StageQuad(sprite_idx, world_pos, color, p->scheduled_blend_add);
+    M_StageQuad(
+        sprite_idx, world_pos, nullptr, color,
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, p->scheduled_blend_add);
+}
+
+void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
+{
+    if (spark == nullptr || !spark->on) {
+        return;
+    }
+
+    if (spark->trans_type == 3) {
+        ASSERT_FAIL(); // TODO: subtractive blend pass (TR3 TransType==3)
+        return;
+    }
+
+    const XYZ_32 pos = Sparks_GetWorldPos(spark);
+    const XYZ_32 world_pos[4] = { pos, pos, pos, pos };
+
+    const int64_t zv = M_GetViewDepth(pos);
+    const int64_t near_z = Output_GetNearZ();
+    const int64_t far_z = Output_GetFarZ();
+    if (zv <= near_z || zv >= far_z) {
+        return;
+    }
+
+    int32_t vpos_z = (int32_t)(zv >> W2V_SHIFT);
+    if (vpos_z == 0) {
+        vpos_z = 1;
+    }
+
+    int32_t sw = (int32_t)spark->size.width;
+    int32_t sh = (int32_t)spark->size.height;
+
+    const bool use_def = (spark->flags & SPARK_F_DEF) != 0U;
+    if ((spark->flags & SPARK_F_SCALE) != 0U) {
+        const int32_t scalar = spark->scalar;
+        sw = (int32_t)(((((int64_t)sw * g_PhdPersp) << scalar) / vpos_z));
+        sh = (int32_t)(((((int64_t)sh * g_PhdPersp) << scalar) / vpos_z));
+
+        if (use_def) {
+            const int32_t max_w = (int32_t)spark->size.width << scalar;
+            const int32_t max_h = (int32_t)spark->size.height << scalar;
+            int32_t min_wh = 4;
+            if ((spark->flags & SPARK_F_ATTACHED_NODE) != 0U
+                && spark->node_num == 0U) {
+                min_wh = 2;
+            }
+            CLAMP(sw, min_wh, max_w);
+            CLAMP(sh, min_wh, max_h);
+        } else {
+            const int32_t max_w = (int32_t)spark->size.width << 2;
+            const int32_t max_h = (int32_t)spark->size.height << 2;
+            CLAMP(sw, 1, max_w);
+            CLAMP(sh, 1, max_h);
+        }
+    }
+
+    const float w = ((sw / 2.0f) * (float)vpos_z) / (float)g_PhdPersp;
+    const float h = ((sh / 2.0f) * (float)vpos_z) / (float)g_PhdPersp;
+    float disp[4][2] = {
+        { -w, -h },
+        { -w, h },
+        { w, h },
+        { w, -h },
+    };
+
+    const RGBA_8888 color = { spark->color.r, spark->color.g, spark->color.b,
+                              255 };
+    const RGBA_8888 world_color[4] = { color, color, color, color };
+
+    if ((spark->flags & SPARK_F_ROTATE) != 0U) {
+        const int32_t angle = (int32_t)(spark->rot_ang & 0xFFF) << 4;
+        const float s = (float)Math_Sin(angle) / 8192.0f;
+        const float c = (float)Math_Cos(angle) / 8192.0f;
+        for (int32_t i = 0; i < 4; i++) {
+            const float x = disp[i][0];
+            const float y = disp[i][1];
+            disp[i][0] = x * c - y * s;
+            disp[i][1] = x * s + y * c;
+        }
+    }
+
+    uint16_t flags =
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_BILLBOARD | VERT_ABS_SPRITE;
+    int32_t sprite_idx = spark->sprite_idx;
+    if ((spark->flags & SPARK_F_DEF) == 0U) {
+        flags |= VERT_FLAT_SHADED;
+        sprite_idx = -1;
+    }
+    M_PRIV *const p = &m_Priv;
+    if (spark->trans_type == 2) {
+        M_StageQuad(
+            sprite_idx, world_pos, disp, world_color, flags,
+            p->scheduled_blend_add);
+    } else {
+        M_StageQuad(
+            sprite_idx, world_pos, disp, world_color, flags,
+            p->scheduled_transparent);
+    }
 }

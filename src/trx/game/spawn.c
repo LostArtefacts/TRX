@@ -9,6 +9,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/game/water_fx.h>
 #include <trx/version.h>
 
@@ -102,6 +103,11 @@ void Spawn_RicochetRay(const GAME_VECTOR start, GAME_VECTOR hit_pos)
 
 void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
 {
+    if (g_TRVersion == 3) {
+        Spawn_BubbleEx(pos, room_num, 8, 8);
+        return;
+    }
+
     const int16_t effect_num = Effect_Create(room_num);
     if (effect_num == NO_EFFECT) {
         return;
@@ -112,6 +118,37 @@ void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
     effect->object_id = O_BUBBLE_1;
     effect->frame_num = -((Random_GetDraw() * 3) / 0x8000);
     effect->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
+}
+
+void Spawn_BubbleEx(
+    const XYZ_32 *const pos, const int16_t room_num, const int32_t size,
+    const int32_t size_range)
+{
+    if (g_TRVersion != 3) {
+        Spawn_Bubble(pos, room_num);
+        return;
+    }
+
+    int16_t water_room = room_num;
+    Room_GetSector(pos->x, pos->y, pos->z, &water_room);
+    if (!Room_Get(water_room)->flags.underwater) {
+        return;
+    }
+
+    const int16_t effect_num = Effect_Create(room_num);
+    if (effect_num == NO_EFFECT) {
+        return;
+    }
+
+    EFFECT *const effect = Effect_Get(effect_num);
+    effect->pos = *pos;
+    effect->object_id = O_BUBBLE_1;
+    effect->frame_num = 0;
+
+    effect->speed = (Random_GetControl() & 0xFF) + 64;
+    effect->fall_speed = (Random_GetControl() & 0x1F) + 32;
+
+    Sparks_TriggerBubble(pos->x, pos->y, pos->z, size, size_range, effect_num);
 }
 
 int16_t Spawn_Blood(

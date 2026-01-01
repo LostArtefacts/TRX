@@ -76,6 +76,7 @@
 - added swamp and water surfaces wave effect
 - added underwater caustics
 - added water splash and ripple effects
+- added proper bubbles
 - added `cdaudio.wad` music playback support
 - added monochrome inventory backgrounds
 - added high-resolutions 16:9 and 4:3 loading screens

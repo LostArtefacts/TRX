@@ -15,6 +15,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/game/stats.h>
 #include <trx/game/water_fx.h>
 #include <trx/version.h>
@@ -157,6 +158,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Sound_ResetAmbient();
     Item_Control();
     Effect_Control();
+    Sparks_Control();
 
     Lara_Control();
     WaterFX_Update();

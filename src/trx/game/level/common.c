@@ -16,6 +16,7 @@
 #include <trx/game/random.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/game/water_fx.h>
 #include <trx/log.h>
 
@@ -88,6 +89,7 @@ bool Level_Initialise(
     Effect_InitialiseArray();
     LOT_InitialiseArray();
     WaterFX_Init();
+    Sparks_Init();
 
     Option_Reset();
     Overlay_Reset();

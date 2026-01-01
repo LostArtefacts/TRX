@@ -10,6 +10,8 @@ void Spawn_Ricochet(GAME_VECTOR pos);
 void Spawn_RicochetRay(GAME_VECTOR start, GAME_VECTOR hit_pos);
 
 void Spawn_Bubble(const XYZ_32 *pos, int16_t room_num);
+void Spawn_BubbleEx(
+    const XYZ_32 *pos, int16_t room_num, int32_t size, int32_t size_range);
 
 int16_t Spawn_Blood(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
