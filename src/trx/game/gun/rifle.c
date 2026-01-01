@@ -264,6 +264,60 @@ static void M_FireGrenade(void)
     Stats_AddAmmoUsed();
 }
 
+static void M_FireRocket(void)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara->rocket_ammo.ammo <= 0) {
+        return;
+    }
+    const WEAPON_INFO *const weapon = &g_Weapons[LGT_ROCKET];
+    const XYZ_32 origin = {
+        .x = lara_item->pos.x,
+        .y = lara_item->pos.y - weapon->gun_height,
+        .z = lara_item->pos.z,
+    };
+
+    const int16_t item_num = Item_Create();
+    if (item_num == NO_ITEM) {
+        return;
+    }
+
+    ITEM *const projectile_item = Item_Get(item_num);
+    projectile_item->object_id = O_ROCKET;
+    projectile_item->room_num = lara_item->room_num;
+
+    XYZ_32 offset = {
+        .x = 0,
+        .y = 180,
+        .z = 72,
+    };
+    Lara_GetJointAbsPosition(&offset, LM_HAND_R);
+    projectile_item->pos = offset;
+    Item_Initialise(item_num);
+
+    projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
+    projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
+    projectile_item->rot.z = 0;
+    if (!lara->left_arm.lock) {
+        projectile_item->rot.x += lara->torso_rot.x;
+        projectile_item->rot.y += lara->torso_rot.y;
+    }
+
+    projectile_item->speed = 16;
+    Item_AddActive(item_num);
+    projectile_item->status = IS_ACTIVE;
+
+    Gun_SmashItems(origin, projectile_item->pos, nullptr);
+
+    if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
+        lara->rocket_ammo.ammo--;
+    }
+    Stats_AddAmmoUsed();
+
+    Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
+}
+
 static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
 {
     switch (weapon_type) {
@@ -276,7 +330,7 @@ static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
         }
         break;
     case LGT_ROCKET:
-        // TODO
+        M_FireRocket();
         break;
     case LGT_M16:
     case LGT_MP5:

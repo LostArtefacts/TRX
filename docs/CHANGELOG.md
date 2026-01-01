@@ -87,6 +87,7 @@
 - added support for colored text (Assault Course colors not yet implemented)
 - added Desert Eagle control
 - added MP5 control
+- added Rocket Launcher control
 - added an option to fix the MP5 accuracy while running
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect
