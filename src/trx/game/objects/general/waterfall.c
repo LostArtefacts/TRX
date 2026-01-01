@@ -1,7 +1,10 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/math.h>
+#include <trx/game/output/state.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/version.h>
 
 #define M_RANGE (WALL_L * 10) // = 10240
@@ -14,6 +17,25 @@ static void M_Control(const int16_t item_num)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
+
+    if (g_TRVersion == 3) {
+        if (!Item_IsNearby(item, lara_item, M_RANGE)) {
+            return;
+        }
+
+        if ((int32_t)Output_GetTimeInGame() % 4 == 0) {
+            const XYZ_32 pos = {
+                .x = item->pos.x + ((544 * Math_Sin(item->rot.y)) >> W2V_SHIFT),
+                .y = item->pos.y,
+                .z = item->pos.z + ((544 * Math_Cos(item->rot.y)) >> W2V_SHIFT),
+            };
+            Sparks_TriggerWaterfallMist(pos.x, pos.y, pos.z, item->rot.y);
+        }
+
+        Sound_Effect(SFX_WATERFALL_LOOP, &item->pos, SPM_NORMAL);
+        return;
+    }
+
     if (g_TRVersion >= 2 && Item_IsNearby(item, lara_item, M_RANGE)) {
         Sound_Effect(SFX_WATERFALL_LOOP, &item->pos, SPM_NORMAL);
     }
