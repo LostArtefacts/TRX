@@ -50,6 +50,7 @@
 - fixed waterfall mist not brightening when holding a flare (#4486)
 - fixed resetting camera in the photo mode not clearing the underwater tint
 - fixed developer console text editing (backspace, moving the caret) doing weird things with Unicode characters
+- fixed Lara jumping if player holds the swim button when exiting the fly cheat (#4470)
 
 **TR1**:
 - added the ability to change inventory and statistics background styles (pattern + wave are not implemented in TR1)
