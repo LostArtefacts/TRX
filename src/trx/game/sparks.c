@@ -5,6 +5,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/sources/poly_fx.h>
@@ -529,4 +530,71 @@ void Sparks_TriggerBubble(
     sptr->dst_size.width = dst;
     sptr->dst_size.height = dst;
     sptr->size = sptr->src_size;
+}
+
+void Sparks_TriggerWaterfallMist(
+    const int32_t x, const int32_t y, const int32_t z, const int32_t angle)
+{
+    const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
+    if (explosion == nullptr || !explosion->loaded) {
+        return;
+    }
+
+    static const int32_t offsets[] = { 576, 203, -203, -576 };
+
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(offsets); i++) {
+        SPARK *const sptr = Sparks_GetFreeSpark();
+
+        const int32_t offset = (Random_GetControl() & 0x1F) + offsets[i] - 16;
+        const int32_t c = Math_Cos(angle) >> W2V_SHIFT;
+        const int32_t s = Math_Sin(angle) >> W2V_SHIFT;
+
+        *sptr = (SPARK) {
+            .on = true,
+            .color = { 128, 128, 128 },
+            .src_color = { 128, 128, 128 },
+            .dst_color = { 192, 192, 192 },
+            .col_fade_speed = 2,
+            .fade_to_black = 4,
+            .trans_type = 2,
+            .extras = 0,
+            .life = (uint8_t)((Random_GetControl() & 3) + 6),
+            .dynamic = -1,
+            .sprite_idx = explosion->mesh_idx,
+            .pos = {
+                .x = x + (Random_GetControl() % 16) - 8 + c * offset,
+                .y = y + (Random_GetControl() % 16) - 8,
+                .z = z + (Random_GetControl() % 16) - 8 + s * offset,
+            },
+            .vel = {
+                .x = s,
+                .y = 0,
+                .z = c,
+            },
+            .gravity = 0,
+            .max_y_vel = 0,
+            .friction = 3,
+            .flags = SPARK_F_SPRITE | SPARK_F_ALT_SPRITE | SPARK_F_SCALE,
+            .scalar = 6,
+        };
+        sptr->s_life = sptr->life;
+
+        if ((Random_GetControl() & 1) != 0) {
+            sptr->flags |= SPARK_F_ROTATE;
+            sptr->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
+            if ((Random_GetControl() & 1) != 0) {
+                sptr->rot_add = -16 - (Random_GetControl() % 16);
+            } else {
+                sptr->rot_add = 16 + (Random_GetControl() % 16);
+            }
+        }
+
+        const uint8_t dst_size = (uint8_t)((Random_GetControl() & 7) + 12);
+        const uint8_t src_size = (uint8_t)(dst_size >> 1);
+        sptr->src_size.width = src_size;
+        sptr->src_size.height = src_size;
+        sptr->dst_size.width = dst_size;
+        sptr->dst_size.height = dst_size;
+        sptr->size = sptr->src_size;
+    }
 }

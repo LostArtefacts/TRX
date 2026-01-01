@@ -95,3 +95,5 @@ void Sparks_SetSmokeWind(int32_t wind_x, int32_t wind_z);
 void Sparks_TriggerBubble(
     int32_t x, int32_t y, int32_t z, int32_t size, int32_t size_range,
     int16_t effect_num);
+
+void Sparks_TriggerWaterfallMist(int32_t x, int32_t y, int32_t z, int32_t ang);
