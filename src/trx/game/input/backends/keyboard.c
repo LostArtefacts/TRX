@@ -379,19 +379,25 @@ static BUILTIN_KEYBOARD_LAYOUT *M_GetBuiltInLayout(const INPUT_ROLE role)
 
 static void M_HandleBuiltInDefaults(void)
 {
+#define L_BIND(role, code)                                                     \
+    do {                                                                       \
+        M_GetBuiltInLayout(role)->scancode = code;                             \
+    } while (0)
+
     if (g_TRVersion == 2) {
-        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_MAGNUMS)->scancode =
-            SDL_SCANCODE_UNKNOWN;
-        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_AUTOS)->scancode = SDL_SCANCODE_3;
+        L_BIND(INPUT_ROLE_EQUIP_MAGNUMS, SDL_SCANCODE_UNKNOWN);
+        L_BIND(INPUT_ROLE_EQUIP_AUTOS, SDL_SCANCODE_3);
     } else if (g_TRVersion == 3) {
-        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_MAGNUMS)->scancode =
-            SDL_SCANCODE_UNKNOWN;
-        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_DESERT_EAGLE)->scancode =
-            SDL_SCANCODE_3;
-        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_M16)->scancode =
-            SDL_SCANCODE_UNKNOWN;
-        M_GetBuiltInLayout(INPUT_ROLE_EQUIP_MP5)->scancode = SDL_SCANCODE_6;
+        L_BIND(INPUT_ROLE_USE_SMALL_MEDI, SDL_SCANCODE_0);
+        L_BIND(INPUT_ROLE_USE_BIG_MEDI, SDL_SCANCODE_9);
+        L_BIND(INPUT_ROLE_EQUIP_MAGNUMS, SDL_SCANCODE_UNKNOWN);
+        L_BIND(INPUT_ROLE_EQUIP_DESERT_EAGLE, SDL_SCANCODE_3);
+        L_BIND(INPUT_ROLE_EQUIP_M16, SDL_SCANCODE_UNKNOWN);
+        L_BIND(INPUT_ROLE_EQUIP_MP5, SDL_SCANCODE_6);
+        L_BIND(INPUT_ROLE_EQUIP_GRENADE_LAUNCHER, SDL_SCANCODE_8);
     }
+
+#undef L_BIND
 }
 
 static void M_Init(void)
