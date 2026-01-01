@@ -62,6 +62,7 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     case O_M16_OPTION:
     case O_MP5_OPTION:
     case O_GRENADE_GUN_OPTION:
+    case O_ROCKET_GUN_OPTION:
     case O_EXPLOSIVE_OPTION:
     case O_SMALL_MEDIPACK_OPTION:
     case O_LARGE_MEDIPACK_OPTION:
@@ -80,6 +81,7 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     case O_M16_AMMO_OPTION:
     case O_MP5_AMMO_OPTION:
     case O_GRENADE_AMMO_OPTION:
+    case O_ROCKET_AMMO_OPTION:
         break;
 
     case O_PUZZLE_OPTION_1:

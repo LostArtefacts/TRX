@@ -545,6 +545,7 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_OPTIONAL(M_ReadAmmo(ctx, "autos", &lara->autos_ammo));
     M_OPTIONAL(M_ReadAmmo(ctx, "desert_eagle", &lara->desert_eagle_ammo));
     M_OPTIONAL(M_ReadAmmo(ctx, "mp5", &lara->mp5_ammo));
+    M_OPTIONAL(M_ReadAmmo(ctx, "rocket", &lara->rocket_ammo));
 
     if (g_TRVersion == 1 && ctx->sg_version < VERSION_13) {
         const bool has_rifle = Inv_RequestItem(O_SHOTGUN_ITEM) != 0;
@@ -609,6 +610,7 @@ static bool M_IsValidItemObject(
         case O_M16_AMMO_ITEM: return initial_obj_id == O_M16_ITEM;
         case O_MP5_AMMO_ITEM: return initial_obj_id == O_MP5_ITEM;
         case O_GRENADE_AMMO_ITEM: return initial_obj_id == O_GRENADE_GUN_ITEM;
+        case O_ROCKET_AMMO_ITEM: return initial_obj_id == O_ROCKET_GUN_ITEM;
         // dual-state animals
         case O_ALLIGATOR: return initial_obj_id == O_CROCODILE;
         case O_CROCODILE: return initial_obj_id == O_ALLIGATOR;
@@ -1118,6 +1120,8 @@ static bool M_ReadResumeInfo(
             ctx, "has_desert_eagle", &resume->flags.has_desert_eagle));
         M_MUST(M_ReadBool(ctx, "has_mp5", &resume->flags.has_mp5));
         M_MUST(M_ReadNum(ctx, "mp5_ammo", &resume->mp5_ammo));
+        M_MUST(M_ReadBool(ctx, "has_rocket", &resume->flags.has_rocket));
+        M_MUST(M_ReadNum(ctx, "rocket_ammo", &resume->rocket_ammo));
     }
 
     M_MUST(M_ReadNum(ctx, "timer", &resume->stats.timer));

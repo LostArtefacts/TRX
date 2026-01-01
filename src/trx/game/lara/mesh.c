@@ -52,6 +52,8 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
         return LGT_MP5;
     } else if (Inv_RequestItem(O_GRENADE_GUN_ITEM)) {
         return LGT_GRENADE;
+    } else if (Inv_RequestItem(O_ROCKET_GUN_ITEM)) {
+        return LGT_ROCKET;
     } else if (Inv_RequestItem(O_HARPOON_ITEM)) {
         return LGT_HARPOON;
     }

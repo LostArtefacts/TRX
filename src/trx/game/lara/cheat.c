@@ -62,6 +62,9 @@ static void M_GiveAllGunsImpl(const bool ignore_exclusions)
     if (Lara_Cheat_GiveGun(LGT_GRENADE, ignore_exclusions)) {
         lara_info->grenade_ammo.ammo = bonus_flag ? 10001 : 300;
     }
+    if (Lara_Cheat_GiveGun(LGT_ROCKET, ignore_exclusions)) {
+        lara_info->rocket_ammo.ammo = bonus_flag ? 10001 : 300;
+    }
 }
 
 static void M_GiveAllMedpacksImpl(void)

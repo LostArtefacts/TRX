@@ -137,6 +137,7 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Wyposaż magnumy",
         "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}Wyposaż MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Wyposaż pistolety",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Wyposaż wyrzutnię rakiet",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Wyposaż strzelbę",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Wyposaż uzi",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Włącz cheat na latanie",
@@ -1290,6 +1291,9 @@
         "lara_grenade": {
             "name": "Animacja wyrzutni granatów",
         },
+        "lara_rocket": {
+            "name": "\\{review}Animacja wyrzutni rakiet",
+        },
         "lara_harpoon": {
             "name": "Animacja wyrzutni harpunów",
         },
@@ -1688,6 +1692,15 @@
         },
         "mp5_ammo": {
             "name": "\\{review}Magazynki do MP5",
+        },
+        "rocket_launcher": {
+            "name": "\\{review}Wyrzutnia rakiet",
+        },
+        "rocket_launcher_ammo": {
+            "name": "\\{review}Rakiety",
+        },
+        "rocket": {
+            "name": "\\{review}Rakieta",
         }
     }
 }

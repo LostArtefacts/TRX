@@ -137,6 +137,7 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "S'équiper des magnums",
         "ENUM_INPUT_ROLE_EQUIP_MP5": "\\{review}Équiper le MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "S'équiper des pistolets",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Équiper le lance-roquettes",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "S'équiper du fusil à pompe",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "S'équiper des Uzi",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Triche de vol",
@@ -1280,6 +1281,9 @@
         "lara_grenade": {
             "name": "\\{review}Animation du lance-grenades",
         },
+        "lara_rocket": {
+            "name": "\\{review}Animation du lance-roquettes",
+        },
         "lara_harpoon": {
             "name": "\\{review}Animation du harpon",
         },
@@ -1694,6 +1698,15 @@
         },
         "mp5_ammo": {
             "name": "\\{review}Chargeurs de MP5",
+        },
+        "rocket_launcher": {
+            "name": "\\{review}Lance-roquettes",
+        },
+        "rocket_launcher_ammo": {
+            "name": "\\{review}Roquettes",
+        },
+        "rocket": {
+            "name": "\\{review}Roquette",
         }
     }
 }

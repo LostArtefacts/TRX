@@ -98,6 +98,9 @@ static void M_RingNotActive(
     case O_GRENADE_GUN_OPTION:
         M_ShowAmmoQuantity("%5d", lara->grenade_ammo.ammo);
         break;
+    case O_ROCKET_GUN_OPTION:
+        M_ShowAmmoQuantity("%5d", lara->rocket_ammo.ammo);
+        break;
 
     case O_SHOTGUN_AMMO_OPTION:
         M_ShowAmmoQuantity("%d", qty * SHOTGUN_SHELL_COUNT);
@@ -112,9 +115,7 @@ static void M_RingNotActive(
         M_ShowAmmoQuantity("%d", qty * 2);
         break;
     case O_GRENADE_AMMO_OPTION:
-        M_ShowAmmoQuantity("%d", qty);
-        break;
-
+    case O_ROCKET_AMMO_OPTION:
     case O_FLAREBOX_OPTION:
         M_ShowAmmoQuantity("%d", qty);
         break;
@@ -278,6 +279,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     case O_M16_OPTION:
     case O_MP5_OPTION:
     case O_GRENADE_GUN_OPTION:
+    case O_ROCKET_GUN_OPTION:
     case O_SMALL_MEDIPACK_OPTION:
     case O_LARGE_MEDIPACK_OPTION:
     case O_FLAREBOX_OPTION:
@@ -505,6 +507,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             case O_M16_OPTION:
             case O_MP5_OPTION:
             case O_GRENADE_GUN_OPTION:
+            case O_ROCKET_GUN_OPTION:
                 Sound_Effect(SFX_MENU_GUNS, nullptr, SPM_ALWAYS);
                 break;
 

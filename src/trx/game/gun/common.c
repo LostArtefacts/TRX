@@ -51,6 +51,7 @@ OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
     case LGT_M16:          return O_LARA_M16;
     case LGT_MP5:          return O_LARA_MP5;
     case LGT_GRENADE:      return O_LARA_GRENADE_GUN;
+    case LGT_ROCKET:       return O_LARA_ROCKET_GUN;
     case LGT_HARPOON:      return O_LARA_HARPOON_GUN;
     case LGT_FLARE:        return O_LARA_FLARE;
     default:               return NO_OBJECT;
@@ -72,6 +73,7 @@ LARA_GUN_TYPE Gun_GetType(const OBJECT_ID obj_id)
     case O_M16_ITEM:          return LGT_M16;
     case O_MP5_ITEM:          return LGT_MP5;
     case O_GRENADE_GUN_ITEM:  return LGT_GRENADE;
+    case O_ROCKET_GUN_ITEM:   return LGT_ROCKET;
     default:                  return LGT_UNARMED;
     }
     // clang-format on
@@ -91,6 +93,7 @@ OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
     case LGT_M16:          return O_M16_ITEM;
     case LGT_MP5:          return O_MP5_ITEM;
     case LGT_GRENADE:      return O_GRENADE_GUN_ITEM;
+    case LGT_ROCKET:       return O_ROCKET_GUN_ITEM;
     default:               return NO_OBJECT;
     }
     // clang-format on
@@ -110,6 +113,7 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     case LGT_M16:          return O_M16_AMMO_ITEM;
     case LGT_MP5:          return O_MP5_AMMO_ITEM;
     case LGT_GRENADE:      return O_GRENADE_AMMO_ITEM;
+    case LGT_ROCKET:       return O_ROCKET_AMMO_ITEM;
     default:               return NO_OBJECT;
     }
     // clang-format on
@@ -129,6 +133,7 @@ int32_t Gun_GetAmmoQuantity(const LARA_GUN_TYPE gun_type)
     case LGT_M16:          return M16_AMMO_QTY;
     case LGT_MP5:          return MP5_AMMO_QTY;
     case LGT_GRENADE:      return GRENADE_AMMO_QTY;
+    case LGT_ROCKET:       return ROCKET_AMMO_QTY;
     default:               return -1;
     }
     // clang-format on
@@ -152,6 +157,7 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
     case LGT_M16:          return &lara_info->m16_ammo;
     case LGT_MP5:          return &lara_info->mp5_ammo;
     case LGT_GRENADE:      return &lara_info->grenade_ammo;
+    case LGT_ROCKET:       return &lara_info->rocket_ammo;
     case LGT_SKIDOO:       return &lara_info->pistol_ammo;
     default:               return nullptr;
     }
@@ -165,6 +171,7 @@ bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)
     case LGT_M16:
     case LGT_MP5:
     case LGT_GRENADE:
+    case LGT_ROCKET:
     case LGT_HARPOON:
         return true;
     default:

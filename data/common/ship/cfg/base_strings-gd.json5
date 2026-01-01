@@ -137,6 +137,7 @@
         "ENUM_INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Magnuman",
         "ENUM_INPUT_ROLE_EQUIP_MP5": "Uidheamaich MP5",
         "ENUM_INPUT_ROLE_EQUIP_PISTOLS": "Uidheamaich Piostalan",
+        "ENUM_INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Uidheamaich Lannsair Rocaid",
         "ENUM_INPUT_ROLE_EQUIP_SHOTGUN": "Uidheamaich Gunna-sgaoil",
         "ENUM_INPUT_ROLE_EQUIP_UZIS": "Uidheamaich Uzis",
         "ENUM_INPUT_ROLE_FLY_CHEAT": "Cleas Itealaich",
@@ -1305,6 +1306,9 @@
         "lara_grenade": {
             "name": "Beòthalachd Lannsair Grenèad",
         },
+        "lara_rocket": {
+            "name": "Beòthalachd Lannsair Rocaid",
+        },
         "lara_harpoon": {
             "name": "Beòthalachd Harpùn",
         },
@@ -1718,6 +1722,15 @@
         },
         "mp5_ammo": {
             "name": "Lòin MP5",
+        },
+        "rocket_launcher": {
+            "name": "Lannsair Rocaid",
+        },
+        "rocket_launcher_ammo": {
+            "name": "Rocaidean",
+        },
+        "rocket": {
+            "name": "Rocaid",
         }
     }
 }

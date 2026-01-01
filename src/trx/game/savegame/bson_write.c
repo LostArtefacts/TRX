@@ -444,6 +444,7 @@ static void M_WriteResumeInfo(
     M_WriteNum(ctx, "m16_ammo", resume->m16_ammo);
     M_WriteNum(ctx, "mp5_ammo", resume->mp5_ammo);
     M_WriteNum(ctx, "grenade_ammo", resume->grenade_ammo);
+    M_WriteNum(ctx, "rocket_ammo", resume->rocket_ammo);
     M_WriteNum(ctx, "harpoon_ammo", resume->harpoon_ammo);
     M_WriteNum(ctx, "num_medis", resume->small_medipacks);
     M_WriteNum(ctx, "num_big_medis", resume->large_medipacks);
@@ -469,6 +470,7 @@ static void M_WriteResumeInfo(
     M_WriteBool(ctx, "has_m16", resume->flags.has_m16);
     M_WriteBool(ctx, "has_mp5", resume->flags.has_mp5);
     M_WriteBool(ctx, "has_grenade", resume->flags.has_grenade);
+    M_WriteBool(ctx, "has_rocket", resume->flags.has_rocket);
     M_WriteBool(ctx, "has_harpoon", resume->flags.has_harpoon);
 
     M_WriteBool(ctx, "costume", resume->flags.costume);
@@ -738,6 +740,7 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteAmmo(ctx, "uzis", &lara->uzi_ammo);
     M_WriteAmmo(ctx, "harpoon", &lara->harpoon_ammo);
     M_WriteAmmo(ctx, "grenade", &lara->grenade_ammo);
+    M_WriteAmmo(ctx, "rocket", &lara->rocket_ammo);
     M_WriteAmmo(ctx, "m16", &lara->m16_ammo);
     M_WriteAmmo(ctx, "mp5", &lara->mp5_ammo);
 

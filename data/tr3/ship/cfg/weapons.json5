@@ -99,6 +99,23 @@
         "sample_num": "",
     },
 
+    "LGT_ROCKET": {
+        "lock_angles": [-60, +60, -55, +55],
+        "left_angles": [-80, +80, -65, +65],
+        "right_angles": [-80, +80, -65, +65],
+        "aim_speed": 10,
+        "shot_accuracy": 8,
+        "gun_height": 500,
+        "damage": 30,
+        "target_dist": 8.0,
+        "equip_anim_idx": 1,
+        "draw_frame": 12,
+        "undraw_frame": 21,
+        "recoil_frame": 0,
+        "flash_time": 2,
+        "sample_num": "",
+    },
+
     "LGT_HARPOON": {
         "lock_angles": [-60, +60, -65, +65],
         "left_angles": [-80, +80, -75, +75],
