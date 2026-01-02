@@ -10,6 +10,11 @@
             "y": 32,
             "z": 80,
         },
+        "flash_pos_alt": {
+            "x": -6,
+            "y": 6,
+            "z": 80,
+        },
         "is_available": false,
     },
 

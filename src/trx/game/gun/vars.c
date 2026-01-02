@@ -103,6 +103,9 @@ void Gun_LoadVars(const char *const path)
 
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "flash_pos"), &g_Weapons[type].flash_pos);
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "flash_pos_alt"),
+            &g_Weapons[type].flash_pos_alt);
 
         // sample_num
         const char *const sample =

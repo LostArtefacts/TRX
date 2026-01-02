@@ -1,5 +1,6 @@
 #include <trx/game/objects/general/flare_item.h>
 
+#include <trx/game/gun.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/pickup.h>
@@ -100,6 +101,14 @@ static void M_Control(const int16_t item_num)
     item->data = (void *)(intptr_t)flare_age;
 }
 
+static void M_DrawFlash(const CLIP clip)
+{
+    WEAPON_INFO *const flare_info = &g_Weapons[LGT_FLARE];
+    SWAP(flare_info->flash_pos, flare_info->flash_pos_alt);
+    Gun_DrawFlash(LGT_FLARE, clip);
+    SWAP(flare_info->flash_pos, flare_info->flash_pos_alt);
+}
+
 static bool M_Draw(const ITEM *const item)
 {
     int32_t rate;
@@ -126,11 +135,7 @@ static bool M_Draw(const ITEM *const item)
         Output_CalculateObjectLighting(item, &frames[0]->bounds);
         Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
         if (((int32_t)(intptr_t)item->data) & 0x8000) {
-            Matrix_TranslateRel(-6, 6, 80);
-            Matrix_RotX(-90 * DEG_1);
-            Matrix_RotY((int16_t)(2 * Random_GetDraw()));
-            Output_CalculateStaticLight(8 * 256);
-            Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
+            M_DrawFlash(clip);
         }
     }
     Matrix_Pop();
