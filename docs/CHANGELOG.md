@@ -11,7 +11,10 @@
 - added support for locked cameras, similar to TR4+ (#2040)
 - added support to use `O_DINO_WARRIOR` and `O_FISH` as aliases for `O_TREX` and `O_BARRACUDA` respectively
 - added the ability to define gun types, flash shade and offset positions in `cfg/weapons.json5`
+- added a new input, that lets the player toggle ingame textures on/off, available by default under F8
+- added a new console command, `/textures`, that lets the player toggle ingame textures on/off
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
+- changed the lighting contrast key binding to F9
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)
 - changed Magnums and Automatic Pistols to be separate objects, so both can appear in the same level (#4475)
 - changed the M16 and MP5 to be separate objects, so both can appear in the same level

@@ -91,6 +91,10 @@ whichever key you have bound, and not include it as part of the command itself.
   `/lighting off`  
   Enables or disables the lighting system. Bask in dynamic shadows or embrace bright clarity!
 
+- `/textures on`  
+  `/textures off`  
+  Enables or disables texture rendering. Peek the exact polygons that power these pretty visuals!
+
 - `/debug on`  
   `/debug off`  
   `/debug {option} on`  

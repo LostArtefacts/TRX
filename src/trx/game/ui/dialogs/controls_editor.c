@@ -118,6 +118,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_SWITCH_UPSCALING },
                 { .role = INPUT_ROLE_SWITCH_BORDERS },
                 { .role = INPUT_ROLE_TOGGLE_WIREFRAME },
+                { .role = INPUT_ROLE_TOGGLE_TEXTURES },
                 { .role = INPUT_ROLE_CYCLE_LIGHTING_CONTRAST },
                 { .role = (INPUT_ROLE)-1 },
             },

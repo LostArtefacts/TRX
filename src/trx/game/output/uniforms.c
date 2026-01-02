@@ -27,6 +27,7 @@
     X_DECLARE_MEMBER(int, lighting_enabled)                                    \
     X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
     X_DECLARE_MEMBER(int, reflections_enabled)                                 \
+    X_DECLARE_MEMBER(int, textures_enabled)                                    \
     X_DECLARE_MEMBER(int, tr_version)
 
 #pragma pack(push, 4)
@@ -140,6 +141,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .min_shade = M_GetMinShade(),
         .billboard_lock_mode = g_Config.rendering.sprite_lock_mode,
         .lighting_enabled = g_Config.rendering.enable_lighting,
+        .textures_enabled = g_Config.rendering.enable_textures,
         .trapezoid_filter_enabled = g_Config.rendering.enable_trapezoid_filter,
         .reflections_enabled = g_Config.visuals.enable_reflections,
         .fog_distance = {Output_GetFogStart(), Output_GetFogEnd()},

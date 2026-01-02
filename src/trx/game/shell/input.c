@@ -57,6 +57,16 @@ static void M_ToggleWireframe(void)
                                             : GS(OSD_WIREFRAME_MODE_OFF));
 }
 
+static void M_ToggleTextures(void)
+{
+    TOGGLE(g_Config.rendering.enable_textures);
+    Config_Update();
+    Console_Log(
+        "%s",
+        g_Config.rendering.enable_textures ? GS(OSD_TEXTURES_ON)
+                                           : GS(OSD_TEXTURES_OFF));
+}
+
 static void M_CycleLightingContrast(void)
 {
     CYCLE(
@@ -113,6 +123,9 @@ void Shell_ProcessInput(void)
     }
     if (g_InputDB.toggle_wireframe) {
         M_ToggleWireframe();
+    }
+    if (g_InputDB.toggle_textures) {
+        M_ToggleTextures();
     }
     if (g_InputDB.cycle_lighting_contrast) {
         M_CycleLightingContrast();
