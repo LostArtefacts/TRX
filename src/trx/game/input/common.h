@@ -12,8 +12,10 @@ typedef enum {
 #undef X_INPUT_ROLE
 } INPUT_ROLE;
 
+#define INPUT_STATE_ANY_WORDS ((INPUT_ROLE_NUMBER_OF + 63) / 64)
+
 typedef union {
-    uint64_t any;
+    uint64_t any[INPUT_STATE_ANY_WORDS];
     struct {
 #define X_INPUT_ROLE(role_name, state_name) uint64_t state_name : 1;
 #include <trx/game/input/roles.def>
@@ -126,3 +128,7 @@ const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod);
 // Returns true if parsing succeeded, false otherwise.
 bool Input_ParseKeyDesc(
     const char *desc, SDL_Scancode *scancode, SDL_Keymod *mod);
+
+void InputState_Clear(INPUT_STATE *state);
+void InputState_Copy(INPUT_STATE *dst, INPUT_STATE src);
+bool InputState_IsAnyPressed(INPUT_STATE state);

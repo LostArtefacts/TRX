@@ -19,7 +19,7 @@ static void M_UpdateFromBackend(
 
 void Input_Update(void)
 {
-    g_Input.any = 0;
+    InputState_Clear(&g_Input);
 
     M_UpdateFromBackend(
         &g_Input, &g_Input_Keyboard, g_Config.input.keyboard_layout);
@@ -60,7 +60,7 @@ void Input_Update(void)
     g_InputDB = Input_GetDebounced(g_Input);
 
     if (Input_IsInListenMode()) {
-        g_Input.any = 0;
-        g_InputDB.any = 0;
+        InputState_Clear(&g_Input);
+        InputState_Clear(&g_InputDB);
     }
 }

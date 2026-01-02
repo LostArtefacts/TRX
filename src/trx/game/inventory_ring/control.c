@@ -312,8 +312,8 @@ static bool M_CheckDemoTimer(const INV_RING *const ring)
         return false;
     }
 
-    if (ring->mode != INV_TITLE_MODE || g_Input.any || g_InputDB.any
-        || Console_IsOpened()) {
+    if (ring->mode != INV_TITLE_MODE || InputState_IsAnyPressed(g_Input)
+        || InputState_IsAnyPressed(g_InputDB) || Console_IsOpened()) {
         ClockTimer_Sync(&m_DemoTimer);
         return false;
     }

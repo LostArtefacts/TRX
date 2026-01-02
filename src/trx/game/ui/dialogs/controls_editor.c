@@ -335,7 +335,7 @@ static UI_CONTROLS_CHOICE M_NavigateInputsDebounce(
     UI_CONTROLS_EDITOR_STATE *const s)
 {
     Input_Update();
-    if (g_Input.any) {
+    if (InputState_IsAnyPressed(g_Input)) {
         return UI_CONTROLS_CHOICE_NOOP;
     }
     Input_EnterListenMode();
@@ -365,7 +365,7 @@ static UI_CONTROLS_CHOICE M_Listen(UI_CONTROLS_EDITOR_STATE *const s)
 
 static UI_CONTROLS_CHOICE M_ListenDebounce(UI_CONTROLS_EDITOR_STATE *const s)
 {
-    if (!g_Input.any) {
+    if (!InputState_IsAnyPressed(g_Input)) {
         s->phase = M_PHASE_NAVIGATE_INPUTS;
     }
     return UI_CONTROLS_CHOICE_NOOP;
