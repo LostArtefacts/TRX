@@ -154,11 +154,7 @@ static bool M_Draw_I(
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots_1, mesh_rots_2, clip);
 
         if (lara->gun_type == LGT_FLARE && lara->left_arm.flash_gun) {
-            Matrix_TranslateRel_I(11, 32, 80);
-            Matrix_RotX_I(-90 * DEG_1);
-            Matrix_RotY_I(2 * Random_GetDraw());
-            Output_CalculateStaticLight(SHADE_FLARE);
-            Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, true);
+            Gun_DrawFlash(LGT_FLARE, clip, true);
         }
         Matrix_Pop();
         break;
@@ -215,12 +211,12 @@ static bool M_Draw_I(
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots_1, nullptr, clip);
 
         if (lara->left_arm.flash_gun) {
-            Gun_DrawFlash((int32_t)gun_type, clip);
+            Gun_DrawFlash(gun_type, clip, false);
         }
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             *g_WMatrixPtr = wsaved_matrix;
-            Gun_DrawFlash(gun_type, clip);
+            Gun_DrawFlash(gun_type, clip, false);
         }
         Matrix_Pop();
         break;
@@ -266,7 +262,7 @@ static bool M_Draw_I(
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             *g_WMatrixPtr = wsaved_matrix;
-            Gun_DrawFlash(gun_type, clip);
+            Gun_DrawFlash(gun_type, clip, false);
         }
         Matrix_Pop();
         break;
@@ -433,7 +429,7 @@ bool Lara_Draw(const ITEM *const item)
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots, nullptr, clip);
 
         if (lara->gun_type == LGT_FLARE && lara->left_arm.flash_gun) {
-            Gun_DrawFlash(LGT_FLARE, clip);
+            Gun_DrawFlash(LGT_FLARE, clip, false);
         }
 
         Matrix_Pop();
@@ -529,12 +525,12 @@ bool Lara_Draw(const ITEM *const item)
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots, nullptr, clip);
 
         if (lara->left_arm.flash_gun) {
-            Gun_DrawFlash(gun_type, clip);
+            Gun_DrawFlash(gun_type, clip, false);
         }
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             *g_WMatrixPtr = wsaved_matrix;
-            Gun_DrawFlash(gun_type, clip);
+            Gun_DrawFlash(gun_type, clip, false);
         }
 
         Matrix_Pop();
@@ -573,7 +569,7 @@ bool Lara_Draw(const ITEM *const item)
         if (lara->right_arm.flash_gun) {
             *g_MatrixPtr = saved_matrix;
             *g_WMatrixPtr = wsaved_matrix;
-            Gun_DrawFlash(gun_type, clip);
+            Gun_DrawFlash(gun_type, clip, false);
         }
 
         Matrix_Pop();
