@@ -237,8 +237,8 @@ void Input_ExitListenMode(void)
 {
     m_ListenMode = false;
     Input_Update();
-    g_OldInputDB.any = g_Input.any;
-    g_InputDB.any = g_Input.any;
+    InputState_Copy(&g_OldInputDB, g_Input);
+    InputState_Copy(&g_InputDB, g_Input);
 }
 
 bool Input_IsInListenMode(void)
@@ -351,7 +351,9 @@ const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout)
 INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
 {
     INPUT_STATE result;
-    result.any = input.any & ~g_OldInputDB.any;
+    for (int32_t i = 0; i < INPUT_STATE_ANY_WORDS; i++) {
+        result.any[i] = input.any[i] & ~g_OldInputDB.any[i];
+    }
 
     // Allow holding certain keys
     for (int32_t i = 0; m_HoldChecks[i].role != (INPUT_ROLE)-1; i++) {
@@ -436,4 +438,28 @@ bool Input_ParseKeyDesc(
     *scancode = SDL_GetScancodeFromName(keystr);
     *mod = m;
     return *scancode != SDL_SCANCODE_UNKNOWN;
+}
+
+void InputState_Clear(INPUT_STATE *const state)
+{
+    for (int32_t i = 0; i < INPUT_STATE_ANY_WORDS; i++) {
+        state->any[i] = 0;
+    }
+}
+
+void InputState_Copy(INPUT_STATE *const dst, const INPUT_STATE src)
+{
+    for (int32_t i = 0; i < INPUT_STATE_ANY_WORDS; i++) {
+        dst->any[i] = src.any[i];
+    }
+}
+
+bool InputState_IsAnyPressed(const INPUT_STATE state)
+{
+    for (int32_t i = 0; i < INPUT_STATE_ANY_WORDS; i++) {
+        if (state.any[i] != 0) {
+            return true;
+        }
+    }
+    return false;
 }

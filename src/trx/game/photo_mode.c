@@ -87,11 +87,11 @@ static PHASE_CONTROL M_AdvanceFrame(M_PRIV *const p)
         phase->resume(phase);
     }
     if (p->rate >= 1.0) {
-        g_Input.any = 0;
-        g_InputDB.any = 0;
+        InputState_Clear(&g_Input);
+        InputState_Clear(&g_InputDB);
         result = phase->control(phase);
-        g_Input.any = 0;
-        g_InputDB.any = 0;
+        InputState_Clear(&g_Input);
+        InputState_Clear(&g_InputDB);
         p->rate = 0.0;
     }
     p->rate += slow ? M_INTERPOLATION_STEP : 1.0f;

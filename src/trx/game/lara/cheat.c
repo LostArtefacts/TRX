@@ -356,8 +356,8 @@ bool Lara_Cheat_ExitFlyMode(void)
     if (lara_info->water_status == LWS_ABOVE_WATER) {
         // Prevent Lara from jumping if the player holds the swim button
         // during the fly cheat exit (#4470)
-        g_Input.any = 0;
-        g_InputDB.any = 0;
+        InputState_Clear(&g_Input);
+        InputState_Clear(&g_InputDB);
         Lara_Control();
     }
 
