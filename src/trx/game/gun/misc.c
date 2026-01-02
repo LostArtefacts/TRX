@@ -217,29 +217,26 @@ void Gun_InitialiseNewWeapon(void)
     }
 }
 
-void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
+void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const CLIP clip)
 {
-    int16_t shade;
+    const WEAPON_INFO weapon = g_Weapons[weapon_type];
     int32_t len;
     int32_t off;
 
     // TODO: define in weapons.json5
     switch (weapon_type) {
     case LGT_MAGNUMS:
-        shade = SHADE_NEUTRAL;
         len = 155;
         off = 55;
         break;
 
     case LGT_AUTOS:
     case LGT_DESERT_EAGLE:
-        shade = SHADE_NEUTRAL;
         len = 215;
         off = 65;
         break;
 
     case LGT_UZIS:
-        shade = 10 * 256;
         len = g_TRVersion == 1 ? 180 : 200;
         off = g_TRVersion == 1 ? 55 : 50;
         break;
@@ -248,19 +245,17 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         if (!g_Config.visuals.enable_shotgun_flash) {
             return;
         }
-        shade = 10 * 256;
         len = 285;
         off = 0;
         break;
 
     case LGT_M16:
-        shade = 10 * 256;
         len = 400;
         off = 99;
         Matrix_TranslateRel(0, len, off);
         Matrix_RotX(-85 * DEG_1);
         Matrix_RotZ(((2 * Random_GetDraw()) & 0x4000) + 0x2000);
-        Output_CalculateStaticLight(shade);
+        Output_CalculateStaticLight(weapon.flash_shade);
         const OBJECT *const obj = Object_Get(O_M16_FLASH);
         if (obj->loaded) {
             Object_DrawMesh(obj->mesh_idx, clip, false);
@@ -268,7 +263,6 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         return;
 
     case LGT_MP5:
-        shade = 10 * 256;
         len = 332;
         off = 96;
         Matrix_TranslateRel(0, len, off);
@@ -276,7 +270,7 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         Matrix_RotZ(
             ((2 * Random_GetDraw()) & 0x4000) + (Random_GetDraw() & 0xFFF)
             + 0x1800);
-        Output_CalculateStaticLight(shade);
+        Output_CalculateStaticLight(weapon.flash_shade);
         const OBJECT *const flash_obj = Object_Get(O_M16_FLASH);
         if (flash_obj->loaded) {
             Object_DrawMesh(flash_obj->mesh_idx, clip, false);
@@ -287,12 +281,11 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
         Matrix_TranslateRel(11, 32, 80);
         Matrix_RotX(-DEG_90);
         Matrix_RotY(2 * Random_GetDraw());
-        Output_CalculateStaticLight(SHADE_FLARE);
+        Output_CalculateStaticLight(weapon.flash_shade);
         Object_DrawMesh(Object_Get(O_FLARE_FIRE)->mesh_idx, clip, false);
         return;
 
     default:
-        shade = SHADE_LOW;
         len = g_TRVersion == 1 ? 155 : 185;
         off = g_TRVersion == 1 ? 55 : 40;
         break;
@@ -301,7 +294,7 @@ void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip)
     Matrix_TranslateRel(0, len, off);
     Matrix_RotX(-DEG_90);
     Matrix_RotZ(2 * Random_GetDraw());
-    Output_CalculateStaticLight(shade);
+    Output_CalculateStaticLight(weapon.flash_shade);
     const OBJECT *const obj = Object_Get(O_GUN_FLASH);
     if (obj->loaded) {
         Object_DrawMesh(obj->mesh_idx, clip, false);

@@ -27,6 +27,7 @@ typedef struct {
     int16_t undraw_frame;
     int16_t recoil_frame;
     int16_t flash_time;
+    int16_t flash_shade;
     SAMPLE_TRX_ID sample_num;
     bool is_available;
 } WEAPON_INFO;
