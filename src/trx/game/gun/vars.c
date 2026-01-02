@@ -25,6 +25,22 @@ static void M_ReadAngles(
     }
 }
 
+static void M_ReadXYZ32(JSON_VALUE *const value, XYZ_32 *const target)
+{
+    JSON_OBJECT *const obj = JSON_ValueAsObject(value);
+    if (obj != nullptr) {
+        target->x = JSON_ObjectGetInt(obj, "x", 0);
+        target->y = JSON_ObjectGetInt(obj, "y", 0);
+        target->z = JSON_ObjectGetInt(obj, "z", 0);
+    }
+    JSON_ARRAY *const arr = JSON_ValueAsArray(value);
+    if (arr != nullptr && arr->length == 3) {
+        target->x = JSON_ArrayGetInt(arr, 0, 0);
+        target->y = JSON_ArrayGetInt(arr, 1, 0);
+        target->z = JSON_ArrayGetInt(arr, 2, 0);
+    }
+}
+
 void Gun_LoadVars(const char *const path)
 {
 #define L_READ_ANGLE(name, target)                                             \
@@ -84,6 +100,9 @@ void Gun_LoadVars(const char *const path)
         L_READ_INT("recoil_frame", g_Weapons[type].recoil_frame);
         L_READ_INT("flash_time", g_Weapons[type].flash_time);
         L_READ_INT("flash_shade", g_Weapons[type].flash_shade);
+
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "flash_pos"), &g_Weapons[type].flash_pos);
 
         // sample_num
         const char *const sample =
