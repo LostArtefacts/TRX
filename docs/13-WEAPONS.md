@@ -56,6 +56,21 @@ described in the table below.
     <td>Specifies the shade applied when drawing the weapon flash object (<code>O_GUN_FLASH</code> / <code>O_M16_FLASH</code> / <code>O_FLARE_FIRE</code>).</td>
   </tr>
   <tr valign="top">
+    <td><code>flash_color</code></td>
+    <td>Float array (length 3)</td>
+    <td>Specifies the color applied when drawing the weapon flash object (<code>O_GUN_FLASH</code> / <code>O_M16_FLASH</code> / <code>O_FLARE_FIRE</code>), used in TR3 lighting system.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>glow_color</code></td>
+    <td>Float array (length 3)</td>
+    <td>Specifies the color applied when drawing the weapon glow object (<code>O_GLOW</code>), used in TR3 lighting system.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>glow_pos</code></td>
+    <td>XYZ</td>
+    <td>Specifies the additional offset to apply to the glow sprite position.</td>
+  </tr>
+  <tr valign="top">
     <td><code>flash_time</code></td>
     <td>Integer</td>
     <td>Determines the number of frames to show the weapon flash object (<code>O_GUN_FLASH</code> / <code>O_M16_FLASH</code>) after firing a weapon.</td>

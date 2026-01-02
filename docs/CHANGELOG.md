@@ -83,6 +83,7 @@
 - fixed game crashing when Lara passes through light sources in levels compiled with dxtre3D
 
 **TR3**:
+- added RGB lighting system support
 - added swamp and water surfaces wave effect
 - added underwater caustics
 - added proper bubbles
@@ -103,6 +104,8 @@
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect
 - fixed Lara's thigh being drawn when a flare is in Lara's hand or has been discarded
+- fixed gun flashes being drawn in white
+- fixed disabling lighting system not working
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)

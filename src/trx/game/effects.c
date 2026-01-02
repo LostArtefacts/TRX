@@ -164,7 +164,7 @@ void Effect_Draw(const int16_t effect_num)
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, Object_Get(O_GLOW)->mesh_idx,
-            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f });
+            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f }, DRAW_BLEND);
         return;
     }
 
@@ -181,7 +181,7 @@ void Effect_Draw(const int16_t effect_num)
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            shade, tint);
+            shade, tint, DRAW_BLEND);
     } else {
         Matrix_Push();
         Matrix_TranslateAbs32(effect->interp.result.pos);

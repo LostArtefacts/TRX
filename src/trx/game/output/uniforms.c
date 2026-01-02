@@ -11,6 +11,7 @@
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
+#include <trx/version.h>
 
 #define M_GLOBAL_MEMBERS                                                       \
     X_DECLARE_MEMBER(float, fog_color, [4])                                    \
@@ -25,7 +26,8 @@
     X_DECLARE_MEMBER(int, billboard_lock_mode)                                 \
     X_DECLARE_MEMBER(int, lighting_enabled)                                    \
     X_DECLARE_MEMBER(int, trapezoid_filter_enabled)                            \
-    X_DECLARE_MEMBER(int, reflections_enabled)
+    X_DECLARE_MEMBER(int, reflections_enabled)                                 \
+    X_DECLARE_MEMBER(int, tr_version)
 
 #pragma pack(push, 4)
 typedef struct {
@@ -41,6 +43,7 @@ typedef struct {
 
 typedef struct {
     float pos[4];
+    float color[4];
     float shade;
     float falloff;
     float _pad[2];
@@ -56,8 +59,11 @@ typedef struct {
 typedef struct {
     float adder;
     float divider;
-    float _pad[2];
+    float _pad0[2];
     float vector_view[4];
+    float tr3_ambient[4];
+    float tr3_light_dir_view[3][4];
+    float tr3_light_color[3][4];
 } M_UNIFORM_LS;
 #pragma pack(pop)
 
@@ -73,6 +79,10 @@ static void M_FillLight(
     dst_light->pos[1] = src_light->pos.y;
     dst_light->pos[2] = src_light->pos.z;
     dst_light->pos[3] = 0.0f;
+    dst_light->color[0] = src_light->color.r / 255.0f;
+    dst_light->color[1] = src_light->color.g / 255.0f;
+    dst_light->color[2] = src_light->color.b / 255.0f;
+    dst_light->color[3] = 0.0f;
     dst_light->shade = src_light->shade.value_1;
     dst_light->falloff = src_light->falloff.value_1;
 }
@@ -120,6 +130,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .brightness_multiplier = g_Config.visuals.brightness,
         .desaturation = Output_GetDesaturation(),
         .sunset_duration = Output_GetSunsetDuration(),
+        .tr_version = g_TRVersion,
         .viewport_size = {
             (float)Viewport_GetWidth(VIEWPORT_GAME),
             (float)Viewport_GetHeight(VIEWPORT_GAME),
@@ -194,6 +205,20 @@ void Output_Uniforms_UploadCPULight(
     ls.vector_view[1] = info->ls_vector_view.y;
     ls.vector_view[2] = info->ls_vector_view.z;
     ls.vector_view[3] = 0;
+    ls.tr3_ambient[0] = info->tr3_ambient.r;
+    ls.tr3_ambient[1] = info->tr3_ambient.g;
+    ls.tr3_ambient[2] = info->tr3_ambient.b;
+    ls.tr3_ambient[3] = 0.0f;
+    for (int32_t i = 0; i < 3; i++) {
+        ls.tr3_light_dir_view[i][0] = info->tr3_light_dir_view[i].x;
+        ls.tr3_light_dir_view[i][1] = info->tr3_light_dir_view[i].y;
+        ls.tr3_light_dir_view[i][2] = info->tr3_light_dir_view[i].z;
+        ls.tr3_light_dir_view[i][3] = 0.0f;
+        ls.tr3_light_color[i][0] = info->tr3_light_color[i].r;
+        ls.tr3_light_color[i][1] = info->tr3_light_color[i].g;
+        ls.tr3_light_color[i][2] = info->tr3_light_color[i].b;
+        ls.tr3_light_color[i][3] = 0.0f;
+    }
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
     GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);

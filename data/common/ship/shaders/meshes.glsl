@@ -38,46 +38,6 @@ vec3 waterWibble(vec4 position)
     return ndc * position.w;
 }
 
-float getEffectPhase(vec4 worldPos)
-{
-    float phase = (worldPos.x + worldPos.z) / 1024.0;
-    float rnd = (fract(sin(dot(worldPos.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453)) * 1023.0 - 511.0;
-    return phase + rnd;
-}
-
-float effectChoppy(float phase, int waterScheme)
-{
-    const float amplitude[22] = float[](
-        16.0,  0.0,   0.0,   0.0,   0.0,
-        16.0,  16.0,  16.0,  16.0,
-        53.0,  53.0,  53.0,  53.0,
-        90.0,  90.0,  90.0,  90.0,
-        127.0, 127.0, 127.0, 127.0,
-        0.0);
-    float angle = radians(360.0 * (mod(uTimeInGame / 64.0, 1.0) + phase));
-    return sin(angle) * amplitude[clamp(waterScheme, 0, 21)];
-}
-
-float effectShimmer(float phase, int waterScheme)
-{
-    const float amplitude[22] = float[](
-        7.875, 4, 8, 12, 15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        0.0);
-    float angle = radians(360.0 * (mod(uTimeInGame / 64.0, 1.0) + phase));
-    return sin(angle) * amplitude[clamp(waterScheme, 0, 21)];
-}
-
-float effectAbs(float phase, int waterScheme)
-{
-    const float intensity[22] = float[](
-        0, -3, 0, 4, 8, 4, 8, 12, 16, 4, 8, 12, 16, 4, 8, 12, 16, 4, 8, 12, 16, 0);
-    return intensity[clamp(waterScheme, 0, 21)];
-}
-
 void main(void) {
     vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
 
@@ -111,24 +71,10 @@ void main(void) {
     if (uTrapezoidFilterEnabled != 0) {
         gTexUV *= inTrapezoidRatios;
     }
-    gColor = inColor;
-
-    if (uLightingEnabled == 0) {
-        gShade = SHADE_NEUTRAL;
-    } else if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        gShade = light(inShade, gFlags, inNormal.xyz, worldPos, inNormal.w);
-
-        // TR3 caustics
-        float add = 0.0;
-        if ((inFlags & VERT_MOVE) != 0u) {
-            add -= effectChoppy(effectPhase, uWaterEffect - 2) / 512.0;
-        }
-        if ((inFlags & VERT_GLOW) != 0u) {
-            add += effectShimmer(effectPhase, uWaterEffect - 2) / 32.0;
-            add += effectAbs(effectPhase, uWaterEffect - 2) / 32.0;
-        }
-        gColor.rgb = clamp(gColor.rgb + add, 0.0, 1.0);
-    }
+    LightingResult lr =
+        light(inColor, inShade, gFlags, inNormal.xyz, worldPos, inNormal.w, effectPhase);
+    gShade = lr.shade;
+    gColor = lr.color;
 }
 
 #elif defined(FRAGMENT)

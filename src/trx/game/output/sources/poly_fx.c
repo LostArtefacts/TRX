@@ -342,11 +342,6 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         return;
     }
 
-    if (spark->trans_type == 3) {
-        ASSERT_FAIL(); // TODO: subtractive blend pass (TR3 TransType==3)
-        return;
-    }
-
     const XYZ_32 pos = Sparks_GetWorldPos(spark);
     const XYZ_32 world_pos[4] = { pos, pos, pos, pos };
 
@@ -422,7 +417,9 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         sprite_idx = -1;
     }
     M_PRIV *const p = &m_Priv;
-    if (spark->trans_type == 2) {
+    if (spark->draw_type == DRAW_BLEND_SUB) {
+        ASSERT_FAIL(); // TODO: subtractive blend pass (TR3 TransType==3)
+    } else if (spark->draw_type == DRAW_BLEND_ADD) {
         M_StageQuad(
             sprite_idx, world_pos, disp, world_color, flags,
             p->scheduled_blend_add);

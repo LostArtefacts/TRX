@@ -2,6 +2,7 @@
 
 #include <trx/colors.h>
 #include <trx/game/math/types.h>
+#include <trx/game/output/uniforms.h>
 #include <trx/game/rooms.h>
 
 #include <GL/glew.h>
@@ -46,9 +47,12 @@ const ROOM *Output_GetCurrentRoom(void);
 int32_t Output_GetLightAdder(void);
 int32_t Output_GetLightDivider(void);
 XYZ_32 Output_GetLightVectorView(void);
+OUTPUT_LIGHT_INFO Output_GetLightInfo(void);
 void Output_SetLightAdder(int32_t adder);
 void Output_SetLightDivider(int32_t divider);
 void Output_RotateLight(int16_t pitch, int16_t yaw);
+void Output_SetTR3Light(
+    RGB_F ambient, const RGB_F colors[3], const XYZ_32 dirs_view[3]);
 
 void Output_EnableScissor(float x, float y, float w, float h);
 void Output_DisableScissor(void);

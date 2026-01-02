@@ -210,6 +210,15 @@ static void M_Stage(const OBJECT_MESH *const mesh)
         return;
     }
 
+    OUTPUT_LIGHT_INFO light_info = Output_GetLightInfo();
+    if (g_TRVersion >= 3 && M_IsMeshSkybox(Object_GetMeshIndex(mesh))) {
+        light_info.tr3_ambient = (RGB_F) { 1.0f, 1.0f, 1.0f };
+        for (int32_t i = 0; i < 3; i++) {
+            light_info.tr3_light_color[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
+            light_info.tr3_light_dir_view[i] = (XYZ_32) { 0, 0, 0 };
+        }
+    }
+
     const MESH_INSTANCE inst = {
         .mesh = batch->mesh_batch,
         .cwmatrix = *g_MatrixPtr,
@@ -218,11 +227,7 @@ static void M_Stage(const OBJECT_MESH *const mesh)
         .wibble = false,
         .water_effect =
             (mesh->enable_caustics && Output_GetWaterEffect()) ? 1 : 0,
-        .light_info = {
-            .ls_adder = Output_GetLightAdder(),
-            .ls_divider = Output_GetLightDivider(),
-            .ls_vector_view = Output_GetLightVectorView(),
-        },
+        .light_info = light_info,
         .room = Output_GetCurrentRoom(),
     };
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);

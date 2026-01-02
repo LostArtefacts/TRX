@@ -25,6 +25,22 @@ static void M_ReadAngles(
     }
 }
 
+static void M_ReadRGB_F(JSON_VALUE *const value, RGB_F *const target)
+{
+    JSON_OBJECT *const obj = JSON_ValueAsObject(value);
+    if (obj != nullptr) {
+        target->r = JSON_ObjectGetDouble(obj, "r", 0.0);
+        target->g = JSON_ObjectGetDouble(obj, "g", 0.0);
+        target->b = JSON_ObjectGetDouble(obj, "b", 0.0);
+    }
+    JSON_ARRAY *const arr = JSON_ValueAsArray(value);
+    if (arr != nullptr && arr->length == 3) {
+        target->r = JSON_ArrayGetDouble(arr, 0, 0.0);
+        target->g = JSON_ArrayGetDouble(arr, 1, 0.0);
+        target->b = JSON_ArrayGetDouble(arr, 2, 0.0);
+    }
+}
+
 static void M_ReadXYZ32(JSON_VALUE *const value, XYZ_32 *const target)
 {
     JSON_OBJECT *const obj = JSON_ValueAsObject(value);
@@ -106,6 +122,15 @@ void Gun_LoadVars(const char *const path)
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "flash_pos_alt"),
             &g_Weapons[type].flash_pos_alt);
+        M_ReadRGB_F(
+            JSON_ObjectGetValue(obj, "flash_color"),
+            &g_Weapons[type].flash_color);
+
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "glow_pos"), &g_Weapons[type].glow_pos);
+        M_ReadRGB_F(
+            JSON_ObjectGetValue(obj, "glow_color"),
+            &g_Weapons[type].glow_color);
 
         // sample_num
         const char *const sample =

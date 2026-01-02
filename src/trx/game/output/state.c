@@ -29,6 +29,9 @@ static const ROOM *m_CurrentRoom = nullptr;
 static int32_t m_LsAdder = 0;
 static int32_t m_LsDivider = 0;
 static XYZ_32 m_LsVectorView = {};
+static RGB_F m_TR3Ambient = { 1.0f, 1.0f, 1.0f };
+static RGB_F m_TR3LightColor[3] = {};
+static XYZ_32 m_TR3LightDirView[3] = {};
 
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
@@ -296,6 +299,21 @@ XYZ_32 Output_GetLightVectorView(void)
     return m_LsVectorView;
 }
 
+OUTPUT_LIGHT_INFO Output_GetLightInfo(void)
+{
+    OUTPUT_LIGHT_INFO info = {
+        .ls_adder = m_LsAdder,
+        .ls_divider = m_LsDivider,
+        .ls_vector_view = m_LsVectorView,
+        .tr3_ambient = m_TR3Ambient,
+    };
+    for (int32_t i = 0; i < 3; i++) {
+        info.tr3_light_color[i] = m_TR3LightColor[i];
+        info.tr3_light_dir_view[i] = m_TR3LightDirView[i];
+    }
+    return info;
+}
+
 void Output_RotateLight(const int16_t pitch, const int16_t yaw)
 {
     const int32_t cp = Math_Cos(pitch);
@@ -309,6 +327,16 @@ void Output_RotateLight(const int16_t pitch, const int16_t yaw)
     m_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
     m_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
     m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
+}
+
+void Output_SetTR3Light(
+    const RGB_F ambient, const RGB_F colors[3], const XYZ_32 dirs_view[3])
+{
+    m_TR3Ambient = ambient;
+    for (int32_t i = 0; i < 3; i++) {
+        m_TR3LightColor[i] = colors[i];
+        m_TR3LightDirView[i] = dirs_view[i];
+    }
 }
 
 void Output_SetTime(const float time)

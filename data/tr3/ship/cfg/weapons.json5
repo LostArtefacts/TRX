@@ -15,6 +15,9 @@
             "y": 6,
             "z": 80,
         },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {},
+        "glow_color": [1, 0.75, 0.125],
     },
 
     "LGT_PISTOLS": {
@@ -34,6 +37,9 @@
             "y": 185,
             "z": 40,
         },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {},
+        "glow_color": [1, 0.75, 0.125],
         "sample_num": "SFX_LARA_PISTOLS",
     },
 
@@ -54,6 +60,9 @@
             "y": 215,
             "z": 65,
         },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {},
+        "glow_color": [1, 0.75, 0.125],
         "sample_num": "SFX_LARA_DESERT_EAGLE",
     },
 
@@ -74,6 +83,9 @@
             "y": 200,
             "z": 50,
         },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {},
+        "glow_color": [1, 0.75, 0.125],
         "sample_num": "SFX_LARA_UZI_FIRE",
     },
 
@@ -96,6 +108,9 @@
         "flash_pos": {
             "y": 285,
         },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {},
+        "glow_color": [1, 0.75, 0.125],
         "sample_num": "SFX_LARA_SHOTGUN",
     },
 
@@ -119,6 +134,9 @@
             "y": 332,
             "z": 96,
         },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {"z": -65},
+        "glow_color": [1, 0.75, 0.125],
         "sample_num": "",
     },
 
@@ -193,6 +211,9 @@
             "y": 185,
             "z": 40,
         },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {},
+        "glow_color": [1, 0.75, 0.125],
         "sample_num": "SFX_LARA_UZI_FIRE",
     },
 }

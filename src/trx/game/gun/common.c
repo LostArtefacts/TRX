@@ -1,3 +1,4 @@
+#include <trx/colors.h>
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
@@ -26,7 +27,11 @@ void Gun_AddDynamicLight(void)
         .y = lara_item->pos.y - WALL_L / 2,
         .z = lara_item->pos.z + (c >> (W2V_SHIFT - 10)),
     };
-    Output_AddDynamicLight(pos, 12, 11);
+    if (g_TRVersion >= 3) {
+        Output_AddDynamicLightRGB(pos, 12, (RGB_888) { 192, 144, 0 });
+    } else {
+        Output_AddDynamicLight(pos, 12, 11);
+    }
 }
 
 OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
