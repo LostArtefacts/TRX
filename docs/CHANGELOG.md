@@ -10,6 +10,7 @@
 - added the ability to swap meshes in Lua
 - added support for locked cameras, similar to TR4+ (#2040)
 - added support to use `O_DINO_WARRIOR` and `O_FISH` as aliases for `O_TREX` and `O_BARRACUDA` respectively
+- added the ability to define gun types, flash shade and offset positions in `cfg/weapons.json5`
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)
 - changed Magnums and Automatic Pistols to be separate objects, so both can appear in the same level (#4475)
@@ -101,6 +102,7 @@
 - added an option to fix the MP5 accuracy while running
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect
+- fixed Lara's thigh being drawn when a flare is in Lara's hand or has been discarded
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)

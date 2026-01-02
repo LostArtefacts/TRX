@@ -46,6 +46,16 @@ described in the table below.
     <td>For rifle type weapons, the relative equip animation index of the associated object e.g. <code>O_LARA_SHOTGUN</code>.</td>
   </tr>
   <tr valign="top">
+    <td><code>flash_pos</code> / <code>flash_pos_alt</code></td>
+    <td>XYZ</td>
+    <td>Specifies the offset position where the weapon flash object (<code>O_GUN_FLASH</code> / <code>O_M16_FLASH</code> / <code>O_FLARE_FIRE</code>) will be drawn. <code>flash_pos_alt</code> is used only for discarded flares.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>flash_shade</code></td>
+    <td>Integer</td>
+    <td>Specifies the shade applied when drawing the weapon flash object (<code>O_GUN_FLASH</code> / <code>O_M16_FLASH</code> / <code>O_FLARE_FIRE</code>).</td>
+  </tr>
+  <tr valign="top">
     <td><code>flash_time</code></td>
     <td>Integer</td>
     <td>Determines the number of frames to show the weapon flash object (<code>O_GUN_FLASH</code> / <code>O_M16_FLASH</code>) after firing a weapon.</td>
@@ -94,6 +104,19 @@ described in the table below.
     <td><code>target_dist</code></td>
     <td>Float</td>
     <td>The maximum distance (in world sectors) that a target can be from Lara in order for her to lock on.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>type</code></td>
+    <td>String</td>
+    <td>
+      The category that determines how the gun is handled. Accepted values are as follows.
+      <ul>
+        <li><code>WEAPON_TYPE_DUAL_PISTOLS</code></li>
+        <li><code>WEAPON_TYPE_SINGLE_PISTOL</code></li>
+        <li><code>WEAPON_TYPE_RIFLE</code></li>
+        <li><code>WEAPON_TYPE_MOUNTED</code></li>
+      </ul>
+    </td>
   </tr>
   <tr valign="top">
     <td><code>undraw_frame</code></td>
