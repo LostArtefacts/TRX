@@ -46,7 +46,7 @@ void Output_Init(void)
     OutputSource_Misc_Init();
     OutputSource_Overlay_Init();
 
-    Output_InitLight();
+    Output_Lights_Init();
     OutputSource_UI_Init();
 
     Output_ApplyRenderSettings();
@@ -83,7 +83,7 @@ void Output_Shutdown(void)
     }
 
     Output_Textures_Shutdown();
-    Output_ShutdownLight();
+    Output_Lights_Shutdown();
 
     GFX_Context_Detach();
 }
@@ -170,6 +170,7 @@ void Output_ApplyLevelSettings(void)
 void Output_DispatchLevelLoad(void)
 {
     Output_Textures_ObserveLevelLoad();
+    Output_Lights_ObserveLevelLoad();
 
     OutputSource_Objects_ObserveLevelLoad();
     OutputSource_Rooms_ObserveLevelLoad();

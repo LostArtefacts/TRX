@@ -1,12 +1,16 @@
 #include <trx/game/output/lights.h>
 
 #include <trx/colors.h>
+#include <trx/game/const.h>
+#include <trx/game/items/common.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
 #include <trx/version.h>
+
+#include <string.h>
 
 #define M_LIGHT_CYCLE 32
 #define M_MAX_ROOM_LIGHT_UNIT (0x2000 / (M_LIGHT_CYCLE / 2))
@@ -27,6 +31,24 @@ static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static M_ROOM_LIGHT_TABLE m_RoomLightTables[M_LIGHT_CYCLE] = {};
 static VECTOR *m_DynamicLights = nullptr;
 
+typedef struct {
+    XYZ_32 sun_dir_world;
+    XYZ_32 bulb_dir_world;
+    XYZ_32 dynamic_dir_world;
+    RGB_888 sun_color;
+    RGB_888 bulb_color;
+    RGB_888 dynamic_color;
+    uint8_t ambient;
+    struct {
+        bool has_sun : 1;
+        bool has_bulb : 1;
+        bool has_dynamic : 1;
+        bool has_ambient : 1;
+    } flags;
+} M_TR3_ITEM_LIGHT;
+
+static M_TR3_ITEM_LIGHT m_TR3ItemLights[MAX_ITEMS] = {};
+
 static RGB_F M_TR3_RGB15ToRGBF(const int16_t rgb15)
 {
     const int32_t r8 = (rgb15 & 0x1F) << 3;
@@ -46,28 +68,65 @@ static int16_t M_TR3_ShadeFromMul(const float mul)
     return (int16_t)shade_f;
 }
 
-static XYZ_32 M_VectorViewFromAngles(const int16_t pitch, const int16_t yaw)
+static uint8_t M_TR3_LerpU8Shift(
+    const uint8_t current, const uint8_t target, const int32_t shift)
 {
-    const int32_t cp = Math_Cos(pitch);
-    const int32_t sp = Math_Sin(pitch);
-    const int32_t cy = Math_Cos(yaw);
-    const int32_t sy = Math_Sin(yaw);
-    const int32_t x = TRIGMULT2(cp, sy);
-    const int32_t y = -sp;
-    const int32_t z = TRIGMULT2(cp, cy);
-    const MATRIX *const m = &g_ViewMatrix;
-    return (XYZ_32) {
-        .x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT,
-        .y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT,
-        .z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT,
+    const int32_t cur = (int32_t)current;
+    const int32_t dst = (int32_t)target;
+    int32_t next = cur + ((dst - cur) >> shift);
+    CLAMP(next, 0, 255);
+    return (uint8_t)next;
+}
+
+static RGB_888 M_TR3_LerpRGBShift(
+    const RGB_888 current, const RGB_888 target, const int32_t shift)
+{
+    return (RGB_888) {
+        .r = M_TR3_LerpU8Shift(current.r, target.r, shift),
+        .g = M_TR3_LerpU8Shift(current.g, target.g, shift),
+        .b = M_TR3_LerpU8Shift(current.b, target.b, shift),
     };
 }
 
-static XYZ_32 M_VectorViewFromDelta(const XYZ_32 delta)
+static XYZ_32 M_TR3_LerpXYZShift(
+    const XYZ_32 current, const XYZ_32 target, const int32_t shift)
 {
-    int16_t angles[2];
-    Math_GetVectorAngles(delta.x, delta.y, delta.z, angles);
-    return M_VectorViewFromAngles(angles[1], angles[0]);
+    return (XYZ_32) {
+        .x = current.x + ((target.x - current.x) >> shift),
+        .y = current.y + ((target.y - current.y) >> shift),
+        .z = current.z + ((target.z - current.z) >> shift),
+    };
+}
+
+static XYZ_32 M_TR3_NormalizeDeltaWorld(const XYZ_32 delta)
+{
+    const int32_t dx = delta.x >> 2;
+    const int32_t dy = delta.y >> 2;
+    const int32_t dz = delta.z >> 2;
+    const uint32_t len =
+        Math_Sqrt((uint32_t)(SQUARE(dx) + SQUARE(dy) + SQUARE(dz)));
+    if (len == 0u) {
+        return (XYZ_32) { 0, 0, 0 };
+    }
+
+    return (XYZ_32) {
+        .x = (dx << W2V_SHIFT) / (int32_t)len,
+        .y = (dy << W2V_SHIFT) / (int32_t)len,
+        .z = (dz << W2V_SHIFT) / (int32_t)len,
+    };
+}
+
+static XYZ_32 M_TR3_VectorViewFromWorld(const XYZ_32 v_world)
+{
+    const MATRIX *const m = &g_ViewMatrix;
+    return (XYZ_32) {
+        .x = (m->_00 * v_world.x + m->_01 * v_world.y + m->_02 * v_world.z)
+            >> W2V_SHIFT,
+        .y = (m->_10 * v_world.x + m->_11 * v_world.y + m->_12 * v_world.z)
+            >> W2V_SHIFT,
+        .z = (m->_20 * v_world.x + m->_21 * v_world.y + m->_22 * v_world.z)
+            >> W2V_SHIFT,
+    };
 }
 
 static void M_TR3_SetConstantLight(const RGB_F ambient)
@@ -157,7 +216,8 @@ static int32_t M_CalculateDynamicLight(
     return adder;
 }
 
-static void M_TR3_CalculateLight(const XYZ_32 pos, const ROOM *const room)
+static void M_TR3_CalculateLightSmoothed(
+    const ITEM *const item, const XYZ_32 pos, const ROOM *const room)
 {
     const LIGHT *sun_light = nullptr;
     bool has_sun = false;
@@ -252,57 +312,104 @@ static void M_TR3_CalculateLight(const XYZ_32 pos, const ROOM *const room)
 
     CLAMP(ambience, 0, 255);
 
-    const RGB_F ambient = {
-        .r = ambience / 255.0f,
-        .g = ambience / 255.0f,
-        .b = ambience / 255.0f,
-    };
+    const uint8_t ambient_target = (uint8_t)ambience;
 
-    RGB_F colors[3] = {};
-    XYZ_32 dirs_view[3] = {};
+    M_TR3_ITEM_LIGHT dummy = {};
+    M_TR3_ITEM_LIGHT *il = &dummy;
+    bool enable_smoothing = false;
+    if (item != nullptr) {
+        const int16_t item_num = Item_GetIndex(item);
+        if (item_num >= 0 && item_num < MAX_ITEMS) {
+            il = &m_TR3ItemLights[item_num];
+            enable_smoothing = true;
+        }
+    }
+
+    // Ambient (smoothed)
+    if (enable_smoothing && il->flags.has_ambient) {
+        il->ambient = M_TR3_LerpU8Shift(il->ambient, ambient_target, 3);
+    } else {
+        il->ambient = ambient_target;
+        il->flags.has_ambient = true;
+    }
+
+    // Sun (smoothed)
+    bool want_sun = false;
+    XYZ_32 sun_dir_world_target = {};
+    RGB_888 sun_target = {};
+
+    int32_t ambient_base = (SHADE_MAX - room->ambient) >> M_TR3_A_SHIFT;
+    CLAMP(ambient_base, 0, 255);
 
     if (has_sun && sun_light != nullptr) {
-        const XYZ_32 sun_dir_world = {
+        want_sun = true;
+        sun_dir_world_target = (XYZ_32) {
             .x = sun_light->dir.x,
             .y = sun_light->dir.y,
             .z = sun_light->dir.z,
         };
-        const MATRIX *const m = &g_ViewMatrix;
-        dirs_view[0] = (XYZ_32) {
-            .x = (m->_00 * sun_dir_world.x + m->_01 * sun_dir_world.y
-                  + m->_02 * sun_dir_world.z)
-                >> W2V_SHIFT,
-            .y = (m->_10 * sun_dir_world.x + m->_11 * sun_dir_world.y
-                  + m->_12 * sun_dir_world.z)
-                >> W2V_SHIFT,
-            .z = (m->_20 * sun_dir_world.x + m->_21 * sun_dir_world.y
-                  + m->_22 * sun_dir_world.z)
-                >> W2V_SHIFT,
-        };
-        colors[0] = (RGB_F) {
-            .r = sun_light->color.r / 255.0f,
-            .g = sun_light->color.g / 255.0f,
-            .b = sun_light->color.b / 255.0f,
-        };
+        sun_target = sun_light->color;
+    } else if (enable_smoothing && il->flags.has_sun) {
+        want_sun = true;
+        sun_dir_world_target = il->sun_dir_world;
+        sun_target = (RGB_888) { ambient_base, ambient_base, ambient_base };
     }
 
+    if (want_sun) {
+        if (enable_smoothing && il->flags.has_sun) {
+            il->sun_dir_world =
+                M_TR3_LerpXYZShift(il->sun_dir_world, sun_dir_world_target, 3);
+            il->sun_color = M_TR3_LerpRGBShift(il->sun_color, sun_target, 3);
+        } else {
+            il->sun_dir_world = sun_dir_world_target;
+            il->sun_color = sun_target;
+            il->flags.has_sun = true;
+        }
+    }
+
+    // Bulb (smoothed)
+    bool want_bulb = false;
+    XYZ_32 bulb_dir_world_target = {};
+    RGB_888 bulb_target = {};
+
     if (brightest_light != nullptr && brightest > 0) {
-        dirs_view[1] = M_VectorViewFromDelta(bulb_delta);
+        want_bulb = true;
+        bulb_dir_world_target = M_TR3_NormalizeDeltaWorld(bulb_delta);
+
         int32_t r8 = (brightest * (int32_t)brightest_light->color.r) >> 13;
         int32_t g8 = (brightest * (int32_t)brightest_light->color.g) >> 13;
         int32_t b8 = (brightest * (int32_t)brightest_light->color.b) >> 13;
         CLAMP(r8, 0, 255);
         CLAMP(g8, 0, 255);
         CLAMP(b8, 0, 255);
-        colors[1] = (RGB_F) {
-            .r = r8 / 255.0f,
-            .g = g8 / 255.0f,
-            .b = b8 / 255.0f,
-        };
+        bulb_target = (RGB_888) { r8, g8, b8 };
+    } else if (enable_smoothing && il->flags.has_bulb) {
+        want_bulb = true;
+        bulb_dir_world_target = il->bulb_dir_world;
+        bulb_target = (RGB_888) { ambient_base, ambient_base, ambient_base };
     }
 
+    if (want_bulb) {
+        if (enable_smoothing && il->flags.has_bulb) {
+            il->bulb_dir_world = M_TR3_LerpXYZShift(
+                il->bulb_dir_world, bulb_dir_world_target, 3);
+            il->bulb_color = M_TR3_LerpRGBShift(il->bulb_color, bulb_target, 3);
+        } else {
+            il->bulb_dir_world = bulb_dir_world_target;
+            il->bulb_color = bulb_target;
+            il->flags.has_bulb = true;
+        }
+    }
+
+    // Dynamic (smoothed while active, drops instantly when not present)
+    bool want_dynamic = false;
+    XYZ_32 dynamic_dir_world_target = {};
+    RGB_888 dynamic_target = {};
+
     if (brightest_dynamic != nullptr && brightest_dyn_shade > 0) {
-        dirs_view[2] = M_VectorViewFromDelta(dyn_delta);
+        want_dynamic = true;
+        dynamic_dir_world_target = M_TR3_NormalizeDeltaWorld(dyn_delta);
+
         int32_t r8 =
             (brightest_dyn_shade * (int32_t)brightest_dynamic->color.r) >> 13;
         int32_t g8 =
@@ -312,10 +419,55 @@ static void M_TR3_CalculateLight(const XYZ_32 pos, const ROOM *const room)
         CLAMP(r8, 0, 255);
         CLAMP(g8, 0, 255);
         CLAMP(b8, 0, 255);
+        dynamic_target = (RGB_888) { r8, g8, b8 };
+    }
+
+    if (want_dynamic) {
+        if (enable_smoothing && il->flags.has_dynamic) {
+            il->dynamic_dir_world = M_TR3_LerpXYZShift(
+                il->dynamic_dir_world, dynamic_dir_world_target, 1);
+            il->dynamic_color =
+                M_TR3_LerpRGBShift(il->dynamic_color, dynamic_target, 1);
+        } else {
+            il->dynamic_dir_world = dynamic_dir_world_target;
+            il->dynamic_color = dynamic_target;
+            il->flags.has_dynamic = true;
+        }
+    }
+
+    const RGB_F ambient = {
+        .r = il->ambient / 255.0f,
+        .g = il->ambient / 255.0f,
+        .b = il->ambient / 255.0f,
+    };
+
+    RGB_F colors[3] = {};
+    XYZ_32 dirs_view[3] = {};
+
+    if (want_sun && il->flags.has_sun) {
+        dirs_view[0] = M_TR3_VectorViewFromWorld(il->sun_dir_world);
+        colors[0] = (RGB_F) {
+            .r = il->sun_color.r / 255.0f,
+            .g = il->sun_color.g / 255.0f,
+            .b = il->sun_color.b / 255.0f,
+        };
+    }
+
+    if (want_bulb && il->flags.has_bulb) {
+        dirs_view[1] = M_TR3_VectorViewFromWorld(il->bulb_dir_world);
+        colors[1] = (RGB_F) {
+            .r = il->bulb_color.r / 255.0f,
+            .g = il->bulb_color.g / 255.0f,
+            .b = il->bulb_color.b / 255.0f,
+        };
+    }
+
+    if (want_dynamic && il->flags.has_dynamic) {
+        dirs_view[2] = M_TR3_VectorViewFromWorld(il->dynamic_dir_world);
         colors[2] = (RGB_F) {
-            .r = r8 / 255.0f,
-            .g = g8 / 255.0f,
-            .b = b8 / 255.0f,
+            .r = il->dynamic_color.r / 255.0f,
+            .g = il->dynamic_color.g / 255.0f,
+            .b = il->dynamic_color.b / 255.0f,
         };
     }
 
@@ -332,7 +484,7 @@ void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
     const ROOM *const room = Room_Get(room_num);
 
     if (g_TRVersion >= 3) {
-        M_TR3_CalculateLight(pos, room);
+        M_TR3_CalculateLightSmoothed(nullptr, pos, room);
         return;
     }
 
@@ -511,14 +663,20 @@ void Output_CalculateObjectLighting(
     };
     Matrix_Pop();
 
-    Output_CalculateLight(pos, item->room_num);
+    if (g_TRVersion >= 3) {
+        M_TR3_CalculateLightSmoothed(item, pos, Room_Get(item->room_num));
+    } else {
+        Output_CalculateLight(pos, item->room_num);
+    }
 }
 
-void Output_InitLight(void)
+void Output_Lights_Init(void)
 {
     if (m_DynamicLights == nullptr) {
         m_DynamicLights = Vector_Create(sizeof(LIGHT));
     }
+
+    memset(m_TR3ItemLights, 0, sizeof(m_TR3ItemLights));
 
     for (int32_t i = 0; i < M_LIGHT_CYCLE; i++) {
         for (int32_t j = 0; j < M_LIGHT_CYCLE; j++) {
@@ -528,12 +686,17 @@ void Output_InitLight(void)
     }
 }
 
-void Output_ShutdownLight(void)
+void Output_Lights_Shutdown(void)
 {
     if (m_DynamicLights != nullptr) {
         Vector_Free(m_DynamicLights);
         m_DynamicLights = nullptr;
     }
+}
+
+void Output_Lights_ObserveLevelLoad(void)
+{
+    memset(m_TR3ItemLights, 0, sizeof(m_TR3ItemLights));
 }
 
 void Output_ResetDynamicLights(void)
@@ -567,7 +730,7 @@ void Output_AddDynamicLight(
             .pos = pos,
             .shade = {},
             .falloff.value_1 = falloff_param << M_TR3_DYNAMIC_FALLOFF_SHIFT,
-            .color = (RGB_888) { (uint8_t)c, (uint8_t)c, (uint8_t)c },
+            .color = (RGB_888) { c, c, c },
             .type = 0,
             .dir = {},
         };

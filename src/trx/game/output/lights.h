@@ -6,8 +6,10 @@
 #include <trx/game/viewport.h>
 #include <trx/vector.h>
 
-void Output_InitLight(void);
-void Output_ShutdownLight(void);
+void Output_Lights_Init(void);
+void Output_Lights_Shutdown(void);
+void Output_Lights_ObserveLevelLoad(void);
+
 void Output_CalculateLight(XYZ_32 pos, int16_t room_num);
 void Output_CalculateStaticLight(int16_t adder);
 void Output_CalculateStaticLightRGB15(int16_t rgb15);
