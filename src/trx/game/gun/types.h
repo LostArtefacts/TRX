@@ -1,8 +1,7 @@
 #pragma once
 
+#include <trx/game/math/types.h>
 #include <trx/game/sound/ids.h>
-
-#include <stdint.h>
 
 typedef enum {
     WEAPON_TYPE_DUAL_PISTOLS,
@@ -28,6 +27,7 @@ typedef struct {
     int16_t recoil_frame;
     int16_t flash_time;
     int16_t flash_shade;
+    XYZ_32 flash_pos;
     SAMPLE_TRX_ID sample_num;
     bool is_available;
 } WEAPON_INFO;
