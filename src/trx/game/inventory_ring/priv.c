@@ -13,6 +13,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
 #include <trx/strings.h>
+#include <trx/version.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -174,6 +175,21 @@ void InvRing_Light(const INV_RING *const ring)
     Math_GetVectorAngles(ring->light.x, ring->light.y, ring->light.z, angles);
     Output_SetLightDivider(0x6000);
     Output_RotateLight(angles[1], angles[0]);
+
+    if (g_TRVersion >= 3) {
+        const RGB_F ambient = { 0.70f, 0.70f, 0.70f };
+        const RGB_F colors[3] = {
+            {},
+            { 0.40f, 0.40f, 0.40f },
+            {},
+        };
+        const XYZ_32 dirs_view[3] = {
+            {},
+            Output_GetLightVectorView(),
+            {},
+        };
+        Output_SetTR3Light(ambient, colors, dirs_view);
+    }
 }
 
 void InvRing_CalcAdders(INV_RING *const ring, const int16_t rotation_duration)
