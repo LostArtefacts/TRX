@@ -1,8 +1,10 @@
+#include <trx/colors.h>
 #include <trx/config.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/version.h>
 
 static void M_Control(const int16_t effect_num)
 {
@@ -16,7 +18,12 @@ static void M_Control(const int16_t effect_num)
 
     effect->rot.z = Random_GetControl();
     if (g_Config.visuals.enable_gun_lighting) {
-        Output_AddDynamicLight(effect->pos, 12, 11);
+        if (g_TRVersion >= 3) {
+            Output_AddDynamicLightRGB(
+                effect->pos, 12, (RGB_888) { 192, 144, 0 });
+        } else {
+            Output_AddDynamicLight(effect->pos, 12, 11);
+        }
     }
 }
 

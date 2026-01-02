@@ -28,6 +28,28 @@ static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
 // TODO: meh
 extern void Window_Smash(int16_t item_num);
 
+static void M_DrawGunGlow(const XYZ_32 offset, const RGB_F color)
+{
+    if (g_TRVersion < 3) {
+        return;
+    }
+    const OBJECT *const glow_obj = Object_Get(O_GLOW);
+    if (!glow_obj->loaded) {
+        return;
+    }
+
+    Matrix_Push();
+    Matrix_TranslateRel32(offset);
+    const XYZ_32 pos = {
+        .x = (int32_t)(g_WMatrixPtr->_03 >> W2V_SHIFT),
+        .y = (int32_t)(g_WMatrixPtr->_13 >> W2V_SHIFT),
+        .z = (int32_t)(g_WMatrixPtr->_23 >> W2V_SHIFT),
+    };
+    Matrix_Pop();
+    Output_DrawSprite(
+        pos.x, pos.y, pos.z, glow_obj->mesh_idx, 0, color, DRAW_BLEND_ADD);
+}
+
 static void M_SmashItem(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -224,7 +246,7 @@ void Gun_DrawFlash(
         return;
     }
 
-    OBJECT_ID flash_obj = O_GUN_FLASH;
+    OBJECT_ID flash_object_id = O_GUN_FLASH;
     XYZ_16 rot = {};
 
     switch (weapon_type) {
@@ -237,13 +259,13 @@ void Gun_DrawFlash(
         } else {
             rot.z += (Random_GetDraw() & 0xFFF) + 0x1800;
         }
-        flash_obj = O_M16_FLASH;
+        flash_object_id = O_M16_FLASH;
         break;
 
     case LGT_FLARE:
         rot.x = -DEG_90;
         rot.y = 2 * Random_GetDraw();
-        flash_obj = O_FLARE_FIRE;
+        flash_object_id = O_FLARE_FIRE;
         break;
 
     default:
@@ -265,11 +287,17 @@ void Gun_DrawFlash(
         Matrix_RotZ(rot.z);
     }
 
-    Output_CalculateStaticLight(weapon.flash_shade);
-    const OBJECT *const obj = Object_Get(flash_obj);
-    if (obj->loaded) {
-        Object_DrawMesh(obj->mesh_idx, clip, interpolated);
+    if (g_TRVersion < 3) {
+        Output_CalculateStaticLight(weapon.flash_shade);
+    } else {
+        Output_CalculateStaticLightRGB_F(weapon.flash_color);
     }
+    const OBJECT *const flash_obj = Object_Get(flash_object_id);
+    if (flash_obj->loaded) {
+        Object_DrawMesh(flash_obj->mesh_idx, clip, interpolated);
+    }
+
+    M_DrawGunGlow(weapon.glow_pos, weapon.glow_color);
 }
 
 void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/colors.h>
 #include <trx/game/items/const.h>
 #include <trx/game/math.h>
 #include <trx/game/rooms/enum.h>
@@ -86,6 +87,9 @@ typedef struct {
     XYZ_32 pos;
     SHADE shade;
     FALLOFF falloff;
+    RGB_888 color;
+    uint8_t type; // TR3: 0 = point, != 0 = sun
+    XYZ_16 dir; // TR3: sun direction (type != 0)
 } LIGHT;
 
 typedef struct {

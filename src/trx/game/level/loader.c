@@ -670,11 +670,45 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
             : GameBuf_Alloc(sizeof(LIGHT) * room->num_lights, GBUF_ROOM_LIGHTS);
         for (int32_t i = 0; i < room->num_lights; i++) {
             LIGHT *const light = &room->lights[i];
-            M_ReadPosition(&light->pos, file);
-            M_ReadShade(loader, &light->shade, file);
-            light->falloff.value_1 = VFile_ReadS32(file);
-            if (loader->game_version >= 2) {
-                light->falloff.value_2 = VFile_ReadS32(file);
+            if (loader->game_version == 3) {
+                // TR3 room lights use the LIGHT_INFO struct layout:
+                // pos (s32*3) + rgb (u8*3) + type (u8) + union (8 bytes).
+                M_ReadPosition(&light->pos, file);
+                light->color.r = VFile_ReadU8(file);
+                light->color.g = VFile_ReadU8(file);
+                light->color.b = VFile_ReadU8(file);
+                light->type = VFile_ReadU8(file);
+                if (light->type != 0u) {
+                    light->dir.x = VFile_ReadS16(file);
+                    light->dir.y = VFile_ReadS16(file);
+                    light->dir.z = VFile_ReadS16(file);
+                    VFile_Skip(file, sizeof(int16_t)); // pad
+                    light->shade.value_1 = 0;
+                    light->shade.value_2 = 0;
+                    light->falloff.value_1 = 0;
+                    light->falloff.value_2 = 0;
+                } else {
+                    int32_t intensity = VFile_ReadS32(file);
+                    const int32_t falloff = VFile_ReadS32(file);
+                    CLAMP(intensity, INT16_MIN, INT16_MAX);
+                    light->shade.value_1 = (int16_t)intensity;
+                    light->shade.value_2 = (int16_t)intensity;
+                    light->falloff.value_1 = falloff;
+                    light->falloff.value_2 = falloff;
+                    light->dir = (XYZ_16) { 0, 0, 0 };
+                }
+            } else {
+                M_ReadPosition(&light->pos, file);
+                M_ReadShade(loader, &light->shade, file);
+                light->falloff.value_1 = VFile_ReadS32(file);
+                if (loader->game_version >= 2) {
+                    light->falloff.value_2 = VFile_ReadS32(file);
+                } else {
+                    light->falloff.value_2 = light->falloff.value_1;
+                }
+                light->color = (RGB_888) { 255, 255, 255 };
+                light->type = 0;
+                light->dir = (XYZ_16) { 0, 0, 0 };
             }
         }
 

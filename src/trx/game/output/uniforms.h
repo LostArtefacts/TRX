@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/colors.h>
 #include <trx/game/matrix.h>
 #include <trx/game/rooms/types.h>
 
@@ -9,6 +10,9 @@ typedef struct {
     int32_t ls_adder;
     int32_t ls_divider;
     XYZ_32 ls_vector_view;
+    RGB_F tr3_ambient;
+    RGB_F tr3_light_color[3];
+    XYZ_32 tr3_light_dir_view[3];
 } OUTPUT_LIGHT_INFO;
 
 typedef struct {

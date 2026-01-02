@@ -46,7 +46,7 @@ typedef struct SPARK {
     int8_t rot_add;
 
     int32_t sprite_idx;
-    uint8_t trans_type;
+    DRAW_TYPE draw_type;
 } SPARK;
 
 enum {
