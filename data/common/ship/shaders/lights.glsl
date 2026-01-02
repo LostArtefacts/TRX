@@ -205,6 +205,17 @@ vec3 lightDynamicTR3(vec4 vertexPos)
     return add;
 }
 
+float getDynamicLightContrastMul()
+{
+    // `uMinShade` is configured via the "lighting contrast" option.
+    // For TR1/TR2 it clamps the minimum shade; in TR3 the lighting is additive,
+    // so we remap it to a multiplier:
+    // LOW: uMinShade = SHADE_NEUTRAL -> 1.0
+    // MED: uMinShade = SHADE_HIGH    -> 1.5
+    // HIGH:uMinShade = 0             -> 2.0
+    return clamp(2.0 - (uMinShade / float(SHADE_NEUTRAL)), 1.0, 2.0);
+}
+
 float light(float shade, uint flags, vec3 normal, vec4 pos, float phase)
 {
     if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
@@ -253,7 +264,10 @@ LightingResult light(
     if (uTRVersion >= 3) {
         if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
             result.color.rgb =
-                clamp(result.color.rgb + lightDynamicTR3(pos), 0.0, 1.0);
+                clamp(
+                    result.color.rgb
+                        + lightDynamicTR3(pos) * getDynamicLightContrastMul(),
+                    0.0, 1.0);
         }
         if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
             result.color.rgb *= lightObjectsTR3(normal);

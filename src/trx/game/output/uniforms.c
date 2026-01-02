@@ -94,8 +94,10 @@ static int16_t M_GetMinShade(void)
         return SHADE_NEUTRAL;
     case LIGHTING_CONTRAST_MEDIUM:
         return SHADE_HIGH;
-    default:
+    case LIGHTING_CONTRAST_HIGH:
         return 0;
+    default:
+        return SHADE_NEUTRAL;
     }
 }
 
