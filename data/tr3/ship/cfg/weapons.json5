@@ -7,6 +7,7 @@
     },
 
     "LGT_PISTOLS": {
+        "type": "WEAPON_TYPE_DUAL_PISTOLS",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],
         "right_angles": [-60, +170, -80, +80],
@@ -21,6 +22,7 @@
     },
 
     "LGT_DESERT_EAGLE": {
+        "type": "WEAPON_TYPE_SINGLE_PISTOL",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-10, +10, -80, +80],
         "right_angles": [0, 0, 0, 0],
@@ -35,6 +37,7 @@
     },
 
     "LGT_UZIS": {
+        "type": "WEAPON_TYPE_DUAL_PISTOLS",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],
         "right_angles": [-60, +170, -80, +80],
@@ -49,6 +52,7 @@
     },
 
     "LGT_SHOTGUN": {
+        "type": "WEAPON_TYPE_RIFLE",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -66,6 +70,7 @@
     },
 
     "LGT_MP5": {
+        "type": "WEAPON_TYPE_RIFLE",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -83,6 +88,7 @@
     },
 
     "LGT_GRENADE": {
+        "type": "WEAPON_TYPE_RIFLE",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -100,6 +106,7 @@
     },
 
     "LGT_ROCKET": {
+        "type": "WEAPON_TYPE_RIFLE",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -117,6 +124,7 @@
     },
 
     "LGT_HARPOON": {
+        "type": "WEAPON_TYPE_RIFLE",
         "lock_angles": [-60, +60, -65, +65],
         "left_angles": [-80, +80, -75, +75],
         "right_angles": [-80, +80, -75, +75],
@@ -134,6 +142,7 @@
     },
 
     "LGT_SKIDOO": {
+        "type": "WEAPON_TYPE_MOUNTED",
         "lock_angles": [-30, 30, -55, 55],
         "left_angles": [-30, 30, -55, 55],
         "right_angles": [-30, 30, -55, 55],

@@ -3,6 +3,7 @@
 #include <trx/config/types.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/types.h>
+#include <trx/game/gun/types.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/objects/ids.h>
