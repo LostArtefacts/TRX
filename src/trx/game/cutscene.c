@@ -9,6 +9,7 @@
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
 #include <trx/game/water_fx.h>
+#include <trx/game/weather_fx.h>
 
 static CAMERA_INFO m_LocalCamera = {};
 
@@ -133,6 +134,7 @@ GF_COMMAND Cutscene_Control(void)
     Lara_Hair_Control(true);
     Camera_UpdateCutscene();
     WaterFX_Update();
+    WeatherFX_Update();
     Output_AnimateTextures(1);
 
     CINE_DATA *const cine_data = Camera_GetCineData();

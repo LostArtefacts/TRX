@@ -641,6 +641,23 @@ static void M_LoadLevel(
         }
     }
 
+    level->weather_type = WEATHER_NONE;
+    {
+        const JSON_VALUE *const tmp_v =
+            JSON_ObjectGetValue(jlvl_obj, "weather_type");
+        if (tmp_v != nullptr) {
+            const char *const tmp =
+                JSON_ValueGetString(tmp_v, JSON_INVALID_STRING);
+            if (tmp == JSON_INVALID_STRING) {
+                Shell_ExitSystemFmt(
+                    "%s, level %d: 'weather_type' must be a string",
+                    ctx->script_path, level->num);
+            }
+
+            level->weather_type = ENUM_MAP_GET(WEATHER_TYPE, tmp, WEATHER_NONE);
+        }
+    }
+
     level->unobtainable.pickups =
         JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
     level->unobtainable.kills =

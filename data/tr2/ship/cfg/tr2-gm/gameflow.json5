@@ -35,6 +35,7 @@
         "data/injections/lara_extra.bin",
         "data/injections/lara_rifle_sfx.bin",
         "data/injections/secret_models_gm.bin",
+        "data/injections/snow.bin",
     ],
 
     "levels": [

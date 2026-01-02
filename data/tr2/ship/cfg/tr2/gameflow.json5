@@ -39,6 +39,7 @@
         "data/injections/lara_extra.bin",
         "data/injections/lara_rifle_sfx.bin",
         "data/injections/secret_models_og.bin",
+        "data/injections/snow.bin",
     ],
 
     "levels": [
@@ -64,6 +65,7 @@
                 "data/injections/lara_animations.bin",
                 "data/injections/pda_model.bin",
                 "data/injections/pickup_aid.bin",
+                "data/injections/snow.bin",
             ],
         },
 
@@ -346,6 +348,7 @@
         {
             "path": "data/skidoo.tr2",
             "music_track": 29,
+            "weather_type": "snow",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 5},
@@ -608,6 +611,7 @@
         {
             "path": "data/skidoo.tr2",
             "music_track": 29,
+            "weather_type": "snow",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_4"},

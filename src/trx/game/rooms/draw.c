@@ -7,6 +7,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 #include <trx/game/water_fx.h>
+#include <trx/game/weather_fx.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
@@ -490,6 +491,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 
     Output_SetupAboveWater(false);
     WaterFX_Draw();
+    WeatherFX_Draw();
     Sparks_Draw();
 }
 

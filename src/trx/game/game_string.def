@@ -657,6 +657,9 @@ GS_DEFINE(CMD_PLAY_MUSIC_TRACK, "Playing music track %d")
 GS_DEFINE(CMD_PLAY_MUSIC_STOPPED, "Music stopped")
 GS_DEFINE(CMD_INVALID_MUSIC_TRACK, "Invalid music track")
 
+GS_DEFINE(CMD_WEATHER_SET, "Weather set to %s")
+GS_DEFINE(CMD_INVALID_WEATHER, "Invalid weather: %s (valid: %s)")
+
 GS_DEFINE(CONSOLE_CMD_HELP_LIST,      "Available commands:")
 GS_DEFINE(CONSOLE_HELP_BRAID,         "Toggles Lara's braid.")
 GS_DEFINE(CONSOLE_HELP_CHEATS,        "Toggles in-game cheats on or off.")
@@ -696,6 +699,7 @@ GS_DEFINE(CONSOLE_HELP_TEXTURES,      "Toggles textures.")
 GS_DEFINE(CONSOLE_HELP_TITLE,         "Returns to the title screen.")
 GS_DEFINE(CONSOLE_HELP_TP,            "Teleports Lara to a given position or room number.")
 GS_DEFINE(CONSOLE_HELP_VSYNC,         "Toggles vertical sync.")
+GS_DEFINE(CONSOLE_HELP_WEATHER,       "Changes the current weather type.")
 GS_DEFINE(CONSOLE_HELP_WIREFRAME,     "Toggles wireframe rendering.")
 
 GS_DEFINE(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER, "This setting is enforced by the level builder and cannot be changed.")

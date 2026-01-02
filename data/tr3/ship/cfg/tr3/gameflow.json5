@@ -31,6 +31,7 @@
         "data/injections/lara_animations.bin",
         "data/injections/pda_model.bin",
         "data/injections/lara_extra.bin",
+        "data/injections/snow.bin",
     ],
 
     "levels": [
@@ -50,6 +51,7 @@
         {
             "path": "data/jungle.tr2",
             "music_track": 34,
+            "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "small_medipack"},
@@ -81,6 +83,7 @@
         {
             "path": "data/quadchas.tr2",
             "music_track": 34,
+            "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -163,6 +166,7 @@
         {
             "path": "data/roofs.tr2",
             "music_track": 73,
+            "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 1792},
@@ -206,6 +210,7 @@
         {
             "path": "data/office.tr2",
             "music_track": 78,
+            "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 5120},
@@ -268,6 +273,7 @@
             "path": "data/antarc.tr2",
             "music_track": 28,
             "cold_water": true,
+            "weather_type": "snow",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 3},
@@ -311,6 +317,7 @@
         {
             "path": "data/chamber.tr2",
             "music_track": 26,
+            "weather_type": "snow",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -338,6 +345,7 @@
             "type": "bonus",
             "path": "data/stpaul.tr2",
             "music_track": 30,
+            "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 10000},

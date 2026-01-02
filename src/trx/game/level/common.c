@@ -18,6 +18,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/water_fx.h>
+#include <trx/game/weather_fx.h>
 #include <trx/log.h>
 
 void Level_Unload(void)
@@ -89,6 +90,8 @@ bool Level_Initialise(
     Effect_InitialiseArray();
     LOT_InitialiseArray();
     WaterFX_Init();
+    WeatherFX_Init();
+    WeatherFX_SetWeather(level->weather_type);
     Sparks_Init();
 
     Option_Reset();

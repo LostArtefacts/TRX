@@ -53,12 +53,12 @@ static M_PRIV m_Priv;
 
 static int M_CompareQuadDepth(const void *const a, const void *const b)
 {
-    const M_QUAD_SORT *const quad_a = a;
-    const M_QUAD_SORT *const quad_b = b;
-    if (quad_b->sort_key == quad_a->sort_key) {
-        return (intptr_t)quad_b->quad - (intptr_t)quad_a->quad;
+    const M_QUAD_SORT *const prim_a = a;
+    const M_QUAD_SORT *const prim_b = b;
+    if (prim_b->sort_key == prim_a->sort_key) {
+        return (intptr_t)prim_b->quad - (intptr_t)prim_a->quad;
     }
-    return quad_b->sort_key - quad_a->sort_key;
+    return prim_b->sort_key - prim_a->sort_key;
 }
 
 static int32_t M_GetViewDepth(const XYZ_32 pos)
@@ -72,12 +72,16 @@ static int32_t M_GetViewDepth(const XYZ_32 pos)
     // clang-format on
 }
 
-static void M_SortQuads(M_PRIV *const p, const VECTOR *const scheduled)
+static void M_SortPrims(M_PRIV *const p, const SCENE_PASS pass)
 {
     Vector_Clear(p->sorted);
 
-    for (int32_t i = 0; i < scheduled->count; i++) {
-        const M_QUAD *const quad = Vector_Get(scheduled, i);
+    const VECTOR *const quads = pass == SCENE_PASS_BLEND_ADD
+        ? p->scheduled_blend_add
+        : p->scheduled_transparent;
+
+    for (int32_t i = 0; i < quads->count; i++) {
+        const M_QUAD *const quad = Vector_Get(quads, i);
         const XYZ_32 centroid = {
             .x = (quad->world_pos[0].x + quad->world_pos[1].x
                   + quad->world_pos[2].x + quad->world_pos[3].x)
@@ -177,12 +181,7 @@ static void M_RenderPass(
     Vector_Clear(p->vertices);
     Vector_Clear(p->sorted);
 
-    const VECTOR *scheduled = p->scheduled_transparent;
-    if (pass == SCENE_PASS_BLEND_ADD) {
-        scheduled = p->scheduled_blend_add;
-    }
-
-    M_SortQuads(p, scheduled);
+    M_SortPrims(p, pass);
     for (int32_t i = 0; i < p->sorted->count; i++) {
         const M_QUAD_SORT *const sort = Vector_Get(p->sorted, i);
         M_EmitQuadVertices(p, sort->quad);
@@ -334,6 +333,24 @@ void OutputSource_PolyFX_StageSpriteQuadWorldBlendAdd(
     M_StageQuad(
         sprite_idx, world_pos, nullptr, color,
         VERT_NO_LIGHTING | VERT_NO_WIBBLE, p->scheduled_blend_add);
+}
+
+void OutputSource_PolyFX_StageQuadTransparentExt(
+    const int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
+    const RGBA_8888 color[4], const uint16_t flags)
+{
+    M_PRIV *const p = &m_Priv;
+    M_StageQuad(
+        sprite_idx, world_pos, disp, color, flags, p->scheduled_transparent);
+}
+
+void OutputSource_PolyFX_StageQuadBlendAddExt(
+    const int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
+    const RGBA_8888 color[4], const uint16_t flags)
+{
+    M_PRIV *const p = &m_Priv;
+    M_StageQuad(
+        sprite_idx, world_pos, disp, color, flags, p->scheduled_blend_add);
 }
 
 void OutputSource_PolyFX_StageSpark(const SPARK *const spark)

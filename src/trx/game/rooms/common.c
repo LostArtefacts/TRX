@@ -9,9 +9,12 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound/common.h>
+#include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
 #include <trx/version.h>
+
+#include <string.h>
 
 static int32_t m_RoomCount = 0;
 static ROOM *m_Rooms = nullptr;
@@ -19,6 +22,18 @@ static bool m_FlipStatus = false;
 static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
+
+#define M_OUTSIDE_TABLE_BLOCK_SHIFT 12 // 4096 (4 * WALL_L)
+#define M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL 64
+#define M_OUTSIDE_TABLE_SENTINEL NO_ROOM
+#define M_OUTSIDE_OFFSET_EMPTY 0xFFFF
+
+static int16_t *m_OutsideRoomTable = nullptr;
+static uint16_t *m_OutsideRoomOffsets = nullptr;
+static int32_t m_OutsideGridX = 0;
+static int32_t m_OutsideGridZ = 0;
+static int32_t m_OutsideOriginCellX = 0;
+static int32_t m_OutsideOriginCellZ = 0;
 
 static void M_AddFlipItems(const ROOM *const room)
 {
@@ -71,6 +86,13 @@ void Room_InitialiseRooms(const int32_t num_rooms)
     m_Rooms = num_rooms == 0
         ? nullptr
         : GameBuf_Alloc(sizeof(ROOM) * num_rooms, GBUF_ROOMS);
+
+    m_OutsideRoomTable = nullptr;
+    m_OutsideRoomOffsets = nullptr;
+    m_OutsideGridX = 0;
+    m_OutsideGridZ = 0;
+    m_OutsideOriginCellX = 0;
+    m_OutsideOriginCellZ = 0;
 }
 
 int32_t Room_GetCount(void)
@@ -87,6 +109,262 @@ ROOM *Room_Get(const int32_t room_num)
         return nullptr;
     }
     return &m_Rooms[room_num];
+}
+
+void Room_BuildOutsideTable(void)
+{
+    m_OutsideRoomTable = nullptr;
+    m_OutsideRoomOffsets = nullptr;
+    m_OutsideGridX = 0;
+    m_OutsideGridZ = 0;
+    m_OutsideOriginCellX = 0;
+    m_OutsideOriginCellZ = 0;
+
+    const int32_t num_rooms = Room_GetCount();
+    if (num_rooms <= 0) {
+        return;
+    }
+
+    {
+        int32_t min_x = INT32_MAX;
+        int32_t min_z = INT32_MAX;
+        int32_t max_x = INT32_MIN;
+        int32_t max_z = INT32_MIN;
+        for (int32_t i = 0; i < num_rooms; i++) {
+            const ROOM *const room = Room_Get(i);
+            if (room == nullptr) {
+                continue;
+            }
+            min_x = MIN(min_x, room->pos.x);
+            min_z = MIN(min_z, room->pos.z);
+            max_x = MAX(max_x, room->pos.x + (room->size.x << WALL_SHIFT));
+            max_z = MAX(max_z, room->pos.z + (room->size.z << WALL_SHIFT));
+        }
+
+        m_OutsideOriginCellX = (min_x >> M_OUTSIDE_TABLE_BLOCK_SHIFT) - 1;
+        m_OutsideOriginCellZ = (min_z >> M_OUTSIDE_TABLE_BLOCK_SHIFT) - 1;
+        const int32_t max_cell_x = (max_x >> M_OUTSIDE_TABLE_BLOCK_SHIFT) + 1;
+        const int32_t max_cell_z = (max_z >> M_OUTSIDE_TABLE_BLOCK_SHIFT) + 1;
+
+        m_OutsideGridX = max_cell_x - m_OutsideOriginCellX + 1;
+        m_OutsideGridZ = max_cell_z - m_OutsideOriginCellZ + 1;
+        if (m_OutsideGridX < 1) {
+            m_OutsideGridX = 1;
+        }
+        if (m_OutsideGridZ < 1) {
+            m_OutsideGridZ = 1;
+        }
+    }
+
+    const int32_t full_table_size =
+        m_OutsideGridX * m_OutsideGridZ * M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL;
+    int16_t *full_table = Memory_Alloc(full_table_size * sizeof(int16_t));
+    for (int32_t i = 0; i < full_table_size; i++) {
+        full_table[i] = M_OUTSIDE_TABLE_SENTINEL;
+    }
+
+    const int32_t blocks_x = m_OutsideGridX * 4;
+    const int32_t blocks_z = m_OutsideGridZ * 4;
+    for (int32_t y = 0; y < blocks_x; y += 4) {
+        for (int32_t x = 0; x < blocks_z; x += 4) {
+            for (int32_t i = 0; i < num_rooms; i++) {
+                const ROOM *const room = Room_Get(i);
+
+                const int32_t room_x =
+                    (room->pos.z >> WALL_SHIFT) - (m_OutsideOriginCellZ << 2);
+                const int32_t room_y =
+                    (room->pos.x >> WALL_SHIFT) - (m_OutsideOriginCellX << 2);
+
+                bool cont = false;
+                for (int32_t ry = 0; ry < 4 && !cont; ry++) {
+                    for (int32_t rx = 0; rx < 4; rx++) {
+                        if (x + rx >= room_x
+                            && x + rx < room_x + room->size.z - 2
+                            && y + ry >= room_y
+                            && y + ry < room_y + room->size.x - 2) {
+                            cont = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!cont) {
+                    continue;
+                }
+
+                int16_t *const cell =
+                    &full_table
+                        [M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL
+                         * ((x >> 2) + m_OutsideGridZ * (y >> 2))];
+                for (int32_t lp = 0; lp < M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL;
+                     lp++) {
+                    if (cell[lp] == M_OUTSIDE_TABLE_SENTINEL) {
+                        cell[lp] = i;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    const int32_t offset_count = m_OutsideGridX * m_OutsideGridZ;
+    m_OutsideRoomOffsets = GameBuf_Alloc(
+        sizeof(uint16_t) * (size_t)offset_count, GBUF_OUTSIDE_ROOM_TABLE);
+    for (int32_t i = 0; i < offset_count; i++) {
+        m_OutsideRoomOffsets[i] = M_OUTSIDE_OFFSET_EMPTY;
+    }
+
+    m_OutsideRoomTable = GameBuf_Alloc(
+        full_table_size * sizeof(int16_t), GBUF_OUTSIDE_ROOM_TABLE);
+    int16_t *const out_base = m_OutsideRoomTable;
+    int16_t *out_ptr = out_base;
+
+    for (int32_t y = 0; y < m_OutsideGridX; y++) {
+        for (int32_t x = 0; x < m_OutsideGridZ; x++) {
+            const int32_t cell_idx = x + y * m_OutsideGridZ;
+            const int16_t *const cell =
+                &full_table[M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL * cell_idx];
+
+            int32_t count = 0;
+            while (count < M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL
+                   && cell[count] != M_OUTSIDE_TABLE_SENTINEL) {
+                count++;
+            }
+
+            if (count == 0) {
+                continue;
+            }
+
+            if (count == 1) {
+                m_OutsideRoomOffsets[cell_idx] = 0x8000U | (uint16_t)cell[0];
+                continue;
+            }
+
+            int16_t *scan = out_base;
+            while (scan < out_ptr) {
+                if (memcmp(scan, cell, count * sizeof(int16_t)) == 0) {
+                    m_OutsideRoomOffsets[cell_idx] =
+                        (uint16_t)(scan - out_base);
+                    break;
+                }
+
+                int32_t scan_len = 0;
+                while (scan[scan_len] != M_OUTSIDE_TABLE_SENTINEL) {
+                    scan_len++;
+                }
+                scan += scan_len + 1;
+            }
+
+            if (scan < out_ptr) {
+                continue;
+            }
+
+            const int32_t new_off = (int32_t)(out_ptr - out_base);
+            ASSERT(new_off >= 0);
+            ASSERT(new_off < 0x8000);
+            m_OutsideRoomOffsets[cell_idx] = new_off;
+
+            ASSERT(new_off + count + 1 <= full_table_size);
+            memcpy(out_ptr, cell, count * sizeof(int16_t));
+            out_ptr += count;
+            *out_ptr++ = M_OUTSIDE_TABLE_SENTINEL;
+        }
+    }
+
+    Memory_FreePointer(&full_table);
+}
+
+int32_t Room_GetOutsideStatus(const XYZ_32 pos, int16_t *const out_room_num)
+{
+    if (out_room_num != nullptr) {
+        *out_room_num = NO_ROOM;
+    }
+
+    if (m_OutsideRoomTable == nullptr || m_OutsideRoomOffsets == nullptr) {
+        return -2;
+    }
+
+    const int32_t cell_x =
+        (pos.x >> M_OUTSIDE_TABLE_BLOCK_SHIFT) - m_OutsideOriginCellX;
+    const int32_t cell_z =
+        (pos.z >> M_OUTSIDE_TABLE_BLOCK_SHIFT) - m_OutsideOriginCellZ;
+    if (cell_x < 0 || cell_x >= m_OutsideGridX || cell_z < 0
+        || cell_z >= m_OutsideGridZ) {
+        return -2;
+    }
+
+    const uint16_t entry =
+        m_OutsideRoomOffsets[m_OutsideGridZ * cell_x + cell_z];
+    if (entry == M_OUTSIDE_OFFSET_EMPTY) {
+        return -2;
+    }
+
+    const int16_t *p = nullptr;
+    int16_t single_room = M_OUTSIDE_TABLE_SENTINEL;
+    if ((entry & 0x8000U) != 0U) {
+        single_room = (int16_t)(entry & ~0x8000U);
+    } else {
+        p = &m_OutsideRoomTable[entry];
+    }
+
+    while (true) {
+        int16_t candidate_room_num;
+        if (p != nullptr) {
+            if (*p == M_OUTSIDE_TABLE_SENTINEL) {
+                break;
+            }
+            candidate_room_num = (int16_t)(*p);
+            p++;
+        } else {
+            if (single_room == M_OUTSIDE_TABLE_SENTINEL) {
+                break;
+            }
+            candidate_room_num = single_room;
+            single_room = M_OUTSIDE_TABLE_SENTINEL;
+        }
+
+        const ROOM *const room = Room_Get(candidate_room_num);
+        if (room == nullptr) {
+            continue;
+        }
+
+        if (pos.y <= room->max_ceiling || pos.y >= room->min_floor) {
+            continue;
+        }
+
+        if (pos.z <= room->pos.z + WALL_L
+            || pos.z >= room->pos.z + (room->size.z << WALL_SHIFT) - WALL_L) {
+            continue;
+        }
+
+        if (pos.x <= room->pos.x + WALL_L
+            || pos.x >= room->pos.x + (room->size.x << WALL_SHIFT) - WALL_L) {
+            continue;
+        }
+
+        int16_t rn = candidate_room_num;
+        const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &rn);
+        const int16_t floor = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+        if (floor == NO_HEIGHT || pos.y > floor) {
+            return -2;
+        }
+
+        const int16_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
+        if (pos.y < ceiling) {
+            return -2;
+        }
+
+        if (!room->flags.underwater && !room->flags.wind) {
+            return -3;
+        }
+
+        if (out_room_num != nullptr) {
+            *out_room_num = candidate_room_num;
+        }
+        return 1;
+    }
+
+    return -2;
 }
 
 int32_t Room_GetNumber(const ROOM *const room)

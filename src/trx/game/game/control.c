@@ -18,6 +18,7 @@
 #include <trx/game/sparks.h>
 #include <trx/game/stats.h>
 #include <trx/game/water_fx.h>
+#include <trx/game/weather_fx.h>
 #include <trx/version.h>
 
 #define M_FRAME_BUFFER(key)                                                    \
@@ -162,6 +163,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     Lara_Control();
     WaterFX_Update();
+    WeatherFX_Update();
     Lara_Hair_Control(false);
 
     Camera_Update();
