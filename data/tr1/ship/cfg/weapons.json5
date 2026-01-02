@@ -4,6 +4,7 @@
     },
 
     "LGT_FLARE": {
+        "flash_shade": 2048,
         "is_available": false,
     },
 
@@ -19,6 +20,7 @@
         "target_dist": 8.0,
         "recoil_frame": 9,
         "flash_time": 3,
+        "flash_shade": 5120,
         "sample_num": "SFX_LARA_PISTOLS",
     },
 
@@ -34,6 +36,7 @@
         "target_dist": 8.0,
         "recoil_frame": 9,
         "flash_time": 3,
+        "flash_shade": 4096,
         "sample_num": "SFX_LARA_MAGNUMS",
     },
 
@@ -49,6 +52,7 @@
         "target_dist": 8.0,
         "recoil_frame": 9,
         "flash_time": 3,
+        "flash_shade": 4096,
         "sample_num": "SFX_LARA_AUTOS",
         "is_available": false,
     },
@@ -65,6 +69,7 @@
         "target_dist": 8.0,
         "recoil_frame": 3,
         "flash_time": 2,
+        "flash_shade": 2560,
         "sample_num": "SFX_LARA_UZI_FIRE",
     },
 
@@ -83,6 +88,7 @@
         "undraw_frame": 21,
         "recoil_frame": 9,
         "flash_time": 3,
+        "flash_shade": 2560,
         "sample_num": "SFX_LARA_SHOTGUN",
     },
 
@@ -101,6 +107,7 @@
         "undraw_frame": 21,
         "recoil_frame": 0,
         "flash_time": 3,
+        "flash_shade": 2560,
         "sample_num": "",
         "is_available": false,
     },

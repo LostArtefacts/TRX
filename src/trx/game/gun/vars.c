@@ -83,6 +83,7 @@ void Gun_LoadVars(const char *const path)
         L_READ_INT("undraw_frame", g_Weapons[type].undraw_frame);
         L_READ_INT("recoil_frame", g_Weapons[type].recoil_frame);
         L_READ_INT("flash_time", g_Weapons[type].flash_time);
+        L_READ_INT("flash_shade", g_Weapons[type].flash_shade);
 
         // sample_num
         const char *const sample =
