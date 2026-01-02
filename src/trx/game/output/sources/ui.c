@@ -10,6 +10,7 @@
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
+#include <trx/version.h>
 
 // GL attribute mapping in the shader
 typedef enum {
@@ -157,6 +158,20 @@ static void M_Draw3DPickups(const M_PRIV *const p)
         Output_SetLightDivider((1 << W2V_SHIFT) * 2);
         Output_SetLightAdder(SHADE_LOW);
         Output_RotateLight(DEG_1 * -30, DEG_1 * 45);
+        if (g_TRVersion >= 3) {
+            const RGB_F ambient = { 0.70f, 0.70f, 0.70f };
+            const RGB_F colors[3] = {
+                {},
+                { 0.40f, 0.40f, 0.40f },
+                {},
+            };
+            const XYZ_32 dirs_view[3] = {
+                {},
+                Output_GetLightVectorView(),
+                {},
+            };
+            Output_SetTR3Light(ambient, colors, dirs_view);
+        }
 
         Matrix_TranslateRel16(frame->offset);
         Matrix_TranslateRel32((XYZ_32) {
