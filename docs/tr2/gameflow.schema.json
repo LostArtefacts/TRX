@@ -186,6 +186,14 @@
         "music_track": {
           "type": "integer"
         },
+        "weather_type": {
+          "type": "string",
+          "enum": [
+            "rain",
+            "snow"
+          ],
+          "description": "Enables a per-level weather effect."
+        },
         "sequence": {
           "type": "array",
           "items": {

@@ -3,6 +3,7 @@
 #include <trx/game/game_flow/enum.h>
 #include <trx/game/music/ids.h>
 #include <trx/game/objects/types.h>
+#include <trx/game/weather_fx.h>
 
 #include <stdint.h>
 
@@ -111,6 +112,7 @@ typedef struct {
     INJECTION_DATA injections;
 
     GF_LEVEL_SETTINGS settings;
+    WEATHER_TYPE weather_type;
 
     struct {
         uint32_t pickups;

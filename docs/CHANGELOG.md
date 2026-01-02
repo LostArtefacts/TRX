@@ -5,6 +5,7 @@
 - added the ability to change pause screen background
 - added the ability to control whether or not allies are hostile towards Lara via Lua (#3873)
 - added the ability to control via Lua which enemies are allies and which are ones that will fight with allies (#3873)
+- added support for TR3 weather effects to all games (#3881)
 - added support for 3D secret objects, and provided defaults for OG levels in TR2 (#4380)
 - added catalog object IDs to Lua
 - added the ability to swap meshes in Lua
@@ -13,6 +14,7 @@
 - added the ability to define gun types, flash shade and offset positions in `cfg/weapons.json5`
 - added a new input, that lets the player toggle ingame textures on/off, available by default under F8
 - added a new console command, `/textures`, that lets the player toggle ingame textures on/off
+- added a new console command, `/weather`, that lets the player control the weather
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
 - changed the lighting contrast key binding to F9
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)
@@ -71,6 +73,7 @@
 - added high-resolution 16:9 and 4:3 game end screen
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - added Magnums to the `/moreguns` console command
+- changed Tibetan Foothills to have snow
 - changed ember emitters to use the `SFX_LAVA_FOUNTAIN` sample (#4376)
 - fixed the scuba diver's death SFX not playing (#4386)
 - fixed a missing trigger for tiger 6 in Ice Palace (#4390)
@@ -93,6 +96,7 @@
 - added water splash and ripple effects
 - added waterfall mist effect
 - added `cdaudio.wad` music playback support
+- added weather effects
 - added monochrome inventory backgrounds
 - added high-resolutions 16:9 and 4:3 loading screens
 - added high-resolutions 16:9 and 4:3 title and game end screens
@@ -104,6 +108,7 @@
 - added MP5 control
 - added Rocket Launcher control
 - added an option to fix the MP5 accuracy while running
+- changed The River Ganges, City and All Hallows to have rain
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect
 - fixed Lara's thigh being drawn when a flare is in Lara's hand or has been discarded

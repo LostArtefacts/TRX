@@ -26,7 +26,7 @@ static int M_L_ConfigSet(lua_State *const L)
         return luaL_error(L, "Unknown option: %s", key);
     }
     const bool ok = Config_SetOptionValueFromString(opt, new_value);
-    if (ok == false) {
+    if (!ok) {
         return luaL_error(L, "Failed to set option %s to %s", key, new_value);
     }
     Config_Update();

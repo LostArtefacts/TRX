@@ -21,6 +21,7 @@
         "data/injections/pda_model.bin",
         "data/injections/winston_model.bin",
         "data/injections/lara_extra.bin",
+        "data/injections/snow.bin",
     ],
 
     "enable_tr2_item_drops": false,

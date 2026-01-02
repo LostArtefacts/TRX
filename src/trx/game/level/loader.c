@@ -780,6 +780,8 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
     Room_ParseFloorData(floor_data);
     Memory_FreePointer(&floor_data);
 
+    Room_BuildOutsideTable();
+
 finish:
     Benchmark_End(&benchmark, nullptr);
 }

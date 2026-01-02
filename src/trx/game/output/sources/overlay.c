@@ -590,7 +590,7 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
     }
 
     const OBJECT *const obj = Object_Get(O_INV_BACKGROUND);
-    if (obj == nullptr || obj->loaded == false) {
+    if (obj == nullptr || !obj->loaded) {
         return false;
     }
 

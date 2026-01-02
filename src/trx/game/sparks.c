@@ -26,8 +26,7 @@ typedef struct {
 static SPARK m_Sparks[M_MAX_SPARKS];
 static M_SPARK_DYNAMIC m_Dynamics[M_MAX_SPARK_DYNAMICS];
 static int32_t m_NextSpark = 0;
-static int32_t m_SmokeWindX = 0;
-static int32_t m_SmokeWindZ = 0;
+static XZ_32 m_SmokeWind = {};
 static SPARKS_CALLBACKS m_Callbacks = {};
 
 static const BITE m_NodeOffsets[16] = {
@@ -165,8 +164,7 @@ void Sparks_Init(void)
         m_Dynamics[i].on = false;
     }
     m_NextSpark = 0;
-    m_SmokeWindX = 0;
-    m_SmokeWindZ = 0;
+    m_SmokeWind = (XZ_32) {};
     m_Callbacks = (SPARKS_CALLBACKS) {};
 }
 
@@ -179,10 +177,14 @@ void Sparks_SetCallbacks(const SPARKS_CALLBACKS *const callbacks)
     }
 }
 
-void Sparks_SetSmokeWind(const int32_t wind_x, const int32_t wind_z)
+XZ_32 Sparks_GetSmokeWind(void)
 {
-    m_SmokeWindX = wind_x;
-    m_SmokeWindZ = wind_z;
+    return m_SmokeWind;
+}
+
+void Sparks_SetSmokeWind(const XZ_32 wind)
+{
+    m_SmokeWind = wind;
 }
 
 void Sparks_Control(void)
@@ -322,8 +324,8 @@ void Sparks_Control(void)
         sptr->pos.z += sptr->vel.z >> 5;
 
         if ((sptr->flags & SPARK_F_OUTSIDE) != 0U) {
-            sptr->pos.x += m_SmokeWindX >> 1;
-            sptr->pos.z += m_SmokeWindZ >> 1;
+            sptr->pos.x += m_SmokeWind.x >> 1;
+            sptr->pos.z += m_SmokeWind.z >> 1;
         }
 
         // Size lerp across lifetime.
@@ -411,15 +413,7 @@ void Sparks_Control(void)
             falloff = 31;
         }
 
-        // TRX dynamic lights don't support RGB; approximate with luminance.
-        CLAMP(r, 0, 255);
-        CLAMP(g, 0, 255);
-        CLAMP(b, 0, 255);
-        int32_t intensity = 8 + (MAX(r, MAX(g, b)) >> 5);
-        int32_t falloff_exp = 7 + (falloff >> 2);
-        CLAMP(intensity, 0, 15);
-        CLAMP(falloff_exp, 0, 15);
-        Output_AddDynamicLight(pos, intensity, falloff_exp);
+        Output_AddDynamicLightRGB(pos, falloff, (RGB_888) { r, g, b });
     }
 }
 

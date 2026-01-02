@@ -19,6 +19,7 @@ Following are each of the properties available within a level.
     // Optional level Lua script file
     "script": "data/scripts/level1.lua",
     "music_track": 57,
+    "weather_type": "rain",
     "water_color": [0.7, 0.5, 0.85],
     "cold_water": true,
     "fog_transparency": false,
@@ -119,6 +120,15 @@ Following are each of the properties available within a level.
     <td><code>music_track</code></td>
     <td>Integer<strong>*</strong></td>
     <td colspan="2">The ambient music track ID.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>weather_type</code></td>
+    <td>String</td>
+    <td colspan="2">
+      TR3 only. Enables per-level weather.
+      Valid values: <code>rain</code>, <code>snow</code>.
+      Omit for none.
+    </td>
   </tr>
   <tr valign="top">
     <td>

@@ -387,7 +387,7 @@ static void M_DrawRipple(
 void WaterFX_Draw(void)
 {
     const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
-    if (explosion->loaded == false) {
+    if (!explosion->loaded) {
         return;
     }
 
@@ -455,7 +455,7 @@ void WaterFX_Update(void)
             }
         }
 
-        if (set == true) {
+        if (set) {
             splash->life--;
             if (splash->life == 0U) {
                 splash->flags = 0U;
