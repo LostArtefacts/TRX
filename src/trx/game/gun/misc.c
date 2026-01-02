@@ -217,48 +217,58 @@ void Gun_InitialiseNewWeapon(void)
     }
 }
 
-void Gun_DrawFlash(const LARA_GUN_TYPE weapon_type, const CLIP clip)
+void Gun_DrawFlash(
+    const LARA_GUN_TYPE weapon_type, const CLIP clip, const bool interpolated)
 {
     if (weapon_type == LGT_SHOTGUN && !g_Config.visuals.enable_shotgun_flash) {
         return;
     }
 
-    const WEAPON_INFO weapon = g_Weapons[weapon_type];
     OBJECT_ID flash_obj = O_GUN_FLASH;
-
-    Matrix_TranslateRel32(weapon.flash_pos);
+    XYZ_16 rot = {};
 
     switch (weapon_type) {
     case LGT_M16:
-        Matrix_RotX(-85 * DEG_1);
-        Matrix_RotZ(((2 * Random_GetDraw()) & 0x4000) + 0x2000);
-        flash_obj = O_M16_FLASH;
-        break;
-
     case LGT_MP5:
-        Matrix_RotX(-85 * DEG_1);
-        Matrix_RotZ(
-            ((2 * Random_GetDraw()) & 0x4000) + (Random_GetDraw() & 0xFFF)
-            + 0x1800);
+        rot.x = -85 * DEG_1;
+        rot.z = ((2 * Random_GetDraw()) & 0x4000);
+        if (weapon_type == LGT_M16) {
+            rot.z += 0x2000;
+        } else {
+            rot.z += (Random_GetDraw() & 0xFFF) + 0x1800;
+        }
         flash_obj = O_M16_FLASH;
         break;
 
     case LGT_FLARE:
-        Matrix_RotX(-DEG_90);
-        Matrix_RotY(2 * Random_GetDraw());
+        rot.x = -DEG_90;
+        rot.y = 2 * Random_GetDraw();
         flash_obj = O_FLARE_FIRE;
         break;
 
     default:
-        Matrix_RotX(-DEG_90);
-        Matrix_RotZ(2 * Random_GetDraw());
+        rot.x = -DEG_90;
+        rot.z = 2 * Random_GetDraw();
         break;
+    }
+
+    const WEAPON_INFO weapon = g_Weapons[weapon_type];
+    if (interpolated) {
+        Matrix_TranslateRel32_I(weapon.flash_pos);
+        Matrix_RotX_I(rot.x);
+        Matrix_RotY_I(rot.y);
+        Matrix_RotZ_I(rot.z);
+    } else {
+        Matrix_TranslateRel32(weapon.flash_pos);
+        Matrix_RotX(rot.x);
+        Matrix_RotY(rot.y);
+        Matrix_RotZ(rot.z);
     }
 
     Output_CalculateStaticLight(weapon.flash_shade);
     const OBJECT *const obj = Object_Get(flash_obj);
     if (obj->loaded) {
-        Object_DrawMesh(obj->mesh_idx, clip, false);
+        Object_DrawMesh(obj->mesh_idx, clip, interpolated);
     }
 }
 

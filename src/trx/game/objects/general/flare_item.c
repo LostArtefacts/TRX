@@ -105,7 +105,7 @@ static void M_DrawFlash(const CLIP clip)
 {
     WEAPON_INFO *const flare_info = &g_Weapons[LGT_FLARE];
     SWAP(flare_info->flash_pos, flare_info->flash_pos_alt);
-    Gun_DrawFlash(LGT_FLARE, clip);
+    Gun_DrawFlash(LGT_FLARE, clip, false);
     SWAP(flare_info->flash_pos, flare_info->flash_pos_alt);
 }
 

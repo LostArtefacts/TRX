@@ -12,7 +12,6 @@
 #define SHADE_LOW      0x1400
 #define SHADE_HIGH     0x800
 #define SHADE_NEUTRAL  0x1000
-#define SHADE_FLARE    0x800
 #define SHADE_SUNSET   0x400
 // clang-format on
 
