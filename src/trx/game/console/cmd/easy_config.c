@@ -15,6 +15,7 @@ static COMMAND_TO_OPTION_MAP m_CommandToOptionMap[] = {
     { "wireframe", &g_Config.rendering.enable_wireframe },
     { "fps", &g_Config.rendering.fps },
     { "lighting", &g_Config.rendering.enable_lighting },
+    { "textures", &g_Config.rendering.enable_textures },
     { nullptr, nullptr },
 };
 
@@ -40,3 +41,4 @@ REGISTER_CONSOLE_COMMAND(
     "wireframe", M_Entrypoint, GS_ID(CONSOLE_HELP_WIREFRAME))
 REGISTER_CONSOLE_COMMAND("fps", M_Entrypoint, GS_ID(CONSOLE_HELP_FPS))
 REGISTER_CONSOLE_COMMAND("lighting", M_Entrypoint, GS_ID(CONSOLE_HELP_LIGHTING))
+REGISTER_CONSOLE_COMMAND("textures", M_Entrypoint, GS_ID(CONSOLE_HELP_TEXTURES))

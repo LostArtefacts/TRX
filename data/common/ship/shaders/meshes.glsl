@@ -65,7 +65,7 @@ void main(void) {
 
     gFlags = inFlags;
     gAtlasSize = inTextureSize;
-    gTexLayer = (gFlags & VERT_FLAT_SHADED) == 0u ? int(inUVW.z) : -1;
+    gTexLayer = (uTexturesEnabled != 0) && (gFlags & VERT_FLAT_SHADED) == 0u ? int(inUVW.z) : -1;
     gTrapezoidRatios = inTrapezoidRatios;
     gTexUV = inUVW.xy;
     if (uTrapezoidFilterEnabled != 0) {
