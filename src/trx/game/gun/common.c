@@ -6,6 +6,12 @@
 #include <trx/game/output.h>
 #include <trx/version.h>
 
+static bool M_IsGunType(
+    const LARA_GUN_TYPE gun_type, const WEAPON_TYPE weapon_type)
+{
+    return g_Weapons[gun_type].type == weapon_type;
+}
+
 void Gun_AddDynamicLight(void)
 {
     if (!g_Config.visuals.enable_gun_lighting) {
@@ -25,15 +31,9 @@ void Gun_AddDynamicLight(void)
 
 OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)
 {
-    switch (gun_type) {
-    case LGT_PISTOLS:
-    case LGT_MAGNUMS:
-    case LGT_AUTOS:
-    case LGT_UZIS:
-        return O_LARA_PISTOLS;
-    default:
-        return Gun_GetWeaponAnim(gun_type);
-    }
+    return M_IsGunType(gun_type, WEAPON_TYPE_DUAL_PISTOLS)
+        ? O_LARA_PISTOLS
+        : Gun_GetWeaponAnim(gun_type);
 }
 
 OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
@@ -166,17 +166,7 @@ AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
 
 bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)
 {
-    switch (gun_type) {
-    case LGT_SHOTGUN:
-    case LGT_M16:
-    case LGT_MP5:
-    case LGT_GRENADE:
-    case LGT_ROCKET:
-    case LGT_HARPOON:
-        return true;
-    default:
-        return false;
-    }
+    return M_IsGunType(gun_type, WEAPON_TYPE_RIFLE);
 }
 
 void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)

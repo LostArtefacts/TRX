@@ -50,6 +50,20 @@ void Gun_LoadVars(const char *const path)
 
         JSON_OBJECT *const obj = JSON_ValueAsObject(elem->value);
 
+        // weapon type
+        const char *const weapon_type =
+            JSON_ObjectGetString(obj, "type", JSON_INVALID_STRING);
+        if (weapon_type != JSON_INVALID_STRING && weapon_type[0] != '\0') {
+            const int32_t weapon_type_val =
+                ENUM_MAP_GET(WEAPON_TYPE, weapon_type, -1);
+            if (weapon_type_val < 0 || weapon_type_val >= NUM_WEAPON_TYPES) {
+                Shell_ExitSystemFmt(
+                    "unknown weapon type '%s' in %s", weapon_type, path);
+            } else {
+                g_Weapons[type].type = weapon_type_val;
+            }
+        }
+
         // angles
         M_ReadAngles(
             obj, name, path, "lock_angles", g_Weapons[type].lock_angles);
