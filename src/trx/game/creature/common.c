@@ -479,7 +479,10 @@ void Creature_Mood(
 int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
 {
     const CREATURE *const creature = item->data;
-    if (creature == nullptr || item->speed == 0 || max_turn == 0) {
+    if (creature == nullptr || max_turn == 0) {
+        return 0;
+    }
+    if (item->speed == 0 && g_TRVersion < 3) {
         return 0;
     }
 
