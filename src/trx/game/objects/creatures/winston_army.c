@@ -1,5 +1,6 @@
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
@@ -34,7 +35,7 @@ typedef enum {
 
 typedef struct {
     int16_t knockdown_timer;
-    bool spawn_check;
+    bool spawn_checked;
 } M_PRIV;
 
 static void M_Initialise(const int16_t item_num)
@@ -45,17 +46,14 @@ static void M_Initialise(const int16_t item_num)
 
 static bool M_RemoveNormalWinston(void)
 {
-    for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
-        CREATURE *const old_creature = LOT_GetBaddieSlot(i);
-        if (old_creature->item_num == NO_ITEM) {
+    const int32_t item_count = Item_GetTotalCount();
+    for (int32_t item_num = 0; item_num < item_count; item_num++) {
+        ITEM *const item = Item_Get(item_num);
+        if (item->object_id != O_WINSTON || (item->flags & IF_KILLED) != 0) {
             continue;
         }
-        ITEM *const old_item = Item_Get(old_creature->item_num);
-        if (old_item->object_id != O_WINSTON) {
-            continue;
-        }
-        old_item->status = IS_INVISIBLE;
-        Creature_Die(old_creature->item_num, false);
+        item->status = IS_INVISIBLE;
+        Item_Kill(item_num);
         return true;
     }
     return false;
@@ -70,7 +68,7 @@ static void M_Control(const int16_t item_num)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->data;
-    M_PRIV *const priv = item->priv;
+    M_PRIV *const p = item->priv;
 
     AI_INFO info;
     Creature_AIInfo(item, &info);
@@ -78,9 +76,9 @@ static void M_Control(const int16_t item_num)
 
     const int16_t angle = Creature_Turn(item, creature->maximum_turn);
 
-    if (!priv->spawn_check) {
+    if (!p->spawn_checked) {
         M_RemoveNormalWinston();
-        priv->spawn_check = true;
+        p->spawn_checked = true;
     }
 
     if (item->hit_points <= 0) {
@@ -92,8 +90,8 @@ static void M_Control(const int16_t item_num)
             if (item->hit_status) {
                 item->goal_anim_state = M_STATE_HIT_DOWN;
             } else {
-                priv->knockdown_timer--;
-                if (priv->knockdown_timer < 0) {
+                p->knockdown_timer--;
+                if (p->knockdown_timer < 0) {
                     item->goal_anim_state = M_STATE_ON_FLOOR;
                 }
             }
@@ -111,8 +109,8 @@ static void M_Control(const int16_t item_num)
             if (item->hit_status) {
                 item->goal_anim_state = M_STATE_HIT_DOWN;
             } else {
-                priv->knockdown_timer--;
-                if (priv->knockdown_timer < 0) {
+                p->knockdown_timer--;
+                if (p->knockdown_timer < 0) {
                     item->goal_anim_state = M_STATE_GET_UP;
                 }
             }
@@ -123,7 +121,7 @@ static void M_Control(const int16_t item_num)
             Item_SwitchToObjAnim(item, 16, 0, O_WINSTON_ARMY);
             item->current_anim_state = M_STATE_FALL_DOWN;
             item->goal_anim_state = M_STATE_FALL_DOWN;
-            priv->knockdown_timer = 150;
+            p->knockdown_timer = 150;
             break;
         }
     } else {
