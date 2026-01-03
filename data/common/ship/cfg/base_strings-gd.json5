@@ -1759,6 +1759,9 @@
         },
         "animating_6": {
             "name": "\\{review}A’ beothachadh Nì 6",
+        },
+        "winston_army": {
+            "name": "\\{review}Winston (armachd)",
         }
     }
 }

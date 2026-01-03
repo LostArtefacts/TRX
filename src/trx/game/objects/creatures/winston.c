@@ -9,7 +9,6 @@
 // clang-format off
 #define M_RADIUS     (WALL_L / 10) // = 102
 #define M_STOP_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
-#define M_SMARTNESS  0x7fff
 // clang-format on
 
 typedef enum {
@@ -36,7 +35,7 @@ static void M_Control(const int16_t item_num)
     Creature_AIInfo(item, &info);
     Creature_Mood(item, &info, MOOD_ATTACK);
 
-    int16_t angle = Creature_Turn(item, creature->maximum_turn);
+    const int16_t angle = Creature_Turn(item, creature->maximum_turn);
 
     if (item->current_anim_state == WINSTON_STATE_STOP) {
         if (item->goal_anim_state != WINSTON_STATE_WALK
@@ -84,7 +83,7 @@ static void M_Setup(OBJECT *const obj)
     obj->hit_points = DONT_TARGET;
     obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 4;
-    obj->smartness = M_SMARTNESS;
+    obj->smartness = -1;
 
     obj->intelligent = true;
     obj->save_position = true;

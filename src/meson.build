@@ -330,6 +330,7 @@ common_sources = [
   'trx/game/objects/creatures/torso.c',
   'trx/game/objects/creatures/trex.c',
   'trx/game/objects/creatures/winston.c',
+  'trx/game/objects/creatures/winston_army.c',
   'trx/game/objects/creatures/wolf.c',
   'trx/game/objects/creatures/worker_1.c',
   'trx/game/objects/creatures/worker_2.c',
