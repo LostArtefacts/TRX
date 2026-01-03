@@ -117,6 +117,7 @@
 - fixed Lara's thigh being drawn when a flare is in Lara's hand or has been discarded
 - fixed gun flashes being drawn in white
 - fixed disabling lighting system not working
+- fixed skybox data to show correct top and bottom colors
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)
