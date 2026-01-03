@@ -330,5 +330,6 @@ void Config_Sanitize(void)
     CLAMP(
         g_Config.visuals.brightness, CONFIG_MIN_BRIGHTNESS,
         CONFIG_MAX_BRIGHTNESS);
+    CLAMP(g_Config.visuals.gamma, CONFIG_MIN_GAMMA, CONFIG_MAX_GAMMA);
     CLAMPL(g_Config.rendering.anisotropy_filter, 1.0);
 }

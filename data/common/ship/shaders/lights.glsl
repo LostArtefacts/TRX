@@ -227,17 +227,14 @@ struct LightingResult {
 };
 
 LightingResult light(
-    vec4 baseColor, float shade, uint flags, vec3 normal, vec4 pos,
+    float shade, uint flags, vec3 normal, vec4 pos,
     float vertexPhase, float effectPhase)
 {
     LightingResult result;
-    result.color = baseColor;
+    result.color = vec4(1);
     result.shade = SHADE_NEUTRAL;
 
     if (uLightingEnabled == 0) {
-        if ((flags & VERT_FLAT_SHADED) == 0u) {
-            result.color = vec4(1);
-        }
         return result;
     }
 
@@ -245,22 +242,22 @@ LightingResult light(
         return result;
     }
 
-#if defined(TR_VERSION) && TR_VERSION >= 3
-        if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
-            result.color.rgb =
-                clamp(
-                    result.color.rgb
-                        + lightDynamicTR3(pos) * getDynamicLightContrastMul(),
-                    0.0, 1.0);
-        }
-        if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
-            result.color.rgb *= lightObjectsTR3(normal);
-        } else if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
-            result.color.rgb *= lightOwnTR3(shade);
-        }
-        result.shade = SHADE_NEUTRAL;
+#if TR_VERSION >= 3
+    if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
+        result.color.rgb =
+            clamp(
+                result.color.rgb
+                    + lightDynamicTR3(pos) * getDynamicLightContrastMul(),
+                0.0, 1.0);
+    }
+    if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
+        result.color.rgb *= lightObjectsTR3(normal);
+    } else if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
+        result.color.rgb *= lightOwnTR3(shade);
+    }
+    result.shade = SHADE_NEUTRAL;
 #else
-        result.shade = light(shade, flags, normal, pos, vertexPhase);
+    result.shade = light(shade, flags, normal, pos, vertexPhase);
 #endif
 
     // TR3 caustics

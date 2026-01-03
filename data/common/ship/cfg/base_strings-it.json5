@@ -596,6 +596,8 @@
         "SETTING_FOV_DESCRIPTION": "Angolo di visione in gradi. Valori più grandi ampliano il campo visivo, valori più piccoli lo restringono.",
         "SETTING_FPS": "FPS",
         "SETTING_FPS_DESCRIPTION": "Imposta i fotogrammi al secondo.",
+        "SETTING_GAMMA": "\\{review}Gamma",
+        "SETTING_GAMMA_DESCRIPTION": "\\{review}Regola la curva gamma. Valori più alti significano illuminazione più luminosa. Il valore 2,5 indica i colori predefiniti.",
         "SETTING_HARPOON_RECOIL": "Ricarica fucile subacqueo",
         "SETTING_HARPOON_RECOIL_DESCRIPTION": "Imposta la frequenza con cui Lara deve ricaricare il fucile subacqueo, in base al numero attuale di munizioni. Ad esempio, se impostato a 3, dovrà ricaricare dopo ogni terzo colpo. Impostare a 0 per disabilitare completamente la ricarica.",
         "SETTING_HEALTHBAR_COLOR": "Colore barra salute",
