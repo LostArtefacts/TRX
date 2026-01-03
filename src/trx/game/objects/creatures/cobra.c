@@ -37,7 +37,7 @@ static void M_Initialise(const int16_t item_num)
     item->hit_points = DONT_TARGET;
 }
 
-void CobraControl(const int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -140,7 +140,7 @@ static void M_Setup(OBJECT *const obj)
     }
 
     obj->initialise_func = M_Initialise;
-    obj->control_func = CobraControl;
+    obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
     obj->shadow_size = UNIT_SHADOW / 2;

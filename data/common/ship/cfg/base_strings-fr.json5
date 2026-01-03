@@ -1735,6 +1735,9 @@
         },
         "animating_6": {
             "name": "\\{review}Animation de l'objet 6",
+        },
+        "winston_army": {
+            "name": "\\{review}Winston (armée)",
         }
     }
 }

@@ -1755,6 +1755,9 @@
         },
         "animating_6": {
             "name": "\\{review}Анимация объекта 6",
+        },
+        "winston_army": {
+            "name": "\\{review}Уинстон (армия)",
         }
     }
 }
