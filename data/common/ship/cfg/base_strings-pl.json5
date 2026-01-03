@@ -522,6 +522,8 @@
         "SETTING_ENABLE_WADING_DESCRIPTION": "Pozwala Larze na brodzenie w płytkiej wodzie. Wyłączenie powoduje utknięcie na powierzchni wody.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Animowane interakcje",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Sprawia, że Lara chodzi do przedmiotów i przełączników, gdy są w pobliżu, zamiast się do nich natychmiastowo przesuwać.",
+        "SETTING_ENABLE_WEATHER": "\\{review}Pogoda",
+        "SETTING_ENABLE_WEATHER_DESCRIPTION": "\\{review}Umożliwia renderowanie efektów pogodowych w obsługiwanych poziomach.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Kolor paska zdrowia wrogów",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Kolor paska zdrowia przeciwników.",
         "SETTING_ENEMY_HEALTHBAR_LOCATION": "Lokalizacja paska wrogów",

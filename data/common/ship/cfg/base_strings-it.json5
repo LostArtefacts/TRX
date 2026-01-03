@@ -522,6 +522,8 @@
         "SETTING_ENABLE_WADING_DESCRIPTION": "Permette a Lara di guadare acque poco profonde, anziché rimanere bloccata sulla superficie dell'acqua.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Interazioni animate",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Fa in modo che Lara si avvicini agli oggetti, alle leve e agli interruttori quando questi sono nelle vicinanze, invece di teletrasportarsi su di loro.",
+        "SETTING_ENABLE_WEATHER": "\\{review}Meteo",
+        "SETTING_ENABLE_WEATHER_DESCRIPTION": "\\{review}Abilita il rendering degli effetti meteorologici nei livelli supportati.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Colore barra nemici",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Colore utilizzato per la barra della salute dei nemici.",
         "SETTING_ENEMY_HEALTHBAR_LOCATION": "Posizione barra nemici",

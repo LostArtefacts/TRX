@@ -82,6 +82,7 @@ typedef struct {
         bool enable_shotgun_flash;
         bool enable_round_shadow;
         bool enable_skybox;
+        bool enable_weather;
         bool enable_ps1_crystals;
 
         bool fix_item_rots;
