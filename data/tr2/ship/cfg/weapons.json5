@@ -90,6 +90,27 @@
         "sample_num": "SFX_LARA_AUTOS",
     },
 
+    "LGT_DESERT_EAGLE": {
+        "type": "WEAPON_TYPE_SINGLE_PISTOL",
+        "lock_angles": [-60, +60, -60, +60],
+        "left_angles": [-10, +10, -80, +80],
+        "right_angles": [0, 0, 0, 0],
+        "aim_speed": 10,
+        "shot_accuracy": 4,
+        "gun_height": 650,
+        "damage": 21,
+        "target_dist": 8.0,
+        "recoil_frame": 16,
+        "flash_time": 3,
+        "flash_shade": 4096,
+        "flash_pos": {
+            "y": 215,
+            "z": 65,
+        },
+        "sample_num": "SFX_LARA_DESERT_EAGLE",
+        "is_available": false,
+    },
+
     "LGT_UZIS": {
         "type": "WEAPON_TYPE_DUAL_PISTOLS",
         "lock_angles": [-60, +60, -60, +60],
