@@ -234,6 +234,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── sanctuary_textures.bin
 │   │   ├── scion_collision.bin
 │   │   ├── skate_kid_sfx.bin
+│   │   ├── snow.bin
 │   │   ├── sprite_alignment.bin
 │   │   ├── stronghold_fd.bin
 │   │   ├── stronghold_itemrots.bin
@@ -341,6 +342,7 @@ If you install everything correctly, your game directory should look more or les
 │   └── track60.flac
 ├── scripting
 │   └── trx
+│       ├── assault_stats.lua
 │       ├── catalog.lua
 │       ├── config.lua
 │       ├── console.lua
@@ -351,6 +353,7 @@ If you install everything correctly, your game directory should look more or les
 │       ├── lara.lua
 │       ├── log.lua
 │       ├── music.lua
+│       ├── objects.lua
 │       ├── rooms.lua
 │       └── sound.lua
 ├── shaders
@@ -570,6 +573,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── sanctuary_textures.bin
         │   │   ├── scion_collision.bin
         │   │   ├── skate_kid_sfx.bin
+        │   │   ├── snow.bin
         │   │   ├── sprite_alignment.bin
         │   │   ├── stronghold_fd.bin
         │   │   ├── stronghold_itemrots.bin
@@ -678,6 +682,7 @@ If you install everything correctly, your game directory should look more or les
         │   └── track60.flac
         ├── scripting
         │   └── trx
+        │       ├── assault_stats.lua
         │       ├── catalog.lua
         │       ├── config.lua
         │       ├── console.lua
@@ -688,6 +693,7 @@ If you install everything correctly, your game directory should look more or les
         │       ├── lara.lua
         │       ├── log.lua
         │       ├── music.lua
+        │       ├── objects.lua
         │       ├── rooms.lua
         │       └── sound.lua
         └── shaders

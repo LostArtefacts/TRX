@@ -95,6 +95,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── icecave.tr2
 │   ├── images
 │   │   ├── 3x2
+│   │   │   ├── china.webp
 │   │   │   ├── credit00_gm.webp
 │   │   │   ├── credit01.webp
 │   │   │   ├── credit02.webp
@@ -106,15 +107,26 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── credit07_gm.webp
 │   │   │   ├── credit08.webp
 │   │   │   ├── end.webp
+│   │   │   ├── gm_level1.webp
+│   │   │   ├── gm_level2.webp
+│   │   │   ├── gm_level3.webp
+│   │   │   ├── gm_level4.webp
+│   │   │   ├── gm_level5.webp
 │   │   │   ├── legal_eu.webp
 │   │   │   ├── legal_eu_gm.webp
 │   │   │   ├── legal_us.webp
 │   │   │   ├── legal_us_gm.webp
+│   │   │   ├── mansion.webp
+│   │   │   ├── rig.webp
+│   │   │   ├── tibet.webp
+│   │   │   ├── titan.webp
 │   │   │   ├── title_eu.webp
 │   │   │   ├── title_eu_gm.webp
 │   │   │   ├── title_us.webp
-│   │   │   └── title_us_gm.webp
+│   │   │   ├── title_us_gm.webp
+│   │   │   └── venice.webp
 │   │   ├── 4x3
+│   │   │   ├── china.webp
 │   │   │   ├── credit00_gm.webp
 │   │   │   ├── credit01.webp
 │   │   │   ├── credit02.webp
@@ -126,14 +138,24 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── credit07_gm.webp
 │   │   │   ├── credit08.webp
 │   │   │   ├── end.webp
+│   │   │   ├── gm_level1.webp
+│   │   │   ├── gm_level2.webp
+│   │   │   ├── gm_level3.webp
+│   │   │   ├── gm_level4.webp
+│   │   │   ├── gm_level5.webp
 │   │   │   ├── legal_eu.webp
 │   │   │   ├── legal_eu_gm.webp
 │   │   │   ├── legal_us.webp
 │   │   │   ├── legal_us_gm.webp
+│   │   │   ├── mansion.webp
+│   │   │   ├── rig.webp
+│   │   │   ├── tibet.webp
+│   │   │   ├── titan.webp
 │   │   │   ├── title_eu.webp
 │   │   │   ├── title_eu_gm.webp
 │   │   │   ├── title_us.webp
-│   │   │   └── title_us_gm.webp
+│   │   │   ├── title_us_gm.webp
+│   │   │   └── venice.webp
 │   │   ├── china.webp
 │   │   ├── credit00_gm.webp
 │   │   ├── credit01.webp
@@ -151,12 +173,34 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── gm_level3.webp
 │   │   ├── gm_level4.webp
 │   │   ├── gm_level5.webp
-│   │   ├── legal.webp
 │   │   ├── legal_eu.webp
 │   │   ├── legal_eu_gm.webp
 │   │   ├── legal_us.webp
 │   │   ├── legal_us_gm.webp
 │   │   ├── mansion.webp
+│   │   ├── og
+│   │   │   ├── china.webp
+│   │   │   ├── credit00_gm.webp
+│   │   │   ├── credit01.webp
+│   │   │   ├── credit02.webp
+│   │   │   ├── credit03.webp
+│   │   │   ├── credit04.webp
+│   │   │   ├── credit05.webp
+│   │   │   ├── credit06.webp
+│   │   │   ├── credit07.webp
+│   │   │   ├── credit07_gm.webp
+│   │   │   ├── credit08.webp
+│   │   │   ├── end.webp
+│   │   │   ├── legal.webp
+│   │   │   ├── mansion.webp
+│   │   │   ├── rig.webp
+│   │   │   ├── tibet.webp
+│   │   │   ├── titan.webp
+│   │   │   ├── title_eu.webp
+│   │   │   ├── title_eu_gm.webp
+│   │   │   ├── title_us.webp
+│   │   │   ├── title_us_gm.webp
+│   │   │   └── venice.webp
 │   │   ├── rig.webp
 │   │   ├── tibet.webp
 │   │   ├── titan.webp
@@ -245,6 +289,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── house_sfx.bin
 │   │   ├── house_shower_frames.bin
 │   │   ├── house_textures.bin
+│   │   ├── inv_background.bin
 │   │   ├── kingdom_cameras.bin
 │   │   ├── kingdom_itemrots.bin
 │   │   ├── kingdom_music_tracks.bin
@@ -254,9 +299,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lair_textures.bin
 │   │   ├── lara_animations.bin
 │   │   ├── lara_extra.bin
+│   │   ├── lara_guns.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_house_guns.bin
 │   │   ├── lara_rifle_sfx.bin
+│   │   ├── lara_unwater_guns.bin
 │   │   ├── lara_vegas_guns.bin
 │   │   ├── living_deck_goon_sfx.bin
 │   │   ├── living_fd.bin
@@ -291,6 +338,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── secret_models_gm.bin
 │   │   ├── secret_models_og.bin
 │   │   ├── shark_sfx.bin
+│   │   ├── snow.bin
 │   │   ├── tibet_fd.bin
 │   │   ├── tibet_itemrots.bin
 │   │   ├── tibet_music_tracks.bin
@@ -338,6 +386,8 @@ If you install everything correctly, your game directory should look more or les
 │   ├── platform.tr2
 │   ├── rig.tr2
 │   ├── scripts
+│   │   ├── assault.lua
+│   │   ├── floating.lua
 │   │   ├── level1.lua
 │   │   ├── level3.lua
 │   │   ├── level4.lua
@@ -421,6 +471,7 @@ If you install everything correctly, your game directory should look more or les
 │   └── 61.mp3
 ├── scripting
 │   └── trx
+│       ├── assault_stats.lua
 │       ├── catalog.lua
 │       ├── config.lua
 │       ├── console.lua
@@ -431,6 +482,7 @@ If you install everything correctly, your game directory should look more or les
 │       ├── lara.lua
 │       ├── log.lua
 │       ├── music.lua
+│       ├── objects.lua
 │       ├── rooms.lua
 │       └── sound.lua
 ├── shaders
@@ -530,6 +582,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── icecave.tr2
         │   ├── images
         │   │   ├── 3x2
+        │   │   │   ├── china.webp
         │   │   │   ├── credit00_gm.webp
         │   │   │   ├── credit01.webp
         │   │   │   ├── credit02.webp
@@ -541,15 +594,26 @@ If you install everything correctly, your game directory should look more or les
         │   │   │   ├── credit07_gm.webp
         │   │   │   ├── credit08.webp
         │   │   │   ├── end.webp
+        │   │   │   ├── gm_level1.webp
+        │   │   │   ├── gm_level2.webp
+        │   │   │   ├── gm_level3.webp
+        │   │   │   ├── gm_level4.webp
+        │   │   │   ├── gm_level5.webp
         │   │   │   ├── legal_eu.webp
         │   │   │   ├── legal_eu_gm.webp
         │   │   │   ├── legal_us.webp
         │   │   │   ├── legal_us_gm.webp
+        │   │   │   ├── mansion.webp
+        │   │   │   ├── rig.webp
+        │   │   │   ├── tibet.webp
+        │   │   │   ├── titan.webp
         │   │   │   ├── title_eu.webp
         │   │   │   ├── title_eu_gm.webp
         │   │   │   ├── title_us.webp
-        │   │   │   └── title_us_gm.webp
+        │   │   │   ├── title_us_gm.webp
+        │   │   │   └── venice.webp
         │   │   ├── 4x3
+        │   │   │   ├── china.webp
         │   │   │   ├── credit00_gm.webp
         │   │   │   ├── credit01.webp
         │   │   │   ├── credit02.webp
@@ -561,14 +625,24 @@ If you install everything correctly, your game directory should look more or les
         │   │   │   ├── credit07_gm.webp
         │   │   │   ├── credit08.webp
         │   │   │   ├── end.webp
+        │   │   │   ├── gm_level1.webp
+        │   │   │   ├── gm_level2.webp
+        │   │   │   ├── gm_level3.webp
+        │   │   │   ├── gm_level4.webp
+        │   │   │   ├── gm_level5.webp
         │   │   │   ├── legal_eu.webp
         │   │   │   ├── legal_eu_gm.webp
         │   │   │   ├── legal_us.webp
         │   │   │   ├── legal_us_gm.webp
+        │   │   │   ├── mansion.webp
+        │   │   │   ├── rig.webp
+        │   │   │   ├── tibet.webp
+        │   │   │   ├── titan.webp
         │   │   │   ├── title_eu.webp
         │   │   │   ├── title_eu_gm.webp
         │   │   │   ├── title_us.webp
-        │   │   │   └── title_us_gm.webp
+        │   │   │   ├── title_us_gm.webp
+        │   │   │   └── venice.webp
         │   │   ├── china.webp
         │   │   ├── credit00_gm.webp
         │   │   ├── credit01.webp
@@ -586,12 +660,34 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── gm_level3.webp
         │   │   ├── gm_level4.webp
         │   │   ├── gm_level5.webp
-        │   │   ├── legal.webp
         │   │   ├── legal_eu.webp
         │   │   ├── legal_eu_gm.webp
         │   │   ├── legal_us.webp
         │   │   ├── legal_us_gm.webp
         │   │   ├── mansion.webp
+        │   │   ├── og
+        │   │   │   ├── china.webp
+        │   │   │   ├── credit00_gm.webp
+        │   │   │   ├── credit01.webp
+        │   │   │   ├── credit02.webp
+        │   │   │   ├── credit03.webp
+        │   │   │   ├── credit04.webp
+        │   │   │   ├── credit05.webp
+        │   │   │   ├── credit06.webp
+        │   │   │   ├── credit07.webp
+        │   │   │   ├── credit07_gm.webp
+        │   │   │   ├── credit08.webp
+        │   │   │   ├── end.webp
+        │   │   │   ├── legal.webp
+        │   │   │   ├── mansion.webp
+        │   │   │   ├── rig.webp
+        │   │   │   ├── tibet.webp
+        │   │   │   ├── titan.webp
+        │   │   │   ├── title_eu.webp
+        │   │   │   ├── title_eu_gm.webp
+        │   │   │   ├── title_us.webp
+        │   │   │   ├── title_us_gm.webp
+        │   │   │   └── venice.webp
         │   │   ├── rig.webp
         │   │   ├── tibet.webp
         │   │   ├── titan.webp
@@ -680,6 +776,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── house_sfx.bin
         │   │   ├── house_shower_frames.bin
         │   │   ├── house_textures.bin
+        │   │   ├── inv_background.bin
         │   │   ├── kingdom_cameras.bin
         │   │   ├── kingdom_itemrots.bin
         │   │   ├── kingdom_music_tracks.bin
@@ -689,9 +786,11 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lair_textures.bin
         │   │   ├── lara_animations.bin
         │   │   ├── lara_extra.bin
+        │   │   ├── lara_guns.bin
         │   │   ├── lara_gym_guns.bin
         │   │   ├── lara_house_guns.bin
         │   │   ├── lara_rifle_sfx.bin
+        │   │   ├── lara_unwater_guns.bin
         │   │   ├── lara_vegas_guns.bin
         │   │   ├── living_deck_goon_sfx.bin
         │   │   ├── living_fd.bin
@@ -726,6 +825,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── secret_models_gm.bin
         │   │   ├── secret_models_og.bin
         │   │   ├── shark_sfx.bin
+        │   │   ├── snow.bin
         │   │   ├── tibet_fd.bin
         │   │   ├── tibet_itemrots.bin
         │   │   ├── tibet_music_tracks.bin
@@ -773,6 +873,8 @@ If you install everything correctly, your game directory should look more or les
         │   ├── platform.tr2
         │   ├── rig.tr2
         │   ├── scripts
+        │   │   ├── assault.lua
+        │   │   ├── floating.lua
         │   │   ├── level1.lua
         │   │   ├── level3.lua
         │   │   ├── level4.lua
@@ -857,6 +959,7 @@ If you install everything correctly, your game directory should look more or les
         │   └── 61.mp3
         ├── scripting
         │   └── trx
+        │       ├── assault_stats.lua
         │       ├── catalog.lua
         │       ├── config.lua
         │       ├── console.lua
@@ -867,6 +970,7 @@ If you install everything correctly, your game directory should look more or les
         │       ├── lara.lua
         │       ├── log.lua
         │       ├── music.lua
+        │       ├── objects.lua
         │       ├── rooms.lua
         │       └── sound.lua
         └── shaders
