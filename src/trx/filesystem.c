@@ -13,9 +13,12 @@
 
 #if defined(_WIN32)
     #include <direct.h>
+    #include <io.h>
+    #include <sys/stat.h>
     #define PATH_SEPARATOR "\\"
 #else
     #include <sys/stat.h>
+    #include <unistd.h>
     #define PATH_SEPARATOR "/"
 #endif
 
@@ -478,6 +481,38 @@ size_t File_Size(MYFILE *file)
 const char *File_GetPath(MYFILE *file)
 {
     return file->path;
+}
+
+bool File_GetMeta(
+    const char *const path, uint64_t *const out_size, uint64_t *const out_mtime)
+{
+    MYFILE *const file = File_Open(path, FILE_OPEN_READ);
+    if (file == nullptr) {
+        return false;
+    }
+
+    if (out_size != nullptr) {
+        *out_size = (uint64_t)File_Size(file);
+    }
+
+    if (out_mtime != nullptr) {
+        uint64_t mtime = 0;
+#if defined(_WIN32)
+        struct _stat64 st;
+        if (_fstat64(_fileno(file->fp), &st) == 0) {
+            mtime = (uint64_t)st.st_mtime;
+        }
+#else
+        struct stat st;
+        if (fstat(fileno(file->fp), &st) == 0) {
+            mtime = (uint64_t)st.st_mtime;
+        }
+#endif
+        *out_mtime = mtime;
+    }
+
+    File_Close(file);
+    return true;
 }
 
 void File_Close(MYFILE *file)

@@ -68,6 +68,10 @@ size_t File_Size(MYFILE *file);
 
 const char *File_GetPath(MYFILE *file);
 
+// Get file size and modification time (seconds since epoch).
+// Returns false if the file cannot be opened/resolved.
+bool File_GetMeta(const char *path, uint64_t *out_size, uint64_t *out_mtime);
+
 void File_Skip(MYFILE *file, size_t bytes);
 
 void File_Seek(MYFILE *file, size_t pos, FILE_SEEK_MODE mode);
