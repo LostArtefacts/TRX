@@ -596,6 +596,8 @@
         "SETTING_FOV_DESCRIPTION": "\\{review}Blickwinkel in Grad. Größere Werte erweitern das Sichtfeld, kleinere verengen es.",
         "SETTING_FPS": "FPS",
         "SETTING_FPS_DESCRIPTION": "Stellt Spiel-Frames pro second ein.",
+        "SETTING_GAMMA": "\\{review}Gamma",
+        "SETTING_GAMMA_DESCRIPTION": "\\{review}Passt die Gammakurve an. Höhere Werte bedeuten hellere Beleuchtung. Der Wert 2,5 entspricht den Standardfarben.",
         "SETTING_HARPOON_RECOIL": "Harpunenrückstoß",
         "SETTING_HARPOON_RECOIL_DESCRIPTION": "Legt fest, wie oft Lara die Harpune nachladen muss, basierend auf ihrer momentanen Munitionsanzahl. Zum Beispiel, wenn es auf 3 festgelegt ist, muss sie nach jedem dritten Schuss nachladen. Auf 0 eingestellt, deaktiviert das Nachladen vollständig.",
         "SETTING_HEALTHBAR_COLOR": "Gesundheitsleisten-Farbe",

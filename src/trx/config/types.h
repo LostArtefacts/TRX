@@ -72,6 +72,7 @@ typedef struct {
 
         CAMERA_MODE camera_mode;
         float brightness;
+        float gamma;
 
         bool enable_reflections;
         bool enable_3d_pickups;

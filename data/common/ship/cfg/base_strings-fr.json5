@@ -596,6 +596,8 @@
         "SETTING_FOV_DESCRIPTION": "\\{review}Angle de vue en degrés. Des valeurs plus grandes élargissent le champ de vision, des valeurs plus petites le rétrécissent.",
         "SETTING_FPS": "FPS",
         "SETTING_FPS_DESCRIPTION": "Définit le nombre d'images par seconde du jeu.",
+        "SETTING_GAMMA": "\\{review}Gamma",
+        "SETTING_GAMMA_DESCRIPTION": "\\{review}Ajuste la courbe gamma. Des valeurs plus élevées signifient un éclairage plus lumineux. La valeur de 2,5 correspond aux couleurs par défaut.",
         "SETTING_HARPOON_RECOIL": "\\{review}Recul du harpon",
         "SETTING_HARPOON_RECOIL_DESCRIPTION": "\\{review}Définit la fréquence à laquelle Lara doit recharger le harpon, en fonction de son nombre de munitions actuel. Par exemple, si réglé sur 3, elle devra recharger après chaque troisième tir. Réglez sur 0 pour désactiver complètement le rechargement.",
         "SETTING_HEALTHBAR_COLOR": "Couleur de la barre de santé",

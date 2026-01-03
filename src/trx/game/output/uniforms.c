@@ -22,6 +22,7 @@
     X_DECLARE_MEMBER(float, time)                                              \
     X_DECLARE_MEMBER(float, time_in_game)                                      \
     X_DECLARE_MEMBER(float, brightness_multiplier)                             \
+    X_DECLARE_MEMBER(float, gamma)                                             \
     X_DECLARE_MEMBER(float, desaturation)                                      \
     X_DECLARE_MEMBER(float, sunset_duration)                                   \
     X_DECLARE_MEMBER(float, min_shade)                                         \
@@ -133,6 +134,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .time = Output_GetTime(),
         .time_in_game = Output_GetTimeInGame(),
         .brightness_multiplier = g_Config.visuals.brightness,
+        .gamma = g_Config.visuals.gamma,
         .desaturation = Output_GetDesaturation(),
         .sunset_duration = Output_GetSunsetDuration(),
         .tr_version = g_TRVersion,

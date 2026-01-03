@@ -596,6 +596,8 @@
         "SETTING_FOV_DESCRIPTION": "Ceàrn seallaidh ann an ceumannan. Bidh luachan nas motha a' leudachadh raon seallaidh, agus bidh luachan nas lugha ga chuingealachadh.",
         "SETTING_FPS": "FPS",
         "SETTING_FPS_DESCRIPTION": "Suidhichidh an àireamh de frèamaichean a chluicheas gach diog 's a' gheama.",
+        "SETTING_GAMMA": "\\{review}Gamma",
+        "SETTING_GAMMA_DESCRIPTION": "\\{review}A’ cur às dèidh an lùb gamma. Tha luachan nas àirde a’ ciallachadh solas nas soilleire. Tha luach 2.5 a’ ciallachadh dathan àbhaisteach.",
         "SETTING_HARPOON_RECOIL": "Ath-luchdadh harpùn",
         "SETTING_HARPOON_RECOIL_DESCRIPTION": "Suidhichidh seo dè cho tric 's a dh'fheumas Lara an harpùn ath-luchdadh, stèidhichte air an lòin a th'aice. M.e. 3 = ath-luchdaich às dèidh a chleachdadh trì tursan. 0 = na bi ag ath-luchdachadh a-riamh.",
         "SETTING_HEALTHBAR_COLOR": "Dath bàr-shlàinte",
