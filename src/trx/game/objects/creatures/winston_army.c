@@ -181,6 +181,8 @@ static void M_Control(const int16_t item_num)
             }
             if (item->hit_status) {
                 item->goal_anim_state = M_STATE_HIT_2;
+            } else if (lara->target != item) {
+                item->goal_anim_state = M_STATE_DEF_1;
             }
             break;
 
