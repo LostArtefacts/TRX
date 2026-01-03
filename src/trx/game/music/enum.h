@@ -1,8 +1,8 @@
 #pragma once
 
 typedef enum {
-    MPM_ALWAYS,
-    MPM_LOOPED,
-    MPM_DELAYED,
-    MPM_TRACKED,
+    MPM_ONCE,
+    MPM_LOOP,
+    MPM_DELAY,
+    MPM_NO_REPEAT,
 } MUSIC_PLAY_MODE;

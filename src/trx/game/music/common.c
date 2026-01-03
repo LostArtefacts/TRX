@@ -94,7 +94,7 @@ static void M_StreamFinished(const int32_t stream_id, void *const user_data)
         m_AudioStreamID = -1;
         if (m_TrackLooped >= 0) {
             m_TrackLastLooped = MX_INACTIVE;
-            Music_Play_Direct(m_TrackLooped, MPM_LOOPED);
+            Music_Play_Direct(m_TrackLooped, MPM_LOOP);
         }
     }
 }
@@ -180,16 +180,16 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         return true;
     }
 
-    if (mode == MPM_TRACKED && track_id == m_TrackLastPlayed) {
+    if (mode == MPM_NO_REPEAT && track_id == m_TrackLastPlayed) {
         return true;
     }
 
-    const bool is_looped = mode == MPM_LOOPED || M_IsAmbientTrack(track_id);
+    const bool is_looped = mode == MPM_LOOP || M_IsAmbientTrack(track_id);
     if (is_looped && track_id == m_TrackLastLooped) {
         return true;
     }
 
-    if (mode == MPM_DELAYED) {
+    if (mode == MPM_DELAY) {
         m_TrackDelayed = track_id;
         return true;
     }
@@ -301,7 +301,7 @@ void Music_StopTrack_Direct(const MUSIC_ID track)
     m_TrackCurrent = MX_INACTIVE;
 
     if (m_TrackLooped >= 0) {
-        Music_Play_Direct(m_TrackLooped, MPM_LOOPED);
+        Music_Play_Direct(m_TrackLooped, MPM_LOOP);
     }
 }
 

@@ -13,7 +13,7 @@ title: Music
     Examples:
     - [lua]`trx.music.play(1)`  
       Plays track 1 once.
-    - [lua]`trx.music.play(2, { mode = trx.music.PlayMode.LOOPED })`  
+    - [lua]`trx.music.play(2, { mode = trx.music.PlayMode.LOOP })`  
       Plays track 2 as a looped track.
 - [lua]`trx.music.pause()`  
     Pauses the music.
@@ -24,11 +24,11 @@ title: Music
 
 ## Play mode constants
 
-- `trx.music.PlayMode.ALWAYS`  
+- `trx.music.PlayMode.ONCE`  
     Plays the track once; after it finishes, any active looped track resumes.
-- `trx.music.PlayMode.LOOPED`  
+- `trx.music.PlayMode.LOOP`  
     Plays the track in looped mode continuously. This track becomes the ambient track.
-- `trx.music.PlayMode.TRACKED`  
+- `trx.music.PlayMode.NO_REPEAT`  
     Plays the track once but prevents retriggering if it's already playing.
-- `trx.music.PlayMode.DELAYED`  
+- `trx.music.PlayMode.DELAY`  
     Schedules the track for later playback without starting it immediately.

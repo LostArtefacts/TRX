@@ -22,7 +22,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     if (p->mode == INV_TITLE_MODE && g_Config.audio.enable_music_in_menu
         && level->music_track >= 0) {
         Music_Stop();
-        Music_Play_Direct(level->music_track, MPM_LOOPED);
+        Music_Play_Direct(level->music_track, MPM_LOOP);
     }
 
     p->ring = InvRing_Open(p->mode);

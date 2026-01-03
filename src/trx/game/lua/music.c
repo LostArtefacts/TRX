@@ -54,14 +54,14 @@ void LUA_CreateMusic(lua_State *const L)
     lua_newtable(L);
 
     lua_newtable(L);
-    lua_pushinteger(L, MPM_ALWAYS);
-    lua_setfield(L, -2, "ALWAYS");
-    lua_pushinteger(L, MPM_LOOPED);
-    lua_setfield(L, -2, "LOOPED");
-    lua_pushinteger(L, MPM_DELAYED);
-    lua_setfield(L, -2, "DELAYED");
-    lua_pushinteger(L, MPM_TRACKED);
-    lua_setfield(L, -2, "TRACKED");
+    lua_pushinteger(L, MPM_ONCE);
+    lua_setfield(L, -2, "ONCE");
+    lua_pushinteger(L, MPM_LOOP);
+    lua_setfield(L, -2, "LOOP");
+    lua_pushinteger(L, MPM_DELAY);
+    lua_setfield(L, -2, "DELAY");
+    lua_pushinteger(L, MPM_NO_REPEAT);
+    lua_setfield(L, -2, "NO_REPEAT");
     lua_setfield(L, -2, "PlayMode");
 
     lua_pushcfunction(L, M_L_MusicGetTrack);
