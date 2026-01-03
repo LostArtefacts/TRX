@@ -45,6 +45,9 @@
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
+            "injections": [
+                "data/injections/gym_sky.bin",
+            ],
         },
 
         // 1. Jungle
@@ -63,6 +66,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/india_sky.bin",
+            ],
         },
 
         // 2. Temple Ruins
@@ -77,6 +83,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/india_sky.bin",
+            ],
         },
 
         // 3. The River Ganges
@@ -90,6 +99,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/india_sky.bin",
             ],
         },
 
@@ -119,6 +131,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/coastal_sky.bin",
+            ],
         },
 
         // 6. Crash Site
@@ -134,6 +149,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/crash_sky.bin",
+            ],
         },
 
         // 7. Madubu Gorge
@@ -146,6 +164,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/rapids_sky.bin",
             ],
         },
 
@@ -233,6 +254,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/nevada_sky.bin",
+            ],
         },
 
         // 14. High Security Compound
@@ -252,6 +276,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/area51_sky.bin",
+            ],
         },
 
         // 15. Area 51
@@ -265,6 +292,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/area51_sky.bin",
             ],
         },
 
@@ -282,6 +312,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/antarc_sky.bin",
             ],
         },
 
@@ -338,6 +371,9 @@
                 {"type": "total_stats", "background_path": "data/images/theend2.webp"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/cavern_sky.bin",
+            ],
         },
 
         // 20. All Hallows
@@ -381,6 +417,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/india_sky.bin",
             ],
         },
         // Cutscene 3
@@ -393,6 +430,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/crash_sky.bin",
             ],
         },
         // Cutscene 4
@@ -418,6 +456,7 @@
             "injections": [
                 "data/injections/cut2_setup.bin",
                 "data/injections/font.bin",
+                "data/injections/london_sky.bin",
             ],
         },
         // Cutscene 6
@@ -442,6 +481,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/london_sky.bin",
             ],
         },
         // Cutscene 8
@@ -454,6 +494,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/nevada_sky.bin",
             ],
         },
         // Cutscene 9
@@ -478,6 +519,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/antarc_sky.bin",
             ],
         },
         // Cutscene 11
