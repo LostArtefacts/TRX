@@ -9,6 +9,7 @@ typedef struct {
     int16_t neck_rotation;
     int16_t maximum_turn;
     int16_t flags;
+    bool alerted : 1;
     int16_t item_num;
     MOOD_TYPE mood;
     LOT_INFO lot;
@@ -18,11 +19,7 @@ typedef struct {
 
 typedef struct {
     int16_t zone_num;
-    // TODO: merge
-    union {
-        int16_t enemy_zone;
-        int16_t enemy_zone_num;
-    };
+    int16_t enemy_zone_num;
     int32_t distance;
     int32_t ahead;
     int32_t bite;

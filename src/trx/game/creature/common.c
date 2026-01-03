@@ -323,7 +323,9 @@ void Creature_Mood(
     if (enemy == nullptr) {
         creature->mood = MOOD_BORED;
         enemy = Lara_GetItem();
-    } else if (enemy->hit_points <= 0) {
+    } else if (
+        enemy->hit_points <= 0
+        && (g_TRVersion < 3 || enemy == Lara_GetItem())) {
         creature->mood = MOOD_BORED;
     } else if (violent) {
         switch (mood) {
@@ -352,7 +354,12 @@ void Creature_Mood(
         switch (mood) {
         case MOOD_BORED:
         case MOOD_STALK:
-            if (item->hit_status
+            if (g_TRVersion >= 3 && creature->alerted
+                && info->zone_num != info->enemy_zone_num) {
+                creature->mood =
+                    info->distance > WALL_L * 3 ? MOOD_STALK : MOOD_BORED;
+            } else if (
+                g_TRVersion < 3 && item->hit_status
                 && (Random_GetControl() < M_ESCAPE_CHANCE
                     || info->zone_num != info->enemy_zone_num)) {
                 creature->mood = MOOD_ESCAPE;
@@ -371,8 +378,10 @@ void Creature_Mood(
             if (item->hit_status
                 && (Random_GetControl() < M_ESCAPE_CHANCE
                     || info->zone_num != info->enemy_zone_num)) {
-                creature->mood = MOOD_ESCAPE;
-            } else if (info->zone_num != info->enemy_zone_num) {
+                creature->mood = g_TRVersion < 3 ? MOOD_ESCAPE : MOOD_STALK;
+            } else if (
+                info->zone_num != info->enemy_zone_num
+                && (g_TRVersion < 3 || info->distance > 6 * WALL_L)) {
                 creature->mood = MOOD_BORED;
             }
             break;
@@ -401,7 +410,7 @@ void Creature_Mood(
             if (Box_StalkBox(item, enemy, box_num) && creature->enemy != nullptr
                 && enemy->hit_points > 0) {
                 Box_TargetBox(lot, box_num);
-                creature->mood = MOOD_STALK;
+                creature->mood = MOOD_STALK; // NOTE: TR3 sets MOOD_BORED?
             } else if (lot->required_box == NO_BOX) {
                 Box_TargetBox(lot, box_num);
             }
@@ -431,7 +440,8 @@ void Creature_Mood(
                 Box_TargetBox(lot, box_num);
             } else if (
                 info->zone_num == info->enemy_zone_num
-                && Box_StalkBox(item, enemy, box_num)) {
+                && Box_StalkBox(item, enemy, box_num)
+                && (g_TRVersion < 3 || !violent)) {
                 Box_TargetBox(lot, box_num);
                 creature->mood = MOOD_STALK;
             }
