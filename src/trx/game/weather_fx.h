@@ -11,4 +11,5 @@ typedef enum {
 void WeatherFX_Init(void);
 void WeatherFX_Update(void);
 void WeatherFX_Draw(void);
+WEATHER_TYPE WeatherFX_GetWeather(void);
 void WeatherFX_SetWeather(WEATHER_TYPE weather_type);

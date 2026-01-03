@@ -536,6 +536,11 @@ void WeatherFX_Init(void)
     M_ClearWeather();
 }
 
+WEATHER_TYPE WeatherFX_GetWeather(void)
+{
+    return m_WeatherType;
+}
+
 void WeatherFX_SetWeather(const WEATHER_TYPE weather_type)
 {
     m_WeatherType = weather_type;
