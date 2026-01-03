@@ -89,6 +89,7 @@
 - fixed reading room lights for custom TR2 levels (regression from 1.0)
 - fixed the switch in room 46 of Opera House randomly disappearing
 - fixed game crashing when Lara passes through light sources in levels compiled with dxtre3D
+- fixed Skidoo music not getting resumed (#4519)
 
 **TR3**:
 - added RGB lighting system support
