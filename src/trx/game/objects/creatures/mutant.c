@@ -98,7 +98,7 @@ static void M_Control(const int16_t item_num)
         int32_t shoot2 = 0;
         if (item->object_id != O_WARRIOR_3
             && Creature_CanTargetEnemy(item, &info)
-            && (info.zone_num != info.enemy_zone
+            && (info.zone_num != info.enemy_zone_num
                 || info.distance > FLYER_ATTACK_RANGE)) {
             if (info.angle > 0 && info.angle < DEG_45) {
                 shoot1 = 1;
@@ -110,7 +110,7 @@ static void M_Control(const int16_t item_num)
         if (item->object_id == O_WARRIOR_1) {
             if (item->current_anim_state == MUTANT_STATE_FLY) {
                 if ((flyer->flags & FLYER_FLYMODE) && flyer->mood != MOOD_ESCAPE
-                    && info.zone_num == info.enemy_zone) {
+                    && info.zone_num == info.enemy_zone_num) {
                     flyer->flags &= ~FLYER_FLYMODE;
                 }
 
@@ -123,7 +123,7 @@ static void M_Control(const int16_t item_num)
                 flyer->lot.setup.fly = STEP_L / 8;
                 Creature_AIInfo(item, &info);
             } else if (
-                (info.zone_num != info.enemy_zone && !shoot1 && !shoot2
+                (info.zone_num != info.enemy_zone_num && !shoot1 && !shoot2
                  && (!info.ahead || flyer->mood == MOOD_BORED))
                 || flyer->mood == MOOD_ESCAPE) {
                 flyer->flags |= FLYER_FLYMODE;
@@ -177,7 +177,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = MUTANT_STATE_STOP;
             } else if (flyer->mood == MOOD_STALK) {
                 if (info.distance < FLYER_WALK_RANGE) {
-                    if (info.zone_num == info.enemy_zone
+                    if (info.zone_num == info.enemy_zone_num
                         || Random_GetControl() < FLYER_UNPOSE_CHANCE) {
                         item->goal_anim_state = MUTANT_STATE_WALK;
                     }
@@ -204,7 +204,7 @@ static void M_Control(const int16_t item_num)
             } else if (
                 flyer->mood == MOOD_BORED
                 || (flyer->mood == MOOD_STALK
-                    && info.zone_num != info.enemy_zone)) {
+                    && info.zone_num != info.enemy_zone_num)) {
                 if (Random_GetControl() < FLYER_POSE_CHANCE) {
                     item->goal_anim_state = MUTANT_STATE_POSE;
                 }

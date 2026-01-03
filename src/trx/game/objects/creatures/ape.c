@@ -152,7 +152,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = APE_STATE_ATTACK;
             } else if (
                 !(ape->flags & APE_ATTACK_FLAG)
-                && info.zone_num == info.enemy_zone && info.ahead) {
+                && info.zone_num == info.enemy_zone_num && info.ahead) {
                 int16_t random = Random_GetControl() >> 5;
                 if (random < APE_JUMP_CHANCE) {
                     item->goal_anim_state = APE_STATE_JUMP;
