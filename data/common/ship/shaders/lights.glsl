@@ -6,6 +6,7 @@
 #define RLM_SUNSET  3
 
 uniform int uWaterEffect;
+uniform vec3 uWaterEffectParams; // x=choppy amp, y=shimmer amp, z=abs intensity
 
 struct Light {
     vec4 pos;
@@ -36,37 +37,21 @@ float getEffectPhase(vec4 worldPos)
     return phase + rnd;
 }
 
-float effectChoppy(float phase, int waterScheme)
+float effectChoppy(float phase)
 {
-    const float amplitude[22] = float[](
-        16.0,  0.0,   0.0,   0.0,   0.0,
-        16.0,  16.0,  16.0,  16.0,
-        53.0,  53.0,  53.0,  53.0,
-        90.0,  90.0,  90.0,  90.0,
-        127.0, 127.0, 127.0, 127.0,
-        0.0);
     float angle = radians(360.0 * (mod(uTimeInGame / 64.0, 1.0) + phase));
-    return sin(angle) * amplitude[clamp(waterScheme, 0, 21)];
+    return sin(angle) * uWaterEffectParams.x;
 }
 
-float effectShimmer(float phase, int waterScheme)
+float effectShimmer(float phase)
 {
-    const float amplitude[22] = float[](
-        7.875, 4, 8, 12, 15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        -3.875, -7.875, -11.875, -15.875,
-        0.0);
     float angle = radians(360.0 * (mod(uTimeInGame / 64.0, 1.0) + phase));
-    return sin(angle) * amplitude[clamp(waterScheme, 0, 21)];
+    return sin(angle) * uWaterEffectParams.y;
 }
 
-float effectAbs(float phase, int waterScheme)
+float effectAbs(void)
 {
-    const float intensity[22] = float[](
-        0, -3, 0, 4, 8, 4, 8, 12, 16, 4, 8, 12, 16, 4, 8, 12, 16, 4, 8, 12, 16, 0);
-    return intensity[clamp(waterScheme, 0, 21)];
+    return uWaterEffectParams.z;
 }
 
 int lightFlicker(float t) {
@@ -142,12 +127,11 @@ float lightObjects(vec3 rawNormal, vec4 vertexPos)
 
 vec3 lightObjectsTR3(vec3 rawNormal)
 {
-    vec3 N = safeNormalize(rawNormal.xyz / float(1 << 14));
-    mat3 viewModelT = mat3(transpose(uMatView * uMatModel));
+    vec3 N = safeNormalize(mat3(uMatView * uMatModel) * (rawNormal.xyz / float(1 << 14)));
 
-    vec3 L0 = safeNormalize(viewModelT * uTR3LightDirView[0].xyz);
-    vec3 L1 = safeNormalize(viewModelT * uTR3LightDirView[1].xyz);
-    vec3 L2 = safeNormalize(viewModelT * uTR3LightDirView[2].xyz);
+    vec3 L0 = uTR3LightDirView[0].xyz;
+    vec3 L1 = uTR3LightDirView[1].xyz;
+    vec3 L2 = uTR3LightDirView[2].xyz;
 
     float d0 = max(dot(N, L0), 0.0);
     float d1 = max(dot(N, L1), 0.0);
@@ -171,16 +155,15 @@ float lightDynamic(float baseLight, vec4 vertexPos)
 {
     float lightAdder = baseLight;
     for (int i = 0; i < uNumLights; i++) {
-        Light light = uLights[i];
-        vec3 dist = light.pos.xyz - vertexPos.xyz;
-        float radius = exp2(light.falloff);
+        vec3 dist = uLights[i].pos.xyz - vertexPos.xyz;
+        float radius = exp2(uLights[i].falloff);
         float distSq = dot(dist, dist);
         if (distSq > radius * radius) {
             continue;
         }
 
-        float maxShade = exp2(light.shade);
-        float distTerm = distSq / exp2(2 * light.falloff - light.shade);
+        float maxShade = exp2(uLights[i].shade);
+        float distTerm = distSq / exp2(2 * uLights[i].falloff - uLights[i].shade);
         float shade = maxShade - distTerm;
         lightAdder -= shade;
     }
@@ -191,16 +174,17 @@ vec3 lightDynamicTR3(vec4 vertexPos)
 {
     vec3 add = vec3(0.0);
     for (int i = 0; i < uNumLights; i++) {
-        Light light = uLights[i];
-        float radius = light.falloff * 0.5; // falloff_raw >> 1
-        vec3 dist = light.pos.xyz - vertexPos.xyz;
-        float d = length(dist);
-        if (d > radius) {
+        float radius = uLights[i].falloff * 0.5; // falloff_raw >> 1
+        vec3 dist = uLights[i].pos.xyz - vertexPos.xyz;
+        float distSq = dot(dist, dist);
+        float radiusSq = radius * radius;
+        if (distSq > radiusSq) {
             continue;
         }
 
+        float d = sqrt(distSq);
         float factor = (radius - d) / max(radius, 1.0);
-        add += factor * light.color.rgb;
+        add += factor * uLights[i].color.rgb;
     }
     return add;
 }
@@ -261,7 +245,7 @@ LightingResult light(
         return result;
     }
 
-    if (uTRVersion >= 3) {
+#if defined(TR_VERSION) && TR_VERSION >= 3
         if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
             result.color.rgb =
                 clamp(
@@ -275,18 +259,18 @@ LightingResult light(
             result.color.rgb *= lightOwnTR3(shade);
         }
         result.shade = SHADE_NEUTRAL;
-    } else {
+#else
         result.shade = light(shade, flags, normal, pos, vertexPhase);
-    }
+#endif
 
     // TR3 caustics
     float add = 0.0;
     if ((flags & VERT_MOVE) != 0u) {
-        add -= effectChoppy(effectPhase, uWaterEffect - 2) / 512.0;
+        add -= effectChoppy(effectPhase) / 512.0;
     }
     if ((flags & VERT_GLOW) != 0u) {
-        add += effectShimmer(effectPhase, uWaterEffect - 2) / 32.0;
-        add += effectAbs(effectPhase, uWaterEffect - 2) / 32.0;
+        add += effectShimmer(effectPhase) / 32.0;
+        add += effectAbs() / 32.0;
     }
     result.color.rgb = clamp(result.color.rgb + add, 0.0, 1.0);
 
