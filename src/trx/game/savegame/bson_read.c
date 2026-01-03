@@ -22,6 +22,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
+#include <trx/game/weather_fx.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/version.h>
@@ -1400,6 +1401,20 @@ bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *const ctx)
         RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
         resume->stats.death_count = -1;
         M_OPTIONAL(M_ReadNum(ctx, "death_count", &resume->stats.death_count));
+    }
+
+    {
+        if (M_HasKey(ctx, "weather_type") != 0) {
+            int32_t weather_type = (int32_t)WEATHER_NONE;
+            if (M_ReadNum(ctx, "weather_type", &weather_type)) {
+                if (weather_type >= (int32_t)WEATHER_NONE
+                    && weather_type <= (int32_t)WEATHER_SNOW) {
+                    WeatherFX_SetWeather((WEATHER_TYPE)weather_type);
+                } else {
+                    WeatherFX_SetWeather(WEATHER_NONE);
+                }
+            }
+        }
     }
 
     M_MUST(M_Pop(ctx));
