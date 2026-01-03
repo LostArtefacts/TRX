@@ -1711,6 +1711,24 @@
         },
         "rocket": {
             "name": "Rakieta",
+        },
+        "animating_1": {
+            "name": "Animowany Obiekt 1",
+        },
+        "animating_2": {
+            "name": "Animowany Obiekt 2",
+        },
+        "animating_3": {
+            "name": "Animowany Obiekt 3",
+        },
+        "animating_4": {
+            "name": "Animowany Obiekt 4",
+        },
+        "animating_5": {
+            "name": "Animowany Obiekt 5",
+        },
+        "animating_6": {
+            "name": "Animowany Obiekt 6",
         }
     }
 }

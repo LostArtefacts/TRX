@@ -1741,6 +1741,24 @@
         },
         "rocket": {
             "name": "Rocaid",
+        },
+        "animating_1": {
+            "name": "\\{review}A’ beothachadh Nì 1",
+        },
+        "animating_2": {
+            "name": "\\{review}A’ beothachadh Nì 2",
+        },
+        "animating_3": {
+            "name": "\\{review}A’ beothachadh Nì 3",
+        },
+        "animating_4": {
+            "name": "\\{review}A’ beothachadh Nì 4",
+        },
+        "animating_5": {
+            "name": "\\{review}A’ beothachadh Nì 5",
+        },
+        "animating_6": {
+            "name": "\\{review}A’ beothachadh Nì 6",
         }
     }
 }

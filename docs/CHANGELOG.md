@@ -15,6 +15,7 @@
 - added a new input, that lets the player toggle ingame textures on/off, available by default under F8
 - added a new console command, `/textures`, that lets the player toggle ingame textures on/off
 - added a new console command, `/weather`, that lets the player control the weather
+- added Animating Item 1-6 control
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
 - changed the lighting contrast key binding to F9
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)
@@ -105,6 +106,7 @@
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - added support for the serif font
 - added support for colored text (Assault Course colors not yet implemented)
+- added Animating Item 1-6 control
 - added Desert Eagle control
 - added MP5 control
 - added Rocket Launcher control
@@ -299,3 +301,6 @@ Showcase: https://youtu.be/vVU9vbUXTXc
 - fixed incorrect keys object orientation in the inventory ring (#4239, regression from 0.3)
 - fixed underwater hum when Microphone near Lara option is on (#2188)
 - fixed 3D pickups not rendering if the associated sprite is not present in the level file (#4275, regression from 0.6)
+
+**TR3**:
+- added basic TR3 level loader (nothing is working yet!)
