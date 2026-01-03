@@ -13,6 +13,8 @@
 #include <trx/vector.h>
 #include <trx/version.h>
 
+#include <math.h>
+
 #define M_GLOBAL_MEMBERS                                                       \
     X_DECLARE_MEMBER(float, fog_color, [4])                                    \
     X_DECLARE_MEMBER(float, fog_distance, [2])                                 \
@@ -214,9 +216,19 @@ void Output_Uniforms_UploadCPULight(
     ls.tr3_ambient[2] = info->tr3_ambient.b;
     ls.tr3_ambient[3] = 0.0f;
     for (int32_t i = 0; i < 3; i++) {
-        ls.tr3_light_dir_view[i][0] = info->tr3_light_dir_view[i].x;
-        ls.tr3_light_dir_view[i][1] = info->tr3_light_dir_view[i].y;
-        ls.tr3_light_dir_view[i][2] = info->tr3_light_dir_view[i].z;
+        float x = (float)info->tr3_light_dir_view[i].x;
+        float y = (float)info->tr3_light_dir_view[i].y;
+        float z = (float)info->tr3_light_dir_view[i].z;
+        const float len2 = x * x + y * y + z * z;
+        if (len2 > 0.0f) {
+            const float inv_len = 1.0f / sqrtf(len2);
+            x *= inv_len;
+            y *= inv_len;
+            z *= inv_len;
+        }
+        ls.tr3_light_dir_view[i][0] = x;
+        ls.tr3_light_dir_view[i][1] = y;
+        ls.tr3_light_dir_view[i][2] = z;
         ls.tr3_light_dir_view[i][3] = 0.0f;
         ls.tr3_light_color[i][0] = info->tr3_light_color[i].r;
         ls.tr3_light_color[i][1] = info->tr3_light_color[i].g;

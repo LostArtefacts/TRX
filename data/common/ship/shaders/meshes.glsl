@@ -44,7 +44,8 @@ void main(void) {
     float effectPhase = getEffectPhase(worldPos);
 
     if ((inFlags & VERT_MOVE) != 0u) {
-        worldPos.y += effectChoppy(effectPhase, uWaterEffect - 2);
+        float waterMul = (uWaterEffect != 0) ? 1.0 : 0.0;
+        worldPos.y += effectChoppy(effectPhase) * waterMul;
     }
 
     if ((inFlags & (VERT_ABS_SPRITE | VERT_BILLBOARD)) != 0u) {

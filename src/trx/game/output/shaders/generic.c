@@ -155,3 +155,21 @@ GLint Output_Shader_LookupUniform(
     }
     return uniform->location;
 }
+
+bool Output_Shader_TryLookupUniform(
+    const OUTPUT_SHADER *const shader, const char *const name,
+    GLint *const out_location)
+{
+    M_UNIFORM *uniform = nullptr;
+    HASH_FIND_STR(shader->uniform_hash, name, uniform);
+    if (uniform == nullptr) {
+        if (out_location != nullptr) {
+            *out_location = -1;
+        }
+        return false;
+    }
+    if (out_location != nullptr) {
+        *out_location = uniform->location;
+    }
+    return true;
+}
