@@ -176,7 +176,7 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         return false;
     }
 
-    if (mode != MPM_ALWAYS && track_id == m_TrackCurrent) {
+    if (track_id == m_TrackCurrent) {
         return true;
     }
 
