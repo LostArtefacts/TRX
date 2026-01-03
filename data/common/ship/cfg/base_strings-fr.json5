@@ -522,6 +522,8 @@
         "SETTING_ENABLE_WADING_DESCRIPTION": "\\{review}Permet à Lara de patauger dans les eaux peu profondes, plutôt que de rester bloquée à la surface.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Animées les placements",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Fait marcher Lara vers les objets et interrupteurs à proximité, au lieu de se téléporter vers eux.",
+        "SETTING_ENABLE_WEATHER": "\\{review}Météo",
+        "SETTING_ENABLE_WEATHER_DESCRIPTION": "\\{review}Active le rendu des effets météorologiques dans les niveaux pris en charge.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Couleur de la barre des ennemis",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Couleur de la barre de santé des ennemis.",
         "SETTING_ENEMY_HEALTHBAR_LOCATION": "Emplacement de la barre des ennemis",

@@ -522,6 +522,8 @@
         "SETTING_ENABLE_WADING_DESCRIPTION": "Leigidh le Lara coiseachd tro uisge eu-dhomhain seach a bhith air a stad aig uachdar na h-aibhne.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Eadar-obrachadh beòthail",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Nì Lara coiseachd gu togailtean is suidsichean nuair a tha i faisg orra, an àite leum dìreach thuca.",
+        "SETTING_ENABLE_WEATHER": "\\{review}Sìde",
+        "SETTING_ENABLE_WEATHER_DESCRIPTION": "\\{review}Cumasach a bhith a’ taisbeanadh buaidhean sìde anns na h-ìrean a tha a’ toirt taic dha.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Dath bàr-nàmhaid",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Dath bàr-shlàinte an nàmhaid.",
         "SETTING_ENEMY_HEALTHBAR_LOCATION": "Suidheachadh bàr-nàmhaid",

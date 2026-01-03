@@ -522,6 +522,8 @@
         "SETTING_ENABLE_WADING_DESCRIPTION": "Allows Lara to wade through shallow water, rather than becoming stuck on the water surface.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Animated interactions",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Makes Lara walk to pickups and switches when nearby instead of teleporting to them.",
+        "SETTING_ENABLE_WEATHER": "Weather",
+        "SETTING_ENABLE_WEATHER_DESCRIPTION": "Enables rendering of weather effects in supported levels.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Enemy bar color",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Color of the enemy healthbar.",
         "SETTING_ENEMY_HEALTHBAR_LOCATION": "Enemy bar location",

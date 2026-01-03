@@ -1,5 +1,6 @@
 #include <trx/game/weather_fx.h>
 
+#include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/game/state.h>
 #include <trx/game/lara.h>
@@ -542,6 +543,9 @@ void WeatherFX_SetWeather(const WEATHER_TYPE weather_type)
 
 void WeatherFX_Update(void)
 {
+    if (!g_Config.visuals.enable_weather) {
+        return;
+    }
     const WEATHER_TYPE weather_type = m_WeatherType;
     if (weather_type == WEATHER_RAIN) {
         M_UpdateRain();
@@ -552,6 +556,9 @@ void WeatherFX_Update(void)
 
 void WeatherFX_Draw(void)
 {
+    if (!g_Config.visuals.enable_weather) {
+        return;
+    }
     switch (m_WeatherType) {
     case WEATHER_RAIN:
         M_DrawRain();

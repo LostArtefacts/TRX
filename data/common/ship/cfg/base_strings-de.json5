@@ -522,6 +522,8 @@
         "SETTING_ENABLE_WADING_DESCRIPTION": "\\{review}Erlaubt Lara, flaches Wasser zu durchwaten, anstatt an der Wasseroberfläche stecken zu bleiben.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Animierte Interaktionen",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": " Lässt Lara zu Pickups und Schaltern hingehen, anstatt sie zu ihnen zu teleportieren.",
+        "SETTING_ENABLE_WEATHER": "\\{review}Wetter",
+        "SETTING_ENABLE_WEATHER_DESCRIPTION": "\\{review}Aktiviert die Darstellung von Wettereffekten in unterstützten Levels.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Leisten-Farbe der Feinde",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Gesundheitsleisten-Farbe der Feinde",
         "SETTING_ENEMY_HEALTHBAR_LOCATION": "Position der Gesundheitsleiste der Feinde",
