@@ -1737,6 +1737,24 @@
         },
         "rocket": {
             "name": "\\{review}Ракета",
+        },
+        "animating_1": {
+            "name": "\\{review}Анимация объекта 1",
+        },
+        "animating_2": {
+            "name": "\\{review}Анимация объекта 2",
+        },
+        "animating_3": {
+            "name": "\\{review}Анимация объекта 3",
+        },
+        "animating_4": {
+            "name": "\\{review}Анимация объекта 4",
+        },
+        "animating_5": {
+            "name": "\\{review}Анимация объекта 5",
+        },
+        "animating_6": {
+            "name": "\\{review}Анимация объекта 6",
         }
     }
 }

@@ -1730,6 +1730,24 @@
         },
         "rocket": {
             "name": "\\{review}Rakete",
+        },
+        "animating_1": {
+            "name": "\\{review}Objekt 1 wird animiert",
+        },
+        "animating_2": {
+            "name": "\\{review}Objekt 2 wird animiert",
+        },
+        "animating_3": {
+            "name": "\\{review}Objekt 3 wird animiert",
+        },
+        "animating_4": {
+            "name": "\\{review}Objekt 4 wird animiert",
+        },
+        "animating_5": {
+            "name": "\\{review}Objekt 5 wird animiert",
+        },
+        "animating_6": {
+            "name": "\\{review}Objekt 6 wird animiert",
         }
     }
 }

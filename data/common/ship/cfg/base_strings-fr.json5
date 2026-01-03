@@ -1717,6 +1717,24 @@
         },
         "rocket": {
             "name": "\\{review}Roquette",
+        },
+        "animating_1": {
+            "name": "\\{review}Animation de l'objet 1",
+        },
+        "animating_2": {
+            "name": "\\{review}Animation de l'objet 2",
+        },
+        "animating_3": {
+            "name": "\\{review}Animation de l'objet 3",
+        },
+        "animating_4": {
+            "name": "\\{review}Animation de l'objet 4",
+        },
+        "animating_5": {
+            "name": "\\{review}Animation de l'objet 5",
+        },
+        "animating_6": {
+            "name": "\\{review}Animation de l'objet 6",
         }
     }
 }

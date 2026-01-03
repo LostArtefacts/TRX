@@ -1747,6 +1747,24 @@
         },
         "rocket": {
             "name": "\\{review}Razzo",
+        },
+        "animating_1": {
+            "name": "\\{review}Animando Oggetto 1",
+        },
+        "animating_2": {
+            "name": "\\{review}Animando Oggetto 2",
+        },
+        "animating_3": {
+            "name": "\\{review}Animando Oggetto 3",
+        },
+        "animating_4": {
+            "name": "\\{review}Animando Oggetto 4",
+        },
+        "animating_5": {
+            "name": "\\{review}Animando Oggetto 5",
+        },
+        "animating_6": {
+            "name": "\\{review}Animando Oggetto 6",
         }
     }
 }

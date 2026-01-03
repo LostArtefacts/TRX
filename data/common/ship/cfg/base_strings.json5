@@ -1746,6 +1746,24 @@
         },
         "winston": {
             "name": "Winston",
+        },
+        "animating_1": {
+            "name": "Animating Object 1",
+        },
+        "animating_2": {
+            "name": "Animating Object 2",
+        },
+        "animating_3": {
+            "name": "Animating Object 3",
+        },
+        "animating_4": {
+            "name": "Animating Object 4",
+        },
+        "animating_5": {
+            "name": "Animating Object 5",
+        },
+        "animating_6": {
+            "name": "Animating Object 6",
         }
     }
 }
