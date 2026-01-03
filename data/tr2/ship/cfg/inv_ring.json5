@@ -26,7 +26,7 @@
         "z_trans_sel": 352,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 10,
+        "inv_pos": 11,
     },
 
     {
@@ -40,7 +40,7 @@
         "z_trans_sel": 296,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 9,
+        "inv_pos": 10,
     },
 
     {
@@ -105,6 +105,21 @@
     },
 
     {
+        "object_id": "O_DESERT_EAGLE_OPTION",
+        "frames_total": 12,
+        "open_frame": 11,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "x_rot_sel": 3360,
+        "y_rot_sel": -32768,
+        "z_trans_sel": 362,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 5,
+    },
+
+    {
         "object_id": "O_UZI_OPTION",
         "frames_total": 13,
         "open_frame": 12,
@@ -117,7 +132,7 @@
         "z_trans_sel": 322,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 5,
+        "inv_pos": 6,
     },
 
     {
@@ -133,7 +148,7 @@
         "z_trans_sel": 296,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 8,
+        "inv_pos": 9,
     },
 
     {
@@ -149,7 +164,7 @@
         "z_trans_sel": 296,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 6,
+        "inv_pos": 7,
     },
 
     {
@@ -165,7 +180,7 @@
         "z_trans_sel": 296,
         "meshes_sel": -1,
         "meshes_drawn": -1,
-        "inv_pos": 7,
+        "inv_pos": 8,
     },
 
     {
@@ -221,7 +236,7 @@
     },
 
     {
-        "object_id": "O_UZI_AMMO_OPTION",
+        "object_id": "O_DESERT_EAGLE_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -234,20 +249,7 @@
     },
 
     {
-        "object_id": "O_HARPOON_AMMO_OPTION",
-        "frames_total": 1,
-        "anim_direction": 1,
-        "anim_speed": 1,
-        "x_rot_pt_sel": 3200,
-        "x_rot_sel": -3808,
-        "z_trans_sel": 296,
-        "meshes_sel": -1,
-        "meshes_drawn": -1,
-        "inv_pos": 8,
-    },
-
-    {
-        "object_id": "O_M16_AMMO_OPTION",
+        "object_id": "O_UZI_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -260,7 +262,20 @@
     },
 
     {
-        "object_id": "O_GRENADE_AMMO_OPTION",
+        "object_id": "O_HARPOON_AMMO_OPTION",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "x_rot_sel": -3808,
+        "z_trans_sel": 296,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 9,
+    },
+
+    {
+        "object_id": "O_M16_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -270,6 +285,19 @@
         "meshes_sel": -1,
         "meshes_drawn": -1,
         "inv_pos": 7,
+    },
+
+    {
+        "object_id": "O_GRENADE_AMMO_OPTION",
+        "frames_total": 1,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "x_rot_pt_sel": 3200,
+        "x_rot_sel": -3808,
+        "z_trans_sel": 296,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "inv_pos": 8,
     },
 
     {
