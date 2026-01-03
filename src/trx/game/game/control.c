@@ -47,7 +47,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     if (level->music_track != MX_INACTIVE
         && (is_cutscene || Music_GetCurrentLoopedTrack() == MX_INACTIVE)) {
         Music_Play_Direct(
-            level->music_track, is_cutscene ? MPM_ALWAYS : MPM_LOOPED);
+            level->music_track, is_cutscene ? MPM_ONCE : MPM_LOOP);
     }
 
     return true;

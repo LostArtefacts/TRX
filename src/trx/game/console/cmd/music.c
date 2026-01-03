@@ -13,7 +13,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         if (track_to_play == 0 || track_to_play == -1) {
             Music_Stop();
             Console_Log(GS(CMD_PLAY_MUSIC_STOPPED));
-        } else if (Music_Play_Direct(track_to_play, MPM_ALWAYS)) {
+        } else if (Music_Play_Direct(track_to_play, MPM_ONCE)) {
             Console_Log(GS(CMD_PLAY_MUSIC_TRACK), track_to_play);
         } else {
             Console_LogError(GS(CMD_INVALID_MUSIC_TRACK));

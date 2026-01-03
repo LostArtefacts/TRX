@@ -977,7 +977,7 @@ static bool M_ReadMusicTracks(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
         // current position in the level.
-        Music_Play_Direct(ambient_track, MPM_LOOPED);
+        Music_Play_Direct(ambient_track, MPM_LOOP);
     }
 
     if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
@@ -987,7 +987,7 @@ static bool M_ReadMusicTracks(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     const bool is_ambient =
         current_track != MX_INACTIVE && current_track == ambient_track;
     if (!is_ambient && current_track != MX_INACTIVE) {
-        Music_Play_Direct(current_track, MPM_ALWAYS);
+        Music_Play_Direct(current_track, MPM_ONCE);
     }
 
     const bool load_timestamp =

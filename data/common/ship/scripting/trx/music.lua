@@ -10,7 +10,7 @@ end
 
 function music.play(id, opts)
   opts = opts or {}
-  mode = opts.mode or trx.music.PlayMode.ALWAYS
+  mode = opts.mode or trx.music.PlayMode.ONCE
   raw.play(id, mode)
 end
 

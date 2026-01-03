@@ -335,7 +335,7 @@ void Overlay_SetBottomText(const OVERLAY_TEXT text)
 void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
 {
     if (Object_IsType(obj_id, g_SecretObjects)) {
-        Music_Play(MX_SECRET, MPM_ALWAYS);
+        Music_Play(MX_SECRET, MPM_ONCE);
     }
 
     int32_t grid_x = -1;

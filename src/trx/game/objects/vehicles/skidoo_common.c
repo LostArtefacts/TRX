@@ -650,7 +650,7 @@ void Skidoo_Animation(
             M_IsArmed(skidoo_data) ? MX_BATTLE_THEME : MX_SKIDOO_THEME);
         const uint16_t music_flags = Music_GetTrackFlags(music_track);
         if (!(music_flags & IF_ONE_SHOT)) {
-            Music_Play_Direct(music_track, MPM_ALWAYS);
+            Music_Play_Direct(music_track, MPM_ONCE);
             Music_SetTrackFlags(music_track, music_flags | IF_ONE_SHOT);
         }
 

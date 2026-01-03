@@ -112,22 +112,22 @@ void Gym_FinishAssault(void)
     if (current_best_time <= 0) {
         if (resume->stats.timer < 100 * LOGIC_FPS) {
             // "Gosh! That was my best time yet!"
-            Music_Play(MX_TR2_GYM_HINT_15, MPM_ALWAYS);
+            Music_Play(MX_TR2_GYM_HINT_15, MPM_ONCE);
         } else {
             // "Congratulations! You did it! But perhaps I could've been
             // faster."
-            Music_Play(MX_TR2_GYM_HINT_17, MPM_ALWAYS);
+            Music_Play(MX_TR2_GYM_HINT_17, MPM_ONCE);
         }
     } else if (resume->stats.timer < (uint32_t)current_best_time) {
         // "Gosh! That was my best time yet!"
-        Music_Play(MX_TR2_GYM_HINT_15, MPM_ALWAYS);
+        Music_Play(MX_TR2_GYM_HINT_15, MPM_ONCE);
     } else if (
         resume->stats.timer < (uint32_t)current_best_time + 5 * LOGIC_FPS) {
         // "Almost. Perhaps another try and I might beat it."
-        Music_Play(MX_TR2_GYM_HINT_16, MPM_ALWAYS);
+        Music_Play(MX_TR2_GYM_HINT_16, MPM_ONCE);
     } else {
         // "Great. But nowhere near my best time."
-        Music_Play(MX_TR2_GYM_HINT_14, MPM_ALWAYS);
+        Music_Play(MX_TR2_GYM_HINT_14, MPM_ONCE);
     }
 
     m_IsAssaultTimerActive = false;
