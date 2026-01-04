@@ -3,6 +3,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rooms/enum.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
@@ -75,9 +76,30 @@ static bool M_TestHangSwingIn(const ITEM *const item, const int16_t angle)
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || lara->gun_status != LGS_ARMLESS || coll->hit_static
-        || coll->side_mid.ceiling > -STEPUP_HEIGHT
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
+        || coll->hit_static) {
+        return false;
+    }
+
+    if (g_TRVersion >= 3
+        && (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT)) {
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector =
+            Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+        if ((sector->ladder & LADDER_CEILING) != 0) {
+            Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
+            item->current_anim_state = LS(LS_MONKEY_IDLE);
+            item->goal_anim_state = LS(LS_MONKEY_IDLE);
+            item->gravity = false;
+            item->speed = 0;
+            item->fall_speed = 0;
+            lara->gun_status = LGS_HANDS_BUSY;
+            Lara_Col_MonkeySwingSnap(item);
+            return true;
+        }
+    }
+
+    if (coll->coll_type != COLL_FRONT || coll->side_mid.ceiling > -STEPUP_HEIGHT
         || coll->side_mid.floor < 200) {
         return false;
     }
@@ -124,8 +146,30 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || lara->gun_status != LGS_ARMLESS || coll->hit_static
+    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
+        || coll->hit_static) {
+        return false;
+    }
+
+    if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT) {
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector =
+            Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+        if ((sector->ladder & LADDER_CEILING) != 0) {
+            Item_SwitchToAnim(item, LA(LA_MONKEY_GRAB), 0);
+            item->current_anim_state = LS(LS_MONKEY_IDLE);
+            item->goal_anim_state = LS(LS_MONKEY_IDLE);
+            item->gravity = false;
+            item->speed = 0;
+            item->fall_speed = 0;
+            lara->gun_status = LGS_HANDS_BUSY;
+
+            Lara_Col_MonkeySwingSnap(item);
+            return true;
+        }
+    }
+
+    if (coll->coll_type != COLL_FRONT
         || coll->side_mid.ceiling > -STEPUP_HEIGHT) {
         return false;
     }
