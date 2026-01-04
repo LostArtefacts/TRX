@@ -17,6 +17,7 @@ X_UI_CFG_INT32(visuals.fov,                 SETTING_FOV, .min_value = 30, .max_v
 X_UI_CFG_BOOL(visuals.enable_reflections,   SETTING_REFLECTIONS)
 X_UI_CFG_BOOL(visuals.enable_skybox,        SETTING_ENABLE_SKYBOX)
 X_UI_CFG_BOOL(visuals.enable_weather,       SETTING_ENABLE_WEATHER)
+X_UI_CFG_BOOL(visuals.enable_footprints,    SETTING_ENABLE_FOOTPRINTS)
 
 X_UI_CFG_BOOL(visuals.enable_braid,         SETTING_ENABLE_BRAID)
 X_UI_CFG_BOOL(visuals.enable_breeze,        SETTING_ENABLE_BREEZE, .custom_handler = { .is_available = UI_Settings_EnableBreeze_IsAvailable })

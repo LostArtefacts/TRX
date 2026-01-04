@@ -439,6 +439,8 @@
         "SETTING_ENABLE_FIRE_LIGHTING_DESCRIPTION": "Włącza generowanie dynamicznego oświetlenia obok aktywnych płomieni.",
         "SETTING_ENABLE_FMV": "Filmy",
         "SETTING_ENABLE_FMV_DESCRIPTION": "Włącza odtwarzanie filmów.",
+        "SETTING_ENABLE_FOOTPRINTS": "Ślady stóp",
+        "SETTING_ENABLE_FOOTPRINTS_DESCRIPTION": "Włącza wyświetlanie śladów stóp Lary na niektórych powierzchniach w obsługiwanych poziomach.",
         "SETTING_ENABLE_GAME_MODES": "Wybór trybu gry",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Pozwala na wybór opcji trybu przy rozpoczynaniu nowej gry.\n\n- Nowa Gra+: odblokowuje wszystkie bronie z nieskończoną amunicją; przeciwnicy mają podwójne zdrowie.\n- Japońska NG: bronie zadają podwójne obrażenia; znajdźki z flarami zawierają 8 flar zamiast 6.\n- Japońska NG+: połączenie Nowej Gry+ i Japońskiej NG.",
         "SETTING_ENABLE_GUN_LIGHTING": "Efekty świetlne broni",
@@ -487,7 +489,7 @@
         "SETTING_ENABLE_SHOTGUN_FLASH": "Rozbłyski ze strzelby",
         "SETTING_ENABLE_SHOTGUN_FLASH_DESCRIPTION": "Rysuje płomienie podczas strzelania ze strzelby, jak w przypadku innych broni.",
         "SETTING_ENABLE_SKYBOX": "Niebo",
-        "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Włącza niebo w poziomach, które je obsługują.",
+        "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Włącza niebo w obsługiwanych poziomach.",
         "SETTING_ENABLE_SLIDE_TO_RUN": "Bieg po zjechaniu",
         "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "Umożliwia Larze natychmiastowe wznowienie biegu po zjechaniu w dół stoku. Aby aktywować, należy przytrzymać przycisk ruchu do przodu.",
         "SETTING_ENABLE_SMOOTH_BARS": "Wygładzanie pasków",
@@ -522,8 +524,8 @@
         "SETTING_ENABLE_WADING_DESCRIPTION": "Pozwala Larze na brodzenie w płytkiej wodzie. Wyłączenie powoduje utknięcie na powierzchni wody.",
         "SETTING_ENABLE_WALK_TO_ITEMS": "Animowane interakcje",
         "SETTING_ENABLE_WALK_TO_ITEMS_DESCRIPTION": "Sprawia, że Lara chodzi do przedmiotów i przełączników, gdy są w pobliżu, zamiast się do nich natychmiastowo przesuwać.",
-        "SETTING_ENABLE_WEATHER": "\\{review}Pogoda",
-        "SETTING_ENABLE_WEATHER_DESCRIPTION": "\\{review}Umożliwia renderowanie efektów pogodowych w obsługiwanych poziomach.",
+        "SETTING_ENABLE_WEATHER": "Pogoda",
+        "SETTING_ENABLE_WEATHER_DESCRIPTION": "Włącza efekty pogodowe w obsługiwanych poziomach.",
         "SETTING_ENEMY_HEALTHBAR_COLOR": "Kolor paska zdrowia wrogów",
         "SETTING_ENEMY_HEALTHBAR_COLOR_DESCRIPTION": "Kolor paska zdrowia przeciwników.",
         "SETTING_ENEMY_HEALTHBAR_LOCATION": "Lokalizacja paska wrogów",
@@ -1735,7 +1737,7 @@
             "name": "Animowany Obiekt 6",
         },
         "winston_army": {
-            "name": "\\{review}Winston (umundurowany)",
+            "name": "Winston (umundurowany)",
         }
     }
 }

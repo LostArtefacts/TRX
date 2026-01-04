@@ -439,6 +439,8 @@
         "SETTING_ENABLE_FIRE_LIGHTING_DESCRIPTION": "Ermöglicht die generierung von dynamischen Lichteffekten neben aktiven Flammen.",
         "SETTING_ENABLE_FMV": "FMVs",
         "SETTING_ENABLE_FMV_DESCRIPTION": "Aktiviert das Abspielen von FMVs.",
+        "SETTING_ENABLE_FOOTPRINTS": "\\{review}Fußspuren",
+        "SETTING_ENABLE_FOOTPRINTS_DESCRIPTION": "\\{review}Ermöglicht das Anzeigen von Laras Fußspuren auf bestimmten Oberflächen in unterstützten Levels.",
         "SETTING_ENABLE_GAME_MODES": "Spielmodi-Auswahl",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Erlaubt die Auswahl der 'Neues Spiel Plus'-Optionen im 'Neues Spiel' Ausweis-Menü.\n\n- Neues Spiel+: schaltet alle Waffen mit unendlich Munition frei; Feinde haben verdoppelte Lebenserenergie.\n- Japanisch NS: Waffen verursachen doppelten Schaden und Fackel-Pickups enhalten 8 statt 6 Fackeln.\n- Japanisch NS+: eine Kombination aus Neus Spiel+ und Japanisch NS.",
         "SETTING_ENABLE_GUN_LIGHTING": "Dynamisches Licht für Waffen",
