@@ -4,8 +4,8 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
-#include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sparks.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
@@ -20,7 +20,6 @@ static bool m_IsFirstHair;
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
 static XYZ_32 m_HairVelocity[M_HAIR_SEGMENTS + 1];
 static HAIR_SEGMENT m_HairSegments[M_HAIR_SEGMENTS + 1];
-static int32_t m_HairWind;
 
 static void M_CalculateSpheres(const ANIM_FRAME *const frame)
 {
@@ -277,7 +276,6 @@ void Lara_Hair_Control(const bool in_cutscene)
 
             Matrix_Pop();
         }
-        m_HairWind = 0;
         return;
     }
 
@@ -303,19 +301,8 @@ void Lara_Hair_Control(const bool in_cutscene)
         height = lara_item->floor;
     }
 
-    if (g_Config.visuals.enable_breeze && Room_Get(room_num)->flags.wind) {
-        const int32_t random = Random_GetDraw() & 7;
-        if (random != 0) {
-            m_HairWind += random - 4;
-            if (m_HairWind < 0) {
-                m_HairWind = 0;
-            } else if (m_HairWind >= 8) {
-                m_HairWind--;
-            }
-        }
-    } else {
-        m_HairWind = 0;
-    }
+    const XZ_32 smoke_wind = Sparks_GetSmokeWind();
+    const int32_t hair_wind_z = Sparks_GetHairWindZ();
 
     for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
         const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
@@ -335,8 +322,13 @@ void Lara_Hair_Control(const bool in_cutscene)
                 s->pos.y = water_height;
             } else if (s->pos.y > height) {
                 s->pos.y = height;
+            } else if (g_TRVersion == 3) {
+                if (Room_Get(room_num)->flags.wind) {
+                    s->pos.x += smoke_wind.x;
+                    s->pos.z += smoke_wind.z;
+                }
             } else {
-                s->pos.z += m_HairWind;
+                s->pos.z += hair_wind_z;
             }
             break;
 
