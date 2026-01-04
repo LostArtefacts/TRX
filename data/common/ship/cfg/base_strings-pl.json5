@@ -1747,6 +1747,9 @@
         },
         "assault_target": {
             "name": "\\{review}Cel ataku",
+        },
+        "electrical_light": {
+            "name": "\\{review}Światło elektryczne",
         }
     }
 }

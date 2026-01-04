@@ -118,6 +118,7 @@
 - added support for the serif font
 - added support for colored text (Assault Course colors not yet implemented)
 - added Animating Item 1-6 control
+- added Electrical Light control
 - added Desert Eagle control
 - added MP5 control
 - added Rocket Launcher control

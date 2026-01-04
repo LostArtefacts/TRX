@@ -301,6 +301,7 @@ X_OBJ_NAME_DEFINE(O_WINDOW_2,              "window_2",              X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_WINDOW_3,              "window_3",              X_OBJ_NAMES("Breakable Window 3"))
 X_OBJ_NAME_DEFINE(O_WINDOW_4,              "window_4",              X_OBJ_NAMES("Breakable Window 4"))
 X_OBJ_NAME_DEFINE(O_ZIPLINE_HANDLE,        "zipline_handle",        X_OBJ_NAMES("Zipline Handle"))
+X_OBJ_NAME_DEFINE(O_ELECTRICAL_LIGHT,      "electrical_light",      X_OBJ_NAMES("Electrical Light"))
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,           "alarm_sound",           X_OBJ_NAMES("Alarm"))

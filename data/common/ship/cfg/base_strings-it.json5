@@ -1783,6 +1783,9 @@
         },
         "assault_target": {
             "name": "\\{review}Obiettivo d'assalto",
+        },
+        "electrical_light": {
+            "name": "\\{review}Luce Elettrica",
         }
     }
 }
