@@ -308,9 +308,7 @@ void Sparks_Control(void)
                 (int32_t)sptr->src_color.b, (int32_t)sptr->dst_color.b, fade);
         } else if (
             sptr->life < sptr->fade_to_black && sptr->fade_to_black != 0U) {
-            const float fade =
-                ((int32_t)sptr->life - (int32_t)sptr->fade_to_black)
-                / (float)sptr->fade_to_black;
+            const float fade = sptr->life / (float)sptr->fade_to_black;
             sptr->color.r = sptr->dst_color.r * fade;
             sptr->color.g = sptr->dst_color.g * fade;
             sptr->color.b = sptr->dst_color.b * fade;
@@ -674,4 +672,58 @@ void Sparks_TriggerWaterfallMist(
         sptr->dst_size.height = dst_size;
         sptr->size = sptr->src_size;
     }
+}
+
+void Sparks_TriggerBreath(
+    const XYZ_32 pos, const XYZ_32 vel, const int16_t room_num)
+{
+    const OBJECT *const object = Object_Get(O_EXPLOSION_1);
+    if (object == nullptr || !object->loaded) {
+        return;
+    }
+
+    SPARK *const sptr = Sparks_GetFreeSpark();
+    const int32_t jitter_x = (Random_GetControl() & 0xF) - 8;
+    const int32_t jitter_y = (Random_GetControl() & 0xF) - 8;
+    const int32_t jitter_z = (Random_GetControl() & 0xF) - 8;
+
+    *sptr = (SPARK) {
+        .on = true,
+        .src_color = { 0, 0, 0 },
+        .dst_color = { 32, 32, 32 },
+        .color = { 0, 0, 0 },
+        .col_fade_speed = 4,
+        .fade_to_black = 32,
+        .draw_type = DRAW_BLEND_ADD,
+        .extras = 0,
+        .life = (uint8_t)((Random_GetControl() & 3) + 37),
+        .dynamic = -1,
+        .sprite_idx = object->mesh_idx,
+        .pos = {
+            .x = pos.x + jitter_x,
+            .y = pos.y + jitter_y,
+            .z = pos.z + jitter_z,
+        },
+        .vel = vel,
+        .gravity = 0,
+        .max_y_vel = 0,
+        .friction = 0,
+        .flags = SPARK_F_SPRITE | SPARK_F_ALT_SPRITE | SPARK_F_SCALE,
+        .scalar = 3,
+        .room_num = (uint8_t)room_num,
+    };
+    sptr->s_life = sptr->life;
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room != nullptr && room->flags.wind) {
+        sptr->flags |= SPARK_F_OUTSIDE;
+    }
+
+    const uint8_t dst_size = (uint8_t)((Random_GetControl() & 7) + 32);
+    const uint8_t src_size = (uint8_t)(dst_size >> 3);
+    sptr->src_size.width = src_size;
+    sptr->src_size.height = src_size;
+    sptr->dst_size.width = dst_size;
+    sptr->dst_size.height = dst_size;
+    sptr->size = sptr->src_size;
 }

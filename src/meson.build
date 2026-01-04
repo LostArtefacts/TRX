@@ -230,6 +230,7 @@ common_sources = [
   'trx/game/items/common.c',
   'trx/game/items/utils.c',
   'trx/game/items/walkable.c',
+  'trx/game/lara/breath.c',
   'trx/game/lara/cheat.c',
   'trx/game/lara/cheat_keys.c',
   'trx/game/lara/col.c',
