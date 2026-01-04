@@ -439,6 +439,8 @@
         "SETTING_ENABLE_FIRE_LIGHTING_DESCRIPTION": "\\{review}Active l'éclairage dynamique généré à proximité des flammes actives.",
         "SETTING_ENABLE_FMV": "Activer les FMV",
         "SETTING_ENABLE_FMV_DESCRIPTION": "Active les FMV en jeu.",
+        "SETTING_ENABLE_FOOTPRINTS": "\\{review}Empreintes de pas",
+        "SETTING_ENABLE_FOOTPRINTS_DESCRIPTION": "\\{review}Permet l'affichage des empreintes de Lara sur certaines surfaces dans les niveaux pris en charge.",
         "SETTING_ENABLE_GAME_MODES": "Autres modes de jeu",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "\\{review}Permet de sélectionner de nouveaux modes de jeu dans le menu nouvelle partie du passeport au menu principal.\n- Nouvelle partie+ : Déverrouille toutes les armes avec munitions infinies ; les ennemis ont le double de points de vie.\n- Version Japonaise : Les armes font le double de dégâts.\n- Version Japonaise+ : Combine le mode Version Japonaise et le mode Nouvelle partie+.",
         "SETTING_ENABLE_GUN_LIGHTING": "Éclairage des armes",

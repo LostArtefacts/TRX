@@ -439,6 +439,8 @@
         "SETTING_ENABLE_FIRE_LIGHTING_DESCRIPTION": "Enables dynamic lighting to be generated beside active flames.",
         "SETTING_ENABLE_FMV": "FMVs",
         "SETTING_ENABLE_FMV_DESCRIPTION": "Enables FMVs playing.",
+        "SETTING_ENABLE_FOOTPRINTS": "Footprints",
+        "SETTING_ENABLE_FOOTPRINTS_DESCRIPTION": "Enables rendering of Lara's footprints on certain surfaces in supported levels.",
         "SETTING_ENABLE_GAME_MODES": "Game mode selection",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Allows new game plus options to be selected from the new game passport menu.\n\n- New Game+: unlocks all weapons with infinite ammo; enemies have double the HP.\n- Japanese NG: weapons do double damage and flare pickups contain 8 rather than 6.\n- Japanese NG+: combination of New Game+ and Japanese NG.",
         "SETTING_ENABLE_GUN_LIGHTING": "Gun lighting",

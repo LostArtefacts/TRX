@@ -1,5 +1,6 @@
 #include <trx/game/footprint_fx.h>
 
+#include <trx/config.h>
 #include <trx/game/collision.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
@@ -133,6 +134,9 @@ static int32_t M_GetVertexYOffset(
 
 void FootprintFX_Update(void)
 {
+    if (!g_Config.visuals.enable_footprints) {
+        return;
+    }
     M_PRIV *const p = &m_Priv;
     for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
         M_FOOTPRINT *const print = &p->prints[i];
@@ -144,6 +148,9 @@ void FootprintFX_Update(void)
 
 void FootprintFX_Draw(void)
 {
+    if (!g_Config.visuals.enable_footprints) {
+        return;
+    }
     const M_PRIV *const p = &m_Priv;
     const OBJECT *const obj = Object_Get(O_EXPLOSION_1);
     if (obj == nullptr || !obj->loaded) {

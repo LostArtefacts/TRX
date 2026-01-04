@@ -215,5 +215,6 @@
         "fix_secrets_killing_music",
         "fix_speeches_killing_music",
         "enable_weather",
+        "enable_footprints",
     ],
 }

@@ -543,5 +543,6 @@
         "fix_glide_cameras",
         "enable_ally_targeting",
         "enable_weather",
+        "enable_footprints",
     ],
 }

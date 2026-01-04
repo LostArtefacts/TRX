@@ -439,6 +439,8 @@
         "SETTING_ENABLE_FIRE_LIGHTING_DESCRIPTION": "Cuiridh seo comas air solas fiùghantach a bhith air a chruthachadh ri taobh lasraichean gnìomhach.",
         "SETTING_ENABLE_FMV": "Bhideothan",
         "SETTING_ENABLE_FMV_DESCRIPTION": "Cuiridh seo cluich bhideothan an comas.",
+        "SETTING_ENABLE_FOOTPRINTS": "\\{review}Clachan-coise",
+        "SETTING_ENABLE_FOOTPRINTS_DESCRIPTION": "\\{review}Leigeas le clachan-coise Lara a nochdadh air uachdaran sònraichte ann an ìrean taicichte.",
         "SETTING_ENABLE_GAME_MODES": "Taghadh modh geama",
         "SETTING_ENABLE_GAME_MODES_DESCRIPTION": "Leigeas le roghainnean Geama Ùr+ a bhith rim faotainn sa phasport aig toiseach a' gheama.\n\n- Geama Ùr+: fuasgladh nan armachd air fad le peilearan gun chrìoch; bidh HP dùbailte aig na nàimhdean.\n- GÙ Iapanach: bidh na h-armachd ag adhbhrachadh milleadh dùbailte, agus bheir togail lòchrain 8 seach 6.\n- GÙ+ Iapanach: measgachadh de GÙ+ is GÙ Iapanach.",
         "SETTING_ENABLE_GUN_LIGHTING": "Solais armachd",
