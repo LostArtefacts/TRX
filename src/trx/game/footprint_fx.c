@@ -180,8 +180,8 @@ void FootprintFX_Draw(void)
         const RGBA_8888 tri_color[3] = { color, color, color };
 
         for (int32_t j = 0; j < 4; j++) {
-            OutputSource_PolyFX_StageSpriteTriWorldBlendSub(
-                sprite_idx, world, tri_color);
+            OutputSource_PolyFX_StageSpriteTriWorld(
+                sprite_idx, world, tri_color, DRAW_BLEND_SUB);
         }
     }
 }

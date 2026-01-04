@@ -343,8 +343,8 @@ static void M_DrawSplash(
                 points[i2],
             };
             const RGBA_8888 quad_color[4] = { c1, c1, c2, c2 };
-            OutputSource_PolyFX_StageSpriteQuadWorldBlendAdd(
-                sprite_idx, quad_pos, quad_color);
+            OutputSource_PolyFX_StageSpriteQuadWorld(
+                sprite_idx, quad_pos, quad_color, DRAW_BLEND_ADD);
         }
     }
 }
@@ -380,8 +380,8 @@ static void M_DrawRipple(
         { r->x + n, r->y, r->z - n },
     };
     const RGBA_8888 quad_color[4] = { color, color, color, color };
-    OutputSource_PolyFX_StageSpriteQuadWorldBlendAdd(
-        sprite_idx, quad_pos, quad_color);
+    OutputSource_PolyFX_StageSpriteQuadWorld(
+        sprite_idx, quad_pos, quad_color, DRAW_BLEND_ADD);
 }
 
 void WaterFX_Draw(void)
