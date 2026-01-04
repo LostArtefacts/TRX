@@ -85,9 +85,9 @@ static void M_StageQuadWorldTransparent(
         return;
     }
 
-    OutputSource_PolyFX_StageQuadTransparentExt(
+    OutputSource_PolyFX_StageQuadExt(
         -1, world_pos, disp, color,
-        VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE);
+        VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND);
 }
 
 static void M_StageRainDropCrossQuads(
@@ -524,10 +524,11 @@ static void M_DrawSnow(void)
         const RGBA_8888 color = { c, c, c, 255 };
         const RGBA_8888 colors[4] = { color, color, color, color };
 
-        OutputSource_PolyFX_StageQuadBlendAddExt(
+        OutputSource_PolyFX_StageQuadExt(
             sprite_idx, world_pos, disp, colors,
             VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_BILLBOARD
-                | VERT_ABS_SPRITE);
+                | VERT_ABS_SPRITE,
+            DRAW_BLEND_ADD);
     }
 }
 
