@@ -3,6 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
+#include <trx/game/footprint_fx.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
@@ -135,6 +136,7 @@ GF_COMMAND Cutscene_Control(void)
     Camera_UpdateCutscene();
     WaterFX_Update();
     WeatherFX_Update();
+    FootprintFX_Update();
     Output_AnimateTextures(1);
 
     CINE_DATA *const cine_data = Camera_GetCineData();

@@ -329,9 +329,9 @@ static void M_OpaquePass(MESH_BATCHER *const batcher)
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
-static void M_BlendAddPass(MESH_BATCHER *const batcher)
+static void M_BlendPass(MESH_BATCHER *const batcher, const SCENE_PASS pass)
 {
-    VECTOR *const staged = batcher->staged[SCENE_PASS_BLEND_ADD];
+    VECTOR *const staged = batcher->staged[pass];
 
     glBindVertexArray(batcher->vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.blend_add);
@@ -421,8 +421,10 @@ static void M_RenderPass(
     } else if (pass == SCENE_PASS_TRANSPARENT) {
         M_SortTransparentFaces(batcher);
         M_TransparentPass(batcher);
+    } else if (pass == SCENE_PASS_BLEND_SUB) {
+        M_BlendPass(batcher, pass);
     } else if (pass == SCENE_PASS_BLEND_ADD) {
-        M_BlendAddPass(batcher);
+        M_BlendPass(batcher, pass);
     }
 }
 

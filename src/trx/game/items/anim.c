@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/items/actions.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
@@ -239,7 +240,8 @@ void Item_Animate(ITEM *const item)
             const ANIM_COMMAND_EFFECT_DATA *const data =
                 (ANIM_COMMAND_EFFECT_DATA *)command->data;
             if (item->frame_num == data->frame_num) {
-                ItemAction_RunDirect(data->effect_num, item);
+                ItemAction_RunDirectWithFX(
+                    data->effect_num, item, data->fx_type);
             }
             break;
 

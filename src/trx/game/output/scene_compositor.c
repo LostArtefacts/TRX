@@ -143,6 +143,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
 
     if (M_IsSourceDirty(p, SCENE_PASS_OPAQUE)
         || M_IsSourceDirty(p, SCENE_PASS_TRANSPARENT)
+        || M_IsSourceDirty(p, SCENE_PASS_BLEND_SUB)
         || M_IsSourceDirty(p, SCENE_PASS_BLEND_ADD)) {
         glEnable(GL_CULL_FACE);
         Output_MeshShader_UploadAlphaDiscard(shader, true);
@@ -151,6 +152,10 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         M_RenderSourcePass(p, SCENE_PASS_TRANSPARENT);
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+        M_RenderSourcePass(p, SCENE_PASS_BLEND_SUB);
+        glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_ONE, GL_ONE);
         M_RenderSourcePass(p, SCENE_PASS_BLEND_ADD);
         glDepthMask(GL_TRUE);
