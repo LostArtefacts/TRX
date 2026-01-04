@@ -6,6 +6,7 @@
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
@@ -27,7 +28,7 @@ bool UI_Settings_FogColor_IsAvailable(const UI_SETTINGS_OPTION *const option)
 bool UI_Settings_EnableBreeze_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.visuals.enable_braid;
+    return g_Config.visuals.enable_braid || g_TRVersion == 3;
 }
 
 bool UI_Settings_ResponsiveJumping_IsAvailable(const UI_SETTINGS_OPTION *option)

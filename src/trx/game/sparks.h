@@ -92,6 +92,7 @@ typedef struct {
 void Sparks_SetCallbacks(const SPARKS_CALLBACKS *callbacks);
 XZ_32 Sparks_GetSmokeWind(void);
 void Sparks_SetSmokeWind(XZ_32 wind);
+int32_t Sparks_GetHairWindZ(void);
 
 void Sparks_TriggerBubble(
     int32_t x, int32_t y, int32_t z, int32_t size, int32_t size_range,
