@@ -7,12 +7,13 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
+#include <trx/version.h>
 
 #define M_BLAST_RADIUS WALL_L // = 1024
 #define M_SPEED (WALL_L / 2) // = 512
 #define M_SPEED_UW (STEP_L / 2) // = 128
 
-static void M_Explode(int16_t rocket_item_num, const XYZ_32 pos)
+static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
 {
     const ITEM *const rocket_item = Item_Get(rocket_item_num);
     const int16_t effect_num = Effect_Create(rocket_item->room_num);
@@ -24,8 +25,11 @@ static void M_Explode(int16_t rocket_item_num, const XYZ_32 pos)
         effect->counter = 0;
         effect->object_id = O_EXPLOSION_1;
     }
-    Sound_Effect(SFX_EXPLOSION_1, &rocket_item->pos, 0x1800000 | SPM_PITCH);
-    Sound_Effect(SFX_EXPLOSION_2, &rocket_item->pos, SPM_NORMAL);
+
+    const XYZ_32 *const sfx_pos =
+        g_TRVersion == 3 ? &rocket_item->pos : nullptr;
+    Sound_Effect(SFX_EXPLOSION_1, sfx_pos, 0x1800000 | SPM_PITCH);
+    Sound_Effect(SFX_EXPLOSION_2, sfx_pos, SPM_NORMAL);
     Item_Kill(rocket_item_num);
 }
 
