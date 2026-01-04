@@ -99,3 +99,5 @@ void Sparks_TriggerBubble(
     int16_t effect_num);
 
 void Sparks_TriggerWaterfallMist(int32_t x, int32_t y, int32_t z, int32_t ang);
+
+void Sparks_TriggerBreath(XYZ_32 pos, XYZ_32 vel, int16_t room_num);

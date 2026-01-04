@@ -7,6 +7,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/breath.h>
 #include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/pathing.h>
@@ -800,6 +801,7 @@ void Lara_Control(void)
 
     Camera_MoveManual();
     M_HandleEnvironment();
+    Lara_Breath_Control(item);
 
     Stats_AddDistanceTravelled(item->pos, lara_info->last_pos);
     lara_info->last_pos = item->pos;
