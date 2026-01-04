@@ -1774,6 +1774,9 @@
         },
         "shadow": {
             "name": "\\{review}Sgàil",
+        },
+        "assault_target": {
+            "name": "\\{review}Targaid Ionnsaigh",
         }
     }
 }

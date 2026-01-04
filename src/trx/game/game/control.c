@@ -77,6 +77,9 @@ GF_COMMAND Game_Control(const bool demo_mode)
         || !Object_Get(O_ASSAULT_DIGITS)->loaded) {
         Stats_UpdateTimer();
     }
+    if (Game_IsInGym()) {
+        Gym_Control();
+    }
     if (g_Config.flow.cheat_keys) {
         Lara_Cheat_CheckKeys();
     }

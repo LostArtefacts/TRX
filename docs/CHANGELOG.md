@@ -120,6 +120,8 @@
 - added Desert Eagle control
 - added MP5 control
 - added Rocket Launcher control
+- added Asasult Course target control
+- added Asasult Course penalty system
 - added an option to fix the MP5 accuracy while running
 - changed The River Ganges, City and All Hallows to have rain
 - fixed sample reading to support correct pitch and volume
@@ -128,6 +130,7 @@
 - fixed gun flashes being drawn in white
 - fixed disabling lighting system not working
 - fixed skybox data to show correct top and bottom colors
+- fixed Assault Course timer remaining indefinitely on screen
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)

@@ -1770,6 +1770,9 @@
         },
         "shadow": {
             "name": "\\{review}Тень",
+        },
+        "assault_target": {
+            "name": "\\{review}Цель атаки",
         }
     }
 }

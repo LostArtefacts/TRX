@@ -37,9 +37,23 @@ static void M_AssaultFinished(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
+static void M_AssaultPenalty8(ITEM *const item)
+{
+    Gym_Assault_AddPenaltySeconds(8);
+    Room_SetFlipEffect(-1);
+}
+
+static void M_AssaultPenalty30(ITEM *const item)
+{
+    Gym_Assault_AddPenaltySeconds(30);
+    Room_SetFlipEffect(-1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_FINISH_LEVEL, M_FinishLevel)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLIP_MAP, M_FlipMap)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_RESET, M_AssaultReset)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_STOP, M_AssaultStop)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_START, M_AssaultStart)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_FINISHED, M_AssaultFinished)
+REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_PENALTY_8, M_AssaultPenalty8)
+REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_PENALTY_30, M_AssaultPenalty30)

@@ -1356,6 +1356,7 @@ void Level_ReadItems(const LEVEL_LOADER *const loader, VFILE *const file)
         if (item->object_id == NO_OBJECT) {
             if (loader->game_version == 3) {
                 // TODO: remove this check after we implement the items
+                LOG_ERROR("Unsupported object #%d", obj_id);
                 item->object_id = O_DUMMY;
             } else {
                 Shell_ExitSystemFmt(
