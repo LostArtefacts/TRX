@@ -102,6 +102,7 @@
 - added waterfall mist effect
 - added `cdaudio.wad` music playback support
 - added weather effects
+- added sprite-based shadows
 - added footprints
 - added surface-based step sounds
 - added monochrome inventory backgrounds

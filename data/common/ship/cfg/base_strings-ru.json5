@@ -193,6 +193,9 @@
         "ENUM_QUICK_GUNS_MODE_DRAW_ONLY": "Только достать",
         "ENUM_SCREENSHOT_FORMAT_JPG": "JPG",
         "ENUM_SCREENSHOT_FORMAT_PNG": "PNG",
+        "ENUM_SHADOW_TYPE_CIRCLE": "\\{review}Круг",
+        "ENUM_SHADOW_TYPE_OCTAGON": "\\{review}Восьмиугольник",
+        "ENUM_SHADOW_TYPE_SPRITE": "\\{review}Спрайт",
         "ENUM_STAT_DETAIL_MODE_DETAILED": "Подробная",
         "ENUM_STAT_DETAIL_MODE_FULL": "Полная",
         "ENUM_STAT_DETAIL_MODE_MINIMAL": "Минимальная",
@@ -482,8 +485,6 @@
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Отключает блокировку ввода данных пользователем при перелистывании страниц паспорта, вместо этого планирует перелистывание страниц.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Реактивный бег",
         "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Включает более отзывчивый режим бега для Лары.\n\n- позволяет начинать бег, когда у Лары есть энергия, а не только при полном запасе выносливости.\n- позволяет бежать по лестнице без прерывания обычной анимацией бега.",
-        "SETTING_ENABLE_ROUND_SHADOW": "Круглые тени",
-        "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Отображать круглые тени вместо стандартных восьмиугольных.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Кристаллы сохранения",
         "SETTING_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Ограничить сохранения только началом уровней и кристаллами сохранения. Количество кристаллов сохранения на уровнях ограничено, они одноразовые, как и в версии для PS1. Изменение этой настройки потребует перезапуска уровня.",
         "SETTING_ENABLE_SHOTGUN_FLASH": "Вспышки из дробовика",
@@ -648,6 +649,8 @@
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}Добавляет мумию, которая появляется в версии для PlayStation в городе Хамун, комната 25.\nДля применения изменений потребуется перезапустить игру.",
         "SETTING_SCREENSHOT_FORMAT": "Формат снимка экрана",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Формат снимка экрана.",
+        "SETTING_SHADOW_TYPE": "\\{review}Форма теней",
+        "SETTING_SHADOW_TYPE_DESCRIPTION": "\\{review}Выбирает способ отображения теней объектов.\n\n- Восьмиугольник: старые тени из TR1 и TR2\n- Круг: круглые тени\n- Спрайт: тени на основе текстур из TR3",
         "SETTING_SHOW_BARS": "\\{review}Показать полосы",
         "SETTING_SHOW_BARS_DESCRIPTION": "\\{review}Отключает все игровые полосы, скрывая информацию о здоровье Лары и других ресурсах (для сложных прохождений).",
         "SETTING_SOUND_VOLUME": "\\{icon sound} Громкость звуков",
@@ -1764,6 +1767,9 @@
         },
         "winston_army": {
             "name": "\\{review}Уинстон (армия)",
+        },
+        "shadow": {
+            "name": "\\{review}Тень",
         }
     }
 }

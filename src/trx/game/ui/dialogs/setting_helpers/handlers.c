@@ -159,6 +159,15 @@ bool UI_Settings_BackgroundStyle_IsEnumValueAvailable(
     return true;
 }
 
+bool UI_Settings_ShadowType_IsEnumValueAvailable(
+    const UI_SETTINGS_OPTION *const option, const int32_t value)
+{
+    if (value == SHADOW_TYPE_SPRITE) {
+        return Object_Get(O_SHADOW)->loaded;
+    }
+    return true;
+}
+
 bool UI_Settings_Volume_RequestChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {

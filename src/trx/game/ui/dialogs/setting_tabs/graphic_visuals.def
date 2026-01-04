@@ -26,7 +26,7 @@ X_UI_CFG_BOOL(gameplay.enable_pickup_aids,  SETTING_ENABLE_PICKUP_AIDS)
 
 X_UI_CFG_BOOL(visuals.enable_ps1_crystals,  SETTING_ENABLE_PS1_CRYSTALS, .custom_handler = { .is_available = UI_Settings_EnablePS1Crystals_IsAvailable })
 
-X_UI_CFG_BOOL(visuals.enable_round_shadow,  SETTING_ENABLE_ROUND_SHADOW)
+X_UI_CFG_ENUM(visuals.shadow_type,          SETTING_SHADOW_TYPE, .misc = UI_Settings_ShadowTypeEnumEntries, .custom_handler = { .is_enum_value_available = UI_Settings_ShadowType_IsEnumValueAvailable })
 X_UI_CFG_BOOL(visuals.enable_gun_lighting,  SETTING_ENABLE_GUN_LIGHTING)
 X_UI_CFG_BOOL(visuals.enable_fire_lighting, SETTING_ENABLE_FIRE_LIGHTING)
 

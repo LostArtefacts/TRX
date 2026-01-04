@@ -146,3 +146,10 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[] = {
     { MUSIC_LOAD_ALWAYS, GS_ID(ENUM_MUSIC_LOAD_CONDITION_ALWAYS) },
     { -1, nullptr },
 };
+
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_ShadowTypeEnumEntries[] = {
+    { SHADOW_TYPE_OCTAGON, GS_ID(ENUM_SHADOW_TYPE_OCTAGON) },
+    { SHADOW_TYPE_CIRCLE, GS_ID(ENUM_SHADOW_TYPE_CIRCLE) },
+    { SHADOW_TYPE_SPRITE, GS_ID(ENUM_SHADOW_TYPE_SPRITE) },
+    { -1, nullptr },
+};

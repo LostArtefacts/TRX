@@ -2,6 +2,7 @@
 
 #include <trx/colors.h>
 #include <trx/game/output/shaders/mesh.h>
+#include <trx/game/output/textures.h>
 #include <trx/game/output/types.h>
 #include <trx/game/sparks.h>
 #include <trx/game/types.h>
@@ -21,6 +22,11 @@ void OutputSource_PolyFX_StageSpriteTriWorld(
 
 void OutputSource_PolyFX_StageQuadExt(
     int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
+    const RGBA_8888 color[4], uint16_t flags, DRAW_TYPE draw_type);
+
+void OutputSource_PolyFX_StageQuadExtUV(
+    const XYZ_32 world_pos[4], const OUTPUT_UVW uvw[4],
+    const OUTPUT_TEXTURE_SIZE texture_size[4], const float disp[4][2],
     const RGBA_8888 color[4], uint16_t flags, DRAW_TYPE draw_type);
 
 void OutputSource_PolyFX_StageSpark(const SPARK *spark);

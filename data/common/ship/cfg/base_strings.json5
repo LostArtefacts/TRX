@@ -193,6 +193,9 @@
         "ENUM_QUICK_GUNS_MODE_DRAW_ONLY": "Draw only",
         "ENUM_SCREENSHOT_FORMAT_JPG": "JPG",
         "ENUM_SCREENSHOT_FORMAT_PNG": "PNG",
+        "ENUM_SHADOW_TYPE_CIRCLE": "Circle",
+        "ENUM_SHADOW_TYPE_OCTAGON": "Octagon",
+        "ENUM_SHADOW_TYPE_SPRITE": "Sprite",
         "ENUM_STAT_DETAIL_MODE_DETAILED": "Detailed",
         "ENUM_STAT_DETAIL_MODE_FULL": "Full",
         "ENUM_STAT_DETAIL_MODE_MINIMAL": "Minimal",
@@ -482,8 +485,6 @@
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "Responsive sprinting",
         "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "Enables a more responsive sprinting state for Lara.\n\n- allows sprinting whenever Lara has energy, rather than only when her stamina is full.\n- allows sprinting up stairs rather than being interrupted by Lara's regular run animation.",
-        "SETTING_ENABLE_ROUND_SHADOW": "Round shadows",
-        "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Enables round shadows instead of the default octagonal ones.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Save crystals",
         "SETTING_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Limits saving to the beginning of levels and save crystals. Levels have limited, single use save crystals like the PS1 version. Changing this option will require restarting the level.",
         "SETTING_ENABLE_SHOTGUN_FLASH": "Shotgun flash",
@@ -648,6 +649,8 @@
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Adds the mummy that appears in the PlayStation version of City of Khamoon, room 25.\nChanging this option will require restarting the game.",
         "SETTING_SCREENSHOT_FORMAT": "Screenshot format",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Screenshot file format.",
+        "SETTING_SHADOW_TYPE": "Shadows shape",
+        "SETTING_SHADOW_TYPE_DESCRIPTION": "Selects how entity shadows are rendered.\n\n- Octagon: old TR1 and TR2 shadows\n- Circle: round shadows\n- Sprite: TR3 texture-based shadows",
         "SETTING_SHOW_BARS": "Show bars",
         "SETTING_SHOW_BARS_DESCRIPTION": "Disables all ingame bars, obscuring information on Lara's health and other resources (for challenge runs).",
         "SETTING_SOUND_VOLUME": "\\{icon sound} Sound volume",
@@ -1629,6 +1632,9 @@
         },
         "hot_liquid": {
             "name": "Extra Fire",
+        },
+        "shadow": {
+            "name": "Shadow",
         },
         "inv_background": {
             "name": "Menu Background",

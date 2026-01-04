@@ -193,6 +193,9 @@
         "ENUM_QUICK_GUNS_MODE_DRAW_ONLY": "Nur ziehen",
         "ENUM_SCREENSHOT_FORMAT_JPG": "JPG",
         "ENUM_SCREENSHOT_FORMAT_PNG": "PNG",
+        "ENUM_SHADOW_TYPE_CIRCLE": "\\{review}Kreis",
+        "ENUM_SHADOW_TYPE_OCTAGON": "\\{review}Achteck",
+        "ENUM_SHADOW_TYPE_SPRITE": "\\{review}Sprite",
         "ENUM_STAT_DETAIL_MODE_DETAILED": "Detailliert",
         "ENUM_STAT_DETAIL_MODE_FULL": "Voll",
         "ENUM_STAT_DETAIL_MODE_MINIMAL": "Minimal",
@@ -482,8 +485,6 @@
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Deaktiviert, dass man die Umblättern-Animation des Ausweises abwarten muss, sie können nun so schnell umblättern, wie sie wollen.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Reaktives Sprinten",
         "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Aktiviert einen reaktiveren Sprintzustand für Lara.\n\n- ermöglicht Sprinten, sobald Lara Energie hat, statt nur bei voller Ausdauer.\n- erlaubt Sprinten auf Treppen, ohne von Laras normaler Laufanimation unterbrochen zu werden.",
-        "SETTING_ENABLE_ROUND_SHADOW": "Runde Schatten",
-        "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Aktiviert runde Schatten anstelle der standardmäßig achteckigen Schatten.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Speicherkristalle",
         "SETTING_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Beschränkt Speichern auf den Anfang des Levels und Speicherkristalle. Level haben eine limitierte Anzahl von Speicherkristallen. Die Speicherkristalle funktionieren nur einmal, so wie auf der PS1. Eine Änderung dieser Option erfordert einen Neustart.",
         "SETTING_ENABLE_SHOTGUN_FLASH": "Schrotflinten-Mündungsfeuer",
@@ -648,6 +649,8 @@
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}Fügt die Mumie hinzu, die in der PlayStation-Version von City of Khamoon, Raum 25, erscheint.\nDas Ändern dieser Option erfordert einen Neustart des Spiels.",
         "SETTING_SCREENSHOT_FORMAT": "Bildschirmfoto-Format",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Dateiformat des Bildschirmfotos.",
+        "SETTING_SHADOW_TYPE": "\\{review}Schattenform",
+        "SETTING_SHADOW_TYPE_DESCRIPTION": "\\{review}Wählt aus, wie die Schatten von Entitäten dargestellt werden.\n\n- Achteck: alte TR1- und TR2-Schatten\n- Kreis: runde Schatten\n- Sprite: TR3 texturbasierte Schatten",
         "SETTING_SHOW_BARS": "\\{review}Leisten anzeigen",
         "SETTING_SHOW_BARS_DESCRIPTION": "\\{review}Deaktiviert alle Ingame-Anzeigen und verdeckt Informationen über Laras Gesundheit und andere Ressourcen (für Herausforderungsdurchläufe).",
         "SETTING_SOUND_VOLUME": "\\{icon sound} Sound-Lautstärke",
@@ -1757,6 +1760,9 @@
         },
         "winston_army": {
             "name": "\\{review}Winston (Armee)",
+        },
+        "shadow": {
+            "name": "\\{review}Schatten",
         }
     }
 }

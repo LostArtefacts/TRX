@@ -27,8 +27,11 @@ typedef struct {
 
 typedef struct {
     int32_t sprite_idx;
+    bool use_custom_uv;
     uint8_t corner_count;
     XYZ_32 world_pos[4];
+    OUTPUT_UVW uvw[4];
+    OUTPUT_TEXTURE_SIZE texture_size[4];
     float disp[4][2];
     RGBA_8888 color[4];
     uint16_t flags;
@@ -137,7 +140,10 @@ static void M_EmitPrimVertices(M_PRIV *const p, const M_PRIM *const prim)
     OUTPUT_UVW uvw[4];
     OUTPUT_TEXTURE_SIZE texture_size[4];
     for (uint8_t i = 0; i < corner_count; i++) {
-        if (prim->sprite_idx >= 0) {
+        if (prim->use_custom_uv) {
+            uvw[i] = prim->uvw[i];
+            texture_size[i] = prim->texture_size[i];
+        } else if (prim->sprite_idx >= 0) {
             const int32_t sprite_corner = sprite_corner_map[i];
             const int32_t uvw_idx = Output_Textures_GetSpriteUVWIndex(
                 prim->sprite_idx, (int16_t)sprite_corner);
@@ -348,9 +354,12 @@ static void M_StagePrim(
 {
     M_PRIM prim;
     prim.sprite_idx = sprite_idx;
+    prim.use_custom_uv = false;
     prim.corner_count = corner_count;
     memset(prim.world_pos, 0, sizeof(prim.world_pos));
     memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos[0]) * corner_count);
+    memset(prim.uvw, 0, sizeof(prim.uvw));
+    memset(prim.texture_size, 0, sizeof(prim.texture_size));
     if (disp != nullptr) {
         memset(prim.disp, 0, sizeof(prim.disp));
         memcpy(prim.disp, disp, sizeof(prim.disp[0]) * corner_count);
@@ -404,6 +413,31 @@ void OutputSource_PolyFX_StageQuadExt(
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
     M_StagePrim(sprite_idx, 4, &world_pos[0], disp, &color[0], flags, target);
+}
+
+void OutputSource_PolyFX_StageQuadExtUV(
+    const XYZ_32 world_pos[4], const OUTPUT_UVW uvw[4],
+    const OUTPUT_TEXTURE_SIZE texture_size[4], const float disp[4][2],
+    const RGBA_8888 color[4], const uint16_t flags, const DRAW_TYPE draw_type)
+{
+    M_PRIV *const p = &m_Priv;
+    VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
+
+    M_PRIM prim;
+    prim.sprite_idx = -1;
+    prim.use_custom_uv = true;
+    prim.corner_count = 4;
+    memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos));
+    memcpy(prim.uvw, uvw, sizeof(prim.uvw));
+    memcpy(prim.texture_size, texture_size, sizeof(prim.texture_size));
+    if (disp != nullptr) {
+        memcpy(prim.disp, disp, sizeof(prim.disp));
+    } else {
+        memset(prim.disp, 0, sizeof(prim.disp));
+    }
+    memcpy(prim.color, color, sizeof(prim.color));
+    prim.flags = flags;
+    Vector_Add(target, &prim);
 }
 
 void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
