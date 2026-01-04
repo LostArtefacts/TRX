@@ -222,8 +222,9 @@ float light(float shade, uint flags, vec3 normal, vec4 pos, float phase)
 }
 
 struct LightingResult {
-    float shade;
-    vec4 color;
+    float shade; // used only for TR1-2
+    vec3 add; // TR3: additive light (dynamic + post effects)
+    vec3 mul; // TR3: multiplicative light (object/own)
 };
 
 LightingResult light(
@@ -231,36 +232,28 @@ LightingResult light(
     float vertexPhase, float effectPhase)
 {
     LightingResult result;
-    result.color = vec4(1);
     result.shade = SHADE_NEUTRAL;
+    result.add = vec3(0.0);
+    result.mul = vec3(1.0);
 
     if (uLightingEnabled == 0) {
         return result;
     }
-
     if ((flags & VERT_NO_LIGHTING) != 0u) {
         return result;
     }
 
 #if TR_VERSION >= 3
     if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
-        result.color.rgb =
-            clamp(
-                result.color.rgb
-                    + lightDynamicTR3(pos) * getDynamicLightContrastMul(),
-                0.0, 1.0);
+        result.add += lightDynamicTR3(pos) * getDynamicLightContrastMul();
     }
-    if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
-        result.color.rgb *= lightObjectsTR3(normal);
-    } else if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
-        result.color.rgb *= lightOwnTR3(shade);
-    }
-    result.shade = SHADE_NEUTRAL;
-#else
-    result.shade = light(shade, flags, normal, pos, vertexPhase);
-#endif
 
-    // TR3 caustics
+    if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {
+        result.mul *= lightObjectsTR3(normal);
+    } else if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
+        result.mul *= lightOwnTR3(shade);
+    }
+
     float add = 0.0;
     if ((flags & VERT_MOVE) != 0u) {
         add -= effectChoppy(effectPhase) / 512.0;
@@ -269,7 +262,12 @@ LightingResult light(
         add += effectShimmer(effectPhase) / 32.0;
         add += effectAbs() / 32.0;
     }
-    result.color.rgb = clamp(result.color.rgb + add, 0.0, 1.0);
+    result.add += vec3(add);
+
+    result.shade = SHADE_NEUTRAL;
+#else
+    result.shade = light(shade, flags, normal, pos, vertexPhase);
+#endif
 
     return result;
 }

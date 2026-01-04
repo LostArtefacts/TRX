@@ -90,20 +90,27 @@ void main(void) {
     float gamma_exp = 1.0 / ((uGamma / 10.0) * 4.0);
 
 #if TR_VERSION >= 3
-    // Apply to the lit vertex diffuse (8-bit) before any modulation.
-    lr.color.rgb = gammaCurve(lr.color.rgb, gamma_exp);
-
-    // Room vertices in TR3 already have their lighting baked into the
-    // per-vertex color; apply gamma to that base color too so rooms react
-    // to the gamma option.
-    vec4 baseColor = inColor;
+    vec3 lightIn;
+    vec3 modulate;
     if ((gFlags & VERT_FLAT_SHADED) == 0u) {
         if (uLightingEnabled == 0) {
-            baseColor.rgb = vec3(1);
+            lightIn = vec3(1);
+        } else {
+            lightIn = inColor.rgb;
         }
-        baseColor.rgb = gammaCurve(baseColor.rgb, gamma_exp);
+        modulate = vec3(1);
+    } else {
+        lightIn = vec3(1);
+        modulate = inColor.rgb;
     }
 
+    // Combine lighting in linear-ish space first: (base + add) * mul
+    vec3 lit = clamp(lightIn + lr.add, 0.0, 1.0);
+    lit *= lr.mul;
+    lit = gammaCurve(lit, gamma_exp);
+
+    // Apply flat shading AFTER modulation
+    vec4 baseColor = vec4(lit * modulate, inColor.a);
 #else
     float shade_mul = 1.0;
     if ((gFlags & VERT_NO_LIGHTING) == 0u) {
@@ -113,15 +120,16 @@ void main(void) {
     // `shade_mul` is roughly in [0..2]. Remap to [0..1], apply the gamma
     // curve, and restore the range. Use sqrt() to limit the effect scope,
     // since we're applying it to the shade (TR1-2) rather than RGB (TR3).
-    lr.color.rgb = gammaCurve(vec3(shade_mul * 0.5), sqrt(gamma_exp)) * 2.0;
+    vec3 mul = gammaCurve(vec3(shade_mul * 0.5), sqrt(gamma_exp)) * 2.0;
 
     vec4 baseColor = inColor;
     if ((gFlags & VERT_FLAT_SHADED) == 0u) {
         baseColor.rgb = gammaCurve(baseColor.rgb, gamma_exp);
     }
+    baseColor.rgb *= mul;
 #endif
 
-    gColor = vec4(baseColor.rgb * lr.color.rgb, baseColor.a);
+    gColor = vec4(baseColor.rgb, baseColor.a);
 }
 
 #elif defined(FRAGMENT)
