@@ -193,6 +193,9 @@
         "ENUM_QUICK_GUNS_MODE_DRAW_ONLY": "\\{review}Tirer seulement",
         "ENUM_SCREENSHOT_FORMAT_JPG": "JPG",
         "ENUM_SCREENSHOT_FORMAT_PNG": "PNG",
+        "ENUM_SHADOW_TYPE_CIRCLE": "\\{review}Cercle",
+        "ENUM_SHADOW_TYPE_OCTAGON": "\\{review}Octogone",
+        "ENUM_SHADOW_TYPE_SPRITE": "\\{review}Sprite",
         "ENUM_STAT_DETAIL_MODE_DETAILED": "Détaillé",
         "ENUM_STAT_DETAIL_MODE_FULL": "Complet",
         "ENUM_STAT_DETAIL_MODE_MINIMAL": "Minimal",
@@ -482,8 +485,6 @@
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Evite de bloquer complètement les contrôles pendant que les pages tournent : à la place, repousse simplement leur effet.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Sprint réactif",
         "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "\\{review}Active un sprint plus réactif pour Lara.\n\n- permet de sprinter dès que Lara a de l'énergie, plutôt que d'attendre que son endurance soit pleine.\n- permet de sprinter dans les escaliers sans être interrompue par l'animation de course normale.",
-        "SETTING_ENABLE_ROUND_SHADOW": "Ombres arrondies",
-        "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Active les ombres arrondies au lieu des ombres octagonales.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Cristaux de sauvegarde",
         "SETTING_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Limite les sauvegardes aux débuts de niveau et aux cristaux de sauvegarde. Les niveaux ont un nombre limité de cristaux, à usage unique, comme sur PS1. Modifier cette option nécessite de recommencer le niveau.",
         "SETTING_ENABLE_SHOTGUN_FLASH": "Flash du fusil",
@@ -648,6 +649,8 @@
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "\\{review}Ajoute la momie qui apparaît dans la version PlayStation de City of Khamoon, salle 25.\nModifier cette option nécessitera de redémarrer le jeu.",
         "SETTING_SCREENSHOT_FORMAT": "Format des captures d'écran",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Format de fichier pour les captures d'écran.",
+        "SETTING_SHADOW_TYPE": "\\{review}Forme des ombres",
+        "SETTING_SHADOW_TYPE_DESCRIPTION": "\\{review}Sélectionne la manière dont les ombres des entités sont rendues.\n\n- Octogone : ombres des anciens TR1 et TR2\n- Cercle : ombres rondes\n- Sprite : ombres basées sur des textures TR3",
         "SETTING_SHOW_BARS": "\\{review}Afficher les barres",
         "SETTING_SHOW_BARS_DESCRIPTION": "\\{review}Désactive toutes les barres en jeu, masquant les informations sur la santé de Lara et d'autres ressources (pour les défis).",
         "SETTING_SOUND_VOLUME": "\\{icon sound} Volume du son",
@@ -1744,6 +1747,9 @@
         },
         "winston_army": {
             "name": "\\{review}Winston (armée)",
+        },
+        "shadow": {
+            "name": "\\{review}Ombre",
         }
     }
 }

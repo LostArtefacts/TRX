@@ -193,6 +193,9 @@
         "ENUM_QUICK_GUNS_MODE_DRAW_ONLY": "Solo equipaggia",
         "ENUM_SCREENSHOT_FORMAT_JPG": "JPG",
         "ENUM_SCREENSHOT_FORMAT_PNG": "PNG",
+        "ENUM_SHADOW_TYPE_CIRCLE": "\\{review}Cerchio",
+        "ENUM_SHADOW_TYPE_OCTAGON": "\\{review}Ottagono",
+        "ENUM_SHADOW_TYPE_SPRITE": "\\{review}Sprite",
         "ENUM_STAT_DETAIL_MODE_DETAILED": "Dettagliato",
         "ENUM_STAT_DETAIL_MODE_FULL": "Completo",
         "ENUM_STAT_DETAIL_MODE_MINIMAL": "Minimo",
@@ -482,8 +485,6 @@
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Fa in modo che sfogliare le pagine del passaporto sia più istantaneo, tenendo conto dei tasti premuti dell'utente",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "Scatto migliorato",
         "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "Abilita per Lara una modalità di scatto migliorata.\n\n- consente di effettuare uno scatto non appena Lara ha energia, invece di dover aspettare che la barra della resistenza sia piena.\n- consente di effettuare uno scatto sulle scale senza essere interrotti dall’animazione di corsa normale.",
-        "SETTING_ENABLE_ROUND_SHADOW": "Ombre arrotondate",
-        "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Abilita le ombre arrotondate invece di quelle ottagonali predefinite.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Cristalli di salvataggio",
         "SETTING_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Permette di salvare all'inizio di ogni livello o utilizzando i cristalli. I livelli hanno un numero limitato di cristalli di salvataggio che possono essere utilizzati una sola volta, come nella versione PS1. La modifica di questa opzione richiederà il riavvio del livello.",
         "SETTING_ENABLE_SHOTGUN_FLASH": "Lampo sparo fucile",
@@ -648,6 +649,8 @@
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Aggiunge la mummia che appare nella versione PlayStation del livello 'Città di Khamoon', stanza 25.\nLa modifica di questa opzione richiederà il riavvio della partita.",
         "SETTING_SCREENSHOT_FORMAT": "Formato cattura schermo",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Formato del file da utilizzare per le istantanee dello schermo.",
+        "SETTING_SHADOW_TYPE": "\\{review}Forma delle ombre",
+        "SETTING_SHADOW_TYPE_DESCRIPTION": "\\{review}Seleziona come vengono renderizzate le ombre delle entità.\n\n- Ottagono: ombre vecchio TR1 e TR2\n- Cerchio: ombre rotonde\n- Sprite: ombre basate su texture di TR3",
         "SETTING_SHOW_BARS": "Mostra barre",
         "SETTING_SHOW_BARS_DESCRIPTION": "Disabilita tutte le barre di gioco, nascondendo le informazioni sulla salute di Lara e altre risorse (per le sfide).",
         "SETTING_SOUND_VOLUME": "\\{icon sound} Volume effetti",
@@ -1774,6 +1777,9 @@
         },
         "winston_army": {
             "name": "\\{review}Winston (esercito)",
+        },
+        "shadow": {
+            "name": "\\{review}Ombra",
         }
     }
 }

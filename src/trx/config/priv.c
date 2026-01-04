@@ -263,6 +263,17 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         }
     }
 
+    // TRX legacy: "round shadows" boolean to enum shadow type.
+    if (JSON_ObjectGetValue(parent_obj, "shadow_type") == nullptr) {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_round_shadow");
+        if (JSON_ValueIsTrue(value)) {
+            g_Config.visuals.shadow_type = SHADOW_TYPE_CIRCLE;
+        } else if (JSON_ValueIsFalse(value)) {
+            g_Config.visuals.shadow_type = SHADOW_TYPE_OCTAGON;
+        }
+    }
+
 #undef L_READ_BOOL
 #undef L_READ_INT
 }
@@ -322,6 +333,7 @@ void Config_Sanitize(void)
     CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov, 30, 150);
     CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
+    CLAMP(g_Config.visuals.shadow_type, 0, SHADOW_TYPE_NUMBER_OF - 1);
 
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;

@@ -528,6 +528,7 @@ const OBJECT_ID g_GameSpriteObjects[] = {
     O_WATER_SPRITE,
     O_SNOW_SPRITE,
     O_HOT_LIQUID,
+    O_SHADOW,
 
     O_GLOW_RESERVED,
     O_FX_RESERVED,

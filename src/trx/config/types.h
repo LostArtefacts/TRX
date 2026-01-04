@@ -81,7 +81,7 @@ typedef struct {
         bool enable_gun_lighting;
         bool enable_fire_lighting;
         bool enable_shotgun_flash;
-        bool enable_round_shadow;
+        SHADOW_TYPE shadow_type;
         bool enable_skybox;
         bool enable_weather;
         bool enable_footprints;

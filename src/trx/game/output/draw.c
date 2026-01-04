@@ -2,19 +2,220 @@
 
 #include <trx/config.h>
 #include <trx/game/creature/const.h>
+#include <trx/game/lara/common.h>
+#include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/lightnings.h>
 #include <trx/game/output/sources/misc.h>
 #include <trx/game/output/sources/objects.h>
+#include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/sources/rooms_debug.h>
 #include <trx/game/output/sources/shadows.h>
 #include <trx/game/output/sources/sprites.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
+#include <trx/game/rooms.h>
 #include <trx/game/scaler.h>
 #include <trx/game/shell.h>
+#include <trx/utils.h>
 #include <trx/version.h>
+
+#define M_SHADOW_LINE_POINTS 4
+#define M_SHADOW_GRID_POINTS (M_SHADOW_LINE_POINTS * M_SHADOW_LINE_POINTS)
+
+static bool M_DrawShadow_TR3(
+    const int16_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item == nullptr) {
+        return false;
+    }
+
+    const OBJECT *const shadow_obj = Object_Get(O_SHADOW);
+    if (!shadow_obj->loaded) {
+        return false;
+    }
+
+    // OG: shadow intensity is based on Lara's height above the floor, even for
+    // non-Lara items.
+    int32_t c = (4096 - ABS(item->floor - lara_item->pos.y)) >> 4;
+    c -= 1;
+    if (c < 32) {
+        c = 32;
+    }
+    CLAMPG(c, 255);
+
+    const RGBA_8888 shadow_color = { c, c, c, 255 };
+    const RGBA_8888 quad_color[4] = {
+        shadow_color,
+        shadow_color,
+        shadow_color,
+        shadow_color,
+    };
+
+    const int32_t x_size =
+        (int32_t)size * ((int32_t)bounds->max.x - (int32_t)bounds->min.x) / 128;
+    const int32_t z_size =
+        (int32_t)size * ((int32_t)bounds->max.z - (int32_t)bounds->min.z) / 128;
+    const int32_t x_dist = x_size / M_SHADOW_LINE_POINTS;
+    const int32_t z_dist = z_size / M_SHADOW_LINE_POINTS;
+
+    int32_t grid_local_x[M_SHADOW_GRID_POINTS];
+    int32_t grid_local_z[M_SHADOW_GRID_POINTS];
+    int32_t x = -x_dist - (x_dist >> 1);
+    int32_t z = z_dist + (z_dist >> 1);
+    int32_t grid_idx = 0;
+    for (int32_t row = 0; row < M_SHADOW_LINE_POINTS; row++) {
+        for (int32_t col = 0; col < M_SHADOW_LINE_POINTS; col++) {
+            grid_local_x[grid_idx] = x;
+            grid_local_z[grid_idx] = z;
+            grid_idx++;
+            x += x_dist;
+        }
+        x = -x_dist - (x_dist >> 1);
+        z -= z_dist;
+    }
+
+    // Determine the shadow anchor position.
+    XYZ_32 anchor_pos = item->interp.result.pos;
+    int32_t anchor_floor = item->interp.result.floor;
+    const int16_t anim_state = item->current_anim_state;
+    if (item == lara_item && anim_state != LS(LS_CRAWL_IDLE)
+        && anim_state != LS(LS_CRAWL_FORWARD) && anim_state != LS(LS_CRAWL_BACK)
+        && anim_state != LS(LS_CRAWL_TURN_LEFT)
+        && anim_state != LS(LS_CRAWL_TURN_RIGHT)) {
+        ANIM_FRAME *frames[2] = { nullptr, nullptr };
+        int32_t rate = 0;
+        const int32_t frac = Item_GetFrames(item, frames, &rate);
+        if (frames[0] != nullptr) {
+            XYZ_32 offset_a = XYZ_32_From16(frames[0]->offset);
+            XYZ_32 offset = offset_a;
+            if (frames[1] != nullptr && rate != 0 && frac != 0) {
+                const XYZ_32 offset_b = XYZ_32_From16(frames[1]->offset);
+                offset.x += ((offset_b.x - offset_a.x) * frac) / rate;
+                offset.y += ((offset_b.y - offset_a.y) * frac) / rate;
+                offset.z += ((offset_b.z - offset_a.z) * frac) / rate;
+            }
+
+            const int32_t sy = Math_Sin(item->interp.result.rot.y);
+            const int32_t cy = Math_Cos(item->interp.result.rot.y);
+            anchor_pos.x += (offset.x * cy + offset.z * sy) >> W2V_SHIFT;
+            anchor_pos.y += offset.y;
+            anchor_pos.z += (offset.z * cy - offset.x * sy) >> W2V_SHIFT;
+
+            int16_t room_num = item->room_num;
+            const SECTOR *const sector = Room_GetSector(
+                anchor_pos.x, anchor_pos.y, anchor_pos.z, &room_num);
+            const int16_t height = Room_GetHeight(
+                sector, anchor_pos.x, anchor_pos.y, anchor_pos.z);
+            if (height != NO_HEIGHT) {
+                anchor_floor = height;
+            }
+        }
+    }
+
+    const int32_t base_y = anchor_floor - 16;
+    const int32_t sy = Math_Sin(item->interp.result.rot.y);
+    const int32_t cy = Math_Cos(item->interp.result.rot.y);
+
+    // Compute the world-space grid points with floor-conforming Y offsets.
+    XYZ_32 grid_world[M_SHADOW_GRID_POINTS];
+    for (int32_t i = 0; i < M_SHADOW_GRID_POINTS; i++) {
+        const int32_t lx = grid_local_x[i];
+        const int32_t lz = grid_local_z[i];
+        const int32_t rx = (lx * cy + lz * sy) >> W2V_SHIFT;
+        const int32_t rz = (lz * cy - lx * sy) >> W2V_SHIFT;
+
+        const int32_t wx = anchor_pos.x + rx;
+        const int32_t wz = anchor_pos.z + rz;
+
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector =
+            Room_GetSector(wx, anchor_floor, wz, &room_num);
+        int32_t height = Room_GetHeight(sector, wx, anchor_floor, wz);
+        if (height == NO_HEIGHT) {
+            height = anchor_floor;
+        }
+        if (ABS(height - anchor_floor) > 196) {
+            height = anchor_floor;
+        }
+
+        grid_world[i] = (XYZ_32) {
+            .x = wx,
+            .y = base_y + (height - anchor_floor),
+            .z = wz,
+        };
+    }
+
+    const int32_t sprite_idx = shadow_obj->mesh_idx;
+    const int32_t uvw_idx = Output_Textures_GetSpriteUVWIndex(sprite_idx, 0);
+    const OUTPUT_TEXTURE_SIZE atlas_size =
+        Output_Textures_GetAtlasSize(uvw_idx / 4);
+    const OUTPUT_TEXTURE_SIZE quad_atlas_size[4] = {
+        atlas_size,
+        atlas_size,
+        atlas_size,
+        atlas_size,
+    };
+
+    OUTPUT_UVW sprite_uvw[4];
+    for (int32_t i = 0; i < 4; i++) {
+        const int32_t corner_uvw_idx =
+            Output_Textures_GetSpriteUVWIndex(sprite_idx, i);
+        sprite_uvw[i] = Output_Textures_GetUVW(corner_uvw_idx);
+    }
+
+    const float u_min =
+        MIN(MIN(sprite_uvw[0].u, sprite_uvw[1].u),
+            MIN(sprite_uvw[2].u, sprite_uvw[3].u));
+    const float u_max =
+        MAX(MAX(sprite_uvw[0].u, sprite_uvw[1].u),
+            MAX(sprite_uvw[2].u, sprite_uvw[3].u));
+    const float v_min =
+        MIN(MIN(sprite_uvw[0].v, sprite_uvw[1].v),
+            MIN(sprite_uvw[2].v, sprite_uvw[3].v));
+    const float v_max =
+        MAX(MAX(sprite_uvw[0].v, sprite_uvw[1].v),
+            MAX(sprite_uvw[2].v, sprite_uvw[3].v));
+    const float w = sprite_uvw[0].w;
+
+    const float u_span = u_max - u_min;
+    const float v_span = v_max - v_min;
+    const float denom = (float)(M_SHADOW_LINE_POINTS - 1);
+
+    for (int32_t row = 0; row < M_SHADOW_LINE_POINTS - 1; row++) {
+        const float v0 = v_min + v_span * ((float)row / denom);
+        const float v1 = v_min + v_span * ((float)(row + 1) / denom);
+        for (int32_t col = 0; col < M_SHADOW_LINE_POINTS - 1; col++) {
+            const float u0 = u_min + u_span * ((float)col / denom);
+            const float u1 = u_min + u_span * ((float)(col + 1) / denom);
+
+            const int32_t i0 = (row * M_SHADOW_LINE_POINTS) + col;
+            const int32_t i1 = i0 + 1;
+            const int32_t i2 = i0 + (M_SHADOW_LINE_POINTS + 1);
+            const int32_t i3 = i0 + M_SHADOW_LINE_POINTS;
+
+            const XYZ_32 quad_pos[4] = {
+                grid_world[i0],
+                grid_world[i1],
+                grid_world[i2],
+                grid_world[i3],
+            };
+            const OUTPUT_UVW quad_uvw[4] = {
+                { u0, v0, w },
+                { u1, v0, w },
+                { u1, v1, w },
+                { u0, v1, w },
+            };
+
+            OutputSource_PolyFX_StageQuadExtUV(
+                quad_pos, quad_uvw, quad_atlas_size, nullptr, quad_color,
+                VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND_SUB);
+        }
+    }
+    return true;
+}
 
 static void M_DrawScreenQuad(
     const float x0, const float y0, const float x1, const float y1,
@@ -90,6 +291,13 @@ void Output_DrawShadow(
 {
     if (!item->enable_shadow) {
         return;
+    }
+
+    if (g_TRVersion == 3
+        && g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {
+        if (M_DrawShadow_TR3(size, bounds, item)) {
+            return;
+        }
     }
 
     const int32_t x_0 = bounds->min.x;

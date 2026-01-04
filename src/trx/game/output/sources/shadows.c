@@ -74,8 +74,9 @@ void OutputSource_Shadows_Shutdown(void)
 void OutputSource_Shadows_StageShadow(void)
 {
     M_PRIV *const p = &m_Priv;
-    OUTPUT_MESH *const mesh =
-        g_Config.visuals.enable_round_shadow ? p->mesh_high : p->mesh_low;
+    OUTPUT_MESH *const mesh = g_Config.visuals.shadow_type == SHADOW_TYPE_CIRCLE
+        ? p->mesh_high
+        : p->mesh_low;
     const MESH_INSTANCE inst = {
         .mesh = mesh,
         .cwmatrix = *g_MatrixPtr,

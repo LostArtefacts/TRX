@@ -193,6 +193,9 @@
         "ENUM_QUICK_GUNS_MODE_DRAW_ONLY": "Wyposaż lub schowaj",
         "ENUM_SCREENSHOT_FORMAT_JPG": "JPG",
         "ENUM_SCREENSHOT_FORMAT_PNG": "PNG",
+        "ENUM_SHADOW_TYPE_CIRCLE": "Elipsa",
+        "ENUM_SHADOW_TYPE_OCTAGON": "Ośmiokąt",
+        "ENUM_SHADOW_TYPE_SPRITE": "Sprite",
         "ENUM_STAT_DETAIL_MODE_DETAILED": "Rozszerzone",
         "ENUM_STAT_DETAIL_MODE_FULL": "Pełne",
         "ENUM_STAT_DETAIL_MODE_MINIMAL": "Minimalne",
@@ -482,8 +485,6 @@
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Wyłącza blokowanie klawiszy podczas przewracania stron paszportu, zamiast tego kolejkując pożądaną nawigację.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "Responsywny sprint",
         "SETTING_ENABLE_RESPONSIVE_SPRINT_DESCRIPTION": "Włącza bardziej responsywny tryb sprintu dla Lary.\n\n- Pozwala sprintować, gdy Lara ma energię, a nie tylko przy pełnej wytrzymałości.\n- Umożliwia sprint po schodach bez przerywania zwykłą animacją biegu.",
-        "SETTING_ENABLE_ROUND_SHADOW": "Okrągłe cienie",
-        "SETTING_ENABLE_ROUND_SHADOW_DESCRIPTION": "Zamienia domyślne ośmiokątne cienie na okrągłe.",
         "SETTING_ENABLE_SAVE_CRYSTALS": "Kryształy zapisu",
         "SETTING_ENABLE_SAVE_CRYSTALS_DESCRIPTION": "Ogranicza zapisywanie do początku poziomów oraz kryształów zapisu umieszczonych w konkretnych lokacjach. Poziomy mają ograniczone, jednorazowe kryształy zapisu jak w wersji PS1. Zmiana tej opcji wymaga ponownego uruchomienia poziomu.",
         "SETTING_ENABLE_SHOTGUN_FLASH": "Rozbłyski ze strzelby",
@@ -648,6 +649,8 @@
         "SETTING_RESTORE_PS1_ENEMIES_DESCRIPTION": "Dodaje mumię, która pojawia się w wersji na PlayStation w City of Khamoon, pokój 25.\nZmiana tej opcji do poprawnego działania wymaga ponownego uruchomienia gry.",
         "SETTING_SCREENSHOT_FORMAT": "Format zrzutów ekranu",
         "SETTING_SCREENSHOT_FORMAT_DESCRIPTION": "Format pliku użyty do zapisu zrzutów ekranu.",
+        "SETTING_SHADOW_TYPE": "Kształt cieni",
+        "SETTING_SHADOW_TYPE_DESCRIPTION": "Wybiera sposób rysowania cieni obiektów.\n\n- Ośmiokąt: stare cienie z TR1 i TR2\n- Elipsa: zaokrąglone cienie\n- Sprite: cienie oparte na teksturach z TR3",
         "SETTING_SHOW_BARS": "Pokaż paski",
         "SETTING_SHOW_BARS_DESCRIPTION": "Wyłącza wszystkie paski w grze, ukrywając informacje o zdrowiu Lary i innych zasobach.",
         "SETTING_SOUND_VOLUME": "\\{icon sound} Głośność dźwięku",
@@ -1738,6 +1741,9 @@
         },
         "winston_army": {
             "name": "Winston (umundurowany)",
+        },
+        "shadow": {
+            "name": "\\{review}Cień",
         }
     }
 }
