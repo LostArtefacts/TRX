@@ -13,6 +13,15 @@ bool Gym_IsAssaultTimerDisplay(void);
 bool Gym_IsAssaultTimerActive(void);
 ASSAULT_STATS Gym_GetAssaultStats(void);
 
+// TR3 assault course extensions (targets + penalties).
+void Gym_Control(void);
+void Gym_Assault_AddPenaltySeconds(int32_t seconds);
+void Gym_Assault_DecreaseTargetCount(void);
+int32_t Gym_Assault_GetPenaltyDisplayTimer(void);
+int32_t Gym_Assault_GetPenaltyFrames(void);
+int32_t Gym_Assault_GetTargetPenaltyFrames(void);
+bool Gym_Assault_OnPadContact(bool on_ground);
+
 void Gym_ResetAssault(void);
 void Gym_StartAssault(void);
 void Gym_StopAssault(void);

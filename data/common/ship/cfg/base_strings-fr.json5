@@ -1750,6 +1750,9 @@
         },
         "shadow": {
             "name": "\\{review}Ombre",
+        },
+        "assault_target": {
+            "name": "\\{review}Cible d'assaut",
         }
     }
 }

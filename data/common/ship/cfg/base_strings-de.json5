@@ -1763,6 +1763,9 @@
         },
         "shadow": {
             "name": "\\{review}Schatten",
+        },
+        "assault_target": {
+            "name": "\\{review}Angriffsziele",
         }
     }
 }

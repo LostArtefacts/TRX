@@ -1744,6 +1744,9 @@
         },
         "shadow": {
             "name": "\\{review}Cień",
+        },
+        "assault_target": {
+            "name": "\\{review}Cel ataku",
         }
     }
 }

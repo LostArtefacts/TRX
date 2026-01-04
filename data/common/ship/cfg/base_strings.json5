@@ -1531,6 +1531,9 @@
         "assault_digits": {
             "name": "Assault Digits",
         },
+        "assault_target": {
+            "name": "Assault Target",
+        },
         "bird_tweeter_1": {
             "name": "Dripping Water",
         },

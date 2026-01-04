@@ -15,6 +15,8 @@
 #include <trx/game/savegame.h>
 #include <trx/game/scaler.h>
 #include <trx/game/ui.h>
+#include <trx/strings.h>
+#include <trx/version.h>
 
 #define M_MAX_PICKUP_DURATION_DISPLAY (LOGIC_FPS * 2)
 #define M_MAX_PICKUP_DURATION_EASE_IN (LOGIC_FPS / 2)
@@ -68,14 +70,12 @@ static void M_DrawAssaultTimer(void)
         return;
     }
 
-    char buffer[32];
     const RESUME_INFO *const resume =
         Savegame_GetCurrentInfo(Game_GetCurrentLevel());
     const int32_t total_sec = resume->stats.timer / LOGIC_FPS;
     const int32_t frame = resume->stats.timer % LOGIC_FPS;
-    sprintf(
-        buffer, "%d:%02d.%d", total_sec / 60, total_sec % 60,
-        frame * 10 / LOGIC_FPS);
+    const char *const buffer = String_FormatStatic(
+        "%d:%02d.%d", total_sec / 60, total_sec % 60, frame * 10 / LOGIC_FPS);
 
     const int32_t scale_h = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
     const int32_t scale_v = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
@@ -106,7 +106,7 @@ static void M_DrawAssaultTimer(void)
         { 1.0f, 1.0f, 1.0f, 1.0f },
     };
 
-    for (char *c = buffer; *c != '\0'; c++) {
+    for (const char *c = buffer; *c != '\0'; c++) {
         ASSAULT_GLYPH_TYPE glyph_type;
         int32_t mesh_num;
         if (*c == ':') {
@@ -127,6 +127,101 @@ static void M_DrawAssaultTimer(void)
             Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, neutral);
         x += Scaler_Calc(
             glyph_info[glyph_type].width, SCALER_TARGET_ASSAULT_DIGITS);
+    }
+}
+
+static void M_DrawAssaultPenalties(const bool is_target_penalty)
+{
+    if (g_TRVersion < 3) {
+        return;
+    }
+    if (!Game_IsInGym() || !Gym_IsAssaultTimerDisplay()) {
+        return;
+    }
+    if (Gym_Assault_GetPenaltyDisplayTimer() <= 0) {
+        return;
+    }
+
+    const OBJECT *const digits_obj = Object_Get(O_ASSAULT_DIGITS);
+    if (!digits_obj->loaded) {
+        LOG_INFO("uh");
+        return;
+    }
+
+    const int32_t timer = is_target_penalty
+        ? Gym_Assault_GetTargetPenaltyFrames()
+        : Gym_Assault_GetPenaltyFrames();
+    if (timer <= 0) {
+        return;
+    }
+
+    const int32_t total_sec = timer / LOGIC_FPS;
+    const char *const fmt = is_target_penalty ? "T %d:%02d s" : "%d:%02d s";
+    const char *const buffer =
+        String_FormatStatic(fmt, total_sec / 60, total_sec % 60);
+
+    const int32_t scale_h = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t scale_v = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t p = Scaler_Calc(1, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d0 = Scaler_Calc(-6, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d1 = Scaler_Calc(14, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d2 = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d3 = Scaler_Calc(8, SCALER_TARGET_ASSAULT_DIGITS);
+
+    int32_t x =
+        Viewport_GetCenterX(VIEWPORT_UI)
+        - Scaler_Calc(
+            is_target_penalty ? 193 : 175, SCALER_TARGET_ASSAULT_DIGITS);
+    int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
+    if (is_target_penalty && Gym_Assault_GetPenaltyFrames() != 0) {
+        y = Scaler_Calc(64, SCALER_TARGET_ASSAULT_DIGITS);
+    }
+
+    const RGBA_F neutral[4] = {
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+        { 1.0f, 1.0f, 1.0f, 1.0f },
+    };
+
+    const RGBA_F text[4] = {
+        { 1.0f, 0.0f, 1.0f, 1.0f },
+        { 1.0f, 0.0f, 1.0f, 1.0f },
+        { 0.25f, 0.0f, 0.25f, 1.0f },
+        { 0.25f, 0.0f, 0.25f, 1.0f },
+    };
+
+    for (const char *c = buffer; *c != '\0'; c++) {
+        if (*c == ' ') {
+            x += d3;
+        } else if (*c == 'T') {
+            x += d0;
+            UI_ScheduleDrawScreenSprite(
+                x, y + p, 0, scale_h, scale_v, digits_obj->mesh_idx + 12,
+                neutral);
+            x += d1 + (p * 2);
+        } else if (*c == 's') {
+            x += d0;
+            UI_ScheduleDrawScreenSprite(
+                x - (p * 4), y, 0, scale_h, scale_v, digits_obj->mesh_idx + 13,
+                text);
+            x += d1;
+        } else if (*c == ':') {
+            x += d0;
+            UI_ScheduleDrawScreenSprite(
+                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 10, text);
+            x += d1;
+        } else if (*c == '.') {
+            x += d0;
+            UI_ScheduleDrawScreenSprite(
+                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 11, text);
+            x += d1;
+        } else {
+            UI_ScheduleDrawScreenSprite(
+                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + (*c - '0'),
+                text);
+            x += d2;
+        }
     }
 }
 
@@ -291,6 +386,8 @@ void Overlay_DrawGameInfo(void)
     if (Game_IsPlaying()) {
         M_DrawPickups();
         M_DrawAssaultTimer();
+        M_DrawAssaultPenalties(false);
+        M_DrawAssaultPenalties(true);
     }
 }
 
