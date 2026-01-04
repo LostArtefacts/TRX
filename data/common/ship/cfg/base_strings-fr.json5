@@ -1753,6 +1753,9 @@
         },
         "assault_target": {
             "name": "\\{review}Cible d'assaut",
+        },
+        "electrical_light": {
+            "name": "\\{review}Lumière électrique",
         }
     }
 }

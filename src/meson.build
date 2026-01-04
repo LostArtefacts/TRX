@@ -391,6 +391,7 @@ common_sources = [
   'trx/game/objects/general/drawbridge.c',
   'trx/game/objects/general/dummy.c',
   'trx/game/objects/general/earthquake.c',
+  'trx/game/objects/general/electrical_light.c',
   'trx/game/objects/general/final_cutscene.c',
   'trx/game/objects/general/flare_item.c',
   'trx/game/objects/general/general.c',

@@ -1773,6 +1773,9 @@
         },
         "assault_target": {
             "name": "\\{review}Цель атаки",
+        },
+        "electrical_light": {
+            "name": "\\{review}Электрический свет",
         }
     }
 }

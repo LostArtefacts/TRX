@@ -1777,6 +1777,9 @@
         },
         "assault_target": {
             "name": "\\{review}Targaid Ionnsaigh",
+        },
+        "electrical_light": {
+            "name": "\\{review}Solais Dealain",
         }
     }
 }

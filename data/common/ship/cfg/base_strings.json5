@@ -1519,6 +1519,9 @@
         "zipline_handle": {
             "name": "Zipline Handle",
         },
+        "electrical_light": {
+            "name": "Electrical Light",
+        },
         "alarm_sound": {
             "name": "Alarm",
         },
