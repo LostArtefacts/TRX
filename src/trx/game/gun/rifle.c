@@ -12,6 +12,7 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
+#include <trx/version.h>
 
 typedef enum {
     LA_G_AIM = 0,
@@ -344,6 +345,28 @@ static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
     }
 }
 
+static void M_PlayMachineGunSound(
+    const LARA_GUN_TYPE weapon_type, const bool stopping)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    if (weapon_type == LGT_M16) {
+        Sound_Effect(
+            stopping ? SFX_M16_STOP : SFX_M16_FIRE, &lara_item->pos,
+            SPM_NORMAL);
+        return;
+    }
+
+    // The MP5 uses a high-pitched explosion when either firing or stopping.
+    // This is intentionally omitted in TR1/2 due to the sample's quality when
+    // played in rapid succession.
+    if (g_TRVersion >= 3) {
+        Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
+    }
+    if (!stopping) {
+        Sound_Effect(SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
+    }
+}
+
 static void M_Animate(const LARA_GUN_TYPE weapon_type)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -394,16 +417,8 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 if (g_Input.action) {
                     if (lara->target == nullptr || lara->left_arm.lock) {
                         M_Fire(weapon_type, false);
-                        if (weapon_type == LGT_M16) {
-                            Sound_Effect(
-                                SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
-                            m_M16Firing = true;
-                        } else if (weapon_type == LGT_MP5) {
-                            Sound_Effect(
-                                SFX_EXPLOSION_1, &lara_item->pos,
-                                0x5000000 | SPM_PITCH);
-                            Sound_Effect(
-                                SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
+                        if (weapon_type == LGT_M16 || weapon_type == LGT_MP5) {
+                            M_PlayMachineGunSound(weapon_type, false);
                             m_M16Firing = true;
                         }
                         item->goal_anim_state = LA_G_RECOIL;
@@ -414,23 +429,11 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             }
 
             if (item->goal_anim_state != LA_G_RECOIL && m_M16Firing) {
-                if (weapon_type == LGT_M16) {
-                    Sound_Effect(SFX_M16_STOP, &lara_item->pos, SPM_NORMAL);
-                } else {
-                    Sound_Effect(
-                        SFX_EXPLOSION_1, &lara_item->pos,
-                        0x5000000 | SPM_PITCH);
-                }
+                M_PlayMachineGunSound(weapon_type, true);
                 m_M16Firing = false;
             }
         } else if (m_M16Firing) {
-            if (weapon_type == LGT_M16) {
-                Sound_Effect(SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
-            } else if (weapon_type == LGT_MP5) {
-                Sound_Effect(
-                    SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
-                Sound_Effect(SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
-            }
+            M_PlayMachineGunSound(weapon_type, false);
         } else if (
             weapon_type == LGT_SHOTGUN && !g_Input.action
             && !lara->left_arm.lock) {
@@ -454,14 +457,9 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             }
         }
 
-        if (item->goal_anim_state == LA_G_URECOIL) {
-            if (weapon_type == LGT_M16) {
-                Sound_Effect(SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
-            } else if (weapon_type == LGT_MP5) {
-                Sound_Effect(
-                    SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
-                Sound_Effect(SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
-            }
+        if (item->goal_anim_state == LA_G_URECOIL
+            && (weapon_type == LGT_M16 || weapon_type == LGT_MP5)) {
+            M_PlayMachineGunSound(weapon_type, false);
         }
         break;
 
