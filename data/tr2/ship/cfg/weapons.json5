@@ -185,6 +185,33 @@
         "sample_num": "",
     },
 
+    "LGT_MP5": {
+        "type": "WEAPON_TYPE_RIFLE",
+        "lock_angles": [-60, +60, -55, +55],
+        "left_angles": [-80, +80, -65, +65],
+        "right_angles": [-80, +80, -65, +65],
+        "aim_speed": 10,
+        "shot_accuracy": 8,
+        "gun_height": 500,
+        "damage": 3,
+        "target_dist": 12.0,
+        "equip_anim_idx": 1,
+        "draw_frame": 16,
+        "undraw_frame": 21,
+        "recoil_frame": 0,
+        "flash_time": 3,
+        "flash_shade": 2560,
+        "flash_pos": {
+            "y": 332,
+            "z": 96,
+        },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {"z": -65},
+        "glow_color": [1, 0.75, 0.125],
+        "sample_num": "",
+        "is_available": false,
+    },
+
     "LGT_GRENADE": {
         "type": "WEAPON_TYPE_RIFLE",
         "lock_angles": [-60, +60, -55, +55],
