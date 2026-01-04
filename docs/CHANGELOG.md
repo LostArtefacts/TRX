@@ -64,8 +64,10 @@
 
 **TR1**:
 - added the ability to change inventory and statistics background styles (pattern + wave are not implemented in TR1)
-- added Automatic Pistols and the Desert Eagle to the `/moreguns` console command
+- added Automatic Pistols, the Desert Eagle, the MP5, and the Rocket Launcher to the `/moreguns` console command  
+    Note that some gun sounds do not match TR3 identically; any improvements offered by the community are welcome
 - fixed Lara standing two clicks below `O_FALLING_BLOCK_3` items rather than directly on top (#4374)
+- fixed missing menu guns SFX in Lara's Home
 - fixed several OG texture issues in Caves (rooms 0, 1, 2, 6, 24, 30 and 32)
 - fixed Lara automatically being given TR2 weapons in NG+ when playing the OG levels (#4365, regression from 1.0)
 - fixed Lara's pistol holster meshes appearing in NG+ in place of her Uzi holster meshes (#4368, regression from 1.0)
@@ -74,9 +76,10 @@
 **TR2**:
 - added unused gym voice line at level start if Lara has any logged assault course attempts (#2822)
 - added high-resolution 16:9 and 4:3 loading screens
-- added high-resolution 16:9 and 4:3 game end screen
+- added high-resolution 16:9 and 4:3 game end screen  
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
-- added Magnums and the Desert Eagle to the `/moreguns` console command
+- added Magnums, the Desert Eagle, the MP5, and the Rocket Launcher to the `/moreguns` console command  
+    Note that some gun sounds do not match TR3 identically; any improvements offered by the community are welcome
 - changed Tibetan Foothills to have snow (you can disable this via Graphic Options → Visuals → Weather)
 - changed ember emitters to use the `SFX_LAVA_FOUNTAIN` sample (#4376)
 - fixed the scuba diver's death SFX not playing (#4386)
