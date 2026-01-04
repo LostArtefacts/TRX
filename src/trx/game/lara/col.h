@@ -12,3 +12,4 @@ bool Lara_Col_TestVault(ITEM *item, COLL_INFO *coll);
 bool Lara_Col_TestLadderHang(ITEM *item, const COLL_INFO *coll);
 void Lara_Col_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
 bool Lara_Col_LandedBad(ITEM *item);
+void Lara_Col_MonkeySwingSnap(ITEM *item);

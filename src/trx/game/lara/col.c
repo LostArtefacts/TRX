@@ -2,6 +2,9 @@
 
 #include <trx/debug.h>
 #include <trx/game/lara.h>
+#include <trx/game/rooms.h>
+
+#define M_MONKEY_CEILING_SNAP 704
 
 static void (*m_CollisionRoutines[LS_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
@@ -41,4 +44,16 @@ void Lara_Col_Shift(COLL_INFO *const coll)
     coll->shift.x = 0;
     coll->shift.y = 0;
     coll->shift.z = 0;
+}
+
+void Lara_Col_MonkeySwingSnap(ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const int32_t ceiling =
+        Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+    if (ceiling != NO_HEIGHT) {
+        item->pos.y = ceiling + M_MONKEY_CEILING_SNAP;
+    }
 }

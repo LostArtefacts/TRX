@@ -250,7 +250,11 @@ void Room_PopulateSectorData(
             break;
 
         case FT_CLIMB:
-            sector->ladder = (LADDER_DIRECTION)M_LADDER_TYPE(fd_entry);
+            sector->ladder |= (LADDER_DIRECTION)M_LADDER_TYPE(fd_entry);
+            break;
+
+        case FT_MONKEY:
+            sector->ladder |= LADDER_CEILING;
             break;
 
         case FT_FLOOR_NWSE_SOLID:

@@ -94,6 +94,7 @@
 - fixed Skidoo music not getting resumed (#4519)
 
 **TR3**:
+- added support for monkey bar mechanics
 - added RGB lighting system support
 - added swamp and water surfaces wave effect
 - added underwater caustics
