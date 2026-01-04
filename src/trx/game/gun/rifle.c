@@ -14,6 +14,10 @@
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
+#define M_SHOTGUN_PELLET_SCATTER (DEG_1 * 20) // = 3640
+#define M_HARPOON_BOLT_SPEED 150
+#define M_GRENADE_SPEED 200
+
 typedef enum {
     LA_G_AIM = 0,
     LA_G_DRAW = 1,
@@ -96,10 +100,10 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
     for (int32_t i = 0; i < SHOTGUN_AMMO_CLIP; i++) {
         int16_t dangles[2] = {
             angles[0]
-                + SHOTGUN_PELLET_SCATTER * (Random_GetControl() - 0x4000)
+                + M_SHOTGUN_PELLET_SCATTER * (Random_GetControl() - 0x4000)
                     / 0x10000,
             angles[1]
-                + SHOTGUN_PELLET_SCATTER * (Random_GetControl() - 0x4000)
+                + M_SHOTGUN_PELLET_SCATTER * (Random_GetControl() - 0x4000)
                     / 0x10000,
         };
         if (Gun_FireWeapon(weapon_type, lara->target, lara_item, dangles)) {
@@ -189,9 +193,9 @@ static void M_FireHarpoon(void)
     }
 
     projectile_item->fall_speed =
-        (-HARPOON_BOLT_SPEED * Math_Sin(projectile_item->rot.x)) >> W2V_SHIFT;
+        (-M_HARPOON_BOLT_SPEED * Math_Sin(projectile_item->rot.x)) >> W2V_SHIFT;
     projectile_item->speed =
-        (HARPOON_BOLT_SPEED * Math_Cos(projectile_item->rot.x)) >> W2V_SHIFT;
+        (M_HARPOON_BOLT_SPEED * Math_Cos(projectile_item->rot.x)) >> W2V_SHIFT;
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 
@@ -252,7 +256,7 @@ static void M_FireGrenade(void)
     projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
     projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
     projectile_item->rot.z = 0;
-    projectile_item->speed = GRENADE_SPEED;
+    projectile_item->speed = M_GRENADE_SPEED;
     projectile_item->fall_speed = 0;
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
