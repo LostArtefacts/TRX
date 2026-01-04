@@ -511,6 +511,8 @@ SCENE_PASS Output_Textures_GetObjectTextureScenePass(const int32_t texture_idx)
         return SCENE_PASS_TRANSPARENT;
     case DRAW_BLEND_ADD:
         return SCENE_PASS_BLEND_ADD;
+    case DRAW_BLEND_SUB:
+        return SCENE_PASS_BLEND_SUB;
     }
     return SCENE_PASS_OPAQUE;
 }

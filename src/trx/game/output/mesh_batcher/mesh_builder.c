@@ -70,7 +70,7 @@ void MeshBuilder_AddFace(
     ASSERT(builder != nullptr);
     ASSERT(
         (pass == SCENE_PASS_TRANSPARENT) || (pass == SCENE_PASS_OPAQUE)
-        || (pass == SCENE_PASS_BLEND_ADD));
+        || (pass == SCENE_PASS_BLEND_SUB) || (pass == SCENE_PASS_BLEND_ADD));
     M_EnsureMesh(builder);
     ASSERT(builder->mesh != nullptr);
     ASSERT(!builder->mesh->sealed);

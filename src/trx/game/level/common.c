@@ -2,6 +2,7 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
+#include <trx/game/footprint_fx.h>
 #include <trx/game/game.h>
 #include <trx/game/game_string_table.h>
 #include <trx/game/gym.h>
@@ -92,6 +93,7 @@ bool Level_Initialise(
     WaterFX_Init();
     WeatherFX_Init();
     WeatherFX_SetWeather(level->weather_type);
+    FootprintFX_Init();
     Sparks_Init();
 
     Option_Reset();

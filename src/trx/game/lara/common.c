@@ -567,6 +567,12 @@ void Lara_Animate(ITEM *const item)
                 break;
             }
 
+            if (g_TRVersion == 3) {
+                ItemAction_RunDirectWithFX(
+                    data->effect_num, item, data->fx_type);
+                break;
+            }
+
             const ANIM_COMMAND_ENVIRONMENT type = data->environment;
             const int32_t height = lara->water_surface_dist;
             if ((type == ACE_WATER && (height >= 0 || height == NO_HEIGHT))

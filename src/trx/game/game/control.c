@@ -3,6 +3,7 @@
 #include <trx/game/clock.h>
 #include <trx/game/demo.h>
 #include <trx/game/effects.h>
+#include <trx/game/footprint_fx.h>
 #include <trx/game/game.h>
 #include <trx/game/gym.h>
 #include <trx/game/interpolation.h>
@@ -164,6 +165,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Lara_Control();
     WaterFX_Update();
     WeatherFX_Update();
+    FootprintFX_Update();
     Lara_Hair_Control(false);
 
     Camera_Update();

@@ -30,6 +30,7 @@ typedef struct {
     int16_t frame_num;
     int16_t effect_num;
     ANIM_COMMAND_ENVIRONMENT environment;
+    int16_t fx_type;
 } ANIM_COMMAND_EFFECT_DATA;
 
 typedef struct {

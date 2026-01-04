@@ -1,6 +1,7 @@
 #include <trx/benchmark.h>
 #include <trx/game/anims.h>
 #include <trx/game/game_buf.h>
+#include <trx/version.h>
 
 static void M_ParseCommand(ANIM_COMMAND *const command, const int16_t **data)
 {
@@ -33,7 +34,13 @@ static void M_ParseCommand(ANIM_COMMAND *const command, const int16_t **data)
         data->frame_num = *data_ptr++;
         const int16_t effect_data = *data_ptr++;
         data->effect_num = effect_data & 0x3FFF;
-        data->environment = (effect_data & 0xC000) >> 14;
+        data->fx_type = 0;
+        if (command->type == AC_EFFECT && g_TRVersion == 3) {
+            data->fx_type = effect_data & 0xC000;
+            data->environment = ACE_ALL;
+        } else {
+            data->environment = (effect_data & 0xC000) >> 14;
+        }
         command->data = (void *)data;
         break;
     }

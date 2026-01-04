@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
+#include <trx/game/footprint_fx.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
@@ -493,6 +494,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     WaterFX_Draw();
     WeatherFX_Draw();
     Sparks_Draw();
+    FootprintFX_Draw();
 }
 
 void Room_AddDrawnItem(const int16_t room_num, const int16_t item_num)

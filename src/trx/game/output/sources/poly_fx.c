@@ -34,16 +34,34 @@ typedef struct {
 } M_QUAD;
 
 typedef struct {
+    int32_t sprite_idx;
+    XYZ_32 world_pos[3];
+    float disp[3][2];
+    RGBA_8888 color[3];
+    uint16_t flags;
+} M_TRI;
+
+typedef enum {
+    M_PRIM_QUAD,
+    M_PRIM_TRI,
+} M_PRIM_TYPE;
+
+typedef struct {
     int32_t sort_key;
-    const M_QUAD *quad;
-} M_QUAD_SORT;
+    M_PRIM_TYPE type;
+    const void *prim;
+} M_PRIM_SORT;
 
 typedef struct {
     SCENE_SOURCE source;
     OUTPUT_MESH_SHADER *shader;
     VECTOR *scheduled_transparent; // M_QUAD
     VECTOR *scheduled_blend_add; // M_QUAD
-    VECTOR *sorted; // M_QUAD_SORT
+    VECTOR *scheduled_blend_sub; // M_QUAD
+    VECTOR *scheduled_tri_transparent; // M_TRI
+    VECTOR *scheduled_tri_blend_add; // M_TRI
+    VECTOR *scheduled_tri_blend_sub; // M_TRI
+    VECTOR *sorted; // M_PRIM_SORT
     VECTOR *vertices; // M_VERTEX
     GLuint vao;
     GLuint vbo;
@@ -51,12 +69,12 @@ typedef struct {
 
 static M_PRIV m_Priv;
 
-static int M_CompareQuadDepth(const void *const a, const void *const b)
+static int M_ComparePrimDepth(const void *const a, const void *const b)
 {
-    const M_QUAD_SORT *const prim_a = a;
-    const M_QUAD_SORT *const prim_b = b;
+    const M_PRIM_SORT *const prim_a = a;
+    const M_PRIM_SORT *const prim_b = b;
     if (prim_b->sort_key == prim_a->sort_key) {
-        return (intptr_t)prim_b->quad - (intptr_t)prim_a->quad;
+        return (intptr_t)prim_b->prim - (intptr_t)prim_a->prim;
     }
     return prim_b->sort_key - prim_a->sort_key;
 }
@@ -76,9 +94,18 @@ static void M_SortPrims(M_PRIV *const p, const SCENE_PASS pass)
 {
     Vector_Clear(p->sorted);
 
-    const VECTOR *const quads = pass == SCENE_PASS_BLEND_ADD
-        ? p->scheduled_blend_add
-        : p->scheduled_transparent;
+    const VECTOR *quads = nullptr;
+    const VECTOR *tris = nullptr;
+    if (pass == SCENE_PASS_BLEND_ADD) {
+        quads = p->scheduled_blend_add;
+        tris = p->scheduled_tri_blend_add;
+    } else if (pass == SCENE_PASS_BLEND_SUB) {
+        quads = p->scheduled_blend_sub;
+        tris = p->scheduled_tri_blend_sub;
+    } else {
+        quads = p->scheduled_transparent;
+        tris = p->scheduled_tri_transparent;
+    }
 
     for (int32_t i = 0; i < quads->count; i++) {
         const M_QUAD *const quad = Vector_Get(quads, i);
@@ -94,17 +121,40 @@ static void M_SortPrims(M_PRIV *const p, const SCENE_PASS pass)
                 / 4,
         };
 
-        const M_QUAD_SORT sort = {
+        const M_PRIM_SORT sort = {
             .sort_key = M_GetViewDepth(centroid),
-            .quad = quad,
+            .type = M_PRIM_QUAD,
+            .prim = quad,
+        };
+        Vector_Add(p->sorted, &sort);
+    }
+
+    for (int32_t i = 0; i < tris->count; i++) {
+        const M_TRI *const tri = Vector_Get(tris, i);
+        const XYZ_32 centroid = {
+            .x = (tri->world_pos[0].x + tri->world_pos[1].x
+                  + tri->world_pos[2].x)
+                / 3,
+            .y = (tri->world_pos[0].y + tri->world_pos[1].y
+                  + tri->world_pos[2].y)
+                / 3,
+            .z = (tri->world_pos[0].z + tri->world_pos[1].z
+                  + tri->world_pos[2].z)
+                / 3,
+        };
+
+        const M_PRIM_SORT sort = {
+            .sort_key = M_GetViewDepth(centroid),
+            .type = M_PRIM_TRI,
+            .prim = tri,
         };
         Vector_Add(p->sorted, &sort);
     }
 
     if (p->sorted->count > 1) {
         qsort(
-            Vector_GetData(p->sorted), p->sorted->count, sizeof(M_QUAD_SORT),
-            M_CompareQuadDepth);
+            Vector_GetData(p->sorted), p->sorted->count, sizeof(M_PRIM_SORT),
+            M_ComparePrimDepth);
     }
 }
 
@@ -161,11 +211,68 @@ static void M_EmitQuadVertices(M_PRIV *const p, const M_QUAD *const quad)
     }
 }
 
+static void M_EmitTriVertices(M_PRIV *const p, const M_TRI *const tri)
+{
+    const uint16_t flags = tri->flags;
+
+    const int32_t tri_corner_map[3] = { 0, 1, 3 };
+    OUTPUT_UVW uvw[3];
+    OUTPUT_TEXTURE_SIZE texture_size[3];
+    for (int32_t i = 0; i < 3; i++) {
+        if (tri->sprite_idx >= 0) {
+            const int32_t corner = tri_corner_map[i];
+            const int32_t uvw_idx = Output_Textures_GetSpriteUVWIndex(
+                tri->sprite_idx, (int16_t)corner);
+            uvw[i] = Output_Textures_GetUVW(uvw_idx);
+            texture_size[i] = Output_Textures_GetAtlasSize(uvw_idx / 4);
+        } else {
+            uvw[i] = (OUTPUT_UVW) { 0.0f, 0.0f, 0.0f };
+            texture_size[i] = (OUTPUT_TEXTURE_SIZE) { 0.0f, 0.0f, 0.0f, 0.0f };
+        }
+    }
+
+    const int32_t tri_idx[2][3] = {
+        { 0, 1, 2 }, // front
+        { 0, 2, 1 }, // back
+    };
+
+    for (int32_t side = 0; side < 2; side++) {
+        for (int32_t i = 0; i < 3; i++) {
+            const int32_t corner = tri_idx[side][i];
+            const M_VERTEX v = {
+                .pos = {
+                    .x = (float)tri->world_pos[corner].x,
+                    .y = (float)tri->world_pos[corner].y,
+                    .z = (float)tri->world_pos[corner].z,
+                    .w = 0.0f,
+                },
+                .normal = {
+                    .x = tri->disp[corner][0],
+                    .y = tri->disp[corner][1],
+                    .z = 0.0f,
+                    .w = 0.0f,
+                },
+                .uvw = uvw[corner],
+                .texture_size = texture_size[corner],
+                .trapezoid_ratio = { 1.0f, 1.0f },
+                .flags = flags,
+                .color = tri->color[corner],
+                .shade = (float)SHADE_NEUTRAL,
+            };
+            Vector_Add(p->vertices, &v);
+        }
+    }
+}
+
 static void M_RenderBegin(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
     Vector_Clear(p->scheduled_transparent);
     Vector_Clear(p->scheduled_blend_add);
+    Vector_Clear(p->scheduled_blend_sub);
+    Vector_Clear(p->scheduled_tri_transparent);
+    Vector_Clear(p->scheduled_tri_blend_add);
+    Vector_Clear(p->scheduled_tri_blend_sub);
     Vector_Clear(p->vertices);
     Vector_Clear(p->sorted);
 }
@@ -174,7 +281,8 @@ static void M_RenderPass(
     const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
-    if (pass != SCENE_PASS_TRANSPARENT && pass != SCENE_PASS_BLEND_ADD) {
+    if (pass != SCENE_PASS_TRANSPARENT && pass != SCENE_PASS_BLEND_SUB
+        && pass != SCENE_PASS_BLEND_ADD) {
         return;
     }
 
@@ -183,8 +291,12 @@ static void M_RenderPass(
 
     M_SortPrims(p, pass);
     for (int32_t i = 0; i < p->sorted->count; i++) {
-        const M_QUAD_SORT *const sort = Vector_Get(p->sorted, i);
-        M_EmitQuadVertices(p, sort->quad);
+        const M_PRIM_SORT *const sort = Vector_Get(p->sorted, i);
+        if (sort->type == M_PRIM_QUAD) {
+            M_EmitQuadVertices(p, sort->prim);
+        } else {
+            M_EmitTriVertices(p, sort->prim);
+        }
     }
 
     glBindVertexArray(p->vao);
@@ -206,10 +318,16 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
     if (pass == SCENE_PASS_TRANSPARENT) {
-        return p->scheduled_transparent->count > 0;
+        return p->scheduled_transparent->count > 0
+            || p->scheduled_tri_transparent->count > 0;
+    }
+    if (pass == SCENE_PASS_BLEND_SUB) {
+        return p->scheduled_blend_sub->count > 0
+            || p->scheduled_tri_blend_sub->count > 0;
     }
     if (pass == SCENE_PASS_BLEND_ADD) {
-        return p->scheduled_blend_add->count > 0;
+        return p->scheduled_blend_add->count > 0
+            || p->scheduled_tri_blend_add->count > 0;
     }
     return false;
 }
@@ -220,7 +338,11 @@ void OutputSource_PolyFX_Init(void)
     p->shader = Output_GetMeshShader();
     p->scheduled_transparent = Vector_Create(sizeof(M_QUAD));
     p->scheduled_blend_add = Vector_Create(sizeof(M_QUAD));
-    p->sorted = Vector_Create(sizeof(M_QUAD_SORT));
+    p->scheduled_blend_sub = Vector_Create(sizeof(M_QUAD));
+    p->scheduled_tri_transparent = Vector_Create(sizeof(M_TRI));
+    p->scheduled_tri_blend_add = Vector_Create(sizeof(M_TRI));
+    p->scheduled_tri_blend_sub = Vector_Create(sizeof(M_TRI));
+    p->sorted = Vector_Create(sizeof(M_PRIM_SORT));
     p->vertices = Vector_Create(sizeof(M_VERTEX));
     p->source.render_begin = M_RenderBegin;
     p->source.render_pass = M_RenderPass;
@@ -280,6 +402,22 @@ void OutputSource_PolyFX_Shutdown(void)
         Vector_Free(p->scheduled_blend_add);
         p->scheduled_blend_add = nullptr;
     }
+    if (p->scheduled_blend_sub != nullptr) {
+        Vector_Free(p->scheduled_blend_sub);
+        p->scheduled_blend_sub = nullptr;
+    }
+    if (p->scheduled_tri_transparent != nullptr) {
+        Vector_Free(p->scheduled_tri_transparent);
+        p->scheduled_tri_transparent = nullptr;
+    }
+    if (p->scheduled_tri_blend_add != nullptr) {
+        Vector_Free(p->scheduled_tri_blend_add);
+        p->scheduled_tri_blend_add = nullptr;
+    }
+    if (p->scheduled_tri_blend_sub != nullptr) {
+        Vector_Free(p->scheduled_tri_blend_sub);
+        p->scheduled_tri_blend_sub = nullptr;
+    }
     if (p->sorted != nullptr) {
         Vector_Free(p->sorted);
         p->sorted = nullptr;
@@ -315,6 +453,23 @@ static void M_StageQuad(
     Vector_Add(target, &quad);
 }
 
+static void M_StageTri(
+    const int32_t sprite_idx, const XYZ_32 world_pos[3], const float disp[3][2],
+    const RGBA_8888 color[3], const uint16_t flags, VECTOR *const target)
+{
+    M_TRI tri;
+    tri.sprite_idx = sprite_idx;
+    memcpy(tri.world_pos, world_pos, sizeof(tri.world_pos));
+    if (disp != nullptr) {
+        memcpy(tri.disp, disp, sizeof(tri.disp));
+    } else {
+        memset(tri.disp, 0, sizeof(tri.disp));
+    }
+    memcpy(tri.color, color, sizeof(tri.color));
+    tri.flags = flags;
+    Vector_Add(target, &tri);
+}
+
 void OutputSource_PolyFX_StageSpriteQuadWorldTransparent(
     const int32_t sprite_idx, const XYZ_32 world_pos[4],
     const RGBA_8888 color[4])
@@ -335,6 +490,26 @@ void OutputSource_PolyFX_StageSpriteQuadWorldBlendAdd(
         VERT_NO_LIGHTING | VERT_NO_WIBBLE, p->scheduled_blend_add);
 }
 
+void OutputSource_PolyFX_StageSpriteQuadWorldBlendSub(
+    const int32_t sprite_idx, const XYZ_32 world_pos[4],
+    const RGBA_8888 color[4])
+{
+    M_PRIV *const p = &m_Priv;
+    M_StageQuad(
+        sprite_idx, world_pos, nullptr, color,
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, p->scheduled_blend_sub);
+}
+
+void OutputSource_PolyFX_StageSpriteTriWorldBlendSub(
+    const int32_t sprite_idx, const XYZ_32 world_pos[3],
+    const RGBA_8888 color[3])
+{
+    M_PRIV *const p = &m_Priv;
+    M_StageTri(
+        sprite_idx, world_pos, nullptr, color,
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, p->scheduled_tri_blend_sub);
+}
+
 void OutputSource_PolyFX_StageQuadTransparentExt(
     const int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
     const RGBA_8888 color[4], const uint16_t flags)
@@ -351,6 +526,15 @@ void OutputSource_PolyFX_StageQuadBlendAddExt(
     M_PRIV *const p = &m_Priv;
     M_StageQuad(
         sprite_idx, world_pos, disp, color, flags, p->scheduled_blend_add);
+}
+
+void OutputSource_PolyFX_StageQuadBlendSubExt(
+    const int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
+    const RGBA_8888 color[4], const uint16_t flags)
+{
+    M_PRIV *const p = &m_Priv;
+    M_StageQuad(
+        sprite_idx, world_pos, disp, color, flags, p->scheduled_blend_sub);
 }
 
 void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
@@ -435,7 +619,9 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     }
     M_PRIV *const p = &m_Priv;
     if (spark->draw_type == DRAW_BLEND_SUB) {
-        ASSERT_FAIL(); // TODO: subtractive blend pass (TR3 TransType==3)
+        M_StageQuad(
+            sprite_idx, world_pos, disp, world_color, flags,
+            p->scheduled_blend_sub);
     } else if (spark->draw_type == DRAW_BLEND_ADD) {
         M_StageQuad(
             sprite_idx, world_pos, disp, world_color, flags,
