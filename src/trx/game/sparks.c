@@ -12,6 +12,8 @@
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/spawn.h>
+#include <trx/game/water_fx.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
@@ -35,6 +37,10 @@ static int32_t m_TR3Wind = 0;
 static int32_t m_TR3WindAngle = DEG_180;
 static int32_t m_TR3DWindAngle = DEG_180;
 static SPARKS_CALLBACKS m_Callbacks = {};
+
+static void M_TriggerExplosionSparksCallback(
+    XYZ_32 pos, int32_t extras, int8_t dynamic, int32_t uw, int16_t room_num);
+static void M_TriggerExplosionBubbleCallback(XYZ_32 pos, int16_t room_num);
 
 static const BITE m_NodeOffsets[16] = {
     { .pos = { 0, 340, 64 }, .mesh_num = 7 },
@@ -176,7 +182,10 @@ void Sparks_Init(void)
     m_TR3Wind = 0;
     m_TR3WindAngle = DEG_180;
     m_TR3DWindAngle = DEG_180;
-    m_Callbacks = (SPARKS_CALLBACKS) {};
+    m_Callbacks = (SPARKS_CALLBACKS) {
+        .trigger_explosion_sparks = M_TriggerExplosionSparksCallback,
+        .trigger_explosion_bubble = M_TriggerExplosionBubbleCallback,
+    };
 }
 
 void Sparks_SetCallbacks(const SPARKS_CALLBACKS *const callbacks)
@@ -358,23 +367,26 @@ void Sparks_Control(void)
 
             const XYZ_32 spark_pos = Sparks_GetWorldPos(sptr);
 
-            if (m_Callbacks.trigger_explosion_sparks == nullptr) {
-                ASSERT_FAIL(); // TODO: hook TriggerExplosionSparks equivalent
-            } else {
-                for (int32_t j = 0; j < (int32_t)(sptr->extras & 7U); j++) {
-                    m_Callbacks.trigger_explosion_sparks(
+            const SPARKS_CALLBACKS callbacks = m_Callbacks;
+            for (int32_t j = 0; j < (int32_t)(sptr->extras & 7U); j++) {
+                if (callbacks.trigger_explosion_sparks != nullptr) {
+                    callbacks.trigger_explosion_sparks(
                         spark_pos, (int32_t)(sptr->extras & 7U) - 1,
                         sptr->dynamic, uw, sptr->room_num);
-                    sptr->dynamic = -1;
+                } else {
+                    M_TriggerExplosionSparksCallback(
+                        spark_pos, (int32_t)(sptr->extras & 7U) - 1,
+                        sptr->dynamic, uw, sptr->room_num);
                 }
+                sptr->dynamic = -1;
             }
 
             if ((sptr->flags & SPARK_F_UNDERWATER) != 0U) {
-                if (m_Callbacks.trigger_explosion_bubble == nullptr) {
-                    ASSERT_FAIL(); // TODO: hook TriggerExplosionBubble
-                } else {
-                    m_Callbacks.trigger_explosion_bubble(
+                if (callbacks.trigger_explosion_bubble != nullptr) {
+                    callbacks.trigger_explosion_bubble(
                         spark_pos, sptr->room_num);
+                } else {
+                    M_TriggerExplosionBubbleCallback(spark_pos, sptr->room_num);
                 }
             }
 
@@ -726,4 +738,233 @@ void Sparks_TriggerBreath(
     sptr->dst_size.width = dst_size;
     sptr->dst_size.height = dst_size;
     sptr->size = sptr->src_size;
+}
+
+void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    M_TriggerExplosionBubbleCallback(item->pos, item->room_num);
+    Sparks_TriggerExplosionSparks(
+        item->pos.x, item->pos.y, item->pos.z, 2, -2, 1, item->room_num);
+
+    for (int32_t i = 0; i < 3; i++) {
+        Sparks_TriggerExplosionSparks(
+            item->pos.x, item->pos.y, item->pos.z, 2, -1, 1, item->room_num);
+    }
+
+    const int32_t water_height = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    if (water_height == NO_HEIGHT) {
+        return;
+    }
+
+    int32_t y = item->pos.y - water_height;
+    if (y >= 2048) {
+        return;
+    }
+
+    const int32_t wh = 2048 - y;
+    y = wh >> 6;
+
+    const ROOM *const room = Room_Get(item->room_num);
+    WaterFX_SetupSplash(&(WATER_FX_SPLASH_SETUP) {
+        .x = item->pos.x,
+        .y = room->max_ceiling,
+        .z = item->pos.z,
+        .inner_y_size = -96,
+        .inner_xz_vel = 160,
+        .inner_gravity = 96,
+        .inner_xz_off = y + 16,
+        .inner_xz_size = y + 12,
+        .inner_friction = 7,
+        .inner_y_vel = (-512 - wh) << 3,
+        .middle_xz_off = y + 24,
+        .middle_xz_size = y + 24,
+        .middle_y_size = -64,
+        .middle_xz_vel = 224,
+        .middle_y_vel = (-768 - wh) << 2,
+        .middle_gravity = 56,
+        .middle_friction = 8,
+        .outer_xz_off = y + 32,
+        .outer_xz_size = y + 32,
+        .outer_xz_vel = 272,
+        .outer_friction = 9,
+    });
+}
+
+void Sparks_TriggerExplosionSparks(
+    int32_t x, int32_t y, int32_t z, int32_t extras, int32_t dynamic,
+    int32_t uw, int16_t room_num)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - x;
+    const int32_t dz = lara_item->pos.z - z;
+    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+        return;
+    }
+
+    const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
+    if (explosion == nullptr || !explosion->loaded) {
+        return;
+    }
+
+    int32_t safe_extras = extras;
+    CLAMP(safe_extras, 0, 3);
+    static const uint8_t extras_table[4] = { 0, 4, 7, 10 };
+
+    SPARK *const sptr = Sparks_GetFreeSpark();
+    *sptr = (SPARK) {
+        .on = true,
+        .src_color = { 255, 0, 0 },
+        .dst_color = { 0, 0, 0 },
+        .color = { 0, 0, 0 },
+        .draw_type = DRAW_BLEND_ADD,
+        .extras = (uint8_t)(
+            safe_extras
+            | ((extras_table[safe_extras] + (Random_GetControl() & 7) - 4)
+               << 3)),
+        .life = 0,
+        .dynamic = (int8_t)dynamic,
+        .sprite_idx = explosion->mesh_idx,
+        .pos = { .x = x, .y = y, .z = z },
+        .vel = {
+            .x = (Random_GetControl() & 0xFFF) - 2048,
+            .y = (Random_GetControl() & 0xFFF) - 2048,
+            .z = (Random_GetControl() & 0xFFF) - 2048,
+        },
+        .gravity = 0,
+        .max_y_vel = 0,
+        .friction = 0,
+        .flags = SPARK_F_SPRITE | SPARK_F_SCALE,
+        .scalar = 3,
+        .room_num = (uint8_t)room_num,
+    };
+
+    if (uw == 1) {
+        sptr->src_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
+        sptr->src_color.b = 32;
+        sptr->dst_color.r = 192;
+        sptr->dst_color.g = (uint8_t)((Random_GetControl() & 0x1F) + 64);
+        sptr->dst_color.b = 0;
+        sptr->col_fade_speed = 7;
+        sptr->fade_to_black = 8;
+        sptr->life = (uint8_t)((Random_GetControl() & 7) + 16);
+        sptr->flags |= SPARK_F_UNDERWATER;
+    } else {
+        sptr->src_color.g = (uint8_t)((Random_GetControl() & 0xF) + 32);
+        sptr->src_color.b = 0;
+        sptr->dst_color.r = (uint8_t)((Random_GetControl() & 0x3F) + 192);
+        sptr->dst_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
+        sptr->dst_color.b = 32;
+        sptr->col_fade_speed = 8;
+        sptr->fade_to_black = 16;
+        sptr->life = (uint8_t)((Random_GetControl() & 7) + 24);
+    }
+    sptr->s_life = sptr->life;
+
+    if (dynamic == -2) {
+        sptr->dynamic = Sparks_AllocDynamic(uw == 1 ? 2 : 1);
+    }
+
+    if (dynamic != -2 || uw == 1) {
+        sptr->pos.x = (Random_GetControl() & 0x1F) + x - 16;
+        sptr->pos.y = (Random_GetControl() & 0x1F) + y - 16;
+        sptr->pos.z = (Random_GetControl() & 0x1F) + z - 16;
+    } else {
+        sptr->pos.x = (Random_GetControl() & 0x1FF) + x - 256;
+        sptr->pos.y = (Random_GetControl() & 0x1FF) + y - 256;
+        sptr->pos.z = (Random_GetControl() & 0x1FF) + z - 256;
+    }
+
+    sptr->friction = (uint8_t)(uw == 1 ? 0x11 : 0x33);
+
+    sptr->flags |= SPARK_F_ALT_SPRITE;
+    if ((Random_GetControl() & 1) != 0) {
+        sptr->flags |= SPARK_F_ROTATE;
+        sptr->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
+        const int32_t rot_add = (Random_GetControl() & 0x7F) + 32;
+        sptr->rot_add = (int8_t)MIN(rot_add, 127);
+    }
+
+    sptr->src_size.width = (uint8_t)((Random_GetControl() & 0xF) + 40);
+    sptr->src_size.height =
+        (uint8_t)(sptr->src_size.width + (Random_GetControl() & 7) + 8);
+    sptr->dst_size.width = (uint8_t)(sptr->src_size.width << 1);
+    sptr->dst_size.height = (uint8_t)(sptr->src_size.height << 1);
+    sptr->size = sptr->src_size;
+
+    if (uw == 2) {
+        const RGB_888 src = sptr->src_color;
+        const RGB_888 dst = sptr->dst_color;
+        sptr->src_color = (RGB_888) { src.b, src.r, src.g };
+        sptr->dst_color = (RGB_888) { dst.b, dst.r, dst.g };
+        sptr->flags |= SPARK_F_GREEN;
+    }
+}
+
+static void M_TriggerExplosionSparksCallback(
+    const XYZ_32 pos, const int32_t extras, const int8_t dynamic,
+    const int32_t uw, const int16_t room_num)
+{
+    Sparks_TriggerExplosionSparks(
+        pos.x, pos.y, pos.z, extras, dynamic, uw, room_num);
+}
+
+static void M_TriggerExplosionBubbleCallback(
+    const XYZ_32 pos, const int16_t room_num)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+        return;
+    }
+
+    const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
+    if (explosion == nullptr || !explosion->loaded) {
+        return;
+    }
+
+    SPARK *const sptr = Sparks_GetFreeSpark();
+    *sptr = (SPARK) {
+        .on = true,
+        .src_color = { 128, 64, 0 },
+        .dst_color = { 128, 128, 128 },
+        .color = { 0, 0, 0 },
+        .col_fade_speed = 8,
+        .fade_to_black = 12,
+        .life = 24,
+        .s_life = 24,
+        .draw_type = DRAW_BLEND_ADD,
+        .extras = 0,
+        .dynamic = -1,
+        .sprite_idx = explosion->mesh_idx,
+        .pos = pos,
+        .vel = { .x = 0, .y = 0, .z = 0 },
+        .gravity = 0,
+        .max_y_vel = 0,
+        .friction = 0,
+        .flags = SPARK_F_UNDERWATER | SPARK_F_SPRITE | SPARK_F_SCALE,
+        .scalar = 3,
+        .room_num = (uint8_t)room_num,
+    };
+
+    const uint8_t size = (uint8_t)((Random_GetControl() & 7) + 63);
+    sptr->src_size.width = (uint8_t)(size >> 1);
+    sptr->src_size.height = sptr->src_size.width;
+    sptr->dst_size.width = (uint8_t)(size << 1);
+    sptr->dst_size.height = sptr->dst_size.width;
+    sptr->size = sptr->src_size;
+
+    for (int32_t i = 0; i < 7; i++) {
+        const XYZ_32 bubble_pos = {
+            .x = (Random_GetControl() & 0x1FF) + pos.x - 256,
+            .y = (Random_GetControl() & 0x7F) + pos.y - 64,
+            .z = (Random_GetControl() & 0x1FF) + pos.z - 256,
+        };
+        Spawn_BubbleEx(&bubble_pos, room_num, 6, 15);
+    }
 }

@@ -118,6 +118,7 @@
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - added support for the serif font
 - added support for colored text (Assault Course colors not yet implemented)
+- added Quad Bike control
 - added Animating Item 1-6 control
 - added Electrical Light control
 - added Smoke Emitter (White) control

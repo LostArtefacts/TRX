@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/items/types.h>
 #include <trx/game/types.h>
 
 #include <stdint.h>
@@ -101,3 +102,8 @@ void Sparks_TriggerBubble(
 void Sparks_TriggerWaterfallMist(int32_t x, int32_t y, int32_t z, int32_t ang);
 
 void Sparks_TriggerBreath(XYZ_32 pos, XYZ_32 vel, int16_t room_num);
+
+void Sparks_TriggerUnderwaterExplosion(const ITEM *item);
+void Sparks_TriggerExplosionSparks(
+    int32_t x, int32_t y, int32_t z, int32_t extras, int32_t dynamic,
+    int32_t uw, int16_t room_num);

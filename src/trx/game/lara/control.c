@@ -39,6 +39,7 @@
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 extern bool Skidoo_Control(void);
+extern bool QuadBike_Control(void);
 
 static SECTOR *M_GetCurrentSector(void)
 {
@@ -450,12 +451,19 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
 
     const ITEM *const vehicle = Lara_Vehicle_GetItem();
     if (vehicle != nullptr) {
-        if (vehicle->object_id == O_SKIDOO_FAST) {
-            // TODO: make this Object_Get(O_SKIDOO_FAST)->control
+        // TODO: make this Object_Get(…)->control
+        switch (vehicle->object_id) {
+        case O_SKIDOO_FAST:
             if (Skidoo_Control()) {
                 return;
             }
-        } else {
+            break;
+        case O_QUAD_BIKE:
+            if (QuadBike_Control()) {
+                return;
+            }
+            break;
+        default:
             Gun_Control();
             return;
         }

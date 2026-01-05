@@ -181,6 +181,7 @@ int32_t Collide_TestCollision(ITEM *const item, const ITEM *const lara_item)
 void Collide_GetJointAbsPosition(
     const ITEM *const item, XYZ_32 *const out_vec, const int32_t joint)
 {
+    // TODO: support interpolation
     const OBJECT *const obj = Object_Get(item->object_id);
     const ANIM_FRAME *const frame = Item_GetBestFrame(item);
 

@@ -940,6 +940,9 @@
         "boat": {
             "name": "Boat",
         },
+        "quad_bike": {
+            "name": "Quad Bike",
+        },
         "bacon_lara": {
             "name": "Bacon Lara",
         },

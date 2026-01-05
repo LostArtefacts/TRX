@@ -30,6 +30,7 @@ void Lara_AnimateUntil(ITEM *lara_item, int32_t goal);
 const ANIM_FRAME *Lara_GetHitFrame(const ITEM *item);
 void Lara_TakeDamage(int16_t damage, bool hit_status);
 
+void Lara_GetMeshPos(LARA_MESH mesh, XYZ_32 *out_pos);
 bool Lara_TestBoundsCollide(const ITEM *item, int32_t radius);
 void Lara_Push(const ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
 bool Lara_TestPosition(const ITEM *item, const OBJECT_BOUNDS *bounds);

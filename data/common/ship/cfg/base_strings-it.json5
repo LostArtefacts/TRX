@@ -1796,6 +1796,9 @@
         },
         "steam_emitter": {
             "name": "\\{review}Emettitore di Vapore",
+        },
+        "quad_bike": {
+            "name": "\\{review}Quad",
         }
     }
 }

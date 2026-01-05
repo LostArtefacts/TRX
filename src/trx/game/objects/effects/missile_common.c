@@ -67,7 +67,7 @@ void Missile_Control(const int16_t effect_num)
             effect->object_id = O_BLOOD_1;
             Sound_Effect(SFX_CRUNCH_1, &effect->pos, SPM_NORMAL);
         }
-        lara_item->hit_status = 1;
+        lara_item->hit_status = true;
 
         effect->rot.y = lara_item->rot.y;
         effect->frame_num = 0;
