@@ -1790,6 +1790,9 @@
         },
         "steam_emitter": {
             "name": "\\{review}Sgaoilteadair Steimhe",
+        },
+        "quad_bike": {
+            "name": "\\{review}Baidhsagal Ceithir-chuibhle",
         }
     }
 }

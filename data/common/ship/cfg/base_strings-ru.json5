@@ -1786,6 +1786,9 @@
         },
         "steam_emitter": {
             "name": "\\{review}Паровой излучатель",
+        },
+        "quad_bike": {
+            "name": "\\{review}Квадроцикл",
         }
     }
 }

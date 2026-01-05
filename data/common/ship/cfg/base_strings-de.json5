@@ -1779,6 +1779,9 @@
         },
         "steam_emitter": {
             "name": "\\{review}Dampfgenerator",
+        },
+        "quad_bike": {
+            "name": "\\{review}Quad",
         }
     }
 }
