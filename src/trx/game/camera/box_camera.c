@@ -79,10 +79,10 @@ static const BOX_INFO *M_GetBox(
 
     // A level may have blocked specific sector or room pathfinding, so create a
     // dummy one-sector box to prevent erratic camera positioning.
-    m_FixedBox.left = z & ~(WALL_L - 1);
-    m_FixedBox.top = x & ~(WALL_L - 1);
-    m_FixedBox.right = m_FixedBox.left + WALL_L - 1;
-    m_FixedBox.bottom = m_FixedBox.top + WALL_L - 1;
+    m_FixedBox.left = ROUND_TO_SECTOR(z);
+    m_FixedBox.top = ROUND_TO_SECTOR(x);
+    m_FixedBox.right = ROUND_TO_SECTOR_END(z);
+    m_FixedBox.bottom = ROUND_TO_SECTOR_END(x);
     return &m_FixedBox;
 }
 
@@ -177,7 +177,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
 
     const M_SETTINGS settings = M_GetSettings();
 
-    int32_t test = (target->z - WALL_L) | (WALL_L - 1);
+    int32_t test = ROUND_TO_SECTOR_END(target->z - WALL_L);
     const SECTOR *const good_left =
         M_GetSector(target->x, target->y, test, target->room_num);
     if (good_left != nullptr) {
@@ -189,7 +189,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         left = test;
     }
 
-    test = (target->z + WALL_L) & (~(WALL_L - 1));
+    test = ROUND_TO_SECTOR(target->z + WALL_L);
     const SECTOR *const good_right =
         M_GetSector(target->x, target->y, test, target->room_num);
     if (good_right != nullptr) {
@@ -201,7 +201,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         right = test;
     }
 
-    test = (target->x - WALL_L) | (WALL_L - 1);
+    test = ROUND_TO_SECTOR_END(target->x - WALL_L);
     const SECTOR *const good_top =
         M_GetSector(test, target->y, target->z, target->room_num);
     if (good_top != nullptr) {
@@ -213,7 +213,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         top = test;
     }
 
-    test = (target->x + WALL_L) & (~(WALL_L - 1));
+    test = ROUND_TO_SECTOR(target->x + WALL_L);
     const SECTOR *const good_bottom =
         M_GetSector(test, target->y, target->z, target->room_num);
     if (good_bottom != nullptr) {

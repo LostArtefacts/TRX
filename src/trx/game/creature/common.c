@@ -714,15 +714,15 @@ bool Creature_Animate(
         const int32_t shift_z = old.z >> WALL_SHIFT;
 
         if (pos_x < shift_x) {
-            item->pos.x = old.x & (~(WALL_L - 1));
+            item->pos.x = ROUND_TO_SECTOR(old.x);
         } else if (pos_x > shift_x) {
-            item->pos.x = old.x | (WALL_L - 1);
+            item->pos.x = ROUND_TO_SECTOR_END(old.x);
         }
 
         if (pos_x < shift_z) {
-            item->pos.z = old.z & (~(WALL_L - 1));
+            item->pos.z = ROUND_TO_SECTOR(old.z);
         } else if (pos_x > shift_z) {
-            item->pos.z = old.z | (WALL_L - 1);
+            item->pos.z = ROUND_TO_SECTOR_END(old.z);
         }
 
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);

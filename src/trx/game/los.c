@@ -174,7 +174,7 @@ static int32_t M_CheckX(
     m_LOSNumRooms = 1;
 
     if (dx < 0) {
-        int32_t x = start->x & (~(WALL_L - 1));
+        int32_t x = ROUND_TO_SECTOR(start->x);
         int32_t y = start->y + ((dy * (x - start->x)) >> WALL_SHIFT);
         int32_t z = start->z + ((dz * (x - start->x)) >> WALL_SHIFT);
 
@@ -216,7 +216,7 @@ static int32_t M_CheckX(
             z -= dz;
         }
     } else {
-        int32_t x = start->x | (WALL_L - 1);
+        int32_t x = ROUND_TO_SECTOR_END(start->x);
         int32_t y = start->y + (((x - start->x) * dy) >> WALL_SHIFT);
         int32_t z = start->z + (((x - start->x) * dz) >> WALL_SHIFT);
 
@@ -281,7 +281,7 @@ static int32_t M_CheckZ(
     m_LOSNumRooms = 1;
 
     if (dz < 0) {
-        int32_t z = start->z & (~(WALL_L - 1));
+        int32_t z = ROUND_TO_SECTOR(start->z);
         int32_t x = start->x + ((dx * (z - start->z)) >> WALL_SHIFT);
         int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
 
@@ -323,7 +323,7 @@ static int32_t M_CheckZ(
             y -= dy;
         }
     } else {
-        int32_t z = start->z | (WALL_L - 1);
+        int32_t z = ROUND_TO_SECTOR_END(start->z);
         int32_t x = start->x + ((dx * (z - start->z)) >> WALL_SHIFT);
         int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
 
