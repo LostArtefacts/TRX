@@ -14,7 +14,7 @@
             "title": "Dżungla",
             "objects": {
                 "key_4": {
-                    "name": "Klucz indry",
+                    "name": "Klucz Indry",
                 },
             },
         },
@@ -22,7 +22,7 @@
             "title": "Ruiny Świątyni",
             "objects": {
                 "key_1": {
-                    "name": "Klucz ganeszy",
+                    "name": "Klucz Ganeszy",
                 },
                 "puzzle_1": {
                     "name": "Szabla",
@@ -55,7 +55,7 @@
             },
         },
         {
-            "title": "Crash Site",
+            "title": "Miejsce Katastrofy",
             "objects": {
                 "key_1": {
                     "name": "Klucz komandora biskupa",
@@ -92,10 +92,10 @@
                     "name": "Klucz konserwacyjny",
                 },
                 "key_2": {
-                    "name": "Klucz salomona",
+                    "name": "Klucz Salomona",
                 },
                 "key_3": {
-                    "name": "Klucz salomona",
+                    "name": "Klucz Salomona",
                 },
                 "puzzle_1": {
                     "name": "Stara moneta",
@@ -205,7 +205,7 @@
             "title": "Zaginione Miasto Tinnos",
             "objects": {
                 "key_1": {
-                    "name": "Klucz uli",
+                    "name": "Klucz Uli",
                 },  
                 "puzzle_1": {
                     "name": "Maska oceaniczna",
