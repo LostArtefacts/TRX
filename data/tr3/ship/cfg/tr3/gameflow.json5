@@ -449,6 +449,7 @@
         {
             "path": "cuts/cut2.tr2",
             "music_track": 67,
+            "weather_type": "rain",
             "sequence": [
                 {"type": "loop_game"},
             ],
