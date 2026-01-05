@@ -59,11 +59,13 @@ static bool M_CanTargetItem(
 
     // Out of bounds items
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
-        == NO_HEIGHT) {
-        return false;
+    if (room_num != NO_ROOM) {
+        const SECTOR *const sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
+            == NO_HEIGHT) {
+            return false;
+        }
     }
 
     // Non-matches to user input
