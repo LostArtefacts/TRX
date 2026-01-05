@@ -7,6 +7,8 @@
 #include <trx/game/output.h>
 #include <trx/version.h>
 
+#define M_SHOTGUN_AMMO_CLIP 6
+
 static bool M_IsGunType(
     const LARA_GUN_TYPE gun_type, const WEAPON_TYPE weapon_type)
 {
@@ -126,32 +128,18 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 
 int32_t Gun_GetAmmoQuantity(const LARA_GUN_TYPE gun_type)
 {
-    // clang-format off
-    switch (gun_type) {
-    case LGT_PISTOLS:      return 1;
-    case LGT_MAGNUMS:      return MAGNUM_AMMO_QTY;
-    case LGT_AUTOS:        return AUTOS_AMMO_QTY;
-    case LGT_DESERT_EAGLE: return DESERT_EAGLE_AMMO_QTY;
-    case LGT_UZIS:         return UZI_AMMO_QTY;
-    case LGT_SHOTGUN:      return SHOTGUN_AMMO_QTY;
-    case LGT_HARPOON:      return HARPOON_AMMO_QTY;
-    case LGT_M16:          return M16_AMMO_QTY;
-    case LGT_MP5:          return MP5_AMMO_QTY;
-    case LGT_GRENADE:      return GRENADE_AMMO_QTY;
-    case LGT_ROCKET:       return ROCKET_AMMO_QTY;
-    default:               return -1;
-    }
-    // clang-format on
+    return MAX(1, g_Weapons[gun_type].pickup_qty)
+        * Gun_GetAmmoClipCount(gun_type);
 }
 
 int32_t Gun_GetAmmoClipCount(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_SHOTGUN ? SHOTGUN_AMMO_CLIP : 1;
+    return gun_type == LGT_SHOTGUN ? M_SHOTGUN_AMMO_CLIP : 1;
 }
 
 int32_t Gun_GetAmmoShellCount(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_SHOTGUN ? SHOTGUN_SHELL_COUNT : 1;
+    return Gun_GetAmmoQuantity(gun_type) / Gun_GetAmmoClipCount(gun_type);
 }
 
 AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
