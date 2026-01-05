@@ -1769,6 +1769,15 @@
         },
         "electrical_light": {
             "name": "\\{review}Elektrisches Licht",
+        },
+        "smoke_emitter_white": {
+            "name": "\\{review}Rauchgenerator (Weiß)",
+        },
+        "smoke_emitter_black": {
+            "name": "\\{review}Rauchgenerator (Schwarz)",
+        },
+        "steam_emitter": {
+            "name": "\\{review}Dampfgenerator",
         }
     }
 }

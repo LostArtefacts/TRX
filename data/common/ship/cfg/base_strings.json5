@@ -1522,6 +1522,15 @@
         "electrical_light": {
             "name": "Electrical Light",
         },
+        "smoke_emitter_white": {
+            "name": "Smoke Emitter (White)",
+        },
+        "smoke_emitter_black": {
+            "name": "Smoke Emitter (Black)",
+        },
+        "steam_emitter": {
+            "name": "Steam Emitter",
+        },
         "alarm_sound": {
             "name": "Alarm",
         },

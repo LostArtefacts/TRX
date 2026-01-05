@@ -412,6 +412,7 @@ common_sources = [
   'trx/game/objects/general/scion3.c',
   'trx/game/objects/general/scion4.c',
   'trx/game/objects/general/scion_holder.c',
+  'trx/game/objects/general/smoke_emitter.c',
   'trx/game/objects/general/sphere_of_doom.c',
   'trx/game/objects/general/switch.c',
   'trx/game/objects/general/trapdoor.c',
