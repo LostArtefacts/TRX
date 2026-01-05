@@ -6,7 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_string.h>
-#include <trx/game/gun/const.h>
+#include <trx/game/gun.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
@@ -68,7 +68,7 @@ static void M_RingNotActive(
     case O_SHOTGUN_OPTION:
         M_ShowAmmoQuantity(
             g_TRVersion == 1 ? "%5d \\{ammo shotgun}" : "%5d",
-            lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP);
+            lara->shotgun_ammo.ammo / Gun_GetAmmoClipCount(LGT_SHOTGUN));
         break;
     case O_MAGNUM_OPTION:
         M_ShowAmmoQuantity(
@@ -103,7 +103,7 @@ static void M_RingNotActive(
         break;
 
     case O_SHOTGUN_AMMO_OPTION:
-        M_ShowAmmoQuantity("%d", qty * SHOTGUN_SHELL_COUNT);
+        M_ShowAmmoQuantity("%d", qty * Gun_GetAmmoShellCount(LGT_SHOTGUN));
         break;
     case O_MAGNUM_AMMO_OPTION:
     case O_AUTOS_AMMO_OPTION:

@@ -97,7 +97,8 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
         lara->left_arm.rot.x,
     };
 
-    for (int32_t i = 0; i < SHOTGUN_AMMO_CLIP; i++) {
+    const int32_t clip = Gun_GetAmmoClipCount(weapon_type);
+    for (int32_t i = 0; i < clip; i++) {
         int16_t dangles[2] = {
             angles[0]
                 + M_SHOTGUN_PELLET_SCATTER * (Random_GetControl() - 0x4000)
