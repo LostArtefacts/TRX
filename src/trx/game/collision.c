@@ -214,13 +214,20 @@ void Collide_GetJointAbsPosition(
 
 void Collide_GetCollisionInfo(
     COLL_INFO *const coll, const int32_t x_pos, const int32_t y_pos,
-    const int32_t z_pos, int16_t room_num, const int32_t obj_height)
+    const int32_t z_pos, int16_t room_num, int32_t obj_height)
 {
     coll->coll_type = COLL_NONE;
     coll->shift.x = 0;
     coll->shift.y = 0;
     coll->shift.z = 0;
     coll->quadrant = Math_GetDirection(coll->facing);
+
+    bool reset_room = false;
+    int16_t prev_room_num = room_num;
+    if (obj_height < 0) {
+        reset_room = true;
+        obj_height = -obj_height;
+    }
 
     int32_t x = x_pos;
     int32_t z = z_pos;
@@ -304,6 +311,10 @@ void Collide_GetCollisionInfo(
         x_right = 0;
         z_right = 0;
         break;
+    }
+
+    if (reset_room) {
+        room_num = prev_room_num;
     }
 
     M_FillSide(

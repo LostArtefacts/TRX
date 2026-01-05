@@ -524,22 +524,32 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.forward) {
-        if (coll->side_front.floor <= -850 || coll->side_front.floor >= -650
-            || coll->side_front.floor - coll->side_front.ceiling < 0
-            || coll->side_left.floor - coll->side_left.ceiling < 0
-            || coll->side_right.floor - coll->side_right.ceiling < 0
-            || coll->hit_static) {
-            if (lara->climb_status
-                && Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
-                && Item_TestFrameEqual(item, M_LF_HANG)
-                && coll->side_mid.ceiling <= -256) {
-                item->goal_anim_state = LS(LS_HANG);
-                item->current_anim_state = LS(LS_HANG);
-                Item_SwitchToAnim(item, LA(LA_LADDER_UP_HANGING), 0);
-            }
-        } else {
+        if (coll->side_front.floor > -850 && coll->side_front.floor < -650
+            && coll->side_front.floor - coll->side_front.ceiling >= 0
+            && coll->side_left.floor - coll->side_left.ceiling >= 0
+            && coll->side_right.floor - coll->side_right.ceiling >= 0
+            && !coll->hit_static) {
             item->goal_anim_state = LS(g_Input.slow ? LS_GYMNAST : LS_PULL_UP);
+            return;
+        } else if (
+            lara->climb_status && Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
+            && Item_TestFrameEqual(item, M_LF_HANG)
+            && coll->side_mid.ceiling <= -256) {
+            item->goal_anim_state = LS(LS_HANG);
+            item->current_anim_state = LS(LS_HANG);
+            Item_SwitchToAnim(item, LA(LA_LADDER_UP_HANGING), 0);
+            return;
         }
+    }
+
+    if (g_TRVersion == 3 && (g_Input.forward || g_Input.crouch)
+        && coll->side_front.floor > -850 && coll->side_front.floor < -650
+        && coll->side_front.floor - coll->side_front.ceiling >= -256
+        && coll->side_left.floor - coll->side_left.ceiling >= -256
+        && coll->side_right.floor - coll->side_right.ceiling >= -256
+        && !coll->hit_static) {
+        item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
+        item->required_anim_state = LS(LS_CROUCH_IDLE);
     } else if (
         g_Input.back && lara->climb_status
         && Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))

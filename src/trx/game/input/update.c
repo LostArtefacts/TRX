@@ -6,6 +6,7 @@
 #include <trx/game/input/backends/keyboard.h>
 #include <trx/game/input/common.h>
 #include <trx/game/lara.h>
+#include <trx/version.h>
 
 static void M_UpdateFromBackend(
     INPUT_STATE *const s, const INPUT_BACKEND_IMPL *const backend,
@@ -37,6 +38,10 @@ void Input_Update(void)
     if (g_Input.left && g_Input.right) {
         g_Input.left = 0;
         g_Input.right = 0;
+    }
+
+    if (g_TRVersion < 3) {
+        g_Input.crouch = 0;
     }
 
     if (g_Config.input.enable_tr3_sidesteps) {

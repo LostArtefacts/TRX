@@ -443,6 +443,8 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_MUST(M_ReadNum(ctx, "water_status", &lara->water_status));
     // Only TR1X >= 4.15, TR2X >=* has ladder support
     M_OPTIONAL(M_ReadBool(ctx, "climb_status", &lara->climb_status));
+    M_OPTIONAL(M_ReadBool(ctx, "is_crouched", &lara->is_crouched));
+    M_OPTIONAL(M_ReadBool(ctx, "keep_crouched", &lara->keep_crouched));
     M_MUST(M_ReadNum(ctx, "pose_count", &lara->pose_count));
     M_MUST(M_ReadNum(ctx, "hit_frame", &lara->hit_frame));
     M_MUST(M_ReadNum(ctx, "hit_direction", &lara->hit_direction));

@@ -678,6 +678,8 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "calc_fall_speed", lara->calc_fall_speed);
     M_WriteNum(ctx, "water_status", lara->water_status);
     M_WriteBool(ctx, "climb_status", lara->climb_status);
+    M_WriteBool(ctx, "is_crouched", lara->is_crouched);
+    M_WriteBool(ctx, "keep_crouched", lara->keep_crouched);
 
     M_WriteNum(ctx, "pose_count", lara->pose_count);
     M_WriteNum(ctx, "hit_frame", lara->hit_frame);

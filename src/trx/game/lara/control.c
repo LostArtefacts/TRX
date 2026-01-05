@@ -16,6 +16,7 @@
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
 #include <trx/game/water_fx.h>
+#include <trx/version.h>
 
 // clang-format off
 #define M_MAX_COLL_ROOMS    20
@@ -460,6 +461,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
         }
     }
 
+    lara_info->is_crouched = false;
     Lara_State_Update(item, coll);
 
     if (item->rot.z < -LARA_LEAN_UNDO) {

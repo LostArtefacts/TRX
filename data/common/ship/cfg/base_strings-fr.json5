@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Caméra vers la droite",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Réhausser la caméra",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Changer de cible",
+        "ENUM_INPUT_ROLE_CROUCH": "\\{review}S'accroupir",
         "ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "\\{review}Contraste de l'éclairage en cycle",
         "ENUM_INPUT_ROLE_DOWN": "Retour",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Dégainer",

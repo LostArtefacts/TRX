@@ -13,6 +13,7 @@
 
 #define LARA_HEIGHT 762
 #define LARA_HEIGHT_UW 400
+#define LARA_HEIGHT_CROUCH 400
 #define LARA_RADIUS 100
 
 #define LARA_TURN_UNDO (2 * DEG_1) // = 364
