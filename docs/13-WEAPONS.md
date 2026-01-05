@@ -96,6 +96,16 @@ described in the table below.
     <td>These values are used to test if Lara is able to lock on to a target.</td>
   </tr>
   <tr valign="top">
+    <td><code>pickup_qty</code></td>
+    <td>Integer</td>
+    <td>The amount of ammo given for the weapon when equivalent ammo object is picked up.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>pickup_qty_alt</code></td>
+    <td>Integer</td>
+    <td>As per <code>pickup_qty</code>, but this applies exclusively to flares when playing Japanese NG.</td>
+  </tr>
+  <tr valign="top">
     <td><code>recoil_frame</code></td>
     <td>Integer</td>
     <td>For pistol type weapons, this value determines when Lara should snap back to the aiming frame after the weapon is fired i.e. Uzis have a lower value than Pistols for faster fire rate.</td>

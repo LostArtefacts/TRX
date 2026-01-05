@@ -21,8 +21,9 @@ static OBJECT_ID M_ConvertToPickup(const OBJECT_ID object_id)
 
 static int32_t M_GetFlareQuantity(void)
 {
-    return Game_IsBonusFlagSet(GBF_JAPANESE) ? FLARE_AMMO_JAPANESE_QTY
-                                             : FLARE_AMMO_QTY;
+    return Game_IsBonusFlagSet(GBF_JAPANESE)
+        ? g_Weapons[LGT_FLARE].pickup_qty_alt
+        : g_Weapons[LGT_FLARE].pickup_qty;
 }
 
 static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)

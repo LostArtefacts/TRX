@@ -109,6 +109,8 @@ void Gun_LoadVars(const char *const path)
         L_READ_ANGLE("shot_accuracy", g_Weapons[type].shot_accuracy);
         L_READ_INT("gun_height", g_Weapons[type].gun_height);
         L_READ_INT("damage", g_Weapons[type].damage);
+        L_READ_INT("pickup_qty", g_Weapons[type].pickup_qty);
+        L_READ_INT("pickup_qty_alt", g_Weapons[type].pickup_qty_alt);
         L_READ_DIST("target_dist", g_Weapons[type].target_dist);
         L_READ_INT("equip_anim_idx", g_Weapons[type].equip_anim_idx);
         L_READ_INT("draw_frame", g_Weapons[type].draw_frame);

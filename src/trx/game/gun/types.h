@@ -21,6 +21,8 @@ typedef struct {
     int16_t shot_accuracy;
     int32_t gun_height;
     int32_t damage;
+    int32_t pickup_qty;
+    int32_t pickup_qty_alt;
     int32_t target_dist;
     int16_t equip_anim_idx;
     int16_t draw_frame;

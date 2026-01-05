@@ -13,6 +13,7 @@
 - added support for locked cameras, similar to TR4+ (#2040)
 - added support to use `O_DINO_WARRIOR` and `O_FISH` as aliases for `O_TREX` and `O_BARRACUDA` respectively
 - added the ability to define gun types, flash shade and offset positions in `cfg/weapons.json5`
+- added the ability to define ammo pickup quantities per weapon in `cfg/weapons.json5` (#4518)
 - added a new input, that lets the player toggle ingame textures on/off, available by default under F8
 - added a new console command, `/textures`, that lets the player toggle ingame textures on/off
 - added a new console command, `/weather`, that lets the player control the weather
