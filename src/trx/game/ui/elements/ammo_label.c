@@ -2,7 +2,7 @@
 
 #include <trx/game/game.h>
 #include <trx/game/game_string.h>
-#include <trx/game/gun/const.h>
+#include <trx/game/gun.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/strings.h>
@@ -25,7 +25,7 @@ void UI_AmmoLabel(void)
     case LGT_PISTOLS:
         return;
     case LGT_SHOTGUN:
-        ammo = lara->shotgun_ammo.ammo / SHOTGUN_AMMO_CLIP;
+        ammo = lara->shotgun_ammo.ammo / Gun_GetAmmoClipCount(LGT_SHOTGUN);
         if (use_icon) {
             icon_str = "\\{ammo shotgun}";
         }

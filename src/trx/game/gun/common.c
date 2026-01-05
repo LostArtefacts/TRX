@@ -144,6 +144,16 @@ int32_t Gun_GetAmmoQuantity(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
+int32_t Gun_GetAmmoClipCount(const LARA_GUN_TYPE gun_type)
+{
+    return gun_type == LGT_SHOTGUN ? SHOTGUN_AMMO_CLIP : 1;
+}
+
+int32_t Gun_GetAmmoShellCount(const LARA_GUN_TYPE gun_type)
+{
+    return gun_type == LGT_SHOTGUN ? SHOTGUN_SHELL_COUNT : 1;
+}
+
 AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
