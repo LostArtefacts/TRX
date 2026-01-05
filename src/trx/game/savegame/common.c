@@ -4,8 +4,7 @@
 #include <trx/enum_map.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/gun/const.h>
-#include <trx/game/gun/vars.h>
+#include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -446,8 +445,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->shotgun_ammo = lara->shotgun_ammo.ammo;
     } else {
         resume->flags.has_shotgun = false;
-        resume->shotgun_ammo =
-            Inv_RequestItem(O_SHOTGUN_AMMO_ITEM) * SHOTGUN_AMMO_QTY;
+        resume->shotgun_ammo = Inv_RequestItem(O_SHOTGUN_AMMO_ITEM)
+            * Gun_GetAmmoQuantity(LGT_SHOTGUN);
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
@@ -455,8 +454,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->magnum_ammo = lara->magnum_ammo.ammo;
     } else {
         resume->flags.has_magnums = false;
-        resume->magnum_ammo =
-            Inv_RequestItem(O_MAGNUM_AMMO_ITEM) * MAGNUM_AMMO_QTY;
+        resume->magnum_ammo = Inv_RequestItem(O_MAGNUM_AMMO_ITEM)
+            * Gun_GetAmmoQuantity(LGT_MAGNUMS);
     }
 
     if (Inv_RequestItem(O_AUTOS_ITEM)) {
@@ -465,7 +464,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     } else {
         resume->flags.has_autos = false;
         resume->autos_ammo =
-            Inv_RequestItem(O_AUTOS_AMMO_ITEM) * AUTOS_AMMO_QTY;
+            Inv_RequestItem(O_AUTOS_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_AUTOS);
     }
 
     if (Inv_RequestItem(O_DESERT_EAGLE_ITEM)) {
@@ -473,8 +472,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->desert_eagle_ammo = lara->desert_eagle_ammo.ammo;
     } else {
         resume->flags.has_desert_eagle = false;
-        resume->desert_eagle_ammo =
-            Inv_RequestItem(O_DESERT_EAGLE_AMMO_ITEM) * DESERT_EAGLE_AMMO_QTY;
+        resume->desert_eagle_ammo = Inv_RequestItem(O_DESERT_EAGLE_AMMO_ITEM)
+            * Gun_GetAmmoQuantity(LGT_DESERT_EAGLE);
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
@@ -482,7 +481,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->uzi_ammo = lara->uzi_ammo.ammo;
     } else {
         resume->flags.has_uzis = false;
-        resume->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM) * UZI_AMMO_QTY;
+        resume->uzi_ammo =
+            Inv_RequestItem(O_UZI_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_UZIS);
     }
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
@@ -493,7 +493,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->m16_ammo = lara->m16_ammo.ammo;
     } else {
         resume->flags.has_m16 = false;
-        resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM) * M16_AMMO_QTY;
+        resume->m16_ammo =
+            Inv_RequestItem(O_M16_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_M16);
     }
 
     if (Inv_RequestItem(O_MP5_ITEM)) {
@@ -501,7 +502,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->mp5_ammo = lara->mp5_ammo.ammo;
     } else {
         resume->flags.has_mp5 = false;
-        resume->mp5_ammo = Inv_RequestItem(O_MP5_AMMO_ITEM) * MP5_AMMO_QTY;
+        resume->mp5_ammo =
+            Inv_RequestItem(O_MP5_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_MP5);
     }
 
     if (Inv_RequestItem(O_HARPOON_ITEM)) {
@@ -509,8 +511,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->harpoon_ammo = lara->harpoon_ammo.ammo;
     } else {
         resume->flags.has_harpoon = false;
-        resume->harpoon_ammo =
-            Inv_RequestItem(O_HARPOON_AMMO_ITEM) * HARPOON_AMMO_QTY;
+        resume->harpoon_ammo = Inv_RequestItem(O_HARPOON_AMMO_ITEM)
+            * Gun_GetAmmoQuantity(LGT_HARPOON);
     }
 
     if (Inv_RequestItem(O_GRENADE_GUN_ITEM)) {
@@ -518,8 +520,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->grenade_ammo = lara->grenade_ammo.ammo;
     } else {
         resume->flags.has_grenade = false;
-        resume->grenade_ammo =
-            Inv_RequestItem(O_GRENADE_AMMO_ITEM) * GRENADE_AMMO_QTY;
+        resume->grenade_ammo = Inv_RequestItem(O_GRENADE_AMMO_ITEM)
+            * Gun_GetAmmoQuantity(LGT_GRENADE);
     }
 
     if (Inv_RequestItem(O_ROCKET_GUN_ITEM)) {
@@ -527,8 +529,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->rocket_ammo = lara->rocket_ammo.ammo;
     } else {
         resume->flags.has_rocket = false;
-        resume->rocket_ammo =
-            Inv_RequestItem(O_ROCKET_AMMO_ITEM) * ROCKET_AMMO_QTY;
+        resume->rocket_ammo = Inv_RequestItem(O_ROCKET_AMMO_ITEM)
+            * Gun_GetAmmoQuantity(LGT_ROCKET);
     }
 
     resume->equipped_gun_type = lara->last_gun_type;
