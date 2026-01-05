@@ -302,6 +302,9 @@ X_OBJ_NAME_DEFINE(O_WINDOW_3,              "window_3",              X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_WINDOW_4,              "window_4",              X_OBJ_NAMES("Breakable Window 4"))
 X_OBJ_NAME_DEFINE(O_ZIPLINE_HANDLE,        "zipline_handle",        X_OBJ_NAMES("Zipline Handle"))
 X_OBJ_NAME_DEFINE(O_ELECTRICAL_LIGHT,      "electrical_light",      X_OBJ_NAMES("Electrical Light"))
+X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_WHITE,   "smoke_emitter_white",   X_OBJ_NAMES("Smoke Emitter (White)"))
+X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_BLACK,   "smoke_emitter_black",   X_OBJ_NAMES("Smoke Emitter (Black)"))
+X_OBJ_NAME_DEFINE(O_STEAM_EMITTER,         "steam_emitter",         X_OBJ_NAMES("Steam Emitter"))
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,           "alarm_sound",           X_OBJ_NAMES("Alarm"))

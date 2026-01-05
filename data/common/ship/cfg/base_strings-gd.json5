@@ -1781,6 +1781,15 @@
         },
         "electrical_light": {
             "name": "\\{review}Solais Dealain",
+        },
+        "smoke_emitter_white": {
+            "name": "\\{review}Sgaoilteadair Smùid (Geal)",
+        },
+        "smoke_emitter_black": {
+            "name": "\\{review}Sgaoilteadair Smùid (Dubh)",
+        },
+        "steam_emitter": {
+            "name": "\\{review}Sgaoilteadair Steimhe",
         }
     }
 }

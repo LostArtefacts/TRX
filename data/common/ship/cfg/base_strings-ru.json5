@@ -1777,6 +1777,15 @@
         },
         "electrical_light": {
             "name": "\\{review}Электрический свет",
+        },
+        "smoke_emitter_white": {
+            "name": "\\{review}Дымовой излучатель (белый)",
+        },
+        "smoke_emitter_black": {
+            "name": "\\{review}Дымовой излучатель (черный)",
+        },
+        "steam_emitter": {
+            "name": "\\{review}Паровой излучатель",
         }
     }
 }

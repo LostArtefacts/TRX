@@ -1751,6 +1751,15 @@
         },
         "electrical_light": {
             "name": "\\{review}Światło elektryczne",
+        },
+        "smoke_emitter_white": {
+            "name": "\\{review}Emiter dymu (biały)",
+        },
+        "smoke_emitter_black": {
+            "name": "\\{review}Emiter dymu (czarny)",
+        },
+        "steam_emitter": {
+            "name": "\\{review}Emiter pary",
         }
     }
 }

@@ -1757,6 +1757,15 @@
         },
         "electrical_light": {
             "name": "\\{review}Lumière électrique",
+        },
+        "smoke_emitter_white": {
+            "name": "\\{review}Émetteur de fumée (blanc)",
+        },
+        "smoke_emitter_black": {
+            "name": "\\{review}Émetteur de fumée (noir)",
+        },
+        "steam_emitter": {
+            "name": "\\{review}Émetteur de vapeur",
         }
     }
 }
