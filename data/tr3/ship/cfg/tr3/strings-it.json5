@@ -1,0 +1,276 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "levels": [
+        {
+            "title": "Casa di Lara",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave Pista",
+                },
+            },
+        },
+        {
+            "title": "Giungla",
+            "objects": {
+                "key_4": {
+                    "name": "Chiave Indra",
+                },
+            },
+        },
+        {
+            "title": "Rovine del Tempio",
+            "objects": {
+                "key_1": {
+                    "name": "Chaive di Ganesha",
+                },
+                "puzzle_1": {
+                    "name": "Scimitarra",
+                },
+                "puzzle_2": {
+                    "name": "Scimitarra",
+                },
+            },
+        },
+        {
+            "title": "Il Fiume Gange",
+            "objects": {
+                "key_1": {
+                    "name": "Chaive Cancello",
+                },
+            },
+        },
+        {
+            "title": "Caverne di Kaliya",
+        },
+        {
+            "title": "Villaggio Costiero",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave di Smuggler",
+                },
+                "puzzle_1": {
+                    "name": "Pietra del Serpente",
+                },
+            },
+        },
+        {
+            "title": "Luogo dell'incidente",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave del Comandante Bishop",
+                },
+                "key_2": {
+                    "name": "Chiave del Tenente Tuckerman",
+                },
+                "pickup_1": {
+                    "name": "Mappa della Palude",
+                },
+            },
+        },
+        {
+            "title": "Gola di Madubu",
+        },
+        {
+            "title": "Tempio di Puna",
+        },
+        {
+            "title": "Molo sul Tamigi",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave della Canna Fumaria",
+                },
+                "key_2": {
+                    "name": "Chiave della Cattedrale",
+                },
+            },
+        },
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave di Manutenzione",
+                },
+                "key_2": {
+                    "name": "Chaive di Solomon",
+                },
+                "key_3": {
+                    "name": "Chaive di Solomon",
+                },
+                "puzzle_1": {
+                    "name": "Vecchio Penny",
+                },
+                "puzzle_2": {
+                    "name": "Biglietto",
+                },
+                "puzzle_3": {
+                    "name": "Martello Massonico",
+                },
+                "puzzle_4": {
+                    "name": "Stella Ornata",
+                },
+            },
+        },
+        {
+            "title": "Cancello di Lud",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave della Caldaia",
+                },
+                "puzzle_1": {
+                    "name": "Fluido di Imbalsamazione",
+                },
+            },
+        },
+        {
+            "title": "Città di Londra",
+        },
+        {
+            "title": "Deserto del Nevada",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave d'Accesso al Generatore",
+                },
+                "key_2": {
+                    "name": "Chiave del Detonatore",
+                },
+            },
+        },
+        {
+            "title": "Reparto di Massima Sicurezza",
+            "objects": {
+                "key_1": {
+                    "name": "Scheda Elettronica di Tipo A",
+                },
+                "key_2": {
+                    "name": "Scheda Elettronica di Tipo B",
+                },
+                "puzzle_1": {
+                    "name": "Chiave di Sicurezza Elettronica Blu",
+                },
+                "puzzle_2": {
+                    "name": "Chiave di Sicurezza Elettronica Gialla",
+                },
+            },
+        },
+        {
+            "title": "Area 51",
+            "objects": {
+                "key_1": {
+                    "name": "Scheda Codice di Lancio",
+                },
+                "puzzle_1": {
+                    "name": "Chiave di Accesso alla Torre",
+                },
+                "puzzle_2": {
+                    "name": "Disco del codice d'Accesso",
+                },
+                "puzzle_3": {
+                    "name": "Disco del codice d'Accesso",
+                },
+                "puzzle_4": {
+                    "name": "Chiave di Accesso all'Hangar",
+                },
+            },
+        },
+        {
+            "title": "Antartide",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave della Capanna",
+                },
+                "puzzle_1": {
+                    "name": "Piede di Porco",
+                },
+                "puzzle_2": {
+                    "name": "Chiave di Controllo del Cancello",
+                },
+            },
+        },
+        {
+            "title": "Miniere RX-Tech",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Piede di Porco",
+                },
+                "puzzle_2": {
+                    "name": "Batteria al Piombo",
+                },
+                "puzzle_3": {
+                    "name": "Avviamento dell'Argano",
+                },
+            },
+        },
+        {
+            "title": "Città Perduta di Tinnos",
+            "objects": {
+                "key_1": {
+                    "name": "Chaive Uli",
+                },
+                "puzzle_1": {
+                    "name": "Maschera Oceaniana",
+                },
+            },
+        },
+        {
+            "title": "Caverna del Meteorite",
+        },
+        {
+            "title": "All Hallows",
+            "objects": {
+                "key_1": {
+                    "name": "Chiave della Cripta",
+                },
+            },
+        },
+    ],
+    "cutscenes": [
+        {
+            "title": "Scena 1",
+        },
+        {
+            "title": "Scena 2",
+        },
+        {
+            "title": "Scena 3",
+        },
+        {
+            "title": "Scena 4",
+        },
+        {
+            "title": "Scena 5",
+        },
+        {
+            "title": "Scena 6",
+        },
+        {
+            "title": "Scena 7",
+        },
+        {
+            "title": "Scena 8",
+        },
+        {
+            "title": "Scena 9",
+        },
+        {
+            "title": "Scena 10",
+        },
+        {
+            "title": "Scena 11",
+        },
+    ],
+    "objects": {
+        "small_medipack": {
+            "name": "Medikit Piccolo",
+        },
+        "large_medipack": {
+            "name": "Medikit Grande",
+        },
+    },
+    "game_strings": {
+        "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
+        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
+        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
+        "OVERLAY_ITEM_COUNT_FMT": "%s",
+    }
+}
