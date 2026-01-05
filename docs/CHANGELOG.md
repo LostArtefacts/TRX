@@ -98,6 +98,7 @@
 
 **TR3**:
 - added support for monkey bar mechanics
+- added support for crawlspace mechanics
 - added RGB lighting system support
 - added swamp and water surfaces wave effect
 - added underwater caustics
@@ -125,6 +126,7 @@
 - added Asasult Course target control
 - added Asasult Course penalty system
 - added an option to fix the MP5 accuracy while running
+- improved run-to-crawl transition
 - changed The River Ganges, City and All Hallows to have rain
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect

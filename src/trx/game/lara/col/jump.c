@@ -13,15 +13,7 @@
 #define M_BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
 // clang-format on
 
-typedef enum {
-    // clang-format off
-    EDGE_CATCH_NEG  = -1,
-    EDGE_CATCH_NONE = 0,
-    EDGE_CATCH_POS  = 1,
-    // clang-format on
-} M_EDGE_CATCH;
-
-static M_EDGE_CATCH M_TestEdgeCatch(
+EDGE_CATCH Lara_Col_TestEdgeCatch(
     const ITEM *const item, const COLL_INFO *const coll, int32_t *const edge)
 {
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
@@ -46,7 +38,7 @@ static M_EDGE_CATCH M_TestEdgeCatch(
         : EDGE_CATCH_NONE;
 }
 
-static bool M_TestHangSwingIn(const ITEM *const item, const int16_t angle)
+bool Lara_Col_TestHangSwingIn(const ITEM *const item, const int16_t angle)
 {
     int32_t x = item->pos.x;
     int32_t y = item->pos.y;
@@ -105,7 +97,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     }
 
     int32_t edge;
-    const M_EDGE_CATCH edge_catch = M_TestEdgeCatch(item, coll, &edge);
+    const EDGE_CATCH edge_catch = Lara_Col_TestEdgeCatch(item, coll, &edge);
     if (edge_catch == EDGE_CATCH_NONE
         || (edge_catch == EDGE_CATCH_NEG
             && !Lara_Col_TestLadderHang(item, coll))) {
@@ -118,7 +110,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     }
     const int16_t angle = Math_DirectionToAngle(dir);
 
-    if (M_TestHangSwingIn(item, angle)) {
+    if (Lara_Col_TestHangSwingIn(item, angle)) {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
     } else {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), 0);
@@ -175,7 +167,7 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
     }
 
     int32_t edge;
-    const M_EDGE_CATCH edge_catch = M_TestEdgeCatch(item, coll, &edge);
+    const EDGE_CATCH edge_catch = Lara_Col_TestEdgeCatch(item, coll, &edge);
     if (edge_catch == EDGE_CATCH_NONE
         || (edge_catch == EDGE_CATCH_NEG
             && !Lara_Col_TestLadderHang(item, coll))) {

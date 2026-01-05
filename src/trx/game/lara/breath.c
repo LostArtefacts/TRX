@@ -38,6 +38,10 @@ static bool M_CanBreatheVisible(const ITEM *const lara_item)
         return Item_GetRelativeFrame(lara_item) >= 30;
     }
 
+    if (lara_item->current_anim_state == LS(LS_CROUCH_IDLE)) {
+        return Item_GetRelativeFrame(lara_item) >= 30;
+    }
+
     const int32_t wibble = (int32_t)Output_GetTimeInGame() % 64;
     return wibble >= 32 && wibble <= 48;
 }

@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
@@ -123,6 +124,12 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         && (g_Config.gameplay.enable_responsive_sprint
             || lara->sprint_timer == LARA_MAX_SPRINT)) {
         item->goal_anim_state = LS(LS_SPRINT);
+        return;
+    }
+
+    if (g_Input.crouch) {
+        // XXX: LS(LS_STOP) in the OG
+        item->goal_anim_state = LS(LS_CROUCH_IDLE);
         return;
     }
 
@@ -256,6 +263,14 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->interact_target.is_moving) {
+        return;
+    }
+
+    if (g_Input.crouch && lara->water_status != LWS_WADE
+        && item->current_anim_state == LS(LS_STOP)
+        && (lara->gun_status == LGS_ARMLESS || !Gun_IsRifleType(lara->gun_type))
+        && !Lara_Vehicle_IsMounted()) {
+        item->goal_anim_state = LS(LS_CROUCH_IDLE);
         return;
     }
 
@@ -612,6 +627,10 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         lara->sprint_timer--;
     }
 
+    if (g_Input.crouch) {
+        item->goal_anim_state = LS(LS_STOP);
+        return;
+    }
     if (g_Input.left) {
         lara->turn_rate -= M_SPRINT_TURN_RATE;
         CLAMPL(lara->turn_rate, -M_SPRINT_TURN_MAX);

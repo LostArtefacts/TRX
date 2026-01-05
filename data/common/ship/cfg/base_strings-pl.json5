@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Kamera w prawo",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Kamera w górę",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Zmień cel",
+        "ENUM_INPUT_ROLE_CROUCH": "\\{review}Kucnij",
         "ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Zmiana kontrastu oświetlenia",
         "ENUM_INPUT_ROLE_DOWN": "Cofanie",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Wyciągnij broń",

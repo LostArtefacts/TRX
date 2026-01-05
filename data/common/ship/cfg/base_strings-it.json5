@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Telecamera Destra",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Telecamera in Alto",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Cambia Bersaglio",
+        "ENUM_INPUT_ROLE_CROUCH": "\\{review}Accovacciarsi",
         "ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Livello Contrasto",
         "ENUM_INPUT_ROLE_DOWN": "Indietro",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Estrai Arma",

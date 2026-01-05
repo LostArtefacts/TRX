@@ -642,11 +642,20 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)
 
     // clang-format off
     LARA_ANIMATION anim_idx;
-    switch (lara->hit_direction) {
-    case DIR_EAST:  anim_idx = LA(LA_HIT_LEFT); break;
-    case DIR_SOUTH: anim_idx = LA(LA_HIT_BACK); break;
-    case DIR_WEST:  anim_idx = LA(LA_HIT_RIGHT); break;
-    default:        anim_idx = LA(LA_HIT_FRONT); break;
+    if (lara->is_crouched) {
+        switch (lara->hit_direction) {
+        case DIR_EAST:  anim_idx = LA(LA_CROUCH_HIT_LEFT); break;
+        case DIR_SOUTH: anim_idx = LA(LA_CROUCH_HIT_BACK); break;
+        case DIR_WEST:  anim_idx = LA(LA_CROUCH_HIT_RIGHT); break;
+        default:        anim_idx = LA(LA_CROUCH_HIT_FRONT); break;
+        }
+    } else {
+        switch (lara->hit_direction) {
+        case DIR_EAST:  anim_idx = LA(LA_HIT_LEFT); break;
+        case DIR_SOUTH: anim_idx = LA(LA_HIT_BACK); break;
+        case DIR_WEST:  anim_idx = LA(LA_HIT_RIGHT); break;
+        default:        anim_idx = LA(LA_HIT_FRONT); break;
+        }
     }
     // clang-format on
 

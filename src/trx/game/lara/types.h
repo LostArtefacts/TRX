@@ -82,6 +82,8 @@ typedef struct {
     bool extra_anim;
     bool burn;
     bool climb_status;
+    bool is_crouched;
+    bool keep_crouched;
     bool killed_loyal_item;
 
     struct {

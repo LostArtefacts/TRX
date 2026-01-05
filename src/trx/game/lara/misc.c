@@ -240,6 +240,21 @@ int16_t Lara_FloorFront(
     return height;
 }
 
+int16_t Lara_CeilingFront(
+    const ITEM *const item, const int16_t ang, const int32_t dist)
+{
+    const int32_t x = item->pos.x + ((dist * Math_Sin(ang)) >> W2V_SHIFT);
+    const int32_t y = item->pos.y - LARA_HEIGHT;
+    const int32_t z = item->pos.z + ((dist * Math_Cos(ang)) >> W2V_SHIFT);
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    int32_t height = Room_GetCeiling(sector, x, y, z);
+    if (height != NO_HEIGHT) {
+        height += LARA_HEIGHT - item->pos.y;
+    }
+    return height;
+}
+
 void Lara_UpdateRoomToHeight(const int32_t height)
 {
     ITEM *const lara_item = Lara_GetItem();

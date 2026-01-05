@@ -130,6 +130,7 @@
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Камера вправо",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Камера вверх",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Изменить цель",
+        "ENUM_INPUT_ROLE_CROUCH": "\\{review}Присесть",
         "ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "\\{review}Цикл контраста освещения",
         "ENUM_INPUT_ROLE_DOWN": "Назад",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Оружие",
