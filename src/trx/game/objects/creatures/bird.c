@@ -129,7 +129,7 @@ static void M_Control(const int16_t item_num)
         if (!bird->flags && item->touch_bits) {
             ITEM *const lara_item = Lara_GetItem();
             lara_item->hit_points -= BIRD_DAMAGE;
-            lara_item->hit_status = 1;
+            lara_item->hit_status = true;
             if (item->object_id == O_CROW) {
                 Creature_Effect(item, &m_CrowBite, Spawn_Blood);
             } else {

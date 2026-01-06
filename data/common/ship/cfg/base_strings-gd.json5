@@ -18,6 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Slighe-ciùil mì-dhligheach",
         "CMD_INVALID_SECRET": "Dìomhaireachd mì-dhligheach: %s (dìomhaireachdan dligheach: %s)",
         "CMD_INVALID_WEATHER": "\\{review}Aimsir neo-dhligheach: %s (dligheach: %s)",
+        "CMD_ITEM_SPAWNED": "\\{review}Chaidh an nì a dh'iarradh a chruthachadh faisg air Lara",
+        "CMD_ITEM_SPAWN_FAILED": "\\{review}Dh'fhàillig an nì a dh'iarradh a chruthachadh",
         "CMD_LUA_RUNTIME_ERROR": "Mearachd a' ruith Lua: %s",
         "CMD_LUA_SYNTAX_ERROR": "Mearachd sìntacs Lua: %s",
         "CMD_PLAY_MUSIC_STOPPED": "Sguir an ceòl",
@@ -1790,6 +1792,9 @@
         },
         "steam_emitter": {
             "name": "\\{review}Sgaoilteadair Steimhe",
+        },
+        "quad_bike": {
+            "name": "\\{review}Baidhsagal Ceithir-chuibhle",
         }
     }
 }

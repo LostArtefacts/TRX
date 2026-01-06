@@ -1,6 +1,7 @@
 #include <trx/game/lara/common.h>
 
 #include <trx/config.h>
+#include <trx/debug.h>
 #include <trx/game/catalog.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
@@ -670,6 +671,122 @@ void Lara_TakeDamage(const int16_t damage, const bool hit_status)
         return;
     }
     Item_TakeDamage(Lara_GetItem(), damage, hit_status);
+}
+
+// TODO: This does the same thing in principle as Lara_GetJointAbsPosition().
+// Consider merging these functions into a single function.
+void Lara_GetMeshPos(const LARA_MESH mesh, XYZ_32 *const out_pos)
+{
+    ASSERT(out_pos != nullptr);
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const OBJECT *const obj = Object_Get(lara_item->object_id);
+    if (obj == nullptr || !obj->loaded) {
+        *out_pos = lara_item->pos;
+        return;
+    }
+
+    const ANIM_FRAME *const frame = Item_GetBestFrame(lara_item);
+    const ANIM_BONE *const bone = Object_GetBone(obj, 0);
+
+    Matrix_PushUnit();
+    Matrix_Rot16(lara_item->rot);
+    Matrix_TranslateRel16(frame->offset);
+    Matrix_Rot16(frame->mesh_rots[LM_HIPS]);
+
+    switch (mesh) {
+    case LM_HIPS:
+        break;
+
+    case LM_THIGH_L:
+    case LM_CALF_L:
+    case LM_FOOT_L:
+        Matrix_TranslateRel32(bone[LM_THIGH_L - 1].pos);
+        Matrix_Rot16(frame->mesh_rots[LM_THIGH_L]);
+        if (mesh != LM_THIGH_L) {
+            Matrix_TranslateRel32(bone[LM_CALF_L - 1].pos);
+            Matrix_Rot16(frame->mesh_rots[LM_CALF_L]);
+            if (mesh != LM_CALF_L) {
+                Matrix_TranslateRel32(bone[LM_FOOT_L - 1].pos);
+                Matrix_Rot16(frame->mesh_rots[LM_FOOT_L]);
+            }
+        }
+        break;
+
+    case LM_THIGH_R:
+    case LM_CALF_R:
+    case LM_FOOT_R:
+        Matrix_TranslateRel32(bone[LM_THIGH_R - 1].pos);
+        Matrix_Rot16(frame->mesh_rots[LM_THIGH_R]);
+        if (mesh != LM_THIGH_R) {
+            Matrix_TranslateRel32(bone[LM_CALF_R - 1].pos);
+            Matrix_Rot16(frame->mesh_rots[LM_CALF_R]);
+            if (mesh != LM_CALF_R) {
+                Matrix_TranslateRel32(bone[LM_FOOT_R - 1].pos);
+                Matrix_Rot16(frame->mesh_rots[LM_FOOT_R]);
+            }
+        }
+        break;
+
+    case LM_TORSO:
+    case LM_UARM_R:
+    case LM_LARM_R:
+    case LM_HAND_R:
+    case LM_UARM_L:
+    case LM_LARM_L:
+    case LM_HAND_L:
+    case LM_HEAD:
+        Matrix_TranslateRel32(bone[LM_TORSO - 1].pos);
+        Matrix_Rot16(frame->mesh_rots[LM_TORSO]);
+        Matrix_Rot16(lara->torso_rot);
+
+        if (mesh == LM_HEAD) {
+            Matrix_TranslateRel32(bone[LM_HEAD - 1].pos);
+            Matrix_Rot16(frame->mesh_rots[LM_HEAD]);
+            Matrix_Rot16(lara->head_rot);
+            break;
+        }
+
+        if (mesh == LM_UARM_R || mesh == LM_LARM_R || mesh == LM_HAND_R) {
+            Matrix_TranslateRel32(bone[LM_UARM_R - 1].pos);
+            Matrix_Rot16(frame->mesh_rots[LM_UARM_R]);
+            if (mesh != LM_UARM_R) {
+                Matrix_TranslateRel32(bone[LM_LARM_R - 1].pos);
+                Matrix_Rot16(frame->mesh_rots[LM_LARM_R]);
+                if (mesh != LM_LARM_R) {
+                    Matrix_TranslateRel32(bone[LM_HAND_R - 1].pos);
+                    Matrix_Rot16(frame->mesh_rots[LM_HAND_R]);
+                }
+            }
+            break;
+        }
+
+        if (mesh == LM_UARM_L || mesh == LM_LARM_L || mesh == LM_HAND_L) {
+            Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
+            Matrix_Rot16(frame->mesh_rots[LM_UARM_L]);
+            if (mesh != LM_UARM_L) {
+                Matrix_TranslateRel32(bone[LM_LARM_L - 1].pos);
+                Matrix_Rot16(frame->mesh_rots[LM_LARM_L]);
+                if (mesh != LM_LARM_L) {
+                    Matrix_TranslateRel32(bone[LM_HAND_L - 1].pos);
+                    Matrix_Rot16(frame->mesh_rots[LM_HAND_L]);
+                }
+            }
+            break;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    *out_pos = (XYZ_32) {
+        .x = lara_item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
+        .y = lara_item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
+        .z = lara_item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+    };
+    Matrix_Pop();
 }
 
 bool Lara_TestBoundsCollide(const ITEM *const item, const int32_t radius)

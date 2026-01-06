@@ -65,6 +65,12 @@ whichever key you have bound, and not include it as part of the command itself.
   `/restless off`  
   Turns on infinite sprint. Lara's always been a speedster, but with this, even cheetahs are asking her for running tips!
 
+- `/teatime`  
+  Calls your loyal butler to whatever ends of the world you're exploring right now. Effective immediately.
+
+- `/spawn {object}`  
+  Spawn an object of your choice. Not guaranteed to behave, but good for testing and oddly therapeutic for goofing off.
+
 ## Configuration commands
 
 - `/set {option}`  

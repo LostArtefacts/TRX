@@ -18,6 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Nieprawidłowa ścieżka muzyczka",
         "CMD_INVALID_SECRET": "Nieprawidłowy sekret: %s (prawidłowe sekrety: %s)",
         "CMD_INVALID_WEATHER": "Nieprawidłowa wartość: %s (prawidłowe: %s)",
+        "CMD_ITEM_SPAWNED": "\\{review}Żądany obiekt pojawił się w pobliżu Lary",
+        "CMD_ITEM_SPAWN_FAILED": "\\{review}Nie udało się wygenerować żądanego obiektu",
         "CMD_LUA_RUNTIME_ERROR": "Błąd wykonania: %s",
         "CMD_LUA_SYNTAX_ERROR": "Błąd składni: %s",
         "CMD_PLAY_MUSIC_STOPPED": "Muzyka zatrzymana",
@@ -600,8 +602,8 @@
         "SETTING_FOV_DESCRIPTION": "Kąt widzenia w stopniach. Większe wartości poszerzają pole widzenia, mniejsze je zmniejszają.",
         "SETTING_FPS": "Klatki na sekundę",
         "SETTING_FPS_DESCRIPTION": "Ustawia liczbę klatek na sekundę w grze.",
-        "SETTING_GAMMA": "\\{review}Gamma",
-        "SETTING_GAMMA_DESCRIPTION": "\\{review}Reguluje krzywą gamma. Wyższe wartości oznaczają jaśniejsze oświetlenie. Wartość 2,5 oznacza domyślne kolory.",
+        "SETTING_GAMMA": "Gamma",
+        "SETTING_GAMMA_DESCRIPTION": "Reguluje krzywą gamma. Wyższe wartości oznaczają jaśniejsze oświetlenie. Wartość 2,5 wyłącza modulację.",
         "SETTING_HARPOON_RECOIL": "Odrzut harpuna",
         "SETTING_HARPOON_RECOIL_DESCRIPTION": "Ustawia, jak często Lara musi przeładowywać harpun w zależności od aktualnej ilości amunicji. Np. przy ustawieniu wartości na 3 Lara będzie musiała przeładować po każdym trzecim strzale. Ustawienie na 0 całkowicie wyłącza przeładowywanie.",
         "SETTING_HEALTHBAR_COLOR": "Kolor paska zdrowia",
@@ -1744,22 +1746,25 @@
             "name": "Winston (umundurowany)",
         },
         "shadow": {
-            "name": "\\{review}Cień",
+            "name": "Cień",
         },
         "assault_target": {
-            "name": "\\{review}Cel ataku",
+            "name": "Tarcza",
         },
         "electrical_light": {
-            "name": "\\{review}Światło elektryczne",
+            "name": "Światło elektryczne",
         },
         "smoke_emitter_white": {
-            "name": "\\{review}Emiter dymu (biały)",
+            "name": "Emiter dymu (biały)",
         },
         "smoke_emitter_black": {
-            "name": "\\{review}Emiter dymu (czarny)",
+            "name": "Emiter dymu (czarny)",
         },
         "steam_emitter": {
-            "name": "\\{review}Emiter pary",
+            "name": "Emiter pary",
+        },
+        "quad_bike": {
+            "name": "Czterokołowiec",
         }
     }
 }

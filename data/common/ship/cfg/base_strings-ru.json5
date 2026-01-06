@@ -18,6 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Невалидная музыка",
         "CMD_INVALID_SECRET": "Невалидный секрет: %s (валидные секреты: %s)",
         "CMD_INVALID_WEATHER": "\\{review}Неверная погода: %s (допустимо: %s)",
+        "CMD_ITEM_SPAWNED": "\\{review}Запрошенный объект появился рядом с Ларой",
+        "CMD_ITEM_SPAWN_FAILED": "\\{review}Не удалось создать запрошенный объект",
         "CMD_LUA_RUNTIME_ERROR": "Ошибка выполнения Lua: %s",
         "CMD_LUA_SYNTAX_ERROR": "Ошибка синтаксиса Lua: %s",
         "CMD_PLAY_MUSIC_STOPPED": "\\{review}Музыка остановлена",
@@ -1786,6 +1788,9 @@
         },
         "steam_emitter": {
             "name": "\\{review}Паровой излучатель",
+        },
+        "quad_bike": {
+            "name": "\\{review}Квадроцикл",
         }
     }
 }

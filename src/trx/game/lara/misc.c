@@ -207,7 +207,7 @@ void Lara_TouchLava(void)
     }
 
     lara_item->hit_points = -1;
-    lara_item->hit_status = 1;
+    lara_item->hit_status = true;
 
     if (lara_info->water_status != LWS_ABOVE_WATER) {
         return;
