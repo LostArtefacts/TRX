@@ -18,6 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Invalid music track",
         "CMD_INVALID_SECRET": "Invalid secret: %s (valid secrets: %s)",
         "CMD_INVALID_WEATHER": "Invalid weather: %s (valid: %s)",
+        "CMD_ITEM_SPAWNED": "Requested object spawned near Lara",
+        "CMD_ITEM_SPAWN_FAILED": "Failed to spawn requested object",
         "CMD_LUA_RUNTIME_ERROR": "Lua runtime error: %s",
         "CMD_LUA_SYNTAX_ERROR": "Lua syntax error: %s",
         "CMD_PLAY_MUSIC_STOPPED": "Music stopped",

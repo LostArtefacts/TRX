@@ -18,6 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Unzulässiger Musik Titel",
         "CMD_INVALID_SECRET": "Unzulässiges Geheimnis: #%d (zulässige Geheimnisse: %s)",
         "CMD_INVALID_WEATHER": "\\{review}Ungültiges Wetter: %s (gültig: %s)",
+        "CMD_ITEM_SPAWNED": "\\{review}Angefordertes Objekt in der Nähe von Lara erzeugt",
+        "CMD_ITEM_SPAWN_FAILED": "\\{review}Erzeugen des angeforderten Objekts fehlgeschlagen",
         "CMD_LUA_RUNTIME_ERROR": "\\{review}Lua-Laufzeitfehler: %s",
         "CMD_LUA_SYNTAX_ERROR": "\\{review}Lua-Syntaxfehler: %s",
         "CMD_PLAY_MUSIC_STOPPED": "\\{review}Musik gestoppt",

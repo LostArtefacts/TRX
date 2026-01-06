@@ -658,6 +658,9 @@ GS_DEFINE(CMD_IMMUNE_SWITCHED_OFF, "Lara is now vulnerable")
 GS_DEFINE(CMD_INF_SPRINT_SWITCHED_ON,  "Lara can now sprint forever")
 GS_DEFINE(CMD_INF_SPRINT_SWITCHED_OFF, "Lara can no longer sprint forever")
 
+GS_DEFINE(CMD_ITEM_SPAWNED,      "Requested object spawned near Lara")
+GS_DEFINE(CMD_ITEM_SPAWN_FAILED, "Failed to spawn requested object")
+
 GS_DEFINE(CMD_WINSTON_SPAWNED,      "Summoned Winston near Lara")
 GS_DEFINE(CMD_WINSTON_SPAWN_FAILED, "Failed to summon Winston")
 GS_DEFINE(CMD_WINSTON_TELEPORTED,   "Summoned Winston near Lara")

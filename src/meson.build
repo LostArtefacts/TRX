@@ -146,6 +146,7 @@ common_sources = [
   'trx/game/console/cmd/screenshot.c',
   'trx/game/console/cmd/set_health.c',
   'trx/game/console/cmd/sfx.c',
+  'trx/game/console/cmd/spawn.c',
   'trx/game/console/cmd/speed.c',
   'trx/game/console/cmd/strings.c',
   'trx/game/console/cmd/teleport.c',
