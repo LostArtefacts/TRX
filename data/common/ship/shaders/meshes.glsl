@@ -48,11 +48,9 @@ vec3 waterWibble(vec4 position)
 void main(void) {
     vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
 
-    float effectPhase = getEffectPhase(worldPos);
-
     if ((inFlags & VERT_MOVE) != 0u) {
         float waterMul = (uWaterEffect != 0) ? 1.0 : 0.0;
-        worldPos.y += effectChoppy(effectPhase) * waterMul;
+        worldPos.y += effectChoppy(worldPos.xyz) * waterMul;
     }
 
     if ((inFlags & (VERT_ABS_SPRITE | VERT_BILLBOARD)) != 0u) {
@@ -84,7 +82,7 @@ void main(void) {
     // the flat polygon's palette color). Keep the lighting component separate
     // from the base color so gamma is applied in the right place.
     LightingResult lr =
-        light(inShade, gFlags, inNormal.xyz, worldPos, inNormal.w, effectPhase);
+        light(inShade, gFlags, inNormal.xyz, worldPos, inNormal.w);
     gShade = lr.shade;
 
     float gamma_exp = 1.0 / ((uGamma / 10.0) * 4.0);
