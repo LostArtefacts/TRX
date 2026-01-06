@@ -31,7 +31,7 @@
         "data/injections/lara_animations.bin",
         "data/injections/pda_model.bin",
         "data/injections/lara_extra.bin",
-        "data/injections/snow.bin",
+        "data/injections/misc_sprites.bin",
     ],
 
     "levels": [

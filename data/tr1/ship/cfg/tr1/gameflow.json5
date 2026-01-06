@@ -21,7 +21,7 @@
         "data/injections/pda_model.bin",
         "data/injections/winston_model.bin",
         "data/injections/lara_extra.bin",
-        "data/injections/snow.bin",
+        "data/injections/misc_sprites.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -42,6 +42,7 @@
             "data/injections/pda_model.bin",
             "data/injections/font.bin",
             "data/injections/title_textures.bin",
+            "data/injections/misc_sprites.bin",
         ],
     },
 
@@ -71,6 +72,7 @@
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
                 "data/injections/winston_model.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
 
