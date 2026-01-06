@@ -43,6 +43,30 @@
         "sample_num": "SFX_LARA_PISTOLS",
     },
 
+    "LGT_MAGNUMS": {
+        "type": "WEAPON_TYPE_DUAL_PISTOLS",
+        "lock_angles": [-60, +60, -60, +60],
+        "left_angles": [-170, +60, -80, +80],
+        "right_angles": [-60, +170, -80, +80],
+        "aim_speed": 10,
+        "shot_accuracy": 8,
+        "gun_height": 650,
+        "damage": 2,
+        "target_dist": 8.0,
+        "recoil_frame": 9,
+        "flash_time": 3,
+        "flash_shade": 4096,
+        "flash_pos": {
+            "y": 155,
+            "z": 55,
+        },
+        "flash_color": [0.75, 0.56, 0.0],
+        "glow_pos": {},
+        "glow_color": [1, 0.75, 0.125],
+        "sample_num": "SFX_LARA_MAGNUMS",
+        "is_available": false,
+    },
+
     "LGT_DESERT_EAGLE": {
         "type": "WEAPON_TYPE_SINGLE_PISTOL",
         "lock_angles": [-60, +60, -60, +60],

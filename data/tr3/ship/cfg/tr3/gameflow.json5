@@ -68,6 +68,7 @@
             ],
             "injections": [
                 "data/injections/india_sky.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -85,6 +86,7 @@
             ],
             "injections": [
                 "data/injections/india_sky.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -102,6 +104,7 @@
             ],
             "injections": [
                 "data/injections/india_sky.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -116,6 +119,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -133,6 +139,7 @@
             ],
             "injections": [
                 "data/injections/coastal_sky.bin",
+                "data/injections/lara_coastal_guns.bin",
             ],
         },
 
@@ -151,6 +158,7 @@
             ],
             "injections": [
                 "data/injections/crash_sky.bin",
+                "data/injections/lara_coastal_guns.bin",
             ],
         },
 
@@ -166,6 +174,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/lara_coastal_guns.bin",
                 "data/injections/rapids_sky.bin",
             ],
         },
@@ -180,6 +189,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_coastal_guns.bin",
             ],
         },
 
@@ -197,6 +209,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
+            ],
         },
 
         // 10. Aldwych
@@ -211,6 +226,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
+            ],
         },
 
         // 11. Lud's Gate
@@ -224,6 +242,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
             ],
         },
 
@@ -240,6 +261,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
+            ],
         },
 
         // 13. Nevada Desert
@@ -255,6 +279,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/lara_nevada_guns.bin",
                 "data/injections/nevada_sky.bin",
             ],
         },
@@ -278,6 +303,7 @@
             ],
             "injections": [
                 "data/injections/area51_sky.bin",
+                "data/injections/lara_nevada_guns.bin",
             ],
         },
 
@@ -295,6 +321,7 @@
             ],
             "injections": [
                 "data/injections/area51_sky.bin",
+                "data/injections/lara_nevada_guns.bin",
             ],
         },
 
@@ -315,6 +342,7 @@
             ],
             "injections": [
                 "data/injections/antarc_sky.bin",
+                "data/injections/lara_antarc_guns.bin",
             ],
         },
 
@@ -330,6 +358,9 @@
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "data/injections/lara_antarc_guns.bin",
+            ],
         },
 
         // 18. Lost City of Tinnos
@@ -343,6 +374,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_antarc_guns.bin",
             ],
         },
 
@@ -373,6 +407,7 @@
             ],
             "injections": [
                 "data/injections/cavern_sky.bin",
+                "data/injections/lara_antarc_guns.bin",
             ],
         },
 
@@ -389,6 +424,9 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
             ],
         },
     ],
