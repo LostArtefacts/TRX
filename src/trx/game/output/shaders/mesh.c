@@ -3,6 +3,7 @@
 #include <trx/game/output/utils.h>
 #include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
+#include <trx/utils.h>
 #include <trx/version.h>
 
 struct OUTPUT_MESH_SHADER {
@@ -127,16 +128,13 @@ void Output_MeshShader_UploadWaterEffect(
         -7.875f,  -11.875f, -15.875f, 0.0f,
     };
     static const float m_AbsIntensity[22] = {
-        0.0f,  -3.0f, 0.0f, 4.0f, 8.0f,  4.0f,  8.0f, 12.0f, 16.0f, 4.0f,  8.0f,
-        12.0f, 16.0f, 4.0f, 8.0f, 12.0f, 16.0f, 4.0f, 8.0f,  12.0f, 16.0f, 0.0f,
+        0.0f,  253.0f, 0.0f, 4.0f,  8.0f,  4.0f, 8.0f, 12.0f,
+        16.0f, 4.0f,   8.0f, 12.0f, 16.0f, 4.0f, 8.0f, 12.0f,
+        16.0f, 4.0f,   8.0f, 12.0f, 16.0f, 0.0f,
     };
 
     int32_t scheme = water_effect - 2;
-    if (scheme < 0) {
-        scheme = 0;
-    } else if (scheme > 21) {
-        scheme = 21;
-    }
+    CLAMP(scheme, 0, 21);
     const float p0 = m_ChoppyAmp[scheme];
     const float p1 = m_ShimmerAmp[scheme];
     const float p2 = m_AbsIntensity[scheme];
