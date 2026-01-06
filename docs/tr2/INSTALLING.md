@@ -314,6 +314,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── living_sfx.bin
 │   │   ├── living_textures.bin
 │   │   ├── loose_boards_sfx.bin
+│   │   ├── misc_sprites.bin
 │   │   ├── opera_fd.bin
 │   │   ├── opera_itemrots.bin
 │   │   ├── opera_music_tracks.bin
@@ -338,7 +339,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── secret_models_gm.bin
 │   │   ├── secret_models_og.bin
 │   │   ├── shark_sfx.bin
-│   │   ├── snow.bin
 │   │   ├── tibet_fd.bin
 │   │   ├── tibet_itemrots.bin
 │   │   ├── tibet_music_tracks.bin
@@ -801,6 +801,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── living_sfx.bin
         │   │   ├── living_textures.bin
         │   │   ├── loose_boards_sfx.bin
+        │   │   ├── misc_sprites.bin
         │   │   ├── opera_fd.bin
         │   │   ├── opera_itemrots.bin
         │   │   ├── opera_music_tracks.bin
@@ -825,7 +826,6 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── secret_models_gm.bin
         │   │   ├── secret_models_og.bin
         │   │   ├── shark_sfx.bin
-        │   │   ├── snow.bin
         │   │   ├── tibet_fd.bin
         │   │   ├── tibet_itemrots.bin
         │   │   ├── tibet_music_tracks.bin

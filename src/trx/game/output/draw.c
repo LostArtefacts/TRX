@@ -293,8 +293,7 @@ void Output_DrawShadow(
         return;
     }
 
-    if (g_TRVersion == 3
-        && g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {
+    if (g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {
         if (M_DrawShadow_TR3(size, bounds, item)) {
             return;
         }

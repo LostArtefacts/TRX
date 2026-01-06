@@ -211,6 +211,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── mines_meshfixes.bin
 │   │   ├── mines_pushblocks.bin
 │   │   ├── mines_textures.bin
+│   │   ├── misc_sprites.bin
 │   │   ├── obelisk_fd.bin
 │   │   ├── obelisk_itemrots.bin
 │   │   ├── obelisk_meshfixes.bin
@@ -234,7 +235,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── sanctuary_textures.bin
 │   │   ├── scion_collision.bin
 │   │   ├── skate_kid_sfx.bin
-│   │   ├── snow.bin
 │   │   ├── sprite_alignment.bin
 │   │   ├── stronghold_fd.bin
 │   │   ├── stronghold_itemrots.bin
@@ -550,6 +550,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── mines_meshfixes.bin
         │   │   ├── mines_pushblocks.bin
         │   │   ├── mines_textures.bin
+        │   │   ├── misc_sprites.bin
         │   │   ├── obelisk_fd.bin
         │   │   ├── obelisk_itemrots.bin
         │   │   ├── obelisk_meshfixes.bin
@@ -573,7 +574,6 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── sanctuary_textures.bin
         │   │   ├── scion_collision.bin
         │   │   ├── skate_kid_sfx.bin
-        │   │   ├── snow.bin
         │   │   ├── sprite_alignment.bin
         │   │   ├── stronghold_fd.bin
         │   │   ├── stronghold_itemrots.bin

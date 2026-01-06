@@ -23,6 +23,7 @@
             "data/injections/inv_background.bin",
             "data/injections/pda_model.bin",
             "data/injections/title_textures.bin",
+            "data/injections/misc_sprites.bin",
         ]
     },
 
@@ -35,7 +36,7 @@
         "data/injections/lara_extra.bin",
         "data/injections/lara_rifle_sfx.bin",
         "data/injections/secret_models_gm.bin",
-        "data/injections/snow.bin",
+        "data/injections/misc_sprites.bin",
     ],
 
     "levels": [
