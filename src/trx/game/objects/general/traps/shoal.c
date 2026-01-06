@@ -538,9 +538,9 @@ static bool M_Draw(const ITEM *const item)
         const int32_t ang12 = (swim_wibble + fish->angle - 2048) & 0xFFF;
 
         const int32_t size = ((128 * Math_Sin(i << 10)) >> W2V_SHIFT) + 192;
-        const int32_t yaw16 = ((ang12 << 4) - DEG_90) & (DEG_360 - 1);
-        const int32_t back_x = x + ((size * Math_Sin(yaw16)) >> W2V_SHIFT);
-        const int32_t back_z = z + ((size * Math_Cos(yaw16)) >> W2V_SHIFT);
+        const int32_t ang16 = ang12 << 4;
+        const int32_t back_x = x - ((size * Math_Sin(ang16)) >> W2V_SHIFT);
+        const int32_t back_z = z + ((size * Math_Cos(ang16)) >> W2V_SHIFT);
 
         const XYZ_32 tri_world[3] = {
             { .x = x, .y = y, .z = z },
