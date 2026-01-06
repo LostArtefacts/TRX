@@ -1801,6 +1801,18 @@
         },
         "quad_bike": {
             "name": "Quad",
+        },
+        "flame_emitter_big": {
+            "name": "\\{review}Emettitore di fiamma (Grande)",
+        },
+        "flame_emitter_small": {
+            "name": "\\{review}Emettitore di fiamma (Piccolo)",
+        },
+        "flame_emitter_jet": {
+            "name": "\\{review}Emettitore di fiamma (Getto)",
+        },
+        "flame_emitter_side": {
+            "name": "\\{review}Emettitore di fiamma (Laterale)",
         }
     }
 }

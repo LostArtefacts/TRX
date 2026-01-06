@@ -6,4 +6,5 @@
 #include <trx/game/game_flow/reader.h>
 #include <trx/game/game_flow/sequencer.h>
 #include <trx/game/game_flow/types.h>
+#include <trx/game/game_flow/util.h>
 #include <trx/game/game_flow/vars.h>

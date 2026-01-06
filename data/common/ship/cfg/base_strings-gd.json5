@@ -1795,6 +1795,18 @@
         },
         "quad_bike": {
             "name": "\\{review}Baidhsagal Ceithir-chuibhle",
+        },
+        "flame_emitter_big": {
+            "name": "\\{review}Sgaoiltean Lasair (Mòr)",
+        },
+        "flame_emitter_small": {
+            "name": "\\{review}Sgaoiltean Lasair (Beag)",
+        },
+        "flame_emitter_jet": {
+            "name": "\\{review}Sgaoiltean Lasair (Jet)",
+        },
+        "flame_emitter_side": {
+            "name": "\\{review}Sgaoiltean Lasair (Taobh)",
         }
     }
 }
