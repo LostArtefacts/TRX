@@ -226,17 +226,20 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
     Vector_Clear(p->sorted);
 }
 
-static void M_RenderPass(
-    const SCENE_SOURCE *const source, const SCENE_PASS pass)
+static void M_RenderPass(const SCENE_SOURCE *const source, SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
-    if (pass != SCENE_PASS_TRANSPARENT && pass != SCENE_PASS_BLEND_SUB
-        && pass != SCENE_PASS_BLEND_ADD) {
+    if (pass != SCENE_PASS_OPAQUE && pass != SCENE_PASS_TRANSPARENT
+        && pass != SCENE_PASS_BLEND_SUB && pass != SCENE_PASS_BLEND_ADD) {
         return;
     }
 
-    Vector_Clear(p->vertices);
-    Vector_Clear(p->sorted);
+    if (pass == SCENE_PASS_OPAQUE) {
+        pass = SCENE_PASS_TRANSPARENT;
+    } else {
+        Vector_Clear(p->vertices);
+        Vector_Clear(p->sorted);
+    }
 
     M_SortPrims(p, pass);
     for (int32_t i = 0; i < p->sorted->count; i++) {
@@ -264,7 +267,7 @@ static void M_RenderPass(
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
-    if (pass == SCENE_PASS_TRANSPARENT) {
+    if (pass == SCENE_PASS_TRANSPARENT || pass == SCENE_PASS_OPAQUE) {
         return p->scheduled_transparent->count > 0;
     }
     if (pass == SCENE_PASS_BLEND_SUB) {
