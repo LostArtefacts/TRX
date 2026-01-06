@@ -638,6 +638,12 @@ static bool M_ReadItem(
         M_MUST(M_ReadNum(ctx, "obj_num", &game_object_id));
     }
     const OBJECT_ID object_id = Object_FromGameID(game_object_id);
+    if (object_id == NO_OBJECT) {
+        item->object_id = O_DUMMY;
+        LOG_ERROR("Unsupported object #%d", game_object_id);
+        return true;
+    }
+
     const OBJECT *const obj = Object_Get(object_id);
     item->object_id = object_id;
     if (!M_IsValidItemObject(object_id, item->object_id)) {
