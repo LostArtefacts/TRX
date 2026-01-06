@@ -107,7 +107,7 @@
                     "name": "Masoński młotek",
                 },
                 "puzzle_4": {
-                    "name": "Ozdobna gwiazda", 
+                    "name": "Ozdobna gwiazda",
                 },
             },
         },
@@ -164,7 +164,7 @@
                 },
                 "puzzle_2": {
                     "name": "Dysk z kodem dostępu",
-                },  
+                },
                 "puzzle_3": {
                     "name": "Dysk z kodem dostępu",
                 },
@@ -206,7 +206,7 @@
             "objects": {
                 "key_1": {
                     "name": "Klucz Uli",
-                },  
+                },
                 "puzzle_1": {
                     "name": "Maska",
                 },
