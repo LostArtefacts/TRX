@@ -30,28 +30,44 @@ layout(std140) uniform LightSource {
     vec4 uTR3LightColor[3];
 };
 
-float getEffectPhase(vec4 worldPos)
+float ogPhaseTurns(vec3 worldPos, int scheme)
 {
-    float phase = (worldPos.x + worldPos.z) / 1024.0;
-    float rnd = (fract(sin(dot(worldPos.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453)) * 1023.0 - 511.0;
-    return phase + rnd;
+    // bucket like OG: xyz * (1/64, 1/64, 1/128)
+    ivec3 q = ivec3(floor(vec3(worldPos.x / 64.0,
+                               worldPos.y / 64.0,
+                               worldPos.z / 128.0)));
+
+    // cheap hash -> 0..1
+    float n = fract(sin(
+        dot(vec3(q), vec3(12.9898, 78.233, 37.719)) + float(scheme) * 19.19
+    ) * 43758.5453);
+
+    // OG-ish: random is multiples of 4, then &63 => 16 lanes
+    float lane = floor(n * 16.0);  // 0..15
+    float offTurns = lane / 16.0;  // 0,1/16,...15/16
+
+    // time base is uTimeInGame with period 64
+    float tTurns = fract(uTimeInGame / 64.0);
+    return tTurns + offTurns;
 }
 
-float effectChoppy(float phase)
+float effectChoppy(vec3 worldPos)
 {
-    float angle = radians(360.0 * (mod(uTimeInGame / 64.0, 1.0) + phase));
-    return sin(angle) * uWaterEffectParams.x;
+    int scheme = clamp(uWaterEffect - 2, 0, 21);
+    float angle = fract(ogPhaseTurns(worldPos, scheme)) * 2 * PI;
+    return -sin(angle) * uWaterEffectParams.x / 2.0;
 }
 
-float effectShimmer(float phase)
+float effectShimmer(vec3 worldPos)
 {
-    float angle = radians(360.0 * (mod(uTimeInGame / 64.0, 1.0) + phase));
-    return sin(angle) * uWaterEffectParams.y;
+    int scheme = clamp(uWaterEffect - 2, 0, 21);
+    float angle = fract(ogPhaseTurns(worldPos, scheme)) * 2 * PI;
+    return sin(angle) * uWaterEffectParams.y * 8.0;
 }
 
-float effectAbs(void)
+float effectAbs()
 {
-    return uWaterEffectParams.z;
+    return uWaterEffectParams.z * 8.0;
 }
 
 int lightFlicker(float t) {
@@ -200,7 +216,7 @@ float getDynamicLightContrastMul()
     return clamp(2.0 - (uMinShade / float(SHADE_NEUTRAL)), 1.0, 2.0);
 }
 
-float light(float shade, uint flags, vec3 normal, vec4 pos, float phase)
+float lightTR12(float shade, uint flags, vec3 normal, vec4 pos, float phase)
 {
     if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
         shade = uLightAdder + shade;
@@ -229,7 +245,7 @@ struct LightingResult {
 
 LightingResult light(
     float shade, uint flags, vec3 normal, vec4 pos,
-    float vertexPhase, float effectPhase)
+    float vertexPhase)
 {
     LightingResult result;
     result.shade = SHADE_NEUTRAL;
@@ -256,17 +272,17 @@ LightingResult light(
 
     float add = 0.0;
     if ((flags & VERT_MOVE) != 0u) {
-        add -= effectChoppy(effectPhase) / 512.0;
+        add += effectChoppy(pos.xyz) / 256.0;
     }
     if ((flags & VERT_GLOW) != 0u) {
-        add += effectShimmer(effectPhase) / 32.0;
-        add += effectAbs() / 32.0;
+        add += effectShimmer(pos.xyz) / 256.0;
+        add += effectAbs() / 256.0;
     }
     result.add += vec3(add);
 
     result.shade = SHADE_NEUTRAL;
 #else
-    result.shade = light(shade, flags, normal, pos, vertexPhase);
+    result.shade = lightTR12(shade, flags, normal, pos, vertexPhase);
 #endif
 
     return result;
