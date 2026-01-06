@@ -6,7 +6,7 @@
             "title": "Casa di Lara",
             "objects": {
                 "key_1": {
-                    "name": "Chiave Pista",
+                    "name": "Chiave del Circuito",
                 },
             },
         },
@@ -14,7 +14,7 @@
             "title": "Giungla",
             "objects": {
                 "key_4": {
-                    "name": "Chiave Indra",
+                    "name": "Chiave di Indra",
                 },
             },
         },
@@ -22,7 +22,7 @@
             "title": "Rovine del Tempio",
             "objects": {
                 "key_1": {
-                    "name": "Chaive di Ganesha",
+                    "name": "Chiave di Ganesha",
                 },
                 "puzzle_1": {
                     "name": "Scimitarra",
@@ -36,7 +36,7 @@
             "title": "Il Fiume Gange",
             "objects": {
                 "key_1": {
-                    "name": "Chaive Cancello",
+                    "name": "Chiave del Cancello",
                 },
             },
         },
@@ -47,7 +47,7 @@
             "title": "Villaggio Costiero",
             "objects": {
                 "key_1": {
-                    "name": "Chiave di Smuggler",
+                    "name": "Chiave del Contrabbandiere",
                 },
                 "puzzle_1": {
                     "name": "Pietra del Serpente",
@@ -55,7 +55,7 @@
             },
         },
         {
-            "title": "Luogo dell'incidente",
+            "title": "Luogo dello Schianto",
             "objects": {
                 "key_1": {
                     "name": "Chiave del Comandante Bishop",
@@ -92,10 +92,10 @@
                     "name": "Chiave di Manutenzione",
                 },
                 "key_2": {
-                    "name": "Chaive di Solomon",
+                    "name": "Chiave di Salomone",
                 },
                 "key_3": {
-                    "name": "Chaive di Solomon",
+                    "name": "Chiave di Salomone",
                 },
                 "puzzle_1": {
                     "name": "Vecchio Penny",
@@ -112,7 +112,7 @@
             },
         },
         {
-            "title": "Cancello di Lud",
+            "title": "Porta di Lud",
             "objects": {
                 "key_1": {
                     "name": "Chiave della Caldaia",
@@ -163,10 +163,10 @@
                     "name": "Chiave di Accesso alla Torre",
                 },
                 "puzzle_2": {
-                    "name": "Disco del codice d'Accesso",
+                    "name": "Disco del Codice d'Accesso",
                 },
                 "puzzle_3": {
-                    "name": "Disco del codice d'Accesso",
+                    "name": "Disco del Codice d'Accesso",
                 },
                 "puzzle_4": {
                     "name": "Chiave di Accesso all'Hangar",
@@ -188,7 +188,7 @@
             },
         },
         {
-            "title": "Miniere RX-Tech",
+            "title": "Miniere della RX-Tech",
             "objects": {
                 "puzzle_1": {
                     "name": "Piede di Porco",
@@ -205,7 +205,7 @@
             "title": "Città Perduta di Tinnos",
             "objects": {
                 "key_1": {
-                    "name": "Chaive Uli",
+                    "name": "Chiave Uli",
                 },
                 "puzzle_1": {
                     "name": "Maschera Oceaniana",
@@ -226,45 +226,45 @@
     ],
     "cutscenes": [
         {
-            "title": "Scena 1",
+            "title": "Intermezzo 1",
         },
         {
-            "title": "Scena 2",
+            "title": "Intermezzo 2",
         },
         {
-            "title": "Scena 3",
+            "title": "Intermezzo 3",
         },
         {
-            "title": "Scena 4",
+            "title": "Intermezzo 4",
         },
         {
-            "title": "Scena 5",
+            "title": "Intermezzo 5",
         },
         {
-            "title": "Scena 6",
+            "title": "Intermezzo 6",
         },
         {
-            "title": "Scena 7",
+            "title": "Intermezzo 7",
         },
         {
-            "title": "Scena 8",
+            "title": "Intermezzo 8",
         },
         {
-            "title": "Scena 9",
+            "title": "Intermezzo 9",
         },
         {
-            "title": "Scena 10",
+            "title": "Intermezzo 10",
         },
         {
-            "title": "Scena 11",
+            "title": "Intermezzo 11",
         },
     ],
     "objects": {
         "small_medipack": {
-            "name": "Medikit Piccolo",
+            "name": "Kit Medico Piccolo",
         },
         "large_medipack": {
-            "name": "Medikit Grande",
+            "name": "Kit Medico Grande",
         },
     },
     "game_strings": {
