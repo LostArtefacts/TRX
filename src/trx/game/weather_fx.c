@@ -490,7 +490,7 @@ static void M_DrawSnow(void)
         const int32_t ui_h = Viewport_GetHeight(VIEWPORT_UI);
 
         const XYZ_32 world_pos[4] = { center, center, center, center };
-        const float s = 16.0f;
+        const float s = 8.0f;
         const float disp[4][2] = {
             { -s, -s },
             { s, -s },
