@@ -143,6 +143,7 @@
 - fixed skybox data to show correct top and bottom colors
 - fixed Assault Course timer remaining indefinitely on screen
 - fixed the skybox's blue lid for the Thames Wharf and City cutscenes
+- fixed fish schools to no longer swim at supersonic speeds if their triggers do not have timers set, or reuse the same timer
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
 - fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)

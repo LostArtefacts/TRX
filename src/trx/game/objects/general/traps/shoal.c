@@ -1,3 +1,4 @@
+#include <trx/game/game_buf.h>
 #include <trx/game/game_flow/util.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -11,11 +12,9 @@
 #include <trx/version.h>
 
 #include <stdint.h>
-#include <string.h>
 
 #define M_SHOAL_COUNT 8
 #define M_FISH_PER_SHOAL 24
-#define M_TOTAL_FISH (M_SHOAL_COUNT + (M_SHOAL_COUNT * M_FISH_PER_SHOAL))
 
 #define M_LEVEL_RANGES(id, ...)                                                \
     { id, sizeof((XYZ_16[])__VA_ARGS__) / sizeof(XYZ_16), __VA_ARGS__ }
@@ -40,15 +39,19 @@ typedef struct {
 } M_FISH;
 
 typedef struct {
+    int32_t leader_num;
+    M_FISH fish[M_FISH_PER_SHOAL + 1];
+    M_LEADER leader;
+    int32_t piranha_hit_wait;
+} M_PRIV;
+
+typedef struct {
     int32_t level_id;
     int32_t range_count;
     XYZ_16 ranges[M_SHOAL_COUNT];
 } M_FISH_LEVEL_CONFIG;
 
-static M_FISH m_Fish[M_TOTAL_FISH];
-static M_LEADER m_Leaders[M_SHOAL_COUNT];
 static int16_t m_CarcassItemNum = NO_ITEM;
-static int32_t m_PiranhaHitWait = 0;
 
 static const M_FISH_LEVEL_CONFIG m_FishLevelConfigs[] = {
     M_LEVEL_RANGES(
@@ -151,15 +154,13 @@ static bool M_FishNearItem(
     return true;
 }
 
-static void M_SetupShoal(const int32_t shoal_num)
+static void M_SetupShoal(M_PRIV *const p, const int32_t shoal_num)
 {
-    if (!M_IsValidShoalNum(shoal_num)) {
+    if (p == nullptr || !M_IsValidShoalNum(shoal_num)) {
         return;
     }
 
-    M_LEADER *const leader = &m_Leaders[shoal_num];
-    const XYZ_16 *ranges = nullptr;
-    int32_t range_count = 0;
+    M_LEADER *const leader = &p->leader;
 
     if (g_TRVersion < 3) {
         goto fallback;
@@ -183,14 +184,14 @@ fallback:
     leader->range.z = 256;
 }
 
-static void M_SetupFish(const int32_t leader_num, const ITEM *const item)
+static void M_SetupFish(M_PRIV *const p, const ITEM *const item)
 {
-    if (!M_IsValidShoalNum(leader_num)) {
+    if (p == nullptr || item == nullptr || !M_IsValidShoalNum(p->leader_num)) {
         return;
     }
 
-    M_LEADER *const leader = &m_Leaders[leader_num];
-    M_FISH *fish = &m_Fish[leader_num];
+    M_LEADER *const leader = &p->leader;
+    M_FISH *fish = &p->fish[0];
 
     const int16_t x = leader->range.x;
     const int16_t y = leader->range.y;
@@ -204,7 +205,7 @@ static void M_SetupFish(const int32_t leader_num, const ITEM *const item)
     fish->swim = (Random_GetControl() & 0x3F);
 
     for (int32_t i = 0; i < M_FISH_PER_SHOAL; i++) {
-        fish = &m_Fish[(leader_num * M_FISH_PER_SHOAL) + M_SHOAL_COUNT + i];
+        fish = &p->fish[i + 1];
         fish->pos.x = Random_GetControl() % (x << 1) - x;
         fish->pos.y = Random_GetControl() % y;
         fish->pos.z = Random_GetControl() % (z << 1) - z;
@@ -219,6 +220,7 @@ static void M_SetupFish(const int32_t leader_num, const ITEM *const item)
     leader->speed = (Random_GetControl() & 0x7F) + 32;
     leader->angle_time = 0;
     leader->speed_time = 0;
+    p->piranha_hit_wait = 0;
 }
 
 static void M_Control(const int16_t item_num)
@@ -233,9 +235,19 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    M_LEADER *const leader = &m_Leaders[leader_num];
+    M_PRIV *const p = item->priv;
+    if (p == nullptr) {
+        return;
+    }
+
+    if (p->leader_num != leader_num) {
+        p->leader_num = leader_num;
+        p->leader.on = false;
+    }
+    M_LEADER *const leader = &p->leader;
     if (!leader->on) {
-        M_SetupFish(leader_num, item);
+        M_SetupShoal(p, leader_num);
+        M_SetupFish(p, item);
     }
 
     const ITEM *const lara_item = Lara_GetItem();
@@ -250,11 +262,11 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (m_PiranhaHitWait != 0) {
-        m_PiranhaHitWait--;
+    if (p->piranha_hit_wait != 0) {
+        p->piranha_hit_wait--;
     }
 
-    M_FISH *const leader_fish = &m_Fish[leader_num];
+    M_FISH *const leader_fish = &p->fish[0];
 
     const ITEM *enemy = lara_item;
     if (piranha_attack != 0) {
@@ -394,8 +406,7 @@ static void M_Control(const int16_t item_num)
     leader_fish->pos.z = z;
 
     for (int32_t i = 0; i < M_FISH_PER_SHOAL; i++) {
-        M_FISH *const fish =
-            &m_Fish[leader_num * M_FISH_PER_SHOAL + M_SHOAL_COUNT + i];
+        M_FISH *const fish = &p->fish[i + 1];
 
         if (item->object_id == O_PIRAHNAS) {
             const XYZ_32 fish_pos = {
@@ -404,11 +415,11 @@ static void M_Control(const int16_t item_num)
                 .z = item->pos.z + fish->pos.z,
             };
             if (M_FishNearItem(&fish_pos, 256, enemy)) {
-                if (m_PiranhaHitWait == 0) {
+                if (p->piranha_hit_wait == 0) {
                     Spawn_Blood(
                         fish_pos.x, fish_pos.y, fish_pos.z, 0, 0,
                         enemy->room_num);
-                    m_PiranhaHitWait = 8;
+                    p->piranha_hit_wait = 8;
                 }
 
                 if (piranha_attack != 2) {
@@ -505,7 +516,16 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
-    if (!m_Leaders[leader_num].on) {
+    const M_PRIV *const p = item->priv;
+    if (p == nullptr) {
+        return false;
+    }
+
+    if (p->leader_num != leader_num) {
+        return false;
+    }
+
+    if (!p->leader.on) {
         return false;
     }
 
@@ -526,7 +546,7 @@ static bool M_Draw(const ITEM *const item)
     }
 
     const XYZ_32 base_pos = item->interp.result.pos;
-    const M_FISH *fish = &m_Fish[leader_num * M_FISH_PER_SHOAL + M_SHOAL_COUNT];
+    const M_FISH *fish = &p->fish[1];
 
     for (int32_t i = 0; i < M_FISH_PER_SHOAL; i++, fish++) {
         const int32_t x = base_pos.x + fish->pos.x;
@@ -621,9 +641,14 @@ static void M_Initialise(const int16_t item_num)
     item->enable_shadow = false;
     item->collidable = false;
 
-    if (item->hit_points != NO_ITEM && M_IsValidShoalNum(item->hit_points)) {
-        M_SetupShoal(item->hit_points);
+    if (item->priv == nullptr) {
+        item->priv = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
     }
+
+    M_PRIV *const p = item->priv;
+    p->leader.on = false;
+    p->leader_num = NO_ITEM;
+    p->piranha_hit_wait = 0;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -635,11 +660,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
-
-    memset(m_Fish, 0, sizeof(m_Fish));
-    memset(m_Leaders, 0, sizeof(m_Leaders));
     m_CarcassItemNum = NO_ITEM;
-    m_PiranhaHitWait = 0;
 }
 
 void Shoal_TriggerActivate(ITEM *const item, const int16_t trigger_timer)
@@ -650,8 +671,10 @@ void Shoal_TriggerActivate(ITEM *const item, const int16_t trigger_timer)
     item->hit_points = leader_num;
     item->timer = 0;
 
-    if (M_IsValidShoalNum(leader_num)) {
-        M_SetupShoal(leader_num);
+    if (M_IsValidShoalNum(leader_num) && item->priv != nullptr) {
+        M_PRIV *const p = item->priv;
+        p->leader_num = leader_num;
+        M_SetupShoal(p, leader_num);
     }
 }
 
@@ -659,8 +682,9 @@ void Shoal_TriggerDeactivate(const ITEM *const item)
 {
     // Anti-trigger turns the leader off to force a re-setup.
     const int32_t leader_num = item->hit_points;
-    if (M_IsValidShoalNum(leader_num)) {
-        m_Leaders[leader_num].on = false;
+    if (M_IsValidShoalNum(leader_num) && item->priv != nullptr) {
+        M_PRIV *const p = item->priv;
+        p->leader.on = false;
     }
 }
 
