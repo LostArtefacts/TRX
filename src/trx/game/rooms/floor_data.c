@@ -10,9 +10,11 @@
 #include <trx/game/objects/general/keyhole.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/general/switch.h>
+#include <trx/game/objects/general/traps/shoal.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
+#include <trx/version.h>
 
 #define M_NULL_INDEX 0
 #define M_IS_DONE(t) ((t & 0x8000) == 0x8000)
@@ -455,9 +457,17 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 break;
             }
 
-            trig_item->timer = trigger->timer;
-            if (trig_item->timer != 1) {
-                trig_item->timer *= LOGIC_FPS;
+            const bool is_shoal_object =
+                Object_IsType(trig_item->object_id, g_ShoalObjects);
+
+            if (is_shoal_object && trigger->type != TT_ANTIPAD
+                && trigger->type != TT_ANTITRIGGER) {
+                Shoal_TriggerActivate(trig_item, trigger->timer);
+            } else {
+                trig_item->timer = trigger->timer;
+                if (trig_item->timer != 1) {
+                    trig_item->timer *= LOGIC_FPS;
+                }
             }
 
             if (trigger->type == TT_SWITCH) {
@@ -465,6 +475,9 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             } else if (
                 trigger->type == TT_ANTIPAD
                 || trigger->type == TT_ANTITRIGGER) {
+                if (is_shoal_object) {
+                    Shoal_TriggerDeactivate(trig_item);
+                }
                 trig_item->flags &= ~trigger->mask;
                 if (trigger->one_shot) {
                     trig_item->flags |= IF_ONE_SHOT;

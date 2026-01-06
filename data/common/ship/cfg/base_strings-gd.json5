@@ -1807,6 +1807,12 @@
         },
         "flame_emitter_side": {
             "name": "\\{review}Sgaoiltean Lasair (Taobh)",
+        },
+        "tropical_fish": {
+            "name": "\\{review}Iasg Tropaigeach",
+        },
+        "pirahnas": {
+            "name": "\\{review}Pirahnas",
         }
     }
 }

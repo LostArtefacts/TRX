@@ -126,6 +126,7 @@
 - added Smoke Emitters control
 - added Steam Emitter control
 - added Flame Emitter 1-3 and Side Flame Emitter control
+- added Piranhas and Tropical Fish control
 - added Desert Eagle control
 - added MP5 control
 - added Rocket Launcher control

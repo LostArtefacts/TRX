@@ -1813,6 +1813,12 @@
         },
         "flame_emitter_side": {
             "name": "\\{review}Emettitore di fiamma (Laterale)",
+        },
+        "tropical_fish": {
+            "name": "\\{review}Pesci Tropicali",
+        },
+        "pirahnas": {
+            "name": "\\{review}Piranha",
         }
     }
 }

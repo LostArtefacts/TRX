@@ -402,3 +402,5 @@ X_OBJ_NAME_DEFINE(O_ANIMATING_3,           "animating_3",           X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_ANIMATING_4,           "animating_4",           X_OBJ_NAMES("Animating Object 4"))
 X_OBJ_NAME_DEFINE(O_ANIMATING_5,           "animating_5",           X_OBJ_NAMES("Animating Object 5"))
 X_OBJ_NAME_DEFINE(O_ANIMATING_6,           "animating_6",           X_OBJ_NAMES("Animating Object 6"))
+X_OBJ_NAME_DEFINE(O_TROPICAL_FISH,         "tropical_fish",         X_OBJ_NAMES("Tropical Fish"))
+X_OBJ_NAME_DEFINE(O_PIRAHNAS,              "pirahnas",              X_OBJ_NAMES("Pirahnas"))

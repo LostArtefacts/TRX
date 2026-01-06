@@ -18,8 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Nieprawidłowa ścieżka muzyczka",
         "CMD_INVALID_SECRET": "Nieprawidłowy sekret: %s (prawidłowe sekrety: %s)",
         "CMD_INVALID_WEATHER": "Nieprawidłowa wartość: %s (prawidłowe: %s)",
-        "CMD_ITEM_SPAWNED": "\\{review}Żądany obiekt pojawił się w pobliżu Lary",
-        "CMD_ITEM_SPAWN_FAILED": "\\{review}Nie udało się wygenerować żądanego obiektu",
+        "CMD_ITEM_SPAWNED": "Żądany obiekt przywołany w pobliżu Lary",
+        "CMD_ITEM_SPAWN_FAILED": "Nie udało się przywołać żądanego obiektu",
         "CMD_LUA_RUNTIME_ERROR": "Błąd wykonania: %s",
         "CMD_LUA_SYNTAX_ERROR": "Błąd składni: %s",
         "CMD_PLAY_MUSIC_STOPPED": "Muzyka zatrzymana",
@@ -132,7 +132,7 @@
         "ENUM_INPUT_ROLE_CAMERA_RIGHT": "Kamera w prawo",
         "ENUM_INPUT_ROLE_CAMERA_UP": "Kamera w górę",
         "ENUM_INPUT_ROLE_CHANGE_TARGET": "Zmień cel",
-        "ENUM_INPUT_ROLE_CROUCH": "\\{review}Kucnij",
+        "ENUM_INPUT_ROLE_CROUCH": "Kucnij",
         "ENUM_INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Zmiana kontrastu oświetlenia",
         "ENUM_INPUT_ROLE_DOWN": "Cofanie",
         "ENUM_INPUT_ROLE_DRAW_WEAPON": "Wyciągnij broń",
@@ -1777,6 +1777,12 @@
         },
         "flame_emitter_side": {
             "name": "Emiter płomieni (boczny)",
+        },
+        "tropical_fish": {
+            "name": "Rybki",
+        },
+        "pirahnas": {
+            "name": "Piranie",
         }
     }
 }

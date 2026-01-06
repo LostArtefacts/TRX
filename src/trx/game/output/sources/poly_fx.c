@@ -77,6 +77,22 @@ static int32_t M_GetViewDepth(const XYZ_32 pos)
     // clang-format on
 }
 
+static void M_ApplyTintToColors(RGBA_8888 color[4], const uint8_t corner_count)
+{
+    const RGB_F tint = Output_GetTint();
+    for (uint8_t i = 0; i < corner_count; i++) {
+        int32_t r = (int32_t)((float)color[i].r * tint.r);
+        int32_t g = (int32_t)((float)color[i].g * tint.g);
+        int32_t b = (int32_t)((float)color[i].b * tint.b);
+        CLAMP(r, 0, 255);
+        CLAMP(g, 0, 255);
+        CLAMP(b, 0, 255);
+        color[i].r = (uint8_t)r;
+        color[i].g = (uint8_t)g;
+        color[i].b = (uint8_t)b;
+    }
+}
+
 static XYZ_32 M_GetPrimCentroid(const M_PRIM *const prim)
 {
     XYZ_32 centroid = { 0, 0, 0 };
@@ -235,7 +251,9 @@ static void M_RenderPass(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_DYNAMIC_DRAW);
 
-    Output_MeshShader_UploadTint(p->shader, Output_GetTint());
+    // PolyFX primitives are staged with Output_GetTint() already applied at
+    // stage time, because different rooms can have different water state.
+    Output_MeshShader_UploadTint(p->shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
     Output_MeshShader_UploadWaterEffect(p->shader, 0);
     Output_MeshShader_UploadWibbleEffect(p->shader, false);
     Output_MeshShader_UploadModelMatrix(p->shader, &g_IDMatrix);
@@ -368,6 +386,7 @@ static void M_StagePrim(
     }
     memset(prim.color, 0, sizeof(prim.color));
     memcpy(prim.color, color, sizeof(prim.color[0]) * corner_count);
+    M_ApplyTintToColors(prim.color, corner_count);
     prim.flags = flags;
     Vector_Add(target, &prim);
 }
@@ -436,6 +455,38 @@ void OutputSource_PolyFX_StageQuadExtUV(
         memset(prim.disp, 0, sizeof(prim.disp));
     }
     memcpy(prim.color, color, sizeof(prim.color));
+    M_ApplyTintToColors(prim.color, 4);
+    prim.flags = flags;
+    Vector_Add(target, &prim);
+}
+
+void OutputSource_PolyFX_StageTriExtUV(
+    const XYZ_32 world_pos[3], const OUTPUT_UVW uvw[3],
+    const OUTPUT_TEXTURE_SIZE texture_size[3], const float disp[3][2],
+    const RGBA_8888 color[3], const uint16_t flags, const DRAW_TYPE draw_type)
+{
+    M_PRIV *const p = &m_Priv;
+    VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
+
+    M_PRIM prim;
+    prim.sprite_idx = -1;
+    prim.use_custom_uv = true;
+    prim.corner_count = 3;
+    memset(prim.world_pos, 0, sizeof(prim.world_pos));
+    memcpy(prim.world_pos, world_pos, sizeof(world_pos[0]) * 3);
+    memset(prim.uvw, 0, sizeof(prim.uvw));
+    memcpy(prim.uvw, uvw, sizeof(uvw[0]) * 3);
+    memset(prim.texture_size, 0, sizeof(prim.texture_size));
+    memcpy(prim.texture_size, texture_size, sizeof(texture_size[0]) * 3);
+    if (disp != nullptr) {
+        memset(prim.disp, 0, sizeof(prim.disp));
+        memcpy(prim.disp, disp, sizeof(disp[0]) * 3);
+    } else {
+        memset(prim.disp, 0, sizeof(prim.disp));
+    }
+    memset(prim.color, 0, sizeof(prim.color));
+    memcpy(prim.color, color, sizeof(color[0]) * 3);
+    M_ApplyTintToColors(prim.color, 3);
     prim.flags = flags;
     Vector_Add(target, &prim);
 }

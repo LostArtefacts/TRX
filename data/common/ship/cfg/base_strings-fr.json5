@@ -1783,6 +1783,12 @@
         },
         "flame_emitter_side": {
             "name": "\\{review}Émetteur de flammes (Latéral)",
+        },
+        "tropical_fish": {
+            "name": "\\{review}Poisson tropical",
+        },
+        "pirahnas": {
+            "name": "\\{review}Piranhas",
         }
     }
 }
