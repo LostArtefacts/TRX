@@ -1824,6 +1824,12 @@
         },
         "animating_6": {
             "name": "Animating Object 6",
+        },
+        "tropical_fish": {
+            "name": "Tropical Fish",
+        },
+        "pirahnas": {
+            "name": "Pirahnas",
         }
     }
 }

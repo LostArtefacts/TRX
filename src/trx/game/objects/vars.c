@@ -622,3 +622,11 @@ const OBJECT_ID g_SmashableObjects[] = {
     NO_OBJECT,
     // clang-format on
 };
+
+const OBJECT_ID g_ShoalObjects[] = {
+    // clang-format off
+    O_TROPICAL_FISH,
+    O_PIRAHNAS,
+    NO_OBJECT,
+    // clang-format on
+};

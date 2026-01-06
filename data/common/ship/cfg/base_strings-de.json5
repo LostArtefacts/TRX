@@ -1796,6 +1796,12 @@
         },
         "flame_emitter_side": {
             "name": "\\{review}Flammenwerfer (Seite)",
+        },
+        "tropical_fish": {
+            "name": "\\{review}Tropischer Fisch",
+        },
+        "pirahnas": {
+            "name": "\\{review}Piranhas",
         }
     }
 }
