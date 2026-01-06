@@ -1272,12 +1272,6 @@ bool QuadBike_Control(void)
     bool killed = false;
     int32_t pitch = 0;
 
-    int16_t room_num = item->room_num;
-    SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    (void)Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-    (void)Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
-
     XYZ_32 front_left_pos = { 0 };
     XYZ_32 front_right_pos = { 0 };
     const int32_t front_left_height =
@@ -1285,11 +1279,11 @@ bool QuadBike_Control(void)
     const int32_t front_right_height =
         M_TestHeight(item, 550, 260, &front_right_pos);
 
-    room_num = item->room_num;
-    SECTOR *const sector2 =
+    int16_t room_num = item->room_num;
+    SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     const int32_t height =
-        Room_GetHeight(sector2, item->pos.x, item->pos.y, item->pos.z);
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     Room_TestTriggers(lara_item);
 
     if (lara_item->hit_points <= 0) {
