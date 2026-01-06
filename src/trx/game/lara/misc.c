@@ -4,6 +4,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
+#include <trx/game/objects/effects/flame.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -361,7 +362,8 @@ void Lara_CatchFire(void)
     }
 
     EFFECT *const effect = Effect_Get(effect_num);
-    effect->frame_num = 0;
+    effect->pos = lara_item->pos;
+    effect->frame_num = g_TRVersion == 3 ? FLAME_SMALL : 0;
     effect->object_id = O_FLAME;
     effect->counter = -1;
     lara_info->burn = true;

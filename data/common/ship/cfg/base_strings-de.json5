@@ -1784,6 +1784,18 @@
         },
         "quad_bike": {
             "name": "\\{review}Quad",
+        },
+        "flame_emitter_big": {
+            "name": "\\{review}Flammenwerfer (Groß)",
+        },
+        "flame_emitter_small": {
+            "name": "\\{review}Flammenwerfer (Klein)",
+        },
+        "flame_emitter_jet": {
+            "name": "\\{review}Flammenwerfer (Strahl)",
+        },
+        "flame_emitter_side": {
+            "name": "\\{review}Flammenwerfer (Seite)",
         }
     }
 }

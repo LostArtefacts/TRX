@@ -101,6 +101,7 @@
 - added support for monkey bar mechanics
 - added support for crawlspace mechanics
 - added RGB lighting system support
+- added flame effects
 - added swamp and water surfaces wave effect
 - added underwater caustics
 - added proper bubbles
@@ -122,9 +123,9 @@
 - added Quad Bike control
 - added Animating Item 1-6 control
 - added Electrical Light control
-- added Smoke Emitter (White) control
-- added Smoke Emitter (Black) control
+- added Smoke Emitters control
 - added Steam Emitter control
+- added Flame Emitter 1-3 and Side Flame Emitter control
 - added Desert Eagle control
 - added MP5 control
 - added Rocket Launcher control

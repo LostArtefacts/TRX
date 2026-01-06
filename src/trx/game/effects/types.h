@@ -17,6 +17,8 @@ typedef struct {
     int16_t counter;
     int16_t shade;
 
+    int32_t flag1, flag2;
+
     struct {
         struct {
             XYZ_32 pos;

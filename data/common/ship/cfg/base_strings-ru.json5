@@ -1791,6 +1791,18 @@
         },
         "quad_bike": {
             "name": "\\{review}Квадроцикл",
+        },
+        "flame_emitter_big": {
+            "name": "\\{review}Генератор пламени (Большой)",
+        },
+        "flame_emitter_small": {
+            "name": "\\{review}Генератор пламени (Малый)",
+        },
+        "flame_emitter_jet": {
+            "name": "\\{review}Генератор пламени (Струйный)",
+        },
+        "flame_emitter_side": {
+            "name": "\\{review}Генератор пламени (Боковой)",
         }
     }
 }

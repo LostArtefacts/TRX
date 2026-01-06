@@ -48,7 +48,7 @@ static void M_Control(const int16_t item_num)
     int32_t attack_radius = SQUARE(WALL_L);
 
     // TODO: do not hardcode this
-    if (g_TRVersion == 3 && GF_GetCurrentLevel()->num >= 9) {
+    if (g_TRVersion == 3 && GF_BadGetLevelNum() >= 9) {
         forget_radius = SQUARE(2.5 * WALL_L);
         alert_radius = SQUARE(1.25 * WALL_L);
         attack_radius = SQUARE(682);

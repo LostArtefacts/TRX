@@ -121,11 +121,11 @@ static int32_t M_GetFreeSpark(void)
     int32_t free = 0;
     int32_t min_life = INT32_MAX;
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        const SPARK *const sptr = &m_Sparks[i];
-        if ((int32_t)sptr->life < min_life && sptr->dynamic == -1
-            && ((sptr->flags & SPARK_F_BLOOD) == 0U || (i & 1) != 0)) {
+        const SPARK *const spark = &m_Sparks[i];
+        if ((int32_t)spark->life < min_life && spark->dynamic == -1
+            && ((spark->flags & SPARK_F_BLOOD) == 0U || (i & 1) != 0)) {
             free = i;
-            min_life = (int32_t)sptr->life;
+            min_life = (int32_t)spark->life;
         }
     }
 
@@ -164,7 +164,7 @@ void Sparks_FreeDynamic(const int8_t idx)
     if (idx < 0 || idx >= M_MAX_SPARK_DYNAMICS) {
         return;
     }
-    m_Dynamics[(uint8_t)idx].on = false;
+    m_Dynamics[idx].on = false;
 }
 
 void Sparks_Init(void)
@@ -282,185 +282,186 @@ void Sparks_Control(void)
     M_UpdateWind();
 
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        SPARK *const sptr = &m_Sparks[i];
-        if (!sptr->on) {
+        SPARK *const spark = &m_Sparks[i];
+        if (!spark->on) {
             continue;
         }
 
-        if ((sptr->flags & SPARK_F_ATTACHED_POS) == 0U || sptr->life > 16) {
-            if (sptr->life > 0) {
-                sptr->life--;
+        if ((spark->flags & SPARK_F_ATTACHED_POS) == 0U || spark->life > 16) {
+            if (spark->life > 0) {
+                spark->life--;
             }
         }
 
-        if (sptr->life == 0) {
-            if (sptr->dynamic != -1) {
-                m_Dynamics[(uint8_t)sptr->dynamic].on = false;
-                sptr->dynamic = -1;
+        if (spark->life == 0) {
+            if (spark->dynamic != -1) {
+                m_Dynamics[(uint8_t)spark->dynamic].on = false;
+                spark->dynamic = -1;
             }
 
-            sptr->on = false;
+            spark->on = false;
             continue;
         }
 
-        const int32_t lived = (int32_t)sptr->s_life - (int32_t)sptr->life;
+        const int32_t lived = (int32_t)spark->s_life - (int32_t)spark->life;
 
         // Color fade: src -> dst, then fade-to-black.
-        if (lived < (int32_t)sptr->col_fade_speed
-            && sptr->col_fade_speed != 0U) {
-            const float fade = lived / (float)sptr->col_fade_speed;
-            sptr->color.r = M_LERP(
-                (int32_t)sptr->src_color.r, (int32_t)sptr->dst_color.r, fade);
-            sptr->color.g = M_LERP(
-                (int32_t)sptr->src_color.g, (int32_t)sptr->dst_color.g, fade);
-            sptr->color.b = M_LERP(
-                (int32_t)sptr->src_color.b, (int32_t)sptr->dst_color.b, fade);
+        if (lived < (int32_t)spark->col_fade_speed
+            && spark->col_fade_speed != 0U) {
+            const float fade = lived / (float)spark->col_fade_speed;
+            spark->color.r = M_LERP(
+                (int32_t)spark->src_color.r, (int32_t)spark->dst_color.r, fade);
+            spark->color.g = M_LERP(
+                (int32_t)spark->src_color.g, (int32_t)spark->dst_color.g, fade);
+            spark->color.b = M_LERP(
+                (int32_t)spark->src_color.b, (int32_t)spark->dst_color.b, fade);
         } else if (
-            sptr->life < sptr->fade_to_black && sptr->fade_to_black != 0U) {
-            const float fade = sptr->life / (float)sptr->fade_to_black;
-            sptr->color.r = sptr->dst_color.r * fade;
-            sptr->color.g = sptr->dst_color.g * fade;
-            sptr->color.b = sptr->dst_color.b * fade;
+            spark->life < spark->fade_to_black && spark->fade_to_black != 0U) {
+            const float fade = spark->life / (float)spark->fade_to_black;
+            spark->color.r = spark->dst_color.r * fade;
+            spark->color.g = spark->dst_color.g * fade;
+            spark->color.b = spark->dst_color.b * fade;
         } else {
-            sptr->color = sptr->dst_color;
+            spark->color = spark->dst_color;
         }
 
-        if (sptr->life == sptr->fade_to_black
-            && (sptr->flags & SPARK_F_UNDERWATER) != 0U) {
-            sptr->dst_size.width >>= 2;
-            sptr->dst_size.height >>= 2;
+        if (spark->life == spark->fade_to_black
+            && (spark->flags & SPARK_F_UNDERWATER) != 0U) {
+            spark->dst_size.width >>= 2;
+            spark->dst_size.height >>= 2;
         }
 
-        if ((sptr->flags & SPARK_F_ROTATE) != 0U) {
-            sptr->rot_angle = (sptr->rot_angle + sptr->rot_add) & 0xFFF;
+        if ((spark->flags & SPARK_F_ROTATE) != 0U) {
+            spark->rot_angle = (spark->rot_angle + spark->rot_add) & 0xFFF;
         }
 
-        if ((sptr->flags & SPARK_F_ALT_SPRITE) != 0U) {
+        if ((spark->flags & SPARK_F_ALT_SPRITE) != 0U) {
             const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
             if (explosion->loaded) {
                 const int32_t base = explosion->mesh_idx;
-                if (sptr->color.r < 16 && sptr->color.g < 16
-                    && sptr->color.b < 16) {
-                    sptr->sprite_idx = base + 3;
+                if (spark->color.r < 16 && spark->color.g < 16
+                    && spark->color.b < 16) {
+                    spark->sprite_idx = base + 3;
                 } else if (
-                    sptr->color.r < 64 && sptr->color.g < 64
-                    && sptr->color.b < 64) {
-                    sptr->sprite_idx = base + 2;
+                    spark->color.r < 64 && spark->color.g < 64
+                    && spark->color.b < 64) {
+                    spark->sprite_idx = base + 2;
                 } else if (
-                    sptr->color.r < 96 && sptr->color.g < 96
-                    && sptr->color.b < 96) {
-                    sptr->sprite_idx = base + 1;
+                    spark->color.r < 96 && spark->color.g < 96
+                    && spark->color.b < 96) {
+                    spark->sprite_idx = base + 1;
                 } else {
-                    sptr->sprite_idx = base;
+                    spark->sprite_idx = base;
                 }
             }
         }
 
-        if (lived == (int32_t)(sptr->extras >> 3)
-            && (sptr->extras & 7U) != 0U) {
+        if (lived == (int32_t)(spark->extras >> 3)
+            && (spark->extras & 7U) != 0U) {
             int32_t uw = 0;
-            if ((sptr->flags & SPARK_F_UNDERWATER) != 0U) {
+            if ((spark->flags & SPARK_F_UNDERWATER) != 0U) {
                 uw = 1;
-            } else if ((sptr->flags & SPARK_F_GREEN) != 0U) {
+            } else if ((spark->flags & SPARK_F_GREEN) != 0U) {
                 uw = 2;
             }
 
-            const XYZ_32 spark_pos = Sparks_GetWorldPos(sptr);
+            const XYZ_32 spark_pos = Sparks_GetWorldPos(spark);
 
             const SPARKS_CALLBACKS callbacks = m_Callbacks;
-            for (int32_t j = 0; j < (int32_t)(sptr->extras & 7U); j++) {
+            for (int32_t j = 0; j < (int32_t)(spark->extras & 7U); j++) {
                 if (callbacks.trigger_explosion_sparks != nullptr) {
                     callbacks.trigger_explosion_sparks(
-                        spark_pos, (int32_t)(sptr->extras & 7U) - 1,
-                        sptr->dynamic, uw, sptr->room_num);
+                        spark_pos, (int32_t)(spark->extras & 7U) - 1,
+                        spark->dynamic, uw, spark->room_num);
                 } else {
                     M_TriggerExplosionSparksCallback(
-                        spark_pos, (int32_t)(sptr->extras & 7U) - 1,
-                        sptr->dynamic, uw, sptr->room_num);
+                        spark_pos, (int32_t)(spark->extras & 7U) - 1,
+                        spark->dynamic, uw, spark->room_num);
                 }
-                sptr->dynamic = -1;
+                spark->dynamic = -1;
             }
 
-            if ((sptr->flags & SPARK_F_UNDERWATER) != 0U) {
+            if ((spark->flags & SPARK_F_UNDERWATER) != 0U) {
                 if (callbacks.trigger_explosion_bubble != nullptr) {
                     callbacks.trigger_explosion_bubble(
-                        spark_pos, sptr->room_num);
+                        spark_pos, spark->room_num);
                 } else {
-                    M_TriggerExplosionBubbleCallback(spark_pos, sptr->room_num);
+                    M_TriggerExplosionBubbleCallback(
+                        spark_pos, spark->room_num);
                 }
             }
 
-            sptr->extras = 0;
+            spark->extras = 0;
         }
 
         // Physics
-        sptr->vel.y += sptr->gravity;
-        if (sptr->max_y_vel != 0) {
-            const int32_t limit = (int32_t)sptr->max_y_vel << 5;
-            if ((sptr->vel.y < 0 && sptr->vel.y < limit)
-                || (sptr->vel.y > 0 && sptr->vel.y > limit)) {
-                sptr->vel.y = limit;
+        spark->vel.y += spark->gravity;
+        if (spark->max_y_vel != 0) {
+            const int32_t limit = (int32_t)spark->max_y_vel << 5;
+            if ((spark->vel.y < 0 && spark->vel.y < limit)
+                || (spark->vel.y > 0 && spark->vel.y > limit)) {
+                spark->vel.y = limit;
             }
         }
 
-        if ((sptr->friction & 0x0FU) != 0U) {
-            sptr->vel.x -= sptr->vel.x >> (sptr->friction & 0x0FU);
-            sptr->vel.z -= sptr->vel.z >> (sptr->friction & 0x0FU);
+        if ((spark->friction & 0x0FU) != 0U) {
+            spark->vel.x -= spark->vel.x >> (spark->friction & 0x0FU);
+            spark->vel.z -= spark->vel.z >> (spark->friction & 0x0FU);
         }
 
-        if ((sptr->friction & 0xF0U) != 0U) {
-            sptr->vel.y -= sptr->vel.y >> (sptr->friction >> 4);
+        if ((spark->friction & 0xF0U) != 0U) {
+            spark->vel.y -= spark->vel.y >> (spark->friction >> 4);
         }
 
-        sptr->pos.x += sptr->vel.x >> 5;
-        sptr->pos.y += sptr->vel.y >> 5;
-        sptr->pos.z += sptr->vel.z >> 5;
+        spark->pos.x += spark->vel.x >> 5;
+        spark->pos.y += spark->vel.y >> 5;
+        spark->pos.z += spark->vel.z >> 5;
 
-        if ((sptr->flags & SPARK_F_OUTSIDE) != 0U) {
-            sptr->pos.x += m_SmokeWind.x >> 1;
-            sptr->pos.z += m_SmokeWind.z >> 1;
+        if ((spark->flags & SPARK_F_OUTSIDE) != 0U) {
+            spark->pos.x += m_SmokeWind.x >> 1;
+            spark->pos.z += m_SmokeWind.z >> 1;
         }
 
         // Size lerp across lifetime.
-        if (sptr->s_life != 0U) {
-            const float fade = lived / (float)sptr->s_life;
-            sptr->size.width = M_LERP(
-                (int32_t)sptr->src_size.width, (int32_t)sptr->dst_size.width,
+        if (spark->s_life != 0U) {
+            const float fade = lived / (float)spark->s_life;
+            spark->size.width = M_LERP(
+                (int32_t)spark->src_size.width, (int32_t)spark->dst_size.width,
                 fade);
-            sptr->size.height = M_LERP(
-                (int32_t)sptr->src_size.height, (int32_t)sptr->dst_size.height,
-                fade);
+            spark->size.height = M_LERP(
+                (int32_t)spark->src_size.height,
+                (int32_t)spark->dst_size.height, fade);
         } else {
-            sptr->size = sptr->src_size;
+            spark->size = spark->src_size;
         }
 
         // If attached to a node, detach after a short random delay for some
         // node types.
-        if ((sptr->flags & (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE))
+        if ((spark->flags & (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE))
                 == (SPARK_F_ITEM | SPARK_F_ATTACHED_NODE)
-            && (sptr->node_num == 2 || sptr->node_num == 3)) {
-            const int32_t b = sptr->node_num == 3 ? (Random_GetDraw() & 3) + 12
-                                                  : (Random_GetDraw() & 3) + 8;
+            && (spark->node_num == 2 || spark->node_num == 3)) {
+            const int32_t b = spark->node_num == 3 ? (Random_GetDraw() & 3) + 12
+                                                   : (Random_GetDraw() & 3) + 8;
             if (lived > b) {
-                sptr->pos = Sparks_GetWorldPos(sptr);
-                sptr->flags &= ~(SPARK_F_ATTACHED_NODE | SPARK_F_ITEM);
+                spark->pos = Sparks_GetWorldPos(spark);
+                spark->flags &= ~(SPARK_F_ATTACHED_NODE | SPARK_F_ITEM);
             }
         }
     }
 
     // Dynamic light pass.
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        const SPARK *const sptr = &m_Sparks[i];
-        if (!sptr->on || sptr->dynamic == -1) {
+        const SPARK *const spark = &m_Sparks[i];
+        if (!spark->on || spark->dynamic == -1) {
             continue;
         }
 
-        M_SPARK_DYNAMIC *const dl = &m_Dynamics[(uint8_t)sptr->dynamic];
+        M_SPARK_DYNAMIC *const dl = &m_Dynamics[(uint8_t)spark->dynamic];
         if (!dl->on) {
             continue;
         }
 
-        const XYZ_32 world_pos = Sparks_GetWorldPos(sptr);
+        const XYZ_32 world_pos = Sparks_GetWorldPos(spark);
         const int32_t rnd = Random_GetControl();
         XYZ_32 pos = {
             .x = world_pos.x + ((rnd & 0xF) << 4),
@@ -468,7 +469,7 @@ void Sparks_Control(void)
             .z = world_pos.z + ((rnd >> 4) & 0xF0),
         };
 
-        int32_t falloff = (int32_t)sptr->s_life - (int32_t)sptr->life - 1;
+        int32_t falloff = (int32_t)spark->s_life - (int32_t)spark->life - 1;
         int32_t r = 0;
         int32_t g = 0;
         int32_t b = 0;
@@ -520,23 +521,23 @@ void Sparks_Draw(void)
 void Sparks_DetachEffect(const int16_t effect_num)
 {
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        SPARK *const sptr = &m_Sparks[i];
-        if (!sptr->on) {
+        SPARK *const spark = &m_Sparks[i];
+        if (!spark->on) {
             continue;
         }
 
-        if ((sptr->flags & SPARK_F_FX) != 0U
-            && sptr->effect_num == effect_num) {
-            if ((sptr->flags & SPARK_F_ATTACHED_POS) != 0U) {
-                sptr->on = false;
+        if ((spark->flags & SPARK_F_FX) != 0U
+            && spark->effect_num == effect_num) {
+            if ((spark->flags & SPARK_F_ATTACHED_POS) != 0U) {
+                spark->on = false;
                 continue;
             }
 
             const EFFECT *const effect = Effect_Get(effect_num);
-            sptr->pos.x += effect->pos.x;
-            sptr->pos.y += effect->pos.y;
-            sptr->pos.z += effect->pos.z;
-            sptr->flags &= ~SPARK_F_FX;
+            spark->pos.x += effect->pos.x;
+            spark->pos.y += effect->pos.y;
+            spark->pos.z += effect->pos.z;
+            spark->flags &= ~SPARK_F_FX;
         }
     }
 }
@@ -544,23 +545,24 @@ void Sparks_DetachEffect(const int16_t effect_num)
 void Sparks_DetachItem(const int16_t item_num)
 {
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        SPARK *const sptr = &m_Sparks[i];
-        if (!sptr->on) {
+        SPARK *const spark = &m_Sparks[i];
+        if (!spark->on) {
             continue;
         }
 
-        if ((sptr->flags & SPARK_F_ITEM) != 0U && sptr->item_num == item_num) {
-            if ((sptr->flags & SPARK_F_ATTACHED_POS) != 0U) {
-                sptr->on = false;
+        if ((spark->flags & SPARK_F_ITEM) != 0U
+            && spark->item_num == item_num) {
+            if ((spark->flags & SPARK_F_ATTACHED_POS) != 0U) {
+                spark->on = false;
                 continue;
             }
 
             const ITEM *const item = Item_Get(item_num);
-            sptr->pos.x += item->pos.x;
-            sptr->pos.y += item->pos.y;
-            sptr->pos.z += item->pos.z;
-            sptr->flags &= ~SPARK_F_ITEM;
-            sptr->flags &= ~SPARK_F_ATTACHED_NODE;
+            spark->pos.x += item->pos.x;
+            spark->pos.y += item->pos.y;
+            spark->pos.z += item->pos.z;
+            spark->flags &= ~SPARK_F_ITEM;
+            spark->flags &= ~SPARK_F_ATTACHED_NODE;
         }
     }
 }
@@ -582,8 +584,8 @@ void Sparks_TriggerBubble(
     }
 
     const int32_t idx = M_GetFreeSpark();
-    SPARK *const sptr = &m_Sparks[idx];
-    *sptr = (SPARK) {
+    SPARK *const spark = &m_Sparks[idx];
+    *spark = (SPARK) {
         .on = true,
         .src_color = { 0, 0, 0 },
         .dst_color = { 144, 144, 144 },
@@ -612,11 +614,11 @@ void Sparks_TriggerBubble(
 
     const uint8_t base = (uint8_t)full_size;
     const uint8_t dst = (uint8_t)(base << 3);
-    sptr->src_size.width = base;
-    sptr->src_size.height = base;
-    sptr->dst_size.width = dst;
-    sptr->dst_size.height = dst;
-    sptr->size = sptr->src_size;
+    spark->src_size.width = base;
+    spark->src_size.height = base;
+    spark->dst_size.width = dst;
+    spark->dst_size.height = dst;
+    spark->size = spark->src_size;
 }
 
 void Sparks_TriggerWaterfallMist(
@@ -630,13 +632,13 @@ void Sparks_TriggerWaterfallMist(
     static const int32_t offsets[] = { 576, 203, -203, -576 };
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(offsets); i++) {
-        SPARK *const sptr = Sparks_GetFreeSpark();
+        SPARK *const spark = Sparks_GetFreeSpark();
 
         const int32_t offset = (Random_GetControl() & 0x1F) + offsets[i] - 16;
         const int32_t c = Math_Cos(angle) >> W2V_SHIFT;
         const int32_t s = Math_Sin(angle) >> W2V_SHIFT;
 
-        *sptr = (SPARK) {
+        *spark = (SPARK) {
             .on = true,
             .color = { 128, 128, 128 },
             .src_color = { 128, 128, 128 },
@@ -664,25 +666,25 @@ void Sparks_TriggerWaterfallMist(
             .flags = SPARK_F_SPRITE | SPARK_F_ALT_SPRITE | SPARK_F_SCALE,
             .scalar = 6,
         };
-        sptr->s_life = sptr->life;
+        spark->s_life = spark->life;
 
         if ((Random_GetControl() & 1) != 0) {
-            sptr->flags |= SPARK_F_ROTATE;
-            sptr->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
+            spark->flags |= SPARK_F_ROTATE;
+            spark->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
             if ((Random_GetControl() & 1) != 0) {
-                sptr->rot_add = -16 - (Random_GetControl() % 16);
+                spark->rot_add = -16 - (Random_GetControl() % 16);
             } else {
-                sptr->rot_add = 16 + (Random_GetControl() % 16);
+                spark->rot_add = 16 + (Random_GetControl() % 16);
             }
         }
 
         const uint8_t dst_size = (uint8_t)((Random_GetControl() & 7) + 12);
         const uint8_t src_size = (uint8_t)(dst_size >> 1);
-        sptr->src_size.width = src_size;
-        sptr->src_size.height = src_size;
-        sptr->dst_size.width = dst_size;
-        sptr->dst_size.height = dst_size;
-        sptr->size = sptr->src_size;
+        spark->src_size.width = src_size;
+        spark->src_size.height = src_size;
+        spark->dst_size.width = dst_size;
+        spark->dst_size.height = dst_size;
+        spark->size = spark->src_size;
     }
 }
 
@@ -694,12 +696,12 @@ void Sparks_TriggerBreath(
         return;
     }
 
-    SPARK *const sptr = Sparks_GetFreeSpark();
+    SPARK *const spark = Sparks_GetFreeSpark();
     const int32_t jitter_x = (Random_GetControl() & 0xF) - 8;
     const int32_t jitter_y = (Random_GetControl() & 0xF) - 8;
     const int32_t jitter_z = (Random_GetControl() & 0xF) - 8;
 
-    *sptr = (SPARK) {
+    *spark = (SPARK) {
         .on = true,
         .src_color = { 0, 0, 0 },
         .dst_color = { 32, 32, 32 },
@@ -722,22 +724,365 @@ void Sparks_TriggerBreath(
         .friction = 0,
         .flags = SPARK_F_SPRITE | SPARK_F_ALT_SPRITE | SPARK_F_SCALE,
         .scalar = 3,
-        .room_num = (uint8_t)room_num,
+        .room_num = room_num,
     };
-    sptr->s_life = sptr->life;
+    spark->s_life = spark->life;
 
     const ROOM *const room = Room_Get(room_num);
     if (room != nullptr && room->flags.wind) {
-        sptr->flags |= SPARK_F_OUTSIDE;
+        spark->flags |= SPARK_F_OUTSIDE;
     }
 
-    const uint8_t dst_size = (uint8_t)((Random_GetControl() & 7) + 32);
-    const uint8_t src_size = (uint8_t)(dst_size >> 3);
-    sptr->src_size.width = src_size;
-    sptr->src_size.height = src_size;
-    sptr->dst_size.width = dst_size;
-    sptr->dst_size.height = dst_size;
-    sptr->size = sptr->src_size;
+    const uint8_t dst_size = ((Random_GetControl() & 7) + 32);
+    const uint8_t src_size = (dst_size >> 3);
+    spark->src_size.width = src_size;
+    spark->src_size.height = src_size;
+    spark->dst_size.width = dst_size;
+    spark->dst_size.height = dst_size;
+    spark->size = spark->src_size;
+}
+
+void Sparks_TriggerFireFlame(
+    const XYZ_32 pos, const int32_t body_part, const int32_t type)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+
+    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+        return;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+
+    if (type == 2) {
+        spark->src_color.r = (Random_GetControl() & 0x1F) + 48;
+        spark->src_color.g = spark->src_color.r;
+        spark->src_color.b = (Random_GetControl() & 0x3F) - 64;
+    } else if (type == 254) {
+        spark->src_color.r = 48;
+        spark->src_color.g = 255;
+        spark->src_color.b = (Random_GetControl() & 0x1F) + 48;
+        spark->dst_color.r = 32;
+        spark->dst_color.g = (Random_GetControl() & 0x3F) - 64;
+        spark->dst_color.b = (Random_GetControl() & 0x3F) + 128;
+    } else {
+        spark->src_color.r = 255;
+        spark->src_color.g = (Random_GetControl() & 0x1F) + 48;
+        spark->src_color.b = 48;
+    }
+
+    if (type != 254) {
+        spark->dst_color.r = (Random_GetControl() & 0x3F) - 64;
+        spark->dst_color.b = 32;
+        spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
+    }
+
+    if (body_part == -1) {
+        if (type == 2 || type == 255 || type == 254) {
+            spark->fade_to_black = 6;
+            spark->col_fade_speed = (Random_GetControl() & 3) + 5;
+            spark->life = (type < 254 ? 0 : 8) + (Random_GetControl() & 3) + 16;
+            spark->s_life = spark->life;
+        } else {
+            spark->fade_to_black = 8;
+            spark->col_fade_speed = (Random_GetControl() & 3) + 20;
+            spark->life = (Random_GetControl() & 7) + 40;
+            spark->s_life = spark->life;
+        }
+    } else {
+        spark->fade_to_black = 16;
+        spark->col_fade_speed = (Random_GetControl() & 3) + 8;
+        spark->life = (Random_GetControl() & 3) + 28;
+        spark->s_life = spark->life;
+    }
+
+    spark->draw_type = 2;
+    spark->extras = 0;
+    spark->dynamic = -1;
+
+    if (body_part != -1) {
+        spark->pos.x = (Random_GetControl() & 0x1F) - 16;
+        spark->pos.y = 0;
+        spark->pos.z = (Random_GetControl() & 0x1F) - 16;
+    } else {
+        spark->pos = pos;
+        if (type == 0 || type == 1) {
+            spark->pos.x += (Random_GetControl() & 0x1F) - 16;
+            spark->pos.z += (Random_GetControl() & 0x1F) - 16;
+        } else if (type >= 254) {
+            spark->pos.x += (Random_GetControl() & 0x3F) - 32;
+            spark->pos.z += (Random_GetControl() & 0x3F) - 32;
+        } else {
+            spark->pos.x += (Random_GetControl() & 0xF) - 8;
+            spark->pos.z += (Random_GetControl() & 0xF) - 8;
+        }
+    }
+
+    if (type == 2) {
+        spark->vel.x = (Random_GetControl() & 0x1F) - 16;
+        spark->vel.y = -1024 - (Random_GetControl() & 0x1FF);
+        spark->vel.z = (Random_GetControl() & 0x1F) - 16;
+        spark->friction = 68;
+    } else {
+        spark->vel.x = (Random_GetControl() & 0xFF) - 128;
+        spark->vel.y = -16 - (Random_GetControl() & 0xF);
+        spark->vel.z = (Random_GetControl() & 0xFF) - 128;
+
+        if (type == 1) {
+            spark->friction = 51;
+        } else {
+            spark->friction = 5;
+        }
+    }
+
+    if (Random_GetControl() & 1) {
+        if (body_part == -1) {
+            spark->gravity = -16 - (Random_GetControl() & 0x1F);
+            spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE
+                | SPARK_F_SCALE;
+            spark->max_y_vel = -16 - (Random_GetControl() & 7);
+        } else {
+            spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_FX | SPARK_F_ROTATE
+                | SPARK_F_SPRITE | SPARK_F_SCALE;
+            spark->item_num = body_part;
+            spark->gravity = -32 - (Random_GetControl() & 0x3F);
+            spark->max_y_vel = -24 - (Random_GetControl() & 7);
+        }
+
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+
+        if (Random_GetControl() & 1) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+    } else if (body_part == -1) {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
+        spark->gravity = -16 - (Random_GetControl() & 0x1F);
+        spark->max_y_vel = -16 - (Random_GetControl() & 7);
+    } else {
+        spark->flags =
+            SPARK_F_ALT_SPRITE | SPARK_F_FX | SPARK_F_SPRITE | SPARK_F_SCALE;
+        spark->item_num = body_part;
+        spark->gravity = -32 - (Random_GetControl() & 0x3F);
+        spark->max_y_vel = -24 - (Random_GetControl() & 7);
+    }
+
+    spark->scalar = 2;
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+
+    uint8_t size;
+    if (type == 0) {
+        size = (Random_GetControl() & 0x1F) + 128;
+    } else if (type == 1) {
+        size = (Random_GetControl() & 0x1F) + 64;
+    } else if (type < 254) {
+        spark->max_y_vel = 0;
+        spark->gravity = 0;
+        size = (Random_GetControl() & 0x1F) + 32;
+    } else {
+        size = (Random_GetControl() & 0xF) + 48;
+    }
+
+    spark->src_size.width = size;
+    spark->src_size.height = size;
+    spark->size.width = size;
+    spark->size.height = size;
+
+    if (type == 2) {
+        spark->dst_size.width = size >> 2;
+        spark->dst_size.height = size >> 2;
+    } else {
+        spark->dst_size.width = size >> 4;
+        spark->dst_size.height = size >> 4;
+    }
+}
+
+void Sparks_TriggerFireSmoke(
+    const XYZ_32 pos, const int32_t body_part, const int32_t type)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+
+    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+        return;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = 0;
+    spark->src_color.g = 0;
+    spark->src_color.b = 0;
+    spark->dst_color.r = 32;
+    spark->dst_color.g = 32;
+    spark->dst_color.b = 32;
+
+    if (body_part == -1) {
+        if (type == 255) {
+            spark->fade_to_black = 8;
+            spark->col_fade_speed = (Random_GetControl() & 3) + 16;
+            spark->life = (Random_GetControl() & 7) + 28;
+            spark->s_life = spark->life;
+        } else {
+            spark->fade_to_black = 16;
+            spark->col_fade_speed = (Random_GetControl() & 7) + 32;
+            spark->life = (Random_GetControl() & 0xF) + 57;
+            spark->s_life = spark->life;
+        }
+    } else {
+        spark->fade_to_black = 12;
+        spark->col_fade_speed = (Random_GetControl() & 3) + 4;
+        spark->life = (Random_GetControl() & 3) + 20;
+        spark->s_life = spark->life;
+    }
+
+    spark->draw_type = 2;
+    spark->extras = 0;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0xF) - 8;
+    spark->pos.y = pos.y - (Random_GetControl() & 0x7F) - 256;
+    spark->pos.z = pos.z + (Random_GetControl() & 0xF) - 8;
+    spark->vel.x = (Random_GetControl() & 0xFF) - 128;
+    spark->vel.y = -16 - (Random_GetControl() & 0xF);
+    spark->vel.z = (Random_GetControl() & 0xFF) - 128;
+    spark->friction = 4;
+
+    if (Random_GetControl() & 1) {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE
+            | SPARK_F_SCALE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+
+        if (Random_GetControl() & 1) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+    } else {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    }
+
+    spark->scalar = 3;
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->gravity = -16 - (Random_GetControl() & 0xF);
+    spark->max_y_vel = -8 - (Random_GetControl() & 7);
+    spark->dst_size.width = (Random_GetControl() & 0x3F) + 64;
+    spark->src_size.width = spark->dst_size.width >> 2;
+    spark->size.width = spark->src_size.width;
+    spark->src_size.height = spark->src_size.width;
+    spark->size.height = spark->src_size.width;
+    spark->dst_size.height = spark->dst_size.width;
+}
+
+void Sparks_TriggerStaticFlame(const XYZ_32 pos, const int32_t size)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+
+    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+        return;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = (Random_GetControl() & 0x3F) - 64;
+    spark->src_color.g = (Random_GetControl() & 0x3F) + 128;
+    spark->src_color.b = 64;
+    spark->dst_color.r = spark->src_color.r;
+    spark->dst_color.g = spark->src_color.g;
+    spark->dst_color.b = 64;
+    spark->col_fade_speed = 1;
+    spark->fade_to_black = 0;
+    spark->life = 2;
+    spark->s_life = 2;
+    spark->draw_type = 2;
+    spark->extras = 0;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 7) - 4;
+    spark->pos.y = pos.y;
+    spark->pos.z = pos.z + (Random_GetControl() & 7) - 4;
+    spark->max_y_vel = 0;
+    spark->gravity = 0;
+    spark->friction = 0;
+    spark->vel.z = 0;
+    spark->vel.y = 0;
+    spark->vel.x = 0;
+    spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->scalar = 2;
+    spark->dst_size.width = size;
+    spark->dst_size.height = size;
+    spark->src_size.height = size;
+    spark->src_size.width = size;
+    spark->size.height = size;
+    spark->size.width = size;
+}
+
+void Sparks_TriggerSideFlame(
+    const XYZ_32 pos, const int32_t angle, const int32_t speed,
+    const bool pilot)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+
+    if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
+        return;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = (Random_GetControl() & 0x1F) + 48;
+    spark->src_color.g = spark->src_color.r;
+    spark->src_color.b = (Random_GetControl() & 0x3F) - 64;
+    spark->dst_color.r = (Random_GetControl() & 0x3F) - 64;
+    spark->dst_color.g = (Random_GetControl() & 0x3F) + 0x80;
+    spark->dst_color.b = 32;
+    spark->fade_to_black = 8;
+    spark->col_fade_speed = (Random_GetControl() & 3) + 12;
+    spark->draw_type = 2;
+    spark->extras = 0;
+    spark->life = (Random_GetControl() & 7) + 28;
+    spark->s_life = spark->life;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+
+    int32_t dist;
+    if (pilot) {
+        dist = (speed << 7) + (Random_GetControl() & 0x1F);
+    } else {
+        dist = (speed << 8) + (Random_GetControl() & 0x1FF);
+    }
+    dist <<= 1;
+
+    const int32_t s = (dist * Math_Sin(angle)) >> W2V_SHIFT;
+    const int32_t c = (dist * Math_Cos(angle)) >> W2V_SHIFT;
+    spark->vel.x = (int16_t)((Random_GetControl() & 0x7F) + s - 64);
+    spark->vel.y = -6 - (Random_GetControl() & 7);
+    spark->vel.z = (int16_t)((Random_GetControl() & 0x7F) + c - 64);
+    spark->friction = 4;
+    spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    spark->gravity = -8 - (Random_GetControl() & 0xF);
+    spark->max_y_vel = -8 - (Random_GetControl() & 7);
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->scalar = 3;
+
+    int32_t size = (Random_GetControl() & 0x1F) + 128;
+    if (pilot) {
+        size >>= 2;
+    }
+
+    spark->dst_size.width = size;
+    spark->dst_size.height = size;
+    spark->src_size.width = size >> 1;
+    spark->src_size.height = size >> 1;
+    spark->size.width = size >> 1;
+    spark->size.height = size >> 1;
 }
 
 void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
@@ -815,8 +1160,8 @@ void Sparks_TriggerExplosionSparks(
     CLAMP(safe_extras, 0, 3);
     static const uint8_t extras_table[4] = { 0, 4, 7, 10 };
 
-    SPARK *const sptr = Sparks_GetFreeSpark();
-    *sptr = (SPARK) {
+    SPARK *const spark = Sparks_GetFreeSpark();
+    *spark = (SPARK) {
         .on = true,
         .src_color = { 255, 0, 0 },
         .dst_color = { 0, 0, 0 },
@@ -844,64 +1189,64 @@ void Sparks_TriggerExplosionSparks(
     };
 
     if (uw == 1) {
-        sptr->src_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
-        sptr->src_color.b = 32;
-        sptr->dst_color.r = 192;
-        sptr->dst_color.g = (uint8_t)((Random_GetControl() & 0x1F) + 64);
-        sptr->dst_color.b = 0;
-        sptr->col_fade_speed = 7;
-        sptr->fade_to_black = 8;
-        sptr->life = (uint8_t)((Random_GetControl() & 7) + 16);
-        sptr->flags |= SPARK_F_UNDERWATER;
+        spark->src_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
+        spark->src_color.b = 32;
+        spark->dst_color.r = 192;
+        spark->dst_color.g = (uint8_t)((Random_GetControl() & 0x1F) + 64);
+        spark->dst_color.b = 0;
+        spark->col_fade_speed = 7;
+        spark->fade_to_black = 8;
+        spark->life = (uint8_t)((Random_GetControl() & 7) + 16);
+        spark->flags |= SPARK_F_UNDERWATER;
     } else {
-        sptr->src_color.g = (uint8_t)((Random_GetControl() & 0xF) + 32);
-        sptr->src_color.b = 0;
-        sptr->dst_color.r = (uint8_t)((Random_GetControl() & 0x3F) + 192);
-        sptr->dst_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
-        sptr->dst_color.b = 32;
-        sptr->col_fade_speed = 8;
-        sptr->fade_to_black = 16;
-        sptr->life = (uint8_t)((Random_GetControl() & 7) + 24);
+        spark->src_color.g = (uint8_t)((Random_GetControl() & 0xF) + 32);
+        spark->src_color.b = 0;
+        spark->dst_color.r = (uint8_t)((Random_GetControl() & 0x3F) + 192);
+        spark->dst_color.g = (uint8_t)((Random_GetControl() & 0x3F) + 128);
+        spark->dst_color.b = 32;
+        spark->col_fade_speed = 8;
+        spark->fade_to_black = 16;
+        spark->life = (uint8_t)((Random_GetControl() & 7) + 24);
     }
-    sptr->s_life = sptr->life;
+    spark->s_life = spark->life;
 
     if (dynamic == -2) {
-        sptr->dynamic = Sparks_AllocDynamic(uw == 1 ? 2 : 1);
+        spark->dynamic = Sparks_AllocDynamic(uw == 1 ? 2 : 1);
     }
 
     if (dynamic != -2 || uw == 1) {
-        sptr->pos.x = (Random_GetControl() & 0x1F) + x - 16;
-        sptr->pos.y = (Random_GetControl() & 0x1F) + y - 16;
-        sptr->pos.z = (Random_GetControl() & 0x1F) + z - 16;
+        spark->pos.x = (Random_GetControl() & 0x1F) + x - 16;
+        spark->pos.y = (Random_GetControl() & 0x1F) + y - 16;
+        spark->pos.z = (Random_GetControl() & 0x1F) + z - 16;
     } else {
-        sptr->pos.x = (Random_GetControl() & 0x1FF) + x - 256;
-        sptr->pos.y = (Random_GetControl() & 0x1FF) + y - 256;
-        sptr->pos.z = (Random_GetControl() & 0x1FF) + z - 256;
+        spark->pos.x = (Random_GetControl() & 0x1FF) + x - 256;
+        spark->pos.y = (Random_GetControl() & 0x1FF) + y - 256;
+        spark->pos.z = (Random_GetControl() & 0x1FF) + z - 256;
     }
 
-    sptr->friction = (uint8_t)(uw == 1 ? 0x11 : 0x33);
+    spark->friction = (uint8_t)(uw == 1 ? 0x11 : 0x33);
 
-    sptr->flags |= SPARK_F_ALT_SPRITE;
+    spark->flags |= SPARK_F_ALT_SPRITE;
     if ((Random_GetControl() & 1) != 0) {
-        sptr->flags |= SPARK_F_ROTATE;
-        sptr->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
+        spark->flags |= SPARK_F_ROTATE;
+        spark->rot_angle = (uint16_t)(Random_GetControl() & 0xFFF);
         const int32_t rot_add = (Random_GetControl() & 0x7F) + 32;
-        sptr->rot_add = (int8_t)MIN(rot_add, 127);
+        spark->rot_add = (int8_t)MIN(rot_add, 127);
     }
 
-    sptr->src_size.width = (uint8_t)((Random_GetControl() & 0xF) + 40);
-    sptr->src_size.height =
-        (uint8_t)(sptr->src_size.width + (Random_GetControl() & 7) + 8);
-    sptr->dst_size.width = (uint8_t)(sptr->src_size.width << 1);
-    sptr->dst_size.height = (uint8_t)(sptr->src_size.height << 1);
-    sptr->size = sptr->src_size;
+    spark->src_size.width = (uint8_t)((Random_GetControl() & 0xF) + 40);
+    spark->src_size.height =
+        (uint8_t)(spark->src_size.width + (Random_GetControl() & 7) + 8);
+    spark->dst_size.width = (uint8_t)(spark->src_size.width << 1);
+    spark->dst_size.height = (uint8_t)(spark->src_size.height << 1);
+    spark->size = spark->src_size;
 
     if (uw == 2) {
-        const RGB_888 src = sptr->src_color;
-        const RGB_888 dst = sptr->dst_color;
-        sptr->src_color = (RGB_888) { src.b, src.r, src.g };
-        sptr->dst_color = (RGB_888) { dst.b, dst.r, dst.g };
-        sptr->flags |= SPARK_F_GREEN;
+        const RGB_888 src = spark->src_color;
+        const RGB_888 dst = spark->dst_color;
+        spark->src_color = (RGB_888) { src.b, src.r, src.g };
+        spark->dst_color = (RGB_888) { dst.b, dst.r, dst.g };
+        spark->flags |= SPARK_F_GREEN;
     }
 }
 
@@ -928,8 +1273,8 @@ static void M_TriggerExplosionBubbleCallback(
         return;
     }
 
-    SPARK *const sptr = Sparks_GetFreeSpark();
-    *sptr = (SPARK) {
+    SPARK *const spark = Sparks_GetFreeSpark();
+    *spark = (SPARK) {
         .on = true,
         .src_color = { 128, 64, 0 },
         .dst_color = { 128, 128, 128 },
@@ -953,11 +1298,11 @@ static void M_TriggerExplosionBubbleCallback(
     };
 
     const uint8_t size = (uint8_t)((Random_GetControl() & 7) + 63);
-    sptr->src_size.width = (uint8_t)(size >> 1);
-    sptr->src_size.height = sptr->src_size.width;
-    sptr->dst_size.width = (uint8_t)(size << 1);
-    sptr->dst_size.height = sptr->dst_size.width;
-    sptr->size = sptr->src_size;
+    spark->src_size.width = (uint8_t)(size >> 1);
+    spark->src_size.height = spark->src_size.width;
+    spark->dst_size.width = (uint8_t)(size << 1);
+    spark->dst_size.height = spark->dst_size.width;
+    spark->size = spark->src_size;
 
     for (int32_t i = 0; i < 7; i++) {
         const XYZ_32 bubble_pos = {

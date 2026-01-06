@@ -1249,6 +1249,30 @@
                 "Fire Emitter",
             ]
         },
+        "flame_emitter_big": {
+            "name": [
+                "Flame Emitter (Big)",
+                "Fire Emitter (Big)",
+            ]
+        },
+        "flame_emitter_small": {
+            "name": [
+                "Flame Emitter (Small)",
+                "Fire Emitter (Small)",
+            ]
+        },
+        "flame_emitter_jet": {
+            "name": [
+                "Flame Emitter (Jet)",
+                "Fire Emitter (Jet)",
+            ]
+        },
+        "flame_emitter_side": {
+            "name": [
+                "Flame Emitter (Side)",
+                "Fire Emitter (Side)",
+            ]
+        },
         "gondola": {
             "name": "Gondola",
         },
