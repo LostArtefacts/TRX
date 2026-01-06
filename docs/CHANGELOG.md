@@ -16,6 +16,7 @@
 - added a new input, that lets the player toggle ingame textures on/off, available by default under F8
 - added a new console command, `/textures`, that lets the player toggle ingame textures on/off
 - added a new console command, `/weather`, that lets the player control the weather
+- added a new console command, `/spawn`, that lets the builder spawn an entity of their choice to test things around
 - added Animating Item 1-6 control
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
 - changed the lighting contrast key binding to F9

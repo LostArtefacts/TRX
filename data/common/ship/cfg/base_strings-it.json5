@@ -18,6 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Traccia musicale non valida",
         "CMD_INVALID_SECRET": "Segreto non valido: %s (segreti validi: %s)",
         "CMD_INVALID_WEATHER": "\\{review}Meteo non valido: %s (valido: %s)",
+        "CMD_ITEM_SPAWNED": "\\{review}Oggetto richiesto generato vicino a Lara",
+        "CMD_ITEM_SPAWN_FAILED": "\\{review}Impossibile generare l'oggetto richiesto",
         "CMD_LUA_RUNTIME_ERROR": "Errore di esecuzione Lua: %s",
         "CMD_LUA_SYNTAX_ERROR": "Errore di sintassi Lua: %s",
         "CMD_PLAY_MUSIC_STOPPED": "Musica interrotta",

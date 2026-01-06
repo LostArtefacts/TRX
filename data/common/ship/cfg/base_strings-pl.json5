@@ -18,6 +18,8 @@
         "CMD_INVALID_MUSIC_TRACK": "Nieprawidłowa ścieżka muzyczka",
         "CMD_INVALID_SECRET": "Nieprawidłowy sekret: %s (prawidłowe sekrety: %s)",
         "CMD_INVALID_WEATHER": "Nieprawidłowa wartość: %s (prawidłowe: %s)",
+        "CMD_ITEM_SPAWNED": "\\{review}Żądany obiekt pojawił się w pobliżu Lary",
+        "CMD_ITEM_SPAWN_FAILED": "\\{review}Nie udało się wygenerować żądanego obiektu",
         "CMD_LUA_RUNTIME_ERROR": "Błąd wykonania: %s",
         "CMD_LUA_SYNTAX_ERROR": "Błąd składni: %s",
         "CMD_PLAY_MUSIC_STOPPED": "Muzyka zatrzymana",
