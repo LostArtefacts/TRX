@@ -13,6 +13,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
+#include <trx/version.h>
 
 // clang-format off
 #define M_LF_PICKUP_ERASE        42
@@ -344,7 +345,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     if (g_Input.action && !lara_item->gravity && lara->gun_status == LGS_ARMLESS
         && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)
         && ((lara_item->current_anim_state == LS(LS_STOP)
-             && anim == LA_STAND_IDLE)
+             && (g_TRVersion < 3 || anim == LA_STAND_IDLE))
             || ((
                 lara_item->current_anim_state == LS(LS_CROUCH_IDLE)
                 && anim == LA_CROUCH_IDLE)))) {
