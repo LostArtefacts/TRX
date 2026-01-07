@@ -115,6 +115,7 @@
 - added surface-based step sounds
 - added cold breath effects
 - added gun shells
+- added new ricochets
 - added flare lighting and sparks
 - added monochrome inventory backgrounds
 - added high-resolutions 16:9 and 4:3 loading screens
