@@ -316,7 +316,9 @@ static void M_FireRocket(void)
     }
     Stats_AddAmmoUsed();
 
-    Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
+    if (g_TRVersion >= 3) {
+        Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
+    }
 }
 
 static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
