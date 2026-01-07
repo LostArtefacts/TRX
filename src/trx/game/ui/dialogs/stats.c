@@ -12,6 +12,8 @@
 #include <trx/strings.h>
 #include <trx/version.h>
 
+#define M_MIN_ASSAULT_COURSE_ROWS 7
+
 typedef enum {
     M_ROW_GENERIC,
     M_ROW_LEVEL_COUNTER,
@@ -26,6 +28,12 @@ typedef enum {
     M_ROW_AMMO_HITS,
     M_ROW_MEDIPACKS_USED,
     M_ROW_DISTANCE_TRAVELLED,
+    M_ROW_ASSAULT_COURSE_TITLE,
+    M_ROW_ASSAULT_COURSE_ROW,
+    M_ROW_ASSAULT_NO_TIMES_SET,
+    M_ROW_RACETRACK_TITLE,
+    M_ROW_RACETRACK_ROW,
+    M_ROW_SPACER,
 } M_ROW_ROLE;
 
 typedef struct {
@@ -39,7 +47,17 @@ typedef struct {
 
 typedef struct UI_STATS_DIALOG_STATE {
     UI_STATS_DIALOG_ARGS args;
-    UI_REQUESTER_STATE assault_req;
+    UI_SCROLLABLE scrollable;
+
+    union {
+        struct {
+            const STATS_COMMON *stats;
+            const LEVEL_MAX_STATS *max_stats;
+            FINAL_STATS final_stats;
+        };
+        const GYM_TRACK_STATS *assault_stats[GYM_TRACK_NUMBER_OF];
+    };
+
     const M_LOOK *look;
     bool has_floordata_secrets;
 } UI_STATS_DIALOG_STATE;
@@ -70,6 +88,16 @@ static const M_LOOK m_Looks[TR_VERSION_COUNT] = {
         .use_full_hours = true,
     },
 };
+
+static const char *M_FormatRecordTime(const int32_t total_frames)
+{
+    const int32_t total_seconds = total_frames / LOGIC_FPS;
+    const int32_t minutes = (total_seconds / 60) % 60;
+    const int32_t seconds = total_seconds % 60;
+    const int32_t centiseconds = total_frames % LOGIC_FPS / (LOGIC_FPS / 10);
+    return String_FormatStatic(
+        "%02d:%02d.%-2d", minutes, seconds, centiseconds);
+}
 
 static const char *M_FormatTime(
     const UI_STATS_DIALOG_STATE *const s, const int32_t total_frames)
@@ -132,6 +160,17 @@ static void M_FormatIconSecrets(
     }
 }
 
+static void M_RowCentered(
+    const UI_STATS_DIALOG_STATE *const s, const char *const text)
+{
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_CENTER },
+    });
+    UI_Label(text);
+    UI_EndStack();
+}
+
 static void M_Row(
     const UI_STATS_DIALOG_STATE *const s, const char *const key,
     const char *const value)
@@ -156,7 +195,7 @@ static void M_Row(
 
 static void M_RowFromRole(
     const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
-    const STATS_COMMON *const stats, const LEVEL_MAX_STATS *const max_stats)
+    const int32_t param)
 {
     const char *const num_fmt = g_Config.ui.stat_detail_mode == SDM_MINIMAL
         ? GS(STATS_BASIC_FMT)
@@ -174,16 +213,16 @@ static void M_RowFromRole(
         break;
 
     case M_ROW_TIMER:
-        M_Row(s, GS(STATS_TIME_TAKEN), M_FormatTime(s, stats->timer));
+        M_Row(s, GS(STATS_TIME_TAKEN), M_FormatTime(s, s->stats->timer));
         break;
 
     case M_ROW_ICON_SECRETS: {
         if (s->has_floordata_secrets) {
-            M_RowFromRole(s, M_ROW_NUM_SECRETS, stats, max_stats);
+            M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
             break;
         }
         char buf[256];
-        M_FormatIconSecrets(buf, (LEVEL_STATS *)stats);
+        M_FormatIconSecrets(buf, (LEVEL_STATS *)s->stats);
         M_Row(s, GS(STATS_SECRETS), buf);
         break;
     }
@@ -192,59 +231,98 @@ static void M_RowFromRole(
         M_Row(
             s, GS(STATS_SECRETS),
             String_FormatStatic(
-                GS(STATS_DETAIL_FMT), stats->secret_count,
-                max_stats->max_secret_count));
+                GS(STATS_DETAIL_FMT), s->stats->secret_count,
+                s->max_stats->max_secret_count));
         break;
 
     case M_ROW_PICKUPS:
         M_Row(
             s, GS(STATS_PICKUPS),
             String_FormatStatic(
-                num_fmt, stats->pickup_count, max_stats->max_pickup_count));
+                num_fmt, s->stats->pickup_count,
+                s->max_stats->max_pickup_count));
         break;
 
     case M_ROW_KILLS:
         M_Row(
             s, GS(STATS_KILLS),
             String_FormatStatic(
-                num_fmt, stats->kill_count, max_stats->max_kill_count));
+                num_fmt, s->stats->kill_count, s->max_stats->max_kill_count));
         break;
 
     case M_ROW_DEATHS:
         M_Row(
             s, GS(STATS_DEATHS),
-            String_FormatStatic(GS(STATS_BASIC_FMT), stats->death_count));
+            String_FormatStatic(GS(STATS_BASIC_FMT), s->stats->death_count));
         break;
 
     case M_ROW_AMMO:
         M_Row(
             s, GS(STATS_AMMO),
             String_FormatStatic(
-                GS(PAGINATION_NAV), stats->ammo_hits, stats->ammo_used));
+                GS(PAGINATION_NAV), s->stats->ammo_hits, s->stats->ammo_used));
         break;
 
     case M_ROW_AMMO_USED:
         M_Row(
             s, GS(STATS_AMMO_USED),
-            String_FormatStatic("%d", stats->ammo_used));
+            String_FormatStatic("%d", s->stats->ammo_used));
         break;
 
     case M_ROW_AMMO_HITS:
         M_Row(
             s, GS(STATS_AMMO_HITS),
-            String_FormatStatic("%d", stats->ammo_hits));
+            String_FormatStatic("%d", s->stats->ammo_hits));
         break;
 
     case M_ROW_MEDIPACKS_USED:
         M_Row(
             s, GS(STATS_MEDIPACKS_USED),
-            String_FormatStatic("%.1f", stats->medipacks_used));
+            String_FormatStatic("%.1f", s->stats->medipacks_used));
         break;
 
     case M_ROW_DISTANCE_TRAVELLED:
         M_Row(
             s, GS(STATS_DISTANCE_TRAVELLED),
-            M_FormatDistance(stats->distance_travelled));
+            M_FormatDistance(s->stats->distance_travelled));
+        break;
+
+    case M_ROW_ASSAULT_COURSE_TITLE:
+        M_RowCentered(s, GS(STATS_GYM_ASSAULT_COURSE));
+        break;
+
+    case M_ROW_ASSAULT_COURSE_ROW:
+    case M_ROW_RACETRACK_ROW: {
+        const GYM_TRACK_TYPE track_type = role == M_ROW_ASSAULT_COURSE_ROW
+            ? GYM_TRACK_ASSAULT
+            : GYM_TRACK_QUAD;
+        const GYM_TRACK_ENTRY *const entry =
+            &s->assault_stats[track_type]->entries[param];
+        const char *const attempt_str = String_FormatStatic(
+            "%2d: %s %d", param + 1, GS(STATS_ASSAULT_FINISH),
+            entry->attempt_num);
+        const char *const time_str = String_FormatStatic(
+            param == 0 ? GS(STATS_ASSAULT_BEST_TIME_FMT)
+                       : GS(STATS_ASSAULT_OTHER_TIMES_FMT),
+            M_FormatRecordTime(entry->time));
+        if (g_TRVersion == 3) {
+            M_RowCentered(s, time_str);
+        } else {
+            M_Row(s, attempt_str, time_str);
+        }
+        break;
+    }
+
+    case M_ROW_ASSAULT_NO_TIMES_SET:
+        M_RowCentered(s, GS(STATS_ASSAULT_NO_TIMES_SET));
+        break;
+
+    case M_ROW_RACETRACK_TITLE:
+        M_RowCentered(s, GS(STATS_GYM_RACETRACK_COURSE));
+        break;
+
+    case M_ROW_SPACER:
+        M_RowCentered(s, " ");
         break;
 
     default:
@@ -252,94 +330,76 @@ static void M_RowFromRole(
     }
 }
 
-static void M_CommonRows(
-    const UI_STATS_DIALOG_STATE *const s, const STATS_COMMON *const stats,
-    const LEVEL_MAX_STATS *const max_stats)
+static void M_CommonRows(const UI_STATS_DIALOG_STATE *const s)
 {
     if (g_TRVersion == 1) {
         if (g_Config.ui.stat_detail_mode == SDM_MINIMAL) {
-            M_RowFromRole(s, M_ROW_KILLS, stats, max_stats);
-            M_RowFromRole(s, M_ROW_PICKUPS, stats, max_stats);
-            M_RowFromRole(s, M_ROW_NUM_SECRETS, stats, max_stats);
-            M_RowFromRole(s, M_ROW_TIMER, stats, max_stats);
+            M_RowFromRole(s, M_ROW_KILLS, 0);
+            M_RowFromRole(s, M_ROW_PICKUPS, 0);
+            M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
+            M_RowFromRole(s, M_ROW_TIMER, 0);
         } else {
-            M_RowFromRole(s, M_ROW_TIMER, stats, max_stats);
-            M_RowFromRole(s, M_ROW_NUM_SECRETS, stats, max_stats);
-            M_RowFromRole(s, M_ROW_PICKUPS, stats, max_stats);
-            M_RowFromRole(s, M_ROW_KILLS, stats, max_stats);
+            M_RowFromRole(s, M_ROW_TIMER, 0);
+            M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
+            M_RowFromRole(s, M_ROW_PICKUPS, 0);
+            M_RowFromRole(s, M_ROW_KILLS, 0);
             if (g_Config.ui.stat_detail_mode == SDM_FULL) {
-                M_RowFromRole(s, M_ROW_AMMO, stats, max_stats);
-                M_RowFromRole(s, M_ROW_MEDIPACKS_USED, stats, max_stats);
-                M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, stats, max_stats);
+                M_RowFromRole(s, M_ROW_AMMO, 0);
+                M_RowFromRole(s, M_ROW_MEDIPACKS_USED, 0);
+                M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, 0);
             }
         }
     } else {
         if (g_Config.ui.stat_detail_mode == SDM_FULL) {
-            M_RowFromRole(s, M_ROW_PICKUPS, stats, max_stats);
+            M_RowFromRole(s, M_ROW_PICKUPS, 0);
         }
-        M_RowFromRole(s, M_ROW_KILLS, stats, max_stats);
+        M_RowFromRole(s, M_ROW_KILLS, 0);
         if (g_Config.ui.stat_detail_mode == SDM_FULL) {
-            M_RowFromRole(s, M_ROW_AMMO, stats, max_stats);
+            M_RowFromRole(s, M_ROW_AMMO, 0);
         } else {
-            M_RowFromRole(s, M_ROW_AMMO_USED, stats, max_stats);
-            M_RowFromRole(s, M_ROW_AMMO_HITS, stats, max_stats);
+            M_RowFromRole(s, M_ROW_AMMO_USED, 0);
+            M_RowFromRole(s, M_ROW_AMMO_HITS, 0);
         }
-        M_RowFromRole(s, M_ROW_MEDIPACKS_USED, stats, max_stats);
-        M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, stats, max_stats);
+        M_RowFromRole(s, M_ROW_MEDIPACKS_USED, 0);
+        M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, 0);
     }
 
-    if (g_Config.gameplay.enable_deaths_counter && stats->death_count >= 0) {
+    if (g_Config.gameplay.enable_deaths_counter && s->stats->death_count >= 0) {
         // Always use sum of all levels for the deaths.
         // Deaths get stored in the resume info for the level they happen
         // on, so if the player dies in Vilcabamba and reloads Caves, they
         // should still see an incremented death counter.
-        M_RowFromRole(s, M_ROW_DEATHS, stats, max_stats);
+        M_RowFromRole(s, M_ROW_DEATHS, 0);
     }
 }
 
 static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *const s)
 {
-    const GF_LEVEL *const current_level =
-        GF_GetLevel(GFLT_MAIN, s->args.level_num);
-    const RESUME_INFO *const current_info =
-        Savegame_GetCurrentInfo(current_level);
-    const STATS_COMMON *const stats =
-        (const STATS_COMMON *)&current_info->stats;
-    const LEVEL_MAX_STATS *const max_stats =
-        Stats_GetLevelMaxStats(current_level);
-
     if (g_Config.ui.enable_stats_level_header) {
-        M_RowFromRole(s, M_ROW_LEVEL_COUNTER, stats, max_stats);
+        M_RowFromRole(s, M_ROW_LEVEL_COUNTER, 0);
     }
 
     if (g_TRVersion == 1) {
-        M_CommonRows(s, stats, max_stats);
+        M_CommonRows(s);
     } else {
-        M_RowFromRole(s, M_ROW_TIMER, stats, max_stats);
-        if (max_stats->max_secret_count != 0) {
-            M_RowFromRole(s, M_ROW_ICON_SECRETS, stats, max_stats);
+        M_RowFromRole(s, M_ROW_TIMER, 0);
+        if (s->max_stats->max_secret_count != 0) {
+            M_RowFromRole(s, M_ROW_ICON_SECRETS, 0);
         }
-        M_CommonRows(s, stats, max_stats);
+        M_CommonRows(s);
     }
 }
 
 static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *const s)
 {
-    const GF_LEVEL_TYPE level_type =
-        GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
-    const FINAL_STATS final_stats =
-        Stats_ComputeFinalStats(level_type == GFL_BONUS);
-    const STATS_COMMON *const stats = &final_stats.stats;
-    const LEVEL_MAX_STATS *const max_stats = &final_stats.max_stats;
-
     if (g_TRVersion == 1) {
-        M_CommonRows(s, stats, max_stats);
+        M_CommonRows(s);
     } else {
-        M_RowFromRole(s, M_ROW_TIMER, stats, max_stats);
-        if (max_stats->max_secret_count != 0) {
-            M_RowFromRole(s, M_ROW_NUM_SECRETS, stats, max_stats);
+        M_RowFromRole(s, M_ROW_TIMER, 0);
+        if (s->max_stats->max_secret_count != 0) {
+            M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
         }
-        M_CommonRows(s, stats, max_stats);
+        M_CommonRows(s);
     }
 }
 
@@ -364,37 +424,50 @@ static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
 
 static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
 {
-    const ASSAULT_STATS stats = Gym_GetAssaultStats();
-    UI_BeginRequester(&s->assault_req, M_GetDialogTitle(s));
-    // ensure minimum dialog width
-    UI_Spacer(290.0f, 0.0f);
-    if (stats.entries[0].time == 0) {
-        UI_BeginAnchor(0.5f, 0.5f);
-        UI_Label(GS(STATS_ASSAULT_NO_TIMES_SET));
-        UI_EndAnchor();
+    const int32_t record_limit = g_TRVersion >= 3 ? 3 : MAX_ASSAULT_TIMES;
+    const bool has_race_track = Gym_TrackManager_HasStats(GYM_TRACK_QUAD);
+    int32_t count = 0;
+
+#define L_EMIT_ROW(...)                                                        \
+    M_RowFromRole(__VA_ARGS__);                                                \
+    count++;
+
+    if (has_race_track) {
+        L_EMIT_ROW(s, M_ROW_ASSAULT_COURSE_TITLE, 0);
+    }
+
+    if (s->assault_stats[GYM_TRACK_ASSAULT]->entries[0].time == 0) {
+        L_EMIT_ROW(s, M_ROW_ASSAULT_NO_TIMES_SET, 0);
     } else {
-        const int32_t first = UI_Requester_GetFirstRow(&s->assault_req);
-        const int32_t last = UI_Requester_GetLastRow(&s->assault_req);
-        for (int32_t i = first; i < last; i++) {
-            if (stats.entries[i].time == 0) {
+        for (int32_t i = 0; i < record_limit; i++) {
+            if (s->assault_stats[GYM_TRACK_ASSAULT]->entries[i].time == 0) {
                 break;
             }
-
-            char left_buf[32] = " ";
-            char right_buf[32] = " ";
-            sprintf(
-                left_buf, "%2d: %s %d", i + 1, GS(STATS_ASSAULT_FINISH),
-                stats.entries[i].attempt_num);
-
-            const int32_t sec = stats.entries[i].time / LOGIC_FPS;
-            sprintf(
-                right_buf, "%02d:%02d.%-2d", sec / 60, sec % 60,
-                stats.entries[i].time % LOGIC_FPS / (LOGIC_FPS / 10));
-
-            M_Row(s, left_buf, right_buf);
+            L_EMIT_ROW(s, M_ROW_ASSAULT_COURSE_ROW, i);
         }
     }
-    UI_EndRequester(&s->assault_req);
+
+    if (has_race_track) {
+        L_EMIT_ROW(s, M_ROW_SPACER, 0);
+        L_EMIT_ROW(s, M_ROW_RACETRACK_TITLE, 0);
+        if (s->assault_stats[GYM_TRACK_QUAD]->entries[0].time == 0) {
+            L_EMIT_ROW(s, M_ROW_ASSAULT_NO_TIMES_SET, 0);
+        } else {
+            for (int32_t i = 0; i < record_limit; i++) {
+                if (s->assault_stats[GYM_TRACK_QUAD]->entries[i].time == 0) {
+                    break;
+                }
+                L_EMIT_ROW(s, M_ROW_RACETRACK_ROW, i);
+            }
+        }
+    }
+
+#undef L_EMIT_ROW
+
+    while (count < M_MIN_ASSAULT_COURSE_ROWS) {
+        M_RowFromRole(s, M_ROW_SPACER, 0);
+        count++;
+    }
 }
 
 static void M_BeginDialog(const UI_STATS_DIALOG_STATE *const s)
@@ -439,26 +512,48 @@ static void M_EndDialog(const UI_STATS_DIALOG_STATE *const s)
 UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
 {
     UI_STATS_DIALOG_STATE *const s = Memory_Alloc(sizeof(*s));
-    const ASSAULT_STATS stats = Gym_GetAssaultStats();
-    int32_t max_assault_times = 0;
-    for (int i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (stats.entries[i].time != 0) {
-            max_assault_times++;
-        }
-    }
-    UI_Requester_Init(&s->assault_req, 7, max_assault_times, false);
-    s->assault_req.reserve_space = true;
+
+    const int32_t record_limit = g_TRVersion == 3 ? 3 : MAX_ASSAULT_TIMES;
+
+    s->has_floordata_secrets = false;
+    s->scrollable.vis_items = M_MIN_ASSAULT_COURSE_ROWS;
     s->args = args;
     s->look = &m_Looks[g_TRVersion - 1];
 
-    s->has_floordata_secrets = false;
-    const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
-    for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
-        if (max_stats->secret_objects[i].taken
-            && max_stats->secret_objects[i].assigned_object_id == NO_OBJECT) {
-            s->has_floordata_secrets = true;
+    switch (args.mode) {
+    case UI_STATS_DIALOG_MODE_LEVEL:
+        const GF_LEVEL *const current_level =
+            GF_GetLevel(GFLT_MAIN, s->args.level_num);
+        const RESUME_INFO *const current_info =
+            Savegame_GetCurrentInfo(current_level);
+        s->stats = (const STATS_COMMON *)&current_info->stats;
+        s->max_stats = Stats_GetLevelMaxStats(current_level);
+
+        const GF_LEVEL *const level = Game_GetCurrentLevel();
+        for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
+            if (s->max_stats->secret_objects[i].taken
+                && s->max_stats->secret_objects[i].assigned_object_id
+                    == NO_OBJECT) {
+                s->has_floordata_secrets = true;
+            }
         }
+        break;
+
+    case UI_STATS_DIALOG_MODE_FINAL:
+        const GF_LEVEL_TYPE level_type =
+            GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
+        s->final_stats = Stats_ComputeFinalStats(level_type == GFL_BONUS);
+        s->stats = &s->final_stats.stats;
+        s->max_stats = &s->final_stats.max_stats;
+        break;
+
+    case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
+        for (int32_t track_type = 0; track_type < GYM_TRACK_NUMBER_OF;
+             track_type++) {
+            s->assault_stats[track_type] =
+                Gym_TrackManager_GetStats(track_type);
+        }
+        break;
     }
 
     return s;
@@ -466,12 +561,12 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
 
 void UI_StatsDialog_Free(UI_STATS_DIALOG_STATE *const s)
 {
-    UI_Requester_Free(&s->assault_req);
+    Memory_Free(s);
 }
 
 int32_t UI_StatsDialog_Control(UI_STATS_DIALOG_STATE *const s)
 {
-    return UI_Requester_Control(&s->assault_req);
+    return UI_ScrollableStack_Control(&s->scrollable, UI_STACK_VERTICAL);
 }
 
 void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
@@ -479,21 +574,31 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
     UI_BeginModal(0.5f, s->look->window_y);
     UI_BeginPad(s->look->window_margin, s->look->window_margin);
 
+    M_BeginDialog(s);
     switch (s->args.mode) {
     case UI_STATS_DIALOG_MODE_LEVEL:
-        M_BeginDialog(s);
         M_LevelStatsRows(s);
-        M_EndDialog(s);
         break;
+
     case UI_STATS_DIALOG_MODE_FINAL:
-        M_BeginDialog(s);
         M_FinalStatsRows(s);
-        M_EndDialog(s);
         break;
+
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
+        // Ensure minimum size even if there are no items
+        UI_Spacer(290.0f, 0.0f);
+        UI_BeginScrollableStack(
+            &s->scrollable,
+            (UI_SCROLLABLE_STACK_SETTINGS) {
+                .orientation = UI_STACK_VERTICAL,
+                .spacing = 3.0f,
+            });
         M_AssaultCourseStatsRows(s);
+        UI_EndScrollableStack();
         break;
     }
+
+    M_EndDialog(s);
 
     UI_EndPad();
     UI_EndModal();

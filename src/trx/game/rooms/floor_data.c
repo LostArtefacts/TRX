@@ -398,13 +398,14 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         switch (trigger->type) {
         case TT_PAD:
         case TT_ANTIPAD:
-            if (!Gym_Assault_OnPadContact(false)) {
+            if (!Gym_TrackManager_OnPadContact(GYM_TRACK_ASSAULT, false)) {
                 return;
             }
             if (item->pos.y != item->floor) {
                 return;
             }
-            if (item->object_id == O_LARA && !Gym_Assault_OnPadContact(true)) {
+            if (item->object_id == O_LARA
+                && !Gym_TrackManager_OnPadContact(GYM_TRACK_ASSAULT, true)) {
                 return;
             }
             break;

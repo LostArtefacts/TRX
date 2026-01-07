@@ -9,7 +9,7 @@
 
 static bool M_StoreAssaultTime(const float time)
 {
-    ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
+    GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
     uint32_t logic_time = (uint32_t)(time * LOGIC_FPS);
     int32_t insert_idx = -1;
 
@@ -37,7 +37,7 @@ static bool M_StoreAssaultTime(const float time)
 
 static bool M_RemoveAssaultTimeAtIndex(const int32_t idx)
 {
-    ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
+    GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
     if (idx < 0 || idx >= MAX_ASSAULT_TIMES) {
         return false;
     }
@@ -58,7 +58,7 @@ static bool M_RemoveAssaultTimeAtIndex(const int32_t idx)
 // trxc.assault_stats.record(time) -> bool
 static int M_L_AssaultStatsRecord(lua_State *const L)
 {
-    if (!Gym_HasAssaultStats()) {
+    if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
         return luaL_error(L, "Assault stats unavailable");
     }
     const float time = (float)luaL_checknumber(L, 1);
@@ -74,7 +74,7 @@ static int M_L_AssaultStatsRecord(lua_State *const L)
 // trxc.assault_stats.remove(index) -> bool
 static int M_L_AssaultStatsRemove(lua_State *const L)
 {
-    if (!Gym_HasAssaultStats()) {
+    if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
         return luaL_error(L, "Assault stats unavailable");
     }
     const int64_t index_1 = luaL_checkinteger(L, 1);
@@ -92,11 +92,11 @@ static int M_L_AssaultStatsRemove(lua_State *const L)
 // trxc.assault_stats.list() -> { { time = float, attempt_num = int }, ... }
 static int M_L_AssaultStatsList(lua_State *const L)
 {
-    if (!Gym_HasAssaultStats()) {
+    if (!Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
         return luaL_error(L, "Assault stats unavailable");
     }
 
-    const ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
+    const GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
     lua_newtable(L);
     int32_t out_idx = 1;
 

@@ -73,7 +73,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     Interpolation_Remember();
-    if (!Game_IsInGym() || Gym_IsAssaultTimerActive()
+    if (!Game_IsInGym() || Gym_TrackManager_IsTimerActive(GYM_TRACK_ASSAULT)
+        || Gym_TrackManager_IsTimerActive(GYM_TRACK_QUAD)
         || !Object_Get(O_ASSAULT_DIGITS)->loaded) {
         Stats_UpdateTimer();
     }

@@ -147,7 +147,7 @@ static void M_Control(const int16_t item_num)
                 if (p->bounce_stage == 2) {
                     item->rot.x = 0x3800;
                     Item_RemoveActive(item_num);
-                    Gym_Assault_DecreaseTargetCount();
+                    Gym_TrackManager_DecreaseTargetCount(GYM_TRACK_ASSAULT);
                     return;
                 }
 
