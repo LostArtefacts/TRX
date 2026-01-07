@@ -15,7 +15,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define M_INJECTION_CURRENT_VERSION 5
+#define M_INJECTION_CURRENT_VERSION 6
 #define M_VIRTUAL_NAME "virtual_injection"
 
 typedef struct {
@@ -135,8 +135,13 @@ static void M_InitialiseBlock(
 
     case IDT_SAMPLE_INFOS: {
         for (int32_t i = 0; i < data_count; i++) {
+            // Skip ID, volume and chance
             VFile_Skip(file, 3 * sizeof(int16_t));
             const int16_t flags = VFile_ReadS16(file);
+            if (version >= INJ_VERSION_6) {
+                // Skip range and pitch
+                VFile_Skip(file, sizeof(int32_t) + sizeof(int8_t));
+            }
             const int16_t num_samples = (flags >> 2) & 0xF;
             m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
             if (g_TRVersion == 1 || version >= INJ_VERSION_4) {

@@ -19,14 +19,16 @@ static void M_HandleSFXData(
 
         SAMPLE_INFO *const sample_info = Sound_GetOrCreateSample(sfx_id);
         sample_info->volume = VFile_ReadS16(chunk.injection->fp);
-        sample_info->pitch = 0;
-        if (g_TRVersion >= 2) {
-            sample_info->range = 10 * WALL_L; // TODO: support TR3
-        } else if (g_TRVersion == 1) {
-            sample_info->range = 8 * WALL_L;
-        }
         sample_info->randomness = VFile_ReadS16(chunk.injection->fp);
         sample_info->flags.all = VFile_ReadU16(chunk.injection->fp);
+        if (chunk.injection->version >= INJ_VERSION_6) {
+            sample_info->range = VFile_ReadS32(chunk.injection->fp);
+            sample_info->pitch = VFile_ReadS8(chunk.injection->fp);
+        } else {
+            sample_info->range = 10 * WALL_L;
+            sample_info->pitch = 0;
+        }
+
         if (g_TRVersion == 1) {
             switch (sample_info->flags.mode_bits) {
             case 0:
