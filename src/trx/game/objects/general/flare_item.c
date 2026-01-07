@@ -7,8 +7,10 @@
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 // clang-format off
 #define M_FLARE_INTENSITY 12
@@ -17,6 +19,22 @@
 #define M_FLARE_OLD_AGE   (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
 #define M_FLARE_YOUNG_AGE (LOGIC_FPS)                       // = 30
 // clang-format off
+
+static XYZ_32 M_TransformLocalOffset(
+    const XYZ_32 pos, const XYZ_16 rot, const XYZ_32 local_offset)
+{
+    Matrix_PushUnit();
+    Matrix_TranslateAbs32(pos);
+    Matrix_Rot16(rot);
+    Matrix_TranslateRel32(local_offset);
+    const XYZ_32 out = {
+        .x = g_WMatrixPtr->_03 >> W2V_SHIFT,
+        .y = g_WMatrixPtr->_13 >> W2V_SHIFT,
+        .z = g_WMatrixPtr->_23 >> W2V_SHIFT,
+    };
+    Matrix_Pop();
+    return out;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -131,13 +149,49 @@ static bool M_Draw(const ITEM *const item)
     };
     Matrix_TranslateRel32(flare_offset);
 
-    if (clip != CLIP_NOT_VISIBLE) {
-        Output_CalculateObjectLighting(item, &frames[0]->bounds);
-        Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
-        if (((int32_t)(intptr_t)item->data) & 0x8000) {
-            M_DrawFlash(clip);
-        }
+    if (clip == CLIP_NOT_VISIBLE) {
+        goto end;
     }
+
+    Output_CalculateObjectLighting(item, &frames[0]->bounds);
+    Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
+    if ((((int32_t)(intptr_t)item->data) & 0x8000) == 0) {
+        goto end;
+    }
+
+    if (g_TRVersion < 3) {
+        M_DrawFlash(clip);
+        goto end;
+    }
+
+    const XYZ_32 flare_pos = {
+        .x = item->interp.result.pos.x,
+        .y = item->interp.result.pos.y,
+        .z = item->interp.result.pos.z,
+    };
+    const XYZ_32 tip_local = { .x = -6, .y = 6, .z = 32 };
+    const XYZ_32 tip_pos = M_TransformLocalOffset(
+        flare_pos, item->interp.result.rot, tip_local);
+
+    const XYZ_32 vel_local = {
+        .x = (Random_GetDraw() & 0x7F) - 64,
+        .y = (Random_GetDraw() & 0x7F) - 64,
+        .z = (Random_GetDraw() & 0x1FF) + 512,
+    };
+    const XYZ_32 vel_pos = M_TransformLocalOffset(
+        flare_pos, item->interp.result.rot, vel_local);
+    const XYZ_32 vel = {
+        .x = vel_pos.x - flare_pos.x,
+        .y = vel_pos.y - flare_pos.y,
+        .z = vel_pos.z - flare_pos.z,
+    };
+
+    for (int32_t i = 0; i < (Random_GetDraw() & 3) + 4; i++) {
+        const bool smoke = (i >> 2) != 0;
+        Sparks_TriggerFlareSparks(tip_pos, vel, smoke);
+    }
+
+end:
     Matrix_Pop();
     return true;
 }

@@ -112,3 +112,5 @@ void Sparks_TriggerStaticFlame(XYZ_32 pos, int32_t size);
 void Sparks_TriggerFireSmoke(XYZ_32 pos, int32_t body_part, int32_t type);
 void Sparks_TriggerSideFlame(
     XYZ_32 pos, int32_t angle, int32_t speed, bool pilot);
+
+void Sparks_TriggerFlareSparks(XYZ_32 pos, XYZ_32 vel, bool smoke);
