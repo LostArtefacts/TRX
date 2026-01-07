@@ -27,8 +27,10 @@ static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
     }
 
     const XYZ_32 *const sfx_pos =
-        g_TRVersion == 3 ? &rocket_item->pos : nullptr;
-    Sound_Effect(SFX_EXPLOSION_1, sfx_pos, 0x1800000 | SPM_PITCH);
+        g_TRVersion >= 3 ? &rocket_item->pos : nullptr;
+    const uint32_t flags =
+        g_TRVersion >= 3 ? (0x1800000 | SPM_PITCH) : SPM_NORMAL;
+    Sound_Effect(SFX_EXPLOSION_1, sfx_pos, flags);
     Sound_Effect(SFX_EXPLOSION_2, sfx_pos, SPM_NORMAL);
     Item_Kill(rocket_item_num);
 }
