@@ -1413,3 +1413,77 @@ void Sparks_TriggerFlareSparks(
     smoke_spark->src_size.height = smoke_spark->dst_size.height >> 3;
     smoke_spark->size.height = smoke_spark->dst_size.height >> 3;
 }
+
+void Sparks_TriggerRicochet(
+    const GAME_VECTOR pos, const int32_t angle, const int32_t size)
+{
+    SPARK *spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = 255;
+    spark->src_color.g = (Random_GetControl() & 0x1F) + 32;
+    spark->src_color.b = 0;
+    spark->dst_color.r = 192;
+    spark->dst_color.g = (Random_GetControl() & 0x3F) + 96;
+    spark->dst_color.b = 0;
+    spark->col_fade_speed = 8;
+    spark->fade_to_black = 8;
+    spark->life = 24;
+    spark->s_life = 24;
+    spark->draw_type = DRAW_BLEND_ADD;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x;
+    spark->pos.y = pos.y;
+    spark->pos.z = pos.z;
+    int32_t ang = ((Random_GetControl() & 0x7FF) + angle - 1024) & 0xFFF;
+    spark->vel.x = -Math_Sin(ang << 4) >> 3;
+    spark->vel.y = 2 * (Random_GetControl() & 0x1FF) - 768;
+    spark->vel.z = Math_Cos(ang << 4) >> 3;
+    spark->friction = 1;
+    spark->flags = SPARK_F_SCALE;
+    spark->scalar = 3;
+    spark->gravity =
+        (int16_t)(ABS(spark->vel.y >> 6) + (Random_GetControl() & 0x1F));
+    spark->size.width = (Random_GetControl() & 3) + 4;
+    spark->src_size.width = spark->size.width;
+    spark->dst_size.width = (Random_GetControl() & 1) + 1;
+    spark->size.height = (Random_GetControl() & 3) + 4;
+    spark->src_size.height = spark->size.height;
+    spark->dst_size.height = (Random_GetControl() & 1) + 1;
+    spark->max_y_vel = 0;
+
+    spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    uint8_t c = (uint8_t)((Random_GetControl() & 0x3F) + 128);
+    spark->src_color.r = c;
+    spark->src_color.g = c;
+    spark->src_color.b = c;
+    c >>= 1;
+    spark->dst_color.r = c;
+    spark->dst_color.g = c;
+    spark->dst_color.b = c;
+    spark->draw_type =
+        DRAW_BLEND; // DRAW_BLEND_SUB in the OG, but doesn't that match?
+    spark->col_fade_speed = 8;
+    spark->fade_to_black = 16;
+    spark->life = 28;
+    spark->s_life = 28;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x;
+    spark->pos.y = pos.y;
+    spark->pos.z = pos.z;
+    ang = ((Random_GetControl() & 0x7FF) + angle - 1023) & 0xFFF;
+    spark->vel.x = -Math_Sin(ang << 4) >> 3;
+    spark->vel.y = (Random_GetControl() & 0x1FF) - 384;
+    spark->vel.z = Math_Cos(ang << 4) >> 3;
+    spark->friction = 33;
+    spark->flags = SPARK_F_SCALE;
+    spark->scalar = 3;
+    spark->gravity = (Random_GetControl() & 7) + 4;
+    spark->size.width = (Random_GetControl() & 3) + 4;
+    spark->src_size.width = spark->size.width;
+    spark->dst_size.width = (Random_GetControl() & 1) + 1;
+    spark->size.height = (Random_GetControl() & 3) + 4;
+    spark->src_size.height = spark->size.height;
+    spark->dst_size.height = (Random_GetControl() & 1) + 1;
+    spark->max_y_vel = 0;
+}

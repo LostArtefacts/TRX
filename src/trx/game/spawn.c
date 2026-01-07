@@ -85,6 +85,15 @@ void Spawn_Splash(const ITEM *const item)
 
 void Spawn_Ricochet(const GAME_VECTOR pos)
 {
+    if (g_TRVersion == 3) {
+        const ITEM *const lara_item = Lara_GetItem();
+        const int32_t angle16 = Math_Atan(
+            lara_item->pos.z - pos.pos.z, lara_item->pos.x - pos.pos.x);
+        Sparks_TriggerRicochet(pos, ((uint16_t)angle16 >> 4) & 0x0FFF, 16);
+        Sound_Effect(SFX_LARA_RICOCHET, &pos.pos, SPM_NORMAL);
+        return;
+    }
+
     const int16_t effect_num = Effect_Create(pos.room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
