@@ -108,7 +108,7 @@ void main(void) {
     lit = gammaCurve(lit, gamma_exp);
 
     // Apply flat shading AFTER modulation
-    vec4 baseColor = vec4(lit * modulate, inColor.a);
+    gColor = vec4(lit * modulate, inColor.a);
 #else
     float shade_mul = 1.0;
     if ((gFlags & VERT_NO_LIGHTING) == 0u) {
@@ -120,14 +120,12 @@ void main(void) {
     // since we're applying it to the shade (TR1-2) rather than RGB (TR3).
     vec3 mul = gammaCurve(vec3(shade_mul * 0.5), sqrt(gamma_exp)) * 2.0;
 
-    vec4 baseColor = inColor;
+    gColor = inColor;
     if ((gFlags & VERT_FLAT_SHADED) == 0u) {
-        baseColor.rgb = gammaCurve(baseColor.rgb, gamma_exp);
+        gColor.rgb = gammaCurve(gColor.rgb, gamma_exp);
     }
-    baseColor.rgb *= mul;
+    gColor.rgb *= mul;
 #endif
-
-    gColor = vec4(baseColor.rgb, baseColor.a);
 }
 
 #elif defined(FRAGMENT)

@@ -135,7 +135,7 @@ static M_PRIV m_Priv = {
     },
 };
 
-static bool M_CreateTextureRGBA8(
+static bool M_CreateTextureRGB8(
     GFX_GL_TEXTURE *const texture, const int32_t width, const int32_t height,
     const void *const data)
 {
@@ -150,9 +150,19 @@ static bool M_CreateTextureRGBA8(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // RGB8 rows are tightly packed (3 bytes per pixel). With the default
+    // unpack alignment of 4, OpenGL will assume padding at the end of each row
+    // when width * 3 is not a multiple of 4, which looks like an incorrect
+    // source stride.
+    GLint prev_unpack_alignment = 0;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &prev_unpack_alignment);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    GFX_GL_CheckError();
     glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+        GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
         data);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, prev_unpack_alignment);
     GFX_GL_CheckError();
     return true;
 }
@@ -235,8 +245,8 @@ static void M_EnsureSolidBlackTexture(void)
     if (m_Priv.solid_black_texture.initialized) {
         return;
     }
-    const uint8_t pixel[4] = { 0, 0, 0, 255 };
-    M_CreateTextureRGBA8(&m_Priv.solid_black_texture, 1, 1, &pixel[0]);
+    const uint8_t pixel[3] = { 0, 0, 0 };
+    M_CreateTextureRGB8(&m_Priv.solid_black_texture, 1, 1, &pixel[0]);
 }
 
 static void M_ImageCandidates_Free(M_IMAGE_CACHE_ENTRY *const e)
@@ -371,17 +381,7 @@ static bool M_Image_LoadIntoTexture(
         return false;
     }
 
-    uint8_t *const rgba = Memory_Alloc((size_t)width * (size_t)height * 4);
-    const size_t pixel_count = (size_t)width * (size_t)height;
-    for (size_t i = 0; i < pixel_count; i++) {
-        rgba[i * 4 + 0] = img->data[i].r;
-        rgba[i * 4 + 1] = img->data[i].g;
-        rgba[i * 4 + 2] = img->data[i].b;
-        rgba[i * 4 + 3] = 255;
-    }
-
-    const bool ok = M_CreateTextureRGBA8(&e->texture, width, height, rgba);
-    Memory_Free(rgba);
+    const bool ok = M_CreateTextureRGB8(&e->texture, width, height, img->data);
     Image_Free(img);
     if (!ok) {
         return false;
@@ -702,7 +702,7 @@ static void M_EnsureSnapshotTexture(M_PRIV *const p)
 
     s->width = w;
     s->height = h;
-    M_CreateTextureRGBA8(&s->texture, s->width, s->height, nullptr);
+    M_CreateTextureRGB8(&s->texture, s->width, s->height, nullptr);
     GFX_2D_Renderer_ClearFit(p->snapshot.renderer);
 }
 
