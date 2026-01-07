@@ -132,6 +132,7 @@
 - added MP5 control
 - added Rocket Launcher control
 - added Magnums, the Automatic Pistols, and the M16 to the `/moreguns` console command
+- added all weapons to Lara's Home (accessible with cheats or via the console only)
 - added Asasult Course target control
 - added Asasult Course penalty system
 - added an option to fix the MP5 accuracy while running
