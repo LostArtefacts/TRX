@@ -47,6 +47,7 @@
             ],
             "injections": [
                 "data/injections/gym_sky.bin",
+                "data/injections/lara_gym_guns.bin",
             ],
         },
 
