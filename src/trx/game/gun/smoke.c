@@ -1,0 +1,138 @@
+#include <trx/game/gun/smoke.h>
+
+#include <trx/game/lara.h>
+#include <trx/game/lara/common.h>
+#include <trx/game/lara/misc.h>
+#include <trx/game/rooms.h>
+#include <trx/game/sparks.h>
+#include <trx/version.h>
+
+static XYZ_32 M_GetHandAbsPosition(const LARA_MESH hand, XYZ_32 offset)
+{
+    Lara_GetMeshPos(hand, &offset);
+    return offset;
+}
+
+static XYZ_32 M_GetMuzzleOffset(
+    const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
+{
+    switch (weapon_type) {
+    case LGT_PISTOLS:
+    case LGT_AUTOS:
+    case LGT_MAGNUMS:
+        return (XYZ_32) {
+            .x = is_right_hand ? -16 : 16,
+            .y = 128,
+            .z = 40,
+        };
+    case LGT_DESERT_EAGLE:
+        return (XYZ_32) {
+            .x = is_right_hand ? -32 : 16,
+            .y = 160,
+            .z = 56,
+        };
+    case LGT_UZIS:
+        return (XYZ_32) {
+            .x = is_right_hand ? -16 : 8,
+            .y = 140,
+            .z = 48,
+        };
+    case LGT_GRENADE:
+        return (XYZ_32) { .x = 0, .y = 180, .z = 80 };
+    case LGT_ROCKET:
+        return (XYZ_32) { .x = 0, .y = 84, .z = 72 };
+    case LGT_SHOTGUN:
+        return (XYZ_32) { .x = -16, .y = 228, .z = 32 };
+    case LGT_M16:
+    case LGT_MP5:
+        return (XYZ_32) { .x = 0, .y = 228, .z = 96 };
+    default:
+        return (XYZ_32) { .x = 0, .y = 0, .z = 0 };
+    }
+}
+
+static int32_t M_GetInitialSmokeCount(const LARA_GUN_TYPE weapon_type)
+{
+    switch (weapon_type) {
+    case LGT_PISTOLS:
+    case LGT_AUTOS:
+    case LGT_MAGNUMS:
+    case LGT_DESERT_EAGLE:
+    case LGT_UZIS:
+        return 28;
+    case LGT_M16:
+    case LGT_MP5:
+        return 24;
+    case LGT_SHOTGUN:
+    case LGT_GRENADE:
+    case LGT_ROCKET:
+        return 32;
+    default:
+        return 0;
+    }
+}
+
+void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
+{
+    if (g_TRVersion != 3) {
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const int32_t count = M_GetInitialSmokeCount(weapon_type);
+    if (count == 0) {
+        return;
+    }
+
+    lara->tr3_smoke_weapon = weapon_type;
+    if (is_right_hand) {
+        lara->tr3_smoke_count_r = count;
+    } else {
+        lara->tr3_smoke_count_l = count;
+    }
+
+    const LARA_MESH hand = is_right_hand ? LM_HAND_R : LM_HAND_L;
+    const XYZ_32 muzzle_offset = M_GetMuzzleOffset(weapon_type, is_right_hand);
+    const XYZ_32 muzzle_pos = M_GetHandAbsPosition(hand, muzzle_offset);
+
+    GAME_VECTOR pos = { .pos = muzzle_pos,
+                        .room_num = Lara_GetItem()->room_num };
+    Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+    Sparks_TriggerGunSmoke(pos, true, weapon_type, count);
+}
+
+void Gun_Smoke_Control(void)
+{
+    if (g_TRVersion != 3) {
+        return;
+    }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->tr3_smoke_count_l == 0 && lara->tr3_smoke_count_r == 0) {
+        return;
+    }
+
+    const LARA_GUN_TYPE weapon_type = lara->tr3_smoke_weapon;
+
+    if (lara->tr3_smoke_count_l > 0) {
+        const XYZ_32 muzzle_pos = M_GetHandAbsPosition(
+            LM_HAND_L, M_GetMuzzleOffset(weapon_type, false));
+        GAME_VECTOR pos = { .pos = muzzle_pos,
+                            .room_num = Lara_GetItem()->room_num };
+        Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        Sparks_TriggerGunSmoke(
+            pos, false, weapon_type, lara->tr3_smoke_count_l);
+        lara->tr3_smoke_count_l--;
+    }
+
+    if (lara->tr3_smoke_count_r > 0) {
+        const XYZ_32 muzzle_pos = M_GetHandAbsPosition(
+            LM_HAND_R, M_GetMuzzleOffset(weapon_type, true));
+        GAME_VECTOR pos = { .pos = muzzle_pos,
+                            .room_num = Lara_GetItem()->room_num };
+        Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        Sparks_TriggerGunSmoke(
+            pos, false, weapon_type, lara->tr3_smoke_count_r);
+        lara->tr3_smoke_count_r--;
+    }
+}

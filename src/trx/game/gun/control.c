@@ -8,6 +8,7 @@
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/pistols.h>
 #include <trx/game/gun/rifle.h>
+#include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
@@ -258,6 +259,8 @@ void Gun_Control(void)
     if (lara->right_arm.flash_gun > 0) {
         lara->right_arm.flash_gun--;
     }
+
+    Gun_Smoke_Control();
 
     M_UpdateGunState();
 

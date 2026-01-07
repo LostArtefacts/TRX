@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/items/types.h>
+#include <trx/game/lara/enum.h>
 #include <trx/game/types.h>
 
 #include <stdint.h>
@@ -116,3 +117,9 @@ void Sparks_TriggerSideFlame(
 void Sparks_TriggerFlareSparks(XYZ_32 pos, XYZ_32 vel, bool smoke);
 
 void Sparks_TriggerRicochet(GAME_VECTOR pos, int32_t angle, int32_t size);
+
+void Sparks_TriggerGunSmoke(
+    GAME_VECTOR pos, bool initial, LARA_GUN_TYPE weapon, int32_t shade);
+void Sparks_TriggerGunSmokeDirected(
+    GAME_VECTOR pos, XYZ_32 vel, bool initial, LARA_GUN_TYPE weapon,
+    int32_t shade);

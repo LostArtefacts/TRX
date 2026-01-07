@@ -115,6 +115,7 @@
 - added surface-based step sounds
 - added cold breath effects
 - added gun shells
+- added gun smoke effects
 - added new ricochets
 - added flare lighting and sparks
 - added monochrome inventory backgrounds

@@ -5,6 +5,7 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/control.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/sound.h>
@@ -150,6 +151,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                         weapon_type, lara->target, lara_item, angles)) {
                     lara->right_arm.flash_gun = weapon->flash_time;
                     Spawn_GunShell(weapon_type, true);
+                    Gun_Smoke_OnFire(weapon_type, true);
                     if (!sound_already) {
                         M_FireSound(weapon->sample_num, false);
                     }
@@ -201,9 +203,11 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 if (weapon_type == LGT_DESERT_EAGLE) {
                     lara->right_arm.flash_gun = weapon->flash_time;
                     Spawn_GunShell(weapon_type, true);
+                    Gun_Smoke_OnFire(weapon_type, true);
                 } else {
                     lara->left_arm.flash_gun = weapon->flash_time;
                     Spawn_GunShell(weapon_type, false);
+                    Gun_Smoke_OnFire(weapon_type, false);
                 }
 
                 if (!sound_already) {
