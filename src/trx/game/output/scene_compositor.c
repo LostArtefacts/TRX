@@ -156,7 +156,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
         M_RenderSourcePass(p, SCENE_PASS_BLEND_SUB);
         glBlendEquation(GL_FUNC_ADD);
-        glBlendFunc(GL_ONE, GL_ONE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         M_RenderSourcePass(p, SCENE_PASS_BLEND_ADD);
         glDepthMask(GL_TRUE);
         glDisable(GL_CULL_FACE);
