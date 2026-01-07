@@ -1488,3 +1488,106 @@ void Sparks_TriggerRicochet(
     spark->dst_size.height = (Random_GetControl() & 1) + 1;
     spark->max_y_vel = 0;
 }
+
+void Sparks_TriggerGunSmoke(
+    const GAME_VECTOR pos, const bool initial, const LARA_GUN_TYPE weapon,
+    const int32_t shade)
+{
+    Sparks_TriggerGunSmokeDirected(pos, (XYZ_32) {}, initial, weapon, shade);
+}
+
+void Sparks_TriggerGunSmokeDirected(
+    const GAME_VECTOR pos, const XYZ_32 vel, const bool initial,
+    const LARA_GUN_TYPE weapon, const int32_t shade)
+{
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = 0;
+    spark->src_color.g = 0;
+    spark->src_color.b = 0;
+    spark->dst_color.r = shade << 2;
+    spark->dst_color.g = shade << 2;
+    spark->dst_color.b = shade << 2;
+    spark->col_fade_speed = 4;
+    spark->fade_to_black = 32 - (initial << 4);
+    spark->life = (Random_GetControl() & 3) + 40;
+    spark->s_life = spark->life;
+
+    if ((weapon == LGT_PISTOLS || weapon == LGT_MAGNUMS || weapon == LGT_UZIS)
+        && spark->dst_color.r > 64) {
+        spark->dst_color.r = 64;
+        spark->dst_color.g = 64;
+        spark->dst_color.b = 64;
+    }
+
+    spark->draw_type = 2;
+    spark->extras = 0;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+
+    if (initial) {
+        spark->vel.x = vel.x + (Random_GetControl() & 0x3FF) - 512;
+        spark->vel.y = vel.y + (Random_GetControl() & 0x3FF) - 512;
+        spark->vel.z = vel.z + (Random_GetControl() & 0x3FF) - 512;
+    } else {
+        spark->vel.x = ((Random_GetControl() & 0x1FF) - 256) >> 1;
+        spark->vel.y = ((Random_GetControl() & 0x1FF) - 256) >> 1;
+        spark->vel.z = ((Random_GetControl() & 0x1FF) - 256) >> 1;
+    }
+
+    spark->friction = 4;
+
+    if (Random_GetControl() & 1) {
+        if (Room_Get(Lara_GetItem()->room_num)->flags.wind) {
+            spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_OUTSIDE | SPARK_F_ROTATE
+                | SPARK_F_SPRITE | SPARK_F_SCALE;
+        } else {
+            spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE
+                | SPARK_F_SCALE;
+        }
+
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+
+        if (Random_GetControl() & 1) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+    } else if (Room_Get(Lara_GetItem()->room_num)->flags.wind) {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_OUTSIDE | SPARK_F_SPRITE
+            | SPARK_F_SCALE;
+    } else {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    }
+
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->scalar = 3;
+    spark->gravity = -2 - (Random_GetControl() & 1);
+    spark->max_y_vel = -2 - (Random_GetControl() & 1);
+
+    uint8_t size = (Random_GetControl() & 7)
+        - ((weapon == LGT_ROCKET || weapon == LGT_GRENADE) ? 0 : 12) + 24;
+
+    if (initial) {
+        spark->size.width = size >> 1;
+        spark->src_size.width = spark->size.width;
+        spark->dst_size.width = (size + 4) << 1;
+    } else {
+        spark->size.width = size >> 2;
+        spark->src_size.width = spark->size.width;
+        spark->dst_size.width = size;
+    }
+
+    if (initial) {
+        spark->size.height = size >> 1;
+        spark->src_size.height = spark->size.width;
+        spark->dst_size.height = (size + 4) << 1;
+    } else {
+        spark->size.height = size >> 2;
+        spark->src_size.height = spark->size.width;
+        spark->dst_size.height = size;
+    }
+}

@@ -6,6 +6,7 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/control.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
@@ -114,6 +115,7 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
 
     if (fired) {
         lara->right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
+        Gun_Smoke_OnFire(weapon_type, true);
         Sound_Effect(
             g_Weapons[weapon_type].sample_num, &lara_item->pos, SPM_NORMAL);
     }
@@ -139,6 +141,7 @@ static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
     if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
         lara->right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
         Spawn_GunShell(weapon_type, true);
+        Gun_Smoke_OnFire(weapon_type, true);
     }
 }
 
@@ -269,6 +272,8 @@ static void M_FireGrenade(void)
         lara->grenade_ammo.ammo--;
     }
     Stats_AddAmmoUsed();
+
+    Gun_Smoke_OnFire(LGT_GRENADE, true);
 }
 
 static void M_FireRocket(void)
@@ -325,6 +330,8 @@ static void M_FireRocket(void)
     if (g_TRVersion >= 3) {
         Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
     }
+
+    Gun_Smoke_OnFire(LGT_ROCKET, true);
 }
 
 static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)

@@ -111,4 +111,9 @@ typedef struct {
 
     MATRIX mesh_pos_matrices[LM_NUMBER_OF];
     bool mesh_pos_matrices_valid;
+
+    // TR3: persistent gun smoke spawned from muzzle after firing.
+    int32_t tr3_smoke_count_l;
+    int32_t tr3_smoke_count_r;
+    LARA_GUN_TYPE tr3_smoke_weapon;
 } LARA_INFO;
