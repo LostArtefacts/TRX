@@ -387,8 +387,9 @@ void Gun_HitTarget(
     Item_TakeDamage(item, damage, true);
 
     if (hit_pos != nullptr) {
-        const bool make_ricochet = g_Config.visuals.fix_texture_issues
-            && item->object_id == O_SCION_ITEM_3;
+        const bool make_ricochet = (g_Config.visuals.fix_texture_issues
+                                    && item->object_id == O_SCION_ITEM_3)
+            || item->object_id == O_WINSTON_ARMY;
 
         if (make_ricochet) {
             const GAME_VECTOR pos = {
