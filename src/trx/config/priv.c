@@ -281,8 +281,13 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_LoadOptions(root_obj, Config_GetOptionMap());
-    if (Gym_HasAssaultStats()) {
-        ConfigFile_LoadAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    if (Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
+        ConfigFile_LoadGymTrackStats(
+            root_obj, "assault_stats", &g_Config.profile.assault_stats);
+    }
+    if (Gym_TrackManager_HasStats(GYM_TRACK_QUAD)) {
+        ConfigFile_LoadGymTrackStats(
+            root_obj, "racetrack_stats", &g_Config.profile.racetrack_stats);
     }
     M_LoadLegacyInputConfig(root_obj);
     M_LoadInputConfig(root_obj);
@@ -292,8 +297,13 @@ void Config_LoadFromJSON(JSON_OBJECT *root_obj)
 void Config_DumpToJSON(JSON_OBJECT *root_obj)
 {
     ConfigFile_DumpOptions(root_obj, Config_GetOptionMap());
-    if (Gym_HasAssaultStats()) {
-        ConfigFile_DumpAssaultStats(root_obj, &g_Config.profile.assault_stats);
+    if (Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
+        ConfigFile_DumpGymTrackStats(
+            root_obj, "assault_stats", &g_Config.profile.assault_stats);
+    }
+    if (Gym_TrackManager_HasStats(GYM_TRACK_QUAD)) {
+        ConfigFile_DumpGymTrackStats(
+            root_obj, "racetrack_stats", &g_Config.profile.racetrack_stats);
     }
     M_DumpInputConfig(root_obj);
 }

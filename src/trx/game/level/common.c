@@ -29,7 +29,8 @@ void Level_Unload(void)
 
     Lara_InitialiseLoad(NO_ITEM);
 
-    Gym_ResetAssault();
+    Gym_TrackManager_Reset(GYM_TRACK_ASSAULT);
+    Gym_TrackManager_Reset(GYM_TRACK_QUAD);
     Creature_Reset();
     Object_Reset();
     Camera_Reset();

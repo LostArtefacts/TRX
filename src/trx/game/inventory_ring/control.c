@@ -377,7 +377,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_slot : -1;
 
     if (g_Config.gameplay.enable_timer_in_inventory
-        && !(Game_IsInGym() && Gym_HasAssaultStats())) {
+        && !(Game_IsInGym() && Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT))) {
         Stats_UpdateTimer();
     }
 

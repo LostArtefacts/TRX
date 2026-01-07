@@ -35,6 +35,7 @@
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/resize.h>
 #include <trx/game/ui/elements/row_arrows.h>
+#include <trx/game/ui/elements/scrollable_stack.h>
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/span.h>
 #include <trx/game/ui/elements/stack.h>

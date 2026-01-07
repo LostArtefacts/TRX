@@ -9,12 +9,14 @@
 #include <trx/screenshot.h>
 
 typedef struct {
-    struct {
-        uint32_t time;
-        uint32_t attempt_num;
-    } entries[MAX_ASSAULT_TIMES];
+    uint32_t time;
+    uint32_t attempt_num;
+} GYM_TRACK_ENTRY;
+
+typedef struct {
+    GYM_TRACK_ENTRY entries[MAX_ASSAULT_TIMES];
     uint32_t total_attempts;
-} ASSAULT_STATS;
+} GYM_TRACK_STATS;
 
 typedef struct {
     // This signifies whether the config was already read from disk.
@@ -34,7 +36,8 @@ typedef struct {
 
     struct {
         bool new_game_plus_unlock;
-        ASSAULT_STATS assault_stats;
+        GYM_TRACK_STATS assault_stats;
+        GYM_TRACK_STATS racetrack_stats;
     } profile;
 
     struct {

@@ -1439,7 +1439,7 @@ bool QuadBike_Control(void)
         }
     } else {
         if (Game_IsInGym()) {
-            Gym_ResetAssault();
+            Gym_TrackManager_Reset(GYM_TRACK_ASSAULT);
         }
 
         m_ExhaustSmokeVel = 0;

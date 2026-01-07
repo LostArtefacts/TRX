@@ -118,7 +118,8 @@
 - added high-resolutions 16:9 and 4:3 credit images
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - added support for the serif font
-- added support for colored text (Assault Course colors not yet implemented)
+- added support for colored text
+- added Assault Course and Race Track course mechanics
 - added Quad Bike control
 - added Animating Item 1-6 control
 - added Electrical Light control
@@ -135,6 +136,7 @@
 - added Asasult Course penalty system
 - added an option to fix the MP5 accuracy while running
 - improved run-to-crawl transition
+- improved text colors of the Assault Course statistics and timers
 - changed The River Ganges, City and All Hallows to have rain
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect

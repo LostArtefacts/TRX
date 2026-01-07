@@ -30,7 +30,9 @@ int ConfigFile_ReadEnum(
 void ConfigFile_WriteEnum(
     JSON_OBJECT *obj, const char *name, int value, const char *enum_name);
 
-bool ConfigFile_LoadAssaultStats(
-    JSON_OBJECT *root_obj, ASSAULT_STATS *assault_stats);
-bool ConfigFile_DumpAssaultStats(
-    JSON_OBJECT *root_obj, const ASSAULT_STATS *assault_stats);
+bool ConfigFile_LoadGymTrackStats(
+    JSON_OBJECT *root_obj, const char *key_name,
+    GYM_TRACK_STATS *assault_stats);
+bool ConfigFile_DumpGymTrackStats(
+    JSON_OBJECT *root_obj, const char *key_name,
+    const GYM_TRACK_STATS *assault_stats);

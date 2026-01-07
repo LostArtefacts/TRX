@@ -8,24 +8,37 @@
 void Gym_SetInventoryOpenEnabled(bool enabled);
 bool Gym_IsInventoryOpenEnabled(void);
 
-bool Gym_HasAssaultStats(void);
-bool Gym_IsAssaultTimerDisplay(void);
-bool Gym_IsAssaultTimerActive(void);
-ASSAULT_STATS Gym_GetAssaultStats(void);
+typedef enum {
+    GYM_TRACK_NONE = -1,
+    GYM_TRACK_QUAD,
+    GYM_TRACK_ASSAULT,
+    GYM_TRACK_NUMBER_OF
+} GYM_TRACK_TYPE;
+
+GYM_TRACK_TYPE Gym_TrackManager_GetActiveTrackType(void);
+bool Gym_TrackManager_HasStats(GYM_TRACK_TYPE track);
+const GYM_TRACK_STATS *Gym_TrackManager_GetStats(GYM_TRACK_TYPE track);
+bool Gym_TrackManager_IsTimerDisplay(GYM_TRACK_TYPE track);
+bool Gym_TrackManager_IsTimerActive(GYM_TRACK_TYPE track);
+void Gym_TrackManager_Reset(GYM_TRACK_TYPE track);
+void Gym_TrackManager_Start(GYM_TRACK_TYPE track);
+void Gym_TrackManager_Stop(GYM_TRACK_TYPE track);
+void Gym_TrackManager_Finish(GYM_TRACK_TYPE track);
+
+// Assault-only extensions (no-op / 0 for other tracks).
+void Gym_TrackManager_AddPenaltySeconds(GYM_TRACK_TYPE track, int32_t seconds);
+void Gym_TrackManager_DecreaseTargetCount(GYM_TRACK_TYPE track);
+int32_t Gym_TrackManager_GetPenaltyDisplayTimer(GYM_TRACK_TYPE track);
+int32_t Gym_TrackManager_GetPenaltyFrames(GYM_TRACK_TYPE track);
+int32_t Gym_TrackManager_GetTargetPenaltyFrames(GYM_TRACK_TYPE track);
+bool Gym_TrackManager_OnPadContact(GYM_TRACK_TYPE track, bool on_ground);
+
+// Quad-only extensions (0 for other tracks).
+int32_t Gym_TrackManager_GetLapTimeDisplayTimer(GYM_TRACK_TYPE track);
+int32_t Gym_TrackManager_GetLapTime(GYM_TRACK_TYPE track);
 
 // TR3 assault course extensions (targets + penalties).
 void Gym_Control(void);
-void Gym_Assault_AddPenaltySeconds(int32_t seconds);
-void Gym_Assault_DecreaseTargetCount(void);
-int32_t Gym_Assault_GetPenaltyDisplayTimer(void);
-int32_t Gym_Assault_GetPenaltyFrames(void);
-int32_t Gym_Assault_GetTargetPenaltyFrames(void);
-bool Gym_Assault_OnPadContact(bool on_ground);
-
-void Gym_ResetAssault(void);
-void Gym_StartAssault(void);
-void Gym_StopAssault(void);
-void Gym_FinishAssault(void);
 
 // Potentially converts the requested track id based on Lara's state. Returns
 // true if the track should be played.

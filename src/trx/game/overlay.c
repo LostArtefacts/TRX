@@ -41,6 +41,121 @@ typedef struct {
 static UI_OVERLAY_STATE *m_UI = nullptr;
 static DISPLAY_PICKUP m_Pickups[OUTPUT_UI_MAX_PICKUPS] = {};
 
+static const RGBA_F m_WhiteTextColor[4] = {
+    { 1.0f, 1.0f, 1.0f, 1.0f },
+    { 1.0f, 1.0f, 1.0f, 1.0f },
+    { 1.0f, 1.0f, 1.0f, 1.0f },
+    { 1.0f, 1.0f, 1.0f, 1.0f },
+};
+
+static const RGBA_F m_NeutralTextColor[4] = {
+    { 1.0f, 1.0f, 1.0f, 1.0f },
+    { 1.0f, 1.0f, 1.0f, 1.0f },
+    { 0.25f, 0.25f, 0.25f, 1.0f },
+    { 0.25f, 0.25f, 0.25f, 1.0f },
+};
+
+static const RGBA_F m_GreyTextColor[4] = {
+    { 0.5f, 0.5f, 0.5f, 1.0f },
+    { 0.5f, 0.5f, 0.5f, 1.0f },
+    { 0.1f, 0.1f, 0.1f, 1.0f },
+    { 0.1f, 0.1f, 0.1f, 1.0f },
+};
+
+static const RGBA_F m_GreenTextColor[4] = {
+    { 0.35f, 0.75f, 0.2f, 1.0f },
+    { 0.35f, 0.75f, 0.2f, 1.0f },
+    { 0.1f, 0.25f, 0.0f, 1.0f },
+    { 0.1f, 0.25f, 0.0f, 1.0f },
+};
+
+static const RGBA_F m_RedTextColor[4] = {
+    { 0.9f, 0.2f, 0.0f, 1.0f },
+    { 0.9f, 0.2f, 0.0f, 1.0f },
+    { 0.3f, 0.0f, 0.0f, 1.0f },
+    { 0.3f, 0.0f, 0.0f, 1.0f },
+};
+
+static const RGBA_F m_PinkTextColor[4] = {
+    { 1.0f, 0.0f, 1.0f, 1.0f },
+    { 1.0f, 0.0f, 1.0f, 1.0f },
+    { 0.25f, 0.0f, 0.25f, 1.0f },
+    { 0.25f, 0.0f, 0.25f, 1.0f },
+};
+
+static const char *M_FormatAssaultTimeText(
+    const int32_t frames, const bool placeholder)
+{
+    if (placeholder && frames <= 0) {
+        return "--:--.-";
+    }
+    const int32_t total_sec = frames / LOGIC_FPS;
+    const int32_t frame = frames % LOGIC_FPS;
+    return String_FormatStatic(
+        "%d:%02d.%d", total_sec / 60, total_sec % 60, frame * 10 / LOGIC_FPS);
+}
+
+static int32_t M_DrawAssaultTimerText(
+    const OBJECT *const digits_obj, const char *const text, int32_t x,
+    const int32_t y, const RGBA_F color[4])
+{
+    const int32_t scale_h = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t scale_v = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d0 = Scaler_Calc(-6, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d1 = Scaler_Calc(14, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d2 = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
+
+    for (const char *c = text; *c != '\0'; c++) {
+        if (*c == '-') {
+            x += d2;
+            continue;
+        }
+
+        int32_t mesh_num = 0;
+        int32_t offset = 0;
+        int32_t width = 0;
+        if (*c == ':') {
+            mesh_num = 10;
+            offset = d0;
+            width = d1;
+        } else if (*c == '.') {
+            mesh_num = 11;
+            offset = d0;
+            width = d1;
+        } else {
+            mesh_num = *c - '0';
+            offset = 0;
+            width = d2;
+        }
+
+        x += offset;
+        UI_ScheduleDrawScreenSprite(
+            x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + mesh_num, color);
+        x += width;
+    }
+
+    return x;
+}
+
+static int32_t M_MeasureAssaultTimerText(const char *const text)
+{
+    const int32_t d0 = Scaler_Calc(-6, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d1 = Scaler_Calc(14, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d2 = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
+
+    int32_t w = 0;
+    for (const char *c = text; *c != '\0'; c++) {
+        if (*c == ':' || *c == '.') {
+            w += d0 + d1;
+        } else if (*c == '-') {
+            w += d2;
+        } else {
+            w += d2;
+        }
+    }
+    return w;
+}
+
 static bool M_IsSprite(const DISPLAY_PICKUP *const pickup)
 {
     return !g_Config.visuals.enable_3d_pickups
@@ -64,93 +179,47 @@ static float M_Ease(float current, const float start, const float goal)
     }
 }
 
-static void M_DrawAssaultTimer(void)
+static void M_DrawTrackTimer(const GYM_TRACK_TYPE track_type)
 {
-    if (!Game_IsInGym() || !Gym_IsAssaultTimerDisplay()) {
-        return;
-    }
-
-    const RESUME_INFO *const resume =
-        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    const int32_t total_sec = resume->stats.timer / LOGIC_FPS;
-    const int32_t frame = resume->stats.timer % LOGIC_FPS;
-    const char *const buffer = String_FormatStatic(
-        "%d:%02d.%d", total_sec / 60, total_sec % 60, frame * 10 / LOGIC_FPS);
-
-    const int32_t scale_h = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t scale_v = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
-
-    typedef enum {
-        ASSAULT_GLYPH_DECIMAL_POINT,
-        ASSAULT_GLYPH_COLON,
-        ASSAULT_GLYPH_DIGIT,
-    } ASSAULT_GLYPH_TYPE;
-
-    struct {
-        int32_t offset;
-        int32_t width;
-    } glyph_info[] = {
-        [ASSAULT_GLYPH_DECIMAL_POINT] = { .offset = -6, .width = 14 },
-        [ASSAULT_GLYPH_COLON] = { .offset = -6, .width = 14 },
-        [ASSAULT_GLYPH_DIGIT] = { .offset = 0, .width = 20 },
-    };
-
-    const int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
-    int32_t x = Viewport_GetCenterX(VIEWPORT_UI)
-        - Scaler_Calc(50, SCALER_TARGET_ASSAULT_DIGITS);
-
-    const RGBA_F neutral[4] = {
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-    };
-
-    for (const char *c = buffer; *c != '\0'; c++) {
-        ASSAULT_GLYPH_TYPE glyph_type;
-        int32_t mesh_num;
-        if (*c == ':') {
-            glyph_type = ASSAULT_GLYPH_COLON;
-            mesh_num = 10;
-        } else if (*c == '.') {
-            glyph_type = ASSAULT_GLYPH_DECIMAL_POINT;
-            mesh_num = 11;
-        } else {
-            glyph_type = ASSAULT_GLYPH_DIGIT;
-            mesh_num = *c - '0';
-        }
-
-        x += Scaler_Calc(
-            glyph_info[glyph_type].offset, SCALER_TARGET_ASSAULT_DIGITS);
-        UI_ScheduleDrawScreenSprite(
-            x, y, 0, scale_h, scale_v,
-            Object_Get(O_ASSAULT_DIGITS)->mesh_idx + mesh_num, neutral);
-        x += Scaler_Calc(
-            glyph_info[glyph_type].width, SCALER_TARGET_ASSAULT_DIGITS);
-    }
-}
-
-static void M_DrawAssaultPenalties(const bool is_target_penalty)
-{
-    if (g_TRVersion < 3) {
-        return;
-    }
-    if (!Game_IsInGym() || !Gym_IsAssaultTimerDisplay()) {
-        return;
-    }
-    if (Gym_Assault_GetPenaltyDisplayTimer() <= 0) {
+    if (!Gym_TrackManager_IsTimerDisplay(track_type)) {
         return;
     }
 
     const OBJECT *const digits_obj = Object_Get(O_ASSAULT_DIGITS);
     if (!digits_obj->loaded) {
-        LOG_INFO("uh");
+        return;
+    }
+
+    const RESUME_INFO *const resume =
+        Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    const char *const buffer =
+        M_FormatAssaultTimeText(resume->stats.timer, false);
+
+    const int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
+    int32_t x = Viewport_GetCenterX(VIEWPORT_UI)
+        - Scaler_Calc(50, SCALER_TARGET_ASSAULT_DIGITS);
+
+    M_DrawAssaultTimerText(
+        digits_obj, buffer, x, y,
+        g_TRVersion < 3 ? m_WhiteTextColor : m_NeutralTextColor);
+}
+
+static void M_DrawAssaultPenalties(
+    const GYM_TRACK_TYPE track_type, const bool is_target_penalty)
+{
+    if (!Gym_TrackManager_IsTimerDisplay(track_type)
+        || Gym_TrackManager_GetPenaltyDisplayTimer(track_type) <= 0) {
+        return;
+    }
+
+    const OBJECT *const digits_obj = Object_Get(O_ASSAULT_DIGITS);
+    if (!digits_obj->loaded) {
         return;
     }
 
     const int32_t timer = is_target_penalty
-        ? Gym_Assault_GetTargetPenaltyFrames()
-        : Gym_Assault_GetPenaltyFrames();
+        ? Gym_TrackManager_GetTargetPenaltyFrames(track_type)
+        : Gym_TrackManager_GetPenaltyFrames(track_type);
     if (timer <= 0) {
         return;
     }
@@ -173,23 +242,10 @@ static void M_DrawAssaultPenalties(const bool is_target_penalty)
         - Scaler_Calc(
             is_target_penalty ? 193 : 175, SCALER_TARGET_ASSAULT_DIGITS);
     int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
-    if (is_target_penalty && Gym_Assault_GetPenaltyFrames() != 0) {
+    if (is_target_penalty
+        && Gym_TrackManager_GetPenaltyFrames(track_type) != 0) {
         y = Scaler_Calc(64, SCALER_TARGET_ASSAULT_DIGITS);
     }
-
-    const RGBA_F neutral[4] = {
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f },
-    };
-
-    const RGBA_F text[4] = {
-        { 1.0f, 0.0f, 1.0f, 1.0f },
-        { 1.0f, 0.0f, 1.0f, 1.0f },
-        { 0.25f, 0.0f, 0.25f, 1.0f },
-        { 0.25f, 0.0f, 0.25f, 1.0f },
-    };
 
     for (const char *c = buffer; *c != '\0'; c++) {
         if (*c == ' ') {
@@ -198,31 +254,80 @@ static void M_DrawAssaultPenalties(const bool is_target_penalty)
             x += d0;
             UI_ScheduleDrawScreenSprite(
                 x, y + p, 0, scale_h, scale_v, digits_obj->mesh_idx + 12,
-                neutral);
+                g_TRVersion < 3 ? m_WhiteTextColor : m_NeutralTextColor);
             x += d1 + (p * 2);
         } else if (*c == 's') {
             x += d0;
             UI_ScheduleDrawScreenSprite(
                 x - (p * 4), y, 0, scale_h, scale_v, digits_obj->mesh_idx + 13,
-                text);
+                m_PinkTextColor);
             x += d1;
         } else if (*c == ':') {
             x += d0;
             UI_ScheduleDrawScreenSprite(
-                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 10, text);
+                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 10,
+                m_PinkTextColor);
             x += d1;
         } else if (*c == '.') {
             x += d0;
             UI_ScheduleDrawScreenSprite(
-                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 11, text);
+                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 11,
+                m_PinkTextColor);
             x += d1;
         } else {
             UI_ScheduleDrawScreenSprite(
                 x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + (*c - '0'),
-                text);
+                m_PinkTextColor);
             x += d2;
         }
     }
+}
+
+static int32_t M_GetBestTrackTime(const GYM_TRACK_TYPE track_type)
+{
+    const GYM_TRACK_STATS *const stats = Gym_TrackManager_GetStats(track_type);
+    return stats->total_attempts > 0 ? (int32_t)stats->entries[0].time : 0;
+}
+
+static void M_DrawRacetrackLapTimes(const GYM_TRACK_TYPE track_type)
+{
+    const int32_t last_lap_frames = Gym_TrackManager_GetLapTime(track_type);
+    if (last_lap_frames <= 0) {
+        return;
+    }
+
+    const OBJECT *const digits_obj = Object_Get(O_ASSAULT_DIGITS);
+    if (!digits_obj->loaded) {
+        return;
+    }
+
+    const int32_t best_lap_frames = M_GetBestTrackTime(track_type);
+    const bool is_best_lap =
+        best_lap_frames > 0 && last_lap_frames == best_lap_frames;
+
+    const char *const last_text =
+        M_FormatAssaultTimeText(last_lap_frames, true);
+    const char *const best_text = best_lap_frames > 0
+        ? M_FormatAssaultTimeText(best_lap_frames, true)
+        : "";
+
+    const int32_t w_last = M_MeasureAssaultTimerText(last_text);
+    const int32_t w_best = M_MeasureAssaultTimerText(best_text);
+    const int32_t gap = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
+
+    const int32_t cx = Viewport_GetCenterX(VIEWPORT_UI);
+    const int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
+
+    int32_t x = cx - w_last / 2;
+    x = M_DrawAssaultTimerText(
+        digits_obj, last_text, x, y,
+        is_best_lap               ? m_GreenTextColor
+            : best_lap_frames > 0 ? m_RedTextColor
+                                  : m_NeutralTextColor);
+    x += gap;
+    M_DrawAssaultTimerText(
+        digits_obj, best_text, x, y,
+        is_best_lap ? m_GreenTextColor : m_GreyTextColor);
 }
 
 static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
@@ -247,10 +352,10 @@ static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
         .z = Output_GetNearZ_UI(),
         .shade = SHADE_NEUTRAL,
         .color = {
-            [0] = { 1.0f, 1.0f, 1.0f, 1.0f },
-            [1] = { 1.0f, 1.0f, 1.0f, 1.0f },
-            [2] = { 1.0f, 1.0f, 1.0f, 1.0f },
-            [3] = { 1.0f, 1.0f, 1.0f, 1.0f },
+            m_WhiteTextColor[0],
+            m_WhiteTextColor[1],
+            m_WhiteTextColor[2],
+            m_WhiteTextColor[3],
         },
     });
 }
@@ -383,11 +488,22 @@ void Overlay_Draw(void)
 
 void Overlay_DrawGameInfo(void)
 {
-    if (Game_IsPlaying()) {
-        M_DrawPickups();
-        M_DrawAssaultTimer();
-        M_DrawAssaultPenalties(false);
-        M_DrawAssaultPenalties(true);
+    if (!Game_IsPlaying()) {
+        return;
+    }
+
+    M_DrawPickups();
+
+    if (Gym_TrackManager_GetLapTimeDisplayTimer(GYM_TRACK_QUAD) > 0) {
+        M_DrawRacetrackLapTimes(GYM_TRACK_QUAD);
+    } else {
+        const GYM_TRACK_TYPE track_type = Gym_TrackManager_GetActiveTrackType();
+        if (track_type == GYM_TRACK_NONE) {
+            return;
+        }
+        M_DrawTrackTimer(track_type);
+        M_DrawAssaultPenalties(track_type, false);
+        M_DrawAssaultPenalties(track_type, true);
     }
 }
 

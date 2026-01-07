@@ -15,37 +15,55 @@ static void M_FlipMap(ITEM *const item)
 
 static void M_AssaultStart(ITEM *const item)
 {
-    Gym_StartAssault();
+    Gym_TrackManager_Start(GYM_TRACK_ASSAULT);
     Room_SetFlipEffect(-1);
 }
 
 static void M_AssaultStop(ITEM *const item)
 {
-    Gym_StopAssault();
+    Gym_TrackManager_Stop(GYM_TRACK_ASSAULT);
     Room_SetFlipEffect(-1);
 }
 
 static void M_AssaultReset(ITEM *const item)
 {
-    Gym_ResetAssault();
+    Gym_TrackManager_Reset(GYM_TRACK_ASSAULT);
     Room_SetFlipEffect(-1);
 }
 
 static void M_AssaultFinished(ITEM *const item)
 {
-    Gym_FinishAssault();
+    Gym_TrackManager_Finish(GYM_TRACK_ASSAULT);
     Room_SetFlipEffect(-1);
 }
 
 static void M_AssaultPenalty8(ITEM *const item)
 {
-    Gym_Assault_AddPenaltySeconds(8);
+    Gym_TrackManager_AddPenaltySeconds(GYM_TRACK_ASSAULT, 8);
     Room_SetFlipEffect(-1);
 }
 
 static void M_AssaultPenalty30(ITEM *const item)
 {
-    Gym_Assault_AddPenaltySeconds(30);
+    Gym_TrackManager_AddPenaltySeconds(GYM_TRACK_ASSAULT, 30);
+    Room_SetFlipEffect(-1);
+}
+
+static void M_RacetrackStart(ITEM *const item)
+{
+    Gym_TrackManager_Start(GYM_TRACK_QUAD);
+    Room_SetFlipEffect(-1);
+}
+
+static void M_RacetrackReset(ITEM *const item)
+{
+    Gym_TrackManager_Stop(GYM_TRACK_QUAD);
+    Room_SetFlipEffect(-1);
+}
+
+static void M_RacetrackFinished(ITEM *const item)
+{
+    Gym_TrackManager_Finish(GYM_TRACK_QUAD);
     Room_SetFlipEffect(-1);
 }
 
@@ -57,3 +75,6 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_START, M_AssaultStart)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_FINISHED, M_AssaultFinished)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_PENALTY_8, M_AssaultPenalty8)
 REGISTER_ITEM_ACTION(ITEM_ACTION_ASSAULT_PENALTY_30, M_AssaultPenalty30)
+REGISTER_ITEM_ACTION(ITEM_ACTION_RACETRACK_START, M_RacetrackStart)
+REGISTER_ITEM_ACTION(ITEM_ACTION_RACETRACK_RESET, M_RacetrackReset)
+REGISTER_ITEM_ACTION(ITEM_ACTION_RACETRACK_FINISHED, M_RacetrackFinished)

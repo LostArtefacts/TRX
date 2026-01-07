@@ -1,6 +1,7 @@
 #include <trx/game/gym.h>
 
 #include <trx/config.h>
+#include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
@@ -17,22 +18,39 @@
 #define M_NO_TIME (-1)
 #define M_MAX_ASSAULT_TIME_FRAMES (60 * 60 * LOGIC_FPS - 3) // 59:59
 
-static int32_t m_IsInventoryOpenEnabled = -1;
-static bool m_IsAssaultTimerDisplay = false;
-static bool m_IsAssaultTimerActive = false;
-static int16_t m_CompletionTimer = 0;
+typedef struct {
+    int32_t is_inventory_open_enabled;
+    int16_t completion_timer;
+    GYM_TRACK_TYPE active_track_type;
 
-static int32_t m_AssaultPenaltyDisplayTimer = 0;
-static int32_t m_AssaultPenaltyFrames = 0;
-static int32_t m_AssaultTargetPenaltyFrames = 0;
-static int32_t m_AssaultTargetsRemaining = 0;
-static int32_t m_AssaultTimerAutoHideTimer = 0;
-static bool m_AssaultPadTouchedThisFrame = false;
-static bool m_AssaultPadLock = false;
+    struct {
+        bool timer_display;
+        bool timer_active;
+        int32_t penalty_display_timer;
+        int32_t penalty_frames;
+        int32_t target_penalty_frames;
+        int32_t targets_remaining;
+        int32_t timer_auto_hide_timer;
+        bool pad_touched_this_frame;
+        bool pad_lock;
+    } assault_course;
+
+    struct {
+        bool timer_display;
+        bool timer_active;
+        int32_t lap_time;
+        int32_t lap_time_display_timer;
+    } quad_course;
+} M_PRIV;
+
+static M_PRIV m_Priv = {
+    .is_inventory_open_enabled = -1,
+};
 
 static void M_ResetAssaultTargets(void)
 {
-    m_AssaultTargetsRemaining = 0;
+    M_PRIV *const p = &m_Priv;
+    p->assault_course.targets_remaining = 0;
 
     const OBJECT *const obj = Object_Get(O_ASSAULT_TARGET);
     if (!obj->loaded) {
@@ -54,23 +72,23 @@ static void M_ResetAssaultTargets(void)
             obj->initialise_func(item_num);
         }
 
-        m_AssaultTargetsRemaining++;
+        p->assault_course.targets_remaining++;
     }
 }
 
 static int32_t M_GetBestTime(void)
 {
-    const ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
+    const GYM_TRACK_STATS *const assault = &g_Config.profile.assault_stats;
     return assault->total_attempts > 0 ? (int32_t)assault->entries[0].time
                                        : M_NO_TIME;
 }
 
-static bool M_StoreAssaultTime(const uint32_t time)
+static bool M_StoreCourseTime(GYM_TRACK_STATS *const stats, const uint32_t time)
 {
-    ASSAULT_STATS *const assault = &g_Config.profile.assault_stats;
     int32_t insert_idx = -1;
-    for (int32_t i = 0; i < MAX_ASSAULT_TIMES; i++) {
-        if (assault->entries[i].time == 0 || time < assault->entries[i].time) {
+    const int32_t limit = MAX_ASSAULT_TIMES;
+    for (int32_t i = 0; i < limit; i++) {
+        if (stats->entries[i].time == 0 || time < stats->entries[i].time) {
             insert_idx = i;
             break;
         }
@@ -79,43 +97,36 @@ static bool M_StoreAssaultTime(const uint32_t time)
         return false;
     }
 
-    for (int32_t i = MAX_ASSAULT_TIMES - 1; i > insert_idx; i--) {
-        assault->entries[i] = assault->entries[i - 1];
+    for (int32_t i = limit - 1; i > insert_idx; i--) {
+        stats->entries[i] = stats->entries[i - 1];
     }
 
-    assault->total_attempts++;
-    assault->entries[insert_idx].time = time;
-    assault->entries[insert_idx].attempt_num = assault->total_attempts;
+    stats->total_attempts++;
+    stats->entries[insert_idx].time = time;
+    stats->entries[insert_idx].attempt_num = stats->total_attempts;
     Config_Update();
     return true;
 }
 
+static bool M_IsOnQuadBike(void)
+{
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
+    return vehicle != nullptr && vehicle->object_id == O_QUAD_BIKE;
+}
+
 void Gym_SetInventoryOpenEnabled(const bool enabled)
 {
-    m_IsInventoryOpenEnabled = enabled;
+    M_PRIV *const p = &m_Priv;
+    p->is_inventory_open_enabled = enabled;
 }
 
 bool Gym_IsInventoryOpenEnabled(void)
 {
-    if (m_IsInventoryOpenEnabled == -1) {
-        m_IsInventoryOpenEnabled = g_TRVersion >= 2;
+    M_PRIV *const p = &m_Priv;
+    if (p->is_inventory_open_enabled == -1) {
+        p->is_inventory_open_enabled = g_TRVersion >= 2;
     }
-    return m_IsInventoryOpenEnabled;
-}
-
-bool Gym_IsAssaultTimerDisplay(void)
-{
-    return m_IsAssaultTimerDisplay;
-}
-
-bool Gym_IsAssaultTimerActive(void)
-{
-    return m_IsAssaultTimerActive;
-}
-
-ASSAULT_STATS Gym_GetAssaultStats(void)
-{
-    return g_Config.profile.assault_stats;
+    return p->is_inventory_open_enabled;
 }
 
 void Gym_Control(void)
@@ -124,121 +135,35 @@ void Gym_Control(void)
         return;
     }
 
-    if (m_AssaultPadLock && !m_AssaultPadTouchedThisFrame) {
-        m_AssaultPadLock = false;
-    }
-    m_AssaultPadTouchedThisFrame = false;
+    M_PRIV *const p = &m_Priv;
 
-    if (m_AssaultPenaltyDisplayTimer > 0) {
-        m_AssaultPenaltyDisplayTimer--;
+    if (p->assault_course.pad_lock
+        && !p->assault_course.pad_touched_this_frame) {
+        p->assault_course.pad_lock = false;
     }
-    if (!m_IsAssaultTimerActive && m_IsAssaultTimerDisplay
-        && m_AssaultTimerAutoHideTimer > 0) {
-        m_AssaultTimerAutoHideTimer--;
-        if (m_AssaultTimerAutoHideTimer == 0) {
-            m_IsAssaultTimerDisplay = false;
+    p->assault_course.pad_touched_this_frame = false;
+
+    if (p->assault_course.penalty_display_timer > 0) {
+        p->assault_course.penalty_display_timer--;
+    }
+    if (!p->assault_course.timer_active && p->assault_course.timer_display
+        && p->assault_course.timer_auto_hide_timer > 0) {
+        p->assault_course.timer_auto_hide_timer--;
+        if (p->assault_course.timer_auto_hide_timer == 0) {
+            p->assault_course.timer_display = false;
+            p->active_track_type = GYM_TRACK_NONE;
         }
     }
-}
 
-void Gym_Assault_AddPenaltySeconds(const int32_t seconds)
-{
-    if (g_TRVersion < 3) {
-        return;
-    }
-    if (!m_IsAssaultTimerActive) {
-        return;
-    }
-    if (seconds <= 0) {
-        return;
-    }
-
-    m_AssaultPenaltyDisplayTimer = 4 * LOGIC_FPS;
-    m_AssaultPenaltyFrames += seconds * LOGIC_FPS;
-    CLAMPG(m_AssaultPenaltyFrames, M_MAX_ASSAULT_TIME_FRAMES);
-}
-
-void Gym_Assault_DecreaseTargetCount(void)
-{
-    if (m_AssaultTargetsRemaining > 0) {
-        m_AssaultTargetsRemaining--;
+    if (p->quad_course.lap_time_display_timer > 0) {
+        p->quad_course.lap_time_display_timer--;
     }
 }
 
-int32_t Gym_Assault_GetPenaltyDisplayTimer(void)
+static void M_Assault_Finish(void)
 {
-    return m_AssaultPenaltyDisplayTimer;
-}
-
-int32_t Gym_Assault_GetPenaltyFrames(void)
-{
-    return m_AssaultPenaltyFrames;
-}
-
-int32_t Gym_Assault_GetTargetPenaltyFrames(void)
-{
-    return m_AssaultTargetPenaltyFrames;
-}
-
-bool Gym_Assault_OnPadContact(const bool on_ground)
-{
-    if (g_TRVersion < 3) {
-        return true;
-    }
-    if (!Game_IsInGym()) {
-        return true;
-    }
-
-    m_AssaultPadTouchedThisFrame = true;
-    if (!on_ground) {
-        return true;
-    }
-    if (m_AssaultPadLock) {
-        return false;
-    }
-
-    m_AssaultPadLock = true;
-    return true;
-}
-
-void Gym_ResetAssault(void)
-{
-    m_IsAssaultTimerActive = false;
-    m_IsAssaultTimerDisplay = false;
-    m_AssaultPenaltyFrames = 0;
-    m_AssaultTargetPenaltyFrames = 0;
-    m_AssaultPenaltyDisplayTimer = 0;
-    m_AssaultTargetsRemaining = 0;
-    m_AssaultTimerAutoHideTimer = 0;
-    m_AssaultPadTouchedThisFrame = false;
-    m_AssaultPadLock = false;
-}
-
-void Gym_StartAssault(void)
-{
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    resume->stats.timer = 0;
-    m_IsAssaultTimerActive = true;
-    m_IsAssaultTimerDisplay = true;
-    m_AssaultPenaltyFrames = 0;
-    m_AssaultTargetPenaltyFrames = 0;
-    m_AssaultPenaltyDisplayTimer = 0;
-    m_AssaultTimerAutoHideTimer = 0;
-    m_AssaultPadTouchedThisFrame = false;
-    m_AssaultPadLock = false;
-    M_ResetAssaultTargets();
-}
-
-void Gym_StopAssault(void)
-{
-    m_IsAssaultTimerActive = false;
-    m_IsAssaultTimerDisplay = true;
-    m_AssaultTimerAutoHideTimer = 0;
-}
-
-void Gym_FinishAssault(void)
-{
-    if (!m_IsAssaultTimerActive) {
+    M_PRIV *const p = &m_Priv;
+    if (!p->assault_course.timer_active) {
         return;
     }
 
@@ -246,24 +171,25 @@ void Gym_FinishAssault(void)
 
     uint32_t final_time = resume->stats.timer;
     if (g_TRVersion >= 3) {
-        m_AssaultPenaltyDisplayTimer = 10 * LOGIC_FPS;
-        m_AssaultTargetPenaltyFrames =
-            10 * LOGIC_FPS * m_AssaultTargetsRemaining;
-        CLAMPG(m_AssaultTargetPenaltyFrames, M_MAX_ASSAULT_TIME_FRAMES);
+        p->assault_course.penalty_display_timer = 10 * LOGIC_FPS;
+        p->assault_course.target_penalty_frames =
+            10 * LOGIC_FPS * p->assault_course.targets_remaining;
+        CLAMPG(
+            p->assault_course.target_penalty_frames, M_MAX_ASSAULT_TIME_FRAMES);
 
-        final_time += (uint32_t)m_AssaultPenaltyFrames
-            + (uint32_t)m_AssaultTargetPenaltyFrames;
+        final_time += (uint32_t)p->assault_course.penalty_frames
+            + (uint32_t)p->assault_course.target_penalty_frames;
         CLAMPG(final_time, M_MAX_ASSAULT_TIME_FRAMES);
         resume->stats.timer = final_time;
     }
 
-    M_StoreAssaultTime(final_time);
+    M_StoreCourseTime(&g_Config.profile.assault_stats, final_time);
 
     if (g_TRVersion >= 3) {
         if (final_time < (uint32_t)(180 * LOGIC_FPS)) {
             Music_Play(MX_TR3_GYM_HINT_FAST_TIME, MPM_ONCE);
         }
-        m_AssaultTimerAutoHideTimer = 15 * LOGIC_FPS;
+        p->assault_course.timer_auto_hide_timer = 15 * LOGIC_FPS;
     } else {
         const int32_t current_best_time = M_GetBestTime();
         if (current_best_time <= 0) {
@@ -287,12 +213,285 @@ void Gym_FinishAssault(void)
         }
     }
 
-    m_IsAssaultTimerActive = false;
+    p->assault_course.timer_active = false;
 }
 
-bool Gym_HasAssaultStats(void)
+static void M_Racetrack_Finish(void)
 {
-    return g_TRVersion >= 2;
+    if (!M_IsOnQuadBike()) {
+        return;
+    }
+
+    M_PRIV *const p = &m_Priv;
+    if (!p->quad_course.timer_active) {
+        return;
+    }
+
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    uint32_t final_time = resume->stats.timer;
+    CLAMPG(final_time, M_MAX_ASSAULT_TIME_FRAMES);
+    resume->stats.timer = final_time;
+
+    p->quad_course.lap_time = (int32_t)final_time;
+    p->quad_course.lap_time_display_timer = 10 * LOGIC_FPS;
+    M_StoreCourseTime(&g_Config.profile.racetrack_stats, final_time);
+    p->quad_course.timer_active = false;
+}
+
+GYM_TRACK_TYPE Gym_TrackManager_GetActiveTrackType(void)
+{
+    M_PRIV *const p = &m_Priv;
+    return p->active_track_type;
+}
+
+bool Gym_TrackManager_HasStats(const GYM_TRACK_TYPE track)
+{
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        return g_TRVersion >= 2;
+    case GYM_TRACK_QUAD:
+        return g_TRVersion >= 3;
+    default:
+        return false;
+    }
+}
+
+const GYM_TRACK_STATS *Gym_TrackManager_GetStats(const GYM_TRACK_TYPE track)
+{
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        return &g_Config.profile.assault_stats;
+    case GYM_TRACK_QUAD:
+        return &g_Config.profile.racetrack_stats;
+    default:
+        return nullptr;
+    }
+}
+
+bool Gym_TrackManager_IsTimerDisplay(const GYM_TRACK_TYPE track)
+{
+    M_PRIV *const p = &m_Priv;
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        return p->assault_course.timer_display;
+    case GYM_TRACK_QUAD:
+        return p->quad_course.timer_display;
+    default:
+        return false;
+    }
+}
+
+bool Gym_TrackManager_IsTimerActive(const GYM_TRACK_TYPE track)
+{
+    M_PRIV *const p = &m_Priv;
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        return p->assault_course.timer_active;
+    case GYM_TRACK_QUAD:
+        return p->quad_course.timer_active;
+    default:
+        return false;
+    }
+}
+
+void Gym_TrackManager_Reset(const GYM_TRACK_TYPE track)
+{
+    M_PRIV *const p = &m_Priv;
+    p->active_track_type = GYM_TRACK_NONE;
+
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        p->assault_course.timer_active = false;
+        p->assault_course.timer_display = false;
+        p->assault_course.penalty_frames = 0;
+        p->assault_course.target_penalty_frames = 0;
+        p->assault_course.penalty_display_timer = 0;
+        p->assault_course.targets_remaining = 0;
+        p->assault_course.timer_auto_hide_timer = 0;
+        p->assault_course.pad_touched_this_frame = false;
+        p->assault_course.pad_lock = false;
+        break;
+
+    case GYM_TRACK_QUAD:
+        p->quad_course.timer_active = false;
+        p->quad_course.timer_display = false;
+        p->quad_course.lap_time = 0;
+        p->quad_course.lap_time_display_timer = 0;
+        break;
+
+    default:
+        break;
+    }
+}
+
+void Gym_TrackManager_Start(const GYM_TRACK_TYPE track)
+{
+    M_PRIV *const p = &m_Priv;
+    p->active_track_type = track;
+
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
+    resume->stats.timer = 0;
+
+    switch (track) {
+    case GYM_TRACK_ASSAULT: {
+        p->assault_course.timer_active = true;
+        p->assault_course.timer_display = true;
+        p->assault_course.penalty_frames = 0;
+        p->assault_course.target_penalty_frames = 0;
+        p->assault_course.penalty_display_timer = 0;
+        p->assault_course.timer_auto_hide_timer = 0;
+        p->assault_course.pad_touched_this_frame = false;
+        p->assault_course.pad_lock = false;
+        M_ResetAssaultTargets();
+        break;
+    }
+
+    case GYM_TRACK_QUAD: {
+        if (!M_IsOnQuadBike()) {
+            return;
+        }
+
+        p->quad_course.timer_active = true;
+        p->quad_course.timer_display = true;
+        break;
+    default:
+        break;
+    }
+    }
+}
+
+void Gym_TrackManager_Stop(const GYM_TRACK_TYPE track)
+{
+    M_PRIV *const p = &m_Priv;
+    p->active_track_type = GYM_TRACK_NONE;
+
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        p->assault_course.timer_active = false;
+        p->assault_course.timer_display = true;
+        p->assault_course.timer_auto_hide_timer = 0;
+        break;
+
+    case GYM_TRACK_QUAD:
+        if (!M_IsOnQuadBike()) {
+            return;
+        }
+        p->quad_course.timer_active = false;
+        p->quad_course.timer_display = true;
+        break;
+
+    default:
+        break;
+    }
+}
+
+void Gym_TrackManager_Finish(const GYM_TRACK_TYPE track)
+{
+    M_PRIV *const p = &m_Priv;
+
+    switch (track) {
+    case GYM_TRACK_ASSAULT:
+        M_Assault_Finish();
+        break;
+
+    case GYM_TRACK_QUAD:
+        M_Racetrack_Finish();
+        break;
+
+    default:
+        break;
+    }
+}
+
+void Gym_TrackManager_AddPenaltySeconds(
+    const GYM_TRACK_TYPE track, const int32_t seconds)
+{
+    ASSERT(track == GYM_TRACK_ASSAULT);
+    M_PRIV *const p = &m_Priv;
+    if (seconds <= 0 || !p->assault_course.timer_active) {
+        return;
+    }
+
+    p->assault_course.penalty_display_timer = 4 * LOGIC_FPS;
+    p->assault_course.penalty_frames += seconds * LOGIC_FPS;
+    CLAMPG(p->assault_course.penalty_frames, M_MAX_ASSAULT_TIME_FRAMES);
+}
+
+void Gym_TrackManager_DecreaseTargetCount(const GYM_TRACK_TYPE track)
+{
+    ASSERT(track == GYM_TRACK_ASSAULT);
+    M_PRIV *const p = &m_Priv;
+    if (p->assault_course.targets_remaining > 0) {
+        p->assault_course.targets_remaining--;
+    }
+}
+
+int32_t Gym_TrackManager_GetPenaltyDisplayTimer(const GYM_TRACK_TYPE track)
+{
+    if (track != GYM_TRACK_ASSAULT) {
+        return 0;
+    }
+    M_PRIV *const p = &m_Priv;
+    return p->assault_course.penalty_display_timer;
+}
+
+int32_t Gym_TrackManager_GetPenaltyFrames(const GYM_TRACK_TYPE track)
+{
+    if (track != GYM_TRACK_ASSAULT) {
+        return 0;
+    }
+    M_PRIV *const p = &m_Priv;
+    return p->assault_course.penalty_frames;
+}
+
+int32_t Gym_TrackManager_GetTargetPenaltyFrames(const GYM_TRACK_TYPE track)
+{
+    if (track != GYM_TRACK_ASSAULT) {
+        return 0;
+    }
+    M_PRIV *const p = &m_Priv;
+    return p->assault_course.target_penalty_frames;
+}
+
+bool Gym_TrackManager_OnPadContact(
+    const GYM_TRACK_TYPE track, const bool on_ground)
+{
+    if (track != GYM_TRACK_ASSAULT) {
+        return true;
+    }
+    if (!Game_IsInGym()) {
+        return true;
+    }
+
+    M_PRIV *const p = &m_Priv;
+    p->assault_course.pad_touched_this_frame = true;
+    if (!on_ground) {
+        return true;
+    }
+    if (p->assault_course.pad_lock) {
+        return false;
+    }
+
+    p->assault_course.pad_lock = true;
+    return true;
+}
+
+int32_t Gym_TrackManager_GetLapTimeDisplayTimer(const GYM_TRACK_TYPE track)
+{
+    if (track != GYM_TRACK_QUAD) {
+        return 0;
+    }
+    M_PRIV *const p = &m_Priv;
+    return p->quad_course.lap_time_display_timer;
+}
+
+int32_t Gym_TrackManager_GetLapTime(const GYM_TRACK_TYPE track)
+{
+    if (track != GYM_TRACK_QUAD) {
+        return 0;
+    }
+    M_PRIV *const p = &m_Priv;
+    return p->quad_course.lap_time;
 }
 
 bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
@@ -334,10 +533,11 @@ bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
 
     case MX_TR1_GYM_HINT_25:
         if ((flags & IF_ONE_SHOT) != 0) {
-            m_CompletionTimer++;
-            if (m_CompletionTimer == LOGIC_FPS * 4) {
+            M_PRIV *const p = &m_Priv;
+            p->completion_timer++;
+            if (p->completion_timer == LOGIC_FPS * 4) {
                 Game_SetIsLevelComplete(true);
-                m_CompletionTimer = 0;
+                p->completion_timer = 0;
             }
         } else if (lara->current_anim_state != LS(LS_WATER_OUT)) {
             return false;
