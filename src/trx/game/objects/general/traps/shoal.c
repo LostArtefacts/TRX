@@ -1,5 +1,6 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/util.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
@@ -36,6 +37,13 @@ typedef struct {
     uint8_t speed;
     uint8_t acc;
     uint8_t swim;
+    struct {
+        struct {
+            XYZ_16 pos;
+            uint16_t angle; // 0..4095
+            uint8_t swim;
+        } prev, result;
+    } interp;
 } M_FISH;
 
 typedef struct {
@@ -203,6 +211,12 @@ static void M_SetupFish(M_PRIV *const p, const ITEM *const item)
     fish->angle = 0;
     fish->speed = ((Random_GetControl() & 0x3F) + 8);
     fish->swim = (Random_GetControl() & 0x3F);
+    fish->interp.prev.pos = fish->pos;
+    fish->interp.prev.angle = fish->angle;
+    fish->interp.prev.swim = fish->swim;
+    fish->interp.result.pos = fish->pos;
+    fish->interp.result.angle = fish->angle;
+    fish->interp.result.swim = fish->swim;
 
     for (int32_t i = 0; i < M_FISH_PER_SHOAL; i++) {
         fish = &p->fish[i + 1];
@@ -213,6 +227,12 @@ static void M_SetupFish(M_PRIV *const p, const ITEM *const item)
         fish->angle = Random_GetControl() & 0xFFF;
         fish->speed = (Random_GetControl() & 0x1F) + 32;
         fish->swim = Random_GetControl() & 0x3F;
+        fish->interp.prev.pos = fish->pos;
+        fish->interp.prev.angle = fish->angle;
+        fish->interp.prev.swim = fish->swim;
+        fish->interp.result.pos = fish->pos;
+        fish->interp.result.angle = fish->angle;
+        fish->interp.result.swim = fish->swim;
     }
 
     leader->on = true;
@@ -516,7 +536,7 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
-    const M_PRIV *const p = item->priv;
+    M_PRIV *const p = item->priv;
     if (p == nullptr) {
         return false;
     }
@@ -546,16 +566,57 @@ static bool M_Draw(const ITEM *const item)
     }
 
     const XYZ_32 base_pos = item->interp.result.pos;
-    const M_FISH *fish = &p->fish[1];
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+
+    M_FISH *fish = &p->fish[1];
 
     for (int32_t i = 0; i < M_FISH_PER_SHOAL; i++, fish++) {
-        const int32_t x = base_pos.x + fish->pos.x;
-        const int32_t y = base_pos.y + fish->pos.y;
-        const int32_t z = base_pos.z + fish->pos.z;
+        if (do_interp) {
+            fish->interp.result.pos.x = (int16_t)LERP(
+                (int32_t)fish->interp.prev.pos.x, (int32_t)fish->pos.x, ratio);
+            fish->interp.result.pos.y = (int16_t)LERP(
+                (int32_t)fish->interp.prev.pos.y, (int32_t)fish->pos.y, ratio);
+            fish->interp.result.pos.z = (int16_t)LERP(
+                (int32_t)fish->interp.prev.pos.z, (int32_t)fish->pos.z, ratio);
 
-        const int32_t swim_ang16 = fish->swim << 10;
+            fish->interp.result.angle =
+                (Math_AngleMean(
+                     fish->interp.prev.angle << 4, fish->angle << 4, ratio)
+                 >> 4)
+                & 0xFFF;
+
+            int32_t swim_diff =
+                (int32_t)fish->swim - (int32_t)fish->interp.prev.swim;
+            if (swim_diff > 32) {
+                swim_diff -= 64;
+            } else if (swim_diff < -32) {
+                swim_diff += 64;
+            }
+
+            int32_t swim_interp = LERP(
+                (int32_t)fish->interp.prev.swim,
+                (int32_t)fish->interp.prev.swim + swim_diff, ratio);
+            swim_interp %= 64;
+            if (swim_interp < 0) {
+                swim_interp += 64;
+            }
+            fish->interp.result.swim = swim_interp;
+        } else {
+            fish->interp.result.pos = fish->pos;
+            fish->interp.result.angle = fish->angle;
+            fish->interp.result.swim = fish->swim;
+        }
+
+        const int32_t x = base_pos.x + fish->interp.result.pos.x;
+        const int32_t y = base_pos.y + fish->interp.result.pos.y;
+        const int32_t z = base_pos.z + fish->interp.result.pos.z;
+
+        const int32_t swim_ang16 = fish->interp.result.swim << 10;
         const int32_t swim_wibble = Math_Sin(swim_ang16) >> 7;
-        const int32_t ang12 = (swim_wibble + fish->angle - 2048) & 0xFFF;
+        const int32_t ang12 =
+            (swim_wibble + fish->interp.result.angle - 2048) & 0xFFF;
 
         const int32_t size = ((128 * Math_Sin(i << 10)) >> W2V_SHIFT) + 192;
         const int32_t ang16 = ang12 << 4;
@@ -595,12 +656,7 @@ static bool M_Draw(const ITEM *const item)
         shade += 80;
         CLAMP(shade, 0, 255);
 
-        const RGBA_8888 color = {
-            shade,
-            shade,
-            shade,
-            255,
-        };
+        const RGBA_8888 color = { shade, shade, shade, 255 };
         const RGBA_8888 tri_color[3] = { color, color, color };
 
         // OG flips the UV mapping depending on the shoal number (tropical
@@ -629,6 +685,14 @@ static bool M_Draw(const ITEM *const item)
             OutputSource_PolyFX_StageTriExtUV(
                 tri_world, uvw, texture_size, nullptr, tri_color,
                 VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND);
+        }
+    }
+
+    if (Interpolation_IsActive() && ratio >= 1.0) {
+        for (int32_t i = 0; i < M_FISH_PER_SHOAL + 1; i++) {
+            p->fish[i].interp.prev.pos = p->fish[i].pos;
+            p->fish[i].interp.prev.angle = p->fish[i].angle;
+            p->fish[i].interp.prev.swim = p->fish[i].swim;
         }
     }
 
