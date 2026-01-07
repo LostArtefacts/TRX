@@ -8,6 +8,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/random.h>
+#include <trx/version.h>
 
 static bool m_CacheMatrices = false;
 
@@ -180,7 +181,8 @@ static bool M_Draw_I(
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots_1, mesh_rots_2, clip);
 
-        if (lara->gun_type == LGT_FLARE && lara->left_arm.flash_gun) {
+        if (g_TRVersion < 3 && lara->gun_type == LGT_FLARE
+            && lara->left_arm.flash_gun) {
             Gun_DrawFlash(LGT_FLARE, clip, true);
         }
         Matrix_Pop();
@@ -475,7 +477,8 @@ bool Lara_Draw(const ITEM *const item)
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots, nullptr, clip);
 
-        if (lara->gun_type == LGT_FLARE && lara->left_arm.flash_gun) {
+        if (g_TRVersion < 3 && lara->gun_type == LGT_FLARE
+            && lara->left_arm.flash_gun) {
             Gun_DrawFlash(LGT_FLARE, clip, false);
         }
 

@@ -6,8 +6,11 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/general/flare_item.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
+#include <trx/version.h>
 
 typedef enum {
     // clang-format off
@@ -20,31 +23,50 @@ typedef enum {
 } M_LARA_FLARE_ANIMATION;
 
 typedef enum {
-    LF_FL_HOLD_FT = 1,
-    LF_FL_THROW_FT = 32,
-    LF_FL_DRAW_FT = 39,
-    LF_FL_IGNITE_FT = 23,
-    LF_FL_2_HOLD_FT = 15,
+    // clang-format off
+    LF_FL_HOLD_FT       = 1,
+    LF_FL_THROW_FT      = 32,
+    LF_FL_DRAW_FT       = 39,
+    LF_FL_IGNITE_FT     = 23,
+    LF_FL_2_HOLD_FT     = 15,
 
-    LF_FL_HOLD = 0,
-    LF_FL_THROW = (LF_FL_HOLD + LF_FL_HOLD_FT), // = 1
+    LF_FL_HOLD          = 0,
+    LF_FL_THROW         = (LF_FL_HOLD + LF_FL_HOLD_FT), // = 1
     LF_FL_THROW_RELEASE = (LF_FL_THROW + 20), // = 21
-    LF_FL_DRAW = (LF_FL_THROW + LF_FL_THROW_FT), // = 33
-    LF_FL_IGNITE = (LF_FL_DRAW + LF_FL_DRAW_FT), // = 72
-    LF_FL_2_HOLD = (LF_FL_IGNITE + LF_FL_IGNITE_FT), // = 95
-    LF_FL_END = (LF_FL_2_HOLD + LF_FL_2_HOLD_FT), // = 110
-    LF_FL_DRAW_GOT_IT = (LF_FL_DRAW + 13), // = 46
+    LF_FL_DRAW          = (LF_FL_THROW + LF_FL_THROW_FT), // = 33
+    LF_FL_IGNITE        = (LF_FL_DRAW + LF_FL_DRAW_FT), // = 72
+    LF_FL_2_HOLD        = (LF_FL_IGNITE + LF_FL_IGNITE_FT), // = 95
+    LF_FL_END           = (LF_FL_2_HOLD + LF_FL_2_HOLD_FT), // = 110
+    LF_FL_DRAW_GOT_IT   = (LF_FL_DRAW + 13), // = 46
+    // clang-format on
 } M_LARA_FLARE_FRAME;
 
 static const LARA_TRX_STATE m_HoldStates[] = {
-    LS_WALK,      LS_STOP,      LS_POSE,       LS_TURN_RIGHT,  LS_TURN_LEFT,
-    LS_WALK_BACK, LS_FAST_TURN, LS_STEP_LEFT,  LS_STEP_RIGHT,  LS_WADE,
-    LS_PICKUP,    LS_SWITCH_ON, LS_SWITCH_OFF, LS_TRX_INVALID, // sentinel
+    // clang-format off
+    LS_WALK,
+    LS_STOP,
+    LS_POSE,
+    LS_TURN_RIGHT,
+    LS_TURN_LEFT,
+    LS_WALK_BACK,
+    LS_FAST_TURN,
+    LS_STEP_LEFT,
+    LS_STEP_RIGHT,
+    LS_WADE,
+    LS_PICKUP,
+    LS_SWITCH_ON,
+    LS_SWITCH_OFF,
+    LS_TRX_INVALID, // sentinel
+    // clang-format on
 };
 
 static const LARA_TRX_STATE m_ThrowStates[] = {
-    LS_FAST_FALL, LS_SWAN_DIVE, LS_FAST_DIVE,
+    // clang-format off
+    LS_FAST_FALL,
+    LS_SWAN_DIVE,
+    LS_FAST_DIVE,
     LS_TRX_INVALID, // sentinel
+    // clang-format on
 };
 
 static XYZ_32 m_IgnitePos = {};
@@ -117,11 +139,38 @@ static void M_ControlInHand(const int32_t flare_age)
 
     lara_info->left_arm.flash_gun = Flare_GenerateLight(vec, flare_age);
 
-    if (lara_info->flare.age < Flare_GetMaxAge()) {
-        lara_info->flare.age++;
-        Flare_GenerateEffects(&lara_item->pos, vec, lara_item->room_num);
-    } else if (M_CanThrowFlare()) {
-        lara_info->gun_status = LGS_UNDRAW;
+    if (lara_info->flare.age >= Flare_GetMaxAge()) {
+        if (M_CanThrowFlare()) {
+            lara_info->gun_status = LGS_UNDRAW;
+        }
+        return;
+    }
+
+    lara_info->flare.age++;
+    Flare_GenerateEffects(&lara_item->pos, vec, lara_item->room_num);
+
+    if (!lara_info->left_arm.flash_gun) {
+        return;
+    }
+
+    if (g_TRVersion < 3) {
+        return;
+    }
+
+    XYZ_32 vec_2 = {
+        .x = 8,
+        .y = 36,
+        .z = WALL_L + (Random_GetDraw() & 0xFF),
+    };
+    Lara_GetJointAbsPosition(&vec_2, LM_HAND_L);
+    const XYZ_32 vel = {
+        .x = vec_2.x - vec.x,
+        .y = vec_2.y - vec.y,
+        .z = vec_2.z - vec.z,
+    };
+    for (int32_t i = 0; i < (Random_GetDraw() & 3) + 4; i++) {
+        const bool smoke = (i >> 2) != 0;
+        Sparks_TriggerFlareSparks(vec, vel, smoke);
     }
 }
 
