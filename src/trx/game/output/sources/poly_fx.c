@@ -500,6 +500,7 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         return;
     }
 
+    DRAW_TYPE draw_type = spark->draw_type;
     const XYZ_32 pos = Sparks_GetWorldPos(spark);
     const XYZ_32 world_pos[4] = { pos, pos, pos, pos };
 
@@ -551,9 +552,7 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         { w, -h },
     };
 
-    const RGBA_8888 color = { spark->color.r, spark->color.g, spark->color.b,
-                              255 };
-    const RGBA_8888 world_color[4] = { color, color, color, color };
+    RGBA_8888 color = { spark->color.r, spark->color.g, spark->color.b, 255 };
 
     if ((spark->flags & SPARK_F_ROTATE) != 0U) {
         const int32_t angle = (int32_t)spark->rot_angle * DEG_180 / 0xFFF.p0;
@@ -573,10 +572,15 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     if ((spark->flags & SPARK_F_SPRITE) == 0U) {
         flags |= VERT_FLAT_SHADED;
         sprite_idx = -1;
+        if (draw_type == DRAW_BLEND_ADD) {
+            draw_type = DRAW_BLEND;
+            color.a = 128;
+        }
     }
     M_PRIV *const p = &m_Priv;
-    VECTOR *const target =
-        M_GetScheduledVectorForDrawType(p, (DRAW_TYPE)spark->draw_type);
+    VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
+
+    const RGBA_8888 world_color[4] = { color, color, color, color };
     M_StagePrim(
         sprite_idx, 4, &world_pos[0], disp, &world_color[0], flags, target);
 }
