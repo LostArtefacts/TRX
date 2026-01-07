@@ -19,7 +19,6 @@
 
 #define M_MAX_SPARKS 192
 #define M_MAX_SPARK_DYNAMICS 32
-#define M_LERP(a, b, ratio) ((a) + ((b) - (a)) * (ratio))
 
 typedef struct {
     bool on;
@@ -309,11 +308,11 @@ void Sparks_Control(void)
         if (lived < (int32_t)spark->col_fade_speed
             && spark->col_fade_speed != 0U) {
             const float fade = lived / (float)spark->col_fade_speed;
-            spark->color.r = M_LERP(
+            spark->color.r = LERP(
                 (int32_t)spark->src_color.r, (int32_t)spark->dst_color.r, fade);
-            spark->color.g = M_LERP(
+            spark->color.g = LERP(
                 (int32_t)spark->src_color.g, (int32_t)spark->dst_color.g, fade);
-            spark->color.b = M_LERP(
+            spark->color.b = LERP(
                 (int32_t)spark->src_color.b, (int32_t)spark->dst_color.b, fade);
         } else if (
             spark->life < spark->fade_to_black && spark->fade_to_black != 0U) {
@@ -425,10 +424,10 @@ void Sparks_Control(void)
         // Size lerp across lifetime.
         if (spark->s_life != 0U) {
             const float fade = lived / (float)spark->s_life;
-            spark->size.width = M_LERP(
+            spark->size.width = LERP(
                 (int32_t)spark->src_size.width, (int32_t)spark->dst_size.width,
                 fade);
-            spark->size.height = M_LERP(
+            spark->size.height = LERP(
                 (int32_t)spark->src_size.height,
                 (int32_t)spark->dst_size.height, fade);
         } else {
