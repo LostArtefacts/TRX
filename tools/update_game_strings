@@ -336,9 +336,10 @@ def sync_base_strings(ctx: RunContext) -> None:
                     "name": REVIEW_MARKER
                 }
                 for file in gs.translations.values():
-                    file.data.setdefault("objects", {})[key] = {
-                        "name": REVIEW_MARKER
-                    }
+                    if not file.extends:
+                        file.data.setdefault("objects", {})[key] = {
+                            "name": REVIEW_MARKER
+                        }
 
 
 @step
