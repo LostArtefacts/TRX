@@ -92,13 +92,40 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
     }
 
     const LARA_MESH hand = is_right_hand ? LM_HAND_R : LM_HAND_L;
-    const XYZ_32 muzzle_offset = M_GetMuzzleOffset(weapon_type, is_right_hand);
-    const XYZ_32 muzzle_pos = M_GetHandAbsPosition(hand, muzzle_offset);
+    const XYZ_32 muzzle_pos = weapon_type == LGT_SHOTGUN && is_right_hand
+        ? M_GetHandAbsPosition(hand, (XYZ_32) { .x = 0, .y = 228, .z = 32 })
+        : M_GetHandAbsPosition(
+              hand, M_GetMuzzleOffset(weapon_type, is_right_hand));
 
     GAME_VECTOR pos = { .pos = muzzle_pos,
                         .room_num = Lara_GetItem()->room_num };
     Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
-    Sparks_TriggerGunSmoke(pos, true, weapon_type, count);
+
+    if (weapon_type == LGT_SHOTGUN && is_right_hand) {
+        const XYZ_32 muzzle_tip_pos =
+            M_GetHandAbsPosition(hand, (XYZ_32) { .x = 0, .y = 1508, .z = 32 });
+        const XYZ_32 vel = {
+            .x = muzzle_tip_pos.x - muzzle_pos.x,
+            .y = muzzle_tip_pos.y - muzzle_pos.y,
+            .z = muzzle_tip_pos.z - muzzle_pos.z,
+        };
+
+        for (int32_t i = 0; i < 7; i++) {
+            Sparks_TriggerGunSmokeDirected(pos, vel, true, weapon_type, count);
+        }
+
+        const XYZ_32 vel_sparks = {
+            .x = (muzzle_tip_pos.x - muzzle_pos.x) << 1,
+            .y = (muzzle_tip_pos.y - muzzle_pos.y) << 1,
+            .z = (muzzle_tip_pos.z - muzzle_pos.z) << 1,
+        };
+
+        for (int32_t i = 0; i < 12; i++) {
+            Sparks_TriggerShotgunSparks(muzzle_pos, vel_sparks);
+        }
+    } else {
+        Sparks_TriggerGunSmoke(pos, true, weapon_type, count);
+    }
 }
 
 void Gun_Smoke_Control(void)

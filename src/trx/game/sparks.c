@@ -1591,3 +1591,38 @@ void Sparks_TriggerGunSmokeDirected(
         spark->dst_size.height = size;
     }
 }
+
+void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
+{
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = 255;
+    spark->src_color.g = 255;
+    spark->src_color.b = 0;
+    spark->dst_color.r = 255;
+    spark->dst_color.g = (Random_GetControl() & 0x7F) + 64;
+    spark->dst_color.b = 0;
+    spark->col_fade_speed = 3;
+    spark->fade_to_black = 5;
+    spark->life = 10;
+    spark->s_life = 10;
+    spark->draw_type = 2;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 7) - 3;
+    spark->pos.y = pos.y + (Random_GetControl() & 7) - 3;
+    spark->pos.z = pos.z + (Random_GetControl() & 7) - 3;
+    spark->vel.x = vel.x + (Random_GetControl() & 0x1FF) - 256;
+    spark->vel.y = vel.y + (Random_GetControl() & 0x1FF) - 256;
+    spark->vel.z = vel.z + (Random_GetControl() & 0x1FF) - 256;
+    spark->friction = 0;
+    spark->flags = SPARK_F_SCALE;
+    spark->scalar = 2;
+    spark->max_y_vel = 0;
+    spark->gravity = 0;
+    spark->size.width = (Random_GetControl() & 3) + 4;
+    spark->src_size.width = spark->size.width;
+    spark->dst_size.width = 1;
+    spark->size.height = (Random_GetControl() & 3) + 4;
+    spark->src_size.height = spark->size.height;
+    spark->dst_size.height = 1;
+}
