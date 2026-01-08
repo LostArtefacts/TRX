@@ -35,11 +35,6 @@ static int32_t m_HairWindZ = 0;
 static int32_t m_TR3Wind = 0;
 static int32_t m_TR3WindAngle = DEG_180;
 static int32_t m_TR3DWindAngle = DEG_180;
-static SPARKS_CALLBACKS m_Callbacks = {};
-
-static void M_TriggerExplosionSparksCallback(
-    XYZ_32 pos, int32_t extras, int8_t dynamic, int32_t uw, int16_t room_num);
-static void M_TriggerExplosionBubbleCallback(XYZ_32 pos, int16_t room_num);
 
 static const BITE m_NodeOffsets[16] = {
     { .pos = { 0, 340, 64 }, .mesh_num = 7 },
@@ -181,19 +176,6 @@ void Sparks_Init(void)
     m_TR3Wind = 0;
     m_TR3WindAngle = DEG_180;
     m_TR3DWindAngle = DEG_180;
-    m_Callbacks = (SPARKS_CALLBACKS) {
-        .trigger_explosion_sparks = M_TriggerExplosionSparksCallback,
-        .trigger_explosion_bubble = M_TriggerExplosionBubbleCallback,
-    };
-}
-
-void Sparks_SetCallbacks(const SPARKS_CALLBACKS *const callbacks)
-{
-    if (callbacks != nullptr) {
-        m_Callbacks = *callbacks;
-    } else {
-        m_Callbacks = (SPARKS_CALLBACKS) {};
-    }
 }
 
 XZ_32 Sparks_GetSmokeWind(void)
@@ -366,28 +348,15 @@ void Sparks_Control(void)
 
             const XYZ_32 spark_pos = Sparks_GetWorldPos(spark);
 
-            const SPARKS_CALLBACKS callbacks = m_Callbacks;
             for (int32_t j = 0; j < (int32_t)(spark->extras & 7U); j++) {
-                if (callbacks.trigger_explosion_sparks != nullptr) {
-                    callbacks.trigger_explosion_sparks(
-                        spark_pos, (int32_t)(spark->extras & 7U) - 1,
-                        spark->dynamic, uw, spark->room_num);
-                } else {
-                    M_TriggerExplosionSparksCallback(
-                        spark_pos, (int32_t)(spark->extras & 7U) - 1,
-                        spark->dynamic, uw, spark->room_num);
-                }
+                Sparks_TriggerExplosionSparks(
+                    spark_pos, (int32_t)(spark->extras & 7U) - 1,
+                    spark->dynamic, uw, spark->room_num);
                 spark->dynamic = -1;
             }
 
             if ((spark->flags & SPARK_F_UNDERWATER) != 0U) {
-                if (callbacks.trigger_explosion_bubble != nullptr) {
-                    callbacks.trigger_explosion_bubble(
-                        spark_pos, spark->room_num);
-                } else {
-                    M_TriggerExplosionBubbleCallback(
-                        spark_pos, spark->room_num);
-                }
+                Sparks_TriggerExplosionBubble(spark_pos, spark->room_num);
             }
 
             spark->extras = 0;
@@ -1095,13 +1064,11 @@ void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
         return;
     }
 
-    M_TriggerExplosionBubbleCallback(item->pos, item->room_num);
-    Sparks_TriggerExplosionSparks(
-        item->pos.x, item->pos.y, item->pos.z, 2, -2, 1, item->room_num);
+    Sparks_TriggerExplosionBubble(item->pos, item->room_num);
+    Sparks_TriggerExplosionSparks(item->pos, 2, -2, 1, item->room_num);
 
     for (int32_t i = 0; i < 3; i++) {
-        Sparks_TriggerExplosionSparks(
-            item->pos.x, item->pos.y, item->pos.z, 2, -1, 1, item->room_num);
+        Sparks_TriggerExplosionSparks(item->pos, 2, -1, 1, item->room_num);
     }
 
     const int32_t water_height = Room_GetWaterHeight(
@@ -1145,12 +1112,11 @@ void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
 }
 
 void Sparks_TriggerExplosionSparks(
-    int32_t x, int32_t y, int32_t z, int32_t extras, int32_t dynamic,
-    int32_t uw, int16_t room_num)
+    XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - x;
-    const int32_t dz = lara_item->pos.z - z;
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
     if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000) {
         return;
     }
@@ -1178,7 +1144,7 @@ void Sparks_TriggerExplosionSparks(
         .life = 0,
         .dynamic = (int8_t)dynamic,
         .sprite_idx = explosion->mesh_idx,
-        .pos = { .x = x, .y = y, .z = z },
+        .pos = pos,
         .vel = {
             .x = (Random_GetControl() & 0xFFF) - 2048,
             .y = (Random_GetControl() & 0xFFF) - 2048,
@@ -1219,13 +1185,13 @@ void Sparks_TriggerExplosionSparks(
     }
 
     if (dynamic != -2 || uw == 1) {
-        spark->pos.x = (Random_GetControl() & 0x1F) + x - 16;
-        spark->pos.y = (Random_GetControl() & 0x1F) + y - 16;
-        spark->pos.z = (Random_GetControl() & 0x1F) + z - 16;
+        spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+        spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+        spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
     } else {
-        spark->pos.x = (Random_GetControl() & 0x1FF) + x - 256;
-        spark->pos.y = (Random_GetControl() & 0x1FF) + y - 256;
-        spark->pos.z = (Random_GetControl() & 0x1FF) + z - 256;
+        spark->pos.x = pos.x + (Random_GetControl() & 0x1FF) - 256;
+        spark->pos.y = pos.y + (Random_GetControl() & 0x1FF) - 256;
+        spark->pos.z = pos.z + (Random_GetControl() & 0x1FF) - 256;
     }
 
     spark->friction = (uint8_t)(uw == 1 ? 0x11 : 0x33);
@@ -1254,16 +1220,7 @@ void Sparks_TriggerExplosionSparks(
     }
 }
 
-static void M_TriggerExplosionSparksCallback(
-    const XYZ_32 pos, const int32_t extras, const int8_t dynamic,
-    const int32_t uw, const int16_t room_num)
-{
-    Sparks_TriggerExplosionSparks(
-        pos.x, pos.y, pos.z, extras, dynamic, uw, room_num);
-}
-
-static void M_TriggerExplosionBubbleCallback(
-    const XYZ_32 pos, const int16_t room_num)
+void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
 {
     const ITEM *const lara_item = Lara_GetItem();
     const int32_t dx = lara_item->pos.x - pos.x;

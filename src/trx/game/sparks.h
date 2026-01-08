@@ -105,9 +105,9 @@ void Sparks_TriggerWaterfallMist(int32_t x, int32_t y, int32_t z, int32_t ang);
 void Sparks_TriggerBreath(XYZ_32 pos, XYZ_32 vel, int16_t room_num);
 
 void Sparks_TriggerUnderwaterExplosion(const ITEM *item);
+void Sparks_TriggerExplosionBubble(XYZ_32 pos, int16_t room_num);
 void Sparks_TriggerExplosionSparks(
-    int32_t x, int32_t y, int32_t z, int32_t extras, int32_t dynamic,
-    int32_t uw, int16_t room_num);
+    XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num);
 void Sparks_TriggerFireFlame(XYZ_32 pos, int32_t body_part, int32_t type);
 void Sparks_TriggerStaticFlame(XYZ_32 pos, int32_t size);
 void Sparks_TriggerFireSmoke(XYZ_32 pos, int32_t body_part, int32_t type);

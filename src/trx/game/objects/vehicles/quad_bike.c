@@ -276,13 +276,10 @@ static void M_Explode(ITEM *const item)
     if (Room_Get(item->room_num)->flags.underwater) {
         Sparks_TriggerUnderwaterExplosion(item);
     } else {
-        Sparks_TriggerExplosionSparks(
-            item->pos.x, item->pos.y, item->pos.z, 3, -2, 0, item->room_num);
+        Sparks_TriggerExplosionSparks(item->pos, 3, -2, 0, item->room_num);
 
         for (int32_t i = 0; i < 3; i++) {
-            Sparks_TriggerExplosionSparks(
-                item->pos.x, item->pos.y, item->pos.z, 3, -1, 0,
-                item->room_num);
+            Sparks_TriggerExplosionSparks(item->pos, 3, -1, 0, item->room_num);
         }
     }
 
