@@ -1,6 +1,7 @@
 #include <trx/game/objects/general/flare_item.h>
 
 #include <trx/game/gun.h>
+#include <trx/game/items/anim.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/pickup.h>
@@ -121,6 +122,51 @@ static void M_Control(const int16_t item_num)
         Flare_GenerateEffects(&item->pos, item->pos, item->room_num);
     }
 
+    if (g_TRVersion >= 3) {
+        const int32_t flare_age_plain = flare_age & 0x7FFF;
+        const bool is_active = (flare_age & 0x8000) != 0;
+        if (flare_age_plain < Flare_GetMaxAge() && is_active) {
+            const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+            const XYZ_32 flare_size = {
+                .x = bounds->max.x - bounds->min.x,
+                .y = bounds->max.y - bounds->min.y,
+                .z = bounds->max.z - bounds->min.z,
+            };
+            const XYZ_32 flare_offset = {
+                .x = -flare_size.x,
+                .y = -flare_size.y,
+                .z = -flare_size.z,
+            };
+
+            const XYZ_32 flare_pos = item->pos;
+            const XYZ_32 tip_local = {
+                .x = flare_offset.x - 6,
+                .y = flare_offset.y + 6,
+                .z = flare_offset.z + 32,
+            };
+            const XYZ_32 tip_pos =
+                M_TransformLocalOffset(flare_pos, item->rot, tip_local);
+
+            const XYZ_32 vel_local = {
+                .x = (Random_GetControl() & 0x7F) - 64,
+                .y = (Random_GetControl() & 0x7F) - 64,
+                .z = (Random_GetControl() & 0x1FF) + 512,
+            };
+            const XYZ_32 vel_pos =
+                M_TransformLocalOffset(flare_pos, item->rot, vel_local);
+            const XYZ_32 vel = {
+                .x = vel_pos.x - flare_pos.x,
+                .y = vel_pos.y - flare_pos.y,
+                .z = vel_pos.z - flare_pos.z,
+            };
+
+            for (int32_t i = 0; i < (Random_GetControl() & 3) + 4; i++) {
+                const bool smoke = (i >> 2) != 0;
+                Sparks_TriggerFlareSparks(tip_pos, vel, smoke);
+            }
+        }
+    }
+
     item->data = (void *)(intptr_t)flare_age;
 }
 
@@ -164,37 +210,11 @@ static bool M_Draw(const ITEM *const item)
         goto end;
     }
 
-    if (g_TRVersion < 3) {
-        M_DrawFlash(clip);
+    if (g_TRVersion >= 3) {
         goto end;
     }
 
-    const XYZ_32 flare_pos = {
-        .x = item->interp.result.pos.x,
-        .y = item->interp.result.pos.y,
-        .z = item->interp.result.pos.z,
-    };
-    const XYZ_32 tip_local = { .x = -6, .y = 6, .z = 32 };
-    const XYZ_32 tip_pos = M_TransformLocalOffset(
-        flare_pos, item->interp.result.rot, tip_local);
-
-    const XYZ_32 vel_local = {
-        .x = (Random_GetDraw() & 0x7F) - 64,
-        .y = (Random_GetDraw() & 0x7F) - 64,
-        .z = (Random_GetDraw() & 0x1FF) + 512,
-    };
-    const XYZ_32 vel_pos = M_TransformLocalOffset(
-        flare_pos, item->interp.result.rot, vel_local);
-    const XYZ_32 vel = {
-        .x = vel_pos.x - flare_pos.x,
-        .y = vel_pos.y - flare_pos.y,
-        .z = vel_pos.z - flare_pos.z,
-    };
-
-    for (int32_t i = 0; i < (Random_GetDraw() & 3) + 4; i++) {
-        const bool smoke = (i >> 2) != 0;
-        Sparks_TriggerFlareSparks(tip_pos, vel, smoke);
-    }
+    M_DrawFlash(clip);
 
 end:
     Matrix_Pop();
