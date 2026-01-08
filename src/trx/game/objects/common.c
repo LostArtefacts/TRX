@@ -11,11 +11,11 @@
 #include <trx/memory.h>
 #include <trx/vector.h>
 
-#include <string.h>
-
 static OBJECT m_Objects[O_NUMBER_OF] = {};
-static STATIC_OBJECT_3D m_StaticObjects3D[MAX_STATIC_OBJECTS_3D] = {};
-static STATIC_OBJECT_2D m_StaticObjects2D[MAX_STATIC_OBJECTS_2D] = {};
+static STATIC_OBJECT_3D *m_StaticObjects3D = nullptr;
+static STATIC_OBJECT_2D *m_StaticObjects2D = nullptr;
+static int32_t m_StaticObjects3DCount = 0;
+static int32_t m_StaticObjects2DCount = 0;
 static OBJECT_MESH **m_MeshPointers = nullptr;
 static int32_t m_MeshCount = 0;
 
@@ -24,12 +24,39 @@ void Object_Reset(void)
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
         m_Objects[i].loaded = false;
     }
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_3D; i++) {
-        m_StaticObjects3D[i].loaded = false;
-    }
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
-        m_StaticObjects2D[i].loaded = false;
-    }
+
+    m_StaticObjects3D = nullptr;
+    m_StaticObjects2D = nullptr;
+    m_StaticObjects3DCount = 0;
+    m_StaticObjects2DCount = 0;
+    m_MeshPointers = nullptr;
+    m_MeshCount = 0;
+}
+
+void Object_InitialiseStaticObjects3D(const int32_t count)
+{
+    ASSERT(count >= 0);
+    m_StaticObjects3DCount = count;
+    m_StaticObjects3D =
+        GameBuf_Alloc(sizeof(STATIC_OBJECT_3D) * count, GBUF_STATIC_OBJECTS_3D);
+}
+
+void Object_InitialiseStaticObjects2D(const int32_t count)
+{
+    ASSERT(count >= 0);
+    m_StaticObjects2DCount = count;
+    m_StaticObjects2D =
+        GameBuf_Alloc(sizeof(STATIC_OBJECT_2D) * count, GBUF_STATIC_OBJECTS_2D);
+}
+
+int32_t Object_GetStaticObjects3DCount(void)
+{
+    return m_StaticObjects3DCount;
+}
+
+int32_t Object_GetStaticObjects2DCount(void)
+{
+    return m_StaticObjects2DCount;
 }
 
 OBJECT *Object_TryGet(const OBJECT_ID object_id)
@@ -57,12 +84,17 @@ OBJECT *Object_GetByGameID(const int32_t game_id)
 
 STATIC_OBJECT_3D *Object_Get3DStatic(const int32_t static_id)
 {
+    ASSERT(m_StaticObjects3D != nullptr);
+    ASSERT(static_id >= 0 && static_id < m_StaticObjects3DCount);
     return &m_StaticObjects3D[static_id];
 }
 
 STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
 {
-    if (static_id < 0 || static_id >= MAX_STATIC_OBJECTS_2D) {
+    if (m_StaticObjects2D == nullptr) {
+        return nullptr;
+    }
+    if (static_id < 0 || static_id >= m_StaticObjects2DCount) {
         return nullptr;
     }
     return &m_StaticObjects2D[static_id];

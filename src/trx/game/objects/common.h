@@ -29,6 +29,11 @@ int32_t Object_ToGameID(OBJECT_ID object_id);
 
 // Other functions ============================================================
 
+void Object_InitialiseStaticObjects3D(int32_t count);
+void Object_InitialiseStaticObjects2D(int32_t count);
+int32_t Object_GetStaticObjects3DCount(void);
+int32_t Object_GetStaticObjects2DCount(void);
+
 STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
 

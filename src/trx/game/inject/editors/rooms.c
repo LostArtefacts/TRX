@@ -264,14 +264,13 @@ static void M_AddRoomStatic2D(const INJECTION *const injection)
     const uint16_t vertex = VFile_ReadU16(injection->fp);
     const uint16_t frame_idx = VFile_ReadU16(injection->fp);
 
-    if (id < 0 || id >= MAX_STATIC_OBJECTS_2D) {
+    const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(id);
+    if (obj == nullptr) {
         LOG_WARNING("Invalid static 2D id: %d", id);
         return;
     }
-
-    const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(id);
     if (!obj->loaded) {
-        LOG_WARNING("Static 2D %d is not loaded");
+        LOG_WARNING("Static 2D %d is not loaded", id);
         return;
     }
 

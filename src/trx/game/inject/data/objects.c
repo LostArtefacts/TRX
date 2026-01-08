@@ -82,6 +82,12 @@ static void M_ReadStaticObject3D(const INJECTION_CHUNK chunk)
     const LEVEL_INFO cached_info = Inject_GetCachedInfo();
     const int32_t static_id = VFile_ReadS32(chunk.injection->fp);
 
+    if (static_id < 0 || static_id >= Object_GetStaticObjects3DCount()) {
+        LOG_WARNING("Invalid static 3D %d", static_id);
+        VFile_Skip(chunk.injection->fp, 2 + 12 + 12 + 2);
+        return;
+    }
+
     STATIC_OBJECT_3D *const obj = Object_Get3DStatic(static_id);
     obj->mesh_idx = VFile_ReadS16(chunk.injection->fp);
     obj->mesh_idx += cached_info.mesh_ptr_count;

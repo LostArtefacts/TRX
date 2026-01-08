@@ -96,9 +96,10 @@ static void M_PrepareObjectAnimationRanges(void)
 static void M_PrepareSpriteAnimationRanges(void)
 {
     size_t required_size = 0;
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
+    const int32_t static_2d_count = Object_GetStaticObjects2DCount();
+    for (int32_t i = 0; i < static_2d_count; i++) {
         const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(i);
-        if (!obj->loaded || obj->frame_count == 1) {
+        if (obj == nullptr || !obj->loaded || obj->frame_count == 1) {
             continue;
         }
         required_size++;
@@ -107,9 +108,9 @@ static void M_PrepareSpriteAnimationRanges(void)
     Vector_Clear(m_AnimationRanges.sprites);
     Vector_EnsureCapacity(m_AnimationRanges.sprites, required_size);
 
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
+    for (int32_t i = 0; i < static_2d_count; i++) {
         const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(i);
-        if (!obj->loaded || obj->frame_count == 1) {
+        if (obj == nullptr || !obj->loaded || obj->frame_count == 1) {
             continue;
         }
         Vector_Add(
@@ -738,9 +739,10 @@ void Output_CycleAnimatedTextures(void)
         m_ObjectTextures[range->textures[i]] = temp;
     }
 
-    for (int32_t i = 0; i < MAX_STATIC_OBJECTS_2D; i++) {
+    const int32_t static_2d_count = Object_GetStaticObjects2DCount();
+    for (int32_t i = 0; i < static_2d_count; i++) {
         const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(i);
-        if (!obj->loaded || obj->frame_count == 1) {
+        if (obj == nullptr || !obj->loaded || obj->frame_count == 1) {
             continue;
         }
 

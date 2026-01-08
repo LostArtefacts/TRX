@@ -1081,24 +1081,51 @@ void Level_ReadStaticObjects(
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("static objects: %d", num_objects);
+
+    typedef struct {
+        int32_t static_id;
+        int16_t mesh_idx;
+        BOUNDS_16 draw_bounds;
+        BOUNDS_16 collision_bounds;
+        uint16_t flags;
+    } M_STATIC_OBJ_3D_TEMP;
+
+    M_STATIC_OBJ_3D_TEMP *tmp_statics =
+        Memory_Alloc(sizeof(M_STATIC_OBJ_3D_TEMP) * num_objects);
+
+    int32_t max_static_id = -1;
     for (int32_t i = 0; i < num_objects; i++) {
-        const int32_t static_id = VFile_ReadS32(file);
-        if (static_id < 0 || static_id >= MAX_STATIC_OBJECTS_3D) {
+        tmp_statics[i].static_id = VFile_ReadS32(file);
+        if (tmp_statics[i].static_id < 0) {
             Shell_ExitSystemFmt(
-                "Invalid static ID: %d (max=%d)", static_id,
-                MAX_STATIC_OBJECTS_3D - 1);
+                "Invalid static ID: %d", tmp_statics[i].static_id);
         }
+        max_static_id = MAX(max_static_id, tmp_statics[i].static_id);
 
-        STATIC_OBJECT_3D *const obj = Object_Get3DStatic(static_id);
-        obj->mesh_idx = VFile_ReadS16(file);
+        tmp_statics[i].mesh_idx = VFile_ReadS16(file);
+        M_ReadBounds16(&tmp_statics[i].draw_bounds, file);
+        M_ReadBounds16(&tmp_statics[i].collision_bounds, file);
+        tmp_statics[i].flags = VFile_ReadU16(file);
+    }
+
+    LOG_INFO("max static id: %d", max_static_id);
+    int32_t injection_max_id = Inject_GetMaxStaticObject3DId();
+    if (injection_max_id < 0) {
+        injection_max_id = -1;
+    }
+    const int32_t capacity = MAX(max_static_id, injection_max_id) + 1;
+    Object_InitialiseStaticObjects3D(capacity);
+
+    for (int32_t i = 0; i < num_objects; i++) {
+        STATIC_OBJECT_3D *const obj =
+            Object_Get3DStatic(tmp_statics[i].static_id);
+        obj->mesh_idx = tmp_statics[i].mesh_idx;
         obj->loaded = true;
+        obj->draw_bounds = tmp_statics[i].draw_bounds;
+        obj->collision_bounds = tmp_statics[i].collision_bounds;
 
-        M_ReadBounds16(&obj->draw_bounds, file);
-        M_ReadBounds16(&obj->collision_bounds, file);
-
-        const uint16_t flags = VFile_ReadU16(file);
-        obj->collidable = (flags & 1) == 0;
-        obj->visible = (flags & 2) != 0;
+        obj->collidable = (tmp_statics[i].flags & 1) == 0;
+        obj->visible = (tmp_statics[i].flags & 2) != 0;
         if (loader->game_version >= 3) {
             obj->collidable = true;
         }
@@ -1106,6 +1133,7 @@ void Level_ReadStaticObjects(
         Object_GetMesh(obj->mesh_idx)->enable_caustics = obj->visible;
     }
 
+    Memory_FreePointer(&tmp_statics);
     Benchmark_End(&benchmark, nullptr);
 }
 
@@ -1173,6 +1201,13 @@ void Level_ReadSpriteSequences(
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sequences = VFile_ReadS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
+
+    int32_t injection_max_id = Inject_GetMaxStaticObject2DId();
+    if (injection_max_id < 0) {
+        injection_max_id = -1;
+    }
+    const int32_t capacity = MAX(num_sequences - 1, injection_max_id) + 1;
+    Object_InitialiseStaticObjects2D(capacity);
 
     int32_t static_id = 0;
     for (int32_t i = 0; i < num_sequences; i++) {
