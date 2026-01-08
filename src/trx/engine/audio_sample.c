@@ -4,6 +4,7 @@
 #include <trx/debug.h>
 #include <trx/log.h>
 #include <trx/memory.h>
+#include <trx/version.h>
 
 #include <SDL2/SDL_audio.h>
 #include <errno.h>
@@ -55,16 +56,17 @@ typedef struct {
     // centi-dB. They are a log2-based gain domain that the OG engine used to
     // feed directly to DirectSound (-10000..0 style range).
     //
-    // In TRX we keep the game-side math pristine and simply interpret these as:
-    //   log2(gain) * 1000
-    // i.e. +1000 means "double the amplitude", -1000 means "half the
-    // amplitude". `M_DecibelToMultiplier()` is the corresponding inverse
-    // transform:
-    //   gain = 2^(value/1000)
+    // In TRX we keep the game-side math pristine and interpret these as:
+    //   TR1/2: log2(gain) * 1000
+    //   TR3:   DirectSound-style centi-dB in [-10000..0]
+    //
+    // `M_DecibelToMultiplier()` is the corresponding inverse transform:
+    //   TR1/2: gain = 2^(value/1000)
+    //   TR3:   gain = 10^(value/2000)
     //
     // This makes combining contributions (volume + pan) an additive operation
-    // in this log2 domain, while still producing a linear multiplier for the
-    // mixer.
+    // in the game's log domain, while still producing a linear multiplier for
+    // the mixer.
     int32_t volume;
     int32_t pan;
 
@@ -87,7 +89,8 @@ static AUDIO_SAMPLE_SOUND m_Samples[AUDIO_MAX_ACTIVE_SAMPLES] = {};
 
 static double M_DecibelToMultiplier(double db_gain)
 {
-    return pow(2.0, db_gain / 1000.0);
+    // DirectSound-style centi-dB domain: gain = 10^(centi_dB/2000).
+    return pow(10.0, db_gain / 2000.0);
 }
 
 static bool M_RecalculateChannelVolumes(int32_t sound_id)
