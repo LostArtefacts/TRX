@@ -6,8 +6,10 @@
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 void Missile_Control(const int16_t effect_num)
 {
@@ -77,7 +79,15 @@ void Missile_Control(const int16_t effect_num)
 
     if (effect->object_id == O_MISSILE_HARPOON
         && Room_Get(effect->room_num)->flags.underwater) {
-        Spawn_Bubble(&effect->pos, effect->room_num);
+        if (g_TRVersion == 3) {
+            const int32_t time4 = ((int32_t)Output_GetTimeInGame()) / 4;
+            if ((time4 & 0xF) == 0) {
+                Spawn_BubbleEx(&effect->pos, effect->room_num, 8, 8);
+            }
+            Sparks_TriggerRocketSmoke(effect->pos, 64, effect->room_num);
+        } else {
+            Spawn_Bubble(&effect->pos, effect->room_num);
+        }
     } else if (effect->object_id == O_MISSILE_FLAME) {
         if (!effect->counter--) {
             Output_AddDynamicLight(effect->pos, 14, 11);

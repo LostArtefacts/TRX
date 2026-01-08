@@ -1,29 +1,81 @@
+#include <trx/config.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
+#include <trx/game/output/lights.h>
+#include <trx/game/output/state.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
+#include <trx/game/spawn.h>
 #include <trx/game/stats.h>
+#include <trx/game/water_fx.h>
+#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_BLAST_RADIUS WALL_L // = 1024
 #define M_SPEED (WALL_L / 2) // = 512
 #define M_SPEED_UW (STEP_L / 2) // = 128
 
+static void M_SetTR3ProjectileShade(ITEM *const item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    // OG TR3 uses `item->shade = -0x3DF0` on projectiles; in TRX any negative
+    // shade forces the dynamic/smoothed lighting path.
+    item->shade.value_1 = -1;
+    item->shade.value_2 = -1;
+}
+
+static XYZ_32 M_GetLocalZOffset(const ITEM *const item, const int32_t dist)
+{
+    const int32_t cx = Math_Cos(item->rot.x);
+    const int32_t sx = Math_Sin(item->rot.x);
+    const int32_t cy = Math_Cos(item->rot.y);
+    const int32_t sy = Math_Sin(item->rot.y);
+
+    const int32_t horz = (dist * cx) >> W2V_SHIFT;
+    return (XYZ_32) {
+        .x = (horz * sy) >> W2V_SHIFT,
+        .y = -(dist * sx) >> W2V_SHIFT,
+        .z = (horz * cy) >> W2V_SHIFT,
+    };
+}
+
 static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
 {
     const ITEM *const rocket_item = Item_Get(rocket_item_num);
-    const int16_t effect_num = Effect_Create(rocket_item->room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->pos = pos;
-        effect->speed = 0;
-        effect->frame_num = 0;
-        effect->counter = 0;
-        effect->object_id = O_EXPLOSION_1;
+    const ROOM *const room = Room_Get(rocket_item->room_num);
+    const bool is_underwater = room != nullptr && room->flags.underwater;
+
+    if (g_TRVersion == 3) {
+        if (is_underwater) {
+            Sparks_TriggerUnderwaterExplosion(rocket_item);
+        } else {
+            Sparks_TriggerExplosionSparks(pos, 3, -2, 0, rocket_item->room_num);
+            for (int32_t i = 0; i < 2; i++) {
+                Sparks_TriggerExplosionSparks(
+                    pos, 3, -1, 0, rocket_item->room_num);
+            }
+        }
+    }
+
+    if (g_TRVersion != 3) {
+        const int16_t effect_num = Effect_Create(rocket_item->room_num);
+        if (effect_num != NO_EFFECT) {
+            EFFECT *const effect = Effect_Get(effect_num);
+            effect->pos = pos;
+            effect->speed = 0;
+            effect->frame_num = 0;
+            effect->counter = 0;
+            effect->object_id = O_EXPLOSION_1;
+        }
     }
 
     const XYZ_32 *const sfx_pos =
@@ -55,7 +107,8 @@ static void M_Control(const int16_t item_num)
     const XYZ_32 old_pos = item->pos;
 
     const ROOM *const room = Room_Get(item->room_num);
-    if (room->flags.underwater) {
+    const bool was_underwater = room != nullptr && room->flags.underwater;
+    if (was_underwater) {
         if (item->speed < M_SPEED_UW) {
             item->speed += (item->speed >> 2) + 4;
             CLAMPG(item->speed, M_SPEED_UW);
@@ -67,11 +120,61 @@ static void M_Control(const int16_t item_num)
         if (item->speed < M_SPEED) {
             item->speed += (item->speed >> 2) + 4;
         }
-        const int16_t rot = item->rot.z;
         item->rot.z += DEG_1 * ((item->speed >> 3) + 7);
     }
 
-    // TODO: dynamics
+    if (g_TRVersion == 3) {
+        M_SetTR3ProjectileShade(item);
+
+        const XYZ_32 back_128 = M_GetLocalZOffset(item, -128);
+        const int32_t back_dist = -1536 - (Random_GetControl() & 0x1FF);
+        const XYZ_32 back_vel = M_GetLocalZOffset(item, back_dist);
+
+        const int32_t time4 = ((int32_t)Output_GetTimeInGame()) / 4;
+        if ((time4 & 4) != 0) {
+            Sparks_TriggerRocketFlame(
+                back_128,
+                (XYZ_32) {
+                    .x = back_vel.x - back_128.x,
+                    .y = back_vel.y - back_128.y,
+                    .z = back_vel.z - back_128.z,
+                },
+                item_num, item->room_num);
+        }
+
+        Sparks_TriggerRocketSmoke(
+            (XYZ_32) {
+                .x = item->pos.x + back_128.x,
+                .y = item->pos.y + back_128.y,
+                .z = item->pos.z + back_128.z,
+            },
+            -1, item->room_num);
+
+        if (was_underwater) {
+            const XYZ_32 bubble_pos = {
+                .x = item->pos.x + back_128.x,
+                .y = item->pos.y + back_128.y,
+                .z = item->pos.z + back_128.z,
+            };
+            Spawn_BubbleEx(&bubble_pos, item->room_num, 4, 8);
+        }
+
+        if (g_Config.visuals.enable_gun_lighting) {
+            const int32_t rnd = Random_GetControl();
+            const XYZ_32 light_pos = {
+                .x = item->pos.x + back_128.x + (rnd & 0xF) - 8,
+                .y = item->pos.y + back_128.y + ((rnd >> 4) & 0xF) - 8,
+                .z = item->pos.z + back_128.z + ((rnd >> 8) & 0xF) - 8,
+            };
+            const int32_t c = Random_GetControl();
+            const RGB_888 color = {
+                .r = (uint8_t)((c & 0x1F) + 224),
+                .g = (uint8_t)(((c >> 5) & 0x3F) + 128),
+                .b = (uint8_t)((c >> 11) & 0x3F),
+            };
+            Output_AddDynamicLightRGB(light_pos, 14, color);
+        }
+    }
 
     const int32_t speed = (item->speed * Math_Cos(item->rot.x)) >> W2V_SHIFT;
     item->pos.x += (speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
@@ -83,6 +186,37 @@ static void M_Control(const int16_t item_num)
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
     Item_UpdateRoom(item_num, room_num);
+
+    if (g_TRVersion == 3) {
+        const ROOM *const new_room = Room_Get(item->room_num);
+        const bool is_underwater =
+            new_room != nullptr && new_room->flags.underwater;
+        if (is_underwater && !was_underwater) {
+            WaterFX_SetupSplash(&(WATER_FX_SPLASH_SETUP) {
+                .x = item->pos.x,
+                .y = new_room->max_ceiling,
+                .z = item->pos.z,
+                .inner_xz_off = 16,
+                .inner_xz_size = 12,
+                .inner_y_size = -96,
+                .inner_xz_vel = 160,
+                .inner_y_vel = -0x4000,
+                .inner_gravity = 128,
+                .inner_friction = 7,
+                .middle_xz_off = 24,
+                .middle_xz_size = 24,
+                .middle_y_size = -64,
+                .middle_xz_vel = 224,
+                .middle_y_vel = -0x2000,
+                .middle_gravity = 72,
+                .middle_friction = 8,
+                .outer_xz_off = 32,
+                .outer_xz_size = 32,
+                .outer_xz_vel = 272,
+                .outer_friction = 9,
+            });
+        }
+    }
 
     bool explode = false;
     int32_t radius = 0;
