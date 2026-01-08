@@ -2,6 +2,7 @@
 
 #include <trx/debug.h>
 #include <trx/filesystem.h>
+#include <trx/game/lua/embedded_scripts.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
@@ -63,11 +64,13 @@ static LUA_RESULT M_LuaLoadAndRun(
     return result;
 }
 
-// Loader closure for TRX modules, invoked via package.preload.
-static int M_TRXModuleLoader(lua_State *const L)
+// Loader closure for embedded TRX modules, invoked via package.preload.
+static int M_TRXEmbeddedModuleLoader(lua_State *const L)
 {
-    const char *const path = lua_tostring(L, lua_upvalueindex(1));
-    int status = luaL_loadfile(L, path);
+    const uint8_t *const data = lua_touserdata(L, lua_upvalueindex(1));
+    const size_t size = (size_t)lua_tointeger(L, lua_upvalueindex(2));
+    const char *const chunk_name = lua_tostring(L, lua_upvalueindex(3));
+    int status = luaL_loadbuffer(L, (const char *)data, size, chunk_name);
     if (status != LUA_OK) {
         lua_error(L);
     }
@@ -81,7 +84,7 @@ static int M_TRXModuleLoader(lua_State *const L)
 
 static void M_LoadTRXCModule(lua_State *const L, void (*loader)(lua_State *))
 {
-    LOG_INFO("Loading TRXC module %p", loader);
+    LOG_DEBUG("Loading TRXC module %p", loader);
     loader(L);
 }
 
@@ -114,13 +117,16 @@ static char *M_DeriveTRXModuleName(const char *path)
     return name;
 }
 
-static void M_RegisterTRXPreload(
-    lua_State *const L, const char *path, const char *name)
+static void M_RegisterTRXPreloadEmbedded(
+    lua_State *const L, const uint8_t *const data, const size_t size,
+    const char *const chunk_name, const char *const name)
 {
     lua_getglobal(L, "package");
     lua_getfield(L, -1, "preload");
-    lua_pushstring(L, path);
-    lua_pushcclosure(L, M_TRXModuleLoader, 1);
+    lua_pushlightuserdata(L, (void *)data);
+    lua_pushinteger(L, (lua_Integer)size);
+    lua_pushstring(L, chunk_name);
+    lua_pushcclosure(L, M_TRXEmbeddedModuleLoader, 3);
     lua_setfield(L, -2, name);
     lua_pop(L, 2);
 }
@@ -136,21 +142,19 @@ static void M_RequireTRXModule(lua_State *const L, const char *name)
     lua_settop(L, 0);
 }
 
-// Register a TRX Lua script as a package.preload module and require it.
-static void M_LoadTRXModule(lua_State *const L, const char *const path)
+static void M_LoadTRXScripts(lua_State *const L)
 {
-    LOG_DEBUG("Loading TRX module %s", path);
-    const char *const rel_path = String_FormatStatic("scripting/trx/%s", path);
-    char *full_path = File_GetFullPath(rel_path);
-    if (full_path == nullptr) {
-        LOG_ERROR("Script %s not found", rel_path);
-        return;
+    for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedScripts;
+         script->path != nullptr; script++) {
+        LOG_DEBUG("Loading TRX module %s", script->path);
+        char *name = M_DeriveTRXModuleName(script->path);
+        const char *const chunk_name =
+            String_FormatStatic("@trx/%s", script->path);
+        M_RegisterTRXPreloadEmbedded(
+            L, script->data, script->size, chunk_name, name);
+        M_RequireTRXModule(L, name);
+        Memory_FreePointer(&name);
     }
-    char *name = M_DeriveTRXModuleName(path);
-    M_RegisterTRXPreload(L, full_path, name);
-    M_RequireTRXModule(L, name);
-    Memory_FreePointer(&full_path);
-    Memory_FreePointer(&name);
 }
 
 void LUA_Init(void)
@@ -183,20 +187,7 @@ void LUA_Init(void)
     M_PRIV *const p = &m_Priv;
     p->state = L;
 
-    M_LoadTRXModule(L, "catalog.lua");
-    M_LoadTRXModule(L, "items.lua");
-    M_LoadTRXModule(L, "config.lua");
-    M_LoadTRXModule(L, "console.lua");
-    M_LoadTRXModule(L, "events.lua");
-    M_LoadTRXModule(L, "lara.lua");
-    M_LoadTRXModule(L, "log.lua");
-    M_LoadTRXModule(L, "sound.lua");
-    M_LoadTRXModule(L, "music.lua");
-    M_LoadTRXModule(L, "rooms.lua");
-    M_LoadTRXModule(L, "game.lua");
-    M_LoadTRXModule(L, "creatures.lua");
-    M_LoadTRXModule(L, "objects.lua");
-    M_LoadTRXModule(L, "assault_stats.lua");
+    M_LoadTRXScripts(L);
 }
 
 void LUA_Shutdown(void)

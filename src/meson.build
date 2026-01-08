@@ -21,6 +21,34 @@ c_compiler = meson.get_compiler('c')
 git = find_program('git', required: true)
 python3 = find_program('python3', required: true)
 
+trx_lua_embed = custom_target(
+  'trx_lua_embed',
+  input: [
+    '../data/scripting/assault_stats.lua',
+    '../data/scripting/catalog.lua',
+    '../data/scripting/config.lua',
+    '../data/scripting/console.lua',
+    '../data/scripting/creatures.lua',
+    '../data/scripting/events.lua',
+    '../data/scripting/game.lua',
+    '../data/scripting/items.lua',
+    '../data/scripting/lara.lua',
+    '../data/scripting/log.lua',
+    '../data/scripting/music.lua',
+    '../data/scripting/objects.lua',
+    '../data/scripting/rooms.lua',
+    '../data/scripting/sound.lua',
+  ],
+  output: ['trx_embedded_lua.c'],
+  command: [
+    python3,
+    meson.project_source_root() + '/../tools/embed_trx_lua.py',
+    '--output',
+    '@OUTPUT0@',
+    '@INPUT@',
+  ],
+)
+
 build_opts = [
   '-Wno-unused',
   '-Wno-unused-parameter',
@@ -688,7 +716,7 @@ if host_machine.system() == 'windows'
   ]
 endif
 
-trx_sources = common_sources + [trx_init, trx_resources]
+trx_sources = common_sources + [trx_init, trx_resources, trx_lua_embed]
 
 executable(
   'TRX',

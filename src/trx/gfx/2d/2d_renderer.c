@@ -5,7 +5,6 @@
 #include <trx/game/output.h>
 #include <trx/gfx/context.h>
 #include <trx/gfx/gl/utils.h>
-#include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 
@@ -111,7 +110,6 @@ static void M_UploadVertices(GFX_2D_RENDERER *const r)
 
 GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
 {
-    LOG_INFO("");
     GFX_2D_RENDERER *const r = Memory_Alloc(sizeof(GFX_2D_RENDERER));
     const GFX_CONFIG *const config = GFX_Context_GetConfig();
 
