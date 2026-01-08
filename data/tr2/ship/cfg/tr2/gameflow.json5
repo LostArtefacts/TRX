@@ -641,6 +641,7 @@
             "injections": [
                 "data/injections/font.bin",
                 "data/injections/photo.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         {
@@ -652,6 +653,7 @@
                 "data/injections/cut2_textures.bin",
                 "data/injections/font.bin",
                 "data/injections/photo.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         {
@@ -664,6 +666,7 @@
                 "data/injections/cut3_textures.bin",
                 "data/injections/font.bin",
                 "data/injections/photo.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         {
@@ -677,6 +680,7 @@
                 "data/injections/cut4_textures.bin",
                 "data/injections/font.bin",
                 "data/injections/photo.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
     ],
