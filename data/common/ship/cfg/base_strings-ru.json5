@@ -1813,6 +1813,12 @@
         },
         "pirahnas": {
             "name": "\\{review}Пираньи",
+        },
+        "gun_shell": {
+            "name": "\\{review}Патрон для пистолета",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Патрон для дробовика",
         }
     }
 }

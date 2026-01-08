@@ -1817,6 +1817,12 @@
         },
         "pirahnas": {
             "name": "\\{review}Pirahnas",
+        },
+        "gun_shell": {
+            "name": "\\{review}Sgèith Gheir",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Sgèith Sgian",
         }
     }
 }

@@ -10,6 +10,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
+#include <trx/game/spawn.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
@@ -137,6 +138,7 @@ static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
 
     if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
         lara->right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
+        Spawn_GunShell(weapon_type, true);
     }
 }
 
@@ -444,6 +446,10 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             weapon_type == LGT_SHOTGUN && !g_Input.action
             && !lara->left_arm.lock) {
             item->goal_anim_state = LA_G_UNAIM;
+        }
+
+        if (weapon_type == LGT_SHOTGUN && Item_TestFrameEqual(item, 12)) {
+            Spawn_ShotgunShell();
         }
         break;
 

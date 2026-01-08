@@ -1787,6 +1787,12 @@
         },
         "pirahnas": {
             "name": "Piranie",
+        },
+        "gun_shell": {
+            "name": "\\{review}Łuska do pistoletu",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Łuska do strzelby",
         }
     }
 }
