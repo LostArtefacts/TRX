@@ -1802,6 +1802,12 @@
         },
         "pirahnas": {
             "name": "\\{review}Piranhas",
+        },
+        "gun_shell": {
+            "name": "\\{review}Gewehrpatrone",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Schrotpatrone",
         }
     }
 }

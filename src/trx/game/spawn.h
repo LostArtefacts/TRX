@@ -1,6 +1,8 @@
 #pragma once
 
+#include <trx/game/gun/types.h>
 #include <trx/game/items/types.h>
+#include <trx/game/lara/types.h>
 #include <trx/game/types.h>
 
 XYZ_32 Spawn_GetRayPos(GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t dist);
@@ -28,6 +30,9 @@ int16_t Spawn_GunHit(
 int16_t Spawn_GunMiss(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num);
+
+void Spawn_GunShell(LARA_GUN_TYPE weapon_type, bool right);
+void Spawn_ShotgunShell(void);
 
 int16_t Spawn_ShardGun(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,

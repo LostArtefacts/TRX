@@ -1789,6 +1789,12 @@
         },
         "pirahnas": {
             "name": "\\{review}Piranhas",
+        },
+        "gun_shell": {
+            "name": "\\{review}Cartouche de pistolet",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Cartouche de fusil à pompe",
         }
     }
 }

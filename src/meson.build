@@ -357,6 +357,7 @@ common_sources = [
   'trx/game/objects/effects/flame.c',
   'trx/game/objects/effects/glow.c',
   'trx/game/objects/effects/gun_flash.c',
+  'trx/game/objects/effects/gun_shell.c',
   'trx/game/objects/effects/hot_liquid.c',
   'trx/game/objects/effects/missile.c',
   'trx/game/objects/effects/missile_common.c',

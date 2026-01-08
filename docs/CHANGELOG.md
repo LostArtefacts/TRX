@@ -114,6 +114,7 @@
 - added footprints
 - added surface-based step sounds
 - added cold breath effects
+- added gun shells
 - added monochrome inventory backgrounds
 - added high-resolutions 16:9 and 4:3 loading screens
 - added high-resolutions 16:9 and 4:3 title and game end screens

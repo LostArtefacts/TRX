@@ -3,6 +3,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/common.h>
 #include <trx/game/los.h>
 #include <trx/game/math.h>
 #include <trx/game/output.h>
@@ -238,6 +239,103 @@ int16_t Spawn_GunMiss(
     };
     Spawn_Ricochet(pos);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
+}
+
+static void M_TriggerGunShell(
+    const LARA_GUN_TYPE weapon_type, const bool right, const bool shotgun)
+{
+    if (g_TRVersion < 3) {
+        return;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    XYZ_32 offset = {};
+    if (shotgun) {
+        offset = (XYZ_32) { .x = 16, .y = 114, .z = 32 };
+    } else if (right) {
+        switch (weapon_type) {
+        case LGT_PISTOLS:
+        case LGT_AUTOS:
+        case LGT_MAGNUMS:
+            offset = (XYZ_32) { .x = 8, .y = 48, .z = 40 };
+            break;
+        case LGT_DESERT_EAGLE:
+            offset = (XYZ_32) { .x = 16, .y = 40, .z = 56 };
+            break;
+        case LGT_UZIS:
+            offset = (XYZ_32) { .x = 8, .y = 35, .z = 48 };
+            break;
+        case LGT_M16:
+        case LGT_MP5:
+            offset = (XYZ_32) { .x = 16, .y = 2, .z = 64 };
+            break;
+        default:
+            return;
+        }
+    } else {
+        switch (weapon_type) {
+        case LGT_PISTOLS:
+        case LGT_AUTOS:
+        case LGT_MAGNUMS:
+            offset = (XYZ_32) { .x = -12, .y = 48, .z = 40 };
+            break;
+        case LGT_DESERT_EAGLE:
+            offset = (XYZ_32) { .x = -16, .y = 40, .z = 56 };
+            break;
+        case LGT_UZIS:
+            offset = (XYZ_32) { .x = -16, .y = 35, .z = 48 };
+            break;
+        default:
+            return;
+        }
+    }
+
+    Lara_GetMeshPos(right ? LM_HAND_R : LM_HAND_L, &offset);
+
+    const int16_t effect_num = Effect_Create(lara_item->room_num);
+    if (effect_num == NO_EFFECT) {
+        return;
+    }
+
+    EFFECT *const effect = Effect_Get(effect_num);
+    effect->pos = offset;
+    effect->room_num = lara_item->room_num;
+    effect->rot.x = 0;
+    effect->rot.y = 0;
+    effect->rot.z = (int16_t)Random_GetControl();
+    effect->speed = (int16_t)((Random_GetControl() & 0x1F) + 16);
+    effect->object_id = shotgun ? O_SHOTGUN_SHELL : O_GUN_SHELL;
+    effect->frame_num = Object_Get(effect->object_id)->mesh_idx;
+    effect->fall_speed = (int16_t)(-48 - (Random_GetControl() & 7));
+    effect->shade = 0x4210;
+    effect->counter = (int16_t)((Random_GetControl() & 1) + 1);
+
+    if (shotgun || weapon_type == LGT_M16 || weapon_type == LGT_MP5) {
+        const int32_t spread = (Random_GetControl() & 0xFFF);
+        effect->flag1 = lara->left_arm.rot.y + lara_item->rot.y - spread
+            + lara->torso_rot.y + (shotgun ? 0x2800 : 0x4800);
+        if (!shotgun && effect->speed < 24) {
+            effect->speed += 24;
+        }
+    } else if (right) {
+        effect->flag1 = lara_item->rot.y - (Random_GetControl() & 0xFFF)
+            + lara->left_arm.rot.y + 0x4800;
+    } else {
+        effect->flag1 = lara_item->rot.y + (Random_GetControl() & 0xFFF)
+            + lara->left_arm.rot.y - 0x4800;
+    }
+}
+
+void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
+{
+    M_TriggerGunShell(weapon_type, right, false);
+}
+
+void Spawn_ShotgunShell(void)
+{
+    M_TriggerGunShell(LGT_SHOTGUN, true, true);
 }
 
 int16_t Spawn_ShardGun(

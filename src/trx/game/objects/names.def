@@ -350,6 +350,8 @@ X_OBJ_NAME_DEFINE(O_GONG,                  "gong",                  X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_GONG_BONGER,           "gong_bonger",           X_OBJ_NAMES("Gong Stick"))
 X_OBJ_NAME_DEFINE(O_GRENADE,               "grenade",               X_OBJ_NAMES("Grenade"))
 X_OBJ_NAME_DEFINE(O_GUN_FLASH,             "gun_flash",             X_OBJ_NAMES("Gun Flash"))
+X_OBJ_NAME_DEFINE(O_GUN_SHELL,             "gun_shell",             X_OBJ_NAMES("Gun Shell"))
+X_OBJ_NAME_DEFINE(O_SHOTGUN_SHELL,         "shotgun_shell",         X_OBJ_NAMES("Shotgun Shell"))
 X_OBJ_NAME_DEFINE(O_HARPOON_BOLT,          "harpoon_bolt",          X_OBJ_NAMES("Harpoon Bolt"))
 X_OBJ_NAME_DEFINE(O_HOT_LIQUID,            "hot_liquid",            X_OBJ_NAMES("Extra Fire"))
 X_OBJ_NAME_DEFINE(O_SHADOW,                "shadow",                X_OBJ_NAMES("Shadow"))

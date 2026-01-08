@@ -1672,6 +1672,12 @@
         "gun_flash": {
             "name": "Gun Flash",
         },
+        "gun_shell": {
+            "name": "Gun Shell",
+        },
+        "shotgun_shell": {
+            "name": "Shotgun Shell",
+        },
         "harpoon_bolt": {
             "name": "Harpoon Bolt",
         },

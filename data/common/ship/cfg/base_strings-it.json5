@@ -1819,6 +1819,12 @@
         },
         "pirahnas": {
             "name": "\\{review}Piranha",
+        },
+        "gun_shell": {
+            "name": "\\{review}Bossolo di pistola",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Bossolo di fucile a pompa",
         }
     }
 }

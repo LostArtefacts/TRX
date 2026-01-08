@@ -8,6 +8,7 @@
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/sound.h>
+#include <trx/game/spawn.h>
 #include <trx/version.h>
 
 #define M_ENABLE_FAST_UZI (g_TRVersion >= 2)
@@ -148,6 +149,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                     && Gun_FireWeapon(
                         weapon_type, lara->target, lara_item, angles)) {
                     lara->right_arm.flash_gun = weapon->flash_time;
+                    Spawn_GunShell(weapon_type, true);
                     if (!sound_already) {
                         M_FireSound(weapon->sample_num, false);
                     }
@@ -198,8 +200,10 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
                 if (weapon_type == LGT_DESERT_EAGLE) {
                     lara->right_arm.flash_gun = weapon->flash_time;
+                    Spawn_GunShell(weapon_type, true);
                 } else {
                     lara->left_arm.flash_gun = weapon->flash_time;
+                    Spawn_GunShell(weapon_type, false);
                 }
 
                 if (!sound_already) {
