@@ -470,6 +470,7 @@
             "injections": [
                 "data/injections/font.bin",
                 "data/injections/crash_sky.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         // Cutscene 4
@@ -482,6 +483,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         // Cutscene 5
@@ -509,6 +511,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/font.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         // Cutscene 7
@@ -535,6 +538,7 @@
             "injections": [
                 "data/injections/font.bin",
                 "data/injections/nevada_sky.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         // Cutscene 9
@@ -560,6 +564,7 @@
             "injections": [
                 "data/injections/font.bin",
                 "data/injections/antarc_sky.bin",
+                "data/injections/misc_sprites.bin",
             ],
         },
         // Cutscene 11
