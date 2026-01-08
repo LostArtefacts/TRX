@@ -17,7 +17,7 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
-#define M_MAX_SPARKS 192
+#define M_MAX_SPARKS 400
 #define M_MAX_SPARK_DYNAMICS 32
 
 typedef struct {
