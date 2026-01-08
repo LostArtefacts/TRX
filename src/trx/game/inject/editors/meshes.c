@@ -92,6 +92,10 @@ static void M_ApplyMeshEdit(const MESH_EDIT *const edit)
 
         mesh = Object_GetMesh(obj->mesh_idx + edit->mesh_idx);
     } else if (edit->obj_info.type == OBJ_TYPE_STATIC3D) {
+        if (edit->obj_info.id < 0
+            || edit->obj_info.id >= Object_GetStaticObjects3DCount()) {
+            return;
+        }
         const STATIC_OBJECT_3D *const obj =
             Object_Get3DStatic(edit->obj_info.id);
         mesh = Object_GetMesh(obj->mesh_idx);
@@ -214,6 +218,9 @@ static void M_Object3DEdits(
         const BOUNDS_16 collision_bounds = M_ReadBounds16(injection->fp);
         const BOUNDS_16 draw_bounds = M_ReadBounds16(injection->fp);
 
+        if (obj_id < 0 || obj_id >= Object_GetStaticObjects3DCount()) {
+            continue;
+        }
         STATIC_OBJECT_3D *const obj = Object_Get3DStatic(obj_id);
         if (!obj->loaded) {
             continue;

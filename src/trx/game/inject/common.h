@@ -12,6 +12,8 @@ void Inject_Cleanup(void);
 
 INJECTION_MESH_META Inject_GetRoomMeshMeta(int32_t room_index);
 int32_t Inject_GetDataCount(INJECTION_DATA_TYPE type);
+int32_t Inject_GetMaxStaticObject3DId(void);
+int32_t Inject_GetMaxStaticObject2DId(void);
 LEVEL_INFO Inject_GetCachedInfo(void);
 
 void Inject_RegisterPaletteMap(const uint16_t *palette_map, int32_t size);

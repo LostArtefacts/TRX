@@ -93,6 +93,10 @@ static void M_HandleSpriteSequences(
             }
         } else if (obj_info.type == OBJ_TYPE_STATIC2D) {
             STATIC_OBJECT_2D *const obj = Object_Get2DStatic(obj_info.id);
+            if (obj == nullptr) {
+                LOG_WARNING("Invalid static 2D %d", obj_info.id);
+                continue;
+            }
             obj->frame_count = ABS(num_meshes);
             obj->texture_idx = mesh_idx + level_info->textures.sprite_count;
             obj->loaded = true;

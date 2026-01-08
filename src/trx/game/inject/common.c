@@ -33,6 +33,8 @@ static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = nullptr;
 
 static int32_t m_DataCounts[IDT_NUMBER_OF] = {};
+static int32_t m_MaxStaticObject3DId = -1;
+static int32_t m_MaxStaticObject2DId = -1;
 static VECTOR *m_RoomMeta = nullptr;
 static LEVEL_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
@@ -112,6 +114,33 @@ static void M_InitialiseBlock(
     }
 
     switch (data_type) {
+    case IDT_STATIC_OBJECTS: {
+        for (int32_t i = 0; i < data_count; i++) {
+            const int32_t static_id = VFile_ReadS32(file);
+            if (static_id > m_MaxStaticObject3DId) {
+                m_MaxStaticObject3DId = static_id;
+            }
+            VFile_Skip(file, 28);
+        }
+        return;
+    }
+
+    case IDT_SPRITE_SEQUENCES: {
+        for (int32_t i = 0; i < data_count; i++) {
+            const INJECT_OBJECT_TYPE obj_type = VFile_ReadS32(file);
+            const int32_t obj_id = VFile_ReadS32(file);
+            if (obj_type == OBJ_TYPE_STATIC2D
+                && obj_id > m_MaxStaticObject2DId) {
+                m_MaxStaticObject2DId = obj_id;
+            }
+            if (obj_type == OBJ_TYPE_OBJECT && version < INJ_VERSION_5) {
+                VFile_Skip(file, 16);
+            }
+            VFile_Skip(file, sizeof(int16_t) * 2);
+        }
+        return;
+    }
+
     case IDT_ROOM_EDIT_META: {
         if (m_RoomMeta == nullptr) {
             m_RoomMeta = Vector_Create(sizeof(INJECTION_MESH_META));
@@ -438,6 +467,8 @@ void Inject_Cleanup(void)
     for (int32_t i = 0; i < IDT_NUMBER_OF; i++) {
         m_DataCounts[i] = 0;
     }
+    m_MaxStaticObject3DId = -1;
+    m_MaxStaticObject2DId = -1;
 
     Memory_FreePointer(&m_Injections);
     Memory_FreePointer(&m_PaletteMap);
@@ -478,6 +509,16 @@ INJECTION_MESH_META Inject_GetRoomMeshMeta(const int32_t room_index)
 int32_t Inject_GetDataCount(const INJECTION_DATA_TYPE type)
 {
     return m_DataCounts[type];
+}
+
+int32_t Inject_GetMaxStaticObject3DId(void)
+{
+    return m_MaxStaticObject3DId;
+}
+
+int32_t Inject_GetMaxStaticObject2DId(void)
+{
+    return m_MaxStaticObject2DId;
 }
 
 LEVEL_INFO Inject_GetCachedInfo(void)
