@@ -1080,7 +1080,8 @@ static bool M_ReadResumeInfo(
     } else {
         M_MUST(M_ReadNum(ctx, "magnum_ammo", &resume->magnum_ammo));
         M_MUST(M_ReadNum(ctx, "autos_ammo", &resume->autos_ammo));
-        M_MUST(M_ReadNum(ctx, "desert_eagle_ammo", &resume->desert_eagle_ammo));
+        M_OPTIONAL(
+            M_ReadNum(ctx, "desert_eagle_ammo", &resume->desert_eagle_ammo));
     }
 
     // TR1X <4.16
@@ -1125,12 +1126,12 @@ static bool M_ReadResumeInfo(
     } else {
         M_MUST(M_ReadBool(ctx, "has_magnums", &resume->flags.has_magnums));
         M_MUST(M_ReadBool(ctx, "has_autos", &resume->flags.has_autos));
-        M_MUST(M_ReadBool(
+        M_OPTIONAL(M_ReadBool(
             ctx, "has_desert_eagle", &resume->flags.has_desert_eagle));
-        M_MUST(M_ReadBool(ctx, "has_mp5", &resume->flags.has_mp5));
-        M_MUST(M_ReadNum(ctx, "mp5_ammo", &resume->mp5_ammo));
-        M_MUST(M_ReadBool(ctx, "has_rocket", &resume->flags.has_rocket));
-        M_MUST(M_ReadNum(ctx, "rocket_ammo", &resume->rocket_ammo));
+        M_OPTIONAL(M_ReadBool(ctx, "has_mp5", &resume->flags.has_mp5));
+        M_OPTIONAL(M_ReadNum(ctx, "mp5_ammo", &resume->mp5_ammo));
+        M_OPTIONAL(M_ReadBool(ctx, "has_rocket", &resume->flags.has_rocket));
+        M_OPTIONAL(M_ReadNum(ctx, "rocket_ammo", &resume->rocket_ammo));
     }
 
     M_MUST(M_ReadNum(ctx, "timer", &resume->stats.timer));
@@ -1387,8 +1388,8 @@ bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     M_MUST(M_PushObject(ctx, "misc"));
 
     {
-        bool bonus_flag = false;
-        M_OPTIONAL(M_ReadBool(ctx, "bonus_flag", &bonus_flag));
+        int32_t bonus_flag = false;
+        M_OPTIONAL(M_ReadNum(ctx, "bonus_flag", &bonus_flag));
         Game_SetBonusFlag(bonus_flag);
     }
 
