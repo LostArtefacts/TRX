@@ -50,8 +50,23 @@ typedef struct {
     float volume_r; // sample gain multiplier
 
     float pitch;
-    int32_t volume; // volume specified in hundredths of decibel
-    int32_t pan; // pan specified in hundredths of decibel
+    // `volume`/`pan` come from the game layer (src/trx/game/sound/common.c).
+    // Despite the historic "decibel" naming, these values are not base-10
+    // centi-dB. They are a log2-based gain domain that the OG engine used to
+    // feed directly to DirectSound (-10000..0 style range).
+    //
+    // In TRX we keep the game-side math pristine and simply interpret these as:
+    //   log2(gain) * 1000
+    // i.e. +1000 means "double the amplitude", -1000 means "half the
+    // amplitude". `M_DecibelToMultiplier()` is the corresponding inverse
+    // transform:
+    //   gain = 2^(value/1000)
+    //
+    // This makes combining contributions (volume + pan) an additive operation
+    // in this log2 domain, while still producing a linear multiplier for the
+    // mixer.
+    int32_t volume;
+    int32_t pan;
 
     // pitch shift means the same samples can be reused twice, hence float
     float current_sample;
@@ -72,7 +87,7 @@ static AUDIO_SAMPLE_SOUND m_Samples[AUDIO_MAX_ACTIVE_SAMPLES] = {};
 
 static double M_DecibelToMultiplier(double db_gain)
 {
-    return pow(2.0, db_gain / 600.0);
+    return pow(2.0, db_gain / 1000.0);
 }
 
 static bool M_RecalculateChannelVolumes(int32_t sound_id)
