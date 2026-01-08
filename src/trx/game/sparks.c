@@ -513,7 +513,12 @@ void Sparks_Control(void)
 void Sparks_Draw(void)
 {
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        OutputSource_PolyFX_StageSpark(&m_Sparks[i]);
+        SPARK *const spark = &m_Sparks[i];
+        if (!spark->on) {
+            continue;
+        }
+
+        OutputSource_PolyFX_StageSpark(spark);
     }
 }
 
