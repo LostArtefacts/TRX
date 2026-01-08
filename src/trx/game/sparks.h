@@ -123,3 +123,5 @@ void Sparks_TriggerGunSmoke(
 void Sparks_TriggerGunSmokeDirected(
     GAME_VECTOR pos, XYZ_32 vel, bool initial, LARA_GUN_TYPE weapon,
     int32_t shade);
+
+void Sparks_TriggerShotgunSparks(XYZ_32 pos, XYZ_32 vel);
