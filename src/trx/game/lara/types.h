@@ -5,6 +5,7 @@
 #include <trx/game/effects/types.h>
 #include <trx/game/items/types.h>
 #include <trx/game/lara/enum.h>
+#include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/types.h>
 
@@ -107,4 +108,7 @@ typedef struct {
         int16_t age;
         int16_t frame_num;
     } flare;
+
+    MATRIX mesh_pos_matrices[LM_NUMBER_OF];
+    bool mesh_pos_matrices_valid;
 } LARA_INFO;
