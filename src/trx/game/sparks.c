@@ -1583,3 +1583,112 @@ void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = 1;
 }
+
+void Sparks_TriggerRocketSmoke(
+    const XYZ_32 pos, const int32_t c, const int16_t room_num)
+{
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+
+    spark->src_color.r = 0;
+    spark->src_color.g = 0;
+    spark->src_color.b = 0;
+    spark->dst_color.r = c + 64;
+    spark->dst_color.g = c + 64;
+    spark->dst_color.b = c + 64;
+    spark->fade_to_black = 12;
+    spark->col_fade_speed = (Random_GetControl() & 3) + 4;
+    spark->draw_type = 2;
+    spark->extras = 0;
+    spark->life = (Random_GetControl() & 3) + 20;
+    spark->s_life = spark->life;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0xF) - 8;
+    spark->pos.y = pos.y + (Random_GetControl() & 0xF) - 8;
+    spark->pos.z = pos.z + (Random_GetControl() & 0xF) - 8;
+    spark->vel.x = (Random_GetControl() & 0xFF) - 128;
+    spark->vel.y = -4 - (Random_GetControl() & 3);
+    spark->vel.z = (Random_GetControl() & 0xFF) - 128;
+    spark->friction = 4;
+
+    if (Random_GetControl() & 1) {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE
+            | SPARK_F_SCALE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+
+        if (Random_GetControl() & 1) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+    } else {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    }
+
+    spark->scalar = 3;
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->gravity = -4 - (Random_GetControl() & 3);
+    spark->max_y_vel = -4 - (Random_GetControl() & 3);
+    const uint8_t size = (Random_GetControl() & 7) + 32;
+    spark->dst_size.width = size;
+    spark->src_size.width = size >> 2;
+    spark->size.width = size >> 2;
+    spark->src_size.height = size >> 2;
+    spark->size.height = size >> 2;
+    spark->dst_size.height = size;
+}
+
+void Sparks_TriggerRocketFlame(
+    const XYZ_32 pos, const XYZ_32 vel, const int16_t item_num,
+    const int16_t room_num)
+{
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = (Random_GetControl() & 0x1F) + 48;
+    spark->src_color.g = spark->src_color.r;
+    spark->src_color.b = (Random_GetControl() & 0x3F) + 192;
+    spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
+    spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
+    spark->dst_color.b = 32;
+    spark->fade_to_black = 12;
+    spark->col_fade_speed = (Random_GetControl() & 3) + 12;
+    spark->draw_type = 2;
+    spark->life = (Random_GetControl() & 3) + 28;
+    spark->s_life = spark->life;
+    spark->extras = 0;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+    spark->vel.x = vel.x;
+    spark->vel.y = vel.y;
+    spark->vel.z = vel.z;
+    spark->friction = 51;
+    spark->item_num = item_num;
+
+    if (Random_GetControl() & 1) {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_ITEM | SPARK_F_ROTATE
+            | SPARK_F_SPRITE | SPARK_F_SCALE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+
+        if (Random_GetControl() & 1) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+    } else {
+        spark->flags =
+            SPARK_F_ALT_SPRITE | SPARK_F_ITEM | SPARK_F_SPRITE | SPARK_F_SCALE;
+    }
+
+    spark->gravity = 0;
+    spark->max_y_vel = 0;
+    spark->scalar = 2;
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->size.width = (Random_GetControl() & 7) + 32;
+    spark->src_size.width = spark->size.width;
+    spark->dst_size.width = 2;
+    spark->size.height = spark->size.width;
+    spark->src_size.height = spark->size.height;
+    spark->dst_size.height = 2;
+}

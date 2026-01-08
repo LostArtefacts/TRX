@@ -9,14 +9,17 @@
 #include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
+#include <trx/game/math.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
 #define M_SHOTGUN_PELLET_SCATTER (DEG_1 * 20) // = 3640
-#define M_HARPOON_BOLT_SPEED 150
+#define M_HARPOON_BOLT_SPEED_TR12 150
+#define M_HARPOON_BOLT_SPEED_TR3 256
 #define M_GRENADE_SPEED 200
 
 typedef enum {
@@ -34,6 +37,33 @@ typedef enum {
 
 static bool m_M16Firing = false;
 static bool m_ReloadHarpoon = false;
+
+static XYZ_32 M_GetLocalZOffset(const ITEM *const item, const int32_t dist)
+{
+    const int32_t cx = Math_Cos(item->rot.x);
+    const int32_t sx = Math_Sin(item->rot.x);
+    const int32_t cy = Math_Cos(item->rot.y);
+    const int32_t sy = Math_Sin(item->rot.y);
+
+    const int32_t horz = (dist * cx) >> W2V_SHIFT;
+    return (XYZ_32) {
+        .x = (horz * sy) >> W2V_SHIFT,
+        .y = -(dist * sx) >> W2V_SHIFT,
+        .z = (horz * cy) >> W2V_SHIFT,
+    };
+}
+
+static void M_SetTR3ProjectileShade(ITEM *const item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    // OG TR3 uses `item->shade = -0x3DF0` on projectiles; in TRX any negative
+    // shade forces the dynamic/smoothed lighting path.
+    item->shade.value_1 = -1;
+    item->shade.value_2 = -1;
+}
 
 static M_ANIM M_GetReadyAnim(const LARA_GUN_TYPE weapon_type)
 {
@@ -197,10 +227,18 @@ static void M_FireHarpoon(void)
         projectile_item->rot.z = 0;
     }
 
+    const int32_t bolt_speed =
+        g_TRVersion == 3 ? M_HARPOON_BOLT_SPEED_TR3 : M_HARPOON_BOLT_SPEED_TR12;
     projectile_item->fall_speed =
-        (-M_HARPOON_BOLT_SPEED * Math_Sin(projectile_item->rot.x)) >> W2V_SHIFT;
+        (-bolt_speed * Math_Sin(projectile_item->rot.x)) >> W2V_SHIFT;
     projectile_item->speed =
-        (M_HARPOON_BOLT_SPEED * Math_Cos(projectile_item->rot.x)) >> W2V_SHIFT;
+        (bolt_speed * Math_Cos(projectile_item->rot.x)) >> W2V_SHIFT;
+
+    if (g_TRVersion == 3) {
+        M_SetTR3ProjectileShade(projectile_item);
+        projectile_item->hit_points = 256;
+    }
+
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 
@@ -332,6 +370,23 @@ static void M_FireRocket(void)
     }
 
     Gun_Smoke_OnFire(LGT_ROCKET, true);
+
+    if (g_TRVersion == 3) {
+        M_SetTR3ProjectileShade(projectile_item);
+        const XYZ_32 back_128 = M_GetLocalZOffset(projectile_item, -128);
+        for (int32_t i = 0; i < 8; i++) {
+            const int32_t dist = -(Random_GetControl() & 0x7FF);
+            const XYZ_32 back_vel = M_GetLocalZOffset(projectile_item, dist);
+            Sparks_TriggerRocketFlame(
+                back_128,
+                (XYZ_32) {
+                    .x = back_vel.x - back_128.x,
+                    .y = back_vel.y - back_128.y,
+                    .z = back_vel.z - back_128.z,
+                },
+                item_num, projectile_item->room_num);
+        }
+    }
 }
 
 static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)

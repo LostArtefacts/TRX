@@ -42,8 +42,8 @@ static bool M_CanBreatheVisible(const ITEM *const lara_item)
         return Item_GetRelativeFrame(lara_item) >= 30;
     }
 
-    const int32_t wibble = (int32_t)Output_GetTimeInGame() % 64;
-    return wibble >= 32 && wibble <= 48;
+    const int32_t time = (int32_t)Output_GetTimeInGame() % 64;
+    return time >= 32 && time <= 48;
 }
 
 void Lara_Breath_Control(const ITEM *const lara_item)
