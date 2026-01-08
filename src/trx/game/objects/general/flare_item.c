@@ -15,9 +15,14 @@
 // clang-format off
 #define M_FLARE_INTENSITY 12
 #define M_FLARE_FALL_OFF  11
-#define M_MAX_FLARE_AGE   (60 * LOGIC_FPS)                  // = 1800
-#define M_FLARE_OLD_AGE   (M_MAX_FLARE_AGE - 2 * LOGIC_FPS) // = 1740
-#define M_FLARE_YOUNG_AGE (LOGIC_FPS)                       // = 30
+
+#define M_MAX_FLARE_AGE_TR12   (60 * LOGIC_FPS)                       // = 1800
+#define M_FLARE_OLD_AGE_TR12   (M_MAX_FLARE_AGE_TR12 - 2 * LOGIC_FPS) // = 1740
+#define M_FLARE_YOUNG_AGE_TR12 (LOGIC_FPS)                            // = 30
+
+#define M_MAX_FLARE_AGE_TR3   (30 * LOGIC_FPS)         // = 900
+#define M_FLARE_DYING_AGE_TR3 (M_MAX_FLARE_AGE_TR3 - 90) // = 810
+#define M_FLARE_END_AGE_TR3   (M_MAX_FLARE_AGE_TR3 - 24) // = 876
 // clang-format off
 
 static XYZ_32 M_TransformLocalOffset(
@@ -196,6 +201,117 @@ end:
     return true;
 }
 
+static bool M_GenerateLight_TR12(const XYZ_32 pos, const int32_t flare_age)
+{
+    if (flare_age >= M_MAX_FLARE_AGE_TR12) {
+        return false;
+    }
+
+    const int32_t random = Random_GetDraw();
+    const XYZ_32 light_pos = {
+        .x = pos.x + (random & 0xA0),
+        .y = pos.y,
+        .z = pos.z,
+    };
+
+    if (flare_age < M_FLARE_YOUNG_AGE_TR12) {
+        const int32_t intensity = M_FLARE_INTENSITY
+                * (flare_age - M_FLARE_YOUNG_AGE_TR12)
+            / (2 * M_FLARE_YOUNG_AGE_TR12)
+            + M_FLARE_INTENSITY;
+        Output_AddDynamicLight(light_pos, intensity, M_FLARE_FALL_OFF);
+        return true;
+    }
+
+    if (flare_age < M_FLARE_OLD_AGE_TR12) {
+        Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF);
+        return true;
+    }
+
+    if (random > 0x2000) {
+        Output_AddDynamicLight(
+            light_pos, M_FLARE_INTENSITY - (random & 3), M_FLARE_FALL_OFF);
+        return true;
+    }
+
+    Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF / 2);
+    return false;
+}
+
+static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
+{
+    if (flare_age >= M_MAX_FLARE_AGE_TR3) {
+        return false;
+    }
+
+    const int32_t rnd = Random_GetControl();
+    const XYZ_32 light_pos = {
+        .x = pos.x + ((rnd & 0xF) << 3),
+        .y = pos.y + ((rnd >> 1) & 0x78),
+        .z = pos.z + ((rnd >> 5) & 0x78),
+    };
+
+    int32_t r = 0;
+    int32_t g = 0;
+    int32_t b = 0;
+    int32_t falloff = 0;
+
+    if (flare_age < 4) {
+        r = (rnd & 0x1F) + (flare_age << 4) + 160;
+        g = ((rnd >> 4) & 0x1F) + (flare_age << 3) + 32;
+        b = ((rnd >> 8) & 0x1F) + (flare_age << 4);
+        falloff = (rnd & 3) + (flare_age << 2) + 4;
+
+        if (falloff > 16) {
+            falloff -= (rnd >> 12) & 3;
+        }
+    } else if (flare_age < 16) {
+        r = (rnd & 0x3F) + (flare_age << 2) + 128;
+        g = ((rnd >> 4) & 0x1F) + (flare_age << 2) + 64;
+        b = ((rnd >> 8) & 0x1F) + (flare_age << 2) + 16;
+        falloff = (rnd & 1) + flare_age + 2;
+    } else if (flare_age < M_FLARE_DYING_AGE_TR3) {
+        r = (rnd & 0x3F) + 192;
+        g = ((rnd >> 4) & 0x1F) + 128;
+        b = ((rnd >> 8) & 0x20) + (((rnd >> 6) & 0x10) << 1);
+        falloff = 16;
+    } else if (flare_age < M_FLARE_END_AGE_TR3) {
+        if (rnd > 0x2000) {
+            r = (rnd & 0x3F) + 192;
+            g = ((rnd >> 4) & 0x1F) + 64;
+            b = ((rnd >> 8) & 0x20) + (((rnd >> 6) & 0x10) << 1);
+            falloff = 16;
+        } else {
+            const int32_t rnd2 = Random_GetControl();
+            const int32_t rnd3 = Random_GetControl();
+            const int32_t rnd4 = Random_GetControl();
+            r = (rnd2 & 0x3F) + 192;
+            g = (rnd3 & 0x3F) + 64;
+            b = rnd4 & 0x7F;
+            falloff = (Random_GetControl() & 6) + 8;
+            Output_AddDynamicLightRGB(
+                    light_pos, falloff, (RGB_888) { r, g, b });
+            return false;
+        }
+    } else {
+        const int32_t rnd2 = Random_GetControl();
+        const int32_t rnd3 = Random_GetControl();
+        const int32_t rnd4 = Random_GetControl();
+        r = (rnd2 & 0x3F) + 192;
+        g = (rnd3 & 0x3F) + 64;
+        b = rnd4 & 0x1F;
+        falloff = 16 - ((flare_age - M_FLARE_END_AGE_TR3) >> 1);
+        Output_AddDynamicLightRGB(
+                light_pos, falloff, (RGB_888) { r, g, b });
+        return (rnd & 1) != 0;
+    }
+
+    Output_AddDynamicLightRGB(
+            light_pos, falloff, (RGB_888) { r, g, b });
+    return true;
+
+}
+
 void Flare_GenerateEffects(
     const XYZ_32 *const sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
@@ -212,43 +328,16 @@ void Flare_GenerateEffects(
 
 bool Flare_GenerateLight(const XYZ_32 pos, const int32_t flare_age)
 {
-    if (flare_age >= M_MAX_FLARE_AGE) {
-        return false;
+    if (g_TRVersion >= 3) {
+        return M_GenerateLight_TR3(pos, flare_age);
+    } else {
+        return M_GenerateLight_TR12(pos, flare_age);
     }
-
-    const int32_t random = Random_GetDraw();
-    const XYZ_32 light_pos = {
-        .x = pos.x + (random & 0xA0),
-        .y = pos.y,
-        .z = pos.z,
-    };
-
-    if (flare_age < M_FLARE_YOUNG_AGE) {
-        const int32_t intensity = M_FLARE_INTENSITY
-                * (flare_age - M_FLARE_YOUNG_AGE) / (2 * M_FLARE_YOUNG_AGE)
-            + M_FLARE_INTENSITY;
-        Output_AddDynamicLight(light_pos, intensity, M_FLARE_FALL_OFF);
-        return true;
-    }
-
-    if (flare_age < M_FLARE_OLD_AGE) {
-        Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF);
-        return true;
-    }
-
-    if (random > 0x2000) {
-        Output_AddDynamicLight(
-            light_pos, M_FLARE_INTENSITY - (random & 3), M_FLARE_FALL_OFF);
-        return true;
-    }
-
-    Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF / 2);
-    return false;
 }
 
 int32_t Flare_GetMaxAge(void)
 {
-    return M_MAX_FLARE_AGE;
+    return g_TRVersion >= 3 ? M_MAX_FLARE_AGE_TR3 : M_MAX_FLARE_AGE_TR12;
 }
 
 static void M_Setup(OBJECT *const obj)
