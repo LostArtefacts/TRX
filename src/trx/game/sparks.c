@@ -1461,8 +1461,7 @@ void Sparks_TriggerRicochet(
     spark->dst_color.r = c;
     spark->dst_color.g = c;
     spark->dst_color.b = c;
-    spark->draw_type =
-        DRAW_BLEND; // DRAW_BLEND_SUB in the OG, but doesn't that match?
+    spark->draw_type = DRAW_BLEND_SUB;
     spark->col_fade_speed = 8;
     spark->fade_to_black = 16;
     spark->life = 28;

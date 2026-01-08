@@ -573,9 +573,9 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         flags |= VERT_FLAT_SHADED;
         sprite_idx = -1;
         if (draw_type == DRAW_BLEND_ADD) {
-            draw_type = DRAW_BLEND;
             color.a = 128;
         }
+        draw_type = DRAW_BLEND;
     }
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
