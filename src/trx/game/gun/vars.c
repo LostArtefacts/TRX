@@ -142,6 +142,12 @@ void Gun_LoadVars(const char *const path)
             JSON_ObjectGetValue(obj, "muzzle_pos_alt"),
             &g_Weapons[type].muzzle_pos_alt);
 
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "shell_pos"), &g_Weapons[type].shell_pos);
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "shell_pos_alt"),
+            &g_Weapons[type].shell_pos_alt);
+
         // sample_num
         const char *const sample =
             JSON_ObjectGetString(obj, "sample_num", JSON_INVALID_STRING);

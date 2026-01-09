@@ -91,6 +91,16 @@ described in the table below.
     <td>How many smoke effect instances to spawn upon shooting.</td>
   </tr>
   <tr valign="top">
+    <td><code>shell_pos</code></td>
+    <td>XYZ</td>
+    <td>Specifies the additional offset to apply to the gun for shells (right hand).</td>
+  </tr>
+  <tr valign="top">
+    <td><code>shell_pos_alt</code></td>
+    <td>XYZ</td>
+    <td>Specifies the additional offset to apply to the gun for shells (left hand for dual pistols).</td>
+  </tr>
+  <tr valign="top">
     <td><code>gun_height</code></td>
     <td>Integer</td>
     <td>Used to determine the start Y position when firing a weapon, and to determine if Lara is too far submerged in water to be able to use a weapon (other than the harpoon).</td>
