@@ -783,14 +783,124 @@ static void M_Reset(void)
     g_Camera.pos.z -= 100;
 }
 
+static void M_Update(
+    const ITEM *const item, const bool fixed_camera, int32_t target_y)
+{
+    Camera_SetChunky(false);
+    if (g_Camera.type != CAM_LOOK) {
+        m_LastIdeal.target = g_Camera.target;
+    }
+
+    const BOUNDS_16 *bounds = Item_GetBoundsAccurate(item);
+
+    if (g_Camera.item != nullptr && !fixed_camera) {
+        bounds = Item_GetBoundsAccurate(g_Camera.item);
+
+        const int32_t dx = g_Camera.item->pos.x - item->pos.x;
+        const int32_t dz = g_Camera.item->pos.z - item->pos.z;
+        const int32_t shift = Math_Sqrt(SQUARE(dx) + SQUARE(dz));
+        int16_t angle = Math_Atan(dz, dx) - item->rot.y;
+
+        int16_t tilt = Math_Atan(
+            shift,
+            target_y - (bounds->min.y + bounds->max.y) / 2
+                - g_Camera.item->pos.y);
+        angle >>= 1;
+        tilt >>= 1;
+
+        if (angle > CAMERA_MIN_HEAD_ROTATION && angle < CAMERA_MAX_HEAD_ROTATION
+            && tilt > CAMERA_MIN_HEAD_TILT && tilt < CAMERA_MAX_HEAD_TILT) {
+            LARA_INFO *const lara_info = Lara_GetLaraInfo();
+            int16_t change = angle - lara_info->head_rot.y;
+            if (change > CAMERA_HEAD_TURN) {
+                lara_info->head_rot.y += CAMERA_HEAD_TURN;
+            } else if (change < -CAMERA_HEAD_TURN) {
+                lara_info->head_rot.y -= CAMERA_HEAD_TURN;
+            } else {
+                lara_info->head_rot.y = angle;
+            }
+
+            change = tilt - lara_info->head_rot.x;
+            if (change > CAMERA_HEAD_TURN) {
+                lara_info->head_rot.x += CAMERA_HEAD_TURN;
+            } else if (change < -CAMERA_HEAD_TURN) {
+                lara_info->head_rot.x -= CAMERA_HEAD_TURN;
+            } else {
+                lara_info->head_rot.x = tilt;
+            }
+            lara_info->torso_rot.x = lara_info->head_rot.x;
+            lara_info->torso_rot.y = lara_info->head_rot.y;
+            g_Camera.type = CAM_LOOK;
+            g_Camera.item->looked_at = true;
+        }
+    }
+
+    if (g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT) {
+        target_y -= STEP_L;
+        g_Camera.target.room_num = item->room_num;
+        if (g_Camera.fixed_camera) {
+            g_Camera.target.y = target_y;
+            g_Camera.speed = 1;
+        } else {
+            g_Camera.target.y += (target_y - g_Camera.target.y) >> 2;
+            g_Camera.speed = g_Camera.type == CAM_LOOK ? CAMERA_LOOK_SPEED
+                                                       : CAMERA_COMBAT_SPEED;
+        }
+        g_Camera.fixed_camera = false;
+        if (g_Camera.type == CAM_LOOK) {
+            M_Look(item);
+        } else {
+            M_Combat(item);
+        }
+    } else {
+        g_Camera.target.x = item->pos.x;
+        g_Camera.target.z = item->pos.z;
+
+        if (g_Camera.flags == CF_FOLLOW_CENTRE) {
+            const int32_t shift = (bounds->min.z + bounds->max.z) / 2;
+            g_Camera.target.z += (shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+            g_Camera.target.x += (shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+        }
+
+        g_Camera.target.room_num = item->room_num;
+        g_Camera.target.y = target_y;
+
+        if (g_Camera.fixed_camera != fixed_camera) {
+            g_Camera.fixed_camera = true;
+            g_Camera.speed = 1;
+        } else {
+            g_Camera.fixed_camera = false;
+        }
+
+        if (g_Camera.speed != 1 && m_LastState.cam_type != CAM_LOOK) {
+            g_Camera.target.x =
+                ((g_Camera.target.x - m_LastIdeal.target.x) >> 2)
+                + m_LastIdeal.target.x;
+            g_Camera.target.y =
+                ((g_Camera.target.y - m_LastIdeal.target.y) >> 2)
+                + m_LastIdeal.target.y;
+            g_Camera.target.z =
+                ((g_Camera.target.z - m_LastIdeal.target.z) >> 2)
+                + m_LastIdeal.target.z;
+        }
+
+        Room_GetSector(
+            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
+            &g_Camera.target.room_num);
+
+        if (g_Camera.type == CAM_CHASE || g_Camera.flags == CF_CHASE_OBJECT) {
+            M_Chase(item);
+        } else {
+            M_Fixed();
+        }
+    }
+}
+
 static const CAMERA_STRATEGY m_Strategy = {
     .get_chase_speed_func = M_GetChaseSpeed,
-    .chase_func = M_Chase,
-    .combat_func = M_Combat,
-    .look_func = M_Look,
-    .fixed_func = M_Fixed,
     .clamp_result_func = M_ClampResult,
     .reset_func = M_Reset,
+    .update_func = M_Update,
 };
 
 REGISTER_CAMERA(CAMERA_MODE_TR3, m_Strategy)

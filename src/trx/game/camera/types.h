@@ -5,12 +5,9 @@
 
 typedef struct {
     int16_t (*get_chase_speed_func)(void);
-    void (*chase_func)(const ITEM *item);
-    void (*combat_func)(const ITEM *item);
-    void (*look_func)(const ITEM *item);
-    void (*fixed_func)(void);
     void (*clamp_result_func)(void);
     void (*reset_func)(void);
+    void (*update_func)(const ITEM *item, bool fixed_camera, int32_t target_y);
 } CAMERA_STRATEGY;
 
 typedef struct {
