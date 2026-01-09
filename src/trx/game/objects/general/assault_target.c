@@ -28,6 +28,7 @@ static void M_ResetItemState(ITEM *const item, const OBJECT *const obj)
     item->current_anim_state = anim->current_anim_state;
     item->goal_anim_state = item->current_anim_state;
     item->required_anim_state = M_STATE_RISE;
+    item->prev_frame_num = item->frame_num;
     item->rot.x = 0;
     item->rot.z = 0;
     item->timer = 0;
