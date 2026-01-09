@@ -1126,9 +1126,6 @@ void Level_ReadStaticObjects(
 
         obj->collidable = (tmp_statics[i].flags & 1) == 0;
         obj->visible = (tmp_statics[i].flags & 2) != 0;
-        if (loader->game_version >= 3) {
-            obj->collidable = true;
-        }
 
         Object_GetMesh(obj->mesh_idx)->enable_caustics = obj->visible;
     }
