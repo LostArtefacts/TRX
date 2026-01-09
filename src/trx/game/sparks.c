@@ -1422,6 +1422,7 @@ void Sparks_TriggerRicochet(
     spark->src_color.r = 255;
     spark->src_color.g = (Random_GetControl() & 0x1F) + 32;
     spark->src_color.b = 0;
+    spark->color = spark->src_color;
     spark->dst_color.r = 192;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 96;
     spark->dst_color.b = 0;
@@ -1457,6 +1458,7 @@ void Sparks_TriggerRicochet(
     spark->src_color.r = c;
     spark->src_color.g = c;
     spark->src_color.b = c;
+    spark->color = spark->src_color;
     c >>= 1;
     spark->dst_color.r = c;
     spark->dst_color.g = c;
