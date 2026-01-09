@@ -23,7 +23,9 @@ static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static int32_t m_FlipSlotFlags[MAX_FLIP_MAPS] = {};
 
-#define M_OUTSIDE_TABLE_BLOCK_SHIFT 12 // 4096 (4 * WALL_L)
+#define M_OUTSIDE_TABLE_STEP_SHIFT 2
+#define M_OUTSIDE_TABLE_STEP (1 << M_OUTSIDE_TABLE_STEP_SHIFT)
+#define M_OUTSIDE_TABLE_BLOCK_SHIFT (WALL_SHIFT + M_OUTSIDE_TABLE_STEP_SHIFT)
 #define M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL 64
 #define M_OUTSIDE_TABLE_SENTINEL NO_ROOM
 #define M_OUTSIDE_OFFSET_EMPTY 0xFFFF
@@ -163,21 +165,21 @@ void Room_BuildOutsideTable(void)
         full_table[i] = M_OUTSIDE_TABLE_SENTINEL;
     }
 
-    const int32_t blocks_x = m_OutsideGridX * 4;
-    const int32_t blocks_z = m_OutsideGridZ * 4;
-    for (int32_t y = 0; y < blocks_x; y += 4) {
-        for (int32_t x = 0; x < blocks_z; x += 4) {
+    const int32_t blocks_x = m_OutsideGridX * M_OUTSIDE_TABLE_STEP;
+    const int32_t blocks_z = m_OutsideGridZ * M_OUTSIDE_TABLE_STEP;
+    for (int32_t y = 0; y < blocks_x; y += M_OUTSIDE_TABLE_STEP) {
+        for (int32_t x = 0; x < blocks_z; x += M_OUTSIDE_TABLE_STEP) {
             for (int32_t i = 0; i < num_rooms; i++) {
                 const ROOM *const room = Room_Get(i);
 
-                const int32_t room_x =
-                    (room->pos.z >> WALL_SHIFT) - (m_OutsideOriginCellZ << 2);
-                const int32_t room_y =
-                    (room->pos.x >> WALL_SHIFT) - (m_OutsideOriginCellX << 2);
+                const int32_t room_x = (room->pos.z >> WALL_SHIFT)
+                    - (m_OutsideOriginCellZ << M_OUTSIDE_TABLE_STEP_SHIFT);
+                const int32_t room_y = (room->pos.x >> WALL_SHIFT)
+                    - (m_OutsideOriginCellX << M_OUTSIDE_TABLE_STEP_SHIFT);
 
                 bool cont = false;
-                for (int32_t ry = 0; ry < 4 && !cont; ry++) {
-                    for (int32_t rx = 0; rx < 4; rx++) {
+                for (int32_t ry = 0; ry < M_OUTSIDE_TABLE_STEP && !cont; ry++) {
+                    for (int32_t rx = 0; rx < M_OUTSIDE_TABLE_STEP; rx++) {
                         if (x + rx >= room_x
                             && x + rx < room_x + room->size.z - 2
                             && y + ry >= room_y
@@ -195,7 +197,9 @@ void Room_BuildOutsideTable(void)
                 int16_t *const cell =
                     &full_table
                         [M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL
-                         * ((x >> 2) + m_OutsideGridZ * (y >> 2))];
+                         * ((x >> M_OUTSIDE_TABLE_STEP_SHIFT)
+                            + m_OutsideGridZ
+                                * (y >> M_OUTSIDE_TABLE_STEP_SHIFT))];
                 for (int32_t lp = 0; lp < M_OUTSIDE_TABLE_MAX_ROOMS_PER_CELL;
                      lp++) {
                     if (cell[lp] == M_OUTSIDE_TABLE_SENTINEL) {
