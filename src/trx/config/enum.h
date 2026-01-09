@@ -67,6 +67,7 @@ typedef enum {
 typedef enum {
     CAMERA_MODE_TR1,
     CAMERA_MODE_TR2,
+    CAMERA_MODE_TR3,
     CAMERA_MODE_NUMBER_OF,
 } CAMERA_MODE;
 

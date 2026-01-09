@@ -12,6 +12,7 @@
 #define M_MAX_ELEVATION     (85 * DEG_1) // = 15470
 #define M_CHASE_SHIFT       (STEP_L * 3 / 2) // = 384
 #define M_LOOK_SHIFT        (STEP_L * 7 / 8) // = 224
+#define M_CHASE_SPEED       10
 // clang-format on
 
 typedef struct {
@@ -35,6 +36,11 @@ static M_STATE m_LastState = {};
 static M_IDEAL m_LastIdeal = {};
 static M_IDEAL m_LastLookIdeal = {};
 static int32_t m_Snaps = 0;
+
+static int16_t M_GetChaseSpeed(void)
+{
+    return M_CHASE_SPEED;
+}
 
 static bool M_LOS(
     GAME_VECTOR *const start, GAME_VECTOR *const target, const int32_t shift)
@@ -776,3 +782,15 @@ static void M_Reset(void)
     g_Camera.pos = m_LastIdeal.target;
     g_Camera.pos.z -= 100;
 }
+
+static const CAMERA_STRATEGY m_Strategy = {
+    .get_chase_speed_func = M_GetChaseSpeed,
+    .chase_func = M_Chase,
+    .combat_func = M_Combat,
+    .look_func = M_Look,
+    .fixed_func = M_Fixed,
+    .clamp_result_func = M_ClampResult,
+    .reset_func = M_Reset,
+};
+
+REGISTER_CAMERA(CAMERA_MODE_TR3, m_Strategy)
