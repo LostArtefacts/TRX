@@ -36,5 +36,8 @@ typedef struct {
     SAMPLE_TRX_ID sample_num;
     RGB_F glow_color;
     XYZ_32 glow_pos;
+    XYZ_32 muzzle_pos;
+    XYZ_32 muzzle_pos_alt;
+    int32_t smoke_count;
     bool is_available;
 } WEAPON_INFO;
