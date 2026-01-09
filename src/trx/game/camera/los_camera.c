@@ -10,6 +10,7 @@
 #define M_DEFAULT_ELEVATION (-10 * DEG_1) // = -1820
 #define M_MAX_ELEVATION     (85 * DEG_1) // = 15470
 #define M_CHASE_SHIFT       (STEP_L * 3 / 2) // = 384
+#define M_LOOK_SHIFT        (STEP_L * 7 / 8) // = 224
 // clang-format on
 
 typedef struct {
@@ -31,6 +32,7 @@ typedef struct {
 
 static M_STATE m_LastState = {};
 static M_IDEAL m_LastIdeal = {};
+static M_IDEAL m_LastLookIdeal = {};
 static int32_t m_Snaps = 0;
 
 static bool M_LOS(
@@ -529,4 +531,214 @@ static void M_Fixed(void)
             g_Camera.timer = -1;
         }
     }
+}
+
+static XYZ_32 M_GetHeadPos(const int32_t x, const int32_t y, const int32_t z)
+{
+    XYZ_32 pos = {
+        .x = x,
+        .y = y,
+        .z = z,
+    };
+    Lara_GetMeshPos(LM_HEAD, &pos);
+    return pos;
+}
+
+static void M_Look(const ITEM *const item)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    XYZ_16 head_rot = lara->head_rot;
+    XYZ_16 torso_rot = lara->torso_rot;
+
+    lara->torso_rot.x = 0;
+    lara->torso_rot.y = 0;
+    lara->head_rot.x <<= 1;
+    lara->head_rot.y <<= 1;
+
+    CLAMP(lara->head_rot.x, -13650, 10010);
+    CLAMP(lara->head_rot.y, -14560, 14560);
+
+    XYZ_32 pos_1 = M_GetHeadPos(0, 16, 64);
+
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *sector =
+        Room_GetSector(pos_1.x, pos_1.y + STEP_L, pos_1.z, &room_num);
+
+    const ROOM *room = Room_Get(room_num);
+    if (room->flags.swamp) {
+        pos_1.y = room->max_ceiling - STEP_L;
+    }
+
+    sector = Room_GetSector(pos_1.x, pos_1.y, pos_1.z, &room_num);
+    int16_t height = Room_GetHeight(sector, pos_1.x, pos_1.y, pos_1.z);
+    int16_t ceiling = Room_GetCeiling(sector, pos_1.x, pos_1.y, pos_1.z);
+
+    if (height == NO_HEIGHT || ceiling == NO_HEIGHT || ceiling >= height
+        || pos_1.y > height || pos_1.y < ceiling) {
+        pos_1 = M_GetHeadPos(0, 16, 0);
+        room_num = lara_item->room_num;
+        sector = Room_GetSector(pos_1.x, pos_1.y + STEP_L, pos_1.z, &room_num);
+
+        room = Room_Get(room_num);
+        if (room->flags.swamp) {
+            pos_1.y = room->max_ceiling - STEP_L;
+        }
+
+        sector = Room_GetSector(pos_1.x, pos_1.y, pos_1.z, &room_num);
+        height = Room_GetHeight(sector, pos_1.x, pos_1.y, pos_1.z);
+        ceiling = Room_GetCeiling(sector, pos_1.x, pos_1.y, pos_1.z);
+
+        if (height == NO_HEIGHT || ceiling == NO_HEIGHT || ceiling >= height
+            || pos_1.y > height || pos_1.y < ceiling) {
+            pos_1 = M_GetHeadPos(0, 16, -64);
+        }
+    }
+
+    XYZ_32 pos_2 = M_GetHeadPos(0, 0, -1024);
+    XYZ_32 pos_3 = M_GetHeadPos(0, 0, 2048);
+
+    const XYZ_32 delta = {
+        .x = (pos_2.x - pos_1.x) >> 3,
+        .y = (pos_2.y - pos_1.y) >> 3,
+        .z = (pos_2.z - pos_1.z) >> 3,
+    };
+
+    XYZ_32 ideal_pos = pos_1;
+    room_num = lara_item->room_num;
+
+    int32_t i = 0;
+    for (; i < M_LOS_STEPS; i++) {
+        int16_t next_room_num = room_num;
+        sector = Room_GetSector(
+            ideal_pos.x, ideal_pos.y + STEP_L, ideal_pos.z, &next_room_num);
+
+        if (Room_Get(next_room_num)->flags.swamp) {
+            ideal_pos.y = Room_Get(next_room_num)->max_ceiling - STEP_L;
+            break;
+        }
+
+        sector = Room_GetSector(
+            ideal_pos.x, ideal_pos.y, ideal_pos.z, &next_room_num);
+        height = Room_GetHeight(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+        ceiling =
+            Room_GetCeiling(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+
+        if (height == NO_HEIGHT || ceiling == NO_HEIGHT || ceiling >= height
+            || ideal_pos.y > height || ideal_pos.y < ceiling) {
+            break;
+        }
+
+        room_num = next_room_num;
+        ideal_pos.x += delta.x;
+        ideal_pos.y += delta.y;
+        ideal_pos.z += delta.z;
+    }
+
+    if (i != 0) {
+        ideal_pos.x -= delta.x;
+        ideal_pos.y -= delta.y;
+        ideal_pos.z -= delta.z;
+    }
+
+    GAME_VECTOR ideal = {
+        .pos = ideal_pos,
+        .room_num = room_num,
+    };
+    // TODO: this is not the same as M_UpdateLaraState used in other cases
+    if (m_LastState.lara.rot.x == lara->head_rot.x
+        && m_LastState.lara.rot.y == lara->head_rot.y
+        && m_LastState.lara.pos.x == lara_item->pos.x
+        && m_LastState.lara.pos.y == lara_item->pos.y
+        && m_LastState.lara.pos.z == lara_item->pos.z
+        && m_LastState.lara.current_anim_state == lara_item->current_anim_state
+        && m_LastState.lara.goal_anim_state == lara_item->goal_anim_state
+        && m_LastState.cam_type == CAM_LOOK) {
+        ideal = m_LastLookIdeal.pos;
+        pos_3 = m_LastLookIdeal.target.pos;
+    } else {
+        m_LastState.lara.rot.x = lara->head_rot.x;
+        m_LastState.lara.rot.y = lara->head_rot.y;
+        m_LastState.lara.pos = lara_item->pos;
+        m_LastState.lara.current_anim_state = lara_item->current_anim_state;
+        m_LastState.lara.goal_anim_state = lara_item->goal_anim_state;
+
+        m_LastLookIdeal.pos = ideal;
+        m_LastLookIdeal.target.pos = pos_3;
+    }
+
+    M_Collide(&ideal, M_LOOK_SHIFT, true);
+
+    if (m_LastState.cam_type == CAM_FIXED) {
+        g_Camera.pos.pos = ideal.pos;
+        g_Camera.target.pos = pos_3;
+    } else {
+        g_Camera.pos.x += (ideal.x - g_Camera.pos.x) >> 2;
+        g_Camera.pos.y += (ideal.y - g_Camera.pos.y) >> 2;
+        g_Camera.pos.z += (ideal.z - g_Camera.pos.z) >> 2;
+        g_Camera.target.x += (pos_3.x - g_Camera.target.x) >> 2;
+        g_Camera.target.y += (pos_3.y - g_Camera.target.y) >> 2;
+        g_Camera.target.z += (pos_3.z - g_Camera.target.z) >> 2;
+    }
+
+    g_Camera.target.room_num = lara_item->room_num;
+
+    if (g_Camera.type == m_LastState.cam_type) {
+        Camera_ApplyBounce();
+    }
+
+    Room_GetSector(
+        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
+    ideal_pos = g_Camera.pos.pos;
+    room_num = g_Camera.pos.room_num;
+    sector = Room_GetSector(ideal_pos.x, ideal_pos.y, ideal_pos.z, &room_num);
+    height = Room_GetHeight(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+    ceiling = Room_GetCeiling(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+
+    if (ceiling != NO_HEIGHT && height != NO_HEIGHT) {
+        if (ceiling > ideal_pos.y - 255 && height < ideal_pos.y + 255
+            && height > ceiling) {
+            g_Camera.pos.y = (ceiling + height) >> 1;
+        } else if (height < ideal_pos.y + 255 && height > ceiling) {
+            g_Camera.pos.y = height - 255;
+        } else if (ceiling > ideal_pos.y - 255 && height > ceiling) {
+            g_Camera.pos.y = ceiling + 255;
+        }
+    }
+
+    ideal_pos = g_Camera.pos.pos;
+    room_num = g_Camera.pos.room_num;
+    sector = Room_GetSector(ideal_pos.x, ideal_pos.y, ideal_pos.z, &room_num);
+    height = Room_GetHeight(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+    ceiling = Room_GetCeiling(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+
+    if (Room_Get(room_num)->flags.swamp) {
+        g_Camera.pos.y = Room_Get(room_num)->max_ceiling - 256;
+    } else if (
+        ideal_pos.y < ceiling || ideal_pos.y > height || ceiling >= height
+        || height == NO_HEIGHT || ceiling == NO_HEIGHT) {
+        M_LOS(&g_Camera.target, &g_Camera.pos, 0);
+    }
+
+    ideal_pos = g_Camera.pos.pos;
+    room_num = g_Camera.pos.room_num;
+    sector = Room_GetSector(ideal_pos.x, ideal_pos.y, ideal_pos.z, &room_num);
+    height = Room_GetHeight(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+    ceiling = Room_GetCeiling(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
+
+    if (ideal_pos.y < ceiling || ideal_pos.y > height || ceiling >= height
+        || height == NO_HEIGHT || ceiling == NO_HEIGHT
+        || Room_Get(room_num)->flags.swamp) {
+        g_Camera.pos.pos = pos_1;
+        g_Camera.pos.room_num = lara_item->room_num;
+    }
+
+    Room_GetSector(
+        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
+    m_LastState.cam_type = g_Camera.type;
+
+    Camera_UpdateMicPosition();
+
+    lara->head_rot = head_rot;
+    lara->torso_rot = torso_rot;
 }
