@@ -251,6 +251,7 @@ common_sources = [
   'trx/game/items/actions/effects.c',
   'trx/game/items/actions/footprint.c',
   'trx/game/items/actions/general.c',
+  'trx/game/items/actions/gym_tr3.c',
   'trx/game/items/actions/ids.c',
   'trx/game/items/actions/items.c',
   'trx/game/items/actions/lara.c',
