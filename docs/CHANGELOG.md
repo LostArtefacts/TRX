@@ -144,6 +144,7 @@
 - added an option to fix the MP5 accuracy while running
 - improved run-to-crawl transition
 - improved text colors of the Assault Course statistics and timers
+- improved Assault Course targets to spawn ricochets
 - changed The River Ganges, City and All Hallows to have rain
 - fixed sample reading to support correct pitch and volume
 - fixed pool edges shifting along with the water effect
