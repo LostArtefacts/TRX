@@ -57,6 +57,12 @@ typedef struct {
     int32_t r;
 } SPHERE;
 
+typedef struct {
+    BOUNDS_16 bounds;
+    XYZ_32 pos;
+    XYZ_16 rot;
+} COLL_ITEM;
+
 int32_t Collide_GetSpheres(const ITEM *item, SPHERE *spheres, bool world_space);
 
 int32_t Collide_TestCollision(ITEM *item, const ITEM *lara_item);
@@ -71,3 +77,5 @@ void Collide_GetCollisionInfo(
 bool Collide_CollideStaticObjects(
     COLL_INFO *coll, int32_t x, int32_t y, int32_t z, int16_t room_num,
     int32_t height);
+bool Collide_TestBoundsCollide(
+    const COLL_ITEM *src_item, const COLL_ITEM *dst_item, int32_t radius);

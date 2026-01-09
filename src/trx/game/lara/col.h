@@ -2,6 +2,7 @@
 
 #include <trx/game/collision.h>
 #include <trx/game/lara/enum.h>
+#include <trx/game/rooms/types.h>
 
 typedef enum {
     // clang-format off
@@ -29,3 +30,4 @@ bool Lara_Col_LandedBad(ITEM *item);
 void Lara_Col_MonkeySwingSnap(ITEM *item);
 void Lara_Col_ItemPush(
     const ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
+void Lara_Col_Static3DPush(const STATIC_MESH *mesh, COLL_INFO *coll);

@@ -10,8 +10,8 @@
 static void (*m_CollisionRoutines[LS_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
 
-void Lara_Col_ItemPush(
-    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
+static void M_Push(
+    const COLL_ITEM *const item, COLL_INFO *const coll, const bool hit_on,
     const bool big_push)
 {
     ITEM *const target_item = Lara_GetItem();
@@ -22,7 +22,7 @@ void Lara_Col_ItemPush(
     int32_t rx = (c * dx - s * dz) >> W2V_SHIFT;
     int32_t rz = (c * dz + s * dx) >> W2V_SHIFT;
 
-    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+    const BOUNDS_16 *const bounds = &item->bounds;
     int32_t min_x = bounds->min.x;
     int32_t max_x = bounds->max.x;
     int32_t min_z = bounds->min.z;
@@ -81,9 +81,7 @@ void Lara_Col_ItemPush(
         target_item->pos.x = coll->old.x;
         target_item->pos.z = coll->old.z;
     } else {
-        coll->old.x = target_item->pos.x;
-        coll->old.y = target_item->pos.y;
-        coll->old.z = target_item->pos.z;
+        coll->old = target_item->pos;
         Lara_UpdateRoomToHeight(-10);
     }
 
@@ -142,4 +140,26 @@ void Lara_Col_MonkeySwingSnap(ITEM *const item)
     if (ceiling != NO_HEIGHT) {
         item->pos.y = ceiling + M_MONKEY_CEILING_SNAP;
     }
+}
+
+void Lara_Col_ItemPush(
+    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
+    const bool big_push)
+{
+    const COLL_ITEM src_item = {
+        .bounds = Item_GetBestFrame(item)->bounds,
+        .pos = item->pos,
+        .rot = item->rot,
+    };
+    M_Push(&src_item, coll, hit_on, big_push);
+}
+
+void Lara_Col_Static3DPush(const STATIC_MESH *const mesh, COLL_INFO *const coll)
+{
+    const COLL_ITEM src_item = {
+        .bounds = Object_Get3DStatic(mesh->static_num)->collision_bounds,
+        .pos = mesh->pos,
+        .rot = { .y = mesh->rot.y },
+    };
+    M_Push(&src_item, coll, false, true);
 }
