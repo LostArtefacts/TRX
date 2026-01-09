@@ -120,7 +120,7 @@ static void M_Control(const int16_t item_num)
         if (item->speed < M_SPEED) {
             item->speed += (item->speed >> 2) + 4;
         }
-        item->rot.z += DEG_1 * ((item->speed >> 3) + 7);
+        item->rot.z += DEG_1 * ((item->speed >> 2) + 7);
     }
 
     if (g_TRVersion == 3) {
