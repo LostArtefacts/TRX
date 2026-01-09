@@ -21,6 +21,7 @@
 - added Animating Item 1-6 control
 - added the option to use TR3 sprite-based shadows (Visuals → Shadows shape)
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
+- improved fog behavior to be less dependent on camera rotation
 - changed the 2D and 3D statics limit from 256 to unlimited
 - changed the lighting contrast key binding to F9
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)

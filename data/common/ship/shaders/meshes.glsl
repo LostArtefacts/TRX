@@ -146,10 +146,10 @@ in vec4 gColor;
 in vec2 gTrapezoidRatios;
 out vec4 outColor;
 
-vec4 applyFog(vec4 color, float depth)
+vec4 applyFog(vec4 color, float dist)
 {
     float fogFactor = clamp(
-        (depth - uFogDistance.x) / (uFogDistance.y - uFogDistance.x), 0.0, 1.0);
+        (dist - uFogDistance.x) / (uFogDistance.y - uFogDistance.x), 0.0, 1.0);
     return mix(color, uFogColor, fogFactor);
 }
 
@@ -182,7 +182,7 @@ void main(void) {
 
     // Fog
     if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
-        texColor = applyFog(texColor, gEyePos.z);
+        texColor = applyFog(texColor, length(gEyePos.xyz));
     }
 
     texColor.rgb *= uGlobalTint * uBrightnessMultiplier;
