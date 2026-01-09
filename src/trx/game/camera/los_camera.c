@@ -3,10 +3,13 @@
 #include <trx/game/rooms.h>
 
 // clang-format off
-#define M_WALL_MASK  (WALL_L - 1)
-#define M_LOS_STEPS  8
-#define M_MAX_SNAPS  8
-#define M_SNAP_DELTA (STEP_L * 3) // = 768
+#define M_WALL_MASK         (WALL_L - 1)
+#define M_LOS_STEPS         8
+#define M_MAX_SNAPS         8
+#define M_SNAP_DELTA        (STEP_L * 3) // = 768
+#define M_DEFAULT_ELEVATION (-10 * DEG_1) // = -1820
+#define M_MAX_ELEVATION     (85 * DEG_1) // = 15470
+#define M_CHASE_SHIFT       (STEP_L * 3 / 2) // = 384
 // clang-format on
 
 typedef struct {
@@ -311,4 +314,127 @@ static void M_Move(GAME_VECTOR *const ideal, const int32_t speed)
     m_LastState.cam_type = g_Camera.type;
 
     Camera_UpdateMicPosition();
+}
+
+static GAME_VECTOR M_GetIdeal(
+    const int32_t distance, const int16_t target_rot_y)
+{
+    int32_t farthest = 0x7FFFFFFF;
+    int32_t farthest_num = 0;
+    GAME_VECTOR temp[2] = {};
+    GAME_VECTOR ideals[5] = {};
+
+    for (int32_t i = 0; i < 5; i++) {
+        ideals[i].y =
+            ((Math_Sin(g_Camera.target_elevation) * g_Camera.target_distance)
+             >> W2V_SHIFT)
+            + g_Camera.target.y;
+    }
+
+    for (int32_t i = 0; i < 5; i++) {
+        const int16_t angle = i > 0 ? ((i - 1) << W2V_SHIFT)
+                                    : (g_Camera.target_angle + target_rot_y);
+        ideals[i].x =
+            g_Camera.target.x - ((distance * Math_Sin(angle)) >> W2V_SHIFT);
+        ideals[i].z =
+            g_Camera.target.z - ((distance * Math_Cos(angle)) >> W2V_SHIFT);
+
+        ideals[i].room_num = g_Camera.target.room_num;
+
+        if (M_LOS(&g_Camera.target, &ideals[i], 200)) {
+            temp[0] = ideals[i];
+            temp[1] = g_Camera.pos;
+
+            if (i == 0 || M_LOS(&temp[0], &temp[1], 0)) {
+                if (i == 0) {
+                    farthest_num = 0;
+                    break;
+                }
+
+                const int32_t dx = SQUARE(g_Camera.pos.x - ideals[i].x);
+                const int32_t dz = SQUARE(g_Camera.pos.z - ideals[i].z) + dx;
+                if (dz < farthest) {
+                    farthest = dz;
+                    farthest_num = i;
+                }
+            }
+        } else if (i == 0) {
+            temp[0] = ideals[i];
+            temp[1] = g_Camera.pos;
+
+            const int32_t dx = SQUARE(g_Camera.target.x - ideals[i].x);
+            const int32_t dz = SQUARE(g_Camera.target.z - ideals[i].z) + dx;
+            if (dz > 0x90000) {
+                farthest_num = 0;
+                break;
+            }
+        }
+    }
+
+    return ideals[farthest_num];
+}
+
+static void M_Chase(const ITEM *const item)
+{
+    if (g_Camera.target_elevation == 0) {
+        g_Camera.target_elevation = M_DEFAULT_ELEVATION;
+    }
+    g_Camera.target_elevation += item->rot.x;
+    CLAMP(g_Camera.target_elevation, -M_MAX_ELEVATION, M_MAX_ELEVATION);
+
+    const int32_t distance =
+        (g_Camera.target_distance * Math_Cos(g_Camera.target_elevation))
+        >> W2V_SHIFT;
+
+    int16_t room_num = g_Camera.target.room_num;
+    const SECTOR *sector = Room_GetSector(
+        g_Camera.target.x, g_Camera.target.y + STEP_L, g_Camera.target.z,
+        &room_num);
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flags.swamp) {
+        g_Camera.target.y = room->max_ceiling - STEP_L;
+    }
+
+    XYZ_32 pos = g_Camera.target.pos;
+    sector = Room_GetSector(pos.x, pos.y, pos.z, &g_Camera.target.room_num);
+    int16_t height =
+        Room_GetHeightEx(sector, pos.x, pos.y, pos.z, true, NO_ITEM);
+    int16_t ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z, true);
+
+    if (ceiling + 16 > height - 16 && height != NO_HEIGHT
+        && ceiling != NO_HEIGHT) {
+        g_Camera.target.y = (height + ceiling) >> 1;
+        g_Camera.target_elevation = 0;
+    } else if (pos.y > height - 16 && height != NO_HEIGHT) {
+        g_Camera.target.y = height - 16;
+        g_Camera.target_elevation = 0;
+    } else if (pos.y < ceiling + 16 && ceiling != NO_HEIGHT) {
+        g_Camera.target.y = ceiling + 16;
+        g_Camera.target_elevation = 0;
+    }
+
+    sector = Room_GetSector(
+        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
+        &g_Camera.target.room_num);
+    pos = g_Camera.target.pos;
+    room_num = g_Camera.target.room_num;
+    sector = Room_GetSector(
+        g_Camera.target.x, g_Camera.target.y, g_Camera.target.z, &room_num);
+    height = Room_GetHeightEx(sector, pos.x, pos.y, pos.z, true, NO_ITEM);
+    ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z, true);
+
+    if (pos.y < ceiling || pos.y > height || ceiling >= height
+        || height == NO_HEIGHT || ceiling == NO_HEIGHT) {
+        g_Camera.target = m_LastIdeal.target;
+    }
+
+    GAME_VECTOR ideal = M_GetIdeal(distance, item->rot.y);
+    M_Collide(&ideal, M_CHASE_SHIFT, true);
+
+    if (m_LastState.cam_type == CAM_FIXED) {
+        g_Camera.speed = 1;
+    }
+
+    M_Move(&ideal, g_Camera.speed);
 }
