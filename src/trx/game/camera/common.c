@@ -4,6 +4,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 
 // clang-format off
@@ -102,6 +103,28 @@ void Camera_Reset(void)
 {
     g_Camera.mic_pos.room_num = NO_ROOM;
     g_Camera.pos.room_num = NO_ROOM;
+}
+
+void Camera_ApplyBounce(void)
+{
+    if (g_Camera.bounce > 0) {
+        g_Camera.pos.y += g_Camera.bounce;
+        g_Camera.target.y += g_Camera.bounce;
+        g_Camera.bounce = 0;
+    } else if (g_Camera.bounce < 0) {
+        const XYZ_32 shake = {
+            .x = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .y = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+            .z = g_Camera.bounce * (Random_GetControl() - 0x4000) / 0x7FFF,
+        };
+        g_Camera.pos.x += shake.x;
+        g_Camera.pos.y += shake.y;
+        g_Camera.pos.z += shake.z;
+        g_Camera.target.y += shake.x;
+        g_Camera.target.y += shake.y;
+        g_Camera.target.z += shake.z;
+        g_Camera.bounce += 5;
+    }
 }
 
 void Camera_ClampInterpResult(void)
