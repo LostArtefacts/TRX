@@ -164,6 +164,11 @@ bool XYZ_32_AreEquivalent(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
     return pos1->x == pos2->x && pos1->y == pos2->y && pos1->z == pos2->z;
 }
 
+bool XYZ_16_AreEquivalent(const XYZ_16 *const rot1, const XYZ_16 *const rot2)
+{
+    return rot1->x == rot2->x && rot1->y == rot2->y && rot1->z == rot2->z;
+}
+
 XYZ_32 XYZ_32_From16(const XYZ_16 src)
 {
     return (XYZ_32) { src.x, src.y, src.z };

@@ -1,10 +1,34 @@
 #include <trx/game/camera.h>
+#include <trx/game/lara.h>
 #include <trx/game/rooms.h>
 
 // clang-format off
-#define M_WALL_MASK (WALL_L - 1)
-#define M_LOS_STEPS 8
+#define M_WALL_MASK  (WALL_L - 1)
+#define M_LOS_STEPS  8
+#define M_MAX_SNAPS  8
+#define M_SNAP_DELTA (STEP_L * 3) // = 768
 // clang-format on
+
+typedef struct {
+    struct {
+        int16_t current_anim_state;
+        int16_t goal_anim_state;
+        XYZ_32 pos;
+        XYZ_16 rot;
+        XYZ_16 head_rot;
+        XYZ_16 torso_rot;
+    } lara;
+    CAMERA_TYPE cam_type;
+} M_STATE;
+
+typedef struct {
+    GAME_VECTOR pos;
+    GAME_VECTOR target;
+} M_IDEAL;
+
+static M_STATE m_LastState = {};
+static M_IDEAL m_LastIdeal = {};
+static int32_t m_Snaps = 0;
 
 static bool M_LOS(
     GAME_VECTOR *const start, GAME_VECTOR *const target, const int32_t shift)
@@ -179,4 +203,112 @@ static bool M_Collide(
     Room_GetSector(pos.x, pos.y, pos.z, &ideal->room_num);
     ideal->pos = pos;
     return false;
+}
+
+static bool M_UpdateLaraState(void)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+
+    const bool same_lara_state =
+        XYZ_16_AreEquivalent(&m_LastState.lara.rot, &lara_item->rot)
+        && XYZ_16_AreEquivalent(&m_LastState.lara.head_rot, &lara->head_rot)
+        && XYZ_16_AreEquivalent(&m_LastState.lara.torso_rot, &lara->torso_rot)
+        && XYZ_32_AreEquivalent(&m_LastState.lara.pos, &lara_item->pos)
+        && m_LastState.lara.current_anim_state == lara_item->current_anim_state
+        && m_LastState.lara.goal_anim_state == lara_item->goal_anim_state;
+    if (same_lara_state && m_LastState.cam_type == g_Camera.type) {
+        return false;
+    }
+
+    m_LastState.lara.rot = lara_item->rot;
+    m_LastState.lara.head_rot = lara->head_rot;
+    m_LastState.lara.torso_rot = lara->torso_rot;
+    m_LastState.lara.pos = lara_item->pos;
+    m_LastState.lara.current_anim_state = lara_item->current_anim_state;
+    m_LastState.lara.goal_anim_state = lara_item->goal_anim_state;
+    return true;
+}
+
+static void M_Move(GAME_VECTOR *const ideal, const int32_t speed)
+{
+    if (M_UpdateLaraState()) {
+        m_LastIdeal.pos = *ideal;
+    } else {
+        *ideal = m_LastIdeal.pos;
+    }
+
+    g_Camera.pos.x += (ideal->x - g_Camera.pos.x) / speed;
+    g_Camera.pos.y += (ideal->y - g_Camera.pos.y) / speed;
+    g_Camera.pos.z += (ideal->z - g_Camera.pos.z) / speed;
+    g_Camera.pos.room_num = ideal->room_num;
+
+    Camera_ApplyBounce();
+
+    XYZ_32 pos = g_Camera.pos.pos;
+    int16_t room_num = g_Camera.pos.room_num;
+    const SECTOR *sector =
+        Room_GetSector(pos.x, pos.y + STEP_L, pos.z, &room_num);
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flags.swamp) {
+        pos.y = room->max_ceiling - STEP_L;
+        Room_GetSector(pos.x, pos.y, pos.z, &g_Camera.pos.room_num);
+    }
+
+    sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    int16_t height =
+        Room_GetHeightEx(sector, pos.x, pos.y, pos.z, true, NO_ITEM);
+    int16_t ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z, true);
+
+    if (pos.y < ceiling || pos.y > height) {
+        M_LOS(&g_Camera.target, &g_Camera.pos, 0);
+        const XYZ_32 delta = {
+            .x = ABS(g_Camera.pos.x - ideal->x),
+            .y = ABS(g_Camera.pos.y - ideal->y),
+            .z = ABS(g_Camera.pos.z - ideal->z),
+        };
+
+        if (delta.x < M_SNAP_DELTA && delta.y < M_SNAP_DELTA
+            && delta.z < M_SNAP_DELTA) {
+            GAME_VECTOR start = *ideal;
+            GAME_VECTOR target = g_Camera.pos;
+
+            if (!M_LOS(&start, &target, 0)) {
+                m_Snaps++;
+                if (m_Snaps >= M_MAX_SNAPS) {
+                    g_Camera.pos = *ideal;
+                    m_Snaps = 0;
+                }
+            }
+        }
+    }
+
+    pos = g_Camera.pos.pos;
+    room_num = g_Camera.pos.room_num;
+    sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    height = Room_GetHeightEx(sector, pos.x, pos.y, pos.z, true, NO_ITEM);
+    ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z, true);
+
+    if (pos.y - 255 < ceiling && pos.y + 255 > height && ceiling < height
+        && ceiling != NO_HEIGHT && height != NO_HEIGHT) {
+        g_Camera.pos.y = (ceiling + height) >> 1;
+    } else if (
+        pos.y + 255 > height && ceiling < height && ceiling != NO_HEIGHT
+        && height != NO_HEIGHT) {
+        g_Camera.pos.y = height - 255;
+    } else if (
+        pos.y - 255 < ceiling && ceiling < height && ceiling != NO_HEIGHT
+        && height != NO_HEIGHT) {
+        g_Camera.pos.y = ceiling + 255;
+    } else if (
+        ceiling >= height || height == NO_HEIGHT || ceiling == NO_HEIGHT) {
+        g_Camera.pos = *ideal;
+    }
+
+    Room_GetSector(
+        g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z, &g_Camera.pos.room_num);
+    m_LastState.cam_type = g_Camera.type;
+
+    Camera_UpdateMicPosition();
 }
