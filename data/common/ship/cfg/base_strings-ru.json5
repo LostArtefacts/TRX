@@ -123,6 +123,7 @@
         "ENUM_BK_TRANSPARENT_MEDIUM": "\\{review}Темно",
         "ENUM_CAMERA_MODE_TR1": "TR1",
         "ENUM_CAMERA_MODE_TR2": "TR2",
+        "ENUM_CAMERA_MODE_TR3": "\\{review}TR3",
         "ENUM_INPUT_ROLE_ACTION": "Действие",
         "ENUM_INPUT_ROLE_CAMERA_BACK": "Камера назад",
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Камера вниз",

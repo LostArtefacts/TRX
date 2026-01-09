@@ -21,6 +21,7 @@
 - added Animating Item 1-6 control
 - added the option to use TR3 sprite-based shadows (Visuals → Shadows shape)
 - added an option for soft static mesh collision; this also allows for arbitrary mesh rotation in custom levels and retaining accurate collision (Gameplay → Controls → Soft mesh collision) (#3654)
+- added an option to use the TR3 camera (Visuals → Camera Mode)
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
 - improved fog behavior to be less dependent on camera rotation
 - changed the 2D and 3D statics limit from 256 to unlimited
@@ -147,6 +148,7 @@
 - added Asasult Course target control
 - added Asasult Course penalty system
 - added an option to fix the MP5 accuracy while running
+- added TR3 camera control
 - improved run-to-crawl transition
 - improved text colors of the Assault Course statistics and timers
 - improved Assault Course targets to spawn ricochets
