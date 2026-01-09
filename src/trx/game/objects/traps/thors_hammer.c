@@ -138,7 +138,7 @@ static void M_CollisionHandle(
         return;
     }
     if (coll->enable_baddie_push) {
-        Lara_Push(item, coll, false, true);
+        Lara_Col_ItemPush(item, coll, false, true);
     }
 }
 
@@ -151,7 +151,7 @@ static void M_CollisionHead(
     }
     if (coll->enable_baddie_push
         && item->current_anim_state != THOR_HAMMER_STATE_ACTIVE) {
-        Lara_Push(item, coll, false, true);
+        Lara_Col_ItemPush(item, coll, false, true);
     }
 }
 

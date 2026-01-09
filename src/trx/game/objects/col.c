@@ -16,7 +16,7 @@ void Object_Collision(
     }
 
     if (coll->enable_baddie_push) {
-        Lara_Push(item, coll, false, true);
+        Lara_Col_ItemPush(item, coll, false, true);
     }
 }
 

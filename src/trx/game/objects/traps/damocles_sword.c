@@ -87,7 +87,7 @@ static void M_Collision(
         return;
     }
     if (coll->enable_baddie_push) {
-        Lara_Push(item, coll, false, true);
+        Lara_Col_ItemPush(item, coll, false, true);
     }
     if (item->gravity) {
         lara_item->hit_points -= M_DAMAGE;

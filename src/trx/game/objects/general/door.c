@@ -1,7 +1,7 @@
 #include <trx/game/objects/general/door.h>
 
 #include <trx/game/game_buf.h>
-#include <trx/game/lara/common.h>
+#include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -243,7 +243,7 @@ void Door_Collision(
     }
 
     if (coll->enable_baddie_push) {
-        Lara_Push(
+        Lara_Col_ItemPush(
             item, coll,
             coll->enable_hit
                 && item->current_anim_state != item->goal_anim_state,

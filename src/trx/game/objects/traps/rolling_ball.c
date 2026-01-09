@@ -152,7 +152,7 @@ static void M_Collision(
 
     if (lara_item->gravity || g_Config.debug.enable_invulnerability) {
         if (coll->enable_baddie_push) {
-            Lara_Push(item, coll, coll->enable_hit, true);
+            Lara_Col_ItemPush(item, coll, coll->enable_hit, true);
         }
         if (!g_Config.debug.enable_invulnerability) {
             lara_item->hit_points -= M_DAMAGE_AIR;

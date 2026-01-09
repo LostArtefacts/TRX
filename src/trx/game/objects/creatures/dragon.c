@@ -172,7 +172,7 @@ static void M_Collision(
     }
 
     if (item->current_anim_state != DRAGON_STATE_DEATH) {
-        Lara_Push(item, coll, true, false);
+        Lara_Col_ItemPush(item, coll, true, false);
         return;
     }
 
@@ -183,7 +183,7 @@ static void M_Collision(
     const int32_t side_shift = (cy * dz + sy * dx) >> W2V_SHIFT;
 
     if (side_shift <= DRAGON_L_COL || side_shift >= DRAGON_R_COL) {
-        Lara_Push(item, coll, true, false);
+        Lara_Col_ItemPush(item, coll, true, false);
         return;
     }
 

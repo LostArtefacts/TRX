@@ -5,9 +5,95 @@
 #include <trx/game/rooms.h>
 
 #define M_MONKEY_CEILING_SNAP 704
+#define M_PUSH_TIMEOUT 15
 
 static void (*m_CollisionRoutines[LS_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
+
+void Lara_Col_ItemPush(
+    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
+    const bool big_push)
+{
+    ITEM *const target_item = Lara_GetItem();
+    int32_t dx = target_item->pos.x - item->pos.x;
+    int32_t dz = target_item->pos.z - item->pos.z;
+    const int32_t c = Math_Cos(item->rot.y);
+    const int32_t s = Math_Sin(item->rot.y);
+    int32_t rx = (c * dx - s * dz) >> W2V_SHIFT;
+    int32_t rz = (c * dz + s * dx) >> W2V_SHIFT;
+
+    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+    int32_t min_x = bounds->min.x;
+    int32_t max_x = bounds->max.x;
+    int32_t min_z = bounds->min.z;
+    int32_t max_z = bounds->max.z;
+
+    if (big_push) {
+        max_x += coll->radius;
+        min_z -= coll->radius;
+        max_z += coll->radius;
+        min_x -= coll->radius;
+    }
+
+    if (rx < min_x || rx > max_x || rz < min_z || rz > max_z) {
+        return;
+    }
+
+    const int32_t l = rx - min_x;
+    const int32_t r = max_x - rx;
+    const int32_t t = max_z - rz;
+    const int32_t b = rz - min_z;
+
+    if (l <= r && l <= t && l <= b) {
+        rx -= l;
+    } else if (r <= l && r <= t && r <= b) {
+        rx += r;
+    } else if (t <= l && t <= r && t <= b) {
+        rz += t;
+    } else {
+        rz = min_z;
+    }
+
+    target_item->pos.x = item->pos.x + ((rz * s + rx * c) >> W2V_SHIFT);
+    target_item->pos.z = item->pos.z + ((rz * c - rx * s) >> W2V_SHIFT);
+
+    rz = (bounds->max.z + bounds->min.z) / 2;
+    rx = (bounds->max.x + bounds->min.x) / 2;
+    dx -= (c * rx + s * rz) >> W2V_SHIFT;
+    dz -= (c * rz - s * rx) >> W2V_SHIFT;
+
+    if (hit_on && bounds->max.y - bounds->min.y > STEP_L) {
+        Lara_TakeHit(target_item, dx, dz);
+    }
+
+    const int16_t old_facing = coll->facing;
+    coll->bad_pos = NO_BAD_POS;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->facing = Math_Atan(
+        target_item->pos.z - coll->old.z, target_item->pos.x - coll->old.x);
+    Collide_GetCollisionInfo(
+        coll, target_item->pos.x, target_item->pos.y, target_item->pos.z,
+        target_item->room_num, LARA_HEIGHT);
+    coll->facing = old_facing;
+
+    if (coll->coll_type != COLL_NONE) {
+        target_item->pos.x = coll->old.x;
+        target_item->pos.z = coll->old.z;
+    } else {
+        coll->old.x = target_item->pos.x;
+        coll->old.y = target_item->pos.y;
+        coll->old.z = target_item->pos.z;
+        Lara_UpdateRoomToHeight(-10);
+    }
+
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->interact_target.is_moving
+        && lara_info->interact_target.move_count > M_PUSH_TIMEOUT) {
+        lara_info->interact_target.is_moving = false;
+        lara_info->gun_status = LGS_ARMLESS;
+    }
+}
 
 void Lara_Col_Register(
     const LARA_TRX_STATE state,
