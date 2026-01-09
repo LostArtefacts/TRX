@@ -63,11 +63,6 @@ static void M_ResetAssaultTargets(void)
             continue;
         }
 
-        // Ensure we don't run out of LOT slots after repeated restarts.
-        if (item->data != nullptr) {
-            LOT_DisableBaddieAI(item_num);
-        }
-
         if (obj->initialise_func != nullptr) {
             obj->initialise_func(item_num);
         }
