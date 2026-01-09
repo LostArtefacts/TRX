@@ -10,11 +10,6 @@
 
 static void M_Control(const int16_t effect_num)
 {
-    if (g_TRVersion < 3) {
-        Effect_Kill(effect_num);
-        return;
-    }
-
     EFFECT *const effect = Effect_Get(effect_num);
     const int32_t old_x = effect->pos.x;
     const int32_t old_y = effect->pos.y;
@@ -91,7 +86,6 @@ static void M_Control(const int16_t effect_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
-    obj->loaded = true;
     obj->mesh_count = 0;
 }
 
