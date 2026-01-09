@@ -19,7 +19,7 @@ static void M_Collision(
     }
 
     if (coll->enable_baddie_push) {
-        Lara_Push(
+        Lara_Col_ItemPush(
             item, coll, item->speed > 0 ? coll->enable_hit : false, false);
     }
 

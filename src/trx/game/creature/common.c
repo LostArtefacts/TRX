@@ -660,7 +660,7 @@ void Creature_Collision(
         return;
     }
 
-    Lara_Push(
+    Lara_Col_ItemPush(
         item, coll,
         (g_TRVersion >= 2 || item->hit_points > 0) ? coll->enable_hit : false,
         false);
