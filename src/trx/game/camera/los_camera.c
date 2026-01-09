@@ -742,3 +742,22 @@ static void M_Look(const ITEM *const item)
     lara->head_rot = head_rot;
     lara->torso_rot = torso_rot;
 }
+
+static void M_ClampResult(void)
+{
+    XYZ_32 pos = g_Camera.interp.result.pos;
+    int16_t room_num = g_Camera.interp.room_num;
+    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    const int16_t height =
+        Room_GetHeightEx(sector, pos.x, pos.y, pos.z, true, NO_ITEM);
+    const int16_t ceiling =
+        Room_GetCeilingEx(sector, pos.x, pos.y, pos.z, true);
+    if (height == NO_HEIGHT || ceiling == NO_HEIGHT || height < g_Camera.pos.y
+        || ceiling > g_Camera.pos.y) {
+        pos = g_Camera.pos.pos;
+        room_num = g_Camera.pos.room_num;
+    }
+    Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    g_Camera.interp.result.pos = pos;
+    g_Camera.interp.room_num = room_num;
+}
