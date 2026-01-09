@@ -21,6 +21,7 @@ int16_t XYZ_32_GetPitch(XYZ_32 pos);
 int32_t XYZ_32_GetDistance(const XYZ_32 *pos1, const XYZ_32 *pos2);
 int32_t XYZ_32_GetDistance0(const XYZ_32 *pos);
 bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
+bool XYZ_16_AreEquivalent(const XYZ_16 *rot1, const XYZ_16 *rot2);
 XYZ_32 XYZ_32_From16(XYZ_16 src);
 bool XYZ_32_IsNearby(const XYZ_32 *pos1, const XYZ_32 *pos2, int32_t distance);
 
