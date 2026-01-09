@@ -254,11 +254,6 @@ static void M_SpawnRainDrop(M_RAINDROP *const drop)
 
 static void M_UpdateRain(void)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return;
-    }
-
     const XZ_32 wind = Sparks_GetSmokeWind();
 
     int32_t num_alive = 0;
@@ -372,11 +367,6 @@ static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
 
 static void M_UpdateSnow(void)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return;
-    }
-
     int32_t num_alive = 0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
         M_SNOWFLAKE *const snow = &m_Snowflakes[i];

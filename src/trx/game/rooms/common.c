@@ -180,10 +180,9 @@ void Room_BuildOutsideTable(void)
                 bool cont = false;
                 for (int32_t ry = 0; ry < M_OUTSIDE_TABLE_STEP && !cont; ry++) {
                     for (int32_t rx = 0; rx < M_OUTSIDE_TABLE_STEP; rx++) {
-                        if (x + rx >= room_x
-                            && x + rx < room_x + room->size.z - 2
+                        if (x + rx >= room_x && x + rx < room_x + room->size.z
                             && y + ry >= room_y
-                            && y + ry < room_y + room->size.x - 2) {
+                            && y + ry < room_y + room->size.x) {
                             cont = true;
                             break;
                         }
