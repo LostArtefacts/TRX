@@ -76,6 +76,21 @@ described in the table below.
     <td>Determines the number of frames to show the weapon flash object (<code>O_GUN_FLASH</code> / <code>O_M16_FLASH</code>) after firing a weapon.</td>
   </tr>
   <tr valign="top">
+    <td><code>muzzle_pos</code></td>
+    <td>XYZ</td>
+    <td>Specifies the additional offset to apply to the muzzle for smoke effects (right hand).</td>
+  </tr>
+  <tr valign="top">
+    <td><code>muzzle_pos_alt</code></td>
+    <td>XYZ</td>
+    <td>Specifies the additional offset to apply to the muzzle for smoke effects (left hand for dual pistols).</td>
+  </tr>
+  <tr valign="top">
+    <td><code>smoke_count</code></td>
+    <td>Integer</td>
+    <td>How many smoke effect instances to spawn upon shooting.</td>
+  </tr>
+  <tr valign="top">
     <td><code>gun_height</code></td>
     <td>Integer</td>
     <td>Used to determine the start Y position when firing a weapon, and to determine if Lara is too far submerged in water to be able to use a weapon (other than the harpoon).</td>

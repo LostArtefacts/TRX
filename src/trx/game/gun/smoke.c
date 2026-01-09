@@ -1,5 +1,6 @@
 #include <trx/game/gun/smoke.h>
 
+#include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/misc.h>
@@ -16,60 +17,8 @@ static XYZ_32 M_GetHandAbsPosition(const LARA_MESH hand, XYZ_32 offset)
 static XYZ_32 M_GetMuzzleOffset(
     const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 {
-    switch (weapon_type) {
-    case LGT_PISTOLS:
-    case LGT_AUTOS:
-    case LGT_MAGNUMS:
-        return (XYZ_32) {
-            .x = is_right_hand ? -16 : 16,
-            .y = 128,
-            .z = 40,
-        };
-    case LGT_DESERT_EAGLE:
-        return (XYZ_32) {
-            .x = is_right_hand ? -32 : 16,
-            .y = 160,
-            .z = 56,
-        };
-    case LGT_UZIS:
-        return (XYZ_32) {
-            .x = is_right_hand ? -16 : 8,
-            .y = 140,
-            .z = 48,
-        };
-    case LGT_GRENADE:
-        return (XYZ_32) { .x = 0, .y = 180, .z = 80 };
-    case LGT_ROCKET:
-        return (XYZ_32) { .x = 0, .y = 84, .z = 72 };
-    case LGT_SHOTGUN:
-        return (XYZ_32) { .x = -16, .y = 228, .z = 32 };
-    case LGT_M16:
-    case LGT_MP5:
-        return (XYZ_32) { .x = 0, .y = 228, .z = 96 };
-    default:
-        return (XYZ_32) { .x = 0, .y = 0, .z = 0 };
-    }
-}
-
-static int32_t M_GetInitialSmokeCount(const LARA_GUN_TYPE weapon_type)
-{
-    switch (weapon_type) {
-    case LGT_PISTOLS:
-    case LGT_AUTOS:
-    case LGT_MAGNUMS:
-    case LGT_DESERT_EAGLE:
-    case LGT_UZIS:
-        return 28;
-    case LGT_M16:
-    case LGT_MP5:
-        return 24;
-    case LGT_SHOTGUN:
-    case LGT_GRENADE:
-    case LGT_ROCKET:
-        return 32;
-    default:
-        return 0;
-    }
+    return is_right_hand ? g_Weapons[weapon_type].muzzle_pos
+                         : g_Weapons[weapon_type].muzzle_pos_alt;
 }
 
 void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
@@ -79,7 +28,7 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const int32_t count = M_GetInitialSmokeCount(weapon_type);
+    const int32_t count = g_Weapons[weapon_type].smoke_count;
     if (count == 0) {
         return;
     }

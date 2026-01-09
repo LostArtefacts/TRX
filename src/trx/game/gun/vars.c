@@ -118,6 +118,7 @@ void Gun_LoadVars(const char *const path)
         L_READ_INT("recoil_frame", g_Weapons[type].recoil_frame);
         L_READ_INT("flash_time", g_Weapons[type].flash_time);
         L_READ_INT("flash_shade", g_Weapons[type].flash_shade);
+        L_READ_INT("smoke_count", g_Weapons[type].smoke_count);
 
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "flash_pos"), &g_Weapons[type].flash_pos);
@@ -133,6 +134,13 @@ void Gun_LoadVars(const char *const path)
         M_ReadRGB_F(
             JSON_ObjectGetValue(obj, "glow_color"),
             &g_Weapons[type].glow_color);
+
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "muzzle_pos"),
+            &g_Weapons[type].muzzle_pos);
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "muzzle_pos_alt"),
+            &g_Weapons[type].muzzle_pos_alt);
 
         // sample_num
         const char *const sample =
