@@ -1,3 +1,4 @@
+#include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
@@ -760,4 +761,18 @@ static void M_ClampResult(void)
     Room_GetSector(pos.x, pos.y, pos.z, &room_num);
     g_Camera.interp.result.pos = pos;
     g_Camera.interp.room_num = room_num;
+}
+
+static void M_Reset(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    ASSERT(lara_item != nullptr);
+    g_Camera.shift = 0;
+    m_LastIdeal.target.pos = lara_item->pos;
+    m_LastIdeal.target.pos.y -= WALL_L;
+    m_LastIdeal.target.room_num = lara_item->room_num;
+
+    g_Camera.target = m_LastIdeal.target;
+    g_Camera.pos = m_LastIdeal.target;
+    g_Camera.pos.z -= 100;
 }
