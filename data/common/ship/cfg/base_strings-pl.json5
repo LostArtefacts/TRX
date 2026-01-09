@@ -500,6 +500,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Sprawia, że paski życia i tlenu używają gładkich przejść kolorów.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Gładkie odbicia od ściany",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Pozwala Larze szybciej się odbić po uderzeniu w ścianę, gdy jednocześnie trzymany jest klawisz kierunku oraz do przodu.",
+        "SETTING_ENABLE_SOFT_STATICS": "\\{review}Miękka kolizja siatki",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "\\{review}Pozwala Larze poruszać się płynnie wzdłuż statycznych siatek – podobnie jak w TR4+ – zamiast nagle się zatrzymywać.",
         "SETTING_ENABLE_SPRINT": "Sprint",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Pozwala Larze sprintować, podobnie jak w TR3 i nowszych grach.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Przewroty na schodkach",

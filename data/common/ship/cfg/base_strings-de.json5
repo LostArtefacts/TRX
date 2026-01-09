@@ -500,6 +500,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Sorgt bei Gesundheitsleisten, Sauerstoffleisten und Gesundheitsleisten von Feinden für einen fließenden Farbübergang.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Sanftes Wand-Abprallen",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Erlaubt Lara, sich schneller zu fangen, nachdem sie gegen eine Wand gestoßen ist und eine der Richtungstasten zusammen mit der Vorwärtstaste gedrückt gehalten wird..",
+        "SETTING_ENABLE_SOFT_STATICS": "\\{review}Weiche Netz-Kollision",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "\\{review}Ermöglicht es Lara, sich sanft gegen statische Meshes zu bewegen – ähnlich wie in TR4+ – anstatt abrupt anzuhalten.",
         "SETTING_ENABLE_SPRINT": "\\{review}Sprinten",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "\\{review}Ermöglicht Lara zu sprinten, ähnlich wie in TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Stufen-Roll-Boost",

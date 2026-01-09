@@ -532,6 +532,11 @@ bool Collide_CollideStaticObjects(
                 continue;
             }
 
+            coll->hit_static = 1;
+            if (g_Config.gameplay.enable_soft_statics) {
+                return true;
+            }
+
             int32_t shl = in_x_max - x_min;
             int32_t shr = x_max - in_x_min;
             if (shl < shr) {
@@ -617,7 +622,6 @@ bool Collide_CollideStaticObjects(
                 break;
             }
 
-            coll->hit_static = 1;
             return true;
         }
     }

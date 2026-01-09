@@ -20,7 +20,8 @@
 
 // clang-format off
 #define M_MAX_COLL_ROOMS    20
-#define M_COLL_DIST         CREATURE_TARGET_DIST // = 4096
+#define M_ITEM_COLL_DIST    CREATURE_TARGET_DIST // = 4096
+#define M_STATIC_COLL_DIST  (WALL_L * 3)         // = 3072
 #define M_MOVE_TIMEOUT      90
 #define M_UW_DAMAGE         5
 #define M_SWAMP_DAMAGE      10
@@ -162,7 +163,8 @@ static void M_ObjectCollision(COLL_INFO *const coll)
         lara_item->room_num, nearby_rooms, M_MAX_COLL_ROOMS);
 
     for (int32_t i = 0; i < room_count; i++) {
-        int16_t item_num = Room_Get(nearby_rooms[i])->item_num;
+        const ROOM *const room = Room_Get(nearby_rooms[i]);
+        int16_t item_num = room->item_num;
         while (item_num != NO_ITEM) {
             const ITEM *const item = Item_Get(item_num);
             // The collision routine can destroy the item - need to store the
@@ -180,7 +182,7 @@ static void M_ObjectCollision(COLL_INFO *const coll)
 
             const OBJECT *const obj = Object_Get(item->object_id);
             if (obj->collision_func == nullptr
-                || !Item_IsNearby(lara_item, item, M_COLL_DIST)) {
+                || !Item_IsNearby(lara_item, item, M_ITEM_COLL_DIST)) {
                 goto loop_end;
             }
 
@@ -188,6 +190,25 @@ static void M_ObjectCollision(COLL_INFO *const coll)
 
         loop_end:
             item_num = next_item_num;
+        }
+
+        if (!g_Config.gameplay.enable_soft_statics) {
+            continue;
+        }
+
+        for (int32_t j = 0; j < room->num_static_meshes; j++) {
+            const STATIC_MESH *const mesh = &room->static_meshes[j];
+            const STATIC_OBJECT_3D *const obj =
+                Object_Get3DStatic(mesh->static_num);
+            if (!obj->collidable
+                || !XYZ_32_IsNearby(
+                    &lara_item->pos, &mesh->pos, M_STATIC_COLL_DIST)) {
+                continue;
+            }
+
+            if (Item_TestStatic3DBoundsCollide(mesh, lara_item, coll->radius)) {
+                Lara_Col_Static3DPush(mesh, coll);
+            }
         }
     }
 

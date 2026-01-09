@@ -500,6 +500,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Fa in modo che la barra della salute e la barra dell'ossigeno utilizzino transizioni di colore uniformi.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Deflessione rapida da muro",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Permette a Lara di riprendersi più velocemente dopo aver urtato un muro e un tasto direzionale viene premuto insieme con il tasto Corri.",
+        "SETTING_ENABLE_SOFT_STATICS": "\\{review}Collisione con mesh morbida",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "\\{review}Consente a Lara di muoversi dolcemente contro le mesh statiche – simile a TR4+ – invece di fermarsi bruscamente.",
         "SETTING_ENABLE_SPRINT": "Scatto",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Permette a Lara di effettuare uno scatto, come in TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Spinta su gradino",

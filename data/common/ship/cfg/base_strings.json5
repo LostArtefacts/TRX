@@ -500,6 +500,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Makes the UI bars use smooth color transitions.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Smooth wall deflection",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Allows Lara to recover more quickly after hitting a wall and a direction key is held together with forward.",
+        "SETTING_ENABLE_SOFT_STATICS": "Soft static collision",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "Allows Lara to move smoothly against static meshes - similar to TR4+ - rather than coming to a hard stop.",
         "SETTING_ENABLE_SPRINT": "Sprinting",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Allows Lara to sprint, similar to TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Step roll boost",

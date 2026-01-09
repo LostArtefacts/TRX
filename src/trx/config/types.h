@@ -203,6 +203,7 @@ typedef struct {
         bool enable_responsive_sprint;
         int32_t idle_pose_timeout;
         bool enable_idle_pose_camera;
+        bool enable_soft_statics;
 
         bool enable_auto_item_selection;
         bool enable_item_examining;
