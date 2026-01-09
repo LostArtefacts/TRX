@@ -122,6 +122,7 @@
 - added new ricochets
 - added flare lighting and sparks
 - added monochrome inventory backgrounds
+- added TR3 inventory ring lighting
 - added high-resolutions 16:9 and 4:3 loading screens
 - added high-resolutions 16:9 and 4:3 title and game end screens
 - added high-resolutions 16:9 and 4:3 credit images
