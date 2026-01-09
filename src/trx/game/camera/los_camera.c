@@ -509,3 +509,24 @@ static void M_Combat(const ITEM *const item)
 
     M_Move(&ideal, g_Camera.speed);
 }
+
+static void M_Fixed(void)
+{
+    const OBJECT_VECTOR *const fixed = Camera_GetFixedObject(g_Camera.num);
+    GAME_VECTOR target = {
+        .x = fixed->x,
+        .y = fixed->y,
+        .z = fixed->z,
+        .room_num = fixed->data,
+    };
+
+    g_Camera.fixed_camera = true;
+    M_Move(&target, 1);
+
+    if (g_Camera.timer != 0) {
+        g_Camera.timer--;
+        if (g_Camera.timer == 0) {
+            g_Camera.timer = -1;
+        }
+    }
+}
