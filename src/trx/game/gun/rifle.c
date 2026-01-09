@@ -206,9 +206,8 @@ static void M_FireHarpoon(void)
     };
 
     Lara_GetJointAbsPosition(&offset, LM_HAND_R);
-    projectile_item->pos.x = offset.x;
-    projectile_item->pos.y = offset.y;
-    projectile_item->pos.z = offset.z;
+    projectile_item->pos = offset;
+    projectile_item->interp.prev.pos = projectile_item->pos;
     Item_Initialise(item_num);
 
     if (lara->target != nullptr) {
@@ -291,9 +290,8 @@ static void M_FireGrenade(void)
         .z = 77,
     };
     Lara_GetJointAbsPosition(&offset, LM_HAND_R);
-    projectile_item->pos.x = offset.x;
-    projectile_item->pos.y = offset.y;
-    projectile_item->pos.z = offset.z;
+    projectile_item->pos = offset;
+    projectile_item->interp.prev.pos = projectile_item->pos;
     Item_Initialise(item_num);
 
     projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
@@ -344,6 +342,7 @@ static void M_FireRocket(void)
     };
     Lara_GetJointAbsPosition(&offset, LM_HAND_R);
     projectile_item->pos = offset;
+    projectile_item->interp.prev.pos = projectile_item->pos;
     Item_Initialise(item_num);
 
     projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
