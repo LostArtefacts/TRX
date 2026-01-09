@@ -456,7 +456,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
         }
 
         if (weapon_type == LGT_SHOTGUN && Item_TestFrameEqual(item, 12)) {
-            Spawn_ShotgunShell();
+            Spawn_GunShell(LGT_SHOTGUN, true);
         }
         break;
 

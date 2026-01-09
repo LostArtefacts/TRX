@@ -38,6 +38,8 @@ typedef struct {
     XYZ_32 glow_pos;
     XYZ_32 muzzle_pos;
     XYZ_32 muzzle_pos_alt;
+    XYZ_32 shell_pos;
+    XYZ_32 shell_pos_alt;
     int32_t smoke_count;
     bool is_available;
 } WEAPON_INFO;
