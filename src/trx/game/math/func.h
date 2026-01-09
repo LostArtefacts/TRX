@@ -22,6 +22,7 @@ int32_t XYZ_32_GetDistance(const XYZ_32 *pos1, const XYZ_32 *pos2);
 int32_t XYZ_32_GetDistance0(const XYZ_32 *pos);
 bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
 XYZ_32 XYZ_32_From16(XYZ_16 src);
+bool XYZ_32_IsNearby(const XYZ_32 *pos1, const XYZ_32 *pos2, int32_t distance);
 
 float XYZ_F_DotProduct(XYZ_F a, XYZ_F b);
 float XYZ_F_Length2(XYZ_F pos);

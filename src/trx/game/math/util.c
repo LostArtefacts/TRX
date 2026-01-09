@@ -142,6 +142,18 @@ int32_t XYZ_32_GetDistance(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
     return Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z)) << scale;
 }
 
+bool XYZ_32_IsNearby(
+    const XYZ_32 *const pos1, const XYZ_32 *const pos2, const int32_t distance)
+{
+    const XYZ_32 delta = {
+        .x = pos1->x - pos2->x,
+        .y = pos1->y - pos2->y,
+        .z = pos1->z - pos2->z,
+    };
+    return delta.x > -distance && delta.x < distance && delta.y > -distance
+        && delta.y < distance && delta.z > -distance && delta.z < distance;
+}
+
 int32_t XYZ_32_GetDistance0(const XYZ_32 *const pos)
 {
     return Math_Sqrt(SQUARE(pos->x) + SQUARE(pos->y) + SQUARE(pos->z));
