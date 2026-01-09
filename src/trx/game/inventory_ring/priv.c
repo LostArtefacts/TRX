@@ -7,6 +7,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/math.h>
+#include <trx/game/matrix.h>
 #include <trx/game/music.h>
 #include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
@@ -37,6 +38,19 @@ static bool m_ShowExamine = false;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
+
+static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
+{
+    const MATRIX *const m = &g_ViewMatrix;
+    return (XYZ_32) {
+        .x = (m->_00 * v_world.x + m->_01 * v_world.y + m->_02 * v_world.z)
+            >> W2V_SHIFT,
+        .y = (m->_10 * v_world.x + m->_11 * v_world.y + m->_12 * v_world.z)
+            >> W2V_SHIFT,
+        .z = (m->_20 * v_world.x + m->_21 * v_world.y + m->_22 * v_world.z)
+            >> W2V_SHIFT,
+    };
+}
 
 static void M_HandleRequestedObject(INV_RING *const ring)
 {
@@ -177,16 +191,42 @@ void InvRing_Light(const INV_RING *const ring)
     Output_RotateLight(angles[1], angles[0]);
 
     if (g_TRVersion >= 3) {
-        const RGB_F ambient = { 0.70f, 0.70f, 0.70f };
+        // OG Inv_RingLight() LightCol columns are (sun, spot, dynamic):
+        // sun = (3312, 1664, 0);
+        // spot = (3312, 3312, 3312);
+        // dynamic = (0, 0, 3072) with an ambient of (32, 32, 32).
+        const float ambient_u8 = 32.0f / 255.0f;
+        const RGB_F ambient = { ambient_u8, ambient_u8, ambient_u8 };
         const RGB_F colors[3] = {
-            {},
-            { 0.40f, 0.40f, 0.40f },
-            {},
+            {
+                .r = 3312.0f / 4096.0f,
+                .g = 1664.0f / 4096.0f,
+                .b = 0.0f,
+            },
+            {
+                .r = 3312.0f / 4096.0f,
+                .g = 3312.0f / 4096.0f,
+                .b = 3312.0f / 4096.0f,
+            },
+            {
+                .r = 0.0f,
+                .g = 0.0f,
+                .b = 3072.0f / 4096.0f,
+            },
         };
         const XYZ_32 dirs_view[3] = {
-            {},
-            Output_GetLightVectorView(),
-            {},
+            M_VectorViewFromWorld((XYZ_32) {
+                .x = 0x4000,
+                .y = -0x4000,
+                .z = 0x3000,
+            }),
+            M_VectorViewFromWorld((XYZ_32) {
+                .x = -0x4000,
+                .y = -0x4000,
+                .z = 0x3000,
+            }),
+            M_VectorViewFromWorld(
+                (XYZ_32) { .x = 0, .y = 0x2000, .z = 0x3000 }),
         };
         Output_SetTR3Light(ambient, colors, dirs_view);
     }
