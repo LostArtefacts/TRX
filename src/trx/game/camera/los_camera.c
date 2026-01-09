@@ -438,3 +438,74 @@ static void M_Chase(const ITEM *const item)
 
     M_Move(&ideal, g_Camera.speed);
 }
+
+static void M_Combat(const ITEM *const item)
+{
+    g_Camera.target.x = item->pos.x;
+    g_Camera.target.z = item->pos.z;
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->target != nullptr) {
+        g_Camera.target_angle = lara->target_angles[0] + item->rot.y;
+        g_Camera.target_elevation = lara->target_angles[1] + item->rot.x;
+    } else {
+        g_Camera.target_angle =
+            lara->torso_rot.y + lara->head_rot.y + item->rot.y;
+        g_Camera.target_elevation =
+            lara->head_rot.x + item->rot.x + lara->torso_rot.x - 2730;
+    }
+
+    int16_t room_num = g_Camera.target.room_num;
+    const SECTOR *sector = Room_GetSector(
+        g_Camera.target.x, g_Camera.target.y + STEP_L, g_Camera.target.z,
+        &room_num);
+
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flags.swamp) {
+        g_Camera.target.y = room->max_ceiling - STEP_L;
+    }
+
+    XYZ_32 pos = g_Camera.target.pos;
+    sector = Room_GetSector(pos.x, pos.y, pos.z, &g_Camera.target.room_num);
+    int16_t height =
+        Room_GetHeightEx(sector, pos.x, pos.y, pos.z, true, NO_ITEM);
+    int16_t ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z, true);
+
+    if (ceiling + 64 > height - 64 && height != NO_HEIGHT
+        && ceiling != NO_HEIGHT) {
+        g_Camera.target.y = (ceiling + height) >> 1;
+        g_Camera.target_elevation = 0;
+    } else if (pos.y > height - 64 && height != NO_HEIGHT) {
+        g_Camera.target.y = height - 64;
+        g_Camera.target_elevation = 0;
+    } else if (pos.y < ceiling + 64 && ceiling != NO_HEIGHT) {
+        g_Camera.target.y = ceiling + 64;
+        g_Camera.target_elevation = 0;
+    }
+
+    pos = g_Camera.target.pos;
+    Room_GetSector(pos.x, pos.y, pos.z, &g_Camera.target.room_num);
+    room_num = g_Camera.target.room_num;
+    sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    height = Room_GetHeightEx(sector, pos.x, pos.y, pos.z, true, NO_ITEM);
+    ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z, true);
+
+    if (pos.y < ceiling || pos.y > height || ceiling >= height
+        || height == NO_HEIGHT || ceiling == NO_HEIGHT) {
+        g_Camera.target = m_LastIdeal.target;
+    }
+
+    g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
+    const int32_t distance =
+        g_Camera.target_distance * Math_Cos(g_Camera.target_elevation)
+        >> W2V_SHIFT;
+
+    GAME_VECTOR ideal = M_GetIdeal(distance, 0);
+    M_Collide(&ideal, M_CHASE_SHIFT, true);
+
+    if (m_LastState.cam_type == CAM_FIXED) {
+        g_Camera.speed = 1;
+    }
+
+    M_Move(&ideal, g_Camera.speed);
+}
