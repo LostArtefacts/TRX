@@ -500,6 +500,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Permet à la barre de santé et à la barre d'air d'utiliser des transitions de couleurs fluides.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "\\{review}Déviation murale fluide",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "\\{review}Permet à Lara de se remettre plus rapidement après avoir heurté un mur et qu'une touche de direction est maintenue avec l'avant.",
+        "SETTING_ENABLE_SOFT_STATICS": "\\{review}Collision de maillage souple",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "\\{review}Permet à Lara de se déplacer en douceur contre les maillages statiques – comme dans TR4+ – plutôt que de s'arrêter brutalement.",
         "SETTING_ENABLE_SPRINT": "\\{review}Sprint",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "\\{review}Permet à Lara de sprinter, comme dans TR3 et les suivants.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "\\{review}Boost de roulade de marche",

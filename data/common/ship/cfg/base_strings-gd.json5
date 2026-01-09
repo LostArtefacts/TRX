@@ -500,6 +500,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Cuiridh seo dath le gluasad rèidh air na bàraichean slàinte, èadhair is nàmhaid.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Ath-bheòthachadh bhalla rèidh",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Cuidichidh Lara le tilleadh nas luaithe às dèidh buille ri balla ma thèid stiùireadh is 'air adhart' a chumail.",
+        "SETTING_ENABLE_SOFT_STATICS": "Bualadh mogal bog",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "Leigidh le Lara gluasad gu rèidh air aghaidh mogalan statach – coltach ri TR4+ – seach stad chruaidh a dhèanamh.",
         "SETTING_ENABLE_SPRINT": "Ruith gu luath",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Leigidh seo le Lara ruith gu luath, coltach ri TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Brùthadh le rolla bho cheum",

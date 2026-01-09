@@ -500,6 +500,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Использовать плавные цветовые переходы на шкалах здоровья, воздуха и врагов.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Мягкое столкновение со стеной",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Позволяет Ларе быстрее восстанавливаться после удара о стену, и клавиша направления удерживается вместе с клавишей Вперёд.",
+        "SETTING_ENABLE_SOFT_STATICS": "\\{review}Мягкое столкновение с сеткой",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "\\{review}Позволяет Ларе плавно двигаться вдоль статических мешей – как в TR4+ – вместо того чтобы резко останавливаться.",
         "SETTING_ENABLE_SPRINT": "\\{review}Бег",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "\\{review}Позволяет Ларе бегать на спринте, как в TR3 и новее.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Ускорение подъёма",
