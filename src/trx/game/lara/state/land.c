@@ -6,6 +6,7 @@
 #include <trx/game/lara/util.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/version.h>
 
 // clang-format off
 #define M_LF_ROLL                  2
@@ -298,6 +299,14 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
+    int16_t fheight;
+    int16_t rheight;
+    if (g_Input.forward) {
+        fheight = Lara_FloorFront(item, item->rot.y, 104);
+    } else if (g_Input.back) {
+        rheight = Lara_FloorFront(item, item->rot.y + DEG_180, 104);
+    }
+
     const ROOM *const room = Room_Get(item->room_num);
     if (room->flags.swamp) {
         if (g_Input.left) {
@@ -306,9 +315,21 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS(LS_TURN_RIGHT);
         }
     } else if (g_Input.step_left) {
-        item->goal_anim_state = LS(LS_STEP_LEFT);
+        const int16_t h = Lara_FloorFront(item, item->rot.y - DEG_90, 148);
+        const int16_t c = Lara_CeilingFront(item, item->rot.y - DEG_90, 148);
+        if (g_TRVersion < 3
+            || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
+                && c <= 0)) {
+            item->goal_anim_state = LS(LS_STEP_LEFT);
+        }
     } else if (g_Input.step_right) {
-        item->goal_anim_state = LS(LS_STEP_RIGHT);
+        const int16_t h = Lara_FloorFront(item, item->rot.y + DEG_90, 148);
+        const int16_t c = Lara_CeilingFront(item, item->rot.y + DEG_90, 148);
+        if (g_TRVersion < 3
+            || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
+                && c <= 0)) {
+            item->goal_anim_state = LS(LS_STEP_RIGHT);
+        }
     } else if (g_Input.left) {
         item->goal_anim_state = LS(LS_TURN_LEFT);
     } else if (g_Input.right) {
@@ -332,15 +353,26 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     } else if (g_Input.jump) {
         item->goal_anim_state = LS(LS_COMPRESS);
     } else if (g_Input.forward) {
-        if (g_Input.slow) {
+        const int16_t h = Lara_FloorFront(item, item->rot.y, 104);
+        const int16_t c = Lara_CeilingFront(item, item->rot.y, 104);
+        if (g_TRVersion == 3 && Room_GetHeightType() == HT_BIG_SLOPE && h < 0) {
+            item->goal_anim_state = LS_STOP;
+        } else if (g_TRVersion == 3 && c > 0) {
+            item->goal_anim_state = LS_STOP;
+        } else if (g_Input.slow) {
             M_Walk(item, coll);
         } else {
             M_Run(item, coll);
         }
     } else if (g_Input.back) {
         if (g_Input.slow) {
-            M_WalkBack(item, coll);
-        } else {
+            if (g_TRVersion < 3
+                || (rheight < (STEPUP_HEIGHT - 1)
+                    && rheight > -(STEPUP_HEIGHT - 1)
+                    && Room_GetHeightType() != HT_BIG_SLOPE)) {
+                M_WalkBack(item, coll);
+            }
+        } else if (g_TRVersion < 3 || rheight > -(STEPUP_HEIGHT - 1)) {
             item->goal_anim_state = LS(LS_FAST_BACK);
         }
     }
