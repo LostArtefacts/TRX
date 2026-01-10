@@ -1,0 +1,174 @@
+{
+    // NOTE: bad changes to this file may result in crashes.
+    // Lines starting with double slashes are comments and are ignored.
+
+    "main_menu_picture": "data/images/title_eu_gm.webp",
+    "savegame_fmt_legacy": "savegame_la.%d",
+    "savegame_fmt_bson": "save_trla_%02d.dat",
+
+    "enable_tr2_item_drops": true,
+    "convert_dropped_guns": true,
+
+    "title": {
+        "path": "data/title_la.tr2",
+        "music_track": 5,
+        "sequence": [
+            {"type": "display_picture", "path": "data/images/legal_eu.webp", "legal": true},
+            {"type": "play_fmv", "fmv_id": 0},
+            {"type": "play_fmv", "fmv_id": 1},
+            {"type": "exit_to_title"},
+        ],
+    },
+
+    "ambient_tracks": [
+        26, 27, 28, 29, 30, 31, 32, 33, 34,
+        35, 36, 73, 74, 75, 76, 77, 78,
+    ],
+
+    "sfx_path": "data/main_la.sfx",
+    "injections": [
+        "data/injections/font.bin",
+        "data/injections/lara_animations.bin",
+        "data/injections/pda_model.bin",
+        "data/injections/lara_extra.bin",
+        "data/injections/misc_sprites.bin",
+    ],
+
+    "levels": [
+        // 0. Lara's Home
+        {
+            "type": "gym",
+            "path": "data/house.tr2",
+            "music_track": -1,
+            "sequence": [
+                {"type": "loading_screen", "path": "data/images/house.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "level_stats"},
+            ],
+            "injections": [
+                "data/injections/gym_sky.bin",
+                "data/injections/lara_gym_guns.bin",
+            ],
+        },
+
+        // 1. Highland Fling
+        {
+            "path": "data/scotland.tr2",
+            "music_track": 36,
+            "weather_type": "rain",
+            "sequence": [
+                {"type": "loading_screen", "path": "data/images/highland.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "give_item", "object_id": "small_medipack"},
+                {"type": "give_item", "object_id": "large_medipack"},
+                {"type": "give_item", "object_id": "flare", "quantity": 2},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_guns.bin",
+            ],
+        },
+
+        // 2. Willard's Lair
+        {
+            "path": "data/willsden.tr2",
+            "music_track": 30,
+            "sequence": [
+                {"type": "loading_screen", "path": "data/images/willard.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_guns.bin",
+            ],
+        },
+
+        // 3. Shakespeare Cliff
+        {
+            "path": "data/chunnel.tr2",
+            "music_track": 74,
+            "sequence": [
+                {"type": "loading_screen", "path": "data/images/chunnel.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_nevada_guns.bin",
+            ],
+        },
+
+        // 4. Sleeping with the Fishes
+        {
+            "path": "data/undersea.tr2",
+            "music_track": 27,
+            "sequence": [
+                {"type": "loading_screen", "path": "data/images/undersea.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
+            ],
+        },
+
+        // 5. It's a Madhouse!
+        {
+            "path": "data/zoo.tr2",
+            "music_track": 34,
+            "sequence": [
+                {"type": "loading_screen", "path": "data/images/zoo.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
+            ],
+        },
+
+        // 6. Reunion
+        {
+            "path": "data/slinc.tr2",
+            "music_track": 26,
+            "sequence": [
+                {"type": "loading_screen", "path": "data/images/slinc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "play_music", "music_track": 14},
+                {"type": "level_stats"},
+                {"type": "play_music", "music_track": 121},
+                {"type": "display_picture", "credit": true, "path": "data/images/end.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit01.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit02.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit03.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit04.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit05.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit06.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit07.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit08.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/credit09.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "total_stats", "background_path": "data/images/theend2.webp"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "data/injections/lara_london_guns.bin",
+            ],
+        },
+    ],
+
+    "fmvs": [
+        {"path": "fmv/logo.rpl", "legal": true},
+        {"path": "fmv/intr_eng.rpl"},
+    ],
+
+    "hidden_config": [
+    ],
+}
