@@ -158,6 +158,7 @@
 - fixed disabling lighting system not working
 - fixed skybox data to show correct top and bottom colors
 - fixed Assault Course timer remaining indefinitely on screen
+- fixed low visibility of Quad Bike exhaust smokes at high speeds
 - fixed the skybox's blue lid for the Thames Wharf and City cutscenes
 - fixed fish schools to no longer swim at supersonic speeds if their triggers do not have timers set, or reuse the same timer
 

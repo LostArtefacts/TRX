@@ -385,9 +385,16 @@ static void M_TriggerExhaustSmoke(
     spark->src_color.b = 0;
 
     if (moving) {
-        spark->dst_color.r = (96 * speed) >> 5;
-        spark->dst_color.g = (96 * speed) >> 5;
-        spark->dst_color.b = (128 * speed) >> 5;
+#if 0
+        // OG
+        spark->dst_color.r = MINMAX((96 * speed) >> 5, 0, 255);
+        spark->dst_color.g = MINMAX((96 * speed) >> 5, 0, 255);
+        spark->dst_color.b = MINMAX((128 * speed) >> 5, 0, 255);
+#else
+        spark->dst_color.r = 96 >> 1;
+        spark->dst_color.g = 96 >> 1;
+        spark->dst_color.b = 128 >> 1;
+#endif
     } else {
         spark->dst_color.r = 96;
         spark->dst_color.g = 96;
@@ -1408,8 +1415,7 @@ bool QuadBike_Control(void)
             const int16_t smoke_rot = item->rot.y + (i == 0 ? 0x9000 : 0x7000);
 
             if (item->speed > 32) {
-                int32_t smoke_vel = 96 - item->speed;
-                CLAMP(smoke_vel, 8, 64);
+                const int32_t smoke_vel = MINMAX(96 - item->speed, 8, 64);
                 M_TriggerExhaustSmoke(pos, smoke_rot, smoke_vel, true);
             } else {
                 int32_t smoke_vel = 0;
