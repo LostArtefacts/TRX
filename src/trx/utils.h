@@ -33,6 +33,9 @@
         else if ((a) > (c))                                                    \
             (a) = (c);                                                         \
     } while (0)
+
+#define MINMAX(target, low, high) MAX(MIN((target), (low)), (target))
+
 #define SWAP(a, b)                                                             \
     do {                                                                       \
         typeof(a) c = (a);                                                     \
