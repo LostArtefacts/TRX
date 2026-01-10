@@ -222,23 +222,30 @@ static bool M_UpdateLaraState(void)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
 
-    const bool same_lara_state =
-        XYZ_16_AreEquivalent(&m_LastState.lara.rot, &lara_item->rot)
+    bool same_lara_state =
+        m_LastState.lara.current_anim_state == lara_item->current_anim_state
+        && m_LastState.lara.goal_anim_state == lara_item->goal_anim_state
         && XYZ_16_AreEquivalent(&m_LastState.lara.head_rot, &lara->head_rot)
-        && XYZ_16_AreEquivalent(&m_LastState.lara.torso_rot, &lara->torso_rot)
-        && XYZ_32_AreEquivalent(&m_LastState.lara.pos, &lara_item->pos)
-        && m_LastState.lara.current_anim_state == lara_item->current_anim_state
-        && m_LastState.lara.goal_anim_state == lara_item->goal_anim_state;
+        && XYZ_32_AreEquivalent(&m_LastState.lara.pos, &lara_item->pos);
+    if (g_Camera.type != CAM_LOOK) {
+        same_lara_state &=
+            XYZ_16_AreEquivalent(&m_LastState.lara.rot, &lara_item->rot)
+            && XYZ_16_AreEquivalent(
+                &m_LastState.lara.torso_rot, &lara->torso_rot);
+    }
     if (same_lara_state && m_LastState.cam_type == g_Camera.type) {
         return false;
     }
 
-    m_LastState.lara.rot = lara_item->rot;
-    m_LastState.lara.head_rot = lara->head_rot;
-    m_LastState.lara.torso_rot = lara->torso_rot;
-    m_LastState.lara.pos = lara_item->pos;
     m_LastState.lara.current_anim_state = lara_item->current_anim_state;
     m_LastState.lara.goal_anim_state = lara_item->goal_anim_state;
+    m_LastState.lara.head_rot = lara->head_rot;
+    m_LastState.lara.pos = lara_item->pos;
+    if (g_Camera.type != CAM_LOOK) {
+        m_LastState.lara.rot = lara_item->rot;
+        m_LastState.lara.torso_rot = lara->torso_rot;
+    }
+
     return true;
 }
 
@@ -652,26 +659,12 @@ static void M_Look(const ITEM *const item)
         .pos = ideal_pos,
         .room_num = room_num,
     };
-    // TODO: this is not the same as M_UpdateLaraState used in other cases
-    if (m_LastState.lara.rot.x == lara->head_rot.x
-        && m_LastState.lara.rot.y == lara->head_rot.y
-        && m_LastState.lara.pos.x == lara_item->pos.x
-        && m_LastState.lara.pos.y == lara_item->pos.y
-        && m_LastState.lara.pos.z == lara_item->pos.z
-        && m_LastState.lara.current_anim_state == lara_item->current_anim_state
-        && m_LastState.lara.goal_anim_state == lara_item->goal_anim_state
-        && m_LastState.cam_type == CAM_LOOK) {
-        ideal = m_LastLookIdeal.pos;
-        pos_3 = m_LastLookIdeal.target.pos;
-    } else {
-        m_LastState.lara.rot.x = lara->head_rot.x;
-        m_LastState.lara.rot.y = lara->head_rot.y;
-        m_LastState.lara.pos = lara_item->pos;
-        m_LastState.lara.current_anim_state = lara_item->current_anim_state;
-        m_LastState.lara.goal_anim_state = lara_item->goal_anim_state;
-
+    if (M_UpdateLaraState()) {
         m_LastLookIdeal.pos = ideal;
         m_LastLookIdeal.target.pos = pos_3;
+    } else {
+        ideal = m_LastLookIdeal.pos;
+        pos_3 = m_LastLookIdeal.target.pos;
     }
 
     M_Collide(&ideal, M_LOOK_SHIFT, true);
