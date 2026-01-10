@@ -61,10 +61,7 @@ static bool M_Draw_I(
     Matrix_Rot16(item->interp.result.rot);
 
     const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
-    if (clip == CLIP_NOT_VISIBLE) {
-        if (is_lara) {
-            lara->mesh_pos_matrices_valid = false;
-        }
+    if (clip == CLIP_NOT_VISIBLE && !is_lara) {
         m_CacheMatrices = false;
         Matrix_Pop();
         return false;
@@ -362,10 +359,7 @@ bool Lara_Draw(const ITEM *const item)
     const MATRIX item_matrix = *g_MatrixPtr;
     const MATRIX item_wmatrix = *g_WMatrixPtr;
     const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
-    if (clip == CLIP_NOT_VISIBLE) {
-        if (is_lara) {
-            lara->mesh_pos_matrices_valid = false;
-        }
+    if (clip == CLIP_NOT_VISIBLE && !is_lara) {
         m_CacheMatrices = false;
         Matrix_Pop();
         return false;
