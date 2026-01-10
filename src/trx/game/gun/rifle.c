@@ -127,6 +127,10 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
         lara->left_arm.rot.y + lara_item->rot.y,
         lara->left_arm.rot.x,
     };
+    if (g_TRVersion == 3 && !lara->left_arm.lock) {
+        angles[0] += lara->torso_rot.y;
+        angles[1] += lara->torso_rot.x;
+    }
 
     const int32_t clip = Gun_GetAmmoClipCount(weapon_type);
     for (int32_t i = 0; i < clip; i++) {
@@ -159,6 +163,10 @@ static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
         lara->left_arm.rot.y + lara_item->rot.y,
         lara->left_arm.rot.x,
     };
+    if (g_TRVersion == 3 && !lara->left_arm.lock) {
+        angles[0] += lara->torso_rot.y;
+        angles[1] += lara->torso_rot.x;
+    }
 
     if (g_Config.gameplay.fix_m16_accuracy && running) {
         g_Weapons[weapon_type].shot_accuracy = DEG_1 * 12;
@@ -221,8 +229,13 @@ static void M_FireHarpoon(void)
         projectile_item->rot.x = -Math_Atan(dxz, dy);
         projectile_item->rot.z = 0;
     } else {
-        projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
-        projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
+        if (g_TRVersion == 3) {
+            projectile_item->rot.x = lara->torso_rot.x + lara_item->rot.x;
+            projectile_item->rot.y = lara->torso_rot.y + lara_item->rot.y;
+        } else {
+            projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
+            projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
+        }
         projectile_item->rot.z = 0;
     }
 
@@ -297,6 +310,10 @@ static void M_FireGrenade(void)
     projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
     projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
     projectile_item->rot.z = 0;
+    if (g_TRVersion == 3 && !lara->left_arm.lock) {
+        projectile_item->rot.x += lara->torso_rot.x;
+        projectile_item->rot.y += lara->torso_rot.y;
+    }
     projectile_item->speed = M_GRENADE_SPEED;
     projectile_item->fall_speed = 0;
     Item_AddActive(item_num);
