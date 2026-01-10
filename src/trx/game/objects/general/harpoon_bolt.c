@@ -75,6 +75,10 @@ static void M_Control_TR3(const int16_t item_num)
             continue;
         }
 
+        if (target_item->object_id == O_HARPOON_BOLT) {
+            continue;
+        }
+
         if (!target_item->collidable) {
             continue;
         }
