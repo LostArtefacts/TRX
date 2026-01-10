@@ -112,6 +112,22 @@ static float M_Get3DPickupScale(
     return (ref_scale + perfect_fit_scale) / 2.0f;
 }
 
+static XYZ_32 M_VectorViewFromWorld(
+    const MATRIX *const view_matrix, const XYZ_32 vec_world)
+{
+    return (XYZ_32) {
+        .x = (view_matrix->_00 * vec_world.x + view_matrix->_01 * vec_world.y
+              + view_matrix->_02 * vec_world.z)
+            >> W2V_SHIFT,
+        .y = (view_matrix->_10 * vec_world.x + view_matrix->_11 * vec_world.y
+              + view_matrix->_12 * vec_world.z)
+            >> W2V_SHIFT,
+        .z = (view_matrix->_20 * vec_world.x + view_matrix->_21 * vec_world.y
+              + view_matrix->_22 * vec_world.z)
+            >> W2V_SHIFT,
+    };
+}
+
 static void M_Draw3DPickups(const M_PRIV *const p)
 {
     Output_MeshShader_Bind(Output_GetMeshShader());
@@ -135,17 +151,23 @@ static void M_Draw3DPickups(const M_PRIV *const p)
 
         const float scale = M_Get3DPickupScale(pickup_rect, frame);
 
-        // Output_GetLightVectorView() used by the 3D object lighting needs a
-        // W2V matrix to work. Set up something for it – probably wrong since
-        // we're in an orthographic projection and the Z buffer has a different
-        // operating range (Output_GetFarZ_UI vs Output_GetFarZ), but looks OK.
-        const XYZ_32 camera = {
-            .x = origin.x,
-            .y = origin.y,
-            .z = origin.z - WALL_L,
-        };
+        // Lighting routines needs a W2V matrix to work; set up something for
+        // it.
+        MATRIX pickup_view_matrix = {};
+        XYZ_32 camera = g_TRVersion >= 3 ?
+             (XYZ_32) {
+                .x = origin.x,
+                .y = origin.y - WALL_L,
+                .z = origin.z,
+            } :
+             (XYZ_32) {
+                .x = origin.x,
+                .y = origin.y,
+                .z = origin.z - WALL_L,
+            };
         Matrix_LookAt(
             camera.x, camera.y, camera.z, origin.x, origin.y, origin.z, 0);
+        pickup_view_matrix = g_ViewMatrix;
 
         Matrix_PushUnit();
         Matrix_TranslateSet(origin.x, origin.y, origin.z);
@@ -155,22 +177,49 @@ static void M_Draw3DPickups(const M_PRIV *const p)
         Matrix_Scale((1 << W2V_SHIFT) * scale);
 
         // Set up lighting for the pickup mesh.
-        Output_SetLightDivider((1 << W2V_SHIFT) * 2);
-        Output_SetLightAdder(SHADE_LOW);
-        Output_RotateLight(DEG_1 * -30, DEG_1 * 45);
         if (g_TRVersion >= 3) {
-            const RGB_F ambient = { 0.70f, 0.70f, 0.70f };
+            // Port of OG TR3's SetPickupLight().
+            // ambient = (64, 64, 64)
+            // sun     = (3072, 1680, 640)
+            // spot    = (1024, 1024, 1024)
+            // dynamic = (640, 2432, 4080)
+            const float ambient_u8 = 64.0f / 255.0f;
+            const RGB_F ambient = { ambient_u8, ambient_u8, ambient_u8 };
             const RGB_F colors[3] = {
-                {},
-                { 0.40f, 0.40f, 0.40f },
-                {},
+                {
+                    .r = 3072.0f / 4096.0f,
+                    .g = 1680.0f / 4096.0f,
+                    .b = 640.0f / 4096.0f,
+                },
+                {
+                    .r = 1024.0f / 4096.0f,
+                    .g = 1024.0f / 4096.0f,
+                    .b = 1024.0f / 4096.0f,
+                },
+                {
+                    .r = 640.0f / 4096.0f,
+                    .g = 2432.0f / 4096.0f,
+                    .b = 4080.0f / 4096.0f,
+                },
             };
+
             const XYZ_32 dirs_view[3] = {
-                {},
-                Output_GetLightVectorView(),
-                {},
+                M_VectorViewFromWorld(
+                    &pickup_view_matrix,
+                    (XYZ_32) { .x = 0x2000, .y = -0x2000, .z = 0x1800 }),
+                M_VectorViewFromWorld(
+                    &pickup_view_matrix,
+                    (XYZ_32) { .x = -0x2000, .y = -0x4000, .z = 0x3000 }),
+                M_VectorViewFromWorld(
+                    &pickup_view_matrix,
+                    (XYZ_32) { .x = 0, .y = 0x2000, .z = 0x3000 }),
             };
+
             Output_SetTR3Light(ambient, colors, dirs_view);
+        } else {
+            Output_SetLightDivider((1 << W2V_SHIFT) * 2);
+            Output_SetLightAdder(SHADE_LOW);
+            Output_RotateLight(DEG_1 * -30, DEG_1 * 45);
         }
 
         Matrix_TranslateRel16(frame->offset);
