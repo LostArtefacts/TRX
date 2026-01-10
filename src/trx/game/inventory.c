@@ -11,14 +11,6 @@
 
 INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 
-static OBJECT_ID M_ConvertToPickup(const OBJECT_ID object_id)
-{
-    if (Object_IsType(object_id, g_InvObjects)) {
-        return Object_GetCognateInverse(object_id, g_ItemToInvObjectMap);
-    }
-    return object_id;
-}
-
 static int32_t M_GetFlareQuantity(void)
 {
     return Game_IsBonusFlagSet(GBF_JAPANESE)
@@ -136,6 +128,14 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
     return Object_GetCognate(object_id, g_ItemToInvObjectMap);
 }
 
+OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
+{
+    if (Object_IsType(object_id, g_InvObjects)) {
+        return Object_GetCognateInverse(object_id, g_ItemToInvObjectMap);
+    }
+    return object_id;
+}
+
 void Inv_InsertItem(INVENTORY_ITEM *const inv_item)
 {
     Inv_InsertItemEx(inv_item, 1);
@@ -231,7 +231,7 @@ void Inv_RemoveAllItems(void)
 bool Inv_AddItem(const OBJECT_ID object_id)
 {
     const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
-    const OBJECT_ID pickup_object_id = M_ConvertToPickup(object_id);
+    const OBJECT_ID pickup_object_id = Inv_GetItemPickup(object_id);
     const OBJECT *const object =
         Object_Get(inv_object_id == NO_OBJECT ? object_id : inv_object_id);
     if (!object->loaded) {
