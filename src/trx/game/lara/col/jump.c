@@ -115,8 +115,9 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     } else {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), 0);
     }
-    item->current_anim_state = LS(LS_HANG);
-    item->goal_anim_state = LS(LS_HANG);
+    const ANIM *const anim = Item_GetAnim(item);
+    item->current_anim_state = anim->current_anim_state;
+    item->goal_anim_state = anim->current_anim_state;
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     if (edge_catch == EDGE_CATCH_POS) {
