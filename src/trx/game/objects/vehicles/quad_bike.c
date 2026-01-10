@@ -1408,10 +1408,9 @@ bool QuadBike_Control(void)
             const int16_t smoke_rot = item->rot.y + (i == 0 ? 0x9000 : 0x7000);
 
             if (item->speed > 32) {
-                if (item->speed < 64) {
-                    M_TriggerExhaustSmoke(
-                        pos, smoke_rot, 64 - item->speed, true);
-                }
+                int32_t smoke_vel = 96 - item->speed;
+                CLAMP(smoke_vel, 8, 64);
+                M_TriggerExhaustSmoke(pos, smoke_rot, smoke_vel, true);
             } else {
                 int32_t smoke_vel = 0;
                 if (m_ExhaustSmokeVel < 16) {
