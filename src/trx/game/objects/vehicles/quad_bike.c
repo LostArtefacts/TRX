@@ -1339,9 +1339,17 @@ bool QuadBike_Control(void)
     }
 
     item->floor = height;
-    const int16_t rot = quad->velocity >> 2;
-    quad->front_rot -= rot;
-    quad->rear_rot -= rot + (quad->revs >> 3);
+    // Cap per-frame wheel rotation delta to avoid large int16 angle jumps.
+    // Large jumps can make interpolation pick the "short way" and appear to
+    // spin backwards at high speed.
+    int32_t wheel_delta = quad->velocity >> 2;
+    CLAMP(wheel_delta, -0x1000, 0x1000);
+    quad->front_rot = quad->front_rot - wheel_delta;
+
+    int32_t rear_delta = wheel_delta + (quad->revs >> 3);
+    CLAMP(rear_delta, -0x1000, 0x1000);
+    quad->rear_rot = quad->rear_rot - rear_delta;
+
     if (p->extra_rotation != nullptr) {
         if (p->rear_rot_x_idx[0] >= 0) {
             p->extra_rotation[p->rear_rot_x_idx[0]] = quad->rear_rot;
@@ -1356,6 +1364,7 @@ bool QuadBike_Control(void)
             p->extra_rotation[p->front_rot_x_idx[1]] = quad->front_rot;
         }
     }
+
     quad->left_fall_speed = M_DoDynamics(
         front_left_height, quad->left_fall_speed, &front_left_pos.y);
     quad->right_fall_speed = M_DoDynamics(
