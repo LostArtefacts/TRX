@@ -223,7 +223,7 @@ static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
     return true;
 }
 
-static void M_HangTest(ITEM *const item, COLL_INFO *const coll)
+void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
 {
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = NO_BAD_NEG;
@@ -512,7 +512,7 @@ static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
-    M_HangTest(item, coll);
+    Lara_Col_HangTest(item, coll);
     if (item->goal_anim_state != LS(LS_HANG)) {
         return;
     }
@@ -566,7 +566,7 @@ static void M_Shimmy(ITEM *const item, COLL_INFO *const coll)
         item->current_anim_state == LS(LS_SHIMMY_LEFT) ? -DEG_90 : DEG_90;
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y + angle;
-    M_HangTest(item, coll);
+    Lara_Col_HangTest(item, coll);
     lara->move_angle = item->rot.y + angle;
 }
 

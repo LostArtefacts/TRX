@@ -113,34 +113,69 @@ cleanup:
 
 static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
 {
-    if (!g_Input.action || item->hit_points <= 0 || !M_CanMonkeySwing(item)) {
-        M_MonkeySwingFall(item);
+    if (M_CanMonkeySwing(item)) {
+        if (!g_Input.action || item->hit_points <= 0) {
+            M_MonkeySwingFall(item);
+            return;
+        }
+
+        item->gravity = false;
+        item->fall_speed = 0;
+        item->speed = 0;
+
+        M_GetMonkeyCollisionInfo(item, coll, item->rot.y, NO_BAD_NEG, false);
+
+        if (g_Input.forward && coll->coll_type != COLL_FRONT
+            && ABS(coll->side_mid.ceiling - coll->side_front.ceiling)
+                < M_MONKEY_CEILING_SHIFT) {
+            item->goal_anim_state = LS(LS_MONKEY_FORWARD);
+        } else if (
+            g_Input.step_left && M_TestMonkeySide(item, coll, -DEG_90, false)) {
+            item->goal_anim_state = LS(LS_MONKEY_LEFT);
+        } else if (
+            g_Input.step_right && M_TestMonkeySide(item, coll, DEG_90, true)) {
+            item->goal_anim_state = LS(LS_MONKEY_RIGHT);
+        } else if (g_Input.left) {
+            item->goal_anim_state = LS(LS_MONKEY_TURN_LEFT);
+        } else if (g_Input.right) {
+            item->goal_anim_state = LS(LS_MONKEY_TURN_RIGHT);
+        }
+
+        Lara_Col_MonkeySwingSnap(item);
         return;
     }
 
-    item->gravity = false;
-    item->fall_speed = 0;
-    item->speed = 0;
-
-    M_GetMonkeyCollisionInfo(item, coll, item->rot.y, NO_BAD_NEG, false);
-
-    if (g_Input.forward && coll->coll_type != COLL_FRONT
-        && ABS(coll->side_mid.ceiling - coll->side_front.ceiling)
-            < M_MONKEY_CEILING_SHIFT) {
-        item->goal_anim_state = LS(LS_MONKEY_FORWARD);
-    } else if (
-        g_Input.step_left && M_TestMonkeySide(item, coll, -DEG_90, false)) {
-        item->goal_anim_state = LS(LS_MONKEY_LEFT);
-    } else if (
-        g_Input.step_right && M_TestMonkeySide(item, coll, DEG_90, true)) {
-        item->goal_anim_state = LS(LS_MONKEY_RIGHT);
-    } else if (g_Input.left) {
-        item->goal_anim_state = LS(LS_MONKEY_TURN_LEFT);
-    } else if (g_Input.right) {
-        item->goal_anim_state = LS(LS_MONKEY_TURN_RIGHT);
+    // Monkey idle state can be the result of swinging on a thin ledge as well
+    // as actually being on monkeybars. LA_REACH_TO_THIN_LEDGE in TR3 links to
+    // this state.
+    Lara_Col_HangTest(item, coll);
+    if (item->goal_anim_state != LS(LS_MONKEY_IDLE)) {
+        return;
     }
 
-    Lara_Col_MonkeySwingSnap(item);
+    if (g_Input.forward && coll->side_front.floor > -850
+        && coll->side_front.floor < -650
+        && coll->side_front.floor - coll->side_front.ceiling >= 0
+        && coll->side_left.floor - coll->side_left.ceiling >= 0
+        && coll->side_right.floor - coll->side_right.ceiling >= 0
+        && !coll->hit_static) {
+        item->goal_anim_state = LS(g_Input.slow ? LS_GYMNAST : LS_PULL_UP);
+        return;
+    }
+
+    if ((g_Input.forward || g_Input.crouch) && coll->side_front.floor > -850
+        && coll->side_front.floor < -650
+        && coll->side_front.floor - coll->side_front.ceiling >= -256
+        && coll->side_left.floor - coll->side_left.ceiling >= -256
+        && coll->side_right.floor - coll->side_right.ceiling >= -256
+        && !coll->hit_static) {
+        item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
+        item->required_anim_state = LS(LS_CROUCH_IDLE);
+    } else if (g_Input.left || g_Input.step_left) {
+        item->goal_anim_state = LS(LS_SHIMMY_LEFT);
+    } else if (g_Input.right || g_Input.step_right) {
+        item->goal_anim_state = LS(LS_SHIMMY_RIGHT);
+    }
 }
 
 static void M_MonkeyForward(ITEM *const item, COLL_INFO *const coll)
