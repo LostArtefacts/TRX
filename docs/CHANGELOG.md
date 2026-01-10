@@ -25,6 +25,7 @@
 - added an option to use the TR3 camera (Visuals → Camera Mode)
 - improved a fade-in and fade-out effect on loading screens – they now smoothly transition to the game screen
 - improved fog behavior to be less dependent on camera rotation
+- changed the 3D pickups option to try the simplified 3D meshes first, if available, before falling back to inventory items
 - changed the 2D and 3D statics limit from 256 to unlimited
 - changed the lighting contrast key binding to F9
 - changed underwater statics to be affected by caustics, even if they don't get merged into level geometry (#4430)

@@ -318,13 +318,12 @@ bool Object_DrawPickupItem(const ITEM *const item)
     }
 
     // Convert item to menu display item.
-    const OBJECT_ID inv_object_id = Inv_GetItemOption(item->object_id);
-    if (inv_object_id == NO_OBJECT) {
-        return Object_DrawSpriteItem(item);
+    const OBJECT *obj = Object_TryGet(Inv_GetItemPickup(item->object_id));
+    if (obj == nullptr || !obj->loaded || obj->mesh_count < 0) {
+        obj = Object_TryGet(Inv_GetItemOption(item->object_id));
     }
 
-    const OBJECT *const obj = Object_Get(inv_object_id);
-    if (!obj->loaded || obj->mesh_count < 0) {
+    if (obj == nullptr || !obj->loaded || obj->mesh_count < 0) {
         return Object_DrawSpriteItem(item);
     }
 
