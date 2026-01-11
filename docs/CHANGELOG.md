@@ -116,6 +116,7 @@
 - added proper bubbles
 - added water splash and ripple effects
 - added waterfall mist effect
+- added per-mesh underwater tinting (Lara only)
 - added `cdaudio.wad` music playback support
 - added weather effects
 - added sprite-based shadows

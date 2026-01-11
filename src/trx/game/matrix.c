@@ -697,3 +697,12 @@ void Matrix_LookAt(
     };
     Matrix_GenerateW2V(&view_pos, &view_rot);
 }
+
+XYZ_32 Matrix_MulVec32(const MATRIX *const m, const XYZ_32 v)
+{
+    return (XYZ_32) {
+        (m->_00 * v.x + m->_01 * v.y + m->_02 * v.z + m->_03) >> W2V_SHIFT,
+        (m->_10 * v.x + m->_11 * v.y + m->_12 * v.z + m->_13) >> W2V_SHIFT,
+        (m->_20 * v.x + m->_21 * v.y + m->_22 * v.z + m->_23) >> W2V_SHIFT,
+    };
+}

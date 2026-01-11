@@ -20,9 +20,12 @@ void Output_SetTimeInGame(float time);
 
 void Output_SetupBelowWater(bool is_underwater);
 void Output_SetupAboveWater(bool is_underwater);
+RGB_F Output_GetWaterColor(void);
 void Output_SetWaterColor(RGB_888 color);
 
 RGB_F Output_GetTint(void);
+void Output_PushTintOverride(RGB_F tint);
+void Output_PopTintOverride(void);
 bool Output_GetWaterEffect(void);
 bool Output_GetWibbleEffect(void);
 float Output_GetDesaturation(void);
