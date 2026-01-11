@@ -1,10 +1,14 @@
 #include <trx/game/lara/mesh.h>
 
 #include <trx/config.h>
+#include <trx/game/camera.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
+#include <trx/game/output.h>
+#include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
+#include <trx/version.h>
 
 typedef enum {
     BRAID_TORSO,
@@ -191,4 +195,26 @@ OBJECT_MESH *Lara_Mesh_Get(const LARA_MESH mesh)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     return lara_info->mesh_ptrs[mesh];
+}
+
+RGB_F Lara_GetMeshTint(const GAME_VECTOR pos)
+{
+    if (g_TRVersion < 3 || g_Camera.underwater) {
+        return Output_GetTint();
+    }
+
+    int16_t room_num = pos.room_num;
+    Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    const int32_t water_height =
+        Room_GetWaterHeight(pos.x, pos.y, pos.z, room_num);
+
+    if (!Room_Get(room_num)->flags.underwater) {
+        return (RGB_F) { 1.0f, 1.0f, 1.0f };
+    } else if (water_height == NO_HEIGHT) {
+        return Output_GetWaterColor();
+    } else if (pos.y > water_height) {
+        return Output_GetWaterColor();
+    } else {
+        return (RGB_F) { 1.0f, 1.0f, 1.0f };
+    }
 }

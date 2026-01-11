@@ -71,3 +71,5 @@ void Matrix_TranslateRel32_ID(XYZ_32 offset_1, XYZ_32 offset_2);
 void Matrix_InitInterpolate(int32_t frac, int32_t rate);
 void Matrix_Interpolate(void);
 void Matrix_InterpolateArm(void);
+
+XYZ_32 Matrix_MulVec32(const MATRIX *m, const XYZ_32 v);

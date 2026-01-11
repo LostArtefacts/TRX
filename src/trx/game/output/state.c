@@ -39,6 +39,9 @@ static bool m_IsShadeEffect = false;
 static bool m_IsSkyboxEnabled = false;
 static float m_Desaturation = 0.0f;
 
+static int32_t m_TintOverrideDepth = 0;
+static RGB_F m_TintOverrideStack[8] = {};
+
 float Output_GetTime(void)
 {
     return m_Time;
@@ -157,6 +160,11 @@ void Output_SetFogColor(const RGBA_8888 color)
     m_FogColor.a = color.a / 255.0f;
 }
 
+RGB_F Output_GetWaterColor(void)
+{
+    return m_WaterColor;
+}
+
 void Output_SetWaterColor(const RGB_888 color)
 {
     m_WaterColor.r = color.r / 255.0f;
@@ -166,10 +174,25 @@ void Output_SetWaterColor(const RGB_888 color)
 
 RGB_F Output_GetTint(void)
 {
+    if (m_TintOverrideDepth != 0) {
+        return m_TintOverrideStack[m_TintOverrideDepth - 1];
+    }
     if (m_IsShadeEffect) {
         return m_WaterColor;
     }
     return (RGB_F) { 1.0f, 1.0f, 1.0f };
+}
+
+void Output_PushTintOverride(const RGB_F tint)
+{
+    ASSERT(m_TintOverrideDepth < (int32_t)ARRAY_SIZE(m_TintOverrideStack));
+    m_TintOverrideStack[m_TintOverrideDepth++] = tint;
+}
+
+void Output_PopTintOverride(void)
+{
+    ASSERT(m_TintOverrideDepth > 0);
+    m_TintOverrideDepth--;
 }
 
 void Output_GetPerspProjectionMatrix(GLfloat output[][4])

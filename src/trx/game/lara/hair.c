@@ -4,6 +4,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
+#include <trx/game/output/state.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 #include <trx/utils.h>
@@ -394,6 +395,7 @@ void Lara_Hair_Draw(void)
     }
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
     const OBJECT *const obj = Object_Get(O_LARA_HAIR);
     int16_t mesh_idx = obj->mesh_idx;
     if ((lara->mesh_effects & (1 << LM_HEAD)) != 0) {
@@ -409,7 +411,11 @@ void Lara_Hair_Draw(void)
         Matrix_TranslateAbs32(s->interp.result.pos);
         Matrix_RotY(s->interp.result.rot.y);
         Matrix_RotX(s->interp.result.rot.x);
+
+        Output_PushTintOverride(Lara_GetMeshTint((GAME_VECTOR) {
+            .pos = s->interp.result.pos, .room_num = lara_item->room_num }));
         Object_DrawMesh(mesh_idx + i, CLIP_FULLY_VISIBLE, false);
+        Output_PopTintOverride();
         Matrix_Pop();
     }
 }
