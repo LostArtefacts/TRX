@@ -289,13 +289,19 @@ bool Sound_Init(void)
     m_MasterVolume = g_Config.audio.sound_volume;
     m_DecibelLUT[0] = -10000;
 
-    // Hundredths of a dB in the range [-10000..0].
-    // Later we apply a linear gain of `10^(centi_dB/2000)`.
     for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
-        const double gain = (double)i / (double)M_DECIBEL_LUT_SIZE;
-        int32_t centi_db = (int32_t)lrint(2000.0 * log10(gain));
-        CLAMP(centi_db, -10000, 0);
-        m_DecibelLUT[i] = centi_db;
+        if (g_TRVersion < 3) {
+            // Legacy scale
+            m_DecibelLUT[i] =
+                (log2(1.0 / M_DECIBEL_LUT_SIZE) - log2(1.0 / i)) * 1000;
+        } else {
+            // Hundredths of a dB in the range [-10000..0].
+            // Later we apply a linear gain of `10^(centi_dB/2000)`.
+            const double gain = (double)i / (double)M_DECIBEL_LUT_SIZE;
+            int32_t centi_db = (int32_t)lrint(2000.0 * log10(gain));
+            CLAMP(centi_db, -10000, 0);
+            m_DecibelLUT[i] = centi_db;
+        }
     }
 
     if (!Audio_Init()) {

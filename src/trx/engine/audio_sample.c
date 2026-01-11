@@ -89,8 +89,13 @@ static AUDIO_SAMPLE_SOUND m_Samples[AUDIO_MAX_ACTIVE_SAMPLES] = {};
 
 static double M_DecibelToMultiplier(double db_gain)
 {
-    // DirectSound-style centi-dB domain: gain = 10^(centi_dB/2000).
-    return pow(10.0, db_gain / 2000.0);
+    if (g_TRVersion < 3) {
+        // Legacy scale
+        return pow(2.0, db_gain / 600.0);
+    } else {
+        // DirectSound-style centi-dB domain: gain = 10^(centi_dB/2000).
+        return pow(10.0, db_gain / 2000.0);
+    }
 }
 
 static bool M_RecalculateChannelVolumes(int32_t sound_id)
