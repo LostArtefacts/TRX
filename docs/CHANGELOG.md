@@ -104,6 +104,7 @@
 - fixed the switch in room 46 of Opera House randomly disappearing
 - fixed game crashing when Lara passes through light sources in levels compiled with dxtre3D
 - fixed Skidoo music not getting resumed (#4519)
+- fixed Stopwatch position in the inventory ring (#2014)
 
 **TR3**:
 - added support for monkey bar mechanics
