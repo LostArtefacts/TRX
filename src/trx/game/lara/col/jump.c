@@ -4,6 +4,7 @@
 #include <trx/game/lara/util.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rooms/enum.h>
+#include <trx/game/rooms/utils.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
@@ -122,8 +123,37 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
-        item->pos.x += coll->shift.x;
-        item->pos.z += coll->shift.z;
+        if (g_TRVersion >= 3) {
+            switch (Math_GetDirection(angle)) {
+            case DIR_NORTH:
+                item->pos.z = ROUND_TO_SECTOR_END(item->pos.z) - LARA_RADIUS;
+                item->pos.x += coll->shift.x;
+                break;
+
+            case DIR_EAST:
+                item->pos.x = ROUND_TO_SECTOR_END(item->pos.x) - LARA_RADIUS;
+                item->pos.z += coll->shift.z;
+                break;
+
+            case DIR_SOUTH:
+                item->pos.z = ROUND_TO_SECTOR(item->pos.z) + LARA_RADIUS;
+                item->pos.x += coll->shift.x;
+                break;
+
+            case DIR_WEST:
+                item->pos.x = ROUND_TO_SECTOR(item->pos.x) + LARA_RADIUS;
+                item->pos.z += coll->shift.z;
+                break;
+
+            default:
+                item->pos.x += coll->shift.x;
+                item->pos.z += coll->shift.z;
+                break;
+            }
+        } else {
+            item->pos.x += coll->shift.x;
+            item->pos.z += coll->shift.z;
+        }
     } else {
         item->pos.y = edge - bounds->min.y;
     }
@@ -189,7 +219,7 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
     if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
     } else {
-        item->pos.y = edge - bounds->min.y;
+        item->pos.y = edge - bounds->min.y + (g_TRVersion >= 3 ? 4 : 0);
     }
     item->pos.x += coll->shift.x;
     item->pos.z += coll->shift.z;
