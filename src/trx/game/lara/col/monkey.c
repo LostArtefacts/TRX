@@ -156,8 +156,8 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
     if (g_Input.forward && coll->side_front.floor > -850
         && coll->side_front.floor < -650
         && coll->side_front.floor - coll->side_front.ceiling >= 0
-        && coll->side_left.floor - coll->side_left.ceiling >= 0
-        && coll->side_right.floor - coll->side_right.ceiling >= 0
+        && coll->side_left2.floor - coll->side_left2.ceiling >= 0
+        && coll->side_right2.floor - coll->side_right2.ceiling >= 0
         && !coll->hit_static) {
         item->goal_anim_state = LS(g_Input.slow ? LS_GYMNAST : LS_PULL_UP);
         return;
@@ -166,8 +166,8 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
     if ((g_Input.forward || g_Input.crouch) && coll->side_front.floor > -850
         && coll->side_front.floor < -650
         && coll->side_front.floor - coll->side_front.ceiling >= -256
-        && coll->side_left.floor - coll->side_left.ceiling >= -256
-        && coll->side_right.floor - coll->side_right.ceiling >= -256
+        && coll->side_left2.floor - coll->side_left2.ceiling >= -256
+        && coll->side_right2.floor - coll->side_right2.ceiling >= -256
         && !coll->hit_static) {
         item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
         item->required_anim_state = LS(LS_CROUCH_IDLE);

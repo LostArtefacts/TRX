@@ -42,7 +42,7 @@ static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
 static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
 {
     const int32_t coll_hdif =
-        ABS(coll->side_left.floor - coll->side_right.floor);
+        ABS(coll->side_left2.floor - coll->side_right2.floor);
     if (coll->coll_type != COLL_FRONT || !g_Input.action
         || coll_hdif >= SLOPE_DIF) {
         return false;

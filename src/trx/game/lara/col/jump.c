@@ -33,7 +33,7 @@ EDGE_CATCH Lara_Col_TestEdgeCatch(
         return EDGE_CATCH_NEG;
     }
 
-    return ABS(coll->side_left.floor - coll->side_right.floor) < SLOPE_DIF
+    return ABS(coll->side_left2.floor - coll->side_right2.floor) < SLOPE_DIF
         ? EDGE_CATCH_POS
         : EDGE_CATCH_NONE;
 }
