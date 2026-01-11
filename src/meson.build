@@ -749,4 +749,12 @@ if host_machine.system() == 'darwin'
   install_data('../data/tr2/mac/icon.icns', install_dir : 'Contents/Resources', install_tag: 'tr2')
   install_data('../data/tr2/mac/Info.plist', install_dir : 'Contents', install_tag: 'tr2')
   meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR2X', install_tag: 'tr2')
+
+  install_subdir('../data/tr3/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr3')
+  install_subdir('../data/tr3/ship/data', install_dir : 'Contents/Resources', install_tag: 'tr3')
+  install_subdir('../data/common/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr3')
+  install_subdir('../data/common/ship/shaders', install_dir : 'Contents/Resources', install_tag: 'tr3')
+  install_data('../data/tr3/mac/icon.icns', install_dir : 'Contents/Resources', install_tag: 'tr3')
+  install_data('../data/tr3/mac/Info.plist', install_dir : 'Contents', install_tag: 'tr3')
+  meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR3X', install_tag: 'tr3')
 endif

@@ -29,6 +29,7 @@ jobs:
         game:
           - { version: 1 }
           - { version: 2 }
+          - { version: 3 }
 
     name: Build release assets
     runs-on: macos-14
