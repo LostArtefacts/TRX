@@ -237,18 +237,19 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y;
 
     const DIRECTION dir = Math_GetDirection(item->rot.y);
+    const int32_t hang_test_shift = g_TRVersion >= 3 ? 4 : 2;
     switch (dir) {
     case DIR_NORTH:
-        item->pos.z += 2;
+        item->pos.z += hang_test_shift;
         break;
     case DIR_EAST:
-        item->pos.x += 2;
+        item->pos.x += hang_test_shift;
         break;
     case DIR_SOUTH:
-        item->pos.z -= 2;
+        item->pos.z -= hang_test_shift;
         break;
     case DIR_WEST:
-        item->pos.x -= 2;
+        item->pos.x -= hang_test_shift;
         break;
     default:
         break;
@@ -325,7 +326,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     const int32_t hdif = coll->side_front.floor - bounds->min.y;
 
-    if (ABS(coll->side_left.floor - coll->side_right.floor) >= SLOPE_DIF
+    if (ABS(coll->side_left2.floor - coll->side_right2.floor) >= SLOPE_DIF
         || coll->side_mid.ceiling >= 0 || coll->coll_type != COLL_FRONT || flag
         || coll->hit_static || hdif < -SLOPE_DIF || hdif > SLOPE_DIF) {
         item->pos = coll->old;
@@ -526,8 +527,8 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     if (g_Input.forward) {
         if (coll->side_front.floor > -850 && coll->side_front.floor < -650
             && coll->side_front.floor - coll->side_front.ceiling >= 0
-            && coll->side_left.floor - coll->side_left.ceiling >= 0
-            && coll->side_right.floor - coll->side_right.ceiling >= 0
+            && coll->side_left2.floor - coll->side_left2.ceiling >= 0
+            && coll->side_right2.floor - coll->side_right2.ceiling >= 0
             && !coll->hit_static) {
             item->goal_anim_state = LS(g_Input.slow ? LS_GYMNAST : LS_PULL_UP);
             return;
@@ -545,8 +546,8 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     if (g_TRVersion == 3 && (g_Input.forward || g_Input.crouch)
         && coll->side_front.floor > -850 && coll->side_front.floor < -650
         && coll->side_front.floor - coll->side_front.ceiling >= -256
-        && coll->side_left.floor - coll->side_left.ceiling >= -256
-        && coll->side_right.floor - coll->side_right.ceiling >= -256
+        && coll->side_left2.floor - coll->side_left2.ceiling >= -256
+        && coll->side_right2.floor - coll->side_right2.ceiling >= -256
         && !coll->hit_static) {
         item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
         item->required_anim_state = LS(LS_CROUCH_IDLE);
@@ -870,10 +871,10 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     }
     const int16_t angle = Math_DirectionToAngle(dir);
 
-    const int32_t left_floor = coll->side_left.floor;
-    const int32_t left_ceiling = coll->side_left.ceiling;
-    const int32_t right_floor = coll->side_right.floor;
-    const int32_t right_ceiling = coll->side_right.ceiling;
+    const int32_t left_floor = coll->side_left2.floor;
+    const int32_t left_ceiling = coll->side_left2.ceiling;
+    const int32_t right_floor = coll->side_right2.floor;
+    const int32_t right_ceiling = coll->side_right2.ceiling;
     const int32_t front_floor = coll->side_front.floor;
     const int32_t front_ceiling = coll->side_front.ceiling;
     const bool slope = ABS(left_floor - right_floor) >= SLOPE_DIF;

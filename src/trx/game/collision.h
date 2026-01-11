@@ -26,6 +26,8 @@ typedef struct {
     COLL_SIDE side_front;
     COLL_SIDE side_left;
     COLL_SIDE side_right;
+    COLL_SIDE side_left2;
+    COLL_SIDE side_right2;
     int32_t radius;
     int32_t bad_pos;
     int32_t bad_neg;

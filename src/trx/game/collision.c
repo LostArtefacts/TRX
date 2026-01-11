@@ -6,6 +6,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/rooms.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #define M_HEADROOM 160 // Additional collision space above Lara's head.
 
@@ -321,16 +322,27 @@ void Collide_GetCollisionInfo(
     M_FillSide(
         coll, &coll->side_front, x_pos + x_front, z_pos + z_front, y_pos,
         obj_height, &room_num);
+
+    int16_t room_num2;
+    room_num2 = prev_room_num;
     M_FillSide(
         coll, &coll->side_left, x_pos + x_left, z_pos + z_left, y_pos,
-        obj_height, &room_num);
+        obj_height, &room_num2);
+    room_num2 = prev_room_num;
     M_FillSide(
         coll, &coll->side_right, x_pos + x_right, z_pos + z_right, y_pos,
-        obj_height, &room_num);
-    // TODO: TR3 uses an extra left and right side, purpose to be investigated.
+        obj_height, &room_num2);
 
+    M_FillSide(
+        coll, &coll->side_left2, x_pos + x_left, z_pos + z_left, y_pos,
+        obj_height, &room_num);
+    M_FillSide(
+        coll, &coll->side_right2, x_pos + x_right, z_pos + z_right, y_pos,
+        obj_height, &room_num);
+
+    const int16_t static_room_num = g_TRVersion >= 3 ? prev_room_num : room_num;
     if (Collide_CollideStaticObjects(
-            coll, x_pos, y_pos, z_pos, room_num, obj_height)) {
+            coll, x_pos, y_pos, z_pos, static_room_num, obj_height)) {
         const XYZ_32 test_pos = {
             .x = x_pos + coll->shift.x,
             .y = y_pos,
