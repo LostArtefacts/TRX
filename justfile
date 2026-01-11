@@ -52,6 +52,7 @@ push-image-win: (image-win "0") (_docker_push "rrdash/trx-win")
 
 import "justfile.tr1"
 import "justfile.tr2"
+import "justfile.tr3"
 
 download-assets tr_version='all':
     tools/download_assets {{tr_version}}

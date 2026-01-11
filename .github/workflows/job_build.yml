@@ -38,8 +38,10 @@ jobs:
           echo "version=$(just output-current-version)" >> $GITHUB_OUTPUT
           echo "tr1_dir=build/artifacts/tr1/" >> $GITHUB_OUTPUT
           echo "tr2_dir=build/artifacts/tr2/" >> $GITHUB_OUTPUT
+          echo "tr3_dir=build/artifacts/tr3/" >> $GITHUB_OUTPUT
           echo "tr1_asset=$(just output-package-name --game 1 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
           echo "tr2_asset=$(just output-package-name --game 2 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
+          echo "tr3_asset=$(just output-package-name --game 3 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
 
       - name: Download large assets
         if: ${{ inputs.target == 'release' }}
@@ -52,9 +54,11 @@ jobs:
           if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
             just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}"
             just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}"
+            just tr3-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr3_dir }}"
           else
             just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}" --no-zip
             just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}" --no-zip
+            just tr3-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr3_dir }}" --no-zip
           fi
 
       - name: Upload artifacts (tr1)
@@ -68,3 +72,9 @@ jobs:
         with:
           name: ${{ steps.vars.outputs.tr2_asset }}
           path: ${{ steps.vars.outputs.tr2_dir }}
+
+      - name: Upload artifacts (tr3)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.tr3_asset }}
+          path: ${{ steps.vars.outputs.tr3_dir }}
