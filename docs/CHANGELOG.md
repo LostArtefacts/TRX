@@ -52,6 +52,7 @@
 - removed the `scripting/trx` directory – internal TRX LUA scripts now get embedded in the exe
 - fixed broken final statistic counters (#4432, regression from 1.0)
 - fixed undefined behavior (crashes and/or texture glitches) in levels with a lot of textures
+- fixed a crash if a pickup aid spawns against an item whose 3D model isn't present
 - fixed Bacon Lara not always being drawn perfectly in sync with Lara's animation (#4210)
 - fixed gondolas not being drawn with an underwater tint when they have sunk (#4428)
 - fixed the teleport-to-item command not succeeding if used in succession with the same type and an out of bounds item is encountered (#4468)
