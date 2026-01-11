@@ -19,7 +19,7 @@ typedef struct {
     XYZW_F pos;
     XYZ_F normal;
     uint16_t flags;
-    int16_t uvw_idx;
+    int32_t uvw_idx;
     float trapezoid_ratio[2];
     int16_t shade;
     RGBA_8888 color;
