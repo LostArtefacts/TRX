@@ -119,13 +119,14 @@ static void M_SaveRaw(
         .flags = Game_GetBonusFlag(),
         .counter = Savegame_GetCounter(),
         .level_num = level->num,
-        .title_size = strlen(level->title),
+        .title_size = level->title != nullptr ? strlen(level->title) : 0,
     };
 
     File_WriteData(fp, &header, sizeof(header));
     File_WriteData(fp, compressed, compressed_size);
     File_WriteData(fp, &extra_header, sizeof(extra_header));
-    File_WriteData(fp, level->title, strlen(level->title));
+    File_WriteData(
+        fp, level->title, level->title != nullptr ? strlen(level->title) : 0);
 
     Memory_FreePointer(&uncompressed);
     Memory_FreePointer(&compressed);

@@ -821,7 +821,8 @@ void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "weather_type", WeatherFX_GetWeather());
     M_PopAndSet(ctx, "misc");
 
-    M_WriteString(ctx, "level_title", level->title);
+    M_WriteString(
+        ctx, "level_title", level->title != nullptr ? level->title : "");
     M_WriteNum(ctx, "save_counter", Savegame_GetCounter());
     M_WriteNum(ctx, "level_num", level->num);
 }
