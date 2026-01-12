@@ -166,6 +166,17 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Effect_Control();
     Sparks_Control();
 
+    {
+        const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
+        ITEM *const lara_item = Lara_GetItem();
+        LARA_INFO *const lara_info = Lara_GetLaraInfo();
+        if (lara_item != nullptr && lara_info != nullptr
+            && lara_info->poison_timer >= 16 && (time4 & 0xFF) == 0) {
+            CLAMPG(lara_info->poison_timer, 256);
+            Lara_TakeDamage(lara_info->poison_timer >> 4, false);
+        }
+    }
+
     Lara_Control();
     WaterFX_Update();
     WeatherFX_Update();

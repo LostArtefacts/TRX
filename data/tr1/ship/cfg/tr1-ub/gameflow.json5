@@ -164,6 +164,7 @@
         "disable_trex_collision",
         "fix_tihocan_secret_sound",
         "fix_animated_sprites",
+        "healthbar_poison_color",
         "exposurebar_color",
         "exposurebar_location",
         "exposurebar_show_mode",

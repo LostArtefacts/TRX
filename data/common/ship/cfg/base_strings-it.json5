@@ -613,6 +613,8 @@
         "SETTING_HEALTHBAR_COLOR_DESCRIPTION": "Colore utilizzato per la barra della salute.",
         "SETTING_HEALTHBAR_LOCATION": "Posizione barra salute",
         "SETTING_HEALTHBAR_LOCATION_DESCRIPTION": "Posizione in cui viene visualizzata la barra della salute.",
+        "SETTING_HEALTHBAR_POISON_COLOR": "\\{review}Colore della barra della salute avvelenata",
+        "SETTING_HEALTHBAR_POISON_COLOR_DESCRIPTION": "\\{review}Colore della barra della salute quando Lara è avvelenata.",
         "SETTING_IDLE_POSE_TIMEOUT": "Tempo di inattività",
         "SETTING_IDLE_POSE_TIMEOUT_DESCRIPTION": "Permette a Lara di riprodurre la sua animazione di posa dopo il numero di secondi d'inattività specificato. Impostalo a 0 per disabilitarlo.",
         "SETTING_INVENTORY_AMBIENT_VOLUME": "Volume ambientale (inventario)",

@@ -613,6 +613,8 @@
         "SETTING_HEALTHBAR_COLOR_DESCRIPTION": "Цвет шкалы здоровья.",
         "SETTING_HEALTHBAR_LOCATION": "Положение шкалы здоровья",
         "SETTING_HEALTHBAR_LOCATION_DESCRIPTION": "Место, где отображается шкала здоровья Лары.",
+        "SETTING_HEALTHBAR_POISON_COLOR": "\\{review}Цвет полосы здоровья при отравлении",
+        "SETTING_HEALTHBAR_POISON_COLOR_DESCRIPTION": "\\{review}Цвет полосы здоровья, когда Лара отравлена.",
         "SETTING_IDLE_POSE_TIMEOUT": "\\{review}Таймер ожидания",
         "SETTING_IDLE_POSE_TIMEOUT_DESCRIPTION": "\\{review}Позволяет Ларе перейти в анимацию позы после заданного количества секунд бездействия. Установите 0, чтобы отключить.",
         "SETTING_INVENTORY_AMBIENT_VOLUME": "\\{review}Громкость окружения (инвентарь)",

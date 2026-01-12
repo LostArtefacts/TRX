@@ -144,6 +144,7 @@ X_CFG_ENUM_EX("ui.enemy_healthbar_show_mode",        ui.enemy_health_bar.show_mo
 X_CFG_ENUM_EX("ui.exposurebar_color",                ui.lara_exposure_bar.color, BC_BLUE2, BAR_COLOR)
 X_CFG_ENUM_EX("ui.exposurebar_location",             ui.lara_exposure_bar.location, BL_TOP_RIGHT, BAR_LOCATION)
 X_CFG_ENUM_EX("ui.healthbar_color",                  ui.lara_health_bar.color, BC_RED, BAR_COLOR)
+X_CFG_ENUM_EX("ui.healthbar_poison_color",           ui.lara_health_bar.poison_color, BC_GOLD2, BAR_COLOR)
 X_CFG_ENUM_EX("ui.healthbar_location",               ui.lara_health_bar.location, BL_TOP_LEFT, BAR_LOCATION)
 X_CFG_ENUM_EX("ui.sprintbar_color",                  ui.lara_sprint_bar.color, BC_GREEN2, BAR_COLOR)
 X_CFG_ENUM_EX("ui.sprintbar_location",               ui.lara_sprint_bar.location, BL_TOP_RIGHT, BAR_LOCATION)

@@ -127,6 +127,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->interact_target.is_moving = false;
     lara_info->interact_target.item_num = NO_ITEM;
     lara_info->interact_target.move_count = 0;
+    lara_info->poison_timer = 0;
 
     LOT_InitialiseLOT(&lara_info->lot);
     lara_info->lot.setup.step = WALL_L * 20;
@@ -386,8 +387,10 @@ void Lara_UseItem(const OBJECT_ID obj_id)
 
     case O_SMALL_MEDIPACK_ITEM:
     case O_SMALL_MEDIPACK_OPTION:
-        if (lara_item->hit_points > 0
-            && lara_item->hit_points < LARA_MAX_HITPOINTS) {
+        if ((lara_item->hit_points > 0
+             && lara_item->hit_points < LARA_MAX_HITPOINTS)
+            || lara_info->poison_timer != 0) {
+            lara_info->poison_timer = 0;
             lara_item->hit_points += LARA_MAX_HITPOINTS / 2;
             CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
             Inv_RemoveItem(O_SMALL_MEDIPACK_ITEM);
@@ -398,8 +401,10 @@ void Lara_UseItem(const OBJECT_ID obj_id)
 
     case O_LARGE_MEDIPACK_ITEM:
     case O_LARGE_MEDIPACK_OPTION:
-        if (lara_item->hit_points > 0
-            && lara_item->hit_points < LARA_MAX_HITPOINTS) {
+        if ((lara_item->hit_points > 0
+             && lara_item->hit_points < LARA_MAX_HITPOINTS)
+            || lara_info->poison_timer != 0) {
+            lara_info->poison_timer = 0;
             lara_item->hit_points = LARA_MAX_HITPOINTS;
             Inv_RemoveItem(O_LARGE_MEDIPACK_ITEM);
             Sound_Effect(SFX_MENU_MEDI, nullptr, SPM_ALWAYS);

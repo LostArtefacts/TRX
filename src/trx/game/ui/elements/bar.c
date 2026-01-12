@@ -115,6 +115,10 @@ static const M_LOOK_PS1 m_LookTR23PS1 = {
             { 0xB60100, 0xEA0100, 0xB60100, 0x870000, 0x6D0000 },
             { 0x01B900, 0x03FA00, 0x01B900, 0x018800, 0x015A00 },
         },
+        [UI_BAR_LARA_HP_POISON] = {
+            { 0x400000, 0x4C0000, 0x580000, 0x640000, 0x7C0000 },
+            { 0x400080, 0x4C0099, 0x5800B2, 0x6400CB, 0x7C00FD },
+        },
         [UI_BAR_LARA_AIR] = {
             { 0x00717A, 0x009298, 0x00717A, 0x005D6A, 0x004A5A },
             { 0x007101, 0x009201, 0x007101, 0x005D01, 0x004A00 },
@@ -220,6 +224,9 @@ static void M_DrawFillPC(
     switch (settings->type) {
     case UI_BAR_LARA_HP:
         color = g_Config.ui.lara_health_bar.color;
+        break;
+    case UI_BAR_LARA_HP_POISON:
+        color = g_Config.ui.lara_health_bar.poison_color;
         break;
     case UI_BAR_LARA_AIR:
         color = g_Config.ui.lara_air_bar.color;

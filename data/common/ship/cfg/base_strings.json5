@@ -613,6 +613,8 @@
         "SETTING_HEALTHBAR_COLOR_DESCRIPTION": "Color of the healthbar.",
         "SETTING_HEALTHBAR_LOCATION": "Healthbar location",
         "SETTING_HEALTHBAR_LOCATION_DESCRIPTION": "Location where the healthbar is displayed.",
+        "SETTING_HEALTHBAR_POISON_COLOR": "Poison healthbar color",
+        "SETTING_HEALTHBAR_POISON_COLOR_DESCRIPTION": "Color of the healthbar when Lara is poisoned.",
         "SETTING_IDLE_POSE_TIMEOUT": "Idle pose timeout",
         "SETTING_IDLE_POSE_TIMEOUT_DESCRIPTION": "Allows Lara to enter a pose animation when she has been idle for the specified number of seconds. Set to 0 to disable.",
         "SETTING_INVENTORY_AMBIENT_VOLUME": "Ambient volume (inventory)",

@@ -613,6 +613,8 @@
         "SETTING_HEALTHBAR_COLOR_DESCRIPTION": "Kolor paska zdrowia Lary.",
         "SETTING_HEALTHBAR_LOCATION": "Lokalizacja paska zdrowia",
         "SETTING_HEALTHBAR_LOCATION_DESCRIPTION": "Miejsce, w którym wyświetlany jest pasek zdrowia Lary.",
+        "SETTING_HEALTHBAR_POISON_COLOR": "\\{review}Kolor paska zdrowia przy zatruciu",
+        "SETTING_HEALTHBAR_POISON_COLOR_DESCRIPTION": "\\{review}Kolor paska zdrowia, gdy Lara jest zatruta.",
         "SETTING_IDLE_POSE_TIMEOUT": "Czas bezczynności",
         "SETTING_IDLE_POSE_TIMEOUT_DESCRIPTION": "Pozwala Larze przyjąć pozę po określonej liczbie sekund bezczynności. Wartość 0 wyłącza tę funkcję.",
         "SETTING_INVENTORY_AMBIENT_VOLUME": "Głośność otoczenia (ekwipunek)",

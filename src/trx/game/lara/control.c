@@ -751,6 +751,7 @@ static void M_HandleEnvironment(void)
 
     case LWS_CHEAT:
         item->hit_points = LARA_MAX_HITPOINTS;
+        lara_info->poison_timer = 0;
         lara_info->death_timer = 0;
         M_HandleUnderwater(&coll);
         if (g_InputDB.slow && !g_Input.look && !g_Input.fly_cheat) {
@@ -797,6 +798,7 @@ void Lara_Control(void)
 
     if (item->hit_points > 0 && g_Config.debug.enable_invulnerability) {
         item->hit_points = LARA_MAX_HITPOINTS;
+        lara_info->poison_timer = 0;
     }
 
     M_Cheat();
