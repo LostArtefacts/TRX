@@ -86,6 +86,8 @@ typedef struct {
     int16_t radius;
     int16_t camera_pitch;
     bool rotating;
+    int16_t rotate_from_object;
+    int16_t rotate_to_object;
     int16_t rot_count;
     int16_t current_object;
     int16_t target_object;
