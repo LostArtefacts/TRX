@@ -21,6 +21,8 @@
 #include <math.h>
 
 #define M_CAMERA_2_RING 598
+#define M_SHADE_NORMAL SHADE_LOW
+#define M_SHADE_SELECTED SHADE_NEUTRAL
 
 static bool M_IsEnterTransition(const INV_RING *const ring)
 {
@@ -94,12 +96,25 @@ fallback:
 static void M_DrawItem(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
 {
-    if (ring->motion.status != RNG_FADING_OUT && ring->motion.status != RNG_DONE
-        && inv_item == ring->list[ring->current_object] && !ring->rotating) {
-        Output_SetLightAdder(SHADE_NEUTRAL);
-    } else {
-        Output_SetLightAdder(SHADE_LOW);
+    int32_t shade = M_SHADE_NORMAL;
+    if (ring->motion.status != RNG_FADING_OUT
+        && ring->motion.status != RNG_DONE) {
+        if (ring->rotating) {
+            float t = (ring->rot_count / (float)INV_RING_ROTATE_DURATION);
+            CLAMP(t, 0.0f, 1.0f);
+            if (inv_item == ring->list[ring->rotate_from_object]) {
+                t = 1.0f - t;
+            } else if (inv_item == ring->list[ring->rotate_to_object]) {
+                t = t;
+            } else {
+                t = 1.0f;
+            }
+            shade = LERP((float)M_SHADE_SELECTED, (float)M_SHADE_NORMAL, t);
+        } else if (inv_item == ring->list[ring->current_object]) {
+            shade = M_SHADE_SELECTED;
+        }
     }
+    Output_SetLightAdder(shade);
 
     Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);
     Matrix_RotY(inv_item->y_rot);

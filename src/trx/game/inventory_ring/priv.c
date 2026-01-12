@@ -117,6 +117,8 @@ void InvRing_InitRing(
     }
 
     ring->rotating = false;
+    ring->rotate_from_object = 0;
+    ring->rotate_to_object = 0;
     ring->rot_count = 0;
     ring->target_object = 0;
     ring->rot_adder = 0;
@@ -310,11 +312,13 @@ void InvRing_DoMotions(INV_RING *const ring)
 void InvRing_RotateLeft(INV_RING *const ring)
 {
     ring->rotating = true;
+    ring->rotate_from_object = ring->current_object;
     if (ring->current_object <= 0) {
         ring->target_object = ring->number_of_objects - 1;
     } else {
         ring->target_object = ring->current_object - 1;
     }
+    ring->rotate_to_object = ring->target_object;
     ring->rot_count = INV_RING_ROTATE_DURATION;
     ring->rot_adder = ring->rot_adder_l;
 }
@@ -322,11 +326,13 @@ void InvRing_RotateLeft(INV_RING *const ring)
 void InvRing_RotateRight(INV_RING *const ring)
 {
     ring->rotating = true;
+    ring->rotate_from_object = ring->current_object;
     if (ring->current_object + 1 >= ring->number_of_objects) {
         ring->target_object = 0;
     } else {
         ring->target_object = ring->current_object + 1;
     }
+    ring->rotate_to_object = ring->target_object;
     ring->rot_count = INV_RING_ROTATE_DURATION;
     ring->rot_adder = ring->rot_adder_r;
 }
