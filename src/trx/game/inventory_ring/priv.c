@@ -35,6 +35,7 @@ typedef enum {
 } PASS_MESH;
 
 static bool m_ShowExamine = false;
+static bool m_ShowUseItemButton = false;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
@@ -503,8 +504,10 @@ void InvRing_DrawUI(INV_RING *const ring)
         UI_BeginModal(0.5f, 0.8f);
         UI_BeginStack(UI_STACK_HORIZONTAL);
         UI_ButtonLabel(INPUT_ROLE_LOOK, GS(ACTION_EXAMINE_ITEM));
-        UI_Spacer(60.0f, 0.0f);
-        UI_ButtonLabel(INPUT_ROLE_ACTION, GS(ACTION_USE_ITEM));
+        if (m_ShowUseItemButton) {
+            UI_Spacer(60.0f, 0.0f);
+            UI_ButtonLabel(INPUT_ROLE_ACTION, GS(ACTION_USE_ITEM));
+        }
         UI_EndStack();
         UI_EndModal();
     }
@@ -591,9 +594,28 @@ void InvRing_RemoveHeader(void)
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, false);
 }
 
-void InvRing_ShowExamine(const bool show)
+void InvRing_ShowExamine(const bool show, const OBJECT_ID object_id)
 {
     m_ShowExamine = show;
+    m_ShowUseItemButton = show;
+    if (show) {
+        switch (object_id) {
+        case O_QUEST_ITEM_1:
+        case O_QUEST_ITEM_2:
+        case O_QUEST_ITEM_3:
+        case O_QUEST_ITEM_4:
+        case O_QUEST_OPTION_1:
+        case O_QUEST_OPTION_2:
+        case O_QUEST_OPTION_3:
+        case O_QUEST_OPTION_4:
+        case O_PICKUP_OPTION_1:
+        case O_PICKUP_OPTION_2:
+            m_ShowUseItemButton = false;
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 bool InvRing_CanExamine(void)

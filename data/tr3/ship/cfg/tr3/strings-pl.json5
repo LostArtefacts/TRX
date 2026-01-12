@@ -7,16 +7,16 @@
             "objects": {
                 "key_1": {
                     "name": "Klucz do toru wyścigowego",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Dżungla",
             "objects": {
                 "key_4": {
                     "name": "Klucz Indry",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Ruiny Świątyni",
@@ -29,16 +29,16 @@
                 },
                 "puzzle_2": {
                     "name": "Szabla",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Rzeka Ganges",
             "objects": {
                 "key_1": {
                     "name": "Klucz do bramy",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Jaskinie Kaliyi",
@@ -51,8 +51,8 @@
                 },
                 "puzzle_1": {
                     "name": "Kamień węża",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Miejsce Katastrofy",
@@ -65,8 +65,9 @@
                 },
                 "pickup_1": {
                     "name": "Mapa bagna",
-                },
-            },
+                    "description": "",
+                }
+            }
         },
         {
             "title": "Wąwóz Madubu",
@@ -82,8 +83,8 @@
                 },
                 "key_2": {
                     "name": "Klucz do katedry",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Aldwych",
@@ -108,8 +109,8 @@
                 },
                 "puzzle_4": {
                     "name": "Ozdobna gwiazda",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Brama Lud'a",
@@ -119,8 +120,8 @@
                 },
                 "puzzle_1": {
                     "name": "Płyn balsamujący",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Miasto",
@@ -133,8 +134,8 @@
                 },
                 "key_2": {
                     "name": "Przełącznik detonatora",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Ściśle Strzeżona Baza",
@@ -150,8 +151,8 @@
                 },
                 "puzzle_2": {
                     "name": "Żółta przepustka bezpieczeństwa",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Strefa 51",
@@ -170,8 +171,8 @@
                 },
                 "puzzle_4": {
                     "name": "Klucz dostępu do hangaru",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Antarktyda",
@@ -184,8 +185,8 @@
                 },
                 "puzzle_2": {
                     "name": "Klucz do bramy",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Kopalnie RX-Tech",
@@ -198,8 +199,8 @@
                 },
                 "puzzle_3": {
                     "name": "Rozrusznik wyciągarki",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Zaginione Miasto Tinnos",
@@ -209,8 +210,8 @@
                 },
                 "puzzle_1": {
                     "name": "Maska",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Jaskinia Meteorytowa",
@@ -218,11 +219,27 @@
         {
             "title": "Wszystkich Świętych",
             "objects": {
+                "quest_1": {
+                    "name": "\\{review}Kamień Infada",
+                    "description": "",
+                },
+                "quest_2": {
+                    "name": "\\{review}Pierwiastek 115",
+                    "description": "",
+                },
+                "quest_3": {
+                    "name": "\\{review}Oko Izydy",
+                    "description": "",
+                },
+                "quest_4": {
+                    "name": "\\{review}Sztylet Ora",
+                    "description": "",
+                },
                 "key_1": {
                     "name": "Klucz do skarbca",
-                },
-            },
-        },
+                }
+            }
+        }
     ],
     "cutscenes": [
         {
@@ -257,6 +274,15 @@
         },
         {
             "title": "Scena Przerywnikowa 11",
-        },
-    ]
+        }
+    ],
+    "game_strings": {
+        "INVENTORY_RING_HEADING_FMT": "\\{review}\\{color 5}%s",
+        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{review}\\{color 3}%s",
+        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{review}\\{color 5}%s",
+        "OVERLAY_ITEM_COUNT_FMT": "\\{review}%s",
+        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}\\{color 2}%s",
+        "STATS_GYM_ASSAULT_COURSE": "\\{review}\\{color 5}Tor Przeszkód",
+        "STATS_GYM_RACETRACK_COURSE": "\\{review}\\{color 5}Tor Wyścigowy",
+    }
 }

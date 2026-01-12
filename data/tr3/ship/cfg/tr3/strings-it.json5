@@ -7,16 +7,16 @@
             "objects": {
                 "key_1": {
                     "name": "Chiave del Circuito",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Giungla",
             "objects": {
                 "key_4": {
                     "name": "Chiave di Indra",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Rovine del Tempio",
@@ -29,16 +29,16 @@
                 },
                 "puzzle_2": {
                     "name": "Scimitarra",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Il Fiume Gange",
             "objects": {
                 "key_1": {
                     "name": "Chiave del Cancello",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Caverne di Kaliya",
@@ -51,8 +51,8 @@
                 },
                 "puzzle_1": {
                     "name": "Pietra del Serpente",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Luogo dello Schianto",
@@ -65,8 +65,9 @@
                 },
                 "pickup_1": {
                     "name": "Mappa della Palude",
-                },
-            },
+                    "description": "",
+                }
+            }
         },
         {
             "title": "Gola di Madubu",
@@ -82,8 +83,8 @@
                 },
                 "key_2": {
                     "name": "Chiave della Cattedrale",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Aldwych",
@@ -108,8 +109,8 @@
                 },
                 "puzzle_4": {
                     "name": "Stella Ornata",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Porta di Lud",
@@ -119,8 +120,8 @@
                 },
                 "puzzle_1": {
                     "name": "Fluido di Imbalsamazione",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Città di Londra",
@@ -133,8 +134,8 @@
                 },
                 "key_2": {
                     "name": "Chiave del Detonatore",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Reparto di Massima Sicurezza",
@@ -150,8 +151,8 @@
                 },
                 "puzzle_2": {
                     "name": "Chiave di Sicurezza Elettronica Gialla",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Area 51",
@@ -170,8 +171,8 @@
                 },
                 "puzzle_4": {
                     "name": "Chiave di Accesso all'Hangar",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Antartide",
@@ -184,8 +185,8 @@
                 },
                 "puzzle_2": {
                     "name": "Chiave di Controllo del Cancello",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Miniere della RX-Tech",
@@ -198,8 +199,8 @@
                 },
                 "puzzle_3": {
                     "name": "Avviamento dell'Argano",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Città Perduta di Tinnos",
@@ -209,8 +210,8 @@
                 },
                 "puzzle_1": {
                     "name": "Maschera Oceaniana",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Caverna del Meteorite",
@@ -220,9 +221,9 @@
             "objects": {
                 "key_1": {
                     "name": "Chiave della Cripta",
-                },
-            },
-        },
+                }
+            }
+        }
     ],
     "cutscenes": [
         {
@@ -257,20 +258,39 @@
         },
         {
             "title": "Intermezzo 11",
-        },
+        }
     ],
     "objects": {
+        "quest_1": {
+            "name": "\\{review}Pietra Infada",
+            "description": "",
+        },
+        "quest_2": {
+            "name": "\\{review}Elemento 115",
+            "description": "",
+        },
+        "quest_3": {
+            "name": "\\{review}Occhio di Iside",
+            "description": "",
+        },
+        "quest_4": {
+            "name": "\\{review}Pugnale Ora",
+            "description": "",
+        },
         "small_medipack": {
             "name": "Kit Medico Piccolo",
         },
         "large_medipack": {
             "name": "Kit Medico Grande",
-        },
+        }
     },
     "game_strings": {
         "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
         "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
+        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
         "OVERLAY_ITEM_COUNT_FMT": "%s",
+        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}\\{color 2}%s",
+        "STATS_GYM_ASSAULT_COURSE": "\\{review}\\{color 5}Percorso d'Assalto",
+        "STATS_GYM_RACETRACK_COURSE": "\\{review}\\{color 5}Percorso della Pista di Corsa",
     }
 }

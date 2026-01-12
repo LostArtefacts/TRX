@@ -53,7 +53,7 @@ static void M_RingIsOpen(INV_RING *const ring)
 static void M_RingIsNotOpen(INV_RING *const ring)
 {
     InvRing_RemoveHeader();
-    InvRing_ShowExamine(false);
+    InvRing_ShowExamine(false, NO_OBJECT);
 }
 
 static void M_RingNotActive(
@@ -136,6 +136,10 @@ static void M_RingNotActive(
     case O_KEY_OPTION_2:
     case O_KEY_OPTION_3:
     case O_KEY_OPTION_4:
+    case O_QUEST_OPTION_1:
+    case O_QUEST_OPTION_2:
+    case O_QUEST_OPTION_3:
+    case O_QUEST_OPTION_4:
     case O_PICKUP_OPTION_1:
     case O_PICKUP_OPTION_2:
     case O_LEADBAR_OPTION:
@@ -151,13 +155,14 @@ static void M_RingNotActive(
 
     InvRing_ShowExamine(
         ring->motion.status == RNG_OPEN
-        && Option_Examine_CanExamine(inv_item->object_id));
+            && Option_Examine_CanExamine(inv_item->object_id),
+        inv_item->object_id);
 }
 
 static void M_RingActive(void)
 {
     InvRing_RemoveItemTexts();
-    InvRing_ShowExamine(false);
+    InvRing_ShowExamine(false, NO_OBJECT);
 }
 
 static bool M_AnimateInventoryItem(INVENTORY_ITEM *const inv_item)

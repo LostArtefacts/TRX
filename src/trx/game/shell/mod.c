@@ -82,6 +82,20 @@ const SHELL_MOD *Shell_GetModByType(
     return nullptr;
 }
 
+bool Shell_IsCurrentMod(const char *const name)
+{
+    if (name == nullptr) {
+        return false;
+    }
+
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (args == nullptr || args->mod == nullptr || args->mod->name == nullptr) {
+        return false;
+    }
+
+    return strcmp(args->mod->name, name) == 0;
+}
+
 const char *Shell_GetCommonStringsPath(void)
 {
     return String_FormatStatic("%s/base_strings.json5", Shell_GetConfigDir());

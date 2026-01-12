@@ -157,7 +157,6 @@ class RunContext:
         self.mods = {
             f"tr{game}-{mod_path.name}": GameStringSet(vfs, mod_path)
             for game, paths in PROJECT_PATHS.items()
-            if game != 3
             for mod_path in paths.shipped_data_dir.glob("cfg/*")
             if mod_path.is_dir()
         }
@@ -197,6 +196,7 @@ class BaseResolver:
     def fill(self) -> Any:
         self.fill_base_strings()
         self.fill_object_names()
+        self.fill_level_object_names()
         return self.trans_file.data
 
     def fill_base_strings(self) -> None:
@@ -229,6 +229,61 @@ class BaseResolver:
         if not self.trans_file.data["objects"]:
             del self.trans_file.data["objects"]
 
+    def fill_level_object_names(self) -> None:
+        base_levels = self.base_file.data.get("levels")
+        trans_levels = self.trans_file.data.get("levels")
+        if self.trans_file.extends:
+            return
+        if not isinstance(base_levels, list) or not isinstance(trans_levels, list):
+            return
+
+        missing: list[tuple[str, str]] = []
+        for level_index, base_level in enumerate(base_levels):
+            if level_index >= len(trans_levels):
+                break
+            if not isinstance(base_level, dict):
+                continue
+            trans_level = trans_levels[level_index]
+            if not isinstance(trans_level, dict):
+                continue
+
+            base_objects = base_level.get("objects")
+            if not isinstance(base_objects, dict) or not base_objects:
+                continue
+
+            trans_objects = trans_level.setdefault("objects", {})
+            if not isinstance(trans_objects, dict):
+                trans_objects = {}
+                trans_level["objects"] = trans_objects
+
+            for obj_key, obj in base_objects.items():
+                if not isinstance(obj, dict):
+                    continue
+                base_name = obj.get("name")
+                if isinstance(base_name, list) and base_name:
+                    base_name = base_name[0]  # Only take the first
+                trans_obj = trans_objects.get(obj_key)
+                if not isinstance(trans_obj, dict) or not clean(
+                    trans_obj.get("name")
+                ):
+                    missing.append((f"{level_index}:{obj_key}", clean(base_name)))
+
+        for chunk in chunks(missing, n=50):
+            filled = dict(self.fill_chunk(chunk))
+            for packed_key, v in filled.items():
+                level_index_str, obj_key = packed_key.split(":", 1)
+                level_index = int(level_index_str)
+                if level_index >= len(trans_levels):
+                    continue
+                trans_level = trans_levels[level_index]
+                if not isinstance(trans_level, dict):
+                    continue
+                trans_objects = trans_level.setdefault("objects", {})
+                if not isinstance(trans_objects, dict):
+                    trans_objects = {}
+                    trans_level["objects"] = trans_objects
+                trans_objects.setdefault(obj_key, {})["name"] = v
+
 
 class AIResolver(BaseResolver):
     def __init__(
@@ -249,7 +304,8 @@ class AIResolver(BaseResolver):
     def system_prompt(self) -> str:
         return f"""
             Translate the user-provided JSON to language '{self.target_lang}'
-            for a Tomb Raider game."""
+            for a Tomb Raider game. You are not allowed to compress identical
+            lines - output must exactly match input."""
 
     def fill_chunk(self, chunk: list[tuple[str, str]]) -> list[tuple[str, str]]:
         import openai

@@ -21,6 +21,7 @@ void Shell_ScanAvailableMods(void);
 const SHELL_MOD *Shell_GetModByName(const char *name);
 const SHELL_MOD *Shell_GetModByType(
     SHELL_MOD_TYPE mod_type, int32_t engine_version);
+bool Shell_IsCurrentMod(const char *name);
 
 const char *Shell_GetCommonStringsPath(void);
 const char *Shell_GetBaseGameStringsPath(const SHELL_MOD *mod);

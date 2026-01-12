@@ -1804,6 +1804,18 @@
         },
         "shotgun_shell": {
             "name": "\\{review}Łuska do strzelby",
+        },
+        "quest_1": {
+            "name": "\\{review}Przedmiot Misji 1",
+        },
+        "quest_2": {
+            "name": "\\{review}Przedmiot Misji 2",
+        },
+        "quest_3": {
+            "name": "\\{review}Przedmiot Misji 3",
+        },
+        "quest_4": {
+            "name": "\\{review}Przedmiot Misji 4",
         }
     }
 }

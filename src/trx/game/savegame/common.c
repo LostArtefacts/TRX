@@ -490,6 +490,10 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
     resume->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
+    resume->num_quest_item_1 = Inv_RequestItem(O_QUEST_ITEM_1);
+    resume->num_quest_item_2 = Inv_RequestItem(O_QUEST_ITEM_2);
+    resume->num_quest_item_3 = Inv_RequestItem(O_QUEST_ITEM_3);
+    resume->num_quest_item_4 = Inv_RequestItem(O_QUEST_ITEM_4);
 
     if (Inv_RequestItem(O_M16_ITEM)) {
         resume->flags.has_m16 = true;
@@ -591,6 +595,10 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->small_medipacks = 0;
         resume->large_medipacks = 0;
         resume->num_scions = 0;
+        resume->num_quest_item_1 = 0;
+        resume->num_quest_item_2 = 0;
+        resume->num_quest_item_3 = 0;
+        resume->num_quest_item_4 = 0;
         resume->flares = 0;
 
         resume->equipped_gun_type = LGT_UNARMED;
@@ -620,6 +628,10 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->desert_eagle_ammo = 0;
         resume->uzi_ammo = 0;
         resume->num_scions = 0;
+        resume->num_quest_item_1 = 0;
+        resume->num_quest_item_2 = 0;
+        resume->num_quest_item_3 = 0;
+        resume->num_quest_item_4 = 0;
         resume->flags.has_harpoon = false;
         resume->flags.has_m16 = false;
         resume->flags.has_mp5 = false;

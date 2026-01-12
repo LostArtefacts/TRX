@@ -451,6 +451,10 @@ static void M_WriteResumeInfo(
     M_WriteNum(ctx, "num_big_medis", resume->large_medipacks);
     M_WriteNum(ctx, "num_flares", resume->flares);
     M_WriteNum(ctx, "num_scions", resume->num_scions);
+    M_WriteNum(ctx, "num_quest_item_1", resume->num_quest_item_1);
+    M_WriteNum(ctx, "num_quest_item_2", resume->num_quest_item_2);
+    M_WriteNum(ctx, "num_quest_item_3", resume->num_quest_item_3);
+    M_WriteNum(ctx, "num_quest_item_4", resume->num_quest_item_4);
     M_WriteNum(ctx, "gun_status", resume->gun_status);
     M_WriteNum(ctx, "gun_type", resume->equipped_gun_type);
     M_WriteNum(ctx, "holsters_gun_type", resume->holsters_gun_type);
@@ -572,6 +576,10 @@ void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_PushObject(ctx);
     M_WriteNum(ctx, "pickup1", Inv_RequestItem(O_PICKUP_ITEM_1));
     M_WriteNum(ctx, "pickup2", Inv_RequestItem(O_PICKUP_ITEM_2));
+    M_WriteNum(ctx, "quest1", Inv_RequestItem(O_QUEST_ITEM_1));
+    M_WriteNum(ctx, "quest2", Inv_RequestItem(O_QUEST_ITEM_2));
+    M_WriteNum(ctx, "quest3", Inv_RequestItem(O_QUEST_ITEM_3));
+    M_WriteNum(ctx, "quest4", Inv_RequestItem(O_QUEST_ITEM_4));
     M_WriteNum(ctx, "puzzle1", Inv_RequestItem(O_PUZZLE_ITEM_1));
     M_WriteNum(ctx, "puzzle2", Inv_RequestItem(O_PUZZLE_ITEM_2));
     M_WriteNum(ctx, "puzzle3", Inv_RequestItem(O_PUZZLE_ITEM_3));

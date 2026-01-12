@@ -217,6 +217,10 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, resume->large_medipacks);
         Inv_AddItemNTimes(O_FLARE_ITEM, resume->flares);
         Inv_AddItemNTimes(O_SCION_ITEM_1, resume->num_scions);
+        Inv_AddItemNTimes(O_QUEST_ITEM_1, resume->num_quest_item_1);
+        Inv_AddItemNTimes(O_QUEST_ITEM_2, resume->num_quest_item_2);
+        Inv_AddItemNTimes(O_QUEST_ITEM_3, resume->num_quest_item_3);
+        Inv_AddItemNTimes(O_QUEST_ITEM_4, resume->num_quest_item_4);
         if (resume->flags.has_m16) {
             Inv_AddItem(O_M16_ITEM);
             lara_info->m16_ammo.ammo = resume->m16_ammo;

@@ -8,6 +8,7 @@
 #include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
+#include <trx/game/output.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -138,18 +139,8 @@ static void M_SpawnPickupAid(const ITEM *const item)
     }
 }
 
-static void M_Control(int16_t item_num)
+static void M_ControlPickupAids(ITEM *const item)
 {
-    ITEM *const item = Item_Get(item_num);
-    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
-        Item_RemoveActive(item_num);
-        return;
-    }
-
-    if (!g_Config.gameplay.enable_pickup_aids || item->room_num == NO_ROOM) {
-        return;
-    }
-
     const ITEM *const lara = Lara_GetItem();
     if (item->fall_speed != 0 || lara == nullptr
         || !Object_Get(O_PICKUP_AID)->loaded) {
@@ -174,6 +165,38 @@ static void M_Control(int16_t item_num)
     item->priv = (void *)(intptr_t)(int32_t)timer;
 }
 
+static void M_ControlPickupLights(ITEM *const item)
+{
+    const int16_t timer = Output_GetTimeInGame();
+    const int16_t angle = Math_Cos((timer & 0x3F) << 10);
+    int32_t c = ABS(angle >> 9);
+    CLAMPG(c, 31);
+    c <<= 3;
+    Output_AddDynamicLightRGB(item->pos, 8, (RGB_888) { 0, c, c >> 1 });
+}
+
+static void M_Control(int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
+        Item_RemoveActive(item_num);
+        return;
+    }
+
+    if (g_Config.gameplay.enable_pickup_aids && item->room_num != NO_ROOM) {
+        M_ControlPickupAids(item);
+    }
+
+    if (g_TRVersion == 3
+        && (item->object_id == O_QUEST_ITEM_1
+            || item->object_id == O_QUEST_ITEM_2
+            || item->object_id == O_QUEST_ITEM_3
+            || item->object_id == O_QUEST_ITEM_4)) {
+        item->rot.y += 1024;
+        M_ControlPickupLights(item);
+    }
+}
+
 static void M_DoPickup(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -189,8 +212,22 @@ static void M_DoPickup(const int16_t item_num)
 
     item->status = IS_INVISIBLE;
     item->flags |= IF_KILLED;
-    Item_RemoveDrawn(item_num);
-    Item_RemoveActive(item_num);
+
+    if (g_TRVersion == 3
+        && (item->object_id == O_QUEST_ITEM_1
+            || item->object_id == O_QUEST_ITEM_2
+            || item->object_id == O_QUEST_ITEM_3
+            || item->object_id == O_QUEST_ITEM_4)) {
+        if (GF_BadGetLevelNum() == 19
+            || (GF_BadIsMod("tr3-la") && GF_BadGetLevelNum() == 4)) {
+            Item_Kill(item_num);
+        } else {
+            Game_SetIsLevelComplete(true);
+        }
+    } else {
+        Item_RemoveDrawn(item_num);
+        Item_RemoveActive(item_num);
+    }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;
@@ -527,6 +564,10 @@ REGISTER_OBJECT(O_DESERT_EAGLE_AMMO_ITEM, M_Setup)
 REGISTER_OBJECT(O_DESERT_EAGLE_ITEM, M_Setup)
 REGISTER_OBJECT(O_PICKUP_ITEM_1, M_Setup)
 REGISTER_OBJECT(O_PICKUP_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_QUEST_ITEM_1, M_Setup)
+REGISTER_OBJECT(O_QUEST_ITEM_2, M_Setup)
+REGISTER_OBJECT(O_QUEST_ITEM_3, M_Setup)
+REGISTER_OBJECT(O_QUEST_ITEM_4, M_Setup)
 REGISTER_OBJECT(O_PISTOL_AMMO_ITEM, M_Setup)
 REGISTER_OBJECT(O_PISTOL_ITEM, M_Setup)
 REGISTER_OBJECT(O_PUZZLE_ITEM_1, M_Setup)
