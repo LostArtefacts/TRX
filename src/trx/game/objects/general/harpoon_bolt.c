@@ -174,7 +174,7 @@ static void M_Control_TR3(const int16_t item_num)
 
     const ROOM *const room = Room_Get(item->room_num);
     if (room != nullptr && room->flags.underwater) {
-        const int32_t time4 = ((int32_t)Output_GetTimeInGame()) / 4;
+        const int32_t time4 = Output_GetTimeInGame() * 4;
         if ((time4 & 0xF) == 0) {
             Spawn_BubbleEx(&item->pos, item->room_num, 2, 8);
         }

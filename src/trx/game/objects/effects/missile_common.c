@@ -80,7 +80,7 @@ void Missile_Control(const int16_t effect_num)
     if (effect->object_id == O_MISSILE_HARPOON
         && Room_Get(effect->room_num)->flags.underwater) {
         if (g_TRVersion == 3) {
-            const int32_t time4 = ((int32_t)Output_GetTimeInGame()) / 4;
+            const int32_t time4 = Output_GetTimeInGame() * 4;
             if ((time4 & 0xF) == 0) {
                 Spawn_BubbleEx(&effect->pos, effect->room_num, 8, 8);
             }
