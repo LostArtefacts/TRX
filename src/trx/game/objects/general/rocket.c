@@ -130,7 +130,7 @@ static void M_Control(const int16_t item_num)
         const int32_t back_dist = -1536 - (Random_GetControl() & 0x1FF);
         const XYZ_32 back_vel = M_GetLocalZOffset(item, back_dist);
 
-        const int32_t time4 = ((int32_t)Output_GetTimeInGame()) / 4;
+        const int32_t time4 = Output_GetTimeInGame() * 4;
         if ((time4 & 4) != 0) {
             Sparks_TriggerRocketFlame(
                 back_128,
