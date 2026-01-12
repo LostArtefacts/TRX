@@ -20,6 +20,10 @@ typedef struct {
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
     uint8_t num_scions;
+    uint8_t num_quest_item_1;
+    uint8_t num_quest_item_2;
+    uint8_t num_quest_item_3;
+    uint8_t num_quest_item_4;
     uint16_t m16_ammo;
     uint16_t mp5_ammo;
     uint16_t grenade_ammo;

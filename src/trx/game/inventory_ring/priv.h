@@ -51,7 +51,7 @@ void InvRing_RemoveItemTexts(void);
 void InvRing_SelectMeshes(INVENTORY_ITEM *inv_item);
 void InvRing_ShowHeader(INV_RING *ring);
 void InvRing_RemoveHeader(void);
-void InvRing_ShowExamine(bool show);
+void InvRing_ShowExamine(bool show, OBJECT_ID object_id);
 bool InvRing_CanExamine(void);
 void InvRing_ShowVersionText(void);
 void InvRing_RemoveVersionText(void);

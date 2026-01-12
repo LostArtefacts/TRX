@@ -1852,6 +1852,18 @@
         },
         "shotgun_shell": {
             "name": "Bossolo di Cartuccia",
+        },
+        "quest_1": {
+            "name": "\\{review}Oggetto della missione 1",
+        },
+        "quest_2": {
+            "name": "\\{review}Oggetto della missione 2",
+        },
+        "quest_3": {
+            "name": "\\{review}Oggetto della missione 3",
+        },
+        "quest_4": {
+            "name": "\\{review}Oggetto della missione 4",
         }
     }
 }

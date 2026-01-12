@@ -1834,6 +1834,18 @@
         },
         "shotgun_shell": {
             "name": "\\{review}Sgèith Sgian",
+        },
+        "quest_1": {
+            "name": "\\{review}Nìsean Tàileasg 1",
+        },
+        "quest_2": {
+            "name": "\\{review}Nìsean Tàileasg 2",
+        },
+        "quest_3": {
+            "name": "\\{review}Nìsean Tàileasg 3",
+        },
+        "quest_4": {
+            "name": "\\{review}Nìsean Tàileasg 4",
         }
     }
 }

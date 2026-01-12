@@ -194,6 +194,7 @@
             ],
             "injections": [
                 "data/injections/lara_coastal_guns.bin",
+                "data/injections/ora_dagger.bin",
             ],
         },
 
@@ -356,6 +357,7 @@
             "cold_water": true,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "remove_scions"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
@@ -411,6 +413,7 @@
             "injections": [
                 "data/injections/cavern_sky.bin",
                 "data/injections/lara_antarc_guns.bin",
+                "data/injections/ora_dagger.bin",
             ],
         },
 

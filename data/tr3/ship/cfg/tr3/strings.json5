@@ -7,16 +7,16 @@
             "objects": {
                 "key_1": {
                     "name": "Racetrack Key",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Jungle",
             "objects": {
                 "key_4": {
                     "name": "Indra Key",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Temple Ruins",
@@ -29,16 +29,16 @@
                 },
                 "puzzle_2": {
                     "name": "Scimitar",
-                },
-            },
+                }
+            }
         },
         {
             "title": "The River Ganges",
             "objects": {
                 "key_1": {
                     "name": "Gate Key",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Caves of Kaliya",
@@ -51,8 +51,8 @@
                 },
                 "puzzle_1": {
                     "name": "Serpent Stone",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Crash Site",
@@ -65,8 +65,9 @@
                 },
                 "pickup_1": {
                     "name": "Swamp Map",
-                },
-            },
+                    "description": "",
+                }
+            }
         },
         {
             "title": "Madubu Gorge",
@@ -82,8 +83,8 @@
                 },
                 "key_2": {
                     "name": "Cathedral Key",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Aldwych",
@@ -108,8 +109,8 @@
                 },
                 "puzzle_4": {
                     "name": "Ornate Star",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Lud's Gate",
@@ -119,8 +120,8 @@
                 },
                 "puzzle_1": {
                     "name": "Embalming Fluid",
-                },
-            },
+                }
+            }
         },
         {
             "title": "City",
@@ -133,8 +134,8 @@
                 },
                 "key_2": {
                     "name": "Detonator Switch",
-                },
-            },
+                }
+            }
         },
         {
             "title": "High Security Compound",
@@ -150,8 +151,8 @@
                 },
                 "puzzle_2": {
                     "name": "Yellow Security Pass",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Area 51",
@@ -170,8 +171,8 @@
                 },
                 "puzzle_4": {
                     "name": "Hanger Access Key",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Antarctica",
@@ -184,8 +185,8 @@
                 },
                 "puzzle_2": {
                     "name": "Gate Control Key",
-                },
-            },
+                }
+            }
         },
         {
             "title": "RX-Tech Mines",
@@ -198,8 +199,8 @@
                 },
                 "puzzle_3": {
                     "name": "Winch Starter",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Lost City of Tinnos",
@@ -209,8 +210,8 @@
                 },
                 "puzzle_1": {
                     "name": "Oceanic Mask",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Meteorite Cavern",
@@ -220,9 +221,9 @@
             "objects": {
                 "key_1": {
                     "name": "Vault Key",
-                },
-            },
-        },
+                }
+            }
+        }
     ],
     "cutscenes": [
         {
@@ -257,23 +258,39 @@
         },
         {
             "title": "Cutscene 11",
-        },
+        }
     ],
     "objects": {
+        "quest_1": {
+            "name": "Infada Stone",
+            "description": "",
+        },
+        "quest_2": {
+            "name": "Element 115",
+            "description": "",
+        },
+        "quest_3": {
+            "name": "Eye of Isis",
+            "description": "",
+        },
+        "quest_4": {
+            "name": "Ora Dagger",
+            "description": "",
+        },
         "small_medipack": {
             "name": "Small Medi Pack",
         },
         "large_medipack": {
             "name": "Large Medi Pack",
-        },
+        }
     },
     "game_strings": {
         "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
         "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
+        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
+        "OVERLAY_ITEM_COUNT_FMT": "%s",
+        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{color 2}%s",
         "STATS_GYM_ASSAULT_COURSE": "\\{color 5}Assault Course",
         "STATS_GYM_RACETRACK_COURSE": "\\{color 5}Race Track Course",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{color 2}%s",
-        "OVERLAY_ITEM_COUNT_FMT": "%s",
     }
 }

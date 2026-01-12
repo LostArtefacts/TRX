@@ -1810,6 +1810,18 @@
         },
         "shotgun_shell": {
             "name": "\\{review}Cartouche de fusil à pompe",
+        },
+        "quest_1": {
+            "name": "\\{review}Objet de quête 1",
+        },
+        "quest_2": {
+            "name": "\\{review}Objet de quête 2",
+        },
+        "quest_3": {
+            "name": "\\{review}Objet de quête 3",
+        },
+        "quest_4": {
+            "name": "\\{review}Objet de quête 4",
         }
     }
 }

@@ -834,6 +834,18 @@
         "pickup_2": {
             "name": "Pickup Item 2",
         },
+        "quest_1": {
+            "name": "Quest Item 1",
+        },
+        "quest_2": {
+            "name": "Quest Item 2",
+        },
+        "quest_3": {
+            "name": "Quest Item 3",
+        },
+        "quest_4": {
+            "name": "Quest Item 4",
+        },
         "key_1": {
             "name": "Key 1",
         },

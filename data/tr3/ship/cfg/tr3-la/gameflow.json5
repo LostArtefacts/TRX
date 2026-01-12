@@ -126,6 +126,7 @@
             "music_track": 34,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/zoo.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "remove_scions"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},

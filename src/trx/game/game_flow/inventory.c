@@ -233,6 +233,7 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
     m_RemoveAmmo = false;
     m_RemoveFlares = false;
     m_RemoveMedipacks = false;
+    m_RemoveScions = false;
 
     if (level == nullptr) {
         return;
@@ -327,6 +328,10 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
 
     if (m_RemoveScions) {
         resume->num_scions = 0;
+        resume->num_quest_item_1 = 0;
+        resume->num_quest_item_2 = 0;
+        resume->num_quest_item_3 = 0;
+        resume->num_quest_item_4 = 0;
         m_RemoveScions = false;
     }
 

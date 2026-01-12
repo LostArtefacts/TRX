@@ -7,8 +7,8 @@
             "objects": {
                 "key_1": {
                     "name": "Chiave del Circuito",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Balzo nell'Altopiano",
@@ -18,8 +18,8 @@
                 },
                 "puzzle_2": {
                     "name": "Gemma del Cardo",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Nascondiglio di Willard",
@@ -29,8 +29,8 @@
                 },
                 "puzzle_1": {
                     "name": "Piede di Porco",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Scogliera di Shakespeare",
@@ -40,8 +40,8 @@
                 },
                 "puzzle_1": {
                     "name": "Disco di Accesso alla Pompa",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Dormire con i Pesci",
@@ -57,8 +57,8 @@
                 },
                 "puzzle_4": {
                     "name": "Lampadina",
-                },
-            },
+                }
+            }
         },
         {
             "title": "È un Manicomio!",
@@ -71,16 +71,16 @@
                 },
                 "puzzle_1": {
                     "name": "Mano di Rathmore",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Riunione",
             "objects": {
                 "puzzle_1": {
                     "name": "Mano di Rathmore",
-                },
-            },
-        },
-    ],
+                }
+            }
+        }
+    ]
 }

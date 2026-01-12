@@ -25,6 +25,10 @@ static void M_GiveAllKeysImpl(void)
     Inv_AddItem(O_KEY_ITEM_2);
     Inv_AddItem(O_KEY_ITEM_3);
     Inv_AddItem(O_KEY_ITEM_4);
+    Inv_AddItem(O_QUEST_ITEM_1);
+    Inv_AddItem(O_QUEST_ITEM_2);
+    Inv_AddItem(O_QUEST_ITEM_3);
+    Inv_AddItem(O_QUEST_ITEM_4);
     Inv_AddItem(O_PICKUP_ITEM_1);
     Inv_AddItem(O_PICKUP_ITEM_2);
     Inv_AddItem(O_LEADBAR_ITEM);

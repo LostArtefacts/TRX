@@ -8,6 +8,7 @@
 #include <trx/game/option/passport.h>
 #include <trx/game/option/sound.h>
 #include <trx/game/option/stats.h>
+#include <trx/version.h>
 
 void Option_Reset(void)
 {
@@ -92,6 +93,10 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     case O_KEY_OPTION_2:
     case O_KEY_OPTION_3:
     case O_KEY_OPTION_4:
+    case O_QUEST_OPTION_1:
+    case O_QUEST_OPTION_2:
+    case O_QUEST_OPTION_3:
+    case O_QUEST_OPTION_4:
     case O_PICKUP_OPTION_1:
     case O_PICKUP_OPTION_2:
     case O_SCION_OPTION:

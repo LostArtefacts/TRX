@@ -1823,6 +1823,18 @@
         },
         "shotgun_shell": {
             "name": "\\{review}Schrotpatrone",
+        },
+        "quest_1": {
+            "name": "\\{review}Quest-Gegenstand 1",
+        },
+        "quest_2": {
+            "name": "\\{review}Quest-Gegenstand 2",
+        },
+        "quest_3": {
+            "name": "\\{review}Quest-Gegenstand 3",
+        },
+        "quest_4": {
+            "name": "\\{review}Quest-Gegenstand 4",
         }
     }
 }

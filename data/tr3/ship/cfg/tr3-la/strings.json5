@@ -7,8 +7,8 @@
             "objects": {
                 "key_1": {
                     "name": "Racetrack Key",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Highland Fling",
@@ -18,8 +18,8 @@
                 },
                 "puzzle_2": {
                     "name": "Thistle Stone",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Willard's Lair",
@@ -29,8 +29,8 @@
                 },
                 "puzzle_1": {
                     "name": "Crowbar",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Shakespeare Cliff",
@@ -40,8 +40,8 @@
                 },
                 "puzzle_1": {
                     "name": "Pump Access Disk",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Sleeping with the Fishes",
@@ -57,8 +57,8 @@
                 },
                 "puzzle_4": {
                     "name": "Circuit Bulb",
-                },
-            },
+                }
+            }
         },
         {
             "title": "It's a Madhouse!",
@@ -71,16 +71,22 @@
                 },
                 "puzzle_1": {
                     "name": "The Hand of Rathmore",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Reunion",
             "objects": {
                 "puzzle_1": {
                     "name": "The Hand of Rathmore",
-                },
-            },
-        },
+                }
+            }
+        }
     ],
+    "objects": {
+        "quest_1": {
+            "name": "Hand of Rathmore",
+            "description": "",
+        }
+    }
 }

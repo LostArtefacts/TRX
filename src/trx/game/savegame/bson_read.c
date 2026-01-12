@@ -1181,6 +1181,8 @@ bool Savegame_BSON_LoadInventory(SAVEGAME_BSON_READ_CONTEXT *const ctx)
         const char *const key;
     } objects[] = {
         { O_PICKUP_ITEM_1, "pickup1" }, { O_PICKUP_ITEM_2, "pickup2" },
+        { O_QUEST_ITEM_1, "quest1" },   { O_QUEST_ITEM_2, "quest2" },
+        { O_QUEST_ITEM_3, "quest3" },   { O_QUEST_ITEM_4, "quest4" },
         { O_PUZZLE_ITEM_1, "puzzle1" }, { O_PUZZLE_ITEM_2, "puzzle2" },
         { O_PUZZLE_ITEM_3, "puzzle3" }, { O_PUZZLE_ITEM_4, "puzzle4" },
         { O_KEY_ITEM_1, "key1" },       { O_KEY_ITEM_2, "key2" },

@@ -7,8 +7,8 @@
             "objects": {
                 "key_1": {
                     "name": "Schlüssel zur Rennstrecke",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Das Hochland",
@@ -18,8 +18,8 @@
                 },
                 "puzzle_2": {
                     "name": "Distelstein",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Willards Unterschlupf",
@@ -29,8 +29,8 @@
                 },
                 "puzzle_1": {
                     "name": "Brechstange",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Shakespeare-Klippe",
@@ -40,8 +40,8 @@
                 },
                 "puzzle_1": {
                     "name": "Pumoen-Zugangs-Disk",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Mit den Fischen schlafen",
@@ -57,8 +57,8 @@
                 },
                 "puzzle_4": {
                     "name": "Gelbe Stromkreis-Glühbirne",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Es ist ein Irrenhaus!",
@@ -71,16 +71,16 @@
                 },
                 "puzzle_1": {
                     "name": "Hand von Rathmore",
-                },
-            },
+                }
+            }
         },
         {
             "title": "Wiedervereinigung",
             "objects": {
                 "puzzle_1": {
                     "name": "Hand von Rathmore",
-                },
-            },
-        },
-    ],
+                }
+            }
+        }
+    ]
 }

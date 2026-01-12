@@ -8,7 +8,11 @@
 - added underwater blood spills
 - added poison mechanic
 - added new creature explosions effects
+- added meteorite artifacts support
+- added examine item feature for certain items
 - fixed actors jumping to their start frame at the end of cutscenes
+- fixed Swamp Map rotation
+- fixed Hand of Rathmore not rotating in Sleeping with the Fishes
 
 
 
