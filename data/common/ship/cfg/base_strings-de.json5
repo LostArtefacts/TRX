@@ -613,6 +613,8 @@
         "SETTING_HEALTHBAR_COLOR_DESCRIPTION": "Farbe der Gesundheitsleiste.",
         "SETTING_HEALTHBAR_LOCATION": "Position der Gesundheitsleiste",
         "SETTING_HEALTHBAR_LOCATION_DESCRIPTION": "Position, an der die Gesundheitsleiste angezeigt wird.",
+        "SETTING_HEALTHBAR_POISON_COLOR": "\\{review}Gift Gesundheitsbalken Farbe",
+        "SETTING_HEALTHBAR_POISON_COLOR_DESCRIPTION": "\\{review}Farbe des Gesundheitsbalkens, wenn Lara vergiftet ist.",
         "SETTING_IDLE_POSE_TIMEOUT": "\\{review}Leerlauf-Zeit",
         "SETTING_IDLE_POSE_TIMEOUT_DESCRIPTION": "\\{review}Ermöglicht Lara, nach der angegebenen Anzahl an Sekunden Inaktivität eine Posenanimation zu starten. Auf 0 setzen, um zu deaktivieren.",
         "SETTING_INVENTORY_AMBIENT_VOLUME": "\\{review}Umgebungslautstärke (Inventar)",

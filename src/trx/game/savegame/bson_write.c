@@ -692,6 +692,7 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "air", lara->air);
     M_WriteNum(ctx, "sprint_timer", lara->sprint_timer);
     M_WriteNum(ctx, "exposure_timer", lara->exposure_timer);
+    M_WriteNum(ctx, "poison_timer", lara->poison_timer);
     M_WriteNum(ctx, "dive_count", lara->dive_timer);
     M_WriteNum(ctx, "death_count", lara->death_timer);
 

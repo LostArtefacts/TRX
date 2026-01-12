@@ -60,6 +60,7 @@
     "hidden_config": [
         "enable_item_examining",
         "enemy_healthbar_color_allies",
+        "healthbar_poison_color",
         "exposurebar_color",
         "exposurebar_location",
         "exposurebar_show_mode",

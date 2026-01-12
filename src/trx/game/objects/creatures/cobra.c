@@ -111,7 +111,7 @@ static void M_Control(const int16_t item_num)
         if (creature->flags != 1 && (item->touch_bits & 0x2000) != 0) {
             creature->flags = 1;
             Lara_TakeDamage(80, true);
-            lara->poison = 256;
+            lara->poison_timer = 256;
             Creature_Effect(item, &m_CobraBite, Spawn_Blood);
         }
         break;

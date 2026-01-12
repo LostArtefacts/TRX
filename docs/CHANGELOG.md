@@ -4,6 +4,7 @@
 **TR3**:
 - added new blood effects
 - added underwater blood spills
+- added poison mechanic
 - added new creature explosions effects
 - fixed actors jumping to their start frame at the end of cutscenes
 

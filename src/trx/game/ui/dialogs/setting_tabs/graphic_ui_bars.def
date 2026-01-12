@@ -6,6 +6,7 @@ X_UI_CFG_BOOL(ui.enable_bar_flashing,           SETTING_ENABLE_BAR_FLASHING, .cu
 
 X_UI_CFG_ENUM(ui.lara_health_bar.location,      SETTING_HEALTHBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Healthbar_IsAvailable })
 X_UI_CFG_ENUM(ui.lara_health_bar.color,         SETTING_HEALTHBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_HealthbarColor_IsAvailable })
+X_UI_CFG_ENUM(ui.lara_health_bar.poison_color,  SETTING_HEALTHBAR_POISON_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_HealthbarColor_IsAvailable })
 
 X_UI_CFG_ENUM(ui.lara_air_bar.location,         SETTING_AIRBAR_LOCATION, .misc = UI_Settings_BarLocationEnumEntries, .custom_handler = { .is_available = UI_Settings_Airbar_IsAvailable })
 X_UI_CFG_ENUM(ui.lara_air_bar.color,            SETTING_AIRBAR_COLOR, .misc = UI_Settings_BarColorEnumEntries, .custom_handler = { .is_available = UI_Settings_AirbarColor_IsAvailable })

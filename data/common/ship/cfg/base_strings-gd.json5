@@ -613,6 +613,8 @@
         "SETTING_HEALTHBAR_COLOR_DESCRIPTION": "Dath a' bhàr-shlàinte.",
         "SETTING_HEALTHBAR_LOCATION": "Suidheachadh bàr-shlàinte",
         "SETTING_HEALTHBAR_LOCATION_DESCRIPTION": "Far a nochdas am bàr-shlàinte air an sgrion.",
+        "SETTING_HEALTHBAR_POISON_COLOR": "\\{review}Dath bàr-slàinte puinnseanta",
+        "SETTING_HEALTHBAR_POISON_COLOR_DESCRIPTION": "\\{review}Dath a’ bhàr-slàinte nuair a tha Lara air a puinnseanachadh.",
         "SETTING_IDLE_POSE_TIMEOUT": "Dàil seasaimh",
         "SETTING_IDLE_POSE_TIMEOUT_DESCRIPTION": "Leigidh seo le Lara beòthalachd shònraichte a thòiseachadh às dèidh dhi dad a dhèanamh fad an àireamh de dhiogan suidhichte. Suidhich gu 0 gus a chur à comas.",
         "SETTING_INVENTORY_AMBIENT_VOLUME": "Tomhas fuaim àrainneachd (stòradh)",

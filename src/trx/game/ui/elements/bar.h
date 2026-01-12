@@ -13,6 +13,7 @@
 
 typedef enum {
     UI_BAR_LARA_HP,
+    UI_BAR_LARA_HP_POISON,
     UI_BAR_LARA_AIR,
     UI_BAR_LARA_STAMINA,
     UI_BAR_LARA_EXPOSURE,

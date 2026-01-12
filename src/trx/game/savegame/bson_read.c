@@ -451,6 +451,7 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_OPTIONAL(M_ReadNum(ctx, "sprint_timer", &lara->sprint_timer));
     // Only TR1X >=4.16, TR2X >=1.6 have exposure bar function
     M_OPTIONAL(M_ReadNum(ctx, "exposure_timer", &lara->exposure_timer));
+    M_OPTIONAL(M_ReadNum(ctx, "poison_timer", &lara->poison_timer));
     M_MUST(M_ReadNum(ctx, "dive_count", &lara->dive_timer));
     M_MUST(M_ReadNum(ctx, "death_count", &lara->death_timer));
     M_MUST(M_ReadNum(ctx, "current_active", &lara->current_active));

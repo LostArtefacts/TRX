@@ -27,6 +27,8 @@
         "SETTING_GAMMA_DESCRIPTION": "Adjusts the gamma curve. Higher values mean brighter lighting. The value of 2.5 means default colours.",
         "SETTING_HEALTHBAR_COLOR": "Healthbar colour",
         "SETTING_HEALTHBAR_COLOR_DESCRIPTION": "Colour of the healthbar.",
+        "SETTING_HEALTHBAR_POISON_COLOR": "Poison healthbar colour",
+        "SETTING_HEALTHBAR_POISON_COLOR_DESCRIPTION": "Colour of the healthbar when Lara is poisoned.",
         "SETTING_QUICK_GUNS_MODE_DESCRIPTION": "Controls the behaviour of the quick gun equip keys.\n\n- Draw only: pressing a key will cause Lara to equip the assigned gun.\n- Draw or holster: same as above, plus Lara will undraw the assigned gun if she's currently carrying it.",
         "SETTING_SPRINTBAR_COLOR": "Sprintbar colour",
         "SETTING_SPRINTBAR_COLOR_DESCRIPTION": "Colour of the sprintbar.",
