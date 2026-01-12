@@ -48,15 +48,24 @@ static void M_DrawLaraMesh(
     const bool interpolated)
 {
     const OBJECT_MESH *const mesh = Lara_GetLaraInfo()->mesh_ptrs[mesh_num];
+    XYZ_32 origin = XYZ_32_From16(mesh->center);
+    switch (mesh_num) {
+    case LM_TORSO:
+    case LM_CALF_L:
+    case LM_CALF_R:
+    case LM_FOOT_L:
+    case LM_FOOT_R:
+        origin.y -= 24;
+        break;
+    case LM_HEAD:
+        origin.y -= 8;
+        break;
+    default:
+        break;
+    }
     const GAME_VECTOR pos = {
         .room_num = item->room_num,
-        .pos = Matrix_MulVec32(
-            g_WMatrixPtr,
-            (XYZ_32) {
-                mesh->center.x,
-                mesh->center.y + (mesh_num == LM_TORSO ? -24 : -8),
-                mesh->center.z,
-            }),
+        .pos = Matrix_MulVec32(g_WMatrixPtr, origin),
     };
     Output_PushTintOverride(Lara_GetMeshTint(pos));
     if (interpolated) {
