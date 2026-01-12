@@ -1,6 +1,11 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.1...develop) - ××××-××-××
 - added a bubble emitter (#4629)
 
+**TR3**:
+- added new creature explosions effects
+
+
+
 ## [1.1](https://github.com/LostArtefacts/TRX/compare/trx-1.0.3...trx-1.1) - 2026-01-17
 Showcase: https://www.youtube.com/watch?v=veVYyr--H1A
 - added a fade-in and fade-out effect to patterned inventory backgrounds

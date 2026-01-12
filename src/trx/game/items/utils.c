@@ -6,6 +6,7 @@
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 void Item_TakeDamage(
     ITEM *const item, const int16_t damage, const bool hit_status)
@@ -41,6 +42,7 @@ int32_t Item_Explode(
     Matrix_Rot16(best_frame->mesh_rots[0]);
 
     const int32_t speed_shift = item->object_id == O_TORSO ? 7 : 8;
+    const bool is_tr3 = g_TRVersion == 3;
 
     // main mesh
     int32_t bit = 1;
@@ -55,7 +57,8 @@ int32_t Item_Explode(
             effect->room_num = item->room_num;
             effect->speed = Random_GetControl() >> speed_shift;
             effect->fall_speed = -Random_GetControl() >> speed_shift;
-            effect->counter = damage;
+            effect->counter =
+                is_tr3 ? ((damage << 2) | (Random_GetControl() & 3)) : damage;
             effect->object_id = O_BODY_PART;
             effect->frame_num = obj->mesh_idx;
             effect->shade = Output_GetLightAdder() - 0x300;
@@ -90,7 +93,9 @@ int32_t Item_Explode(
                 effect->room_num = item->room_num;
                 effect->speed = Random_GetControl() >> speed_shift;
                 effect->fall_speed = -Random_GetControl() >> speed_shift;
-                effect->counter = damage;
+                effect->counter = is_tr3
+                    ? ((damage << 2) | (Random_GetControl() & 3))
+                    : damage;
                 effect->object_id = O_BODY_PART;
                 effect->frame_num = obj->mesh_idx + i;
                 effect->shade = Output_GetLightAdder() - 0x300;
