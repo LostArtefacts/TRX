@@ -83,6 +83,9 @@ static bool M_CanEquip(void)
     if (lara->request_gun_type == LGT_FLARE) {
         return lara->gun_type != LGT_FLARE;
     }
+    if (lara->is_crouched && Gun_IsRifleType(lara->request_gun_type)) {
+        return false;
+    }
     if (Lara_Vehicle_IsMounted()) {
         return false;
     }
