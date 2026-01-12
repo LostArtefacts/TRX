@@ -71,3 +71,5 @@ WATER_FX_RIPPLE *WaterFX_SetupRipple(
 void WaterFX_SetupSplash(const WATER_FX_SPLASH_SETUP *setup);
 void WaterFX_Splash(const ITEM *item);
 void WaterFX_WadeSplash(const ITEM *item, int32_t water_height, int32_t depth);
+
+void WaterFX_TriggerUnderwaterBlood(XYZ_32 pos, int32_t size);

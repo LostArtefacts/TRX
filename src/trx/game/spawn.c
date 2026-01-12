@@ -12,6 +12,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
+#include <trx/game/sparks/spawners.h>
 #include <trx/game/water_fx.h>
 #include <trx/version.h>
 
@@ -166,6 +167,18 @@ int16_t Spawn_Blood(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
+    if (g_TRVersion == 3) {
+        if (Room_Get(room_num)->flags.underwater) {
+            WaterFX_TriggerUnderwaterBlood(
+                (XYZ_32) { x, y, z }, Random_GetControl() & 7);
+        } else {
+            Sparks_TriggerBlood(
+                (XYZ_32) { x, y, z }, y_rot >> 4,
+                (Random_GetControl() & 7) + 6);
+        }
+        return NO_EFFECT;
+    }
+
     const int16_t effect_num = Effect_Create(room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
@@ -186,10 +199,19 @@ void Spawn_BloodBath(
     const int16_t y_rot, const int16_t room_num, const int32_t count)
 {
     for (int32_t i = 0; i < count; i++) {
-        Spawn_Blood(
-            x - (Random_GetDraw() << 9) / 0x8000 + 256,
-            y - (Random_GetDraw() << 9) / 0x8000 + 256,
-            z - (Random_GetDraw() << 9) / 0x8000 + 256, speed, y_rot, room_num);
+        if (g_TRVersion == 3) {
+            Spawn_Blood(
+                x - (Random_GetControl() << 9) / 0x8000 + 256,
+                y - (Random_GetControl() << 9) / 0x8000 + 256,
+                z - (Random_GetControl() << 9) / 0x8000 + 256, speed, y_rot,
+                room_num);
+        } else {
+            Spawn_Blood(
+                x - (Random_GetDraw() << 9) / 0x8000 + 256,
+                y - (Random_GetDraw() << 9) / 0x8000 + 256,
+                z - (Random_GetDraw() << 9) / 0x8000 + 256, speed, y_rot,
+                room_num);
+        }
     }
 }
 
