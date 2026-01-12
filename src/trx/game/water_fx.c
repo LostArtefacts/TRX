@@ -295,6 +295,29 @@ void WaterFX_WadeSplash(
     }
 }
 
+void WaterFX_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
+{
+    int32_t idx = -1;
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
+        if ((m_Ripples[i].flags & 1U) == 0U) {
+            idx = i;
+            break;
+        }
+    }
+    if (idx < 0) {
+        return;
+    }
+
+    WATER_FX_RIPPLE *const ripple = &m_Ripples[idx];
+    ripple->flags = 0x33U;
+    ripple->init = 1U;
+    ripple->life = (Random_GetControl() & 7) - 16;
+    ripple->size = size;
+    ripple->x = pos.x + (Random_GetControl() & 0x3F) - 32;
+    ripple->y = pos.y;
+    ripple->z = pos.z + (Random_GetControl() & 0x3F) - 32;
+}
+
 static RGBA_8888 M_Gray(int32_t c)
 {
     CLAMP(c, 0, 255);
@@ -356,10 +379,16 @@ static void M_DrawRipple(
     int32_t sprite_idx = base_sprite_idx + 9;
     RGBA_8888 color;
 
+    const bool censored = false;
+
     if ((r->flags & 0x10U) != 0U) {
         if ((r->flags & 0x20U) != 0U) {
             sprite_idx = base_sprite_idx;
-            color = (RGBA_8888) { r->life, 0, 0, 255 };
+            if (censored) {
+                color = (RGBA_8888) { r->life / 2, 0, r->life, 255 };
+            } else {
+                color = (RGBA_8888) { r->life, 0, 0, 255 };
+            }
         } else {
             int32_t c1 = r->init != 0U ? (r->init >> 2) : (r->life >> 2);
             c1 <<= 3;
@@ -373,15 +402,26 @@ static void M_DrawRipple(
         color = M_Gray(c1);
     }
 
-    const XYZ_32 quad_pos[4] = {
-        { r->x - n, r->y, r->z - n },
-        { r->x - n, r->y, r->z + n },
-        { r->x + n, r->y, r->z + n },
-        { r->x + n, r->y, r->z - n },
+    // double-sided
+    const XYZ_32 quad_pos[2][4] = {
+        {
+            { r->x - n, r->y, r->z - n },
+            { r->x + n, r->y, r->z - n },
+            { r->x + n, r->y, r->z + n },
+            { r->x - n, r->y, r->z + n },
+        },
+        {
+            { r->x - n, r->y, r->z - n },
+            { r->x - n, r->y, r->z + n },
+            { r->x + n, r->y, r->z + n },
+            { r->x + n, r->y, r->z - n },
+        },
     };
     const RGBA_8888 quad_color[4] = { color, color, color, color };
     OutputSource_PolyFX_StageSpriteQuadWorld(
-        sprite_idx, quad_pos, quad_color, DRAW_BLEND_ADD);
+        sprite_idx, quad_pos[0], quad_color, DRAW_BLEND_ADD);
+    OutputSource_PolyFX_StageSpriteQuadWorld(
+        sprite_idx, quad_pos[1], quad_color, DRAW_BLEND_ADD);
 }
 
 void WaterFX_Draw(void)

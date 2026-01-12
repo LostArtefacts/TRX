@@ -2,6 +2,8 @@
 - added a bubble emitter (#4629)
 
 **TR3**:
+- added new blood effects
+- added underwater blood spills
 - added new creature explosions effects
 
 
