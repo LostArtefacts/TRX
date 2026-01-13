@@ -70,29 +70,30 @@ static void M_Cheat(void)
     }
 }
 
-static void M_WaterCurrent(COLL_INFO *const coll)
+static void M_WaterCurrent_TR12(COLL_INFO *const coll)
 {
-    ITEM *const item = Lara_GetItem();
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    int16_t room_num = item->room_num;
-    const ROOM *const room = Room_Get(item->room_num);
-    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
+    int16_t room_num = lara_item->room_num;
+    const ROOM *const room = Room_Get(lara_item->room_num);
+    lara_item->box_num =
+        Room_GetWorldSector(room, lara_item->pos.x, lara_item->pos.z)->box;
 
     XYZ_32 target;
-    if (Box_CalculateTarget(&target, item, &lara_info->lot) == TARGET_NONE) {
+    if (Box_CalculateTarget(&target, lara_item, &lara->lot) == TARGET_NONE) {
         return;
     }
 
 #define L_SHIFT(_axis)                                                         \
     do {                                                                       \
-        target._axis -= item->pos._axis;                                       \
-        if (target._axis > lara_info->current_active) {                        \
-            item->pos._axis += lara_info->current_active;                      \
-        } else if (target._axis < -lara_info->current_active) {                \
-            item->pos._axis -= lara_info->current_active;                      \
+        target._axis -= lara_item->pos._axis;                                  \
+        if (target._axis > lara->current.active) {                             \
+            lara_item->pos._axis += lara->current.active;                      \
+        } else if (target._axis < -lara->current.active) {                     \
+            lara_item->pos._axis -= lara->current.active;                      \
         } else {                                                               \
-            item->pos._axis += target._axis;                                   \
+            lara_item->pos._axis += target._axis;                              \
         }                                                                      \
     } while (0)
 
@@ -101,38 +102,38 @@ static void M_WaterCurrent(COLL_INFO *const coll)
     L_SHIFT(z);
 #undef L_SHIFT
 
-    lara_info->current_active = 0;
-    coll->facing =
-        Math_Atan(item->pos.z - coll->old.z, item->pos.x - coll->old.x);
+    lara->current.active = 0;
+    coll->facing = Math_Atan(
+        lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + LARA_HEIGHT_UW / 2, item->pos.z,
-        room_num, LARA_HEIGHT_UW);
+        coll, lara_item->pos.x, lara_item->pos.y + LARA_HEIGHT_UW / 2,
+        lara_item->pos.z, room_num, LARA_HEIGHT_UW);
 
     switch (coll->coll_type) {
     case COLL_FRONT:
-        if (item->rot.x > 35 * DEG_1) {
-            item->rot.x += LARA_UW_WALL_DEFLECT;
-        } else if (item->rot.x < -35 * DEG_1) {
-            item->rot.x -= LARA_UW_WALL_DEFLECT;
+        if (lara_item->rot.x > 35 * DEG_1) {
+            lara_item->rot.x += LARA_UW_WALL_DEFLECT;
+        } else if (lara_item->rot.x < -35 * DEG_1) {
+            lara_item->rot.x -= LARA_UW_WALL_DEFLECT;
         } else {
-            item->fall_speed = 0;
+            lara_item->fall_speed = 0;
         }
         break;
 
     case COLL_TOP:
-        item->rot.x -= LARA_UW_WALL_DEFLECT;
+        lara_item->rot.x -= LARA_UW_WALL_DEFLECT;
         break;
 
     case COLL_TOP_FRONT:
-        item->fall_speed = 0;
+        lara_item->fall_speed = 0;
         break;
 
     case COLL_LEFT:
-        item->rot.y += 5 * DEG_1;
+        lara_item->rot.y += 5 * DEG_1;
         break;
 
     case COLL_RIGHT:
-        item->rot.y -= 5 * DEG_1;
+        lara_item->rot.y -= 5 * DEG_1;
         break;
 
     default:
@@ -140,12 +141,120 @@ static void M_WaterCurrent(COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor < 0) {
-        item->pos.y += coll->side_mid.floor;
-        item->rot.x += LARA_UW_WALL_DEFLECT;
+        lara_item->pos.y += coll->side_mid.floor;
+        lara_item->rot.x += LARA_UW_WALL_DEFLECT;
     }
     Lara_Col_Shift(coll);
 
-    coll->old = item->pos;
+    coll->old = lara_item->pos;
+}
+
+static void M_WaterCurrent_TR3(COLL_INFO *const coll)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
+    if (lara->current.active != 0) {
+        const OBJECT_VECTOR *const sink =
+            Camera_GetFixedObject(lara->current.active - 1);
+        const int32_t speed = sink->data;
+        const int32_t angle =
+            -Math_Atan(lara_item->pos.x - sink->x, lara_item->pos.z - sink->z)
+            - DEG_90;
+        lara->current.vel.x +=
+            (((speed * Math_Sin(angle)) >> 4) - lara->current.vel.x) >> 4;
+        lara->current.vel.z +=
+            (((speed * Math_Cos(angle)) >> 4) - lara->current.vel.z) >> 4;
+        lara_item->pos.y += (sink->y - lara_item->pos.y) >> 4;
+    } else {
+        int32_t shifter;
+        int32_t abs_vel;
+
+        abs_vel = ABS(lara->current.vel.x);
+        if (abs_vel > 16) {
+            shifter = 4;
+        } else if (abs_vel > 8) {
+            shifter = 3;
+        } else {
+            shifter = 2;
+        }
+
+        lara->current.vel.x -= lara->current.vel.x >> shifter;
+        if (ABS(lara->current.vel.x) < 4) {
+            lara->current.vel.x = 0;
+        }
+
+        abs_vel = ABS(lara->current.vel.z);
+        if (abs_vel > 16) {
+            shifter = 4;
+        } else if (abs_vel > 8) {
+            shifter = 3;
+        } else {
+            shifter = 2;
+        }
+
+        lara->current.vel.z -= lara->current.vel.z >> shifter;
+        if (ABS(lara->current.vel.z) < 4) {
+            lara->current.vel.z = 0;
+        }
+
+        if (!lara->current.vel.x && !lara->current.vel.z) {
+            return;
+        }
+    }
+
+    lara_item->pos.x += lara->current.vel.x >> 8;
+    lara_item->pos.z += lara->current.vel.z >> 8;
+    lara->current.active = 0;
+    coll->facing = Math_Atan(
+        lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
+    Collide_GetCollisionInfo(
+        coll, lara_item->pos.x, lara_item->pos.y + 200, lara_item->pos.z,
+        lara_item->room_num, 400);
+
+    switch (coll->coll_type) {
+    case COLL_FRONT:
+        if (lara_item->rot.x > 35 * DEG_1) {
+            lara_item->rot.x += 2 * DEG_1;
+        } else if (lara_item->rot.x < -35 * DEG_1) {
+            lara_item->rot.x -= 2 * DEG_1;
+        } else {
+            lara_item->fall_speed = 0;
+        }
+        break;
+
+    case COLL_TOP:
+        lara_item->rot.x -= 2 * DEG_1;
+        break;
+
+    case COLL_TOP_FRONT:
+        lara_item->fall_speed = 0;
+        break;
+
+    case COLL_LEFT:
+        lara_item->rot.y += 5 * DEG_1;
+        break;
+
+    case COLL_RIGHT:
+        lara_item->rot.y -= 5 * DEG_1;
+        break;
+    }
+
+    if (coll->side_mid.floor < 0) {
+        lara_item->pos.y += coll->side_mid.floor;
+    }
+
+    Lara_Col_Shift(coll);
+    coll->old = lara_item->pos;
+}
+
+static void M_WaterCurrent(COLL_INFO *const coll)
+{
+    if (g_TRVersion < 3) {
+        M_WaterCurrent_TR12(coll);
+    } else {
+        M_WaterCurrent_TR3(coll);
+    }
 }
 
 static void M_ObjectCollision(COLL_INFO *const coll)
@@ -571,7 +680,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         CLAMP(item->rot.z, -M_LEAN_MAX_UW, M_LEAN_MAX_UW);
     }
 
-    if (lara_info->current_active && lara_info->water_status != LWS_CHEAT) {
+    if (lara_info->current.active && lara_info->water_status != LWS_CHEAT) {
         M_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&lara_info->lot);
@@ -642,7 +751,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
         item->rot.z = 0;
     }
 
-    if (lara_info->current_active && lara_info->water_status != LWS_CHEAT) {
+    if (lara_info->current.active && lara_info->water_status != LWS_CHEAT) {
         M_WaterCurrent(coll);
     } else {
         LOT_ClearLOT(&lara_info->lot);

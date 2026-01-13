@@ -704,7 +704,9 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "dive_count", lara->dive_timer);
     M_WriteNum(ctx, "death_count", lara->death_timer);
 
-    M_WriteNum(ctx, "current_active", lara->current_active);
+    M_WriteNum(ctx, "current_active", lara->current.active);
+    M_WriteNum(ctx, "current_vel_x", lara->current.vel.x);
+    M_WriteNum(ctx, "current_vel_z", lara->current.vel.z);
     M_WriteBool(ctx, "burn", lara->burn);
     M_WriteNum(ctx, "water_surface_dist", lara->water_surface_dist);
 

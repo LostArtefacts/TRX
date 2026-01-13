@@ -457,7 +457,9 @@ static bool M_ReadLara(M_CONTEXT *const ctx)
     M_OPTIONAL(M_ReadNum(ctx, "poison_timer", &lara->poison_timer));
     M_MUST(M_ReadNum(ctx, "dive_count", &lara->dive_timer));
     M_MUST(M_ReadNum(ctx, "death_count", &lara->death_timer));
-    M_MUST(M_ReadNum(ctx, "current_active", &lara->current_active));
+    M_MUST(M_ReadNum(ctx, "current_active", &lara->current.active));
+    M_OPTIONAL(M_ReadNum(ctx, "current_vel_x", &lara->current.vel.x));
+    M_OPTIONAL(M_ReadNum(ctx, "current_vel_z", &lara->current.vel.z));
     // Only TR1X >=4.12, TR2X >=* have burn flag
     M_OPTIONAL(M_ReadBool(ctx, "burn", &lara->burn));
 

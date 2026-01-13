@@ -15,6 +15,7 @@
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
 
 **TR3**:
+- added new water currents
 - added new blood effects
 - added underwater blood spills
 - added poison mechanic

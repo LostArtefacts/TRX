@@ -52,7 +52,10 @@ typedef struct {
     int16_t exposure_timer;
     int16_t poison_timer;
     int32_t idle_timer;
-    int16_t current_active;
+    struct {
+        int32_t active;
+        XZ_16 vel;
+    } current;
     LOT_INFO lot;
     XYZ_32 last_pos;
 

@@ -104,7 +104,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->death_timer = 0;
     lara_info->dive_timer = 0;
     lara_info->idle_timer = 0;
-    lara_info->current_active = 0;
+    lara_info->current.active = 0;
     lara_info->extra_anim = false;
     lara_info->burn = false;
     lara_info->climb_status = false;
