@@ -73,3 +73,4 @@ void Matrix_Interpolate(void);
 void Matrix_InterpolateArm(void);
 
 XYZ_32 Matrix_MulVec32(const MATRIX *m, const XYZ_32 v);
+XYZ_32 Matrix_GetOffset(const MATRIX *m);

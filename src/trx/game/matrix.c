@@ -706,3 +706,12 @@ XYZ_32 Matrix_MulVec32(const MATRIX *const m, const XYZ_32 v)
         (m->_20 * v.x + m->_21 * v.y + m->_22 * v.z + m->_23) >> W2V_SHIFT,
     };
 }
+
+XYZ_32 Matrix_GetOffset(const MATRIX *const m)
+{
+    return (XYZ_32) {
+        .x = m->_03 >> W2V_SHIFT,
+        .y = m->_13 >> W2V_SHIFT,
+        .z = m->_23 >> W2V_SHIFT,
+    };
+}
