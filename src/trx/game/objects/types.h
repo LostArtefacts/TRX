@@ -8,6 +8,7 @@
 #include <trx/game/savegame/enum.h>
 #include <trx/game/types.h>
 
+#include <stddef.h>
 #include <stdint.h>
 
 typedef struct {
@@ -80,6 +81,8 @@ typedef struct OBJECT {
     int16_t smartness;
     XYZ_BOOL base_rot;
     LOT_SETUP lot_setup;
+
+    size_t priv_size;
 
     bool enable_interpolation;
     bool loaded;

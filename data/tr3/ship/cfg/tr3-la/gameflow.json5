@@ -172,5 +172,15 @@
     ],
 
     "hidden_config": [
+        "enable_save_crystals",
+        "enable_ps1_crystals",
+        "enable_reflections",
+        "fix_chainblock_secret_sound",
+        "enable_compass_stats",
+        "enable_wading",
+        "restore_ps1_enemies",
+        "load_music_triggers",
+        "fix_secrets_killing_music",
+        "fix_speeches_killing_music",
     ],
 }
