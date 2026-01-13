@@ -24,8 +24,8 @@
 #define M_SHADOW_LINE_POINTS 4
 #define M_SHADOW_GRID_POINTS (M_SHADOW_LINE_POINTS * M_SHADOW_LINE_POINTS)
 
-static bool M_DrawShadow_TR3(
-    const int16_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
+static bool M_DrawShadow_Sprite(
+    const int32_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item == nullptr) {
@@ -39,12 +39,8 @@ static bool M_DrawShadow_TR3(
 
     // OG: shadow intensity is based on Lara's height above the floor, even for
     // non-Lara items.
-    int32_t c = (4096 - ABS(item->floor - lara_item->pos.y)) >> 4;
-    c -= 1;
-    if (c < 32) {
-        c = 32;
-    }
-    CLAMPG(c, 255);
+    int32_t c = ((4096 - ABS(item->floor - item->pos.y)) >> 4) - 1;
+    CLAMP(c, 32, 255);
 
     const RGBA_8888 shadow_color = { c, c, c, 255 };
     const RGBA_8888 quad_color[4] = {
@@ -54,10 +50,8 @@ static bool M_DrawShadow_TR3(
         shadow_color,
     };
 
-    const int32_t x_size =
-        (int32_t)size * ((int32_t)bounds->max.x - (int32_t)bounds->min.x) / 128;
-    const int32_t z_size =
-        (int32_t)size * ((int32_t)bounds->max.z - (int32_t)bounds->min.z) / 128;
+    const int32_t x_size = size * (bounds->max.x - bounds->min.x) / 128;
+    const int32_t z_size = size * (bounds->max.z - bounds->min.z) / 128;
     const int32_t x_dist = x_size / M_SHADOW_LINE_POINTS;
     const int32_t z_dist = z_size / M_SHADOW_LINE_POINTS;
 
@@ -113,6 +107,19 @@ static bool M_DrawShadow_TR3(
                 anchor_floor = height;
             }
         }
+    } else if (g_TRVersion < 3) {
+        const int32_t x_mid = (bounds->min.x + bounds->max.x) / 2;
+        const int32_t z_mid = (bounds->min.z + bounds->max.z) / 2;
+        Matrix_Push();
+        *g_MatrixPtr = g_ViewMatrix;
+        *g_WMatrixPtr = g_IDMatrix;
+        Matrix_TranslateAbs(
+            item->interp.result.pos.x, item->interp.result.floor,
+            item->interp.result.pos.z);
+        Matrix_RotY(item->rot.y);
+        Matrix_TranslateRel(x_mid, 0, z_mid);
+        anchor_pos = Matrix_GetOffset(g_WMatrixPtr);
+        Matrix_Pop();
     }
 
     const int32_t base_y = anchor_floor - 16;
@@ -294,19 +301,15 @@ void Output_DrawShadow(
     }
 
     if (g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {
-        if (M_DrawShadow_TR3(size, bounds, item)) {
+        if (M_DrawShadow_Sprite(size, bounds, item)) {
             return;
         }
     }
 
-    const int32_t x_0 = bounds->min.x;
-    const int32_t x_1 = bounds->max.x;
-    const int32_t z_0 = bounds->min.z;
-    const int32_t z_1 = bounds->max.z;
-    const int32_t x_mid = (x_0 + x_1) / 2;
-    const int32_t z_mid = (z_0 + z_1) / 2;
-    const int32_t x_size = (x_1 - x_0) * size / 1024;
-    const int32_t z_size = (z_1 - z_0) * size / 1024;
+    const int32_t x_mid = (bounds->min.x + bounds->max.x) / 2;
+    const int32_t z_mid = (bounds->min.z + bounds->max.z) / 2;
+    const int32_t x_size = (bounds->max.x - bounds->min.x) * size / 1024;
+    const int32_t z_size = (bounds->max.z - bounds->min.z) * size / 1024;
 
     Matrix_Push();
     *g_MatrixPtr = g_ViewMatrix;
