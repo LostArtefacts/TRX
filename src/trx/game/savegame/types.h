@@ -48,6 +48,7 @@ typedef struct {
     } flags;
 
     bool level_completed;
+    int32_t prev_level;
 
     LEVEL_STATS stats;
 } RESUME_INFO;

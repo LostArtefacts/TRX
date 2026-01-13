@@ -330,6 +330,7 @@ void Savegame_Init(void)
         resume_info->equipped_gun_type = LGT_PISTOLS;
         resume_info->holsters_gun_type = LGT_PISTOLS;
         resume_info->back_gun_type = LGT_UNARMED;
+        resume_info->prev_level = -1;
     }
 }
 
@@ -404,7 +405,7 @@ void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
 {
     LOG_INFO("Resetting resume info for level #%d", level->num);
     RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
-    M_CopyResumeInfo(current, &(RESUME_INFO) {});
+    *current = (RESUME_INFO) { .prev_level = -1 };
 }
 
 void Savegame_CarryCurrentInfoToNextLevel(
@@ -419,6 +420,7 @@ void Savegame_CarryCurrentInfoToNextLevel(
         const bool dst_level_completed = dst_resume->level_completed;
         M_CopyResumeInfo(dst_resume, src_resume);
         dst_resume->level_completed = dst_level_completed;
+        dst_resume->prev_level = src_level->num;
     }
 }
 
