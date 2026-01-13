@@ -119,10 +119,11 @@
                 {"type": "play_fmv", "fmv_id": 2},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
-                {"type": "level_complete"},
+                {"type": "globe_select", "image": "data/images/india.webp"},
             ],
             "injections": [
                 "data/injections/lara_guns.bin",
+                "data/injections/globe_model.bin",
             ],
         },
 
@@ -190,11 +191,12 @@
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
-                {"type": "level_complete"},
+                {"type": "globe_select", "image": "data/images/southpac.webp"},
             ],
             "injections": [
                 "data/injections/lara_coastal_guns.bin",
                 "data/injections/ora_dagger.bin",
+                "data/injections/globe_model.bin",
             ],
         },
 
@@ -262,10 +264,11 @@
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
-                {"type": "level_complete"},
+                {"type": "globe_select", "image": "data/images/london.webp"},
             ],
             "injections": [
                 "data/injections/lara_london_guns.bin",
+                "data/injections/globe_model.bin",
             ],
         },
 
@@ -320,11 +323,12 @@
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
-                {"type": "level_complete"},
+                {"type": "globe_select", "image": "data/images/nevada.webp"},
             ],
             "injections": [
                 "data/injections/area51_sky.bin",
                 "data/injections/lara_nevada_guns.bin",
+                "data/injections/globe_model.bin",
             ],
         },
 

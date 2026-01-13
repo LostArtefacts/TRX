@@ -223,6 +223,7 @@
         "GRAPHIC_SETTINGS_UI_BARS_TAB": "Bars",
         "GRAPHIC_SETTINGS_UI_TAB": "UI",
         "GRAPHIC_SETTINGS_VISUALS_TAB": "Visuals",
+        "INVENTORY_RING_HEADING_ADVENTURE": "Adventure",
         "INVENTORY_RING_HEADING_FMT": "%s",
         "INVENTORY_RING_HEADING_GAME_OVER": "GAME OVER",
         "INVENTORY_RING_HEADING_INVENTORY": "INVENTORY",
@@ -912,6 +913,9 @@
         },
         "gamma": {
             "name": "Gamma",
+        },
+        "globe": {
+            "name": "Globe",
         },
         "pda": {
             "name": "Gameplay",

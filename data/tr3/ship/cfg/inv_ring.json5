@@ -542,6 +542,20 @@
     },
 
     {
+        "object_id": "O_GLOBE_SELECT_OPTION",
+        "frames_total": 160,
+        "anim_direction": 1,
+        "anim_speed": 1,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
+        "y_trans_sel": -176,
+        "z_trans_sel": 256,
+        "which_meshes": 0xFFFFFFF7,
+        "drawn_meshes": 0xFFFFFFF7,
+        "inv_pos": 300,
+    },
+
+    {
         "object_id": "O_PASSPORT_OPTION",
         "frames_total": 30,
         "open_frame": 14,

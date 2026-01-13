@@ -390,7 +390,9 @@ void Savegame_InitCurrentInfo(void)
         const GF_LEVEL *const level = &level_table->levels[i];
         Savegame_ResetCurrentInfo(level);
         Savegame_ApplyLogicToCurrentInfo(level);
-        Savegame_GetCurrentInfo(level)->flags.available = false;
+        RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
+        current->level_completed = false;
+        current->flags.available = false;
     }
 
     if (GF_GetGymLevel() != nullptr) {
@@ -405,7 +407,7 @@ void Savegame_ResetCurrentInfo(const GF_LEVEL *const level)
 {
     LOG_INFO("Resetting resume info for level #%d", level->num);
     RESUME_INFO *const current = Savegame_GetCurrentInfo(level);
-    *current = (RESUME_INFO) { .prev_level = -1 };
+    *current = (RESUME_INFO) { .prev_level = -1, .level_completed = false };
 }
 
 void Savegame_CarryCurrentInfoToNextLevel(

@@ -355,6 +355,7 @@ static void M_DeterminePages(void)
         break;
 
     case INV_KEYS_MODE:
+    case INV_GLOBE_SELECT_MODE:
         ASSERT_FAIL();
     }
 

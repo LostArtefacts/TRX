@@ -484,7 +484,8 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
 
 void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
 {
-    if (inv_item->object_id == O_PASSPORT_OPTION) {
+    if (inv_item->object_id == O_PASSPORT_OPTION
+        || inv_item->object_id == O_GLOBE_SELECT_OPTION) {
         return;
     }
     Overlay_SetBottomText((OVERLAY_TEXT) {
@@ -567,6 +568,8 @@ void InvRing_ShowHeader(INV_RING *const ring)
             .gs_key = GS_ID(INVENTORY_RING_HEADING_ITEMS),
             .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
         });
+        break;
+    case RT_GLOBE_SELECT:
         break;
     case RT_NUMBER_OF:
         break;

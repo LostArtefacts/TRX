@@ -223,6 +223,7 @@
         "GRAPHIC_SETTINGS_UI_BARS_TAB": "Barre",
         "GRAPHIC_SETTINGS_UI_TAB": "Interfaccia",
         "GRAPHIC_SETTINGS_VISUALS_TAB": "Grafica",
+        "INVENTORY_RING_HEADING_ADVENTURE": "\\{review}Avventura",
         "INVENTORY_RING_HEADING_FMT": "%s",
         "INVENTORY_RING_HEADING_GAME_OVER": "GAME OVER",
         "INVENTORY_RING_HEADING_INVENTORY": "INVENTARIO",
@@ -1868,6 +1869,9 @@
         },
         "quest_4": {
             "name": "\\{review}Oggetto della missione 4",
+        },
+        "globe": {
+            "name": "\\{review}Globo",
         }
     }
 }

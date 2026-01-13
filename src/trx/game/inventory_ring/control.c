@@ -17,6 +17,7 @@
 #include <trx/game/music.h>
 #include <trx/game/option.h>
 #include <trx/game/option/examine.h>
+#include <trx/game/option/globe_select.h>
 #include <trx/game/option/passport.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
@@ -37,6 +38,12 @@
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static int32_t m_StartLevel;
 static OBJECT_ID m_InvChosen = NO_OBJECT;
+static INV_RING *m_ActiveRing = nullptr;
+
+INV_RING *InvRing_GetActiveRing(void)
+{
+    return m_ActiveRing;
+}
 
 static void M_ShowAmmoQuantity(const char *const fmt, const int32_t qty)
 {
@@ -193,6 +200,22 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     // TODO: Make this function not have any side effects.
     // Consider adding new GF_ constants, but research other solutions first.
 
+    if (ring->mode == INV_GLOBE_SELECT_MODE) {
+        if (ring->globe_select.confirmed && ring->globe_select.selection >= 0
+            && ring->globe_select.selection < 6) {
+            const int32_t start_level_num =
+                ring->globe_select
+                    .start_level_num[ring->globe_select.selection];
+            if (start_level_num >= 0) {
+                return (GF_COMMAND) {
+                    .action = GF_START_GAME,
+                    .param = start_level_num,
+                };
+            }
+        }
+        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+    }
+
     if (m_StartLevel != -1) {
         return (GF_COMMAND) {
             .action = GF_SELECT_GAME,
@@ -251,6 +274,12 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         case PASSPORT_ACTION_SELECT_LEVEL:
             return (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
+                .param = g_Passport.select_slot,
+            };
+
+        case PASSPORT_ACTION_GLOBE_SELECT:
+            return (GF_COMMAND) {
+                .action = GF_GLOBE_SELECT,
                 .param = g_Passport.select_slot,
             };
 
@@ -386,7 +415,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     Shell_ProcessInput();
     Game_ProcessInput();
 
-    m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_slot : -1;
+    if (ring->mode == INV_GLOBE_SELECT_MODE) {
+        m_StartLevel = -1;
+    } else {
+        m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_slot : -1;
+    }
 
     if (g_Config.gameplay.enable_timer_in_inventory
         && !(Game_IsInGym() && Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT))) {
@@ -398,7 +431,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     if ((ring->mode == INV_SAVE_MODE || ring->mode == INV_SAVE_CRYSTAL_MODE
-         || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE)
+         || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE
+         || ring->mode == INV_GLOBE_SELECT_MODE)
         && !ring->is_pass_open) {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) { .menu_confirm = 1 };
@@ -434,14 +468,15 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         }
 
         if (m_StartLevel != -1 || ring->is_demo_needed
-            || (g_InputDB.menu_back && ring->mode != INV_TITLE_MODE)) {
+            || (g_InputDB.menu_back && ring->mode != INV_TITLE_MODE
+                && ring->mode != INV_GLOBE_SELECT_MODE)) {
             Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
             m_InvChosen = NO_OBJECT;
 
             if (ring->type == RT_MAIN) {
                 g_InvRing_Source[RT_MAIN].current = ring->current_object;
-            } else {
-                g_InvRing_Source[RT_OPTION].current = ring->current_object;
+            } else if (ring->type != RT_NUMBER_OF) {
+                g_InvRing_Source[ring->type].current = ring->current_object;
             }
 
             if (M_Finish(ring, false).action != GF_NOOP) {
@@ -470,7 +505,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         if (g_InputDB.menu_confirm || examine) {
             if ((ring->mode == INV_SAVE_MODE
                  || ring->mode == INV_SAVE_CRYSTAL_MODE
-                 || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE)
+                 || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE
+                 || ring->mode == INV_GLOBE_SELECT_MODE)
                 && !ring->is_pass_open) {
                 ring->is_pass_open = true;
             }
@@ -533,7 +569,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         }
 
         if (g_InputDB.menu_up && ring->mode != INV_TITLE_MODE
-            && ring->mode != INV_KEYS_MODE) {
+            && ring->mode != INV_KEYS_MODE
+            && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
                 if (g_InvRing_Source[RT_KEYS].count > 0) {
                     InvRing_MotionSetup(
@@ -564,7 +601,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
         } else if (
             g_InputDB.menu_down && ring->mode != INV_TITLE_MODE
-            && ring->mode != INV_KEYS_MODE) {
+            && ring->mode != INV_KEYS_MODE
+            && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
                 if (g_InvRing_Source[RT_OPTION].count > 0
                     && !InvRing_IsOptionLockedOut()) {
@@ -701,7 +739,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         Option_Control(inv_item, busy);
 
         if (!busy) {
-            if (g_InputDB.menu_back) {
+            if (g_InputDB.menu_back && ring->mode != INV_GLOBE_SELECT_MODE) {
                 InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
@@ -718,8 +756,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 m_InvChosen = inv_item->object_id;
                 if (ring->type == RT_MAIN) {
                     g_InvRing_Source[RT_MAIN].current = ring->current_object;
-                } else {
-                    g_InvRing_Source[RT_OPTION].current = ring->current_object;
+                } else if (ring->type != RT_NUMBER_OF) {
+                    g_InvRing_Source[ring->type].current = ring->current_object;
                 }
 
                 if (ring->mode == INV_TITLE_MODE
@@ -727,7 +765,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                         || inv_item->object_id == O_SOUND_OPTION
                         || inv_item->object_id == O_PDA_OPTION
                         || inv_item->object_id == O_CONTROL_OPTION
-                        || inv_item->object_id == O_GAMMA_OPTION)) {
+                        || inv_item->object_id == O_GLOBE_SELECT_OPTION)) {
                     InvRing_MotionSetup(
                         ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 } else {
@@ -854,24 +892,26 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         InvRing_RemoveVersionText();
     }
 
-    // Reset option ring
-    g_InvRing_Source[RT_OPTION].count = 0;
-    Inv_InsertItem(
-        InvRing_GetByObjectID(O_PASSPORT_CLOSED) != nullptr
-            ? InvRing_GetByObjectID(O_PASSPORT_CLOSED)
-            : InvRing_GetByObjectID(O_PASSPORT_OPTION));
-    if (g_TRVersion == 1) {
-        Inv_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
-        Inv_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
-        Inv_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
-    } else {
-        Inv_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
-        Inv_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
-        Inv_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
-    }
-    Inv_InsertItem(InvRing_GetByObjectID(O_PDA_OPTION));
-    if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr) {
-        Inv_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
+    if (mode != INV_GLOBE_SELECT_MODE) {
+        // Reset option ring
+        g_InvRing_Source[RT_OPTION].count = 0;
+        Inv_InsertItem(
+            InvRing_GetByObjectID(O_PASSPORT_CLOSED) != nullptr
+                ? InvRing_GetByObjectID(O_PASSPORT_CLOSED)
+                : InvRing_GetByObjectID(O_PASSPORT_OPTION));
+        if (g_TRVersion == 1) {
+            Inv_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
+            Inv_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
+            Inv_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
+        } else {
+            Inv_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
+            Inv_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
+            Inv_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
+        }
+        Inv_InsertItem(InvRing_GetByObjectID(O_PDA_OPTION));
+        if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr) {
+            Inv_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
+        }
     }
 
     g_InvRing_Source[RT_KEYS].current = 0;
@@ -888,6 +928,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
         g_InvRing_Source[RT_OPTION].qtys[i] = 1;
         InvRing_InitInvItem(g_InvRing_Source[RT_OPTION].items[i]);
+    }
+
+    g_InvRing_Source[RT_GLOBE_SELECT].current = 0;
+    for (int32_t i = 0; i < g_InvRing_Source[RT_GLOBE_SELECT].count; i++) {
+        g_InvRing_Source[RT_GLOBE_SELECT].qtys[i] = 1;
+        InvRing_InitInvItem(g_InvRing_Source[RT_GLOBE_SELECT].items[i]);
     }
 
     if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr
@@ -915,6 +961,16 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         : nullptr;
 
     switch (mode) {
+    case INV_GLOBE_SELECT_MODE:
+        ring->background_style = BK_NONE;
+        ring->background_path = nullptr;
+        InvRing_InitRing(
+            ring, RT_GLOBE_SELECT, g_InvRing_Source[RT_GLOBE_SELECT].items,
+            g_InvRing_Source[RT_GLOBE_SELECT].count,
+            g_InvRing_Source[RT_GLOBE_SELECT].current);
+        Option_GlobeSelect_UpdateSelectable(ring);
+        break;
+
     case INV_TITLE_MODE:
     case INV_SAVE_MODE:
     case INV_SAVE_CRYSTAL_MODE:
@@ -989,7 +1045,9 @@ void InvRing_Close(INV_RING *const ring)
 GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
     InvRing_AdjustMusicVolume(ring);
+    m_ActiveRing = ring;
     const GF_COMMAND gf_cmd = M_Control(ring);
+    m_ActiveRing = nullptr;
     Overlay_Animate(1);
     return gf_cmd;
 }

@@ -223,6 +223,7 @@
         "GRAPHIC_SETTINGS_UI_BARS_TAB": "\\{review}Брусья",
         "GRAPHIC_SETTINGS_UI_TAB": "Интерфейс",
         "GRAPHIC_SETTINGS_VISUALS_TAB": "Визуальные эффекты",
+        "INVENTORY_RING_HEADING_ADVENTURE": "\\{review}Приключение",
         "INVENTORY_RING_HEADING_FMT": "%s",
         "INVENTORY_RING_HEADING_GAME_OVER": "Конец игры",
         "INVENTORY_RING_HEADING_INVENTORY": "Инвентарь",
@@ -1846,6 +1847,9 @@
         },
         "quest_4": {
             "name": "\\{review}Предмет задания 4",
+        },
+        "globe": {
+            "name": "\\{review}Глобус",
         }
     }
 }

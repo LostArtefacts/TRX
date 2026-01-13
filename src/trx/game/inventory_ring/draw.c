@@ -10,6 +10,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/option.h>
+#include <trx/game/option/globe_select.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output.h>
 #include <trx/game/savegame.h>
@@ -23,6 +24,64 @@
 #define M_CAMERA_2_RING 598
 #define M_SHADE_NORMAL SHADE_LOW
 #define M_SHADE_SELECTED SHADE_NEUTRAL
+
+static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
+{
+    return Matrix_MulVec32(&g_ViewMatrix, v_world);
+}
+
+static float M_GlobeSelectPulse01(const float time)
+{
+    const int16_t angle = (((uint64_t)time) % 16ULL) * DEG_360 / 16;
+    const float s = (float)Math_Sin(angle);
+    return (s + 16384.0f) / (16384.0f * 2.0f);
+}
+
+static void M_GlobeSelectApplyLight(
+    const INV_RING *const ring, const uint32_t bit, const int32_t mesh_idx)
+{
+    const float ambient_u8 = 32.0f / 255.0f;
+    const RGB_F ambient = { ambient_u8, ambient_u8, ambient_u8 };
+
+    RGB_F colors[3] = {};
+
+    if (bit == 1u) {
+        colors[0] = (RGB_F) { 0, 256.0f / 4096.0f, 3840.0f / 4096.0f };
+        colors[1] = (RGB_F) { 0, 256.0f / 4096.0f, 3840.0f / 4096.0f };
+        colors[2] = (RGB_F) { 0, 256.0f / 4096.0f, 3840.0f / 4096.0f };
+    } else if ((bit & 0x7Eu) != 0u) {
+        const float pulse = M_GlobeSelectPulse01(Output_GetTime());
+        const int32_t area_idx = Option_GlobeSelect_AreaFromMeshIdx(mesh_idx);
+        const bool completed = area_idx >= 0 && area_idx < 6
+            && !ring->globe_select.selectable[area_idx];
+
+        const RGB_F marker = completed ? (RGB_F) { pulse, 0.0f, 0.0f }
+                                       : (RGB_F) { 0.0f, pulse, 0.0f };
+        colors[0] = marker;
+        colors[1] = marker;
+        colors[2] = marker;
+    } else {
+        colors[0] =
+            (RGB_F) { 256.0f / 4096.0f, 1024.0f / 4096.0f, 256.0f / 4096.0f };
+        colors[1] =
+            (RGB_F) { 256.0f / 4096.0f, 1024.0f / 4096.0f, 256.0f / 4096.0f };
+        colors[2] =
+            (RGB_F) { 256.0f / 4096.0f, 1024.0f / 4096.0f, 256.0f / 4096.0f };
+    }
+
+    const XYZ_32 dirs_offsets[3] = {
+        { .x = 0x1000, .y = -0x1000, .z = 0xC00 },
+        { .x = -0x1000, .y = -0x1000, .z = 0xC00 },
+        { .x = 0, .y = 0x800, .z = 0xC00 },
+    };
+    const XYZ_32 dirs_view[3] = {
+        M_VectorViewFromWorld(dirs_offsets[0]),
+        M_VectorViewFromWorld(dirs_offsets[1]),
+        M_VectorViewFromWorld(dirs_offsets[2]),
+    };
+
+    Output_SetTR3Light(ambient, colors, dirs_view);
+}
 
 static bool M_IsEnterTransition(const INV_RING *const ring)
 {
@@ -125,6 +184,40 @@ static void M_DrawItem(
         return;
     }
 
+    if (inv_item->object_id == O_GLOBE_SELECT_OPTION) {
+        Matrix_Rot16(ring->globe_select.rot);
+
+        InvRing_Light(ring);
+        ANIM_FRAME *const frame = &obj->frame_base[0];
+        const uint32_t mesh_bits = ring->globe_select.meshes_drawn;
+        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+            if (mesh_idx == 0) {
+                Matrix_TranslateRel16(frame->offset);
+                Matrix_Rot16(frame->mesh_rots[mesh_idx]);
+            } else {
+                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
+                if (bone->matrix_pop) {
+                    Matrix_Pop();
+                }
+                if (bone->matrix_push) {
+                    Matrix_Push();
+                }
+
+                Matrix_TranslateRel32(bone->pos);
+                Matrix_Rot16(frame->mesh_rots[mesh_idx]);
+            }
+
+            const uint32_t bit = 1u << mesh_idx;
+            if ((mesh_bits & bit) == 0u) {
+                continue;
+            }
+
+            M_GlobeSelectApplyLight(ring, bit, mesh_idx);
+            Object_DrawMesh(obj->mesh_idx + mesh_idx, 0, false);
+        }
+        return;
+    }
+
     int32_t rate;
     ANIM_FRAME *frame1;
     ANIM_FRAME *frame2;
@@ -208,6 +301,9 @@ void InvRing_Draw(INV_RING *const ring)
             : ring->back_fader.args.target;
 
         switch (ring->background_style) {
+        case BK_NONE:
+            break;
+
         case BK_TRANSPARENT_MEDIUM:
             Output_Overlay_DrawGame();
             Output_Overlay_DrawBlackRectangle(opacity * 0.5f, false);

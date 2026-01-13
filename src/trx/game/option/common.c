@@ -4,6 +4,7 @@
 #include <trx/game/option/controls.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/gameplay.h>
+#include <trx/game/option/globe_select.h>
 #include <trx/game/option/graphics.h>
 #include <trx/game/option/passport.h>
 #include <trx/game/option/sound.h>
@@ -21,6 +22,7 @@ void Option_Shutdown(void)
     Option_Graphics_Shutdown();
     Option_Sound_Shutdown();
     Option_Controls_Shutdown();
+    Option_GlobeSelect_Shutdown();
 }
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
@@ -50,7 +52,8 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     case O_CONTROL_OPTION:
         Option_Controls_Control(inv_item, is_busy);
         break;
-    case O_GAMMA_OPTION:
+    case O_GLOBE_SELECT_OPTION:
+        Option_GlobeSelect_Control(inv_item, is_busy);
         break;
 
     case O_PISTOL_OPTION:
@@ -142,7 +145,8 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     case O_CONTROL_OPTION:
         Option_Controls_Draw(inv_item);
         break;
-    case O_GAMMA_OPTION:
+    case O_GLOBE_SELECT_OPTION:
+        Option_GlobeSelect_Draw(inv_item);
         break;
     default:
         break;
@@ -170,6 +174,9 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
         break;
     case O_CONTROL_OPTION:
         Option_Controls_Close();
+        break;
+    case O_GLOBE_SELECT_OPTION:
+        Option_GlobeSelect_Close();
         break;
     default:
         Option_Examine_Close();

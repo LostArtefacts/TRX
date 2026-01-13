@@ -8,12 +8,14 @@ typedef enum {
     INV_LOAD_MODE,
     INV_DEATH_MODE,
     INV_SAVE_CRYSTAL_MODE,
+    INV_GLOBE_SELECT_MODE,
 } INVENTORY_MODE;
 
 typedef enum {
     RT_MAIN = 0,
     RT_OPTION = 1,
     RT_KEYS = 2,
+    RT_GLOBE_SELECT = 3,
     RT_NUMBER_OF,
 } RING_TYPE;
 
