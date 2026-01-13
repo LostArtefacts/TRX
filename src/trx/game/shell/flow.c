@@ -311,6 +311,10 @@ int32_t Shell_Main(const SHELL_ARGS *args)
             break;
         }
 
+        case GF_GLOBE_SELECT:
+            gf_cmd = GF_RunGlobeSelect(nullptr);
+            break;
+
         case GF_START_SAVED_GAME: {
             const int16_t slot_num = gf_cmd.param;
             const int16_t level_num = Savegame_GetLevelNumber(slot_num);

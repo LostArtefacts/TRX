@@ -223,6 +223,7 @@
         "GRAPHIC_SETTINGS_UI_BARS_TAB": "\\{review}Leisten",
         "GRAPHIC_SETTINGS_UI_TAB": "\\{review}Benutzeroberfläche",
         "GRAPHIC_SETTINGS_VISUALS_TAB": "\\{review}Darstellung",
+        "INVENTORY_RING_HEADING_ADVENTURE": "\\{review}Abenteuer",
         "INVENTORY_RING_HEADING_FMT": "%s",
         "INVENTORY_RING_HEADING_GAME_OVER": "GAME OVER",
         "INVENTORY_RING_HEADING_INVENTORY": "INVENTAR",
@@ -1839,6 +1840,9 @@
         },
         "quest_4": {
             "name": "\\{review}Quest-Gegenstand 4",
+        },
+        "globe": {
+            "name": "\\{review}Globus",
         }
     }
 }

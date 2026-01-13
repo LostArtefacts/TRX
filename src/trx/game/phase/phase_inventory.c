@@ -46,8 +46,10 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         p->fade_to_black = true;
     }
     return (PHASE_CONTROL) {
-        .action = p->ring->motion.status == RNG_DONE ? PHASE_ACTION_END
-                                                     : PHASE_ACTION_CONTINUE,
+        .action = (p->mode == INV_GLOBE_SELECT_MODE && gf_cmd.action != GF_NOOP)
+                || p->ring->motion.status == RNG_DONE
+            ? PHASE_ACTION_END
+            : PHASE_ACTION_CONTINUE,
         .gf_cmd = gf_cmd,
     };
 }

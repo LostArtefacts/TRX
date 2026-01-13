@@ -44,6 +44,7 @@
     X(GFS_DISPLAY_PICTURE,   M_HandlePicture)                                  \
     X(GFS_LEVEL_STATS,       M_HandleLevelStats)                               \
     X(GFS_TOTAL_STATS,       M_HandleTotalStats)                               \
+    X(GFS_GLOBE_SELECT,      M_HandleGlobeSelect)                              \
     X(GFS_SET_START_ANIM,    M_HandleSetStartAnim)                             \
     X(GFS_ENABLE_SUNSET,     M_HandleEnableSunset)                             \
     X(GFS_SETUP_BACON_LARA,  M_HandleSetupBaconLara)                           \
@@ -94,22 +95,10 @@ M_GF_HANDLER(M_HandleLevelComplete)
     if (seq_ctx != GFSC_NORMAL) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
+    M_FinishLevelBasic();
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     const GF_LEVEL *const next_level = M_GetCanonicalNextLevel(current_level);
 
-    if (current_level == GF_GetLastLevel()) {
-        g_Config.profile.new_game_plus_unlock = true;
-        Config_Update();
-    }
-
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
-    resume->flags.available = true;
-    resume->level_completed = true;
-    const bool bonus_level_unlock = Stats_CheckAllSecretsCollected();
-
-    if (next_level != nullptr) {
-        Savegame_PersistGameToCurrentInfo(next_level);
-    }
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
@@ -333,6 +322,32 @@ M_GF_HANDLER(M_HandleTotalStats)
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);
+    return gf_cmd;
+}
+
+M_GF_HANDLER(M_HandleGlobeSelect)
+{
+    if (seq_ctx != GFSC_NORMAL) {
+        return (GF_COMMAND) { .action = GF_NOOP };
+    }
+    M_FinishLevelBasic();
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
+    const GF_GLOBE_SELECT_DATA *const data = event->data;
+    const GF_COMMAND gf_cmd =
+        GF_RunGlobeSelect(data != nullptr ? data->image_path : nullptr);
+    if (gf_cmd.action == GF_START_GAME) {
+        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+        const GF_LEVEL *const next_level = GF_GetLevel(GFLT_MAIN, gf_cmd.param);
+        if (next_level != nullptr) {
+            Savegame_PersistGameToCurrentInfo(next_level);
+            RESUME_INFO *const next_resume =
+                Savegame_GetCurrentInfo(next_level);
+            if (next_resume != nullptr) {
+                next_resume->prev_level =
+                    current_level != nullptr ? current_level->num : -1;
+            }
+        }
+    }
     return gf_cmd;
 }
 

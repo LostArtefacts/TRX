@@ -119,4 +119,12 @@ typedef struct {
 
     BACKGROUND_TYPE background_style;
     const char *background_path;
+    struct {
+        XYZ_16 rot;
+        int32_t selection;
+        uint32_t meshes_drawn;
+        bool confirmed;
+        bool selectable[6];
+        int32_t start_level_num[6];
+    } globe_select;
 } INV_RING;

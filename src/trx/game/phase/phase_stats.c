@@ -66,6 +66,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         }
         break;
 
+    case BK_NONE:
     case BK_PATTERN_STATIC:
     case BK_PATTERN_WAVE:
     case BK_MONOCHROME:

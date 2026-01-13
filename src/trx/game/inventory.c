@@ -71,8 +71,10 @@ static RING_TYPE M_GetRingType(const INVENTORY_ITEM *const inv_item)
         return RT_MAIN;
     } else if (inv_item->inv_pos < 200) {
         return RT_KEYS;
-    } else {
+    } else if (inv_item->inv_pos < 300) {
         return RT_OPTION;
+    } else {
+        return RT_GLOBE_SELECT;
     }
 }
 
@@ -220,10 +222,12 @@ void Inv_RemoveAllItems(void)
 {
     g_InvRing_Source[RT_MAIN].count = 0;
     g_InvRing_Source[RT_KEYS].count = 0;
+    g_InvRing_Source[RT_GLOBE_SELECT].count = 0;
 
     // Reset main ring
     Inv_AddItem(O_STOPWATCH_OPTION);
     Inv_AddItem(O_COMPASS_OPTION);
+    Inv_AddItem(O_GLOBE_SELECT_OPTION);
 
     Inv_ClearSelection();
 }

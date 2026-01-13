@@ -94,6 +94,16 @@ GF_COMMAND GF_RunGame(
     return gf_cmd;
 }
 
+GF_COMMAND GF_RunGlobeSelect(const char *const background_path)
+{
+    PHASE *const phase = Phase_GlobeSelect_Create((PHASE_GLOBE_SELECT_ARGS) {
+        .background_path = background_path,
+    });
+    const GF_COMMAND gf_cmd = PhaseExecutor_Run(phase);
+    Phase_GlobeSelect_Destroy(phase);
+    return gf_cmd;
+}
+
 GF_COMMAND GF_DoFrontendSequence(void)
 {
     const SHELL_ARGS *const args = Shell_GetArgs();

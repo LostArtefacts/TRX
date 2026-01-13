@@ -223,6 +223,7 @@
         "GRAPHIC_SETTINGS_UI_BARS_TAB": "Bàr",
         "GRAPHIC_SETTINGS_UI_TAB": "Eadar-aghaidh",
         "GRAPHIC_SETTINGS_VISUALS_TAB": "Lèirsinneachd",
+        "INVENTORY_RING_HEADING_ADVENTURE": "\\{review}Dàn-thuras",
         "INVENTORY_RING_HEADING_FMT": "%s",
         "INVENTORY_RING_HEADING_GAME_OVER": "GEAMA DEIREANNACH",
         "INVENTORY_RING_HEADING_INVENTORY": "CLÀR-SEILBHE",
@@ -1850,6 +1851,9 @@
         },
         "quest_4": {
             "name": "\\{review}Nìsean Tàileasg 4",
+        },
+        "globe": {
+            "name": "\\{review}Cruinne",
         }
     }
 }

@@ -223,6 +223,7 @@
         "GRAPHIC_SETTINGS_UI_BARS_TAB": "Paski",
         "GRAPHIC_SETTINGS_UI_TAB": "Interfejs",
         "GRAPHIC_SETTINGS_VISUALS_TAB": "Wygląd",
+        "INVENTORY_RING_HEADING_ADVENTURE": "\\{review}Przygoda",
         "INVENTORY_RING_HEADING_FMT": "%s",
         "INVENTORY_RING_HEADING_GAME_OVER": "KONIEC GRY",
         "INVENTORY_RING_HEADING_INVENTORY": "EKWIPUNEK",
@@ -1820,6 +1821,9 @@
         },
         "quest_4": {
             "name": "\\{review}Przedmiot Misji 4",
+        },
+        "globe": {
+            "name": "\\{review}Globus",
         }
     }
 }

@@ -47,6 +47,7 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
+static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent);
 
 static void M_LoadGlobalInjections(const M_CONTEXT *ctx, JSON_OBJECT *obj);
 
@@ -62,6 +63,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_LEVEL_COMPLETE,    nullptr, nullptr },
     { GFS_LEVEL_STATS,       nullptr, nullptr },
     { GFS_EXIT_TO_TITLE,     nullptr, nullptr },
+    { GFS_GLOBE_SELECT,      M_HandleGlobeSelectEvent, nullptr },
 
     // Events with integer arguments
     { GFS_SET_START_ANIM,    M_HandleIntEvent, "anim" },
@@ -368,6 +370,28 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
         event->data = event_data;
     }
     return sizeof(GF_ADD_ITEM_DATA);
+}
+
+static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent)
+{
+    const char *const image =
+        JSON_ObjectGetString(event_obj, "image", JSON_INVALID_STRING);
+    if (image == JSON_INVALID_STRING) {
+        if (event != nullptr) {
+            event->data = nullptr;
+        }
+        return 0;
+    }
+
+    if (event != nullptr) {
+        GF_GLOBE_SELECT_DATA *const event_data = extra_data;
+        event_data->image_path =
+            (char *)extra_data + sizeof(GF_GLOBE_SELECT_DATA);
+        strcpy(event_data->image_path, image);
+        event->data = event_data;
+    }
+
+    return sizeof(GF_GLOBE_SELECT_DATA) + strlen(image) + 1;
 }
 
 static OBJECT_ID M_GetObjectFromJSONValue(const JSON_VALUE *const value)
