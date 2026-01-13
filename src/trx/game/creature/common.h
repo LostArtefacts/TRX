@@ -41,6 +41,9 @@ void Creature_AddAlly(OBJECT_ID obj_id);
 void Creature_AddAllyTargetingEnemy(OBJECT_ID obj_id);
 bool Creature_IsTargetable(const ITEM *item);
 
+// Returns true if the target object can be destroyed with a missile.
+bool Creature_IsDestructible(const ITEM *item);
+
 int16_t Creature_Effect(
     const ITEM *item, const BITE *bite,
     int16_t (*spawn)(

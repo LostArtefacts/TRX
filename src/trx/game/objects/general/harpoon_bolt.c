@@ -83,7 +83,8 @@ static void M_Control_TR3(const int16_t item_num)
             continue;
         }
 
-        if (!Creature_IsTargetable(target_item)) {
+        if (!Creature_IsTargetable(target_item)
+            && !Creature_IsDestructible(target_item)) {
             continue;
         }
 
