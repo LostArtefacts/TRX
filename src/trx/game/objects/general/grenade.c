@@ -207,6 +207,7 @@ static void M_Control(const int16_t item_num)
         }
 
         if (!Creature_IsTargetable(target_item)
+            && !Creature_IsDestructible(target_item)
             && !Creature_IsFloating(target_item)) {
             continue;
         }

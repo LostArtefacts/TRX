@@ -1,5 +1,6 @@
 #include <trx/game/items/utils.h>
 
+#include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
@@ -11,7 +12,7 @@
 void Item_TakeDamage(
     ITEM *const item, const int16_t damage, const bool hit_status)
 {
-    if (item->hit_points == DONT_TARGET) {
+    if (item->hit_points == DONT_TARGET && !Creature_IsDestructible(item)) {
         return;
     }
 

@@ -119,6 +119,13 @@ const OBJECT_ID g_CreatureObjects[] = {
     // clang-format on
 };
 
+const OBJECT_ID g_DestructibleCreatureObjects[] = {
+    // clang-format off
+    O_COBRA,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const OBJECT_ID g_WaterObjects[] = {
     // clang-format off
     O_ALLIGATOR,
