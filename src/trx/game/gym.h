@@ -5,8 +5,7 @@
 
 #include <stdint.h>
 
-void Gym_SetInventoryOpenEnabled(bool enabled);
-bool Gym_IsInventoryOpenEnabled(void);
+#define GYM_ASSAULT_TARGET_TIME (10 * LOGIC_FPS)
 
 typedef enum {
     GYM_TRACK_NONE = -1,
@@ -14,6 +13,9 @@ typedef enum {
     GYM_TRACK_ASSAULT,
     GYM_TRACK_NUMBER_OF
 } GYM_TRACK_TYPE;
+
+void Gym_SetInventoryOpenEnabled(bool enabled);
+bool Gym_IsInventoryOpenEnabled(void);
 
 GYM_TRACK_TYPE Gym_TrackManager_GetActiveTrackType(void);
 bool Gym_TrackManager_HasStats(GYM_TRACK_TYPE track);
@@ -27,7 +29,6 @@ void Gym_TrackManager_Finish(GYM_TRACK_TYPE track);
 
 // Assault-only extensions (no-op / 0 for other tracks).
 void Gym_TrackManager_AddPenaltySeconds(GYM_TRACK_TYPE track, int32_t seconds);
-void Gym_TrackManager_DecreaseTargetCount(GYM_TRACK_TYPE track);
 int32_t Gym_TrackManager_GetPenaltyDisplayTimer(GYM_TRACK_TYPE track);
 int32_t Gym_TrackManager_GetPenaltyFrames(GYM_TRACK_TYPE track);
 int32_t Gym_TrackManager_GetTargetPenaltyFrames(GYM_TRACK_TYPE track);

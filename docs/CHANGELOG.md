@@ -15,6 +15,7 @@
 - fixed Hand of Rathmore not rotating in Sleeping with the Fishes
 - fixed colored exhaust smokes on Quad Bike for 1 frame
 - fixed Cobras and Rattlesnakes being immune to explosives in their sleeping state
+- fixed exploding Assault Targets in Lara's Home counting as penalties
 
 
 
