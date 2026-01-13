@@ -135,6 +135,14 @@ typedef struct {
     GF_LEVEL *levels;
 } GF_LEVEL_TABLE;
 
+typedef struct {
+    XYZ_16 rot;
+    int32_t start_level_ordinal;
+    int32_t completion_level_ordinal;
+    uint32_t prereq_mask;
+    uint8_t mesh_idx;
+} GF_GLOBE_ENTRY;
+
 // ----------------------------------------------------------------------------
 // Game flow structures
 // ----------------------------------------------------------------------------
@@ -168,6 +176,12 @@ typedef struct {
     // other data
     GF_LEVEL_SETTINGS settings;
     INJECTION_DATA injections;
+
+    // Globe select entries
+    struct {
+        int32_t count;
+        GF_GLOBE_ENTRY *entries;
+    } globe;
 
     // Path to a global Lua script executed after game initialization
     char *main_script_path;

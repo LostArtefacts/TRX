@@ -285,6 +285,12 @@
         }
     },
     "game_strings": {
+        "GLOBE_SELECT_AREA_1": "India",
+        "GLOBE_SELECT_AREA_2": "South Pacific Islands",
+        "GLOBE_SELECT_AREA_3": "Nevada",
+        "GLOBE_SELECT_AREA_4": "",
+        "GLOBE_SELECT_AREA_5": "London",
+        "GLOBE_SELECT_AREA_6": "Antarctica",
         "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
         "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
         "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",

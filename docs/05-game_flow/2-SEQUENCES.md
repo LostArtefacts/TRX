@@ -49,6 +49,23 @@ default game flow for examples.
     </td>
   </tr>
   <tr valign="top">
+    <td rowspan="2"><code>globe_select</code></td>
+    <td><code>globe_select_entries</code></td>
+    <td><code>Object</code></td>
+    <td>
+      Ends the current level and opens the globe destination selector.
+      Available destinations are configured by the global
+      <code><a href="./0-GLOBAL_PROPERTIES.md#globe-select-entries">globe_select_entries</a></code>.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>image</code></td>
+    <td>String</td>
+    <td>
+      Optional path to the background image. If omitted, a plain black background is used.
+    </td>
+  </tr>
+  <tr valign="top">
     <td rowspan="4">
       <code>display_picture</code>
     </td>

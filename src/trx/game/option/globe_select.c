@@ -11,66 +11,31 @@
 #include <trx/utils.h>
 
 typedef struct {
-    XYZ_16 rot;
-    int32_t start_level_ordinal;
-    int32_t completion_level_ordinal;
-    uint32_t prereq_mask;
-    const char *area_name;
-    uint8_t mesh_idx;
-} M_GLOBE_ENTRY;
+    GAME_STRING_ID gs_area_id;
+} M_AREA_STRING_ENTRY;
 
-static const M_GLOBE_ENTRY m_GlobeEntries[] = {
-    {
-        .rot = { -1536, -7936, 1536 },
-        .start_level_ordinal = 1,
-        .completion_level_ordinal = 4,
-        .prereq_mask = 0u,
-        .area_name = "India",
-        .mesh_idx = 2,
-    },
-    {
-        .rot = { 1024, -512, -256 },
-        .start_level_ordinal = 5,
-        .completion_level_ordinal = 8,
-        .prereq_mask = 1u << 0,
-        .area_name = "South Pacific Islands",
-        .mesh_idx = 5,
-    },
-    {
-        .rot = { 2560, 21248, -4096 },
-        .start_level_ordinal = 13,
-        .completion_level_ordinal = 15,
-        .prereq_mask = 1u << 0,
-        .area_name = "Nevada Desert",
-        .mesh_idx = 4,
-    },
-    {
-        .rot = { -3328, 29440, 1024 },
-        .start_level_ordinal = -1,
-        .completion_level_ordinal = -1,
-        .prereq_mask = 0u,
-        .area_name = nullptr, // Unused Peru
-        .mesh_idx = 3,
-    },
-    {
-        .rot = { 3072, -20992, 6400 },
-        .start_level_ordinal = 9,
-        .completion_level_ordinal = 12,
-        .prereq_mask = 1u << 0,
-        .area_name = "London",
-        .mesh_idx = 1,
-    },
-    {
-        .rot = { -5120, -15360, -18688 },
-        .start_level_ordinal = 16,
-        .completion_level_ordinal = 19,
-        .prereq_mask = (1u << 0) | (1u << 1) | (1u << 2) | (1u << 4),
-        .area_name = "Antarctica",
-        .mesh_idx = 6,
-    },
+static const M_AREA_STRING_ENTRY m_AreaStrings[] = {
+    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_1) },
+    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_2) },
+    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_3) },
+    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_4) }, // Unused Peru
+    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_5) },
+    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_6) },
 };
 
-#define M_GLOBE_ENTRY_COUNT ARRAY_SIZE(m_GlobeEntries)
+static int32_t M_GetEntryCount(void)
+{
+    return MIN(g_GameFlow.globe.count, (int32_t)ARRAY_SIZE(m_AreaStrings));
+}
+
+static const GF_GLOBE_ENTRY *M_GetEntry(const int32_t idx)
+{
+    const int32_t entry_count = M_GetEntryCount();
+    if (idx < 0 || idx >= entry_count) {
+        return nullptr;
+    }
+    return &g_GameFlow.globe.entries[idx];
+}
 
 static bool M_IsLevelCompleted(const int32_t level_ordinal)
 {
@@ -93,12 +58,17 @@ static int32_t M_GetNextSelectableIndex(
         return ring->globe_select.selection;
     }
 
-    for (size_t step = 0; step < M_GLOBE_ENTRY_COUNT; step++) {
+    const int32_t entry_count = M_GetEntryCount();
+    if (entry_count <= 0) {
+        return ring->globe_select.selection;
+    }
+
+    for (int32_t step = 0; step < entry_count; step++) {
         int32_t idx = ring->globe_select.selection + direction * (step + 1);
-        while (idx < 0) {
-            idx += M_GLOBE_ENTRY_COUNT;
+        while (idx < 0 && entry_count != 0) {
+            idx += entry_count;
         }
-        idx %= M_GLOBE_ENTRY_COUNT;
+        idx %= entry_count;
         if (ring->globe_select.selectable[idx]) {
             return idx;
         }
@@ -119,8 +89,11 @@ static bool M_UpdateRotAxis(int16_t *const cur, const int16_t target)
 
 static bool M_IsAligned(INV_RING *const ring)
 {
-    const M_GLOBE_ENTRY *const entry =
-        &m_GlobeEntries[ring->globe_select.selection];
+    const GF_GLOBE_ENTRY *const entry =
+        M_GetEntry(ring->globe_select.selection);
+    if (entry == nullptr) {
+        return true;
+    }
     int32_t axes = 0;
     axes += M_UpdateRotAxis(&ring->globe_select.rot.x, entry->rot.x) ? 1 : 0;
     axes += M_UpdateRotAxis(&ring->globe_select.rot.y, entry->rot.y) ? 1 : 0;
@@ -130,9 +103,10 @@ static bool M_IsAligned(INV_RING *const ring)
 
 int32_t Option_GlobeSelect_AreaFromMeshIdx(const int32_t mesh_idx)
 {
-    for (size_t i = 0; i < M_GLOBE_ENTRY_COUNT; i++) {
-        if (m_GlobeEntries[i].mesh_idx == mesh_idx) {
-            return i;
+    const int32_t entry_count = M_GetEntryCount();
+    for (int32_t i = 0; i < entry_count; i++) {
+        if (g_GameFlow.globe.entries[i].mesh_idx == mesh_idx) {
+            return (int32_t)i;
         }
     }
     return -1;
@@ -146,31 +120,32 @@ void Option_GlobeSelect_UpdateSelectable(INV_RING *const ring)
     ring->globe_select.rot.z = 0;
     ring->globe_select.meshes_drawn = 0x0FFFu;
     ring->globe_select.confirmed = false;
-    for (int32_t i = 0; i < 6; i++) {
+    for (int32_t i = 0; i < MAX_GLOBE_ZONES; i++) {
         ring->globe_select.selectable[i] = false;
         ring->globe_select.start_level_num[i] = -1;
     }
 
     uint32_t completed_mask = 0u;
-    for (size_t i = 0; i < M_GLOBE_ENTRY_COUNT; i++) {
-        if (M_IsLevelCompleted(m_GlobeEntries[i].completion_level_ordinal)) {
+    const int32_t entry_count = M_GetEntryCount();
+    for (int32_t i = 0; i < entry_count; i++) {
+        if (M_IsLevelCompleted(
+                g_GameFlow.globe.entries[i].completion_level_ordinal)) {
             completed_mask |= 1u << i;
         }
     }
 
     int32_t selectable_count = 0;
-    for (size_t i = 0; i < M_GLOBE_ENTRY_COUNT; i++) {
+    for (int32_t i = 0; i < entry_count; i++) {
         ring->globe_select.selectable[i] = false;
         ring->globe_select.start_level_num[i] = -1;
 
-        const M_GLOBE_ENTRY *const entry = &m_GlobeEntries[i];
-        if (entry->area_name == nullptr) {
-            continue;
-        }
+        const GF_GLOBE_ENTRY *const entry = &g_GameFlow.globe.entries[i];
 
         const GF_LEVEL *const start_level =
             GF_GetLevelByOrdinalNumber(GFLT_MAIN, entry->start_level_ordinal);
-        ring->globe_select.start_level_num[i] = start_level->num;
+        if (start_level != nullptr) {
+            ring->globe_select.start_level_num[i] = start_level->num;
+        }
 
         if ((completed_mask & (1u << i)) != 0u) {
             continue;
@@ -188,10 +163,10 @@ void Option_GlobeSelect_UpdateSelectable(INV_RING *const ring)
     }
 
     ring->globe_select.meshes_drawn = 0x0FFFu;
-    for (size_t i = 0; i < M_GLOBE_ENTRY_COUNT; i++) {
+    for (int32_t i = 0; i < entry_count; i++) {
         if (ring->globe_select.start_level_num[i] < 0) {
             ring->globe_select.meshes_drawn &=
-                ~(1 << m_GlobeEntries[i].mesh_idx);
+                ~(1 << g_GameFlow.globe.entries[i].mesh_idx);
         }
     }
 
@@ -199,10 +174,10 @@ void Option_GlobeSelect_UpdateSelectable(INV_RING *const ring)
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, selectable_count > 1);
 
     if (ring->globe_select.selection < 0
-        || ring->globe_select.selection >= (int32_t)M_GLOBE_ENTRY_COUNT
+        || ring->globe_select.selection >= entry_count
         || !ring->globe_select.selectable[ring->globe_select.selection]) {
         ring->globe_select.selection = -1;
-        for (size_t i = 0; i < M_GLOBE_ENTRY_COUNT; i++) {
+        for (int32_t i = 0; i < entry_count; i++) {
             if (ring->globe_select.selectable[i]) {
                 ring->globe_select.selection = i;
                 break;
@@ -241,13 +216,14 @@ void Option_GlobeSelect_Control(
         }
     }
 
-    const M_GLOBE_ENTRY *const entry =
-        &m_GlobeEntries[ring->globe_select.selection];
-    if (entry->area_name != nullptr) {
+    const int32_t entry_count = M_GetEntryCount();
+    if (ring->globe_select.selection >= 0
+        && ring->globe_select.selection < entry_count
+        && ring->globe_select.selection < (int32_t)ARRAY_SIZE(m_AreaStrings)) {
         Overlay_SetBottomText((OVERLAY_TEXT) {
-            .kind = UI_OVERLAY_TEXT_LITERAL,
+            .kind = UI_OVERLAY_TEXT_GS_KEY,
             .fmt_gs_key = GS_ID(INVENTORY_RING_OBJECT_NAME_FMT),
-            .literal = entry->area_name,
+            .literal = m_AreaStrings[ring->globe_select.selection].gs_area_id,
         });
     } else {
         Overlay_SetBottomText((OVERLAY_TEXT) { 0 });

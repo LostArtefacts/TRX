@@ -6,6 +6,7 @@
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/game_flow/vars.h>
+#include <trx/game/inventory_ring/types.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/shell.h>
@@ -50,6 +51,7 @@ static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent);
 
 static void M_LoadGlobalInjections(const M_CONTEXT *ctx, JSON_OBJECT *obj);
+static void M_LoadGlobeSelectEntries(const M_CONTEXT *ctx, JSON_OBJECT *obj);
 
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
@@ -302,6 +304,76 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
         JSON_ObjectGetBool(obj, "convert_dropped_guns", g_TRVersion > 1);
 }
 
+static void M_LoadGlobeEntry(
+    const M_CONTEXT *const ctx, JSON_OBJECT *const obj, GF_GLOBE_ENTRY *const e,
+    size_t idx, void *const user_arg)
+{
+    JSON_ARRAY *const rot_arr = JSON_ObjectGetArray(obj, "rot");
+    if (rot_arr == nullptr || rot_arr->length != 3) {
+        Shell_ExitSystemFmt(
+            "%s: 'globe_select_entries[].rot' must be a 3-element list",
+            ctx->script_path);
+    }
+
+    e->rot.x = JSON_ArrayGetInt(rot_arr, 0, 0);
+    e->rot.y = JSON_ArrayGetInt(rot_arr, 1, 0);
+    e->rot.z = JSON_ArrayGetInt(rot_arr, 2, 0);
+
+    e->start_level_ordinal =
+        JSON_ObjectGetInt(obj, "start_level_ordinal", JSON_INVALID_NUMBER);
+    if (e->start_level_ordinal == JSON_INVALID_NUMBER) {
+        Shell_ExitSystemFmt(
+            "%s: 'globe_select_entries[].start_level_ordinal' must be a number",
+            ctx->script_path);
+    }
+
+    e->completion_level_ordinal =
+        JSON_ObjectGetInt(obj, "completion_level_ordinal", JSON_INVALID_NUMBER);
+    if (e->completion_level_ordinal == JSON_INVALID_NUMBER) {
+        Shell_ExitSystemFmt(
+            "%s: 'globe_select_entries[].completion_level_ordinal' must be a "
+            "number",
+            ctx->script_path);
+    }
+
+    const JSON_ARRAY *const prereq_zones =
+        JSON_ObjectGetArray(obj, "prereq_zones");
+    if (prereq_zones == nullptr) {
+        Shell_ExitSystemFmt(
+            "%s: 'globe_select_entries[].prereq_zones' must be an integer list",
+            ctx->script_path);
+    }
+
+    uint32_t computed_prereq_mask = 0;
+    for (size_t i = 0; i < prereq_zones->length; i++) {
+        const int32_t zone =
+            JSON_ArrayGetInt(prereq_zones, i, JSON_INVALID_NUMBER);
+        if (zone == JSON_INVALID_NUMBER) {
+            Shell_ExitSystemFmt(
+                "%s: 'globe_select_entries[].prereq_zones' must be an integer "
+                "list",
+                ctx->script_path);
+        }
+        if (zone < 0 || zone >= MAX_GLOBE_ZONES) {
+            Shell_ExitSystemFmt(
+                "%s: 'globe_select_entries[].prereq_zones' entries must be in "
+                "range 0..%d",
+                ctx->script_path, MAX_GLOBE_ZONES - 1);
+        }
+        computed_prereq_mask |= 1u << zone;
+    }
+    e->prereq_mask = computed_prereq_mask;
+
+    const int32_t mesh_idx =
+        JSON_ObjectGetInt(obj, "mesh_idx", JSON_INVALID_NUMBER);
+    if (mesh_idx == JSON_INVALID_NUMBER) {
+        Shell_ExitSystemFmt(
+            "%s: 'globe_select_entries[].mesh_idx' must be a number",
+            ctx->script_path);
+    }
+    e->mesh_idx = (uint8_t)mesh_idx;
+}
+
 static DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
 {
     if (event != nullptr) {
@@ -441,6 +513,17 @@ static void M_LoadArray(
 
         load_func(ctx, elem_obj, element, i, load_func_arg);
     }
+}
+
+static void M_LoadGlobeSelectEntries(
+    const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
+{
+    ctx->gf->globe.count = 0;
+    ctx->gf->globe.entries = nullptr;
+    M_LoadArray(
+        ctx, obj, "globe_select_entries", &ctx->gf->globe.count,
+        (void **)&ctx->gf->globe.entries, sizeof(GF_GLOBE_ENTRY),
+        (M_LOAD_ARRAY_FUNC)M_LoadGlobeEntry, nullptr);
 }
 
 static size_t M_LoadSequenceEvent(
@@ -806,6 +889,7 @@ void GF_LoadFromString(
 
     M_LoadRoot(&ctx, root_obj);
     M_LoadSettings(&ctx, root_obj, &ctx.gf->settings);
+    M_LoadGlobeSelectEntries(&ctx, root_obj);
     M_LoadGlobalInjections(&ctx, root_obj);
     M_LoadLevels(&ctx, root_obj);
     M_LoadCutscenes(&ctx, root_obj);

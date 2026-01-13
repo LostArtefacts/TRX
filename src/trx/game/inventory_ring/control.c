@@ -202,7 +202,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
 
     if (ring->mode == INV_GLOBE_SELECT_MODE) {
         if (ring->globe_select.confirmed && ring->globe_select.selection >= 0
-            && ring->globe_select.selection < 6) {
+            && ring->globe_select.selection < MAX_GLOBE_ZONES) {
             const int32_t start_level_num =
                 ring->globe_select
                     .start_level_num[ring->globe_select.selection];

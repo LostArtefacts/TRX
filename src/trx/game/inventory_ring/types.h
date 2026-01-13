@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #define MAX_QTY 999999
+#define MAX_GLOBE_ZONES 6
 
 typedef struct {
     int16_t shape;
@@ -124,7 +125,7 @@ typedef struct {
         int32_t selection;
         uint32_t meshes_drawn;
         bool confirmed;
-        bool selectable[6];
-        int32_t start_level_num[6];
+        bool selectable[MAX_GLOBE_ZONES];
+        int32_t start_level_num[MAX_GLOBE_ZONES];
     } globe_select;
 } INV_RING;
