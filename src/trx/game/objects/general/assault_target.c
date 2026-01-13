@@ -128,7 +128,7 @@ static void M_Control(const int16_t item_num)
 
         item->timer++;
 
-        if (item->timer > 10 * LOGIC_FPS) {
+        if (item->timer > GYM_ASSAULT_TARGET_TIME) {
             LARA_INFO *const lara = Lara_GetLaraInfo();
             if (lara->target == item) {
                 lara->target = nullptr;
@@ -148,7 +148,6 @@ static void M_Control(const int16_t item_num)
                 if (p->bounce_stage == 2) {
                     item->rot.x = 0x3800;
                     Item_RemoveActive(item_num);
-                    Gym_TrackManager_DecreaseTargetCount(GYM_TRACK_ASSAULT);
                     return;
                 }
 

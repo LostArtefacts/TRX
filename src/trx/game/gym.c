@@ -29,7 +29,6 @@ typedef struct {
         int32_t penalty_display_timer;
         int32_t penalty_frames;
         int32_t target_penalty_frames;
-        int32_t targets_remaining;
         int32_t timer_auto_hide_timer;
         bool pad_touched_this_frame;
         bool pad_lock;
@@ -47,10 +46,27 @@ static M_PRIV m_Priv = {
     .is_inventory_open_enabled = -1,
 };
 
+static int32_t M_CountAssaultTargets(void)
+{
+    int32_t remaining = 0;
+    for (int16_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
+        ITEM *const item = Item_Get(item_num);
+        if (item->object_id != O_ASSAULT_TARGET) {
+            continue;
+        }
+
+        if ((item->flags & IF_KILLED) == 0
+            && item->timer > GYM_ASSAULT_TARGET_TIME) {
+            remaining++;
+        }
+    }
+    LOG_INFO("remaining=%d", remaining);
+    return remaining;
+}
+
 static void M_ResetAssaultTargets(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->assault_course.targets_remaining = 0;
 
     const OBJECT *const obj = Object_Get(O_ASSAULT_TARGET);
     if (!obj->loaded) {
@@ -77,8 +93,6 @@ static void M_ResetAssaultTargets(void)
             item->status != IS_INACTIVE && obj->initialise_func != nullptr) {
             obj->initialise_func(item_num);
         }
-
-        p->assault_course.targets_remaining++;
     }
 }
 
@@ -177,9 +191,10 @@ static void M_Assault_Finish(void)
 
     uint32_t final_time = resume->stats.timer;
     if (g_TRVersion >= 3) {
+        const int32_t targets_remaining = M_CountAssaultTargets();
         p->assault_course.penalty_display_timer = 10 * LOGIC_FPS;
         p->assault_course.target_penalty_frames =
-            10 * LOGIC_FPS * p->assault_course.targets_remaining;
+            10 * LOGIC_FPS * targets_remaining;
         CLAMPG(
             p->assault_course.target_penalty_frames, M_MAX_ASSAULT_TIME_FRAMES);
 
@@ -312,7 +327,6 @@ void Gym_TrackManager_Reset(const GYM_TRACK_TYPE track)
         p->assault_course.penalty_frames = 0;
         p->assault_course.target_penalty_frames = 0;
         p->assault_course.penalty_display_timer = 0;
-        p->assault_course.targets_remaining = 0;
         p->assault_course.timer_auto_hide_timer = 0;
         p->assault_course.pad_touched_this_frame = false;
         p->assault_course.pad_lock = false;
@@ -421,15 +435,6 @@ void Gym_TrackManager_AddPenaltySeconds(
     p->assault_course.penalty_display_timer = 4 * LOGIC_FPS;
     p->assault_course.penalty_frames += seconds * LOGIC_FPS;
     CLAMPG(p->assault_course.penalty_frames, M_MAX_ASSAULT_TIME_FRAMES);
-}
-
-void Gym_TrackManager_DecreaseTargetCount(const GYM_TRACK_TYPE track)
-{
-    ASSERT(track == GYM_TRACK_ASSAULT);
-    M_PRIV *const p = &m_Priv;
-    if (p->assault_course.targets_remaining > 0) {
-        p->assault_course.targets_remaining--;
-    }
 }
 
 int32_t Gym_TrackManager_GetPenaltyDisplayTimer(const GYM_TRACK_TYPE track)
