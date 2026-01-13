@@ -96,13 +96,16 @@ static int M_L_GamePlayLevel(lua_State *const L)
     if (level_idx < 0 || level_idx >= count) {
         return luaL_error(L, "invalid level number: %d", level_idx);
     }
-    // XXX: big hack – write the resume info to the level just before, so that
-    // game_flow/sequencer.c can copy the right data in its call to
-    // Savegame_CarryCurrentInfoToNextLevel().
-    // This system needs rewriting to support non-linear gameplay better!
-    if (GF_GetCurrentLevel() != nullptr) {
-        Savegame_PersistGameToCurrentInfo(
-            GF_GetLevelBefore(GF_GetLevel(GFLT_MAIN, level_idx)));
+    const GF_LEVEL *const current_level = GF_GetCurrentLevel();
+    if (current_level != nullptr) {
+        const GF_LEVEL *const next_level = GF_GetLevel(GFLT_MAIN, level_idx);
+        if (next_level != nullptr) {
+            Savegame_PersistGameToCurrentInfo(next_level);
+            RESUME_INFO *const resume = Savegame_GetCurrentInfo(next_level);
+            if (resume != nullptr) {
+                resume->prev_level = current_level->num;
+            }
+        }
     }
     GF_OverrideCommand((GF_COMMAND) {
         .action = GF_START_GAME,

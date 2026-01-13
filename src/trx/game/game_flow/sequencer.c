@@ -69,6 +69,51 @@ static GF_SEQUENCE_CONTEXT M_SwitchSequenceContext(
     }
 }
 
+static const GF_LEVEL *M_GetCanonicalNextLevel(const GF_LEVEL *const level)
+{
+    // Canonical order is still used for console-driven linear simulation.
+    return GF_GetLevelAfter(level);
+}
+
+static const GF_LEVEL *M_GetLinkedPrevLevel(const GF_LEVEL *const level)
+{
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume == nullptr) {
+        return nullptr;
+    }
+    if (resume->prev_level == -1) {
+        return nullptr;
+    }
+    return GF_GetLevel(GFLT_MAIN, resume->prev_level);
+}
+
+static bool M_IsLevelDescendantOf(
+    const GF_LEVEL *const level, const int32_t ancestor_level_num)
+{
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    if (resume == nullptr) {
+        return false;
+    }
+
+    const int32_t count = GF_GetLevelTable(GFLT_MAIN)->count;
+    int32_t current_prev = resume->prev_level;
+    for (int32_t i = 0; i < count && current_prev != -1; i++) {
+        if (current_prev == ancestor_level_num) {
+            return true;
+        }
+        const GF_LEVEL *const prev_level = GF_GetLevel(GFLT_MAIN, current_prev);
+        if (prev_level == nullptr) {
+            break;
+        }
+        RESUME_INFO *const prev_resume = Savegame_GetCurrentInfo(prev_level);
+        if (prev_resume == nullptr) {
+            break;
+        }
+        current_prev = prev_resume->prev_level;
+    }
+    return false;
+}
+
 GF_COMMAND GF_InterpretSequence(
     const GF_LEVEL *const level, GF_SEQUENCE_CONTEXT seq_ctx,
     void *const seq_ctx_arg)
@@ -86,7 +131,7 @@ GF_COMMAND GF_InterpretSequence(
 
     GF_COMMAND gf_cmd = { .action = GF_EXIT_TO_TITLE };
 
-    const GF_LEVEL *const prev_level = GF_GetLevelBefore(level);
+    const GF_LEVEL *const prev_level = M_GetLinkedPrevLevel(level);
 
     // before load
     switch (seq_ctx) {
@@ -104,8 +149,17 @@ GF_COMMAND GF_InterpretSequence(
         if (level == GF_GetGymLevel() || level == GF_GetFirstLevel()) {
             Savegame_InitCurrentInfo();
         } else {
+            const int32_t prev_level_num =
+                Savegame_GetCurrentInfo(level)->prev_level;
             Savegame_ResetCurrentInfo(level);
-            Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
+            if (prev_level_num != -1) {
+                const GF_LEVEL *const linked_prev_level =
+                    GF_GetLevel(GFLT_MAIN, prev_level_num);
+                if (linked_prev_level != nullptr) {
+                    Savegame_CarryCurrentInfoToNextLevel(
+                        linked_prev_level, level);
+                }
+            }
             Savegame_ApplyLogicToCurrentInfo(level);
         }
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
@@ -121,12 +175,32 @@ GF_COMMAND GF_InterpretSequence(
             Savegame_InitCurrentInfo();
             if (level->num > GF_GetFirstLevel()->num) {
                 Savegame_LoadOnlyResumeInfo(slot_num);
-                const GF_LEVEL *tmp_level = level;
-                while (tmp_level != nullptr) {
-                    Savegame_ResetCurrentInfo(tmp_level);
-                    tmp_level = GF_GetLevelAfter(tmp_level);
+
+                const int32_t prev_level_num =
+                    Savegame_GetCurrentInfo(level)->prev_level;
+
+                const GF_LEVEL_TABLE *const level_table =
+                    GF_GetLevelTable(GFLT_MAIN);
+                for (int32_t i = 0; i < level_table->count; i++) {
+                    const GF_LEVEL *const tmp_level = &level_table->levels[i];
+                    if (tmp_level->type == GFL_GYM) {
+                        continue;
+                    }
+                    if (tmp_level == level
+                        || M_IsLevelDescendantOf(tmp_level, level->num)) {
+                        Savegame_ResetCurrentInfo(tmp_level);
+                    }
                 }
-                Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
+
+                if (prev_level_num != -1) {
+                    const GF_LEVEL *const linked_prev_level =
+                        GF_GetLevel(GFLT_MAIN, prev_level_num);
+                    if (linked_prev_level != nullptr) {
+                        Savegame_CarryCurrentInfoToNextLevel(
+                            linked_prev_level, level);
+                    }
+                }
+
                 Savegame_ApplyLogicToCurrentInfo(level);
                 GF_InventoryModifier_Scan(level);
                 GF_InventoryModifier_ApplyToResumeInfo(level);
@@ -154,7 +228,7 @@ GF_COMMAND GF_InterpretSequence(
                     }
 
                     const GF_LEVEL *const next_level =
-                        GF_GetLevelAfter(tmp_level);
+                        M_GetCanonicalNextLevel(tmp_level);
                     if (next_level != nullptr) {
                         Savegame_CarryCurrentInfoToNextLevel(
                             tmp_level, next_level);
@@ -173,9 +247,6 @@ GF_COMMAND GF_InterpretSequence(
         } else if (level->type == GFL_DEMO) {
             Savegame_ApplyLogicToCurrentInfo(level);
         } else if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-            if (prev_level != nullptr) {
-                Savegame_CarryCurrentInfoToNextLevel(prev_level, level);
-            }
             Savegame_ApplyLogicToCurrentInfo(level);
             GF_InventoryModifier_Scan(level);
             GF_InventoryModifier_ApplyToResumeInfo(level);

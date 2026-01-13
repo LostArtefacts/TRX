@@ -462,6 +462,7 @@ static void M_WriteResumeInfo(
 
     M_WriteBool(ctx, "available", resume->flags.available);
     M_WriteBool(ctx, "level_completed", resume->level_completed);
+    M_WriteNum(ctx, "prev_level", resume->prev_level);
     // TR1X <4.16
     M_WriteBool(ctx, "got_pistols", resume->flags.has_pistols);
     M_WriteBool(ctx, "got_shotgun", resume->flags.has_shotgun);

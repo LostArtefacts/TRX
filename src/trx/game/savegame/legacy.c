@@ -345,6 +345,7 @@ static void M_ReadStats(M_CONTEXT *const ctx, LEVEL_STATS *const stats)
 static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
 {
     resume->level_completed = false;
+    resume->prev_level = -1;
     resume->pistol_ammo = M_ReadU16(ctx);
     if (g_TRVersion == 1) {
         resume->magnum_ammo = M_ReadU16(ctx);

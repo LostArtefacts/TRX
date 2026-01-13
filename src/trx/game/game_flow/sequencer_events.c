@@ -61,6 +61,29 @@ static GF_SEQUENCE_EVENT_HANDLER m_EventHandlers[GFS_NUMBER_OF] = {
     // clang-format on
 };
 
+static void M_FinishLevelBasic(void)
+{
+    const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+
+    if (current_level == GF_GetLastLevel()) {
+        g_Config.profile.new_game_plus_unlock = true;
+        Config_Update();
+    }
+
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+    if (resume != nullptr) {
+        resume->flags.available = true;
+        resume->level_completed = true;
+    }
+}
+
+static const GF_LEVEL *M_GetCanonicalNextLevel(const GF_LEVEL *const level)
+{
+    // Canonical order is still used for regular level flow; resume inheritance
+    // is non-linear and tracked via RESUME_INFO.prev_level.
+    return GF_GetLevelAfter(level);
+}
+
 M_GF_HANDLER(M_HandleExitToTitle)
 {
     return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
@@ -72,7 +95,7 @@ M_GF_HANDLER(M_HandleLevelComplete)
         return (GF_COMMAND) { .action = GF_NOOP };
     }
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    const GF_LEVEL *const next_level = GF_GetLevelAfter(current_level);
+    const GF_LEVEL *const next_level = M_GetCanonicalNextLevel(current_level);
 
     if (current_level == GF_GetLastLevel()) {
         g_Config.profile.new_game_plus_unlock = true;
@@ -90,7 +113,12 @@ M_GF_HANDLER(M_HandleLevelComplete)
     if (next_level == nullptr) {
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-    if (next_level->type == GFL_BONUS && !bonus_level_unlock) {
+    Savegame_PersistGameToCurrentInfo(next_level);
+    RESUME_INFO *const next_resume = Savegame_GetCurrentInfo(next_level);
+    if (next_resume != nullptr) {
+        next_resume->prev_level = current_level->num;
+    }
+    if (next_level->type == GFL_BONUS && !Stats_CheckAllSecretsCollected()) {
         return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
     return (GF_COMMAND) {
