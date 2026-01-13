@@ -297,7 +297,7 @@ X_OBJ_NAME_DEFINE(O_PUZZLE_HOLE_1,         "puzzle_hole_1",         X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PUZZLE_HOLE_2,         "puzzle_hole_2",         X_OBJ_NAMES("Puzzle Hole 2 (Empty)"))
 X_OBJ_NAME_DEFINE(O_PUZZLE_HOLE_3,         "puzzle_hole_3",         X_OBJ_NAMES("Puzzle Hole 3 (Empty)"))
 X_OBJ_NAME_DEFINE(O_PUZZLE_HOLE_4,         "puzzle_hole_4",         X_OBJ_NAMES("Puzzle Hole 4 (Empty)"))
-X_OBJ_NAME_DEFINE(O_SAVEGAME_ITEM,         "save_crystal",          X_OBJ_NAMES("Savegame Crystal"))
+X_OBJ_NAME_DEFINE(O_SAVE_CRYSTAL_ITEM,     "save_crystal",          X_OBJ_NAMES("Savegame Crystal"))
 X_OBJ_NAME_DEFINE(O_SCION_HOLDER,          "scion_holder",          X_OBJ_NAMES("Scion Holder"))
 X_OBJ_NAME_DEFINE(O_SLIDING_PILLAR,        "sliding_pillar",        X_OBJ_NAMES("Sliding Pillar"))
 X_OBJ_NAME_DEFINE(O_SPRINGBOARD,           "springboard",           X_OBJ_NAMES("Springboard"))

@@ -2,7 +2,16 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/general/pickup.h>
+#include <trx/game/output.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sound.h>
+#include <trx/version.h>
+
+typedef struct {
+    bool initialised;
+    int16_t initial_angle;
+} M_PRIV;
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
@@ -27,8 +36,12 @@ static const OBJECT_BOUNDS m_UW_Bounds = {
 };
 
 static const LARA_TRX_STATE m_StopStates[] = {
-    LS_STOP, LS_TREAD, LS_SURF_TREAD,
+    // clang-format off
+    LS_STOP,
+    LS_TREAD,
+    LS_SURF_TREAD,
     LS_TRX_INVALID, // sentinel
+    // clang-format on
 };
 
 static const OBJECT_BOUNDS *M_Bounds(void)
@@ -42,10 +55,9 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 
 static void M_Initialise(const int16_t item_num)
 {
-    if (g_Config.gameplay.enable_save_crystals) {
-        Item_AddActive(item_num);
-    } else {
-        Item_Get(item_num)->status = IS_INVISIBLE;
+    ITEM *const item = Item_Get(item_num);
+    if (!g_Config.gameplay.enable_save_crystals && g_TRVersion != 3) {
+        item->status = IS_INVISIBLE;
     }
 }
 
@@ -73,13 +85,55 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     }
 }
 
-static void M_Control(const int16_t item_num)
+static void M_ControlHeal(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+
+    if (item->status == IS_INVISIBLE || item->clear_body) {
+        return;
+    }
+
+    M_PRIV *const p = item->priv;
+    if (!p->initialised) {
+        p->initialised = true;
+        p->initial_angle = item->pos.y;
+    }
+
+    item->rot.y += 1024;
+    const int32_t timer = Output_GetTimeInGame();
+    const int16_t angle = Math_Cos((timer & 0x3F) << 10);
+    int32_t c = ABS(angle >> 9);
+    CLAMPG(c, 31);
+    c <<= 3;
+
+    item->pos.y = p->initial_angle - ABS(angle >> 6) - 64;
+
+    Output_AddDynamicLightRGB(item->pos, 8, (RGB_888) { 0, c, 0 });
+
+    ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = ABS(item->pos.x - lara_item->pos.x);
+    const int32_t dy = ABS(item->pos.y - lara_item->pos.y);
+    const int32_t dz = ABS(item->pos.z - lara_item->pos.z);
+    if (dx < STEP_L && dy < WALL_L && dz < STEP_L) {
+        LARA_INFO *const lara = Lara_GetLaraInfo();
+        lara->poison_timer = 0;
+        lara_item->hit_points += LARA_MAX_HITPOINTS / 2;
+        CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
+
+        // PS1: SFX_SAVE_CRYSTAL, PC: SFX_MENU_MEDI
+        Sound_Effect(SFX_MENU_MEDI, &lara_item->pos, SPM_NORMAL);
+
+        Item_Kill(item_num);
+    }
+}
+
+static void M_ControlSave(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Item_Animate(item);
 }
 
-static void M_Collision(
+static void M_CollisionSave(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
@@ -125,14 +179,20 @@ static void M_Collision(
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
-    if (g_Config.gameplay.enable_save_crystals) {
-        obj->handle_save_func = M_HandleSave;
-        obj->control_func = M_Control;
-        obj->collision_func = M_Collision;
+    obj->handle_save_func = M_HandleSave;
+    obj->priv_size = sizeof(M_PRIV);
+    if (g_TRVersion == 3) {
+        obj->control_func = M_ControlHeal;
+        obj->collision_func = nullptr;
+        obj->save_position = true;
         obj->save_flags = true;
+    } else if (g_Config.gameplay.enable_save_crystals) {
+        obj->control_func = M_ControlSave;
+        obj->collision_func = M_CollisionSave;
+        obj->save_flags = true;
+        Object_SetReflective(O_SAVE_CRYSTAL_ITEM, true);
     }
     obj->bounds_func = M_Bounds;
-    Object_SetReflective(O_SAVEGAME_ITEM, true);
 }
 
-REGISTER_OBJECT(O_SAVEGAME_ITEM, M_Setup)
+REGISTER_OBJECT(O_SAVE_CRYSTAL_ITEM, M_Setup)

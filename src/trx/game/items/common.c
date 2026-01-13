@@ -256,6 +256,14 @@ void Item_Initialise(const int16_t item_num)
         item->hit_points *= 2;
     }
 
+    if (obj->priv_size != 0) {
+        if (item->priv != nullptr) {
+            memset(item->priv, 0, obj->priv_size);
+        } else {
+            item->priv = GameBuf_Alloc(obj->priv_size, GBUF_ITEM_DATA);
+        }
+    }
+
     if (obj->initialise_func != nullptr) {
         obj->initialise_func(item_num);
     }
