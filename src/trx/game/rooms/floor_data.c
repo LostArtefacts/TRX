@@ -567,14 +567,19 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         }
 
         case TO_SINK: {
-            const OBJECT_VECTOR *const sink =
-                Camera_GetFixedObject((int16_t)(intptr_t)cmd->parameter);
+            if (g_TRVersion == 3) {
+                lara_info->current.active =
+                    1 + (int16_t)(intptr_t)cmd->parameter;
+            } else {
+                const OBJECT_VECTOR *const sink =
+                    Camera_GetFixedObject((int16_t)(intptr_t)cmd->parameter);
 
-            if (lara_info->lot.required_box != sink->flags) {
-                lara_info->lot.target = sink->pos;
-                lara_info->lot.required_box = sink->flags;
+                if (lara_info->lot.required_box != sink->flags) {
+                    lara_info->lot.target = sink->pos;
+                    lara_info->lot.required_box = sink->flags;
+                }
+                lara_info->current.active = sink->data * 6;
             }
-            lara_info->current_active = sink->data * 6;
             break;
         }
 

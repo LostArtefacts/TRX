@@ -244,7 +244,7 @@ static void M_ReadLara(M_CONTEXT *const ctx)
     lara->air = M_ReadS16(ctx);
     lara->dive_timer = M_ReadS16(ctx);
     lara->death_timer = M_ReadS16(ctx);
-    lara->current_active = M_ReadS16(ctx);
+    lara->current.active = M_ReadS16(ctx);
     lara->hit_effect_count = M_ReadS16(ctx);
 
     if (g_TRVersion == 1) {

@@ -4,6 +4,7 @@
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 
 **TR3**:
+- added new water currents
 - added new blood effects
 - added underwater blood spills
 - added poison mechanic
