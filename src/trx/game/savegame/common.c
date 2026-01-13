@@ -416,7 +416,9 @@ void Savegame_CarryCurrentInfoToNextLevel(
     RESUME_INFO *const src_resume = Savegame_GetCurrentInfo(src_level);
     RESUME_INFO *const dst_resume = Savegame_GetCurrentInfo(dst_level);
     if (src_resume != nullptr && dst_resume != nullptr) {
+        const bool dst_level_completed = dst_resume->level_completed;
         M_CopyResumeInfo(dst_resume, src_resume);
+        dst_resume->level_completed = dst_level_completed;
     }
 }
 

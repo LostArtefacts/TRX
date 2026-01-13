@@ -1100,6 +1100,8 @@ static bool M_ReadResumeInfo(
     M_OPTIONAL(M_ReadNum(ctx, "num_scions", &resume->num_scions));
 
     M_MUST(M_ReadBool(ctx, "available", &resume->flags.available));
+    resume->level_completed = false;
+    M_OPTIONAL(M_ReadBool(ctx, "level_completed", &resume->level_completed));
     if (M_HasKey(ctx, "got_pistols")) {
         // TR1X <4.16
         M_MUST(M_ReadBool(ctx, "got_pistols", &resume->flags.has_pistols));

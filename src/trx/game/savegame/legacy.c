@@ -344,6 +344,7 @@ static void M_ReadStats(M_CONTEXT *const ctx, LEVEL_STATS *const stats)
 
 static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
 {
+    resume->level_completed = false;
     resume->pistol_ammo = M_ReadU16(ctx);
     if (g_TRVersion == 1) {
         resume->magnum_ammo = M_ReadU16(ctx);
@@ -408,7 +409,7 @@ static void M_ReadResumeInfos(M_CONTEXT *const ctx)
             const GF_LEVEL *const level = &level_table->levels[i];
             M_ReadResumeInfo(ctx, Savegame_GetCurrentInfo(level));
         } else {
-            RESUME_INFO dummy_resume_info;
+            RESUME_INFO dummy_resume_info = {};
             M_ReadResumeInfo(ctx, &dummy_resume_info);
         }
     }
