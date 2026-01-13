@@ -76,6 +76,9 @@ void GF_Shutdown(void)
     }
     M_FreeFMVs(gf);
 
+    Memory_FreePointer(&gf->globe.entries);
+    gf->globe.count = 0;
+
     if (gf->title_level != nullptr) {
         M_FreeLevel(gf->title_level);
         Memory_FreePointer(&gf->title_level);

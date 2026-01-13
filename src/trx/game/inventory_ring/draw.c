@@ -52,7 +52,7 @@ static void M_GlobeSelectApplyLight(
     } else if ((bit & 0x7Eu) != 0u) {
         const float pulse = M_GlobeSelectPulse01(Output_GetTime());
         const int32_t area_idx = Option_GlobeSelect_AreaFromMeshIdx(mesh_idx);
-        const bool completed = area_idx >= 0 && area_idx < 6
+        const bool completed = area_idx >= 0 && area_idx < MAX_GLOBE_ZONES
             && !ring->globe_select.selectable[area_idx];
 
         const RGB_F marker = completed ? (RGB_F) { pulse, 0.0f, 0.0f }

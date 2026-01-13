@@ -187,6 +187,39 @@ remains distinct for each game.
     </td>
   </tr>
   <tr valign="top">
+    <td>
+      <a name="globe-select-entries"></a>
+      <code>globe_select_entries</code>
+    </td>
+    <td>Object array</td>
+    <td>
+      Defines up to 6 selectable destinations for the <code>globe_select</code>
+      sequence. Each entry is an object with the following keys:
+      <ul>
+        <li>
+          <code>rot</code> (integer array, length 3): target rotation
+          (<code>[x, y, z]</code>) in engine angle units.
+        </li>
+        <li>
+          <code>start_level_ordinal</code> (integer): ordinal number of the
+          first level for this destination within the main level table.
+        </li>
+        <li>
+          <code>completion_level_ordinal</code> (integer): ordinal number of a
+          level that, once completed, marks this destination as completed.
+        </li>
+        <li>
+          <code>prereq_zones</code> (integer array): a list of required
+          destination indices to unlock this area (e.g. <code>[0, 1, 2, 4]</code>).
+        </li>
+        <li>
+          <code>mesh_idx</code> (integer): globe mesh index used to represent
+          the destination (for rotation/selection and hiding unavailable meshes).
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>levels</code></td>
     <td>Object array<strong>*</strong></td>
     <td>
@@ -346,6 +379,16 @@ remains distinct for each game.
     <td>String</td>
     <td>
       The path to the sound effects (.sfx) file to use in the game.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>globe_select_entries</code></td>
+    <td>Object array</td>
+    <td>
+      Defines up to 6 selectable destinations for the <code>globe_select</code>
+      sequence. See
+      <a href="./0-GLOBAL_PROPERTIES.md#globe-select-entries">TR1 section</a>
+      for the full schema.
     </td>
   </tr>
   <tr valign="top">

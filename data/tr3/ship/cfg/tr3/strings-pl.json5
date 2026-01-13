@@ -277,6 +277,12 @@
         }
     ],
     "game_strings": {
+        "GLOBE_SELECT_AREA_1": "\\{review}Indie",
+        "GLOBE_SELECT_AREA_2": "\\{review}Wyspy Południowego Pacyfiku",
+        "GLOBE_SELECT_AREA_3": "\\{review}Pustynia Nevada",
+        "GLOBE_SELECT_AREA_4": "\\{review}",
+        "GLOBE_SELECT_AREA_5": "\\{review}Londyn",
+        "GLOBE_SELECT_AREA_6": "\\{review}Antarktyda",
         "INVENTORY_RING_HEADING_FMT": "\\{review}\\{color 5}%s",
         "INVENTORY_RING_ITEM_COUNT_FMT": "\\{review}\\{color 3}%s",
         "INVENTORY_RING_OBJECT_NAME_FMT": "\\{review}\\{color 5}%s",

@@ -34,6 +34,15 @@
         "data/injections/misc_sprites.bin",
     ],
 
+    "globe_select_entries": [
+        {"rot": [-1536, -7936, 1536], "start_level_ordinal": 1,  "completion_level_ordinal": 4,  "prereq_zones": [], "mesh_idx": 2},
+        {"rot": [1024, -512, -256],   "start_level_ordinal": 5,  "completion_level_ordinal": 8,  "prereq_zones": [0], "mesh_idx": 5},
+        {"rot": [2560, 21248, -4096], "start_level_ordinal": 13, "completion_level_ordinal": 15, "prereq_zones": [0], "mesh_idx": 4},
+        {"rot": [-3328, 29440, 1024], "start_level_ordinal": -1, "completion_level_ordinal": -1, "prereq_zones": [], "mesh_idx": 3},
+        {"rot": [3072, -20992, 6400], "start_level_ordinal": 9,  "completion_level_ordinal": 12, "prereq_zones": [0], "mesh_idx": 1},
+        {"rot": [-5120, -15360, -18688], "start_level_ordinal": 16, "completion_level_ordinal": 19, "prereq_zones": [0, 1, 2, 4], "mesh_idx": 6},
+    ],
+
     "levels": [
         // 0. Lara's Home
         {

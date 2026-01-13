@@ -285,6 +285,12 @@
         }
     },
     "game_strings": {
+        "GLOBE_SELECT_AREA_1": "\\{review}Indien",
+        "GLOBE_SELECT_AREA_2": "\\{review}Südseeinseln",
+        "GLOBE_SELECT_AREA_3": "\\{review}Nevada-Wüste",
+        "GLOBE_SELECT_AREA_4": "\\{review}",
+        "GLOBE_SELECT_AREA_5": "\\{review}London",
+        "GLOBE_SELECT_AREA_6": "\\{review}Antarktis",
         "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
         "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
         "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
