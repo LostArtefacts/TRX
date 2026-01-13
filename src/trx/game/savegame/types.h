@@ -47,6 +47,8 @@ typedef struct {
         bool has_harpoon;
     } flags;
 
+    bool level_completed;
+
     LEVEL_STATS stats;
 } RESUME_INFO;
 
