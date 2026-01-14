@@ -49,15 +49,7 @@ static void M_FadeIn(M_PRIV *const p)
 
 static void M_FadeOut(M_PRIV *const p)
 {
-    if ((p->args.background_type != BK_PATTERN_STATIC
-         && p->args.background_type != BK_PATTERN_WAVE)
-        || M_EnableFade(p)) {
-        Output_Overlay_CaptureSnapshot();
-        Fader_InitFromCurrentHold(&p->top_fader, 1.0f, 0.5f, 0.1f);
-        p->state = STATE_FADE_OUT;
-    } else {
-        p->state = STATE_FINISH;
-    }
+    p->state = STATE_FINISH;
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
@@ -139,10 +131,8 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         break;
 
     case STATE_FADE_OUT:
-        if (g_InputDB.menu_confirm || g_InputDB.menu_back || !M_IsFading(p)) {
-            p->state = STATE_FINISH;
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        }
+        p->state = STATE_FINISH;
+        return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
         break;
 
     case STATE_FINISH:
@@ -153,6 +143,25 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     }
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
+}
+
+static bool M_RequestFadeToBlack(PHASE *const phase, FADER_ARGS *const out_args)
+{
+    M_PRIV *const p = phase->priv;
+    if (!M_EnableFade(p)) {
+        return false;
+    }
+
+    if (out_args != nullptr) {
+        *out_args = (FADER_ARGS) {
+            .from_current = false,
+            .initial = 0.0f,
+            .target = 1.0f,
+            .duration = 0.5f,
+            .debuff = 0.1f,
+        };
+    }
+    return true;
 }
 
 static void M_Draw(PHASE *const phase)
@@ -220,6 +229,8 @@ PHASE *Phase_Stats_Create(const PHASE_STATS_ARGS args)
     phase->end = M_End;
     phase->control = M_Control;
     phase->draw = M_Draw;
+    phase->request_fade_to_black = M_RequestFadeToBlack;
+    phase->uses_cross_fade_in = nullptr;
     return phase;
 }
 
