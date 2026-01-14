@@ -20,6 +20,12 @@ typedef struct {
     bool has_drawn;
 } M_PRIV;
 
+static bool M_UsesCrossFadeIn(PHASE *const phase)
+{
+    const M_PRIV *const p = phase->priv;
+    return p->args.loading_pic && !p->args.block_cross_fade_in;
+}
+
 static void M_FadeOut(M_PRIV *const p)
 {
     p->state = STATE_FADE_OUT;
@@ -130,6 +136,8 @@ PHASE *Phase_Picture_Create(const PHASE_PICTURE_ARGS args)
     phase->end = M_End;
     phase->control = M_Control;
     phase->draw = M_Draw;
+    phase->request_fade_to_black = nullptr;
+    phase->uses_cross_fade_in = M_UsesCrossFadeIn;
     return phase;
 }
 

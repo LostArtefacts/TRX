@@ -26,6 +26,8 @@ static bool m_Exiting;
 static FADER m_ExitFader;
 static int32_t m_PhaseStackSize = 0;
 static PHASE *m_PhaseStack[M_MAX_PHASES] = {};
+static bool m_PendingFadeToBlack = false;
+static FADER_ARGS m_PendingFadeToBlackArgs;
 
 static GF_COMMAND M_HandleOverride(void)
 {
@@ -46,6 +48,71 @@ static GF_COMMAND M_HandleOverride(void)
 
         return gf_cmd;
     }
+    return (GF_COMMAND) { .action = GF_NOOP };
+}
+
+static void M_DrawFadeToBlackTransition(const float opacity)
+{
+    Output_BeginScene();
+    Output_SwitchViewport(VIEWPORT_GAME);
+    UI_BeginScene();
+
+    Output_Overlay_DrawSnapshot(1.0f);
+    Output_Overlay_DrawBlackRectangle(opacity, false);
+
+    Overlay_Draw();
+    Console_Draw();
+    UI_EndScene();
+
+    Output_SwitchViewport(VIEWPORT_UI);
+    UI_Draw();
+
+    Output_Flush();
+    Output_Overlay_DrawBlackRectangle(
+        Fader_GetCurrentValue(&m_ExitFader), true);
+    Output_EndScene();
+
+    if (!Output_IsHeadless()
+        || GFX_Context_GetScheduledScreenshotPath() != nullptr) {
+        Output_FlipScreen();
+    } else {
+        GFX_Track_Reset();
+    }
+}
+
+static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
+{
+    Output_Overlay_CaptureSnapshot();
+
+    FADER fader = {};
+    Fader_InitToHold(&fader, 0.0f, 1.0f, args.duration, args.debuff);
+    while (Fader_IsActive(&fader)) {
+        (void)Clock_WaitTick();
+        m_CurrentFrame++;
+
+        Shell_ProcessEvents();
+        Console_Control();
+        Overlay_Control();
+
+        const GF_COMMAND gf_cmd = M_HandleOverride();
+        if (gf_cmd.action != GF_NOOP) {
+            return gf_cmd;
+        }
+
+        if (Shell_IsExiting() && !m_Exiting) {
+            m_Exiting = true;
+            if (g_Config.visuals.enable_exit_fade_effects) {
+                Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
+            }
+        } else if (m_Exiting && !Fader_IsActive(&m_ExitFader)) {
+            return (GF_COMMAND) { .action = GF_EXIT_GAME };
+        }
+
+        Interpolation_SetRate(1.0f);
+        Output_SetTime(m_CurrentFrame);
+        M_DrawFadeToBlackTransition(Fader_GetCurrentValue(&fader));
+    }
+
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
@@ -140,6 +207,19 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
     m_PhaseStack[m_PhaseStackSize++] = phase;
 
+    if (m_PendingFadeToBlack) {
+        const bool uses_cross_fade_in = phase != nullptr
+            && phase->uses_cross_fade_in != nullptr
+            && phase->uses_cross_fade_in(phase);
+        if (!uses_cross_fade_in) {
+            gf_cmd = M_RunFadeToBlackTransition(m_PendingFadeToBlackArgs);
+            if (gf_cmd.action != GF_NOOP) {
+                goto finish;
+            }
+        }
+        m_PendingFadeToBlack = false;
+    }
+
     if (phase->start != nullptr) {
         Clock_SyncTick();
         g_OldInputDB = g_Input;
@@ -191,6 +271,14 @@ finish:
     if (phase->end != nullptr) {
         phase->end(phase);
     }
+
+    if (phase->request_fade_to_black != nullptr) {
+        m_PendingFadeToBlack =
+            phase->request_fade_to_black(phase, &m_PendingFadeToBlackArgs);
+    } else {
+        m_PendingFadeToBlack = false;
+    }
+
     if (prev_phase != nullptr && prev_phase->resume != nullptr) {
         Clock_SyncTick();
         prev_phase->resume(phase);
