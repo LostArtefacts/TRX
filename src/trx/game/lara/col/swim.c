@@ -82,16 +82,16 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
 
     switch (dir) {
     case DIR_NORTH:
-        item->pos.z = (item->pos.z & -WALL_L) + WALL_L + LARA_RADIUS;
-        break;
-    case DIR_WEST:
-        item->pos.x = (item->pos.x & -WALL_L) + WALL_L + LARA_RADIUS;
-        break;
-    case DIR_SOUTH:
-        item->pos.z = (item->pos.z & -WALL_L) - LARA_RADIUS;
+        item->pos.z = ROUND_TO_SECTOR(item->pos.z) + WALL_L + LARA_RADIUS;
         break;
     case DIR_EAST:
-        item->pos.x = (item->pos.x & -WALL_L) - LARA_RADIUS;
+        item->pos.x = ROUND_TO_SECTOR(item->pos.x) + WALL_L + LARA_RADIUS;
+        break;
+    case DIR_SOUTH:
+        item->pos.z = ROUND_TO_SECTOR(item->pos.z) - LARA_RADIUS;
+        break;
+    case DIR_WEST:
+        item->pos.x = ROUND_TO_SECTOR(item->pos.x) - LARA_RADIUS;
         break;
     case DIR_UNKNOWN:
         return false;
