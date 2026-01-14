@@ -3,15 +3,15 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "levels": [
         {
-            "title": "Lara's Home",
+            "title": "Casa di Lara",
             "objects": {
                 "key_1": {
-                    "name": "Racetrack Key",
+                    "name": "Chiave del Circuito",
                 },
             },
         },
         {
-            "title": "Balzo nell'altopiano",
+            "title": "Balzo nell'Altopiano",
             "objects": {
                 "puzzle_1": {
                     "name": "Piede di Porco",
@@ -33,18 +33,18 @@
             },
         },
         {
-            "title": "Scogliere di Shakespeare",
+            "title": "Scogliera di Shakespeare",
             "objects": {
                 "key_1": {
                     "name": "Scheda di Attivazione della Trivella",
                 },
                 "puzzle_1": {
-                    "name": "Disco di accesso alla Pompa",
+                    "name": "Disco di Accesso alla Pompa",
                 },
             },
         },
         {
-            "title": "Dormendo con i Pesci",
+            "title": "Dormire con i Pesci",
             "objects": {
                 "puzzle_1": {
                     "name": "Lampadina",
@@ -64,7 +64,7 @@
             "title": "È un Manicomio!",
             "objects": {
                 "key_1": {
-                    "name": "Chiave Zoo",
+                    "name": "Chiave dello Zoo",
                 },
                 "key_4": {
                     "name": "Chiave della Voliera",

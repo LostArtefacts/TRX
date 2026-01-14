@@ -123,7 +123,7 @@
         "ENUM_BK_TRANSPARENT_MEDIUM": "Scuro",
         "ENUM_CAMERA_MODE_TR1": "TR1",
         "ENUM_CAMERA_MODE_TR2": "TR2",
-        "ENUM_CAMERA_MODE_TR3": "\\{review}TR3",
+        "ENUM_CAMERA_MODE_TR3": "TR3",
         "ENUM_INPUT_ROLE_ACTION": "Azione",
         "ENUM_INPUT_ROLE_CAMERA_BACK": "Telecamera Posteriore",
         "ENUM_INPUT_ROLE_CAMERA_DOWN": "Telecamera in Basso",
@@ -501,8 +501,8 @@
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Fa in modo che la barra della salute e la barra dell'ossigeno utilizzino transizioni di colore uniformi.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Deflessione rapida da muro",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT_DESCRIPTION": "Permette a Lara di riprendersi più velocemente dopo aver urtato un muro e un tasto direzionale viene premuto insieme con il tasto Corri.",
-        "SETTING_ENABLE_SOFT_STATICS": "\\{review}Collisione con mesh morbida",
-        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "\\{review}Consente a Lara di muoversi dolcemente contro le mesh statiche – simile a TR4+ – invece di fermarsi bruscamente.",
+        "SETTING_ENABLE_SOFT_STATICS": "Collisione delicata con mesh",
+        "SETTING_ENABLE_SOFT_STATICS_DESCRIPTION": "Permette a Lara di muoversi dolcemente contro le maglie poligonali statiche – simile a TR4+ – anziché fermarsi bruscamente.",
         "SETTING_ENABLE_SPRINT": "Scatto",
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Permette a Lara di effettuare uno scatto, come in TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Spinta su gradino",
@@ -717,10 +717,10 @@
         "STATS_AMMO": "Munizioni a Segno/Usate",
         "STATS_AMMO_HITS": "Colpi a Segno",
         "STATS_AMMO_USED": "Munizioni Usate",
-        "STATS_ASSAULT_BEST_TIME_FMT": "\\{review}%s",
+        "STATS_ASSAULT_BEST_TIME_FMT": "%s",
         "STATS_ASSAULT_FINISH": "Fine",
         "STATS_ASSAULT_NO_TIMES_SET": "Nessun tempo impostato",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}%s",
+        "STATS_ASSAULT_OTHER_TIMES_FMT": "%s",
         "STATS_ASSAULT_TITLE": "MIGLIORI TEMPI",
         "STATS_BASIC_FMT": "%d",
         "STATS_BONUS_STATISTICS": "Statistiche Bonus",
@@ -728,8 +728,8 @@
         "STATS_DETAIL_FMT": "%d di %d",
         "STATS_DISTANCE_TRAVELLED": "Distanza Percorsa",
         "STATS_FINAL_STATISTICS": "Statistiche Finali",
-        "STATS_GYM_ASSAULT_COURSE": "\\{review}Percorso d'Assalto",
-        "STATS_GYM_RACETRACK_COURSE": "\\{review}Circuito di Gara",
+        "STATS_GYM_ASSAULT_COURSE": "Corso d'Addestramento",
+        "STATS_GYM_RACETRACK_COURSE": "Corso su Circuito",
         "STATS_KILLS": "Uccisioni",
         "STATS_LEVEL": "Livello",
         "STATS_MEDIPACKS_USED": "Kit Medici Usati",
@@ -1510,10 +1510,10 @@
             "name": "Allarme",
         },
         "alphabet": {
-            "name": "Alfabeto",
+            "name": "Carattere Predefinito",
         },
         "assault_digits": {
-            "name": "Cifre Corso d'Assalto",
+            "name": "Cifre Corso d'Addestramento",
         },
         "bird_tweeter_1": {
             "name": "Gocce d'Acqua",
@@ -1738,7 +1738,7 @@
             "name": "Winston",
         },
         "alphabet_small": {
-            "name": "Carattere piccolo",
+            "name": "Carattere Piccolo",
         },
         "autos": {
             "name": "Pistole Automatiche",
@@ -1810,28 +1810,40 @@
             "name": "Quad",
         },
         "flame_emitter_big": {
-            "name": "\\{review}Emettitore di fiamma (Grande)",
+            "name": [
+                "Emettitore di Fiamme (Grande)",
+                "Emettitore di Fuoco (Grande)",
+            ]
         },
         "flame_emitter_small": {
-            "name": "\\{review}Emettitore di fiamma (Piccolo)",
+            "name": [
+                "Emettitore di Fiamme (Piccolo)",
+                "Emettitore di Fuoco (Piccolo)",
+            ]
         },
         "flame_emitter_jet": {
-            "name": "\\{review}Emettitore di fiamma (Getto)",
+            "name": [
+                "Emettitore di Fiamme (Getto)",
+                "Emettitore di Fuoco (Getto)",
+            ]
         },
         "flame_emitter_side": {
-            "name": "\\{review}Emettitore di fiamma (Laterale)",
+            "name": [
+                "Emettitore di Fiamme (Laterale)",
+                "Emettitore di Fuoco (Laterale)",
+            ]
         },
         "tropical_fish": {
-            "name": "\\{review}Pesci Tropicali",
+            "name": "Pesci Tropicali",
         },
         "pirahnas": {
-            "name": "\\{review}Piranha",
+            "name": "Piranha",
         },
         "gun_shell": {
-            "name": "\\{review}Bossolo di pistola",
+            "name": "Bossolo di Proiettile",
         },
         "shotgun_shell": {
-            "name": "\\{review}Bossolo di fucile a pompa",
+            "name": "Bossolo di Cartuccia",
         }
     }
 }
