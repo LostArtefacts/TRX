@@ -472,6 +472,8 @@
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Włącza ekran z informacjami prawnymi oraz filmik z logiem Core Design na początku gry.",
         "SETTING_ENABLE_LOADING_SCREENS": "Ekrany ładowania",
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Włącza ekrany ładowania pokazywane przed każdym poziomem.",
+        "SETTING_ENABLE_MANUAL_CAMERA": "\\{review}Ręczna kamera",
+        "SETTING_ENABLE_MANUAL_CAMERA_DESCRIPTION": "\\{review}Włącza klawisze kamery (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) używane do sterowania kamerą w trybie zdjęć, aby również obracać kamerę w grze.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Muzyka w menu głównym",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Odtwarza muzykę w menu głównym.",
         "SETTING_ENABLE_NEUTRAL_TWISTS": "Salta w miejscu",

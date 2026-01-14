@@ -472,6 +472,8 @@
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Показывать логотипы и ролики правообладателей при запуске игры.",
         "SETTING_ENABLE_LOADING_SCREENS": "Загрузочные экраны",
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Показывать загрузочные экраны в стиле PS1 перед каждым уровнем.",
+        "SETTING_ENABLE_MANUAL_CAMERA": "\\{review}Ручное управление камерой",
+        "SETTING_ENABLE_MANUAL_CAMERA_DESCRIPTION": "\\{review}Включает клавиши управления камерой (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}), используемые для управления камерой в режиме фотографии, для также вращения игровой камеры.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Музыка в главном меню",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Воспроизводить музыку в главном меню.",
         "SETTING_ENABLE_NEUTRAL_TWISTS": "Нейтральные перевороты",

@@ -214,6 +214,7 @@ typedef struct {
         bool enable_soft_statics;
 
         bool enable_auto_item_selection;
+        bool enable_manual_camera;
         bool enable_item_examining;
         bool enable_target_change;
         bool enable_walk_to_items;

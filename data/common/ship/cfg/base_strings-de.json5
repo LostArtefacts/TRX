@@ -472,6 +472,8 @@
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Aktiviert die Rechtshinweise und die Core Design FMV beim Starten des Spiels.",
         "SETTING_ENABLE_LOADING_SCREENS": "Ladebildschirme",
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Aktiviert PS1-artige Ladebildschirme vor jedem Level.",
+        "SETTING_ENABLE_MANUAL_CAMERA": "\\{review}Manuelle Kamera",
+        "SETTING_ENABLE_MANUAL_CAMERA_DESCRIPTION": "\\{review}Aktiviert die Kameratasten (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}), die zur Steuerung der Kamera im Fotomodus verwendet werden, um auch die Ingame-Kamera zu drehen.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Hauptmenü-Musik",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Spielt Musik im Hauptmenü ab.",
         "SETTING_ENABLE_NEUTRAL_TWISTS": "\\{review}Neutrale Drehung",

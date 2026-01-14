@@ -472,6 +472,8 @@
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Seallaidh seo scrion laghail agus bhideo Core Design aig toiseach a' gheama.",
         "SETTING_ENABLE_LOADING_SCREENS": "Sgrionaichean luchdachaidh",
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Cuiridh seo scrionaichean luchdachaidh stoidhle PS1 an comas aig toiseach gach ìre.",
+        "SETTING_ENABLE_MANUAL_CAMERA": "\\{review}Camara làimhe",
+        "SETTING_ENABLE_MANUAL_CAMERA_DESCRIPTION": "\\{review}Cuir comas air na h-iuchraichean camara (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) a thathas a’ cleachdadh gus smachd a chumail air camara Modh Dealbh, gus cuideachd camara a’ gheama a chuairteachadh.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Ceòl sa phrìomh chlàr",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Cluichidh ceòl anns a' phrìomh chlàr.",
         "SETTING_ENABLE_NEUTRAL_TWISTS": "Snìomh neodrach",
