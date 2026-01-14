@@ -1,5 +1,13 @@
 #include <trx/game/input/backends/internal.h>
 
+#include <trx/config.h>
+
+static bool M_IsManualCameraInput(const INPUT_ROLE role)
+{
+    return role == INPUT_ROLE_CAMERA_FORWARD || role == INPUT_ROLE_CAMERA_BACK
+        || role == INPUT_ROLE_CAMERA_LEFT || role == INPUT_ROLE_CAMERA_RIGHT;
+}
+
 void Input_ConflictHelper(
     const INPUT_LAYOUT layout,
     bool (*check_conflict_func)(
@@ -19,6 +27,12 @@ void Input_ConflictHelper(
             }
 
             if (role1 == role2) {
+                continue;
+            }
+
+            if (!g_Config.gameplay.enable_manual_camera
+                && (M_IsManualCameraInput(role1)
+                    || M_IsManualCameraInput(role2))) {
                 continue;
             }
 

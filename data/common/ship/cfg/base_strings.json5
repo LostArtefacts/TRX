@@ -472,6 +472,8 @@
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Enables legal screen and Core Design FMV at the game start.",
         "SETTING_ENABLE_LOADING_SCREENS": "Loading screens",
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Enables PS1 style loading screens before each level.",
+        "SETTING_ENABLE_MANUAL_CAMERA": "Manual camera",
+        "SETTING_ENABLE_MANUAL_CAMERA_DESCRIPTION": "Enables the camera keys (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) used to control Photo Mode camera, to also rotate the ingame camera.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Main menu music",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Plays music in the main menu.",
         "SETTING_ENABLE_NEUTRAL_TWISTS": "Neutral twists",

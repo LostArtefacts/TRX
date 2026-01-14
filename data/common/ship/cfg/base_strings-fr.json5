@@ -472,6 +472,8 @@
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Affiche l'écran juridique et la FMV Core Design au début du jeu.",
         "SETTING_ENABLE_LOADING_SCREENS": "Activer les écrans de chargement",
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Active les écrans de chargements avant chaque début des niveaux, comme sur PlayStation 1.",
+        "SETTING_ENABLE_MANUAL_CAMERA": "\\{review}Caméra manuelle",
+        "SETTING_ENABLE_MANUAL_CAMERA_DESCRIPTION": "\\{review}Active les touches de la caméra (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilisées pour contrôler la caméra du mode photo, pour également faire pivoter la caméra en jeu.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Musique du menu principal",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Active ou non la musique dans le menu principal.",
         "SETTING_ENABLE_NEUTRAL_TWISTS": "\\{review}Pirouettes sur place",

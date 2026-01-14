@@ -3,6 +3,7 @@ X_UI_CFG_BOOL(gameplay.enable_walk_to_items,       SETTING_ENABLE_WALK_TO_ITEMS)
 X_UI_CFG_BOOL(input.enable_tr3_sidesteps,          SETTING_ENABLE_TR3_SIDESTEPS)
 X_UI_CFG_ENUM(input.quick_guns_mode,               SETTING_QUICK_GUNS_MODE, .misc = UI_Settings_QuickGunsModeEnumEntries)
 X_UI_CFG_ENUM(gameplay.look_mode,                  SETTING_LOOK_MODE, .misc = UI_Settings_LookModeEnumEntries)
+X_UI_CFG_BOOL(gameplay.enable_manual_camera,       SETTING_ENABLE_MANUAL_CAMERA)
 X_UI_CFG_INT32(gameplay.idle_pose_timeout,         SETTING_IDLE_POSE_TIMEOUT, .min_value = 0, .max_value = 1200)
 X_UI_CFG_BOOL(gameplay.enable_idle_pose_camera,    SETTING_ENABLE_IDLE_POSE_CAMERA, .custom_handler = { .is_available = UI_Settings_IdlePose_IsAvailable })
 

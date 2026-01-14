@@ -472,6 +472,8 @@
         "SETTING_ENABLE_LEGAL_DESCRIPTION": "Abilita la schermata di introduzione e il video Core Design all'avvio del gioco.",
         "SETTING_ENABLE_LOADING_SCREENS": "Schermate di caricamento",
         "SETTING_ENABLE_LOADING_SCREENS_DESCRIPTION": "Abilita le schermate di caricamento in stile PS1 prima di ogni livello.",
+        "SETTING_ENABLE_MANUAL_CAMERA": "\\{review}Telecamera manuale",
+        "SETTING_ENABLE_MANUAL_CAMERA_DESCRIPTION": "\\{review}Abilita i tasti della telecamera (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) usati per controllare la telecamera della Modalità Foto, per ruotare anche la telecamera di gioco.",
         "SETTING_ENABLE_MUSIC_IN_MENU": "Musica menu principale",
         "SETTING_ENABLE_MUSIC_IN_MENU_DESCRIPTION": "Riproduce la musica nel menu principale.",
         "SETTING_ENABLE_NEUTRAL_TWISTS": "Rotazione da fermo",

@@ -203,6 +203,14 @@ void Camera_Update(void)
 
 void Camera_MoveManual(void)
 {
+    if (g_Input.camera_reset) {
+        M_OffsetReset();
+    }
+
+    if (!g_Config.gameplay.enable_manual_camera) {
+        return;
+    }
+
     const int16_t camera_delta = (const int32_t)(DEG_90 / LOGIC_FPS)
         * (double)m_ManualCameraMultiplier[g_Config.gameplay.camera_speed];
 
@@ -215,9 +223,6 @@ void Camera_MoveManual(void)
         M_OffsetAdditionalElevation(-camera_delta);
     } else if (g_Input.camera_back) {
         M_OffsetAdditionalElevation(camera_delta);
-    }
-    if (g_Input.camera_reset) {
-        M_OffsetReset();
     }
 }
 
