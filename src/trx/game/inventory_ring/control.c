@@ -438,8 +438,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             } else {
                 InvRing_MotionSetup(
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
-                Fader_InitFromCurrent(
-                    &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
+                if (g_Config.visuals.enable_fade_effects
+                    && g_Config.ui.inventory_fade_effects) {
+                    Fader_InitFromCurrent(
+                        &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
+                }
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
@@ -767,8 +770,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 // Fade to game. Do it as soon as the ring starts to close.
                 InvRing_MotionSetup(
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
-                Fader_InitFromCurrent(
-                    &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
+                if (g_Config.visuals.enable_fade_effects
+                    && g_Config.ui.inventory_fade_effects) {
+                    Fader_InitFromCurrent(
+                        &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
+                }
             }
             InvRing_MotionRadius(ring, 0);
             InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);

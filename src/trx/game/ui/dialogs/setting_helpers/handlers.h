@@ -8,7 +8,7 @@ bool UI_Settings_EnablePS1Crystals_IsAvailable(
 bool UI_Settings_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_FixWadeWallHit_IsAvailable(const UI_SETTINGS_OPTION *option);
-bool UI_Settings_EnableExitFadeEffects_IsAvailable(
+bool UI_Settings_EnableFadeEffects_IsAvailable(
     const UI_SETTINGS_OPTION *option);
 bool UI_Settings_PauseMusicInInventory_IsAvailable(
     const UI_SETTINGS_OPTION *option);

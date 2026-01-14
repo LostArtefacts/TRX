@@ -119,7 +119,8 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         if (g_InputDB.pause) {
             M_ReturnToGame(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        } else if (!Fader_IsActive(&p->fader)) {
+        } else if (
+            !Fader_IsActive(&p->fader) || !g_Config.ui.pause_fade_effects) {
             p->state = STATE_WAIT;
             M_CreateText(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
@@ -154,7 +155,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     }
 
     case STATE_FADE_OUT:
-        if (!Fader_IsActive(&p->fader)) {
+        if (!Fader_IsActive(&p->fader) || !g_Config.ui.pause_fade_effects) {
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = p->action },
@@ -170,7 +171,9 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
-    const float progress = Fader_GetCurrentValue(&p->fader);
+    const float progress = g_Config.ui.pause_fade_effects
+        ? Fader_GetCurrentValue(&p->fader)
+        : p->fader.args.target;
     switch (g_Config.ui.pause_background_style) {
     case BK_TRANSPARENT_MEDIUM:
         Output_Overlay_DrawGame();
