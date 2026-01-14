@@ -186,7 +186,9 @@ void InvRing_Draw(INV_RING *const ring)
         }
         Interpolation_Interpolate();
     } else {
-        const float opacity = Fader_GetCurrentValue(&ring->back_fader);
+        const float opacity = g_Config.ui.inventory_fade_effects
+            ? Fader_GetCurrentValue(&ring->back_fader)
+            : ring->back_fader.args.target;
 
         switch (ring->background_style) {
         case BK_TRANSPARENT_MEDIUM:

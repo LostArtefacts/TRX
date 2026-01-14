@@ -27,9 +27,15 @@ typedef struct {
     UI_STATS_DIALOG_STATE *ui_state;
 } M_PRIV;
 
+static bool M_EnableFade(const M_PRIV *const p)
+{
+    return g_Config.ui.stats_fade_effects || p->args.show_final_stats;
+}
+
 static bool M_IsFading(const M_PRIV *const p)
 {
-    return Fader_IsActive(&p->top_fader) || Fader_IsActive(&p->back_fader);
+    return M_EnableFade(p)
+        && (Fader_IsActive(&p->top_fader) || Fader_IsActive(&p->back_fader));
 }
 
 static void M_FadeIn(M_PRIV *const p)
@@ -43,8 +49,9 @@ static void M_FadeIn(M_PRIV *const p)
 
 static void M_FadeOut(M_PRIV *const p)
 {
-    if (p->args.background_type != BK_PATTERN_STATIC
-        && p->args.background_type != BK_PATTERN_WAVE) {
+    if ((p->args.background_type != BK_PATTERN_STATIC
+         && p->args.background_type != BK_PATTERN_WAVE)
+        || M_EnableFade(p)) {
         Output_Overlay_CaptureSnapshot();
         Fader_InitFromCurrentHold(&p->top_fader, 1.0f, 0.5f, 0.1f);
         p->state = STATE_FADE_OUT;
@@ -152,14 +159,18 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
-    const float top_opacity = Fader_GetCurrentValue(&p->top_fader);
+    const float top_opacity = M_EnableFade(p)
+        ? Fader_GetCurrentValue(&p->top_fader)
+        : p->top_fader.args.target;
     if (top_opacity > 0.0f) {
         Output_Overlay_DrawSnapshot(1.0f);
         Output_Overlay_DrawBlackRectangle(top_opacity, false);
         return;
     }
 
-    const float progress = Fader_GetCurrentValue(&p->back_fader);
+    const float progress = M_EnableFade(p)
+        ? Fader_GetCurrentValue(&p->back_fader)
+        : p->back_fader.args.target;
     switch (p->args.background_type) {
     case BK_TRANSPARENT_MEDIUM:
         Output_Overlay_DrawGame();

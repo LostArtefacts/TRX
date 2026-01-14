@@ -14,7 +14,7 @@ bool UI_Settings_EnablePS1Crystals_IsAvailable(
     return g_Config.gameplay.enable_save_crystals;
 }
 
-bool UI_Settings_EnableExitFadeEffects_IsAvailable(
+bool UI_Settings_EnableFadeEffects_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.visuals.enable_fade_effects;

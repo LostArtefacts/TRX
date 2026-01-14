@@ -6,6 +6,7 @@
 - added the ability to control whether or not allies are hostile towards Lara via Lua (#3873)
 - added the ability to control via Lua which enemies are allies and which are ones that will fight with allies (#3873)
 - added the ability to control Lara's air timer via Lua (#4592)
+- added the ability to fine-tune the fade effects between the inventory ring, the pause screen, and the stats screen (Graphic Options → UI → Inventory/Pause/Stats fade effects)
 - added gamma control (TR3-style) to all games
 - added support for TR3 weather effects to all games (#3881)
 - added support for 3D secret objects, and provided defaults for OG levels in TR2 (#4380)
