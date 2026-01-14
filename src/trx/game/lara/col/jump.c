@@ -123,7 +123,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
-        switch (Math_GetDirection(angle)) {
+        switch (dir) {
         case DIR_NORTH:
             item->pos.z = ROUND_TO_SECTOR_END(item->pos.z) - LARA_RADIUS;
             item->pos.x += coll->shift.x;

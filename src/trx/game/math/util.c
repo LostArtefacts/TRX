@@ -49,11 +49,11 @@ DIRECTION Math_GetDirectionCone(const int16_t angle, const int16_t cone)
     if (angle >= -cone && angle <= cone) {
         return DIR_NORTH;
     } else if (angle >= DEG_90 - cone && angle <= DEG_90 + cone) {
-        return DIR_WEST;
+        return DIR_EAST;
     } else if (angle >= DEG_180 - cone || angle <= -DEG_180 + cone) {
         return DIR_SOUTH;
     } else if (angle >= -DEG_90 - cone && angle <= -DEG_90 + cone) {
-        return DIR_EAST;
+        return DIR_WEST;
     }
     return DIR_UNKNOWN;
 }
@@ -63,11 +63,11 @@ int16_t Math_DirectionToAngle(const DIRECTION dir)
     switch (dir) {
     case DIR_NORTH:
         return 0;
-    case DIR_WEST:
+    case DIR_EAST:
         return DEG_90;
     case DIR_SOUTH:
         return -DEG_180;
-    case DIR_EAST:
+    case DIR_WEST:
         return -DEG_90;
     default:
         return 0;

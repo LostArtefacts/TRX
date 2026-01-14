@@ -379,7 +379,7 @@ static void M_CrawlToClimb(ITEM *const item, COLL_INFO *const coll)
     if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
 
-        switch (Math_GetDirection(item->rot.y)) {
+        switch (dir) {
         case DIR_NORTH:
             item->pos.z =
                 ROUND_TO_SECTOR_END(item->pos.z) - M_CRAWL_TO_HANG_XZ_OFFSET;
