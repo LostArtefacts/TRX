@@ -113,9 +113,10 @@ Download the latest TRX release for TR1 or TR2:
 
 6. **What about TR3 support?**
 
-    The team is hard at work continuing to polish TRX for TR1 and TR2 as well
-    as adding features for custom levels. At the same time, work has started on
-    adding TR3 features into TRX, but there is no estimated completion date.
+    TR3 work is well underway! Thanks to *TOMB3* serving as the backbone
+    for many of its core systems, tons of native systems are already in
+    place – new triangle geometry logic, new rendering effects, and
+    more. Still early, but we're moving _fast_.
 
 ## Website
 The Lost Artefacts team is a small, passionate community of developers and
