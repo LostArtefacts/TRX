@@ -109,6 +109,10 @@
 - fixed Stopwatch position in the inventory ring (#2014)
 
 **TR3**:
+
+A lot of our TR3 work builds on *TOMB3*, which Troye and ChocolateFan kindly let us dive into and expand on.
+Their hard work gave us the perfect base to push TRX further, and made the climb a lot less vertical!
+
 - added support for monkey bar mechanics
 - added support for crawlspace mechanics
 - added RGB lighting system support
