@@ -86,7 +86,7 @@ Download the latest TRX release for TR1-TR3:
 ### Tomb Raider 3
 * For installation instructions, refer to the [detailed documentation](docs/tr3/INSTALLING.md).
 
-For the changelog for all of the games (TRX uses an unified engine capable of
+For the changelog for all of the games (TRX uses a unified engine capable of
 running all 3 games), please refer to [this document](docs/CHANGELOG.md).
 
 
