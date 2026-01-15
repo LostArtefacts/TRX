@@ -48,6 +48,7 @@ jobs:
         run: |
           just download-assets 1
           just download-assets 2
+          just download-assets 3
 
       - name: Package asset (${{ inputs.platform }})
         run: |
