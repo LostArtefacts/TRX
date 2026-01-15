@@ -183,7 +183,7 @@ remains distinct for each game.
     <td>
       Global data injection file paths. Individual levels will inherit these
       unless <code>inherit_injections</code> is set to <code>false</code> on
-      those levels. See <a href="./5-INJECTIONS.md">Injections</a> for full details.
+      those levels. See <a href="../15-INJECTIONS.md">Injections</a> for full details.
     </td>
   </tr>
   <tr valign="top">
