@@ -28,7 +28,7 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
     if (x < 0 || y < 0 || width < 0 || height < 0) {
         struct {
             int32_t w, h;
-        } ar;
+        } ar = { .w = 1, .h = 1 };
         switch (g_Config.rendering.aspect_mode) {
         case AM_4_3:
             ar.w = 4;

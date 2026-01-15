@@ -62,7 +62,7 @@ static int M_L_ConsoleEval(lua_State *const L)
     Console_SetVerbose(verbose);
     COMMAND_RESULT res = Console_Eval(cmd);
     Console_SetVerbose(old_verbose);
-    const char *err;
+    const char *err = "unknown error";
     switch (res) {
     case CR_BAD_INVOCATION:
         err = "bad invocation";

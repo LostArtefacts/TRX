@@ -299,8 +299,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    int16_t fheight;
-    int16_t rheight;
+    int16_t fheight = NO_HEIGHT;
+    int16_t rheight = NO_HEIGHT;
     if (g_Input.forward) {
         fheight = Lara_FloorFront(item, item->rot.y, 104);
     } else if (g_Input.back) {
