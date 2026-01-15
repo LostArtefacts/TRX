@@ -107,6 +107,7 @@
 - fixed game crashing when Lara passes through light sources in levels compiled with dxtre3D
 - fixed Skidoo music not getting resumed (#4519)
 - fixed Stopwatch position in the inventory ring (#2014)
+- fixed static lighting on broken ice/windows (#4506, regression from 1.0)
 
 **TR3**:
 - added support for monkey bar mechanics
