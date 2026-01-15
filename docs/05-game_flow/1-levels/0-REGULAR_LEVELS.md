@@ -177,7 +177,7 @@ Following are each of the properties available within a level.
     <td><code>injections</code></td>
     <td>String array</td>
     <td colspan="2">
-      Injection file paths. See <a href="../5-INJECTIONS.md">Injections</a> for full
+      Injection file paths. See <a href="../../15-INJECTIONS.md">Injections</a> for full
       details.
     </td>
   </tr>
@@ -186,7 +186,7 @@ Following are each of the properties available within a level.
     <td>Boolean</td>
     <td colspan="2">
       A flag to indicate whether or not the level should use the globally
-      defined injections. See <a href="../5-INJECTIONS.md">Injections</a> for full
+      defined injections. See <a href="../../15-INJECTIONS.md">Injections</a> for full
       details.
     </td>
   </tr>
