@@ -14,7 +14,7 @@
 
 <hr/>
 
-Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1** and **Tomb Raider 2**. TRX aims to enhance these classic games through decompilation and the implementation of open-source alternatives to proprietary components. TRX is a single engine capable of running TR1, TR2, and custom levels respecting each of the distinct, classic engines' mechanics.
+Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1**, **Tomb Raider 2** and **Tomb Raider 3**. TRX aims to enhance these classic games through decompilation and the implementation of open-source alternatives to proprietary components. TRX is a single engine capable of running TR1, TR2, and custom levels respecting each of the distinct, classic engines' mechanics.
 
 ## Showcase
 <table>
@@ -71,7 +71,7 @@ Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1** and
 </table>
 
 ## Download
-Download the latest TRX release for TR1 or TR2:
+Download the latest TRX release for TR1-TR3:
 
 <a href="https://github.com/LostArtefacts/TRX/releases?q=prerelease%3Afalse&expanded=true">
     <img src="data/download_trx.svg"/>
@@ -79,18 +79,26 @@ Download the latest TRX release for TR1 or TR2:
 
 ### Tomb Raider 1
 * For installation instructions, refer to the [detailed documentation](docs/tr1/INSTALLING.md).
-* See the [changelog](docs/tr1/CHANGELOG.md) for a version history.
 
 ### Tomb Raider 2
 * For installation instructions, refer to the [detailed documentation](docs/tr2/INSTALLING.md).
-* See the [changelog](docs/tr2/CHANGELOG.md) for a version history.
+
+### Tomb Raider 3
+* For installation instructions, refer to the [detailed documentation](docs/tr3/INSTALLING.md).
+
+For the changelog for all of the games (TRX uses an unified engine capable of
+running all 3 games), please refer to [this document](docs/CHANGELOG.md).
 
 
 ## Q&A
 
-1. **Are TR1 and TR2 fully playable from beginning to end?**
+1. **Are all three games fully playable from beginning to end?**
 
-    By all means! If you encounter a bug, please file a ticket.
+    TR1 and TR2 – yes, by all means! If you encounter a bug, please file a
+    ticket.
+
+    TR3 is still in the works, though, and the team is hard at work to make
+    this happen!
 
 2. **Can we get HD textures? What about other visual updates?**
 

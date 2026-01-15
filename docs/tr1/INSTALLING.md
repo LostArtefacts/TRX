@@ -340,22 +340,6 @@ If you install everything correctly, your game directory should look more or les
 │   ├── track58.flac
 │   ├── track59.flac
 │   └── track60.flac
-├── scripting
-│   └── trx
-│       ├── assault_stats.lua
-│       ├── catalog.lua
-│       ├── config.lua
-│       ├── console.lua
-│       ├── creatures.lua
-│       ├── events.lua
-│       ├── game.lua
-│       ├── items.lua
-│       ├── lara.lua
-│       ├── log.lua
-│       ├── music.lua
-│       ├── objects.lua
-│       ├── rooms.lua
-│       └── sound.lua
 ├── shaders
 │   ├── 2d.glsl
 │   ├── billboard.glsl
@@ -363,6 +347,8 @@ If you install everything correctly, your game directory should look more or les
 │   ├── fbo.glsl
 │   ├── lights.glsl
 │   ├── meshes.glsl
+│   ├── meshes_tr3.glsl
+│   ├── meshes_tr12.glsl
 │   └── ui.glsl
 └── TRX.exe</code></pre>
 </details>
@@ -680,22 +666,6 @@ If you install everything correctly, your game directory should look more or les
         │   ├── track58.flac
         │   ├── track59.flac
         │   └── track60.flac
-        ├── scripting
-        │   └── trx
-        │       ├── assault_stats.lua
-        │       ├── catalog.lua
-        │       ├── config.lua
-        │       ├── console.lua
-        │       ├── creatures.lua
-        │       ├── events.lua
-        │       ├── game.lua
-        │       ├── items.lua
-        │       ├── lara.lua
-        │       ├── log.lua
-        │       ├── music.lua
-        │       ├── objects.lua
-        │       ├── rooms.lua
-        │       └── sound.lua
         └── shaders
             ├── 2d.glsl
             ├── billboard.glsl
@@ -703,6 +673,8 @@ If you install everything correctly, your game directory should look more or les
             ├── fbo.glsl
             ├── lights.glsl
             ├── meshes.glsl
+            ├── meshes_tr3.glsl
+            ├── meshes_tr12.glsl
             └── ui.glsl</code></pre>
 </details>
 
