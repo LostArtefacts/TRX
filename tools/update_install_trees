@@ -9,6 +9,11 @@ from shared.paths import DATA_DIR, DOCS_DIR, PROJECT_PATHS, REPO_DIR
 from shared.vfs import VirtualFilesystem
 
 DATA_REPO_ROOT_DIR = REPO_DIR.parent / "TRX-data"
+
+IGNORED_FILES = """
+    max_stats.cache.json
+"""
+
 TR1_OG_FILES = """
 data/cat.phd
 data/cut1.phd
@@ -210,6 +215,51 @@ music/60.mp3
 music/61.mp3
 """
 
+TR3_OG_FILES = """
+data/main.sfx
+data/tombpc.dat
+fmv/crsh_eng.rpl
+fmv/endgame.rpl
+fmv/intr_eng.rpl
+fmv/sail_eng.rpl
+fmv/logo.rpl
+audio/cdaudio.wad
+cuts/cut1.tr2
+cuts/cut2.tr2
+data/antarc.tr2
+data/chamber.tr2
+data/city.tr2
+data/compound.tr2
+data/crash.tr2
+data/house.tr2
+data/jungle.tr2
+data/mines.tr2
+data/nevada.tr2
+data/office.tr2
+data/quadchas.tr2
+data/rapids.tr2
+data/roofs.tr2
+data/sewer.tr2
+data/shore.tr2
+data/stpaul.tr2
+data/temple.tr2
+data/title.tr2
+data/tonyboss.tr2
+data/tower.tr2
+data/triboss.tr2
+data/vict.tr2
+cuts/cut3.tr2
+cuts/cut4.tr2
+cuts/cut5.tr2
+cuts/cut6.tr2
+cuts/cut7.tr2
+cuts/cut8.tr2
+cuts/cut9.tr2
+cuts/cut11.tr2
+cuts/cut12.tr2
+data/area51.tr2
+"""
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -229,6 +279,7 @@ def collect(root_dir: Path) -> Iterable[Path]:
         path.relative_to(root_dir)
         for path in root_dir.rglob("*")
         if path.is_file()
+        and path.name not in IGNORED_FILES
     )
 
 
@@ -285,6 +336,35 @@ def tr2_files_mac() -> Iterable[Path]:
     yield from (Path("Contents/Resources/") / sub for sub in tr2_ship_files())
     yield from (Path("Contents/Resources/") / sub for sub in tr2_og_files())
     yield Path("Contents/Resources/icon.icns")
+
+
+def tr3_og_files() -> Iterable[Path]:
+    yield from (Path(line) for line in TR3_OG_FILES.splitlines() if line)
+
+
+def tr3_ship_files() -> Iterable[Path]:
+    yield from collect(DATA_DIR / "common/ship")
+    yield from collect(PROJECT_PATHS[2].data_dir / "ship")
+    yield from collect(DATA_REPO_ROOT_DIR / "tr3/ship")
+
+
+def tr3_files_win() -> Iterable[Path]:
+    yield Path("TRX.exe")
+    yield Path("cfg/TR3X.json5*")
+    yield from tr3_og_files()
+    yield from tr3_ship_files()
+
+
+def tr3_files_mac() -> Iterable[Path]:
+    yield Path("Contents/_CodeSignature")
+    yield Path("Contents/Frameworks")
+    yield Path("Contents/info.plist")
+    yield Path("Contents/MacOS")
+    yield from (Path("Contents/Resources/") / sub for sub in tr3_ship_files())
+    yield from (Path("Contents/Resources/") / sub for sub in tr3_og_files())
+    yield Path("Contents/Resources/icon.icns")
+
+
 
 
 def make_tree_string(paths: list[Path]) -> str:
@@ -354,6 +434,8 @@ def main() -> None:
         (PROJECT_PATHS[1].docs_dir / "INSTALLING.md", "mac", tr1_files_mac),
         (PROJECT_PATHS[2].docs_dir / "INSTALLING.md", "win", tr2_files_win),
         (PROJECT_PATHS[2].docs_dir / "INSTALLING.md", "mac", tr2_files_mac),
+        (PROJECT_PATHS[3].docs_dir / "INSTALLING.md", "win", tr3_files_win),
+        (PROJECT_PATHS[3].docs_dir / "INSTALLING.md", "mac", tr3_files_mac),
     ]
 
     for path, platform, func in trees:

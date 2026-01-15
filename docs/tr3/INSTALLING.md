@@ -2,12 +2,7 @@
 
 ## Installing (simplified)
 
-1. Download the latest TRX installer for TR2 (e.g. `TRX-1.0-Windows_Installer-tr2.exe`).
-2. Mark the installer EXE as safe to run:
-    - Right-click on the `.exe`.
-    - Go to properties.
-    - Click "Unblock".
-3. Run the installer and proceed with the steps.
+**The TR3 installer is not yet ready, but we'll eventually provide it.**
 
 > [!NOTE]
 > When downloading TRX, you might see a warning from Windows Defender, your browser, or another security tool. Modern antivirus systems use AI‑based heuristics – they flag anything uncommon or unsigned as suspicious, even if it's perfectly safe. TRX can trigger these alerts because:
@@ -27,8 +22,7 @@
      Make sure you choose to overwrite existing directories and files.
 3. If installing for the first time – put your original game files into the target directory.
 
-   Optionally, you can also install the Golden Mask expansion pack files. Extract the contents of the following zip into the target directory:  
-   https://lostartefacts.dev/aux/tr2x/trgm.zip
+   Unfortunately, due to legal reasons, we cannot offer an easy packaging of The Lost Artifact expansion pack.
 
 ## Verifying the installation
 
@@ -36,6 +30,8 @@ If you install everything correctly, your game directory should look more or les
 
 <details data-id="file-tree-win">
 <pre><code>.
+├── audio
+│   └── cdaudio.wad
 ├── cfg
 │   ├── base_strings-de.json5
 │   ├── base_strings-en-gb.json5
@@ -78,56 +74,31 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   └── strings.json5
-│   ├── TR2X.json5*
+│   ├── TR3X.json5*
 │   └── weapons.json5
-├── data
-│   ├── assault.tr2
-│   ├── boat.tr2
-│   ├── catacomb.tr2
+├── cuts
 │   ├── cut1.tr2
 │   ├── cut2.tr2
 │   ├── cut3.tr2
 │   ├── cut4.tr2
-│   ├── deck.tr2
-│   ├── emprtomb.tr2
-│   ├── floating.tr2
+│   ├── cut5.tr2
+│   ├── cut6.tr2
+│   ├── cut7.tr2
+│   ├── cut8.tr2
+│   ├── cut9.tr2
+│   ├── cut11.tr2
+│   └── cut12.tr2
+├── data
+│   ├── antarc.tr2
+│   ├── area51.tr2
+│   ├── chamber.tr2
+│   ├── city.tr2
+│   ├── compound.tr2
+│   ├── crash.tr2
 │   ├── house.tr2
-│   ├── icecave.tr2
 │   ├── images
-│   │   ├── 3x2
-│   │   │   ├── china.webp
-│   │   │   ├── credit00_gm.webp
-│   │   │   ├── credit01.webp
-│   │   │   ├── credit02.webp
-│   │   │   ├── credit03.webp
-│   │   │   ├── credit04.webp
-│   │   │   ├── credit05.webp
-│   │   │   ├── credit06.webp
-│   │   │   ├── credit07.webp
-│   │   │   ├── credit07_gm.webp
-│   │   │   ├── credit08.webp
-│   │   │   ├── end.webp
-│   │   │   ├── gm_level1.webp
-│   │   │   ├── gm_level2.webp
-│   │   │   ├── gm_level3.webp
-│   │   │   ├── gm_level4.webp
-│   │   │   ├── gm_level5.webp
-│   │   │   ├── legal_eu.webp
-│   │   │   ├── legal_eu_gm.webp
-│   │   │   ├── legal_us.webp
-│   │   │   ├── legal_us_gm.webp
-│   │   │   ├── mansion.webp
-│   │   │   ├── rig.webp
-│   │   │   ├── tibet.webp
-│   │   │   ├── titan.webp
-│   │   │   ├── title_eu.webp
-│   │   │   ├── title_eu_gm.webp
-│   │   │   ├── title_us.webp
-│   │   │   ├── title_us_gm.webp
-│   │   │   └── venice.webp
 │   │   ├── 4x3
-│   │   │   ├── china.webp
-│   │   │   ├── credit00_gm.webp
+│   │   │   ├── antarc.webp
 │   │   │   ├── credit01.webp
 │   │   │   ├── credit02.webp
 │   │   │   ├── credit03.webp
@@ -135,29 +106,19 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── credit05.webp
 │   │   │   ├── credit06.webp
 │   │   │   ├── credit07.webp
-│   │   │   ├── credit07_gm.webp
 │   │   │   ├── credit08.webp
-│   │   │   ├── end.webp
-│   │   │   ├── gm_level1.webp
-│   │   │   ├── gm_level2.webp
-│   │   │   ├── gm_level3.webp
-│   │   │   ├── gm_level4.webp
-│   │   │   ├── gm_level5.webp
+│   │   │   ├── credit09.webp
+│   │   │   ├── house.webp
+│   │   │   ├── india.webp
 │   │   │   ├── legal_eu.webp
-│   │   │   ├── legal_eu_gm.webp
 │   │   │   ├── legal_us.webp
-│   │   │   ├── legal_us_gm.webp
-│   │   │   ├── mansion.webp
-│   │   │   ├── rig.webp
-│   │   │   ├── tibet.webp
-│   │   │   ├── titan.webp
+│   │   │   ├── london.webp
+│   │   │   ├── nevada.webp
+│   │   │   ├── southpac.webp
+│   │   │   ├── theend2.webp
 │   │   │   ├── title_eu.webp
-│   │   │   ├── title_eu_gm.webp
-│   │   │   ├── title_us.webp
-│   │   │   ├── title_us_gm.webp
-│   │   │   └── venice.webp
-│   │   ├── china.webp
-│   │   ├── credit00_gm.webp
+│   │   │   └── title_us.webp
+│   │   ├── antarc.webp
 │   │   ├── credit01.webp
 │   │   ├── credit02.webp
 │   │   ├── credit03.webp
@@ -165,22 +126,16 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── credit05.webp
 │   │   ├── credit06.webp
 │   │   ├── credit07.webp
-│   │   ├── credit07_gm.webp
 │   │   ├── credit08.webp
-│   │   ├── end.webp
-│   │   ├── gm_level1.webp
-│   │   ├── gm_level2.webp
-│   │   ├── gm_level3.webp
-│   │   ├── gm_level4.webp
-│   │   ├── gm_level5.webp
+│   │   ├── credit09.webp
+│   │   ├── house.webp
+│   │   ├── india.webp
 │   │   ├── legal_eu.webp
-│   │   ├── legal_eu_gm.webp
 │   │   ├── legal_us.webp
-│   │   ├── legal_us_gm.webp
-│   │   ├── mansion.webp
+│   │   ├── london.webp
+│   │   ├── nevada.webp
 │   │   ├── og
-│   │   │   ├── china.webp
-│   │   │   ├── credit00_gm.webp
+│   │   │   ├── antarc.webp
 │   │   │   ├── credit01.webp
 │   │   │   ├── credit02.webp
 │   │   │   ├── credit03.webp
@@ -188,27 +143,24 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── credit05.webp
 │   │   │   ├── credit06.webp
 │   │   │   ├── credit07.webp
-│   │   │   ├── credit07_gm.webp
 │   │   │   ├── credit08.webp
-│   │   │   ├── end.webp
-│   │   │   ├── legal.webp
-│   │   │   ├── mansion.webp
-│   │   │   ├── rig.webp
-│   │   │   ├── tibet.webp
-│   │   │   ├── titan.webp
+│   │   │   ├── credit09.webp
+│   │   │   ├── house.webp
+│   │   │   ├── india.webp
+│   │   │   ├── legal_eu.webp
+│   │   │   ├── legal_us.webp
+│   │   │   ├── london.webp
+│   │   │   ├── nevada.webp
+│   │   │   ├── nevadafff.webp
+│   │   │   ├── southpac.webp
+│   │   │   ├── theend2.webp
+│   │   │   ├── theend.webp
 │   │   │   ├── title_eu.webp
-│   │   │   ├── title_eu_gm.webp
-│   │   │   ├── title_us.webp
-│   │   │   ├── title_us_gm.webp
-│   │   │   └── venice.webp
-│   │   ├── rig.webp
-│   │   ├── tibet.webp
-│   │   ├── titan.webp
+│   │   │   └── title_us.webp
+│   │   ├── southpac.webp
+│   │   ├── theend2.webp
 │   │   ├── title_eu.webp
-│   │   ├── title_eu_gm.webp
-│   │   ├── title_us.webp
-│   │   ├── title_us_gm.webp
-│   │   └── venice.webp
+│   │   └── title_us.webp
 │   ├── injections
 │   │   ├── barefoot_sfx.bin
 │   │   ├── barkhang_cameras.bin
@@ -372,19 +324,14 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── xian_pickup_meshes.bin
 │   │   ├── xian_sfx.bin
 │   │   └── xian_textures.bin
-│   ├── keel.tr2
-│   ├── level1.tr2
-│   ├── level2.tr2
-│   ├── level3.tr2
-│   ├── level4.tr2
-│   ├── level5.tr2
-│   ├── living.tr2
+│   ├── jungle.tr2
 │   ├── main.sfx
-│   ├── main_gm.sfx
-│   ├── monastry.tr2
-│   ├── opera.tr2
-│   ├── platform.tr2
-│   ├── rig.tr2
+│   ├── mines.tr2
+│   ├── nevada.tr2
+│   ├── office.tr2
+│   ├── quadchas.tr2
+│   ├── rapids.tr2
+│   ├── roofs.tr2
 │   ├── scripts
 │   │   ├── assault.lua
 │   │   ├── floating.lua
@@ -392,83 +339,22 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── level3.lua
 │   │   ├── level4.lua
 │   │   └── monastry.lua
-│   ├── skidoo.tr2
+│   ├── sewer.tr2
+│   ├── shore.tr2
+│   ├── stpaul.tr2
+│   ├── temple.tr2
 │   ├── title.tr2
-│   ├── title_gm.tr2
-│   ├── unwater.tr2
-│   ├── venice.tr2
-│   ├── wall.tr2
-│   └── xian.tr2
+│   ├── tombpc.dat
+│   ├── tonyboss.tr2
+│   ├── tower.tr2
+│   ├── triboss.tr2
+│   └── vict.tr2
 ├── fmv
-│   ├── ancient.rpl
-│   ├── crash.rpl
-│   ├── end.rpl
-│   ├── jeep.rpl
-│   ├── landing.rpl
+│   ├── crsh_eng.rpl
+│   ├── endgame.rpl
+│   ├── intr_eng.rpl
 │   ├── logo.rpl
-│   ├── modern.rpl
-│   └── ms.rpl
-├── music
-│   ├── 2.mp3
-│   ├── 3.mp3
-│   ├── 4.mp3
-│   ├── 5.mp3
-│   ├── 6.mp3
-│   ├── 7.mp3
-│   ├── 8.mp3
-│   ├── 9.mp3
-│   ├── 10.mp3
-│   ├── 11.mp3
-│   ├── 12.mp3
-│   ├── 13.mp3
-│   ├── 14.mp3
-│   ├── 15.mp3
-│   ├── 16.mp3
-│   ├── 17.mp3
-│   ├── 18.mp3
-│   ├── 19.mp3
-│   ├── 20.mp3
-│   ├── 21.mp3
-│   ├── 22.mp3
-│   ├── 23.mp3
-│   ├── 24.mp3
-│   ├── 25.mp3
-│   ├── 26.mp3
-│   ├── 27.mp3
-│   ├── 28.mp3
-│   ├── 29.mp3
-│   ├── 30.mp3
-│   ├── 31.mp3
-│   ├── 32.mp3
-│   ├── 33.mp3
-│   ├── 34.mp3
-│   ├── 35.mp3
-│   ├── 36.mp3
-│   ├── 37.mp3
-│   ├── 38.mp3
-│   ├── 39.mp3
-│   ├── 40.mp3
-│   ├── 41.mp3
-│   ├── 42.mp3
-│   ├── 43.mp3
-│   ├── 44.mp3
-│   ├── 45.mp3
-│   ├── 46.mp3
-│   ├── 47.mp3
-│   ├── 48.mp3
-│   ├── 49.mp3
-│   ├── 50.mp3
-│   ├── 51.mp3
-│   ├── 52.mp3
-│   ├── 53.mp3
-│   ├── 54.mp3
-│   ├── 55.mp3
-│   ├── 56.mp3
-│   ├── 57.mp3
-│   ├── 58.mp3
-│   ├── 59.mp3
-│   ├── 60.mp3
-│   └── 61.mp3
+│   └── sail_eng.rpl
 ├── shaders
 │   ├── 2d.glsl
 │   ├── billboard.glsl
@@ -487,16 +373,16 @@ If you install everything correctly, your game directory should look more or les
 ## Playing the game
 
 - To play the game, run `TRX.exe`.
-- To play the Golden Mask expansion pack, run `TRX.exe --gold`.
+- To play the Lost Artifact expansion pack, run `TRX.exe --gold`.
 
 # macOS
 
 ## Installing
 
-1. Download the latest TRX for TR2 installer image (e.g `TRX-0.1-Mac-tr2.dmg`). Mount the image and drag TR2X to the Applications folder.
-2. Run TR2X from the Applications folder. This will show you an error dialog about missing game data files. This is expected at this point, as you have not copied them in yet. However, it's important to run the app first to allow macOS to verify the app bundle's signature.
-3. Find TR2X in your Applications folder. Right-click it and click "Show Package Contents".
-4. Copy your Tomb Raider 2 game data files into `Contents/Resources`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
+1. Download the latest TRX for TR3 installer image (e.g `TRX-0.1-Mac-tr3.dmg`). Mount the image and drag TR3X to the Applications folder.
+2. Run TR3X from the Applications folder. This will show you an error dialog about missing game data files. This is expected at this point, as you have not copied them in yet. However, it's important to run the app first to allow macOS to verify the app bundle's signature.
+3. Find TR3X in your Applications folder. Right-click it and click "Show Package Contents".
+4. Copy your Tomb Raider 3 game data files into `Contents/Resources`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
 
 ## Verifying the installation
 
@@ -510,6 +396,8 @@ If you install everything correctly, your game directory should look more or les
     ├── info.plist
     ├── MacOS
     └── Resources
+        ├── audio
+        │   └── cdaudio.wad
         ├── cfg
         │   ├── base_strings-de.json5
         │   ├── base_strings-en-gb.json5
@@ -553,54 +441,29 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── strings-pl.json5
         │   │   └── strings.json5
         │   └── weapons.json5
-        ├── data
-        │   ├── assault.tr2
-        │   ├── boat.tr2
-        │   ├── catacomb.tr2
+        ├── cuts
         │   ├── cut1.tr2
         │   ├── cut2.tr2
         │   ├── cut3.tr2
         │   ├── cut4.tr2
-        │   ├── deck.tr2
-        │   ├── emprtomb.tr2
-        │   ├── floating.tr2
+        │   ├── cut5.tr2
+        │   ├── cut6.tr2
+        │   ├── cut7.tr2
+        │   ├── cut8.tr2
+        │   ├── cut9.tr2
+        │   ├── cut11.tr2
+        │   └── cut12.tr2
+        ├── data
+        │   ├── antarc.tr2
+        │   ├── area51.tr2
+        │   ├── chamber.tr2
+        │   ├── city.tr2
+        │   ├── compound.tr2
+        │   ├── crash.tr2
         │   ├── house.tr2
-        │   ├── icecave.tr2
         │   ├── images
-        │   │   ├── 3x2
-        │   │   │   ├── china.webp
-        │   │   │   ├── credit00_gm.webp
-        │   │   │   ├── credit01.webp
-        │   │   │   ├── credit02.webp
-        │   │   │   ├── credit03.webp
-        │   │   │   ├── credit04.webp
-        │   │   │   ├── credit05.webp
-        │   │   │   ├── credit06.webp
-        │   │   │   ├── credit07.webp
-        │   │   │   ├── credit07_gm.webp
-        │   │   │   ├── credit08.webp
-        │   │   │   ├── end.webp
-        │   │   │   ├── gm_level1.webp
-        │   │   │   ├── gm_level2.webp
-        │   │   │   ├── gm_level3.webp
-        │   │   │   ├── gm_level4.webp
-        │   │   │   ├── gm_level5.webp
-        │   │   │   ├── legal_eu.webp
-        │   │   │   ├── legal_eu_gm.webp
-        │   │   │   ├── legal_us.webp
-        │   │   │   ├── legal_us_gm.webp
-        │   │   │   ├── mansion.webp
-        │   │   │   ├── rig.webp
-        │   │   │   ├── tibet.webp
-        │   │   │   ├── titan.webp
-        │   │   │   ├── title_eu.webp
-        │   │   │   ├── title_eu_gm.webp
-        │   │   │   ├── title_us.webp
-        │   │   │   ├── title_us_gm.webp
-        │   │   │   └── venice.webp
         │   │   ├── 4x3
-        │   │   │   ├── china.webp
-        │   │   │   ├── credit00_gm.webp
+        │   │   │   ├── antarc.webp
         │   │   │   ├── credit01.webp
         │   │   │   ├── credit02.webp
         │   │   │   ├── credit03.webp
@@ -608,29 +471,19 @@ If you install everything correctly, your game directory should look more or les
         │   │   │   ├── credit05.webp
         │   │   │   ├── credit06.webp
         │   │   │   ├── credit07.webp
-        │   │   │   ├── credit07_gm.webp
         │   │   │   ├── credit08.webp
-        │   │   │   ├── end.webp
-        │   │   │   ├── gm_level1.webp
-        │   │   │   ├── gm_level2.webp
-        │   │   │   ├── gm_level3.webp
-        │   │   │   ├── gm_level4.webp
-        │   │   │   ├── gm_level5.webp
+        │   │   │   ├── credit09.webp
+        │   │   │   ├── house.webp
+        │   │   │   ├── india.webp
         │   │   │   ├── legal_eu.webp
-        │   │   │   ├── legal_eu_gm.webp
         │   │   │   ├── legal_us.webp
-        │   │   │   ├── legal_us_gm.webp
-        │   │   │   ├── mansion.webp
-        │   │   │   ├── rig.webp
-        │   │   │   ├── tibet.webp
-        │   │   │   ├── titan.webp
+        │   │   │   ├── london.webp
+        │   │   │   ├── nevada.webp
+        │   │   │   ├── southpac.webp
+        │   │   │   ├── theend2.webp
         │   │   │   ├── title_eu.webp
-        │   │   │   ├── title_eu_gm.webp
-        │   │   │   ├── title_us.webp
-        │   │   │   ├── title_us_gm.webp
-        │   │   │   └── venice.webp
-        │   │   ├── china.webp
-        │   │   ├── credit00_gm.webp
+        │   │   │   └── title_us.webp
+        │   │   ├── antarc.webp
         │   │   ├── credit01.webp
         │   │   ├── credit02.webp
         │   │   ├── credit03.webp
@@ -638,22 +491,16 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── credit05.webp
         │   │   ├── credit06.webp
         │   │   ├── credit07.webp
-        │   │   ├── credit07_gm.webp
         │   │   ├── credit08.webp
-        │   │   ├── end.webp
-        │   │   ├── gm_level1.webp
-        │   │   ├── gm_level2.webp
-        │   │   ├── gm_level3.webp
-        │   │   ├── gm_level4.webp
-        │   │   ├── gm_level5.webp
+        │   │   ├── credit09.webp
+        │   │   ├── house.webp
+        │   │   ├── india.webp
         │   │   ├── legal_eu.webp
-        │   │   ├── legal_eu_gm.webp
         │   │   ├── legal_us.webp
-        │   │   ├── legal_us_gm.webp
-        │   │   ├── mansion.webp
+        │   │   ├── london.webp
+        │   │   ├── nevada.webp
         │   │   ├── og
-        │   │   │   ├── china.webp
-        │   │   │   ├── credit00_gm.webp
+        │   │   │   ├── antarc.webp
         │   │   │   ├── credit01.webp
         │   │   │   ├── credit02.webp
         │   │   │   ├── credit03.webp
@@ -661,27 +508,24 @@ If you install everything correctly, your game directory should look more or les
         │   │   │   ├── credit05.webp
         │   │   │   ├── credit06.webp
         │   │   │   ├── credit07.webp
-        │   │   │   ├── credit07_gm.webp
         │   │   │   ├── credit08.webp
-        │   │   │   ├── end.webp
-        │   │   │   ├── legal.webp
-        │   │   │   ├── mansion.webp
-        │   │   │   ├── rig.webp
-        │   │   │   ├── tibet.webp
-        │   │   │   ├── titan.webp
+        │   │   │   ├── credit09.webp
+        │   │   │   ├── house.webp
+        │   │   │   ├── india.webp
+        │   │   │   ├── legal_eu.webp
+        │   │   │   ├── legal_us.webp
+        │   │   │   ├── london.webp
+        │   │   │   ├── nevada.webp
+        │   │   │   ├── nevadafff.webp
+        │   │   │   ├── southpac.webp
+        │   │   │   ├── theend2.webp
+        │   │   │   ├── theend.webp
         │   │   │   ├── title_eu.webp
-        │   │   │   ├── title_eu_gm.webp
-        │   │   │   ├── title_us.webp
-        │   │   │   ├── title_us_gm.webp
-        │   │   │   └── venice.webp
-        │   │   ├── rig.webp
-        │   │   ├── tibet.webp
-        │   │   ├── titan.webp
+        │   │   │   └── title_us.webp
+        │   │   ├── southpac.webp
+        │   │   ├── theend2.webp
         │   │   ├── title_eu.webp
-        │   │   ├── title_eu_gm.webp
-        │   │   ├── title_us.webp
-        │   │   ├── title_us_gm.webp
-        │   │   └── venice.webp
+        │   │   └── title_us.webp
         │   ├── injections
         │   │   ├── barefoot_sfx.bin
         │   │   ├── barkhang_cameras.bin
@@ -845,19 +689,14 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── xian_pickup_meshes.bin
         │   │   ├── xian_sfx.bin
         │   │   └── xian_textures.bin
-        │   ├── keel.tr2
-        │   ├── level1.tr2
-        │   ├── level2.tr2
-        │   ├── level3.tr2
-        │   ├── level4.tr2
-        │   ├── level5.tr2
-        │   ├── living.tr2
+        │   ├── jungle.tr2
         │   ├── main.sfx
-        │   ├── main_gm.sfx
-        │   ├── monastry.tr2
-        │   ├── opera.tr2
-        │   ├── platform.tr2
-        │   ├── rig.tr2
+        │   ├── mines.tr2
+        │   ├── nevada.tr2
+        │   ├── office.tr2
+        │   ├── quadchas.tr2
+        │   ├── rapids.tr2
+        │   ├── roofs.tr2
         │   ├── scripts
         │   │   ├── assault.lua
         │   │   ├── floating.lua
@@ -865,84 +704,23 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── level3.lua
         │   │   ├── level4.lua
         │   │   └── monastry.lua
-        │   ├── skidoo.tr2
+        │   ├── sewer.tr2
+        │   ├── shore.tr2
+        │   ├── stpaul.tr2
+        │   ├── temple.tr2
         │   ├── title.tr2
-        │   ├── title_gm.tr2
-        │   ├── unwater.tr2
-        │   ├── venice.tr2
-        │   ├── wall.tr2
-        │   └── xian.tr2
+        │   ├── tombpc.dat
+        │   ├── tonyboss.tr2
+        │   ├── tower.tr2
+        │   ├── triboss.tr2
+        │   └── vict.tr2
         ├── fmv
-        │   ├── ancient.rpl
-        │   ├── crash.rpl
-        │   ├── end.rpl
-        │   ├── jeep.rpl
-        │   ├── landing.rpl
+        │   ├── crsh_eng.rpl
+        │   ├── endgame.rpl
+        │   ├── intr_eng.rpl
         │   ├── logo.rpl
-        │   ├── modern.rpl
-        │   └── ms.rpl
+        │   └── sail_eng.rpl
         ├── icon.icns
-        ├── music
-        │   ├── 2.mp3
-        │   ├── 3.mp3
-        │   ├── 4.mp3
-        │   ├── 5.mp3
-        │   ├── 6.mp3
-        │   ├── 7.mp3
-        │   ├── 8.mp3
-        │   ├── 9.mp3
-        │   ├── 10.mp3
-        │   ├── 11.mp3
-        │   ├── 12.mp3
-        │   ├── 13.mp3
-        │   ├── 14.mp3
-        │   ├── 15.mp3
-        │   ├── 16.mp3
-        │   ├── 17.mp3
-        │   ├── 18.mp3
-        │   ├── 19.mp3
-        │   ├── 20.mp3
-        │   ├── 21.mp3
-        │   ├── 22.mp3
-        │   ├── 23.mp3
-        │   ├── 24.mp3
-        │   ├── 25.mp3
-        │   ├── 26.mp3
-        │   ├── 27.mp3
-        │   ├── 28.mp3
-        │   ├── 29.mp3
-        │   ├── 30.mp3
-        │   ├── 31.mp3
-        │   ├── 32.mp3
-        │   ├── 33.mp3
-        │   ├── 34.mp3
-        │   ├── 35.mp3
-        │   ├── 36.mp3
-        │   ├── 37.mp3
-        │   ├── 38.mp3
-        │   ├── 39.mp3
-        │   ├── 40.mp3
-        │   ├── 41.mp3
-        │   ├── 42.mp3
-        │   ├── 43.mp3
-        │   ├── 44.mp3
-        │   ├── 45.mp3
-        │   ├── 46.mp3
-        │   ├── 47.mp3
-        │   ├── 48.mp3
-        │   ├── 49.mp3
-        │   ├── 50.mp3
-        │   ├── 51.mp3
-        │   ├── 52.mp3
-        │   ├── 53.mp3
-        │   ├── 54.mp3
-        │   ├── 55.mp3
-        │   ├── 56.mp3
-        │   ├── 57.mp3
-        │   ├── 58.mp3
-        │   ├── 59.mp3
-        │   ├── 60.mp3
-        │   └── 61.mp3
         └── shaders
             ├── 2d.glsl
             ├── billboard.glsl
