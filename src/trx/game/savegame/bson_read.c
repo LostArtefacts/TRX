@@ -73,13 +73,11 @@ static void M_SetError(M_CONTEXT *const ctx, const char *fmt, ...)
     vsnprintf(body, sizeof(body), fmt, ap);
     va_end(ap);
     if (ctx && ctx->path[0] != '\0') {
-        snprintf(ctx->error_msg, sizeof(ctx->error_msg), "%s", ctx->path);
-        strncat(
-            ctx->error_msg, ": ",
-            sizeof(ctx->error_msg) - strlen(ctx->error_msg) - 1);
-        strncat(
-            ctx->error_msg, body,
-            sizeof(ctx->error_msg) - strlen(ctx->error_msg) - 1);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+        snprintf(
+            ctx->error_msg, sizeof(ctx->error_msg), "%s: %s", ctx->path, body);
+#pragma GCC diagnostic pop
     } else {
         snprintf(ctx->error_msg, sizeof(ctx->error_msg), "%s", body);
     }
