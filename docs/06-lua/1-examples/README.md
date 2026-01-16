@@ -18,7 +18,7 @@ local hp_lut = {
 }
 
 -- Adjust HP of enemies when the level loads
-trx.events.on_level_load(function(level)
+trx.events.after_level_state(function(level)
   for i = 1, #trx.items do
     local item = trx.items[i]
     local hp = hp_lut[item.object_id]

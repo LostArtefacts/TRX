@@ -8,9 +8,10 @@ Lua scripts can listen for game events using the global `events` API.
 
 ### API
 
-- [lua]`trx.events.on_level_init(callback)` 
-- [lua]`trx.events.on_level_start(callback)`  
-- [lua]`trx.events.on_level_load(callback)`  
+- [lua]`trx.events.before_level_file(callback)`
+- [lua]`trx.events.after_level_file(callback)`
+- [lua]`trx.events.after_level_state(callback)`
+- [lua]`trx.events.on_game_start(callback)`
 - [lua]`trx.events.on_pickup(callback)`  
 - [lua]`trx.events.on_control(callback)`  
 - [lua]`trx.events.on_control_post(callback)`  
@@ -20,29 +21,29 @@ Lua scripts can listen for game events using the global `events` API.
 
 ### Events
 
-#### `on_level_init`
+#### `before_level_file`
 Happens prior to loading the level file.
 
 Arguments:
 - `level_num`
 
-#### `on_level_start`
+#### `after_level_file`
 Happens after the level finishes loading, prior to loading information from a
 savegame.
 
 Arguments:
 - `level_num`
 
-#### `on_level_load`
+#### `after_level_state`
 Happens after the level finishes loading, after loading information from a
-savegame. If the game is started normally, this duplicates `on_level_start`.
+savegame. If the game is started normally, this duplicates `after_level_file`.
 
 Arguments:
 - `level_num`
 
 #### `on_game_start`
 Happens after the level finishes loading and the game is about to start.
-The difference from `on_level_start` and `on_level_load` is that this waits for the fade-to-black / cross-fade effects to
+The difference from `after_level_file` and `after_level_state` is that this waits for the fade-to-black / cross-fade effects to
 finish, and is suitable to play sound effects and run game logic.
 
 Arguments:
@@ -55,12 +56,12 @@ Happens just after Lara picks up an item.
 Arguments:
 - `item_num`
 
-#### `on_control`
+#### `before_control`
 Happens on every logical game frame, before executing main game logic.
 
 Arguments: none  
 
-#### `on_control_post`
+#### `after_control`
 Happens on every logical game frame, after executing main game logic.
 
 Arguments: none  
@@ -68,12 +69,12 @@ Arguments: none
 ### Examples
 
 ```lua
-trx.events.on_level_init(function(level_num)
-  -- handle level initialisation
+trx.events.before_level_file(function(level_num)
+  -- handle pre-file-load setup
 end)
 
-trx.events.on_level_load(function(level_num)
-  -- handle level load
+trx.events.after_level_state(function(level_num)
+  -- handle post-savegame state restore
 end)
 
 trx.events.on_pickup(function(item_num)

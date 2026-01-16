@@ -43,9 +43,9 @@ static void M_Resume(PHASE *const phase)
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
-    Lua_FireEventInt32(LUA_EVENT_CONTROL_PRE, 0);
+    Lua_FireEventInt32(LUA_EVENT_BEFORE_CONTROL, 0);
     const GF_COMMAND gf_cmd = Game_Control(false);
-    Lua_FireEventInt32(LUA_EVENT_CONTROL_POST, 0);
+    Lua_FireEventInt32(LUA_EVENT_AFTER_CONTROL, 0);
     if (gf_cmd.action != GF_NOOP) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,

@@ -3,6 +3,12 @@
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
 - added new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start
 - improved inventory ring active item highlight for smoother appearance
+- changed Lua event callback names to be more consistent:
+    - `on_level_init` → `before_level_file`
+    - `on_level_start` → `after_level_file`
+    - `on_level_load` → `after_level_state`
+    - `on_control` → `before_control`
+    - `on_control_post` → `after_control`
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 
 **TR3**:

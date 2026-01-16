@@ -119,7 +119,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
         Music_Stop();
     }
 
-    Lua_FireEventInt32(LUA_EVENT_LEVEL_LOAD, level->num);
+    Lua_FireEventInt32(LUA_EVENT_AFTER_LEVEL_FILE, level->num);
 
     // post load
     switch (seq_ctx) {
@@ -144,7 +144,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
     }
     GF_DisableObjectsIfNeeded();
 
-    Lua_FireEventInt32(LUA_EVENT_LEVEL_START, level->num);
+    Lua_FireEventInt32(LUA_EVENT_AFTER_LEVEL_STATE, level->num);
 
     g_Passport.ask_for_save = g_Config.gameplay.enable_save_crystals
         && seq_ctx == GFSC_NORMAL
