@@ -13,6 +13,10 @@
 #define M_CHASE_SHIFT       (STEP_L * 3 / 2) // = 384
 #define M_LOOK_SHIFT        (STEP_L * 7 / 8) // = 224
 #define M_CHASE_SPEED       10
+#define M_MAX_LOOK_TILT     (55 * DEG_1) // = 10010
+#define M_MIN_LOOK_TILT     (-75 * DEG_1) // = -13650
+#define M_MAX_LOOK_ROTATION (80 * DEG_1) // = 14560
+#define M_MIN_LOOK_ROTATION -M_MAX_LOOK_ROTATION // = -14560
 // clang-format on
 
 typedef struct {
@@ -570,8 +574,8 @@ static void M_Look(const ITEM *const item)
     lara->head_rot.x <<= 1;
     lara->head_rot.y <<= 1;
 
-    CLAMP(lara->head_rot.x, -13650, 10010);
-    CLAMP(lara->head_rot.y, -14560, 14560);
+    CLAMP(lara->head_rot.x, M_MIN_LOOK_TILT, M_MAX_LOOK_TILT);
+    CLAMP(lara->head_rot.y, M_MIN_LOOK_ROTATION, M_MAX_LOOK_ROTATION);
 
     XYZ_32 pos_1 = M_GetHeadPos(0, 16, 64);
 
@@ -713,7 +717,7 @@ static void M_Look(const ITEM *const item)
     ceiling = Room_GetCeiling(sector, ideal_pos.x, ideal_pos.y, ideal_pos.z);
 
     if (Room_Get(room_num)->flags.swamp) {
-        g_Camera.pos.y = Room_Get(room_num)->max_ceiling - 256;
+        g_Camera.pos.y = Room_Get(room_num)->max_ceiling - STEP_L;
     } else if (
         ideal_pos.y < ceiling || ideal_pos.y > height || ceiling >= height
         || height == NO_HEIGHT || ceiling == NO_HEIGHT) {
