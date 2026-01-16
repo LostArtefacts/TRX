@@ -1,5 +1,4 @@
 #include <trx/game/creature.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -38,10 +37,18 @@ typedef struct {
     bool spawn_checked;
 } M_PRIV;
 
-static void M_Initialise(const int16_t item_num)
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
 {
-    ITEM *const item = Item_Get(item_num);
-    item->priv = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
+    M_PRIV *const p = item->priv;
+    p->knockdown_timer = JSON_ObjectGetInt(priv_root, "knockdown_timer", 0);
+    p->spawn_checked = JSON_ObjectGetBool(priv_root, "spawn_checked", false);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "knockdown_timer", p->knockdown_timer);
+    JSON_ObjectAppendBool(priv_root, "spawn_checked", p->spawn_checked);
 }
 
 static bool M_RemoveNormalWinston(void)
@@ -229,7 +236,9 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
-    obj->initialise_func = M_Initialise;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
 
@@ -239,6 +248,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->intelligent = true;
     obj->save_position = true;
+    obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
 }
