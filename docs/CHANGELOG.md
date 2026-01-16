@@ -85,6 +85,7 @@
 - fixed Lara automatically being given TR2 weapons in NG+ when playing the OG levels (#4365, regression from 1.0)
 - fixed Lara's pistol holster meshes appearing in NG+ in place of her Uzi holster meshes (#4368, regression from 1.0)
 - fixed Lara's footstep sounds being very quiet when weapons are equipped (#4451, regression from 1.0)
+- fixed the grenade blast SFX not always playing in succession (#4628, regression from 1.0)
 
 **TR2**:
 - added unused gym voice line at level start if Lara has any logged assault course attempts (#2822)
