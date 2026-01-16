@@ -160,7 +160,7 @@ Their hard work gave us the perfect base to push TRX further, and made the climb
 - added Asasult Course target control
 - added Asasult Course penalty system
 - added an option to fix the MP5 accuracy while running
-- added TR3 camera control
+- added TR3 camera control and look functionality
 - improved run-to-crawl transition
 - improved text colors of the Assault Course statistics and timers
 - improved Assault Course targets to spawn ricochets
