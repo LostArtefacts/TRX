@@ -31,7 +31,7 @@ Create a file `data/scripts/level1.lua` folder in your project and put the
 following content:
 
 ```lua
-trx.events.on_level_load(function(level)
+trx.events.after_level_state(function(level)
   trx.log.info("hello from level 1!")
 end)
 ```

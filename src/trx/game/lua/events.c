@@ -143,20 +143,20 @@ void LUA_CreateEvents(lua_State *const L)
     lua_setfield(L, -2, "detach");
 
     lua_newtable(L);
-    lua_pushinteger(L, LUA_EVENT_LEVEL_INIT);
-    lua_setfield(L, -2, "LEVEL_INIT");
-    lua_pushinteger(L, LUA_EVENT_LEVEL_START);
-    lua_setfield(L, -2, "LEVEL_START");
-    lua_pushinteger(L, LUA_EVENT_LEVEL_LOAD);
-    lua_setfield(L, -2, "LEVEL_LOAD");
+    lua_pushinteger(L, LUA_EVENT_BEFORE_LEVEL_FILE);
+    lua_setfield(L, -2, "BEFORE_LEVEL_FILE");
+    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_FILE);
+    lua_setfield(L, -2, "AFTER_LEVEL_FILE");
+    lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_STATE);
+    lua_setfield(L, -2, "AFTER_LEVEL_STATE");
     lua_pushinteger(L, LUA_EVENT_GAME_START);
     lua_setfield(L, -2, "GAME_START");
     lua_pushinteger(L, LUA_EVENT_PICKUP);
     lua_setfield(L, -2, "PICKUP");
-    lua_pushinteger(L, LUA_EVENT_CONTROL_PRE);
-    lua_setfield(L, -2, "CONTROL");
-    lua_pushinteger(L, LUA_EVENT_CONTROL_POST);
-    lua_setfield(L, -2, "CONTROL_POST");
+    lua_pushinteger(L, LUA_EVENT_BEFORE_CONTROL);
+    lua_setfield(L, -2, "BEFORE_CONTROL");
+    lua_pushinteger(L, LUA_EVENT_AFTER_CONTROL);
+    lua_setfield(L, -2, "AFTER_CONTROL");
     lua_setfield(L, -2, "EventType");
 
     lua_setfield(L, -2, "events");

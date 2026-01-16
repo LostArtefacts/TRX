@@ -375,7 +375,7 @@ void Stats_CalculateMaxStats(void)
                 Lua_FreeResult(&res);
             }
             Lua_SetScriptContext(LUA_CONTEXT_GLOBAL);
-            Lua_FireEventInt32(LUA_EVENT_LEVEL_INIT, level->num);
+            Lua_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
 
             Inject_InitLevel(level, INJECTION_MODE_STATS);
             if (loader->probe(loader, file, LEVEL_PROBE_STATS)) {
