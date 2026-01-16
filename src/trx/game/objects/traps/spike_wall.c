@@ -23,13 +23,14 @@ static void M_Move(const int16_t item_num)
 
     if (Room_GetHeight(sector, x, item->pos.y, z) != item->pos.y) {
         item->status = IS_DEACTIVATED;
+        Sound_StopEffect(SFX_SPIKE_WALL);
     } else {
         item->pos.z = z;
         item->pos.x = x;
         Item_UpdateRoom(item_num, room_num);
     }
 
-    Sound_Effect(SFX_DOOR_SLIDE, &item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_SPIKE_WALL, &item->pos, SPM_NORMAL);
 }
 
 static void M_HitLara(ITEM *const item)

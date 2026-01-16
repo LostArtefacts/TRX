@@ -5,8 +5,8 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
-#define SPIKE_CEILING_DAMAGE 20
-#define SPIKE_CEILING_SPEED 1
+#define M_DAMAGE 20
+#define M_SPEED 1
 
 static void M_Move(const int16_t item_num)
 {
@@ -17,21 +17,22 @@ static void M_Move(const int16_t item_num)
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
     if (Room_GetHeight(sector, item->pos.x, y, item->pos.z) < y + WALL_L) {
         item->status = IS_DEACTIVATED;
+        Sound_StopEffect(SFX_SPIKE_WALL);
     } else {
         item->pos.y = y;
         Item_UpdateRoom(item_num, room_num);
     }
-    Sound_Effect(SFX_DOOR_SLIDE, &item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_SPIKE_WALL, &item->pos, SPM_NORMAL);
 }
 
 static void M_HitLara(ITEM *const item)
 {
-    Lara_TakeDamage(SPIKE_CEILING_DAMAGE, true);
+    Lara_TakeDamage(M_DAMAGE, true);
 
     const ITEM *const lara_item = Lara_GetItem();
     Spawn_BloodBath(
-        lara_item->pos.x, item->pos.y + LARA_HEIGHT, lara_item->pos.z,
-        SPIKE_CEILING_SPEED, item->rot.y, lara_item->room_num, 3);
+        lara_item->pos.x, item->pos.y + LARA_HEIGHT, lara_item->pos.z, M_SPEED,
+        item->rot.y, lara_item->room_num, 3);
     item->touch_bits = 0;
 
     Sound_Effect(SFX_LARA_FLESH_WOUND, &item->pos, SPM_NORMAL);
