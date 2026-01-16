@@ -8,11 +8,11 @@
 #include <trx/version.h>
 
 // clang-format off
-#define M_MAX_HEAD_ROTATION          ((g_TRVersion == 1 ? 50 : 44) * DEG_1) // = 9100 (TR1), 8008 (TR2)
+#define M_MAX_HEAD_ROTATION          ((g_TRVersion == 1 ? 50 : 44) * DEG_1) // = 9100 (TR1), 8008 (TR2/3)
 #define M_HEAD_TURN                  (2 * DEG_1)             // = 364
-#define M_MIN_HEAD_ROTATION          (-M_MAX_HEAD_ROTATION)  // = -9100 (TR1), -8008 (TR2)
-#define M_MAX_HEAD_TILT              (22 * DEG_1)            // = 4004
-#define M_MIN_HEAD_TILT              (-42 * DEG_1)           // = -7644
+#define M_MIN_HEAD_ROTATION          (-M_MAX_HEAD_ROTATION)  // = -9100 (TR1), -8008 (TR2/3)
+#define M_MAX_HEAD_TILT              ((g_TRVersion < 3 ? 22 : 30) * DEG_1) // = 4004 (TR1/2), 5460 (TR3)
+#define M_MIN_HEAD_TILT              ((g_TRVersion < 3 ? -42 : -35) * DEG_1) // = -7644 (TR1/2), -6370 (TR3)
 #define M_HEAD_TURN_SURF             (3 * DEG_1)             // = 546
 #define M_MAX_HEAD_ROTATION_SURF     (50 * DEG_1)            // = 9100
 #define M_MAX_HEAD_TILT_SURF         (40 * DEG_1)            // = 7280
@@ -108,7 +108,8 @@ void Lara_Look_LeftRight(void)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     g_Camera.type = CAM_LOOK;
 
-    const bool on_surface = lara->water_status == LWS_SURFACE;
+    const bool on_surface =
+        g_TRVersion < 3 && lara->water_status == LWS_SURFACE;
     const int16_t max_head_rot =
         on_surface ? M_MAX_HEAD_ROTATION_SURF : M_MAX_HEAD_ROTATION;
     const int16_t head_turn = on_surface ? M_HEAD_TURN_SURF : M_HEAD_TURN;
@@ -141,7 +142,8 @@ void Lara_Look_UpDown(void)
         SWAP2(g_Input.forward, g_Input.back, temp_forward);
     }
 
-    const bool on_surface = lara->water_status == LWS_SURFACE;
+    const bool on_surface =
+        g_TRVersion < 3 && lara->water_status == LWS_SURFACE;
     const int16_t min_head_tilt =
         on_surface ? M_MIN_HEAD_TILT_SURF : M_MIN_HEAD_TILT;
     const int16_t max_head_tilt =
