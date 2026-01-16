@@ -1,5 +1,4 @@
 #include <trx/game/const.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/gym.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -20,6 +19,22 @@ typedef struct {
     int32_t bounce_stage;
     bool destroyed;
 } M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->x_rot_speed = JSON_ObjectGetInt(priv_root, "x_rot_speed", 0);
+    p->bounce_stage = JSON_ObjectGetInt(priv_root, "bounce_stage", 0);
+    p->destroyed = JSON_ObjectGetBool(priv_root, "destroyed", false) != 0;
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "x_rot_speed", p->x_rot_speed);
+    JSON_ObjectAppendInt(priv_root, "bounce_stage", p->bounce_stage);
+    JSON_ObjectAppendBool(priv_root, "destroyed", p->destroyed ? 1 : 0);
+}
 
 static void M_ResetItemState(ITEM *const item, const OBJECT *const obj)
 {
@@ -49,9 +64,6 @@ static void M_Initialise(const int16_t item_num)
         LOT_DisableBaddieAI(item_num);
     }
 
-    if (item->priv == nullptr) {
-        item->priv = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
-    }
     M_PRIV *const p = item->priv;
     p->x_rot_speed = 0;
     p->bounce_stage = 0;
@@ -193,6 +205,9 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->hit_points = 8;
     obj->shadow_size = 128;
     obj->radius = 102;
