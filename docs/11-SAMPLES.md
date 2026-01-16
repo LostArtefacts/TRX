@@ -410,7 +410,7 @@ title: Sample IDs
 | `201` | SFX_CLATTER_1 |
 | `202` | SFX_CLATTER_2 |
 | `203` | SFX_CLATTER_3 |
-| `204` | SFX_DOOR_SLIDE |
+| `204` | SFX_SPIKE_WALL |
 | `205` | SFX_LARA_FLESH_WOUND |
 | `206` | SFX_SAW_REVVING |
 | `207` | SFX_SAW_STOP |
