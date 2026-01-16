@@ -7,11 +7,67 @@
 
 #define M_DAMAGE 20
 #define M_SPEED 1
+#define M_STEP_SLOW 5
+#define M_STEP_FAST 10
+
+typedef struct {
+    int32_t step;
+    bool animate;
+} M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->step = JSON_ObjectGetInt(priv_root, "step", M_STEP_SLOW);
+    p->animate = JSON_ObjectGetBool(priv_root, "animate", false);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "step", p->step);
+    JSON_ObjectAppendBool(priv_root, "animate", p->animate);
+}
+
+static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+{
+    M_PRIV *const p = item->priv;
+    if (p == nullptr) {
+        return true;
+    }
+
+    if (trigger->type == TT_ANTITRIGGER || trigger->type == TT_ANTIPAD) {
+        return true;
+    }
+
+    item->timer = 0;
+    if (trigger->timer == 1) {
+        p->step = M_STEP_FAST;
+        p->animate = true;
+    } else {
+        p->step = M_STEP_SLOW;
+        p->animate = false;
+    }
+    return true;
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    Trap_Initialise(item_num);
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    if (p != nullptr) {
+        p->step = M_STEP_SLOW;
+        p->animate = false;
+    }
+}
 
 static void M_Move(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    const int32_t y = item->pos.y + 5;
+    const M_PRIV *const p = item->priv;
+    const int32_t step = (p != nullptr && p->step > 0) ? p->step : M_STEP_SLOW;
+    const int32_t y = item->pos.y + step;
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
@@ -21,8 +77,8 @@ static void M_Move(const int16_t item_num)
     } else {
         item->pos.y = y;
         Item_UpdateRoom(item_num, room_num);
+        Sound_Effect(SFX_SPIKE_WALL, &item->pos, SPM_NORMAL);
     }
-    Sound_Effect(SFX_SPIKE_WALL, &item->pos, SPM_NORMAL);
 }
 
 static void M_HitLara(ITEM *const item)
@@ -51,13 +107,24 @@ static void M_Control(const int16_t item_num)
     if (item->touch_bits) {
         M_HitLara(item);
     }
+
+    if (Item_IsTriggerActive(item) && item->status != IS_DEACTIVATED) {
+        const M_PRIV *const p = item->priv;
+        if (p != nullptr && p->animate) {
+            Item_Animate(item);
+        }
+    }
 }
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = Trap_Initialise;
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision_Trap;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->trigger_func = M_Trigger;
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->save_position = true;
     obj->save_flags = true;
 }
