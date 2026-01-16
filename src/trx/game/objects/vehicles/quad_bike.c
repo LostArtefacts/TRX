@@ -59,12 +59,67 @@ static bool m_CanHandbrakeStart;
 static uint8_t m_ExhaustSmokeVel;
 
 typedef struct {
-    QUAD_BIKE_INFO quad;
+    int32_t velocity;
+    int16_t front_rot;
+    int16_t rear_rot;
+    int32_t revs;
+    int32_t engine_revs;
+    int16_t track_mesh;
+    int32_t skidoo_turn;
+    int32_t left_fall_speed;
+    int32_t right_fall_speed;
+    int16_t momentum_angle;
+    int16_t extra_rotation;
+    int32_t pitch;
+    uint8_t flags;
+} M_QUAD_BIKE_INFO;
+
+typedef struct {
+    M_QUAD_BIKE_INFO quad;
     int16_t *extra_rotation;
     int32_t extra_rotation_count;
     int32_t rear_rot_x_idx[2];
     int32_t front_rot_x_idx[2];
 } M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->quad.velocity = JSON_ObjectGetInt(priv_root, "velocity", 0);
+    p->quad.front_rot = JSON_ObjectGetInt(priv_root, "front_rot", 0);
+    p->quad.rear_rot = JSON_ObjectGetInt(priv_root, "rear_rot", 0);
+    p->quad.revs = JSON_ObjectGetInt(priv_root, "revs", 0);
+    p->quad.engine_revs = JSON_ObjectGetInt(priv_root, "engine_revs", 0);
+    p->quad.track_mesh = JSON_ObjectGetInt(priv_root, "track_mesh", 0);
+    p->quad.skidoo_turn = JSON_ObjectGetInt(priv_root, "skidoo_turn", 0);
+    p->quad.left_fall_speed =
+        JSON_ObjectGetInt(priv_root, "left_fall_speed", 0);
+    p->quad.right_fall_speed =
+        JSON_ObjectGetInt(priv_root, "right_fall_speed", 0);
+    p->quad.momentum_angle = JSON_ObjectGetInt(priv_root, "momentum_angle", 0);
+    p->quad.extra_rotation = JSON_ObjectGetInt(priv_root, "extra_rotation", 0);
+    p->quad.pitch = JSON_ObjectGetInt(priv_root, "pitch", 0);
+    p->quad.flags = (uint8_t)JSON_ObjectGetInt(priv_root, "flags", 0);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "velocity", p->quad.velocity);
+    JSON_ObjectAppendInt(priv_root, "front_rot", p->quad.front_rot);
+    JSON_ObjectAppendInt(priv_root, "rear_rot", p->quad.rear_rot);
+    JSON_ObjectAppendInt(priv_root, "revs", p->quad.revs);
+    JSON_ObjectAppendInt(priv_root, "engine_revs", p->quad.engine_revs);
+    JSON_ObjectAppendInt(priv_root, "track_mesh", p->quad.track_mesh);
+    JSON_ObjectAppendInt(priv_root, "skidoo_turn", p->quad.skidoo_turn);
+    JSON_ObjectAppendInt(priv_root, "left_fall_speed", p->quad.left_fall_speed);
+    JSON_ObjectAppendInt(
+        priv_root, "right_fall_speed", p->quad.right_fall_speed);
+    JSON_ObjectAppendInt(priv_root, "momentum_angle", p->quad.momentum_angle);
+    JSON_ObjectAppendInt(priv_root, "extra_rotation", p->quad.extra_rotation);
+    JSON_ObjectAppendInt(priv_root, "pitch", p->quad.pitch);
+    JSON_ObjectAppendInt(priv_root, "flags", p->quad.flags);
+}
 
 static int32_t M_CountExtraRotationValues(const XYZ_BOOL flags)
 {
@@ -136,8 +191,8 @@ static void M_CalcExtraRotationLayout(const OBJECT *const obj, M_PRIV *const p)
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
 
-    M_PRIV *const p = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
     p->quad.momentum_angle = item->rot.y;
 
     const OBJECT *const obj = Object_Get(item->object_id);
@@ -149,7 +204,6 @@ static void M_Initialise(const int16_t item_num)
         p->extra_rotation = nullptr;
     }
 
-    item->priv = p;
     item->data = p->extra_rotation;
 }
 
@@ -227,7 +281,7 @@ static void M_Collision(
     lara->gun_status = LGS_HANDS_BUSY;
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    QUAD_BIKE_INFO *const quad = &p->quad;
+    M_QUAD_BIKE_INFO *const quad = &p->quad;
 
     const int16_t angle =
         (int16_t)Math_Atan(
@@ -320,7 +374,7 @@ static bool M_CheckGetOff(void)
     } else if (
         lara_item->frame_num == Anim_GetAnim(lara_item->anim_num)->frame_end) {
         M_PRIV *const p = item->priv;
-        QUAD_BIKE_INFO *const quad = &p->quad;
+        M_QUAD_BIKE_INFO *const quad = &p->quad;
 
         if (lara_item->current_anim_state == M_STATE_FALL_OFF) {
             Item_SwitchToAnim(lara_item, LA(LA_FREEFALL), 0);
@@ -675,7 +729,7 @@ static int32_t M_SkidooDynamics(ITEM *const item)
 {
     m_DontExitQuad = false;
     M_PRIV *const p = item->priv;
-    QUAD_BIKE_INFO *const quad = &p->quad;
+    M_QUAD_BIKE_INFO *const quad = &p->quad;
 
     XYZ_32 old_pos;
     old_pos.x = item->pos.x;
@@ -929,7 +983,7 @@ static void M_AnimateQuadBike(
 
     ITEM *const lara_item = Lara_GetItem();
     M_PRIV *const p = item->priv;
-    QUAD_BIKE_INFO *const quad = &p->quad;
+    M_QUAD_BIKE_INFO *const quad = &p->quad;
     state = lara_item->current_anim_state;
 
     if (item->pos.y != item->floor && state != M_STATE_FALL
@@ -1093,7 +1147,7 @@ static void M_AnimateQuadBike(
 
 static bool M_UserControl(ITEM *item, int32_t height, int32_t *pitch)
 {
-    QUAD_BIKE_INFO *quad;
+    M_QUAD_BIKE_INFO *quad;
 
     M_PRIV *const p = item->priv;
     quad = &p->quad;
@@ -1271,7 +1325,7 @@ bool QuadBike_Control(void)
     ITEM *const item = Lara_Vehicle_GetItem();
     ITEM *const lara_item = Lara_GetItem();
     M_PRIV *const p = item->priv;
-    QUAD_BIKE_INFO *const quad = &p->quad;
+    M_QUAD_BIKE_INFO *const quad = &p->quad;
 
     int32_t hit_wall = M_SkidooDynamics(item);
     bool killed = false;
@@ -1463,6 +1517,9 @@ bool QuadBike_Control(void)
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->collision_func = M_Collision;
     obj->draw_func = Object_DrawAnimatingItem;
     obj->save_position = true;
