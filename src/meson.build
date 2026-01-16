@@ -411,6 +411,7 @@ common_sources = [
   'trx/game/objects/effects/splash.c',
   'trx/game/objects/effects/twinkle.c',
   'trx/game/objects/effects/water_sprite.c',
+  'trx/game/objects/general/ai_node.c',
   'trx/game/objects/general/alarm_sound.c',
   'trx/game/objects/general/animating.c',
   'trx/game/objects/general/assault_target.c',
