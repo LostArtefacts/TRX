@@ -7,6 +7,7 @@
 #include <trx/game/rooms/enum.h>
 #include <trx/game/savegame/enum.h>
 #include <trx/game/types.h>
+#include <trx/json.h>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -66,6 +67,8 @@ typedef struct OBJECT {
     void (*activate_func)(ITEM *item);
     void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
+    void (*priv_load_func)(ITEM *item, const JSON_OBJECT *root);
+    void (*priv_save_func)(const ITEM *item, JSON_OBJECT *root);
     const OBJECT_BOUNDS *(*bounds_func)(void);
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);
