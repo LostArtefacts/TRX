@@ -42,6 +42,7 @@
 - fixed Spike Walls not having sound
 - fixed colored exhaust smokes on Quad Bike for 1 frame
 - fixed Cobras and Rattlesnakes being immune to explosives in their sleeping state
+- fixed Quad Bikes not restoring their state from savegames properly
 - fixed exploding Assault Targets in Lara's Home counting as penalties
 
 
