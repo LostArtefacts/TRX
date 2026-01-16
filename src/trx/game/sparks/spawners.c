@@ -1071,7 +1071,6 @@ void Sparks_TriggerGunSmokeDirected(
     const GAME_VECTOR pos, const XYZ_32 vel, const bool initial,
     const LARA_GUN_TYPE weapon, const int32_t shade)
 {
-
     SPARK *const spark = Sparks_GetFreeSpark();
     spark->on = true;
     spark->src_color.r = 0;
@@ -1080,6 +1079,7 @@ void Sparks_TriggerGunSmokeDirected(
     spark->dst_color.r = shade << 2;
     spark->dst_color.g = shade << 2;
     spark->dst_color.b = shade << 2;
+    spark->color = spark->src_color;
     spark->col_fade_speed = 4;
     spark->fade_to_black = 32 - (initial << 4);
     spark->life = (Random_GetControl() & 3) + 40;
