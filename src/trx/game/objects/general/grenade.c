@@ -78,7 +78,9 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
             SFX_EXPLOSION_1, &grenade_item->pos, 0x1800000 | SPM_PITCH);
         Sound_Effect(SFX_EXPLOSION_2, &grenade_item->pos, SPM_NORMAL);
     } else {
-        Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
+        Sound_Effect(
+            g_TRVersion == 1 ? SFX_EXPLOSION_3 : SFX_EXPLOSION_1, nullptr,
+            SPM_NORMAL);
     }
     Item_Kill(grenade_item_num);
 }

@@ -41,9 +41,7 @@ static void M_HandleSFXData(
                 sample_info->mode = SAMPLE_MODE_LOOPED;
                 break;
             case 3:
-                LOG_WARNING(
-                    "Unexpected sample mode for sample %d. flags=%0X", sfx_id,
-                    sample_info->flags);
+                sample_info->mode = SAMPLE_MODE_NORMAL;
                 break;
             }
         } else {
