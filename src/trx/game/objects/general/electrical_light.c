@@ -1,5 +1,4 @@
 #include <trx/game/collision.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
@@ -8,12 +7,6 @@
 typedef struct {
     int32_t life;
 } M_PRIV;
-
-static void M_Initialise(const int16_t item_num)
-{
-    ITEM *const item = Item_Get(item_num);
-    item->priv = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
-}
 
 static void M_Control(const int16_t item_num)
 {
@@ -59,9 +52,23 @@ static void M_Control(const int16_t item_num)
     Output_AddDynamicLightRGB(item->pos, 16, (RGB_888) { rg, rg, b });
 }
 
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->life = JSON_ObjectGetInt(priv_root, "life", 0);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "life", p->life);
+}
+
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = M_Initialise;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->control_func = M_Control;
     obj->draw_func = nullptr;
     obj->save_flags = true;

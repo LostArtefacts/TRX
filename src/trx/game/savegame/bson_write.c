@@ -387,6 +387,14 @@ static void M_WriteItem(
     default:
         break;
     }
+
+    if (obj->priv_size > 0 && obj->priv_save_func != nullptr) {
+        M_PushObject(ctx);
+        JSON_OBJECT *const priv_root = JSON_ValueAsObject(ctx->current);
+        ASSERT(priv_root != nullptr);
+        obj->priv_save_func(item, priv_root);
+        M_PopAndSet(ctx, "priv");
+    }
 }
 
 static void M_WriteArm(
