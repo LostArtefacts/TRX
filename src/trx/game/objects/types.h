@@ -4,7 +4,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/items/types.h>
 #include <trx/game/pathing/types.h>
-#include <trx/game/rooms/enum.h>
+#include <trx/game/rooms/types.h>
 #include <trx/game/savegame/enum.h>
 #include <trx/game/types.h>
 #include <trx/json.h>
@@ -65,6 +65,7 @@ typedef struct OBJECT {
     int16_t (*ceiling_height_func)(
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
     void (*activate_func)(ITEM *item);
+    bool (*trigger_func)(ITEM *item, const TRIGGER *trigger);
     void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
     void (*priv_load_func)(ITEM *item, const JSON_OBJECT *root);

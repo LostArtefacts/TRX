@@ -458,6 +458,8 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 break;
             }
 
+            const OBJECT *const obj = Object_Get(trig_item->object_id);
+
             const bool is_shoal_object =
                 Object_IsType(trig_item->object_id, g_ShoalObjects);
 
@@ -468,6 +470,14 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 trig_item->timer = trigger->timer;
                 if (trig_item->timer != 1) {
                     trig_item->timer *= LOGIC_FPS;
+                }
+
+                if (obj->trigger_func != nullptr) {
+                    const bool use_default_handling =
+                        obj->trigger_func(trig_item, trigger);
+                    if (!use_default_handling) {
+                        break;
+                    }
                 }
             }
 
@@ -499,7 +509,6 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 break;
             }
 
-            const OBJECT *const obj = Object_Get(trig_item->object_id);
             if (obj->activate_func != nullptr) {
                 obj->activate_func(trig_item);
             } else if (obj->intelligent) {
