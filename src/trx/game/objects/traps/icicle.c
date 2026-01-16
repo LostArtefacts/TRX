@@ -2,6 +2,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sound.h>
 
 #define M_DAMAGE 200
 
@@ -56,16 +57,15 @@ static void M_Control(const int16_t item_num)
     const SECTOR *const sector =
         Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
     Item_UpdateRoom(item_num, room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
-    item->floor = height;
-    if (item->current_anim_state == ICICLE_FALL && item->pos.y >= height) {
+    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    if (item->current_anim_state == ICICLE_FALL && item->pos.y >= item->floor) {
+        item->pos.y = item->floor;
         item->gravity = false;
         item->goal_anim_state = ICICLE_LAND;
-        item->pos.y = height;
         item->fall_speed = 0;
         item->mesh_bits = 0b00101011;
+        Sound_Effect(SFX_ICICLE, &item->pos, SPM_NORMAL);
     }
 }
 
