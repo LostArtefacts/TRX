@@ -9,7 +9,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/creatures/cobra.h>
 #include <trx/game/objects/general/lift.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
@@ -353,16 +352,6 @@ static void M_WriteItem(
             M_WriteNum(ctx, "momentum_angle", data->momentum_angle);
             M_WriteNum(ctx, "extra_rotation", data->extra_rotation);
             M_WriteNum(ctx, "pitch", data->pitch);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-    }
-
-    case O_COBRA: {
-        if (item->priv != nullptr) {
-            const COBRA_INFO *const data = item->priv;
-            M_PushObject(ctx);
-            M_WriteNum(ctx, "hit_points", data->hit_points);
             M_PopAndSet(ctx, "data");
         }
         break;

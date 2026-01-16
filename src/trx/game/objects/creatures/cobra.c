@@ -1,7 +1,4 @@
-#include <trx/game/objects/creatures/cobra.h>
-
 #include <trx/game/creature.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -10,6 +7,10 @@
 #include <trx/version.h>
 
 static BITE m_CobraBite = { .pos = { 0, 0, 0 }, .mesh_num = 13 };
+
+typedef struct {
+    int16_t hit_points;
+} M_PRIV;
 
 typedef enum {
     COBRA_STATE_WAKING_UP = 0,
@@ -24,6 +25,18 @@ typedef enum {
     COBRA_ANIM_DEATH = 4,
 } M_COBRA_ANIM;
 
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->hit_points = JSON_ObjectGetInt(priv_root, "hit_points", p->hit_points);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "hit_points", p->hit_points);
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -31,9 +44,8 @@ static void M_Initialise(const int16_t item_num)
     Item_SwitchToAnim(item, COBRA_ANIM_SLEEP, 45);
     item->current_anim_state = COBRA_STATE_SLEEP;
     item->goal_anim_state = COBRA_STATE_SLEEP;
-    COBRA_INFO *const priv = GameBuf_Alloc(sizeof(COBRA_INFO), GBUF_ITEM_DATA);
-    priv->hit_points = item->hit_points;
-    item->priv = priv;
+    M_PRIV *const p = item->priv;
+    p->hit_points = item->hit_points;
     item->hit_points = DONT_TARGET;
 }
 
@@ -56,7 +68,7 @@ static void M_Control(const int16_t item_num)
 
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->data;
-    COBRA_INFO *const priv = item->priv;
+    M_PRIV *const p = item->priv;
 
     if (creature == nullptr) {
         return;
@@ -92,7 +104,7 @@ static void M_Control(const int16_t item_num)
 
     switch (item->current_anim_state) {
     case COBRA_STATE_WAKING_UP:
-        item->hit_points = priv->hit_points;
+        item->hit_points = p->hit_points;
         break;
 
     case COBRA_STATE_ALERT:
@@ -119,12 +131,12 @@ static void M_Control(const int16_t item_num)
     case COBRA_STATE_SLEEP:
         creature->flags = 0;
         if (item->hit_points != DONT_TARGET) {
-            priv->hit_points = item->hit_points;
+            p->hit_points = item->hit_points;
             item->hit_points = DONT_TARGET;
         }
         if (info.distance < alert_radius && lara_item->hit_points > 0) {
             item->goal_anim_state = COBRA_STATE_WAKING_UP;
-            item->hit_points = priv->hit_points;
+            item->hit_points = p->hit_points;
         }
         break;
     }
@@ -142,6 +154,9 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
 
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = 8;
