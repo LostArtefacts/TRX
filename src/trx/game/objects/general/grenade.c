@@ -60,9 +60,11 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
                     pos, 3, -1, 0, grenade_item->room_num);
             }
         }
-    }
 
-    if (g_TRVersion != 3) {
+        Sound_Effect(
+            SFX_EXPLOSION_1, &grenade_item->pos, 0x1800000 | SPM_PITCH);
+        Sound_Effect(SFX_EXPLOSION_2, &grenade_item->pos, SPM_NORMAL);
+    } else {
         const int16_t effect_num = Effect_Create(grenade_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
@@ -72,16 +74,10 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
             effect->counter = 0;
             effect->object_id = O_EXPLOSION_1;
         }
+
+        Sound_Effect(SFX_EXPLOSION_3, nullptr, SPM_NORMAL);
     }
-    if (g_TRVersion == 3) {
-        Sound_Effect(
-            SFX_EXPLOSION_1, &grenade_item->pos, 0x1800000 | SPM_PITCH);
-        Sound_Effect(SFX_EXPLOSION_2, &grenade_item->pos, SPM_NORMAL);
-    } else {
-        Sound_Effect(
-            g_TRVersion == 1 ? SFX_EXPLOSION_3 : SFX_EXPLOSION_1, nullptr,
-            SPM_NORMAL);
-    }
+
     Item_Kill(grenade_item_num);
 }
 
