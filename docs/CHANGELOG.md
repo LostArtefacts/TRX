@@ -5,6 +5,7 @@
 - added new blood effects
 - added underwater blood spills
 - added new creature explosions effects
+- fixed actors jumping to their start frame at the end of cutscenes
 
 
 
