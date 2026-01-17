@@ -5,6 +5,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
+#include <trx/game/output/bind.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 #include <trx/game/water_fx.h>
@@ -317,12 +318,13 @@ static void M_DrawSkybox(void)
 
 static void M_DrawRoomItem(const int16_t item_num, void *const ud)
 {
-    ITEM *const item = Item_Get(item_num);
+    const ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (!item->bind.drawn && item->status != IS_INVISIBLE
+    OUTPUT_ITEM_BIND *const bind = Output_Bind_GetItem(item);
+    if (!bind->drawn && item->status != IS_INVISIBLE
         && obj->draw_func != nullptr) {
         M_SetupWaterStatus(Room_Get(item->room_num));
-        item->bind.drawn |= obj->draw_func(item);
+        bind->drawn |= obj->draw_func(item);
     }
 }
 
@@ -470,9 +472,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         M_DrawSkybox();
     }
 
-    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
-        Item_Get(i)->bind.drawn = false;
-    }
+    Output_Bind_ResetItems();
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
         const int16_t draw_room_num = Room_DrawGetRoom(i);

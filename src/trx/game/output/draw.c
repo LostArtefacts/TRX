@@ -5,6 +5,7 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
+#include <trx/game/output/bind.h>
 #include <trx/game/output/sources/lightnings.h>
 #include <trx/game/output/sources/misc.h>
 #include <trx/game/output/sources/objects.h>
@@ -299,6 +300,12 @@ void Output_DrawShadow(
     if (!item->enable_shadow) {
         return;
     }
+
+    OUTPUT_ITEM_BIND *const bind = Output_Bind_GetItem(item);
+    if (bind->shadow_drawn) {
+        return;
+    }
+    bind->shadow_drawn = true;
 
     if (g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {
         if (M_DrawShadow_Sprite(size, bounds, item)) {

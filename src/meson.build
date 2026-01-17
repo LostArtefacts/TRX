@@ -513,6 +513,7 @@ common_sources = [
   'trx/game/option/passport.c',
   'trx/game/option/sound.c',
   'trx/game/option/stats.c',
+  'trx/game/output/bind.c',
   'trx/game/output/common.c',
   'trx/game/output/draw.c',
   'trx/game/output/func.c',
