@@ -84,7 +84,7 @@ bool Level_Initialise(
     }
 
     Level_Unload();
-    Lua_FireEvent(LUA_EVENT_LEVEL_INIT, level->num);
+    Lua_FireEventInt32(LUA_EVENT_LEVEL_INIT, level->num);
     Level_Load(level);
 
     GameStringTable_Apply(level);

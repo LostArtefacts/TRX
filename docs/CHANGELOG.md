@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.1...develop) - ××××-××-××
 - added a bubble emitter (#4629)
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
+- added new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start
 - improved inventory ring active item highlight for smoother appearance
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 
