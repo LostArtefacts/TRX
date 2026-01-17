@@ -400,6 +400,7 @@ static void M_TriggerExhaustSmoke(
         spark->dst_color.g = 96;
         spark->dst_color.b = 128;
     }
+    spark->color = spark->src_color;
 
     spark->col_fade_speed = 4;
     spark->fade_to_black = 4;

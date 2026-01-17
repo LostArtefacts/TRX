@@ -13,6 +13,7 @@
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation
 - fixed Hand of Rathmore not rotating in Sleeping with the Fishes
+- fixed colored exhaust smokes on Quad Bike for 1 frame
 
 
 
