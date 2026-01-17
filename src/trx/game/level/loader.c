@@ -12,6 +12,7 @@
 #include <trx/game/level/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
+#include <trx/game/output/bind.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
@@ -739,10 +740,11 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         room->flags.swamp       = (flags & 0x80) != 0;
         // clang-format on
 
-        room->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
-        room->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
-        room->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
-        room->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
+        OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
+        bind->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
+        bind->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
+        bind->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
+        bind->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
 

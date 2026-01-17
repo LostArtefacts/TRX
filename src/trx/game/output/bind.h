@@ -11,6 +11,14 @@ typedef struct {
 typedef struct {
     bool active;
     bool drawn;
+    int16_t bound_left;
+    int16_t bound_right;
+    int16_t bound_top;
+    int16_t bound_bottom;
+    int16_t test_left;
+    int16_t test_right;
+    int16_t test_top;
+    int16_t test_bottom;
 } OUTPUT_ROOM_BIND;
 
 void Output_Bind_ResetItems(void);
