@@ -30,7 +30,7 @@
 
 #define M_INV_RING_FADE_TIME_FAST                                              \
     (INV_RING_CLOSE_FRAMES / INV_RING_FRAMES / (float)LOGIC_FPS)
-#define M_INV_RING_FADE_TIME_TITLE_FINISH 0.25f
+#define M_INV_RING_FADE_TIME_TO_BLACK 0.25f
 #define M_RING_SWITCH_FRAMES (96 / 2)
 #define M_SELECTING_FRAMES (32 / 2)
 
@@ -344,10 +344,17 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     if (ring->motion.status == RNG_FADING_OUT) {
+        if (ring->mode == INV_TITLE_MODE) {
+            const GF_COMMAND gf_cmd = M_Finish(ring, true);
+            ring->is_done = true;
+            ring->motion.status = RNG_DONE;
+            return gf_cmd;
+        }
+
         if (!Fader_IsActive(&ring->back_fader)
             && !Fader_IsActive(&ring->top_fader)) {
             Fader_InitFromCurrentHold(
-                &ring->top_fader, 1.0f, M_INV_RING_FADE_TIME_TITLE_FINISH,
+                &ring->top_fader, 1.0f, M_INV_RING_FADE_TIME_TO_BLACK,
                 1.0f / (float)LOGIC_FPS);
         }
 
