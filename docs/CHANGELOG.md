@@ -3,6 +3,7 @@
 
 **TR3**:
 - added new creature explosions effects
+- fixed actors jumping to their start frame at the end of cutscenes
 
 
 
