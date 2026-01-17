@@ -139,6 +139,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/coastal_airlock.bin",
                 "data/injections/coastal_sky.bin",
                 "data/injections/lara_coastal_guns.bin",
             ],
@@ -342,6 +343,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/antarc_airlock.bin",
                 "data/injections/antarc_sky.bin",
                 "data/injections/lara_antarc_guns.bin",
             ],

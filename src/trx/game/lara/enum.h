@@ -82,6 +82,11 @@ typedef enum {
     LS_EXTRA_PULL_DAGGER    = 14,
     LS_EXTRA_START_HOUSE    = 15,
     LS_EXTRA_END_HOUSE      = 16,
+    LS_EXTRA_SHIVA_KILL     = 17,
+    LS_EXTRA_RAPIDS_DROWN   = 18,
+    LS_EXTRA_TRAIN_KILL     = 19,
+    LS_EXTRA_JAIL_WAKE_UP   = 20,
+    LS_EXTRA_WILLARD_KILL   = 21,
     LS_EXTRA_NUMBER_OF,
 } LARA_EXTRA_STATE;
 // clang-format on
