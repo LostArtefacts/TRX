@@ -23,12 +23,13 @@ class Changelog:
 
 
 def get_youtube_id(url: str) -> str | None:
-    if match := re.search(
-        r"https://(?:www\.)?youtube\.com/watch\?v=(\w+)", url
-    ):
-        return match.group(1)
-    if match := re.search(r"https://(?:www\.)?youtu\.be/(\w+)", url):
-        return match.group(1)
+    patterns = [
+        r"https://(?:www\.)?youtube\.com/watch\?v=([A-Za-z0-9_-]{11})",
+        r"https://(?:www\.)?youtu\.be/([A-Za-z0-9_-]{11})",
+    ]
+    for pattern in patterns:
+        if match := re.search(pattern, url):
+            return match.group(1)
     return None
 
 
