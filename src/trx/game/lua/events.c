@@ -74,7 +74,34 @@ void Lua_ClearLevelListeners(void)
     }
 }
 
-void Lua_FireEvent(LUA_EVENT_TYPE ev, int32_t arg)
+static void M_PushArg(lua_State *const L, const LUA_EVENT_ARG arg)
+{
+    switch (arg.type) {
+    case LUA_EVENT_ARG_NIL:
+        lua_pushnil(L);
+        break;
+    case LUA_EVENT_ARG_INT32:
+        lua_pushinteger(L, arg.value.i32);
+        break;
+    case LUA_EVENT_ARG_BOOL:
+        lua_pushboolean(L, arg.value.b);
+        break;
+    case LUA_EVENT_ARG_NUMBER:
+        lua_pushnumber(L, arg.value.number);
+        break;
+    case LUA_EVENT_ARG_STRING:
+        if (arg.value.str != nullptr) {
+            lua_pushstring(L, arg.value.str);
+        } else {
+            lua_pushnil(L);
+        }
+        break;
+    }
+}
+
+void Lua_FireEventEx(
+    const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
+    const int32_t arg_count)
 {
     lua_State *const L = m_L;
     if (L == nullptr || m_Listeners == nullptr) {
@@ -86,12 +113,22 @@ void Lua_FireEvent(LUA_EVENT_TYPE ev, int32_t arg)
             continue;
         }
         lua_rawgeti(L, LUA_REGISTRYINDEX, lst->ref);
-        lua_pushinteger(L, arg);
-        if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
+        for (int32_t arg_idx = 0; arg_idx < arg_count; arg_idx++) {
+            M_PushArg(L, args[arg_idx]);
+        }
+        if (lua_pcall(L, arg_count, 0, 0) != LUA_OK) {
             LOG_ERROR("Lua event handler error: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
         }
     }
+}
+
+void Lua_FireEventInt32(const LUA_EVENT_TYPE ev, const int32_t arg)
+{
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_INT32, .value = { .i32 = arg } },
+    };
+    Lua_FireEventEx(ev, args, 1);
 }
 
 void LUA_CreateEvents(lua_State *const L)
@@ -112,6 +149,8 @@ void LUA_CreateEvents(lua_State *const L)
     lua_setfield(L, -2, "LEVEL_START");
     lua_pushinteger(L, LUA_EVENT_LEVEL_LOAD);
     lua_setfield(L, -2, "LEVEL_LOAD");
+    lua_pushinteger(L, LUA_EVENT_GAME_START);
+    lua_setfield(L, -2, "GAME_START");
     lua_pushinteger(L, LUA_EVENT_PICKUP);
     lua_setfield(L, -2, "PICKUP");
     lua_pushinteger(L, LUA_EVENT_CONTROL_PRE);

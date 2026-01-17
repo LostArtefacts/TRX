@@ -40,6 +40,15 @@ savegame. If the game is started normally, this duplicates `on_level_start`.
 Arguments:
 - `level_num`
 
+#### `on_game_start`
+Happens after the level finishes loading and the game is about to start.
+The difference from `on_level_start` and `on_level_load` is that this waits for the fade-to-black / cross-fade effects to
+finish, and is suitable to play sound effects and run game logic.
+
+Arguments:
+- `level_num`
+- `is_save`
+
 #### `on_pickup`
 Happens just after Lara picks up an item.
 

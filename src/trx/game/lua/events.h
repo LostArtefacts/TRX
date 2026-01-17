@@ -9,10 +9,29 @@ typedef enum {
     LUA_EVENT_LEVEL_INIT,
     LUA_EVENT_LEVEL_START,
     LUA_EVENT_LEVEL_LOAD,
+    LUA_EVENT_GAME_START,
     LUA_EVENT_PICKUP,
     LUA_EVENT_CONTROL_PRE,
     LUA_EVENT_CONTROL_POST,
 } LUA_EVENT_TYPE;
+
+typedef enum {
+    LUA_EVENT_ARG_NIL,
+    LUA_EVENT_ARG_INT32,
+    LUA_EVENT_ARG_BOOL,
+    LUA_EVENT_ARG_NUMBER,
+    LUA_EVENT_ARG_STRING,
+} LUA_EVENT_ARG_TYPE;
+
+typedef struct {
+    LUA_EVENT_ARG_TYPE type;
+    union {
+        int32_t i32;
+        bool b;
+        double number;
+        const char *str;
+    } value;
+} LUA_EVENT_ARG;
 
 // Initialize event API in Lua state
 void LUA_CreateEvents(lua_State *L);
@@ -20,5 +39,9 @@ void LUA_CreateEvents(lua_State *L);
 // Clear all listeners declared during the current level script
 void Lua_ClearLevelListeners(void);
 
-// Fire a Lua event of given type with integer argument
-void Lua_FireEvent(LUA_EVENT_TYPE ev, int32_t arg);
+// Fire a Lua event of given type with arbitrary arguments
+void Lua_FireEventEx(
+    LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *args, int32_t arg_count);
+
+// Fire a Lua event of given type with int32 argument
+void Lua_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);
