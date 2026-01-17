@@ -13,6 +13,8 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <math.h>
+
 static float m_Time = 0.0f;
 static float m_TimeInGame = 0.0f;
 static int32_t m_AnimatedTexturesOffset = 0;

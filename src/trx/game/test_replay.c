@@ -18,6 +18,7 @@
 #include <trx/vector.h>
 
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 
 #define M_DEBUG 0

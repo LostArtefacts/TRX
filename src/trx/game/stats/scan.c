@@ -17,6 +17,8 @@
 #include <trx/memory.h>
 #include <trx/version.h>
 
+#include <string.h>
+
 static bool m_KillableItems[MAX_ITEMS] = {};
 
 static void M_IncludeKillableItem(

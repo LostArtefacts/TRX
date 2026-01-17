@@ -18,6 +18,8 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <math.h>
+
 #define M_CAMERA_2_RING 598
 
 static bool M_IsEnterTransition(const INV_RING *const ring)

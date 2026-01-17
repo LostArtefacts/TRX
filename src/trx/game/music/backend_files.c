@@ -7,6 +7,8 @@
 #include <trx/memory.h>
 #include <trx/strings.h>
 
+#include <stdio.h>
+
 typedef struct {
     const char *dir;
     const char *description;

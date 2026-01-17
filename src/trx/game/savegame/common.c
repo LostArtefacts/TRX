@@ -15,6 +15,9 @@
 #include <trx/strings.h>
 #include <trx/version.h>
 
+#include <stdio.h>
+#include <string.h>
+
 #define MAX_STRATEGIES 2
 #define SAVES_DIR "saves"
 

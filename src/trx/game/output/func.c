@@ -11,6 +11,8 @@
 #include <trx/log.h>
 #include <trx/utils.h>
 
+#include <math.h>
+
 CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
 {
     if (g_MatrixPtr->_23 >= Output_GetFarZ()) {

@@ -10,6 +10,7 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <string.h>
 #include <zconf.h>
 #include <zlib.h>
 
