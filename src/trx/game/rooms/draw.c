@@ -122,16 +122,17 @@ static void M_GetBounds(void)
         const int16_t room_num = m_BoundRooms[m_BoundStart % M_MAX_BOUND_ROOMS];
         m_BoundStart++;
         ROOM *const room = Room_Get(room_num);
-        room->bind.active = false;
+        OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
+        bind->active = false;
 
         CLAMPG(room->bound_left, room->test_left);
         CLAMPG(room->bound_top, room->test_top);
         CLAMPL(room->bound_right, room->test_right);
         CLAMPL(room->bound_bottom, room->test_bottom);
 
-        if (!room->bind.drawn) {
+        if (!bind->drawn) {
             Room_MarkToBeDrawn(room_num);
-            room->bind.drawn = 1;
+            bind->drawn = true;
             if (room->flags.outside) {
                 m_Outside = 1;
             }
@@ -275,7 +276,8 @@ static void M_SetBounds(
         return;
     }
 
-    if (room->bind.active) {
+    OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
+    if (bind->active) {
         CLAMPG(room->test_left, left);
         CLAMPG(room->test_top, top);
         CLAMPL(room->test_right, right);
@@ -283,7 +285,7 @@ static void M_SetBounds(
     } else {
         m_BoundRooms[m_BoundEnd % M_MAX_BOUND_ROOMS] = room_num;
         m_BoundEnd++;
-        room->bind.active = true;
+        bind->active = true;
         room->test_left = left;
         room->test_top = top;
         room->test_right = right;
@@ -435,12 +437,14 @@ int16_t Room_DrawGetRoom(const int16_t idx)
 void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 {
     ROOM *const room = Room_Get(current_room);
+    Output_Bind_ResetRooms();
     room->test_left = Viewport_GetMinX(VIEWPORT_GAME);
     room->test_top = Viewport_GetMinY(VIEWPORT_GAME);
     room->test_right = Viewport_GetMaxX(VIEWPORT_GAME);
     room->test_bottom = Viewport_GetMaxY(VIEWPORT_GAME);
-    room->bind.active = true;
-    room->bind.drawn = false;
+    OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
+    bind->active = true;
+    bind->drawn = false;
 
     g_PhdLeft = room->test_left;
     g_PhdTop = room->test_top;
@@ -478,8 +482,9 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         const int16_t draw_room_num = Room_DrawGetRoom(i);
         ROOM *const draw_room = Room_Get(draw_room_num);
         M_DrawSingleRoom(draw_room);
-        draw_room->bind.active = false;
-        draw_room->bind.drawn = false;
+        OUTPUT_ROOM_BIND *const draw_bind = Output_Bind_GetRoom(draw_room);
+        draw_bind->active = false;
+        draw_bind->drawn = false;
     }
 
     const ITEM *const lara_item = Lara_GetItem();
