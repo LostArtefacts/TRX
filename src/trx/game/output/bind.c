@@ -21,7 +21,10 @@ OUTPUT_ITEM_BIND *Output_Bind_GetItem(const ITEM *const item)
 
 void Output_Bind_ResetRooms(void)
 {
-    memset(m_RoomBindings, 0, sizeof(m_RoomBindings));
+    for (int32_t i = 0; i < MAX_ROOMS; i++) {
+        m_RoomBindings[i].active = false;
+        m_RoomBindings[i].drawn = false;
+    }
 }
 
 OUTPUT_ROOM_BIND *Output_Bind_GetRoom(const ROOM *const room)

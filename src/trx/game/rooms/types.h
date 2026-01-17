@@ -154,15 +154,6 @@ typedef struct {
     ROOM_LIGHT_MODE light_mode;
     int16_t num_lights;
     int16_t num_static_meshes;
-    int16_t bound_left;
-    int16_t bound_right;
-    int16_t bound_top;
-    int16_t bound_bottom;
-    uint16_t bound_active;
-    int16_t test_left;
-    int16_t test_right;
-    int16_t test_top;
-    int16_t test_bottom;
     int16_t item_num;
     int16_t effect_num;
     int16_t flipped_room;

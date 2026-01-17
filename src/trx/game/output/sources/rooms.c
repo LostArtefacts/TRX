@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/output.h>
+#include <trx/game/output/bind.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/random.h>
 #include <trx/memory.h>
@@ -159,6 +160,7 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
 {
     M_PRIV *const p = &m_Priv;
     OUTPUT_MESH *const mesh = p->meshes[Room_GetNumber(room)];
+    const OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
     const MESH_INSTANCE inst = {
         .mesh = mesh,
         .cwmatrix = *g_MatrixPtr,
@@ -168,10 +170,10 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
         .water_effect = M_GetWaterEffect(room),
         .enable_scissor = true,
         .scissor = {
-            .x = room->bound_left,
-            .y = room->bound_bottom,
-            .width = room->bound_right - room->bound_left,
-            .height = room->bound_bottom - room->bound_top,
+            .x = bind->bound_left,
+            .y = bind->bound_bottom,
+            .width = bind->bound_right - bind->bound_left,
+            .height = bind->bound_bottom - bind->bound_top,
         },
         .room = Output_GetCurrentRoom(),
     };
