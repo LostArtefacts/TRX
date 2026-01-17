@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.1...develop) - ××××-××-××
 - added a bubble emitter (#4629)
 - improved inventory ring active item highlight for smoother appearance
+- fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 
 **TR3**:
 - added new blood effects
