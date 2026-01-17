@@ -49,13 +49,9 @@ trx_lua_embed = custom_target(
   ],
 )
 
-build_opts = [
+common_build_opts = [
   '-Wno-unused',
   '-Wno-unused-parameter',
-  '-Wno-microsoft-anon-tag',
-  '-Wno-gnu-binary-literal',
-  '-Wno-gnu-empty-initializer',
-  '-Wno-gnu-zero-variadic-macro-arguments',
   '-DMESON_BUILD',
   '-DGLEW_NO_GLU',
   '-DSDL_MAIN_HANDLED',
@@ -69,6 +65,19 @@ build_opts = [
   '-DPCRE2_CODE_UNIT_WIDTH=8',
   '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
 ]
+
+# Some warning names are compiler-specific (e.g. Clang-only) and will spam notes
+# on GCC. Only add the ones the current compiler actually supports.
+compiler_specific_warning_opts = [
+  '-Wno-microsoft-anon-tag',
+  '-Wno-gnu-binary-literal',
+  '-Wno-gnu-empty-initializer',
+  '-Wno-gnu-zero-variadic-macro-arguments',
+]
+
+build_opts = (
+  common_build_opts + c_compiler.get_supported_arguments(compiler_specific_warning_opts)
+)
 
 add_project_arguments(build_opts, language: 'c')
 
