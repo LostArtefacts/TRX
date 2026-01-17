@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.0.3...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.1...develop) - ××××-××-××
+
+## [1.1](https://github.com/LostArtefacts/TRX/compare/trx-1.0.3...trx-1.1) - 2026-01-17
+Showcase: https://www.youtube.com/watch?v=veVYyr--H1A
 - added a fade-in and fade-out effect to patterned inventory backgrounds
 - added the ability to use monochrome image for inventory and statistic screens backgrounds
 - added the ability to use very dark image for inventory and statistic screens backgrounds (#4469)
