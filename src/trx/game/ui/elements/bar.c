@@ -8,6 +8,8 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <math.h>
+
 #define M_COLOR_STEPS 5
 
 typedef struct {

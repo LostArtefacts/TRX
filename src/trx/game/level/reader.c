@@ -23,6 +23,9 @@
 #include <trx/memory.h>
 #include <trx/version.h>
 
+#include <stdlib.h>
+#include <string.h>
+
 #define M_DEFAULT_SFX_PATH "data/main.sfx"
 
 typedef struct {

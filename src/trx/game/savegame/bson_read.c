@@ -27,6 +27,9 @@
 #include <trx/strings.h>
 #include <trx/version.h>
 
+#include <stdio.h>
+#include <string.h>
+
 #define M_NO_ROOM_LEGACY 255
 
 #define M_MAX_STACK_SIZE 10

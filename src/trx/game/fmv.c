@@ -18,6 +18,8 @@
 #include <trx/log.h>
 #include <trx/memory.h>
 
+#include <string.h>
+
 static bool m_IsPlaying = false;
 static const char *m_Extensions[] = {
     ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,

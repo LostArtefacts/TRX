@@ -19,6 +19,8 @@
 #include <trx/gfx/context.h>
 #include <trx/gfx/gl/track.h>
 
+#include <stdio.h>
+
 #define M_MAX_PHASES 10
 
 static int32_t m_CurrentFrame = 0;

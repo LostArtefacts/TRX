@@ -6,6 +6,8 @@
 #include <trx/memory.h>
 #include <trx/strings.h>
 
+#include <string.h>
+
 typedef struct {
     bool *target;
     const CONFIG_OPTION *option;

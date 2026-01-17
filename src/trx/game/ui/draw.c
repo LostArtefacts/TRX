@@ -9,6 +9,8 @@
 #include <trx/vector.h>
 #include <trx/version.h>
 
+#include <string.h>
+
 #define M_WHITE ((RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f })
 #define M_OUTLINE_THICKNESS 0.75f
 #define M_SCHEDULE_OP(draw_func, inst)                                         \

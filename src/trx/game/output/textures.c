@@ -11,6 +11,8 @@
 #include <trx/memory.h>
 #include <trx/utils.h>
 
+#include <string.h>
+
 typedef struct {
     OUTPUT_UVW corners[4];
 } M_UVW_PACK;

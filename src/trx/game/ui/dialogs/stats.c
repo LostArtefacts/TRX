@@ -12,6 +12,9 @@
 #include <trx/strings.h>
 #include <trx/version.h>
 
+#include <stdio.h>
+#include <string.h>
+
 #define M_MIN_ASSAULT_COURSE_ROWS 7
 
 typedef enum {

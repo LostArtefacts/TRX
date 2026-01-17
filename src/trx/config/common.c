@@ -9,6 +9,9 @@
 #include <trx/memory.h>
 #include <trx/strings.h>
 
+#include <stdio.h>
+#include <string.h>
+
 // In-memory list of pointers to config options enforced by the game flow.
 static VECTOR *m_EnforcedOptions = nullptr;
 // In-memory list of pointers to config options hidden by the game flow.

@@ -8,6 +8,8 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <string.h>
+
 #define X_CFG_BOOL(target_, default_value_)                                    \
     { .name = QUOTE(target_),                                                  \
       .type = COT_BOOL,                                                        \

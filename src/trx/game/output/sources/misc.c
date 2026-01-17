@@ -9,6 +9,8 @@
 #include <trx/memory.h>
 #include <trx/utils.h>
 
+#include <math.h>
+
 typedef struct {
     XYZW_F pos;
     RGBA_8888 color;

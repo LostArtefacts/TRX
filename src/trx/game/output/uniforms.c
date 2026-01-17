@@ -14,6 +14,7 @@
 #include <trx/version.h>
 
 #include <math.h>
+#include <string.h>
 
 #define M_GLOBAL_MEMBERS                                                       \
     X_DECLARE_MEMBER(float, fog_color, [4])                                    \

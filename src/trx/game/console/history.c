@@ -8,6 +8,8 @@
 #include <trx/vector.h>
 #include <trx/version.h>
 
+#include <string.h>
+
 #define MAX_HISTORY_ENTRIES 30
 
 VECTOR *m_History = nullptr;

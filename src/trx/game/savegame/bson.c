@@ -12,6 +12,7 @@
 
 #include <zconf.h>
 #include <zlib.h>
+#include <string.h>
 
 #define M_MAGIC_TR1X MKTAG('T', '1', 'M', 'B')
 #define M_MAGIC_TR2X MKTAG('T', '2', 'X', 'B')

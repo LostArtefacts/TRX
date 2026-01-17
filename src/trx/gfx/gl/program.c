@@ -8,6 +8,7 @@
 #include <trx/log.h>
 #include <trx/memory.h>
 
+#include <stdio.h>
 #include <string.h>
 
 static char *M_PreprocessIncludes(const char *src, const char *dir)
