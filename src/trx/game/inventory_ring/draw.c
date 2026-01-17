@@ -293,6 +293,9 @@ void InvRing_Draw(INV_RING *const ring)
         Option_Draw(inv_item);
     }
 
-    Output_Overlay_DrawBlackRectangle(
-        Fader_GetCurrentValue(&ring->top_fader), true);
+    float top_opacity = Fader_GetCurrentValue(&ring->top_fader);
+    if (ring->mode == INV_TITLE_MODE && ring->motion.status != RNG_OPENING) {
+        top_opacity = 0.0f;
+    }
+    Output_Overlay_DrawBlackRectangle(top_opacity, true);
 }
