@@ -176,11 +176,6 @@ typedef struct {
         bool swamp;
     } flags;
 
-    struct {
-        bool active;
-        bool drawn;
-    } bind;
-
     ROOM_DRAWSET drawn_items;
     uint8_t water_scheme;
     uint8_t reverb_info;
