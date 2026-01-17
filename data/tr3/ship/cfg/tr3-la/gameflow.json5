@@ -115,6 +115,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
+                "data/injections/antarc_airlock.bin",
                 "data/injections/lara_london_guns.bin",
             ],
         },
