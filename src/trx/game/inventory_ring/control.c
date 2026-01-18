@@ -874,6 +874,11 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         Inv_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
     }
 
+    g_InvRing_Source[RT_KEYS].current = 0;
+    for (int32_t i = 0; i < g_InvRing_Source[RT_KEYS].count; i++) {
+        InvRing_InitInvItem(g_InvRing_Source[RT_KEYS].items[i]);
+    }
+
     g_InvRing_Source[RT_MAIN].current = 0;
     for (int32_t i = 0; i < g_InvRing_Source[RT_MAIN].count; i++) {
         InvRing_InitInvItem(g_InvRing_Source[RT_MAIN].items[i]);
