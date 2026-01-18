@@ -1,7 +1,9 @@
 #include <trx/game/collision.h>
 
 #include <trx/config.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/items.h>
+#include <trx/game/items/anim.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/matrix.h>
 #include <trx/game/rooms.h>
@@ -182,15 +184,43 @@ int32_t Collide_TestCollision(ITEM *const item, const ITEM *const lara_item)
 void Collide_GetJointAbsPosition(
     const ITEM *const item, XYZ_32 *const out_vec, const int32_t joint)
 {
-    // TODO: support interpolation
     const OBJECT *const obj = Object_Get(item->object_id);
-    const ANIM_FRAME *const frame = Item_GetBestFrame(item);
+    ANIM_FRAME *frames[2] = { nullptr, nullptr };
+    int32_t rate = 0;
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    const bool use_item_interp =
+        Interpolation_IsActive() && item->enable_interpolation;
+    const XYZ_32 item_pos =
+        use_item_interp ? item->interp.result.pos : item->pos;
+    const XYZ_16 item_rot =
+        use_item_interp ? item->interp.result.rot : item->rot;
+
+    if (frames[0] == nullptr) {
+        Matrix_PushUnit();
+        Matrix_Rot16(item_rot);
+        Matrix_TranslateRel32(*out_vec);
+        out_vec->x = item_pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+        out_vec->y = item_pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+        out_vec->z = item_pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+        Matrix_Pop();
+        return;
+    }
+
+    const ANIM_FRAME *const frame_a = frames[0];
+    const ANIM_FRAME *const frame_b = frames[1];
+    const bool do_interp = frame_b != nullptr && frac != 0 && rate != 0;
 
     int32_t stack = 1;
     Matrix_PushUnit();
-    Matrix_Rot16(item->rot);
-    Matrix_TranslateRel16(frame->offset);
-    Matrix_Rot16(frame->mesh_rots[0]);
+    Matrix_Rot16(item_rot);
+    if (do_interp) {
+        Matrix_InitInterpolate(frac, rate);
+        Matrix_TranslateRel16_ID(frame_a->offset, frame_b->offset);
+        Matrix_Rot16_ID(frame_a->mesh_rots[0], frame_b->mesh_rots[0]);
+    } else {
+        Matrix_TranslateRel16(frame_a->offset);
+        Matrix_Rot16(frame_a->mesh_rots[0]);
+    }
 
     const int16_t *extra_rotation = item->data;
     const int32_t max_joint = obj->mesh_count > 0 ? obj->mesh_count - 1 : 0;
@@ -199,25 +229,49 @@ void Collide_GetJointAbsPosition(
         const ANIM_BONE *const bone = Object_GetBone(obj, i);
         if (bone->matrix_pop) {
             stack--;
-            Matrix_Pop();
+            if (do_interp) {
+                Matrix_Pop_I();
+            } else {
+                Matrix_Pop();
+            }
         }
         if (bone->matrix_push) {
             stack++;
-            Matrix_Push();
+            if (do_interp) {
+                Matrix_Push_I();
+            } else {
+                Matrix_Push();
+            }
         }
 
-        Matrix_TranslateRel32(bone->pos);
-        Matrix_Rot16(frame->mesh_rots[i + 1]);
-        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
+        if (do_interp) {
+            Matrix_TranslateRel32_I(bone->pos);
+            Matrix_Rot16_ID(
+                frame_a->mesh_rots[i + 1], frame_b->mesh_rots[i + 1]);
+            Object_ApplyExtraRotation(&extra_rotation, bone->rot, true);
+        } else {
+            Matrix_TranslateRel32(bone->pos);
+            Matrix_Rot16(frame_a->mesh_rots[i + 1]);
+            Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
+        }
     }
 
-    Matrix_TranslateRel32(*out_vec);
-    out_vec->x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-    out_vec->y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-    out_vec->z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+    if (do_interp) {
+        Matrix_TranslateRel32_I(*out_vec);
+        Matrix_Interpolate();
+    } else {
+        Matrix_TranslateRel32(*out_vec);
+    }
+    out_vec->x = item_pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
+    out_vec->y = item_pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
+    out_vec->z = item_pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
 
     while (stack--) {
-        Matrix_Pop();
+        if (do_interp) {
+            Matrix_Pop_I();
+        } else {
+            Matrix_Pop();
+        }
     }
 }
 
