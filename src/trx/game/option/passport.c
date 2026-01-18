@@ -677,8 +677,7 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
         return true;
     } else {
         Savegame_BindSlot(save_slot);
-        M_Confirm(
-            PASSPORT_ACTION_SELECT_LEVEL, GF_GetFirstLevel()->num + choice);
+        M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, choice);
         return true;
     }
     return false;
