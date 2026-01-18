@@ -153,6 +153,9 @@ void InvRing_InitRing(
 
     ring->motion_timer.type = CLOCK_TIMER_SIM;
     ClockTimer_Sync(&ring->motion_timer);
+
+    m_ShowExamine = false;
+    m_ShowUseItemButton = false;
 }
 
 void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
