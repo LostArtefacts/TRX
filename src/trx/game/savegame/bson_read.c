@@ -1099,12 +1099,20 @@ static bool M_ReadResumeInfo(
     // TR2X <1.6
     M_OPTIONAL(M_ReadNum(ctx, "num_scions", &resume->num_scions));
 
-    M_MUST(M_ReadBool(ctx, "available", &resume->flags.available));
-    resume->level_completed = false;
-    M_OPTIONAL(M_ReadBool(ctx, "level_completed", &resume->level_completed));
+    // TRX <1.2
+    M_OPTIONAL(M_ReadNum(ctx, "num_quest_item_1", &resume->num_quest_item_1));
+    M_OPTIONAL(M_ReadNum(ctx, "num_quest_item_2", &resume->num_quest_item_2));
+    M_OPTIONAL(M_ReadNum(ctx, "num_quest_item_3", &resume->num_quest_item_3));
+    M_OPTIONAL(M_ReadNum(ctx, "num_quest_item_4", &resume->num_quest_item_4));
 
+    M_MUST(M_ReadBool(ctx, "available", &resume->flags.available));
+
+    // TRX <1.2
+    resume->level_completed = false;
     resume->prev_level = -1;
+    M_OPTIONAL(M_ReadBool(ctx, "level_completed", &resume->level_completed));
     M_OPTIONAL(M_ReadNum(ctx, "prev_level", &resume->prev_level));
+
     if (M_HasKey(ctx, "got_pistols")) {
         // TR1X <4.16
         M_MUST(M_ReadBool(ctx, "got_pistols", &resume->flags.has_pistols));
