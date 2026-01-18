@@ -141,6 +141,11 @@ void main(void) {
         outColor *= vec4(lightV, lightV, lightV, 1.0);
     }
 
+    if (uDesaturation > 0.0) {
+        float luma = dot(outColor.rgb, vec3(0.299, 0.587, 0.114));
+        outColor.rgb = mix(outColor.rgb, vec3(luma), clamp(uDesaturation, 0.0, 1.0));
+    }
+
     outColor.rgb *= uBrightnessMultiplier * uBrightnessScale;
 
     outColor.a *= clamp(uOpacity, 0.0, 1.0);

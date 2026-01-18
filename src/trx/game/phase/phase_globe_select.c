@@ -119,7 +119,7 @@ static void M_Draw(PHASE *const phase)
     const float opacity = Fader_GetCurrentValue(&p->fader);
 
     if (p->args.background_path != nullptr) {
-        Output_Overlay_DrawImage(p->args.background_path);
+        Output_Overlay_DrawImageMono(p->args.background_path, 1.0f);
         Output_Overlay_DrawBlackRectangle(0.5f, false);
     } else {
         Output_Overlay_DrawBlackRectangle(1.0f, false);
