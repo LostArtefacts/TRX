@@ -172,6 +172,7 @@
     ],
 
     "hidden_config": [
+        "enable_3d_pickups", // TR3 has no sprite pickups
         "enable_save_crystals",
         "enable_ps1_crystals",
         "enable_reflections",
