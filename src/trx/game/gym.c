@@ -204,8 +204,6 @@ static void M_Assault_Finish(void)
         resume->stats.timer = final_time;
     }
 
-    M_StoreCourseTime(&g_Config.profile.assault_stats, final_time);
-
     if (g_TRVersion >= 3) {
         if (final_time < (uint32_t)(180 * LOGIC_FPS)) {
             Music_Play(MX_TR3_GYM_HINT_FAST_TIME, MPM_ONCE);
@@ -235,6 +233,8 @@ static void M_Assault_Finish(void)
     }
 
     p->assault_course.timer_active = false;
+
+    M_StoreCourseTime(&g_Config.profile.assault_stats, final_time);
 }
 
 static void M_Racetrack_Finish(void)

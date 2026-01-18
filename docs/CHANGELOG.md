@@ -16,6 +16,9 @@
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
 
+**TR2**:
+- fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
+
 **TR3**:
 - added new water currents
 - added new blood effects
