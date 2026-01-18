@@ -318,6 +318,29 @@ void WaterFX_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
     ripple->z = pos.z + (Random_GetControl() & 0x3F) - 32;
 }
 
+void WaterFX_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
+{
+    int32_t idx = -1;
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
+        if ((m_Ripples[i].flags & 1U) == 0U) {
+            idx = i;
+            break;
+        }
+    }
+    if (idx < 0) {
+        return;
+    }
+
+    WATER_FX_RIPPLE *const ripple = &m_Ripples[idx];
+    ripple->flags = 0x33U;
+    ripple->init = 1U;
+    ripple->life = (Random_GetDraw() & 7) - 16;
+    ripple->size = size;
+    ripple->x = pos.x + (Random_GetDraw() & 0x3F) - 32;
+    ripple->y = pos.y;
+    ripple->z = pos.z + (Random_GetDraw() & 0x3F) - 32;
+}
+
 static RGBA_8888 M_Gray(int32_t c)
 {
     CLAMP(c, 0, 255);

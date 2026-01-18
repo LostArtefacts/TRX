@@ -17,6 +17,8 @@ void Output_SetTime(float time);
 float Output_GetTime(void);
 float Output_GetTimeInGame(void);
 void Output_SetTimeInGame(float time);
+bool Output_IsControlFrame(void);
+void Output_SetControlFrame(bool is_control_frame);
 
 void Output_SetupBelowWater(bool is_underwater);
 void Output_SetupAboveWater(bool is_underwater);

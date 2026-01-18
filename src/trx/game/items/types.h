@@ -20,6 +20,7 @@ typedef struct {
     int32_t floor;
     uint32_t touch_bits;
     uint32_t mesh_bits;
+    int16_t after_death;
     OBJECT_ID object_id;
     int16_t current_anim_state;
     int16_t goal_anim_state;

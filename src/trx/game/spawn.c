@@ -194,6 +194,23 @@ int16_t Spawn_Blood(
     return effect_num;
 }
 
+int16_t Spawn_BloodD(
+    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
+    const int16_t y_rot, const int16_t room_num)
+{
+    if (g_TRVersion == 3) {
+        if (Room_Get(room_num)->flags.underwater) {
+            WaterFX_TriggerUnderwaterBloodD(
+                (XYZ_32) { x, y + 64, z }, Random_GetDraw() & 7);
+        } else {
+            Sparks_TriggerBloodD(
+                (XYZ_32) { x, y, z }, y_rot >> 4, (Random_GetDraw() & 7) + 6);
+        }
+        return NO_EFFECT;
+    }
+    return Spawn_Blood(x, y, z, speed, y_rot, room_num);
+}
+
 void Spawn_BloodBath(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num, const int32_t count)
@@ -212,6 +229,17 @@ void Spawn_BloodBath(
                 z - (Random_GetDraw() << 9) / 0x8000 + 256, speed, y_rot,
                 room_num);
         }
+    }
+}
+
+void Spawn_BloodBathD(
+    const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
+    const int16_t y_rot, const int16_t room_num, const int32_t count)
+{
+    for (int32_t i = 0; i < count; i++) {
+        Spawn_BloodD(
+            x - (Random_GetDraw() << 9) / 0x8000 + 256, y,
+            z - (Random_GetDraw() << 9) / 0x8000 + 256, speed, y_rot, room_num);
     }
 }
 

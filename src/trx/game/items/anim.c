@@ -7,6 +7,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/version.h>
 
 #define M_SFX_SURF_DISTANCE ((STEP_L * 2) + 1)
 
@@ -204,6 +205,8 @@ void Item_Animate(ITEM *const item)
             }
 
             case AC_DEACTIVATE:
+                const OBJECT *const obj = Object_Get(item->object_id);
+                item->after_death = obj->intelligent ? 1 : 64;
                 item->status = IS_DEACTIVATED;
                 break;
 

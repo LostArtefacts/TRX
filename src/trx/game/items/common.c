@@ -7,8 +7,10 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/const.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
+#include <trx/game/spawn.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -208,6 +210,7 @@ void Item_Initialise(const int16_t item_num)
     item->timer = 0;
     item->mesh_bits = 0xFFFFFFFF;
     item->touch_bits = 0;
+    item->after_death = 0;
     item->data = nullptr;
     item->priv = nullptr;
     item->carried_item = nullptr;
@@ -287,6 +290,23 @@ void Item_Control(void)
     }
 
     Carrier_AnimateDrops();
+}
+
+void Item_ControlDraw(ITEM *const item)
+{
+    if (g_TRVersion == 3 && item->status != IS_INVISIBLE
+        && item->after_death < 32 && item->after_death > 0) {
+        item->after_death++;
+
+        if (item->after_death == 2 || item->after_death == 5
+            || item->after_death == 11 || item->after_death == 20
+            || item->after_death == 27 || item->after_death == 32
+            || (Random_GetDraw() & 7) == 0) {
+            Spawn_BloodBathD(
+                item->pos.x, item->pos.y - 64, item->pos.z, 0,
+                Random_GetDraw() << 1, item->room_num, 1);
+        }
+    }
 }
 
 void Item_Kill(const int16_t item_num)

@@ -266,7 +266,9 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
 
         Interpolation_SetRate(1.0);
         Output_SetTime(m_CurrentFrame);
+        Output_SetControlFrame(true);
         M_Draw(phase);
+        Output_SetControlFrame(false);
     }
 
 finish:

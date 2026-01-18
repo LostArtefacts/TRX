@@ -42,3 +42,4 @@ void Sparks_TriggerRocketFlame(
     XYZ_32 pos, XYZ_32 vel, int16_t item_num, int16_t room_num);
 
 void Sparks_TriggerBlood(XYZ_32 pos, int32_t angle_12, int32_t count);
+void Sparks_TriggerBloodD(XYZ_32 pos, int32_t angle_12, int32_t count);
