@@ -9,6 +9,7 @@
     - `on_level_load` → `after_level_state`
     - `on_control` → `before_control`
     - `on_control_post` → `after_control`
+- changed turbo cheat to auto‑reset to normal speed if pushed past limit, making it easier for new players to recover from accidental changes
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 - fixed being unable to use the manual camera in TR3 camera mode when Lara is idle (#4670, regression from 1.1)
 

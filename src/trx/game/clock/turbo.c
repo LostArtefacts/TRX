@@ -11,7 +11,12 @@
 
 void Clock_CycleTurboSpeed(const bool forward)
 {
-    Clock_SetTurboSpeed(Clock_GetTurboSpeed() + (forward ? 1 : -1));
+    int32_t new_speed = Clock_GetTurboSpeed() + (forward ? 1 : -1);
+    if (new_speed < CLOCK_TURBO_SPEED_MIN
+        || new_speed > CLOCK_TURBO_SPEED_MAX) {
+        new_speed = 0;
+    }
+    Clock_SetTurboSpeed(new_speed);
 }
 
 int32_t Clock_GetTurboSpeed(void)
