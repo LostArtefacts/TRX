@@ -38,8 +38,15 @@ vec3 waterWibble(vec4 position)
 {
     vec3 ndc = position.xyz / position.w;
     vec2 pixelPos = (ndc.xy * 0.5 + 0.5) * uViewportSize;
+#if TR_VERSION == 3
+    float phases = (uTimeInGame * 0.25 + pixelPos.x) * (2.0 * PI / WIBBLE_SIZE);
+    float scale = length(uViewportSize) / length(vec2(640.0, 480.0));
+    float adjustedWibble = scale;
+    pixelPos.y += sin(phases) * adjustedWibble;
+#else
     vec2 phases = (uTimeInGame + pixelPos.yx) * (2.0 * PI / WIBBLE_SIZE);
     pixelPos += sin(phases) * MAX_WIBBLE;
+#endif
     // reverse transform
     ndc.xy = (pixelPos / uViewportSize - 0.5) * 2.0;
     return ndc * position.w;
