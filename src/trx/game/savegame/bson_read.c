@@ -1209,6 +1209,7 @@ bool Savegame_BSON_LoadInventory(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     for (int32_t i = 0; objects[i].key != nullptr; i++) {
         int16_t qty;
         if (M_ReadNum(ctx, objects[i].key, &qty)) {
+            Inv_RemoveItem(objects[i].object_id);
             Inv_AddItemNTimes(objects[i].object_id, qty);
         }
     }
