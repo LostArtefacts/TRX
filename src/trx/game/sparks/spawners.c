@@ -569,7 +569,7 @@ void Sparks_TriggerBlood(
             ((Random_GetControl() & 0x1F) + angle_12 - 16) & 0xFFF;
         spark->vel.x = -(dist * Math_Sin(ang << 4)) >> 7;
         spark->vel.y = -128 - (Random_GetControl() & 0xFF);
-        spark->vel.z = dist * Math_Cos((ang << 4)) >> 7;
+        spark->vel.z = dist * Math_Cos(ang << 4) >> 7;
         spark->friction = 4;
         spark->flags = SPARK_F_BLOOD | SPARK_F_SCALE;
         spark->scalar = 3;
@@ -581,6 +581,60 @@ void Sparks_TriggerBlood(
         spark->src_size.height = 2;
         spark->dst_size.width = 2 - (Random_GetControl() & 1);
         spark->dst_size.height = 2 - (Random_GetControl() & 1);
+    }
+}
+
+void Sparks_TriggerBloodD(
+    const XYZ_32 pos, int32_t angle_12, const int32_t count)
+{
+    const bool censored = false;
+
+    for (int32_t i = 0; i < count; i++) {
+        SPARK *const spark = Sparks_GetFreeSpark();
+        spark->on = true;
+
+        if (censored) {
+            spark->src_color.r = 112;
+            spark->src_color.g = 0;
+            spark->src_color.b = 224;
+            spark->dst_color.r = 96;
+            spark->dst_color.g = 0;
+            spark->dst_color.b = 192;
+        } else {
+            spark->src_color.r = 224;
+            spark->src_color.g = 0;
+            spark->src_color.b = 32;
+            spark->dst_color.r = 192;
+            spark->dst_color.g = 0;
+            spark->dst_color.b = 24;
+        }
+        spark->color = spark->src_color;
+
+        spark->col_fade_speed = 8;
+        spark->fade_to_black = 8;
+        spark->life = 24;
+        spark->s_life = 24;
+        spark->draw_type = 1;
+        spark->dynamic = -1;
+        spark->pos.x = pos.x + (Random_GetDraw() & 0x1F) - 16;
+        spark->pos.y = pos.y + (Random_GetDraw() & 0x1F) - 16;
+        spark->pos.z = pos.z + (Random_GetDraw() & 0x1F) - 16;
+        const int16_t dist = Random_GetDraw() & 0xF;
+        const int32_t ang = ((Random_GetDraw() & 0x1F) + angle_12 - 16) & 0xFFF;
+        spark->vel.x = -(dist * Math_Sin(ang << 4)) >> 7;
+        spark->vel.y = -128 - (Random_GetDraw() & 0xFF);
+        spark->vel.z = dist * Math_Cos(ang << 4) >> 7;
+        spark->friction = 4;
+        spark->flags = SPARK_F_SCALE;
+        spark->scalar = 3;
+        spark->max_y_vel = 0;
+        spark->gravity = (Random_GetDraw() & 0x1F) + 31;
+        spark->size.width = 2;
+        spark->src_size.width = 2;
+        spark->size.height = 2;
+        spark->src_size.height = 2;
+        spark->dst_size.width = 2 - (Random_GetDraw() & 1);
+        spark->dst_size.height = 2 - (Random_GetDraw() & 1);
     }
 }
 

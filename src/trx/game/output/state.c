@@ -17,6 +17,7 @@
 
 static float m_Time = 0.0f;
 static float m_TimeInGame = 0.0f;
+static bool m_ControlFrame = false;
 static int32_t m_AnimatedTexturesOffset = 0;
 
 static int32_t m_FogStart = 0;
@@ -425,4 +426,14 @@ void Output_AdjustDepth(const float factor, const float units)
         m_DepthFactor = factor;
         m_DepthUnits = units;
     }
+}
+
+bool Output_IsControlFrame(void)
+{
+    return m_ControlFrame;
+}
+
+void Output_SetControlFrame(const bool is_control_frame)
+{
+    m_ControlFrame = is_control_frame;
 }

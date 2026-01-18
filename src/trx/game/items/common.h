@@ -21,6 +21,7 @@ int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 
 void Item_Initialise(int16_t item_num);
 void Item_Control(void);
+void Item_ControlDraw(ITEM *item);
 void Item_Kill(int16_t item_num);
 void Item_RemoveActive(int16_t item_num);
 void Item_RemoveDrawn(int16_t item_num);

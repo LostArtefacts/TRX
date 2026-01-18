@@ -73,3 +73,4 @@ void WaterFX_Splash(const ITEM *item);
 void WaterFX_WadeSplash(const ITEM *item, int32_t water_height, int32_t depth);
 
 void WaterFX_TriggerUnderwaterBlood(XYZ_32 pos, int32_t size);
+void WaterFX_TriggerUnderwaterBloodD(XYZ_32 pos, int32_t size);

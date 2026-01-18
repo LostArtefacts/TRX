@@ -321,13 +321,19 @@ static void M_DrawSkybox(void)
 
 static void M_DrawRoomItem(const int16_t item_num, void *const ud)
 {
-    const ITEM *const item = Item_Get(item_num);
+    ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
     OUTPUT_ITEM_BIND *const bind = Output_Bind_GetItem(item);
-    if (!bind->drawn && item->status != IS_INVISIBLE
-        && obj->draw_func != nullptr) {
-        M_SetupWaterStatus(Room_Get(item->room_num));
-        bind->drawn |= obj->draw_func(item);
+    if (bind->drawn || item->status == IS_INVISIBLE
+        || obj->draw_func == nullptr) {
+        return;
+    }
+
+    M_SetupWaterStatus(Room_Get(item->room_num));
+    bind->drawn |= obj->draw_func(item);
+
+    if (Output_IsControlFrame()) {
+        Item_ControlDraw(item);
     }
 }
 
