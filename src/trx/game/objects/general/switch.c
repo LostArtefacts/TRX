@@ -81,7 +81,7 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->flags |= IF_CODE_BITS;
-    if (!Item_IsTriggerActive(item)) {
+    if (!Item_IsTriggerActive(item) && (item->flags & IF_ONE_SHOT) == 0) {
         item->goal_anim_state = SWITCH_STATE_OFF;
         item->timer = 0;
     }
@@ -190,7 +190,7 @@ static void M_CollisionControlled(
 
     if ((g_Input.action && lara->gun_status == LGS_ARMLESS
          && !lara_item->gravity && lara_item->current_anim_state == LS(LS_STOP)
-         && item->status == IS_INACTIVE)
+         && (item->flags & IF_ONE_SHOT) == 0 && item->status == IS_INACTIVE)
         || (lara->interact_target.is_moving
             && lara->interact_target.item_num == item_num)) {
         const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
@@ -247,8 +247,8 @@ static void M_Collision(
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (!g_Input.action || item->status != IS_INACTIVE
-        || lara->gun_status != LGS_ARMLESS || lara_item->gravity
-        || lara_item->current_anim_state != LS(LS_STOP)
+        || (item->flags & IF_ONE_SHOT) != 0 || lara->gun_status != LGS_ARMLESS
+        || lara_item->gravity || lara_item->current_anim_state != LS(LS_STOP)
         || !Lara_TestPosition(item, obj->bounds_func())) {
         return;
     }
