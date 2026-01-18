@@ -186,19 +186,23 @@ void Collide_GetJointAbsPosition(
     const OBJECT *const obj = Object_Get(item->object_id);
     const ANIM_FRAME *const frame = Item_GetBestFrame(item);
 
+    int32_t stack = 1;
     Matrix_PushUnit();
     Matrix_Rot16(item->rot);
     Matrix_TranslateRel16(frame->offset);
     Matrix_Rot16(frame->mesh_rots[0]);
 
     const int16_t *extra_rotation = item->data;
-    const int32_t abs_joint = MIN(obj->mesh_count, joint);
+    const int32_t max_joint = obj->mesh_count > 0 ? obj->mesh_count - 1 : 0;
+    const int32_t abs_joint = MIN(max_joint, joint);
     for (int32_t i = 0; i < abs_joint; i++) {
         const ANIM_BONE *const bone = Object_GetBone(obj, i);
         if (bone->matrix_pop) {
+            stack--;
             Matrix_Pop();
         }
         if (bone->matrix_push) {
+            stack++;
             Matrix_Push();
         }
 
@@ -211,7 +215,10 @@ void Collide_GetJointAbsPosition(
     out_vec->x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
     out_vec->y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
     out_vec->z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
-    Matrix_Pop();
+
+    while (stack--) {
+        Matrix_Pop();
+    }
 }
 
 void Collide_GetCollisionInfo(

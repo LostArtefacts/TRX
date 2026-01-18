@@ -115,6 +115,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_XIAN_SPEARMAN,
     O_XIAN_SPEARMAN_STATUE,
     O_YETI,
+    O_TONY,
     NO_OBJECT,
     // clang-format on
 };
@@ -167,6 +168,7 @@ const OBJECT_ID g_BossObjects[] = {
     O_BIRD_GUARDIAN,
     O_SKIDOO_DRIVER,
     O_SKIDOO_ARMED,
+    O_TONY,
     NO_OBJECT,
     // clang-format on
 };

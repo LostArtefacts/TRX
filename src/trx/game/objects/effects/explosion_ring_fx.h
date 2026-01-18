@@ -1,0 +1,25 @@
+#pragma once
+
+#include <trx/colors.h>
+#include <trx/game/math/types.h>
+
+#include <stdint.h>
+
+typedef struct {
+    XZ_16 pos;
+    RGB_888 color;
+} EXPLOSION_VERT;
+
+typedef struct {
+    int16_t on;
+    int16_t life;
+    int16_t speed;
+    int16_t radius;
+    XZ_16 rot;
+    XYZ_32 pos;
+    EXPLOSION_VERT verts[16];
+} EXPLOSION_RING;
+
+void ExplosionRingFX_Reset(void);
+EXPLOSION_RING *ExplosionRingFX_GetRing(int32_t idx);
+void ExplosionRingFX_Draw(void);

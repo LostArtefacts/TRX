@@ -14,6 +14,7 @@ int16_t Creature_Turn(ITEM *item, int16_t max_turn);
 void Creature_Tilt(ITEM *item, int16_t angle);
 void Creature_Head(ITEM *item, int16_t required);
 void Creature_Neck(ITEM *item, int16_t required);
+void Creature_Joint(ITEM *item, int16_t joint, int16_t required);
 
 void Creature_Float(int16_t item_num);
 void Creature_Underwater(ITEM *item, int32_t depth);
