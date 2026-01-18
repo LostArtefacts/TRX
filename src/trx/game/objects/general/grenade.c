@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/gun/misc.h>
@@ -10,11 +11,16 @@
 #include <trx/game/sparks.h>
 #include <trx/game/stats.h>
 #include <trx/game/water_fx.h>
+#include <trx/utils.h>
 #include <trx/version.h>
 
-#define M_BLAST_RADIUS (WALL_L / 2) // = 512
 #define M_SPEED 200
 #define M_FALL_SPEED (M_SPEED - 10) // = 190
+
+static int32_t M_GetBlastRadius(void)
+{
+    return g_Config.gameplay.enable_bouncy_grenades ? WALL_L : WALL_L / 2;
+}
 
 static void M_SetTR3ProjectileShade(ITEM *const item)
 {
@@ -106,6 +112,31 @@ static void M_Control(const int16_t item_num)
     const ROOM *const room = Room_Get(item->room_num);
     const bool was_underwater = room != nullptr && room->flags.underwater;
 
+    if (g_Config.gameplay.enable_bouncy_grenades) {
+        if (was_underwater) {
+            item->fall_speed += (5 - item->fall_speed) >> 1;
+            item->speed -= item->speed >> 2;
+            if (item->speed != 0) {
+                item->rot.z += DEG_1 * ((item->speed >> 4) + 3);
+                if (item->required_anim_state != 0) {
+                    item->rot.y += DEG_1 * ((item->speed >> 2) + 3);
+                } else {
+                    item->rot.x += DEG_1 * ((item->speed >> 2) + 3);
+                }
+            }
+        } else {
+            item->fall_speed += 3;
+            if (item->speed != 0) {
+                item->rot.z += DEG_1 * ((item->speed >> 2) + 7);
+                if (item->required_anim_state != 0) {
+                    item->rot.y += DEG_1 * ((item->speed >> 1) + 7);
+                } else {
+                    item->rot.x += DEG_1 * ((item->speed >> 1) + 7);
+                }
+            }
+        }
+    }
+
     if (g_TRVersion == 3) {
         M_SetTR3ProjectileShade(item);
         if (!was_underwater && item->speed != 0) {
@@ -120,22 +151,60 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    item->speed--;
-    if (item->speed < M_FALL_SPEED) {
-        item->fall_speed++;
+    bool explode = false;
+    int32_t radius = 0;
+
+    if (g_Config.gameplay.enable_bouncy_grenades) {
+        const XYZ_32 vel = {
+            .x = (item->speed * Math_Sin(item->goal_anim_state)) >> W2V_SHIFT,
+            .y = item->fall_speed,
+            .z = (item->speed * Math_Cos(item->goal_anim_state)) >> W2V_SHIFT,
+        };
+        item->pos.x += vel.x;
+        item->pos.y += vel.y;
+        item->pos.z += vel.z;
+
+        const int16_t y_rot = item->rot.y;
+        item->rot.y = item->goal_anim_state;
+        Collide_DoProperDetection(item, old_pos);
+        item->goal_anim_state = item->rot.y;
+        item->rot.y = y_rot;
+
+        if (item->hit_points > 0) {
+            item->hit_points--;
+
+            if (item->hit_points == 0) {
+                radius = M_GetBlastRadius();
+                explode = true;
+            }
+        }
+    } else {
+        item->speed--;
+        if (item->speed < M_FALL_SPEED) {
+            item->fall_speed++;
+        }
+        item->pos.y += item->fall_speed
+            - ((item->speed * Math_Sin(item->rot.x)) >> W2V_SHIFT);
+
+        const int16_t speed =
+            (item->speed * Math_Cos(item->rot.x)) >> W2V_SHIFT;
+        item->pos.z += (speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+        item->pos.x += (speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        item->floor =
+            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        Item_UpdateRoom(item_num, room_num);
+
+        if (item->pos.y >= item->floor
+            || item->pos.y <= Room_GetCeiling(
+                   sector, item->pos.x, item->pos.y, item->pos.z)) {
+            radius = M_GetBlastRadius();
+            explode = true;
+        }
     }
-    item->pos.y +=
-        item->fall_speed - ((item->speed * Math_Sin(item->rot.x)) >> W2V_SHIFT);
-
-    const int16_t speed = (item->speed * Math_Cos(item->rot.x)) >> W2V_SHIFT;
-    item->pos.z += (speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-    item->pos.x += (speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-    Item_UpdateRoom(item_num, room_num);
 
     if (g_TRVersion == 3) {
         const ROOM *const new_room = Room_Get(item->room_num);
@@ -155,14 +224,14 @@ static void M_Control(const int16_t item_num)
                 .inner_y_size = -96,
                 .inner_xz_vel = 160,
                 .inner_gravity = 128,
-                .inner_y_vel = (int16_t)inner_y_vel,
+                .inner_y_vel = inner_y_vel,
                 .inner_friction = 7,
                 .middle_xz_off = 24,
                 .middle_xz_size = 24,
                 .middle_y_size = -64,
                 .middle_xz_vel = 224,
                 .middle_gravity = 72,
-                .middle_y_vel = (int16_t)middle_y_vel,
+                .middle_y_vel = middle_y_vel,
                 .middle_friction = 8,
                 .outer_xz_off = 32,
                 .outer_xz_size = 32,
@@ -172,17 +241,11 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    bool explode = false;
-    int32_t radius = 0;
-    if (item->pos.y >= item->floor
-        || item->pos.y
-            <= Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z)) {
-        radius = M_BLAST_RADIUS;
-        explode = true;
-    }
-
     if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
         explode = true;
+        if (g_TRVersion == 3) {
+            radius = M_GetBlastRadius();
+        }
     }
 
     for (int16_t target_item_num = Room_Get(item->room_num)->item_num;
@@ -238,6 +301,9 @@ static void M_Control(const int16_t item_num)
         }
 
         explode = true;
+        if (g_TRVersion == 3) {
+            radius = M_GetBlastRadius();
+        }
 
         if (target_item->status != IS_ACTIVE) {
             continue;

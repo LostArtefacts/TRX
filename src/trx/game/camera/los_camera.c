@@ -4,7 +4,6 @@
 #include <trx/game/rooms.h>
 
 // clang-format off
-#define M_WALL_MASK         (WALL_L - 1)
 #define M_LOS_STEPS         8
 #define M_MAX_SNAPS         8
 #define M_SNAP_DELTA        (STEP_L * 3) // = 768
@@ -171,7 +170,7 @@ static bool M_Collide(
     int16_t ceiling =
         Room_GetCeilingEx(sector, pos.x - shift, pos.y, pos.z, true);
     if (L_OUT_OF_BOUNDS) {
-        pos.x = shift + (pos.x & ~M_WALL_MASK);
+        pos.x = ROUND_TO_SECTOR(pos.x) + shift;
     }
 
     // -Z clamp
@@ -181,7 +180,7 @@ static bool M_Collide(
         Room_GetHeightEx(sector, pos.x, pos.y, pos.z - shift, true, NO_ITEM);
     ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z - shift, true);
     if (L_OUT_OF_BOUNDS) {
-        pos.z = shift + (pos.z & ~M_WALL_MASK);
+        pos.z = ROUND_TO_SECTOR(pos.z) + shift;
     }
 
     // +X clamp
@@ -191,7 +190,7 @@ static bool M_Collide(
         Room_GetHeightEx(sector, pos.x + shift, pos.y, pos.z, true, NO_ITEM);
     ceiling = Room_GetCeilingEx(sector, pos.x + shift, pos.y, pos.z, true);
     if (L_OUT_OF_BOUNDS) {
-        pos.x = (pos.x | M_WALL_MASK) - shift;
+        pos.x = ROUND_TO_SECTOR_END(pos.x) - shift;
     }
 
     // +Z clamp
@@ -201,7 +200,7 @@ static bool M_Collide(
         Room_GetHeightEx(sector, pos.x, pos.y, pos.z + shift, true, NO_ITEM);
     ceiling = Room_GetCeilingEx(sector, pos.x, pos.y, pos.z + shift, true);
     if (L_OUT_OF_BOUNDS) {
-        pos.z = (pos.z | M_WALL_MASK) - shift;
+        pos.z = ROUND_TO_SECTOR_END(pos.z) - shift;
     }
 
     if (!y_first) {
