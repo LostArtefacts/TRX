@@ -370,8 +370,12 @@ void Output_SetTime(const float time)
     m_Time = time;
 }
 
-void Output_AnimateTextures(const int32_t num_frames)
+void Output_AnimateTextures(int32_t num_frames)
 {
+    if (g_TRVersion == 3) {
+        num_frames *= 2;
+    }
+
     m_TimeInGame += num_frames;
     m_AnimatedTexturesOffset += num_frames;
     bool update = false;
