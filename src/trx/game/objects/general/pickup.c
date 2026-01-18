@@ -187,7 +187,7 @@ static void M_Control(int16_t item_num)
         M_ControlPickupAids(item);
     }
 
-    if (g_TRVersion == 3
+    if (g_TRVersion == 3 && item->room_num != NO_ROOM
         && (item->object_id == O_QUEST_ITEM_1
             || item->object_id == O_QUEST_ITEM_2
             || item->object_id == O_QUEST_ITEM_3

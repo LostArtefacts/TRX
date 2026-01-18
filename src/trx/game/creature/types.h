@@ -15,6 +15,7 @@ typedef struct {
     LOT_INFO lot;
     XYZ_32 target;
     ITEM *enemy;
+    int16_t joint_rotation[4];
 } CREATURE;
 
 typedef struct {
@@ -24,6 +25,7 @@ typedef struct {
     int32_t ahead;
     int32_t bite;
     int16_t angle;
+    int16_t x_angle;
     int16_t enemy_facing;
 } AI_INFO;
 

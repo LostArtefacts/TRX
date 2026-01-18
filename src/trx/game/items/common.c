@@ -49,7 +49,11 @@ static inline bool M_ItemBoundsIntersectsPortal(
         return true;
     }
 
-    const BOUNDS_32 room_bounds = Room_GetRoomBounds(Room_Get(item->room_num));
+    const ROOM *const own_room = Room_Get(item->room_num);
+    if (own_room == nullptr) {
+        return false;
+    }
+    const BOUNDS_32 room_bounds = Room_GetRoomBounds(own_room);
     return !Bounds_32_Intersect(&bounds, &room_bounds);
 }
 

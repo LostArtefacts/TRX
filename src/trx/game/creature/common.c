@@ -22,8 +22,10 @@
 #define M_TARGET_TOLERANCE 0x400000
 #define M_MAX_TILT (3 * DEG_1) // = 546
 #define M_MAX_HEAD_CHANGE (5 * DEG_1) // = 910
+#define M_MAX_JOINT_CHANGE (5 * DEG_1) // = 910
 #define M_HEAD_ARC                                                             \
     (g_TRVersion == 1 ? FRONT_ARC : 0x3000) // = 16384 (TR1), 12288 (TR2)
+#define M_JOINT_ARC 0x3000
 #define M_MAX_X_ROT (20 * DEG_1) // = 3640
 
 static bool M_TestSwitchOrKill(
@@ -253,12 +255,13 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    const int32_t z = enemy->pos.z
+    int32_t z = enemy->pos.z
         - ((obj->pivot_length * Math_Cos(item->rot.y)) >> W2V_SHIFT)
         - item->pos.z;
-    const int32_t x = enemy->pos.x
+    int32_t x = enemy->pos.x
         - ((obj->pivot_length * Math_Sin(item->rot.y)) >> W2V_SHIFT)
         - item->pos.x;
+    const int32_t y = item->pos.y - enemy->pos.y; // sic, reversed
     const int16_t angle = Math_Atan(z, x);
 
     if (creature->enemy == nullptr) {
@@ -274,6 +277,14 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
     info->bite = info->ahead && ABS(enemy->pos.y - item->pos.y) <= STEP_L
         && (g_TRVersion == 1 || enemy->hit_points > 0);
+
+    x = ABS(x);
+    z = ABS(z);
+    if (x > z) {
+        info->x_angle = Math_Atan(x + (z >> 1), y);
+    } else {
+        info->x_angle = Math_Atan(z + (x >> 1), y);
+    }
 }
 
 bool Creature_EnsureHabitat(
@@ -537,6 +548,21 @@ void Creature_Neck(ITEM *const item, const int16_t required)
     CLAMP(creature->neck_rotation, -M_HEAD_ARC, M_HEAD_ARC);
 }
 
+void Creature_Joint(
+    ITEM *const item, const int16_t joint, const int16_t required)
+{
+    CREATURE *const creature = item->data;
+    if (creature == nullptr) {
+        return;
+    }
+
+    int16_t change = required - creature->joint_rotation[joint];
+    CLAMP(change, -M_MAX_JOINT_CHANGE, M_MAX_JOINT_CHANGE);
+
+    creature->joint_rotation[joint] += change;
+    CLAMP(creature->joint_rotation[joint], -M_JOINT_ARC, M_JOINT_ARC);
+}
+
 void Creature_Float(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -588,7 +614,10 @@ bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
     const CREATURE *const creature = item->data;
     const ITEM *const enemy =
         creature->enemy != nullptr ? creature->enemy : Lara_GetItem();
-    if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE) {
+    if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE
+        || (g_TRVersion == 3
+            && (info->angle - creature->joint_rotation[2] <= -DEG_90
+                || info->angle - creature->joint_rotation[2] >= DEG_90))) {
         return false;
     }
 
