@@ -4,6 +4,9 @@
 - improved inventory ring active item highlight for smoother appearance
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 
+**TR2**:
+- fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
+
 **TR3**:
 - added new blood effects
 - added underwater blood spills
