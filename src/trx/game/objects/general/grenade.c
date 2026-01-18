@@ -243,9 +243,7 @@ static void M_Control(const int16_t item_num)
 
     if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
         explode = true;
-        if (g_TRVersion == 3) {
-            radius = M_GetBlastRadius();
-        }
+        radius = M_GetBlastRadius();
     }
 
     for (int16_t target_item_num = Room_Get(item->room_num)->item_num;
@@ -301,9 +299,7 @@ static void M_Control(const int16_t item_num)
         }
 
         explode = true;
-        if (g_TRVersion == 3) {
-            radius = M_GetBlastRadius();
-        }
+        radius = M_GetBlastRadius();
 
         if (target_item->status != IS_ACTIVE) {
             continue;
