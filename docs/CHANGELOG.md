@@ -15,7 +15,8 @@
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 - fixed being unable to use the manual camera in TR3 camera mode when Lara is idle (#4670, regression from 1.1)
 - fixed grenades not killing more than a single enemy
-- fixed running `/title` and similar while in the key items inventory ring briefly persisting the "Examine" button (old regression)
+- fixed running `/title` and similar commands leaving the "Examine" button briefly visible in the key items ring (old regression)
+- fixed running `/title` and similar commands when examining an item causing incorrect item rotation next time the ring opens (old regression)
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
