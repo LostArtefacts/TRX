@@ -3,6 +3,7 @@
 #include <trx/game/output/uniforms.h>
 
 #include <trx/config.h>
+#include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/rooms.h>
@@ -161,6 +162,20 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
     GFX_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(general), &general);
+}
+
+void Output_Uniforms_UploadDesaturation(
+    const OUTPUT_UNIFORMS *const uniforms, const float desaturation)
+{
+    ASSERT(uniforms != nullptr);
+
+    float clamped = desaturation;
+    CLAMP(clamped, 0.0f, 1.0f);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
+    GFX_TRACK_SUBDATA(
+        glBufferSubData, GL_UNIFORM_BUFFER,
+        offsetof(M_UNIFORM_GENERAL, desaturation), sizeof(clamped), &clamped);
 }
 
 void Output_Uniforms_UploadRoomLights(

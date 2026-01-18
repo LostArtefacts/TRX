@@ -146,12 +146,14 @@ float Output_GetDesaturation(void)
 
 void Output_SetDesaturation(const float desaturation)
 {
+    if (m_Desaturation == desaturation) {
+        return;
+    }
     m_Desaturation = desaturation;
-    CLAMP(m_Desaturation, 0.0f, 1.0f);
 
     const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
     if (uniforms != nullptr) {
-        Output_Uniforms_UploadGeneral(uniforms);
+        Output_Uniforms_UploadDesaturation(uniforms, m_Desaturation);
     }
 }
 
