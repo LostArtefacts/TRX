@@ -55,6 +55,7 @@ typedef struct {
     int32_t width;
     int32_t height;
     float opacity;
+    float desaturation;
     bool flip_y;
     bool use_fit;
 } M_DRAW_OP_IMAGE;
@@ -548,6 +549,7 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
     GFX_2D_Renderer_SetEffect(p->image.renderer, GFX_2D_EFFECT_NONE);
     GFX_2D_Renderer_SetRepeat(p->image.renderer, 1, 1);
     GFX_2D_Renderer_SetTextureSize(p->image.renderer, nullptr);
+    Output_SetDesaturation(op->desaturation);
     if (op->use_fit) {
         GFX_2D_Renderer_SetFit(
             p->image.renderer, GFX_2D_FIT_SMART, (float)op->width,
@@ -561,6 +563,7 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
     } else {
         GFX_2D_Renderer_RenderWithBlend(p->image.renderer);
     }
+    Output_SetDesaturation(0.0f);
 }
 
 static void M_DrawOp_Snapshot(const M_DRAW_OP_SNAPSHOT *const op)
@@ -786,6 +789,12 @@ bool Output_Overlay_LoadImage(const char *const file_name)
 
 void Output_Overlay_DrawImage(const char *const file_name)
 {
+    Output_Overlay_DrawImageMono(file_name, 0.0f);
+}
+
+void Output_Overlay_DrawImageMono(
+    const char *const file_name, const float intensity)
+{
     if (!Output_Overlay_LoadImage(file_name)) {
         return;
     }
@@ -803,6 +812,7 @@ void Output_Overlay_DrawImage(const char *const file_name)
                     .width = e->texture_width,
                     .height = e->texture_height,
                     .opacity = 1.0f,
+                    .desaturation = intensity,
                     .flip_y = false,
                     .use_fit = true,
                 }));
