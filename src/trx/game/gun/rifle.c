@@ -11,6 +11,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
@@ -297,15 +298,23 @@ static void M_FireGrenade(void)
     projectile_item->object_id = O_GRENADE;
     projectile_item->room_num = lara_item->room_num;
 
-    XYZ_32 offset = {
-        .x = -2,
-        .y = 373,
-        .z = 77,
-    };
+    XYZ_32 offset =
+        g_TRVersion == 3 ? (XYZ_32) { 0, 276, 80 } : (XYZ_32) { -2, 373, 77 };
     Lara_GetJointAbsPosition(&offset, LM_HAND_R);
     projectile_item->pos = offset;
     projectile_item->interp.prev.pos = projectile_item->pos;
     Item_Initialise(item_num);
+
+    const SECTOR *const sector = Room_GetSector(
+        origin.x, origin.y, origin.z, &projectile_item->room_num);
+    const int32_t height = Room_GetHeight(sector, origin.x, origin.y, origin.z);
+    if (height < origin.y) {
+        projectile_item->pos = (XYZ_32) {
+            .x = lara_item->pos.x,
+            .y = origin.y,
+            .z = lara_item->pos.z,
+        };
+    }
 
     projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
     projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
@@ -314,8 +323,23 @@ static void M_FireGrenade(void)
         projectile_item->rot.x += lara->torso_rot.x;
         projectile_item->rot.y += lara->torso_rot.y;
     }
-    projectile_item->speed = M_GRENADE_SPEED;
-    projectile_item->fall_speed = 0;
+
+    if (g_Config.gameplay.enable_bouncy_grenades) {
+        // TR3 grenades use a timed fuse and bounce/roll physics, so use speed
+        // as horizontal velocity magnitude and fall_speed as vertical velocity.
+        projectile_item->speed = 128;
+        projectile_item->fall_speed =
+            -(projectile_item->speed * Math_Sin(projectile_item->rot.x))
+            >> W2V_SHIFT;
+        projectile_item->current_anim_state = projectile_item->rot.x;
+        projectile_item->goal_anim_state = projectile_item->rot.y;
+        projectile_item->required_anim_state = 0;
+        projectile_item->hit_points = 120;
+    } else {
+        projectile_item->speed = M_GRENADE_SPEED;
+        projectile_item->fall_speed = 0;
+    }
+
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 

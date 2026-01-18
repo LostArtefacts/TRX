@@ -670,3 +670,389 @@ bool Collide_TestBoundsCollide(
         rz <= src_bounds->max.z + radius);
     // clang-format on
 }
+
+void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
+{
+    int32_t ceiling;
+    int32_t height;
+    int32_t oldonobj;
+    int32_t bs;
+    int32_t yang;
+
+    int16_t room_num = item->room_num;
+    const SECTOR *sector =
+        Room_GetSector(old_pos.x, old_pos.y, old_pos.z, &room_num);
+    int32_t oldheight = Room_GetHeight(sector, old_pos.x, old_pos.y, old_pos.z);
+    int32_t oldtype = Room_GetHeightType();
+
+    room_num = item->room_num;
+    sector = Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    height = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+
+    if (item->pos.y >= height) {
+        bs = 0;
+
+        if ((oldtype == HT_BIG_SLOPE || oldtype == HT_DIAGONAL)
+            && oldheight < height) {
+            yang = (uint16_t)item->rot.y;
+
+            const int16_t tilt =
+                Room_GetTiltType(sector, item->pos.x, item->pos.y, item->pos.z);
+            const int8_t tiltyoff = tilt >> 8;
+            const int8_t tiltxoff = (int8_t)tilt;
+            if (tiltyoff < 0) {
+                if (yang >= DEG_180) {
+                    bs = 1;
+                }
+            } else if (tiltyoff > 0) {
+                if (yang <= DEG_180) {
+                    bs = 1;
+                }
+            }
+
+            if (tiltxoff < 0) {
+                if (yang >= DEG_90 && yang <= DEG_270) {
+                    bs = 1;
+                }
+            } else if (tiltxoff > 0) {
+                if (yang <= DEG_90 || yang >= DEG_270) {
+                    bs = 1;
+                }
+            }
+        }
+
+        const bool x_cross = ROUND_TO_SECTOR(item->pos.x ^ old_pos.x) != 0;
+        const bool z_cross = ROUND_TO_SECTOR(item->pos.z ^ old_pos.z) != 0;
+        if (old_pos.y > height + 32 && !bs && (x_cross || z_cross)) {
+            const bool xs = x_cross && z_cross
+                ? ABS(old_pos.x - item->pos.x) < ABS(old_pos.z - item->pos.z)
+                : true;
+            item->rot.y = x_cross && xs ? -item->rot.y : -DEG_180 - item->rot.y;
+            item->pos = old_pos;
+            item->speed >>= 1;
+        } else if (oldtype != HT_BIG_SLOPE && oldtype != HT_DIAGONAL) {
+            if (item->fall_speed > 0) {
+                if (item->fall_speed > 16) {
+                    if (item->object_id == O_GRENADE) {
+                        item->fall_speed =
+                            (item->fall_speed >> 1) - item->fall_speed;
+                    } else {
+                        item->fall_speed = -(item->fall_speed >> 2);
+
+                        if (item->fall_speed < -100) {
+                            item->fall_speed = -100;
+                        }
+                    }
+                } else {
+                    item->fall_speed = 0;
+
+                    if (item->object_id == O_GRENADE) {
+                        item->speed--;
+                        item->required_anim_state = 1;
+                        item->rot.x = 0;
+                    } else {
+                        item->speed -= 3;
+                    }
+
+                    if (item->speed < 0) {
+                        item->speed = 0;
+                    }
+                }
+            }
+
+            item->pos.y = height;
+        } else {
+            item->speed -= item->speed >> 2;
+
+            const int16_t tilt =
+                Room_GetTiltType(sector, item->pos.x, item->pos.y, item->pos.z);
+            const int8_t tiltyoff = tilt >> 8;
+            const int8_t tiltxoff = (int8_t)tilt;
+            if (tiltyoff < 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2) {
+                if ((uint16_t)item->rot.y > DEG_180) {
+                    item->rot.y = -1 - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed -= tiltyoff << 1;
+
+                        if ((uint16_t)item->rot.y > DEG_90
+                            && (uint16_t)item->rot.y < DEG_270) {
+                            item->rot.y -= 0x1000;
+
+                            if ((uint16_t)item->rot.y < DEG_90) {
+                                item->rot.y = DEG_90;
+                            }
+                        } else if ((uint16_t)item->rot.y < DEG_90) {
+                            item->rot.y += 0x1000;
+
+                            if ((uint16_t)item->rot.y > DEG_90) {
+                                item->rot.y = DEG_90;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            } else if (tiltyoff > 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2) {
+                if ((uint16_t)item->rot.y < DEG_180) {
+                    item->rot.y = -1 - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed += tiltyoff << 1;
+
+                        if ((uint16_t)item->rot.y > DEG_270
+                            || (uint16_t)item->rot.y < DEG_90) {
+                            item->rot.y -= 0x1000;
+
+                            if ((uint16_t)item->rot.y < DEG_270) {
+                                item->rot.y = -DEG_90;
+                            }
+                        } else if ((uint16_t)item->rot.y < DEG_270) {
+                            item->rot.y += 0x1000;
+
+                            if ((uint16_t)item->rot.y > DEG_270) {
+                                item->rot.y = -DEG_90;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            } else if (tiltxoff < 0 && ABS(tiltxoff) - ABS(tiltyoff) >= 2) {
+                if ((uint16_t)item->rot.y > DEG_90
+                    && (uint16_t)item->rot.y < DEG_270) {
+                    item->rot.y = 0x7FFF - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed -= tiltxoff << 1;
+
+                        if ((uint16_t)item->rot.y < DEG_180) {
+                            item->rot.y -= DEG_90;
+
+                            if ((uint16_t)item->rot.y > 61440) {
+                                item->rot.y = 0;
+                            }
+                        } else {
+                            item->rot.y += DEG_90;
+
+                            if ((uint16_t)item->rot.y < DEG_90) {
+                                item->rot.y = 0;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            } else if (tiltxoff > 0 && ABS(tiltxoff) - ABS(tiltyoff) >= 2) {
+                if ((uint16_t)item->rot.y > DEG_270
+                    || (uint16_t)item->rot.y < DEG_90) {
+                    item->rot.y = 0x7FFF - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed += tiltxoff << 1;
+
+                        if ((uint16_t)item->rot.y > DEG_180) {
+                            item->rot.y -= 0x1000;
+
+                            if ((uint16_t)item->rot.y < DEG_180) {
+                                item->rot.y = -DEG_180;
+                            }
+                        } else if ((uint16_t)item->rot.y < DEG_180) {
+                            item->rot.y += 0x1000;
+
+                            if ((uint16_t)item->rot.y > DEG_180) {
+                                item->rot.y = -DEG_180;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            } else if (tiltyoff < 0 && tiltxoff < 0) {
+                if ((uint16_t)item->rot.y > DEG_135
+                    && (uint16_t)item->rot.y < DEG_315) {
+                    item->rot.y = -(DEG_90 + 1) - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed -= tiltxoff + tiltyoff;
+
+                        if ((uint16_t)item->rot.y > DEG_45
+                            && (uint16_t)item->rot.y < DEG_225) {
+                            item->rot.y -= 0x1000;
+
+                            if ((uint16_t)item->rot.y < DEG_45) {
+                                item->rot.y = DEG_45;
+                            }
+                        } else if (item->rot.y != DEG_45) {
+                            item->rot.y += 0x1000;
+
+                            if ((uint16_t)item->rot.y > DEG_45) {
+                                item->rot.y = DEG_45;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            } else if (tiltyoff < 0 && tiltxoff > 0) {
+                if ((uint16_t)item->rot.y > DEG_225
+                    || (uint16_t)item->rot.y < DEG_45) {
+                    item->rot.y = DEG_90 - 1 - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed += tiltxoff - tiltyoff;
+
+                        if ((uint16_t)item->rot.y < DEG_315
+                            && (uint16_t)item->rot.y > DEG_135) {
+                            item->rot.y -= 0x1000;
+
+                            if ((uint16_t)item->rot.y < DEG_135) {
+                                item->rot.y = DEG_135;
+                            }
+                        } else if (item->rot.y != DEG_135) {
+                            item->rot.y += 0x1000;
+
+                            if ((uint16_t)item->rot.y > DEG_135) {
+                                item->rot.y = DEG_135;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            } else if (tiltyoff > 0 && tiltxoff > 0) {
+                if ((uint16_t)item->rot.y > DEG_315
+                    || (uint16_t)item->rot.y < DEG_135) {
+                    item->rot.y = -(DEG_90 + 1) - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed += tiltxoff + tiltyoff;
+
+                        if ((uint16_t)item->rot.y < DEG_45
+                            || (uint16_t)item->rot.y > DEG_225) {
+                            item->rot.y -= 0x1000;
+
+                            if ((uint16_t)item->rot.y < DEG_225) {
+                                item->rot.y = -DEG_135;
+                            }
+                        } else if ((uint16_t)item->rot.y != DEG_225) {
+                            item->rot.y += 0x1000;
+
+                            if ((uint16_t)item->rot.y > DEG_225) {
+                                item->rot.y = -DEG_135;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            } else if (tiltyoff > 0 && tiltxoff < 0) {
+                if ((uint16_t)item->rot.y > DEG_45
+                    && (uint16_t)item->rot.y < DEG_225) {
+                    item->rot.y = DEG_90 - 1 - item->rot.y;
+
+                    if (item->fall_speed > 0) {
+                        item->fall_speed = -(item->fall_speed >> 1);
+                    }
+                } else {
+                    if (item->speed < 32) {
+                        item->speed += tiltyoff - tiltxoff;
+
+                        if ((uint16_t)item->rot.y < DEG_135
+                            || (uint16_t)item->rot.y > DEG_315) {
+                            item->rot.y -= 0x1000;
+
+                            if ((uint16_t)item->rot.y < DEG_315) {
+                                item->rot.y = -DEG_45;
+                            }
+                        } else if ((uint16_t)item->rot.y != DEG_315) {
+                            item->rot.y += 0x1000;
+
+                            if ((uint16_t)item->rot.y > DEG_315) {
+                                item->rot.y = -DEG_45;
+                            }
+                        }
+                    }
+
+                    item->fall_speed =
+                        item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
+                }
+            }
+
+            item->pos = old_pos;
+        }
+    } else {
+        // NOTE: OG had additional processing of walkables here, which have
+        // been reworked in TRX.
+
+        room_num = item->room_num;
+        sector =
+            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        ceiling =
+            Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+
+        if (item->pos.y < ceiling) {
+            const bool x_cross = ROUND_TO_SECTOR(item->pos.x ^ old_pos.x) != 0;
+            const bool z_cross = ROUND_TO_SECTOR(item->pos.z ^ old_pos.z) != 0;
+            if (old_pos.y < ceiling && (x_cross || z_cross)) {
+                item->rot.y = x_cross ? -item->rot.y : -DEG_180 - item->rot.y;
+
+                if (item->object_id == O_GRENADE) {
+                    item->speed -= item->speed >> 3;
+                } else {
+                    item->speed >>= 1;
+                }
+
+                item->pos = old_pos;
+            } else {
+                item->pos.y = ceiling;
+            }
+
+            if (item->fall_speed < 0) {
+                item->fall_speed = -item->fall_speed;
+            }
+        }
+    }
+
+    room_num = item->room_num;
+    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+
+    if (item->room_num != room_num) {
+        Item_UpdateRoom(Item_GetIndex(item), room_num);
+    }
+}

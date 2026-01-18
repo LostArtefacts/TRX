@@ -1,7 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.1...develop) - ××××-××-××
-- added a bubble emitter (#4629)
+- added Bubble Emitter control (#4629)
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
-- added new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start
+- added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
+- added a new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start
 - added support for cross-fades to the title screen
 - improved inventory ring active item highlight for smoother appearance
 - changed Lua event callback names to be more consistent:

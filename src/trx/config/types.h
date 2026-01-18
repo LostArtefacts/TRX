@@ -212,6 +212,7 @@ typedef struct {
         int32_t idle_pose_timeout;
         bool enable_idle_pose_camera;
         bool enable_soft_statics;
+        bool enable_bouncy_grenades;
 
         bool enable_auto_item_selection;
         bool enable_manual_camera;
