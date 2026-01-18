@@ -6,6 +6,16 @@ title: Migrating levels
 
 ## TRX
 
+### Version 1.1 to 1.2
+
+1. **Lua event name cleanup**:
+    The following events got new names:
+    - `on_level_init` → `before_level_file`
+    - `on_level_start` → `after_level_file`
+    - `on_level_load` → `after_level_state`
+    - `on_control` → `before_control`
+    - `on_control_post` → `after_control`
+
 ### Version 1.0 to 1.1
 
 1. **Ally and ally target behavior moved to Lua**:  
