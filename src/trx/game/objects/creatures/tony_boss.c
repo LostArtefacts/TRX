@@ -296,7 +296,7 @@ static void M_Control(const int16_t item_num)
         }
     } else {
         if (p->item_flags[3] != 2) {
-            item->hit_points = 100;
+            item->hit_points = item->max_hit_points;
         }
 
         AI_INFO info;
@@ -569,7 +569,7 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = M_Draw;
 
     obj->shadow_size = 0;
-    obj->hit_points = 200;
+    obj->hit_points = 100;
     obj->pivot_length = 50;
     obj->radius = 102;
 
