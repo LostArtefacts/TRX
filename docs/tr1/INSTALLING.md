@@ -139,7 +139,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── peru.webp
 │   │   ├── title.webp
 │   │   ├── title_og_alt.webp
-│   │   └── title_ub.webp
+│   │   ├── title_ub.webp
+│   │   ├── ub_loading1.webp
+│   │   └── ub_loading2.webp
 │   ├── injections
 │   │   ├── atlantis_door_sfx.bin
 │   │   ├── atlantis_fd.bin
@@ -464,7 +466,9 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── peru.webp
         │   │   ├── title.webp
         │   │   ├── title_og_alt.webp
-        │   │   └── title_ub.webp
+        │   │   ├── title_ub.webp
+        │   │   ├── ub_loading1.webp
+        │   │   └── ub_loading2.webp
         │   ├── injections
         │   │   ├── atlantis_door_sfx.bin
         │   │   ├── atlantis_fd.bin

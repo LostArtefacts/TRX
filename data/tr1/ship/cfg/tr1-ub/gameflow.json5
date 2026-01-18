@@ -54,6 +54,7 @@
             "path": "data/egypt.phd",
             "music_track": 59,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
@@ -74,6 +75,7 @@
             "path": "data/cat.phd",
             "music_track": 59,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
@@ -94,6 +96,7 @@
             "path": "data/end.phd",
             "music_track": 60,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
@@ -112,6 +115,7 @@
             "path": "data/end2.phd",
             "music_track": 60,
             "sequence": [
+                {"type": "loading_screen", "path": "data/images/ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "play_music", "music_track": 19},
@@ -154,7 +158,6 @@
         "enable_save_crystals",   // UB has no save crystals
         "enable_ps1_crystals",    // UB has no save crystals
         "enable_item_examining",  // UB has no special item descriptions
-        "enable_loading_screens", // UB has no loading screens yet
         "enable_reflections",     // UB has no reflective objects
         "enemy_healthbar_color_allies", // UB has no allies
         "fix_water_exit",

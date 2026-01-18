@@ -3,6 +3,9 @@
 - improved inventory ring active item highlight for smoother appearance
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 
+**TR1**:
+- added Unfinished Business loading screens (#1310, thanks to rockahub)
+
 **TR3**:
 - added new blood effects
 - added underwater blood spills
