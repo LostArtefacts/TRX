@@ -291,6 +291,7 @@ def tr1_ship_files() -> Iterable[Path]:
     yield from collect(DATA_DIR / "common/ship")
     yield from collect(PROJECT_PATHS[1].data_dir / "ship")
     yield from collect(DATA_REPO_ROOT_DIR / "tr1/ship")
+    yield from collect(DATA_REPO_ROOT_DIR / "tr1ub/ship")
 
 
 def tr1_files_win() -> Iterable[Path]:

@@ -61,7 +61,10 @@ def download_assets(asset_urls: list[str], target_dir: Path) -> None:
 def main() -> None:
     args = parse_args()
     asset_urls_map: dict[int, list[str]] = {
-        1: ["https://lostartefacts.dev/aux/tr1x/main.zip"],
+        1: [
+            "https://lostartefacts.dev/aux/tr1x/main.zip",
+            "https://lostartefacts.dev/aux/tr1x/trub.zip",
+        ],
         2: [
             "https://lostartefacts.dev/aux/tr2x/main.zip",
             "https://lostartefacts.dev/aux/tr2x/trgm.zip",
