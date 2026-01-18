@@ -19,6 +19,7 @@
 
 typedef struct {
     const char *const text;
+    const GF_LEVEL *const level;
 } M_ROW;
 
 typedef struct UI_SELECT_LEVEL_DIALOG_STATE {
@@ -38,11 +39,19 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(const int32_t save_slot)
     ASSERT(info != nullptr);
     ASSERT(info->features.select_level);
 
+    Savegame_LoadOnlyResumeInfo(save_slot);
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i <= info->level_num && i < level_table->count; i++) {
-        if (level_table->levels[i].type != GFL_GYM) {
+        const GF_LEVEL *const level = &level_table->levels[i];
+        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        if (resume != nullptr && resume->flags.available
+            && level->type != GFL_GYM) {
             Vector_Add(
-                s->rows, &(M_ROW) { .text = level_table->levels[i].title });
+                s->rows,
+                &(M_ROW) {
+                    .text = level_table->levels[i].title,
+                    .level = level,
+                });
         }
     }
 
@@ -60,7 +69,12 @@ void UI_SelectLevelDialog_Free(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 int32_t UI_SelectLevelDialog_Control(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 {
     UI_BasePassportDialog_Control(&s->req);
-    return UI_Requester_Control(&s->req);
+    const int32_t choice = UI_Requester_Control(&s->req);
+    if (choice == UI_REQUESTER_NO_CHOICE || choice == UI_REQUESTER_CANCEL) {
+        return choice;
+    }
+    const M_ROW *const row = Vector_Get(s->rows, choice);
+    return row->level->num;
 }
 
 void UI_SelectLevelDialog(UI_SELECT_LEVEL_DIALOG_STATE *const s)
