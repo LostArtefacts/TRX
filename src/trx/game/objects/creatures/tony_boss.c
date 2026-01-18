@@ -13,20 +13,11 @@
 #include <trx/game/spawn.h>
 #include <trx/utils.h>
 
-typedef struct {
-    XYZ_16 pos;
-    RGB_888 sub;
-    RGB_888 color;
-} SHIELD_POINT;
-
-typedef struct {
-    uint8_t ring_count;
-    int16_t explode_count;
-    int16_t dropped_item;
-    uint8_t dead;
-    SHIELD_POINT shield[5][8];
-    int32_t item_flags[4];
-} M_PRIV;
+typedef enum {
+    M_PHASE_DORMANT = 0,
+    M_PHASE_AWAKENED = 1,
+    M_PHASE_PHASE2 = 2,
+} M_PHASE;
 
 typedef enum {
     M_STATE_WAIT,
@@ -37,6 +28,24 @@ typedef enum {
     M_STATE_BIG_ROOM,
     M_STATE_DEATH
 } M_STATE;
+
+typedef struct {
+    XYZ_16 pos;
+    RGB_888 sub;
+    RGB_888 color;
+} SHIELD_POINT;
+
+typedef struct {
+    bool dropped_item;
+    uint8_t ring_count;
+    int16_t explode_count;
+    uint8_t dead;
+    SHIELD_POINT shield[5][8];
+    M_PHASE phase;
+
+    // Alternates the chosen attack while in the FLOAT state (ROCK_ZAPP vs ZAPP)
+    bool attack_toggle;
+} M_PRIV;
 
 static int32_t m_Heights[5] = { -1536, -1280, -832, -384, 0 };
 static int32_t m_Dist[5] = { 200, 400, 500, 500, 475 };
@@ -216,7 +225,8 @@ static void M_Initialise(int16_t item_num)
     p->dropped_item = false;
     p->ring_count = 0;
     p->explode_count = 0;
-    p->item_flags[3] = 0;
+    p->attack_toggle = false;
+    p->phase = M_PHASE_DORMANT;
 
     for (int i = 0; i < 5; i++) {
         const int32_t dist = m_Dist[i];
@@ -295,14 +305,14 @@ static void M_Control(const int16_t item_num)
             return;
         }
     } else {
-        if (p->item_flags[3] != 2) {
+        if (p->phase != M_PHASE_PHASE2) {
             item->hit_points = item->max_hit_points;
         }
 
         AI_INFO info;
         Creature_AIInfo(item, &info);
 
-        if (p->item_flags[3] != 0) {
+        if (p->phase != M_PHASE_DORMANT) {
             tony->target.x = lara_item->pos.x;
             tony->target.z = lara_item->pos.z;
             angle = Creature_Turn(item, tony->maximum_turn);
@@ -310,7 +320,7 @@ static void M_Control(const int16_t item_num)
             const int32_t x = item->pos.x - lara_item->pos.x;
             const int32_t z = item->pos.z - lara_item->pos.z;
             if (SQUARE(x) + SQUARE(z) < 0x1900000) {
-                p->item_flags[3] = 1;
+                p->phase = M_PHASE_AWAKENED;
             }
 
             angle = 0;
@@ -320,7 +330,7 @@ static void M_Control(const int16_t item_num)
         case M_STATE_WAIT:
             tony->maximum_turn = 0;
             if (item->goal_anim_state != M_STATE_RISE
-                && p->item_flags[3] != 0) {
+                && p->phase != M_PHASE_DORMANT) {
                 item->goal_anim_state = M_STATE_RISE;
             }
             break;
@@ -341,25 +351,25 @@ static void M_Control(const int16_t item_num)
 
             if (p->explode_count == 0) {
                 if (item->goal_anim_state != M_STATE_BIG_ROOM
-                    && p->item_flags[3] != 2) {
+                    && p->phase != M_PHASE_PHASE2) {
                     item->goal_anim_state = M_STATE_BIG_ROOM;
                     tony->maximum_turn = 0;
                 }
 
                 const int32_t time4 = Output_GetTimeInGame() * 4;
                 if (item->goal_anim_state != M_STATE_ROCK_ZAPP
-                    && p->item_flags[3] == 2 && !(time4 & 0xFF)
-                    && p->item_flags[0] == 0) {
+                    && p->phase == M_PHASE_PHASE2 && !(time4 & 0xFF)
+                    && !p->attack_toggle) {
                     item->goal_anim_state = M_STATE_ROCK_ZAPP;
-                    p->item_flags[0] = 1;
+                    p->attack_toggle = true;
                 }
 
                 if (item->goal_anim_state != M_STATE_ZAPP
                     && item->goal_anim_state != M_STATE_ROCK_ZAPP
-                    && p->item_flags[3] == 2 && !(time4 & 0xFF)
-                    && p->item_flags[0] == 1) {
+                    && p->phase == M_PHASE_PHASE2 && !(time4 & 0xFF)
+                    && p->attack_toggle) {
                     item->goal_anim_state = M_STATE_ZAPP;
-                    p->item_flags[0] = 0;
+                    p->attack_toggle = false;
                 }
             }
             break;
@@ -390,7 +400,7 @@ static void M_Control(const int16_t item_num)
             tony->maximum_turn = 0;
             if (item->frame_num - Anim_GetAnim(item->anim_num)->frame_base
                 == 56) {
-                p->item_flags[3] = 2;
+                p->phase = M_PHASE_PHASE2;
                 p->explode_count = 1;
             }
             break;
