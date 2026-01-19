@@ -47,7 +47,7 @@ float ogPhaseTurns(vec3 worldPos, int scheme)
     float offTurns = lane / 16.0;  // 0,1/16,...15/16
 
     // time base is uTimeInGame with period 64
-    float tTurns = fract(uTimeInGame * 0.5 / 64.0);
+    float tTurns = fract(uTimeInGame / 64.0);
     return tTurns + offTurns;
 }
 
