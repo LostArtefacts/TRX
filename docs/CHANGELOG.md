@@ -4,6 +4,7 @@
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
 - added a new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start
 - added support for cross-fades to the title screen
+- added visual previews of bar colors
 - improved inventory ring active item highlight for smoother appearance
 - changed Lua event callback names to be more consistent:
     - `on_level_init` → `before_level_file`
