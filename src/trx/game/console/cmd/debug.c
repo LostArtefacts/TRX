@@ -20,7 +20,9 @@ static DEBUG_OPTION_ENTRY m_AllOptions[] = {
     { &g_Config.debug.enable_debug_spheres, nullptr },
     { &g_Config.debug.enable_debug_cuboids, nullptr },
     { &g_Config.debug.enable_debug_pos, nullptr },
+    { &g_Config.debug.enable_debug_anim, nullptr },
     { &g_Config.debug.enable_debug_camera, nullptr },
+    { &g_Config.debug.enable_debug_status, nullptr },
     { nullptr, nullptr }
 };
 

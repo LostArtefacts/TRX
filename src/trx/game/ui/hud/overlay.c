@@ -202,6 +202,8 @@ static void M_DebugPosTopLeft(void)
         UI_Label(GS(OVERLAY_DEBUG_POSITION));
         UI_Label(GS(OVERLAY_DEBUG_ROTATION));
         UI_Label(GS(OVERLAY_DEBUG_SPEED));
+    }
+    if (g_Config.debug.enable_debug_anim) {
         UI_Label(GS(OVERLAY_DEBUG_ANIMATION));
     }
     if (g_Config.debug.enable_debug_camera) {
@@ -222,6 +224,8 @@ static void M_DebugPosTopLeft(void)
             "\\{small}%d, %d",
             vehicle != nullptr ? vehicle->speed : lara->speed,
             vehicle != nullptr ? vehicle->fall_speed : lara->fall_speed));
+    }
+    if (g_Config.debug.enable_debug_anim) {
         UI_Label(String_FormatStatic(
             "\\{small}%d, %d, %d", obj_id,
             Item_GetRelativeObjAnim(lara, obj_id),
@@ -266,7 +270,8 @@ static void M_DebugPosTopRight(void)
             "\\{small}%d, %d, %d", g_Camera.target.x, g_Camera.target.y,
             g_Camera.target.z));
     }
-    if (g_Config.debug.enable_invulnerability) {
+    if (g_Config.debug.enable_debug_status
+        && g_Config.debug.enable_invulnerability) {
         UI_LabelEx(
             GS(OVERLAY_DEBUG_IMMUNE), (UI_LABEL_SETTINGS) { .scale = 0.8 });
     }

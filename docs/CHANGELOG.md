@@ -7,6 +7,8 @@
 - added support for cross-fades to the title screen
 - added visual previews of bar colors
 - improved inventory ring active item highlight for smoother appearance
+- changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`
+- changed `enable_invulnerability` to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)
 - changed Lua event callback names to be more consistent:
     - `on_level_init` → `before_level_file`
     - `on_level_start` → `after_level_file`
