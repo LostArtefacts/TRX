@@ -33,6 +33,7 @@
 - added examine item feature for certain items
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation
+- fixed seaweed disappearing too quickly in certain levels
 - fixed Hand of Rathmore not rotating in Sleeping with the Fishes
 - fixed Icicles not having sound
 - fixed Spike Walls not having sound
