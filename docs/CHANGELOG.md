@@ -53,6 +53,7 @@
 - fixed animated textures speed
 - fixed inconsistent Meteor Artifacts names
 - fixed wrong item selection sound in the inventory ring
+- fixed flame emitters not getting restored when loading from a save
 
 
 

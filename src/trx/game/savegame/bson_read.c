@@ -785,7 +785,11 @@ static bool M_ReadItem(
         break;
     }
 
-    case O_FLAME_EMITTER: {
+    case O_FLAME_EMITTER:
+    case O_FLAME_EMITTER_BIG:
+    case O_FLAME_EMITTER_SMALL:
+    case O_FLAME_EMITTER_JET:
+    case O_FLAME_EMITTER_SIDE: {
         if ((g_TRVersion >= 2 || ctx->sg_version >= VERSION_3)
             && g_Config.gameplay.enable_enhanced_saves) {
             int32_t effect_num = NO_EFFECT;

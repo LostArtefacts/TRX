@@ -275,6 +275,10 @@ static void M_WriteItem(
 
     switch (item->object_id) {
     case O_FLAME_EMITTER:
+    case O_FLAME_EMITTER_BIG:
+    case O_FLAME_EMITTER_SMALL:
+    case O_FLAME_EMITTER_JET:
+    case O_FLAME_EMITTER_SIDE:
         if (item->data != nullptr) {
             const int32_t effect_num =
                 fx_order->id_map[(int32_t)(intptr_t)item->data - 1];
