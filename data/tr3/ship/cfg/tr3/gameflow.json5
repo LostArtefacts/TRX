@@ -170,6 +170,7 @@
             ],
             "injections": [
                 "data/injections/crash_sky.bin",
+                "data/injections/crash_pickup_meshes.bin",
                 "data/injections/lara_coastal_guns.bin",
             ],
         },
