@@ -8,6 +8,7 @@
 #include <trx/game/scaler.h>
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
 #include <trx/game/ui/elements/anchor.h>
+#include <trx/game/ui/elements/bar.h>
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/elements/hide.h>
 #include <trx/game/ui/elements/label.h>
@@ -28,6 +29,8 @@
 
 #include <math.h>
 
+#define M_BAR_WIDTH 60
+#define M_BAR_HEIGHT 12
 #define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
 #define M_HOLD_TIMER_MAX LOGIC_FPS
 
@@ -90,6 +93,33 @@ static bool M_IsEnumEntryAvailable(
         return true;
     }
     return option->custom_handler.is_enum_value_available(option, entry->value);
+}
+
+static UI_BAR_TYPE M_GetBarType(const UI_SETTINGS_OPTION *const option)
+{
+    if (option->target == &g_Config.ui.lara_health_bar.color) {
+        return UI_BAR_LARA_HP;
+    } else if (option->target == &g_Config.ui.lara_health_bar.poison_color) {
+        return UI_BAR_LARA_HP_POISON;
+    } else if (option->target == &g_Config.ui.lara_air_bar.color) {
+        return UI_BAR_LARA_AIR;
+    } else if (option->target == &g_Config.ui.lara_sprint_bar.color) {
+        return UI_BAR_LARA_STAMINA;
+    } else if (option->target == &g_Config.ui.lara_exposure_bar.color) {
+        return UI_BAR_LARA_EXPOSURE;
+    } else if (option->target == &g_Config.ui.enemy_health_bar.color) {
+        return UI_BAR_ENEMY_HP;
+    } else if (option->target == &g_Config.ui.enemy_health_bar.color_allies) {
+        return UI_BAR_ALLY_HP;
+    } else {
+        return (UI_BAR_TYPE)-1;
+    }
+}
+
+static bool M_IsBarColorEnum(const UI_SETTINGS_OPTION *const option)
+{
+    return option != nullptr && option->option_type == COT_ENUM
+        && option->misc == UI_Settings_BarColorEnumEntries;
 }
 
 static bool M_HasAvailableEnumValue(const UI_SETTINGS_OPTION *const option)
@@ -286,6 +316,9 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     case COT_STRING:
         return UI_Label_MeasureW(*(char **)option->target);
     case COT_ENUM: {
+        if (M_IsBarColorEnum(option)) {
+            return M_BAR_WIDTH * g_Config.ui.text_scale;
+        }
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
         const int32_t current_value = *(int32_t *)option->target;
@@ -877,7 +910,18 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         {
             const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row);
             const char *const value = M_FormatRowValue(s, row);
-            M_OptionLabel(option, value, /* star_if_enforced */ false);
+            if (M_IsBarColorEnum(option)) {
+                UI_Bar((UI_BAR_SETTINGS) {
+                    .w = M_BAR_WIDTH,
+                    .h = M_BAR_HEIGHT,
+                    .value = 100,
+                    .max_value = 100,
+                    .type = M_GetBarType(option),
+                    .preview = true,
+                });
+            } else {
+                M_OptionLabel(option, value, /* star_if_enforced */ false);
+            }
         }
         UI_EndRowArrows();
 

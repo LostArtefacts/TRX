@@ -40,6 +40,7 @@ typedef struct {
 typedef struct {
     UI_BAR_SETTINGS settings;
     const M_LOOK *look;
+    float scale;
 } M_DATA;
 
 static void M_DrawBackground(const M_LOOK *look, M_RECT_F rect);
@@ -207,7 +208,9 @@ static void M_Measure(UI_NODE *const node)
 {
     M_DATA *const data = node->data;
     const float scale =
-        Scaler_GetScale(SCALER_TARGET_BAR) * data->look->basic_scale;
+        Scaler_GetScale(
+            data->settings.preview ? SCALER_TARGET_TEXT : SCALER_TARGET_BAR)
+        * data->scale;
     node->measure_w = data->settings.w * scale;
     node->measure_h = data->settings.h * scale;
 }
@@ -349,10 +352,15 @@ static void M_Draw(const UI_NODE *const node)
     const float y = UI_ScaleY(node->y);
     const float w = UI_ScaleX(node->w);
     const float h = UI_ScaleY(node->h);
-    const float scale =
-        Scaler_GetScale(SCALER_TARGET_BAR) * data->look->basic_scale;
-    const float border = ceil(UI_ScaleX(UI_BAR_BORDER * scale));
-    const float padding = ceil(UI_ScaleX(UI_BAR_PADDING * scale));
+    float border;
+    float padding;
+    if (data->settings.preview) {
+        border = h / (float)(M_COLOR_STEPS + 4);
+        padding = h / (float)(M_COLOR_STEPS + 4);
+    } else {
+        border = ceil(UI_ScaleX(UI_BAR_BORDER * data->scale));
+        padding = ceil(UI_ScaleX(UI_BAR_PADDING * data->scale));
+    }
     const M_RECT_F outer_rect = {
         .x = x,
         .y = y,
@@ -389,5 +397,6 @@ void UI_Bar(const UI_BAR_SETTINGS settings)
     M_DATA *const data = node->data;
     data->settings = settings;
     data->look = m_Looks[g_Config.ui.bar_look];
+    data->scale = data->settings.preview ? 1.0f : data->look->basic_scale;
     UI_AddChild(node);
 }

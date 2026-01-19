@@ -29,6 +29,7 @@ typedef struct {
     int32_t h;
     int32_t value;
     int32_t max_value;
+    bool preview;
 } UI_BAR_SETTINGS;
 
 // draw functions
