@@ -78,7 +78,7 @@ static const M_LOOK_PC m_LookTR1 = {
     },
 };
 
-static const M_LOOK_PC m_LookTR23PC = {
+static const M_LOOK_PC m_LookTR2PC = {
     .base = {
         .basic_scale = 0.75f,
         .draw_border = M_DrawBorderPC,
@@ -100,6 +100,32 @@ static const M_LOOK_PC m_LookTR23PC = {
         [BC_PINK]   = { 0xFF40DF, 0xFF96C8, 0xFF40DF, 0xFF40DF, 0xFF40DF },
         [BC_PURPLE] = { 0x461E6B, 0xFF40DF, 0x461E6B, 0x461E6B, 0x461E6B },
         [BC_GREEN2] = { 0x0BAA6B, 0x2EE708, 0x0BAA6B, 0x0BAA6B, 0x0BAA6B },
+        // clang-format on
+    },
+};
+
+static const M_LOOK_PC m_LookTR3PC = {
+    .base = {
+        .basic_scale = 0.75f,
+        .draw_border = M_DrawBorderPC,
+        .draw_background = M_DrawBackground,
+        .draw_fill = M_DrawFillPC,
+    },
+    .border_light = { 0xFF, 0xFF, 0xFF, 0xFF },
+    .border_dark = { 0x40, 0x40, 0x40, 0xFF },
+    .color_map = {
+        // clang-format off
+        [BC_RED]    = { 0x4F0000, 0xFF0000, 0x7F0000, 0x7F0000, 0x4F0000 },
+        [BC_BLUE]   = { 0x00004F, 0x0000FF, 0x00007F, 0x00007F, 0x00004F },
+        [BC_GREY]   = { 0x4F4F4F, 0x7F7F7F, 0x5F5F5F, 0x5F5F5F, 0x4F4F4F },
+        [BC_GOLD]   = { 0x4F2F00, 0xFFBF00, 0x7F5F00, 0x7F5F00, 0x4F2F00 },
+        [BC_SILVER] = { 0x4F4F4F, 0xBFBFBF, 0x7F7F7F, 0x7F7F7F, 0x4F4F4F },
+        [BC_GREEN]  = { 0x004F2F, 0x00FF7F, 0x007F4F, 0x007F4F, 0x004F2F },
+        [BC_GOLD2]  = { 0x4F4F00, 0xFFFF00, 0x7F7F00, 0x7F7F00, 0x4F4F00 },
+        [BC_BLUE2]  = { 0x004F4F, 0x00FFFF, 0x007F7F, 0x007F7F, 0x004F4F },
+        [BC_PINK]   = { 0x4F003F, 0xFF7FBF, 0x7F3F5F, 0x7F3F5F, 0x4F003F },
+        [BC_PURPLE] = { 0x2F004F, 0x7F00FF, 0x4F007F, 0x4F007F, 0x2F004F },
+        [BC_GREEN2] = { 0x004F00, 0x00FF00, 0x007F00, 0x007F00, 0x004F00 },
         // clang-format on
     },
 };
@@ -151,7 +177,8 @@ static const M_LOOK_PS1 m_LookTR23PS1 = {
 
 static const M_LOOK *m_Looks[] = {
     [BAR_LOOK_TR1] = &m_LookTR1.base,
-    [BAR_LOOK_TR23_PC] = &m_LookTR23PC.base,
+    [BAR_LOOK_TR2_PC] = &m_LookTR2PC.base,
+    [BAR_LOOK_TR3_PC] = &m_LookTR3PC.base,
     [BAR_LOOK_TR23_PS1] = &m_LookTR23PS1.base,
 };
 
