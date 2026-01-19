@@ -39,7 +39,7 @@ vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
     vec3 ndc = screenPosition.xyz / screenPosition.w;
     vec2 pixelPos = (ndc.xy * 0.5 + 0.5) * uViewportSize;
 #if TR_VERSION == 3
-    float phases = (uTimeInGame * 0.25 + length(worldPosition.xyz)) * (2.0 * PI / WIBBLE_SIZE);
+    float phases = (uTimeInGame * 0.5 + length(worldPosition.xyz)) * (2.0 * PI / WIBBLE_SIZE);
     float scale = length(uViewportSize) / length(vec2(640.0, 480.0));
     float adjustedWibble = scale;
     pixelPos.y += sin(phases) * adjustedWibble;

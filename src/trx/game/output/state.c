@@ -374,12 +374,10 @@ void Output_SetTime(const float time)
 
 void Output_AnimateTextures(int32_t num_frames)
 {
-    if (g_TRVersion == 3) {
-        num_frames *= 2;
-    }
+    const int32_t anim_delta = g_TRVersion == 3 ? 2 : 1;
 
     m_TimeInGame += num_frames;
-    m_AnimatedTexturesOffset += num_frames;
+    m_AnimatedTexturesOffset += num_frames * anim_delta;
     bool update = false;
     while (m_AnimatedTexturesOffset > 5) {
         Output_CycleAnimatedTextures();
