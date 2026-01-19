@@ -47,17 +47,42 @@ typedef struct {
     bool attack_toggle;
 } M_PRIV;
 
-static int32_t m_Heights[5] = { -1536, -1280, -832, -384, 0 };
-static int32_t m_Dist[5] = { 200, 400, 500, 500, 475 };
-static int32_t m_DDist[5] = { 1600, 5600, 6400, 5600, 1600 };
-static int32_t m_DHeights1[5] = { -7680, -4224, -768, 2688, 6144 };
-static int32_t m_DHeights2[5] = { -1536, -1152, -768, -384, 0 };
+static const int32_t m_Heights[5] = { -1536, -1280, -832, -384, 0 };
+static const int32_t m_Dist[5] = { 200, 400, 500, 500, 475 };
+static const int32_t m_DDist[5] = { 1600, 5600, 6400, 5600, 1600 };
+static const int32_t m_DHeights1[5] = { -7680, -4224, -768, 2688, 6144 };
+static const int32_t m_DHeights2[5] = { -1536, -1152, -768, -384, 0 };
 static int32_t m_DeathDist[5] = {};
 static int32_t m_DeathHeights[5] = {};
 
 extern void TonyBoss_TriggerFireBall(
     ITEM *item, int32_t type, XYZ_32 *pos, int16_t room_num, int16_t angle,
     int32_t speed);
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->dropped_item =
+        JSON_ObjectGetBool(priv_root, "dropped_item", p->dropped_item);
+    p->ring_count = JSON_ObjectGetInt(priv_root, "ring_count", p->ring_count);
+    p->explode_count =
+        JSON_ObjectGetInt(priv_root, "explode_count", p->explode_count);
+    p->dead = JSON_ObjectGetBool(priv_root, "dead", p->dead);
+    p->phase = JSON_ObjectGetInt(priv_root, "phase", p->phase);
+    p->attack_toggle =
+        JSON_ObjectGetBool(priv_root, "attack_toggle", p->attack_toggle);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendBool(priv_root, "dropped_item", p->dropped_item);
+    JSON_ObjectAppendInt(priv_root, "ring_count", p->ring_count);
+    JSON_ObjectAppendInt(priv_root, "explode_count", p->explode_count);
+    JSON_ObjectAppendBool(priv_root, "dead", p->dead);
+    JSON_ObjectAppendInt(priv_root, "phase", p->phase);
+    JSON_ObjectAppendBool(priv_root, "attack_toggle", p->attack_toggle);
+}
 
 static void M_TriggerFlame(int16_t item_num, int32_t node)
 {
@@ -577,6 +602,8 @@ static void M_Setup(OBJECT *const obj)
     }
 
     obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
