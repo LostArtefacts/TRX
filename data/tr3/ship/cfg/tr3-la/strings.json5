@@ -70,7 +70,7 @@
                     "name": "Aviary Key",
                 },
                 "puzzle_1": {
-                    "name": "The Hand of Rathmore",
+                    "name": "Hand of Rathmore",
                 }
             }
         },
@@ -78,7 +78,7 @@
             "title": "Reunion",
             "objects": {
                 "puzzle_1": {
-                    "name": "The Hand of Rathmore",
+                    "name": "Hand of Rathmore",
                 }
             }
         }
