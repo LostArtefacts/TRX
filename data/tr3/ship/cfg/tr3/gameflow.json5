@@ -151,6 +151,7 @@
             "injections": [
                 "data/injections/coastal_airlock.bin",
                 "data/injections/coastal_sky.bin",
+                "data/injections/coastal_animating_bounds.bin",
                 "data/injections/lara_coastal_guns.bin",
             ],
         },
@@ -447,6 +448,7 @@
             ],
             "injections": [
                 "data/injections/lara_london_guns.bin",
+                "data/injections/stpaul_animating_bounds.bin",
             ],
         },
     ],
