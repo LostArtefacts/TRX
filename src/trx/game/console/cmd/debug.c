@@ -70,17 +70,27 @@ static void M_ShowOption(const CONFIG_OPTION *const option)
     Memory_Free(name);
 }
 
-static void M_UpdateOption(const CONFIG_OPTION *const option, const bool enable)
+static bool M_UpdateOption(const CONFIG_OPTION *const option, const bool enable)
 {
-    *(bool *)option->target = enable;
+    bool *const target = (bool *)option->target;
+    if (*target == enable) {
+        return false;
+    }
+
+    *target = enable;
     M_LogOption(option);
+    return true;
 }
 
-static void M_UpdateAll(const bool enable)
+static bool M_UpdateAll(const bool enable)
 {
+    bool changed = false;
     for (int32_t i = 0; m_AllOptions[i].target != nullptr; i++) {
-        M_UpdateOption(m_AllOptions[i].option, enable);
+        if (M_UpdateOption(m_AllOptions[i].option, enable)) {
+            changed = true;
+        }
     }
+    return changed;
 }
 
 static void M_ShowStatus(void)
@@ -118,8 +128,9 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     bool use_set = false;
     bool explicit_enable = false;
     if (val == nullptr && String_ParseBool(key, &explicit_enable)) {
-        M_UpdateAll(explicit_enable);
-        Config_Update();
+        if (M_UpdateAll(explicit_enable)) {
+            Config_Update();
+        }
         Memory_Free(args);
         return CR_SUCCESS;
     } else if (val != nullptr && String_ParseBool(val, &explicit_enable)) {
@@ -130,21 +141,27 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     }
 
     VECTOR *const matches = M_BuildMatches(key);
-    if (!matches->count) {
+    if (matches->count == 0) {
         Console_LogError(GS(OSD_CONFIG_OPTION_UNKNOWN_OPTION), key);
         Vector_Free(matches);
         Memory_Free(args);
         return CR_FAILURE;
     }
 
+    bool changed = false;
     for (int32_t i = 0; i < matches->count; i++) {
         const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
         const CONFIG_OPTION *const option = match->value;
-        M_UpdateOption(
-            option, use_set ? explicit_enable : !*(bool *)option->target);
+        const bool enable =
+            use_set ? explicit_enable : !*(bool *)option->target;
+        if (M_UpdateOption(option, enable)) {
+            changed = true;
+        }
     }
 
-    Config_Update();
+    if (changed) {
+        Config_Update();
+    }
     Vector_Free(matches);
     Memory_Free(args);
     return CR_SUCCESS;
