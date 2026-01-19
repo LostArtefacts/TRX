@@ -52,6 +52,7 @@
 - fixed underwater wobble effect amplitude
 - fixed animated textures speed
 - fixed inconsistent Meteor Artifacts names
+- fixed wrong item selection sound in the inventory ring
 
 
 
