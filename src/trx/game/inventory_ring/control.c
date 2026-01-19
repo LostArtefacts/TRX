@@ -563,7 +563,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 break;
 
             default:
-                Sound_Effect(SFX_MENU_SPININ, nullptr, SPM_ALWAYS);
+                Sound_Effect(SFX_MENU_CHOOSE, nullptr, SPM_ALWAYS);
                 break;
             }
         }
