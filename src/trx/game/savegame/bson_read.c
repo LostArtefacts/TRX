@@ -32,10 +32,7 @@
 #define M_NO_ROOM_LEGACY 255
 
 #define M_MAX_STACK_SIZE 10
-#define M_SHOULD(x)                                                            \
-    if (!(x)) {                                                                \
-        goto success;                                                          \
-    }
+#define M_SHOULD(x) ((x) ? 1 : (LOG_WARNING("%s", ctx->error_msg), 0))
 #define M_OPTIONAL(x) (void)(x);
 #define M_MUST(x)                                                              \
     if (!(x)) {                                                                \
@@ -689,8 +686,8 @@ static bool M_ReadItem(
     }
 
     if (obj->save_hitpoints) {
-        M_MUST(M_ReadNum(ctx, "hitpoints", &item->hit_points));
-        // TR1x >= 4.16, TR2X >=1.6 store max hit points information
+        M_SHOULD(M_ReadNum(ctx, "hitpoints", &item->hit_points));
+        // TR1X >= 4.16, TR2X >=1.6 store max hit points information
         M_OPTIONAL(M_ReadNum(ctx, "max_hitpoints", &item->max_hit_points));
     }
 
@@ -1314,40 +1311,39 @@ bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *const ctx)
     }
 
     // TR1X <=v2.15.3, TR2X <=v1.1 may not have fx effects
-    M_SHOULD(M_PushObject(ctx, "fx"));
-    for (int32_t i = 0;; i++) {
-        if (!M_PushArrayElem(ctx, i)) {
-            break;
-        }
-        if (i < MAX_EFFECTS) {
-            M_ReadEffect(ctx);
-        } else {
-            LOG_WARNING(
-                "Malformed save: expected a max of %d effect, got at least %d. "
-                "extra effects will be ignored.",
-                MAX_EFFECTS - 1, i);
+    if (M_SHOULD(M_PushObject(ctx, "fx"))) {
+        for (int32_t i = 0;; i++) {
+            if (!M_PushArrayElem(ctx, i)) {
+                break;
+            }
+            if (i < MAX_EFFECTS) {
+                M_ReadEffect(ctx);
+            } else {
+                LOG_WARNING(
+                    "Malformed save: expected a max of %d effect, got at least "
+                    "%d. "
+                    "extra effects will be ignored.",
+                    MAX_EFFECTS - 1, i);
+            }
+            M_MUST(M_Pop(ctx));
         }
         M_MUST(M_Pop(ctx));
     }
-    M_MUST(M_Pop(ctx));
     M_FINISH();
 }
 
 bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *const ctx)
 {
-    if (g_TRVersion == 1) {
-        M_SHOULD(M_PushObject(ctx, "flares"));
-    } else {
-        M_MUST(M_PushObject(ctx, "flares"));
-    }
-    for (int32_t i = 0;; i++) {
-        if (!M_PushArrayElem(ctx, i)) {
-            break;
+    if (M_SHOULD(M_PushObject(ctx, "flares"))) {
+        for (int32_t i = 0;; i++) {
+            if (!M_PushArrayElem(ctx, i)) {
+                break;
+            }
+            M_MUST(M_ReadFlare(ctx));
+            M_MUST(M_Pop(ctx));
         }
-        M_MUST(M_ReadFlare(ctx));
         M_MUST(M_Pop(ctx));
     }
-    M_MUST(M_Pop(ctx));
     M_FINISH();
 }
 
