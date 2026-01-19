@@ -41,6 +41,7 @@
 - added meteorite artifacts support
 - added examine item feature for certain items
 - added Tony control
+- added Spikes animation in Coastal Village and Madubu Gorge
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation
 - fixed seaweed disappearing too quickly in certain levels

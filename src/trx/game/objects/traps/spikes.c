@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
+#include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
@@ -53,9 +54,35 @@ static void M_Collision(
     }
 }
 
+static void M_Control(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (!Item_IsTriggerActive(item)) {
+        return;
+    }
+
+    const int32_t level_num = GF_BadGetLevelNum();
+    if (level_num != 5 && level_num != 7) {
+        return;
+    }
+
+    if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+        if (level_num == 5) {
+            Sound_Effect(SFX_SHIVA_SWORD_2, &item->pos, SPM_ALWAYS);
+        } else {
+            Sound_Effect(SFX_LARA_GET_OUT, &item->pos, SPM_ALWAYS);
+        }
+    }
+
+    Item_Animate(item);
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
+    if (g_TRVersion == 3) {
+        obj->control_func = M_Control;
+    }
 }
 
 REGISTER_OBJECT(O_SPIKES, M_Setup)
