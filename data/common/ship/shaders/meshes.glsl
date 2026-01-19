@@ -34,22 +34,23 @@ vec3 gammaCurve(vec3 rgb, float gamma_exp)
     return clamp(out8 / 255.0, 0.0, 1.0);
 }
 
-vec3 waterWibble(vec4 position)
+vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
 {
-    vec3 ndc = position.xyz / position.w;
+    vec3 ndc = screenPosition.xyz / screenPosition.w;
     vec2 pixelPos = (ndc.xy * 0.5 + 0.5) * uViewportSize;
 #if TR_VERSION == 3
-    float phases = (uTimeInGame * 0.25 + pixelPos.x) * (2.0 * PI / WIBBLE_SIZE);
+    float phases = (uTimeInGame * 0.25 + length(worldPosition.xyz)) * (2.0 * PI / WIBBLE_SIZE);
     float scale = length(uViewportSize) / length(vec2(640.0, 480.0));
     float adjustedWibble = scale;
     pixelPos.y += sin(phases) * adjustedWibble;
 #else
-    vec2 phases = (uTimeInGame + pixelPos.yx) * (2.0 * PI / WIBBLE_SIZE);
-    pixelPos += sin(phases) * MAX_WIBBLE;
+    float phases = (uTimeInGame + length(worldPosition.xyz)) * (2.0 * PI / WIBBLE_SIZE);
+    pixelPos.x += sin(phases) * MAX_WIBBLE;
+    pixelPos.y += cos(phases) * MAX_WIBBLE;
 #endif
     // reverse transform
     ndc.xy = (pixelPos / uViewportSize - 0.5) * 2.0;
-    return ndc * position.w;
+    return ndc * screenPosition.w;
 }
 
 void main(void) {
@@ -73,7 +74,7 @@ void main(void) {
 
     // Apply water wibble effect only to non-sprite vertices
     if (uWibbleEffect && (inFlags & (VERT_NO_WIBBLE | VERT_BILLBOARD)) == 0u) {
-        gl_Position.xyz = waterWibble(gl_Position);
+        gl_Position.xyz = waterWibble(worldPos, gl_Position);
     }
 
     gFlags = inFlags;

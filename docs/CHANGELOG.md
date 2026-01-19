@@ -21,9 +21,11 @@
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
+- fixed underwater wobble effect acting twitchy with camera movement
 
 **TR2**:
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
+- fixed underwater wobble effect acting twitchy with camera movement
 
 **TR3**:
 - added new water currents
