@@ -444,6 +444,8 @@
         "SETTING_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Aktiviert die Aufzählung von Laras Toden im Kompass und in den Level-Statistiken. Die Anzahl der Tode wird im aktuell geladenen Speicherstand aktualisiert, sobald sie stirbt.",
         "SETTING_ENABLE_DEMO": "Demo-Modus",
         "SETTING_ENABLE_DEMO_DESCRIPTION": "Aktiviert die Anzeige von Demos im Hauptmenü.",
+        "SETTING_ENABLE_ENDLESS_SPRINT": "\\{review}Endloses Sprinten",
+        "SETTING_ENABLE_ENDLESS_SPRINT_DESCRIPTION": "\\{review}Verhindert, dass Lara beim Sprinten jemals müde wird. Hindernisse bringen sie jedoch weiterhin zum Stillstand.",
         "SETTING_ENABLE_ENEMY_ROTATION": "Zufällige Startwinkel für Gegner",
         "SETTING_ENABLE_ENEMY_ROTATION_DESCRIPTION": "Verwendet einen zusätzlichen zufälligen Startwinkel für ein paar Gegner, sobald sie initialisiert werden.",
         "SETTING_ENABLE_ENHANCED_SAVES": "Speichere Effekte",

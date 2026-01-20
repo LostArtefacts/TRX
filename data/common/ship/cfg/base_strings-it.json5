@@ -444,6 +444,8 @@
         "SETTING_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Permette di mostrare il conteggio delle morti nella bussola e nelle statistiche del livello. Il conteggio delle morti viene aggiornato nel salvataggio attualmente caricato ogni volta che Lara muore.",
         "SETTING_ENABLE_DEMO": "Modalità demo",
         "SETTING_ENABLE_DEMO_DESCRIPTION": "Abilita la riproduzione delle demo nel menu principale.",
+        "SETTING_ENABLE_ENDLESS_SPRINT": "\\{review}Corsa infinita",
+        "SETTING_ENABLE_ENDLESS_SPRINT_DESCRIPTION": "\\{review}Impedisce a Lara di stancarsi mai durante la corsa. Gli ostacoli la fermeranno comunque.",
         "SETTING_ENABLE_ENEMY_ROTATION": "Rotazione nemici casuale",
         "SETTING_ENABLE_ENEMY_ROTATION_DESCRIPTION": "Applica una rotazione casuale aggiuntiva ad alcuni nemici quando vengono inizializzati.",
         "SETTING_ENABLE_ENHANCED_SAVES": "Salva gli effetti",
