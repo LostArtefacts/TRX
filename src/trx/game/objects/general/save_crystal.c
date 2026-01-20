@@ -184,7 +184,6 @@ static void M_Setup(OBJECT *const obj)
     if (g_TRVersion == 3) {
         obj->control_func = M_ControlHeal;
         obj->collision_func = nullptr;
-        obj->save_position = true;
         obj->save_flags = true;
     } else if (g_Config.gameplay.enable_save_crystals) {
         obj->control_func = M_ControlSave;
