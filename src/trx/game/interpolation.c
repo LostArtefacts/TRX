@@ -278,6 +278,7 @@ static void M_RememberItem(ITEM *const item)
     REMEMBER(item, rot.x);
     REMEMBER(item, rot.y);
     REMEMBER(item, rot.z);
+    item->prev_frame_num = item->frame_num;
 }
 
 static void M_CommitItem(ITEM *const item)
