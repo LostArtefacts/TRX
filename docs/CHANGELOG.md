@@ -22,6 +22,7 @@
 - fixed grenades not killing more than a single enemy
 - fixed running `/title` and similar commands leaving the "Examine" button briefly visible in the key items ring (old regression)
 - fixed running `/title` and similar commands when examining an item causing incorrect item rotation next time the ring opens (old regression)
+- fixed endless sprint cheat setting not retained between game relaunches
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
