@@ -10,6 +10,7 @@
 #include <trx/version.h>
 
 #define M_SFX_SURF_DISTANCE ((STEP_L * 2) + 1)
+#define M_FRAME_INTERP_SCALE 1024
 
 static bool M_ShouldPlaySFXAlways(
     const ITEM *const item, const bool item_underwater)
@@ -121,51 +122,54 @@ int32_t Item_GetFrames(const ITEM *item, ANIM_FRAME *frames[], int32_t *rate)
     const int32_t cur_frame_num = item->frame_num - anim->frame_base;
     const int32_t last_frame_num = anim->frame_end - anim->frame_base;
     const int32_t key_frame_span = anim->interpolation;
-    const int32_t key_frame_shift = cur_frame_num % key_frame_span;
     const int32_t first_key_frame_num = cur_frame_num / key_frame_span;
     const int32_t second_key_frame_num = first_key_frame_num + 1;
 
-    const int32_t numerator = key_frame_shift;
+    int32_t interp_frame_num = cur_frame_num;
+    double interp_frame_sub = 0.0;
+    const double alpha = Interpolation_GetWorldRate();
+    if (alpha >= 0.0 && alpha <= 1.0) {
+        const bool prev_in_anim = item->prev_frame_num >= anim->frame_base
+            && item->prev_frame_num <= anim->frame_end;
+        if (prev_in_anim) {
+            const int32_t prev_frame_num =
+                item->prev_frame_num - anim->frame_base;
+            const int32_t frame_delta = cur_frame_num - prev_frame_num;
+            if (frame_delta > 0) {
+                const OBJECT *const obj = Object_Get(item->object_id);
+                const bool allow_interp = obj->can_interpolate_func == nullptr
+                    || obj->can_interpolate_func(
+                        item, first_key_frame_num, second_key_frame_num);
+                if (allow_interp) {
+                    const double frame_pos =
+                        prev_frame_num + (frame_delta * alpha);
+                    if (frame_pos < last_frame_num) {
+                        interp_frame_num = (int32_t)frame_pos;
+                        interp_frame_sub = frame_pos - interp_frame_num;
+                    }
+                }
+            }
+        }
+    }
+
+    const int32_t key_frame_shift = interp_frame_num % key_frame_span;
+    const int32_t frame_a = interp_frame_num / key_frame_span;
+    const int32_t frame_b = frame_a + 1;
+    frames[0] = &anim->frame_ptr[frame_a];
+    frames[1] = &anim->frame_ptr[frame_b];
+
     int32_t denominator = key_frame_span;
-    if (numerator != 0) {
+    if (key_frame_shift != 0 || interp_frame_sub > 0.0) {
         const int32_t second_key_frame_num2 =
-            (cur_frame_num / key_frame_span + 1) * key_frame_span;
+            (interp_frame_num / key_frame_span + 1) * key_frame_span;
         if (second_key_frame_num2 > anim->frame_end) {
             denominator += anim->frame_end - second_key_frame_num2;
         }
     }
 
-    frames[0] = &anim->frame_ptr[first_key_frame_num];
-    frames[1] = &anim->frame_ptr[second_key_frame_num];
-
-    // OG
-    if (g_Config.rendering.fps == 30) {
-        *rate = denominator;
-        return numerator;
-    }
-
-    // Invalid state for interpolation
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->can_interpolate_func != nullptr
-        && !obj->can_interpolate_func(
-            item, first_key_frame_num, second_key_frame_num)) {
-        *rate = denominator;
-        return numerator;
-    }
-
-    // Interpolated
-    const double clock_ratio = Interpolation_GetWorldRate() - 0.5;
-    const double final =
-        (key_frame_shift + clock_ratio) / (double)key_frame_span;
-    const double interp_frame_num =
-        (first_key_frame_num * key_frame_span) + (final * key_frame_span);
-    if (interp_frame_num >= last_frame_num) {
-        *rate = denominator;
-        return numerator;
-    }
-
-    *rate = 10;
-    return final * 10;
+    const double numerator = key_frame_shift + interp_frame_sub;
+    *rate = denominator * M_FRAME_INTERP_SCALE;
+    return (int32_t)((numerator * M_FRAME_INTERP_SCALE) + 0.5);
 }
 
 void Item_Animate(ITEM *const item)
