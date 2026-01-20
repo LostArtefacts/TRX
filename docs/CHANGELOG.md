@@ -48,6 +48,7 @@
 - added Tony control
 - added Spikes animation in Coastal Village and Madubu Gorge
 - added Aldwych Drill control (Spike Ceiling with timer=1 to descend faster)
+- added TR3 behavior patterns to Tiger control
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation
 - fixed seaweed disappearing too quickly in certain levels

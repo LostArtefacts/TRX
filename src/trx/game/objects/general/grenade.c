@@ -84,6 +84,7 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
         Sound_Effect(SFX_EXPLOSION_3, nullptr, SPM_NORMAL);
     }
 
+    Creature_AlertNearbyGuards(grenade_item);
     Item_Kill(grenade_item_num);
 }
 

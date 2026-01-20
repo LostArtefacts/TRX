@@ -437,6 +437,7 @@ int32_t Gun_FireWeapon(
     }
     ammo->ammo--;
     Stats_AddAmmoUsed();
+    lara->has_fired = true;
 
     const XYZ_32 view_pos = {
         .x = src->pos.x,

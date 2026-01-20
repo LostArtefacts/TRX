@@ -10,6 +10,7 @@
 #include <trx/game/lara/breath.h>
 #include <trx/game/level/settings.h>
 #include <trx/game/music.h>
+#include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -904,6 +905,16 @@ void Lara_Control(void)
 {
     ITEM *const item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
+    if (lara_info->poison_timer >= 16 && (time4 & 0xFF) == 0) {
+        CLAMPG(lara_info->poison_timer, 256);
+        Lara_TakeDamage(lara_info->poison_timer >> 4, false);
+    }
+    if (lara_info->has_fired && (time4 & 0x7F) == 0) {
+        Creature_AlertNearbyGuards(item);
+        lara_info->has_fired = false;
+    }
 
     if (item->hit_points > 0 && g_Config.debug.enable_invulnerability) {
         item->hit_points = LARA_MAX_HITPOINTS;
