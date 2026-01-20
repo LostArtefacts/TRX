@@ -20,7 +20,7 @@ X_UI_CFG_BOOL(gameplay.enable_deaths_counter,       SETTING_ENABLE_DEATHS_COUNTE
 
 X_UI_CFG_INT32(gameplay.maximum_save_slots,         SETTING_MAXIMUM_SAVE_SLOTS, .min_value = 1, .max_value = 1000, .delta_fast = 10, .delta_slow = 1)
 X_UI_CFG_BOOL(gameplay.enable_enhanced_saves,       SETTING_ENABLE_ENHANCED_SAVES)
-X_UI_CFG_BOOL(gameplay.enable_bouncy_grenades,      SETTING_ENABLE_BOUNCY_GRENADES)
+X_UI_CFG_BOOL(gameplay.enable_bouncy_grenades,      SETTING_ENABLE_BOUNCY_GRENADES, .custom_handler = { .is_available = UI_Settings_Grenade_IsAvailable })
 X_UI_CFG_BOOL(gameplay.remember_gun_status,         SETTING_REMEMBER_GUNS_BETWEEN_LEVELS)
 
 X_UI_CFG_BOOL(gameplay.restore_ps1_enemies,         SETTING_RESTORE_PS1_ENEMIES)

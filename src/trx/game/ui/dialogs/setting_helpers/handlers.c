@@ -207,6 +207,11 @@ bool UI_Settings_Flare_IsAvailable(const UI_SETTINGS_OPTION *const option)
     return g_Weapons[LGT_FLARE].is_available;
 }
 
+bool UI_Settings_Grenade_IsAvailable(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Weapons[LGT_GRENADE].is_available;
+}
+
 bool UI_Settings_Harpoon_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Weapons[LGT_HARPOON].is_available;
