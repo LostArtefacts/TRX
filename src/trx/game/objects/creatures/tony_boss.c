@@ -289,9 +289,9 @@ static void M_Control(const int16_t item_num)
             item->current_anim_state = M_STATE_DEATH;
         }
 
-        if (item->frame_num - Anim_GetAnim(item->anim_num)->frame_base > 110) {
+        if (Item_GetRelativeFrame(item) > 110) {
+            Item_SwitchToAnim(item, Item_GetRelativeAnim(item), 110);
             item->mesh_bits = 0;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base + 110;
 
             if (!p->explode_count) {
                 p->ring_count = 0;
@@ -361,8 +361,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case M_STATE_RISE:
-            if (item->frame_num - Anim_GetAnim(item->anim_num)->frame_base
-                <= 16) {
+            if (Item_GetRelativeFrame(item) <= 16) {
                 tony->maximum_turn = 0;
             } else {
                 tony->maximum_turn = 364;
@@ -403,8 +402,7 @@ static void M_Control(const int16_t item_num)
             torso_y = info.angle;
             torso_x = info.x_angle;
             tony->maximum_turn = 182;
-            if (item->frame_num - Anim_GetAnim(item->anim_num)->frame_base
-                == 28) {
+            if (Item_GetRelativeFrame(item) == 28) {
                 TonyBoss_TriggerFireBall(
                     item, 2, 0, item->room_num, item->rot.y, 0);
             }
@@ -414,8 +412,7 @@ static void M_Control(const int16_t item_num)
             torso_y = info.angle;
             torso_x = info.x_angle;
             tony->maximum_turn = 0;
-            if (item->frame_num - Anim_GetAnim(item->anim_num)->frame_base
-                == 40) {
+            if (Item_GetRelativeFrame(item) == 40) {
                 TonyBoss_TriggerFireBall(item, 0, 0, item->room_num, 0, 0);
                 TonyBoss_TriggerFireBall(item, 1, 0, item->room_num, 0, 0);
             }
@@ -423,8 +420,7 @@ static void M_Control(const int16_t item_num)
 
         case M_STATE_BIG_ROOM:
             tony->maximum_turn = 0;
-            if (item->frame_num - Anim_GetAnim(item->anim_num)->frame_base
-                == 56) {
+            if (Item_GetRelativeFrame(item) == 56) {
                 p->phase = M_PHASE_PHASE2;
                 p->explode_count = 1;
             }
@@ -435,11 +431,9 @@ static void M_Control(const int16_t item_num)
     if (item->current_anim_state == M_STATE_ROCK_ZAPP
         || item->current_anim_state == M_STATE_ZAPP
         || item->current_anim_state == M_STATE_BIG_ROOM) {
-        int32_t f = item->frame_num - Anim_GetAnim(item->anim_num)->frame_base;
-
+        int32_t f = Item_GetRelativeFrame(item);
         if (f > 16) {
             f = Anim_GetAnim(item->anim_num)->frame_end - item->frame_num;
-
             CLAMPG(f, 16);
         }
 

@@ -66,7 +66,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+    if (Item_GetRelativeFrame(item) == 0) {
         if (level_num == 5) {
             Sound_Effect(SFX_SHIVA_SWORD_2, &item->pos, SPM_ALWAYS);
         } else {
