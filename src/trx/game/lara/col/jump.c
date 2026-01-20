@@ -303,6 +303,11 @@ static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
 
 static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 {
+    if (g_TRVersion == 3 && item->hit_points <= 0) {
+        item->goal_anim_state = LS(LS_STOP);
+        return;
+    }
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = item->rot.y;
     coll->bad_pos = NO_BAD_POS;
