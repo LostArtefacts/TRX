@@ -79,6 +79,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-pl.json5
 │   │   └── strings.json5
 │   ├── TR2X.json5*
+│   ├── ui.json5
 │   └── weapons.json5
 ├── data
 │   ├── assault.tr2
@@ -552,6 +553,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── strings-it.json5
         │   │   ├── strings-pl.json5
         │   │   └── strings.json5
+        │   ├── ui.json5
         │   └── weapons.json5
         ├── data
         │   ├── assault.tr2
