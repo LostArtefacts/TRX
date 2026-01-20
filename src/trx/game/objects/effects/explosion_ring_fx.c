@@ -47,12 +47,8 @@ static void M_RotateZX(
     out->z = (yz * sx + zz * cx) >> W2V_SHIFT;
 }
 
-void ExplosionRingFX_Draw(void)
+void ExplosionRingFX_Control(void)
 {
-    const int32_t time4 = Output_GetTimeInGame() * 4;
-    const int32_t sprite_base = Object_Get(O_EXPLOSION_1)->mesh_idx;
-    const int32_t sprite_idx = sprite_base + 4 + ((time4 >> 4) & 3);
-
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
         EXPLOSION_RING *const ring = &m_ExplosionRings[i];
         if (ring->on == 0) {
@@ -66,6 +62,20 @@ void ExplosionRingFX_Draw(void)
         }
 
         ring->radius += ring->speed;
+    }
+}
+
+void ExplosionRingFX_Draw(void)
+{
+    const int32_t time4 = Output_GetTimeInGame() * 4;
+    const int32_t sprite_base = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    const int32_t sprite_idx = sprite_base + 4 + ((time4 >> 4) & 3);
+
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
+        EXPLOSION_RING *const ring = &m_ExplosionRings[i];
+        if (ring->on == 0) {
+            continue;
+        }
 
         int32_t rad = ring->radius;
         for (int32_t band = 0; band < 2; band++) {

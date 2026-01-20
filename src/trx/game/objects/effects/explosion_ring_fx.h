@@ -21,5 +21,8 @@ typedef struct {
 } EXPLOSION_RING;
 
 void ExplosionRingFX_Reset(void);
-EXPLOSION_RING *ExplosionRingFX_GetRing(int32_t idx);
+
+void ExplosionRingFX_Control(void);
 void ExplosionRingFX_Draw(void);
+
+EXPLOSION_RING *ExplosionRingFX_GetRing(int32_t idx);
