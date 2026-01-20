@@ -289,16 +289,15 @@ static void M_Collision(
         - item->rot.y;
 
     if (angle > -0x1FFE && angle < 0x5FFA) {
-        lara_item->anim_num = Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 23;
+        Item_SwitchToObjAnim(lara_item, 23, 0, O_LARA_VEHICLE_ANIM);
         lara_item->current_anim_state = M_STATE_GET_ON_L;
         lara_item->goal_anim_state = M_STATE_GET_ON_L;
     } else {
-        lara_item->anim_num = Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 9;
+        Item_SwitchToObjAnim(lara_item, 9, 0, O_LARA_VEHICLE_ANIM);
         lara_item->current_anim_state = M_STATE_GET_ON_R;
         lara_item->goal_anim_state = M_STATE_GET_ON_R;
     }
 
-    lara_item->frame_num = Anim_GetAnim(lara_item->anim_num)->frame_base;
     item->hit_points = 1;
     lara_item->pos.x = item->pos.x;
     lara_item->pos.y = item->pos.y;
@@ -354,8 +353,7 @@ static bool M_CheckGetOff(void)
 
     if ((lara_item->current_anim_state == M_STATE_GET_OFF_R
          || lara_item->current_anim_state == M_STATE_GET_OFF_L)
-        && lara_item->frame_num
-            == Anim_GetAnim(lara_item->anim_num)->frame_end) {
+        && lara_item->frame_num == Item_GetAnim(lara_item)->frame_end) {
         if (lara_item->current_anim_state == M_STATE_GET_OFF_L) {
             lara_item->rot.y += DEG_90;
         } else {
@@ -371,8 +369,7 @@ static bool M_CheckGetOff(void)
         lara_item->rot.z = 0;
         Lara_Vehicle_SetIndex(NO_ITEM);
         lara->gun_status = LGS_ARMLESS;
-    } else if (
-        lara_item->frame_num == Anim_GetAnim(lara_item->anim_num)->frame_end) {
+    } else if (lara_item->frame_num == Item_GetAnim(lara_item)->frame_end) {
         M_PRIV *const p = item->priv;
         M_QUAD_BIKE_INFO *const quad = &p->quad;
 
@@ -397,7 +394,7 @@ static bool M_CheckGetOff(void)
         }
 
         if (lara_item->current_anim_state == M_STATE_FALL_DEATH) {
-            lara_item->goal_anim_state = 8;
+            lara_item->goal_anim_state = M_STATE_FALL;
             lara_item->fall_speed = 154;
             lara_item->speed = 0;
             quad->flags |= 0x80;
@@ -989,50 +986,43 @@ static void M_AnimateQuadBike(
     if (item->pos.y != item->floor && state != M_STATE_FALL
         && state != M_STATE_LAND && state != M_STATE_FALL_OFF && !killed) {
         if (quad->velocity < 0) {
-            lara_item->anim_num = Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 6;
+            Item_SwitchToObjAnim(lara_item, 6, 0, O_LARA_VEHICLE_ANIM);
         } else {
-            lara_item->anim_num =
-                Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 25;
+            Item_SwitchToObjAnim(lara_item, 25, 0, O_LARA_VEHICLE_ANIM);
         }
 
-        lara_item->frame_num = Anim_GetAnim(lara_item->anim_num)->frame_base;
-        lara_item->current_anim_state = 8;
-        lara_item->goal_anim_state = 8;
+        lara_item->current_anim_state = M_STATE_FALL;
+        lara_item->goal_anim_state = M_STATE_FALL;
     } else if (
         hit_wall != 0 && state != M_STATE_HIT_FRONT && state != M_STATE_HIT_BACK
         && state != M_STATE_HIT_LEFT && state != M_STATE_HIT_RIGHT
         && state != M_STATE_FALL_OFF && quad->velocity > 0x3555 && !killed) {
         switch (hit_wall) {
         case 13:
-            lara_item->anim_num =
-                Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 12;
+            Item_SwitchToObjAnim(lara_item, 12, 0, O_LARA_VEHICLE_ANIM);
             lara_item->current_anim_state = M_STATE_HIT_FRONT;
             lara_item->goal_anim_state = M_STATE_HIT_FRONT;
             break;
 
         case 14:
-            lara_item->anim_num =
-                Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 11;
+            Item_SwitchToObjAnim(lara_item, 11, 0, O_LARA_VEHICLE_ANIM);
             lara_item->current_anim_state = M_STATE_HIT_BACK;
             lara_item->goal_anim_state = M_STATE_HIT_BACK;
             break;
 
         case 11:
-            lara_item->anim_num =
-                Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 14;
+            Item_SwitchToObjAnim(lara_item, 14, 0, O_LARA_VEHICLE_ANIM);
             lara_item->current_anim_state = M_STATE_HIT_LEFT;
             lara_item->goal_anim_state = M_STATE_HIT_LEFT;
             break;
 
         default:
-            lara_item->anim_num =
-                Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 13;
+            Item_SwitchToObjAnim(lara_item, 13, 0, O_LARA_VEHICLE_ANIM);
             lara_item->current_anim_state = M_STATE_HIT_RIGHT;
             lara_item->goal_anim_state = M_STATE_HIT_RIGHT;
             break;
         }
 
-        lara_item->frame_num = Anim_GetAnim(lara_item->anim_num)->frame_base;
         Sound_Effect(SFX_QUAD_FRONT_IMPACT, &item->pos, SPM_NORMAL);
     } else {
         switch (lara_item->current_anim_state) {
@@ -1064,10 +1054,7 @@ static void M_AnimateQuadBike(
             if (!(quad->velocity & 0xFFFFFF00)) {
                 lara_item->goal_anim_state = M_STATE_STOP;
             } else if (g_Input.right) {
-                lara_item->anim_num =
-                    Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 20;
-                lara_item->frame_num =
-                    Anim_GetAnim(lara_item->anim_num)->frame_base;
+                Item_SwitchToObjAnim(lara_item, 20, 0, O_LARA_VEHICLE_ANIM);
                 lara_item->current_anim_state = M_STATE_TURN_R;
                 lara_item->goal_anim_state = M_STATE_TURN_R;
             } else if (!g_Input.left) {
@@ -1124,10 +1111,7 @@ static void M_AnimateQuadBike(
             if (!(quad->velocity & 0xFFFFFF00)) {
                 lara_item->goal_anim_state = M_STATE_STOP;
             } else if (g_Input.left) {
-                lara_item->anim_num =
-                    Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 3;
-                lara_item->frame_num =
-                    Anim_GetAnim(lara_item->anim_num)->frame_base;
+                Item_SwitchToObjAnim(lara_item, 3, 0, O_LARA_VEHICLE_ANIM);
                 lara_item->current_anim_state = M_STATE_TURN_L;
                 lara_item->goal_anim_state = M_STATE_TURN_L;
             } else if (!g_Input.right) {
@@ -1453,9 +1437,8 @@ bool QuadBike_Control(void)
         Item_Animate(lara_item);
         item->anim_num = lara_item->anim_num + Object_Get(O_QUAD_BIKE)->anim_idx
             - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx;
-        item->frame_num = lara_item->frame_num
-            + Anim_GetAnim(item->anim_num)->frame_base
-            - Anim_GetAnim(lara_item->anim_num)->frame_base;
+        item->frame_num = lara_item->frame_num + Item_GetAnim(item)->frame_base
+            - Item_GetAnim(lara_item)->frame_base;
         g_Camera.target_elevation = -5460;
 
         if (quad->flags & 0x40 && item->pos.y == item->floor) {
