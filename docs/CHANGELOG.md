@@ -7,6 +7,7 @@
 - added support for cross-fades to the title screen
 - added visual previews of bar colors
 - added endless sprint (available previously via the `/restless` command) to the UI settings (Gameplay options → Mods → Endless sprint)
+- added endless flare time cheat (Gameplay options → Mods → Endless flare time)
 - improved inventory ring active item highlight for smoother appearance
 - changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`
 - changed `enable_invulnerability` to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)

@@ -444,6 +444,8 @@
         "SETTING_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Włącza wyświetlanie licznika śmierci w statystykach poziomu. Liczba śmierci jest aktualizowana w aktualnie wczytanym zapisie w momencie, kiedy Lara ginie.",
         "SETTING_ENABLE_DEMO": "Tryb demo",
         "SETTING_ENABLE_DEMO_DESCRIPTION": "Włącza odtwarzanie krótkich demonstracyjnych sekwencji w menu głównym.",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME": "\\{review}Nieskończony czas świecy dymnej",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME_DESCRIPTION": "\\{review}Zapobiega wygasaniu przenośnych świec dymnych. Rzucone świece dymne nadal gasną normalnie.",
         "SETTING_ENABLE_ENDLESS_SPRINT": "\\{review}Niekończący się sprint",
         "SETTING_ENABLE_ENDLESS_SPRINT_DESCRIPTION": "\\{review}Zapobiega zmęczeniu Lary podczas biegu. Przeszkody nadal ją zatrzymają.",
         "SETTING_ENABLE_ENEMY_ROTATION": "Losuj rotację przeciwników",

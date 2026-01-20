@@ -122,8 +122,13 @@ static bool M_CanThrowFlare(void)
     return !lara_item->gravity && !g_Input.jump;
 }
 
-static void M_ControlInHand(const int32_t flare_age)
+static void M_ControlInHand(void)
 {
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const int32_t flare_age = g_Config.debug.enable_endless_flare_time
+        ? MIN(Flare_GetMaxAge() / 2, lara_info->flare.age)
+        : lara_info->flare.age;
+
     XYZ_32 vec = {
         .x = 11,
         .y = 32,
@@ -132,21 +137,20 @@ static void M_ControlInHand(const int32_t flare_age)
     Lara_GetJointAbsPosition(&vec, LM_HAND_L);
 
     const ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (flare_age == 0) {
         M_DoIgniteEffects(vec, lara_item->room_num);
     }
 
     lara_info->left_arm.flash_gun = Flare_GenerateLight(vec, flare_age);
 
-    if (lara_info->flare.age >= Flare_GetMaxAge()) {
+    if (flare_age >= Flare_GetMaxAge()) {
         if (M_CanThrowFlare()) {
             lara_info->gun_status = LGS_UNDRAW;
         }
         return;
     }
 
-    lara_info->flare.age++;
+    lara_info->flare.age = flare_age + 1;
     Flare_GenerateEffects(&lara_item->pos, vec, lara_item->room_num);
 
     if (!lara_info->left_arm.flash_gun) {
@@ -218,7 +222,7 @@ static void M_ControlArmless(void)
         lara_info->flare.control = false;
     }
 
-    M_ControlInHand(lara_info->flare.age);
+    M_ControlInHand();
     M_SetArm(lara_info->left_arm.frame_num);
 }
 
@@ -228,7 +232,7 @@ static void M_ControlBusyHands(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     lara_info->flare.control =
         Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
-    M_ControlInHand(lara_info->flare.age);
+    M_ControlInHand();
     M_SetArm(lara_info->left_arm.frame_num);
 }
 
@@ -254,7 +258,7 @@ void Lara_Flare_Draw(void)
 
     if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)
         || lara_item->current_anim_state == LS(LS_PICKUP)) {
-        M_ControlInHand(lara_info->flare.age);
+        M_ControlInHand();
         lara_info->flare.control = false;
         lara_info->left_arm.frame_num = LF_FL_2_HOLD - 2;
         M_SetArm(lara_info->left_arm.frame_num);
@@ -275,10 +279,10 @@ void Lara_Flare_Draw(void)
         if (frame_num == LF_FL_IGNITE) {
             lara_info->flare.age = 0;
         }
-        M_ControlInHand(lara_info->flare.age);
+        M_ControlInHand();
     } else if (frame_num == LF_FL_2_HOLD - 1) {
         M_InitialiseState();
-        M_ControlInHand(lara_info->flare.age);
+        M_ControlInHand();
         frame_num = LF_FL_HOLD;
     }
 
@@ -360,7 +364,7 @@ void Lara_Flare_Undraw(void)
     }
 
     if (frame_num_1 >= LF_FL_THROW && frame_num_1 < LF_FL_THROW_RELEASE) {
-        M_ControlInHand(lara_info->flare.age);
+        M_ControlInHand();
     }
 
     lara_info->left_arm.frame_num = frame_num_1;
