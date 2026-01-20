@@ -119,4 +119,5 @@ typedef struct {
     int32_t tr3_smoke_count_l;
     int32_t tr3_smoke_count_r;
     LARA_GUN_TYPE tr3_smoke_weapon;
+    bool has_fired;
 } LARA_INFO;

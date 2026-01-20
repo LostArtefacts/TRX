@@ -64,9 +64,7 @@ static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
                     pos, 3, -1, 0, rocket_item->room_num);
             }
         }
-    }
-
-    if (g_TRVersion != 3) {
+    } else {
         const int16_t effect_num = Effect_Create(rocket_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
@@ -85,6 +83,8 @@ static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
     Sound_Effect(SFX_EXPLOSION_1, sfx_pos, flags);
     Sound_Effect(SFX_EXPLOSION_2, sfx_pos, SPM_NORMAL);
     Item_Kill(rocket_item_num);
+
+    Creature_AlertNearbyGuards(rocket_item);
 }
 
 static bool M_CanExplodeTarget(const ITEM *const item)

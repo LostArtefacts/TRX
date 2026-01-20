@@ -194,6 +194,7 @@ common_sources = [
   'trx/game/console/common.c',
   'trx/game/console/history.c',
   'trx/game/console/registry.c',
+  'trx/game/creature/alert.c',
   'trx/game/creature/behavior.c',
   'trx/game/creature/common.c',
   'trx/game/creature/shooting.c',

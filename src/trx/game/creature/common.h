@@ -9,6 +9,8 @@ void Creature_AIInfo(ITEM *item, AI_INFO *info);
 bool Creature_EnsureHabitat(
     int16_t item_num, int32_t *wh, const HYBRID_INFO *info);
 void Creature_Mood(const ITEM *item, const AI_INFO *info, bool violent);
+void Creature_UpdateMood(const ITEM *item, const AI_INFO *info, bool violent);
+void Creature_ApplyMood(const ITEM *item, const AI_INFO *info, bool violent);
 
 int16_t Creature_Turn(ITEM *item, int16_t max_turn);
 void Creature_Tilt(ITEM *item, int16_t angle);

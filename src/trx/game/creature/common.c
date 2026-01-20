@@ -310,6 +310,13 @@ bool Creature_EnsureHabitat(
 void Creature_Mood(
     const ITEM *const item, const AI_INFO *const info, const bool violent)
 {
+    Creature_UpdateMood(item, info, violent);
+    Creature_ApplyMood(item, info, violent);
+}
+
+void Creature_UpdateMood(
+    const ITEM *const item, const AI_INFO *const info, const bool violent)
+{
     CREATURE *const creature = item->data;
     if (creature == nullptr) {
         return;
@@ -412,6 +419,18 @@ void Creature_Mood(
         }
         lot->required_box = NO_BOX;
     }
+}
+
+void Creature_ApplyMood(
+    const ITEM *const item, const AI_INFO *const info, const bool violent)
+{
+    CREATURE *const creature = item->data;
+    if (creature == nullptr) {
+        return;
+    }
+
+    LOT_INFO *const lot = &creature->lot;
+    const ITEM *enemy = creature->enemy;
 
     switch (creature->mood) {
     case MOOD_BORED: {

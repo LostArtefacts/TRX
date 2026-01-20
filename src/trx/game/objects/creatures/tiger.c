@@ -4,9 +4,10 @@
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 // clang-format off
-#define TIGER_HITPOINTS      20
+#define TIGER_HITPOINTS      (g_TRVersion == 3 ? 24 : 20)
 #define TIGER_TOUCH_BITS     0b00000111'11111101'11000000'00000000
 #define TIGER_RADIUS         (WALL_L / 3) // = 341
 #define TIGER_WALK_TURN      (DEG_1 * 3) // = 546
@@ -14,7 +15,7 @@
 #define TIGER_ATTACK_1_RANGE SQUARE(WALL_L / 3) // = 116281
 #define TIGER_ATTACK_2_RANGE SQUARE(WALL_L * 3 / 2) // = 2359296
 #define TIGER_ATTACK_3_RANGE SQUARE(WALL_L) // = 1048576
-#define TIGER_BITE_DAMAGE    100
+#define TIGER_BITE_DAMAGE    (g_TRVersion == 3 ? 90 : 100)
 #define TIGER_ROAR_CHANCE    96
 // clang-format on
 
@@ -55,14 +56,22 @@ static void M_Control(const int16_t item_num)
     int16_t angle = 0;
     int16_t tilt = 0;
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
     if (item->hit_points > 0) {
         AI_INFO info;
         Creature_AIInfo(item, &info);
-        Creature_Mood(item, &info, MOOD_ATTACK);
+        Creature_UpdateMood(item, &info, true);
 
         if (info.ahead != 0) {
             head = info.angle;
         }
+
+        if (g_TRVersion == 3 && creature->alerted
+            && info.zone_num != info.enemy_zone_num) {
+            creature->mood = MOOD_ESCAPE;
+        }
+        Creature_ApplyMood(item, &info, true);
         angle = Creature_Turn(item, creature->maximum_turn);
 
         switch (item->current_anim_state) {
@@ -71,17 +80,25 @@ static void M_Control(const int16_t item_num)
             creature->flags = 0;
 
             if (creature->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = TIGER_STATE_RUN;
+                if (g_TRVersion < 3) {
+                    item->goal_anim_state = TIGER_STATE_RUN;
+                } else if (lara->target == item || info.ahead == 0) {
+                    item->goal_anim_state = TIGER_STATE_RUN;
+                } else {
+                    item->goal_anim_state = TIGER_STATE_STOP;
+                }
             } else if (creature->mood == MOOD_BORED) {
                 if (Random_GetControl() < TIGER_ROAR_CHANCE) {
                     item->goal_anim_state = TIGER_STATE_ROAR;
                 }
                 item->goal_anim_state = TIGER_STATE_WALK;
             } else if (
-                info.ahead != 0 && info.distance < TIGER_ATTACK_1_RANGE) {
+                (g_TRVersion == 3 ? info.bite != 0 : info.ahead != 0)
+                && info.distance < TIGER_ATTACK_1_RANGE) {
                 item->goal_anim_state = TIGER_STATE_ATTACK_1;
             } else if (
-                info.ahead != 0 && info.distance < TIGER_ATTACK_3_RANGE) {
+                (g_TRVersion == 3 ? info.bite != 0 : info.ahead != 0)
+                && info.distance < TIGER_ATTACK_3_RANGE) {
                 creature->maximum_turn = TIGER_WALK_TURN;
                 item->goal_anim_state = TIGER_STATE_ATTACK_3;
             } else if (item->required_anim_state != TIGER_STATE_EMPTY) {
@@ -97,7 +114,11 @@ static void M_Control(const int16_t item_num)
 
         case TIGER_STATE_WALK:
             creature->maximum_turn = TIGER_WALK_TURN;
-            if (Random_GetControl() < TIGER_ROAR_CHANCE) {
+            if (g_TRVersion == 3
+                && (creature->mood == MOOD_ESCAPE
+                    || creature->mood == MOOD_ATTACK)) {
+                item->goal_anim_state = TIGER_STATE_RUN;
+            } else if (Random_GetControl() < TIGER_ROAR_CHANCE) {
                 item->goal_anim_state = TIGER_STATE_STOP;
                 item->required_anim_state = TIGER_STATE_ROAR;
             }
@@ -107,22 +128,25 @@ static void M_Control(const int16_t item_num)
             creature->maximum_turn = TIGER_RUN_TURN;
             if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = TIGER_STATE_STOP;
-            } else if (creature->flags != 0) {
-                if (info.ahead != 0) {
-                    item->goal_anim_state = TIGER_STATE_STOP;
-                }
+            } else if (creature->flags != 0 && info.ahead != 0) {
+                item->goal_anim_state = TIGER_STATE_STOP;
             } else if (
-                info.ahead != 0 && info.distance < TIGER_ATTACK_2_RANGE) {
+                (g_TRVersion == 3 ? info.bite != 0 : info.ahead != 0)
+                && info.distance < TIGER_ATTACK_2_RANGE) {
                 const ITEM *const lara_item = Lara_GetItem();
-                if (lara_item->speed == 0) {
-                    item->goal_anim_state = TIGER_STATE_STOP;
-                } else {
+                if (lara_item->speed != 0) {
                     item->goal_anim_state = TIGER_STATE_ATTACK_2;
+                } else {
+                    item->goal_anim_state = TIGER_STATE_STOP;
                 }
             } else if (
                 creature->mood != MOOD_ATTACK
                 && Random_GetControl() < TIGER_ROAR_CHANCE) {
                 item->required_anim_state = TIGER_STATE_ROAR;
+                item->goal_anim_state = TIGER_STATE_STOP;
+            } else if (
+                g_TRVersion == 3 && creature->mood == MOOD_ESCAPE
+                && lara->target != item && info.ahead != 0) {
                 item->goal_anim_state = TIGER_STATE_STOP;
             }
             creature->flags = 0;
@@ -138,7 +162,6 @@ static void M_Control(const int16_t item_num)
                 creature->flags = 1;
             }
             break;
-            ;
 
         default:
             break;
