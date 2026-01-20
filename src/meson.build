@@ -650,6 +650,7 @@ common_sources = [
   'trx/game/ui/hud/console_logs.c',
   'trx/game/ui/hud/overlay.c',
   'trx/game/ui/scrollable.c',
+  'trx/game/ui/settings.c',
   'trx/game/ui/text.c',
   'trx/game/viewport.c',
   'trx/game/water_fx.c',

@@ -118,8 +118,7 @@ static UI_BAR_TYPE M_GetBarType(const UI_SETTINGS_OPTION *const option)
 
 static bool M_IsBarColorEnum(const UI_SETTINGS_OPTION *const option)
 {
-    return option != nullptr && option->option_type == COT_ENUM
-        && option->misc == UI_Settings_BarColorEnumEntries;
+    return M_GetBarType(option) != (UI_BAR_TYPE)-1;
 }
 
 static bool M_HasAvailableEnumValue(const UI_SETTINGS_OPTION *const option)
@@ -276,6 +275,10 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         return result;
     }
 
+    if (M_IsBarColorEnum(option)) {
+        return M_BAR_WIDTH * g_Config.ui.text_scale;
+    }
+
     switch (option->option_type) {
     case COT_BOOL:
     case COT_INVERTED_BOOL: {
@@ -316,9 +319,6 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     case COT_STRING:
         return UI_Label_MeasureW(*(char **)option->target);
     case COT_ENUM: {
-        if (M_IsBarColorEnum(option)) {
-            return M_BAR_WIDTH * g_Config.ui.text_scale;
-        }
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
         const int32_t current_value = *(int32_t *)option->target;
@@ -909,7 +909,6 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
             UI_ROW_ARROWS_MEDIUM);
         {
             const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row);
-            const char *const value = M_FormatRowValue(s, row);
             if (M_IsBarColorEnum(option)) {
                 UI_Bar((UI_BAR_SETTINGS) {
                     .w = M_BAR_WIDTH,
@@ -920,6 +919,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
                     .preview = true,
                 });
             } else {
+                const char *const value = M_FormatRowValue(s, row);
                 M_OptionLabel(option, value, /* star_if_enforced */ false);
             }
         }

@@ -34,21 +34,6 @@ typedef enum {
 } BAR_SHOW_MODE;
 
 typedef enum {
-    BC_GOLD,
-    BC_BLUE,
-    BC_GREY,
-    BC_RED,
-    BC_SILVER,
-    BC_GREEN,
-    BC_GOLD2,
-    BC_BLUE2,
-    BC_PINK,
-    BC_PURPLE,
-    BC_GREEN2,
-    BC_NUMBER_OF,
-} BAR_COLOR;
-
-typedef enum {
     BAR_LOOK_TR1,
     BAR_LOOK_TR2_PC,
     BAR_LOOK_TR3_PC,
