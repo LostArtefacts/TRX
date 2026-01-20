@@ -3,6 +3,7 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
+#include <trx/version.h>
 
 // clang-format off
 #define M_CAM_HANG_ANGLE             0
@@ -19,6 +20,11 @@
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
+    if (g_TRVersion == 3 && item->hit_points <= 0) {
+        item->goal_anim_state = LS(LS_STOP);
+        return;
+    }
+
     if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
         Lara_Look_UpDown();
     }

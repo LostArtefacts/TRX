@@ -59,6 +59,7 @@
 - fixed inconsistent Meteor Artifacts names
 - fixed wrong item selection sound in the inventory ring
 - fixed flame emitters not getting restored when loading from a save
+- fixed Lara holding onto ledges after dying if the Action key wasn't released
 
 
 
