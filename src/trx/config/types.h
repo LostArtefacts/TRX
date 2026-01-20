@@ -291,6 +291,7 @@ typedef struct {
         bool enable_review_markers;
         bool enable_invulnerability;
         bool enable_endless_sprint;
+        bool enable_endless_flare_time;
     } debug;
 
     struct {

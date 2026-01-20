@@ -444,6 +444,8 @@
         "SETTING_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Отображать счётчик смертей на компасе и в статистике уровня. Счётчик смертей обновляется в текущем загруженном сохранении сразу после смерти Лары.",
         "SETTING_ENABLE_DEMO": "Демо режим",
         "SETTING_ENABLE_DEMO_DESCRIPTION": "Показывать демонстрации в главном меню.",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME": "\\{review}Бесконечное время горения факелов",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME_DESCRIPTION": "\\{review}Предотвращает затухание ручных факелов. Брошенные факелы по-прежнему будут гаснуть как обычно.",
         "SETTING_ENABLE_ENDLESS_SPRINT": "\\{review}Бесконечный спринт",
         "SETTING_ENABLE_ENDLESS_SPRINT_DESCRIPTION": "\\{review}Предотвращает усталость Лары при беге. Препятствия по-прежнему остановят её.",
         "SETTING_ENABLE_ENEMY_ROTATION": "Разнообразить угол наклона врагов",

@@ -444,6 +444,8 @@
         "SETTING_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Seallaidh seo cunntas bàsan Lara anns a' chombaist agus anns na staitistig. Thèid seo ùrachadh sa bhad nuair a bhàsaicheas Lara.",
         "SETTING_ENABLE_DEMO": "Modh taisbeanaidh",
         "SETTING_ENABLE_DEMO_DESCRIPTION": "Leigidh le seo taisbeanadhan a chluich bhon phrìomh chlàr.",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME": "\\{review}Ùine solais gun chrìoch",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME_DESCRIPTION": "\\{review}Bidh e a’ casg air na solais-làimhe a dhol dheth gu bràth. Bidh solais air an tilgeil fhathast a’ dol dheth mar as àbhaist.",
         "SETTING_ENABLE_ENDLESS_SPRINT": "\\{review}Ruith gun chrìoch",
         "SETTING_ENABLE_ENDLESS_SPRINT_DESCRIPTION": "\\{review}Bidh seo a’ casg air Lara bho bhith sgìth gu bràth fhad ‘s a tha i a’ ruith gu luath. Bidh cnapan-starra fhathast ga stad.",
         "SETTING_ENABLE_ENEMY_ROTATION": "Ceàrn tùsail nàimhdean",

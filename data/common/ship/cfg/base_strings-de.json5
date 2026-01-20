@@ -444,6 +444,8 @@
         "SETTING_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Aktiviert die Aufzählung von Laras Toden im Kompass und in den Level-Statistiken. Die Anzahl der Tode wird im aktuell geladenen Speicherstand aktualisiert, sobald sie stirbt.",
         "SETTING_ENABLE_DEMO": "Demo-Modus",
         "SETTING_ENABLE_DEMO_DESCRIPTION": "Aktiviert die Anzeige von Demos im Hauptmenü.",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME": "\\{review}Unendliche Fackelzeit",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME_DESCRIPTION": "\\{review}Verhindert, dass die tragbaren Fackeln jemals erlöschen. Geworfene Fackeln erlöschen jedoch weiterhin wie gewohnt.",
         "SETTING_ENABLE_ENDLESS_SPRINT": "\\{review}Endloses Sprinten",
         "SETTING_ENABLE_ENDLESS_SPRINT_DESCRIPTION": "\\{review}Verhindert, dass Lara beim Sprinten jemals müde wird. Hindernisse bringen sie jedoch weiterhin zum Stillstand.",
         "SETTING_ENABLE_ENEMY_ROTATION": "Zufällige Startwinkel für Gegner",

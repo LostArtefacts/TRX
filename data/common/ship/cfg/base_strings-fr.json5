@@ -444,6 +444,8 @@
         "SETTING_ENABLE_DEATHS_COUNTER_DESCRIPTION": "Permet d'afficher un compteur de décès dans la boussole et dans les statistiques de niveau. Le nombre de morts est mis à jour dans la sauvegarde actuellement chargée dès que Lara meurt.",
         "SETTING_ENABLE_DEMO": "Activer le mode démo",
         "SETTING_ENABLE_DEMO_DESCRIPTION": "Active le mode démo dans le menu principal.",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME": "\\{review}Temps de torche sans fin",
+        "SETTING_ENABLE_ENDLESS_FLARE_TIME_DESCRIPTION": "\\{review}Empêche les torches portatives de s'éteindre. Les torches lancées s'éteindront toujours normalement.",
         "SETTING_ENABLE_ENDLESS_SPRINT": "\\{review}Sprint infini",
         "SETTING_ENABLE_ENDLESS_SPRINT_DESCRIPTION": "\\{review}Empêche Lara de se fatiguer lorsqu'elle sprinte. Les obstacles l'arrêteront toujours.",
         "SETTING_ENABLE_ENEMY_ROTATION": "\\{review}Randomiser l'angle de départ des ennemis",
