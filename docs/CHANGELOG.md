@@ -5,10 +5,11 @@
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
 - added a new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start
 - added support for cross-fades to the title screen
-- added visual previews of bar colors
+- added visual previews of bar colors (Graphic Options → Bars)
 - added endless sprint (available previously via the `/restless` command) to the UI settings (Gameplay options → Mods → Endless sprint)
 - added endless flare time cheat (Gameplay options → Mods → Endless flare time)
 - improved inventory ring active item highlight for smoother appearance
+- changed all UI bar colors from hardcoded to configurable via `cfg/ui.json5`, enabling some customization for PS1 bars
 - changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`
 - changed `enable_invulnerability` to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)
 - changed `/debug [0|1]` command to no longer spam about settings that aren't changed
@@ -35,6 +36,7 @@
 - fixed underwater wobble effect acting twitchy with camera movement
 
 **TR3**:
+- added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)
 - added new water currents
 - added new blood effects
 - added underwater blood spills

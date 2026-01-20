@@ -2,6 +2,7 @@
 
 #include <trx/config/types.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/settings.h>
 #include <trx/version.h>
 
 // shared properties of common ingame bars
@@ -10,18 +11,6 @@
 #define UI_BAR_BORDER 2.0f
 #define UI_BAR_PADDING 2.0f
 #define UI_BAR_BLINK_THRESHOLD (g_TRVersion == 1 ? 0.2f : 0.25f)
-
-typedef enum {
-    UI_BAR_LARA_HP,
-    UI_BAR_LARA_HP_POISON,
-    UI_BAR_LARA_AIR,
-    UI_BAR_LARA_STAMINA,
-    UI_BAR_LARA_EXPOSURE,
-    UI_BAR_ENEMY_HP,
-    UI_BAR_ALLY_HP,
-    UI_BAR_PROGRESS,
-    UI_BAR_NUMBER_OF,
-} UI_BAR_TYPE;
 
 typedef struct {
     UI_BAR_TYPE type;

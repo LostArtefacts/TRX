@@ -3,195 +3,39 @@
 #include <trx/config.h>
 #include <trx/game/output.h>
 #include <trx/game/scaler.h>
+#include <trx/game/shell.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/json.h>
+#include <trx/json_file.h>
+#include <trx/memory.h>
+#include <trx/strings.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
 #include <math.h>
 
-#define M_COLOR_STEPS 5
-
 typedef struct {
     float x, y, w, h;
 } M_RECT_F;
 
-typedef struct M_LOOK {
-    float basic_scale;
-    void (*draw_border)(const struct M_LOOK *look, M_RECT_F rect, float border);
-    void (*draw_background)(const struct M_LOOK *look, M_RECT_F rect);
-    void (*draw_fill)(
-        const struct M_LOOK *look, const UI_BAR_SETTINGS *settings,
-        M_RECT_F rect, float percent);
-} M_LOOK;
-
-typedef struct {
-    M_LOOK base;
-    RGBA_8888 border_light;
-    RGBA_8888 border_dark;
-    uint32_t color_map[BC_NUMBER_OF][M_COLOR_STEPS];
-} M_LOOK_PC;
-
-typedef struct {
-    M_LOOK base;
-    uint32_t color_map[UI_BAR_NUMBER_OF][2][M_COLOR_STEPS];
-} M_LOOK_PS1;
-
 typedef struct {
     UI_BAR_SETTINGS settings;
-    const M_LOOK *look;
+    const UI_BAR_THEME *theme;
     float scale;
 } M_DATA;
 
-static void M_DrawBackground(const M_LOOK *look, M_RECT_F rect);
-static void M_DrawBorderPC(const M_LOOK *look, M_RECT_F rect, float border);
-static void M_DrawBorderPS1(const M_LOOK *look, M_RECT_F rect, float border);
+static void M_DrawBackground(const UI_BAR_THEME *theme, M_RECT_F rect);
+static void M_DrawBorderPC(
+    const UI_BAR_THEME *theme, M_RECT_F rect, float border);
+static void M_DrawBorderPS1(
+    const UI_BAR_THEME *theme, M_RECT_F rect, float border);
 static void M_DrawFillPC(
-    const M_LOOK *look, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
+    const UI_BAR_THEME *theme, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
     float percent);
 static void M_DrawFillPS1(
-    const M_LOOK *look, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
+    const UI_BAR_THEME *theme, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
     float percent);
-
-static const M_LOOK_PC m_LookTR1 = {
-    .base = {
-        .basic_scale = 1.0f,
-        .draw_border = M_DrawBorderPC,
-        .draw_background = M_DrawBackground,
-        .draw_fill = M_DrawFillPC,
-    },
-    .border_light = { 0x35, 0x35, 0x35, 0xFF },
-    .border_dark = { 0x35, 0x35, 0x35, 0xFF },
-    .color_map = {
-        // clang-format off
-        [BC_GOLD]   = { 0x7C5E25, 0xA1833C, 0x7C5E25, 0x644613, 0x4C2E02 },
-        [BC_BLUE]   = { 0x3D717B, 0x65929A, 0x3D717B, 0x1F5D6B, 0x004A5B },
-        [BC_GREY]   = { 0x586458, 0x748474, 0x586458, 0x4C504C, 0x303030 },
-        [BC_RED]    = { 0xA0281C, 0xB82C20, 0xA0281C, 0x7C2020, 0x541420 },
-        [BC_SILVER] = { 0x969696, 0xE6E6E6, 0xC8C8C8, 0x8C8C8C, 0x646464 },
-        [BC_GREEN]  = { 0x64BE14, 0x82E61E, 0x64BE14, 0x5A960F, 0x506E0A },
-        [BC_GOLD2]  = { 0xDCAA00, 0xFFC800, 0xDCAA00, 0xB98C00, 0x966400 },
-        [BC_BLUE2]  = { 0x00AADC, 0x00C8FF, 0x00AADC, 0x008CB9, 0x006496 },
-        [BC_PINK]   = { 0xDC8CAA, 0xFF96C8, 0xD282A0, 0xA56478, 0x783C46 },
-        [BC_PURPLE] = { 0x341650, 0x461E6B, 0x341650, 0x27113C, 0x1A0B28 },
-        [BC_GREEN2] = { 0x10984D, 0x18B85B, 0x10984D, 0x0B7733, 0x075819 },
-        // clang-format on
-    },
-};
-
-static const M_LOOK_PC m_LookTR2PC = {
-    .base = {
-        .basic_scale = 0.75f,
-        .draw_border = M_DrawBorderPC,
-        .draw_background = M_DrawBackground,
-        .draw_fill = M_DrawFillPC,
-    },
-    .border_light = { 0xFF, 0xFF, 0xFF, 0xFF },
-    .border_dark = { 0x40, 0x40, 0x40, 0xFF },
-    .color_map = {
-        // clang-format off
-        [BC_RED]    = { 0xFF0000, 0xFF8000, 0xFF0000, 0xFF0000, 0xFF0000 },
-        [BC_BLUE]   = { 0x0000FF, 0xFFFFFF, 0x0000FF, 0x0000FF, 0x0000FF },
-        [BC_GREY]   = { 0x4C504C, 0xA0A0A0, 0x4C504C, 0x4C504C, 0x4C504C },
-        [BC_GOLD]   = { 0x7C5E25, 0xA1833C, 0x7C5E25, 0x7C5E25, 0x7C5E25 },
-        [BC_SILVER] = { 0x969696, 0xE6E6E6, 0x969696, 0x969696, 0x969696 },
-        [BC_GREEN]  = { 0x00A000, 0x82E61E, 0x00A000, 0x00A000, 0x00A000 },
-        [BC_GOLD2]  = { 0x966400, 0xFFC800, 0x966400, 0x966400, 0x966400 },
-        [BC_BLUE2]  = { 0x00AADC, 0x00C8FF, 0x008CB9, 0x008CB9, 0x008CB9 },
-        [BC_PINK]   = { 0xFF40DF, 0xFF96C8, 0xFF40DF, 0xFF40DF, 0xFF40DF },
-        [BC_PURPLE] = { 0x461E6B, 0xFF40DF, 0x461E6B, 0x461E6B, 0x461E6B },
-        [BC_GREEN2] = { 0x0BAA6B, 0x2EE708, 0x0BAA6B, 0x0BAA6B, 0x0BAA6B },
-        // clang-format on
-    },
-};
-
-static const M_LOOK_PC m_LookTR3PC = {
-    .base = {
-        .basic_scale = 0.75f,
-        .draw_border = M_DrawBorderPC,
-        .draw_background = M_DrawBackground,
-        .draw_fill = M_DrawFillPC,
-    },
-    .border_light = { 0xFF, 0xFF, 0xFF, 0xFF },
-    .border_dark = { 0x40, 0x40, 0x40, 0xFF },
-    .color_map = {
-        // clang-format off
-        [BC_RED]    = { 0x4F0000, 0xFF0000, 0x7F0000, 0x7F0000, 0x4F0000 },
-        [BC_BLUE]   = { 0x00004F, 0x0000FF, 0x00007F, 0x00007F, 0x00004F },
-        [BC_GREY]   = { 0x4F4F4F, 0x7F7F7F, 0x5F5F5F, 0x5F5F5F, 0x4F4F4F },
-        [BC_GOLD]   = { 0x4F2F00, 0xFFBF00, 0x7F5F00, 0x7F5F00, 0x4F2F00 },
-        [BC_SILVER] = { 0x4F4F4F, 0xBFBFBF, 0x7F7F7F, 0x7F7F7F, 0x4F4F4F },
-        [BC_GREEN]  = { 0x004F2F, 0x00FF7F, 0x007F4F, 0x007F4F, 0x004F2F },
-        [BC_GOLD2]  = { 0x4F4F00, 0xFFFF00, 0x7F7F00, 0x7F7F00, 0x4F4F00 },
-        [BC_BLUE2]  = { 0x004F4F, 0x00FFFF, 0x007F7F, 0x007F7F, 0x004F4F },
-        [BC_PINK]   = { 0x4F003F, 0xFF7FBF, 0x7F3F5F, 0x7F3F5F, 0x4F003F },
-        [BC_PURPLE] = { 0x2F004F, 0x7F00FF, 0x4F007F, 0x4F007F, 0x2F004F },
-        [BC_GREEN2] = { 0x004F00, 0x00FF00, 0x007F00, 0x007F00, 0x004F00 },
-        // clang-format on
-    },
-};
-
-static const M_LOOK_PS1 m_LookTR23PS1 = {
-    .base = {
-        .basic_scale = 1.0f,
-        .draw_border = M_DrawBorderPS1,
-        .draw_background = M_DrawBackground,
-        .draw_fill = M_DrawFillPS1,
-    },
-    .color_map = {
-        // clang-format off
-        [UI_BAR_LARA_HP] = {
-            { 0xB60100, 0xEA0100, 0xB60100, 0x870000, 0x6D0000 },
-            { 0x01B900, 0x03FA00, 0x01B900, 0x018800, 0x015A00 },
-        },
-        [UI_BAR_LARA_HP_POISON] = {
-            { 0x400000, 0x4C0000, 0x580000, 0x640000, 0x7C0000 },
-            { 0x400080, 0x4C0099, 0x5800B2, 0x6400CB, 0x7C00FD },
-        },
-        [UI_BAR_LARA_AIR] = {
-            { 0x00717A, 0x009298, 0x00717A, 0x005D6A, 0x004A5A },
-            { 0x007101, 0x009201, 0x007101, 0x005D01, 0x004A00 },
-        },
-        [UI_BAR_LARA_STAMINA] = {
-            { 0xC00100, 0xF00100, 0xC00100, 0x900000, 0x600000 },
-            { 0xC0B900, 0xF0E800, 0xC0B900, 0x908A00, 0x605A00 },
-        },
-        [UI_BAR_LARA_EXPOSURE] = {
-            { 0x000170, 0x090091, 0x000170, 0x000053, 0x00003E },
-            { 0xC00100, 0xF00100, 0xC00100, 0x900000, 0x600000 },
-        },
-        [UI_BAR_ENEMY_HP] = {
-            { 0xB64C00, 0xED6400, 0xB64C00, 0x843700, 0x6D2D00 },
-            { 0xC00100, 0xF00100, 0xC00100, 0x900000, 0x600000 },
-        },
-        [UI_BAR_ALLY_HP] = {
-            { 0xB78900, 0xEEB300, 0xB78900, 0x846300, 0x6D5200 },
-            { 0x01B900, 0x03FA00, 0x01B900, 0x018800, 0x015A00 },
-        },
-        [UI_BAR_PROGRESS] = {
-            { 0x2F0030, 0x5F0060, 0x7E007F, 0x5F0060, 0x2F0030 },
-            { 0x002E30, 0x015D60, 0x017C7F, 0x015D60, 0x002E30 },
-        },
-        // clang-format on
-    },
-};
-
-static const M_LOOK *m_Looks[] = {
-    [BAR_LOOK_TR1] = &m_LookTR1.base,
-    [BAR_LOOK_TR2_PC] = &m_LookTR2PC.base,
-    [BAR_LOOK_TR3_PC] = &m_LookTR3PC.base,
-    [BAR_LOOK_TR23_PS1] = &m_LookTR23PS1.base,
-};
-
-static RGBA_8888 M_GetColor(const uint32_t value)
-{
-    return (RGBA_8888) {
-        .r = (value >> 16) & 0xFF,
-        .g = (value >> 8) & 0xFF,
-        .b = (value) & 0xFF,
-        .a = 0xFF,
-    };
-}
 
 static RGBA_8888 M_MixColors(
     const RGBA_8888 c0, const RGBA_8888 c1, const float percent)
@@ -215,123 +59,87 @@ static void M_Measure(UI_NODE *const node)
     node->measure_h = data->settings.h * scale;
 }
 
-static void M_DrawBackground(const M_LOOK *const look, const M_RECT_F rect)
+static void M_DrawBackground(
+    const UI_BAR_THEME *const theme, const M_RECT_F rect)
 {
     UI_ScheduleDrawScreenFlatQuad(
         rect.x, rect.y, 0, rect.w, rect.h, (RGBA_8888) { 0, 0, 0, 255 });
 }
 
 static void M_DrawBorderPC(
-    const M_LOOK *const look, const M_RECT_F rect, const float border)
+    const UI_BAR_THEME *const theme, const M_RECT_F rect, const float border)
 {
-    const M_LOOK_PC *const pc_look = (const M_LOOK_PC *)look;
     UI_ScheduleDrawScreenFlatQuad(
-        rect.x, rect.y, 0, rect.w, rect.h, pc_look->border_light);
+        rect.x, rect.y, 0, rect.w, rect.h, theme->border_light);
     UI_ScheduleDrawScreenFlatQuad(
         rect.x + border, rect.y + border, 0, rect.w - border, rect.h - border,
-        pc_look->border_dark);
+        theme->border_dark);
 }
 
 static void M_DrawBorderPS1(
-    const M_LOOK *const look, const M_RECT_F rect, const float border)
+    const UI_BAR_THEME *const theme, const M_RECT_F rect, const float border)
 {
-    const RGBA_8888 c1 = { 0x50, 0x82, 0x82, 0xFF };
-    const RGBA_8888 c2 = { 0x9F, 0x9F, 0x9F, 0xFF };
-    const RGBA_8888 c3 = { 0x29, 0x41, 0x41, 0xFF };
-    const RGBA_8888 c4 = { 0x4F, 0x4F, 0x4F, 0xFF };
 #if 0
     Output_DrawScreenGradientQuad(
-        rect.x - border, rect.y + border, 0, rect.w + border * 2, rect.h - border * 2, c3, c4, c4, c3);
+        rect.x - border, rect.y + border, 0, rect.w + border * 2, rect.h - border * 2, theme->border_bl, theme->border_br, theme->border_br, theme->border_bl);
 #endif
     Output_DrawScreenGradientQuad(
-        rect.x, rect.y, 0, rect.w, rect.h, c1, c2, c2, c1);
+        rect.x, rect.y, 0, rect.w, rect.h, theme->border_tl, theme->border_tr,
+        theme->border_br, theme->border_bl);
 }
 
 static void M_DrawFillPC(
-    const M_LOOK *const look, const UI_BAR_SETTINGS *const settings,
+    const UI_BAR_THEME *const theme, const UI_BAR_SETTINGS *const settings,
     const M_RECT_F rect, const float percent)
 {
-    const M_LOOK_PC *const pc_look = (const M_LOOK_PC *)look;
-    BAR_COLOR color;
-    switch (settings->type) {
-    case UI_BAR_LARA_HP:
-        color = g_Config.ui.lara_health_bar.color;
-        break;
-    case UI_BAR_LARA_HP_POISON:
-        color = g_Config.ui.lara_health_bar.poison_color;
-        break;
-    case UI_BAR_LARA_AIR:
-        color = g_Config.ui.lara_air_bar.color;
-        break;
-    case UI_BAR_LARA_STAMINA:
-        color = g_Config.ui.lara_sprint_bar.color;
-        break;
-    case UI_BAR_LARA_EXPOSURE:
-        color = g_Config.ui.lara_exposure_bar.color;
-        break;
-    case UI_BAR_ENEMY_HP:
-        color = g_Config.ui.enemy_health_bar.color;
-        break;
-    case UI_BAR_ALLY_HP:
-        color = g_Config.ui.enemy_health_bar.color_allies;
-        break;
-    case UI_BAR_PROGRESS:
-        color = g_TRVersion >= 2 ? BC_GREEN : BC_GOLD;
-        break;
-    default:
-        color = BC_GOLD;
-        break;
-    }
-
     if (g_Config.ui.enable_smooth_bars) {
-        for (int32_t i = 0; i < M_COLOR_STEPS - 1; i++) {
-            const RGBA_8888 c1 = M_GetColor(pc_look->color_map[color][i]);
-            const RGBA_8888 c2 = M_GetColor(pc_look->color_map[color][i + 1]);
-            const int32_t lsy = rect.y + i * rect.h / (M_COLOR_STEPS - 1);
+        for (int32_t i = 0; i < UI_BAR_COLOR_STEPS - 1; i++) {
+            const RGBA_8888 c1 = theme->ramp[i];
+            const RGBA_8888 c2 = theme->ramp[i + 1];
+            const int32_t lsy = rect.y + i * rect.h / (UI_BAR_COLOR_STEPS - 1);
             const int32_t lsh =
-                rect.y + (i + 1) * rect.h / (M_COLOR_STEPS - 1) - lsy;
+                rect.y + (i + 1) * rect.h / (UI_BAR_COLOR_STEPS - 1) - lsy;
             UI_ScheduleDrawScreenGradientQuad(
                 rect.x, lsy, 0, rect.w, lsh, c1, c1, c2, c2);
         }
     } else {
-        for (int32_t i = 0; i < M_COLOR_STEPS; i++) {
-            const RGBA_8888 c = M_GetColor(pc_look->color_map[color][i]);
-            const int32_t lsy = rect.y + i * rect.h / M_COLOR_STEPS;
-            const int32_t lsh = rect.y + (i + 1) * rect.h / M_COLOR_STEPS - lsy;
+        for (int32_t i = 0; i < UI_BAR_COLOR_STEPS; i++) {
+            const RGBA_8888 c = theme->ramp[i];
+            const int32_t lsy = rect.y + i * rect.h / UI_BAR_COLOR_STEPS;
+            const int32_t lsh =
+                rect.y + (i + 1) * rect.h / UI_BAR_COLOR_STEPS - lsy;
             UI_ScheduleDrawScreenFlatQuad(rect.x, lsy, 0, rect.w, lsh, c);
         }
     }
 }
 
 static void M_DrawFillPS1(
-    const M_LOOK *const look, const UI_BAR_SETTINGS *const settings,
+    const UI_BAR_THEME *const theme, const UI_BAR_SETTINGS *const settings,
     const M_RECT_F rect, const float percent)
 {
-    const M_LOOK_PS1 *const ps1_look = (const M_LOOK_PS1 *)look;
     const UI_BAR_TYPE type = settings->type;
     if (g_Config.ui.enable_smooth_bars) {
-        for (int32_t i = 0; i < M_COLOR_STEPS - 1; i++) {
-            const RGBA_8888 ctl = M_GetColor(ps1_look->color_map[type][0][i]);
-            const RGBA_8888 ctr = M_GetColor(ps1_look->color_map[type][1][i]);
-            const RGBA_8888 cbl =
-                M_GetColor(ps1_look->color_map[type][0][i + 1]);
-            const RGBA_8888 cbr =
-                M_GetColor(ps1_look->color_map[type][1][i + 1]);
+        for (int32_t i = 0; i < UI_BAR_COLOR_STEPS - 1; i++) {
+            const RGBA_8888 ctl = theme->ramp_left[i];
+            const RGBA_8888 ctr = theme->ramp_right[i];
+            const RGBA_8888 cbl = theme->ramp_left[i + 1];
+            const RGBA_8888 cbr = theme->ramp_right[i + 1];
             const RGBA_8888 ctrm = M_MixColors(ctl, ctr, percent);
             const RGBA_8888 cbrm = M_MixColors(cbl, cbr, percent);
-            const int32_t lsy = rect.y + i * rect.h / (M_COLOR_STEPS - 1);
+            const int32_t lsy = rect.y + i * rect.h / (UI_BAR_COLOR_STEPS - 1);
             const int32_t lsh =
-                rect.y + (i + 1) * rect.h / (M_COLOR_STEPS - 1) - lsy;
+                rect.y + (i + 1) * rect.h / (UI_BAR_COLOR_STEPS - 1) - lsy;
             UI_ScheduleDrawScreenGradientQuad(
                 rect.x, lsy, 0, rect.w, lsh, ctl, ctrm, cbl, cbrm);
         }
     } else {
-        for (int32_t i = 0; i < M_COLOR_STEPS; i++) {
-            const RGBA_8888 cl = M_GetColor(ps1_look->color_map[type][0][i]);
-            const RGBA_8888 cr = M_GetColor(ps1_look->color_map[type][1][i]);
+        for (int32_t i = 0; i < UI_BAR_COLOR_STEPS; i++) {
+            const RGBA_8888 cl = theme->ramp_left[i];
+            const RGBA_8888 cr = theme->ramp_right[i];
             const RGBA_8888 crm = M_MixColors(cl, cr, percent);
-            const int32_t lsy = rect.y + i * rect.h / M_COLOR_STEPS;
-            const int32_t lsh = rect.y + (i + 1) * rect.h / M_COLOR_STEPS - lsy;
+            const int32_t lsy = rect.y + i * rect.h / UI_BAR_COLOR_STEPS;
+            const int32_t lsh =
+                rect.y + (i + 1) * rect.h / UI_BAR_COLOR_STEPS - lsy;
             UI_ScheduleDrawScreenGradientQuad(
                 rect.x, lsy, 0, rect.w, lsh, cl, crm, cl, crm);
         }
@@ -355,8 +163,8 @@ static void M_Draw(const UI_NODE *const node)
     float border;
     float padding;
     if (data->settings.preview) {
-        border = h / (float)(M_COLOR_STEPS + 4);
-        padding = h / (float)(M_COLOR_STEPS + 4);
+        border = h / (float)(UI_BAR_COLOR_STEPS + 4);
+        padding = h / (float)(UI_BAR_COLOR_STEPS + 4);
     } else {
         border = ceil(UI_ScaleX(UI_BAR_BORDER * data->scale));
         padding = ceil(UI_ScaleX(UI_BAR_PADDING * data->scale));
@@ -378,10 +186,21 @@ static void M_Draw(const UI_NODE *const node)
         .h = inner_rect.h - padding * 2,
     };
 
-    data->look->draw_border(data->look, outer_rect, border);
-    data->look->draw_background(data->look, inner_rect);
-    if (percent > 0.0f) {
-        data->look->draw_fill(data->look, settings, bar_rect, percent);
+    switch (data->theme->kind) {
+    case UI_BAR_THEME_PC_KIND:
+        M_DrawBorderPC(data->theme, outer_rect, border);
+        M_DrawBackground(data->theme, inner_rect);
+        if (percent > 0.0f) {
+            M_DrawFillPC(data->theme, settings, bar_rect, percent);
+        }
+        break;
+    case UI_BAR_THEME_PS1_KIND:
+        M_DrawBorderPS1(data->theme, outer_rect, border);
+        M_DrawBackground(data->theme, inner_rect);
+        if (percent > 0.0f) {
+            M_DrawFillPS1(data->theme, settings, bar_rect, percent);
+        }
+        break;
     }
 }
 
@@ -396,7 +215,7 @@ void UI_Bar(const UI_BAR_SETTINGS settings)
         sizeof(M_DATA));
     M_DATA *const data = node->data;
     data->settings = settings;
-    data->look = m_Looks[g_Config.ui.bar_look];
-    data->scale = data->settings.preview ? 1.0f : data->look->basic_scale;
+    data->theme = UI_Settings_GetBarTheme(settings.type);
+    data->scale = data->settings.preview ? 1.0f : data->theme->basic_scale;
     UI_AddChild(node);
 }

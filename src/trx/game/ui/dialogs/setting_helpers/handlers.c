@@ -1,11 +1,12 @@
 #include <trx/game/ui/dialogs/setting_helpers/handlers.h>
 
 #include <trx/config.h>
-#include <trx/config/enum.h>
+#include <trx/config/common.h>
 #include <trx/game/gun.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
+#include <trx/game/ui/settings.h>
 #include <trx/version.h>
 
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
@@ -121,6 +122,25 @@ bool UI_Settings_AllyHealthbarColor_IsAvailable(
 {
     return UI_Settings_AllyHealthbar_IsAvailable(option)
         && g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+}
+
+bool UI_Settings_BarColor_CanChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    const char *const value = *(char **)option->target;
+    return UI_Settings_CanChangeBarColor(value, dir);
+}
+
+bool UI_Settings_BarColor_RequestChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    const char *const value = *(char **)option->target;
+    const char *const next = UI_Settings_GetNextBarColorName(value, dir);
+    if (next == nullptr) {
+        return false;
+    }
+    const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+    return Config_SetOptionValueFromString(cfg_opt, next);
 }
 
 bool UI_Settings_IdlePose_IsAvailable(const UI_SETTINGS_OPTION *const option)

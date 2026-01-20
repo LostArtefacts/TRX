@@ -79,21 +79,6 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_BackgroundStyleEnumEntries[] = {
     { -1, nullptr },
 };
 
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarColorEnumEntries[] = {
-    { BC_GOLD, GS_ID(ENUM_BAR_COLOR_GOLD) },
-    { BC_BLUE, GS_ID(ENUM_BAR_COLOR_BLUE) },
-    { BC_GREY, GS_ID(ENUM_BAR_COLOR_GREY) },
-    { BC_RED, GS_ID(ENUM_BAR_COLOR_RED) },
-    { BC_SILVER, GS_ID(ENUM_BAR_COLOR_SILVER) },
-    { BC_GREEN, GS_ID(ENUM_BAR_COLOR_GREEN) },
-    { BC_GOLD2, GS_ID(ENUM_BAR_COLOR_GOLD2) },
-    { BC_BLUE2, GS_ID(ENUM_BAR_COLOR_BLUE2) },
-    { BC_PINK, GS_ID(ENUM_BAR_COLOR_PINK) },
-    { BC_PURPLE, GS_ID(ENUM_BAR_COLOR_PURPLE) },
-    { BC_GREEN2, GS_ID(ENUM_BAR_COLOR_GREEN2) },
-    { -1, nullptr },
-};
-
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[] = {
     { CAMERA_MODE_TR1, GS_ID(ENUM_CAMERA_MODE_TR1) },
     { CAMERA_MODE_TR2, GS_ID(ENUM_CAMERA_MODE_TR2) },

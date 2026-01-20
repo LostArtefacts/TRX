@@ -129,18 +129,18 @@ typedef struct {
         bool enable_bar_flashing;
         struct {
             BAR_LOCATION location;
-            BAR_COLOR color;
-            BAR_COLOR poison_color;
+            char *color;
+            char *poison_color;
         } lara_health_bar;
         struct {
             BAR_LOCATION location;
-            BAR_COLOR color;
+            char *color;
         } lara_air_bar, lara_sprint_bar, lara_exposure_bar;
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
-            BAR_COLOR color;
-            BAR_COLOR color_allies;
+            char *color;
+            char *color_allies;
         } enemy_health_bar;
     } ui;
 
