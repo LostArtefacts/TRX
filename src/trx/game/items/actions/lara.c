@@ -100,13 +100,13 @@ static void M_Bubbles(ITEM *const item)
         return;
     }
 
-    Sound_Effect(SFX_LARA_BUBBLES, &item->pos, SPM_UNDERWATER);
+    Sound_Effect(SFX_LARA_BUBBLES, &lara_item->pos, SPM_UNDERWATER);
 
     XYZ_32 offset = { .x = 0, .y = 0, .z = 50 };
-    Collide_GetJointAbsPosition(item, &offset, LM_HEAD);
+    Collide_GetJointAbsPosition(lara_item, &offset, LM_HEAD);
 
     for (int32_t i = 0; i < count; i++) {
-        Spawn_Bubble(&offset, item->room_num);
+        Spawn_Bubble(&offset, lara_item->room_num);
     }
 }
 

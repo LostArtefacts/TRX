@@ -71,11 +71,19 @@ static void M_SwapMeshes(ITEM *const item, const OBJECT_ID swap_id)
 
 static void M_SwapMeshesWithMeshSwap1(ITEM *const item)
 {
+    if (item == nullptr) {
+        return;
+    }
+
     M_SwapMeshes(item, O_MESH_SWAP_1);
 }
 
 static void M_SwapMeshesWithMeshSwap2(ITEM *const item)
 {
+    if (item == nullptr) {
+        return;
+    }
+
     M_SwapMeshes(item, O_MESH_SWAP_2);
 }
 
