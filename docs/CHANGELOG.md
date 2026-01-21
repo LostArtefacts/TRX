@@ -23,6 +23,7 @@
 - changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`
 - changed `enable_invulnerability` to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)
 - changed `/debug [0|1]` command to no longer spam about settings that aren't changed
+- changed Lua catalog keys to strip `O_` prefixes and use lowercase
 - changed Lua event callback names to be more consistent:
     - `on_level_init` → `before_level_file`
     - `on_level_start` → `after_level_file`

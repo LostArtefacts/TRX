@@ -1,3 +1,3 @@
 trx.events.after_level_file(function(level)
-  trx.objects.swap_mesh(trx.catalog.objects.O_SECRET_2_OPTION, trx.catalog.objects.O_SECRET_3_OPTION, 0, 0)
+  trx.objects.swap_mesh(trx.catalog.objects.secret_2_option, trx.catalog.objects.secret_3_option, 0, 0)
 end)

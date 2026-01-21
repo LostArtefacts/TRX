@@ -13,8 +13,8 @@ with 30 hitpoints. Simply adjust the lookup table to fit your needs. Refer to
 ```lua
 -- Lookup table mapping object IDs to HP
 local hp_lut = {
-  [trx.catalog.objects.O_WOLF] = 30,
-  [trx.catalog.objects.O_BAT] = 20,
+  [trx.catalog.objects.wolf] = 30,
+  [trx.catalog.objects.bat] = 20,
 }
 
 -- Adjust HP of enemies when the level loads
