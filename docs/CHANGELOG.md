@@ -11,6 +11,7 @@
 - added visual previews of bar colors (Graphic Options → Bars)
 - added endless sprint (available previously via the `/restless` command) to the UI settings (Gameplay options → Mods → Endless sprint)
 - added endless flare time cheat (Gameplay options → Mods → Endless flare time)
+- changed rooms-to-draw tracking to no longer stop at the 100-room limit
 - improved inventory ring active item highlight for smoother appearance
 - changed all UI bar colors from hardcoded to configurable via `cfg/ui.json5`, enabling some customization for PS1 bars
 - changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`

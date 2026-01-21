@@ -11,6 +11,7 @@
 #include <trx/game/water_fx.h>
 #include <trx/game/weather_fx.h>
 #include <trx/utils.h>
+#include <trx/vector.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -78,8 +79,7 @@ static inline void M_DrawSet_ForEach(
     }
 }
 
-static int32_t m_DrawCount = 0;
-static int16_t m_RoomsToDraw[MAX_ROOMS_TO_DRAW] = {};
+static VECTOR *m_RoomsToDraw = nullptr;
 
 static int32_t m_Outside;
 static int32_t m_OutsideRight;
@@ -90,6 +90,14 @@ static int32_t m_OutsideBottom;
 static int32_t m_BoundStart;
 static int32_t m_BoundEnd;
 static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
+
+static void M_EnsureRoomsToDraw(void)
+{
+    if (m_RoomsToDraw != nullptr) {
+        return;
+    }
+    m_RoomsToDraw = Vector_CreateAtCapacity(sizeof(int16_t), 100);
+}
 
 static inline void M_SetupWaterStatus(const ROOM *const room)
 {
@@ -414,32 +422,26 @@ static void M_DrawSingleRoom(const ROOM *const room)
 
 void Room_DrawReset(void)
 {
-    m_DrawCount = 0;
+    M_EnsureRoomsToDraw();
+    Vector_Clear(m_RoomsToDraw);
 }
 
 void Room_MarkToBeDrawn(const int16_t room_num)
 {
-    if (m_DrawCount + 1 == MAX_ROOMS_TO_DRAW) {
+    if (Vector_Contains(m_RoomsToDraw, &room_num)) {
         return;
     }
-
-    for (int32_t i = 0; i < m_DrawCount; i++) {
-        if (m_RoomsToDraw[i] == room_num) {
-            return;
-        }
-    }
-
-    m_RoomsToDraw[m_DrawCount++] = room_num;
+    Vector_Add(m_RoomsToDraw, &room_num);
 }
 
 int32_t Room_DrawGetCount(void)
 {
-    return m_DrawCount;
+    return m_RoomsToDraw->count;
 }
 
 int16_t Room_DrawGetRoom(const int16_t idx)
 {
-    return m_RoomsToDraw[idx];
+    return *(int16_t *)Vector_Get(m_RoomsToDraw, idx);
 }
 
 void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
@@ -524,4 +526,10 @@ void Room_RemoveDrawnItem(const int16_t room_num, const int16_t item_num)
         ROOM *const room = Room_Get(room_num);
         M_DrawSet_Remove(&room->drawn_items, item_num);
     }
+}
+
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    Vector_Free(m_RoomsToDraw);
+    m_RoomsToDraw = nullptr;
 }
