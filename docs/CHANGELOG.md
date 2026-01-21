@@ -37,6 +37,7 @@
 **TR2**:
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
 - fixed underwater wobble effect acting twitchy with camera movement
+- fixed a deviation in water current behaviour that could result in Lara stopping too early (#4706, regression from TR2X 1.1)
 
 **TR3**:
 - added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)

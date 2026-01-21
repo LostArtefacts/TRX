@@ -583,7 +583,8 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 const OBJECT_VECTOR *const sink =
                     Camera_GetFixedObject((int16_t)(intptr_t)cmd->parameter);
 
-                if (lara_info->lot.required_box != sink->flags) {
+                if (g_TRVersion == 2
+                    || lara_info->lot.required_box != sink->flags) {
                     lara_info->lot.target = sink->pos;
                     lara_info->lot.required_box = sink->flags;
                 }
