@@ -1,3 +1,4 @@
+#include <trx/game/items/actions/ids.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/rooms.h>
 
@@ -111,6 +112,36 @@ static int M_L_RoomGetBounds(lua_State *const L)
     return 1;
 }
 
+// trxc.rooms.flip()
+static int M_L_RoomFlip(lua_State *const L)
+{
+    Room_FlipMap();
+    return 0;
+}
+
+// trxc.rooms.flip_effect(effect_id, [timer])
+static int M_L_RoomFlipEffect(lua_State *const L)
+{
+    const int32_t trx_effect_id = luaL_checkinteger(L, 1);
+    if (trx_effect_id == -1) {
+        Room_SetFlipEffect(-1);
+    } else {
+        const ITEM_ACTION game_id = ItemAction_ToGameID(trx_effect_id);
+        if (game_id == ITEM_ACTION_INVALID) {
+            return luaL_error(L, "invalid flip effect id");
+        }
+        Room_SetFlipEffect(game_id);
+    }
+
+    const int arg_count = lua_gettop(L);
+    if (arg_count >= 2) {
+        const int32_t timer = luaL_checkinteger(L, 2);
+        Room_SetFlipTimer(timer);
+    }
+
+    return 0;
+}
+
 void LUA_CreateRooms(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
@@ -143,6 +174,10 @@ void LUA_CreateRooms(lua_State *const L)
     lua_setfield(L, -2, "get_flip_status");
     lua_pushcfunction(L, M_L_RoomGetFlippedRoom);
     lua_setfield(L, -2, "get_flipped_room");
+    lua_pushcfunction(L, M_L_RoomFlip);
+    lua_setfield(L, -2, "flip");
+    lua_pushcfunction(L, M_L_RoomFlipEffect);
+    lua_setfield(L, -2, "flip_effect");
     lua_setfield(L, -2, "rooms");
     lua_pop(L, 1);
 }

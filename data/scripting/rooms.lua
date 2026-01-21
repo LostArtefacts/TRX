@@ -50,6 +50,8 @@ end
 local fn = {
   FlipStatus = raw.FlipStatus,
   Room = Room,
+  flip = raw.flip,
+  flip_effect = raw.flip_effect,
 }
 
 function fn.get(arg)
@@ -67,6 +69,8 @@ trx.rooms = setmetatable({}, {
   __index = function(_, key)
     if key == "fn" then
       return fn
+    elseif key == "flip" or key == "flip_effect" then
+      return fn[key]
     elseif type(key) == "number" or type(key) == "string" then
       return fn.get(key)
     end

@@ -49,3 +49,10 @@ Module for inspecting all rooms in the current level.
 
 - [lua]`trx.rooms.fn.get(arg)`  
   Alias of `trx.rooms[arg]`.
+
+- [lua]`trx.rooms.flip()`  
+  Flips the current room map.
+
+- [lua]`trx.rooms.flip_effect(effect_id, [timer])`  
+  Sets the flip effect id (0-based), and optionally the flip timer.  
+  Use `effect_id=-1` to disable the current effect.

@@ -100,10 +100,14 @@ static void M_Flicker(ITEM *const item)
     Room_IncrementFlipTimer(1);
 }
 
-static void M_FloorShake(ITEM *const item)
+static void M_FloorShake(ITEM *item)
 {
     const int32_t max_dist = WALL_L * 16; // = 0x4000
     const int32_t max_bounce = 100;
+
+    if (item == nullptr) {
+        item = Lara_GetItem();
+    }
 
     const int32_t dx = item->pos.x - g_Camera.pos.x;
     const int32_t dy = item->pos.y - g_Camera.pos.y;
