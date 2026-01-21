@@ -16,6 +16,12 @@ title: Migrating levels
     - `on_control` → `before_control`
     - `on_control_post` → `after_control`
 
+2. **Lua objects catalog name cleanup**:
+    All keys in `trx.catalog.objects` had their `O_` prefix removed and were
+    converted to lowercase.  
+    Before: `trx.catalog.objects.O_BANDIT_1`  
+    After: `trx.catalog.objects.bandit_1`
+
 ### Version 1.0 to 1.1
 
 1. **Ally and ally target behavior moved to Lua**:  
