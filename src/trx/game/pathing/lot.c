@@ -196,10 +196,13 @@ void LOT_CreateZone(ITEM *const item)
     int16_t zone_num = zone[item->box_num];
     int16_t flip_num = flip[item->box_num];
 
+    const bool use_fixed_fly_zone =
+        g_TRVersion == 3 && creature->lot.setup.fly != 0;
+
     creature->lot.zone_count = 0;
     BOX_NODE *node = creature->lot.node;
     for (int32_t i = 0; i < Box_GetCount(); i++) {
-        if (zone[i] == zone_num || flip[i] == flip_num) {
+        if (use_fixed_fly_zone || zone[i] == zone_num || flip[i] == flip_num) {
             node->box_num = i;
             node++;
             creature->lot.zone_count++;

@@ -232,19 +232,23 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
 
     ITEM *const enemy = M_ChooseEnemy(item);
     const int16_t *const zone = Box_GetLotZone(&creature->lot);
+    const bool use_fixed_fly_zone =
+        g_TRVersion == 3 && creature->lot.setup.fly != 0;
 
     {
         const ROOM *const room = Room_Get(item->room_num);
         item->box_num =
             Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
-        info->zone_num = zone[item->box_num];
+        info->zone_num =
+            use_fixed_fly_zone ? BOX_FIXED_FLY_ZONE : zone[item->box_num];
     }
 
     {
         const ROOM *const room = Room_Get(enemy->room_num);
         enemy->box_num =
             Room_GetWorldSector(room, enemy->pos.x, enemy->pos.z)->box;
-        info->enemy_zone_num = zone[enemy->box_num];
+        info->enemy_zone_num =
+            use_fixed_fly_zone ? BOX_FIXED_FLY_ZONE : zone[enemy->box_num];
     }
 
     const BOX_INFO *const enemy_box = Box_GetBox(enemy->box_num);
