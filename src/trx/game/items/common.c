@@ -6,6 +6,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/traps/shoal.h>
 #include <trx/game/output/const.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -335,6 +336,27 @@ void Item_Kill(const int16_t item_num)
     while (m_MaxUsedItemCount > 0
            && m_Items[m_MaxUsedItemCount - 1].flags & IF_KILLED) {
         m_MaxUsedItemCount--;
+    }
+}
+
+void Item_KillAllActive(void)
+{
+    int16_t item_num = Item_GetNextActive();
+    while (item_num != NO_ITEM) {
+        ITEM *const item = Item_Get(item_num);
+        const int16_t next_item_num = item->next_active;
+
+        if (item->active && (item->flags & IF_REVERSE) == 0
+            && item->object_id != O_LARA
+            && !Object_IsType(item->object_id, g_PickupObjects)
+            && !Object_IsType(item->object_id, g_DoorObjects)) {
+            Item_Kill(item_num);
+
+            if (Object_IsType(item->object_id, g_ShoalObjects)) {
+                Shoal_TriggerDeactivate(item);
+            }
+        }
+        item_num = next_item_num;
     }
 }
 

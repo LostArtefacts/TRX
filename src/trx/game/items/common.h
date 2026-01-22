@@ -23,6 +23,7 @@ void Item_Initialise(int16_t item_num);
 void Item_Control(void);
 void Item_ControlDraw(ITEM *item);
 void Item_Kill(int16_t item_num);
+void Item_KillAllActive(void);
 void Item_RemoveActive(int16_t item_num);
 void Item_RemoveDrawn(int16_t item_num);
 void Item_ClearKilled(void);

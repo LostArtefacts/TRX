@@ -1843,6 +1843,9 @@
         },
         "globe": {
             "name": "\\{review}Globus",
+        },
+        "kill_all_triggered": {
+            "name": "\\{review}Alle töten (ausgelöst)",
         }
     }
 }
