@@ -201,26 +201,42 @@ static bool M_SwitchToLand(
 const ITEM *M_GetBaddieOverlap(const int16_t item_num)
 {
     const ITEM *item = Item_Get(item_num);
+    if (item->speed == 0 || item->hit_points <= 0) {
+        return nullptr;
+    }
 
     const int32_t x = item->pos.x;
     const int32_t y = item->pos.y;
     const int32_t z = item->pos.z;
-    const int32_t radius = SQUARE(Object_Get(item->object_id)->radius);
+    int32_t radius = Object_Get(item->object_id)->radius;
+    if (g_TRVersion < 3) {
+        radius = SQUARE(radius);
+    }
 
     int16_t link = Room_Get(item->room_num)->item_num;
     while (link != NO_ITEM && link != item_num) {
         item = Item_Get(link);
-        if (item != Lara_GetItem() && item->status == IS_ACTIVE
-            && item->speed != 0) {
-            const XYZ_32 delta = {
-                item->pos.x - x,
-                item->pos.y - y,
-                item->pos.z - z,
-            };
-            const int32_t distance =
-                SQUARE(delta.x) + SQUARE(delta.y) + SQUARE(delta.z);
-            if (distance < radius) {
-                return item;
+        if (item != Lara_GetItem() && item->status == IS_ACTIVE) {
+            if (g_TRVersion >= 3 && item->hit_points > 0) {
+                const int32_t dx = ABS(item->pos.x - x);
+                const int32_t dz = ABS(item->pos.z - z);
+                const int32_t distance =
+                    dx > dz ? dx + (dz >> 1) : dz + (dx >> 1);
+                const int32_t item_radius = Object_Get(item->object_id)->radius;
+                if (distance < item_radius + radius) {
+                    return item;
+                }
+            } else if (g_TRVersion < 3 && item->speed != 0) {
+                const XYZ_32 delta = {
+                    item->pos.x - x,
+                    item->pos.y - y,
+                    item->pos.z - z,
+                };
+                const int32_t distance =
+                    SQUARE(delta.x) + SQUARE(delta.y) + SQUARE(delta.z);
+                if (distance < radius) {
+                    return item;
+                }
             }
         }
 
@@ -917,10 +933,29 @@ bool Creature_Animate(
         Creature_Tilt(item, tilt * 2);
     }
 
-    const ITEM *const hit_item = M_GetBaddieOverlap(item_num);
-    if (hit_item != nullptr) {
-        item->pos = old;
-        return true;
+    if (g_TRVersion < 3 || item->object_id != O_TREX) {
+        const ITEM *const hit_item = M_GetBaddieOverlap(item_num);
+        if (g_TRVersion < 3 && hit_item != nullptr) {
+            item->pos = old;
+            return true;
+        }
+
+        if (g_TRVersion >= 3 && hit_item != nullptr) {
+            const int16_t angle = Math_Atan(
+                                      hit_item->pos.z - item->pos.z,
+                                      hit_item->pos.x - item->pos.x)
+                - item->rot.y;
+            if (angle != 0) {
+                if (ABS(angle) < 2048) {
+                    item->rot.y -= angle;
+                } else if (angle > 0) {
+                    item->rot.y -= 2048;
+                } else {
+                    item->rot.y += 2048;
+                }
+            }
+            return true;
+        }
     }
 
     if (lot->setup.fly != 0) {
