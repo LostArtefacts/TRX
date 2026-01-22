@@ -14,19 +14,21 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
-#define M_FLOAT_SPEED 32
-#define M_MAX_DISTANCE (WALL_L * 30)
-#define M_ATTACK_RANGE SQUARE(WALL_L * 3) // = 0x900000 = 9437184
-#define M_ESCAPE_CHANCE 2048
-#define M_RECOVER_CHANCE 256
+// clang-format off
+#define M_FLOAT_SPEED      32
+#define M_MAX_DISTANCE     (g_TRVersion < 3 ? WALL_L * 30 : STEP_L * 125) // = 30720 (TR1/2), 32000 (TR3)
+#define M_ATTACK_RANGE     SQUARE(WALL_L * 3) // = 0x900000 = 9437184
+#define M_ESCAPE_CHANCE    2048
+#define M_RECOVER_CHANCE   256
 #define M_TARGET_TOLERANCE 0x400000
-#define M_MAX_TILT (3 * DEG_1) // = 546
-#define M_MAX_HEAD_CHANGE (5 * DEG_1) // = 910
+#define M_MAX_TILT         (3 * DEG_1) // = 546
+#define M_MAX_HEAD_CHANGE  (5 * DEG_1) // = 910
 #define M_MAX_JOINT_CHANGE (5 * DEG_1) // = 910
-#define M_HEAD_ARC                                                             \
-    (g_TRVersion == 1 ? FRONT_ARC : 0x3000) // = 16384 (TR1), 12288 (TR2)
-#define M_JOINT_ARC 0x3000
-#define M_MAX_X_ROT (20 * DEG_1) // = 3640
+#define M_HEAD_ARC         (g_TRVersion == 1 ? FRONT_ARC : 0x3000) // = 16384 (TR1), 12288 (TR2)
+#define M_JOINT_ARC        0x3000
+#define M_MAX_X_ROT        (20 * DEG_1) // = 3640
+#define M_BITE_DISTANCE    (g_TRVersion < 3 ? STEP_L : STEP_L * 2)
+// clang-format on
 
 static bool M_TestSwitchOrKill(
     const int16_t item_num, const OBJECT_ID target_id)
@@ -252,6 +254,8 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     }
 
     const BOX_INFO *const enemy_box = Box_GetBox(enemy->box_num);
+    // TODO: TR3 defines non-LOT creatures, like cobras and handles them
+    // differently here and in LOT initialisation.
     if (((enemy_box->overlap_index & creature->lot.setup.block_mask) != 0)
         || (creature->lot.node[item->box_num].search_num
             == (creature->lot.search_num | BOX_BLOCKED_SEARCH))) {
@@ -259,27 +263,53 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    int32_t z = enemy->pos.z
-        - ((obj->pivot_length * Math_Cos(item->rot.y)) >> W2V_SHIFT)
-        - item->pos.z;
-    int32_t x = enemy->pos.x
-        - ((obj->pivot_length * Math_Sin(item->rot.y)) >> W2V_SHIFT)
-        - item->pos.x;
-    const int32_t y = item->pos.y - enemy->pos.y; // sic, reversed
-    const int16_t angle = Math_Atan(z, x);
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (creature->enemy == nullptr) {
+    const XZ_32 pivot = {
+        .x = (obj->pivot_length * Math_Sin(item->rot.y)) >> W2V_SHIFT,
+        .z = (obj->pivot_length * Math_Cos(item->rot.y)) >> W2V_SHIFT,
+    };
+
+    XZ_32 enemy_pos = {
+        .x = enemy->pos.x,
+        .z = enemy->pos.z,
+    };
+    if (g_TRVersion >= 3) {
+        const int16_t enemy_angle =
+            enemy == lara_item ? lara->move_angle : enemy->rot.y;
+        enemy_pos.x += (14 * enemy->speed * Math_Sin(enemy_angle)) >> W2V_SHIFT;
+        enemy_pos.z += (14 * enemy->speed * Math_Cos(enemy_angle)) >> W2V_SHIFT;
+    }
+
+    int32_t x = enemy_pos.x - pivot.x - item->pos.x;
+    int32_t z = enemy_pos.z - pivot.z - item->pos.z;
+    int32_t y = item->pos.y - enemy->pos.y; // sic, reversed
+
+    if (enemy == lara_item) {
+        const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
+        if (state == LS_CROUCH_IDLE || state == LS_CROUCH_ROLL
+            || state == LS_CRAWL_IDLE || state == LS_CRAWL_FORWARD
+            || state == LS_CRAWL_TURN_LEFT || state == LS_CRAWL_TURN_RIGHT) {
+            y -= STEP_L * 3 / 2;
+        }
+    }
+
+    const bool too_far = ABS(z) > M_MAX_DISTANCE || ABS(x) > M_MAX_DISTANCE;
+    if (creature->enemy == nullptr || (g_TRVersion == 3 && too_far)) {
         info->distance = 0x7FFFFFFF;
-    } else if (ABS(x) > M_MAX_DISTANCE || ABS(z) > M_MAX_DISTANCE) {
+    } else if (g_TRVersion < 3 && too_far) {
         info->distance = SQUARE(M_MAX_DISTANCE);
     } else {
         info->distance = SQUARE(x) + SQUARE(z);
     }
 
+    const int16_t angle = Math_Atan(z, x);
     info->angle = angle - item->rot.y;
     info->enemy_facing = angle - enemy->rot.y + DEG_180;
     info->ahead = info->angle > -FRONT_ARC && info->angle < FRONT_ARC;
-    info->bite = info->ahead && ABS(enemy->pos.y - item->pos.y) <= STEP_L
+    info->bite = info->ahead
+        && ABS(enemy->pos.y - item->pos.y) <= M_BITE_DISTANCE
         && (g_TRVersion == 1 || enemy->hit_points > 0);
 
     x = ABS(x);
