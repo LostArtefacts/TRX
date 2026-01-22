@@ -280,7 +280,11 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         return;
     }
 
-    ITEM *const enemy = M_ChooseEnemy(item);
+    ITEM *enemy = g_TRVersion >= 3 ? creature->enemy : M_ChooseEnemy(item);
+    if (enemy == nullptr) {
+        enemy = Lara_GetItem();
+        creature->enemy = enemy;
+    }
     const int16_t *const zone = Box_GetLotZone(&creature->lot);
     const bool use_fixed_fly_zone =
         g_TRVersion == 3 && creature->lot.setup.fly != 0;
@@ -1164,6 +1168,12 @@ int32_t Creature_Vault(
 
     if (item->floor > old.y + STEP_L * 7 / 2) {
         vault = -4;
+    } else if (
+        item->floor > old.y + STEP_L * 5 / 2 && item->object_id == O_MONKEY) {
+        vault = -3;
+    } else if (
+        item->floor > old.y + STEP_L * 3 / 2 && item->object_id == O_MONKEY) {
+        vault = -2;
     } else if (item->pos.y > old.y - STEP_L * 3 / 2) {
         return 0;
     } else if (item->pos.y > old.y - STEP_L * 5 / 2) {
@@ -1240,4 +1250,198 @@ int16_t Creature_Effect(
     XYZ_32 pos = bite->pos;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
     return spawn(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
+}
+
+int16_t Creature_AIGuard(CREATURE *const creature)
+{
+    if (Item_Get(creature->item_num)->ai_bits & AI_MODIFY) {
+        return 0;
+    }
+
+    const int32_t rnd = Random_GetControl();
+    if (rnd < 256) {
+        creature->head_left = true;
+        creature->head_right = true;
+    } else if (rnd < 384) {
+        creature->head_left = true;
+        creature->head_right = false;
+    } else if (rnd < 512) {
+        creature->head_left = false;
+        creature->head_right = true;
+    }
+
+    if (creature->head_left && creature->head_right) {
+        return 0;
+    }
+    if (creature->head_left) {
+        return -DEG_90;
+    }
+    if (creature->head_right) {
+        return DEG_90;
+    }
+    return 0;
+}
+
+static bool M_SameZone(const CREATURE *const creature, ITEM *const target_item)
+{
+    if (creature->lot.setup.fly != 0) {
+        return true;
+    }
+
+    int16_t *const zone = Box_GetGroundZone(
+        Room_GetFlipStatus(), (creature->lot.setup.step >> 8) - 1);
+    ITEM *const item = Item_Get(creature->item_num);
+
+    const ROOM *room = Room_Get(item->room_num);
+    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
+
+    room = Room_Get(target_item->room_num);
+    target_item->box_num =
+        Room_GetWorldSector(room, target_item->pos.x, target_item->pos.z)->box;
+
+    return zone[item->box_num] == zone[target_item->box_num];
+}
+
+void Creature_GetAITarget(CREATURE *const creature)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    ITEM *const item = Item_Get(creature->item_num);
+    ITEM *const enemy = creature->enemy;
+    const OBJECT_ID enemy_object_id =
+        enemy != nullptr ? enemy->object_id : NO_OBJECT;
+
+    uint8_t ai_bits = item->ai_bits;
+
+    if (ai_bits & AI_GUARD) {
+        creature->enemy = lara_item;
+
+        if (creature->alerted) {
+            item->ai_bits &= ~AI_GUARD;
+
+            if (ai_bits & AI_AMBUSH) {
+                item->ai_bits |= AI_MODIFY;
+            }
+        }
+    } else if (ai_bits & AI_PATROL_1) {
+        if (creature->alerted || creature->hurt_by_lara) {
+            item->ai_bits &= ~AI_PATROL_1;
+
+            if (ai_bits & AI_AMBUSH) {
+                item->ai_bits |= AI_MODIFY;
+            }
+        } else if (!creature->patrol_2 && enemy_object_id != O_AI_PATROL_1) {
+            for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+                ITEM *const target = Item_Get(i);
+
+                if (target->object_id == O_AI_PATROL_1
+                    && target->room_num != NO_ROOM
+                    && M_SameZone(creature, target)
+                    && target->rot.y == item->ai_tag) {
+                    creature->enemy = target;
+                    return;
+                }
+            }
+        } else if (creature->patrol_2 && enemy_object_id != O_AI_PATROL_2) {
+            for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+                ITEM *const target = Item_Get(i);
+
+                if (target->object_id == O_AI_PATROL_2
+                    && target->room_num != NO_ROOM
+                    && M_SameZone(creature, target)
+                    && target->rot.y == item->ai_tag) {
+                    creature->enemy = target;
+                    return;
+                }
+            }
+        } else if (
+            ABS(enemy->pos.x - item->pos.x) < 768
+            && ABS(enemy->pos.y - item->pos.y) < 768
+            && ABS(enemy->pos.z - item->pos.z) < 768) {
+            Room_TestTriggers(enemy);
+            creature->patrol_2 = !creature->patrol_2;
+        }
+    } else if (ai_bits & AI_AMBUSH) {
+        if (ai_bits & AI_MODIFY || creature->hurt_by_lara) {
+            if (enemy_object_id != O_AI_AMBUSH) {
+                for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+                    ITEM *const target = Item_Get(i);
+
+                    if (target->object_id == O_AI_AMBUSH
+                        && target->room_num != NO_ROOM
+                        && M_SameZone(creature, target)
+                        && (target->rot.y == item->ai_tag
+                            || item->object_id == O_MONKEY)) {
+                        creature->enemy = target;
+                        return;
+                    }
+                }
+            } else if (item->object_id != O_MONKEY) {
+                if (ABS(enemy->pos.x - item->pos.x) < 768
+                    && ABS(enemy->pos.y - item->pos.y) < 768
+                    && ABS(enemy->pos.z - item->pos.z) < 768) {
+                    Room_TestTriggers(enemy);
+                    creature->reached_goal = 1;
+                    creature->enemy = lara_item;
+                    item->ai_bits &= ~(AI_AMBUSH | AI_MODIFY);
+                    item->ai_bits |= AI_GUARD;
+                    creature->alerted = 0;
+                }
+            }
+        } else {
+            creature->enemy = lara_item;
+        }
+    } else if (ai_bits & AI_FOLLOW) {
+        if (creature->hurt_by_lara) {
+            creature->enemy = lara_item;
+            creature->alerted = 1;
+            item->ai_bits &= ~AI_FOLLOW;
+        } else if (item->hit_status) {
+            item->ai_bits &= ~AI_FOLLOW;
+        } else if (enemy_object_id != O_AI_FOLLOW) {
+            for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+                ITEM *const target = Item_Get(i);
+
+                if (target->object_id == O_AI_FOLLOW
+                    && target->room_num != NO_ROOM
+                    && M_SameZone(creature, target)
+                    && target->rot.y == item->ai_tag) {
+                    creature->enemy = target;
+                    return;
+                }
+            }
+        } else if (
+            ABS(enemy->pos.x - item->pos.x) < 768
+            && ABS(enemy->pos.y - item->pos.y) < 768
+            && ABS(enemy->pos.z - item->pos.z) < 768) {
+            creature->reached_goal = 1;
+            item->ai_bits &= ~AI_FOLLOW;
+        }
+    } else if (item->object_id == O_MONKEY && item->carried_item == nullptr) {
+        if (item->ai_bits == AI_MODIFY) {
+            if (enemy_object_id != O_KEY_ITEM_4) {
+                for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+                    ITEM *const target = Item_Get(i);
+
+                    if (target->object_id == O_KEY_ITEM_4
+                        && target->room_num != NO_ROOM && !target->ai_bits
+                        && target->status != IS_INVISIBLE && !target->clear_body
+                        && M_SameZone(creature, target)) {
+                        creature->enemy = target;
+                        return;
+                    }
+                }
+            }
+        } else if (enemy_object_id != O_SMALL_MEDIPACK_ITEM) {
+            for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+                ITEM *const target = Item_Get(i);
+                if (target->object_id == O_SMALL_MEDIPACK_ITEM
+                    && target->room_num != NO_ROOM && !target->ai_bits
+                    && target->status != IS_INVISIBLE && !target->clear_body
+                    && M_SameZone(creature, target)) {
+                    creature->enemy = target;
+                    return;
+                }
+            }
+        }
+    }
 }

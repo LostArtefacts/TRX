@@ -4,6 +4,7 @@
 #include <trx/game/carrier.h>
 #include <trx/game/effects.h>
 #include <trx/game/game.h>
+#include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
@@ -720,6 +721,28 @@ static bool M_ReadItem(
                 M_MUST(M_ReadNum(ctx, "max_turn", &creature->maximum_turn));
                 M_MUST(M_ReadNum(ctx, "creature_flags", &creature->flags));
                 M_MUST(M_ReadNum(ctx, "creature_mood", &creature->mood));
+                if (M_SHOULD(M_PushObject(ctx, "creature"))) {
+                    M_MUST(M_ReadBool(ctx, "alerted", &creature->alerted));
+                    M_MUST(M_ReadBool(ctx, "head_left", &creature->head_left));
+                    M_MUST(
+                        M_ReadBool(ctx, "head_right", &creature->head_right));
+                    M_MUST(M_ReadBool(
+                        ctx, "reached_goal", &creature->reached_goal));
+                    M_MUST(M_ReadBool(
+                        ctx, "hurt_by_lara", &creature->hurt_by_lara));
+                    M_MUST(M_ReadBool(ctx, "patrol_2", &creature->patrol_2));
+                    M_MUST(M_PushObject(ctx, "joint_rotations"));
+                    for (int32_t i = 0; i < 4; i++) {
+                        M_MUST(M_PushArrayElem(ctx, i));
+                        M_OPTIONAL(
+                            M_ReadNumDirect(ctx, &creature->joint_rotation[i]));
+                        M_MUST(M_Pop(ctx));
+                    }
+                    M_MUST(M_Pop(ctx));
+                    M_MUST(M_Pop(ctx));
+                }
+                M_OPTIONAL(M_ReadNum(ctx, "ai_bits", &item->ai_bits));
+                M_OPTIONAL(M_ReadNum(ctx, "ai_tag", &item->ai_tag));
             }
         } else if (obj->intelligent) {
             item->data = nullptr;
@@ -734,13 +757,20 @@ static bool M_ReadItem(
     if (M_HasKey(ctx, "carried_items")) {
         M_MUST(M_PushObject(ctx, "carried_items"));
         CARRIED_ITEM *carried_item = item->carried_item;
+        CARRIED_ITEM *prev_item = nullptr;
         for (int32_t j = 0;; j++) {
             if (!M_PushArrayElem(ctx, j)) {
                 break;
             }
             if (carried_item == nullptr) {
-                M_SetError(ctx, "carried item mismatch");
-                M_FAIL();
+                carried_item = GameBuf_Alloc(sizeof(CARRIED_ITEM), GBUF_ITEMS);
+                carried_item->next_item = nullptr;
+                carried_item->spawn_num = NO_ITEM;
+                if (prev_item != nullptr) {
+                    prev_item->next_item = carried_item;
+                } else {
+                    item->carried_item = carried_item;
+                }
             }
 
             int16_t game_object_id;
@@ -751,6 +781,7 @@ static bool M_ReadItem(
             M_MUST(M_ReadNum(ctx, "y_rot", &carried_item->rot.y));
             M_MUST(M_ReadNum(ctx, "room_num", &carried_item->room_num));
             M_MUST(M_ReadNum(ctx, "fall_speed", &carried_item->fall_speed));
+            M_OPTIONAL(M_ReadNum(ctx, "spawn_num", &carried_item->spawn_num));
             M_MUST(M_ReadNum(ctx, "status", &carried_item->status));
 
             if (g_TRVersion == 1 && ctx->sg_version < VERSION_10
@@ -758,6 +789,16 @@ static bool M_ReadItem(
                 carried_item->room_num = NO_ROOM;
             }
 
+            if (carried_item->status == DS_CARRIED
+                && carried_item->spawn_num != NO_ITEM) {
+                ITEM *const pickup_item = Item_Get(carried_item->spawn_num);
+                if (pickup_item != nullptr
+                    && pickup_item->room_num != NO_ROOM) {
+                    Item_UpdateRoom(carried_item->spawn_num, NO_ROOM);
+                }
+            }
+
+            prev_item = carried_item;
             carried_item = carried_item->next_item;
             M_MUST(M_Pop(ctx));
         }

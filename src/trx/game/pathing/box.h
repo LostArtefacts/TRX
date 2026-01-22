@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/creature/types.h>
 #include <trx/game/items/types.h>
 #include <trx/game/pathing/types.h>
 
@@ -11,6 +12,8 @@ int16_t Box_GetOverlap(int32_t overlap_idx);
 int16_t *Box_GetFlyZone(bool flip_status);
 int16_t *Box_GetGroundZone(bool flip_status, int32_t zone_idx);
 int16_t *Box_GetLotZone(const LOT_INFO *lot);
+int16_t AIGuard(CREATURE *creature);
+void GetAITarget(CREATURE *creature);
 bool Box_SearchLOT(LOT_INFO *lot, int32_t expansion);
 bool Box_UpdateLOT(LOT_INFO *lot, int32_t expansion);
 void Box_TargetBox(LOT_INFO *lot, int16_t box_num);

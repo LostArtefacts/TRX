@@ -178,6 +178,7 @@ X_OBJ_NAME_DEFINE(O_CULT_1B,               "cult_1b",               X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_CULT_2,                "cult_2",                X_OBJ_NAMES("Knife Thrower"))
 X_OBJ_NAME_DEFINE(O_CULT_3,                "cult_3",                X_OBJ_NAMES("Shotgun Goon"))
 X_OBJ_NAME_DEFINE(O_MOUSE,                 "mouse",                 X_OBJ_NAMES("Rat"))
+X_OBJ_NAME_DEFINE(O_MONKEY,                "monkey",                X_OBJ_NAMES("Monkey"))
 X_OBJ_NAME_DEFINE(O_DRAGON_FRONT,          "dragon_front",          X_OBJ_NAMES("Dragon Front"))
 X_OBJ_NAME_DEFINE(O_DRAGON_BACK,           "dragon_back",           X_OBJ_NAMES("Dragon Back"))
 X_OBJ_NAME_DEFINE(O_SHARK,                 "shark",                 X_OBJ_NAMES("Shark"))

@@ -1833,6 +1833,9 @@
         },
         "kill_all_triggered": {
             "name": "\\{review}Élimination totale déclenchée",
+        },
+        "monkey": {
+            "name": "\\{review}Singe",
         }
     }
 }

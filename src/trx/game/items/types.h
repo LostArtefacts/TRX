@@ -38,6 +38,8 @@ typedef struct {
     int16_t box_num;
     int16_t timer;
     uint16_t flags;
+    uint8_t ai_bits;
+    int16_t ai_tag;
 
     SHADE shade;
     void *data;

@@ -1875,6 +1875,9 @@
         },
         "kill_all_triggered": {
             "name": "\\{review}Eliminazione totale attivata",
+        },
+        "monkey": {
+            "name": "\\{review}Scimmia",
         }
     }
 }

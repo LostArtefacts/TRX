@@ -1104,6 +1104,9 @@
         "mouse": {
             "name": "Rat",
         },
+        "monkey": {
+            "name": "Monkey",
+        },
         "dragon_front": {
             "name": "Dragon Front",
         },

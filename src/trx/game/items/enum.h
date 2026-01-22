@@ -21,6 +21,16 @@ typedef enum {
 
 typedef enum {
     // clang-format off
+    AI_GUARD    = 1 << 0,
+    AI_AMBUSH   = 1 << 1,
+    AI_PATROL_1 = 1 << 2,
+    AI_MODIFY   = 1 << 3,
+    AI_FOLLOW   = 1 << 4,
+    // clang-format on
+} AI_BITS;
+
+typedef enum {
+    // clang-format off
     IS_INACTIVE    = 0,
     IS_ACTIVE      = 1,
     IS_DEACTIVATED = 2,
