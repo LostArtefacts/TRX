@@ -449,6 +449,7 @@ common_sources = [
   'trx/game/objects/general/grenade.c',
   'trx/game/objects/general/harpoon_bolt.c',
   'trx/game/objects/general/keyhole.c',
+  'trx/game/objects/general/kill_all_triggered.c',
   'trx/game/objects/general/lara_alarm.c',
   'trx/game/objects/general/lift.c',
   'trx/game/objects/general/mini_copter.c',

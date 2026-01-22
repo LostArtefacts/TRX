@@ -1854,6 +1854,9 @@
         },
         "globe": {
             "name": "\\{review}Cruinne",
+        },
+        "kill_all_triggered": {
+            "name": "\\{review}Cur às do gach rud",
         }
     }
 }

@@ -1466,6 +1466,9 @@
         "key_hole_4": {
             "name": "Keyhole 4",
         },
+        "kill_all_triggered": {
+            "name": "Kill All Triggered",
+        },
         "lift": {
             "name": "Lift",
         },

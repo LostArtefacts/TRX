@@ -1872,6 +1872,9 @@
         },
         "globe": {
             "name": "\\{review}Globo",
+        },
+        "kill_all_triggered": {
+            "name": "\\{review}Eliminazione totale attivata",
         }
     }
 }

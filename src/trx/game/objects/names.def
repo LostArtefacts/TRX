@@ -283,6 +283,7 @@ X_OBJ_NAME_DEFINE(O_KEY_HOLE_1,            "key_hole_1",            X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_KEY_HOLE_2,            "key_hole_2",            X_OBJ_NAMES("Keyhole 2"))
 X_OBJ_NAME_DEFINE(O_KEY_HOLE_3,            "key_hole_3",            X_OBJ_NAMES("Keyhole 3"))
 X_OBJ_NAME_DEFINE(O_KEY_HOLE_4,            "key_hole_4",            X_OBJ_NAMES("Keyhole 4"))
+X_OBJ_NAME_DEFINE(O_KILL_ALL_TRIGGERED,    "kill_all_triggered",    X_OBJ_NAMES("Kill All Triggered"))
 X_OBJ_NAME_DEFINE(O_LIFT,                  "lift",                  X_OBJ_NAMES("Lift"))
 X_OBJ_NAME_DEFINE(O_MOVABLE_BLOCK_1,       "movable_block_1",       X_OBJ_NAMES("Push Block 1", "Movable Block 1"))
 X_OBJ_NAME_DEFINE(O_MOVABLE_BLOCK_2,       "movable_block_2",       X_OBJ_NAMES("Push Block 2", "Movable Block 2"))

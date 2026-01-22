@@ -1830,6 +1830,9 @@
         },
         "globe": {
             "name": "\\{review}Globe",
+        },
+        "kill_all_triggered": {
+            "name": "\\{review}Élimination totale déclenchée",
         }
     }
 }
