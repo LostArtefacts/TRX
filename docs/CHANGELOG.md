@@ -11,9 +11,10 @@
 - added visual previews of bar colors (Graphic Options → Bars)
 - added endless sprint (available previously via the `/restless` command) to the UI settings (Gameplay options → Mods → Endless sprint)
 - added endless flare time cheat (Gameplay options → Mods → Endless flare time)
-- changed rooms-to-draw tracking to no longer stop at the 100-room limit
+- added `O_VULTURE` for custom levels
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
+- changed rooms-to-draw tracking to no longer stop at the 100-room limit
 - changed all UI bar colors from hardcoded to configurable via `cfg/ui.json5`, enabling some customization for PS1 bars
 - changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`
 - changed `enable_invulnerability` to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)
@@ -57,6 +58,7 @@
 - added Aldwych Drill control (Spike Ceiling with timer=1 to descend faster)
 - added TR3 behavior patterns to Tiger control
 - added Kill All Triggered control
+- added Vulture control
 - changed enemy drops to appear at the tile center, to conform with the OG
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation
