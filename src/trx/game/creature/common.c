@@ -198,6 +198,38 @@ static bool M_SwitchToLand(
     return true;
 }
 
+const ITEM *M_GetBaddieOverlap(const int16_t item_num)
+{
+    const ITEM *item = Item_Get(item_num);
+
+    const int32_t x = item->pos.x;
+    const int32_t y = item->pos.y;
+    const int32_t z = item->pos.z;
+    const int32_t radius = SQUARE(Object_Get(item->object_id)->radius);
+
+    int16_t link = Room_Get(item->room_num)->item_num;
+    while (link != NO_ITEM && link != item_num) {
+        item = Item_Get(link);
+        if (item != Lara_GetItem() && item->status == IS_ACTIVE
+            && item->speed != 0) {
+            const XYZ_32 delta = {
+                item->pos.x - x,
+                item->pos.y - y,
+                item->pos.z - z,
+            };
+            const int32_t distance =
+                SQUARE(delta.x) + SQUARE(delta.y) + SQUARE(delta.z);
+            if (distance < radius) {
+                return item;
+            }
+        }
+
+        link = item->next_item;
+    }
+
+    return nullptr;
+}
+
 void Creature_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -689,38 +721,6 @@ bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
     return LOS_Check(&start, &target, true);
 }
 
-bool Creature_CheckBaddieOverlap(const int16_t item_num)
-{
-    const ITEM *item = Item_Get(item_num);
-
-    const int32_t x = item->pos.x;
-    const int32_t y = item->pos.y;
-    const int32_t z = item->pos.z;
-    const int32_t radius = SQUARE(Object_Get(item->object_id)->radius);
-
-    int16_t link = Room_Get(item->room_num)->item_num;
-    while (link != NO_ITEM && link != item_num) {
-        item = Item_Get(link);
-        if (item != Lara_GetItem() && item->status == IS_ACTIVE
-            && item->speed != 0) {
-            const XYZ_32 delta = {
-                item->pos.x - x,
-                item->pos.y - y,
-                item->pos.z - z,
-            };
-            const int32_t distance =
-                SQUARE(delta.x) + SQUARE(delta.y) + SQUARE(delta.z);
-            if (distance < radius) {
-                return true;
-            }
-        }
-
-        link = item->next_item;
-    }
-
-    return false;
-}
-
 void Creature_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -917,7 +917,8 @@ bool Creature_Animate(
         Creature_Tilt(item, tilt * 2);
     }
 
-    if (Creature_CheckBaddieOverlap(item_num)) {
+    const ITEM *const hit_item = M_GetBaddieOverlap(item_num);
+    if (hit_item != nullptr) {
         item->pos = old;
         return true;
     }

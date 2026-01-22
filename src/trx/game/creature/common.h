@@ -23,7 +23,6 @@ void Creature_Underwater(ITEM *item, int32_t depth);
 bool Creature_IsFloating(const ITEM *item);
 
 bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
-bool Creature_CheckBaddieOverlap(int16_t item_num);
 void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
 
