@@ -112,6 +112,7 @@ static void M_Control(const int16_t item_num)
         break;
 
     case M_STATE_STOP:
+    case M_STATE_EAT:
         item->pos.y = item->floor;
         if (bird->mood != MOOD_BORED) {
             item->goal_anim_state = M_STATE_FLY;
@@ -128,10 +129,8 @@ static void M_Control(const int16_t item_num)
         break;
 
     case M_STATE_ATTACK:
-        if (!bird->flags && item->touch_bits) {
-            ITEM *const lara_item = Lara_GetItem();
-            lara_item->hit_points -= M_DAMAGE;
-            lara_item->hit_status = true;
+        if (bird->flags == 0 && item->touch_bits != 0) {
+            Lara_TakeDamage(M_DAMAGE, true);
             if (item->object_id == O_CROW) {
                 Creature_Effect(item, &m_CrowBite, Spawn_Blood);
             } else {
@@ -140,29 +139,21 @@ static void M_Control(const int16_t item_num)
             bird->flags = 1;
         }
         break;
-
-    case M_STATE_EAT:
-        item->pos.y = item->floor;
-        if (bird->mood != MOOD_BORED) {
-            item->goal_anim_state = M_STATE_FLY;
-        }
-        break;
     }
 
     Creature_Animate(item_num, angle, 0);
 }
 
-static void M_SetupEagle(OBJECT *const obj)
+static bool M_SetupCommon(OBJECT *const obj)
 {
     if (!obj->loaded) {
-        return;
+        return false;
     }
 
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->hit_points = M_EAGLE_HITPOINTS;
     obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
@@ -173,29 +164,26 @@ static void M_SetupEagle(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+
+    return true;
+}
+
+static void M_SetupEagle(OBJECT *const obj)
+{
+    if (!M_SetupCommon(obj)) {
+        return;
+    }
+
+    obj->hit_points = M_EAGLE_HITPOINTS;
 }
 
 static void M_SetupCrow(OBJECT *const obj)
 {
-    if (!obj->loaded) {
+    if (!M_SetupCommon(obj)) {
         return;
     }
 
-    obj->initialise_func = M_Initialise;
-    obj->control_func = M_Control;
-    obj->collision_func = Creature_Collision;
-
     obj->hit_points = M_CROW_HITPOINTS;
-    obj->radius = M_RADIUS;
-    obj->shadow_size = UNIT_SHADOW / 2;
-    obj->pivot_length = 0;
-    obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
-
-    obj->intelligent = true;
-    obj->save_position = true;
-    obj->save_hitpoints = true;
-    obj->save_flags = true;
-    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_EAGLE, M_SetupEagle)
