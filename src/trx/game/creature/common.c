@@ -803,11 +803,17 @@ bool Creature_Animate(
     int32_t next_height =
         next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
 
+    const bool fly_check = g_TRVersion < 3 || lot->setup.fly == 0;
+
     const int32_t box_height = Box_GetBox(item->box_num)->height;
-    if (sector->box == NO_BOX || zone[item->box_num] != zone[sector->box]
+    if (sector->box == NO_BOX
+        || (fly_check && zone[item->box_num] != zone[sector->box])
         || box_height - height > lot->setup.step
         || box_height - height < lot->setup.drop) {
         const int32_t pos_x = item->pos.x >> WALL_SHIFT;
+        const int32_t pos_z = g_TRVersion < 3
+            ? pos_x
+            : item->pos.z >> WALL_SHIFT; // TODO: OG bug in TR1/2?
         const int32_t shift_x = old.x >> WALL_SHIFT;
         const int32_t shift_z = old.z >> WALL_SHIFT;
 
@@ -817,9 +823,9 @@ bool Creature_Animate(
             item->pos.x = ROUND_TO_SECTOR_END(old.x);
         }
 
-        if (pos_x < shift_z) {
+        if (pos_z < shift_z) {
             item->pos.z = ROUND_TO_SECTOR(old.z);
-        } else if (pos_x > shift_z) {
+        } else if (pos_z > shift_z) {
             item->pos.z = ROUND_TO_SECTOR_END(old.z);
         }
 
@@ -849,7 +855,7 @@ bool Creature_Animate(
                     x - radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = radius - pos_x;
             } else if (
-                !shift_z
+                shift_z == 0
                 && Box_BadFloor(
                     x - radius, y, z - radius, height, next_height, room_num,
                     lot)) {
@@ -864,7 +870,7 @@ bool Creature_Animate(
                     x + radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
-                !shift_z
+                shift_z == 0
                 && Box_BadFloor(
                     x + radius, y, z - radius, height, next_height, room_num,
                     lot)) {
@@ -886,7 +892,7 @@ bool Creature_Animate(
                     x - radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = radius - pos_x;
             } else if (
-                !shift_z
+                shift_z == 0
                 && Box_BadFloor(
                     x - radius, y, z + radius, height, next_height, room_num,
                     lot)) {
@@ -901,7 +907,7 @@ bool Creature_Animate(
                     x + radius, y, z, height, next_height, room_num, lot)) {
                 shift_x = WALL_L - radius - pos_x;
             } else if (
-                !shift_z
+                shift_z == 0
                 && Box_BadFloor(
                     x + radius, y, z + radius, height, next_height, room_num,
                     lot)) {
@@ -927,7 +933,7 @@ bool Creature_Animate(
     item->pos.x += shift_x;
     item->pos.z += shift_z;
 
-    if (shift_x || shift_z) {
+    if (shift_x != 0 || shift_z != 0) {
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
         item->rot.y += angle;
         Creature_Tilt(item, tilt * 2);
@@ -963,7 +969,16 @@ bool Creature_Animate(
         CLAMP(dy, -lot->setup.fly, lot->setup.fly);
 
         height = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
-        if (item->pos.y + dy <= height) {
+        if (item->pos.y + dy > height) {
+            if (item->pos.y <= height) {
+                dy = 0;
+                item->pos.y = height;
+            } else {
+                dy = -lot->setup.fly;
+                item->pos.x = old.x;
+                item->pos.z = old.z;
+            }
+        } else if (Object_IsType(item->object_id, g_WaterObjects)) {
             const int32_t ceiling =
                 Room_GetCeiling(sector, item->pos.x, y, item->pos.z);
             int32_t min_y = bounds->min.y;
@@ -972,6 +987,8 @@ bool Creature_Animate(
                 min_y = 0;
                 break;
             case O_SHARK:
+                // TODO
+                // case O_WHALE:
                 min_y = 128;
                 break;
             default:
@@ -986,20 +1003,19 @@ bool Creature_Animate(
                     dy = 0;
                 }
             }
-        } else if (item->pos.y <= height) {
-            item->pos.y = height;
-            dy = 0;
         } else {
-            item->pos.x = old.x;
-            item->pos.z = old.z;
-            dy = -lot->setup.fly;
+            Room_GetSector(item->pos.x, y + STEP_L, item->pos.z, &room_num);
+            const ROOM *const room = Room_Get(room_num);
+            if (room->flags.underwater || room->flags.swamp) {
+                dy = -lot->setup.fly;
+            }
         }
 
         item->pos.y += dy;
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
         item->floor = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
 
-        int16_t angle = item->speed ? Math_Atan(item->speed, -dy) : 0;
+        int16_t angle = item->speed != 0 ? Math_Atan(item->speed, -dy) : 0;
         if (g_TRVersion >= 2) {
             CLAMP(angle, -M_MAX_X_ROT, M_MAX_X_ROT);
         }
@@ -1012,8 +1028,30 @@ bool Creature_Animate(
             item->rot.x = angle;
         }
     } else {
-        const SECTOR *const sector =
+        const SECTOR *sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        if (g_TRVersion == 3) {
+            const int16_t ceiling =
+                Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+            int32_t min_y = bounds->min.y;
+            switch (item->object_id) {
+            case O_TREX:
+                // TODO
+                // case O_SHIVA:
+                // case O_MUTANT_2:
+                min_y = STEP_L * 3;
+                break;
+            default:
+                break;
+            }
+
+            if (item->pos.y + min_y < ceiling) {
+                item->pos = old;
+                sector = Room_GetSector(
+                    item->pos.x, item->pos.y, item->pos.z, &room_num);
+            }
+        }
+
         item->floor =
             Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
 
