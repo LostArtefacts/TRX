@@ -249,6 +249,22 @@ static void M_WriteItem(
             M_WriteNum(ctx, "max_turn", creature->maximum_turn);
             M_WriteNum(ctx, "creature_flags", creature->flags);
             M_WriteNum(ctx, "creature_mood", creature->mood);
+            M_PushObject(ctx);
+            M_WriteBool(ctx, "alerted", creature->alerted);
+            M_WriteBool(ctx, "head_left", creature->head_left);
+            M_WriteBool(ctx, "head_right", creature->head_right);
+            M_WriteBool(ctx, "reached_goal", creature->reached_goal);
+            M_WriteBool(ctx, "hurt_by_lara", creature->hurt_by_lara);
+            M_WriteBool(ctx, "patrol_2", creature->patrol_2);
+            M_PushArray(ctx);
+            for (int32_t i = 0; i < 4; i++) {
+                M_PushNum(ctx, creature->joint_rotation[i]);
+                M_PopAndAppend(ctx);
+            }
+            M_PopAndSet(ctx, "joint_rotations");
+            M_PopAndSet(ctx, "creature");
+            M_WriteNum(ctx, "ai_bits", item->ai_bits);
+            M_WriteNum(ctx, "ai_tag", item->ai_tag);
         }
     }
 
@@ -261,6 +277,7 @@ static void M_WriteItem(
         M_WriteNum(ctx, "y_rot", drop_item->rot.y);
         M_WriteNum(ctx, "room_num", drop_item->room_num);
         M_WriteNum(ctx, "fall_speed", drop_item->fall_speed);
+        M_WriteNum(ctx, "spawn_num", drop_item->spawn_num);
         M_WriteNum(ctx, "status", (int32_t)Carrier_GetSaveStatus(drop_item));
 
         // TR1X <4.16

@@ -55,3 +55,6 @@ int16_t Creature_Effect(
 bool Creature_Shoot(
     ITEM *item, const AI_INFO *info, const BITE *gun, int16_t extra_rotation,
     int32_t damage);
+
+int16_t Creature_AIGuard(CREATURE *creature);
+void Creature_GetAITarget(CREATURE *creature);

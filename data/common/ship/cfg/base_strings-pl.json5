@@ -1827,6 +1827,9 @@
         },
         "kill_all_triggered": {
             "name": "\\{review}Eliminacja wszystkich (wyzwolona)",
+        },
+        "monkey": {
+            "name": "\\{review}Małpa",
         }
     }
 }

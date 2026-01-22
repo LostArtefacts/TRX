@@ -1857,6 +1857,9 @@
         },
         "kill_all_triggered": {
             "name": "\\{review}Cur às do gach rud",
+        },
+        "monkey": {
+            "name": "\\{review}Muncaidh",
         }
     }
 }

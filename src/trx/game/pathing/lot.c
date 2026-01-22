@@ -166,6 +166,11 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
     creature->maximum_turn = DEG_1;
     creature->flags = 0;
     creature->enemy = nullptr;
+    creature->head_left = false;
+    creature->head_right = false;
+    creature->reached_goal = false;
+    creature->hurt_by_lara = false;
+    creature->patrol_2 = false;
 
     const OBJECT *const obj = Object_Get(item->object_id);
     creature->lot.setup = obj->lot_setup;

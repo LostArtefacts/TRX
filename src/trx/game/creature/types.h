@@ -9,7 +9,12 @@ typedef struct {
     int16_t neck_rotation;
     int16_t maximum_turn;
     int16_t flags;
-    bool alerted : 1;
+    bool alerted;
+    bool head_left;
+    bool head_right;
+    bool reached_goal;
+    bool hurt_by_lara;
+    bool patrol_2;
     int16_t item_num;
     MOOD_TYPE mood;
     LOT_INFO lot;

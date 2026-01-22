@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/const.h>
+#include <trx/game/creature.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/pistols.h>
 #include <trx/game/gun/rifle.h>
@@ -385,6 +386,10 @@ void Gun_HitTarget(
         }
     }
     Item_TakeDamage(item, damage, true);
+    if (item->data != nullptr && Object_Get(item->object_id)->intelligent) {
+        CREATURE *const creature = (CREATURE *)item->data;
+        creature->hurt_by_lara = true;
+    }
 
     if (hit_pos != nullptr) {
         const bool make_ricochet = (g_Config.visuals.fix_texture_issues

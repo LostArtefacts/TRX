@@ -1,5 +1,6 @@
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -221,6 +222,10 @@ void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
 bool Box_StalkBox(
     const ITEM *const item, const ITEM *const enemy, const int16_t box_num)
 {
+    if (enemy == nullptr) {
+        return false;
+    }
+
     const BOX_INFO *const box = Box_GetBox(box_num);
 
     // TODO: determine if the shift is essential

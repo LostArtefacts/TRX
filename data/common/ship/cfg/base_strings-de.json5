@@ -1846,6 +1846,9 @@
         },
         "kill_all_triggered": {
             "name": "\\{review}Alle töten (ausgelöst)",
+        },
+        "monkey": {
+            "name": "\\{review}Affe",
         }
     }
 }

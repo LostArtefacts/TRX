@@ -215,6 +215,8 @@ void Item_Initialise(const int16_t item_num)
     item->timer = 0;
     item->mesh_bits = 0xFFFFFFFF;
     item->touch_bits = 0;
+    item->ai_bits = 0;
+    item->ai_tag = 0;
     item->after_death = 0;
     item->data = nullptr;
     item->priv = nullptr;
