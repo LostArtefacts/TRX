@@ -5,16 +5,17 @@
 #include <trx/utils.h>
 
 // clang-format off
-#define M_DAMAGE          20
-#define M_RADIUS          (WALL_L / 5) // = 204
-#define M_ATTACK_RANGE    SQUARE(WALL_L / 2) // = 262144
-#define M_TURN            (DEG_1 * 3) // = 546
-#define M_START_ANIM      5
-#define M_DIE_ANIM        8
-#define M_EAGLE_HITPOINTS 20
-#define M_CROW_HITPOINTS  15
-#define M_CROW_START_ANIM 14
-#define M_CROW_DIE_ANIM   1
+#define M_DAMAGE            20
+#define M_RADIUS            (WALL_L / 5) // = 204
+#define M_ATTACK_RANGE      SQUARE(WALL_L / 2) // = 262144
+#define M_TURN              (DEG_1 * 3) // = 546
+#define M_START_ANIM        5
+#define M_DIE_ANIM          8
+#define M_EAGLE_HITPOINTS   20
+#define M_CROW_HITPOINTS    15
+#define M_CROW_START_ANIM   14
+#define M_CROW_DIE_ANIM     1
+#define M_VULTURE_HITPOINTS 18
 // clang-format off
 
 typedef enum {
@@ -186,5 +187,15 @@ static void M_SetupCrow(OBJECT *const obj)
     obj->hit_points = M_CROW_HITPOINTS;
 }
 
+static void M_SetupVulture(OBJECT *const obj)
+{
+    if (!M_SetupCommon(obj)) {
+        return;
+    }
+
+    obj->hit_points = M_VULTURE_HITPOINTS;
+}
+
 REGISTER_OBJECT(O_EAGLE, M_SetupEagle)
 REGISTER_OBJECT(O_CROW, M_SetupCrow)
+REGISTER_OBJECT(O_VULTURE, M_SetupVulture)
