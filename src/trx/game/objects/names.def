@@ -216,6 +216,7 @@ X_OBJ_NAME_DEFINE(O_PODS,                  "pods",                  X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_BIG_POD,               "big_pod",               X_OBJ_NAMES("Big Pod"))
 X_OBJ_NAME_DEFINE(O_TONY,                  "tony",                  X_OBJ_NAMES("Tony"))
 X_OBJ_NAME_DEFINE(O_VULTURE,               "vulture",               X_OBJ_NAMES("Vulture"))
+X_OBJ_NAME_DEFINE(O_COBRA,                 "snake",                 X_OBJ_NAMES("Snake", "Cobra"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))
