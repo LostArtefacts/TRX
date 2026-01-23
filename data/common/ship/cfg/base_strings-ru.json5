@@ -1862,6 +1862,12 @@
         },
         "monkey": {
             "name": "\\{review}Обезьяна",
+        },
+        "tony": {
+            "name": "\\{review}Тони",
+        },
+        "vulture": {
+            "name": "\\{review}Стервятник",
         }
     }
 }

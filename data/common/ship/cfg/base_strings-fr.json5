@@ -1842,6 +1842,12 @@
         },
         "monkey": {
             "name": "\\{review}Singe",
+        },
+        "tony": {
+            "name": "\\{review}Tony",
+        },
+        "vulture": {
+            "name": "\\{review}Vautour",
         }
     }
 }

@@ -1221,6 +1221,12 @@
         "big_pod": {
             "name": "Big Pod",
         },
+        "tony": {
+            "name": "Tony",
+        },
+        "vulture": {
+            "name": "Vulture",
+        },
         "blade": {
             "name": "Wall-mounted Blade",
         },

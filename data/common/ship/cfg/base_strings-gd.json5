@@ -1866,6 +1866,12 @@
         },
         "monkey": {
             "name": "\\{review}Muncaidh",
+        },
+        "tony": {
+            "name": "Tònaidh",
+        },
+        "vulture": {
+            "name": "Fitheach",
         }
     }
 }
