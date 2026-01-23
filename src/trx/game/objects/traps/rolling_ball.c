@@ -46,10 +46,22 @@ static void M_Roll(ITEM *const item)
 static bool M_TestStop(const ITEM *const item)
 {
     int32_t dist;
-    if (g_TRVersion == 1) {
-        dist = WALL_L / 2;
-    } else {
-        dist = item->object_id == O_ROLLING_BALL_1 ? STEP_L * 3 / 2 : WALL_L;
+    int32_t item_height;
+    switch (item->object_id) {
+    case O_ROLLING_BALL_1:
+        item_height = STEP_L * 13 / 4;
+        if (g_TRVersion == 1) {
+            dist = WALL_L / 2;
+        } else if (g_TRVersion == 2) {
+            dist = STEP_L * 3 / 2;
+        } else {
+            dist = STEP_L * 5 / 4;
+        }
+        break;
+    default:
+        item_height = WALL_L;
+        dist = WALL_L;
+        break;
     }
 
     int16_t room_num = item->room_num;
@@ -57,8 +69,13 @@ static bool M_TestStop(const ITEM *const item)
         item->pos.x + ((dist * Math_Sin(item->rot.y)) >> W2V_SHIFT);
     const int32_t z =
         item->pos.z + ((dist * Math_Cos(item->rot.y)) >> W2V_SHIFT);
-    const SECTOR *const sector = Room_GetSector(x, item->pos.y, z, &room_num);
-    return Room_GetHeight(sector, x, item->pos.y, z) < item->pos.y;
+    const SECTOR *sector = Room_GetSector(x, item->pos.y, z, &room_num);
+    const int16_t height = Room_GetHeight(sector, x, item->pos.y, z);
+    sector = Room_GetSector(x, item->pos.y - item_height, z, &room_num);
+    const int16_t ceiling =
+        Room_GetCeiling(sector, x, item->pos.y - item_height, z);
+
+    return height < item->pos.y || ceiling > item->pos.y - item_height;
 }
 
 static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
