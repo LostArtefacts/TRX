@@ -1833,6 +1833,12 @@
         },
         "monkey": {
             "name": "\\{review}Małpa",
+        },
+        "tony": {
+            "name": "\\{review}Tony",
+        },
+        "vulture": {
+            "name": "\\{review}Sęp",
         }
     }
 }
