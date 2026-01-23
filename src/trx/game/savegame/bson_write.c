@@ -157,6 +157,34 @@ static void M_WriteNum_Double(
         float: M_WriteNum_Double,                                              \
         double: M_WriteNum_Double)(ctx, key, value)
 
+static void M_WriteNumNZ_Int(
+    M_CONTEXT *const ctx, const char *const key, const int32_t value)
+{
+    if (value != 0) {
+        M_WriteNum_Int(ctx, key, value);
+    }
+}
+
+static void M_WriteNumNZ_Double(
+    M_CONTEXT *const ctx, const char *const key, const double value)
+{
+    if (value != 0.0) {
+        M_WriteNum_Double(ctx, key, value);
+    }
+}
+
+#define M_WriteNumNZ(ctx, key, value)                                          \
+    _Generic(                                                                  \
+        (value),                                                               \
+        int8_t: M_WriteNumNZ_Int,                                              \
+        uint8_t: M_WriteNumNZ_Int,                                             \
+        int16_t: M_WriteNumNZ_Int,                                             \
+        uint16_t: M_WriteNumNZ_Int,                                            \
+        int32_t: M_WriteNumNZ_Int,                                             \
+        uint32_t: M_WriteNumNZ_Int,                                            \
+        float: M_WriteNumNZ_Double,                                            \
+        double: M_WriteNumNZ_Double)(ctx, key, value)
+
 // =============================================================================
 // End of internal helpers
 // =============================================================================
@@ -242,6 +270,8 @@ static void M_WriteItem(
         M_WriteBool(ctx, "collidable", item->collidable);
         M_WriteBool(ctx, "intelligent", obj->intelligent && item->data);
         M_WriteNum(ctx, "timer", item->timer);
+        M_WriteNumNZ(ctx, "ai_bits", item->ai_bits);
+        M_WriteNumNZ(ctx, "ai_tag", item->ai_tag);
         if (obj->intelligent && item->data != nullptr) {
             const CREATURE *const creature = item->data;
             M_WriteNum(ctx, "head_rot", creature->head_rotation);
@@ -263,8 +293,6 @@ static void M_WriteItem(
             }
             M_PopAndSet(ctx, "joint_rotations");
             M_PopAndSet(ctx, "creature");
-            M_WriteNum(ctx, "ai_bits", item->ai_bits);
-            M_WriteNum(ctx, "ai_tag", item->ai_tag);
         }
     }
 

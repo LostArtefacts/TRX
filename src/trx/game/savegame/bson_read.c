@@ -711,6 +711,8 @@ static bool M_ReadItem(
             M_MUST(M_ReadBool(ctx, "gravity", &item->gravity));
             M_OPTIONAL(M_ReadBool(ctx, "collidable", &item->collidable));
         }
+        M_OPTIONAL(M_ReadNum(ctx, "ai_bits", &item->ai_bits));
+        M_OPTIONAL(M_ReadNum(ctx, "ai_tag", &item->ai_tag));
 
         bool intelligent = obj->intelligent;
         M_OPTIONAL(M_ReadBool(ctx, "intelligent", &intelligent));
@@ -743,8 +745,6 @@ static bool M_ReadItem(
                     M_MUST(M_Pop(ctx));
                     M_MUST(M_Pop(ctx));
                 }
-                M_OPTIONAL(M_ReadNum(ctx, "ai_bits", &item->ai_bits));
-                M_OPTIONAL(M_ReadNum(ctx, "ai_tag", &item->ai_tag));
             }
         } else if (obj->intelligent) {
             item->data = nullptr;
