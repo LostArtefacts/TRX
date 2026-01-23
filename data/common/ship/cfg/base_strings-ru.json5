@@ -407,6 +407,8 @@
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Когда Лара нажимает кнопку действия возле замочной скважины или головоломки, и у неё в инвентаре есть соответствующий предмет, этот предмет будет предварительно выбран.",
         "SETTING_ENABLE_BAR_FLASHING": "\\{review}Мигающие полосы",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "\\{review}Заставляет полосы здоровья и кислорода Лары мигать, когда один из ресурсов на исходе.",
+        "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Включить тряску при движении валуна",
+        "SETTING_ENABLE_BOULDER_SHAKE_DESCRIPTION": "\\{review}Если включено, камера будет трястись, когда валун находится в движении.",
         "SETTING_ENABLE_BOUNCY_GRENADES": "\\{review}Прыгающие гранаты",
         "SETTING_ENABLE_BOUNCY_GRENADES_DESCRIPTION": "\\{review}Включает поведение гранат в стиле TR3: они отскакивают от стен и склонов и создают большую зону взрыва, но за счет уменьшенной скорости.",
         "SETTING_ENABLE_BRAID": "Коса Лары",

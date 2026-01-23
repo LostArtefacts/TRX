@@ -407,6 +407,8 @@
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Lorsque Lara appuie sur Action en face d'une serreure ou un emplacement de puzzle et qu'elle a l'objet correspondant dans son inventaire, cet objet sera présélectionné.",
         "SETTING_ENABLE_BAR_FLASHING": "\\{review}Barres clignotantes",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "\\{review}Fait clignoter les barres de santé et d'oxygène de Lara lorsqu'elle est à court de l'une ou l'autre ressource.",
+        "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Activer le tremblement des rochers",
+        "SETTING_ENABLE_BOULDER_SHAKE_DESCRIPTION": "\\{review}Si activé, la caméra tremblera lorsqu’un rocher est en mouvement.",
         "SETTING_ENABLE_BOUNCY_GRENADES": "\\{review}Grenades rebondissantes",
         "SETTING_ENABLE_BOUNCY_GRENADES_DESCRIPTION": "\\{review}Active le comportement des grenades à la TR3 : elles ricochent sur les murs et les pentes et produisent un rayon d'explosion plus large, mais au prix d'une vitesse réduite.",
         "SETTING_ENABLE_BRAID": "Tresse de Lara",

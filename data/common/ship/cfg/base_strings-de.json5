@@ -407,6 +407,8 @@
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Wenn Lara ein Schlüsselloch oder einen Rätsel-Slot verwendet und sie das dazu passende Item in ihrem Inventar hat, wird dieses automatisch ausgewählt.",
         "SETTING_ENABLE_BAR_FLASHING": "\\{review}Leisten blinken",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "\\{review}Lässt Laras Gesundheits- und Sauerstoffanzeigen blinken, wenn eine der Ressourcen knapp wird.",
+        "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Felskamerawackeln aktivieren",
+        "SETTING_ENABLE_BOULDER_SHAKE_DESCRIPTION": "\\{review}Wenn aktiviert, wackelt die Kamera, sobald sich ein Fels bewegt.",
         "SETTING_ENABLE_BOUNCY_GRENADES": "\\{review}Sprunggranaten",
         "SETTING_ENABLE_BOUNCY_GRENADES_DESCRIPTION": "\\{review}Aktiviert das Granatenverhalten im Stil von TR3: Sie prallen von Wänden und Hängen ab und erzeugen einen größeren Explosionsradius, jedoch auf Kosten einer reduzierten Geschwindigkeit.",
         "SETTING_ENABLE_BRAID": "Laras Zopf",

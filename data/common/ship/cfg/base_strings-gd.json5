@@ -407,6 +407,8 @@
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Ma bhriogas Lara air gnìomh aig toll iuchrach neo àite tòimhseachain, taghaidh i an nì ceart gu fèin-obrachail.",
         "SETTING_ENABLE_BAR_FLASHING": "Bàraichean deàrrsail",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "Cuiridh seo an àite bàraichean slàinte agus ocsaidean Lara deàrrsail nuair a tha i a' ruith ìosal air na goireasan seo.",
+        "SETTING_ENABLE_BOULDER_SHAKE": "Crathadh ulpagan",
+        "SETTING_ENABLE_BOULDER_SHAKE_DESCRIPTION": "Crathaidh an camara nuair a bhios ulpagan a' gluasad.",
         "SETTING_ENABLE_BOUNCY_GRENADES": "\\{review}Grenadan bouncy",
         "SETTING_ENABLE_BOUNCY_GRENADES_DESCRIPTION": "\\{review}Cuir comas air giùlan grenade stoidhle TR3: bidh iad a’ bualadh air ballachan agus claisean agus a’ dèanamh raon spreadhaidh nas motha, ach aig cosgais astar nas ìsle.",
         "SETTING_ENABLE_BRAID": "Feaman-fuilt Lara",

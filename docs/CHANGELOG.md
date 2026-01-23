@@ -13,6 +13,7 @@
 - added endless flare time cheat (Gameplay options → Mods → Endless flare time)
 - added `O_VULTURE` for custom levels
 - added `O_ROLLING_BALL_4` (giant Temple of Puna boulder) for custom levels
+- added an option to control whether or not moving boulders should shake the camera (Gameplay options → General → Enable boulder shake)
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
 - changed rooms-to-draw tracking to no longer stop at the 100-room limit
