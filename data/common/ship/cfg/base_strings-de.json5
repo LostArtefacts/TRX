@@ -1861,6 +1861,9 @@
         },
         "vulture": {
             "name": "\\{review}Geier",
+        },
+        "snake": {
+            "name": "\\{review}Schlange",
         }
     }
 }

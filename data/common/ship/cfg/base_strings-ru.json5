@@ -1868,6 +1868,9 @@
         },
         "vulture": {
             "name": "\\{review}Стервятник",
+        },
+        "snake": {
+            "name": "\\{review}Змей",
         }
     }
 }

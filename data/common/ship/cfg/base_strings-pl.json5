@@ -1839,6 +1839,9 @@
         },
         "vulture": {
             "name": "\\{review}Sęp",
+        },
+        "snake": {
+            "name": "\\{review}Wąż",
         }
     }
 }

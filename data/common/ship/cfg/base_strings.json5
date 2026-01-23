@@ -1227,6 +1227,12 @@
         "vulture": {
             "name": "Vulture",
         },
+        "snake": {
+            "name": [
+                "Snake",
+                "Cobra",
+            ]
+        },
         "blade": {
             "name": "Wall-mounted Blade",
         },
