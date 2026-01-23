@@ -249,6 +249,8 @@ X_OBJ_NAME_DEFINE(O_MIDAS_TOUCH,           "midas_touch",           X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_MINE,                  "mine",                  X_OBJ_NAMES("Aquatic Mine"))
 X_OBJ_NAME_DEFINE(O_PENDULUM_1,            "pendulum_1",            X_OBJ_NAMES("Pendulum", "Sandbag", "Swinging box"))
 X_OBJ_NAME_DEFINE(O_PENDULUM_2,            "pendulum_2",            X_OBJ_NAMES("Pendulum", "Sandbag", "Swinging box"))
+X_OBJ_NAME_DEFINE(O_POISON_DART,           "poison_dart",           X_OBJ_NAMES("Poison Dart"))
+X_OBJ_NAME_DEFINE(O_POISON_DART_EMITTER,   "poison_dart_emitter",   X_OBJ_NAMES("Poison Dart Emitter"))
 X_OBJ_NAME_DEFINE(O_POWER_SAW,             "power_saw",             X_OBJ_NAMES("Power Saw"))
 X_OBJ_NAME_DEFINE(O_PROPELLER_1,           "propeller_1",           X_OBJ_NAMES("Airplane Propeller"))
 X_OBJ_NAME_DEFINE(O_PROPELLER_2,           "propeller_2",           X_OBJ_NAMES("Underwater Propeller"))

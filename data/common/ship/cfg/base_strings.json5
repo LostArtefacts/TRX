@@ -1365,6 +1365,12 @@
                 "Swinging box",
             ]
         },
+        "poison_dart": {
+            "name": "Poison Dart",
+        },
+        "poison_dart_emitter": {
+            "name": "Poison Dart Emitter",
+        },
         "power_saw": {
             "name": "Power Saw",
         },

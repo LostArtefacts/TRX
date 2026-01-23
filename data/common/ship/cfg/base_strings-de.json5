@@ -1868,6 +1868,12 @@
         },
         "snake": {
             "name": "\\{review}Schlange",
+        },
+        "poison_dart": {
+            "name": "\\{review}Giftpfeil",
+        },
+        "poison_dart_emitter": {
+            "name": "\\{review}Giftpfeilwerfer",
         }
     }
 }

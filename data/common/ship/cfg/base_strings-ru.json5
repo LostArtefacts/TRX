@@ -1875,6 +1875,12 @@
         },
         "snake": {
             "name": "\\{review}Змей",
+        },
+        "poison_dart": {
+            "name": "\\{review}Отравленный дротик",
+        },
+        "poison_dart_emitter": {
+            "name": "\\{review}Метатель отравленных дротиков",
         }
     }
 }

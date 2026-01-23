@@ -1846,6 +1846,12 @@
         },
         "snake": {
             "name": "\\{review}Wąż",
+        },
+        "poison_dart": {
+            "name": "\\{review}Zatruta strzałka",
+        },
+        "poison_dart_emitter": {
+            "name": "\\{review}Wyrzutnia zatrutych strzałek",
         }
     }
 }

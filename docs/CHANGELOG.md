@@ -63,7 +63,8 @@
 - added TR3 behavior patterns to Tiger control
 - added Kill All Triggered control
 - added Vulture control
-- added boulder control
+- added Boulder control
+- added Poison Dart control
 - added Lara's backwards-hop stumble if there is a slope behind her
 - changed enemy drops to appear at the tile center, to conform with the OG
 - fixed actors jumping to their start frame at the end of cutscenes

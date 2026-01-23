@@ -1879,6 +1879,12 @@
         },
         "snake": {
             "name": "\\{review}Nathair",
+        },
+        "poison_dart": {
+            "name": "Dàrt Phuinnseanta",
+        },
+        "poison_dart_emitter": {
+            "name": "Sgaoiladair Dàrt Phuinnseanta",
         }
     }
 }

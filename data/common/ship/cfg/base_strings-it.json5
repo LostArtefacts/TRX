@@ -1897,6 +1897,12 @@
         },
         "snake": {
             "name": "\\{review}Serpente",
+        },
+        "poison_dart": {
+            "name": "\\{review}Dardo avvelenato",
+        },
+        "poison_dart_emitter": {
+            "name": "\\{review}Lanciatore di dardi avvelenati",
         }
     }
 }
