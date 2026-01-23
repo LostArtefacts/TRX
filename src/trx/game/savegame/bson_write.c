@@ -185,6 +185,18 @@ static void M_WriteNumNZ_Double(
         float: M_WriteNumNZ_Double,                                            \
         double: M_WriteNumNZ_Double)(ctx, key, value)
 
+static int32_t M_GetMusicTrackFlagsCount(void)
+{
+    int32_t last_index = -1;
+    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+        const uint16_t flags = Music_GetTrackFlags(i);
+        if (flags != 0) {
+            last_index = i;
+        }
+    }
+    return last_index + 1;
+}
+
 // =============================================================================
 // End of internal helpers
 // =============================================================================
@@ -669,9 +681,10 @@ void Savegame_BSON_DumpCameras(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
 
 void Savegame_BSON_DumpMusic(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
 {
+    const int32_t track_flag_count = M_GetMusicTrackFlagsCount();
     M_PushObject(ctx);
     M_PushArray(ctx);
-    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+    for (int32_t i = 0; i < track_flag_count; i++) {
         M_PushNum(ctx, Music_GetTrackFlags(i));
         M_PopAndAppend(ctx);
     }
@@ -695,7 +708,7 @@ void Savegame_BSON_DumpMusic(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
 
     // TR1X <4.16
     M_PushArray(ctx);
-    for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
+    for (int32_t i = 0; i < track_flag_count; i++) {
         M_PushNum(ctx, Music_GetTrackFlags(i));
         M_PopAndAppend(ctx);
     }

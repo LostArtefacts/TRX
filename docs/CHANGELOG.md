@@ -13,6 +13,7 @@
 - added endless flare time cheat (Gameplay options → Mods → Endless flare time)
 - changed rooms-to-draw tracking to no longer stop at the 100-room limit
 - improved inventory ring active item highlight for smoother appearance
+- improved savegame file size by reducing it about 20–30%.
 - changed all UI bar colors from hardcoded to configurable via `cfg/ui.json5`, enabling some customization for PS1 bars
 - changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`
 - changed `enable_invulnerability` to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)
