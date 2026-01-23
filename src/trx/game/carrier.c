@@ -6,8 +6,10 @@
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rooms/utils.h>
 #include <trx/log.h>
 #include <trx/vector.h>
+#include <trx/version.h>
 
 #define M_DROP_FAST_RATE GRAVITY
 #define M_DROP_SLOW_RATE 1
@@ -322,6 +324,17 @@ void Carrier_TestItemDrops(const int16_t item_num)
             pickup->pos = carrier->pos;
             pickup->rot = carrier->rot;
             pickup->status = IS_INACTIVE;
+        }
+
+        ITEM *const pickup = Item_Get(item->spawn_num);
+        if (g_TRVersion == 3) {
+            int16_t room_num = carrier->room_num;
+            pickup->pos.x = ROUND_TO_SECTOR(carrier->pos.x) + WALL_L / 2;
+            pickup->pos.z = ROUND_TO_SECTOR(carrier->pos.z) + WALL_L / 2;
+            const SECTOR *const sector = Room_GetSector(
+                pickup->pos.x, carrier->pos.y, pickup->pos.z, &room_num);
+            pickup->pos.y = Room_GetHeight(
+                sector, pickup->pos.x, carrier->pos.y, pickup->pos.z);
         }
 
         item->status = DS_FALLING;

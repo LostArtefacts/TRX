@@ -56,6 +56,7 @@
 - added Aldwych Drill control (Spike Ceiling with timer=1 to descend faster)
 - added TR3 behavior patterns to Tiger control
 - added Kill All Triggered control
+- changed enemy drops to appear at the tile center, to conform with the OG
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation
 - fixed seaweed disappearing too quickly in certain levels
