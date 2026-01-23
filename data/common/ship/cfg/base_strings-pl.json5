@@ -407,6 +407,8 @@
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Kiedy Lara spróbuje wejść w interakcję z zamkiem lub slotem na przedmiot i ma odpowiednią rzecz w plecaku, zostanie ona automatycznie wybrana.",
         "SETTING_ENABLE_BAR_FLASHING": "Migające paski",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "Sprawia, że paski zdrowia i tlenu Lary zaczynają migać, kiedy dany zasób jest na wyczerpaniu.",
+        "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Włącz wstrząsy głazów",
+        "SETTING_ENABLE_BOULDER_SHAKE_DESCRIPTION": "\\{review}Po włączeniu kamera będzie się trząść, gdy głaz jest w ruchu.",
         "SETTING_ENABLE_BOUNCY_GRENADES": "\\{review}Odbijające się granaty",
         "SETTING_ENABLE_BOUNCY_GRENADES_DESCRIPTION": "\\{review}Włącza zachowanie granatów w stylu TR3: odbijają się od ścian i pochyłości oraz tworzą większy promień wybuchu, ale kosztem zmniejszonej prędkości.",
         "SETTING_ENABLE_BRAID": "Warkocz Lary",

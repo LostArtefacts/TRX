@@ -407,6 +407,8 @@
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "When Lara presses action against a keyhole or puzzle slot, and she has the corresponding item in the inventory, that item will be pre-selected.",
         "SETTING_ENABLE_BAR_FLASHING": "Flash bars",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "Makes Lara's health and oxygen bars blink when she's running low on either resource.",
+        "SETTING_ENABLE_BOULDER_SHAKE": "Enable boulder shake",
+        "SETTING_ENABLE_BOULDER_SHAKE_DESCRIPTION": "If enabled, the camera will shake when a boulder is in motion.",
         "SETTING_ENABLE_BOUNCY_GRENADES": "Bouncy grenades",
         "SETTING_ENABLE_BOUNCY_GRENADES_DESCRIPTION": "Enables TR3-style grenade behavior: they ricochet off walls and slopes and produce a larger blast radius, but at the expense of reduced velocity.",
         "SETTING_ENABLE_BRAID": "Lara's braid",

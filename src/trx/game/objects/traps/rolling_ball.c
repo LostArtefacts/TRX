@@ -19,21 +19,19 @@ static void M_Roll(ITEM *const item)
     item->fall_speed = 0;
     item->pos.y = item->floor;
 
-    if (g_TRVersion == 1) {
-        return;
+    if (g_TRVersion > 1) {
+        if (item->object_id == O_ROLLING_BALL_1) {
+            Sound_Effect(SFX_ROLLING_BALL_1_ROLL, &item->pos, SPM_NORMAL);
+        } else if (item->object_id == O_ROLLING_BALL_2) {
+            Sound_Effect(SFX_ROLLING_BALL_2_ROLL, &item->pos, SPM_NORMAL);
+        } else if (item->object_id == O_ROLLING_BALL_3) {
+            Sound_Effect(SFX_ROLLING_BALL_3_ROLL, &item->pos, SPM_NORMAL);
+        } else if (item->object_id == O_ROLLING_BALL_4) {
+            Sound_Effect(SFX_ROLLING_BALL_4_ROLL, &item->pos, SPM_NORMAL);
+        }
     }
 
-    if (item->object_id == O_ROLLING_BALL_1) {
-        Sound_Effect(SFX_ROLLING_BALL_1_ROLL, &item->pos, SPM_NORMAL);
-    } else if (item->object_id == O_ROLLING_BALL_2) {
-        Sound_Effect(SFX_ROLLING_BALL_2_ROLL, &item->pos, SPM_NORMAL);
-    } else if (item->object_id == O_ROLLING_BALL_3) {
-        Sound_Effect(SFX_ROLLING_BALL_3_ROLL, &item->pos, SPM_NORMAL);
-    } else if (item->object_id == O_ROLLING_BALL_4) {
-        Sound_Effect(SFX_ROLLING_BALL_4_ROLL, &item->pos, SPM_NORMAL);
-    }
-
-    if (g_TRVersion >= 2) {
+    if (g_Config.gameplay.enable_boulder_shake) {
         const int32_t dist = Math_Sqrt(
             (g_Camera.mic_pos.z - item->pos.z)
                 * (g_Camera.mic_pos.z - item->pos.z)

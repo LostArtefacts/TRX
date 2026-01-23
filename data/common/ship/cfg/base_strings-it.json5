@@ -407,6 +407,8 @@
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Quando Lara preme azione contro un buco della serratura o un altro ricettacolo e ha l'oggetto corrispondente nell'inventario, quell'oggetto verrà preselezionato.",
         "SETTING_ENABLE_BAR_FLASHING": "Barre lampeggianti",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "Fa in modo che le barre della salute e dell'ossigeno di Lara lampeggino quando stanno per esaurirsi.",
+        "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Attiva vibrazione massi",
+        "SETTING_ENABLE_BOULDER_SHAKE_DESCRIPTION": "\\{review}Se attivata, la telecamera vibrerà quando un masso è in movimento.",
         "SETTING_ENABLE_BOUNCY_GRENADES": "\\{review}Granate rimbalzanti",
         "SETTING_ENABLE_BOUNCY_GRENADES_DESCRIPTION": "\\{review}Abilita il comportamento delle granate in stile TR3: rimbalzano su muri e pendii e producono un raggio d'esplosione più ampio, ma a scapito di una velocità ridotta.",
         "SETTING_ENABLE_BRAID": "Treccia di Lara",
