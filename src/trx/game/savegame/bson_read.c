@@ -695,17 +695,19 @@ static bool M_ReadItem(
     if (obj->save_flags) {
         M_MUST(M_ReadNum(ctx, "flags", &item->flags));
         M_MUST(M_ReadNum(ctx, "timer", &item->timer));
+        ITEM_STATUS saved_status = item->status;
+        M_OPTIONAL(M_ReadNum(ctx, "status", &saved_status));
 
         if ((item->flags & IF_KILLED) != 0) {
             Item_Kill(item_num);
-            item->status = IS_DEACTIVATED;
+            item->status = saved_status;
         } else {
             bool is_active;
             M_MUST(M_ReadBool(ctx, "active", &is_active));
             if (is_active && !item->active) {
                 Item_AddActive(item_num);
             }
-            M_MUST(M_ReadNum(ctx, "status", &item->status));
+            item->status = saved_status;
             M_MUST(M_ReadBool(ctx, "gravity", &item->gravity));
             M_OPTIONAL(M_ReadBool(ctx, "collidable", &item->collidable));
         }
