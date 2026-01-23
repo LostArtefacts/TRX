@@ -1543,6 +1543,12 @@
                 "Rolling Ball 3",
             ]
         },
+        "rolling_ball_4": {
+            "name": [
+                "Boulder 4",
+                "Rolling Ball 4",
+            ]
+        },
         "swinging_axe": {
             "name": "\\{review}Schwingende Axt",
         },

@@ -1525,6 +1525,9 @@
         "rolling_ball_3": {
             "name": "Głaz 3",
         },
+        "rolling_ball_4": {
+            "name": "Głaz 4",
+        },
         "swinging_axe": {
             "name": "Siekiera",
         },

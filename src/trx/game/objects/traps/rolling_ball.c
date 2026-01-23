@@ -29,6 +29,8 @@ static void M_Roll(ITEM *const item)
         Sound_Effect(SFX_ROLLING_BALL_2_ROLL, &item->pos, SPM_NORMAL);
     } else if (item->object_id == O_ROLLING_BALL_3) {
         Sound_Effect(SFX_ROLLING_BALL_3_ROLL, &item->pos, SPM_NORMAL);
+    } else if (item->object_id == O_ROLLING_BALL_4) {
+        Sound_Effect(SFX_ROLLING_BALL_4_ROLL, &item->pos, SPM_NORMAL);
     }
 
     if (g_TRVersion >= 2) {
@@ -57,6 +59,10 @@ static bool M_TestStop(const ITEM *const item)
         } else {
             dist = STEP_L * 5 / 4;
         }
+        break;
+    case O_ROLLING_BALL_4:
+        item_height = WALL_L * 33 / 16;
+        dist = WALL_L * 17 / 16;
         break;
     default:
         item_height = WALL_L;
@@ -89,6 +95,9 @@ static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
     } else if (item->object_id == O_ROLLING_BALL_3) {
         Sound_Effect(SFX_ROLLING_BALL_3_STOP, &item->pos, SPM_NORMAL);
         item->goal_anim_state = TRAP_WORKING;
+    } else if (item->object_id == O_ROLLING_BALL_4) {
+        Sound_Effect(SFX_ROLLING_BALL_4_STOP, &item->pos, SPM_NORMAL);
+        item->status = IS_DEACTIVATED;
     }
 
     item->pos.x = old_pos.x;
@@ -233,3 +242,4 @@ static void M_Setup(OBJECT *const obj)
 REGISTER_OBJECT(O_ROLLING_BALL_1, M_Setup)
 REGISTER_OBJECT(O_ROLLING_BALL_2, M_Setup)
 REGISTER_OBJECT(O_ROLLING_BALL_3, M_Setup)
+REGISTER_OBJECT(O_ROLLING_BALL_4, M_Setup)

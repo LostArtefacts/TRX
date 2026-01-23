@@ -1530,6 +1530,12 @@
                 "\\{review}Boule Roulante 3",
             ]
         },
+        "rolling_ball_4": {
+            "name": [
+                "\\{review}Rocher 4",
+                "\\{review}Boule Roulante 4",
+            ]
+        },
         "swinging_axe": {
             "name": "\\{review}Hache Oscillante",
         },
