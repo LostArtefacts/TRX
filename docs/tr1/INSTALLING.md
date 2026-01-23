@@ -371,7 +371,8 @@ If you install everything correctly, your game directory should look more or les
 2. Run TR1X from the Applications folder. This will show you an error dialog about missing game data files. This is expected at this point, as you have not copied them in yet. However, it's important to run the app first to allow macOS to verify the app bundle's signature.
 3. Find TR1X in your Applications folder. Right-click it and click "Show Package Contents".
 4. Copy your Tomb Raider 1 game data files into `Contents/Resources`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
-If when you open the game and you see a popup "TR1X is damaged", run `xattr -cr /Applications/TR1X.app`
+
+In case you see a popup "TR1X is damaged" when you run the game, run `xattr -cr /Applications/TR1X.app`.
 
 ## Verifying the installation
 

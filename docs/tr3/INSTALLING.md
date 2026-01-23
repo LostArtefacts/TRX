@@ -385,7 +385,7 @@ If you install everything correctly, your game directory should look more or les
 3. Find TR3X in your Applications folder. Right-click it and click "Show Package Contents".
 4. Copy your Tomb Raider 3 game data files into `Contents/Resources`. (See the Windows / Linux instructions for retrieving game data from e.g. GOG.)
 
-If when you open the game and you see a popup "TR3X is damaged", run `xattr -cr /Applications/TR3X.app`
+In case you see a popup "TR3X is damaged" when you run the game, run `xattr -cr /Applications/TR3X.app`.
 
 ## Verifying the installation
 
