@@ -1,9 +1,14 @@
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
+#include <trx/game/random.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks.h>
 #include <trx/log.h>
+#include <trx/utils.h>
 #include <trx/version.h>
+
+#define M_POISON_TIMER 24
 
 typedef enum {
     // clang-format off
@@ -13,10 +18,39 @@ typedef enum {
     // clang-format on
 } M_STATE;
 
-static void M_CreateProjectile(ITEM *const item)
+static OBJECT_ID M_GetProjectileObjectID(const OBJECT_ID emitter_id)
+{
+    switch (emitter_id) {
+    case O_DART_EMITTER:
+        return O_DART;
+    case O_DISC_EMITTER:
+        return O_DISC;
+    case O_POISON_DART_EMITTER:
+        return O_POISON_DART;
+    default:
+        return NO_OBJECT;
+    }
+}
+
+static void M_TriggerPoisonDartSmoke(
+    const ITEM *const item, const int32_t x, const int32_t z)
+{
+    const int32_t x_limit = x != 0 ? ABS(x << 1) - 1 : 0;
+    const int32_t z_limit = x == 0 ? ABS(z << 1) - 1 : 0;
+    for (int32_t i = 0; i < 5; i++) {
+        const int32_t rnd = -Random_GetControl();
+        const XZ_32 vel = {
+            .x = x >= 0 ? (x_limit & rnd) : -(x_limit & rnd),
+            .z = z >= 0 ? (z_limit & rnd) : -(z_limit & rnd),
+        };
+        Sparks_TriggerDartSmoke(item->pos, vel, false);
+    }
+}
+
+static void M_CreateProjectile(const ITEM *const item)
 {
     const OBJECT_ID projectile_obj_id =
-        item->object_id == O_DART_EMITTER ? O_DART : O_DISC;
+        M_GetProjectileObjectID(item->object_id);
     if (!Object_Get(projectile_obj_id)->loaded) {
         LOG_ERROR(
             "Projectile object not loaded for item #%d", Item_GetIndex(item));
@@ -35,20 +69,23 @@ static void M_CreateProjectile(ITEM *const item)
     projectile_item->rot.y = item->rot.y;
     projectile_item->pos.y = item->pos.y - 512;
 
+    const bool is_poison = item->object_id == O_POISON_DART_EMITTER;
+    const int32_t wall_inset = is_poison ? 0 : 100;
+
     int32_t x = 0;
     int32_t z = 0;
     switch (projectile_item->rot.y) {
     case 0:
-        z = -WALL_L / 2 + 100;
+        z = (is_poison ? 1 : -1) * (WALL_L / 2 - wall_inset);
         break;
     case DEG_90:
-        x = -WALL_L / 2 + 100;
+        x = (is_poison ? 1 : -1) * (WALL_L / 2 - wall_inset);
         break;
     case -DEG_180:
-        z = WALL_L / 2 - 100;
+        z = (is_poison ? -1 : 1) * (WALL_L / 2 - wall_inset);
         break;
     case -DEG_90:
-        x = WALL_L / 2 - 100;
+        x = (is_poison ? -1 : 1) * (WALL_L / 2 - wall_inset);
         break;
     }
 
@@ -58,7 +95,12 @@ static void M_CreateProjectile(ITEM *const item)
     Item_AddActive(projectile_item_num);
     projectile_item->status = IS_ACTIVE;
 
-    if (item->object_id == O_DART_EMITTER) {
+    if (is_poison) {
+        projectile_item->rot.y += DEG_180;
+        projectile_item->speed = STEP_L;
+        M_TriggerPoisonDartSmoke(projectile_item, x, z);
+        Sound_Effect(SFX_BLOWPIPE_BLOW, &projectile_item->pos, SPM_NORMAL);
+    } else if (item->object_id == O_DART_EMITTER) {
         const int16_t effect_num = Effect_Create(projectile_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
@@ -95,11 +137,34 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
+static void M_ControlPoisonEmitter(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+
+    if (item->active) {
+        if (item->timer > 0) {
+            item->timer--;
+            return;
+        }
+        item->timer = M_POISON_TIMER;
+    }
+
+    M_CreateProjectile(item);
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->save_flags = true;
 }
 
+static void M_SetupPoisonEmitter(OBJECT *const obj)
+{
+    obj->draw_func = nullptr;
+    obj->control_func = M_ControlPoisonEmitter;
+    obj->save_flags = true;
+}
+
 REGISTER_OBJECT(O_DART_EMITTER, M_Setup)
 REGISTER_OBJECT(O_DISC_EMITTER, M_Setup)
+REGISTER_OBJECT(O_POISON_DART_EMITTER, M_SetupPoisonEmitter)

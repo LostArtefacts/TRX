@@ -1,6 +1,7 @@
 #include <trx/game/output/sources/poly_fx.h>
 
 #include <trx/debug.h>
+#include <trx/game/camera.h>
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/shaders/mesh.h>
@@ -10,6 +11,7 @@
 #include <trx/utils.h>
 #include <trx/vector.h>
 
+#include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -492,6 +494,140 @@ void OutputSource_PolyFX_StageTriExtUV(
     M_ApplyTintToColors(prim.color, 3);
     prim.flags = flags;
     Vector_Add(target, &prim);
+}
+
+void OutputSource_PolyFX_StageLineSegment(
+    const XYZ_32 from, const RGBA_8888 from_color, const XYZ_32 to,
+    const RGBA_8888 to_color, const float half_width)
+{
+    const int64_t zv_mid = (M_GetViewDepth(from) + M_GetViewDepth(to)) / 2;
+    const int64_t near_z = Output_GetNearZ();
+    const int64_t far_z = Output_GetFarZ();
+    if (zv_mid <= near_z || zv_mid >= far_z) {
+        return;
+    }
+
+    const float dx = (float)(to.x - from.x);
+    const float dy = (float)(to.y - from.y);
+    const float dz = (float)(to.z - from.z);
+    float d_len = sqrtf(dx * dx + dy * dy + dz * dz);
+    if (d_len <= 0.00001f) {
+        return;
+    }
+    d_len = 1.0f / d_len;
+
+    const float dir_x = dx * d_len;
+    const float dir_y = dy * d_len;
+    const float dir_z = dz * d_len;
+
+    const XYZ_32 mid = {
+        (from.x + to.x) / 2,
+        (from.y + to.y) / 2,
+        (from.z + to.z) / 2,
+    };
+    const float vx = (float)(mid.x - g_Camera.pos.x);
+    const float vy = (float)(mid.y - g_Camera.pos.y);
+    const float vz = (float)(mid.z - g_Camera.pos.z);
+    float v_len = sqrtf(vx * vx + vy * vy + vz * vz);
+    if (v_len <= 0.00001f) {
+        return;
+    }
+    v_len = 1.0f / v_len;
+    const float view_x = vx * v_len;
+    const float view_y = vy * v_len;
+    const float view_z = vz * v_len;
+
+    float side0_x = dir_y * view_z - dir_z * view_y;
+    float side0_y = dir_z * view_x - dir_x * view_z;
+    float side0_z = dir_x * view_y - dir_y * view_x;
+    float side0_len =
+        sqrtf(side0_x * side0_x + side0_y * side0_y + side0_z * side0_z);
+    if (side0_len <= 0.00001f) {
+        side0_x = dir_y * 0.0f - dir_z * 1.0f;
+        side0_y = dir_z * 0.0f - dir_x * 0.0f;
+        side0_z = dir_x * 1.0f - dir_y * 0.0f;
+        side0_len =
+            sqrtf(side0_x * side0_x + side0_y * side0_y + side0_z * side0_z);
+        if (side0_len <= 0.00001f) {
+            return;
+        }
+    }
+    side0_len = 1.0f / side0_len;
+    side0_x *= side0_len;
+    side0_y *= side0_len;
+    side0_z *= side0_len;
+
+    float side1_x = dir_y * side0_z - dir_z * side0_y;
+    float side1_y = dir_z * side0_x - dir_x * side0_z;
+    float side1_z = dir_x * side0_y - dir_y * side0_x;
+    float side1_len =
+        sqrtf(side1_x * side1_x + side1_y * side1_y + side1_z * side1_z);
+    if (side1_len <= 0.00001f) {
+        return;
+    }
+    side1_len = 1.0f / side1_len;
+    side1_x *= side1_len;
+    side1_y *= side1_len;
+    side1_z *= side1_len;
+
+    const RGBA_8888 colors[4] = { from_color, from_color, to_color, to_color };
+    const float disp[4][2] = {};
+
+    {
+        const XYZ_32 quad0[4] = {
+            {
+                from.x - (int32_t)lrintf(side0_x * half_width),
+                from.y - (int32_t)lrintf(side0_y * half_width),
+                from.z - (int32_t)lrintf(side0_z * half_width),
+            },
+            {
+                from.x + (int32_t)lrintf(side0_x * half_width),
+                from.y + (int32_t)lrintf(side0_y * half_width),
+                from.z + (int32_t)lrintf(side0_z * half_width),
+            },
+            {
+                to.x + (int32_t)lrintf(side0_x * half_width),
+                to.y + (int32_t)lrintf(side0_y * half_width),
+                to.z + (int32_t)lrintf(side0_z * half_width),
+            },
+            {
+                to.x - (int32_t)lrintf(side0_x * half_width),
+                to.y - (int32_t)lrintf(side0_y * half_width),
+                to.z - (int32_t)lrintf(side0_z * half_width),
+            },
+        };
+        OutputSource_PolyFX_StageQuadExt(
+            -1, quad0, disp, colors,
+            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND);
+    }
+
+    {
+        const XYZ_32 quad1[4] = {
+            {
+                from.x - (int32_t)lrintf(side1_x * half_width),
+                from.y - (int32_t)lrintf(side1_y * half_width),
+                from.z - (int32_t)lrintf(side1_z * half_width),
+            },
+            {
+                from.x + (int32_t)lrintf(side1_x * half_width),
+                from.y + (int32_t)lrintf(side1_y * half_width),
+                from.z + (int32_t)lrintf(side1_z * half_width),
+            },
+            {
+                to.x + (int32_t)lrintf(side1_x * half_width),
+                to.y + (int32_t)lrintf(side1_y * half_width),
+                to.z + (int32_t)lrintf(side1_z * half_width),
+            },
+            {
+                to.x - (int32_t)lrintf(side1_x * half_width),
+                to.y - (int32_t)lrintf(side1_y * half_width),
+                to.z - (int32_t)lrintf(side1_z * half_width),
+            },
+        };
+        OutputSource_PolyFX_StageQuadExt(
+            -1, quad1, disp, colors,
+            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND);
+    }
 }
 
 void OutputSource_PolyFX_StageSpark(const SPARK *const spark)

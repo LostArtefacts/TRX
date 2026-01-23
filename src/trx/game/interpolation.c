@@ -63,6 +63,7 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
         break;
 
     case O_DART:
+    case O_DISC:
     case O_BOAT:
     case O_SKIDOO_ARMED:
     case O_SKIDOO_TRACK:
@@ -76,6 +77,7 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
         max_xz = 300;
         break;
 
+    case O_POISON_DART:
     case O_ROCKET:
         max_xz = 1000;
         max_y = 200;
