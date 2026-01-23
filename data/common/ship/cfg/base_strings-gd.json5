@@ -1555,6 +1555,12 @@
                 "Ball-rollaidh 3",
             ]
         },
+        "rolling_ball_4": {
+            "name": [
+                "Ulbhag 4",
+                "Ball-rollaidh 4",
+            ]
+        },
         "swinging_axe": {
             "name": "Tuagh",
         },

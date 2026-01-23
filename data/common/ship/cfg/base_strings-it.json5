@@ -1311,6 +1311,12 @@
                 "Masso Rotolante 3",
             ]
         },
+        "rolling_ball_4": {
+            "name": [
+                "Masso 4",
+                "Masso Rotolante 4",
+            ]
+        },
         "spikes": {
             "name": "Spuntoni",
         },
