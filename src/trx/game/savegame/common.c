@@ -2,6 +2,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/enum_map.h>
+#include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
@@ -432,13 +433,16 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     if (resume == nullptr) {
         return;
     }
+
+    resume->flags.available = true;
+    resume->allies_hostile = Creature_AreAlliesHostile();
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
 
     if (lara_item != nullptr) {
         resume->lara_hitpoints = lara_item->hit_points;
     }
-    resume->flags.available = true;
     resume->small_medipacks = Inv_RequestItem(O_SMALL_MEDIPACK_ITEM);
     resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
 
