@@ -7,6 +7,7 @@
 - added a new Lua function, `trx.rooms.flip()`, to toggle the flip map (#4704)
 - added a new Lua function, `trx.rooms.flip_effect()`, to set the active flip effect with an optional timer (#4704)
 - added a new Lua catalog, `trx.catalog.flip_effects` for name-based flip effect catalog IDs
+- added new Lua catalogs for Lara states, Lara anims, music, and samples
 - added support for cross-fades to the title screen
 - added visual previews of bar colors (Graphic Options → Bars)
 - added endless sprint (available previously via the `/restless` command) to the UI settings (Gameplay options → Mods → Endless sprint)
