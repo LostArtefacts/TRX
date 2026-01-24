@@ -349,7 +349,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
 
     const bool too_far = ABS(z) > M_MAX_DISTANCE || ABS(x) > M_MAX_DISTANCE;
     if (creature->enemy == nullptr || (g_TRVersion == 3 && too_far)) {
-        info->distance = 0x7FFFFFFF;
+        info->distance = INT32_MAX;
     } else if (g_TRVersion < 3 && too_far) {
         info->distance = SQUARE(M_MAX_DISTANCE);
     } else {
@@ -370,6 +370,16 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         info->x_angle = Math_Atan(x + (z >> 1), y);
     } else {
         info->x_angle = Math_Atan(z + (x >> 1), y);
+    }
+
+    if (g_TRVersion == 3) {
+        if (!creature->hurt_by_lara && creature->enemy == lara_item
+            && !Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
+            creature->enemy = nullptr;
+            info->ahead = false;
+            info->bite = false;
+            info->distance = INT32_MAX;
+        }
     }
 }
 
