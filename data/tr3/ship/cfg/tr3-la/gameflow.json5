@@ -124,6 +124,7 @@
         // 5. It's a Madhouse!
         {
             "path": "data/zoo.tr2",
+            "script": "data/scripts/zoo.lua",
             "music_track": 34,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/zoo.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},

@@ -215,7 +215,7 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
 
         if (!creature->hurt_by_lara && creature->enemy == lara_item
-            && Object_Get(O_TIGER)->loaded) {
+            && !Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
             creature->enemy = nullptr;
         }
 
