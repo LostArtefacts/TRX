@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/game.h>
+#include <trx/game/output/draw.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/shell.h>
@@ -59,6 +60,7 @@ static void M_Draw(PHASE *const phase)
     if (p->taking_screenshot) {
         p->taking_screenshot = false;
     } else {
+        Output_DrawPhotoModeFrame();
         UI_PhotoMode(PhotoMode_GetCurrentMode());
     }
 }

@@ -239,10 +239,6 @@ void PhotoMode_Start(void)
     Camera_PhotoMode_Enter();
     Music_Pause();
     Sound_PauseAll();
-
-    if (!g_Config.ui.enable_photo_mode_ui) {
-        Console_Log(GS(OSD_PHOTO_MODE_LAUNCHED));
-    }
 }
 
 void PhotoMode_End(void)

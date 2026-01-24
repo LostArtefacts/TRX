@@ -283,7 +283,6 @@
         "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Emplacement de sauvegarde %d invalide",
         "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "L'emplacement de sauvegarde %d n'est pas disponible",
         "OSD_OBJECT_NOT_FOUND": "Objet non trouvé",
-        "OSD_PHOTO_MODE_LAUNCHED": "Entrée en mode photo, appuyez sur \\{input toggle_ui} pour afficher l'aide",
         "OSD_PLAY_CUTSCENE": "Chargement de la cinématique %d",
         "OSD_PLAY_DEMO": "Chargement de la démo %d",
         "OSD_PLAY_LEVEL": "Chargement de %s",

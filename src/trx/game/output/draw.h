@@ -31,6 +31,7 @@ void Output_DrawScreenGradientQuad(
 void Output_DrawScreenFrame(
     int32_t sx, int32_t sy, int32_t w, int32_t h, RGBA_8888 col_dark,
     RGBA_8888 col_light, float thickness);
+void Output_DrawPhotoModeFrame(void);
 
 void Output_DrawSphere(XYZ_16 center, int32_t radius);
 void Output_DrawCuboid(const BOUNDS_16 *bounds);

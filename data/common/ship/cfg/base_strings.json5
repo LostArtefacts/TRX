@@ -283,7 +283,6 @@
         "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
         "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Save slot %d is not available",
         "OSD_OBJECT_NOT_FOUND": "Object not found",
-        "OSD_PHOTO_MODE_LAUNCHED": "Entering photo mode, press \\{input toggle_ui} for help",
         "OSD_PLAY_CUTSCENE": "Loading cutscene %d",
         "OSD_PLAY_DEMO": "Loading demo %d",
         "OSD_PLAY_LEVEL": "Loading %s",

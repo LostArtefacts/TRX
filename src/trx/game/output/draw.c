@@ -401,6 +401,13 @@ void Output_DrawScreenFrame(
     // clang-format on
 }
 
+void Output_DrawPhotoModeFrame(void)
+{
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_GAME);
+    const RGBA_8888 color = { 255, 0, 0, 96 };
+    OutputSource_UI_StagePhotoModeFrame(rect, color, 4.0f);
+}
+
 void Output_DrawSphere(const XYZ_16 center, const int32_t radius)
 {
     Matrix_Push();

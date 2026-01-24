@@ -40,5 +40,7 @@ void OutputSource_UI_Shutdown(void);
 void OutputSource_UI_StagePickup(OUTPUT_UI_PICKUP pickup);
 void OutputSource_UI_StageSprite(OUTPUT_UI_SPRITE sprite);
 void OutputSource_UI_StageQuad(OUTPUT_UI_QUAD quad);
+void OutputSource_UI_StagePhotoModeFrame(
+    VIEWPORT_RECT rect, RGBA_8888 color, float thickness);
 
 VIEWPORT_RECT OutputSource_UI_GetPickupRect(const OUTPUT_UI_PICKUP *pickup);

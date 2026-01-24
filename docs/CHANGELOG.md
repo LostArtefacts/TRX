@@ -18,6 +18,8 @@
 - added an option to make Lara stumble if she hops backwards and there is a slope behind her (Gameplay options → Controls → Backwards slope stumble)
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
+- changed photo mode to no longer show "Entering photo mode" in the console
+- changed photo mode to always display a red frame around the game view when active (not visible in screenshots)
 - changed rooms-to-draw tracking to no longer stop at the 100-room limit
 - changed boulders to stop if the ceiling height is lower than their height
 - changed all UI bar colors from hardcoded to configurable via `cfg/ui.json5`, enabling some customization for PS1 bars

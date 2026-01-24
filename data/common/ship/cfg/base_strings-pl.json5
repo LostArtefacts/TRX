@@ -283,7 +283,6 @@
         "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Nieprawidłowy slot zapisu %d",
         "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Slot zapisu %d jest niedostępny",
         "OSD_OBJECT_NOT_FOUND": "Nie odnaleziono tego obiektu",
-        "OSD_PHOTO_MODE_LAUNCHED": "Tryb zdjęć. Naciśnij \\{input toggle_ui}, aby uzyskać pomoc",
         "OSD_PLAY_CUTSCENE": "Wczytano przerywnik %d",
         "OSD_PLAY_DEMO": "Wczytano demo %d",
         "OSD_PLAY_LEVEL": "Wczytano %s",
