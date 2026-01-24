@@ -8,7 +8,7 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
-#define M_POISON_TIMER 24
+#define M_POISON_FIRE_TIMER 24
 
 typedef enum {
     // clang-format off
@@ -17,6 +17,22 @@ typedef enum {
     STATE_RELOAD = 2,
     // clang-format on
 } M_STATE;
+
+typedef struct {
+    int32_t fire_timer;
+} M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->fire_timer = JSON_ObjectGetInt(priv_root, "fire_timer", 0);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "fire_timer", p->fire_timer);
+}
 
 static OBJECT_ID M_GetProjectileObjectID(const OBJECT_ID emitter_id)
 {
@@ -140,15 +156,19 @@ static void M_Control(const int16_t item_num)
 static void M_ControlPoisonEmitter(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
 
-    if (item->active) {
-        if (item->timer > 0) {
-            item->timer--;
-            return;
-        }
-        item->timer = M_POISON_TIMER;
+    if (!Item_IsTriggerActive(item)) {
+        p->fire_timer = 0;
+        return;
     }
 
+    if (p->fire_timer > 0) {
+        p->fire_timer--;
+        return;
+    }
+
+    p->fire_timer = M_POISON_FIRE_TIMER;
     M_CreateProjectile(item);
 }
 
@@ -162,6 +182,9 @@ static void M_SetupPoisonEmitter(OBJECT *const obj)
 {
     obj->draw_func = nullptr;
     obj->control_func = M_ControlPoisonEmitter;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->save_flags = true;
 }
 
