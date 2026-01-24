@@ -39,6 +39,7 @@
 - fixed running `/title` and similar commands when examining an item causing incorrect item rotation next time the ring opens (old regression)
 - fixed endless sprint cheat setting not retained between game relaunches
 - fixed Cobras not being counted in level kill count
+- fixed stats dialog retaining friendly status for allies that become enemy types in later levels, causing them to get excluded from kill count
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)

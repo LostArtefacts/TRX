@@ -363,7 +363,7 @@ void Stats_CalculateMaxStats(void)
 
         const LEVEL_LOADER *const loader = Level_GuessLoader(file);
         if (loader != nullptr) {
-            Creature_SetAlliesHostile(false);
+            Creature_Reset();
 
             Lua_ClearLevelListeners();
             Lua_SetScriptContext(LUA_CONTEXT_LEVEL);
