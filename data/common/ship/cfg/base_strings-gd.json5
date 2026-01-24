@@ -1885,6 +1885,33 @@
         },
         "poison_dart_emitter": {
             "name": "Sgaoiladair Dàrt Phuinnseanta",
+        },
+        "red_light": {
+            "name": "\\{review}Solas Dearg",
+        },
+        "green_light": {
+            "name": "\\{review}Solas Uaine",
+        },
+        "blue_light": {
+            "name": "\\{review}Solas Gorm",
+        },
+        "amber_light": {
+            "name": "\\{review}Solas Òmar",
+        },
+        "white_light": {
+            "name": "\\{review}Solas Geal",
+        },
+        "on_off_light": {
+            "name": "\\{review}Solas Air/Off",
+        },
+        "pulse_light": {
+            "name": "\\{review}Solas Pulse",
+        },
+        "strobe_light": {
+            "name": "\\{review}Solas Strobe",
+        },
+        "beacon_light": {
+            "name": "\\{review}Solas Beacon",
         }
     }
 }

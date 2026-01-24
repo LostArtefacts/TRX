@@ -1881,6 +1881,33 @@
         },
         "poison_dart_emitter": {
             "name": "\\{review}Метатель отравленных дротиков",
+        },
+        "red_light": {
+            "name": "\\{review}Красный свет",
+        },
+        "green_light": {
+            "name": "\\{review}Зеленый свет",
+        },
+        "blue_light": {
+            "name": "\\{review}Синий свет",
+        },
+        "amber_light": {
+            "name": "\\{review}Янтарный свет",
+        },
+        "white_light": {
+            "name": "\\{review}Белый свет",
+        },
+        "on_off_light": {
+            "name": "\\{review}Включение/выключение света",
+        },
+        "pulse_light": {
+            "name": "\\{review}Импульсный свет",
+        },
+        "strobe_light": {
+            "name": "\\{review}Стробоскопический свет",
+        },
+        "beacon_light": {
+            "name": "\\{review}Маячковый свет",
         }
     }
 }

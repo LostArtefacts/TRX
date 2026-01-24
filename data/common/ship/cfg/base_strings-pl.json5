@@ -1852,6 +1852,33 @@
         },
         "poison_dart_emitter": {
             "name": "\\{review}Wyrzutnia zatrutych strzałek",
+        },
+        "red_light": {
+            "name": "\\{review}Czerwone Światło",
+        },
+        "green_light": {
+            "name": "\\{review}Zielone Światło",
+        },
+        "blue_light": {
+            "name": "\\{review}Niebieskie Światło",
+        },
+        "amber_light": {
+            "name": "\\{review}Bursztynowe Światło",
+        },
+        "white_light": {
+            "name": "\\{review}Białe Światło",
+        },
+        "on_off_light": {
+            "name": "\\{review}Światło Włącz/Wyłącz",
+        },
+        "pulse_light": {
+            "name": "\\{review}Pulsujące Światło",
+        },
+        "strobe_light": {
+            "name": "\\{review}Stroboskopowe Światło",
+        },
+        "beacon_light": {
+            "name": "\\{review}Światło Sygnalizacyjne",
         }
     }
 }

@@ -1874,6 +1874,33 @@
         },
         "poison_dart_emitter": {
             "name": "\\{review}Giftpfeilwerfer",
+        },
+        "red_light": {
+            "name": "\\{review}Rotes Licht",
+        },
+        "green_light": {
+            "name": "\\{review}Grünes Licht",
+        },
+        "blue_light": {
+            "name": "\\{review}Blaues Licht",
+        },
+        "amber_light": {
+            "name": "\\{review}Bernsteinfarbenes Licht",
+        },
+        "white_light": {
+            "name": "\\{review}Weißes Licht",
+        },
+        "on_off_light": {
+            "name": "\\{review}An/Aus Licht",
+        },
+        "pulse_light": {
+            "name": "\\{review}Pulsierendes Licht",
+        },
+        "strobe_light": {
+            "name": "\\{review}Stroboskoplicht",
+        },
+        "beacon_light": {
+            "name": "\\{review}Leuchtfeuer",
         }
     }
 }

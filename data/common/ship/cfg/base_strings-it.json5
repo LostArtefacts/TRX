@@ -1903,6 +1903,33 @@
         },
         "poison_dart_emitter": {
             "name": "\\{review}Lanciatore di dardi avvelenati",
+        },
+        "red_light": {
+            "name": "\\{review}Luce Rossa",
+        },
+        "green_light": {
+            "name": "\\{review}Luce Verde",
+        },
+        "blue_light": {
+            "name": "\\{review}Luce Blu",
+        },
+        "amber_light": {
+            "name": "\\{review}Luce Ambra",
+        },
+        "white_light": {
+            "name": "\\{review}Luce Bianca",
+        },
+        "on_off_light": {
+            "name": "\\{review}Luce Accesa/Spenta",
+        },
+        "pulse_light": {
+            "name": "\\{review}Luce a Impulsi",
+        },
+        "strobe_light": {
+            "name": "\\{review}Luce Strobo",
+        },
+        "beacon_light": {
+            "name": "\\{review}Luce Segnaletica",
         }
     }
 }

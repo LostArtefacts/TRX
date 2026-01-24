@@ -1861,6 +1861,33 @@
         },
         "poison_dart_emitter": {
             "name": "\\{review}Lanceur de dards empoisonnés",
+        },
+        "red_light": {
+            "name": "\\{review}Lumière Rouge",
+        },
+        "green_light": {
+            "name": "\\{review}Lumière Verte",
+        },
+        "blue_light": {
+            "name": "\\{review}Lumière Bleue",
+        },
+        "amber_light": {
+            "name": "\\{review}Lumière Ambre",
+        },
+        "white_light": {
+            "name": "\\{review}Lumière Blanche",
+        },
+        "on_off_light": {
+            "name": "\\{review}Lumière Marche/Arrêt",
+        },
+        "pulse_light": {
+            "name": "\\{review}Lumière Pulsée",
+        },
+        "strobe_light": {
+            "name": "\\{review}Lumière Stroboscopique",
+        },
+        "beacon_light": {
+            "name": "\\{review}Lumière Balise",
         }
     }
 }
