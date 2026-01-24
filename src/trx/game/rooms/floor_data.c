@@ -466,11 +466,6 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             if (is_shoal_object && trigger->type != TT_ANTIPAD
                 && trigger->type != TT_ANTITRIGGER) {
                 Shoal_TriggerActivate(trig_item, trigger->timer);
-            } else if (
-                trig_item->object_id == O_POISON_DART_EMITTER
-                && trig_item->active && trigger->type != TT_ANTIPAD
-                && trigger->type != TT_ANTITRIGGER) {
-                break;
             } else {
                 trig_item->timer = trigger->timer;
                 if (trig_item->timer != 1) {
