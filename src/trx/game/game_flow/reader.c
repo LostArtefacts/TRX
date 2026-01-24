@@ -769,6 +769,8 @@ static void M_LoadLevel(
         JSON_ObjectGetInt(jlvl_obj, "unobtainable_pickups", 0);
     level->unobtainable.kills =
         JSON_ObjectGetInt(jlvl_obj, "unobtainable_kills", 0);
+    level->unobtainable.ally_kills =
+        JSON_ObjectGetInt(jlvl_obj, "unobtainable_ally_kills", 0);
     level->unobtainable.secrets =
         JSON_ObjectGetInt(jlvl_obj, "unobtainable_secrets", 0);
 

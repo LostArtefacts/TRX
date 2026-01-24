@@ -25,8 +25,13 @@ static void M_IncludeKillableItem(
     LEVEL_MAX_STATS *const stats, int16_t item_num)
 {
     m_KillableItems[item_num] = true;
-    stats->max_kill_count++;
     const ITEM *const item = Item_Get(item_num);
+    const bool is_ally = Creature_IsAlly(item);
+    if (is_ally) {
+        stats->max_kill_ally_count++;
+    } else {
+        stats->max_kill_non_ally_count++;
+    }
     LOG_TRACE(
         "Killable item %d: object = %s", item_num,
         Object_GetName(item->object_id));
@@ -143,7 +148,8 @@ static void M_CheckTriggers(
 
             default:
                 // Add killable if object triggered
-                if (Creature_IsHostile(item)) {
+                if (Creature_IsHostile(item) || Creature_IsAlly(item)
+                    || Creature_IsAllyTargetingEnemy(item)) {
                     M_IncludeKillableItem(stats, item_num);
                 }
                 break;
@@ -269,7 +275,10 @@ void Stats_ScanLevel(const GF_LEVEL *const level)
     M_CalculateStats(max_stats);
     max_stats->max_pickup_count += GF_GetSecretRewardCount(level);
     max_stats->max_pickup_count -= level->unobtainable.pickups;
-    max_stats->max_kill_count -= level->unobtainable.kills;
     max_stats->max_secret_count -= level->unobtainable.secrets;
+    max_stats->max_kill_ally_count -= level->unobtainable.ally_kills;
+    max_stats->max_kill_non_ally_count -= level->unobtainable.kills;
+    max_stats->max_kill_count =
+        max_stats->max_kill_non_ally_count + max_stats->max_kill_ally_count;
     Benchmark_End(&benchmark, nullptr);
 }

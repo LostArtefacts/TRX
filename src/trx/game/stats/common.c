@@ -213,6 +213,8 @@ FINAL_STATS Stats_ComputeFinalStats(const bool include_bonus_levels)
         if (max_stats != nullptr) {
 #define L_ADD(prop) result.max_stats.prop += max_stats->prop;
             L_ADD(max_kill_count);
+            L_ADD(max_kill_ally_count);
+            L_ADD(max_kill_non_ally_count);
             L_ADD(max_pickup_count);
             L_ADD(max_secret_count);
             L_ADD(max_pickup_secret_count);

@@ -229,6 +229,9 @@
         "unobtainable_kills": {
           "type": "integer"
         },
+        "unobtainable_ally_kills": {
+          "type": "integer"
+        },
         "unobtainable_secrets": {
           "type": "integer"
         }

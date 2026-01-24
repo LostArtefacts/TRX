@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gym.h>
@@ -57,6 +58,7 @@ typedef struct UI_STATS_DIALOG_STATE {
             const STATS_COMMON *stats;
             const LEVEL_MAX_STATS *max_stats;
             FINAL_STATS final_stats;
+            LEVEL_MAX_STATS adjusted_max_stats;
         };
         const GYM_TRACK_STATS *assault_stats[GYM_TRACK_NUMBER_OF];
     };
@@ -127,6 +129,59 @@ static const char *M_FormatDistance(int32_t distance)
         return String_FormatStatic(
             "%d.%02dkm", distance / 1000, (distance % 1000) / 10);
     }
+}
+
+static void M_AdjustMaxKills(
+    UI_STATS_DIALOG_STATE *const s, const bool include_allies)
+{
+    if (s->max_stats == nullptr) {
+        return;
+    }
+    s->adjusted_max_stats = *s->max_stats;
+    s->adjusted_max_stats.max_kill_count =
+        s->adjusted_max_stats.max_kill_non_ally_count;
+    if (include_allies) {
+        s->adjusted_max_stats.max_kill_count +=
+            s->adjusted_max_stats.max_kill_ally_count;
+    }
+    s->max_stats = &s->adjusted_max_stats;
+}
+
+static bool M_HasPreviousAlliesHostile(const int32_t level_num)
+{
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    if (level_table == nullptr || level_num <= 0) {
+        return false;
+    }
+    for (int32_t i = 0; i <= level_num && i < level_table->count; i++) {
+        const GF_LEVEL *const level = &level_table->levels[i];
+        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        if (resume != nullptr && resume->flags.available
+            && resume->allies_hostile) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool M_HasAnyAlliesHostile(const bool include_bonus_levels)
+{
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    if (level_table == nullptr) {
+        return false;
+    }
+    for (int32_t i = 0; i < level_table->count; i++) {
+        const GF_LEVEL *const level = &level_table->levels[i];
+        if (!(level->type == GFL_NORMAL
+              || (level->type == GFL_BONUS && include_bonus_levels))) {
+            continue;
+        }
+        const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        if (resume != nullptr && resume->allies_hostile) {
+            return true;
+        }
+    }
+    return false;
 }
 
 static void M_FormatIconSecrets(
@@ -531,6 +586,9 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
             Savegame_GetCurrentInfo(current_level);
         s->stats = (const STATS_COMMON *)&current_info->stats;
         s->max_stats = Stats_GetLevelMaxStats(current_level);
+        const bool include_allies = Creature_AreAlliesHostile()
+            || M_HasPreviousAlliesHostile(s->args.level_num);
+        M_AdjustMaxKills(s, include_allies);
 
         const GF_LEVEL *const level = Game_GetCurrentLevel();
         for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
@@ -545,9 +603,11 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
     case UI_STATS_DIALOG_MODE_FINAL:
         const GF_LEVEL_TYPE level_type =
             GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
-        s->final_stats = Stats_ComputeFinalStats(level_type == GFL_BONUS);
+        const bool include_bonus_levels = level_type == GFL_BONUS;
+        s->final_stats = Stats_ComputeFinalStats(include_bonus_levels);
         s->stats = &s->final_stats.stats;
         s->max_stats = &s->final_stats.max_stats;
+        M_AdjustMaxKills(s, M_HasAnyAlliesHostile(include_bonus_levels));
         break;
 
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
