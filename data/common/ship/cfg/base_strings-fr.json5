@@ -405,6 +405,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "\\{review}Permet à Lara de cibler des alliés, tels que des moines. Si désactivé, les alliés seront immunisés contre les munitions de Lara.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Présélection des bonnes clés",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Lorsque Lara appuie sur Action en face d'une serreure ou un emplacement de puzzle et qu'elle a l'objet correspondant dans son inventaire, cet objet sera présélectionné.",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE": "\\{review}Trébuchement en pente arrière",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE_DESCRIPTION": "\\{review}Fait trébucher Lara si elle saute en arrière et qu’il y a une pente derrière elle (TR3). Si désactivé, Lara s’arrête net contre la pente (TR1/2).",
         "SETTING_ENABLE_BAR_FLASHING": "\\{review}Barres clignotantes",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "\\{review}Fait clignoter les barres de santé et d'oxygène de Lara lorsqu'elle est à court de l'une ou l'autre ressource.",
         "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Activer le tremblement des rochers",
