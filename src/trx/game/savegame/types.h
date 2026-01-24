@@ -49,6 +49,7 @@ typedef struct {
 
     bool level_completed;
     int32_t prev_level;
+    bool allies_hostile;
 
     LEVEL_STATS stats;
 } RESUME_INFO;

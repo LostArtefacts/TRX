@@ -1156,8 +1156,10 @@ static bool M_ReadResumeInfo(
     // TRX <1.2
     resume->level_completed = false;
     resume->prev_level = -1;
+    resume->allies_hostile = false;
     M_OPTIONAL(M_ReadBool(ctx, "level_completed", &resume->level_completed));
     M_OPTIONAL(M_ReadNum(ctx, "prev_level", &resume->prev_level));
+    M_OPTIONAL(M_ReadBool(ctx, "allies_hostile", &resume->allies_hostile));
 
     if (M_HasKey(ctx, "got_pistols")) {
         // TR1X <4.16
