@@ -405,6 +405,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Leigidh seo le Lara a targaidich air càirdean - manaich, 's a leithid. Mura tèid seo a chur an comas, bidh iad dìonach air peilearan Lara.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Roghainn ro-làimh air iuchraichean",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Ma bhriogas Lara air gnìomh aig toll iuchrach neo àite tòimhseachain, taghaidh i an nì ceart gu fèin-obrachail.",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE": "Tuiseal air leathad air chùl",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE_DESCRIPTION": "Bheir seo air Lara tuisleadh ma leumas i air ais agus nuair a tha leathad air a cùlaibh (TR3). Ma tha e à comas, stadaidh Lara gu cruaidh an aghaidh an leathaid (TR1/2).",
         "SETTING_ENABLE_BAR_FLASHING": "Bàraichean deàrrsail",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "Cuiridh seo an àite bàraichean slàinte agus ocsaidean Lara deàrrsail nuair a tha i a' ruith ìosal air na goireasan seo.",
         "SETTING_ENABLE_BOULDER_SHAKE": "Crathadh ulpagan",

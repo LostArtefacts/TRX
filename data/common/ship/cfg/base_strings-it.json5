@@ -405,6 +405,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Permette a Lara di colpire gli alleati, come i monaci. Se disabilitato, gli alleati saranno immuni alle munizioni di Lara.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Preselezione oggetti chiave",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Quando Lara preme azione contro un buco della serratura o un altro ricettacolo e ha l'oggetto corrispondente nell'inventario, quell'oggetto verrà preselezionato.",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE": "\\{review}Inciampo su pendenza all’indietro",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE_DESCRIPTION": "\\{review}Fa inciampare Lara se salta all’indietro e c’è una pendenza dietro di lei (TR3). Se disattivato, Lara si arresta bruscamente contro la pendenza (TR1/2).",
         "SETTING_ENABLE_BAR_FLASHING": "Barre lampeggianti",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "Fa in modo che le barre della salute e dell'ossigeno di Lara lampeggino quando stanno per esaurirsi.",
         "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Attiva vibrazione massi",

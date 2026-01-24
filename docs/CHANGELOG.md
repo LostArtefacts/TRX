@@ -14,6 +14,7 @@
 - added `O_VULTURE` for custom levels
 - added `O_ROLLING_BALL_4` (giant Temple of Puna boulder) for custom levels
 - added an option to control whether or not moving boulders should shake the camera (Gameplay options → General → Enable boulder shake)
+- added an option to make Lara stumble if she hops backwards and there is a slope behind her (Gameplay options → Controls → Backwards slope stumble)
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
 - changed rooms-to-draw tracking to no longer stop at the 100-room limit
@@ -63,6 +64,7 @@
 - added Kill All Triggered control
 - added Vulture control
 - added boulder control
+- added Lara's backwards-hop stumble if there is a slope behind her
 - changed enemy drops to appear at the tile center, to conform with the OG
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation

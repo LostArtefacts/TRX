@@ -204,6 +204,7 @@ typedef struct {
         bool enable_lean_jumping;
         bool enable_step_roll_boost;
         bool enable_slide_to_run;
+        bool enable_back_slope_stumble;
         bool enable_neutral_twists;
         bool enable_controlled_drops;
         bool enable_ledge_jumps;

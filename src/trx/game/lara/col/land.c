@@ -556,7 +556,7 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
     item->gravity = false;
     item->fall_speed = 0;
     coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
+    coll->slopes_are_walls = !g_Config.gameplay.enable_back_slope_stumble;
     coll->bad_pos = NO_BAD_POS;
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
@@ -567,10 +567,13 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor <= 200) {
-        if (M_DeflectEdge(item, coll)) {
-            M_CollideStop(item, coll);
+        if (!g_Config.gameplay.enable_back_slope_stumble
+            || !Lara_Col_TestSlide(item, coll)) {
+            if (M_DeflectEdge(item, coll)) {
+                M_CollideStop(item, coll);
+            }
+            item->pos.y += coll->side_mid.floor;
         }
-        item->pos.y += coll->side_mid.floor;
     } else {
         Item_SwitchToAnim(item, LA(LA_FALL_BACK), 0);
         item->current_anim_state = LS(LS_FALL_BACK);

@@ -405,6 +405,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Позволяет Ларе нацеливаться на союзников, таких как монахи. Если этот параметр отключен, союзники будут неуязвимы для боеприпасов Лары.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Автоматический выбор предмета",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Когда Лара нажимает кнопку действия возле замочной скважины или головоломки, и у неё в инвентаре есть соответствующий предмет, этот предмет будет предварительно выбран.",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE": "\\{review}Спотыкание на склоне сзади",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE_DESCRIPTION": "\\{review}Заставляет Лару споткнуться, если она отпрыгивает назад и позади находится склон (TR3). Если отключено, Лара резко останавливается, упираясь в склон (TR1/2).",
         "SETTING_ENABLE_BAR_FLASHING": "\\{review}Мигающие полосы",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "\\{review}Заставляет полосы здоровья и кислорода Лары мигать, когда один из ресурсов на исходе.",
         "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Включить тряску при движении валуна",

@@ -405,6 +405,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Erlaubt Lara, auf freundliche Einheiten zu ziehlen, wie zum Beispiel Mönche. Wenn diese Option deaktiviert ist, sind freundliche Einheiten immun gegen Laras Munition.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Vorausgewählte Schlüssel-Items",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "Wenn Lara ein Schlüsselloch oder einen Rätsel-Slot verwendet und sie das dazu passende Item in ihrem Inventar hat, wird dieses automatisch ausgewählt.",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE": "\\{review}Stolpern an rückwärtiger Schräge",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE_DESCRIPTION": "\\{review}Lässt Lara stolpern, wenn sie rückwärts springt und sich hinter ihr eine Schräge befindet (TR3). Wenn deaktiviert, kommt Lara abrupt an der Schräge zum Stehen (TR1/2).",
         "SETTING_ENABLE_BAR_FLASHING": "\\{review}Leisten blinken",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "\\{review}Lässt Laras Gesundheits- und Sauerstoffanzeigen blinken, wenn eine der Ressourcen knapp wird.",
         "SETTING_ENABLE_BOULDER_SHAKE": "\\{review}Felskamerawackeln aktivieren",

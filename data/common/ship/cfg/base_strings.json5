@@ -405,6 +405,8 @@
         "SETTING_ENABLE_ALLY_TARGETING_DESCRIPTION": "Allows Lara to target allies, such as monks. If disabled, allies will be immune to Lara's ammunition.",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION": "Key item pre-selection",
         "SETTING_ENABLE_AUTO_ITEM_SELECTION_DESCRIPTION": "When Lara presses action against a keyhole or puzzle slot, and she has the corresponding item in the inventory, that item will be pre-selected.",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE": "Backwards slope stumble",
+        "SETTING_ENABLE_BACK_SLOPE_STUMBLE_DESCRIPTION": "Makes Lara perform a stumble if she hops back and there is a slope behind her (TR3). If disabled, Lara will come to a hard stop against the slope (TR1/2).",
         "SETTING_ENABLE_BAR_FLASHING": "Flash bars",
         "SETTING_ENABLE_BAR_FLASHING_DESCRIPTION": "Makes Lara's health and oxygen bars blink when she's running low on either resource.",
         "SETTING_ENABLE_BOULDER_SHAKE": "Enable boulder shake",
