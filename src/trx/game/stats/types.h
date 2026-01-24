@@ -9,6 +9,8 @@
 typedef struct {
     size_t max_pickup_secret_count;
     size_t max_kill_count;
+    size_t max_kill_ally_count;
+    size_t max_kill_non_ally_count;
     size_t max_pickup_count;
     size_t max_secret_count;
     uint32_t all_secrets_mask;

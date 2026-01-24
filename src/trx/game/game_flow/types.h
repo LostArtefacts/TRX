@@ -121,6 +121,7 @@ typedef struct {
     struct {
         uint32_t pickups;
         uint32_t kills;
+        uint32_t ally_kills;
         uint32_t secrets;
     } unobtainable;
 

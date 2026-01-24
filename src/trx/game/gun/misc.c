@@ -444,14 +444,14 @@ void Gun_HitTarget(
 
     if (!Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
         CREATURE *const creature = item->data;
-        creature->damage_from_lara += damage;
-        if (item->hit_points <= 0) {
+        if (creature != nullptr) {
+            creature->damage_from_lara += damage;
+        }
+        if (item->hit_points <= 0
+            || (creature != nullptr
+                && (creature->damage_from_lara > M_ALLY_FRIENDLY_FIRE_THRESHOLD
+                    || creature->mood == MOOD_BORED))) {
             Creature_SetAlliesHostile(true);
-        } else if (item->data != nullptr) {
-            if (creature->damage_from_lara > M_ALLY_FRIENDLY_FIRE_THRESHOLD
-                || creature->mood == MOOD_BORED) {
-                Creature_SetAlliesHostile(true);
-            }
         }
     }
 }
