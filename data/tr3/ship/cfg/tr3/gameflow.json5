@@ -63,6 +63,7 @@
         // 1. Jungle
         {
             "path": "data/jungle.tr2",
+            "script": "data/scripts/jungle.lua",
             "music_track": 34,
             "weather_type": "rain",
             "sequence": [
