@@ -71,6 +71,16 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/spawn {object}`  
   Spawn an object of your choice. Not guaranteed to behave, but good for testing and oddly therapeutic for goofing off.
 
+- `/trigger {item_num}`  
+  `/trigger {item_name}`  
+  `/trigger {object}`  
+  Force-triggers one or more items by their item ID, item name, or object name. Great for testing switches, traps, and scripted events.
+
+- `/untrigger {item_num}`  
+  `/untrigger {item_name}`  
+  `/untrigger {object}`  
+  Reverses `/trigger` for one or more items.
+
 ## Configuration commands
 
 - `/set {option}`  
