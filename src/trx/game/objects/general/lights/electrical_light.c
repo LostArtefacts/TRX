@@ -1,4 +1,3 @@
-#include <trx/game/collision.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>

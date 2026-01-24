@@ -73,6 +73,16 @@
 - added Vulture control
 - added Boulder control
 - added Poison Dart control
+- added dynamic light objects:
+    - added Red Light control
+    - added Green Light control
+    - added Blue Light control
+    - added Amber Light control
+    - added White Light control
+    - added Strobe Light control
+    - added Pulse Light control
+    - added Beacon Light control
+    - added On/Off Light control
 - added Lara's backwards-hop stumble if there is a slope behind her
 - changed enemy drops to appear at the tile center, to conform with the OG
 - fixed actors jumping to their start frame at the end of cutscenes

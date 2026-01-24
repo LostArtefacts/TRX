@@ -1620,6 +1620,33 @@
         "electrical_light": {
             "name": "Electrical Light",
         },
+        "red_light": {
+            "name": "Red Light",
+        },
+        "green_light": {
+            "name": "Green Light",
+        },
+        "blue_light": {
+            "name": "Blue Light",
+        },
+        "amber_light": {
+            "name": "Amber Light",
+        },
+        "white_light": {
+            "name": "White Light",
+        },
+        "on_off_light": {
+            "name": "On/Off Light",
+        },
+        "pulse_light": {
+            "name": "Pulse Light",
+        },
+        "strobe_light": {
+            "name": "Strobe Light",
+        },
+        "beacon_light": {
+            "name": "Beacon Light",
+        },
         "smoke_emitter_white": {
             "name": "Smoke Emitter (White)",
         },
