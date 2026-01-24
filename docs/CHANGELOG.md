@@ -35,6 +35,7 @@
 - fixed running `/title` and similar commands leaving the "Examine" button briefly visible in the key items ring (old regression)
 - fixed running `/title` and similar commands when examining an item causing incorrect item rotation next time the ring opens (old regression)
 - fixed endless sprint cheat setting not retained between game relaunches
+- fixed Cobras not being counted in level kill count
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
