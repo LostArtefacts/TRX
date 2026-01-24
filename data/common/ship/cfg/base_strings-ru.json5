@@ -283,7 +283,6 @@
         "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Неверный слот сохранения %d",
         "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Слот сохранения %d недоступен",
         "OSD_OBJECT_NOT_FOUND": "Объект не найден",
-        "OSD_PHOTO_MODE_LAUNCHED": "Вход в Фоторежим - нажмите \\{input toggle_ui} для помощи",
         "OSD_PLAY_CUTSCENE": "Загрузка заставки %d",
         "OSD_PLAY_DEMO": "Загрузка демо %d",
         "OSD_PLAY_LEVEL": "Загрузка %s",

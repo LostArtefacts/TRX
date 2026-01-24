@@ -5,6 +5,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
+#include <trx/game/scaler.h>
 #include <trx/game/viewport.h>
 #include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
@@ -414,4 +415,68 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
         const int32_t j = OUTPUT_QUAD_TO_FAN(i);
         Vector_Add(p->vertices, &vertices[j]);
     }
+}
+
+void OutputSource_UI_StagePhotoModeFrame(
+    const VIEWPORT_RECT rect, const RGBA_8888 color, const float thickness)
+{
+    const int32_t t =
+        (int32_t)(Scaler_Calc(thickness, SCALER_TARGET_TEXT) + 0.5f);
+    if (t <= 0) {
+        return;
+    }
+
+    const int32_t x0 = rect.x;
+    const int32_t y0 = rect.y;
+    const int32_t x1 = rect.x + rect.w;
+    const int32_t y1 = rect.y + rect.h;
+    const int32_t z = Output_GetNearZ_UI();
+
+    OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
+        .x0 = x0,
+        .y0 = y0,
+        .x1 = x1,
+        .y1 = y0 + t,
+        .z = z,
+        .tl = color,
+        .tr = color,
+        .bl = color,
+        .br = color,
+    });
+
+    OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
+        .x0 = x0,
+        .y0 = y1 - t,
+        .x1 = x1,
+        .y1 = y1,
+        .z = z,
+        .tl = color,
+        .tr = color,
+        .bl = color,
+        .br = color,
+    });
+
+    OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
+        .x0 = x0,
+        .y0 = y0 + t,
+        .x1 = x0 + t,
+        .y1 = y1 - t,
+        .z = z,
+        .tl = color,
+        .tr = color,
+        .bl = color,
+        .br = color,
+    });
+
+    OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
+        .x0 = x1 - t,
+        .y0 = y0 + t,
+        .x1 = x1,
+        .y1 = y1 - t,
+        .z = z,
+        .tl = color,
+        .tr = color,
+        .bl = color,
+        .br = color,
+    });
 }

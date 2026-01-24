@@ -283,7 +283,6 @@
         "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Slot mì-dhligheach: %d",
         "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Chan eil slot sàbhalaidh %d ri làimh",
         "OSD_OBJECT_NOT_FOUND": "Cha deach an t-oibseact a lorg",
-        "OSD_PHOTO_MODE_LAUNCHED": "A' toiseachadh modh dealbh, brùth \\{input toggle_ui} airson cuideachadh",
         "OSD_PLAY_CUTSCENE": "A' luchdachadh sealladh-film %d",
         "OSD_PLAY_DEMO": "A' luchdachadh taisbeanaidh %d",
         "OSD_PLAY_LEVEL": "A' luchdachadh %s",

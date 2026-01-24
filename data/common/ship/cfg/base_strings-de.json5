@@ -283,7 +283,6 @@
         "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Unzulässiger Speicher-Slot %d",
         "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Speicher-Slot %d ist nicht verfügbar",
         "OSD_OBJECT_NOT_FOUND": "Objekt nicht gefunden",
-        "OSD_PHOTO_MODE_LAUNCHED": "Foto-Modus aufrufen, drücke %s für Hilfe",
         "OSD_PLAY_CUTSCENE": "Lade Zwischensequenz %d",
         "OSD_PLAY_DEMO": "Lade Demo %d",
         "OSD_PLAY_LEVEL": "Lade %s",
