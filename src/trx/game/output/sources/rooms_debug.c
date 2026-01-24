@@ -38,6 +38,46 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
+static int32_t M_GetTriggerPortalTriangleIndices(
+    const SECTOR *const sector, int32_t indices[3])
+{
+    if (sector->portal_room.pit == NO_ROOM) {
+        return 0;
+    }
+    if (!sector->floor.is_split) {
+        return 0;
+    }
+
+    const int32_t clockwise[4] = { 0, 3, 2, 1 };
+    int32_t skip = -1;
+
+    switch (sector->floor.split.type) {
+    case SPLIT_NWSE_PORTAL_SW:
+        skip = 0;
+        break;
+    case SPLIT_NWSE_PORTAL_NE:
+        skip = 2;
+        break;
+    case SPLIT_NESW_PORTAL_SE:
+        skip = 1;
+        break;
+    case SPLIT_NESW_PORTAL_NW:
+        skip = 3;
+        break;
+    default:
+        return 0;
+    }
+
+    int32_t count = 0;
+    for (int32_t i = 0; i < 4; i++) {
+        if (clockwise[i] != skip) {
+            indices[count++] = clockwise[i];
+        }
+    }
+
+    return count;
+}
+
 static void M_PrepareRoomTriggers(
     const M_PRIV *const p, M_ROOM_MESH *const mesh, const ROOM *const room)
 {
@@ -50,8 +90,16 @@ static void M_PrepareRoomTriggers(
             if (sector->trigger == nullptr) {
                 continue;
             }
-            for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
-                const int32_t j = OUTPUT_QUAD_TO_FAN(i);
+
+            int32_t tri_indices[3];
+            const int32_t tri_count =
+                M_GetTriggerPortalTriangleIndices(sector, tri_indices);
+            const int32_t vertex_count =
+                tri_count != 0 ? tri_count : OUTPUT_QUAD_VERTICES;
+
+            for (int32_t i = 0; i < vertex_count; i++) {
+                const int32_t j =
+                    tri_count != 0 ? tri_indices[i] : OUTPUT_QUAD_TO_FAN(i);
                 XYZ_16 vertex_pos = {
                     .x = (x + offsets[j].x) * WALL_L,
                     .z = (z + offsets[j].z) * WALL_L,
@@ -62,13 +110,9 @@ static void M_PrepareRoomTriggers(
                     .y = room->pos.y,
                 };
 
-                int16_t room_num = room - Room_Get(0);
-                sector = Room_GetSector(
-                    world_pos.x, world_pos.y, world_pos.z, &room_num);
-                vertex_pos.y =
-                    Room_GetHeight(
-                        sector, world_pos.x, world_pos.y, world_pos.z)
-                    + (Output_GetWaterEffect() ? -16 : -2);
+                const int16_t height = Room_GetFloorHeightForSector(
+                    sector, world_pos.x, world_pos.z, true);
+                vertex_pos.y = height + (Output_GetWaterEffect() ? -16 : -2);
 
                 M_VERTEX vertex = {
                     .pos = {
@@ -83,6 +127,7 @@ static void M_PrepareRoomTriggers(
             }
         }
     }
+
     mesh->triggers.vertex_count =
         p->vertices->count - mesh->triggers.vertex_start;
 }

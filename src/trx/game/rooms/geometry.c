@@ -412,6 +412,17 @@ int16_t Room_GetHeight(
     return Room_GetHeightEx(sector, x, y, z, false, NO_ITEM);
 }
 
+int16_t Room_GetFloorHeightForSector(
+    const SECTOR *const sector, const int32_t x, const int32_t z,
+    const bool fix_tilts)
+{
+    m_HeightType = HT_WALL;
+    if (Room_IsAbyssHeight(sector->floor.height)) {
+        return m_AbyssMaxHeight;
+    }
+    return M_GetSurfaceHeight(sector->floor, x, z, fix_tilts);
+}
+
 int16_t Room_GetHeightEx(
     const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
     const bool fix_tilts, const int16_t ignore_item_num)
