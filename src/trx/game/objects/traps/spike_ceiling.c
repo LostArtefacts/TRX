@@ -38,7 +38,8 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
         return true;
     }
 
-    if (trigger->type == TT_ANTITRIGGER || trigger->type == TT_ANTIPAD) {
+    if (trigger == nullptr || trigger->type == TT_ANTITRIGGER
+        || trigger->type == TT_ANTIPAD) {
         return true;
     }
 
