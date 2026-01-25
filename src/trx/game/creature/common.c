@@ -1417,6 +1417,10 @@ void Creature_GetAITarget(CREATURE *const creature)
             item->ai_bits &= ~AI_FOLLOW;
         }
     } else if (item->object_id == O_MONKEY && item->carried_item == nullptr) {
+        if (Creature_IsHostile(item)) {
+            creature->enemy = lara_item;
+            return;
+        }
         if (item->ai_bits == AI_MODIFY) {
             if (enemy_object_id != O_KEY_ITEM_4) {
                 for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
