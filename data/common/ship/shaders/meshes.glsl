@@ -133,6 +133,7 @@ void main(void) {
         gColor.rgb = gammaCurve(gColor.rgb, gamma_exp);
     }
     gColor.rgb *= mul;
+    gColor.rgb = clamp(gColor.rgb + lr.add, 0.0, 1.0);
 #endif
 }
 

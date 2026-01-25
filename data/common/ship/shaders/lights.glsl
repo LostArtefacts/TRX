@@ -13,6 +13,8 @@ struct Light {
     vec4 color;
     float shade;
     float falloff;
+    float kind;
+    float _pad0;
 };
 
 layout(std140) uniform Lights {
@@ -167,10 +169,13 @@ vec3 lightOwnTR3(float shade)
     return clamp(uTR3Ambient.rgb * (shade8 / 255.0), 0.0, 1.0);
 }
 
-float lightDynamic(float baseLight, vec4 vertexPos)
+float lightDynamicTR12Lum(float baseLight, vec4 vertexPos)
 {
     float lightAdder = baseLight;
     for (int i = 0; i < uNumLights; i++) {
+        if (uLights[i].kind != 0.0) {
+            continue;
+        }
         vec3 dist = uLights[i].pos.xyz - vertexPos.xyz;
         float radius = exp2(uLights[i].falloff);
         float distSq = dot(dist, dist);
@@ -184,6 +189,29 @@ float lightDynamic(float baseLight, vec4 vertexPos)
         lightAdder -= shade;
     }
     return max(lightAdder, 0);
+}
+
+vec3 lightDynamicTR12RGB(vec4 vertexPos)
+{
+    vec3 add = vec3(0.0);
+    for (int i = 0; i < uNumLights; i++) {
+        if (uLights[i].kind == 0.0) {
+            continue;
+        }
+
+        float radius = uLights[i].falloff * 0.5;
+        vec3 dist = uLights[i].pos.xyz - vertexPos.xyz;
+        float distSq = dot(dist, dist);
+        float radiusSq = radius * radius;
+        if (distSq > radiusSq) {
+            continue;
+        }
+
+        float d = sqrt(distSq);
+        float factor = (radius - d) / max(radius, 1.0);
+        add += factor * uLights[i].color.rgb;
+    }
+    return add;
 }
 
 vec3 lightDynamicTR3(vec4 vertexPos)
@@ -216,7 +244,7 @@ float getDynamicLightContrastMul()
     return clamp(2.0 - (uMinShade / float(SHADE_NEUTRAL)), 1.0, 2.0);
 }
 
-float lightTR12(float shade, uint flags, vec3 normal, vec4 pos, float phase)
+float lightLumTR12(float shade, uint flags, vec3 normal, vec4 pos, float phase)
 {
     if ((flags & VERT_USE_OWN_LIGHT) != 0u) {
         shade = uLightAdder + shade;
@@ -224,7 +252,7 @@ float lightTR12(float shade, uint flags, vec3 normal, vec4 pos, float phase)
         shade = lightObjects(normal, pos);
     } else {
         if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
-            shade = lightDynamic(shade, pos);
+            shade = lightDynamicTR12Lum(shade, pos);
             shade += lightRoom(uRoomLightMode, uTimeInGame, phase);
         }
         shade = clamp(shade, 0, SHADE_MAX);
@@ -282,7 +310,10 @@ LightingResult light(
 
     result.shade = SHADE_NEUTRAL;
 #else
-    result.shade = lightTR12(shade, flags, normal, pos, vertexPhase);
+    result.shade = lightLumTR12(shade, flags, normal, pos, vertexPhase);
+    if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
+        result.add += lightDynamicTR12RGB(pos) * getDynamicLightContrastMul();
+    }
 #endif
 
     return result;

@@ -751,10 +751,6 @@ void Output_AddDynamicLight(
 void Output_AddDynamicLightRGB(
     const XYZ_32 pos, const int32_t falloff, const RGB_888 color)
 {
-    if (g_TRVersion < 3) {
-        return;
-    }
-
     int32_t safe_falloff = falloff;
     CLAMP(safe_falloff, 0, 255);
 
@@ -763,7 +759,7 @@ void Output_AddDynamicLightRGB(
         .shade = {},
         .falloff.value_1 = safe_falloff << M_TR3_DYNAMIC_FALLOFF_SHIFT,
         .color = color,
-        .type = 0,
+        .type = g_TRVersion < 3 ? 1 : 0,
         .dir = {},
     };
     Vector_Add(m_DynamicLights, &light);
