@@ -732,9 +732,11 @@ static bool M_ReadItem(
                         M_ReadBool(ctx, "head_right", &creature->head_right));
                     M_MUST(M_ReadBool(
                         ctx, "reached_goal", &creature->reached_goal));
+                    M_MUST(M_ReadBool(ctx, "patrol_2", &creature->patrol_2));
                     M_MUST(M_ReadBool(
                         ctx, "hurt_by_lara", &creature->hurt_by_lara));
-                    M_MUST(M_ReadBool(ctx, "patrol_2", &creature->patrol_2));
+                    M_SHOULD(M_ReadNum(
+                        ctx, "damage_from_lara", &creature->damage_from_lara));
                     M_MUST(M_PushObject(ctx, "joint_rotations"));
                     for (int32_t i = 0; i < 4; i++) {
                         M_MUST(M_PushArrayElem(ctx, i));

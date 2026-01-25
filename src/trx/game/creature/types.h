@@ -14,6 +14,7 @@ typedef struct {
     bool head_right;
     bool reached_goal;
     bool hurt_by_lara;
+    int32_t damage_from_lara;
     bool patrol_2;
     int16_t item_num;
     MOOD_TYPE mood;
