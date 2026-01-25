@@ -296,8 +296,9 @@ static void M_WriteItem(
             M_WriteBool(ctx, "head_left", creature->head_left);
             M_WriteBool(ctx, "head_right", creature->head_right);
             M_WriteBool(ctx, "reached_goal", creature->reached_goal);
-            M_WriteBool(ctx, "hurt_by_lara", creature->hurt_by_lara);
             M_WriteBool(ctx, "patrol_2", creature->patrol_2);
+            M_WriteBool(ctx, "hurt_by_lara", creature->hurt_by_lara);
+            M_WriteNum(ctx, "damage_from_lara", creature->damage_from_lara);
             M_PushArray(ctx);
             for (int32_t i = 0; i < 4; i++) {
                 M_PushNum(ctx, creature->joint_rotation[i]);
