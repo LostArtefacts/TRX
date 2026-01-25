@@ -79,7 +79,8 @@ static bool M_TestStop(const ITEM *const item)
     const int16_t ceiling =
         Room_GetCeiling(sector, x, item->pos.y - item_height, z);
 
-    return height < item->pos.y || ceiling > item->pos.y - item_height;
+    return height < item->pos.y
+        || (!item->gravity && ceiling > item->pos.y - item_height);
 }
 
 static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
