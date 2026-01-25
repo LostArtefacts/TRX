@@ -385,7 +385,8 @@ def sync_base_strings(ctx: RunContext) -> None:
     ctx.base.main.data["objects"] = new
     for key in changed:
         for file in ctx.base.translations.values():
-            file.data.setdefault("objects", {})[key] = {"name": REVIEW_MARKER}
+            if not file.extends:
+                file.data.setdefault("objects", {})[key] = {"name": REVIEW_MARKER}
         for gs in ctx.mods.values():
             if gs.main.data.get("objects", {}).get(key):
                 gs.main.data.setdefault("objects", {})[key] = {
