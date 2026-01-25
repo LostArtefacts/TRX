@@ -1,6 +1,16 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.1...develop) - ××××-××-××
 - added globe level selection mechanic
 - added Bubble Emitter control (#4629)
+- added dynamic light objects:
+    - added Red Light control
+    - added Green Light control
+    - added Blue Light control
+    - added Amber Light control
+    - added White Light control
+    - added Strobe Light control
+    - added Pulse Light control
+    - added Beacon Light control
+    - added On/Off Light control
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
 - added a new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start

@@ -52,7 +52,8 @@ typedef struct {
     float color[4];
     float shade;
     float falloff;
-    float _pad[2];
+    float kind;
+    float _pad;
 } M_UNIFORM_LIGHT;
 
 typedef struct {
@@ -91,6 +92,7 @@ static void M_FillLight(
     dst_light->color[3] = 0.0f;
     dst_light->shade = src_light->shade.value_1;
     dst_light->falloff = src_light->falloff.value_1;
+    dst_light->kind = src_light->type;
 }
 
 static int16_t M_GetMinShade(void)
