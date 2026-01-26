@@ -191,6 +191,13 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
     if ((item->flags & IF_KILLED) != 0) {
         return false;
     }
+    if (item->hit_points == DONT_TARGET) {
+        if (item->status != IS_ACTIVE) {
+            return false;
+        }
+    } else if (item->hit_points <= 0) {
+        return false;
+    }
 
     if (Object_IsType(item->object_id, g_LoyalObjects)) {
         LARA_INFO *const lara_info = Lara_GetLaraInfo();
