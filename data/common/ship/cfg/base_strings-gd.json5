@@ -579,6 +579,8 @@
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "Càradh far am bi Lara uaireannan a' gluasad a-steach gu ballachan nuair a tha i a' togail rudeigin fon uisge, agus os cionn uisge fo mhullaichean cas leathann.",
         "SETTING_FIX_M16_ACCURACY": "Càraich cruinneas M16/MP5",
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Càradh cruinneas M16/MP5 fhad 's a tha Lara a' ruith.",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "\\{review}Cuir prìomhachas air togail moncaidh ceart",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "\\{review}Bidh moncaidhean air an ionnsaigh a’ cur prìomhachas air freagairt air ais seach a bhith a’ cruinneachadh pacaidean Medi agus iuchraichean.",
         "SETTING_FIX_QWOP_GLITCH": "Càraich glitch QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Càradh glitch - ris an canar QWOP - far am bi Lara a' leum air ceumannan beaga agus a' toiseachadh gluasad gu neònach tron làr.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Ceòl dìomhaireachd ioma-fhilleadh",

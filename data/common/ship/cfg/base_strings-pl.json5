@@ -579,6 +579,8 @@
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "Naprawia problem, w wyniku którego gra umieszczała Larę wewnątrz ścian podczas zbierania przedmiotów pod wodą lub pod stromymi sufitami.",
         "SETTING_FIX_M16_ACCURACY": "Napraw celność M16/MP5",
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Naprawia celność M16/MP5 podczas biegania.",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "\\{review}Napraw priorytet podnoszenia przez małpy",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "\\{review}Zaatakowane małpy będą priorytetowo odwetować się zamiast zbierać apteczki i klucze.",
         "SETTING_FIX_QWOP_GLITCH": "Napraw glitch QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Naprawia rzadki problem pojawiający się, kiedy Lara zeskakuje z małych schodków, co skutkuje dziwną animacją biegu znaną jako stan QWOP.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Warstwowe dźwięki sekretów",

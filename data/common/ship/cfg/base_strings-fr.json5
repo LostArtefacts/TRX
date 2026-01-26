@@ -579,6 +579,8 @@
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "\\{review}Corrige un problème où Lara dérivait parfois dans les murs en ramassant des objets sous l’eau, ainsi qu’en ramassant des objets au-dessus de l’eau sous des plafonds fortement inclinés.",
         "SETTING_FIX_M16_ACCURACY": "\\{review}Corriger la précision du M16/MP5",
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Corrige la précision du M16/MP5 pendant que Lara court.",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "\\{review}Corriger la priorité de ramassage des singes",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "\\{review}Les singes attaqués privilégieront la riposte plutôt que de collecter les trousses de soins et les clés.",
         "SETTING_FIX_QWOP_GLITCH": "Corriger le glitch QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Corrige le fait que sauter sur des petites marches entraîne parfois Lara à se bloquer dans une animation de course étrange, connu sous le nom du glitch QWOP.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Superposer le son du secret",

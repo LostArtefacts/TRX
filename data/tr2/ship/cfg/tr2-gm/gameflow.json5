@@ -218,5 +218,6 @@
         "fix_speeches_killing_music",
         "enable_weather",
         "enable_footprints",
+        "fix_monkey_pickup_priority",
     ],
 }
