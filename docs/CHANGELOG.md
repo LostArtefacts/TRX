@@ -88,6 +88,7 @@
 - added Vulture control
 - added Boulder control
 - added Poison Dart control
+- added Earthquake control
 - added dynamic light objects:
     - added Red Light control
     - added Green Light control
