@@ -1,6 +1,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/sound.h>
@@ -63,9 +64,19 @@ static void M_MarkDone(ITEM *const receptacle_item)
     if (done_obj_id != NO_OBJECT) {
         receptacle_item->object_id = done_obj_id;
     }
-    if (receptacle_item->status == IS_INACTIVE) {
-        receptacle_item->status = IS_ACTIVE;
+    if (receptacle_item->status == IS_ACTIVE) {
+        return;
     }
+
+    Item_SwitchToObjAnim(receptacle_item, 0, 0, receptacle_item->object_id);
+    const ANIM *const anim = Item_GetAnim(receptacle_item);
+    receptacle_item->current_anim_state = anim->current_anim_state;
+    receptacle_item->goal_anim_state = receptacle_item->current_anim_state;
+    receptacle_item->required_anim_state = 0;
+    receptacle_item->flags = IF_CODE_BITS;
+    receptacle_item->status = IS_ACTIVE;
+    Item_AddActive(Item_GetIndex(receptacle_item));
+    Item_Animate(receptacle_item);
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -74,6 +85,14 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         if (item->status == IS_DEACTIVATED || item->status == IS_ACTIVE) {
             M_MarkDone(item);
         }
+    }
+}
+
+static void M_Control(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (Item_IsTriggerActive(item)) {
+        Item_Animate(item);
     }
 }
 
@@ -132,18 +151,22 @@ static void M_CollisionDone(
 
 static void M_SetupEmpty(OBJECT *const obj)
 {
+    obj->control_func = M_Control;
     obj->collision_func = M_Collision;
     obj->handle_save_func = M_HandleSave;
     obj->is_usable_func = M_IsUsable;
     obj->bounds_func = M_Bounds;
     obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 static void M_SetupDone(OBJECT *const obj)
 {
+    obj->control_func = M_Control;
     obj->collision_func = M_CollisionDone;
     obj->bounds_func = M_Bounds;
     obj->save_flags = true;
+    obj->save_anim = true;
 }
 
 REGISTER_OBJECT(O_PUZZLE_HOLE_1, M_SetupEmpty)

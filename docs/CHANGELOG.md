@@ -76,6 +76,7 @@
 - added underwater blood spills
 - added poison mechanic
 - added heal crystals
+- added animated puzzle holes support
 - added new creature explosions effects
 - added meteorite artifacts support
 - added examine item feature for certain items
