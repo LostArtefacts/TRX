@@ -454,7 +454,25 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TO_OBJECT: {
             const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
             ITEM *const trig_item = Item_Get(item_num);
-            if (trig_item->flags & IF_ONE_SHOT) {
+
+            bool one_shot = false;
+            if (g_TRVersion == 3) {
+                switch (trigger->type) {
+                case TT_SWITCH:
+                    one_shot = trig_item->flags & IF_ONE_SHOT_SWITCH;
+                    break;
+                case TT_ANTIPAD:
+                case TT_ANTITRIGGER:
+                    one_shot = trig_item->flags & IF_ONE_SHOT_ANTITRIGGER;
+                    break;
+                default:
+                    one_shot = trig_item->flags & IF_ONE_SHOT;
+                    break;
+                }
+            } else {
+                one_shot = trig_item->flags & IF_ONE_SHOT;
+            }
+            if (one_shot) {
                 break;
             }
 
@@ -483,6 +501,9 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
             if (trigger->type == TT_SWITCH) {
                 trig_item->flags ^= trigger->mask;
+                if (trigger->one_shot && g_TRVersion == 3) {
+                    trig_item->flags |= IF_ONE_SHOT_SWITCH;
+                }
             } else if (
                 trigger->type == TT_ANTIPAD
                 || trigger->type == TT_ANTITRIGGER) {
@@ -491,7 +512,11 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 }
                 trig_item->flags &= ~trigger->mask;
                 if (trigger->one_shot) {
-                    trig_item->flags |= IF_ONE_SHOT;
+                    if (g_TRVersion == 3) {
+                        trig_item->flags |= IF_ONE_SHOT_ANTITRIGGER;
+                    } else {
+                        trig_item->flags |= IF_ONE_SHOT;
+                    }
                 }
             } else {
                 trig_item->flags |= trigger->mask;
