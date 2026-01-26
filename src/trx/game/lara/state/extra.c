@@ -40,6 +40,29 @@
 #define M_CAM_TORSO_KILL_DISTANCE     (2 * WALL_L)  // = 2048
 // clang-format on
 
+typedef struct {
+    int16_t frame_idx;
+    LARA_MESH mesh;
+} M_MIDAS_STEP;
+
+static const M_MIDAS_STEP m_MidasSteps[] = {
+    { .frame_idx = 5, .mesh = LM_FOOT_L },
+    { .frame_idx = 5, .mesh = LM_FOOT_R },
+    { .frame_idx = 70, .mesh = LM_CALF_L },
+    { .frame_idx = 90, .mesh = LM_THIGH_L },
+    { .frame_idx = 100, .mesh = LM_CALF_R },
+    { .frame_idx = 120, .mesh = LM_HIPS },
+    { .frame_idx = 120, .mesh = LM_THIGH_R },
+    { .frame_idx = 135, .mesh = LM_TORSO },
+    { .frame_idx = 150, .mesh = LM_UARM_L },
+    { .frame_idx = 163, .mesh = LM_LARM_L },
+    { .frame_idx = 174, .mesh = LM_HAND_L },
+    { .frame_idx = 186, .mesh = LM_UARM_R },
+    { .frame_idx = 195, .mesh = LM_LARM_R },
+    { .frame_idx = 218, .mesh = LM_HAND_R },
+    { .frame_idx = 225, .mesh = LM_HEAD },
+};
+
 static void M_ScionPedestal(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -77,80 +100,22 @@ static void M_MidasKill(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 0;
 
     Object_SetReflective(O_LARA_EXTRA_SKIN_MIDAS, true);
+    Object_SetReflective(O_LARA_HAIR_SWAP, true);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t frame_num = Item_GetRelativeFrame(item);
-    switch (frame_num) {
-    case 5:
-        lara->mesh_effects |= (1 << LM_FOOT_L);
-        lara->mesh_effects |= (1 << LM_FOOT_R);
-        Lara_Mesh_SwapSingle(LM_FOOT_L, O_LARA_EXTRA_SKIN_MIDAS);
-        Lara_Mesh_SwapSingle(LM_FOOT_R, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
 
-    case 70:
-        lara->mesh_effects |= (1 << LM_CALF_L);
-        Lara_Mesh_SwapSingle(LM_CALF_L, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
+    for (size_t i = 0; i < ARRAY_SIZE(m_MidasSteps); i++) {
+        const M_MIDAS_STEP *const step = &m_MidasSteps[i];
+        if (step->frame_idx != frame_num) {
+            continue;
+        }
 
-    case 90:
-        lara->mesh_effects |= (1 << LM_THIGH_L);
-        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 100:
-        lara->mesh_effects |= (1 << LM_CALF_R);
-        Lara_Mesh_SwapSingle(LM_CALF_R, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 120:
-        lara->mesh_effects |= (1 << LM_HIPS);
-        lara->mesh_effects |= (1 << LM_THIGH_R);
-        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA_SKIN_MIDAS);
-        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 135:
-        lara->mesh_effects |= (1 << LM_TORSO);
-        Lara_Mesh_SwapSingle(LM_TORSO, O_LARA_EXTRA_SKIN_MIDAS);
-        lara->back_gun_obj_id = O_LARA;
-        break;
-
-    case 150:
-        lara->mesh_effects |= (1 << LM_UARM_L);
-        Lara_Mesh_SwapSingle(LM_UARM_L, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 163:
-        lara->mesh_effects |= (1 << LM_LARM_L);
-        Lara_Mesh_SwapSingle(LM_LARM_L, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 174:
-        lara->mesh_effects |= (1 << LM_HAND_L);
-        Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 186:
-        lara->mesh_effects |= (1 << LM_UARM_R);
-        Lara_Mesh_SwapSingle(LM_UARM_R, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 195:
-        lara->mesh_effects |= (1 << LM_LARM_R);
-        Lara_Mesh_SwapSingle(LM_LARM_R, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 218:
-        lara->mesh_effects |= (1 << LM_HAND_R);
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
-
-    case 225:
-        Object_SetReflective(O_LARA_HAIR_SWAP, true);
-        lara->mesh_effects |= (1 << LM_HEAD);
-        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA_EXTRA_SKIN_MIDAS);
-        break;
+        lara->mesh_effects |= (1 << step->mesh);
+        Lara_Mesh_SwapSingle(step->mesh, O_LARA_EXTRA_SKIN_MIDAS);
+        if (step->mesh == LM_TORSO) {
+            lara->back_gun_obj_id = O_LARA;
+        }
     }
 
     Twinkle_SparkleItem(item, lara->mesh_effects);
