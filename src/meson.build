@@ -373,6 +373,7 @@ common_sources = [
   'trx/game/objects/creatures/raptor.c',
   'trx/game/objects/creatures/rat.c',
   'trx/game/objects/creatures/shark.c',
+  'trx/game/objects/creatures/shiva.c',
   'trx/game/objects/creatures/skate_kid.c',
   'trx/game/objects/creatures/skidoo_driver.c',
   'trx/game/objects/creatures/spider.c',

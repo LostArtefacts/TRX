@@ -4,6 +4,7 @@
 
 BOUNDS_32 Room_GetRoomBounds(const ROOM *room);
 SECTOR *Room_GetSector(int32_t x, int32_t y, int32_t z, int16_t *room_num);
+SECTOR *Room_GetSector32(const XYZ_32 pos, int16_t *room_num);
 SECTOR *Room_GetSectorOnWalkable(
     int32_t x, int32_t y, int32_t z, int16_t *room_num);
 SECTOR *Room_GetWorldSector(const ROOM *room, int32_t x_pos, int32_t z_pos);

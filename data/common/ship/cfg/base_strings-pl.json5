@@ -1884,6 +1884,9 @@
         },
         "beacon_light": {
             "name": "\\{review}Światło Sygnalizacyjne",
+        },
+        "shiva": {
+            "name": "\\{review}Siwa",
         }
     }
 }

@@ -174,6 +174,15 @@ XYZ_32 XYZ_32_From16(const XYZ_16 src)
     return (XYZ_32) { src.x, src.y, src.z };
 }
 
+XYZ_32 XYZ_32_DirShift(XYZ_32 src, int16_t angle, int32_t shift)
+{
+    return (XYZ_32) {
+        .x = src.x + ((shift * Math_Sin(angle)) >> W2V_SHIFT),
+        .y = src.y,
+        .z = src.z + ((shift * Math_Cos(angle)) >> W2V_SHIFT),
+    };
+}
+
 float XYZ_F_DotProduct(const XYZ_F a, const XYZ_F b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;

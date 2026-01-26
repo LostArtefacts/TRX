@@ -1913,6 +1913,9 @@
         },
         "beacon_light": {
             "name": "\\{review}Маячковый свет",
+        },
+        "shiva": {
+            "name": "\\{review}Шива",
         }
     }
 }
