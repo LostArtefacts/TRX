@@ -30,3 +30,4 @@ X_UI_CFG_BOOL(gameplay.enable_enemy_rotation,       SETTING_ENABLE_ENEMY_ROTATIO
 X_UI_CFG_BOOL(gameplay.enable_killer_pushblocks,    SETTING_ENABLE_KILLER_PUSHBLOCKS)
 X_UI_CFG_BOOL(gameplay.enable_boulder_shake,        SETTING_ENABLE_BOULDER_SHAKE)
 X_UI_CFG_BOOL(gameplay.enable_ally_targeting,       SETTING_ENABLE_ALLY_TARGETING)
+X_UI_CFG_ENUM(gameplay.ally_hostility_policy,       SETTING_ALLY_HOSTILITY_POLICY, .misc = UI_Settings_AllyHostilityPolicyEnumEntries)

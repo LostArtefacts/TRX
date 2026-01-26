@@ -96,8 +96,7 @@
     - added On/Off Light control
 - added Lara's backwards-hop stumble if there is a slope behind her
 - improved Monkeys to no longer hardcode hostility status based on Tiger presence
-- changed hostile Monkeys to share hostility status, like TR2 Barkhang monks
-    This is a deliberate change to simplify the code, that is still in line how most people play the game (either kill all allies, or none at all).
+- changed hostile Monkeys to share hostility status, like TR2 Barkhang monks (the original TR3 behavior can be restored in Gameplay → General → Ally hostility policy)
 - changed enemy drops to appear at the tile center, to conform with the OG
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation

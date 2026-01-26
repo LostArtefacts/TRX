@@ -257,3 +257,10 @@ uint32_t Stats_GetSecretMaskForItem(
 
     return 0;
 }
+
+void Stats_MarkAlliesHostile(void)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+    resume->hurt_allies = true;
+}

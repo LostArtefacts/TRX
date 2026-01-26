@@ -435,7 +435,6 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     }
 
     resume->flags.available = true;
-    resume->allies_hostile = Creature_AreAlliesHostile();
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();

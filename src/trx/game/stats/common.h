@@ -24,5 +24,6 @@ void Stats_AddAmmoUsed(void);
 void Stats_AddDeath(void);
 void Stats_AddMedipacksUsed(double medipack_value);
 void Stats_AddDistanceTravelled(XYZ_32 pos, XYZ_32 last_pos);
+void Stats_MarkAlliesHostile(void);
 
 FINAL_STATS Stats_ComputeFinalStats(bool include_bonus_levels);
