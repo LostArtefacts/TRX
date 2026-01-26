@@ -625,7 +625,7 @@ static void M_Setup(OBJECT *const obj)
     }
 
     if (!Object_Get(O_MESH_SWAP_2)->loaded) {
-        Shell_ExitSystem("Monkey requires O_MESHSWAP_2 (pickups)");
+        Shell_ExitSystem("Monkey requires O_MESH_SWAP_2 (pickups)");
     }
 
     obj->initialise_func = M_Initialise;

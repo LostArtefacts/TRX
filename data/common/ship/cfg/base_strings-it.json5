@@ -1935,6 +1935,9 @@
         },
         "beacon_light": {
             "name": "\\{review}Luce Segnaletica",
+        },
+        "shiva": {
+            "name": "\\{review}Shiva",
         }
     }
 }

@@ -1906,6 +1906,9 @@
         },
         "beacon_light": {
             "name": "\\{review}Leuchtfeuer",
+        },
+        "shiva": {
+            "name": "\\{review}Shiva",
         }
     }
 }

@@ -1917,6 +1917,9 @@
         },
         "beacon_light": {
             "name": "\\{review}Solas Beacon",
+        },
+        "shiva": {
+            "name": "\\{review}Sìva",
         }
     }
 }

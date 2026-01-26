@@ -15,3 +15,5 @@
 #define DEG_45  ((DEG_360) / 8)     // = 0x2000
 #define DEG_1   ((DEG_360) / 360)   // = 182
 // clang-format on
+
+#define W2V_SHIFT 14

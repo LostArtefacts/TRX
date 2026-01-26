@@ -80,6 +80,7 @@
 - added meteorite artifacts support
 - added examine item feature for certain items
 - added Monkey control
+- added Shiva control
 - added Tony control
 - added Spikes animation in Coastal Village and Madubu Gorge
 - added Aldwych Drill control (Spike Ceiling with timer=1 to descend faster)

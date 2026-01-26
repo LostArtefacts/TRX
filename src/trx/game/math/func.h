@@ -24,6 +24,7 @@ bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
 bool XYZ_16_AreEquivalent(const XYZ_16 *rot1, const XYZ_16 *rot2);
 XYZ_32 XYZ_32_From16(XYZ_16 src);
 bool XYZ_32_IsNearby(const XYZ_32 *pos1, const XYZ_32 *pos2, int32_t distance);
+XYZ_32 XYZ_32_DirShift(XYZ_32 src, int16_t angle, int32_t shift);
 
 float XYZ_F_DotProduct(XYZ_F a, XYZ_F b);
 float XYZ_F_Length2(XYZ_F pos);

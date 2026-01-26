@@ -52,6 +52,10 @@ void Creature_SetAlliesHostile(bool enable)
 
 void Creature_Hurt(ITEM *const item, const int32_t damage)
 {
+    if (damage <= 0) {
+        return;
+    }
+
     CREATURE *const creature = item->data;
     if (creature != nullptr) {
         creature->hurt_by_lara = true;

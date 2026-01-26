@@ -291,6 +291,11 @@ SECTOR *Room_GetSector(
     return sector;
 }
 
+SECTOR *Room_GetSector32(const XYZ_32 pos, int16_t *const room_num)
+{
+    return Room_GetSector(pos.x, pos.y, pos.z, room_num);
+}
+
 SECTOR *Room_GetSectorOnWalkable(
     const int32_t x, const int32_t y, const int32_t z, int16_t *const room_num)
 {

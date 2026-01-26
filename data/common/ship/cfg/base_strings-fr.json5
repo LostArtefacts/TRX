@@ -1893,6 +1893,9 @@
         },
         "beacon_light": {
             "name": "\\{review}Lumière Balise",
+        },
+        "shiva": {
+            "name": "\\{review}Shiva",
         }
     }
 }
