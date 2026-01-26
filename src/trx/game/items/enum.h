@@ -11,11 +11,13 @@ typedef enum {
 
 typedef enum {
     // clang-format off
-    IF_ONE_SHOT  = 0x0100,
-    IF_CODE_BITS = 0x3E00,
-    IF_REVERSE   = 0x4000,
-    IF_INVISIBLE = 0x0100,
-    IF_KILLED    = 0x8000,
+    IF_ONE_SHOT_SWITCH      = 0x0040,
+    IF_ONE_SHOT_ANTITRIGGER = 0x0080,
+    IF_ONE_SHOT             = 0x0100,
+    IF_CODE_BITS            = 0x3E00,
+    IF_REVERSE              = 0x4000,
+    IF_INVISIBLE            = 0x0100,
+    IF_KILLED               = 0x8000,
     // clang-format on
 } ITEM_FLAG;
 
