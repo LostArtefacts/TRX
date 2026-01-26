@@ -35,6 +35,7 @@ int32_t Creature_Vault(
 void Creature_Reset(void);
 bool Creature_AreAlliesHostile(void);
 void Creature_SetAlliesHostile(bool enable);
+void Creature_Hurt(ITEM *item, int32_t damage);
 bool Creature_IsAlive(const ITEM *item);
 bool Creature_IsHostile(const ITEM *item);
 bool Creature_IsAlly(const ITEM *item);

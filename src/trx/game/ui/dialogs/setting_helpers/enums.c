@@ -127,6 +127,13 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_ScreenshotFormatEnumEntries[] = {
     { -1, nullptr },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_AllyHostilityPolicyEnumEntries[] = {
+    { ALLY_HOSTILITY_POLICY_INDIVIDUAL,
+      GS_ID(ENUM_ALLY_HOSTILITY_POLICY_INDIVIDUAL) },
+    { ALLY_HOSTILITY_POLICY_SHARED, GS_ID(ENUM_ALLY_HOSTILITY_POLICY_SHARED) },
+    { -1, nullptr },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[] = {
     { MUSIC_LOAD_NEVER, GS_ID(ENUM_MUSIC_LOAD_CONDITION_NEVER) },
     { MUSIC_LOAD_NON_AMBIENT, GS_ID(ENUM_MUSIC_LOAD_CONDITION_NON_AMBIENT) },

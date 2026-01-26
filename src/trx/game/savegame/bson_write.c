@@ -498,7 +498,7 @@ static void M_WriteResumeInfo(
     M_WriteBool(ctx, "level_completed", resume->level_completed);
     M_WriteNum(ctx, "prev_level", resume->prev_level);
 
-    M_WriteBool(ctx, "allies_hostile", resume->allies_hostile);
+    M_WriteBool(ctx, "hurt_allies", resume->hurt_allies);
 
     M_WriteNum(ctx, "lara_hitpoints", resume->lara_hitpoints);
     M_WriteNum(ctx, "pistol_ammo", resume->pistol_ammo);

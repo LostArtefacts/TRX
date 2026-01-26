@@ -346,7 +346,7 @@ static void M_ReadResumeInfo(M_CONTEXT *const ctx, RESUME_INFO *const resume)
 {
     resume->level_completed = false;
     resume->prev_level = -1;
-    resume->allies_hostile = false;
+    resume->hurt_allies = false;
 
     resume->pistol_ammo = M_ReadU16(ctx);
     if (g_TRVersion == 1) {

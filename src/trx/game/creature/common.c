@@ -77,7 +77,7 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
     }
 
     if (best_item == nullptr) {
-        if (!goody || Creature_AreAlliesHostile()) {
+        if (!goody || Creature_IsHostile(item)) {
             creature->enemy = lara_item;
         } else {
             creature->enemy = nullptr;
@@ -85,7 +85,7 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
         return;
     }
 
-    if (!goody || Creature_AreAlliesHostile()) {
+    if (!goody || Creature_IsHostile(item)) {
         const int32_t dx = (lara_item->pos.x - item->pos.x) >> 6;
         const int32_t dy = (lara_item->pos.y - item->pos.y) >> 6;
         const int32_t dz = (lara_item->pos.z - item->pos.z) >> 6;
@@ -374,7 +374,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
 
     if (g_TRVersion == 3) {
         if (!creature->hurt_by_lara && creature->enemy == lara_item
-            && !Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
+            && !Creature_IsHostile(item) && Creature_IsAlly(item)) {
             creature->enemy = nullptr;
             info->ahead = false;
             info->bite = false;

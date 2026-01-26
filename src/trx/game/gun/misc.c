@@ -20,7 +20,6 @@
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
 
-#define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 
 static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
@@ -387,8 +386,7 @@ void Gun_HitTarget(
     }
     Item_TakeDamage(item, damage, true);
     if (item->data != nullptr && Object_Get(item->object_id)->intelligent) {
-        CREATURE *const creature = (CREATURE *)item->data;
-        creature->hurt_by_lara = true;
+        Creature_Hurt(item, damage);
     }
 
     if (hit_pos != nullptr) {
@@ -439,19 +437,6 @@ void Gun_HitTarget(
 
         default:
             break;
-        }
-    }
-
-    if (!Creature_AreAlliesHostile() && Creature_IsAlly(item)) {
-        CREATURE *const creature = item->data;
-        if (creature != nullptr) {
-            creature->damage_from_lara += damage;
-        }
-        if (item->hit_points <= 0
-            || (creature != nullptr
-                && (creature->damage_from_lara > M_ALLY_FRIENDLY_FIRE_THRESHOLD
-                    || creature->mood == MOOD_BORED))) {
-            Creature_SetAlliesHostile(true);
         }
     }
 }

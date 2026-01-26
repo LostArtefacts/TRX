@@ -147,7 +147,7 @@ static void M_AdjustMaxKills(
     s->max_stats = &s->adjusted_max_stats;
 }
 
-static bool M_HasPreviousAlliesHostile(const int32_t level_num)
+static bool M_HasHurtAlliesSoFar(const int32_t level_num)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     if (level_table == nullptr || level_num <= 0) {
@@ -157,14 +157,14 @@ static bool M_HasPreviousAlliesHostile(const int32_t level_num)
         const GF_LEVEL *const level = &level_table->levels[i];
         const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         if (resume != nullptr && resume->flags.available
-            && resume->allies_hostile) {
+            && resume->hurt_allies) {
             return true;
         }
     }
     return false;
 }
 
-static bool M_HasAnyAlliesHostile(const bool include_bonus_levels)
+static bool M_HasHurtAlliesEver(const bool include_bonus_levels)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     if (level_table == nullptr) {
@@ -177,7 +177,7 @@ static bool M_HasAnyAlliesHostile(const bool include_bonus_levels)
             continue;
         }
         const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        if (resume != nullptr && resume->allies_hostile) {
+        if (resume != nullptr && resume->hurt_allies) {
             return true;
         }
     }
@@ -586,8 +586,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
             Savegame_GetCurrentInfo(current_level);
         s->stats = (const STATS_COMMON *)&current_info->stats;
         s->max_stats = Stats_GetLevelMaxStats(current_level);
-        const bool include_allies = Creature_AreAlliesHostile()
-            || M_HasPreviousAlliesHostile(s->args.level_num);
+        const bool include_allies = M_HasHurtAlliesSoFar(s->args.level_num);
         M_AdjustMaxKills(s, include_allies);
 
         const GF_LEVEL *const level = Game_GetCurrentLevel();
@@ -607,7 +606,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
         s->final_stats = Stats_ComputeFinalStats(include_bonus_levels);
         s->stats = &s->final_stats.stats;
         s->max_stats = &s->final_stats.max_stats;
-        M_AdjustMaxKills(s, M_HasAnyAlliesHostile(include_bonus_levels));
+        M_AdjustMaxKills(s, M_HasHurtAlliesEver(include_bonus_levels));
         break;
 
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:

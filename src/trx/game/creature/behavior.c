@@ -1,6 +1,10 @@
+#include <trx/config.h>
 #include <trx/game/creature.h>
 #include <trx/game/objects/vars.h>
+#include <trx/game/stats.h>
 #include <trx/vector.h>
+
+#define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
 
 static bool m_AlliesHostile = false;
 static VECTOR *m_AllyObjects = nullptr;
@@ -41,12 +45,59 @@ bool Creature_AreAlliesHostile(void)
 void Creature_SetAlliesHostile(bool enable)
 {
     m_AlliesHostile = enable;
+    if (enable) {
+        Stats_MarkAlliesHostile();
+    }
+}
+
+void Creature_Hurt(ITEM *const item, const int32_t damage)
+{
+    CREATURE *const creature = item->data;
+    if (creature != nullptr) {
+        creature->hurt_by_lara = true;
+    }
+
+    switch (g_Config.gameplay.ally_hostility_policy) {
+    case ALLY_HOSTILITY_POLICY_INDIVIDUAL:
+        Stats_MarkAlliesHostile();
+        break;
+
+    case ALLY_HOSTILITY_POLICY_SHARED:
+        if (!m_AlliesHostile && Creature_IsAlly(item)) {
+            if (creature != nullptr) {
+                creature->damage_from_lara += damage;
+            }
+            if (item->hit_points <= 0
+                || (creature != nullptr
+                    && (creature->damage_from_lara
+                            > M_ALLY_FRIENDLY_FIRE_THRESHOLD
+                        || creature->mood == MOOD_BORED))) {
+                m_AlliesHostile = true;
+                Stats_MarkAlliesHostile();
+            }
+        }
+        break;
+    }
 }
 
 bool Creature_IsHostile(const ITEM *const item)
 {
-    return Object_IsType(item->object_id, g_CreatureObjects)
-        && (!Creature_IsAlly(item) || Creature_AreAlliesHostile());
+    if (!Object_IsType(item->object_id, g_CreatureObjects)) {
+        return false;
+    }
+
+    if (!Creature_IsAlly(item)) {
+        return true;
+    }
+
+    switch (g_Config.gameplay.ally_hostility_policy) {
+    case ALLY_HOSTILITY_POLICY_INDIVIDUAL:
+        const CREATURE *const creature = item->data;
+        return creature != nullptr && creature->hurt_by_lara;
+    case ALLY_HOSTILITY_POLICY_SHARED:
+        return m_AlliesHostile;
+    }
+    return false;
 }
 
 bool Creature_IsAlly(const ITEM *const item)
