@@ -258,6 +258,7 @@ typedef struct {
         bool fix_floor_data_issues;
         bool fix_bridge_collision;
         bool fix_bear_ai;
+        bool fix_monkey_pickup_priority;
     } gameplay;
 
     struct {

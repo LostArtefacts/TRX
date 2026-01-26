@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items/anim.h>
@@ -194,8 +195,8 @@ static void M_Control(const int16_t item_num)
         }
     } else {
         Creature_GetAITarget(creature);
-
-        if (creature->hurt_by_lara) {
+        if (creature->hurt_by_lara
+            && g_Config.gameplay.fix_monkey_pickup_priority) {
             creature->enemy = lara_item;
         }
 

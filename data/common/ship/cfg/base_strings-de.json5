@@ -579,6 +579,8 @@
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "\\{review}Behebt ein Problem, bei dem Lara manchmal in Wände driftet, wenn sie unter Wasser Gegenstände einsammelt, sowie beim Einsammeln von Gegenständen über Wasser unter steil geneigten Decken.",
         "SETTING_FIX_M16_ACCURACY": "\\{review}Fix: M16/MP5-Genauigkeit",
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Fixt die Genauigkeit des M16/MP5, während Lara rennt.",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "\\{review}Behebe die Priorität beim Aufheben von Affen",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "\\{review}Angegriffene Affen werden das Zurückschlagen priorisieren, bevor sie Medi-Packs und Schlüssel aufsammeln.",
         "SETTING_FIX_QWOP_GLITCH": "Fix: QWOP-Glitch",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Fixt, dass Lara auf kleinen Stufen springt, was manchmal in einer seltsamen Lauf-Animation resultiert, bekannt als QWOP-Zustand.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Überlagernde Geheimnis-Musik",

@@ -26,4 +26,5 @@ X_UI_CFG_BOOL(gameplay.fix_free_flare_glitch,       SETTING_FIX_FREE_FLARE_GLITC
 
 X_UI_CFG_BOOL(gameplay.fix_alligator_ai,            SETTING_FIX_ALLIGATOR_AI)
 X_UI_CFG_BOOL(gameplay.fix_bear_ai,                 SETTING_FIX_BEAR_AI)
+X_UI_CFG_BOOL(gameplay.fix_monkey_pickup_priority,  SETTING_FIX_MONKEY_PICKUP_PRIORITY)
 X_UI_CFG_BOOL(audio.fix_chainblock_secret_sound,    SETTING_FIX_CHAINBLOCK_SECRET_SOUND)

@@ -579,6 +579,8 @@
         "SETTING_FIX_LARA_PICKUP_EMBED_DESCRIPTION": "\\{review}Исправляет ошибку, из-за которой Лара иногда проскальзывала в стены при сборе предметов под водой, а также при сборе предметов над водой под крутыми наклонными потолками.",
         "SETTING_FIX_M16_ACCURACY": "\\{review}Исправить точность M16/MP5",
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Исправлять точность стрельбы из М16/MP5 во время бега Лары.",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "\\{review}Исправить приоритет подбора обезьян",
+        "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "\\{review}Атакованные обезьяны будут отдавать приоритет ответной атаке, а не сбору аптечек и ключей.",
         "SETTING_FIX_QWOP_GLITCH": "Исправить QWOP-состояние",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Исправляет странную анимацию бега, известную как QWOP-состояние, которое иногда возникает, когда Лара приземляется на пол во время прыжка.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Исправить звук секрета",

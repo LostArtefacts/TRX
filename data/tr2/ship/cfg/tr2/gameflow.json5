@@ -701,6 +701,7 @@
         "disable_trex_collision", // TR2 always disables corpse collision
         "fix_alligator_ai", // TR2 has no alligators
         "fix_bear_ai", // TR2 has no bears
+        "fix_monkey_pickup_priority",
         "healthbar_poison_color",
         "exposurebar_color",
         "exposurebar_location",

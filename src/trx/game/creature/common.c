@@ -1427,7 +1427,8 @@ void Creature_GetAITarget(CREATURE *const creature)
             item->ai_bits &= ~AI_FOLLOW;
         }
     } else if (item->object_id == O_MONKEY && item->carried_item == nullptr) {
-        if (Creature_IsHostile(item)) {
+        if (creature->hurt_by_lara
+            && g_Config.gameplay.fix_monkey_pickup_priority) {
             creature->enemy = lara_item;
             return;
         }

@@ -163,6 +163,7 @@
         "fix_water_exit",
         "change_pierre_spawn",
         "fix_bear_ai",
+        "fix_monkey_pickup_priority",
         "restore_ps1_enemies",
         "disable_trex_collision",
         "fix_tihocan_secret_sound",
@@ -175,5 +176,6 @@
         "enable_ally_targeting",
         "enable_weather",
         "enable_footprints",
+        "ally_hostility_policy",
     ],
 }
