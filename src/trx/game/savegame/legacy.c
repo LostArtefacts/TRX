@@ -150,7 +150,15 @@ static bool M_ItemHasSaveFlags(const OBJECT *const obj, ITEM *const item)
 static bool M_ItemHasSaveAnim(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
-    return obj->save_anim && item->object_id != O_BACON_LARA;
+    return obj->save_anim && item->object_id != O_BACON_LARA
+        && item->object_id != O_PUZZLE_HOLE_1
+        && item->object_id != O_PUZZLE_HOLE_2
+        && item->object_id != O_PUZZLE_HOLE_3
+        && item->object_id != O_PUZZLE_HOLE_4
+        && item->object_id != O_PUZZLE_DONE_1
+        && item->object_id != O_PUZZLE_DONE_2
+        && item->object_id != O_PUZZLE_DONE_3
+        && item->object_id != O_PUZZLE_DONE_4;
 }
 
 static bool M_ItemHasHitPoints(const ITEM *const item)
