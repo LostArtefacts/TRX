@@ -60,11 +60,13 @@
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
 - fixed underwater wobble effect acting twitchy with camera movement
+- fixed gun injections overwriting Lara's footstep SFX in all levels (#4733, regression from 1.1)
 
 **TR2**:
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
 - fixed underwater wobble effect acting twitchy with camera movement
 - fixed a deviation in water current behaviour that could result in Lara stopping too early (#4706, regression from TR2X 1.1)
+- fixed gun injections overwriting Lara's footstep SFX in underwater levels (#4733, regression from 1.1)
 
 **TR3**:
 - added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)
