@@ -45,6 +45,7 @@
     - `on_control` → `before_control`
     - `on_control_post` → `after_control`
 - changed turbo cheat to auto‑reset to normal speed if pushed past limit, making it easier for new players to recover from accidental changes
+- changed Blades to support being reset
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
@@ -120,6 +121,7 @@
 - fixed Lara holding onto ledges after dying if the Action key wasn't released
 - fixed being unable to antitrigger Poison Dart Emitters
 - fixed ally Lua API not working with most of the TR3 enemies supported so far
+- fixed Blades in Coastal Village not respecting antitrigger
 
 
 

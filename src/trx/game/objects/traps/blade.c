@@ -39,6 +39,9 @@ static void M_Control(const int16_t item_num)
     if (Item_IsTriggerActive(item)
         && item->current_anim_state == BLADE_STATE_STOP) {
         item->goal_anim_state = BLADE_STATE_CUT;
+    } else if (!Item_IsTriggerActive(item) && Item_TestFrameEqual(item, -1)) {
+        item->status = IS_INACTIVE;
+        Item_RemoveActive(item_num);
     } else {
         item->goal_anim_state = BLADE_STATE_STOP;
     }
