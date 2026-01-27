@@ -5,8 +5,18 @@
 #include <trx/game/pathing/types.h>
 
 typedef struct {
-    int16_t head_rotation;
-    int16_t neck_rotation;
+    union {
+        // NOTE: many draw paths treat item->data as an int16_t rotation array.
+        // For intelligent objects, item->data is a CREATURE*, so joint_rotation
+        // must be the first field to match this expectation.
+        int16_t joint_rotation[4];
+        struct {
+            // These are old TR1-2 aliases.
+            int16_t head_rotation;
+            int16_t neck_rotation;
+            int16_t _extra_rotation[2];
+        };
+    };
     int16_t maximum_turn;
     int16_t flags;
     bool alerted;
@@ -21,7 +31,6 @@ typedef struct {
     LOT_INFO lot;
     XYZ_32 target;
     ITEM *enemy;
-    int16_t joint_rotation[4];
 } CREATURE;
 
 typedef struct {
