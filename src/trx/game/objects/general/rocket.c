@@ -101,6 +101,73 @@ static bool M_CanExplodeTarget(const ITEM *const item)
     return true;
 }
 
+static bool M_TryExplodeItem(
+    const ITEM *const projectile_item, const XYZ_32 old_pos,
+    const int16_t target_item_num, const int32_t radius)
+{
+    ITEM *const target_item = Item_Get(target_item_num);
+    const OBJECT *const target_obj = Object_Get(target_item->object_id);
+    if (target_item == Lara_GetItem()) {
+        return false;
+    }
+    if (!target_item->collidable) {
+        return false;
+    }
+
+    if (target_item->status == IS_INVISIBLE
+        || target_obj->collision_func == nullptr) {
+        return false;
+    }
+
+    if (!Creature_IsTargetable(target_item)
+        && !Creature_IsDestructible(target_item)
+        && !Creature_IsFloating(target_item)) {
+        return false;
+    }
+
+    const ANIM_FRAME *const frame = Item_GetBestFrame(target_item);
+    const BOUNDS_16 *const bounds = &frame->bounds;
+
+    const int32_t cdy = projectile_item->pos.y - target_item->pos.y;
+    if (cdy + radius < bounds->min.y || cdy - radius > bounds->max.y) {
+        return false;
+    }
+
+    const int32_t cy = Math_Cos(target_item->rot.y);
+    const int32_t sy = Math_Sin(target_item->rot.y);
+    const int32_t cdx = projectile_item->pos.x - target_item->pos.x;
+    const int32_t cdz = projectile_item->pos.z - target_item->pos.z;
+    const int32_t odx = old_pos.x - target_item->pos.x;
+    const int32_t odz = old_pos.z - target_item->pos.z;
+
+    const int32_t rx = (cy * cdx - sy * cdz) >> W2V_SHIFT;
+    const int32_t sx = (cy * odx - sy * odz) >> W2V_SHIFT;
+    if ((rx + radius < bounds->min.x && sx + radius < bounds->min.x)
+        || (rx - radius > bounds->max.x && sx - radius > bounds->max.x)) {
+        return false;
+    }
+
+    const int32_t rz = (sy * cdx + cy * cdz) >> W2V_SHIFT;
+    const int32_t sz = (sy * odx + cy * odz) >> W2V_SHIFT;
+    if ((rz + radius < bounds->min.z && sz + radius < bounds->min.z)
+        || (rz - radius > bounds->max.z && sz - radius > bounds->max.z)) {
+        return false;
+    }
+
+    if (target_item->status == IS_ACTIVE) {
+        Gun_HitTarget(
+            target_item, nullptr, nullptr, LGT_ROCKET,
+            g_Weapons[LGT_ROCKET].damage);
+        Stats_AddAmmoHits();
+
+        if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
+            Creature_Die(target_item_num, true);
+        }
+    }
+
+    return true;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -231,71 +298,22 @@ static void M_Control(const int16_t item_num)
         explode = true;
     }
 
-    for (int16_t target_item_num = Room_Get(item->room_num)->item_num;
-         target_item_num != NO_ITEM;
-         target_item_num = Item_Get(target_item_num)->next_item) {
-        ITEM *const target_item = Item_Get(target_item_num);
-        const OBJECT *const target_obj = Object_Get(target_item->object_id);
-        if (target_item == Lara_GetItem()) {
-            continue;
-        }
-        if (!target_item->collidable) {
-            continue;
-        }
+    Room_GetNearbyRooms(item->pos, radius * 4, radius * 4, item->room_num);
+    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
+        const ROOM *const room = Room_Get(Room_DrawGetRoom(i));
+        for (int16_t target_item_num = room->item_num;
+             target_item_num != NO_ITEM;
+             target_item_num = Item_Get(target_item_num)->next_item) {
+            if (!M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
+                continue;
+            }
 
-        if (target_item->status == IS_INVISIBLE
-            || target_obj->collision_func == nullptr) {
-            continue;
-        }
-
-        if (!Creature_IsTargetable(target_item)
-            && !Creature_IsDestructible(target_item)
-            && !Creature_IsFloating(target_item)) {
-            continue;
-        }
-
-        const ANIM_FRAME *const frame = Item_GetBestFrame(target_item);
-        const BOUNDS_16 *const bounds = &frame->bounds;
-
-        const int32_t cdy = item->pos.y - target_item->pos.y;
-        if (cdy + radius < bounds->min.y || cdy - radius > bounds->max.y) {
-            continue;
-        }
-
-        const int32_t cy = Math_Cos(target_item->rot.y);
-        const int32_t sy = Math_Sin(target_item->rot.y);
-        const int32_t cdx = item->pos.x - target_item->pos.x;
-        const int32_t cdz = item->pos.z - target_item->pos.z;
-        const int32_t odx = old_pos.x - target_item->pos.x;
-        const int32_t odz = old_pos.z - target_item->pos.z;
-
-        const int32_t rx = (cy * cdx - sy * cdz) >> W2V_SHIFT;
-        const int32_t sx = (cy * odx - sy * odz) >> W2V_SHIFT;
-        if ((rx + radius < bounds->min.x && sx + radius < bounds->min.x)
-            || (rx - radius > bounds->max.x && sx - radius > bounds->max.x)) {
-            continue;
-        }
-
-        const int32_t rz = (sy * cdx + cy * cdz) >> W2V_SHIFT;
-        const int32_t sz = (sy * odx + cy * odz) >> W2V_SHIFT;
-        if ((rz + radius < bounds->min.z && sz + radius < bounds->min.z)
-            || (rz - radius > bounds->max.z && sz - radius > bounds->max.z)) {
-            continue;
-        }
-
-        explode = true;
-
-        if (target_item->status != IS_ACTIVE) {
-            continue;
-        }
-
-        Gun_HitTarget(
-            target_item, nullptr, nullptr, LGT_ROCKET,
-            g_Weapons[LGT_ROCKET].damage);
-        Stats_AddAmmoHits();
-
-        if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
-            Creature_Die(target_item_num, true);
+            if (!explode) {
+                explode = true;
+                radius = WALL_L;
+                i = -1;
+                break;
+            }
         }
     }
 

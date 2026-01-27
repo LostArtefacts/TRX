@@ -122,7 +122,7 @@
 - fixed wrong item selection sound in the inventory ring
 - fixed flame emitters not getting restored when loading from a save
 - fixed Lara holding onto ledges after dying if the Action key wasn't released
-- fixed Grenade and Harpoons damage
+- fixed Grenade, Rocket Launcher, and Harpoons damage
 - fixed being unable to antitrigger Poison Dart Emitters
 - fixed ally Lua API not working with most of the TR3 enemies supported so far
 - fixed one-shot antitriggers / antipads behavior
