@@ -578,20 +578,19 @@ BOUNDS_32 Room_GetWorldBounds(void)
 }
 
 void Room_GetNearbyRooms(
-    const int32_t x, const int32_t y, const int32_t z, const int32_t r,
-    const int32_t h, const int16_t room_num)
+    const XYZ_32 pos, const int32_t r, const int32_t h, const int16_t room_num)
 {
     Room_DrawReset();
     Room_MarkToBeDrawn(room_num);
 
-    M_GetNewRoom(r + x, y, r + z, room_num);
-    M_GetNewRoom(x - r, y, r + z, room_num);
-    M_GetNewRoom(r + x, y, z - r, room_num);
-    M_GetNewRoom(x - r, y, z - r, room_num);
-    M_GetNewRoom(r + x, y - h, r + z, room_num);
-    M_GetNewRoom(x - r, y - h, r + z, room_num);
-    M_GetNewRoom(r + x, y - h, z - r, room_num);
-    M_GetNewRoom(x - r, y - h, z - r, room_num);
+    M_GetNewRoom(pos.x + r, pos.y, pos.z + r, room_num);
+    M_GetNewRoom(pos.x - r, pos.y, pos.z + r, room_num);
+    M_GetNewRoom(pos.x + r, pos.y, pos.z - r, room_num);
+    M_GetNewRoom(pos.x - r, pos.y, pos.z - r, room_num);
+    M_GetNewRoom(pos.x + r, pos.y - h, pos.z + r, room_num);
+    M_GetNewRoom(pos.x - r, pos.y - h, pos.z + r, room_num);
+    M_GetNewRoom(pos.x + r, pos.y - h, pos.z - r, room_num);
+    M_GetNewRoom(pos.x - r, pos.y - h, pos.z - r, room_num);
 }
 
 bool Room_CheckOverlap(const int16_t room_num_0, const int16_t room_num_1)

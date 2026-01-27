@@ -549,7 +549,8 @@ bool Collide_CollideStaticObjects(
     const int32_t in_z_max = z + coll->radius;
     XYZ_32 shifter = { .x = 0, .z = 0 };
 
-    Room_GetNearbyRooms(x, y, z, coll->radius + 50, height + 50, room_num);
+    Room_GetNearbyRooms(
+        (XYZ_32) { x, y, z }, coll->radius + 50, height + 50, room_num);
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
         const ROOM *const room = Room_Get(Room_DrawGetRoom(i));

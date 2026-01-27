@@ -31,7 +31,6 @@ int32_t Room_GetOutsideStatus(XYZ_32 pos, int16_t *out_room_num);
 
 bool Room_PointInside(const ROOM *room, XYZ_32 point);
 bool Room_CheckOverlap(int16_t room_num_0, int16_t room_num_1);
-void Room_GetNearbyRooms(
-    int32_t x, int32_t y, int32_t z, int32_t r, int32_t h, int16_t room_num);
+void Room_GetNearbyRooms(XYZ_32 pos, int32_t r, int32_t h, int16_t room_num);
 
 bool Room_FindValidPos(XYZ_32 *out_pos, int16_t *out_room_num);
