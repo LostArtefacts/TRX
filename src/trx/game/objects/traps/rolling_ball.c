@@ -46,10 +46,8 @@ static void M_Roll(ITEM *const item)
 static bool M_TestStop(const ITEM *const item)
 {
     int32_t dist;
-    int32_t item_height;
     switch (item->object_id) {
     case O_ROLLING_BALL_1:
-        item_height = STEP_L * 13 / 4;
         if (g_TRVersion == 1) {
             dist = WALL_L / 2;
         } else if (g_TRVersion == 2) {
@@ -59,14 +57,17 @@ static bool M_TestStop(const ITEM *const item)
         }
         break;
     case O_ROLLING_BALL_4:
-        item_height = WALL_L * 33 / 16;
         dist = WALL_L * 17 / 16;
         break;
     default:
-        item_height = WALL_L;
         dist = WALL_L;
         break;
     }
+
+    const ANIM_FRAME *const frame = Item_GetBestFrame(item);
+    const BOUNDS_16 *const bounds = &frame->bounds;
+    const int16_t item_height =
+        ROUND_TO_HALF_CLICK(ABS(bounds->max.y - bounds->min.y));
 
     int16_t room_num = item->room_num;
     const int32_t x =
