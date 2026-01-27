@@ -992,7 +992,8 @@ bool Creature_Animate(
                 item->pos.x = old.x;
                 item->pos.z = old.z;
             }
-        } else if (Object_IsType(item->object_id, g_WaterObjects)) {
+        } else if (
+            fly_check || Object_IsType(item->object_id, g_WaterObjects)) {
             const int32_t ceiling =
                 Room_GetCeiling(sector, item->pos.x, y, item->pos.z);
             int32_t min_y = bounds->min.y;
