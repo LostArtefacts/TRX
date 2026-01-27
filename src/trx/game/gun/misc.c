@@ -394,7 +394,8 @@ void Gun_HitTarget(
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (item->hit_points > 0 && item->hit_points <= damage) {
+    if ((item->hit_points == DONT_TARGET && Creature_IsDestructible(item))
+        || (item->hit_points > 0 && item->hit_points <= damage)) {
         const bool skip_stats = item->object_id == O_DRAGON_FRONT;
         if (!skip_stats) {
             Stats_AddKill();
