@@ -59,3 +59,5 @@ bool UI_Settings_Flare_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Grenade_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Harpoon_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_M16_IsAvailable(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_ProjectileAreaDamage_IsAvailable(
+    const UI_SETTINGS_OPTION *option);

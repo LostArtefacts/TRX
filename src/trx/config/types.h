@@ -260,6 +260,8 @@ typedef struct {
         bool fix_bridge_collision;
         bool fix_bear_ai;
         bool fix_monkey_pickup_priority;
+
+        PROJECTILE_AREA_DAMAGE projectile_area_damage;
     } gameplay;
 
     struct {

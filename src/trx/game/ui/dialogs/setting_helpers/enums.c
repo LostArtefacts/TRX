@@ -134,6 +134,14 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_AllyHostilityPolicyEnumEntries[] = {
     { -1, nullptr },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_ProjectileAreaDamageEnumEntries[] = {
+    { PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP,
+      GS_ID(ENUM_PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP) },
+    { PROJECTILE_AREA_DAMAGE_MULTI_SWEEP,
+      GS_ID(ENUM_PROJECTILE_AREA_DAMAGE_MUTLI_SWEEP) },
+    { -1, nullptr },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[] = {
     { MUSIC_LOAD_NEVER, GS_ID(ENUM_MUSIC_LOAD_CONDITION_NEVER) },
     { MUSIC_LOAD_NON_AMBIENT, GS_ID(ENUM_MUSIC_LOAD_CONDITION_NON_AMBIENT) },
