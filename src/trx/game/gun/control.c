@@ -514,7 +514,7 @@ int32_t Gun_FireWeapon(
     Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
     Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
     Gun_HitTarget(
-        target, &start, &hit_pos,
+        target, &start, &hit_pos, weapon_type,
         weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
     return 1;
 }
