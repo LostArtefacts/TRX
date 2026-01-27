@@ -278,7 +278,7 @@
         "aim_speed": 10,
         "shot_accuracy": 8,
         "gun_height": 500,
-        "damage": 4,
+        "damage": 6,
         "pickup_qty": 3,
         "target_dist": 8.0,
         "equip_anim_idx": 1,
