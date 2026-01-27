@@ -38,7 +38,9 @@ typedef enum {
     M_ANIM_KILL_ANIM = 18,
 } M_ANIM;
 
-static int32_t m_EffectMesh = 0;
+typedef struct {
+    int32_t effect_mesh;
+} M_PRIV;
 
 static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
 {
@@ -147,9 +149,23 @@ static void M_Damage(
     }
 }
 
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->effect_mesh =
+        JSON_ObjectGetInt(priv_root, "effect_mesh", p->effect_mesh);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "effect_mesh", p->effect_mesh);
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
 
     if (item->object_id == O_SHIVA) {
         Item_SwitchToAnim(item, M_ANIM_START_ANIM, 0);
@@ -159,6 +175,7 @@ static void M_Initialise(const int16_t item_num)
 
     item->status = IS_INACTIVE;
     item->mesh_bits = 0;
+    p->effect_mesh = 0;
 }
 
 static void M_Control(const int16_t item_num)
@@ -170,6 +187,7 @@ static void M_Control(const int16_t item_num)
     const ITEM *const lara_item = Lara_GetItem();
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->data;
+    M_PRIV *const p = item->priv;
 
     const bool lara_alive = lara_item->hit_points > 0;
     int16_t torso_x = 0;
@@ -326,14 +344,14 @@ static void M_Control(const int16_t item_num)
                 creature->flags--;
             } else {
                 if (item->mesh_bits == 0) {
-                    m_EffectMesh = 0;
+                    p->effect_mesh = 0;
                 }
 
                 item->mesh_bits <<= 1;
                 item->mesh_bits |= 1;
                 creature->flags = 1;
                 XYZ_32 smoke_pos = { 0, 0, 256 };
-                Collide_GetJointAbsPosition(item, &smoke_pos, m_EffectMesh++);
+                Collide_GetJointAbsPosition(item, &smoke_pos, p->effect_mesh++);
                 Sparks_TriggerExplosionSparks(
                     smoke_pos, 2, 0, 0, item->room_num);
                 M_TriggerSmoke(smoke_pos, true);
@@ -341,7 +359,7 @@ static void M_Control(const int16_t item_num)
 
             if (item->mesh_bits == INT32_MAX) {
                 item->goal_anim_state = M_STATE_WAIT;
-                m_EffectMesh = 0;
+                p->effect_mesh = 0;
                 creature->flags = -45;
             }
             break;
@@ -416,13 +434,14 @@ bool M_Draw(const ITEM *const item)
     int32_t rate;
     const int32_t frac = Item_GetFrames(item, frames, &rate);
     const OBJECT *const obj = Object_Get(item->object_id);
+    M_PRIV *const p = item->priv;
 
     if (item->hit_points <= 0 && item->status != IS_ACTIVE
         && item->mesh_bits != 0) {
         ITEM *const mutable_item = (ITEM *)item;
         mutable_item->mesh_bits >>= 1;
         XYZ_32 smoke_pos = { 0, 0, 256 };
-        Collide_GetJointAbsPosition(item, &smoke_pos, m_EffectMesh++);
+        Collide_GetJointAbsPosition(item, &smoke_pos, p->effect_mesh++);
         M_TriggerSmoke(smoke_pos, true);
     }
 
@@ -523,6 +542,9 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->draw_func = M_Draw;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
 
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = 100;
