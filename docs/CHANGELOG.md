@@ -129,6 +129,7 @@
 - fixed ally Lua API not working with most of the TR3 enemies supported so far
 - fixed one-shot antitriggers / antipads behavior
 - fixed Blades in Coastal Village not respecting antitrigger
+- fixed running down an enemy with a Quad not counting as a kill
 
 
 
