@@ -149,7 +149,7 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
         Spawn_BloodBath(
             item->pos.x, skidoo->pos.y - STEP_L, item->pos.z, skidoo->speed,
             skidoo->rot.y, item->room_num, 3);
-        Gun_HitTarget(item, nullptr, nullptr, item->hit_points);
+        Gun_HitTarget(item, nullptr, nullptr, LGT_SKIDOO, item->hit_points);
     }
     return true;
 }

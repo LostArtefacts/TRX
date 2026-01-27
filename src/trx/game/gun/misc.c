@@ -67,7 +67,7 @@ static void M_SmashItem(const int16_t item_num)
         break;
 
     case O_SCION_ITEM_3:
-        Gun_HitTarget(item, nullptr, nullptr, item->hit_points);
+        Gun_HitTarget(item, nullptr, nullptr, LGT_UNARMED, item->hit_points);
         break;
 
     default:
@@ -371,7 +371,8 @@ PROJECTILE_HIT Gun_SmashItems(
 
 void Gun_HitTarget(
     ITEM *const item, const GAME_VECTOR *const start,
-    const GAME_VECTOR *const hit_pos, int32_t damage)
+    const GAME_VECTOR *const hit_pos, const LARA_GUN_TYPE weapon_type,
+    int32_t damage)
 {
     bool make_ricochet = (g_Config.visuals.fix_texture_issues
                           && item->object_id == O_SCION_ITEM_3)
@@ -385,7 +386,8 @@ void Gun_HitTarget(
         const int16_t angle = DEG_180 - item->rot.y + Math_Atan(dz, dx);
 
         if (item->current_anim_state > 1 && item->current_anim_state < 5
-            && angle > -DEG_90 && angle < DEG_90) {
+            && angle > -DEG_90 && angle < DEG_90 && weapon_type != LGT_ROCKET
+            && weapon_type != LGT_GRENADE && weapon_type != LGT_HARPOON) {
             make_ricochet = true;
             damage = 0;
         }

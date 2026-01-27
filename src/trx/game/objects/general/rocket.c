@@ -290,7 +290,8 @@ static void M_Control(const int16_t item_num)
         }
 
         Gun_HitTarget(
-            target_item, nullptr, nullptr, g_Weapons[LGT_ROCKET].damage);
+            target_item, nullptr, nullptr, LGT_ROCKET,
+            g_Weapons[LGT_ROCKET].damage);
         Stats_AddAmmoHits();
 
         if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
