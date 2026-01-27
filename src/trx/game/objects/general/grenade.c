@@ -316,8 +316,9 @@ static void M_Control(const int16_t item_num)
         radius = M_GetBlastRadius();
     }
 
-    Room_GetNearbyRooms(item->pos, radius * 4, radius * 4, item->room_num);
-    if (g_TRVersion == 3) {
+    if (g_Config.gameplay.projectile_area_damage
+        == PROJECTILE_AREA_DAMAGE_MULTI_SWEEP) {
+        Room_GetNearbyRooms(item->pos, radius * 4, radius * 4, item->room_num);
         for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
             const ROOM *const room = Room_Get(Room_DrawGetRoom(i));
             for (int16_t target_item_num = room->item_num;

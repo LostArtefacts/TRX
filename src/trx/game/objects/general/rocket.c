@@ -298,21 +298,32 @@ static void M_Control(const int16_t item_num)
         explode = true;
     }
 
-    Room_GetNearbyRooms(item->pos, radius * 4, radius * 4, item->room_num);
-    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
-        const ROOM *const room = Room_Get(Room_DrawGetRoom(i));
+    if (g_Config.gameplay.projectile_area_damage
+        == PROJECTILE_AREA_DAMAGE_MULTI_SWEEP) {
+        Room_GetNearbyRooms(item->pos, radius * 4, radius * 4, item->room_num);
+        for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
+            const ROOM *const room = Room_Get(Room_DrawGetRoom(i));
+            for (int16_t target_item_num = room->item_num;
+                 target_item_num != NO_ITEM;
+                 target_item_num = Item_Get(target_item_num)->next_item) {
+                if (!M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
+                    continue;
+                }
+
+                if (!explode) {
+                    explode = true;
+                    radius = WALL_L;
+                    i = -1;
+                    break;
+                }
+            }
+        }
+    } else {
         for (int16_t target_item_num = room->item_num;
              target_item_num != NO_ITEM;
              target_item_num = Item_Get(target_item_num)->next_item) {
-            if (!M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
-                continue;
-            }
-
-            if (!explode) {
+            if (M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
                 explode = true;
-                radius = WALL_L;
-                i = -1;
-                break;
             }
         }
     }

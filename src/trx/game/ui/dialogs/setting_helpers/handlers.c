@@ -221,3 +221,10 @@ bool UI_Settings_M16_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Weapons[LGT_M16].is_available || g_Weapons[LGT_MP5].is_available;
 }
+
+bool UI_Settings_ProjectileAreaDamage_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return g_Weapons[LGT_ROCKET].is_available
+        || g_Weapons[LGT_GRENADE].is_available;
+}
