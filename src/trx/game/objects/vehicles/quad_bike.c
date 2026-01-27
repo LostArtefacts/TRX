@@ -14,6 +14,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
+#include <trx/game/stats.h>
 #include <trx/version.h>
 
 static const BITE m_QuadBites[6] = {
@@ -706,14 +707,16 @@ static void M_SkidooBaddieCollision(ITEM *const quad)
 
             if (item->object_id == O_ROLLING_BALL_2) {
                 if (item->current_anim_state == 1) {
-                    lara_item->hit_status = true;
-                    lara_item->hit_points -= 100;
+                    Lara_TakeDamage(100, true);
                 }
             } else {
                 Spawn_BloodBath(
                     item->pos.x, quad->pos.y - 256, item->pos.z, quad->speed,
                     quad->rot.y, item->room_num, 3);
-                item->hit_points = 0;
+                if (item->hit_points > 0) {
+                    item->hit_points = 0;
+                    Stats_AddKill();
+                }
             }
 
         loop_end:
