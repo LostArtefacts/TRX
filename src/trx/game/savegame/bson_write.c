@@ -9,7 +9,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/general/lift.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vehicles/boat.h>
@@ -414,22 +413,6 @@ static void M_WriteItem(
             M_WriteNum(ctx, "momentum_angle", data->momentum_angle);
             M_WriteNum(ctx, "extra_rotation", data->extra_rotation);
             M_WriteNum(ctx, "pitch", data->pitch);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-    }
-
-    case O_LIFT: {
-        if (item->data != nullptr) {
-            const LIFT_INFO *const data = (LIFT_INFO *)item->data;
-            M_PushObject(ctx);
-            M_WriteNum(ctx, "start_height", data->start_height);
-            M_WriteNum(ctx, "wait_time", data->wait_time);
-            M_WriteBool(ctx, "is_moving", data->is_moving);
-            for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
-                const char *const pos_key = String_FormatStatic("linked_%d", j);
-                M_WriteXYZ32(ctx, pos_key, data->linked[j].pos);
-            }
             M_PopAndSet(ctx, "data");
         }
         break;

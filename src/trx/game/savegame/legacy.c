@@ -6,7 +6,6 @@
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
-#include <trx/game/objects/general/lift.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
@@ -14,6 +13,7 @@
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/savegame.h>
+#include <trx/game/savegame/legacy_io.h>
 #include <trx/game/stats.h>
 #include <trx/memory.h>
 #include <trx/version.h>
@@ -94,6 +94,21 @@ static void M_Skip(M_CONTEXT *const ctx, const size_t size)
 L_SPECIAL_READS
 #undef X_SPECIAL_READ
 #undef L_SPECIAL_READS
+
+static int32_t M_IOReadS32(const SAVEGAME_LEGACY_IO *const io)
+{
+    return M_ReadS32((M_CONTEXT *)io->priv);
+}
+
+static int16_t M_IOReadS16(const SAVEGAME_LEGACY_IO *const io)
+{
+    return M_ReadS16((M_CONTEXT *)io->priv);
+}
+
+static void M_IOSkip(const SAVEGAME_LEGACY_IO *const io, const size_t size)
+{
+    M_Skip((M_CONTEXT *)io->priv, size);
+}
 
 // =============================================================================
 // End of internal helpers
@@ -533,6 +548,18 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
         }
     }
 
+    const SAVEGAME_LEGACY_IO io = {
+        .read_s32 = M_IOReadS32,
+        .read_s16 = M_IOReadS16,
+        .skip = M_IOSkip,
+        .tr_version = g_TRVersion,
+        .priv = ctx,
+    };
+
+    if (obj->priv_legacy_load_func != nullptr) {
+        obj->priv_legacy_load_func(item, &io);
+    }
+
     switch (item->object_id) {
     case O_MOVABLE_BLOCK_1:
     case O_MOVABLE_BLOCK_2:
@@ -572,13 +599,6 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
         data->momentum_angle = M_ReadS16(ctx);
         data->extra_rotation = M_ReadS16(ctx);
         data->pitch = M_ReadS32(ctx);
-        break;
-    }
-
-    case O_LIFT: {
-        LIFT_INFO *const data = item->data;
-        data->start_height = M_ReadS32(ctx);
-        data->wait_time = M_ReadS32(ctx);
         break;
     }
 

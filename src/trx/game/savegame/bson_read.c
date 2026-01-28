@@ -11,7 +11,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/general/lift.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vars.h>
@@ -915,22 +914,6 @@ static bool M_ReadItem(
         M_MUST(M_ReadNum(ctx, "momentum_angle", &data->momentum_angle));
         M_MUST(M_ReadNum(ctx, "extra_rotation", &data->extra_rotation));
         M_MUST(M_ReadNum(ctx, "pitch", &data->pitch));
-        M_MUST(M_Pop(ctx));
-        break;
-    }
-
-    case O_LIFT: {
-        M_MUST(M_PushObject(ctx, "data"));
-        LIFT_INFO *const data = item->data;
-        M_MUST(M_ReadNum(ctx, "start_height", &data->start_height));
-        M_MUST(M_ReadNum(ctx, "wait_time", &data->wait_time));
-        if (ctx->sg_version >= VERSION_12) {
-            M_MUST(M_ReadBool(ctx, "is_moving", &data->is_moving));
-            for (int32_t j = 0; j < LIFT_NUM_SECTORS; j++) {
-                const char *const pos_key = String_FormatStatic("linked_%d", j);
-                M_MUST(M_ReadXYZ32(ctx, pos_key, &data->linked[j].pos));
-            }
-        }
         M_MUST(M_Pop(ctx));
         break;
     }
