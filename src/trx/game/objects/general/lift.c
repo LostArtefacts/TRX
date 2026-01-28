@@ -40,7 +40,7 @@ static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
     for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
         const JSON_OBJECT *const linked_root =
-            JSON_ObjectGetObject((JSON_OBJECT *)priv_root, key);
+            JSON_ObjectGetObject(priv_root, key);
         if (linked_root != nullptr) {
             p->linked[i].pos.x =
                 JSON_ObjectGetInt(linked_root, "x", p->linked[i].pos.x);
