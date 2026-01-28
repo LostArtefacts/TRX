@@ -11,7 +11,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/objects/vehicles/boat.h>
@@ -846,32 +845,6 @@ static bool M_ReadItem(
                 item->data = (void *)(intptr_t)(effect_num + 1);
                 M_MUST(M_Pop(ctx));
             }
-        }
-        break;
-    }
-
-    case O_MOVABLE_BLOCK_1:
-    case O_MOVABLE_BLOCK_2:
-    case O_MOVABLE_BLOCK_3:
-    case O_MOVABLE_BLOCK_4: {
-        if (ctx->sg_version >= VERSION_12) {
-            M_MUST(M_PushObject(ctx, "data"));
-            MOVABLE_BLOCK_INFO *const data = item->data;
-            M_MUST(M_ReadNum(ctx, "counter_rot_0", &data->counter_rot[0]));
-            M_MUST(M_ReadNum(ctx, "counter_rot_1", &data->counter_rot[1]));
-            M_MUST(M_ReadNum(ctx, "counter_rot_2", &data->counter_rot[2]));
-            M_MUST(M_ReadNum(ctx, "original_rot", &data->original_rot));
-            M_MUST(M_ReadNum(ctx, "gravity_frames", &data->gravity_frames));
-            M_MUST(M_ReadBool(ctx, "is_push_pull", &data->is_push_pull));
-            M_MUST(
-                M_ReadBool(ctx, "is_forced_moving", &data->is_forced_moving));
-            M_MUST(M_ReadXYZ32(ctx, "linked", &data->linked.pos));
-            M_MUST(M_Pop(ctx));
-        } else {
-            // For old saves, guess linked sector is at item position.
-            MOVABLE_BLOCK_INFO *const data = item->data;
-            data->linked.pos = item->pos;
-            data->linked.room_num = item->room_num;
         }
         break;
     }

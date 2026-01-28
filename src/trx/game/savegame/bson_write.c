@@ -9,7 +9,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vehicles/boat.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
@@ -354,25 +353,6 @@ static void M_WriteItem(
             M_WriteNum(ctx, "bl_status", status);
             M_PushObject(ctx);
             M_WriteNum(ctx, "status", status);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-
-    case O_MOVABLE_BLOCK_1:
-    case O_MOVABLE_BLOCK_2:
-    case O_MOVABLE_BLOCK_3:
-    case O_MOVABLE_BLOCK_4:
-        if (item->data != nullptr) {
-            const MOVABLE_BLOCK_INFO *const data = item->data;
-            M_PushObject(ctx);
-            M_WriteNum(ctx, "counter_rot_0", data->counter_rot[0]);
-            M_WriteNum(ctx, "counter_rot_1", data->counter_rot[1]);
-            M_WriteNum(ctx, "counter_rot_2", data->counter_rot[2]);
-            M_WriteNum(ctx, "original_rot", data->original_rot);
-            M_WriteNum(ctx, "gravity_frames", data->gravity_frames);
-            M_WriteBool(ctx, "is_push_pull", data->is_push_pull);
-            M_WriteBool(ctx, "is_forced_moving", data->is_forced_moving);
-            M_WriteXYZ32(ctx, "linked", data->linked.pos);
             M_PopAndSet(ctx, "data");
         }
         break;

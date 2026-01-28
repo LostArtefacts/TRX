@@ -18,13 +18,3 @@ void MovableBlock_ShiftStackY(
 void MovableBlock_SlideStack(
     int32_t stack_height, XYZ_32 old_sector, const ITEM *dest_item,
     bool reposition);
-
-typedef struct {
-    int16_t counter_rot[3];
-    int16_t original_rot;
-    uint16_t gravity_frames;
-    bool is_push_pull;
-    bool is_forced_moving;
-    GAME_VECTOR initial;
-    GAME_VECTOR linked;
-} MOVABLE_BLOCK_INFO;
