@@ -1,17 +1,18 @@
-#include <trx/game/objects/general/lift.h>
-
-#include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
+#include <trx/game/savegame/legacy_io.h>
 #include <trx/log.h>
+#include <trx/strings.h>
 #include <trx/vector.h>
 
 #define LIFT_WAIT_TIME (3 * LOGIC_FPS) // = 90
 #define LIFT_SHIFT 16
 #define LIFT_HEIGHT (STEP_L * 5) // = 1280
 #define LIFT_TRAVEL_DIST (STEP_L * 22)
+#define M_LIFT_NUM_FLOOR_SECTORS 4
+#define M_LIFT_NUM_SECTORS 8
 
 typedef enum {
     LIFT_STATE_DOOR_CLOSED = 0,
@@ -21,6 +22,63 @@ typedef enum {
 typedef enum {
     LIFT_ANIM_CLOSED = 0,
 } LIFT_ANIM;
+
+typedef struct {
+    int32_t start_height;
+    int32_t wait_time;
+    bool is_moving;
+    GAME_VECTOR linked[M_LIFT_NUM_SECTORS];
+} M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->start_height =
+        JSON_ObjectGetInt(priv_root, "start_height", p->start_height);
+    p->wait_time = JSON_ObjectGetInt(priv_root, "wait_time", p->wait_time);
+    p->is_moving = JSON_ObjectGetBool(priv_root, "is_moving", p->is_moving);
+    for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
+        const char *const key = String_FormatStatic("linked_%d", i);
+        const JSON_OBJECT *const linked_root =
+            JSON_ObjectGetObject((JSON_OBJECT *)priv_root, key);
+        if (linked_root != nullptr) {
+            p->linked[i].pos.x =
+                JSON_ObjectGetInt(linked_root, "x", p->linked[i].pos.x);
+            p->linked[i].pos.y =
+                JSON_ObjectGetInt(linked_root, "y", p->linked[i].pos.y);
+            p->linked[i].pos.z =
+                JSON_ObjectGetInt(linked_root, "z", p->linked[i].pos.z);
+        }
+    }
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "start_height", p->start_height);
+    JSON_ObjectAppendInt(priv_root, "wait_time", p->wait_time);
+    JSON_ObjectAppendBool(priv_root, "is_moving", p->is_moving);
+    for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
+        const char *const key = String_FormatStatic("linked_%d", i);
+        JSON_OBJECT *const linked_root = JSON_ObjectNew();
+        JSON_ObjectAppendInt(linked_root, "x", p->linked[i].pos.x);
+        JSON_ObjectAppendInt(linked_root, "y", p->linked[i].pos.y);
+        JSON_ObjectAppendInt(linked_root, "z", p->linked[i].pos.z);
+        JSON_ObjectAppendObject(priv_root, key, linked_root);
+    }
+}
+
+static void M_LoadLegacyPriv(
+    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    if (p == nullptr) {
+        io->skip(io, sizeof(int32_t) * 2);
+        return;
+    }
+    p->start_height = io->read_s32(io);
+    p->wait_time = io->read_s32(io);
+}
 
 static void M_FloorCeiling(
     const ITEM *const item, const int32_t x, const int32_t y, const int32_t z,
@@ -214,12 +272,10 @@ static void M_GetSectorPositions(
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-
-    LIFT_INFO *const lift_data =
-        GameBuf_Alloc(sizeof(LIFT_INFO), GBUF_ITEM_DATA);
-    lift_data->start_height = item->pos.y;
-    lift_data->wait_time = 0;
-    lift_data->is_moving = false;
+    M_PRIV *const p = item->priv;
+    p->start_height = item->pos.y;
+    p->wait_time = 0;
+    p->is_moving = false;
 
     VECTOR *positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
@@ -228,75 +284,75 @@ static void M_Initialise(const int16_t item_num)
             .pos = *(const XYZ_32 *)Vector_Get(positions, i),
             .room_num = item->room_num,
         };
-        lift_data->linked[i] = linked;
+        p->linked[i] = linked;
     }
     Vector_Free(positions);
-
-    item->data = lift_data;
 }
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    LIFT_INFO *const lift_data = item->data;
-    const int32_t bottom = lift_data->start_height;
+    M_PRIV *const p = item->priv;
+    const int32_t bottom = p->start_height;
     const int32_t top = bottom + LIFT_TRAVEL_DIST;
     const int32_t target = Item_IsTriggerActive(item) ? top : bottom;
 
     if (item->pos.y == target) {
         item->goal_anim_state = LIFT_STATE_DOOR_OPEN;
-        lift_data->wait_time = 0;
-        if (lift_data->is_moving) {
-            for (int32_t i = 0; i < LIFT_NUM_FLOOR_SECTORS; i++) {
+        p->wait_time = 0;
+        if (p->is_moving) {
+            for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
                 MovableBlock_ShiftStackY(
-                    lift_data->linked[i].pos.y, lift_data->linked[i].pos,
-                    item->pos.y, item->room_num, true);
+                    p->linked[i].pos.y, p->linked[i].pos, item->pos.y,
+                    item->room_num, true);
                 // Don't reposition because item->pos links to a single sector.
-                lift_data->linked[i].pos.y = item->pos.y;
+                p->linked[i].pos.y = item->pos.y;
             }
-            for (int32_t i = LIFT_NUM_FLOOR_SECTORS; i < LIFT_NUM_SECTORS;
+            for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS;
                  i++) {
                 MovableBlock_ShiftStackY(
-                    lift_data->linked[i].pos.y, lift_data->linked[i].pos,
+                    p->linked[i].pos.y, p->linked[i].pos,
                     item->pos.y - LIFT_HEIGHT, item->room_num, true);
                 // Don't reposition because item->pos links to a single sector.
-                lift_data->linked[i].pos.y = item->pos.y - LIFT_HEIGHT;
+                p->linked[i].pos.y = item->pos.y - LIFT_HEIGHT;
             }
         }
-        lift_data->is_moving = false;
-    } else if (lift_data->wait_time < LIFT_WAIT_TIME) {
+        p->is_moving = false;
+    } else if (p->wait_time < LIFT_WAIT_TIME) {
         item->goal_anim_state = LIFT_STATE_DOOR_OPEN;
-        lift_data->wait_time++;
+        p->wait_time++;
         // Prevent Lara from interacting with blocks about to move.
-        for (int32_t i = 0; i < LIFT_NUM_FLOOR_SECTORS; i++) {
+        for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
             MovableBlock_ShiftStackY(
-                lift_data->linked[i].pos.y, lift_data->linked[i].pos,
-                item->pos.y, item->room_num, false);
+                p->linked[i].pos.y, p->linked[i].pos, item->pos.y,
+                item->room_num, false);
         }
-        for (int32_t i = LIFT_NUM_FLOOR_SECTORS; i < LIFT_NUM_SECTORS; i++) {
+        for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS;
+             i++) {
             MovableBlock_ShiftStackY(
-                lift_data->linked[i].pos.y, lift_data->linked[i].pos,
-                item->pos.y - LIFT_HEIGHT, item->room_num, false);
+                p->linked[i].pos.y, p->linked[i].pos, item->pos.y - LIFT_HEIGHT,
+                item->room_num, false);
         }
     } else {
         item->goal_anim_state = LIFT_STATE_DOOR_CLOSED;
-        lift_data->is_moving = true;
+        p->is_moving = true;
         const int32_t delta = target - item->pos.y;
         const int32_t step = (delta > 0)
             ? (delta < LIFT_SHIFT ? delta : LIFT_SHIFT)
             : (delta > -LIFT_SHIFT ? delta : -LIFT_SHIFT);
         item->pos.y += step;
         // Raise/lower possible movable blocks on top.
-        for (int32_t i = 0; i < LIFT_NUM_FLOOR_SECTORS; i++) {
+        for (int32_t i = 0; i < M_LIFT_NUM_FLOOR_SECTORS; i++) {
             MovableBlock_ShiftStackY(
-                lift_data->linked[i].pos.y, lift_data->linked[i].pos,
-                item->pos.y, item->room_num, false);
+                p->linked[i].pos.y, p->linked[i].pos, item->pos.y,
+                item->room_num, false);
         }
         // Double check linked positions on save vs load.
-        for (int32_t i = LIFT_NUM_FLOOR_SECTORS; i < LIFT_NUM_SECTORS; i++) {
+        for (int32_t i = M_LIFT_NUM_FLOOR_SECTORS; i < M_LIFT_NUM_SECTORS;
+             i++) {
             MovableBlock_ShiftStackY(
-                lift_data->linked[i].pos.y, lift_data->linked[i].pos,
-                item->pos.y - LIFT_HEIGHT, item->room_num, false);
+                p->linked[i].pos.y, p->linked[i].pos, item->pos.y - LIFT_HEIGHT,
+                item->room_num, false);
         }
     }
 
@@ -326,6 +382,10 @@ static void M_Setup(OBJECT *const obj)
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->add_walkable_func = M_AddWalkable;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
+    obj->priv_legacy_load_func = M_LoadLegacyPriv;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
