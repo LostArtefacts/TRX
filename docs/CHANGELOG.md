@@ -63,6 +63,7 @@
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
 - fixed underwater wobble effect acting twitchy with camera movement
 - fixed gun injections overwriting Lara's footstep SFX in all levels (#4733, regression from 1.1)
+- fixed pushblocks in Natla's Mines becoming unusable after loading a save made in earlier versions (#4735, regression from 1.1)
 
 **TR2**:
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)

@@ -423,6 +423,14 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     if (stage == SAVEGAME_STAGE_BEFORE_LOAD) {
         MovableBlock_UpdateBox(item, false);
     } else if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (item->anim_num < obj->anim_idx
+            || item->anim_num >= obj->anim_idx + obj->anim_count) {
+            // #4735 - resolve save issues caused by injections shifting anim
+            // numbers. Remove after some time.
+            Item_SwitchToAnim(item, 0, 0);
+        }
+
         const int16_t item_num = Item_GetIndex(item);
         if (item->flags & IF_KILLED) {
             Walkable_Remove(item_num);
