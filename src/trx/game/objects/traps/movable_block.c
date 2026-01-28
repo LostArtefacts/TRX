@@ -9,8 +9,10 @@
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
+#include <trx/game/savegame/legacy_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
+#include <trx/strings.h>
 #include <trx/vector.h>
 
 #define LF_PPREADY 19
@@ -20,6 +22,19 @@ typedef enum {
     MOVABLE_BLOCK_STATE_PUSH = 2,
     MOVABLE_BLOCK_STATE_PULL = 3,
 } MOVABLE_BLOCK_STATE;
+
+typedef struct {
+    int16_t counter_rot[3];
+    int16_t original_rot;
+} M_EXTRA_ROTATIONS;
+
+typedef struct {
+    uint16_t gravity_frames;
+    bool is_push_pull;
+    bool is_forced_moving;
+    GAME_VECTOR initial;
+    GAME_VECTOR linked;
+} M_PRIV;
 
 static const OBJECT_BOUNDS m_MovableBlock_Bounds = {
     .shift = {
@@ -43,7 +58,7 @@ static void M_GetStack(
 static void M_UpdateRotation(ITEM *const item, const int16_t rot_y)
 {
     item->rot.y = rot_y;
-    MOVABLE_BLOCK_INFO *const data = item->data;
+    M_EXTRA_ROTATIONS *const data = item->data;
     // All 3 indices are potentially used in other parts of the code that can
     // cast item->data to structs such as XYZ_16. This is similar to things such
     // as the compass needle that apply extra rotation.
@@ -53,28 +68,28 @@ static void M_UpdateRotation(ITEM *const item, const int16_t rot_y)
 // Indicates if Lara is currently pushing or pulling a block.
 static void M_SetPushPull(ITEM *const item, const bool enable)
 {
-    MOVABLE_BLOCK_INFO *const data = item->data;
-    data->is_push_pull = enable;
+    M_PRIV *const p = item->priv;
+    p->is_push_pull = enable;
 }
 
 static bool M_IsPushPull(const ITEM *const item)
 {
-    const MOVABLE_BLOCK_INFO *const data = item->data;
-    return data != nullptr ? data->is_push_pull : false;
+    const M_PRIV *const p = item->priv;
+    return p != nullptr && p->is_push_pull;
 }
 
 // Indicates if blocks are being forcefully moved by other objects such as
 // lifts.
 static void M_SetForcedMoving(ITEM *const item, const bool enable)
 {
-    MOVABLE_BLOCK_INFO *const data = item->data;
-    data->is_forced_moving = enable;
+    M_PRIV *const p = item->priv;
+    p->is_forced_moving = enable;
 }
 
 static bool M_IsForcedMoving(const ITEM *const item)
 {
-    const MOVABLE_BLOCK_INFO *const data = item->data;
-    return data != nullptr ? data->is_forced_moving : false;
+    const M_PRIV *const p = item->priv;
+    return p != nullptr && p->is_forced_moving;
 }
 
 // If a stack of multiple blocks need to drop, each subsequently stacked block
@@ -82,42 +97,97 @@ static bool M_IsForcedMoving(const ITEM *const item)
 // blocks and stop moving.
 static void M_SetGravityFrames(ITEM *const item, const uint8_t frames)
 {
-    MOVABLE_BLOCK_INFO *const data = item->data;
-    data->gravity_frames = frames;
+    M_PRIV *const p = item->priv;
+    p->gravity_frames = frames;
 }
 
 static uint16_t M_GetGravityFrames(const ITEM *const item)
 {
-    const MOVABLE_BLOCK_INFO *const data = item->data;
-    return data != nullptr ? data->gravity_frames : 0;
+    const M_PRIV *const p = item->priv;
+    return p != nullptr ? p->gravity_frames : 0;
 }
 
 // Handles the block's initial position and room number for walkables.
 static void M_SetInitial(ITEM *const item)
 {
-    MOVABLE_BLOCK_INFO *const data = item->data;
-    data->initial.pos = item->pos;
-    data->initial.room_num = item->room_num;
+    M_PRIV *const p = item->priv;
+    p->initial.pos = item->pos;
+    p->initial.room_num = item->room_num;
 }
 
 static GAME_VECTOR M_GetInitial(const ITEM *const item)
 {
-    const MOVABLE_BLOCK_INFO *const data = item->data;
-    return data->initial;
+    const M_PRIV *const p = item->priv;
+    return p->initial;
 }
 
 // Handles the block's linked position and room number for walkables.
 static void M_SetLinked(ITEM *const item)
 {
-    MOVABLE_BLOCK_INFO *const data = item->data;
-    data->linked.pos = item->pos;
-    data->linked.room_num = item->room_num;
+    M_PRIV *const p = item->priv;
+    p->linked.pos = item->pos;
+    p->linked.room_num = item->room_num;
 }
 
 static GAME_VECTOR M_GetLinked(const ITEM *const item)
 {
-    const MOVABLE_BLOCK_INFO *const data = item->data;
-    return data->linked;
+    const M_PRIV *const p = item->priv;
+    return p->linked;
+}
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->gravity_frames = (uint16_t)JSON_ObjectGetInt(
+        priv_root, "gravity_frames", p->gravity_frames);
+    p->is_push_pull =
+        JSON_ObjectGetBool(priv_root, "is_push_pull", p->is_push_pull);
+    p->is_forced_moving =
+        JSON_ObjectGetBool(priv_root, "is_forced_moving", p->is_forced_moving);
+
+    const JSON_OBJECT *const linked_root =
+        JSON_ObjectGetObject(priv_root, "linked");
+    if (linked_root != nullptr) {
+        p->linked.pos.x = JSON_ObjectGetInt(linked_root, "x", p->linked.pos.x);
+        p->linked.pos.y = JSON_ObjectGetInt(linked_root, "y", p->linked.pos.y);
+        p->linked.pos.z = JSON_ObjectGetInt(linked_root, "z", p->linked.pos.z);
+    }
+
+    M_EXTRA_ROTATIONS *const data = item->data;
+    data->counter_rot[0] =
+        JSON_ObjectGetInt(priv_root, "counter_rot_0", data->counter_rot[0]);
+    data->counter_rot[1] =
+        JSON_ObjectGetInt(priv_root, "counter_rot_1", data->counter_rot[1]);
+    data->counter_rot[2] =
+        JSON_ObjectGetInt(priv_root, "counter_rot_2", data->counter_rot[2]);
+    data->original_rot =
+        JSON_ObjectGetInt(priv_root, "original_rot", data->original_rot);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "gravity_frames", p->gravity_frames);
+    JSON_ObjectAppendBool(priv_root, "is_push_pull", p->is_push_pull);
+    JSON_ObjectAppendBool(priv_root, "is_forced_moving", p->is_forced_moving);
+
+    JSON_OBJECT *const linked_root = JSON_ObjectNew();
+    JSON_ObjectAppendInt(linked_root, "x", p->linked.pos.x);
+    JSON_ObjectAppendInt(linked_root, "y", p->linked.pos.y);
+    JSON_ObjectAppendInt(linked_root, "z", p->linked.pos.z);
+    JSON_ObjectAppendObject(priv_root, "linked", linked_root);
+
+    const M_EXTRA_ROTATIONS *const data = item->data;
+    JSON_ObjectAppendInt(priv_root, "counter_rot_0", data->counter_rot[0]);
+    JSON_ObjectAppendInt(priv_root, "counter_rot_1", data->counter_rot[1]);
+    JSON_ObjectAppendInt(priv_root, "counter_rot_2", data->counter_rot[2]);
+    JSON_ObjectAppendInt(priv_root, "original_rot", data->original_rot);
+}
+
+static void M_LoadLegacyPriv(
+    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
+{
+    M_SetLinked(item);
 }
 
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
@@ -404,11 +474,13 @@ static void M_Initialise(const int16_t item_num)
     // during collision tests and can appear jarring. Additional angles are
     // stored to preserve item appearance in spite of control angle changes.
     ITEM *const item = Item_Get(item_num);
-    MOVABLE_BLOCK_INFO *const data =
-        GameBuf_Alloc(sizeof(MOVABLE_BLOCK_INFO), GBUF_ITEM_DATA);
+
+    M_EXTRA_ROTATIONS *const data =
+        GameBuf_Alloc(sizeof(XYZ_16), GBUF_ITEM_DATA);
     item->data = data;
     data->original_rot =
         (((item->rot.y + DEG_180) / DEG_90) * DEG_90) - DEG_180;
+
     M_UpdateRotation(item, data->original_rot);
     M_SetGravityFrames(item, 0);
     M_SetPushPull(item, false);
@@ -852,6 +924,10 @@ static void M_Setup(OBJECT *const obj)
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->add_walkable_func = M_AddWalkable;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
+    obj->priv_legacy_load_func = M_LoadLegacyPriv;
     obj->base_rot.y = true;
     obj->save_anim = true;
     obj->save_flags = true;

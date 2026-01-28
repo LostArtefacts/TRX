@@ -44,7 +44,7 @@ typedef enum {
     // do the shifting on load.
     VERSION_11 = 11,
 
-    // Save and load MOVABLE_BLOCK_INFO in item->data.
+    // Save and load movable block priv data.
     VERSION_12 = 12,
 
     // Added back gun and gun item number properties to Lara.

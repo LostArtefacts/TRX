@@ -7,11 +7,11 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/general/pickup.h>
-#include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vehicles/boat.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/pathing.h>
+#include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/legacy_io.h>
 #include <trx/game/stats.h>
@@ -561,16 +561,6 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
     }
 
     switch (item->object_id) {
-    case O_MOVABLE_BLOCK_1:
-    case O_MOVABLE_BLOCK_2:
-    case O_MOVABLE_BLOCK_3:
-    case O_MOVABLE_BLOCK_4: {
-        MOVABLE_BLOCK_INFO *const data = item->data;
-        data->linked.pos = item->pos;
-        data->linked.room_num = item->room_num;
-        break;
-    }
-
     case O_SLIDING_PILLAR: {
         SLIDING_PILLAR_INFO *const data = item->data;
         data->linked.pos = item->pos;
