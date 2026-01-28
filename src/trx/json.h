@@ -11,6 +11,9 @@
 #define json_uintmax_t uintmax_t
 #define json_strtoumax strtoumax
 
+#define JSON_CONST_DISPATCH(arg, ctype, call)                                  \
+    _Generic(0 ? (arg) : (void *)1, const void *: (ctype)call, default: call)
+
 typedef enum {
     JSON_TYPE_STRING,
     JSON_TYPE_NUMBER,
@@ -97,8 +100,16 @@ int64_t JSON_ValueGetInt64(const JSON_VALUE *value, int64_t d);
 double JSON_ValueGetDouble(const JSON_VALUE *value, double d);
 const JSON_NUMBER *JSON_ValueGetNumber(const JSON_VALUE *value);
 const char *JSON_ValueGetString(const JSON_VALUE *value, const char *d);
-JSON_ARRAY *JSON_ValueAsArray(JSON_VALUE *value);
-JSON_OBJECT *JSON_ValueAsObject(JSON_VALUE *value);
+
+JSON_ARRAY *JSON_ValueAsArray_Impl(const JSON_VALUE *value);
+#define JSON_ValueAsArray(value)                                               \
+    JSON_CONST_DISPATCH(                                                       \
+        value, const JSON_ARRAY *, JSON_ValueAsArray_Impl(value))
+
+JSON_OBJECT *JSON_ValueAsObject_Impl(const JSON_VALUE *value);
+#define JSON_ValueAsObject(value)                                              \
+    JSON_CONST_DISPATCH(                                                       \
+        value, const JSON_OBJECT *, JSON_ValueAsObject_Impl(value))
 
 // arrays
 JSON_ARRAY *JSON_ArrayNew(void);
@@ -112,14 +123,24 @@ void JSON_ArrayAppendString(JSON_ARRAY *arr, const char *string);
 void JSON_ArrayAppendArray(JSON_ARRAY *arr, JSON_ARRAY *arr2);
 void JSON_ArrayAppendObject(JSON_ARRAY *arr, JSON_OBJECT *obj);
 
-JSON_VALUE *JSON_ArrayGetValue(JSON_ARRAY *arr, size_t idx);
+JSON_VALUE *JSON_ArrayGetValue(const JSON_ARRAY *arr, size_t idx);
 int JSON_ArrayGetBool(const JSON_ARRAY *arr, size_t idx, int d);
 int JSON_ArrayGetInt(const JSON_ARRAY *arr, size_t idx, int d);
 double JSON_ArrayGetDouble(const JSON_ARRAY *arr, size_t idx, double d);
 const char *JSON_ArrayGetString(
     const JSON_ARRAY *arr, size_t idx, const char *d);
-JSON_ARRAY *JSON_ArrayGetArray(JSON_ARRAY *arr, size_t idx);
-JSON_OBJECT *JSON_ArrayGetObject(JSON_ARRAY *arr, size_t idx);
+
+JSON_ARRAY *JSON_ArrayGetArray_Impl(const JSON_ARRAY *arr, size_t idx);
+#define JSON_ArrayGetArray(value, ...)                                         \
+    JSON_CONST_DISPATCH(                                                       \
+        value, const JSON_ARRAY *,                                             \
+        JSON_ArrayGetArray_Impl(value, __VA_ARGS__))
+
+JSON_OBJECT *JSON_ArrayGetObject_Impl(const JSON_ARRAY *arr, size_t idx);
+#define JSON_ArrayGetObject(value, ...)                                        \
+    JSON_CONST_DISPATCH(                                                       \
+        value, const JSON_ARRAY *,                                             \
+        JSON_ArrayGetObject_Impl(value, __VA_ARGS__))
 
 // objects
 JSON_OBJECT *JSON_ObjectNew(void);
@@ -140,15 +161,25 @@ bool JSON_ObjectContainsKey(JSON_OBJECT *obj, const char *key);
 void JSON_ObjectEvictKey(JSON_OBJECT *obj, const char *key);
 void JSON_ObjectMerge(JSON_OBJECT *root, const JSON_OBJECT *obj);
 
-JSON_VALUE *JSON_ObjectGetValue(JSON_OBJECT *obj, const char *key);
+JSON_VALUE *JSON_ObjectGetValue(const JSON_OBJECT *obj, const char *key);
 int JSON_ObjectGetBool(const JSON_OBJECT *obj, const char *key, int d);
 int JSON_ObjectGetInt(const JSON_OBJECT *obj, const char *key, int d);
 int64_t JSON_ObjectGetInt64(const JSON_OBJECT *obj, const char *key, int64_t d);
 double JSON_ObjectGetDouble(const JSON_OBJECT *obj, const char *key, double d);
 const char *JSON_ObjectGetString(
     const JSON_OBJECT *obj, const char *key, const char *d);
-JSON_ARRAY *JSON_ObjectGetArray(JSON_OBJECT *obj, const char *key);
-JSON_OBJECT *JSON_ObjectGetObject(JSON_OBJECT *obj, const char *key);
+
+JSON_ARRAY *JSON_ObjectGetArray_Impl(const JSON_OBJECT *obj, const char *key);
+#define JSON_ObjectGetArray(value, ...)                                        \
+    JSON_CONST_DISPATCH(                                                       \
+        value, const JSON_ARRAY *,                                             \
+        JSON_ObjectGetArray_Impl(value, __VA_ARGS__))
+
+JSON_OBJECT *JSON_ObjectGetObject_Impl(const JSON_OBJECT *obj, const char *key);
+#define JSON_ObjectGetObject(value, ...)                                       \
+    JSON_CONST_DISPATCH(                                                       \
+        value, const JSON_OBJECT *,                                            \
+        JSON_ObjectGetObject_Impl(value, __VA_ARGS__))
 
 typedef enum {
     JSON_PARSE_ERROR_NONE = 0,
