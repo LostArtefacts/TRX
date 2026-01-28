@@ -251,8 +251,10 @@ SDL_Window *Shell_GetWindow(void)
 
 int32_t Shell_Main(const SHELL_ARGS *args)
 {
-    ASSERT(args != nullptr);
     LOG_INFO("Game directory: %s", File_GetGameDirectory());
+
+    ASSERT(args != nullptr);
+    ASSERT(args->mod != nullptr || args->engine_version != 0);
 
     // Set the g_TRVersion early. Later on it will be overriden by the
     // level loader, but this lets the game load good config defaults.
