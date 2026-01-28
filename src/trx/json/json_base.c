@@ -92,38 +92,6 @@ static JSON_VALUE *M_ValueFromNumber(JSON_NUMBER *const num)
     return value;
 }
 
-static const JSON_NUMBER *M_ValueAsNumber(const JSON_VALUE *const value)
-{
-    if (value == nullptr || value->type != JSON_TYPE_NUMBER) {
-        return nullptr;
-    }
-    return (const JSON_NUMBER *)value->payload;
-}
-
-static const JSON_STRING *M_ValueAsString(const JSON_VALUE *const value)
-{
-    if (value == nullptr || value->type != JSON_TYPE_STRING) {
-        return nullptr;
-    }
-    return (const JSON_STRING *)value->payload;
-}
-
-static JSON_OBJECT *M_ValueAsObject(JSON_VALUE *const value)
-{
-    if (value == nullptr || value->type != JSON_TYPE_OBJECT) {
-        return nullptr;
-    }
-    return (JSON_OBJECT *)value->payload;
-}
-
-static JSON_ARRAY *M_ValueAsArray(JSON_VALUE *const value)
-{
-    if (value == nullptr || value->type != JSON_TYPE_ARRAY) {
-        return nullptr;
-    }
-    return (JSON_ARRAY *)value->payload;
-}
-
 static void M_ArrayElementFree(JSON_ARRAY_ELEMENT *const element)
 {
     if (element->ref_count == 0) {
@@ -240,12 +208,15 @@ int JSON_ValueGetBool(const JSON_VALUE *const value, const int d)
 
 const JSON_NUMBER *JSON_ValueGetNumber(const JSON_VALUE *const value)
 {
-    return M_ValueAsNumber(value);
+    if (value == nullptr || value->type != JSON_TYPE_NUMBER) {
+        return nullptr;
+    }
+    return (const JSON_NUMBER *)value->payload;
 }
 
 int JSON_ValueGetInt(const JSON_VALUE *const value, const int d)
 {
-    const JSON_NUMBER *const num = M_ValueAsNumber(value);
+    const JSON_NUMBER *const num = JSON_ValueGetNumber(value);
     if (num == nullptr) {
         return d;
     }
@@ -261,31 +232,40 @@ int JSON_ValueGetInt(const JSON_VALUE *const value, const int d)
 
 int64_t JSON_ValueGetInt64(const JSON_VALUE *const value, const int64_t d)
 {
-    const JSON_NUMBER *const num = M_ValueAsNumber(value);
+    const JSON_NUMBER *const num = JSON_ValueGetNumber(value);
     return num != nullptr ? strtoll(num->number, nullptr, 10) : d;
 }
 
 double JSON_ValueGetDouble(const JSON_VALUE *const value, const double d)
 {
-    const JSON_NUMBER *const num = M_ValueAsNumber(value);
+    const JSON_NUMBER *const num = JSON_ValueGetNumber(value);
     return num != nullptr ? atof(num->number) : d;
 }
 
 const char *JSON_ValueGetString(
     const JSON_VALUE *const value, const char *const d)
 {
-    const JSON_STRING *const str = M_ValueAsString(value);
-    return str != nullptr ? str->string : d;
+    if (value == nullptr || value->type != JSON_TYPE_STRING) {
+        return nullptr;
+    }
+    const JSON_STRING *const string = value->payload;
+    return string != nullptr ? string->string : d;
 }
 
-JSON_ARRAY *JSON_ValueAsArray(JSON_VALUE *const value)
+JSON_ARRAY *JSON_ValueAsArray_Impl(const JSON_VALUE *const value)
 {
-    return M_ValueAsArray(value);
+    if (value == nullptr || value->type != JSON_TYPE_ARRAY) {
+        return nullptr;
+    }
+    return (JSON_ARRAY *)value->payload;
 }
 
-JSON_OBJECT *JSON_ValueAsObject(JSON_VALUE *const value)
+JSON_OBJECT *JSON_ValueAsObject_Impl(const JSON_VALUE *const value)
 {
-    return M_ValueAsObject(value);
+    if (value == nullptr || value->type != JSON_TYPE_OBJECT) {
+        return nullptr;
+    }
+    return (JSON_OBJECT *)value->payload;
 }
 
 JSON_ARRAY *JSON_ArrayNew(void)
@@ -327,37 +307,37 @@ void JSON_ArrayAppend(JSON_ARRAY *const arr, JSON_VALUE *const value)
     arr->length++;
 }
 
-void JSON_ArrayAppendBool(JSON_ARRAY *arr, int b)
+void JSON_ArrayAppendBool(JSON_ARRAY *const arr, const int b)
 {
     JSON_ArrayAppend(arr, JSON_ValueFromBool(b));
 }
 
-void JSON_ArrayAppendInt(JSON_ARRAY *arr, int number)
+void JSON_ArrayAppendInt(JSON_ARRAY *const arr, const int number)
 {
     JSON_ArrayAppend(arr, JSON_ValueFromInt(number));
 }
 
-void JSON_ArrayAppendDouble(JSON_ARRAY *arr, double number)
+void JSON_ArrayAppendDouble(JSON_ARRAY *const arr, const double number)
 {
     JSON_ArrayAppend(arr, JSON_ValueFromDouble(number));
 }
 
-void JSON_ArrayAppendString(JSON_ARRAY *arr, const char *string)
+void JSON_ArrayAppendString(JSON_ARRAY *const arr, const char *string)
 {
     JSON_ArrayAppend(arr, JSON_ValueFromString(string));
 }
 
-void JSON_ArrayAppendArray(JSON_ARRAY *arr, JSON_ARRAY *arr2)
+void JSON_ArrayAppendArray(JSON_ARRAY *const arr, JSON_ARRAY *const arr2)
 {
     JSON_ArrayAppend(arr, JSON_ValueFromArray(arr2));
 }
 
-void JSON_ArrayAppendObject(JSON_ARRAY *arr, JSON_OBJECT *obj)
+void JSON_ArrayAppendObject(JSON_ARRAY *const arr, JSON_OBJECT *const obj)
 {
     JSON_ArrayAppend(arr, JSON_ValueFromObject(obj));
 }
 
-JSON_VALUE *JSON_ArrayGetValue(JSON_ARRAY *const arr, const size_t idx)
+JSON_VALUE *JSON_ArrayGetValue(const JSON_ARRAY *const arr, const size_t idx)
 {
     if (arr == nullptr || idx >= arr->length) {
         return nullptr;
@@ -372,37 +352,39 @@ JSON_VALUE *JSON_ArrayGetValue(JSON_ARRAY *const arr, const size_t idx)
 int JSON_ArrayGetBool(
     const JSON_ARRAY *const arr, const size_t idx, const int d)
 {
-    const JSON_VALUE *const value = JSON_ArrayGetValue((JSON_ARRAY *)arr, idx);
+    const JSON_VALUE *const value = JSON_ArrayGetValue(arr, idx);
     return JSON_ValueGetBool(value, d);
 }
 
 int JSON_ArrayGetInt(const JSON_ARRAY *const arr, const size_t idx, const int d)
 {
-    const JSON_VALUE *const value = JSON_ArrayGetValue((JSON_ARRAY *)arr, idx);
+    const JSON_VALUE *const value = JSON_ArrayGetValue(arr, idx);
     return JSON_ValueGetInt(value, d);
 }
 
 double JSON_ArrayGetDouble(
     const JSON_ARRAY *const arr, const size_t idx, const double d)
 {
-    const JSON_VALUE *const value = JSON_ArrayGetValue((JSON_ARRAY *)arr, idx);
+    const JSON_VALUE *const value = JSON_ArrayGetValue(arr, idx);
     return JSON_ValueGetDouble(value, d);
 }
 
 const char *JSON_ArrayGetString(
     const JSON_ARRAY *const arr, const size_t idx, const char *const d)
 {
-    const JSON_VALUE *const value = JSON_ArrayGetValue((JSON_ARRAY *)arr, idx);
+    const JSON_VALUE *const value = JSON_ArrayGetValue(arr, idx);
     return JSON_ValueGetString(value, d);
 }
 
-JSON_ARRAY *JSON_ArrayGetArray(JSON_ARRAY *arr, const size_t idx)
+JSON_ARRAY *JSON_ArrayGetArray_Impl(
+    const JSON_ARRAY *const arr, const size_t idx)
 {
     JSON_VALUE *const value = JSON_ArrayGetValue(arr, idx);
     return JSON_ValueAsArray(value);
 }
 
-JSON_OBJECT *JSON_ArrayGetObject(JSON_ARRAY *arr, const size_t idx)
+JSON_OBJECT *JSON_ArrayGetObject_Impl(
+    const JSON_ARRAY *const arr, const size_t idx)
 {
     JSON_VALUE *const value = JSON_ArrayGetValue(arr, idx);
     return JSON_ValueAsObject(value);
@@ -410,13 +392,13 @@ JSON_OBJECT *JSON_ArrayGetObject(JSON_ARRAY *arr, const size_t idx)
 
 JSON_OBJECT *JSON_ObjectNew(void)
 {
-    JSON_OBJECT *obj = Memory_Alloc(sizeof(JSON_OBJECT));
+    JSON_OBJECT *const obj = Memory_Alloc(sizeof(JSON_OBJECT));
     obj->start = nullptr;
     obj->length = 0;
     return obj;
 }
 
-void JSON_ObjectFree(JSON_OBJECT *obj)
+void JSON_ObjectFree(JSON_OBJECT *const obj)
 {
     JSON_OBJECT_ELEMENT *elem = obj->start;
     while (elem) {
@@ -450,39 +432,44 @@ void JSON_ObjectAppend(
     obj->length++;
 }
 
-void JSON_ObjectAppendBool(JSON_OBJECT *obj, const char *key, int b)
+void JSON_ObjectAppendBool(
+    JSON_OBJECT *const obj, const char *const key, const int b)
 {
     JSON_ObjectAppend(obj, key, JSON_ValueFromBool(b));
 }
 
-void JSON_ObjectAppendInt(JSON_OBJECT *obj, const char *key, int number)
+void JSON_ObjectAppendInt(
+    JSON_OBJECT *const obj, const char *const key, const int number)
 {
     JSON_ObjectAppend(obj, key, JSON_ValueFromInt(number));
 }
 
-void JSON_ObjectAppendInt64(JSON_OBJECT *obj, const char *key, int64_t number)
+void JSON_ObjectAppendInt64(
+    JSON_OBJECT *const obj, const char *const key, const int64_t number)
 {
     JSON_ObjectAppend(obj, key, JSON_ValueFromInt64(number));
 }
 
-void JSON_ObjectAppendDouble(JSON_OBJECT *obj, const char *key, double number)
+void JSON_ObjectAppendDouble(
+    JSON_OBJECT *const obj, const char *const key, const double number)
 {
     JSON_ObjectAppend(obj, key, JSON_ValueFromDouble(number));
 }
 
 void JSON_ObjectAppendString(
-    JSON_OBJECT *obj, const char *key, const char *string)
+    JSON_OBJECT *const obj, const char *const key, const char *string)
 {
     JSON_ObjectAppend(obj, key, JSON_ValueFromString(string));
 }
 
-void JSON_ObjectAppendArray(JSON_OBJECT *obj, const char *key, JSON_ARRAY *arr)
+void JSON_ObjectAppendArray(
+    JSON_OBJECT *const obj, const char *const key, JSON_ARRAY *const arr)
 {
     JSON_ObjectAppend(obj, key, JSON_ValueFromArray(arr));
 }
 
 void JSON_ObjectAppendObject(
-    JSON_OBJECT *obj, const char *key, JSON_OBJECT *obj2)
+    JSON_OBJECT *const obj, const char *const key, JSON_OBJECT *const obj2)
 {
     JSON_ObjectAppend(obj, key, JSON_ValueFromObject(obj2));
 }
@@ -533,7 +520,8 @@ void JSON_ObjectMerge(JSON_OBJECT *const root, const JSON_OBJECT *const obj)
     }
 }
 
-JSON_VALUE *JSON_ObjectGetValue(JSON_OBJECT *const obj, const char *const key)
+JSON_VALUE *JSON_ObjectGetValue(
+    const JSON_OBJECT *const obj, const char *const key)
 {
     if (obj == nullptr) {
         return nullptr;
@@ -551,50 +539,47 @@ JSON_VALUE *JSON_ObjectGetValue(JSON_OBJECT *const obj, const char *const key)
 int JSON_ObjectGetBool(
     const JSON_OBJECT *const obj, const char *const key, const int d)
 {
-    const JSON_VALUE *const value =
-        JSON_ObjectGetValue((JSON_OBJECT *)obj, key);
+    const JSON_VALUE *const value = JSON_ObjectGetValue(obj, key);
     return JSON_ValueGetBool(value, d);
 }
 
 int JSON_ObjectGetInt(
     const JSON_OBJECT *const obj, const char *const key, const int d)
 {
-    const JSON_VALUE *const value =
-        JSON_ObjectGetValue((JSON_OBJECT *)obj, key);
+    const JSON_VALUE *const value = JSON_ObjectGetValue(obj, key);
     return JSON_ValueGetInt(value, d);
 }
 
 int64_t JSON_ObjectGetInt64(
     const JSON_OBJECT *const obj, const char *const key, const int64_t d)
 {
-    const JSON_VALUE *const value =
-        JSON_ObjectGetValue((JSON_OBJECT *)obj, key);
+    const JSON_VALUE *const value = JSON_ObjectGetValue(obj, key);
     return JSON_ValueGetInt64(value, d);
 }
 
 double JSON_ObjectGetDouble(
     const JSON_OBJECT *const obj, const char *const key, const double d)
 {
-    const JSON_VALUE *const value =
-        JSON_ObjectGetValue((JSON_OBJECT *)obj, key);
+    const JSON_VALUE *const value = JSON_ObjectGetValue(obj, key);
     return JSON_ValueGetDouble(value, d);
 }
 
 const char *JSON_ObjectGetString(
     const JSON_OBJECT *const obj, const char *const key, const char *const d)
 {
-    const JSON_VALUE *const value =
-        JSON_ObjectGetValue((JSON_OBJECT *)obj, key);
+    const JSON_VALUE *const value = JSON_ObjectGetValue(obj, key);
     return JSON_ValueGetString(value, d);
 }
 
-JSON_ARRAY *JSON_ObjectGetArray(JSON_OBJECT *obj, const char *key)
+JSON_ARRAY *JSON_ObjectGetArray_Impl(
+    const JSON_OBJECT *const obj, const char *const key)
 {
     JSON_VALUE *const value = JSON_ObjectGetValue(obj, key);
     return JSON_ValueAsArray(value);
 }
 
-JSON_OBJECT *JSON_ObjectGetObject(JSON_OBJECT *obj, const char *key)
+JSON_OBJECT *JSON_ObjectGetObject_Impl(
+    const JSON_OBJECT *const obj, const char *const key)
 {
     JSON_VALUE *const value = JSON_ObjectGetValue(obj, key);
     return JSON_ValueAsObject(value);
