@@ -126,8 +126,7 @@ bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 
     int32_t worst_slot = -1;
     for (int32_t slot = 0; slot < LOT_SLOT_COUNT; slot++) {
-        const int32_t item_num = m_BaddieSlots[slot].item_num;
-        const ITEM *const item = Item_Get(item_num);
+        const ITEM *const item = Item_Get(m_BaddieSlots[slot].item_num);
         const int32_t dx = (item->pos.x - g_Camera.pos.pos.x) >> 8;
         const int32_t dy = (item->pos.y - g_Camera.pos.pos.y) >> 8;
         const int32_t dz = (item->pos.z - g_Camera.pos.pos.z) >> 8;

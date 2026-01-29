@@ -185,8 +185,8 @@ static void M_MeshEdits(
         edit.vertex_edit_count = VFile_ReadS32(injection->fp);
         edit.vertex_edits =
             Memory_Alloc(sizeof(VERTEX_EDIT) * edit.vertex_edit_count);
-        for (int32_t i = 0; i < edit.vertex_edit_count; i++) {
-            VERTEX_EDIT *vertex_edit = &edit.vertex_edits[i];
+        for (int32_t j = 0; j < edit.vertex_edit_count; j++) {
+            VERTEX_EDIT *vertex_edit = &edit.vertex_edits[j];
             vertex_edit->index = VFile_ReadS16(injection->fp);
             vertex_edit->shift.x = VFile_ReadS16(injection->fp);
             vertex_edit->shift.y = VFile_ReadS16(injection->fp);

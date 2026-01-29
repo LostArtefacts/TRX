@@ -627,9 +627,8 @@ void Output_CalculateStaticMeshLight(
             continue;
         }
 
-        const int32_t shade = (1 << light->shade.value_1)
+        adder -= (1 << light->shade.value_1)
             - (dist >> (2 * light->falloff.value_1 - light->shade.value_1));
-        adder -= shade;
         if (adder < 0) {
             break;
         }

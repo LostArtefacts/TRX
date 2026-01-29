@@ -384,9 +384,9 @@ static size_t M_WordWrap(
                 // Break word if longer than line
                 if (word_width > max_width) {
                     for (size_t j = i; j < i + word_len; j++) {
-                        const M_GLYPH_INFO *const glyph = glyphs[j];
+                        const M_GLYPH_INFO *const next_glyph = glyphs[j];
                         const float glyph_width =
-                            (glyph->width[current_font] + M_LETTER_SPACING)
+                            (next_glyph->width[current_font] + M_LETTER_SPACING)
                             * scale_f;
                         if (cur_width + glyph_width > max_width) {
                             L_CONCAT_CHAR('\n')
@@ -397,21 +397,21 @@ static size_t M_WordWrap(
                                 cur_width += 2 * space_width;
                             }
                         }
-                        L_CONCAT_STR(glyph->text)
+                        L_CONCAT_STR(next_glyph->text)
                         cur_width += glyph_width;
                     }
                 } else {
                     for (size_t j = i; j < i + word_len; j++) {
-                        const M_GLYPH_INFO *const glyph = glyphs[j];
-                        L_CONCAT_STR(glyph->text)
+                        const M_GLYPH_INFO *const next_glyph = glyphs[j];
+                        L_CONCAT_STR(next_glyph->text)
                     }
                     cur_width = word_width;
                 }
             } else {
                 // Copy word as is
                 for (size_t j = i; j < i + word_len; j++) {
-                    const M_GLYPH_INFO *const glyph = glyphs[j];
-                    L_CONCAT_STR(glyph->text)
+                    const M_GLYPH_INFO *const next_glyph = glyphs[j];
+                    L_CONCAT_STR(next_glyph->text)
                 }
                 cur_width += word_width;
             }

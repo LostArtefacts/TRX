@@ -19,29 +19,29 @@ static void M_ParseCommand(ANIM_COMMAND *const command, const int16_t **data)
     }
 
     case AC_JUMP_VELOCITY: {
-        ANIM_COMMAND_VELOCITY_DATA *const data = GameBuf_Alloc(
+        ANIM_COMMAND_VELOCITY_DATA *const cmd_data = GameBuf_Alloc(
             sizeof(ANIM_COMMAND_VELOCITY_DATA), GBUF_ANIM_COMMANDS);
-        data->fall_speed = *data_ptr++;
-        data->speed = *data_ptr++;
-        command->data = (void *)data;
+        cmd_data->fall_speed = *data_ptr++;
+        cmd_data->speed = *data_ptr++;
+        command->data = (void *)cmd_data;
         break;
     }
 
     case AC_SOUND_FX:
     case AC_EFFECT: {
-        ANIM_COMMAND_EFFECT_DATA *const data =
+        ANIM_COMMAND_EFFECT_DATA *const cmd_data =
             GameBuf_Alloc(sizeof(ANIM_COMMAND_EFFECT_DATA), GBUF_ANIM_COMMANDS);
-        data->frame_num = *data_ptr++;
+        cmd_data->frame_num = *data_ptr++;
         const int16_t effect_data = *data_ptr++;
-        data->effect_num = effect_data & 0x3FFF;
-        data->fx_type = 0;
+        cmd_data->effect_num = effect_data & 0x3FFF;
+        cmd_data->fx_type = 0;
         if (command->type == AC_EFFECT && g_TRVersion == 3) {
-            data->fx_type = effect_data & 0xC000;
-            data->environment = ACE_ALL;
+            cmd_data->fx_type = effect_data & 0xC000;
+            cmd_data->environment = ACE_ALL;
         } else {
-            data->environment = (effect_data & 0xC000) >> 14;
+            cmd_data->environment = (effect_data & 0xC000) >> 14;
         }
-        command->data = (void *)data;
+        command->data = (void *)cmd_data;
         break;
     }
 

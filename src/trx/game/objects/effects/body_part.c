@@ -6,6 +6,19 @@
 #include <trx/game/sparks/spawners.h>
 #include <trx/version.h>
 
+static void M_SpawnSplash(const GAME_VECTOR pos)
+{
+    const int16_t effect_num = Effect_Create(pos.room_num);
+    if (effect_num != NO_EFFECT) {
+        EFFECT *const effect = Effect_Get(effect_num);
+        effect->pos = pos.pos;
+        effect->rot.y = 0;
+        effect->speed = 0;
+        effect->frame_num = 0;
+        effect->object_id = O_SPLASH_1;
+    }
+}
+
 static void M_Control_TR12(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -23,17 +36,8 @@ static void M_Control_TR12(const int16_t effect_num)
     const ROOM *const current_room = Room_Get(effect->room_num);
     const ROOM *const next_room = Room_Get(room_num);
     if (!current_room->flags.underwater && next_room->flags.underwater) {
-        const int16_t effect_num = Effect_Create(effect->room_num);
-        if (effect_num != NO_EFFECT) {
-            EFFECT *const splash_fx = Effect_Get(effect_num);
-            splash_fx->pos.x = effect->pos.x;
-            splash_fx->pos.y = effect->pos.y;
-            splash_fx->pos.z = effect->pos.z;
-            splash_fx->rot.y = 0;
-            splash_fx->speed = 0;
-            splash_fx->frame_num = 0;
-            splash_fx->object_id = O_SPLASH_1;
-        }
+        M_SpawnSplash(
+            (GAME_VECTOR) { .pos = effect->pos, .room_num = effect->room_num });
     }
 
     const int32_t ceiling =

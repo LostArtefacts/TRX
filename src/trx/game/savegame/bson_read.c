@@ -774,9 +774,9 @@ static bool M_ReadItem(
                 }
             }
 
-            int16_t game_object_id;
-            M_MUST(M_ReadNum(ctx, "object_id", &game_object_id));
-            carried_item->object_id = Object_FromGameID(game_object_id);
+            int16_t carried_game_object_id;
+            M_MUST(M_ReadNum(ctx, "object_id", &carried_game_object_id));
+            carried_item->object_id = Object_FromGameID(carried_game_object_id);
 
             M_MUST(M_ReadPos(ctx, &carried_item->pos));
             M_MUST(M_ReadNum(ctx, "y_rot", &carried_item->rot.y));

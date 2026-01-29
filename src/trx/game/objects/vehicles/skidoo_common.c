@@ -852,9 +852,10 @@ bool Skidoo_Control(void)
 
         const int32_t pitch_delta =
             (SKIDOO_MAX_SPEED - skidoo_data->pitch) * 100;
-        const int32_t pitch = (SOUND_DEFAULT_PITCH - pitch_delta) << 8;
 
-        Sound_Effect(SFX_SKIDOO_MOVING, &skidoo->pos, SPM_PITCH | pitch);
+        Sound_Effect(
+            SFX_SKIDOO_MOVING, &skidoo->pos,
+            SPM_PITCH | ((SOUND_DEFAULT_PITCH - pitch_delta) << 8));
     } else {
         skidoo_data->track_mesh = 0;
         if (!drive) {

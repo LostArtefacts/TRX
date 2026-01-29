@@ -38,9 +38,9 @@
 
 #define SWAP(a, b)                                                             \
     do {                                                                       \
-        typeof(a) c = (a);                                                     \
+        typeof(a) SWAP_tmp_ = (a);                                             \
         (a) = (b);                                                             \
-        (b) = c;                                                               \
+        (b) = SWAP_tmp_;                                                       \
     } while (0)
 #define SWAP2(a, b, tmp)                                                       \
     do {                                                                       \

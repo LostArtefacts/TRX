@@ -967,7 +967,6 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
     UI_EndModal();
 
     if (s->description.show) {
-        const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
         const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, sel_row);
         if (option != nullptr) {
             const char *title = GameString_Get(option->label_id);

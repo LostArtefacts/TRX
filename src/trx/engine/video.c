@@ -894,13 +894,12 @@ static void M_InitClock(M_CLOCK *c, int *queue_serial)
     M_SetClock(c, NAN, -1);
 }
 
-static void M_SyncClockToSlave(M_CLOCK *c, M_CLOCK *slave)
+static void M_SyncClockToSlave(M_CLOCK *const c, M_CLOCK *const slave)
 {
-    double M_CLOCK = M_GetClock(c);
+    double clock = M_GetClock(c);
     double slave_clock = M_GetClock(slave);
     if (!isnan(slave_clock)
-        && (isnan(M_CLOCK)
-            || fabs(M_CLOCK - slave_clock) > AV_NOSYNC_THRESHOLD)) {
+        && (isnan(clock) || fabs(clock - slave_clock) > AV_NOSYNC_THRESHOLD)) {
         M_SetClock(c, slave_clock, slave->serial);
     }
 }

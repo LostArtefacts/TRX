@@ -850,9 +850,8 @@ static void M_Control(const int16_t item_num)
                 + ((360 * Math_Cos(lara_item->rot.y)) >> W2V_SHIFT),
         };
 
-        int16_t room_num = lara_item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+        room_num = lara_item->room_num;
+        sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
         if (Room_GetHeight(sector, pos.x, pos.y, pos.z) >= pos.y - STEP_L) {
             lara_item->pos.x = pos.x;
             lara_item->pos.z = pos.z;

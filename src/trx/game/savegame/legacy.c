@@ -694,7 +694,6 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
     // Copy RESUME_INFO of "current position" level to the target level
     if (g_TRVersion == 1) {
-        const GF_LEVEL *const level = Game_GetCurrentLevel();
         const GF_LEVEL *current_position = nullptr;
         const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
         for (int32_t i = 0; i < level_table->count; i++) {
@@ -704,6 +703,7 @@ static bool M_LoadFromFile(MYFILE *const fp)
             }
         }
         if (current_position != nullptr) {
+            const GF_LEVEL *const level = Game_GetCurrentLevel();
             *Savegame_GetCurrentInfo(level) =
                 *Savegame_GetCurrentInfo(current_position);
         }
