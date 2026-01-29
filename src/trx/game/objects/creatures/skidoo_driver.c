@@ -49,7 +49,7 @@ static void M_MakeMountable(ITEM *const skidoo_item)
     skidoo_item->status = IS_DEACTIVATED;
     Skidoo_Initialise(skidoo_item_num);
 
-    SKIDOO_INFO *const skidoo_data = skidoo_item->data;
+    SKIDOO_INFO *const skidoo_data = skidoo_item->priv;
     skidoo_data->track_mesh = SKIDOO_GUN_MESH;
 }
 

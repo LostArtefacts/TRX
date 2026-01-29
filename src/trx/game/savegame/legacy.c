@@ -7,7 +7,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/general/pickup.h>
-#include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
@@ -559,18 +558,6 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
     }
 
     switch (item->object_id) {
-    case O_SKIDOO_FAST: {
-        SKIDOO_INFO *const data = item->data;
-        data->track_mesh = M_ReadS16(ctx);
-        data->skidoo_turn = M_ReadS32(ctx);
-        data->left_fallspeed = M_ReadS32(ctx);
-        data->right_fallspeed = M_ReadS32(ctx);
-        data->momentum_angle = M_ReadS16(ctx);
-        data->extra_rotation = M_ReadS16(ctx);
-        data->pitch = M_ReadS32(ctx);
-        break;
-    }
-
     default:
         break;
     }

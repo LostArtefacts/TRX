@@ -9,7 +9,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
@@ -326,27 +325,6 @@ static void M_WriteItem(
         drop_item = drop_item->next_item;
     }
     M_PopAndSet(ctx, "carried_items");
-
-    switch (item->object_id) {
-    case O_SKIDOO_FAST: {
-        if (item->data != nullptr) {
-            const SKIDOO_INFO *const data = (SKIDOO_INFO *)item->data;
-            M_PushObject(ctx);
-            M_WriteNum(ctx, "track_mesh", data->track_mesh);
-            M_WriteNum(ctx, "skidoo_turn", data->skidoo_turn);
-            M_WriteNum(ctx, "left_fallspeed", data->left_fallspeed);
-            M_WriteNum(ctx, "right_fallspeed", data->right_fallspeed);
-            M_WriteNum(ctx, "momentum_angle", data->momentum_angle);
-            M_WriteNum(ctx, "extra_rotation", data->extra_rotation);
-            M_WriteNum(ctx, "pitch", data->pitch);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-    }
-
-    default:
-        break;
-    }
 
     if (obj->priv_size > 0 && obj->priv_save_func != nullptr) {
         M_PushObject(ctx);
