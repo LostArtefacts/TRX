@@ -152,10 +152,24 @@ void Object_DrawStaticObject(
 
 bool Object_DrawAnimatingItem(const ITEM *item)
 {
+    return Object_DrawAnimatingItemWithSwap(item, nullptr);
+}
+
+bool Object_DrawAnimatingItemWithSwap(
+    const ITEM *const item, const OBJECT *const mesh_swap)
+{
     ANIM_FRAME *frames[2];
     int32_t rate;
-    int32_t frac = Item_GetFrames(item, frames, &rate);
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
     const OBJECT *const obj = Object_Get(item->object_id);
+
+    const OBJECT *swap_obj = mesh_swap;
+    if (swap_obj != nullptr && !swap_obj->loaded) {
+        swap_obj = nullptr;
+    }
+    if (swap_obj != nullptr) {
+        ASSERT(swap_obj->mesh_count == obj->mesh_count);
+    }
 
     if (obj->shadow_size != 0) {
         Output_DrawShadow(obj->shadow_size, &frames[0]->bounds, item);
@@ -175,8 +189,9 @@ bool Object_DrawAnimatingItem(const ITEM *item)
 
     const int16_t *extra_rotation = item->data;
 
-    Object_DrawInterpolatedObject(
-        obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate);
+    Object_DrawInterpolatedObjectWithSwap(
+        obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate,
+        swap_obj);
     if (g_Config.debug.enable_debug_cuboids) {
         Output_DrawCuboid(&frames[0]->bounds);
     }
@@ -185,9 +200,19 @@ bool Object_DrawAnimatingItem(const ITEM *item)
 }
 
 void Object_DrawInterpolatedObject(
-    const OBJECT *const obj, const uint32_t meshes,
+    const OBJECT *const obj, const uint32_t mesh_mask,
     const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
+{
+    Object_DrawInterpolatedObjectWithSwap(
+        obj, mesh_mask, extra_rotation, frame1, frame2, frac, rate, nullptr);
+}
+
+void Object_DrawInterpolatedObjectWithSwap(
+    const OBJECT *const obj, const uint32_t mesh_mask,
+    const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate,
+    const OBJECT *const mesh_swap)
 {
     if (frame1 == nullptr) {
         return;
@@ -224,8 +249,10 @@ void Object_DrawInterpolatedObject(
                 Object_ApplyExtraRotation(&extra_rotation, bone->rot, true);
             }
 
-            if (meshes & (1 << mesh_idx)) {
+            if ((mesh_mask & (1u << mesh_idx)) != 0) {
                 Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, true);
+            } else if (mesh_swap != nullptr) {
+                Object_DrawMesh(mesh_swap->mesh_idx + mesh_idx, clip, true);
             }
         }
     } else {
@@ -249,8 +276,10 @@ void Object_DrawInterpolatedObject(
                 Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
             }
 
-            if (meshes & (1 << mesh_idx)) {
+            if ((mesh_mask & (1u << mesh_idx)) != 0) {
                 Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
+            } else if (mesh_swap != nullptr) {
+                Object_DrawMesh(mesh_swap->mesh_idx + mesh_idx, clip, false);
             }
         }
     }
@@ -259,7 +288,7 @@ void Object_DrawInterpolatedObject(
 }
 
 void Object_ApplyExtraRotation(
-    const int16_t **extra_rotation, const XYZ_BOOL rot_flags,
+    const int16_t **const extra_rotation, const XYZ_BOOL rot_flags,
     const bool interpolated)
 {
     const int16_t *rot_ptr = *extra_rotation;
