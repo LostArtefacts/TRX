@@ -2,15 +2,18 @@ local raw = trxc.rooms
 
 -- Room proxy metatable
 local getters = {
+  num = function(idx)
+    return idx
+  end,
   underwater = raw.get_underwater,
   wind = raw.get_wind,
   flip_status = raw.get_flip_status,
   flipped_room = function(self, key)
-    local flippped_room = raw.get_flipped_room(self)
+    local flipped_room = raw.get_flipped_room(self)
     if flipped_room == nil then
       return nil
     end
-    return trx.rooms[flipped_room.num]
+    return trx.rooms[flipped_room]
   end,
   bounds = raw.get_bounds,
   internal_bounds = function(self, key)
