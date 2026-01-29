@@ -13,7 +13,6 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vars.h>
-#include <trx/game/objects/vehicles/boat.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
@@ -862,20 +861,6 @@ static bool M_ReadItem(
             data->linked.room_num = item->room_num;
         }
         break;
-
-    case O_BOAT: {
-        M_MUST(M_PushObject(ctx, "data"));
-        BOAT_INFO *const data = item->data;
-        M_MUST(M_ReadNum(ctx, "boat_turn", &data->boat_turn));
-        M_MUST(M_ReadNum(ctx, "left_fallspeed", &data->left_fallspeed));
-        M_MUST(M_ReadNum(ctx, "right_fallspeed", &data->right_fallspeed));
-        M_MUST(M_ReadNum(ctx, "tilt_angle", &data->tilt_angle));
-        M_MUST(M_ReadNum(ctx, "extra_rotation", &data->extra_rotation));
-        M_MUST(M_ReadNum(ctx, "water", &data->water));
-        M_MUST(M_ReadNum(ctx, "pitch", &data->pitch));
-        M_MUST(M_Pop(ctx));
-        break;
-    }
 
     case O_SKIDOO_FAST: {
         M_MUST(M_PushObject(ctx, "data"));
