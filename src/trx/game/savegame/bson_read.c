@@ -11,7 +11,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/output.h>
@@ -847,20 +846,6 @@ static bool M_ReadItem(
         }
         break;
     }
-
-    case O_SLIDING_PILLAR:
-        if (ctx->sg_version >= VERSION_12 && item->data != nullptr) {
-            M_MUST(M_PushObject(ctx, "data"));
-            SLIDING_PILLAR_INFO *const data = item->data;
-            M_MUST(M_ReadXYZ32(ctx, "linked", &data->linked.pos));
-            M_MUST(M_Pop(ctx));
-        } else {
-            // For old saves, guess linked sector is at item position.
-            SLIDING_PILLAR_INFO *const data = item->data;
-            data->linked.pos = item->pos;
-            data->linked.room_num = item->room_num;
-        }
-        break;
 
     case O_SKIDOO_FAST: {
         M_MUST(M_PushObject(ctx, "data"));

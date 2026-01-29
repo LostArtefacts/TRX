@@ -9,7 +9,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/traps/sliding_pillar.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
@@ -352,15 +351,6 @@ static void M_WriteItem(
             M_WriteNum(ctx, "bl_status", status);
             M_PushObject(ctx);
             M_WriteNum(ctx, "status", status);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-
-    case O_SLIDING_PILLAR:
-        if (item->data != nullptr) {
-            const SLIDING_PILLAR_INFO *const data = item->data;
-            M_PushObject(ctx);
-            M_WriteXYZ32(ctx, "linked", data->linked.pos);
             M_PopAndSet(ctx, "data");
         }
         break;
