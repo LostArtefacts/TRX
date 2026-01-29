@@ -12,7 +12,6 @@
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/vars.h>
-#include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -810,25 +809,6 @@ static bool M_ReadItem(
         if (g_TRVersion == 1 && ctx->sg_version < VERSION_4) {
             Carrier_TestLegacyDrops(item_num);
         }
-    }
-
-    switch (item->object_id) {
-    case O_SKIDOO_FAST: {
-        M_MUST(M_PushObject(ctx, "data"));
-        SKIDOO_INFO *const data = item->data;
-        M_MUST(M_ReadNum(ctx, "track_mesh", &data->track_mesh));
-        M_MUST(M_ReadNum(ctx, "skidoo_turn", &data->skidoo_turn));
-        M_MUST(M_ReadNum(ctx, "left_fallspeed", &data->left_fallspeed));
-        M_MUST(M_ReadNum(ctx, "right_fallspeed", &data->right_fallspeed));
-        M_MUST(M_ReadNum(ctx, "momentum_angle", &data->momentum_angle));
-        M_MUST(M_ReadNum(ctx, "extra_rotation", &data->extra_rotation));
-        M_MUST(M_ReadNum(ctx, "pitch", &data->pitch));
-        M_MUST(M_Pop(ctx));
-        break;
-    }
-
-    default:
-        break;
     }
 
     if (obj->priv_size > 0 && obj->priv_load_func != nullptr) {

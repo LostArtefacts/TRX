@@ -157,9 +157,11 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
 void Skidoo_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    if (item->priv == nullptr) {
+        item->priv = GameBuf_Alloc(sizeof(SKIDOO_INFO), GBUF_ITEM_DATA);
+    }
 
-    SKIDOO_INFO *const skidoo_data =
-        GameBuf_Alloc(sizeof(SKIDOO_INFO), GBUF_ITEM_DATA);
+    SKIDOO_INFO *const skidoo_data = item->priv;
     skidoo_data->skidoo_turn = 0;
     skidoo_data->right_fallspeed = 0;
     skidoo_data->left_fallspeed = 0;
@@ -167,8 +169,6 @@ void Skidoo_Initialise(const int16_t item_num)
     skidoo_data->momentum_angle = item->rot.y;
     skidoo_data->track_mesh = 0;
     skidoo_data->pitch = 0;
-
-    item->data = skidoo_data;
 }
 
 int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
@@ -321,7 +321,7 @@ void Skidoo_DoSnowEffect(const ITEM *const skidoo)
 
 int32_t Skidoo_Dynamics(ITEM *const skidoo)
 {
-    SKIDOO_INFO *const skidoo_data = skidoo->data;
+    SKIDOO_INFO *const skidoo_data = skidoo->priv;
 
     XYZ_32 fl_old;
     XYZ_32 bl_old;
@@ -466,7 +466,7 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
 int32_t Skidoo_UserControl(
     ITEM *const skidoo, const int32_t height, int32_t *const out_pitch)
 {
-    SKIDOO_INFO *const skidoo_data = skidoo->data;
+    SKIDOO_INFO *const skidoo_data = skidoo->priv;
 
     bool drive = false;
 
@@ -583,7 +583,7 @@ int32_t Skidoo_CheckGetOffOK(int32_t direction)
 void Skidoo_Animation(
     ITEM *const skidoo, const int32_t collide, const int32_t dead)
 {
-    const SKIDOO_INFO *const skidoo_data = skidoo->data;
+    const SKIDOO_INFO *const skidoo_data = skidoo->priv;
     ITEM *const lara_item = Lara_GetItem();
 
     if (skidoo->pos.y != skidoo->floor && skidoo->fall_speed > 0
@@ -798,7 +798,7 @@ bool Skidoo_Control(void)
 {
     ITEM *const lara_item = Lara_GetItem();
     ITEM *const skidoo = Lara_Vehicle_GetItem();
-    SKIDOO_INFO *const skidoo_data = skidoo->data;
+    SKIDOO_INFO *const skidoo_data = skidoo->priv;
     int32_t collide = Skidoo_Dynamics(skidoo);
 
     XYZ_32 fl;
@@ -939,7 +939,7 @@ bool Skidoo_Control(void)
 bool Skidoo_Draw(const ITEM *const item)
 {
     int32_t track_mesh_status = 0;
-    const SKIDOO_INFO *const skidoo_data = item->data;
+    const SKIDOO_INFO *const skidoo_data = item->priv;
     if (skidoo_data != nullptr) {
         track_mesh_status = skidoo_data->track_mesh;
     }
