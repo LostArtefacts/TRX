@@ -186,7 +186,9 @@ void main(void) {
 
     // Reflections
     if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0) {
-        texColor *= texture(uTexEnvMap, (normalize(gNormal) * 0.5 + 0.5).xy) * 2;
+        vec2 env_uv = (normalize(gNormal) * 0.5 + 0.5).xy;
+        env_uv.y = 1.0 - env_uv.y;
+        texColor *= texture(uTexEnvMap, env_uv) * 2;
     }
 
     // Fog
