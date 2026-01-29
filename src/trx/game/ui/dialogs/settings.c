@@ -97,19 +97,32 @@ static bool M_IsEnumEntryAvailable(
 
 static UI_BAR_TYPE M_GetBarType(const UI_SETTINGS_OPTION *const option)
 {
-    if (option->target == &g_Config.ui.lara_health_bar.color) {
+    if (option->target == &g_Config.ui.lara_health_bar.color
+        || option->target == &g_Config.ui.lara_health_bar.color_ps1) {
         return UI_BAR_LARA_HP;
-    } else if (option->target == &g_Config.ui.lara_health_bar.poison_color) {
+    } else if (
+        option->target == &g_Config.ui.lara_health_bar.poison_color
+        || option->target == &g_Config.ui.lara_health_bar.poison_color_ps1) {
         return UI_BAR_LARA_HP_POISON;
-    } else if (option->target == &g_Config.ui.lara_air_bar.color) {
+    } else if (
+        option->target == &g_Config.ui.lara_air_bar.color
+        || option->target == &g_Config.ui.lara_air_bar.color_ps1) {
         return UI_BAR_LARA_AIR;
-    } else if (option->target == &g_Config.ui.lara_sprint_bar.color) {
+    } else if (
+        option->target == &g_Config.ui.lara_sprint_bar.color
+        || option->target == &g_Config.ui.lara_sprint_bar.color_ps1) {
         return UI_BAR_LARA_STAMINA;
-    } else if (option->target == &g_Config.ui.lara_exposure_bar.color) {
+    } else if (
+        option->target == &g_Config.ui.lara_exposure_bar.color
+        || option->target == &g_Config.ui.lara_exposure_bar.color_ps1) {
         return UI_BAR_LARA_EXPOSURE;
-    } else if (option->target == &g_Config.ui.enemy_health_bar.color) {
+    } else if (
+        option->target == &g_Config.ui.enemy_health_bar.color
+        || option->target == &g_Config.ui.enemy_health_bar.color_ps1) {
         return UI_BAR_ENEMY_HP;
-    } else if (option->target == &g_Config.ui.enemy_health_bar.color_allies) {
+    } else if (
+        option->target == &g_Config.ui.enemy_health_bar.color_allies
+        || option->target == &g_Config.ui.enemy_health_bar.color_allies_ps1) {
         return UI_BAR_ALLY_HP;
     } else {
         return (UI_BAR_TYPE)-1;
@@ -139,6 +152,10 @@ static bool M_HasAvailableEnumValue(const UI_SETTINGS_OPTION *const option)
 
 static bool M_IsOptionHidden(const UI_SETTINGS_OPTION *const option)
 {
+    if (option->custom_handler.is_visible != nullptr
+        && !option->custom_handler.is_visible(option)) {
+        return true;
+    }
     if (Config_IsOptionHidden(option->target)) {
         return true;
     }

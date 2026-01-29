@@ -202,7 +202,9 @@
         "fix_alligator_ai",       // TR2G has no alligators
         "fix_animated_sprites",
         "healthbar_poison_color",
+        "healthbar_poison_color_ps1",
         "exposurebar_color",
+        "exposurebar_color_ps1",
         "exposurebar_location",
         "exposurebar_show_mode",
         "change_pierre_spawn",

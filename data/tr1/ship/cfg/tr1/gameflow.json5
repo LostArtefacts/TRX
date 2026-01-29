@@ -538,9 +538,12 @@
 
     "hidden_config": [
         "enable_item_examining", // TR1 has no special item descriptions
-        "enemy_healthbar_color_allies", // TR1 has no allies
         "healthbar_poison_color",
+        "healthbar_poison_color_ps1",
+        "enemy_healthbar_color_allies",
+        "enemy_healthbar_color_allies_ps1",
         "exposurebar_color",
+        "exposurebar_color_ps1",
         "exposurebar_location",
         "exposurebar_show_mode",
         "fix_glide_cameras",

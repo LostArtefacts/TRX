@@ -86,42 +86,46 @@ bool UI_Settings_AllyHealthbar_IsAvailable(
 bool UI_Settings_HealthbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return UI_Settings_Healthbar_IsAvailable(option)
-        && g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+    return UI_Settings_Healthbar_IsAvailable(option);
 }
 
 bool UI_Settings_AirbarColor_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
-    return UI_Settings_Airbar_IsAvailable(option)
-        && g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+    return UI_Settings_Airbar_IsAvailable(option);
 }
 
 bool UI_Settings_SprintbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return UI_Settings_Sprintbar_IsAvailable(option)
-        && g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+    return UI_Settings_Sprintbar_IsAvailable(option);
 }
 
 bool UI_Settings_ExposurebarColor_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return UI_Settings_Exposurebar_IsAvailable(option)
-        && g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+    return UI_Settings_Exposurebar_IsAvailable(option);
 }
 
 bool UI_Settings_EnemyHealthbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return UI_Settings_EnemyHealthbar_IsAvailable(option)
-        && g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+    return UI_Settings_EnemyHealthbar_IsAvailable(option);
 }
 
 bool UI_Settings_AllyHealthbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
-    return UI_Settings_AllyHealthbar_IsAvailable(option)
-        && g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+    return UI_Settings_AllyHealthbar_IsAvailable(option);
+}
+
+bool UI_Settings_BarColorPC_IsVisible(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+}
+
+bool UI_Settings_BarColorPS1_IsVisible(const UI_SETTINGS_OPTION *const option)
+{
+    return g_Config.ui.bar_look == BAR_LOOK_TR23_PS1;
 }
 
 bool UI_Settings_BarColor_CanChangeValue(
