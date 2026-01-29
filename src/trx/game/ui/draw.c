@@ -233,9 +233,8 @@ static void M_DrawScreenCentreGradientBox(
 
 static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
 {
-    const float thickness = M_OUTLINE_THICKNESS;
-    const float e = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
     if (g_TRVersion == 1 && op->ui_style == UI_STYLE_PC) {
+        const float e = Scaler_Calc(M_OUTLINE_THICKNESS, SCALER_TARGET_TEXT);
         const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
         const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
         M_DrawScreenQuad(
@@ -248,8 +247,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
             op->x0, op->y, op->z, (op->x1 - op->x0) * PHD_ONE / 8, PHD_ONE,
             mesh_idx + 4, (RGBA_F[4]) { M_WHITE, M_WHITE, M_WHITE, M_WHITE });
     } else if (g_TRVersion == 3 && op->ui_style == UI_STYLE_PC) {
-        const float thickness = 1.0f;
-        const float e1 = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
+        const float e1 = Scaler_Calc(1.0f, SCALER_TARGET_TEXT);
         const float e2 = e1 / 3.0f;
         const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
         const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
@@ -258,6 +256,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
         M_DrawScreenQuad(
             op->x0, op->y - e2, op->x1, op->y + e2, op->z, cl, cl, cl, cl);
     } else {
+        const float e = Scaler_Calc(M_OUTLINE_THICKNESS, SCALER_TARGET_TEXT);
         M_DrawScreenQuad(
             op->x0, op->y - e, op->x1, op->y + e, op->z,
             M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),

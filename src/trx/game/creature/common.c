@@ -961,14 +961,14 @@ bool Creature_Animate(
         }
 
         if (g_TRVersion >= 3 && hit_item != nullptr) {
-            const int16_t angle = Math_Atan(
-                                      hit_item->pos.z - item->pos.z,
-                                      hit_item->pos.x - item->pos.x)
+            const int16_t item_angle = Math_Atan(
+                                           hit_item->pos.z - item->pos.z,
+                                           hit_item->pos.x - item->pos.x)
                 - item->rot.y;
-            if (angle != 0) {
-                if (ABS(angle) < 2048) {
-                    item->rot.y -= angle;
-                } else if (angle > 0) {
+            if (item_angle != 0) {
+                if (ABS(item_angle) < 2048) {
+                    item->rot.y -= item_angle;
+                } else if (item_angle > 0) {
                     item->rot.y -= 2048;
                 } else {
                     item->rot.y += 2048;
@@ -1030,20 +1030,20 @@ bool Creature_Animate(
         sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
         item->floor = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
 
-        int16_t angle = item->speed != 0 ? Math_Atan(item->speed, -dy) : 0;
+        int16_t item_angle = item->speed != 0 ? Math_Atan(item->speed, -dy) : 0;
         if (g_TRVersion >= 2) {
-            CLAMP(angle, -M_MAX_X_ROT, M_MAX_X_ROT);
+            CLAMP(item_angle, -M_MAX_X_ROT, M_MAX_X_ROT);
         }
 
-        if (angle < item->rot.x - DEG_1) {
+        if (item_angle < item->rot.x - DEG_1) {
             item->rot.x -= DEG_1;
-        } else if (angle > item->rot.x + DEG_1) {
+        } else if (item_angle > item->rot.x + DEG_1) {
             item->rot.x += DEG_1;
         } else {
-            item->rot.x = angle;
+            item->rot.x = item_angle;
         }
     } else {
-        const SECTOR *sector =
+        sector =
             Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
         if (g_TRVersion == 3) {
             const int16_t ceiling =

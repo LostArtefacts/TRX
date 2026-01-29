@@ -51,6 +51,7 @@ trx_lua_embed = custom_target(
 )
 
 common_build_opts = [
+  '-Wshadow',
   '-Wno-unused',
   '-Wno-unused-parameter',
   '-DMESON_BUILD',

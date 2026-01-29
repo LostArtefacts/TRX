@@ -628,8 +628,8 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         const int32_t sector_count = room->size.x * room->size.z;
         room->sectors =
             GameBuf_Alloc(sizeof(SECTOR) * sector_count, GBUF_ROOM_SECTORS);
-        for (int32_t i = 0; i < sector_count; i++) {
-            SECTOR *const sector = &room->sectors[i];
+        for (int32_t j = 0; j < sector_count; j++) {
+            SECTOR *const sector = &room->sectors[j];
             sector->idx = VFile_ReadU16(file);
             if (loader->game_version == 3) {
                 uint16_t misc_info = VFile_ReadU16(file);
@@ -670,8 +670,8 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         room->lights = room->num_lights == 0
             ? nullptr
             : GameBuf_Alloc(sizeof(LIGHT) * room->num_lights, GBUF_ROOM_LIGHTS);
-        for (int32_t i = 0; i < room->num_lights; i++) {
-            LIGHT *const light = &room->lights[i];
+        for (int32_t j = 0; j < room->num_lights; j++) {
+            LIGHT *const light = &room->lights[j];
             if (loader->game_version == 3) {
                 // TR3 room lights use the LIGHT_INFO struct layout:
                 // pos (s32*3) + rgb (u8*3) + type (u8) + union (8 bytes).
@@ -721,8 +721,8 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
             ? nullptr
             : GameBuf_Alloc(
                   sizeof(STATIC_MESH) * static_count, GBUF_ROOM_STATIC_MESHES);
-        for (int32_t i = 0; i < room->num_static_meshes; i++) {
-            STATIC_MESH *const mesh = &room->static_meshes[i];
+        for (int32_t j = 0; j < room->num_static_meshes; j++) {
+            STATIC_MESH *const mesh = &room->static_meshes[j];
             M_ReadPosition(&mesh->pos, file);
             mesh->rot.y = VFile_ReadS16(file);
             M_ReadShade(loader, &mesh->shade, file);

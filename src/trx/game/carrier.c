@@ -342,7 +342,6 @@ void Carrier_TestItemDrops(const int16_t item_num)
 
         if (item->room_num != NO_ROOM) {
             // Handle reloading a save with a falling or landed item.
-            ITEM *const pickup = Item_Get(item->spawn_num);
             pickup->pos = item->pos;
             pickup->fall_speed = item->fall_speed;
             Item_UpdateRoom(item->spawn_num, item->room_num);

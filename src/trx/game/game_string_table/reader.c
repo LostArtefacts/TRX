@@ -83,8 +83,6 @@ static void M_LoadTableFromJSON(
 
         JSON_OBJECT_ELEMENT *jgs_elem = jgs_obj->start;
         for (size_t i = 0; i < gs_count; i++, jgs_elem = jgs_elem->next) {
-            JSON_OBJECT *const jgs_obj = JSON_ValueAsObject(jgs_elem->value);
-
             const char *const key = jgs_elem->name->string;
             const char *const value =
                 JSON_ValueGetString(jgs_elem->value, JSON_INVALID_STRING);

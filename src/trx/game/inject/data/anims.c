@@ -28,9 +28,9 @@ static void M_HandleAnimData(
                 level_info->anims.anim_count, data_count, chunk.injection->fp);
             level_info->anims.anim_count += data_count;
 
-            for (int32_t i = 0; i < data_count; i++) {
+            for (int32_t j = 0; j < data_count; j++) {
                 ANIM *const anim =
-                    Anim_GetAnim(cached_info.anims.anim_count + i);
+                    Anim_GetAnim(cached_info.anims.anim_count + j);
                 anim->jump_anim_num += cached_info.anims.anim_count;
                 anim->frame_ofs += cached_info.anims.frame_count * 2;
                 anim->change_idx += cached_info.anims.change_count;
@@ -52,9 +52,9 @@ static void M_HandleAnimData(
                 chunk.injection->fp);
             level_info->anims.change_count += data_count;
 
-            for (int32_t i = 0; i < data_count; i++) {
+            for (int32_t j = 0; j < data_count; j++) {
                 ANIM_CHANGE *const change =
-                    Anim_GetChange(cached_info.anims.change_count + i);
+                    Anim_GetChange(cached_info.anims.change_count + j);
                 change->range_idx += cached_info.anims.range_count;
             }
             break;
@@ -80,9 +80,9 @@ static void M_HandleAnimData(
                 level_info->anims.range_count, data_count, chunk.injection->fp);
             level_info->anims.range_count += data_count;
 
-            for (int32_t i = 0; i < data_count; i++) {
+            for (int32_t j = 0; j < data_count; j++) {
                 ANIM_RANGE *const range =
-                    Anim_GetRange(cached_info.anims.range_count + i);
+                    Anim_GetRange(cached_info.anims.range_count + j);
                 range->link_anim_num += cached_info.anims.anim_count;
             }
             break;
