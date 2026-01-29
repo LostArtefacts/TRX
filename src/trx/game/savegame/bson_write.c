@@ -10,7 +10,6 @@
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
-#include <trx/game/objects/vehicles/boat.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
@@ -365,22 +364,6 @@ static void M_WriteItem(
             M_PopAndSet(ctx, "data");
         }
         break;
-
-    case O_BOAT: {
-        if (item->data != nullptr) {
-            const BOAT_INFO *const data = (BOAT_INFO *)item->data;
-            M_PushObject(ctx);
-            M_WriteNum(ctx, "boat_turn", data->boat_turn);
-            M_WriteNum(ctx, "left_fallspeed", data->left_fallspeed);
-            M_WriteNum(ctx, "right_fallspeed", data->right_fallspeed);
-            M_WriteNum(ctx, "tilt_angle", data->tilt_angle);
-            M_WriteNum(ctx, "extra_rotation", data->extra_rotation);
-            M_WriteNum(ctx, "water", data->water);
-            M_WriteNum(ctx, "pitch", data->pitch);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-    }
 
     case O_SKIDOO_FAST: {
         if (item->data != nullptr) {

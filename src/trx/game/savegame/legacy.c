@@ -8,7 +8,6 @@
 #include <trx/game/music.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/traps/sliding_pillar.h>
-#include <trx/game/objects/vehicles/boat.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -565,18 +564,6 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
         SLIDING_PILLAR_INFO *const data = item->data;
         data->linked.pos = item->pos;
         data->linked.room_num = item->room_num;
-        break;
-    }
-
-    case O_BOAT: {
-        BOAT_INFO *const data = item->data;
-        data->boat_turn = M_ReadS32(ctx);
-        data->left_fallspeed = M_ReadS32(ctx);
-        data->right_fallspeed = M_ReadS32(ctx);
-        data->tilt_angle = M_ReadS16(ctx);
-        data->extra_rotation = M_ReadS16(ctx);
-        data->water = M_ReadS32(ctx);
-        data->pitch = M_ReadS32(ctx);
         break;
     }
 

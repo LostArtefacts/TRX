@@ -1,10 +1,7 @@
-#include <trx/game/objects/vehicles/boat.h>
-
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
 #include <trx/game/effects.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
@@ -14,8 +11,10 @@
 #include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/savegame/legacy_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
+#include <trx/strings.h>
 #include <trx/utils.h>
 
 #define BOAT_FALL_ANIM 15
@@ -57,6 +56,56 @@ typedef enum {
     BOAT_STATE_FALL = 6,
     BOAT_STATE_DEATH = 8,
 } BOAT_STATE;
+
+typedef struct {
+    int32_t boat_turn;
+    int32_t left_fallspeed;
+    int32_t right_fallspeed;
+    int16_t tilt_angle;
+    int16_t extra_rotation;
+    int32_t water;
+    int32_t pitch;
+} M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->boat_turn = JSON_ObjectGetInt(priv_root, "boat_turn", p->boat_turn);
+    p->left_fallspeed =
+        JSON_ObjectGetInt(priv_root, "left_fallspeed", p->left_fallspeed);
+    p->right_fallspeed =
+        JSON_ObjectGetInt(priv_root, "right_fallspeed", p->right_fallspeed);
+    p->tilt_angle = JSON_ObjectGetInt(priv_root, "tilt_angle", p->tilt_angle);
+    p->extra_rotation =
+        JSON_ObjectGetInt(priv_root, "extra_rotation", p->extra_rotation);
+    p->water = JSON_ObjectGetInt(priv_root, "water", p->water);
+    p->pitch = JSON_ObjectGetInt(priv_root, "pitch", p->pitch);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "boat_turn", p->boat_turn);
+    JSON_ObjectAppendInt(priv_root, "left_fallspeed", p->left_fallspeed);
+    JSON_ObjectAppendInt(priv_root, "right_fallspeed", p->right_fallspeed);
+    JSON_ObjectAppendInt(priv_root, "tilt_angle", p->tilt_angle);
+    JSON_ObjectAppendInt(priv_root, "extra_rotation", p->extra_rotation);
+    JSON_ObjectAppendInt(priv_root, "water", p->water);
+    JSON_ObjectAppendInt(priv_root, "pitch", p->pitch);
+}
+
+static void M_LoadLegacyPriv(
+    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    p->boat_turn = io->read_s32(io);
+    p->left_fallspeed = io->read_s32(io);
+    p->right_fallspeed = io->read_s32(io);
+    p->tilt_angle = io->read_s16(io);
+    p->extra_rotation = io->read_s16(io);
+    p->water = io->read_s32(io);
+    p->pitch = io->read_s32(io);
+}
 
 static int32_t M_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
 {
@@ -266,8 +315,8 @@ static int32_t M_DoDynamics(
 static int32_t M_Dynamics(const int16_t boat_num)
 {
     ITEM *const boat_item = Item_Get(boat_num);
-    BOAT_INFO *const boat_data = (BOAT_INFO *)boat_item->data;
-    boat_item->rot.z -= boat_data->tilt_angle;
+    M_PRIV *const p = boat_item->priv;
+    boat_item->rot.z -= p->tilt_angle;
 
     XYZ_32 fl_old;
     XYZ_32 bl_old;
@@ -290,8 +339,8 @@ static int32_t M_Dynamics(const int16_t boat_num)
     CLAMPG(fr_old.y, hfr_old);
     CLAMPG(f_old.y, hf_old);
 
-    boat_item->rot.y += boat_data->extra_rotation + boat_data->boat_turn;
-    boat_data->tilt_angle = boat_data->boat_turn * 6;
+    boat_item->rot.y += p->extra_rotation + p->boat_turn;
+    p->tilt_angle = p->boat_turn * 6;
 
     boat_item->pos.z +=
         (boat_item->speed * Math_Cos(boat_item->rot.y)) >> W2V_SHIFT;
@@ -372,7 +421,7 @@ static int32_t M_Dynamics(const int16_t boat_num)
         Vehicle_DoShift(boat_item, &boat_item->pos, &old);
     }
 
-    boat_data->extra_rotation = rot;
+    p->extra_rotation = rot;
 
     const int32_t collide = Vehicle_GetCollisionAnim(boat_item, &moved);
     if (slip || collide) {
@@ -413,9 +462,8 @@ static int32_t M_UserControl(ITEM *const boat_item)
 {
     int32_t no_turn = 1;
 
-    BOAT_INFO *const boat_data = (BOAT_INFO *)boat_item->data;
-    if (boat_item->pos.y < boat_data->water - STEP_L / 2
-        || boat_data->water == NO_HEIGHT) {
+    M_PRIV *const p = boat_item->priv;
+    if (boat_item->pos.y < p->water - STEP_L / 2 || p->water == NO_HEIGHT) {
         return no_turn;
     }
 
@@ -434,19 +482,19 @@ static int32_t M_UserControl(ITEM *const boat_item)
     const bool right_input = g_Input.right && !look;
 
     if ((left_input && !g_Input.back) || (right_input && g_Input.back)) {
-        if (boat_data->boat_turn > 0) {
-            boat_data->boat_turn -= BOAT_UNDO_TURN;
+        if (p->boat_turn > 0) {
+            p->boat_turn -= BOAT_UNDO_TURN;
         } else {
-            boat_data->boat_turn -= BOAT_TURN;
-            CLAMPL(boat_data->boat_turn, -BOAT_MAX_TURN);
+            p->boat_turn -= BOAT_TURN;
+            CLAMPL(p->boat_turn, -BOAT_MAX_TURN);
         }
         no_turn = 0;
     } else if ((right_input && !g_Input.back) || (left_input && g_Input.back)) {
-        if (boat_data->boat_turn < 0) {
-            boat_data->boat_turn += BOAT_UNDO_TURN;
+        if (p->boat_turn < 0) {
+            p->boat_turn += BOAT_UNDO_TURN;
         } else {
-            boat_data->boat_turn += BOAT_TURN;
-            CLAMPG(boat_data->boat_turn, BOAT_MAX_TURN);
+            p->boat_turn += BOAT_TURN;
+            CLAMPG(p->boat_turn, BOAT_MAX_TURN);
         }
         no_turn = 0;
     }
@@ -487,7 +535,7 @@ static int32_t M_UserControl(ITEM *const boat_item)
 static void M_Animation(const ITEM *const boat_item, const int32_t collide)
 {
     ITEM *const lara_item = Lara_GetItem();
-    const BOAT_INFO *const boat_data = (const BOAT_INFO *)boat_item->data;
+    const M_PRIV *const p = boat_item->priv;
 
     if (lara_item->hit_points <= 0) {
         if (lara_item->current_anim_state == BOAT_STATE_DEATH) {
@@ -499,8 +547,7 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
         return;
     }
 
-    if (boat_item->pos.y < boat_data->water - STEP_L / 2
-        && boat_item->fall_speed > 0) {
+    if (boat_item->pos.y < p->water - STEP_L / 2 && boat_item->fall_speed > 0) {
         if (lara_item->current_anim_state == BOAT_STATE_FALL) {
             return;
         }
@@ -555,17 +602,15 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
 
 static void M_Initialise(const int16_t item_num)
 {
-    BOAT_INFO *boat_data = GameBuf_Alloc(sizeof(BOAT_INFO), GBUF_ITEM_DATA);
-    boat_data->boat_turn = 0;
-    boat_data->left_fallspeed = 0;
-    boat_data->right_fallspeed = 0;
-    boat_data->tilt_angle = 0;
-    boat_data->extra_rotation = 0;
-    boat_data->water = 0;
-    boat_data->pitch = 0;
-
-    ITEM *const boat_item = Item_Get(item_num);
-    boat_item->data = boat_data;
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->boat_turn = 0;
+    p->left_fallspeed = 0;
+    p->right_fallspeed = 0;
+    p->tilt_angle = 0;
+    p->extra_rotation = 0;
+    p->water = 0;
+    p->pitch = 0;
 }
 
 static void M_Collision(
@@ -635,7 +680,7 @@ static void M_Control(const int16_t item_num)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     ITEM *const boat_item = Item_Get(item_num);
-    BOAT_INFO *const boat_data = (BOAT_INFO *)boat_item->data;
+    M_PRIV *const p = boat_item->priv;
 
     bool drive = false;
     int32_t no_turn = 1;
@@ -659,7 +704,7 @@ static void M_Control(const int16_t item_num)
 
     const int32_t water_height = Room_GetWaterHeight(
         boat_item->pos.x, boat_item->pos.y, boat_item->pos.z, room_num);
-    boat_data->water = water_height;
+    p->water = water_height;
 
     if (Lara_Vehicle_GetIndex() == item_num && lara_item->hit_points > 0) {
         switch (lara_item->current_anim_state) {
@@ -680,28 +725,26 @@ static void M_Control(const int16_t item_num)
     }
 
     if (no_turn) {
-        if (boat_data->boat_turn < -BOAT_UNDO_TURN) {
-            boat_data->boat_turn += BOAT_UNDO_TURN;
-        } else if (boat_data->boat_turn > BOAT_UNDO_TURN) {
-            boat_data->boat_turn -= BOAT_UNDO_TURN;
+        if (p->boat_turn < -BOAT_UNDO_TURN) {
+            p->boat_turn += BOAT_UNDO_TURN;
+        } else if (p->boat_turn > BOAT_UNDO_TURN) {
+            p->boat_turn -= BOAT_UNDO_TURN;
         } else {
-            boat_data->boat_turn = 0;
+            p->boat_turn = 0;
         }
     }
 
     boat_item->floor = height + BOAT_SHIFT_Y;
-    if (boat_data->water == NO_HEIGHT) {
-        boat_data->water = height;
+    if (p->water == NO_HEIGHT) {
+        p->water = height;
     } else {
-        boat_data->water -= 5;
+        p->water -= 5;
     }
 
-    boat_data->left_fallspeed =
-        M_DoDynamics(hfl, boat_data->left_fallspeed, &fl.y);
-    boat_data->right_fallspeed =
-        M_DoDynamics(hfr, boat_data->right_fallspeed, &fr.y);
-    boat_item->fall_speed = M_DoDynamics(
-        boat_data->water, boat_item->fall_speed, &boat_item->pos.y);
+    p->left_fallspeed = M_DoDynamics(hfl, p->left_fallspeed, &fl.y);
+    p->right_fallspeed = M_DoDynamics(hfr, p->right_fallspeed, &fr.y);
+    boat_item->fall_speed =
+        M_DoDynamics(p->water, boat_item->fall_speed, &boat_item->pos.y);
 
     height = (fr.y + fl.y) / 2;
 
@@ -722,7 +765,7 @@ static void M_Control(const int16_t item_num)
 
         Item_UpdateRoom(item_num, room_num);
 
-        boat_item->rot.z += boat_data->tilt_angle;
+        boat_item->rot.z += p->tilt_angle;
         lara_item->pos.x = boat_item->pos.x;
         lara_item->pos.y = boat_item->pos.y;
         lara_item->pos.z = boat_item->pos.z;
@@ -750,28 +793,26 @@ static void M_Control(const int16_t item_num)
         g_Camera.target_distance = 2 * WALL_L;
     } else {
         Item_UpdateRoom(item_num, room_num);
-        boat_item->rot.z += boat_data->tilt_angle;
+        boat_item->rot.z += p->tilt_angle;
     }
 
     const int32_t pitch = water_height - ceiling < BOAT_SOUND_CEILING
         ? boat_item->speed * (water_height - ceiling) / BOAT_SOUND_CEILING
         : boat_item->speed;
 
-    boat_data->pitch += ((pitch - boat_data->pitch) >> 2);
+    p->pitch += ((pitch - p->pitch) >> 2);
     if (boat_item->speed != 0
         && water_height + BOAT_SHIFT_Y != boat_item->pos.y) {
         Sound_Effect(SFX_BOAT_ENGINE, &boat_item->pos, SPM_NORMAL);
     } else if (boat_item->speed > 20) {
         Sound_Effect(
             SFX_BOAT_MOVING, &boat_item->pos,
-            SPM_PITCH
-                | ((0x10000 - (BOAT_MAX_SPEED - boat_data->pitch) * 100) << 8));
+            SPM_PITCH | ((0x10000 - (BOAT_MAX_SPEED - p->pitch) * 100) << 8));
 
     } else if (drive) {
         Sound_Effect(
             SFX_BOAT_IDLE, &boat_item->pos,
-            SPM_PITCH
-                | ((0x10000 - (BOAT_MAX_SPEED - boat_data->pitch) * 100) << 8));
+            SPM_PITCH | ((0x10000 - (BOAT_MAX_SPEED - p->pitch) * 100) << 8));
     }
 
     if (boat_item->speed && water_height + BOAT_SHIFT_Y == boat_item->pos.y) {
@@ -828,6 +869,10 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
+    obj->priv_legacy_load_func = M_LoadLegacyPriv;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
