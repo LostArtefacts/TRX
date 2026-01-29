@@ -25,6 +25,7 @@ trx_lua_embed = custom_target(
   'trx_lua_embed',
   input: [
     '../data/scripting/assault_stats.lua',
+    '../data/scripting/camera.lua',
     '../data/scripting/catalog.lua',
     '../data/scripting/config.lua',
     '../data/scripting/console.lua',
@@ -310,6 +311,7 @@ common_sources = [
   'trx/game/level/settings.c',
   'trx/game/los.c',
   'trx/game/lua/assault_stats.c',
+  'trx/game/lua/camera.c',
   'trx/game/lua/catalog.c',
   'trx/game/lua/common.c',
   'trx/game/lua/config.c',

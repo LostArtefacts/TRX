@@ -23,6 +23,7 @@ static M_PRIV m_Priv = {
 
 // Initialize internal APIs
 extern void LUA_CreateCatalog(lua_State *L);
+extern void LUA_CreateCamera(lua_State *L);
 extern void LUA_CreateConsole(lua_State *L);
 extern void LUA_CreateEvents(lua_State *L);
 extern void LUA_CreateItems(lua_State *L);
@@ -170,6 +171,7 @@ void LUA_Init(void)
 
     // Initialize internal modules
     M_LoadTRXCModule(L, LUA_CreateCatalog);
+    M_LoadTRXCModule(L, LUA_CreateCamera);
     M_LoadTRXCModule(L, LUA_CreateConsole);
     M_LoadTRXCModule(L, LUA_CreateEvents);
     M_LoadTRXCModule(L, LUA_CreateItems);
