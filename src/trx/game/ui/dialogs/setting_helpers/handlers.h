@@ -39,6 +39,8 @@ bool UI_Settings_EnemyHealthbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *option);
 bool UI_Settings_AllyHealthbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *option);
+bool UI_Settings_BarColorPC_IsVisible(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_BarColorPS1_IsVisible(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_BarColor_CanChangeValue(
     const UI_SETTINGS_OPTION *option, int32_t dir);
 bool UI_Settings_BarColor_RequestChangeValue(

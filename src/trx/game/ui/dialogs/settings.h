@@ -18,6 +18,7 @@ typedef struct {
     bool (*request_change_value)(
         const struct UI_SETTINGS_OPTION *option, int32_t dir);
     bool (*is_available)(const struct UI_SETTINGS_OPTION *option);
+    bool (*is_visible)(const struct UI_SETTINGS_OPTION *option);
     bool (*is_enum_value_available)(
         const struct UI_SETTINGS_OPTION *option, int32_t value);
 } UI_SETTINGS_CUSTOM_OPITON_HANDLER;

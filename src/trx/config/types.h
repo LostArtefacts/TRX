@@ -130,17 +130,22 @@ typedef struct {
         struct {
             BAR_LOCATION location;
             char *color;
+            char *color_ps1;
             char *poison_color;
+            char *poison_color_ps1;
         } lara_health_bar;
         struct {
             BAR_LOCATION location;
             char *color;
+            char *color_ps1;
         } lara_air_bar, lara_sprint_bar, lara_exposure_bar;
         struct {
             BAR_SHOW_MODE show_mode;
             BAR_LOCATION location;
             char *color;
+            char *color_ps1;
             char *color_allies;
+            char *color_allies_ps1;
         } enemy_health_bar;
     } ui;
 

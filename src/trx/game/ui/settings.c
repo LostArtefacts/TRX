@@ -1,10 +1,8 @@
 #include <trx/game/ui/settings.h>
 
 #include <trx/config.h>
-#include <trx/enum_map.h>
 #include <trx/game/shell.h>
 #include <trx/json_file.h>
-#include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/version.h>
@@ -30,10 +28,45 @@ typedef struct {
 
 typedef struct {
     struct {
-        M_THEME_GROUP tr1, tr2, tr3;
-        UI_BAR_THEME ps1[UI_BAR_NUMBER_OF];
+        M_THEME_GROUP tr1, tr2, tr3, ps1;
     } bars;
 } M_SETTINGS;
+
+typedef struct {
+    char *const *const pc_color;
+    char *const *const ps1_color;
+} M_BAR_COLOR_SELECT;
+
+static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
+    [UI_BAR_LARA_HP] = {
+        .pc_color = &g_Config.ui.lara_health_bar.color,
+        .ps1_color = &g_Config.ui.lara_health_bar.color_ps1,
+    },
+    [UI_BAR_LARA_HP_POISON] = {
+        .pc_color = &g_Config.ui.lara_health_bar.poison_color,
+        .ps1_color = &g_Config.ui.lara_health_bar.poison_color_ps1,
+    },
+    [UI_BAR_LARA_AIR] = {
+        .pc_color = &g_Config.ui.lara_air_bar.color,
+        .ps1_color = &g_Config.ui.lara_air_bar.color_ps1,
+    },
+    [UI_BAR_LARA_STAMINA] = {
+        .pc_color = &g_Config.ui.lara_sprint_bar.color,
+        .ps1_color = &g_Config.ui.lara_sprint_bar.color_ps1,
+    },
+    [UI_BAR_LARA_EXPOSURE] = {
+        .pc_color = &g_Config.ui.lara_exposure_bar.color,
+        .ps1_color = &g_Config.ui.lara_exposure_bar.color_ps1,
+    },
+    [UI_BAR_ENEMY_HP] = {
+        .pc_color = &g_Config.ui.enemy_health_bar.color,
+        .ps1_color = &g_Config.ui.enemy_health_bar.color_ps1,
+    },
+    [UI_BAR_ALLY_HP] = {
+        .pc_color = &g_Config.ui.enemy_health_bar.color_allies,
+        .ps1_color = &g_Config.ui.enemy_health_bar.color_allies_ps1,
+    },
+};
 
 static M_SETTINGS m_Settings;
 
@@ -57,7 +90,7 @@ static void M_FreeThemeGroup(M_THEME_GROUP *const group)
     group->lookup = nullptr;
 }
 
-static const M_THEME_GROUP *M_GetCurrentPCGroup(void)
+static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
 {
     switch (g_Config.ui.bar_look) {
     case BAR_LOOK_TR1:
@@ -66,14 +99,11 @@ static const M_THEME_GROUP *M_GetCurrentPCGroup(void)
         return &m_Settings.bars.tr2;
     case BAR_LOOK_TR3_PC:
         return &m_Settings.bars.tr3;
+    case BAR_LOOK_TR23_PS1:
+        return &m_Settings.bars.ps1;
     default:
         return nullptr;
     }
-}
-
-static UI_BAR_TYPE M_BarTypeFromName(const char *const name)
-{
-    return ENUM_MAP_GET(UI_BAR_TYPE, name, (int32_t)(UI_BAR_TYPE)-1);
 }
 
 static bool M_ParseHexColor(const char *const value, RGBA_8888 *const out)
@@ -189,8 +219,8 @@ static void M_LoadThemesPC(
 }
 
 static void M_LoadThemesPS1(
-    JSON_OBJECT *const obj, UI_BAR_THEME themes[UI_BAR_NUMBER_OF],
-    const char *const path, const char *const section)
+    JSON_OBJECT *const obj, M_THEME_GROUP *const group, const char *const path,
+    const char *const section)
 {
     if (obj == nullptr) {
         Shell_ExitSystemFmt("missing '%s' in %s", section, path);
@@ -234,14 +264,25 @@ static void M_LoadThemesPS1(
         Shell_ExitSystemFmt("missing '%s.colors' in %s", section, path);
     }
 
-    bool seen[UI_BAR_NUMBER_OF] = { false };
+    M_FreeThemeGroup(group);
+
+    size_t count = 0;
+    for (JSON_OBJECT_ELEMENT *elem = colors_obj->start; elem != nullptr;
+         elem = elem->next) {
+        count++;
+    }
+    if (count == 0) {
+        Shell_ExitSystemFmt("empty '%s.colors' in %s", section, path);
+    }
+
+    group->colors = Memory_Alloc(sizeof(*group->colors) * count);
+    group->color_count = (int32_t)count;
+    group->lookup = nullptr;
+
+    size_t idx = 0;
     for (JSON_OBJECT_ELEMENT *elem = colors_obj->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
-        const UI_BAR_TYPE type = M_BarTypeFromName(name);
-        if (type == (UI_BAR_TYPE)-1) {
-            Shell_ExitSystemFmt("unknown ps1 bar '%s' in %s", name, path);
-        }
         JSON_ARRAY *const arr = JSON_ValueAsArray(elem->value);
         if (arr == nullptr || arr->length != 2) {
             Shell_ExitSystemFmt(
@@ -252,7 +293,19 @@ static void M_LoadThemesPS1(
             JSON_ValueAsArray(JSON_ArrayGetValue(arr, 0));
         JSON_ARRAY *const right_arr =
             JSON_ValueAsArray(JSON_ArrayGetValue(arr, 1));
-        UI_BAR_THEME *const theme = &themes[type];
+        group->colors[idx].name = Memory_DupStr(name);
+        M_THEME_LOOKUP *existing = nullptr;
+        HASH_FIND_STR(group->lookup, group->colors[idx].name, existing);
+        if (existing != nullptr) {
+            Shell_ExitSystemFmt(
+                "duplicate '%s.colors.%s' in %s", section, name, path);
+        }
+        M_THEME_LOOKUP *const entry = Memory_Alloc(sizeof(*entry));
+        entry->name = group->colors[idx].name;
+        entry->index = (int32_t)idx;
+        HASH_ADD_KEYPTR(
+            hh, group->lookup, entry->name, strlen(entry->name), entry);
+        UI_BAR_THEME *const theme = &group->colors[idx].theme;
         *theme = (UI_BAR_THEME) {
             .kind = UI_BAR_THEME_PS1_KIND,
             .basic_scale = basic_scale,
@@ -261,22 +314,13 @@ static void M_LoadThemesPS1(
             .border_bl = border_bl,
             .border_br = border_br,
         };
-        seen[type] = true;
         M_ReadColorArray(
             left_arr, theme->ramp_left, path,
             String_FormatStatic("%s.colors.%s[0]", section, name));
         M_ReadColorArray(
             right_arr, theme->ramp_right, path,
             String_FormatStatic("%s.colors.%s[1]", section, name));
-    }
-    for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
-        if (!seen[i]) {
-            const char *const bar_name =
-                EnumMap_ToString(ENUM_MAP_NAME(UI_BAR_TYPE), i);
-            LOG_WARNING(
-                "missing '%s.colors.%s' in %s", section,
-                bar_name != nullptr ? bar_name : "(unknown)", path);
-        }
+        idx++;
     }
 }
 
@@ -298,33 +342,28 @@ void UI_Settings_LoadFromFile(const char *const path)
         JSON_ObjectGetObject(root_obj, "tr3"), &m_Settings.bars.tr3, path,
         "tr3");
     M_LoadThemesPS1(
-        JSON_ObjectGetObject(root_obj, "ps1"), m_Settings.bars.ps1, path,
+        JSON_ObjectGetObject(root_obj, "ps1"), &m_Settings.bars.ps1, path,
         "ps1");
     JSON_ValueFree(root);
 }
 
 static const char *M_GetBarColorName(const UI_BAR_TYPE type)
 {
-    switch (type) {
-    case UI_BAR_LARA_HP:
-        return g_Config.ui.lara_health_bar.color;
-    case UI_BAR_LARA_HP_POISON:
-        return g_Config.ui.lara_health_bar.poison_color;
-    case UI_BAR_LARA_AIR:
-        return g_Config.ui.lara_air_bar.color;
-    case UI_BAR_LARA_STAMINA:
-        return g_Config.ui.lara_sprint_bar.color;
-    case UI_BAR_LARA_EXPOSURE:
-        return g_Config.ui.lara_exposure_bar.color;
-    case UI_BAR_ENEMY_HP:
-        return g_Config.ui.enemy_health_bar.color;
-    case UI_BAR_ALLY_HP:
-        return g_Config.ui.enemy_health_bar.color_allies;
-    case UI_BAR_PROGRESS:
-        return g_TRVersion >= 2 ? "green" : "gold";
-    default:
+    if (type < 0 || type >= UI_BAR_NUMBER_OF) {
         return "gold";
     }
+
+    const bool use_ps1 = g_Config.ui.bar_look == BAR_LOOK_TR23_PS1;
+    const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[type];
+    const char *value = nullptr;
+
+    if (use_ps1 && select->ps1_color != nullptr) {
+        value = *select->ps1_color;
+    } else if (!use_ps1 && select->pc_color != nullptr) {
+        value = *select->pc_color;
+    }
+
+    return value;
 }
 
 static const UI_BAR_THEME *M_FindThemeByName(
@@ -344,7 +383,7 @@ static const UI_BAR_THEME *M_FindThemeByName(
 
 bool UI_Settings_CanChangeBarColor(const char *const current, const int32_t dir)
 {
-    const M_THEME_GROUP *const group = M_GetCurrentPCGroup();
+    const M_THEME_GROUP *const group = M_GetCurrentBarGroup();
     if (group == nullptr || group->color_count == 0 || dir == 0) {
         return false;
     }
@@ -363,7 +402,7 @@ bool UI_Settings_CanChangeBarColor(const char *const current, const int32_t dir)
 const char *UI_Settings_GetNextBarColorName(
     const char *const current, const int32_t dir)
 {
-    const M_THEME_GROUP *const group = M_GetCurrentPCGroup();
+    const M_THEME_GROUP *const group = M_GetCurrentBarGroup();
     if (group == nullptr || group->color_count == 0 || dir == 0) {
         return nullptr;
     }
@@ -387,10 +426,7 @@ const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
     if (type < 0 || type >= UI_BAR_NUMBER_OF) {
         return nullptr;
     }
-    if (g_Config.ui.bar_look == BAR_LOOK_TR23_PS1) {
-        return &m_Settings.bars.ps1[type];
-    }
-    const M_THEME_GROUP *const group = M_GetCurrentPCGroup();
+    const M_THEME_GROUP *const group = M_GetCurrentBarGroup();
     if (group == nullptr || group->color_count <= 0) {
         return nullptr;
     }
