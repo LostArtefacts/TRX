@@ -1,11 +1,9 @@
-#include <trx/game/objects/traps/sliding_pillar.h>
-
 #include <trx/game/const.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/items/walkable.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
+#include <trx/game/savegame/legacy_io.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
 
@@ -26,30 +24,67 @@ typedef enum {
     // clang-format on
 } PILLAR_ANIM;
 
+typedef struct {
+    GAME_VECTOR initial;
+    GAME_VECTOR linked;
+} M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    const JSON_OBJECT *const linked_root =
+        JSON_ObjectGetObject(priv_root, "linked");
+    if (linked_root != nullptr) {
+        p->linked.pos.x = JSON_ObjectGetInt(linked_root, "x", p->linked.pos.x);
+        p->linked.pos.y = JSON_ObjectGetInt(linked_root, "y", p->linked.pos.y);
+        p->linked.pos.z = JSON_ObjectGetInt(linked_root, "z", p->linked.pos.z);
+    }
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_OBJECT *const linked_root = JSON_ObjectNew();
+    JSON_ObjectAppendInt(linked_root, "x", p->linked.pos.x);
+    JSON_ObjectAppendInt(linked_root, "y", p->linked.pos.y);
+    JSON_ObjectAppendInt(linked_root, "z", p->linked.pos.z);
+    JSON_ObjectAppendObject(priv_root, "linked", linked_root);
+}
+
+static void M_LoadLegacyPriv(
+    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    p->initial.pos = item->pos;
+    p->initial.room_num = item->room_num;
+    p->linked.pos = item->pos;
+    p->linked.room_num = item->room_num;
+}
+
 static void M_SetInitial(ITEM *const item)
 {
-    SLIDING_PILLAR_INFO *const data = item->data;
-    data->initial.pos = item->pos;
-    data->initial.room_num = item->room_num;
+    M_PRIV *const p = item->priv;
+    p->initial.pos = item->pos;
+    p->initial.room_num = item->room_num;
 }
 
 static GAME_VECTOR M_GetInitial(const ITEM *const item)
 {
-    const SLIDING_PILLAR_INFO *const data = item->data;
-    return data->initial;
+    const M_PRIV *const p = item->priv;
+    return p->initial;
 }
 
 static void M_SetLinked(ITEM *const item)
 {
-    SLIDING_PILLAR_INFO *const data = item->data;
-    data->linked.pos = item->pos;
-    data->linked.room_num = item->room_num;
+    M_PRIV *const p = item->priv;
+    p->linked.pos = item->pos;
+    p->linked.room_num = item->room_num;
 }
 
 static GAME_VECTOR M_GetLinked(const ITEM *const item)
 {
-    const SLIDING_PILLAR_INFO *const data = item->data;
-    return data->linked;
+    const M_PRIV *const p = item->priv;
+    return p->linked;
 }
 
 static bool M_IsItemOnTop(
@@ -124,9 +159,6 @@ static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     MovableBlock_UpdateBox(item, false);
-    SLIDING_PILLAR_INFO *const pillar_data =
-        GameBuf_Alloc(sizeof(SLIDING_PILLAR_INFO), GBUF_ITEM_DATA);
-    item->data = pillar_data;
     M_SetInitial(item);
     M_SetLinked(item);
 }
@@ -206,6 +238,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     obj->save_flags = true;
     obj->add_walkable_func = M_AddWalkable;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
+    obj->priv_legacy_load_func = M_LoadLegacyPriv;
 }
 
 REGISTER_OBJECT(O_SLIDING_PILLAR, M_Setup)
