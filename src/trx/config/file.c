@@ -211,7 +211,11 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 (const char *)opt->default_value);
             char **const p = (char **)opt->target;
             Memory_FreePointer(p);
-            *p = Memory_DupStr(val);
+            if (val != nullptr) {
+                *p = Memory_DupStr(val);
+            } else {
+                *p = Memory_DupStr(opt->default_value);
+            }
             break;
         }
 
