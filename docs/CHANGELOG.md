@@ -135,6 +135,7 @@
 - fixed Blades in Coastal Village not respecting antitrigger
 - fixed running down an enemy with a Quad not counting as a kill
 - fixed killing Cobras with a manually-aimed projectile not counting as a kill
+- fixed smoke and spark rotation snapping at 180° instead of rotating smoothly
 
 
 
