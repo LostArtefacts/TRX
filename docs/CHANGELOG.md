@@ -75,6 +75,7 @@
 - fixed underwater wobble effect acting twitchy with camera movement
 - fixed a deviation in water current behaviour that could result in Lara stopping too early (#4706, regression from TR2X 1.1)
 - fixed gun injections overwriting Lara's footstep SFX in underwater levels (#4733, regression from 1.1)
+- fixed exploding Armed Snowmobile not disappearing the vehicle (#4762)
 
 **TR3**:
 - added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)
@@ -251,7 +252,7 @@ Showcase: https://www.youtube.com/watch?v=veVYyr--H1A
 - fixed reading room lights for custom TR2 levels (regression from 1.0)
 - fixed the switch in room 46 of Opera House randomly disappearing
 - fixed game crashing when Lara passes through light sources in levels compiled with dxtre3D
-- fixed Skidoo music not getting resumed (#4519)
+- fixed Snowmobile music not getting resumed (#4519)
 - fixed Stopwatch position in the inventory ring (#2014)
 - fixed static lighting on broken ice/windows (#4506, regression from 1.0)
 

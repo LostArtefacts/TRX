@@ -1130,6 +1130,16 @@ void Creature_Die(const int16_t item_num, const bool explode)
         item->hit_points = 0;
         return;
 
+    case O_SKIDOO_ARMED:
+        if (explode) {
+            Item_Explode(item_num, -1, 0);
+            ITEM *const vehicle_item = Item_Get(item_num);
+            vehicle_item->hit_points = 0;
+            vehicle_item->status = IS_INVISIBLE;
+            return;
+        }
+        break;
+
     case O_SKIDOO_DRIVER:
         if (explode) {
             Item_Explode(item_num, -1, 0);
@@ -1138,6 +1148,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         const int16_t vehicle_item_num = (int16_t)(intptr_t)item->data;
         ITEM *const vehicle_item = Item_Get(vehicle_item_num);
         vehicle_item->hit_points = 0;
+        vehicle_item->status = IS_INVISIBLE;
         return;
 
     default:
