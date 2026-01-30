@@ -6,6 +6,7 @@ typedef enum {
     PHASE_ACTION_CONTINUE,
     PHASE_ACTION_NO_WAIT,
     PHASE_ACTION_END,
+    PHASE_ACTION_END_FAST,
 } PHASE_ACTION;
 
 // Status returned upon every logical frame by the control routine.

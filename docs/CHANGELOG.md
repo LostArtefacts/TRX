@@ -61,6 +61,7 @@
 - fixed Cobras not being counted in level kill count
 - fixed stats dialog retaining friendly status for allies that become enemy types in later levels, causing them to get excluded from kill count
 - fixed targeting hostile ex-allies not working if "Enable ally targeting" option is off
+- fixed `/play` and similar commands fading out instead of running instantly on stats/title screens
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
