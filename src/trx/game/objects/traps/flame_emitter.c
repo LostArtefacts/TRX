@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/effects/flame.h>
@@ -5,25 +6,46 @@
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
+typedef struct {
+    int16_t effect_num;
+} M_PRIV;
+
 typedef void (*FLAME_INIT_FUNC)(EFFECT *const effect, const ITEM *const item);
 
-static void M_KillIfAlive(ITEM *const item)
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
 {
-    if (item->data == nullptr) {
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(
+        priv_root, "fx_num", Effect_GetInOrderNum(p->effect_num));
+}
+
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    if (!g_Config.gameplay.enable_enhanced_saves) {
+        return;
+    }
+    M_PRIV *const p = item->priv;
+    p->effect_num = JSON_ObjectGetInt(priv_root, "fx_num", p->effect_num);
+}
+
+static void M_KillIfAlive(const ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    if (p->effect_num == NO_EFFECT) {
         return;
     }
 
-    const int32_t flame_num = ((int32_t)(intptr_t)item->data) - 1;
-    Effect_Kill(flame_num);
-    item->data = nullptr;
+    Effect_Kill(p->effect_num);
+    p->effect_num = NO_EFFECT;
 
     if (g_TRVersion == 1) {
         Sound_StopEffect(SFX_LOOP_FOR_SMALL_FIRES);
     }
 }
 
-static void M_SpawnIfNeeded(ITEM *const item, const FLAME_INIT_FUNC init_func)
+static int16_t M_Spawn(ITEM *const item, const FLAME_INIT_FUNC init_func)
 {
+    M_PRIV *const p = item->priv;
     const int16_t effect_num = Effect_Create(item->room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
@@ -32,18 +54,25 @@ static void M_SpawnIfNeeded(ITEM *const item, const FLAME_INIT_FUNC init_func)
         effect->counter = 0;
         init_func(effect, item);
     }
-    item->data = (void *)(intptr_t)(effect_num + 1);
+    return effect_num;
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->effect_num = NO_EFFECT;
 }
 
 static void M_ControlCommon(
     const int16_t item_num, const FLAME_INIT_FUNC init_func)
 {
     ITEM *const item = Item_Get(item_num);
-
+    M_PRIV *const p = item->priv;
     if (!Item_IsTriggerActive(item)) {
         M_KillIfAlive(item);
-    } else if (item->data == nullptr) {
-        M_SpawnIfNeeded(item, init_func);
+    } else if (p->effect_num == NO_EFFECT) {
+        p->effect_num = M_Spawn(item, init_func);
     }
 }
 
@@ -103,9 +132,13 @@ static void M_ControlSide(const int16_t item_num)
 
 static void M_SetupCommon(OBJECT *const obj, void (*control_func)(int16_t))
 {
+    obj->initialise_func = M_Initialise;
     obj->control_func = control_func;
     obj->draw_func = nullptr;
     obj->save_flags = true;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
 }
 
 static void M_Setup(OBJECT *const obj)

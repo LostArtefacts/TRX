@@ -328,22 +328,6 @@ static void M_WriteItem(
     M_PopAndSet(ctx, "carried_items");
 
     switch (item->object_id) {
-    case O_FLAME_EMITTER:
-    case O_FLAME_EMITTER_BIG:
-    case O_FLAME_EMITTER_SMALL:
-    case O_FLAME_EMITTER_JET:
-    case O_FLAME_EMITTER_SIDE:
-        if (item->data != nullptr) {
-            const int32_t effect_num =
-                fx_order->id_map[(int32_t)(intptr_t)item->data - 1];
-            // TR1X <4.16, TR2X <1.6
-            M_WriteNum(ctx, "fx_num", effect_num);
-            M_PushObject(ctx);
-            M_WriteNum(ctx, "fx_num", effect_num);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-
     case O_SKIDOO_FAST: {
         if (item->data != nullptr) {
             const SKIDOO_INFO *const data = (SKIDOO_INFO *)item->data;
