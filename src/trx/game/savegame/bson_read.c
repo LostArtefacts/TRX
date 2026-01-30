@@ -772,6 +772,8 @@ static bool M_ReadItem(
                 } else {
                     item->carried_item = carried_item;
                 }
+                M_OPTIONAL(
+                    M_ReadNum(ctx, "spawn_num", &carried_item->spawn_num));
             }
 
             int16_t game_object_id;
@@ -782,7 +784,6 @@ static bool M_ReadItem(
             M_MUST(M_ReadNum(ctx, "y_rot", &carried_item->rot.y));
             M_MUST(M_ReadNum(ctx, "room_num", &carried_item->room_num));
             M_MUST(M_ReadNum(ctx, "fall_speed", &carried_item->fall_speed));
-            M_OPTIONAL(M_ReadNum(ctx, "spawn_num", &carried_item->spawn_num));
             M_MUST(M_ReadNum(ctx, "status", &carried_item->status));
 
             if (g_TRVersion == 1 && ctx->sg_version < VERSION_10
