@@ -344,17 +344,6 @@ static void M_WriteItem(
         }
         break;
 
-    case O_BACON_LARA:
-        if (item->data != nullptr) {
-            const int32_t status = (int32_t)(intptr_t)item->priv;
-            // TR1X <4.16, TR2X <1.6
-            M_WriteNum(ctx, "bl_status", status);
-            M_PushObject(ctx);
-            M_WriteNum(ctx, "status", status);
-            M_PopAndSet(ctx, "data");
-        }
-        break;
-
     case O_SKIDOO_FAST: {
         if (item->data != nullptr) {
             const SKIDOO_INFO *const data = (SKIDOO_INFO *)item->data;

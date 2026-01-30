@@ -812,21 +812,6 @@ static bool M_ReadItem(
     }
 
     switch (item->object_id) {
-    case O_BACON_LARA: {
-        if (g_TRVersion >= 2 || ctx->sg_version >= VERSION_5) {
-            int32_t status;
-            // TR1X <4.16, TR2X <1.6
-            if (M_ReadNum(ctx, "bl_status", &status)) {
-                item->priv = (void *)(intptr_t)status;
-            } else if (M_PushObject(ctx, "data")) {
-                M_MUST(M_ReadNum(ctx, "status", &status));
-                item->priv = (void *)(intptr_t)status;
-                M_MUST(M_Pop(ctx));
-            }
-        }
-        break;
-    }
-
     case O_FLAME_EMITTER:
     case O_FLAME_EMITTER_BIG:
     case O_FLAME_EMITTER_SMALL:
