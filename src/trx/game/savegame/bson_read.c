@@ -865,13 +865,14 @@ static bool M_ReadItem(
         break;
     }
 
-    if (obj->priv_size > 0 && obj->priv_load_func != nullptr
-        && M_HasKey(ctx, "priv")) {
-        M_MUST(M_PushObject(ctx, "priv"));
-        JSON_OBJECT *const priv_root = JSON_ValueAsObject(ctx->current);
-        M_MUST(priv_root != nullptr);
-        obj->priv_load_func(item, priv_root);
-        M_MUST(M_Pop(ctx));
+    if (obj->priv_size > 0 && obj->priv_load_func != nullptr) {
+        if (M_SHOULD(M_PushObject(ctx, "priv"))
+            || M_SHOULD(M_PushObject(ctx, "data"))) {
+            JSON_OBJECT *const priv_root = JSON_ValueAsObject(ctx->current);
+            M_MUST(priv_root != nullptr);
+            obj->priv_load_func(item, priv_root);
+            M_MUST(M_Pop(ctx));
+        }
     }
 
     if (g_TRVersion >= 2) {
