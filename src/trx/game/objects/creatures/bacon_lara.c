@@ -8,16 +8,34 @@
 
 #define M_SMASH_JUMP_FRAME 1
 
+typedef struct {
+    bool status;
+} M_PRIV;
+
 static int32_t m_AnchorX = -1;
 static int32_t m_AnchorZ = -1;
 
+static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+{
+    M_PRIV *const p = item->priv;
+    p->status = JSON_ObjectGetInt(priv_root, "status", p->status);
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+{
+    const M_PRIV *const p = item->priv;
+    JSON_ObjectAppendInt(priv_root, "status", p->status);
+}
+
 static void M_Initialise(const int16_t item_num)
 {
+    const ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
     const OBJECT *const lara_obj = Object_Get(O_LARA);
     OBJECT *const bacon_obj = Object_Get(O_BACON_LARA);
     bacon_obj->anim_idx = lara_obj->anim_idx;
     bacon_obj->frame_base = lara_obj->frame_base;
-    Item_Get(item_num)->priv = nullptr;
+    p->status = false;
 }
 
 static void M_Control(const int16_t item_num)
@@ -27,6 +45,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
     const ITEM *const lara_item = Lara_GetItem();
 
     if (Item_IsTriggerActive(item)) {
@@ -41,7 +60,7 @@ static void M_Control(const int16_t item_num)
         item->hit_points = LARA_MAX_HITPOINTS;
     }
 
-    if (item->priv == nullptr) {
+    if (!p->status) {
         int32_t x = 2 * m_AnchorX - lara_item->pos.x;
         int32_t y = lara_item->pos.y;
         int32_t z = 2 * m_AnchorZ - lara_item->pos.z;
@@ -75,12 +94,12 @@ static void M_Control(const int16_t item_num)
             item->speed = 0;
             item->fall_speed = 0;
             item->gravity = true;
-            item->priv = (void *)-1;
             item->pos.y += 50;
+            p->status = true;
         }
     }
 
-    if (item->priv != nullptr) {
+    if (p->status) {
         Item_Animate(item);
 
         int32_t x = item->pos.x;
@@ -107,7 +126,8 @@ static void M_Control(const int16_t item_num)
 
 static bool M_Draw(const ITEM *const item)
 {
-    if (item->priv != nullptr || item->current_anim_state == LS(LS_DEATH)) {
+    M_PRIV *const p = item->priv;
+    if (p->status || item->current_anim_state == LS(LS_DEATH)) {
         return Object_DrawAnimatingItem(item);
     }
 
@@ -132,6 +152,9 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->draw_func = M_Draw;
     obj->collision_func = Creature_Collision;
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->hit_points = LARA_MAX_HITPOINTS;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = true;
