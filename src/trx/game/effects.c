@@ -84,6 +84,19 @@ int16_t Effect_GetNum(const EFFECT *effect)
     return effect - m_Effects;
 }
 
+int16_t Effect_GetInOrderNum(const int16_t effect_num)
+{
+    int16_t order_num = 0;
+    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_EFFECT;
+         link_num = Effect_Get(link_num)->next_active) {
+        if (link_num == effect_num) {
+            return order_num;
+        }
+        order_num++;
+    }
+    return NO_EFFECT;
+}
+
 int16_t Effect_GetActiveNum(void)
 {
     return m_NextEffectActive;

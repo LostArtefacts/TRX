@@ -813,26 +813,6 @@ static bool M_ReadItem(
     }
 
     switch (item->object_id) {
-    case O_FLAME_EMITTER:
-    case O_FLAME_EMITTER_BIG:
-    case O_FLAME_EMITTER_SMALL:
-    case O_FLAME_EMITTER_JET:
-    case O_FLAME_EMITTER_SIDE: {
-        if ((g_TRVersion >= 2 || ctx->sg_version >= VERSION_3)
-            && g_Config.gameplay.enable_enhanced_saves) {
-            int32_t effect_num = NO_EFFECT;
-            // TR1X <4.16, TR2X <1.6
-            if (M_ReadNum(ctx, "fx_num", &effect_num)) {
-                item->data = (void *)(intptr_t)(effect_num + 1);
-            } else if (M_PushObject(ctx, "data")) {
-                M_MUST(M_ReadNum(ctx, "fx_num", &effect_num));
-                item->data = (void *)(intptr_t)(effect_num + 1);
-                M_MUST(M_Pop(ctx));
-            }
-        }
-        break;
-    }
-
     case O_SKIDOO_FAST: {
         M_MUST(M_PushObject(ctx, "data"));
         SKIDOO_INFO *const data = item->data;
