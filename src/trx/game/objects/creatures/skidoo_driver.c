@@ -43,6 +43,10 @@ static void M_KillDriver(ITEM *const driver_item)
 
 static void M_MakeMountable(ITEM *const skidoo_item)
 {
+    if (skidoo_item->status == IS_INVISIBLE) {
+        return;
+    }
+
     const int32_t skidoo_item_num = Item_GetIndex(skidoo_item);
     LOT_DisableBaddieAI(skidoo_item_num);
     skidoo_item->object_id = O_SKIDOO_FAST;
@@ -223,7 +227,9 @@ static void M_Control(const int16_t driver_item_num)
         Sound_Effect(SFX_SKIDOO_IDLE, &skidoo_item->pos, SPM_NORMAL);
     } else {
         driver_data->head_rotation = driver_data->head_rotation == 1 ? 2 : 1;
-        Skidoo_DoSnowEffect(skidoo_item);
+        if (skidoo_item->status != IS_INVISIBLE) {
+            Skidoo_DoSnowEffect(skidoo_item);
+        }
 
         const int32_t pitch_delta =
             (SKIDOO_MAX_SPEED - skidoo_item->speed) * 100;
