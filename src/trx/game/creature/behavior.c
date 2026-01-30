@@ -86,7 +86,8 @@ void Creature_Hurt(ITEM *const item, const int32_t damage)
 
 bool Creature_IsHostile(const ITEM *const item)
 {
-    if (!Object_IsType(item->object_id, g_CreatureObjects)) {
+    if (item->object_id != O_SKIDOO_ARMED
+        && !Object_IsType(item->object_id, g_CreatureObjects)) {
         return false;
     }
 
