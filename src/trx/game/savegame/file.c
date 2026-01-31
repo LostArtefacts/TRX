@@ -14,9 +14,9 @@
 #include <zconf.h>
 #include <zlib.h>
 
-#define M_MAGIC_TR1X MKTAG('T', '1', 'M', 'B')
-#define M_MAGIC_TR2X MKTAG('T', '2', 'X', 'B')
-#define M_MAGIC_TRX MKTAG('T', 'R', 'X', 'S') // TODO: use this after TRX 1.0
+#define M_MAGIC_TR1X MKTAG('T', '1', 'M', 'B') // TOOD: remove me after TRX 1.5
+#define M_MAGIC_TR2X MKTAG('T', '2', 'X', 'B') // TOOD: remove me after TRX 1.5
+#define M_MAGIC_TRX MKTAG('T', 'R', 'X', 'S')
 
 #define M_MUST(x)                                                              \
     if (!(x)) {                                                                \
@@ -91,7 +91,7 @@ static void M_SaveRaw(
 
     const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
     const SAVEGAME_BSON_HEADER header = {
-        .magic = g_TRVersion == 1 ? M_MAGIC_TR1X : M_MAGIC_TR2X,
+        .magic = M_MAGIC_TRX,
         .initial_version = Savegame_GetInitialVersion(),
         .version = SG_CURRENT_VERSION,
         .compressed_size = compressed_size,
