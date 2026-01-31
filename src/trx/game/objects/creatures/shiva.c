@@ -5,6 +5,8 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
@@ -150,17 +152,16 @@ static void M_Damage(
     }
 }
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->effect_mesh =
-        JSON_ObjectGetInt(priv_root, "effect_mesh", p->effect_mesh);
+    SG_SHOULD(SG_READ_VALUE(io, "effect_mesh", &p->effect_mesh));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_ObjectAppendInt(priv_root, "effect_mesh", p->effect_mesh);
+    SGW_WRITE_VALUE(io, "effect_mesh", p->effect_mesh);
 }
 
 static void M_Initialise(const int16_t item_num)

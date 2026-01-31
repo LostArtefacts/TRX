@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/json.h>
+#include <trx/log.h>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -70,3 +71,18 @@ bool SG_ReadIO_ReadValueDirect(SG_READ_IO *io, SG_READ_TYPE type, void *target);
             uint32_t: SG_TYPE_U32,                                             \
             double: SG_TYPE_DOUBLE),                                           \
         (void *)(target_ptr))
+
+#define SG_SHOULD(x) ((x) ? 1 : (LOG_WARNING("%s", SG_ReadIO_GetError(io)), 0))
+#define SG_OPTIONAL(x) (x)
+#define SG_MUST(x)                                                             \
+    if (!(x)) {                                                                \
+        goto fail;                                                             \
+    }
+#define SG_FAIL() goto fail;
+#define SG_FINISH()                                                            \
+    do {                                                                       \
+    success:                                                                   \
+        return true;                                                           \
+    fail:                                                                      \
+        return false;                                                          \
+    } while (0);

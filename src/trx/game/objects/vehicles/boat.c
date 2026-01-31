@@ -11,6 +11,8 @@
 #include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/savegame/legacy_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
@@ -67,31 +69,28 @@ typedef struct {
     int32_t pitch;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->boat_turn = JSON_ObjectGetInt(priv_root, "boat_turn", p->boat_turn);
-    p->left_fallspeed =
-        JSON_ObjectGetInt(priv_root, "left_fallspeed", p->left_fallspeed);
-    p->right_fallspeed =
-        JSON_ObjectGetInt(priv_root, "right_fallspeed", p->right_fallspeed);
-    p->tilt_angle = JSON_ObjectGetInt(priv_root, "tilt_angle", p->tilt_angle);
-    p->extra_rotation =
-        JSON_ObjectGetInt(priv_root, "extra_rotation", p->extra_rotation);
-    p->water = JSON_ObjectGetInt(priv_root, "water", p->water);
-    p->pitch = JSON_ObjectGetInt(priv_root, "pitch", p->pitch);
+    SG_SHOULD(SG_READ_VALUE(io, "boat_turn", &p->boat_turn));
+    SG_SHOULD(SG_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
+    SG_SHOULD(SG_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
+    SG_SHOULD(SG_READ_VALUE(io, "tilt_angle", &p->tilt_angle));
+    SG_SHOULD(SG_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
+    SG_SHOULD(SG_READ_VALUE(io, "water", &p->water));
+    SG_SHOULD(SG_READ_VALUE(io, "pitch", &p->pitch));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_ObjectAppendInt(priv_root, "boat_turn", p->boat_turn);
-    JSON_ObjectAppendInt(priv_root, "left_fallspeed", p->left_fallspeed);
-    JSON_ObjectAppendInt(priv_root, "right_fallspeed", p->right_fallspeed);
-    JSON_ObjectAppendInt(priv_root, "tilt_angle", p->tilt_angle);
-    JSON_ObjectAppendInt(priv_root, "extra_rotation", p->extra_rotation);
-    JSON_ObjectAppendInt(priv_root, "water", p->water);
-    JSON_ObjectAppendInt(priv_root, "pitch", p->pitch);
+    SGW_WRITE_VALUE(io, "boat_turn", p->boat_turn);
+    SGW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
+    SGW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
+    SGW_WRITE_VALUE(io, "tilt_angle", p->tilt_angle);
+    SGW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
+    SGW_WRITE_VALUE(io, "water", p->water);
+    SGW_WRITE_VALUE(io, "pitch", p->pitch);
 }
 
 static void M_LoadLegacyPriv(

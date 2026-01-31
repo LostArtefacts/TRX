@@ -4,6 +4,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/utils.h>
@@ -37,18 +39,18 @@ typedef struct {
     bool spawn_checked;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->knockdown_timer = JSON_ObjectGetInt(priv_root, "knockdown_timer", 0);
-    p->spawn_checked = JSON_ObjectGetBool(priv_root, "spawn_checked", false);
+    SG_SHOULD(SG_READ_VALUE(io, "knockdown_timer", &p->knockdown_timer));
+    SG_SHOULD(SG_READ_VALUE(io, "spawn_checked", &p->spawn_checked));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_ObjectAppendInt(priv_root, "knockdown_timer", p->knockdown_timer);
-    JSON_ObjectAppendBool(priv_root, "spawn_checked", p->spawn_checked);
+    SGW_WRITE_VALUE(io, "knockdown_timer", p->knockdown_timer);
+    SGW_WRITE_VALUE(io, "spawn_checked", p->spawn_checked);
 }
 
 static bool M_RemoveNormalWinston(void)

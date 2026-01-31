@@ -21,20 +21,11 @@
 #include <trx/game/weather_fx.h>
 #include <trx/version.h>
 
-#define M_SHOULD(x) ((x) ? 1 : (LOG_WARNING("%s", SG_ReadIO_GetError(io)), 0))
-#define M_OPTIONAL(x) (x)
-#define M_MUST(x)                                                              \
-    if (!(x)) {                                                                \
-        goto fail;                                                             \
-    }
-#define M_FAIL() goto fail;
-#define M_FINISH()                                                             \
-    do {                                                                       \
-    success:                                                                   \
-        return true;                                                           \
-    fail:                                                                      \
-        return false;                                                          \
-    } while (0);
+#define M_SHOULD SG_SHOULD
+#define M_OPTIONAL SG_OPTIONAL
+#define M_MUST SG_MUST
+#define M_FAIL SG_FAIL
+#define M_FINISH SG_FINISH
 
 static bool M_ReadXYZ32(
     SG_READ_IO *const io, const char *const key, XYZ_32 *const target)
@@ -452,8 +443,7 @@ static bool M_ReadItem(SG_READ_IO *const io, const int16_t item_num)
     if (obj->priv_size > 0 && obj->priv_load_func != nullptr) {
         // "priv" introduced in TRX 1.2
         if (M_SHOULD(SG_PUSH(io, "priv")) || M_SHOULD(SG_PUSH(io, "data"))) {
-            JSON_OBJECT *const priv_root = SG_ReadIO_GetCurrentObject(io);
-            obj->priv_load_func(item, priv_root);
+            obj->priv_load_func(item, io);
             M_MUST(SG_POP(io));
         }
     }

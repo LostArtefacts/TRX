@@ -1,6 +1,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/sparks.h>
 
 typedef struct {
@@ -51,16 +53,16 @@ static void M_Control(const int16_t item_num)
     Output_AddDynamicLightRGB(item->pos, 16, (RGB_888) { rg, rg, b });
 }
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->life = JSON_ObjectGetInt(priv_root, "life", 0);
+    SG_SHOULD(SG_READ_VALUE(io, "life", &p->life));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_ObjectAppendInt(priv_root, "life", p->life);
+    SGW_WRITE_VALUE(io, "life", p->life);
 }
 
 static void M_Setup(OBJECT *const obj)

@@ -3,6 +3,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/savegame/legacy_io.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
@@ -29,26 +31,25 @@ typedef struct {
     GAME_VECTOR linked;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    const JSON_OBJECT *const linked_root =
-        JSON_ObjectGetObject(priv_root, "linked");
-    if (linked_root != nullptr) {
-        p->linked.pos.x = JSON_ObjectGetInt(linked_root, "x", p->linked.pos.x);
-        p->linked.pos.y = JSON_ObjectGetInt(linked_root, "y", p->linked.pos.y);
-        p->linked.pos.z = JSON_ObjectGetInt(linked_root, "z", p->linked.pos.z);
+    if (SG_SHOULD(SG_PUSH(io, "linked"))) {
+        SG_SHOULD(SG_READ_VALUE(io, "x", &p->linked.pos.x));
+        SG_SHOULD(SG_READ_VALUE(io, "y", &p->linked.pos.y));
+        SG_SHOULD(SG_READ_VALUE(io, "z", &p->linked.pos.z));
+        SG_SHOULD(SG_POP(io));
     }
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_OBJECT *const linked_root = JSON_ObjectNew();
-    JSON_ObjectAppendInt(linked_root, "x", p->linked.pos.x);
-    JSON_ObjectAppendInt(linked_root, "y", p->linked.pos.y);
-    JSON_ObjectAppendInt(linked_root, "z", p->linked.pos.z);
-    JSON_ObjectAppendObject(priv_root, "linked", linked_root);
+    SGW_PUSH_OBJECT(io);
+    SGW_WRITE_VALUE(io, "x", p->linked.pos.x);
+    SGW_WRITE_VALUE(io, "y", p->linked.pos.y);
+    SGW_WRITE_VALUE(io, "z", p->linked.pos.z);
+    SGW_POP_AND_SET(io, "linked");
 }
 
 static void M_LoadLegacyPriv(

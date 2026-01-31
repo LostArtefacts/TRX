@@ -1,33 +1,31 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/savegame/legacy_io.h>
 
-static void M_PrivLoad(ITEM *const item, const JSON_OBJECT *const root)
+static void M_PrivLoad(ITEM *const item, SG_READ_IO *const io)
 {
     SKIDOO_INFO *const p = item->priv;
-    p->track_mesh = JSON_ObjectGetInt(root, "track_mesh", p->track_mesh);
-    p->skidoo_turn = JSON_ObjectGetInt(root, "skidoo_turn", p->skidoo_turn);
-    p->left_fallspeed =
-        JSON_ObjectGetInt(root, "left_fallspeed", p->left_fallspeed);
-    p->right_fallspeed =
-        JSON_ObjectGetInt(root, "right_fallspeed", p->right_fallspeed);
-    p->momentum_angle =
-        JSON_ObjectGetInt(root, "momentum_angle", p->momentum_angle);
-    p->extra_rotation =
-        JSON_ObjectGetInt(root, "extra_rotation", p->extra_rotation);
-    p->pitch = JSON_ObjectGetInt(root, "pitch", p->pitch);
+    SG_SHOULD(SG_READ_VALUE(io, "track_mesh", &p->track_mesh));
+    SG_SHOULD(SG_READ_VALUE(io, "skidoo_turn", &p->skidoo_turn));
+    SG_SHOULD(SG_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
+    SG_SHOULD(SG_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
+    SG_SHOULD(SG_READ_VALUE(io, "momentum_angle", &p->momentum_angle));
+    SG_SHOULD(SG_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
+    SG_SHOULD(SG_READ_VALUE(io, "pitch", &p->pitch));
 }
 
-static void M_PrivSave(const ITEM *const item, JSON_OBJECT *const root)
+static void M_PrivSave(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const SKIDOO_INFO *const p = item->priv;
-    JSON_ObjectAppendInt(root, "track_mesh", p->track_mesh);
-    JSON_ObjectAppendInt(root, "skidoo_turn", p->skidoo_turn);
-    JSON_ObjectAppendInt(root, "left_fallspeed", p->left_fallspeed);
-    JSON_ObjectAppendInt(root, "right_fallspeed", p->right_fallspeed);
-    JSON_ObjectAppendInt(root, "momentum_angle", p->momentum_angle);
-    JSON_ObjectAppendInt(root, "extra_rotation", p->extra_rotation);
-    JSON_ObjectAppendInt(root, "pitch", p->pitch);
+    SGW_WRITE_VALUE(io, "track_mesh", p->track_mesh);
+    SGW_WRITE_VALUE(io, "skidoo_turn", p->skidoo_turn);
+    SGW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
+    SGW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
+    SGW_WRITE_VALUE(io, "momentum_angle", p->momentum_angle);
+    SGW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
+    SGW_WRITE_VALUE(io, "pitch", p->pitch);
 }
 
 static void M_PrivLegacyLoad(

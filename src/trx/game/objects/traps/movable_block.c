@@ -9,6 +9,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/savegame/legacy_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
@@ -135,53 +137,45 @@ static GAME_VECTOR M_GetLinked(const ITEM *const item)
     return p->linked;
 }
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->gravity_frames = (uint16_t)JSON_ObjectGetInt(
-        priv_root, "gravity_frames", p->gravity_frames);
-    p->is_push_pull =
-        JSON_ObjectGetBool(priv_root, "is_push_pull", p->is_push_pull);
-    p->is_forced_moving =
-        JSON_ObjectGetBool(priv_root, "is_forced_moving", p->is_forced_moving);
+    SG_SHOULD(SG_READ_VALUE(io, "gravity_frames", &p->gravity_frames));
+    SG_SHOULD(SG_READ_VALUE(io, "is_push_pull", &p->is_push_pull));
+    SG_SHOULD(SG_READ_VALUE(io, "is_forced_moving", &p->is_forced_moving));
 
-    const JSON_OBJECT *const linked_root =
-        JSON_ObjectGetObject(priv_root, "linked");
-    if (linked_root != nullptr) {
-        p->linked.pos.x = JSON_ObjectGetInt(linked_root, "x", p->linked.pos.x);
-        p->linked.pos.y = JSON_ObjectGetInt(linked_root, "y", p->linked.pos.y);
-        p->linked.pos.z = JSON_ObjectGetInt(linked_root, "z", p->linked.pos.z);
+    if (SG_SHOULD(SG_PUSH(io, "linked"))) {
+        SG_SHOULD(SG_READ_VALUE(io, "x", &p->linked.pos.x));
+        SG_SHOULD(SG_READ_VALUE(io, "y", &p->linked.pos.y));
+        SG_SHOULD(SG_READ_VALUE(io, "z", &p->linked.pos.z));
+        SG_SHOULD(SG_POP(io));
     }
 
     M_EXTRA_ROTATIONS *const data = item->data;
-    data->counter_rot[0] =
-        JSON_ObjectGetInt(priv_root, "counter_rot_0", data->counter_rot[0]);
-    data->counter_rot[1] =
-        JSON_ObjectGetInt(priv_root, "counter_rot_1", data->counter_rot[1]);
-    data->counter_rot[2] =
-        JSON_ObjectGetInt(priv_root, "counter_rot_2", data->counter_rot[2]);
-    data->original_rot =
-        JSON_ObjectGetInt(priv_root, "original_rot", data->original_rot);
+    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_0", &data->counter_rot[0]));
+    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_1", &data->counter_rot[1]));
+    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_2", &data->counter_rot[2]));
+    SG_SHOULD(SG_READ_VALUE(io, "original_rot", &data->original_rot));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_ObjectAppendInt(priv_root, "gravity_frames", p->gravity_frames);
-    JSON_ObjectAppendBool(priv_root, "is_push_pull", p->is_push_pull);
-    JSON_ObjectAppendBool(priv_root, "is_forced_moving", p->is_forced_moving);
+    SGW_WRITE_VALUE(io, "gravity_frames", p->gravity_frames);
+    SGW_WRITE_VALUE(io, "is_push_pull", p->is_push_pull);
+    SGW_WRITE_VALUE(io, "is_forced_moving", p->is_forced_moving);
 
-    JSON_OBJECT *const linked_root = JSON_ObjectNew();
-    JSON_ObjectAppendInt(linked_root, "x", p->linked.pos.x);
-    JSON_ObjectAppendInt(linked_root, "y", p->linked.pos.y);
-    JSON_ObjectAppendInt(linked_root, "z", p->linked.pos.z);
-    JSON_ObjectAppendObject(priv_root, "linked", linked_root);
+    SGW_PUSH_OBJECT(io);
+    SGW_WRITE_VALUE(io, "x", p->linked.pos.x);
+    SGW_WRITE_VALUE(io, "y", p->linked.pos.y);
+    SGW_WRITE_VALUE(io, "z", p->linked.pos.z);
+    SGW_POP_AND_SET(io, "linked");
 
     const M_EXTRA_ROTATIONS *const data = item->data;
-    JSON_ObjectAppendInt(priv_root, "counter_rot_0", data->counter_rot[0]);
-    JSON_ObjectAppendInt(priv_root, "counter_rot_1", data->counter_rot[1]);
-    JSON_ObjectAppendInt(priv_root, "counter_rot_2", data->counter_rot[2]);
-    JSON_ObjectAppendInt(priv_root, "original_rot", data->original_rot);
+    SGW_WRITE_VALUE(io, "counter_rot_0", data->counter_rot[0]);
+    SGW_WRITE_VALUE(io, "counter_rot_1", data->counter_rot[1]);
+    SGW_WRITE_VALUE(io, "counter_rot_2", data->counter_rot[2]);
+    SGW_WRITE_VALUE(io, "original_rot", data->original_rot);
 }
 
 static void M_LoadLegacyPriv(

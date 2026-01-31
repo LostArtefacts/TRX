@@ -11,6 +11,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
@@ -83,43 +85,40 @@ typedef struct {
     int32_t front_rot_x_idx[2];
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->quad.velocity = JSON_ObjectGetInt(priv_root, "velocity", 0);
-    p->quad.front_rot = JSON_ObjectGetInt(priv_root, "front_rot", 0);
-    p->quad.rear_rot = JSON_ObjectGetInt(priv_root, "rear_rot", 0);
-    p->quad.revs = JSON_ObjectGetInt(priv_root, "revs", 0);
-    p->quad.engine_revs = JSON_ObjectGetInt(priv_root, "engine_revs", 0);
-    p->quad.track_mesh = JSON_ObjectGetInt(priv_root, "track_mesh", 0);
-    p->quad.skidoo_turn = JSON_ObjectGetInt(priv_root, "skidoo_turn", 0);
-    p->quad.left_fall_speed =
-        JSON_ObjectGetInt(priv_root, "left_fall_speed", 0);
-    p->quad.right_fall_speed =
-        JSON_ObjectGetInt(priv_root, "right_fall_speed", 0);
-    p->quad.momentum_angle = JSON_ObjectGetInt(priv_root, "momentum_angle", 0);
-    p->quad.extra_rotation = JSON_ObjectGetInt(priv_root, "extra_rotation", 0);
-    p->quad.pitch = JSON_ObjectGetInt(priv_root, "pitch", 0);
-    p->quad.flags = (uint8_t)JSON_ObjectGetInt(priv_root, "flags", 0);
+    SG_SHOULD(SG_READ_VALUE(io, "velocity", &p->quad.velocity));
+    SG_SHOULD(SG_READ_VALUE(io, "front_rot", &p->quad.front_rot));
+    SG_SHOULD(SG_READ_VALUE(io, "rear_rot", &p->quad.rear_rot));
+    SG_SHOULD(SG_READ_VALUE(io, "revs", &p->quad.revs));
+    SG_SHOULD(SG_READ_VALUE(io, "engine_revs", &p->quad.engine_revs));
+    SG_SHOULD(SG_READ_VALUE(io, "track_mesh", &p->quad.track_mesh));
+    SG_SHOULD(SG_READ_VALUE(io, "skidoo_turn", &p->quad.skidoo_turn));
+    SG_SHOULD(SG_READ_VALUE(io, "left_fall_speed", &p->quad.left_fall_speed));
+    SG_SHOULD(SG_READ_VALUE(io, "right_fall_speed", &p->quad.right_fall_speed));
+    SG_SHOULD(SG_READ_VALUE(io, "momentum_angle", &p->quad.momentum_angle));
+    SG_SHOULD(SG_READ_VALUE(io, "extra_rotation", &p->quad.extra_rotation));
+    SG_SHOULD(SG_READ_VALUE(io, "pitch", &p->quad.pitch));
+    SG_SHOULD(SG_READ_VALUE(io, "flags", &p->quad.flags));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_ObjectAppendInt(priv_root, "velocity", p->quad.velocity);
-    JSON_ObjectAppendInt(priv_root, "front_rot", p->quad.front_rot);
-    JSON_ObjectAppendInt(priv_root, "rear_rot", p->quad.rear_rot);
-    JSON_ObjectAppendInt(priv_root, "revs", p->quad.revs);
-    JSON_ObjectAppendInt(priv_root, "engine_revs", p->quad.engine_revs);
-    JSON_ObjectAppendInt(priv_root, "track_mesh", p->quad.track_mesh);
-    JSON_ObjectAppendInt(priv_root, "skidoo_turn", p->quad.skidoo_turn);
-    JSON_ObjectAppendInt(priv_root, "left_fall_speed", p->quad.left_fall_speed);
-    JSON_ObjectAppendInt(
-        priv_root, "right_fall_speed", p->quad.right_fall_speed);
-    JSON_ObjectAppendInt(priv_root, "momentum_angle", p->quad.momentum_angle);
-    JSON_ObjectAppendInt(priv_root, "extra_rotation", p->quad.extra_rotation);
-    JSON_ObjectAppendInt(priv_root, "pitch", p->quad.pitch);
-    JSON_ObjectAppendInt(priv_root, "flags", p->quad.flags);
+    SGW_WRITE_VALUE(io, "velocity", p->quad.velocity);
+    SGW_WRITE_VALUE(io, "front_rot", p->quad.front_rot);
+    SGW_WRITE_VALUE(io, "rear_rot", p->quad.rear_rot);
+    SGW_WRITE_VALUE(io, "revs", p->quad.revs);
+    SGW_WRITE_VALUE(io, "engine_revs", p->quad.engine_revs);
+    SGW_WRITE_VALUE(io, "track_mesh", p->quad.track_mesh);
+    SGW_WRITE_VALUE(io, "skidoo_turn", p->quad.skidoo_turn);
+    SGW_WRITE_VALUE(io, "left_fall_speed", p->quad.left_fall_speed);
+    SGW_WRITE_VALUE(io, "right_fall_speed", p->quad.right_fall_speed);
+    SGW_WRITE_VALUE(io, "momentum_angle", p->quad.momentum_angle);
+    SGW_WRITE_VALUE(io, "extra_rotation", p->quad.extra_rotation);
+    SGW_WRITE_VALUE(io, "pitch", p->quad.pitch);
+    SGW_WRITE_VALUE(io, "flags", p->quad.flags);
 }
 
 static int32_t M_CountExtraRotationValues(const XYZ_BOOL flags)
