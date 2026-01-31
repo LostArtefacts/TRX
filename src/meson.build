@@ -287,6 +287,7 @@ common_sources = [
   'trx/game/lara/common.c',
   'trx/game/lara/control.c',
   'trx/game/lara/draw.c',
+  'trx/game/lara/electric.c',
   'trx/game/lara/flare.c',
   'trx/game/lara/hair.c',
   'trx/game/lara/look.c',

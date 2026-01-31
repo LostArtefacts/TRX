@@ -6,6 +6,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/general/keyhole.h>
 #include <trx/game/objects/general/pickup.h>
@@ -367,7 +368,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     const bool is_heavy = item->object_id != O_LARA;
     if (!is_heavy) {
         if (sector->is_death_sector && M_TestLava(item)) {
-            Lara_TouchLava();
+            Lara_TouchDeathSector(Level_GetDeathTile());
         }
 
         const LADDER_DIRECTION direction = 1 << Math_GetDirection(item->rot.y);

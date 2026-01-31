@@ -177,6 +177,22 @@ static void M_LoadSettings(
     }
 
     {
+        const char *const tmp_s =
+            JSON_ObjectGetString(obj, "death_tile", JSON_INVALID_STRING);
+        if (tmp_s != JSON_INVALID_STRING) {
+            const int32_t value =
+                EnumMap_Get(ENUM_MAP_NAME(GF_DEATH_TILE), tmp_s, -1);
+            if (value < 0) {
+                Shell_ExitSystemFmt(
+                    "%s: Invalid death_tile value '%s'", ctx->script_path,
+                    tmp_s);
+            }
+            settings->death_tile.is_present = true;
+            settings->death_tile.value = value;
+        }
+    }
+
+    {
         const char *tmp_s =
             JSON_ObjectGetString(obj, "sfx_path", JSON_INVALID_STRING);
         if (tmp_s != JSON_INVALID_STRING) {

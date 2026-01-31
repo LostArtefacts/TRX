@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
+#include <trx/game/level/settings.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/effects/flame.h>
 #include <trx/game/random.h>
@@ -185,7 +186,7 @@ void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
     CLAMPG(lara_info->hit_frame, 34);
 }
 
-void Lara_TouchLava(void)
+void Lara_TouchDeathSector(const GF_DEATH_TILE death_tile)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -210,6 +211,23 @@ void Lara_TouchLava(void)
     lara_item->hit_points = -1;
     lara_item->hit_status = true;
 
+    switch (death_tile) {
+    case GF_DEATH_TILE_RAPIDS:
+        Lara_RapidsDrown();
+        break;
+    case GF_DEATH_TILE_ELECTRIC:
+        lara_info->electrocuted = true;
+        break;
+    case GF_DEATH_TILE_LAVA:
+        Lara_TouchLava();
+        break;
+    }
+}
+
+void Lara_TouchLava(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->water_status != LWS_ABOVE_WATER) {
         return;
     }
@@ -224,6 +242,22 @@ void Lara_TouchLava(void)
             effect->counter = -1 - 24 * Random_GetControl() / 0x7FFF;
         }
     }
+}
+
+void Lara_RapidsDrown(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    Lara_SwitchToExtraState(LS_EXTRA_RAPIDS_DROWN);
+
+    lara_item->gravity = false;
+    lara_item->hit_points = -1;
+    lara_item->hit_status = true;
+    lara_item->fall_speed = 0;
+    lara_item->speed = 0;
+
+    lara_info->gun_type = LGT_UNARMED;
 }
 
 int16_t Lara_FloorFront(
@@ -372,6 +406,8 @@ void Lara_CatchFire(void)
 void Lara_Extinguish(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_info->electrocuted = false;
+
     if (!lara_info->burn) {
         return;
     }

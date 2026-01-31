@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/collision.h>
+#include <trx/game/game_flow/enum.h>
 #include <trx/game/lara/enum.h>
 
 void Lara_GetJointAbsPosition(XYZ_32 *vec, LARA_MESH joint);
@@ -8,6 +9,8 @@ void Lara_RefuseInteraction(void);
 void Lara_TakeHit(ITEM *lara_item, int32_t dx, int32_t dz);
 void Lara_Extinguish(void);
 void Lara_TouchLava(void);
+void Lara_TouchDeathSector(GF_DEATH_TILE death_tile);
+void Lara_RapidsDrown(void);
 
 int16_t Lara_FloorFront(const ITEM *item, int16_t ang, int32_t dist);
 int16_t Lara_CeilingFront(const ITEM *item, int16_t ang, int32_t dist);

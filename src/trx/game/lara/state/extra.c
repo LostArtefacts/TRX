@@ -1,12 +1,16 @@
 #include <trx/game/camera.h>
+#include <trx/game/collision.h>
 #include <trx/game/game.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/effects/twinkle.h>
+#include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sparks/spawners.h>
 #include <trx/game/stats.h>
 #include <trx/game/viewport.h>
 
@@ -196,6 +200,28 @@ static void M_BeastKill(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_RapidsDrown(ITEM *const item, COLL_INFO *const coll)
+{
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
+        LARA_HEIGHT);
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    item->pos.y =
+        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z) + 384;
+
+    item->rot.y += 1024;
+
+    const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
+    if ((time4 & 3) == 0) {
+        Sparks_TriggerWaterfallMist(
+            item->pos.x, item->pos.y, item->pos.z,
+            Random_GetControl() & 0x0FFF);
+    }
+}
+
 static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_PULLED)) {
@@ -278,4 +304,5 @@ REGISTER_LARA_EXTRA(LS_EXTRA_START_ANIM,     M_StartAnim)
 REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE,    M_StartHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_END_HOUSE,      M_EndHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_SHIVA_KILL,     M_BeastKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_RAPIDS_DROWN,   M_RapidsDrown)
 // clang-format on

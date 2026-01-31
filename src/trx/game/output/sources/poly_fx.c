@@ -498,7 +498,7 @@ void OutputSource_PolyFX_StageTriExtUV(
 
 void OutputSource_PolyFX_StageLineSegment(
     const XYZ_32 from, const RGBA_8888 from_color, const XYZ_32 to,
-    const RGBA_8888 to_color, const float half_width)
+    const RGBA_8888 to_color, const float half_width, const DRAW_TYPE draw_type)
 {
     const int64_t zv_mid = (M_GetViewDepth(from) + M_GetViewDepth(to)) / 2;
     const int64_t near_z = Output_GetNearZ();
@@ -598,7 +598,7 @@ void OutputSource_PolyFX_StageLineSegment(
         };
         OutputSource_PolyFX_StageQuadExt(
             -1, quad0, disp, colors,
-            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND);
+            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, draw_type);
     }
 
     {
@@ -626,7 +626,7 @@ void OutputSource_PolyFX_StageLineSegment(
         };
         OutputSource_PolyFX_StageQuadExt(
             -1, quad1, disp, colors,
-            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND);
+            VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE, draw_type);
     }
 }
 

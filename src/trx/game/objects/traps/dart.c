@@ -115,7 +115,8 @@ static bool M_DrawPoisonDart(const ITEM *const item)
         .z = origin.z + ((size * Math_Cos(rot.y)) >> W2V_SHIFT),
     };
     const RGBA_8888 color = { 0x78, 0x3C, 0x14, 0xFF };
-    OutputSource_PolyFX_StageLineSegment(origin, color, to, color, 2.0f);
+    OutputSource_PolyFX_StageLineSegment(
+        origin, color, to, color, 2.0f, DRAW_BLEND);
     return true;
 }
 
