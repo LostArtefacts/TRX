@@ -1,45 +1,37 @@
 #pragma once
 
 #include <trx/filesystem.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/savegame/types.h>
 #include <trx/json.h>
 
 #include <stdint.h>
 
 // Start of reader functions ===================================================
-typedef struct SAVEGAME_BSON_READ_CONTEXT SAVEGAME_BSON_READ_CONTEXT;
-SAVEGAME_BSON_READ_CONTEXT *Savegame_BSON_StartRead(
-    JSON_VALUE *root, uint16_t version);
-void Savegame_BSON_FinishRead(SAVEGAME_BSON_READ_CONTEXT *ctx, bool success);
-
-bool Savegame_BSON_LoadLara(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadInventory(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadFlipmaps(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadCameras(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadItems(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadEffects(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadFlares(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadMusic(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadResumeInfoList(SAVEGAME_BSON_READ_CONTEXT *ctx);
-bool Savegame_BSON_LoadMisc(SAVEGAME_BSON_READ_CONTEXT *ctx);
+bool Savegame_BSON_LoadLara(SG_READ_IO *io);
+bool Savegame_BSON_LoadInventory(SG_READ_IO *io);
+bool Savegame_BSON_LoadFlipmaps(SG_READ_IO *io);
+bool Savegame_BSON_LoadCameras(SG_READ_IO *io);
+bool Savegame_BSON_LoadItems(SG_READ_IO *io);
+bool Savegame_BSON_LoadEffects(SG_READ_IO *io);
+bool Savegame_BSON_LoadFlares(SG_READ_IO *io);
+bool Savegame_BSON_LoadMusic(SG_READ_IO *io);
+bool Savegame_BSON_LoadResumeInfoList(SG_READ_IO *io);
+bool Savegame_BSON_LoadMisc(SG_READ_IO *io);
 // End of reader functions =====================================================
 
 // Start of writer functions ===================================================
-typedef struct SAVEGAME_BSON_WRITE_CONTEXT SAVEGAME_BSON_WRITE_CONTEXT;
-SAVEGAME_BSON_WRITE_CONTEXT *Savegame_BSON_StartWrite(void);
-void Savegame_BSON_FinishWrite(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-JSON_VALUE *Savegame_BSON_GetWriteRoot(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-
-void Savegame_BSON_DumpFlares(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpInventory(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpFlipmaps(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpCameras(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpMusic(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpItems(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpResumeInfoList(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
-void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *ctx);
+void Savegame_BSON_DumpFlares(SG_WRITE_IO *io);
+void Savegame_BSON_DumpEffects(SG_WRITE_IO *io);
+void Savegame_BSON_DumpInventory(SG_WRITE_IO *io);
+void Savegame_BSON_DumpFlipmaps(SG_WRITE_IO *io);
+void Savegame_BSON_DumpCameras(SG_WRITE_IO *io);
+void Savegame_BSON_DumpMusic(SG_WRITE_IO *io);
+void Savegame_BSON_DumpItems(SG_WRITE_IO *io);
+void Savegame_BSON_DumpLara(SG_WRITE_IO *io);
+void Savegame_BSON_DumpResumeInfoList(SG_WRITE_IO *io);
+void Savegame_BSON_DumpMisc(SG_WRITE_IO *io);
 // End of writer functions =====================================================
 
 #pragma pack(push, 1)

@@ -557,11 +557,6 @@ static void M_ReadItem(M_CONTEXT *const ctx, const int16_t item_num)
         obj->priv_legacy_load_func(item, &io);
     }
 
-    switch (item->object_id) {
-    default:
-        break;
-    }
-
     if (g_TRVersion == 1) {
         Carrier_TestLegacyDrops(item_num);
     } else {
