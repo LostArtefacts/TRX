@@ -139,24 +139,23 @@ static bool M_LoadFromFile(MYFILE *const fp)
 
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
-    SAVEGAME_BSON_READ_CONTEXT *const ctx =
-        Savegame_BSON_StartRead(root, sg_version);
+    SG_READ_IO *const io = SG_ReadIO_Create(root, sg_version);
 
-    M_MUST(Savegame_BSON_LoadMisc(ctx));
-    M_MUST(Savegame_BSON_LoadResumeInfoList(ctx));
-    M_MUST(Savegame_BSON_LoadInventory(ctx));
-    M_MUST(Savegame_BSON_LoadFlipmaps(ctx));
-    M_MUST(Savegame_BSON_LoadCameras(ctx));
-    M_MUST(Savegame_BSON_LoadItems(ctx));
-    M_MUST(Savegame_BSON_LoadEffects(ctx));
-    M_MUST(Savegame_BSON_LoadFlares(ctx));
-    M_MUST(Savegame_BSON_LoadMusic(ctx));
-    M_MUST(Savegame_BSON_LoadLara(ctx));
+    M_MUST(Savegame_BSON_LoadMisc(io));
+    M_MUST(Savegame_BSON_LoadResumeInfoList(io));
+    M_MUST(Savegame_BSON_LoadInventory(io));
+    M_MUST(Savegame_BSON_LoadFlipmaps(io));
+    M_MUST(Savegame_BSON_LoadCameras(io));
+    M_MUST(Savegame_BSON_LoadItems(io));
+    M_MUST(Savegame_BSON_LoadEffects(io));
+    M_MUST(Savegame_BSON_LoadFlares(io));
+    M_MUST(Savegame_BSON_LoadMusic(io));
+    M_MUST(Savegame_BSON_LoadLara(io));
 
     result = true;
 
 fail:
-    Savegame_BSON_FinishRead(ctx, result);
+    SG_ReadIO_Destroy(io, result);
     JSON_ValueFree(root);
     return result;
 }
@@ -164,22 +163,21 @@ fail:
 static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    SAVEGAME_BSON_WRITE_CONTEXT *const ctx = Savegame_BSON_StartWrite();
-    JSON_VALUE *const root = Savegame_BSON_GetWriteRoot(ctx);
+    SG_WRITE_IO *const io = SG_WriteIO_Create();
 
-    Savegame_BSON_DumpResumeInfoList(ctx);
-    Savegame_BSON_DumpInventory(ctx);
-    Savegame_BSON_DumpFlipmaps(ctx);
-    Savegame_BSON_DumpCameras(ctx);
-    Savegame_BSON_DumpItems(ctx);
-    Savegame_BSON_DumpEffects(ctx);
-    Savegame_BSON_DumpLara(ctx);
-    Savegame_BSON_DumpMusic(ctx);
-    Savegame_BSON_DumpFlares(ctx);
-    Savegame_BSON_DumpMisc(ctx);
+    Savegame_BSON_DumpResumeInfoList(io);
+    Savegame_BSON_DumpInventory(io);
+    Savegame_BSON_DumpFlipmaps(io);
+    Savegame_BSON_DumpCameras(io);
+    Savegame_BSON_DumpItems(io);
+    Savegame_BSON_DumpEffects(io);
+    Savegame_BSON_DumpLara(io);
+    Savegame_BSON_DumpMusic(io);
+    Savegame_BSON_DumpFlares(io);
+    Savegame_BSON_DumpMisc(io);
 
-    M_SaveRaw(fp, root, current_level->num);
-    Savegame_BSON_FinishWrite(ctx);
+    M_SaveRaw(fp, SG_WriteIO_GetRoot(io), current_level->num);
+    SG_WriteIO_Destroy(io);
 }
 
 static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
@@ -232,10 +230,9 @@ static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
 {
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
-    SAVEGAME_BSON_READ_CONTEXT *const ctx =
-        Savegame_BSON_StartRead(root, sg_version);
-    const bool result = Savegame_BSON_LoadResumeInfoList(ctx);
-    Savegame_BSON_FinishRead(ctx, result);
+    SG_READ_IO *const io = SG_ReadIO_Create(root, sg_version);
+    const bool result = Savegame_BSON_LoadResumeInfoList(io);
+    SG_ReadIO_Destroy(io, result);
     JSON_ValueFree(root);
     return result;
 }
