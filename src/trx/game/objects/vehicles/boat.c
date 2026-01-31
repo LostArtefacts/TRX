@@ -13,7 +13,6 @@
 #include <trx/game/random.h>
 #include <trx/game/savegame/bson_read_io.h>
 #include <trx/game/savegame/bson_write_io.h>
-#include <trx/game/savegame/legacy_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/strings.h>
@@ -91,19 +90,6 @@ static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
     SGW_WRITE_VALUE(io, "water", p->water);
     SGW_WRITE_VALUE(io, "pitch", p->pitch);
-}
-
-static void M_LoadLegacyPriv(
-    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
-{
-    M_PRIV *const p = item->priv;
-    p->boat_turn = io->read_s32(io);
-    p->left_fallspeed = io->read_s32(io);
-    p->right_fallspeed = io->read_s32(io);
-    p->tilt_angle = io->read_s16(io);
-    p->extra_rotation = io->read_s16(io);
-    p->water = io->read_s32(io);
-    p->pitch = io->read_s32(io);
 }
 
 static int32_t M_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
@@ -870,7 +856,6 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
-    obj->priv_legacy_load_func = M_LoadLegacyPriv;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;

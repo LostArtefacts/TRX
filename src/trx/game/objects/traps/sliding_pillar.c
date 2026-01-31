@@ -5,7 +5,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame/bson_read_io.h>
 #include <trx/game/savegame/bson_write_io.h>
-#include <trx/game/savegame/legacy_io.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
 
@@ -50,16 +49,6 @@ static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "y", p->linked.pos.y);
     SGW_WRITE_VALUE(io, "z", p->linked.pos.z);
     SGW_POP_AND_SET(io, "linked");
-}
-
-static void M_LoadLegacyPriv(
-    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
-{
-    M_PRIV *const p = item->priv;
-    p->initial.pos = item->pos;
-    p->initial.room_num = item->room_num;
-    p->linked.pos = item->pos;
-    p->linked.room_num = item->room_num;
 }
 
 static void M_SetInitial(ITEM *const item)
@@ -242,7 +231,6 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
-    obj->priv_legacy_load_func = M_LoadLegacyPriv;
 }
 
 REGISTER_OBJECT(O_SLIDING_PILLAR, M_Setup)

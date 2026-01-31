@@ -2,7 +2,6 @@
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/savegame/bson_read_io.h>
 #include <trx/game/savegame/bson_write_io.h>
-#include <trx/game/savegame/legacy_io.h>
 
 static void M_PrivLoad(ITEM *const item, SG_READ_IO *const io)
 {
@@ -28,19 +27,6 @@ static void M_PrivSave(const ITEM *const item, SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "pitch", p->pitch);
 }
 
-static void M_PrivLegacyLoad(
-    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
-{
-    SKIDOO_INFO *const p = item->priv;
-    p->track_mesh = io->read_s16(io);
-    p->skidoo_turn = io->read_s32(io);
-    p->left_fallspeed = io->read_s32(io);
-    p->right_fallspeed = io->read_s32(io);
-    p->momentum_angle = io->read_s16(io);
-    p->extra_rotation = io->read_s16(io);
-    p->pitch = io->read_s32(io);
-}
-
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = Skidoo_Initialise;
@@ -49,7 +35,6 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(SKIDOO_INFO);
     obj->priv_load_func = M_PrivLoad;
     obj->priv_save_func = M_PrivSave;
-    obj->priv_legacy_load_func = M_PrivLegacyLoad;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;

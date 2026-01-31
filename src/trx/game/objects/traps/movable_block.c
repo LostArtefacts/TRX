@@ -11,7 +11,6 @@
 #include <trx/game/random.h>
 #include <trx/game/savegame/bson_read_io.h>
 #include <trx/game/savegame/bson_write_io.h>
-#include <trx/game/savegame/legacy_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/strings.h>
@@ -176,12 +175,6 @@ static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "counter_rot_1", data->counter_rot[1]);
     SGW_WRITE_VALUE(io, "counter_rot_2", data->counter_rot[2]);
     SGW_WRITE_VALUE(io, "original_rot", data->original_rot);
-}
-
-static void M_LoadLegacyPriv(
-    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
-{
-    M_SetLinked(item);
 }
 
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
@@ -921,7 +914,6 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
-    obj->priv_legacy_load_func = M_LoadLegacyPriv;
     obj->base_rot.y = true;
     obj->save_anim = true;
     obj->save_flags = true;

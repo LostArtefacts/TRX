@@ -584,7 +584,6 @@ common_sources = [
   'trx/game/savegame/bson_write.c',
   'trx/game/savegame/bson_write_io.c',
   'trx/game/savegame/common.c',
-  'trx/game/savegame/legacy.c',
   'trx/game/scaler.c',
   'trx/game/shell/args.c',
   'trx/game/shell/common.c',
