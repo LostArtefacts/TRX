@@ -11,11 +11,7 @@
       "type": "string",
       "description": "Path to a global Lua script to execute after game initialization, before the first level loads."
     },
-    "savegame_fmt_legacy": {
-      "type": "string",
-      "description": "Path pattern to look for the old TombATI savegame files."
-    },
-    "savegame_fmt_bson": {
+    "savegame_file_fmt": {
       "type": "string",
       "description": "Path pattern to look for the savegame files."
     },
@@ -98,8 +94,7 @@
   },
   "required": [
     "main_menu_picture",
-    "savegame_fmt_legacy",
-    "savegame_fmt_bson",
+    "savegame_file_fmt",
     "levels"
   ],
   "additionalProperties": false,

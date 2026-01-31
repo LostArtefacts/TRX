@@ -6,8 +6,7 @@
     "main_menu_picture": "data/images/title.webp",
 
     // path to the savegame file
-    "savegame_fmt_legacy": "save_demo_pc.%d",
-    "savegame_fmt_bson": "save_demo_pc_%02d.dat",
+    "savegame_file_fmt": "save_demo_pc_%02d.dat",
 
     "injections": [
         "data/injections/braid.bin",

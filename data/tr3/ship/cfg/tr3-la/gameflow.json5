@@ -3,8 +3,7 @@
     // Lines starting with double slashes are comments and are ignored.
 
     "main_menu_picture": "data/images/title_eu_gm.webp",
-    "savegame_fmt_legacy": "savegame_la.%d",
-    "savegame_fmt_bson": "save_trla_%02d.dat",
+    "savegame_file_fmt": "save_trla_%02d.dat",
 
     "enable_tr2_item_drops": true,
     "convert_dropped_guns": true,

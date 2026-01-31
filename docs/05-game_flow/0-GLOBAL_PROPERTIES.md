@@ -17,8 +17,7 @@ remains distinct for each game.
 ```json5
 {
     "main_menu_picture": "data/titleh.png",
-    "savegame_fmt_legacy": "saveati.%d",
-    "savegame_fmt_bson": "save_tr1_%02d.dat",
+    "savegame_file_fmt": "save_tr1_%02d.dat",
     "water_color": [0.45, 1.0, 1.0],
     "fog_transparency": false,
     "fog_color": [0.0, 0.0, 0.0],
@@ -241,14 +240,9 @@ remains distinct for each game.
     <td>Path to the main menu background image.</td>
   </tr>
   <tr valign="top">
-    <td><code>savegame_fmt_bson</code></td>
+    <td><code>savegame_file_fmt</code></td>
     <td>String<strong>*</strong></td>
     <td>Path pattern to look for the savegame files.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>savegame_fmt_legacy</code></td>
-    <td>String<strong>*</strong></td>
-    <td>Path pattern to look for the old TombATI savegame files.</td>
   </tr>
   <tr valign="top">
     <td>
@@ -291,8 +285,7 @@ remains distinct for each game.
     // Lines starting with double slashes are comments and are ignored.
 
     "main_menu_picture": "data/images/title_eu.webp",
-    "savegame_fmt_legacy": "savegame.%d",
-    "savegame_fmt_bson": "save_tr2_%02d.dat",
+    "savegame_file_fmt": "save_tr2_%02d.dat",
 
     "demo_version": false,
 
@@ -370,9 +363,9 @@ remains distinct for each game.
     <td>Path to the main menu background image.</td>
   </tr>
   <tr valign="top">
-    <td><code>savegame_fmt_legacy</code></td>
+    <td><code>savegame_file_fmt</code></td>
     <td>String<strong>*</strong></td>
-    <td>Path pattern to look for the original savegame files.</td>
+    <td>Path pattern to look for the savegame files.</td>
   </tr>
   <tr valign="top">
     <td><code>sfx_path</code></td>

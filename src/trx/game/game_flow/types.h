@@ -162,8 +162,7 @@ typedef struct {
 
     // savegame settings
     struct {
-        char *savegame_fmt_legacy;
-        char *savegame_fmt_bson;
+        char *savegame_file_fmt;
     };
 
     // global settings

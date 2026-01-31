@@ -85,8 +85,7 @@ void GF_Shutdown(void)
     }
 
     Memory_FreePointer(&gf->main_menu_background_path);
-    Memory_FreePointer(&gf->savegame_fmt_legacy);
-    Memory_FreePointer(&gf->savegame_fmt_bson);
+    Memory_FreePointer(&gf->savegame_file_fmt);
     Memory_FreePointer(&gf->ambient_tracks.ids);
     Memory_FreePointer(&gf->settings.sfx_path);
     Memory_FreePointer(&gf->main_script_path);
