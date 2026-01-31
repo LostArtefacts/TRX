@@ -180,6 +180,7 @@
         {
             "path": "data/rapids.tr2",
             "music_track": 36,
+            "death_tile": "rapids",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -269,6 +270,7 @@
             "path": "data/office.tr2",
             "music_track": 78,
             "weather_type": "rain",
+            "death_tile": "electric",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 5120},
@@ -328,6 +330,7 @@
         {
             "path": "data/area51.tr2",
             "music_track": 27,
+            "death_tile": "electric",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "pistols", "quantity": 1},

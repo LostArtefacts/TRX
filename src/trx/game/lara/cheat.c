@@ -319,6 +319,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->interact_target.is_moving = false;
     lara_info->interact_target.move_count = 0;
 
+    Lara_Extinguish();
     M_ReinitialiseGunMeshes();
     g_Camera.type = CAM_CHASE;
 

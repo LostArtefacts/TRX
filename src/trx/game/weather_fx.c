@@ -180,7 +180,7 @@ static void M_DrawRain(void)
         const RGBA_8888 from_color = { 0, 0, 0x20, 0x00 };
         const RGBA_8888 to_color = { 0x30, 0x40, 0x60, 0x80 };
         OutputSource_PolyFX_StageLineSegment(
-            from, from_color, to, to_color, 1.0f);
+            from, from_color, to, to_color, 1.0f, DRAW_BLEND);
     }
 }
 

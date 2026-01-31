@@ -20,6 +20,7 @@ Following are each of the properties available within a level.
     "script": "data/scripts/level1.lua",
     "music_track": 57,
     "weather_type": "rain",
+    "death_tile": "rapids",
     "water_color": [0.7, 0.5, 0.85],
     "cold_water": true,
     "fog_transparency": false,
@@ -128,6 +129,15 @@ Following are each of the properties available within a level.
       TR3 only. Enables per-level weather.
       Valid values: <code>rain</code>, <code>snow</code>.
       Omit for none.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>death_tile</code></td>
+    <td>String</td>
+    <td colspan="2">
+      TR3 only. Controls the per-level death tile behavior.
+      Valid values: <code>lava</code>, <code>rapids</code>, <code>electric</code>.
+      Omit for lava.
     </td>
   </tr>
   <tr valign="top">

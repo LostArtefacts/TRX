@@ -62,3 +62,17 @@ bool Level_HasColdWater(void)
 
     return false;
 }
+
+GF_DEATH_TILE Level_GetDeathTile(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->settings.death_tile.is_present) {
+        return level->settings.death_tile.value;
+    }
+
+    if (g_GameFlow.settings.death_tile.is_present) {
+        return g_GameFlow.settings.death_tile.value;
+    }
+
+    return GF_DEATH_TILE_LAVA;
+}

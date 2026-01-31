@@ -19,15 +19,16 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
+
     if (lara_item->hit_points == LARA_MAX_HITPOINTS) {
         Console_LogWarning(GS(OSD_HEAL_ALREADY_FULL_HP));
-        return CR_SUCCESS;
+    } else {
+        Console_Log(GS(OSD_HEAL_SUCCESS));
     }
 
     lara_item->hit_points = LARA_MAX_HITPOINTS;
     lara->poison_timer = 0;
     Lara_Extinguish();
-    Console_Log(GS(OSD_HEAL_SUCCESS));
     return CR_SUCCESS;
 }
 

@@ -145,6 +145,8 @@ static bool M_ReadLara(SG_READ_IO *const io)
     M_SHOULD(SG_READ_VALUE(io, "current_vel_x", &lara->current.vel.x));
     M_SHOULD(SG_READ_VALUE(io, "current_vel_z", &lara->current.vel.z));
     M_MUST(SG_READ_VALUE(io, "burn", &lara->burn));
+    // Introduced in TRX 1.2
+    M_SHOULD(SG_READ_VALUE(io, "electrocuted", &lara->electrocuted));
 
     M_MUST(SG_READ_VALUE(io, "mesh_effects", &lara->mesh_effects));
     M_MUST(SG_READ_VALUE(io, "extra_anim", &lara->extra_anim));

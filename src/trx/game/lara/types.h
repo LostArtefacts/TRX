@@ -85,6 +85,7 @@ typedef struct {
 
     bool extra_anim;
     bool burn;
+    bool electrocuted;
     bool climb_status;
     bool is_crouched;
     bool keep_crouched;

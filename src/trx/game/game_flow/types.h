@@ -95,6 +95,10 @@ typedef struct {
         bool is_present;
         bool value;
     } cold_water;
+    struct {
+        bool is_present;
+        int32_t value;
+    } death_tile;
 } GF_LEVEL_SETTINGS;
 
 typedef struct {

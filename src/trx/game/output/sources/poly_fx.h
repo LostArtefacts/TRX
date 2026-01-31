@@ -36,6 +36,6 @@ void OutputSource_PolyFX_StageTriExtUV(
 
 void OutputSource_PolyFX_StageLineSegment(
     XYZ_32 from, RGBA_8888 from_color, XYZ_32 to, RGBA_8888 to_color,
-    float half_width);
+    float half_width, DRAW_TYPE draw_type);
 
 void OutputSource_PolyFX_StageSpark(const SPARK *spark);

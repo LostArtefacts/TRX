@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/electric.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
@@ -689,6 +690,11 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
 finish:
+    if (is_lara && lara->electrocuted) {
+        Lara_Electricity_Draw(0, lara_item);
+        Lara_Electricity_Draw(1, lara_item);
+    }
+
     g_PhdLeft = left;
     g_PhdRight = right;
     g_PhdTop = top;
