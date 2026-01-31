@@ -26,3 +26,9 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len);
 void Audio_Stream_Init(void);
 void Audio_Stream_Shutdown(void);
 void Audio_Stream_Mix(float *dst_buffer, size_t len);
+
+void Audio_Reverb_Init(int32_t sample_rate, int32_t channels);
+void Audio_Reverb_Shutdown(void);
+void Audio_Reverb_Process(float *dst_buffer, size_t len);
+void Audio_Reverb_SetType(uint8_t reverb_type);
+uint8_t Audio_Reverb_GetType(void);

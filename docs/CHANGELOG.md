@@ -7,6 +7,7 @@
 - fixed a missing footstep sound when Lara starts to sprint
 
 **TR3**:
+- added reverb support
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 
 

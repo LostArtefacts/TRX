@@ -22,8 +22,9 @@ static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
 {
     m_CallbackSeen = true;
     memset(m_MixBuffer, m_Silence, len);
-    Audio_Stream_Mix(m_MixBuffer, len);
     Audio_Sample_Mix(m_MixBuffer, len);
+    Audio_Reverb_Process(m_MixBuffer, len);
+    Audio_Stream_Mix(m_MixBuffer, len);
     if (m_Muted) {
         memset(m_MixBuffer, m_Silence, len);
     }
@@ -73,6 +74,7 @@ bool Audio_Init(void)
 
     Audio_Sample_Init();
     Audio_Stream_Init();
+    Audio_Reverb_Init(AUDIO_WORKING_RATE, AUDIO_WORKING_CHANNELS);
 
     return true;
 }
@@ -97,6 +99,7 @@ bool Audio_Shutdown(void)
 
     Audio_Sample_Shutdown();
     Audio_Stream_Shutdown();
+    Audio_Reverb_Shutdown();
 
     if (!m_ShouldSkipSDLQuitAudio) {
         SDL_QuitSubSystem(SDL_INIT_AUDIO);
@@ -138,6 +141,30 @@ void Audio_UnlockDevice(void)
         return;
     }
     SDL_UnlockAudioDevice(g_AudioDeviceID);
+}
+
+void Audio_SetReverbType(const uint8_t reverb_type)
+{
+    if (g_AudioDeviceID) {
+        SDL_LockAudioDevice(g_AudioDeviceID);
+    }
+    Audio_Reverb_SetType(reverb_type);
+    if (g_AudioDeviceID) {
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+    }
+}
+
+uint8_t Audio_GetReverbType(void)
+{
+    uint8_t reverb_type = 0;
+    if (g_AudioDeviceID) {
+        SDL_LockAudioDevice(g_AudioDeviceID);
+    }
+    reverb_type = Audio_Reverb_GetType();
+    if (g_AudioDeviceID) {
+        SDL_UnlockAudioDevice(g_AudioDeviceID);
+    }
+    return reverb_type;
 }
 
 int32_t Audio_GetAVChannelLayout(const int32_t channels)

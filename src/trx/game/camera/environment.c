@@ -1,6 +1,7 @@
 #include <trx/game/camera/environment.h>
 
 #include <trx/config.h>
+#include <trx/engine/audio.h>
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
 #include <trx/game/lara.h>
@@ -8,7 +9,6 @@
 #include <trx/game/output/vars.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
-#include <trx/version.h>
 
 typedef enum {
     TARGET_UNKNOWN,
@@ -123,6 +123,13 @@ void Camera_EnsureEnvironment(void)
         const ROOM *const room = Room_Get(g_Camera.pos.room_num);
         g_Camera.underwater = room->flags.underwater;
     }
+
+    uint8_t reverb_type = 0;
+    if (g_Camera.mic_pos.room_num != NO_ROOM) {
+        const ROOM *const room = Room_Get(g_Camera.mic_pos.room_num);
+        reverb_type = room->reverb_info;
+    }
+    Audio_SetReverbType(reverb_type);
 }
 
 void Camera_UpdateMicPosition(void)
