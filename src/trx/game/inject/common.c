@@ -82,7 +82,7 @@ static bool M_IsRelevant(
         }
         const SAVEGAME_INFO *const info =
             Savegame_GetSavegameInfo(Savegame_GetBoundSlot());
-        if (info != nullptr && (info->initial_version == VERSION_LEGACY)) {
+        if (info != nullptr && (info->initial_version == SG_VERSION_LEGACY)) {
             return false;
         }
         return true;

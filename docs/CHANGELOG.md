@@ -50,6 +50,7 @@
     - `on_control_post` → `after_control`
 - changed turbo cheat to auto‑reset to normal speed if pushed past limit, making it easier for new players to recover from accidental changes
 - changed Blades to support being reset
+- removed support for < TRX 1.0 savegames
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)

@@ -235,19 +235,9 @@ static void M_WriteItem(
     const M_FX_ORDER *const fx_order)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
-    // TR1X <4.16, TR2X <1.6
-    M_WriteNum(ctx, "obj_num", Object_ToGameID(item->object_id));
     M_WriteNum(ctx, "object_id", Object_ToGameID(item->object_id));
 
     if (obj->save_position) {
-        // TR1X <4.16
-        M_WriteNum(ctx, "x", item->pos.x);
-        M_WriteNum(ctx, "y", item->pos.y);
-        M_WriteNum(ctx, "z", item->pos.z);
-        M_WriteNum(ctx, "x_rot", item->rot.x);
-        M_WriteNum(ctx, "y_rot", item->rot.y);
-        M_WriteNum(ctx, "z_rot", item->rot.z);
-
         M_WriteXYZ32(ctx, "pos", item->pos);
         M_WriteXYZ16(ctx, "rot", item->rot);
         M_WriteNum(ctx, "room_num", item->room_num);
@@ -315,12 +305,6 @@ static void M_WriteItem(
         M_WriteNum(ctx, "fall_speed", drop_item->fall_speed);
         M_WriteNum(ctx, "spawn_num", drop_item->spawn_num);
         M_WriteNum(ctx, "status", (int32_t)Carrier_GetSaveStatus(drop_item));
-
-        // TR1X <4.16
-        M_WriteNum(ctx, "x", drop_item->pos.x);
-        M_WriteNum(ctx, "y", drop_item->pos.y);
-        M_WriteNum(ctx, "z", drop_item->pos.z);
-
         M_PopAndAppend(ctx);
         drop_item = drop_item->next_item;
     }
@@ -345,9 +329,6 @@ static void M_WriteArm(
     M_WriteNum(ctx, "lock", arm->lock);
     M_WriteNum(ctx, "flash_gun", arm->flash_gun);
     M_WriteXYZ16(ctx, "rot", arm->rot);
-    M_WriteNum(ctx, "x_rot", arm->rot.x);
-    M_WriteNum(ctx, "y_rot", arm->rot.y);
-    M_WriteNum(ctx, "z_rot", arm->rot.z);
     M_PopAndSet(ctx, key);
 }
 
@@ -412,11 +393,6 @@ static void M_WriteResumeInfo(
     M_WriteNum(ctx, "holsters_gun_type", resume->holsters_gun_type);
     M_WriteNum(ctx, "back_gun_type", resume->back_gun_type);
 
-    // TR1X <4.16
-    M_WriteBool(ctx, "got_pistols", resume->flags.has_pistols);
-    M_WriteBool(ctx, "got_shotgun", resume->flags.has_shotgun);
-    M_WriteBool(ctx, "got_magnums", resume->flags.has_magnums);
-    M_WriteBool(ctx, "got_uzis", resume->flags.has_uzis);
     M_WriteBool(ctx, "has_pistols", resume->flags.has_pistols);
     M_WriteBool(ctx, "has_shotgun", resume->flags.has_shotgun);
     M_WriteBool(ctx, "has_magnums", resume->flags.has_magnums);
@@ -496,24 +472,12 @@ void Savegame_BSON_DumpEffects(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
         M_PushObject(ctx);
         M_WriteXYZ32(ctx, "pos", effect->pos);
         M_WriteXYZ16(ctx, "rot", effect->rot);
-        // TR1X <4.16
-        M_WriteNum(ctx, "x", effect->pos.x);
-        M_WriteNum(ctx, "y", effect->pos.y);
-        M_WriteNum(ctx, "z", effect->pos.z);
-        M_WriteNum(ctx, "x_rot", effect->rot.x);
-        M_WriteNum(ctx, "y_rot", effect->rot.y);
-        M_WriteNum(ctx, "z_rot", effect->rot.z);
-
-        // TR1X <4.16, TR2X<1.6
-        M_WriteNum(ctx, "room_number", effect->room_num);
         M_WriteNum(ctx, "room_num", effect->room_num);
-
-        // TR1X <4.16, TR2X<1.6
-        M_WriteNum(ctx, "object_number", Object_ToGameID(effect->object_id));
         M_WriteNum(ctx, "object_id", Object_ToGameID(effect->object_id));
-
         M_WriteNum(ctx, "speed", effect->speed);
         M_WriteNum(ctx, "fall_speed", effect->fall_speed);
+        // Introduced in TRX 1.2
+        M_WriteNum(ctx, "frame_num", effect->frame_num);
         M_WriteNum(ctx, "frame_number", effect->frame_num);
         M_WriteNum(ctx, "counter", effect->counter);
         M_WriteNum(ctx, "shade", effect->shade);
@@ -583,27 +547,12 @@ void Savegame_BSON_DumpMusic(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
 
     const MUSIC_ID current_track = Music_GetCurrentPlayingTrack();
     const MUSIC_ID current_ambient = Music_GetCurrentLoopedTrack();
-    // TR1X >=4.16, TR2X – music/current/…
     M_PushObject(ctx);
     M_WriteNum(ctx, "current_track", current_track);
     M_WriteNum(ctx, "current_ambient", current_ambient);
     M_WriteNum(ctx, "timestamp", Music_GetTimestamp());
     M_PopAndSet(ctx, "current");
-
-    // TR1X <4.16 - music/…
-    M_WriteNum(ctx, "current_track", current_track);
-    M_WriteNum(ctx, "current_ambient", current_ambient);
-    M_WriteNum(ctx, "timestamp", Music_GetTimestamp());
-
     M_PopAndSet(ctx, "music");
-
-    // TR1X <4.16
-    M_PushArray(ctx);
-    for (int32_t i = 0; i < track_flag_count; i++) {
-        M_PushNum(ctx, Music_GetTrackFlags(i));
-        M_PopAndAppend(ctx);
-    }
-    M_PopAndSet(ctx, "music_track_flags");
 }
 
 void Savegame_BSON_DumpItems(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
@@ -629,6 +578,8 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
 
     M_PushObject(ctx);
 
+    // Introduced in TRX 1.2
+    M_WriteNum(ctx, "item_num", lara->item_num);
     M_WriteNum(ctx, "item_number", lara->item_num);
     M_WriteNum(ctx, "gun_status", lara->gun_status);
     M_WriteNum(ctx, "gun_type", lara->gun_type);
@@ -666,6 +617,8 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "flare_frame", lara->flare.frame_num);
     M_WriteBool(ctx, "flare_control_left", lara->flare.control);
     M_WriteBool(ctx, "extra_anim", lara->extra_anim);
+    // Introduced in TRX 1.2
+    M_WriteNum(ctx, "vehicle_item_num", Lara_Vehicle_GetIndex());
     M_WriteNum(ctx, "vehicle_item_number", Lara_Vehicle_GetIndex());
 
     M_WriteNum(ctx, "mesh_effects", lara->mesh_effects);
@@ -681,21 +634,8 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "turn_rate", lara->turn_rate);
     M_WriteNum(ctx, "move_angle", lara->move_angle);
     M_WriteXYZ16(ctx, "head_rot", lara->head_rot);
-    // TR1X <4.16
-    M_WriteNum(ctx, "head_rot.y", lara->head_rot.y);
-    M_WriteNum(ctx, "head_rot.x", lara->head_rot.x);
-    M_WriteNum(ctx, "head_rot.z", lara->head_rot.z);
     M_WriteXYZ16(ctx, "torso_rot", lara->torso_rot);
-    // TR1X <4.16
-    M_WriteNum(ctx, "torso_rot.y", lara->torso_rot.y);
-    M_WriteNum(ctx, "torso_rot.x", lara->torso_rot.x);
-    M_WriteNum(ctx, "torso_rot.z", lara->torso_rot.z);
     M_WriteXYZ32(ctx, "last_pos", lara->last_pos);
-    // TR1X <4.16
-    M_WriteNum(ctx, "last_pos.x", lara->last_pos.x);
-    M_WriteNum(ctx, "last_pos.y", lara->last_pos.y);
-    M_WriteNum(ctx, "last_pos.z", lara->last_pos.z);
-
     M_WriteArm(ctx, "left_arm", &lara->left_arm);
     M_WriteArm(ctx, "right_arm", &lara->right_arm);
     M_WriteAmmo(ctx, "pistols", &lara->pistol_ammo);
@@ -726,19 +666,6 @@ void Savegame_BSON_DumpLara(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
     M_WriteNum(ctx, "move_count", lara->interact_target.move_count);
     M_WriteBool(ctx, "is_moving", lara->interact_target.is_moving);
     M_PopAndSet(ctx, "interact_target");
-    // TR1X <4.16, TR2X <1.6
-    M_WriteNum(ctx, "interact_target.item_num", lara->interact_target.item_num);
-    M_WriteNum(
-        ctx, "interact_target.move_count", lara->interact_target.move_count);
-    M_WriteBool(
-        ctx, "interact_target.is_moving", lara->interact_target.is_moving);
-
-    if (g_TRVersion == 1) {
-        // TR1X <4.16
-        M_PushObject(ctx);
-        M_WriteLOT(ctx, &lara->lot);
-        M_PopAndSet(ctx, "lot");
-    }
 
     M_PopAndSet(ctx, "lara");
 }
@@ -755,19 +682,6 @@ void Savegame_BSON_DumpResumeInfoList(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
         M_PopAndAppend(ctx);
     }
     M_PopAndSet(ctx, "resume_info");
-
-    if (g_TRVersion == 1) {
-        // < TR1X <4.16
-        M_PushArray(ctx);
-        for (int32_t i = 0; i < count; i++) {
-            const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-            const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-            M_PushObject(ctx);
-            M_WriteResumeInfo(ctx, resume);
-            M_PopAndAppend(ctx);
-        }
-        M_PopAndSet(ctx, "current_info");
-    }
 }
 
 void Savegame_BSON_DumpMisc(SAVEGAME_BSON_WRITE_CONTEXT *const ctx)
