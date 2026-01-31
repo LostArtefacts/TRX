@@ -662,7 +662,7 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     }
 
     info->level_num = File_ReadS16(fp);
-    info->initial_version = VERSION_LEGACY;
+    info->initial_version = SG_VERSION_LEGACY;
     info->features.restart = false;
     info->features.select_level = false;
     return true;

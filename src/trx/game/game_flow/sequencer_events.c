@@ -154,7 +154,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
 
     default:
         if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
-            Savegame_SetInitialVersion(SAVEGAME_CURRENT_VERSION);
+            Savegame_SetInitialVersion(SG_CURRENT_VERSION);
             GF_InventoryModifier_Scan(Game_GetCurrentLevel());
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_REGULAR);
         }

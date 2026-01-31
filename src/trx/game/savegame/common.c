@@ -22,7 +22,7 @@
 #define MAX_STRATEGIES 2
 #define SAVES_DIR "saves"
 
-static SAVEGAME_VERSION m_InitialVersion = VERSION_LEGACY;
+static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
 static RESUME_INFO *m_ResumeInfo = nullptr;
 static int32_t m_SaveSlots = 0;

@@ -112,7 +112,7 @@ static void M_SaveRaw(
     const SAVEGAME_BSON_HEADER header = {
         .magic = g_TRVersion == 1 ? M_MAGIC_TR1X : M_MAGIC_TR2X,
         .initial_version = Savegame_GetInitialVersion(),
-        .version = SAVEGAME_CURRENT_VERSION,
+        .version = SG_CURRENT_VERSION,
         .compressed_size = compressed_size,
         .uncompressed_size = uncompressed_size,
     };
@@ -187,9 +187,15 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     SAVEGAME_BSON_HEADER header;
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
+    if (header.version < SG_MIN_SUPPORTED_VERSION) {
+        LOG_WARNING(
+            "Too old SG version: %d (min supported: %d)", header.version,
+            SG_MIN_SUPPORTED_VERSION);
+        return false;
+    }
     info->initial_version = header.initial_version;
-    info->features.restart = header.initial_version >= VERSION_LEGACY;
-    info->features.select_level = header.initial_version >= VERSION_1;
+    info->features.restart = header.initial_version >= SG_VERSION_LEGACY;
+    info->features.select_level = header.initial_version >= SG_VERSION_1;
 
     // recover the slot information from the end of the file
     File_Skip(fp, header.compressed_size);
