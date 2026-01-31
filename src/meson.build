@@ -136,6 +136,7 @@ common_sources = [
   'trx/config/priv.c',
   'trx/config/vars.c',
   'trx/engine/audio.c',
+  'trx/engine/audio_reverb.c',
   'trx/engine/audio_sample.c',
   'trx/engine/audio_stream.c',
   'trx/engine/image.c',

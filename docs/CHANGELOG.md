@@ -11,6 +11,7 @@
 - fixed Lara's flare undraw animation being skippable on specific late draw frames (#1593)
 
 **TR3**:
+- added reverb support
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
 - fixed Lara unable to climb small ledges with low crawlspaces

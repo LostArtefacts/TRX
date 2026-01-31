@@ -752,6 +752,9 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
         if (loader->game_version == 3) {
             room->water_scheme = VFile_ReadU8(file);
             room->reverb_info = VFile_ReadU8(file);
+            if (room->reverb_info != 0) {
+                LOG_INFO("room %d: reverb=%d", i, room->reverb_info);
+            }
             VFile_Skip(file, 1);
         }
     }
