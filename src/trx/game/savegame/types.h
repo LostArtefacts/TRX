@@ -55,7 +55,6 @@ typedef struct {
 } RESUME_INFO;
 
 typedef struct {
-    SAVEGAME_FORMAT format;
     char *full_path;
     int32_t counter;
     int32_t level_num;
@@ -66,16 +65,3 @@ typedef struct {
         bool select_level;
     } features;
 } SAVEGAME_INFO;
-
-typedef struct {
-    bool allow_load;
-    bool allow_save;
-    SAVEGAME_FORMAT format;
-    const char *(*get_save_file_pattern_func)(void);
-    bool (*fill_info_func)(MYFILE *fp, SAVEGAME_INFO *info);
-    bool (*load_from_file_func)(MYFILE *fp);
-    bool (*load_only_resume_info_func)(MYFILE *fp);
-    void (*save_to_file_func)(MYFILE *fp, SAVEGAME_INFO *savegame_info);
-    bool (*update_death_counters_func)(
-        MYFILE *fp, int32_t level_num, int32_t death_count);
-} SAVEGAME_STRATEGY;

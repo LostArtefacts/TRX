@@ -7,12 +7,6 @@ typedef enum {
 } SAVEGAME_STAGE;
 
 typedef enum {
-    SAVEGAME_FORMAT_INVALID = 0,
-    SAVEGAME_FORMAT_LEGACY = 1,
-    SAVEGAME_FORMAT_BSON = 2,
-} SAVEGAME_FORMAT;
-
-typedef enum {
     SG_VERSION_LEGACY = -1,
     SG_VERSION_1 = 1,
 

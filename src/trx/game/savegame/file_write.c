@@ -12,8 +12,8 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
-#include <trx/game/savegame/bson.h>
-#include <trx/game/savegame/bson_write_io.h>
+#include <trx/game/savegame/file.h>
+#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/weather_fx.h>
 #include <trx/version.h>
 
@@ -254,7 +254,7 @@ static int32_t M_GetMusicTrackFlagsCount(void)
     return last_index + 1;
 }
 
-void Savegame_BSON_DumpFlares(SG_WRITE_IO *const io)
+void SG_File_DumpFlares(SG_WRITE_IO *const io)
 {
     SGW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
@@ -274,7 +274,7 @@ void Savegame_BSON_DumpFlares(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "flares");
 }
 
-void Savegame_BSON_DumpEffects(SG_WRITE_IO *const io)
+void SG_File_DumpEffects(SG_WRITE_IO *const io)
 {
     M_FX_ORDER fx_order;
     M_GetFXOrder(&fx_order);
@@ -303,7 +303,7 @@ void Savegame_BSON_DumpEffects(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "fx");
 }
 
-void Savegame_BSON_DumpInventory(SG_WRITE_IO *const io)
+void SG_File_DumpInventory(SG_WRITE_IO *const io)
 {
     SGW_PUSH_OBJECT(io);
     SGW_WRITE_VALUE(io, "pickup1", Inv_RequestItem(O_PICKUP_ITEM_1));
@@ -324,7 +324,7 @@ void Savegame_BSON_DumpInventory(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "inventory");
 }
 
-void Savegame_BSON_DumpFlipmaps(SG_WRITE_IO *const io)
+void SG_File_DumpFlipmaps(SG_WRITE_IO *const io)
 {
     SGW_PUSH_OBJECT(io);
     SGW_WRITE_VALUE(io, "status", Room_GetFlipStatus());
@@ -339,7 +339,7 @@ void Savegame_BSON_DumpFlipmaps(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "flipmap");
 }
 
-void Savegame_BSON_DumpCameras(SG_WRITE_IO *const io)
+void SG_File_DumpCameras(SG_WRITE_IO *const io)
 {
     SGW_PUSH_ARRAY(io);
     JSON_ARRAY *const cameras_arr = JSON_ArrayNew();
@@ -351,7 +351,7 @@ void Savegame_BSON_DumpCameras(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "cameras");
 }
 
-void Savegame_BSON_DumpMusic(SG_WRITE_IO *const io)
+void SG_File_DumpMusic(SG_WRITE_IO *const io)
 {
     const int32_t track_flag_count = M_GetMusicTrackFlagsCount();
     SGW_PUSH_OBJECT(io);
@@ -372,7 +372,7 @@ void Savegame_BSON_DumpMusic(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "music");
 }
 
-void Savegame_BSON_DumpItems(SG_WRITE_IO *const io)
+void SG_File_DumpItems(SG_WRITE_IO *const io)
 {
     Savegame_ProcessItemsBeforeSave();
     M_FX_ORDER fx_order;
@@ -387,7 +387,7 @@ void Savegame_BSON_DumpItems(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "items");
 }
 
-void Savegame_BSON_DumpLara(SG_WRITE_IO *const io)
+void SG_File_DumpLara(SG_WRITE_IO *const io)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     ASSERT(lara != nullptr);
@@ -488,7 +488,7 @@ void Savegame_BSON_DumpLara(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "lara");
 }
 
-void Savegame_BSON_DumpResumeInfoList(SG_WRITE_IO *const io)
+void SG_File_DumpResumeInfoList(SG_WRITE_IO *const io)
 {
     const int32_t count = GF_GetLevelTable(GFLT_MAIN)->count;
     SGW_PUSH_ARRAY(io);
@@ -502,7 +502,7 @@ void Savegame_BSON_DumpResumeInfoList(SG_WRITE_IO *const io)
     SGW_POP_AND_SET(io, "resume_info");
 }
 
-void Savegame_BSON_DumpMisc(SG_WRITE_IO *const io)
+void SG_File_DumpMisc(SG_WRITE_IO *const io)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     const RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);

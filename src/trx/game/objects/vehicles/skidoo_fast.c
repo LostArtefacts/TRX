@@ -1,7 +1,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
-#include <trx/game/savegame/bson_read_io.h>
-#include <trx/game/savegame/bson_write_io.h>
+#include <trx/game/savegame/file_read_io.h>
+#include <trx/game/savegame/file_write_io.h>
 
 static void M_PrivLoad(ITEM *const item, SG_READ_IO *const io)
 {
