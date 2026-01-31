@@ -140,9 +140,7 @@ static void M_WriteItem(
 
     if (obj->priv_size > 0 && obj->priv_save_func != nullptr) {
         SGW_PUSH_OBJECT(io);
-        JSON_OBJECT *const priv_root = SG_WriteIO_GetCurrentObject(io);
-        ASSERT(priv_root != nullptr);
-        obj->priv_save_func(item, priv_root);
+        obj->priv_save_func(item, io);
         SGW_POP_AND_SET(io, "priv");
     }
 }

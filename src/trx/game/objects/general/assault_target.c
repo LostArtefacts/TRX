@@ -4,6 +4,8 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing/lot.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
@@ -20,20 +22,20 @@ typedef struct {
     bool destroyed;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->x_rot_speed = JSON_ObjectGetInt(priv_root, "x_rot_speed", 0);
-    p->bounce_stage = JSON_ObjectGetInt(priv_root, "bounce_stage", 0);
-    p->destroyed = JSON_ObjectGetBool(priv_root, "destroyed", false) != 0;
+    SG_SHOULD(SG_READ_VALUE(io, "x_rot_speed", &p->x_rot_speed));
+    SG_SHOULD(SG_READ_VALUE(io, "bounce_stage", &p->bounce_stage));
+    SG_SHOULD(SG_READ_VALUE(io, "destroyed", &p->destroyed));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_ObjectAppendInt(priv_root, "x_rot_speed", p->x_rot_speed);
-    JSON_ObjectAppendInt(priv_root, "bounce_stage", p->bounce_stage);
-    JSON_ObjectAppendBool(priv_root, "destroyed", p->destroyed ? 1 : 0);
+    SGW_WRITE_VALUE(io, "x_rot_speed", p->x_rot_speed);
+    SGW_WRITE_VALUE(io, "bounce_stage", p->bounce_stage);
+    SGW_WRITE_VALUE(io, "destroyed", p->destroyed);
 }
 
 static void M_ResetItemState(ITEM *const item, const OBJECT *const obj)

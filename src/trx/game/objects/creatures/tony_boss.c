@@ -8,6 +8,8 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/bson_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
@@ -59,29 +61,26 @@ extern void TonyBoss_TriggerFireBall(
     ITEM *item, int32_t type, XYZ_32 *pos, int16_t room_num, int16_t angle,
     int32_t speed);
 
-static void M_LoadPriv(ITEM *const item, const JSON_OBJECT *const priv_root)
+static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    p->dropped_item =
-        JSON_ObjectGetBool(priv_root, "dropped_item", p->dropped_item);
-    p->ring_count = JSON_ObjectGetInt(priv_root, "ring_count", p->ring_count);
-    p->explode_count =
-        JSON_ObjectGetInt(priv_root, "explode_count", p->explode_count);
-    p->dead = JSON_ObjectGetBool(priv_root, "dead", p->dead);
-    p->phase = JSON_ObjectGetInt(priv_root, "phase", p->phase);
-    p->attack_toggle =
-        JSON_ObjectGetBool(priv_root, "attack_toggle", p->attack_toggle);
+    SG_SHOULD(SG_READ_VALUE(io, "dropped_item", &p->dropped_item));
+    SG_SHOULD(SG_READ_VALUE(io, "ring_count", &p->ring_count));
+    SG_SHOULD(SG_READ_VALUE(io, "explode_count", &p->explode_count));
+    SG_SHOULD(SG_READ_VALUE(io, "dead", &p->dead));
+    SG_SHOULD(SG_READ_VALUE(io, "phase", &p->phase));
+    SG_SHOULD(SG_READ_VALUE(io, "attack_toggle", &p->attack_toggle));
 }
 
-static void M_SavePriv(const ITEM *const item, JSON_OBJECT *const priv_root)
+static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSON_ObjectAppendBool(priv_root, "dropped_item", p->dropped_item);
-    JSON_ObjectAppendInt(priv_root, "ring_count", p->ring_count);
-    JSON_ObjectAppendInt(priv_root, "explode_count", p->explode_count);
-    JSON_ObjectAppendBool(priv_root, "dead", p->dead);
-    JSON_ObjectAppendInt(priv_root, "phase", p->phase);
-    JSON_ObjectAppendBool(priv_root, "attack_toggle", p->attack_toggle);
+    SGW_WRITE_VALUE(io, "dropped_item", p->dropped_item);
+    SGW_WRITE_VALUE(io, "ring_count", p->ring_count);
+    SGW_WRITE_VALUE(io, "explode_count", p->explode_count);
+    SGW_WRITE_VALUE(io, "dead", p->dead);
+    SGW_WRITE_VALUE(io, "phase", p->phase);
+    SGW_WRITE_VALUE(io, "attack_toggle", p->attack_toggle);
 }
 
 static void M_TriggerFlame(int16_t item_num, int32_t node)
