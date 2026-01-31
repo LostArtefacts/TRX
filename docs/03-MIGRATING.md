@@ -22,6 +22,14 @@ title: Migrating levels
     Before: `trx.catalog.objects.O_BANDIT_1`  
     After: `trx.catalog.objects.bandit_1`
 
+3. **Savegame file pattern rename**:
+    Replace `savegame_fmt_bson` with `savegame_file_fmt` in game flow files.
+    The old `savegame_fmt_bson` key is still accepted but logs a warning and is
+    scheduled for removal in TRX 1.5.
+
+4. **Legacy savegame pattern removed**:
+    Remove the `savegame_fmt_legacy` key from game flow files.
+
 ### Version 1.0 to 1.1
 
 1. **Ally and ally target behavior moved to Lua**:  

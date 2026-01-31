@@ -2,8 +2,7 @@
     // This file is used to enable the -l argument support.
 
     "main_menu_picture": "data/images/title.webp",
-    "savegame_fmt_legacy": "save_tmp.%d",
-    "savegame_fmt_bson": "save_tmp_%02d.dat",
+    "savegame_file_fmt": "save_tmp_%02d.dat",
 
     "injections": [
         "data/injections/braid.bin",

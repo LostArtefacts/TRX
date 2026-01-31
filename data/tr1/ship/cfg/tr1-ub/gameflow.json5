@@ -3,8 +3,7 @@
     // Lines starting with double slashes are comments and are ignored.
 
     "main_menu_picture": "data/images/title_ub.webp",
-    "savegame_fmt_legacy": "saveuba.%d",
-    "savegame_fmt_bson": "save_trub_%02d.dat",
+    "savegame_file_fmt": "save_trub_%02d.dat",
 
     "injections": [
         "data/injections/braid.bin",

@@ -260,20 +260,20 @@ static void M_LoadRoot(const M_CONTEXT *const ctx, JSON_OBJECT *const obj)
     }
     ctx->gf->main_menu_background_path = Memory_DupStr(tmp_s);
 
-    tmp_s =
-        JSON_ObjectGetString(obj, "savegame_fmt_legacy", JSON_INVALID_STRING);
+    tmp_s = JSON_ObjectGetString(obj, "savegame_file_fmt", JSON_INVALID_STRING);
     if (tmp_s == JSON_INVALID_STRING) {
-        Shell_ExitSystemFmt(
-            "%s: 'savegame_fmt_legacy' must be a string", ctx->script_path);
+        tmp_s =
+            JSON_ObjectGetString(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
+        if (tmp_s == JSON_INVALID_STRING) {
+            Shell_ExitSystemFmt(
+                "%s: 'savegame_file_fmt' must be a string", ctx->script_path);
+        }
+        // TODO: remove in TRX 1.5.
+        LOG_WARNING(
+            "%s: 'savegame_fmt_bson' is deprecated; use 'savegame_file_fmt'",
+            ctx->script_path);
     }
-    ctx->gf->savegame_fmt_legacy = Memory_DupStr(tmp_s);
-
-    tmp_s = JSON_ObjectGetString(obj, "savegame_fmt_bson", JSON_INVALID_STRING);
-    if (tmp_s == JSON_INVALID_STRING) {
-        Shell_ExitSystemFmt(
-            "%s: 'savegame_fmt_bson' must be a string", ctx->script_path);
-    }
-    ctx->gf->savegame_fmt_bson = Memory_DupStr(tmp_s);
+    ctx->gf->savegame_file_fmt = Memory_DupStr(tmp_s);
 
     tmp_s = JSON_ObjectGetString(obj, "main_script", JSON_INVALID_STRING);
     if (tmp_s != JSON_INVALID_STRING) {

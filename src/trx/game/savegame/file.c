@@ -27,7 +27,7 @@ static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
 
 const char *SG_File_GetSaveFilePattern(void)
 {
-    return g_GameFlow.savegame_fmt_bson;
+    return g_GameFlow.savegame_file_fmt;
 }
 
 static JSON_VALUE *M_ParseFromBuffer(
