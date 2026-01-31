@@ -385,24 +385,3 @@ void Music_SetTrackFlags(const MUSIC_ID track_id, const uint16_t flags)
 {
     m_MusicTrackFlags[track_id] = flags;
 }
-
-MUSIC_ID Music_ConvertLegacyTrack(const MUSIC_ID track_id)
-{
-    if (g_TRVersion == 1) {
-        return track_id;
-    } else {
-        const int8_t skipped_track_ids[] = { 2, 19, 20, 26, -1 };
-        int32_t idx = 0;
-        int32_t ret_track_id = 2;
-
-        for (int32_t i = 2; i < track_id; i++) {
-            if ((skipped_track_ids[idx] >= 0)
-                && (i == skipped_track_ids[idx])) {
-                idx++;
-            } else {
-                ret_track_id++;
-            }
-        }
-        return ret_track_id;
-    }
-}

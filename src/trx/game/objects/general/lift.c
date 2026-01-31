@@ -4,7 +4,6 @@
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/savegame/bson_read_io.h>
 #include <trx/game/savegame/bson_write_io.h>
-#include <trx/game/savegame/legacy_io.h>
 #include <trx/log.h>
 #include <trx/strings.h>
 #include <trx/vector.h>
@@ -63,18 +62,6 @@ static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
         SGW_WRITE_VALUE(io, "z", p->linked[i].pos.z);
         SGW_POP_AND_SET(io, key);
     }
-}
-
-static void M_LoadLegacyPriv(
-    ITEM *const item, const SAVEGAME_LEGACY_IO *const io)
-{
-    M_PRIV *const p = item->priv;
-    if (p == nullptr) {
-        io->skip(io, sizeof(int32_t) * 2);
-        return;
-    }
-    p->start_height = io->read_s32(io);
-    p->wait_time = io->read_s32(io);
 }
 
 static void M_FloorCeiling(
@@ -382,7 +369,6 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
-    obj->priv_legacy_load_func = M_LoadLegacyPriv;
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
