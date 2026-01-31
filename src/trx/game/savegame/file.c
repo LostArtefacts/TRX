@@ -1,4 +1,4 @@
-#include <trx/game/savegame/bson.h>
+#include <trx/game/savegame/file.h>
 
 #include <trx/bson.h>
 #include <trx/game/game.h>
@@ -23,28 +23,9 @@
         goto fail;                                                             \
     }
 
-static const char *M_GetSaveFilePattern(void);
 static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
-static bool M_LoadFromFile(MYFILE *fp);
-static void M_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
-static bool M_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
-static bool M_LoadOnlyResumeInfo(MYFILE *fp);
-static bool M_UpdateDeathCounters(
-    MYFILE *fp, int32_t level_num, int32_t death_count);
 
-static SAVEGAME_STRATEGY m_Strategy = {
-    .allow_load = true,
-    .allow_save = true,
-    .format = SAVEGAME_FORMAT_BSON,
-    .get_save_file_pattern_func = M_GetSaveFilePattern,
-    .fill_info_func = M_FillInfo,
-    .load_from_file_func = M_LoadFromFile,
-    .save_to_file_func = M_SaveToFile,
-    .load_only_resume_info_func = M_LoadOnlyResumeInfo,
-    .update_death_counters_func = M_UpdateDeathCounters,
-};
-
-static const char *M_GetSaveFilePattern(void)
+const char *SG_File_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_fmt_bson;
 }
@@ -133,7 +114,7 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
-static bool M_LoadFromFile(MYFILE *const fp)
+bool SG_File_LoadFromFile(MYFILE *const fp)
 {
     bool result = false;
 
@@ -141,16 +122,16 @@ static bool M_LoadFromFile(MYFILE *const fp)
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
     SG_READ_IO *const io = SG_ReadIO_Create(root, sg_version);
 
-    M_MUST(Savegame_BSON_LoadMisc(io));
-    M_MUST(Savegame_BSON_LoadResumeInfoList(io));
-    M_MUST(Savegame_BSON_LoadInventory(io));
-    M_MUST(Savegame_BSON_LoadFlipmaps(io));
-    M_MUST(Savegame_BSON_LoadCameras(io));
-    M_MUST(Savegame_BSON_LoadItems(io));
-    M_MUST(Savegame_BSON_LoadEffects(io));
-    M_MUST(Savegame_BSON_LoadFlares(io));
-    M_MUST(Savegame_BSON_LoadMusic(io));
-    M_MUST(Savegame_BSON_LoadLara(io));
+    M_MUST(SG_File_LoadMisc(io));
+    M_MUST(SG_File_LoadResumeInfoList(io));
+    M_MUST(SG_File_LoadInventory(io));
+    M_MUST(SG_File_LoadFlipmaps(io));
+    M_MUST(SG_File_LoadCameras(io));
+    M_MUST(SG_File_LoadItems(io));
+    M_MUST(SG_File_LoadEffects(io));
+    M_MUST(SG_File_LoadFlares(io));
+    M_MUST(SG_File_LoadMusic(io));
+    M_MUST(SG_File_LoadLara(io));
 
     result = true;
 
@@ -160,27 +141,27 @@ fail:
     return result;
 }
 
-static void M_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
+void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     SG_WRITE_IO *const io = SG_WriteIO_Create();
 
-    Savegame_BSON_DumpResumeInfoList(io);
-    Savegame_BSON_DumpInventory(io);
-    Savegame_BSON_DumpFlipmaps(io);
-    Savegame_BSON_DumpCameras(io);
-    Savegame_BSON_DumpItems(io);
-    Savegame_BSON_DumpEffects(io);
-    Savegame_BSON_DumpLara(io);
-    Savegame_BSON_DumpMusic(io);
-    Savegame_BSON_DumpFlares(io);
-    Savegame_BSON_DumpMisc(io);
+    SG_File_DumpResumeInfoList(io);
+    SG_File_DumpInventory(io);
+    SG_File_DumpFlipmaps(io);
+    SG_File_DumpCameras(io);
+    SG_File_DumpItems(io);
+    SG_File_DumpEffects(io);
+    SG_File_DumpLara(io);
+    SG_File_DumpMusic(io);
+    SG_File_DumpFlares(io);
+    SG_File_DumpMisc(io);
 
     M_SaveRaw(fp, SG_WriteIO_GetRoot(io), current_level->num);
     SG_WriteIO_Destroy(io);
 }
 
-static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
+bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     SAVEGAME_BSON_HEADER header;
     File_Seek(fp, 0, FILE_SEEK_SET);
@@ -206,7 +187,7 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
         return true;
     }
 
-    // recover the slot information from the bson structures
+    // recover the slot information from the savegame structures
     bool result = false;
     File_Seek(fp, 0, FILE_SEEK_SET);
     JSON_VALUE *root = M_ReadRaw(fp, nullptr);
@@ -226,18 +207,18 @@ static bool M_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return result;
 }
 
-static bool M_LoadOnlyResumeInfo(MYFILE *const fp)
+bool SG_File_LoadOnlyResumeInfo(MYFILE *const fp)
 {
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
     SG_READ_IO *const io = SG_ReadIO_Create(root, sg_version);
-    const bool result = Savegame_BSON_LoadResumeInfoList(io);
+    const bool result = SG_File_LoadResumeInfoList(io);
     SG_ReadIO_Destroy(io, result);
     JSON_ValueFree(root);
     return result;
 }
 
-static bool M_UpdateDeathCounters(
+bool SG_File_UpdateDeathCounters(
     MYFILE *const fp, int32_t level_num, const int32_t death_count)
 {
     bool result = false;
@@ -264,5 +245,3 @@ cleanup:
     JSON_ValueFree(root);
     return result;
 }
-
-REGISTER_SAVEGAME_STRATEGY(m_Strategy)

@@ -2,8 +2,8 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
-#include <trx/game/savegame/bson_read_io.h>
-#include <trx/game/savegame/bson_write_io.h>
+#include <trx/game/savegame/file_read_io.h>
+#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 

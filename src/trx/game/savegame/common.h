@@ -10,7 +10,6 @@
 // everything finishes loading, e.g. items, creatures, triggers etc., and is
 // what actually sets Lara's health, creatures status, triggers, inventory etc.
 
-void Savegame_RegisterStrategy(SAVEGAME_STRATEGY strategy);
 void Savegame_Init(void);
 void Savegame_Shutdown(void);
 bool Savegame_IsInitialised(void);
@@ -61,9 +60,3 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *level);
 void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *level);
 
 int32_t Savegame_GetSlotCount(void);
-
-#define REGISTER_SAVEGAME_STRATEGY(strategy_)                                  \
-    __attribute__((__constructor__)) static void M_Register(void)              \
-    {                                                                          \
-        Savegame_RegisterStrategy(strategy_);                                  \
-    }

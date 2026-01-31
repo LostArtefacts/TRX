@@ -1,8 +1,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
-#include <trx/game/savegame/bson_read_io.h>
-#include <trx/game/savegame/bson_write_io.h>
+#include <trx/game/savegame/file_read_io.h>
+#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sparks.h>
 
 typedef struct {

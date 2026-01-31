@@ -16,7 +16,7 @@
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
-#include <trx/game/savegame/bson_read_io.h>
+#include <trx/game/savegame/file_read_io.h>
 #include <trx/game/stats.h>
 #include <trx/game/weather_fx.h>
 #include <trx/version.h>
@@ -656,7 +656,7 @@ static bool M_ReadResumeInfo(SG_READ_IO *const io, RESUME_INFO *const resume)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadInventory(SG_READ_IO *const io)
+bool SG_File_LoadInventory(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "inventory"));
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
@@ -688,7 +688,7 @@ bool Savegame_BSON_LoadInventory(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadFlipmaps(SG_READ_IO *const io)
+bool SG_File_LoadFlipmaps(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "flipmap"));
 
@@ -727,7 +727,7 @@ bool Savegame_BSON_LoadFlipmaps(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadCameras(SG_READ_IO *const io)
+bool SG_File_LoadCameras(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "cameras"));
     const size_t count = SG_ARRAY_LEN(io);
@@ -747,7 +747,7 @@ bool Savegame_BSON_LoadCameras(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadLara(SG_READ_IO *const io)
+bool SG_File_LoadLara(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "lara"));
     M_MUST(M_ReadLara(io));
@@ -755,7 +755,7 @@ bool Savegame_BSON_LoadLara(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadItems(SG_READ_IO *const io)
+bool SG_File_LoadItems(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "items"));
     const int32_t count = SG_ARRAY_LEN(io);
@@ -777,7 +777,7 @@ bool Savegame_BSON_LoadItems(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadEffects(SG_READ_IO *const io)
+bool SG_File_LoadEffects(SG_READ_IO *const io)
 {
     if (!g_Config.gameplay.enable_enhanced_saves) {
         return true;
@@ -802,7 +802,7 @@ bool Savegame_BSON_LoadEffects(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadFlares(SG_READ_IO *const io)
+bool SG_File_LoadFlares(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "flares"));
     for (int32_t i = 0;; i++) {
@@ -816,7 +816,7 @@ bool Savegame_BSON_LoadFlares(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadMusic(SG_READ_IO *const io)
+bool SG_File_LoadMusic(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "music"));
     M_MUST(SG_PUSH(io, "current"));
@@ -829,7 +829,7 @@ bool Savegame_BSON_LoadMusic(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadResumeInfoList(SG_READ_IO *const io)
+bool SG_File_LoadResumeInfoList(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "resume_info"));
     const int32_t length = SG_ARRAY_LEN(io);
@@ -851,7 +851,7 @@ bool Savegame_BSON_LoadResumeInfoList(SG_READ_IO *const io)
     M_FINISH();
 }
 
-bool Savegame_BSON_LoadMisc(SG_READ_IO *const io)
+bool SG_File_LoadMisc(SG_READ_IO *const io)
 {
     M_MUST(SG_PUSH(io, "misc"));
 
