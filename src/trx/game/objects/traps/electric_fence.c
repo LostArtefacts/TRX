@@ -2,10 +2,24 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
+#include <trx/log.h>
 
 #define M_EPSILON 32
+
+typedef struct {
+    bool is_initialised;
+    bool is_flat;
+} M_PRIV;
+
+static bool M_IsFenceOnDeathSector(const ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *sector = Room_GetSector32(item->pos, &room_num);
+    return sector->is_death_sector;
+}
 
 static void M_TriggerFenceSparks(const XYZ_32 pos, const bool kill)
 {
@@ -102,80 +116,85 @@ static void M_Control(const int16_t item_num)
     XZ_32 spark_axis = {};
     XZ_32 fence_size = {};
 
-    const bool is_flat = GF_BadGetLevelNum() == 12;
+    M_PRIV *const p = item->priv;
+    if (!p->is_initialised) {
+        p->is_initialised = true;
+        p->is_flat = M_IsFenceOnDeathSector(item);
+    }
+
     switch (item->rot.y) {
     case 0:
         fence_center.x = item->pos.x + WALL_L / 2;
         fence_center.z = item->pos.z + WALL_L / 2;
+        fence_size.x = WALL_L + M_EPSILON;
+        fence_size.z = 128;
         spark_pos.x = fence_center.x - (WALL_L - M_EPSILON);
         spark_pos.z = fence_center.z;
-        if (is_flat) {
+        if (p->is_flat) {
             spark_axis.x = Random_GetControl() & 0x3FF;
             spark_pos.z += spark_axis.x * -(Random_GetControl() & 1);
         }
         spark_axis.x = WALL_L;
         spark_axis.z = 0;
-        fence_size.x = WALL_L + M_EPSILON;
-        fence_size.z = 128;
         break;
 
     case -DEG_90:
         fence_center.x = item->pos.x - WALL_L / 2;
         fence_center.z = item->pos.z + WALL_L / 2;
+        fence_size.x = 128;
+        fence_size.z = WALL_L + M_EPSILON;
         spark_pos.x = fence_center.x;
         spark_pos.z = fence_center.z - (WALL_L - M_EPSILON);
-        if (is_flat) {
+        if (p->is_flat) {
             spark_axis.x = Random_GetControl() & 0x3FF;
             spark_pos.x += spark_axis.x * -(Random_GetControl() & 1);
         }
         spark_axis.x = 0;
         spark_axis.z = WALL_L;
-        fence_size.x = 128;
-        fence_size.z = WALL_L + M_EPSILON;
         break;
 
     case -DEG_180:
         fence_center.x = item->pos.x - WALL_L / 2;
         fence_center.z = item->pos.z - WALL_L / 2;
+        fence_size.x = WALL_L + M_EPSILON;
+        fence_size.z = 128;
         spark_pos.x = fence_center.x - (WALL_L - M_EPSILON);
         spark_pos.z = fence_center.z;
-        if (is_flat) {
+        if (p->is_flat) {
             spark_axis.x = Random_GetControl() & 0x3FF;
             spark_pos.z += spark_axis.x * -(Random_GetControl() & 1);
         }
         spark_axis.x = WALL_L;
         spark_axis.z = 0;
-        fence_size.x = WALL_L + M_EPSILON;
-        fence_size.z = 128;
         break;
 
     case DEG_90:
         fence_center.x = item->pos.x + WALL_L / 2;
         fence_center.z = item->pos.z - WALL_L / 2;
+        fence_size.x = 128;
+        fence_size.z = WALL_L + M_EPSILON;
         spark_pos.x = fence_center.x;
         spark_pos.z = fence_center.z - (WALL_L - M_EPSILON);
-        if (is_flat) {
+        if (p->is_flat) {
             spark_axis.x = Random_GetControl() & 0x3FF;
             spark_pos.x += spark_axis.x * -(Random_GetControl() & 1);
         }
         spark_axis.x = 0;
         spark_axis.z = WALL_L;
-        fence_size.x = 128;
-        fence_size.z = WALL_L + M_EPSILON;
         break;
 
     default:
         break;
     }
 
-    if (!(Random_GetControl() & 0x1F)) {
+    if ((Random_GetControl() & 0x1F) == 0) {
         if (spark_axis.x != 0) {
             spark_pos.x += Random_GetControl() & spark_axis.x;
         } else {
             spark_pos.z += Random_GetControl() & spark_axis.z;
         }
 
-        if (is_flat) {
+        if (p->is_flat) {
             spark_pos.y = item->pos.y - (Random_GetControl() & 0x1F);
         } else {
             spark_pos.y = item->pos.y - (Random_GetControl() & 0x7FF)
@@ -197,7 +216,7 @@ static void M_Control(const int16_t item_num)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->electrocuted || is_flat
+    if (lara->electrocuted || p->is_flat
         || lara_item->pos.x < fence_center.x - fence_size.x
         || lara_item->pos.x > fence_center.x + fence_size.x
         || lara_item->pos.z < fence_center.z - fence_size.z
@@ -214,6 +233,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->draw_func = nullptr;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
 }
 
