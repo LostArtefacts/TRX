@@ -340,7 +340,7 @@ GS_DEFINE(SETTING_ENABLE_BRAID_DESCRIPTION,                   "Enables Lara's br
 GS_DEFINE(SETTING_ENABLE_BREEZE_DESCRIPTION,                  "Enables the breeze effect on Lara's braid in appropriate rooms.")
 GS_DEFINE(SETTING_ENABLE_BUFFERING_FUNC_KEYS_DESCRIPTION,     "Enables F-key (1-frame) buffering to achieve precise control of Lara's movement. This function originally only exists in the TombATI port (TR1).")
 GS_DEFINE(SETTING_ENABLE_BUFFERING_INVENTORY_DESCRIPTION,     "Enables inventory (2-frame) buffering to achieve precise control of Lara's movement.")
-GS_DEFINE(SETTING_ENABLE_CHEATS_DESCRIPTION,                  "Enables various cheats:\n\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable fly cheat (swimming midair).\n  - WALK key: exit fly mode.\n  - GUN key: open the closest door (doesn't work in some places).")
+GS_DEFINE(SETTING_ENABLE_CHEATS_DESCRIPTION,                  "Enables various cheats:\n\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable fly cheat (swimming midair).\n  - WALK key: exit fly mode.\n  - GUN key: open the closest door (doesn't work in some places).")
 GS_DEFINE(SETTING_ENABLE_COMPASS_STATS_DESCRIPTION,           "Enables showing level statistics when the compass is selected.")
 GS_DEFINE(SETTING_ENABLE_CONSOLE_DESCRIPTION,                 "Enables the developer console.")
 GS_DEFINE(SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION,        "Allows Lara to turn mid-air and grab the ledge she just stepped off, if the action input is held while falling.")
