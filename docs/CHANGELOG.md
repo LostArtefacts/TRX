@@ -31,6 +31,7 @@
 - added an option to control whether or not moving boulders should shake the camera (Gameplay options → General → Enable boulder shake)
 - added an option to make Lara stumble if she hops backwards and there is a slope behind her (Gameplay options → Controls → Backwards slope stumble)
 - added `/trigger` and `/untrigger` console commands, with support for targeting by item ID, item name, or object name
+- improved `/tp` to accept `room`/`item` prefixes and `rN`/`iN` shortcuts
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
 - improved indentation for nested bullets in the UIs

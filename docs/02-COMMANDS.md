@@ -19,9 +19,14 @@ whichever key you have bound, and not include it as part of the command itself.
   Reveals Lara's exact coordinates in the universe. Knowledge is power!
 
 - `/tp {room_number}`  
+  `/tp room {room_number}`  
+  `/tp r{room_number}`  
+  `/tp {room_number}` (legacy)  
+  `/tp item {item_number}`  
+  `/tp i{item_number}`  
   `/tp {x} {y} {z}`  
   `/tp {object}`  
-  Instant travel! Teleports Lara to a random spot within the specified room, the specified X,Y,Z coordinates, or the nearest object of specific type.
+  Instant travel! Teleports Lara to a random spot within the specified room, to an item's position by item number, to the specified X,Y,Z coordinates, or to the nearest object of a specific type.
 
 - `/hp`  
   `/hp {health}`  
