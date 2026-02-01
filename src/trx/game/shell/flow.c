@@ -81,6 +81,11 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
 
 static void M_SetupSDL(void)
 {
+    SDL_version compiled;
+    SDL_VERSION(&compiled);
+    LOG_INFO(
+        "SDL version: %d.%d.%d", compiled.major, compiled.minor,
+        compiled.patch);
     if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) < 0) {
         Shell_ExitSystemFmt("Cannot initialize SDL: %s", SDL_GetError());
     }

@@ -15,9 +15,12 @@ static size_t m_MixBufferCapacity = 0;
 static float *m_MixBuffer = nullptr;
 static Uint8 m_Silence = 0;
 static bool m_Muted = false;
+static bool m_CallbackSeen = false;
+static bool m_ShouldSkipSDLQuitAudio = false;
 
 static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
 {
+    m_CallbackSeen = true;
     memset(m_MixBuffer, m_Silence, len);
     Audio_Stream_Mix(m_MixBuffer, len);
     Audio_Sample_Mix(m_MixBuffer, len);
@@ -35,6 +38,8 @@ bool Audio_Init(void)
         return true;
     }
 
+    m_CallbackSeen = false;
+    m_ShouldSkipSDLQuitAudio = false;
     int32_t result = SDL_InitSubSystem(SDL_INIT_AUDIO);
     if (result < 0) {
         LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
@@ -81,7 +86,11 @@ bool Audio_Shutdown(void)
 
     if (g_AudioDeviceID) {
         SDL_PauseAudioDevice(g_AudioDeviceID, 1);
-        SDL_CloseAudioDevice(g_AudioDeviceID);
+        if (!m_CallbackSeen) {
+            m_ShouldSkipSDLQuitAudio = true;
+        } else {
+            SDL_CloseAudioDevice(g_AudioDeviceID);
+        }
         g_AudioDeviceID = 0;
     }
     Memory_FreePointer(&m_MixBuffer);
@@ -89,8 +98,15 @@ bool Audio_Shutdown(void)
     Audio_Sample_Shutdown();
     Audio_Stream_Shutdown();
 
-    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    if (!m_ShouldSkipSDLQuitAudio) {
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    }
     return true;
+}
+
+bool Audio_ShouldSkipSDLQuitAudio(void)
+{
+    return m_ShouldSkipSDLQuitAudio;
 }
 
 void Audio_Mute(void)
@@ -106,6 +122,22 @@ void Audio_Unmute(void)
 bool Audio_IsMuted(void)
 {
     return m_Muted;
+}
+
+void Audio_LockDevice(void)
+{
+    if (g_AudioDeviceID == 0) {
+        return;
+    }
+    SDL_LockAudioDevice(g_AudioDeviceID);
+}
+
+void Audio_UnlockDevice(void)
+{
+    if (g_AudioDeviceID == 0) {
+        return;
+    }
+    SDL_UnlockAudioDevice(g_AudioDeviceID);
 }
 
 int32_t Audio_GetAVChannelLayout(const int32_t channels)
