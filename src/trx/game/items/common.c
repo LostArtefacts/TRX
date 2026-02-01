@@ -6,7 +6,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/general/traps/shoal.h>
+#include <trx/game/objects/general/shoal.h>
 #include <trx/game/output/const.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
