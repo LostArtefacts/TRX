@@ -1,8 +1,6 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/engine/audio.h>
-#include <trx/game/output.h>
-#include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/log.h>
 #include <trx/memory.h>
@@ -134,32 +132,4 @@ void Shell_ScheduleExit(void)
 bool Shell_IsExiting(void)
 {
     return m_IsExiting;
-}
-
-void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
-{
-    Shell_HandleCommonConfigChange(old, new);
-
-#define L_CHANGED(subject) (old->subject != new->subject)
-
-    if (L_CHANGED(rendering.upscaling_filter)
-        || L_CHANGED(rendering.enable_wireframe)
-        || L_CHANGED(rendering.wireframe_width)
-        || L_CHANGED(rendering.enable_vsync)
-        || L_CHANGED(rendering.anisotropy_filter)) {
-        Output_ApplyRenderSettings();
-    }
-
-    if (L_CHANGED(visuals.fov)) {
-        if (Viewport_GetSystemFOV() == -1) {
-            Viewport_AlterFOV(-1, FOV_MODE_GAME);
-        }
-    }
-
-    if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
-        Savegame_Shutdown();
-        Savegame_Init();
-        Savegame_ScanSavedGames();
-    }
-#undef L_CHANGED
 }

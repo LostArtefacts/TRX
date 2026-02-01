@@ -3,6 +3,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
+#include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/test_replay.h>
@@ -134,8 +135,7 @@ void Shell_SyncFromWindow(const bool update_viewport)
     }
 }
 
-void Shell_HandleCommonConfigChange(
-    const CONFIG *const old, const CONFIG *const new)
+void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
 {
     if (!TestReplay_IsOpened()) {
         Config_Write();
@@ -176,6 +176,26 @@ void Shell_HandleCommonConfigChange(
 
     if (L_CHANGED(visuals.enable_braid)) {
         Lara_Mesh_UpdateHair(false);
+    }
+
+    if (L_CHANGED(rendering.upscaling_filter)
+        || L_CHANGED(rendering.enable_wireframe)
+        || L_CHANGED(rendering.wireframe_width)
+        || L_CHANGED(rendering.enable_vsync)
+        || L_CHANGED(rendering.anisotropy_filter)) {
+        Output_ApplyRenderSettings();
+    }
+
+    if (L_CHANGED(visuals.fov)) {
+        if (Viewport_GetSystemFOV() == -1) {
+            Viewport_AlterFOV(-1, FOV_MODE_GAME);
+        }
+    }
+
+    if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
+        Savegame_Shutdown();
+        Savegame_Init();
+        Savegame_ScanSavedGames();
     }
 #undef L_CHANGED
 }
