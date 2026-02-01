@@ -120,6 +120,7 @@
     - added Beacon Light control
     - added On/Off Light control
 - added Lara's backwards-hop stumble if there is a slope behind her
+- improved look camera stability to reduce idle-breathing camera bobbing/roll
 - improved Monkeys to no longer hardcode hostility status based on Tiger presence
 - changed hostile Monkeys to share hostility status, like TR2 Barkhang monks (the original TR3 behavior can be restored in Gameplay → General → Ally hostility policy)
 - changed enemy drops to appear at the tile center, to conform with the OG

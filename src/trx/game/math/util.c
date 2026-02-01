@@ -154,9 +154,15 @@ bool XYZ_32_IsNearby(
         && delta.y < distance && delta.z > -distance && delta.z < distance;
 }
 
-int32_t XYZ_32_GetDistance0(const XYZ_32 *const pos)
+int32_t XYZ_32_GetLength(const XYZ_32 pos)
 {
-    return Math_Sqrt(SQUARE(pos->x) + SQUARE(pos->y) + SQUARE(pos->z));
+    return Math_Sqrt(SQUARE(pos.x) + SQUARE(pos.y) + SQUARE(pos.z));
+}
+
+int64_t XYZ_32_GetLength2_64(const XYZ_32 pos)
+{
+    return SQUARE((int64_t)pos.x) + SQUARE((int64_t)pos.y)
+        + SQUARE((int64_t)pos.z);
 }
 
 bool XYZ_32_AreEquivalent(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
@@ -174,13 +180,63 @@ XYZ_32 XYZ_32_From16(const XYZ_16 src)
     return (XYZ_32) { src.x, src.y, src.z };
 }
 
-XYZ_32 XYZ_32_DirShift(XYZ_32 src, int16_t angle, int32_t shift)
+XYZ_32 XYZ_32_OffsetYaw(
+    const XYZ_32 src, const int16_t yaw, const int32_t distance)
 {
     return (XYZ_32) {
-        .x = src.x + ((shift * Math_Sin(angle)) >> W2V_SHIFT),
+        .x = src.x + ((distance * Math_Sin(yaw)) >> W2V_SHIFT),
         .y = src.y,
-        .z = src.z + ((shift * Math_Cos(angle)) >> W2V_SHIFT),
+        .z = src.z + ((distance * Math_Cos(yaw)) >> W2V_SHIFT),
     };
+}
+
+XYZ_32 XYZ_32_FromYawPitch(const int16_t yaw, const int16_t pitch)
+{
+    return (XYZ_32) {
+        .x = (Math_Sin(yaw) * Math_Cos(pitch)) >> W2V_SHIFT,
+        .y = -Math_Sin(pitch),
+        .z = (Math_Cos(yaw) * Math_Cos(pitch)) >> W2V_SHIFT,
+    };
+}
+
+int64_t XYZ_32_DotProduct_64(const XYZ_32 a, const XYZ_32 b)
+{
+    return (int64_t)a.x * b.x + (int64_t)a.y * b.y + (int64_t)a.z * b.z;
+}
+
+bool XYZ_32_ProjectPointOntoAxis(
+    const XYZ_32 origin, const XYZ_32 axis, const int64_t axis_len2,
+    XYZ_32 *const pos)
+{
+    // Finds the value `t` such that the point
+    //   origin + t * axis
+    // is the closest point on the line to the original *pos, and then writes
+    // that point back into *pos.
+    //
+    // Example:
+    // - origin = (0, 0, 0)
+    // - axis   = (1, 0, 0)  // line is the X axis
+    // - *pos   = (5, 2, -3)
+    // The closest point on the X axis is (5, 0, 0), so after the call:
+    // - *pos = (5, 0, 0)
+
+    if (axis_len2 == 0) {
+        return false;
+    }
+
+    const XYZ_32 offset = {
+        .x = pos->x - origin.x,
+        .y = pos->y - origin.y,
+        .z = pos->z - origin.z,
+    };
+
+    const int64_t t_num = XYZ_32_DotProduct_64(offset, axis);
+    *pos = (XYZ_32) {
+        .x = origin.x + (int32_t)((t_num * axis.x) / axis_len2),
+        .y = origin.y + (int32_t)((t_num * axis.y) / axis_len2),
+        .z = origin.z + (int32_t)((t_num * axis.z) / axis_len2),
+    };
+    return true;
 }
 
 float XYZ_F_DotProduct(const XYZ_F a, const XYZ_F b)
