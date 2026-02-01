@@ -84,9 +84,12 @@ OBJECT *Object_GetByGameID(const int32_t game_id)
 
 STATIC_OBJECT_3D *Object_Get3DStatic(const int32_t static_id)
 {
-    ASSERT(m_StaticObjects3D != nullptr);
-    ASSERT(static_id >= 0 && static_id < m_StaticObjects3DCount);
     return &m_StaticObjects3D[static_id];
+}
+
+bool Object_IsValidStatid3D(const int32_t static_id)
+{
+    return static_id >= 0 && static_id < m_StaticObjects3DCount;
 }
 
 STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)

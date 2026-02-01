@@ -73,7 +73,14 @@ static void M_FixStatics(void)
         room_stat_vecs[i] = Vector_Create(sizeof(STATIC_MESH));
         ROOM *const room = Room_Get(i);
         for (int32_t m = 0; m < room->num_static_meshes; m++) {
-            Vector_Add(room_stat_vecs[i], &room->static_meshes[m]);
+            STATIC_MESH *const static_mesh = &room->static_meshes[m];
+            if (Object_IsValidStatid3D(static_mesh->static_num)) {
+                Vector_Add(room_stat_vecs[i], static_mesh);
+            } else {
+                LOG_WARNING(
+                    "Invalid static 3D (id %d) in room %d",
+                    static_mesh->static_num, i);
+            }
         }
     }
 
