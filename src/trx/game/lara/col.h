@@ -12,6 +12,12 @@ typedef enum {
     // clang-format on
 } EDGE_CATCH;
 
+typedef enum {
+    LANDED_OK,
+    LANDED_BAD,
+    LANDED_HANDLED,
+} LANDED_STATE;
+
 void Lara_Col_Register(
     LARA_TRX_STATE state, void (*handle_func)(ITEM *item, COLL_INFO *coll));
 void Lara_Col_Update(ITEM *item, COLL_INFO *coll);
@@ -26,7 +32,7 @@ EDGE_CATCH Lara_Col_TestEdgeCatch(
     const ITEM *item, const COLL_INFO *coll, int32_t *edge);
 bool Lara_Col_Fallen(ITEM *item, const COLL_INFO *coll);
 void Lara_Col_DeflectEdgeJump(ITEM *item, COLL_INFO *coll);
-bool Lara_Col_LandedBad(ITEM *item);
+LANDED_STATE Lara_Col_LandedBad(ITEM *item);
 void Lara_Col_MonkeySwingSnap(ITEM *item);
 void Lara_Col_HangTest(ITEM *item, COLL_INFO *coll);
 void Lara_Col_ItemPush(
