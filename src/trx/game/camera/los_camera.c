@@ -42,9 +42,26 @@ static M_IDEAL m_LastIdeal = {};
 static M_IDEAL m_LastLookIdeal = {};
 static int32_t m_Snaps = 0;
 
+static CAMERA_LOOK_SETTINGS m_LookSettings = {
+    // clang-format off
+    .head_turn         = +2 * DEG_1,
+    .max_head_rotation = +44 * DEG_1,
+    .min_head_rotation = -44 * DEG_1,
+    .max_head_tilt     = +30 * DEG_1,
+    .min_head_tilt     = -35 * DEG_1,
+    .torso_head_rot_y  = 1.0f,
+    .torso_head_rot_x  = 1.0f,
+    // clang-format on
+};
+
 static int16_t M_GetChaseSpeed(void)
 {
     return M_CHASE_SPEED;
+}
+
+static const CAMERA_LOOK_SETTINGS *M_GetLookSettingsFunc(const bool on_surface)
+{
+    return &m_LookSettings;
 }
 
 static bool M_LOS(
@@ -903,6 +920,7 @@ static void M_Update(
 
 static const CAMERA_STRATEGY m_Strategy = {
     .get_chase_speed_func = M_GetChaseSpeed,
+    .get_look_settings_func = M_GetLookSettingsFunc,
     .clamp_result_func = M_ClampResult,
     .reset_func = M_Reset,
     .update_func = M_Update,

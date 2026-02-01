@@ -27,6 +27,8 @@ typedef struct {
     bool test_early_lb_shift;
     bool use_fixed_los_check;
     bool override_chase_speed;
+    CAMERA_LOOK_SETTINGS look_settings;
+    CAMERA_LOOK_SETTINGS look_settings_surf;
 } M_SETTINGS;
 
 static const M_SETTINGS m_CameraSettings[CAMERA_MODE_NUMBER_OF] = {
@@ -39,7 +41,30 @@ static const M_SETTINGS m_CameraSettings[CAMERA_MODE_NUMBER_OF] = {
         .test_early_lb_shift = true,
         .use_fixed_los_check = false,
         .override_chase_speed = false,
+        .look_settings = {
+            // clang-format off
+            .max_head_rotation = +50 * DEG_1,
+            .min_head_rotation = -50 * DEG_1,
+            .head_turn         = +2 * DEG_1,
+            .max_head_tilt     = +22 * DEG_1,
+            .min_head_tilt     = -42 * DEG_1,
+            .torso_head_rot_y  = 1.0f,
+            .torso_head_rot_x  = 1.0f,
+            // clang-format on
+        },
+        .look_settings_surf = {
+            // clang-format off
+            .head_turn         = +3 * DEG_1,
+            .max_head_rotation = +50 * DEG_1,
+            .min_head_rotation = -50 * DEG_1,
+            .max_head_tilt     = +40 * DEG_1,
+            .min_head_tilt     = -40 * DEG_1,
+            .torso_head_rot_y  = 0.5f,
+            .torso_head_rot_x  = 0.0f,
+            // clang-format on
+        },
     },
+
     [CAMERA_MODE_TR2] = {
         .chase_speed = 10,
         .min_square = SQUARE(WALL_L / 3),
@@ -49,19 +74,47 @@ static const M_SETTINGS m_CameraSettings[CAMERA_MODE_NUMBER_OF] = {
         .test_early_lb_shift = false,
         .use_fixed_los_check = true,
         .override_chase_speed = true,
+        .look_settings = {
+            // clang-format off
+            .head_turn         = +2 * DEG_1,
+            .max_head_rotation = +44 * DEG_1,
+            .min_head_rotation = -44 * DEG_1,
+            .max_head_tilt     = +22 * DEG_1,
+            .min_head_tilt     = -42 * DEG_1,
+            .torso_head_rot_y  = 1.0f,
+            .torso_head_rot_x  = 1.0f,
+            // clang-format on
+        },
+        .look_settings_surf = {
+            // clang-format off
+            .head_turn         = +3 * DEG_1,
+            .max_head_rotation = +50 * DEG_1,
+            .min_head_rotation = -50 * DEG_1,
+            .max_head_tilt     = +40 * DEG_1,
+            .min_head_tilt     = -40 * DEG_1,
+            .torso_head_rot_y  = 0.5f,
+            .torso_head_rot_x  = 0.0f,
+            // clang-format on
+        },
     },
 };
 
 static BOX_INFO m_FixedBox = {};
 
-static M_SETTINGS M_GetSettings(void)
+static const M_SETTINGS *M_GetSettings(void)
 {
-    return m_CameraSettings[g_Config.visuals.camera_mode];
+    return &m_CameraSettings[g_Config.visuals.camera_mode];
 }
 
 static int16_t M_GetChaseSpeed(void)
 {
-    return M_GetSettings().chase_speed;
+    return M_GetSettings()->chase_speed;
+}
+
+static const CAMERA_LOOK_SETTINGS *M_GetLookSettingsFunc(const bool on_surface)
+{
+    return on_surface ? &M_GetSettings()->look_settings_surf
+                      : &M_GetSettings()->look_settings;
 }
 
 static const BOX_INFO *M_GetBox(
@@ -174,7 +227,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     int32_t top = box->top;
     int32_t bottom = box->bottom;
 
-    const M_SETTINGS settings = M_GetSettings();
+    const M_SETTINGS *const settings = M_GetSettings();
 
     int32_t test = ROUND_TO_SECTOR_END(target->z - WALL_L);
     const SECTOR *const good_left =
@@ -184,7 +237,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box != nullptr && box->left < left) {
             left = box->left;
         }
-    } else if (settings.test_shift_pair) {
+    } else if (settings->test_shift_pair) {
         left = test;
     }
 
@@ -196,7 +249,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box != nullptr && box->right > right) {
             right = box->right;
         }
-    } else if (settings.test_shift_pair) {
+    } else if (settings->test_shift_pair) {
         right = test;
     }
 
@@ -208,7 +261,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box != nullptr && box->top < top) {
             top = box->top;
         }
-    } else if (settings.test_shift_pair) {
+    } else if (settings->test_shift_pair) {
         top = test;
     }
 
@@ -220,7 +273,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         if (box != nullptr && box->bottom > bottom) {
             bottom = box->bottom;
         }
-    } else if (settings.test_shift_pair) {
+    } else if (settings->test_shift_pair) {
         bottom = test;
     }
 
@@ -244,7 +297,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
     };
 
     bool clip = false;
-    bool prefer_a = !settings.test_shift_pair;
+    bool prefer_a = !settings->test_shift_pair;
 
 #define L_SHIFT(axis1, axis2, l1, l2, r1, r2)                                  \
     shift(                                                                     \
@@ -254,7 +307,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         &target_b.axis1, &target_b.axis2, &target_b.y, g_Camera.target.axis1,  \
         g_Camera.target.axis2, g_Camera.target.y, l1, r2, r1, l2)
 
-    if (!settings.test_shift_pair) {
+    if (!settings->test_shift_pair) {
         if (target->z < left && good_left == nullptr) {
             clip = true;
             if (target->x < g_Camera.target.x) {
@@ -331,7 +384,7 @@ static void M_SmartShift(GAME_VECTOR *const target, void (*shift)(M_SHIFT_ARGS))
         return;
     }
 
-    if (settings.test_shift_pair) {
+    if (settings->test_shift_pair) {
         if (prefer_a) {
             prefer_a = LOS_Check(&g_Camera.target, &target_a, false);
         } else {
@@ -372,8 +425,8 @@ static void M_Clip(M_SHIFT_ARGS)
         *y = top;
     }
 
-    const M_SETTINGS settings = M_GetSettings();
-    if (settings.clip_shift_height) {
+    const M_SETTINGS *const settings = M_GetSettings();
+    if (settings->clip_shift_height) {
         *h = height;
     }
 }
@@ -389,8 +442,9 @@ static void M_Shift(M_SHIFT_ARGS)
     const int32_t tr_square = t_square + r_square;
     const int32_t bl_square = b_square + l_square;
 
-    const M_SETTINGS settings = M_GetSettings();
-    const int32_t scaled_target = g_Camera.target_square * settings.shift_scale;
+    const M_SETTINGS *const settings = M_GetSettings();
+    const int32_t scaled_target =
+        g_Camera.target_square * settings->shift_scale;
 
     int32_t shift;
     if (g_Camera.target_square < tl_square) {
@@ -400,7 +454,7 @@ static void M_Shift(M_SHIFT_ARGS)
             shift = Math_Sqrt(shift);
             *y = target_y + (top >= bottom ? shift : -shift);
         }
-    } else if (tl_square > settings.min_square) {
+    } else if (tl_square > settings->min_square) {
         *x = left;
         *y = top;
     } else if (g_Camera.target_square < bl_square) {
@@ -411,7 +465,7 @@ static void M_Shift(M_SHIFT_ARGS)
             *y = target_y + (top < bottom ? shift : -shift);
         }
     } else if (
-        settings.test_early_lb_shift && bl_square > settings.min_square) {
+        settings->test_early_lb_shift && bl_square > settings->min_square) {
         *x = left;
         *y = bottom;
     } else if (scaled_target < tr_square) {
@@ -421,7 +475,7 @@ static void M_Shift(M_SHIFT_ARGS)
             *x = target_x + (left < right ? shift : -shift);
             *y = top;
         }
-    } else if (settings.test_early_lb_shift || bl_square <= tr_square) {
+    } else if (settings->test_early_lb_shift || bl_square <= tr_square) {
         *x = right;
         *y = top;
     } else {
@@ -518,10 +572,11 @@ static void M_Chase(const ITEM *const item)
         .room_num = g_Camera.pos.room_num,
     };
 
-    const M_SETTINGS settings = M_GetSettings();
-    const int16_t speed = settings.override_chase_speed || g_Camera.fixed_camera
+    const M_SETTINGS *const settings = M_GetSettings();
+    const int16_t speed =
+        settings->override_chase_speed || g_Camera.fixed_camera
         ? g_Camera.speed
-        : settings.chase_speed;
+        : settings->chase_speed;
     M_SmartShift(&target, M_Shift);
     M_Move(&target, speed);
 }
@@ -592,8 +647,8 @@ static void M_Fixed(void)
         .room_num = fixed->data,
     };
 
-    const M_SETTINGS settings = M_GetSettings();
-    if (settings.use_fixed_los_check
+    const M_SETTINGS *const settings = M_GetSettings();
+    if (settings->use_fixed_los_check
         && !LOS_Check(&g_Camera.target, &target, false)) {
         M_ShiftClamp(&target, STEP_L);
     }
@@ -826,6 +881,7 @@ static void M_Update(
 
 static const CAMERA_STRATEGY m_Strategy = {
     .get_chase_speed_func = M_GetChaseSpeed,
+    .get_look_settings_func = M_GetLookSettingsFunc,
     .clamp_result_func = M_ClampResult,
     .reset_func = M_Reset,
     .update_func = M_Update,

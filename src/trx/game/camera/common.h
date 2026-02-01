@@ -13,6 +13,7 @@ void Camera_ResetPosition(void);
 void Camera_Reset(void);
 void Camera_ApplyBounce(void);
 void Camera_ClampInterpResult(void);
+const CAMERA_LOOK_SETTINGS *Camera_GetLookSettings(bool on_surface);
 
 void Camera_RegisterStrategy(CAMERA_MODE mode, CAMERA_STRATEGY strategy);
 
