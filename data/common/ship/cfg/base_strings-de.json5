@@ -427,7 +427,7 @@
         "SETTING_ENABLE_BUFFERING_INVENTORY": "\\{review}Pufferung (Inventar)",
         "SETTING_ENABLE_BUFFERING_INVENTORY_DESCRIPTION": "\\{review}Aktiviert die Pufferung des Inventars (2 Frames), um eine präzise Steuerung von Laras Bewegung zu ermöglichen.",
         "SETTING_ENABLE_CHEATS": "Cheats",
-        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Aktiviert verschiedene Cheats:\n\n- L: Beende das Level sofort.\n- I: eine Erhöhung der Anzahl der Munition und Medipacks; und alle plotrelevanten Items des aktuellen Levels.\n- O: Aktiviere Flug-Cheat (in der Luft schwimmen).\n  - GEHEN-Taste: beende Flug-Modus.\n  - WAFFE ZIEHEN-Taste: öffne die nächstgelegene Tür (funktioniert an ein paar Stellen nicht).",
+        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Aktiviert verschiedene Cheats:\n\n- L: Beende das Level sofort.\n- I: eine Erhöhung der Anzahl der Munition und Medipacks; und alle plotrelevanten Items des aktuellen Levels.\n- O: Aktiviere Flug-Cheat (in der Luft schwimmen).\n  - GEHEN-Taste: beende Flug-Modus.\n  - WAFFE ZIEHEN-Taste: öffne die nächstgelegene Tür (funktioniert an ein paar Stellen nicht).",
         "SETTING_ENABLE_COMPASS_STATS": "Levelstatistiken im Kompass",
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Aktiviert die Anzeige von Levelstatistiken wenn der Kompass ausgewählt wird.",
         "SETTING_ENABLE_CONSOLE": "Konsole",

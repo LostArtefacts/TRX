@@ -427,7 +427,7 @@
         "SETTING_ENABLE_BUFFERING_INVENTORY": "Buffering (inventario)",
         "SETTING_ENABLE_BUFFERING_INVENTORY_DESCRIPTION": "Abilita il buffering dell'inventario (2 fotogrammi) per ottenere un controllo preciso dei movimenti di Lara.",
         "SETTING_ENABLE_CHEATS": "Trucchi",
-        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Abilita vari trucchi:\n\n- L: termina immediatamente il livello.\n- I: dà a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n  - tasto CAMMINA: disabilita il trucco DOZY.\n  - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi).",
+        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Abilita vari trucchi:\n\n- L: termina immediatamente il livello.\n- I: dà a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n  - tasto CAMMINA: disabilita il trucco DOZY.\n  - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi).",
         "SETTING_ENABLE_COMPASS_STATS": "Statistiche livello bussola",
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Abilita la visualizzazione delle statistiche del livello quando è selezionata la bussola.",
         "SETTING_ENABLE_CONSOLE": "Console",

@@ -427,7 +427,7 @@
         "SETTING_ENABLE_BUFFERING_INVENTORY": "Buforowanie (ekwipunek)",
         "SETTING_ENABLE_BUFFERING_INVENTORY_DESCRIPTION": "Włącza buforowanie ekranu ekwipunku, aby uzyskać precyzyjną kontrolę nad ruchem Lary (2 klatki).",
         "SETTING_ENABLE_CHEATS": "Cheaty",
-        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Włącza różne cheaty:\n\n- L: natychmiast kończy poziom.\n- I: daje Larze wszystkie bronie; zwiększa ilość amunicji i apteczek; daje wszystkie przedmioty z bieżącego poziomu.\n- O: włącza latanie.\n  - Klawisz chodzenia: wyjście z trybu latani.\n  - Klawisz broni: otwiera najbliższe drzwi.",
+        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Włącza różne cheaty:\n\n- L: natychmiast kończy poziom.\n- I: daje Larze wszystkie bronie; zwiększa ilość amunicji i apteczek; daje wszystkie przedmioty z bieżącego poziomu.\n- O: włącza latanie.\n  - Klawisz chodzenia: wyjście z trybu latani.\n  - Klawisz broni: otwiera najbliższe drzwi.",
         "SETTING_ENABLE_COMPASS_STATS": "Statystyki w kompasie",
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Włącza wyświetlanie statystyk aktualnego poziomu przy wybraniu kompasu.",
         "SETTING_ENABLE_CONSOLE": "Konsola",

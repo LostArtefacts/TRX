@@ -427,7 +427,7 @@
         "SETTING_ENABLE_BUFFERING_INVENTORY": "\\{review}Mise en mémoire tampon (inventaire)",
         "SETTING_ENABLE_BUFFERING_INVENTORY_DESCRIPTION": "\\{review}Active la mise en mémoire tampon de l'inventaire (2 images) pour un contrôle précis des mouvements de Lara.",
         "SETTING_ENABLE_CHEATS": "Triche",
-        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Active plusieurs fonctions de triche :\n- L: termine immédiatement le niveau.\n- I: donne toutes les armes à Lara, le maximum en munitions et trousses de soin, et tous les éléments utiles au niveau en cours.\n- O: Fait voler Lara (nager dans les airs).\n     - Touche MARCHER : Revenir au sol.\n     - Touche ESPACE : Ouvre les portes fermées (peut ne pas fonctionner sur certaines).",
+        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Active plusieurs fonctions de triche :\n- L: termine immédiatement le niveau.\n- I: donne toutes les armes à Lara, le maximum en munitions et trousses de soin, et tous les éléments utiles au niveau en cours.\n- O: Fait voler Lara (nager dans les airs).\n  - Touche MARCHER : Revenir au sol.\n  - Touche ESPACE : Ouvre les portes fermées (peut ne pas fonctionner sur certaines).",
         "SETTING_ENABLE_COMPASS_STATS": "Statistiques dans la boussole",
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Affiche les statistiques du niveau lorsque la boussole est sélectionnée.",
         "SETTING_ENABLE_CONSOLE": "Console",

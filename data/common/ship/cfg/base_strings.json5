@@ -427,7 +427,7 @@
         "SETTING_ENABLE_BUFFERING_INVENTORY": "Buffering (inventory)",
         "SETTING_ENABLE_BUFFERING_INVENTORY_DESCRIPTION": "Enables inventory (2-frame) buffering to achieve precise control of Lara's movement.",
         "SETTING_ENABLE_CHEATS": "Cheats",
-        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Enables various cheats:\n\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable fly cheat (swimming midair).\n  - WALK key: exit fly mode.\n  - GUN key: open the closest door (doesn't work in some places).",
+        "SETTING_ENABLE_CHEATS_DESCRIPTION": "Enables various cheats:\n\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable fly cheat (swimming midair).\n  - WALK key: exit fly mode.\n  - GUN key: open the closest door (doesn't work in some places).",
         "SETTING_ENABLE_COMPASS_STATS": "Level statistics in compass",
         "SETTING_ENABLE_COMPASS_STATS_DESCRIPTION": "Enables showing level statistics when the compass is selected.",
         "SETTING_ENABLE_CONSOLE": "Console",

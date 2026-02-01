@@ -32,6 +32,7 @@
 - added an option to make Lara stumble if she hops backwards and there is a slope behind her (Gameplay options → Controls → Backwards slope stumble)
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
+- improved indentation for nested bullets in the UIs
 - changed photo mode to no longer show "Entering photo mode" in the console
 - changed photo mode to always display a red frame around the game view when active (not visible in screenshots)
 - changed stats dialog to include allies in kill count if they turn hostile. This applies to all levels that follow, and the final stats screen.

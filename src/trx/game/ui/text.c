@@ -279,13 +279,57 @@ static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
     return entry != nullptr ? entry->glyph : nullptr;
 }
 
+static int32_t M_DetectBulletIndent(
+    const M_GLYPH_INFO **glyphs, const size_t glyph_count, const size_t idx)
+{
+    size_t scan = idx;
+    int32_t leading_spaces = 0;
+    while (scan < glyph_count && glyphs[scan]->role == GLYPH_SPACE) {
+        leading_spaces++;
+        scan++;
+    }
+    if (scan + 1 < glyph_count && glyphs[scan]->role == GLYPH_TEXT
+        && glyphs[scan]->text[0] == '-' && glyphs[scan]->text[1] == '\0'
+        && glyphs[scan + 1]->role == GLYPH_SPACE) {
+        return leading_spaces + 2;
+    }
+    return 0;
+}
+
+static void M_EmitIndent(
+    char *const dst, size_t *const out_len, const int32_t indent,
+    const float space_width, float *const cur_width)
+{
+    for (int32_t s = 0; s < indent; s++) {
+        if (dst != nullptr) {
+            dst[*out_len] = ' ';
+        }
+        (*out_len)++;
+    }
+    *cur_width += indent * space_width;
+}
+
+static void M_EmitNewline(
+    char *const dst, size_t *const out_len, const int32_t indent,
+    const float space_width, float *const cur_width)
+{
+    if (dst != nullptr) {
+        dst[*out_len] = '\n';
+    }
+    (*out_len)++;
+    *cur_width = 0.0f;
+    if (indent > 0) {
+        M_EmitIndent(dst, out_len, indent, space_width, cur_width);
+    }
+}
+
 static size_t M_WordWrap(
     const M_GLYPH_INFO **glyphs, const size_t glyph_count, const float scale_f,
     const float max_width, char *const dst)
 {
     size_t out_len = 0;
     float cur_width = 0.0f;
-    bool in_bullet = false;
+    int32_t bullet_indent = 0;
 
     const float space_width = M_WORD_SPACING * scale_f;
 
@@ -309,31 +353,28 @@ static size_t M_WordWrap(
             continue;
         }
 
+        if (cur_width == 0.0f && bullet_indent == 0) {
+            bullet_indent = M_DetectBulletIndent(glyphs, glyph_count, i);
+        }
+
         if (glyph->role == GLYPH_FONT_MARKER) {
             current_font = glyph->mesh_idx;
         } else if (glyph->role == GLYPH_NEW_LINE) {
             L_CONCAT_CHAR('\n')
             cur_width = 0.0f;
-            in_bullet = false;
+            bullet_indent = 0;
         } else if (glyph->role == GLYPH_NEW_PAGE) {
             L_CONCAT_CHAR('\f')
             cur_width = 0.0f;
-            in_bullet = false;
+            bullet_indent = 0;
         } else if (glyph->role == GLYPH_SPACE) {
-            if (cur_width > 0.0f) {
-                const float w = M_WORD_SPACING * scale_f;
-                if (cur_width + w > max_width) {
-                    L_CONCAT_CHAR('\n')
-                    cur_width = 0.0f;
-                    if (in_bullet) {
-                        L_CONCAT_CHAR(' ')
-                        L_CONCAT_CHAR(' ')
-                        cur_width += 2 * space_width;
-                    }
-                } else {
-                    L_CONCAT_CHAR(' ')
-                    cur_width += w;
-                }
+            const float w = M_WORD_SPACING * scale_f;
+            if (cur_width + w > max_width) {
+                M_EmitNewline(
+                    dst, &out_len, bullet_indent, space_width, &cur_width);
+            } else {
+                L_CONCAT_CHAR(' ')
+                cur_width += w;
             }
         } else if (
             glyph->role == GLYPH_REVIEW_MARKER
@@ -351,13 +392,6 @@ static size_t M_WordWrap(
                 word_len++;
             }
 
-            // Detect bullet start marker ("- " at line start)
-            if (cur_width == 0.0f && word_len == 1 && glyphs[i]->text[0] == '-'
-                && (i + 1 < glyph_count
-                    && glyphs[i + 1]->role == GLYPH_SPACE)) {
-                in_bullet = true;
-            }
-
             // Compute width (sum widths + spacing)
             float word_width = 0.0f;
             for (size_t j = i; j < i + word_len; j++) {
@@ -372,13 +406,8 @@ static size_t M_WordWrap(
             // Wrap line if needed
             if (cur_width + word_width > max_width) {
                 if (cur_width > 0.0f) {
-                    L_CONCAT_CHAR('\n')
-                    cur_width = 0.0f;
-                    if (in_bullet) {
-                        L_CONCAT_CHAR(' ')
-                        L_CONCAT_CHAR(' ')
-                        cur_width += 2 * space_width;
-                    }
+                    M_EmitNewline(
+                        dst, &out_len, bullet_indent, space_width, &cur_width);
                 }
 
                 // Break word if longer than line
@@ -389,13 +418,9 @@ static size_t M_WordWrap(
                             (next_glyph->width[current_font] + M_LETTER_SPACING)
                             * scale_f;
                         if (cur_width + glyph_width > max_width) {
-                            L_CONCAT_CHAR('\n')
-                            cur_width = 0.0f;
-                            if (in_bullet) {
-                                L_CONCAT_CHAR(' ')
-                                L_CONCAT_CHAR(' ')
-                                cur_width += 2 * space_width;
-                            }
+                            M_EmitNewline(
+                                dst, &out_len, bullet_indent, space_width,
+                                &cur_width);
                         }
                         L_CONCAT_STR(next_glyph->text)
                         cur_width += glyph_width;
