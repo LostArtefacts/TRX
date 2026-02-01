@@ -541,6 +541,18 @@ static void M_Process(
             glyph_font = M_FONT_DEFAULT;
         }
 
+        float spacing = glyph->width[glyph_font];
+        if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
+            && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
+            spacing += M_LETTER_SPACING;
+        }
+
+        if (glyph->role == GLYPH_TEXT && glyph->mesh_idx < 0) {
+            // Non-breaking space or other non-rendered text glyphs.
+            x += spacing * scale / UI_TEXT_BASE_SCALE;
+            goto loop_end;
+        }
+
         if (visible && draw_func != nullptr) {
             const OBJECT *object = Object_Get(m_FontObjects[glyph_font]);
             draw_func(
@@ -548,11 +560,6 @@ static void M_Process(
                 m_TextColor[color_idx]);
         }
 
-        float spacing = glyph->width[glyph_font];
-        if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
-            && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
-            spacing += M_LETTER_SPACING;
-        }
         x += spacing * scale / UI_TEXT_BASE_SCALE;
 
     loop_end:
