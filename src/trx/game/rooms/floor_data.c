@@ -10,8 +10,8 @@
 #include <trx/game/music.h>
 #include <trx/game/objects/general/keyhole.h>
 #include <trx/game/objects/general/pickup.h>
+#include <trx/game/objects/general/shoal.h>
 #include <trx/game/objects/general/switch.h>
-#include <trx/game/objects/general/traps/shoal.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
