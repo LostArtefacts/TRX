@@ -43,6 +43,11 @@ static const CAMERA_STRATEGY *M_GetStrategy(void)
     return &m_Strategies[g_Config.visuals.camera_mode];
 }
 
+const CAMERA_LOOK_SETTINGS *Camera_GetLookSettings(const bool on_surface)
+{
+    return M_GetStrategy()->get_look_settings_func(on_surface);
+}
+
 void Camera_RegisterStrategy(
     const CAMERA_MODE mode, const CAMERA_STRATEGY strategy)
 {

@@ -5,19 +5,6 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/utils.h>
-#include <trx/version.h>
-
-// clang-format off
-#define M_MAX_HEAD_ROTATION          ((g_TRVersion == 1 ? 50 : 44) * DEG_1) // = 9100 (TR1), 8008 (TR2/3)
-#define M_HEAD_TURN                  (2 * DEG_1)             // = 364
-#define M_MIN_HEAD_ROTATION          (-M_MAX_HEAD_ROTATION)  // = -9100 (TR1), -8008 (TR2/3)
-#define M_MAX_HEAD_TILT              ((g_TRVersion < 3 ? 22 : 30) * DEG_1) // = 4004 (TR1/2), 5460 (TR3)
-#define M_MIN_HEAD_TILT              ((g_TRVersion < 3 ? -42 : -35) * DEG_1) // = -7644 (TR1/2), -6370 (TR3)
-#define M_HEAD_TURN_SURF             (3 * DEG_1)             // = 546
-#define M_MAX_HEAD_ROTATION_SURF     (50 * DEG_1)            // = 9100
-#define M_MAX_HEAD_TILT_SURF         (40 * DEG_1)            // = 7280
-#define M_MIN_HEAD_TILT_SURF         (-M_MAX_HEAD_TILT_SURF) // = -7280
-// clang-format on
 
 static const LARA_TRX_STATE m_StopStates[] = {
     LS_STOP,
@@ -61,13 +48,17 @@ static void M_Reset(void)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->head_rot.x <= -M_HEAD_TURN || lara->head_rot.x >= M_HEAD_TURN) {
+    const CAMERA_LOOK_SETTINGS *const look = Camera_GetLookSettings(false);
+
+    if (lara->head_rot.x <= -look->head_turn
+        || lara->head_rot.x >= look->head_turn) {
         lara->head_rot.x -= lara->head_rot.x / 8;
     } else {
         lara->head_rot.x = 0;
     }
 
-    if (lara->head_rot.y <= -M_HEAD_TURN || lara->head_rot.y >= M_HEAD_TURN) {
+    if (lara->head_rot.y <= -look->head_turn
+        || lara->head_rot.y >= look->head_turn) {
         lara->head_rot.y += lara->head_rot.y / -8;
     } else {
         lara->head_rot.y = 0;
@@ -105,36 +96,31 @@ static bool M_IsStatePermitted(void)
 
 void Lara_Look_LeftRight(void)
 {
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     g_Camera.type = CAM_LOOK;
 
-    const bool on_surface =
-        g_TRVersion < 3 && lara->water_status == LWS_SURFACE;
-    const int16_t max_head_rot =
-        on_surface ? M_MAX_HEAD_ROTATION_SURF : M_MAX_HEAD_ROTATION;
-    const int16_t head_turn = on_surface ? M_HEAD_TURN_SURF : M_HEAD_TURN;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const CAMERA_LOOK_SETTINGS *const look =
+        Camera_GetLookSettings(lara->water_status == LWS_SURFACE);
 
     if (g_Input.left) {
         g_Input.left = 0;
-        if (lara->head_rot.y > -max_head_rot) {
-            lara->head_rot.y -= head_turn;
+        if (lara->head_rot.y > look->min_head_rotation) {
+            lara->head_rot.y -= look->head_turn;
         }
     } else if (g_Input.right) {
         g_Input.right = 0;
-        if (lara->head_rot.y < max_head_rot) {
-            lara->head_rot.y += head_turn;
+        if (lara->head_rot.y < look->max_head_rotation) {
+            lara->head_rot.y += look->head_turn;
         }
     }
 
     if (lara->gun_status != LGS_HANDS_BUSY && !Lara_Vehicle_IsMounted()) {
-        lara->torso_rot.y =
-            on_surface ? (lara->head_rot.y / 2) : lara->head_rot.y;
+        lara->torso_rot.y = lara->head_rot.y * look->torso_head_rot_y;
     }
 }
 
 void Lara_Look_UpDown(void)
 {
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     g_Camera.type = CAM_LOOK;
 
     if (g_Config.gameplay.enable_inverted_look) {
@@ -142,28 +128,24 @@ void Lara_Look_UpDown(void)
         SWAP2(g_Input.forward, g_Input.back, temp_forward);
     }
 
-    const bool on_surface =
-        g_TRVersion < 3 && lara->water_status == LWS_SURFACE;
-    const int16_t min_head_tilt =
-        on_surface ? M_MIN_HEAD_TILT_SURF : M_MIN_HEAD_TILT;
-    const int16_t max_head_tilt =
-        on_surface ? M_MAX_HEAD_TILT_SURF : M_MAX_HEAD_TILT;
-    const int16_t head_turn = on_surface ? M_HEAD_TURN_SURF : M_HEAD_TURN;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const CAMERA_LOOK_SETTINGS *const look =
+        Camera_GetLookSettings(lara->water_status == LWS_SURFACE);
 
     if (g_Input.forward) {
         g_Input.forward = 0;
-        if (lara->head_rot.x > min_head_tilt) {
-            lara->head_rot.x -= head_turn;
+        if (lara->head_rot.x > look->min_head_tilt) {
+            lara->head_rot.x -= look->head_turn;
         }
     } else if (g_Input.back) {
         g_Input.back = 0;
-        if (lara->head_rot.x < max_head_tilt) {
-            lara->head_rot.x += head_turn;
+        if (lara->head_rot.x < look->max_head_tilt) {
+            lara->head_rot.x += look->head_turn;
         }
     }
 
     if (lara->gun_status != LGS_HANDS_BUSY) {
-        lara->torso_rot.x = on_surface ? 0 : lara->head_rot.x;
+        lara->torso_rot.x = lara->head_rot.x * look->torso_head_rot_x;
     }
 }
 

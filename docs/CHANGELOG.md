@@ -66,6 +66,7 @@
 - fixed `/play` and similar commands fading out instead of running instantly on stats/title screens
 - fixed Cheats description showing arrows in the indented bullets (#4753, regression from TRX 1.1)
 - fixed game freezing on exit on certain platforms when there are no active sound devices (SDL bug)
+- fixed Lara's look head rotation/tilt limits being hardcoded to the engine version rather than camera mode
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)

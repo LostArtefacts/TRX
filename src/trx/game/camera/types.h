@@ -4,7 +4,18 @@
 #include <trx/game/types.h>
 
 typedef struct {
+    int16_t head_turn;
+    int16_t max_head_rotation;
+    int16_t min_head_rotation;
+    int16_t max_head_tilt;
+    int16_t min_head_tilt;
+    float torso_head_rot_y;
+    float torso_head_rot_x;
+} CAMERA_LOOK_SETTINGS;
+
+typedef struct {
     int16_t (*get_chase_speed_func)(void);
+    const CAMERA_LOOK_SETTINGS *(*get_look_settings_func)(bool on_surface);
     void (*clamp_result_func)(void);
     void (*reset_func)(void);
     void (*update_func)(const ITEM *item, bool fixed_camera, int32_t target_y);
