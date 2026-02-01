@@ -226,7 +226,7 @@ void Lara_TouchDeathSector(const GF_DEATH_TILE death_tile)
 
 void Lara_TouchLava(void)
 {
-    const ITEM *const lara_item = Lara_GetItem();
+    ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->water_status != LWS_ABOVE_WATER) {
         return;

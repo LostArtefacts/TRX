@@ -341,10 +341,15 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_Col_LandedBad(item)) {
-        item->goal_anim_state = LS(LS_DEATH);
-    } else {
+    switch (Lara_Col_LandedBad(item)) {
+    case LANDED_OK:
         item->goal_anim_state = LS(LS_STOP);
+        break;
+    case LANDED_BAD:
+        item->goal_anim_state = LS(LS_DEATH);
+        break;
+    case LANDED_HANDLED:
+        break;
     }
     item->gravity = false;
     item->fall_speed = 0;
@@ -375,13 +380,20 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_Col_LandedBad(item)) {
+    switch (Lara_Col_LandedBad(item)) {
+    case LANDED_OK:
+        if (lara->water_status != LWS_WADE && g_Input.forward
+            && !g_Input.slow) {
+            item->goal_anim_state = LS(LS_RUN);
+        } else {
+            item->goal_anim_state = LS(LS_STOP);
+        }
+        break;
+    case LANDED_BAD:
         item->goal_anim_state = LS(LS_DEATH);
-    } else if (
-        lara->water_status != LWS_WADE && g_Input.forward && !g_Input.slow) {
-        item->goal_anim_state = LS(LS_RUN);
-    } else {
-        item->goal_anim_state = LS(LS_STOP);
+        break;
+    case LANDED_HANDLED:
+        break;
     }
 
     item->gravity = false;
@@ -423,10 +435,15 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_Col_LandedBad(item)) {
-        item->goal_anim_state = LS(LS_DEATH);
-    } else {
+    switch (Lara_Col_LandedBad(item)) {
+    case LANDED_OK:
         item->goal_anim_state = LS(LS_STOP);
+        break;
+    case LANDED_BAD:
+        item->goal_anim_state = LS(LS_DEATH);
+        break;
+    case LANDED_HANDLED:
+        break;
     }
     item->gravity = false;
     item->fall_speed = 0;
@@ -448,10 +465,15 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_Col_LandedBad(item)) {
-        item->goal_anim_state = LS(LS_DEATH);
-    } else {
+    switch (Lara_Col_LandedBad(item)) {
+    case LANDED_OK:
         item->goal_anim_state = LS(LS_STOP);
+        break;
+    case LANDED_BAD:
+        item->goal_anim_state = LS(LS_DEATH);
+        break;
+    case LANDED_HANDLED:
+        break;
     }
 
     item->gravity = false;
@@ -478,11 +500,17 @@ static void M_Reach(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_Col_LandedBad(item)) {
-        item->goal_anim_state = LS(LS_DEATH);
-    } else {
+    switch (Lara_Col_LandedBad(item)) {
+    case LANDED_OK:
         item->goal_anim_state = LS(LS_STOP);
+        break;
+    case LANDED_BAD:
+        item->goal_anim_state = LS(LS_DEATH);
+        break;
+    case LANDED_HANDLED:
+        break;
     }
+
     item->gravity = false;
     item->fall_speed = 0;
     item->pos.y += coll->side_mid.floor;
@@ -546,12 +574,17 @@ static void M_FastFall(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (Lara_Col_LandedBad(item)) {
-        item->goal_anim_state = LS(LS_DEATH);
-    } else {
+    switch (Lara_Col_LandedBad(item)) {
+    case LANDED_OK:
         item->goal_anim_state = LS(LS_STOP);
         item->current_anim_state = LS(LS_STOP);
         Item_SwitchToAnim(item, LA(LA_FREEFALL_LAND), 0);
+        break;
+    case LANDED_BAD:
+        item->goal_anim_state = LS(LS_DEATH);
+        break;
+    case LANDED_HANDLED:
+        break;
     }
 
     Sound_StopEffect(SFX_LARA_FALL);
@@ -610,7 +643,7 @@ void Lara_Col_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-bool Lara_Col_LandedBad(ITEM *const item)
+LANDED_STATE Lara_Col_LandedBad(ITEM *const item)
 {
     const XYZ_32 pos = item->pos;
     int16_t room_num = item->room_num;
@@ -620,11 +653,20 @@ bool Lara_Col_LandedBad(ITEM *const item)
     item->pos.y = height;
     item->floor = height;
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const bool was_alive = item->hit_points > 0;
+    const bool was_extra_anim = lara->extra_anim;
     Room_TestTriggers(item);
+    if (was_alive && item->hit_points <= 0 && !was_extra_anim
+        && lara->extra_anim) {
+        // Support rapids drown from any height
+        return LANDED_HANDLED;
+    }
+
     item->pos.y = pos.y;
     const int32_t land_speed = item->fall_speed - DAMAGE_START;
     if (land_speed <= 0) {
-        return false;
+        return LANDED_OK;
     }
 
     if (g_Config.debug.enable_invulnerability) {
@@ -638,7 +680,7 @@ bool Lara_Col_LandedBad(ITEM *const item)
     }
 
     // #675: Original bug to keep. Correct operator would be <=
-    return item->hit_points < 0;
+    return item->hit_points < 0 ? LANDED_BAD : LANDED_OK;
 }
 
 // clang-format off
