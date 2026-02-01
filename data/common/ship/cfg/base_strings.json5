@@ -1443,6 +1443,9 @@
         "thors_head": {
             "name": "Thor's Hammer",
         },
+        "electric_fence": {
+            "name": "Electric Fence",
+        },
         "bell": {
             "name": "Bell",
         },
