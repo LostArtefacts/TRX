@@ -1900,6 +1900,9 @@
         },
         "shiva": {
             "name": "\\{review}Shiva",
+        },
+        "electric_fence": {
+            "name": "\\{review}Clôture électrique",
         }
     }
 }

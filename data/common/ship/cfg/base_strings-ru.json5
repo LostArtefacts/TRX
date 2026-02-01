@@ -1920,6 +1920,9 @@
         },
         "shiva": {
             "name": "\\{review}Шива",
+        },
+        "electric_fence": {
+            "name": "\\{review}Электрический забор",
         }
     }
 }

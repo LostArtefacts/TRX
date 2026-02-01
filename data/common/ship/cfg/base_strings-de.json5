@@ -1913,6 +1913,9 @@
         },
         "shiva": {
             "name": "\\{review}Shiva",
+        },
+        "electric_fence": {
+            "name": "\\{review}Elektrischer Zaun",
         }
     }
 }

@@ -1891,6 +1891,9 @@
         },
         "shiva": {
             "name": "\\{review}Siwa",
+        },
+        "electric_fence": {
+            "name": "\\{review}Ogrodzenie Elektryczne",
         }
     }
 }

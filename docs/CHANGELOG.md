@@ -97,6 +97,7 @@
 - added Shiva control
 - added Tony control
 - added Spikes animation in Coastal Village and Madubu Gorge
+- added Electric Fence control
 - added Aldwych Drill control (Spike Ceiling with timer=1 to descend faster)
 - added TR3 behavior patterns to Tiger control
 - added Kill All Triggered control

@@ -267,6 +267,7 @@ X_OBJ_NAME_DEFINE(O_SWINGING_AXE,          "swinging_axe",          X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_TEETH_TRAP,            "teeth_trap",            X_OBJ_NAMES("Teeth Trap", "Clang-clang Door"))
 X_OBJ_NAME_DEFINE(O_THORS_HANDLE,          "thors_handle",          X_OBJ_NAMES("Thor's Hammer Handle"))
 X_OBJ_NAME_DEFINE(O_THORS_HEAD,            "thors_head",            X_OBJ_NAMES("Thor's Hammer"))
+X_OBJ_NAME_DEFINE(O_ELECTRIC_FENCE,        "electric_fence",        X_OBJ_NAMES("Electric Fence"))
 
 // General objects
 X_OBJ_NAME_DEFINE(O_BELL,                  "bell",                  X_OBJ_NAMES("Bell"))
