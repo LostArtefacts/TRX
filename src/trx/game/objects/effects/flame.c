@@ -199,7 +199,7 @@ static void M_TR3_ControlSmall(
         effect->pos.x, effect->pos.y, effect->pos.z, effect->room_num);
     if (wh == NO_HEIGHT || effect->pos.y <= wh
         || (Room_Get(effect->room_num)->flags.swamp
-            && (GF_BadGetLevelNum() == 12 || GF_BadGetLevelNum() == 4
+            && (GF_BadGetLevelNum() == 4 || GF_BadGetLevelNum() == 18
                 || GF_BadGetLevelNum() == 19))) {
         Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_NORMAL);
         Lara_TakeDamage(M_ON_FIRE_DAMAGE, true);
