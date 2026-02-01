@@ -232,6 +232,11 @@ void Lara_TouchLava(void)
         return;
     }
 
+    if (g_TRVersion == 3) {
+        Lara_CatchFire();
+        return;
+    }
+
     const OBJECT *const obj = Object_Get(O_FLAME);
     for (int32_t i = 0; i < 10; i++) {
         const int16_t effect_num = Effect_Create(lara_item->room_num);
@@ -396,7 +401,14 @@ void Lara_CatchFire(void)
     }
 
     EFFECT *const effect = Effect_Get(effect_num);
-    effect->pos = lara_item->pos;
+    if (g_TRVersion == 3) {
+        // TR3 effects use Collide_GetJointAbsPosition but only every x frames,
+        // which lets Lara briefly catch fire even if she touches liquids
+        // (for example, when running into the boiling water in Tony's room).
+        effect->pos = (XYZ_32) {};
+    } else {
+        effect->pos = lara_item->pos;
+    }
     effect->frame_num = g_TRVersion == 3 ? FLAME_SMALL : 0;
     effect->object_id = O_FLAME;
     effect->counter = -1;
