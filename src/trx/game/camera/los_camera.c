@@ -1,6 +1,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
+#include <trx/game/math.h>
 #include <trx/game/rooms.h>
 
 // clang-format off
@@ -585,6 +586,10 @@ static void M_Look(const ITEM *const item)
     CLAMP(lara->head_rot.x, M_MIN_LOOK_TILT, M_MAX_LOOK_TILT);
     CLAMP(lara->head_rot.y, M_MIN_LOOK_ROTATION, M_MAX_LOOK_ROTATION);
 
+    // Get head-relative points in mesh space (faithful), then project the
+    // camera's ray onto the head->forward axis to remove breathing-induced
+    // roll/tilt wobble without moving the ray off Lara's head.
+    const XYZ_32 head_pos = M_GetHeadPos(0, 0, 0);
     XYZ_32 pos_1 = M_GetHeadPos(0, 16, 64);
 
     int16_t room_num = lara_item->room_num;
@@ -623,6 +628,20 @@ static void M_Look(const ITEM *const item)
 
     XYZ_32 pos_2 = M_GetHeadPos(0, 0, -1024);
     XYZ_32 pos_3 = M_GetHeadPos(0, 0, 2048);
+
+    // Constrain the camera ray to pass through Lara's head (OG behavior), but
+    // remove idle-breathing wobble by projecting onto a stable forward axis
+    // derived from yaw + pitch (no roll/tilt from torso animation).
+    const int16_t yaw = lara_item->rot.y + lara->head_rot.y;
+    const int16_t pitch = lara_item->rot.x + lara->head_rot.x;
+    const XYZ_32 axis = XYZ_32_FromYawPitch(yaw, pitch);
+
+    const int64_t axis_len2 = XYZ_32_GetLength2_64(axis);
+    if (axis_len2 != 0) {
+        XYZ_32_ProjectPointOntoAxis(head_pos, axis, axis_len2, &pos_1);
+        XYZ_32_ProjectPointOntoAxis(head_pos, axis, axis_len2, &pos_2);
+        XYZ_32_ProjectPointOntoAxis(head_pos, axis, axis_len2, &pos_3);
+    }
 
     const XYZ_32 delta = {
         .x = (pos_2.x - pos_1.x) >> 3,

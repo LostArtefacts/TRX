@@ -16,15 +16,21 @@ int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio);
 int32_t Math_FloorDiv(int32_t x, int32_t divisor);
 int32_t Math_GCD(int32_t a, int32_t b);
 
+XYZ_32 XYZ_32_From16(XYZ_16 src);
 int16_t XYZ_32_GetYaw(XYZ_32 pos);
 int16_t XYZ_32_GetPitch(XYZ_32 pos);
 int32_t XYZ_32_GetDistance(const XYZ_32 *pos1, const XYZ_32 *pos2);
-int32_t XYZ_32_GetDistance0(const XYZ_32 *pos);
+int32_t XYZ_32_GetLength(XYZ_32 pos);
+int64_t XYZ_32_GetLength2_64(XYZ_32 pos);
+int64_t XYZ_32_DotProduct_64(XYZ_32 a, XYZ_32 b);
 bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
-bool XYZ_16_AreEquivalent(const XYZ_16 *rot1, const XYZ_16 *rot2);
-XYZ_32 XYZ_32_From16(XYZ_16 src);
 bool XYZ_32_IsNearby(const XYZ_32 *pos1, const XYZ_32 *pos2, int32_t distance);
-XYZ_32 XYZ_32_DirShift(XYZ_32 src, int16_t angle, int32_t shift);
+XYZ_32 XYZ_32_FromYawPitch(int16_t yaw, int16_t pitch);
+XYZ_32 XYZ_32_OffsetYaw(XYZ_32 src, int16_t yaw, int32_t distance);
+bool XYZ_32_ProjectPointOntoAxis(
+    XYZ_32 origin, XYZ_32 axis, int64_t axis_len2, XYZ_32 *pos);
+
+bool XYZ_16_AreEquivalent(const XYZ_16 *rot1, const XYZ_16 *rot2);
 
 float XYZ_F_DotProduct(XYZ_F a, XYZ_F b);
 float XYZ_F_Length2(XYZ_F pos);

@@ -886,13 +886,13 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
         .y = new_pos.y - lara_item->pos.y,
         .z = new_pos.z - lara_item->pos.z,
     };
-    const int32_t dist = XYZ_32_GetDistance0(&dpos);
-    if (velocity >= dist) {
+    const int32_t length = XYZ_32_GetLength(dpos);
+    if (velocity >= length) {
         lara_item->pos = new_pos;
     } else {
-        lara_item->pos.x += velocity * dpos.x / dist;
-        lara_item->pos.y += velocity * dpos.y / dist;
-        lara_item->pos.z += velocity * dpos.z / dist;
+        lara_item->pos.x += velocity * dpos.x / length;
+        lara_item->pos.y += velocity * dpos.y / length;
+        lara_item->pos.z += velocity * dpos.z / length;
     }
 
     if (walk_to_items && !lara_info->interact_target.is_moving) {

@@ -241,7 +241,7 @@ static void M_Control(const int16_t item_num)
 
                 if (creature->mood == MOOD_ESCAPE) {
                     int16_t room_num = item->room_num;
-                    const XYZ_32 offset = XYZ_32_DirShift(
+                    const XYZ_32 offset = XYZ_32_OffsetYaw(
                         item->pos, item->rot.y + DEG_180, WALL_L);
                     const SECTOR *const sector =
                         Room_GetSector32(offset, &room_num);
