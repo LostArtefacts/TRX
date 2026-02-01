@@ -63,6 +63,7 @@
 - fixed stats dialog retaining friendly status for allies that become enemy types in later levels, causing them to get excluded from kill count
 - fixed targeting hostile ex-allies not working if "Enable ally targeting" option is off
 - fixed `/play` and similar commands fading out instead of running instantly on stats/title screens
+- fixed Cheats description showing arrows in the indented bullets (#4753, regression from TRX 1.1)
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
