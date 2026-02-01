@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/debug.h>
+#include <trx/engine/audio.h>
 #include <trx/game/output.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
@@ -41,7 +42,15 @@ void Shell_Terminate(int32_t exit_code)
     if (window != nullptr) {
         SDL_DestroyWindow(window);
     }
-    SDL_Quit();
+    if (Audio_ShouldSkipSDLQuitAudio()) {
+        const Uint32 inited = SDL_WasInit(0);
+        const Uint32 quit_flags = inited & ~SDL_INIT_AUDIO;
+        if (quit_flags != 0) {
+            SDL_QuitSubSystem(quit_flags);
+        }
+    } else {
+        SDL_Quit();
+    }
     exit(exit_code);
 }
 

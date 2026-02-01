@@ -12,6 +12,9 @@
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
 
+void Audio_LockDevice(void);
+void Audio_UnlockDevice(void);
+
 int32_t Audio_GetAVChannelLayout(int32_t sample_fmt);
 int32_t Audio_GetAVAudioFormat(int32_t sample_fmt);
 int32_t Audio_GetSDLAudioFormat(enum AVSampleFormat sample_fmt);

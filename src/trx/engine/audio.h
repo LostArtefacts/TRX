@@ -13,6 +13,7 @@
 
 bool Audio_Init(void);
 bool Audio_Shutdown(void);
+bool Audio_ShouldSkipSDLQuitAudio(void);
 
 void Audio_Mute(void);
 void Audio_Unmute(void);

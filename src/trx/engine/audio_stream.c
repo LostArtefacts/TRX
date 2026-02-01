@@ -263,7 +263,7 @@ static bool M_InitialiseFromFormatContext(
     }
 
     bool ret = false;
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
 
     AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
     int32_t error_code = 0;
@@ -362,7 +362,7 @@ cleanup:
         Audio_Stream_Close(sound_id);
     }
 
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
     return ret;
 }
 
@@ -580,9 +580,9 @@ bool Audio_Stream_Pause(int32_t sound_id)
 
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
     if (stream->is_playing) {
-        SDL_LockAudioDevice(g_AudioDeviceID);
+        Audio_LockDevice();
         stream->is_playing = false;
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        Audio_UnlockDevice();
     }
 
     return true;
@@ -597,9 +597,9 @@ bool Audio_Stream_Unpause(int32_t sound_id)
 
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
     if (!stream->is_playing) {
-        SDL_LockAudioDevice(g_AudioDeviceID);
+        Audio_LockDevice();
         stream->is_playing = true;
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        Audio_UnlockDevice();
     }
 
     return true;
@@ -706,7 +706,7 @@ bool Audio_Stream_Close(int32_t sound_id)
         return false;
     }
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
 
     AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
 
@@ -767,7 +767,7 @@ bool Audio_Stream_Close(int32_t sound_id)
 
     M_Clear(stream);
 
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
 
     if (finish_callback) {
         finish_callback(sound_id, finish_callback_user_data);
@@ -889,9 +889,9 @@ double Audio_Stream_GetTimestamp(int32_t sound_id)
     AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
 
     if (stream->duration > 0.0) {
-        SDL_LockAudioDevice(g_AudioDeviceID);
+        Audio_LockDevice();
         timestamp = (double)stream->played_samples / (double)AUDIO_WORKING_RATE;
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        Audio_UnlockDevice();
     }
 
     return timestamp;
@@ -904,10 +904,10 @@ double Audio_Stream_GetDuration(int32_t sound_id)
         return -1.0;
     }
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
     AUDIO_STREAM_SOUND *stream = &m_Streams[sound_id];
     double duration = stream->duration;
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
     return duration;
 }
 
@@ -923,12 +923,12 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
         return false;
     }
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
     const double time_base_sec = av_q2d(stream->av.stream->time_base);
     if (time_base_sec <= 0.0) {
         LOG_ERROR(
             "Audio_Stream_SeekTimestamp: invalid time_base %f", time_base_sec);
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        Audio_UnlockDevice();
         return false;
     }
 
@@ -941,7 +941,7 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
         LOG_ERROR(
             "seek failed for timestamp %f: %s", timestamp,
             av_err2str(error_code));
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        Audio_UnlockDevice();
         return false;
     }
 
@@ -954,7 +954,7 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
     M_ResetPlaybackState(stream, timestamp);
     stream->is_read_done = false;
 
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
     return true;
 }
 

@@ -588,7 +588,7 @@ int32_t Audio_Sample_Play(
 
     int32_t result = AUDIO_NO_SOUND;
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES;
          sound_id++) {
         AUDIO_SAMPLE_SOUND *sound = &m_Samples[sound_id];
@@ -612,7 +612,7 @@ int32_t Audio_Sample_Play(
         result = sound_id;
         break;
     }
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
 
     if (result == AUDIO_NO_SOUND) {
         LOG_ERROR("All sample buffers are used!");
@@ -638,9 +638,9 @@ bool Audio_Sample_Pause(int32_t sound_id)
     }
 
     if (m_Samples[sound_id].is_playing) {
-        SDL_LockAudioDevice(g_AudioDeviceID);
+        Audio_LockDevice();
         m_Samples[sound_id].is_playing = false;
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        Audio_UnlockDevice();
     }
 
     return true;
@@ -669,9 +669,9 @@ bool Audio_Sample_Unpause(int32_t sound_id)
     }
 
     if (!m_Samples[sound_id].is_playing) {
-        SDL_LockAudioDevice(g_AudioDeviceID);
+        Audio_LockDevice();
         m_Samples[sound_id].is_playing = true;
-        SDL_UnlockAudioDevice(g_AudioDeviceID);
+        Audio_UnlockDevice();
     }
 
     return true;
@@ -700,10 +700,10 @@ bool Audio_Sample_Close(int32_t sound_id)
         return false;
     }
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
     m_Samples[sound_id].is_used = false;
     m_Samples[sound_id].is_playing = false;
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
 
     return true;
 }
@@ -731,10 +731,10 @@ bool Audio_Sample_SetPan(int32_t sound_id, int32_t pan)
         return false;
     }
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
     m_Samples[sound_id].pan = pan;
     M_RecalculateChannelVolumes(sound_id);
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
 
     return true;
 }
@@ -746,10 +746,10 @@ bool Audio_Sample_SetVolume(int32_t sound_id, int32_t volume)
         return false;
     }
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
     m_Samples[sound_id].volume = volume;
     M_RecalculateChannelVolumes(sound_id);
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
 
     return true;
 }
@@ -761,10 +761,10 @@ bool Audio_Sample_SetPitch(int32_t sound_id, float pitch)
         return false;
     }
 
-    SDL_LockAudioDevice(g_AudioDeviceID);
+    Audio_LockDevice();
     m_Samples[sound_id].pitch = pitch;
     M_RecalculateChannelVolumes(sound_id);
-    SDL_UnlockAudioDevice(g_AudioDeviceID);
+    Audio_UnlockDevice();
 
     return true;
 }
