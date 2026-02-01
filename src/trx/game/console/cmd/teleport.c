@@ -16,6 +16,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 static int16_t m_LastTeleportedItemNum = NO_ITEM;
 
@@ -190,12 +191,45 @@ static COMMAND_RESULT M_TeleportToXYZ(float x, const float y, float z)
         .z = z * WALL_L,
     };
     if (!Lara_Cheat_Teleport(pos, NO_ROOM)) {
-        Console_LogError(GS(OSD_POS_SET_POS_FAIL), x, y, z);
+        Console_LogError(GS(CMD_TELEPORT_POS_FAIL), x, y, z);
         return CR_FAILURE;
     }
 
-    Console_Log(GS(OSD_POS_SET_POS), x, y, z);
+    Console_Log(GS(CMD_TELEPORT_POS), x, y, z);
     return CR_SUCCESS;
+}
+
+static COMMAND_RESULT M_TeleportToItemNum(const int16_t item_num)
+{
+    if (item_num < 0 || item_num >= Item_GetTotalCount()) {
+        Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+        return CR_FAILURE;
+    }
+
+    const ITEM *const item = Item_Get(item_num);
+    if (item == nullptr || item->room_num == NO_ROOM) {
+        Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+        return CR_FAILURE;
+    }
+
+    if ((item->flags & IF_KILLED) != 0) {
+        Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+        return CR_FAILURE;
+    }
+
+    const XYZ_32 pos = {
+        .x = item->pos.x,
+        .y = item->pos.y - STEP_L / 4,
+        .z = item->pos.z,
+    };
+    if (Lara_Cheat_Teleport(pos, item->room_num)) {
+        M_AlignLaraToItem(item);
+        Console_Log(GS(CMD_TELEPORT_ITEM), item_num);
+        return CR_SUCCESS;
+    }
+
+    Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+    return CR_FAILURE;
 }
 
 static COMMAND_RESULT M_TeleportToRoom(const int16_t room_num)
@@ -227,11 +261,11 @@ static COMMAND_RESULT M_TeleportToRoom(const int16_t room_num)
     }
 
     if (!success) {
-        Console_LogError(GS(OSD_POS_SET_ROOM_FAIL), room_num);
+        Console_LogError(GS(CMD_TELEPORT_ROOM_FAIL), room_num);
         return CR_FAILURE;
     }
 
-    Console_Log(GS(OSD_POS_SET_ROOM), room_num);
+    Console_Log(GS(CMD_TELEPORT_ROOM), room_num);
     return CR_SUCCESS;
 }
 
@@ -244,7 +278,7 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
 
     const ITEM *const best_item = M_GetItemToTeleporTo(user_input);
     if (best_item == nullptr) {
-        Console_LogError(GS(OSD_POS_SET_ITEM_FAIL), user_input);
+        Console_LogError(GS(CMD_TELEPORT_OBJECT_FAIL), user_input);
         return CR_FAILURE;
     }
 
@@ -270,11 +304,55 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
     };
     if (Lara_Cheat_Teleport(pos, best_item->room_num)) {
         M_AlignLaraToItem(best_item);
-        Console_Log(GS(OSD_POS_SET_ITEM), reported_name);
+        Console_Log(GS(CMD_TELEPORT_OBJECT), reported_name);
     } else {
-        Console_LogError(GS(OSD_POS_SET_ITEM_FAIL), reported_name);
+        Console_LogError(GS(CMD_TELEPORT_OBJECT_FAIL), reported_name);
     }
     return CR_SUCCESS;
+}
+
+static bool M_TryParseTagNumber(
+    const char *const args, const char tag, int16_t *const out_num)
+{
+    if (args == nullptr) {
+        return false;
+    }
+    if (args[0] != tag) {
+        return false;
+    }
+
+    int32_t num32 = 0;
+    if (!String_ParseInteger(args + 1, &num32)) {
+        return false;
+    }
+    if (num32 < INT16_MIN || num32 > INT16_MAX) {
+        return false;
+    }
+    *out_num = (int16_t)num32;
+    return true;
+}
+
+static bool M_TryParseKeywordNumber(
+    const char *const args, const char *const keyword, int16_t *const out_num)
+{
+    if (args == nullptr || keyword == nullptr) {
+        return false;
+    }
+
+    const size_t keyword_len = strlen(keyword);
+    if (strncmp(args, keyword, keyword_len) != 0) {
+        return false;
+    }
+
+    int32_t num32 = 0;
+    if (!String_ParseInteger(args + keyword_len, &num32)) {
+        return false;
+    }
+    if (num32 < INT16_MIN || num32 > INT16_MAX) {
+        return false;
+    }
+    *out_num = (int16_t)num32;
+    return true;
 }
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
@@ -293,8 +371,22 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         return M_TeleportToXYZ(x, y, z);
     }
 
+    int16_t num = 0;
+    if (M_TryParseKeywordNumber(ctx->args, "item ", &num)) {
+        return M_TeleportToItemNum(num);
+    }
+    if (M_TryParseTagNumber(ctx->args, 'i', &num)) {
+        return M_TeleportToItemNum(num);
+    }
+    if (M_TryParseKeywordNumber(ctx->args, "room ", &num)) {
+        return M_TeleportToRoom(num);
+    }
+    if (M_TryParseTagNumber(ctx->args, 'r', &num)) {
+        return M_TeleportToRoom(num);
+    }
+
     int16_t room_num = -1;
-    if (sscanf(ctx->args, "%hd", &room_num) == 1) {
+    if (sscanf(ctx->args, "%hd", &room_num) == 1) { // legacy
         return M_TeleportToRoom(room_num);
     }
 
