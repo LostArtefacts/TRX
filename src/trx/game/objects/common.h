@@ -34,6 +34,7 @@ void Object_InitialiseStaticObjects2D(int32_t count);
 int32_t Object_GetStaticObjects3DCount(void);
 int32_t Object_GetStaticObjects2DCount(void);
 
+bool Object_IsValidStatid3D(int32_t static_id);
 STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
 
