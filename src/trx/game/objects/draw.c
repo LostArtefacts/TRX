@@ -192,7 +192,7 @@ bool Object_DrawAnimatingItemWithSwap(
     Object_DrawInterpolatedObjectWithSwap(
         obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate,
         swap_obj);
-    if (g_Config.debug.enable_debug_cuboids) {
+    if (g_Config.debug.enable_debug_bounding_boxes) {
         Output_DrawCuboid(&frames[0]->bounds);
     }
     Matrix_Pop();

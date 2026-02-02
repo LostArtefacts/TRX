@@ -35,6 +35,7 @@
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
 - improved indentation for nested bullets in the UIs
+- changed "debug cuboids" option name to "debug bounding boxes" (`/debug bounding-boxes` or `/set debug-bounding-boxes 1`)
 - changed photo mode to no longer show "Entering photo mode" in the console
 - changed photo mode to always display a red frame around the game view when active (not visible in screenshots)
 - changed stats dialog to include allies in kill count if they turn hostile. This applies to all levels that follow, and the final stats screen.
@@ -147,6 +148,7 @@
 - fixed running down an enemy with a Quad not counting as a kill
 - fixed killing Cobras with a manually-aimed projectile not counting as a kill
 - fixed smoke and spark rotation snapping at 180° instead of rotating smoothly
+- fixed Lara burning instead of getting electrocuted when touching the top of the electric fence
 
 
 

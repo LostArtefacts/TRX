@@ -289,6 +289,7 @@
         {
             "path": "data/nevada.tr2",
             "music_track": 33,
+            "death_tile": "electric",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
