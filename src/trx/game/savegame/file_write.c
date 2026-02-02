@@ -428,7 +428,7 @@ void SG_File_DumpLara(SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "current_vel_x", lara->current.vel.x);
     SGW_WRITE_VALUE(io, "current_vel_z", lara->current.vel.z);
     SGW_WRITE_VALUE(io, "burn", lara->burn);
-    SGW_WRITE_VALUE(io, "electrocuted", lara->electrocuted);
+    SGW_WRITE_VALUE(io, "electric", lara->electric);
     SGW_WRITE_VALUE(io, "water_surface_dist", lara->water_surface_dist);
 
     SGW_WRITE_VALUE(io, "flare_age", lara->flare.age);

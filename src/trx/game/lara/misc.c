@@ -216,7 +216,7 @@ void Lara_TouchDeathSector(const GF_DEATH_TILE death_tile)
         Lara_RapidsDrown();
         break;
     case GF_DEATH_TILE_ELECTRIC:
-        lara_info->electrocuted = true;
+        lara_info->electric = 1;
         break;
     case GF_DEATH_TILE_LAVA:
         Lara_TouchLava();
@@ -418,7 +418,7 @@ void Lara_CatchFire(void)
 void Lara_Extinguish(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->electrocuted = false;
+    lara_info->electric = 0;
 
     if (!lara_info->burn) {
         return;

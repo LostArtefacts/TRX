@@ -1,6 +1,8 @@
 #include <trx/game/lara/electric.h>
 
 #include <trx/game/collision.h>
+#include <trx/game/lara.h>
+#include <trx/game/output/lights.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/utils.h>
@@ -91,6 +93,43 @@ void Lara_Electricity_UpdatePoints(void)
         m_ElectricityPoints[i].vel.y = yv;
         m_ElectricityPoints[i].vel.z = zv;
     }
+}
+
+void Lara_Electricity_EmitLight(void)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->electric == 0) {
+        return;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t electric = lara->electric;
+
+    int32_t r = 0;
+    int32_t g = 0;
+    int32_t b = 0;
+    int32_t falloff = 0;
+
+    if (electric < 12) {
+        r = (Random_GetControl() & 7) - electric + 16;
+        g = 32 - electric;
+        b = 255;
+        falloff = (Random_GetControl() & 1) - 2 * electric + 25;
+        r <<= 3;
+        g <<= 3;
+    } else {
+        r = 0;
+        g = (Random_GetControl() & 0x3F) + 64;
+        b = (Random_GetControl() & 0x3F) + 128;
+        falloff = (Random_GetControl() & 3) + 8;
+    }
+
+    CLAMP(r, 0, 255);
+    CLAMP(g, 0, 255);
+    CLAMP(b, 0, 255);
+    CLAMP(falloff, 0, 255);
+
+    Output_AddDynamicLightRGB(lara_item->pos, falloff, (RGB_888) { r, g, b });
 }
 
 void Lara_Electricity_Draw(const int32_t lr, const ITEM *const item)
