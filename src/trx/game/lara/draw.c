@@ -122,7 +122,7 @@ static bool M_Draw_I(
         return false;
     }
 
-    if (g_Config.debug.enable_debug_cuboids) {
+    if (g_Config.debug.enable_debug_bounding_boxes) {
         Output_DrawCuboid(&frame1->bounds);
     }
 
@@ -420,7 +420,7 @@ bool Lara_Draw(const ITEM *const item)
         return false;
     }
 
-    if (g_Config.debug.enable_debug_cuboids) {
+    if (g_Config.debug.enable_debug_bounding_boxes) {
         Output_DrawCuboid(&frame->bounds);
     }
 

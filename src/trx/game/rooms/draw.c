@@ -390,7 +390,7 @@ static void M_DrawSingleRoom(const ROOM *const room)
         if (clip != CLIP_NOT_VISIBLE) {
             Output_CalculateStaticMeshLight(mesh->pos, mesh->shade, room);
             Object_DrawMesh(obj->mesh_idx, clip, false);
-            if (g_Config.debug.enable_debug_cuboids) {
+            if (g_Config.debug.enable_debug_bounding_boxes) {
                 Output_DrawCuboid(&obj->draw_bounds);
             }
         }

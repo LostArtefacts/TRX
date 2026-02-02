@@ -294,7 +294,7 @@ typedef struct {
         bool enable_debug_portals;
         bool enable_debug_room_clip;
         bool enable_debug_spheres;
-        bool enable_debug_cuboids;
+        bool enable_debug_bounding_boxes;
         bool enable_debug_pos;
         bool enable_debug_anim;
         bool enable_debug_camera;
