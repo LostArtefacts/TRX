@@ -912,8 +912,12 @@ void Lara_Control(void)
         CLAMPG(lara_info->poison_timer, 256);
         Lara_TakeDamage(lara_info->poison_timer >> 4, false);
     }
-    if (lara_info->electrocuted) {
+    if (lara_info->electric != 0) {
+        if (lara_info->electric < 16) {
+            lara_info->electric++;
+        }
         Lara_Electricity_UpdatePoints();
+        Lara_Electricity_EmitLight();
     }
 
     if (lara_info->has_fired && (time4 & 0x7F) == 0) {

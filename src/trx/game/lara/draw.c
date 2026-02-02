@@ -690,7 +690,7 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
 finish:
-    if (is_lara && lara->electrocuted) {
+    if (is_lara && lara->electric != 0) {
         Lara_Electricity_Draw(0, lara_item);
         Lara_Electricity_Draw(1, lara_item);
     }

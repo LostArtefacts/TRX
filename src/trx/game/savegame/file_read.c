@@ -146,7 +146,7 @@ static bool M_ReadLara(SG_READ_IO *const io)
     M_SHOULD(SG_READ_VALUE(io, "current_vel_z", &lara->current.vel.z));
     M_MUST(SG_READ_VALUE(io, "burn", &lara->burn));
     // Introduced in TRX 1.2
-    M_SHOULD(SG_READ_VALUE(io, "electrocuted", &lara->electrocuted));
+    M_SHOULD(SG_READ_VALUE(io, "electric", &lara->electric));
 
     M_MUST(SG_READ_VALUE(io, "mesh_effects", &lara->mesh_effects));
     M_MUST(SG_READ_VALUE(io, "extra_anim", &lara->extra_anim));
@@ -579,7 +579,8 @@ static bool M_ReadResumeInfo(SG_READ_IO *const io, RESUME_INFO *const resume)
     M_MUST(SG_READ_VALUE(
         io, "gun_type", &resume->equipped_gun_type)); // LGT_UNARMED
     M_MUST(SG_READ_VALUE(
-        io, "holsters_gun_type", &resume->holsters_gun_type)); // LGT_UNKNOWN
+        io, "holsters_gun_type",
+        &resume->holsters_gun_type)); // LGT_UNKNOWN
 
     // TRX <1.1
     if (g_TRVersion == 2 && SG_ReadIO_GetVersion(io) < SG_VERSION_14) {

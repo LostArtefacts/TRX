@@ -108,7 +108,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->current.active = 0;
     lara_info->extra_anim = false;
     lara_info->burn = false;
-    lara_info->electrocuted = false;
+    lara_info->electric = 0;
     lara_info->climb_status = false;
     lara_info->killed_loyal_item = false;
     lara_info->mesh_effects = 0;

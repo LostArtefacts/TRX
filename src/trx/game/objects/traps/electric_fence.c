@@ -92,7 +92,7 @@ static void M_TouchFence(const XZ_32 spark_axis, XYZ_32 spark_pos)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->electrocuted = true;
+    lara->electric = 1;
     lara_item->hit_points = 0;
 }
 
@@ -216,7 +216,7 @@ static void M_Control(const int16_t item_num)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->electrocuted || p->is_flat
+    if (lara->electric != 0 || p->is_flat
         || lara_item->pos.x < fence_center.x - fence_size.x
         || lara_item->pos.x > fence_center.x + fence_size.x
         || lara_item->pos.z < fence_center.z - fence_size.z
