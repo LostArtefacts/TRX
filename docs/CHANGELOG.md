@@ -12,6 +12,8 @@
     - added Beacon Light control
     - added On/Off Light control
 - added the ability in Lua to hook into control loop events during cutscenes
+- added an option to change Lara's outfit, with 20 variants included by default; custom levels can provide up to 32 outfits (#4383)
+- added the ability for custom levels to define Lara's braid position relative to her head (#110)
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
 - added the ability to toggle TR1/2 and TR3 projectile area damage – TR3 often deals double damage (Gameplay → Mods → Projectile Area Damage)
@@ -56,6 +58,7 @@
     - `on_control_post` → `after_control`
 - changed turbo cheat to auto‑reset to normal speed if pushed past limit, making it easier for new players to recover from accidental changes
 - changed Blades to support being reset
+- changed the barefoot SFX option toggle in TR2 to no longer require reloading the level for changes to take effect
 - removed support for legacy (TombATI / TR2 GOG/Steam) and pre-1.0 (TR1X/TR2X) savegame files
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
@@ -78,12 +81,14 @@
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
 - fixed save crystal reflections rendering upside down (regression from 4.14)
 - fixed underwater wobble effect acting twitchy with camera movement
+- fixed several texture issues on each of Lara's outfits
 - fixed gun injections overwriting Lara's footstep SFX in all levels (#4733, regression from 1.1)
 - fixed pushblocks in Natla's Mines becoming unusable after loading a save made in earlier versions (#4735, regression from 1.1)
 
 **TR2**:
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
 - fixed underwater wobble effect acting twitchy with camera movement
+- fixed several texture issues on each of Lara's outfits
 - fixed a deviation in water current behaviour that could result in Lara stopping too early (#4706, regression from TR2X 1.1)
 - fixed gun injections overwriting Lara's footstep SFX in underwater levels (#4733, regression from 1.1)
 - fixed exploding Armed Snowmobile not disappearing the vehicle (#4762)
@@ -126,6 +131,7 @@
 - improved Monkeys to no longer hardcode hostility status based on Tiger presence
 - changed hostile Monkeys to share hostility status, like TR2 Barkhang monks (the original TR3 behavior can be restored in Gameplay → General → Ally hostility policy)
 - changed enemy drops to appear at the tile center, to conform with the OG
+- fixed several texture issues on each of Lara's outfits
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Swamp Map rotation
 - fixed seaweed disappearing too quickly in certain levels

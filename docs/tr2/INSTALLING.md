@@ -52,6 +52,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── catalog_objects.csv
 │   ├── catalog_samples.csv
 │   ├── inv_ring.json5
+│   ├── outfits.json5
 │   ├── poses.json5
 │   ├── tr2
 │   │   ├── gameflow.json5
@@ -211,7 +212,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── title_us_gm.webp
 │   │   └── venice.webp
 │   ├── injections
-│   │   ├── barefoot_sfx.bin
 │   │   ├── barkhang_cameras.bin
 │   │   ├── barkhang_fd.bin
 │   │   ├── barkhang_itemrots.bin
@@ -303,6 +303,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lara_guns.bin
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_house_guns.bin
+│   │   ├── lara_outfits.bin
 │   │   ├── lara_rifle_sfx.bin
 │   │   ├── lara_unwater_guns.bin
 │   │   ├── lara_vegas_guns.bin
@@ -388,7 +389,9 @@ If you install everything correctly, your game directory should look more or les
 │   ├── rig.tr2
 │   ├── scripts
 │   │   ├── assault.lua
+│   │   ├── cut3.lua
 │   │   ├── floating.lua
+│   │   ├── house.lua
 │   │   ├── level1.lua
 │   │   ├── level3.lua
 │   │   ├── level4.lua
@@ -529,6 +532,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── catalog_objects.csv
         │   ├── catalog_samples.csv
         │   ├── inv_ring.json5
+        │   ├── outfits.json5
         │   ├── poses.json5
         │   ├── tr2
         │   │   ├── gameflow.json5
@@ -687,7 +691,6 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── title_us_gm.webp
         │   │   └── venice.webp
         │   ├── injections
-        │   │   ├── barefoot_sfx.bin
         │   │   ├── barkhang_cameras.bin
         │   │   ├── barkhang_fd.bin
         │   │   ├── barkhang_itemrots.bin
@@ -779,6 +782,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lara_guns.bin
         │   │   ├── lara_gym_guns.bin
         │   │   ├── lara_house_guns.bin
+        │   │   ├── lara_outfits.bin
         │   │   ├── lara_rifle_sfx.bin
         │   │   ├── lara_unwater_guns.bin
         │   │   ├── lara_vegas_guns.bin
@@ -864,7 +868,9 @@ If you install everything correctly, your game directory should look more or les
         │   ├── rig.tr2
         │   ├── scripts
         │   │   ├── assault.lua
+        │   │   ├── cut3.lua
         │   │   ├── floating.lua
+        │   │   ├── house.lua
         │   │   ├── level1.lua
         │   │   ├── level3.lua
         │   │   ├── level4.lua

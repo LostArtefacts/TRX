@@ -48,6 +48,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── catalog_objects.csv
 │   ├── catalog_samples.csv
 │   ├── inv_ring.json5
+│   ├── outfits.json5
 │   ├── poses.json5
 │   ├── tr3
 │   │   ├── gameflow.json5
@@ -185,6 +186,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_london_guns.bin
 │   │   ├── lara_nevada_guns.bin
+│   │   ├── lara_outfits.bin
 │   │   ├── london_sky.bin
 │   │   ├── misc_sprites.bin
 │   │   ├── nevada_sky.bin
@@ -203,6 +205,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── rapids.tr2
 │   ├── roofs.tr2
 │   ├── scripts
+│   │   ├── cut8.lua
 │   │   ├── jungle.lua
 │   │   └── zoo.lua
 │   ├── sewer.tr2
@@ -282,6 +285,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── catalog_objects.csv
         │   ├── catalog_samples.csv
         │   ├── inv_ring.json5
+        │   ├── outfits.json5
         │   ├── poses.json5
         │   ├── tr3
         │   │   ├── gameflow.json5
@@ -418,6 +422,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lara_gym_guns.bin
         │   │   ├── lara_london_guns.bin
         │   │   ├── lara_nevada_guns.bin
+        │   │   ├── lara_outfits.bin
         │   │   ├── london_sky.bin
         │   │   ├── misc_sprites.bin
         │   │   ├── nevada_sky.bin
@@ -436,6 +441,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── rapids.tr2
         │   ├── roofs.tr2
         │   ├── scripts
+        │   │   ├── cut8.lua
         │   │   ├── jungle.lua
         │   │   └── zoo.lua
         │   ├── sewer.tr2
