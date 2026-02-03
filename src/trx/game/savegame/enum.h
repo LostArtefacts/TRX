@@ -16,6 +16,9 @@ typedef enum {
     // Separated Magnums and Automatic Pistols.
     SG_VERSION_14 = 14,
 
+    // Replaced Lara mesh pointers with outfits
+    SG_VERSION_15 = 15,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_14,
+    SG_CURRENT_VERSION = SG_VERSION_15,
 } SAVEGAME_VERSION;

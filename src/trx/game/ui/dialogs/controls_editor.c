@@ -91,6 +91,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
                 { .role = INPUT_ROLE_CAMERA_RIGHT },
                 { .role = INPUT_ROLE_CAMERA_FORWARD },
                 { .role = INPUT_ROLE_CAMERA_BACK },
+                { .role = INPUT_ROLE_CHANGE_OUTFIT },
                 { .role = INPUT_ROLE_FLY_CHEAT },
                 { .role = INPUT_ROLE_ITEM_CHEAT },
                 { .role = INPUT_ROLE_LEVEL_SKIP_CHEAT },

@@ -21,12 +21,14 @@
         "data/injections/lara_rifle_sfx.bin",
         "data/injections/secret_models_og.bin",
         "data/injections/misc_sprites.bin",
+        "data/injections/lara_outfits.bin",
     ],
 
     "levels": [
         {
             "path": "PLACEHOLDER",
             "music_track": -1,
+            "lara_skin_type": "skin_type_09",
             "sequence": [
                 {"type": "loop_game"},
                 {"type": "level_stats"},

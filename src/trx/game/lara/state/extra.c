@@ -103,22 +103,27 @@ static void M_MidasKill(ITEM *const item, COLL_INFO *const coll)
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
 
-    Object_SetReflective(O_LARA_EXTRA_SKIN_MIDAS, true);
-    Object_SetReflective(O_LARA_HAIR_SWAP, true);
-
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t frame_num = Item_GetRelativeFrame(item);
 
     for (size_t i = 0; i < ARRAY_SIZE(m_MidasSteps); i++) {
         const M_MIDAS_STEP *const step = &m_MidasSteps[i];
-        if (step->frame_idx != frame_num) {
+        if (step->frame_idx > frame_num) {
             continue;
         }
 
         lara->mesh_effects |= (1 << step->mesh);
-        Lara_Mesh_SwapSingle(step->mesh, O_LARA_EXTRA_SKIN_MIDAS);
-        if (step->mesh == LM_TORSO) {
+        Lara_Skin_SwapSingleExtra(step->mesh, LS_EXTRA_MIDAS_KILL);
+        switch (step->mesh) {
+        case LM_TORSO:
             lara->back_gun_obj_id = O_LARA;
+            break;
+        case LM_HAND_L:
+        case LM_HAND_R:
+            Lara_Skin_ClearEquipment(step->mesh);
+            break;
+        default:
+            break;
         }
     }
 
@@ -225,10 +230,10 @@ static void M_RapidsDrown(ITEM *const item, COLL_INFO *const coll)
 static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_PULLED)) {
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_DAGGER_1);
+        Lara_Skin_SetExtraEquipment(LM_HAND_R, EXTRA_MESH_DAGGER_HAND);
         Music_Play(MX_DAGGER_PULL, MPM_ONCE);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_STORED)) {
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
+        Lara_Skin_ClearEquipment(LM_HAND_R);
         Inv_AddItem(O_PUZZLE_ITEM_2);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_DISPLAY)) {
         Overlay_AddDisplayPickup(O_PUZZLE_ITEM_2);
@@ -251,11 +256,10 @@ static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_START_HOUSE_BEGIN)) {
         Music_Play(MX_REVEAL_2, MPM_ONCE);
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_DAGGER_2);
-        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA_SKIN_DAGGER_2);
+        Lara_Skin_SetExtraEquipment(LM_HAND_R, EXTRA_MESH_DAGGER_HAND);
     } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_DAGGER_STORED)) {
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
-        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA);
+        Lara_Skin_ClearEquipment(LM_HAND_R);
+        Lara_Skin_SetExtraEquipment(LM_HIPS, EXTRA_MESH_DAGGER_HIPS);
         Inv_AddItem(O_PUZZLE_ITEM_1);
     } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_END)) {
         g_Camera.type = CAM_CHASE;
@@ -271,12 +275,12 @@ static void M_EndHouse(ITEM *const item, COLL_INFO *const coll)
     if (Item_TestFrameEqual(item, M_LF_SHOWER_START)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->back_gun_obj_id = O_LARA;
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
-        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
-        Lara_Mesh_SwapSingle(LM_HIPS, O_LARA_EXTRA_SKIN_DAGGER_2);
+        Lara_Skin_SetCombatFace(false);
+        Lara_Skin_ClearEquipment(LM_HAND_R);
+        Lara_Skin_ClearEquipment(LM_HIPS);
         Music_Play(MX_CUTSCENE_BATH, MPM_ONCE);
     } else if (Item_TestFrameEqual(item, M_LF_SHOWER_SHOTGUN_PICKUP)) {
-        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_SHOTGUN);
+        Lara_Skin_SetGunEquipment(LM_HAND_R, LGT_SHOTGUN);
     } else if (Item_TestFrameEqual(item, -1)) {
         Game_SetIsLevelComplete(true);
     }

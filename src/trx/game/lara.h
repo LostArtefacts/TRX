@@ -13,6 +13,7 @@
 #include <trx/game/lara/look.h>
 #include <trx/game/lara/mesh.h>
 #include <trx/game/lara/misc.h>
+#include <trx/game/lara/skin.h>
 #include <trx/game/lara/state.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/lara/vehicle.h>

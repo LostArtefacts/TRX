@@ -19,6 +19,7 @@ X_UI_CFG_BOOL(visuals.enable_skybox,        SETTING_ENABLE_SKYBOX)
 X_UI_CFG_BOOL(visuals.enable_weather,       SETTING_ENABLE_WEATHER)
 X_UI_CFG_BOOL(visuals.enable_footprints,    SETTING_ENABLE_FOOTPRINTS)
 
+X_UI_CFG_ENUM(visuals.lara_skin_type,       SETTING_LARA_SKIN_TYPE, .misc = UI_Settings_LaraSkinEntries, .custom_handler = { .is_enum_value_available = UI_Settings_LaraSkinType_IsEnumValueAvailable })
 X_UI_CFG_BOOL(visuals.enable_braid,         SETTING_ENABLE_BRAID)
 X_UI_CFG_BOOL(visuals.enable_breeze,        SETTING_ENABLE_BREEZE, .custom_handler = { .is_available = UI_Settings_EnableBreeze_IsAvailable })
 X_UI_CFG_BOOL(visuals.enable_3d_pickups,    SETTING_ENABLE_3D_PICKUPS)

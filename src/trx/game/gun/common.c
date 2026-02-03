@@ -174,16 +174,12 @@ bool Gun_IsRifleType(const LARA_GUN_TYPE gun_type)
 
 void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
-    ASSERT(obj_id != NO_OBJECT);
-    Lara_Mesh_SwapSingle(LM_HAND_L, obj_id);
+    Lara_Skin_SetGunEquipment(LM_HAND_L, weapon_type);
 }
 
 void Gun_SetLaraHandRMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
-    ASSERT(obj_id != NO_OBJECT);
-    Lara_Mesh_SwapSingle(LM_HAND_R, obj_id);
+    Lara_Skin_SetGunEquipment(LM_HAND_R, weapon_type);
 }
 
 void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
@@ -198,18 +194,14 @@ void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
 
 void Gun_SetLaraHolsterLMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
-    ASSERT(obj_id != NO_OBJECT);
-    Lara_Mesh_SwapSingle(LM_THIGH_L, obj_id);
+    Lara_Skin_SetGunEquipment(LM_THIGH_L, weapon_type);
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     lara_info->holsters_gun_type = weapon_type;
 }
 
 void Gun_SetLaraHolsterRMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const OBJECT_ID obj_id = Gun_GetWeaponAnim(weapon_type);
-    ASSERT(obj_id != NO_OBJECT);
-    Lara_Mesh_SwapSingle(LM_THIGH_R, obj_id);
+    Lara_Skin_SetGunEquipment(LM_THIGH_R, weapon_type);
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     lara_info->holsters_gun_type = weapon_type;
 }

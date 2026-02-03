@@ -19,6 +19,7 @@
         "data/injections/font.bin",
         "data/injections/winston_model.bin",
         "data/injections/misc_sprites.bin",
+        "data/injections/lara_outfits.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -28,6 +29,7 @@
         {
             "path": "PLACEHOLDER",
             "music_track": 0,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loop_game"},
                 {"type": "level_stats"},

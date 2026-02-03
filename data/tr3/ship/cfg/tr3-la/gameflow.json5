@@ -31,6 +31,7 @@
         "data/injections/pda_model.bin",
         "data/injections/lara_extra.bin",
         "data/injections/misc_sprites.bin",
+        "data/injections/lara_outfits.bin",
     ],
 
     "levels": [
@@ -39,6 +40,7 @@
             "type": "gym",
             "path": "data/house.tr2",
             "music_track": -1,
+            "lara_skin_type": "skin_type_15",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/house.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -54,6 +56,7 @@
         {
             "path": "data/scotland.tr2",
             "music_track": 36,
+            "lara_skin_type": "skin_type_16",
             "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/highland.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -74,6 +77,7 @@
         {
             "path": "data/willsden.tr2",
             "music_track": 30,
+            "lara_skin_type": "skin_type_16",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/willard.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -90,6 +94,7 @@
         {
             "path": "data/chunnel.tr2",
             "music_track": 74,
+            "lara_skin_type": "skin_type_19",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/chunnel.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -106,6 +111,7 @@
         {
             "path": "data/undersea.tr2",
             "music_track": 27,
+            "lara_skin_type": "skin_type_18",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/undersea.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -125,6 +131,7 @@
             "path": "data/zoo.tr2",
             "script": "data/scripts/zoo.lua",
             "music_track": 34,
+            "lara_skin_type": "skin_type_18",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/zoo.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "remove_scions"},
@@ -142,6 +149,7 @@
         {
             "path": "data/slinc.tr2",
             "music_track": 26,
+            "lara_skin_type": "skin_type_18",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/slinc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},

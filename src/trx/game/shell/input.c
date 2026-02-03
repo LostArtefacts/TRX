@@ -5,6 +5,7 @@
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
 #include <trx/game/console/common.h>
+#include <trx/game/lara.h>
 #include <trx/game/viewport.h>
 #include <trx/gfx/context.h>
 #include <trx/utils.h>
@@ -139,5 +140,9 @@ void Shell_ProcessInput(void)
 
     if (g_InputDB.turbo_cheat && g_Config.gameplay.enable_cheats) {
         Clock_CycleTurboSpeed(!g_Input.slow);
+    }
+
+    if (g_InputDB.change_outfit) {
+        Lara_Skin_CycleOutfit(g_Input.slow ? -1 : 1);
     }
 }

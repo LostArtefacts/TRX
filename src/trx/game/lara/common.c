@@ -138,6 +138,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
 
     Lara_Control_Initialise(level->type, m_StartAnimState);
 
+    Lara_Skin_Initialise();
     if (level->type == GFL_CUTSCENE) {
         Lara_Mesh_Initialise(level);
         lara_info->gun_status = LGS_ARMLESS;

@@ -87,6 +87,15 @@ static void M_SwapMeshesWithMeshSwap2(ITEM *const item)
     M_SwapMeshes(item, O_MESH_SWAP_2);
 }
 
+static void M_SwapMeshesWithMeshSwap3(ITEM *const item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    M_SwapMeshes(item, O_MESH_SWAP_3);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_TURN_180, M_Turn180)
 REGISTER_ITEM_ACTION(ITEM_ACTION_INVISIBILITY_ON, M_InvisibilityOn)
 REGISTER_ITEM_ACTION(ITEM_ACTION_INVISIBILITY_OFF, M_InvisibilityOff)
@@ -98,3 +107,5 @@ REGISTER_ITEM_ACTION(
     ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_1, M_SwapMeshesWithMeshSwap1)
 REGISTER_ITEM_ACTION(
     ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_2, M_SwapMeshesWithMeshSwap2)
+REGISTER_ITEM_ACTION(
+    ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_3, M_SwapMeshesWithMeshSwap3)

@@ -13,6 +13,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara/pose.h>
+#include <trx/game/lara/skin.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
 #include <trx/game/option.h>
@@ -152,6 +153,7 @@ static void M_ShutdownModules(void)
     }
 
     Lara_Pose_Shutdown();
+    Lara_Skin_Shutdown();
 
     Console_Shutdown();
     Savegame_Shutdown();
@@ -207,6 +209,8 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
     Gun_LoadVars(String_FormatStatic("%s/weapons.json5", Shell_GetConfigDir()));
     UI_Settings_LoadFromFile(
         String_FormatStatic("%s/ui.json5", Shell_GetConfigDir()));
+    Lara_Skin_LoadFromFile(
+        String_FormatStatic("%s/outfits.json5", Shell_GetConfigDir()));
 
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);

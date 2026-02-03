@@ -440,12 +440,21 @@ void SG_File_DumpLara(SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "vehicle_item_number", Lara_Vehicle_GetIndex());
 
     SGW_WRITE_VALUE(io, "mesh_effects", lara->mesh_effects);
+
+    SGW_PUSH_OBJECT(io);
+    SGW_WRITE_VALUE(io, "skin_type", Lara_Skin_GetType());
+    SGW_WRITE_VALUE(io, "skin_is_default", Lara_Skin_IsDefaultType());
+    SGW_WRITE_VALUE(io, "holsters_visible", Lara_Skin_AreHolstersVisible());
     SGW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-        SGW_PUSH_VALUE(io, Object_GetMeshOffset(lara->mesh_ptrs[i]));
+        const LARA_SKIN_EQUIPMENT *const equipment = Lara_Skin_GetEquipment(i);
+        SGW_PUSH_OBJECT(io);
+        SGW_WRITE_VALUE(io, "type", equipment->type);
+        SGW_WRITE_VALUE(io, "data", equipment->data);
         SGW_POP_AND_APPEND(io);
     }
-    SGW_POP_AND_SET(io, "meshes");
+    SGW_POP_AND_SET(io, "equipment");
+    SGW_POP_AND_SET(io, "skin");
 
     SGW_WRITE_VALUE(io, "target_angle1", lara->target_angles[0]);
     SGW_WRITE_VALUE(io, "target_angle2", lara->target_angles[1]);

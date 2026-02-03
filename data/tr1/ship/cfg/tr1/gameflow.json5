@@ -21,6 +21,7 @@
         "data/injections/winston_model.bin",
         "data/injections/lara_extra.bin",
         "data/injections/misc_sprites.bin",
+        "data/injections/lara_outfits.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -49,9 +50,11 @@
         // Level 0: Lara's Home
         {
             "path": "data/gym.phd",
+            "script": "data/scripts/gym.lua",
             "type": "gym",
             "music_track": 0,
             "inherit_injections": false,
+            "lara_skin_type": "skin_type_01",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 3},
                 {"type": "loading_screen", "path": "data/images/gym.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -72,6 +75,8 @@
                 "data/injections/font.bin",
                 "data/injections/winston_model.bin",
                 "data/injections/misc_sprites.bin",
+                "data/injections/lara_feet_sfx.bin",
+                "data/injections/lara_outfits.bin",
             ],
         },
 
@@ -79,6 +84,7 @@
         {
             "path": "data/level1.phd",
             "music_track": 57,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "loading_screen", "path": "data/images/peru.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -97,6 +103,7 @@
         {
             "path": "data/level2.phd",
             "music_track": 57,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/peru.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -114,6 +121,7 @@
         {
             "path": "data/level3a.phd",
             "music_track": 57,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/peru.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -132,6 +140,7 @@
         {
             "path": "data/level3b.phd",
             "music_track": 57,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/peru.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -151,6 +160,7 @@
         {
             "path": "data/level4.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 5},
                 {"type": "loading_screen", "path": "data/images/greece.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -171,6 +181,7 @@
         {
             "path": "data/level5.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/greece.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -190,6 +201,7 @@
         {
             "path": "data/level6.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/greece.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -207,6 +219,7 @@
         {
             "path": "data/level7a.phd",
             "music_track": 58,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/greece.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -226,6 +239,7 @@
         {
             "path": "data/level7b.phd",
             "music_track": 58,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/greece.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -250,6 +264,7 @@
         {
             "path": "data/level8a.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 6},
                 {"type": "loading_screen", "path": "data/images/egypt.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -271,6 +286,7 @@
         {
             "path": "data/level8b.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/egypt.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -291,6 +307,7 @@
         {
             "path": "data/level8c.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/egypt.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -311,6 +328,7 @@
         {
             "path": "data/level10a.phd",
             "music_track": 58,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 7},
                 {"type": "loading_screen", "path": "data/images/atlantis.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -342,6 +360,7 @@
         {
             "path": "data/level10b.phd",
             "music_track": 60,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 8},
                 {"type": "loading_screen", "path": "data/images/atlantis.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -366,6 +385,7 @@
         {
             "path": "data/level10c.phd",
             "music_track": 60,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/atlantis.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -417,6 +437,7 @@
         {
             "path": "data/level2.phd",
             "music_track": 57,
+            "lara_skin_type": "skin_type_02",
             "injections": [
                 "data/injections/vilcabamba_door_sfx.bin",
                 "data/injections/vilcabamba_itemrots.bin",
@@ -433,6 +454,7 @@
         {
             "path": "data/level3a.phd",
             "music_track": 57,
+            "lara_skin_type": "skin_type_02",
             "injections": [
                 "data/injections/valley_itemrots.bin",
                 "data/injections/valley_skybox.bin",
@@ -452,6 +474,7 @@
         {
             "path": "data/cut1.phd",
             "music_track": 23,
+            "lara_skin_type": "skin_type_02",
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut1_setup.bin",
@@ -459,6 +482,7 @@
                 "data/injections/photo.bin",
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
+                "data/injections/lara_outfits.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -469,6 +493,7 @@
         {
             "path": "data/cut2.phd",
             "music_track": 25,
+            "lara_skin_type": "skin_type_02",
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut2_setup.bin",
@@ -476,6 +501,7 @@
                 "data/injections/photo.bin",
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
+                "data/injections/lara_outfits.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -486,6 +512,7 @@
         {
             "path": "data/cut3.phd",
             "music_track": 24,
+            "lara_skin_type": "skin_type_02",
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut3_setup.bin",
@@ -493,6 +520,7 @@
                 "data/injections/photo.bin",
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
+                "data/injections/lara_outfits.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -503,6 +531,7 @@
         {
             "path": "data/cut4.phd",
             "music_track": 22,
+            "lara_skin_type": "skin_type_02",
             "fog_start": 12.0,
             "fog_end": 18.0,
             "inherit_injections": false,
@@ -513,6 +542,7 @@
                 "data/injections/photo.bin",
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
+                "data/injections/lara_outfits.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},

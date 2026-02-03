@@ -175,7 +175,10 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
     }
 
     if (L_CHANGED(visuals.enable_braid)) {
-        Lara_Mesh_UpdateHair(false);
+        Lara_Skin_ApplyOutfit();
+    }
+    if (L_CHANGED(visuals.lara_skin_type)) {
+        Lara_Skin_ApplyOutfitFromConfig();
     }
 
     if (L_CHANGED(rendering.upscaling_filter)

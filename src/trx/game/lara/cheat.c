@@ -82,13 +82,8 @@ static void M_GiveAllMedpacksImpl(void)
 
 static void M_ReinitialiseGunMeshes(void)
 {
-    const bool has_flare = Lara_Flare_IsMeshActive();
     Lara_Mesh_Initialise(Game_GetCurrentLevel());
     Gun_InitialiseNewWeapon();
-    if (has_flare) {
-        Lara_Flare_DrawMeshes();
-    }
-    Lara_Mesh_UpdateHair(true);
 }
 
 static void M_ResetGunStatus(void)
@@ -274,8 +269,12 @@ bool Lara_Cheat_EnterFlyMode(void)
 
     Viewport_AlterFOV(-1, FOV_MODE_GAME);
 
-    if (lara_info->extra_anim) {
+    if (lara_info->extra_anim || lara_item->hit_points < 0) {
         M_ResetGunStatus();
+        Lara_Skin_ClearEquipment(LM_HAND_R);
+        if (!Lara_Flare_IsMeshActive()) {
+            Lara_Skin_ClearEquipment(LM_HAND_L);
+        }
     } else if (Gun_IsRifleType(lara_info->gun_type)) {
         while (lara_info->gun_item_num != NO_ITEM) {
             Gun_Rifle_Undraw(lara_info->gun_type);
@@ -312,7 +311,6 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->air = LARA_MAX_AIR;
     lara_info->death_timer = 0;
     lara_info->mesh_effects = 0;
-    Object_SetReflective(O_LARA_HAIR_SWAP, false);
     lara_item->enable_shadow = true;
     lara_item->hit_points = LARA_MAX_HITPOINTS;
     lara_info->interact_target.item_num = NO_ITEM;
@@ -321,6 +319,7 @@ bool Lara_Cheat_EnterFlyMode(void)
 
     Lara_Extinguish();
     M_ReinitialiseGunMeshes();
+    Lara_Skin_ApplyOutfit();
     g_Camera.type = CAM_CHASE;
 
     Console_Log(GS(OSD_FLY_MODE_ON));

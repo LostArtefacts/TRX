@@ -45,7 +45,7 @@ static void M_KillLara(ITEM *const item)
     Lara_TakeDamage(TREX_BITE_DAMAGE, true);
     Creature_SpecialKill(
         item, TREX_ANIM_KILL, TREX_STATE_KILL, LS_EXTRA_TREX_KILL);
-    Lara_Mesh_SwapAll(O_LARA_EXTRA_SKIN_TREX);
+    Lara_Skin_SwapAllExtra(LS_EXTRA_TREX_KILL);
 }
 
 static void M_Collision(

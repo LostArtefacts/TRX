@@ -36,17 +36,14 @@ static void M_ToggleGun(
         return;
     }
 
-    const OBJECT *const obj = Object_Get(O_LARA_PISTOLS);
-    const OBJECT_MESH *const mesh =
-        Object_GetMesh(obj->mesh_idx + thigh_mesh_idx);
-    const bool armed = Lara_Mesh_Get(thigh_mesh_idx) != mesh;
-
+    const bool armed =
+        Lara_Skin_GetEquipment(hand_mesh_idx)->type == EQUIPMENT_TYPE_WEAPON;
     if (armed) {
-        Lara_Mesh_SwapSingle(thigh_mesh_idx, O_LARA_PISTOLS);
-        Lara_Mesh_SwapSingle(hand_mesh_idx, O_LARA);
+        Lara_Skin_SetGunEquipment(thigh_mesh_idx, LGT_PISTOLS);
+        Lara_Skin_SetGunEquipment(hand_mesh_idx, LGT_UNARMED);
     } else {
-        Lara_Mesh_SwapSingle(thigh_mesh_idx, O_LARA);
-        Lara_Mesh_SwapSingle(hand_mesh_idx, O_LARA_PISTOLS);
+        Lara_Skin_SetGunEquipment(thigh_mesh_idx, LGT_UNARMED);
+        Lara_Skin_SetGunEquipment(hand_mesh_idx, LGT_PISTOLS);
     }
 }
 
@@ -58,25 +55,6 @@ static void M_ToggleRightGun(ITEM *const item)
 static void M_ToggleLeftGun(ITEM *const item)
 {
     M_ToggleGun(item, LM_THIGH_L, LM_HAND_L);
-}
-
-static void M_ToggleLaraMeshSwap(ITEM *const item)
-{
-    if (item == nullptr) {
-        return;
-    }
-
-    const OBJECT *const obj = Object_Get(O_LARA_SWAP);
-    const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx + LM_HIPS);
-    const bool swapped = Lara_Mesh_Get(LM_HIPS) == mesh;
-
-    if (swapped) {
-        Lara_Mesh_SwapAll(O_LARA);
-        Lara_Mesh_SwapSingle(LM_THIGH_L, O_LARA_PISTOLS);
-        Lara_Mesh_SwapSingle(LM_THIGH_R, O_LARA_PISTOLS);
-    } else {
-        Lara_Mesh_SwapAll(O_LARA_SWAP);
-    }
 }
 
 static void M_ResetHair(ITEM *const item)
@@ -114,7 +92,5 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_NORMAL, M_Normal)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_HANDS_FREE, M_HandsFree)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_RIGHT_GUN, M_ToggleRightGun)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_LEFT_GUN, M_ToggleLeftGun)
-REGISTER_ITEM_ACTION(
-    ITEM_ACTION_SWAP_MESHES_WITH_MESH_SWAP_3, M_ToggleLaraMeshSwap)
 REGISTER_ITEM_ACTION(ITEM_ACTION_RESET_HAIR, M_ResetHair)
 REGISTER_ITEM_ACTION(ITEM_ACTION_BUBBLES, M_Bubbles)

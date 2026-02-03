@@ -108,6 +108,9 @@
         "music_track": {
           "type": "integer"
         },
+        "lara_skin_type": {
+          "type": "string"
+        },
         "inherit_injections": {
           "type": "boolean"
         },
@@ -174,11 +177,8 @@
           ],
           "description": "Enables a per-level weather effect."
         },
-        "lara_type": {
-          "type": [
-            "integer",
-            "string"
-          ]
+        "lara_skin_type": {
+          "type": "string"
         },
         "water_color": {
           "type": "array",

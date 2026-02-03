@@ -1,0 +1,72 @@
+#pragma once
+
+typedef enum {
+    LARA_SKIN_TYPE_DEFAULT,
+    LARA_SKIN_TYPE_01,
+    LARA_SKIN_TYPE_02,
+    LARA_SKIN_TYPE_03,
+    LARA_SKIN_TYPE_04,
+    LARA_SKIN_TYPE_05,
+    LARA_SKIN_TYPE_06,
+    LARA_SKIN_TYPE_07,
+    LARA_SKIN_TYPE_08,
+    LARA_SKIN_TYPE_09,
+    LARA_SKIN_TYPE_10,
+    LARA_SKIN_TYPE_11,
+    LARA_SKIN_TYPE_12,
+    LARA_SKIN_TYPE_13,
+    LARA_SKIN_TYPE_14,
+    LARA_SKIN_TYPE_15,
+    LARA_SKIN_TYPE_16,
+    LARA_SKIN_TYPE_17,
+    LARA_SKIN_TYPE_18,
+    LARA_SKIN_TYPE_19,
+    LARA_SKIN_TYPE_20,
+    LARA_SKIN_TYPE_21,
+    LARA_SKIN_TYPE_22,
+    LARA_SKIN_TYPE_23,
+    LARA_SKIN_TYPE_24,
+    LARA_SKIN_TYPE_25,
+    LARA_SKIN_TYPE_26,
+    LARA_SKIN_TYPE_27,
+    LARA_SKIN_TYPE_28,
+    LARA_SKIN_TYPE_29,
+    LARA_SKIN_TYPE_30,
+    LARA_SKIN_TYPE_31,
+    LARA_SKIN_TYPE_32,
+    NUM_LARA_SKINS,
+} LARA_SKIN_TYPE;
+
+typedef enum {
+    // clang-format off
+    BRAID_MODE_NONE,          // No body adjustments needed
+    BRAID_MODE_TR1_HEAD_ONLY, // Head replacement only (no backpack present)
+    BRAID_MODE_TR1_FULL,      // Head and torso replacement
+    BRAID_MODE_TR1_MAULED,    // Head and mauled torso replacement
+    BRAID_MODE_TR1_GOLD,      // Gold head and torso replacement
+    NUM_BRAID_MODES,
+    // clang-format on
+} LARA_SKIN_BRAID_MODE;
+
+typedef enum {
+    EXTRA_MESH_TR1_BRAID_DEFAULT_HEAD,
+    EXTRA_MESH_TR1_BRAID_COMBAT_HEAD,
+    EXTRA_MESH_TR1_BRAID_DEFAULT_TORSO,
+    EXTRA_MESH_TR1_BRAID_MAULED_TORSO,
+    EXTRA_MESH_TR1_BRAID_GOLD_HEAD,
+    EXTRA_MESH_TR1_BRAID_GOLD_TORSO,
+    EXTRA_MESH_DAGGER_HAND,
+    EXTRA_MESH_DAGGER_HIPS,
+    EXTRA_MESH_OAR,
+    EXTRA_MESH_SPANNER,
+    EXTRA_MESH_DRINK_CAN,
+    NUM_EXTRA_MESHES,
+} LARA_SKIN_EXTRA_MESH;
+
+typedef enum {
+    // clang-format off
+    EQUIPMENT_TYPE_NONE   = 0,
+    EQUIPMENT_TYPE_WEAPON = 1,
+    EQUIPMENT_TYPE_EXTRA  = 2,
+    // clang-format on
+} LARA_SKIN_EQUIPMENT_TYPE;

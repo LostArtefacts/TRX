@@ -143,6 +143,7 @@ X_CFG_ENUM(rendering.ui_filter,                        GFX_TF_POINT, GFX_TEXTURE
 X_CFG_ENUM(rendering.upscaling_filter,                 GFX_TF_POINT, GFX_TEXTURE_FILTER)
 X_CFG_ENUM(ui.menu_style,                              UI_STYLE_PS1, UI_STYLE)
 X_CFG_ENUM(ui.stat_detail_mode,                        SDM_FULL, STAT_DETAIL_MODE)
+X_CFG_ENUM(visuals.lara_skin_type,                     LARA_SKIN_TYPE_DEFAULT, LARA_SKIN_TYPE)
 X_CFG_ENUM_EX("ui.airbar_location",                    ui.lara_air_bar.location, BL_TOP_RIGHT, BAR_LOCATION)
 X_CFG_ENUM_EX("ui.enemy_healthbar_location",           ui.enemy_health_bar.location, BL_BOTTOM_LEFT, BAR_LOCATION)
 X_CFG_ENUM_EX("ui.enemy_healthbar_show_mode",          ui.enemy_health_bar.show_mode, BSM_ALWAYS, BAR_SHOW_MODE)

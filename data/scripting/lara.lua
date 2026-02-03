@@ -1,11 +1,18 @@
 local raw = trxc.lara
 
-local lara = {}
+local lara = {
+  set_extra_equipment = raw.set_extra_equipment,
+  clear_equipment = raw.clear_equipment,
+}
 
 -- Item proxy metatable
 local getters = {
   exposure_bar = raw.get_exposure_bar,
   air_bar = raw.get_air_bar,
+  skin = raw.get_skin,
+  holsters_visible = raw.are_holsters_visible,
+  has_pistol_weapon = raw.has_pistol_weapon,
+  extra_anim = raw.get_extra_anim,
   item = function()
     return trx.items[raw.get_item()]
   end,
@@ -14,6 +21,8 @@ local getters = {
 local setters = {
   exposure_bar = raw.set_exposure_bar,
   air_bar = raw.set_air_bar,
+  skin = raw.set_skin,
+  holsters_visible = raw.set_holsters_visible,
 }
 
 local lara_mt = {

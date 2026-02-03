@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/config/common.h>
 #include <trx/game/gun.h>
+#include <trx/game/lara/skin.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
@@ -191,6 +192,13 @@ bool UI_Settings_ShadowType_IsEnumValueAvailable(
         return Object_Get(O_SHADOW)->loaded;
     }
     return true;
+}
+
+bool UI_Settings_LaraSkinType_IsEnumValueAvailable(
+    const UI_SETTINGS_OPTION *const option, const int32_t value)
+{
+    return value == LARA_SKIN_TYPE_DEFAULT
+        || Lara_Skin_IsOutfitAvailable(value);
 }
 
 bool UI_Settings_Volume_RequestChange(
