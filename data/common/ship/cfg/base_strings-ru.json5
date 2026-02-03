@@ -721,6 +721,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "Переключает между сглаженными и пикселизированными текстурами элементов интерфейса.",
         "SETTING_UI_LANGUAGE": "Язык",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Изменить язык интерфейса.",
+        "SETTING_UI_PICKUPS_OVERLAY": "Отображение подбора",
+        "SETTING_UI_PICKUPS_OVERLAY_DESCRIPTION": "Показывает предметы в правом нижнем углу, когда Лара что-то подбирает.",
         "SETTING_UI_PICKUP_SCALE": "\\{review}Масштаб подбора",
         "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "\\{review}Изменяет размер предметов, анимированных в интерфейсе, когда Лара что-то подбирает.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Закольцевать список",

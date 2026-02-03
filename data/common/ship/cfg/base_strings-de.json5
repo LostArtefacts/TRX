@@ -721,6 +721,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "Schaltet zwischen weichgezeichneten und pixeligen UI-Texturen hin und her.",
         "SETTING_UI_LANGUAGE": "Sprache",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Ändert die Sprache des UI-Textes.",
+        "SETTING_UI_PICKUPS_OVERLAY": "Pickup-Anzeige",
+        "SETTING_UI_PICKUPS_OVERLAY_DESCRIPTION": "Zeigt Gegenstände unten rechts an, wenn Lara etwas aufnimmt.",
         "SETTING_UI_PICKUP_SCALE": "Pickup-Skala",
         "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "\\{review}Ändert die Größe der im UI animierten Gegenstände, wenn Lara etwas aufnimmt.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Scroll-Schleife",

@@ -2,6 +2,7 @@ X_UI_CFG_STRING(language,                       SETTING_UI_LANGUAGE, .custom_han
 
 X_UI_CFG_FLOAT_PERCENT(ui.text_scale,           SETTING_UI_TEXT_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
 X_UI_CFG_FLOAT_PERCENT(ui.pickup_scale,         SETTING_UI_PICKUP_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5)
+X_UI_CFG_BOOL(ui.show_pickups_overlay,          SETTING_UI_PICKUPS_OVERLAY)
 X_UI_CFG_BOOL(ui.enable_wraparound,             SETTING_UI_SCROLL_WRAPAROUND)
 
 X_UI_CFG_ENUM(ui.menu_style,                    SETTING_MENU_STYLE, .misc = UI_Settings_MenuStyleEnumEntries)

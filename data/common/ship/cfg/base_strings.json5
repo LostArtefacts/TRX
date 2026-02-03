@@ -721,6 +721,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "Switches between smooth and pixel UI textures.",
         "SETTING_UI_LANGUAGE": "Language",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Changes the language of the UI text.",
+        "SETTING_UI_PICKUPS_OVERLAY": "Pickups overlay",
+        "SETTING_UI_PICKUPS_OVERLAY_DESCRIPTION": "Shows items in the bottom-right corner when Lara picks something up.",
         "SETTING_UI_PICKUP_SCALE": "Pickup scale",
         "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "Changes size of items animated in the UI when Lara picks something up.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Scroll wrap",

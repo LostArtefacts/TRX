@@ -721,6 +721,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "Passa dall'interfaccia di gioco filtrata a quella pixelata e viceversa.",
         "SETTING_UI_LANGUAGE": "Lingua",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Cambia la lingua dell'interfaccia utente.",
+        "SETTING_UI_PICKUPS_OVERLAY": "Notifiche raccolta",
+        "SETTING_UI_PICKUPS_OVERLAY_DESCRIPTION": "Mostra gli oggetti nell'angolo in basso a destra quando Lara raccoglie qualcosa.",
         "SETTING_UI_PICKUP_SCALE": "Scala oggetti raccolti",
         "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "Modifica la dimensione degli oggetti animati visualizzati nell'interfaccia utente quando Lara raccoglie qualcosa.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Scorrimento continuo",
