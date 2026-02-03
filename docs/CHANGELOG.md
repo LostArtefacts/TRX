@@ -11,6 +11,7 @@
     - added Pulse Light control
     - added Beacon Light control
     - added On/Off Light control
+- added the ability in Lua to hook into control loop events during cutscenes
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
 - added the ability to toggle TR1/2 and TR3 projectile area damage – TR3 often deals double damage (Gameplay → Mods → Projectile Area Damage)
