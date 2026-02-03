@@ -8,7 +8,11 @@ title: Migrating levels
 
 ### Version 1.1 to 1.2
 
-1. **Lua event name cleanup**:
+1. **Lara skin system**:  
+    Lara's outfit must now be defined using additional skin objects, along with
+    game-flow and JSON setup. Refer to [outfits documentation](16-OUTFITS.md).
+
+2. **Lua event name cleanup**:  
     The following events got new names:
     - `on_level_init` → `before_level_file`
     - `on_level_start` → `after_level_file`
@@ -16,18 +20,18 @@ title: Migrating levels
     - `on_control` → `before_control`
     - `on_control_post` → `after_control`
 
-2. **Lua objects catalog name cleanup**:
+3. **Lua objects catalog name cleanup**:  
     All keys in `trx.catalog.objects` had their `O_` prefix removed and were
     converted to lowercase.  
     Before: `trx.catalog.objects.O_BANDIT_1`  
     After: `trx.catalog.objects.bandit_1`
 
-3. **Savegame file pattern rename**:
+4. **Savegame file pattern rename**:  
     Replace `savegame_fmt_bson` with `savegame_file_fmt` in game flow files.
     The old `savegame_fmt_bson` key is still accepted but logs a warning and is
     scheduled for removal in TRX 1.5.
 
-4. **Legacy savegame pattern removed**:
+5. **Legacy savegame pattern removed**:  
     Remove the `savegame_fmt_legacy` key from game flow files.
 
 ### Version 1.0 to 1.1

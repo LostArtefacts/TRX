@@ -71,6 +71,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── catalog_objects.csv
 │   ├── catalog_samples.csv
 │   ├── inv_ring.json5
+│   ├── outfits.json5
 │   ├── poses.json5
 │   ├── tr1
 │   │   ├── gameflow.json5
@@ -201,10 +202,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── khamoon_textures.bin
 │   │   ├── lara_animations.bin
 │   │   ├── lara_extra.bin
+│   │   ├── lara_feet_sfx.bin
 │   │   ├── lara_flares.bin
 │   │   ├── lara_guns.bin
 │   │   ├── lara_gym_flares.bin
 │   │   ├── lara_gym_guns.bin
+│   │   ├── lara_outfits.bin
 │   │   ├── midas_itemrots.bin
 │   │   ├── midas_textures.bin
 │   │   ├── mines_cameras.bin
@@ -270,6 +273,8 @@ If you install everything correctly, your game directory should look more or les
 │   ├── level10a.phd
 │   ├── level10b.phd
 │   ├── level10c.phd
+│   ├── scripts
+│   │   └── gym.lua
 │   └── title.phd
 ├── fmv
 │   ├── cafe.rpl
@@ -402,6 +407,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── catalog_objects.csv
         │   ├── catalog_samples.csv
         │   ├── inv_ring.json5
+        │   ├── outfits.json5
         │   ├── poses.json5
         │   ├── tr1
         │   │   ├── gameflow.json5
@@ -531,10 +537,12 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── khamoon_textures.bin
         │   │   ├── lara_animations.bin
         │   │   ├── lara_extra.bin
+        │   │   ├── lara_feet_sfx.bin
         │   │   ├── lara_flares.bin
         │   │   ├── lara_guns.bin
         │   │   ├── lara_gym_flares.bin
         │   │   ├── lara_gym_guns.bin
+        │   │   ├── lara_outfits.bin
         │   │   ├── midas_itemrots.bin
         │   │   ├── midas_textures.bin
         │   │   ├── mines_cameras.bin
@@ -600,6 +608,8 @@ If you install everything correctly, your game directory should look more or les
         │   ├── level10a.phd
         │   ├── level10b.phd
         │   ├── level10c.phd
+        │   ├── scripts
+        │   │   └── gym.lua
         │   └── title.phd
         ├── fmv
         │   ├── cafe.rpl
