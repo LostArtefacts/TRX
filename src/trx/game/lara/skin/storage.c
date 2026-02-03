@@ -72,25 +72,9 @@ static bool M_ReadExtraMeshes(JSON_OBJECT *const root_obj)
     return true;
 }
 
-static bool M_LoadOutfit(
+static bool M_LoadBraid(
     JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
 {
-    const char *const mesh_obj_name =
-        JSON_ObjectGetString(outfit_obj, "mesh_object", JSON_INVALID_STRING);
-    if (mesh_obj_name == JSON_INVALID_STRING) {
-        Shell_ExitSystemFmt("missing outfit mesh object");
-        return false;
-    }
-
-    CATALOG_ID mesh_object_id;
-    if (!Catalog_NameToEnum(CATALOG_OBJECTS, mesh_obj_name, &mesh_object_id)) {
-        Shell_ExitSystemFmt("unknown outfit object_id '%s'", mesh_obj_name);
-        return false;
-    }
-    outfit->obj_id = mesh_object_id;
-
-    outfit->mesh_offset = JSON_ObjectGetInt(outfit_obj, "mesh_offset", 1);
-
     JSON_OBJECT *const braid_obj = JSON_ObjectGetObject(outfit_obj, "braid");
     if (braid_obj != nullptr) {
         const char *const braid_mode_name =
@@ -122,16 +106,24 @@ static bool M_LoadOutfit(
         outfit->braid.enabled = false;
     }
 
-    int32_t tmp_i = JSON_ObjectGetInt(outfit_obj, "gun_map", -1);
-    if (tmp_i < 0 || tmp_i >= m_GunMaps->count) {
-        Shell_ExitSystemFmt("invalid gun map '%d'", tmp_i);
+    return true;
+}
+
+static bool M_LoadGunMap(
+    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+{
+    const int32_t map_idx = JSON_ObjectGetInt(outfit_obj, "gun_map", -1);
+    if (map_idx < 0 || map_idx >= m_GunMaps->count) {
+        Shell_ExitSystemFmt("invalid gun map '%d'", map_idx);
         return false;
     }
-    outfit->gun_map = (LARA_SKIN_GUN_MAP *)Vector_Get(m_GunMaps, tmp_i);
+    outfit->gun_map = (LARA_SKIN_GUN_MAP *)Vector_Get(m_GunMaps, map_idx);
+    return true;
+}
 
-    outfit->is_reflective =
-        JSON_ObjectGetBool(outfit_obj, "is_reflective", false);
-
+static bool M_LoadSFX(
+    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+{
     const char *const feet_sample_name = JSON_ObjectGetString(
         outfit_obj, "footstep_sample_id", JSON_INVALID_STRING);
     if (feet_sample_name != JSON_INVALID_STRING) {
@@ -146,26 +138,33 @@ static bool M_LoadOutfit(
         outfit->footstep_sample_id = SFX_TRX_INVALID;
     }
 
-    outfit->combat_face_offset =
-        JSON_ObjectGetInt(outfit_obj, "combat_face_offset", -1);
+    return true;
+}
 
-    {
-        JSON_OBJECT *const holster_obj =
-            JSON_ObjectGetObject(outfit_obj, "no_holster_offsets");
-        if (holster_obj != nullptr) {
-            outfit->no_holster_offsets.left =
-                JSON_ObjectGetInt(holster_obj, "thigh_l", -1);
-            outfit->no_holster_offsets.right =
-                JSON_ObjectGetInt(holster_obj, "thigh_r", -1);
-        } else {
-            outfit->no_holster_offsets.left = -1;
-            outfit->no_holster_offsets.right = -1;
-        }
+static bool M_LoadNoHolsters(
+    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+{
+    JSON_OBJECT *const holster_obj =
+        JSON_ObjectGetObject(outfit_obj, "no_holster_offsets");
+    if (holster_obj != nullptr) {
+        outfit->no_holster_offsets.left =
+            JSON_ObjectGetInt(holster_obj, "thigh_l", -1);
+        outfit->no_holster_offsets.right =
+            JSON_ObjectGetInt(holster_obj, "thigh_r", -1);
+    } else {
+        outfit->no_holster_offsets.left = -1;
+        outfit->no_holster_offsets.right = -1;
     }
+    return true;
+}
 
+static bool M_LoadExtras(
+    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+{
     for (int32_t j = 0; j < LS_EXTRA_NUMBER_OF; j++) {
         outfit->extra_outfits[j] = LARA_SKIN_TYPE_DEFAULT;
     }
+
     JSON_OBJECT *const extra_obj =
         JSON_ObjectGetObject(outfit_obj, "extra_outfits");
     if (extra_obj != nullptr) {
@@ -186,6 +185,52 @@ static bool M_LoadOutfit(
             }
             outfit->extra_outfits[state] = type;
         }
+    }
+
+    return true;
+}
+
+static bool M_LoadOutfit(
+    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+{
+    const char *const mesh_obj_name =
+        JSON_ObjectGetString(outfit_obj, "mesh_object", JSON_INVALID_STRING);
+    if (mesh_obj_name == JSON_INVALID_STRING) {
+        Shell_ExitSystemFmt("missing outfit mesh object");
+        return false;
+    }
+
+    CATALOG_ID mesh_object_id;
+    if (!Catalog_NameToEnum(CATALOG_OBJECTS, mesh_obj_name, &mesh_object_id)) {
+        Shell_ExitSystemFmt("unknown outfit object_id '%s'", mesh_obj_name);
+        return false;
+    }
+    outfit->obj_id = mesh_object_id;
+
+    outfit->mesh_offset = JSON_ObjectGetInt(outfit_obj, "mesh_offset", 1);
+    outfit->is_reflective =
+        JSON_ObjectGetBool(outfit_obj, "is_reflective", false);
+    outfit->combat_face_offset =
+        JSON_ObjectGetInt(outfit_obj, "combat_face_offset", -1);
+
+    if (!M_LoadBraid(outfit_obj, outfit)) {
+        return false;
+    }
+
+    if (!M_LoadGunMap(outfit_obj, outfit)) {
+        return false;
+    }
+
+    if (!M_LoadSFX(outfit_obj, outfit)) {
+        return false;
+    }
+
+    if (!M_LoadNoHolsters(outfit_obj, outfit)) {
+        return false;
+    }
+
+    if (!M_LoadExtras(outfit_obj, outfit)) {
+        return false;
     }
 
     outfit->is_defined = true;
