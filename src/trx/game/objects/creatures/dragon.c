@@ -103,7 +103,6 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     Item_UpdateRoom(lara->item_num, dragon_back_item->room_num);
 
     Lara_SwitchToExtraState(LS_EXTRA_PULL_DAGGER);
-    Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_DAGGER_1);
 
     Camera_InvokeCinematic(lara_item, 0, 0);
 
