@@ -225,6 +225,7 @@ static void M_RapidsDrown(ITEM *const item, COLL_INFO *const coll)
 static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_PULLED)) {
+        Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA_EXTRA_SKIN_DAGGER_1);
         Music_Play(MX_DAGGER_PULL, MPM_ONCE);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_STORED)) {
         Lara_Mesh_SwapSingle(LM_HAND_R, O_LARA);
