@@ -34,3 +34,4 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_ShadowTypeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_ProjectileAreaDamageEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LaraSkinEntries[];

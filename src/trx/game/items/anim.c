@@ -3,7 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items/actions.h>
-#include <trx/game/lara/common.h>
+#include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -307,14 +307,14 @@ void Item_PlayAnimSFX(
         return;
     }
 
-    const ITEM *const lara_item = Lara_GetItem();
+    const bool is_lara = item == Lara_GetItem();
     const bool item_underwater =
         item->room_num != NO_ROOM && Room_Get(item->room_num)->flags.underwater;
     const ANIM_COMMAND_ENVIRONMENT mode = data->environment;
 
     if (mode != ACE_ALL && item->room_num != NO_ROOM) {
         int32_t height = NO_HEIGHT;
-        if (item == lara_item) {
+        if (is_lara) {
             height = Lara_GetLaraInfo()->water_surface_dist;
         } else if (item_underwater) {
             height = -STEP_L;
@@ -337,5 +337,7 @@ void Item_PlayAnimSFX(
         play_mode = SPM_UNDERWATER;
     }
 
-    Sound_Effect_Direct(data->effect_num, &item->pos, play_mode);
+    const SAMPLE_ID sfx_num =
+        is_lara ? Lara_Skin_GetAnimSFX(data->effect_num) : data->effect_num;
+    Sound_Effect_Direct(sfx_num, &item->pos, play_mode);
 }

@@ -15,12 +15,14 @@
         "data/injections/pda_model.bin",
         "data/injections/lara_extra.bin",
         "data/injections/misc_sprites.bin",
+        "data/injections/lara_outfits.bin",
     ],
 
     "levels": [
         {
             "path": "PLACEHOLDER",
             "music_track": -1,
+            "lara_skin_type": "skin_type_16",
             "sequence": [
                 {"type": "loop_game"},
                 {"type": "level_stats"},

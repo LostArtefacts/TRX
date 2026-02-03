@@ -295,6 +295,8 @@ common_sources = [
   'trx/game/lara/mesh.c',
   'trx/game/lara/misc.c',
   'trx/game/lara/pose.c',
+  'trx/game/lara/skin/common.c',
+  'trx/game/lara/skin/storage.c',
   'trx/game/lara/state.c',
   'trx/game/lara/state/climb.c',
   'trx/game/lara/state/crouch.c',

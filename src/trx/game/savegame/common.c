@@ -150,8 +150,6 @@ static void M_LoadPostprocess(void)
         lara->burn = false;
         Lara_CatchFire();
     }
-
-    Lara_Mesh_UpdateHair(true);
 }
 
 static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)

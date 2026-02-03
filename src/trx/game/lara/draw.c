@@ -14,6 +14,7 @@
 #include <trx/version.h>
 
 static bool m_CacheMatrices = false;
+static bool m_IsLara = true;
 
 static void M_CacheMatrix(const LARA_MESH mesh)
 {
@@ -48,7 +49,7 @@ static void M_DrawLaraMesh(
     const ITEM *const item, const LARA_MESH mesh_num, const CLIP clip,
     const bool interpolated)
 {
-    const OBJECT_MESH *const mesh = Lara_GetLaraInfo()->mesh_ptrs[mesh_num];
+    const OBJECT_MESH *const mesh = Lara_Mesh_Get(mesh_num);
     XYZ_32 origin = XYZ_32_From16(mesh->center);
     switch (mesh_num) {
     case LM_TORSO:
@@ -95,11 +96,29 @@ static void M_DrawBodyPart(
     }
 }
 
+static inline void M_DrawEquipment(
+    const LARA_MESH mesh, const CLIP clip, const bool interpolated)
+{
+    if (!m_IsLara) {
+        return;
+    }
+
+    const LARA_SKIN_EQUIPMENT *const equipment = Lara_Skin_GetEquipment(mesh);
+    if (!equipment->visible || equipment->mesh == nullptr) {
+        return;
+    }
+
+    if (interpolated) {
+        Output_DrawObjectMesh_I(equipment->mesh, clip);
+    } else {
+        Output_DrawObjectMesh(equipment->mesh, clip);
+    }
+}
+
 static bool M_Draw_I(
     const ITEM *const item, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
-    const bool is_lara = item == Lara_GetItem();
     const OBJECT *const obj = Object_Get(item->object_id);
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
@@ -116,7 +135,7 @@ static bool M_Draw_I(
     Matrix_Rot16(item->interp.result.rot);
 
     const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
-    if (clip == CLIP_NOT_VISIBLE && !is_lara) {
+    if (clip == CLIP_NOT_VISIBLE && !m_IsLara) {
         m_CacheMatrices = false;
         Matrix_Pop();
         return false;
@@ -126,7 +145,7 @@ static bool M_Draw_I(
         Output_DrawCuboid(&frame1->bounds);
     }
 
-    m_CacheMatrices = is_lara;
+    m_CacheMatrices = m_IsLara;
     if (m_CacheMatrices) {
         lara->mesh_pos_matrices_valid = false;
     }
@@ -134,7 +153,8 @@ static bool M_Draw_I(
     Matrix_Push();
     Output_CalculateObjectLighting(item, &frame1->bounds);
 
-    const ANIM_BONE *const bone = Object_GetBone(obj, 0);
+    const ANIM_BONE *const bone =
+        m_IsLara ? Lara_Skin_GetBoneBase() : Object_GetBone(obj, 0);
     const XYZ_16 *mesh_rots_1 = frame1->mesh_rots;
     const XYZ_16 *mesh_rots_2 = frame2->mesh_rots;
     const XYZ_16 *mesh_rots_1_c;
@@ -145,15 +165,18 @@ static bool M_Draw_I(
     Matrix_Rot16_ID(mesh_rots_1[LM_HIPS], mesh_rots_2[LM_HIPS]);
     M_CacheMatrix(LM_HIPS);
     M_DrawLaraMesh(item, LM_HIPS, clip, true);
+    M_DrawEquipment(LM_HIPS, clip, true);
 
     Matrix_Push_I();
     M_DrawBodyPart(LM_THIGH_L, bone, mesh_rots_1, mesh_rots_2, clip);
+    M_DrawEquipment(LM_THIGH_L, clip, true);
     M_DrawBodyPart(LM_CALF_L, bone, mesh_rots_1, mesh_rots_2, clip);
     M_DrawBodyPart(LM_FOOT_L, bone, mesh_rots_1, mesh_rots_2, clip);
     Matrix_Pop_I();
 
     Matrix_Push_I();
     M_DrawBodyPart(LM_THIGH_R, bone, mesh_rots_1, mesh_rots_2, clip);
+    M_DrawEquipment(LM_THIGH_R, clip, true);
     M_DrawBodyPart(LM_CALF_R, bone, mesh_rots_1, mesh_rots_2, clip);
     M_DrawBodyPart(LM_FOOT_R, bone, mesh_rots_1, mesh_rots_2, clip);
     Matrix_Pop_I();
@@ -183,12 +206,12 @@ static bool M_Draw_I(
 
     *g_MatrixPtr = saved_matrix;
     *g_WMatrixPtr = wsaved_matrix;
-    if (is_lara) {
+    if (m_IsLara) {
         Lara_Hair_Draw();
     }
     Matrix_Pop_I();
 
-    if (is_lara && lara->back_gun_obj_id != O_LARA) {
+    if (m_IsLara && lara->back_gun_obj_id != O_LARA) {
         Matrix_Push_I();
         const OBJECT *const back_obj = Object_Get(lara->back_gun_obj_id);
         const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
@@ -213,6 +236,7 @@ static bool M_Draw_I(
         M_DrawBodyPart(LM_UARM_R, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots_1, mesh_rots_2, clip);
+        M_DrawEquipment(LM_HAND_R, clip, true);
         Matrix_Pop_I();
 
         Matrix_Push_I();
@@ -232,6 +256,7 @@ static bool M_Draw_I(
 
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots_1, mesh_rots_2, clip);
+        M_DrawEquipment(LM_HAND_L, clip, true);
 
         if (g_TRVersion < 3 && lara->gun_type == LGT_FLARE
             && lara->left_arm.flash_gun) {
@@ -265,6 +290,7 @@ static bool M_Draw_I(
 
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots_1, nullptr, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots_1, nullptr, clip);
+        M_DrawEquipment(LM_HAND_R, clip, false);
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
@@ -292,6 +318,7 @@ static bool M_Draw_I(
 
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots_1, nullptr, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots_1, nullptr, clip);
+        M_DrawEquipment(LM_HAND_L, clip, false);
 
         if (lara->left_arm.flash_gun) {
             Gun_DrawFlash(gun_type, clip, false);
@@ -329,6 +356,7 @@ static bool M_Draw_I(
 
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots_1, mesh_rots_2, clip);
+        M_DrawEquipment(LM_HAND_R, clip, true);
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
@@ -369,8 +397,8 @@ static bool M_Draw_I(
 bool Lara_Draw(const ITEM *const item)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    const bool is_lara = item == lara_item;
-    if (is_lara
+    m_IsLara = item == lara_item;
+    if (m_IsLara
         && (item->status == IS_INVISIBLE || (item->flags & IF_ONE_SHOT) != 0)) {
         return false;
     }
@@ -414,7 +442,7 @@ bool Lara_Draw(const ITEM *const item)
     const MATRIX item_matrix = *g_MatrixPtr;
     const MATRIX item_wmatrix = *g_WMatrixPtr;
     const CLIP clip = Output_CheckBoundsClip(&frame->bounds);
-    if (clip == CLIP_NOT_VISIBLE && !is_lara) {
+    if (clip == CLIP_NOT_VISIBLE && !m_IsLara) {
         m_CacheMatrices = false;
         Matrix_Pop();
         return false;
@@ -424,7 +452,7 @@ bool Lara_Draw(const ITEM *const item)
         Output_DrawCuboid(&frame->bounds);
     }
 
-    m_CacheMatrices = is_lara;
+    m_CacheMatrices = m_IsLara;
     if (m_CacheMatrices) {
         lara->mesh_pos_matrices_valid = false;
     }
@@ -432,7 +460,8 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Push();
     Output_CalculateObjectLighting(item, &frame->bounds);
 
-    const ANIM_BONE *const bone = Object_GetBone(obj, 0);
+    const ANIM_BONE *const bone =
+        m_IsLara ? Lara_Skin_GetBoneBase() : Object_GetBone(obj, 0);
     const LARA_POSE *const pose = Lara_Pose_Get();
     const XYZ_16 *mesh_rots = pose != nullptr ? pose->rots : frame->mesh_rots;
     const XYZ_16 *mesh_rots_c;
@@ -441,15 +470,18 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Rot16(mesh_rots[LM_HIPS]);
     M_CacheMatrix(LM_HIPS);
     M_DrawLaraMesh(item, LM_HIPS, clip, false);
+    M_DrawEquipment(LM_HIPS, clip, false);
 
     Matrix_Push();
     M_DrawBodyPart(LM_THIGH_L, bone, mesh_rots, nullptr, clip);
+    M_DrawEquipment(LM_THIGH_L, clip, false);
     M_DrawBodyPart(LM_CALF_L, bone, mesh_rots, nullptr, clip);
     M_DrawBodyPart(LM_FOOT_L, bone, mesh_rots, nullptr, clip);
     Matrix_Pop();
 
     Matrix_Push();
     M_DrawBodyPart(LM_THIGH_R, bone, mesh_rots, nullptr, clip);
+    M_DrawEquipment(LM_THIGH_R, clip, false);
     M_DrawBodyPart(LM_CALF_R, bone, mesh_rots, nullptr, clip);
     M_DrawBodyPart(LM_FOOT_R, bone, mesh_rots, nullptr, clip);
     Matrix_Pop();
@@ -476,13 +508,13 @@ bool Lara_Draw(const ITEM *const item)
 
     *g_MatrixPtr = saved_matrix;
     *g_WMatrixPtr = wsaved_matrix;
-    if (is_lara) {
+    if (m_IsLara) {
         Lara_Hair_Draw();
     }
 
     Matrix_Pop();
 
-    if (is_lara && lara->back_gun_obj_id != O_LARA) {
+    if (m_IsLara && lara->back_gun_obj_id != O_LARA) {
         Matrix_Push();
         const OBJECT *const back_obj = Object_Get(lara->back_gun_obj_id);
         const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
@@ -508,6 +540,7 @@ bool Lara_Draw(const ITEM *const item)
         M_DrawBodyPart(LM_UARM_R, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots, nullptr, clip);
+        M_DrawEquipment(LM_HAND_R, clip, false);
         Matrix_Pop();
 
         Matrix_Push();
@@ -525,6 +558,7 @@ bool Lara_Draw(const ITEM *const item)
 
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots, nullptr, clip);
+        M_DrawEquipment(LM_HAND_L, clip, false);
 
         if (g_TRVersion < 3 && lara->gun_type == LGT_FLARE
             && lara->left_arm.flash_gun) {
@@ -577,6 +611,7 @@ bool Lara_Draw(const ITEM *const item)
 
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots, nullptr, clip);
+        M_DrawEquipment(LM_HAND_R, clip, false);
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
@@ -623,6 +658,7 @@ bool Lara_Draw(const ITEM *const item)
 
         M_DrawBodyPart(LM_LARM_L, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots, nullptr, clip);
+        M_DrawEquipment(LM_HAND_L, clip, false);
 
         if (lara->left_arm.flash_gun) {
             Gun_DrawFlash(gun_type, clip, false);
@@ -655,6 +691,7 @@ bool Lara_Draw(const ITEM *const item)
 
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots, nullptr, clip);
+        M_DrawEquipment(LM_HAND_R, clip, false);
 
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
@@ -690,7 +727,7 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
 finish:
-    if (is_lara && lara->electric != 0) {
+    if (m_IsLara && lara->electric != 0) {
         Lara_Electricity_Draw(0, lara_item);
         Lara_Electricity_Draw(1, lara_item);
     }

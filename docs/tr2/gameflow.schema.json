@@ -143,6 +143,9 @@
         "music_track": {
           "type": "integer"
         },
+        "lara_skin_type": {
+          "type": "string"
+        },
         "inherit_injections": {
           "type": "boolean"
         },
@@ -180,6 +183,9 @@
         },
         "music_track": {
           "type": "integer"
+        },
+        "lara_skin_type": {
+          "type": "string"
         },
         "weather_type": {
           "type": "string",

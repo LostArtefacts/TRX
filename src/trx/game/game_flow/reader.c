@@ -761,6 +761,28 @@ static void M_LoadLevel(
         }
     }
 
+    {
+        const char *const tmp = JSON_ObjectGetString(
+            jlvl_obj, "lara_skin_type", JSON_INVALID_STRING);
+        if (tmp == JSON_INVALID_STRING) {
+            if (level->type != GFL_TITLE && level->type != GFL_DUMMY
+                && level->type != GFL_CURRENT) {
+                Shell_ExitSystemFmt(
+                    "%s, level %d: 'lara_skin_type' must be a string",
+                    ctx->script_path, level->num);
+            }
+        } else {
+            const int32_t type = ENUM_MAP_GET(LARA_SKIN_TYPE, tmp, -1);
+            if (type <= 0 || type >= NUM_LARA_SKINS) {
+                Shell_ExitSystemFmt(
+                    "%s, level %d: invalid 'lara_skin_type' value (%s)",
+                    ctx->script_path, level->num, tmp);
+            } else {
+                level->lara_skin_type = type;
+            }
+        }
+    }
+
     level->weather_type = WEATHER_NONE;
     {
         const JSON_VALUE *const tmp_v =

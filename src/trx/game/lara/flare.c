@@ -238,7 +238,7 @@ static void M_ControlBusyHands(void)
 
 static void M_UndrawMeshes(void)
 {
-    Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA);
+    Lara_Skin_ClearEquipment(LM_HAND_L);
 }
 
 void Lara_Flare_Control(void)
@@ -444,13 +444,13 @@ finish:
 
 bool Lara_Flare_IsMeshActive(void)
 {
-    const OBJECT *const obj = Object_Get(O_LARA_FLARE);
-    return obj->loaded
-        && Lara_Mesh_Get(LM_HAND_L)
-        == Object_GetMesh(obj->mesh_idx + LM_HAND_L);
+    const LARA_SKIN_EQUIPMENT *const equipment =
+        Lara_Skin_GetEquipment(LM_HAND_L);
+    return equipment->type == EQUIPMENT_TYPE_WEAPON
+        && equipment->data == LGT_FLARE;
 }
 
 void Lara_Flare_DrawMeshes(void)
 {
-    Lara_Mesh_SwapSingle(LM_HAND_L, O_LARA_FLARE);
+    Lara_Skin_SetGunEquipment(LM_HAND_L, LGT_FLARE);
 }

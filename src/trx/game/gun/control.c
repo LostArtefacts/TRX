@@ -315,7 +315,7 @@ void Gun_Control(void)
         break;
 
     case LGS_UNDRAW:
-        Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
+        Lara_Skin_SetCombatFace(false);
 
         switch (lara->gun_type) {
         case LGT_PISTOLS:
@@ -345,11 +345,8 @@ void Gun_Control(void)
         break;
 
     case LGS_READY:
-        if (lara->pistol_ammo.ammo && g_Input.action) {
-            Lara_Mesh_SwapSingle(LM_HEAD, O_LARA_UZIS);
-        } else {
-            Lara_Mesh_SwapSingle(LM_HEAD, O_LARA);
-        }
+        const bool is_firing = lara->pistol_ammo.ammo != 0 && g_Input.action;
+        Lara_Skin_SetCombatFace(is_firing);
 
         if (g_Camera.type != CAM_CINEMATIC && g_Camera.type != CAM_LOOK) {
             g_Camera.type = CAM_COMBAT;

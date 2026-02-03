@@ -12,10 +12,6 @@
 
 #define M_HAIR_SEGMENTS 6
 #define M_HAIR_SPHERES 5
-// TODO: allow defining these values externally (#110)
-#define M_HAIR_OFFSET_X 0
-#define M_HAIR_OFFSET_Y (g_TRVersion == 1 ? 20 : -23)
-#define M_HAIR_OFFSET_Z (g_TRVersion == 1 ? -45 : -55)
 
 static bool m_IsFirstHair;
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
@@ -96,7 +92,7 @@ static void M_CalculateSpheres(const ANIM_FRAME *const frame)
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop();
 
-    Matrix_TranslateRel(M_HAIR_OFFSET_X, M_HAIR_OFFSET_Y, M_HAIR_OFFSET_Z);
+    Matrix_TranslateRel32(Lara_Skin_GetBraidOffset());
 }
 
 static void M_CalculateSpheres_I(
@@ -183,7 +179,7 @@ static void M_CalculateSpheres_I(
     m_HairSpheres[2].r = mesh->radius;
     Matrix_Pop_I();
 
-    Matrix_TranslateRel_I(M_HAIR_OFFSET_X, M_HAIR_OFFSET_Y, M_HAIR_OFFSET_Z);
+    Matrix_TranslateRel32_I(Lara_Skin_GetBraidOffset());
     Matrix_Interpolate();
 }
 
@@ -394,16 +390,8 @@ void Lara_Hair_Draw(void)
         return;
     }
 
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
-    const OBJECT *const obj = Object_Get(O_LARA_HAIR);
-    int16_t mesh_idx = obj->mesh_idx;
-    if ((lara->mesh_effects & (1 << LM_HEAD)) != 0) {
-        const OBJECT *const swap_obj = Object_Get(O_LARA_HAIR_SWAP);
-        if (swap_obj->loaded) {
-            mesh_idx = swap_obj->mesh_idx;
-        }
-    }
+    const int32_t mesh_idx = Lara_Skin_GetBraidMeshIdx();
 
     for (int32_t i = 0; i < M_HAIR_SEGMENTS; i++) {
         const HAIR_SEGMENT *const s = &m_HairSegments[i];
@@ -422,8 +410,8 @@ void Lara_Hair_Draw(void)
 
 bool Lara_Hair_IsActive(void)
 {
-    return g_Config.visuals.enable_braid && Object_Get(O_LARA_HAIR)->loaded
-        && Object_Get(O_LARA)->loaded;
+    return g_Config.visuals.enable_braid && Object_Get(O_LARA)->loaded
+        && Lara_Skin_IsBraidSupported();
 }
 
 int32_t Lara_Hair_GetSegmentCount(void)

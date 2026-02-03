@@ -36,6 +36,7 @@
         "data/injections/lara_rifle_sfx.bin",
         "data/injections/secret_models_gm.bin",
         "data/injections/misc_sprites.bin",
+        "data/injections/lara_outfits.bin",
     ],
 
     "levels": [
@@ -47,6 +48,7 @@
             "path": "data/level1.tr2",
             "script": "data/scripts/level1.lua",
             "music_track": 29,
+            "lara_skin_type": "skin_type_11",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "shotgun"},
@@ -75,6 +77,7 @@
         {
             "path": "data/level2.tr2",
             "music_track": 54,
+            "lara_skin_type": "skin_type_11",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -99,6 +102,7 @@
             "path": "data/level3.tr2",
             "script": "data/scripts/level3.lua",
             "music_track": 55,
+            "lara_skin_type": "skin_type_11",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level3.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -122,6 +126,7 @@
             "path": "data/level4.tr2",
             "script": "data/scripts/level4.lua",
             "music_track": 27,
+            "lara_skin_type": "skin_type_11",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level4.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_1"},
@@ -158,6 +163,7 @@
             "path": "data/level5.tr2",
             "type": "bonus",
             "music_track": 30,
+            "lara_skin_type": "skin_type_13",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/gm_level5.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "remove_weapons"},

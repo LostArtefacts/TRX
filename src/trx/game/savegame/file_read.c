@@ -171,26 +171,67 @@ static bool M_ReadLara(SG_READ_IO *const io)
     M_MUST(SG_READ_VALUE(io, "flare_frame", &lara->flare.frame_num));
     M_MUST(SG_READ_VALUE(io, "flare_control_left", &lara->flare.control));
 
-    M_MUST(SG_PUSH(io, "meshes"));
-    const int32_t mesh_count = SG_ARRAY_LEN(io);
-    if (mesh_count != LM_NUMBER_OF) {
-        SG_ReadIO_SetError(
-            io, "expected %d Lara meshes, got %d", LM_NUMBER_OF, mesh_count);
-        M_FAIL();
-    }
-    for (int32_t i = 0; i < mesh_count; i++) {
-        M_MUST(SG_PUSH_INDEX(io, i));
-        int32_t idx = Object_GetMeshOffset(lara->mesh_ptrs[i]);
-        M_MUST(SG_READ_VALUE_DIRECT(io, &idx));
-        OBJECT_MESH *const mesh = Object_FindMesh(idx);
-        if (mesh != nullptr) {
-            lara->mesh_ptrs[i] = mesh;
-        } else {
-            LOG_WARNING("can't find mesh %d", idx);
+    // < TRX 1.2
+    if (SG_ReadIO_GetVersion(io) < SG_VERSION_15) {
+        // TODO: remove in TRX 1.5.
+        M_MUST(SG_PUSH(io, "meshes"));
+        const int32_t mesh_count = SG_ARRAY_LEN(io);
+        if (mesh_count != LM_NUMBER_OF) {
+            SG_ReadIO_SetError(
+                io, "expected %d Lara meshes, got %d", LM_NUMBER_OF,
+                mesh_count);
+            M_FAIL();
+        }
+        const OBJECT_MESH *meshes[LM_NUMBER_OF] = {};
+        for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+            M_MUST(SG_PUSH_INDEX(io, i));
+            int32_t idx = 0;
+            M_MUST(SG_READ_VALUE_DIRECT(io, &idx));
+            meshes[i] = Object_FindMesh(idx);
+            M_MUST(SG_POP(io));
         }
         M_MUST(SG_POP(io));
+
+        Lara_Skin_ExtractLegacyEquipment(meshes);
+    } else {
+        M_MUST(SG_PUSH(io, "skin"));
+        LARA_SKIN_TYPE skin_type = LARA_SKIN_TYPE_DEFAULT;
+        bool skin_is_default = false;
+        M_MUST(SG_READ_VALUE(io, "skin_type", &skin_type));
+        M_MUST(SG_READ_VALUE(io, "skin_is_default", &skin_is_default));
+        if (!skin_is_default) {
+            Lara_Skin_SetType(skin_type);
+        }
+
+        bool holsters_visible = true;
+        M_MUST(SG_READ_VALUE(io, "holsters_visible", &holsters_visible));
+        Lara_Skin_SetHolstersVisible(holsters_visible);
+
+        M_MUST(SG_PUSH(io, "equipment"));
+        const int32_t mesh_count = SG_ARRAY_LEN(io);
+        if (mesh_count != LM_NUMBER_OF) {
+            SG_ReadIO_SetError(
+                io, "expected %d equipment meshes, got %d", LM_NUMBER_OF,
+                mesh_count);
+            M_FAIL();
+        }
+        for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+            LARA_SKIN_EQUIPMENT_TYPE type = EQUIPMENT_TYPE_NONE;
+            int32_t data = -1;
+            M_MUST(SG_PUSH_INDEX(io, i));
+            M_MUST(SG_READ_VALUE(io, "type", &type));
+            M_MUST(SG_READ_VALUE(io, "data", &data));
+            M_MUST(SG_POP(io));
+
+            if (type == EQUIPMENT_TYPE_WEAPON) {
+                Lara_Skin_SetGunEquipment(i, data);
+            } else if (type == EQUIPMENT_TYPE_EXTRA) {
+                Lara_Skin_SetExtraEquipment(i, data);
+            }
+        }
+        M_MUST(SG_POP(io));
+        M_MUST(SG_POP(io));
     }
-    M_MUST(SG_POP(io));
 
     lara->target = nullptr;
     M_MUST(SG_READ_VALUE(io, "target_angle1", &lara->target_angles[0]));

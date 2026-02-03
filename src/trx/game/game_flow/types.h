@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/game_flow/enum.h>
+#include <trx/game/lara/skin/enum.h>
 #include <trx/game/music/ids.h>
 #include <trx/game/objects/types.h>
 #include <trx/game/weather_fx.h>
@@ -116,6 +117,7 @@ typedef struct {
     char *script_path;
 
     MUSIC_ID music_track;
+    LARA_SKIN_TYPE lara_skin_type;
     GF_SEQUENCE sequence;
     INJECTION_DATA injections;
 

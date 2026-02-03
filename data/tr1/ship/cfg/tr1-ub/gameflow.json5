@@ -19,6 +19,7 @@
         "data/injections/font.bin",
         "data/injections/winston_model.bin",
         "data/injections/misc_sprites.bin",
+        "data/injections/lara_outfits.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -52,6 +53,7 @@
         {
             "path": "data/egypt.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -73,6 +75,7 @@
         {
             "path": "data/cat.phd",
             "music_track": 59,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -94,6 +97,7 @@
         {
             "path": "data/end.phd",
             "music_track": 60,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -113,6 +117,7 @@
         {
             "path": "data/end2.phd",
             "music_track": 60,
+            "lara_skin_type": "skin_type_02",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},

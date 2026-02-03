@@ -12,3 +12,4 @@ typedef enum {
 } SAMPLE_TRX_ID;
 
 SAMPLE_ID Sound_ToGameID(SAMPLE_TRX_ID sample_id);
+SAMPLE_TRX_ID Sound_FromGameID(SAMPLE_ID sample_id);

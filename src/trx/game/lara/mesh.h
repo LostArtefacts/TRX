@@ -6,7 +6,6 @@
 #include <trx/game/objects.h>
 
 void Lara_Mesh_Initialise(const GF_LEVEL *level);
-void Lara_Mesh_UpdateHair(bool enforce);
 void Lara_Mesh_SwapSingle(LARA_MESH mesh, OBJECT_ID obj_id);
 void Lara_Mesh_SwapAll(OBJECT_ID obj_id);
 void Lara_Mesh_Set(LARA_MESH mesh, OBJECT_MESH *mesh_ptr);
