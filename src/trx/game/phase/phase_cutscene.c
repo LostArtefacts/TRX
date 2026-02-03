@@ -3,6 +3,7 @@
 #include <trx/game/cutscene.h>
 #include <trx/game/game.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/output.h>
 #include <trx/memory.h>
 
@@ -43,8 +44,10 @@ static void M_Resume(PHASE *const phase)
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
+    Lua_FireEventInt32(LUA_EVENT_BEFORE_CONTROL, 0);
     M_PRIV *const p = phase->priv;
     const GF_COMMAND gf_cmd = Cutscene_Control();
+    Lua_FireEventInt32(LUA_EVENT_AFTER_CONTROL, 0);
     if (gf_cmd.action != GF_NOOP) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
