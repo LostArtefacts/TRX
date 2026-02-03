@@ -64,11 +64,6 @@ behave. The structure of this file is described below.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>braids</code></td>
-    <td>Object array</td>
-    <td>Each object defines a braid configuration, details of which are below.</td>
-  </tr>
-  <tr valign="top">
     <td><code>extra_meshes</code></td>
     <td>Integer map</td>
     <td>
@@ -86,7 +81,7 @@ behave. The structure of this file is described below.
   </tr>
 </table>
 
-#### Outfits
+### Outfits
 
 <details>
 <summary>Show snippet</summary>
@@ -97,9 +92,17 @@ behave. The structure of this file is described below.
   "mesh_offset": 16,
   "is_reflective": false,
   "gun_map": 0,
-  "braid": 0,
-  "braid_mode": "BRAID_MODE_TR1_FULL",
   "combat_face_offset": 1,
+  "braid": {
+    "mode": "BRAID_MODE_TR1_FULL",
+    "mesh_offset": 10,
+    "gold_offset": 16,
+    "hair_pos": {
+      "x": 0,
+      "y": 20,
+      "z": -45,
+    },
+  },
   "no_holster_offsets": {
     "thigh_r": 1,
     "thigh_l": 2,
@@ -145,53 +148,10 @@ behave. The structure of this file is described below.
   </tr>
   <tr valign="top">
     <td><code>braid</code></td>
-    <td>Integer</td>
+    <td>Object</td>
     <td colspan="2">
-      The index into the <code>braids</code> array to use for this outfit. Use
-      <code>-1</code> for no braid.
-    </td>
-  </tr>
-  <tr valign="top" >
-    <td rowspan="6"><code>braid_mode</code></td>
-    <td rowspan="6">String</td>
-    <td colspan="2">
-      Indicates special handling when the braid is active for this outfit.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>BRAID_MODE_NONE</code></td>
-    <td>
-      No special treatment (this mode is implied if <code>braid_mode</code> is
-      not specified).
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>BRAID_MODE_TR1_HEAD_ONLY</code></td>
-    <td>
-      Replaces Lara's head with <code>EXTRA_MESH_TR1_BRAID_DEFAULT_HEAD</code>
-      defined in the <code>O_LARA_SKIN_SWAP_EXTRA</code> object.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>BRAID_MODE_TR1_FULL</code></td>
-    <td>
-      As per <code>BRAID_MODE_TR1_HEAD_ONLY</code>, plus Lara's torso will be
-      replaced with <code>EXTRA_MESH_TR1_BRAID_DEFAULT_TORSO</code>.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>BRAID_MODE_TR1_MAULED</code></td>
-    <td>
-      As per <code>BRAID_MODE_TR1_FULL</code>, but the torso swap mesh used here
-      is <code>EXTRA_MESH_TR1_BRAID_MAULED_TORSO</code>.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>BRAID_MODE_TR1_GOLD</code></td>
-    <td>
-      As per <code>BRAID_MODE_TR1_FULL</code>, but the swap meshes used here
-      are <code>EXTRA_MESH_TR1_BRAID_GOLD_HEAD</code> and
-      <code>EXTRA_MESH_TR1_BRAID_GOLD_TORSO</code>.
+      The braid setup specific to this outfit. If omitted, no braid will be
+      shown. See the braids section below.
     </td>
   </tr>
   <tr valign="top">
@@ -231,23 +191,7 @@ behave. The structure of this file is described below.
   </tr>
 </table>
 
-#### Braids
-
-<details>
-<summary>Show snippet</summary>
-
-```json
-{
-  "mesh_offset": 10,
-  "gold_offset": 16,
-  "hair_pos": {
-    "x": 0,
-    "y": 20,
-    "z": -45,
-  },
-},
-```
-</details>
+### Braids
 
 <table>
   <tr valign="top" align="left">
@@ -255,10 +199,51 @@ behave. The structure of this file is described below.
     <th>Type</th>
     <th colspan="2">Description</th>
   </tr>
+  <tr valign="top" >
+    <td rowspan="6"><code>mode</code></td>
+    <td rowspan="6">String</td>
+    <td colspan="2">Indicates special handling when the braid is active.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>BRAID_MODE_NONE</code></td>
+    <td>
+      No special treatment (this mode is implied if <code>mode</code> is not
+      specified).
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>BRAID_MODE_TR1_HEAD_ONLY</code></td>
+    <td>
+      Replaces Lara's head with <code>EXTRA_MESH_TR1_BRAID_DEFAULT_HEAD</code>
+      defined in the <code>O_LARA_SKIN_SWAP_EXTRA</code> object.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>BRAID_MODE_TR1_FULL</code></td>
+    <td>
+      As per <code>BRAID_MODE_TR1_HEAD_ONLY</code>, plus Lara's torso will be
+      replaced with <code>EXTRA_MESH_TR1_BRAID_DEFAULT_TORSO</code>.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>BRAID_MODE_TR1_MAULED</code></td>
+    <td>
+      As per <code>BRAID_MODE_TR1_FULL</code>, but the torso swap mesh used here
+      is <code>EXTRA_MESH_TR1_BRAID_MAULED_TORSO</code>.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>BRAID_MODE_TR1_GOLD</code></td>
+    <td>
+      As per <code>BRAID_MODE_TR1_FULL</code>, but the swap meshes used here
+      are <code>EXTRA_MESH_TR1_BRAID_GOLD_HEAD</code> and
+      <code>EXTRA_MESH_TR1_BRAID_GOLD_TORSO</code>.
+    </td>
+  </tr>
   <tr valign="top">
     <td><code>mesh_offset</code></td>
     <td>Integer</td>
-    <td>
+    <td colspan="2">
       The starting mesh offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the
       braid.
     </td>
@@ -266,7 +251,7 @@ behave. The structure of this file is described below.
   <tr valign="top">
     <td><code>gold_offset</code></td>
     <td>Integer</td>
-    <td>
+    <td colspan="2">
       The starting mesh offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the
       golden braid.
     </td>
@@ -274,11 +259,11 @@ behave. The structure of this file is described below.
   <tr valign="top">
     <td><code>hair_pos</code></td>
     <td>XYZ</td>
-    <td>The position relative to Lara's head where the braid will be drawn.</td>
+    <td colspan="2">The position relative to Lara's head where the braid will be drawn.</td>
   </tr>
 </table>
 
-#### Guns
+### Guns
 
 <details>
 <summary>Show snippet</summary>
@@ -310,7 +295,7 @@ Missing fields imply that no mesh is drawn for that slot.
   <tr valign="top" align="left">
     <th>Property</th>
     <th>Type</th>
-    <th colspan="2">Description</th>
+    <th>Description</th>
   </tr>
   <tr valign="top">
     <td>
@@ -369,6 +354,8 @@ can be selected by the player.
 
 Ship the default injection file, but edit `cfg/outfits.json5` by removing the 
 entries from the `outfits` section that you do not need.
+
+***
 
 > I want to customize Lara's outfits.
 

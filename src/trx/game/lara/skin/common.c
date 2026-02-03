@@ -30,7 +30,7 @@ static int32_t M_GetBraidDependentMeshIdx(
     }
 
     LARA_SKIN_EXTRA_MESH extra_id;
-    switch (outfit->braid_mode) {
+    switch (outfit->braid.mode) {
     case BRAID_MODE_TR1_HEAD_ONLY:
         if (mesh_idx != LM_HEAD) {
             return M_NO_MESH;
@@ -119,7 +119,7 @@ static int32_t M_GetCombatFaceMeshIdx(const LARA_SKIN_OUTFIT *const outfit)
     }
 
     if (g_Config.visuals.enable_braid) {
-        switch (outfit->braid_mode) {
+        switch (outfit->braid.mode) {
         case BRAID_MODE_TR1_HEAD_ONLY:
         case BRAID_MODE_TR1_FULL:
         case BRAID_MODE_TR1_MAULED:
@@ -226,6 +226,7 @@ void Lara_Skin_Initialise(void)
         Lara_Skin_ClearEquipment(i);
     }
 
+    const int32_t hair_segment_count = Lara_Hair_GetSegmentCount();
     const int32_t outfit_count = Lara_Skin_GetOutfitCount();
     for (int32_t i = 0; i < outfit_count; i++) {
         const LARA_SKIN_OUTFIT *const outfit = Lara_Skin_GetOutfit(i);
@@ -259,19 +260,14 @@ void Lara_Skin_Initialise(void)
                     gun_swap_obj->mesh_idx + map.thigh.right, true);
             }
         }
-    }
 
-    const int32_t braid_count = Lara_Skin_GetBraidCount();
-    const int32_t hair_segment_count = Lara_Hair_GetSegmentCount();
-    for (int32_t i = 0; i < braid_count; i++) {
-        const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid(i);
-        if (braid->gold_offset == M_NO_MESH) {
+        if (!outfit->braid.enabled || outfit->braid.gold_offset == M_NO_MESH) {
             continue;
         }
 
         for (int32_t j = 0; j < hair_segment_count; j++) {
-            Object_SetMeshReflective(
-                O_LARA_SKIN_SWAP_EXTRA, braid->gold_offset + j, true);
+            Object_SetMeshReflectiveEx(
+                extra_obj->mesh_idx + outfit->braid.gold_offset + j, true);
         }
     }
 
@@ -414,25 +410,34 @@ const ANIM_BONE *Lara_Skin_GetBoneBase(void)
 
 bool Lara_Skin_IsBraidSupported(void)
 {
-    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    return outfit->braid != nullptr && Lara_Skin_GetBraidMeshIdx() != M_NO_MESH;
+    return Lara_Skin_GetBraidMeshIdx() != M_NO_MESH;
 }
 
 XYZ_32 Lara_Skin_GetBraidOffset(void)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    return outfit->braid != nullptr ? outfit->braid->hair_pos : (XYZ_32) {};
+    return outfit->braid.hair_pos;
 }
 
 int32_t Lara_Skin_GetBraidMeshIdx(void)
 {
-    const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    if (outfit->is_reflective || (lara->mesh_effects & (1 << LM_HEAD)) != 0) {
-        return obj->mesh_idx + outfit->braid->gold_offset;
+    if (!outfit->braid.enabled) {
+        return M_NO_MESH;
     }
-    return obj->mesh_idx + outfit->braid->mesh_offset;
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    int32_t offset = outfit->braid.mesh_offset;
+    if (outfit->is_reflective || (lara->mesh_effects & (1 << LM_HEAD)) != 0) {
+        offset = outfit->braid.gold_offset;
+    }
+
+    if (offset == M_NO_MESH) {
+        return M_NO_MESH;
+    }
+
+    const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    return obj->mesh_idx + offset;
 }
 
 bool Lara_Skin_AreHolstersVisible(void)

@@ -51,34 +51,6 @@ static bool M_ReadGunMaps(JSON_OBJECT *const root_obj)
     return true;
 }
 
-static bool M_ReadBraids(JSON_OBJECT *const root_obj)
-{
-    JSON_ARRAY *const braids = JSON_ObjectGetArray(root_obj, "braids");
-    if (braids == nullptr) {
-        return false;
-    }
-
-    for (size_t i = 0; i < braids->length; ++i) {
-        JSON_OBJECT *const braid_obj = JSON_ArrayGetObject(braids, i);
-        LARA_SKIN_BRAID braid = {
-            .mesh_offset = JSON_ObjectGetInt(braid_obj, "mesh_offset", 0),
-            .gold_offset = JSON_ObjectGetInt(braid_obj, "gold_offset", 0),
-        };
-
-        JSON_OBJECT *const pos_obj =
-            JSON_ObjectGetObject(braid_obj, "hair_pos");
-        if (pos_obj != nullptr) {
-            braid.hair_pos.x = JSON_ObjectGetInt(pos_obj, "x", 0);
-            braid.hair_pos.y = JSON_ObjectGetInt(pos_obj, "y", 0);
-            braid.hair_pos.z = JSON_ObjectGetInt(pos_obj, "z", 0);
-        }
-
-        Vector_Add(m_Braids, &braid);
-    }
-
-    return true;
-}
-
 static bool M_ReadExtraMeshes(JSON_OBJECT *const root_obj)
 {
     JSON_OBJECT *const extra_obj =
@@ -119,24 +91,38 @@ static bool M_LoadOutfit(
 
     outfit->mesh_offset = JSON_ObjectGetInt(outfit_obj, "mesh_offset", 1);
 
-    int32_t tmp_i = JSON_ObjectGetInt(outfit_obj, "braid", -1);
-    if (tmp_i != -1 && tmp_i < m_Braids->count) {
-        outfit->braid = (LARA_SKIN_BRAID *)Vector_Get(m_Braids, tmp_i);
-    }
-
-    const char *const braid_mode_name =
-        JSON_ObjectGetString(outfit_obj, "braid_mode", JSON_INVALID_STRING);
-    if (braid_mode_name != JSON_INVALID_STRING) {
-        const int32_t mode =
-            ENUM_MAP_GET(LARA_SKIN_BRAID_MODE, braid_mode_name, -1);
-        if (mode < 0 || mode >= NUM_BRAID_MODES) {
-            Shell_ExitSystemFmt("unknown braid mode '%s'", braid_mode_name);
-            return false;
+    JSON_OBJECT *const braid_obj = JSON_ObjectGetObject(outfit_obj, "braid");
+    if (braid_obj != nullptr) {
+        const char *const braid_mode_name =
+            JSON_ObjectGetString(braid_obj, "mode", JSON_INVALID_STRING);
+        if (braid_mode_name != JSON_INVALID_STRING) {
+            const int32_t mode =
+                ENUM_MAP_GET(LARA_SKIN_BRAID_MODE, braid_mode_name, -1);
+            if (mode < 0 || mode >= NUM_BRAID_MODES) {
+                Shell_ExitSystemFmt("unknown braid mode '%s'", braid_mode_name);
+                return false;
+            }
+            outfit->braid.mode = mode;
         }
-        outfit->braid_mode = mode;
+
+        outfit->braid.mesh_offset =
+            JSON_ObjectGetInt(braid_obj, "mesh_offset", 0);
+        outfit->braid.gold_offset =
+            JSON_ObjectGetInt(braid_obj, "gold_offset", 0);
+
+        JSON_OBJECT *const pos_obj =
+            JSON_ObjectGetObject(braid_obj, "hair_pos");
+        if (pos_obj != nullptr) {
+            outfit->braid.hair_pos.x = JSON_ObjectGetInt(pos_obj, "x", 0);
+            outfit->braid.hair_pos.y = JSON_ObjectGetInt(pos_obj, "y", 0);
+            outfit->braid.hair_pos.z = JSON_ObjectGetInt(pos_obj, "z", 0);
+        }
+        outfit->braid.enabled = true;
+    } else {
+        outfit->braid.enabled = false;
     }
 
-    tmp_i = JSON_ObjectGetInt(outfit_obj, "gun_map", -1);
+    int32_t tmp_i = JSON_ObjectGetInt(outfit_obj, "gun_map", -1);
     if (tmp_i < 0 || tmp_i >= m_GunMaps->count) {
         Shell_ExitSystemFmt("invalid gun map '%d'", tmp_i);
         return false;
@@ -237,7 +223,6 @@ static bool M_ReadOutfits(JSON_OBJECT *const root_obj)
 
 void Lara_Skin_LoadFromFile(const char *const path)
 {
-    m_Braids = Vector_Create(sizeof(LARA_SKIN_BRAID));
     m_GunMaps = Vector_Create(sizeof(LARA_SKIN_GUN_MAP));
 
     LOG_INFO("Reading outfit definitions from %s", path);
@@ -248,10 +233,6 @@ void Lara_Skin_LoadFromFile(const char *const path)
     }
 
     if (!M_ReadGunMaps(root)) {
-        goto cleanup;
-    }
-
-    if (!M_ReadBraids(root)) {
         goto cleanup;
     }
 
@@ -269,26 +250,15 @@ cleanup:
 
 void Lara_Skin_Shutdown(void)
 {
-#define L_DELETE_VECTOR(vec)                                                   \
-    if (vec != nullptr) {                                                      \
-        Vector_Free(vec);                                                      \
-        vec = nullptr;                                                         \
+    if (m_GunMaps != nullptr) {
+        Vector_Free(m_GunMaps);
+        m_GunMaps = nullptr;
     }
-
-    L_DELETE_VECTOR(m_Braids);
-    L_DELETE_VECTOR(m_GunMaps);
-
-#undef L_DELETE_VECTOR
 }
 
 int32_t Lara_Skin_GetOutfitCount(void)
 {
     return NUM_LARA_SKINS;
-}
-
-int32_t Lara_Skin_GetBraidCount(void)
-{
-    return m_Braids->count;
 }
 
 bool Lara_Skin_IsOutfitAvailable(const LARA_SKIN_TYPE skin_type)
@@ -299,12 +269,6 @@ bool Lara_Skin_IsOutfitAvailable(const LARA_SKIN_TYPE skin_type)
 const LARA_SKIN_OUTFIT *Lara_Skin_GetOutfit(const LARA_SKIN_TYPE skin_type)
 {
     return &m_Outfits[skin_type];
-}
-
-const LARA_SKIN_BRAID *Lara_Skin_GetBraid(const int32_t idx)
-{
-    ASSERT(idx >= 0 && idx < m_Braids->count);
-    return (const LARA_SKIN_BRAID *)Vector_Get(m_Braids, idx);
 }
 
 int32_t Lara_Skin_GetExtraMeshOffset(const LARA_SKIN_EXTRA_MESH mesh)

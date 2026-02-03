@@ -19,6 +19,8 @@ typedef struct {
 } LARA_SKIN_GUN_MAP;
 
 typedef struct {
+    LARA_SKIN_BRAID_MODE mode;
+    bool enabled;
     int32_t mesh_offset;
     int32_t gold_offset;
     XYZ_32 hair_pos;
@@ -29,10 +31,9 @@ typedef struct {
     OBJECT_ID obj_id;
     int32_t mesh_offset;
     LARA_SKIN_GUN_MAP *gun_map;
-    LARA_SKIN_BRAID *braid;
+    LARA_SKIN_BRAID braid;
     bool is_reflective;
     SAMPLE_TRX_ID footstep_sample_id;
-    LARA_SKIN_BRAID_MODE braid_mode;
     int32_t combat_face_offset;
     MESH_PAIR no_holster_offsets;
     LARA_SKIN_TYPE extra_outfits[LS_EXTRA_NUMBER_OF];
