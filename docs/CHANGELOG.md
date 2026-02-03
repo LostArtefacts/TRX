@@ -14,6 +14,7 @@
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
 - added the ability to toggle TR1/2 and TR3 projectile area damage – TR3 often deals double damage (Gameplay → Mods → Projectile Area Damage)
+- added the ability to hide pickup notifications in the bottom-right corner (Graphic Options → UI → Pickups overlay)
 - added a new Lua event, `trx.events.on_game_start`, which fires when the level finishes loading and the game is about to start
 - added a new Lua function, `trx.rooms.flip()`, to toggle the flip map (#4704)
 - added a new Lua function, `trx.rooms.flip_effect()`, to set the active flip effect with an optional timer (#4704)

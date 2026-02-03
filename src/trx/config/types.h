@@ -107,6 +107,7 @@ typedef struct {
         bool enable_photo_mode_ui;
         bool enable_wraparound;
         bool enable_fps_counter;
+        bool show_pickups_overlay;
 
         float text_scale;
         float bar_scale;

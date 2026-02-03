@@ -721,6 +721,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "\\{review}Alterne entre des textures UI lisses et pixelisées.",
         "SETTING_UI_LANGUAGE": "Langue",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Change la langue du texte de l'interface utilisateur.",
+        "SETTING_UI_PICKUPS_OVERLAY": "Affichage des objets ramassés",
+        "SETTING_UI_PICKUPS_OVERLAY_DESCRIPTION": "Affiche les objets en bas à droite lorsque Lara ramasse quelque chose.",
         "SETTING_UI_PICKUP_SCALE": "\\{review}Échelle de ramassage",
         "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "\\{review}Modifie la taille des objets animés dans l'interface utilisateur lorsque Lara ramasse quelque chose.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Boucler au défilement",

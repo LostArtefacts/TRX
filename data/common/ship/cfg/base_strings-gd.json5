@@ -721,6 +721,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "Tionndaidh eadar inneach an eadar-aghaidh rèidh neo piogsaileach.",
         "SETTING_UI_LANGUAGE": "Cànan",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Atharraicheas cànan an eadar-aghaidh.",
+        "SETTING_UI_PICKUPS_OVERLAY": "Taisbeanadh thogailtean",
+        "SETTING_UI_PICKUPS_OVERLAY_DESCRIPTION": "Seallaidh seo togailtean san oisean deas-ìosal nuair a thogas Lara rudeigin.",
         "SETTING_UI_PICKUP_SCALE": "Meud togailtean",
         "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "Atharraicheas meud nan togailtean beòthail san EA nuair a thogas Lara an àird iad.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Sgrolaich timcheall",

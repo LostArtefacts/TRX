@@ -492,7 +492,9 @@ void Overlay_DrawGameInfo(void)
         return;
     }
 
-    M_DrawPickups();
+    if (g_Config.ui.show_pickups_overlay) {
+        M_DrawPickups();
+    }
 
     if (Gym_TrackManager_GetLapTimeDisplayTimer(GYM_TRACK_QUAD) > 0) {
         M_DrawRacetrackLapTimes(GYM_TRACK_QUAD);

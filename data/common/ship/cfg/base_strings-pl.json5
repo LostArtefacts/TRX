@@ -721,6 +721,8 @@
         "SETTING_UI_FILTER_DESCRIPTION": "Przełącza między gładką a pikselową grafiką interfejsu.",
         "SETTING_UI_LANGUAGE": "Język",
         "SETTING_UI_LANGUAGE_DESCRIPTION": "Zmienia język tekstu interfejsu.",
+        "SETTING_UI_PICKUPS_OVERLAY": "Powiadomienia o podniesieniu",
+        "SETTING_UI_PICKUPS_OVERLAY_DESCRIPTION": "Wyświetla przedmioty w prawym dolnym rogu, gdy Lara coś podnosi.",
         "SETTING_UI_PICKUP_SCALE": "Skala przedmiotów",
         "SETTING_UI_PICKUP_SCALE_DESCRIPTION": "Zmienia rozmiar przedmiotów animowanych w rogu ekranu, kiedy Lara coś podnosi.",
         "SETTING_UI_SCROLL_WRAPAROUND": "Cykliczne przewijanie",
