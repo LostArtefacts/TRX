@@ -1,5 +1,6 @@
 #include <trx/game/cutscene.h>
 
+#include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
@@ -158,6 +159,9 @@ void Cutscene_Draw(void)
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
     SceneCompositor_Flush();
+    if (g_Config.visuals.enable_reflections) {
+        Output_Textures_UpdateEnvironmentMap();
+    }
 }
 
 CAMERA_INFO *Cutscene_GetCamera(void)
