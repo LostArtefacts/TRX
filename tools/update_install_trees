@@ -345,7 +345,7 @@ def tr3_og_files() -> Iterable[Path]:
 
 def tr3_ship_files() -> Iterable[Path]:
     yield from collect(DATA_DIR / "common/ship")
-    yield from collect(PROJECT_PATHS[2].data_dir / "ship")
+    yield from collect(PROJECT_PATHS[3].data_dir / "ship")
     yield from collect(DATA_REPO_ROOT_DIR / "tr3/ship")
 
 
