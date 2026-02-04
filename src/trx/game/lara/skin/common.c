@@ -97,7 +97,7 @@ static inline int32_t M_GetMeshIdx(
         offset = M_GetNoHolsterMeshIdx(mesh, outfit);
     }
     if (offset == M_NO_MESH) {
-        offset = skin_obj->mesh_idx + outfit->mesh_offset + mesh;
+        offset = skin_obj->mesh_idx + mesh;
     }
     return offset;
 }
@@ -206,6 +206,12 @@ static void M_SetGunEquipment(
 
 void Lara_Skin_Initialise(void)
 {
+    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    ASSERT(extra_obj->loaded);
+
+    const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
+    ASSERT(gun_swap_obj->loaded);
+
     m_SkinType = M_NO_OUTFIT;
     m_HolsterType_L = LGT_UNARMED;
     m_HolsterType_R = LGT_UNARMED;
@@ -214,15 +220,6 @@ void Lara_Skin_Initialise(void)
     m_HolstersVisible = true;
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
         m_Equipment[i].visible = true;
-    }
-
-    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
-    ASSERT(extra_obj->loaded);
-
-    const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
-    ASSERT(gun_swap_obj->loaded);
-
-    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
         Lara_Skin_ClearEquipment(i);
     }
 
@@ -236,13 +233,13 @@ void Lara_Skin_Initialise(void)
 
         const OBJECT *const skin_obj = Object_Get(outfit->obj_id);
         ASSERT(skin_obj->loaded);
+        ASSERT(skin_obj->mesh_count == LM_NUMBER_OF);
         if (!outfit->is_reflective) {
             continue;
         }
 
         for (int32_t j = 0; j < LM_NUMBER_OF; j++) {
-            Object_SetMeshReflective(
-                outfit->obj_id, outfit->mesh_offset + j, true);
+            Object_SetMeshReflectiveEx(skin_obj->mesh_idx + j, true);
             const int32_t extra_idx = M_GetBraidDependentMeshIdx(j, outfit);
             if (extra_idx != M_NO_MESH) {
                 Object_SetMeshReflectiveEx(extra_idx, true);
@@ -405,7 +402,7 @@ const ANIM_BONE *Lara_Skin_GetBoneBase(void)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
     const OBJECT *const skin_obj = Object_Get(outfit->obj_id);
-    return Object_GetBone(skin_obj, outfit->mesh_offset);
+    return Object_GetBone(skin_obj, 0);
 }
 
 bool Lara_Skin_IsBraidSupported(void)

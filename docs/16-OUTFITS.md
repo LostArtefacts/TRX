@@ -25,9 +25,10 @@ The skin system uses five objects as follows. These objects are provided in the
 `lara_outfits.bin` injection, and are available to download as a separate WAD
 (see [injections](15-INJECTIONS.md)).
 
-#### `O_LARA_SKIN_SWAP_1`/`O_LARA_SKIN_SWAP_2`
-Each of these can contain up to 16 standalone Lara models. Note that all
-holsters are removed.
+#### `O_LARA_SKIN_SWAP_1`...`O_LARA_SKIN_SWAP_32`
+Each of these should contain a distinct Lara model, with the mesh count and bone
+order conforming to the standard for Lara. Bone offsets are used (e.g. consider
+Bacon Lara's different structure); animations are not used.
 
 #### `O_LARA_SKIN_SWAP_EXTRA`
 This object contains various additional meshes for Lara, such as altered torsos
@@ -88,8 +89,7 @@ behave. The structure of this file is described below.
 
 ```json
 "skin_type_02": {
-  "mesh_object": "O_LARA_SKIN_SWAP_1",
-  "mesh_offset": 16,
+  "mesh_object": "O_LARA_SKIN_SWAP_2",
   "is_reflective": false,
   "gun_map": 0,
   "combat_face_offset": 1,
@@ -124,14 +124,8 @@ behave. The structure of this file is described below.
   <tr valign="top">
     <td><code>mesh_object</code></td>
     <td>String</td>
-    <td colspan="2">Indicates which object contains the outfits meshes.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>mesh_offset</code></td>
-    <td>Integer</td>
     <td colspan="2">
-      Indicates the position of the starting mesh i.e. Lara's hips. Meshes are
-      expected to follow the standard Lara bone order.
+     Indicates which object contains the outfit's meshes and bones.
     </td>
   </tr>
   <tr valign="top">
