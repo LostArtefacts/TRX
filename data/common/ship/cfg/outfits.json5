@@ -3,7 +3,6 @@
         // TR1 Gym
         "skin_type_01" : {
             "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 1,
             "gun_map": 0,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
             "combat_face_offset": 1,
@@ -24,8 +23,7 @@
 
         // TR1 Classic
         "skin_type_02": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 16,
+            "mesh_object": "O_LARA_SKIN_SWAP_2",
             "gun_map": 0,
             "combat_face_offset": 1,
             "braid": {
@@ -50,8 +48,7 @@
 
         // TR1 Mauled
         "skin_type_03": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 31,
+            "mesh_object": "O_LARA_SKIN_SWAP_3",
             "gun_map": 0,
             "combat_face_offset": 1,
             "braid": {
@@ -75,8 +72,7 @@
 
         // TR1 Combo
         "skin_type_04": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 46,
+            "mesh_object": "O_LARA_SKIN_SWAP_4",
             "gun_map": 0,
             "combat_face_offset": 1,
             "braid": {
@@ -100,8 +96,7 @@
 
         // TR1 Golden Lara
         "skin_type_05": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 61,
+            "mesh_object": "O_LARA_SKIN_SWAP_5",
             "gun_map": 1,
             "is_reflective": true,
             "combat_face_offset": -1,
@@ -119,8 +114,7 @@
 
         // Bacon Lara
         "skin_type_06": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 76,
+            "mesh_object": "O_LARA_SKIN_SWAP_6",
             "gun_map": 0,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
             "combat_face_offset": -1,
@@ -131,8 +125,7 @@
 
         // Golden Bacon Lara
         "skin_type_07": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 91,
+            "mesh_object": "O_LARA_SKIN_SWAP_7",
             "gun_map": 1,
             "is_reflective": true,
             "combat_face_offset": -1,
@@ -140,8 +133,7 @@
 
         // TR2 Gym
         "skin_type_08": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 106,
+            "mesh_object": "O_LARA_SKIN_SWAP_8",
             "gun_map": 2,
             "combat_face_offset": 2,
             "braid": {
@@ -164,8 +156,7 @@
 
         // TR2 Classic
         "skin_type_09": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 121,
+            "mesh_object": "O_LARA_SKIN_SWAP_9",
             "gun_map": 2,
             "combat_face_offset": 2,
             "braid": {
@@ -188,8 +179,7 @@
 
         // Diving Suit
         "skin_type_10": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 136,
+            "mesh_object": "O_LARA_SKIN_SWAP_10",
             "gun_map": 2,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
             "combat_face_offset": 2,
@@ -209,8 +199,7 @@
 
         // Bomber Jacket
         "skin_type_11": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 151,
+            "mesh_object": "O_LARA_SKIN_SWAP_11",
             "gun_map": 2,
             "combat_face_offset": 2,
             "braid": {
@@ -233,8 +222,7 @@
 
         // Robe
         "skin_type_12": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 166,
+            "mesh_object": "O_LARA_SKIN_SWAP_12",
             "gun_map": 2,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
             "combat_face_offset": 2,
@@ -258,8 +246,7 @@
 
         // Vegas
         "skin_type_13": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 181,
+            "mesh_object": "O_LARA_SKIN_SWAP_13",
             "gun_map": 2,
             "combat_face_offset": 2,
             "braid": {
@@ -282,8 +269,7 @@
 
         // TR2/3 Golden Lara
         "skin_type_14": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 196,
+            "mesh_object": "O_LARA_SKIN_SWAP_14",
             "gun_map": 1,
             "is_reflective": true,
             "combat_face_offset": -1,
@@ -300,8 +286,7 @@
 
         // TR3 Gym
         "skin_type_15": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 211,
+            "mesh_object": "O_LARA_SKIN_SWAP_15",
             "gun_map": 4,
             "combat_face_offset": 3,
             "braid": {
@@ -324,8 +309,7 @@
 
         // TR3 Classic
         "skin_type_16": {
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
-            "mesh_offset": 226,
+            "mesh_object": "O_LARA_SKIN_SWAP_16",
             "gun_map": 3,
             "combat_face_offset": 3,
             "braid": {
@@ -348,8 +332,7 @@
 
         // South Pacific
         "skin_type_17": {
-            "mesh_object": "O_LARA_SKIN_SWAP_2",
-            "mesh_offset": 1,
+            "mesh_object": "O_LARA_SKIN_SWAP_17",
             "gun_map": 3,
             "combat_face_offset": 3,
             "braid": {
@@ -372,8 +355,7 @@
 
         // Catsuit
         "skin_type_18": {
-            "mesh_object": "O_LARA_SKIN_SWAP_2",
-            "mesh_offset": 16,
+            "mesh_object": "O_LARA_SKIN_SWAP_18",
             "gun_map": 3,
             "combat_face_offset": 3,
             "braid": {
@@ -396,8 +378,7 @@
 
         // Nevada
         "skin_type_19": {
-            "mesh_object": "O_LARA_SKIN_SWAP_2",
-            "mesh_offset": 31,
+            "mesh_object": "O_LARA_SKIN_SWAP_19",
             "gun_map": 4,
             "combat_face_offset": 3,
             "braid": {
@@ -420,8 +401,7 @@
 
         // Antarctica
         "skin_type_20": {
-            "mesh_object": "O_LARA_SKIN_SWAP_2",
-            "mesh_offset": 46,
+            "mesh_object": "O_LARA_SKIN_SWAP_20",
             "gun_map": 4,
             "combat_face_offset": 3,
             "braid": {

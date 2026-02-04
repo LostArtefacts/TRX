@@ -207,7 +207,6 @@ static bool M_LoadOutfit(
     }
     outfit->obj_id = mesh_object_id;
 
-    outfit->mesh_offset = JSON_ObjectGetInt(outfit_obj, "mesh_offset", 1);
     outfit->is_reflective =
         JSON_ObjectGetBool(outfit_obj, "is_reflective", false);
     outfit->combat_face_offset =
