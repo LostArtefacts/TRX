@@ -204,6 +204,22 @@ static void M_SetGunEquipment(
     }
 }
 
+static void M_SetCombatFace(const bool enabled)
+{
+    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    int32_t mesh_idx = M_NO_MESH;
+    if (enabled) {
+        mesh_idx = M_GetCombatFaceMeshIdx(outfit);
+    } else {
+        mesh_idx = M_GetMeshIdx(LM_HEAD, outfit);
+    }
+
+    if (mesh_idx != M_NO_MESH) {
+        Lara_Mesh_Set(LM_HEAD, Object_GetMesh(mesh_idx));
+        m_UseCombatFace = enabled;
+    }
+}
+
 void Lara_Skin_Initialise(void)
 {
     const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
@@ -344,25 +360,13 @@ void Lara_Skin_ApplyOutfit(void)
 
     M_SetGunEquipment(LM_THIGH_L, m_HolsterType_L, outfit);
     M_SetGunEquipment(LM_THIGH_R, m_HolsterType_R, outfit);
+    M_SetCombatFace(m_UseCombatFace);
 }
 
 void Lara_Skin_SetCombatFace(const bool enabled)
 {
-    if (m_UseCombatFace == enabled) {
-        return;
-    }
-
-    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    int32_t mesh_idx = M_NO_MESH;
-    if (enabled) {
-        mesh_idx = M_GetCombatFaceMeshIdx(outfit);
-    } else {
-        mesh_idx = M_GetMeshIdx(LM_HEAD, outfit);
-    }
-
-    if (mesh_idx != M_NO_MESH) {
-        Lara_Mesh_Set(LM_HEAD, Object_GetMesh(mesh_idx));
-        m_UseCombatFace = enabled;
+    if (m_UseCombatFace != enabled) {
+        M_SetCombatFace(enabled);
     }
 }
 
