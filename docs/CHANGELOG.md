@@ -59,6 +59,7 @@
 - changed turbo cheat to auto‑reset to normal speed if pushed past limit, making it easier for new players to recover from accidental changes
 - changed Blades to support being reset
 - changed the barefoot SFX option toggle in TR2 to no longer require reloading the level for changes to take effect
+- changed triggers that target pickup items to support antitriggers, switches and bitmasks
 - removed support for legacy (TombATI / TR2 GOG/Steam) and pre-1.0 (TR1X/TR2X) savegame files
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
@@ -77,6 +78,7 @@
 - fixed game freezing on exit on certain platforms when there are no active sound devices (SDL bug)
 - fixed Lara's look head rotation/tilt limits being hardcoded to the engine version rather than camera mode
 - fixed pushblocks being able to fall into rooms below despite no portals being present (#4788, regression from TR1X 4.15/TR2X 1.5)
+- fixed one-shot triggers for hidden pickup items making the items permanently invisible (#4784)
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
