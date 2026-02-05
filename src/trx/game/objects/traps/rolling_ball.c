@@ -66,8 +66,11 @@ static bool M_TestStop(const ITEM *const item)
 
     const ANIM_FRAME *const frame = Item_GetBestFrame(item);
     const BOUNDS_16 *const bounds = &frame->bounds;
-    const int16_t item_height =
+    int16_t item_height =
         ROUND_TO_HALF_CLICK(ABS(bounds->max.y - bounds->min.y));
+    if (item->object_id != O_ROLLING_BALL_4) {
+        CLAMPG(item_height, STEP_L * 3);
+    }
 
     int16_t room_num = item->room_num;
     const int32_t x =
