@@ -93,17 +93,27 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     }
 }
 
-static void M_Activate(ITEM *const item)
+static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
 {
-    if (item->status == IS_INVISIBLE) {
+    if (trigger->type == TT_SWITCH) {
+        item->flags ^= trigger->mask;
+    } else if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
+        item->flags &= ~trigger->mask;
+    } else {
+        item->flags |= trigger->mask;
+    }
+
+    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
+        item->status = IS_INVISIBLE;
+        item->flags |= IF_KILLED;
+    } else if (item->status == IS_INVISIBLE) {
         item->touch_bits = 0;
         item->status = IS_ACTIVE;
         const int16_t item_num = Item_GetIndex(item);
         Item_AddActive(item_num);
-    } else {
-        item->status = IS_INVISIBLE;
-        item->flags |= IF_KILLED;
     }
+
+    return false;
 }
 
 static void M_SpawnPickupAid(const ITEM *const item)
@@ -484,7 +494,7 @@ cleanup:
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->activate_func = M_Activate;
+    obj->trigger_func = M_Trigger;
     obj->control_func = M_Control;
     obj->collision_func = Pickup_Collision;
     obj->bounds_func = Pickup_Bounds;
