@@ -93,6 +93,7 @@
 - fixed a deviation in water current behaviour that could result in Lara stopping too early (#4706, regression from TR2X 1.1)
 - fixed gun injections overwriting Lara's footstep SFX in underwater levels (#4733, regression from 1.1)
 - fixed exploding Armed Snowmobile not disappearing the vehicle (#4762)
+- fixed the polar bear in Furnace of the Gods twitching if killed when in its reared state (#4624)
 
 **TR3**:
 - added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)
