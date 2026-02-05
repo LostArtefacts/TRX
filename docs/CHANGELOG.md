@@ -76,6 +76,7 @@
 - fixed Cheats description showing arrows in the indented bullets (#4753, regression from TRX 1.1)
 - fixed game freezing on exit on certain platforms when there are no active sound devices (SDL bug)
 - fixed Lara's look head rotation/tilt limits being hardcoded to the engine version rather than camera mode
+- fixed pushblocks being able to fall into rooms below despite no portals being present (#4788, regression from TR1X 4.15/TR2X 1.5)
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)

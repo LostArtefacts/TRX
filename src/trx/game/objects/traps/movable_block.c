@@ -689,15 +689,11 @@ static void M_Control(const int16_t item_num)
     // Check if the block is floating, on a walkable, or on the pit floor.
     // ROUND_TO_HALF_CLICK because block can fall through floor to undefined
     // sector.
-    int16_t room_num = Room_GetIndexFromPos((XYZ_32) {
-        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z });
-    if (room_num == NO_ROOM) {
-        room_num = item->room_num;
-    }
-    const ROOM *const room = Room_Get(room_num);
-    const SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    int16_t room_num = item->room_num;
+    const SECTOR *sector = Room_GetSector(
+        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z, &room_num);
     int32_t under_block_height = Room_GetHeightEx(
-        sector, item->pos.x, item->pos.y, item->pos.z, false, item_num);
+        sector, item->pos.x, item->pos.y, item->pos.z, true, item_num);
 
     bool update_room_num = true;
 
@@ -706,16 +702,10 @@ static void M_Control(const int16_t item_num)
         const int32_t y_prev = item->pos.y - item->fall_speed;
 
         // Query floor at previous y position.
-        room_num = Room_GetIndexFromPos(
-            (XYZ_32) { item->pos.x, ROUND_TO_HALF_CLICK(y_prev), item->pos.z });
-        if (room_num == NO_ROOM) {
-            room_num = item->room_num;
-        }
-        const ROOM *const prev_room = Room_Get(room_num);
         const SECTOR *prev_sector =
-            Room_GetWorldSector(prev_room, item->pos.x, item->pos.z);
+            Room_GetSector(item->pos.x, y_prev, item->pos.z, &room_num);
         int32_t prev_height = Room_GetHeightEx(
-            prev_sector, item->pos.x, y_prev, item->pos.z, false, item_num);
+            prev_sector, item->pos.x, y_prev, item->pos.z, true, item_num);
 
         // If on a walkable at the previous y position, use the rounded previous
         // y position as the floor.
