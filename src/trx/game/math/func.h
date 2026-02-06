@@ -37,4 +37,4 @@ float XYZ_F_Length2(XYZ_F pos);
 float XYZ_F_Length(XYZ_F pos);
 XYZ_F XYZ_F_Subtract(XYZ_F a, XYZ_F b);
 
-bool Bounds_32_Intersect(const BOUNDS_32 *a, const BOUNDS_32 *b);
+bool Bounds32_Intersect(const BOUNDS_32 *a, const BOUNDS_32 *b);

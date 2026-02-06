@@ -46,7 +46,7 @@ static inline bool M_ItemBoundsIntersectsPortal(
         },
     };
 
-    if (Bounds_32_Intersect(&bounds, &portal->bounds)) {
+    if (Bounds32_Intersect(&bounds, &portal->bounds)) {
         return true;
     }
 
@@ -55,7 +55,7 @@ static inline bool M_ItemBoundsIntersectsPortal(
         return false;
     }
     const BOUNDS_32 room_bounds = Room_GetRoomBounds(own_room);
-    return !Bounds_32_Intersect(&bounds, &room_bounds);
+    return !Bounds32_Intersect(&bounds, &room_bounds);
 }
 
 void Item_InitialiseItems(const int32_t num_items)
