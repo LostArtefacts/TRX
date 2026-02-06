@@ -184,11 +184,8 @@ void Gun_SetLaraHandRMesh(const LARA_GUN_TYPE weapon_type)
 
 void Gun_SetLaraBackMesh(const LARA_GUN_TYPE weapon_type)
 {
-    const OBJECT_ID obj_id =
-        weapon_type == LGT_UNARMED ? O_LARA : Gun_GetWeaponAnim(weapon_type);
-    ASSERT(obj_id != NO_OBJECT);
+    Lara_Skin_SetGunEquipment(LM_TORSO, weapon_type);
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->back_gun_obj_id = obj_id;
     lara_info->back_gun_type = weapon_type;
 }
 

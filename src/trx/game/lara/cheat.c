@@ -283,7 +283,8 @@ bool Lara_Cheat_EnterFlyMode(void)
 
     if (lara_info->gun_status == LGS_HANDS_BUSY
         || (lara_info->gun_status == LGS_UNDRAW
-            && lara_info->back_gun_obj_id != O_LARA)) {
+            && Lara_Skin_GetEquipment(LM_TORSO)->type
+                == EQUIPMENT_TYPE_WEAPON)) {
         lara_info->gun_status = LGS_ARMLESS;
     }
 

@@ -555,6 +555,30 @@ void Lara_Skin_SetExtraEquipment(
 void Lara_Skin_SetGunEquipment(
     const LARA_MESH mesh, const LARA_GUN_TYPE gun_type)
 {
+    if (mesh == LM_TORSO) {
+        if (gun_type == LGT_UNARMED) {
+            Lara_Skin_ClearEquipment(mesh);
+            return;
+        }
+
+        const OBJECT_ID obj_id = Gun_GetWeaponAnim(gun_type);
+        if (obj_id == NO_OBJECT || obj_id == O_LARA) {
+            Lara_Skin_ClearEquipment(mesh);
+            return;
+        }
+        const OBJECT *const obj = Object_Get(obj_id);
+        if (!obj->loaded) {
+            Lara_Skin_ClearEquipment(mesh);
+            return;
+        }
+
+        LARA_SKIN_EQUIPMENT *const equipment = &m_Equipment[mesh];
+        equipment->type = EQUIPMENT_TYPE_WEAPON;
+        equipment->data = gun_type;
+        equipment->mesh = Object_GetMesh(obj->mesh_idx + LM_HEAD);
+        return;
+    }
+
     M_SetGunEquipment(mesh, gun_type, M_GetCurrentOutfit());
 
     if (mesh == LM_THIGH_L) {

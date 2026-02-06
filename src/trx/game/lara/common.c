@@ -87,7 +87,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
         lara_item->hit_points = g_Config.gameplay.start_lara_hitpoints;
     }
 
-    lara_info->back_gun_obj_id = O_LARA;
     lara_info->gun_item_num = NO_ITEM;
     lara_info->flare.age = 0;
     lara_info->flare.control = false;

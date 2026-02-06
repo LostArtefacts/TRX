@@ -100,7 +100,6 @@ typedef struct {
 
     LARA_GUN_TYPE holsters_gun_type;
     LARA_GUN_TYPE back_gun_type;
-    OBJECT_ID back_gun_obj_id;
     int16_t gun_item_num;
     AMMO_INFO harpoon_ammo;
     AMMO_INFO grenade_ammo;

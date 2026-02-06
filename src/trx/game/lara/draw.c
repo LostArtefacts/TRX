@@ -191,6 +191,7 @@ static bool M_Draw_I(
     Matrix_Rot16_I(lara->interp.result.torso_rot);
     M_CacheMatrix(LM_TORSO);
     M_DrawLaraMesh(item, LM_TORSO, clip, true);
+    M_DrawEquipment(LM_TORSO, clip, true);
 
     Matrix_Push_I();
     Matrix_TranslateRel32_I(bone[LM_HEAD - 1].pos);
@@ -209,19 +210,6 @@ static bool M_Draw_I(
         Lara_Hair_Draw();
     }
     Matrix_Pop_I();
-
-    if (m_IsLara && lara->back_gun_obj_id != O_LARA) {
-        Matrix_Push_I();
-        const OBJECT *const back_obj = Object_Get(lara->back_gun_obj_id);
-        const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
-        Matrix_TranslateRel32_I(bone_c[LM_HEAD - 1].pos);
-        mesh_rots_1_c = back_obj->frame_base->mesh_rots;
-        mesh_rots_2_c = back_obj->frame_base->mesh_rots;
-        Matrix_Rot16_ID(mesh_rots_1_c[LM_HEAD], mesh_rots_2_c[LM_HEAD]);
-        M_DrawEquipmentMesh(
-            Object_GetMesh(back_obj->mesh_idx + LM_HEAD), clip, true);
-        Matrix_Pop_I();
-    }
 
     LARA_GUN_TYPE gun_type = LGT_UNARMED;
     if (lara->gun_status == LGS_READY || lara->gun_status == LGS_SPECIAL
@@ -497,6 +485,7 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Rot16(lara->interp.result.torso_rot);
     M_CacheMatrix(LM_TORSO);
     M_DrawLaraMesh(item, LM_TORSO, clip, false);
+    M_DrawEquipment(LM_TORSO, clip, false);
 
     Matrix_Push();
     Matrix_TranslateRel32(bone[LM_HEAD - 1].pos);
@@ -514,18 +503,6 @@ bool Lara_Draw(const ITEM *const item)
     }
 
     Matrix_Pop();
-
-    if (m_IsLara && lara->back_gun_obj_id != O_LARA) {
-        Matrix_Push();
-        const OBJECT *const back_obj = Object_Get(lara->back_gun_obj_id);
-        const ANIM_BONE *const bone_c = Object_GetBone(back_obj, 0);
-        Matrix_TranslateRel32(bone_c[LM_HEAD - 1].pos);
-        mesh_rots_c = back_obj->frame_base->mesh_rots;
-        Matrix_Rot16(mesh_rots_c[LM_HEAD]);
-        M_DrawEquipmentMesh(
-            Object_GetMesh(back_obj->mesh_idx + LM_HEAD), clip, false);
-        Matrix_Pop();
-    }
 
     LARA_GUN_TYPE gun_type = LGT_UNARMED;
     if (pose == nullptr
