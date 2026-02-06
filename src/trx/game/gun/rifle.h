@@ -9,4 +9,3 @@ void Gun_Rifle_Undraw(LARA_GUN_TYPE weapon_type);
 void Gun_Rifle_DrawMeshes(LARA_GUN_TYPE weapon_type);
 void Gun_Rifle_UndrawMeshes(LARA_GUN_TYPE weapon_type);
 void Gun_Rifle_EnsureReady(LARA_GUN_TYPE weapon_type);
-void Gun_Rifle_LoadLegacy(bool has_rifle);

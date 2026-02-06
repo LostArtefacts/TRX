@@ -126,7 +126,6 @@ static bool M_ReadLara(SG_READ_IO *const io)
     }
 
     M_MUST(SG_READ_VALUE(io, "last_gun_type", &lara->last_gun_type));
-    M_MUST(M_ReadObjectID(io, "back_gun_obj_id", &lara->back_gun_obj_id));
     M_MUST(SG_READ_VALUE(io, "calc_fall_speed", &lara->calc_fall_speed));
     M_MUST(SG_READ_VALUE(io, "water_status", &lara->water_status));
     M_MUST(SG_READ_VALUE(io, "climb_status", &lara->climb_status));

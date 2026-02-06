@@ -93,12 +93,6 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     if (lara->last_gun_type == LGT_UNARMED) {
         lara->last_gun_type = gun_type;
     }
-    if (Gun_IsRifleType(gun_type)) {
-        if (lara->back_gun_obj_id == O_LARA) {
-            lara->back_gun_obj_id = Gun_GetWeaponAnim(gun_type);
-            lara->back_gun_type = gun_type;
-        }
-    }
     Item_GlobalReplace(gun_object, ammo_object);
 }
 

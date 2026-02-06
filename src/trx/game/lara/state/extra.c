@@ -116,8 +116,6 @@ static void M_MidasKill(ITEM *const item, COLL_INFO *const coll)
         Lara_Skin_SwapSingleExtra(step->mesh, LS_EXTRA_MIDAS_KILL);
         switch (step->mesh) {
         case LM_TORSO:
-            lara->back_gun_obj_id = O_LARA;
-            break;
         case LM_HAND_L:
         case LM_HAND_R:
             Lara_Skin_ClearEquipment(step->mesh);
@@ -274,7 +272,7 @@ static void M_EndHouse(ITEM *const item, COLL_INFO *const coll)
 
     if (Item_TestFrameEqual(item, M_LF_SHOWER_START)) {
         LARA_INFO *const lara = Lara_GetLaraInfo();
-        lara->back_gun_obj_id = O_LARA;
+        Lara_Skin_ClearEquipment(LM_TORSO);
         Lara_Skin_SetCombatFace(false);
         Lara_Skin_ClearEquipment(LM_HAND_R);
         Lara_Skin_ClearEquipment(LM_HIPS);

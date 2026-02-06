@@ -732,23 +732,3 @@ void Gun_Rifle_EnsureReady(const LARA_GUN_TYPE weapon_type)
         Gun_Rifle_Draw(weapon_type);
     } while (Item_GetRelativeAnim(item) != goal_anim);
 }
-
-void Gun_Rifle_LoadLegacy(const bool has_rifle)
-{
-    // Applies to legacy TR1 saves where there was no concept of the back gun.
-    // Restore Lara's torso to normal and either snaps to ready or undrawn
-    // state.
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    Lara_Mesh_SwapSingle(LM_TORSO, O_LARA);
-
-    if (lara->gun_type == LGT_SHOTGUN) {
-        Gun_Rifle_UndrawMeshes(LGT_SHOTGUN);
-        if (lara->gun_status == LGS_DRAW || lara->gun_status == LGS_READY) {
-            Gun_Rifle_EnsureReady(LGT_SHOTGUN);
-        } else if (lara->gun_status == LGS_UNDRAW) {
-            lara->gun_status = LGS_ARMLESS;
-        }
-    } else if (has_rifle) {
-        lara->back_gun_obj_id = O_LARA_SHOTGUN;
-    }
-}

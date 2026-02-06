@@ -413,8 +413,7 @@ void SG_File_DumpLara(SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "gun_type", lara->gun_type);
     SGW_WRITE_VALUE(io, "request_gun_type", lara->request_gun_type);
     SGW_WRITE_VALUE(io, "last_gun_type", lara->last_gun_type);
-    SGW_WRITE_VALUE(
-        io, "back_gun_obj_id", Object_ToGameID(lara->back_gun_obj_id));
+
     SGW_WRITE_VALUE(io, "calc_fall_speed", lara->calc_fall_speed);
     SGW_WRITE_VALUE(io, "water_status", lara->water_status);
     SGW_WRITE_VALUE(io, "climb_status", lara->climb_status);
