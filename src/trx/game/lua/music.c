@@ -62,6 +62,8 @@ void LUA_CreateMusic(lua_State *const L)
     lua_setfield(L, -2, "DELAY");
     lua_pushinteger(L, MPM_NO_REPEAT);
     lua_setfield(L, -2, "NO_REPEAT");
+    lua_pushinteger(L, MPM_OVERLAY);
+    lua_setfield(L, -2, "OVERLAY");
     lua_setfield(L, -2, "PlayMode");
 
     lua_pushcfunction(L, M_L_MusicGetTrack);

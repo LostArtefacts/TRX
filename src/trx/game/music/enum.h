@@ -5,4 +5,5 @@ typedef enum {
     MPM_LOOP,
     MPM_DELAY,
     MPM_NO_REPEAT,
+    MPM_OVERLAY,
 } MUSIC_PLAY_MODE;

@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/creature.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
@@ -104,7 +105,10 @@ static void M_Control(const int16_t item_num)
 
         if (item->hit_points < SKATE_KID_SPEECH_HITPOINTS
             && !(item->flags & SKATE_KID_SPEECH_STARTED)) {
-            Music_Play(MX_SKATEKID_SPEECH, MPM_NO_REPEAT);
+            const MUSIC_PLAY_MODE mode =
+                g_Config.audio.fix_speeches_killing_music ? MPM_OVERLAY
+                                                          : MPM_NO_REPEAT;
+            Music_Play(MX_SKATEKID_SPEECH, mode);
             item->flags |= SKATE_KID_SPEECH_STARTED;
         }
 

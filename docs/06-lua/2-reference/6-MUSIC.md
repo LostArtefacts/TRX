@@ -32,3 +32,5 @@ title: Music
     Plays the track once but prevents retriggering if it's already playing.
 - `trx.music.PlayMode.DELAY`  
     Schedules the track for later playback without starting it immediately.
+- `trx.music.PlayMode.OVERLAY`  
+    Schedules the track on top of current music track.

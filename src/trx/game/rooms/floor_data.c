@@ -1,5 +1,6 @@
 #include <trx/game/rooms/floor_data.h>
 
+#include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
@@ -29,6 +30,21 @@
 #define M_TRIG_CMD_ARG(t) (t & 0x3FF)
 #define M_TRIG_CAM_GLIDE(t) ((t & 0x3E00) >> 6)
 #define M_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
+
+static bool M_IsSpeechTrack(const MUSIC_ID track_id)
+{
+    switch (Music_FromGameID(track_id)) {
+    case MX_BALDY_SPEECH:
+    case MX_COWBOY_SPEECH:
+    case MX_LARSON_SPEECH:
+    case MX_NATLA_SPEECH:
+    case MX_PIERRE_SPEECH:
+    case MX_SKATEKID_SPEECH:
+        return true;
+    default:
+        return false;
+    }
+}
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
@@ -129,6 +145,12 @@ static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
     }
 
     uint16_t flags = Music_GetTrackFlags(track_id);
+    MUSIC_PLAY_MODE play_mode = MPM_NO_REPEAT;
+    if (g_Config.audio.fix_speeches_killing_music
+        && M_IsSpeechTrack(track_id)) {
+        play_mode = MPM_OVERLAY;
+    }
+
     // TODO: consolidate
     if (g_TRVersion == 1) {
         if ((flags & IF_ONE_SHOT) != 0) {
@@ -148,7 +170,7 @@ static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
             if (trigger->one_shot) {
                 flags |= IF_ONE_SHOT;
             }
-            Music_Play_Direct(track_id, MPM_NO_REPEAT);
+            Music_Play_Direct(track_id, play_mode);
         } else {
             Music_StopTrack_Direct(track_id);
         }
@@ -164,7 +186,7 @@ static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
         }
 
         if (trigger->timer == 0) {
-            Music_Play_Direct(track_id, MPM_NO_REPEAT);
+            Music_Play_Direct(track_id, play_mode);
             goto finish;
         }
 
@@ -181,7 +203,7 @@ static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
 
         timer--;
         if (timer == 0) {
-            Music_Play_Direct(track_id, MPM_NO_REPEAT);
+            Music_Play_Direct(track_id, play_mode);
         }
         flags = (flags & 0xFF00) | (timer & 0xFF);
     }
@@ -695,7 +717,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             // in TR2, see #2047
             const int16_t secret_num = (int16_t)(intptr_t)cmd->parameter;
             if (Stats_AddSecret(secret_num)) {
-                Music_Play(MX_SECRET, MPM_ONCE);
+                const MUSIC_PLAY_MODE mode =
+                    g_Config.audio.fix_secrets_killing_music ? MPM_OVERLAY
+                                                             : MPM_ONCE;
+                Music_Play(MX_SECRET, mode);
             }
             break;
         }
