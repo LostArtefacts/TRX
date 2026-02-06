@@ -540,6 +540,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Save crystals will be drawn with a purple tint, more similar to the PS1 type.",
         "SETTING_ENABLE_PS1_SFX": "PS1 SFX replacements",
         "SETTING_ENABLE_PS1_SFX_DESCRIPTION": "Enables specific sound effect replacements using PS1 equivalents.\n\n- Uzi fire (TR1 only)\n- Lara barefoot sounds (TR2 only)",
+        "SETTING_ENABLE_RESPONSIVE_MESH_TINT": "Responsive mesh tint",
+        "SETTING_ENABLE_RESPONSIVE_MESH_TINT_DESCRIPTION": "Enables Lara's individual meshes to be drawn with a water tint if they are themselves located underwater (TR3 style). Otherwise, if Lara is in water, each of her meshes will be drawn with the tint (TR1/2 style).",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Responsive passport",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "Responsive sprinting",

@@ -12,8 +12,9 @@
     - added Beacon Light control
     - added On/Off Light control
 - added the ability in Lua to hook into control loop events during cutscenes
-- added an option to change Lara's outfit, with 20 variants included by default; custom levels can provide up to 32 outfits (#4383)
+- added an option to change Lara's outfit, with 20 variants included by default; custom levels can provide up to 32 outfits (Visuals → General → Lara's outfit) (#4383)
 - added an option to control UI brightness (Graphic Options → Rendering → UI brightness); renamed "Brightness" to "Game brightness"
+- added an option to allow Lara's underwater mesh tint to be more responsive based on position, as per TR3 (Visuals → General → Responsive mesh tint)
 - added the ability for custom levels to define Lara's braid position relative to her head (#110)
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
