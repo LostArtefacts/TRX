@@ -24,6 +24,7 @@
     X_DECLARE_MEMBER(float, time)                                              \
     X_DECLARE_MEMBER(float, time_in_game)                                      \
     X_DECLARE_MEMBER(float, brightness_multiplier)                             \
+    X_DECLARE_MEMBER(float, ui_brightness_multiplier)                          \
     X_DECLARE_MEMBER(float, gamma)                                             \
     X_DECLARE_MEMBER(float, desaturation)                                      \
     X_DECLARE_MEMBER(float, sunset_duration)                                   \
@@ -137,7 +138,8 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
     M_UNIFORM_GENERAL general = {
         .time = Output_GetTime(),
         .time_in_game = Output_GetTimeInGame(),
-        .brightness_multiplier = g_Config.visuals.brightness,
+        .brightness_multiplier = g_Config.visuals.game_brightness,
+        .ui_brightness_multiplier = g_Config.visuals.ui_brightness,
         .gamma = g_Config.visuals.gamma,
         .desaturation = Output_GetDesaturation(),
         .sunset_duration = Output_GetSunsetDuration(),
@@ -178,6 +180,37 @@ void Output_Uniforms_UploadDesaturation(
     GFX_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER,
         offsetof(M_UNIFORM_GENERAL, desaturation), sizeof(clamped), &clamped);
+}
+
+void Output_Uniforms_UploadGameBrightnessMultiplier(
+    const OUTPUT_UNIFORMS *const uniforms,
+    const float game_brightness_multiplier)
+{
+    ASSERT(uniforms != nullptr);
+
+    float clamped = game_brightness_multiplier;
+    CLAMP(clamped, CONFIG_MIN_BRIGHTNESS, CONFIG_MAX_BRIGHTNESS);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
+    GFX_TRACK_SUBDATA(
+        glBufferSubData, GL_UNIFORM_BUFFER,
+        offsetof(M_UNIFORM_GENERAL, brightness_multiplier), sizeof(clamped),
+        &clamped);
+}
+
+void Output_Uniforms_UploadUIBrightnessMultiplier(
+    const OUTPUT_UNIFORMS *const uniforms, const float brightness_multiplier)
+{
+    ASSERT(uniforms != nullptr);
+
+    float clamped = brightness_multiplier;
+    CLAMP(clamped, CONFIG_MIN_BRIGHTNESS, CONFIG_MAX_BRIGHTNESS);
+
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
+    GFX_TRACK_SUBDATA(
+        glBufferSubData, GL_UNIFORM_BUFFER,
+        offsetof(M_UNIFORM_GENERAL, ui_brightness_multiplier), sizeof(clamped),
+        &clamped);
 }
 
 void Output_Uniforms_UploadRoomLights(

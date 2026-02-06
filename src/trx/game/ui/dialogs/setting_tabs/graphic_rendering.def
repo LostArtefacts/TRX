@@ -4,7 +4,8 @@ X_UI_CFG_ENUM(rendering.texture_filter,          SETTING_TEXTURE_FILTER, .misc =
 X_UI_CFG_ENUM(rendering.ui_filter,               SETTING_UI_FILTER, .misc = UI_Settings_TextureFilterEnumEntries)
 X_UI_CFG_FLOAT(rendering.anisotropy_filter,      SETTING_ANISOTROPY_FILTER, .min_value = 1 * 100, .max_value = 32 * 100, .delta_slow = 10, .delta_fast = 100)
 X_UI_CFG_BOOL(rendering.enable_vsync,            SETTING_VSYNC)
-X_UI_CFG_FLOAT(visuals.brightness,               SETTING_BRIGHTNESS, .min_value = CONFIG_MIN_BRIGHTNESS * 100, .max_value = CONFIG_MAX_BRIGHTNESS * 100, .delta_slow = 1, .delta_fast = 5)
+X_UI_CFG_FLOAT(visuals.game_brightness,          SETTING_GAME_BRIGHTNESS, .min_value = CONFIG_MIN_BRIGHTNESS * 100, .max_value = CONFIG_MAX_BRIGHTNESS * 100, .delta_slow = 1, .delta_fast = 5)
+X_UI_CFG_FLOAT(visuals.ui_brightness,            SETTING_UI_BRIGHTNESS, .min_value = CONFIG_MIN_BRIGHTNESS * 100, .max_value = CONFIG_MAX_BRIGHTNESS * 100, .delta_slow = 1, .delta_fast = 5)
 X_UI_CFG_FLOAT(visuals.gamma,                    SETTING_GAMMA, .min_value = CONFIG_MIN_GAMMA * 100, .max_value = CONFIG_MAX_GAMMA * 100, .delta_slow = 10, .delta_fast = 50)
 
 X_UI_CFG_ENUM(rendering.lighting_contrast,       SETTING_LIGHTING_CONTRAST, .misc = UI_Settings_LightingContrastEnumEntries)

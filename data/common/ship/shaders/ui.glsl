@@ -49,7 +49,7 @@ void main(void) {
         texColor.rgb *= texColor.a;
     }
 
-    texColor.rgb *= uBrightnessMultiplier;
+    texColor.rgb *= uUIBrightnessMultiplier;
     outColor = texColor;
 }
 

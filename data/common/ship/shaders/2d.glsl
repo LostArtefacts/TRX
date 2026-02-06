@@ -146,7 +146,7 @@ void main(void) {
         outColor.rgb = mix(outColor.rgb, vec3(luma), clamp(uDesaturation, 0.0, 1.0));
     }
 
-    outColor.rgb *= uBrightnessMultiplier * uBrightnessScale;
+    outColor.rgb *= uUIBrightnessMultiplier * uBrightnessScale;
 
     outColor.a *= clamp(uOpacity, 0.0, 1.0);
     // Output premultiplied alpha so callers can use (ONE, ONE_MINUS_SRC_ALPHA).

@@ -13,6 +13,7 @@
     - added On/Off Light control
 - added the ability in Lua to hook into control loop events during cutscenes
 - added an option to change Lara's outfit, with 20 variants included by default; custom levels can provide up to 32 outfits (#4383)
+- added an option to control UI brightness (Graphic Options → Rendering → UI brightness); renamed "Brightness" to "Game brightness"
 - added the ability for custom levels to define Lara's braid position relative to her head (#110)
 - added the ability to disable manual camera (Gameplay → Controls → Manual camera)
 - added the ability to enable bouncy grenades (Gameplay → General → Enable bouncy grenades)
@@ -178,7 +179,7 @@ Showcase: https://www.youtube.com/watch?v=veVYyr--H1A
 - added the ability to control via Lua which enemies are allies and which are ones that will fight with allies (#3873)
 - added the ability to control Lara's air timer via Lua (#4592)
 - added the ability to fine-tune the fade effects between the inventory ring, the pause screen, and the stats screen (Graphic Options → UI → Inventory/Pause/Stats fade effects)
-- added gamma control (TR3-style) to all games
+- added gamma control (TR3-style) to all games (Graphic Options → Rendering → Gamma)
 - added support for TR3 weather effects to all games (#3881)
 - added support for 3D secret objects, and provided defaults for OG levels in TR2 (#4380)
 - added catalog object IDs to Lua

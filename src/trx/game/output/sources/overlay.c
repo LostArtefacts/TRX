@@ -838,7 +838,7 @@ void Output_Overlay_CaptureSnapshot(void)
     p->snapshot.state.has_content = true;
 
     // Remove the captured brightness so we can reapply the current multiplier.
-    p->snapshot.state.captured_brightness = g_Config.visuals.brightness;
+    p->snapshot.state.captured_brightness = g_Config.visuals.ui_brightness;
     CLAMPL(p->snapshot.state.captured_brightness, 0.001f);
     GFX_2D_Renderer_SetBrightnessScale(
         p->snapshot.renderer, 1.0f / p->snapshot.state.captured_brightness);
