@@ -13,9 +13,13 @@
 #include <trx/game/shell.h>
 #include <trx/game/water_fx.h>
 #include <trx/game/weather_fx.h>
+#include <trx/memory.h>
 #include <trx/utils.h>
 
 static CAMERA_INFO m_LocalCamera = {};
+static OBJECT_MESH **m_CapturedObjectMeshes = nullptr;
+static OBJECT_ID *m_CapturedObjectMeshOwners = nullptr;
+static int32_t m_CapturedObjectMeshCount = 0;
 
 typedef struct {
     bool is_valid;
@@ -49,6 +53,79 @@ static void M_CaptureLaraCutsceneState(void)
     m_LaraCutsceneState.holsters_visible = Lara_Skin_AreHolstersVisible();
 }
 
+static void M_CaptureObjectMeshesState(void)
+{
+    Memory_FreePointer(&m_CapturedObjectMeshes);
+    Memory_FreePointer(&m_CapturedObjectMeshOwners);
+    m_CapturedObjectMeshCount = Object_GetMeshCount();
+    if (m_CapturedObjectMeshCount <= 0) {
+        return;
+    }
+
+    m_CapturedObjectMeshes = Memory_Alloc(
+        m_CapturedObjectMeshCount * sizeof(*m_CapturedObjectMeshes));
+    m_CapturedObjectMeshOwners = Memory_Alloc(
+        m_CapturedObjectMeshCount * sizeof(*m_CapturedObjectMeshOwners));
+    for (int32_t i = 0; i < m_CapturedObjectMeshCount; i++) {
+        m_CapturedObjectMeshes[i] = Object_GetMesh(i);
+        m_CapturedObjectMeshOwners[i] = NO_OBJECT;
+    }
+
+    for (OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
+        const OBJECT *const obj = Object_Get(obj_id);
+        if (!obj->loaded || obj->mesh_count <= 0 || obj->mesh_idx < 0) {
+            continue;
+        }
+
+        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
+            const int32_t abs_idx = obj->mesh_idx + mesh_idx;
+            if (abs_idx >= 0 && abs_idx < m_CapturedObjectMeshCount) {
+                m_CapturedObjectMeshOwners[abs_idx] = obj_id;
+            }
+        }
+    }
+}
+
+static void M_RestoreObjectMeshesState(void)
+{
+    if (m_CapturedObjectMeshes == nullptr || m_CapturedObjectMeshCount <= 0) {
+        return;
+    }
+
+    const int32_t mesh_count = Object_GetMeshCount();
+    if (mesh_count != m_CapturedObjectMeshCount) {
+        return;
+    }
+
+    for (int32_t i = 0; i < mesh_count; i++) {
+        if (Object_GetMesh(i) == m_CapturedObjectMeshes[i]) {
+            continue;
+        }
+
+        int32_t j = -1;
+        for (int32_t k = i + 1; k < mesh_count; k++) {
+            if (Object_GetMesh(k) == m_CapturedObjectMeshes[i]) {
+                j = k;
+                break;
+            }
+        }
+        if (j < 0) {
+            continue;
+        }
+
+        if (m_CapturedObjectMeshOwners[i] == NO_OBJECT
+            || m_CapturedObjectMeshOwners[j] == NO_OBJECT) {
+            continue;
+        }
+
+        const OBJECT *const obj_1 = Object_Get(m_CapturedObjectMeshOwners[i]);
+        const OBJECT *const obj_2 = Object_Get(m_CapturedObjectMeshOwners[j]);
+        Object_SwapMeshEx(
+            m_CapturedObjectMeshOwners[i], m_CapturedObjectMeshOwners[j],
+            i - obj_1->mesh_idx, j - obj_2->mesh_idx);
+    }
+}
+
 static void M_RestoreLaraCutsceneState(void)
 {
     if (!m_LaraCutsceneState.is_valid) {
@@ -78,23 +155,9 @@ static void M_ResetActorAnimation(ITEM *const item)
     item->required_anim_state = 0;
 }
 
-static void M_AnimateActors(void)
-{
-    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        if (!M_IsCutsceneActor(item)) {
-            continue;
-        }
-
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->control_func != nullptr) {
-            obj->control_func(i);
-        }
-    }
-}
-
 static void M_ResetActorsToStart(void)
 {
+    M_RestoreObjectMeshesState();
     M_RestoreLaraCutsceneState();
 
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
@@ -113,7 +176,8 @@ static void M_ReplayActors(
         Lua_FireEventInt32(LUA_EVENT_BEFORE_CONTROL, 0);
         cine_data->frame_idx = frame_idx;
         Camera_UpdateCutscene();
-        M_AnimateActors();
+        Item_Control();
+        Effect_Control();
         Lua_FireEventInt32(LUA_EVENT_AFTER_CONTROL, 0);
     }
 }
@@ -198,6 +262,7 @@ bool Cutscene_Start(const int32_t level_num)
 
     M_InitialisePlayer(Item_GetIndex(Lara_GetItem()));
     M_CaptureLaraCutsceneState();
+    M_CaptureObjectMeshesState();
     Camera_GetCineData()->frame_idx = 0;
 
     if (level->music_track != MX_INACTIVE) {
@@ -209,6 +274,9 @@ bool Cutscene_Start(const int32_t level_num)
 
 void Cutscene_End(void)
 {
+    Memory_FreePointer(&m_CapturedObjectMeshes);
+    Memory_FreePointer(&m_CapturedObjectMeshOwners);
+    m_CapturedObjectMeshCount = 0;
     Music_Stop();
 }
 
