@@ -8,10 +8,14 @@
 #include <trx/game/input.h>
 #include <trx/game/lara/const.h>
 #include <trx/log.h>
+#include <trx/memory.h>
+#include <trx/strings.h>
 #include <trx/utils.h>
 
 #include <stdio.h>
 #include <string.h>
+
+#define M_CONFIG_VERSION_CURRENT 1
 
 static void M_LoadKeyboardLayout(
     JSON_OBJECT *const parent_obj, const INPUT_LAYOUT layout)
@@ -147,6 +151,32 @@ static void M_DumpInputConfig(JSON_OBJECT *const root_obj)
     }
 }
 
+static void M_MigrateBarColorName(char **const value_ptr)
+{
+    const char *value = *value_ptr;
+    const char *new_value = nullptr;
+    if (value == nullptr) {
+        return;
+    }
+    if (String_Equivalent(value, "gold")) {
+        new_value = "brown";
+    } else if (String_Equivalent(value, "green")) {
+        new_value = "teal";
+    } else if (String_Equivalent(value, "gold2")) {
+        new_value = "yellow";
+    } else if (String_Equivalent(value, "blue2")) {
+        new_value = "cyan";
+    } else if (String_Equivalent(value, "green2")) {
+        new_value = "green";
+    } else if (String_Equivalent(value, "gold-green")) {
+        new_value = "yellow-green";
+    }
+    if (new_value != nullptr) {
+        Memory_FreePointer(value_ptr);
+        *value_ptr = Memory_DupStr(new_value);
+    }
+}
+
 static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 {
 #define L_READ_BOOL(target, key)                                               \
@@ -272,6 +302,47 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         } else if (JSON_ValueIsFalse(value)) {
             g_Config.visuals.shadow_type = SHADOW_TYPE_OCTAGON;
         }
+    }
+
+    // Pre-1.2 UI bar look and color migration; one-shot via config version.
+    if (g_Config.config_version >= 0 && g_Config.config_version < 1) {
+        {
+            const char *const value =
+                JSON_ObjectGetString(parent_obj, "bar_look", "");
+            const char *new_value = nullptr;
+            if (String_Equivalent(value, "tr1")) {
+                new_value = "tr1_pc";
+            } else if (String_Equivalent(value, "tr2")) {
+                new_value = "tr2_pc";
+            } else if (String_Equivalent(value, "tr3")) {
+                new_value = "tr3_pc";
+            } else if (String_Equivalent(value, "ps1")) {
+                new_value = "tr2_ps1";
+            }
+            if (new_value != nullptr) {
+                Memory_FreePointer(&g_Config.ui.bar_look);
+                g_Config.ui.bar_look = Memory_DupStr(new_value);
+            }
+        }
+
+        M_MigrateBarColorName(&g_Config.ui.lara_health_bar.color);
+        M_MigrateBarColorName(&g_Config.ui.lara_health_bar.color_ps1);
+        M_MigrateBarColorName(&g_Config.ui.lara_health_bar.poison_color);
+        M_MigrateBarColorName(&g_Config.ui.lara_health_bar.poison_color_ps1);
+        M_MigrateBarColorName(&g_Config.ui.lara_air_bar.color);
+        M_MigrateBarColorName(&g_Config.ui.lara_air_bar.color_ps1);
+        M_MigrateBarColorName(&g_Config.ui.lara_sprint_bar.color);
+        M_MigrateBarColorName(&g_Config.ui.lara_sprint_bar.color_ps1);
+        M_MigrateBarColorName(&g_Config.ui.lara_exposure_bar.color);
+        M_MigrateBarColorName(&g_Config.ui.lara_exposure_bar.color_ps1);
+        M_MigrateBarColorName(&g_Config.ui.enemy_health_bar.color);
+        M_MigrateBarColorName(&g_Config.ui.enemy_health_bar.color_ps1);
+        M_MigrateBarColorName(&g_Config.ui.enemy_health_bar.color_allies);
+        M_MigrateBarColorName(&g_Config.ui.enemy_health_bar.color_allies_ps1);
+    }
+    if (g_Config.config_version >= 0
+        && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {
+        g_Config.config_version = M_CONFIG_VERSION_CURRENT;
     }
 
 #undef L_READ_BOOL

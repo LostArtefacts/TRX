@@ -34,13 +34,6 @@ typedef enum {
 } BAR_SHOW_MODE;
 
 typedef enum {
-    BAR_LOOK_TR1,
-    BAR_LOOK_TR2_PC,
-    BAR_LOOK_TR3_PC,
-    BAR_LOOK_TR23_PS1,
-} BAR_LOOK;
-
-typedef enum {
     MUSIC_LOAD_NEVER,
     MUSIC_LOAD_NON_AMBIENT,
     MUSIC_LOAD_ALWAYS,

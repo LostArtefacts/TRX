@@ -18,9 +18,7 @@ static void M_Apply(const GS_TABLE *const table)
 {
     for (const GS_GAME_STRING_ENTRY *cur = table->game_strings;
          cur != nullptr && cur->key != nullptr; cur++) {
-        if (!GameString_IsKnown(cur->key)) {
-            LOG_ERROR("Invalid game string key: %s", cur->key);
-        } else if (cur->value == nullptr) {
+        if (cur->value == nullptr) {
             LOG_ERROR("Invalid game string value: %s", cur->key);
         } else {
             GameString_Define(cur->key, cur->value);

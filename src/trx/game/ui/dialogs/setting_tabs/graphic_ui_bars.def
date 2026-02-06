@@ -1,6 +1,6 @@
 X_UI_CFG_BOOL(ui.show_bars,                     SETTING_SHOW_BARS)
 X_UI_CFG_FLOAT_PERCENT(ui.bar_scale,            SETTING_UI_BAR_SCALE, .min_value = 50, .max_value = 200, .delta_slow = 1, .delta_fast = 5, .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
-X_UI_CFG_ENUM(ui.bar_look,                      SETTING_BAR_LOOK, .misc = UI_Settings_BarLookEnumEntries, .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
+X_UI_CFG_STRING(ui.bar_look,                    SETTING_BAR_LOOK, .custom_handler = { .format_value = UI_Settings_BarLook_FormatValue, .can_change_value = UI_Settings_BarLook_CanChangeValue, .request_change_value = UI_Settings_BarLook_RequestChangeValue, .is_available = UI_Settings_Bar_IsAvailable })
 X_UI_CFG_BOOL(ui.enable_smooth_bars,            SETTING_ENABLE_SMOOTH_BARS, .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
 X_UI_CFG_BOOL(ui.enable_bar_flashing,           SETTING_ENABLE_BAR_FLASHING, .custom_handler = { .is_available = UI_Settings_Bar_IsAvailable })
 

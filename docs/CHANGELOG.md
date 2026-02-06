@@ -98,7 +98,7 @@
 - fixed the polar bear in Furnace of the Gods twitching if killed when in its reared state (#4624)
 
 **TR3**:
-- added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)
+- added new UI bar appearances, "TR3 PC" and "TR3 PS1" (Graphic Options → Bars → Bars appearance)
 - added new water currents
 - added new blood effects
 - added underwater blood spills

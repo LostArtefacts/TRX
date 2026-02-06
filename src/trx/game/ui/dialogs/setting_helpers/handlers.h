@@ -43,6 +43,11 @@ bool UI_Settings_AllyHealthbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *option);
 bool UI_Settings_BarColorPC_IsVisible(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_BarColorPS1_IsVisible(const UI_SETTINGS_OPTION *option);
+const char *UI_Settings_BarLook_FormatValue(const UI_SETTINGS_OPTION *option);
+bool UI_Settings_BarLook_CanChangeValue(
+    const UI_SETTINGS_OPTION *option, int32_t dir);
+bool UI_Settings_BarLook_RequestChangeValue(
+    const UI_SETTINGS_OPTION *option, int32_t dir);
 bool UI_Settings_BarColor_CanChangeValue(
     const UI_SETTINGS_OPTION *option, int32_t dir);
 bool UI_Settings_BarColor_RequestChangeValue(

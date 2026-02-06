@@ -62,14 +62,6 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[] = {
     { -1, nullptr },
 };
 
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLookEnumEntries[] = {
-    { BAR_LOOK_TR1, GS_ID(ENUM_BAR_LOOK_TR1) },
-    { BAR_LOOK_TR2_PC, GS_ID(ENUM_BAR_LOOK_TR2_PC) },
-    { BAR_LOOK_TR3_PC, GS_ID(ENUM_BAR_LOOK_TR3_PC) },
-    { BAR_LOOK_TR23_PS1, GS_ID(ENUM_BAR_LOOK_TR23_PS1) },
-    { -1, nullptr },
-};
-
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_BackgroundStyleEnumEntries[] = {
     { BK_TRANSPARENT_MEDIUM, GS_ID(ENUM_BK_TRANSPARENT_MEDIUM) },
     { BK_TRANSPARENT_DARK, GS_ID(ENUM_BK_TRANSPARENT_DARK) },

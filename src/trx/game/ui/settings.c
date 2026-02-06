@@ -1,11 +1,11 @@
 #include <trx/game/ui/settings.h>
 
 #include <trx/config.h>
+#include <trx/game/game_string.h>
 #include <trx/game/shell.h>
 #include <trx/json_file.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
-#include <trx/version.h>
 
 #include <uthash.h>
 
@@ -27,9 +27,22 @@ typedef struct {
 } M_THEME_GROUP;
 
 typedef struct {
-    struct {
-        M_THEME_GROUP tr1, tr2, tr3, ps1;
-    } bars;
+    char *name;
+    char *name_gs;
+    UI_BAR_THEME_KIND kind;
+    M_THEME_GROUP group;
+} M_BAR_THEME_ENTRY;
+
+typedef struct M_BAR_THEME_LOOKUP {
+    char *name;
+    int32_t index;
+    UT_hash_handle hh;
+} M_BAR_THEME_LOOKUP;
+
+typedef struct {
+    int32_t bar_theme_count;
+    M_BAR_THEME_ENTRY *bar_themes;
+    struct M_BAR_THEME_LOOKUP *bar_lookup;
 } M_SETTINGS;
 
 typedef struct {
@@ -90,20 +103,30 @@ static void M_FreeThemeGroup(M_THEME_GROUP *const group)
     group->lookup = nullptr;
 }
 
-static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
+static void M_FreeBarThemes(void)
 {
-    switch (g_Config.ui.bar_look) {
-    case BAR_LOOK_TR1:
-        return &m_Settings.bars.tr1;
-    case BAR_LOOK_TR2_PC:
-        return &m_Settings.bars.tr2;
-    case BAR_LOOK_TR3_PC:
-        return &m_Settings.bars.tr3;
-    case BAR_LOOK_TR23_PS1:
-        return &m_Settings.bars.ps1;
-    default:
-        return nullptr;
+    M_BAR_THEME_LOOKUP *entry = nullptr;
+    M_BAR_THEME_LOOKUP *tmp = nullptr;
+    HASH_ITER(hh, m_Settings.bar_lookup, entry, tmp)
+    {
+        HASH_DEL(m_Settings.bar_lookup, entry);
+        Memory_FreePointer(&entry);
     }
+
+    if (m_Settings.bar_themes == nullptr) {
+        return;
+    }
+
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        Memory_FreePointer(&theme->name);
+        Memory_FreePointer(&theme->name_gs);
+        M_FreeThemeGroup(&theme->group);
+    }
+
+    Memory_FreePointer(&m_Settings.bar_themes);
+    m_Settings.bar_theme_count = 0;
+    m_Settings.bar_lookup = nullptr;
 }
 
 static bool M_ParseHexColor(const char *const value, RGBA_8888 *const out)
@@ -142,14 +165,6 @@ static void M_LoadThemesPC(
     JSON_OBJECT *const obj, M_THEME_GROUP *const group, const char *const path,
     const char *const section)
 {
-    if (obj == nullptr) {
-        Shell_ExitSystemFmt("missing '%s' in %s", section, path);
-    }
-    const char *const style =
-        JSON_ObjectGetString(obj, "style", JSON_INVALID_STRING);
-    if (style == JSON_INVALID_STRING || !String_Equivalent(style, "pc")) {
-        Shell_ExitSystemFmt("invalid '%s.style' in %s", section, path);
-    }
     const float basic_scale = (float)JSON_ObjectGetDouble(obj, "scale", 1.0f);
     RGBA_8888 border_light = {};
     RGBA_8888 border_dark = {};
@@ -222,14 +237,6 @@ static void M_LoadThemesPS1(
     JSON_OBJECT *const obj, M_THEME_GROUP *const group, const char *const path,
     const char *const section)
 {
-    if (obj == nullptr) {
-        Shell_ExitSystemFmt("missing '%s' in %s", section, path);
-    }
-    const char *const style =
-        JSON_ObjectGetString(obj, "style", JSON_INVALID_STRING);
-    if (style == JSON_INVALID_STRING || !String_Equivalent(style, "ps1")) {
-        Shell_ExitSystemFmt("invalid '%s.style' in %s", section, path);
-    }
     const float basic_scale = (float)JSON_ObjectGetDouble(obj, "scale", 1.0f);
     RGBA_8888 border_tl = {};
     RGBA_8888 border_tr = {};
@@ -324,6 +331,53 @@ static void M_LoadThemesPS1(
     }
 }
 
+static M_BAR_THEME_ENTRY *M_FindBarThemeByName(const char *const name)
+{
+    if (name == nullptr) {
+        return nullptr;
+    }
+    M_BAR_THEME_LOOKUP *entry = nullptr;
+    HASH_FIND_STR(m_Settings.bar_lookup, name, entry);
+    if (entry == nullptr) {
+        return nullptr;
+    }
+    return &m_Settings.bar_themes[entry->index];
+}
+
+static M_BAR_THEME_ENTRY *M_GetCurrentBarTheme(void)
+{
+    M_BAR_THEME_ENTRY *theme = M_FindBarThemeByName(g_Config.ui.bar_look);
+    if (theme != nullptr) {
+        return theme;
+    }
+    if (m_Settings.bar_theme_count <= 0) {
+        return nullptr;
+    }
+    return &m_Settings.bar_themes[0];
+}
+
+static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
+{
+    M_BAR_THEME_ENTRY *const theme = M_GetCurrentBarTheme();
+    if (theme == nullptr) {
+        return nullptr;
+    }
+    return &theme->group;
+}
+
+static int32_t M_FindCurrentThemeIndex(void)
+{
+    if (g_Config.ui.bar_look == nullptr) {
+        return -1;
+    }
+    M_BAR_THEME_LOOKUP *entry = nullptr;
+    HASH_FIND_STR(m_Settings.bar_lookup, g_Config.ui.bar_look, entry);
+    if (entry == nullptr) {
+        return -1;
+    }
+    return entry->index;
+}
+
 void UI_Settings_LoadFromFile(const char *const path)
 {
     JSON_VALUE *const root =
@@ -332,18 +386,77 @@ void UI_Settings_LoadFromFile(const char *const path)
     if (root_obj == nullptr) {
         Shell_ExitSystemFmt("invalid ui settings file: %s", path);
     }
-    M_LoadThemesPC(
-        JSON_ObjectGetObject(root_obj, "tr1"), &m_Settings.bars.tr1, path,
-        "tr1");
-    M_LoadThemesPC(
-        JSON_ObjectGetObject(root_obj, "tr2"), &m_Settings.bars.tr2, path,
-        "tr2");
-    M_LoadThemesPC(
-        JSON_ObjectGetObject(root_obj, "tr3"), &m_Settings.bars.tr3, path,
-        "tr3");
-    M_LoadThemesPS1(
-        JSON_ObjectGetObject(root_obj, "ps1"), &m_Settings.bars.ps1, path,
-        "ps1");
+
+    M_FreeBarThemes();
+
+    size_t theme_count = 0;
+    for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
+         elem = elem->next) {
+        theme_count++;
+    }
+    if (theme_count == 0) {
+        Shell_ExitSystemFmt("ui settings file has no bar themes: %s", path);
+    }
+
+    m_Settings.bar_themes =
+        Memory_Alloc(sizeof(*m_Settings.bar_themes) * theme_count);
+    m_Settings.bar_theme_count = (int32_t)theme_count;
+    m_Settings.bar_lookup = nullptr;
+
+    size_t idx = 0;
+    for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
+         elem = elem->next) {
+        const char *const theme_name = elem->name->string;
+        JSON_OBJECT *const theme_obj = JSON_ValueAsObject(elem->value);
+        if (theme_obj == nullptr) {
+            Shell_ExitSystemFmt(
+                "invalid '%s' in %s (expected object)", theme_name, path);
+        }
+
+        M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[idx];
+        theme->name = Memory_DupStr(theme_name);
+        theme->name_gs = nullptr;
+        theme->kind = UI_BAR_THEME_PC_KIND;
+        theme->group = (M_THEME_GROUP) {};
+
+        M_BAR_THEME_LOOKUP *existing = nullptr;
+        HASH_FIND_STR(m_Settings.bar_lookup, theme->name, existing);
+        if (existing != nullptr) {
+            Shell_ExitSystemFmt("duplicate '%s' in %s", theme_name, path);
+        }
+
+        const char *const name_gs =
+            JSON_ObjectGetString(theme_obj, "name_gs", JSON_INVALID_STRING);
+        if (name_gs == JSON_INVALID_STRING) {
+            Shell_ExitSystemFmt(
+                "invalid '%s.name_gs' in %s (unknown game string ID)",
+                theme_name, path);
+        }
+        theme->name_gs = Memory_DupStr(name_gs);
+
+        const char *const style =
+            JSON_ObjectGetString(theme_obj, "style", JSON_INVALID_STRING);
+        if (style == JSON_INVALID_STRING) {
+            Shell_ExitSystemFmt("missing '%s.style' in %s", theme_name, path);
+        }
+        if (String_Equivalent(style, "pc")) {
+            theme->kind = UI_BAR_THEME_PC_KIND;
+            M_LoadThemesPC(theme_obj, &theme->group, path, theme_name);
+        } else if (String_Equivalent(style, "ps1")) {
+            theme->kind = UI_BAR_THEME_PS1_KIND;
+            M_LoadThemesPS1(theme_obj, &theme->group, path, theme_name);
+        } else {
+            Shell_ExitSystemFmt("invalid '%s.style' in %s", theme_name, path);
+        }
+
+        M_BAR_THEME_LOOKUP *const entry = Memory_Alloc(sizeof(*entry));
+        entry->name = theme->name;
+        entry->index = (int32_t)idx;
+        HASH_ADD_KEYPTR(
+            hh, m_Settings.bar_lookup, entry->name, strlen(entry->name), entry);
+        idx++;
+    }
+
     JSON_ValueFree(root);
 }
 
@@ -353,7 +466,9 @@ static const char *M_GetBarColorName(const UI_BAR_TYPE type)
         return "gold";
     }
 
-    const bool use_ps1 = g_Config.ui.bar_look == BAR_LOOK_TR23_PS1;
+    const M_BAR_THEME_ENTRY *const theme = M_GetCurrentBarTheme();
+    const bool use_ps1 =
+        theme != nullptr && theme->kind == UI_BAR_THEME_PS1_KIND;
     const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[type];
     const char *value = nullptr;
 
@@ -379,6 +494,61 @@ static const UI_BAR_THEME *M_FindThemeByName(
         return &group->colors[entry->index].theme;
     }
     return nullptr;
+}
+
+bool UI_Settings_IsCurrentBarLookPS1(void)
+{
+    const M_BAR_THEME_ENTRY *const theme = M_GetCurrentBarTheme();
+    return theme != nullptr && theme->kind == UI_BAR_THEME_PS1_KIND;
+}
+
+bool UI_Settings_CanChangeBarLook(const int32_t dir)
+{
+    if (m_Settings.bar_theme_count == 0 || dir == 0) {
+        return false;
+    }
+
+    const int32_t idx = M_FindCurrentThemeIndex();
+    if (idx < 0) {
+        return true;
+    }
+
+    const int32_t next = idx + dir;
+    return next >= 0 && next < m_Settings.bar_theme_count;
+}
+
+const char *UI_Settings_GetNextBarLookName(const int32_t dir)
+{
+    if (m_Settings.bar_theme_count == 0 || dir == 0) {
+        return nullptr;
+    }
+
+    const int32_t idx = M_FindCurrentThemeIndex();
+    if (idx < 0) {
+        return m_Settings.bar_themes[0].name;
+    }
+
+    const int32_t next = idx + dir;
+    if (next < 0 || next >= m_Settings.bar_theme_count) {
+        return nullptr;
+    }
+
+    return m_Settings.bar_themes[next].name;
+}
+
+const char *UI_Settings_GetBarLookLabel(void)
+{
+    const M_BAR_THEME_ENTRY *const theme = M_GetCurrentBarTheme();
+    if (theme == nullptr) {
+        return g_Config.ui.bar_look != nullptr ? g_Config.ui.bar_look : "";
+    }
+
+    const char *const label = GameString_Get(theme->name_gs);
+    if (label != nullptr) {
+        return label;
+    }
+
+    return theme->name;
 }
 
 bool UI_Settings_CanChangeBarColor(const char *const current, const int32_t dir)

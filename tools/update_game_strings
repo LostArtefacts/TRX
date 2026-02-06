@@ -127,6 +127,22 @@ def get_used_strings(
             ) + 1, "ENUM_" + match.group(1)
 
 
+def get_used_ui_theme_strings(
+    vfs: VirtualFilesystem, path: Path
+) -> Iterable[tuple[int, str]]:
+    if not path.exists():
+        return
+    source = load_json5_from_string(vfs.get(path))
+    if not isinstance(source, dict):
+        return
+    for _, theme_data in source.items():
+        if not isinstance(theme_data, dict):
+            continue
+        name_gs = theme_data.get("name_gs")
+        if isinstance(name_gs, str):
+            yield 0, name_gs
+
+
 def get_objects_map(paths: list[Path]) -> dict[str, list[str]]:
     """
     Parse object-name definitions from names.def-like files.
@@ -176,6 +192,11 @@ class RunContext:
                 for path in source_files
             ],
             [],
+        )
+        self.used_game_strings += list(
+            get_used_ui_theme_strings(
+                vfs, CommonPaths.shipped_data_dir / "cfg/ui.json5"
+            )
         )
         self.object_names_dict = get_objects_map(source_files)
 
@@ -359,7 +380,11 @@ def remove_unused_defines(ctx: RunContext) -> None:
 def sync_base_strings(ctx: RunContext) -> None:
     """Sync base strings and clear changed keys in translations and mods."""
     old = ctx.base.main.data.get("game_strings", {})
-    new = ctx.game_strings_dict
+    used = {key for _, key in ctx.used_game_strings}
+    new = dict(ctx.game_strings_dict)
+    for key in sorted(used):
+        if key not in new and key in old:
+            new[key] = old[key]
     changed = [k for k, v in new.items() if old.get(k) != v]
     ctx.base.main.data["game_strings"] = new
     for key in changed:
