@@ -429,8 +429,9 @@ bool Lara_Draw(const ITEM *const item)
         hit_frame == nullptr ? frames[0] : hit_frame;
 
     const OBJECT *const obj = Object_Get(item->object_id);
+    const BOUNDS_16 *const shadow_bounds = Item_GetBoundsAccurate(item);
     if (!Lara_Vehicle_IsMounted()) {
-        Output_DrawShadow(obj->shadow_size, &frame->bounds, item);
+        Output_DrawShadow(obj->shadow_size, shadow_bounds, item);
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;
