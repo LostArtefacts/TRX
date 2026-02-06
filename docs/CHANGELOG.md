@@ -87,6 +87,7 @@
 - fixed several texture issues on each of Lara's outfits
 - fixed gun injections overwriting Lara's footstep SFX in all levels (#4733, regression from 1.1)
 - fixed pushblocks in Natla's Mines becoming unusable after loading a save made in earlier versions (#4735, regression from 1.1)
+- fixed low-quality texture palette on injected TR2/3 weapons and flares
 
 **TR2**:
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
