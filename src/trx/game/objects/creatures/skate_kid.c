@@ -30,18 +30,49 @@ typedef enum {
     SKATE_KID_STATE_DEATH = 5,
 } SKATE_KID_STATE;
 
+typedef struct {
+    int16_t skateboard_item_num;
+} M_PRIV;
+
 static BITE m_KidGun1 = { .pos = { 0, 150, 34 }, .mesh_num = 7 };
 static BITE m_KidGun2 = { .pos = { 0, 150, 37 }, .mesh_num = 4 };
 
 static void M_Initialise(const int16_t item_num)
 {
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->skateboard_item_num = NO_ITEM;
+
     Creature_Initialise(item_num);
-    Item_Get(item_num)->current_anim_state = SKATE_KID_STATE_SKATE;
+    item->current_anim_state = SKATE_KID_STATE_SKATE;
+
+    if (!Object_Get(O_SKATEBOARD)->loaded) {
+        return;
+    }
+
+    const int16_t skateboard_item_num = Item_Create();
+    if (skateboard_item_num == NO_ITEM) {
+        LOG_WARNING("Failed to create skateboard item for skate kid.");
+        return;
+    }
+
+    ITEM *const skateboard_item = Item_Get(skateboard_item_num);
+    skateboard_item->object_id = O_SKATEBOARD;
+    skateboard_item->pos = item->pos;
+    skateboard_item->rot = item->rot;
+    skateboard_item->room_num = item->room_num;
+    skateboard_item->status = item->status;
+    skateboard_item->collidable = false;
+    skateboard_item->shade.value_1 = -1;
+    Item_Initialise(skateboard_item_num);
+
+    p->skateboard_item_num = skateboard_item_num;
 }
 
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
 
     if (item->status == IS_INVISIBLE) {
         if (!LOT_EnableBaddieAI(item_num, 0)) {
@@ -137,24 +168,19 @@ static void M_Control(const int16_t item_num)
 
     Creature_Head(item, head);
     Creature_Animate(item_num, angle, 0);
-}
 
-static bool M_Draw(const ITEM *const item)
-{
-    const bool result = Object_DrawAnimatingItem(item);
-    if (!Object_Get(O_SKATEBOARD)->loaded) {
-        return result;
+    if (p->skateboard_item_num != NO_ITEM) {
+        ITEM *const skateboard_item = Item_Get(p->skateboard_item_num);
+        skateboard_item->pos = item->pos;
+        skateboard_item->rot = item->rot;
+        skateboard_item->status = item->status;
+        Item_UpdateRoom(p->skateboard_item_num, item->room_num);
+
+        const int16_t relative_anim = Item_GetRelativeAnim(item);
+        const int16_t relative_frame = Item_GetRelativeFrame(item);
+        Item_SwitchToObjAnim(
+            skateboard_item, relative_anim, relative_frame, O_SKATEBOARD);
     }
-
-    const int16_t relative_anim = Item_GetRelativeAnim(item);
-    const int16_t relative_frame = Item_GetRelativeFrame(item);
-    ((ITEM *)item)->object_id = O_SKATEBOARD;
-    Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
-    Object_DrawAnimatingItem(item);
-
-    ((ITEM *)item)->object_id = O_SKATEKID;
-    Item_SwitchToAnim((ITEM *)item, relative_anim, relative_frame);
-    return result;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -164,8 +190,8 @@ static void M_Setup(OBJECT *const obj)
     }
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
-    obj->draw_func = M_Draw;
     obj->collision_func = Creature_Collision;
+    obj->priv_size = sizeof(M_PRIV);
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = SKATE_KID_HITPOINTS;
     obj->radius = SKATE_KID_RADIUS;
@@ -185,4 +211,10 @@ static void M_Setup(OBJECT *const obj)
     }
 }
 
+static void M_SetupSkateboard(OBJECT *const obj)
+{
+    obj->control_func = nullptr;
+}
+
 REGISTER_OBJECT(O_SKATEKID, M_Setup)
+REGISTER_OBJECT(O_SKATEBOARD, M_SetupSkateboard)
