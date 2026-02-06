@@ -103,6 +103,7 @@
 **TR2**:
 - added "Sound Options → Misc → Layered secret music" option
 - changed Assault Course stats to show scroll indicators (#3510)
+- changed statistics screen rows to be more compact
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
 - fixed underwater wobble effect acting twitchy with camera movement
 - fixed several texture issues on each of Lara's outfits
@@ -150,6 +151,7 @@
 - improved look camera stability to reduce idle-breathing camera bobbing/roll
 - improved Monkeys to no longer hardcode hostility status based on Tiger presence
 - changed Assault Course stats to show scroll indicators (#3510)
+- changed statistics screen rows to be more compact
 - changed hostile Monkeys to share hostility status, like TR2 Barkhang monks (the original TR3 behavior can be restored in Gameplay → General → Ally hostility policy)
 - changed enemy drops to appear at the tile center, to conform with the OG
 - fixed several texture issues on each of Lara's outfits

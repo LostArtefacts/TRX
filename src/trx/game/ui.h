@@ -20,12 +20,14 @@
 #include <trx/game/ui/elements/bar.h>
 #include <trx/game/ui/elements/bar_enemy_hp.h>
 #include <trx/game/ui/elements/bar_lara_air.h>
+#include <trx/game/ui/elements/bar_lara_exposure.h>
 #include <trx/game/ui/elements/bar_lara_hp.h>
+#include <trx/game/ui/elements/bar_lara_sprint.h>
 #include <trx/game/ui/elements/button_label.h>
-#include <trx/game/ui/elements/fixed.h>
 #include <trx/game/ui/elements/flash.h>
 #include <trx/game/ui/elements/fps_counter.h>
 #include <trx/game/ui/elements/frame.h>
+#include <trx/game/ui/elements/hide.h>
 #include <trx/game/ui/elements/horizontal_line.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/modal.h>
