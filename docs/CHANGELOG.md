@@ -95,6 +95,7 @@
 - fixed baddie speeches not restored from the savegame when "fix speeches killing music" option is on
 
 **TR2**:
+- added "Sound Options → Misc → Layered secret music" option
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
 - fixed underwater wobble effect acting twitchy with camera movement
 - fixed several texture issues on each of Lara's outfits
@@ -138,6 +139,7 @@
     - added Beacon Light control
     - added On/Off Light control
 - added Lara's backwards-hop stumble if there is a slope behind her
+- added "Sound Options → Misc → Layered secret music" option
 - improved look camera stability to reduce idle-breathing camera bobbing/roll
 - improved Monkeys to no longer hardcode hostility status based on Tiger presence
 - changed hostile Monkeys to share hostility status, like TR2 Barkhang monks (the original TR3 behavior can be restored in Gameplay → General → Ally hostility policy)
