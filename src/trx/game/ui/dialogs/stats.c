@@ -9,6 +9,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/elements/scrollable_area.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/version.h>
@@ -649,6 +650,7 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
         // Ensure minimum size even if there are no items
         UI_Spacer(290.0f, 0.0f);
+        UI_BeginScrollableArea(&s->scrollable, false);
         UI_BeginScrollableStack(
             &s->scrollable,
             (UI_SCROLLABLE_STACK_SETTINGS) {
@@ -657,6 +659,7 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
             });
         M_AssaultCourseStatsRows(s);
         UI_EndScrollableStack();
+        UI_EndScrollableArea(&s->scrollable, false);
         break;
     }
 
