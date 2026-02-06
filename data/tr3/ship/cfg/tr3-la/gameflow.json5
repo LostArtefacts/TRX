@@ -103,7 +103,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_nevada_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -121,7 +121,7 @@
             ],
             "injections": [
                 "data/injections/antarc_airlock.bin",
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/undersea_animating_bounds.bin",
             ],
         },
@@ -141,7 +141,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -170,7 +170,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
     ],
