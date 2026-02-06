@@ -215,8 +215,10 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             Memory_FreePointer(p);
             if (val != nullptr) {
                 *p = Memory_DupStr(val);
-            } else {
+            } else if (opt->default_value != nullptr) {
                 *p = Memory_DupStr(opt->default_value);
+            } else {
+                *p = nullptr;
             }
             break;
         }
@@ -293,9 +295,11 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             break;
 
         case COT_STRING:
-            JSON_ObjectAppendString(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(char **)opt->target);
+            if (*(char **)opt->target != nullptr) {
+                JSON_ObjectAppendString(
+                    root_obj, Config_ResolveOptionName(opt->name),
+                    *(char **)opt->target);
+            }
             break;
 
         case COT_RGB888: {

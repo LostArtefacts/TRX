@@ -190,6 +190,12 @@ bool Config_IsOptionAtDefault(const void *const target)
     case COT_STRING: {
         const char *const cur = *(char **)option->target;
         const char *const def = (const char *)option->default_value;
+        if (cur == nullptr && def == nullptr) {
+            return true;
+        }
+        if (cur == nullptr || def == nullptr) {
+            return false;
+        }
         return strcmp(cur, def) == 0;
     }
     }
@@ -225,8 +231,9 @@ bool Config_RestoreOptionDefault(const void *const target)
         return true;
     case COT_STRING: {
         char **const p = (char **)option->target;
+        const char *const def = (const char *)option->default_value;
         char *const old = *p;
-        *p = Memory_DupStr((const char *)option->default_value);
+        *p = def != nullptr ? Memory_DupStr(def) : nullptr;
         // VERY IMPORTANT: free the memory AFTER we allocate, so that we force
         // the pointer to get a different macro, so that change subscribers
         // can see the string has changed by comparing just the pointers.
@@ -265,7 +272,10 @@ const char *Config_GetOptionValueAsString(const CONFIG_OPTION *const option)
             "%02hhx%02hhx%02hhx", color->r, color->g, color->b);
     }
     case COT_STRING:
-        return String_FormatStatic("%s", *(char **)option->target);
+        return String_FormatStatic(
+            "%s",
+            *(char **)option->target != nullptr ? *(char **)option->target
+                                                : "");
     default:
         return nullptr;
     }
