@@ -117,7 +117,7 @@ static bool M_DrawShadow_Sprite(
         Matrix_TranslateAbs(
             item->interp.result.pos.x, item->interp.result.floor,
             item->interp.result.pos.z);
-        Matrix_RotY(item->rot.y);
+        Matrix_RotY(item->interp.result.rot.y);
         Matrix_TranslateRel(x_mid, 0, z_mid);
         anchor_pos = Matrix_GetOffset(g_WMatrixPtr);
         Matrix_Pop();
@@ -324,7 +324,7 @@ void Output_DrawShadow(
     Matrix_TranslateAbs(
         item->interp.result.pos.x, item->interp.result.floor,
         item->interp.result.pos.z);
-    Matrix_RotY(item->rot.y);
+    Matrix_RotY(item->interp.result.rot.y);
     Matrix_TranslateRel(x_mid, 0, z_mid);
     Matrix_ScaleX((1 << W2V_SHIFT) * x_size / UNIT_SHADOW);
     Matrix_ScaleZ((1 << W2V_SHIFT) * z_size / UNIT_SHADOW);

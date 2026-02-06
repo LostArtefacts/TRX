@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/inventory.h>
+#include <trx/game/items/col.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
@@ -172,7 +173,8 @@ bool Object_DrawAnimatingItemWithSwap(
     }
 
     if (obj->shadow_size != 0) {
-        Output_DrawShadow(obj->shadow_size, &frames[0]->bounds, item);
+        const BOUNDS_16 *const shadow_bounds = Item_GetBoundsAccurate(item);
+        Output_DrawShadow(obj->shadow_size, shadow_bounds, item);
     }
 
     Matrix_Push();

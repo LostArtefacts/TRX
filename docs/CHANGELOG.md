@@ -62,6 +62,7 @@
 - changed the barefoot SFX option toggle in TR2 to no longer require reloading the level for changes to take effect
 - changed triggers that target pickup items to support antitriggers, switches and bitmasks
 - removed support for legacy (TombATI / TR2 GOG/Steam) and pre-1.0 (TR1X/TR2X) savegame files
+- fixed shadows to support 60 FPS interpolation
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
 - fixed custom levels that contain invalid room static mesh references not being able to load (#4770)
