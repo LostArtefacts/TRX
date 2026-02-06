@@ -540,6 +540,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Bidh na criostalan sàbhalaidh purpaidh mar a tha iad anns a' PhS1.",
         "SETTING_ENABLE_PS1_SFX": "Cleachd fuaimean a' PhS1",
         "SETTING_ENABLE_PS1_SFX_DESCRIPTION": "Cleachd fuaimean sònraichte bhon PhS1 an àite an fheaghainn PhC.\n\n - Fuaim Uzi (TR1 a-mhàin)\n- Fuaim casrùisgte Lara (TR2 a-mhàin)",
+        "SETTING_ENABLE_RESPONSIVE_MESH_TINT": "Dathadh freagairteach lìonra",
+        "SETTING_ENABLE_RESPONSIVE_MESH_TINT_DESCRIPTION": "Leigidh seo le lìonra Lara fa leth a bhith air an sealltainn le dath uisge ma tha iad fhèin fo uisge (stoidhle TR3). Air neo, ma tha Lara san uisge, thèid gach lìonra aice a shealltainn leis an dath (stoidhle TR1/2).",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Pasport freagairteach",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Cuiridh seo às do bhacadh cuir a-steach le brath ro-luath air tionndadh duilleagan a' phasport; leigidh e leutha bhith air an clàradh an àite a bhith air an stad.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "Ruith luath freagairteach",

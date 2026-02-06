@@ -88,6 +88,7 @@ typedef struct {
         bool enable_fire_lighting;
         bool enable_shotgun_flash;
         LARA_SKIN_TYPE lara_skin_type;
+        bool enable_responsive_mesh_tint;
         SHADOW_TYPE shadow_type;
         bool enable_skybox;
         bool enable_weather;

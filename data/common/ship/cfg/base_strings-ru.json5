@@ -540,6 +540,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Кристаллы сохранения будут отображаться с фиолетовым оттенком, больше похожим на кристаллы PS1.",
         "SETTING_ENABLE_PS1_SFX": "\\{review}Замены звуковых эффектов PS1",
         "SETTING_ENABLE_PS1_SFX_DESCRIPTION": "\\{review}Включает определённые замены звуковых эффектов, используя эквиваленты с PS1.\n\n- Выстрелы из Узи (только TR1)\n- Звуки босых ног Лары (только TR2)",
+        "SETTING_ENABLE_RESPONSIVE_MESH_TINT": "\\{review}Адаптивная тонировка мешей",
+        "SETTING_ENABLE_RESPONSIVE_MESH_TINT_DESCRIPTION": "\\{review}Позволяет отрисовывать отдельные меши Лары с водной тонировкой, если они сами находятся под водой (стиль TR3). В противном случае, если Лара находится в воде, все её меши будут отрисовываться с тонировкой (стиль TR1/2).",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Отзывчивый паспорт",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT_DESCRIPTION": "Отключает блокировку ввода данных пользователем при перелистывании страниц паспорта, вместо этого планирует перелистывание страниц.",
         "SETTING_ENABLE_RESPONSIVE_SPRINT": "\\{review}Реактивный бег",

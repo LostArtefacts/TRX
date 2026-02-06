@@ -8,7 +8,6 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
-#include <trx/version.h>
 
 static OBJECT_MESH *m_Meshes[LM_NUMBER_OF] = {};
 
@@ -127,7 +126,7 @@ OBJECT_MESH *Lara_Mesh_Get(const LARA_MESH mesh)
 
 RGB_F Lara_GetMeshTint(const GAME_VECTOR pos)
 {
-    if (g_TRVersion < 3 || g_Camera.underwater) {
+    if (!g_Config.visuals.enable_responsive_mesh_tint || g_Camera.underwater) {
         return Output_GetTint();
     }
 
