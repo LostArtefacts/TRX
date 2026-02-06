@@ -75,7 +75,8 @@ typedef struct {
         int32_t fov;
 
         CAMERA_MODE camera_mode;
-        float brightness;
+        float game_brightness;
+        float ui_brightness;
         float gamma;
 
         bool enable_reflections;

@@ -263,6 +263,22 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         }
     }
 
+    // TRX ..1.2: split brightness into game and UI fields.
+    {
+        const JSON_VALUE *const old_value =
+            JSON_ObjectGetValue(parent_obj, "brightness");
+        if (old_value != nullptr) {
+            const float old_brightness = JSON_ValueGetDouble(
+                old_value, g_Config.visuals.game_brightness);
+            if (JSON_ObjectGetValue(parent_obj, "game_brightness") == nullptr) {
+                g_Config.visuals.game_brightness = old_brightness;
+            }
+            if (JSON_ObjectGetValue(parent_obj, "ui_brightness") == nullptr) {
+                g_Config.visuals.ui_brightness = old_brightness;
+            }
+        }
+    }
+
     // TRX legacy: "round shadows" boolean to enum shadow type.
     if (JSON_ObjectGetValue(parent_obj, "shadow_type") == nullptr) {
         const JSON_VALUE *const value =
@@ -350,7 +366,10 @@ void Config_Sanitize(void)
     }
 
     CLAMP(
-        g_Config.visuals.brightness, CONFIG_MIN_BRIGHTNESS,
+        g_Config.visuals.game_brightness, CONFIG_MIN_BRIGHTNESS,
+        CONFIG_MAX_BRIGHTNESS);
+    CLAMP(
+        g_Config.visuals.ui_brightness, CONFIG_MIN_BRIGHTNESS,
         CONFIG_MAX_BRIGHTNESS);
     CLAMP(g_Config.visuals.gamma, CONFIG_MIN_GAMMA, CONFIG_MAX_GAMMA);
     CLAMPL(g_Config.rendering.anisotropy_filter, 1.0);
