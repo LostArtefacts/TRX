@@ -29,3 +29,6 @@ void Lua_FreeResult(LUA_RESULT *result);
 
 // Evaluate a Lua script file. Caller must free the result with Lua_FreeResult.
 LUA_RESULT Lua_EvalFile(const char *path);
+
+// Reload current level script and reset level-scoped listeners.
+void Lua_ReloadLevelScript(void);

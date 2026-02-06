@@ -38,6 +38,8 @@
 - added an option to control whether or not moving boulders should shake the camera (Gameplay options → General → Enable boulder shake)
 - added an option to make Lara stumble if she hops backwards and there is a slope behind her (Gameplay options → Controls → Backwards slope stumble)
 - added `/trigger` and `/untrigger` console commands, with support for targeting by item ID, item name, or object name
+- added the ability to seek backwards through cutscenes with left button
+- improved the ability to seek through cutscenes to support even faster seeks (Slow = ±1 s, default = ±5 s, new: Draw = ±15 s)
 - improved `/tp` to accept `room`/`item` prefixes and `rN`/`iN` shortcuts
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
@@ -85,6 +87,7 @@
 - fixed one-shot triggers for hidden pickup items making the items permanently invisible (#4784)
 - fixed secret tracks played at low quality when "fix secrets killing music" option is on
 - fixed secret tracks not restored from the savegame when "fix secrets killing music" option is on
+- fixed slow-forward seeking through cutscenes (right+slow) not working (regression from 1.0)
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
