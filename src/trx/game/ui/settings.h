@@ -1,9 +1,9 @@
 #pragma once
 
 #include <trx/colors.h>
-#include <trx/config/enum.h>
 
 #include <stddef.h>
+#include <stdint.h>
 
 #define UI_BAR_COLOR_STEPS 5
 
@@ -43,3 +43,7 @@ void UI_Settings_LoadFromFile(const char *path);
 const UI_BAR_THEME *UI_Settings_GetBarTheme(UI_BAR_TYPE type);
 bool UI_Settings_CanChangeBarColor(const char *current, int32_t dir);
 const char *UI_Settings_GetNextBarColorName(const char *current, int32_t dir);
+bool UI_Settings_IsCurrentBarLookPS1(void);
+bool UI_Settings_CanChangeBarLook(int32_t dir);
+const char *UI_Settings_GetNextBarLookName(int32_t dir);
+const char *UI_Settings_GetBarLookLabel(void);

@@ -100,7 +100,7 @@
 - fixed incorrect textures on the MP5 when equipped or on Lara's back
 
 **TR3**:
-- added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)
+- added new UI bar appearances, "TR3 PC" and "TR3 PS1" (Graphic Options → Bars → Bars appearance)
 - added new water currents
 - added new blood effects
 - added underwater blood spills

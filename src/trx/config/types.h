@@ -33,6 +33,7 @@ typedef struct {
     bool dirty;
 
     // Start of user fields
+    int32_t config_version;
     char *language;
 
     struct {
@@ -127,7 +128,7 @@ typedef struct {
         bool pause_fade_effects;
 
         bool enable_smooth_bars;
-        BAR_LOOK bar_look;
+        char *bar_look;
         bool show_bars;
         bool enable_bar_flashing;
         struct {

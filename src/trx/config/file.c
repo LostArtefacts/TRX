@@ -29,7 +29,9 @@ static bool M_ReadFromJSON(
     if (cfg_root != nullptr) {
         result = true;
     } else {
-        cfg_root = JSON_ValueFromObject(JSON_ObjectNew());
+        JSON_OBJECT *const cfg_root_obj = JSON_ObjectNew();
+        JSON_ObjectAppendInt(cfg_root_obj, "config_version", -1);
+        cfg_root = JSON_ValueFromObject(cfg_root_obj);
     }
     JSON_VALUE *const enf_root =
         enforced_path != nullptr ? JSONFile_Read(enforced_path) : nullptr;

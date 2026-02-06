@@ -121,12 +121,35 @@ bool UI_Settings_AllyHealthbarColor_IsAvailable(
 
 bool UI_Settings_BarColorPC_IsVisible(const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.ui.bar_look != BAR_LOOK_TR23_PS1;
+    return !UI_Settings_IsCurrentBarLookPS1();
 }
 
 bool UI_Settings_BarColorPS1_IsVisible(const UI_SETTINGS_OPTION *const option)
 {
-    return g_Config.ui.bar_look == BAR_LOOK_TR23_PS1;
+    return UI_Settings_IsCurrentBarLookPS1();
+}
+
+const char *UI_Settings_BarLook_FormatValue(
+    const UI_SETTINGS_OPTION *const option)
+{
+    return UI_Settings_GetBarLookLabel();
+}
+
+bool UI_Settings_BarLook_CanChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    return UI_Settings_CanChangeBarLook(dir);
+}
+
+bool UI_Settings_BarLook_RequestChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    const char *const next = UI_Settings_GetNextBarLookName(dir);
+    if (next == nullptr) {
+        return false;
+    }
+    const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+    return Config_SetOptionValueFromString(cfg_opt, next);
 }
 
 bool UI_Settings_BarColor_CanChangeValue(
