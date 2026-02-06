@@ -6,12 +6,71 @@
 #include <trx/game/lara.h>
 #include <trx/game/shell.h>
 #include <trx/json_file.h>
+#include <trx/memory.h>
 #include <trx/vector.h>
 
+#include <string.h>
+#include <uthash.h>
+
+typedef struct {
+    char *name;
+    char *name_gs;
+    LARA_SKIN_OUTFIT outfit;
+} M_OUTFIT_ENTRY;
+
+typedef struct M_OUTFIT_LOOKUP {
+    char *name;
+    int32_t index;
+    UT_hash_handle hh;
+} M_OUTFIT_LOOKUP;
+
 static VECTOR *m_GunMaps = nullptr;
-static VECTOR *m_Braids = nullptr;
-static LARA_SKIN_OUTFIT m_Outfits[NUM_LARA_SKINS] = {};
+static M_OUTFIT_ENTRY *m_Outfits = nullptr;
+static int32_t m_OutfitCount = 0;
+static M_OUTFIT_LOOKUP *m_OutfitLookup = nullptr;
 static int32_t m_ExtraMeshOffsets[NUM_EXTRA_MESHES] = {};
+
+static void M_ResetOutfits(void)
+{
+    M_OUTFIT_LOOKUP *entry = nullptr;
+    M_OUTFIT_LOOKUP *tmp = nullptr;
+    HASH_ITER(hh, m_OutfitLookup, entry, tmp)
+    {
+        HASH_DEL(m_OutfitLookup, entry);
+        Memory_FreePointer(&entry);
+    }
+
+    if (m_Outfits != nullptr) {
+        for (int32_t i = 0; i < m_OutfitCount; i++) {
+            Memory_FreePointer(&m_Outfits[i].name);
+            Memory_FreePointer(&m_Outfits[i].name_gs);
+        }
+        Memory_FreePointer(&m_Outfits);
+    }
+
+    m_OutfitCount = 0;
+    m_OutfitLookup = nullptr;
+}
+
+LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
+{
+    if (name == nullptr) {
+        return LARA_SKIN_TYPE_DEFAULT;
+    }
+
+    M_OUTFIT_LOOKUP *entry = nullptr;
+    HASH_FIND_STR(m_OutfitLookup, name, entry);
+    if (entry == nullptr) {
+        return -1;
+    }
+
+    return entry->index;
+}
+
+LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void)
+{
+    return m_OutfitCount > 0 ? 0 : LARA_SKIN_TYPE_DEFAULT;
+}
 
 static bool M_ReadGunMaps(JSON_OBJECT *const root_obj)
 {
@@ -178,9 +237,9 @@ static bool M_LoadExtras(
             }
 
             name = JSON_ValueGetString(elem->value, JSON_INVALID_STRING);
-            const int32_t type = ENUM_MAP_GET(LARA_SKIN_TYPE, name, -1);
-            if (type < 0 || type >= NUM_LARA_SKINS) {
-                Shell_ExitSystemFmt("unknown skin type '%s'", name);
+            const LARA_SKIN_TYPE type = Lara_Skin_FindOutfitByName(name);
+            if (type < 0 || type >= m_OutfitCount) {
+                Shell_ExitSystemFmt("unknown outfit '%s'", name);
                 return false;
             }
             outfit->extra_outfits[state] = type;
@@ -243,23 +302,65 @@ static bool M_ReadOutfits(JSON_OBJECT *const root_obj)
         return false;
     }
 
+    size_t outfit_count = 0;
+    for (JSON_OBJECT_ELEMENT *elem = outfits_map->start; elem != nullptr;
+         elem = elem->next) {
+        outfit_count++;
+    }
+
+    if (outfit_count == 0) {
+        Shell_ExitSystemFmt("missing outfits in configuration");
+        return false;
+    }
+
+    m_Outfits = Memory_Alloc(sizeof(*m_Outfits) * outfit_count);
+    m_OutfitCount = (int32_t)outfit_count;
+
+    size_t idx = 0;
     for (JSON_OBJECT_ELEMENT *elem = outfits_map->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
-        const int32_t type = ENUM_MAP_GET(LARA_SKIN_TYPE, name, -1);
-        if (type == LARA_SKIN_TYPE_DEFAULT) {
-            Shell_ExitSystemFmt("default skin cannot be defined");
-            return false;
-        } else if (type < 0 || type >= NUM_LARA_SKINS) {
-            Shell_ExitSystemFmt("unknown skin type '%s'", name);
+        JSON_OBJECT *const outfit_obj = JSON_ValueAsObject(elem->value);
+        if (outfit_obj == nullptr) {
+            Shell_ExitSystemFmt("invalid outfit '%s'", name);
             return false;
         }
 
-        JSON_OBJECT *const outfit_obj = JSON_ValueAsObject(elem->value);
-        LARA_SKIN_OUTFIT *const outfit = &m_Outfits[type];
-        if (!M_LoadOutfit(outfit_obj, outfit)) {
+        M_OUTFIT_ENTRY *const outfit = &m_Outfits[idx];
+        outfit->name = Memory_DupStr(name);
+
+        const char *const name_gs =
+            JSON_ObjectGetString(outfit_obj, "name_gs", JSON_INVALID_STRING);
+        if (name_gs == JSON_INVALID_STRING) {
+            Shell_ExitSystemFmt("invalid '%s.name_gs'", name);
             return false;
         }
+        outfit->name_gs = Memory_DupStr(name_gs);
+
+        M_OUTFIT_LOOKUP *existing = nullptr;
+        HASH_FIND_STR(m_OutfitLookup, outfit->name, existing);
+        if (existing != nullptr) {
+            Shell_ExitSystemFmt("duplicate outfit '%s'", name);
+            return false;
+        }
+
+        M_OUTFIT_LOOKUP *const lookup = Memory_Alloc(sizeof(*lookup));
+        lookup->name = outfit->name;
+        lookup->index = (int32_t)idx;
+        HASH_ADD_KEYPTR(
+            hh, m_OutfitLookup, lookup->name, strlen(lookup->name), lookup);
+        idx++;
+    }
+
+    idx = 0;
+    for (JSON_OBJECT_ELEMENT *elem = outfits_map->start; elem != nullptr;
+         elem = elem->next) {
+        JSON_OBJECT *const outfit_obj = JSON_ValueAsObject(elem->value);
+        ASSERT(outfit_obj != nullptr);
+        if (!M_LoadOutfit(outfit_obj, &m_Outfits[idx].outfit)) {
+            return false;
+        }
+        idx++;
     }
 
     return true;
@@ -267,7 +368,14 @@ static bool M_ReadOutfits(JSON_OBJECT *const root_obj)
 
 void Lara_Skin_LoadFromFile(const char *const path)
 {
+    if (m_GunMaps != nullptr) {
+        Vector_Free(m_GunMaps);
+        m_GunMaps = nullptr;
+    }
     m_GunMaps = Vector_Create(sizeof(LARA_SKIN_GUN_MAP));
+
+    M_ResetOutfits();
+    memset(m_ExtraMeshOffsets, 0, sizeof(m_ExtraMeshOffsets));
 
     LOG_INFO("Reading outfit definitions from %s", path);
     JSON_VALUE *const doc = JSONFile_Read(path);
@@ -298,21 +406,41 @@ void Lara_Skin_Shutdown(void)
         Vector_Free(m_GunMaps);
         m_GunMaps = nullptr;
     }
+
+    M_ResetOutfits();
 }
 
 int32_t Lara_Skin_GetOutfitCount(void)
 {
-    return NUM_LARA_SKINS;
+    return m_OutfitCount;
 }
 
 bool Lara_Skin_IsOutfitAvailable(const LARA_SKIN_TYPE skin_type)
 {
-    return m_Outfits[skin_type].is_defined;
+    return skin_type >= 0 && skin_type < m_OutfitCount
+        && m_Outfits[skin_type].outfit.is_defined;
 }
 
 const LARA_SKIN_OUTFIT *Lara_Skin_GetOutfit(const LARA_SKIN_TYPE skin_type)
 {
-    return &m_Outfits[skin_type];
+    ASSERT(skin_type >= 0 && skin_type < m_OutfitCount);
+    return &m_Outfits[skin_type].outfit;
+}
+
+const char *Lara_Skin_GetOutfitName(const LARA_SKIN_TYPE skin_type)
+{
+    if (skin_type < 0 || skin_type >= m_OutfitCount) {
+        return nullptr;
+    }
+    return m_Outfits[skin_type].name;
+}
+
+const char *Lara_Skin_GetOutfitNameGS(const LARA_SKIN_TYPE skin_type)
+{
+    if (skin_type < 0 || skin_type >= m_OutfitCount) {
+        return nullptr;
+    }
+    return m_Outfits[skin_type].name_gs;
 }
 
 int32_t Lara_Skin_GetExtraMeshOffset(const LARA_SKIN_EXTRA_MESH mesh)

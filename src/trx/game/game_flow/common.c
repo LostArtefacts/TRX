@@ -30,6 +30,7 @@ static void M_FreeLevel(GF_LEVEL *const level)
     Memory_FreePointer(&level->path);
     Memory_FreePointer(&level->title);
     Memory_FreePointer(&level->script_path);
+    Memory_FreePointer(&level->lara_outfit);
     M_FreeInjections(&level->injections);
     M_FreeSequence(&level->sequence);
 

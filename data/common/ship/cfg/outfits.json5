@@ -1,7 +1,8 @@
 {
     "outfits": {
         // TR1 Gym
-        "skin_type_01" : {
+        "tr1_gym" : {
+            "name_gs": "LARA_OUTFIT_TR1_GYM",
             "mesh_object": "O_LARA_SKIN_SWAP_1",
             "gun_map": 0,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
@@ -17,12 +18,13 @@
                 },
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_05",
+                "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
             },
         },
 
         // TR1 Classic
-        "skin_type_02": {
+        "tr1_classic": {
+            "name_gs": "LARA_OUTFIT_TR1_CLASSIC",
             "mesh_object": "O_LARA_SKIN_SWAP_2",
             "gun_map": 0,
             "combat_face_offset": 1,
@@ -41,13 +43,14 @@
                 "thigh_l": 2,
             },
             "extra_outfits": {
-                "LS_EXTRA_TREX_KILL": "skin_type_03",
-                "LS_EXTRA_MIDAS_KILL": "skin_type_05",
+                "LS_EXTRA_TREX_KILL": "tr1_mauled",
+                "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
             },
         },
 
         // TR1 Mauled
-        "skin_type_03": {
+        "tr1_mauled": {
+            "name_gs": "LARA_OUTFIT_TR1_MAULED",
             "mesh_object": "O_LARA_SKIN_SWAP_3",
             "gun_map": 0,
             "combat_face_offset": 1,
@@ -66,12 +69,13 @@
                 "thigh_l": 4,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_05",
+                "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
             },
         },
 
         // TR1 Combo
-        "skin_type_04": {
+        "tr1_combo": {
+            "name_gs": "LARA_OUTFIT_TR1_COMBO",
             "mesh_object": "O_LARA_SKIN_SWAP_4",
             "gun_map": 0,
             "combat_face_offset": 1,
@@ -90,12 +94,13 @@
                 "thigh_l": 2,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_05",
+                "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
             },
         },
 
         // TR1 Golden Lara
-        "skin_type_05": {
+        "tr1_golden_lara": {
+            "name_gs": "LARA_OUTFIT_TR1_GOLDEN_LARA",
             "mesh_object": "O_LARA_SKIN_SWAP_5",
             "gun_map": 1,
             "is_reflective": true,
@@ -113,18 +118,20 @@
         },
 
         // Bacon Lara
-        "skin_type_06": {
+        "tr1_bacon_lara": {
+            "name_gs": "LARA_OUTFIT_TR1_BACON_LARA",
             "mesh_object": "O_LARA_SKIN_SWAP_6",
             "gun_map": 0,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
             "combat_face_offset": -1,
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_07",
+                "LS_EXTRA_MIDAS_KILL": "tr1_golden_bacon_lara",
             },
         },
 
         // Golden Bacon Lara
-        "skin_type_07": {
+        "tr1_golden_bacon_lara": {
+            "name_gs": "LARA_OUTFIT_TR1_GOLDEN_BACON_LARA",
             "mesh_object": "O_LARA_SKIN_SWAP_7",
             "gun_map": 1,
             "is_reflective": true,
@@ -132,7 +139,8 @@
         },
 
         // TR2 Gym
-        "skin_type_08": {
+        "tr2_gym": {
+            "name_gs": "LARA_OUTFIT_TR2_GYM",
             "mesh_object": "O_LARA_SKIN_SWAP_8",
             "gun_map": 2,
             "combat_face_offset": 2,
@@ -150,12 +158,13 @@
                 "thigh_l": 6,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // TR2 Classic
-        "skin_type_09": {
+        "tr2_classic": {
+            "name_gs": "LARA_OUTFIT_TR2_CLASSIC",
             "mesh_object": "O_LARA_SKIN_SWAP_9",
             "gun_map": 2,
             "combat_face_offset": 2,
@@ -173,12 +182,13 @@
                 "thigh_l": 8,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // Diving Suit
-        "skin_type_10": {
+        "tr2_diving_suit": {
+            "name_gs": "LARA_OUTFIT_TR2_DIVING_SUIT",
             "mesh_object": "O_LARA_SKIN_SWAP_10",
             "gun_map": 2,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
@@ -193,12 +203,13 @@
                 },
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // Bomber Jacket
-        "skin_type_11": {
+        "tr2_bomber_jacket": {
+            "name_gs": "LARA_OUTFIT_TR2_BOMBER_JACKET",
             "mesh_object": "O_LARA_SKIN_SWAP_11",
             "gun_map": 2,
             "combat_face_offset": 2,
@@ -216,12 +227,13 @@
                 "thigh_l": 8,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // Robe
-        "skin_type_12": {
+        "tr2_robe": {
+            "name_gs": "LARA_OUTFIT_TR2_ROBE",
             "mesh_object": "O_LARA_SKIN_SWAP_12",
             "gun_map": 2,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
@@ -240,12 +252,13 @@
                 "thigh_l": 10,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // Vegas
-        "skin_type_13": {
+        "tr2_vegas": {
+            "name_gs": "LARA_OUTFIT_TR2_VEGAS",
             "mesh_object": "O_LARA_SKIN_SWAP_13",
             "gun_map": 2,
             "combat_face_offset": 2,
@@ -263,12 +276,13 @@
                 "thigh_l": 12,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // TR2/3 Golden Lara
-        "skin_type_14": {
+        "tr23_golden_lara": {
+            "name_gs": "LARA_OUTFIT_TR23_GOLDEN_LARA",
             "mesh_object": "O_LARA_SKIN_SWAP_14",
             "gun_map": 1,
             "is_reflective": true,
@@ -285,7 +299,8 @@
         },
 
         // TR3 Gym
-        "skin_type_15": {
+        "tr3_gym": {
+            "name_gs": "LARA_OUTFIT_TR3_GYM",
             "mesh_object": "O_LARA_SKIN_SWAP_15",
             "gun_map": 4,
             "combat_face_offset": 3,
@@ -303,12 +318,13 @@
                 "thigh_l": 14,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // TR3 Classic
-        "skin_type_16": {
+        "tr3_classic": {
+            "name_gs": "LARA_OUTFIT_TR3_CLASSIC",
             "mesh_object": "O_LARA_SKIN_SWAP_16",
             "gun_map": 3,
             "combat_face_offset": 3,
@@ -326,12 +342,13 @@
                 "thigh_l": 16,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // South Pacific
-        "skin_type_17": {
+        "tr3_south_pacific": {
+            "name_gs": "LARA_OUTFIT_TR3_SOUTH_PACIFIC",
             "mesh_object": "O_LARA_SKIN_SWAP_17",
             "gun_map": 3,
             "combat_face_offset": 3,
@@ -349,12 +366,13 @@
                 "thigh_l": 18,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // Catsuit
-        "skin_type_18": {
+        "tr3_catsuit": {
+            "name_gs": "LARA_OUTFIT_TR3_CATSUIT",
             "mesh_object": "O_LARA_SKIN_SWAP_18",
             "gun_map": 3,
             "combat_face_offset": 3,
@@ -372,12 +390,13 @@
                 "thigh_l": 20,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // Nevada
-        "skin_type_19": {
+        "tr3_nevada": {
+            "name_gs": "LARA_OUTFIT_TR3_NEVADA",
             "mesh_object": "O_LARA_SKIN_SWAP_19",
             "gun_map": 4,
             "combat_face_offset": 3,
@@ -395,12 +414,13 @@
                 "thigh_l": 22,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
 
         // Antarctica
-        "skin_type_20": {
+        "tr3_antarctica": {
+            "name_gs": "LARA_OUTFIT_TR3_ANTARCTICA",
             "mesh_object": "O_LARA_SKIN_SWAP_20",
             "gun_map": 4,
             "combat_face_offset": 3,
@@ -418,7 +438,7 @@
                 "thigh_l": 24,
             },
             "extra_outfits": {
-                "LS_EXTRA_MIDAS_KILL": "skin_type_14",
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
             },
         },
     },

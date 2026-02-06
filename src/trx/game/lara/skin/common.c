@@ -3,14 +3,18 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
+#include <trx/game/game_string.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara.h>
+#include <trx/log.h>
+#include <trx/memory.h>
+#include <trx/strings.h>
 #include <trx/version.h>
 
 #define M_NO_OUTFIT (-1)
 #define M_NO_MESH (-1)
 
-static LARA_SKIN_TYPE m_SkinType = LARA_SKIN_TYPE_01;
+static LARA_SKIN_TYPE m_SkinType = LARA_SKIN_TYPE_DEFAULT;
 static bool m_HolstersVisible = true;
 static bool m_UseCombatFace = false;
 static LARA_GUN_TYPE m_HolsterType_L = LGT_UNARMED;
@@ -19,7 +23,79 @@ static LARA_SKIN_EQUIPMENT m_Equipment[LM_NUMBER_OF] = {};
 
 static inline const LARA_SKIN_OUTFIT *M_GetCurrentOutfit(void)
 {
+    if (!Lara_Skin_IsOutfitAvailable(m_SkinType)) {
+        m_SkinType = Lara_Skin_GetDefaultType();
+    }
     return Lara_Skin_GetOutfit(m_SkinType);
+}
+
+static LARA_SKIN_TYPE M_ResolveOutfitTypeFromName(
+    const char *const outfit_name, const bool warn_on_invalid,
+    const char *const source)
+{
+    if (outfit_name == nullptr) {
+        return LARA_SKIN_TYPE_DEFAULT;
+    }
+
+    const LARA_SKIN_TYPE type = Lara_Skin_FindOutfitByName(outfit_name);
+    if (Lara_Skin_IsOutfitAvailable(type)) {
+        return type;
+    }
+
+    if (warn_on_invalid) {
+        LOG_WARNING(
+            "Invalid outfit '%s' from %s; falling back to default", outfit_name,
+            source);
+    }
+    return LARA_SKIN_TYPE_DEFAULT;
+}
+
+static LARA_SKIN_TYPE M_GetFallbackOutfitType(void)
+{
+    return Lara_Skin_GetDefaultType();
+}
+
+static void M_SetConfigOutfit(const char *const outfit_name)
+{
+    ASSERT(outfit_name != nullptr);
+    char *const old = g_Config.visuals.lara_outfit;
+    g_Config.visuals.lara_outfit = Memory_DupStr(outfit_name);
+    // Keep the old pointer alive until after the duplication so Config_Update
+    // can reliably detect a string change via pointer identity.
+    Memory_Free(old);
+}
+
+static LARA_SKIN_TYPE M_GetCurrentLevelOutfitType(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level == nullptr) {
+        return M_GetFallbackOutfitType();
+    }
+
+    const LARA_SKIN_TYPE level_type = M_ResolveOutfitTypeFromName(
+        level->lara_outfit, true, "gameflow level setting");
+    if (level_type != LARA_SKIN_TYPE_DEFAULT) {
+        return level_type;
+    }
+    return M_GetFallbackOutfitType();
+}
+
+const char *Lara_Skin_GetOutfitLabelByType(const LARA_SKIN_TYPE skin_type)
+{
+    const char *const name_gs = Lara_Skin_GetOutfitNameGS(skin_type);
+    if (name_gs != nullptr) {
+        const char *const label = GameString_Get(name_gs);
+        if (label != nullptr) {
+            return label;
+        }
+    }
+
+    const char *const name = Lara_Skin_GetOutfitName(skin_type);
+    if (name != nullptr) {
+        return name;
+    }
+
+    return GS(LARA_OUTFIT_DEFAULT);
 }
 
 static int32_t M_GetBraidDependentMeshIdx(
@@ -176,7 +252,6 @@ static void M_SetGunEquipment(
     const LARA_MESH mesh, const LARA_GUN_TYPE gun_type,
     const LARA_SKIN_OUTFIT *const outfit)
 {
-    const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
     const LARA_SKIN_MESH_MAP map = outfit->gun_map->mesh_offsets[gun_type];
 
     int32_t offset = M_NO_MESH;
@@ -293,10 +368,21 @@ void Lara_Skin_ApplyOutfitFromConfig(void)
         return;
     }
 
-    const LARA_SKIN_TYPE skin_type =
-        g_Config.visuals.lara_skin_type == LARA_SKIN_TYPE_DEFAULT
-        ? GF_GetCurrentLevel()->lara_skin_type
-        : g_Config.visuals.lara_skin_type;
+    LARA_SKIN_TYPE skin_type = M_GetCurrentLevelOutfitType();
+    if (g_Config.visuals.lara_outfit != nullptr) {
+        const LARA_SKIN_TYPE config_type =
+            Lara_Skin_FindOutfitByName(g_Config.visuals.lara_outfit);
+        if (!Lara_Skin_IsOutfitAvailable(config_type)) {
+            LOG_WARNING(
+                "Invalid outfit '%s' from config.visuals.lara_outfit; falling "
+                "back to default",
+                g_Config.visuals.lara_outfit);
+            skin_type = M_GetCurrentLevelOutfitType();
+        } else {
+            skin_type = config_type;
+        }
+    }
+
     Lara_Skin_SetType(skin_type);
 }
 
@@ -306,15 +392,19 @@ void Lara_Skin_CycleOutfit(const int32_t dir)
         return;
     }
 
-    if (Config_IsOptionEnforced(&g_Config.visuals.lara_skin_type)) {
+    if (Config_IsOptionEnforced(&g_Config.visuals.lara_outfit)) {
         return;
     }
 
     // Update the config twice to guarantee the change is submitted in cases
     // where Lara_Skin_SetType has been called manually for non-permanent swaps
     // e.g. by Lua in cutscenes.
-    if (m_SkinType != g_Config.visuals.lara_skin_type) {
-        g_Config.visuals.lara_skin_type = m_SkinType;
+    const char *const current_name = Lara_Skin_GetOutfitName(m_SkinType);
+    ASSERT(current_name != nullptr);
+
+    if (g_Config.visuals.lara_outfit == nullptr
+        || !String_Equivalent(g_Config.visuals.lara_outfit, current_name)) {
+        M_SetConfigOutfit(current_name);
         Config_Update();
     }
 
@@ -326,7 +416,7 @@ void Lara_Skin_CycleOutfit(const int32_t dir)
         type %= outfit_count;
     } while (!Lara_Skin_IsOutfitAvailable(type));
 
-    g_Config.visuals.lara_skin_type = type;
+    M_SetConfigOutfit(Lara_Skin_GetOutfitName(type));
     Config_Update();
 }
 
@@ -337,17 +427,28 @@ LARA_SKIN_TYPE Lara_Skin_GetType(void)
 
 bool Lara_Skin_IsDefaultType(void)
 {
-    return m_SkinType == g_Config.visuals.lara_skin_type
-        || m_SkinType == GF_GetCurrentLevel()->lara_skin_type;
+    if (g_Config.visuals.lara_outfit != nullptr) {
+        const LARA_SKIN_TYPE config_type =
+            Lara_Skin_FindOutfitByName(g_Config.visuals.lara_outfit);
+        if (Lara_Skin_IsOutfitAvailable(config_type)) {
+            return m_SkinType == config_type;
+        }
+        return m_SkinType == M_GetCurrentLevelOutfitType();
+    }
+    return m_SkinType == M_GetCurrentLevelOutfitType();
 }
 
 void Lara_Skin_SetType(const LARA_SKIN_TYPE skin_type)
 {
-    if (m_SkinType == skin_type) {
+    LARA_SKIN_TYPE new_skin_type = skin_type;
+    if (!Lara_Skin_IsOutfitAvailable(new_skin_type)) {
+        new_skin_type = M_GetFallbackOutfitType();
+    }
+    if (m_SkinType == new_skin_type) {
         return;
     }
 
-    m_SkinType = skin_type;
+    m_SkinType = new_skin_type;
     Lara_Skin_ApplyOutfit();
 }
 

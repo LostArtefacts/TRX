@@ -4,7 +4,6 @@
 #include <trx/config/const.h>
 #include <trx/config/enum.h>
 #include <trx/game/input.h>
-#include <trx/game/lara/skin/enum.h>
 #include <trx/game/sound/enum.h>
 #include <trx/gfx/common.h>
 #include <trx/screenshot.h>
@@ -87,8 +86,8 @@ typedef struct {
         bool enable_gun_lighting;
         bool enable_fire_lighting;
         bool enable_shotgun_flash;
-        LARA_SKIN_TYPE lara_skin_type;
         bool enable_responsive_mesh_tint;
+        char *lara_outfit;
         SHADOW_TYPE shadow_type;
         bool enable_skybox;
         bool enable_weather;

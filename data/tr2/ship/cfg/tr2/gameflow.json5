@@ -50,7 +50,7 @@
             "path": "data/assault.tr2",
             "script": "data/scripts/assault.lua",
             "music_track": -1,
-            "lara_skin_type": "skin_type_08",
+            "lara_outfit": "tr2_gym",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/mansion.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -76,7 +76,7 @@
         {
             "path": "data/wall.tr2",
             "music_track": 29,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 2},
@@ -108,7 +108,7 @@
         {
             "path": "data/boat.tr2",
             "music_track": -1,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "magnums_ammo", "quantity": 4},
@@ -132,7 +132,7 @@
         {
             "path": "data/venice.tr2",
             "music_track": -1,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "enable_sunset"},
@@ -156,7 +156,7 @@
         {
             "path": "data/opera.tr2",
             "music_track": 27,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "uzis"},
@@ -186,7 +186,7 @@
         {
             "path": "data/rig.tr2",
             "music_track": 54,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/rig.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 3},
@@ -214,7 +214,7 @@
         {
             "path": "data/platform.tr2",
             "music_track": 54,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/rig.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
@@ -242,7 +242,7 @@
         {
             "path": "data/unwater.tr2",
             "music_track": 30,
-            "lara_skin_type": "skin_type_10",
+            "lara_outfit": "tr2_diving_suit",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 4},
@@ -269,7 +269,7 @@
         {
             "path": "data/keel.tr2",
             "music_track": 27,
-            "lara_skin_type": "skin_type_10",
+            "lara_outfit": "tr2_diving_suit",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
@@ -299,7 +299,7 @@
         {
             "path": "data/living.tr2",
             "music_track": 30,
-            "lara_skin_type": "skin_type_10",
+            "lara_outfit": "tr2_diving_suit",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "m16_ammo", "quantity": 4},
@@ -327,7 +327,7 @@
         {
             "path": "data/deck.tr2",
             "music_track": 27,
-            "lara_skin_type": "skin_type_10",
+            "lara_outfit": "tr2_diving_suit",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 4},
@@ -357,7 +357,7 @@
         {
             "path": "data/skidoo.tr2",
             "music_track": 29,
-            "lara_skin_type": "skin_type_11",
+            "lara_outfit": "tr2_bomber_jacket",
             "weather_type": "snow",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -384,7 +384,7 @@
             "path": "data/monastry.tr2",
             "script": "data/scripts/monastry.lua",
             "music_track": -1,
-            "lara_skin_type": "skin_type_11",
+            "lara_outfit": "tr2_bomber_jacket",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_4"},
@@ -411,7 +411,7 @@
         {
             "path": "data/catacomb.tr2",
             "music_track": 27,
-            "lara_skin_type": "skin_type_11",
+            "lara_outfit": "tr2_bomber_jacket",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 2},
@@ -438,7 +438,7 @@
         {
             "path": "data/icecave.tr2",
             "music_track": 27,
-            "lara_skin_type": "skin_type_11",
+            "lara_outfit": "tr2_bomber_jacket",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher_ammo", "quantity": 4},
@@ -465,7 +465,7 @@
         {
             "path": "data/emprtomb.tr2",
             "music_track": 55,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 6},
@@ -495,7 +495,7 @@
             "path": "data/floating.tr2",
             "script": "data/scripts/floating.lua",
             "music_track": 55,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "disable_floor", "height": 9728},
@@ -519,7 +519,7 @@
         {
             "path": "data/xian.tr2",
             "music_track": 55,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -544,7 +544,7 @@
             "path": "data/house.tr2",
             "script": "data/scripts/house.lua",
             "music_track": -1,
-            "lara_skin_type": "skin_type_12",
+            "lara_outfit": "tr2_robe",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/mansion.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "key_1"},
@@ -585,7 +585,7 @@
         {
             "path": "data/boat.tr2",
             "music_track": -1,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "magnums_ammo", "quantity": 4},
@@ -605,7 +605,7 @@
         {
             "path": "data/keel.tr2",
             "music_track": 27,
-            "lara_skin_type": "skin_type_10",
+            "lara_outfit": "tr2_diving_suit",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "grenade_launcher"},
@@ -630,7 +630,7 @@
             "path": "data/skidoo.tr2",
             "music_track": 29,
             "weather_type": "snow",
-            "lara_skin_type": "skin_type_11",
+            "lara_outfit": "tr2_bomber_jacket",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_4"},
@@ -652,7 +652,7 @@
         {
             "path": "data/cut1.tr2",
             "music_track": 2,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -667,7 +667,7 @@
         {
             "path": "data/cut2.tr2",
             "music_track": 3,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [{"type": "loop_game"}],
             "inherit_injections": false,
             "injections": [
@@ -682,7 +682,7 @@
             "path": "data/cut3.tr2",
             "script": "data/scripts/cut3.lua",
             "music_track": 4,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [{"type": "loop_game"}],
             "inherit_injections": false,
             "injections": [
@@ -697,7 +697,7 @@
         {
             "path": "data/cut4.tr2",
             "music_track": 26,
-            "lara_skin_type": "skin_type_09",
+            "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loop_game"},
             ],

@@ -143,6 +143,25 @@ def get_used_ui_theme_strings(
             yield 0, name_gs
 
 
+def get_used_outfit_strings(
+    vfs: VirtualFilesystem, path: Path
+) -> Iterable[tuple[int, str]]:
+    if not path.exists():
+        return
+    source = load_json5_from_string(vfs.get(path))
+    if not isinstance(source, dict):
+        return
+    outfits = source.get("outfits")
+    if not isinstance(outfits, dict):
+        return
+    for _, outfit_data in outfits.items():
+        if not isinstance(outfit_data, dict):
+            continue
+        name_gs = outfit_data.get("name_gs")
+        if isinstance(name_gs, str):
+            yield 0, name_gs
+
+
 def get_objects_map(paths: list[Path]) -> dict[str, list[str]]:
     """
     Parse object-name definitions from names.def-like files.
@@ -196,6 +215,11 @@ class RunContext:
         self.used_game_strings += list(
             get_used_ui_theme_strings(
                 vfs, CommonPaths.shipped_data_dir / "cfg/ui.json5"
+            )
+        )
+        self.used_game_strings += list(
+            get_used_outfit_strings(
+                vfs, CommonPaths.shipped_data_dir / "cfg/outfits.json5"
             )
         )
         self.object_names_dict = get_objects_map(source_files)

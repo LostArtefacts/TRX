@@ -1,6 +1,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/skin/storage.h>
 #include <trx/game/lua/common.h>
 
 #include <lauxlib.h>
@@ -53,19 +54,28 @@ static int M_L_LaraSetAirBar(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.get_skin() → int
-static int M_L_LaraGetSkin(lua_State *const L)
+// trxc.lara.get_outfit() → string
+static int M_L_LaraGetOutfit(lua_State *const L)
 {
-    const int32_t skin_idx = Lara_Skin_GetType();
-    lua_pushinteger(L, skin_idx);
+    const int32_t outfit_idx = Lara_Skin_GetType();
+    const char *const outfit_name = Lara_Skin_GetOutfitName(outfit_idx);
+    if (outfit_name == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, outfit_name);
+    }
     return 1;
 }
 
-// trxc.lara.set_skin(skin_idx)
-static int M_L_LaraSetSkin(lua_State *const L)
+// trxc.lara.set_outfit(outfit_name)
+static int M_L_LaraSetOutfit(lua_State *const L)
 {
-    const int32_t skin_idx = luaL_checkinteger(L, 1);
-    Lara_Skin_SetType(skin_idx);
+    const char *const outfit_name = luaL_checkstring(L, 1);
+    const int32_t outfit_idx = Lara_Skin_FindOutfitByName(outfit_name);
+    if (!Lara_Skin_IsOutfitAvailable(outfit_idx)) {
+        return luaL_error(L, "unknown Lara outfit: %s", outfit_name);
+    }
+    Lara_Skin_SetType(outfit_idx);
     return 0;
 }
 
@@ -144,10 +154,10 @@ void LUA_CreateLara(lua_State *const L)
     lua_setfield(L, -2, "get_air_bar");
     lua_pushcfunction(L, M_L_LaraSetAirBar);
     lua_setfield(L, -2, "set_air_bar");
-    lua_pushcfunction(L, M_L_LaraGetSkin);
-    lua_setfield(L, -2, "get_skin");
-    lua_pushcfunction(L, M_L_LaraSetSkin);
-    lua_setfield(L, -2, "set_skin");
+    lua_pushcfunction(L, M_L_LaraGetOutfit);
+    lua_setfield(L, -2, "get_outfit");
+    lua_pushcfunction(L, M_L_LaraSetOutfit);
+    lua_setfield(L, -2, "set_outfit");
     lua_pushcfunction(L, M_L_LaraSetExtraEquipment);
     lua_setfield(L, -2, "set_extra_equipment");
     lua_pushcfunction(L, M_L_LaraClearEquipment);
