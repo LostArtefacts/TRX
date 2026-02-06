@@ -25,7 +25,7 @@ static inline bool M_BoundsIntersectsPortal(
             .z = mesh->pos.z + obj->draw_bounds.max.z,
         },
     };
-    return Bounds_32_Intersect(&bounds, &portal->bounds);
+    return Bounds32_Intersect(&bounds, &portal->bounds);
 }
 
 static void M_ComputePortalBounds(void)

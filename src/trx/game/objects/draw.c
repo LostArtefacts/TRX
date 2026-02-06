@@ -163,6 +163,7 @@ bool Object_DrawAnimatingItemWithSwap(
     int32_t rate;
     const int32_t frac = Item_GetFrames(item, frames, &rate);
     const OBJECT *const obj = Object_Get(item->object_id);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
     const OBJECT *swap_obj = mesh_swap;
     if (swap_obj != nullptr && !swap_obj->loaded) {
@@ -173,21 +174,20 @@ bool Object_DrawAnimatingItemWithSwap(
     }
 
     if (obj->shadow_size != 0) {
-        const BOUNDS_16 *const shadow_bounds = Item_GetBoundsAccurate(item);
-        Output_DrawShadow(obj->shadow_size, shadow_bounds, item);
+        Output_DrawShadow(obj->shadow_size, bounds, item);
     }
 
     Matrix_Push();
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const CLIP clip = Output_CheckBoundsClip(&frames[0]->bounds);
+    const CLIP clip = Output_CheckBoundsClip(bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return false;
     }
 
-    Output_CalculateObjectLighting(item, &frames[0]->bounds);
+    Output_CalculateObjectLighting(item, bounds);
 
     const int16_t *extra_rotation = item->data;
 
@@ -195,7 +195,7 @@ bool Object_DrawAnimatingItemWithSwap(
         obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate,
         swap_obj);
     if (g_Config.debug.enable_debug_bounding_boxes) {
-        Output_DrawCuboid(&frames[0]->bounds);
+        Output_DrawCuboid(bounds);
     }
     Matrix_Pop();
     return true;

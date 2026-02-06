@@ -263,7 +263,7 @@ XYZ_F XYZ_F_Subtract(const XYZ_F a, const XYZ_F b)
     };
 }
 
-bool Bounds_32_Intersect(const BOUNDS_32 *const a, const BOUNDS_32 *const b)
+bool Bounds32_Intersect(const BOUNDS_32 *const a, const BOUNDS_32 *const b)
 {
     return !(
         a->min.x > b->max.x || a->max.x < b->min.x || a->min.y > b->max.y
