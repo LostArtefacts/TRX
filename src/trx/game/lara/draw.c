@@ -26,10 +26,9 @@ static void M_CacheMatrix(const LARA_MESH mesh)
     lara->mesh_pos_matrices[mesh] = *g_WMatrixPtr;
 }
 
-static void M_DrawGunMesh(
-    const int32_t mesh_idx, const CLIP clip, const bool interpolated)
+static void M_DrawEquipmentMesh(
+    const OBJECT_MESH *const mesh, const CLIP clip, const bool interpolated)
 {
-    const OBJECT_MESH *const mesh = Object_GetMesh(mesh_idx);
     const GAME_VECTOR pos = {
         .room_num = Lara_GetItem()->room_num,
         .pos = Matrix_MulVec32(
@@ -41,7 +40,11 @@ static void M_DrawGunMesh(
             }),
     };
     Output_PushTintOverride(Lara_GetMeshTint(pos));
-    Object_DrawMesh(mesh_idx, clip, interpolated);
+    if (interpolated) {
+        Output_DrawObjectMesh_I(mesh, clip);
+    } else {
+        Output_DrawObjectMesh(mesh, clip);
+    }
     Output_PopTintOverride();
 }
 
@@ -108,11 +111,7 @@ static inline void M_DrawEquipment(
         return;
     }
 
-    if (interpolated) {
-        Output_DrawObjectMesh_I(equipment->mesh, clip);
-    } else {
-        Output_DrawObjectMesh(equipment->mesh, clip);
-    }
+    M_DrawEquipmentMesh(equipment->mesh, clip, interpolated);
 }
 
 static bool M_Draw_I(
@@ -219,7 +218,8 @@ static bool M_Draw_I(
         mesh_rots_1_c = back_obj->frame_base->mesh_rots;
         mesh_rots_2_c = back_obj->frame_base->mesh_rots;
         Matrix_Rot16_ID(mesh_rots_1_c[LM_HEAD], mesh_rots_2_c[LM_HEAD]);
-        M_DrawGunMesh(back_obj->mesh_idx + LM_HEAD, clip, true);
+        M_DrawEquipmentMesh(
+            Object_GetMesh(back_obj->mesh_idx + LM_HEAD), clip, true);
         Matrix_Pop_I();
     }
 
@@ -521,7 +521,8 @@ bool Lara_Draw(const ITEM *const item)
         Matrix_TranslateRel32(bone_c[LM_HEAD - 1].pos);
         mesh_rots_c = back_obj->frame_base->mesh_rots;
         Matrix_Rot16(mesh_rots_c[LM_HEAD]);
-        M_DrawGunMesh(back_obj->mesh_idx + LM_HEAD, clip, false);
+        M_DrawEquipmentMesh(
+            Object_GetMesh(back_obj->mesh_idx + LM_HEAD), clip, false);
         Matrix_Pop();
     }
 
