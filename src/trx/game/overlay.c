@@ -550,7 +550,9 @@ void Overlay_SetBottomText(const OVERLAY_TEXT text)
 void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
 {
     if (Object_IsType(obj_id, g_SecretObjects)) {
-        Music_Play(MX_SECRET, MPM_ONCE);
+        const MUSIC_PLAY_MODE mode =
+            g_Config.audio.fix_secrets_killing_music ? MPM_OVERLAY : MPM_ONCE;
+        Music_Play(MX_SECRET, mode);
     }
 
     int32_t grid_x = -1;

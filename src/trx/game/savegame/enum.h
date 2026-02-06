@@ -19,6 +19,9 @@ typedef enum {
     // Replaced Lara mesh pointers with outfits
     SG_VERSION_15 = 15,
 
+    // Music save format switched to stream list with play modes.
+    SG_VERSION_16 = 16,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_15,
+    SG_CURRENT_VERSION = SG_VERSION_16,
 } SAVEGAME_VERSION;

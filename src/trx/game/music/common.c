@@ -8,7 +8,6 @@
 #include <trx/game/music/backend_cdaudio.h>
 #include <trx/game/music/backend_cdaudio_wad.h>
 #include <trx/game/music/backend_files.h>
-#include <trx/game/sound.h>
 #include <trx/log.h>
 #include <trx/vector.h>
 #include <trx/version.h>
@@ -23,9 +22,22 @@ static MUSIC_ID m_TrackLooped = MX_INACTIVE;
 static MUSIC_ID m_TrackLastPlayed = MX_INACTIVE;
 static MUSIC_ID m_TrackLastLooped = MX_INACTIVE;
 
+typedef struct {
+    int32_t audio_stream_id;
+    MUSIC_ID track_id;
+    MUSIC_PLAY_MODE mode;
+    bool active;
+} M_MUSIC_STREAM;
+
 static float m_MusicVolume = 0.0f;
-static int32_t m_AudioStreamID = -1;
 static const MUSIC_BACKEND *m_Backend = nullptr;
+static M_MUSIC_STREAM m_MainStream = {
+    .audio_stream_id = -1,
+    .track_id = MX_INACTIVE,
+    .mode = MPM_ONCE,
+    .active = false,
+};
+static M_MUSIC_STREAM m_OverlayStreams[MUSIC_MAX_OVERLAY_TRACKS] = {};
 
 static const MUSIC_BACKEND *M_FindBackend(void)
 {
@@ -72,9 +84,18 @@ static const MUSIC_BACKEND *M_FindBackend(void)
     return backend;
 }
 
-static void M_StopActiveStream(void)
+static void M_StreamReset(M_MUSIC_STREAM *const stream)
 {
-    if (m_AudioStreamID < 0) {
+    stream->audio_stream_id = -1;
+    stream->track_id = MX_INACTIVE;
+    stream->mode = MPM_ONCE;
+    stream->active = false;
+}
+
+static void M_StreamClose(M_MUSIC_STREAM *const stream)
+{
+    if (!stream->active || stream->audio_stream_id < 0) {
+        M_StreamReset(stream);
         return;
     }
 
@@ -82,20 +103,51 @@ static void M_StopActiveStream(void)
     // finished by itself. In cases where we end the streams early by hand,
     // we clear the finish callback in order to avoid resuming the BGM playback
     // just after we stop it.
-    Audio_Stream_SetFinishCallback(m_AudioStreamID, nullptr, nullptr);
-    Audio_Stream_Close(m_AudioStreamID);
+    Audio_Stream_SetFinishCallback(stream->audio_stream_id, nullptr, nullptr);
+    Audio_Stream_Close(stream->audio_stream_id);
+    M_StreamReset(stream);
+}
+
+static void M_StopMainStream(void)
+{
+    M_StreamClose(&m_MainStream);
+}
+
+static void M_StopOverlayStreams(void)
+{
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        M_StreamClose(&m_OverlayStreams[i]);
+    }
+}
+
+static void M_ResetStreamState(void)
+{
+    M_StreamReset(&m_MainStream);
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        M_StreamReset(&m_OverlayStreams[i]);
+    }
 }
 
 static void M_StreamFinished(const int32_t stream_id, void *const user_data)
 {
-    // When a stream finishes, play the remembered BGM.
-    if (stream_id == m_AudioStreamID) {
+    M_MUSIC_STREAM *const stream = user_data;
+    if (stream == nullptr) {
+        return;
+    }
+    if (!stream->active || stream->audio_stream_id != stream_id) {
+        return;
+    }
+
+    if (stream == &m_MainStream) {
+        // When the main stream finishes, play the remembered BGM.
         m_TrackCurrent = MX_INACTIVE;
-        m_AudioStreamID = -1;
+        M_StreamReset(stream);
         if (m_TrackLooped >= 0) {
             m_TrackLastLooped = MX_INACTIVE;
             Music_Play_Direct(m_TrackLooped, MPM_LOOP);
         }
+    } else {
+        M_StreamReset(stream);
     }
 }
 
@@ -130,12 +182,87 @@ static bool M_IsAmbientTrack(const MUSIC_ID track_id)
     return false;
 }
 
-static void M_SyncVolume(const int32_t audio_stream_id)
+static void M_SyncVolume(const M_MUSIC_STREAM *const stream)
 {
-    if (audio_stream_id < 0) {
+    if (stream == nullptr || !stream->active || stream->audio_stream_id < 0) {
         return;
     }
-    Audio_Stream_SetVolume(audio_stream_id, m_MusicVolume);
+    Audio_Stream_SetVolume(stream->audio_stream_id, m_MusicVolume);
+}
+
+static void M_SyncVolumes(void)
+{
+    M_SyncVolume(&m_MainStream);
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        M_SyncVolume(&m_OverlayStreams[i]);
+    }
+}
+
+static int32_t M_GetFreeOverlaySlot(void)
+{
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        if (!m_OverlayStreams[i].active) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static bool M_PlayOverlayTrack(const MUSIC_ID track_id)
+{
+    if (m_Backend == nullptr) {
+        LOG_WARNING(
+            "Not playing overlay track %d because no backend is available",
+            track_id);
+        return false;
+    }
+
+    const int32_t slot = M_GetFreeOverlaySlot();
+    if (slot < 0) {
+        LOG_WARNING(
+            "Not playing overlay track %d because all %d overlay slots are in "
+            "use",
+            track_id, MUSIC_MAX_OVERLAY_TRACKS);
+        return false;
+    }
+
+    const int32_t stream_id = m_Backend->play(m_Backend, track_id);
+    if (stream_id < 0) {
+        LOG_ERROR("Failed to create overlay stream for track %d", track_id);
+        return false;
+    }
+
+    m_OverlayStreams[slot].audio_stream_id = stream_id;
+    m_OverlayStreams[slot].track_id = track_id;
+    m_OverlayStreams[slot].mode = MPM_OVERLAY;
+    m_OverlayStreams[slot].active = true;
+    M_SyncVolume(&m_OverlayStreams[slot]);
+    Audio_Stream_SetIsLooped(stream_id, false);
+    Audio_Stream_SetFinishCallback(
+        stream_id, M_StreamFinished, &m_OverlayStreams[slot]);
+    return true;
+}
+
+static bool M_GetMainTrackState(MUSIC_STREAM_STATE *const state)
+{
+    if (!m_MainStream.active || state == nullptr) {
+        return false;
+    }
+
+    state->track_id = MX_INACTIVE;
+    state->mode = MPM_ONCE;
+    state->timestamp = Audio_Stream_GetTimestamp(m_MainStream.audio_stream_id);
+
+    if (m_TrackCurrent != MX_INACTIVE) {
+        state->track_id = m_TrackCurrent;
+        return true;
+    }
+    if (m_TrackLooped != MX_INACTIVE) {
+        state->track_id = m_TrackLooped;
+        state->mode = MPM_LOOP;
+        return true;
+    }
+    return false;
 }
 
 bool Music_Init(void)
@@ -156,13 +283,16 @@ finish:
     m_TrackDelayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
     m_TrackLastLooped = MX_INACTIVE;
+    M_ResetStreamState();
     return Audio_Init();
 }
 
 void Music_Shutdown(void)
 {
     m_Initialised = false;
-    M_StopActiveStream();
+    M_StopMainStream();
+    M_StopOverlayStreams();
+    M_ResetStreamState();
     Audio_Shutdown();
 }
 
@@ -174,6 +304,11 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
 
     if (M_IsBrokenTrack(track_id)) {
         return false;
+    }
+
+    if (mode == MPM_OVERLAY) {
+        LOG_INFO("Playing overlay track %d", track_id);
+        return M_PlayOverlayTrack(track_id);
     }
 
     if (track_id == m_TrackCurrent) {
@@ -203,44 +338,7 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
         return true;
     }
 
-    const MUSIC_TRX_ID track = Music_FromGameID(track_id);
-    // TODO: utilise secondary audio stream to allow playing high fidelity
-    // versions of these sounds.
-    if (g_Config.audio.fix_secrets_killing_music && track == MX_SECRET
-        && Sound_IsAvailable(SFX_SECRET)) {
-        return Sound_Effect(SFX_SECRET, nullptr, SPM_ALWAYS);
-    }
-
-    if (g_Config.audio.fix_speeches_killing_music) {
-        SAMPLE_TRX_ID sample_id = SFX_TRX_INVALID;
-        switch (track) {
-        case MX_BALDY_SPEECH:
-            sample_id = SFX_BALDY_SPEECH;
-            break;
-        case MX_COWBOY_SPEECH:
-            sample_id = SFX_COWBOY_SPEECH;
-            break;
-        case MX_LARSON_SPEECH:
-            sample_id = SFX_LARSON_SPEECH;
-            break;
-        case MX_NATLA_SPEECH:
-            sample_id = SFX_NATLA_SPEECH;
-            break;
-        case MX_PIERRE_SPEECH:
-            sample_id = SFX_PIERRE_SPEECH;
-            break;
-        case MX_SKATEKID_SPEECH:
-            sample_id = SFX_SKATEKID_SPEECH;
-            break;
-        default:
-            break;
-        }
-        if (Sound_IsAvailable(sample_id)) {
-            return Sound_Effect(sample_id, nullptr, SPM_ALWAYS);
-        }
-    }
-
-    M_StopActiveStream();
+    M_StopMainStream();
 
     if (m_Backend == nullptr) {
         LOG_WARNING(
@@ -250,15 +348,19 @@ bool Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
 
     LOG_INFO("Playing track %d, mode: %d", track_id, mode);
 
-    m_AudioStreamID = m_Backend->play(m_Backend, track_id);
-    if (m_AudioStreamID < 0) {
+    const int32_t stream_id = m_Backend->play(m_Backend, track_id);
+    if (stream_id < 0) {
         LOG_ERROR("Failed to create music stream for track %d", track_id);
         goto finish;
     }
 
-    M_SyncVolume(m_AudioStreamID);
-    Audio_Stream_SetIsLooped(m_AudioStreamID, is_looped);
-    Audio_Stream_SetFinishCallback(m_AudioStreamID, M_StreamFinished, nullptr);
+    m_MainStream.audio_stream_id = stream_id;
+    m_MainStream.track_id = track_id;
+    m_MainStream.mode = is_looped ? MPM_LOOP : MPM_ONCE;
+    m_MainStream.active = true;
+    M_SyncVolume(&m_MainStream);
+    Audio_Stream_SetIsLooped(stream_id, is_looped);
+    Audio_Stream_SetFinishCallback(stream_id, M_StreamFinished, &m_MainStream);
 
 finish:
     m_TrackDelayed = MX_INACTIVE;
@@ -288,7 +390,9 @@ void Music_Stop(void)
     m_TrackDelayed = MX_INACTIVE;
     m_TrackLooped = MX_INACTIVE;
     m_TrackLastLooped = MX_INACTIVE;
-    M_StopActiveStream();
+    M_StopMainStream();
+    M_StopOverlayStreams();
+    M_ResetStreamState();
 }
 
 void Music_StopTrack_Direct(const MUSIC_ID track)
@@ -297,9 +401,8 @@ void Music_StopTrack_Direct(const MUSIC_ID track)
         return;
     }
 
-    M_StopActiveStream();
+    M_StopMainStream();
     m_TrackCurrent = MX_INACTIVE;
-
     if (m_TrackLooped >= 0) {
         Music_Play_Direct(m_TrackLooped, MPM_LOOP);
     }
@@ -307,42 +410,124 @@ void Music_StopTrack_Direct(const MUSIC_ID track)
 
 void Music_Pause(void)
 {
-    if (m_AudioStreamID < 0) {
-        return;
+    if (m_MainStream.active && m_MainStream.audio_stream_id >= 0) {
+        Audio_Stream_Pause(m_MainStream.audio_stream_id);
     }
-    Audio_Stream_Pause(m_AudioStreamID);
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        if (m_OverlayStreams[i].active
+            && m_OverlayStreams[i].audio_stream_id >= 0) {
+            Audio_Stream_Pause(m_OverlayStreams[i].audio_stream_id);
+        }
+    }
 }
 
 void Music_Unpause(void)
 {
-    if (m_AudioStreamID < 0) {
-        return;
+    if (m_MainStream.active && m_MainStream.audio_stream_id >= 0) {
+        Audio_Stream_Unpause(m_MainStream.audio_stream_id);
     }
-    Audio_Stream_Unpause(m_AudioStreamID);
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        if (m_OverlayStreams[i].active
+            && m_OverlayStreams[i].audio_stream_id >= 0) {
+            Audio_Stream_Unpause(m_OverlayStreams[i].audio_stream_id);
+        }
+    }
 }
 
 double Music_GetTimestamp(void)
 {
-    if (m_AudioStreamID < 0) {
+    if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {
         return -1.0;
     }
-    return Audio_Stream_GetTimestamp(m_AudioStreamID);
+    return Audio_Stream_GetTimestamp(m_MainStream.audio_stream_id);
 }
 
 bool Music_SeekTimestamp(const double timestamp)
 {
-    if (m_AudioStreamID < 0) {
+    if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {
         return false;
     }
-    return Audio_Stream_SeekTimestamp(m_AudioStreamID, timestamp);
+    return Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 
 bool Music_SyncTimestamp(const double timestamp)
 {
-    if (m_AudioStreamID < 0) {
+    if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {
         return false;
     }
-    return Audio_Stream_SyncTimestamp(m_AudioStreamID, timestamp);
+    return Audio_Stream_SyncTimestamp(m_MainStream.audio_stream_id, timestamp);
+}
+
+int32_t Music_GetStreamCount(void)
+{
+    int32_t count = 0;
+    if (m_MainStream.active) {
+        count++;
+    }
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        if (m_OverlayStreams[i].active) {
+            count++;
+        }
+    }
+    return count;
+}
+
+bool Music_GetStreamState(
+    const int32_t index, MUSIC_STREAM_STATE *const out_state)
+{
+    if (index < 0 || out_state == nullptr) {
+        return false;
+    }
+
+    int32_t stream_index = 0;
+    if (m_MainStream.active) {
+        if (stream_index == index) {
+            return M_GetMainTrackState(out_state);
+        }
+        stream_index++;
+    }
+
+    for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
+        if (!m_OverlayStreams[i].active) {
+            continue;
+        }
+
+        if (stream_index == index) {
+            out_state->track_id = m_OverlayStreams[i].track_id;
+            out_state->mode = m_OverlayStreams[i].mode;
+            out_state->timestamp =
+                Audio_Stream_GetTimestamp(m_OverlayStreams[i].audio_stream_id);
+            return true;
+        }
+        stream_index++;
+    }
+
+    return false;
+}
+
+bool Music_SeekTrackTimestamp(
+    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode, const double timestamp)
+{
+    if (mode == MPM_OVERLAY) {
+        for (int32_t i = MUSIC_MAX_OVERLAY_TRACKS - 1; i >= 0; i--) {
+            if (!m_OverlayStreams[i].active
+                || m_OverlayStreams[i].track_id != track_id) {
+                continue;
+            }
+            return Audio_Stream_SeekTimestamp(
+                m_OverlayStreams[i].audio_stream_id, timestamp);
+        }
+        return false;
+    }
+
+    MUSIC_STREAM_STATE state = {};
+    if (!M_GetMainTrackState(&state)) {
+        return false;
+    }
+    if (state.track_id != track_id || state.mode != mode) {
+        return false;
+    }
+    return Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 
 MUSIC_ID Music_GetDelayedTrack(void)
@@ -365,7 +550,7 @@ void Music_SetVolume(float volume)
     volume *= g_Config.audio.master_volume;
     if (volume != m_MusicVolume) {
         m_MusicVolume = volume;
-        M_SyncVolume(m_AudioStreamID);
+        M_SyncVolumes();
     }
 }
 

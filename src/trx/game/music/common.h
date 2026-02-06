@@ -5,6 +5,14 @@
 
 #include <stdint.h>
 
+#define MUSIC_MAX_OVERLAY_TRACKS 3
+
+typedef struct {
+    MUSIC_ID track_id;
+    MUSIC_PLAY_MODE mode;
+    double timestamp;
+} MUSIC_STREAM_STATE;
+
 bool Music_Init(void);
 void Music_Shutdown(void);
 
@@ -20,6 +28,8 @@ void Music_Shutdown(void);
 // MPM_DELAY:
 //   A track does not get played and instead is only marked for later playback.
 //   The track to play is available with Music_GetDelayedTrack().
+// MPM_OVERLAY:
+//   Plays a non-looping track without interrupting active background music.
 bool Music_Play_Direct(MUSIC_ID track, MUSIC_PLAY_MODE mode);
 
 // Stops the provided single track and restarts the looped track if applicable.
@@ -29,7 +39,7 @@ void Music_StopTrack_Direct(MUSIC_ID track);
 // music track slot depending on the game.
 bool Music_Play(MUSIC_TRX_ID track, MUSIC_PLAY_MODE mode);
 
-// Stops any music, whether looped or active speech.
+// Stops all music streams, including looped, active, and overlay tracks.
 void Music_Stop(void);
 
 // Pauses the music.
@@ -46,6 +56,16 @@ bool Music_SeekTimestamp(double timestamp);
 
 // Seeks to the given timestamp if the drift is too big.
 bool Music_SyncTimestamp(double timestamp);
+
+// Returns the number of currently active serializable streams.
+int32_t Music_GetStreamCount(void);
+
+// Returns stream state by active index [0..Music_GetStreamCount()).
+bool Music_GetStreamState(int32_t index, MUSIC_STREAM_STATE *state);
+
+// Seeks timestamp for the active stream that matches track and mode.
+bool Music_SeekTrackTimestamp(
+    MUSIC_ID track, MUSIC_PLAY_MODE mode, double timestamp);
 
 // Returns the delayed track. Ignores looped tracks.
 MUSIC_ID Music_GetDelayedTrack(void);

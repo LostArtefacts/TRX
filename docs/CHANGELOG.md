@@ -22,6 +22,7 @@
 - added a new Lua function, `trx.rooms.flip()`, to toggle the flip map (#4704)
 - added a new Lua function, `trx.rooms.flip_effect()`, to set the active flip effect with an optional timer (#4704)
 - added a new Lua catalog, `trx.catalog.flip_effects` for name-based flip effect catalog IDs
+- added a new Lua music play mode, `trx.music.PlayMode.OVERLAY` for playing on top of currently played track
 - added new Lua catalogs for Lara states, Lara anims, music, and samples
 - added a new Lua module, `trx.camera`, with camera getters and `trx.camera.shake()`
 - added `num` to `trx.rooms.Room`
@@ -79,6 +80,8 @@
 - fixed Lara's look head rotation/tilt limits being hardcoded to the engine version rather than camera mode
 - fixed pushblocks being able to fall into rooms below despite no portals being present (#4788, regression from TR1X 4.15/TR2X 1.5)
 - fixed one-shot triggers for hidden pickup items making the items permanently invisible (#4784)
+- fixed secret tracks played at low quality when "fix secrets killing music" option is on
+- fixed secret tracks not restored from the savegame when "fix secrets killing music" option is on
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
@@ -88,6 +91,8 @@
 - fixed gun injections overwriting Lara's footstep SFX in all levels (#4733, regression from 1.1)
 - fixed pushblocks in Natla's Mines becoming unusable after loading a save made in earlier versions (#4735, regression from 1.1)
 - fixed low-quality texture palette on injected TR2/3 weapons and flares
+- fixed baddie speeches played at low quality when "fix speeches killing music" option is on
+- fixed baddie speeches not restored from the savegame when "fix speeches killing music" option is on
 
 **TR2**:
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)

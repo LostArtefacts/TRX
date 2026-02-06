@@ -550,14 +550,19 @@ static bool M_ReadFlare(SG_READ_IO *const io)
     M_FINISH();
 }
 
+static bool M_ShouldLoadMusicTimestamp(
+    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode,
+    const MUSIC_ID ambient_track)
+{
+    const bool is_ambient = mode == MPM_LOOP && track_id == ambient_track;
+    return !is_ambient
+        || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
+}
+
 static bool M_ReadMusicTracks(SG_READ_IO *const io)
 {
-    MUSIC_ID current_track = MX_INACTIVE;
     MUSIC_ID ambient_track = MX_INACTIVE;
-    double timestamp;
-    M_MUST(SG_READ_VALUE(io, "current_track", &current_track));
     M_MUST(SG_READ_VALUE(io, "current_ambient", &ambient_track));
-    M_MUST(SG_READ_VALUE(io, "timestamp", &timestamp));
 
     Music_Stop();
     if (ambient_track != MX_INACTIVE) {
@@ -570,18 +575,59 @@ static bool M_ReadMusicTracks(SG_READ_IO *const io)
         return true;
     }
 
-    const bool is_ambient =
-        current_track != MX_INACTIVE && current_track == ambient_track;
-    if (!is_ambient && current_track != MX_INACTIVE) {
-        Music_Play_Direct(current_track, MPM_ONCE);
-    }
+    if (M_SHOULD(SG_PUSH(io, "streams"))) {
+        // TRX 1.2
+        const int32_t stream_count = SG_ARRAY_LEN(io);
+        for (int32_t i = 0; i < stream_count; i++) {
+            MUSIC_ID track_id = MX_INACTIVE;
+            MUSIC_PLAY_MODE mode = MPM_ONCE;
+            double timestamp = -1.0;
+            M_MUST(SG_PUSH_INDEX(io, i));
+            M_MUST(SG_READ_VALUE(io, "track", &track_id));
+            M_MUST(SG_READ_VALUE(io, "mode", &mode));
+            M_MUST(SG_READ_VALUE(io, "timestamp", &timestamp));
+            M_MUST(SG_POP(io));
 
-    const bool load_timestamp =
-        !is_ambient || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
-    if (load_timestamp && !Music_SeekTimestamp(timestamp)) {
-        LOG_WARNING(
-            "Could not load current track %d at timestamp %lf.", current_track,
-            timestamp);
+            if (track_id == MX_INACTIVE) {
+                continue;
+            }
+            if (!Music_Play_Direct(track_id, mode)) {
+                LOG_WARNING("Could not load stream track %d", track_id);
+                continue;
+            }
+
+            if (M_ShouldLoadMusicTimestamp(track_id, mode, ambient_track)
+                && !Music_SeekTrackTimestamp(track_id, mode, timestamp)) {
+                LOG_WARNING(
+                    "Could not load stream track %d at timestamp %lf.",
+                    track_id, timestamp);
+            }
+        }
+        M_MUST(SG_POP(io));
+    } else {
+        MUSIC_ID current_track = MX_INACTIVE;
+        double timestamp = -1.0;
+        M_MUST(SG_READ_VALUE(io, "current_track", &current_track));
+        M_MUST(SG_READ_VALUE(io, "timestamp", &timestamp));
+
+        const bool is_ambient =
+            current_track != MX_INACTIVE && current_track == ambient_track;
+        if (!is_ambient && current_track != MX_INACTIVE
+            && !Music_Play_Direct(current_track, MPM_ONCE)) {
+            LOG_WARNING("Could not load current track %d.", current_track);
+        }
+
+        const MUSIC_ID track_to_seek =
+            is_ambient ? ambient_track : current_track;
+        const MUSIC_PLAY_MODE mode_to_seek = is_ambient ? MPM_LOOP : MPM_ONCE;
+        if (M_ShouldLoadMusicTimestamp(
+                track_to_seek, mode_to_seek, ambient_track)
+            && !Music_SeekTrackTimestamp(
+                track_to_seek, mode_to_seek, timestamp)) {
+            LOG_WARNING(
+                "Could not load current track %d at timestamp %lf.",
+                current_track, timestamp);
+        }
     }
 
     M_FINISH();

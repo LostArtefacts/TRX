@@ -362,12 +362,24 @@ void SG_File_DumpMusic(SG_WRITE_IO *const io)
     }
     SGW_POP_AND_SET(io, "flags");
 
-    const MUSIC_ID current_track = Music_GetCurrentPlayingTrack();
     const MUSIC_ID current_ambient = Music_GetCurrentLoopedTrack();
     SGW_PUSH_OBJECT(io);
-    SGW_WRITE_VALUE(io, "current_track", current_track);
     SGW_WRITE_VALUE(io, "current_ambient", current_ambient);
-    SGW_WRITE_VALUE(io, "timestamp", Music_GetTimestamp());
+    SGW_PUSH_ARRAY(io);
+    const int32_t stream_count = Music_GetStreamCount();
+    for (int32_t i = 0; i < stream_count; i++) {
+        MUSIC_STREAM_STATE state = {};
+        if (!Music_GetStreamState(i, &state)) {
+            continue;
+        }
+
+        SGW_PUSH_OBJECT(io);
+        SGW_WRITE_VALUE(io, "track", state.track_id);
+        SGW_WRITE_VALUE(io, "mode", state.mode);
+        SGW_WRITE_VALUE(io, "timestamp", state.timestamp);
+        SGW_POP_AND_APPEND(io);
+    }
+    SGW_POP_AND_SET(io, "streams");
     SGW_POP_AND_SET(io, "current");
     SGW_POP_AND_SET(io, "music");
 }
