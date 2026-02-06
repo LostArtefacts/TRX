@@ -6,6 +6,7 @@
 #include <trx/enum_map.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_string.h>
+#include <trx/game/lara/skin.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 
@@ -85,6 +86,88 @@ static const CONFIG_OPTION *M_GetOptionFromKey(const char *const key)
     Vector_Free(matches);
     Vector_Free(source);
     return result;
+}
+
+static bool M_IsLaraOutfitOption(const CONFIG_OPTION *const option)
+{
+    return option != nullptr && option->target == &g_Config.visuals.lara_outfit;
+}
+
+static char *M_FormatValuesList(const VECTOR *const values)
+{
+    if (values == nullptr || values->count == 0) {
+        return nullptr;
+    }
+
+    char *result = nullptr;
+    for (int32_t i = 0; i < values->count; i++) {
+        const char *const value = *(char **)Vector_Get(values, i);
+        if (value == nullptr) {
+            continue;
+        }
+
+        if (result == nullptr) {
+            result = Memory_DupStr(value);
+        } else {
+            char *const joined = String_Format("%s, %s", result, value);
+            Memory_FreePointer(&result);
+            result = joined;
+        }
+    }
+
+    return result;
+}
+
+static char *M_FormatLaraOutfitDefaults(void)
+{
+    VECTOR *const values = Vector_Create(sizeof(char *));
+    const char *const default_value = "-";
+    Vector_Add(values, &default_value);
+
+    const int32_t outfit_count = Lara_Skin_GetOutfitCount();
+    for (int32_t i = 0; i < outfit_count; i++) {
+        const char *const outfit_name = Lara_Skin_GetOutfitName(i);
+        if (outfit_name != nullptr) {
+            Vector_Add(values, &outfit_name);
+        }
+    }
+
+    char *const result = M_FormatValuesList(values);
+    Vector_Free(values);
+    return result;
+}
+
+static const char *M_GetValueForConsole(const CONFIG_OPTION *const option)
+{
+    if (option->type == COT_STRING && *(char **)option->target == nullptr) {
+        return "(null)";
+    }
+    return Config_GetOptionValueAsString(option);
+}
+
+static bool M_IsAllowedOptionValue(
+    const CONFIG_OPTION *const option, const char *const new_value)
+{
+    if (!M_IsLaraOutfitOption(option)) {
+        return true;
+    }
+
+    const LARA_SKIN_TYPE outfit_type = Lara_Skin_FindOutfitByName(new_value);
+    return Lara_Skin_IsOutfitAvailable(outfit_type);
+}
+
+static bool M_TryApplyOptionValue(
+    const CONFIG_OPTION *const option, const char *const new_value)
+{
+    if (strcmp(new_value, "-") == 0) {
+        return Config_RestoreOptionDefault(option->target);
+    }
+
+    if (!M_IsAllowedOptionValue(option, new_value)) {
+        return false;
+    }
+
+    return Config_SetOptionValueFromString(option, new_value);
 }
 
 // Builds a source list of all options and returns fuzzy-match results.
@@ -169,25 +252,16 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
         if (values == nullptr) {
             return nullptr;
         }
-        // Join vector items into a comma-separated string
-        size_t total_len = 1;
-        const char *const sep = ", ";
-        for (int32_t i = 0; i < values->count; i++) {
-            const char *const s = *(char **)Vector_Get(values, i);
-            total_len += strlen(s) + (i + 1 < values->count ? strlen(sep) : 0);
-        }
-        char *const result = Memory_Alloc(total_len);
-        char *ptr = result;
-        for (int32_t i = 0; i < values->count; i++) {
-            const char *const s = *(char **)Vector_Get(values, i);
-            strcat(ptr, s);
-            if (i + 1 < values->count) {
-                strcat(ptr, sep);
-            }
-        }
+        char *const result = M_FormatValuesList(values);
         Vector_Free(values);
         return result;
     }
+
+    case COT_STRING:
+        if (M_IsLaraOutfitOption(option)) {
+            return M_FormatLaraOutfitDefaults();
+        }
+        return nullptr;
 
     default:
         return nullptr;
@@ -226,22 +300,22 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
     ASSERT(option != nullptr);
 
     char *normalized_name = Console_Cmd_Config_NormalizeKey(option->name);
+    COMMAND_RESULT result = CR_FAILURE;
 
     if (new_value == nullptr || String_IsEmpty(new_value)) {
-        const char *const value_str = Config_GetOptionValueAsString(option);
+        const char *const value_str = M_GetValueForConsole(option);
         if (value_str == nullptr) {
-            return CR_FAILURE;
+            result = CR_FAILURE;
+            goto cleanup;
         }
         Console_Log(GS(OSD_CONFIG_OPTION_GET), normalized_name, value_str);
-        return CR_SUCCESS;
+        result = CR_SUCCESS;
+        goto cleanup;
     }
 
-    COMMAND_RESULT result;
-    if ((strcmp(new_value, "-") == 0
-         && Config_RestoreOptionDefault(option->target))
-        || Config_SetOptionValueFromString(option, new_value)) {
+    if (M_TryApplyOptionValue(option, new_value)) {
         Config_Update();
-        const char *const value_str = Config_GetOptionValueAsString(option);
+        const char *const value_str = M_GetValueForConsole(option);
         ASSERT(value_str != nullptr);
         Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, value_str);
         result = CR_SUCCESS;
