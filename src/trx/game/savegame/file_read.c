@@ -386,9 +386,9 @@ static bool M_ReadItem(SG_READ_IO *const io, const int16_t item_num)
             // Introduced in TRX 1.2
             M_OPTIONAL(SG_READ_VALUE(io, "collidable", &item->collidable));
         }
-        // Introduced in TRX 1.2
-        M_SHOULD(SG_READ_VALUE(io, "ai_bits", &item->ai_bits));
-        M_SHOULD(SG_READ_VALUE(io, "ai_tag", &item->ai_tag));
+        // Introduced in TRX 1.2, not written if zero
+        M_OPTIONAL(SG_READ_VALUE(io, "ai_bits", &item->ai_bits));
+        M_OPTIONAL(SG_READ_VALUE(io, "ai_tag", &item->ai_tag));
 
         bool intelligent = obj->intelligent;
         // Introduced in TRX 1.2
