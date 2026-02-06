@@ -2,7 +2,9 @@
 
 #include <trx/debug.h>
 #include <trx/filesystem.h>
+#include <trx/game/game_flow/common.h>
 #include <trx/game/lua/embedded_scripts.h>
+#include <trx/game/lua/events.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
@@ -224,6 +226,27 @@ LUA_RESULT Lua_EvalFile(const char *const path)
     const LUA_RESULT result = M_LuaLoadAndRun(p->state, M_LoadFile, real_path);
     Memory_FreePointer(&real_path);
     return result;
+}
+
+void Lua_ReloadLevelScript(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level == nullptr) {
+        return;
+    }
+
+    Lua_ClearLevelListeners();
+    Lua_SetScriptContext(LUA_CONTEXT_LEVEL);
+
+    if (level->script_path != nullptr) {
+        LUA_RESULT res = Lua_EvalFile(level->script_path);
+        if (res.code != LUA_OK) {
+            LOG_ERROR("Lua level script error: %s", res.message);
+        }
+        Lua_FreeResult(&res);
+    }
+
+    Lua_SetScriptContext(LUA_CONTEXT_GLOBAL);
 }
 
 void Lua_FreeResult(LUA_RESULT *const result)
