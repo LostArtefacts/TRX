@@ -305,7 +305,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lara_house_guns.bin
 │   │   ├── lara_outfits.bin
 │   │   ├── lara_rifle_sfx.bin
-│   │   ├── lara_unwater_guns.bin
 │   │   ├── lara_vegas_guns.bin
 │   │   ├── living_deck_goon_sfx.bin
 │   │   ├── living_fd.bin
@@ -784,7 +783,6 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lara_house_guns.bin
         │   │   ├── lara_outfits.bin
         │   │   ├── lara_rifle_sfx.bin
-        │   │   ├── lara_unwater_guns.bin
         │   │   ├── lara_vegas_guns.bin
         │   │   ├── living_deck_goon_sfx.bin
         │   │   ├── living_fd.bin

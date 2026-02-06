@@ -97,6 +97,7 @@
 - fixed gun injections overwriting Lara's footstep SFX in underwater levels (#4733, regression from 1.1)
 - fixed exploding Armed Snowmobile not disappearing the vehicle (#4762)
 - fixed the polar bear in Furnace of the Gods twitching if killed when in its reared state (#4624)
+- fixed incorrect textures on the MP5 when equipped or on Lara's back
 
 **TR3**:
 - added a new UI bar appearance, "TR3 PC" (Graphic Options → Bars → Bars appearance)
