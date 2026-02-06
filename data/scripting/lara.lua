@@ -9,7 +9,7 @@ local lara = {
 local getters = {
   exposure_bar = raw.get_exposure_bar,
   air_bar = raw.get_air_bar,
-  skin = raw.get_skin,
+  outfit = raw.get_outfit,
   holsters_visible = raw.are_holsters_visible,
   has_pistol_weapon = raw.has_pistol_weapon,
   extra_anim = raw.get_extra_anim,
@@ -21,7 +21,7 @@ local getters = {
 local setters = {
   exposure_bar = raw.set_exposure_bar,
   air_bar = raw.set_air_bar,
-  skin = raw.set_skin,
+  outfit = raw.set_outfit,
   holsters_visible = raw.set_holsters_visible,
 }
 

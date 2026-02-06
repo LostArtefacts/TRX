@@ -35,7 +35,7 @@ typedef struct {
     SAMPLE_TRX_ID footstep_sample_id;
     int32_t combat_face_offset;
     MESH_PAIR no_holster_offsets;
-    LARA_SKIN_TYPE extra_outfits[LS_EXTRA_NUMBER_OF];
+    int32_t extra_outfits[LS_EXTRA_NUMBER_OF];
 } LARA_SKIN_OUTFIT;
 
 typedef struct {

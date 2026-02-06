@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/config/common.h>
+#include <trx/game/game_flow/common.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara/skin.h>
 #include <trx/game/music.h>
@@ -217,11 +218,62 @@ bool UI_Settings_ShadowType_IsEnumValueAvailable(
     return true;
 }
 
-bool UI_Settings_LaraSkinType_IsEnumValueAvailable(
-    const UI_SETTINGS_OPTION *const option, const int32_t value)
+static int32_t M_GetLaraOutfitPosition(void)
 {
-    return value == LARA_SKIN_TYPE_DEFAULT
-        || Lara_Skin_IsOutfitAvailable(value);
+    if (g_Config.visuals.lara_outfit == nullptr) {
+        return 0;
+    }
+
+    const LARA_SKIN_TYPE type =
+        Lara_Skin_FindOutfitByName(g_Config.visuals.lara_outfit);
+    if (Lara_Skin_IsOutfitAvailable(type)) {
+        return type + 1;
+    }
+    return 0;
+}
+
+const char *UI_Settings_LaraOutfit_FormatValue(
+    const UI_SETTINGS_OPTION *const option)
+{
+    const int32_t pos = M_GetLaraOutfitPosition();
+    if (pos == 0) {
+        return GS(LARA_OUTFIT_DEFAULT);
+    }
+    return Lara_Skin_GetOutfitLabelByType(pos - 1);
+}
+
+bool UI_Settings_LaraOutfit_CanChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    if (dir == 0) {
+        return false;
+    }
+
+    const int32_t pos = M_GetLaraOutfitPosition();
+    const int32_t next = pos + dir;
+    return next >= 0 && next <= Lara_Skin_GetOutfitCount();
+}
+
+bool UI_Settings_LaraOutfit_RequestChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    const int32_t pos = M_GetLaraOutfitPosition();
+    const int32_t next = pos + dir;
+    if (next < 0 || next > Lara_Skin_GetOutfitCount()) {
+        return false;
+    }
+
+    if (next == 0) {
+        return Config_RestoreOptionDefault(option->target);
+    }
+
+    const char *const name = Lara_Skin_GetOutfitName(next - 1);
+    if (name == nullptr) {
+        return false;
+    }
+
+    const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+    return Config_SetOptionValueFromString(cfg_opt, name);
 }
 
 bool UI_Settings_Volume_RequestChange(

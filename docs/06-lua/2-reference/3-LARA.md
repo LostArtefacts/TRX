@@ -28,10 +28,11 @@ Module for interacting with the Lara's object.
     end)
     ```
 
-- [lua]`trx.lara.skin`  
-    Reads/writes Lara's skin type. Skins are stored in saves, but writing this
-    value does not change the global config setting, so subsequent levels will
-    adhere to regular skin changes.
+- [lua]`trx.lara.outfit`  
+    Reads/writes Lara's outfit name string (for example [lua]`"tr2_diving_suit"`).
+    Outfit names are the keys defined in [md]`cfg/outfits.json5`. Outfits are
+    stored in saves, but writing this value does not change the global config
+    setting, so subsequent levels will adhere to regular outfit changes.
 
 - [lua]`trx.lara.set_extra_equipment(lara_mesh_id, extra_mesh_id)`  
     Defines a specific extra mesh to be drawn at the same position as the given

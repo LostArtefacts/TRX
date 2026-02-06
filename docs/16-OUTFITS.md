@@ -88,7 +88,8 @@ behave. The structure of this file is described below.
 <summary>Show snippet</summary>
 
 ```json
-"skin_type_02": {
+"tr1_classic": {
+  "name_gs": "LARA_OUTFIT_TR1_CLASSIC",
   "mesh_object": "O_LARA_SKIN_SWAP_2",
   "is_reflective": false,
   "gun_map": 0,
@@ -108,8 +109,8 @@ behave. The structure of this file is described below.
     "thigh_l": 2,
   },
   "extra_outfits": {
-    "LS_EXTRA_TREX_KILL": "skin_type_03",
-    "LS_EXTRA_MIDAS_KILL": "skin_type_05",
+    "LS_EXTRA_TREX_KILL": "tr1_mauled",
+    "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
   },
 },
 ```
@@ -120,6 +121,14 @@ behave. The structure of this file is described below.
     <th>Property</th>
     <th>Type</th>
     <th colspan="2">Description</th>
+  </tr>
+  <tr valign="top">
+    <td><code>name_gs</code></td>
+    <td>String</td>
+    <td colspan="2">
+      The game string enum key used for localized UI labels for this outfit
+      (for example, <code>LARA_OUTFIT_TR1_CLASSIC</code>).
+    </td>
   </tr>
   <tr valign="top">
     <td><code>mesh_object</code></td>
@@ -330,15 +339,15 @@ it.
 
 In this case, you can simply enforce the outfit option, and continue to ship the
 standard files as above. Provided your game-flow level has an accurate
-`lara_skin_type` entry, you can enforce as follows.
+`lara_outfit` entry, you can enforce as follows.
 
 ```json
 "enforced_config": {
-  "lara_skin_type": "default",
+  "lara_outfit": null,
 },
 ```
 
-Using default here means that if your second level uses a different outfit, that
+Using null here means that if your second level uses a different outfit, that
 will still be honoured.
 
 ***

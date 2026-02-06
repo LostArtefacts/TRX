@@ -49,7 +49,7 @@
             "type": "gym",
             "path": "data/house.tr2",
             "music_track": -1,
-            "lara_skin_type": "skin_type_15",
+            "lara_outfit": "tr3_gym",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/house.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -66,7 +66,7 @@
             "path": "data/jungle.tr2",
             "script": "data/scripts/jungle.lua",
             "music_track": 34,
-            "lara_skin_type": "skin_type_16",
+            "lara_outfit": "tr3_classic",
             "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -89,7 +89,7 @@
         {
             "path": "data/temple.tr2",
             "music_track": 34,
-            "lara_skin_type": "skin_type_16",
+            "lara_outfit": "tr3_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -108,7 +108,7 @@
         {
             "path": "data/quadchas.tr2",
             "music_track": 34,
-            "lara_skin_type": "skin_type_16",
+            "lara_outfit": "tr3_classic",
             "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -127,7 +127,7 @@
         {
             "path": "data/tonyboss.tr2",
             "music_track": 30,
-            "lara_skin_type": "skin_type_16",
+            "lara_outfit": "tr3_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -146,7 +146,7 @@
         {
             "path": "data/shore.tr2",
             "music_track": 32,
-            "lara_skin_type": "skin_type_17",
+            "lara_outfit": "tr3_south_pacific",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -167,7 +167,7 @@
         {
             "path": "data/crash.tr2",
             "music_track": 33,
-            "lara_skin_type": "skin_type_17",
+            "lara_outfit": "tr3_south_pacific",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "pickup_1", "quantity": 1},
@@ -189,7 +189,7 @@
             "path": "data/rapids.tr2",
             "music_track": 36,
             "death_tile": "rapids",
-            "lara_skin_type": "skin_type_17",
+            "lara_outfit": "tr3_south_pacific",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -207,7 +207,7 @@
         {
             "path": "data/triboss.tr2",
             "music_track": 30,
-            "lara_skin_type": "skin_type_17",
+            "lara_outfit": "tr3_south_pacific",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/southpac.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -226,7 +226,7 @@
         {
             "path": "data/roofs.tr2",
             "music_track": 73,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -246,7 +246,7 @@
         {
             "path": "data/sewer.tr2",
             "music_track": 74,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -264,7 +264,7 @@
         {
             "path": "data/tower.tr2",
             "music_track": 31,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -282,7 +282,7 @@
         {
             "path": "data/office.tr2",
             "music_track": 78,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "weather_type": "rain",
             "death_tile": "electric",
             "sequence": [
@@ -304,7 +304,7 @@
             "path": "data/nevada.tr2",
             "music_track": 33,
             "death_tile": "electric",
-            "lara_skin_type": "skin_type_19",
+            "lara_outfit": "tr3_nevada",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -323,7 +323,7 @@
         {
             "path": "data/compound.tr2",
             "music_track": 27,
-            "lara_skin_type": "skin_type_19",
+            "lara_outfit": "tr3_nevada",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "remove_weapons"},
@@ -348,7 +348,7 @@
             "path": "data/area51.tr2",
             "music_track": 27,
             "death_tile": "electric",
-            "lara_skin_type": "skin_type_19",
+            "lara_outfit": "tr3_nevada",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "pistols", "quantity": 1},
@@ -368,7 +368,7 @@
         {
             "path": "data/antarc.tr2",
             "music_track": 28,
-            "lara_skin_type": "skin_type_20",
+            "lara_outfit": "tr3_antarctica",
             "cold_water": true,
             "weather_type": "snow",
             "sequence": [
@@ -391,7 +391,7 @@
         {
             "path": "data/mines.tr2",
             "music_track": 30,
-            "lara_skin_type": "skin_type_20",
+            "lara_outfit": "tr3_antarctica",
             "cold_water": true,
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -410,7 +410,7 @@
         {
             "path": "data/city.tr2",
             "music_track": 26,
-            "lara_skin_type": "skin_type_20",
+            "lara_outfit": "tr3_antarctica",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
@@ -428,7 +428,7 @@
         {
             "path": "data/chamber.tr2",
             "music_track": 26,
-            "lara_skin_type": "skin_type_20",
+            "lara_outfit": "tr3_antarctica",
             "weather_type": "snow",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -462,7 +462,7 @@
             "type": "bonus",
             "path": "data/stpaul.tr2",
             "music_track": 30,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "weather_type": "rain",
             "sequence": [
                 {"type": "loading_screen", "path": "data/images/london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
@@ -484,7 +484,7 @@
         {
             "path": "cuts/cut6.tr2",
             "music_track": 64,
-            "lara_skin_type": "skin_type_16",
+            "lara_outfit": "tr3_classic",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -499,7 +499,7 @@
         {
             "path": "cuts/cut9.tr2",
             "music_track": 69,
-            "lara_skin_type": "skin_type_16",
+            "lara_outfit": "tr3_classic",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -515,7 +515,7 @@
         {
             "path": "cuts/cut1.tr2",
             "music_track": 68,
-            "lara_skin_type": "skin_type_17",
+            "lara_outfit": "tr3_south_pacific",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -532,7 +532,7 @@
         {
             "path": "cuts/cut4.tr2",
             "music_track": 65,
-            "lara_skin_type": "skin_type_17",
+            "lara_outfit": "tr3_south_pacific",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -548,7 +548,7 @@
         {
             "path": "cuts/cut2.tr2",
             "music_track": 67,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "weather_type": "rain",
             "sequence": [
                 {"type": "loop_game"},
@@ -565,7 +565,7 @@
         {
             "path": "cuts/cut5.tr2",
             "music_track": 63,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -581,7 +581,7 @@
         {
             "path": "cuts/cut11.tr2",
             "music_track": 71,
-            "lara_skin_type": "skin_type_18",
+            "lara_outfit": "tr3_catsuit",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -597,7 +597,7 @@
         {
             "path": "cuts/cut7.tr2",
             "music_track": 72,
-            "lara_skin_type": "skin_type_19",
+            "lara_outfit": "tr3_nevada",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -615,7 +615,7 @@
             "path": "cuts/cut8.tr2",
             "script": "data/scripts/cut8.lua",
             "music_track": 70,
-            "lara_skin_type": "skin_type_19",
+            "lara_outfit": "tr3_nevada",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -630,7 +630,7 @@
         {
             "path": "cuts/cut3.tr2",
             "music_track": 62,
-            "lara_skin_type": "skin_type_20",
+            "lara_outfit": "tr3_antarctica",
             "sequence": [
                 {"type": "loop_game"},
             ],
@@ -647,7 +647,7 @@
         {
             "path": "cuts/cut12.tr2",
             "music_track": 66,
-            "lara_skin_type": "skin_type_20",
+            "lara_outfit": "tr3_antarctica",
             "sequence": [
                 {"type": "loop_game"},
             ],

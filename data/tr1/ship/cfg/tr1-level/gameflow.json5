@@ -29,7 +29,7 @@
         {
             "path": "PLACEHOLDER",
             "music_track": 0,
-            "lara_skin_type": "skin_type_02",
+            "lara_outfit": "tr1_classic",
             "sequence": [
                 {"type": "loop_game"},
                 {"type": "level_stats"},

@@ -19,7 +19,7 @@ Following are each of the properties available within a level.
     // Optional level Lua script file
     "script": "data/scripts/level1.lua",
     "music_track": 57,
-    "lara_skin_type": "skin_type_08",
+    "lara_outfit": "tr2_classic",
     "weather_type": "rain",
     "death_tile": "rapids",
     "water_color": [0.7, 0.5, 0.85],
@@ -124,7 +124,7 @@ Following are each of the properties available within a level.
     <td colspan="2">The ambient music track ID.</td>
   </tr>
   <tr valign="top">
-    <td><code>lara_skin_type</code></td>
+    <td><code>lara_outfit</code></td>
     <td>string<strong>*</strong></td>
     <td colspan="2">
       Defines the outfit to use for Lara, unless overridden by player choice.

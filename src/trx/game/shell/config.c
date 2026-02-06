@@ -177,7 +177,7 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
     if (L_CHANGED(visuals.enable_braid)) {
         Lara_Skin_ApplyOutfit();
     }
-    if (L_CHANGED(visuals.lara_skin_type)) {
+    if (L_CHANGED(visuals.lara_outfit)) {
         Lara_Skin_ApplyOutfitFromConfig();
     }
 
