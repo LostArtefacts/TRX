@@ -179,13 +179,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── gym_sky.bin
 │   │   ├── india_sky.bin
 │   │   ├── lara_animations.bin
-│   │   ├── lara_antarc_guns.bin
-│   │   ├── lara_coastal_guns.bin
 │   │   ├── lara_extra.bin
 │   │   ├── lara_guns.bin
 │   │   ├── lara_gym_guns.bin
-│   │   ├── lara_london_guns.bin
-│   │   ├── lara_nevada_guns.bin
 │   │   ├── lara_outfits.bin
 │   │   ├── london_sky.bin
 │   │   ├── misc_sprites.bin
@@ -415,13 +411,9 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── gym_sky.bin
         │   │   ├── india_sky.bin
         │   │   ├── lara_animations.bin
-        │   │   ├── lara_antarc_guns.bin
-        │   │   ├── lara_coastal_guns.bin
         │   │   ├── lara_extra.bin
         │   │   ├── lara_guns.bin
         │   │   ├── lara_gym_guns.bin
-        │   │   ├── lara_london_guns.bin
-        │   │   ├── lara_nevada_guns.bin
         │   │   ├── lara_outfits.bin
         │   │   ├── london_sky.bin
         │   │   ├── misc_sprites.bin

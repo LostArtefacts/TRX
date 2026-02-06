@@ -159,7 +159,7 @@
                 "data/injections/coastal_airlock.bin",
                 "data/injections/coastal_sky.bin",
                 "data/injections/coastal_animating_bounds.bin",
-                "data/injections/lara_coastal_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -180,7 +180,7 @@
             "injections": [
                 "data/injections/crash_sky.bin",
                 "data/injections/crash_pickup_meshes.bin",
-                "data/injections/lara_coastal_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -198,7 +198,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_coastal_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/rapids_sky.bin",
             ],
         },
@@ -216,7 +216,7 @@
                 {"type": "globe_select", "image": "data/images/southpac.webp"},
             ],
             "injections": [
-                "data/injections/lara_coastal_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/ora_dagger.bin",
                 "data/injections/globe_model.bin",
             ],
@@ -238,7 +238,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -256,7 +256,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -274,7 +274,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -294,7 +294,7 @@
                 {"type": "globe_select", "image": "data/images/london.webp"},
             ],
             "injections": [
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/globe_model.bin",
             ],
         },
@@ -314,7 +314,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_nevada_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/nevada_sky.bin",
             ],
         },
@@ -339,7 +339,7 @@
             ],
             "injections": [
                 "data/injections/area51_sky.bin",
-                "data/injections/lara_nevada_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -359,7 +359,7 @@
             ],
             "injections": [
                 "data/injections/area51_sky.bin",
-                "data/injections/lara_nevada_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/globe_model.bin",
             ],
         },
@@ -383,7 +383,7 @@
             "injections": [
                 "data/injections/antarc_airlock.bin",
                 "data/injections/antarc_sky.bin",
-                "data/injections/lara_antarc_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -402,7 +402,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_antarc_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -420,7 +420,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_antarc_guns.bin",
+                "data/injections/lara_guns.bin",
             ],
         },
 
@@ -452,7 +452,7 @@
             ],
             "injections": [
                 "data/injections/cavern_sky.bin",
-                "data/injections/lara_antarc_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/ora_dagger.bin",
             ],
         },
@@ -473,7 +473,7 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_london_guns.bin",
+                "data/injections/lara_guns.bin",
                 "data/injections/stpaul_animating_bounds.bin",
             ],
         },
