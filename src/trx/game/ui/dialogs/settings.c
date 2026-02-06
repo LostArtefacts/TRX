@@ -6,21 +6,8 @@
 #include <trx/game/game_string_manager.h>
 #include <trx/game/input.h>
 #include <trx/game/scaler.h>
+#include <trx/game/ui.h>
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
-#include <trx/game/ui/elements/anchor.h>
-#include <trx/game/ui/elements/bar.h>
-#include <trx/game/ui/elements/frame.h>
-#include <trx/game/ui/elements/hide.h>
-#include <trx/game/ui/elements/label.h>
-#include <trx/game/ui/elements/modal.h>
-#include <trx/game/ui/elements/pad.h>
-#include <trx/game/ui/elements/resize.h>
-#include <trx/game/ui/elements/row_arrows.h>
-#include <trx/game/ui/elements/scrollable_area.h>
-#include <trx/game/ui/elements/spacer.h>
-#include <trx/game/ui/elements/stack.h>
-#include <trx/game/ui/elements/tab_switch.h>
-#include <trx/game/ui/elements/window.h>
 #include <trx/game/viewport.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
@@ -593,6 +580,16 @@ static void M_Footer(const UI_SETTINGS_STATE *const s)
     UI_EndStack();
 }
 
+static void M_WindowHeader(void *const user_data)
+{
+    UI_SETTINGS_STATE *const s = user_data;
+    if (s->tab_switch != nullptr && s->tab_count > 0) {
+        UI_TabSwitch(
+            s->tab_switch, s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS);
+        UI_Spacer(0.0f, 8.0f);
+    }
+}
+
 static void M_HandleLanguageReload(const EVENT *const event, void *const data)
 {
     UI_SETTINGS_STATE *const s = data;
@@ -851,21 +848,14 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
     });
 
-    UI_BeginWindow();
-    UI_WindowTitle(GameString_Get(s->title));
-    UI_BeginWindowBody();
-
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+    UI_BeginWindow((UI_WINDOW_SETTINGS) {
+        .title = GameString_Get(s->title),
+        .scrollable = &s->scroll,
+        .title_spacing = -1.0f,
+        .header_func = M_WindowHeader,
+        .footer_func = nullptr,
+        .user_data = s,
     });
-    if (s->tab_switch != nullptr && s->tab_count > 0) {
-        UI_TabSwitch(
-            s->tab_switch, s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS);
-        UI_Spacer(0.0f, 8.0f);
-    }
-
-    UI_BeginScrollableArea(&s->scroll, s->tab_count > 0);
 
     if (s->scroll.vis_items == 0) {
         UI_BeginResize(-1.0f, -1.0f);
@@ -955,9 +945,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 
         UI_EndResize();
     }
-    UI_EndScrollableArea(&s->scroll, s->tab_count > 0);
-    UI_EndStack();
-    UI_EndWindowBody();
+
     UI_EndWindow();
 
     // Button hint strip

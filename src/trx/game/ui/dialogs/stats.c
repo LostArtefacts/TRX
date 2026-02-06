@@ -9,7 +9,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui.h>
-#include <trx/game/ui/elements/scrollable_area.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/version.h>
@@ -44,7 +43,7 @@ typedef enum {
 typedef struct {
     float window_margin;
     float window_y;
-    float window_pad;
+    float title_spacing;
     float min_width;
     float row_spacing;
     bool use_full_hours;
@@ -72,7 +71,7 @@ static const M_LOOK m_Looks[TR_VERSION_COUNT] = {
     [0] = {
         .window_margin = 0.0f,
         .window_y = 0.5f,
-        .window_pad = 4.0f,
+        .title_spacing = 4.0f,
         .min_width = 0.0f,
         .row_spacing = 30.0f,
         .use_full_hours = false,
@@ -80,7 +79,7 @@ static const M_LOOK m_Looks[TR_VERSION_COUNT] = {
     [1] = {
         .window_margin = 40.0f,
         .window_y = 1.0f,
-        .window_pad = 3.0f,
+        .title_spacing = 3.0f,
         .min_width = 290.0f,
         .row_spacing = 25.0f,
         .use_full_hours = true,
@@ -88,7 +87,7 @@ static const M_LOOK m_Looks[TR_VERSION_COUNT] = {
     [2] = {
         .window_margin = 40.0f,
         .window_y = 1.0f,
-        .window_pad = 3.0f,
+        .title_spacing = 3.0f,
         .min_width = 290.0f,
         .row_spacing = 25.0f,
         .use_full_hours = true,
@@ -529,29 +528,70 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
     }
 }
 
+static int32_t M_GetAssaultCourseRowCount(const UI_STATS_DIALOG_STATE *const s)
+{
+    const int32_t record_limit = g_TRVersion >= 3 ? 3 : MAX_ASSAULT_TIMES;
+    const bool has_race_track = Gym_TrackManager_HasStats(GYM_TRACK_QUAD);
+    int32_t count = 0;
+
+    if (has_race_track) {
+        count++;
+    }
+
+    if (s->assault_stats[GYM_TRACK_ASSAULT]->entries[0].time == 0) {
+        count++;
+    } else {
+        for (int32_t i = 0; i < record_limit; i++) {
+            if (s->assault_stats[GYM_TRACK_ASSAULT]->entries[i].time == 0) {
+                break;
+            }
+            count++;
+        }
+    }
+
+    if (has_race_track) {
+        count += 2;
+        if (s->assault_stats[GYM_TRACK_QUAD]->entries[0].time == 0) {
+            count++;
+        } else {
+            for (int32_t i = 0; i < record_limit; i++) {
+                if (s->assault_stats[GYM_TRACK_QUAD]->entries[i].time == 0) {
+                    break;
+                }
+                count++;
+            }
+        }
+    }
+
+    return MAX(count, M_MIN_ASSAULT_COURSE_ROWS);
+}
+
+static UI_WINDOW_SETTINGS M_GetWindowSettings(
+    const UI_STATS_DIALOG_STATE *const s)
+{
+    const bool is_assault_mode =
+        s->args.mode == UI_STATS_DIALOG_MODE_ASSAULT_COURSE;
+    return (UI_WINDOW_SETTINGS) {
+        .title = M_GetDialogTitle(s),
+        .scrollable = is_assault_mode ? &s->scrollable : nullptr,
+        .title_spacing = s->look->title_spacing,
+    };
+}
+
 static void M_BeginDialog(const UI_STATS_DIALOG_STATE *const s)
 {
-    const char *const title = M_GetDialogTitle(s);
     if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_VERTICAL,
             .spacing = { .v = 11.0f },
             .align = { .h = UI_STACK_H_ALIGN_CENTER },
         });
+        const char *const title = M_GetDialogTitle(s);
         if (title != nullptr) {
             UI_Label(title);
         }
     } else {
-        UI_BeginWindow();
-        if (title != nullptr) {
-            UI_WindowTitle(title);
-        }
-        UI_BeginWindowBody();
-        UI_BeginStackEx((UI_STACK_SETTINGS) {
-            .orientation = UI_STACK_VERTICAL,
-            .spacing = { .v = s->look->window_pad },
-            .align = { .h = UI_STACK_H_ALIGN_SPAN },
-        });
+        UI_BeginWindow(M_GetWindowSettings(s));
     }
     // ensure minimum dialog width
     UI_Spacer(s->look->min_width, 0.0f);
@@ -562,8 +602,6 @@ static void M_EndDialog(const UI_STATS_DIALOG_STATE *const s)
     if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
         UI_EndStack();
     } else {
-        UI_EndStack();
-        UI_EndWindowBody();
         UI_EndWindow();
     }
 }
@@ -571,8 +609,6 @@ static void M_EndDialog(const UI_STATS_DIALOG_STATE *const s)
 UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
 {
     UI_STATS_DIALOG_STATE *const s = Memory_Alloc(sizeof(*s));
-
-    const int32_t record_limit = g_TRVersion == 3 ? 3 : MAX_ASSAULT_TIMES;
 
     s->has_floordata_secrets = false;
     s->scrollable.vis_items = M_MIN_ASSAULT_COURSE_ROWS;
@@ -616,6 +652,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
             s->assault_stats[track_type] =
                 Gym_TrackManager_GetStats(track_type);
         }
+        s->scrollable.max_items = M_GetAssaultCourseRowCount(s);
         break;
     }
 
@@ -650,7 +687,6 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
         // Ensure minimum size even if there are no items
         UI_Spacer(290.0f, 0.0f);
-        UI_BeginScrollableArea(&s->scrollable, false);
         UI_BeginScrollableStack(
             &s->scrollable,
             (UI_SCROLLABLE_STACK_SETTINGS) {
@@ -659,7 +695,6 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
             });
         M_AssaultCourseStatsRows(s);
         UI_EndScrollableStack();
-        UI_EndScrollableArea(&s->scrollable, false);
         break;
     }
 

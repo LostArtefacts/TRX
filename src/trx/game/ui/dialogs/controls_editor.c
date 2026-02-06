@@ -583,6 +583,20 @@ UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *const s)
     }
 }
 
+static void M_Header(void *const user_data)
+{
+    UI_CONTROLS_EDITOR_STATE *const s = user_data;
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+        .spacing = { .v = 4.0f },
+    });
+    M_CurrentLayout(s);
+    M_GroupsHeader(s);
+    UI_EndStack();
+    UI_Spacer(0.0f, 5.0f);
+}
+
 void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
 {
     UI_BeginModal(0.5f, 0.55f);
@@ -591,28 +605,21 @@ void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
     });
 
-    UI_BeginWindow();
-    UI_WindowTitle(GS(CONTROLS_CUSTOMIZE));
-    UI_BeginWindowBody();
-
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = UI_STACK_H_ALIGN_SPAN },
-        .spacing = { .v = 4.0f },
+    UI_BeginWindow((UI_WINDOW_SETTINGS) {
+        .title = GS(CONTROLS_CUSTOMIZE),
+        .scrollable = nullptr,
+        .title_spacing = -1.0f,
+        .header_func = M_Header,
+        .user_data = s,
     });
-    M_CurrentLayout(s);
-    M_GroupsHeader(s);
-    UI_Spacer(0.0f, 5.0f);
 
     UI_BeginStack(UI_STACK_HORIZONTAL);
     M_Group(s, s->active_group);
     UI_EndStack();
 
-    UI_EndStack();
-    UI_EndWindowBody();
     UI_EndWindow();
 
-    UI_Spacer(0.0f, 5.f);
+    UI_Spacer(0.0f, 5.0f);
     M_Footer(s);
     UI_EndStack();
     UI_EndModal();

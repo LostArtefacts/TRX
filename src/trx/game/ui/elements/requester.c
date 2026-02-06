@@ -2,13 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/input.h>
-#include <trx/game/ui/elements/frame.h>
-#include <trx/game/ui/elements/pad.h>
-#include <trx/game/ui/elements/resize.h>
-#include <trx/game/ui/elements/scrollable_area.h>
-#include <trx/game/ui/elements/stack.h>
-#include <trx/game/ui/elements/window.h>
-#include <trx/game/ui/text.h>
+#include <trx/game/ui.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
@@ -106,18 +100,13 @@ void UI_Requester_SelectRow(UI_REQUESTER_STATE *const s, const int32_t i)
 void UI_BeginRequester(
     const UI_REQUESTER_STATE *const s, const char *const title)
 {
-    UI_BeginWindow();
-    UI_WindowTitle(title);
-    UI_BeginWindowBody();
-
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+    const bool show_scroll_hints =
+        s->show_arrows && s->scroll.vis_items < s->scroll.max_items;
+    UI_BeginWindow((UI_WINDOW_SETTINGS) {
+        .title = title,
+        .scrollable = show_scroll_hints ? &s->scroll : nullptr,
+        .title_spacing = -1.0f,
     });
-
-    if (s->show_arrows) {
-        UI_BeginScrollableArea(&s->scroll, false);
-    }
     if (s->reserve_space) {
         UI_BeginResize(
             -1.0f,
@@ -139,12 +128,6 @@ void UI_EndRequester(const UI_REQUESTER_STATE *const s)
     if (s->reserve_space) {
         UI_EndResize();
     }
-    if (s->show_arrows) {
-        UI_EndScrollableArea(&s->scroll, false);
-    }
-
-    UI_EndStack();
-    UI_EndWindowBody();
     UI_EndWindow();
 }
 

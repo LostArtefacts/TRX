@@ -9,23 +9,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/scaler.h>
-#include <trx/game/ui/elements/ammo_label.h>
-#include <trx/game/ui/elements/bar.h>
-#include <trx/game/ui/elements/bar_enemy_hp.h>
-#include <trx/game/ui/elements/bar_lara_air.h>
-#include <trx/game/ui/elements/bar_lara_exposure.h>
-#include <trx/game/ui/elements/bar_lara_hp.h>
-#include <trx/game/ui/elements/bar_lara_sprint.h>
-#include <trx/game/ui/elements/fixed.h>
-#include <trx/game/ui/elements/flash.h>
-#include <trx/game/ui/elements/fps_counter.h>
-#include <trx/game/ui/elements/label.h>
-#include <trx/game/ui/elements/modal.h>
-#include <trx/game/ui/elements/pad.h>
-#include <trx/game/ui/elements/resize.h>
-#include <trx/game/ui/elements/row_arrows.h>
-#include <trx/game/ui/elements/spacer.h>
-#include <trx/game/ui/elements/stack.h>
+#include <trx/game/ui.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/version.h>
@@ -174,14 +158,10 @@ static void M_Arrow(
                 -1.0,
                 UI_BAR_HEIGHT * Scaler_GetScale(SCALER_TARGET_BAR)
                     / Scaler_GetScale(SCALER_TARGET_TEXT));
-        } else {
-            UI_BeginFixed(0.5f, 0.5f);
         }
         UI_Label(m_ArrowInfo[arrow].label);
         if (m_ArrowInfo[arrow].resize) {
             UI_EndResize();
-        } else {
-            UI_EndFixed();
         }
     }
 }
