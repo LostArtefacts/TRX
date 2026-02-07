@@ -34,6 +34,8 @@ void Output_Uniforms_UploadRoomLights(
     const OUTPUT_UNIFORMS *uniforms, const ROOM *room);
 void Output_Uniforms_UploadCPULight(
     const OUTPUT_UNIFORMS *uniforms, const OUTPUT_LIGHT_INFO *info);
+void Output_Uniforms_UploadOwnLight(
+    const OUTPUT_UNIFORMS *uniforms, const OUTPUT_LIGHT_INFO *info);
 
 void Output_Uniforms_UploadDesaturation(
     const OUTPUT_UNIFORMS *uniforms, float desaturation);

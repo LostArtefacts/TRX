@@ -75,9 +75,18 @@ typedef struct {
 } M_UNIFORM_LS;
 #pragma pack(pop)
 
+typedef enum {
+    M_LS_MODE_NONE = 0,
+    M_LS_MODE_FULL = 1,
+    M_LS_MODE_OWN = 2,
+} M_LS_MODE;
+
 typedef struct {
     M_UNIFORM_LIGHTS last_lights;
     OUTPUT_LIGHT_INFO last_light_info;
+    M_LS_MODE last_ls_mode;
+    int32_t last_own_light_adder;
+    RGB_F last_own_light_tr3_ambient;
 } M_PRIV;
 
 static void M_FillLight(
@@ -238,11 +247,11 @@ void Output_Uniforms_UploadRoomLights(
     const size_t size = offsetof(M_UNIFORM_LIGHTS, lights)
         + lights.num_lights * sizeof(M_UNIFORM_LIGHT);
 
-    M_PRIV *const priv = uniforms->priv;
-    if (memcmp(&priv->last_lights, &lights, sizeof(lights)) == 0) {
+    M_PRIV *const p = uniforms->priv;
+    if (memcmp(&p->last_lights, &lights, sizeof(lights)) == 0) {
         return;
     }
-    memcpy(&priv->last_lights, &lights, sizeof(lights));
+    memcpy(&p->last_lights, &lights, sizeof(lights));
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->lights);
     GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, size, &lights);
@@ -251,11 +260,15 @@ void Output_Uniforms_UploadRoomLights(
 void Output_Uniforms_UploadCPULight(
     const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
 {
-    M_PRIV *const priv = uniforms->priv;
-    if (memcmp(&priv->last_light_info, info, sizeof(*info)) == 0) {
+    M_PRIV *const p = uniforms->priv;
+    if (p->last_ls_mode == M_LS_MODE_FULL
+        && memcmp(&p->last_light_info, info, sizeof(*info)) == 0) {
         return;
     }
-    memcpy(&priv->last_light_info, info, sizeof(*info));
+    memcpy(&p->last_light_info, info, sizeof(*info));
+    p->last_own_light_adder = info->ls_adder;
+    p->last_own_light_tr3_ambient = info->tr3_ambient;
+    p->last_ls_mode = M_LS_MODE_FULL;
 
     M_UNIFORM_LS ls = {};
     ls.adder = info->ls_adder;
@@ -292,6 +305,46 @@ void Output_Uniforms_UploadCPULight(
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
     GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);
     GFX_GL_CheckError();
+}
+
+void Output_Uniforms_UploadOwnLight(
+    const OUTPUT_UNIFORMS *const uniforms, const OUTPUT_LIGHT_INFO *const info)
+{
+    M_PRIV *const priv = uniforms->priv;
+
+    if (g_TRVersion >= 3) {
+        if (priv->last_ls_mode == M_LS_MODE_OWN
+            && priv->last_own_light_tr3_ambient.r == info->tr3_ambient.r
+            && priv->last_own_light_tr3_ambient.g == info->tr3_ambient.g
+            && priv->last_own_light_tr3_ambient.b == info->tr3_ambient.b) {
+            return;
+        }
+
+        const float ambient[4] = {
+            info->tr3_ambient.r,
+            info->tr3_ambient.g,
+            info->tr3_ambient.b,
+            0.0f,
+        };
+        glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
+        GFX_TRACK_SUBDATA(
+            glBufferSubData, GL_UNIFORM_BUFFER,
+            offsetof(M_UNIFORM_LS, tr3_ambient), sizeof(ambient), ambient);
+        priv->last_own_light_tr3_ambient = info->tr3_ambient;
+    } else {
+        if (priv->last_ls_mode == M_LS_MODE_OWN
+            && priv->last_own_light_adder == info->ls_adder) {
+            return;
+        }
+
+        const float light_adder = info->ls_adder;
+        glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
+        GFX_TRACK_SUBDATA(
+            glBufferSubData, GL_UNIFORM_BUFFER, offsetof(M_UNIFORM_LS, adder),
+            sizeof(light_adder), &light_adder);
+        priv->last_own_light_adder = info->ls_adder;
+    }
+    priv->last_ls_mode = M_LS_MODE_OWN;
 }
 
 OUTPUT_UNIFORMS *Output_Uniforms_Create(void)

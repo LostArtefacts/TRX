@@ -30,6 +30,10 @@ typedef struct M_MESH_BUF_BINDING {
     M_MESH_GEOM *geom_data;
     M_MESH_TEXTURE *tex_data;
     M_MESH_SHADE *shade_data;
+    bool needs_room_lights;
+    bool needs_cpu_light;
+    bool needs_object_light;
+    bool needs_own_light;
     int32_t vertex_start;
     int32_t vertex_count;
 
@@ -124,8 +128,13 @@ static void M_FillShade(
     *shade = vertex->shade;
 }
 
-static void M_SyncRoom(MESH_BATCHER *const batcher, const ROOM *const room)
+static void M_SyncRoom(
+    const MESH_BATCHER *const batcher, const M_MESH_BUF_BINDING *const bind,
+    const ROOM *const room)
 {
+    if (!bind->needs_room_lights) {
+        return;
+    }
     Output_Uniforms_UploadRoomLights(Output_GetUniforms(), room);
 }
 
@@ -235,9 +244,12 @@ static void M_DrawOpaqueInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    M_SyncRoom(batcher, inst->room);
-
-    Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
+    M_SyncRoom(batcher, bind, inst->room);
+    if (bind->needs_object_light) {
+        Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
+    } else if (bind->needs_own_light) {
+        Output_Uniforms_UploadOwnLight(Output_GetUniforms(), &inst->light_info);
+    }
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
 
@@ -271,9 +283,12 @@ static void M_DrawBlendAddInstance(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
-    M_SyncRoom(batcher, inst->room);
-
-    Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
+    M_SyncRoom(batcher, bind, inst->room);
+    if (bind->needs_object_light) {
+        Output_Uniforms_UploadCPULight(Output_GetUniforms(), &inst->light_info);
+    } else if (bind->needs_own_light) {
+        Output_Uniforms_UploadOwnLight(Output_GetUniforms(), &inst->light_info);
+    }
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
     Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
@@ -364,8 +379,16 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
 
         if (sort_ptr->inst != inst) {
             inst = sort_ptr->inst;
-            Output_Uniforms_UploadCPULight(
-                Output_GetUniforms(), &inst->light_info);
+            const M_MESH_BUF_BINDING *const bind =
+                M_GetBinding(batcher, inst->mesh);
+            ASSERT(bind != nullptr);
+            if (bind->needs_object_light) {
+                Output_Uniforms_UploadCPULight(
+                    Output_GetUniforms(), &inst->light_info);
+            } else if (bind->needs_own_light) {
+                Output_Uniforms_UploadOwnLight(
+                    Output_GetUniforms(), &inst->light_info);
+            }
             Output_MeshShader_UploadModelMatrix(
                 batcher->shader, &inst->wmatrix);
             Output_MeshShader_UploadTint(batcher->shader, inst->tint);
@@ -373,7 +396,7 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
                 batcher->shader, inst->water_effect);
             Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-            M_SyncRoom(batcher, inst->room);
+            M_SyncRoom(batcher, bind, inst->room);
         }
 
         // indices live in the EBO starting at index_start
@@ -576,6 +599,17 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
         M_FillGeometry(&bind->geom_data[i], &vertices[i]);
         M_FillTexture(&bind->tex_data[i], &vertices[i]);
         M_FillShade(&bind->shade_data[i], &vertices[i]);
+        if ((vertices[i].flags & VERT_USE_DYNAMIC_LIGHT) != 0) {
+            bind->needs_room_lights = true;
+        }
+        if ((vertices[i].flags & VERT_USE_OBJECT_LIGHT) != 0) {
+            bind->needs_object_light = true;
+            bind->needs_cpu_light = true;
+        }
+        if ((vertices[i].flags & VERT_USE_OWN_LIGHT) != 0) {
+            bind->needs_own_light = true;
+            bind->needs_cpu_light = true;
+        }
     }
 
     // 2. Assign Vertex Offsets
