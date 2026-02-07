@@ -6,10 +6,14 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+#include <string.h>
+
 struct OUTPUT_MESH_SHADER {
     OUTPUT_SHADER *base_tr12;
     OUTPUT_SHADER *base_tr3;
 
+    MATRIX model_matrix[2];
+    bool has_model_matrix[2];
     int32_t water_effect[2];
     float water_effect_params[2][3];
     bool is_wibble_effect[2];
@@ -31,6 +35,8 @@ static OUTPUT_SHADER *M_GetVariantBase(
 OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
 {
     OUTPUT_MESH_SHADER *const shader = Memory_Alloc(sizeof(*shader));
+    shader->has_model_matrix[0] = false;
+    shader->has_model_matrix[1] = false;
     shader->water_effect[0] = -1;
     shader->water_effect[1] = -1;
     shader->water_effect_params[0][0] = 0.0f;
@@ -81,10 +87,18 @@ void Output_MeshShader_Free(OUTPUT_MESH_SHADER *const shader)
 }
 
 void Output_MeshShader_UploadModelMatrix(
-    const OUTPUT_MESH_SHADER *const shader, const MATRIX *const source)
+    OUTPUT_MESH_SHADER *const shader, const MATRIX *const source)
 {
     const int32_t variant_idx = M_GetVariantIndex();
     OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
+    if (shader->has_model_matrix[variant_idx]
+        && memcmp(&shader->model_matrix[variant_idx], source, sizeof(*source))
+            == 0) {
+        return;
+    }
+    memcpy(&shader->model_matrix[variant_idx], source, sizeof(*source));
+    shader->has_model_matrix[variant_idx] = true;
+
     GLfloat m[4][4];
     Output_FillMatrix(m, source);
 
