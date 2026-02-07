@@ -182,12 +182,20 @@ static bool M_IsAmbientTrack(const MUSIC_ID track_id)
     return false;
 }
 
+static float M_GetConfiguredMusicVolume(void)
+{
+    return g_Config.audio.music_volume * g_Config.audio.master_volume;
+}
+
 static void M_SyncVolume(const M_MUSIC_STREAM *const stream)
 {
     if (stream == nullptr || !stream->active || stream->audio_stream_id < 0) {
         return;
     }
-    Audio_Stream_SetVolume(stream->audio_stream_id, m_MusicVolume);
+    const float volume = stream->mode == MPM_OVERLAY
+        ? M_GetConfiguredMusicVolume()
+        : m_MusicVolume;
+    Audio_Stream_SetVolume(stream->audio_stream_id, volume);
 }
 
 static void M_SyncVolumes(void)
