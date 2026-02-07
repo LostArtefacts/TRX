@@ -29,9 +29,7 @@ out vec4 gColor;
 
 vec3 gammaCurve(vec3 rgb, float gamma_exp)
 {
-    vec3 in8 = floor(clamp(rgb, 0.0, 1.0) * 255.0 + 0.5);
-    vec3 out8 = floor(pow(in8 / 256.0, vec3(gamma_exp)) * 256.0);
-    return clamp(out8 / 255.0, 0.0, 1.0);
+    return pow(clamp(rgb, 0.0, 1.0), vec3(gamma_exp));
 }
 
 vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
