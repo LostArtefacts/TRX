@@ -43,7 +43,15 @@ void UI_Settings_LoadFromFile(const char *path);
 const UI_BAR_THEME *UI_Settings_GetBarTheme(UI_BAR_TYPE type);
 bool UI_Settings_CanChangeBarColor(const char *current, int32_t dir);
 const char *UI_Settings_GetNextBarColorName(const char *current, int32_t dir);
+int32_t UI_Settings_GetBarColorCountByKind(UI_BAR_THEME_KIND kind);
+const char *UI_Settings_GetBarColorNameByKind(
+    UI_BAR_THEME_KIND kind, int32_t index);
+bool UI_Settings_IsBarColorNameValidByKind(
+    UI_BAR_THEME_KIND kind, const char *name);
 bool UI_Settings_IsCurrentBarLookPS1(void);
 bool UI_Settings_CanChangeBarLook(int32_t dir);
 const char *UI_Settings_GetNextBarLookName(int32_t dir);
 const char *UI_Settings_GetBarLookLabel(void);
+int32_t UI_Settings_GetBarLookCount(void);
+const char *UI_Settings_GetBarLookName(int32_t index);
+bool UI_Settings_IsBarLookNameValid(const char *name);

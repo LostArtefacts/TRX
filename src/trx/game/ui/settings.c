@@ -344,6 +344,27 @@ static M_BAR_THEME_ENTRY *M_FindBarThemeByName(const char *const name)
     return &m_Settings.bar_themes[entry->index];
 }
 
+static bool M_IsBarColorNameEncountered(
+    const UI_BAR_THEME_KIND kind, const char *const name, const int32_t stop_i,
+    const int32_t stop_j)
+{
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        if (theme->kind != kind) {
+            continue;
+        }
+        for (int32_t j = 0; j < theme->group.color_count; j++) {
+            if (i == stop_i && j == stop_j) {
+                return false;
+            }
+            if (String_Equivalent(theme->group.colors[j].name, name)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 static M_BAR_THEME_ENTRY *M_GetCurrentBarTheme(void)
 {
     M_BAR_THEME_ENTRY *theme = M_FindBarThemeByName(g_Config.ui.bar_look);
@@ -606,4 +627,89 @@ const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
         return theme;
     }
     return &group->colors[0].theme;
+}
+
+int32_t UI_Settings_GetBarColorCountByKind(const UI_BAR_THEME_KIND kind)
+{
+    int32_t count = 0;
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        if (theme->kind != kind) {
+            continue;
+        }
+        for (int32_t j = 0; j < theme->group.color_count; j++) {
+            const char *const name = theme->group.colors[j].name;
+            if (M_IsBarColorNameEncountered(kind, name, i, j)) {
+                continue;
+            }
+            count++;
+        }
+    }
+    return count;
+}
+
+const char *UI_Settings_GetBarColorNameByKind(
+    const UI_BAR_THEME_KIND kind, const int32_t index)
+{
+    if (index < 0) {
+        return nullptr;
+    }
+
+    int32_t unique_index = 0;
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        if (theme->kind != kind) {
+            continue;
+        }
+        for (int32_t j = 0; j < theme->group.color_count; j++) {
+            const char *const name = theme->group.colors[j].name;
+            if (M_IsBarColorNameEncountered(kind, name, i, j)) {
+                continue;
+            }
+            if (unique_index == index) {
+                return name;
+            }
+            unique_index++;
+        }
+    }
+
+    return nullptr;
+}
+
+bool UI_Settings_IsBarColorNameValidByKind(
+    const UI_BAR_THEME_KIND kind, const char *const name)
+{
+    if (name == nullptr) {
+        return false;
+    }
+
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        if (theme->kind != kind) {
+            continue;
+        }
+        if (M_FindThemeByName(&theme->group, name) != nullptr) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int32_t UI_Settings_GetBarLookCount(void)
+{
+    return m_Settings.bar_theme_count;
+}
+
+const char *UI_Settings_GetBarLookName(const int32_t index)
+{
+    if (index < 0 || index >= m_Settings.bar_theme_count) {
+        return nullptr;
+    }
+    return m_Settings.bar_themes[index].name;
+}
+
+bool UI_Settings_IsBarLookNameValid(const char *const name)
+{
+    return M_FindBarThemeByName(name) != nullptr;
 }
