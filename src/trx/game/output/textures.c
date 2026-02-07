@@ -10,6 +10,7 @@
 #include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -37,6 +38,7 @@ static struct {
         bool *animated;
         bool *animated_objects;
         bool *animated_sprites;
+        bool *has_transparency_objects;
 
         uint16_t *flags;
         uint16_t *flags_objects;
@@ -274,8 +276,76 @@ static void M_PrepareUVWs(void)
     m_Priv.uvws.flags = Memory_Alloc(m_Priv.uvws.count * sizeof(uint16_t));
     m_Priv.uvws.flags_objects = m_Priv.uvws.flags;
     m_Priv.uvws.flags_sprites = m_Priv.uvws.flags + m_Priv.uvws.count_objects;
+    m_Priv.uvws.has_transparency_objects =
+        Memory_Alloc(m_Priv.uvws.count_objects * sizeof(bool));
     M_FillObjectUVWs();
     M_FillSpriteUVWs();
+}
+
+static bool M_ObjectTextureHasTransparency(const int32_t texture_idx)
+{
+    if (texture_idx < 0 || texture_idx >= Output_GetObjectTextureCount()
+        || m_TexturePages32 == nullptr) {
+        return true;
+    }
+
+    const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(texture_idx);
+    if (texture == nullptr || texture->uv_count <= 0) {
+        return true;
+    }
+    if (texture->tex_page < 0 || texture->tex_page >= m_TexturePageCount) {
+        return true;
+    }
+
+    int32_t min_u = INT32_MAX;
+    int32_t min_v = INT32_MAX;
+    int32_t max_u = INT32_MIN;
+    int32_t max_v = INT32_MIN;
+    for (int32_t i = 0; i < texture->uv_count; i++) {
+        CLAMPG(min_u, texture->uv[i].u);
+        CLAMPG(min_v, texture->uv[i].v);
+        CLAMPL(max_u, texture->uv[i].u);
+        CLAMPL(max_v, texture->uv[i].v);
+    }
+
+    const int32_t x0 = (min_u * (TEXTURE_PAGE_WIDTH - 1)) / 65535;
+    const int32_t y0 = (min_v * (TEXTURE_PAGE_HEIGHT - 1)) / 65535;
+    const int32_t x1 =
+        (max_u * (TEXTURE_PAGE_WIDTH - 1) + 65534) / 65535; // ceil
+    const int32_t y1 =
+        (max_v * (TEXTURE_PAGE_HEIGHT - 1) + 65534) / 65535; // ceil
+
+    int32_t px0 = x0;
+    int32_t py0 = y0;
+    int32_t px1 = x1;
+    int32_t py1 = y1;
+    CLAMP(px0, 0, TEXTURE_PAGE_WIDTH - 1);
+    CLAMP(py0, 0, TEXTURE_PAGE_HEIGHT - 1);
+    CLAMP(px1, 0, TEXTURE_PAGE_WIDTH - 1);
+    CLAMP(py1, 0, TEXTURE_PAGE_HEIGHT - 1);
+
+    const RGBA_8888 *const page = Output_GetTexturePage32(texture->tex_page);
+    if (page == nullptr) {
+        return true;
+    }
+
+    for (int32_t y = py0; y <= py1; y++) {
+        const int32_t row = y * TEXTURE_PAGE_WIDTH;
+        for (int32_t x = px0; x <= px1; x++) {
+            if (page[row + x].a < 255) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static void M_PrepareObjectTransparencyFlags(void)
+{
+    for (int32_t i = 0; i < Output_GetObjectTextureCount(); i++) {
+        m_Priv.uvws.has_transparency_objects[i] =
+            M_ObjectTextureHasTransparency(i);
+    }
 }
 
 static void M_PrepareEnvMap(void)
@@ -382,6 +452,7 @@ static void M_FreeLevelData(void)
     Memory_FreePointer(&m_Priv.uvws.data);
     Memory_FreePointer(&m_Priv.uvws.animated);
     Memory_FreePointer(&m_Priv.uvws.flags);
+    Memory_FreePointer(&m_Priv.uvws.has_transparency_objects);
     Memory_FreePointer(&m_Priv.atlas_sizes.data);
 }
 
@@ -414,6 +485,7 @@ void Output_Textures_ObserveLevelLoad(void)
 {
     M_FreeLevelData();
     M_PrepareUVWs();
+    M_PrepareObjectTransparencyFlags();
     M_PrepareAnimationRanges();
     M_UploadAtlas();
 }
@@ -511,6 +583,10 @@ SCENE_PASS Output_Textures_GetObjectTextureScenePass(const int32_t texture_idx)
     case DRAW_OPAQUE:
         return SCENE_PASS_OPAQUE;
     case DRAW_BLEND:
+        if (!m_Priv.uvws.animated_objects[texture_idx]
+            && !m_Priv.uvws.has_transparency_objects[texture_idx]) {
+            return SCENE_PASS_OPAQUE;
+        }
         return SCENE_PASS_TRANSPARENT;
     case DRAW_BLEND_ADD:
         return SCENE_PASS_BLEND_ADD;
