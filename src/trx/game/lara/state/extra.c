@@ -15,7 +15,7 @@
 #include <trx/game/viewport.h>
 
 // clang-format off
-#define M_LF_PICKUPSCION               44
+#define M_LF_PICKUP_SCION              44
 #define M_LF_PICKUP_GOLD_BAR           113
 #define M_LF_SHARK_DEATH_END           56
 #define M_LF_SHARK_DEATH_TIMER_DELAY   25
@@ -70,7 +70,7 @@ static const M_MIDAS_STEP m_MidasSteps[] = {
 static void M_ScionPedestal(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (Item_TestFrameEqual(item, M_LF_PICKUPSCION)
+    if (Item_TestFrameEqual(item, M_LF_PICKUP_SCION)
         && lara->interact_target.item_num != NO_ITEM) {
         ITEM *const scion = Item_Get(lara->interact_target.item_num);
         Overlay_AddDisplayPickup(scion->object_id);

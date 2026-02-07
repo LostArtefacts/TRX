@@ -15,6 +15,7 @@
 #define LARA_HEIGHT_UW 400
 #define LARA_HEIGHT_CROUCH 400
 #define LARA_RADIUS 100
+#define LARA_SWIM_DEPTH 730
 
 #define LARA_TURN_UNDO (2 * DEG_1) // = 364
 #define LARA_TURN_RATE ((DEG_1 / 4) + LARA_TURN_UNDO) // = 409

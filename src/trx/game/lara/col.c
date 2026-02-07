@@ -1,8 +1,10 @@
 #include <trx/game/lara/col.h>
 
+#include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
+#include <trx/game/spawn.h>
 
 #define M_MONKEY_CEILING_SNAP 704
 #define M_PUSH_TIMEOUT 15
@@ -162,4 +164,28 @@ void Lara_Col_Static3DPush(const STATIC_MESH *const mesh, COLL_INFO *const coll)
         .rot = { .y = mesh->rot.y },
     };
     M_Push(&src_item, coll, false, true);
+}
+
+void Lara_Col_WadeSplash(ITEM *const item)
+{
+    if (!g_Config.gameplay.enable_wading) {
+        return;
+    }
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->water_status == LWS_CHEAT) {
+        return;
+    }
+
+    const int32_t water_depth = Lara_GetWaterDepth(
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(
+        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+    if (water_height != NO_HEIGHT && water_depth != NO_HEIGHT
+        && bounds != nullptr && item->pos.y + bounds->min.y <= water_height
+        && item->pos.y + bounds->max.y >= water_height
+        && water_depth < LARA_SWIM_DEPTH - STEP_L) {
+        Spawn_Splash(item);
+    }
 }
