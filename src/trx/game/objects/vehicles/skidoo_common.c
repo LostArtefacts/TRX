@@ -146,10 +146,12 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
     } else if (
         obj->intelligent && item->status == IS_ACTIVE
         && (Creature_IsTargetable(item) || item->hit_points == 0)) {
-        Spawn_BloodBath(
-            item->pos.x, skidoo->pos.y - STEP_L, item->pos.z, skidoo->speed,
-            skidoo->rot.y, item->room_num, 3);
-        Gun_HitTarget(item, nullptr, nullptr, LGT_SKIDOO, item->hit_points);
+        if (Item_ShouldSpawnBlood(item)) {
+            Spawn_BloodBath(
+                item->pos.x, skidoo->pos.y - STEP_L, item->pos.z, skidoo->speed,
+                skidoo->rot.y, item->room_num, 3);
+        }
+        Gun_HitTarget(item, nullptr, nullptr, item->hit_points);
     }
     return true;
 }

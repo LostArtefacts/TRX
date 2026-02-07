@@ -45,6 +45,33 @@ typedef struct {
     int32_t effect_mesh;
 } M_PRIV;
 
+static bool M_ShouldSpawnBlood(const ITEM *const item)
+{
+    if (item->current_anim_state != M_STATE_WAIT_DEF
+        && item->current_anim_state != M_STATE_WALK_DEF
+        && item->current_anim_state != M_STATE_START) {
+        return true;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = item->pos.x - lara_item->pos.x;
+    const int32_t dz = item->pos.z - lara_item->pos.z;
+    const int16_t angle = DEG_180 - item->rot.y + Math_Atan(dz, dx);
+    if (angle <= -DEG_90 || angle >= DEG_90) {
+        return true;
+    }
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    // XXX: This uses Lara's currently equipped gun. If she swaps weapons before
+    // a projectile impact resolves, this can differ from the projectile weapon.
+    if (lara->gun_type == LGT_ROCKET || lara->gun_type == LGT_GRENADE
+        || lara->gun_type == LGT_HARPOON) {
+        return true;
+    }
+
+    return false;
+}
+
 static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -460,6 +487,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
+    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
     obj->draw_func = M_Draw;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;

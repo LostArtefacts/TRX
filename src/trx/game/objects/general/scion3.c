@@ -1,5 +1,6 @@
 // The Great Pyramid shootable Scion.
 
+#include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
@@ -7,6 +8,11 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+
+static bool M_ShouldSpawnBlood(const ITEM *const item)
+{
+    return !g_Config.visuals.fix_texture_issues;
+}
 
 static void M_Control(const int16_t item_num)
 {
@@ -59,6 +65,7 @@ static void M_Control(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
     obj->hit_points = 5;
     obj->save_flags = true;
     obj->save_hitpoints = true;

@@ -305,6 +305,10 @@ void Item_ControlDraw(ITEM *const item)
         && item->after_death < 32 && item->after_death > 0) {
         item->after_death++;
 
+        if (!Item_ShouldSpawnBlood(item)) {
+            return;
+        }
+
         if (item->after_death == 2 || item->after_death == 5
             || item->after_death == 11 || item->after_death == 20
             || item->after_death == 27 || item->after_death == 32

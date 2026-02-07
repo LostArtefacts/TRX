@@ -163,9 +163,7 @@ static bool M_TryExplodeItem(
         return false;
     }
 
-    Gun_HitTarget(
-        target_item, nullptr, nullptr, LGT_GRENADE,
-        g_Weapons[LGT_GRENADE].damage);
+    Gun_HitTarget(target_item, nullptr, nullptr, g_Weapons[LGT_GRENADE].damage);
     Stats_AddAmmoHits();
 
     if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
