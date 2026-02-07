@@ -38,18 +38,14 @@ Module for interacting with the Lara's object.
     Defines a specific extra mesh to be drawn at the same position as the given
     Lara mesh.
 
-    The extra mesh must be present in the `O_LARA_SKIN_SWAP_EXTRA` object.
-    Common useful IDs:
-    - 6: The Dagger of Xian (hand)
-    - 7: The Dagger of Xian (hips)
-    - 8: Kayak oar
-    - 9: Minecart spanner
-    - 10: Drinks can (High Security Compound cutscene)
+    The extra mesh must be present in the `O_LARA_SKIN_SWAP_EXTRA` object and 
+    should be setup properly in the [outfits JSON](../../16-OUTFITS.md). Refer
+    to the constants further below.
 
     Example:
     ```lua
     -- Put an oar in Lara's right hand
-    trx.lara.set_extra_equipment(10, 8)
+    trx.lara.set_extra_equipment(trx.lara.mesh.hand_r, trx.lara.extra_mesh.oar)
     ```
 
 - [lua]`trx.lara.clear_equipment(lara_mesh_id)`  
@@ -70,3 +66,50 @@ Module for interacting with the Lara's object.
     Read-only - if Lara is currently in an extra anim state, returns the
     relative animation number of the `O_LARA_EXTRA` object.  
     Otherwise, returns -1.
+
+## Mesh constants
+
+- `trx.lara.mesh.hips`  
+    An index to Lara's hips mesh.
+- `trx.lara.mesh.thigh_l`  
+    An index to Lara's left thigh mesh.
+- `trx.lara.mesh.calf_l`  
+    An index to Lara's left calf mesh.
+- `trx.lara.mesh.foot_l`  
+    An index to Lara's left foot mesh.
+- `trx.lara.mesh.thigh_r`  
+    An index to Lara's right thigh mesh.
+- `trx.lara.mesh.calf_r`  
+    An index to Lara's right calf mesh.
+- `trx.lara.mesh.foot_r`  
+    An index to Lara's right foot mesh.
+- `trx.lara.mesh.torso`  
+    An index to Lara's torso mesh.
+- `trx.lara.mesh.uarm_r`  
+    An index to Lara's upper right arm mesh.
+- `trx.lara.mesh.larm_r`  
+    An index to Lara's lower right arm mesh.
+- `trx.lara.mesh.hand_r`  
+    An index to Lara's right hand mesh.
+- `trx.lara.mesh.uarm_l`  
+    An index to Lara's upper left arm mesh.
+- `trx.lara.mesh.larm_l`  
+    An index to Lara's lower left arm mesh.
+- `trx.lara.mesh.hand_l`  
+    An index to Lara's left hand mesh.
+- `trx.lara.mesh.head`  
+    An index to Lara's head mesh.
+
+## Extra mesh constants
+
+- `trx.lara.extra_mesh.dagger_hand`  
+    An index to the dagger mesh used when Lara retrieves it from the dragon and
+    when inspecting it at home.
+- `trx.lara.extra_mesh.dagger_hips`  
+    An index to the dagger mesh that sits on Lara's hips during Home Sweet Home.
+- `trx.lara.extra_mesh.oar`  
+    An index to the oar mesh used when Lara is in the kayak.
+- `trx.lara.extra_mesh.spanner`  
+    An index to the spanner mesh used when Lara is in the minecart.
+- `trx.lara.extra_mesh.drink_can`  
+    An index to the drink can mesh used in the High Security Compound cutscene.

@@ -3,6 +3,8 @@ local raw = trxc.lara
 local lara = {
   set_extra_equipment = raw.set_extra_equipment,
   clear_equipment = raw.clear_equipment,
+  mesh = raw.mesh,
+  extra_mesh = raw.extra_mesh,
 }
 
 -- Item proxy metatable
