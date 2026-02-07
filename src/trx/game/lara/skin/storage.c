@@ -103,23 +103,20 @@ static bool M_ReadGunMaps(JSON_OBJECT *const root_obj)
 
         for (int32_t j = 0; j < NUM_WEAPONS; j++) {
             LARA_SKIN_MESH_MAP *const mesh_map = &map.mesh_offsets[j];
+            memset(mesh_map, -1, sizeof(LARA_SKIN_MESH_MAP));
             const char *const gun_name =
                 EnumMap_ToString(ENUM_MAP_NAME(LARA_GUN_TYPE), j);
             JSON_OBJECT *const gun_obj =
                 JSON_ObjectGetObject(map_obj, gun_name);
             if (gun_obj == nullptr) {
-                mesh_map->hand.left = -1;
-                mesh_map->hand.right = -1;
-                mesh_map->thigh.left = -1;
-                mesh_map->thigh.right = -1;
-            } else {
-                mesh_map->hand.right = JSON_ObjectGetInt(gun_obj, "hand_r", -1);
-                mesh_map->hand.left = JSON_ObjectGetInt(gun_obj, "hand_l", -1);
-                mesh_map->thigh.right =
-                    JSON_ObjectGetInt(gun_obj, "thigh_r", -1);
-                mesh_map->thigh.left =
-                    JSON_ObjectGetInt(gun_obj, "thigh_l", -1);
+                continue;
             }
+
+            mesh_map->hand.right = JSON_ObjectGetInt(gun_obj, "hand_r", -1);
+            mesh_map->hand.left = JSON_ObjectGetInt(gun_obj, "hand_l", -1);
+            mesh_map->thigh.right = JSON_ObjectGetInt(gun_obj, "thigh_r", -1);
+            mesh_map->thigh.left = JSON_ObjectGetInt(gun_obj, "thigh_l", -1);
+            mesh_map->torso = JSON_ObjectGetInt(gun_obj, "torso", -1);
         }
 
         Vector_Add(m_GunMaps, &map);
