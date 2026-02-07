@@ -14,6 +14,7 @@
 #define M_CAM_BACK_JUMP_ANGLE   (135 * DEG_1)                  // = 24570
 #define M_CAM_REACH_ANGLE       (85 * DEG_1)                   // = 15470
 #define M_CAM_ZIPLINE_ANGLE     (70 * DEG_1)                   // = 12740
+#define M_LF_NEUTRAL_TWIST_WADE_SPLASH -5
 // clang-format on
 
 static void M_Compress(ITEM *const item, COLL_INFO *const coll)
@@ -74,6 +75,9 @@ static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
     } else if (g_Input.roll) {
         item->goal_anim_state = LS(LS_ROLL);
     } else {
+        if (Item_TestFrameEqual(item, M_LF_NEUTRAL_TWIST_WADE_SPLASH)) {
+            Lara_Col_WadeSplash(item);
+        }
         item->goal_anim_state = LS(LS_STOP);
     }
 }

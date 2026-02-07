@@ -33,7 +33,6 @@
 #define M_RADIUS_SURF       LARA_RADIUS          // = 100
 #define M_RADIUS_UW         300
 #define M_WADE_DEPTH        (g_TRVersion == 3 ? 256 : 384)
-#define M_SWIM_DEPTH        730
 #define M_LEAN_UNDO_SURF    (LARA_LEAN_UNDO * 2) // = 364
 #define M_LEAN_UNDO_UW      M_LEAN_UNDO_SURF     // = 364
 #define M_LEAN_MAX_UW       (LARA_LEAN_MAX * 2)  // = 4004
@@ -366,7 +365,7 @@ static void M_UpdateEnvironment(void)
         const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
         if (bounds != nullptr && item->pos.y + bounds->min.y <= water_height
             && item->pos.y + bounds->max.y >= water_height
-            && item->fall_speed > 0 && water_depth < M_SWIM_DEPTH - STEP_L) {
+            && item->fall_speed > 0 && water_depth < LARA_SWIM_DEPTH - STEP_L) {
             Spawn_Splash(item);
         }
     }
@@ -379,7 +378,7 @@ static void M_UpdateEnvironment(void)
             break;
         }
 
-        if (water_depth > M_SWIM_DEPTH - STEP_L && !room->flags.swamp) {
+        if (water_depth > LARA_SWIM_DEPTH - STEP_L && !room->flags.swamp) {
             if (room->flags.underwater) {
                 lara_info->air = LARA_MAX_AIR;
                 lara_info->water_status = LWS_UNDERWATER;
@@ -513,7 +512,7 @@ static void M_UpdateEnvironment(void)
             if (item->current_anim_state == LS(LS_WADE)) {
                 item->goal_anim_state = LS(LS_RUN);
             }
-        } else if (water_height_diff > M_SWIM_DEPTH && !room->flags.swamp) {
+        } else if (water_height_diff > LARA_SWIM_DEPTH && !room->flags.swamp) {
             lara_info->water_status = LWS_SURFACE;
             item->pos.y += 1 - water_height_diff;
 

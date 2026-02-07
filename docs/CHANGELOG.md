@@ -27,7 +27,7 @@
 - added a new Lua music play mode, `trx.music.PlayMode.OVERLAY` for playing on top of currently played track
 - added new Lua catalogs for Lara states, Lara anims, music, and samples
 - added a new Lua module, `trx.camera`, with camera getters and `trx.camera.shake()`
-- added `num` to `trx.rooms.Room`
+- added a new Lua property, `trx.rooms.Room.num`
 - added support for cross-fades to the title screen
 - added visual previews of bar colors (Graphic Options → Bars)
 - added the ability to change PS1 bar colors
@@ -41,6 +41,7 @@
 - added the ability to seek backwards through cutscenes with left button
 - added the ability to trigger collapsible tiles from heavy triggers, regardless of Lara's position (#4807)
 - added floor height change detection for boulders when stopped, so they will drop if the floor below them drops (#4808)
+- added splash effects to neutral twists and rolls (#4793)
 - improved rendering performance
 - improved the ability to seek through cutscenes to support even faster seeks (Slow = ±1 s, default = ±5 s, new: Draw = ±15 s)
 - improved `/tp` to accept `room`/`item` prefixes and `rN`/`iN` shortcuts
