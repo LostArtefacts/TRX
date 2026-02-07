@@ -425,7 +425,7 @@ void Output_DisableScissor(void)
 
 void Output_AdjustDepth(const float factor, const float units)
 {
-    if (factor != m_DepthUnits || units != m_DepthUnits) {
+    if (factor != m_DepthFactor || units != m_DepthUnits) {
         glPolygonOffset(factor, units);
         m_DepthFactor = factor;
         m_DepthUnits = units;
