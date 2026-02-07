@@ -13,6 +13,21 @@
 #include <stdio.h>
 #include <string.h>
 
+static char *M_NormalizeValue(const char *const value)
+{
+    if (value == nullptr) {
+        return nullptr;
+    }
+
+    char *const result = Memory_DupStr(value);
+    for (uint32_t i = 0; i < strlen(result); i++) {
+        if (result[i] == '_') {
+            result[i] = '-';
+        }
+    }
+    return result;
+}
+
 static const char *M_Resolve(const char *const option_name)
 {
     const char *dot = strrchr(option_name, '.');
@@ -20,31 +35,6 @@ static const char *M_Resolve(const char *const option_name)
         return dot + 1;
     }
     return option_name;
-}
-
-static bool M_SameKey(const char *key1, const char *key2)
-{
-    key1 = M_Resolve(key1);
-    key2 = M_Resolve(key2);
-    const size_t len1 = strlen(key1);
-    const size_t len2 = strlen(key2);
-    if (len1 != len2) {
-        return false;
-    }
-    for (uint32_t i = 0; i < len1; i++) {
-        char c1 = key1[i];
-        char c2 = key2[i];
-        if (c1 == '_') {
-            c1 = '-';
-        }
-        if (c2 == '_') {
-            c2 = '-';
-        }
-        if (c1 != c2) {
-            return false;
-        }
-    }
-    return true;
 }
 
 static const CONFIG_OPTION *M_GetOptionFromKey(const char *const key)
@@ -101,11 +91,17 @@ static char *M_FormatValuesList(const VECTOR *const values)
             continue;
         }
 
+        char *normalized = M_NormalizeValue(value);
+        if (normalized == nullptr) {
+            continue;
+        }
+
         if (result == nullptr) {
-            result = Memory_DupStr(value);
+            result = normalized;
         } else {
-            char *const joined = String_Format("%s, %s", result, value);
+            char *const joined = String_Format("%s, %s", result, normalized);
             Memory_FreePointer(&result);
+            Memory_FreePointer(&normalized);
             result = joined;
         }
     }
@@ -132,13 +128,22 @@ static char *M_FormatDynamicEnumDefaults(const CONFIG_OPTION *const option)
     return result;
 }
 
-static const char *M_GetValueForConsole(const CONFIG_OPTION *const option)
+static char *M_GetValueForConsole(const CONFIG_OPTION *const option)
 {
     if ((option->type == COT_STRING || option->type == COT_DYNAMIC_ENUM)
         && *(char **)option->target == nullptr) {
-        return "(null)";
+        return Memory_DupStr("(null)");
     }
-    return Config_GetOptionValueAsString(option);
+
+    const char *const value = Config_GetOptionValueAsString(option);
+    if (value == nullptr) {
+        return nullptr;
+    }
+
+    if (option->type == COT_ENUM || option->type == COT_DYNAMIC_ENUM) {
+        return M_NormalizeValue(value);
+    }
+    return Memory_DupStr(value);
 }
 
 static bool M_TryApplyOptionValue(
@@ -147,7 +152,38 @@ static bool M_TryApplyOptionValue(
     if (strcmp(new_value, "-") == 0) {
         return Config_RestoreOptionDefault(option->target);
     }
-    return Config_SetOptionValueFromString(option, new_value);
+    if (Config_SetOptionValueFromString(option, new_value)) {
+        return true;
+    }
+
+    if (option->type != COT_ENUM && option->type != COT_DYNAMIC_ENUM) {
+        return false;
+    }
+
+    char *normalized = M_NormalizeValue(new_value);
+    if (normalized != nullptr) {
+        const bool different = strcmp(normalized, new_value) != 0;
+        if (different && Config_SetOptionValueFromString(option, normalized)) {
+            Memory_FreePointer(&normalized);
+            return true;
+        }
+        Memory_FreePointer(&normalized);
+    }
+
+    char *underscore = Memory_DupStr(new_value);
+    bool different = false;
+    for (uint32_t i = 0; i < strlen(underscore); i++) {
+        if (underscore[i] == '-') {
+            underscore[i] = '_';
+            different = true;
+        }
+    }
+    if (different && Config_SetOptionValueFromString(option, underscore)) {
+        Memory_FreePointer(&underscore);
+        return true;
+    }
+    Memory_FreePointer(&underscore);
+    return false;
 }
 
 // Builds a source list of all options and returns fuzzy-match results.
@@ -283,21 +319,23 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
     COMMAND_RESULT result = CR_FAILURE;
 
     if (new_value == nullptr || String_IsEmpty(new_value)) {
-        const char *const value_str = M_GetValueForConsole(option);
+        char *value_str = M_GetValueForConsole(option);
         if (value_str == nullptr) {
             result = CR_FAILURE;
             goto cleanup;
         }
         Console_Log(GS(OSD_CONFIG_OPTION_GET), normalized_name, value_str);
+        Memory_FreePointer(&value_str);
         result = CR_SUCCESS;
         goto cleanup;
     }
 
     if (M_TryApplyOptionValue(option, new_value)) {
         Config_Update();
-        const char *const value_str = M_GetValueForConsole(option);
+        char *value_str = M_GetValueForConsole(option);
         ASSERT(value_str != nullptr);
         Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, value_str);
+        Memory_FreePointer(&value_str);
         result = CR_SUCCESS;
     } else {
         // Report bad invocation on the provided new value
