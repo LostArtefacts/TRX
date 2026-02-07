@@ -37,6 +37,11 @@ typedef struct M_MESH_BUF_BINDING {
     int32_t opaque_index_count;
     int32_t blend_add_index_start;
     int32_t blend_add_index_count;
+    int32_t transparent_index_start;
+    int32_t transparent_index_count;
+    int32_t transparent_face_count;
+    int32_t *transparent_face_index_starts;
+    int32_t *transparent_face_index_counts;
 
     UT_hash_handle hh;
 } M_MESH_BUF_BINDING;
@@ -67,7 +72,6 @@ typedef struct MESH_BATCHER {
     } vbo;
 
     VECTOR *transparent_sort; // M_FACE_SORT
-    VECTOR *transparent_indices; // uint32_t
     struct {
         GLuint opaque;
         GLuint transparent;
@@ -76,6 +80,7 @@ typedef struct MESH_BATCHER {
 
     int32_t opaque_total_indices;
     int32_t blend_add_total_indices;
+    int32_t transparent_total_indices;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -303,25 +308,14 @@ static void M_OpaquePass(MESH_BATCHER *const batcher)
 
         // Accumulate transparent polygons and faces.
         for (int32_t j = 0; j < inst->mesh->transparent_faces->count; j++) {
-            const OUTPUT_MESH_FACE *const face =
-                Vector_Get(inst->mesh->transparent_faces, j);
-
-            const int32_t index_start = batcher->transparent_indices->count;
-            for (int32_t k = 0; k < face->vertex_count; k++) {
-                const uint32_t global_idx =
-                    bind->vertex_start + face->vertex_indices[k];
-                Vector_Add(batcher->transparent_indices, &global_idx);
-            }
-            const int32_t index_count =
-                batcher->transparent_indices->count - index_start;
-
             Vector_Add(
                 batcher->transparent_sort,
                 &(M_FACE_SORT) {
                     .inst = inst,
-                    .face = face,
-                    .index_start = index_start,
-                    .index_count = index_count,
+                    .face = Vector_Get(inst->mesh->transparent_faces, j),
+                    .index_start = bind->transparent_index_start
+                        + bind->transparent_face_index_starts[j],
+                    .index_count = bind->transparent_face_index_counts[j],
                 });
         }
     }
@@ -355,16 +349,10 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
         return;
     }
 
-    // Upload indices only
     glBindVertexArray(batcher->vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.transparent);
-    GFX_TRACK_DATA(
-        glBufferData, GL_ELEMENT_ARRAY_BUFFER,
-        batcher->transparent_indices->count * sizeof(uint32_t),
-        Vector_GetData(batcher->transparent_indices), GL_DYNAMIC_DRAW);
 
     const MESH_INSTANCE *inst = nullptr;
-    int32_t last_base_vertex = -1;
 
     for (int32_t i = 0; i < batcher->transparent_sort->count; i++) {
         const M_FACE_SORT *const sort_ptr =
@@ -407,7 +395,6 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
     for (int32_t pass = 0; pass < SCENE_PASS_COUNT; pass++) {
         Vector_Clear(batcher->staged[pass]);
     }
-    Vector_Clear(batcher->transparent_indices);
     Vector_Clear(batcher->transparent_sort);
 }
 
@@ -432,7 +419,7 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const MESH_BATCHER *const batcher = source->priv;
     return batcher->staged[pass]->count > 0
-        || (batcher->transparent_indices->count > 0
+        || (batcher->transparent_sort->count > 0
             && pass == SCENE_PASS_TRANSPARENT);
 }
 
@@ -462,7 +449,6 @@ MESH_BATCHER *MeshBatcher_Create(void)
     batcher->source.priv = batcher;
 
     batcher->transparent_sort = Vector_Create(sizeof(M_FACE_SORT));
-    batcher->transparent_indices = Vector_Create(sizeof(uint32_t));
 
     glGenVertexArrays(1, &batcher->vao);
     glGenBuffers(3, &batcher->vbo.geom);
@@ -539,10 +525,6 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
         Vector_Free(batcher->bindings);
         batcher->bindings = nullptr;
     }
-    if (batcher->transparent_indices != nullptr) {
-        Vector_Free(batcher->transparent_indices);
-        batcher->transparent_indices = nullptr;
-    }
     if (batcher->transparent_sort != nullptr) {
         Vector_Free(batcher->transparent_sort);
         batcher->transparent_sort = nullptr;
@@ -567,6 +549,8 @@ void MeshBatcher_RemoveMesh(
     Memory_Free(bind->geom_data);
     Memory_Free(bind->tex_data);
     Memory_Free(bind->shade_data);
+    Memory_Free(bind->transparent_face_index_starts);
+    Memory_Free(bind->transparent_face_index_counts);
     Vector_Remove(batcher->bindings, &bind);
     HASH_DEL(batcher->binding_map, bind);
     if (batcher->bindings->count == 0) {
@@ -607,6 +591,28 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
     bind->blend_add_index_count = mesh->blend_add_vertex_indices->count;
     bind->blend_add_index_start = batcher->blend_add_total_indices;
     batcher->blend_add_total_indices += bind->blend_add_index_count;
+
+    // Transparent
+    bind->transparent_face_count = mesh->transparent_faces->count;
+    bind->transparent_face_index_starts = nullptr;
+    bind->transparent_face_index_counts = nullptr;
+    bind->transparent_index_count = 0;
+    if (bind->transparent_face_count > 0) {
+        bind->transparent_face_index_starts =
+            Memory_Alloc(sizeof(int32_t) * bind->transparent_face_count);
+        bind->transparent_face_index_counts =
+            Memory_Alloc(sizeof(int32_t) * bind->transparent_face_count);
+        for (int32_t i = 0; i < bind->transparent_face_count; i++) {
+            const OUTPUT_MESH_FACE *const face =
+                Vector_Get(mesh->transparent_faces, i);
+            bind->transparent_face_index_starts[i] =
+                bind->transparent_index_count;
+            bind->transparent_face_index_counts[i] = face->vertex_count;
+            bind->transparent_index_count += face->vertex_count;
+        }
+    }
+    bind->transparent_index_start = batcher->transparent_total_indices;
+    batcher->transparent_total_indices += bind->transparent_index_count;
 
     // Prevent double add
     mesh->sealed = 2;
@@ -660,6 +666,8 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
         Memory_Alloc(batcher->opaque_total_indices * sizeof(uint32_t));
     uint32_t *blend_indices =
         Memory_Alloc(batcher->blend_add_total_indices * sizeof(uint32_t));
+    uint32_t *transparent_indices =
+        Memory_Alloc(batcher->transparent_total_indices * sizeof(uint32_t));
 
     // Flatten the data
     for (int32_t i = 0; i < batcher->bindings->count; i++) {
@@ -681,6 +689,20 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
                 Vector_GetData(bind->mesh->blend_add_vertex_indices),
                 bind->blend_add_index_count * sizeof(uint32_t));
         }
+
+        // Copy Transparent Indices
+        if (bind->transparent_index_count > 0) {
+            for (int32_t j = 0; j < bind->transparent_face_count; j++) {
+                const OUTPUT_MESH_FACE *const face =
+                    Vector_Get(bind->mesh->transparent_faces, j);
+                const int32_t dst_start = bind->transparent_index_start
+                    + bind->transparent_face_index_starts[j];
+                for (int32_t k = 0; k < face->vertex_count; k++) {
+                    transparent_indices[dst_start + k] =
+                        bind->vertex_start + face->vertex_indices[k];
+                }
+            }
+        }
     }
 
     // Upload to GPU
@@ -696,8 +718,15 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
         batcher->blend_add_total_indices * sizeof(uint32_t), blend_indices,
         GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.transparent);
+    GFX_TRACK_DATA(
+        glBufferData, GL_ELEMENT_ARRAY_BUFFER,
+        batcher->transparent_total_indices * sizeof(uint32_t),
+        transparent_indices, GL_STATIC_DRAW);
+
     Memory_FreePointer(&opaque_indices);
     Memory_FreePointer(&blend_indices);
+    Memory_FreePointer(&transparent_indices);
 }
 
 void MeshBatcher_UpdateMeshGeometry(
