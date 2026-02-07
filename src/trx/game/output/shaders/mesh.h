@@ -41,7 +41,7 @@ void Output_MeshShader_Bind(const OUTPUT_MESH_SHADER *shader);
 
 // TODO: these could could use UBOs
 void Output_MeshShader_UploadModelMatrix(
-    const OUTPUT_MESH_SHADER *shader, const MATRIX *source);
+    OUTPUT_MESH_SHADER *shader, const MATRIX *source);
 void Output_MeshShader_UploadWaterEffect(
     OUTPUT_MESH_SHADER *shader, int32_t water_effect);
 void Output_MeshShader_UploadWibbleEffect(
