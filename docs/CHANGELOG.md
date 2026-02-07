@@ -72,6 +72,7 @@
 - changed triggers that target pickup items to support antitriggers, switches and bitmasks
 - removed support for legacy (TombATI / TR2 GOG/Steam) and pre-1.0 (TR1X/TR2X) savegame files
 - fixed a small hiccup when launching the game on certain GPUs
+- fixed inconsistent music volume in the statistics screens (#4499)
 - fixed shadows to support 60 FPS interpolation
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals

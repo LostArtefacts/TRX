@@ -39,7 +39,6 @@ void Level_Unload(void)
     Output_SetTimeInGame(0.0f);
     Output_DispatchLevelUnload();
 
-    Music_SetVolume(g_Config.audio.music_volume);
     Sound_StopAll();
     Viewport_AlterFOV(-1, FOV_MODE_GAME);
 }
