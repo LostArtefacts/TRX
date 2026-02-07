@@ -5,9 +5,15 @@
 #include <trx/game/rooms.h>
 #include <trx/vector.h>
 
+typedef struct {
+    bool heavy_triggered;
+    int32_t origin;
+} M_PRIV;
+
 static int32_t M_GetOrigin(const ITEM *const item)
 {
-    return (int32_t)(intptr_t)item->priv;
+    const M_PRIV *const p = item->priv;
+    return p->origin;
 }
 
 static void M_CalculateOrigin(ITEM *const item)
@@ -15,7 +21,8 @@ static void M_CalculateOrigin(ITEM *const item)
     const OBJECT *const obj = Object_Get(item->object_id);
     const ANIM *const anim = Object_GetAnim(obj, 0);
     const ANIM_FRAME *const frame = &anim->frame_ptr[0];
-    item->priv = (void *)(intptr_t)ROUND_TO_CLICK_SIGNED(frame->offset.y);
+    M_PRIV *const p = item->priv;
+    p->origin = ROUND_TO_CLICK_SIGNED(frame->offset.y);
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -69,6 +76,13 @@ static void M_AddWalkable(const int16_t item_num)
     Walkable_Add(item_num, item->pos);
 }
 
+static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+{
+    M_PRIV *const p = item->priv;
+    p->heavy_triggered = trigger->type == TT_HEAVY;
+    return true;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -77,12 +91,14 @@ static void M_Control(const int16_t item_num)
     switch (item->current_anim_state) {
     case TRAP_SET:
         const ITEM *const lara_item = Lara_GetItem();
-        if (lara_item->pos.y != item->pos.y + origin) {
+        M_PRIV *const p = item->priv;
+        if (!p->heavy_triggered && lara_item->pos.y != item->pos.y + origin) {
             item->status = IS_INACTIVE;
             Item_RemoveActive(item_num);
             return;
         }
         item->goal_anim_state = TRAP_ACTIVATE;
+        p->heavy_triggered = false;
         break;
 
     case TRAP_ACTIVATE:
@@ -130,6 +146,8 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
+    obj->trigger_func = M_Trigger;
+    obj->priv_size = sizeof(M_PRIV);
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->add_walkable_func = M_AddWalkable;
