@@ -10,6 +10,7 @@ typedef enum {
     COT_ENUM,
     COT_RGB888,
     COT_STRING,
+    COT_DYNAMIC_ENUM,
 } CONFIG_OPTION_TYPE;
 
 typedef struct {

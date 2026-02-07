@@ -1,8 +1,10 @@
 #include <trx/game/lara/skin/storage.h>
 
+#include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/enum_map.h>
 #include <trx/game/catalog.h>
+#include <trx/game/game_string.h>
 #include <trx/game/lara.h>
 #include <trx/game/shell.h>
 #include <trx/json_file.h>
@@ -29,6 +31,22 @@ static M_OUTFIT_ENTRY *m_Outfits = nullptr;
 static int32_t m_OutfitCount = 0;
 static M_OUTFIT_LOOKUP *m_OutfitLookup = nullptr;
 static int32_t m_ExtraMeshOffsets[NUM_EXTRA_MESHES] = {};
+
+static void M_SeedDynamicEnumValues(void)
+{
+    const CONFIG_OPTION *const option =
+        Config_GetOption(&g_Config.visuals.lara_outfit);
+    if (option == nullptr) {
+        return;
+    }
+
+    Config_DynamicEnum_ResetValues(option);
+    Config_DynamicEnum_AddValue(option, nullptr, GS_ID(LARA_OUTFIT_DEFAULT));
+    for (int32_t i = 0; i < m_OutfitCount; i++) {
+        Config_DynamicEnum_AddValue(
+            option, m_Outfits[i].name, m_Outfits[i].name_gs);
+    }
+}
 
 static void M_ResetOutfits(void)
 {
@@ -375,6 +393,7 @@ void Lara_Skin_LoadFromFile(const char *const path)
     m_GunMaps = Vector_Create(sizeof(LARA_SKIN_GUN_MAP));
 
     M_ResetOutfits();
+    M_SeedDynamicEnumValues();
     memset(m_ExtraMeshOffsets, 0, sizeof(m_ExtraMeshOffsets));
 
     LOG_INFO("Reading outfit definitions from %s", path);
@@ -396,6 +415,8 @@ void Lara_Skin_LoadFromFile(const char *const path)
         goto cleanup;
     }
 
+    M_SeedDynamicEnumValues();
+
 cleanup:
     JSON_ValueFree(doc);
 }
@@ -408,6 +429,7 @@ void Lara_Skin_Shutdown(void)
     }
 
     M_ResetOutfits();
+    M_SeedDynamicEnumValues();
 }
 
 int32_t Lara_Skin_GetOutfitCount(void)
@@ -433,14 +455,6 @@ const char *Lara_Skin_GetOutfitName(const LARA_SKIN_TYPE skin_type)
         return nullptr;
     }
     return m_Outfits[skin_type].name;
-}
-
-const char *Lara_Skin_GetOutfitNameGS(const LARA_SKIN_TYPE skin_type)
-{
-    if (skin_type < 0 || skin_type >= m_OutfitCount) {
-        return nullptr;
-    }
-    return m_Outfits[skin_type].name_gs;
 }
 
 int32_t Lara_Skin_GetExtraMeshOffset(const LARA_SKIN_EXTRA_MESH mesh)

@@ -2,12 +2,11 @@
 
 #include <trx/colors.h>
 #include <trx/config.h>
+#include <trx/config/dynamic_enum.h>
 #include <trx/debug.h>
 #include <trx/enum_map.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_string.h>
-#include <trx/game/lara/skin.h>
-#include <trx/game/ui/settings.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 
@@ -89,48 +88,6 @@ static const CONFIG_OPTION *M_GetOptionFromKey(const char *const key)
     return result;
 }
 
-static bool M_IsLaraOutfitOption(const CONFIG_OPTION *const option)
-{
-    return option != nullptr && option->target == &g_Config.visuals.lara_outfit;
-}
-
-static bool M_IsBarLookOption(const CONFIG_OPTION *const option)
-{
-    return option != nullptr && option->target == &g_Config.ui.bar_look;
-}
-
-static bool M_GetBarColorKindForOption(
-    const CONFIG_OPTION *const option, UI_BAR_THEME_KIND *const out_kind)
-{
-    if (option == nullptr || out_kind == nullptr) {
-        return false;
-    }
-
-    if (option->target == &g_Config.ui.lara_health_bar.color
-        || option->target == &g_Config.ui.lara_health_bar.poison_color
-        || option->target == &g_Config.ui.lara_air_bar.color
-        || option->target == &g_Config.ui.lara_sprint_bar.color
-        || option->target == &g_Config.ui.lara_exposure_bar.color
-        || option->target == &g_Config.ui.enemy_health_bar.color
-        || option->target == &g_Config.ui.enemy_health_bar.color_allies) {
-        *out_kind = UI_BAR_THEME_PC_KIND;
-        return true;
-    }
-
-    if (option->target == &g_Config.ui.lara_health_bar.color_ps1
-        || option->target == &g_Config.ui.lara_health_bar.poison_color_ps1
-        || option->target == &g_Config.ui.lara_air_bar.color_ps1
-        || option->target == &g_Config.ui.lara_sprint_bar.color_ps1
-        || option->target == &g_Config.ui.lara_exposure_bar.color_ps1
-        || option->target == &g_Config.ui.enemy_health_bar.color_ps1
-        || option->target == &g_Config.ui.enemy_health_bar.color_allies_ps1) {
-        *out_kind = UI_BAR_THEME_PS1_KIND;
-        return true;
-    }
-
-    return false;
-}
-
 static char *M_FormatValuesList(const VECTOR *const values)
 {
     if (values == nullptr || values->count == 0) {
@@ -156,56 +113,17 @@ static char *M_FormatValuesList(const VECTOR *const values)
     return result;
 }
 
-static char *M_FormatLaraOutfitDefaults(void)
+static char *M_FormatDynamicEnumDefaults(const CONFIG_OPTION *const option)
 {
     VECTOR *const values = Vector_Create(sizeof(char *));
     const char *const default_value = "-";
     Vector_Add(values, &default_value);
 
-    const int32_t outfit_count = Lara_Skin_GetOutfitCount();
-    for (int32_t i = 0; i < outfit_count; i++) {
-        const char *const outfit_name = Lara_Skin_GetOutfitName(i);
-        if (outfit_name != nullptr) {
-            Vector_Add(values, &outfit_name);
-        }
-    }
-
-    char *const result = M_FormatValuesList(values);
-    Vector_Free(values);
-    return result;
-}
-
-static char *M_FormatBarLookDefaults(void)
-{
-    VECTOR *const values = Vector_Create(sizeof(char *));
-    const char *const default_value = "-";
-    Vector_Add(values, &default_value);
-
-    const int32_t bar_look_count = UI_Settings_GetBarLookCount();
-    for (int32_t i = 0; i < bar_look_count; i++) {
-        const char *const bar_look_name = UI_Settings_GetBarLookName(i);
-        if (bar_look_name != nullptr) {
-            Vector_Add(values, &bar_look_name);
-        }
-    }
-
-    char *const result = M_FormatValuesList(values);
-    Vector_Free(values);
-    return result;
-}
-
-static char *M_FormatBarColorDefaults(const UI_BAR_THEME_KIND kind)
-{
-    VECTOR *const values = Vector_Create(sizeof(char *));
-    const char *const default_value = "-";
-    Vector_Add(values, &default_value);
-
-    const int32_t color_count = UI_Settings_GetBarColorCountByKind(kind);
-    for (int32_t i = 0; i < color_count; i++) {
-        const char *const color_name =
-            UI_Settings_GetBarColorNameByKind(kind, i);
-        if (color_name != nullptr) {
-            Vector_Add(values, &color_name);
+    const int32_t value_count = Config_DynamicEnum_GetValueCount(option);
+    for (int32_t i = 0; i < value_count; i++) {
+        const char *const value = Config_DynamicEnum_GetValueAt(option, i);
+        if (value != nullptr) {
+            Vector_Add(values, &value);
         }
     }
 
@@ -216,31 +134,11 @@ static char *M_FormatBarColorDefaults(const UI_BAR_THEME_KIND kind)
 
 static const char *M_GetValueForConsole(const CONFIG_OPTION *const option)
 {
-    if (option->type == COT_STRING && *(char **)option->target == nullptr) {
+    if ((option->type == COT_STRING || option->type == COT_DYNAMIC_ENUM)
+        && *(char **)option->target == nullptr) {
         return "(null)";
     }
     return Config_GetOptionValueAsString(option);
-}
-
-static bool M_IsAllowedOptionValue(
-    const CONFIG_OPTION *const option, const char *const new_value)
-{
-    if (M_IsLaraOutfitOption(option)) {
-        const LARA_SKIN_TYPE outfit_type =
-            Lara_Skin_FindOutfitByName(new_value);
-        return Lara_Skin_IsOutfitAvailable(outfit_type);
-    }
-
-    if (M_IsBarLookOption(option)) {
-        return UI_Settings_IsBarLookNameValid(new_value);
-    }
-
-    UI_BAR_THEME_KIND bar_color_kind = UI_BAR_THEME_PC_KIND;
-    if (M_GetBarColorKindForOption(option, &bar_color_kind)) {
-        return UI_Settings_IsBarColorNameValidByKind(bar_color_kind, new_value);
-    }
-
-    return true;
 }
 
 static bool M_TryApplyOptionValue(
@@ -249,11 +147,6 @@ static bool M_TryApplyOptionValue(
     if (strcmp(new_value, "-") == 0) {
         return Config_RestoreOptionDefault(option->target);
     }
-
-    if (!M_IsAllowedOptionValue(option, new_value)) {
-        return false;
-    }
-
     return Config_SetOptionValueFromString(option, new_value);
 }
 
@@ -344,17 +237,10 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
         return result;
     }
 
+    case COT_DYNAMIC_ENUM:
+        return M_FormatDynamicEnumDefaults(option);
+
     case COT_STRING:
-        if (M_IsLaraOutfitOption(option)) {
-            return M_FormatLaraOutfitDefaults();
-        }
-        if (M_IsBarLookOption(option)) {
-            return M_FormatBarLookDefaults();
-        }
-        UI_BAR_THEME_KIND bar_color_kind = UI_BAR_THEME_PC_KIND;
-        if (M_GetBarColorKindForOption(option, &bar_color_kind)) {
-            return M_FormatBarColorDefaults(bar_color_kind);
-        }
         return nullptr;
 
     default:

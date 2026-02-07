@@ -127,6 +127,7 @@ dependencies = [
 common_sources = [
   'trx/benchmark.c',
   'trx/config/common.c',
+  'trx/config/dynamic_enum.c',
   'trx/config/file.c',
   'trx/config/map.c',
   'trx/config/priv.c',

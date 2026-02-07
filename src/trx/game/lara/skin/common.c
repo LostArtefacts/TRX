@@ -80,24 +80,6 @@ static LARA_SKIN_TYPE M_GetCurrentLevelOutfitType(void)
     return M_GetFallbackOutfitType();
 }
 
-const char *Lara_Skin_GetOutfitLabelByType(const LARA_SKIN_TYPE skin_type)
-{
-    const char *const name_gs = Lara_Skin_GetOutfitNameGS(skin_type);
-    if (name_gs != nullptr) {
-        const char *const label = GameString_Get(name_gs);
-        if (label != nullptr) {
-            return label;
-        }
-    }
-
-    const char *const name = Lara_Skin_GetOutfitName(skin_type);
-    if (name != nullptr) {
-        return name;
-    }
-
-    return GS(LARA_OUTFIT_DEFAULT);
-}
-
 static int32_t M_GetBraidDependentMeshIdx(
     const LARA_MESH mesh_idx, const LARA_SKIN_OUTFIT *const outfit)
 {

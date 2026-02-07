@@ -1,5 +1,6 @@
 #include <trx/config/common.h>
 
+#include <trx/config/dynamic_enum.h>
 #include <trx/config/file.h>
 #include <trx/config/priv.h>
 #include <trx/config/vars.h>
@@ -187,7 +188,8 @@ bool Config_IsOptionAtDefault(const void *const target)
     case COT_ENUM:
         return *(int32_t *)option->target == *(int32_t *)option->default_value;
         break;
-    case COT_STRING: {
+    case COT_STRING:
+    case COT_DYNAMIC_ENUM: {
         const char *const cur = *(char **)option->target;
         const char *const def = (const char *)option->default_value;
         if (cur == nullptr && def == nullptr) {
@@ -229,7 +231,8 @@ bool Config_RestoreOptionDefault(const void *const target)
     case COT_ENUM:
         *(int32_t *)option->target = *(int32_t *)option->default_value;
         return true;
-    case COT_STRING: {
+    case COT_STRING:
+    case COT_DYNAMIC_ENUM: {
         char **const p = (char **)option->target;
         const char *const def = (const char *)option->default_value;
         char *const old = *p;
@@ -272,6 +275,7 @@ const char *Config_GetOptionValueAsString(const CONFIG_OPTION *const option)
             "%02hhx%02hhx%02hhx", color->r, color->g, color->b);
     }
     case COT_STRING:
+    case COT_DYNAMIC_ENUM:
         return String_FormatStatic(
             "%s",
             *(char **)option->target != nullptr ? *(char **)option->target
@@ -365,10 +369,15 @@ bool Config_SetOptionValueFromString(
         break;
     }
 
-    case COT_STRING: {
+    case COT_STRING:
+    case COT_DYNAMIC_ENUM: {
+        if (option->type == COT_DYNAMIC_ENUM
+            && !Config_DynamicEnum_IsValidValue(option, new_value)) {
+            return false;
+        }
         char **const p = (char **)option->target;
         char *const old = *p;
-        *p = Memory_DupStr(new_value);
+        *p = new_value != nullptr ? Memory_DupStr(new_value) : nullptr;
         // VERY IMPORTANT: free the memory AFTER we allocate, so that we force
         // the pointer to get a different macro, so that change subscribers
         // can see the string has changed by comparing just the pointers.

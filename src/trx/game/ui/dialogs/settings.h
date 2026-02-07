@@ -55,6 +55,11 @@ typedef struct UI_SETTINGS_OPTION {
 #define X_UI_CFG_STRING(target_, label_id_, ...)                               \
     X_UI_CFG(COT_STRING, target_, label_id_, ##__VA_ARGS__)
 
+#define X_UI_CFG_DYN_ENUM(target_, label_id_, ...)                             \
+    X_UI_CFG(                                                                  \
+        COT_DYNAMIC_ENUM, target_, label_id_, .delta_slow = 1,                 \
+        .delta_fast = 1, ##__VA_ARGS__)
+
 #define X_UI_CFG_BOOL(target_, label_id_, ...)                                 \
     X_UI_CFG(COT_BOOL, target_, label_id_, ##__VA_ARGS__)
 

@@ -18,12 +18,6 @@ bool UI_Settings_BackgroundStyle_IsEnumValueAvailable(
 
 bool UI_Settings_ShadowType_IsEnumValueAvailable(
     const UI_SETTINGS_OPTION *option, int32_t value);
-const char *UI_Settings_LaraOutfit_FormatValue(
-    const UI_SETTINGS_OPTION *option);
-bool UI_Settings_LaraOutfit_CanChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
-bool UI_Settings_LaraOutfit_RequestChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
 
 bool UI_Settings_FogColor_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_EnableBreeze_IsAvailable(const UI_SETTINGS_OPTION *option);
@@ -47,15 +41,6 @@ bool UI_Settings_AllyHealthbarColor_IsAvailable(
     const UI_SETTINGS_OPTION *option);
 bool UI_Settings_BarColorPC_IsVisible(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_BarColorPS1_IsVisible(const UI_SETTINGS_OPTION *option);
-const char *UI_Settings_BarLook_FormatValue(const UI_SETTINGS_OPTION *option);
-bool UI_Settings_BarLook_CanChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
-bool UI_Settings_BarLook_RequestChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
-bool UI_Settings_BarColor_CanChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
-bool UI_Settings_BarColor_RequestChangeValue(
-    const UI_SETTINGS_OPTION *option, int32_t dir);
 
 bool UI_Settings_IdlePose_IsAvailable(const UI_SETTINGS_OPTION *option);
 

@@ -1,6 +1,7 @@
 #include <trx/game/ui/dialogs/settings.h>
 
 #include <trx/config.h>
+#include <trx/config/dynamic_enum.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game_string_manager.h>
@@ -269,6 +270,9 @@ static const char *M_FormatRowValue(
             "%.00f%%", (*(float *)option->target) * 100.0f);
     case COT_STRING:
         return String_FormatStatic("%s", *(char **)option->target);
+    case COT_DYNAMIC_ENUM:
+        return Config_DynamicEnum_GetLabelForValue(
+            Config_GetOption(option->target), *(char **)option->target);
     case COT_RGB888: {
         const uint8_t *const component = M_GetColorComponent(option);
         return String_FormatStatic("%d", *component);
@@ -335,6 +339,19 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         return UI_Label_MeasureW("255");
     case COT_STRING:
         return UI_Label_MeasureW(*(char **)option->target);
+    case COT_DYNAMIC_ENUM: {
+        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+        if (cfg_opt == nullptr) {
+            return 0.0f;
+        }
+        float result = 0.0f;
+        const int32_t count = Config_DynamicEnum_GetValueCount(cfg_opt);
+        for (int32_t i = 0; i < count; i++) {
+            const char *const label = Config_DynamicEnum_GetLabelAt(cfg_opt, i);
+            result = MAX(result, UI_Label_MeasureW(label));
+        }
+        return result;
+    }
     case COT_ENUM: {
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
@@ -409,6 +426,15 @@ static bool M_CanChangeValue(
 
     case COT_STRING:
         return false;
+
+    case COT_DYNAMIC_ENUM: {
+        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+        if (cfg_opt == nullptr) {
+            return false;
+        }
+        return Config_DynamicEnum_CanCycle(
+            cfg_opt, *(char **)option->target, dir);
+    }
 
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
@@ -832,6 +858,19 @@ void UI_Settings_RequestChange(
         if (next_pos >= 0) {
             const UI_SETTINGS_ENUM_ENTRY *const entries = option->misc;
             *(int32_t *)option->target = entries[next_pos].value;
+        }
+        break;
+    }
+    case COT_DYNAMIC_ENUM: {
+        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+        if (cfg_opt == nullptr) {
+            break;
+        }
+        const char *const next = Config_DynamicEnum_GetNext(
+            cfg_opt, *(char **)option->target, delta);
+        if (next != nullptr
+            || Config_DynamicEnum_IsValidValue(cfg_opt, nullptr)) {
+            Config_SetOptionValueFromString(cfg_opt, next);
         }
         break;
     }

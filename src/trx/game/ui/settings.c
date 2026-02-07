@@ -83,6 +83,10 @@ static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
 
 static M_SETTINGS m_Settings;
 
+static bool M_IsBarColorNameEncountered(
+    const UI_BAR_THEME_KIND kind, const char *const name, const int32_t stop_i,
+    const int32_t stop_j);
+
 static void M_FreeThemeGroup(M_THEME_GROUP *const group)
 {
     M_THEME_LOOKUP *entry = nullptr;
@@ -103,8 +107,74 @@ static void M_FreeThemeGroup(M_THEME_GROUP *const group)
     group->lookup = nullptr;
 }
 
+static void M_ResetDynamicEnumValues(void)
+{
+    const CONFIG_OPTION *const bar_look_option =
+        Config_GetOption(&g_Config.ui.bar_look);
+    if (bar_look_option != nullptr) {
+        Config_DynamicEnum_ResetValues(bar_look_option);
+    }
+
+    for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
+        const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[i];
+        const CONFIG_OPTION *const pc_option =
+            Config_GetOption(select->pc_color);
+        if (pc_option != nullptr) {
+            Config_DynamicEnum_ResetValues(pc_option);
+        }
+        const CONFIG_OPTION *const ps1_option =
+            Config_GetOption(select->ps1_color);
+        if (ps1_option != nullptr) {
+            Config_DynamicEnum_ResetValues(ps1_option);
+        }
+    }
+}
+
+static void M_SeedDynamicEnumBarColors(
+    const CONFIG_OPTION *const option, const UI_BAR_THEME_KIND kind)
+{
+    Config_DynamicEnum_ResetValues(option);
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        if (theme->kind != kind) {
+            continue;
+        }
+        for (int32_t j = 0; j < theme->group.color_count; j++) {
+            const char *const name = theme->group.colors[j].name;
+            if (M_IsBarColorNameEncountered(kind, name, i, j)) {
+                continue;
+            }
+            Config_DynamicEnum_AddValue(option, name, nullptr);
+        }
+    }
+}
+
+static void M_SeedDynamicEnumValues(void)
+{
+    const CONFIG_OPTION *const bar_look_option =
+        Config_GetOption(&g_Config.ui.bar_look);
+    if (bar_look_option != nullptr) {
+        Config_DynamicEnum_ResetValues(bar_look_option);
+        for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+            const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+            Config_DynamicEnum_AddValue(
+                bar_look_option, theme->name, theme->name_gs);
+        }
+    }
+
+    for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
+        const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[i];
+        M_SeedDynamicEnumBarColors(
+            Config_GetOption(select->pc_color), UI_BAR_THEME_PC_KIND);
+        M_SeedDynamicEnumBarColors(
+            Config_GetOption(select->ps1_color), UI_BAR_THEME_PS1_KIND);
+    }
+}
+
 static void M_FreeBarThemes(void)
 {
+    M_ResetDynamicEnumValues();
+
     M_BAR_THEME_LOOKUP *entry = nullptr;
     M_BAR_THEME_LOOKUP *tmp = nullptr;
     HASH_ITER(hh, m_Settings.bar_lookup, entry, tmp)
@@ -386,19 +456,6 @@ static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
     return &theme->group;
 }
 
-static int32_t M_FindCurrentThemeIndex(void)
-{
-    if (g_Config.ui.bar_look == nullptr) {
-        return -1;
-    }
-    M_BAR_THEME_LOOKUP *entry = nullptr;
-    HASH_FIND_STR(m_Settings.bar_lookup, g_Config.ui.bar_look, entry);
-    if (entry == nullptr) {
-        return -1;
-    }
-    return entry->index;
-}
-
 void UI_Settings_LoadFromFile(const char *const path)
 {
     JSON_VALUE *const root =
@@ -478,6 +535,8 @@ void UI_Settings_LoadFromFile(const char *const path)
         idx++;
     }
 
+    M_SeedDynamicEnumValues();
+
     JSON_ValueFree(root);
 }
 
@@ -523,95 +582,6 @@ bool UI_Settings_IsCurrentBarLookPS1(void)
     return theme != nullptr && theme->kind == UI_BAR_THEME_PS1_KIND;
 }
 
-bool UI_Settings_CanChangeBarLook(const int32_t dir)
-{
-    if (m_Settings.bar_theme_count == 0 || dir == 0) {
-        return false;
-    }
-
-    const int32_t idx = M_FindCurrentThemeIndex();
-    if (idx < 0) {
-        return true;
-    }
-
-    const int32_t next = idx + dir;
-    return next >= 0 && next < m_Settings.bar_theme_count;
-}
-
-const char *UI_Settings_GetNextBarLookName(const int32_t dir)
-{
-    if (m_Settings.bar_theme_count == 0 || dir == 0) {
-        return nullptr;
-    }
-
-    const int32_t idx = M_FindCurrentThemeIndex();
-    if (idx < 0) {
-        return m_Settings.bar_themes[0].name;
-    }
-
-    const int32_t next = idx + dir;
-    if (next < 0 || next >= m_Settings.bar_theme_count) {
-        return nullptr;
-    }
-
-    return m_Settings.bar_themes[next].name;
-}
-
-const char *UI_Settings_GetBarLookLabel(void)
-{
-    const M_BAR_THEME_ENTRY *const theme = M_GetCurrentBarTheme();
-    if (theme == nullptr) {
-        return g_Config.ui.bar_look != nullptr ? g_Config.ui.bar_look : "";
-    }
-
-    const char *const label = GameString_Get(theme->name_gs);
-    if (label != nullptr) {
-        return label;
-    }
-
-    return theme->name;
-}
-
-bool UI_Settings_CanChangeBarColor(const char *const current, const int32_t dir)
-{
-    const M_THEME_GROUP *const group = M_GetCurrentBarGroup();
-    if (group == nullptr || group->color_count == 0 || dir == 0) {
-        return false;
-    }
-    if (current == nullptr) {
-        return true;
-    }
-    for (int32_t i = 0; i < group->color_count; i++) {
-        if (String_Equivalent(group->colors[i].name, current)) {
-            const int32_t next = i + dir;
-            return next >= 0 && next < group->color_count;
-        }
-    }
-    return true;
-}
-
-const char *UI_Settings_GetNextBarColorName(
-    const char *const current, const int32_t dir)
-{
-    const M_THEME_GROUP *const group = M_GetCurrentBarGroup();
-    if (group == nullptr || group->color_count == 0 || dir == 0) {
-        return nullptr;
-    }
-    if (current == nullptr) {
-        return group->colors[0].name;
-    }
-    for (int32_t i = 0; i < group->color_count; i++) {
-        if (String_Equivalent(group->colors[i].name, current)) {
-            const int32_t next = i + dir;
-            if (next < 0 || next >= group->color_count) {
-                return nullptr;
-            }
-            return group->colors[next].name;
-        }
-    }
-    return group->colors[0].name;
-}
-
 const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
 {
     if (type < 0 || type >= UI_BAR_NUMBER_OF) {
@@ -627,89 +597,4 @@ const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
         return theme;
     }
     return &group->colors[0].theme;
-}
-
-int32_t UI_Settings_GetBarColorCountByKind(const UI_BAR_THEME_KIND kind)
-{
-    int32_t count = 0;
-    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
-        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
-        if (theme->kind != kind) {
-            continue;
-        }
-        for (int32_t j = 0; j < theme->group.color_count; j++) {
-            const char *const name = theme->group.colors[j].name;
-            if (M_IsBarColorNameEncountered(kind, name, i, j)) {
-                continue;
-            }
-            count++;
-        }
-    }
-    return count;
-}
-
-const char *UI_Settings_GetBarColorNameByKind(
-    const UI_BAR_THEME_KIND kind, const int32_t index)
-{
-    if (index < 0) {
-        return nullptr;
-    }
-
-    int32_t unique_index = 0;
-    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
-        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
-        if (theme->kind != kind) {
-            continue;
-        }
-        for (int32_t j = 0; j < theme->group.color_count; j++) {
-            const char *const name = theme->group.colors[j].name;
-            if (M_IsBarColorNameEncountered(kind, name, i, j)) {
-                continue;
-            }
-            if (unique_index == index) {
-                return name;
-            }
-            unique_index++;
-        }
-    }
-
-    return nullptr;
-}
-
-bool UI_Settings_IsBarColorNameValidByKind(
-    const UI_BAR_THEME_KIND kind, const char *const name)
-{
-    if (name == nullptr) {
-        return false;
-    }
-
-    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
-        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
-        if (theme->kind != kind) {
-            continue;
-        }
-        if (M_FindThemeByName(&theme->group, name) != nullptr) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-int32_t UI_Settings_GetBarLookCount(void)
-{
-    return m_Settings.bar_theme_count;
-}
-
-const char *UI_Settings_GetBarLookName(const int32_t index)
-{
-    if (index < 0 || index >= m_Settings.bar_theme_count) {
-        return nullptr;
-    }
-    return m_Settings.bar_themes[index].name;
-}
-
-bool UI_Settings_IsBarLookNameValid(const char *const name)
-{
-    return M_FindBarThemeByName(name) != nullptr;
 }
