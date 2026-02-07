@@ -6,6 +6,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
@@ -709,9 +710,11 @@ static void M_SkidooBaddieCollision(ITEM *const quad)
                     Lara_TakeDamage(100, true);
                 }
             } else {
-                Spawn_BloodBath(
-                    item->pos.x, quad->pos.y - 256, item->pos.z, quad->speed,
-                    quad->rot.y, item->room_num, 3);
+                if (Item_ShouldSpawnBlood(item)) {
+                    Spawn_BloodBath(
+                        item->pos.x, quad->pos.y - 256, item->pos.z,
+                        quad->speed, quad->rot.y, item->room_num, 3);
+                }
                 if (item->hit_points > 0) {
                     item->hit_points = 0;
                     Stats_AddKill();

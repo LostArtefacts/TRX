@@ -185,6 +185,8 @@
 - fixed killing Cobras with a manually-aimed projectile not counting as a kill
 - fixed smoke and spark rotation snapping at 180° instead of rotating smoothly
 - fixed Lara burning instead of getting electrocuted when touching the top of the electric fence
+- fixed driving over Winston with a Quad Bike or shooting him with the Harpoon Gun causing him to bleed
+- fixed driving over Assault Target with a Quad Bike or shooting it with the Harpoon Gun causing it to spawn blood
 
 
 

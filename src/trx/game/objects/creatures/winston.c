@@ -19,6 +19,11 @@ typedef enum {
     // clang-format on
 } M_STATE;
 
+static bool M_ShouldSpawnBlood(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -79,6 +84,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
 
     obj->hit_points = DONT_TARGET;
     obj->radius = M_RADIUS;

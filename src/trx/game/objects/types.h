@@ -77,6 +77,7 @@ typedef struct OBJECT {
     void (*add_walkable_func)(int16_t item_num);
     bool (*can_interpolate_func)(
         const ITEM *item, int32_t frame_a, int32_t frame_b);
+    bool (*should_spawn_blood_func)(const ITEM *item);
 
     int16_t anim_idx;
     int16_t anim_count;

@@ -109,3 +109,17 @@ int32_t Item_Explode(
 
     return !(item->mesh_bits & (0x7FFFFFFF >> (31 - obj->mesh_count)));
 }
+
+bool Item_ShouldSpawnBlood(const ITEM *const item)
+{
+    if (item == nullptr) {
+        return true;
+    }
+
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->should_spawn_blood_func != nullptr) {
+        return obj->should_spawn_blood_func(item);
+    }
+
+    return true;
+}

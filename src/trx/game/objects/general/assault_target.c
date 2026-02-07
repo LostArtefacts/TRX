@@ -22,6 +22,11 @@ typedef struct {
     bool destroyed;
 } M_PRIV;
 
+static bool M_ShouldSpawnBlood(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -207,6 +212,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;

@@ -22,7 +22,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *weapon);
 void Gun_ChangeTarget(const WEAPON_INFO *weapon);
 void Gun_HitTarget(
     ITEM *item, const GAME_VECTOR *start, const GAME_VECTOR *hit_pos,
-    LARA_GUN_TYPE weapon_type, int32_t damage);
+    int32_t damage);
 
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip, bool interpolated);
 
