@@ -10,7 +10,7 @@
 
 #include <uthash.h>
 
-typedef OUTPUT_SHORT M_MESH_SHADE;
+typedef float M_MESH_SHADE;
 
 typedef struct {
     XYZW_F pos;
@@ -515,8 +515,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.shade);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);
     glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_SHADE, 1, OUTPUT_SHORT_GL, GL_FALSE,
-        sizeof(M_MESH_SHADE), 0);
+        OUTPUT_MESH_ATTR_SHADE, 1, GL_FLOAT, GL_FALSE, sizeof(M_MESH_SHADE), 0);
 
     glGenBuffers(3, &batcher->ebo.opaque);
 
