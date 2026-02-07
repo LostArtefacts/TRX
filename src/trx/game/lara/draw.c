@@ -156,8 +156,6 @@ static bool M_Draw_I(
         m_IsLara ? Lara_Skin_GetBoneBase() : Object_GetBone(obj, 0);
     const XYZ_16 *mesh_rots_1 = frame1->mesh_rots;
     const XYZ_16 *mesh_rots_2 = frame2->mesh_rots;
-    const XYZ_16 *mesh_rots_1_c;
-    const XYZ_16 *mesh_rots_2_c;
 
     Matrix_InitInterpolate(frac, rate);
     Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
@@ -195,11 +193,7 @@ static bool M_Draw_I(
 
     Matrix_Push_I();
     Matrix_TranslateRel32_I(bone[LM_HEAD - 1].pos);
-    mesh_rots_1_c = mesh_rots_1;
-    mesh_rots_2_c = mesh_rots_2;
     Matrix_Rot16_ID(mesh_rots_1[LM_HEAD], mesh_rots_2[LM_HEAD]);
-    mesh_rots_1 = mesh_rots_1_c;
-    mesh_rots_2 = mesh_rots_2_c;
     Matrix_Rot16_I(lara->interp.result.head_rot);
     M_CacheMatrix(LM_HEAD);
     M_DrawLaraMesh(item, LM_HEAD, clip, true);
@@ -453,7 +447,6 @@ bool Lara_Draw(const ITEM *const item)
         m_IsLara ? Lara_Skin_GetBoneBase() : Object_GetBone(obj, 0);
     const LARA_POSE *const pose = Lara_Pose_Get();
     const XYZ_16 *mesh_rots = pose != nullptr ? pose->rots : frame->mesh_rots;
-    const XYZ_16 *mesh_rots_c;
 
     Matrix_TranslateRel16(pose != nullptr ? pose->offset : frame->offset);
     Matrix_Rot16(mesh_rots[LM_HIPS]);
@@ -489,9 +482,7 @@ bool Lara_Draw(const ITEM *const item)
 
     Matrix_Push();
     Matrix_TranslateRel32(bone[LM_HEAD - 1].pos);
-    mesh_rots_c = mesh_rots;
     Matrix_Rot16(mesh_rots[LM_HEAD]);
-    mesh_rots = mesh_rots_c;
     Matrix_Rot16(lara->interp.result.head_rot);
     M_CacheMatrix(LM_HEAD);
     M_DrawLaraMesh(item, LM_HEAD, clip, false);

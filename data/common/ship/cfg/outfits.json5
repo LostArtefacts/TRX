@@ -494,24 +494,30 @@
             },
             "LGT_SHOTGUN": {
                 "hand_r": 65,
+                "torso": 72,
             },
             "LGT_FLARE": {
                 "hand_l": 66,
             },
             "LGT_M16": {
                 "hand_r": 67,
+                "torso": 73,
             },
             "LGT_MP5": {
                 "hand_r": 68,
+                "torso": 74,
             },
             "LGT_GRENADE": {
                 "hand_r": 69,
+                "torso": 75,
             },
             "LGT_HARPOON": {
                 "hand_r": 70,
+                "torso": 76,
             },
             "LGT_ROCKET": {
                 "hand_r": 71,
+                "torso": 77,
             },
         },
 
@@ -551,24 +557,30 @@
             },
             "LGT_SHOTGUN": {
                 "hand_r": 65,
+                "torso": 72,
             },
             "LGT_FLARE": {
                 "hand_l": 66,
             },
             "LGT_M16": {
                 "hand_r": 67,
+                "torso": 73,
             },
             "LGT_MP5": {
                 "hand_r": 68,
+                "torso": 74,
             },
             "LGT_GRENADE": {
                 "hand_r": 69,
+                "torso": 75,
             },
             "LGT_HARPOON": {
                 "hand_r": 70,
+                "torso": 76,
             },
             "LGT_ROCKET": {
                 "hand_r": 71,
+                "torso": 77,
             },
         },
 
@@ -608,24 +620,30 @@
             },
             "LGT_SHOTGUN": {
                 "hand_r": 65,
+                "torso": 72,
             },
             "LGT_FLARE": {
                 "hand_l": 66,
             },
             "LGT_M16": {
                 "hand_r": 67,
+                "torso": 73,
             },
             "LGT_MP5": {
                 "hand_r": 68,
+                "torso": 74,
             },
             "LGT_GRENADE": {
                 "hand_r": 69,
+                "torso": 75,
             },
             "LGT_HARPOON": {
                 "hand_r": 70,
+                "torso": 76,
             },
             "LGT_ROCKET": {
                 "hand_r": 71,
+                "torso": 77,
             },
         },
 
@@ -665,24 +683,30 @@
             },
             "LGT_SHOTGUN": {
                 "hand_r": 65,
+                "torso": 72,
             },
             "LGT_FLARE": {
                 "hand_l": 66,
             },
             "LGT_M16": {
                 "hand_r": 67,
+                "torso": 73,
             },
             "LGT_MP5": {
                 "hand_r": 68,
+                "torso": 74,
             },
             "LGT_GRENADE": {
                 "hand_r": 69,
+                "torso": 75,
             },
             "LGT_HARPOON": {
                 "hand_r": 70,
+                "torso": 76,
             },
             "LGT_ROCKET": {
                 "hand_r": 71,
+                "torso": 77,
             },
         },
 
@@ -722,24 +746,30 @@
             },
             "LGT_SHOTGUN": {
                 "hand_r": 65,
+                "torso": 72,
             },
             "LGT_FLARE": {
                 "hand_l": 66,
             },
             "LGT_M16": {
                 "hand_r": 67,
+                "torso": 73,
             },
             "LGT_MP5": {
                 "hand_r": 68,
+                "torso": 74,
             },
             "LGT_GRENADE": {
                 "hand_r": 69,
+                "torso": 75,
             },
             "LGT_HARPOON": {
                 "hand_r": 70,
+                "torso": 76,
             },
             "LGT_ROCKET": {
                 "hand_r": 71,
+                "torso": 77,
             },
         },
     ],

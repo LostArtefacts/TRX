@@ -12,6 +12,7 @@ typedef struct {
 typedef struct {
     MESH_PAIR hand;
     MESH_PAIR thigh;
+    int32_t torso;
 } LARA_SKIN_MESH_MAP;
 
 typedef struct {

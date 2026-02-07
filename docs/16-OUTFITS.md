@@ -21,7 +21,7 @@ guide to the data and JSON configuration, and some scenario/workflow examples.
 
 ## Data setup
 
-The skin system uses five objects as follows. These objects are provided in the
+The skin system uses the following objects. These are provided in the
 `lara_outfits.bin` injection, and are available to download as a separate WAD
 (see [injections](15-INJECTIONS.md)).
 
@@ -33,11 +33,12 @@ Bacon Lara's different structure); animations are not used.
 #### `O_LARA_SKIN_SWAP_EXTRA`
 This object contains various additional meshes for Lara, such as altered torsos
 when the TR1 braid is in use, Lara's combat face, and meshes used in extra
-animations, such as pulling the dagger in Dragon's Lair.
+animations, such as pulling the dagger in Dragon's Lair. It also contains both
+the TR1 and TR2/3 braid.
 
 #### `O_LARA_SKIN_SWAP_GUNS`
 This object contains holsters - both empty and equipped with the various guns - 
-as well as the guns themselves when they are in Lara's hands.
+as well as the guns themselves when they are in Lara's hands or on her back.
 
 #### `O_LARA_SKIN_SWAP_LEGS`
 This object contains copies of Lara's legs for each outfit, with holster strap
@@ -262,7 +263,9 @@ behave. The structure of this file is described below.
   <tr valign="top">
     <td><code>hair_pos</code></td>
     <td>XYZ</td>
-    <td colspan="2">The position relative to Lara's head where the braid will be drawn.</td>
+    <td colspan="2">
+      The position relative to Lara's head where the braid will be drawn.
+    </td>
   </tr>
 </table>
 
@@ -285,14 +288,17 @@ behave. The structure of this file is described below.
   },
   "LGT_SHOTGUN": {
     "hand_r": 65,
+    "torso": 72,
   },
 }
 ```
 </details>
 
 The map keys must match known engine weapons. See [weapons](13-WEAPONS.md) and
-`cfg/weapons.json5` for reference. Any entry may omit hand or thigh meshes.
-Missing fields imply that no mesh is drawn for that slot.
+`cfg/weapons.json5` for reference. Any entry may omit hand, thigh or torso, and
+note that specific gun types will only look for particular entries. For example,
+defining a `thigh_l` property for `LGT_SHOTGUN` is meaningless and will be
+ignored. Any missing fields imply that no mesh is drawn for that slot.
 
 <table>
   <tr valign="top" align="left">
@@ -320,6 +326,16 @@ Missing fields imply that no mesh is drawn for that slot.
     <td>
       The mesh offset in <code>O_LARA_SKIN_SWAP_GUNS</code> for the gun to draw
       against Lara's thighs. This expects the holster to be part of the mesh.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <code>torso</code>
+    </td>
+    <td>Integer</td>
+    <td>
+      The mesh offset in <code>O_LARA_SKIN_SWAP_GUNS</code> for the gun to draw
+      on Lara's back.
     </td>
   </tr>
 </table>
