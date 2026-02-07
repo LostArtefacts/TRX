@@ -39,6 +39,7 @@
 - added an option to make Lara stumble if she hops backwards and there is a slope behind her (Gameplay options → Controls → Backwards slope stumble)
 - added `/trigger` and `/untrigger` console commands, with support for targeting by item ID, item name, or object name
 - added the ability to seek backwards through cutscenes with left button
+- added the ability to trigger collapsible tiles from heavy triggers, regardless of Lara's position (#4807)
 - improved the ability to seek through cutscenes to support even faster seeks (Slow = ±1 s, default = ±5 s, new: Draw = ±15 s)
 - improved `/tp` to accept `room`/`item` prefixes and `rN`/`iN` shortcuts
 - improved inventory ring active item highlight for smoother appearance
