@@ -76,6 +76,20 @@
       .default_value = default_value_,                                         \
       .param = nullptr },
 
+#define X_CFG_DYNAMIC_ENUM(target_, default_value_)                            \
+    { .name = QUOTE(target_),                                                  \
+      .type = COT_DYNAMIC_ENUM,                                                \
+      .target = &g_Config.target_,                                             \
+      .default_value = default_value_,                                         \
+      .param = nullptr },
+
+#define X_CFG_DYNAMIC_ENUM_EX(name_, target_, default_value_)                  \
+    { .name = name_,                                                           \
+      .type = COT_DYNAMIC_ENUM,                                                \
+      .target = &g_Config.target_,                                             \
+      .default_value = default_value_,                                         \
+      .param = nullptr },
+
 static const CONFIG_OPTION *m_ConfigOptionMap[TR_VERSION_COUNT] = {
     [0] =
         (CONFIG_OPTION[]) {
@@ -104,6 +118,8 @@ static const CONFIG_OPTION *m_ConfigOptionMap[TR_VERSION_COUNT] = {
 #undef X_CFG_RGB888
 #undef X_CFG_STRING
 #undef X_CFG_STRING_EX
+#undef X_CFG_DYNAMIC_ENUM
+#undef X_CFG_DYNAMIC_ENUM_EX
 
 const CONFIG_OPTION *Config_GetOptionMap(void)
 {

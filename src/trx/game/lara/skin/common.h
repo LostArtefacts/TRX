@@ -11,7 +11,6 @@ LARA_SKIN_TYPE Lara_Skin_GetType(void);
 bool Lara_Skin_IsDefaultType(void);
 void Lara_Skin_SetType(LARA_SKIN_TYPE skin_type);
 void Lara_Skin_ApplyOutfit(void);
-const char *Lara_Skin_GetOutfitLabelByType(LARA_SKIN_TYPE skin_type);
 
 void Lara_Skin_SetCombatFace(bool enabled);
 void Lara_Skin_SwapAllExtra(LARA_EXTRA_STATE state);

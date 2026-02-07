@@ -207,7 +207,8 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
                 *(int *)opt->default_value, opt->param);
             break;
 
-        case COT_STRING: {
+        case COT_STRING:
+        case COT_DYNAMIC_ENUM: {
             const char *const val = JSON_ObjectGetString(
                 root_obj, Config_ResolveOptionName(opt->name),
                 (const char *)opt->default_value);
@@ -295,6 +296,7 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             break;
 
         case COT_STRING:
+        case COT_DYNAMIC_ENUM:
             if (*(char **)opt->target != nullptr) {
                 JSON_ObjectAppendString(
                     root_obj, Config_ResolveOptionName(opt->name),

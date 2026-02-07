@@ -209,6 +209,7 @@ static void M_DumpConfig(MYFILE *const fp)
     for (int32_t i = 0; i < opts->count; i++) {
         const CONFIG_OPTION *opt = raw_opts[i];
         const char *const fmt = opt->type == COT_ENUM || opt->type == COT_STRING
+                || opt->type == COT_DYNAMIC_ENUM
             ? "config %s \"%s\"\n"
             : "config %s %s\n";
         File_WriteString(
