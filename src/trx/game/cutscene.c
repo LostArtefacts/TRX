@@ -11,6 +11,7 @@
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
+#include <trx/game/sparks.h>
 #include <trx/game/water_fx.h>
 #include <trx/game/weather_fx.h>
 #include <trx/memory.h>
@@ -168,6 +169,20 @@ static void M_ResetActorsToStart(void)
     }
 }
 
+static void M_Control(void)
+{
+    Output_ResetDynamicLights();
+    Camera_UpdateCutscene();
+    Item_Control();
+    Effect_Control();
+    Sparks_Control();
+    WaterFX_Update();
+    WeatherFX_Update();
+    FootprintFX_Update();
+    Output_AnimateTextures(1);
+    Lara_Hair_Control(true);
+}
+
 static void M_ReplayActors(
     CINE_DATA *const cine_data, const int32_t start_frame,
     const int32_t end_frame)
@@ -175,9 +190,7 @@ static void M_ReplayActors(
     for (int32_t frame_idx = start_frame; frame_idx < end_frame; frame_idx++) {
         Lua_FireEventInt32(LUA_EVENT_BEFORE_CONTROL, 0);
         cine_data->frame_idx = frame_idx;
-        Camera_UpdateCutscene();
-        Item_Control();
-        Effect_Control();
+        M_Control();
         Lua_FireEventInt32(LUA_EVENT_AFTER_CONTROL, 0);
     }
 }
@@ -305,16 +318,7 @@ GF_COMMAND Cutscene_Control(void)
         M_Skip(dir * LOGIC_FPS * speed);
     }
 
-    Output_ResetDynamicLights();
-
-    Item_Control();
-    Effect_Control();
-    Lara_Hair_Control(true);
-    Camera_UpdateCutscene();
-    WaterFX_Update();
-    WeatherFX_Update();
-    FootprintFX_Update();
-    Output_AnimateTextures(1);
+    M_Control();
 
     CINE_DATA *const cine_data = Camera_GetCineData();
     cine_data->frame_idx++;

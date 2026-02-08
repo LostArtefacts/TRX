@@ -163,6 +163,7 @@
 - changed enemy drops to appear at the tile center, to conform with the OG
 - fixed several texture issues on each of Lara's outfits
 - fixed actors jumping to their start frame at the end of cutscenes
+- fixed Flame in Cutscene 4 and 6 appearing static
 - fixed Swamp Map rotation
 - fixed seaweed disappearing too quickly in certain levels
 - fixed Hand of Rathmore not rotating in Sleeping with the Fishes
