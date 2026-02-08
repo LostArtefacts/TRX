@@ -248,16 +248,16 @@ behave. The structure of this file is described below.
     <td><code>mesh_offset</code></td>
     <td>Integer</td>
     <td colspan="2">
-      The starting mesh offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the
-      braid.
+      The starting offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the regular
+      braid meshes and bones.
     </td>
   </tr>
   <tr valign="top">
     <td><code>gold_offset</code></td>
     <td>Integer</td>
     <td colspan="2">
-      The starting mesh offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the
-      golden braid.
+      The starting offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the golden
+      braid meshes and bones.
     </td>
   </tr>
   <tr valign="top">
@@ -382,3 +382,9 @@ Download the provided TRX WAD to access the data included in the shipped
 injection. Move each of the relevant objects to your WAD. You can then proceed
 to edit the meshes as required. Ensure that you remove the `lara_outfits.bin`
 from your game-flow, otherwise these will override the data in your level.
+
+> I want to customize Lara's braid.
+
+Braid meshes and bones are taken from the `O_LARA_SKIN_SWAP_EXTRA` object, so to
+customize it you will need to follow the same steps as for customizing outfits
+i.e. import the TRX WAD, edit the data and remove the injection.

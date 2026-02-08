@@ -20,6 +20,7 @@ const ANIM_BONE *Lara_Skin_GetBoneBase(void);
 bool Lara_Skin_IsBraidSupported(void);
 XYZ_32 Lara_Skin_GetBraidOffset(void);
 int32_t Lara_Skin_GetBraidMeshIdx(void);
+const ANIM_BONE *Lara_Skin_GetBraidBoneBase(void);
 
 bool Lara_Skin_AreHolstersVisible(void);
 void Lara_Skin_SetHolstersVisible(bool visible);
