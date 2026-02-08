@@ -44,6 +44,11 @@ bool UI_Settings_BarColorPS1_IsVisible(const UI_SETTINGS_OPTION *option);
 
 bool UI_Settings_IdlePose_IsAvailable(const UI_SETTINGS_OPTION *option);
 
+const char *UI_Settings_ColorEditor_FormatValue(
+    const UI_SETTINGS_OPTION *option);
+bool UI_Settings_ColorEditor_CanChangeValue(
+    const UI_SETTINGS_OPTION *option, int32_t dir);
+
 const char *UI_Settings_Language_FormatValue(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Language_CanChangeValue(
     const UI_SETTINGS_OPTION *option, int32_t dir);

@@ -715,7 +715,7 @@ int32_t Output_GetPaletteSize(void)
 RGB_888 Output_GetPaletteColor8(const uint16_t idx)
 {
     if (m_Palette8 == nullptr) {
-        return (RGB_888) { 0, 0, 0 };
+        return COLOR_RGB_888_BLACK;
     }
     return m_Palette8[idx];
 }
@@ -723,7 +723,7 @@ RGB_888 Output_GetPaletteColor8(const uint16_t idx)
 RGB_888 Output_GetPaletteColor16(const uint16_t idx)
 {
     if (m_Palette16 == nullptr) {
-        return (RGB_888) { 0, 0, 0 };
+        return COLOR_RGB_888_BLACK;
     }
     return m_Palette16[idx];
 }

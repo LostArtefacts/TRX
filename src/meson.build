@@ -126,6 +126,7 @@ dependencies = [
 
 common_sources = [
   'trx/benchmark.c',
+  'trx/colors.c',
   'trx/config/common.c',
   'trx/config/dynamic_enum.c',
   'trx/config/file.c',
@@ -612,6 +613,7 @@ common_sources = [
   'trx/game/test_replay.c',
   'trx/game/ui/common.c',
   'trx/game/ui/dialogs/base_passport.c',
+  'trx/game/ui/dialogs/color_editor.c',
   'trx/game/ui/dialogs/controls.c',
   'trx/game/ui/dialogs/controls_backend.c',
   'trx/game/ui/dialogs/controls_editor.c',
@@ -640,9 +642,11 @@ common_sources = [
   'trx/game/ui/elements/bar_lara_hp.c',
   'trx/game/ui/elements/bar_lara_sprint.c',
   'trx/game/ui/elements/button_label.c',
+  'trx/game/ui/elements/color_swatch.c',
   'trx/game/ui/elements/flash.c',
   'trx/game/ui/elements/fps_counter.c',
   'trx/game/ui/elements/frame.c',
+  'trx/game/ui/elements/gradient_slider.c',
   'trx/game/ui/elements/hide.c',
   'trx/game/ui/elements/horizontal_line.c',
   'trx/game/ui/elements/label.c',
