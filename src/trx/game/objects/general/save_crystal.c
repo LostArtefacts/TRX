@@ -10,6 +10,7 @@
 
 typedef struct {
     bool initialised;
+    bool used_for_save;
     int16_t initial_angle;
 } M_PRIV;
 
@@ -76,10 +77,11 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
         break;
 
     case SAVEGAME_STAGE_BEFORE_SAVE:
-        if (item->data != nullptr) {
+        M_PRIV *const p = item->priv;
+        if (p->used_for_save) {
             // need to reset the crystal status
             item->status = IS_DEACTIVATED;
-            item->data = nullptr;
+            p->used_for_save = false;
             const int16_t item_num = Item_GetIndex(item);
             Item_RemoveDrawn(item_num);
         }
@@ -176,7 +178,8 @@ static void M_CollisionSave(
         return;
     }
 
-    item->data = (void *)1;
+    M_PRIV *const p = item->priv;
+    p->used_for_save = true;
     GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
 }
 
