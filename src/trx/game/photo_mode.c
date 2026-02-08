@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/collision.h>
 #include <trx/game/console/common.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
@@ -187,9 +188,27 @@ static bool M_HandleItemRotationInputs(ITEM *const item)
     if (delta.x == 0 && delta.y == 0 && delta.z == 0) {
         return false;
     }
+
+    // Keep the item's root joint anchored while rotating, so off-center
+    // animation origins (especially in cutscenes) do not cause huge offsets.
+    // Use live item transforms; interpolation may still contain previous-frame
+    // values and would make both samples identical.
+    const bool was_item_interp_enabled = item->enable_interpolation;
+    item->enable_interpolation = false;
+
+    XYZ_32 old_root_pos = {};
+    Collide_GetJointAbsPosition(item, &old_root_pos, 0);
+
     item->rot.x += delta.x;
     item->rot.y += delta.y;
     item->rot.z += delta.z;
+
+    XYZ_32 new_root_pos = {};
+    Collide_GetJointAbsPosition(item, &new_root_pos, 0);
+    item->enable_interpolation = was_item_interp_enabled;
+    item->pos.x += old_root_pos.x - new_root_pos.x;
+    item->pos.y += old_root_pos.y - new_root_pos.y;
+    item->pos.z += old_root_pos.z - new_root_pos.z;
     return true;
 }
 
