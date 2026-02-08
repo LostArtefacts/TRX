@@ -681,7 +681,6 @@
         "enable_compass_stats",
         "enable_wading",
         "restore_ps1_enemies",
-        "load_music_triggers",
         "fix_speeches_killing_music",
     ],
 }

@@ -48,15 +48,16 @@
 - improved inventory ring active item highlight for smoother appearance
 - improved savegame file size by reducing it about 20–30%.
 - improved indentation for nested bullets in the UIs
-- changed "debug cuboids" option name to "debug bounding boxes" (`/debug bounding-boxes` or `/set debug-bounding-boxes 1`)
+- changed `debug.debug_cuboids` option name from "debug cuboids" to "debug bounding boxes" (`/debug bounding-boxes` or `/set debug-bounding-boxes 1`)
+- changed `debug.enable_debug_pos` option to split into `enable_debug_pos` and `enable_debug_anim`
+- changed `debug.enable_invulnerability` option to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)
+- changed `audio.load_music_triggers` (Gameplay → Fixes → Fix one-shot music triggers) to be enabled by default
 - changed photo mode to no longer show "Entering photo mode" in the console
 - changed photo mode to always display a red frame around the game view when active (not visible in screenshots)
 - changed stats dialog to include allies in kill count if they turn hostile. This applies to all levels that follow, and the final stats screen.
 - changed rooms-to-draw tracking to no longer stop at the 100-room limit
 - changed boulders to stop if the ceiling height is lower than their height
 - changed all UI bar colors from hardcoded to configurable via `cfg/ui.json5`, enabling some customization for PS1 bars
-- changed `enable_debug_pos` to split into `enable_debug_pos` and `enable_debug_anim`
-- changed `enable_invulnerability` to only show the marker if the setting `enable_debug_status` is on (off by default) (#4631)
 - changed `/debug [0|1]` command to no longer spam about settings that aren't changed
 - changed `/set` command to always use hyphens for enum option values, and accept both underscores and hyphens
 - changed Lua catalog keys to strip `O_` prefixes and use lowercase
@@ -114,6 +115,7 @@
 
 **TR2**:
 - added "Sound Options → Misc → Layered secret music" option
+- added "Gameplay → Fixes → Fix one-shot music triggers" option
 - changed Assault Course stats to show scroll indicators (#3510)
 - changed statistics screen rows to be more compact
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
@@ -126,6 +128,8 @@
 - fixed incorrect textures on the MP5 when equipped or on Lara's back
 
 **TR3**:
+- added "Sound Options → Misc → Layered secret music" option
+- added "Gameplay → Fixes → Fix one-shot music triggers" option
 - added new UI bar appearances, "TR3 PC" and "TR3 PS1" (Graphic Options → Bars → Bars appearance)
 - added new water currents
 - added new blood effects
