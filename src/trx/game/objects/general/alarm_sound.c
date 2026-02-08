@@ -3,6 +3,10 @@
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
 
+typedef struct {
+    int32_t counter;
+} M_PRIV;
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -12,20 +16,20 @@ static void M_Control(const int16_t item_num)
 
     Sound_Effect(SFX_PLATFORM_ALARM, &item->pos, SPM_NORMAL);
 
-    int32_t counter = (int32_t)(intptr_t)item->data;
-    counter++;
-    if (counter > 6) {
+    M_PRIV *const p = item->priv;
+    p->counter++;
+    if (p->counter > 6) {
         Output_AddDynamicLight(item->pos, 12, 11);
-        if (counter > 12) {
-            counter = 0;
+        if (p->counter > 12) {
+            p->counter = 0;
         }
     }
-    item->data = (void *)(intptr_t)counter;
 }
 
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
 }
 
