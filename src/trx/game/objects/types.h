@@ -78,6 +78,7 @@ typedef struct OBJECT {
     bool (*can_interpolate_func)(
         const ITEM *item, int32_t frame_a, int32_t frame_b);
     bool (*should_spawn_blood_func)(const ITEM *item);
+    int32_t (*get_mesh_index_func)(const ITEM *item, int32_t mesh_idx);
 
     int16_t anim_idx;
     int16_t anim_count;

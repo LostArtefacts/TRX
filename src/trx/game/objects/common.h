@@ -55,6 +55,7 @@ int32_t Object_GetMeshOffset(const OBJECT_MESH *mesh);
 void Object_SetMeshOffset(OBJECT_MESH *mesh, int32_t data_offset);
 
 OBJECT_MESH *Object_GetMesh(int32_t index);
+int32_t Object_GetItemMeshIndex(const ITEM *item, int32_t mesh_idx);
 void Object_SwapMesh(
     OBJECT_ID object1_id, OBJECT_ID object2_id, int32_t mesh_num);
 void Object_SwapAllMeshes(OBJECT_ID object1_id, OBJECT_ID object2_id);

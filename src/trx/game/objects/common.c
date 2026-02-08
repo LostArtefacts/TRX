@@ -176,6 +176,23 @@ OBJECT_MESH *Object_GetMesh(const int32_t index)
     return m_MeshPointers[index];
 }
 
+int32_t Object_GetItemMeshIndex(const ITEM *const item, const int32_t mesh_idx)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const int32_t fallback = obj->mesh_idx + mesh_idx;
+
+    if (obj->get_mesh_index_func == nullptr) {
+        return fallback;
+    }
+
+    const int32_t resolved = obj->get_mesh_index_func(item, mesh_idx);
+    if (resolved < 0) {
+        return fallback;
+    }
+
+    return resolved;
+}
+
 int32_t Object_GetMeshIndex(const OBJECT_MESH *const mesh)
 {
     for (int32_t i = 0; i < m_MeshCount; i++) {

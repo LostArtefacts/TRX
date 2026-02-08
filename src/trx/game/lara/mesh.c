@@ -145,3 +145,21 @@ RGB_F Lara_GetMeshTint(const GAME_VECTOR pos)
         return (RGB_F) { 1.0f, 1.0f, 1.0f };
     }
 }
+
+int32_t Lara_GetMeshIndex(const ITEM *const item, const int32_t mesh_idx)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    const int32_t fallback = obj->mesh_idx + mesh_idx;
+
+    const OBJECT_MESH *const mesh = Lara_Mesh_Get(mesh_idx);
+    if (mesh == nullptr) {
+        return fallback;
+    }
+
+    const int32_t resolved = Object_GetMeshIndex(mesh);
+    if (resolved < 0) {
+        return fallback;
+    }
+
+    return resolved;
+}
