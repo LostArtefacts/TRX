@@ -1,6 +1,7 @@
 #include <trx/debug.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/objects/general/pickup.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/log.h>
@@ -85,7 +86,7 @@ void Stats_UpdateSecrets(LEVEL_STATS *const stats)
 void Stats_MarkSecretCollected(const ITEM *const item)
 {
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(Game_GetCurrentLevel());
-    resume->stats.secret_flags |= (uint32_t)(intptr_t)item->data;
+    resume->stats.secret_flags |= Pickup_GetSecretMask(item);
     Stats_UpdateSecrets(&resume->stats);
 }
 

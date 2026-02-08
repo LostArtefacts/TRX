@@ -68,15 +68,27 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 
+typedef struct {
+    int32_t aid_timer;
+    uint32_t secret_mask;
+} M_PRIV;
+
+uint32_t Pickup_GetSecretMask(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->secret_mask;
+}
+
 static void M_Initialise(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    item->priv = (void *)(intptr_t)(-1);
+    M_PRIV *const p = item->priv;
+    p->aid_timer = -1;
+    p->secret_mask = 0;
 
     if (Object_IsType(item->object_id, g_SecretObjects)) {
         const GF_LEVEL *const level = Game_GetCurrentLevel();
-        item->data =
-            (void *)(intptr_t)Stats_GetSecretMaskForItem(level, item_num);
+        p->secret_mask = Stats_GetSecretMaskForItem(level, item_num);
     }
 
     if (item->status != IS_INVISIBLE) {
@@ -163,7 +175,8 @@ static void M_ControlPickupAids(ITEM *const item)
         return;
     }
 
-    int32_t timer = (int32_t)(intptr_t)item->priv;
+    M_PRIV *const p = item->priv;
+    int32_t timer = p->aid_timer;
     if (timer <= 0
         || (timer < M_AID_WAIT_MIN
             && Random_GetDraw() < M_AID_WAIT_BREAK_CHANCE)) {
@@ -173,7 +186,7 @@ static void M_ControlPickupAids(ITEM *const item)
         timer--;
     }
 
-    item->priv = (void *)(intptr_t)(int32_t)timer;
+    p->aid_timer = timer;
 }
 
 static void M_ControlPickupLights(ITEM *const item)
@@ -502,6 +515,7 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = Object_DrawPickupItem;
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
     obj->save_flags = true;
 }
