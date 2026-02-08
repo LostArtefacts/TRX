@@ -11,6 +11,7 @@ static void M_SetupLara(void)
     obj->initialise_func = Lara_InitialiseLoad;
     obj->can_interpolate_func = Lara_CanInterpolate;
     obj->draw_func = nullptr;
+    obj->get_mesh_index_func = Lara_GetMeshIndex;
 
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
@@ -35,6 +36,7 @@ void Object_SetupAllObjects(void)
         obj->is_usable_func = nullptr;
         obj->can_interpolate_func = Object_CanInterpolate;
         obj->should_spawn_blood_func = nullptr;
+        obj->get_mesh_index_func = nullptr;
         obj->hit_points = DONT_TARGET;
         obj->pivot_length = 0;
         obj->radius = M_DEFAULT_RADIUS;

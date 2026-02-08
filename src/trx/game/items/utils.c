@@ -61,7 +61,7 @@ int32_t Item_Explode(
             effect->counter =
                 is_tr3 ? ((damage << 2) | (Random_GetControl() & 3)) : damage;
             effect->object_id = O_BODY_PART;
-            effect->frame_num = obj->mesh_idx;
+            effect->frame_num = Object_GetItemMeshIndex(item, 0);
             effect->shade = Output_GetLightAdder() - 0x300;
         }
         item->mesh_bits &= ~bit;
@@ -98,7 +98,7 @@ int32_t Item_Explode(
                     ? ((damage << 2) | (Random_GetControl() & 3))
                     : damage;
                 effect->object_id = O_BODY_PART;
-                effect->frame_num = obj->mesh_idx + i;
+                effect->frame_num = Object_GetItemMeshIndex(item, i);
                 effect->shade = Output_GetLightAdder() - 0x300;
             }
             item->mesh_bits &= ~bit;
