@@ -32,6 +32,12 @@ static void M_Control(const int16_t item_num)
         Item_UpdateRoom(item_num, room_num);
     }
 
+    int16_t floor_room_num = item->room_num;
+    const SECTOR *const sector =
+        Room_GetSector(pos.x, pos.y, pos.z, &floor_room_num);
+    const int16_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    item->floor = height == NO_HEIGHT ? pos.y : height;
+
     if (item->dynamic_light && item->status != IS_INVISIBLE) {
         pos.x = 0;
         pos.y = 0;
