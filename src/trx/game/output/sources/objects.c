@@ -47,7 +47,7 @@ static void M_AddObjectFace(
     const FACE *const face, uint16_t flags)
 {
     RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
-    int16_t uvw_idx = -1;
+    int32_t uvw_idx = -1;
 
     if (flags & VERT_FLAT_SHADED) {
         if (g_TRVersion == 1) {
