@@ -283,6 +283,9 @@ void Camera_PhotoMode_Enter(void)
     g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
     g_Camera.target_square = SQUARE(g_Camera.target_distance);
 
+    g_Camera.target.room_num = g_Camera.pos.room_num;
+    Room_GetSector32(g_Camera.target.pos, &g_Camera.target.room_num);
+
     m_StartingCamera = g_Camera;
 
     m_OriginalFOV = Viewport_GetEffectiveFOV();
