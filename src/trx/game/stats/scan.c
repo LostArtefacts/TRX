@@ -245,9 +245,9 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
     }
 
     // Assign secret items their bits so they know which secret to set on
-    // pickup. NOTE: Do not persist to item->data here. This scan runs at game
-    // launch to compute max stats; later, gameplay level loads restore
-    // item->data using cached info in LEVEL_MAX_STATS.
+    // pickup. NOTE: Do not persist runtime pickup state here. This scan runs
+    // at game launch to compute max stats; gameplay level loads restore secret
+    // masks using cached info in LEVEL_MAX_STATS.
     for (int32_t i = 0; i < STATS_MAX_SECRETS; i++) {
         const int32_t item_num = stats->secret_objects[i].item_num;
         if (item_num == NO_ITEM) {
