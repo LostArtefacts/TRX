@@ -32,6 +32,10 @@ typedef enum {
     SKIDOO_DRIVER_ANIM_DEATH = 10,
 } SKIDOO_DRIVER_ANIM;
 
+typedef struct {
+    int16_t skidoo_item_num;
+} M_PRIV;
+
 static void M_KillDriver(ITEM *const driver_item)
 {
     const int32_t driver_item_num = Item_GetIndex(driver_item);
@@ -170,6 +174,7 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const skidoo_driver = Item_Get(item_num);
+    M_PRIV *const p = skidoo_driver->priv;
 
     const int16_t skidoo_item_num = Item_CreateLevelItem();
     ASSERT(skidoo_item_num != NO_ITEM);
@@ -185,7 +190,7 @@ static void M_Initialise(const int16_t item_num)
     skidoo->shade.value_1 = -1;
     Item_Initialise(skidoo_item_num);
 
-    skidoo_driver->data = (void *)(intptr_t)skidoo_item_num;
+    p->skidoo_item_num = skidoo_item_num;
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -193,7 +198,8 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED) {
             item->hit_points = DONT_TARGET;
-            const int16_t skidoo_num = (int16_t)(intptr_t)item->data;
+            const M_PRIV *const p = item->priv;
+            const int16_t skidoo_num = p->skidoo_item_num;
             ITEM *const skidoo = Item_Get(skidoo_num);
             skidoo->object_id = O_SKIDOO_FAST;
             Skidoo_Initialise(skidoo_num);
@@ -204,8 +210,8 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 static void M_Control(const int16_t driver_item_num)
 {
     ITEM *const driver_item = Item_Get(driver_item_num);
-
-    const int16_t skidoo_item_num = (int16_t)(intptr_t)driver_item->data;
+    const M_PRIV *const p = driver_item->priv;
+    const int16_t skidoo_item_num = p->skidoo_item_num;
     ITEM *const skidoo_item = Item_Get(skidoo_item_num);
 
     if (skidoo_item->data == nullptr) {
@@ -267,12 +273,19 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
+    obj->priv_size = sizeof(M_PRIV);
 
     obj->hit_points = 1;
 
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+}
+
+int16_t SkidooDriver_GetSkidooItemNum(const ITEM *const driver_item)
+{
+    const M_PRIV *const p = driver_item->priv;
+    return p->skidoo_item_num;
 }
 
 REGISTER_OBJECT(O_SKIDOO_DRIVER, M_Setup)
