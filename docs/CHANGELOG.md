@@ -74,6 +74,7 @@
 - fixed a small hiccup when launching the game on certain GPUs
 - fixed inconsistent music volume in the statistics screens (#4499)
 - fixed shadows to support 60 FPS interpolation
+- fixed soft static mesh collision not working right with statics that appear in overlapping rooms
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
 - fixed custom levels that contain invalid room static mesh references not being able to load (#4770)
