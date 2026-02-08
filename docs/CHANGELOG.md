@@ -228,8 +228,8 @@ Showcase: https://www.youtube.com/watch?v=veVYyr--H1A
 - added support to use `O_DINO_WARRIOR` and `O_FISH` as aliases for `O_TREX` and `O_BARRACUDA` respectively
 - added the ability to define gun types, flash shade and offset positions in `cfg/weapons.json5`
 - added the ability to define ammo pickup quantities per weapon in `cfg/weapons.json5` (#4518)
-- added a new input, that lets the player toggle ingame textures on/off, available by default under F8
-- added a new console command, `/textures`, that lets the player toggle ingame textures on/off
+- added a new input, that lets the player toggle in-game textures on/off, available by default under F8
+- added a new console command, `/textures`, that lets the player toggle in-game textures on/off
 - added a new console command, `/weather`, that lets the player control the weather
 - added a new console command, `/spawn`, that lets the builder spawn an entity of their choice to test things around
 - added Animating Item 1-6 control
@@ -276,7 +276,7 @@ Showcase: https://www.youtube.com/watch?v=veVYyr--H1A
 - fixed grenades not exploding floating water creatures (#4399, regression from TR2X 1.3)
 - fixed water enemies not getting tinted when dead and floating (#4407, regression from 1.0)
 - fixed Lara not colliding with mines/gondolas when underwater (#4424, regression from TR2X 1.3)
-- fixed flare box pickups containig only one flare if Lara has none in her inventory at that time (#4423, regression from 1.0)
+- fixed flare box pickups containing only one flare if Lara has none in her inventory at that time (#4423, regression from 1.0)
 - fixed water enemies appearing untinted for a frame after dying and moving to the water surface (#4420, regression from TR2X 0.1)
 - fixed the interactive fly cheat breaking with animated interactions enabled (#4444, regression from TR1X 4.14)
 - fixed switch triggers using an incorrect state check, which could result in fixed camera behavior that deviated from OG (#4456, regression from 1.0)
@@ -351,9 +351,9 @@ Their hard work gave us the perfect base to push TRX further, and made the climb
 - added flare lighting and sparks
 - added monochrome inventory backgrounds
 - added TR3 inventory ring lighting
-- added high-resolutions 16:9 and 4:3 loading screens
-- added high-resolutions 16:9 and 4:3 title and game end screens
-- added high-resolutions 16:9 and 4:3 credit images
+- added high-resolution 16:9 and 4:3 loading screens
+- added high-resolution 16:9 and 4:3 title and game end screens
+- added high-resolution 16:9 and 4:3 credit images
     To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - added support for the serif font
 - added support for colored text
@@ -370,8 +370,8 @@ Their hard work gave us the perfect base to push TRX further, and made the climb
 - added Rocket Launcher control
 - added Magnums, the Automatic Pistols, and the M16 to the `/moreguns` console command
 - added all weapons to Lara's Home (accessible with cheats or via the console only)
-- added Asasult Course target control
-- added Asasult Course penalty system
+- added Assault Course target control
+- added Assault Course penalty system
 - added an option to fix the MP5 accuracy while running
 - added TR3 camera control and look functionality
 - improved run-to-crawl transition
@@ -393,7 +393,7 @@ Their hard work gave us the perfect base to push TRX further, and made the climb
 - fixed shadow sizes dependent on Lara's placement instead of their owner's
 
 ## [1.0.3](https://github.com/LostArtefacts/TRX/compare/trx-1.0.2...trx-1.0.3) - 2025-11-27
-- fixed the conveyer belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)
+- fixed the conveyor belt fuse in Natla's Mines not appearing after using the nearby switch (#4349, regression from 1.0)
 
 ## [1.0.2](https://github.com/LostArtefacts/TRX/compare/trx-1.0.1...trx-1.0.2) - 2025-11-26
 - fixed Lara being unable to interact with keyholes after picking up an item if animated interactions are enabled (#4342, regression from 1.0)
@@ -480,7 +480,7 @@ Showcase: https://youtu.be/vVU9vbUXTXc
 - changed LOS algorithm to TR2+ implementation
 - changed save crystal collision to make them easier to activate
 - changed cutscene data (e.g. `cut1.phd`, as opposed to in-game cinematics) to match TR2 format, where Lara (as `O_LARA`) must be defined as an item in the level file
-- changed the Remove shotguns, Remove Uzis and Remove Magnus into a single "Remove extra guns" option
+- changed the Remove shotguns, Remove Uzis and Remove Magnums into a single "Remove extra guns" option
 - changed toggling Lara's braid in-game to swap out her head and torso meshes appropriately without the need to reload the level (#2399)
 - removed the `Enhanced shotgun targeting` option in favour of using the common weapon lock mode (Gameplay → Controls → Weapon lock mode)
 - fixed Lara being able to push blocks through toggle opacity 1 portals (#4129)
