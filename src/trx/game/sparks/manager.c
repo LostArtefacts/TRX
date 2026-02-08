@@ -138,7 +138,7 @@ int8_t Sparks_AllocDynamic(const uint8_t flags)
             m_Dynamics[i].on = true;
             m_Dynamics[i].falloff = 4;
             m_Dynamics[i].flags = flags;
-            m_Dynamics[i].color = (RGB_888) { 0, 0, 0 };
+            m_Dynamics[i].color = COLOR_RGB_888_BLACK;
             return (int8_t)i;
         }
     }

@@ -739,7 +739,7 @@ void Output_AddDynamicLight(
             .pos = pos,
             .shade.value_1 = intensity,
             .falloff.value_1 = falloff,
-            .color = (RGB_888) { 255, 255, 255 },
+            .color = COLOR_RGB_888_WHITE,
             .type = 0,
             .dir = {},
         };

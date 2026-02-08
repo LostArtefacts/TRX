@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/dialogs/color_editor.h>
 #include <trx/game/ui/dialogs/controls.h>
 #include <trx/game/ui/dialogs/controls_backend.h>
 #include <trx/game/ui/dialogs/gameplay_settings.h>
@@ -24,9 +25,11 @@
 #include <trx/game/ui/elements/bar_lara_hp.h>
 #include <trx/game/ui/elements/bar_lara_sprint.h>
 #include <trx/game/ui/elements/button_label.h>
+#include <trx/game/ui/elements/color_swatch.h>
 #include <trx/game/ui/elements/flash.h>
 #include <trx/game/ui/elements/fps_counter.h>
 #include <trx/game/ui/elements/frame.h>
+#include <trx/game/ui/elements/gradient_slider.h>
 #include <trx/game/ui/elements/hide.h>
 #include <trx/game/ui/elements/horizontal_line.h>
 #include <trx/game/ui/elements/label.h>

@@ -708,7 +708,7 @@ void Level_ReadRooms(const LEVEL_LOADER *const loader, VFILE *const file)
                 } else {
                     light->falloff.value_2 = light->falloff.value_1;
                 }
-                light->color = (RGB_888) { 255, 255, 255 };
+                light->color = COLOR_RGB_888_WHITE;
                 light->type = 0;
                 light->dir = (XYZ_16) { 0, 0, 0 };
             }

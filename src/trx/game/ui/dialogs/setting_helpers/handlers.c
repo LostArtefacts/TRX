@@ -7,6 +7,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui/settings.h>
+#include <trx/strings.h>
 #include <trx/version.h>
 
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
@@ -131,6 +132,19 @@ bool UI_Settings_BarColorPS1_IsVisible(const UI_SETTINGS_OPTION *const option)
 bool UI_Settings_IdlePose_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.gameplay.idle_pose_timeout > 0;
+}
+
+const char *UI_Settings_ColorEditor_FormatValue(
+    const UI_SETTINGS_OPTION *const option)
+{
+    const RGB_888 *const color = option->target;
+    return String_FormatStatic("#%02X%02X%02X", color->r, color->g, color->b);
+}
+
+bool UI_Settings_ColorEditor_CanChangeValue(
+    const UI_SETTINGS_OPTION *const option, const int32_t dir)
+{
+    return false;
 }
 
 bool UI_Settings_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *const option)

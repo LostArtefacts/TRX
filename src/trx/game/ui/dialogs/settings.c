@@ -8,6 +8,7 @@
 #include <trx/game/input.h>
 #include <trx/game/scaler.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/dialogs/color_editor.h>
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
 #include <trx/game/viewport.h>
 #include <trx/memory.h>
@@ -47,6 +48,8 @@ typedef struct UI_SETTINGS_STATE {
         bool show;
         UI_TEXT_DIALOG_STATE *state;
     } description;
+
+    UI_COLOR_EDITOR_DIALOG_STATE *color_editor;
 
     int32_t listener_id;
 } UI_SETTINGS_STATE;
@@ -122,6 +125,11 @@ static bool M_IsBarColorEnum(const UI_SETTINGS_OPTION *const option)
     return M_GetBarType(option) != (UI_BAR_TYPE)-1;
 }
 
+static bool M_IsColorEditorOption(const UI_SETTINGS_OPTION *const option)
+{
+    return option != nullptr && option->option_type == COT_RGB888;
+}
+
 static bool M_HasAvailableEnumValue(const UI_SETTINGS_OPTION *const option)
 {
     const UI_SETTINGS_ENUM_ENTRY *entry =
@@ -169,21 +177,6 @@ static const UI_SETTINGS_OPTION *M_GetOptionByRow(
         }
         count++;
     }
-    return nullptr;
-}
-
-static uint8_t *M_GetColorComponent(const UI_SETTINGS_OPTION *const option)
-{
-    RGB_888 *const color = option->target;
-    switch ((int32_t)(intptr_t)option->misc) {
-    case 0:
-        return &color->r;
-    case 1:
-        return &color->g;
-    case 2:
-        return &color->b;
-    }
-    ASSERT_FAIL();
     return nullptr;
 }
 
@@ -261,8 +254,9 @@ static const char *M_FormatRowValue(
         return Config_DynamicEnum_GetLabelForValue(
             Config_GetOption(option->target), *(char **)option->target);
     case COT_RGB888: {
-        const uint8_t *const component = M_GetColorComponent(option);
-        return String_FormatStatic("%d", *component);
+        const RGB_888 *const color = option->target;
+        return String_FormatStatic(
+            "#%02X%02X%02X", color->r, color->g, color->b);
     }
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
@@ -323,7 +317,8 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         return MAX(min_value_w, max_value_w);
     }
     case COT_RGB888:
-        return UI_Label_MeasureW("255");
+        return UI_Label_MeasureW("#FFFFFF") + 8.0f * g_Config.ui.text_scale
+            + 32.0f * g_Config.ui.text_scale;
     case COT_STRING:
         return UI_Label_MeasureW(*(char **)option->target);
     case COT_DYNAMIC_ENUM: {
@@ -401,15 +396,8 @@ static bool M_CanChangeValue(
             && target_value <= (float)option->max_value / 100.0f;
     }
 
-    case COT_RGB888: {
-        const uint8_t *const component = M_GetColorComponent(option);
-        if (dir < 0) {
-            return *component > option->min_value;
-        } else if (dir > 0) {
-            return *component < option->max_value;
-        }
-        break;
-    }
+    case COT_RGB888:
+        return false;
 
     case COT_STRING:
         return false;
@@ -592,13 +580,19 @@ static void M_OptionLabel(
 static void M_Footer(const UI_SETTINGS_STATE *const s)
 {
     const int32_t row_idx = UI_Scrollable_GetSelectedItem(&s->scroll);
+    const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
+    const bool can_edit_value = M_IsColorEditorOption(option);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         .spacing = { .h = 20 },
     });
-    UI_BeginHide(!M_CanExamine(s, row_idx));
-    UI_LabelFmt("\\{input look} %s", GS(COMMON_SETTINGS_TOGGLE_HELP));
+    UI_BeginHide(!M_CanExamine(s, row_idx) && !can_edit_value);
+    if (can_edit_value) {
+        UI_LabelFmt("\\{input action} %s", GS(COMMON_SETTINGS_EDIT_VALUE));
+    } else {
+        UI_LabelFmt("\\{input look} %s", GS(COMMON_SETTINGS_TOGGLE_HELP));
+    }
     UI_EndHide();
     UI_BeginHide(!M_CanRestoreDefault(s, row_idx));
     UI_LabelFmt("\\{input unbind_key} %s", GS(COMMON_SETTINGS_RESTORE_DEFAULT));
@@ -626,6 +620,7 @@ static UI_SETTINGS_STATE *M_InitCommon(const GAME_STRING_ID title)
 {
     UI_SETTINGS_STATE *const s = Memory_Alloc(sizeof(*s));
     s->title = title;
+    s->color_editor = UI_ColorEditorDialog_Init();
     s->listener_id =
         GameStringManager_SubscribeReload(M_HandleLanguageReload, s);
     return s;
@@ -726,6 +721,8 @@ void UI_Settings_Free(UI_SETTINGS_STATE *const s)
         s->description.state = nullptr;
         s->description.show = false;
     }
+    UI_ColorEditorDialog_Free(s->color_editor);
+    s->color_editor = nullptr;
     Memory_Free(s);
 }
 
@@ -733,6 +730,10 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
 {
     UI_Scrollable_SetVisibleItems(
         &s->scroll, MIN(s->max_group_items, M_GetVisibleRows()));
+    if (UI_ColorEditorDialog_IsOpen(s->color_editor)) {
+        UI_ColorEditorDialog_Control(s->color_editor);
+        return false;
+    }
     if (s->description.show) {
         UI_TextDialog_Control(s->description.state);
         if (g_InputDB.menu_back || g_InputDB.look) {
@@ -761,6 +762,7 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
         }
     } else if (s->phase == UI_SETTINGS_PHASE_EDIT_SETTINGS) {
         const int32_t sel_row = UI_Scrollable_GetSelectedItem(&s->scroll);
+
         if (g_InputDB.menu_left && sel_row >= 0) {
             M_RequestChangeValue(s, sel_row, -1);
         } else if (g_InputDB.menu_right && sel_row >= 0) {
@@ -772,14 +774,26 @@ bool UI_Settings_Control(UI_SETTINGS_STATE *const s)
             s->options = s->tabs[s->tab_switch->active_tab_idx].options;
             M_RecomputeSizes(s);
             return false;
-        } else if (g_InputDB.look && M_CanExamine(s, sel_row)) {
-            s->description.show = true;
-            s->description.state = UI_TextDialog_Init(
-                MIN(UI_GetCanvasWidth() * 2.0 / 3.0f,
-                    s->max_label_w + s->max_value_w + 10),
-                (size_t)M_GetVisibleRows(), true);
-            return false;
+        } else if (g_InputDB.menu_confirm && sel_row >= 0) {
+            const UI_SETTINGS_OPTION *const option =
+                M_GetOptionByRow(s, sel_row);
+            if (M_IsColorEditorOption(option)) {
+                UI_ColorEditorDialog_Open(s->color_editor, option);
+                return false;
+            }
+        } else if (g_InputDB.look && sel_row >= 0) {
+            const UI_SETTINGS_OPTION *const option =
+                M_GetOptionByRow(s, sel_row);
+            if (M_CanExamine(s, sel_row)) {
+                s->description.show = true;
+                s->description.state = UI_TextDialog_Init(
+                    MIN(UI_GetCanvasWidth() * 2.0 / 3.0f,
+                        s->max_label_w + s->max_value_w + 10),
+                    (size_t)M_GetVisibleRows(), true);
+                return false;
+            }
         }
+
         if (g_InputDB.menu_up) {
             if (!UI_Scrollable_SelectPrev(&s->scroll, false)) {
                 if (s->tab_switch != nullptr) {
@@ -840,14 +854,8 @@ void UI_Settings_RequestChange(
             *(float *)option->target = 0.0f;
         }
         break;
-    case COT_RGB888: {
-        uint8_t *const component = M_GetColorComponent(option);
-        int32_t component_i = *component;
-        component_i += delta;
-        CLAMP(component_i, 0, 255);
-        *component = component_i;
+    case COT_RGB888:
         break;
-    }
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
         const int32_t next_pos =
@@ -965,6 +973,21 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
                     .type = M_GetBarType(option),
                     .preview = true,
                 });
+            } else if (M_IsColorEditorOption(option)) {
+                const char *const value = M_FormatRowValue(s, row);
+                const RGB_888 *const color = option->target;
+                UI_BeginStackEx((UI_STACK_SETTINGS) {
+                    .orientation = UI_STACK_HORIZONTAL,
+                    .align = { .v = UI_STACK_V_ALIGN_CENTER },
+                    .spacing = { .h = 4.0f },
+                });
+                M_OptionLabel(option, value, /* star_if_enforced */ false);
+                UI_ColorSwatch((UI_COLOR_SWATCH_SETTINGS) {
+                    .color = *color,
+                    .w = UI_TEXT_HEIGHT - 2.0f,
+                    .h = UI_TEXT_HEIGHT - 2.0f,
+                });
+                UI_EndStack();
             } else {
                 const char *const value = M_FormatRowValue(s, row);
                 M_OptionLabel(option, value, /* star_if_enforced */ false);
@@ -993,6 +1016,8 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
 
     UI_EndStack();
     UI_EndModal();
+
+    UI_ColorEditorDialog(s->color_editor);
 
     if (s->description.show) {
         const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, sel_row);
