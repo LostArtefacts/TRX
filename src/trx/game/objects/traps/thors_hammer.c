@@ -11,9 +11,14 @@ typedef enum {
     THOR_HAMMER_STATE_DONE = 3,
 } THOR_HAMMER_STATE;
 
+typedef struct {
+    int16_t head_item_num;
+} M_PRIV;
+
 static void M_InitialiseHandle(const int16_t item_num)
 {
     ITEM *const hand_item = Item_Get(item_num);
+    M_PRIV *const p = hand_item->priv;
     const int16_t head_item_num = Item_CreateLevelItem();
     ASSERT(head_item_num != NO_ITEM);
     ITEM *const head_item = Item_Get(head_item_num);
@@ -23,7 +28,7 @@ static void M_InitialiseHandle(const int16_t item_num)
     head_item->rot = hand_item->rot;
     head_item->shade.value_1 = hand_item->shade.value_1;
     Item_Initialise(head_item_num);
-    hand_item->data = head_item;
+    p->head_item_num = head_item_num;
 }
 
 static void M_ControlHandle(const int16_t item_num)
@@ -123,7 +128,8 @@ static void M_ControlHandle(const int16_t item_num)
     }
     Item_Animate(item);
 
-    ITEM *const head_item = item->data;
+    M_PRIV *const p = item->priv;
+    ITEM *const head_item = Item_Get(p->head_item_num);
     const int16_t relative_anim = Item_GetRelativeAnim(item);
     const int16_t relative_frame = Item_GetRelativeFrame(item);
     Item_SwitchToAnim(head_item, relative_anim, relative_frame);
@@ -161,6 +167,7 @@ static void M_SetupHandle(OBJECT *const obj)
     obj->control_func = M_ControlHandle;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = M_CollisionHandle;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
     obj->save_anim = true;
 }
