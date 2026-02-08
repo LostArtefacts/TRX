@@ -26,6 +26,10 @@
 #define M_FLARE_END_AGE_TR3   (M_MAX_FLARE_AGE_TR3 - 24) // = 876
 // clang-format off
 
+typedef struct {
+    int32_t raw_age;
+} M_PRIV;
+
 static XYZ_32 M_TransformLocalOffset(
     const XYZ_32 pos, const XYZ_16 rot, const XYZ_32 local_offset)
 {
@@ -109,7 +113,8 @@ static void M_Control(const int16_t item_num)
 
     Item_UpdateRoom(item_num, room_num);
 
-    int32_t flare_age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
+    int32_t flare_age = FlareItem_GetAge(item);
+    bool is_active = FlareItem_IsActive(item);
     if (flare_age < Flare_GetMaxAge()) {
         flare_age++;
     } else if (item->fall_speed == 0 && item->speed == 0) {
@@ -118,14 +123,12 @@ static void M_Control(const int16_t item_num)
     }
 
     if (Flare_GenerateLight(item->pos, flare_age)) {
-        flare_age |= 0x8000u;
+        is_active = true;
         Flare_GenerateEffects(&item->pos, item->pos, item->room_num);
     }
 
     if (g_TRVersion >= 3) {
-        const int32_t flare_age_plain = flare_age & 0x7FFF;
-        const bool is_active = (flare_age & 0x8000) != 0;
-        if (flare_age_plain < Flare_GetMaxAge() && is_active) {
+        if (flare_age < Flare_GetMaxAge() && is_active) {
             const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
             const XYZ_32 flare_size = {
                 .x = bounds->max.x - bounds->min.x,
@@ -167,7 +170,7 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    item->data = (void *)(intptr_t)flare_age;
+    FlareItem_SetAge(item, flare_age, is_active);
 }
 
 static void M_DrawFlash(const CLIP clip)
@@ -206,7 +209,7 @@ static bool M_Draw(const ITEM *const item)
 
     Output_CalculateObjectLighting(item, &frames[0]->bounds);
     Object_DrawMesh(Object_Get(O_FLARE_ITEM)->mesh_idx, clip, false);
-    if ((((int32_t)(intptr_t)item->data) & 0x8000) == 0) {
+    if (!FlareItem_IsActive(item)) {
         goto end;
     }
 
@@ -360,12 +363,35 @@ int32_t Flare_GetMaxAge(void)
     return g_TRVersion >= 3 ? M_MAX_FLARE_AGE_TR3 : M_MAX_FLARE_AGE_TR12;
 }
 
+int32_t FlareItem_GetAge(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->raw_age & 0x7FFF;
+}
+
+bool FlareItem_IsActive(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return (p->raw_age & 0x8000) != 0;
+}
+
+void FlareItem_SetAge(
+    ITEM *const item, const int32_t flare_age, const bool is_active)
+{
+    M_PRIV *const p = item->priv;
+    p->raw_age = flare_age & 0x7FFF;
+    if (is_active) {
+        p->raw_age |= 0x8000;
+    }
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = Pickup_Collision;
     obj->bounds_func = Pickup_Bounds;
     obj->control_func = M_Control;
     obj->draw_func = M_Draw;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
     obj->save_flags = true;
 

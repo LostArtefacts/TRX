@@ -8,6 +8,7 @@
 #include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
+#include <trx/game/objects/general/flare_item.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
@@ -251,7 +252,7 @@ static void M_DoFlarePickup(const int16_t item_num)
     lara->gun_type = LGT_FLARE;
     Gun_InitialiseNewWeapon();
     lara->gun_status = LGS_SPECIAL;
-    lara->flare.age = ((int32_t)(intptr_t)item->data) & 0x7FFF;
+    lara->flare.age = FlareItem_GetAge(item);
     Item_Kill(item_num);
     lara->interact_target.is_moving = false;
 }

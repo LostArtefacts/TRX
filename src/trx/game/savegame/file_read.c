@@ -11,6 +11,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/flare_item.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
@@ -544,7 +545,7 @@ static bool M_ReadFlare(SG_READ_IO *const io)
     M_MUST(SG_READ_VALUE(io, "fall_speed", &item->fall_speed));
     int32_t flare_age;
     M_MUST(SG_READ_VALUE(io, "age", &flare_age));
-    item->data = (void *)(intptr_t)flare_age;
+    FlareItem_SetAge(item, flare_age & 0x7FFF, (flare_age & 0x8000) != 0);
     Item_AddActive(item_num);
     M_FINISH();
 }

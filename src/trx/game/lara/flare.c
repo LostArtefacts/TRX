@@ -427,9 +427,9 @@ void Lara_Flare_Dispose(const bool thrown)
     }
 
     if (Flare_GenerateLight(item->pos, lara_info->flare.age)) {
-        item->data = (void *)(intptr_t)(lara_info->flare.age | 0x8000);
+        FlareItem_SetAge(item, lara_info->flare.age, true);
     } else {
-        item->data = (void *)(intptr_t)(lara_info->flare.age & ~0x8000);
+        FlareItem_SetAge(item, lara_info->flare.age, false);
     }
 
     Item_AddActive(item_num);
