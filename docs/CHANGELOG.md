@@ -99,6 +99,7 @@
 - fixed secret tracks played at low quality when "fix secrets killing music" option is on
 - fixed secret tracks not restored from the savegame when "fix secrets killing music" option is on
 - fixed slow-forward seeking through cutscenes (right+slow) not working (regression from 1.0)
+- fixed statics marked collidable but with zero‑size hitboxes causing phantom collisions
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)

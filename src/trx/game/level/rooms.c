@@ -63,7 +63,7 @@ static void M_ComputePortalBounds(void)
     }
 }
 
-static void M_FixStatics(void)
+static void M_FixStaticsVisibility(void)
 {
     int32_t total_rooms = Room_GetCount();
     VECTOR **room_stat_vecs =
@@ -143,8 +143,34 @@ static void M_FixStatics(void)
     }
 }
 
+static void M_FixStaticsCollision(void)
+{
+    const int32_t count = Object_GetStaticObjects3DCount();
+    for (int32_t i = 0; i < count; i++) {
+        STATIC_OBJECT_3D *const obj = Object_Get3DStatic(i);
+        if (!obj->loaded || !obj->collidable) {
+            continue;
+        }
+
+        const XYZ_32 hitbox = {
+            .x = obj->collision_bounds.max.x - obj->collision_bounds.min.x,
+            .y = obj->collision_bounds.max.y - obj->collision_bounds.min.y,
+            .z = obj->collision_bounds.max.z - obj->collision_bounds.min.z,
+        };
+
+        if (hitbox.x <= 0 || hitbox.y <= 0 || hitbox.z <= 0) {
+            LOG_WARNING(
+                "Static %d is marked as collidable, but has degenerate "
+                "hitbox (%d x %d x %d)",
+                i, hitbox.x, hitbox.y, hitbox.z);
+            obj->collidable = false;
+        }
+    }
+}
+
 void Level_LoadRooms(void)
 {
     M_ComputePortalBounds();
-    M_FixStatics();
+    M_FixStaticsCollision();
+    M_FixStaticsVisibility();
 }
