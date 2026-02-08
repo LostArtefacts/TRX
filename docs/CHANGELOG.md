@@ -91,6 +91,7 @@
 - fixed stats dialog retaining friendly status for allies that become enemy types in later levels, causing them to get excluded from kill count
 - fixed targeting hostile ex-allies not working if "Enable ally targeting" option is off
 - fixed `/play` and similar commands fading out instead of running instantly on stats/title screens
+- fixed `/play` and similar commands sometimes preserving cutscene camera tilt if invoked while a cutscene was paused
 - fixed Cheats description showing arrows in the indented bullets (#4753, regression from TRX 1.1)
 - fixed game freezing on exit on certain platforms when there are no active sound devices (SDL bug)
 - fixed Lara twitching when trying to step back onto death tiles
