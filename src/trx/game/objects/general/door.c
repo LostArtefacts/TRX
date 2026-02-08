@@ -1,6 +1,5 @@
 #include <trx/game/objects/general/door.h>
 
-#include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
@@ -10,14 +9,14 @@ typedef struct {
     SECTOR *sector;
     SECTOR old_sector;
     int16_t box_num;
-} DOORPOS_DATA;
+} M_DOOR_POS;
 
 typedef struct {
-    DOORPOS_DATA d1;
-    DOORPOS_DATA d1flip;
-    DOORPOS_DATA d2;
-    DOORPOS_DATA d2flip;
-} DOOR_DATA;
+    M_DOOR_POS d1;
+    M_DOOR_POS d1flip;
+    M_DOOR_POS d2;
+    M_DOOR_POS d2flip;
+} M_PRIV;
 
 static const SECTOR m_BlockedSector = {
     .idx = 0,
@@ -70,7 +69,7 @@ static void M_CopySectorProperties(
     target_sector->portal_room.wall = source_sector->portal_room.wall;
 }
 
-static void M_Open(DOORPOS_DATA *const d)
+static void M_Open(M_DOOR_POS *const d)
 {
     if (d->sector == nullptr) {
         return;
@@ -84,7 +83,7 @@ static void M_Open(DOORPOS_DATA *const d)
     }
 }
 
-static void M_Check(DOORPOS_DATA *const d)
+static void M_Check(M_DOOR_POS *const d)
 {
     // Forcefully remove the invisible block if Lara happens to occupy the same
     // tile. This ensures that Lara doesn't void if a timed door happens to
@@ -95,7 +94,7 @@ static void M_Check(DOORPOS_DATA *const d)
     }
 }
 
-static void M_Shut(DOORPOS_DATA *const d)
+static void M_Shut(M_DOOR_POS *const d)
 {
     if (d->sector == nullptr) {
         return;
@@ -111,7 +110,7 @@ static void M_Shut(DOORPOS_DATA *const d)
 
 static void M_InitialisePortal(
     const ROOM *const room, const ITEM *const item, const int32_t sector_dx,
-    const int32_t sector_dz, DOORPOS_DATA *const door_pos)
+    const int32_t sector_dz, M_DOOR_POS *const door_pos)
 {
     door_pos->sector = M_GetRoomRelSector(room, item, sector_dx, sector_dz);
 
@@ -135,8 +134,7 @@ static void M_InitialisePortal(
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    DOOR_DATA *door = GameBuf_Alloc(sizeof(DOOR_DATA), GBUF_ITEM_DATA);
-    item->data = door;
+    M_PRIV *const p = item->priv;
 
     int32_t dx = 0;
     int32_t dz = 0;
@@ -152,34 +150,34 @@ static void M_Initialise(const int16_t item_num)
 
     int16_t room_num = item->room_num;
     const ROOM *room = Room_Get(room_num);
-    M_InitialisePortal(room, item, dx, dz, &door->d1);
+    M_InitialisePortal(room, item, dx, dz, &p->d1);
 
     if (room->flipped_room == NO_ROOM) {
-        door->d1flip.sector = nullptr;
+        p->d1flip.sector = nullptr;
     } else {
         room = Room_Get(room->flipped_room);
-        M_InitialisePortal(room, item, dx, dz, &door->d1flip);
+        M_InitialisePortal(room, item, dx, dz, &p->d1flip);
     }
 
-    room_num = door->d1.sector->portal_room.wall;
-    M_Shut(&door->d1);
-    M_Shut(&door->d1flip);
+    room_num = p->d1.sector->portal_room.wall;
+    M_Shut(&p->d1);
+    M_Shut(&p->d1flip);
 
     if (room_num == NO_ROOM) {
-        door->d2.sector = nullptr;
-        door->d2flip.sector = nullptr;
+        p->d2.sector = nullptr;
+        p->d2flip.sector = nullptr;
     } else {
         room = Room_Get(room_num);
-        M_InitialisePortal(room, item, 0, 0, &door->d2);
+        M_InitialisePortal(room, item, 0, 0, &p->d2);
         if (room->flipped_room == NO_ROOM) {
-            door->d2flip.sector = nullptr;
+            p->d2flip.sector = nullptr;
         } else {
             room = Room_Get(room->flipped_room);
-            M_InitialisePortal(room, item, 0, 0, &door->d2flip);
+            M_InitialisePortal(room, item, 0, 0, &p->d2flip);
         }
 
-        M_Shut(&door->d2);
-        M_Shut(&door->d2flip);
+        M_Shut(&p->d2);
+        M_Shut(&p->d2flip);
 
         const int16_t prev_room = item->room_num;
         Item_UpdateRoom(item_num, room_num);
@@ -190,32 +188,32 @@ static void M_Initialise(const int16_t item_num)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    DOOR_DATA *const door = item->data;
+    M_PRIV *const p = item->priv;
 
     if (Item_IsTriggerActive(item)) {
         if (item->current_anim_state == DOOR_STATE_CLOSED) {
             item->goal_anim_state = DOOR_STATE_OPEN;
         } else {
-            M_Open(&door->d1);
-            M_Open(&door->d2);
-            M_Open(&door->d1flip);
-            M_Open(&door->d2flip);
+            M_Open(&p->d1);
+            M_Open(&p->d2);
+            M_Open(&p->d1flip);
+            M_Open(&p->d2flip);
         }
     } else {
         if (item->current_anim_state == DOOR_STATE_OPEN) {
             item->goal_anim_state = DOOR_STATE_CLOSED;
         } else {
-            M_Shut(&door->d1);
-            M_Shut(&door->d2);
-            M_Shut(&door->d1flip);
-            M_Shut(&door->d2flip);
+            M_Shut(&p->d1);
+            M_Shut(&p->d2);
+            M_Shut(&p->d1flip);
+            M_Shut(&p->d2flip);
         }
     }
 
-    M_Check(&door->d1);
-    M_Check(&door->d2);
-    M_Check(&door->d1flip);
-    M_Check(&door->d2flip);
+    M_Check(&p->d1);
+    M_Check(&p->d2);
+    M_Check(&p->d1flip);
+    M_Check(&p->d2flip);
     Item_Animate(item);
 }
 
@@ -225,6 +223,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Door_Collision;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
     obj->save_anim = true;
 }
