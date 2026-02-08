@@ -28,7 +28,6 @@ static void M_CalculateOrigin(ITEM *const item)
 static void M_Initialise(const int16_t item_num)
 {
     Trap_Initialise(item_num);
-
     ITEM *const item = Item_Get(item_num);
     M_CalculateOrigin(item);
 }
