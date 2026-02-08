@@ -293,7 +293,7 @@ static bool M_ObjectTextureHasTransparency(const int32_t texture_idx)
     if (texture == nullptr || texture->uv_count <= 0) {
         return true;
     }
-    if (texture->tex_page < 0 || texture->tex_page >= m_TexturePageCount) {
+    if (texture->tex_page >= m_TexturePageCount) {
         return true;
     }
 
