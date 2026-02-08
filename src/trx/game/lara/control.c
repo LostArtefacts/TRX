@@ -258,6 +258,32 @@ static void M_WaterCurrent(COLL_INFO *const coll)
     }
 }
 
+static void M_SoftStaticCollision(COLL_INFO *const coll)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    Room_GetNearbyRooms(
+        lara_item->pos, coll->radius + 50, LARA_HEIGHT + 50,
+        lara_item->room_num);
+
+    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
+        const ROOM *const room = Room_Get(Room_DrawGetRoom(i));
+        for (int32_t j = 0; j < room->num_static_meshes; j++) {
+            const STATIC_MESH *const mesh = &room->static_meshes[j];
+            const STATIC_OBJECT_3D *const obj =
+                Object_Get3DStatic(mesh->static_num);
+            if (!obj->collidable
+                || !XYZ_32_IsNearby(
+                    &lara_item->pos, &mesh->pos, M_STATIC_COLL_DIST)) {
+                continue;
+            }
+
+            if (Item_TestStatic3DBoundsCollide(mesh, lara_item, coll->radius)) {
+                Lara_Col_Static3DPush(mesh, coll);
+            }
+        }
+    }
+}
+
 static void M_ObjectCollision(COLL_INFO *const coll)
 {
     ITEM *const lara_item = Lara_GetItem();
@@ -301,25 +327,10 @@ static void M_ObjectCollision(COLL_INFO *const coll)
         loop_end:
             item_num = next_item_num;
         }
+    }
 
-        if (!g_Config.gameplay.enable_soft_statics) {
-            continue;
-        }
-
-        for (int32_t j = 0; j < room->num_static_meshes; j++) {
-            const STATIC_MESH *const mesh = &room->static_meshes[j];
-            const STATIC_OBJECT_3D *const obj =
-                Object_Get3DStatic(mesh->static_num);
-            if (!obj->collidable
-                || !XYZ_32_IsNearby(
-                    &lara_item->pos, &mesh->pos, M_STATIC_COLL_DIST)) {
-                continue;
-            }
-
-            if (Item_TestStatic3DBoundsCollide(mesh, lara_item, coll->radius)) {
-                Lara_Col_Static3DPush(mesh, coll);
-            }
-        }
+    if (g_Config.gameplay.enable_soft_statics) {
+        M_SoftStaticCollision(coll);
     }
 
     if (lara_info->hit_effect_count != 0 && lara_info->hit_effect != nullptr
