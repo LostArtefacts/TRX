@@ -351,6 +351,7 @@
         "OSD_WIREFRAME_MODE_OFF": "Widok siatki: wyłączony",
         "OSD_WIREFRAME_MODE_ON": "Widok siatki: włączony",
         "OVERLAY_DEBUG_ANIMATION": "Animacja: ",
+        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}Stan: ",
         "OVERLAY_DEBUG_CAMERA_POS": "Pozycja kamery: ",
         "OVERLAY_DEBUG_CAMERA_TARGET": "Cel kamery: ",
         "OVERLAY_DEBUG_IMMUNE": "Nieśmiertelność",

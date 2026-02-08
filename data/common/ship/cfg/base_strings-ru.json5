@@ -351,6 +351,7 @@
         "OSD_WIREFRAME_MODE_OFF": "\\{review}Режим каркаса: выкл",
         "OSD_WIREFRAME_MODE_ON": "\\{review}Режим каркаса: вкл",
         "OVERLAY_DEBUG_ANIMATION": "Анимация: ",
+        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}Состояние: ",
         "OVERLAY_DEBUG_CAMERA_POS": "\\{review}Положение камеры: ",
         "OVERLAY_DEBUG_CAMERA_TARGET": "\\{review}Цель камеры: ",
         "OVERLAY_DEBUG_IMMUNE": "Неуязвимость вкл.",
