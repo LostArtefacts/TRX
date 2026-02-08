@@ -82,7 +82,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *kid = item->data;
+    CREATURE *const kid = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
 

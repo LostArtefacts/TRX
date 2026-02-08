@@ -2,7 +2,6 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/input.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -25,14 +24,11 @@ typedef enum {
 } MOVABLE_BLOCK_STATE;
 
 typedef struct {
-    int16_t counter_rot[3];
-    int16_t original_rot;
-} M_EXTRA_ROTATIONS;
-
-typedef struct {
     uint16_t gravity_frames;
     bool is_push_pull;
     bool is_forced_moving;
+    int16_t extra_rotations[3];
+    int16_t original_rot;
     GAME_VECTOR initial;
     GAME_VECTOR linked;
 } M_PRIV;
@@ -59,11 +55,11 @@ static void M_GetStack(
 static void M_UpdateRotation(ITEM *const item, const int16_t rot_y)
 {
     item->rot.y = rot_y;
-    M_EXTRA_ROTATIONS *const data = item->data;
+    M_PRIV *const p = item->priv;
     // All 3 indices are potentially used in other parts of the code that can
-    // cast item->data to structs such as XYZ_16. This is similar to things such
-    // as the compass needle that apply extra rotation.
-    data->counter_rot[0] = data->original_rot - rot_y;
+    // cast item->extra_rotations to structs such as XYZ_16. This is similar to
+    // things such as the compass needle that apply extra rotation.
+    p->extra_rotations[0] = p->original_rot - rot_y;
 }
 
 // Indicates if Lara is currently pushing or pulling a block.
@@ -150,11 +146,10 @@ static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
         SG_SHOULD(SG_POP(io));
     }
 
-    M_EXTRA_ROTATIONS *const data = item->data;
-    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_0", &data->counter_rot[0]));
-    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_1", &data->counter_rot[1]));
-    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_2", &data->counter_rot[2]));
-    SG_SHOULD(SG_READ_VALUE(io, "original_rot", &data->original_rot));
+    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_0", &p->extra_rotations[0]));
+    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_1", &p->extra_rotations[1]));
+    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_2", &p->extra_rotations[2]));
+    SG_SHOULD(SG_READ_VALUE(io, "original_rot", &p->original_rot));
 }
 
 static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
@@ -170,11 +165,10 @@ static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
     SGW_WRITE_VALUE(io, "z", p->linked.pos.z);
     SGW_POP_AND_SET(io, "linked");
 
-    const M_EXTRA_ROTATIONS *const data = item->data;
-    SGW_WRITE_VALUE(io, "counter_rot_0", data->counter_rot[0]);
-    SGW_WRITE_VALUE(io, "counter_rot_1", data->counter_rot[1]);
-    SGW_WRITE_VALUE(io, "counter_rot_2", data->counter_rot[2]);
-    SGW_WRITE_VALUE(io, "original_rot", data->original_rot);
+    SGW_WRITE_VALUE(io, "counter_rot_0", p->extra_rotations[0]);
+    SGW_WRITE_VALUE(io, "counter_rot_1", p->extra_rotations[1]);
+    SGW_WRITE_VALUE(io, "counter_rot_2", p->extra_rotations[2]);
+    SGW_WRITE_VALUE(io, "original_rot", p->original_rot);
 }
 
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
@@ -461,14 +455,12 @@ static void M_Initialise(const int16_t item_num)
     // during collision tests and can appear jarring. Additional angles are
     // stored to preserve item appearance in spite of control angle changes.
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
 
-    M_EXTRA_ROTATIONS *const data =
-        GameBuf_Alloc(sizeof(XYZ_16), GBUF_ITEM_DATA);
-    item->data = data;
-    data->original_rot =
-        (((item->rot.y + DEG_180) / DEG_90) * DEG_90) - DEG_180;
+    item->extra_rotations = p->extra_rotations;
+    p->original_rot = (((item->rot.y + DEG_180) / DEG_90) * DEG_90) - DEG_180;
 
-    M_UpdateRotation(item, data->original_rot);
+    M_UpdateRotation(item, p->original_rot);
     M_SetGravityFrames(item, 0);
     M_SetPushPull(item, false);
     M_SetForcedMoving(item, false);

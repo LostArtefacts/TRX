@@ -60,7 +60,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const bird = (CREATURE *)item->data;
+    CREATURE *const bird = item->creature_data;
 
     if (item->hit_points <= 0) {
         switch (item->current_anim_state) {

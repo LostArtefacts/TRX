@@ -204,7 +204,7 @@ static void M_Initialise(const int16_t item_num)
         p->extra_rotation = nullptr;
     }
 
-    item->data = p->extra_rotation;
+    item->extra_rotations = p->extra_rotation;
 }
 
 static int32_t M_GetOnQuadBike(

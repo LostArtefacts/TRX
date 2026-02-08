@@ -17,6 +17,7 @@ typedef struct CARRIED_ITEM {
 } CARRIED_ITEM;
 
 typedef struct TRAP_DATA TRAP_DATA;
+typedef struct CREATURE CREATURE;
 
 typedef struct {
     int32_t floor;
@@ -45,9 +46,10 @@ typedef struct {
 
     SHADE shade;
     union {
-        void *data; // to be eventually represented as CREATURE*
+        CREATURE *creature_data;
         TRAP_DATA *trap_data;
     };
+    int16_t *extra_rotations;
     void *priv;
     CARRIED_ITEM *carried_item;
     char *name;

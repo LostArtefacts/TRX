@@ -65,7 +65,7 @@ static void M_Control(const int16_t item_num)
 
     int16_t angle = 0;
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
 
     if (item->hit_points > 0) {
         AI_INFO info;

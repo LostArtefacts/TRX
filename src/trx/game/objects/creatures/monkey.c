@@ -66,7 +66,7 @@ typedef enum {
 
 static void M_Bite(ITEM *const item, ITEM *const enemy, const int32_t dmg)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (enemy == Lara_GetItem()) {
         if (creature->flags == 0 && item->touch_bits & 0x2400) {
             Lara_TakeDamage(dmg, true);
@@ -178,7 +178,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const creature = (CREATURE *)item->data;
+    CREATURE *const creature = item->creature_data;
 
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();

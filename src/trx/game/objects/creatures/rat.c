@@ -70,7 +70,7 @@ static void M_ControlRat(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *rat = item->data;
+    CREATURE *const rat = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
 

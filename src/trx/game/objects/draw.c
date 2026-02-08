@@ -189,7 +189,7 @@ bool Object_DrawAnimatingItemWithSwap(
 
     Output_CalculateObjectLighting(item, bounds);
 
-    const int16_t *extra_rotation = item->data;
+    const int16_t *extra_rotation = item->extra_rotations;
 
     Object_DrawInterpolatedObjectWithSwap(
         obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate,

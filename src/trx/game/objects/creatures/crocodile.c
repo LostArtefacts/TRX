@@ -61,7 +61,7 @@ static const HYBRID_INFO m_CrocodileInfo = {
 
 static void M_UpdateCreatureLOT(const ITEM *const item)
 {
-    CREATURE *const creature = (CREATURE *)item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
     }
@@ -91,7 +91,7 @@ static void M_ControlCrocodile(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *croc = item->data;
+    CREATURE *const croc = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
 
@@ -205,7 +205,7 @@ static void M_ControlAlligator(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *gator = item->data;
+    CREATURE *const gator = item->creature_data;
     const SECTOR *sector;
     int16_t head = 0;
     int16_t angle = 0;

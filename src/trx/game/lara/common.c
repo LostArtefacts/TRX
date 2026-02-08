@@ -73,7 +73,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_item->data = lara_info;
+    lara_item->creature_data = (CREATURE *)lara_info; // ?
     lara_item->collidable = false;
 
     m_Controllable = true;

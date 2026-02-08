@@ -4,11 +4,10 @@
 #include <trx/game/items.h>
 #include <trx/game/pathing/types.h>
 
-typedef struct {
+typedef struct CREATURE {
     union {
-        // NOTE: many draw paths treat item->data as an int16_t rotation array.
-        // For intelligent objects, item->data is a CREATURE*, so joint_rotation
-        // must be the first field to match this expectation.
+        // NOTE: creature extra rotations are provided via this array.
+        // Intelligent objects wire item->extra_rotations to joint_rotation.
         int16_t joint_rotation[4];
         struct {
             // These are old TR1-2 aliases.

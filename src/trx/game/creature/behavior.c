@@ -56,7 +56,7 @@ void Creature_Hurt(ITEM *const item, const int32_t damage)
         return;
     }
 
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature != nullptr) {
         creature->hurt_by_lara = true;
     }
@@ -97,7 +97,7 @@ bool Creature_IsHostile(const ITEM *const item)
 
     switch (g_Config.gameplay.ally_hostility_policy) {
     case ALLY_HOSTILITY_POLICY_INDIVIDUAL:
-        const CREATURE *const creature = item->data;
+        const CREATURE *const creature = item->creature_data;
         return creature != nullptr && creature->hurt_by_lara;
     case ALLY_HOSTILITY_POLICY_SHARED:
         return m_AlliesHostile;

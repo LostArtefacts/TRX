@@ -92,13 +92,14 @@ static void M_WriteItem(
         SGW_WRITE_VALUE(io, "active", item->active);
         SGW_WRITE_VALUE(io, "gravity", item->gravity);
         SGW_WRITE_VALUE(io, "collidable", item->collidable);
-        const bool intelligent = obj->intelligent && item->data != nullptr;
+        const bool intelligent =
+            obj->intelligent && item->creature_data != nullptr;
         SGW_WRITE_VALUE(io, "intelligent", intelligent);
         SGW_WRITE_VALUE(io, "timer", item->timer);
         SGW_WRITE_VALUE_NZ(io, "ai_bits", item->ai_bits);
         SGW_WRITE_VALUE_NZ(io, "ai_tag", item->ai_tag);
         if (intelligent) {
-            const CREATURE *const creature = item->data;
+            const CREATURE *const creature = item->creature_data;
             SGW_WRITE_VALUE(io, "head_rot", creature->head_rotation);
             SGW_WRITE_VALUE(io, "neck_rot", creature->neck_rotation);
             SGW_WRITE_VALUE(io, "max_turn", creature->maximum_turn);

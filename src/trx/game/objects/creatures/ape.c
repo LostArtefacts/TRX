@@ -45,7 +45,7 @@ static BITE m_ApeBite = { .pos = { 0, -19, 75 }, .mesh_num = 15 };
 static bool M_Vault(int16_t item_num, int16_t angle)
 {
     ITEM *const item = Item_Get(item_num);
-    CREATURE *ape = item->data;
+    CREATURE *const ape = item->creature_data;
     int32_t x = item->pos.x >> WALL_SHIFT;
     int32_t y = item->pos.y;
     int32_t z = item->pos.z >> WALL_SHIFT;
@@ -109,7 +109,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *ape = item->data;
+    CREATURE *const ape = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
 

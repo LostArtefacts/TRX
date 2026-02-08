@@ -218,7 +218,8 @@ void Item_Initialise(const int16_t item_num)
     item->ai_bits = 0;
     item->ai_tag = 0;
     item->after_death = 0;
-    item->data = nullptr;
+    item->creature_data = nullptr;
+    item->extra_rotations = nullptr;
     item->priv = nullptr;
     item->carried_item = nullptr;
     item->name = nullptr;

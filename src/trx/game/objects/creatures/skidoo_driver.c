@@ -94,7 +94,7 @@ static void M_ControlDead(ITEM *const driver_item, ITEM *const skidoo_item)
 
 static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
 {
-    CREATURE *const driver_data = skidoo_item->data;
+    CREATURE *const driver_data = skidoo_item->creature_data;
 
     AI_INFO info;
     Creature_AIInfo(skidoo_item, &info);
@@ -214,12 +214,12 @@ static void M_Control(const int16_t driver_item_num)
     const int16_t skidoo_item_num = p->skidoo_item_num;
     ITEM *const skidoo_item = Item_Get(skidoo_item_num);
 
-    if (skidoo_item->data == nullptr) {
+    if (skidoo_item->creature_data == nullptr) {
         LOT_EnableBaddieAI(skidoo_item_num, true);
         skidoo_item->status = IS_ACTIVE;
     }
 
-    CREATURE *const driver_data = skidoo_item->data;
+    CREATURE *const driver_data = skidoo_item->creature_data;
     int16_t angle = 0;
 
     if (skidoo_item->hit_points <= 0) {

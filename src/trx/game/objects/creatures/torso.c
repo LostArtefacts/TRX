@@ -73,7 +73,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *const torso = item->data;
+    CREATURE *const torso = item->creature_data;
     int16_t head = 0;
     ITEM *const lara_item = Lara_GetItem();
 

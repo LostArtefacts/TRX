@@ -51,7 +51,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *natla = item->data;
+    CREATURE *const natla = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

@@ -38,7 +38,7 @@ bool Creature_Shoot(
     const int16_t extra_rotation, const int32_t damage)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    const CREATURE *const creature = item->data;
+    const CREATURE *const creature = item->creature_data;
     ITEM *const target_item = creature->enemy;
 
     bool is_targetable;

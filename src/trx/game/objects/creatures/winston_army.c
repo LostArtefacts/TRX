@@ -76,7 +76,7 @@ static void M_Control(const int16_t item_num)
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     M_PRIV *const p = item->priv;
 
     AI_INFO info;

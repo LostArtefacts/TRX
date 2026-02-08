@@ -67,7 +67,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *bat = item->data;
+    CREATURE *const bat = item->creature_data;
     int16_t angle = 0;
     if (item->hit_points <= 0) {
         if (item->pos.y < item->floor) {

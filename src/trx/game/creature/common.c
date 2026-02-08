@@ -49,7 +49,7 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
 {
     ITEM *const lara_item = Lara_GetItem();
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
 
     ITEM *best_item = nullptr;
     int32_t best_distance = INT32_MAX;
@@ -113,7 +113,7 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
 
 static ITEM *M_ChooseEnemy(const ITEM *const item)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (Creature_IsAlly(item)) {
         M_GetBaddieTarget(creature->item_num, true);
     } else if (Creature_IsAllyTargetingEnemy(item)) {
@@ -256,7 +256,8 @@ void Creature_Initialise(const int16_t item_num)
         item->rot.y += (Random_GetControl() - DEG_90) >> 1;
     }
     item->collidable = true;
-    item->data = nullptr;
+    item->creature_data = nullptr;
+    item->extra_rotations = nullptr;
 }
 
 bool Creature_Activate(const int16_t item_num)
@@ -276,7 +277,7 @@ bool Creature_Activate(const int16_t item_num)
 
 void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
     }
@@ -414,7 +415,7 @@ void Creature_Mood(
 void Creature_UpdateMood(
     const ITEM *const item, const AI_INFO *const info, const bool violent)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
     }
@@ -521,7 +522,7 @@ void Creature_UpdateMood(
 void Creature_ApplyMood(
     const ITEM *const item, const AI_INFO *const info, const bool violent)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
     }
@@ -605,7 +606,7 @@ void Creature_ApplyMood(
 
 int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
 {
-    const CREATURE *const creature = item->data;
+    const CREATURE *const creature = item->creature_data;
     if (creature == nullptr || max_turn == 0) {
         return 0;
     }
@@ -638,7 +639,7 @@ void Creature_Tilt(ITEM *const item, int16_t angle)
 
 void Creature_Head(ITEM *const item, const int16_t required)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
     }
@@ -652,7 +653,7 @@ void Creature_Head(ITEM *const item, const int16_t required)
 
 void Creature_Neck(ITEM *const item, const int16_t required)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
     }
@@ -667,7 +668,7 @@ void Creature_Neck(ITEM *const item, const int16_t required)
 void Creature_Joint(
     ITEM *const item, const int16_t joint, const int16_t required)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
     }
@@ -727,7 +728,7 @@ bool Creature_IsFloating(const ITEM *const item)
 
 bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
 {
-    const CREATURE *const creature = item->data;
+    const CREATURE *const creature = item->creature_data;
     const ITEM *const enemy =
         creature->enemy != nullptr ? creature->enemy : Lara_GetItem();
     if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE
@@ -783,7 +784,7 @@ bool Creature_Animate(
     const int16_t item_num, const int16_t angle, const int16_t tilt)
 {
     ITEM *const item = Item_Get(item_num);
-    const CREATURE *const creature = item->data;
+    const CREATURE *const creature = item->creature_data;
     const OBJECT *const obj = Object_Get(item->object_id);
     if (creature == nullptr) {
         return false;
