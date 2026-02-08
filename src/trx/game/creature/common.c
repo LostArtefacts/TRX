@@ -6,6 +6,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/los.h>
+#include <trx/game/objects/creatures/skidoo_driver.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -1145,7 +1146,10 @@ void Creature_Die(const int16_t item_num, const bool explode)
             Item_Explode(item_num, -1, 0);
         }
         item->hit_points = DONT_TARGET;
-        const int16_t vehicle_item_num = (int16_t)(intptr_t)item->data;
+        const int16_t vehicle_item_num = SkidooDriver_GetSkidooItemNum(item);
+        if (vehicle_item_num == NO_ITEM) {
+            return;
+        }
         ITEM *const vehicle_item = Item_Get(vehicle_item_num);
         vehicle_item->hit_points = 0;
         vehicle_item->status = IS_INVISIBLE;
