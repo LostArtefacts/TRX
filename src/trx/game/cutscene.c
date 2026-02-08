@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/footprint_fx.h>
 #include <trx/game/interpolation.h>
@@ -198,6 +199,7 @@ static void M_ReplayActors(
 static void M_PlayerControl(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+
     CAMERA_INFO *const camera = Cutscene_GetCamera();
     item->rot.y = camera->target_angle;
     item->pos = camera->pos.pos;
@@ -224,6 +226,7 @@ static void M_InitialisePlayer(const int16_t item_num)
     OBJECT *const obj = Object_Get(O_LARA);
     obj->draw_func = Lara_Draw;
     obj->control_func = M_PlayerControl;
+    obj->shadow_size = (UNIT_SHADOW * 10) / 16;
 
     Item_AddActive(item_num);
     ITEM *const item = Item_Get(item_num);
