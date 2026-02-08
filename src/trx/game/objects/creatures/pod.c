@@ -12,9 +12,15 @@ typedef enum {
     POD_STATE_EXPLODE = 1,
 } POD_STATE;
 
+typedef struct {
+    int16_t bug_item_num;
+} M_PRIV;
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->bug_item_num = NO_ITEM;
 
     const int16_t bug_item_num = Item_CreateLevelItem();
     if (bug_item_num != NO_ITEM) {
@@ -29,7 +35,7 @@ static void M_Initialise(const int16_t item_num)
         bug->shade.value_1 = -1;
 
         Item_Initialise(bug_item_num);
-        item->data = (void *)(intptr_t)bug_item_num;
+        p->bug_item_num = bug_item_num;
     }
 
     item->flags = 0;
@@ -74,15 +80,17 @@ static void M_Control(const int16_t item_num)
             item->collidable = false;
             Item_Explode(item_num, 0xFFFE00, 0);
 
-            const int16_t bug_item_num = (intptr_t)item->data;
-            ITEM *const bug = Item_Get(bug_item_num);
-            if (Object_Get(bug->object_id)->loaded) {
-                bug->touch_bits = 0;
-                Item_AddActive(bug_item_num);
-                if (LOT_EnableBaddieAI(bug_item_num, 0)) {
-                    bug->status = IS_ACTIVE;
-                } else {
-                    bug->status = IS_INVISIBLE;
+            const M_PRIV *const p = item->priv;
+            if (p->bug_item_num != NO_ITEM) {
+                ITEM *const bug = Item_Get(p->bug_item_num);
+                if (Object_Get(bug->object_id)->loaded) {
+                    bug->touch_bits = 0;
+                    Item_AddActive(p->bug_item_num);
+                    if (LOT_EnableBaddieAI(p->bug_item_num, 0)) {
+                        bug->status = IS_ACTIVE;
+                    } else {
+                        bug->status = IS_INVISIBLE;
+                    }
                 }
             }
             item->status = IS_DEACTIVATED;
@@ -101,6 +109,7 @@ static void M_Setup(OBJECT *const obj)
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_anim = true;
     obj->save_flags = true;
 }
