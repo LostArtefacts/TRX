@@ -12,6 +12,8 @@
 
 #define M_HAIR_SEGMENTS 6
 #define M_HAIR_SPHERES 5
+#define M_BONE_IDX(segment)                                                    \
+    (segment == M_HAIR_SEGMENTS ? (segment - 2) : (segment - 1))
 
 static bool m_IsFirstHair;
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
@@ -190,19 +192,18 @@ void Lara_Hair_Initialise(void)
         return;
     }
 
+    const ANIM_BONE *const bones = Object_GetBone(obj, 0);
     m_IsFirstHair = true;
     m_HairSegments[0].rot.x = -DEG_90;
     m_HairSegments[0].rot.y = 0;
 
-    for (int32_t i = 0; i < M_HAIR_SEGMENTS; i++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, i);
-        m_HairSegments[i + 1].pos = bone->pos;
-        m_HairSegments[i + 1].rot.x = -DEG_90;
-        m_HairSegments[i + 1].rot.y = 0;
-        m_HairSegments[i + 1].rot.z = 0;
-        m_HairVelocity[i].x = 0;
-        m_HairVelocity[i].y = 0;
-        m_HairVelocity[i].z = 0;
+    for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
+        const ANIM_BONE *const bone = &bones[M_BONE_IDX(i)];
+        m_HairSegments[i].pos = bone->pos;
+        m_HairSegments[i].rot.x = -DEG_90;
+        m_HairSegments[i].rot.y = 0;
+        m_HairSegments[i].rot.z = 0;
+        m_HairVelocity[i - 1] = (XYZ_32) {};
     }
 }
 
@@ -248,16 +249,15 @@ void Lara_Hair_Control(const bool in_cutscene)
     Matrix_Pop();
 
     const OBJECT *const obj = Object_Get(O_LARA_HAIR);
+    const ANIM_BONE *const bones = Object_GetBone(obj, 0);
 
     HAIR_SEGMENT *const fs = &m_HairSegments[0];
-    fs->pos.x = pos.x;
-    fs->pos.y = pos.y;
-    fs->pos.z = pos.z;
+    fs->pos = pos;
 
     if (m_IsFirstHair) {
         m_IsFirstHair = false;
         for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
-            const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
+            const ANIM_BONE *const bone = &bones[M_BONE_IDX(i)];
             const HAIR_SEGMENT *const ps = &m_HairSegments[i - 1];
             HAIR_SEGMENT *const s = &m_HairSegments[i];
 
@@ -302,7 +302,6 @@ void Lara_Hair_Control(const bool in_cutscene)
     const int32_t hair_wind_z = Sparks_GetHairWindZ();
 
     for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
         HAIR_SEGMENT *const ps = &m_HairSegments[i - 1];
         HAIR_SEGMENT *const s = &m_HairSegments[i];
 
@@ -365,12 +364,8 @@ void Lara_Hair_Control(const bool in_cutscene)
         Matrix_RotY(ps->rot.y);
         Matrix_RotX(ps->rot.x);
 
-        if (i == M_HAIR_SEGMENTS) {
-            const ANIM_BONE *const last_bone = bone - 1;
-            Matrix_TranslateRel32(last_bone->pos);
-        } else {
-            Matrix_TranslateRel32(bone->pos);
-        }
+        const ANIM_BONE *const bone = &bones[M_BONE_IDX(i)];
+        Matrix_TranslateRel32(bone->pos);
 
         s->pos.x = g_MatrixPtr->_03 >> W2V_SHIFT;
         s->pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;

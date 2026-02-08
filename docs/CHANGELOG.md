@@ -77,6 +77,7 @@
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
 - fixed custom levels that contain invalid room static mesh references not being able to load (#4770)
+- fixed the tip of Lara's braid using an invalid offset position on the first frame of a level (#4821)
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
 - fixed being unable to use the manual camera in TR3 camera mode when Lara is idle (#4670, regression from 1.1)
 - fixed grenades not killing more than a single enemy
