@@ -9,6 +9,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/general/flare_item.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
@@ -268,7 +269,9 @@ void SG_File_DumpFlares(SG_WRITE_IO *const io)
         SGW_WRITE_VALUE(io, "room_num", item->room_num);
         SGW_WRITE_VALUE(io, "speed", item->speed);
         SGW_WRITE_VALUE(io, "fall_speed", item->fall_speed);
-        SGW_WRITE_VALUE(io, "age", (int32_t)(intptr_t)item->data);
+        const int32_t flare_age = FlareItem_GetAge(item);
+        const int32_t active = FlareItem_IsActive(item) ? 0x8000 : 0;
+        SGW_WRITE_VALUE(io, "age", flare_age | active);
         SGW_POP_AND_APPEND(io);
     }
     SGW_POP_AND_SET(io, "flares");
