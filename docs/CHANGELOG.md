@@ -79,6 +79,7 @@
 - fixed soft static mesh collision not working right with statics that appear in overlapping rooms
 - fixed drawing debug triggers using random tint near water sources
 - fixed drawing debug triggers glitching through triangular portals
+- fixed Lara being force-resurfaced near split-triangle water portals in certain spots
 - fixed custom levels that contain invalid room static mesh references not being able to load (#4770)
 - fixed the tip of Lara's braid using an invalid offset position on the first frame of a level (#4821)
 - fixed drawing shadows twice when item intersects a portal (#4640, regression from 1.0)
