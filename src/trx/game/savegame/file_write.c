@@ -495,7 +495,8 @@ void SG_File_DumpLara(SG_WRITE_IO *const io)
     if (lara->gun_item_num != NO_ITEM) {
         SGW_PUSH_OBJECT(io);
         const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        SGW_WRITE_VALUE(io, "obj_id", Object_ToGameID(weapon_item->object_id));
+        SGW_WRITE_VALUE(
+            io, "object_id", Object_ToGameID(weapon_item->object_id));
         SGW_WRITE_VALUE(io, "anim_num", weapon_item->anim_num);
         SGW_WRITE_VALUE(io, "frame_num", weapon_item->frame_num);
         SGW_WRITE_VALUE(
