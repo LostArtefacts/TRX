@@ -187,12 +187,11 @@ static void M_CalculateSpheres_I(
 
 void Lara_Hair_Initialise(void)
 {
-    const OBJECT *const obj = Object_Get(O_LARA_HAIR);
-    if (!obj->loaded) {
+    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase();
+    if (bones == nullptr) {
         return;
     }
 
-    const ANIM_BONE *const bones = Object_GetBone(obj, 0);
     m_IsFirstHair = true;
     m_HairSegments[0].rot.x = -DEG_90;
     m_HairSegments[0].rot.y = 0;
@@ -248,8 +247,7 @@ void Lara_Hair_Control(const bool in_cutscene)
     };
     Matrix_Pop();
 
-    const OBJECT *const obj = Object_Get(O_LARA_HAIR);
-    const ANIM_BONE *const bones = Object_GetBone(obj, 0);
+    const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase();
 
     HAIR_SEGMENT *const fs = &m_HairSegments[0];
     fs->pos = pos;

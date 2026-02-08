@@ -142,6 +142,22 @@ static int32_t M_GetNoHolsterMeshIdx(
     return obj->mesh_idx + offset;
 }
 
+static inline int32_t M_GetRelativeBraidOffset(void)
+{
+    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    if (!outfit->braid.enabled) {
+        return M_NO_MESH;
+    }
+
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    int32_t offset = outfit->braid.mesh_offset;
+    if (outfit->is_reflective || (lara->mesh_effects & (1 << LM_HEAD)) != 0) {
+        offset = outfit->braid.gold_offset;
+    }
+
+    return offset;
+}
+
 static inline int32_t M_GetMeshIdx(
     const LARA_MESH mesh, const LARA_SKIN_OUTFIT *const outfit)
 {
@@ -508,23 +524,24 @@ XYZ_32 Lara_Skin_GetBraidOffset(void)
 
 int32_t Lara_Skin_GetBraidMeshIdx(void)
 {
-    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    if (!outfit->braid.enabled) {
-        return M_NO_MESH;
-    }
-
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    int32_t offset = outfit->braid.mesh_offset;
-    if (outfit->is_reflective || (lara->mesh_effects & (1 << LM_HEAD)) != 0) {
-        offset = outfit->braid.gold_offset;
-    }
-
+    const int32_t offset = M_GetRelativeBraidOffset();
     if (offset == M_NO_MESH) {
-        return M_NO_MESH;
+        return offset;
     }
 
     const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
     return obj->mesh_idx + offset;
+}
+
+const ANIM_BONE *Lara_Skin_GetBraidBoneBase(void)
+{
+    const int32_t offset = M_GetRelativeBraidOffset();
+    if (offset == M_NO_MESH) {
+        return nullptr;
+    }
+
+    const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    return Object_GetBone(obj, offset);
 }
 
 bool Lara_Skin_AreHolstersVisible(void)
