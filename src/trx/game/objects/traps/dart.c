@@ -14,6 +14,10 @@
 #define M_POISON_AMOUNT 160
 #define M_PITCH (DEG_45 / 2)
 
+typedef struct {
+    bool pending_kill;
+} M_PRIV;
+
 static void M_DamageLara(const ITEM *const item)
 {
     const bool is_poison = item->object_id == O_POISON_DART;
@@ -30,18 +34,23 @@ static void M_DamageLara(const ITEM *const item)
         lara_item->rot.y, lara_item->room_num);
 }
 
-static void M_Hit(const int16_t item_num, const XYZ_32 pos)
+static void M_Hit(
+    const int16_t item_num, const XYZ_32 pos, const int16_t old_room_num)
 {
     const ITEM *const item = Item_Get(item_num);
-    Item_Kill(item_num);
 
     if (item->object_id == O_POISON_DART) {
         for (int32_t i = 0; i < 4; i++) {
             Sparks_TriggerDartSmoke(pos, (XZ_32) {}, true);
         }
+        ITEM *const poison_item = Item_Get(item_num);
+        M_PRIV *const p = poison_item->priv;
+        p->pending_kill = true;
+        Item_UpdateRoom(item_num, old_room_num);
         return;
     }
 
+    Item_Kill(item_num);
     Sound_Effect(SFX_PROJECTILE_HIT, &item->pos, SPM_NORMAL);
 
     int16_t room_num = item->room_num;
@@ -74,6 +83,14 @@ static void M_Animate(ITEM *const item)
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    if (item->object_id == O_POISON_DART) {
+        M_PRIV *const p = item->priv;
+        if (p->pending_kill) {
+            Item_Kill(item_num);
+            return;
+        }
+    }
+
     if (item->touch_bits != 0) {
         M_DamageLara(item);
         if (item->object_id == O_POISON_DART) {
@@ -100,7 +117,9 @@ static void M_Control(const int16_t item_num)
     const GAME_VECTOR new_pos = { .pos = item->pos,
                                   .room_num = item->room_num };
     if (item->pos.y >= height) {
-        M_Hit(item_num, Spawn_GetRayPos(old_pos, new_pos, STEP_L / 12));
+        M_Hit(
+            item_num, Spawn_GetRayPos(old_pos, new_pos, STEP_L / 12),
+            old_pos.room_num);
     }
 }
 
@@ -133,6 +152,7 @@ static void M_SetupPoisonDart(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->draw_func = M_DrawPoisonDart;
+    obj->priv_size = sizeof(M_PRIV);
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->save_flags = true;
 }
