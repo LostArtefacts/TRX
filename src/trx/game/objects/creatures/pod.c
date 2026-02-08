@@ -52,6 +52,12 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
     }
 }
 
+static int16_t M_GetCarrierItemNum(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->bug_item_num;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -109,6 +115,7 @@ static void M_Setup(OBJECT *const obj)
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->carrier_item_num_func = M_GetCarrierItemNum;
     obj->priv_size = sizeof(M_PRIV);
     obj->save_anim = true;
     obj->save_flags = true;

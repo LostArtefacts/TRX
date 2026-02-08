@@ -187,16 +187,6 @@ const OBJECT_ID g_MovableBlockObjects[] = {
     // clang-format on
 };
 
-const OBJECT_ID g_PlaceholderObjects[] = {
-    // clang-format off
-    O_CENTAUR_STATUE,
-    O_PODS,
-    O_BIG_POD,
-    O_BARTOLI,
-    NO_OBJECT,
-    // clang-format on
-};
-
 const OBJECT_ID g_SecretObjects[] = {
     // clang-format off
     O_SECRET_1,

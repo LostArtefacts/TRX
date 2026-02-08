@@ -20,7 +20,6 @@ extern const OBJECT_ID g_NullObjects[];
 extern const OBJECT_ID g_InvObjects[];
 extern const OBJECT_ID g_WaterSpriteObjects[];
 extern const OBJECT_ID g_BossObjects[];
-extern const OBJECT_ID g_PlaceholderObjects[];
 extern const OBJECT_ID g_SecretObjects[];
 extern const OBJECT_ID g_MovableBlockObjects[];
 extern const OBJECT_ID g_GameSpriteObjects[];
