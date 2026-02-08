@@ -158,15 +158,9 @@ static bool M_CameraInsideRoom(const XYZ_32 pos, const int16_t room_num)
 
 static void M_UpdateCameraRooms(void)
 {
-    if (M_CameraInsideRoom(g_Camera.pos.pos, g_Camera.pos.room_num)
-        && M_CameraInsideRoom(g_Camera.target.pos, g_Camera.target.room_num)) {
-        Room_GetSector(
-            g_Camera.pos.x, g_Camera.pos.y, g_Camera.pos.z,
-            &g_Camera.pos.room_num);
-        Room_GetSector(
-            g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
-            &g_Camera.target.room_num);
-    } else {
+    Room_GetSector32(g_Camera.pos.pos, &g_Camera.pos.room_num);
+    Room_GetSector32(g_Camera.target.pos, &g_Camera.target.room_num);
+    if (!M_CameraInsideRoom(g_Camera.pos.pos, g_Camera.pos.room_num)) {
         const int16_t pos_room_num = Room_GetIndexFromPos(g_Camera.pos.pos);
         const int16_t tar_room_num = Room_GetIndexFromPos(g_Camera.target.pos);
 
