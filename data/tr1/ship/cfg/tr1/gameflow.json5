@@ -483,6 +483,7 @@
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
+                "data/injections/misc_sprites.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -502,6 +503,7 @@
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
+                "data/injections/misc_sprites.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -521,6 +523,7 @@
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
+                "data/injections/misc_sprites.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
@@ -543,6 +546,7 @@
                 "data/injections/pda_model.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
+                "data/injections/misc_sprites.bin",
             ],
             "sequence": [
                 {"type": "loop_game"},
