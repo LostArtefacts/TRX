@@ -227,6 +227,8 @@ static bool M_ReadLara(SG_READ_IO *const io)
                 Lara_Skin_SetGunEquipment(i, data);
             } else if (type == EQUIPMENT_TYPE_EXTRA) {
                 Lara_Skin_SetExtraEquipment(i, data);
+            } else {
+                Lara_Skin_ClearEquipment(i);
             }
         }
         M_MUST(SG_POP(io));
@@ -255,6 +257,25 @@ static bool M_ReadLara(SG_READ_IO *const io)
     M_SHOULD(M_ReadAmmo(io, "desert_eagle", &lara->desert_eagle_ammo));
     M_SHOULD(M_ReadAmmo(io, "mp5", &lara->mp5_ammo));
     M_SHOULD(M_ReadAmmo(io, "rocket", &lara->rocket_ammo));
+
+    if (M_OPTIONAL(SG_PUSH(io, "weapon"))) {
+        lara->gun_item_num = Item_Create();
+        ITEM *const weapon_item = Item_Get(lara->gun_item_num);
+        weapon_item->status = IS_ACTIVE;
+        weapon_item->room_num = NO_ROOM;
+        // Introduced in TRX 1.2
+        if (!M_SHOULD(
+                M_ReadObjectID(io, "object_id", &weapon_item->object_id))) {
+            M_MUST(M_ReadObjectID(io, "obj_id", &weapon_item->object_id));
+        }
+        M_MUST(SG_READ_VALUE(io, "anim_num", &weapon_item->anim_num));
+        M_MUST(SG_READ_VALUE(io, "frame_num", &weapon_item->frame_num));
+        M_MUST(SG_READ_VALUE(
+            io, "current_anim_state", &weapon_item->current_anim_state));
+        M_MUST(SG_READ_VALUE(
+            io, "goal_anim_state", &weapon_item->goal_anim_state));
+        M_MUST(SG_POP(io));
+    }
 
     M_MUST(SG_PUSH(io, "interact_target"));
     M_MUST(SG_READ_VALUE(io, "item_num", &lara->interact_target.item_num));
