@@ -80,6 +80,7 @@ void Camera_ResetPosition(void)
     const CAMERA_STRATEGY *const strategy = M_GetStrategy();
     strategy->reset_func();
 
+    g_Camera.roll = 0;
     g_Camera.target_distance = CAMERA_DEFAULT_DISTANCE;
     g_Camera.item = nullptr;
     g_Camera.speed = 1;
