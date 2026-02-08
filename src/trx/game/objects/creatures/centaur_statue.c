@@ -9,6 +9,10 @@
 #define CENTAUR_REARING_ANIM 7
 #define CENTAUR_REARING_FRAME 36
 
+typedef struct {
+    int16_t centaur_item_num;
+} M_PRIV;
+
 static void M_Initialise(const int16_t item_num)
 {
     OBJECT *const obj = Object_Get(O_CENTAUR);
@@ -17,6 +21,8 @@ static void M_Initialise(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->centaur_item_num = NO_ITEM;
 
     const int16_t centaur_item_num = Item_CreateLevelItem();
     ASSERT(centaur_item_num != NO_ITEM);
@@ -37,7 +43,7 @@ static void M_Initialise(const int16_t item_num)
     centaur->goal_anim_state = centaur->current_anim_state;
     centaur->rot.y = item->rot.y;
 
-    item->data = (void *)(intptr_t)centaur_item_num;
+    p->centaur_item_num = centaur_item_num;
 }
 
 static void M_Control(const int16_t item_num)
@@ -58,12 +64,12 @@ static void M_Control(const int16_t item_num)
         Item_Kill(item_num);
         item->status = IS_DEACTIVATED;
 
-        if (item->data != nullptr) {
-            const int16_t centaur_item_num = (intptr_t)item->data;
-            ITEM *const centaur = Item_Get(centaur_item_num);
+        const M_PRIV *const p = item->priv;
+        if (p->centaur_item_num != NO_ITEM) {
+            ITEM *const centaur = Item_Get(p->centaur_item_num);
             centaur->touch_bits = 0;
-            Item_AddActive(centaur_item_num);
-            LOT_EnableBaddieAI(centaur_item_num, 1);
+            Item_AddActive(p->centaur_item_num);
+            LOT_EnableBaddieAI(p->centaur_item_num, 1);
             centaur->status = IS_ACTIVE;
             Sound_Effect(SFX_EXPLOSION_1, &centaur->pos, SPM_NORMAL);
         } else {
@@ -80,6 +86,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_anim = true;
     obj->save_flags = true;
     obj->enable_interpolation = false;
