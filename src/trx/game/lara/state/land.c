@@ -9,6 +9,7 @@
 #include <trx/version.h>
 
 // clang-format off
+#define M_WALK_DIST                140  // OG: 104
 #define M_LF_ROLL                  2
 #define M_CANCEL_POSE_TIME         (10 * LOGIC_FPS)               // = 300
 #define M_CANCEL_POSE_CHANCE       0x40                           // = 64
@@ -304,9 +305,9 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     int16_t fheight = NO_HEIGHT;
     int16_t rheight = NO_HEIGHT;
     if (g_Input.forward) {
-        fheight = Lara_FloorFront(item, item->rot.y, 104);
+        fheight = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
     } else if (g_Input.back) {
-        rheight = Lara_FloorFront(item, item->rot.y + DEG_180, 104);
+        rheight = Lara_FloorFront(item, item->rot.y + DEG_180, M_WALK_DIST);
     }
 
     const ROOM *const room = Room_Get(item->room_num);
@@ -355,8 +356,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     } else if (g_Input.jump) {
         item->goal_anim_state = LS(LS_COMPRESS);
     } else if (g_Input.forward) {
-        const int16_t h = Lara_FloorFront(item, item->rot.y, 104);
-        const int16_t c = Lara_CeilingFront(item, item->rot.y, 104);
+        const int16_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
+        const int16_t c = Lara_CeilingFront(item, item->rot.y, M_WALK_DIST);
         if (g_TRVersion == 3 && Room_GetHeightType() == HT_BIG_SLOPE && h < 0) {
             item->goal_anim_state = LS_STOP;
         } else if (g_TRVersion == 3 && c > 0) {

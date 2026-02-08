@@ -276,6 +276,9 @@ int16_t Lara_FloorFront(
     int32_t height = Room_GetHeight(sector, x, y, z);
     if (height != NO_HEIGHT) {
         height -= item->pos.y;
+        if (height > 0 && Room_GetPitSector(sector, x, z)->is_death_sector) {
+            return STEP_L * 2;
+        }
     }
     return height;
 }

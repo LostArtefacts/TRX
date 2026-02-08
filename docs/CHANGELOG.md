@@ -92,6 +92,7 @@
 - fixed `/play` and similar commands fading out instead of running instantly on stats/title screens
 - fixed Cheats description showing arrows in the indented bullets (#4753, regression from TRX 1.1)
 - fixed game freezing on exit on certain platforms when there are no active sound devices (SDL bug)
+- fixed Lara twitching when trying to step back onto death tiles
 - fixed Lara's look head rotation/tilt limits being hardcoded to the engine version rather than camera mode
 - fixed pushblocks being able to fall into rooms below despite no portals being present (#4788, regression from TR1X 4.15/TR2X 1.5)
 - fixed one-shot triggers for hidden pickup items making the items permanently invisible (#4784)
