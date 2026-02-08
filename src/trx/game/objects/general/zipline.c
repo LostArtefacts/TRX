@@ -1,4 +1,3 @@
-#include <trx/game/game_buf.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
@@ -7,6 +6,10 @@
 
 #define ZIPLINE_MAX_SPEED 100
 #define ZIPLINE_ACCELERATION 5
+
+typedef struct {
+    GAME_VECTOR old_pos;
+} M_PRIV;
 
 typedef enum {
     ZIPLINE_STATE_EMPTY = 0,
@@ -39,11 +42,9 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    GAME_VECTOR *const data =
-        GameBuf_Alloc(sizeof(GAME_VECTOR), GBUF_ITEM_DATA);
-    data->pos = item->pos;
-    data->room_num = item->room_num;
-    item->data = data;
+    M_PRIV *const p = item->priv;
+    p->old_pos.pos = item->pos;
+    p->old_pos.room_num = item->room_num;
 }
 
 static void M_Control(const int16_t item_num)
@@ -54,9 +55,9 @@ static void M_Control(const int16_t item_num)
     }
 
     if (!(item->flags & IF_ONE_SHOT)) {
-        const GAME_VECTOR *const old = item->data;
-        item->pos = old->pos;
-        Item_UpdateRoom(item_num, old->room_num);
+        const M_PRIV *const p = item->priv;
+        item->pos = p->old_pos.pos;
+        Item_UpdateRoom(item_num, p->old_pos.room_num);
         item->status = IS_INACTIVE;
         item->goal_anim_state = ZIPLINE_STATE_GRAB;
         item->current_anim_state = ZIPLINE_STATE_GRAB;
@@ -157,6 +158,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
     obj->bounds_func = M_Bounds;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
