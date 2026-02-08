@@ -2,12 +2,16 @@
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
-#include <trx/game/pathing.h>
+#include <trx/game/objects/creatures/dragon.h>
 #include <trx/game/spawn.h>
 #include <trx/utils.h>
 
-#define BOOM_TIME 130
-#define BARTOLI_RANGE (WALL_L * 5) // = 5120
+#define M_BOOM_TIME 130
+#define M_BARTOLI_RANGE (WALL_L * 5) // = 5120
+
+typedef struct {
+    int16_t dragon_item_num;
+} M_PRIV;
 
 static void M_CreateBoom(const OBJECT_ID obj_id, const ITEM *const origin_item)
 {
@@ -30,21 +34,12 @@ static void M_CreateBoom(const OBJECT_ID obj_id, const ITEM *const origin_item)
 
 static void M_ConvertBartoliToDragon(const int16_t item_num)
 {
-    const ITEM *const item_bartoli = Item_Get(item_num);
-
-    const int16_t item_dragon_back_num = (intptr_t)item_bartoli->data;
-    ITEM *const item_dragon_back = Item_Get(item_dragon_back_num);
-    const int16_t item_dragon_front_num = (intptr_t)item_dragon_back->data;
-    ITEM *const item_dragon_front = Item_Get(item_dragon_front_num);
-
-    item_dragon_back->touch_bits = 0;
-    item_dragon_front->touch_bits = 0;
-
-    LOT_EnableBaddieAI(item_dragon_front_num, true);
-    Item_AddActive(item_dragon_front_num);
-    Item_AddActive(item_dragon_back_num);
-
-    item_dragon_back->status = IS_ACTIVE;
+    const ITEM *const bartoli_item = Item_Get(item_num);
+    const M_PRIV *const p = bartoli_item->priv;
+    const int16_t dragon_item_num = p->dragon_item_num;
+    if (dragon_item_num != NO_ITEM) {
+        Dragon_Activate(dragon_item_num);
+    }
     Item_Kill(item_num);
 }
 
@@ -53,43 +48,15 @@ static bool M_CheckLaraProximity(const ITEM *const origin_item)
     const ITEM *const lara_item = Lara_GetItem();
     const int32_t dx = ABS(lara_item->pos.x - origin_item->pos.x);
     const int32_t dz = ABS(lara_item->pos.z - origin_item->pos.z);
-    return dx < BARTOLI_RANGE && dz < BARTOLI_RANGE;
+    return dx < M_BARTOLI_RANGE && dz < M_BARTOLI_RANGE;
 }
 
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-
-    const int16_t item_dragon_back_num = Item_CreateLevelItem();
-    const int16_t item_dragon_front_num = Item_CreateLevelItem();
-    ASSERT(item_dragon_back_num != NO_ITEM);
-    ASSERT(item_dragon_front_num != NO_ITEM);
-
-    ITEM *const item_dragon_back = Item_Get(item_dragon_back_num);
-    item_dragon_back->object_id = O_DRAGON_BACK;
-    item_dragon_back->pos.x = item->pos.x;
-    item_dragon_back->pos.y = item->pos.y;
-    item_dragon_back->pos.z = item->pos.z;
-    item_dragon_back->rot.y = item->rot.y;
-    item_dragon_back->room_num = item->room_num;
-    item_dragon_back->flags = IF_INVISIBLE;
-    item_dragon_back->shade.value_1 = -1;
-    Item_Initialise(item_dragon_back_num);
-    item_dragon_back->mesh_bits = 0x1FFFFF;
-
-    ITEM *const item_dragon_front = Item_Get(item_dragon_front_num);
-    item_dragon_front->object_id = O_DRAGON_FRONT;
-    item_dragon_front->pos.x = item->pos.x;
-    item_dragon_front->pos.y = item->pos.y;
-    item_dragon_front->pos.z = item->pos.z;
-    item_dragon_front->rot.y = item->rot.y;
-    item_dragon_front->room_num = item->room_num;
-    item_dragon_front->flags = IF_INVISIBLE;
-    item_dragon_front->shade.value_1 = -1;
-    Item_Initialise(item_dragon_front_num);
-    item_dragon_back->data = (void *)(intptr_t)item_dragon_front_num;
-
-    item->data = (void *)(intptr_t)item_dragon_back_num;
+    M_PRIV *const p = item->priv;
+    p->dragon_item_num = Dragon_CreateInactive(item);
+    ASSERT(p->dragon_item_num != NO_ITEM);
 }
 
 static void M_Control(const int16_t item_num)
@@ -111,13 +78,13 @@ static void M_Control(const int16_t item_num)
     Spawn_MysticLight(item_num);
     Item_Animate(item);
 
-    if (item->timer == BOOM_TIME + 0) {
+    if (item->timer == M_BOOM_TIME + 0) {
         M_CreateBoom(O_SPHERE_OF_DOOM_1, item);
-    } else if (item->timer == BOOM_TIME + 10) {
+    } else if (item->timer == M_BOOM_TIME + 10) {
         M_CreateBoom(O_SPHERE_OF_DOOM_2, item);
-    } else if (item->timer == BOOM_TIME + 20) {
+    } else if (item->timer == M_BOOM_TIME + 20) {
         M_CreateBoom(O_SPHERE_OF_DOOM_3, item);
-    } else if (item->timer >= BOOM_TIME + 20) {
+    } else if (item->timer >= M_BOOM_TIME + 20) {
         M_ConvertBartoliToDragon(item_num);
     }
 }
@@ -130,6 +97,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
+    obj->priv_size = sizeof(M_PRIV);
 
     obj->save_flags = true;
     obj->save_anim = true;
