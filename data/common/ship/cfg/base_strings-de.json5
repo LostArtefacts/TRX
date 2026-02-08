@@ -351,6 +351,7 @@
         "OSD_WIREFRAME_MODE_OFF": "Gitterrahmen-Modus: aus",
         "OSD_WIREFRAME_MODE_ON": "Gitterrahmen-Modus: ein",
         "OVERLAY_DEBUG_ANIMATION": "Animation: ",
+        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}Status: ",
         "OVERLAY_DEBUG_CAMERA_POS": "\\{review}Kamerastandort: ",
         "OVERLAY_DEBUG_CAMERA_TARGET": "\\{review}Kameraziel: ",
         "OVERLAY_DEBUG_IMMUNE": "Unverwundbarkeit ein",

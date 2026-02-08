@@ -351,6 +351,7 @@
         "OSD_WIREFRAME_MODE_OFF": "Modh frèam-uèir: dheth",
         "OSD_WIREFRAME_MODE_ON": "Modh frèam-uèir: air",
         "OVERLAY_DEBUG_ANIMATION": "Beothachadh: ",
+        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}Stàit: ",
         "OVERLAY_DEBUG_CAMERA_POS": "Tùs a' chamara: ",
         "OVERLAY_DEBUG_CAMERA_TARGET": "Targaid a' chamara: ",
         "OVERLAY_DEBUG_IMMUNE": "Neo-bhàsmhorachd air",

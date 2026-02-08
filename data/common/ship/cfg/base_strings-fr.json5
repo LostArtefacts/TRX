@@ -351,6 +351,7 @@
         "OSD_WIREFRAME_MODE_OFF": "\\{review}Mode fil de fer : désactivé",
         "OSD_WIREFRAME_MODE_ON": "\\{review}Mode fil de fer : activé",
         "OVERLAY_DEBUG_ANIMATION": "\\{review}Animation : ",
+        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}État : ",
         "OVERLAY_DEBUG_CAMERA_POS": "\\{review}Origine de la caméra : ",
         "OVERLAY_DEBUG_CAMERA_TARGET": "\\{review}Cible de la caméra : ",
         "OVERLAY_DEBUG_IMMUNE": "\\{review}Invulnérabilité activée",

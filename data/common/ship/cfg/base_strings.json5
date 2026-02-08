@@ -351,6 +351,7 @@
         "OSD_WIREFRAME_MODE_OFF": "Wireframe mode: off",
         "OSD_WIREFRAME_MODE_ON": "Wireframe mode: on",
         "OVERLAY_DEBUG_ANIMATION": "Animation: ",
+        "OVERLAY_DEBUG_ANIMATION_STATE": "State: ",
         "OVERLAY_DEBUG_CAMERA_POS": "Camera origin: ",
         "OVERLAY_DEBUG_CAMERA_TARGET": "Camera target: ",
         "OVERLAY_DEBUG_IMMUNE": "Invulnerability on",

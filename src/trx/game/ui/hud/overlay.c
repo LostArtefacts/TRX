@@ -185,6 +185,7 @@ static void M_DebugPosTopLeft(void)
     }
     if (g_Config.debug.enable_debug_anim) {
         UI_Label(GS(OVERLAY_DEBUG_ANIMATION));
+        UI_Label(GS(OVERLAY_DEBUG_ANIMATION_STATE));
     }
     if (g_Config.debug.enable_debug_camera) {
         UI_Label(GS(OVERLAY_DEBUG_CAMERA_POS));
@@ -207,9 +208,11 @@ static void M_DebugPosTopLeft(void)
     }
     if (g_Config.debug.enable_debug_anim) {
         UI_Label(String_FormatStatic(
-            "\\{small}%d, %d, %d", obj_id,
-            Item_GetRelativeObjAnim(lara, obj_id),
+            "\\{small}%d, %d", Item_GetRelativeObjAnim(lara, obj_id),
             Item_GetRelativeFrame(lara)));
+        UI_Label(String_FormatStatic(
+            "\\{small}%d, %d (%d)", lara->current_anim_state,
+            lara->goal_anim_state, obj_id));
     }
     if (g_Config.debug.enable_debug_camera) {
         UI_Label(String_FormatStatic(

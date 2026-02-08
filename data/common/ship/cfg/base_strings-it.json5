@@ -351,6 +351,7 @@
         "OSD_WIREFRAME_MODE_OFF": "Modalità reticolo: disattivato",
         "OSD_WIREFRAME_MODE_ON": "Modalità reticolo: attivato",
         "OVERLAY_DEBUG_ANIMATION": "Animazione: ",
+        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}Stato: ",
         "OVERLAY_DEBUG_CAMERA_POS": "Origine telecamera: ",
         "OVERLAY_DEBUG_CAMERA_TARGET": "Obiettivo telecamera: ",
         "OVERLAY_DEBUG_IMMUNE": "Invulnerabilità attivata",
