@@ -108,7 +108,7 @@
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
 - fixed save crystal reflections rendering upside down (regression from 4.14)
 - fixed underwater wobble effect acting twitchy with camera movement
-- fixed several texture issues on each of Lara's outfits
+- fixed several texture issues on each of Lara's outfits and guns
 - fixed gun injections overwriting Lara's footstep SFX in all levels (#4733, regression from 1.1)
 - fixed pushblocks in Natla's Mines becoming unusable after loading a save made in earlier versions (#4735, regression from 1.1)
 - fixed low-quality texture palette on injected TR2/3 weapons and flares
@@ -122,7 +122,7 @@
 - changed statistics screen rows to be more compact
 - fixed wrong line played when finishing the Assault Course for the first time (#4667, regression from 1.1)
 - fixed underwater wobble effect acting twitchy with camera movement
-- fixed several texture issues on each of Lara's outfits
+- fixed several texture issues on each of Lara's outfits and guns
 - fixed a deviation in water current behaviour that could result in Lara stopping too early (#4706, regression from TR2X 1.1)
 - fixed gun injections overwriting Lara's footstep SFX in underwater levels (#4733, regression from 1.1)
 - fixed exploding Armed Snowmobile not disappearing the vehicle (#4762)
@@ -172,7 +172,7 @@
 - changed statistics screen rows to be more compact
 - changed hostile Monkeys to share hostility status, like TR2 Barkhang monks (the original TR3 behavior can be restored in Gameplay → General → Ally hostility policy)
 - changed enemy drops to appear at the tile center, to conform with the OG
-- fixed several texture issues on each of Lara's outfits
+- fixed several texture issues on each of Lara's outfits and guns
 - fixed actors jumping to their start frame at the end of cutscenes
 - fixed Flame in Cutscene 4 and 6 appearing static
 - fixed Swamp Map rotation
