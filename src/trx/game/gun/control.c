@@ -15,6 +15,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/los.h>
 #include <trx/game/matrix.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -116,6 +117,12 @@ static bool M_CanEquip(void)
     }
 }
 
+static bool M_HasWeaponAnim(const LARA_GUN_TYPE gun_type)
+{
+    const OBJECT *const obj = Object_Get(Gun_GetLaraAnim(gun_type));
+    return obj->loaded && obj->frame_base != nullptr;
+}
+
 static bool M_NeedToDraw(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -191,6 +198,13 @@ static void M_DrawRequestedWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (M_CanEquip()) {
+        if (!M_HasWeaponAnim(lara->request_gun_type)) {
+            lara->request_gun_type = LGT_UNARMED;
+            lara->gun_type = LGT_UNARMED;
+            lara->gun_status = LGS_ARMLESS;
+            return;
+        }
+
         if (lara->gun_type == LGT_FLARE) {
             Lara_Flare_Dispose(false);
         }
