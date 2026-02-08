@@ -51,6 +51,12 @@ static bool M_CheckLaraProximity(const ITEM *const origin_item)
     return dx < M_BARTOLI_RANGE && dz < M_BARTOLI_RANGE;
 }
 
+static int16_t M_GetCarrierItemNum(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p->dragon_item_num;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -97,6 +103,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
+    obj->carrier_item_num_func = M_GetCarrierItemNum;
     obj->priv_size = sizeof(M_PRIV);
 
     obj->save_flags = true;

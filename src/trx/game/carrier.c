@@ -33,12 +33,16 @@ static ITEM *M_GetCarrier(const int16_t item_num)
     // Allow carried items to be allocated to holder objects (pods/statues),
     // but then have those items dropped by the actual creatures within.
     ITEM *item = Item_Get(item_num);
-    if (Object_IsType(item->object_id, g_PlaceholderObjects)) {
-        const int16_t child_item_num = (intptr_t)item->data;
+    const OBJECT *obj = Object_Get(item->object_id);
+    if (obj->carrier_item_num_func != nullptr) {
+        const int16_t child_item_num = obj->carrier_item_num_func(item);
+        if (child_item_num == NO_ITEM) {
+            return nullptr;
+        }
         item = Item_Get(child_item_num);
     }
 
-    const OBJECT *const obj = Object_Get(item->object_id);
+    obj = Object_Get(item->object_id);
     if (!obj->loaded) {
         return nullptr;
     }
