@@ -1,3 +1,5 @@
+#include <trx/game/objects/creatures/dragon.h>
+
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/carrier.h>
@@ -60,14 +62,48 @@ typedef enum {
     // clang-format on
 } DRAGON_ANIM;
 
+typedef struct {
+    int16_t dragon_front_item_num;
+} M_PRIV;
+
 static const BITE m_DragonMouth = {
     .pos = { .x = 35, .y = 171, .z = 1168 },
     .mesh_num = 12,
 };
 
+static int16_t M_GetFrontItemNum(const ITEM *const dragon_back_item)
+{
+    const M_PRIV *const p = dragon_back_item->priv;
+    if (p == nullptr) {
+        return NO_ITEM;
+    }
+    return p->dragon_front_item_num;
+}
+
+static bool M_SetFrontItemNum(
+    ITEM *const dragon_back_item, const int16_t dragon_front_item_num)
+{
+    M_PRIV *const p = dragon_back_item->priv;
+    if (p == nullptr) {
+        return false;
+    }
+    p->dragon_front_item_num = dragon_front_item_num;
+    return true;
+}
+
+static void M_InitialiseBack(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->dragon_front_item_num = NO_ITEM;
+}
+
 static void M_MarkDragonDead(ITEM *const dragon_back_item)
 {
-    const int16_t dragon_front_item_num = (intptr_t)dragon_back_item->data;
+    const int16_t dragon_front_item_num = M_GetFrontItemNum(dragon_back_item);
+    if (dragon_front_item_num == NO_ITEM) {
+        return;
+    }
     const ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
     CREATURE *const creature = dragon_front_item->data;
     creature->flags = -1;
@@ -201,15 +237,19 @@ static void M_Collision(
     }
 }
 
-static void M_Control(const int16_t item_num)
+static void M_ControlFront(const int16_t item_num)
+{
+}
+
+static void M_ControlBack(const int16_t item_num)
 {
     const int16_t dragon_back_item_num = item_num;
     ITEM *const dragon_back_item = Item_Get(item_num);
-    if (dragon_back_item->object_id == O_DRAGON_FRONT) {
+
+    const int16_t dragon_front_item_num = M_GetFrontItemNum(dragon_back_item);
+    if (dragon_front_item_num == NO_ITEM) {
         return;
     }
-
-    const int16_t dragon_front_item_num = (intptr_t)dragon_back_item->data;
     ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
     if (!Creature_Activate(dragon_front_item_num)) {
         return;
@@ -419,7 +459,7 @@ static void M_SetupFront(OBJECT *const obj)
     SOFT_ASSERT(
         Object_Get(O_DRAGON_BACK)->loaded, "Dragon back object missing");
     obj->handle_save_func = M_HandleSaveFront;
-    obj->control_func = M_Control;
+    obj->control_func = M_ControlFront;
     obj->collision_func = M_Collision;
 
     obj->hit_points = DRAGON_HITPOINTS;
@@ -441,7 +481,8 @@ static void M_SetupBack(OBJECT *const obj)
         return;
     }
 
-    obj->control_func = M_Control;
+    obj->initialise_func = M_InitialiseBack;
+    obj->control_func = M_ControlBack;
     obj->collision_func = M_Collision;
 
     obj->radius = DRAGON_RADIUS;
@@ -449,6 +490,65 @@ static void M_SetupBack(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    obj->priv_size = sizeof(M_PRIV);
+}
+
+int16_t Dragon_CreateInactive(const ITEM *const item)
+{
+    const int16_t dragon_back_item_num = Item_CreateLevelItem();
+    const int16_t dragon_front_item_num = Item_CreateLevelItem();
+    ASSERT(dragon_back_item_num != NO_ITEM);
+    ASSERT(dragon_front_item_num != NO_ITEM);
+
+    ITEM *const dragon_back_item = Item_Get(dragon_back_item_num);
+    dragon_back_item->object_id = O_DRAGON_BACK;
+    dragon_back_item->pos.x = item->pos.x;
+    dragon_back_item->pos.y = item->pos.y;
+    dragon_back_item->pos.z = item->pos.z;
+    dragon_back_item->rot.y = item->rot.y;
+    dragon_back_item->room_num = item->room_num;
+    dragon_back_item->flags = IF_INVISIBLE;
+    dragon_back_item->shade.value_1 = -1;
+    Item_Initialise(dragon_back_item_num);
+    dragon_back_item->mesh_bits = 0x1FFFFF;
+
+    ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
+    dragon_front_item->object_id = O_DRAGON_FRONT;
+    dragon_front_item->pos.x = item->pos.x;
+    dragon_front_item->pos.y = item->pos.y;
+    dragon_front_item->pos.z = item->pos.z;
+    dragon_front_item->rot.y = item->rot.y;
+    dragon_front_item->room_num = item->room_num;
+    dragon_front_item->flags = IF_INVISIBLE;
+    dragon_front_item->shade.value_1 = -1;
+    Item_Initialise(dragon_front_item_num);
+
+    if (!M_SetFrontItemNum(dragon_back_item, dragon_front_item_num)) {
+        return NO_ITEM;
+    }
+    return dragon_back_item_num;
+}
+
+void Dragon_Activate(const int16_t dragon_back_item_num)
+{
+    if (dragon_back_item_num == NO_ITEM) {
+        return;
+    }
+
+    ITEM *const dragon_back_item = Item_Get(dragon_back_item_num);
+    const int16_t dragon_front_item_num = M_GetFrontItemNum(dragon_back_item);
+    if (dragon_front_item_num == NO_ITEM) {
+        return;
+    }
+
+    ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
+    dragon_back_item->touch_bits = 0;
+    dragon_front_item->touch_bits = 0;
+
+    LOT_EnableBaddieAI(dragon_front_item_num, true);
+    Item_AddActive(dragon_front_item_num);
+    Item_AddActive(dragon_back_item_num);
+    dragon_back_item->status = IS_ACTIVE;
 }
 
 REGISTER_OBJECT(O_DRAGON_FRONT, M_SetupFront)
