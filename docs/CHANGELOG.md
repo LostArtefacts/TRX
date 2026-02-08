@@ -196,6 +196,7 @@
 - fixed Lara burning instead of getting electrocuted when touching the top of the electric fence
 - fixed driving over Winston with a Quad Bike or shooting him with the Harpoon Gun causing him to bleed
 - fixed driving over Assault Target with a Quad Bike or shooting it with the Harpoon Gun causing it to spawn blood
+- fixed skybox data in Scotland TR3:LA levels to show correct top and bottom colors
 
 
 
