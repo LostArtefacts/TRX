@@ -30,6 +30,10 @@ typedef enum {
     EEL_ANIM_DEATH = 3,
 } EEL_ANIM;
 
+typedef struct {
+    int32_t pos;
+} M_PRIV;
+
 static const BITE m_EelBite = {
     .pos = { .x = 7, .y = 157, .z = 333 },
     .mesh_num = 7,
@@ -38,8 +42,9 @@ static const BITE m_EelBite = {
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
 
-    int32_t pos = (int32_t)(intptr_t)item->data;
+    int32_t pos = p->pos;
     item->pos.x -= (pos * Math_Sin(item->rot.y)) >> W2V_SHIFT;
     item->pos.z -= (pos * Math_Cos(item->rot.y)) >> W2V_SHIFT;
 
@@ -90,7 +95,7 @@ static void M_Control(const int16_t item_num)
 
     item->pos.x += (pos * Math_Sin(item->rot.y)) >> W2V_SHIFT;
     item->pos.z += (pos * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-    item->data = (void *)(intptr_t)pos;
+    p->pos = pos;
     Item_Animate(item);
 }
 
@@ -102,6 +107,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
+    obj->priv_size = sizeof(M_PRIV);
 
     obj->hit_points = EEL_HITPOINTS;
 
