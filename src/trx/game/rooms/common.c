@@ -382,9 +382,14 @@ void Room_InitialiseFlipStatus(void)
 {
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         ROOM *const room = Room_Get(i);
+        // Some level data links only one side of a flip pair. In that case, a
+        // previous iteration may already have marked this room as flipped.
+        if (room->flip_status == RFS_FLIPPED) {
+            continue;
+        }
         if (room->flipped_room == NO_ROOM) {
             room->flip_status = RFS_NONE;
-        } else if (room->flip_status != RFS_FLIPPED) {
+        } else {
             ROOM *const flipped_room = Room_Get(room->flipped_room);
             room->flip_status = RFS_UNFLIPPED;
             flipped_room->flip_status = RFS_FLIPPED;
