@@ -67,7 +67,7 @@ static void M_Initialise(const int16_t item_num)
         Item_RemoveActive(item_num);
     }
 
-    if (item->data != nullptr) {
+    if (item->creature_data != nullptr) {
         LOT_DisableBaddieAI(item_num);
     }
 

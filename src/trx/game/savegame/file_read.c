@@ -395,7 +395,7 @@ static bool M_ReadItem(SG_READ_IO *const io, const int16_t item_num)
         M_SHOULD(SG_READ_VALUE(io, "intelligent", &intelligent));
         if (intelligent) {
             LOT_EnableBaddieAI(item_num, true);
-            CREATURE *const creature = item->data;
+            CREATURE *const creature = item->creature_data;
             if (creature != nullptr) {
                 M_MUST(SG_READ_VALUE(io, "head_rot", &creature->head_rotation));
                 M_MUST(SG_READ_VALUE(io, "neck_rot", &creature->neck_rotation));
@@ -429,7 +429,8 @@ static bool M_ReadItem(SG_READ_IO *const io, const int16_t item_num)
                 }
             }
         } else if (obj->intelligent) {
-            item->data = nullptr;
+            item->creature_data = nullptr;
+            item->extra_rotations = nullptr;
             if (item->clear_body && item->hit_points <= 0
                 && (item->flags & IF_KILLED) == 0) {
                 item->next_active = Item_GetPrevActive();

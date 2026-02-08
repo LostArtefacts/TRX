@@ -42,7 +42,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *centaur = item->data;
+    CREATURE *const centaur = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
 

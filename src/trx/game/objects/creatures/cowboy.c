@@ -52,7 +52,7 @@ static void M_Control(const int16_t item_num)
         item->status = IS_ACTIVE;
     }
 
-    CREATURE *cowboy = item->data;
+    CREATURE *const cowboy = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
     int16_t tilt = 0;

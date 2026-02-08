@@ -76,7 +76,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
 
     int16_t head = 0;
     int16_t neck = 0;

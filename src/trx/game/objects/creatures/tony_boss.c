@@ -277,7 +277,7 @@ static void M_Control(const int16_t item_num)
 
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    CREATURE *const tony = item->data;
+    CREATURE *const tony = item->creature_data;
     int16_t angle = 0;
     int16_t torso_x = 0;
     int16_t torso_y = 0;

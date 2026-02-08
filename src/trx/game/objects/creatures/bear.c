@@ -55,7 +55,7 @@ static void M_Control(const int16_t item_num)
     OBJECT *const obj = Object_Get(item->object_id);
     obj->pivot_length = g_Config.gameplay.fix_bear_ai ? 0 : 500;
 
-    CREATURE *const bear = (CREATURE *)item->data;
+    CREATURE *const bear = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
 

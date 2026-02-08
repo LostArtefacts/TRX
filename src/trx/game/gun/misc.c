@@ -391,7 +391,8 @@ void Gun_HitTarget(
     }
 
     Item_TakeDamage(item, damage, true);
-    if (item->data != nullptr && Object_Get(item->object_id)->intelligent) {
+    if (item->creature_data != nullptr
+        && Object_Get(item->object_id)->intelligent) {
         Creature_Hurt(item, damage);
     }
 

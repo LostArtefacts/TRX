@@ -90,8 +90,9 @@ CREATURE *LOT_GetBaddieSlot(const int32_t i)
 void LOT_DisableBaddieAI(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const creature = (CREATURE *)item->data;
-    item->data = nullptr;
+    CREATURE *const creature = item->creature_data;
+    item->creature_data = nullptr;
+    item->extra_rotations = nullptr;
 
     if (creature != nullptr) {
         creature->item_num = NO_ITEM;
@@ -101,7 +102,7 @@ void LOT_DisableBaddieAI(const int16_t item_num)
 
 bool LOT_EnableBaddieAI(const int16_t item_num, const bool always)
 {
-    if (Item_Get(item_num)->data != nullptr) {
+    if (Item_Get(item_num)->creature_data != nullptr) {
         return true;
     }
 
@@ -152,7 +153,8 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
 {
     CREATURE *const creature = &m_BaddieSlots[slot];
     ITEM *const item = Item_Get(item_num);
-    item->data = creature;
+    item->creature_data = creature;
+    item->extra_rotations = creature->joint_rotation;
 
     creature->item_num = item_num;
     creature->mood = MOOD_BORED;
@@ -182,7 +184,7 @@ void LOT_InitialiseSlot(const int16_t item_num, const int32_t slot)
 
 void LOT_CreateZone(ITEM *const item)
 {
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
 
     const int16_t *zone;
     const int16_t *flip;

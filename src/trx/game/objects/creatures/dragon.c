@@ -105,7 +105,7 @@ static void M_MarkDragonDead(ITEM *const dragon_back_item)
         return;
     }
     const ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
-    CREATURE *const creature = dragon_front_item->data;
+    CREATURE *const creature = dragon_front_item->creature_data;
     creature->flags = -1;
     Stats_AddKill();
 
@@ -257,7 +257,7 @@ static void M_ControlBack(const int16_t item_num)
 
     int16_t angle = 0;
     int16_t head = 0;
-    CREATURE *const creature = dragon_front_item->data;
+    CREATURE *const creature = dragon_front_item->creature_data;
     const OBJECT *const front_obj = Object_Get(O_DRAGON_FRONT);
 
     if (dragon_front_item->hit_points <= 0) {

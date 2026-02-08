@@ -41,7 +41,7 @@ static void M_Control(const int16_t item_num)
     }
 
     ITEM *const item = Item_Get(item_num);
-    CREATURE *const creature = item->data;
+    CREATURE *const creature = item->creature_data;
 
     int16_t tilt = 0;
     int16_t angle = 0;

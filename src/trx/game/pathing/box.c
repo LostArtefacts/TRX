@@ -277,7 +277,7 @@ bool Box_EscapeBox(
 bool Box_ValidBox(
     const ITEM *item, const int16_t zone_num, const int16_t box_num)
 {
-    const CREATURE *const creature = item->data;
+    const CREATURE *const creature = item->creature_data;
     const int16_t *const zone = Box_GetLotZone(&creature->lot);
     const bool use_fixed_fly_zone =
         g_TRVersion == 3 && creature->lot.setup.fly != 0;

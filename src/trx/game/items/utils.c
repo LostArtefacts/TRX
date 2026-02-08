@@ -68,7 +68,7 @@ int32_t Item_Explode(
     }
 
     // additional meshes
-    const int16_t *extra_rotation = (int16_t *)item->data;
+    const int16_t *extra_rotation = item->extra_rotations;
     for (int32_t i = 1; i < obj->mesh_count; i++) {
         const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
         if (bone->matrix_pop) {
