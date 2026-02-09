@@ -775,12 +775,12 @@ GS_DEFINE(CONSOLE_HELP_WEATHER,       "Changes the current weather type.")
 GS_DEFINE(CONSOLE_HELP_WIREFRAME,     "Toggles wireframe rendering.")
 
 GS_DEFINE(COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER,    "Settings are disabled for this level set.")
+GS_DEFINE(COMMON_SETTINGS_CHROMA,                   "Chroma")
 GS_DEFINE(COMMON_SETTINGS_EDIT_VALUE,               "Edit value")
 GS_DEFINE(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER, "This setting is enforced by the level builder and cannot be changed.")
 GS_DEFINE(COMMON_SETTINGS_HUE,                      "Hue")
 GS_DEFINE(COMMON_SETTINGS_LIGHTNESS,                "Lightness")
 GS_DEFINE(COMMON_SETTINGS_RESTORE_DEFAULT,          "Restore default")
-GS_DEFINE(COMMON_SETTINGS_SATURATION,               "Saturation")
 GS_DEFINE(COMMON_SETTINGS_TOGGLE_HELP,              "Toggle help")
 
 GS_DEFINE(SOUND_SETTINGS_TITLE,                     "Sound Options")

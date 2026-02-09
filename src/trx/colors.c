@@ -4,6 +4,10 @@
 
 #include <math.h>
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 RGBA_8888 Color_RGB888ToRGBA8888_Impl(const RGB_888 color)
 {
     return Color_RGB888ToRGBA8888Ex_Impl(color, 255);
@@ -103,4 +107,94 @@ void Color_RGBToHSL(
     *out_h = hue;
     *out_s = sat;
     *out_l = light;
+}
+
+static float M_SRGBToLinear(const float c)
+{
+    if (c <= 0.04045f) {
+        return c / 12.92f;
+    }
+    return powf((c + 0.055f) / 1.055f, 2.4f);
+}
+
+static float M_LinearToSRGB(const float c)
+{
+    if (c <= 0.0031308f) {
+        return c * 12.92f;
+    }
+    return 1.055f * powf(c, 1.0f / 2.4f) - 0.055f;
+}
+
+RGB_888 Color_OKLCHToRGB(const float l, const float c, const float h)
+{
+    float lightness = l;
+    float chroma = c;
+    float hue = h < 0.0f ? 0.0f : fmodf(h, 360.0f);
+    CLAMP(lightness, 0.0f, 1.0f);
+    CLAMP(chroma, 0.0f, 1.0f);
+    CLAMP(hue, 0.0f, 360.0f);
+
+    const float hue_rad = hue * M_PI / 180.0f;
+    const float a = chroma * cosf(hue_rad);
+    const float b = chroma * sinf(hue_rad);
+
+    const float l_ = lightness + 0.3963377774f * a + 0.2158037573f * b;
+    const float m_ = lightness - 0.1055613458f * a - 0.0638541728f * b;
+    const float s_ = lightness - 0.0894841775f * a - 1.2914855480f * b;
+
+    const float l_3 = l_ * l_ * l_;
+    const float m_3 = m_ * m_ * m_;
+    const float s_3 = s_ * s_ * s_;
+
+    float r_linear =
+        +4.0767416621f * l_3 - 3.3077115913f * m_3 + 0.2309699292f * s_3;
+    float g_linear =
+        -1.2684380046f * l_3 + 2.6097574011f * m_3 - 0.3413193965f * s_3;
+    float b_linear =
+        -0.0041960863f * l_3 - 0.7034186147f * m_3 + 1.7076147010f * s_3;
+    CLAMP(r_linear, 0.0f, 1.0f);
+    CLAMP(g_linear, 0.0f, 1.0f);
+    CLAMP(b_linear, 0.0f, 1.0f);
+
+    const float r_srgb = M_LinearToSRGB(r_linear);
+    const float g_srgb = M_LinearToSRGB(g_linear);
+    const float b_srgb = M_LinearToSRGB(b_linear);
+
+    return (RGB_888) {
+        .r = (uint8_t)roundf(r_srgb * 255.0f),
+        .g = (uint8_t)roundf(g_srgb * 255.0f),
+        .b = (uint8_t)roundf(b_srgb * 255.0f),
+    };
+}
+
+void Color_RGBToOKLCH(
+    const RGB_888 color, float *const out_l, float *const out_c,
+    float *const out_h)
+{
+    const float r = M_SRGBToLinear(color.r / 255.0f);
+    const float g = M_SRGBToLinear(color.g / 255.0f);
+    const float b = M_SRGBToLinear(color.b / 255.0f);
+
+    const float l =
+        cbrtf(0.4122214708f * r + 0.5363325363f * g + 0.0514459929f * b);
+    const float m =
+        cbrtf(0.2119034982f * r + 0.6806995451f * g + 0.1073969566f * b);
+    const float s =
+        cbrtf(0.0883024619f * r + 0.2817188376f * g + 0.6299787005f * b);
+
+    float lightness = 0.2104542553f * l + 0.7936177850f * m - 0.0040720468f * s;
+    const float a = 1.9779984951f * l - 2.4285922050f * m + 0.4505937099f * s;
+    const float b_comp =
+        0.0259040371f * l + 0.7827717662f * m - 0.8086757660f * s;
+
+    const float chroma = sqrtf(a * a + b_comp * b_comp);
+    float hue = atan2f(b_comp, a) * 180.0f / M_PI;
+    if (hue < 0.0f) {
+        hue += 360.0f;
+    }
+
+    CLAMP(lightness, 0.0f, 1.0f);
+    *out_l = lightness;
+    *out_c = chroma;
+    *out_h = hue;
 }
