@@ -68,9 +68,6 @@ static bool M_TestStop(const ITEM *const item)
     const BOUNDS_16 *const bounds = &frame->bounds;
     int16_t item_height =
         ROUND_TO_HALF_CLICK(ABS(bounds->max.y - bounds->min.y));
-    if (item->object_id != O_ROLLING_BALL_4) {
-        CLAMPG(item_height, STEP_L * 3);
-    }
 
     int16_t room_num = item->room_num;
     const int32_t x =
@@ -79,6 +76,13 @@ static bool M_TestStop(const ITEM *const item)
         item->pos.z + ((dist * Math_Cos(item->rot.y)) >> W2V_SHIFT);
     const SECTOR *sector = Room_GetSector(x, item->pos.y, z, &room_num);
     const int16_t height = Room_GetHeight(sector, x, item->pos.y, z);
+    if (item->object_id != O_ROLLING_BALL_4) {
+        // Allow a more lenient height check if regular boulders fall onto
+        // slopes with a ceiling in front.
+        const int32_t height_scale = Room_GetHeightType() != HT_WALL ? 2 : 1;
+        CLAMPG(item_height, STEP_L * 3 / height_scale);
+    }
+
     sector = Room_GetSector(x, item->pos.y - item_height, z, &room_num);
     const int16_t ceiling =
         Room_GetCeiling(sector, x, item->pos.y - item_height, z);
