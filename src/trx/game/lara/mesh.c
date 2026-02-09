@@ -58,8 +58,8 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
 
 static void M_InitialiseCutsceneLevel(void)
 {
-    Gun_SetLaraHolsterLMesh(LGT_PISTOLS);
-    Gun_SetLaraHolsterRMesh(LGT_PISTOLS);
+    Lara_Skin_SetGunEquipment(LM_THIGH_L, LGT_PISTOLS);
+    Lara_Skin_SetGunEquipment(LM_THIGH_R, LGT_PISTOLS);
 }
 
 static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
