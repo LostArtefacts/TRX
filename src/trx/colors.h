@@ -46,3 +46,5 @@ RGBA_F Color_RGBFToRGBAFEx_Impl(RGB_F color, float alpha);
 
 RGB_888 Color_HSLToRGB(float h, float s, float l);
 void Color_RGBToHSL(RGB_888 color, float *out_h, float *out_s, float *out_l);
+RGB_888 Color_OKLCHToRGB(float l, float c, float h);
+void Color_RGBToOKLCH(RGB_888 color, float *out_l, float *out_c, float *out_h);

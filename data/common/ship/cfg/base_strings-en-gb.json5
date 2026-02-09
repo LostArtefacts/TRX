@@ -4,7 +4,6 @@
     "language_name": "English (British)",
     "extends": "en",
     "game_strings": {
-        "ACTION_HIDE_DIALOG": "Hide dialogue",
         "CONTROLS_CUSTOMIZE": "Customise Controls",
         "ENUM_BAR_LOCATION_BOTTOM_CENTER": "Bottom centre",
         "ENUM_BAR_LOCATION_TOP_CENTER": "Top centre",

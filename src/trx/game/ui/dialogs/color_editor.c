@@ -14,20 +14,21 @@
 #define M_COLOR_EDITOR_PADDING 8.0f
 #define M_COLOR_EDITOR_TITLE_MARGIN 5.0f
 #define M_MAX_STOPS 7
+#define M_OKLCH_MAX_CHROMA 0.4f
 
 typedef enum {
     M_COLOR_ROW_HUE,
-    M_COLOR_ROW_SATURATION,
+    M_COLOR_ROW_CHROMA,
     M_COLOR_ROW_LIGHTNESS,
     M_COLOR_ROW_COUNT,
 } M_COLOR_ROW;
 
 typedef struct {
     float h;
-    float s;
+    float c;
     float l;
     bool use_state_h;
-    bool use_state_s;
+    bool use_state_c;
     bool use_state_l;
 } M_STOP_DEF;
 
@@ -42,7 +43,7 @@ struct UI_COLOR_EDITOR_DIALOG_STATE {
     const UI_SETTINGS_OPTION *option;
     M_COLOR_ROW component_idx;
     float h;
-    float s;
+    float c;
     float l;
     RGB_888 color;
     RGB_888 cached_stops[M_COLOR_ROW_COUNT][M_MAX_STOPS];
@@ -56,22 +57,22 @@ __attribute__((constructor)) static void M_Init(void)
         .label_id = GS_ID(COMMON_SETTINGS_HUE),
         .stop_count = 7,
         .stops = {
-            { .h = 0.0f, .s = 1.0f, .l = 0.5f },
-            { .h = 60.0f, .s = 1.0f, .l = 0.5f },
-            { .h = 120.0f, .s = 1.0f, .l = 0.5f },
-            { .h = 180.0f, .s = 1.0f, .l = 0.5f },
-            { .h = 240.0f, .s = 1.0f, .l = 0.5f },
-            { .h = 300.0f, .s = 1.0f, .l = 0.5f },
-            { .h = 360.0f, .s = 1.0f, .l = 0.5f },
+            { .h = 0.0f, .use_state_c = true, .use_state_l = true },
+            { .h = 60.0f, .use_state_c = true, .use_state_l = true },
+            { .h = 120.0f, .use_state_c = true, .use_state_l = true },
+            { .h = 180.0f, .use_state_c = true, .use_state_l = true },
+            { .h = 240.0f, .use_state_c = true, .use_state_l = true },
+            { .h = 300.0f, .use_state_c = true, .use_state_l = true },
+            { .h = 360.0f, .use_state_c = true, .use_state_l = true },
         },
     };
 
-    m_RowDefs[M_COLOR_ROW_SATURATION] = (M_ROW_DEF) {
-        .label_id = GS_ID(COMMON_SETTINGS_SATURATION),
+    m_RowDefs[M_COLOR_ROW_CHROMA] = (M_ROW_DEF) {
+        .label_id = GS_ID(COMMON_SETTINGS_CHROMA),
         .stop_count = 2,
         .stops = {
-            { .s = 0.0f, .use_state_h = true, .use_state_l = true },
-            { .s = 1.0f, .use_state_h = true, .use_state_l = true },
+            { .c = 0.0f, .use_state_h = true, .use_state_l = true },
+            { .c = M_OKLCH_MAX_CHROMA, .use_state_h = true, .use_state_l = true },
         },
     };
 
@@ -79,9 +80,9 @@ __attribute__((constructor)) static void M_Init(void)
         .label_id = GS_ID(COMMON_SETTINGS_LIGHTNESS),
         .stop_count = 3,
         .stops = {
-            { .l = 0.0f, .use_state_h = true, .use_state_s = true },
-            { .l = 0.5f, .use_state_h = true, .use_state_s = true },
-            { .l = 1.0f, .use_state_h = true, .use_state_s = true },
+            { .l = 0.0f, .use_state_h = true, .use_state_c = true },
+            { .l = 0.5f, .use_state_h = true, .use_state_c = true },
+            { .l = 1.0f, .use_state_h = true, .use_state_c = true },
         },
     };
 }
@@ -92,8 +93,8 @@ static float M_GetSliderValue(
     switch (row) {
     case M_COLOR_ROW_HUE:
         return s->h / 360.0f;
-    case M_COLOR_ROW_SATURATION:
-        return s->s;
+    case M_COLOR_ROW_CHROMA:
+        return s->c / M_OKLCH_MAX_CHROMA;
     case M_COLOR_ROW_LIGHTNESS:
         return s->l;
     case M_COLOR_ROW_COUNT:
@@ -107,9 +108,9 @@ static RGB_888 M_GetStopColor(
     const UI_COLOR_EDITOR_DIALOG_STATE *const s, const M_STOP_DEF *const stop)
 {
     const float h = stop->use_state_h ? s->h : stop->h;
-    const float sat = stop->use_state_s ? s->s : stop->s;
+    const float c = stop->use_state_c ? s->c : stop->c;
     const float l = stop->use_state_l ? s->l : stop->l;
-    return Color_HSLToRGB(h, sat, l);
+    return Color_OKLCHToRGB(l, c, h);
 }
 
 static void M_GetGradientStops(
@@ -124,7 +125,7 @@ static void M_GetGradientStops(
 
 static void M_RebuildCache(UI_COLOR_EDITOR_DIALOG_STATE *const s)
 {
-    s->color = Color_HSLToRGB(s->h, s->s, s->l);
+    s->color = Color_OKLCHToRGB(s->l, s->c, s->h);
     for (M_COLOR_ROW row = M_COLOR_ROW_HUE; row < M_COLOR_ROW_COUNT; row++) {
         M_GetGradientStops(s, row, s->cached_stops[row]);
     }
@@ -133,7 +134,8 @@ static void M_RebuildCache(UI_COLOR_EDITOR_DIALOG_STATE *const s)
 static void M_SetLocalColorFromRGB(
     UI_COLOR_EDITOR_DIALOG_STATE *const s, const RGB_888 rgb)
 {
-    Color_RGBToHSL(rgb, &s->h, &s->s, &s->l);
+    Color_RGBToOKLCH(rgb, &s->l, &s->c, &s->h);
+    CLAMP(s->c, 0.0f, M_OKLCH_MAX_CHROMA);
     M_RebuildCache(s);
 }
 
@@ -218,7 +220,7 @@ void UI_ColorEditorDialog_Close(UI_COLOR_EDITOR_DIALOG_STATE *const s)
     s->option = nullptr;
     s->component_idx = 0;
     s->h = 0.0f;
-    s->s = 0.0f;
+    s->c = 0.0f;
     s->l = 0.0f;
 }
 
@@ -269,9 +271,9 @@ void UI_ColorEditorDialog_Control(UI_COLOR_EDITOR_DIALOG_STATE *const s)
             while (s->h > 360.0f) {
                 s->h -= 360.0f;
             }
-        } else if (s->component_idx == M_COLOR_ROW_SATURATION) {
-            s->s += delta / 100.0f;
-            CLAMP(s->s, 0.0f, 1.0f);
+        } else if (s->component_idx == M_COLOR_ROW_CHROMA) {
+            s->c += (delta / 100.0f) * M_OKLCH_MAX_CHROMA;
+            CLAMP(s->c, 0.0f, M_OKLCH_MAX_CHROMA);
         } else {
             s->l += delta / 100.0f;
             CLAMP(s->l, 0.0f, 1.0f);
@@ -325,7 +327,7 @@ void UI_ColorEditorDialog(UI_COLOR_EDITOR_DIALOG_STATE *const s)
     UI_EndStack();
 
     M_ColorEditorRow(s, M_COLOR_ROW_HUE);
-    M_ColorEditorRow(s, M_COLOR_ROW_SATURATION);
+    M_ColorEditorRow(s, M_COLOR_ROW_CHROMA);
     M_ColorEditorRow(s, M_COLOR_ROW_LIGHTNESS);
 
     UI_EndStack();
