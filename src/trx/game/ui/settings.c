@@ -83,10 +83,6 @@ static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
 
 static M_SETTINGS m_Settings;
 
-static bool M_IsBarColorNameEncountered(
-    const UI_BAR_THEME_KIND kind, const char *const name, const int32_t stop_i,
-    const int32_t stop_j);
-
 static void M_FreeThemeGroup(M_THEME_GROUP *const group)
 {
     M_THEME_LOOKUP *entry = nullptr;
@@ -128,6 +124,27 @@ static void M_ResetDynamicEnumValues(void)
             Config_DynamicEnum_ResetValues(ps1_option);
         }
     }
+}
+
+static bool M_IsBarColorNameEncountered(
+    const UI_BAR_THEME_KIND kind, const char *const name, const int32_t stop_i,
+    const int32_t stop_j)
+{
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        if (theme->kind != kind) {
+            continue;
+        }
+        for (int32_t j = 0; j < theme->group.color_count; j++) {
+            if (i == stop_i && j == stop_j) {
+                return false;
+            }
+            if (String_Equivalent(theme->group.colors[j].name, name)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 static void M_SeedDynamicEnumBarColors(
@@ -412,27 +429,6 @@ static M_BAR_THEME_ENTRY *M_FindBarThemeByName(const char *const name)
         return nullptr;
     }
     return &m_Settings.bar_themes[entry->index];
-}
-
-static bool M_IsBarColorNameEncountered(
-    const UI_BAR_THEME_KIND kind, const char *const name, const int32_t stop_i,
-    const int32_t stop_j)
-{
-    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
-        M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
-        if (theme->kind != kind) {
-            continue;
-        }
-        for (int32_t j = 0; j < theme->group.color_count; j++) {
-            if (i == stop_i && j == stop_j) {
-                return false;
-            }
-            if (String_Equivalent(theme->group.colors[j].name, name)) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 static M_BAR_THEME_ENTRY *M_GetCurrentBarTheme(void)
