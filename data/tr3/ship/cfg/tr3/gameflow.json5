@@ -491,6 +491,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut6_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
             ],
@@ -506,6 +507,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut9_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/india_sky.bin",
                 "data/injections/lara_outfits.bin",
@@ -522,9 +524,9 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut1_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/crash_sky.bin",
-                "data/injections/misc_sprites.bin",
                 "data/injections/lara_outfits.bin",
             ],
         },
@@ -539,8 +541,8 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut4_setup.bin",
-                "data/injections/font.bin",
                 "data/injections/misc_sprites.bin",
+                "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
             ],
         },
@@ -556,6 +558,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut2_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/london_sky.bin",
                 "data/injections/lara_outfits.bin",
@@ -572,8 +575,8 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut5_setup.bin",
-                "data/injections/font.bin",
                 "data/injections/misc_sprites.bin",
+                "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
             ],
         },
@@ -588,6 +591,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut11_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/london_sky.bin",
                 "data/injections/lara_outfits.bin",
@@ -604,9 +608,9 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut7_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/nevada_sky.bin",
-                "data/injections/misc_sprites.bin",
                 "data/injections/lara_outfits.bin",
             ],
         },
@@ -622,6 +626,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut8_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
             ],
@@ -638,8 +643,8 @@
             "injections": [
                 "data/injections/antarc_sky.bin",
                 "data/injections/cut3_setup.bin",
-                "data/injections/font.bin",
                 "data/injections/misc_sprites.bin",
+                "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
             ],
         },
@@ -654,6 +659,7 @@
             "inherit_injections": false,
             "injections": [
                 "data/injections/cut12_setup.bin",
+                "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
             ],
