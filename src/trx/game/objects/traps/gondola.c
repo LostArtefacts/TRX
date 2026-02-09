@@ -24,10 +24,10 @@ static void M_Control(const int16_t item_num)
         const int16_t room_shift = frame->bounds.min.y + M_SINK_ROOM_SHIFT;
         int16_t room_num = gondola->room_num;
         const SECTOR *const sector = Room_GetSector(
-            gondola->pos.x, gondola->pos.y + room_shift, gondola->pos.z,
+            (XYZ_32) { gondola->pos.x, gondola->pos.y + room_shift,
+                       gondola->pos.z },
             &room_num);
-        const int32_t height = Room_GetHeight(
-            sector, gondola->pos.x, gondola->pos.y, gondola->pos.z);
+        const int32_t height = Room_GetHeight(sector, gondola->pos);
         gondola->floor = height;
         Item_UpdateRoom(item_num, room_num);
 

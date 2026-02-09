@@ -135,10 +135,8 @@ void Lara_Col_Shift(COLL_INFO *const coll)
 void Lara_Col_MonkeySwingSnap(ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t ceiling =
-        Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t ceiling = Room_GetCeiling(sector, item->pos);
     if (ceiling != NO_HEIGHT) {
         item->pos.y = ceiling + M_MONKEY_CEILING_SNAP;
     }
@@ -179,8 +177,7 @@ void Lara_Col_WadeSplash(ITEM *const item)
 
     const int32_t water_depth = Lara_GetWaterDepth(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
     if (water_height != NO_HEIGHT && water_depth != NO_HEIGHT
         && bounds != nullptr && item->pos.y + bounds->min.y <= water_height

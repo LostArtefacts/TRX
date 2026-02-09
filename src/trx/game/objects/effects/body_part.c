@@ -30,8 +30,7 @@ static void M_Control_TR12(const int16_t effect_num)
     effect->fall_speed += GRAVITY;
 
     int16_t room_num = effect->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(effect->pos.x, effect->pos.y, effect->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
 
     const ROOM *const current_room = Room_Get(effect->room_num);
     const ROOM *const next_room = Room_Get(room_num);
@@ -40,15 +39,13 @@ static void M_Control_TR12(const int16_t effect_num)
             (GAME_VECTOR) { .pos = effect->pos, .room_num = effect->room_num });
     }
 
-    const int32_t ceiling =
-        Room_GetCeiling(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    const int32_t ceiling = Room_GetCeiling(sector, effect->pos);
     if (effect->pos.y < ceiling) {
         effect->pos.y = ceiling;
         effect->fall_speed = -effect->fall_speed;
     }
 
-    const int32_t height =
-        Room_GetHeight(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    const int32_t height = Room_GetHeight(sector, effect->pos);
     if (effect->pos.y >= height) {
         if (effect->counter > 0) {
             effect->speed = 0;
@@ -118,18 +115,15 @@ static void M_Control_TR3(const int16_t effect_num)
     }
 
     int16_t room_num = effect->room_num;
-    SECTOR *const sector =
-        Room_GetSector(effect->pos.x, effect->pos.y, effect->pos.z, &room_num);
-    int32_t c =
-        Room_GetCeiling(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
+    int32_t c = Room_GetCeiling(sector, effect->pos);
 
     if (effect->pos.y < c) {
         effect->pos.y = c;
         effect->fall_speed = -effect->fall_speed;
     }
 
-    int32_t h =
-        Room_GetHeight(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    int32_t h = Room_GetHeight(sector, effect->pos);
 
     if (effect->pos.y >= h) {
         if (effect->counter & 3) {

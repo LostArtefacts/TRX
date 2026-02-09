@@ -651,8 +651,7 @@ void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
         Sparks_TriggerExplosionSparks(item->pos, 2, -1, 1, item->room_num);
     }
 
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     if (water_height == NO_HEIGHT) {
         return;
     }

@@ -174,19 +174,21 @@ static int32_t M_CheckX(
     m_LOSNumRooms = 1;
 
     if (dx < 0) {
-        int32_t x = ROUND_TO_SECTOR(start->x);
-        int32_t y = start->y + ((dy * (x - start->x)) >> WALL_SHIFT);
-        int32_t z = start->z + ((dz * (x - start->x)) >> WALL_SHIFT);
+        XYZ_32 cur_pos;
+        cur_pos.x = ROUND_TO_SECTOR(start->x);
+        cur_pos.y = start->y + ((dy * (cur_pos.x - start->x)) >> WALL_SHIFT);
+        cur_pos.z = start->z + ((dz * (cur_pos.x - start->x)) >> WALL_SHIFT);
 
-        while (x > target->x) {
+        while (cur_pos.x > target->x) {
+            XYZ_32 sample_pos = cur_pos;
+
             {
-                const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-                const int32_t height = Room_GetHeight(sector, x, y, z);
-                const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-                if (y > height || y < ceiling) {
-                    target->x = x;
-                    target->y = y;
-                    target->z = z;
+                const SECTOR *const sector =
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = room_num;
                     return -1;
                 }
@@ -197,38 +199,40 @@ static int32_t M_CheckX(
                 m_LOSRooms[m_LOSNumRooms++] = room_num;
             }
 
+            sample_pos.x -= 1;
+
             {
                 const SECTOR *const sector =
-                    Room_GetSector(x - 1, y, z, &room_num);
-                const int32_t height = Room_GetHeight(sector, x - 1, y, z);
-                const int32_t ceiling = Room_GetCeiling(sector, x - 1, y, z);
-                if (y > height || y < ceiling) {
-                    target->x = x;
-                    target->y = y;
-                    target->z = z;
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = last_room_num;
                     return 0;
                 }
             }
 
-            x -= WALL_L;
-            y -= dy;
-            z -= dz;
+            cur_pos.x -= WALL_L;
+            cur_pos.y -= dy;
+            cur_pos.z -= dz;
         }
     } else {
-        int32_t x = ROUND_TO_SECTOR_END(start->x);
-        int32_t y = start->y + (((x - start->x) * dy) >> WALL_SHIFT);
-        int32_t z = start->z + (((x - start->x) * dz) >> WALL_SHIFT);
+        XYZ_32 cur_pos;
+        cur_pos.x = ROUND_TO_SECTOR_END(start->x);
+        cur_pos.y = start->y + (((cur_pos.x - start->x) * dy) >> WALL_SHIFT);
+        cur_pos.z = start->z + (((cur_pos.x - start->x) * dz) >> WALL_SHIFT);
 
-        while (x < target->x) {
+        while (cur_pos.x < target->x) {
+            XYZ_32 sample_pos = cur_pos;
+
             {
-                const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-                const int32_t height = Room_GetHeight(sector, x, y, z);
-                const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-                if (y > height || y < ceiling) {
-                    target->z = z;
-                    target->y = y;
-                    target->x = x;
+                const SECTOR *const sector =
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = room_num;
                     return -1;
                 }
@@ -239,23 +243,23 @@ static int32_t M_CheckX(
                 m_LOSRooms[m_LOSNumRooms++] = room_num;
             }
 
+            sample_pos.x += 1;
+
             {
                 const SECTOR *const sector =
-                    Room_GetSector(x + 1, y, z, &room_num);
-                const int32_t height = Room_GetHeight(sector, x + 1, y, z);
-                const int32_t ceiling = Room_GetCeiling(sector, x + 1, y, z);
-                if (y > height || y < ceiling) {
-                    target->x = x;
-                    target->y = y;
-                    target->z = z;
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = last_room_num;
                     return 0;
                 }
             }
 
-            x += WALL_L;
-            y += dy;
-            z += dz;
+            cur_pos.x += WALL_L;
+            cur_pos.y += dy;
+            cur_pos.z += dz;
         }
     }
 
@@ -281,19 +285,21 @@ static int32_t M_CheckZ(
     m_LOSNumRooms = 1;
 
     if (dz < 0) {
-        int32_t z = ROUND_TO_SECTOR(start->z);
-        int32_t x = start->x + ((dx * (z - start->z)) >> WALL_SHIFT);
-        int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
+        XYZ_32 cur_pos;
+        cur_pos.z = ROUND_TO_SECTOR(start->z);
+        cur_pos.x = start->x + ((dx * (cur_pos.z - start->z)) >> WALL_SHIFT);
+        cur_pos.y = start->y + ((dy * (cur_pos.z - start->z)) >> WALL_SHIFT);
 
-        while (z > target->z) {
+        while (cur_pos.z > target->z) {
+            XYZ_32 sample_pos = cur_pos;
+
             {
-                const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-                const int32_t height = Room_GetHeight(sector, x, y, z);
-                const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-                if (y > height || y < ceiling) {
-                    target->x = x;
-                    target->y = y;
-                    target->z = z;
+                const SECTOR *const sector =
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = room_num;
                     return -1;
                 }
@@ -304,38 +310,40 @@ static int32_t M_CheckZ(
                 m_LOSRooms[m_LOSNumRooms++] = room_num;
             }
 
+            sample_pos.z -= 1;
+
             {
                 const SECTOR *const sector =
-                    Room_GetSector(x, y, z - 1, &room_num);
-                const int32_t height = Room_GetHeight(sector, x, y, z - 1);
-                const int32_t ceiling = Room_GetCeiling(sector, x, y, z - 1);
-                if (y > height || y < ceiling) {
-                    target->x = x;
-                    target->y = y;
-                    target->z = z;
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = last_room_num;
                     return 0;
                 }
             }
 
-            z -= WALL_L;
-            x -= dx;
-            y -= dy;
+            cur_pos.z -= WALL_L;
+            cur_pos.x -= dx;
+            cur_pos.y -= dy;
         }
     } else {
-        int32_t z = ROUND_TO_SECTOR_END(start->z);
-        int32_t x = start->x + ((dx * (z - start->z)) >> WALL_SHIFT);
-        int32_t y = start->y + ((dy * (z - start->z)) >> WALL_SHIFT);
+        XYZ_32 cur_pos;
+        cur_pos.z = ROUND_TO_SECTOR_END(start->z);
+        cur_pos.x = start->x + ((dx * (cur_pos.z - start->z)) >> WALL_SHIFT);
+        cur_pos.y = start->y + ((dy * (cur_pos.z - start->z)) >> WALL_SHIFT);
 
-        while (z < target->z) {
+        while (cur_pos.z < target->z) {
+            XYZ_32 sample_pos = cur_pos;
+
             {
-                const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-                const int32_t height = Room_GetHeight(sector, x, y, z);
-                const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-                if (y > height || y < ceiling) {
-                    target->x = x;
-                    target->y = y;
-                    target->z = z;
+                const SECTOR *const sector =
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = room_num;
                     return -1;
                 }
@@ -346,23 +354,23 @@ static int32_t M_CheckZ(
                 m_LOSRooms[m_LOSNumRooms++] = room_num;
             }
 
+            sample_pos.z += 1;
+
             {
                 const SECTOR *const sector =
-                    Room_GetSector(x, y, z + 1, &room_num);
-                const int32_t height = Room_GetHeight(sector, x, y, z + 1);
-                const int32_t ceiling = Room_GetCeiling(sector, x, y, z + 1);
-                if (y > height || y < ceiling) {
-                    target->x = x;
-                    target->y = y;
-                    target->z = z;
+                    Room_GetSector(sample_pos, &room_num);
+                const int32_t height = Room_GetHeight(sector, sample_pos);
+                const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+                if (cur_pos.y > height || cur_pos.y < ceiling) {
+                    target->pos = cur_pos;
                     target->room_num = last_room_num;
                     return 0;
                 }
             }
 
-            z += WALL_L;
-            x += dx;
-            y += dy;
+            cur_pos.z += WALL_L;
+            cur_pos.x += dx;
+            cur_pos.y += dy;
         }
     }
 
@@ -373,16 +381,14 @@ static int32_t M_CheckZ(
 static int32_t M_ClipTargetSimple(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
-    const SECTOR *sector =
-        Room_GetSector(target->x, target->y, target->z, &target->room_num);
+    const SECTOR *sector = Room_GetSector(target->pos, &target->room_num);
 
     // This function exists because of issue #4070.
     int32_t dx = target->x - start->x;
     int32_t dy = target->y - start->y;
     int32_t dz = target->z - start->z;
 
-    const int32_t height =
-        Room_GetHeight(sector, target->x, target->y, target->z);
+    const int32_t height = Room_GetHeight(sector, target->pos);
     if (target->y > height && start->y < height) {
         target->y = height;
         target->x = start->x + dx * (height - start->y) / dy;
@@ -390,8 +396,7 @@ static int32_t M_ClipTargetSimple(
         return false;
     }
 
-    const int32_t ceiling =
-        Room_GetCeiling(sector, target->x, target->y, target->z);
+    const int32_t ceiling = Room_GetCeiling(sector, target->pos);
     if (target->y < ceiling && start->y > ceiling) {
         target->y = ceiling;
         target->x = start->x + dx * (ceiling - start->y) / dy;
@@ -406,60 +411,49 @@ static int32_t M_ClipTargetWithSlopes(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
     int16_t room_num = target->room_num;
-    const SECTOR *sector =
-        Room_GetSector(target->x, target->y, target->z, &room_num);
+    const SECTOR *sector = Room_GetSector(target->pos, &room_num);
 
-    if (target->y > Room_GetHeight(sector, target->x, target->y, target->z)) {
+    if (target->y > Room_GetHeight(sector, target->pos)) {
         const XYZ_32 origin = {
-            .x =
-                start->x + ((M_CLIP_1 - 1) * (target->x - start->x) / M_CLIP_1),
-            .y =
-                start->y + ((M_CLIP_1 - 1) * (target->y - start->y) / M_CLIP_1),
-            .z =
-                start->z + ((M_CLIP_1 - 1) * (target->z - start->z) / M_CLIP_1),
+            start->x + ((M_CLIP_1 - 1) * (target->x - start->x) / M_CLIP_1),
+            start->y + ((M_CLIP_1 - 1) * (target->y - start->y) / M_CLIP_1),
+            start->z + ((M_CLIP_1 - 1) * (target->z - start->z) / M_CLIP_1),
         };
-        int32_t dx, dy, dz;
+        XYZ_32 delta;
         for (int32_t i = M_CLIP_2 - 1; i > 0; i--) {
-            dx = origin.x + (i * (target->x - origin.x) / M_CLIP_2);
-            dy = origin.y + (i * (target->y - origin.y) / M_CLIP_2);
-            dz = origin.z + (i * (target->z - origin.z) / M_CLIP_2);
-            sector = Room_GetSector(dx, dy, dz, &room_num);
-            if (dy < Room_GetHeight(sector, dx, dy, dz)) {
+            delta.x = origin.x + (i * (target->x - origin.x) / M_CLIP_2);
+            delta.y = origin.y + (i * (target->y - origin.y) / M_CLIP_2);
+            delta.z = origin.z + (i * (target->z - origin.z) / M_CLIP_2);
+            sector = Room_GetSector(delta, &room_num);
+            if (delta.y < Room_GetHeight(sector, delta)) {
                 break;
             }
         }
 
-        target->x = dx;
-        target->y = dy;
-        target->z = dz;
+        target->pos = delta;
         target->room_num = room_num;
         return 0;
     }
 
-    if (target->y < Room_GetCeiling(sector, target->x, target->y, target->z)) {
+    if (target->y < Room_GetCeiling(sector, target->pos)) {
         const XYZ_32 origin = {
-            .x =
-                start->x + ((M_CLIP_1 - 1) * (target->x - start->x) / M_CLIP_1),
-            .y =
-                start->y + ((M_CLIP_1 - 1) * (target->y - start->y) / M_CLIP_1),
-            .z =
-                start->z + ((M_CLIP_1 - 1) * (target->z - start->z) / M_CLIP_1),
+            start->x + ((M_CLIP_1 - 1) * (target->x - start->x) / M_CLIP_1),
+            start->y + ((M_CLIP_1 - 1) * (target->y - start->y) / M_CLIP_1),
+            start->z + ((M_CLIP_1 - 1) * (target->z - start->z) / M_CLIP_1),
         };
-        int32_t dx, dy, dz;
+        XYZ_32 delta;
         for (int32_t i = M_CLIP_2 - 1; i > 0; i--) {
-            dx = origin.x + (i * (target->x - origin.x) / M_CLIP_2);
-            dy = origin.y + (i * (target->y - origin.y) / M_CLIP_2);
-            dz = origin.z + (i * (target->z - origin.z) / M_CLIP_2);
+            delta.x = origin.x + (i * (target->x - origin.x) / M_CLIP_2);
+            delta.y = origin.y + (i * (target->y - origin.y) / M_CLIP_2);
+            delta.z = origin.z + (i * (target->z - origin.z) / M_CLIP_2);
 
-            sector = Room_GetSector(dx, dy, dz, &room_num);
-            if (dy > Room_GetCeiling(sector, dx, dy, dz)) {
+            sector = Room_GetSector(delta, &room_num);
+            if (delta.y > Room_GetCeiling(sector, delta)) {
                 break;
             }
         }
 
-        target->x = dx;
-        target->y = dy;
-        target->z = dz;
+        target->pos = delta;
         target->room_num = room_num;
         return 0;
     }

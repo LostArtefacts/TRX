@@ -227,15 +227,14 @@ BOUNDS_32 Room_GetRoomBounds(const ROOM *const room)
     };
 }
 
-SECTOR *Room_GetSector(
-    const int32_t x, const int32_t y, const int32_t z, int16_t *const room_num)
+SECTOR *Room_GetSector(const XYZ_32 pos, int16_t *const room_num)
 {
     SECTOR *sector = nullptr;
 
     while (true) {
         const ROOM *room = Room_Get(*room_num);
-        int32_t z_sector = (z - room->pos.z) >> WALL_SHIFT;
-        int32_t x_sector = (x - room->pos.x) >> WALL_SHIFT;
+        int32_t z_sector = (pos.z - room->pos.z) >> WALL_SHIFT;
+        int32_t x_sector = (pos.x - room->pos.x) >> WALL_SHIFT;
 
         if (z_sector <= 0) {
             z_sector = 0;
@@ -266,69 +265,72 @@ SECTOR *Room_GetSector(
 
     ASSERT(sector != nullptr);
 
-    if (y >= M_GetSurfaceHeight(sector->floor, x, z, true)) {
+    if (pos.y >= M_GetSurfaceHeight(sector->floor, pos.x, pos.z, true)) {
         do {
             if (sector->portal_room.pit == NO_ROOM
-                || M_IsPortalSolid(sector->floor, x, z)) {
+                || M_IsPortalSolid(sector->floor, pos.x, pos.z)) {
                 break;
             }
             *room_num = sector->portal_room.pit;
             const ROOM *const room = Room_Get(*room_num);
-            sector = Room_GetWorldSector(room, x, z);
-        } while (y >= M_GetSurfaceHeight(sector->floor, x, z, true));
-    } else if (y < M_GetSurfaceHeight(sector->ceiling, x, z, true)) {
+            sector = Room_GetWorldSector(room, pos.x, pos.z);
+        } while (pos.y
+                 >= M_GetSurfaceHeight(sector->floor, pos.x, pos.z, true));
+    } else if (
+        pos.y < M_GetSurfaceHeight(sector->ceiling, pos.x, pos.z, true)) {
         do {
             if (sector->portal_room.sky == NO_ROOM
-                || M_IsPortalSolid(sector->ceiling, x, z)) {
+                || M_IsPortalSolid(sector->ceiling, pos.x, pos.z)) {
                 break;
             }
             *room_num = sector->portal_room.sky;
             const ROOM *const room = Room_Get(sector->portal_room.sky);
-            sector = Room_GetWorldSector(room, x, z);
-        } while (y < M_GetSurfaceHeight(sector->ceiling, x, z, true));
+            sector = Room_GetWorldSector(room, pos.x, pos.z);
+        } while (pos.y
+                 < M_GetSurfaceHeight(sector->ceiling, pos.x, pos.z, true));
     }
 
     return sector;
 }
 
-SECTOR *Room_GetSector32(const XYZ_32 pos, int16_t *const room_num)
-{
-    return Room_GetSector(pos.x, pos.y, pos.z, room_num);
-}
-
-SECTOR *Room_GetSectorOnWalkable(
-    const int32_t x, const int32_t y, const int32_t z, int16_t *const room_num)
+SECTOR *Room_GetSectorOnWalkable(const XYZ_32 pos, int16_t *const room_num)
 {
     // Resolve wall portals.
     const ROOM *room = Room_Get(*room_num);
-    SECTOR *sector = Room_GetWorldSector(room, x, z);
+    SECTOR *sector = Room_GetWorldSector(room, pos.x, pos.z);
     while (sector->portal_room.wall != NO_ROOM) {
         *room_num = sector->portal_room.wall;
         room = Room_Get(*room_num);
-        sector = Room_GetWorldSector(room, x, z);
+        sector = Room_GetWorldSector(room, pos.x, pos.z);
     }
 
     // Check if on a walkable.
-    const int32_t room_height = Room_GetHeight(sector, x, y, z);
+    const int32_t room_height = Room_GetHeight(sector, pos);
     const bool skip_pit = Room_IsOnWalkable(
-        sector, x, ROUND_TO_HALF_CLICK(y), z, ROUND_TO_HALF_CLICK(y), NO_ITEM);
+        sector,
+        (XYZ_32) {
+            pos.x,
+            ROUND_TO_HALF_CLICK(pos.y),
+            pos.z,
+        },
+        ROUND_TO_HALF_CLICK(pos.y), NO_ITEM);
 
     // Traverse pit sector unless on a walkable.
-    if (!skip_pit && y >= sector->floor.height) {
+    if (!skip_pit && pos.y >= sector->floor.height) {
         while (sector->portal_room.pit != NO_ROOM) {
             *room_num = sector->portal_room.pit;
             room = Room_Get(*room_num);
-            sector = Room_GetWorldSector(room, x, z);
-            if (y < sector->floor.height) {
+            sector = Room_GetWorldSector(room, pos.x, pos.z);
+            if (pos.y < sector->floor.height) {
                 break;
             }
         }
-    } else if (y < sector->ceiling.height) {
+    } else if (pos.y < sector->ceiling.height) {
         while (sector->portal_room.sky != NO_ROOM) {
             *room_num = sector->portal_room.sky;
             room = Room_Get(*room_num);
-            sector = Room_GetWorldSector(room, x, z);
-            if (y >= sector->ceiling.height) {
+            sector = Room_GetWorldSector(room, pos.x, pos.z);
+            if (pos.y >= sector->ceiling.height) {
                 break;
             }
         }
@@ -397,24 +399,21 @@ HEIGHT_TYPE Room_GetHeightType(void)
     return m_HeightType;
 }
 
-int16_t Room_GetTiltType(
-    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z)
+int16_t Room_GetTiltType(const SECTOR *sector, const XYZ_32 pos)
 {
-    sector = Room_GetPitSector(sector, x, z);
+    sector = Room_GetPitSector(sector, pos.x, pos.z);
 
-    if ((y + STEP_L * 2) < sector->floor.height) {
+    if ((pos.y + STEP_L * 2) < sector->floor.height) {
         return 0;
     }
 
-    return sector->floor.is_split ? M_GetSplitTiltType(sector, x, z)
+    return sector->floor.is_split ? M_GetSplitTiltType(sector, pos.x, pos.z)
                                   : sector->floor.tilt;
 }
 
-int16_t Room_GetHeight(
-    const SECTOR *const sector, const int32_t x, const int32_t y,
-    const int32_t z)
+int16_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)
 {
-    return Room_GetHeightEx(sector, x, y, z, false, NO_ITEM);
+    return Room_GetHeightEx(sector, pos, false, NO_ITEM);
 }
 
 int16_t Room_GetFloorHeightForSector(
@@ -429,22 +428,22 @@ int16_t Room_GetFloorHeightForSector(
 }
 
 int16_t Room_GetHeightEx(
-    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
-    const bool fix_tilts, const int16_t ignore_item_num)
+    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts,
+    const int16_t ignore_item_num)
 {
     m_HeightType = HT_WALL;
 
-    const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
+    const SECTOR *const pit_sector = Room_GetPitSector(sector, pos.x, pos.z);
     int32_t height = pit_sector->floor.height;
 
     if (Room_IsAbyssHeight(height)) {
         height = m_AbyssMaxHeight;
     } else {
-        height = M_GetSurfaceHeight(pit_sector->floor, x, z, fix_tilts);
+        height = M_GetSurfaceHeight(pit_sector->floor, pos.x, pos.z, fix_tilts);
     }
 
     // Climb the stack of walkables.
-    int32_t test_y = y;
+    int32_t test_y = pos.y;
     for (WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
         // Optionally ignore a walkable.
         if (w->item_num == ignore_item_num) {
@@ -454,13 +453,13 @@ int16_t Room_GetHeightEx(
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
             const int32_t test_height =
-                obj->floor_height_func(item, x, test_y, z, height);
+                obj->floor_height_func(item, pos.x, test_y, pos.z, height);
             // If the floor height changed, try to climb the walkable stack.
             if (test_height != height) {
                 height = test_height;
                 // Only raise the test y value if the test floor height is above
                 // the original y value.
-                if (y > test_height) {
+                if (pos.y > test_height) {
                     test_y = test_height;
                 }
             }
@@ -470,36 +469,37 @@ int16_t Room_GetHeightEx(
     return height;
 }
 
-int16_t Room_GetCeiling(
-    const SECTOR *const sector, const int32_t x, const int32_t y,
-    const int32_t z)
+int16_t Room_GetCeiling(const SECTOR *const sector, const XYZ_32 pos)
 {
-    return Room_GetCeilingEx(sector, x, y, z, false);
+    return Room_GetCeilingEx(sector, pos, false);
 }
 
 int16_t Room_GetCeilingEx(
-    const SECTOR *const sector, const int32_t x, const int32_t y,
-    const int32_t z, const bool fix_tilts)
+    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts)
 {
-    const SECTOR *const sky_sector = Room_GetSkySector(sector, x, z);
-    int16_t height = M_GetSurfaceHeight(sky_sector->ceiling, x, z, fix_tilts);
+    const SECTOR *const sky_sector = Room_GetSkySector(sector, pos.x, pos.z);
+    int16_t height =
+        M_GetSurfaceHeight(sky_sector->ceiling, pos.x, pos.z, fix_tilts);
 
-    const SECTOR *const pit_sector = Room_GetPitSector(sector, x, z);
+    const SECTOR *const pit_sector = Room_GetPitSector(sector, pos.x, pos.z);
 
     for (WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
         const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->ceiling_height_func != nullptr) {
-            height = obj->ceiling_height_func(item, x, y, z, height);
+            height =
+                obj->ceiling_height_func(item, pos.x, pos.y, pos.z, height);
         }
     }
 
     return height;
 }
 
-int32_t Room_GetWaterHeight(
-    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
+int32_t Room_GetWaterHeight(const XYZ_32 pos, int16_t room_num)
 {
+    const int32_t x = pos.x;
+    const int32_t y = pos.y;
+    const int32_t z = pos.z;
     const SECTOR *sector = nullptr;
     const ROOM *room = nullptr;
 
@@ -627,10 +627,10 @@ int32_t Room_FindGridShift(int32_t src, const int32_t dst)
 }
 
 bool Room_IsOnWalkable(
-    const SECTOR *sector, const int32_t x, const int32_t y, const int32_t z,
-    const int32_t room_height, const int16_t ignore_item_num)
+    const SECTOR *sector, const XYZ_32 pos, const int32_t room_height,
+    const int16_t ignore_item_num)
 {
-    sector = Room_GetPitSector(sector, x, z);
+    sector = Room_GetPitSector(sector, pos.x, pos.z);
 
     int16_t height = sector->floor.height;
     bool object_found = false;
@@ -643,7 +643,7 @@ bool Room_IsOnWalkable(
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
             const int32_t test_height =
-                obj->floor_height_func(item, x, y, z, height);
+                obj->floor_height_func(item, pos.x, pos.y, pos.z, height);
             // If the floor height changed, try to climb the walkable stack.
             if (test_height != height) {
                 // Check if height changed aka actually on a walkable.

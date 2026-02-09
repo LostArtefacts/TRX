@@ -100,10 +100,8 @@ static bool M_DrawShadow_Sprite(
             anchor_pos.z += (offset.z * cy - offset.x * sy) >> W2V_SHIFT;
 
             int16_t room_num = item->room_num;
-            const SECTOR *const sector = Room_GetSector(
-                anchor_pos.x, anchor_pos.y, anchor_pos.z, &room_num);
-            const int16_t height = Room_GetHeight(
-                sector, anchor_pos.x, anchor_pos.y, anchor_pos.z);
+            const SECTOR *const sector = Room_GetSector(anchor_pos, &room_num);
+            const int16_t height = Room_GetHeight(sector, anchor_pos);
             if (height != NO_HEIGHT) {
                 anchor_floor = height;
             }
@@ -141,9 +139,9 @@ static bool M_DrawShadow_Sprite(
         const int32_t wz = anchor_pos.z + rz;
 
         int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(wx, anchor_floor, wz, &room_num);
-        int32_t height = Room_GetHeight(sector, wx, anchor_floor, wz);
+        XYZ_32 test_pos = { wx, anchor_floor, wz };
+        const SECTOR *const sector = Room_GetSector(test_pos, &room_num);
+        int32_t height = Room_GetHeight(sector, test_pos);
         if (height == NO_HEIGHT) {
             height = anchor_floor;
         }

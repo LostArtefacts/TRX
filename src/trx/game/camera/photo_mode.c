@@ -158,8 +158,8 @@ static bool M_CameraInsideRoom(const XYZ_32 pos, const int16_t room_num)
 
 static void M_UpdateCameraRooms(void)
 {
-    Room_GetSector32(g_Camera.pos.pos, &g_Camera.pos.room_num);
-    Room_GetSector32(g_Camera.target.pos, &g_Camera.target.room_num);
+    Room_GetSector(g_Camera.pos.pos, &g_Camera.pos.room_num);
+    Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
     if (!M_CameraInsideRoom(g_Camera.pos.pos, g_Camera.pos.room_num)) {
         const int16_t pos_room_num = Room_GetIndexFromPos(g_Camera.pos.pos);
         const int16_t tar_room_num = Room_GetIndexFromPos(g_Camera.target.pos);
@@ -284,7 +284,7 @@ void Camera_PhotoMode_Enter(void)
     g_Camera.target_square = SQUARE(g_Camera.target_distance);
 
     g_Camera.target.room_num = g_Camera.pos.room_num;
-    Room_GetSector32(g_Camera.target.pos, &g_Camera.target.room_num);
+    Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
 
     m_StartingCamera = g_Camera;
 

@@ -15,9 +15,9 @@ static void M_Reset(ITEM *const item)
     item->fall_speed = 50;
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(
+        (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
+    item->floor = Room_GetHeight(sector, item->pos);
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -50,10 +50,8 @@ static void M_Control(const int16_t item_num)
         item->pos.z += item->goal_anim_state;
 
         int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        const int16_t height =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+        const int16_t height = Room_GetHeight(sector, item->pos);
 
         item->floor = height;
         Item_UpdateRoom(item_num, room_num);

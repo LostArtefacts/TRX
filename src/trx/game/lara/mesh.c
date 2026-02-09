@@ -131,9 +131,8 @@ RGB_F Lara_GetMeshTint(const GAME_VECTOR pos)
     }
 
     int16_t room_num = pos.room_num;
-    Room_GetSector(pos.x, pos.y, pos.z, &room_num);
-    const int32_t water_height =
-        Room_GetWaterHeight(pos.x, pos.y, pos.z, room_num);
+    Room_GetSector(pos.pos, &room_num);
+    const int32_t water_height = Room_GetWaterHeight(pos.pos, room_num);
 
     if (!Room_Get(room_num)->flags.underwater) {
         return (RGB_F) { 1.0f, 1.0f, 1.0f };

@@ -78,8 +78,10 @@ static M_CLIMB_RESULT M_TestClimbPos(
     }
 
     int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector(x, y - 128, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
+    XYZ_32 sample_pos = { x, y - 128, z };
+    const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
+    sample_pos.y = y;
+    int32_t height = Room_GetHeight(sector, sample_pos);
     if (height == NO_HEIGHT) {
         return CLIMB_RESULT_NONE;
     }
@@ -92,7 +94,7 @@ static M_CLIMB_RESULT M_TestClimbPos(
         *shift = height;
     }
 
-    int32_t ceiling = Room_GetCeiling(sector, x, y, z) - y;
+    int32_t ceiling = Room_GetCeiling(sector, sample_pos) - y;
     if (ceiling > M_CLIMB_SHIFT) {
         return CLIMB_RESULT_NONE;
     }
@@ -109,14 +111,17 @@ static M_CLIMB_RESULT M_TestClimbPos(
 
     const int32_t x2 = x + x_front;
     const int32_t z2 = z + z_front;
-    sector = Room_GetSector(x2, y, z2, &room_num);
-    height = Room_GetHeight(sector, x2, y, z2);
+    sample_pos.x = x2;
+    sample_pos.y = y;
+    sample_pos.z = z2;
+    sector = Room_GetSector(sample_pos, &room_num);
+    height = Room_GetHeight(sector, sample_pos);
     if (height != NO_HEIGHT) {
         height -= y;
     }
 
     if (height > M_CLIMB_SHIFT) {
-        ceiling = Room_GetCeiling(sector, x2, y, z2) - y;
+        ceiling = Room_GetCeiling(sector, sample_pos) - y;
         if (ceiling >= M_CLIMB_HEIGHT) {
             return CLIMB_RESULT_POS;
         }
@@ -154,9 +159,12 @@ static M_CLIMB_RESULT M_TestClimbPos(
     }
 
     room_num = item->room_num;
-    sector = Room_GetSector(x, item_height + y, z, &room_num);
-    sector = Room_GetSector(x2, item_height + y, z2, &room_num);
-    ceiling = Room_GetCeiling(sector, x2, item_height + y, z2);
+    sample_pos = (XYZ_32) { x, item_height + y, z };
+    Room_GetSector(sample_pos, &room_num);
+    sample_pos.x = x2;
+    sample_pos.z = z2;
+    sector = Room_GetSector(sample_pos, &room_num);
+    ceiling = Room_GetCeiling(sector, sample_pos);
     if (ceiling == NO_HEIGHT) {
         return CLIMB_RESULT_POS;
     }
@@ -427,8 +435,9 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
     int32_t ceiling;
 
     int16_t room_num = item->room_num;
-    sector = Room_GetSector(x, y, z, &room_num);
-    ceiling = Room_GetCeiling(sector, x, y, z) + STEP_L - y;
+    XYZ_32 sample_pos = { x, y, z };
+    sector = Room_GetSector(sample_pos, &room_num);
+    ceiling = Room_GetCeiling(sector, sample_pos) + STEP_L - y;
     if (ceiling > M_CLIMB_SHIFT) {
         return CLIMB_RESULT_NONE;
     }
@@ -439,8 +448,10 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
 
     const int32_t x2 = x + x_front;
     const int32_t z2 = z + z_front;
-    sector = Room_GetSector(x2, y, z2, &room_num);
-    height = Room_GetHeight(sector, x2, y, z2);
+    sample_pos.x = x2;
+    sample_pos.z = z2;
+    sector = Room_GetSector(sample_pos, &room_num);
+    height = Room_GetHeight(sector, sample_pos);
     if (height == NO_HEIGHT) {
         *ledge = NO_HEIGHT;
         return CLIMB_RESULT_POS;
@@ -449,7 +460,7 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
     height -= y;
     *ledge = height;
     if (height > STEP_L / 2) {
-        ceiling = Room_GetCeiling(sector, x2, y, z2) - y;
+        ceiling = Room_GetCeiling(sector, sample_pos) - y;
         if (ceiling >= M_CLIMB_HEIGHT) {
             return CLIMB_RESULT_POS;
         }
@@ -467,9 +478,12 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
     }
 
     room_num = item->room_num;
-    sector = Room_GetSector(x, y + M_CLIMB_HEIGHT, z, &room_num);
-    sector = Room_GetSector(x2, y + M_CLIMB_HEIGHT, z2, &room_num);
-    ceiling = Room_GetCeiling(sector, x2, y + M_CLIMB_HEIGHT, z2) - y;
+    sample_pos = (XYZ_32) { x, y + M_CLIMB_HEIGHT, z };
+    Room_GetSector(sample_pos, &room_num);
+    sample_pos.x = x2;
+    sample_pos.z = z2;
+    sector = Room_GetSector(sample_pos, &room_num);
+    ceiling = Room_GetCeiling(sector, sample_pos) - y;
     if (ceiling <= height) {
         return CLIMB_RESULT_POS;
     }
@@ -504,9 +518,9 @@ static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)
         .y = item->pos.y,
     };
     int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
-    const int32_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
-    const int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+    const int32_t ceiling = Room_GetCeiling(sector, pos);
     return height == NO_HEIGHT || height < pos.y
         || (ceiling - pos.y) >= -M_LEDGE_JUMP_PUSH_HEIGHT;
 }

@@ -78,7 +78,7 @@ static void M_RemoveFlipItems(const ROOM *const room)
 static void M_GetNewRoom(
     const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
 {
-    Room_GetSector(x, y, z, &room_num);
+    Room_GetSector((XYZ_32) { x, y, z }, &room_num);
     Room_MarkToBeDrawn(room_num);
 }
 
@@ -346,13 +346,13 @@ int32_t Room_GetOutsideStatus(const XYZ_32 pos, int16_t *const out_room_num)
         }
 
         int16_t rn = candidate_room_num;
-        const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &rn);
-        const int16_t floor = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+        const SECTOR *const sector = Room_GetSector(pos, &rn);
+        const int16_t floor = Room_GetHeight(sector, pos);
         if (floor == NO_HEIGHT || pos.y > floor) {
             return -2;
         }
 
-        const int16_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
+        const int16_t ceiling = Room_GetCeiling(sector, pos);
         if (pos.y < ceiling) {
             return -2;
         }
@@ -525,8 +525,7 @@ bool Room_PointInside(const ROOM *const room, const XYZ_32 point)
     if (point.x >= x1 && point.x < x2 && point.y >= y1 && point.y <= y2
         && point.z >= z1 && point.z < z2) {
         const SECTOR *sector = Room_GetWorldSector(room, point.x, point.z);
-        const int32_t height =
-            Room_GetHeight(sector, point.x, point.y, point.z);
+        const int32_t height = Room_GetHeight(sector, point);
         if (height != NO_HEIGHT) {
             return true;
         }
@@ -635,12 +634,12 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
         }
     }
 
+    const SECTOR *sector = Room_GetSector(*out_pos, &room_num);
+    int16_t height = Room_GetHeight(sector, *out_pos);
+
     int32_t x = out_pos->x;
     int32_t y = out_pos->y;
     int32_t z = out_pos->z;
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-    int16_t height = Room_GetHeight(sector, x, y, z);
-
     if (height == NO_HEIGHT) {
         // Sample a sphere of points around target x, y, z
         // and teleport to the first available location.
@@ -659,9 +658,8 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
                     .y = y,
                     .z = ROUND_TO_SECTOR(z + dz * unit) + WALL_L / 2,
                 };
-                sector = Room_GetSector(point.x, point.y, point.z, &room_num);
-                height = Room_GetHeightEx(
-                    sector, point.x, point.y, point.z, true, NO_ITEM);
+                sector = Room_GetSector(point, &room_num);
+                height = Room_GetHeightEx(sector, point, true, NO_ITEM);
                 if (height == NO_HEIGHT) {
                     continue;
                 }

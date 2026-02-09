@@ -41,29 +41,27 @@ EDGE_CATCH Lara_Col_TestEdgeCatch(
 
 bool Lara_Col_TestHangSwingIn(const ITEM *const item, const int16_t angle)
 {
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
+    XYZ_32 pos = item->pos;
     int16_t room_num = item->room_num;
     switch (angle) {
     case 0:
-        z += STEP_L;
+        pos.z += STEP_L;
         break;
     case DEG_90:
-        x += STEP_L;
+        pos.x += STEP_L;
         break;
     case -DEG_180:
-        z -= STEP_L;
+        pos.z -= STEP_L;
         break;
     case -DEG_90:
-        x -= STEP_L;
+        pos.x -= STEP_L;
         break;
     }
 
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
-    int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-    return height != NO_HEIGHT && height - y > 0 && ceiling - y < -400;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    int32_t height = Room_GetHeight(sector, pos);
+    int32_t ceiling = Room_GetCeiling(sector, pos);
+    return height != NO_HEIGHT && height - pos.y > 0 && ceiling - pos.y < -400;
 }
 
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
@@ -77,8 +75,8 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     if (g_TRVersion >= 3
         && (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT)) {
         int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+        const SECTOR *const sector = Room_GetSector(
+            (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
         if ((sector->ladder & LADDER_CEILING) != 0) {
             Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
             item->current_anim_state = LS(LS_MONKEY_IDLE);
@@ -171,8 +169,8 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
 
     if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT) {
         int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+        const SECTOR *const sector = Room_GetSector(
+            (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
         if ((sector->ladder & LADDER_CEILING) != 0) {
             Item_SwitchToAnim(item, LA(LA_MONKEY_GRAB), 0);
             item->current_anim_state = LS(LS_MONKEY_IDLE);
@@ -647,9 +645,9 @@ LANDED_STATE Lara_Col_LandedBad(ITEM *const item)
 {
     const XYZ_32 pos = item->pos;
     int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
     const int32_t height =
-        Room_GetHeight(sector, pos.x, pos.y - LARA_HEIGHT, pos.z);
+        Room_GetHeight(sector, (XYZ_32) { pos.x, pos.y - LARA_HEIGHT, pos.z });
     item->pos.y = height;
     item->floor = height;
 

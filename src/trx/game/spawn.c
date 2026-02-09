@@ -63,10 +63,9 @@ void Spawn_Splash(const ITEM *const item)
         return;
     }
 
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos, &room_num);
 
     for (int32_t i = 0; i < 10; i++) {
         const int16_t effect_num = Effect_Create(room_num);
@@ -142,7 +141,7 @@ void Spawn_BubbleEx(
     }
 
     int16_t water_room = room_num;
-    Room_GetSector(pos->x, pos->y, pos->z, &water_room);
+    Room_GetSector(*pos, &water_room);
     if (!Room_Get(water_room)->flags.underwater) {
         return;
     }

@@ -13,20 +13,16 @@
 static void M_Move(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    const int32_t z =
-        item->pos.z + (M_SPEED * Math_Cos(item->rot.y) >> WALL_SHIFT);
-    const int32_t x =
-        item->pos.x + (M_SPEED * Math_Sin(item->rot.y) >> WALL_SHIFT);
+    const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_SPEED << 4);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, item->pos.y, z, &room_num);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
 
-    if (Room_GetHeight(sector, x, item->pos.y, z) != item->pos.y) {
+    if (Room_GetHeight(sector, pos) != pos.y) {
         item->status = IS_DEACTIVATED;
         Sound_StopEffect(SFX_SPIKE_WALL);
     } else {
-        item->pos.z = z;
-        item->pos.x = x;
+        item->pos = pos;
         Item_UpdateRoom(item_num, room_num);
     }
 

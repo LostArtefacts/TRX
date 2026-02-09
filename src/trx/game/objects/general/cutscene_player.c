@@ -21,9 +21,7 @@ static void M_Control(const int16_t item_num)
     item->status = IS_ACTIVE;
     CAMERA_INFO *const camera = Cutscene_GetCamera();
     item->rot.y = camera->target_angle;
-    item->pos.x = camera->pos.pos.x;
-    item->pos.y = camera->pos.pos.y;
-    item->pos.z = camera->pos.pos.z;
+    item->pos = camera->pos.pos;
 
     XYZ_32 pos = {};
     Collide_GetJointAbsPosition(item, &pos, 0);
@@ -34,9 +32,8 @@ static void M_Control(const int16_t item_num)
     }
 
     int16_t floor_room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(pos.x, pos.y, pos.z, &floor_room_num);
-    const int16_t height = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    const SECTOR *const sector = Room_GetSector(pos, &floor_room_num);
+    const int16_t height = Room_GetHeight(sector, pos);
     item->floor = height == NO_HEIGHT ? pos.y : height;
 
     if (item->dynamic_light && item->status != IS_INVISIBLE) {

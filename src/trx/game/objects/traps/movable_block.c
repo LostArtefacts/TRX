@@ -174,18 +174,17 @@ static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
 
     // Check if there is a hard wall above.
-    if (Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z)
-        == NO_HEIGHT) {
+    if (Room_GetHeight(sector, item->pos) == NO_HEIGHT) {
         return true;
     }
 
     // Make sure there is nothing on top of the block.
     if (Room_GetHeight(
-            sector, item->pos.x, item->pos.y - block_height, item->pos.z)
+            sector,
+            (XYZ_32) { item->pos.x, item->pos.y - block_height, item->pos.z })
         != item->pos.y - block_height) {
         return false;
     }
@@ -199,43 +198,44 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
         return false;
     }
 
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z;
+    XYZ_32 base_pos = item->pos;
     int16_t room_num = item->room_num;
 
     switch (quadrant) {
     case DIR_NORTH:
-        z += WALL_L;
+        base_pos.z += WALL_L;
         break;
     case DIR_EAST:
-        x += WALL_L;
+        base_pos.x += WALL_L;
         break;
     case DIR_SOUTH:
-        z -= WALL_L;
+        base_pos.z -= WALL_L;
         break;
     case DIR_WEST:
-        x -= WALL_L;
+        base_pos.x -= WALL_L;
         break;
     default:
         break;
     }
 
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *sector = Room_GetSector(base_pos, &room_num);
     COLL_INFO coll = {
         .quadrant = quadrant,
         .radius = 500,
     };
-    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(
+            &coll, base_pos.x, base_pos.y, base_pos.z, room_num, 1000)) {
         return false;
     }
 
-    if (Room_GetHeight(sector, x, y, z) != y) {
+    if (Room_GetHeight(sector, base_pos) != base_pos.y) {
         return false;
     }
 
-    sector = Room_GetSector(x, y - block_height, z, &room_num);
-    if (Room_GetCeiling(sector, x, y - block_height, z) > y - block_height) {
+    const XYZ_32 sample_pos = { base_pos.x, base_pos.y - block_height,
+                                base_pos.z };
+    sector = Room_GetSector(sample_pos, &room_num);
+    if (Room_GetCeiling(sector, sample_pos) > base_pos.y - block_height) {
         return false;
     }
 
@@ -268,53 +268,58 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
     }
 
     // Test block destination sector.
-    int32_t x = item->pos.x + x_add;
-    int32_t y = item->pos.y;
-    int32_t z = item->pos.z + z_add;
+    XYZ_32 base_pos = {
+        .x = item->pos.x + x_add,
+        .y = item->pos.y,
+        .z = item->pos.z + z_add,
+    };
     int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *sector = Room_GetSector(base_pos, &room_num);
 
     COLL_INFO coll = {
         .quadrant = quadrant,
         .radius = 500,
     };
-    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(
+            &coll, base_pos.x, base_pos.y, base_pos.z, room_num, 1000)) {
         return false;
     }
 
-    if (Room_GetHeight(sector, x, y, z) != y) {
+    if (Room_GetHeight(sector, base_pos) != base_pos.y) {
         return false;
     }
 
-    sector = Room_GetSector(x, y - block_height, z, &room_num);
-    if (Room_GetCeiling(sector, x, y - block_height, z) > y - block_height) {
+    XYZ_32 sample_pos = { base_pos.x, base_pos.y - block_height, base_pos.z };
+    sector = Room_GetSector(sample_pos, &room_num);
+    if (Room_GetCeiling(sector, sample_pos) > base_pos.y - block_height) {
         return false;
     }
 
     // Test Lara destination sector.
-    x += x_add;
-    z += z_add;
+    base_pos.x += x_add;
+    base_pos.z += z_add;
     room_num = item->room_num;
-    sector = Room_GetSector(x, y, z, &room_num);
-
-    if (Room_GetHeight(sector, x, y, z) != y) {
+    sector = Room_GetSector(base_pos, &room_num);
+    if (Room_GetHeight(sector, base_pos) != base_pos.y) {
         return false;
     }
 
-    sector = Room_GetSector(x, y - LARA_HEIGHT, z, &room_num);
-    if (Room_GetCeiling(sector, x, y - LARA_HEIGHT, z) > y - LARA_HEIGHT) {
+    sample_pos = (XYZ_32) { base_pos.x, base_pos.y - LARA_HEIGHT, base_pos.z };
+    sector = Room_GetSector(sample_pos, &room_num);
+    if (Room_GetCeiling(sector, sample_pos) > base_pos.y - LARA_HEIGHT) {
         return false;
     }
 
     ITEM *const lara_item = Lara_GetItem();
-    x = lara_item->pos.x + x_add;
-    y = lara_item->pos.y;
-    z = lara_item->pos.z + z_add;
+    base_pos.x = lara_item->pos.x + x_add;
+    base_pos.y = lara_item->pos.y;
+    base_pos.z = lara_item->pos.z + z_add;
     room_num = lara_item->room_num;
-    sector = Room_GetSector(x, y, z, &room_num);
+    sector = Room_GetSector(base_pos, &room_num);
     coll.radius = LARA_RADIUS;
     coll.quadrant = (quadrant + 2) & 3;
-    if (Collide_CollideStaticObjects(&coll, x, y, z, room_num, LARA_HEIGHT)) {
+    if (Collide_CollideStaticObjects(
+            &coll, base_pos.x, base_pos.y, base_pos.z, room_num, LARA_HEIGHT)) {
         return false;
     }
 
@@ -419,16 +424,14 @@ static void M_KillLara(const ITEM *const item, ITEM *const lara)
 static bool M_IsAgainstFloor(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     return sector->floor.tilt == 0 && sector->floor.height == item->pos.y;
 }
 
 static bool M_IsAgainstCeiling(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     const SECTOR *const sky_sector =
         Room_GetSkySector(sector, item->pos.x, item->pos.z);
     return sky_sector->ceiling.tilt == 0
@@ -564,7 +567,8 @@ static void M_Collision(
 
         int16_t room_num = lara_item->room_num;
         Room_GetSector(
-            item->pos.x, item->pos.y - STEP_L / 2, item->pos.z, &room_num);
+            (XYZ_32) { item->pos.x, item->pos.y - STEP_L / 2, item->pos.z },
+            &room_num);
         if (room_num != item->room_num) {
             return;
         }
@@ -682,10 +686,14 @@ static void M_Control(const int16_t item_num)
     // ROUND_TO_HALF_CLICK because block can fall through floor to undefined
     // sector.
     int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector(
-        item->pos.x, ROUND_TO_HALF_CLICK(item->pos.y), item->pos.z, &room_num);
-    int32_t under_block_height = Room_GetHeightEx(
-        sector, item->pos.x, item->pos.y, item->pos.z, true, item_num);
+    XYZ_32 sample_pos = {
+        item->pos.x,
+        ROUND_TO_HALF_CLICK(item->pos.y),
+        item->pos.z,
+    };
+    const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
+    int32_t under_block_height =
+        Room_GetHeightEx(sector, item->pos, true, item_num);
 
     bool update_room_num = true;
 
@@ -694,16 +702,21 @@ static void M_Control(const int16_t item_num)
         const int32_t y_prev = item->pos.y - item->fall_speed;
 
         // Query floor at previous y position.
-        const SECTOR *prev_sector =
-            Room_GetSector(item->pos.x, y_prev, item->pos.z, &room_num);
-        int32_t prev_height = Room_GetHeightEx(
-            prev_sector, item->pos.x, y_prev, item->pos.z, true, item_num);
+        sample_pos.y = y_prev;
+        const SECTOR *prev_sector = Room_GetSector(sample_pos, &room_num);
+        int32_t prev_height =
+            Room_GetHeightEx(prev_sector, sample_pos, true, item_num);
 
         // If on a walkable at the previous y position, use the rounded previous
         // y position as the floor.
         if (Room_IsOnWalkable(
-                prev_sector, item->pos.x, ROUND_TO_HALF_CLICK(y_prev),
-                item->pos.z, ROUND_TO_HALF_CLICK(y_prev), item_num)) {
+                prev_sector,
+                (XYZ_32) {
+                    item->pos.x,
+                    ROUND_TO_HALF_CLICK(y_prev),
+                    item->pos.z,
+                },
+                ROUND_TO_HALF_CLICK(y_prev), item_num)) {
             prev_height = ROUND_TO_HALF_CLICK(y_prev);
         }
 
@@ -742,7 +755,8 @@ static void M_Control(const int16_t item_num)
     if (update_room_num) {
         room_num = item->room_num;
         Room_GetSectorOnWalkable(
-            item->pos.x, item->pos.y - WALL_L, item->pos.z, &room_num);
+            (XYZ_32) { item->pos.x, item->pos.y - WALL_L, item->pos.z },
+            &room_num);
         Item_UpdateRoom(item_num, room_num);
     }
 
@@ -865,8 +879,7 @@ static void M_GetStack(
     const int32_t step_y, const int16_t room_num)
 {
     int16_t sector_room_num = room_num;
-    SECTOR *sector =
-        Room_GetSector(stack_pos.x, stack_pos.y, stack_pos.z, &sector_room_num);
+    SECTOR *sector = Room_GetSector(stack_pos, &sector_room_num);
     sector = Room_GetPitSector(sector, stack_pos.x, stack_pos.z);
 
     for (WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
@@ -911,8 +924,7 @@ void MovableBlock_UpdateBox(const ITEM *const item, const bool blocked)
     }
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     if (sector->floor.height == item->pos.y && sector->box != NO_BOX) {
         BOX_INFO *const box = Box_GetBox(sector->box);
         if (box != nullptr && (box->overlap_index & BOX_BLOCKABLE) != 0) {
@@ -953,7 +965,8 @@ void MovableBlock_ShiftStackY(
         item->pos.y = new_y;
         int16_t sector_room_num = room_num;
         SECTOR *sector = Room_GetSector(
-            item->pos.x, item->pos.y - STEP_L, item->pos.z, &sector_room_num);
+            (XYZ_32) { item->pos.x, item->pos.y - STEP_L, item->pos.z },
+            &sector_room_num);
         Item_UpdateRoom(item_num, sector_room_num);
         if (reposition) {
             const GAME_VECTOR target = {
@@ -986,7 +999,8 @@ void MovableBlock_SlideStack(
         item->pos.z = dest_item->pos.z;
         int16_t sector_room_num = dest_item->room_num;
         Room_GetSector(
-            item->pos.x, item->pos.y - STEP_L, item->pos.z, &sector_room_num);
+            (XYZ_32) { item->pos.x, item->pos.y - STEP_L, item->pos.z },
+            &sector_room_num);
         Item_UpdateRoom(item_num, sector_room_num);
         if (reposition) {
             const GAME_VECTOR target = {

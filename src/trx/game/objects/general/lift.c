@@ -344,7 +344,8 @@ static void M_Control(const int16_t item_num)
 
     // Update room number one click up to avoid lift on a room portal.
     int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y - STEP_L, item->pos.z, &room_num);
+    Room_GetSector(
+        (XYZ_32) { item->pos.x, item->pos.y - STEP_L, item->pos.z }, &room_num);
     Item_UpdateRoom(item_num, room_num);
 }
 

@@ -456,7 +456,8 @@ bool Box_BadFloor(
     const int32_t x, const int32_t y, const int32_t z, const int32_t box_height,
     const int32_t next_height, int16_t room_num, const LOT_INFO *const lot)
 {
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *const sector =
+        Room_GetSector((XYZ_32) { x, y, z }, &room_num);
     if (sector->box == NO_BOX) {
         return true;
     }

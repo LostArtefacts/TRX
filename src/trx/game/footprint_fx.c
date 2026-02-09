@@ -68,7 +68,7 @@ void FootprintFX_Add(const ITEM *const lara_item, const bool is_left_foot)
         lara_item, &pos, is_left_foot ? LM_FOOT_L : LM_FOOT_R);
 
     int16_t room_num = lara_item->room_num;
-    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
     if (sector == nullptr) {
         return;
     }
@@ -82,7 +82,7 @@ void FootprintFX_Add(const ITEM *const lara_item, const bool is_left_foot)
         return;
     }
 
-    const int32_t y = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    const int32_t y = Room_GetHeight(sector, pos);
     if (y == NO_HEIGHT) {
         return;
     }
@@ -113,14 +113,13 @@ static int32_t M_GetVertexYOffset(
     const M_FOOTPRINT *const print, const XYZ_32 world_pos)
 {
     int16_t room_num = print->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(world_pos.x, print->y, world_pos.z, &room_num);
+    const XYZ_32 pos = { world_pos.x, print->y, world_pos.z };
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
     if (sector == nullptr) {
         return 0;
     }
 
-    const int32_t height =
-        Room_GetHeight(sector, world_pos.x, print->y, world_pos.z);
+    const int32_t height = Room_GetHeight(sector, pos);
     if (height == NO_HEIGHT) {
         return 0;
     }

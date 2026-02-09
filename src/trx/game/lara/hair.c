@@ -280,18 +280,19 @@ void Lara_Hair_Control(const bool in_cutscene)
         water_height = NO_HEIGHT;
     } else {
         water_height = Room_GetWaterHeight(
-            lara_item->pos.x
-                + (frame_1->bounds.min.x + frame_1->bounds.max.x) / 2,
-            lara_item->pos.y
-                + (frame_1->bounds.max.y + frame_1->bounds.min.y) / 2,
-            lara_item->pos.z
-                + (frame_1->bounds.max.z + frame_1->bounds.min.z) / 2,
+            (XYZ_32) {
+                lara_item->pos.x
+                    + (frame_1->bounds.min.x + frame_1->bounds.max.x) / 2,
+                lara_item->pos.y
+                    + (frame_1->bounds.max.y + frame_1->bounds.min.y) / 2,
+                lara_item->pos.z
+                    + (frame_1->bounds.max.z + frame_1->bounds.min.z) / 2,
+            },
             room_num);
     }
 
-    const SECTOR *const sector =
-        Room_GetSector(fs->pos.x, fs->pos.y, fs->pos.z, &room_num);
-    int32_t height = Room_GetHeight(sector, fs->pos.x, fs->pos.y, fs->pos.z);
+    const SECTOR *const sector = Room_GetSector(fs->pos, &room_num);
+    int32_t height = Room_GetHeight(sector, fs->pos);
     if (height < fs->pos.y) {
         height = lara_item->floor;
     }

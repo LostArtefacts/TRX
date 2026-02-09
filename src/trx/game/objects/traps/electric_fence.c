@@ -17,7 +17,7 @@ typedef struct {
 static bool M_IsFenceOnDeathSector(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector32(item->pos, &room_num);
+    const SECTOR *sector = Room_GetSector(item->pos, &room_num);
     return sector->is_death_sector;
 }
 

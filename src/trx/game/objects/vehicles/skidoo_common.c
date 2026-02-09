@@ -202,10 +202,8 @@ int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
     }
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, item->pos);
     if (height < -32000) {
         return M_GET_ON_NONE;
     }
@@ -278,9 +276,8 @@ int32_t Skidoo_TestHeight(
     out_pos->y = item->pos.y + ((x_off * sz - z_off * sx) >> W2V_SHIFT);
     out_pos->z = item->pos.z + ((z_off * cy - x_off * sy) >> W2V_SHIFT);
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(out_pos->x, out_pos->y, out_pos->z, &room_num);
-    return Room_GetHeight(sector, out_pos->x, out_pos->y, out_pos->z);
+    const SECTOR *const sector = Room_GetSector(*out_pos, &room_num);
+    return Room_GetHeight(sector, *out_pos);
 }
 
 void Skidoo_DoSnowEffect(const ITEM *const skidoo)
@@ -427,10 +424,8 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
     }
 
     int16_t room_num = skidoo->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(skidoo->pos.x, skidoo->pos.y, skidoo->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, skidoo->pos.x, skidoo->pos.y, skidoo->pos.z);
+    const SECTOR *const sector = Room_GetSector(skidoo->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, skidoo->pos);
     if (height < skidoo->pos.y - STEP_L) {
         Vehicle_DoShift(skidoo, &skidoo->pos, &old);
     }
@@ -551,15 +546,11 @@ int32_t Skidoo_CheckGetOffOK(int32_t direction)
         rot = skidoo->rot.y - DEG_90;
     }
 
-    const int32_t c = Math_Cos(rot);
-    const int32_t s = Math_Sin(rot);
-    const int32_t x = skidoo->pos.x - ((M_GET_OFF_DIST * s) >> W2V_SHIFT);
-    const int32_t z = skidoo->pos.z - ((M_GET_OFF_DIST * c) >> W2V_SHIFT);
-    const int32_t y = skidoo->pos.y;
+    const XYZ_32 pos = XYZ_32_OffsetYaw(skidoo->pos, rot, -M_GET_OFF_DIST);
 
     int16_t room_num = skidoo->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    const int32_t height = Room_GetHeight(sector, x, y, z);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
     const HEIGHT_TYPE height_type = Room_GetHeightType();
 
     if (height_type == HT_BIG_SLOPE || height_type == HT_DIAGONAL
@@ -571,7 +562,7 @@ int32_t Skidoo_CheckGetOffOK(int32_t direction)
         return false;
     }
 
-    const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
+    const int32_t ceiling = Room_GetCeiling(sector, pos);
     if (ceiling - skidoo->pos.y > -LARA_HEIGHT) {
         return false;
     }
@@ -809,10 +800,8 @@ bool Skidoo_Control(void)
     const int32_t hfr = Skidoo_TestHeight(skidoo, M_FRONT, M_SIDE, &fr);
 
     int16_t room_num = skidoo->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(skidoo->pos.x, skidoo->pos.y, skidoo->pos.z, &room_num);
-    int32_t height =
-        Room_GetHeight(sector, skidoo->pos.x, skidoo->pos.y, skidoo->pos.z);
+    const SECTOR *const sector = Room_GetSector(skidoo->pos, &room_num);
+    int32_t height = Room_GetHeight(sector, skidoo->pos);
 
     bool dead = false;
     if (lara_item->hit_points <= 0) {

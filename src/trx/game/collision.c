@@ -13,11 +13,10 @@
 #define M_HEADROOM 160 // Additional collision space above Lara's head.
 
 static bool M_IsOnWalkable(
-    const SECTOR *const sector, const int32_t x, const int32_t y,
-    const int32_t z, const int32_t room_height)
+    const SECTOR *const sector, const XYZ_32 pos, const int32_t room_height)
 {
     return g_Config.gameplay.fix_bridge_collision
-        && Room_IsOnWalkable(sector, x, y, z, room_height, NO_ITEM);
+        && Room_IsOnWalkable(sector, pos, room_height, NO_ITEM);
 }
 
 // Probes the front, left, and right of Lara and fills in the collision info for
@@ -25,11 +24,10 @@ static bool M_IsOnWalkable(
 // how big slope and lava pit sectors are treated. For example, in the walk
 // state, Lara won't walk up big slopes or walk down into lava pits.
 static void M_FillSide(
-    const COLL_INFO *const coll, COLL_SIDE *const side, const int32_t x_pos,
-    const int32_t z_pos, const int32_t y_pos, const int32_t obj_height,
-    int16_t *const room_num)
+    const COLL_INFO *const coll, COLL_SIDE *const side, const XYZ_32 pos,
+    const int32_t obj_height, int16_t *const room_num)
 {
-    const int32_t y = y_pos - obj_height;
+    const int32_t y = pos.y - obj_height;
     const int32_t y_top = y - M_HEADROOM;
 
     int16_t local_room_num = *room_num;
@@ -38,16 +36,16 @@ static void M_FillSide(
         ? &local_room_num
         : room_num;
 
-    const SECTOR *const sector =
-        Room_GetSector(x_pos, y_top, z_pos, test_room_num);
-    int32_t height = Room_GetHeight(sector, x_pos, y_top, z_pos);
-    int32_t ceiling = Room_GetCeiling(sector, x_pos, y_top, z_pos);
+    const XYZ_32 sample_pos = { .x = pos.x, .y = y_top, .z = pos.z };
+    const SECTOR *const sector = Room_GetSector(sample_pos, test_room_num);
+    int32_t height = Room_GetHeight(sector, sample_pos);
+    int32_t ceiling = Room_GetCeiling(sector, sample_pos);
     const int32_t room_height = height;
     const int32_t room_ceiling = ceiling;
     const bool sim_wall = room_height == ceiling && room_height != NO_HEIGHT
         && sector->ceiling.tilt == 0 && sector->floor.tilt == 0;
     if (height != NO_HEIGHT) {
-        height -= y_pos;
+        height -= pos.y;
     }
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
@@ -57,8 +55,7 @@ static void M_FillSide(
     side->ceiling = ceiling;
     side->type = Room_GetHeightType();
 
-    const bool is_on_walkable =
-        M_IsOnWalkable(sector, x_pos, y_top, z_pos, room_height);
+    const bool is_on_walkable = M_IsOnWalkable(sector, sample_pos, room_height);
     if (!is_on_walkable) {
         if (coll->slopes_are_walls
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
@@ -71,7 +68,7 @@ static void M_FillSide(
             side->floor = STEP_L * 2;
         } else if (
             coll->lava_is_pit && side->floor > 0
-            && Room_GetPitSector(sector, x_pos, z_pos)->is_death_sector) {
+            && Room_GetPitSector(sector, pos.x, pos.z)->is_death_sector) {
             side->floor = STEP_L * 2;
         }
     } else if (sim_wall) {
@@ -297,13 +294,14 @@ void Collide_GetCollisionInfo(
     const int32_t y = y_pos - obj_height;
     const int32_t y_top = y - M_HEADROOM;
 
-    const SECTOR *sector = Room_GetSector(x, y_top, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y_top, z);
+    const XYZ_32 sample_pos = { .x = x, .y = y_top, .z = z };
+    const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
+    int32_t height = Room_GetHeight(sector, sample_pos);
     int32_t room_height = height;
     if (height != NO_HEIGHT) {
         height -= y_pos;
     }
-    int32_t ceiling = Room_GetCeiling(sector, x, y_top, z);
+    int32_t ceiling = Room_GetCeiling(sector, sample_pos);
     if (ceiling != NO_HEIGHT) {
         ceiling -= y;
     }
@@ -312,13 +310,14 @@ void Collide_GetCollisionInfo(
     coll->side_mid.ceiling = ceiling;
     coll->side_mid.type = Room_GetHeightType();
 
-    bool is_on_walkable = M_IsOnWalkable(sector, x, y_top, z, room_height);
+    bool is_on_walkable = M_IsOnWalkable(sector, sample_pos, room_height);
     if (is_on_walkable) {
         coll->tilt_z = 0;
         coll->tilt_x = 0;
     } else {
         const ITEM *const lara_item = Lara_GetItem();
-        const int16_t tilt = Room_GetTiltType(sector, x, lara_item->pos.y, z);
+        const int16_t tilt =
+            Room_GetTiltType(sector, (XYZ_32) { x, lara_item->pos.y, z });
         coll->tilt_z = tilt >> 8;
         coll->tilt_x = (int8_t)tilt;
     }
@@ -381,24 +380,29 @@ void Collide_GetCollisionInfo(
     }
 
     M_FillSide(
-        coll, &coll->side_front, x_pos + x_front, z_pos + z_front, y_pos,
+        coll, &coll->side_front,
+        (XYZ_32) { .x = x_pos + x_front, .z = z_pos + z_front, .y = y_pos },
         obj_height, &room_num);
 
     int16_t room_num2;
     room_num2 = prev_room_num;
     M_FillSide(
-        coll, &coll->side_left, x_pos + x_left, z_pos + z_left, y_pos,
+        coll, &coll->side_left,
+        (XYZ_32) { .x = x_pos + x_left, .z = z_pos + z_left, .y = y_pos },
         obj_height, &room_num2);
     room_num2 = prev_room_num;
     M_FillSide(
-        coll, &coll->side_right, x_pos + x_right, z_pos + z_right, y_pos,
+        coll, &coll->side_right,
+        (XYZ_32) { .x = x_pos + x_right, .z = z_pos + z_right, .y = y_pos },
         obj_height, &room_num2);
 
     M_FillSide(
-        coll, &coll->side_left2, x_pos + x_left, z_pos + z_left, y_pos,
+        coll, &coll->side_left2,
+        (XYZ_32) { .x = x_pos + x_left, .z = z_pos + z_left, .y = y_pos },
         obj_height, &room_num);
     M_FillSide(
-        coll, &coll->side_right2, x_pos + x_right, z_pos + z_right, y_pos,
+        coll, &coll->side_right2,
+        (XYZ_32) { .x = x_pos + x_right, .z = z_pos + z_right, .y = y_pos },
         obj_height, &room_num);
 
     const int16_t static_room_num = g_TRVersion >= 3 ? prev_room_num : room_num;
@@ -409,11 +413,9 @@ void Collide_GetCollisionInfo(
             .y = y_pos,
             .z = z_pos + coll->shift.z,
         };
-        sector = Room_GetSector(test_pos.x, test_pos.y, test_pos.z, &room_num);
-        if (Room_GetHeight(sector, test_pos.x, test_pos.y, test_pos.z)
-                < test_pos.y - WALL_L / 2
-            || Room_GetCeiling(sector, test_pos.x, test_pos.y, test_pos.z)
-                > y) {
+        sector = Room_GetSector(test_pos, &room_num);
+        if (Room_GetHeight(sector, test_pos) < test_pos.y - WALL_L / 2
+            || Room_GetCeiling(sector, test_pos) > y) {
             coll->shift.x = -coll->shift.x;
             coll->shift.z = -coll->shift.z;
         }
@@ -742,14 +744,13 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
     int32_t yang;
 
     int16_t room_num = item->room_num;
-    const SECTOR *sector =
-        Room_GetSector(old_pos.x, old_pos.y, old_pos.z, &room_num);
-    int32_t oldheight = Room_GetHeight(sector, old_pos.x, old_pos.y, old_pos.z);
+    const SECTOR *sector = Room_GetSector(old_pos, &room_num);
+    int32_t oldheight = Room_GetHeight(sector, old_pos);
     int32_t oldtype = Room_GetHeightType();
 
     room_num = item->room_num;
-    sector = Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    height = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    sector = Room_GetSector(item->pos, &room_num);
+    height = Room_GetHeight(sector, item->pos);
 
     if (item->pos.y >= height) {
         bs = 0;
@@ -758,8 +759,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
             && oldheight < height) {
             yang = (uint16_t)item->rot.y;
 
-            const int16_t tilt =
-                Room_GetTiltType(sector, item->pos.x, item->pos.y, item->pos.z);
+            const int16_t tilt = Room_GetTiltType(sector, item->pos);
             const int8_t tiltyoff = tilt >> 8;
             const int8_t tiltxoff = (int8_t)tilt;
             if (tiltyoff < 0) {
@@ -826,8 +826,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
         } else {
             item->speed -= item->speed >> 2;
 
-            const int16_t tilt =
-                Room_GetTiltType(sector, item->pos.x, item->pos.y, item->pos.z);
+            const int16_t tilt = Room_GetTiltType(sector, item->pos);
             const int8_t tiltyoff = tilt >> 8;
             const int8_t tiltxoff = (int8_t)tilt;
             if (tiltyoff < 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2) {
@@ -1083,10 +1082,8 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
         // been reworked in TRX.
 
         room_num = item->room_num;
-        sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        ceiling =
-            Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+        sector = Room_GetSector(item->pos, &room_num);
+        ceiling = Room_GetCeiling(sector, item->pos);
 
         if (item->pos.y < ceiling) {
             const bool x_cross = ROUND_TO_SECTOR(item->pos.x ^ old_pos.x) != 0;
@@ -1112,7 +1109,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
     }
 
     room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos, &room_num);
 
     if (item->room_num != room_num) {
         Item_UpdateRoom(Item_GetIndex(item), room_num);

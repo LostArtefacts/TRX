@@ -188,10 +188,8 @@ static bool M_SwitchToLand(
         item->goal_anim_state = item->current_anim_state;
 
         int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        item->floor =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+        item->floor = Room_GetHeight(sector, item->pos);
         item->pos.y = item->floor;
         Item_UpdateRoom(item_num, room_num);
     }
@@ -391,8 +389,7 @@ bool Creature_EnsureHabitat(
     // Test the environment for a hybrid creature. Record the water height and
     // return whether or not a type conversion has taken place.
     const ITEM *const item = Item_Get(item_num);
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     if (wh != nullptr) {
         *wh = water_height;
     }
@@ -687,8 +684,7 @@ void Creature_Float(const int16_t item_num)
     item->hit_points = DONT_TARGET;
     item->rot.x = 0;
 
-    const int32_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t wh = Room_GetWaterHeight(item->pos, item->room_num);
     if (item->pos.y > wh) {
         item->pos.y -= M_FLOAT_SPEED;
     }
@@ -697,16 +693,14 @@ void Creature_Float(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
 }
 
 void Creature_Underwater(ITEM *const item, const int32_t depth)
 {
-    const int32_t wh = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t wh = Room_GetWaterHeight(item->pos, item->room_num);
     if (item->pos.y >= wh + depth) {
         return;
     }
@@ -797,7 +791,7 @@ bool Creature_Animate(
 
     if (g_TRVersion >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
         int16_t room_num = item->room_num;
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        Room_GetSector(item->pos, &room_num);
         Item_UpdateRoom(item_num, room_num);
     }
 
@@ -811,9 +805,11 @@ bool Creature_Animate(
     int32_t y = item->pos.y + bounds->min.y;
 
     int16_t room_num = item->room_num;
-    Room_GetSector(old.x, y, old.z, &room_num);
-    const SECTOR *sector =
-        Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+    XYZ_32 sample_pos = { old.x, y, old.z };
+    Room_GetSector(sample_pos, &room_num);
+    sample_pos.x = item->pos.x;
+    sample_pos.z = item->pos.z;
+    const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
     int32_t height = Box_GetBox(sector->box)->height;
     int16_t next_box = lot->node[sector->box].exit_box;
     int32_t next_height =
@@ -845,7 +841,10 @@ bool Creature_Animate(
             item->pos.z = ROUND_TO_SECTOR_END(old.z);
         }
 
-        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+        sample_pos.x = item->pos.x;
+        sample_pos.y = y;
+        sample_pos.z = item->pos.z;
+        sector = Room_GetSector(sample_pos, &room_num);
         height = Box_GetBox(sector->box)->height;
         next_box = lot->node[sector->box].exit_box;
         next_height =
@@ -950,7 +949,10 @@ bool Creature_Animate(
     item->pos.z += shift_z;
 
     if (shift_x != 0 || shift_z != 0) {
-        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
+        sample_pos.x = item->pos.x;
+        sample_pos.y = y;
+        sample_pos.z = item->pos.z;
+        sector = Room_GetSector(sample_pos, &room_num);
         item->rot.y += angle;
         Creature_Tilt(item, tilt * 2);
     }
@@ -984,7 +986,8 @@ bool Creature_Animate(
         int32_t dy = creature->target.y - item->pos.y;
         CLAMP(dy, -lot->setup.fly, lot->setup.fly);
 
-        height = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
+        height =
+            Room_GetHeight(sector, (XYZ_32) { item->pos.x, y, item->pos.z });
         if (item->pos.y + dy > height) {
             if (item->pos.y <= height) {
                 dy = 0;
@@ -996,8 +999,8 @@ bool Creature_Animate(
             }
         } else if (
             fly_check || Object_IsType(item->object_id, g_WaterObjects)) {
-            const int32_t ceiling =
-                Room_GetCeiling(sector, item->pos.x, y, item->pos.z);
+            const int32_t ceiling = Room_GetCeiling(
+                sector, (XYZ_32) { item->pos.x, y, item->pos.z });
             int32_t min_y = bounds->min.y;
             switch (item->object_id) {
             case O_ALLIGATOR:
@@ -1021,7 +1024,8 @@ bool Creature_Animate(
                 }
             }
         } else {
-            Room_GetSector(item->pos.x, y + STEP_L, item->pos.z, &room_num);
+            sample_pos = (XYZ_32) { item->pos.x, y + STEP_L, item->pos.z };
+            Room_GetSector(sample_pos, &room_num);
             const ROOM *const room = Room_Get(room_num);
             if (room->flags.underwater || room->flags.swamp) {
                 dy = -lot->setup.fly;
@@ -1029,8 +1033,9 @@ bool Creature_Animate(
         }
 
         item->pos.y += dy;
-        sector = Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-        item->floor = Room_GetHeight(sector, item->pos.x, y, item->pos.z);
+        sample_pos = (XYZ_32) { item->pos.x, y, item->pos.z };
+        sector = Room_GetSector(sample_pos, &room_num);
+        item->floor = Room_GetHeight(sector, sample_pos);
 
         int16_t item_angle = item->speed != 0 ? Math_Atan(item->speed, -dy) : 0;
         if (g_TRVersion >= 2) {
@@ -1045,11 +1050,9 @@ bool Creature_Animate(
             item->rot.x = item_angle;
         }
     } else {
-        sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        sector = Room_GetSector(item->pos, &room_num);
         if (g_TRVersion == 3) {
-            const int16_t ceiling =
-                Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+            const int16_t ceiling = Room_GetCeiling(sector, item->pos);
             int32_t min_y = bounds->min.y;
             switch (item->object_id) {
             case O_TREX:
@@ -1064,13 +1067,11 @@ bool Creature_Animate(
 
             if (item->pos.y + min_y < ceiling) {
                 item->pos = old;
-                sector = Room_GetSector(
-                    item->pos.x, item->pos.y, item->pos.z, &room_num);
+                sector = Room_GetSector(item->pos, &room_num);
             }
         }
 
-        item->floor =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        item->floor = Room_GetHeight(sector, item->pos);
 
         if (item->pos.y > item->floor) {
             item->pos.y = item->floor;
@@ -1086,7 +1087,8 @@ bool Creature_Animate(
         // Get the room just above the enemy so that if it is in one-click high
         // water, its effects behave still as though in a dry room.
         Room_GetSector(
-            item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z, &room_num);
+            (XYZ_32) { item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z },
+            &room_num);
         if (g_TRVersion >= 2 && Room_Get(room_num)->flags.underwater) {
             item->hit_points = 0;
         }

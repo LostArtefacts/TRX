@@ -182,10 +182,8 @@ bool Demo_Start(const int32_t level_num)
 
     int16_t room_num = *p->demo_ptr++;
     Item_UpdateRoom(lara->item_num, room_num);
-    const SECTOR *const sector = Room_GetSector(
-        lara_item->pos.x, lara_item->pos.y, lara_item->pos.z, &room_num);
-    lara_item->floor = Room_GetHeight(
-        sector, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z);
+    const SECTOR *const sector = Room_GetSector(lara_item->pos, &room_num);
+    lara_item->floor = Room_GetHeight(sector, lara_item->pos);
 
     if (g_TRVersion >= 2) {
         lara->last_gun_type = *p->demo_ptr++;

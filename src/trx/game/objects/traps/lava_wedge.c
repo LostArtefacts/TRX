@@ -17,35 +17,33 @@ static void M_Control(const int16_t item_num)
     }
 
     int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
     if (item->status != IS_DEACTIVATED) {
-        int32_t x = item->pos.x;
-        int32_t z = item->pos.z;
+        XYZ_32 pos = item->pos;
 
         switch (item->rot.y) {
         case 0:
             item->pos.z += M_SPEED;
-            z += 2 * WALL_L;
+            pos.z += 2 * WALL_L;
             break;
         case -DEG_180:
             item->pos.z -= M_SPEED;
-            z -= 2 * WALL_L;
+            pos.z -= 2 * WALL_L;
             break;
         case DEG_90:
             item->pos.x += M_SPEED;
-            x += 2 * WALL_L;
+            pos.x += 2 * WALL_L;
             break;
         default:
             item->pos.x -= M_SPEED;
-            x -= 2 * WALL_L;
+            pos.x -= 2 * WALL_L;
             break;
         }
 
-        const SECTOR *const sector =
-            Room_GetSector(x, item->pos.y, z, &room_num);
-        if (Room_GetHeight(sector, x, item->pos.y, z) != item->pos.y) {
+        const SECTOR *const sector = Room_GetSector(pos, &room_num);
+        if (Room_GetHeight(sector, pos) != item->pos.y) {
             item->status = IS_DEACTIVATED;
         }
     }

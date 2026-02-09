@@ -92,9 +92,9 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
     // to ensure that the initial sector is in the room above, hence we test
     // slightly above the initial y position.
     const SECTOR *const sector = Room_GetSector(
-        pickup->pos.x, pickup->pos.y - 10, pickup->pos.z, &room_num);
-    const int16_t height =
-        Room_GetHeight(sector, pickup->pos.x, pickup->pos.y, pickup->pos.z);
+        (XYZ_32) { pickup->pos.x, pickup->pos.y - 10, pickup->pos.z },
+        &room_num);
+    const int16_t height = Room_GetHeight(sector, pickup->pos);
     const bool in_water = Room_Get(pickup->room_num)->flags.underwater;
 
     if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
@@ -335,10 +335,10 @@ void Carrier_TestItemDrops(const int16_t item_num)
             int16_t room_num = carrier->room_num;
             pickup->pos.x = ROUND_TO_SECTOR(carrier->pos.x) + WALL_L / 2;
             pickup->pos.z = ROUND_TO_SECTOR(carrier->pos.z) + WALL_L / 2;
-            const SECTOR *const sector = Room_GetSector(
-                pickup->pos.x, carrier->pos.y, pickup->pos.z, &room_num);
+            const SECTOR *const sector = Room_GetSector(pickup->pos, &room_num);
             pickup->pos.y = Room_GetHeight(
-                sector, pickup->pos.x, carrier->pos.y, pickup->pos.z);
+                sector,
+                (XYZ_32) { pickup->pos.x, carrier->pos.y, pickup->pos.z });
         }
 
         item->status = DS_FALLING;

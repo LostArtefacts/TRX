@@ -58,9 +58,8 @@ static void M_Control_TR3(const int16_t item_num)
     item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
 
     if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
@@ -136,8 +135,7 @@ static void M_Control_TR3(const int16_t item_num)
         return;
     }
 
-    const int32_t ceiling =
-        Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+    const int32_t ceiling = Room_GetCeiling(sector, item->pos);
     if (item->pos.y >= item->floor || item->pos.y <= ceiling) {
         if (item->hit_points <= 0) {
             item->hit_points = M_TR3_HIT_POINTS;
@@ -216,9 +214,8 @@ static void M_Control_TR12(const int16_t item_num)
     item->pos.y += item->fall_speed;
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
 
     bool hit = false;
@@ -290,8 +287,7 @@ static void M_Control_TR12(const int16_t item_num)
     }
 
     if (!hit) {
-        const int32_t ceiling =
-            Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+        const int32_t ceiling = Room_GetCeiling(sector, item->pos);
         if (item->pos.y >= item->floor || item->pos.y <= ceiling) {
             hit = true;
         }

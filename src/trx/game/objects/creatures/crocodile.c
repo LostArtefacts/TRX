@@ -236,10 +236,8 @@ static void M_ControlAlligator(const int16_t item_num)
         Item_Animate(item);
 
         room_num = item->room_num;
-        sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        item->floor =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        sector = Room_GetSector(item->pos, &room_num);
+        item->floor = Room_GetHeight(sector, item->pos);
         Item_UpdateRoom(item_num, room_num);
         return;
     }

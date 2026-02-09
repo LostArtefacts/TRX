@@ -79,13 +79,13 @@ static void M_Control(const int16_t item_num)
 
     int16_t room_num = item->room_num;
     const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+        Room_GetSector(item->pos, &room_num);
 
     const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        Room_GetHeight(sector, item->pos);
     if (item->pos.y < height) {
         const int32_t ceiling =
-            Room_GetCeiling(sector, item->pos.x, item->pos.y, item->pos.z);
+            Room_GetCeiling(sector, item->pos);
         if (item->pos.y < ceiling) {
             item->fall_speed = -item->fall_speed;
             item->pos.y = ceiling;
@@ -338,7 +338,7 @@ static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
 void Flare_GenerateEffects(
     const XYZ_32 *const sound_pos, const XYZ_32 flare_pos, int16_t room_num)
 {
-    Room_GetSector(flare_pos.x, flare_pos.y, flare_pos.z, &room_num);
+    Room_GetSector(flare_pos, &room_num);
     if (Room_Get(room_num)->flags.underwater) {
         Sound_Effect(SFX_LARA_FLARE_BURN, sound_pos, SPM_UNDERWATER);
         if (Random_GetDraw() < 0x4000) {

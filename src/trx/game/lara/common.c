@@ -801,12 +801,9 @@ void Lara_AlignPosition(const ITEM *const item, const XYZ_32 *const vec)
 
     if (g_Config.gameplay.fix_lara_pickup_embed) {
         int16_t room_num = lara->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(new_pos.x, new_pos.y, new_pos.z, &room_num);
-        const int32_t height =
-            Room_GetHeight(sector, new_pos.x, new_pos.y, new_pos.z);
-        const int32_t ceiling =
-            Room_GetCeiling(sector, new_pos.x, new_pos.y, new_pos.z);
+        const SECTOR *const sector = Room_GetSector(new_pos, &room_num);
+        const int32_t height = Room_GetHeight(sector, new_pos);
+        const int32_t ceiling = Room_GetCeiling(sector, new_pos);
 
         if (ABS(height - lara->pos.y) > STEP_L
             || ABS(ceiling - lara->pos.y) < LARA_HEIGHT) {
@@ -868,10 +865,8 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
 
     if (ref_item->object_id == O_FLARE_ITEM) {
         int16_t room_num = lara_item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(new_pos.x, new_pos.y, new_pos.z, &room_num);
-        const int32_t height =
-            Room_GetHeight(sector, new_pos.x, new_pos.y, new_pos.z);
+        const SECTOR *const sector = Room_GetSector(new_pos, &room_num);
+        const int32_t height = Room_GetHeight(sector, new_pos);
         if (ABS(height - lara_item->pos.y) > STEP_L * 2) {
             return false;
         }

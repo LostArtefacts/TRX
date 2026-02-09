@@ -17,25 +17,20 @@ static void M_Control(const int16_t effect_num)
         return;
     }
 
-    int32_t z = effect->pos.z
-        + ((effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT);
-    int32_t x = effect->pos.x
-        + ((effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT);
-    int32_t y = effect->pos.y;
+    const XYZ_32 pos =
+        XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
     int16_t room_num = effect->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
 
-    if (y >= Room_GetHeight(sector, x, y, z)
-        || y <= Room_GetCeiling(sector, x, y, z)) {
+    if (pos.y >= Room_GetHeight(sector, pos)
+        || pos.y <= Room_GetCeiling(sector, pos)) {
         return;
     }
 
     const int16_t new_effect_num = Effect_Create(room_num);
     if (new_effect_num != NO_EFFECT) {
-        EFFECT *new_effect = Effect_Get(new_effect_num);
-        new_effect->pos.x = x;
-        new_effect->pos.y = y;
-        new_effect->pos.z = z;
+        EFFECT *const new_effect = Effect_Get(new_effect_num);
+        new_effect->pos = pos;
         new_effect->rot.y = effect->rot.y;
         new_effect->room_num = room_num;
         new_effect->speed = effect->speed;

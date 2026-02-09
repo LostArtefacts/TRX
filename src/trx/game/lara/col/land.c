@@ -43,52 +43,51 @@ static bool M_TestWall(
     const ITEM *const item, const int32_t front, const int32_t right,
     const int32_t down)
 {
-    int32_t x = item->pos.x;
-    int32_t y = item->pos.y + down;
-    int32_t z = item->pos.z;
+    XYZ_32 pos = item->pos;
+    pos.y += down;
 
     const DIRECTION dir = Math_GetDirection(item->rot.y);
     switch (dir) {
     case DIR_NORTH:
-        x -= right;
+        pos.x -= right;
         break;
     case DIR_EAST:
-        z -= right;
+        pos.z -= right;
         break;
     case DIR_SOUTH:
-        x += right;
+        pos.x += right;
         break;
     case DIR_WEST:
-        z += right;
+        pos.z += right;
         break;
     default:
         break;
     }
 
     int16_t room_num = item->room_num;
-    Room_GetSector(x, y, z, &room_num);
+    Room_GetSector(pos, &room_num);
 
     switch (dir) {
     case DIR_NORTH:
-        z += front;
+        pos.z += front;
         break;
     case DIR_EAST:
-        x += front;
+        pos.x += front;
         break;
     case DIR_SOUTH:
-        z -= front;
+        pos.z -= front;
         break;
     case DIR_WEST:
-        x -= front;
+        pos.x -= front;
         break;
     default:
         break;
     }
 
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    const int32_t height = Room_GetHeight(sector, x, y, z);
-    const int32_t ceiling = Room_GetCeiling(sector, x, y, z);
-    if (height != NO_HEIGHT && height - y > 0 && ceiling - y < 0) {
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+    const int32_t ceiling = Room_GetCeiling(sector, pos);
+    if (height != NO_HEIGHT && height - pos.y > 0 && ceiling - pos.y < 0) {
         return false;
     }
     return true;

@@ -70,15 +70,14 @@ static void M_Move(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const M_PRIV *const p = item->priv;
     const int32_t step = (p != nullptr && p->step > 0) ? p->step : M_STEP_SLOW;
-    const int32_t y = item->pos.y + step;
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, y, item->pos.z, &room_num);
-    if (Room_GetHeight(sector, item->pos.x, y, item->pos.z) < y + WALL_L) {
+    const XYZ_32 pos = { item->pos.x, item->pos.y + step, item->pos.z };
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    if (Room_GetHeight(sector, pos) < pos.y + WALL_L) {
         item->status = IS_DEACTIVATED;
         Sound_StopEffect(SFX_SPIKE_WALL);
     } else {
-        item->pos.y = y;
+        item->pos.y = pos.y;
         Item_UpdateRoom(item_num, room_num);
         Sound_Effect(SFX_SPIKE_WALL, &item->pos, SPM_NORMAL);
     }

@@ -57,9 +57,10 @@ int32_t Vehicle_DoShift(
         x = 0;
         z = 0;
 
+        XYZ_32 test_pos = (XYZ_32) { old->x, pos->y, pos->z };
         room_num = vehicle->room_num;
-        sector = Room_GetSector(old->x, pos->y, pos->z, &room_num);
-        height = Room_GetHeight(sector, old->x, pos->y, pos->z);
+        sector = Room_GetSector(test_pos, &room_num);
+        height = Room_GetHeight(sector, test_pos);
         if (height < old->y - STEP_L) {
             if (pos->z > old->z) {
                 z = -shift_z - 1;
@@ -68,9 +69,10 @@ int32_t Vehicle_DoShift(
             }
         }
 
+        test_pos = (XYZ_32) { pos->x, pos->y, old->z };
         room_num = vehicle->room_num;
-        sector = Room_GetSector(pos->x, pos->y, old->z, &room_num);
-        height = Room_GetHeight(sector, pos->x, pos->y, old->z);
+        sector = Room_GetSector(test_pos, &room_num);
+        height = Room_GetHeight(sector, test_pos);
         if (height < old->y - STEP_L) {
             if (pos->x > old->x) {
                 x = -shift_x - 1;

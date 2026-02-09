@@ -195,10 +195,9 @@ void Lara_TouchDeathSector(const GF_DEATH_TILE death_tile)
     }
 
     int16_t room_num = lara_item->room_num;
-    const SECTOR *const sector = Room_GetSector(
-        lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z);
+    const XYZ_32 pos = { lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z };
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
     if (lara_item->floor != height) {
         return;
     }
@@ -268,15 +267,16 @@ void Lara_RapidsDrown(void)
 int16_t Lara_FloorFront(
     const ITEM *const item, const int16_t ang, const int32_t dist)
 {
-    const int32_t x = item->pos.x + ((dist * Math_Sin(ang)) >> W2V_SHIFT);
-    const int32_t y = item->pos.y - LARA_HEIGHT;
-    const int32_t z = item->pos.z + ((dist * Math_Cos(ang)) >> W2V_SHIFT);
+    XYZ_32 pos = item->pos;
+    pos.y -= LARA_HEIGHT;
+    pos = XYZ_32_OffsetYaw(pos, ang, dist);
     int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetHeight(sector, x, y, z);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    int32_t height = Room_GetHeight(sector, pos);
     if (height != NO_HEIGHT) {
         height -= item->pos.y;
-        if (height > 0 && Room_GetPitSector(sector, x, z)->is_death_sector) {
+        if (height > 0
+            && Room_GetPitSector(sector, pos.x, pos.z)->is_death_sector) {
             return STEP_L * 2;
         }
     }
@@ -289,9 +289,10 @@ int16_t Lara_CeilingFront(
     const int32_t x = item->pos.x + ((dist * Math_Sin(ang)) >> W2V_SHIFT);
     const int32_t y = item->pos.y - LARA_HEIGHT;
     const int32_t z = item->pos.z + ((dist * Math_Cos(ang)) >> W2V_SHIFT);
+    const XYZ_32 pos = { x, y, z };
     int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    int32_t height = Room_GetCeiling(sector, x, y, z);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    int32_t height = Room_GetCeiling(sector, pos);
     if (height != NO_HEIGHT) {
         height += LARA_HEIGHT - item->pos.y;
     }
@@ -301,13 +302,12 @@ int16_t Lara_CeilingFront(
 void Lara_UpdateRoomToHeight(const int32_t height)
 {
     ITEM *const lara_item = Lara_GetItem();
-    const int32_t x = lara_item->pos.x;
-    const int32_t y = height + lara_item->pos.y;
-    const int32_t z = lara_item->pos.z;
+    XYZ_32 pos = lara_item->pos;
+    pos.y += height;
 
     int16_t room_num = lara_item->room_num;
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    lara_item->floor = Room_GetHeight(sector, x, y, z);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    lara_item->floor = Room_GetHeight(sector, pos);
 
     const int16_t item_num = Item_GetIndex(lara_item);
     Item_UpdateRoom(item_num, room_num);
@@ -355,10 +355,10 @@ int32_t Lara_GetWaterDepth(
         while (sector->portal_room.sky != NO_ROOM) {
             room = Room_Get(sector->portal_room.sky);
             if (!room->flags.underwater && !room->flags.swamp) {
-                const int32_t water_height =
-                    Room_GetWaterHeight(x, y, z, room_num);
-                sector = Room_GetSector(x, y, z, &room_num);
-                return Room_GetHeight(sector, x, y, z) - water_height;
+                const XYZ_32 pos = { x, y, z };
+                const int32_t water_height = Room_GetWaterHeight(pos, room_num);
+                sector = Room_GetSector(pos, &room_num);
+                return Room_GetHeight(sector, pos) - water_height;
             }
             sector = Room_GetWorldSector(room, x, z);
         }
@@ -368,9 +368,10 @@ int32_t Lara_GetWaterDepth(
     while (sector->portal_room.pit != NO_ROOM) {
         room = Room_Get(sector->portal_room.pit);
         if (room->flags.underwater || room->flags.swamp) {
-            const int32_t water_height = Room_GetWaterHeight(x, y, z, room_num);
-            sector = Room_GetSector(x, y, z, &room_num);
-            return Room_GetHeight(sector, x, y, z) - water_height;
+            const XYZ_32 pos = { x, y, z };
+            const int32_t water_height = Room_GetWaterHeight(pos, room_num);
+            sector = Room_GetSector(pos, &room_num);
+            return Room_GetHeight(sector, pos) - water_height;
         }
         sector = Room_GetWorldSector(room, x, z);
     }

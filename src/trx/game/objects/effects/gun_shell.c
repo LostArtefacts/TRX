@@ -27,8 +27,7 @@ static void M_Control(const int16_t effect_num)
         (effect->speed * Math_Cos(effect->flag1)) >> (W2V_SHIFT + 1);
 
     int16_t room_num = effect->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(effect->pos.x, effect->pos.y, effect->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
 
     if (effect->room_num != room_num) {
         Effect_NewRoom(effect_num, room_num);
@@ -43,8 +42,7 @@ static void M_Control(const int16_t effect_num)
         return;
     }
 
-    const int32_t ceiling =
-        Room_GetCeiling(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    const int32_t ceiling = Room_GetCeiling(sector, effect->pos);
     if (effect->pos.y < ceiling) {
         Sound_Effect(SFX_LARA_SHOTGUN_SHELL, &effect->pos, SPM_NORMAL);
         effect->speed -= 4;
@@ -59,8 +57,7 @@ static void M_Control(const int16_t effect_num)
         effect->pos.y = ceiling;
     }
 
-    const int32_t height =
-        Room_GetHeight(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    const int32_t height = Room_GetHeight(sector, effect->pos);
     if (effect->pos.y >= height) {
         Sound_Effect(SFX_LARA_SHOTGUN_SHELL, &effect->pos, SPM_NORMAL);
         effect->speed -= 8;

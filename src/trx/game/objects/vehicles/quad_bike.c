@@ -230,11 +230,9 @@ static int32_t M_GetOnQuadBike(
     }
 
     int16_t room_num = item->room_num;
-    SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    SECTOR *const sector = Room_GetSector(item->pos, &room_num);
 
-    const int32_t h =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const int32_t h = Room_GetHeight(sector, item->pos);
     if (h < -32000) {
         return 0;
     }
@@ -417,14 +415,14 @@ static int32_t M_TestHeight(
     pos->z = item->pos.z + ((x * c - z * s) >> W2V_SHIFT);
 
     int16_t room_num = item->room_num;
-    SECTOR *const sector = Room_GetSector(pos->x, pos->y, pos->z, &room_num);
-    const int32_t ceiling = Room_GetCeiling(sector, pos->x, pos->y, pos->z);
+    SECTOR *const sector = Room_GetSector(*pos, &room_num);
+    const int32_t ceiling = Room_GetCeiling(sector, *pos);
 
     if (pos->y < ceiling || ceiling == NO_HEIGHT) {
         return NO_HEIGHT;
     }
 
-    return Room_GetHeight(sector, pos->x, pos->y, pos->z);
+    return Room_GetHeight(sector, *pos);
 }
 
 static void M_TriggerExhaustSmoke(
@@ -508,14 +506,12 @@ static bool M_SkidooCanGetOff(const int32_t lr)
     ITEM *const item = Lara_Vehicle_GetItem();
 
     const int16_t angle = item->rot.y + DEG_90 * lr;
-    const int32_t x = item->pos.x + ((512 * Math_Sin(angle)) >> W2V_SHIFT);
-    const int32_t y = item->pos.y;
-    const int32_t z = item->pos.z + ((512 * Math_Cos(angle)) >> W2V_SHIFT);
+    const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, angle, 512);
 
     int16_t room_num = item->room_num;
-    SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    const int32_t h = Room_GetHeight(sector, x, y, z);
-    const int32_t c = Room_GetCeiling(sector, x, y, z);
+    SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t h = Room_GetHeight(sector, pos);
+    const int32_t c = Room_GetCeiling(sector, pos);
 
     const HEIGHT_TYPE height_type = Room_GetHeightType();
     if (height_type != HT_BIG_SLOPE && height_type != HT_DIAGONAL
@@ -606,11 +602,10 @@ static int32_t M_DoShift(
 
     int32_t x = 0;
     int32_t z = 0;
+    XYZ_32 test_pos = { old_pos->x, new_pos->y, new_pos->z };
     int16_t room_num = item->room_num;
-    SECTOR *sector =
-        Room_GetSector(old_pos->x, new_pos->y, new_pos->z, &room_num);
-    const int32_t h =
-        Room_GetHeight(sector, old_pos->x, new_pos->y, new_pos->z);
+    SECTOR *sector = Room_GetSector(test_pos, &room_num);
+    const int32_t h = Room_GetHeight(sector, test_pos);
 
     if (h < old_pos->y - 256) {
         if (new_pos->z > old_pos->z) {
@@ -620,10 +615,10 @@ static int32_t M_DoShift(
         }
     }
 
+    test_pos = (XYZ_32) { new_pos->x, new_pos->y, old_pos->z };
     room_num = item->room_num;
-    sector = Room_GetSector(new_pos->x, new_pos->y, old_pos->z, &room_num);
-    const int32_t h2 =
-        Room_GetHeight(sector, new_pos->x, new_pos->y, old_pos->z);
+    sector = Room_GetSector(test_pos, &room_num);
+    const int32_t h2 = Room_GetHeight(sector, test_pos);
 
     if (h2 < old_pos->y - 256) {
         if (new_pos->x > old_pos->x) {
@@ -812,10 +807,8 @@ static int32_t M_SkidooDynamics(ITEM *const item)
     }
 
     int16_t room_num = item->room_num;
-    SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, item->pos);
 
     int32_t speed = item->pos.y < height
         ? item->speed
@@ -937,10 +930,8 @@ static int32_t M_SkidooDynamics(ITEM *const item)
     }
 
     room_num = item->room_num;
-    SECTOR *const sector2 =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height2 =
-        Room_GetHeight(sector2, item->pos.x, item->pos.y, item->pos.z);
+    SECTOR *const sector2 = Room_GetSector(item->pos, &room_num);
+    const int32_t height2 = Room_GetHeight(sector2, item->pos);
 
     if (height2 < item->pos.y - 256) {
         M_DoShift(item, &item->pos, &old_pos);
@@ -1328,10 +1319,8 @@ bool QuadBike_Control(void)
         M_TestHeight(item, 550, 260, &front_right_pos);
 
     int16_t room_num = item->room_num;
-    SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, item->pos);
     Room_TestTriggers(lara_item);
 
     if (lara_item->hit_points <= 0) {

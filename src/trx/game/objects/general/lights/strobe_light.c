@@ -14,7 +14,7 @@ void M_TriggerAlertLight(
     const int16_t room_num)
 {
     GAME_VECTOR src = { .pos = pos, .room_num = room_num };
-    Room_GetSector(pos.x, pos.y, pos.z, &src.room_num);
+    Room_GetSector(pos, &src.room_num);
 
     const int32_t dist = 8 * WALL_L;
     GAME_VECTOR dst = {

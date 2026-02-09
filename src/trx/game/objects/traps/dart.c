@@ -54,7 +54,7 @@ static void M_Hit(
     Sound_Effect(SFX_PROJECTILE_HIT, &item->pos, SPM_NORMAL);
 
     int16_t room_num = item->room_num;
-    Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    Room_GetSector(pos, &room_num);
 
     const int16_t effect_num = Effect_Create(room_num);
     if (effect_num != NO_EFFECT) {
@@ -104,11 +104,9 @@ static void M_Control(const int16_t item_num)
     M_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const int32_t height = Room_GetHeight(sector, item->pos);
 
     if (item->object_id == O_DISC) {
         item->rot.x += M_PITCH;

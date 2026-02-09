@@ -23,12 +23,9 @@ static void M_Control(const int16_t effect_num)
     effect->pos.x += (speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
 
     int16_t room_num = effect->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(effect->pos.x, effect->pos.y, effect->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, effect->pos.x, effect->pos.y, effect->pos.z);
-    const int32_t ceiling =
-        Room_GetCeiling(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, effect->pos);
+    const int32_t ceiling = Room_GetCeiling(sector, effect->pos);
 
     if (effect->pos.y >= height || effect->pos.y <= ceiling) {
         if (effect->object_id == O_MISSILE_2) {
