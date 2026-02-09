@@ -234,9 +234,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── coldwar_textures.bin
 │   │   ├── common_pickup_meshes.bin
 │   │   ├── common_pickup_meshes_gm.bin
+│   │   ├── cut2_setup.bin
 │   │   ├── cut2_textures.bin
 │   │   ├── cut3_setup.bin
 │   │   ├── cut3_textures.bin
+│   │   ├── cut4_setup.bin
 │   │   ├── cut4_textures.bin
 │   │   ├── dagger_sprite.bin
 │   │   ├── deck_cameras.bin
@@ -712,9 +714,11 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── coldwar_textures.bin
         │   │   ├── common_pickup_meshes.bin
         │   │   ├── common_pickup_meshes_gm.bin
+        │   │   ├── cut2_setup.bin
         │   │   ├── cut2_textures.bin
         │   │   ├── cut3_setup.bin
         │   │   ├── cut3_textures.bin
+        │   │   ├── cut4_setup.bin
         │   │   ├── cut4_textures.bin
         │   │   ├── dagger_sprite.bin
         │   │   ├── deck_cameras.bin
