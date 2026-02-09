@@ -108,7 +108,12 @@ static bool M_DrawShadow_Sprite(
                 anchor_floor = height;
             }
         }
-    } else if (g_TRVersion < 3) {
+    } else if (
+        g_TRVersion < 3
+        || (g_TRVersion == 3 && item->object_id >= O_PLAYER_1
+            && item->object_id <= O_PLAYER_10)) {
+        // TR3 cutscene actors are driven by cutscene data, so their item origin
+        // can diverge from the visual mesh center.
         const int32_t x_mid = (bounds->min.x + bounds->max.x) / 2;
         const int32_t z_mid = (bounds->min.z + bounds->max.z) / 2;
         Matrix_Push();
