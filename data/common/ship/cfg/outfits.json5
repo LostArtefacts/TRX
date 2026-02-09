@@ -485,6 +485,7 @@
             "LGT_DESERT_EAGLE": {
                 "hand_r": 62,
                 "thigh_r": 9,
+                "thigh_l": 2,
             },
             "LGT_UZIS": {
                 "hand_r": 63,
@@ -548,6 +549,7 @@
             "LGT_DESERT_EAGLE": {
                 "hand_r": 62,
                 "thigh_r": 20,
+                "thigh_l": 13,
             },
             "LGT_UZIS": {
                 "hand_r": 63,
@@ -611,6 +613,7 @@
             "LGT_DESERT_EAGLE": {
                 "hand_r": 62,
                 "thigh_r": 31,
+                "thigh_l": 24,
             },
             "LGT_UZIS": {
                 "hand_r": 63,
@@ -674,6 +677,7 @@
             "LGT_DESERT_EAGLE": {
                 "hand_r": 62,
                 "thigh_r": 42,
+                "thigh_l": 35,
             },
             "LGT_UZIS": {
                 "hand_r": 63,
@@ -737,6 +741,7 @@
             "LGT_DESERT_EAGLE": {
                 "hand_r": 62,
                 "thigh_r": 53,
+                "thigh_l": 46,
             },
             "LGT_UZIS": {
                 "hand_r": 63,
