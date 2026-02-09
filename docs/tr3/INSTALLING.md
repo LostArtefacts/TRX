@@ -190,6 +190,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── pda_model.bin
 │   │   ├── pickup_aid.bin
 │   │   ├── rapids_sky.bin
+│   │   ├── scotland_sky.bin
 │   │   ├── stpaul_animating_bounds.bin
 │   │   └── undersea_animating_bounds.bin
 │   ├── jungle.tr2
@@ -422,6 +423,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── pda_model.bin
         │   │   ├── pickup_aid.bin
         │   │   ├── rapids_sky.bin
+        │   │   ├── scotland_sky.bin
         │   │   ├── stpaul_animating_bounds.bin
         │   │   └── undersea_animating_bounds.bin
         │   ├── jungle.tr2

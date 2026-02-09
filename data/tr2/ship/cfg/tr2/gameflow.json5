@@ -671,6 +671,7 @@
             "sequence": [{"type": "loop_game"}],
             "inherit_injections": false,
             "injections": [
+                "data/injections/cut2_setup.bin",
                 "data/injections/cut2_textures.bin",
                 "data/injections/font.bin",
                 "data/injections/photo.bin",
@@ -703,6 +704,7 @@
             ],
             "inherit_injections": false,
             "injections": [
+                "data/injections/cut4_setup.bin",
                 "data/injections/cut4_textures.bin",
                 "data/injections/font.bin",
                 "data/injections/photo.bin",
