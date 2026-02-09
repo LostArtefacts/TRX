@@ -121,8 +121,7 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
 static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     const int32_t water_depth =
         Lara_GetWaterDepth(item->pos.x, item->pos.y, item->pos.z, room_num);
 
@@ -146,7 +145,7 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
     item->fall_speed = 0;
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->water_status = LWS_WADE;
-    item->pos.y = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    item->pos.y = Room_GetHeight(sector, item->pos);
 }
 
 static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
@@ -177,8 +176,7 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
         item->pos = coll->old;
     }
 
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     if (water_height - item->pos.y <= -100) {
         item->current_anim_state = LS(LS_DIVE);
         item->goal_anim_state = LS(LS_SWIM);
@@ -309,8 +307,7 @@ static void M_UWDeath(ITEM *const item, COLL_INFO *const coll)
     lara->air = -1;
     lara->gun_status = LGS_HANDS_BUSY;
     item->hit_points = -1;
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     if (water_height != NO_HEIGHT && water_height < item->pos.y - 100) {
         item->pos.y -= 5;
     }

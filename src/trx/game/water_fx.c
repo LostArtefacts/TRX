@@ -209,13 +209,12 @@ void WaterFX_SetupSplash(const WATER_FX_SPLASH_SETUP *const setup_)
 void WaterFX_Splash(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos, &room_num);
     if (!M_IsRoomUnderwater(room_num)) {
         return;
     }
 
-    const int32_t water_height =
-        Room_GetWaterHeight(item->pos.x, item->pos.y, item->pos.z, room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, room_num);
     WATER_FX_SPLASH_SETUP setup = {
         .x = item->pos.x,
         .y = water_height,
@@ -246,7 +245,7 @@ void WaterFX_WadeSplash(
     const ITEM *const item, const int32_t water_height, const int32_t depth)
 {
     int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos, &room_num);
     if (!M_IsRoomUnderwater(room_num)) {
         return;
     }

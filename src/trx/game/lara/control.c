@@ -48,7 +48,7 @@ static SECTOR *M_GetCurrentSector(void)
     const ITEM *const lara_item = Lara_GetItem();
     int16_t room_num = lara_item->room_num;
     return Room_GetSector(
-        lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z, &room_num);
+        (XYZ_32) { lara_item->pos.x, MAX_HEIGHT, lara_item->pos.z }, &room_num);
 }
 
 static void M_Cheat(void)
@@ -361,8 +361,7 @@ static void M_UpdateEnvironment(void)
     const ROOM *const room = Room_Get(item->room_num);
     const int32_t water_depth = Lara_GetWaterDepth(
         item->pos.x, item->pos.y, item->pos.z, item->room_num);
-    const int32_t water_height = Room_GetWaterHeight(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     const int32_t water_height_diff =
         water_height == NO_HEIGHT ? NO_HEIGHT : item->pos.y - water_height;
     lara_info->water_surface_dist = -water_height_diff;

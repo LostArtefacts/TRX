@@ -172,12 +172,11 @@ static int32_t M_TestWaterHeight(
     pos->z = item->pos.z + ((z_off * c - x_off * s) >> W2V_SHIFT);
 
     int16_t room_num = item->room_num;
-    Room_GetSector(pos->x, pos->y, pos->z, &room_num);
-    int32_t height = Room_GetWaterHeight(pos->x, pos->y, pos->z, room_num);
+    Room_GetSector(*pos, &room_num);
+    int32_t height = Room_GetWaterHeight(*pos, room_num);
     if (height == NO_HEIGHT) {
-        const SECTOR *const sector =
-            Room_GetSector(pos->x, pos->y, pos->z, &room_num);
-        height = Room_GetHeight(sector, pos->x, pos->y, pos->z);
+        const SECTOR *const sector = Room_GetSector(*pos, &room_num);
+        height = Room_GetHeight(sector, *pos);
         if (height != NO_HEIGHT) {
             return height;
         }
@@ -394,13 +393,10 @@ static int32_t M_Dynamics(const int16_t boat_num)
     }
 
     int16_t room_num = boat_item->room_num;
-    const SECTOR *const sector = Room_GetSector(
-        boat_item->pos.x, boat_item->pos.y, boat_item->pos.z, &room_num);
-    int32_t height = Room_GetWaterHeight(
-        boat_item->pos.x, boat_item->pos.y, boat_item->pos.z, room_num);
+    const SECTOR *const sector = Room_GetSector(boat_item->pos, &room_num);
+    int32_t height = Room_GetWaterHeight(boat_item->pos, room_num);
     if (height == NO_HEIGHT) {
-        height = Room_GetHeight(
-            sector, boat_item->pos.x, boat_item->pos.y, boat_item->pos.z);
+        height = Room_GetHeight(sector, boat_item->pos);
     }
     if (height < boat_item->pos.y - STEP_L / 2) {
         Vehicle_DoShift(boat_item, &boat_item->pos, &old);
@@ -680,15 +676,16 @@ static void M_Control(const int16_t item_num)
 
     int16_t room_num = boat_item->room_num;
     const SECTOR *sector = Room_GetSector(
-        boat_item->pos.x, boat_item->pos.y + BOAT_SHIFT_Y, boat_item->pos.z,
+        (XYZ_32) {
+            boat_item->pos.x,
+            boat_item->pos.y + BOAT_SHIFT_Y,
+            boat_item->pos.z,
+        },
         &room_num);
-    int32_t height = Room_GetHeight(
-        sector, boat_item->pos.x, boat_item->pos.y, boat_item->pos.z);
-    const int32_t ceiling = Room_GetCeiling(
-        sector, boat_item->pos.x, boat_item->pos.y, boat_item->pos.z);
+    int32_t height = Room_GetHeight(sector, boat_item->pos);
+    const int32_t ceiling = Room_GetCeiling(sector, boat_item->pos);
 
-    const int32_t water_height = Room_GetWaterHeight(
-        boat_item->pos.x, boat_item->pos.y, boat_item->pos.z, room_num);
+    const int32_t water_height = Room_GetWaterHeight(boat_item->pos, room_num);
     p->water = water_height;
 
     if (Lara_Vehicle_GetIndex() == item_num && lara_item->hit_points > 0) {
@@ -761,7 +758,11 @@ static void M_Control(const int16_t item_num)
         Room_TestTriggers(boat_item);
 
         sector = Room_GetSector(
-            lara_item->pos.x, lara_item->pos.y + BOAT_SHIFT_Y, lara_item->pos.z,
+            (XYZ_32) {
+                lara_item->pos.x,
+                lara_item->pos.y + BOAT_SHIFT_Y,
+                lara_item->pos.z,
+            },
             &room_num);
         Item_UpdateRoom(lara->item_num, room_num);
 
@@ -836,8 +837,8 @@ static void M_Control(const int16_t item_num)
         };
 
         room_num = lara_item->room_num;
-        sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
-        if (Room_GetHeight(sector, pos.x, pos.y, pos.z) >= pos.y - STEP_L) {
+        sector = Room_GetSector(pos, &room_num);
+        if (Room_GetHeight(sector, pos) >= pos.y - STEP_L) {
             lara_item->pos.x = pos.x;
             lara_item->pos.z = pos.z;
             Item_UpdateRoom(lara->item_num, room_num);

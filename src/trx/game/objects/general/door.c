@@ -50,8 +50,7 @@ static bool M_LaraDoorCollision(const SECTOR *const sector)
     }
 
     int16_t room_num = lara->room_num;
-    const SECTOR *const lara_sector =
-        Room_GetSector(lara->pos.x, lara->pos.y, lara->pos.z, &room_num);
+    const SECTOR *const lara_sector = Room_GetSector(lara->pos, &room_num);
     return lara_sector == sector;
 }
 

@@ -30,7 +30,8 @@ static bool M_ShouldPlaySFXAlways(
 
     const int32_t dist =
         item_underwater ? -M_SFX_SURF_DISTANCE : +M_SFX_SURF_DISTANCE;
-    Room_GetSector(item->pos.x, item->pos.y + dist, item->pos.z, &room_num);
+    Room_GetSector(
+        (XYZ_32) { item->pos.x, item->pos.y + dist, item->pos.z }, &room_num);
     const ROOM *const nearby_room = Room_Get(room_num);
     const bool near_underwater = nearby_room->flags.underwater;
     return item_underwater != near_underwater;

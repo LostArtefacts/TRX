@@ -271,7 +271,7 @@ static void M_Control(const int16_t item_num)
                     const XYZ_32 offset = XYZ_32_OffsetYaw(
                         item->pos, item->rot.y + DEG_180, WALL_L);
                     const SECTOR *const sector =
-                        Room_GetSector32(offset, &room_num);
+                        Room_GetSector(offset, &room_num);
 
                     if (creature->flags != 0 || sector->box == 0x7FF
                         || Box_GetBox(sector->box)->overlap_index

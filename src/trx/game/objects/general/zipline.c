@@ -76,14 +76,11 @@ static void M_Control(const int16_t item_num)
         item->fall_speed += ZIPLINE_ACCELERATION;
     }
 
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t s = Math_Sin(item->rot.y);
-    item->pos.x += (item->fall_speed * s) >> W2V_SHIFT;
-    item->pos.z += (item->fall_speed * c) >> W2V_SHIFT;
     item->pos.y += item->fall_speed >> 2;
+    item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, item->fall_speed);
 
     int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
     ITEM *const lara_item = Lara_GetItem();
@@ -93,13 +90,13 @@ static void M_Control(const int16_t item_num)
         lara_item->pos = item->pos;
     }
 
-    const int32_t x = item->pos.x + ((s * WALL_L) >> W2V_SHIFT);
-    const int32_t z = item->pos.z + ((c * WALL_L) >> W2V_SHIFT);
-    const int32_t y = item->pos.y + (STEP_L >> 2);
+    XYZ_32 pos = item->pos;
+    pos.y += STEP_L >> 2;
+    pos = XYZ_32_OffsetYaw(pos, item->rot.y, WALL_L);
 
-    const SECTOR *const sector = Room_GetSector(x, y, z, &room_num);
-    if (Room_GetHeight(sector, x, y, z) > y + STEP_L
-        && Room_GetCeiling(sector, x, y, z) < y - STEP_L) {
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    if (Room_GetHeight(sector, pos) > pos.y + STEP_L
+        && Room_GetCeiling(sector, pos) < pos.y - STEP_L) {
         Sound_Effect(SFX_ZIPLINE_GO, &item->pos, SPM_ALWAYS);
         return;
     }

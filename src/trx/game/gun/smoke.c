@@ -48,7 +48,7 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 
     GAME_VECTOR pos = { .pos = muzzle_pos,
                         .room_num = Lara_GetItem()->room_num };
-    Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+    Room_GetSector(pos.pos, &pos.room_num);
 
     if (weapon_type == LGT_SHOTGUN && is_right_hand) {
         const XYZ_32 muzzle_tip_pos =
@@ -95,7 +95,7 @@ void Gun_Smoke_Control(void)
             LM_HAND_L, M_GetMuzzleOffset(weapon_type, false));
         GAME_VECTOR pos = { .pos = muzzle_pos,
                             .room_num = Lara_GetItem()->room_num };
-        Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        Room_GetSector(pos.pos, &pos.room_num);
         Sparks_TriggerGunSmoke(
             pos, false, weapon_type, lara->tr3_smoke_count_l);
         lara->tr3_smoke_count_l--;
@@ -106,7 +106,7 @@ void Gun_Smoke_Control(void)
             LM_HAND_R, M_GetMuzzleOffset(weapon_type, true));
         GAME_VECTOR pos = { .pos = muzzle_pos,
                             .room_num = Lara_GetItem()->room_num };
-        Room_GetSector(pos.x, pos.y, pos.z, &pos.room_num);
+        Room_GetSector(pos.pos, &pos.room_num);
         Sparks_TriggerGunSmoke(
             pos, false, weapon_type, lara->tr3_smoke_count_r);
         lara->tr3_smoke_count_r--;

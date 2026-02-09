@@ -40,15 +40,12 @@ static void M_Control(const int16_t item_num)
 
     if (item->current_anim_state == SPINNING_BLADE_STATE_SPIN) {
         if (item->goal_anim_state != SPINNING_BLADE_STATE_STOP) {
-            const int32_t x = item->pos.x
-                + ((WALL_L * 3 / 2 * Math_Sin(item->rot.y)) >> W2V_SHIFT);
-            const int32_t z = item->pos.z
-                + ((WALL_L * 3 / 2 * Math_Cos(item->rot.y)) >> W2V_SHIFT);
+            const XYZ_32 pos =
+                XYZ_32_OffsetYaw(item->pos, item->rot.y, WALL_L * 3 / 2);
 
             int16_t room_num = item->room_num;
-            const SECTOR *const sector =
-                Room_GetSector(x, item->pos.y, z, &room_num);
-            if (Room_GetHeight(sector, x, item->pos.y, z) == NO_HEIGHT) {
+            const SECTOR *const sector = Room_GetSector(pos, &room_num);
+            if (Room_GetHeight(sector, pos) == NO_HEIGHT) {
                 item->goal_anim_state = SPINNING_BLADE_STATE_STOP;
             }
         }
@@ -76,10 +73,8 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, item->pos);
     item->pos.y = height;
     item->floor = height;
     Item_UpdateRoom(item_num, room_num);

@@ -12,7 +12,7 @@
 
 static SECTOR *M_GetItemPitSector(const XYZ_32 pos, int16_t room_num)
 {
-    SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
+    SECTOR *const sector = Room_GetSector(pos, &room_num);
     return Room_GetPitSector(sector, pos.x, pos.z);
 }
 

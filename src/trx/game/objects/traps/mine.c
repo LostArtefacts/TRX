@@ -11,7 +11,7 @@ static bool m_DetonateAllMines = false;
 
 static int16_t M_GetBoatItem(const XYZ_32 *const pos, int16_t *const room_num)
 {
-    Room_GetSector(pos->x, pos->y, pos->z, room_num);
+    Room_GetSector(*pos, room_num);
 
     int16_t item_num = Room_Get(*room_num)->item_num;
     while (item_num != NO_ITEM) {

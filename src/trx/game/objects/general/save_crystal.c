@@ -171,9 +171,9 @@ static void M_CollisionSave(
 
     int16_t room_num = lara_item->room_num;
     const XYZ_32 pos = lara_item->pos;
-    const SECTOR *const sector = Room_GetSector(pos.x, pos.y, pos.z, &room_num);
-    const int32_t ceiling = Room_GetCeiling(sector, pos.x, pos.y, pos.z);
-    const int32_t floor = Room_GetHeight(sector, pos.x, pos.y, pos.z);
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t ceiling = Room_GetCeiling(sector, pos);
+    const int32_t floor = Room_GetHeight(sector, pos);
     if (ceiling >= item->pos.y || floor < item->pos.y) {
         return;
     }

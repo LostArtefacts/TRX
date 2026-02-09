@@ -89,7 +89,7 @@ static void M_InitialiseState(void)
 static void M_DoIgniteEffects(const XYZ_32 flare_pos, int16_t room_num)
 {
     m_IgnitePos = flare_pos;
-    Room_GetSector(m_IgnitePos.x, m_IgnitePos.y, m_IgnitePos.z, &room_num);
+    Room_GetSector(m_IgnitePos, &room_num);
     const ROOM *const room = Room_Get(room_num);
     const SOUND_PLAY_MODE mode =
         room->flags.underwater ? SPM_UNDERWATER : SPM_NORMAL;
@@ -392,9 +392,8 @@ void Lara_Flare_Dispose(const bool thrown)
     };
     Lara_GetJointAbsPosition(&vec, LM_HAND_L);
 
-    const SECTOR *const sector =
-        Room_GetSector(vec.x, vec.y, vec.z, &item->room_num);
-    const int32_t height = Room_GetHeight(sector, vec.x, vec.y, vec.z);
+    const SECTOR *const sector = Room_GetSector(vec, &item->room_num);
+    const int32_t height = Room_GetHeight(sector, vec);
     if (height < vec.y) {
         item->pos.x = lara_item->pos.x;
         item->pos.y = vec.y;

@@ -161,8 +161,8 @@ static void M_SharkKill(ITEM *const item, COLL_INFO *const coll)
     lara->hit_direction = -1;
 
     if (Item_TestFrameEqual(item, M_LF_SHARK_DEATH_END)) {
-        const int32_t water_height = Room_GetWaterHeight(
-            item->pos.x, item->pos.y, item->pos.z, item->room_num);
+        const int32_t water_height =
+            Room_GetWaterHeight(item->pos, item->room_num);
         if (water_height != NO_HEIGHT && water_height < item->pos.y - 100) {
             item->pos.y -= 5;
         }
@@ -210,10 +210,8 @@ static void M_RapidsDrown(ITEM *const item, COLL_INFO *const coll)
         LARA_HEIGHT);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    item->pos.y =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z) + 384;
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    item->pos.y = Room_GetHeight(sector, item->pos) + 384;
 
     item->rot.y += 1024;
 

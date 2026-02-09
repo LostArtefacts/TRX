@@ -195,8 +195,7 @@ static void M_TR3_ControlSmall(
         Effect_NewRoom(Effect_GetNum(effect), lara_item->room_num);
     }
 
-    const int32_t wh = Room_GetWaterHeight(
-        effect->pos.x, effect->pos.y, effect->pos.z, effect->room_num);
+    const int32_t wh = Room_GetWaterHeight(effect->pos, effect->room_num);
     if (wh == NO_HEIGHT || effect->pos.y <= wh
         || (Room_Get(effect->room_num)->flags.swamp
             && (GF_BadGetLevelNum() == 4 || GF_BadGetLevelNum() == 18
@@ -430,8 +429,8 @@ static void M_TR12_Control(const int16_t effect_num)
             Effect_NewRoom(effect_num, room_num);
         }
 
-        const int32_t water_height = Room_GetWaterHeight(
-            effect->pos.x, effect->pos.y, effect->pos.z, effect->room_num);
+        const int32_t water_height =
+            Room_GetWaterHeight(effect->pos, effect->room_num);
         if ((water_height != NO_HEIGHT && effect->pos.y > water_height)
             || lara_info->water_status == LWS_CHEAT) {
             effect->counter = 0;

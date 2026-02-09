@@ -126,8 +126,8 @@ static bool M_TestLava(const ITEM *const item)
 
     // OG fix: check if floor index has lava
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(
+        (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
     return sector->is_death_sector;
 }
 
@@ -361,8 +361,8 @@ void Room_ReadTriangulation(
 void Room_TestTriggers(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *sector =
-        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    const SECTOR *sector = Room_GetSector(
+        (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
 
     Room_TestSectorTrigger(item, sector);
     if (item->object_id != O_TORSO) {
@@ -377,8 +377,12 @@ void Room_TestTriggers(const ITEM *const item)
 
             room_num = item->room_num;
             sector = Room_GetSector(
-                item->pos.x + dx * WALL_L, MAX_HEIGHT,
-                item->pos.z + dz * WALL_L, &room_num);
+                (XYZ_32) {
+                    item->pos.x + dx * WALL_L,
+                    MAX_HEIGHT,
+                    item->pos.z + dz * WALL_L,
+                },
+                &room_num);
             Room_TestSectorTrigger(item, sector);
         }
     }

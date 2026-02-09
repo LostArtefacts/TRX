@@ -12,9 +12,8 @@ static void M_Control(const int16_t item_num)
 
     item->goal_anim_state = BELL_STATE_SWING;
 
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &item->room_num);
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &item->room_num);
+    item->floor = Room_GetHeight(sector, item->pos);
     Room_TestTriggers(item);
 
     Item_Animate(item);

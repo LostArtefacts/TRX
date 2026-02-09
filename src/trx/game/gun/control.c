@@ -503,11 +503,11 @@ int32_t Gun_FireWeapon(
                 .z = start.z + ((dist * g_MatrixPtr->_22) >> W2V_SHIFT),
                 .room_num = start.room_num,
             };
-        Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
+        Room_GetSector(hit_pos.pos, &hit_pos.room_num);
         const bool object_on_los = LOS_Check(&start, &hit_pos, true);
         if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos)
             == PROJECTILE_HIT_STOP) {
-            Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
+            Room_GetSector(hit_pos.pos, &hit_pos.room_num);
         }
         if (!object_on_los) {
             Spawn_RicochetRay(start, hit_pos);
@@ -522,7 +522,7 @@ int32_t Gun_FireWeapon(
         .z = start.z + ((best_dist * g_MatrixPtr->_22) >> W2V_SHIFT),
         .room_num = src->room_num,
     };
-    Room_GetSector(hit_pos.x, hit_pos.y, hit_pos.z, &hit_pos.room_num);
+    Room_GetSector(hit_pos.pos, &hit_pos.room_num);
     Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
     Gun_HitTarget(
         target, &start, &hit_pos,

@@ -211,12 +211,9 @@ static void M_Control(const int16_t effect_num)
     }
 
     int16_t room_num = effect->room_num;
-    SECTOR *sector =
-        Room_GetSector(effect->pos.x, effect->pos.y, effect->pos.z, &room_num);
-    const int32_t h =
-        Room_GetHeight(sector, effect->pos.x, effect->pos.y, effect->pos.z);
-    const int32_t c =
-        Room_GetCeiling(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    SECTOR *sector = Room_GetSector(effect->pos, &room_num);
+    const int32_t h = Room_GetHeight(sector, effect->pos);
+    const int32_t c = Room_GetCeiling(sector, effect->pos);
 
     if (effect->pos.y >= h || effect->pos.y < c) {
         if (!effect->flag1 || effect->flag1 == 1 || effect->flag1 == 2
@@ -256,15 +253,10 @@ static void M_Control(const int16_t effect_num)
 
             if (!effect->flag1 || effect->flag1 == 1) {
                 room_num = lara_item->room_num;
-                sector = Room_GetSector(
-                    lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-                    &room_num);
+                sector = Room_GetSector(lara_item->pos, &room_num);
                 pos.x = (Random_GetControl() & 0x3FF) + lara_item->pos.x - 512;
-                pos.y = Room_GetCeiling(
-                            sector, lara_item->pos.x, lara_item->pos.y,
-                            lara_item->pos.z)
-                    + 256;
                 pos.z = (Random_GetControl() & 0x3FF) + lara_item->pos.z - 512;
+                pos.y = Room_GetCeiling(sector, lara_item->pos) + 256;
                 Sparks_TriggerExplosionSparks(pos, 3, -2, 0, room_num);
                 TonyBoss_TriggerFireBall(nullptr, 3, &pos, room_num, 0, 0);
             }

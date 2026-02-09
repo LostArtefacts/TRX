@@ -10,10 +10,8 @@ static BOUNDS_16 m_InterpolatedBounds = {};
 int16_t Item_GetHeight(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, item->pos);
 
     return height;
 }

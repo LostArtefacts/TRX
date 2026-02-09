@@ -17,8 +17,8 @@
 static bool M_CanMonkeySwing(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, MAX_HEIGHT, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(
+        (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
     return (sector->ladder & LADDER_CEILING) != 0;
 }
 

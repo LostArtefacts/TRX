@@ -128,9 +128,12 @@ void Camera_ClampInterpResult(void)
 {
     if (g_Camera.type == CAM_PHOTO_MODE) {
         Room_GetSector(
-            g_Camera.interp.result.pos.x,
-            g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
-            g_Camera.interp.result.pos.z, &g_Camera.interp.room_num);
+            (XYZ_32) {
+                g_Camera.interp.result.pos.x,
+                g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
+                g_Camera.interp.result.pos.z,
+            },
+            &g_Camera.interp.room_num);
         return;
     }
 

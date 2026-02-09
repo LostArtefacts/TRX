@@ -63,30 +63,27 @@ static void M_Control(const int16_t item_num)
     }
 
     if (!p->status) {
-        int32_t x = 2 * m_AnchorX - lara_item->pos.x;
-        int32_t y = lara_item->pos.y;
-        int32_t z = 2 * m_AnchorZ - lara_item->pos.z;
+        const XYZ_32 pos = {
+            .x = 2 * m_AnchorX - lara_item->pos.x,
+            .z = 2 * m_AnchorZ - lara_item->pos.z,
+            .y = lara_item->pos.y,
+        };
 
         int16_t room_num = item->room_num;
-        const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-        const int32_t h = Room_GetHeight(sector, x, y, z);
+        const SECTOR *sector = Room_GetSector(pos, &room_num);
+        const int32_t h = Room_GetHeight(sector, pos);
         item->floor = h;
 
         room_num = lara_item->room_num;
-        sector = Room_GetSector(
-            lara_item->pos.x, lara_item->pos.y, lara_item->pos.z, &room_num);
-        int32_t lh = Room_GetHeight(
-            sector, lara_item->pos.x, lara_item->pos.y, lara_item->pos.z);
+        sector = Room_GetSector(lara_item->pos, &room_num);
+        int32_t lh = Room_GetHeight(sector, lara_item->pos);
 
         const int16_t relative_anim = Item_GetRelativeAnim(lara_item);
         const int16_t relative_frame = Item_GetRelativeFrame(lara_item);
         Item_SwitchToObjAnim(item, relative_anim, relative_frame, O_LARA);
-        item->pos.x = x;
-        item->pos.y = y;
-        item->pos.z = z;
-        item->rot.x = lara_item->rot.x;
-        item->rot.y = lara_item->rot.y - DEG_180;
-        item->rot.z = lara_item->rot.z;
+        item->pos = pos;
+        item->rot = lara_item->rot;
+        item->rot.y -= DEG_180;
         Item_UpdateRoom(item_num, lara_item->room_num);
 
         if (h >= lh + WALL_L && !lara_item->gravity) {
@@ -104,13 +101,9 @@ static void M_Control(const int16_t item_num)
     if (p->status) {
         Item_Animate(item);
 
-        int32_t x = item->pos.x;
-        int32_t y = item->pos.y;
-        int32_t z = item->pos.z;
-
         int16_t room_num = item->room_num;
-        const SECTOR *sector = Room_GetSector(x, y, z, &room_num);
-        const int32_t h = Room_GetHeight(sector, x, y, z);
+        const SECTOR *sector = Room_GetSector(item->pos, &room_num);
+        const int32_t h = Room_GetHeight(sector, item->pos);
         item->floor = h;
 
         Room_TestTriggers(item);

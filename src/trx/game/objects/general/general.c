@@ -31,7 +31,7 @@ void General_Control(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
     XYZ_32 pos = { .x = 3000, .y = 720, .z = 0 };

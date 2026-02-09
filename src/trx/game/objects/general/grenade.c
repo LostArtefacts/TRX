@@ -260,15 +260,12 @@ static void M_Control(const int16_t item_num)
         item->pos.x += (speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
 
         int16_t room_num = item->room_num;
-        const SECTOR *const sector =
-            Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
-        item->floor =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+        item->floor = Room_GetHeight(sector, item->pos);
         Item_UpdateRoom(item_num, room_num);
 
         if (item->pos.y >= item->floor
-            || item->pos.y <= Room_GetCeiling(
-                   sector, item->pos.x, item->pos.y, item->pos.z)) {
+            || item->pos.y <= Room_GetCeiling(sector, item->pos)) {
             radius = M_GetBlastRadius();
             explode = true;
         }

@@ -70,12 +70,9 @@ static bool M_TestStop(const ITEM *const item)
         ROUND_TO_HALF_CLICK(ABS(bounds->max.y - bounds->min.y));
 
     int16_t room_num = item->room_num;
-    const int32_t x =
-        item->pos.x + ((dist * Math_Sin(item->rot.y)) >> W2V_SHIFT);
-    const int32_t z =
-        item->pos.z + ((dist * Math_Cos(item->rot.y)) >> W2V_SHIFT);
-    const SECTOR *sector = Room_GetSector(x, item->pos.y, z, &room_num);
-    const int16_t height = Room_GetHeight(sector, x, item->pos.y, z);
+    XYZ_32 sample_pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, dist);
+    const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
+    const int16_t height = Room_GetHeight(sector, sample_pos);
     if (item->object_id != O_ROLLING_BALL_4) {
         // Allow a more lenient height check if regular boulders fall onto
         // slopes with a ceiling in front.
@@ -83,9 +80,9 @@ static bool M_TestStop(const ITEM *const item)
         CLAMPG(item_height, STEP_L * 3 / height_scale);
     }
 
-    sector = Room_GetSector(x, item->pos.y - item_height, z, &room_num);
-    const int16_t ceiling =
-        Room_GetCeiling(sector, x, item->pos.y - item_height, z);
+    sample_pos.y -= item_height;
+    sector = Room_GetSector(sample_pos, &room_num);
+    const int16_t ceiling = Room_GetCeiling(sector, sample_pos);
 
     return height < item->pos.y
         || (!item->gravity && ceiling > item->pos.y - item_height);
@@ -127,9 +124,8 @@ static void M_Control(const int16_t item_num)
 
     if (item->status != IS_ACTIVE) {
         int16_t room_num = item->room_num;
-        const SECTOR *const sector = Room_GetSector32(item->pos, &room_num);
-        const int16_t height =
-            Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+        const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+        const int16_t height = Room_GetHeight(sector, item->pos);
         if (item->floor < height) {
             item->status = IS_ACTIVE;
             item->floor = height;
@@ -155,11 +151,10 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos.x, item->pos.y, item->pos.z, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
 
-    item->floor = Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+    item->floor = Room_GetHeight(sector, item->pos);
     Room_TestTriggers(item);
 
     if (item->pos.y >= item->floor - STEP_L) {

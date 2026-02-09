@@ -19,10 +19,8 @@ static void M_Control(const int16_t effect_num)
     effect->fall_speed += GRAVITY;
 
     int16_t room_num = effect->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(effect->pos.x, effect->pos.y, effect->pos.z, &room_num);
-    const int32_t height =
-        Room_GetHeight(sector, effect->pos.x, effect->pos.y, effect->pos.z);
+    const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, effect->pos);
 
     if (effect->pos.y >= height) {
         Sound_Effect(SFX_WATERFALL_2, &effect->pos, SPM_NORMAL);

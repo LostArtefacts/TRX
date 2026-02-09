@@ -94,10 +94,9 @@ static void M_Control(const int16_t item_num)
 
             p->zapped = true;
         } else if (p->no_target) {
-            const SECTOR *const sector = Room_GetSector(
-                item->pos.x, item->pos.y, item->pos.z, &item->room_num);
-            const int32_t h =
-                Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
+            const SECTOR *const sector =
+                Room_GetSector(item->pos, &item->room_num);
+            const int32_t h = Room_GetHeight(sector, item->pos);
             p->target.x = item->pos.x;
             p->target.y = h;
             p->target.z = item->pos.z;
