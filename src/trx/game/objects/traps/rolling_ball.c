@@ -126,10 +126,9 @@ static void M_Control(const int16_t item_num)
         const SECTOR *const sector = Room_GetSector32(item->pos, &room_num);
         const int16_t height =
             Room_GetHeight(sector, item->pos.x, item->pos.y, item->pos.z);
-        if (item->pos.y < height) {
+        if (item->floor < height) {
             item->status = IS_ACTIVE;
             item->floor = height;
-            Item_UpdateRoom(item_num, room_num);
         }
         return;
     }
