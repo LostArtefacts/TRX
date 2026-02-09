@@ -162,6 +162,8 @@ static void M_AlignLaraToItem(const ITEM *const item)
         dir = L_DIR_SAME;
     } else if (Object_IsType(item->object_id, g_DoorObjects)) {
         dir = L_DIR_OPPOSITE;
+    } else if (item->object_id == O_ZIPLINE_HANDLE) {
+        dir = L_DIR_SAME;
     }
     if (dir != L_DIR_NONE) {
         ITEM *const lara_item = Lara_GetItem();
