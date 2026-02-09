@@ -344,6 +344,21 @@ cleanup:
     item->rot = old_rot;
 }
 
+static inline bool M_HasValidPickupState(const ITEM *const lara_item)
+{
+    // TODO: unify under a pickup style config option, but retain sprint slide
+    // test in TR1/2 mode.
+    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
+    if (g_TRVersion < 3) {
+        return state == LS_STOP && anim != LA_SPRINT_SLIDE_STAND_RIGHT
+            && anim != LA_SPRINT_SLIDE_STAND_LEFT;
+    }
+
+    return (state == LS_STOP && anim == LA_STAND_IDLE)
+        || (state == LS_CROUCH_IDLE && anim == LA_CROUCH_IDLE);
+}
+
 static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
@@ -408,11 +423,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 
     if (g_Input.action && !lara_item->gravity && lara->gun_status == LGS_ARMLESS
         && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)
-        && ((lara_item->current_anim_state == LS(LS_STOP)
-             && (g_TRVersion < 3 || anim == LA_STAND_IDLE))
-            || ((
-                lara_item->current_anim_state == LS(LS_CROUCH_IDLE)
-                && anim == LA_CROUCH_IDLE)))) {
+        && M_HasValidPickupState(lara_item)) {
 
         if (item->object_id == O_FLARE_ITEM) {
             if (lara->is_crouched) {

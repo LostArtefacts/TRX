@@ -105,6 +105,7 @@
 - fixed secret tracks not restored from the savegame when "fix secrets killing music" option is on
 - fixed slow-forward seeking through cutscenes (right+slow) not working (regression from 1.0)
 - fixed statics marked collidable but with zero‑size hitboxes causing phantom collisions
+- fixed Lara being displaced during the sprint-slide animation if she tried to pick up an item at the same time (#4843, regression from TR1X 4.14, TR2X 1.4)
 
 **TR1**:
 - added Unfinished Business loading screens (#1310, thanks to rockahub)
