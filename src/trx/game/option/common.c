@@ -28,7 +28,7 @@ void Option_Shutdown(void)
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     if (inv_item->action == ACTION_EXAMINE) {
-        Option_Examine_Control(inv_item->object_id, is_busy);
+        Option_Examine_Control(inv_item, is_busy);
         return;
     }
 

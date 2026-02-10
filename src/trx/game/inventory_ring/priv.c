@@ -9,6 +9,7 @@
 #include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
+#include <trx/game/objects/names.h>
 #include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
 #include <trx/game/sound.h>
@@ -39,6 +40,19 @@ static bool m_ShowUseItemButton = false;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
+
+static void M_AdjustRot(int16_t *const rot, const int16_t dest_rot)
+{
+    const int32_t delta = dest_rot - *rot;
+    if (delta != 0) {
+        if (delta > 0 && delta < DEG_180) {
+            *rot += 1024;
+        } else {
+            *rot -= 1024;
+        }
+        *rot &= ~(1024 - 1);
+    }
+}
 
 static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
 {
@@ -164,6 +178,7 @@ void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
     inv_item->meshes_drawn = inv_item->meshes_sel;
     inv_item->current_frame = 0;
     inv_item->goal_frame = 0;
+    inv_item->manual_rot = (XYZ_16) {};
     inv_item->x_rot_pt = 0;
     inv_item->x_rot = inv_item->x_rot_nosel;
     inv_item->y_rot = 0;
@@ -644,6 +659,7 @@ void InvRing_UpdateInventoryItem(
     const INV_RING *const ring, INVENTORY_ITEM *const inv_item,
     const int32_t num_frames)
 {
+
     if (inv_item != ring->list[ring->current_object]) {
         for (int32_t i = 0; i < num_frames; i++) {
             if (inv_item->y_rot < 0) {
@@ -666,16 +682,16 @@ void InvRing_UpdateInventoryItem(
         || ring->motion.status == RNG_SELECTING
         || ring->motion.status == RNG_DESELECT
         || ring->motion.status == RNG_CLOSING_ITEM) {
+
+        if (inv_item->has_manual_rot) {
+            return;
+        }
+
         for (int32_t i = 0; i < num_frames; i++) {
-            const int32_t delta = inv_item->y_rot_sel - inv_item->y_rot;
-            if (delta != 0) {
-                if (delta > 0 && delta < DEG_180) {
-                    inv_item->y_rot += 1024;
-                } else {
-                    inv_item->y_rot -= 1024;
-                }
-                inv_item->y_rot &= ~(1024 - 1);
-            }
+            M_AdjustRot(&inv_item->y_rot, inv_item->y_rot_sel);
+            M_AdjustRot(&inv_item->manual_rot.x, 0);
+            M_AdjustRot(&inv_item->manual_rot.y, 0);
+            M_AdjustRot(&inv_item->manual_rot.z, 0);
         }
     } else if (
         ring->number_of_objects == 1

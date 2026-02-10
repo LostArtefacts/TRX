@@ -153,7 +153,8 @@ fallback:
 }
 
 static void M_DrawItem(
-    const INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
+    const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
+    const int16_t view_rot_y)
 {
     int32_t shade = M_SHADE_NORMAL;
     if (ring->motion.status != RNG_FADING_OUT
@@ -174,6 +175,14 @@ static void M_DrawItem(
     Output_SetLightAdder(shade);
 
     Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);
+
+    Matrix_RotX(-inv_item->x_rot_pt);
+    Matrix_RotY(-view_rot_y);
+    Matrix_RotY(inv_item->manual_rot.y);
+    Matrix_RotX(inv_item->manual_rot.x);
+    Matrix_RotY(view_rot_y);
+    Matrix_RotX(inv_item->x_rot_pt);
+
     Matrix_RotY(inv_item->y_rot);
     Matrix_RotX(inv_item->x_rot);
 
@@ -369,7 +378,7 @@ void InvRing_Draw(INV_RING *const ring)
             Matrix_TranslateRel(ring->radius, 0, 0);
             Matrix_RotY(DEG_90);
             Matrix_RotX(inv_item->x_rot_pt);
-            M_DrawItem(ring, inv_item);
+            M_DrawItem(ring, inv_item, view_rot.y);
             angle += ring->angle_adder;
             Matrix_Pop();
         }

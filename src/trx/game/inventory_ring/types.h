@@ -44,6 +44,8 @@ typedef struct {
     int32_t y_trans;
     int32_t z_trans_sel;
     int32_t z_trans;
+    XYZ_16 manual_rot;
+    bool has_manual_rot;
     uint32_t meshes_sel;
     uint32_t meshes_drawn;
     int16_t inv_pos;
