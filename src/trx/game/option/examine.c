@@ -1,10 +1,14 @@
 #include <trx/game/option/examine.h>
 
+#include <trx/game/const.h>
 #include <trx/game/input.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/scaler.h>
 #include <trx/game/ui.h>
 #include <trx/game/viewport.h>
+#include <trx/strings.h>
+
+#define M_EXAMINE_ROTATION_SPEED (DEG_1 * 3)
 
 typedef struct {
     OBJECT_ID object_id;
@@ -15,6 +19,12 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
+
+static bool M_ShouldShowDialog(const OBJECT_ID obj_id)
+{
+    const char *const description = Object_GetDescription(obj_id);
+    return !String_IsEmpty(description);
+}
 
 static int32_t M_GetMaxRows(void)
 {
@@ -46,34 +56,60 @@ static void M_Close(M_PRIV *const p)
     }
 }
 
+static void M_ApplyExamineRotation(INVENTORY_ITEM *const inv_item)
+{
+    const int32_t yaw_input =
+        (g_Input.menu_left ? 1 : 0) - (g_Input.menu_right ? 1 : 0);
+    const int32_t pitch_input =
+        (g_Input.menu_down ? 1 : 0) - (g_Input.menu_up ? 1 : 0);
+    if (yaw_input == 0 && pitch_input == 0) {
+        return;
+    }
+    inv_item->has_manual_rot = true;
+    inv_item->manual_rot.y += yaw_input * M_EXAMINE_ROTATION_SPEED;
+    inv_item->manual_rot.x += pitch_input * M_EXAMINE_ROTATION_SPEED;
+}
+
 bool Option_Examine_CanExamine(const OBJECT_ID obj_id)
 {
     return Object_GetDescription(obj_id) != nullptr;
 }
 
-void Option_Examine_Control(const OBJECT_ID obj_id, const bool is_busy)
+void Option_Examine_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     M_PRIV *const p = &m_Priv;
     if (is_busy) {
         return;
     }
 
+    const OBJECT_ID obj_id = inv_item->object_id;
     if (!p->ui.is_ready) {
         M_Init(p, obj_id);
     }
-    UI_TextDialog_Control(p->ui.state);
 
-    if (g_InputDB.look || g_InputDB.menu_back || g_InputDB.menu_confirm) {
+    const bool show_dialog = M_ShouldShowDialog(obj_id);
+    if (show_dialog) {
+        UI_TextDialog_Control(p->ui.state);
+    }
+
+    if ((show_dialog && g_InputDB.look) || g_InputDB.menu_back
+        || g_InputDB.menu_confirm) {
         g_InputDB.menu_back = true;
         g_InputDB.menu_confirm = false;
+        inv_item->has_manual_rot = false;
         M_Close(p);
+        return;
+    }
+
+    if (!show_dialog) {
+        M_ApplyExamineRotation(inv_item);
     }
 }
 
 void Option_Examine_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->ui.is_ready) {
+    if (p->ui.is_ready && M_ShouldShowDialog(p->object_id)) {
         UI_TextDialog(
             p->ui.state, Object_GetName(p->object_id),
             Object_GetDescription(p->object_id));
