@@ -86,6 +86,14 @@ static void M_ReinitialiseGunMeshes(void)
     Gun_InitialiseNewWeapon();
 }
 
+static void M_ClearHandWeaponMeshes(void)
+{
+    Gun_SetLaraHandRMesh(LGT_UNARMED);
+    if (!Lara_Flare_IsMeshActive()) {
+        Gun_SetLaraHandLMesh(LGT_UNARMED);
+    }
+}
+
 static void M_ResetGunStatus(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -271,10 +279,7 @@ bool Lara_Cheat_EnterFlyMode(void)
 
     if (lara_info->extra_anim || lara_item->hit_points < 0) {
         M_ResetGunStatus();
-        Lara_Skin_ClearEquipment(LM_HAND_R);
-        if (!Lara_Flare_IsMeshActive()) {
-            Lara_Skin_ClearEquipment(LM_HAND_L);
-        }
+        M_ClearHandWeaponMeshes();
     } else if (Gun_IsRifleType(lara_info->gun_type)) {
         while (lara_info->gun_item_num != NO_ITEM) {
             Gun_Rifle_Undraw(lara_info->gun_type);
@@ -286,6 +291,7 @@ bool Lara_Cheat_EnterFlyMode(void)
             && Lara_Skin_GetEquipment(LM_TORSO)->type
                 == EQUIPMENT_TYPE_WEAPON)) {
         lara_info->gun_status = LGS_ARMLESS;
+        M_ClearHandWeaponMeshes();
     }
 
     lara_info->extra_anim = false;
@@ -362,6 +368,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         lara_info->gun_status = LGS_UNDRAW;
     } else {
         lara_info->gun_status = LGS_ARMLESS;
+        M_ClearHandWeaponMeshes();
         M_ReinitialiseGunMeshes();
     }
 
