@@ -423,6 +423,7 @@ Showcase: https://youtu.be/vVU9vbUXTXc
 - added support for dark theme on Windows
 - added support for triangular geometry
 - added support for additive blending in textures
+- added support for quicksand rooms
 - improved bilinear filtering for smoother edge blending when multiple objects overlap in depth
 - improved rendering of statics and items in overlapping rooms (#2005)
 - improved ricochets placement
