@@ -654,19 +654,27 @@ void Savegame_ApplyLogicToCurrentInfo(const GF_LEVEL *const level)
         resume->rocket_ammo = resume->flags.has_rocket ? 10000 : 0;
         resume->harpoon_ammo = resume->flags.has_harpoon ? 10000 : 0;
 
-        if (g_TRVersion == 1) {
-            resume->equipped_gun_type = LGT_UZIS;
-            resume->back_gun_type = LGT_SHOTGUN;
-            resume->holsters_gun_type = LGT_UZIS;
-        } else {
-            if (g_TRVersion == 2) {
+        const bool should_force_ngplus_gun_setup =
+            !g_Config.gameplay.remember_gun_status || resume->prev_level == -1;
+        if (should_force_ngplus_gun_setup) {
+            switch (g_TRVersion) {
+            case 1:
+                resume->equipped_gun_type = LGT_UZIS;
+                resume->back_gun_type = LGT_SHOTGUN;
+                resume->holsters_gun_type = LGT_UZIS;
+                break;
+            case 2:
                 resume->equipped_gun_type = LGT_GRENADE;
                 resume->back_gun_type = LGT_GRENADE;
-            } else {
+                resume->holsters_gun_type = LGT_PISTOLS;
+                break;
+            case 3:
+            default:
                 resume->equipped_gun_type = LGT_ROCKET;
                 resume->back_gun_type = LGT_ROCKET;
+                resume->holsters_gun_type = LGT_PISTOLS;
+                break;
             }
-            resume->holsters_gun_type = LGT_PISTOLS;
         }
     }
 
