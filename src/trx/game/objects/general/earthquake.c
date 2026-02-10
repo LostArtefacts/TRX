@@ -47,16 +47,29 @@ static void M_FindAndActivateRelatedItems(const ITEM *const item)
     }
 }
 
+static void M_Reset(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->shake_intensity = 0;
+    p->target_intensity = 0;
+    p->target_timer = 0;
+    item->status = IS_INACTIVE;
+    Item_RemoveActive(item_num);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
 
+    if (!Item_IsTriggerActive(item)) {
+        M_Reset(item_num);
+        return;
+    }
+
     switch (g_TRVersion) {
     case 1:
-        if (!Item_IsTriggerActive(item)) {
-            break;
-        }
         if (Random_GetDraw() < 256) {
             g_Camera.bounce = -150;
             Sound_Effect(SFX_EARTHQUAKE_1, nullptr, SPM_NORMAL);
@@ -74,12 +87,6 @@ static void M_Control(const int16_t item_num)
         break;
 
     case 3: {
-        if (!Item_IsTriggerActive(item)) {
-            p->shake_intensity = 0;
-            p->target_intensity = 100;
-            break;
-        }
-
         if (p->target_intensity == 0) {
             p->target_intensity = 100;
         }
