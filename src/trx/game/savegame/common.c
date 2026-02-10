@@ -515,6 +515,13 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;
     resume->back_gun_type = lara->back_gun_type;
+    if (resume->back_gun_type == LGT_UNARMED
+        && Gun_IsRifleType(resume->equipped_gun_type)
+        && Inv_RequestItem(Gun_GetGunObject(resume->equipped_gun_type)) != 0) {
+        // If a rifle is currently drawn, Lara's back mesh is temporarily
+        // unarmed. Preserve the preferred rifle for next-level mesh restore.
+        resume->back_gun_type = resume->equipped_gun_type;
+    }
     if (lara->gun_status == LGS_READY) {
         resume->gun_status = LGS_READY;
     } else {
