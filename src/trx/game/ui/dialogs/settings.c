@@ -894,6 +894,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         .header_func = M_WindowHeader,
         .footer_func = nullptr,
         .user_data = s,
+        .reserve_scroll_space = true,
     });
 
     if (s->scroll.vis_items == 0) {

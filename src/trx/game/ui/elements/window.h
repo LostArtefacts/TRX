@@ -11,6 +11,7 @@ typedef struct {
     UI_WINDOW_CALLBACK *header_func;
     UI_WINDOW_CALLBACK *footer_func;
     void *user_data;
+    bool reserve_scroll_space;
 } UI_WINDOW_SETTINGS;
 
 void UI_BeginWindow(UI_WINDOW_SETTINGS settings);
