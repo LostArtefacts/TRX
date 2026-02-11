@@ -185,7 +185,7 @@ static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
             }
         }
 
-        if (trigger->timer == 0) {
+        if (trigger->timer == 0 || g_TRVersion != 2) {
             Music_Play_Direct(track_id, play_mode);
             goto finish;
         }
