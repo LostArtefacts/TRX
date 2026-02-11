@@ -4,6 +4,7 @@
 #include <trx/game/const.h>
 #include <trx/game/game_string.h>
 #include <trx/game/input.h>
+#include <trx/game/inventory_ring/control.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/scaler.h>
@@ -31,6 +32,15 @@ static void M_DrawHideDialogFooter(void *const user_data)
         "\\{input look} %s",
         user_data != nullptr ? (const char *)user_data : "");
     UI_EndAnchor();
+}
+
+static void M_DrawRotateHint(void *const user_data)
+{
+    UI_ButtonLabelEx(
+        g_Config.input.backend == INPUT_BACKEND_KEYBOARD
+            ? GS(MISC_DIRECTION_KEYS_KEYBOARD)
+            : GS(MISC_DIRECTION_KEYS_CONTROLLER),
+        GS(ACTION_ROTATE));
 }
 
 static bool M_ShouldShowDialog(const OBJECT_ID obj_id)
@@ -63,6 +73,7 @@ static void M_Init(M_PRIV *const p, const OBJECT_ID obj_id)
 
 static void M_Close(M_PRIV *const p)
 {
+    InvRing_ClearButtonHint();
     if (p->ui.is_ready) {
         UI_TextDialog_Free(p->ui.state);
         p->ui.state = nullptr;
@@ -109,6 +120,11 @@ void Option_Examine_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 
     const bool has_dialog = M_ShouldShowDialog(obj_id);
     const bool show_dialog = has_dialog && !p->is_dialog_hidden;
+    if (show_dialog) {
+        InvRing_ClearButtonHint();
+    } else {
+        InvRing_SetButtonHintDrawer(M_DrawRotateHint, nullptr);
+    }
     if (show_dialog) {
         UI_TextDialog_Control(p->ui.state);
     }
@@ -158,14 +174,6 @@ void Option_Examine_Draw(void)
                 .footer_func = M_DrawHideDialogFooter,
                 .footer_user_data = (void *)footer_label,
             });
-    } else {
-        UI_BeginModal(0.5f, 0.85f);
-        UI_ButtonLabelEx(
-            g_Config.input.backend == INPUT_BACKEND_KEYBOARD
-                ? GS(MISC_DIRECTION_KEYS_KEYBOARD)
-                : GS(MISC_DIRECTION_KEYS_CONTROLLER),
-            GS(ACTION_ROTATE));
-        UI_EndModal();
     }
 }
 
