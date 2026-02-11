@@ -4,6 +4,7 @@
     "language_name": "Polski",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Zbadaj",
+        "ACTION_HIDE_DIALOG": "Ukryj okno",
         "ACTION_RESET_DEFAULTS": "Zresetuj układ",
         "ACTION_UNBIND": "Usuń przypisanie",
         "ACTION_USE_ITEM": "Użyj",

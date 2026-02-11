@@ -4,6 +4,7 @@
     "language_name": "English",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Examine",
+        "ACTION_HIDE_DIALOG": "Hide dialog",
         "ACTION_RESET_DEFAULTS": "Reset All",
         "ACTION_UNBIND": "Unbind",
         "ACTION_USE_ITEM": "Use",

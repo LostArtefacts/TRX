@@ -4,6 +4,7 @@
     "language_name": "Deutsch",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Untersuchen",
+        "ACTION_HIDE_DIALOG": "Dialog ausblenden",
         "ACTION_RESET_DEFAULTS": "Auf Standard zurücksetzen",
         "ACTION_UNBIND": "Freigeben",
         "ACTION_USE_ITEM": "Benutze",

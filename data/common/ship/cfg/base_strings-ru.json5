@@ -4,6 +4,7 @@
     "language_name": "Русский",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Осмотреть",
+        "ACTION_HIDE_DIALOG": "Скрыть диалог",
         "ACTION_RESET_DEFAULTS": "Сброс",
         "ACTION_UNBIND": "Очистить",
         "ACTION_USE_ITEM": "Использовать",

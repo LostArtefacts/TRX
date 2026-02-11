@@ -4,6 +4,7 @@
     "language_name": "Italiano",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Esamina",
+        "ACTION_HIDE_DIALOG": "Nascondi dialogo",
         "ACTION_RESET_DEFAULTS": "Ripristina",
         "ACTION_UNBIND": "Dissocia",
         "ACTION_USE_ITEM": "Usa",

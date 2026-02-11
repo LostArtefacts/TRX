@@ -4,6 +4,7 @@
     "language_name": "Français",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Examiner",
+        "ACTION_HIDE_DIALOG": "Masquer le dialogue",
         "ACTION_RESET_DEFAULTS": "Réinitialiser tout",
         "ACTION_UNBIND": "Dissocier",
         "ACTION_USE_ITEM": "Utiliser",
