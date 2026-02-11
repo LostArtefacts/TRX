@@ -11,10 +11,10 @@
 #include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 #include <trx/strings.h>
 #include <trx/utils.h>
 
@@ -68,28 +68,28 @@ typedef struct {
     int32_t pitch;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "boat_turn", &p->boat_turn));
-    SG_SHOULD(SG_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
-    SG_SHOULD(SG_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
-    SG_SHOULD(SG_READ_VALUE(io, "tilt_angle", &p->tilt_angle));
-    SG_SHOULD(SG_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
-    SG_SHOULD(SG_READ_VALUE(io, "water", &p->water));
-    SG_SHOULD(SG_READ_VALUE(io, "pitch", &p->pitch));
+    JSON_SHOULD(JSON_READ_VALUE(io, "boat_turn", &p->boat_turn));
+    JSON_SHOULD(JSON_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
+    JSON_SHOULD(JSON_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
+    JSON_SHOULD(JSON_READ_VALUE(io, "tilt_angle", &p->tilt_angle));
+    JSON_SHOULD(JSON_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
+    JSON_SHOULD(JSON_READ_VALUE(io, "water", &p->water));
+    JSON_SHOULD(JSON_READ_VALUE(io, "pitch", &p->pitch));
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "boat_turn", p->boat_turn);
-    SGW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
-    SGW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
-    SGW_WRITE_VALUE(io, "tilt_angle", p->tilt_angle);
-    SGW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
-    SGW_WRITE_VALUE(io, "water", p->water);
-    SGW_WRITE_VALUE(io, "pitch", p->pitch);
+    JSONW_WRITE_VALUE(io, "boat_turn", p->boat_turn);
+    JSONW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
+    JSONW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
+    JSONW_WRITE_VALUE(io, "tilt_angle", p->tilt_angle);
+    JSONW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
+    JSONW_WRITE_VALUE(io, "water", p->water);
+    JSONW_WRITE_VALUE(io, "pitch", p->pitch);
 }
 
 static int32_t M_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)

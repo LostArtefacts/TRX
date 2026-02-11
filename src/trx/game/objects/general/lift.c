@@ -2,8 +2,8 @@
 #include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 #include <trx/log.h>
 #include <trx/strings.h>
 #include <trx/vector.h>
@@ -31,36 +31,36 @@ typedef struct {
     GAME_VECTOR linked[M_LIFT_NUM_SECTORS];
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "start_height", &p->start_height));
-    SG_SHOULD(SG_READ_VALUE(io, "wait_time", &p->wait_time));
-    SG_SHOULD(SG_READ_VALUE(io, "is_moving", &p->is_moving));
+    JSON_SHOULD(JSON_READ_VALUE(io, "start_height", &p->start_height));
+    JSON_SHOULD(JSON_READ_VALUE(io, "wait_time", &p->wait_time));
+    JSON_SHOULD(JSON_READ_VALUE(io, "is_moving", &p->is_moving));
     for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
-        if (SG_SHOULD(SG_PUSH(io, key))) {
-            SG_SHOULD(SG_READ_VALUE(io, "x", &p->linked[i].pos.x));
-            SG_SHOULD(SG_READ_VALUE(io, "y", &p->linked[i].pos.y));
-            SG_SHOULD(SG_READ_VALUE(io, "z", &p->linked[i].pos.z));
-            SG_SHOULD(SG_POP(io));
+        if (JSON_SHOULD(JSON_PUSH(io, key))) {
+            JSON_SHOULD(JSON_READ_VALUE(io, "x", &p->linked[i].pos.x));
+            JSON_SHOULD(JSON_READ_VALUE(io, "y", &p->linked[i].pos.y));
+            JSON_SHOULD(JSON_READ_VALUE(io, "z", &p->linked[i].pos.z));
+            JSON_SHOULD(JSON_POP(io));
         }
     }
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "start_height", p->start_height);
-    SGW_WRITE_VALUE(io, "wait_time", p->wait_time);
-    SGW_WRITE_VALUE(io, "is_moving", p->is_moving);
+    JSONW_WRITE_VALUE(io, "start_height", p->start_height);
+    JSONW_WRITE_VALUE(io, "wait_time", p->wait_time);
+    JSONW_WRITE_VALUE(io, "is_moving", p->is_moving);
     for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
-        SGW_PUSH_OBJECT(io);
-        SGW_WRITE_VALUE(io, "x", p->linked[i].pos.x);
-        SGW_WRITE_VALUE(io, "y", p->linked[i].pos.y);
-        SGW_WRITE_VALUE(io, "z", p->linked[i].pos.z);
-        SGW_POP_AND_SET(io, key);
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE_VALUE(io, "x", p->linked[i].pos.x);
+        JSONW_WRITE_VALUE(io, "y", p->linked[i].pos.y);
+        JSONW_WRITE_VALUE(io, "z", p->linked[i].pos.z);
+        JSONW_POP_AND_SET(io, key);
     }
 }
 

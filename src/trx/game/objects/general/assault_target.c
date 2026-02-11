@@ -4,9 +4,9 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing/lot.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sound.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 #include <trx/version.h>
 
 typedef enum {
@@ -27,20 +27,20 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
     return false;
 }
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "x_rot_speed", &p->x_rot_speed));
-    SG_SHOULD(SG_READ_VALUE(io, "bounce_stage", &p->bounce_stage));
-    SG_SHOULD(SG_READ_VALUE(io, "destroyed", &p->destroyed));
+    JSON_SHOULD(JSON_READ_VALUE(io, "x_rot_speed", &p->x_rot_speed));
+    JSON_SHOULD(JSON_READ_VALUE(io, "bounce_stage", &p->bounce_stage));
+    JSON_SHOULD(JSON_READ_VALUE(io, "destroyed", &p->destroyed));
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "x_rot_speed", p->x_rot_speed);
-    SGW_WRITE_VALUE(io, "bounce_stage", p->bounce_stage);
-    SGW_WRITE_VALUE(io, "destroyed", p->destroyed);
+    JSONW_WRITE_VALUE(io, "x_rot_speed", p->x_rot_speed);
+    JSONW_WRITE_VALUE(io, "bounce_stage", p->bounce_stage);
+    JSONW_WRITE_VALUE(io, "destroyed", p->destroyed);
 }
 
 static void M_ResetItemState(ITEM *const item, const OBJECT *const obj)

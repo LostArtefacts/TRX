@@ -2,10 +2,10 @@
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 #include <trx/log.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -24,16 +24,16 @@ typedef struct {
     int32_t fire_timer;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "fire_timer", &p->fire_timer));
+    JSON_SHOULD(JSON_READ_VALUE(io, "fire_timer", &p->fire_timer));
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "fire_timer", p->fire_timer);
+    JSONW_WRITE_VALUE(io, "fire_timer", p->fire_timer);
 }
 
 static OBJECT_ID M_GetProjectileObjectID(const OBJECT_ID emitter_id)

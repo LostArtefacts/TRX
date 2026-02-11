@@ -8,11 +8,11 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 #include <trx/utils.h>
 
 typedef enum {
@@ -61,26 +61,26 @@ extern void TonyBoss_TriggerFireBall(
     ITEM *item, int32_t type, XYZ_32 *pos, int16_t room_num, int16_t angle,
     int32_t speed);
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "dropped_item", &p->dropped_item));
-    SG_SHOULD(SG_READ_VALUE(io, "ring_count", &p->ring_count));
-    SG_SHOULD(SG_READ_VALUE(io, "explode_count", &p->explode_count));
-    SG_SHOULD(SG_READ_VALUE(io, "dead", &p->dead));
-    SG_SHOULD(SG_READ_VALUE(io, "phase", &p->phase));
-    SG_SHOULD(SG_READ_VALUE(io, "attack_toggle", &p->attack_toggle));
+    JSON_SHOULD(JSON_READ_VALUE(io, "dropped_item", &p->dropped_item));
+    JSON_SHOULD(JSON_READ_VALUE(io, "ring_count", &p->ring_count));
+    JSON_SHOULD(JSON_READ_VALUE(io, "explode_count", &p->explode_count));
+    JSON_SHOULD(JSON_READ_VALUE(io, "dead", &p->dead));
+    JSON_SHOULD(JSON_READ_VALUE(io, "phase", &p->phase));
+    JSON_SHOULD(JSON_READ_VALUE(io, "attack_toggle", &p->attack_toggle));
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "dropped_item", p->dropped_item);
-    SGW_WRITE_VALUE(io, "ring_count", p->ring_count);
-    SGW_WRITE_VALUE(io, "explode_count", p->explode_count);
-    SGW_WRITE_VALUE(io, "dead", p->dead);
-    SGW_WRITE_VALUE(io, "phase", p->phase);
-    SGW_WRITE_VALUE(io, "attack_toggle", p->attack_toggle);
+    JSONW_WRITE_VALUE(io, "dropped_item", p->dropped_item);
+    JSONW_WRITE_VALUE(io, "ring_count", p->ring_count);
+    JSONW_WRITE_VALUE(io, "explode_count", p->explode_count);
+    JSONW_WRITE_VALUE(io, "dead", p->dead);
+    JSONW_WRITE_VALUE(io, "phase", p->phase);
+    JSONW_WRITE_VALUE(io, "attack_toggle", p->attack_toggle);
 }
 
 static void M_TriggerFlame(int16_t item_num, int32_t node)

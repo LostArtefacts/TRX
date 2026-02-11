@@ -2,10 +2,10 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 
 #define M_DAMAGE 20
 #define M_SPEED 1
@@ -17,18 +17,18 @@ typedef struct {
     bool animate;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "step", &p->step));
-    SG_SHOULD(SG_READ_VALUE(io, "animate", &p->animate));
+    JSON_SHOULD(JSON_READ_VALUE(io, "step", &p->step));
+    JSON_SHOULD(JSON_READ_VALUE(io, "animate", &p->animate));
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "step", p->step);
-    SGW_WRITE_VALUE(io, "animate", p->animate);
+    JSONW_WRITE_VALUE(io, "step", p->step);
+    JSONW_WRITE_VALUE(io, "animate", p->animate);
 }
 
 static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)

@@ -1,30 +1,30 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 
-static void M_PrivLoad(ITEM *const item, SG_READ_IO *const io)
+static void M_PrivLoad(ITEM *const item, JSON_READ_IO *const io)
 {
     SKIDOO_INFO *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "track_mesh", &p->track_mesh));
-    SG_SHOULD(SG_READ_VALUE(io, "skidoo_turn", &p->skidoo_turn));
-    SG_SHOULD(SG_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
-    SG_SHOULD(SG_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
-    SG_SHOULD(SG_READ_VALUE(io, "momentum_angle", &p->momentum_angle));
-    SG_SHOULD(SG_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
-    SG_SHOULD(SG_READ_VALUE(io, "pitch", &p->pitch));
+    JSON_SHOULD(JSON_READ_VALUE(io, "track_mesh", &p->track_mesh));
+    JSON_SHOULD(JSON_READ_VALUE(io, "skidoo_turn", &p->skidoo_turn));
+    JSON_SHOULD(JSON_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
+    JSON_SHOULD(JSON_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
+    JSON_SHOULD(JSON_READ_VALUE(io, "momentum_angle", &p->momentum_angle));
+    JSON_SHOULD(JSON_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
+    JSON_SHOULD(JSON_READ_VALUE(io, "pitch", &p->pitch));
 }
 
-static void M_PrivSave(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_PrivSave(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const SKIDOO_INFO *const p = item->priv;
-    SGW_WRITE_VALUE(io, "track_mesh", p->track_mesh);
-    SGW_WRITE_VALUE(io, "skidoo_turn", p->skidoo_turn);
-    SGW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
-    SGW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
-    SGW_WRITE_VALUE(io, "momentum_angle", p->momentum_angle);
-    SGW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
-    SGW_WRITE_VALUE(io, "pitch", p->pitch);
+    JSONW_WRITE_VALUE(io, "track_mesh", p->track_mesh);
+    JSONW_WRITE_VALUE(io, "skidoo_turn", p->skidoo_turn);
+    JSONW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
+    JSONW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
+    JSONW_WRITE_VALUE(io, "momentum_angle", p->momentum_angle);
+    JSONW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
+    JSONW_WRITE_VALUE(io, "pitch", p->pitch);
 }
 
 static void M_Setup(OBJECT *const obj)
