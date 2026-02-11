@@ -3,8 +3,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
 
@@ -30,25 +30,25 @@ typedef struct {
     GAME_VECTOR linked;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    if (SG_SHOULD(SG_PUSH(io, "linked"))) {
-        SG_SHOULD(SG_READ_VALUE(io, "x", &p->linked.pos.x));
-        SG_SHOULD(SG_READ_VALUE(io, "y", &p->linked.pos.y));
-        SG_SHOULD(SG_READ_VALUE(io, "z", &p->linked.pos.z));
-        SG_SHOULD(SG_POP(io));
+    if (JSON_SHOULD(JSON_PUSH(io, "linked"))) {
+        JSON_SHOULD(JSON_READ_VALUE(io, "x", &p->linked.pos.x));
+        JSON_SHOULD(JSON_READ_VALUE(io, "y", &p->linked.pos.y));
+        JSON_SHOULD(JSON_READ_VALUE(io, "z", &p->linked.pos.z));
+        JSON_SHOULD(JSON_POP(io));
     }
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_PUSH_OBJECT(io);
-    SGW_WRITE_VALUE(io, "x", p->linked.pos.x);
-    SGW_WRITE_VALUE(io, "y", p->linked.pos.y);
-    SGW_WRITE_VALUE(io, "z", p->linked.pos.z);
-    SGW_POP_AND_SET(io, "linked");
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE_VALUE(io, "x", p->linked.pos.x);
+    JSONW_WRITE_VALUE(io, "y", p->linked.pos.y);
+    JSONW_WRITE_VALUE(io, "z", p->linked.pos.z);
+    JSONW_POP_AND_SET(io, "linked");
 }
 
 static void M_SetInitial(ITEM *const item)

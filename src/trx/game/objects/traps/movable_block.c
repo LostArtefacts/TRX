@@ -8,10 +8,10 @@
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 #include <trx/strings.h>
 #include <trx/vector.h>
 
@@ -132,43 +132,43 @@ static GAME_VECTOR M_GetLinked(const ITEM *const item)
     return p->linked;
 }
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "gravity_frames", &p->gravity_frames));
-    SG_SHOULD(SG_READ_VALUE(io, "is_push_pull", &p->is_push_pull));
-    SG_SHOULD(SG_READ_VALUE(io, "is_forced_moving", &p->is_forced_moving));
+    JSON_SHOULD(JSON_READ_VALUE(io, "gravity_frames", &p->gravity_frames));
+    JSON_SHOULD(JSON_READ_VALUE(io, "is_push_pull", &p->is_push_pull));
+    JSON_SHOULD(JSON_READ_VALUE(io, "is_forced_moving", &p->is_forced_moving));
 
-    if (SG_SHOULD(SG_PUSH(io, "linked"))) {
-        SG_SHOULD(SG_READ_VALUE(io, "x", &p->linked.pos.x));
-        SG_SHOULD(SG_READ_VALUE(io, "y", &p->linked.pos.y));
-        SG_SHOULD(SG_READ_VALUE(io, "z", &p->linked.pos.z));
-        SG_SHOULD(SG_POP(io));
+    if (JSON_SHOULD(JSON_PUSH(io, "linked"))) {
+        JSON_SHOULD(JSON_READ_VALUE(io, "x", &p->linked.pos.x));
+        JSON_SHOULD(JSON_READ_VALUE(io, "y", &p->linked.pos.y));
+        JSON_SHOULD(JSON_READ_VALUE(io, "z", &p->linked.pos.z));
+        JSON_SHOULD(JSON_POP(io));
     }
 
-    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_0", &p->extra_rotations[0]));
-    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_1", &p->extra_rotations[1]));
-    SG_SHOULD(SG_READ_VALUE(io, "counter_rot_2", &p->extra_rotations[2]));
-    SG_SHOULD(SG_READ_VALUE(io, "original_rot", &p->original_rot));
+    JSON_SHOULD(JSON_READ_VALUE(io, "counter_rot_0", &p->extra_rotations[0]));
+    JSON_SHOULD(JSON_READ_VALUE(io, "counter_rot_1", &p->extra_rotations[1]));
+    JSON_SHOULD(JSON_READ_VALUE(io, "counter_rot_2", &p->extra_rotations[2]));
+    JSON_SHOULD(JSON_READ_VALUE(io, "original_rot", &p->original_rot));
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "gravity_frames", p->gravity_frames);
-    SGW_WRITE_VALUE(io, "is_push_pull", p->is_push_pull);
-    SGW_WRITE_VALUE(io, "is_forced_moving", p->is_forced_moving);
+    JSONW_WRITE_VALUE(io, "gravity_frames", p->gravity_frames);
+    JSONW_WRITE_VALUE(io, "is_push_pull", p->is_push_pull);
+    JSONW_WRITE_VALUE(io, "is_forced_moving", p->is_forced_moving);
 
-    SGW_PUSH_OBJECT(io);
-    SGW_WRITE_VALUE(io, "x", p->linked.pos.x);
-    SGW_WRITE_VALUE(io, "y", p->linked.pos.y);
-    SGW_WRITE_VALUE(io, "z", p->linked.pos.z);
-    SGW_POP_AND_SET(io, "linked");
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE_VALUE(io, "x", p->linked.pos.x);
+    JSONW_WRITE_VALUE(io, "y", p->linked.pos.y);
+    JSONW_WRITE_VALUE(io, "z", p->linked.pos.z);
+    JSONW_POP_AND_SET(io, "linked");
 
-    SGW_WRITE_VALUE(io, "counter_rot_0", p->extra_rotations[0]);
-    SGW_WRITE_VALUE(io, "counter_rot_1", p->extra_rotations[1]);
-    SGW_WRITE_VALUE(io, "counter_rot_2", p->extra_rotations[2]);
-    SGW_WRITE_VALUE(io, "original_rot", p->original_rot);
+    JSONW_WRITE_VALUE(io, "counter_rot_0", p->extra_rotations[0]);
+    JSONW_WRITE_VALUE(io, "counter_rot_1", p->extra_rotations[1]);
+    JSONW_WRITE_VALUE(io, "counter_rot_2", p->extra_rotations[2]);
+    JSONW_WRITE_VALUE(io, "original_rot", p->original_rot);
 }
 
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height)

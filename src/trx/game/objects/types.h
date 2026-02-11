@@ -47,8 +47,8 @@ typedef struct {
     bool ignore_rot;
 } OBJECT_BOUNDS;
 
-typedef struct SG_READ_IO SG_READ_IO;
-typedef struct SG_WRITE_IO SG_WRITE_IO;
+typedef struct JSON_READ_IO JSON_READ_IO;
+typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
 typedef struct OBJECT {
     int16_t mesh_count;
@@ -70,8 +70,8 @@ typedef struct OBJECT {
     bool (*trigger_func)(ITEM *item, const TRIGGER *trigger);
     void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
-    void (*priv_load_func)(ITEM *item, SG_READ_IO *io);
-    void (*priv_save_func)(const ITEM *item, SG_WRITE_IO *io);
+    void (*priv_load_func)(ITEM *item, JSON_READ_IO *io);
+    void (*priv_save_func)(const ITEM *item, JSON_WRITE_IO *io);
     const OBJECT_BOUNDS *(*bounds_func)(void);
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);

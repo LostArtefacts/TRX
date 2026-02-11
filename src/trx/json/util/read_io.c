@@ -1,4 +1,4 @@
-#include <trx/game/savegame/file_read_io.h>
+#include <trx/json/util/read_io.h>
 
 #include <trx/debug.h>
 #include <trx/json.h>
@@ -11,7 +11,7 @@
 
 #define M_MAX_STACK_SIZE 10
 
-typedef struct SG_READ_IO {
+typedef struct JSON_READ_IO {
     char path[256];
     int32_t path_index_stack[M_MAX_STACK_SIZE];
     int32_t path_top;
@@ -19,10 +19,10 @@ typedef struct SG_READ_IO {
     JSON_VALUE *stack[M_MAX_STACK_SIZE];
     JSON_VALUE *current;
     size_t current_pos;
-    uint16_t sg_version;
-} SG_READ_IO;
+    uint16_t version;
+} JSON_READ_IO;
 
-static void M_SetError(SG_READ_IO *const io, const char *fmt, ...)
+static void M_SetError(JSON_READ_IO *const io, const char *fmt, ...)
 {
     char body[256];
     va_list ap;
@@ -40,7 +40,7 @@ static void M_SetError(SG_READ_IO *const io, const char *fmt, ...)
     }
 }
 
-static bool M_PushPathKey(SG_READ_IO *const io, const char *const key)
+static bool M_PushPathKey(JSON_READ_IO *const io, const char *const key)
 {
     if (io->path_top + 1 >= M_MAX_STACK_SIZE) {
         return false;
@@ -54,7 +54,7 @@ static bool M_PushPathKey(SG_READ_IO *const io, const char *const key)
     return true;
 }
 
-static bool M_PushPathIndex(SG_READ_IO *const io, const size_t idx)
+static bool M_PushPathIndex(JSON_READ_IO *const io, const size_t idx)
 {
     if (io->path_top + 1 >= M_MAX_STACK_SIZE) {
         return false;
@@ -66,7 +66,7 @@ static bool M_PushPathIndex(SG_READ_IO *const io, const size_t idx)
     return true;
 }
 
-static void M_PopPath(SG_READ_IO *const io)
+static void M_PopPath(JSON_READ_IO *const io)
 {
     if (io->path_top <= 0) {
         io->path[0] = '\0';
@@ -77,7 +77,7 @@ static void M_PopPath(SG_READ_IO *const io)
     io->path[pos] = '\0';
 }
 
-static bool M_PushValue(SG_READ_IO *const io, JSON_VALUE *const value)
+static bool M_PushValue(JSON_READ_IO *const io, JSON_VALUE *const value)
 {
     if (value == nullptr) {
         M_SetError(io, "pushing null value");
@@ -93,7 +93,7 @@ static bool M_PushValue(SG_READ_IO *const io, JSON_VALUE *const value)
     return true;
 }
 
-static bool M_ReadBoolDirect(SG_READ_IO *const io, bool *const target)
+static bool M_ReadBoolDirect(JSON_READ_IO *const io, bool *const target)
 {
     if (JSON_ValueIsTrue(io->current)) {
         *target = true;
@@ -109,7 +109,7 @@ static bool M_ReadBoolDirect(SG_READ_IO *const io, bool *const target)
 
 #define L_DEFINE_M_READ_NUM_DIRECT(type_, name, minv, maxv)                    \
     static bool M_ReadNumDirect_##name(                                        \
-        SG_READ_IO *const io, void *const target)                              \
+        JSON_READ_IO *const io, void *const target)                            \
     {                                                                          \
         if (io->current->type != JSON_TYPE_NUMBER) {                           \
             M_SetError(io, "not a number");                                    \
@@ -131,7 +131,7 @@ L_DEFINE_M_READ_NUM_DIRECT(uint16_t, U16, 0, UINT16_MAX)
 L_DEFINE_M_READ_NUM_DIRECT(uint32_t, U32, 0, UINT32_MAX)
 #undef L_DEFINE_M_READ_NUM_DIRECT
 
-static bool M_ReadNumDirect_Double(SG_READ_IO *const io, double *const target)
+static bool M_ReadNumDirect_Double(JSON_READ_IO *const io, double *const target)
 {
     if (io->current->type != JSON_TYPE_NUMBER) {
         M_SetError(io, "not a number");
@@ -142,54 +142,54 @@ static bool M_ReadNumDirect_Double(SG_READ_IO *const io, double *const target)
     return true;
 }
 
-bool SG_ReadIO_ReadValueDirect(
-    SG_READ_IO *const io, const SG_READ_TYPE type, void *const target)
+bool JSON_ReadIO_ReadValueDirect(
+    JSON_READ_IO *const io, const JSON_READ_TYPE type, void *const target)
 {
     switch (type) {
-    case SG_TYPE_BOOL:
+    case JSON_READ_BOOL:
         return M_ReadBoolDirect(io, target);
-    case SG_TYPE_S8:
+    case JSON_READ_S8:
         return M_ReadNumDirect_S8(io, target);
-    case SG_TYPE_U8:
+    case JSON_READ_U8:
         return M_ReadNumDirect_U8(io, target);
-    case SG_TYPE_S16:
+    case JSON_READ_S16:
         return M_ReadNumDirect_S16(io, target);
-    case SG_TYPE_U16:
+    case JSON_READ_U16:
         return M_ReadNumDirect_U16(io, target);
-    case SG_TYPE_S32:
+    case JSON_READ_S32:
         return M_ReadNumDirect_S32(io, target);
-    case SG_TYPE_U32:
+    case JSON_READ_U32:
         return M_ReadNumDirect_U32(io, target);
-    case SG_TYPE_DOUBLE:
+    case JSON_READ_DOUBLE:
         return M_ReadNumDirect_Double(io, target);
     }
     M_SetError(io, "unsupported read type");
     return false;
 }
 
-bool SG_ReadIO_ReadValue(
-    SG_READ_IO *const io, const char *const key, const SG_READ_TYPE type,
+bool JSON_ReadIO_ReadValue(
+    JSON_READ_IO *const io, const char *const key, const JSON_READ_TYPE type,
     void *const target)
 {
-    if (!SG_ReadIO_PushObject(io, key)) {
+    if (!JSON_ReadIO_PushObject(io, key)) {
         return false;
     }
-    const bool success = SG_ReadIO_ReadValueDirect(io, type, target);
-    SG_ReadIO_Pop(io);
+    const bool success = JSON_ReadIO_ReadValueDirect(io, type, target);
+    JSON_ReadIO_Pop(io);
     return success;
 }
 
-const char *SG_ReadIO_GetError(const SG_READ_IO *const io)
+const char *JSON_ReadIO_GetError(const JSON_READ_IO *const io)
 {
     return io->error_msg;
 }
 
-uint16_t SG_ReadIO_GetVersion(const SG_READ_IO *const io)
+uint16_t JSON_ReadIO_GetVersion(const JSON_READ_IO *const io)
 {
-    return io->sg_version;
+    return io->version;
 }
 
-void SG_ReadIO_SetError(SG_READ_IO *const io, const char *fmt, ...)
+void JSON_ReadIO_SetError(JSON_READ_IO *const io, const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -199,7 +199,7 @@ void SG_ReadIO_SetError(SG_READ_IO *const io, const char *fmt, ...)
     M_SetError(io, "%s", body);
 }
 
-bool SG_ReadIO_PushObject(SG_READ_IO *const io, const char *const key)
+bool JSON_ReadIO_PushObject(JSON_READ_IO *const io, const char *const key)
 {
     JSON_OBJECT *const current_obj = JSON_ValueAsObject(io->current);
     if (current_obj == nullptr) {
@@ -218,7 +218,7 @@ bool SG_ReadIO_PushObject(SG_READ_IO *const io, const char *const key)
     return M_PushValue(io, child);
 }
 
-bool SG_ReadIO_PushArrayElem(SG_READ_IO *const io, const size_t index)
+bool JSON_ReadIO_PushArrayElem(JSON_READ_IO *const io, const size_t index)
 {
     JSON_ARRAY *const current_arr = JSON_ValueAsArray(io->current);
     if (current_arr == nullptr) {
@@ -237,7 +237,7 @@ bool SG_ReadIO_PushArrayElem(SG_READ_IO *const io, const size_t index)
     return M_PushValue(io, child);
 }
 
-bool SG_ReadIO_Pop(SG_READ_IO *const io)
+bool JSON_ReadIO_Pop(JSON_READ_IO *const io)
 {
     if (io->current_pos == 0) {
         M_SetError(io, "pop from empty stack");
@@ -249,7 +249,7 @@ bool SG_ReadIO_Pop(SG_READ_IO *const io)
     return true;
 }
 
-int32_t SG_ReadIO_GetArrayLength(SG_READ_IO *const io)
+int32_t JSON_ReadIO_GetArrayLength(JSON_READ_IO *const io)
 {
     JSON_ARRAY *const arr = JSON_ValueAsArray(io->current);
     if (arr == nullptr) {
@@ -259,7 +259,7 @@ int32_t SG_ReadIO_GetArrayLength(SG_READ_IO *const io)
     return arr->length;
 }
 
-bool SG_ReadIO_HasKey(SG_READ_IO *const io, const char *const key)
+bool JSON_ReadIO_HasKey(JSON_READ_IO *const io, const char *const key)
 {
     JSON_OBJECT *const obj = JSON_ValueAsObject(io->current);
     if (obj == nullptr) {
@@ -268,22 +268,22 @@ bool SG_ReadIO_HasKey(SG_READ_IO *const io, const char *const key)
     return JSON_ObjectContainsKey(obj, key);
 }
 
-JSON_OBJECT *SG_ReadIO_GetCurrentObject(SG_READ_IO *const io)
+JSON_OBJECT *JSON_ReadIO_GetCurrentObject(JSON_READ_IO *const io)
 {
     return JSON_ValueAsObject(io->current);
 }
 
-SG_READ_IO *SG_ReadIO_Create(JSON_VALUE *const root, const uint16_t sg_version)
+JSON_READ_IO *JSON_ReadIO_Create(JSON_VALUE *const root, const uint16_t version)
 {
-    SG_READ_IO *const io = Memory_Alloc(sizeof(*io));
+    JSON_READ_IO *const io = Memory_Alloc(sizeof(*io));
     io->stack[0] = root;
     io->current_pos = 0;
     io->current = io->stack[0];
-    io->sg_version = sg_version;
+    io->version = version;
     return io;
 }
 
-void SG_ReadIO_Destroy(SG_READ_IO *const io, const bool success)
+void JSON_ReadIO_Destroy(JSON_READ_IO *const io, const bool success)
 {
     if (!success && io->error_msg[0] != '\0') {
         LOG_ERROR("%s", io->error_msg);

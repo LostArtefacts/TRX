@@ -120,7 +120,7 @@ bool SG_File_LoadFromFile(MYFILE *const fp)
 
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
-    SG_READ_IO *const io = SG_ReadIO_Create(root, sg_version);
+    JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version);
 
     M_MUST(SG_File_LoadMisc(io));
     M_MUST(SG_File_LoadResumeInfoList(io));
@@ -136,7 +136,7 @@ bool SG_File_LoadFromFile(MYFILE *const fp)
     result = true;
 
 fail:
-    SG_ReadIO_Destroy(io, result);
+    JSON_ReadIO_Destroy(io, result);
     JSON_ValueFree(root);
     return result;
 }
@@ -144,7 +144,7 @@ fail:
 void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    SG_WRITE_IO *const io = SG_WriteIO_Create();
+    JSON_WRITE_IO *const io = JSON_WriteIO_Create();
 
     SG_File_DumpResumeInfoList(io);
     SG_File_DumpInventory(io);
@@ -157,8 +157,8 @@ void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     SG_File_DumpFlares(io);
     SG_File_DumpMisc(io);
 
-    M_SaveRaw(fp, SG_WriteIO_GetRoot(io), current_level->num);
-    SG_WriteIO_Destroy(io);
+    M_SaveRaw(fp, JSON_WriteIO_GetRoot(io), current_level->num);
+    JSON_WriteIO_Destroy(io);
 }
 
 bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
@@ -211,9 +211,9 @@ bool SG_File_LoadOnlyResumeInfo(MYFILE *const fp)
 {
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
-    SG_READ_IO *const io = SG_ReadIO_Create(root, sg_version);
+    JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version);
     const bool result = SG_File_LoadResumeInfoList(io);
-    SG_ReadIO_Destroy(io, result);
+    JSON_ReadIO_Destroy(io, result);
     JSON_ValueFree(root);
     return result;
 }

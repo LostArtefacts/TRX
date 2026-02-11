@@ -1,9 +1,9 @@
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
-#include <trx/game/savegame/file_read_io.h>
-#include <trx/game/savegame/file_write_io.h>
 #include <trx/game/sparks.h>
+#include <trx/json/util/read_io.h>
+#include <trx/json/util/write_io.h>
 
 typedef struct {
     int32_t life;
@@ -53,16 +53,16 @@ static void M_Control(const int16_t item_num)
     Output_AddDynamicLightRGB(item->pos, 16, (RGB_888) { rg, rg, b });
 }
 
-static void M_LoadPriv(ITEM *const item, SG_READ_IO *const io)
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SG_SHOULD(SG_READ_VALUE(io, "life", &p->life));
+    JSON_SHOULD(JSON_READ_VALUE(io, "life", &p->life));
 }
 
-static void M_SavePriv(const ITEM *const item, SG_WRITE_IO *const io)
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SGW_WRITE_VALUE(io, "life", p->life);
+    JSONW_WRITE_VALUE(io, "life", p->life);
 }
 
 static void M_Setup(OBJECT *const obj)
