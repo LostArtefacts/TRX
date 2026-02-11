@@ -8,7 +8,7 @@
 #include <trx/game/lara/hair.h>
 #include <trx/game/objects.h>
 #include <trx/game/shell.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/vector.h>

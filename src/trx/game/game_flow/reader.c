@@ -11,7 +11,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/shell.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>

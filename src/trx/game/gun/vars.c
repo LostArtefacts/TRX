@@ -4,7 +4,7 @@
 #include <trx/game/catalog.h>
 #include <trx/game/const.h>
 #include <trx/game/shell.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/log.h>
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};

@@ -1,7 +1,7 @@
 #include <trx/game/console/history.h>
 
 #include <trx/game/shell.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/utils.h>

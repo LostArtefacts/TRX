@@ -3,7 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/game_string.h>
 #include <trx/game/shell.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 

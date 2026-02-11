@@ -2,7 +2,7 @@
 #include <trx/game/game_string_table.h>
 #include <trx/game/game_string_table/priv.h>
 #include <trx/game/shell.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 
