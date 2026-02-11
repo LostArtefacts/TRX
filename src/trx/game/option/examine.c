@@ -1,6 +1,7 @@
 #include <trx/game/option/examine.h>
 
 #include <trx/game/const.h>
+#include <trx/game/game_string.h>
 #include <trx/game/input.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/names.h>
@@ -13,6 +14,7 @@
 
 typedef struct {
     OBJECT_ID object_id;
+    bool is_dialog_hidden;
     struct {
         bool is_ready;
         UI_TEXT_DIALOG_STATE *state;
@@ -20,6 +22,15 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
+
+static void M_DrawHideDialogFooter(void *const user_data)
+{
+    UI_BeginAnchor(0.5f, 0.5f);
+    UI_LabelFmt(
+        "\\{input look} %s",
+        user_data != nullptr ? (const char *)user_data : "");
+    UI_EndAnchor();
+}
 
 static bool M_ShouldShowDialog(const OBJECT_ID obj_id)
 {
@@ -43,6 +54,7 @@ static int32_t M_GetMaxRows(void)
 static void M_Init(M_PRIV *const p, const OBJECT_ID obj_id)
 {
     p->object_id = obj_id;
+    p->is_dialog_hidden = false;
     p->ui.is_ready = true;
     p->ui.state = UI_TextDialog_Init(
         UI_GetCanvasWidth() * 2.0 / 3.0f, M_GetMaxRows(), false);
@@ -94,16 +106,31 @@ void Option_Examine_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         M_Init(p, obj_id);
     }
 
-    const bool show_dialog = M_ShouldShowDialog(obj_id);
+    const bool has_dialog = M_ShouldShowDialog(obj_id);
+    const bool show_dialog = has_dialog && !p->is_dialog_hidden;
     if (show_dialog) {
         UI_TextDialog_Control(p->ui.state);
     }
 
-    if ((show_dialog && g_InputDB.look) || g_InputDB.menu_back
-        || g_InputDB.menu_confirm) {
+    if (g_InputDB.look) {
+        if (show_dialog) {
+            p->is_dialog_hidden = true;
+            return;
+        } else {
+            g_InputDB.menu_back = true;
+            g_InputDB.menu_confirm = false;
+            inv_item->has_manual_rot = false;
+            p->is_dialog_hidden = false;
+            M_Close(p);
+            return;
+        }
+    }
+
+    if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
         g_InputDB.menu_back = true;
         g_InputDB.menu_confirm = false;
         inv_item->has_manual_rot = false;
+        p->is_dialog_hidden = false;
         M_Close(p);
         return;
     }
@@ -116,10 +143,17 @@ void Option_Examine_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 void Option_Examine_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->ui.is_ready && M_ShouldShowDialog(p->object_id)) {
-        UI_TextDialog(
-            p->ui.state, Object_GetName(p->object_id),
-            Object_GetDescription(p->object_id));
+    if (p->ui.is_ready && M_ShouldShowDialog(p->object_id)
+        && !p->is_dialog_hidden) {
+        const char *const footer_label = GS(ACTION_HIDE_DIALOG);
+        UI_TextDialogEx(
+            p->ui.state,
+            (UI_TEXT_DIALOG_SETTINGS) {
+                .title_raw = Object_GetName(p->object_id),
+                .text_raw = Object_GetDescription(p->object_id),
+                .footer_func = M_DrawHideDialogFooter,
+                .footer_user_data = (void *)footer_label,
+            });
     }
 }
 

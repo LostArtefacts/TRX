@@ -129,11 +129,13 @@ void UI_TextDialog_Control(UI_TEXT_DIALOG_STATE *const s)
     }
 }
 
-void UI_TextDialog(
-    UI_TEXT_DIALOG_STATE *const s, const char *const title_raw,
-    const char *const text_raw)
+void UI_TextDialogEx(
+    UI_TEXT_DIALOG_STATE *const s, const UI_TEXT_DIALOG_SETTINGS settings)
 {
     ASSERT(s != nullptr);
+
+    const char *const title_raw = settings.title_raw;
+    const char *const text_raw = settings.text_raw;
 
     if (text_raw == nullptr || String_IsEmpty(text_raw)) {
         return;
@@ -143,6 +145,12 @@ void UI_TextDialog(
     M_UpdateText(s, text_raw);
 
     UI_BeginModal(0.5f, 0.5f);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .spacing = { .v = 5.0f },
+        .align = { .h = UI_STACK_H_ALIGN_SPAN },
+    });
+
     UI_BeginFrame(
         s->is_heavy ? UI_FRAME_DIALOG_BACKGROUND_HEAVY
                     : UI_FRAME_DIALOG_BACKGROUND);
@@ -192,5 +200,23 @@ void UI_TextDialog(
     UI_EndStack();
     UI_EndPad();
     UI_EndFrame();
+
+    if (settings.footer_func != nullptr) {
+        settings.footer_func(settings.footer_user_data);
+    }
+    UI_EndStack();
+
     UI_EndModal();
+}
+
+void UI_TextDialog(
+    UI_TEXT_DIALOG_STATE *const s, const char *const title_raw,
+    const char *const text_raw)
+{
+    UI_TextDialogEx(
+        s,
+        (UI_TEXT_DIALOG_SETTINGS) {
+            .title_raw = title_raw,
+            .text_raw = text_raw,
+        });
 }

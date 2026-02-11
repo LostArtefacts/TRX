@@ -4,6 +4,7 @@
     "language_name": "Gàidhlig",
     "game_strings": {
         "ACTION_EXAMINE_ITEM": "Sgrùd",
+        "ACTION_HIDE_DIALOG": "Falaich an còmhradh",
         "ACTION_RESET_DEFAULTS": "Ath-shuidhich",
         "ACTION_UNBIND": "Falamhaich",
         "ACTION_USE_ITEM": "Cleachd",
