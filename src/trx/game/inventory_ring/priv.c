@@ -20,7 +20,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#define RING_CAMERA_Y_OFFSET (-96)
+#define M_CAMERA_Y_OFFSET (-96)
+#define M_MANUAL_ROT_RESET_RATE 0.15
 
 typedef enum {
     // clang-format off
@@ -178,7 +179,7 @@ void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
     inv_item->meshes_drawn = inv_item->meshes_sel;
     inv_item->current_frame = 0;
     inv_item->goal_frame = 0;
-    inv_item->manual_rot = (XYZ_16) {};
+    inv_item->manual_rot = g_IDMatrix;
     inv_item->x_rot_pt = 0;
     inv_item->x_rot = inv_item->x_rot_nosel;
     inv_item->y_rot = 0;
@@ -195,7 +196,7 @@ void InvRing_GetView(
 {
     int16_t angles[2];
     Math_GetVectorAngles(
-        -ring->camera.pos.x, RING_CAMERA_Y_OFFSET - ring->camera.pos.y,
+        -ring->camera.pos.x, M_CAMERA_Y_OFFSET - ring->camera.pos.y,
         ring->radius - ring->camera.pos.z, angles);
     out_pos->x = ring->camera.pos.x;
     out_pos->y = ring->camera.pos.y;
@@ -689,9 +690,8 @@ void InvRing_UpdateInventoryItem(
 
         for (int32_t i = 0; i < num_frames; i++) {
             M_AdjustRot(&inv_item->y_rot, inv_item->y_rot_sel);
-            M_AdjustRot(&inv_item->manual_rot.x, 0);
-            M_AdjustRot(&inv_item->manual_rot.y, 0);
-            M_AdjustRot(&inv_item->manual_rot.z, 0);
+            Matrix_Slerp3x3_M(
+                &inv_item->manual_rot, &g_IDMatrix, M_MANUAL_ROT_RESET_RATE);
         }
     } else if (
         ring->number_of_objects == 1

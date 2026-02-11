@@ -3,7 +3,7 @@
 #include <trx/config/enum.h>
 #include <trx/game/fader.h>
 #include <trx/game/inventory_ring/enum.h>
-#include <trx/game/math.h>
+#include <trx/game/matrix.h>
 #include <trx/game/objects/types.h>
 
 #include <stdint.h>
@@ -44,7 +44,7 @@ typedef struct {
     int32_t y_trans;
     int32_t z_trans_sel;
     int32_t z_trans;
-    XYZ_16 manual_rot;
+    MATRIX manual_rot;
     bool has_manual_rot;
     uint32_t meshes_sel;
     uint32_t meshes_drawn;

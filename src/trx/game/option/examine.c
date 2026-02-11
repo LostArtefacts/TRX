@@ -2,6 +2,7 @@
 
 #include <trx/game/const.h>
 #include <trx/game/input.h>
+#include <trx/game/matrix.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/scaler.h>
 #include <trx/game/ui.h>
@@ -66,8 +67,14 @@ static void M_ApplyExamineRotation(INVENTORY_ITEM *const inv_item)
         return;
     }
     inv_item->has_manual_rot = true;
-    inv_item->manual_rot.y += yaw_input * M_EXAMINE_ROTATION_SPEED;
-    inv_item->manual_rot.x += pitch_input * M_EXAMINE_ROTATION_SPEED;
+    MATRIX delta = g_IDMatrix;
+    if (yaw_input != 0) {
+        Matrix_RotY_M(&delta, yaw_input * M_EXAMINE_ROTATION_SPEED);
+    }
+    if (pitch_input != 0) {
+        Matrix_RotX_M(&delta, pitch_input * M_EXAMINE_ROTATION_SPEED);
+    }
+    Matrix_Mul3x3_M(&inv_item->manual_rot, &delta, &inv_item->manual_rot);
 }
 
 bool Option_Examine_CanExamine(const OBJECT_ID obj_id)

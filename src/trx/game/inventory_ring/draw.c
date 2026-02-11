@@ -178,8 +178,7 @@ static void M_DrawItem(
 
     Matrix_RotX(-inv_item->x_rot_pt);
     Matrix_RotY(-view_rot_y);
-    Matrix_RotY(inv_item->manual_rot.y);
-    Matrix_RotX(inv_item->manual_rot.x);
+    Matrix_Mul3x3(&inv_item->manual_rot);
     Matrix_RotY(view_rot_y);
     Matrix_RotX(inv_item->x_rot_pt);
 

@@ -42,6 +42,12 @@ void Matrix_RotX(int16_t rx);
 void Matrix_RotY(int16_t ry);
 void Matrix_RotZ(int16_t rz);
 void Matrix_Rot16(XYZ_16 rotation);
+void Matrix_RotX_M(MATRIX *m, int16_t rx);
+void Matrix_RotY_M(MATRIX *m, int16_t ry);
+void Matrix_RotZ_M(MATRIX *m, int16_t rz);
+void Matrix_Mul3x3_M(MATRIX *out, const MATRIX *lhs, const MATRIX *rhs);
+void Matrix_Slerp3x3_M(MATRIX *lhs_out, const MATRIX *rhs, double t);
+void Matrix_Mul3x3(const MATRIX *rhs);
 
 void Matrix_TranslateRel(int32_t x, int32_t y, int32_t z);
 void Matrix_TranslateRel16(XYZ_16 offset);
