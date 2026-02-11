@@ -3,6 +3,7 @@
 - fixed Play Previous Level feature not restoring Lara's equipment correctly for pre-1.2 saves (regression from 1.2)
 - fixed Play Previous Level feature causing Lara to instantly die for pre-1.2 saves, when the Persistent Damage option is on (regression from 1.2)
     Note: for those 1.0/1.1 saves, this feature will restore her health to full, as it was not stored correctly. 1.2 will continue to restore the correct HP value.
+- fixed TR2 delayed music triggers not working (regression from 1.1)
 
 ## [1.2](https://github.com/LostArtefacts/TRX/compare/trx-1.1...trx-1.2) - 2026-02-11
 Showcase: https://www.youtube.com/watch?v=jeq8rQONaic
