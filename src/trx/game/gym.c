@@ -467,6 +467,9 @@ int32_t Gym_TrackManager_GetTargetPenaltyFrames(const GYM_TRACK_TYPE track)
 bool Gym_TrackManager_OnPadContact(
     const GYM_TRACK_TYPE track, const bool on_ground)
 {
+    if (g_TRVersion < 3) {
+        return true;
+    }
     if (track != GYM_TRACK_ASSAULT) {
         return true;
     }
