@@ -956,8 +956,18 @@ bool SG_File_LoadResumeInfoList(SG_READ_IO *const io)
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
         M_MUST(SG_PUSH_INDEX(io, i));
+        const bool has_prev_level = SG_ReadIO_HasKey(io, "prev_level");
         M_MUST(M_ReadResumeInfo(io, resume));
         M_MUST(SG_POP(io));
+
+        // TRX 1.0/1.1 did not store prev_level for resume entries. Infer the
+        // canonical predecessor so "Play previous levels" can carry loadout.
+        if (!has_prev_level && resume->prev_level == -1) {
+            const GF_LEVEL *const prev_level = GF_GetLevelBefore(level);
+            if (prev_level != nullptr) {
+                resume->prev_level = prev_level->num;
+            }
+        }
     }
     M_MUST(SG_POP(io));
     M_FINISH();
