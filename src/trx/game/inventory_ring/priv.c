@@ -522,7 +522,7 @@ void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
 void InvRing_DrawUI(INV_RING *const ring)
 {
     if (m_ShowExamine) {
-        UI_BeginModal(0.5f, 0.8f);
+        UI_BeginModal(0.5f, 0.85f);
         UI_BeginStack(UI_STACK_HORIZONTAL);
         UI_ButtonLabel(INPUT_ROLE_LOOK, GS(ACTION_EXAMINE_ITEM));
         if (m_ShowUseItemButton) {

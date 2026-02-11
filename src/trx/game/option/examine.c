@@ -1,5 +1,6 @@
 #include <trx/game/option/examine.h>
 
+#include <trx/config.h>
 #include <trx/game/const.h>
 #include <trx/game/game_string.h>
 #include <trx/game/input.h>
@@ -143,8 +144,11 @@ void Option_Examine_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 void Option_Examine_Draw(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->ui.is_ready && M_ShouldShowDialog(p->object_id)
-        && !p->is_dialog_hidden) {
+    if (!p->ui.is_ready) {
+        return;
+    }
+
+    if (M_ShouldShowDialog(p->object_id) && !p->is_dialog_hidden) {
         const char *const footer_label = GS(ACTION_HIDE_DIALOG);
         UI_TextDialogEx(
             p->ui.state,
@@ -154,6 +158,14 @@ void Option_Examine_Draw(void)
                 .footer_func = M_DrawHideDialogFooter,
                 .footer_user_data = (void *)footer_label,
             });
+    } else {
+        UI_BeginModal(0.5f, 0.85f);
+        UI_ButtonLabelEx(
+            g_Config.input.backend == INPUT_BACKEND_KEYBOARD
+                ? GS(MISC_DIRECTION_KEYS_KEYBOARD)
+                : GS(MISC_DIRECTION_KEYS_CONTROLLER),
+            GS(ACTION_ROTATE));
+        UI_EndModal();
     }
 }
 
