@@ -363,6 +363,37 @@ static void M_TranslateSet(MATRIX *const m, const XYZ_32 pos)
     m->_23 = pos.z << W2V_SHIFT;
 }
 
+void Matrix_Mul3x3_M(
+    MATRIX *const out, const MATRIX *const lhs, const MATRIX *const rhs)
+{
+#define L_MUL(r_, c_)                                                          \
+    (((lhs->_##r_##0 * rhs->_0##c_) + (lhs->_##r_##1 * rhs->_1##c_)            \
+      + (lhs->_##r_##2 * rhs->_2##c_))                                         \
+     >> W2V_SHIFT)
+
+    const int64_t r00 = L_MUL(0, 0);
+    const int64_t r01 = L_MUL(0, 1);
+    const int64_t r02 = L_MUL(0, 2);
+    const int64_t r10 = L_MUL(1, 0);
+    const int64_t r11 = L_MUL(1, 1);
+    const int64_t r12 = L_MUL(1, 2);
+    const int64_t r20 = L_MUL(2, 0);
+    const int64_t r21 = L_MUL(2, 1);
+    const int64_t r22 = L_MUL(2, 2);
+
+    out->_00 = r00;
+    out->_01 = r01;
+    out->_02 = r02;
+    out->_10 = r10;
+    out->_11 = r11;
+    out->_12 = r12;
+    out->_20 = r20;
+    out->_21 = r21;
+    out->_22 = r22;
+
+#undef L_MUL
+}
+
 static void M_InterpolateArm(MATRIX *const m, const MATRIX *const mi)
 {
     m->_00 = m[-2]._00;
@@ -516,6 +547,40 @@ void Matrix_Rot16(const XYZ_16 rotation)
 {
     M_RotYXZ(g_MatrixPtr, rotation);
     M_RotYXZ(g_WMatrixPtr, rotation);
+}
+
+void Matrix_RotX_M(MATRIX *const m, const int16_t angle)
+{
+    M_RotX(m, angle);
+}
+
+void Matrix_RotY_M(MATRIX *const m, const int16_t angle)
+{
+    M_RotY(m, angle);
+}
+
+void Matrix_RotZ_M(MATRIX *const m, const int16_t angle)
+{
+    M_RotZ(m, angle);
+}
+
+void Matrix_Slerp3x3_M(
+    MATRIX *const lhs_out, const MATRIX *const rhs, const double t)
+{
+    QUATERNION q1, q2, q;
+    M_MatrixToQuaternion(lhs_out, &q1);
+    M_MatrixToQuaternion(rhs, &q2);
+
+    double clamped_t = t;
+    CLAMP(clamped_t, 0.0, 1.0);
+    M_QuaternionSlerp(&q1, &q2, clamped_t, &q);
+    M_MatrixFromQuaternion(&q, lhs_out);
+}
+
+void Matrix_Mul3x3(const MATRIX *const rhs)
+{
+    Matrix_Mul3x3_M(g_MatrixPtr, g_MatrixPtr, rhs);
+    Matrix_Mul3x3_M(g_WMatrixPtr, g_WMatrixPtr, rhs);
 }
 
 void Matrix_TranslateRel(const int32_t dx, const int32_t dy, const int32_t dz)
