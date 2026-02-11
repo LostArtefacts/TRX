@@ -17,7 +17,8 @@ static bool M_ShouldShowScrollHints(const UI_WINDOW_SETTINGS *const settings)
     if (settings->scrollable == nullptr) {
         return false;
     }
-    return settings->scrollable->vis_items < settings->scrollable->max_items;
+    return settings->reserve_scroll_space
+        || settings->scrollable->vis_items < settings->scrollable->max_items;
 }
 
 static float M_GetOuterPad(void)
