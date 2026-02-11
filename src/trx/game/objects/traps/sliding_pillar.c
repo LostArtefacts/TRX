@@ -34,9 +34,9 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     if (JSON_SHOULD(JSON_PUSH(io, "linked"))) {
-        JSON_SHOULD(JSON_READ_VALUE(io, "x", &p->linked.pos.x));
-        JSON_SHOULD(JSON_READ_VALUE(io, "y", &p->linked.pos.y));
-        JSON_SHOULD(JSON_READ_VALUE(io, "z", &p->linked.pos.z));
+        JSON_SHOULD(JSON_READ(io, "x", &p->linked.pos.x));
+        JSON_SHOULD(JSON_READ(io, "y", &p->linked.pos.y));
+        JSON_SHOULD(JSON_READ(io, "z", &p->linked.pos.z));
         JSON_SHOULD(JSON_POP(io));
     }
 }
@@ -45,9 +45,9 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_PUSH_OBJECT(io);
-    JSONW_WRITE_VALUE(io, "x", p->linked.pos.x);
-    JSONW_WRITE_VALUE(io, "y", p->linked.pos.y);
-    JSONW_WRITE_VALUE(io, "z", p->linked.pos.z);
+    JSONW_WRITE(io, "x", p->linked.pos.x);
+    JSONW_WRITE(io, "y", p->linked.pos.y);
+    JSONW_WRITE(io, "z", p->linked.pos.z);
     JSONW_POP_AND_SET(io, "linked");
 }
 

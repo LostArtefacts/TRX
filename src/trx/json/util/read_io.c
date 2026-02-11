@@ -142,39 +142,39 @@ static bool M_ReadNumDirect_Double(JSON_READ_IO *const io, double *const target)
     return true;
 }
 
-bool JSON_ReadIO_ReadValueDirect(
+bool JSON_ReadIO_ReadDirect(
     JSON_READ_IO *const io, const JSON_READ_TYPE type, void *const target)
 {
     switch (type) {
-    case JSON_READ_BOOL:
+    case JSON_READ_TYPE_BOOL:
         return M_ReadBoolDirect(io, target);
-    case JSON_READ_S8:
+    case JSON_READ_TYPE_S8:
         return M_ReadNumDirect_S8(io, target);
-    case JSON_READ_U8:
+    case JSON_READ_TYPE_U8:
         return M_ReadNumDirect_U8(io, target);
-    case JSON_READ_S16:
+    case JSON_READ_TYPE_S16:
         return M_ReadNumDirect_S16(io, target);
-    case JSON_READ_U16:
+    case JSON_READ_TYPE_U16:
         return M_ReadNumDirect_U16(io, target);
-    case JSON_READ_S32:
+    case JSON_READ_TYPE_S32:
         return M_ReadNumDirect_S32(io, target);
-    case JSON_READ_U32:
+    case JSON_READ_TYPE_U32:
         return M_ReadNumDirect_U32(io, target);
-    case JSON_READ_DOUBLE:
+    case JSON_READ_TYPE_DOUBLE:
         return M_ReadNumDirect_Double(io, target);
     }
     M_SetError(io, "unsupported read type");
     return false;
 }
 
-bool JSON_ReadIO_ReadValue(
+bool JSON_ReadIO_Read(
     JSON_READ_IO *const io, const char *const key, const JSON_READ_TYPE type,
     void *const target)
 {
     if (!JSON_ReadIO_PushObject(io, key)) {
         return false;
     }
-    const bool success = JSON_ReadIO_ReadValueDirect(io, type, target);
+    const bool success = JSON_ReadIO_ReadDirect(io, type, target);
     JSON_ReadIO_Pop(io);
     return success;
 }

@@ -30,17 +30,17 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "x_rot_speed", &p->x_rot_speed));
-    JSON_SHOULD(JSON_READ_VALUE(io, "bounce_stage", &p->bounce_stage));
-    JSON_SHOULD(JSON_READ_VALUE(io, "destroyed", &p->destroyed));
+    JSON_SHOULD(JSON_READ(io, "x_rot_speed", &p->x_rot_speed));
+    JSON_SHOULD(JSON_READ(io, "bounce_stage", &p->bounce_stage));
+    JSON_SHOULD(JSON_READ(io, "destroyed", &p->destroyed));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "x_rot_speed", p->x_rot_speed);
-    JSONW_WRITE_VALUE(io, "bounce_stage", p->bounce_stage);
-    JSONW_WRITE_VALUE(io, "destroyed", p->destroyed);
+    JSONW_WRITE(io, "x_rot_speed", p->x_rot_speed);
+    JSONW_WRITE(io, "bounce_stage", p->bounce_stage);
+    JSONW_WRITE(io, "destroyed", p->destroyed);
 }
 
 static void M_ResetItemState(ITEM *const item, const OBJECT *const obj)

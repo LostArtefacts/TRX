@@ -71,25 +71,25 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "boat_turn", &p->boat_turn));
-    JSON_SHOULD(JSON_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
-    JSON_SHOULD(JSON_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
-    JSON_SHOULD(JSON_READ_VALUE(io, "tilt_angle", &p->tilt_angle));
-    JSON_SHOULD(JSON_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
-    JSON_SHOULD(JSON_READ_VALUE(io, "water", &p->water));
-    JSON_SHOULD(JSON_READ_VALUE(io, "pitch", &p->pitch));
+    JSON_SHOULD(JSON_READ(io, "boat_turn", &p->boat_turn));
+    JSON_SHOULD(JSON_READ(io, "left_fallspeed", &p->left_fallspeed));
+    JSON_SHOULD(JSON_READ(io, "right_fallspeed", &p->right_fallspeed));
+    JSON_SHOULD(JSON_READ(io, "tilt_angle", &p->tilt_angle));
+    JSON_SHOULD(JSON_READ(io, "extra_rotation", &p->extra_rotation));
+    JSON_SHOULD(JSON_READ(io, "water", &p->water));
+    JSON_SHOULD(JSON_READ(io, "pitch", &p->pitch));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "boat_turn", p->boat_turn);
-    JSONW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
-    JSONW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
-    JSONW_WRITE_VALUE(io, "tilt_angle", p->tilt_angle);
-    JSONW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
-    JSONW_WRITE_VALUE(io, "water", p->water);
-    JSONW_WRITE_VALUE(io, "pitch", p->pitch);
+    JSONW_WRITE(io, "boat_turn", p->boat_turn);
+    JSONW_WRITE(io, "left_fallspeed", p->left_fallspeed);
+    JSONW_WRITE(io, "right_fallspeed", p->right_fallspeed);
+    JSONW_WRITE(io, "tilt_angle", p->tilt_angle);
+    JSONW_WRITE(io, "extra_rotation", p->extra_rotation);
+    JSONW_WRITE(io, "water", p->water);
+    JSONW_WRITE(io, "pitch", p->pitch);
 }
 
 static int32_t M_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
