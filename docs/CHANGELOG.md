@@ -5,6 +5,10 @@
 - fixed not restoring Lara's back weapon mesh between levels when "remember guns" is enabled and a rifle-type weapon is equipped at level end
 - fixed a missing footstep sound when Lara starts to sprint
 
+**TR3**:
+- added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
+
+
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/trx-1.2...trx-1.2.1) - 2026-02-11
 - fixed title ring music inheriting the wrong audio volume (regression from 1.2)
 - fixed settings dialog changing size when cycling through non-scrollable tabs (regression from 1.2)
