@@ -3,6 +3,7 @@
 - changed Earthquake to support being reset
 - fixed NG+ always forcing Lara's default equipped gun at level start even when "remember guns between levels" is enabled (#4711)
 - fixed not restoring Lara's back weapon mesh between levels when "remember guns" is enabled and a rifle-type weapon is equipped at level end
+- fixed a missing footstep sound when Lara starts to sprint
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/trx-1.2...trx-1.2.1) - 2026-02-11
 - fixed title ring music inheriting the wrong audio volume (regression from 1.2)
