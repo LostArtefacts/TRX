@@ -74,6 +74,7 @@ static void M_HandleRequestedObject(INV_RING *const ring)
 void InvRing_AdjustMusicVolume(const INV_RING *const ring)
 {
     if (ring->mode == INV_TITLE_MODE) {
+        Music_SetVolume(g_Config.audio.music_volume);
         return;
     }
     const bool is_ambient =
