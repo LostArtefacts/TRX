@@ -7,7 +7,7 @@
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/json.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/utils.h>

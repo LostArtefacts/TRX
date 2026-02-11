@@ -3,7 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/catalog.h>
 #include <trx/game/shell.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/memory.h>
 
 CAMERA_INFO g_InvRing_OldCamera = {};

@@ -5,7 +5,7 @@
 #include <trx/debug.h>
 #include <trx/filesystem.h>
 #include <trx/game/console/history.h>
-#include <trx/json_file.h>
+#include <trx/json/util/file.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
