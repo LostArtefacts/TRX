@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2...develop) - ××××-××-××
+
+## [1.2](https://github.com/LostArtefacts/TRX/compare/trx-1.1...trx-1.2) - 2026-02-11
+Showcase: https://www.youtube.com/watch?v=jeq8rQONaic
 - added globe level selection mechanic
 - added Bubble Emitter control (#4629)
 - added dynamic light objects:
