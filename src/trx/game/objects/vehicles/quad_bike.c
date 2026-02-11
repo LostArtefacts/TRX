@@ -89,39 +89,37 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "velocity", &p->quad.velocity));
-    JSON_SHOULD(JSON_READ_VALUE(io, "front_rot", &p->quad.front_rot));
-    JSON_SHOULD(JSON_READ_VALUE(io, "rear_rot", &p->quad.rear_rot));
-    JSON_SHOULD(JSON_READ_VALUE(io, "revs", &p->quad.revs));
-    JSON_SHOULD(JSON_READ_VALUE(io, "engine_revs", &p->quad.engine_revs));
-    JSON_SHOULD(JSON_READ_VALUE(io, "track_mesh", &p->quad.track_mesh));
-    JSON_SHOULD(JSON_READ_VALUE(io, "skidoo_turn", &p->quad.skidoo_turn));
-    JSON_SHOULD(
-        JSON_READ_VALUE(io, "left_fall_speed", &p->quad.left_fall_speed));
-    JSON_SHOULD(
-        JSON_READ_VALUE(io, "right_fall_speed", &p->quad.right_fall_speed));
-    JSON_SHOULD(JSON_READ_VALUE(io, "momentum_angle", &p->quad.momentum_angle));
-    JSON_SHOULD(JSON_READ_VALUE(io, "extra_rotation", &p->quad.extra_rotation));
-    JSON_SHOULD(JSON_READ_VALUE(io, "pitch", &p->quad.pitch));
-    JSON_SHOULD(JSON_READ_VALUE(io, "flags", &p->quad.flags));
+    JSON_SHOULD(JSON_READ(io, "velocity", &p->quad.velocity));
+    JSON_SHOULD(JSON_READ(io, "front_rot", &p->quad.front_rot));
+    JSON_SHOULD(JSON_READ(io, "rear_rot", &p->quad.rear_rot));
+    JSON_SHOULD(JSON_READ(io, "revs", &p->quad.revs));
+    JSON_SHOULD(JSON_READ(io, "engine_revs", &p->quad.engine_revs));
+    JSON_SHOULD(JSON_READ(io, "track_mesh", &p->quad.track_mesh));
+    JSON_SHOULD(JSON_READ(io, "skidoo_turn", &p->quad.skidoo_turn));
+    JSON_SHOULD(JSON_READ(io, "left_fall_speed", &p->quad.left_fall_speed));
+    JSON_SHOULD(JSON_READ(io, "right_fall_speed", &p->quad.right_fall_speed));
+    JSON_SHOULD(JSON_READ(io, "momentum_angle", &p->quad.momentum_angle));
+    JSON_SHOULD(JSON_READ(io, "extra_rotation", &p->quad.extra_rotation));
+    JSON_SHOULD(JSON_READ(io, "pitch", &p->quad.pitch));
+    JSON_SHOULD(JSON_READ(io, "flags", &p->quad.flags));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "velocity", p->quad.velocity);
-    JSONW_WRITE_VALUE(io, "front_rot", p->quad.front_rot);
-    JSONW_WRITE_VALUE(io, "rear_rot", p->quad.rear_rot);
-    JSONW_WRITE_VALUE(io, "revs", p->quad.revs);
-    JSONW_WRITE_VALUE(io, "engine_revs", p->quad.engine_revs);
-    JSONW_WRITE_VALUE(io, "track_mesh", p->quad.track_mesh);
-    JSONW_WRITE_VALUE(io, "skidoo_turn", p->quad.skidoo_turn);
-    JSONW_WRITE_VALUE(io, "left_fall_speed", p->quad.left_fall_speed);
-    JSONW_WRITE_VALUE(io, "right_fall_speed", p->quad.right_fall_speed);
-    JSONW_WRITE_VALUE(io, "momentum_angle", p->quad.momentum_angle);
-    JSONW_WRITE_VALUE(io, "extra_rotation", p->quad.extra_rotation);
-    JSONW_WRITE_VALUE(io, "pitch", p->quad.pitch);
-    JSONW_WRITE_VALUE(io, "flags", p->quad.flags);
+    JSONW_WRITE(io, "velocity", p->quad.velocity);
+    JSONW_WRITE(io, "front_rot", p->quad.front_rot);
+    JSONW_WRITE(io, "rear_rot", p->quad.rear_rot);
+    JSONW_WRITE(io, "revs", p->quad.revs);
+    JSONW_WRITE(io, "engine_revs", p->quad.engine_revs);
+    JSONW_WRITE(io, "track_mesh", p->quad.track_mesh);
+    JSONW_WRITE(io, "skidoo_turn", p->quad.skidoo_turn);
+    JSONW_WRITE(io, "left_fall_speed", p->quad.left_fall_speed);
+    JSONW_WRITE(io, "right_fall_speed", p->quad.right_fall_speed);
+    JSONW_WRITE(io, "momentum_angle", p->quad.momentum_angle);
+    JSONW_WRITE(io, "extra_rotation", p->quad.extra_rotation);
+    JSONW_WRITE(io, "pitch", p->quad.pitch);
+    JSONW_WRITE(io, "flags", p->quad.flags);
 }
 
 static int32_t M_CountExtraRotationValues(const XYZ_BOOL flags)

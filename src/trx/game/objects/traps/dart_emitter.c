@@ -27,13 +27,13 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "fire_timer", &p->fire_timer));
+    JSON_SHOULD(JSON_READ(io, "fire_timer", &p->fire_timer));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "fire_timer", p->fire_timer);
+    JSONW_WRITE(io, "fire_timer", p->fire_timer);
 }
 
 static OBJECT_ID M_GetProjectileObjectID(const OBJECT_ID emitter_id)

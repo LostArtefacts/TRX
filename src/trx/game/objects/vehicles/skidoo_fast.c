@@ -6,25 +6,25 @@
 static void M_PrivLoad(ITEM *const item, JSON_READ_IO *const io)
 {
     SKIDOO_INFO *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "track_mesh", &p->track_mesh));
-    JSON_SHOULD(JSON_READ_VALUE(io, "skidoo_turn", &p->skidoo_turn));
-    JSON_SHOULD(JSON_READ_VALUE(io, "left_fallspeed", &p->left_fallspeed));
-    JSON_SHOULD(JSON_READ_VALUE(io, "right_fallspeed", &p->right_fallspeed));
-    JSON_SHOULD(JSON_READ_VALUE(io, "momentum_angle", &p->momentum_angle));
-    JSON_SHOULD(JSON_READ_VALUE(io, "extra_rotation", &p->extra_rotation));
-    JSON_SHOULD(JSON_READ_VALUE(io, "pitch", &p->pitch));
+    JSON_SHOULD(JSON_READ(io, "track_mesh", &p->track_mesh));
+    JSON_SHOULD(JSON_READ(io, "skidoo_turn", &p->skidoo_turn));
+    JSON_SHOULD(JSON_READ(io, "left_fallspeed", &p->left_fallspeed));
+    JSON_SHOULD(JSON_READ(io, "right_fallspeed", &p->right_fallspeed));
+    JSON_SHOULD(JSON_READ(io, "momentum_angle", &p->momentum_angle));
+    JSON_SHOULD(JSON_READ(io, "extra_rotation", &p->extra_rotation));
+    JSON_SHOULD(JSON_READ(io, "pitch", &p->pitch));
 }
 
 static void M_PrivSave(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const SKIDOO_INFO *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "track_mesh", p->track_mesh);
-    JSONW_WRITE_VALUE(io, "skidoo_turn", p->skidoo_turn);
-    JSONW_WRITE_VALUE(io, "left_fallspeed", p->left_fallspeed);
-    JSONW_WRITE_VALUE(io, "right_fallspeed", p->right_fallspeed);
-    JSONW_WRITE_VALUE(io, "momentum_angle", p->momentum_angle);
-    JSONW_WRITE_VALUE(io, "extra_rotation", p->extra_rotation);
-    JSONW_WRITE_VALUE(io, "pitch", p->pitch);
+    JSONW_WRITE(io, "track_mesh", p->track_mesh);
+    JSONW_WRITE(io, "skidoo_turn", p->skidoo_turn);
+    JSONW_WRITE(io, "left_fallspeed", p->left_fallspeed);
+    JSONW_WRITE(io, "right_fallspeed", p->right_fallspeed);
+    JSONW_WRITE(io, "momentum_angle", p->momentum_angle);
+    JSONW_WRITE(io, "extra_rotation", p->extra_rotation);
+    JSONW_WRITE(io, "pitch", p->pitch);
 }
 
 static void M_Setup(OBJECT *const obj)

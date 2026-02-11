@@ -135,40 +135,40 @@ static GAME_VECTOR M_GetLinked(const ITEM *const item)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "gravity_frames", &p->gravity_frames));
-    JSON_SHOULD(JSON_READ_VALUE(io, "is_push_pull", &p->is_push_pull));
-    JSON_SHOULD(JSON_READ_VALUE(io, "is_forced_moving", &p->is_forced_moving));
+    JSON_SHOULD(JSON_READ(io, "gravity_frames", &p->gravity_frames));
+    JSON_SHOULD(JSON_READ(io, "is_push_pull", &p->is_push_pull));
+    JSON_SHOULD(JSON_READ(io, "is_forced_moving", &p->is_forced_moving));
 
     if (JSON_SHOULD(JSON_PUSH(io, "linked"))) {
-        JSON_SHOULD(JSON_READ_VALUE(io, "x", &p->linked.pos.x));
-        JSON_SHOULD(JSON_READ_VALUE(io, "y", &p->linked.pos.y));
-        JSON_SHOULD(JSON_READ_VALUE(io, "z", &p->linked.pos.z));
+        JSON_SHOULD(JSON_READ(io, "x", &p->linked.pos.x));
+        JSON_SHOULD(JSON_READ(io, "y", &p->linked.pos.y));
+        JSON_SHOULD(JSON_READ(io, "z", &p->linked.pos.z));
         JSON_SHOULD(JSON_POP(io));
     }
 
-    JSON_SHOULD(JSON_READ_VALUE(io, "counter_rot_0", &p->extra_rotations[0]));
-    JSON_SHOULD(JSON_READ_VALUE(io, "counter_rot_1", &p->extra_rotations[1]));
-    JSON_SHOULD(JSON_READ_VALUE(io, "counter_rot_2", &p->extra_rotations[2]));
-    JSON_SHOULD(JSON_READ_VALUE(io, "original_rot", &p->original_rot));
+    JSON_SHOULD(JSON_READ(io, "counter_rot_0", &p->extra_rotations[0]));
+    JSON_SHOULD(JSON_READ(io, "counter_rot_1", &p->extra_rotations[1]));
+    JSON_SHOULD(JSON_READ(io, "counter_rot_2", &p->extra_rotations[2]));
+    JSON_SHOULD(JSON_READ(io, "original_rot", &p->original_rot));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "gravity_frames", p->gravity_frames);
-    JSONW_WRITE_VALUE(io, "is_push_pull", p->is_push_pull);
-    JSONW_WRITE_VALUE(io, "is_forced_moving", p->is_forced_moving);
+    JSONW_WRITE(io, "gravity_frames", p->gravity_frames);
+    JSONW_WRITE(io, "is_push_pull", p->is_push_pull);
+    JSONW_WRITE(io, "is_forced_moving", p->is_forced_moving);
 
     JSONW_PUSH_OBJECT(io);
-    JSONW_WRITE_VALUE(io, "x", p->linked.pos.x);
-    JSONW_WRITE_VALUE(io, "y", p->linked.pos.y);
-    JSONW_WRITE_VALUE(io, "z", p->linked.pos.z);
+    JSONW_WRITE(io, "x", p->linked.pos.x);
+    JSONW_WRITE(io, "y", p->linked.pos.y);
+    JSONW_WRITE(io, "z", p->linked.pos.z);
     JSONW_POP_AND_SET(io, "linked");
 
-    JSONW_WRITE_VALUE(io, "counter_rot_0", p->extra_rotations[0]);
-    JSONW_WRITE_VALUE(io, "counter_rot_1", p->extra_rotations[1]);
-    JSONW_WRITE_VALUE(io, "counter_rot_2", p->extra_rotations[2]);
-    JSONW_WRITE_VALUE(io, "original_rot", p->original_rot);
+    JSONW_WRITE(io, "counter_rot_0", p->extra_rotations[0]);
+    JSONW_WRITE(io, "counter_rot_1", p->extra_rotations[1]);
+    JSONW_WRITE(io, "counter_rot_2", p->extra_rotations[2]);
+    JSONW_WRITE(io, "original_rot", p->original_rot);
 }
 
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height)

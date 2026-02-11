@@ -20,15 +20,15 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "step", &p->step));
-    JSON_SHOULD(JSON_READ_VALUE(io, "animate", &p->animate));
+    JSON_SHOULD(JSON_READ(io, "step", &p->step));
+    JSON_SHOULD(JSON_READ(io, "animate", &p->animate));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "step", p->step);
-    JSONW_WRITE_VALUE(io, "animate", p->animate);
+    JSONW_WRITE(io, "step", p->step);
+    JSONW_WRITE(io, "animate", p->animate);
 }
 
 static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)

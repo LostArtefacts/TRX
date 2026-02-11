@@ -9,10 +9,10 @@
 typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
 typedef enum JSON_WRITE_TYPE {
-    JSON_WRITE_BOOL = 0,
-    JSON_WRITE_INT,
-    JSON_WRITE_DOUBLE,
-    JSON_WRITE_STRING,
+    JSON_WRITE_TYPE_BOOL = 0,
+    JSON_WRITE_TYPE_INT,
+    JSON_WRITE_TYPE_DOUBLE,
+    JSON_WRITE_TYPE_STRING,
 } JSON_WRITE_TYPE;
 
 JSON_WRITE_IO *JSON_WriteIO_Create(void);
@@ -51,17 +51,17 @@ void JSON_WriteIO_PushString(JSON_WRITE_IO *io, const char *value);
         const char *: JSON_WriteIO_PushString,                                 \
         char *: JSON_WriteIO_PushString)(io, value)
 
-#define JSONW_WRITE_VALUE(io, key, value)                                      \
+#define JSONW_WRITE(io, key, value)                                            \
     do {                                                                       \
         JSONW_PUSH_VALUE((io), (value));                                       \
         JSONW_POP_AND_SET((io), (key));                                        \
     } while (0)
 
-#define JSONW_WRITE_VALUE_NZ(io, key, value)                                   \
+#define JSONW_WRITE_NZ(io, key, value)                                         \
     do {                                                                       \
         typeof(value) _tmp = (value);                                          \
         unsigned char _zero[sizeof(_tmp)] = { 0 };                             \
         if (memcmp(&_tmp, _zero, sizeof(_tmp)) != 0) {                         \
-            JSONW_WRITE_VALUE(io, key, _tmp);                                  \
+            JSONW_WRITE(io, key, _tmp);                                        \
         }                                                                      \
     } while (0)

@@ -64,23 +64,23 @@ extern void TonyBoss_TriggerFireBall(
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "dropped_item", &p->dropped_item));
-    JSON_SHOULD(JSON_READ_VALUE(io, "ring_count", &p->ring_count));
-    JSON_SHOULD(JSON_READ_VALUE(io, "explode_count", &p->explode_count));
-    JSON_SHOULD(JSON_READ_VALUE(io, "dead", &p->dead));
-    JSON_SHOULD(JSON_READ_VALUE(io, "phase", &p->phase));
-    JSON_SHOULD(JSON_READ_VALUE(io, "attack_toggle", &p->attack_toggle));
+    JSON_SHOULD(JSON_READ(io, "dropped_item", &p->dropped_item));
+    JSON_SHOULD(JSON_READ(io, "ring_count", &p->ring_count));
+    JSON_SHOULD(JSON_READ(io, "explode_count", &p->explode_count));
+    JSON_SHOULD(JSON_READ(io, "dead", &p->dead));
+    JSON_SHOULD(JSON_READ(io, "phase", &p->phase));
+    JSON_SHOULD(JSON_READ(io, "attack_toggle", &p->attack_toggle));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "dropped_item", p->dropped_item);
-    JSONW_WRITE_VALUE(io, "ring_count", p->ring_count);
-    JSONW_WRITE_VALUE(io, "explode_count", p->explode_count);
-    JSONW_WRITE_VALUE(io, "dead", p->dead);
-    JSONW_WRITE_VALUE(io, "phase", p->phase);
-    JSONW_WRITE_VALUE(io, "attack_toggle", p->attack_toggle);
+    JSONW_WRITE(io, "dropped_item", p->dropped_item);
+    JSONW_WRITE(io, "ring_count", p->ring_count);
+    JSONW_WRITE(io, "explode_count", p->explode_count);
+    JSONW_WRITE(io, "dead", p->dead);
+    JSONW_WRITE(io, "phase", p->phase);
+    JSONW_WRITE(io, "attack_toggle", p->attack_toggle);
 }
 
 static void M_TriggerFlame(int16_t item_num, int32_t node)

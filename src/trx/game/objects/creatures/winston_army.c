@@ -47,15 +47,15 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "knockdown_timer", &p->knockdown_timer));
-    JSON_SHOULD(JSON_READ_VALUE(io, "spawn_checked", &p->spawn_checked));
+    JSON_SHOULD(JSON_READ(io, "knockdown_timer", &p->knockdown_timer));
+    JSON_SHOULD(JSON_READ(io, "spawn_checked", &p->spawn_checked));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "knockdown_timer", p->knockdown_timer);
-    JSONW_WRITE_VALUE(io, "spawn_checked", p->spawn_checked);
+    JSONW_WRITE(io, "knockdown_timer", p->knockdown_timer);
+    JSONW_WRITE(io, "spawn_checked", p->spawn_checked);
 }
 
 static bool M_RemoveNormalWinston(void)

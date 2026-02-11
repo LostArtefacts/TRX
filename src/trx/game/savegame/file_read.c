@@ -33,9 +33,9 @@ static bool M_ReadXYZ32(
 {
     ASSERT(target != nullptr);
     M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ_VALUE(io, "x", &target->x));
-    M_MUST(JSON_READ_VALUE(io, "y", &target->y));
-    M_MUST(JSON_READ_VALUE(io, "z", &target->z));
+    M_MUST(JSON_READ(io, "x", &target->x));
+    M_MUST(JSON_READ(io, "y", &target->y));
+    M_MUST(JSON_READ(io, "z", &target->z));
     M_MUST(JSON_POP(io));
     M_FINISH();
 }
@@ -45,9 +45,9 @@ static bool M_ReadXYZ16(
 {
     ASSERT(target != nullptr);
     M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ_VALUE(io, "x", &target->x));
-    M_MUST(JSON_READ_VALUE(io, "y", &target->y));
-    M_MUST(JSON_READ_VALUE(io, "z", &target->z));
+    M_MUST(JSON_READ(io, "x", &target->x));
+    M_MUST(JSON_READ(io, "y", &target->y));
+    M_MUST(JSON_READ(io, "z", &target->z));
     M_MUST(JSON_POP(io));
     M_FINISH();
 }
@@ -70,7 +70,7 @@ static bool M_ReadObjectID(
     JSON_READ_IO *const io, const char *const key, OBJECT_ID *const target)
 {
     int32_t game_id = 0;
-    M_MUST(JSON_READ_VALUE(io, key, &game_id));
+    M_MUST(JSON_READ(io, key, &game_id));
     *target = Object_FromGameID(game_id);
     if (*target == NO_OBJECT) {
         JSON_ReadIO_SetError(io, "unsupported object #%d", game_id);
@@ -84,10 +84,10 @@ static bool M_ReadArm(
 {
     ASSERT(arm != nullptr);
     M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ_VALUE(io, "anim_num", &arm->anim_num));
-    M_MUST(JSON_READ_VALUE(io, "frame_num", &arm->frame_num));
-    M_MUST(JSON_READ_VALUE(io, "lock", &arm->lock));
-    M_MUST(JSON_READ_VALUE(io, "flash_gun", &arm->flash_gun));
+    M_MUST(JSON_READ(io, "anim_num", &arm->anim_num));
+    M_MUST(JSON_READ(io, "frame_num", &arm->frame_num));
+    M_MUST(JSON_READ(io, "lock", &arm->lock));
+    M_MUST(JSON_READ(io, "flash_gun", &arm->flash_gun));
     M_MUST(M_ReadRot(io, &arm->rot));
     M_MUST(JSON_POP(io));
     M_FINISH();
@@ -98,7 +98,7 @@ static bool M_ReadAmmo(
 {
     ASSERT(ammo != nullptr);
     M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ_VALUE(io, "ammo", &ammo->ammo));
+    M_MUST(JSON_READ(io, "ammo", &ammo->ammo));
     M_MUST(JSON_POP(io));
     M_FINISH();
 }
@@ -108,13 +108,13 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     ASSERT(lara != nullptr);
 
-    if (!M_OPTIONAL(JSON_READ_VALUE(io, "item_number", &lara->item_num))) {
+    if (!M_OPTIONAL(JSON_READ(io, "item_number", &lara->item_num))) {
         // Introduced in TRX 1.2
-        M_MUST(JSON_READ_VALUE(io, "item_num", &lara->item_num));
+        M_MUST(JSON_READ(io, "item_num", &lara->item_num));
     }
-    M_MUST(JSON_READ_VALUE(io, "gun_status", &lara->gun_status));
-    M_MUST(JSON_READ_VALUE(io, "gun_type", &lara->gun_type));
-    M_MUST(JSON_READ_VALUE(io, "request_gun_type", &lara->request_gun_type));
+    M_MUST(JSON_READ(io, "gun_status", &lara->gun_status));
+    M_MUST(JSON_READ(io, "gun_type", &lara->gun_type));
+    M_MUST(JSON_READ(io, "request_gun_type", &lara->request_gun_type));
 
     // TRX <1.1
     if (g_TRVersion == 2 && JSON_ReadIO_GetVersion(io) < SG_VERSION_14) {
@@ -126,51 +126,50 @@ static bool M_ReadLara(JSON_READ_IO *const io)
         }
     }
 
-    M_MUST(JSON_READ_VALUE(io, "last_gun_type", &lara->last_gun_type));
-    M_MUST(JSON_READ_VALUE(io, "calc_fall_speed", &lara->calc_fall_speed));
-    M_MUST(JSON_READ_VALUE(io, "water_status", &lara->water_status));
-    M_MUST(JSON_READ_VALUE(io, "climb_status", &lara->climb_status));
-    M_SHOULD(JSON_READ_VALUE(io, "is_crouched", &lara->is_crouched));
-    M_SHOULD(JSON_READ_VALUE(io, "keep_crouched", &lara->keep_crouched));
-    M_MUST(JSON_READ_VALUE(io, "pose_count", &lara->pose_count));
-    M_MUST(JSON_READ_VALUE(io, "hit_frame", &lara->hit_frame));
-    M_MUST(JSON_READ_VALUE(io, "hit_direction", &lara->hit_direction));
-    M_MUST(JSON_READ_VALUE(io, "air", &lara->air));
-    M_MUST(JSON_READ_VALUE(io, "sprint_timer", &lara->sprint_timer));
-    M_MUST(JSON_READ_VALUE(io, "exposure_timer", &lara->exposure_timer));
-    M_SHOULD(JSON_READ_VALUE(io, "poison_timer", &lara->poison_timer));
-    M_MUST(JSON_READ_VALUE(io, "dive_count", &lara->dive_timer));
-    M_MUST(JSON_READ_VALUE(io, "death_count", &lara->death_timer));
-    M_MUST(JSON_READ_VALUE(io, "current_active", &lara->current.active));
-    M_SHOULD(JSON_READ_VALUE(io, "current_vel_x", &lara->current.vel.x));
-    M_SHOULD(JSON_READ_VALUE(io, "current_vel_z", &lara->current.vel.z));
-    M_MUST(JSON_READ_VALUE(io, "burn", &lara->burn));
+    M_MUST(JSON_READ(io, "last_gun_type", &lara->last_gun_type));
+    M_MUST(JSON_READ(io, "calc_fall_speed", &lara->calc_fall_speed));
+    M_MUST(JSON_READ(io, "water_status", &lara->water_status));
+    M_MUST(JSON_READ(io, "climb_status", &lara->climb_status));
+    M_SHOULD(JSON_READ(io, "is_crouched", &lara->is_crouched));
+    M_SHOULD(JSON_READ(io, "keep_crouched", &lara->keep_crouched));
+    M_MUST(JSON_READ(io, "pose_count", &lara->pose_count));
+    M_MUST(JSON_READ(io, "hit_frame", &lara->hit_frame));
+    M_MUST(JSON_READ(io, "hit_direction", &lara->hit_direction));
+    M_MUST(JSON_READ(io, "air", &lara->air));
+    M_MUST(JSON_READ(io, "sprint_timer", &lara->sprint_timer));
+    M_MUST(JSON_READ(io, "exposure_timer", &lara->exposure_timer));
+    M_SHOULD(JSON_READ(io, "poison_timer", &lara->poison_timer));
+    M_MUST(JSON_READ(io, "dive_count", &lara->dive_timer));
+    M_MUST(JSON_READ(io, "death_count", &lara->death_timer));
+    M_MUST(JSON_READ(io, "current_active", &lara->current.active));
+    M_SHOULD(JSON_READ(io, "current_vel_x", &lara->current.vel.x));
+    M_SHOULD(JSON_READ(io, "current_vel_z", &lara->current.vel.z));
+    M_MUST(JSON_READ(io, "burn", &lara->burn));
     // Introduced in TRX 1.2
-    M_SHOULD(JSON_READ_VALUE(io, "electric", &lara->electric));
+    M_SHOULD(JSON_READ(io, "electric", &lara->electric));
 
-    M_MUST(JSON_READ_VALUE(io, "mesh_effects", &lara->mesh_effects));
-    M_MUST(JSON_READ_VALUE(io, "extra_anim", &lara->extra_anim));
-    M_MUST(
-        JSON_READ_VALUE(io, "water_surface_dist", &lara->water_surface_dist));
+    M_MUST(JSON_READ(io, "mesh_effects", &lara->mesh_effects));
+    M_MUST(JSON_READ(io, "extra_anim", &lara->extra_anim));
+    M_MUST(JSON_READ(io, "water_surface_dist", &lara->water_surface_dist));
 
-    M_MUST(JSON_READ_VALUE(io, "hit_effect_count", &lara->hit_effect_count));
+    M_MUST(JSON_READ(io, "hit_effect_count", &lara->hit_effect_count));
     int16_t hit_effect = NO_EFFECT;
-    M_MUST(JSON_READ_VALUE(io, "hit_effect", &hit_effect));
+    M_MUST(JSON_READ(io, "hit_effect", &hit_effect));
     lara->hit_effect =
         hit_effect != NO_EFFECT && g_Config.gameplay.enable_enhanced_saves
         ? Effect_Get(hit_effect)
         : nullptr;
 
     const int16_t vehicle_idx = Lara_Vehicle_GetIndex();
-    if (!M_OPTIONAL(JSON_READ_VALUE(io, "vehicle_item_number", &vehicle_idx))) {
+    if (!M_OPTIONAL(JSON_READ(io, "vehicle_item_number", &vehicle_idx))) {
         // Introduced in TRX 1.2
-        M_MUST(JSON_READ_VALUE(io, "vehicle_item_num", &vehicle_idx));
+        M_MUST(JSON_READ(io, "vehicle_item_num", &vehicle_idx));
     }
     Lara_Vehicle_SetIndex(vehicle_idx);
 
-    M_MUST(JSON_READ_VALUE(io, "flare_age", &lara->flare.age));
-    M_MUST(JSON_READ_VALUE(io, "flare_frame", &lara->flare.frame_num));
-    M_MUST(JSON_READ_VALUE(io, "flare_control_left", &lara->flare.control));
+    M_MUST(JSON_READ(io, "flare_age", &lara->flare.age));
+    M_MUST(JSON_READ(io, "flare_frame", &lara->flare.frame_num));
+    M_MUST(JSON_READ(io, "flare_control_left", &lara->flare.control));
 
     // < TRX 1.2
     if (JSON_ReadIO_GetVersion(io) < SG_VERSION_15) {
@@ -187,7 +186,7 @@ static bool M_ReadLara(JSON_READ_IO *const io)
         for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
             M_MUST(JSON_PUSH_INDEX(io, i));
             int32_t idx = 0;
-            M_MUST(JSON_READ_VALUE_DIRECT(io, &idx));
+            M_MUST(JSON_READ_DIRECT(io, &idx));
             meshes[i] = Object_FindMesh(idx);
             M_MUST(JSON_POP(io));
         }
@@ -198,14 +197,14 @@ static bool M_ReadLara(JSON_READ_IO *const io)
         M_MUST(JSON_PUSH(io, "skin"));
         LARA_SKIN_TYPE skin_type = LARA_SKIN_TYPE_DEFAULT;
         bool skin_is_default = false;
-        M_MUST(JSON_READ_VALUE(io, "skin_type", &skin_type));
-        M_MUST(JSON_READ_VALUE(io, "skin_is_default", &skin_is_default));
+        M_MUST(JSON_READ(io, "skin_type", &skin_type));
+        M_MUST(JSON_READ(io, "skin_is_default", &skin_is_default));
         if (!skin_is_default) {
             Lara_Skin_SetType(skin_type);
         }
 
         bool holsters_visible = true;
-        M_MUST(JSON_READ_VALUE(io, "holsters_visible", &holsters_visible));
+        M_MUST(JSON_READ(io, "holsters_visible", &holsters_visible));
         Lara_Skin_SetHolstersVisible(holsters_visible);
 
         M_MUST(JSON_PUSH(io, "equipment"));
@@ -220,8 +219,8 @@ static bool M_ReadLara(JSON_READ_IO *const io)
             LARA_SKIN_EQUIPMENT_TYPE type = EQUIPMENT_TYPE_NONE;
             int32_t data = -1;
             M_MUST(JSON_PUSH_INDEX(io, i));
-            M_MUST(JSON_READ_VALUE(io, "type", &type));
-            M_MUST(JSON_READ_VALUE(io, "data", &data));
+            M_MUST(JSON_READ(io, "type", &type));
+            M_MUST(JSON_READ(io, "data", &data));
             M_MUST(JSON_POP(io));
 
             if (type == EQUIPMENT_TYPE_WEAPON) {
@@ -237,10 +236,10 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     }
 
     lara->target = nullptr;
-    M_MUST(JSON_READ_VALUE(io, "target_angle1", &lara->target_angles[0]));
-    M_MUST(JSON_READ_VALUE(io, "target_angle2", &lara->target_angles[1]));
-    M_MUST(JSON_READ_VALUE(io, "turn_rate", &lara->turn_rate));
-    M_MUST(JSON_READ_VALUE(io, "move_angle", &lara->move_angle));
+    M_MUST(JSON_READ(io, "target_angle1", &lara->target_angles[0]));
+    M_MUST(JSON_READ(io, "target_angle2", &lara->target_angles[1]));
+    M_MUST(JSON_READ(io, "turn_rate", &lara->turn_rate));
+    M_MUST(JSON_READ(io, "move_angle", &lara->move_angle));
     M_MUST(M_ReadXYZ16(io, "head_rot", &lara->head_rot));
     M_MUST(M_ReadXYZ16(io, "torso_rot", &lara->torso_rot));
     M_MUST(M_ReadXYZ32(io, "last_pos", &lara->last_pos));
@@ -269,20 +268,18 @@ static bool M_ReadLara(JSON_READ_IO *const io)
                 M_ReadObjectID(io, "object_id", &weapon_item->object_id))) {
             M_MUST(M_ReadObjectID(io, "obj_id", &weapon_item->object_id));
         }
-        M_MUST(JSON_READ_VALUE(io, "anim_num", &weapon_item->anim_num));
-        M_MUST(JSON_READ_VALUE(io, "frame_num", &weapon_item->frame_num));
-        M_MUST(JSON_READ_VALUE(
+        M_MUST(JSON_READ(io, "anim_num", &weapon_item->anim_num));
+        M_MUST(JSON_READ(io, "frame_num", &weapon_item->frame_num));
+        M_MUST(JSON_READ(
             io, "current_anim_state", &weapon_item->current_anim_state));
-        M_MUST(JSON_READ_VALUE(
-            io, "goal_anim_state", &weapon_item->goal_anim_state));
+        M_MUST(JSON_READ(io, "goal_anim_state", &weapon_item->goal_anim_state));
         M_MUST(JSON_POP(io));
     }
 
     M_MUST(JSON_PUSH(io, "interact_target"));
-    M_MUST(JSON_READ_VALUE(io, "item_num", &lara->interact_target.item_num));
-    M_MUST(
-        JSON_READ_VALUE(io, "move_count", &lara->interact_target.move_count));
-    M_MUST(JSON_READ_VALUE(io, "is_moving", &lara->interact_target.is_moving));
+    M_MUST(JSON_READ(io, "item_num", &lara->interact_target.item_num));
+    M_MUST(JSON_READ(io, "move_count", &lara->interact_target.move_count));
+    M_MUST(JSON_READ(io, "is_moving", &lara->interact_target.is_moving));
     M_MUST(JSON_POP(io));
 
     M_FINISH();
@@ -357,10 +354,10 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
     if (obj->save_position && JSON_ReadIO_HasKey(io, "room_num")) {
         M_MUST(M_ReadPos(io, &item->pos));
         M_MUST(M_ReadRot(io, &item->rot));
-        M_MUST(JSON_READ_VALUE(io, "speed", &item->speed));
-        M_MUST(JSON_READ_VALUE(io, "fall_speed", &item->fall_speed));
+        M_MUST(JSON_READ(io, "speed", &item->speed));
+        M_MUST(JSON_READ(io, "fall_speed", &item->fall_speed));
         int16_t room_num = NO_ROOM;
-        M_MUST(JSON_READ_VALUE(io, "room_num", &room_num));
+        M_MUST(JSON_READ(io, "room_num", &room_num));
         if (room_num != NO_ROOM) {
             Item_UpdateRoom(item_num, room_num);
         }
@@ -368,14 +365,12 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
 
     if (obj->save_anim) {
         // TRX >= 1.1 animated puzzle holes became animated
-        M_SHOULD(
-            JSON_READ_VALUE(io, "current_anim", &item->current_anim_state));
-        M_SHOULD(JSON_READ_VALUE(io, "goal_anim", &item->goal_anim_state));
-        M_SHOULD(
-            JSON_READ_VALUE(io, "required_anim", &item->required_anim_state));
-        M_SHOULD(JSON_READ_VALUE(io, "anim_num", &item->anim_num));
-        M_SHOULD(JSON_READ_VALUE(io, "frame_num", &item->frame_num));
-        M_SHOULD(JSON_READ_VALUE(io, "prev_frame_num", &item->prev_frame_num));
+        M_SHOULD(JSON_READ(io, "current_anim", &item->current_anim_state));
+        M_SHOULD(JSON_READ(io, "goal_anim", &item->goal_anim_state));
+        M_SHOULD(JSON_READ(io, "required_anim", &item->required_anim_state));
+        M_SHOULD(JSON_READ(io, "anim_num", &item->anim_num));
+        M_SHOULD(JSON_READ(io, "frame_num", &item->frame_num));
+        M_SHOULD(JSON_READ(io, "prev_frame_num", &item->prev_frame_num));
 
         // Prevent issues with pre-injection saves and Lara's enhanced
         // animation set.
@@ -386,70 +381,64 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
     }
 
     if (obj->save_hitpoints) {
-        M_MUST(JSON_READ_VALUE(io, "hitpoints", &item->hit_points));
-        M_MUST(JSON_READ_VALUE(io, "max_hitpoints", &item->max_hit_points));
+        M_MUST(JSON_READ(io, "hitpoints", &item->hit_points));
+        M_MUST(JSON_READ(io, "max_hitpoints", &item->max_hit_points));
     }
 
     if (obj->save_flags) {
-        M_MUST(JSON_READ_VALUE(io, "flags", &item->flags));
-        M_MUST(JSON_READ_VALUE(io, "timer", &item->timer));
+        M_MUST(JSON_READ(io, "flags", &item->flags));
+        M_MUST(JSON_READ(io, "timer", &item->timer));
         ITEM_STATUS saved_status = item->status;
-        M_MUST(JSON_READ_VALUE(io, "status", &saved_status));
+        M_MUST(JSON_READ(io, "status", &saved_status));
 
         if ((item->flags & IF_KILLED) != 0) {
             Item_Kill(item_num);
             item->status = saved_status;
         } else {
             bool is_active;
-            M_MUST(JSON_READ_VALUE(io, "active", &is_active));
+            M_MUST(JSON_READ(io, "active", &is_active));
             if (is_active && !item->active) {
                 Item_AddActive(item_num);
             }
             item->status = saved_status;
-            M_MUST(JSON_READ_VALUE(io, "gravity", &item->gravity));
+            M_MUST(JSON_READ(io, "gravity", &item->gravity));
             // Introduced in TRX 1.2
-            M_OPTIONAL(JSON_READ_VALUE(io, "collidable", &item->collidable));
+            M_OPTIONAL(JSON_READ(io, "collidable", &item->collidable));
         }
         // Introduced in TRX 1.2, not written if zero
-        M_OPTIONAL(JSON_READ_VALUE(io, "ai_bits", &item->ai_bits));
-        M_OPTIONAL(JSON_READ_VALUE(io, "ai_tag", &item->ai_tag));
+        M_OPTIONAL(JSON_READ(io, "ai_bits", &item->ai_bits));
+        M_OPTIONAL(JSON_READ(io, "ai_tag", &item->ai_tag));
 
         bool intelligent = obj->intelligent;
         // Introduced in TRX 1.2
-        M_SHOULD(JSON_READ_VALUE(io, "intelligent", &intelligent));
+        M_SHOULD(JSON_READ(io, "intelligent", &intelligent));
         if (intelligent) {
             LOT_EnableBaddieAI(item_num, true);
             CREATURE *const creature = item->creature_data;
             if (creature != nullptr) {
-                M_MUST(
-                    JSON_READ_VALUE(io, "head_rot", &creature->head_rotation));
-                M_MUST(
-                    JSON_READ_VALUE(io, "neck_rot", &creature->neck_rotation));
-                M_MUST(
-                    JSON_READ_VALUE(io, "max_turn", &creature->maximum_turn));
-                M_MUST(JSON_READ_VALUE(io, "creature_flags", &creature->flags));
-                M_MUST(JSON_READ_VALUE(io, "creature_mood", &creature->mood));
+                M_MUST(JSON_READ(io, "head_rot", &creature->head_rotation));
+                M_MUST(JSON_READ(io, "neck_rot", &creature->neck_rotation));
+                M_MUST(JSON_READ(io, "max_turn", &creature->maximum_turn));
+                M_MUST(JSON_READ(io, "creature_flags", &creature->flags));
+                M_MUST(JSON_READ(io, "creature_mood", &creature->mood));
                 if (M_SHOULD(JSON_PUSH(io, "creature"))) {
                     // Introduced in TRX 1.2
-                    M_MUST(JSON_READ_VALUE(io, "alerted", &creature->alerted));
+                    M_MUST(JSON_READ(io, "alerted", &creature->alerted));
+                    M_MUST(JSON_READ(io, "head_left", &creature->head_left));
+                    M_MUST(JSON_READ(io, "head_right", &creature->head_right));
                     M_MUST(
-                        JSON_READ_VALUE(io, "head_left", &creature->head_left));
-                    M_MUST(JSON_READ_VALUE(
-                        io, "head_right", &creature->head_right));
-                    M_MUST(JSON_READ_VALUE(
-                        io, "reached_goal", &creature->reached_goal));
+                        JSON_READ(io, "reached_goal", &creature->reached_goal));
+                    M_MUST(JSON_READ(io, "patrol_2", &creature->patrol_2));
                     M_MUST(
-                        JSON_READ_VALUE(io, "patrol_2", &creature->patrol_2));
-                    M_MUST(JSON_READ_VALUE(
-                        io, "hurt_by_lara", &creature->hurt_by_lara));
-                    M_MUST(JSON_READ_VALUE(
+                        JSON_READ(io, "hurt_by_lara", &creature->hurt_by_lara));
+                    M_MUST(JSON_READ(
                         io, "damage_from_lara", &creature->damage_from_lara));
                     M_MUST(JSON_PUSH(io, "joint_rotations"));
                     for (int32_t i = 0; i < 4; i++) {
                         M_MUST(JSON_PUSH_INDEX(io, i));
                         // Introduced in TRX 1.2
-                        M_SHOULD(JSON_READ_VALUE_DIRECT(
-                            io, &creature->joint_rotation[i]));
+                        M_SHOULD(
+                            JSON_READ_DIRECT(io, &creature->joint_rotation[i]));
                         M_MUST(JSON_POP(io));
                     }
                     M_MUST(JSON_POP(io));
@@ -484,17 +473,15 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
                     item->carried_item = carried_item;
                 }
                 // Introduced in TRX 1.2
-                M_SHOULD(
-                    JSON_READ_VALUE(io, "spawn_num", &carried_item->spawn_num));
+                M_SHOULD(JSON_READ(io, "spawn_num", &carried_item->spawn_num));
             }
 
             M_MUST(M_ReadObjectID(io, "object_id", &carried_item->object_id));
             M_MUST(M_ReadPos(io, &carried_item->pos));
-            M_MUST(JSON_READ_VALUE(io, "y_rot", &carried_item->rot.y));
-            M_MUST(JSON_READ_VALUE(io, "room_num", &carried_item->room_num));
-            M_MUST(
-                JSON_READ_VALUE(io, "fall_speed", &carried_item->fall_speed));
-            M_MUST(JSON_READ_VALUE(io, "status", &carried_item->status));
+            M_MUST(JSON_READ(io, "y_rot", &carried_item->rot.y));
+            M_MUST(JSON_READ(io, "room_num", &carried_item->room_num));
+            M_MUST(JSON_READ(io, "fall_speed", &carried_item->fall_speed));
+            M_MUST(JSON_READ(io, "status", &carried_item->status));
 
             if (carried_item->status == DS_CARRIED
                 && carried_item->spawn_num != NO_ITEM) {
@@ -535,9 +522,9 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
 static bool M_ReadEffect(JSON_READ_IO *const io)
 {
     int32_t room_num = NO_ROOM;
-    if (!M_OPTIONAL(JSON_READ_VALUE(io, "room_number", &room_num))) {
+    if (!M_OPTIONAL(JSON_READ(io, "room_number", &room_num))) {
         // Introduced in TRX 1.2
-        M_MUST(JSON_READ_VALUE(io, "room_num", &room_num));
+        M_MUST(JSON_READ(io, "room_num", &room_num));
     }
 
     const int16_t effect_num = Effect_Create(room_num);
@@ -552,14 +539,14 @@ static bool M_ReadEffect(JSON_READ_IO *const io)
         // Introduced in TRX 1.2
         M_MUST(M_ReadObjectID(io, "object_id", &effect->object_id));
     }
-    M_MUST(JSON_READ_VALUE(io, "speed", &effect->speed));
-    M_MUST(JSON_READ_VALUE(io, "fall_speed", &effect->fall_speed));
-    if (!M_OPTIONAL(JSON_READ_VALUE(io, "frame_number", &effect->frame_num))) {
+    M_MUST(JSON_READ(io, "speed", &effect->speed));
+    M_MUST(JSON_READ(io, "fall_speed", &effect->fall_speed));
+    if (!M_OPTIONAL(JSON_READ(io, "frame_number", &effect->frame_num))) {
         // Introduced in TRX 1.2
-        M_MUST(JSON_READ_VALUE(io, "frame_num", &effect->frame_num));
+        M_MUST(JSON_READ(io, "frame_num", &effect->frame_num));
     }
-    M_MUST(JSON_READ_VALUE(io, "counter", &effect->counter));
-    M_MUST(JSON_READ_VALUE(io, "shade", &effect->shade));
+    M_MUST(JSON_READ(io, "counter", &effect->counter));
+    M_MUST(JSON_READ(io, "shade", &effect->shade));
     M_FINISH();
 }
 
@@ -570,12 +557,12 @@ static bool M_ReadFlare(JSON_READ_IO *const io)
     item->object_id = O_FLARE_ITEM;
     M_MUST(M_ReadPos(io, &item->pos));
     M_MUST(M_ReadRot(io, &item->rot));
-    M_MUST(JSON_READ_VALUE(io, "room_num", &item->room_num));
+    M_MUST(JSON_READ(io, "room_num", &item->room_num));
     Item_Initialise(item_num);
-    M_MUST(JSON_READ_VALUE(io, "speed", &item->speed));
-    M_MUST(JSON_READ_VALUE(io, "fall_speed", &item->fall_speed));
+    M_MUST(JSON_READ(io, "speed", &item->speed));
+    M_MUST(JSON_READ(io, "fall_speed", &item->fall_speed));
     int32_t flare_age;
-    M_MUST(JSON_READ_VALUE(io, "age", &flare_age));
+    M_MUST(JSON_READ(io, "age", &flare_age));
     FlareItem_SetAge(item, flare_age & 0x7FFF, (flare_age & 0x8000) != 0);
     Item_AddActive(item_num);
     M_FINISH();
@@ -593,7 +580,7 @@ static bool M_ShouldLoadMusicTimestamp(
 static bool M_ReadMusicTracks(JSON_READ_IO *const io)
 {
     MUSIC_ID ambient_track = MX_INACTIVE;
-    M_MUST(JSON_READ_VALUE(io, "current_ambient", &ambient_track));
+    M_MUST(JSON_READ(io, "current_ambient", &ambient_track));
 
     Music_Stop();
     if (ambient_track != MX_INACTIVE) {
@@ -614,9 +601,9 @@ static bool M_ReadMusicTracks(JSON_READ_IO *const io)
             MUSIC_PLAY_MODE mode = MPM_ONCE;
             double timestamp = -1.0;
             M_MUST(JSON_PUSH_INDEX(io, i));
-            M_MUST(JSON_READ_VALUE(io, "track", &track_id));
-            M_MUST(JSON_READ_VALUE(io, "mode", &mode));
-            M_MUST(JSON_READ_VALUE(io, "timestamp", &timestamp));
+            M_MUST(JSON_READ(io, "track", &track_id));
+            M_MUST(JSON_READ(io, "mode", &mode));
+            M_MUST(JSON_READ(io, "timestamp", &timestamp));
             M_MUST(JSON_POP(io));
 
             if (track_id == MX_INACTIVE) {
@@ -638,8 +625,8 @@ static bool M_ReadMusicTracks(JSON_READ_IO *const io)
     } else {
         MUSIC_ID current_track = MX_INACTIVE;
         double timestamp = -1.0;
-        M_MUST(JSON_READ_VALUE(io, "current_track", &current_track));
-        M_MUST(JSON_READ_VALUE(io, "timestamp", &timestamp));
+        M_MUST(JSON_READ(io, "current_track", &current_track));
+        M_MUST(JSON_READ(io, "timestamp", &timestamp));
 
         const bool is_ambient =
             current_track != MX_INACTIVE && current_track == ambient_track;
@@ -681,7 +668,7 @@ static bool M_ReadMusicTrackFlags(JSON_READ_IO *const io)
     for (int32_t i = 0; i < count; i++) {
         M_MUST(JSON_PUSH_INDEX(io, i));
         uint32_t flags;
-        M_MUST(JSON_READ_VALUE_DIRECT(io, &flags));
+        M_MUST(JSON_READ_DIRECT(io, &flags));
         Music_SetTrackFlags(i, flags);
         M_MUST(JSON_POP(io));
     }
@@ -692,12 +679,11 @@ static bool M_ReadMusicTrackFlags(JSON_READ_IO *const io)
 static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
 {
     resume->lara_hitpoints = g_Config.gameplay.start_lara_hitpoints;
-    M_MUST(JSON_READ_VALUE(io, "lara_hitpoints", &resume->lara_hitpoints));
+    M_MUST(JSON_READ(io, "lara_hitpoints", &resume->lara_hitpoints));
+    M_MUST(JSON_READ(io, "gun_status", &resume->gun_status)); // LGS_ARMLESS
     M_MUST(
-        JSON_READ_VALUE(io, "gun_status", &resume->gun_status)); // LGS_ARMLESS
-    M_MUST(JSON_READ_VALUE(
-        io, "gun_type", &resume->equipped_gun_type)); // LGT_UNARMED
-    M_MUST(JSON_READ_VALUE(
+        JSON_READ(io, "gun_type", &resume->equipped_gun_type)); // LGT_UNARMED
+    M_MUST(JSON_READ(
         io, "holsters_gun_type",
         &resume->holsters_gun_type)); // LGT_UNKNOWN
 
@@ -711,74 +697,68 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
         }
     }
 
-    M_MUST(JSON_READ_VALUE(
-        io, "back_gun_type", &resume->back_gun_type)); // LGT_UNKNOWN
-    M_MUST(JSON_READ_VALUE(io, "costume", &resume->flags.costume));
+    M_MUST(
+        JSON_READ(io, "back_gun_type", &resume->back_gun_type)); // LGT_UNKNOWN
+    M_MUST(JSON_READ(io, "costume", &resume->flags.costume));
 
-    M_MUST(JSON_READ_VALUE(io, "pistol_ammo", &resume->pistol_ammo));
-    M_MUST(JSON_READ_VALUE(io, "uzi_ammo", &resume->uzi_ammo));
-    M_MUST(JSON_READ_VALUE(io, "shotgun_ammo", &resume->shotgun_ammo));
-    M_MUST(JSON_READ_VALUE(io, "magnum_ammo", &resume->magnum_ammo));
+    M_MUST(JSON_READ(io, "pistol_ammo", &resume->pistol_ammo));
+    M_MUST(JSON_READ(io, "uzi_ammo", &resume->uzi_ammo));
+    M_MUST(JSON_READ(io, "shotgun_ammo", &resume->shotgun_ammo));
+    M_MUST(JSON_READ(io, "magnum_ammo", &resume->magnum_ammo));
     // Introduced in TRX 1.1
-    M_SHOULD(JSON_READ_VALUE(io, "autos_ammo", &resume->autos_ammo));
-    M_SHOULD(
-        JSON_READ_VALUE(io, "desert_eagle_ammo", &resume->desert_eagle_ammo));
+    M_SHOULD(JSON_READ(io, "autos_ammo", &resume->autos_ammo));
+    M_SHOULD(JSON_READ(io, "desert_eagle_ammo", &resume->desert_eagle_ammo));
 
-    M_MUST(JSON_READ_VALUE(io, "m16_ammo", &resume->m16_ammo));
-    M_MUST(JSON_READ_VALUE(io, "grenade_ammo", &resume->grenade_ammo));
-    M_MUST(JSON_READ_VALUE(io, "harpoon_ammo", &resume->harpoon_ammo));
-    M_MUST(JSON_READ_VALUE(io, "num_medis", &resume->small_medipacks));
-    M_MUST(JSON_READ_VALUE(io, "num_big_medis", &resume->large_medipacks));
-    M_MUST(JSON_READ_VALUE(io, "num_flares", &resume->flares));
-    M_MUST(JSON_READ_VALUE(io, "num_scions", &resume->num_scions));
+    M_MUST(JSON_READ(io, "m16_ammo", &resume->m16_ammo));
+    M_MUST(JSON_READ(io, "grenade_ammo", &resume->grenade_ammo));
+    M_MUST(JSON_READ(io, "harpoon_ammo", &resume->harpoon_ammo));
+    M_MUST(JSON_READ(io, "num_medis", &resume->small_medipacks));
+    M_MUST(JSON_READ(io, "num_big_medis", &resume->large_medipacks));
+    M_MUST(JSON_READ(io, "num_flares", &resume->flares));
+    M_MUST(JSON_READ(io, "num_scions", &resume->num_scions));
 
     // Introduced in TRX 1.2
-    M_SHOULD(
-        JSON_READ_VALUE(io, "num_quest_item_1", &resume->num_quest_item_1));
-    M_SHOULD(
-        JSON_READ_VALUE(io, "num_quest_item_2", &resume->num_quest_item_2));
-    M_SHOULD(
-        JSON_READ_VALUE(io, "num_quest_item_3", &resume->num_quest_item_3));
-    M_SHOULD(
-        JSON_READ_VALUE(io, "num_quest_item_4", &resume->num_quest_item_4));
+    M_SHOULD(JSON_READ(io, "num_quest_item_1", &resume->num_quest_item_1));
+    M_SHOULD(JSON_READ(io, "num_quest_item_2", &resume->num_quest_item_2));
+    M_SHOULD(JSON_READ(io, "num_quest_item_3", &resume->num_quest_item_3));
+    M_SHOULD(JSON_READ(io, "num_quest_item_4", &resume->num_quest_item_4));
 
-    M_MUST(JSON_READ_VALUE(io, "available", &resume->flags.available));
+    M_MUST(JSON_READ(io, "available", &resume->flags.available));
 
     // Introduced in TRX 1.2
     resume->level_completed = false;
     resume->prev_level = -1;
     resume->hurt_allies = false;
-    M_SHOULD(JSON_READ_VALUE(io, "level_completed", &resume->level_completed));
-    M_SHOULD(JSON_READ_VALUE(io, "prev_level", &resume->prev_level));
-    M_SHOULD(JSON_READ_VALUE(io, "hurt_allies", &resume->hurt_allies));
+    M_SHOULD(JSON_READ(io, "level_completed", &resume->level_completed));
+    M_SHOULD(JSON_READ(io, "prev_level", &resume->prev_level));
+    M_SHOULD(JSON_READ(io, "hurt_allies", &resume->hurt_allies));
 
-    M_MUST(JSON_READ_VALUE(io, "has_pistols", &resume->flags.has_pistols));
-    M_MUST(JSON_READ_VALUE(io, "has_shotgun", &resume->flags.has_shotgun));
-    M_MUST(JSON_READ_VALUE(io, "has_uzis", &resume->flags.has_uzis));
-    M_MUST(JSON_READ_VALUE(io, "has_m16", &resume->flags.has_m16));
-    M_MUST(JSON_READ_VALUE(io, "has_grenade", &resume->flags.has_grenade));
-    M_MUST(JSON_READ_VALUE(io, "has_harpoon", &resume->flags.has_harpoon));
+    M_MUST(JSON_READ(io, "has_pistols", &resume->flags.has_pistols));
+    M_MUST(JSON_READ(io, "has_shotgun", &resume->flags.has_shotgun));
+    M_MUST(JSON_READ(io, "has_uzis", &resume->flags.has_uzis));
+    M_MUST(JSON_READ(io, "has_m16", &resume->flags.has_m16));
+    M_MUST(JSON_READ(io, "has_grenade", &resume->flags.has_grenade));
+    M_MUST(JSON_READ(io, "has_harpoon", &resume->flags.has_harpoon));
 
     // Introduced in TRX 1.1
-    M_MUST(JSON_READ_VALUE(io, "has_magnums", &resume->flags.has_magnums));
-    M_SHOULD(JSON_READ_VALUE(io, "has_autos", &resume->flags.has_autos));
-    M_SHOULD(JSON_READ_VALUE(
-        io, "has_desert_eagle", &resume->flags.has_desert_eagle));
-    M_SHOULD(JSON_READ_VALUE(io, "has_mp5", &resume->flags.has_mp5));
-    M_SHOULD(JSON_READ_VALUE(io, "mp5_ammo", &resume->mp5_ammo));
-    M_SHOULD(JSON_READ_VALUE(io, "has_rocket", &resume->flags.has_rocket));
-    M_SHOULD(JSON_READ_VALUE(io, "rocket_ammo", &resume->rocket_ammo));
+    M_MUST(JSON_READ(io, "has_magnums", &resume->flags.has_magnums));
+    M_SHOULD(JSON_READ(io, "has_autos", &resume->flags.has_autos));
+    M_SHOULD(
+        JSON_READ(io, "has_desert_eagle", &resume->flags.has_desert_eagle));
+    M_SHOULD(JSON_READ(io, "has_mp5", &resume->flags.has_mp5));
+    M_SHOULD(JSON_READ(io, "mp5_ammo", &resume->mp5_ammo));
+    M_SHOULD(JSON_READ(io, "has_rocket", &resume->flags.has_rocket));
+    M_SHOULD(JSON_READ(io, "rocket_ammo", &resume->rocket_ammo));
 
-    M_MUST(JSON_READ_VALUE(io, "timer", &resume->stats.timer));
-    M_MUST(JSON_READ_VALUE(io, "ammo_hits", &resume->stats.ammo_hits));
-    M_MUST(JSON_READ_VALUE(io, "ammo_used", &resume->stats.ammo_used));
+    M_MUST(JSON_READ(io, "timer", &resume->stats.timer));
+    M_MUST(JSON_READ(io, "ammo_hits", &resume->stats.ammo_hits));
+    M_MUST(JSON_READ(io, "ammo_used", &resume->stats.ammo_used));
+    M_MUST(JSON_READ(io, "medipacks_used", &resume->stats.medipacks_used));
     M_MUST(
-        JSON_READ_VALUE(io, "medipacks_used", &resume->stats.medipacks_used));
-    M_MUST(JSON_READ_VALUE(
-        io, "distance_travelled", &resume->stats.distance_travelled));
-    M_MUST(JSON_READ_VALUE(io, "kills", &resume->stats.kill_count));
-    M_MUST(JSON_READ_VALUE(io, "pickups", &resume->stats.pickup_count));
-    M_MUST(JSON_READ_VALUE(io, "secrets", &resume->stats.secret_flags));
+        JSON_READ(io, "distance_travelled", &resume->stats.distance_travelled));
+    M_MUST(JSON_READ(io, "kills", &resume->stats.kill_count));
+    M_MUST(JSON_READ(io, "pickups", &resume->stats.pickup_count));
+    M_MUST(JSON_READ(io, "secrets", &resume->stats.secret_flags));
     Stats_UpdateSecrets(&resume->stats);
     M_FINISH();
 }
@@ -805,7 +785,7 @@ bool SG_File_LoadInventory(JSON_READ_IO *const io)
     Lara_InitialiseInventory(current_level);
     for (int32_t i = 0; objects[i].key != nullptr; i++) {
         int16_t qty;
-        if (JSON_READ_VALUE(io, objects[i].key, &qty)) {
+        if (JSON_READ(io, objects[i].key, &qty)) {
             Inv_RemoveItem(objects[i].object_id);
             Inv_AddItemNTimes(objects[i].object_id, qty);
         }
@@ -820,15 +800,15 @@ bool SG_File_LoadFlipmaps(JSON_READ_IO *const io)
     M_MUST(JSON_PUSH(io, "flipmap"));
 
     bool status;
-    M_MUST(JSON_READ_VALUE(io, "status", &status));
+    M_MUST(JSON_READ(io, "status", &status));
     if (status) {
         Room_FlipMap();
     }
 
     int32_t flip_effect;
     int32_t flip_timer;
-    M_MUST(JSON_READ_VALUE(io, "effect", &flip_effect));
-    M_MUST(JSON_READ_VALUE(io, "timer", &flip_timer));
+    M_MUST(JSON_READ(io, "effect", &flip_effect));
+    M_MUST(JSON_READ(io, "timer", &flip_timer));
     Room_SetFlipEffect(flip_effect);
     Room_SetFlipTimer(flip_timer);
 
@@ -844,7 +824,7 @@ bool SG_File_LoadFlipmaps(JSON_READ_IO *const io)
             break;
         }
         uint32_t flags;
-        M_MUST(JSON_READ_VALUE_DIRECT(io, &flags));
+        M_MUST(JSON_READ_DIRECT(io, &flags));
         Room_SetFlipSlotFlags(i, flags << 8);
         M_MUST(JSON_POP(io));
     }
@@ -867,7 +847,7 @@ bool SG_File_LoadCameras(JSON_READ_IO *const io)
     for (size_t i = 0; i < count; i++) {
         M_MUST(JSON_PUSH_INDEX(io, i));
         OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        M_MUST(JSON_READ_VALUE_DIRECT(io, &object->flags));
+        M_MUST(JSON_READ_DIRECT(io, &object->flags));
         M_MUST(JSON_POP(io));
     }
     M_MUST(JSON_POP(io));
@@ -994,19 +974,19 @@ bool SG_File_LoadMisc(JSON_READ_IO *const io)
 
     {
         int32_t bonus_flag = false;
-        M_MUST(JSON_READ_VALUE(io, "bonus_flag", &bonus_flag));
+        M_MUST(JSON_READ(io, "bonus_flag", &bonus_flag));
         Game_SetBonusFlag(bonus_flag);
     }
 
     {
         bool allies_hostile = false;
-        M_MUST(JSON_READ_VALUE(io, "are_monks_angry", &allies_hostile));
+        M_MUST(JSON_READ(io, "are_monks_angry", &allies_hostile));
         Creature_SetAlliesHostile(allies_hostile);
     }
 
     {
         int32_t sunset_timer;
-        M_MUST(JSON_READ_VALUE(io, "sunset_timer", &sunset_timer));
+        M_MUST(JSON_READ(io, "sunset_timer", &sunset_timer));
         Output_SetTimeInGame(sunset_timer);
     }
 
@@ -1014,12 +994,12 @@ bool SG_File_LoadMisc(JSON_READ_IO *const io)
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
         RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
         resume->stats.death_count = -1;
-        M_MUST(JSON_READ_VALUE(io, "death_count", &resume->stats.death_count));
+        M_MUST(JSON_READ(io, "death_count", &resume->stats.death_count));
     }
 
     {
         int32_t weather_type = (int32_t)WEATHER_NONE;
-        if (M_OPTIONAL(JSON_READ_VALUE(io, "weather_type", &weather_type))) {
+        if (M_OPTIONAL(JSON_READ(io, "weather_type", &weather_type))) {
             if (weather_type >= (int32_t)WEATHER_NONE
                 && weather_type <= (int32_t)WEATHER_SNOW) {
                 WeatherFX_SetWeather((WEATHER_TYPE)weather_type);

@@ -34,15 +34,15 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ_VALUE(io, "start_height", &p->start_height));
-    JSON_SHOULD(JSON_READ_VALUE(io, "wait_time", &p->wait_time));
-    JSON_SHOULD(JSON_READ_VALUE(io, "is_moving", &p->is_moving));
+    JSON_SHOULD(JSON_READ(io, "start_height", &p->start_height));
+    JSON_SHOULD(JSON_READ(io, "wait_time", &p->wait_time));
+    JSON_SHOULD(JSON_READ(io, "is_moving", &p->is_moving));
     for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
         if (JSON_SHOULD(JSON_PUSH(io, key))) {
-            JSON_SHOULD(JSON_READ_VALUE(io, "x", &p->linked[i].pos.x));
-            JSON_SHOULD(JSON_READ_VALUE(io, "y", &p->linked[i].pos.y));
-            JSON_SHOULD(JSON_READ_VALUE(io, "z", &p->linked[i].pos.z));
+            JSON_SHOULD(JSON_READ(io, "x", &p->linked[i].pos.x));
+            JSON_SHOULD(JSON_READ(io, "y", &p->linked[i].pos.y));
+            JSON_SHOULD(JSON_READ(io, "z", &p->linked[i].pos.z));
             JSON_SHOULD(JSON_POP(io));
         }
     }
@@ -51,15 +51,15 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
-    JSONW_WRITE_VALUE(io, "start_height", p->start_height);
-    JSONW_WRITE_VALUE(io, "wait_time", p->wait_time);
-    JSONW_WRITE_VALUE(io, "is_moving", p->is_moving);
+    JSONW_WRITE(io, "start_height", p->start_height);
+    JSONW_WRITE(io, "wait_time", p->wait_time);
+    JSONW_WRITE(io, "is_moving", p->is_moving);
     for (int32_t i = 0; i < M_LIFT_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
         JSONW_PUSH_OBJECT(io);
-        JSONW_WRITE_VALUE(io, "x", p->linked[i].pos.x);
-        JSONW_WRITE_VALUE(io, "y", p->linked[i].pos.y);
-        JSONW_WRITE_VALUE(io, "z", p->linked[i].pos.z);
+        JSONW_WRITE(io, "x", p->linked[i].pos.x);
+        JSONW_WRITE(io, "y", p->linked[i].pos.y);
+        JSONW_WRITE(io, "z", p->linked[i].pos.z);
         JSONW_POP_AND_SET(io, key);
     }
 }
