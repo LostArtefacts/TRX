@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2.1...develop) - ××××-××-××
+- changed Earthquake to support being reset
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/trx-1.2...trx-1.2.1) - 2026-02-11
 - fixed title ring music inheriting the wrong audio volume (regression from 1.2)
@@ -82,7 +83,6 @@ Showcase: https://www.youtube.com/watch?v=jeq8rQONaic
     - `on_control_post` → `after_control`
 - changed turbo cheat to auto‑reset to normal speed if pushed past limit, making it easier for new players to recover from accidental changes
 - changed Blades to support being reset
-- changed Earthquake to support being reset
 - changed the barefoot SFX option toggle in TR2 to no longer require reloading the level for changes to take effect
 - changed triggers that target pickup items to support antitriggers, switches and bitmasks
 - removed support for legacy (TombATI / TR2 GOG/Steam) and pre-1.0 (TR1X/TR2X) savegame files
