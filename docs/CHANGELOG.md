@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2.1...develop) - ××××-××-××
+
+## [1.2.1](https://github.com/LostArtefacts/TRX/compare/trx-1.2...trx-1.2.1) - 2026-02-11
 - fixed title ring music inheriting the wrong audio volume (regression from 1.2)
 - fixed settings dialog changing size when cycling through non-scrollable tabs (regression from 1.2)
 - fixed Play Previous Level feature not restoring Lara's equipment correctly for pre-1.2 saves (regression from 1.2)
