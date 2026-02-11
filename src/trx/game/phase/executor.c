@@ -199,6 +199,7 @@ static void M_Draw(PHASE *const phase)
 GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    bool skip_fade_out = false;
 
     gf_cmd = M_HandleOverride();
     if (gf_cmd.action != GF_NOOP) {
@@ -224,8 +225,6 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
         }
         m_PendingFadeToBlack = false;
     }
-
-    bool skip_fade_out = false;
 
     if (phase->start != nullptr) {
         Clock_SyncTick();

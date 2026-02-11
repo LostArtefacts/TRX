@@ -163,9 +163,7 @@ static void M_DrawItem(
             CLAMP(t, 0.0f, 1.0f);
             if (inv_item == ring->list[ring->rotate_from_object]) {
                 t = 1.0f - t;
-            } else if (inv_item == ring->list[ring->rotate_to_object]) {
-                t = t;
-            } else {
+            } else if (inv_item != ring->list[ring->rotate_to_object]) {
                 t = 1.0f;
             }
             shade = LERP((float)M_SHADE_SELECTED, (float)M_SHADE_NORMAL, t);
