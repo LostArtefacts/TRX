@@ -38,9 +38,22 @@ typedef enum {
 
 static bool m_ShowExamine = false;
 static bool m_ShowUseItemButton = false;
+static void (*m_ButtonHintDrawFunc)(void *) = nullptr;
+static void *m_ButtonHintUserData = nullptr;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
+
+static void M_DrawExamineHint(void *const user_data)
+{
+    UI_BeginStack(UI_STACK_HORIZONTAL);
+    UI_ButtonLabel(INPUT_ROLE_LOOK, GS(ACTION_EXAMINE_ITEM));
+    if (m_ShowUseItemButton) {
+        UI_Spacer(60.0f, 0.0f);
+        UI_ButtonLabel(INPUT_ROLE_ACTION, GS(ACTION_USE_ITEM));
+    }
+    UI_EndStack();
+}
 
 static void M_AdjustRot(int16_t *const rot, const int16_t dest_rot)
 {
@@ -172,6 +185,8 @@ void InvRing_InitRing(
 
     m_ShowExamine = false;
     m_ShowUseItemButton = false;
+    m_ButtonHintDrawFunc = nullptr;
+    m_ButtonHintUserData = nullptr;
 }
 
 void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
@@ -519,27 +534,65 @@ void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
     String_FormatInto(&m_CountText, &m_CountTextCap, full_fmt, qty);
 }
 
+void InvRing_SetButtonHintDrawer(void (*draw_func)(void *), void *user_data)
+{
+    m_ButtonHintDrawFunc = draw_func;
+    m_ButtonHintUserData = user_data;
+}
+
+void InvRing_ClearButtonHint(void)
+{
+    InvRing_SetButtonHintDrawer(nullptr, nullptr);
+}
+
+void InvRing_ShowExamine(const OBJECT_ID object_id, const bool show)
+{
+    m_ShowExamine = show;
+    m_ShowUseItemButton = show;
+    if (show) {
+        switch (object_id) {
+        case O_QUEST_ITEM_1:
+        case O_QUEST_ITEM_2:
+        case O_QUEST_ITEM_3:
+        case O_QUEST_ITEM_4:
+        case O_QUEST_OPTION_1:
+        case O_QUEST_OPTION_2:
+        case O_QUEST_OPTION_3:
+        case O_QUEST_OPTION_4:
+        case O_PICKUP_OPTION_1:
+        case O_PICKUP_OPTION_2:
+            m_ShowUseItemButton = false;
+            break;
+        default:
+            break;
+        }
+        InvRing_SetButtonHintDrawer(M_DrawExamineHint, nullptr);
+    } else if (m_ButtonHintDrawFunc == M_DrawExamineHint) {
+        InvRing_ClearButtonHint();
+    }
+}
+
 void InvRing_DrawUI(INV_RING *const ring)
 {
-    if (m_ShowExamine) {
-        UI_BeginModal(0.5f, 0.85f);
-        UI_BeginStack(UI_STACK_HORIZONTAL);
-        UI_ButtonLabel(INPUT_ROLE_LOOK, GS(ACTION_EXAMINE_ITEM));
-        if (m_ShowUseItemButton) {
-            UI_Spacer(60.0f, 0.0f);
-            UI_ButtonLabel(INPUT_ROLE_ACTION, GS(ACTION_USE_ITEM));
-        }
-        UI_EndStack();
-        UI_EndModal();
+    UI_BeginModal(0.5f, 1.0f);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_VERTICAL,
+        .align = { .h = UI_STACK_H_ALIGN_CENTER },
+        .spacing = { .v = 20.0f },
+    });
+
+    if (m_ButtonHintDrawFunc != nullptr) {
+        m_ButtonHintDrawFunc(m_ButtonHintUserData);
     }
 
     if (m_CountText != nullptr && m_CountText[0] != '\0') {
-        UI_BeginModal(0.5f, 1.0f);
-        UI_BeginOffset(64.0f, -56.0f);
+        UI_BeginOffset(64.0f, 0.0f);
         UI_Label(m_CountText);
         UI_EndOffset();
-        UI_EndModal();
     }
+    UI_Spacer(0.0f, 50.0f);
+    UI_EndStack();
+    UI_EndModal();
 }
 
 void InvRing_RemoveItemTexts(void)
@@ -615,30 +668,6 @@ void InvRing_RemoveHeader(void)
     Overlay_ShowArrow(UI_OVERLAY_ARROW_TR, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BL, false);
     Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, false);
-}
-
-void InvRing_ShowExamine(const bool show, const OBJECT_ID object_id)
-{
-    m_ShowExamine = show;
-    m_ShowUseItemButton = show;
-    if (show) {
-        switch (object_id) {
-        case O_QUEST_ITEM_1:
-        case O_QUEST_ITEM_2:
-        case O_QUEST_ITEM_3:
-        case O_QUEST_ITEM_4:
-        case O_QUEST_OPTION_1:
-        case O_QUEST_OPTION_2:
-        case O_QUEST_OPTION_3:
-        case O_QUEST_OPTION_4:
-        case O_PICKUP_OPTION_1:
-        case O_PICKUP_OPTION_2:
-            m_ShowUseItemButton = false;
-            break;
-        default:
-            break;
-        }
-    }
 }
 
 bool InvRing_CanExamine(void)
