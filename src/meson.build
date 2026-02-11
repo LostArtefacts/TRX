@@ -126,6 +126,8 @@ dependencies = [
 
 common_sources = [
   'trx/benchmark.c',
+  'trx/bson/parse.c',
+  'trx/bson/write.c',
   'trx/colors.c',
   'trx/config/common.c',
   'trx/config/dynamic_enum.c',
@@ -689,11 +691,9 @@ common_sources = [
   'trx/gfx/gl/vertex_array.c',
   'trx/gfx/renderer.c',
   'trx/gfx/screenshot.c',
-  'trx/json/bson_parse.c',
-  'trx/json/bson_write.c',
-  'trx/json/json_base.c',
-  'trx/json/json_parse.c',
-  'trx/json/json_write.c',
+  'trx/json/base.c',
+  'trx/json/parse.c',
+  'trx/json/write.c',
   'trx/json_file.c',
   'trx/log.c',
   'trx/memory.c',
