@@ -169,9 +169,21 @@ bool JSON_ReadIO_ReadXYZ32Current(
     JSON_READ_IO *const io, void *const target_void)
 {
     XYZ_32 *const target = target_void;
-    JSON_MUST(JSON_READ(io, "x", &target->x));
-    JSON_MUST(JSON_READ(io, "y", &target->y));
-    JSON_MUST(JSON_READ(io, "z", &target->z));
+    JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
+    if (tuple != nullptr) {
+        const int32_t tuple_len = tuple->length;
+        if (tuple_len != 3) {
+            M_SetError(io, "XYZ tuple must have exactly 3 values");
+            JSON_FAIL();
+        }
+        JSON_MUST(JSON_READ_A(io, 0, &target->x));
+        JSON_MUST(JSON_READ_A(io, 1, &target->y));
+        JSON_MUST(JSON_READ_A(io, 2, &target->z));
+    } else {
+        JSON_MUST(JSON_READ(io, "x", &target->x));
+        JSON_MUST(JSON_READ(io, "y", &target->y));
+        JSON_MUST(JSON_READ(io, "z", &target->z));
+    }
     JSON_FINISH();
 }
 
@@ -192,6 +204,43 @@ bool JSON_ReadIO_ReadXYZ16Current(
     JSON_FINISH();
 }
 
+static bool M_ReadRGB888Current(JSON_READ_IO *const io, RGB_888 *const target)
+{
+    JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
+    if (tuple != nullptr) {
+        const int32_t tuple_len = tuple->length;
+        if (tuple_len != 3) {
+            M_SetError(io, "RGB array must have exactly 3 values");
+            JSON_FAIL();
+        }
+
+        RGB_F color = { -1.0f, -1.0f, -1.0f };
+        JSON_MUST(JSON_READ_A(io, 0, &color.r));
+        JSON_MUST(JSON_READ_A(io, 1, &color.g));
+        JSON_MUST(JSON_READ_A(io, 2, &color.b));
+        if (color.r < 0.0f || color.g < 0.0f || color.b < 0.0f || color.r > 1.0f
+            || color.g > 1.0f || color.b > 1.0f) {
+            M_SetError(io, "RGB array values must be in range 0.0..1.0");
+            JSON_FAIL();
+        }
+
+        *target = (RGB_888) {
+            (uint8_t)(color.r * 255.0f),
+            (uint8_t)(color.g * 255.0f),
+            (uint8_t)(color.b * 255.0f),
+        };
+    } else {
+        const char *str = nullptr;
+        JSON_MUST(JSON_READ_CURRENT(io, &str));
+        if (!String_ParseRGB888(str, target)) {
+            M_SetError(io, "invalid RGB color string");
+            JSON_FAIL();
+        }
+    }
+
+    JSON_FINISH();
+}
+
 #define L_DEFINE_JSON_READ_IO_TYPE(name, ctype, impl_func)                     \
     bool JSON_ReadIO_Read##name##Current(                                      \
         JSON_READ_IO *const io, void *const target)                            \
@@ -208,6 +257,7 @@ L_DEFINE_JSON_READ_IO_TYPE(U32, uint32_t, M_ReadNumCurrent_U32)
 L_DEFINE_JSON_READ_IO_TYPE(Float, float, M_ReadNumCurrent_Float)
 L_DEFINE_JSON_READ_IO_TYPE(Double, double, M_ReadNumCurrent_Double)
 L_DEFINE_JSON_READ_IO_TYPE(String, const char *, M_ReadStringCurrent)
+L_DEFINE_JSON_READ_IO_TYPE(RGB888, RGB_888, M_ReadRGB888Current)
 #undef L_DEFINE_JSON_READ_IO_TYPE
 
 const char *JSON_ReadIO_GetError(const JSON_READ_IO *const io)
