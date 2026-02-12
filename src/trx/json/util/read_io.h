@@ -8,16 +8,29 @@
 
 typedef struct JSON_READ_IO JSON_READ_IO;
 
-typedef enum JSON_READ_TYPE {
-    JSON_READ_TYPE_BOOL = 0,
-    JSON_READ_TYPE_S8,
-    JSON_READ_TYPE_U8,
-    JSON_READ_TYPE_S16,
-    JSON_READ_TYPE_U16,
-    JSON_READ_TYPE_S32,
-    JSON_READ_TYPE_U32,
-    JSON_READ_TYPE_DOUBLE,
-} JSON_READ_TYPE;
+typedef struct {
+    void *tmp;
+} JSON_READ_IO_DUMMY;
+
+#define JSON_READ_IO_TYPE_LIST_BASE(X)                                         \
+    X(Bool, bool)                                                              \
+    X(S8, int8_t)                                                              \
+    X(U8, uint8_t)                                                             \
+    X(S16, int16_t)                                                            \
+    X(U16, uint16_t)                                                           \
+    X(S32, int32_t)                                                            \
+    X(U32, uint32_t)                                                           \
+    X(Float, float)                                                            \
+    X(Double, double)                                                          \
+    X(String, const char *)
+#define JSON_READ_IO_TYPE_LIST JSON_READ_IO_TYPE_LIST_BASE
+
+#define JSON_READ_IO_TYPE_TO_CURRENT_FN(name, ctype)                           \
+    ctype:                                                                     \
+    JSON_ReadIO_Read##name##Current,
+
+// ============================================================================
+// Public APIs
 
 JSON_READ_IO *JSON_ReadIO_Create(JSON_VALUE *root, uint16_t version);
 void JSON_ReadIO_Destroy(JSON_READ_IO *io, bool success);
@@ -32,55 +45,83 @@ bool JSON_ReadIO_Pop(JSON_READ_IO *io);
 int32_t JSON_ReadIO_GetArrayLength(JSON_READ_IO *io);
 bool JSON_ReadIO_HasKey(JSON_READ_IO *io, const char *key);
 JSON_OBJECT *JSON_ReadIO_GetCurrentObject(JSON_READ_IO *io);
+JSON_VALUE *JSON_ReadIO_GetCurrentValue(JSON_READ_IO *io);
 
-bool JSON_ReadIO_Read(
-    JSON_READ_IO *io, const char *key, JSON_READ_TYPE type, void *target);
-bool JSON_ReadIO_ReadDirect(
-    JSON_READ_IO *io, JSON_READ_TYPE type, void *target);
+#define L_DECLARE_JSON_READ_IO_TYPE(name, ctype)                               \
+    bool JSON_ReadIO_Read##name##Current(JSON_READ_IO *io, void *target);
+JSON_READ_IO_TYPE_LIST(L_DECLARE_JSON_READ_IO_TYPE)
+#undef L_DECLARE_JSON_READ_IO_TYPE
 
 #define JSON_PUSH(io, key) JSON_ReadIO_PushObject((io), (key))
 #define JSON_PUSH_INDEX(io, idx) JSON_ReadIO_PushArrayElem((io), (idx))
 #define JSON_POP(io) JSON_ReadIO_Pop((io))
 #define JSON_ARRAY_LEN(io) JSON_ReadIO_GetArrayLength((io))
 
-#define JSON_READ_DIRECT(io, target_ptr)                                       \
-    JSON_ReadIO_ReadDirect(                                                    \
-        (io),                                                                  \
-        _Generic(                                                              \
-            *(target_ptr),                                                     \
-            bool: JSON_READ_TYPE_BOOL,                                         \
-            int8_t: JSON_READ_TYPE_S8,                                         \
-            uint8_t: JSON_READ_TYPE_U8,                                        \
-            int16_t: JSON_READ_TYPE_S16,                                       \
-            uint16_t: JSON_READ_TYPE_U16,                                      \
-            int32_t: JSON_READ_TYPE_S32,                                       \
-            uint32_t: JSON_READ_TYPE_U32,                                      \
-            double: JSON_READ_TYPE_DOUBLE),                                    \
-        (void *)(target_ptr))
+// Read the value into target_ptr from the current stack value.
+#define JSON_READ_CURRENT(io, target_ptr)                                      \
+    _Generic(                                                                  \
+        *(target_ptr),                                                         \
+        JSON_READ_IO_TYPE_LIST(JSON_READ_IO_TYPE_TO_CURRENT_FN)                \
+            JSON_READ_IO_DUMMY: JSON_ReadIO_ReadS32Current)(                   \
+        (io), (target_ptr))
 
+// Push a key onto stack, read the value into target_ptr, and pop the value.
+// Fails if the key is missing, or reading failed.
 #define JSON_READ(io, key, target_ptr)                                         \
-    JSON_ReadIO_Read(                                                          \
-        (io), (key),                                                           \
-        _Generic(                                                              \
-            *(target_ptr),                                                     \
-            bool: JSON_READ_TYPE_BOOL,                                         \
-            int8_t: JSON_READ_TYPE_S8,                                         \
-            uint8_t: JSON_READ_TYPE_U8,                                        \
-            int16_t: JSON_READ_TYPE_S16,                                       \
-            uint16_t: JSON_READ_TYPE_U16,                                      \
-            int32_t: JSON_READ_TYPE_S32,                                       \
-            uint32_t: JSON_READ_TYPE_U32,                                      \
-            double: JSON_READ_TYPE_DOUBLE),                                    \
-        (void *)(target_ptr))
+    (JSON_PUSH((io), (key))                                                    \
+         ? (JSON_READ_CURRENT((io), (target_ptr)) ? JSON_POP((io))             \
+                                                  : (JSON_POP((io)), false))   \
+         : false)
 
-#define JSON_SHOULD(x)                                                         \
-    ((x) ? 1 : (LOG_WARNING("%s", JSON_ReadIO_GetError(io)), 0))
-#define JSON_OPTIONAL(x) (x)
-#define JSON_MUST(x)                                                           \
-    if (!(x)) {                                                                \
+// Like JSON_READ(), except also supports default value to fall back to.
+#define JSON_READ_D(io, key, target_ptr, default_value)                        \
+    ((*(target_ptr) = (default_value)), JSON_READ((io), (key), (target_ptr)))
+
+// Like JSON_READ(), except push an array index instead of an object key.
+#define JSON_READ_A(io, idx, target_ptr)                                       \
+    (JSON_PUSH_INDEX((io), (idx))                                              \
+         ? (JSON_READ_CURRENT((io), (target_ptr)) ? JSON_POP((io))             \
+                                                  : (JSON_POP((io)), false))   \
+         : false)
+
+// ============================================================================
+// Control flow macros.
+
+// Users of this API are expected to consume JSON_ReadIO_GetError() in the
+// outermost scope. Example usage:
+//
+// static bool M_CustomSectionReader(JSON_READ_IO *io)
+// {
+//     int32_t foo_value;
+//     JSON_MUST(JSON_READ(io, "foo", &foo_value);
+//     JSON_FINISH();
+// }
+//
+// static void M_OuterReader(void)
+// {
+//     JSON_READ_IO *io = JSON_ReadIO_Create(…);
+//     bool success = M_CustomSectionReader(io);
+//     JSON_ReadIO_Destroy(io, success);
+// }
+
+// If the expr fails, log an error, and carry on.
+#define JSON_SHOULD(expr)                                                      \
+    ((expr) ? 1 : (LOG_WARNING("%s", JSON_ReadIO_GetError(io)), 0))
+
+// Do nothing.
+#define JSON_OPTIONAL(expr) (expr)
+
+// If the expr fails, immediately go to the failure route.
+#define JSON_MUST(expr)                                                        \
+    if (!(expr)) {                                                             \
         goto fail;                                                             \
     }
+
+// Immediately go to the failure route (with `goto fail`).
 #define JSON_FAIL() goto fail;
+
+// Declare the failure route: by default, it just does return a bool.
+// To be used at the end of the function.
 #define JSON_FINISH()                                                          \
     do {                                                                       \
     success:                                                                   \

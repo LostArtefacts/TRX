@@ -160,7 +160,7 @@ static bool M_ReadLara(JSON_READ_IO *const io)
         ? Effect_Get(hit_effect)
         : nullptr;
 
-    const int16_t vehicle_idx = Lara_Vehicle_GetIndex();
+    int16_t vehicle_idx = Lara_Vehicle_GetIndex();
     if (!M_OPTIONAL(JSON_READ(io, "vehicle_item_number", &vehicle_idx))) {
         // Introduced in TRX 1.2
         M_MUST(JSON_READ(io, "vehicle_item_num", &vehicle_idx));
@@ -184,11 +184,9 @@ static bool M_ReadLara(JSON_READ_IO *const io)
         }
         const OBJECT_MESH *meshes[LM_NUMBER_OF] = {};
         for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-            M_MUST(JSON_PUSH_INDEX(io, i));
             int32_t idx = 0;
-            M_MUST(JSON_READ_DIRECT(io, &idx));
+            M_MUST(JSON_READ_A(io, i, &idx));
             meshes[i] = Object_FindMesh(idx);
-            M_MUST(JSON_POP(io));
         }
         M_MUST(JSON_POP(io));
 
@@ -435,11 +433,9 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
                         io, "damage_from_lara", &creature->damage_from_lara));
                     M_MUST(JSON_PUSH(io, "joint_rotations"));
                     for (int32_t i = 0; i < 4; i++) {
-                        M_MUST(JSON_PUSH_INDEX(io, i));
                         // Introduced in TRX 1.2
                         M_SHOULD(
-                            JSON_READ_DIRECT(io, &creature->joint_rotation[i]));
-                        M_MUST(JSON_POP(io));
+                            JSON_READ_A(io, i, &creature->joint_rotation[i]));
                     }
                     M_MUST(JSON_POP(io));
                     M_MUST(JSON_POP(io));
@@ -666,11 +662,9 @@ static bool M_ReadMusicTrackFlags(JSON_READ_IO *const io)
     }
 
     for (int32_t i = 0; i < count; i++) {
-        M_MUST(JSON_PUSH_INDEX(io, i));
         uint32_t flags;
-        M_MUST(JSON_READ_DIRECT(io, &flags));
+        M_MUST(JSON_READ_A(io, i, &flags));
         Music_SetTrackFlags(i, flags);
-        M_MUST(JSON_POP(io));
     }
 
     M_FINISH();
@@ -820,13 +814,9 @@ bool SG_File_LoadFlipmaps(JSON_READ_IO *const io)
         M_FAIL();
     }
     for (size_t i = 0; i < count; i++) {
-        if (!JSON_PUSH_INDEX(io, i)) {
-            break;
-        }
         uint32_t flags;
-        M_MUST(JSON_READ_DIRECT(io, &flags));
+        M_MUST(JSON_READ_A(io, i, &flags));
         Room_SetFlipSlotFlags(i, flags << 8);
-        M_MUST(JSON_POP(io));
     }
     M_MUST(JSON_POP(io));
 
@@ -845,10 +835,8 @@ bool SG_File_LoadCameras(JSON_READ_IO *const io)
         M_FAIL();
     }
     for (size_t i = 0; i < count; i++) {
-        M_MUST(JSON_PUSH_INDEX(io, i));
         OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
-        M_MUST(JSON_READ_DIRECT(io, &object->flags));
-        M_MUST(JSON_POP(io));
+        M_MUST(JSON_READ_A(io, i, &object->flags));
     }
     M_MUST(JSON_POP(io));
     M_FINISH();
