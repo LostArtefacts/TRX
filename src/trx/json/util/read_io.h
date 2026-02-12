@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/colors.h>
 #include <trx/game/math/types.h>
 #include <trx/json.h>
 #include <trx/log.h>
@@ -25,6 +26,7 @@ typedef struct {
     X(Double, double)                                                          \
     X(XYZ16, XYZ_16)                                                           \
     X(XYZ32, XYZ_32)                                                           \
+    X(RGB888, RGB_888)                                                         \
     X(String, const char *)
 #define JSON_READ_IO_TYPE_LIST JSON_READ_IO_TYPE_LIST_BASE
 
