@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/math/types.h>
 #include <trx/json.h>
 #include <trx/log.h>
 
@@ -22,6 +23,8 @@ typedef struct {
     X(U32, uint32_t)                                                           \
     X(Float, float)                                                            \
     X(Double, double)                                                          \
+    X(XYZ16, XYZ_16)                                                           \
+    X(XYZ32, XYZ_32)                                                           \
     X(String, const char *)
 #define JSON_READ_IO_TYPE_LIST JSON_READ_IO_TYPE_LIST_BASE
 

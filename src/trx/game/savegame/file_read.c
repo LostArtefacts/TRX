@@ -28,44 +28,6 @@
 #define M_FAIL JSON_FAIL
 #define M_FINISH JSON_FINISH
 
-static bool M_ReadXYZ32(
-    JSON_READ_IO *const io, const char *const key, XYZ_32 *const target)
-{
-    ASSERT(target != nullptr);
-    M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ(io, "x", &target->x));
-    M_MUST(JSON_READ(io, "y", &target->y));
-    M_MUST(JSON_READ(io, "z", &target->z));
-    M_MUST(JSON_POP(io));
-    M_FINISH();
-}
-
-static bool M_ReadXYZ16(
-    JSON_READ_IO *const io, const char *const key, XYZ_16 *const target)
-{
-    ASSERT(target != nullptr);
-    M_MUST(JSON_PUSH(io, key));
-    M_MUST(JSON_READ(io, "x", &target->x));
-    M_MUST(JSON_READ(io, "y", &target->y));
-    M_MUST(JSON_READ(io, "z", &target->z));
-    M_MUST(JSON_POP(io));
-    M_FINISH();
-}
-
-static bool M_ReadPos(JSON_READ_IO *const io, XYZ_32 *const target)
-{
-    ASSERT(target != nullptr);
-    M_MUST(M_ReadXYZ32(io, "pos", target));
-    M_FINISH();
-}
-
-static bool M_ReadRot(JSON_READ_IO *const io, XYZ_16 *const target)
-{
-    ASSERT(target != nullptr);
-    M_MUST(M_ReadXYZ16(io, "rot", target));
-    M_FINISH();
-}
-
 static bool M_ReadObjectID(
     JSON_READ_IO *const io, const char *const key, OBJECT_ID *const target)
 {
@@ -88,7 +50,7 @@ static bool M_ReadArm(
     M_MUST(JSON_READ(io, "frame_num", &arm->frame_num));
     M_MUST(JSON_READ(io, "lock", &arm->lock));
     M_MUST(JSON_READ(io, "flash_gun", &arm->flash_gun));
-    M_MUST(M_ReadRot(io, &arm->rot));
+    M_MUST(JSON_READ(io, "rot", &arm->rot));
     M_MUST(JSON_POP(io));
     M_FINISH();
 }
@@ -238,9 +200,9 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_MUST(JSON_READ(io, "target_angle2", &lara->target_angles[1]));
     M_MUST(JSON_READ(io, "turn_rate", &lara->turn_rate));
     M_MUST(JSON_READ(io, "move_angle", &lara->move_angle));
-    M_MUST(M_ReadXYZ16(io, "head_rot", &lara->head_rot));
-    M_MUST(M_ReadXYZ16(io, "torso_rot", &lara->torso_rot));
-    M_MUST(M_ReadXYZ32(io, "last_pos", &lara->last_pos));
+    M_MUST(JSON_READ(io, "head_rot", &lara->head_rot));
+    M_MUST(JSON_READ(io, "torso_rot", &lara->torso_rot));
+    M_MUST(JSON_READ(io, "last_pos", &lara->last_pos));
 
     M_MUST(M_ReadArm(io, "left_arm", &lara->left_arm));
     M_MUST(M_ReadArm(io, "right_arm", &lara->right_arm));
@@ -350,8 +312,8 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
     // Not sure why some items do not have their their position saved,
     // despite OBJECT telling them to.
     if (obj->save_position && JSON_ReadIO_HasKey(io, "room_num")) {
-        M_MUST(M_ReadPos(io, &item->pos));
-        M_MUST(M_ReadRot(io, &item->rot));
+        M_MUST(JSON_READ(io, "pos", &item->pos));
+        M_MUST(JSON_READ(io, "rot", &item->rot));
         M_MUST(JSON_READ(io, "speed", &item->speed));
         M_MUST(JSON_READ(io, "fall_speed", &item->fall_speed));
         int16_t room_num = NO_ROOM;
@@ -473,7 +435,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
             }
 
             M_MUST(M_ReadObjectID(io, "object_id", &carried_item->object_id));
-            M_MUST(M_ReadPos(io, &carried_item->pos));
+            M_MUST(JSON_READ(io, "pos", &carried_item->pos));
             M_MUST(JSON_READ(io, "y_rot", &carried_item->rot.y));
             M_MUST(JSON_READ(io, "room_num", &carried_item->room_num));
             M_MUST(JSON_READ(io, "fall_speed", &carried_item->fall_speed));
@@ -529,8 +491,8 @@ static bool M_ReadEffect(JSON_READ_IO *const io)
     }
 
     EFFECT *const effect = Effect_Get(effect_num);
-    M_MUST(M_ReadPos(io, &effect->pos));
-    M_MUST(M_ReadRot(io, &effect->rot));
+    M_MUST(JSON_READ(io, "pos", &effect->pos));
+    M_MUST(JSON_READ(io, "rot", &effect->rot));
     if (!M_OPTIONAL(M_ReadObjectID(io, "object_number", &effect->object_id))) {
         // Introduced in TRX 1.2
         M_MUST(M_ReadObjectID(io, "object_id", &effect->object_id));
@@ -551,8 +513,8 @@ static bool M_ReadFlare(JSON_READ_IO *const io)
     const int16_t item_num = Item_Create();
     ITEM *const item = Item_Get(item_num);
     item->object_id = O_FLARE_ITEM;
-    M_MUST(M_ReadPos(io, &item->pos));
-    M_MUST(M_ReadRot(io, &item->rot));
+    M_MUST(JSON_READ(io, "pos", &item->pos));
+    M_MUST(JSON_READ(io, "rot", &item->rot));
     M_MUST(JSON_READ(io, "room_num", &item->room_num));
     Item_Initialise(item_num);
     M_MUST(JSON_READ(io, "speed", &item->speed));
