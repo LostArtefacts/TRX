@@ -517,7 +517,7 @@ static void M_UpdateEnvironment(void)
     case LWS_WADE: {
         g_Camera.target_elevation = CAM_WADE_ELEVATION;
 
-        if (water_height_diff < M_WADE_DEPTH) {
+        if (water_height_diff <= M_WADE_DEPTH) {
             lara_info->water_status = LWS_ABOVE_WATER;
             if (item->current_anim_state == LS(LS_WADE)) {
                 item->goal_anim_state = LS(LS_RUN);
