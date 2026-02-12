@@ -358,9 +358,10 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     } else if (g_Input.forward) {
         const int16_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
         const int16_t c = Lara_CeilingFront(item, item->rot.y, M_WALK_DIST);
-        if (g_TRVersion == 3 && Room_GetHeightType() == HT_BIG_SLOPE && h < 0) {
+
+        if (Room_GetHeightType() == HT_BIG_SLOPE && h < 0) {
             item->goal_anim_state = LS_STOP;
-        } else if (g_TRVersion == 3 && c > 0) {
+        } else if (c > 0 && !g_Input.action) {
             item->goal_anim_state = LS_STOP;
         } else if (g_Input.slow) {
             M_Walk(item, coll);
