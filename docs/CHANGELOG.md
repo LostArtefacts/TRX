@@ -5,6 +5,7 @@
 - fixed NG+ always forcing Lara's default equipped gun at level start even when "remember guns between levels" is enabled (#4711)
 - fixed not restoring Lara's back weapon mesh between levels when "remember guns" is enabled and a rifle-type weapon is equipped at level end
 - fixed a missing footstep sound when Lara starts to sprint
+- fixed Lara's flare undraw animation being skippable on specific late draw frames (#1593)
 
 **TR3**:
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
