@@ -87,16 +87,8 @@ static M_SETTINGS m_Settings;
 static void M_ExitWithJSONError(
     const char *const source_path, const JSON_READ_IO *const io)
 {
-    const char *const error = JSON_ReadIO_GetError(io);
-    if (error != nullptr && error[0] != '\0') {
-        char log_message[1024];
-        char dialog_message[1024];
-        JSON_ReadIO_FormatError(io, false, log_message, sizeof(log_message));
-        JSON_ReadIO_FormatError(
-            io, true, dialog_message, sizeof(dialog_message));
-        Shell_ExitSystemEx(log_message, dialog_message);
-    }
-    Shell_ExitSystemFmt("%s: ui settings parse error", source_path);
+    JSONFile_ExitWithReadIOError(
+        io, String_FormatStatic("%s: ui settings parse error", source_path));
 }
 
 static void M_FreeThemeGroup(M_THEME_GROUP *const group)
@@ -546,8 +538,7 @@ static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
 
 void UI_Settings_LoadFromFile(const char *const path)
 {
-    JSON_VALUE *const root =
-        JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
 
     M_FreeBarThemes();
@@ -557,7 +548,7 @@ void UI_Settings_LoadFromFile(const char *const path)
 
     M_SeedDynamicEnumValues();
 
-    JSON_ReadIO_Destroy(io, true);
+    JSON_ReadIO_Destroy(io);
     JSON_ValueFree(root);
 }
 

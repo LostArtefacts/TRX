@@ -12,12 +12,27 @@
 #define M_PARSE_FLAGS                                                          \
     (JSON_PARSE_FLAGS_ALLOW_JSON5 | JSON_PARSE_FLAGS_ALLOW_LOCATION_INFORMATION)
 
-JSON_VALUE *JSONFile_Read(const char *path)
+void JSONFile_ExitWithReadIOError(
+    const JSON_READ_IO *const io, const char *const fallback_message)
 {
-    return JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) {});
+    const char *const error = JSON_ReadIO_GetError(io);
+    if (error != nullptr && error[0] != '\0') {
+        char log_message[1024];
+        char dialog_message[1024];
+        JSON_ReadIO_FormatError(io, false, log_message, sizeof(log_message));
+        JSON_ReadIO_FormatError(
+            io, true, dialog_message, sizeof(dialog_message));
+        Shell_ExitSystemEx(log_message, dialog_message);
+    }
+    Shell_ExitSystem(fallback_message);
 }
 
-JSON_VALUE *JSONFile_ReadEx(const char *path, const JSON_FILE_OPTIONS options)
+JSON_VALUE *JSONFile_Read(const char *path)
+{
+    return JSONFile_ReadEx(path, false);
+}
+
+JSON_VALUE *JSONFile_ReadEx(const char *path, const bool exit_on_error)
 {
     char *file_data = nullptr;
     if (!File_Load(path, &file_data, nullptr)) {
@@ -32,17 +47,15 @@ JSON_VALUE *JSONFile_ReadEx(const char *path, const JSON_FILE_OPTIONS options)
         JSON_ReadIO_SetErrorAt(
             io, pr.error_line_no, pr.error_row_no, "%s",
             JSON_GetErrorDescription(pr.error));
-        char log_message[1024];
-        char dialog_message[1024];
-        JSON_ReadIO_FormatError(io, false, log_message, sizeof(log_message));
-        JSON_ReadIO_FormatError(
-            io, true, dialog_message, sizeof(dialog_message));
-        JSON_ReadIO_Destroy(io, true);
-        if (options.exit_on_error) {
-            Shell_ExitSystemEx(log_message, dialog_message);
+        if (exit_on_error) {
+            JSONFile_ExitWithReadIOError(io, "JSON parse error");
         } else {
+            char log_message[1024];
+            JSON_ReadIO_FormatError(
+                io, false, log_message, sizeof(log_message));
             LOG_ERROR("%s", log_message);
         }
+        JSON_ReadIO_Destroy(io);
     }
     Memory_FreePointer(&file_data);
     return value;

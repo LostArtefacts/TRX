@@ -65,8 +65,7 @@ void Gun_LoadVars(const char *const path)
     target = JSON_ObjectGetDouble(obj, name, target / (float)WALL_L) * WALL_L;
 #define L_READ_INT(name, target) target = JSON_ObjectGetInt(obj, name, target)
 
-    JSON_VALUE *const root =
-        JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
     if (root_obj == nullptr) {
         Shell_ExitSystemFmt("invalid weapons vars file: %s", path);
