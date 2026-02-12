@@ -93,7 +93,7 @@ static bool M_PushValue(JSON_READ_IO *const io, JSON_VALUE *const value)
     return true;
 }
 
-static bool M_ReadBoolDirect(JSON_READ_IO *const io, bool *const target)
+static bool M_ReadBoolCurrent(JSON_READ_IO *const io, bool *const target)
 {
     if (JSON_ValueIsTrue(io->current)) {
         *target = true;
@@ -107,8 +107,8 @@ static bool M_ReadBoolDirect(JSON_READ_IO *const io, bool *const target)
     }
 }
 
-#define L_DEFINE_M_READ_NUM_DIRECT(type_, name, minv, maxv)                    \
-    static bool M_ReadNumDirect_##name(                                        \
+#define L_DEFINE_M_READ_NUM_CURRENT(type_, name, minv, maxv)                   \
+    static bool M_ReadNumCurrent_##name(                                       \
         JSON_READ_IO *const io, void *const target)                            \
     {                                                                          \
         if (io->current->type != JSON_TYPE_NUMBER) {                           \
@@ -123,15 +123,16 @@ static bool M_ReadBoolDirect(JSON_READ_IO *const io, bool *const target)
         *(type_ *)target = (type_)val;                                         \
         return true;                                                           \
     }
-L_DEFINE_M_READ_NUM_DIRECT(int8_t, S8, INT8_MIN, INT8_MAX)
-L_DEFINE_M_READ_NUM_DIRECT(int16_t, S16, INT16_MIN, INT16_MAX)
-L_DEFINE_M_READ_NUM_DIRECT(int32_t, S32, INT32_MIN, INT32_MAX)
-L_DEFINE_M_READ_NUM_DIRECT(uint8_t, U8, 0, UINT8_MAX)
-L_DEFINE_M_READ_NUM_DIRECT(uint16_t, U16, 0, UINT16_MAX)
-L_DEFINE_M_READ_NUM_DIRECT(uint32_t, U32, 0, UINT32_MAX)
-#undef L_DEFINE_M_READ_NUM_DIRECT
+L_DEFINE_M_READ_NUM_CURRENT(int8_t, S8, INT8_MIN, INT8_MAX)
+L_DEFINE_M_READ_NUM_CURRENT(int16_t, S16, INT16_MIN, INT16_MAX)
+L_DEFINE_M_READ_NUM_CURRENT(int32_t, S32, INT32_MIN, INT32_MAX)
+L_DEFINE_M_READ_NUM_CURRENT(uint8_t, U8, 0, UINT8_MAX)
+L_DEFINE_M_READ_NUM_CURRENT(uint16_t, U16, 0, UINT16_MAX)
+L_DEFINE_M_READ_NUM_CURRENT(uint32_t, U32, 0, UINT32_MAX)
+#undef L_DEFINE_M_READ_NUM_CURRENT
 
-static bool M_ReadNumDirect_Double(JSON_READ_IO *const io, double *const target)
+static bool M_ReadNumCurrent_Double(
+    JSON_READ_IO *const io, double *const target)
 {
     if (io->current->type != JSON_TYPE_NUMBER) {
         M_SetError(io, "not a number");
@@ -142,42 +143,45 @@ static bool M_ReadNumDirect_Double(JSON_READ_IO *const io, double *const target)
     return true;
 }
 
-bool JSON_ReadIO_ReadDirect(
-    JSON_READ_IO *const io, const JSON_READ_TYPE type, void *const target)
+static bool M_ReadNumCurrent_Float(JSON_READ_IO *const io, float *const target)
 {
-    switch (type) {
-    case JSON_READ_TYPE_BOOL:
-        return M_ReadBoolDirect(io, target);
-    case JSON_READ_TYPE_S8:
-        return M_ReadNumDirect_S8(io, target);
-    case JSON_READ_TYPE_U8:
-        return M_ReadNumDirect_U8(io, target);
-    case JSON_READ_TYPE_S16:
-        return M_ReadNumDirect_S16(io, target);
-    case JSON_READ_TYPE_U16:
-        return M_ReadNumDirect_U16(io, target);
-    case JSON_READ_TYPE_S32:
-        return M_ReadNumDirect_S32(io, target);
-    case JSON_READ_TYPE_U32:
-        return M_ReadNumDirect_U32(io, target);
-    case JSON_READ_TYPE_DOUBLE:
-        return M_ReadNumDirect_Double(io, target);
-    }
-    M_SetError(io, "unsupported read type");
-    return false;
-}
-
-bool JSON_ReadIO_Read(
-    JSON_READ_IO *const io, const char *const key, const JSON_READ_TYPE type,
-    void *const target)
-{
-    if (!JSON_ReadIO_PushObject(io, key)) {
+    if (io->current->type != JSON_TYPE_NUMBER) {
+        M_SetError(io, "not a number");
         return false;
     }
-    const bool success = JSON_ReadIO_ReadDirect(io, type, target);
-    JSON_ReadIO_Pop(io);
-    return success;
+    const double val = JSON_ValueGetDouble(io->current, -1.0);
+    *target = (float)val;
+    return true;
 }
+
+static bool M_ReadStringCurrent(
+    JSON_READ_IO *const io, const char **const target)
+{
+    if (io->current->type != JSON_TYPE_STRING) {
+        M_SetError(io, "not a string");
+        return false;
+    }
+    *target = JSON_ValueGetString(io->current, nullptr);
+    return *target != nullptr;
+}
+
+#define L_DEFINE_JSON_READ_IO_TYPE(name, ctype, impl_func)                     \
+    bool JSON_ReadIO_Read##name##Current(                                      \
+        JSON_READ_IO *const io, void *const target)                            \
+    {                                                                          \
+        return impl_func(io, (ctype *)target);                                 \
+    }
+L_DEFINE_JSON_READ_IO_TYPE(Bool, bool, M_ReadBoolCurrent)
+L_DEFINE_JSON_READ_IO_TYPE(S8, int8_t, M_ReadNumCurrent_S8)
+L_DEFINE_JSON_READ_IO_TYPE(U8, uint8_t, M_ReadNumCurrent_U8)
+L_DEFINE_JSON_READ_IO_TYPE(S16, int16_t, M_ReadNumCurrent_S16)
+L_DEFINE_JSON_READ_IO_TYPE(U16, uint16_t, M_ReadNumCurrent_U16)
+L_DEFINE_JSON_READ_IO_TYPE(S32, int32_t, M_ReadNumCurrent_S32)
+L_DEFINE_JSON_READ_IO_TYPE(U32, uint32_t, M_ReadNumCurrent_U32)
+L_DEFINE_JSON_READ_IO_TYPE(Float, float, M_ReadNumCurrent_Float)
+L_DEFINE_JSON_READ_IO_TYPE(Double, double, M_ReadNumCurrent_Double)
+L_DEFINE_JSON_READ_IO_TYPE(String, const char *, M_ReadStringCurrent)
+#undef L_DEFINE_JSON_READ_IO_TYPE
 
 const char *JSON_ReadIO_GetError(const JSON_READ_IO *const io)
 {
@@ -254,7 +258,7 @@ int32_t JSON_ReadIO_GetArrayLength(JSON_READ_IO *const io)
     JSON_ARRAY *const arr = JSON_ValueAsArray(io->current);
     if (arr == nullptr) {
         M_SetError(io, "not an array");
-        return false;
+        return -1;
     }
     return arr->length;
 }
@@ -271,6 +275,11 @@ bool JSON_ReadIO_HasKey(JSON_READ_IO *const io, const char *const key)
 JSON_OBJECT *JSON_ReadIO_GetCurrentObject(JSON_READ_IO *const io)
 {
     return JSON_ValueAsObject(io->current);
+}
+
+JSON_VALUE *JSON_ReadIO_GetCurrentValue(JSON_READ_IO *const io)
+{
+    return io->current;
 }
 
 JSON_READ_IO *JSON_ReadIO_Create(JSON_VALUE *const root, const uint16_t version)
