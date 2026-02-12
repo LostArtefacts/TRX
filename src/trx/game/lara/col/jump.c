@@ -97,9 +97,12 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
 
     int32_t edge;
     const EDGE_CATCH edge_catch = Lara_Col_TestEdgeCatch(item, coll, &edge);
+    bool ladder_hang = false;
+    if (edge_catch == EDGE_CATCH_NEG) {
+        ladder_hang = Lara_Col_TestLadderHang(item, coll);
+    }
     if (edge_catch == EDGE_CATCH_NONE
-        || (edge_catch == EDGE_CATCH_NEG
-            && !Lara_Col_TestLadderHang(item, coll))) {
+        || (edge_catch == EDGE_CATCH_NEG && !ladder_hang)) {
         return false;
     }
 
@@ -109,7 +112,8 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     }
     const int16_t angle = Math_DirectionToAngle(dir);
 
-    if (Lara_Col_TestHangSwingIn(item, angle)) {
+    const bool swing_in = !ladder_hang && Lara_Col_TestHangSwingIn(item, angle);
+    if (swing_in) {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
     } else {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), 0);
