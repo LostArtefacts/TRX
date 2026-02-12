@@ -9,6 +9,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/shell.h>
 #include <trx/json/util/file.h>
+#include <trx/json/util/read_io.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/vector.h>
@@ -23,23 +24,57 @@ static const char *M_GetPath(void)
     return String_FormatStatic("%s/poses.json5", Shell_GetConfigDir());
 }
 
-static bool M_ReadXYZ16(JSON_VALUE *const value, XYZ_16 *const target)
+static void M_WarnWithJSONError(const JSON_READ_IO *const io)
 {
-    JSON_OBJECT *const obj = JSON_ValueAsObject(value);
-    if (obj != nullptr) {
-        target->x = JSON_ObjectGetInt(obj, "x", 0);
-        target->y = JSON_ObjectGetInt(obj, "y", 0);
-        target->z = JSON_ObjectGetInt(obj, "z", 0);
-        return true;
+    char warning_message[1024];
+    JSON_ReadIO_FormatError(
+        io, false, warning_message, sizeof(warning_message));
+    LOG_WARNING("%s", warning_message);
+}
+
+static bool M_LoadPose(JSON_READ_IO *const io, LARA_POSE *const pose)
+{
+    JSON_MUST(JSON_READ(io, "offset", &pose->offset));
+    JSON_MUST(JSON_PUSH(io, "rots"));
+    const int32_t rot_count = JSON_ARRAY_LEN(io);
+    if (rot_count < 0) {
+        JSON_MUST(JSON_POP(io));
+        JSON_FAIL();
     }
-    JSON_ARRAY *const arr = JSON_ValueAsArray(value);
-    if (arr != nullptr && arr->length == 3) {
-        target->x = JSON_ArrayGetInt(arr, 0, 0);
-        target->y = JSON_ArrayGetInt(arr, 1, 0);
-        target->z = JSON_ArrayGetInt(arr, 2, 0);
-        return true;
+    if (rot_count != LM_NUMBER_OF) {
+        JSON_ReadIO_SetError(
+            io, "expected exactly %d rotations, got %d", LM_NUMBER_OF,
+            rot_count);
+        JSON_MUST(JSON_POP(io));
+        JSON_FAIL();
     }
-    return false;
+
+    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+        JSON_MUST(JSON_READ_A(io, i, &pose->rots[i]));
+    }
+
+    JSON_MUST(JSON_POP(io));
+    JSON_FINISH();
+}
+
+static bool M_LoadPosesArray(JSON_READ_IO *const io, VECTOR *const poses)
+{
+    const int32_t pose_count = JSON_ARRAY_LEN(io);
+    if (pose_count < 0) {
+        JSON_FAIL();
+    }
+
+    for (int32_t i = 0; i < pose_count; i++) {
+        JSON_MUST(JSON_PUSH_INDEX(io, i));
+
+        LARA_POSE pose = {};
+        if (JSON_SHOULD(M_LoadPose(io, &pose))) {
+            Vector_Add(poses, &pose);
+        }
+        JSON_MUST(JSON_POP(io));
+    }
+
+    JSON_FINISH();
 }
 
 static void M_LoadPoses(void)
@@ -47,49 +82,17 @@ static void M_LoadPoses(void)
     m_Poses = Vector_Create(sizeof(LARA_POSE));
     ASSERT(m_Poses != nullptr);
 
-    JSON_VALUE *const doc = JSONFile_Read(M_GetPath());
-    JSON_ARRAY *const poses = JSON_ValueAsArray(doc);
-    if (poses == nullptr) {
-        LOG_WARNING("Error while reading poses: root object must be an array");
-        goto cleanup;
+    const char *const poses_path = M_GetPath();
+    JSON_VALUE *const doc = JSONFile_Read(poses_path);
+    if (doc == nullptr) {
+        return;
     }
 
-    for (size_t i = 0; i < poses->length; ++i) {
-        JSON_OBJECT *const pose_obj = JSON_ArrayGetObject(poses, i);
-        LARA_POSE pose;
-        if (!M_ReadXYZ16(
-                JSON_ObjectGetValue(pose_obj, "offset"), &pose.offset)) {
-            LOG_WARNING(
-                "Error while reading pose %d: invalid or missing pose offset",
-                i);
-        }
-
-        JSON_ARRAY *const rots_arr = JSON_ObjectGetArray(pose_obj, "rots");
-        if (rots_arr == nullptr) {
-            LOG_WARNING("Error while reading pose %d: missing rotations", i);
-            continue;
-        } else if (rots_arr->length != LM_NUMBER_OF) {
-            LOG_WARNING(
-                "Error while reading pose %d: expected exactly %d rotations, "
-                "got %d",
-                i, LM_NUMBER_OF, rots_arr->length);
-            continue;
-        } else {
-            for (int32_t j = 0; j < LM_NUMBER_OF; j++) {
-                if (!M_ReadXYZ16(
-                        JSON_ArrayGetValue(rots_arr, j), &pose.rots[j])) {
-                    LOG_WARNING(
-                        "Error while reading pose %d: invalid or missing "
-                        "rotation %d",
-                        i, j);
-                }
-            }
-        }
-
-        Vector_Add(m_Poses, &pose);
+    JSON_READ_IO *const io = JSON_ReadIO_Create(doc, 0, poses_path);
+    if (!M_LoadPosesArray(io, m_Poses)) {
+        M_WarnWithJSONError(io);
     }
-
-cleanup:
+    JSON_ReadIO_Destroy(io, true);
     JSON_ValueFree(doc);
 }
 
