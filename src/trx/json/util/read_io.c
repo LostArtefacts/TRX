@@ -12,32 +12,119 @@
 #define M_MAX_STACK_SIZE 10
 
 typedef struct JSON_READ_IO {
+    char source_path[256];
     char path[256];
     int32_t path_index_stack[M_MAX_STACK_SIZE];
     int32_t path_top;
     char error_msg[256];
+    char error_path[256];
+    char error_body[256];
+    int32_t error_line;
+    int32_t error_col;
     JSON_VALUE *stack[M_MAX_STACK_SIZE];
     JSON_VALUE *current;
     size_t current_pos;
     uint16_t version;
 } JSON_READ_IO;
 
-static void M_SetError(JSON_READ_IO *const io, const char *fmt, ...)
+static void M_SetErrorV(
+    JSON_READ_IO *const io, const int32_t line, const int32_t col,
+    const bool has_explicit_location, const char *const fmt, va_list ap)
 {
     char body[256];
-    va_list ap;
-    va_start(ap, fmt);
     vsnprintf(body, sizeof(body), fmt, ap);
-    va_end(ap);
-    if (io && io->path[0] != '\0') {
+    int32_t final_line = line;
+    int32_t final_col = col;
+    if (!has_explicit_location) {
+        final_line = -1;
+        final_col = -1;
+        if (io != nullptr && io->source_path[0] != '\0'
+            && io->current != nullptr) {
+            // File-backed JSON parses in this codebase are location-enabled.
+            // Avoid probing non-file trees (e.g. BSON) where value_ex layout
+            // is not guaranteed.
+            const JSON_VALUE_EX *const value_ex =
+                (const JSON_VALUE_EX *)io->current;
+            const size_t offset = value_ex->offset;
+            const size_t line_val = value_ex->line_no;
+            const size_t col_val = value_ex->row_no;
+
+            if (offset <= 16 * 1024 * 1024 && line_val > 0
+                && line_val <= 1024 * 1024 && col_val <= 1024 * 1024) {
+                final_line = (int32_t)line_val;
+                final_col = (int32_t)col_val;
+            }
+        }
+    }
+
+    if (io != nullptr) {
+        io->error_line = final_line;
+        io->error_col = final_col;
+        snprintf(io->error_body, sizeof(io->error_body), "%s", body);
+        if (io->path[0] != '\0') {
+            snprintf(io->error_path, sizeof(io->error_path), "%s", io->path);
+        } else {
+            io->error_path[0] = '\0';
+        }
+    }
+    if (io == nullptr) {
+        return;
+    }
+    if (io->source_path[0] != '\0') {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-truncation"
-        snprintf(
-            io->error_msg, sizeof(io->error_msg), "%s: %s", io->path, body);
+        if (final_line >= 0 && final_col >= 0) {
+            if (io->path[0] != '\0') {
+                snprintf(
+                    io->error_msg, sizeof(io->error_msg),
+                    "Error parsing '%s' (line %d, col %d): %s - %s",
+                    io->source_path, final_line, final_col, io->path, body);
+            } else {
+                snprintf(
+                    io->error_msg, sizeof(io->error_msg),
+                    "Error parsing '%s' (line %d, col %d): %s", io->source_path,
+                    final_line, final_col, body);
+            }
+        } else {
+            if (io->path[0] != '\0') {
+                snprintf(
+                    io->error_msg, sizeof(io->error_msg),
+                    "Error parsing '%s': %s - %s", io->source_path, io->path,
+                    body);
+            } else {
+                snprintf(
+                    io->error_msg, sizeof(io->error_msg),
+                    "Error parsing '%s': %s", io->source_path, body);
+            }
+        }
 #pragma GCC diagnostic pop
     } else {
-        snprintf(io->error_msg, sizeof(io->error_msg), "%s", body);
+        if (final_line >= 0 && final_col >= 0) {
+            snprintf(
+                io->error_msg, sizeof(io->error_msg),
+                "(line %d, col %d): %.200s", final_line, final_col, body);
+        } else {
+            snprintf(io->error_msg, sizeof(io->error_msg), "%.200s", body);
+        }
     }
+}
+
+static void M_SetError(JSON_READ_IO *const io, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    M_SetErrorV(io, -1, -1, false, fmt, ap);
+    va_end(ap);
+}
+
+static void M_SetErrorAt(
+    JSON_READ_IO *const io, const int32_t line, const int32_t col,
+    const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    M_SetErrorV(io, line, col, true, fmt, ap);
+    va_end(ap);
 }
 
 static bool M_PushPathKey(JSON_READ_IO *const io, const char *const key)
@@ -265,9 +352,74 @@ const char *JSON_ReadIO_GetError(const JSON_READ_IO *const io)
     return io->error_msg;
 }
 
+const char *JSON_ReadIO_GetErrorPath(const JSON_READ_IO *const io)
+{
+    return io->error_path;
+}
+
+const char *JSON_ReadIO_GetErrorBody(const JSON_READ_IO *const io)
+{
+    return io->error_body;
+}
+
+int32_t JSON_ReadIO_GetErrorLine(const JSON_READ_IO *const io)
+{
+    return io->error_line;
+}
+
+int32_t JSON_ReadIO_GetErrorCol(const JSON_READ_IO *const io)
+{
+    return io->error_col;
+}
+
 uint16_t JSON_ReadIO_GetVersion(const JSON_READ_IO *const io)
 {
     return io->version;
+}
+
+void JSON_ReadIO_FormatError(
+    const JSON_READ_IO *const io, const bool multiline, char *const buffer,
+    const size_t buffer_size)
+{
+    const char *const body = JSON_ReadIO_GetErrorBody(io);
+    const char *const path = JSON_ReadIO_GetErrorPath(io);
+    const char *const source_path = io->source_path;
+    const int32_t line = JSON_ReadIO_GetErrorLine(io);
+    const int32_t col = JSON_ReadIO_GetErrorCol(io);
+    const char *const separator = multiline ? "\n" : " ";
+
+    if (buffer_size == 0) {
+        return;
+    }
+
+    if (source_path == nullptr || source_path[0] == '\0') {
+        snprintf(buffer, buffer_size, "%s", JSON_ReadIO_GetError(io));
+        return;
+    }
+
+    if (line >= 0 && col >= 0) {
+        if (path != nullptr && path[0] != '\0') {
+            snprintf(
+                buffer, buffer_size,
+                "Error parsing '%s' (line %d, col %d):%s%s - %s", source_path,
+                line, col, separator, path, body);
+        } else {
+            snprintf(
+                buffer, buffer_size,
+                "Error parsing '%s' (line %d, col %d):%s%s", source_path, line,
+                col, separator, body);
+        }
+    } else {
+        if (path != nullptr && path[0] != '\0') {
+            snprintf(
+                buffer, buffer_size, "Error parsing '%s':%s%s - %s",
+                source_path, separator, path, body);
+        } else {
+            snprintf(
+                buffer, buffer_size, "Error parsing '%s':%s%s", source_path,
+                separator, body);
+        }
+    }
 }
 
 void JSON_ReadIO_SetError(JSON_READ_IO *const io, const char *fmt, ...)
@@ -359,9 +511,16 @@ JSON_VALUE *JSON_ReadIO_GetCurrentValue(JSON_READ_IO *const io)
     return io->current;
 }
 
-JSON_READ_IO *JSON_ReadIO_Create(JSON_VALUE *const root, const uint16_t version)
+JSON_READ_IO *JSON_ReadIO_Create(
+    JSON_VALUE *const root, const uint16_t version,
+    const char *const source_path)
 {
     JSON_READ_IO *const io = Memory_Alloc(sizeof(*io));
+    if (source_path != nullptr) {
+        snprintf(io->source_path, sizeof(io->source_path), "%s", source_path);
+    } else {
+        io->source_path[0] = '\0';
+    }
     io->stack[0] = root;
     io->current_pos = 0;
     io->current = io->stack[0];

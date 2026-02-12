@@ -37,11 +37,18 @@ typedef struct {
 // ============================================================================
 // Public APIs
 
-JSON_READ_IO *JSON_ReadIO_Create(JSON_VALUE *root, uint16_t version);
+JSON_READ_IO *JSON_ReadIO_Create(
+    JSON_VALUE *root, uint16_t version, const char *source_path);
 void JSON_ReadIO_Destroy(JSON_READ_IO *io, bool success);
 
 const char *JSON_ReadIO_GetError(const JSON_READ_IO *io);
+const char *JSON_ReadIO_GetErrorPath(const JSON_READ_IO *io);
+const char *JSON_ReadIO_GetErrorBody(const JSON_READ_IO *io);
+int32_t JSON_ReadIO_GetErrorLine(const JSON_READ_IO *io);
+int32_t JSON_ReadIO_GetErrorCol(const JSON_READ_IO *io);
 uint16_t JSON_ReadIO_GetVersion(const JSON_READ_IO *io);
+void JSON_ReadIO_FormatError(
+    const JSON_READ_IO *io, bool multiline, char *buffer, size_t buffer_size);
 
 void JSON_ReadIO_SetError(JSON_READ_IO *io, const char *fmt, ...);
 bool JSON_ReadIO_PushObject(JSON_READ_IO *io, const char *key);
