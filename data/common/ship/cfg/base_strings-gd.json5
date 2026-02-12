@@ -474,6 +474,8 @@
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Leigidh seo le Lara tionndadh san adhar agus grèim a ghabhail air an oir a dh'fhàg i, fhad 's a tha am putan gnìomh air a chumail sios tron tuiteam.",
         "SETTING_ENABLE_CREDITS": "Sgrìoban creideis",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Cuiridh seo sgrìoban creideis an comas às dèidh crìochnachadh a' gheama. Cha bheireas seo buaidh air an sgrion staitistig mu dheireadh.",
+        "SETTING_ENABLE_CROUCH_ROLL": "\\{review}Rolla crom",
+        "SETTING_ENABLE_CROUCH_ROLL_DESCRIPTION": "\\{review}Leigidh seo le Lara rolla air adhart a dhèanamh fhad 's a tha i crom le putan sprint.",
         "SETTING_ENABLE_CUTSCENES": "Seallaidhean-film",
         "SETTING_ENABLE_CUTSCENES_DESCRIPTION": "Cuiridh seo cluich seallaidhean-film an comas.",
         "SETTING_ENABLE_DEATHS_COUNTER": "Cunntair bhàsan Lara",

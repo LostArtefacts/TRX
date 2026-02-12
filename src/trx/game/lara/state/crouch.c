@@ -1,9 +1,12 @@
+#include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/flare.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/util.h>
+#include <trx/game/objects/general/flare_item.h>
 #include <trx/game/rooms/geometry.h>
 #include <trx/utils.h>
 
@@ -18,6 +21,37 @@ static bool M_CanEnterCrawlFromCrouch(const ITEM *const item)
 {
     return item->current_anim_state == LS(LS_CROUCH_IDLE)
         && Item_GetRelativeFrame(item) > 1;
+}
+
+static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
+{
+    if (!g_Config.gameplay.enable_crouch_roll || g_Input.draw || !g_Input.sprint
+        || lara->gun_status != LGS_ARMLESS) {
+        return false;
+    }
+
+    if (!g_Input.crouch
+        && (!lara->keep_crouched || lara->water_status == LWS_WADE)) {
+        return false;
+    }
+
+    const int16_t height_far = Lara_FloorFront(item, item->rot.y, STEP_L * 2);
+    const int16_t height_near = Lara_FloorFront(item, item->rot.y, STEP_L);
+    if (height_far >= STEPUP_HEIGHT || height_near < -STEPUP_HEIGHT) {
+        return false;
+    }
+
+    if (!Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))
+        && !Item_TestAnimEqual(item, LA(LA_STAND_TO_CROUCH_END))) {
+        return false;
+    }
+
+    if (lara->gun_type == LGT_FLARE
+        && (lara->flare.age <= 0 || lara->flare.age >= Flare_GetMaxAge())) {
+        return false;
+    }
+
+    return true;
 }
 
 static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
@@ -46,6 +80,15 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
         lara->torso_rot.x = 0;
         lara->torso_rot.y = 0;
         item->goal_anim_state = LS(LS_CRAWL_IDLE);
+        return;
+    }
+
+    if (M_CanCrouchRoll(item, lara)) {
+        lara->torso_rot.x = 0;
+        lara->torso_rot.y = 0;
+        Item_SwitchToAnim(item, LA(LA_CROUCH_ROLL_FORWARD_START), 0);
+        item->current_anim_state = LS(LS_CROUCH_ROLL);
+        item->goal_anim_state = LS(LS_CROUCH_ROLL);
     }
 }
 

@@ -474,6 +474,8 @@
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "\\{review}Permet à Lara de se retourner en l'air et d’attraper la corniche qu'elle vient de quitter, si la touche d'action est maintenue pendant la chute.",
         "SETTING_ENABLE_CREDITS": "\\{review}Écrans de crédits",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "\\{review}Active les écrans de crédits affichés après avoir terminé le jeu. N'influence pas l'écran des statistiques finales.",
+        "SETTING_ENABLE_CROUCH_ROLL": "\\{review}Roulade accroupie",
+        "SETTING_ENABLE_CROUCH_ROLL_DESCRIPTION": "\\{review}Permet à Lara d'effectuer une roulade avant en position accroupie en appuyant sur sprint.",
         "SETTING_ENABLE_CUTSCENES": "Activer les cutscenes",
         "SETTING_ENABLE_CUTSCENES_DESCRIPTION": "Active les cutscenes en jeu.",
         "SETTING_ENABLE_DEATHS_COUNTER": "Compteur du nombres de morts",

@@ -474,6 +474,8 @@
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Pozwala Larze obrócić się w powietrzu i złapać krawędź z której gracz właśnie się ześliznął, jeśli trzymay jest przycisk akcji.",
         "SETTING_ENABLE_CREDITS": "Napisy końcowe",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Włącza ekrany z napisami końcowymi wyświetlane po ukończeniu gry. Ustawienie nie ma wpływu na ekran końcowych statystyk.",
+        "SETTING_ENABLE_CROUCH_ROLL": "\\{review}Przewrót z kucania",
+        "SETTING_ENABLE_CROUCH_ROLL_DESCRIPTION": "\\{review}Pozwala Larze wykonać przewrót w przód z kucania po naciśnięciu sprintu.",
         "SETTING_ENABLE_CUTSCENES": "Przerywniki",
         "SETTING_ENABLE_CUTSCENES_DESCRIPTION": "Włącza odtwarzanie przerywników (cutscenek).",
         "SETTING_ENABLE_DEATHS_COUNTER": "Licznik śmierci Lary",

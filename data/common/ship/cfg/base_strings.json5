@@ -474,6 +474,8 @@
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Allows Lara to turn mid-air and grab the ledge she just stepped off, if the action input is held while falling.",
         "SETTING_ENABLE_CREDITS": "Credit screens",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Enables credits screens shown after completing the game. Does not influence the final statistics screen.",
+        "SETTING_ENABLE_CROUCH_ROLL": "Crouch roll",
+        "SETTING_ENABLE_CROUCH_ROLL_DESCRIPTION": "Allows Lara to do a forward roll while crouched by pressing sprint.",
         "SETTING_ENABLE_CUTSCENES": "Cutscenes",
         "SETTING_ENABLE_CUTSCENES_DESCRIPTION": "Enables cutscenes playing.",
         "SETTING_ENABLE_DEATHS_COUNTER": "Count Lara's deaths",
