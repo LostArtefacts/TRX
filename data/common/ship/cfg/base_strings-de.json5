@@ -474,6 +474,8 @@
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "\\{review}Ermöglicht Lara, sich in der Luft zu drehen und den Vorsprung zu greifen, den sie gerade verlassen hat, wenn die Aktionstaste beim Fallen gehalten wird.",
         "SETTING_ENABLE_CREDITS": "Credits",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Ermöglicht die Anzeige der Credits nachdem man das Spiel durchgespielt hat. Beeinflusst nicht die Anzeige der Finalen Statistik.",
+        "SETTING_ENABLE_CROUCH_ROLL": "\\{review}Hockrolle",
+        "SETTING_ENABLE_CROUCH_ROLL_DESCRIPTION": "\\{review}Erlaubt Lara, aus der Hocke mit der Sprinttaste eine Vorwärtsrolle zu machen.",
         "SETTING_ENABLE_CUTSCENES": "Zwischensequenzen",
         "SETTING_ENABLE_CUTSCENES_DESCRIPTION": "Aktiviert das Abspielen von Zwischensequenzen.",
         "SETTING_ENABLE_DEATHS_COUNTER": "Laras Tode zählen",

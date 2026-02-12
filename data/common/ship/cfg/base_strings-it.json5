@@ -474,6 +474,8 @@
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Permette a Lara di ruotare a mezz'aria e afferrare la sporgenza della superficie da cui è appena scivolata, se durante la caduta viene premuto il tasto Azione.",
         "SETTING_ENABLE_CREDITS": "Titoli di coda",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Abilita i titoli di coda mostrati dopo aver completato il gioco. Non influisce sulla schermata finale delle statistiche.",
+        "SETTING_ENABLE_CROUCH_ROLL": "\\{review}Capriola accovacciata",
+        "SETTING_ENABLE_CROUCH_ROLL_DESCRIPTION": "\\{review}Permette a Lara di eseguire una capriola in avanti da accovacciata premendo sprint.",
         "SETTING_ENABLE_CUTSCENES": "Scene di intermezzo",
         "SETTING_ENABLE_CUTSCENES_DESCRIPTION": "Abilita la riproduzione delle scene di intermezzo.",
         "SETTING_ENABLE_DEATHS_COUNTER": "Conta morti di Lara",

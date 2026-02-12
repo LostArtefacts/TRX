@@ -474,6 +474,8 @@
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Позволяет Ларе развернуться в воздухе и ухватиться за выступ, с которого она только что сошла, если удерживать клавишу действия во время падения.",
         "SETTING_ENABLE_CREDITS": "Включить титры",
         "SETTING_ENABLE_CREDITS_DESCRIPTION": "Отображать экраны с титрами после завершения игры. Не влияет на финальный экран статистики.",
+        "SETTING_ENABLE_CROUCH_ROLL": "\\{review}Перекат из приседа",
+        "SETTING_ENABLE_CROUCH_ROLL_DESCRIPTION": "\\{review}Позволяет Ларе делать перекат вперед из приседа по нажатию спринта.",
         "SETTING_ENABLE_CUTSCENES": "Заставки",
         "SETTING_ENABLE_CUTSCENES_DESCRIPTION": "Воспроизводить внутриигровые заставки.",
         "SETTING_ENABLE_DEATHS_COUNTER": "Счётчик смертей Лары",

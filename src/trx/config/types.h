@@ -205,6 +205,7 @@ typedef struct {
 
         bool enable_jump_twists;
         bool enable_uw_roll;
+        bool enable_crouch_roll;
         bool enable_tr2_swimming;
         bool enable_wading;
         bool enable_tr2_swim_cancel;

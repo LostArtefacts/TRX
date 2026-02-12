@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2.1...develop) - ××××-××-××
+- added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
 - added the ability to freely rotate examinable items
 - added a color editor dialog for fog and water colors in Graphic Options → Visuals
 - changed Earthquake to support being reset
