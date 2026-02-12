@@ -99,39 +99,47 @@ LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void)
     return m_OutfitCount > 0 ? 0 : LARA_SKIN_TYPE_DEFAULT;
 }
 
-static bool M_ReadGunMaps(JSON_OBJECT *const root_obj)
+static bool M_ReadGunMaps(JSON_READ_IO *const io)
 {
-    JSON_ARRAY *const maps = JSON_ObjectGetArray(root_obj, "gun_maps");
-    if (maps == nullptr) {
-        return false;
+    JSON_MUST(JSON_PUSH(io, "gun_maps"));
+
+    const int32_t map_count = JSON_ARRAY_LEN(io);
+    if (map_count < 0) {
+        JSON_FAIL();
     }
 
-    for (size_t i = 0; i < maps->length; ++i) {
-        JSON_OBJECT *const map_obj = JSON_ArrayGetObject(maps, i);
+    for (int32_t i = 0; i < map_count; ++i) {
+        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        if (JSON_ReadIO_GetCurrentObject(io) == nullptr) {
+            JSON_ReadIO_SetError(io, "gun map %d must be an object", i);
+            JSON_FAIL();
+        }
         LARA_SKIN_GUN_MAP map = {};
 
         for (int32_t j = 0; j < NUM_WEAPONS; j++) {
             LARA_SKIN_MESH_MAP *const mesh_map = &map.mesh_offsets[j];
             memset(mesh_map, -1, sizeof(LARA_SKIN_MESH_MAP));
+
             const char *const gun_name =
                 EnumMap_ToString(ENUM_MAP_NAME(LARA_GUN_TYPE), j);
-            JSON_OBJECT *const gun_obj =
-                JSON_ObjectGetObject(map_obj, gun_name);
-            if (gun_obj == nullptr) {
+            if (!JSON_OPTIONAL(JSON_PUSH(io, gun_name))) {
                 continue;
             }
 
-            mesh_map->hand.right = JSON_ObjectGetInt(gun_obj, "hand_r", -1);
-            mesh_map->hand.left = JSON_ObjectGetInt(gun_obj, "hand_l", -1);
-            mesh_map->thigh.right = JSON_ObjectGetInt(gun_obj, "thigh_r", -1);
-            mesh_map->thigh.left = JSON_ObjectGetInt(gun_obj, "thigh_l", -1);
-            mesh_map->torso = JSON_ObjectGetInt(gun_obj, "torso", -1);
+            JSON_OPTIONAL(JSON_READ(io, "hand_r", &mesh_map->hand.right));
+            JSON_OPTIONAL(JSON_READ(io, "hand_l", &mesh_map->hand.left));
+            JSON_OPTIONAL(JSON_READ(io, "thigh_r", &mesh_map->thigh.right));
+            JSON_OPTIONAL(JSON_READ(io, "thigh_l", &mesh_map->thigh.left));
+            JSON_OPTIONAL(JSON_READ(io, "torso", &mesh_map->torso));
+            JSON_MUST(JSON_POP(io));
         }
 
         Vector_Add(m_GunMaps, &map);
+        JSON_MUST(JSON_POP(io));
     }
 
-    return true;
+    JSON_MUST(JSON_POP(io));
+    JSON_FINISH();
 }
 
 static bool M_ReadExtraMeshes(JSON_READ_IO *const io)
@@ -307,9 +315,6 @@ static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 
 static bool M_ReadOutfits(JSON_READ_IO *const io)
 {
-    if (!JSON_ReadIO_HasKey(io, "outfits")) {
-        return false;
-    }
     JSON_MUST(JSON_PUSH(io, "outfits"));
 
     JSON_OBJECT *const outfits_map = JSON_ReadIO_GetCurrentObject(io);
@@ -382,8 +387,19 @@ static bool M_ReadOutfits(JSON_READ_IO *const io)
     JSON_FINISH();
 }
 
+static bool M_LoadFile(JSON_READ_IO *const io)
+{
+    JSON_MUST(M_ReadGunMaps(io));
+    JSON_MUST(M_ReadExtraMeshes(io));
+    JSON_MUST(M_ReadOutfits(io));
+    JSON_FINISH();
+}
+
 void Lara_Skin_LoadFromFile(const char *const path)
 {
+    char *source_path = Memory_DupStr(path);
+    JSON_READ_IO *io = nullptr;
+
     if (m_GunMaps != nullptr) {
         Vector_Free(m_GunMaps);
         m_GunMaps = nullptr;
@@ -394,42 +410,29 @@ void Lara_Skin_LoadFromFile(const char *const path)
     M_SeedDynamicEnumValues();
     memset(m_ExtraMeshOffsets, 0, sizeof(m_ExtraMeshOffsets));
 
-    LOG_INFO("Reading outfit definitions from %s", path);
-    JSON_VALUE *const doc = JSONFile_Read(path);
-    JSON_OBJECT *const root = JSON_ValueAsObject(doc);
-    if (root == nullptr) {
+    LOG_INFO("Reading outfit definitions from %s", source_path);
+    JSON_VALUE *const doc = JSONFile_ReadEx(source_path, true);
+    if (doc == nullptr) {
+        Shell_ExitSystemFmt("invalid outfits file: %s", source_path);
         goto cleanup;
     }
 
-    if (!M_ReadGunMaps(root)) {
-        goto cleanup;
-    }
-
-    JSON_READ_IO *const io = JSON_ReadIO_Create(doc, 0, path);
-
-    if (!M_ReadExtraMeshes(io)) {
+    io = JSON_ReadIO_Create(doc, 0, source_path);
+    if (!M_LoadFile(io)) {
         const char *const error = JSON_ReadIO_GetError(io);
         if (error != nullptr && error[0] != '\0') {
-            M_ExitWithJSONError(path, io);
+            M_ExitWithJSONError(source_path, io);
         }
-        JSON_ReadIO_Destroy(io);
-        goto cleanup;
     }
-
-    if (!M_ReadOutfits(io)) {
-        const char *const error = JSON_ReadIO_GetError(io);
-        if (error != nullptr && error[0] != '\0') {
-            M_ExitWithJSONError(path, io);
-        }
-        JSON_ReadIO_Destroy(io);
-        goto cleanup;
-    }
-    JSON_ReadIO_Destroy(io);
 
     M_SeedDynamicEnumValues();
 
 cleanup:
+    if (io != nullptr) {
+        JSON_ReadIO_Destroy(io);
+    }
     JSON_ValueFree(doc);
+    Memory_FreePointer(&source_path);
 }
 
 void Lara_Skin_Shutdown(void)
