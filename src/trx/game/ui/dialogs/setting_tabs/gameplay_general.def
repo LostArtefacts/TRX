@@ -3,7 +3,7 @@ X_UI_CFG_BOOL(gameplay.enable_credits,              SETTING_ENABLE_CREDITS)
 X_UI_CFG_BOOL(gameplay.enable_fmv,                  SETTING_ENABLE_FMV)
 X_UI_CFG_BOOL(gameplay.enable_demo,                 SETTING_ENABLE_DEMO)
 X_UI_CFG_BOOL(gameplay.enable_cutscenes,            SETTING_ENABLE_CUTSCENES)
-X_UI_CFG_BOOL(gameplay.enable_loading_screens,      SETTING_ENABLE_LOADING_SCREENS)
+X_UI_CFG_ENUM(gameplay.loading_screens,             SETTING_ENABLE_LOADING_SCREENS, .misc = UI_Settings_LoadingScreensModeEnumEntries)
 
 X_UI_CFG_BOOL(gameplay.enable_game_modes,           SETTING_ENABLE_GAME_MODES)
 X_UI_CFG_BOOL(gameplay.enable_play_previous_levels, SETTING_ENABLE_PLAY_PREVIOUS_LEVELS)

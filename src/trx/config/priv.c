@@ -195,6 +195,17 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         }
     }
 
+    // Legacy bool loading screens option.
+    {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_loading_screens");
+        if (JSON_ValueIsTrue(value)) {
+            g_Config.gameplay.loading_screens = LOADING_SCREENS_ALWAYS;
+        } else if (JSON_ValueIsFalse(value)) {
+            g_Config.gameplay.loading_screens = LOADING_SCREENS_DISABLED;
+        }
+    }
+
     // TR1X ..4.7
     L_READ_BOOL(g_Config.window.is_fullscreen, "enable_fullscreen");
     L_READ_BOOL(g_Config.window.is_maximized, "enable_maximized");
@@ -431,6 +442,7 @@ void Config_Sanitize(void)
     CLAMP(g_Config.visuals.fov, 30, 150);
     CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
     CLAMP(g_Config.visuals.shadow_type, 0, SHADOW_TYPE_NUMBER_OF - 1);
+    CLAMP(g_Config.gameplay.loading_screens, 0, LOADING_SCREENS_NEW_GAMES);
 
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {
         g_Config.rendering.fps = 30;

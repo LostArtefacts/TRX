@@ -199,7 +199,7 @@ typedef struct {
         bool enable_credits;
         bool enable_cutscenes;
         bool enable_demo;
-        bool enable_loading_screens;
+        LOADING_SCREENS_MODE loading_screens;
         bool enable_compass_stats;
         bool enable_total_stats;
 
