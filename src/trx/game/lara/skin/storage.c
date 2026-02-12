@@ -9,6 +9,7 @@
 #include <trx/game/shell.h>
 #include <trx/json/util/file.h>
 #include <trx/memory.h>
+#include <trx/strings.h>
 #include <trx/vector.h>
 
 #include <string.h>
