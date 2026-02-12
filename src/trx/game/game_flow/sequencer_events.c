@@ -242,15 +242,17 @@ M_GF_HANDLER(M_HandlePicture)
     const bool is_after_fmv =
         prev_event != nullptr && prev_event->type == GFS_PLAY_FMV;
     if (event->type == GFS_LOADING_SCREEN) {
-        if (!g_Config.gameplay.enable_loading_screens) {
+        if (g_Config.gameplay.loading_screens == LOADING_SCREENS_DISABLED) {
             return gf_cmd;
-        }
-        if (seq_ctx == GFSC_STORY) {
+        } else if (seq_ctx == GFSC_STORY) {
+            return gf_cmd;
+        } else if (
+            g_Config.gameplay.loading_screens == LOADING_SCREENS_NEW_GAMES
+            && seq_ctx != GFSC_NORMAL && seq_ctx != GFSC_SELECT) {
             return gf_cmd;
         }
         Music_Stop();
-    }
-    if (seq_ctx == GFSC_SAVED) {
+    } else if (seq_ctx == GFSC_SAVED) {
         return gf_cmd;
     }
 
