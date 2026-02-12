@@ -432,6 +432,18 @@ void JSON_ReadIO_SetError(JSON_READ_IO *const io, const char *fmt, ...)
     M_SetError(io, "%s", body);
 }
 
+void JSON_ReadIO_SetErrorAt(
+    JSON_READ_IO *const io, const int32_t line, const int32_t col,
+    const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    char body[256];
+    vsnprintf(body, sizeof(body), fmt, ap);
+    va_end(ap);
+    M_SetErrorAt(io, line, col, "%s", body);
+}
+
 bool JSON_ReadIO_PushObject(JSON_READ_IO *const io, const char *const key)
 {
     JSON_OBJECT *const current_obj = JSON_ValueAsObject(io->current);
