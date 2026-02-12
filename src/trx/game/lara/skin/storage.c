@@ -8,6 +8,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/shell.h>
 #include <trx/json/util/file.h>
+#include <trx/json/util/read_io.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/vector.h>
@@ -32,6 +33,21 @@ static M_OUTFIT_ENTRY *m_Outfits = nullptr;
 static int32_t m_OutfitCount = 0;
 static M_OUTFIT_LOOKUP *m_OutfitLookup = nullptr;
 static int32_t m_ExtraMeshOffsets[NUM_EXTRA_MESHES] = {};
+
+static void M_ExitWithJSONError(
+    const char *const source_path, const JSON_READ_IO *const io)
+{
+    const char *const error = JSON_ReadIO_GetError(io);
+    if (error != nullptr && error[0] != '\0') {
+        char log_message[1024];
+        char dialog_message[1024];
+        JSON_ReadIO_FormatError(io, false, log_message, sizeof(log_message));
+        JSON_ReadIO_FormatError(
+            io, true, dialog_message, sizeof(dialog_message));
+        Shell_ExitSystemEx(log_message, dialog_message);
+    }
+    Shell_ExitSystemFmt("%s: outfits parse error", source_path);
+}
 
 static void M_SeedDynamicEnumValues(void)
 {
@@ -126,12 +142,17 @@ static bool M_ReadGunMaps(JSON_OBJECT *const root_obj)
     return true;
 }
 
-static bool M_ReadExtraMeshes(JSON_OBJECT *const root_obj)
+static bool M_ReadExtraMeshes(JSON_READ_IO *const io)
 {
-    JSON_OBJECT *const extra_obj =
-        JSON_ObjectGetObject(root_obj, "extra_meshes");
-    if (extra_obj == nullptr) {
+    if (!JSON_OPTIONAL(JSON_PUSH(io, "extra_meshes"))) {
         return false;
+    }
+
+    JSON_OBJECT *const extra_obj = JSON_ReadIO_GetCurrentObject(io);
+    if (extra_obj == nullptr) {
+        JSON_ReadIO_SetError(io, "'extra_meshes' must be an object");
+        JSON_MUST(JSON_POP(io));
+        JSON_FAIL();
     }
 
     for (JSON_OBJECT_ELEMENT *elem = extra_obj->start; elem != nullptr;
@@ -139,183 +160,170 @@ static bool M_ReadExtraMeshes(JSON_OBJECT *const root_obj)
         const char *const name = elem->name->string;
         const int32_t type = ENUM_MAP_GET(LARA_SKIN_EXTRA_MESH, name, -1);
         if (type < 0 || type >= NUM_EXTRA_MESHES) {
-            Shell_ExitSystemFmt("unknown extra mesh type '%s'", name);
+            JSON_ReadIO_SetError(io, "unknown extra mesh type '%s'", name);
+            JSON_MUST(JSON_POP(io));
+            JSON_FAIL();
         }
-        m_ExtraMeshOffsets[type] = JSON_ValueGetInt(elem->value, 0);
+
+        JSON_MUST(JSON_READ(io, name, &m_ExtraMeshOffsets[type]));
     }
 
-    return true;
+    JSON_MUST(JSON_POP(io));
+    JSON_FINISH();
 }
 
-static bool M_LoadBraid(
-    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+static bool M_LoadBraid(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
-    JSON_OBJECT *const braid_obj = JSON_ObjectGetObject(outfit_obj, "braid");
-    if (braid_obj != nullptr) {
-        const char *const braid_mode_name =
-            JSON_ObjectGetString(braid_obj, "mode", JSON_INVALID_STRING);
-        if (braid_mode_name != JSON_INVALID_STRING) {
+    if (JSON_OPTIONAL(JSON_PUSH(io, "braid"))) {
+        const char *braid_mode_name = nullptr;
+        if (JSON_OPTIONAL(JSON_READ(io, "mode", &braid_mode_name))) {
             const int32_t mode =
                 ENUM_MAP_GET(LARA_SKIN_BRAID_MODE, braid_mode_name, -1);
             if (mode < 0 || mode >= NUM_BRAID_MODES) {
-                Shell_ExitSystemFmt("unknown braid mode '%s'", braid_mode_name);
-                return false;
+                JSON_ReadIO_SetError(
+                    io, "unknown braid mode '%s'", braid_mode_name);
+                JSON_MUST(JSON_POP(io));
+                JSON_FAIL();
             }
             outfit->braid.mode = mode;
         }
 
-        outfit->braid.mesh_offset =
-            JSON_ObjectGetInt(braid_obj, "mesh_offset", 0);
-        outfit->braid.gold_offset =
-            JSON_ObjectGetInt(braid_obj, "gold_offset", 0);
-
-        JSON_OBJECT *const pos_obj =
-            JSON_ObjectGetObject(braid_obj, "hair_pos");
-        if (pos_obj != nullptr) {
-            outfit->braid.hair_pos.x = JSON_ObjectGetInt(pos_obj, "x", 0);
-            outfit->braid.hair_pos.y = JSON_ObjectGetInt(pos_obj, "y", 0);
-            outfit->braid.hair_pos.z = JSON_ObjectGetInt(pos_obj, "z", 0);
-        }
+        JSON_READ_D(io, "mesh_offset", &outfit->braid.mesh_offset, 0);
+        JSON_READ_D(io, "gold_offset", &outfit->braid.gold_offset, 0);
+        JSON_READ_D(io, "hair_pos", &outfit->braid.hair_pos, (XYZ_32) {});
         outfit->braid.enabled = true;
+        JSON_MUST(JSON_POP(io));
     } else {
         outfit->braid.enabled = false;
     }
 
-    return true;
+    JSON_FINISH();
 }
 
-static bool M_LoadGunMap(
-    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+static bool M_LoadGunMap(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
-    const int32_t map_idx = JSON_ObjectGetInt(outfit_obj, "gun_map", -1);
+    int32_t map_idx = -1;
+    JSON_READ_D(io, "gun_map", &map_idx, -1);
     if (map_idx < 0 || map_idx >= m_GunMaps->count) {
-        Shell_ExitSystemFmt("invalid gun map '%d'", map_idx);
-        return false;
+        JSON_ReadIO_SetError(io, "invalid gun map '%d'", map_idx);
+        JSON_FAIL();
     }
     outfit->gun_map = (LARA_SKIN_GUN_MAP *)Vector_Get(m_GunMaps, map_idx);
-    return true;
+    JSON_FINISH();
 }
 
-static bool M_LoadSFX(
-    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+static bool M_LoadSFX(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
-    const char *const feet_sample_name = JSON_ObjectGetString(
-        outfit_obj, "footstep_sample_id", JSON_INVALID_STRING);
-    if (feet_sample_name != JSON_INVALID_STRING) {
+    const char *feet_sample_name = nullptr;
+    if (JSON_OPTIONAL(JSON_READ(io, "footstep_sample_id", &feet_sample_name))) {
         CATALOG_ID feet_sample_id;
         if (!Catalog_NameToEnum(
                 CATALOG_SAMPLES, feet_sample_name, &feet_sample_id)) {
-            Shell_ExitSystemFmt("unknown sample id '%s'", feet_sample_name);
-            return false;
+            JSON_ReadIO_SetError(
+                io, "unknown sample id '%s'", feet_sample_name);
+            JSON_FAIL();
         }
         outfit->footstep_sample_id = feet_sample_id;
     } else {
         outfit->footstep_sample_id = SFX_TRX_INVALID;
     }
 
-    return true;
+    JSON_FINISH();
 }
 
 static bool M_LoadNoHolsters(
-    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+    JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
-    JSON_OBJECT *const holster_obj =
-        JSON_ObjectGetObject(outfit_obj, "no_holster_offsets");
-    if (holster_obj != nullptr) {
-        outfit->no_holster_offsets.left =
-            JSON_ObjectGetInt(holster_obj, "thigh_l", -1);
-        outfit->no_holster_offsets.right =
-            JSON_ObjectGetInt(holster_obj, "thigh_r", -1);
+    if (JSON_OPTIONAL(JSON_PUSH(io, "no_holster_offsets"))) {
+        JSON_READ_D(io, "thigh_l", &outfit->no_holster_offsets.left, -1);
+        JSON_READ_D(io, "thigh_r", &outfit->no_holster_offsets.right, -1);
+        JSON_MUST(JSON_POP(io));
     } else {
         outfit->no_holster_offsets.left = -1;
         outfit->no_holster_offsets.right = -1;
     }
-    return true;
+    JSON_FINISH();
 }
 
-static bool M_LoadExtras(
-    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+static bool M_LoadExtras(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
     for (int32_t j = 0; j < LS_EXTRA_NUMBER_OF; j++) {
         outfit->extra_outfits[j] = LARA_SKIN_TYPE_DEFAULT;
     }
 
-    JSON_OBJECT *const extra_obj =
-        JSON_ObjectGetObject(outfit_obj, "extra_outfits");
-    if (extra_obj != nullptr) {
+    if (JSON_OPTIONAL(JSON_PUSH(io, "extra_outfits"))) {
+        JSON_OBJECT *const extra_obj = JSON_ReadIO_GetCurrentObject(io);
+        if (extra_obj == nullptr) {
+            JSON_ReadIO_SetError(io, "'extra_outfits' must be an object");
+            JSON_MUST(JSON_POP(io));
+            JSON_FAIL();
+        }
+
         for (JSON_OBJECT_ELEMENT *elem = extra_obj->start; elem != nullptr;
              elem = elem->next) {
-            const char *name = elem->name->string;
-            const int32_t state = ENUM_MAP_GET(LARA_EXTRA_STATE, name, -1);
+            const char *const state_name = elem->name->string;
+            const int32_t state =
+                ENUM_MAP_GET(LARA_EXTRA_STATE, state_name, -1);
             if (state < 0 || state >= LS_EXTRA_NUMBER_OF) {
-                Shell_ExitSystemFmt("unknown Lara extra state '%s'", name);
-                return false;
+                JSON_ReadIO_SetError(
+                    io, "unknown Lara extra state '%s'", state_name);
+                JSON_MUST(JSON_POP(io));
+                JSON_FAIL();
             }
 
-            name = JSON_ValueGetString(elem->value, JSON_INVALID_STRING);
-            const LARA_SKIN_TYPE type = Lara_Skin_FindOutfitByName(name);
+            const char *outfit_name = nullptr;
+            JSON_MUST(JSON_READ(io, state_name, &outfit_name));
+            const LARA_SKIN_TYPE type = Lara_Skin_FindOutfitByName(outfit_name);
             if (type < 0 || type >= m_OutfitCount) {
-                Shell_ExitSystemFmt("unknown outfit '%s'", name);
-                return false;
+                JSON_ReadIO_SetError(io, "unknown outfit '%s'", outfit_name);
+                JSON_MUST(JSON_POP(io));
+                JSON_FAIL();
             }
             outfit->extra_outfits[state] = type;
         }
+        JSON_MUST(JSON_POP(io));
     }
 
-    return true;
+    JSON_FINISH();
 }
 
-static bool M_LoadOutfit(
-    JSON_OBJECT *const outfit_obj, LARA_SKIN_OUTFIT *const outfit)
+static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
-    const char *const mesh_obj_name =
-        JSON_ObjectGetString(outfit_obj, "mesh_object", JSON_INVALID_STRING);
-    if (mesh_obj_name == JSON_INVALID_STRING) {
-        Shell_ExitSystemFmt("missing outfit mesh object");
-        return false;
-    }
+    const char *mesh_obj_name = nullptr;
+    JSON_MUST(JSON_READ(io, "mesh_object", &mesh_obj_name));
 
     CATALOG_ID mesh_object_id;
     if (!Catalog_NameToEnum(CATALOG_OBJECTS, mesh_obj_name, &mesh_object_id)) {
-        Shell_ExitSystemFmt("unknown outfit object_id '%s'", mesh_obj_name);
-        return false;
+        JSON_ReadIO_SetError(
+            io, "unknown outfit object_id '%s'", mesh_obj_name);
+        JSON_FAIL();
     }
     outfit->obj_id = mesh_object_id;
 
-    outfit->is_reflective =
-        JSON_ObjectGetBool(outfit_obj, "is_reflective", false);
-    outfit->combat_face_offset =
-        JSON_ObjectGetInt(outfit_obj, "combat_face_offset", -1);
+    JSON_READ_D(io, "is_reflective", &outfit->is_reflective, false);
+    JSON_READ_D(io, "combat_face_offset", &outfit->combat_face_offset, -1);
 
-    if (!M_LoadBraid(outfit_obj, outfit)) {
-        return false;
-    }
-
-    if (!M_LoadGunMap(outfit_obj, outfit)) {
-        return false;
-    }
-
-    if (!M_LoadSFX(outfit_obj, outfit)) {
-        return false;
-    }
-
-    if (!M_LoadNoHolsters(outfit_obj, outfit)) {
-        return false;
-    }
-
-    if (!M_LoadExtras(outfit_obj, outfit)) {
-        return false;
-    }
+    JSON_MUST(M_LoadBraid(io, outfit));
+    JSON_MUST(M_LoadGunMap(io, outfit));
+    JSON_MUST(M_LoadSFX(io, outfit));
+    JSON_MUST(M_LoadNoHolsters(io, outfit));
+    JSON_MUST(M_LoadExtras(io, outfit));
 
     outfit->is_defined = true;
-    return true;
+    JSON_FINISH();
 }
 
-static bool M_ReadOutfits(JSON_OBJECT *const root_obj)
+static bool M_ReadOutfits(JSON_READ_IO *const io)
 {
-    JSON_OBJECT *const outfits_map = JSON_ObjectGetObject(root_obj, "outfits");
-    if (outfits_map == nullptr) {
+    if (!JSON_ReadIO_HasKey(io, "outfits")) {
         return false;
+    }
+    JSON_MUST(JSON_PUSH(io, "outfits"));
+
+    JSON_OBJECT *const outfits_map = JSON_ReadIO_GetCurrentObject(io);
+    if (outfits_map == nullptr) {
+        JSON_ReadIO_SetError(io, "'outfits' must be an object");
+        JSON_FAIL();
     }
 
     size_t outfit_count = 0;
@@ -325,8 +333,9 @@ static bool M_ReadOutfits(JSON_OBJECT *const root_obj)
     }
 
     if (outfit_count == 0) {
-        Shell_ExitSystemFmt("missing outfits in configuration");
-        return false;
+        JSON_ReadIO_SetError(io, "missing outfits in configuration");
+        JSON_MUST(JSON_POP(io));
+        JSON_FAIL();
     }
 
     m_Outfits = Memory_Alloc(sizeof(*m_Outfits) * outfit_count);
@@ -336,28 +345,24 @@ static bool M_ReadOutfits(JSON_OBJECT *const root_obj)
     for (JSON_OBJECT_ELEMENT *elem = outfits_map->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
-        JSON_OBJECT *const outfit_obj = JSON_ValueAsObject(elem->value);
-        if (outfit_obj == nullptr) {
-            Shell_ExitSystemFmt("invalid outfit '%s'", name);
-            return false;
-        }
+        JSON_MUST(JSON_PUSH(io, name));
 
         M_OUTFIT_ENTRY *const outfit = &m_Outfits[idx];
         outfit->name = Memory_DupStr(name);
 
-        const char *const name_gs =
-            JSON_ObjectGetString(outfit_obj, "name_gs", JSON_INVALID_STRING);
-        if (name_gs == JSON_INVALID_STRING) {
-            Shell_ExitSystemFmt("invalid '%s.name_gs'", name);
-            return false;
+        const char *name_gs = nullptr;
+        if (!JSON_READ(io, "name_gs", &name_gs)) {
+            JSON_MUST(JSON_POP(io));
+            JSON_FAIL();
         }
         outfit->name_gs = Memory_DupStr(name_gs);
 
         M_OUTFIT_LOOKUP *existing = nullptr;
         HASH_FIND_STR(m_OutfitLookup, outfit->name, existing);
         if (existing != nullptr) {
-            Shell_ExitSystemFmt("duplicate outfit '%s'", name);
-            return false;
+            JSON_ReadIO_SetError(io, "duplicate outfit '%s'", name);
+            JSON_MUST(JSON_POP(io));
+            JSON_FAIL();
         }
 
         M_OUTFIT_LOOKUP *const lookup = Memory_Alloc(sizeof(*lookup));
@@ -365,21 +370,24 @@ static bool M_ReadOutfits(JSON_OBJECT *const root_obj)
         lookup->index = (int32_t)idx;
         HASH_ADD_KEYPTR(
             hh, m_OutfitLookup, lookup->name, strlen(lookup->name), lookup);
+        JSON_MUST(JSON_POP(io));
         idx++;
     }
 
     idx = 0;
     for (JSON_OBJECT_ELEMENT *elem = outfits_map->start; elem != nullptr;
          elem = elem->next) {
-        JSON_OBJECT *const outfit_obj = JSON_ValueAsObject(elem->value);
-        ASSERT(outfit_obj != nullptr);
-        if (!M_LoadOutfit(outfit_obj, &m_Outfits[idx].outfit)) {
-            return false;
+        JSON_MUST(JSON_PUSH(io, elem->name->string));
+        if (!M_LoadOutfit(io, &m_Outfits[idx].outfit)) {
+            JSON_MUST(JSON_POP(io));
+            JSON_FAIL();
         }
+        JSON_MUST(JSON_POP(io));
         idx++;
     }
 
-    return true;
+    JSON_MUST(JSON_POP(io));
+    JSON_FINISH();
 }
 
 void Lara_Skin_LoadFromFile(const char *const path)
@@ -405,13 +413,26 @@ void Lara_Skin_LoadFromFile(const char *const path)
         goto cleanup;
     }
 
-    if (!M_ReadExtraMeshes(root)) {
+    JSON_READ_IO *const io = JSON_ReadIO_Create(doc, 0, path);
+
+    if (!M_ReadExtraMeshes(io)) {
+        const char *const error = JSON_ReadIO_GetError(io);
+        if (error != nullptr && error[0] != '\0') {
+            M_ExitWithJSONError(path, io);
+        }
+        JSON_ReadIO_Destroy(io, true);
         goto cleanup;
     }
 
-    if (!M_ReadOutfits(root)) {
+    if (!M_ReadOutfits(io)) {
+        const char *const error = JSON_ReadIO_GetError(io);
+        if (error != nullptr && error[0] != '\0') {
+            M_ExitWithJSONError(path, io);
+        }
+        JSON_ReadIO_Destroy(io, true);
         goto cleanup;
     }
+    JSON_ReadIO_Destroy(io, true);
 
     M_SeedDynamicEnumValues();
 
