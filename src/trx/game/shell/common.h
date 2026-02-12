@@ -20,6 +20,7 @@ const char *Shell_GetConfigDir(void);
 int32_t Shell_Main(const SHELL_ARGS *args);
 void Shell_Terminate(int32_t exit_code);
 void Shell_ExitSystem(const char *message);
+void Shell_ExitSystemEx(const char *log_message, const char *dialog_message);
 void Shell_ExitSystemFmt(const char *fmt, ...);
 
 void Shell_ScheduleExit(void);

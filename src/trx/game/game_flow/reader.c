@@ -89,7 +89,13 @@ static void M_ExitWithJSONError(const M_CONTEXT *const ctx)
 {
     const char *const error = JSON_ReadIO_GetError(ctx->io);
     if (error != nullptr && error[0] != '\0') {
-        Shell_ExitSystemFmt("%s: %s", ctx->script_path, error);
+        char log_message[1024];
+        char dialog_message[1024];
+        JSON_ReadIO_FormatError(
+            ctx->io, false, log_message, sizeof(log_message));
+        JSON_ReadIO_FormatError(
+            ctx->io, true, dialog_message, sizeof(dialog_message));
+        Shell_ExitSystemEx(log_message, dialog_message);
     }
     Shell_ExitSystemFmt("%s: gameflow parse error", ctx->script_path);
 }
@@ -827,7 +833,7 @@ void GF_LoadFromString(
 
     JSON_VALUE *const doc = JSONFile_ReadEx(
         script_path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
-    ctx.io = JSON_ReadIO_Create(doc, 0);
+    ctx.io = JSON_ReadIO_Create(doc, 0, script_path);
 
     JSON_MUST(M_LoadRoot(&ctx));
     JSON_MUST(M_LoadSettings(&ctx, &ctx.gf->settings));

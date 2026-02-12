@@ -9,7 +9,19 @@
 
 #include <string.h>
 
-#define M_PARSE_FLAGS JSON_PARSE_FLAGS_ALLOW_JSON5
+#define M_PARSE_FLAGS                                                          \
+    (JSON_PARSE_FLAGS_ALLOW_JSON5 | JSON_PARSE_FLAGS_ALLOW_LOCATION_INFORMATION)
+
+static const char *M_FormatErrorMessage(
+    const char *const source_path, const JSON_PARSE_RESULT *const pr,
+    const bool multiline)
+{
+    const char *const separator = multiline ? "\n" : " ";
+    return String_FormatStatic(
+        "Error parsing '%s' (line %d, col %d):%s%s", source_path,
+        pr->error_line_no, pr->error_row_no, separator,
+        JSON_GetErrorDescription(pr->error));
+}
 
 JSON_VALUE *JSONFile_Read(const char *path)
 {
@@ -27,13 +39,13 @@ JSON_VALUE *JSONFile_ReadEx(const char *path, const JSON_FILE_OPTIONS options)
     JSON_VALUE *const value = JSON_ParseEx(
         file_data, strlen(file_data), M_PARSE_FLAGS, nullptr, nullptr, &pr);
     if (value == nullptr) {
-        const char *const error_msg = String_FormatStatic(
-            "parse error in '%s': %s (line %d, char %d)", path,
-            JSON_GetErrorDescription(pr.error), pr.error_line_no,
-            pr.error_row_no);
-        LOG_ERROR("%s", error_msg);
+        const char *const log_message = M_FormatErrorMessage(path, &pr, false);
+        const char *const dialog_message =
+            M_FormatErrorMessage(path, &pr, true);
         if (options.exit_on_error) {
-            Shell_ExitSystemFmt("%s", error_msg);
+            Shell_ExitSystemEx(log_message, dialog_message);
+        } else {
+            LOG_ERROR("%s", log_message);
         }
     }
     Memory_FreePointer(&file_data);

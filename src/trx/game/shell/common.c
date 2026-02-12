@@ -18,12 +18,13 @@
 
 static bool m_IsExiting = false;
 
-static void M_ShowFatalError(const char *const message)
+static void M_ShowFatalError(
+    const char *const log_message, const char *const dialog_message)
 {
-    LOG_ERROR("%s", message);
+    LOG_ERROR("%s", log_message);
     SDL_Window *const window = Shell_GetWindow();
     SDL_ShowSimpleMessageBox(
-        SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", message, window);
+        SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", dialog_message, window);
     Shell_Terminate(1);
 }
 
@@ -54,7 +55,14 @@ void Shell_Terminate(int32_t exit_code)
 
 void Shell_ExitSystem(const char *message)
 {
-    M_ShowFatalError(message);
+    M_ShowFatalError(message, message);
+    Shell_Shutdown();
+}
+
+void Shell_ExitSystemEx(
+    const char *const log_message, const char *const dialog_message)
+{
+    M_ShowFatalError(log_message, dialog_message);
     Shell_Shutdown();
 }
 
