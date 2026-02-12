@@ -37,16 +37,8 @@ static int32_t m_ExtraMeshOffsets[NUM_EXTRA_MESHES] = {};
 static void M_ExitWithJSONError(
     const char *const source_path, const JSON_READ_IO *const io)
 {
-    const char *const error = JSON_ReadIO_GetError(io);
-    if (error != nullptr && error[0] != '\0') {
-        char log_message[1024];
-        char dialog_message[1024];
-        JSON_ReadIO_FormatError(io, false, log_message, sizeof(log_message));
-        JSON_ReadIO_FormatError(
-            io, true, dialog_message, sizeof(dialog_message));
-        Shell_ExitSystemEx(log_message, dialog_message);
-    }
-    Shell_ExitSystemFmt("%s: outfits parse error", source_path);
+    JSONFile_ExitWithReadIOError(
+        io, String_FormatStatic("%s: outfits parse error", source_path));
 }
 
 static void M_SeedDynamicEnumValues(void)
@@ -420,7 +412,7 @@ void Lara_Skin_LoadFromFile(const char *const path)
         if (error != nullptr && error[0] != '\0') {
             M_ExitWithJSONError(path, io);
         }
-        JSON_ReadIO_Destroy(io, true);
+        JSON_ReadIO_Destroy(io);
         goto cleanup;
     }
 
@@ -429,10 +421,10 @@ void Lara_Skin_LoadFromFile(const char *const path)
         if (error != nullptr && error[0] != '\0') {
             M_ExitWithJSONError(path, io);
         }
-        JSON_ReadIO_Destroy(io, true);
+        JSON_ReadIO_Destroy(io);
         goto cleanup;
     }
-    JSON_ReadIO_Destroy(io, true);
+    JSON_ReadIO_Destroy(io);
 
     M_SeedDynamicEnumValues();
 

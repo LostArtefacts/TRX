@@ -87,17 +87,9 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
 
 static void M_ExitWithJSONError(const M_CONTEXT *const ctx)
 {
-    const char *const error = JSON_ReadIO_GetError(ctx->io);
-    if (error != nullptr && error[0] != '\0') {
-        char log_message[1024];
-        char dialog_message[1024];
-        JSON_ReadIO_FormatError(
-            ctx->io, false, log_message, sizeof(log_message));
-        JSON_ReadIO_FormatError(
-            ctx->io, true, dialog_message, sizeof(dialog_message));
-        Shell_ExitSystemEx(log_message, dialog_message);
-    }
-    Shell_ExitSystemFmt("%s: gameflow parse error", ctx->script_path);
+    JSONFile_ExitWithReadIOError(
+        ctx->io,
+        String_FormatStatic("%s: gameflow parse error", ctx->script_path));
 }
 
 static bool M_ReadObjectID(
@@ -831,8 +823,7 @@ void GF_LoadFromString(
     ctx.script_path = g_GameFlow.path;
     ctx.io = nullptr;
 
-    JSON_VALUE *const doc = JSONFile_ReadEx(
-        script_path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_VALUE *const doc = JSONFile_ReadEx(script_path, true);
     ctx.io = JSON_ReadIO_Create(doc, 0, script_path);
 
     JSON_MUST(M_LoadRoot(&ctx));
@@ -845,7 +836,7 @@ void GF_LoadFromString(
     JSON_MUST(M_LoadFMVs(&ctx));
     JSON_MUST(M_LoadTitleLevel(&ctx));
 
-    JSON_ReadIO_Destroy(ctx.io, true);
+    JSON_ReadIO_Destroy(ctx.io);
     JSON_ValueFree(doc);
     return;
 fail:

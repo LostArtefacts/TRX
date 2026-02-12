@@ -540,10 +540,7 @@ JSON_READ_IO *JSON_ReadIO_Create(
     return io;
 }
 
-void JSON_ReadIO_Destroy(JSON_READ_IO *const io, const bool success)
+void JSON_ReadIO_Destroy(JSON_READ_IO *const io)
 {
-    if (!success && io->error_msg[0] != '\0') {
-        LOG_ERROR("%s", io->error_msg);
-    }
     Memory_Free(io);
 }

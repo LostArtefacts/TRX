@@ -136,7 +136,7 @@ bool SG_File_LoadFromFile(MYFILE *const fp)
     result = true;
 
 fail:
-    JSON_ReadIO_Destroy(io, result);
+    JSON_ReadIO_Destroy(io);
     JSON_ValueFree(root);
     return result;
 }
@@ -213,7 +213,7 @@ bool SG_File_LoadOnlyResumeInfo(MYFILE *const fp)
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version, nullptr);
     const bool result = SG_File_LoadResumeInfoList(io);
-    JSON_ReadIO_Destroy(io, result);
+    JSON_ReadIO_Destroy(io);
     JSON_ValueFree(root);
     return result;
 }

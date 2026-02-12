@@ -92,7 +92,7 @@ static void M_LoadPoses(void)
     if (!M_LoadPosesArray(io, m_Poses)) {
         M_WarnWithJSONError(io);
     }
-    JSON_ReadIO_Destroy(io, true);
+    JSON_ReadIO_Destroy(io);
     JSON_ValueFree(doc);
 }
 

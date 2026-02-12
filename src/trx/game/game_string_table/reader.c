@@ -154,8 +154,7 @@ GS_FILE *GS_File_CreateFromPath(const char *const path, const bool load_levels)
     GS_FILE *const gs_file = Memory_Alloc(sizeof(*gs_file));
     gs_file->path = Memory_DupStr(path);
 
-    JSON_VALUE *const doc =
-        JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_VALUE *const doc = JSONFile_ReadEx(path, true);
     JSON_OBJECT *root_obj = JSON_ValueAsObject(doc);
     M_LoadTableFromJSON(root_obj, &gs_file->global);
     if (load_levels) {

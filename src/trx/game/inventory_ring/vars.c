@@ -30,8 +30,7 @@ void InvRing_LoadVars(const char *const path)
 {
 #define L_READ_INT(key, target) target = JSON_ObjectGetInt(obj, key, target);
 
-    JSON_VALUE *const root =
-        JSONFile_ReadEx(path, (JSON_FILE_OPTIONS) { .exit_on_error = true });
+    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_ARRAY *const arr = JSON_ValueAsArray(root);
     if (arr == nullptr) {
         Shell_ExitSystemFmt("invalid inventory ring vars file: %s", path);

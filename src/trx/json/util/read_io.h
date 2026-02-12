@@ -39,7 +39,7 @@ typedef struct {
 
 JSON_READ_IO *JSON_ReadIO_Create(
     JSON_VALUE *root, uint16_t version, const char *source_path);
-void JSON_ReadIO_Destroy(JSON_READ_IO *io, bool success);
+void JSON_ReadIO_Destroy(JSON_READ_IO *io);
 
 const char *JSON_ReadIO_GetError(const JSON_READ_IO *io);
 const char *JSON_ReadIO_GetErrorPath(const JSON_READ_IO *io);
@@ -115,7 +115,7 @@ JSON_READ_IO_TYPE_LIST(L_DECLARE_JSON_READ_IO_TYPE)
 // {
 //     JSON_READ_IO *io = JSON_ReadIO_Create(…);
 //     bool success = M_CustomSectionReader(io);
-//     JSON_ReadIO_Destroy(io, success);
+//     JSON_ReadIO_Destroy(io);
 // }
 
 // If the expr fails, log an error, and carry on.

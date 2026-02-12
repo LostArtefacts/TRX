@@ -2,9 +2,7 @@
 
 #include <trx/json.h>
 
-typedef struct {
-    bool exit_on_error;
-} JSON_FILE_OPTIONS;
+typedef struct JSON_READ_IO JSON_READ_IO;
 
 // Read and parse a JSON5 file. Missing files will return nullptr.
 // @param path  Path to read.
@@ -12,8 +10,12 @@ typedef struct {
 //              must free the result with JSON_ValueFree().
 JSON_VALUE *JSONFile_Read(const char *path);
 
-// Like JSONFile_Read(), except with additional options.
-JSON_VALUE *JSONFile_ReadEx(const char *path, JSON_FILE_OPTIONS options);
+// Like JSONFile_Read(), except optionally exits on parse error.
+JSON_VALUE *JSONFile_ReadEx(const char *path, bool exit_on_error);
+
+// Format and hard-exit with the JSON read error details.
+void JSONFile_ExitWithReadIOError(
+    const JSON_READ_IO *io, const char *fallback_message);
 
 // Write a JSON_VALUE to disk (pretty-printed), overwriting only if changed.
 // @param path  Path to read.
