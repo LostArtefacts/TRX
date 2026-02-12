@@ -15,6 +15,7 @@
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
 - fixed Lara unable to climb small ledges with low crawlspaces
 - fixed Lara using the thin-ledge swing hang animation instead of the normal hang in some 1-click ledge cases
+- fixed Lara's cutscene gun shots not rendering muzzle flashes, gun smoke and shell ejections (e.g., Tony cutscene)
 
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/trx-1.2...trx-1.2.1) - 2026-02-11

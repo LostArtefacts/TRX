@@ -3,25 +3,32 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/collision.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/footprint_fx.h>
+#include <trx/game/gun/misc.h>
+#include <trx/game/gun/smoke.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
+#include <trx/game/random.h>
 #include <trx/game/shell.h>
 #include <trx/game/sparks.h>
 #include <trx/game/water_fx.h>
 #include <trx/game/weather_fx.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
+#include <trx/version.h>
 
 static CAMERA_INFO m_LocalCamera = {};
 static OBJECT_MESH **m_CapturedObjectMeshes = nullptr;
 static OBJECT_ID *m_CapturedObjectMeshOwners = nullptr;
 static int32_t m_CapturedObjectMeshCount = 0;
+static bool m_DrawLeftGunFlash = false;
+static bool m_DrawRightGunFlash = false;
 
 typedef struct {
     bool is_valid;
@@ -170,10 +177,80 @@ static void M_ResetActorsToStart(void)
     }
 }
 
+static void M_ControlGun(void)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+
+    m_DrawLeftGunFlash = false;
+    m_DrawRightGunFlash = false;
+    if (lara->left_arm.flash_gun > 0) {
+        m_DrawLeftGunFlash = true;
+        lara->left_arm.flash_gun--;
+    }
+    if (lara->right_arm.flash_gun > 0) {
+        m_DrawRightGunFlash = true;
+        lara->right_arm.flash_gun--;
+    }
+
+    Gun_Smoke_Control();
+
+    if (g_Config.visuals.enable_gun_lighting
+        && (m_DrawLeftGunFlash || m_DrawRightGunFlash)) {
+        XYZ_32 pos = { .x = -12, .y = 48, .z = 40 };
+        LARA_MESH mesh = LM_HAND_L;
+        if (m_DrawRightGunFlash) {
+            pos.x = 8;
+            mesh = LM_HAND_R;
+        }
+
+        Collide_GetJointAbsPosition(lara_item, &pos, mesh);
+        pos.x += (Random_GetControl() & 0xFF) - 128;
+        pos.y -= (Random_GetControl() & 0x7F) - 63;
+        pos.z += (Random_GetControl() & 0xFF) - 128;
+        if (g_TRVersion >= 3) {
+            const RGB_888 color = {
+                .r = 192 + (Random_GetControl() & 0x3F),
+                .g = 144 + (Random_GetControl() & 0x1F),
+                .b = Random_GetControl() & 0x3F,
+            };
+            Output_AddDynamicLightRGB(pos, 10, color);
+        } else {
+            Output_AddDynamicLight(pos, 10, 11);
+        }
+    }
+}
+
+static void M_DrawGunFlash(const LARA_MESH hand_mesh)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    XYZ_32 pos = {};
+    const bool has_mesh_pos = Lara_GetMeshPos(hand_mesh, &pos);
+    if (!has_mesh_pos) {
+        const ITEM *const lara_item = Lara_GetItem();
+        Collide_GetJointAbsPosition(lara_item, &pos, hand_mesh);
+    }
+
+    Matrix_Push();
+    *g_MatrixPtr = g_ViewMatrix;
+    *g_WMatrixPtr = g_IDMatrix;
+    Matrix_TranslateAbs32(pos);
+    if (has_mesh_pos && lara->mesh_pos_matrices_valid) {
+        MATRIX hand_rot = lara->mesh_pos_matrices[hand_mesh];
+        hand_rot._03 = 0;
+        hand_rot._13 = 0;
+        hand_rot._23 = 0;
+        Matrix_Mul3x3(&hand_rot);
+    }
+    Gun_DrawFlash(LGT_PISTOLS, CLIP_FULLY_VISIBLE, false);
+    Matrix_Pop();
+}
+
 static void M_Control(void)
 {
     Output_ResetDynamicLights();
     Camera_UpdateCutscene();
+    M_ControlGun();
     Item_Control();
     Effect_Control();
     Sparks_Control();
@@ -281,6 +358,8 @@ bool Cutscene_Start(const int32_t level_num)
     const GF_LEVEL *const level = GF_GetLevel(GFLT_CUTSCENES, level_num);
     ASSERT(GF_GetCurrentLevel() == level);
 
+    m_DrawLeftGunFlash = false;
+    m_DrawRightGunFlash = false;
     M_InitialisePlayer(Item_GetIndex(Lara_GetItem()));
     M_CaptureLaraCutsceneState();
     M_CaptureObjectMeshesState();
@@ -295,6 +374,8 @@ bool Cutscene_Start(const int32_t level_num)
 
 void Cutscene_End(void)
 {
+    m_DrawLeftGunFlash = false;
+    m_DrawRightGunFlash = false;
     Memory_FreePointer(&m_CapturedObjectMeshes);
     Memory_FreePointer(&m_CapturedObjectMeshOwners);
     m_CapturedObjectMeshCount = 0;
@@ -346,6 +427,12 @@ void Cutscene_Draw(void)
     Interpolation_Interpolate();
     Camera_Apply();
     Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
+    if (m_DrawLeftGunFlash) {
+        M_DrawGunFlash(LM_HAND_L);
+    }
+    if (m_DrawRightGunFlash) {
+        M_DrawGunFlash(LM_HAND_R);
+    }
     SceneCompositor_Flush();
     if (g_Config.visuals.enable_reflections) {
         Output_Textures_UpdateEnvironmentMap();

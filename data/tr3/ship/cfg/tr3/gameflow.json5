@@ -643,6 +643,7 @@
             "injections": [
                 "data/injections/antarc_sky.bin",
                 "data/injections/cut3_setup.bin",
+                "data/injections/cut3_shell.bin",
                 "data/injections/misc_sprites.bin",
                 "data/injections/font.bin",
                 "data/injections/lara_outfits.bin",
