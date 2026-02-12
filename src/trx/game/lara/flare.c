@@ -296,15 +296,20 @@ void Lara_Flare_Undraw(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     int16_t frame_num_1 = lara_info->left_arm.frame_num;
     int16_t frame_num_2 = lara_info->flare.frame_num;
+    const bool is_mounted = Lara_Vehicle_IsMounted();
 
     lara_info->flare.control = true;
 
-    if (lara_item->goal_anim_state == LS(LS_STOP)
-        && !Lara_Vehicle_IsMounted()) {
+    if (lara_item->goal_anim_state == LS(LS_STOP) && !is_mounted) {
         if (Item_TestAnimEqual(lara_item, LA(LA_STAND_IDLE))) {
-            Item_SwitchToAnim(lara_item, LA(LA_FLARE_THROW), frame_num_1);
+            int16_t throw_frame = frame_num_1;
+            if (throw_frame < LF_FL_THROW || throw_frame >= LF_FL_DRAW) {
+                throw_frame = LF_FL_THROW;
+            }
+            Item_SwitchToAnim(lara_item, LA(LA_FLARE_THROW), throw_frame);
             lara_info->flare.frame_num = lara_item->frame_num;
             frame_num_2 = lara_item->frame_num;
+            frame_num_1 = throw_frame;
         }
 
         if (Item_TestAnimEqual(lara_item, LA(LA_FLARE_THROW))) {
@@ -327,9 +332,7 @@ void Lara_Flare_Undraw(void)
             }
             lara_info->flare.frame_num = frame_num_2 + 1;
         }
-    } else if (
-        lara_item->current_anim_state == LS(LS_STOP)
-        && !Lara_Vehicle_IsMounted()) {
+    } else if (lara_item->current_anim_state == LS(LS_STOP) && !is_mounted) {
         Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
     }
 
