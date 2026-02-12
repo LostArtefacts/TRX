@@ -1,6 +1,7 @@
 #include <trx/game/phase/phase_photo_mode.h>
 
 #include <trx/config.h>
+#include <trx/game/cutscene.h>
 #include <trx/game/game.h>
 #include <trx/game/output/draw.h>
 #include <trx/game/phase/executor.h>
@@ -11,11 +12,14 @@
 #include <trx/memory.h>
 
 typedef struct {
+    bool in_cutscene;
     bool taking_screenshot;
 } M_PRIV;
 
 static PHASE_CONTROL M_Start(PHASE *phase)
 {
+    M_PRIV *const p = phase->priv;
+    p->in_cutscene = GF_GetCurrentLevel()->type == GFL_CUTSCENE;
     PhotoMode_Start();
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
@@ -55,7 +59,11 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    Game_Draw(false);
+    if (p->in_cutscene) {
+        Cutscene_Draw();
+    } else {
+        Game_Draw(false);
+    }
 
     if (p->taking_screenshot) {
         p->taking_screenshot = false;

@@ -273,7 +273,6 @@ static bool M_Draw_I(
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots_1, nullptr, clip);
         M_DrawBodyPart(LM_HAND_R, bone, mesh_rots_1, nullptr, clip);
         M_DrawEquipment(LM_HAND_R, clip, false);
-
         if (lara->right_arm.flash_gun) {
             saved_matrix = *g_MatrixPtr;
             wsaved_matrix = *g_WMatrixPtr;

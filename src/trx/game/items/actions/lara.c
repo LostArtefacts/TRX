@@ -1,4 +1,5 @@
 #include <trx/game/camera.h>
+#include <trx/game/gun/smoke.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -57,6 +58,24 @@ static void M_ToggleLeftGun(ITEM *const item)
     M_ToggleGun(item, LM_THIGH_L, LM_HAND_L);
 }
 
+static void M_ShootRightGun(ITEM *const item)
+{
+    Lara_GetLaraInfo()->right_arm.flash_gun = 3;
+    if (g_TRVersion == 3) {
+        Spawn_GunShell(LGT_PISTOLS, true);
+        Gun_Smoke_OnFire(LGT_PISTOLS, true);
+    }
+}
+
+static void M_ShootLeftGun(ITEM *const item)
+{
+    Lara_GetLaraInfo()->left_arm.flash_gun = 3;
+    if (g_TRVersion == 3) {
+        Spawn_GunShell(LGT_PISTOLS, false);
+        Gun_Smoke_OnFire(LGT_PISTOLS, false);
+    }
+}
+
 static void M_ResetHair(ITEM *const item)
 {
     Lara_Hair_Initialise();
@@ -92,5 +111,7 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_NORMAL, M_Normal)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_HANDS_FREE, M_HandsFree)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_RIGHT_GUN, M_ToggleRightGun)
 REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_DRAW_LEFT_GUN, M_ToggleLeftGun)
+REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_SHOOT_RIGHT_GUN, M_ShootRightGun)
+REGISTER_ITEM_ACTION(ITEM_ACTION_LARA_SHOOT_LEFT_GUN, M_ShootLeftGun)
 REGISTER_ITEM_ACTION(ITEM_ACTION_RESET_HAIR, M_ResetHair)
 REGISTER_ITEM_ACTION(ITEM_ACTION_BUBBLES, M_Bubbles)
