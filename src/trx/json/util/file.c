@@ -3,25 +3,14 @@
 #include <trx/filesystem.h>
 #include <trx/game/shell.h>
 #include <trx/json.h>
+#include <trx/json/util/read_io.h>
 #include <trx/log.h>
 #include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <string.h>
 
 #define M_PARSE_FLAGS                                                          \
     (JSON_PARSE_FLAGS_ALLOW_JSON5 | JSON_PARSE_FLAGS_ALLOW_LOCATION_INFORMATION)
-
-static const char *M_FormatErrorMessage(
-    const char *const source_path, const JSON_PARSE_RESULT *const pr,
-    const bool multiline)
-{
-    const char *const separator = multiline ? "\n" : " ";
-    return String_FormatStatic(
-        "Error parsing '%s' (line %d, col %d):%s%s", source_path,
-        pr->error_line_no, pr->error_row_no, separator,
-        JSON_GetErrorDescription(pr->error));
-}
 
 JSON_VALUE *JSONFile_Read(const char *path)
 {
@@ -39,9 +28,16 @@ JSON_VALUE *JSONFile_ReadEx(const char *path, const JSON_FILE_OPTIONS options)
     JSON_VALUE *const value = JSON_ParseEx(
         file_data, strlen(file_data), M_PARSE_FLAGS, nullptr, nullptr, &pr);
     if (value == nullptr) {
-        const char *const log_message = M_FormatErrorMessage(path, &pr, false);
-        const char *const dialog_message =
-            M_FormatErrorMessage(path, &pr, true);
+        JSON_READ_IO *const io = JSON_ReadIO_Create(nullptr, 0, path);
+        JSON_ReadIO_SetErrorAt(
+            io, pr.error_line_no, pr.error_row_no, "%s",
+            JSON_GetErrorDescription(pr.error));
+        char log_message[1024];
+        char dialog_message[1024];
+        JSON_ReadIO_FormatError(io, false, log_message, sizeof(log_message));
+        JSON_ReadIO_FormatError(
+            io, true, dialog_message, sizeof(dialog_message));
+        JSON_ReadIO_Destroy(io, true);
         if (options.exit_on_error) {
             Shell_ExitSystemEx(log_message, dialog_message);
         } else {

@@ -51,6 +51,8 @@ void JSON_ReadIO_FormatError(
     const JSON_READ_IO *io, bool multiline, char *buffer, size_t buffer_size);
 
 void JSON_ReadIO_SetError(JSON_READ_IO *io, const char *fmt, ...);
+void JSON_ReadIO_SetErrorAt(
+    JSON_READ_IO *io, int32_t line, int32_t col, const char *fmt, ...);
 bool JSON_ReadIO_PushObject(JSON_READ_IO *io, const char *key);
 bool JSON_ReadIO_PushArrayElem(JSON_READ_IO *io, size_t index);
 bool JSON_ReadIO_Pop(JSON_READ_IO *io);
