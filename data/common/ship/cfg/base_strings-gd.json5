@@ -1989,6 +1989,9 @@
         },
         "compy": {
             "name": "\\{review}Compsognathus",
+        },
+        "tribe_pipeman": {
+            "name": "\\{review}Cleasaiche Bhalbhaiche Sluaigh",
         }
     }
 }

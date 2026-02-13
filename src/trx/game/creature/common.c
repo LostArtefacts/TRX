@@ -722,6 +722,41 @@ bool Creature_IsFloating(const ITEM *const item)
         && item->hit_points == DONT_TARGET;
 }
 
+bool Creature_CanSeeEnemy(const ITEM *const item, const AI_INFO *const info)
+{
+    // XXX(Dash): I don't understand the need for this function,
+    // when there's CanTargetEnemy().
+
+    const CREATURE *const creature = item->creature_data;
+    const ITEM *const enemy =
+        creature->enemy != nullptr ? creature->enemy : Lara_GetItem();
+
+    if (enemy == nullptr || enemy->hit_points <= 0
+        || (enemy != Lara_GetItem() && enemy->creature_data == nullptr)
+        || info->angle - creature->joint_rotation[2] <= -DEG_90
+        || info->angle - creature->joint_rotation[2] >= DEG_90
+        || info->distance >= CREATURE_SHOOT_RANGE) {
+        return false;
+    }
+
+    GAME_VECTOR start = {
+        .x = item->pos.x,
+        .y = item->pos.y - STEP_L * 3,
+        .z = item->pos.z,
+        .room_num = item->room_num,
+    };
+
+    const BOUNDS_16 *const bounds = &Item_GetBestFrame(enemy)->bounds;
+    GAME_VECTOR target = {
+        .x = enemy->pos.x,
+        .y = enemy->pos.y + ((3 * bounds->min.y + bounds->max.y) >> 2),
+        .z = enemy->pos.z,
+        .room_num = enemy->room_num,
+    };
+
+    return LOS_Check(&start, &target, true);
+}
+
 bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
 {
     const CREATURE *const creature = item->creature_data;

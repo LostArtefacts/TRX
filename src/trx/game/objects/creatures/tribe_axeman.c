@@ -90,8 +90,8 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
 
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
