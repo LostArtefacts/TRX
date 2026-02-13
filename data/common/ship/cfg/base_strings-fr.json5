@@ -1965,6 +1965,9 @@
         },
         "compy": {
             "name": "\\{review}Compsognathus",
+        },
+        "tribe_pipeman": {
+            "name": "\\{review}Utilisateur de sarbacane de la tribu",
         }
     }
 }

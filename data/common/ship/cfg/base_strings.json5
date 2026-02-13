@@ -1308,6 +1308,9 @@
         "tribe_axeman": {
             "name": "Tribe Axeman",
         },
+        "tribe_pipeman": {
+            "name": "Tribe Blowpipe User",
+        },
         "blade": {
             "name": "Wall-mounted Blade",
         },

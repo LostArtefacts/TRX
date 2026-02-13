@@ -2007,6 +2007,9 @@
         },
         "compy": {
             "name": "\\{review}Compsognathus",
+        },
+        "tribe_pipeman": {
+            "name": "\\{review}Utente della Soffiatrice della Tribù",
         }
     }
 }

@@ -1978,6 +1978,9 @@
         },
         "compy": {
             "name": "\\{review}Compsognathus",
+        },
+        "tribe_pipeman": {
+            "name": "\\{review}Stammes-Blasrohrbenutzer",
         }
     }
 }

@@ -12,5 +12,5 @@
 
 #define CREATURE_MISS_CHANCE 0x2000
 
-#define CREATURE_SHOOT_RANGE SQUARE(WALL_L *(g_TRVersion == 1 ? 7 : 8))
+#define CREATURE_SHOOT_RANGE SQUARE((g_TRVersion == 1 ? 7 : 8) * WALL_L)
 // = 51380224 (TR1), 67108864 (TR2)

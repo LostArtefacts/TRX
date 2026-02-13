@@ -25,6 +25,7 @@
 - added Compsognathus control
 - added Mounted Gun control
 - added Tribe Axeman control
+- added Tribe Pipeman control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
 - added crouching/crawling enhancements (Gameplay → Controls → Responsive crawling)
