@@ -380,5 +380,15 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
 
 void Output_Uniforms_Free(OUTPUT_UNIFORMS *const uniforms)
 {
+    if (uniforms == nullptr) {
+        return;
+    }
+    if (uniforms->general != 0) {
+        glDeleteBuffers(4, &uniforms->general);
+        uniforms->general = 0;
+        uniforms->matrices = 0;
+        uniforms->lights = 0;
+        uniforms->ls = 0;
+    }
     Memory_Free(uniforms);
 }

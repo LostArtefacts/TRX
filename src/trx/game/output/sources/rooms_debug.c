@@ -292,8 +292,17 @@ void OutputSource_RoomsDebug_Shutdown(void)
     M_PRIV *const p = &m_Priv;
     if (p->scheduled != nullptr) {
         Vector_Free(p->scheduled);
+        p->scheduled = nullptr;
     }
     M_FreeBuffers(p);
+    if (p->vao != 0) {
+        glDeleteVertexArrays(1, &p->vao);
+        p->vao = 0;
+    }
+    if (p->vbo != 0) {
+        glDeleteBuffers(1, &p->vbo);
+        p->vbo = 0;
+    }
 }
 
 void OutputSource_RoomsDebug_ObserveLevelLoad(void)
