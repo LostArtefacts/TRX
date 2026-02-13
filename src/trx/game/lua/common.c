@@ -197,6 +197,7 @@ void LUA_Init(void)
 void LUA_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
+    Lua_ShutdownEvents();
     lua_close(p->state);
     p->state = nullptr;
 }

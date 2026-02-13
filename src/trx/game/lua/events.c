@@ -16,6 +16,35 @@ typedef struct {
 static lua_State *m_L = nullptr;
 static VECTOR *m_Listeners = nullptr;
 
+static void M_ClearAllListeners(const bool unref_from_lua)
+{
+    if (m_Listeners == nullptr) {
+        return;
+    }
+
+    if (unref_from_lua && m_L != nullptr) {
+        for (int32_t i = 0; i < m_Listeners->count; i++) {
+            const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+            luaL_unref(m_L, LUA_REGISTRYINDEX, lst->ref);
+        }
+    }
+
+    Vector_Free(m_Listeners);
+    m_Listeners = nullptr;
+}
+
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    M_ClearAllListeners(false);
+    m_L = nullptr;
+}
+
+void Lua_ShutdownEvents(void)
+{
+    M_ClearAllListeners(true);
+    m_L = nullptr;
+}
+
 // trxc.events.attach(event_type, callback) → id
 static int32_t M_L_EventsAttach(lua_State *const L)
 {
