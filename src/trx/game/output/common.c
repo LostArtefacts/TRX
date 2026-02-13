@@ -64,6 +64,7 @@ void Output_Shutdown(void)
     OutputSource_Shadows_Shutdown();
     OutputSource_Misc_Shutdown();
     OutputSource_Overlay_Shutdown();
+    OutputSource_UI_Shutdown();
 
     if (m_ShaderWorld != nullptr) {
         Output_MeshShader_Free(m_ShaderWorld);
