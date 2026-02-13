@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2.1...develop) - ××××-××-××
+- fixed a potential `GL_OUT_OF_MEMORY` error that could occur after reloading levels many times (regression from <1.0)
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/trx-1.2...trx-1.2.1) - 2026-02-11
 - fixed title ring music inheriting the wrong audio volume (regression from 1.2)

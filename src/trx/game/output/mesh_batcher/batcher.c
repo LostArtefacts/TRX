@@ -85,6 +85,7 @@ typedef struct MESH_BATCHER {
     int32_t opaque_total_indices;
     int32_t blend_add_total_indices;
     int32_t transparent_total_indices;
+    bool layout_dirty;
 } MESH_BATCHER;
 
 static M_MESH_BUF_BINDING *M_GetBinding(
@@ -446,6 +447,32 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
             && pass == SCENE_PASS_TRANSPARENT);
 }
 
+static void M_RecalculateLayout(MESH_BATCHER *const batcher)
+{
+    batcher->vertex_count = 0;
+    batcher->opaque_total_indices = 0;
+    batcher->blend_add_total_indices = 0;
+    batcher->transparent_total_indices = 0;
+
+    for (int32_t i = 0; i < batcher->bindings->count; i++) {
+        M_MESH_BUF_BINDING *const bind =
+            *(M_MESH_BUF_BINDING **)Vector_Get(batcher->bindings, i);
+
+        bind->vertex_start = batcher->vertex_count;
+        batcher->vertex_count += bind->vertex_count;
+
+        bind->opaque_index_start = batcher->opaque_total_indices;
+        batcher->opaque_total_indices += bind->opaque_index_count;
+
+        bind->blend_add_index_start = batcher->blend_add_total_indices;
+        batcher->blend_add_total_indices += bind->blend_add_index_count;
+
+        bind->transparent_index_start = batcher->transparent_total_indices;
+        batcher->transparent_total_indices += bind->transparent_index_count;
+    }
+    batcher->layout_dirty = false;
+}
+
 static void M_AnimateTextures(const SCENE_SOURCE *const source)
 {
     MESH_BATCHER *const batcher = source->priv;
@@ -472,6 +499,7 @@ MESH_BATCHER *MeshBatcher_Create(void)
     batcher->source.priv = batcher;
 
     batcher->transparent_sort = Vector_Create(sizeof(M_FACE_SORT));
+    batcher->layout_dirty = true;
 
     glGenVertexArrays(1, &batcher->vao);
     glGenBuffers(3, &batcher->vbo.geom);
@@ -557,7 +585,6 @@ void MeshBatcher_Destroy(MESH_BATCHER *const batcher)
             batcher->staged[pass] = nullptr;
         }
     }
-    ASSERT(batcher->vertex_count == 0);
     Memory_Free(batcher);
 }
 
@@ -575,9 +602,7 @@ void MeshBatcher_RemoveMesh(
     Memory_Free(bind->transparent_face_index_counts);
     Vector_Remove(batcher->bindings, &bind);
     HASH_DEL(batcher->binding_map, bind);
-    if (batcher->bindings->count == 0) {
-        batcher->vertex_count = 0;
-    }
+    batcher->layout_dirty = true;
     Memory_Free(bind);
 }
 
@@ -611,19 +636,11 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
         }
     }
 
-    // 2. Assign Vertex Offsets
-    bind->vertex_start = batcher->vertex_count;
-    batcher->vertex_count += bind->vertex_count;
-
-    // 3. Assign Index Offsets
+    // 2. Prepare index counts
     // Opaque
     bind->opaque_index_count = mesh->opaque_vertex_indices->count;
-    bind->opaque_index_start = batcher->opaque_total_indices;
-    batcher->opaque_total_indices += bind->opaque_index_count;
     // Blend/Add
     bind->blend_add_index_count = mesh->blend_add_vertex_indices->count;
-    bind->blend_add_index_start = batcher->blend_add_total_indices;
-    batcher->blend_add_total_indices += bind->blend_add_index_count;
 
     // Transparent
     bind->transparent_face_count = mesh->transparent_faces->count;
@@ -644,18 +661,21 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
             bind->transparent_index_count += face->vertex_count;
         }
     }
-    bind->transparent_index_start = batcher->transparent_total_indices;
-    batcher->transparent_total_indices += bind->transparent_index_count;
 
     // Prevent double add
     mesh->sealed = 2;
 
     Vector_Add(batcher->bindings, &bind);
     HASH_ADD_PTR(batcher->binding_map, mesh, bind);
+    batcher->layout_dirty = true;
 }
 
 void MeshBatcher_Seal(MESH_BATCHER *const batcher)
 {
+    if (batcher->layout_dirty) {
+        M_RecalculateLayout(batcher);
+    }
+
     glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.geom);
     GFX_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
