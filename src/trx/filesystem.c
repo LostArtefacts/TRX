@@ -29,6 +29,14 @@ struct MYFILE {
 
 const char *m_GameDir = nullptr;
 
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    if (m_GameDir != nullptr) {
+        SDL_free((void *)m_GameDir);
+        m_GameDir = nullptr;
+    }
+}
+
 #if defined(_WIN32)
     #include <wchar.h>
     #include <stdlib.h>
