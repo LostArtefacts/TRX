@@ -14,6 +14,9 @@
 - fixed water ripples triggering z-fighting with 0-click ground surfaces
 - fixed UI bar scale option not updating the padding and borders (regression from 1.2)
 
+**TR2**:
+- fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
+
 **TR3**:
 - added reverb support
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
