@@ -12,6 +12,7 @@
 - fixed Lara's flare undraw animation being skippable on specific late draw frames (#1593)
 - fixed footprints rendering with an excessive Y offset
 - fixed water ripples triggering z-fighting with 0-click ground surfaces
+- fixed UI bar scale option not updating the padding and borders (regression from 1.2)
 
 **TR3**:
 - added reverb support
