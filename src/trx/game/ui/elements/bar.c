@@ -160,15 +160,8 @@ static void M_Draw(const UI_NODE *const node)
     const float y = UI_ScaleY(node->y);
     const float w = UI_ScaleX(node->w);
     const float h = UI_ScaleY(node->h);
-    float border;
-    float padding;
-    if (data->settings.preview) {
-        border = h / (float)(UI_BAR_COLOR_STEPS + 4);
-        padding = h / (float)(UI_BAR_COLOR_STEPS + 4);
-    } else {
-        border = ceil(UI_ScaleX(UI_BAR_BORDER * data->scale));
-        padding = ceil(UI_ScaleX(UI_BAR_PADDING * data->scale));
-    }
+    const float border = h / (float)(UI_BAR_COLOR_STEPS + 4);
+    const float padding = h / (float)(UI_BAR_COLOR_STEPS + 4);
     const M_RECT_F outer_rect = {
         .x = x,
         .y = y,
