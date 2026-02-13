@@ -11,6 +11,9 @@
 
 #include <string.h>
 
+#define M_SPLASH_Z_DEPTH_ADJUST -0.005f
+#define M_RIPPLE_Z_DEPTH_ADJUST -0.005f
+
 static const int16_t m_SplashRings[8][2] = {
     { 0, -24 }, { 17, -17 }, { 24, 0 },  { 17, 17 },
     { 0, 24 },  { -17, 17 }, { -24, 0 }, { -17, -17 },
@@ -388,8 +391,9 @@ static void M_DrawSplash(
                 points[i2],
             };
             const RGBA_8888 quad_color[4] = { c1, c1, c2, c2 };
-            OutputSource_PolyFX_StageSpriteQuadWorld(
-                sprite_idx, quad_pos, quad_color, DRAW_BLEND_ADD);
+            OutputSource_PolyFX_StageSpriteQuadWorldDepth(
+                sprite_idx, quad_pos, quad_color, M_SPLASH_Z_DEPTH_ADJUST,
+                DRAW_BLEND_ADD);
         }
     }
 }
@@ -440,10 +444,12 @@ static void M_DrawRipple(
         },
     };
     const RGBA_8888 quad_color[4] = { color, color, color, color };
-    OutputSource_PolyFX_StageSpriteQuadWorld(
-        sprite_idx, quad_pos[0], quad_color, DRAW_BLEND_ADD);
-    OutputSource_PolyFX_StageSpriteQuadWorld(
-        sprite_idx, quad_pos[1], quad_color, DRAW_BLEND_ADD);
+    OutputSource_PolyFX_StageSpriteQuadWorldDepth(
+        sprite_idx, quad_pos[0], quad_color, M_RIPPLE_Z_DEPTH_ADJUST,
+        DRAW_BLEND_ADD);
+    OutputSource_PolyFX_StageSpriteQuadWorldDepth(
+        sprite_idx, quad_pos[1], quad_color, M_RIPPLE_Z_DEPTH_ADJUST,
+        DRAW_BLEND_ADD);
 }
 
 void WaterFX_Draw(void)

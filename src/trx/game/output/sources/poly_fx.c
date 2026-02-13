@@ -31,6 +31,7 @@ typedef struct {
     int32_t sprite_idx;
     bool use_custom_uv;
     uint8_t corner_count;
+    float z_depth_adjust;
     XYZ_32 world_pos[4];
     OUTPUT_UVW uvw[4];
     OUTPUT_TEXTURE_SIZE texture_size[4];
@@ -198,7 +199,7 @@ static void M_EmitPrimVertices(M_PRIV *const p, const M_PRIM *const prim)
                     .x = (float)prim->world_pos[corner].x,
                     .y = (float)prim->world_pos[corner].y,
                     .z = (float)prim->world_pos[corner].z,
-                    .w = 0.0f,
+                    .w = prim->z_depth_adjust,
                 },
                 .normal = {
                     .x = prim->disp[corner][0],
@@ -373,12 +374,14 @@ void OutputSource_PolyFX_Shutdown(void)
 static void M_StagePrim(
     const int32_t sprite_idx, const uint8_t corner_count,
     const XYZ_32 *const world_pos, const float (*disp)[2],
-    const RGBA_8888 *const color, const uint16_t flags, VECTOR *const target)
+    const RGBA_8888 *const color, const uint16_t flags,
+    const float z_depth_adjust, VECTOR *const target)
 {
     M_PRIM prim;
     prim.sprite_idx = sprite_idx;
     prim.use_custom_uv = false;
     prim.corner_count = corner_count;
+    prim.z_depth_adjust = z_depth_adjust;
     memset(prim.world_pos, 0, sizeof(prim.world_pos));
     memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos[0]) * corner_count);
     memset(prim.uvw, 0, sizeof(prim.uvw));
@@ -412,22 +415,40 @@ void OutputSource_PolyFX_StageSpriteQuadWorld(
     const int32_t sprite_idx, const XYZ_32 world_pos[4],
     const RGBA_8888 color[4], const DRAW_TYPE draw_type)
 {
+    OutputSource_PolyFX_StageSpriteQuadWorldDepth(
+        sprite_idx, world_pos, color, 0.0f, draw_type);
+}
+
+void OutputSource_PolyFX_StageSpriteQuadWorldDepth(
+    const int32_t sprite_idx, const XYZ_32 world_pos[4],
+    const RGBA_8888 color[4], const float z_depth_adjust,
+    const DRAW_TYPE draw_type)
+{
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
     M_StagePrim(
         sprite_idx, 4, &world_pos[0], nullptr, &color[0],
-        VERT_NO_LIGHTING | VERT_NO_WIBBLE, target);
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, z_depth_adjust, target);
 }
 
 void OutputSource_PolyFX_StageSpriteTriWorld(
     const int32_t sprite_idx, const XYZ_32 world_pos[3],
     const RGBA_8888 color[3], const DRAW_TYPE draw_type)
 {
+    OutputSource_PolyFX_StageSpriteTriWorldDepth(
+        sprite_idx, world_pos, color, 0.0f, draw_type);
+}
+
+void OutputSource_PolyFX_StageSpriteTriWorldDepth(
+    const int32_t sprite_idx, const XYZ_32 world_pos[3],
+    const RGBA_8888 color[3], const float z_depth_adjust,
+    const DRAW_TYPE draw_type)
+{
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
     M_StagePrim(
         sprite_idx, 3, &world_pos[0], nullptr, &color[0],
-        VERT_NO_LIGHTING | VERT_NO_WIBBLE, target);
+        VERT_NO_LIGHTING | VERT_NO_WIBBLE, z_depth_adjust, target);
 }
 
 void OutputSource_PolyFX_StageQuadExt(
@@ -436,7 +457,8 @@ void OutputSource_PolyFX_StageQuadExt(
 {
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
-    M_StagePrim(sprite_idx, 4, &world_pos[0], disp, &color[0], flags, target);
+    M_StagePrim(
+        sprite_idx, 4, &world_pos[0], disp, &color[0], flags, 0.0f, target);
 }
 
 void OutputSource_PolyFX_StageQuadExtUV(
@@ -451,6 +473,7 @@ void OutputSource_PolyFX_StageQuadExtUV(
     prim.sprite_idx = -1;
     prim.use_custom_uv = true;
     prim.corner_count = 4;
+    prim.z_depth_adjust = 0.0f;
     memcpy(prim.world_pos, world_pos, sizeof(prim.world_pos));
     memcpy(prim.uvw, uvw, sizeof(prim.uvw));
     memcpy(prim.texture_size, texture_size, sizeof(prim.texture_size));
@@ -477,6 +500,7 @@ void OutputSource_PolyFX_StageTriExtUV(
     prim.sprite_idx = -1;
     prim.use_custom_uv = true;
     prim.corner_count = 3;
+    prim.z_depth_adjust = 0.0f;
     memset(prim.world_pos, 0, sizeof(prim.world_pos));
     memcpy(prim.world_pos, world_pos, sizeof(world_pos[0]) * 3);
     memset(prim.uvw, 0, sizeof(prim.uvw));
@@ -718,5 +742,6 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
 
     const RGBA_8888 world_color[4] = { color, color, color, color };
     M_StagePrim(
-        sprite_idx, 4, &world_pos[0], disp, &world_color[0], flags, target);
+        sprite_idx, 4, &world_pos[0], disp, &world_color[0], flags, 0.0f,
+        target);
 }

@@ -16,9 +16,17 @@ void OutputSource_PolyFX_StageSpriteQuadWorld(
     int32_t sprite_idx, const XYZ_32 world_pos[4], const RGBA_8888 color[4],
     DRAW_TYPE draw_type);
 
+void OutputSource_PolyFX_StageSpriteQuadWorldDepth(
+    int32_t sprite_idx, const XYZ_32 world_pos[4], const RGBA_8888 color[4],
+    float z_depth_adjust, DRAW_TYPE draw_type);
+
 void OutputSource_PolyFX_StageSpriteTriWorld(
     int32_t sprite_idx, const XYZ_32 world_pos[3], const RGBA_8888 color[3],
     DRAW_TYPE draw_type);
+
+void OutputSource_PolyFX_StageSpriteTriWorldDepth(
+    int32_t sprite_idx, const XYZ_32 world_pos[3], const RGBA_8888 color[3],
+    float z_depth_adjust, DRAW_TYPE draw_type);
 
 void OutputSource_PolyFX_StageQuadExt(
     int32_t sprite_idx, const XYZ_32 world_pos[4], const float disp[4][2],
