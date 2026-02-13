@@ -14,6 +14,10 @@
     } while (0)
 
 void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);
+bool Item_IsMeshVisible(const ITEM *item, int32_t mesh_num);
+void Item_SetMeshVisible(ITEM *item, int32_t mesh_num, bool visible);
+void Item_SetMeshVisibleMask(ITEM *item, uint32_t mesh_mask, bool visible);
+void Item_ResetMeshBits(ITEM *item);
 
 // Mesh_bits: which meshes to affect.
 // Damage:

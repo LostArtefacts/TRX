@@ -763,7 +763,7 @@ void Matrix_LookAt(
     Matrix_GenerateW2V(&view_pos, &view_rot);
 }
 
-XYZ_32 Matrix_MulVec32(const MATRIX *const m, const XYZ_32 v)
+XYZ_32 Matrix_MulVec32_M(const MATRIX *const m, const XYZ_32 v)
 {
     return (XYZ_32) {
         (m->_00 * v.x + m->_01 * v.y + m->_02 * v.z + m->_03) >> W2V_SHIFT,
@@ -772,7 +772,7 @@ XYZ_32 Matrix_MulVec32(const MATRIX *const m, const XYZ_32 v)
     };
 }
 
-XYZ_32 Matrix_GetOffset(const MATRIX *const m)
+XYZ_32 Matrix_GetOffset_M(const MATRIX *const m)
 {
     return (XYZ_32) {
         .x = m->_03 >> W2V_SHIFT,

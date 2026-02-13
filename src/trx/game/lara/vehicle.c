@@ -1,6 +1,8 @@
 #include <trx/game/lara/vehicle.h>
 
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/skin/common.h>
 
 static int16_t m_VehicleItemNum = NO_ITEM;
 
@@ -41,4 +43,12 @@ void Lara_Vehicle_Dismount(void)
 
     lara_item->rot.x = 0;
     lara_item->rot.z = 0;
+
+    const LARA_SKIN_EQUIPMENT *const hand_r_equipment =
+        Lara_Skin_GetEquipment(LM_HAND_R);
+    if (hand_r_equipment->type == EQUIPMENT_TYPE_EXTRA
+        && hand_r_equipment->data == EXTRA_MESH_OAR) {
+        Lara_Skin_ClearEquipment(LM_HAND_R);
+        Item_SetMeshVisibleMask(lara_item, INT32_MAX, true);
+    }
 }

@@ -1971,6 +1971,9 @@
         },
         "switch_type_wheel": {
             "name": "\\{review}Колёсный переключатель",
+        },
+        "kayak": {
+            "name": "\\{review}Каяк",
         }
     }
 }

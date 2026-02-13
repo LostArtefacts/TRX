@@ -1942,6 +1942,9 @@
         },
         "switch_type_wheel": {
             "name": "\\{review}Przełącznik Kołowy",
+        },
+        "kayak": {
+            "name": "\\{review}Kajak",
         }
     }
 }

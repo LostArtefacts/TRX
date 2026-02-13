@@ -1038,6 +1038,9 @@
         "quad_bike": {
             "name": "Quad Bike",
         },
+        "kayak": {
+            "name": "Kayak",
+        },
         "bacon_lara": {
             "name": "Bacon Lara",
         },

@@ -20,6 +20,7 @@
 
 **TR3**:
 - added reverb support
+- added Kayak control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
@@ -40,6 +41,8 @@
     Note: for those 1.0/1.1 saves, this feature will restore her health to full, as it was not stored correctly. 1.2 will continue to restore the correct HP value.
 - fixed TR2 delayed music triggers not working (regression from 1.1)
 - fixed TR3 using delayed music triggers (TR2-only feature)
+
+
 
 ## [1.2](https://github.com/LostArtefacts/TRX/compare/trx-1.1...trx-1.2) - 2026-02-11
 Showcase: https://www.youtube.com/watch?v=jeq8rQONaic

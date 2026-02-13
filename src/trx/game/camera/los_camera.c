@@ -924,6 +924,12 @@ static void M_Update(
     }
 }
 
+bool Camera_Collide(
+    GAME_VECTOR *const ideal, const int32_t shift, const bool y_first)
+{
+    return M_Collide(ideal, shift, y_first);
+}
+
 static const CAMERA_STRATEGY m_Strategy = {
     .get_chase_speed_func = M_GetChaseSpeed,
     .get_look_settings_func = M_GetLookSettingsFunc,
