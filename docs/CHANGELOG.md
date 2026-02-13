@@ -13,6 +13,9 @@
 - fixed footprints rendering with an excessive Y offset
 - fixed water ripples triggering z-fighting with 0-click ground surfaces
 
+**TR2**:
+- fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
+
 **TR3**:
 - added reverb support
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
