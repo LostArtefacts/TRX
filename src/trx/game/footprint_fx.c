@@ -17,6 +17,7 @@
 
 #define M_MAX_FOOTPRINTS 32
 #define M_FOOTPRINT_LIFETIME 512
+#define M_FOOTPRINT_Z_DEPTH_ADJUST -0.5f
 
 typedef struct {
     int32_t x;
@@ -105,7 +106,7 @@ static void M_GetWorldPoint(
     const int32_t dx = TRIGMULT2(local.x, c) + TRIGMULT2(local.z, s);
     const int32_t dz = TRIGMULT2(local.z, c) - TRIGMULT2(local.x, s);
     out_world->x = print->x + dx;
-    out_world->y = (print->y - 16) + local.y;
+    out_world->y = print->y + local.y;
     out_world->z = print->z + dz;
 }
 
@@ -186,8 +187,9 @@ void FootprintFX_Draw(void)
         const RGBA_8888 tri_color[3] = { color, color, color };
 
         for (int32_t j = 0; j < 4; j++) {
-            OutputSource_PolyFX_StageSpriteTriWorld(
-                sprite_idx, world, tri_color, DRAW_BLEND_SUB);
+            OutputSource_PolyFX_StageSpriteTriWorldDepth(
+                sprite_idx, world, tri_color, M_FOOTPRINT_Z_DEPTH_ADJUST,
+                DRAW_BLEND_SUB);
         }
     }
 }
