@@ -1981,6 +1981,9 @@
         },
         "mounted_gun": {
             "name": "Gunna Stèidhichte",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Gaisgeach nan Sliochd",
         }
     }
 }

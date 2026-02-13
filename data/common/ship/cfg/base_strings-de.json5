@@ -1970,6 +1970,9 @@
         },
         "mounted_gun": {
             "name": "\\{review}Montiertes Geschütz",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Stammesaxtkämpfer",
         }
     }
 }

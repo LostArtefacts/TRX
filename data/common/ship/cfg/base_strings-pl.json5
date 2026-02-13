@@ -1948,6 +1948,9 @@
         },
         "mounted_gun": {
             "name": "\\{review}Zamontowana Broń",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Topornik plemienia",
         }
     }
 }

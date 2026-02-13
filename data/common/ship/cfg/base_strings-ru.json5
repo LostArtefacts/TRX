@@ -1977,6 +1977,9 @@
         },
         "mounted_gun": {
             "name": "\\{review}Установленный пулемёт",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Топорщик племени",
         }
     }
 }

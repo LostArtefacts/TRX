@@ -134,5 +134,6 @@
   "O_WHITE_LIGHT":            { "status": "fully implemented" },
   "O_WINSTON":                { "status": "fully implemented" },
   "O_WINSTON_ARMY":           { "status": "fully implemented" },
-  "O_ZIPLINE_HANDLE":         { "status": "fully implemented" }
+  "O_ZIPLINE_HANDLE":         { "status": "fully implemented" },
+  "O_TRIBE_AXEMAN":           { "status": "fully implemented" }
 }

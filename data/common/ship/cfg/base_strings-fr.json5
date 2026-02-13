@@ -1957,6 +1957,9 @@
         },
         "mounted_gun": {
             "name": "\\{review}Mitrailleuse Fixe",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Hacheur de la tribu",
         }
     }
 }
