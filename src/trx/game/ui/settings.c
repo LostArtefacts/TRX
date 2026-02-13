@@ -552,6 +552,11 @@ void UI_Settings_LoadFromFile(const char *const path)
     JSON_ValueFree(root);
 }
 
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    M_FreeBarThemes();
+}
+
 static const char *M_GetBarColorName(const UI_BAR_TYPE type)
 {
     if (type < 0 || type >= UI_BAR_NUMBER_OF) {
