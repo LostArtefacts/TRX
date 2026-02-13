@@ -179,6 +179,13 @@ static void M_ShutdownModules(void)
     Log_Shutdown();
 }
 
+static SHELL_ARGS *M_CloneArgs(const SHELL_ARGS *const args)
+{
+    SHELL_ARGS *const copy = Memory_Alloc(sizeof(SHELL_ARGS));
+    *copy = *args;
+    return copy;
+}
+
 static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
 {
     const SHELL_ARGS *new_args = args;
@@ -249,7 +256,12 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
         Clock_EnableHeadlessFixedFPS(fps);
     }
 
-    m_ShellArgs = new_args;
+    Memory_FreePointer(&m_ShellArgs);
+    if (new_args == args) {
+        m_ShellArgs = M_CloneArgs(args);
+    } else {
+        m_ShellArgs = new_args;
+    }
     return new_args;
 }
 
@@ -396,4 +408,5 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 void Shell_Shutdown(void)
 {
     M_ShutdownModules();
+    Memory_FreePointer(&m_ShellArgs);
 }

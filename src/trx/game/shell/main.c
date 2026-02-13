@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     }
 
     Shell_ScanAvailableMods();
-    SHELL_ARGS *const args = Shell_ParseArgs(raw_args);
+    SHELL_ARGS *args = Shell_ParseArgs(raw_args);
     if (args == nullptr) {
         Vector_Free(raw_args);
         return 0;
@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 
     LOG_INFO("Starting %s", g_TRXVersion);
     int32_t exit_code = Shell_Main(args);
+    Memory_FreePointer(&args);
     Vector_Free(raw_args);
     Shell_Terminate(exit_code);
     return exit_code;
