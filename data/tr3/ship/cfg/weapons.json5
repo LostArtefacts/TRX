@@ -129,7 +129,7 @@
         "shot_accuracy": 8,
         "gun_height": 650,
         "damage": 1,
-        "pickup_qty": 80,
+        "pickup_qty": 40,
         "target_dist": 8.0,
         "recoil_frame": 3,
         "flash_time": 3,
