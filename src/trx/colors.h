@@ -27,6 +27,7 @@ RGBA_8888 Color_RGB888ToRGBA8888_Impl(RGB_888 color);
 RGBA_8888 Color_RGB888ToRGBA8888Ex_Impl(RGB_888 color, uint8_t alpha);
 RGBA_F Color_RGBFToRGBAF_Impl(RGB_F color);
 RGBA_F Color_RGBFToRGBAFEx_Impl(RGB_F color, float alpha);
+RGBA_8888 Color_ARGB1555ToRGBA8888(uint16_t argb1555);
 
 #define Color_RGBToRGBA(color)                                                 \
     _Generic(                                                                  \

@@ -7,8 +7,8 @@ void Inject_RegisterEditor(
         int32_t element_count));
 
 #define REGISTER_INJECT_EDITOR(data_type, handle_func)                         \
-    __attribute__((                                                            \
-        constructor)) static void M_RegisterInjectEditor##data_type(void)      \
+    __attribute__((constructor)) static void                                   \
+    M_RegisterInjectEditor##data_type(void)                                    \
     {                                                                          \
         Inject_RegisterEditor(data_type, handle_func);                         \
     }

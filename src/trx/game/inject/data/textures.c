@@ -1,5 +1,7 @@
 #include <trx/game/const.h>
 #include <trx/game/inject.h>
+#include <trx/game/level/context.h>
+#include <trx/game/level/sections/append.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output/const.h>
 #include <trx/log.h>
@@ -8,7 +10,7 @@
 
 static uint16_t M_RemapRGB8(const RGB_888 rgb)
 {
-    const LEVEL_INFO *const level_info = Level_GetInfo();
+    const LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
     uint16_t best_idx = 0;
     int32_t best_diff = INT32_MAX;
     for (int32_t i = 1; i < level_info->palette.size; i++) {
@@ -45,7 +47,7 @@ static void M_HandlePalette(
 static void M_HandleTexturePages(
     const INJECTION *const injection, const int32_t data_count)
 {
-    LEVEL_INFO *const info = Level_GetInfo();
+    LEVEL_CONTEXT_INFO *const info = Level_Context_GetInfo();
     if (info->textures.pages_32 == nullptr) {
         VFile_Skip(
             injection->fp, data_count * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
@@ -76,7 +78,7 @@ static void M_HandleTexturePages(
 static void M_HandleSpriteSequences(
     const INJECTION *const injection, const int32_t data_count)
 {
-    LEVEL_INFO *const level_info = Level_GetInfo();
+    LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         const int16_t num_meshes = VFile_ReadS16(injection->fp);
@@ -139,8 +141,8 @@ static void M_HandleTextureData(
 static void M_HandleTextureInfo(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
-    LEVEL_INFO *const level_info = Level_GetInfo();
-    const LEVEL_INFO cached_info = Inject_GetCachedInfo();
+    LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
+    const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
     const int32_t page_base = cached_info.textures.page_count;
 
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
@@ -156,13 +158,13 @@ static void M_HandleTextureInfo(
 
         switch (data_type) {
         case IDT_OBJECT_TEXTURES:
-            Level_AppendObjectTextures(
+            Level_Section_AppendObjectTextures(
                 level_info->textures.object_count, page_base, data_count,
                 chunk.injection->fp);
             level_info->textures.object_count += data_count;
             break;
         case IDT_SPRITE_TEXTURES:
-            Level_AppendSpriteTextures(
+            Level_Section_AppendSpriteTextures(
                 level_info->textures.sprite_count, page_base, data_count,
                 chunk.injection->fp);
             break;

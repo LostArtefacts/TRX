@@ -89,7 +89,7 @@ static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
     FADER fader = {};
     Fader_InitToHold(&fader, 0.0f, 1.0f, args.duration, args.debuff);
     while (Fader_IsActive(&fader)) {
-        (void)Clock_WaitTick();
+        Clock_WaitTick();
         m_CurrentFrame++;
 
         Shell_ProcessEvents();

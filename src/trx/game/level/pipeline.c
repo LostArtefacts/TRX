@@ -1,24 +1,15 @@
-#include <trx/game/level/reader.h>
-
 #include <trx/benchmark.h>
 #include <trx/config.h>
-#include <trx/debug.h>
 #include <trx/filesystem.h>
 #include <trx/game/carrier.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/level.h>
-#include <trx/game/level/reader_tr1.h>
-#include <trx/game/level/reader_tr2.h>
-#include <trx/game/level/reader_tr3.h>
+#include <trx/game/level/format/format.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/mutant.h>
-#include <trx/game/output.h>
 #include <trx/game/rooms.h>
-#include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/game/ui.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/version.h>
@@ -33,11 +24,6 @@ typedef struct {
     int32_t file_index;
 } M_SAMPLE_ENTRY;
 
-const LEVEL_LOADER *g_LevelLoaders[] = {
-    &g_LevelLoaderTR1X, &g_LevelLoaderTR1, &g_LevelLoaderTR1DemoPC,
-    &g_LevelLoaderTR2X, &g_LevelLoaderTR2, &g_LevelLoaderTR3,
-};
-
 static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
 {
     const M_SAMPLE_ENTRY *const entry_a = (M_SAMPLE_ENTRY *)a;
@@ -45,11 +31,12 @@ static int32_t M_CompareSampleOffsets(const void *const a, const void *const b)
     return entry_a->file_index - entry_b->file_index;
 }
 
-static void M_InitialiseSamplesFromFile(const char *file_name)
+static void M_InitialiseSamplesFromFile(
+    LEVEL_CONTEXT *const ctx, const char *file_name)
 {
     BENCHMARK benchmark = Benchmark_Start();
     M_SAMPLE_ENTRY *entries = nullptr;
-    LEVEL_INFO *const info = Level_GetInfo();
+    LEVEL_CONTEXT_INFO *const info = &ctx->info;
 
     if (file_name == nullptr) {
         file_name = g_GameFlow.settings.sfx_path;
@@ -114,10 +101,10 @@ finish:
     Benchmark_End(&benchmark, nullptr);
 }
 
-static void M_InitialiseSamplesFromLevelInfo(void)
+static void M_InitialiseSamplesFromLevelInfo(LEVEL_CONTEXT *const ctx)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    LEVEL_INFO *const info = Level_GetInfo();
+    LEVEL_CONTEXT_INFO *const info = &ctx->info;
     const int32_t sample_count = info->samples.offset_count;
 
     // TODO: this assumes that sample pointers are sorted - adopt TR2's approach
@@ -159,57 +146,11 @@ static void M_MarkWaterEdgeVertices(void)
     Benchmark_End(&benchmark, nullptr);
 }
 
-const LEVEL_LOADER *Level_GuessLoader(VFILE *const file)
-{
-    const LEVEL_LOADER *result = nullptr;
-    BENCHMARK benchmark = Benchmark_Start();
-    for (int32_t i = 0; g_LevelLoaders[i] != nullptr; i++) {
-        const LEVEL_LOADER *const loader = g_LevelLoaders[i];
-        if (loader->probe(loader, file, LEVEL_PROBE_MINIMAL)) {
-            result = loader;
-            break;
-        }
-    }
-    Benchmark_End(&benchmark, nullptr);
-    return result;
-}
-
-LEVEL_LAYOUT Level_GuessLayout(VFILE *const file)
-{
-    const LEVEL_LOADER *const loader = Level_GuessLoader(file);
-    if (loader != nullptr) {
-        return loader->layout;
-    }
-    return LEVEL_LAYOUT_UNKNOWN;
-}
-
-static const LEVEL_LOADER *M_LoadFromFile(const GF_LEVEL *const level)
-{
-    GameBuf_Reset();
-
-    BENCHMARK benchmark = Benchmark_Start();
-    VFILE *const file = VFile_CreateFromPath(level->path);
-    if (file == nullptr) {
-        Shell_ExitSystemFmt("Could not open %s", level->path);
-    }
-
-    const LEVEL_LOADER *const loader = Level_GuessLoader(file);
-    if (loader == nullptr) {
-        Shell_ExitSystemFmt("Failed to load %s", level->path);
-    }
-    g_TRVersion = loader->game_version;
-    ASSERT(loader->load != nullptr);
-    loader->load(loader, file);
-
-    VFile_Close(file);
-    Benchmark_End(&benchmark, nullptr);
-    return loader;
-}
-
 static void M_CompleteSetup(
-    const LEVEL_LOADER *const loader, const GF_LEVEL *const level)
+    const LEVEL_FORMAT_LOADER *const loader, const GF_LEVEL *const level)
 {
     BENCHMARK benchmark = Benchmark_Start();
+    LEVEL_CONTEXT *const ctx = Level_Context_Get();
 
     // We inject explosions sprites and sounds, although in the original game,
     // some levels lack them, resulting in no audio or visual effects when
@@ -218,43 +159,39 @@ static void M_CompleteSetup(
 
     Inject_AllInjections();
 
-    Level_LoadAnimFrames(loader);
-    Level_LoadAnimCommands();
+    Level_Finalize_LoadAnimFrames(ctx);
+    Level_Finalize_LoadAnimCommands(ctx);
     if (g_TRVersion == 1) {
         M_MarkWaterEdgeVertices();
     } else {
-        Level_LoadWalkables();
+        Level_Finalize_LoadWalkables(ctx);
     }
-    Level_LoadObjectsAndItems();
+    Level_Finalize_LoadObjectsAndItems(ctx);
 
     // Configure enemies who carry and drop items
     Carrier_InitialiseLevel(level);
 
-    Level_LoadRooms();
-    Level_LoadTextures();
-    Level_LoadTexturePages(loader);
-    Level_LoadPalettes();
+    Level_Finalize_LoadRooms(ctx);
+    Level_Finalize_LoadTextures(ctx);
+    Level_Finalize_LoadTexturePages(ctx);
+    Level_Finalize_LoadPalettes(ctx);
 
-    UI_LoadText();
-
-    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
-    Output_DispatchLevelLoad();
     if (loader->game_version == 1) {
-        M_InitialiseSamplesFromLevelInfo();
+        M_InitialiseSamplesFromLevelInfo(ctx);
     } else {
-        M_InitialiseSamplesFromFile(level->settings.sfx_path);
+        M_InitialiseSamplesFromFile(ctx, level->settings.sfx_path);
     }
 
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_Load(const GF_LEVEL *const level)
+void Level_Pipeline_Load(const GF_LEVEL *const level)
 {
     LOG_INFO("%d (%s)", level->num, level->path);
     BENCHMARK benchmark = Benchmark_Start();
 
     Inject_InitLevel(level, INJECTION_MODE_FULL);
-    const LEVEL_LOADER *const loader = M_LoadFromFile(level);
+    const LEVEL_FORMAT_LOADER *const loader = Level_Format_LoadFromFile(level);
     M_CompleteSetup(loader, level);
     Inject_Cleanup();
 

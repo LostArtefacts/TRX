@@ -8,7 +8,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/inject.h>
-#include <trx/game/level/reader.h>
+#include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
@@ -370,7 +370,8 @@ void Stats_CalculateMaxStats(void)
             continue;
         }
 
-        const LEVEL_LOADER *const loader = Level_GuessLoader(file);
+        const LEVEL_FORMAT_LOADER *const loader =
+            Level_Format_GuessLoader(file);
         if (loader != nullptr) {
             Creature_Reset();
 
@@ -387,7 +388,7 @@ void Stats_CalculateMaxStats(void)
             Lua_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
 
             Inject_InitLevel(level, INJECTION_MODE_STATS);
-            if (loader->probe(loader, file, LEVEL_PROBE_STATS)) {
+            if (loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS)) {
                 Inject_AllInjections();
 
                 for (int32_t item_num = 0; item_num < Item_GetTotalCount();

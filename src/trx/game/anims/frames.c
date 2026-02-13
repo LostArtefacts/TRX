@@ -19,7 +19,7 @@ typedef enum {
 static ANIM_FRAME *m_Frames = nullptr;
 
 static int32_t M_GetAnimFrameCount(
-    const LEVEL_LOADER *const loader, const int32_t anim_idx,
+    const LEVEL_FORMAT_LOADER *const loader, const int32_t anim_idx,
     const int32_t frame_data_length)
 {
     const ANIM *const anim = Anim_GetAnim(anim_idx);
@@ -74,7 +74,8 @@ static void M_ExtractRotation(
 }
 
 static void M_ParseMeshRotation(
-    const LEVEL_LOADER *const loader, XYZ_16 *const rot, const int16_t **data)
+    const LEVEL_FORMAT_LOADER *const loader, XYZ_16 *const rot,
+    const int16_t **data)
 {
     const int16_t *data_ptr = *data;
     if (loader->game_version == 1) {
@@ -108,7 +109,7 @@ static void M_ParseMeshRotation(
 }
 
 static int32_t M_ParseFrame(
-    const LEVEL_LOADER *const loader, ANIM_FRAME *const frame,
+    const LEVEL_FORMAT_LOADER *const loader, ANIM_FRAME *const frame,
     const int16_t *data_ptr, int16_t mesh_count, const uint8_t frame_size)
 {
     const int16_t *const frame_start = data_ptr;
@@ -141,7 +142,7 @@ static int32_t M_ParseFrame(
 }
 
 int32_t Anim_GetTotalFrameCount(
-    const LEVEL_LOADER *const loader, const int32_t frame_data_length)
+    const LEVEL_FORMAT_LOADER *const loader, const int32_t frame_data_length)
 {
     const int32_t anim_count = Anim_GetTotalCount();
     int32_t total_frame_count = 0;
@@ -158,7 +159,7 @@ void Anim_InitialiseFrames(const int32_t num_frames)
 }
 
 void Anim_LoadFrames(
-    const LEVEL_LOADER *const loader, const int16_t *data,
+    const LEVEL_FORMAT_LOADER *const loader, const int16_t *data,
     const int32_t data_length)
 {
     BENCHMARK benchmark = Benchmark_Start();

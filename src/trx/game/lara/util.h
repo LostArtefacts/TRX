@@ -17,8 +17,8 @@
     }
 
 #define REGISTER_LARA_EXTRA(state, handle_func)                                \
-    __attribute__((                                                            \
-        constructor)) static void M_RegisterExtraStateHandler##state(void)     \
+    __attribute__((constructor)) static void                                   \
+    M_RegisterExtraStateHandler##state(void)                                   \
     {                                                                          \
         Lara_State_RegisterExtra(state, handle_func);                          \
     }

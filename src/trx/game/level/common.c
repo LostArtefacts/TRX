@@ -10,6 +10,7 @@
 #include <trx/game/level.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
+#include <trx/game/objects.h>
 #include <trx/game/option.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
@@ -18,6 +19,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
+#include <trx/game/ui.h>
 #include <trx/game/water_fx.h>
 #include <trx/game/weather_fx.h>
 #include <trx/log.h>
@@ -83,8 +85,14 @@ bool Level_Initialise(
     }
 
     Level_Unload();
+
     Lua_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
-    Level_Load(level);
+
+    Level_Pipeline_Load(level);
+
+    UI_LoadText();
+    Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
+    Output_DispatchLevelLoad();
 
     GameStringTable_Apply(level);
 

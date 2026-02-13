@@ -8,7 +8,7 @@ static void M_TextureEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
 {
-    const LEVEL_INFO *const level_info = Level_GetInfo();
+    const LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
         const uint16_t target_page = VFile_ReadU16(injection->fp);
         const uint8_t target_x = VFile_ReadU8(injection->fp);

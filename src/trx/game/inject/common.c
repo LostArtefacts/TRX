@@ -36,7 +36,7 @@ static int32_t m_DataCounts[IDT_NUMBER_OF] = {};
 static int32_t m_MaxStaticObject3DId = -1;
 static int32_t m_MaxStaticObject2DId = -1;
 static VECTOR *m_RoomMeta = nullptr;
-static LEVEL_INFO m_CachedInfo = {};
+static LEVEL_CONTEXT_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
 static size_t m_PaletteMapSize = 0;
 
@@ -425,7 +425,7 @@ void Inject_AllInjections(void)
 
         // Cache the current status to allow individual handlers to increment
         // counts but still have access to current indices as required.
-        m_CachedInfo = *Level_GetInfo();
+        m_CachedInfo = *Level_Context_GetInfo();
 
         const int32_t num_chunks = VFile_ReadS32(injection->fp);
         for (int32_t j = 0; j < num_chunks; j++) {
@@ -473,7 +473,7 @@ void Inject_Cleanup(void)
     Memory_FreePointer(&m_Injections);
     Memory_FreePointer(&m_PaletteMap);
     m_NumInjections = 0;
-    m_CachedInfo = (LEVEL_INFO) {};
+    m_CachedInfo = (LEVEL_CONTEXT_INFO) {};
 
     if (m_RoomMeta != nullptr) {
         Vector_Free(m_RoomMeta);
@@ -521,7 +521,7 @@ int32_t Inject_GetMaxStaticObject2DId(void)
     return m_MaxStaticObject2DId;
 }
 
-LEVEL_INFO Inject_GetCachedInfo(void)
+LEVEL_CONTEXT_INFO Inject_GetCachedInfo(void)
 {
     return m_CachedInfo;
 }

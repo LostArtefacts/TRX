@@ -444,7 +444,7 @@ void Room_FlipMap(void)
         }
     }
 
-    Level_LoadWalkables();
+    Level_Finalize_LoadWalkables(Level_Context_Get());
 }
 
 bool Room_GetFlipStatus(void)
