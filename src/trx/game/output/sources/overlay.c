@@ -959,4 +959,14 @@ void OutputSource_Overlay_Shutdown(void)
     M_CloseTexture(&p->snapshot.state.texture);
     p->snapshot.state.has_content = false;
     M_CloseTexture(&p->solid_black_texture);
+
+    if (p->ops[0] != nullptr) {
+        Vector_Free(p->ops[0]);
+        p->ops[0] = nullptr;
+    }
+    if (p->ops[1] != nullptr) {
+        Vector_Free(p->ops[1]);
+        p->ops[1] = nullptr;
+    }
+    Memory_ArenaFree(&p->alloc);
 }
