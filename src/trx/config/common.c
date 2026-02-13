@@ -20,6 +20,17 @@ static VECTOR *m_HiddenOptions = nullptr;
 
 static EVENT_MANAGER *m_EventManager = nullptr;
 
+static void M_FreeStringOptionValues(void)
+{
+    const CONFIG_OPTION *option = Config_GetOptionMap();
+    while (option != nullptr && option->target != nullptr) {
+        if (option->type == COT_STRING || option->type == COT_DYNAMIC_ENUM) {
+            Memory_Free(*(char **)option->target);
+        }
+        option++;
+    }
+}
+
 __attribute__((constructor)) static void M_Init(void)
 {
     m_EventManager = EventManager_Create();
@@ -30,6 +41,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
     EventManager_Free(m_EventManager);
     m_EventManager = nullptr;
 
+    M_FreeStringOptionValues();
     Memory_FreePointer(&g_Config.default_path);
     Memory_FreePointer(&g_Config.enforced_path);
 
