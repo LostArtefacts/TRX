@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static void M_ErrorCallback(void *data, const char *msg, int errnum)
 {
@@ -45,4 +46,9 @@ void Log_Init_Extra(const char *path)
 
 void Log_Shutdown_Extra(void)
 {
+}
+
+bool Log_ShouldUseAnsiColors(void)
+{
+    return isatty(fileno(stdout));
 }

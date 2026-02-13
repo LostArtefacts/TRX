@@ -41,5 +41,6 @@ void Log_Message(
     const char *fmt, ...);
 
 // platform-specific implementations
+bool Log_ShouldUseAnsiColors(void);
 void Log_Init_Extra(const char *path);
 void Log_Shutdown_Extra(void);
