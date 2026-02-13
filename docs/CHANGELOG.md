@@ -10,6 +10,7 @@
 - fixed not restoring Lara's back weapon mesh between levels when "remember guns" is enabled and a rifle-type weapon is equipped at level end
 - fixed a missing footstep sound when Lara starts to sprint
 - fixed Lara's flare undraw animation being skippable on specific late draw frames (#1593)
+- fixed water ripples triggering z-fighting with 0-click ground surfaces
 
 **TR3**:
 - added reverb support
