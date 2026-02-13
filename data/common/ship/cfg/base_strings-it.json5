@@ -1999,6 +1999,9 @@
         },
         "mounted_gun": {
             "name": "\\{review}Mitragliatrice Montata",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Ascia della Tribù",
         }
     }
 }

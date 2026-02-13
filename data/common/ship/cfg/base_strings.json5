@@ -1300,6 +1300,9 @@
         "shiva": {
             "name": "Shiva",
         },
+        "tribe_axeman": {
+            "name": "Tribe Axeman",
+        },
         "blade": {
             "name": "Wall-mounted Blade",
         },

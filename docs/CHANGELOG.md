@@ -25,6 +25,7 @@
 - added reverb support
 - added Kayak control
 - added Mounted Gun control
+- added Tribe Axeman control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
@@ -36,8 +37,12 @@
 - fixed Kayak voiding and teleporting on large slopes
 - fixed Kayak wake effects sometimes clipping through complex geometry
 
+
+
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/trx-1.2.1...trx-1.2.2) - 2026-02-13
 - fixed a potential `GL_OUT_OF_MEMORY` error that could occur after reloading levels many times (regression from <1.0)
+
+
 
 ## [1.2.1](https://github.com/LostArtefacts/TRX/compare/trx-1.2...trx-1.2.1) - 2026-02-11
 - fixed title ring music inheriting the wrong audio volume (regression from 1.2)
