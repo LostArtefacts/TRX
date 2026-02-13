@@ -1272,7 +1272,7 @@ static void M_HandleObject(
 
         element->name = string;
 
-        (void)M_HandleKey(state, string);
+        M_HandleKey(state, string);
 
         M_SkipAllSkippables(state);
 

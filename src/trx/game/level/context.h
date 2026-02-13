@@ -2,6 +2,8 @@
 
 #include <trx/game/output/types.h>
 
+typedef struct LEVEL_FORMAT_LOADER LEVEL_FORMAT_LOADER;
+
 typedef struct {
     struct {
         int32_t anim_count;
@@ -38,4 +40,13 @@ typedef struct {
     } samples;
 
     int32_t mesh_ptr_count;
-} LEVEL_INFO;
+} LEVEL_CONTEXT_INFO;
+
+typedef struct {
+    LEVEL_CONTEXT_INFO info;
+    const LEVEL_FORMAT_LOADER *loader;
+} LEVEL_CONTEXT;
+
+void Level_Context_Reset(const LEVEL_FORMAT_LOADER *loader);
+LEVEL_CONTEXT *Level_Context_Get(void);
+LEVEL_CONTEXT_INFO *Level_Context_GetInfo(void);

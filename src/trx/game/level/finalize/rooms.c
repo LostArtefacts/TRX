@@ -1,4 +1,5 @@
 #include <trx/game/game_buf.h>
+#include <trx/game/level/finalize.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/log.h>
@@ -168,7 +169,7 @@ static void M_FixStaticsCollision(void)
     }
 }
 
-void Level_LoadRooms(void)
+void Level_Finalize_LoadRooms(LEVEL_CONTEXT *const ctx)
 {
     M_ComputePortalBounds();
     M_FixStaticsCollision();

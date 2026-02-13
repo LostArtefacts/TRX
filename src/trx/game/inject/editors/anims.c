@@ -7,7 +7,7 @@ static void M_FrameEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
 {
-    LEVEL_INFO *const level_info = Level_GetInfo();
+    LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         const int32_t anim_idx = VFile_ReadS32(injection->fp);
@@ -30,7 +30,7 @@ static void M_FrameReplacements(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
 {
-    LEVEL_INFO *const level_info = Level_GetInfo();
+    LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         const int32_t num_anims = VFile_ReadS32(injection->fp);

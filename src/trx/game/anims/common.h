@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trx/game/anims/types.h>
-#include <trx/game/level/reader.h>
+#include <trx/game/level/format/format.h>
 
 #define NO_ANIM (-1)
 
@@ -14,9 +14,10 @@ void Anim_LoadCommands(const int16_t *data);
 
 void Anim_InitialiseFrames(int32_t num_frames);
 int32_t Anim_GetTotalFrameCount(
-    const LEVEL_LOADER *loader, int32_t frame_data_length);
+    const LEVEL_FORMAT_LOADER *loader, int32_t frame_data_length);
 void Anim_LoadFrames(
-    const LEVEL_LOADER *loader, const int16_t *data, int32_t data_length);
+    const LEVEL_FORMAT_LOADER *loader, const int16_t *data,
+    int32_t data_length);
 
 int32_t Anim_GetTotalCount(void);
 ANIM *Anim_GetAnim(int32_t anim_idx);

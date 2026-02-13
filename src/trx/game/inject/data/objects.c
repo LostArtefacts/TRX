@@ -34,7 +34,7 @@ static void M_AlignTextureReferences(
 
 static void M_ReadObject(const INJECTION_CHUNK chunk)
 {
-    const LEVEL_INFO cached_info = Inject_GetCachedInfo();
+    const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
     const INJECTION_OBJECT_INFO obj_info =
         Inject_ReadObjectPtr(chunk.injection);
     OBJECT *const obj = Object_TryGet(obj_info.id);
@@ -79,7 +79,7 @@ static void M_ReadObject(const INJECTION_CHUNK chunk)
 
 static void M_ReadStaticObject3D(const INJECTION_CHUNK chunk)
 {
-    const LEVEL_INFO cached_info = Inject_GetCachedInfo();
+    const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
     const int32_t static_id = VFile_ReadS32(chunk.injection->fp);
 
     if (static_id < 0 || static_id >= Object_GetStaticObjects3DCount()) {

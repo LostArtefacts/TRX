@@ -2,14 +2,16 @@
 #include <trx/game/anims.h>
 #include <trx/game/inject.h>
 #include <trx/game/inject/utils.h>
+#include <trx/game/level/context.h>
+#include <trx/game/level/sections/append.h>
 #include <trx/game/objects.h>
 #include <trx/memory.h>
 
 static void M_HandleAnimData(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
-    LEVEL_INFO *const level_info = Level_GetInfo();
-    const LEVEL_INFO cached_info = Inject_GetCachedInfo();
+    LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
+    const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
 
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
         const INJECTION_DATA_TYPE data_type =
@@ -24,7 +26,7 @@ static void M_HandleAnimData(
 
         switch (data_type) {
         case IDT_ANIMS: {
-            Level_AppendAnims(
+            Level_Section_AppendAnims(
                 level_info->anims.anim_count, data_count, chunk.injection->fp);
             level_info->anims.anim_count += data_count;
 
@@ -40,14 +42,14 @@ static void M_HandleAnimData(
         }
 
         case IDT_ANIM_BONES: {
-            Level_AppendAnimBones(
+            Level_Section_AppendAnimBones(
                 level_info->anims.bone_count, data_count, chunk.injection->fp);
             level_info->anims.bone_count += data_count;
             break;
         }
 
         case IDT_ANIM_CHANGES: {
-            Level_AppendAnimChanges(
+            Level_Section_AppendAnimChanges(
                 level_info->anims.change_count, data_count,
                 chunk.injection->fp);
             level_info->anims.change_count += data_count;
@@ -61,7 +63,7 @@ static void M_HandleAnimData(
         }
 
         case IDT_ANIM_COMMANDS: {
-            Level_AppendAnimCommands(
+            Level_Section_AppendAnimCommands(
                 level_info->anims.command_count, data_count,
                 chunk.injection->fp);
             level_info->anims.command_count += data_count;
@@ -69,14 +71,14 @@ static void M_HandleAnimData(
         }
 
         case IDT_ANIM_FRAMES: {
-            Level_AppendAnimFrames(
+            Level_Section_AppendAnimFrames(
                 level_info->anims.frame_count, data_count, chunk.injection->fp);
             level_info->anims.frame_count += data_count;
             break;
         }
 
         case IDT_ANIM_RANGES: {
-            Level_AppendAnimRanges(
+            Level_Section_AppendAnimRanges(
                 level_info->anims.range_count, data_count, chunk.injection->fp);
             level_info->anims.range_count += data_count;
 
@@ -100,7 +102,7 @@ static void M_CommandEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
 {
-    const LEVEL_INFO cached_info = Inject_GetCachedInfo();
+    const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
     int16_t cmd_idx = cached_info.anims.command_count;
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
