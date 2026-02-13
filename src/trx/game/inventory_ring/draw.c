@@ -27,7 +27,7 @@
 
 static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
 {
-    return Matrix_MulVec32(&g_ViewMatrix, v_world);
+    return Matrix_MulVec32_M(&g_ViewMatrix, v_world);
 }
 
 static float M_GlobeSelectPulse01(const float time)

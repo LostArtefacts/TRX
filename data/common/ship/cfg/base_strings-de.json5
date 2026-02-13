@@ -1964,6 +1964,9 @@
         },
         "switch_type_wheel": {
             "name": "\\{review}Radswitch",
+        },
+        "kayak": {
+            "name": "\\{review}Kajak",
         }
     }
 }

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/items/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/electric.h>
 #include <trx/game/lara/pose.h>
@@ -31,7 +32,7 @@ static void M_DrawEquipmentMesh(
 {
     const GAME_VECTOR pos = {
         .room_num = Lara_GetItem()->room_num,
-        .pos = Matrix_MulVec32(
+        .pos = Matrix_MulVec32_M(
             g_WMatrixPtr,
             (XYZ_32) {
                 mesh->center.x,
@@ -52,6 +53,10 @@ static void M_DrawLaraMesh(
     const ITEM *const item, const LARA_MESH mesh_num, const CLIP clip,
     const bool interpolated)
 {
+    if (m_IsLara && !Item_IsMeshVisible(item, mesh_num)) {
+        return;
+    }
+
     const OBJECT_MESH *const mesh = Lara_Mesh_Get(mesh_num);
     XYZ_32 origin = XYZ_32_From16(mesh->center);
     switch (mesh_num) {
@@ -70,7 +75,7 @@ static void M_DrawLaraMesh(
     }
     const GAME_VECTOR pos = {
         .room_num = item->room_num,
-        .pos = Matrix_MulVec32(g_WMatrixPtr, origin),
+        .pos = Matrix_MulVec32_M(g_WMatrixPtr, origin),
     };
     Output_PushTintOverride(Lara_GetMeshTint(pos));
     if (interpolated) {
@@ -103,6 +108,10 @@ static inline void M_DrawEquipment(
     const LARA_MESH mesh, const CLIP clip, const bool interpolated)
 {
     if (!m_IsLara) {
+        return;
+    }
+
+    if (!Item_IsMeshVisible(Lara_GetItem(), mesh)) {
         return;
     }
 

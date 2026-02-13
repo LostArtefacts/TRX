@@ -42,6 +42,7 @@ static int32_t m_OpenDoorsCheatCooldown = 0;
 
 extern bool Skidoo_Control(void);
 extern bool QuadBike_Control(void);
+extern bool Kayak_Control(void);
 
 static SECTOR *M_GetCurrentSector(void)
 {
@@ -604,6 +605,11 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
                 return;
             }
             break;
+        case O_KAYAK:
+            if (Kayak_Control()) {
+                return;
+            }
+            break;
         default:
             Gun_Control();
             return;
@@ -723,7 +729,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
         }
     }
 
-    if (!lara_info->extra_anim) {
+    if (!Lara_Vehicle_IsMounted() && !lara_info->extra_anim) {
         Lara_Col_Update(item, coll);
     }
 

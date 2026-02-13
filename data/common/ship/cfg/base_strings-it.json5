@@ -1993,6 +1993,9 @@
         },
         "switch_type_wheel": {
             "name": "\\{review}Interruttore a Ruota",
+        },
+        "kayak": {
+            "name": "\\{review}Kayak",
         }
     }
 }

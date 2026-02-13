@@ -24,6 +24,42 @@ void Item_TakeDamage(
     }
 }
 
+bool Item_IsMeshVisible(const ITEM *const item, const int32_t mesh_num)
+{
+    if (mesh_num < 0 || mesh_num >= 32) {
+        return false;
+    }
+
+    const uint32_t bit = 1u << mesh_num;
+    return (item->mesh_bits & bit) != 0;
+}
+
+void Item_SetMeshVisibleMask(
+    ITEM *const item, const uint32_t mesh_mask, const bool visible)
+{
+    if (visible) {
+        item->mesh_bits |= mesh_mask;
+    } else {
+        item->mesh_bits &= ~mesh_mask;
+    }
+}
+
+void Item_SetMeshVisible(
+    ITEM *const item, const int32_t mesh_num, const bool visible)
+{
+    if (mesh_num < 0 || mesh_num >= 32) {
+        return;
+    }
+
+    const uint32_t bit = 1u << mesh_num;
+    Item_SetMeshVisibleMask(item, bit, visible);
+}
+
+void Item_ResetMeshBits(ITEM *const item)
+{
+    item->mesh_bits = UINT32_MAX;
+}
+
 int32_t Item_Explode(
     const int16_t item_num, const int32_t mesh_bits, const int16_t damage)
 {

@@ -119,7 +119,7 @@ static bool M_DrawShadow_Sprite(
             item->interp.result.pos.z);
         Matrix_RotY(item->interp.result.rot.y);
         Matrix_TranslateRel(x_mid, 0, z_mid);
-        anchor_pos = Matrix_GetOffset(g_WMatrixPtr);
+        anchor_pos = Matrix_GetOffset_M(g_WMatrixPtr);
         Matrix_Pop();
     }
 

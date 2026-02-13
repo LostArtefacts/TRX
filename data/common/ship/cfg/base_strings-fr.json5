@@ -1951,6 +1951,9 @@
         },
         "switch_type_wheel": {
             "name": "\\{review}Interrupteur à Roue",
+        },
+        "kayak": {
+            "name": "\\{review}Kayak",
         }
     }
 }

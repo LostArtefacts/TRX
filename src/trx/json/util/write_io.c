@@ -80,6 +80,28 @@ void JSON_WriteIO_PushDouble(JSON_WRITE_IO *const io, const double value)
     M_PushValue(io, JSON_ValueFromDouble(value));
 }
 
+void JSON_WriteIO_PushXYZ16(JSON_WRITE_IO *const io, const XYZ_16 value)
+{
+    JSON_WriteIO_PushObject(io);
+    JSON_WriteIO_PushInt(io, value.x);
+    JSON_WriteIO_PopAndSet(io, "x");
+    JSON_WriteIO_PushInt(io, value.y);
+    JSON_WriteIO_PopAndSet(io, "y");
+    JSON_WriteIO_PushInt(io, value.z);
+    JSON_WriteIO_PopAndSet(io, "z");
+}
+
+void JSON_WriteIO_PushXYZ32(JSON_WRITE_IO *const io, const XYZ_32 value)
+{
+    JSON_WriteIO_PushObject(io);
+    JSON_WriteIO_PushInt(io, value.x);
+    JSON_WriteIO_PopAndSet(io, "x");
+    JSON_WriteIO_PushInt(io, value.y);
+    JSON_WriteIO_PopAndSet(io, "y");
+    JSON_WriteIO_PushInt(io, value.z);
+    JSON_WriteIO_PopAndSet(io, "z");
+}
+
 JSON_WRITE_IO *JSON_WriteIO_Create(void)
 {
     JSON_WRITE_IO *const io = Memory_Alloc(sizeof(*io));
