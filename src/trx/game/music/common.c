@@ -30,7 +30,7 @@ typedef struct {
 } M_MUSIC_STREAM;
 
 static float m_MusicVolume = 0.0f;
-static const MUSIC_BACKEND *m_Backend = nullptr;
+static MUSIC_BACKEND *m_Backend = nullptr;
 static M_MUSIC_STREAM m_MainStream = {
     .audio_stream_id = -1,
     .track_id = MX_INACTIVE,
@@ -39,7 +39,7 @@ static M_MUSIC_STREAM m_MainStream = {
 };
 static M_MUSIC_STREAM m_OverlayStreams[MUSIC_MAX_OVERLAY_TRACKS] = {};
 
-static const MUSIC_BACKEND *M_FindBackend(void)
+static MUSIC_BACKEND *M_FindBackend(void)
 {
     VECTOR *all_backends = Vector_Create(sizeof(MUSIC_BACKEND *));
     Vector_Add(
@@ -62,7 +62,7 @@ static const MUSIC_BACKEND *M_FindBackend(void)
                 Music_Backend_CDAudioWad_Factory("audio/cdaudio.wad") });
     }
 
-    const MUSIC_BACKEND *backend = nullptr;
+    MUSIC_BACKEND *backend = nullptr;
     for (int32_t i = 0; i < all_backends->count; i++) {
         MUSIC_BACKEND *const tmp_backend =
             *(MUSIC_BACKEND **)Vector_Get(all_backends, i);
@@ -271,6 +271,10 @@ static bool M_GetMainTrackState(MUSIC_STREAM_STATE *const state)
 bool Music_Init(void)
 {
     m_Initialised = true;
+    if (m_Backend != nullptr) {
+        m_Backend->shutdown(m_Backend);
+        m_Backend = nullptr;
+    }
     m_Backend = M_FindBackend();
     if (m_Backend == nullptr) {
         LOG_ERROR("No music backend is available");
@@ -296,6 +300,10 @@ void Music_Shutdown(void)
     M_StopMainStream();
     M_StopOverlayStreams();
     M_ResetStreamState();
+    if (m_Backend != nullptr) {
+        m_Backend->shutdown(m_Backend);
+        m_Backend = nullptr;
+    }
     Audio_Shutdown();
 }
 
