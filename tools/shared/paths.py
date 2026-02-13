@@ -13,9 +13,10 @@ SHARED_SRC_DIR = SRC_DIR / "trx"
 
 
 class BasePaths:
-    data_dir = Path
-    shipped_data_dir = Path
-    src_dir = Path
+    data_dir: Path
+    shipped_data_dir: Path
+    src_dir: Path
+    docs_dir: Path
 
 
 class ProjectPaths(BasePaths):
@@ -38,5 +39,6 @@ CommonPaths.data_dir = DATA_DIR / "common"
 CommonPaths.shipped_data_dir = CommonPaths.data_dir / "ship"
 CommonPaths.src_dir = SHARED_SRC_DIR
 CommonPaths.changelog_path = DOCS_DIR / "CHANGELOG.md"
+CommonPaths.docs_dir = DOCS_DIR
 
 PROJECT_PATHS = {1: TR1Paths, 2: TR2Paths, 3: TR3Paths}
