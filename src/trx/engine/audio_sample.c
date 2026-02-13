@@ -492,21 +492,12 @@ void Audio_Sample_Init(void)
 
 void Audio_Sample_Shutdown(void)
 {
-    if (!g_AudioDeviceID) {
-        return;
-    }
-
     Audio_Sample_CloseAll();
     Audio_Sample_UnloadAll();
 }
 
 bool Audio_Sample_Unload(const int32_t sample_id)
 {
-    if (!g_AudioDeviceID) {
-        LOG_ERROR("Unitialized audio device");
-        return false;
-    }
-
     if (sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
         LOG_ERROR("Maximum allowed samples: %d", AUDIO_MAX_SAMPLES);
         return false;
@@ -526,11 +517,6 @@ bool Audio_Sample_Unload(const int32_t sample_id)
 
 bool Audio_Sample_UnloadAll(void)
 {
-    if (!g_AudioDeviceID) {
-        LOG_ERROR("Unitialized audio device");
-        return false;
-    }
-
     m_LoadedSamplesCount = 0;
     for (int32_t i = 0; i < AUDIO_MAX_SAMPLES; i++) {
         AUDIO_SAMPLE *const sample = &m_LoadedSamples[i];
