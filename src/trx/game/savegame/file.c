@@ -163,9 +163,16 @@ void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
 
 bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
-    SAVEGAME_BSON_HEADER header;
+    SAVEGAME_BSON_HEADER header = {};
     File_Seek(fp, 0, FILE_SEEK_SET);
-    File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER));
+    if (!File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER))) {
+        return false;
+    }
+    if (header.magic != M_MAGIC_TR1X && header.magic != M_MAGIC_TR2X
+        && header.magic != M_MAGIC_TRX) {
+        return false;
+    }
+
     if (header.version < SG_MIN_SUPPORTED_VERSION) {
         LOG_WARNING(
             "Too old SG version: %d (min supported: %d)", header.version,
