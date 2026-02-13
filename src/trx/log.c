@@ -15,6 +15,8 @@
 
 static LOG_LEVEL m_LogLevel = LOG_LEVEL_MAX;
 static FILE *m_LogHandle = nullptr;
+static bool m_UseAnsiColors = true;
+
 static const char *const m_LogLevelColors[] = {
     [LOG_LEVEL_INFO] = M_ANSI_COLOR_RESET,
     [LOG_LEVEL_WARNING] = M_ANSI_COLOR_YELLOW,
@@ -31,6 +33,7 @@ static const char *const m_LogLevelStrings[] = {
 void Log_Init(const char *path, const LOG_LEVEL min_level)
 {
     m_LogLevel = min_level;
+    m_UseAnsiColors = Log_ShouldUseAnsiColors();
     if (path != nullptr) {
         m_LogHandle = fopen(path, "w");
     }
@@ -73,10 +76,15 @@ void Log_Message(
 
     // print to stdout
     if (level >= m_LogLevel) {
-        printf("%s", log_color);
+        if (m_UseAnsiColors) {
+            printf("%s", log_color);
+        }
         printf(M_FORMAT, log_str, timestamp_str, file, line, func);
         vprintf(fmt, va);
-        printf("%s", M_ANSI_COLOR_RESET "\n");
+        if (m_UseAnsiColors) {
+            printf("%s", M_ANSI_COLOR_RESET);
+        }
+        printf("\n");
         fflush(stdout);
     }
 

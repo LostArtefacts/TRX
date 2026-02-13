@@ -6,6 +6,7 @@
 #include <dbghelp.h>
 #include <tlhelp32.h>
 #include <dwarfstack.h>
+#include <io.h>
 #include <process.h>
 #include <signal.h>
 #include <stdio.h>
@@ -128,4 +129,9 @@ void Log_Init_Extra(const char *log_path)
 void Log_Shutdown_Extra(void)
 {
     Memory_FreePointer(&m_MiniDumpPath);
+}
+
+bool Log_ShouldUseAnsiColors(void)
+{
+    return _isatty(_fileno(stdout));
 }
