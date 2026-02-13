@@ -92,6 +92,11 @@ static void M_ClearAllNames(void)
     }
 }
 
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    M_ClearAllNames();
+}
+
 void Object_ClearNames(const OBJECT_ID obj_id)
 {
     ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
