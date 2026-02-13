@@ -29,6 +29,7 @@
 - fixed Lara's cutscene gun shots not rendering muzzle flashes, gun smoke and shell ejections (e.g., Tony cutscene)
 - fixed wheel switches only being usable once
 - fixed wheel switch triggers activating too early
+- fixed Kayak wake effects sometimes clipping through complex geometry
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/trx-1.2.1...trx-1.2.2) - 2026-02-13
 - fixed a potential `GL_OUT_OF_MEMORY` error that could occur after reloading levels many times (regression from <1.0)
