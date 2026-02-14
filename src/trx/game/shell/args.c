@@ -22,6 +22,7 @@ static void M_ShowHelp(void)
     if (Shell_GetModByName("tr2-gm") != nullptr) {
         puts("-g/--gold: launch The Golden Mask expansion pack.");
     }
+    puts("--mod <MOD_ID>: launch a specific mod by id (e.g. tr1, tr1-ub).");
     puts("-l/--level <PATH>: launch a specific level file.");
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
     puts("--test-record <PATH>: record gameplay events to file.");
@@ -79,6 +80,13 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 
         if (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc")) {
             out_args->mod = Shell_GetModByName("tr1-demo-pc");
+        }
+        if (!strcmp(arg, "--mod") && next_arg != nullptr) {
+            const SHELL_MOD *const mod = Shell_GetModByName(next_arg);
+            if (mod != nullptr) {
+                out_args->mod = mod;
+            }
+            i++;
         }
 
         if ((!strcmp(arg, "-l") || !strcmp(arg, "--level"))
