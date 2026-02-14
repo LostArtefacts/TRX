@@ -690,8 +690,6 @@ static int32_t M_DoShift(
     int32_t shift_z = 0;
 
     if (new_sector_x == old_sector_x) {
-        old_pos->x = 0;
-
         if (new_sector_z == old_sector_z) {
             item->pos.z += old_pos->z - new_pos->z;
             item->pos.x += old_pos->x - new_pos->x;
@@ -700,19 +698,17 @@ static int32_t M_DoShift(
             item->pos.z += WALL_L - sector_offset_z;
             return item->pos.x - new_pos->x;
         } else {
-            item->pos.z += -1 - sector_offset_z;
+            item->pos.z -= 1 + sector_offset_z;
             return new_pos->x - item->pos.x;
         }
     }
 
     if (new_sector_z == old_sector_z) {
-        old_pos->z = 0;
-
         if (new_sector_x <= old_sector_x) {
             item->pos.x += WALL_L - sector_offset_x;
             return new_pos->z - item->pos.z;
         } else {
-            item->pos.x += -1 - sector_offset_x;
+            item->pos.x -= 1 + sector_offset_x;
             return item->pos.z - new_pos->z;
         }
     }
