@@ -93,6 +93,7 @@ static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
     lara_item->rot.y = switch_item->rot.y;
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_AIRLOCK:
+    case O_SWITCH_TYPE_WHEEL:
         Lara_AlignPosition(switch_item, &m_AirlockPosition.normal);
         break;
 
@@ -115,6 +116,7 @@ static bool M_MoveLaraControlled(
     XYZ_32 shift;
     switch (item->object_id) {
     case O_SWITCH_TYPE_AIRLOCK:
+    case O_SWITCH_TYPE_WHEEL:
         shift = m_AirlockPosition.controlled;
         break;
     case O_SWITCH_TYPE_SMALL:
@@ -139,6 +141,9 @@ static bool M_MoveLaraControlled(
 static void M_TurnSwitchOn(ITEM *const switch_item, ITEM *const lara_item)
 {
     switch (switch_item->object_id) {
+    case O_SWITCH_TYPE_WHEEL:
+        Lara_SwitchToExtraState(LS_EXTRA_AIRLOCK);
+        break;
     case O_SWITCH_TYPE_SMALL:
         Item_SwitchToAnim(lara_item, LA(LA_SWITCH_SMALL_DOWN), 0);
         break;
@@ -152,7 +157,9 @@ static void M_TurnSwitchOn(ITEM *const switch_item, ITEM *const lara_item)
         break;
     }
 
-    lara_item->current_anim_state = LS(LS_SWITCH_ON);
+    if (!Lara_GetLaraInfo()->extra_anim) {
+        lara_item->current_anim_state = LS(LS_SWITCH_ON);
+    }
     switch_item->goal_anim_state = SWITCH_STATE_ON;
 }
 
@@ -163,6 +170,7 @@ static void M_TurnSwitchOff(ITEM *const switch_item, ITEM *const lara_item)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     switch (switch_item->object_id) {
     case O_SWITCH_TYPE_AIRLOCK:
+    case O_SWITCH_TYPE_WHEEL:
         Lara_SwitchToExtraState(LS_EXTRA_AIRLOCK);
         break;
 
@@ -388,3 +396,4 @@ REGISTER_OBJECT(O_SWITCH_TYPE_BUTTON, M_SetupPushButton)
 REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
 REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_Setup)
 REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
+REGISTER_OBJECT(O_SWITCH_TYPE_WHEEL, M_Setup)

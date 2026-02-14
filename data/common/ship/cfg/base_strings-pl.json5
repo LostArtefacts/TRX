@@ -1939,6 +1939,9 @@
         },
         "electric_fence": {
             "name": "Ogrodzenie elektryczne",
+        },
+        "switch_type_wheel": {
+            "name": "\\{review}Przełącznik Kołowy",
         }
     }
 }

@@ -2,6 +2,7 @@
 - added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
 - added the ability to freely rotate examinable items
 - added a color editor dialog for fog and water colors in Graphic Options → Visuals
+- added `O_SWITCH_TYPE_WHEEL`, which is similar to `O_SWITCH_TYPE_AIRLOCK` but can be used more than once
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
 - changed logs to no longer emit ANSI color characters when the game's output is piped to a file / process
@@ -25,6 +26,8 @@
 - fixed Lara unable to climb small ledges with low crawlspaces
 - fixed Lara using the thin-ledge swing hang animation instead of the normal hang in some 1-click ledge cases
 - fixed Lara's cutscene gun shots not rendering muzzle flashes, gun smoke and shell ejections (e.g., Tony cutscene)
+- fixed wheel switches only being usable once
+- fixed wheel switch triggers activating too early
 
 ## [1.2.2](https://github.com/LostArtefacts/TRX/compare/trx-1.2.1...trx-1.2.2) - 2026-02-13
 - fixed a potential `GL_OUT_OF_MEMORY` error that could occur after reloading levels many times (regression from <1.0)

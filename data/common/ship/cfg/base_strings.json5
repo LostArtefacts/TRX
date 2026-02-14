@@ -1654,6 +1654,13 @@
                 "Underwater Switch",
             ]
         },
+        "switch_type_wheel": {
+            "name": [
+                "Wheel Switch",
+                "Pulley Switch",
+                "Valve Switch",
+            ]
+        },
         "trapdoor_1": {
             "name": "Trapdoor 1",
         },

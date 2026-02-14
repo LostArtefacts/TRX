@@ -1961,6 +1961,9 @@
         },
         "electric_fence": {
             "name": "\\{review}Elektrischer Zaun",
+        },
+        "switch_type_wheel": {
+            "name": "\\{review}Radswitch",
         }
     }
 }

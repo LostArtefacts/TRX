@@ -1990,6 +1990,9 @@
         },
         "electric_fence": {
             "name": "\\{review}Recinzione Elettrica",
+        },
+        "switch_type_wheel": {
+            "name": "\\{review}Interruttore a Ruota",
         }
     }
 }

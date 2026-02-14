@@ -263,6 +263,7 @@ const OBJECT_ID g_SwitchObjects[] = {
     O_SWITCH_TYPE_NORMAL,
     O_SWITCH_TYPE_SMALL,
     O_SWITCH_TYPE_UW,
+    O_SWITCH_TYPE_WHEEL,
     NO_OBJECT,
     // clang-format on
 };
