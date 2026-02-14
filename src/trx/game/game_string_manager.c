@@ -206,6 +206,9 @@ void GameStringManager_AddSourceFile(
     const char *const base_path, const bool load_levels)
 {
     ASSERT(m_SourceFiles != nullptr);
+    if (base_path == nullptr) {
+        return;
+    }
     const M_FILE_ENTRY fe = {
         .path = Memory_DupStr(base_path),
         .load_levels = load_levels,

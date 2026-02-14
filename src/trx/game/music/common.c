@@ -8,7 +8,9 @@
 #include <trx/game/music/backend_cdaudio.h>
 #include <trx/game/music/backend_cdaudio_wad.h>
 #include <trx/game/music/backend_files.h>
+#include <trx/game/shell/paths.h>
 #include <trx/log.h>
+#include <trx/memory.h>
 #include <trx/vector.h>
 #include <trx/version.h>
 
@@ -42,24 +44,44 @@ static M_MUSIC_STREAM m_OverlayStreams[MUSIC_MAX_OVERLAY_TRACKS] = {};
 static MUSIC_BACKEND *M_FindBackend(void)
 {
     VECTOR *all_backends = Vector_Create(sizeof(MUSIC_BACKEND *));
-    Vector_Add(
-        all_backends,
-        &(MUSIC_BACKEND *) { Music_Backend_Files_Factory("music") });
+    const char *const music_dir =
+        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_MUSIC_DIR, nullptr);
+    if (music_dir != nullptr) {
+        Vector_Add(
+            all_backends,
+            &(MUSIC_BACKEND *) { Music_Backend_Files_Factory(music_dir) });
+    }
+
     if (g_TRVersion >= 2) {
-        Vector_Add(
-            all_backends,
-            &(MUSIC_BACKEND *) {
-                Music_Backend_CDAudio_Factory("audio/cdaudio.wav") });
-        Vector_Add(
-            all_backends,
-            &(MUSIC_BACKEND *) {
-                Music_Backend_CDAudio_Factory("audio/cdaudio.mp3") });
+        const char *const cdaudio_dat_path =
+            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.dat");
+        const char *const cdaudio_wav_path =
+            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wav");
+        const char *const cdaudio_mp3_path =
+            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.mp3");
+
+        if (cdaudio_dat_path != nullptr && cdaudio_wav_path != nullptr) {
+            Vector_Add(
+                all_backends,
+                &(MUSIC_BACKEND *) { Music_Backend_CDAudio_Factory(
+                    cdaudio_wav_path, cdaudio_dat_path) });
+        }
+        if (cdaudio_dat_path != nullptr && cdaudio_mp3_path != nullptr) {
+            Vector_Add(
+                all_backends,
+                &(MUSIC_BACKEND *) { Music_Backend_CDAudio_Factory(
+                    cdaudio_mp3_path, cdaudio_dat_path) });
+        }
     }
     if (g_TRVersion >= 3) {
-        Vector_Add(
-            all_backends,
-            &(MUSIC_BACKEND *) {
-                Music_Backend_CDAudioWad_Factory("audio/cdaudio.wad") });
+        const char *const cdaudio_wad_path =
+            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wad");
+        if (cdaudio_wad_path != nullptr) {
+            Vector_Add(
+                all_backends,
+                &(MUSIC_BACKEND *) {
+                    Music_Backend_CDAudioWad_Factory(cdaudio_wad_path) });
+        }
     }
 
     MUSIC_BACKEND *backend = nullptr;

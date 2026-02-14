@@ -1,7 +1,9 @@
 #include <trx/game/shell/mod.h>
 
+#include <trx/debug.h>
 #include <trx/filesystem.h>
 #include <trx/game/shell/common.h>
+#include <trx/game/shell/paths.h>
 #include <trx/strings.h>
 
 #include <string.h>
@@ -50,11 +52,43 @@ static SHELL_MOD m_KnownMods[] = {
     { .name = nullptr }, // sentinel
 };
 
+static void M_ValidateNoMixedModLayouts(void)
+{
+    const char *const games_dir = TRXPath_Get(TRX_PATH_GAMES_DIR);
+    const char *const config_dir = TRXPath_Get(TRX_PATH_CONFIG_DIR);
+    if (games_dir == nullptr || config_dir == nullptr
+        || strcmp(games_dir, config_dir) == 0) {
+        return;
+    }
+
+    for (int32_t i = 0; m_KnownMods[i].name != nullptr; i++) {
+        const SHELL_MOD *const mod = &m_KnownMods[i];
+        const char *const legacy_gameflow =
+            String_FormatStatic("%s/%s/gameflow.json5", config_dir, mod->name);
+        if (File_Exists(legacy_gameflow)) {
+            Shell_ExitSystemFmt(
+                "Mixed mod layout detected: found legacy mod data at '%s' "
+                "while '%s' is used for mods. Move '%s' to '%s/%s/'.",
+                legacy_gameflow, games_dir, mod->name, games_dir, mod->name);
+        }
+    }
+}
+
+static const char *M_GetModStringsPath(const char *const mod_id)
+{
+    ASSERT(mod_id != nullptr);
+    return TRXPath_Join(
+        TRX_PATH_GAMES_DIR, String_FormatStatic("%s/strings.json5", mod_id));
+}
+
 void Shell_ScanAvailableMods(void)
 {
+    M_ValidateNoMixedModLayouts();
+
     for (int32_t i = 0; m_KnownMods[i].name != nullptr; i++) {
         SHELL_MOD *const mod = &m_KnownMods[i];
-        mod->is_available = File_Exists(Shell_GetGameFlowPath(&m_KnownMods[i]));
+        mod->is_available =
+            TRXPath_Exists(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
     }
 }
 
@@ -72,14 +106,29 @@ const SHELL_MOD *Shell_GetModByName(const char *const name)
 const SHELL_MOD *Shell_GetModByType(
     const SHELL_MOD_TYPE mod_type, const int32_t engine_version)
 {
+    const SHELL_MOD *found = nullptr;
+
     for (int32_t i = 0; m_KnownMods[i].name != nullptr; i++) {
         const SHELL_MOD *const mod = &m_KnownMods[i];
-        if (mod->is_available && mod->mod_type == mod_type
-            && (engine_version <= 0 || mod->engine_version == engine_version)) {
-            return &m_KnownMods[i];
+        if (!mod->is_available || mod->mod_type != mod_type
+            || (engine_version > 0 && mod->engine_version != engine_version)) {
+            continue;
+        }
+
+        // match
+        if (engine_version == 0) {
+            if (found) {
+                // more than one mod matches this engine version, abort
+                return nullptr;
+            }
+            found = mod;
+        } else {
+            // exact version match
+            return mod;
         }
     }
-    return nullptr;
+
+    return found;
 }
 
 bool Shell_IsCurrentMod(const char *const name)
@@ -98,23 +147,23 @@ bool Shell_IsCurrentMod(const char *const name)
 
 const char *Shell_GetCommonStringsPath(void)
 {
-    return String_FormatStatic("%s/base_strings.json5", Shell_GetConfigDir());
+    return TRXPath_TryResolve(
+        TRX_DYNAMIC_PATH_COMMON_CONFIG, "base_strings.json5");
 }
 
 const char *Shell_GetBaseGameStringsPath(const SHELL_MOD *const mod)
 {
-    return String_FormatStatic(
-        "%s/%s/strings.json5", Shell_GetConfigDir(), mod->base_mod);
+    const char *const base_mod =
+        mod->base_mod != nullptr ? mod->base_mod : mod->name;
+    return M_GetModStringsPath(base_mod);
 }
 
 const char *Shell_GetGameStringsPath(const SHELL_MOD *const mod)
 {
-    return String_FormatStatic(
-        "%s/%s/strings.json5", Shell_GetConfigDir(), mod->name);
+    return M_GetModStringsPath(mod->name);
 }
 
 const char *Shell_GetGameFlowPath(const SHELL_MOD *const mod)
 {
-    return String_FormatStatic(
-        "%s/%s/gameflow.json5", Shell_GetConfigDir(), mod->name);
+    return TRXPath_Resolve(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
 }

@@ -198,8 +198,10 @@ void LUA_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     Lua_ShutdownEvents();
-    lua_close(p->state);
-    p->state = nullptr;
+    if (p->state != nullptr) {
+        lua_close(p->state);
+        p->state = nullptr;
+    }
 }
 
 LUA_CONTEXT Lua_GetScriptContext(void)
@@ -223,10 +225,7 @@ LUA_RESULT Lua_Eval(const char *const code)
 LUA_RESULT Lua_EvalFile(const char *const path)
 {
     M_PRIV *const p = &m_Priv;
-    char *real_path = File_GetFullPath(path);
-    const LUA_RESULT result = M_LuaLoadAndRun(p->state, M_LoadFile, real_path);
-    Memory_FreePointer(&real_path);
-    return result;
+    return M_LuaLoadAndRun(p->state, M_LoadFile, path);
 }
 
 void Lua_ReloadLevelScript(void)

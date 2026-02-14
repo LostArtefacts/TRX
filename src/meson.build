@@ -619,6 +619,7 @@ common_sources = [
   'trx/game/shell/input.c',
   'trx/game/shell/main.c',
   'trx/game/shell/mod.c',
+  'trx/game/shell/paths.c',
   'trx/game/shell/platform.c',
   'trx/game/sound/common.c',
   'trx/game/sound/ids.c',

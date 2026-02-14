@@ -123,7 +123,9 @@ static const CONFIG_OPTION *m_ConfigOptionMap[TR_VERSION_COUNT] = {
 
 const CONFIG_OPTION *Config_GetOptionMap(void)
 {
-    ASSERT(g_TRVersion >= 1 && g_TRVersion <= 3);
+    if (g_TRVersion < 1 || g_TRVersion > 3) {
+        return nullptr;
+    }
     return m_ConfigOptionMap[g_TRVersion - 1];
 }
 

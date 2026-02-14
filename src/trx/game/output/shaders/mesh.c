@@ -52,8 +52,8 @@ OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
     shader->tint[0] = (RGB_F) { 0.0f, 0.0f, 0.0f };
     shader->tint[1] = (RGB_F) { 0.0f, 0.0f, 0.0f };
 
-    shader->base_tr12 = Output_Shader_Create("shaders/meshes_tr12.glsl");
-    shader->base_tr3 = Output_Shader_Create("shaders/meshes_tr3.glsl");
+    shader->base_tr12 = Output_Shader_Create("meshes_tr12.glsl");
+    shader->base_tr3 = Output_Shader_Create("meshes_tr3.glsl");
 
     Output_Shader_Bind(shader->base_tr12);
     GFX_TRACK_UNIFORM(

@@ -8,6 +8,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/mutant.h>
 #include <trx/game/rooms.h>
+#include <trx/game/shell/paths.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
 #include <trx/log.h>
@@ -16,8 +17,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-
-#define M_DEFAULT_SFX_PATH "data/main.sfx"
 
 typedef struct {
     int32_t game_index;
@@ -42,15 +41,15 @@ static void M_InitialiseSamplesFromFile(
         file_name = g_GameFlow.settings.sfx_path;
     }
     if (file_name == nullptr) {
-        file_name = M_DEFAULT_SFX_PATH;
+        file_name = "main.sfx";
     }
-    const char *full_path = File_GetFullPath(file_name);
+    const char *const full_path =
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_SFX_FILE, file_name);
     LOG_DEBUG("Loading samples from %s", full_path);
 
     MYFILE *const fp = File_Open(full_path, FILE_OPEN_READ);
-    Memory_FreePointer(&full_path);
     if (fp == nullptr) {
-        LOG_ERROR("Could not open %s samples file", file_name);
+        LOG_ERROR("Could not open %s samples file", full_path);
         goto finish;
     }
 

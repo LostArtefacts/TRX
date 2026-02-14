@@ -13,14 +13,13 @@
 #include <trx/game/pathing/lot.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
+#include <trx/game/shell.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/version.h>
 
 #include <stdio.h>
 #include <string.h>
-
-#define SAVES_DIR "saves"
 
 static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
 static SAVEGAME_INFO *m_SavegameInfo = nullptr;
@@ -31,6 +30,22 @@ static int32_t m_SaveCounter = 0;
 static int32_t m_MostRecentlyUsedSlot = -1;
 static int32_t m_MostRecentlyCreatedSlot = -1;
 static int32_t m_BoundSlot = -1;
+
+static const char *M_GetSaveWriteDir(void)
+{
+    const char *const saves_dir = TRXPath_Get(TRX_PATH_SAVES_DIR);
+    const SHELL_ARGS *const args = Shell_GetArgs();
+    if (args != nullptr && args->mod != nullptr && args->mod->name != nullptr) {
+        return String_FormatStatic("%s/%s", saves_dir, args->mod->name);
+    }
+    return saves_dir;
+}
+
+static char *M_GetSaveWritePath(const char *const file_name)
+{
+    ASSERT(file_name != nullptr);
+    return String_Format("%s/%s", M_GetSaveWriteDir(), file_name);
+}
 
 static void M_CopyResumeInfo(
     RESUME_INFO *const target, const RESUME_INFO *const source)
@@ -714,8 +729,11 @@ void Savegame_ScanSavedGames(void)
     m_SavedGames = 0;
     m_MostRecentlyCreatedSlot = -1;
 
-    M_ScanSavedGamesDir(SAVES_DIR);
+    // Scan low-priority locations first; the write directory is authoritative.
     M_ScanSavedGamesDir(".");
+    M_ScanSavedGamesDir(TRXPath_Get(TRX_PATH_LEGACY_SAVES_DIR));
+    M_ScanSavedGamesDir(TRXPath_Get(TRX_PATH_SAVES_DIR));
+    M_ScanSavedGamesDir(M_GetSaveWriteDir());
 
     for (int32_t i = 0; i < m_SaveSlots; i++) {
         SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
@@ -736,8 +754,6 @@ bool Savegame_Save(const int32_t slot_idx)
     bool result = false;
     Savegame_BindSlot(slot_idx);
 
-    File_CreateDirectory(SAVES_DIR);
-
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     const char *const level_title = current_level->title;
 
@@ -756,7 +772,8 @@ bool Savegame_Save(const int32_t slot_idx)
 
     m_SaveCounter++;
     char *file_name = String_Format(SG_File_GetSaveFilePattern(), slot_idx);
-    char *full_path = String_Format("%s/%s", SAVES_DIR, file_name);
+    char *full_path = M_GetSaveWritePath(file_name);
+    File_EnsureParentDirectories(full_path);
     MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
     if (fp != nullptr) {
         SG_File_SaveToFile(fp, savegame_info);

@@ -68,7 +68,7 @@ game will exit to title.
             "type": "bonus",
             "music_track": 57,
             "sequence": [
-                {"type": "play_fmv", "fmv_path": "fmv/snow.avi"},
+                {"type": "play_fmv", "fmv_path": "snow.avi"},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 0},
                 {"type": "level_stats"},

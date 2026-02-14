@@ -15,6 +15,7 @@
 #include <trx/game/output.h>
 #include <trx/game/phase.h>
 #include <trx/game/savegame.h>
+#include <trx/game/shell/paths.h>
 #include <trx/game/stats.h>
 #include <trx/log.h>
 #include <trx/version.h>

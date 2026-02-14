@@ -65,7 +65,9 @@ void *Memory_Dup(const void *const buffer, const size_t size)
 
 char *Memory_DupStr(const char *const string)
 {
-    ASSERT(string != nullptr);
+    if (string == nullptr) {
+        return nullptr;
+    }
     char *memory = Memory_Alloc(strlen(string) + 1);
     strcpy(memory, string);
     return memory;

@@ -11,6 +11,10 @@
 //              error.
 SHELL_ARGS *TestReplay_Open(const char *path);
 
+// Executes the initial configuration headers after the system is done
+// initializing.
+void TestReplay_Start(void);
+
 // Shutdown test replay.
 void TestReplay_Close(void);
 

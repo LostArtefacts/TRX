@@ -2,17 +2,17 @@
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
 
-    "main_menu_picture": "data/images/title_eu_gm.webp",
+    "main_menu_picture": "title_eu_gm.webp",
     "savegame_file_fmt": "save_trla_%02d.dat",
 
     "enable_tr2_item_drops": true,
     "convert_dropped_guns": true,
 
     "title": {
-        "path": "data/title_la.tr2",
+        "path": "title_la.tr2",
         "music_track": 5,
         "sequence": [
-            {"type": "display_picture", "path": "data/images/legal_eu.webp", "legal": true},
+            {"type": "display_picture", "path": "legal_eu.webp", "legal": true},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
@@ -24,42 +24,42 @@
         35, 36, 73, 74, 75, 76, 77, 78,
     ],
 
-    "sfx_path": "data/main_la.sfx",
+    "sfx_path": "main_la.sfx",
     "injections": [
-        "data/injections/font.bin",
-        "data/injections/lara_animations.bin",
-        "data/injections/pda_model.bin",
-        "data/injections/lara_extra.bin",
-        "data/injections/misc_sprites.bin",
-        "data/injections/lara_outfits.bin",
+        "font.bin",
+        "lara_animations.bin",
+        "pda_model.bin",
+        "lara_extra.bin",
+        "misc_sprites.bin",
+        "lara_outfits.bin",
     ],
 
     "levels": [
         // 0. Lara's Home
         {
             "type": "gym",
-            "path": "data/house.tr2",
+            "path": "house.tr2",
             "music_track": -1,
             "lara_outfit": "tr3_gym",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/house.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "house.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
             "injections": [
-                "data/injections/gym_sky.bin",
-                "data/injections/lara_gym_guns.bin",
+                "gym_sky.bin",
+                "lara_gym_guns.bin",
             ],
         },
 
         // 1. Highland Fling
         {
-            "path": "data/scotland.tr2",
+            "path": "scotland.tr2",
             "music_track": 36,
             "lara_outfit": "tr3_classic",
             "weather_type": "rain",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/highland.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "highland.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},
                 {"type": "give_item", "object_id": "flare", "quantity": 2},
@@ -69,73 +69,73 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_guns.bin",
-                "data/injections/scotland_sky.bin",
+                "lara_guns.bin",
+                "scotland_sky.bin",
             ],
         },
 
         // 2. Willard's Lair
         {
-            "path": "data/willsden.tr2",
+            "path": "willsden.tr2",
             "music_track": 30,
             "lara_outfit": "tr3_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/willard.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "willard.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_guns.bin",
-                "data/injections/scotland_sky.bin",
+                "lara_guns.bin",
+                "scotland_sky.bin",
             ],
         },
 
         // 3. Shakespeare Cliff
         {
-            "path": "data/chunnel.tr2",
+            "path": "chunnel.tr2",
             "music_track": 74,
             "lara_outfit": "tr3_nevada",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/chunnel.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "chunnel.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_guns.bin",
+                "lara_guns.bin",
             ],
         },
 
         // 4. Sleeping with the Fishes
         {
-            "path": "data/undersea.tr2",
+            "path": "undersea.tr2",
             "music_track": 27,
             "lara_outfit": "tr3_catsuit",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/undersea.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "undersea.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/antarc_airlock.bin",
-                "data/injections/lara_guns.bin",
-                "data/injections/undersea_animating_bounds.bin",
+                "antarc_airlock.bin",
+                "lara_guns.bin",
+                "undersea_animating_bounds.bin",
             ],
         },
 
         // 5. It's a Madhouse!
         {
-            "path": "data/zoo.tr2",
-            "script": "data/scripts/zoo.lua",
+            "path": "zoo.tr2",
+            "script": "zoo.lua",
             "music_track": 34,
             "lara_outfit": "tr3_catsuit",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/zoo.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "zoo.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "remove_scions"},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
@@ -143,43 +143,43 @@
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_guns.bin",
+                "lara_guns.bin",
             ],
         },
 
         // 6. Reunion
         {
-            "path": "data/slinc.tr2",
+            "path": "slinc.tr2",
             "music_track": 26,
             "lara_outfit": "tr3_catsuit",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/slinc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "slinc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "play_music", "music_track": 121},
-                {"type": "display_picture", "credit": true, "path": "data/images/theend2.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit01.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit02.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit03.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit04.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit05.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit06.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit07.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit08.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credit09.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "total_stats", "background_path": "data/images/theend2.webp"},
+                {"type": "display_picture", "credit": true, "path": "theend2.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit01.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit02.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit03.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit04.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit05.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit06.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit07.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit08.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credit09.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "total_stats", "background_path": "theend2.webp"},
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/lara_guns.bin",
+                "lara_guns.bin",
             ],
         },
     ],
 
     "fmvs": [
-        {"path": "fmv/logo.rpl", "legal": true},
-        {"path": "fmv/intr_eng.rpl"},
+        {"path": "logo.rpl", "legal": true},
+        {"path": "intr_eng.rpl"},
     ],
 
     "hidden_config": [

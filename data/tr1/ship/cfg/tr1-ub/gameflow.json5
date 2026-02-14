@@ -2,24 +2,24 @@
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
 
-    "main_menu_picture": "data/images/title_ub.webp",
+    "main_menu_picture": "title_ub.webp",
     "savegame_file_fmt": "save_trub_%02d.dat",
 
     "injections": [
-        "data/injections/braid.bin",
-        "data/injections/bubbles.bin",
-        "data/injections/gun_glow.bin",
-        "data/injections/lara_animations.bin",
-        "data/injections/lara_guns.bin",
-        "data/injections/uzi_sfx.bin",
-        "data/injections/explosion.bin",
-        "data/injections/pickup_aid.bin",
-        "data/injections/sprite_alignment.bin",
-        "data/injections/pda_model.bin",
-        "data/injections/font.bin",
-        "data/injections/winston_model.bin",
-        "data/injections/misc_sprites.bin",
-        "data/injections/lara_outfits.bin",
+        "braid.bin",
+        "bubbles.bin",
+        "gun_glow.bin",
+        "lara_animations.bin",
+        "lara_guns.bin",
+        "uzi_sfx.bin",
+        "explosion.bin",
+        "pickup_aid.bin",
+        "sprite_alignment.bin",
+        "pda_model.bin",
+        "font.bin",
+        "winston_model.bin",
+        "misc_sprites.bin",
+        "lara_outfits.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -31,17 +31,17 @@
     },
 
     "title": {
-        "path": "data/title.phd",
+        "path": "title.phd",
         "music_track": 2,
         "inherit_injections": false,
         "injections": [
-            "data/injections/pda_model.bin",
-            "data/injections/font.bin",
-            "data/injections/title_textures.bin",
-            "data/injections/misc_sprites.bin",
+            "pda_model.bin",
+            "font.bin",
+            "title_textures.bin",
+            "misc_sprites.bin",
         ],
         "sequence": [
-            {"type": "display_picture", "path": "data/images/eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
+            {"type": "display_picture", "path": "eidos.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
@@ -51,90 +51,90 @@
     "levels": [
         // Level 1: Return to Egypt
         {
-            "path": "data/egypt.phd",
+            "path": "egypt.phd",
             "music_track": 59,
             "lara_outfit": "tr1_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/egypt_cameras.bin",
-                "data/injections/egypt_fd.bin",
-                "data/injections/egypt_itemrots.bin",
-                "data/injections/egypt_meshfixes.bin",
-                "data/injections/egypt_textures.bin",
-                "data/injections/panther_sfx.bin",
+                "egypt_cameras.bin",
+                "egypt_fd.bin",
+                "egypt_itemrots.bin",
+                "egypt_meshfixes.bin",
+                "egypt_textures.bin",
+                "panther_sfx.bin",
             ],
             "unobtainable_kills": 1,
         },
 
         // Level 2: Temple of the Cat
         {
-            "path": "data/cat.phd",
+            "path": "cat.phd",
             "music_track": 59,
             "lara_outfit": "tr1_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/cat_cameras.bin",
-                "data/injections/cat_fd.bin",
-                "data/injections/cat_itemrots.bin",
-                "data/injections/cat_meshfixes.bin",
-                "data/injections/cat_textures.bin",
-                "data/injections/panther_sfx.bin",
+                "cat_cameras.bin",
+                "cat_fd.bin",
+                "cat_itemrots.bin",
+                "cat_meshfixes.bin",
+                "cat_textures.bin",
+                "panther_sfx.bin",
             ],
             "unobtainable_pickups": 1,
         },
 
         // Level 3: Atlantean Stronghold
         {
-            "path": "data/end.phd",
+            "path": "end.phd",
             "music_track": 60,
             "lara_outfit": "tr1_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
             ],
             "injections": [
-                "data/injections/door61_sfx.bin",
-                "data/injections/stronghold_fd.bin",
-                "data/injections/stronghold_itemrots.bin",
-                "data/injections/stronghold_textures.bin",
+                "door61_sfx.bin",
+                "stronghold_fd.bin",
+                "stronghold_itemrots.bin",
+                "stronghold_textures.bin",
             ],
             "unobtainable_kills": 1,
         },
 
         // Level 4: The Hive
         {
-            "path": "data/end2.phd",
+            "path": "end2.phd",
             "music_track": 60,
             "lara_outfit": "tr1_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loading_screen", "path": "ub_loading2.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "play_music", "music_track": 19},
-                {"type": "display_picture", "credit": true, "path": "data/images/end.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credits_ub.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credits_1.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credits_2.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "display_picture", "credit": true, "path": "data/images/credits_3.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "total_stats", "background_path": "data/images/install.webp"},
+                {"type": "display_picture", "credit": true, "path": "end.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credits_ub.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credits_1.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credits_2.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "credits_3.webp", "display_time": 7.5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "total_stats", "background_path": "install.webp"},
                 {"type": "exit_to_title"},
             ],
             "injections": [
-                "data/injections/hive_fd.bin",
-                "data/injections/hive_itemrots.bin",
-                "data/injections/hive_textures.bin",
+                "hive_fd.bin",
+                "hive_itemrots.bin",
+                "hive_textures.bin",
             ],
         },
 
@@ -143,7 +143,7 @@
         // Level 6: Current Position
         // This level is necessary to read TombATI's save files.
         {
-            "path": "data/current.phd",
+            "path": "current.phd",
             "type": "current",
             "music_track": 0,
             "inherit_injections": false,
@@ -152,8 +152,8 @@
     ],
 
     "fmvs": [
-        {"path": "fmv/core.avi", "legal": true},
-        {"path": "fmv/escape.avi", "legal": true},
+        {"path": "core.avi", "legal": true},
+        {"path": "escape.avi", "legal": true},
     ],
 
     "hidden_config": [

@@ -19,11 +19,6 @@
 static VECTOR *m_Poses = nullptr;
 static int32_t m_ActivePose = M_NO_POSE;
 
-static const char *M_GetPath(void)
-{
-    return String_FormatStatic("%s/poses.json5", Shell_GetConfigDir());
-}
-
 static void M_WarnWithJSONError(const JSON_READ_IO *const io)
 {
     char warning_message[1024];
@@ -82,7 +77,11 @@ static void M_LoadPoses(void)
     m_Poses = Vector_Create(sizeof(LARA_POSE));
     ASSERT(m_Poses != nullptr);
 
-    const char *const poses_path = M_GetPath();
+    const char *const poses_path =
+        TRXPath_TryResolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "poses.json5");
+    if (poses_path == nullptr) {
+        return;
+    }
     JSON_VALUE *const doc = JSONFile_Read(poses_path);
     if (doc == nullptr) {
         return;

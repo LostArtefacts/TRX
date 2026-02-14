@@ -1,6 +1,7 @@
 #include <trx/game/shell/args.h>
 
 #include <trx/debug.h>
+#include <trx/game/shell/common.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/utils.h>
@@ -96,8 +97,18 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 out_args->level_to_select = lvnum;
             } else {
                 out_args->level_to_play = next_arg;
-                out_args->mod = Shell_GetModByType(
-                    MOD_DIRECT_LEVEL, out_args->engine_version);
+                if (out_args->mod == nullptr && out_args->engine_version == 0) {
+                    Shell_ExitSystem(
+                        "Either --mod or --engine must be provided for "
+                        "--level");
+                }
+                if (out_args->mod != nullptr) {
+                    out_args->mod = Shell_GetModByType(
+                        MOD_DIRECT_LEVEL, out_args->mod->engine_version);
+                } else {
+                    out_args->mod = Shell_GetModByType(
+                        MOD_DIRECT_LEVEL, out_args->engine_version);
+                }
             }
             i++;
         }
@@ -133,6 +144,10 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         if (!strcmp(arg, "-q") || !strcmp(arg, "--quiet")) {
             out_args->quiet = true;
         }
+    }
+
+    if (out_args->engine_version == 0 && out_args->mod != nullptr) {
+        out_args->engine_version = out_args->mod->engine_version;
     }
 
     return out_args;

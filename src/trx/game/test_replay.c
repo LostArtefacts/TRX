@@ -513,8 +513,20 @@ SHELL_ARGS *TestReplay_Open(const char *path)
         idx++;
     }
 
-    // Execute headers
     M_PARSE_CTX ctx = {};
+    for (int32_t i = 0; i < p->headers->count; i++) {
+        const char *const ln = *(const char **)Vector_Get(p->headers, i);
+        M_ParseArgs(ln, &ctx);
+    }
+    Vector_Free(lines);
+    LOG_INFO("Loaded %zu frames for playback", p->frames->count);
+    return Shell_ParseArgs(ctx.raw_args);
+}
+
+void TestReplay_Start(void)
+{
+    M_PARSE_CTX ctx = {};
+    M_PRIV *const p = &m_Priv;
     for (int32_t i = 0; i < p->headers->count; i++) {
         const char *const ln = *(const char **)Vector_Get(p->headers, i);
         bool handled = false;
@@ -528,10 +540,6 @@ SHELL_ARGS *TestReplay_Open(const char *path)
             LOG_WARNING("Unknown line: %s", ln);
         }
     }
-    Vector_Free(lines);
-
-    LOG_INFO("Loaded %zu frames for playback", p->frames->count);
-    return Shell_ParseArgs(ctx.raw_args);
 }
 
 void TestReplay_Close(void)

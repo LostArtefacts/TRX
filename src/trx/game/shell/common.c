@@ -30,7 +30,7 @@ static void M_ShowFatalError(
 
 const char *Shell_GetConfigDir(void)
 {
-    return "cfg";
+    return TRXPath_Get(TRX_PATH_CONFIG_DIR);
 }
 
 void Shell_Terminate(int32_t exit_code)

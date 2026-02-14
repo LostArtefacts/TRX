@@ -141,10 +141,8 @@ static void M_Init(GFX_RENDERER *const renderer, const GFX_CONFIG *const config)
     GFX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     GFX_GL_Program_Init(&p->program);
-    GFX_GL_Program_AttachShader(
-        &p->program, GL_VERTEX_SHADER, "shaders/fbo.glsl");
-    GFX_GL_Program_AttachShader(
-        &p->program, GL_FRAGMENT_SHADER, "shaders/fbo.glsl");
+    GFX_GL_Program_AttachShader(&p->program, GL_VERTEX_SHADER, "fbo.glsl");
+    GFX_GL_Program_AttachShader(&p->program, GL_FRAGMENT_SHADER, "fbo.glsl");
     GFX_GL_Program_FragmentData(&p->program, "outColor");
     GFX_GL_Program_Link(&p->program);
     GFX_GL_Program_Bind(&p->program);
