@@ -540,6 +540,7 @@ common_sources = [
   'trx/game/objects/vehicles/boat.c',
   'trx/game/objects/vehicles/common.c',
   'trx/game/objects/vehicles/kayak.c',
+  'trx/game/objects/vehicles/mounted_gun.c',
   'trx/game/objects/vehicles/quad_bike.c',
   'trx/game/objects/vehicles/skidoo_armed.c',
   'trx/game/objects/vehicles/skidoo_common.c',

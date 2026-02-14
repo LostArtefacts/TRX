@@ -1996,6 +1996,9 @@
         },
         "kayak": {
             "name": "\\{review}Kayak",
+        },
+        "mounted_gun": {
+            "name": "\\{review}Mitragliatrice Montata",
         }
     }
 }

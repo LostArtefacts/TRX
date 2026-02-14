@@ -141,6 +141,7 @@ X_OBJ_NAME_DEFINE(O_SKIDOO_FAST,           "skidoo_fast",           X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_BOAT,                  "boat",                  X_OBJ_NAMES("Boat"))
 X_OBJ_NAME_DEFINE(O_QUAD_BIKE,             "quad_bike",             X_OBJ_NAMES("Quad Bike"))
 X_OBJ_NAME_DEFINE(O_KAYAK,                 "kayak",                 X_OBJ_NAMES("Kayak"))
+X_OBJ_NAME_DEFINE(O_MOUNTED_GUN,           "mounted_gun",           X_OBJ_NAMES("Mounted Gun"))
 
 // Enemies
 X_OBJ_NAME_DEFINE(O_BACON_LARA,            "bacon_lara",            X_OBJ_NAMES("Bacon Lara"))

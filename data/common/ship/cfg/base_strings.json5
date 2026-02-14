@@ -1041,6 +1041,9 @@
         "kayak": {
             "name": "Kayak",
         },
+        "mounted_gun": {
+            "name": "Mounted Gun",
+        },
         "bacon_lara": {
             "name": "Bacon Lara",
         },

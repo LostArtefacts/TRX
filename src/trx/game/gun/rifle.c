@@ -39,21 +39,6 @@ typedef enum {
 static bool m_M16Firing = false;
 static bool m_ReloadHarpoon = false;
 
-static XYZ_32 M_GetLocalZOffset(const ITEM *const item, const int32_t dist)
-{
-    const int32_t cx = Math_Cos(item->rot.x);
-    const int32_t sx = Math_Sin(item->rot.x);
-    const int32_t cy = Math_Cos(item->rot.y);
-    const int32_t sy = Math_Sin(item->rot.y);
-
-    const int32_t horz = (dist * cx) >> W2V_SHIFT;
-    return (XYZ_32) {
-        .x = (horz * sy) >> W2V_SHIFT,
-        .y = -(dist * sx) >> W2V_SHIFT,
-        .z = (horz * cy) >> W2V_SHIFT,
-    };
-}
-
 static void M_SetTR3ProjectileShade(ITEM *const item)
 {
     if (item == nullptr) {
@@ -413,10 +398,12 @@ static void M_FireRocket(void)
 
     if (g_TRVersion == 3) {
         M_SetTR3ProjectileShade(projectile_item);
-        const XYZ_32 back_128 = M_GetLocalZOffset(projectile_item, -128);
+        const XYZ_32 back_128 = XYZ_32_FromYawPitch(
+            projectile_item->rot.y, projectile_item->rot.x, -128);
         for (int32_t i = 0; i < 8; i++) {
             const int32_t dist = -(Random_GetControl() & 0x7FF);
-            const XYZ_32 back_vel = M_GetLocalZOffset(projectile_item, dist);
+            const XYZ_32 back_vel = XYZ_32_FromYawPitch(
+                projectile_item->rot.y, projectile_item->rot.x, dist);
             Sparks_TriggerRocketFlame(
                 back_128,
                 (XYZ_32) {
