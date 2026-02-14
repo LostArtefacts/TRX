@@ -3,6 +3,7 @@
 - added the ability to freely rotate examinable items
 - added a color editor dialog for fog and water colors in Graphic Options → Visuals
 - added `O_SWITCH_TYPE_WHEEL`, which is similar to `O_SWITCH_TYPE_AIRLOCK` but can be used more than once
+- added support for using more sound slots than originally possible in custom levels (#3898)
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
 - changed logs to no longer emit ANSI color characters when the game's output is piped to a file / process
@@ -17,6 +18,7 @@
 
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
+- removed the requirement to use `main.sfx` in custom levels (#3898)
 
 **TR3**:
 - added reverb support
