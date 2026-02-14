@@ -1180,8 +1180,6 @@ bool Kayak_Control(void)
     int16_t room_num = item->room_num;
     const SECTOR *floor = Room_GetSector(item->pos, &room_num);
     int32_t h = Room_GetHeight(floor, item->pos);
-    Room_TestTriggers(lara_item);
-    Room_TestTriggers(item);
     int32_t wh = Room_GetWaterHeight(item->pos, room_num);
     p->water = wh;
 
@@ -1218,6 +1216,8 @@ bool Kayak_Control(void)
             - Item_GetAnim(lara_item)->frame_base;
         Item_UpdateRoom(Lara_Vehicle_GetIndex(), room_num);
         Item_UpdateRoom(lara_info->item_num, room_num);
+        Room_TestTriggers(lara_item);
+        Room_TestTriggers(item);
         g_Camera.target_elevation = -5460;
         g_Camera.target_distance = 2048;
     }
