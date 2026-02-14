@@ -317,6 +317,7 @@ X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_BUTTON,    "switch_type_button",    X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_NORMAL,    "switch_type_normal",    X_OBJ_NAMES("Lever", "Switch"))
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_SMALL,     "switch_type_small",     X_OBJ_NAMES("Small Switch"))
 X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_UW,        "switch_type_uw",        X_OBJ_NAMES("Underwater Lever", "Underwater Switch"))
+X_OBJ_NAME_DEFINE(O_SWITCH_TYPE_WHEEL,     "switch_type_wheel",     X_OBJ_NAMES("Wheel Switch", "Pulley Switch", "Valve Switch"))
 X_OBJ_NAME_DEFINE(O_TRAPDOOR_TYPE_1,       "trapdoor_1",            X_OBJ_NAMES("Trapdoor 1"))
 X_OBJ_NAME_DEFINE(O_TRAPDOOR_TYPE_2,       "trapdoor_2",            X_OBJ_NAMES("Trapdoor 2"))
 X_OBJ_NAME_DEFINE(O_TRAPDOOR_TYPE_3,       "trapdoor_3",            X_OBJ_NAMES("Trapdoor 3"))

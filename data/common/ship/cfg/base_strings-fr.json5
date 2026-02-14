@@ -1948,6 +1948,9 @@
         },
         "electric_fence": {
             "name": "\\{review}Clôture électrique",
+        },
+        "switch_type_wheel": {
+            "name": "\\{review}Interrupteur à Roue",
         }
     }
 }

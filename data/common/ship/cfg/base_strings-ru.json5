@@ -1968,6 +1968,9 @@
         },
         "electric_fence": {
             "name": "\\{review}Электрический забор",
+        },
+        "switch_type_wheel": {
+            "name": "\\{review}Колёсный переключатель",
         }
     }
 }

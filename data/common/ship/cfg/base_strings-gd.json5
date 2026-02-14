@@ -1972,6 +1972,9 @@
         },
         "electric_fence": {
             "name": "Feansa Dealain",
+        },
+        "switch_type_wheel": {
+            "name": "Suids Cuidhle",
         }
     }
 }
