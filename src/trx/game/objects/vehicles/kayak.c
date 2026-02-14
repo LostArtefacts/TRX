@@ -1205,11 +1205,6 @@ bool Kayak_Control(void)
     }
 
     if (Lara_Vehicle_GetIndex() != NO_ITEM) {
-        if (item->room_num != room_num) {
-            Item_UpdateRoom(Lara_Vehicle_GetIndex(), room_num);
-            Item_UpdateRoom(lara_info->item_num, room_num);
-        }
-
         lara_item->pos.x = item->pos.x;
         lara_item->pos.y = item->pos.y + 32;
         lara_item->pos.z = item->pos.z;
@@ -1221,6 +1216,8 @@ bool Kayak_Control(void)
             - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx;
         item->frame_num = lara_item->frame_num + Item_GetAnim(item)->frame_base
             - Item_GetAnim(lara_item)->frame_base;
+        Item_UpdateRoom(Lara_Vehicle_GetIndex(), room_num);
+        Item_UpdateRoom(lara_info->item_num, room_num);
         g_Camera.target_elevation = -5460;
         g_Camera.target_distance = 2048;
     }
