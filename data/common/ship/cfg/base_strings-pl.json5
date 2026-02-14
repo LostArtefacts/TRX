@@ -1945,6 +1945,9 @@
         },
         "kayak": {
             "name": "\\{review}Kajak",
+        },
+        "mounted_gun": {
+            "name": "\\{review}Zamontowana Broń",
         }
     }
 }

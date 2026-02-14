@@ -190,12 +190,19 @@ XYZ_32 XYZ_32_OffsetYaw(
     };
 }
 
-XYZ_32 XYZ_32_FromYawPitch(const int16_t yaw, const int16_t pitch)
+XYZ_32 XYZ_32_FromYawPitch(
+    const int16_t yaw, const int16_t pitch, const int32_t distance)
 {
+    const int32_t cx = Math_Cos(pitch);
+    const int32_t sx = Math_Sin(pitch);
+    const int32_t cy = Math_Cos(yaw);
+    const int32_t sy = Math_Sin(yaw);
+
+    const int32_t horz = (distance * cx) >> W2V_SHIFT;
     return (XYZ_32) {
-        .x = (Math_Sin(yaw) * Math_Cos(pitch)) >> W2V_SHIFT,
-        .y = -Math_Sin(pitch),
-        .z = (Math_Cos(yaw) * Math_Cos(pitch)) >> W2V_SHIFT,
+        .x = (int32_t)(((int64_t)horz * sy) >> W2V_SHIFT),
+        .y = -(int32_t)(((int64_t)distance * sx) >> W2V_SHIFT),
+        .z = (int32_t)(((int64_t)horz * cy) >> W2V_SHIFT),
     };
 }
 

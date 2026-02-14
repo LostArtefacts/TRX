@@ -1978,6 +1978,9 @@
         },
         "kayak": {
             "name": "\\{review}Càbaig",
+        },
+        "mounted_gun": {
+            "name": "Gunna Stèidhichte",
         }
     }
 }

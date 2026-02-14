@@ -25,7 +25,7 @@ int64_t XYZ_32_GetLength2_64(XYZ_32 pos);
 int64_t XYZ_32_DotProduct_64(XYZ_32 a, XYZ_32 b);
 bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
 bool XYZ_32_IsNearby(const XYZ_32 *pos1, const XYZ_32 *pos2, int32_t distance);
-XYZ_32 XYZ_32_FromYawPitch(int16_t yaw, int16_t pitch);
+XYZ_32 XYZ_32_FromYawPitch(int16_t yaw, int16_t pitch, int32_t distance);
 XYZ_32 XYZ_32_OffsetYaw(XYZ_32 src, int16_t yaw, int32_t distance);
 bool XYZ_32_ProjectPointOntoAxis(
     XYZ_32 origin, XYZ_32 axis, int64_t axis_len2, XYZ_32 *pos);

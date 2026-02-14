@@ -645,7 +645,7 @@ static void M_Look(const ITEM *const item)
     // derived from yaw + pitch (no roll/tilt from torso animation).
     const int16_t yaw = lara_item->rot.y + lara->head_rot.y;
     const int16_t pitch = lara_item->rot.x + lara->head_rot.x;
-    const XYZ_32 axis = XYZ_32_FromYawPitch(yaw, pitch);
+    const XYZ_32 axis = XYZ_32_FromYawPitch(yaw, pitch, 1 << W2V_SHIFT);
 
     const int64_t axis_len2 = XYZ_32_GetLength2_64(axis);
     if (axis_len2 != 0) {

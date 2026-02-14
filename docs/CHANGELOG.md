@@ -21,6 +21,7 @@
 **TR3**:
 - added reverb support
 - added Kayak control
+- added Mounted Gun control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth

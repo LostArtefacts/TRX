@@ -43,6 +43,7 @@ static int32_t m_OpenDoorsCheatCooldown = 0;
 extern bool Skidoo_Control(void);
 extern bool QuadBike_Control(void);
 extern bool Kayak_Control(void);
+extern bool MountedGun_Control(void);
 
 static SECTOR *M_GetCurrentSector(void)
 {
@@ -607,6 +608,14 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
             break;
         case O_KAYAK:
             if (Kayak_Control()) {
+                return;
+            }
+            break;
+        case O_MOUNTED_GUN:
+            if (MountedGun_Control()) {
+                coll->enable_hit = false;
+                coll->enable_baddie_push = false;
+                M_ObjectCollision(coll);
                 return;
             }
             break;
