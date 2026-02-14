@@ -108,7 +108,7 @@ static void M_LoadCatalog(
     const bool allow_duplicates)
 {
     const char *const path =
-        String_FormatStatic("%s/%s", Shell_GetConfigDir(), filename);
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_CATALOG, filename);
     if (!Catalog_Load(context, path, allow_duplicates)) {
         Shell_ExitSystemFmt("Failed to load catalogs from %s", path);
     }
@@ -133,11 +133,8 @@ static void M_InitModules(void)
     Overlay_Init();
     GameEvent_Init();
 
-    Input_Init();
-
     GameBuf_Init();
     Random_Seed();
-    Lara_Pose_Init();
 
     Clock_Init();
     LUA_Init();
@@ -194,30 +191,6 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
         && args->test_replay_path != nullptr) {
         Shell_ExitSystem("Cannot use both --test-record and --test-replay");
     }
-    if (args->headless && args->test_replay_path == nullptr) {
-        Shell_ExitSystem("--headless can only be used with --test-replay");
-    }
-
-    if (args->mod == nullptr) {
-        Shell_ExitSystem("Missing gameflow file");
-    }
-
-    Config_ApplyDefaultSettings();
-    Console_Init();
-
-    M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false);
-    M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false);
-    M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv", true);
-    M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv", false);
-    M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false);
-    M_LoadCatalog(CATALOG_ITEM_ACTIONS, "catalog_item_actions.csv", false);
-    InvRing_LoadVars(
-        String_FormatStatic("%s/inv_ring.json5", Shell_GetConfigDir()));
-    Gun_LoadVars(String_FormatStatic("%s/weapons.json5", Shell_GetConfigDir()));
-    UI_Settings_LoadFromFile(
-        String_FormatStatic("%s/ui.json5", Shell_GetConfigDir()));
-    Lara_Skin_LoadFromFile(
-        String_FormatStatic("%s/outfits.json5", Shell_GetConfigDir()));
 
     if (args->test_replay_path != nullptr) {
         SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);
@@ -231,11 +204,51 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
             tmp_args->debug_render_performance = args->debug_render_performance;
             new_args = tmp_args;
         }
+    } else if (args->headless) {
+        Shell_ExitSystem("--headless can only be used with --test-replay");
+    }
+
+    g_TRVersion = new_args->engine_version;
+    if (new_args->engine_version <= 0 || new_args->mod == nullptr) {
+        Shell_ExitSystem(
+            "Unknown or ambiguous gameflow file. "
+            "Are you missing --engine or --mod?");
+    }
+
+    LOG_INFO("Engine version: %d", g_TRVersion);
+    LOG_INFO("Mod: %s", new_args->mod->name);
+    Config_ApplyDefaultSettings();
+
+    TRXPath_Init(new_args);
+
+    Input_Init();
+    Console_Init();
+    M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false);
+    M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false);
+    M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv", true);
+    M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv", false);
+    M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false);
+    M_LoadCatalog(CATALOG_ITEM_ACTIONS, "catalog_item_actions.csv", false);
+    Lara_Pose_Init();
+    InvRing_LoadVars(
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5"));
+    Gun_LoadVars(
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "weapons.json5"));
+    UI_Settings_LoadFromFile(
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "ui.json5"));
+    Lara_Skin_LoadFromFile(
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
+
+    if (args->test_replay_path != nullptr) {
+        TestReplay_Start();
     } else {
-        Config_Read(
-            String_FormatStatic(
-                "%s/TR%dX.json5", Shell_GetConfigDir(), g_TRVersion),
-            Shell_GetGameFlowPath(args->mod));
+        char *engine_config_path =
+            TRXPath_ExpandVars("%config_dir%/TR%tr_version%X.json5");
+        if (engine_config_path == nullptr) {
+            Shell_ExitSystem("Failed to resolve engine config path");
+        }
+        Config_Read(engine_config_path, Shell_GetGameFlowPath(args->mod));
+        Memory_FreePointer(&engine_config_path);
 
         if (args->test_record_path != nullptr) {
             TestRecorder_Open(args->test_record_path, args->original_args);
@@ -272,19 +285,17 @@ SDL_Window *Shell_GetWindow(void)
 
 int32_t Shell_Main(const SHELL_ARGS *args)
 {
-    LOG_INFO("Game directory: %s", File_GetGameDirectory());
+    LOG_INFO("Game directory: %s", TRXPath_Get(TRX_PATH_TRX_DIR));
 
     ASSERT(args != nullptr);
-    ASSERT(args->mod != nullptr || args->engine_version != 0);
-
-    // Set the g_TRVersion early. Later on it will be overriden by the
-    // level loader, but this lets the game load good config defaults.
-    g_TRVersion = args->engine_version != 0 ? args->engine_version
-                                            : args->mod->engine_version;
-    LOG_INFO("Engine version: %d", g_TRVersion);
 
     M_InitModules();
     args = M_PrepareSystem(args);
+    if (args->mod == nullptr) {
+        Shell_ExitSystem("No --mod specified.");
+        return 1;
+    }
+    TRXPath_Init(args);
     M_CreateGameWindow();
     M_CreateGLContext();
     Output_Init();
@@ -296,10 +307,26 @@ int32_t Shell_Main(const SHELL_ARGS *args)
     GF_LoadFromFile(Shell_GetGameFlowPath(args->mod));
 
     GameStringManager_ClearSourceFiles();
-    GameStringManager_AddSourceFile(Shell_GetCommonStringsPath(), false);
-    GameStringManager_AddSourceFile(
-        Shell_GetBaseGameStringsPath(args->mod), false);
-    GameStringManager_AddSourceFile(Shell_GetGameStringsPath(args->mod), true);
+    const char *const common_strings_path = Shell_GetCommonStringsPath();
+    if (common_strings_path == nullptr) {
+        Shell_ExitSystem("Missing common strings file");
+    }
+    GameStringManager_AddSourceFile(common_strings_path, false);
+    if (args->mod->base_mod != nullptr) {
+        const char *const base_strings_path =
+            Shell_GetBaseGameStringsPath(args->mod);
+        if (base_strings_path == nullptr) {
+            Shell_ExitSystemFmt(
+                "Missing base mod strings file for '%s'", args->mod->name);
+        }
+        GameStringManager_AddSourceFile(base_strings_path, false);
+    }
+    const char *const mod_strings_path = Shell_GetGameStringsPath(args->mod);
+    if (mod_strings_path == nullptr) {
+        Shell_ExitSystemFmt(
+            "Missing strings file for selected mod '%s'", args->mod->name);
+    }
+    GameStringManager_AddSourceFile(mod_strings_path, true);
     GameStringManager_DiscoverLanguages();
     GameStringManager_ReloadLanguage(g_Config.language);
 

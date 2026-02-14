@@ -165,8 +165,10 @@ void GFX_GL_Program_AttachShader(
     ASSERT(program != nullptr);
     ASSERT(path != nullptr);
 
+    const char *const resolved_path =
+        TRXPath_Resolve(TRX_DYNAMIC_PATH_SHADER_FILE, path);
     Memory_FreePointer(&program->path);
-    program->path = Memory_DupStr(path);
+    program->path = Memory_DupStr(resolved_path);
 
     GLuint shader_id = glCreateShader(type);
     GFX_GL_CheckError();
@@ -176,11 +178,11 @@ void GFX_GL_Program_AttachShader(
 
     char *content = nullptr;
     char *processed_content = nullptr;
-    if (!File_Load(path, &content, nullptr)) {
-        Shell_ExitSystemFmt("Unable to find shader file: %s", path);
+    if (!File_Load(program->path, &content, nullptr)) {
+        Shell_ExitSystemFmt("Unable to find shader file: %s", program->path);
     }
 
-    char *shader_dir = File_GetParentDirectory(path);
+    char *shader_dir = File_GetParentDirectory(program->path);
     processed_content = M_PreprocessIncludes(content, shader_dir);
     ASSERT(processed_content != nullptr);
     Memory_FreePointer(&shader_dir);

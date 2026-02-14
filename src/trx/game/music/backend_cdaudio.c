@@ -21,6 +21,7 @@ typedef struct {
 
 typedef struct {
     const char *path;
+    const char *control_path;
     const char *description;
     int32_t num_tracks;
     M_CDAUDIO_TRACK *tracks;
@@ -32,8 +33,8 @@ static bool M_Parse(M_BACKEND_DATA *const data)
 
     char *track_content = nullptr;
     size_t track_content_size;
-    if (!File_Load("audio/cdaudio.dat", &track_content, &track_content_size)) {
-        LOG_WARNING("Cannot find CDAudio control file");
+    if (!File_Load(data->control_path, &track_content, &track_content_size)) {
+        LOG_WARNING("Cannot find CDAudio control file: %s", data->control_path);
         return false;
     }
 
@@ -116,12 +117,12 @@ static bool M_Init(MUSIC_BACKEND *const backend)
     if (fp == nullptr) {
         return false;
     }
+    File_Close(fp);
 
     if (!M_Parse(data)) {
         LOG_ERROR("Failed to parse CDAudio data");
         return false;
     }
-    File_Close(fp);
 
     return true;
 }
@@ -169,6 +170,7 @@ static void M_Shutdown(MUSIC_BACKEND *backend)
     if (backend->data != nullptr) {
         M_BACKEND_DATA *const data = backend->data;
         Memory_FreePointer(&data->path);
+        Memory_FreePointer(&data->control_path);
         Memory_FreePointer(&data->description);
         Memory_FreePointer(&data->tracks);
     }
@@ -176,9 +178,11 @@ static void M_Shutdown(MUSIC_BACKEND *backend)
     Memory_FreePointer(&backend);
 }
 
-MUSIC_BACKEND *Music_Backend_CDAudio_Factory(const char *path)
+MUSIC_BACKEND *Music_Backend_CDAudio_Factory(
+    const char *const path, const char *const control_path)
 {
     ASSERT(path != nullptr);
+    ASSERT(control_path != nullptr);
 
     const char *description_fmt = "CDAudio (path: %s)";
     const size_t description_size = snprintf(nullptr, 0, description_fmt, path);
@@ -187,6 +191,7 @@ MUSIC_BACKEND *Music_Backend_CDAudio_Factory(const char *path)
 
     M_BACKEND_DATA *const data = Memory_Alloc(sizeof(M_BACKEND_DATA));
     data->path = Memory_DupStr(path);
+    data->control_path = Memory_DupStr(control_path);
     data->description = description;
 
     MUSIC_BACKEND *const backend = Memory_Alloc(sizeof(MUSIC_BACKEND));

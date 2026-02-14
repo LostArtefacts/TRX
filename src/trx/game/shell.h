@@ -6,3 +6,4 @@
 #include <trx/game/shell/events.h>
 #include <trx/game/shell/flow.h>
 #include <trx/game/shell/input.h>
+#include <trx/game/shell/paths.h>

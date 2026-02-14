@@ -3,26 +3,26 @@
     // Lines starting with double slashes are comments and are ignored.
 
     // path to the main menu background image
-    "main_menu_picture": "data/images/title.webp",
+    "main_menu_picture": "title.webp",
 
     // path to the savegame file
     "savegame_file_fmt": "save_demo_pc_%02d.dat",
 
     "injections": [
-        "data/injections/braid.bin",
-        "data/injections/bubbles.bin",
-        "data/injections/gun_glow.bin",
-        "data/injections/lara_animations.bin",
-        "data/injections/lara_guns.bin",
-        "data/injections/uzi_sfx.bin",
-        "data/injections/explosion.bin",
-        "data/injections/pickup_aid.bin",
-        "data/injections/sprite_alignment.bin",
-        "data/injections/pda_model.bin",
-        "data/injections/font.bin",
-        "data/injections/winston_model.bin",
-        "data/injections/misc_sprites.bin",
-        "data/injections/lara_outfits.bin",
+        "braid.bin",
+        "bubbles.bin",
+        "gun_glow.bin",
+        "lara_animations.bin",
+        "lara_guns.bin",
+        "uzi_sfx.bin",
+        "explosion.bin",
+        "pickup_aid.bin",
+        "sprite_alignment.bin",
+        "pda_model.bin",
+        "font.bin",
+        "winston_model.bin",
+        "misc_sprites.bin",
+        "lara_outfits.bin",
     ],
 
     "enable_tr2_item_drops": false,
@@ -36,10 +36,10 @@
             {"type": "exit_to_title"},
         ],
         "injections": [
-            "data/injections/pda_model.bin",
-            "data/injections/font.bin",
-            "data/injections/title_textures.bin",
-            "data/injections/misc_sprites.bin",
+            "pda_model.bin",
+            "font.bin",
+            "title_textures.bin",
+            "misc_sprites.bin",
         ],
     },
 
@@ -50,7 +50,7 @@
             "music_track": 0,
             "lara_outfit": "tr1_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/peru.webp"},
+                {"type": "loading_screen", "path": "peru.webp"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},

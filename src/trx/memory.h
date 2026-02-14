@@ -56,7 +56,7 @@ void *Memory_Dup(const void *buffer, size_t size);
 
 // Duplicates a string. In case the memory allocation fails, shows an error to
 // the user and exits the application. The string must be nullptr-terminated.
-// Giving a nullptr to this function is a fatal error.
+// Giving a nullptr to this function returns nullptr.
 char *Memory_DupStr(const char *string);
 
 // Allocate n bytes using the arena allocator. If there's insufficient memory,

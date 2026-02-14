@@ -483,18 +483,8 @@ static bool M_InitialiseFromPath(int32_t sound_id, const char *file_path)
     }
 
     int32_t error_code = 0;
-    char *full_path = File_GetFullPath(file_path);
-    if (full_path == nullptr) {
-        error_code = AVERROR(ENOENT);
-        LOG_ERROR(
-            "Error while opening audio %s: %s", file_path,
-            av_err2str(error_code));
-        return false;
-    }
-
     AVFormatContext *fmt_ctx = nullptr;
-    error_code = avformat_open_input(&fmt_ctx, full_path, nullptr, nullptr);
-    Memory_FreePointer(&full_path);
+    error_code = avformat_open_input(&fmt_ctx, file_path, nullptr, nullptr);
     if (error_code != 0) {
         LOG_ERROR(
             "Error while opening audio %s: %s", file_path,

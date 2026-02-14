@@ -16,14 +16,11 @@
 #include <trx/game/viewport.h>
 #include <trx/gfx/context.h>
 #include <trx/log.h>
-#include <trx/memory.h>
+#include <trx/strings.h>
 
 #include <string.h>
 
 static bool m_IsPlaying = false;
-static const char *m_Extensions[] = {
-    ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,
-};
 
 static void *M_AllocateSurface(
     const int32_t width, const int32_t height, void *const user_data)
@@ -89,6 +86,11 @@ static void M_UploadSurface(void *const surface, void *const user_data)
 
 static bool M_Play(const char *const file_name)
 {
+    if (file_name == nullptr || String_IsEmpty(file_name)) {
+        LOG_ERROR("Cannot play FMV: empty file path");
+        return false;
+    }
+
     VIDEO *const video = Video_Open(file_name);
     if (video == nullptr) {
         return false;
@@ -136,7 +138,7 @@ static bool M_Play(const char *const file_name)
     return true;
 }
 
-bool FMV_Play(const char *const file_name)
+bool FMV_Play(const char *const file_path)
 {
     Music_Stop();
     Sound_StopAll();
@@ -146,9 +148,7 @@ bool FMV_Play(const char *const file_name)
     }
 
     m_IsPlaying = true;
-    char *final_path = File_GuessExtension(file_name, m_Extensions);
-    const bool result = M_Play(final_path);
-    Memory_FreePointer(&final_path);
+    const bool result = M_Play(file_path);
     m_IsPlaying = false;
     return result;
 }

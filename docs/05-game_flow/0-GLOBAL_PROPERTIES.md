@@ -300,7 +300,7 @@ remains distinct for each game.
         ],
     },
 
-    "sfx_path": "data/main.sfx",
+    "sfx_path": "main.sfx",
     "injections": [
         "data/injections/pda_model.bin",
         "data/injections/winston_model.bin",

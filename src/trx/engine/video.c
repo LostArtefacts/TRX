@@ -23,6 +23,7 @@
 #include <trx/filesystem.h>
 #include <trx/log.h>
 #include <trx/memory.h>
+#include <trx/strings.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>
@@ -354,6 +355,10 @@ static int M_PacketQueueInit(M_PACKET_QUEUE *q)
 
 static void M_PacketQueueFlush(M_PACKET_QUEUE *q)
 {
+    if (q == nullptr || q->mutex == nullptr || q->pkt_list == nullptr) {
+        return;
+    }
+
     M_PACKET_LIST pkt1;
 
     SDL_LockMutex(q->mutex);
@@ -369,10 +374,21 @@ static void M_PacketQueueFlush(M_PACKET_QUEUE *q)
 
 static void M_PacketQueueDestroy(M_PACKET_QUEUE *q)
 {
+    if (q == nullptr) {
+        return;
+    }
+
     M_PacketQueueFlush(q);
     av_fifo_freep2(&q->pkt_list);
-    SDL_DestroyMutex(q->mutex);
-    SDL_DestroyCond(q->cond);
+
+    if (q->mutex != nullptr) {
+        SDL_DestroyMutex(q->mutex);
+        q->mutex = nullptr;
+    }
+    if (q->cond != nullptr) {
+        SDL_DestroyCond(q->cond);
+        q->cond = nullptr;
+    }
 }
 
 static void M_PacketQueueAbort(M_PACKET_QUEUE *q)
@@ -578,11 +594,19 @@ static void M_FrameQueueShutdown(M_FRAME_QUEUE *f)
 {
     for (int i = 0; i < f->max_size; i++) {
         M_FRAME *vp = &f->queue[i];
-        M_FrameQueueUnrefItem(vp);
-        av_frame_free(&vp->frame);
+        if (vp->frame != nullptr) {
+            M_FrameQueueUnrefItem(vp);
+            av_frame_free(&vp->frame);
+        }
     }
-    SDL_DestroyMutex(f->mutex);
-    SDL_DestroyCond(f->cond);
+    if (f->mutex != nullptr) {
+        SDL_DestroyMutex(f->mutex);
+        f->mutex = nullptr;
+    }
+    if (f->cond != nullptr) {
+        SDL_DestroyCond(f->cond);
+        f->cond = nullptr;
+    }
 }
 
 static void M_FrameQueueSignal(M_FRAME_QUEUE *f)
@@ -825,23 +849,39 @@ static void M_StreamComponentClose(M_STATE *is, int stream_index)
 
 static void M_StreamClose(M_STATE *is)
 {
-    SDL_WaitThread(is->read_tid, nullptr);
+    if (is == nullptr) {
+        return;
+    }
 
-    if (is->audio_stream >= 0) {
+    if (is->read_tid != nullptr) {
+        SDL_WaitThread(is->read_tid, nullptr);
+        is->read_tid = nullptr;
+    }
+
+    if (is->ic != nullptr && is->audio_stream >= 0) {
         M_StreamComponentClose(is, is->audio_stream);
     }
-    if (is->video_stream >= 0) {
+    if (is->ic != nullptr && is->video_stream >= 0) {
         M_StreamComponentClose(is, is->video_stream);
     }
 
-    avformat_close_input(&is->ic);
+    if (is->ic != nullptr) {
+        avformat_close_input(&is->ic);
+    }
 
     M_PacketQueueDestroy(&is->videoq);
     M_PacketQueueDestroy(&is->audioq);
 
-    M_FrameQueueShutdown(&is->pictq);
-    M_FrameQueueShutdown(&is->sampq);
-    SDL_DestroyCond(is->continue_read_thread);
+    if (is->pictq.mutex != nullptr || is->pictq.cond != nullptr) {
+        M_FrameQueueShutdown(&is->pictq);
+    }
+    if (is->sampq.mutex != nullptr || is->sampq.cond != nullptr) {
+        M_FrameQueueShutdown(&is->sampq);
+    }
+    if (is->continue_read_thread != nullptr) {
+        SDL_DestroyCond(is->continue_read_thread);
+        is->continue_read_thread = nullptr;
+    }
     sws_freeContext(is->img_convert_ctx);
     av_free(is->filename);
     if (is->primary_surface) {
@@ -1862,10 +1902,8 @@ static M_STATE *M_StreamOpen(const char *filename)
     is->video_stream = -1;
     is->audio_stream = -1;
 
-    char *full_path = File_GetFullPath(filename);
-    is->filename = av_strdup(full_path);
-    Memory_FreePointer(&full_path);
-    if (!is->filename) {
+    is->filename = av_strdup(filename);
+    if (is->filename == nullptr) {
         goto fail;
     }
 
@@ -1906,12 +1944,12 @@ fail:
 
 VIDEO *Video_Open(const char *const file_path)
 {
-    LOG_DEBUG("Playing video: %s", file_path);
-    if (!File_Exists(file_path)) {
-        LOG_ERROR("Video does not exist: %s", file_path);
+    if (file_path == nullptr || String_IsEmpty(file_path)) {
+        LOG_ERROR("Cannot open video: empty file path");
         return nullptr;
     }
 
+    LOG_DEBUG("Playing video: %s", file_path);
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
     if (SDL_Init(flags)) {
         LOG_ERROR("Could not initialize SDL - %s", SDL_GetError());

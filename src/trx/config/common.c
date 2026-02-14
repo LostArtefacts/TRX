@@ -154,6 +154,9 @@ void Config_UnsubscribeChanges(const int32_t listener_id)
 const CONFIG_OPTION *Config_GetOption(const void *const target)
 {
     const CONFIG_OPTION *option = Config_GetOptionMap();
+    if (option == nullptr) {
+        return nullptr;
+    }
     while (option->target != nullptr) {
         if (option->target == target) {
             return option;

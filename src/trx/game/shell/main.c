@@ -2,6 +2,7 @@
 #include <trx/game/shell.h>
 #include <trx/log.h>
 #include <trx/memory.h>
+#include <trx/strings.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
@@ -14,14 +15,16 @@ int main(int argc, char *argv[])
         Vector_Add(raw_args, &argv[i]);
     }
 
+    TRXPath_Init(nullptr);
     Shell_ScanAvailableMods();
     SHELL_ARGS *args = Shell_ParseArgs(raw_args);
     if (args == nullptr) {
         Vector_Free(raw_args);
         return 0;
     }
+    TRXPath_Init(args);
 
-    char *log_path = File_GetFullPath("TRX.log");
+    char *log_path = String_Format("%s/TRX.log", TRXPath_Get(TRX_PATH_TRX_DIR));
     Log_Init(log_path, args->quiet ? LOG_LEVEL_WARNING : LOG_LEVEL_MAX);
     Memory_FreePointer(&log_path);
 

@@ -6,13 +6,12 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/output.h>
+#include <trx/game/shell.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 
 #include <stdio.h>
 #include <string.h>
-
-#define SCREENSHOTS_DIR "screenshots"
 
 static char *M_CleanScreenshotTitle(const char *const source)
 {
@@ -48,7 +47,7 @@ static char *M_CleanScreenshotTitle(const char *const source)
     *out++ = '\0';
 
     // Strip trailing underscores
-    while (out[-1] == '_' && out >= result) {
+    while (out > result && out[-1] == '_') {
         out--;
     }
     *out = '\0';
@@ -110,13 +109,16 @@ static char *M_GetScreenshotPath(const SCREENSHOT_FORMAT format)
     char *base_name = M_GetScreenshotBaseName();
     const char *const ext = M_GetScreenshotFileExt(format);
 
-    char *full_path = Memory_Alloc(
-        strlen(SCREENSHOTS_DIR) + strlen(base_name) + strlen(ext) + 6);
-    sprintf(full_path, "%s/%s.%s", SCREENSHOTS_DIR, base_name, ext);
+    char *full_path = Memory_DupStr(TRXPath_Resolve(
+        TRX_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE,
+        String_FormatStatic("%s.%s", base_name, ext)));
+    File_EnsureParentDirectories(full_path);
     if (File_Exists(full_path)) {
         for (int i = 2; i < 100; i++) {
-            sprintf(
-                full_path, "%s/%s_%d.%s", SCREENSHOTS_DIR, base_name, i, ext);
+            Memory_FreePointer(&full_path);
+            full_path = Memory_DupStr(TRXPath_Resolve(
+                TRX_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE,
+                String_FormatStatic("%s_%d.%s", base_name, i, ext)));
             if (!File_Exists(full_path)) {
                 break;
             }

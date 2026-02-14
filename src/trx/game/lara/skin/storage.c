@@ -45,10 +45,6 @@ static void M_SeedDynamicEnumValues(void)
 {
     const CONFIG_OPTION *const option =
         Config_GetOption(&g_Config.visuals.lara_outfit);
-    if (option == nullptr) {
-        return;
-    }
-
     Config_DynamicEnum_ResetValues(option);
     Config_DynamicEnum_AddValue(option, nullptr, GS_ID(LARA_OUTFIT_DEFAULT));
     for (int32_t i = 0; i < m_OutfitCount; i++) {
@@ -443,7 +439,6 @@ void Lara_Skin_Shutdown(void)
     }
 
     M_ResetOutfits();
-    M_SeedDynamicEnumValues();
 }
 
 int32_t Lara_Skin_GetOutfitCount(void)

@@ -244,7 +244,8 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
     JSON_READ_IO *const io = ctx->io;
     const char *tmp_s = nullptr;
     JSON_MUST(JSON_READ(io, "main_menu_picture", &tmp_s));
-    ctx->gf->main_menu_background_path = Memory_DupStr(tmp_s);
+    ctx->gf->main_menu_background_path =
+        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
 
     if (!JSON_READ(io, "savegame_file_fmt", &tmp_s) || tmp_s == nullptr) {
         if (!JSON_READ(io, "savegame_fmt_bson", &tmp_s) || tmp_s == nullptr) {
@@ -260,7 +261,8 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
     tmp_s = nullptr;
     if (JSON_OPTIONAL(JSON_READ(io, "main_script", &tmp_s))
         && tmp_s != nullptr) {
-        ctx->gf->main_script_path = Memory_DupStr(tmp_s);
+        ctx->gf->main_script_path = Memory_DupStr(
+            TRXPath_TryResolve(TRX_DYNAMIC_PATH_SCRIPT_FILE, tmp_s));
     }
 
     if (JSON_PUSH(io, "ambient_tracks")) {
@@ -347,6 +349,8 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
     JSON_READ_IO *const io = ctx->io;
     const char *path;
     JSON_READ_D(io, "path", &path, nullptr);
+    char *expanded_path =
+        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, path));
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
         event_data->path = (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
@@ -356,13 +360,15 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
         JSON_READ_D(io, "fade_in_time", &event_data->fade_in_time, 1.0f);
         JSON_READ_D(
             io, "fade_out_time", &event_data->fade_out_time, 1.0f / 3.0f);
-        if (path != nullptr) {
-            strcpy(event_data->path, path);
+        if (expanded_path != nullptr) {
+            strcpy(event_data->path, expanded_path);
         }
         event->data = event_data;
     }
-    return sizeof(GF_DISPLAY_PICTURE_DATA)
-        + (path == nullptr ? 0 : strlen(path) + 1);
+    const int32_t out_size = sizeof(GF_DISPLAY_PICTURE_DATA)
+        + (expanded_path == nullptr ? 0 : strlen(expanded_path) + 1);
+    Memory_FreePointer(&expanded_path);
+    return out_size;
 }
 
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
@@ -370,7 +376,9 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
     JSON_READ_IO *const io = ctx->io;
     const char *path;
     JSON_READ_D(io, "background_path", &path, nullptr);
-    if (path == nullptr) {
+    char *expanded_path =
+        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, path));
+    if (expanded_path == nullptr) {
         if (event != nullptr) {
             event->data = nullptr;
         }
@@ -378,10 +386,12 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
     }
     if (event != nullptr) {
         char *const event_data = extra_data;
-        strcpy(event_data, path);
+        strcpy(event_data, expanded_path);
         event->data = event_data;
     }
-    return strlen(path) + 1;
+    const int32_t out_size = strlen(expanded_path) + 1;
+    Memory_FreePointer(&expanded_path);
+    return out_size;
 }
 
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
@@ -409,7 +419,9 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent)
     JSON_READ_IO *const io = ctx->io;
     const char *image;
     JSON_READ_D(io, "image", &image, nullptr);
-    if (image == nullptr) {
+    char *expanded_image =
+        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, image));
+    if (expanded_image == nullptr) {
         if (event != nullptr) {
             event->data = nullptr;
         }
@@ -420,11 +432,14 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent)
         GF_GLOBE_SELECT_DATA *const event_data = extra_data;
         event_data->image_path =
             (char *)extra_data + sizeof(GF_GLOBE_SELECT_DATA);
-        strcpy(event_data->image_path, image);
+        strcpy(event_data->image_path, expanded_image);
         event->data = event_data;
     }
 
-    return sizeof(GF_GLOBE_SELECT_DATA) + strlen(image) + 1;
+    const int32_t out_size =
+        sizeof(GF_GLOBE_SELECT_DATA) + strlen(expanded_image) + 1;
+    Memory_FreePointer(&expanded_image);
+    return out_size;
 }
 
 static bool M_LoadArray(
@@ -591,7 +606,8 @@ static bool M_LoadLevelInjections(
     for (int32_t i = 0; i < local_count; i++) {
         const char *str = nullptr;
         JSON_MUST(JSON_READ_A(io, i, &str));
-        level->injections.data_paths[base_index + i] = Memory_DupStr(str);
+        level->injections.data_paths[base_index + i] = Memory_DupStr(
+            TRXPath_TryResolve(TRX_DYNAMIC_PATH_INJECTION_FILE, str));
     }
     JSON_MUST(JSON_POP(io));
     JSON_FINISH();
@@ -653,13 +669,15 @@ static bool M_LoadLevel(
     {
         const char *tmp = nullptr;
         JSON_MUST(JSON_READ(io, "path", &tmp));
-        level->path = Memory_DupStr(tmp);
+        level->path =
+            Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_LEVEL_FILE, tmp));
     }
     {
         const char *tmp_script = nullptr;
         if (JSON_OPTIONAL(JSON_READ(io, "script", &tmp_script))
             && tmp_script != nullptr) {
-            level->script_path = Memory_DupStr(tmp_script);
+            level->script_path = Memory_DupStr(
+                TRXPath_TryResolve(TRX_DYNAMIC_PATH_SCRIPT_FILE, tmp_script));
         } else {
             level->script_path = nullptr;
         }
@@ -765,7 +783,8 @@ static bool M_LoadFMV(
     JSON_READ_IO *const io = ctx->io;
     const char *path = nullptr;
     JSON_MUST(JSON_READ(io, "path", &path));
-    fmv->path = Memory_DupStr(path);
+    fmv->path =
+        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_FMV_FILE, path));
     JSON_READ_D(io, "legal", &fmv->is_legal, false);
     JSON_READ_D(io, "credit", &fmv->is_credit, false);
     JSON_FINISH();
@@ -795,7 +814,8 @@ static bool M_LoadGlobalInjections(const M_CONTEXT *const ctx)
     for (int32_t i = 0; i < ctx->gf->injections.count; i++) {
         const char *str = nullptr;
         JSON_MUST(JSON_READ_A(io, i, &str));
-        ctx->gf->injections.data_paths[i] = Memory_DupStr(str);
+        ctx->gf->injections.data_paths[i] = Memory_DupStr(
+            TRXPath_TryResolve(TRX_DYNAMIC_PATH_INJECTION_FILE, str));
     }
     JSON_MUST(JSON_POP(io));
     JSON_FINISH();

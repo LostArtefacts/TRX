@@ -146,10 +146,8 @@ GFX_2D_RENDERER *GFX_2D_Renderer_Create(void)
     GFX_GL_Texture_Init(&r->surface_texture, GL_TEXTURE_2D);
 
     GFX_GL_Program_Init(&r->program);
-    GFX_GL_Program_AttachShader(
-        &r->program, GL_VERTEX_SHADER, "shaders/2d.glsl");
-    GFX_GL_Program_AttachShader(
-        &r->program, GL_FRAGMENT_SHADER, "shaders/2d.glsl");
+    GFX_GL_Program_AttachShader(&r->program, GL_VERTEX_SHADER, "2d.glsl");
+    GFX_GL_Program_AttachShader(&r->program, GL_FRAGMENT_SHADER, "2d.glsl");
     GFX_GL_Program_FragmentData(&r->program, "outColor");
     GFX_GL_Program_Link(&r->program);
 

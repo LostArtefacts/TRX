@@ -4,7 +4,7 @@
 
 OUTPUT_UI_SHADER *Output_UIShader_Create(void)
 {
-    OUTPUT_SHADER *const shader = Output_Shader_Create("shaders/ui.glsl");
+    OUTPUT_SHADER *const shader = Output_Shader_Create("ui.glsl");
     GFX_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(shader, "uTexAtlas"), 0);
     return shader;

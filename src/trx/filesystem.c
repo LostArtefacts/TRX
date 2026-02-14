@@ -6,7 +6,6 @@
 #include <trx/strings.h>
 #include <trx/utils.h>
 
-#include <SDL2/SDL_filesystem.h>
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
@@ -26,16 +25,6 @@ struct MYFILE {
     FILE *fp;
     const char *path;
 };
-
-const char *m_GameDir = nullptr;
-
-__attribute__((destructor)) static void M_Shutdown(void)
-{
-    if (m_GameDir != nullptr) {
-        SDL_free((void *)m_GameDir);
-        m_GameDir = nullptr;
-    }
-}
 
 #if defined(_WIN32)
     #include <wchar.h>
@@ -80,19 +69,6 @@ static FILE *M_UTF8Fopen(const char *path, const char *mode)
 }
 #endif
 
-static void M_PathAppendSeparator(char *const path)
-{
-    if (!String_EndsWith(path, PATH_SEPARATOR)) {
-        strcat(path, PATH_SEPARATOR);
-    }
-}
-
-static void M_PathAppendPart(char *const path, const char *const part)
-{
-    M_PathAppendSeparator(path);
-    strcat(path, part);
-}
-
 static bool M_ExistsRaw(const char *path)
 {
     if (path == nullptr) {
@@ -106,115 +82,6 @@ static bool M_ExistsRaw(const char *path)
     return false;
 }
 
-static char *M_CasePath(const char *const path)
-{
-    ASSERT(path != nullptr);
-
-    char *path_copy = Memory_DupStr(path);
-    if (M_ExistsRaw(path)) {
-        return path_copy;
-    }
-
-    char *path_piece = path_copy;
-    char *current_path = Memory_Alloc(strlen(path) + 2);
-
-    if (path_copy[0] == '/') {
-        strcpy(current_path, "/");
-        path_piece++;
-    } else if (strstr(path_copy, ":\\")) {
-        strcpy(current_path, path_copy);
-        strstr(current_path, ":\\")[1] = '\0';
-        path_piece += 3;
-    } else {
-        strcpy(current_path, ".");
-    }
-
-    while (path_piece) {
-        char *delim = strpbrk(path_piece, "/\\");
-        char old_delim = delim ? *delim : '\0';
-        if (delim) {
-            *delim = '\0';
-        }
-
-        DIR *path_dir = opendir(current_path);
-        if (!path_dir) {
-            Memory_FreePointer(&path_copy);
-            Memory_FreePointer(&current_path);
-            return nullptr;
-        }
-
-        struct dirent *cur_file = readdir(path_dir);
-        while (cur_file) {
-            if (String_Equivalent(path_piece, cur_file->d_name)) {
-                M_PathAppendPart(current_path, cur_file->d_name);
-                break;
-            }
-            cur_file = readdir(path_dir);
-        }
-        closedir(path_dir);
-
-        if (!cur_file) {
-            M_PathAppendPart(current_path, path_piece);
-        }
-
-        if (delim) {
-            *delim = old_delim;
-            path_piece = delim + 1;
-        } else {
-            break;
-        }
-    }
-
-    Memory_FreePointer(&path_copy);
-
-    char *result;
-    if (current_path[0] == '.'
-        && strcmp(current_path + 1, PATH_SEPARATOR)
-            == 0) { /* strip leading ./ */
-        result = Memory_DupStr(current_path + 1 + strlen(PATH_SEPARATOR));
-    } else {
-        result = Memory_DupStr(current_path);
-    }
-    Memory_FreePointer(&current_path);
-    return result;
-}
-
-static FILE *M_ResolveAndOpen(
-    const char *const path, const char *const mode, char **out_full_path)
-{
-    char *abs_path = nullptr;
-    if (File_IsRelative(path)) {
-        const char *game_dir = File_GetGameDirectory();
-        if (game_dir != nullptr) {
-            abs_path = String_Format("%s%s", game_dir, path);
-        }
-    }
-    if (abs_path == nullptr) {
-        abs_path = Memory_DupStr(path);
-    }
-
-    FILE *fp = M_UTF8Fopen(abs_path, mode);
-    char *resolved_path = nullptr;
-    if (fp != nullptr) {
-        resolved_path = Memory_DupStr(abs_path);
-        goto finish;
-    } else {
-        resolved_path = M_CasePath(abs_path);
-        if (resolved_path != nullptr) {
-            fp = M_UTF8Fopen(resolved_path, mode);
-        }
-    }
-
-finish:
-    if (out_full_path != nullptr) {
-        *out_full_path = resolved_path;
-    } else {
-        Memory_FreePointer(&resolved_path);
-    }
-    Memory_FreePointer(&abs_path);
-    return fp;
-}
-
 bool File_IsAbsolute(const char *path)
 {
     return path && (path[0] == '/' || strstr(path, ":\\"));
@@ -225,23 +92,12 @@ bool File_IsRelative(const char *path)
     return path && !File_IsAbsolute(path);
 }
 
-const char *File_GetGameDirectory(void)
-{
-    if (m_GameDir == nullptr) {
-        m_GameDir = SDL_GetBasePath();
-        if (!m_GameDir) {
-            LOG_ERROR("Can't get module handle");
-            return nullptr;
-        }
-    }
-    return m_GameDir;
-}
-
 bool File_DirExists(const char *path)
 {
-    char *full_path = File_GetFullPath(path);
-    DIR *dir = opendir(full_path);
-    Memory_FreePointer(&full_path);
+    if (path == nullptr) {
+        return false;
+    }
+    DIR *dir = opendir(path);
     if (dir != nullptr) {
         closedir(dir);
         return true;
@@ -251,20 +107,10 @@ bool File_DirExists(const char *path)
 
 bool File_Exists(const char *path)
 {
-    char *full_path = File_GetFullPath(path);
-    bool ret = M_ExistsRaw(full_path);
-    Memory_FreePointer(&full_path);
-    return ret;
-}
-
-char *File_GetFullPath(const char *path)
-{
-    char *full_path = nullptr;
-    FILE *fp = M_ResolveAndOpen(path, "rb", &full_path);
-    if (fp != nullptr) {
-        fclose(fp);
+    if (path == nullptr) {
+        return false;
     }
-    return full_path;
+    return M_ExistsRaw(path);
 }
 
 char *File_GetParentDirectory(const char *path)
@@ -278,45 +124,7 @@ char *File_GetParentDirectory(const char *path)
         return String_Format("%.*s", last_delim - path, path);
     }
 
-    char *full_path = File_GetFullPath(path);
-    if (full_path == nullptr) {
-        return nullptr;
-    }
-    last_delim = MAX(strrchr(full_path, '/'), strrchr(full_path, '\\'));
-    if (last_delim != nullptr) {
-        *last_delim = '\0';
-    }
-    return full_path;
-}
-
-char *File_GuessExtension(const char *path, const char **extensions)
-{
-    if (File_Exists(path)) {
-        goto fallback;
-    }
-
-    const char *dot = strrchr(path, '.');
-    if (dot == nullptr) {
-        goto fallback;
-    }
-
-    for (const char **ext = &extensions[0]; *ext; ext++) {
-        size_t out_size = dot - path + strlen(*ext) + 1;
-        char *out = Memory_Alloc(out_size);
-        strncpy(out, path, dot - path);
-        out[dot - path] = '\0';
-        strcat(out, *ext);
-
-        char *full_path = File_GetFullPath(out);
-        Memory_FreePointer(&out);
-        if (M_ExistsRaw(full_path)) {
-            return full_path;
-        }
-        Memory_FreePointer(&full_path);
-    }
-
-fallback:
-    return Memory_DupStr(path);
+    return nullptr;
 }
 
 MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
@@ -325,19 +133,19 @@ MYFILE *File_Open(const char *path, FILE_OPEN_MODE mode)
     file->path = Memory_DupStr(path);
     switch (mode) {
     case FILE_OPEN_WRITE:
-        file->fp = M_ResolveAndOpen(path, "wb", nullptr);
+        file->fp = M_UTF8Fopen(path, "wb");
         break;
     case FILE_OPEN_READ:
-        file->fp = M_ResolveAndOpen(path, "rb", nullptr);
+        file->fp = M_UTF8Fopen(path, "rb");
         break;
     case FILE_OPEN_READ_WRITE:
-        file->fp = M_ResolveAndOpen(path, "r+b", nullptr);
+        file->fp = M_UTF8Fopen(path, "r+b");
         break;
     default:
         file->fp = nullptr;
         break;
     }
-    if (!file->fp) {
+    if (file->fp == nullptr) {
         Memory_FreePointer(&file->path);
         Memory_FreePointer(&file);
     }
@@ -564,22 +372,20 @@ bool File_Load(const char *path, char **output_data, size_t *output_size)
 
 void File_CreateDirectory(const char *path)
 {
-    char *full_path = File_GetFullPath(path);
-    ASSERT(full_path != nullptr);
+    if (path == nullptr) {
+        return;
+    }
 #if defined(_WIN32)
-    _mkdir(full_path);
+    _mkdir(path);
 #else
-    mkdir(full_path, 0775);
+    mkdir(path, 0775);
 #endif
-    Memory_FreePointer(&full_path);
 }
 
 void File_EnsureParentDirectories(const char *path)
 {
     ASSERT(path != nullptr);
-    LOG_INFO("%s", path);
     char *parent = File_GetParentDirectory(path);
-    LOG_INFO("parent: %s", parent);
     if (parent != nullptr) {
         /* Only recurse/create if there is a distinct, non-empty parent */
         if (parent[0] != '\0' && strcmp(parent, path) != 0) {
@@ -595,10 +401,7 @@ void File_EnsureParentDirectories(const char *path)
 void *File_OpenDirectory(const char *const path)
 {
     ASSERT(path != nullptr);
-    char *full_path = File_GetFullPath(path);
-    DIR *path_dir = opendir(full_path);
-    Memory_FreePointer(&full_path);
-    return path_dir;
+    return opendir(path);
 }
 
 const char *File_ReadDirectory(void *const dir)

@@ -8,14 +8,14 @@
     "enable_tr2_item_drops": true,
     "convert_dropped_guns": true,
 
-    "sfx_path": "data/main.sfx",
+    "sfx_path": "main.sfx",
     "injections": [
-        "data/injections/font.bin",
-        "data/injections/lara_animations.bin",
-        "data/injections/pda_model.bin",
-        "data/injections/lara_extra.bin",
-        "data/injections/misc_sprites.bin",
-        "data/injections/lara_outfits.bin",
+        "font.bin",
+        "lara_animations.bin",
+        "pda_model.bin",
+        "lara_extra.bin",
+        "misc_sprites.bin",
+        "lara_outfits.bin",
     ],
 
     "levels": [
