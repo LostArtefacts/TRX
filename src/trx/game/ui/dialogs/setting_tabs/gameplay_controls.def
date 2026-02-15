@@ -10,6 +10,7 @@ X_UI_CFG_BOOL(gameplay.enable_idle_pose_camera,    SETTING_ENABLE_IDLE_POSE_CAME
 X_UI_CFG_BOOL(gameplay.enable_tr2_jumping,         SETTING_ENABLE_TR2_JUMPING)
 X_UI_CFG_ENUM(gameplay.jump_lock_mode,             SETTING_JUMP_LOCK_MODE, .misc = UI_Settings_JumpLockModeEnumEntries, .custom_handler = { .is_available = UI_Settings_ResponsiveJumping_IsAvailable })
 X_UI_CFG_BOOL(gameplay.enable_jump_twists,         SETTING_ENABLE_JUMP_TWISTS)
+X_UI_CFG_BOOL(gameplay.enable_responsive_crawl,    SETTING_ENABLE_RESPONSIVE_CRAWL)
 X_UI_CFG_BOOL(gameplay.enable_sprint,              SETTING_ENABLE_SPRINT)
 X_UI_CFG_BOOL(gameplay.enable_responsive_sprint,   SETTING_ENABLE_RESPONSIVE_SPRINT, .custom_handler = { .is_available = UI_Settings_Sprint_IsAvailable })
 X_UI_CFG_BOOL(gameplay.enable_neutral_twists,      SETTING_ENABLE_NEUTRAL_TWISTS)

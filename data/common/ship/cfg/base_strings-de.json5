@@ -542,6 +542,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Der Speicherkristall bekommt einen lila Farbton, ähnlich wie bei der PS1-Variante.",
         "SETTING_ENABLE_PS1_SFX": "\\{review}PS1 SFX-Ersetzungen",
         "SETTING_ENABLE_PS1_SFX_DESCRIPTION": "\\{review}Aktiviert bestimmte Soundeffekt-Ersetzungen mit PS1-Äquivalenten.\n\n- Uzi-Feuer (nur TR1)\n- Laras Barfußgeräusche (nur TR2)",
+        "SETTING_ENABLE_RESPONSIVE_CRAWL": "\\{review}Reaktionsschnelles Kriechen",
+        "SETTING_ENABLE_RESPONSIVE_CRAWL_DESCRIPTION": "\\{review}Aktiviert Verbesserungen gegenüber der ursprünglichen Kriechmechanik.\n\n- Ermöglicht es, nach dem Anhalten schneller wieder mit dem Kriechen zu beginnen.\n- Ermöglicht den Übergang vom Laufen/Sprinten zum Kriechen, ohne zuvor anzuhalten.\n- Ermöglicht den Übergang vom Kriechen zur Kriechrolle (falls aktiviert), ohne sich zuvor manuell zu ducken.\n- Stellt Laras Kriech-Aufhebanimation wieder her (Fackeln ausgenommen).",
         "SETTING_ENABLE_RESPONSIVE_MESH_TINT": "\\{review}Reaktionsfähige Mesh-Tönung",
         "SETTING_ENABLE_RESPONSIVE_MESH_TINT_DESCRIPTION": "\\{review}Ermöglicht es, Laras einzelne Meshes mit einer Wasserfärbung darzustellen, wenn sie sich selbst unter Wasser befinden (TR3-Stil). Andernfalls werden, wenn Lara im Wasser ist, alle ihre Meshes mit der Tönung dargestellt (TR1/2-Stil).",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Reaktionsfähiger Ausweis",

@@ -1,5 +1,4 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2.2...develop) - ××××-××-××
-- added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
 - added the ability to freely rotate examinable items
 - added a color editor dialog for fog and water colors in Graphic Options → Visuals
 - added `O_SWITCH_TYPE_WHEEL`, which is similar to `O_SWITCH_TYPE_AIRLOCK` but can be used more than once
@@ -27,6 +26,12 @@
 - added Mounted Gun control
 - added Tribe Axeman control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
+- added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
+- added crouching/crawling enhancements (Gameplay → Controls → Responsive crawling)
+  - added the ability to resume crawling more quickly after coming to a stop
+  - added transitions from run/sprint to crawl without first coming to a stop
+  - added a transition from crawl to crouch-roll without having to manually crouch first
+  - restored an unused pickup animation when in the crawling state, bypassing the crouch transition
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
 - fixed Lara unable to climb small ledges with low crawlspaces
