@@ -11,9 +11,8 @@
 - fixed not restoring Lara's back weapon mesh between levels when "remember guns" is enabled and a rifle-type weapon is equipped at level end
 - fixed a missing footstep sound when Lara starts to sprint
 - fixed Lara's flare undraw animation being skippable on specific late draw frames (#1593)
-- fixed footprints rendering with an excessive Y offset
-- fixed water ripples triggering z-fighting with 0-click ground surfaces
 - fixed UI bar scale option not updating the padding and borders (regression from 1.2)
+- fixed Blade stopping in the wrong position when anti-triggered (#4894)
 
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
@@ -37,6 +36,8 @@
 - fixed Lara unable to climb small ledges with low crawlspaces
 - fixed Lara using the thin-ledge swing hang animation instead of the normal hang in some 1-click ledge cases
 - fixed Lara's cutscene gun shots not rendering muzzle flashes, gun smoke and shell ejections (e.g., Tony cutscene)
+- fixed water ripples triggering z-fighting with 0-click ground surfaces
+- fixed footprints rendering with an excessive Y offset
 - fixed wheel switches only being usable once
 - fixed wheel switch triggers activating too early
 - fixed Kayak voiding and teleporting on large slopes
