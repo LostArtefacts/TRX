@@ -542,6 +542,8 @@
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Kryształy zapisu będą rysowane z fioletowym odcieniem, bardziej podobnym do odcienia z PS1.",
         "SETTING_ENABLE_PS1_SFX": "Efekty dźwiękowe z PS1",
         "SETTING_ENABLE_PS1_SFX_DESCRIPTION": "Zamienia określone efekty dźwiękowe na odpowiedniki z PS1.\n\n- Pociski z Uzi (tylko TR1)\n- Odgłosy poruszania się boso (tylko TR2)",
+        "SETTING_ENABLE_RESPONSIVE_CRAWL": "\\{review}Responsywne czołganie",
+        "SETTING_ENABLE_RESPONSIVE_CRAWL_DESCRIPTION": "\\{review}Włącza ulepszenia względem oryginalnej mechaniki czołgania.\n\n- Umożliwia szybsze wznowienie czołgania po zatrzymaniu.\n- Umożliwia przejście z biegu/sprintu do czołgania bez konieczności wcześniejszego zatrzymania się.\n- Umożliwia przejście z czołgania do przewrotu w przysiadzie (jeśli włączony) bez konieczności ręcznego kucania.\n- Przywraca animację podnoszenia przedmiotów podczas czołgania Lary (z wyłączeniem flar).",
         "SETTING_ENABLE_RESPONSIVE_MESH_TINT": "Reaktywne barwienie wody",
         "SETTING_ENABLE_RESPONSIVE_MESH_TINT_DESCRIPTION": "Nadaje częściom ciała Lary wodne zabarwienie tylko wtedy, gdy znajdują się pod wodą (styl TR3). Przy wyłączonej opcji, zabarwienie jest nadawane całemu ciału Lary (styl TR1/2).",
         "SETTING_ENABLE_RESPONSIVE_PASSPORT": "Responsywny paszport",
