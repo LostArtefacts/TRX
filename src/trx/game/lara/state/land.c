@@ -106,6 +106,12 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static LARA_STATE M_GetRunToCrouchState(void)
+{
+    return LS(
+        g_Config.gameplay.enable_responsive_crawl ? LS_CROUCH_IDLE : LS_STOP);
+}
+
 static void M_Run(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -131,8 +137,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.crouch) {
-        // XXX: LS(LS_STOP) in the OG
-        item->goal_anim_state = LS(LS_CROUCH_IDLE);
+        item->goal_anim_state = M_GetRunToCrouchState();
         return;
     }
 
@@ -664,7 +669,7 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (g_Input.crouch) {
-        item->goal_anim_state = LS(LS_STOP);
+        item->goal_anim_state = M_GetRunToCrouchState();
         return;
     }
     if (g_Input.left) {
