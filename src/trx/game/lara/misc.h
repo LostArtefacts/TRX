@@ -13,7 +13,8 @@ void Lara_TouchDeathSector(GF_DEATH_TILE death_tile);
 void Lara_RapidsDrown(void);
 
 int16_t Lara_FloorFront(const ITEM *item, int16_t ang, int32_t dist);
-int16_t Lara_CeilingFront(const ITEM *item, int16_t ang, int32_t dist);
+int16_t Lara_CeilingFront(
+    const ITEM *item, int16_t ang, int32_t dist, int32_t item_height);
 void Lara_CatchFire(void);
 
 void Lara_UpdateRoomToHeight(int32_t height);
