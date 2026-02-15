@@ -334,7 +334,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->save_anim = true;
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupCommon(OBJECT *const obj)
 {
     M_SetupBase(obj);
     obj->collision_func = M_Collision;
@@ -343,7 +343,7 @@ static void M_Setup(OBJECT *const obj)
 
 static void M_SetupPushButton(OBJECT *const obj)
 {
-    M_Setup(obj);
+    M_SetupCommon(obj);
     obj->enable_interpolation = false;
     obj->bounds_func = M_Bounds;
 }
@@ -353,6 +353,12 @@ static void M_SetupUW(OBJECT *const obj)
     M_SetupBase(obj);
     obj->collision_func = M_CollisionUW;
     obj->bounds_func = M_BoundsUW;
+}
+
+static void M_SetupAirlock(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+    obj->draw_func = Object_DrawUnclippedItem;
 }
 
 bool Switch_Trigger(const int16_t item_num, const int16_t timer)
@@ -391,9 +397,9 @@ bool Switch_Trigger(const int16_t item_num, const int16_t timer)
     return true;
 }
 
-REGISTER_OBJECT(O_SWITCH_TYPE_AIRLOCK, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_AIRLOCK, M_SetupAirlock)
 REGISTER_OBJECT(O_SWITCH_TYPE_BUTTON, M_SetupPushButton)
-REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_Setup)
-REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_NORMAL, M_SetupCommon)
+REGISTER_OBJECT(O_SWITCH_TYPE_SMALL, M_SetupCommon)
 REGISTER_OBJECT(O_SWITCH_TYPE_UW, M_SetupUW)
-REGISTER_OBJECT(O_SWITCH_TYPE_WHEEL, M_Setup)
+REGISTER_OBJECT(O_SWITCH_TYPE_WHEEL, M_SetupCommon)
