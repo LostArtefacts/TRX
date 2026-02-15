@@ -7,9 +7,58 @@
 #include <trx/gfx/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
+#include <trx/vector.h>
 
 #include <stdio.h>
 #include <string.h>
+
+typedef struct {
+    char *path;
+    char *content;
+} M_SHADER_FILE_CACHE_ENTRY;
+
+static VECTOR *m_ShaderFileCache = nullptr; // M_SHADER_FILE_CACHE_ENTRY
+
+static const char *M_LoadFileCached(const char *const path)
+{
+    ASSERT(path != nullptr);
+    if (m_ShaderFileCache == nullptr) {
+        m_ShaderFileCache = Vector_Create(sizeof(M_SHADER_FILE_CACHE_ENTRY));
+    }
+    for (int32_t i = 0; i < m_ShaderFileCache->count; i++) {
+        M_SHADER_FILE_CACHE_ENTRY *const entry =
+            Vector_Get(m_ShaderFileCache, i);
+        if (strcmp(entry->path, path) == 0) {
+            return entry->content;
+        }
+    }
+
+    char *content = nullptr;
+    if (!File_Load(path, &content, nullptr)) {
+        return nullptr;
+    }
+    M_SHADER_FILE_CACHE_ENTRY entry = {
+        .path = Memory_DupStr(path),
+        .content = content,
+    };
+    Vector_Add(m_ShaderFileCache, &entry);
+    return entry.content;
+}
+
+__attribute__((destructor)) static void M_ShutdownCache(void)
+{
+    if (m_ShaderFileCache == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_ShaderFileCache->count; i++) {
+        M_SHADER_FILE_CACHE_ENTRY *const entry =
+            Vector_Get(m_ShaderFileCache, i);
+        Memory_FreePointer(&entry->path);
+        Memory_FreePointer(&entry->content);
+    }
+    Vector_Free(m_ShaderFileCache);
+    m_ShaderFileCache = nullptr;
+}
 
 static char *M_PreprocessIncludes(const char *src, const char *dir)
 {
@@ -65,8 +114,8 @@ static char *M_PreprocessIncludes(const char *src, const char *dir)
         char full_path[1024];
         snprintf(full_path, sizeof(full_path), "%s/%s", dir, filename);
 
-        char *include_src = nullptr;
-        if (!File_Load(full_path, &include_src, nullptr)) {
+        const char *const include_src = M_LoadFileCached(full_path);
+        if (include_src == nullptr) {
             Shell_ExitSystemFmt("Failed to include shader file: %s", full_path);
         }
 
@@ -74,7 +123,6 @@ static char *M_PreprocessIncludes(const char *src, const char *dir)
         char *include_dir = File_GetParentDirectory(full_path);
         char *processed_include =
             M_PreprocessIncludes(include_src, include_dir ? include_dir : dir);
-        Memory_FreePointer(&include_src);
         Memory_FreePointer(&include_dir);
 
         // Append included content
@@ -176,9 +224,9 @@ void GFX_GL_Program_AttachShader(
         Shell_ExitSystem("Failed to create shader");
     }
 
-    char *content = nullptr;
+    const char *content = M_LoadFileCached(program->path);
     char *processed_content = nullptr;
-    if (!File_Load(program->path, &content, nullptr)) {
+    if (content == nullptr) {
         Shell_ExitSystemFmt("Unable to find shader file: %s", program->path);
     }
 
@@ -186,12 +234,11 @@ void GFX_GL_Program_AttachShader(
     processed_content = M_PreprocessIncludes(content, shader_dir);
     ASSERT(processed_content != nullptr);
     Memory_FreePointer(&shader_dir);
-    Memory_FreePointer(&content);
 
-    content = processed_content;
-    processed_content = M_Preprocess(content, type);
+    char *expanded_content = processed_content;
+    processed_content = M_Preprocess(expanded_content, type);
     ASSERT(processed_content != nullptr);
-    Memory_FreePointer(&content);
+    Memory_FreePointer(&expanded_content);
 
     glShaderSource(
         shader_id, 1, (const char *const *)&processed_content, nullptr);
