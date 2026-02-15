@@ -31,6 +31,20 @@
 #define M_BITE_DISTANCE    (g_TRVersion < 3 ? STEP_L : STEP_L * 2)
 // clang-format on
 
+static const LARA_TRX_STATE m_CrouchShiftStates[] = {
+    // clang-format off
+    LS_CROUCH_IDLE,
+    LS_CROUCH_ROLL,
+    LS_CROUCH_TURN_LEFT,
+    LS_CROUCH_TURN_RIGHT,
+    LS_CRAWL_IDLE,
+    LS_CRAWL_FORWARD,
+    LS_CRAWL_TURN_LEFT,
+    LS_CRAWL_TURN_RIGHT,
+    LS_TRX_INVALID, // sentinel
+    // clang-format on
+};
+
 static bool M_TestSwitchOrKill(
     const int16_t item_num, const OBJECT_ID target_id)
 {
@@ -338,13 +352,8 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     int32_t z = enemy_pos.z - pivot.z - item->pos.z;
     int32_t y = item->pos.y - enemy->pos.y; // sic, reversed
 
-    if (enemy == lara_item) {
-        const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
-        if (state == LS_CROUCH_IDLE || state == LS_CROUCH_ROLL
-            || state == LS_CRAWL_IDLE || state == LS_CRAWL_FORWARD
-            || state == LS_CRAWL_TURN_LEFT || state == LS_CRAWL_TURN_RIGHT) {
-            y -= STEP_L * 3 / 2;
-        }
+    if (enemy == lara_item && Lara_HasState(m_CrouchShiftStates)) {
+        y -= STEP_L * 3 / 2;
     }
 
     const bool too_far = ABS(z) > M_MAX_DISTANCE || ABS(x) > M_MAX_DISTANCE;

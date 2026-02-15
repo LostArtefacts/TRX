@@ -83,17 +83,23 @@ static void M_Crouch(ITEM *const item, COLL_INFO *const coll)
 
     if (Lara_Col_Fallen(item, coll)) {
         lara->gun_status = LGS_ARMLESS;
-    } else {
-        lara->keep_crouched =
-            coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
+        return;
+    }
 
-        Lara_Col_Shift(coll);
-        item->pos.y += coll->side_mid.floor;
+    lara->keep_crouched = coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
 
-        if ((!g_Input.crouch || lara->water_status == LWS_WADE)
-            && !lara->keep_crouched
-            && Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))) {
-            item->goal_anim_state = LS(LS_STOP);
+    Lara_Col_Shift(coll);
+    item->pos.y += coll->side_mid.floor;
+
+    if ((!g_Input.crouch || lara->water_status == LWS_WADE)
+        && !lara->keep_crouched
+        && Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))) {
+        item->goal_anim_state = LS(LS_STOP);
+    } else if (g_Config.gameplay.enable_responsive_crawl) {
+        if (g_Input.left) {
+            item->goal_anim_state = LS(LS_CROUCH_TURN_LEFT);
+        } else if (g_Input.right) {
+            item->goal_anim_state = LS(LS_CROUCH_TURN_RIGHT);
         }
     }
 }
@@ -135,6 +141,41 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
             item->pos.y += coll->side_mid.floor;
         }
     }
+}
+
+static void M_CrouchTurn(ITEM *const item, COLL_INFO *const coll)
+{
+    item->gravity = false;
+    item->fall_speed = 0;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->is_crouched = true;
+    lara->move_angle = item->rot.y;
+
+    coll->facing = lara->move_angle;
+    coll->radius = M_CROUCH_RADIUS;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->bad_ceiling = 0;
+    coll->slopes_are_walls = 1;
+
+    Collide_GetCollisionInfo(
+        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
+        LARA_HEIGHT_CROUCH);
+
+    if (Lara_Col_Fallen(item, coll)) {
+        lara->gun_status = LGS_ARMLESS;
+        return;
+    }
+
+    if (Lara_Col_TestSlide(item, coll)) {
+        return;
+    }
+
+    lara->keep_crouched = coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
+
+    Lara_Col_Shift(coll);
+    item->pos.y += coll->side_mid.floor;
 }
 
 static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
@@ -427,12 +468,14 @@ static void M_CrawlToClimb(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
-REGISTER_LARA_COL(LS_CROUCH_IDLE,      M_Crouch)
-REGISTER_LARA_COL(LS_CROUCH_ROLL,      M_CrouchRoll)
-REGISTER_LARA_COL(LS_CRAWL_IDLE,       M_CrawlIdle)
-REGISTER_LARA_COL(LS_CRAWL_FORWARD,    M_CrawlForward)
-REGISTER_LARA_COL(LS_CRAWL_TURN_LEFT,  M_CrawlTurn)
-REGISTER_LARA_COL(LS_CRAWL_TURN_RIGHT, M_CrawlTurn)
-REGISTER_LARA_COL(LS_CRAWL_BACK,       M_CrawlBack)
-REGISTER_LARA_COL(LS_CRAWL_TO_CLIMB,   M_CrawlToClimb)
+REGISTER_LARA_COL(LS_CROUCH_IDLE,       M_Crouch)
+REGISTER_LARA_COL(LS_CROUCH_ROLL,       M_CrouchRoll)
+REGISTER_LARA_COL(LS_CROUCH_TURN_LEFT,  M_CrouchTurn)
+REGISTER_LARA_COL(LS_CROUCH_TURN_RIGHT, M_CrouchTurn)
+REGISTER_LARA_COL(LS_CRAWL_IDLE,        M_CrawlIdle)
+REGISTER_LARA_COL(LS_CRAWL_FORWARD,     M_CrawlForward)
+REGISTER_LARA_COL(LS_CRAWL_TURN_LEFT,   M_CrawlTurn)
+REGISTER_LARA_COL(LS_CRAWL_TURN_RIGHT,  M_CrawlTurn)
+REGISTER_LARA_COL(LS_CRAWL_BACK,        M_CrawlBack)
+REGISTER_LARA_COL(LS_CRAWL_TO_CLIMB,    M_CrawlToClimb)
 // clang-format on
