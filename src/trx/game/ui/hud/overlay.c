@@ -2,7 +2,6 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
-#include <trx/game/clock.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_string.h>
@@ -16,8 +15,8 @@
 
 typedef struct UI_OVERLAY_STATE {
     struct {
-        CLOCK_TIMER timer;
         bool state;
+        int32_t frame;
     } blink;
     UI_FPS_COUNTER_STATE *fps;
     bool force_show_healthbar;
@@ -375,7 +374,6 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
 UI_OVERLAY_STATE *UI_Overlay_Init(void)
 {
     UI_OVERLAY_STATE *const s = Memory_Alloc(sizeof(UI_OVERLAY_STATE));
-    s->blink.timer.type = CLOCK_TIMER_SIM;
     s->fps = UI_FPSCounter_Init();
     UI_Flash_Init(&s->flash_state, 20);
     return s;
@@ -398,9 +396,10 @@ void UI_Overlay_Control(UI_OVERLAY_STATE *const s)
 {
     s->force_show_healthbar = false;
     UI_LaraHealthBar_Control();
-    if (ClockTimer_CheckElapsedAndTake(
-            &s->blink.timer, 10.0 / (double)LOGIC_FPS)) {
+    s->blink.frame++;
+    if (s->blink.frame >= 10) {
         s->blink.state = !s->blink.state;
+        s->blink.frame = 0;
     }
     UI_Flash_Control(&s->flash_state);
 }
