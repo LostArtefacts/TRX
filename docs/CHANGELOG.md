@@ -18,6 +18,7 @@
 
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
+- fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)
 - removed the requirement to use `main.sfx` in custom levels (#3898)
 
 **TR3**:
