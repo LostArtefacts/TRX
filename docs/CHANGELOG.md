@@ -29,11 +29,11 @@
 - added Tribe Pipeman control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
+- added an option to allow Lara to jump out of crawlspaces (Gameplay → Controls → Crawl exit jump)
 - added crouching/crawling enhancements (Gameplay → Controls → Responsive crawling)
   - added the ability to resume crawling more quickly after coming to a stop
   - added transitions from run/sprint to crawl without first coming to a stop
   - added a transition from crawl to crouch-roll without having to manually crouch first
-  - added the ability to jump out of crawlspaces
   - added the ability to turn while in the crouch idle state
   - restored an unused pickup animation when in the crawling state, bypassing the crouch transition
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)

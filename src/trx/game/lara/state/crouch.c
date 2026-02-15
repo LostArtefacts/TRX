@@ -71,7 +71,7 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
 
 static bool M_CanJumpDown(const ITEM *const item, const LARA_INFO *const lara)
 {
-    if (!g_Config.gameplay.enable_responsive_crawl || !g_Input.jump) {
+    if (!g_Config.gameplay.enable_crawl_jump || !g_Input.jump) {
         return false;
     }
 
