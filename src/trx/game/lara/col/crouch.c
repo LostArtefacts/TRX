@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/input.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
@@ -176,8 +177,15 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (!Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))
-        && !Item_TestAnimEqual(item, LA(LA_CROUCH_TO_CRAWL_END))) {
+    bool allow_movement = Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))
+        || Item_TestAnimEqual(item, LA(LA_CROUCH_TO_CRAWL_END));
+    if (g_Config.gameplay.enable_responsive_crawl) {
+        allow_movement |=
+            Item_TestAnimEqual(item, LA(LA_CRAWL_FORWARD_TO_IDLE_END_LEFT))
+            || Item_TestAnimEqual(item, LA(LA_CRAWL_FORWARD_TO_IDLE_END_RIGHT));
+    }
+
+    if (!allow_movement) {
         return;
     }
 
