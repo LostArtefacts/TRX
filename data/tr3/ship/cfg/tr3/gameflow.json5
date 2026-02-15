@@ -437,7 +437,7 @@
                 {"type": "level_stats"},
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "play_music", "music_track": 121},
-                {"type": "display_picture", "credit": true, "path": "data/images/end.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "data/images/theend2.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "data/images/credit01.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "data/images/credit02.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "data/images/credit03.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
