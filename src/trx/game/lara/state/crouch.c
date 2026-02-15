@@ -25,8 +25,13 @@ static bool M_CanEnterCrawlFromCrouch(const ITEM *const item)
 
 static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
 {
-    if (!g_Config.gameplay.enable_crouch_roll || g_Input.draw || !g_Input.sprint
-        || lara->gun_status != LGS_ARMLESS) {
+    if (!g_Config.gameplay.enable_crouch_roll || g_Input.draw
+        || !g_Input.sprint) {
+        return false;
+    }
+
+    if (item->current_anim_state == LS(LS_CROUCH_IDLE)
+        && lara->gun_status != LGS_ARMLESS) {
         return false;
     }
 
@@ -41,7 +46,12 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
         return false;
     }
 
-    if (!Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))
+    if (Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))) {
+        if (!g_Config.gameplay.enable_responsive_crawl) {
+            return false;
+        }
+    } else if (
+        !Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))
         && !Item_TestAnimEqual(item, LA(LA_STAND_TO_CROUCH_END))) {
         return false;
     }
@@ -124,6 +134,11 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
 
     if (Lara_Col_TestSlide(item, coll)) {
         return;
+    }
+
+    if (M_CanCrouchRoll(item, lara)) {
+        Lara_AnimateUntil(item, LS(LS_CROUCH_IDLE));
+        item->goal_anim_state = LS(LS_CROUCH_ROLL);
     }
 
     g_Camera.target_elevation = M_CAM_CRAWL_ELEVATION;
