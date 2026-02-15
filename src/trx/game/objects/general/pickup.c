@@ -25,6 +25,7 @@
 #define M_LF_PICKUP_CROUCH_1     20
 #define M_LF_PICKUP_CROUCH_2     22
 #define M_LF_PICKUP_CROUCH_FLARE 22
+#define M_LF_PICKUP_CRAWL        20
 #define M_AID_DIST_MIN           (STEP_L * 5)      // 1280
 #define M_AID_DIST_MAX           (WALL_L * 8)      // 8192
 #define M_AID_WAIT_MIN           (LOGIC_FPS * 2.5) // 75
@@ -356,7 +357,9 @@ static inline bool M_HasValidPickupState(const ITEM *const lara_item)
     }
 
     return (state == LS_STOP && anim == LA_STAND_IDLE)
-        || (state == LS_CROUCH_IDLE && anim == LA_CROUCH_IDLE);
+        || (state == LS_CROUCH_IDLE && anim == LA_CROUCH_IDLE)
+        || (state == LS_CRAWL_IDLE && anim == LA_CRAWL_IDLE
+            && g_Config.gameplay.enable_responsive_crawl);
 }
 
 static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
@@ -395,7 +398,8 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
             (anim == LA_PICKUP && rel_frame == M_LF_PICKUP_ERASE)
             || (anim == LA_CROUCH_PICKUP
                 && (rel_frame == M_LF_PICKUP_CROUCH_1
-                    || rel_frame == M_LF_PICKUP_CROUCH_2));
+                    || rel_frame == M_LF_PICKUP_CROUCH_2))
+            || (anim == LA_CRAWL_PICKUP && rel_frame == M_LF_PICKUP_CRAWL);
         if (pickup_now) {
             M_DoPickup(item_num);
         }
@@ -416,36 +420,26 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         goto cleanup;
     }
 
-    if (g_Input.action && lara_item->current_anim_state == LS(LS_CRAWL_IDLE)) {
+    const bool is_flare_item = item->object_id == O_FLARE_ITEM;
+    if (g_Input.action && lara_item->current_anim_state == LS(LS_CRAWL_IDLE)
+        && (is_flare_item || !g_Config.gameplay.enable_responsive_crawl)) {
         lara_item->goal_anim_state = LS(LS_CROUCH_IDLE);
         goto cleanup;
     }
 
-    if (g_Input.action && !lara_item->gravity && lara->gun_status == LGS_ARMLESS
-        && (lara->gun_type != LGT_FLARE || item->object_id != O_FLARE_ITEM)
+    if (g_Input.action && !lara_item->gravity
+        && (lara->gun_status == LGS_ARMLESS || anim == LA_CRAWL_IDLE)
+        && (lara->gun_type != LGT_FLARE || !is_flare_item)
         && M_HasValidPickupState(lara_item)) {
-
-        if (item->object_id == O_FLARE_ITEM) {
-            if (lara->is_crouched) {
-                Item_SwitchToAnim(lara_item, LA(LA_CROUCH_PICKUP_FLARE), 0);
-                lara_item->current_anim_state = LS(LS_FLARE_PICKUP);
-                lara_item->goal_anim_state = LS(LS_CROUCH_IDLE);
-            } else {
-                Lara_AnimateUntil(lara_item, LS(LS_FLARE_PICKUP));
-            }
+        if (is_flare_item) {
+            Lara_AnimateUntil(lara_item, LS(LS_FLARE_PICKUP));
         } else {
-            if (lara->is_crouched) {
-                Lara_AlignPosition(item, &m_PickupPosition);
-                Item_SwitchToAnim(lara_item, LA(LA_CROUCH_PICKUP), 0);
-                lara_item->current_anim_state = LS(LS_PICKUP);
-                lara_item->goal_anim_state = LS(LS_CROUCH_IDLE);
-            } else {
-                Lara_AlignPosition(item, &m_PickupPosition);
-                Lara_AnimateUntil(lara_item, LS(LS_PICKUP));
-            }
+            Lara_AlignPosition(item, &m_PickupPosition);
+            Lara_AnimateUntil(lara_item, LS(LS_PICKUP));
         }
-        if (lara->is_crouched) {
-            lara_item->goal_anim_state = LS(LS_CROUCH_IDLE);
+        if (is_ducked) {
+            lara_item->goal_anim_state =
+                LS(anim == LA_CRAWL_IDLE ? LS_CRAWL_IDLE : LS_CROUCH_IDLE);
         } else {
             lara_item->goal_anim_state = LS(LS_STOP);
         }
