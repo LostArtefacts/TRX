@@ -6,6 +6,7 @@
 #include <trx/game/lara/flare.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/util.h>
+#include <trx/game/los.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/rooms/geometry.h>
 #include <trx/utils.h>
@@ -15,6 +16,10 @@
 #define M_CRAWL_TURN_RATE     ((DEG_1 * 2) + 45) // = 409
 #define M_CRAWL_TURN_MAX      (DEG_1 * 3)        // = 546
 #define M_CRAWL_TURN_SLOW     273
+#define M_JUMP_DIST           (STEP_L * 3)       // = 768
+#define M_JUMP_HEIGHT         (STEP_L * 2)       // = 512
+#define M_JUMP_START_SHIFT    (STEP_L * 3 / 8)   // = 96
+#define M_JUMP_TARGET_SHIFT   (STEP_L * 5 / 8)   // = 160
 // clang-format on
 
 static bool M_CanEnterCrawlFromCrouch(const ITEM *const item)
@@ -64,6 +69,45 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
     return true;
 }
 
+static bool M_CanJumpDown(const ITEM *const item, const LARA_INFO *const lara)
+{
+    if (!g_Config.gameplay.enable_responsive_crawl || !g_Input.jump) {
+        return false;
+    }
+
+    if (item->current_anim_state == LS(LS_CROUCH_IDLE)
+        && lara->gun_status != LGS_ARMLESS) {
+        return false;
+    }
+
+    if (!Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))
+        && !Item_TestAnimEqual(item, LA(LA_CROUCH_TO_CRAWL_END))
+        && !Item_TestAnimEqual(item, LA(LA_CRAWL_FORWARD_TO_IDLE_END_RIGHT))
+        && !Item_TestAnimEqual(item, LA(LA_CRAWL_FORWARD_TO_IDLE_END_LEFT))
+        && !Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))) {
+        return false;
+    }
+
+    const int16_t floor_front = Lara_FloorFront(item, item->rot.y, M_JUMP_DIST);
+    const int16_t ceiling_front =
+        Lara_CeilingFront(item, item->rot.y, M_JUMP_DIST, M_JUMP_HEIGHT);
+    if (floor_front < M_JUMP_HEIGHT || ceiling_front == NO_HEIGHT
+        || ceiling_front > 0) {
+        return false;
+    }
+
+    const GAME_VECTOR start = {
+        .x = item->pos.x,
+        .y = item->pos.y - M_JUMP_START_SHIFT,
+        .z = item->pos.z,
+        .room_num = item->room_num,
+    };
+    GAME_VECTOR target = { .pos = XYZ_32_OffsetYaw(
+                               start.pos, item->rot.y, M_JUMP_DIST) };
+    target.y += M_JUMP_TARGET_SHIFT;
+    return LOS_Check(&start, &target, false);
+}
+
 static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
 {
     coll->enable_hit = 0;
@@ -99,6 +143,9 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
         Item_SwitchToAnim(item, LA(LA_CROUCH_ROLL_FORWARD_START), 0);
         item->current_anim_state = LS(LS_CROUCH_ROLL);
         item->goal_anim_state = LS(LS_CROUCH_ROLL);
+    } else if (M_CanJumpDown(item, lara)) {
+        Lara_AnimateUntil(item, LS(LS_CRAWL_IDLE));
+        item->goal_anim_state = LS(LS_CRAWL_JUMP_DOWN);
     }
 }
 
@@ -139,6 +186,8 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
     if (M_CanCrouchRoll(item, lara)) {
         Lara_AnimateUntil(item, LS(LS_CROUCH_IDLE));
         item->goal_anim_state = LS(LS_CROUCH_ROLL);
+    } else if (M_CanJumpDown(item, lara)) {
+        item->goal_anim_state = LS(LS_CRAWL_JUMP_DOWN);
     }
 
     g_Camera.target_elevation = M_CAM_CRAWL_ELEVATION;
@@ -241,6 +290,15 @@ static void M_CrawlBack(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_CrawlJumpDown(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_baddie_push = 0;
+    coll->enable_hit = 0;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->gun_status = LGS_ARMLESS;
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_CROUCH_IDLE,      M_CrouchIdle)
 REGISTER_LARA_STATE(LS_CROUCH_ROLL,      M_CrouchRoll)
@@ -249,4 +307,5 @@ REGISTER_LARA_STATE(LS_CRAWL_FORWARD,    M_CrawlForward)
 REGISTER_LARA_STATE(LS_CRAWL_TURN_LEFT,  M_CrawlTurn)
 REGISTER_LARA_STATE(LS_CRAWL_TURN_RIGHT, M_CrawlTurn)
 REGISTER_LARA_STATE(LS_CRAWL_BACK,       M_CrawlBack)
+REGISTER_LARA_STATE(LS_CRAWL_JUMP_DOWN,  M_CrawlJumpDown)
 // clang-format on

@@ -324,7 +324,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         }
     } else if (g_Input.step_left) {
         const int16_t h = Lara_FloorFront(item, item->rot.y - DEG_90, 148);
-        const int16_t c = Lara_CeilingFront(item, item->rot.y - DEG_90, 148);
+        const int16_t c =
+            Lara_CeilingFront(item, item->rot.y - DEG_90, 148, LARA_HEIGHT);
         if (g_TRVersion < 3
             || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
                 && c <= 0)) {
@@ -332,7 +333,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         }
     } else if (g_Input.step_right) {
         const int16_t h = Lara_FloorFront(item, item->rot.y + DEG_90, 148);
-        const int16_t c = Lara_CeilingFront(item, item->rot.y + DEG_90, 148);
+        const int16_t c =
+            Lara_CeilingFront(item, item->rot.y + DEG_90, 148, LARA_HEIGHT);
         if (g_TRVersion < 3
             || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
                 && c <= 0)) {
@@ -362,7 +364,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_COMPRESS);
     } else if (g_Input.forward) {
         const int16_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
-        const int16_t c = Lara_CeilingFront(item, item->rot.y, M_WALK_DIST);
+        const int16_t c =
+            Lara_CeilingFront(item, item->rot.y, M_WALK_DIST, LARA_HEIGHT);
 
         if (Room_GetHeightType() == HT_BIG_SLOPE && h < 0) {
             item->goal_anim_state = LS_STOP;

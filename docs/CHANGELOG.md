@@ -33,6 +33,7 @@
   - added the ability to resume crawling more quickly after coming to a stop
   - added transitions from run/sprint to crawl without first coming to a stop
   - added a transition from crawl to crouch-roll without having to manually crouch first
+  - added the ability to jump out of crawlspaces
   - restored an unused pickup animation when in the crawling state, bypassing the crouch transition
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
