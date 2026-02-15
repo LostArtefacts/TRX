@@ -32,6 +32,22 @@ static void M_Initialise(const int16_t item_num)
     item->current_anim_state = BLADE_STATE_STOP;
 }
 
+static void M_Stop(ITEM *const item)
+{
+    const int16_t anim_idx = Item_GetRelativeAnim(item);
+    if (anim_idx == BLADE_ANIM_CUT) {
+        const ANIM *const anim = Item_GetAnim(item);
+        if (!Item_IsTriggerActive(item) && anim->jump_anim_num == item->anim_num
+            && Item_TestFrameEqual(item, -1)) {
+            item->status = IS_INACTIVE;
+            Item_RemoveActive(Item_GetIndex(item));
+            return;
+        }
+    }
+
+    item->goal_anim_state = BLADE_STATE_STOP;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -39,11 +55,8 @@ static void M_Control(const int16_t item_num)
     if (Item_IsTriggerActive(item)
         && item->current_anim_state == BLADE_STATE_STOP) {
         item->goal_anim_state = BLADE_STATE_CUT;
-    } else if (!Item_IsTriggerActive(item) && Item_TestFrameEqual(item, -1)) {
-        item->status = IS_INACTIVE;
-        Item_RemoveActive(item_num);
     } else {
-        item->goal_anim_state = BLADE_STATE_STOP;
+        M_Stop(item);
     }
 
     if ((item->touch_bits & BLADE_TOUCH_BITS) != 0
