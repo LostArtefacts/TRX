@@ -1953,6 +1953,9 @@
         },
         "tribe_axeman": {
             "name": "\\{review}Topornik plemienia",
+        },
+        "compy": {
+            "name": "\\{review}Compsognathus",
         }
     }
 }

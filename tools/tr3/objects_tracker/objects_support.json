@@ -126,6 +126,7 @@
   "O_TRAPDOOR_TYPE_1":        { "status": "fully implemented" },
   "O_TRAPDOOR_TYPE_2":        { "status": "fully implemented" },
   "O_TREX":                   { "status": "partially implemented", "todo": "check 100% parity" },
+  "O_COMPY":                  { "status": "fully implemented" },
   "O_TROPICAL_FISH":          { "status": "fully implemented" },
   "O_UZI_AMMO_ITEM":          { "status": "fully implemented" },
   "O_UZI_ITEM":               { "status": "fully implemented" },

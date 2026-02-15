@@ -1986,6 +1986,9 @@
         },
         "tribe_axeman": {
             "name": "\\{review}Gaisgeach nan Sliochd",
+        },
+        "compy": {
+            "name": "\\{review}Compsognathus",
         }
     }
 }

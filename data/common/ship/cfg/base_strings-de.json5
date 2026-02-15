@@ -1975,6 +1975,9 @@
         },
         "tribe_axeman": {
             "name": "\\{review}Stammesaxtkämpfer",
+        },
+        "compy": {
+            "name": "\\{review}Compsognathus",
         }
     }
 }
