@@ -535,7 +535,9 @@ void Creature_ApplyMood(
             if (Box_StalkBox(item, enemy, box_num) && creature->enemy != nullptr
                 && enemy->hit_points > 0) {
                 Box_TargetBox(lot, box_num);
-                creature->mood = MOOD_STALK; // NOTE: TR3 sets MOOD_BORED?
+                if (g_TRVersion < 3) {
+                    creature->mood = MOOD_STALK;
+                }
             } else if (lot->required_box == NO_BOX) {
                 Box_TargetBox(lot, box_num);
             }
