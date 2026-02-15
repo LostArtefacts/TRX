@@ -220,6 +220,7 @@ typedef struct {
         bool enable_controlled_drops;
         bool enable_ledge_jumps;
         bool enable_responsive_crawl;
+        bool enable_crawl_jump;
         bool enable_sprint;
         bool enable_responsive_sprint;
         int32_t idle_pose_timeout;
