@@ -15,7 +15,7 @@
 #define M_CAM_CRAWL_ELEVATION (-DEG_1 * 23)      // = -4186
 #define M_CRAWL_TURN_RATE     ((DEG_1 * 2) + 45) // = 409
 #define M_CRAWL_TURN_MAX      (DEG_1 * 3)        // = 546
-#define M_CRAWL_TURN_SLOW     273
+#define M_CRAWL_TURN_SLOW     (DEG_1 * 3 / 2)    // = 273
 #define M_JUMP_DIST           (STEP_L * 3)       // = 768
 #define M_JUMP_HEIGHT         (STEP_L * 2)       // = 512
 #define M_JUMP_START_SHIFT    (STEP_L * 3 / 8)   // = 96
@@ -155,6 +155,23 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
     item->goal_anim_state = LS(LS_CROUCH_IDLE);
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->is_crouched = true;
+}
+
+static void M_CrouchTurn(ITEM *const item, COLL_INFO *const coll)
+{
+    if (item->hit_points <= 0 || !g_Config.gameplay.enable_responsive_crawl) {
+        item->goal_anim_state = LS(LS_CROUCH_IDLE);
+        return;
+    }
+
+    coll->enable_hit = 0;
+
+    const bool left_turn = item->current_anim_state == LS(LS_CROUCH_TURN_LEFT);
+    item->rot.y += left_turn ? -M_CRAWL_TURN_SLOW : M_CRAWL_TURN_SLOW;
+
+    if (!(left_turn ? g_Input.left : g_Input.right)) {
+        item->goal_anim_state = LS(LS_CROUCH_IDLE);
+    }
 }
 
 static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
@@ -300,12 +317,14 @@ static void M_CrawlJumpDown(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_CROUCH_IDLE,      M_CrouchIdle)
-REGISTER_LARA_STATE(LS_CROUCH_ROLL,      M_CrouchRoll)
-REGISTER_LARA_STATE(LS_CRAWL_IDLE,       M_CrawlIdle)
-REGISTER_LARA_STATE(LS_CRAWL_FORWARD,    M_CrawlForward)
-REGISTER_LARA_STATE(LS_CRAWL_TURN_LEFT,  M_CrawlTurn)
-REGISTER_LARA_STATE(LS_CRAWL_TURN_RIGHT, M_CrawlTurn)
-REGISTER_LARA_STATE(LS_CRAWL_BACK,       M_CrawlBack)
-REGISTER_LARA_STATE(LS_CRAWL_JUMP_DOWN,  M_CrawlJumpDown)
+REGISTER_LARA_STATE(LS_CROUCH_IDLE,       M_CrouchIdle)
+REGISTER_LARA_STATE(LS_CROUCH_ROLL,       M_CrouchRoll)
+REGISTER_LARA_STATE(LS_CROUCH_TURN_LEFT,  M_CrouchTurn)
+REGISTER_LARA_STATE(LS_CROUCH_TURN_RIGHT, M_CrouchTurn)
+REGISTER_LARA_STATE(LS_CRAWL_IDLE,        M_CrawlIdle)
+REGISTER_LARA_STATE(LS_CRAWL_FORWARD,     M_CrawlForward)
+REGISTER_LARA_STATE(LS_CRAWL_TURN_LEFT,   M_CrawlTurn)
+REGISTER_LARA_STATE(LS_CRAWL_TURN_RIGHT,  M_CrawlTurn)
+REGISTER_LARA_STATE(LS_CRAWL_BACK,        M_CrawlBack)
+REGISTER_LARA_STATE(LS_CRAWL_JUMP_DOWN,   M_CrawlJumpDown)
 // clang-format on
