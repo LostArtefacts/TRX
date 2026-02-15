@@ -1962,6 +1962,9 @@
         },
         "tribe_axeman": {
             "name": "\\{review}Hacheur de la tribu",
+        },
+        "compy": {
+            "name": "\\{review}Compsognathus",
         }
     }
 }

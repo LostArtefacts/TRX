@@ -2004,6 +2004,9 @@
         },
         "tribe_axeman": {
             "name": "\\{review}Ascia della Tribù",
+        },
+        "compy": {
+            "name": "\\{review}Compsognathus",
         }
     }
 }

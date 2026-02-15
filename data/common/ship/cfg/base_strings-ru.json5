@@ -1982,6 +1982,9 @@
         },
         "tribe_axeman": {
             "name": "\\{review}Топорщик племени",
+        },
+        "compy": {
+            "name": "\\{review}Компсогнат",
         }
     }
 }

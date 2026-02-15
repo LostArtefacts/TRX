@@ -22,6 +22,7 @@
 **TR3**:
 - added reverb support
 - added Kayak control
+- added Compsognathus control
 - added Mounted Gun control
 - added Tribe Axeman control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
