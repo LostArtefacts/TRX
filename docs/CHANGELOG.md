@@ -46,6 +46,7 @@
 - fixed Kayak voiding and teleporting on large slopes
 - fixed Kayak wake effects sometimes clipping through complex geometry
 - fixed loading screens showing before playing FMVs in Antarctica
+- fixed end credits referencing non-existing image file
 
 
 
