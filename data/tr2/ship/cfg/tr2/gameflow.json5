@@ -78,8 +78,8 @@
             "music_track": 29,
             "lara_outfit": "tr2_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 2},
+                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "shotgun"},
                 {"type": "give_item", "object_id": "small_medipack"},
                 {"type": "give_item", "object_id": "large_medipack"},
@@ -188,8 +188,8 @@
             "music_track": 54,
             "lara_outfit": "tr2_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/rig.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 3},
+                {"type": "loading_screen", "path": "data/images/rig.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "set_lara_start_anim", "anim": 8},
                 {"type": "remove_weapons"},
                 {"type": "add_secret_reward", "object_id": "uzis"},
@@ -244,8 +244,8 @@
             "music_track": 30,
             "lara_outfit": "tr2_diving_suit",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 4},
+                {"type": "loading_screen", "path": "data/images/titan.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "harpoon_gun_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
@@ -360,8 +360,8 @@
             "lara_outfit": "tr2_bomber_jacket",
             "weather_type": "snow",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 5},
+                {"type": "loading_screen", "path": "data/images/tibet.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "give_item", "object_id": "puzzle_4"},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 4},
                 {"type": "loop_game"},
@@ -467,8 +467,8 @@
             "music_track": 55,
             "lara_outfit": "tr2_classic",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 6},
+                {"type": "loading_screen", "path": "data/images/china.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "add_secret_reward", "object_id": "uzis_ammo", "quantity": 8},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 3},

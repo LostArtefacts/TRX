@@ -17,6 +17,7 @@
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
 - fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)
+- fixed loading screens showing before playing FMVs on most levels
 - removed the requirement to use `main.sfx` in custom levels (#3898)
 
 **TR3**:
@@ -44,6 +45,7 @@
 - fixed wheel switch triggers activating too early
 - fixed Kayak voiding and teleporting on large slopes
 - fixed Kayak wake effects sometimes clipping through complex geometry
+- fixed loading screens showing before playing FMVs in Antarctica
 
 
 

@@ -372,8 +372,8 @@
             "cold_water": true,
             "weather_type": "snow",
             "sequence": [
-                {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "play_fmv", "fmv_id": 3},
+                {"type": "loading_screen", "path": "data/images/antarc.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "loop_game"},
                 {"type": "play_cutscene", "cutscene_id": 9},
                 {"type": "play_music", "music_track": 14},
