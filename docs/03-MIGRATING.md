@@ -20,6 +20,15 @@ title: Migrating levels
     - `missile_2` → `missile_atlantean_shard`
     - `missile_3` → `missile_atlantean_bomb`
 
+2. **TR2 breakable window catalog names were renamed**:
+    In `cfg/catalog_objects.csv`, update old breakable windows to the new names:
+    - `O_WINDOW_1` → `O_SMASH_OBJECT_1`
+    - `O_WINDOW_2` → `O_SMASH_OBJECT_2`
+
+    This also affects catalog-derived Lua names (`trx.catalog.objects`):
+    - `window_1` → `smash_object_1`
+    - `window_2` → `smash_object_2`
+
 ### Version 1.1 to 1.2
 
 1. **Lara skin system**:  
