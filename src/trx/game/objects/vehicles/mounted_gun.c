@@ -142,7 +142,7 @@ static void M_Fire(ITEM *const gun_item)
 
     const ITEM *const lara_item = Lara_GetItem();
     ITEM *const projectile_item = Item_Get(item_num);
-    projectile_item->object_id = O_ROCKET;
+    projectile_item->object_id = O_HEAVY_ROCKET;
     projectile_item->room_num = lara_item->room_num;
 
     XYZ_32 offset = {
@@ -161,7 +161,6 @@ static void M_Fire(ITEM *const gun_item)
     projectile_item->rot.z = 0;
 
     projectile_item->speed = 16;
-    // TODO: item_flags = 1 for smashable wall
     Item_AddActive(item_num);
     projectile_item->status = IS_ACTIVE;
 

@@ -100,7 +100,7 @@ bool Creature_Shoot(
 
     XYZ_32 start, target;
     M_CalcShootVectors(item, target_item, &start, &target);
-    Gun_SmashItems(start, target, nullptr);
+    Gun_SmashItems(start, target, nullptr, NO_OBJECT);
 
     return is_targetable;
 }
