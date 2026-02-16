@@ -1983,6 +1983,9 @@
         },
         "tribe_pipeman": {
             "name": "\\{review}Stammes-Blasrohrbenutzer",
+        },
+        "lizard": {
+            "name": "\\{review}Echse",
         }
     }
 }

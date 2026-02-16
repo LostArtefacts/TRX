@@ -1994,6 +1994,9 @@
         },
         "tribe_pipeman": {
             "name": "\\{review}Cleasaiche Bhalbhaiche Sluaigh",
+        },
+        "lizard": {
+            "name": "\\{review}Lacerta",
         }
     }
 }

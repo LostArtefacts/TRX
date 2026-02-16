@@ -1961,6 +1961,9 @@
         },
         "tribe_pipeman": {
             "name": "\\{review}Użytkownik dmuchawki plemiennej",
+        },
+        "lizard": {
+            "name": "\\{review}Jaszczur",
         }
     }
 }

@@ -31,6 +31,15 @@ void Missile_Control(const int16_t effect_num)
     int16_t room_num = effect->room_num;
     const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
 
+    if (g_TRVersion == 3 && effect->object_id == O_MISSILE_FLAME
+        && Room_Get(room_num)->flags.underwater && !effect->flag1) {
+        if (Random_GetControl() & 1) {
+            Sparks_TriggerFlamethrowerSmoke(effect->pos, true);
+        }
+        Effect_Kill(effect_num);
+        return;
+    }
+
     const int32_t height = Room_GetHeight(sector, effect->pos);
     const int32_t ceiling = Room_GetCeiling(sector, effect->pos);
     if (effect->pos.y >= height || effect->pos.y <= ceiling) {
@@ -42,7 +51,17 @@ void Missile_Control(const int16_t effect_num)
             effect->counter = 6;
             Sound_Effect(SFX_PROJECTILE_HIT, &effect->pos, SPM_NORMAL);
         } else if (effect->object_id == O_MISSILE_FLAME) {
-            Output_AddDynamicLight(effect->pos, 14, 11);
+            if (!effect->flag1) {
+                Sparks_TriggerFlamethrowerHitFlame(effect->pos);
+                if (g_TRVersion == 3) {
+                    Output_AddDynamicLightRGB(
+                        effect->pos, 24,
+                        (RGB_888) { 255, 192, Random_GetControl() & 0x3F });
+                } else {
+                    Output_AddDynamicLight(effect->pos, 14, 11);
+                }
+            }
+
             Effect_Kill(effect_num);
         }
         return;
@@ -54,9 +73,14 @@ void Missile_Control(const int16_t effect_num)
 
     if (effect->object_id == O_MISSILE_FLAME) {
         if (Lara_IsNearItem(&effect->pos, 350)) {
-            Lara_TakeDamage(3, true);
-            Lara_CatchFire();
-            return;
+            if (effect->flag1) {
+                LARA_INFO *const lara_info = Lara_GetLaraInfo();
+                lara_info->poison_timer += 4;
+            } else {
+                Lara_TakeDamage(3, true);
+                Lara_CatchFire();
+                return;
+            }
         }
     } else if (Lara_IsNearItem(&effect->pos, 200)) {
         ITEM *const lara_item = Lara_GetItem();
@@ -87,8 +111,10 @@ void Missile_Control(const int16_t effect_num)
         }
     } else if (effect->object_id == O_MISSILE_FLAME) {
         if (!effect->counter--) {
-            Output_AddDynamicLight(effect->pos, 14, 11);
-            Sound_Effect(SFX_DRAGON_FIRE, &effect->pos, SPM_NORMAL);
+            if (g_TRVersion < 3) {
+                Output_AddDynamicLight(effect->pos, 14, 11);
+                Sound_Effect(SFX_DRAGON_FIRE, &effect->pos, SPM_NORMAL);
+            }
             Effect_Kill(effect_num);
         }
     } else if (effect->object_id == O_MISSILE_KNIFE) {

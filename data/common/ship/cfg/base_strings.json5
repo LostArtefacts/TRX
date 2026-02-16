@@ -1060,6 +1060,9 @@
         "bat": {
             "name": "Bat",
         },
+        "lizard": {
+            "name": "Lizard",
+        },
         "crocodile": {
             "name": "Crocodile",
         },
