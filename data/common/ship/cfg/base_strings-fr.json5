@@ -1295,20 +1295,14 @@
         "gun_flash": {
             "name": "\\{review}Éclair de pistolet",
         },
-        "missile_1": {
-            "name": "Missile 1",
+        "natla_gun": {
+            "name": "\\{review}Arme de Natla",
         },
-        "missile_2": {
-            "name": "Missile 2",
+        "missile_atlantean_shard": {
+            "name": "\\{review}Missile (éclat atlante)",
         },
-        "missile_3": {
-            "name": "Missile 3",
-        },
-        "missile_4": {
-            "name": "Missile 4",
-        },
-        "missile_5": {
-            "name": "Missile 5",
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Missile (bombe atlante)",
         },
         "pickup_aid": {
             "name": "Indice au ramassage",
@@ -1735,13 +1729,16 @@
             "name": "\\{review}Hélicoptère 2",
         },
         "missile_flame": {
-            "name": "\\{review}Flamme de missile",
+            "name": "\\{review}Missile (flamme)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Missile (poison)",
         },
         "missile_harpoon": {
-            "name": "\\{review}Harpon de missile",
+            "name": "\\{review}Missile (harpon)",
         },
         "missile_knife": {
-            "name": "\\{review}Couteau de missile",
+            "name": "\\{review}Missile (couteau)",
         },
         "player_5": {
             "name": "\\{review}Acteur de cinématique 5",

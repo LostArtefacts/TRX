@@ -1896,29 +1896,26 @@
         "mini_copter": {
             "name": "Helicopter 2",
         },
-        "missile_1": {
-            "name": "Missile 1",
+        "natla_gun": {
+            "name": "Natla's Gun",
         },
-        "missile_2": {
-            "name": "Missile 2",
+        "missile_atlantean_shard": {
+            "name": "Missile (Atlantean Shard)",
         },
-        "missile_3": {
-            "name": "Missile 3",
-        },
-        "missile_4": {
-            "name": "Missile 4",
-        },
-        "missile_5": {
-            "name": "Missile 5",
+        "missile_atlantean_bomb": {
+            "name": "Missile (Atlantean Bomb)",
         },
         "missile_flame": {
-            "name": "Missile Flame",
+            "name": "Missile (Flame)",
+        },
+        "missile_poison": {
+            "name": "Missile (Poison)",
         },
         "missile_harpoon": {
-            "name": "Missile Harpoon",
+            "name": "Missile (Harpoon)",
         },
         "missile_knife": {
-            "name": "Missile Knife",
+            "name": "Missile (Knife)",
         },
         "pickup_aid": {
             "name": "Pickup Aid",

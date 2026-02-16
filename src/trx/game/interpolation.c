@@ -109,11 +109,11 @@ static XYZ_32 M_GetEffectMaxDelta(const EFFECT *const effect)
     int32_t max_xz = 128;
     int32_t max_y = MAX(128, effect->fall_speed * 2);
     switch (effect->object_id) {
-    case O_MISSILE_1:
-    case O_MISSILE_3:
+    case O_NATLA_GUN:
+    case O_MISSILE_ATLANTEAN_BOMB:
         max_xz = 220;
         break;
-    case O_MISSILE_2:
+    case O_MISSILE_ATLANTEAN_SHARD:
         max_xz = 250;
         break;
     case O_MISSILE_FLAME:

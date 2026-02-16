@@ -1320,20 +1320,14 @@
         "gun_flash": {
             "name": "Lasadh Ghunna",
         },
-        "missile_1": {
-            "name": "Missil 1",
+        "natla_gun": {
+            "name": "\\{review}Gunna Natla",
         },
-        "missile_2": {
-            "name": "Missil 2",
+        "missile_atlantean_shard": {
+            "name": "\\{review}Missil (Slinneag Atlanteach)",
         },
-        "missile_3": {
-            "name": "Missil 3",
-        },
-        "missile_4": {
-            "name": "Missil 4",
-        },
-        "missile_5": {
-            "name": "Missil 5",
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Missil (Boma Atlanteach)",
         },
         "pickup_aid": {
             "name": "Cobhair Togail",
@@ -1759,13 +1753,16 @@
             "name": "Heileacoptair 2",
         },
         "missile_flame": {
-            "name": "Missil Teine",
+            "name": "\\{review}Missil (Teine)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Missil (Puinnsean)",
         },
         "missile_harpoon": {
-            "name": "Missil Harpùn",
+            "name": "\\{review}Missil (Harpùn)",
         },
         "missile_knife": {
-            "name": "Missil Sgian",
+            "name": "\\{review}Missil (Sgian)",
         },
         "player_5": {
             "name": "Actair 5",

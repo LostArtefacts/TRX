@@ -1308,20 +1308,14 @@
         "gun_flash": {
             "name": "Waffen Blitz",
         },
-        "missile_1": {
-            "name": "Rakete 1",
+        "natla_gun": {
+            "name": "\\{review}Natlas Waffe",
         },
-        "missile_2": {
-            "name": "Rakete 2",
+        "missile_atlantean_shard": {
+            "name": "\\{review}Geschoss (Atlantischer Splitter)",
         },
-        "missile_3": {
-            "name": "Rakete 3",
-        },
-        "missile_4": {
-            "name": "Rakete 4",
-        },
-        "missile_5": {
-            "name": "Rakete 5",
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Geschoss (Atlantische Bombe)",
         },
         "pickup_aid": {
             "name": "Pickup-Hilfe",
@@ -1748,13 +1742,16 @@
             "name": "Helikopter 2",
         },
         "missile_flame": {
-            "name": "Raketen Flamme",
+            "name": "\\{review}Geschoss (Flamme)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Geschoss (Gift)",
         },
         "missile_harpoon": {
-            "name": "Raketen Harpune",
+            "name": "\\{review}Geschoss (Harpune)",
         },
         "missile_knife": {
-            "name": "Raketen-Messer",
+            "name": "\\{review}Geschoss (Messer)",
         },
         "player_5": {
             "name": "Zwischensequenz-Schauspieler 5",

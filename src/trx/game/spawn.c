@@ -16,11 +16,6 @@
 #include <trx/game/water_fx.h>
 #include <trx/version.h>
 
-#define M_SHARD_SPEED 250
-#define M_ROCKET_SPEED 220
-#define M_HARPOON_SPEED 150
-#define M_MYSTIC_LIGHT_RANGE (5 * WALL_L) // = 5120
-
 static void M_ShootAtLara(EFFECT *const effect)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -352,7 +347,7 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
     }
 }
 
-int16_t Spawn_ShardGun(
+int16_t Spawn_AtlanteanShard(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num)
 {
@@ -366,16 +361,16 @@ int16_t Spawn_ShardGun(
         effect->rot.x = 0;
         effect->rot.y = y_rot;
         effect->rot.z = 0;
-        effect->object_id = O_MISSILE_2;
+        effect->object_id = O_MISSILE_ATLANTEAN_SHARD;
         effect->frame_num = 0;
-        effect->speed = M_SHARD_SPEED;
+        effect->speed = 250;
         effect->shade = 3584;
         M_ShootAtLara(effect);
     }
     return effect_num;
 }
 
-int16_t Spawn_RocketGun(
+int16_t Spawn_AtlanteanBomb(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num)
 {
@@ -389,9 +384,9 @@ int16_t Spawn_RocketGun(
         effect->rot.x = 0;
         effect->rot.y = y_rot;
         effect->rot.z = 0;
-        effect->object_id = O_MISSILE_3;
+        effect->object_id = O_MISSILE_ATLANTEAN_BOMB;
         effect->frame_num = 0;
-        effect->speed = M_ROCKET_SPEED;
+        effect->speed = 220;
         effect->shade = SHADE_NEUTRAL;
         M_ShootAtLara(effect);
     }
@@ -443,11 +438,8 @@ void Spawn_MysticLight(const int16_t item_num)
         effect->object_id = O_TWINKLE;
 
         effect->rot.y = 2 * Random_GetDraw();
-        effect->pos.x = item->pos.x
-            + ((M_MYSTIC_LIGHT_RANGE * Math_Sin(effect->rot.y)) >> W2V_SHIFT);
-        effect->pos.z = item->pos.z
-            + ((M_MYSTIC_LIGHT_RANGE * Math_Cos(effect->rot.y)) >> W2V_SHIFT);
-        effect->pos.y = (Random_GetDraw() >> 2) + item->pos.y - WALL_L;
+        effect->pos = XYZ_32_OffsetYaw(item->pos, effect->rot.y, 5 * WALL_L);
+        effect->pos.y += (Random_GetDraw() >> 2) - WALL_L;
         effect->room_num = item->room_num;
         effect->counter = item_num;
         effect->frame_num = 0;
@@ -500,7 +492,7 @@ int16_t Spawn_Harpoon(
         effect->rot.x = 0;
         effect->rot.y = y_rot;
         effect->rot.z = 0;
-        effect->speed = M_HARPOON_SPEED;
+        effect->speed = 150;
         effect->fall_speed = 0;
         effect->frame_num = 0;
         effect->object_id = O_MISSILE_HARPOON;

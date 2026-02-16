@@ -1305,20 +1305,14 @@
         "gun_flash": {
             "name": "Rozbłysk broni",
         },
-        "missile_1": {
-            "name": "Pocisk 1",
+        "natla_gun": {
+            "name": "\\{review}Broń Natli",
         },
-        "missile_2": {
-            "name": "Pocisk 2",
+        "missile_atlantean_shard": {
+            "name": "\\{review}Pocisk (Atlantydzki odłamek)",
         },
-        "missile_3": {
-            "name": "Pocisk 3",
-        },
-        "missile_4": {
-            "name": "Pocisk 4",
-        },
-        "missile_5": {
-            "name": "Pocisk 5",
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Pocisk (Atlantydzka bomba)",
         },
         "pickup_aid": {
             "name": "Pomoc do znajdziek",
@@ -1726,13 +1720,16 @@
             "name": "Helikopter 2",
         },
         "missile_flame": {
-            "name": "Płomień",
+            "name": "\\{review}Pocisk (Płomień)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Pocisk (Trucizna)",
         },
         "missile_harpoon": {
-            "name": "Harpun",
+            "name": "\\{review}Pocisk (Harpun)",
         },
         "missile_knife": {
-            "name": "Nóż",
+            "name": "\\{review}Pocisk (Nóż)",
         },
         "player_5": {
             "name": "Aktor 5",

@@ -40,10 +40,10 @@ int16_t Spawn_GunMiss(
 void Spawn_GunShell(LARA_GUN_TYPE weapon_type, bool right);
 void Spawn_ShotgunShell(void);
 
-int16_t Spawn_ShardGun(
+int16_t Spawn_AtlanteanShard(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num);
-int16_t Spawn_RocketGun(
+int16_t Spawn_AtlanteanBomb(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num);
 

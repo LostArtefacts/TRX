@@ -103,8 +103,8 @@ static void M_Control(const int16_t item_num)
         case CENTAUR_STATE_SHOOT:
             if (item->required_anim_state == CENTAUR_STATE_EMPTY) {
                 item->required_anim_state = CENTAUR_STATE_AIM;
-                int16_t effect_num =
-                    Creature_Effect(item, &m_CentaurRocket, Spawn_RocketGun);
+                int16_t effect_num = Creature_Effect(
+                    item, &m_CentaurRocket, Spawn_AtlanteanBomb);
                 if (effect_num != NO_EFFECT) {
                     centaur->neck_rotation = Effect_Get(effect_num)->rot.x;
                 }

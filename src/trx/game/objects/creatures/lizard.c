@@ -184,9 +184,8 @@ static int16_t M_TriggerGasThrower(
     effect->rot.z = 0;
     effect->rot.y = angles[0];
     effect->speed = speed << 2;
-    effect->object_id = O_MISSILE_FLAME;
+    effect->object_id = O_MISSILE_POISON;
     effect->counter = 20;
-    effect->flag1 = 1;
     M_TriggerGas((XYZ_32) {}, (XYZ_32) {}, effect_num);
 
     for (int32_t i = 0; i < 2; i++) {

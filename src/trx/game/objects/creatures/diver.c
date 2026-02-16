@@ -4,7 +4,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/const.h>
 #include <trx/game/los.h>
-#include <trx/game/objects/effects/missile_common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>

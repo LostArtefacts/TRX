@@ -6,6 +6,20 @@ title: Migrating levels
 
 ## TRX
 
+### Version 1.2 to 1.3
+
+1. **TR1 missile catalog names were renamed**:
+    In `cfg/catalog_objects.csv`, update old missile symbols to the new names:
+    - `O_MISSILE_1` → `O_NATLA_GUN`
+    - `O_MISSILE_2` → `O_MISSILE_ATLANTEAN_SHARD`
+    - `O_MISSILE_3` → `O_MISSILE_ATLANTEAN_BOMB`
+    - `O_MISSILE_4` and `O_MISSILE_5` are no longer used and should be removed.
+
+    This also affects catalog-derived Lua names (`trx.catalog.objects`):
+    - `missile_1` → `natla_gun`
+    - `missile_2` → `missile_atlantean_shard`
+    - `missile_3` → `missile_atlantean_bomb`
+
 ### Version 1.1 to 1.2
 
 1. **Lara skin system**:  
