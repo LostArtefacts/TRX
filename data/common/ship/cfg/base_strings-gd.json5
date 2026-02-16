@@ -1997,6 +1997,9 @@
         },
         "lizard": {
             "name": "\\{review}Lacerta",
+        },
+        "carcass": {
+            "name": "Closach",
         }
     }
 }

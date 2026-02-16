@@ -60,6 +60,7 @@ static void M_SmashItem(const int16_t item_num)
         break;
 
     case O_BELL:
+    case O_CARCASS:
         if (item->status != IS_ACTIVE) {
             item->status = IS_ACTIVE;
             Item_AddActive(item_num);

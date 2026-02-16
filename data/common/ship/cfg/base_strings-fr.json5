@@ -1973,6 +1973,9 @@
         },
         "lizard": {
             "name": "\\{review}Lézard",
+        },
+        "carcass": {
+            "name": "\\{review}Carcasse",
         }
     }
 }

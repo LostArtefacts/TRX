@@ -55,17 +55,8 @@ static BITE m_Bite = {
 static bool M_FindCarcass(ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-    p->carcass_item_num = NO_ITEM;
-    int16_t linked_item_num = Room_Get(item->room_num)->item_num;
-    while (linked_item_num != NO_ITEM) {
-        const ITEM *const linked_item = Item_Get(linked_item_num);
-        if (linked_item->object_id == O_ANIMATING_6) {
-            p->carcass_item_num = linked_item_num;
-            return true;
-        }
-        linked_item_num = linked_item->next_item;
-    }
-    return false;
+    p->carcass_item_num = Item_FindTypeInRoom(item->room_num, O_ANIMATING_6);
+    return p->carcass_item_num != NO_ITEM;
 }
 
 static void M_Initialise(const int16_t item_num)

@@ -459,6 +459,7 @@ common_sources = [
   'trx/game/objects/general/bridge_tilt2.c',
   'trx/game/objects/general/cabin.c',
   'trx/game/objects/general/camera_target.c',
+  'trx/game/objects/general/carcass.c',
   'trx/game/objects/general/clock_chimes.c',
   'trx/game/objects/general/cog.c',
   'trx/game/objects/general/combat_end.c',
