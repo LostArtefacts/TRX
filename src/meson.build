@@ -348,6 +348,8 @@ common_sources = [
   'trx/game/lua/objects.c',
   'trx/game/lua/rooms.c',
   'trx/game/lua/sound.c',
+  'trx/game/math/func.c',
+  'trx/game/math/geom.c',
   'trx/game/math/trig.c',
   'trx/game/math/util.c',
   'trx/game/matrix.c',
