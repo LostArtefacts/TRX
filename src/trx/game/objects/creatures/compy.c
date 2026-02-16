@@ -200,7 +200,7 @@ static void M_Control(const int16_t item_num)
         creature->maximum_turn = M_STOP_TURN;
 
         if (creature->mood == MOOD_ATTACK) {
-            if (info.angle && info.distance < M_HIT_RANGE * 4) {
+            if (info.ahead && info.distance < M_HIT_RANGE * 4) {
                 if (!p->shared->attack_lara) {
                     item->goal_anim_state = M_STATE_STOP;
                 } else if (Random_GetControl() < DEG_90) {
@@ -251,7 +251,7 @@ static void M_Control(const int16_t item_num)
             } else if (
                 info.distance < M_HIT_RANGE && info.ahead
                 && p->carcass_item_num != NO_ITEM
-                && creature->mood == MOOD_ATTACK) {
+                && creature->mood != MOOD_ATTACK) {
                 creature->flags |= M_HIT_FLAG;
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
             }
