@@ -771,24 +771,29 @@ bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
     const CREATURE *const creature = item->creature_data;
     const ITEM *const enemy =
         creature->enemy != nullptr ? creature->enemy : Lara_GetItem();
-    if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE
-        || (g_TRVersion == 3
-            && (info->angle - creature->joint_rotation[2] <= -DEG_90
-                || info->angle - creature->joint_rotation[2] >= DEG_90))) {
+    if (enemy == nullptr || !info->ahead
+        || info->distance >= CREATURE_SHOOT_RANGE) {
         return false;
     }
 
-    GAME_VECTOR start;
-    start.pos.x = item->pos.x;
-    start.pos.y = item->pos.y - STEP_L * 3;
-    start.pos.z = item->pos.z;
-    start.room_num = item->room_num;
+    GAME_VECTOR start = { .pos = item->pos, .room_num = item->room_num };
+    GAME_VECTOR target = { .pos = enemy->pos, .room_num = enemy->room_num };
 
-    GAME_VECTOR target;
-    target.pos.x = enemy->pos.x;
-    target.pos.y = enemy->pos.y - STEP_L * 3;
-    target.pos.z = enemy->pos.z;
-    target.room_num = enemy->room_num;
+    if (g_TRVersion == 3) {
+        if (enemy->hit_points <= 0
+            || (enemy != Lara_GetItem() && enemy->creature_data == nullptr)) {
+            return false;
+        }
+
+        const BOUNDS_16 *const bounds1 = &Item_GetBestFrame(item)->bounds;
+        const BOUNDS_16 *const bounds2 = &Item_GetBestFrame(enemy)->bounds;
+
+        start.pos.y += (bounds1->max.y + 3 * bounds1->min.y) >> 2;
+        target.pos.y += (bounds2->max.y + 3 * bounds2->min.y) >> 2;
+    } else {
+        start.pos.y -= STEP_L * 3;
+        target.pos.y -= STEP_L * 3;
+    }
 
     return LOS_Check(&start, &target, true);
 }
