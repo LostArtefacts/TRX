@@ -265,9 +265,8 @@ static void M_Control(const int16_t item_num)
 
             if (Item_GetRelativeFrame(item) == 15) {
                 M_SpawnDart(item);
+                item->goal_anim_state = M_STATE_WAIT_1;
             }
-
-            item->goal_anim_state = M_STATE_WAIT_1;
             break;
 
         case M_STATE_ATTACK_3:
