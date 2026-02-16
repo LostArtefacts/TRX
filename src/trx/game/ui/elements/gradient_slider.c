@@ -8,6 +8,7 @@
 #include <trx/game/ui/text.h>
 #include <trx/utils.h>
 
+#include <math.h>
 #include <string.h>
 
 #define M_MARKER_BORDER 1.0f
