@@ -1967,6 +1967,9 @@
         },
         "carcass": {
             "name": "\\{review}Padlina",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Emiter Nietoperza",
         }
     }
 }

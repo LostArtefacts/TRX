@@ -2000,6 +2000,9 @@
         },
         "carcass": {
             "name": "Closach",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Sgaoiliche Bàta",
         }
     }
 }

@@ -277,6 +277,7 @@ X_OBJ_NAME_DEFINE(O_THORS_HEAD,            "thors_head",            X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_ELECTRIC_FENCE,        "electric_fence",        X_OBJ_NAMES("Electric Fence"))
 
 // General objects
+X_OBJ_NAME_DEFINE(O_BAT_EMITTER,           "bat_emitter",           X_OBJ_NAMES("Bat Emitter"))
 X_OBJ_NAME_DEFINE(O_BELL,                  "bell",                  X_OBJ_NAMES("Bell"))
 X_OBJ_NAME_DEFINE(O_BIG_BOWL,              "big_bowl",              X_OBJ_NAMES("Lava Bowl"))
 X_OBJ_NAME_DEFINE(O_BRIDGE_FLAT,           "bridge_flat",           X_OBJ_NAMES("Bridge Flat"))

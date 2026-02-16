@@ -2018,6 +2018,9 @@
         },
         "carcass": {
             "name": "\\{review}Carcassa",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Emettitore di Pipistrelli",
         }
     }
 }

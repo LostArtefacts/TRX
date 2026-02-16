@@ -30,6 +30,7 @@
 - added Tribe Pipeman control
 - added Lizard control
 - added Carcass control (hanging Raptor)
+- added Bat Emitter control with save/load support
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
 - added an option to allow Lara to jump out of crawlspaces (Gameplay → Controls → Crawl exit jump)
