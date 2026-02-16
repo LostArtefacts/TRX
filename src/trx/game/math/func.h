@@ -6,6 +6,7 @@ int32_t Math_Cos(int32_t angle);
 int32_t Math_Sin(int32_t angle);
 int32_t Math_Atan(int32_t x, int32_t y);
 uint32_t Math_Sqrt(uint32_t n);
+uint64_t Math_Sqrt64(uint64_t n);
 
 void Math_GetVectorAngles(int32_t x, int32_t y, int32_t z, int16_t *dest);
 int32_t Math_AngleInCone(int32_t angle1, int32_t angle2, int32_t cone);
