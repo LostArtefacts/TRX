@@ -1654,6 +1654,30 @@
         "sliding_pillar": {
             "name": "Sliding Pillar",
         },
+        "smashable_1": {
+            "name": [
+                "Smashable 1",
+                "Breakable Window 1",
+            ]
+        },
+        "smashable_2": {
+            "name": [
+                "Smashable 2",
+                "Breakable Window 2",
+            ]
+        },
+        "smashable_3": {
+            "name": [
+                "Smashable 3",
+                "Breakable Window 3",
+            ]
+        },
+        "smashable_4": {
+            "name": [
+                "Smashable 4",
+                "Breakable Window 4",
+            ]
+        },
         "springboard": {
             "name": "Springboard",
         },
@@ -1697,18 +1721,6 @@
         },
         "trapdoor_3": {
             "name": "Trapdoor 3",
-        },
-        "window_1": {
-            "name": "Breakable Window 1",
-        },
-        "window_2": {
-            "name": "Breakable Window 2",
-        },
-        "window_3": {
-            "name": "Breakable Window 3",
-        },
-        "window_4": {
-            "name": "Breakable Window 4",
         },
         "zipline_handle": {
             "name": "Zipline Handle",

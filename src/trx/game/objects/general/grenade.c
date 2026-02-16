@@ -5,7 +5,7 @@
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
-#include <trx/game/objects/general/window.h>
+#include <trx/game/objects/general/smashable.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>

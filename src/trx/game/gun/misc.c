@@ -26,7 +26,7 @@ static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
 
 // TODO: meh
-extern void Window_Smash(int16_t item_num);
+extern void Smashable_Smash(int16_t item_num);
 
 static void M_DrawGunGlow(const XYZ_32 offset, const RGB_F color)
 {
@@ -55,8 +55,8 @@ static void M_SmashItem(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
 
     switch (item->object_id) {
-    case O_WINDOW_1:
-        Window_Smash(item_num);
+    case O_SMASH_OBJECT_1:
+        Smashable_Smash(item_num);
         break;
 
     case O_BELL:

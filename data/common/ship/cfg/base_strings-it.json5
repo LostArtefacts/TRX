@@ -1572,16 +1572,16 @@
         "trapdoor_3": {
             "name": "Botola 3",
         },
-        "window_1": {
+        "smashable_1": {
             "name": "Finestra Frangibile 1",
         },
-        "window_2": {
+        "smashable_2": {
             "name": "Finestra Frangibile 2",
         },
-        "window_3": {
+        "smashable_3": {
             "name": "Finestra Frangibile 3",
         },
-        "window_4": {
+        "smashable_4": {
             "name": "Finestra Frangibile 4",
         },
         "zipline_handle": {
