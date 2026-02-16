@@ -26,4 +26,5 @@ void Gun_HitTarget(
 
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip, bool interpolated);
 
-PROJECTILE_HIT Gun_SmashItems(XYZ_32 start, XYZ_32 target, XYZ_32 *out_hit_pos);
+PROJECTILE_HIT Gun_SmashItems(
+    XYZ_32 start, XYZ_32 target, XYZ_32 *out_hit_pos, OBJECT_ID missile_obj_id);

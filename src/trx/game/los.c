@@ -133,7 +133,8 @@ int32_t LOS_CheckSmashable(
             continue;
         }
         if (!Object_IsType(item->object_id, g_SmashableObjects)
-            && !Object_IsType(item->object_id, g_ShatterableObjects)) {
+            && !Object_IsType(item->object_id, g_ShatterableObjects)
+            && !Object_IsType(item->object_id, g_HeavyShatterableObjects)) {
             continue;
         }
 

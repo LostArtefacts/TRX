@@ -306,7 +306,8 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos, nullptr, item->object_id)
+        == PROJECTILE_HIT_STOP) {
         explode = true;
         radius = M_GetBlastRadius();
     }

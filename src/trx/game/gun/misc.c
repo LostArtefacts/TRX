@@ -22,6 +22,13 @@
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 
+typedef enum {
+    M_SMASH_POLICY_NONE,
+    M_SMASH_POLICY_CONTINUE,
+    M_SMASH_POLICY_STOP,
+    M_SMASH_POLICY_HEAVY,
+} M_SMASH_POLICY;
+
 static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
 
@@ -50,6 +57,20 @@ static void M_DrawGunGlow(const XYZ_32 offset, const RGB_F color)
         pos.x, pos.y, pos.z, glow_obj->mesh_idx, 0, color, DRAW_BLEND_ADD);
 }
 
+static M_SMASH_POLICY M_GetSmashPolicy(const ITEM *const item)
+{
+    if (Object_IsType(item->object_id, g_ShatterableObjects)) {
+        return M_SMASH_POLICY_CONTINUE;
+    }
+    if (Object_IsType(item->object_id, g_SmashableObjects)) {
+        return M_SMASH_POLICY_STOP;
+    }
+    if (Object_IsType(item->object_id, g_HeavyShatterableObjects)) {
+        return M_SMASH_POLICY_HEAVY;
+    }
+    return M_SMASH_POLICY_NONE;
+}
+
 static void M_SmashItem(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -62,6 +83,8 @@ static void M_SmashItem(const int16_t item_num)
 
     case O_BELL:
     case O_CARCASS:
+    case O_SMASH_OBJECT_2:
+    case O_SMASH_OBJECT_3:
         if (item->status != IS_ACTIVE) {
             item->status = IS_ACTIVE;
             Item_AddActive(item_num);
@@ -350,22 +373,37 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 }
 
 PROJECTILE_HIT Gun_SmashItems(
-    const XYZ_32 start, const XYZ_32 target, XYZ_32 *const out_hit_pos)
+    const XYZ_32 start, const XYZ_32 target, XYZ_32 *const out_hit_pos,
+    const OBJECT_ID missile_obj_id)
 {
     int32_t hits = 0;
     int16_t last_item_num = NO_ITEM;
+    const bool is_heavy_missile =
+        Object_IsType(missile_obj_id, g_HeavyMissileObjects);
     while (true) {
         const int16_t item_num = LOS_CheckSmashable(start, target, out_hit_pos);
         if (item_num == NO_ITEM || item_num == last_item_num) {
             break;
         }
         last_item_num = item_num;
-        M_SmashItem(item_num);
-        hits++;
 
         const ITEM *const item = Item_Get(item_num);
-        if (Object_IsType(item->object_id, g_SmashableObjects)) {
+        const M_SMASH_POLICY policy = M_GetSmashPolicy(item);
+        switch (policy) {
+        case M_SMASH_POLICY_HEAVY:
+            if (is_heavy_missile) {
+                M_SmashItem(item_num);
+            }
             return PROJECTILE_HIT_STOP;
+        case M_SMASH_POLICY_STOP:
+            M_SmashItem(item_num);
+            return PROJECTILE_HIT_STOP;
+        case M_SMASH_POLICY_CONTINUE:
+            M_SmashItem(item_num);
+            hits++;
+            break;
+        default:
+            break;
         }
     }
     return hits > 0 ? PROJECTILE_HIT_SHATTER : PROJECTILE_HIT_NONE;

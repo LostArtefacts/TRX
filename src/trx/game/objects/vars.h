@@ -30,5 +30,7 @@ extern const GAME_OBJECT_PAIR g_KeyItemToReceptacleMap[];
 extern const GAME_OBJECT_PAIR g_ReceptacleToReceptacleDoneMap[];
 
 extern const OBJECT_ID g_ShatterableObjects[];
+extern const OBJECT_ID g_HeavyShatterableObjects[];
+extern const OBJECT_ID g_HeavyMissileObjects[];
 extern const OBJECT_ID g_SmashableObjects[];
 extern const OBJECT_ID g_ShoalObjects[];

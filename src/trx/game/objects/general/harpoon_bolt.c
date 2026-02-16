@@ -62,7 +62,8 @@ static void M_Control_TR3(const int16_t item_num)
     item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
 
-    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos, nullptr, item->object_id)
+        == PROJECTILE_HIT_STOP) {
         Item_Kill(item_num);
         return;
     }
@@ -219,7 +220,8 @@ static void M_Control_TR12(const int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 
     bool hit = false;
-    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos, nullptr, item->object_id)
+        == PROJECTILE_HIT_STOP) {
         hit = true;
     }
 

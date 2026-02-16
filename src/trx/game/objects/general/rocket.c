@@ -291,7 +291,8 @@ static void M_Control(const int16_t item_num)
         explode = true;
     }
 
-    if (Gun_SmashItems(old_pos, item->pos, nullptr) == PROJECTILE_HIT_STOP) {
+    if (Gun_SmashItems(old_pos, item->pos, nullptr, item->object_id)
+        == PROJECTILE_HIT_STOP) {
         explode = true;
     }
 
@@ -330,10 +331,31 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupCommon(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->save_position = true;
 }
 
+static void M_Setup(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+}
+
+static void M_SetupHeavy(OBJECT *const obj)
+{
+    const OBJECT *const ref_obj = Object_Get(O_ROCKET);
+    if (!ref_obj->loaded) {
+        return;
+    }
+
+    M_SetupCommon(obj);
+    obj->frame_base = ref_obj->frame_base;
+    obj->anim_idx = ref_obj->anim_idx;
+    obj->mesh_idx = ref_obj->mesh_idx;
+    obj->mesh_count = ref_obj->mesh_count;
+    obj->loaded = true;
+}
+
 REGISTER_OBJECT(O_ROCKET, M_Setup)
+REGISTER_OBJECT(O_HEAVY_ROCKET, M_SetupHeavy)

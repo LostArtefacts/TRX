@@ -505,7 +505,7 @@ int32_t Gun_FireWeapon(
             };
         Room_GetSector(hit_pos.pos, &hit_pos.room_num);
         const bool object_on_los = LOS_Check(&start, &hit_pos, true);
-        if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos)
+        if (Gun_SmashItems(start.pos, hit_pos.pos, &hit_pos.pos, NO_OBJECT)
             == PROJECTILE_HIT_STOP) {
             Room_GetSector(hit_pos.pos, &hit_pos.room_num);
         }
@@ -523,7 +523,7 @@ int32_t Gun_FireWeapon(
         .room_num = src->room_num,
     };
     Room_GetSector(hit_pos.pos, &hit_pos.room_num);
-    Gun_SmashItems(start.pos, hit_pos.pos, nullptr);
+    Gun_SmashItems(start.pos, hit_pos.pos, nullptr, NO_OBJECT);
     Gun_HitTarget(
         target, &start, &hit_pos,
         weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));

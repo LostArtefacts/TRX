@@ -637,6 +637,21 @@ const OBJECT_ID g_ShatterableObjects[] = {
     // clang-format on
 };
 
+const OBJECT_ID g_HeavyShatterableObjects[] = {
+    // clang-format off
+    O_SMASH_OBJECT_2,
+    O_SMASH_OBJECT_3,
+    NO_OBJECT,
+    // clang-format on
+};
+
+const OBJECT_ID g_HeavyMissileObjects[] = {
+    // clang-format off
+    O_HEAVY_ROCKET,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const OBJECT_ID g_SmashableObjects[] = {
     // clang-format off
     O_BELL,

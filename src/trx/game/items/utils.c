@@ -9,6 +9,16 @@
 #include <trx/utils.h>
 #include <trx/version.h>
 
+static bool M_UseTR3ExplodingEffects(const ITEM *const item)
+{
+    if (g_TRVersion < 3) {
+        return false;
+    }
+
+    return !Object_IsType(item->object_id, g_ShatterableObjects)
+        && !Object_IsType(item->object_id, g_HeavyShatterableObjects);
+}
+
 void Item_TakeDamage(
     ITEM *const item, const int16_t damage, const bool hit_status)
 {
@@ -79,7 +89,7 @@ int32_t Item_Explode(
     Matrix_Rot16(best_frame->mesh_rots[0]);
 
     const int32_t speed_shift = item->object_id == O_TORSO ? 7 : 8;
-    const bool is_tr3 = g_TRVersion == 3 && obj->intelligent; // TODO: improve
+    const bool is_tr3 = M_UseTR3ExplodingEffects(item);
 
     // main mesh
     int32_t bit = 1;
