@@ -387,6 +387,7 @@ common_sources = [
   'trx/game/objects/creatures/jelly.c',
   'trx/game/objects/creatures/larson.c',
   'trx/game/objects/creatures/lion.c',
+  'trx/game/objects/creatures/lizard.c',
   'trx/game/objects/creatures/monk.c',
   'trx/game/objects/creatures/monkey.c',
   'trx/game/objects/creatures/mouse.c',

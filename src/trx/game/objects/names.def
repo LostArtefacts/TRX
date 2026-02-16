@@ -148,6 +148,7 @@ X_OBJ_NAME_DEFINE(O_BACON_LARA,            "bacon_lara",            X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_WOLF,                  "wolf",                  X_OBJ_NAMES("Wolf"))
 X_OBJ_NAME_DEFINE(O_BEAR,                  "bear",                  X_OBJ_NAMES("Bear"))
 X_OBJ_NAME_DEFINE(O_BAT,                   "bat",                   X_OBJ_NAMES("Bat"))
+X_OBJ_NAME_DEFINE(O_LIZARD,                "lizard",                X_OBJ_NAMES("Lizard"))
 X_OBJ_NAME_DEFINE(O_CROCODILE,             "crocodile",             X_OBJ_NAMES("Crocodile"))
 X_OBJ_NAME_DEFINE(O_ALLIGATOR,             "alligator",             X_OBJ_NAMES("Alligator"))
 X_OBJ_NAME_DEFINE(O_LION,                  "lion",                  X_OBJ_NAMES("Lion"))

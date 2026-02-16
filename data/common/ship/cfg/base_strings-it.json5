@@ -2012,6 +2012,9 @@
         },
         "tribe_pipeman": {
             "name": "\\{review}Utente della Soffiatrice della Tribù",
+        },
+        "lizard": {
+            "name": "\\{review}Lucertola",
         }
     }
 }

@@ -1301,7 +1301,7 @@ void Sparks_TriggerGunSmokeDirected(
         spark->dst_color.b = 64;
     }
 
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
     spark->extras = 0;
     spark->dynamic = -1;
     spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
@@ -1387,7 +1387,7 @@ void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
     spark->fade_to_black = 5;
     spark->life = 10;
     spark->s_life = 10;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
     spark->dynamic = -1;
     spark->pos.x = pos.x + (Random_GetControl() & 7) - 3;
     spark->pos.y = pos.y + (Random_GetControl() & 7) - 3;
@@ -1423,7 +1423,7 @@ void Sparks_TriggerRocketSmoke(
     spark->color = spark->src_color;
     spark->fade_to_black = 12;
     spark->col_fade_speed = (Random_GetControl() & 3) + 4;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
     spark->extras = 0;
     spark->life = (Random_GetControl() & 3) + 20;
     spark->s_life = spark->life;
@@ -1478,7 +1478,7 @@ void Sparks_TriggerRocketFlame(
     spark->color = spark->src_color;
     spark->fade_to_black = 12;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
     spark->life = (Random_GetControl() & 3) + 28;
     spark->s_life = spark->life;
     spark->extras = 0;
@@ -1517,4 +1517,156 @@ void Sparks_TriggerRocketFlame(
     spark->size.height = spark->size.width;
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = 2;
+}
+
+void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+    const int32_t max_dist = 16 * WALL_L;
+    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+        return;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = 255;
+    spark->src_color.g = (Random_GetControl() & 0x1F) + 48;
+    spark->src_color.b = 48;
+    spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
+    spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
+    spark->dst_color.b = 32;
+    spark->color = spark->src_color;
+
+    spark->fade_to_black = 8;
+    spark->col_fade_speed = (Random_GetControl() & 3) + 8;
+    spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
+    spark->life = (Random_GetControl() & 7) + 20;
+    spark->s_life = spark->life;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+    spark->vel.x = (Random_GetControl() & 0xFF) - 128;
+    spark->vel.y = -16 - (Random_GetControl() & 0xF);
+    spark->vel.z = (Random_GetControl() & 0xFF) - 128;
+    spark->friction = 5;
+
+    if (Random_GetControl() & 1) {
+        spark->gravity = -16 - (Random_GetControl() & 0x1F);
+        spark->max_y_vel = -16 - (Random_GetControl() & 7);
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE
+            | SPARK_F_SCALE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+
+        if (Random_GetControl() & 1) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+    } else {
+        spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
+        spark->gravity = -16 - (Random_GetControl() & 0x1F);
+        spark->max_y_vel = -16 - (Random_GetControl() & 7);
+    }
+
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->scalar = 2;
+    spark->size.width = (Random_GetControl() & 0x1F) + 128;
+    spark->src_size.width = spark->size.width;
+    spark->dst_size.width = spark->size.width >> 4;
+    spark->size.height = spark->size.width;
+    spark->src_size.height = spark->size.height;
+    spark->dst_size.height = spark->size.height >> 4;
+}
+
+void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+    const int32_t max_dist = 16 * WALL_L;
+    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+        return;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+
+    if (uw) {
+        spark->src_color.r = 0;
+        spark->src_color.g = 0;
+        spark->src_color.b = 0;
+        spark->dst_color.r = 192;
+        spark->dst_color.g = 192;
+        spark->dst_color.b = 208;
+    } else {
+        spark->src_color.r = 144;
+        spark->src_color.g = 144;
+        spark->src_color.b = 144;
+        spark->dst_color.r = 64;
+        spark->dst_color.g = 64;
+        spark->dst_color.b = 64;
+    }
+    spark->color = spark->src_color;
+
+    spark->col_fade_speed = 8;
+    spark->fade_to_black = 23;
+    spark->life = (Random_GetControl() & 0xF) + 32;
+    spark->s_life = spark->life;
+
+    if (uw) {
+        spark->draw_type = DRAW_BLEND_ADD;
+    } else {
+        spark->draw_type = DRAW_BLEND_SUB;
+    }
+
+    spark->extras = 0;
+    spark->dynamic = -1;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
+    spark->vel.x = ((Random_GetControl() & 0xFFF) - 2048) >> 2;
+    spark->vel.y = (Random_GetControl() & 0xFF) - 128;
+    spark->vel.z = ((Random_GetControl() & 0xFFF) - 2048) >> 2;
+
+    if (uw) {
+        spark->friction = 20;
+        spark->vel.y >>= 4;
+        spark->pos.y += 32;
+    } else {
+        spark->friction = 6;
+    }
+
+    spark->flags =
+        SPARK_F_ALT_SPRITE | SPARK_F_ROTATE | SPARK_F_SPRITE | SPARK_F_SCALE;
+    spark->rot_angle = Random_GetControl() & 0xFFF;
+
+    if (Random_GetControl() & 1) {
+        spark->rot_add = -16 - (Random_GetControl() & 0xF);
+    } else {
+        spark->rot_add = (Random_GetControl() & 0xF) + 16;
+    }
+
+    spark->sprite_idx = Object_Get(O_EXPLOSION_1)->mesh_idx;
+    spark->scalar = 3;
+
+    if (uw) {
+        spark->max_y_vel = 0;
+        spark->gravity = 0;
+    } else {
+        spark->gravity = -3 - (Random_GetControl() & 3);
+        spark->max_y_vel = -4 - (Random_GetControl() & 3);
+    }
+
+    spark->dst_size.width = (Random_GetControl() & 0x1F) + 128;
+    spark->size.width = spark->dst_size.width >> 2;
+    spark->src_size.width = spark->size.width;
+
+    spark->dst_size.height =
+        spark->dst_size.width + (Random_GetControl() & 0x1F) + 32;
+    spark->size.height = spark->dst_size.height >> 3;
+    spark->src_size.height = spark->size.height;
 }

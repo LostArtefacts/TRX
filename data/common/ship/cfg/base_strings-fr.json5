@@ -1970,6 +1970,9 @@
         },
         "tribe_pipeman": {
             "name": "\\{review}Utilisateur de sarbacane de la tribu",
+        },
+        "lizard": {
+            "name": "\\{review}Lézard",
         }
     }
 }

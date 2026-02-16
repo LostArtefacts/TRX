@@ -45,3 +45,6 @@ void Sparks_TriggerRocketFlame(
 
 void Sparks_TriggerBlood(XYZ_32 pos, int32_t angle_12, int32_t count);
 void Sparks_TriggerBloodD(XYZ_32 pos, int32_t angle_12, int32_t count);
+
+void Sparks_TriggerFlamethrowerHitFlame(XYZ_32 pos);
+void Sparks_TriggerFlamethrowerSmoke(XYZ_32 pos, bool uw);
