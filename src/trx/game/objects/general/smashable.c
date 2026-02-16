@@ -1,4 +1,4 @@
-#include <trx/game/objects/general/window.h>
+#include <trx/game/objects/general/smashable.h>
 
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
@@ -33,7 +33,8 @@ static void M_Initialise(const int16_t item_num)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if ((item->object_id == O_WINDOW_1 || item->object_id == O_WINDOW_2)
+        if ((item->object_id == O_SMASH_OBJECT_1
+             || item->object_id == O_SMASH_OBJECT_2)
             && (item->flags & IF_ONE_SHOT)) {
             item->mesh_bits = 0x100;
             M_SetBoxBlocked(item, false);
@@ -50,7 +51,7 @@ static void M_Control1(const int16_t item_num)
 
     if (Lara_Vehicle_IsMounted()) {
         if (Lara_IsNearItem(&item->pos, 512)) {
-            Window_Smash(item_num);
+            Smashable_Smash(item_num);
         }
     } else if (item->touch_bits) {
         item->touch_bits = 0;
@@ -59,7 +60,7 @@ static void M_Control1(const int16_t item_num)
             ABS((lara_item->speed * Math_Cos(lara_item->rot.y - item->rot.y))
                 >> W2V_SHIFT);
         if (speed >= 50) {
-            Window_Smash(item_num);
+            Smashable_Smash(item_num);
         }
     }
 }
@@ -104,7 +105,7 @@ static void M_Setup2(OBJECT *const obj)
     obj->control_func = M_Control2;
 }
 
-void Window_Smash(const int16_t item_num)
+void Smashable_Smash(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_SetBoxBlocked(item, false);
@@ -121,5 +122,5 @@ void Window_Smash(const int16_t item_num)
     item->status = IS_DEACTIVATED;
 }
 
-REGISTER_OBJECT(O_WINDOW_1, M_Setup1)
-REGISTER_OBJECT(O_WINDOW_2, M_Setup2)
+REGISTER_OBJECT(O_SMASH_OBJECT_1, M_Setup1)
+REGISTER_OBJECT(O_SMASH_OBJECT_2, M_Setup2)

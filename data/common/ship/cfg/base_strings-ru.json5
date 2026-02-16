@@ -1649,16 +1649,16 @@
         "switch_type_small": {
             "name": "\\{review}Маленький выключатель",
         },
-        "window_1": {
+        "smashable_1": {
             "name": "\\{review}Разбиваемое окно 1",
         },
-        "window_2": {
+        "smashable_2": {
             "name": "\\{review}Разбиваемое окно 2",
         },
-        "window_3": {
+        "smashable_3": {
             "name": "\\{review}Разбиваемое окно 3",
         },
-        "window_4": {
+        "smashable_4": {
             "name": "\\{review}Разбиваемое окно 4",
         },
         "zipline_handle": {
