@@ -2,7 +2,10 @@
 - added the ability to freely rotate examinable items
 - added a color editor dialog for fog and water colors in Graphic Options → Visuals
 - added `O_SWITCH_TYPE_WHEEL`, which is similar to `O_SWITCH_TYPE_AIRLOCK` but can be used more than once
+- added `O_SMASH_OBJECT_3`, which can only be broken with triggers or the Crash Site gun
+- added `O_SMASH_OBJECT_4`, which behaves like `O_SMASH_OBJECT_1` but uses `SFX_SHUTTERS_BREAK`
 - added support for using more sound slots than originally possible in custom levels (#3898)
+- changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
 - changed logs to no longer emit ANSI color characters when the game's output is piped to a file / process
@@ -32,6 +35,8 @@
 - added Lizard control
 - added Carcass control (hanging Raptor)
 - added Bat Emitter control with save/load support
+- added Smashable Wall control
+- added Smashable Shutters control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
 - added an option to allow Lara to jump out of crawlspaces (Gameplay → Controls → Crawl exit jump)
