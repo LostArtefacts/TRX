@@ -1986,6 +1986,9 @@
         },
         "carcass": {
             "name": "\\{review}Kadaver",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Fledermaus-Emitter",
         }
     }
 }

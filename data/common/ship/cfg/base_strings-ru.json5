@@ -1993,6 +1993,9 @@
         },
         "carcass": {
             "name": "\\{review}Туша",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Излучатель летучих мышей",
         }
     }
 }

@@ -1973,6 +1973,9 @@
         },
         "carcass": {
             "name": "\\{review}Carcasse",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Émetteur de chauve-souris",
         }
     }
 }

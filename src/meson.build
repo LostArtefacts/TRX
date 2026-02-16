@@ -447,6 +447,7 @@ common_sources = [
   'trx/game/objects/general/alarm_sound.c',
   'trx/game/objects/general/animating.c',
   'trx/game/objects/general/assault_target.c',
+  'trx/game/objects/general/bat_emitter.c',
   'trx/game/objects/general/bell.c',
   'trx/game/objects/general/big_bowl.c',
   'trx/game/objects/general/bird_tweeter.c',
