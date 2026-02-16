@@ -26,6 +26,28 @@ uint32_t Math_Sqrt(uint32_t n)
     return result;
 }
 
+uint64_t Math_Sqrt64(uint64_t n)
+{
+    uint64_t result = 0;
+    uint64_t bit = 1ULL << 62;
+
+    while (bit > n) {
+        bit >>= 2;
+    }
+
+    while (bit != 0) {
+        if (n >= result + bit) {
+            n -= result + bit;
+            result = (result >> 1) + bit;
+        } else {
+            result >>= 1;
+        }
+        bit >>= 2;
+    }
+
+    return result;
+}
+
 void Math_GetVectorAngles(
     const int32_t x, const int32_t y, const int32_t z, int16_t *const dest)
 {
@@ -128,18 +150,25 @@ int16_t XYZ_32_GetPitch(XYZ_32 pos)
 
 int32_t XYZ_32_GetDistance(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
 {
-    int32_t x = (pos1->x - pos2->x);
-    int32_t y = (pos1->y - pos2->y);
-    int32_t z = (pos1->z - pos2->z);
+    int64_t x = (int64_t)pos1->x - pos2->x;
+    int64_t y = (int64_t)pos1->y - pos2->y;
+    int64_t z = (int64_t)pos1->z - pos2->z;
 
     int32_t scale = 0;
-    while ((int16_t)x != x || (int16_t)y != y || (int16_t)z != z) {
+    while ((int32_t)x != x || (int32_t)y != y || (int32_t)z != z) {
         scale++;
         x >>= 1;
         y >>= 1;
         z >>= 1;
     }
-    return Math_Sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z)) << scale;
+
+    const uint64_t dist = Math_Sqrt64(
+        SQUARE((uint64_t)ABS(x)) + SQUARE((uint64_t)ABS(y))
+        + SQUARE((uint64_t)ABS(z)));
+    if (dist > ((uint64_t)INT32_MAX >> scale)) {
+        return INT32_MAX;
+    }
+    return (int32_t)(dist << scale);
 }
 
 bool XYZ_32_IsNearby(
