@@ -222,7 +222,7 @@ static void M_Control(const int16_t item_num)
             const int32_t dx = lara_item->pos.x - item->pos.x;
             const int32_t dz = lara_item->pos.z - item->pos.z;
             Math_Atan(dz, dx);
-            dist = SQUARE(dx) * SQUARE(dz);
+            dist = SQUARE(dx) + SQUARE(dz);
         }
 
         Creature_UpdateMood(item, &info, true);
