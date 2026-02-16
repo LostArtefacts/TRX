@@ -51,6 +51,7 @@ typedef struct {
     M_FISH fish[M_FISH_PER_SHOAL + 1];
     M_LEADER leader;
     int32_t piranha_hit_wait;
+    int16_t carcass_item_num;
 } M_PRIV;
 
 typedef struct {
@@ -58,8 +59,6 @@ typedef struct {
     int32_t range_count;
     XYZ_16 ranges[M_SHOAL_COUNT];
 } M_FISH_LEVEL_CONFIG;
-
-static int16_t m_CarcassItemNum = NO_ITEM;
 
 static const M_FISH_LEVEL_CONFIG m_FishLevelConfigs[] = {
     M_LEVEL_RANGES(
@@ -243,6 +242,12 @@ static void M_SetupFish(M_PRIV *const p, const ITEM *const item)
     p->piranha_hit_wait = 0;
 }
 
+static void M_FindCarcass(const ITEM *const shoal_item)
+{
+    M_PRIV *const p = shoal_item->priv;
+    p->carcass_item_num = Item_FindTypeInRoom(shoal_item->room_num, O_CARCASS);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -274,8 +279,10 @@ static void M_Control(const int16_t item_num)
 
     int32_t piranha_attack = 0;
     if (item->object_id == O_PIRAHNAS && lara_item != nullptr) {
-        if (g_TRVersion == 3 && GF_BadGetLevelNum() == 6
-            && m_CarcassItemNum != NO_ITEM) {
+        if (p->carcass_item_num == NO_ITEM) {
+            M_FindCarcass(item);
+        }
+        if (p->carcass_item_num != NO_ITEM) {
             piranha_attack = 2;
         } else {
             piranha_attack = lara_item->room_num == item->room_num;
@@ -291,7 +298,7 @@ static void M_Control(const int16_t item_num)
     const ITEM *enemy = lara_item;
     if (piranha_attack != 0) {
         if (piranha_attack >= 2) {
-            enemy = Item_Get(m_CarcassItemNum);
+            enemy = Item_Get(p->carcass_item_num);
         }
         leader_fish->angle = M_GetFishAngle12(
             item->pos.x + leader_fish->pos.x, item->pos.z + leader_fish->pos.z,
@@ -713,6 +720,7 @@ static void M_Initialise(const int16_t item_num)
     p->leader.on = false;
     p->leader_num = NO_ITEM;
     p->piranha_hit_wait = 0;
+    p->carcass_item_num = NO_ITEM;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -724,7 +732,6 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
-    m_CarcassItemNum = NO_ITEM;
 }
 
 void Shoal_TriggerActivate(ITEM *const item, const int16_t trigger_timer)

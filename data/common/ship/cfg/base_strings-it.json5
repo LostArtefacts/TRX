@@ -2015,6 +2015,9 @@
         },
         "lizard": {
             "name": "\\{review}Lucertola",
+        },
+        "carcass": {
+            "name": "\\{review}Carcassa",
         }
     }
 }

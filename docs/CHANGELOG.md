@@ -29,6 +29,7 @@
 - added Tribe Axeman control
 - added Tribe Pipeman control
 - added Lizard control
+- added Carcass control (hanging Raptor)
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2
 - added a new gameplay option to toggle Lara's crouch roll (Gameplay → Controls → Crouch roll)
 - added an option to allow Lara to jump out of crawlspaces (Gameplay → Controls → Crawl exit jump)
@@ -51,6 +52,8 @@
 - fixed Kayak wake effects sometimes clipping through complex geometry
 - fixed loading screens showing before playing FMVs in Antarctica
 - fixed end credits referencing non-existing image file
+- removed the limitation of one Carcass instance per level working with Piranhas
+- removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
 
 
 

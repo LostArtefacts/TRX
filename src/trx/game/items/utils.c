@@ -159,3 +159,16 @@ bool Item_ShouldSpawnBlood(const ITEM *const item)
 
     return true;
 }
+
+int16_t Item_FindTypeInRoom(const int16_t room_num, const OBJECT_ID obj_id)
+{
+    int16_t linked_item_num = Room_Get(room_num)->item_num;
+    while (linked_item_num != NO_ITEM) {
+        const ITEM *const linked_item = Item_Get(linked_item_num);
+        if (linked_item->object_id == obj_id) {
+            return linked_item_num;
+        }
+        linked_item_num = linked_item->next_item;
+    }
+    return NO_ITEM;
+}
