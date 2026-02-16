@@ -14,6 +14,7 @@
 - fixed UI bar scale option not updating the padding and borders (regression from 1.2)
 - fixed Blade stopping in the wrong position when anti-triggered (#4894)
 - fixed very distant Boulders causing camera shake (similar to the Tihocan crocodile targeting bug)
+- fixed heavy triggers with no `TO_TARGET` / `TO_CAMERA` resetting cameras
 
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)

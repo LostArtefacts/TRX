@@ -100,7 +100,8 @@ void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 
     M_ValidateTriggerTarget(status);
 
-    if (g_Config.visuals.camera_mode != CAMERA_MODE_TR1 && g_Camera.num == -1
+    if (g_Config.visuals.camera_mode != CAMERA_MODE_TR1
+        && status != TARGET_UNKNOWN && g_Camera.num == -1
         && g_Camera.timer > 0) {
         g_Camera.timer = -1;
     }
