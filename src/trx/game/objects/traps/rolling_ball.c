@@ -32,11 +32,9 @@ static void M_Roll(ITEM *const item)
     }
 
     if (g_Config.gameplay.enable_boulder_shake) {
-        const int32_t dist = Math_Sqrt(
-            (g_Camera.mic_pos.z - item->pos.z)
-                * (g_Camera.mic_pos.z - item->pos.z)
-            + (g_Camera.mic_pos.x - item->pos.x)
-                * (g_Camera.mic_pos.x - item->pos.x));
+        XYZ_32 mic_pos = g_Camera.mic_pos.pos;
+        mic_pos.y = item->pos.y; // Ignore vertical component
+        const int32_t dist = XYZ_32_GetDistance(&mic_pos, &item->pos);
         if (dist < M_SHAKE_RANGE) {
             g_Camera.bounce = 40 * (dist - M_SHAKE_RANGE) / M_SHAKE_RANGE;
         }
