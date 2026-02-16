@@ -632,6 +632,7 @@ const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
 const OBJECT_ID g_ShatterableObjects[] = {
     // clang-format off
     O_SMASH_OBJECT_1,
+    O_SMASH_OBJECT_4,
     NO_OBJECT,
     // clang-format on
 };
