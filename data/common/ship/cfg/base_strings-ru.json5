@@ -1305,20 +1305,14 @@
         "gun_flash": {
             "name": "Вспышка выстрела",
         },
-        "missile_1": {
-            "name": "Ракета 1",
+        "natla_gun": {
+            "name": "\\{review}Пушка Натлы",
         },
-        "missile_2": {
-            "name": "Ракета 2",
+        "missile_atlantean_shard": {
+            "name": "\\{review}Снаряд (Атлантический осколок)",
         },
-        "missile_3": {
-            "name": "Ракета 3",
-        },
-        "missile_4": {
-            "name": "Ракета 4",
-        },
-        "missile_5": {
-            "name": "Ракета 5",
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Снаряд (Атлантическая бомба)",
         },
         "pickup_aid": {
             "name": "Первая помощь",
@@ -1755,13 +1749,16 @@
             "name": "\\{review}Вертолет 2",
         },
         "missile_flame": {
-            "name": "\\{review}Пламя ракеты",
+            "name": "\\{review}Снаряд (Пламя)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Снаряд (Яд)",
         },
         "missile_harpoon": {
-            "name": "\\{review}Гарпунная ракета",
+            "name": "\\{review}Снаряд (Гарпун)",
         },
         "missile_knife": {
-            "name": "\\{review}Нож ракеты",
+            "name": "\\{review}Снаряд (Нож)",
         },
         "player_5": {
             "name": "\\{review}Актер катсцены 5",

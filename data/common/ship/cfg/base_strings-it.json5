@@ -1719,29 +1719,26 @@
         "mini_copter": {
             "name": "Elicottero 2",
         },
-        "missile_1": {
-            "name": "Missile 1",
+        "natla_gun": {
+            "name": "\\{review}Arma di Natla",
         },
-        "missile_2": {
-            "name": "Missile 2",
+        "missile_atlantean_shard": {
+            "name": "\\{review}Missile (Scheggia atlantidea)",
         },
-        "missile_3": {
-            "name": "Missile 3",
-        },
-        "missile_4": {
-            "name": "Missile 4",
-        },
-        "missile_5": {
-            "name": "Missile 5",
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Missile (Bomba atlantidea)",
         },
         "missile_flame": {
-            "name": "Missile Fiamma",
+            "name": "\\{review}Missile (Fiamma)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Missile (Veleno)",
         },
         "missile_harpoon": {
-            "name": "Missile Arpione",
+            "name": "\\{review}Missile (Arpione)",
         },
         "missile_knife": {
-            "name": "Missile Coltello",
+            "name": "\\{review}Missile (Coltello)",
         },
         "pickup_aid": {
             "name": "Segnalazione Oggetti",

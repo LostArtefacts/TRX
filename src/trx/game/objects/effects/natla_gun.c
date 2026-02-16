@@ -35,7 +35,7 @@ static void M_Control(const int16_t effect_num)
         new_effect->room_num = room_num;
         new_effect->speed = effect->speed;
         new_effect->frame_num = 0;
-        new_effect->object_id = O_MISSILE_1;
+        new_effect->object_id = O_NATLA_GUN;
     }
 }
 
@@ -44,4 +44,4 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
 }
 
-REGISTER_OBJECT(O_MISSILE_1, M_Setup)
+REGISTER_OBJECT(O_NATLA_GUN, M_Setup)

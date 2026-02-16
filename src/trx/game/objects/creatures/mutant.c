@@ -283,10 +283,10 @@ static void M_Control(const int16_t item_num)
         case MUTANT_STATE_SHOOT:
             if (flyer->flags & FLYER_BULLET1) {
                 flyer->flags &= ~FLYER_BULLET1;
-                Creature_Effect(item, &m_WarriorShard, Spawn_ShardGun);
+                Creature_Effect(item, &m_WarriorShard, Spawn_AtlanteanShard);
             } else if (flyer->flags & FLYER_BULLET2) {
                 flyer->flags &= ~FLYER_BULLET2;
-                Creature_Effect(item, &m_WarriorRocket, Spawn_RocketGun);
+                Creature_Effect(item, &m_WarriorRocket, Spawn_AtlanteanBomb);
             }
             break;
 
