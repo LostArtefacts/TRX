@@ -56,6 +56,7 @@ static void M_SmashItem(const int16_t item_num)
 
     switch (item->object_id) {
     case O_SMASH_OBJECT_1:
+    case O_SMASH_OBJECT_4:
         Smashable_Smash(item_num);
         break;
 

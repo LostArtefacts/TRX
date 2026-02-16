@@ -79,7 +79,7 @@ int32_t Item_Explode(
     Matrix_Rot16(best_frame->mesh_rots[0]);
 
     const int32_t speed_shift = item->object_id == O_TORSO ? 7 : 8;
-    const bool is_tr3 = g_TRVersion == 3;
+    const bool is_tr3 = g_TRVersion == 3 && obj->intelligent; // TODO: improve
 
     // main mesh
     int32_t bit = 1;

@@ -33,9 +33,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if ((item->object_id == O_SMASH_OBJECT_1
-             || item->object_id == O_SMASH_OBJECT_2)
-            && (item->flags & IF_ONE_SHOT)) {
+        if ((item->flags & IF_ONE_SHOT) != 0) {
             item->mesh_bits = 0x100;
             M_SetBoxBlocked(item, false);
         }
@@ -45,7 +43,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 static void M_Control1(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->flags & IF_ONE_SHOT) {
+    if ((item->flags & IF_ONE_SHOT) != 0) {
         return;
     }
 
@@ -68,7 +66,7 @@ static void M_Control1(const int16_t item_num)
 static void M_Control2(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (item->flags & IF_ONE_SHOT) {
+    if ((item->flags & IF_ONE_SHOT) != 0) {
         return;
     }
 
@@ -77,7 +75,13 @@ static void M_Control2(const int16_t item_num)
     item->mesh_bits = ~1;
     item->collidable = false;
     Item_Explode(item_num, 65278, 0);
-    Sound_Effect(SFX_BRITTLE_GROUND_BREAK, &item->pos, SPM_NORMAL);
+
+    if (item->object_id == O_SMASH_OBJECT_2) {
+        Sound_Effect(SFX_BRITTLE_GROUND_BREAK, &item->pos, SPM_NORMAL);
+    } else if (item->object_id == O_SMASH_OBJECT_3) {
+        Sound_Effect(SFX_EXPLOSION_1, &item->pos, SPM_NORMAL);
+        Sound_Effect(SFX_EXPLOSION_2, &item->pos, SPM_NORMAL);
+    }
 
     item->flags |= IF_ONE_SHOT;
     item->status = IS_DEACTIVATED;
@@ -113,7 +117,12 @@ void Smashable_Smash(const int16_t item_num)
     item->collidable = false;
     item->mesh_bits = ~1;
     Item_Explode(item_num, 0b11111110'11111110, 0);
-    Sound_Effect(SFX_GLASS_BREAK, &item->pos, SPM_NORMAL);
+
+    if (item->object_id == O_SMASH_OBJECT_1) {
+        Sound_Effect(SFX_GLASS_BREAK, &item->pos, SPM_NORMAL);
+    } else if (item->object_id == O_SMASH_OBJECT_4) {
+        Sound_Effect(SFX_SHUTTERS_BREAK, &item->pos, SPM_NORMAL);
+    }
 
     item->flags |= IF_ONE_SHOT;
     if (item->status == IS_ACTIVE) {
@@ -124,3 +133,5 @@ void Smashable_Smash(const int16_t item_num)
 
 REGISTER_OBJECT(O_SMASH_OBJECT_1, M_Setup1)
 REGISTER_OBJECT(O_SMASH_OBJECT_2, M_Setup2)
+REGISTER_OBJECT(O_SMASH_OBJECT_3, M_Setup2)
+REGISTER_OBJECT(O_SMASH_OBJECT_4, M_Setup1)
