@@ -270,7 +270,7 @@ static void M_Control(const int16_t item_num)
             } else if (info.bite && info.distance < M_ATTACK_1_RANGE) {
                 item->goal_anim_state = M_STATE_AIM_1;
             } else if (
-                Creature_CanTargetEnemy(item, &info)
+                Creature_CanTargetEnemy(item, &info) && info.bite
                 && info.distance < M_ATTACK_0_RANGE
                 && (lara_info->poison_timer < 256
                     || (Box_GetBox(creature->enemy->box_num)->overlap_index
