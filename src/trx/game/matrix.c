@@ -1,8 +1,8 @@
 #include <trx/game/matrix.h>
 
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
-#include <trx/game/math.h>
 
 #include <float.h>
 #include <math.h>

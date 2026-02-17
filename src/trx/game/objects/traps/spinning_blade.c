@@ -1,6 +1,6 @@
+#include <trx/core/math.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>

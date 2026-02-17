@@ -1,6 +1,6 @@
+#include <trx/core/math.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
-#include <trx/game/math.h>
 #include <trx/game/objects.h>
 
 static void M_Control(const int16_t effect_num)

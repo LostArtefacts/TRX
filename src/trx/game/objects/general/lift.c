@@ -1,10 +1,10 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/log.h>
+#include <trx/core/math.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
 

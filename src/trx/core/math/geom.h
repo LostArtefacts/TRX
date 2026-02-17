@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math/types.h>
+#include <trx/core/math/types.h>
 
 XYZ_32 XYZ_32_From16(XYZ_16 src);
 int16_t XYZ_32_GetYaw(XYZ_32 pos);

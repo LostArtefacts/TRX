@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math/types.h>
+#include <trx/core/math/types.h>
 #include <trx/game/rooms/types.h>
 
 void Room_InitialiseRooms(int32_t num_rooms);

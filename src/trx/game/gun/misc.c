@@ -1,6 +1,7 @@
 #include <trx/game/gun/misc.h>
 
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
@@ -11,7 +12,6 @@
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>

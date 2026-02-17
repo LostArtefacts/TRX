@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math.h>
+#include <trx/core/math.h>
 
 typedef struct {
     int32_t left;

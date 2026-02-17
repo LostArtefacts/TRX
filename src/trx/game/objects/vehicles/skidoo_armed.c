@@ -1,6 +1,6 @@
+#include <trx/core/math.h>
 #include <trx/game/collision.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/creatures/skidoo_driver.h>
 #include <trx/game/pathing.h>
 

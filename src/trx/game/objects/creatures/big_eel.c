@@ -1,8 +1,8 @@
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/spawn.h>
 

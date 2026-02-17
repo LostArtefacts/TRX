@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/math.h>
 #include <trx/game/anims/enum.h>
-#include <trx/game/math.h>
 
 typedef struct {
     int16_t goal_anim_state;

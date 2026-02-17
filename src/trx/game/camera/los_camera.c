@@ -1,7 +1,7 @@
+#include <trx/core/math.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/rooms.h>
 
 // clang-format off

@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/math/types.h>
 #include <trx/game/lara/types.h>
-#include <trx/game/math/types.h>
 
 bool Lara_Cheat_GiveAllKeys(void);
 bool Lara_Cheat_GiveAllGuns(bool ignore_exclusions);

@@ -1,5 +1,6 @@
 #include <trx/game/objects/vehicles/skidoo_common.h>
 
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/collision.h>
 #include <trx/game/creature.h>
@@ -8,7 +9,6 @@
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>

@@ -1,10 +1,10 @@
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/util.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/textures.h>

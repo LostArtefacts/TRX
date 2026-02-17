@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
@@ -6,7 +7,6 @@
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/state.h>
 #include <trx/game/random.h>

@@ -1,8 +1,8 @@
-#include <trx/game/math/func.h>
+#include <trx/core/math/func.h>
 
+#include <trx/core/math/const.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
-#include <trx/game/math/const.h>
-#include <trx/game/math/geom.h>
 
 uint32_t Math_Sqrt(uint32_t n)
 {

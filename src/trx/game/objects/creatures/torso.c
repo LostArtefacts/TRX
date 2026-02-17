@@ -1,8 +1,8 @@
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>

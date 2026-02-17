@@ -3,7 +3,7 @@
 #include <trx/core/colors.h>
 #include <trx/core/json.h>
 #include <trx/core/log.h>
-#include <trx/game/math/types.h>
+#include <trx/core/math/types.h>
 
 #include <stddef.h>
 #include <stdint.h>

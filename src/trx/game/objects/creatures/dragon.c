@@ -1,5 +1,6 @@
 #include <trx/game/objects/creatures/dragon.h>
 
+#include <trx/core/math.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
@@ -8,7 +9,6 @@
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>

@@ -1,6 +1,6 @@
+#include <trx/core/math.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/math.h>
 #include <trx/game/output/state.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>

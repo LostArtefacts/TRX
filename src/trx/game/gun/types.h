@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trx/core/colors.h>
-#include <trx/game/math/types.h>
+#include <trx/core/math/types.h>
 #include <trx/game/sound/ids.h>
 
 typedef enum {

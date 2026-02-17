@@ -1,8 +1,8 @@
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/music.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>

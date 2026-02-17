@@ -1,8 +1,8 @@
 #include <trx/game/objects/general/smashable.h>
 
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>

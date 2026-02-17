@@ -2,9 +2,9 @@
 
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
-#include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/state.h>

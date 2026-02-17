@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/math.h>
 #include <trx/game/game_flow/types.h>
-#include <trx/game/math.h>
 #include <trx/game/stats/types.h>
 
 bool Stats_HasSecret(int16_t secret_idx);
