@@ -4,9 +4,9 @@
 #include <trx/game/console/common.h>
 #include <trx/game/fmv.h>
 #include <trx/game/input/common.h>
+#include <trx/game/replay/test_recorder.h>
+#include <trx/game/replay/test_replay.h>
 #include <trx/game/shell.h>
-#include <trx/game/test_recorder.h>
-#include <trx/game/test_replay.h>
 #include <trx/game/ui.h>
 
 // If true, next SDL_TEXT* event should be zeroed out.

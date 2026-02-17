@@ -20,13 +20,13 @@
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
+#include <trx/game/replay/test_recorder.h>
+#include <trx/game/replay/test_replay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/shell/platform.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/game/test_recorder.h>
-#include <trx/game/test_replay.h>
 #include <trx/game/ui/settings.h>
 #include <trx/gfx/context.h>
 #include <trx/log.h>

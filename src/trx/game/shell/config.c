@@ -3,10 +3,10 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
+#include <trx/game/replay/test_replay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
-#include <trx/game/test_replay.h>
 #include <trx/game/viewport.h>
 #include <trx/log.h>
 
