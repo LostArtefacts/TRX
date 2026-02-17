@@ -4,10 +4,10 @@
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/game_string.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/events.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
 #include <trx/memory.h>
@@ -205,22 +205,22 @@ void UI_HandleTextEdit(const char *const text)
 
 int32_t UI_GetCanvasWidth(void)
 {
-    return Scaler_CalcInverse(
-        Viewport_GetWidth(VIEWPORT_UI), SCALER_TARGET_GENERIC);
+    return UI_Scaler_CalcInverse(
+        Viewport_GetWidth(VIEWPORT_UI), UI_SCALER_TARGET_GENERIC);
 }
 
 int32_t UI_GetCanvasHeight(void)
 {
-    return Scaler_CalcInverse(
-        Viewport_GetHeight(VIEWPORT_UI), SCALER_TARGET_GENERIC);
+    return UI_Scaler_CalcInverse(
+        Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_GENERIC);
 }
 
 float UI_ScaleX(const float x)
 {
-    return Scaler_Calc(x * 0x10000, SCALER_TARGET_GENERIC) / 0x10000.p0;
+    return UI_Scaler_Calc(x * 0x10000, UI_SCALER_TARGET_GENERIC) / 0x10000.p0;
 }
 
 float UI_ScaleY(const float y)
 {
-    return Scaler_Calc(y * 0x10000, SCALER_TARGET_GENERIC) / 0x10000.p0;
+    return UI_Scaler_Calc(y * 0x10000, UI_SCALER_TARGET_GENERIC) / 0x10000.p0;
 }

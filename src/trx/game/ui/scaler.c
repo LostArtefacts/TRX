@@ -1,4 +1,4 @@
-#include <trx/game/scaler.h>
+#include <trx/game/ui/scaler.h>
 
 #include <trx/config.h>
 #include <trx/game/viewport.h>
@@ -18,26 +18,26 @@ static float M_DoCalc(
     return MIN(sx, sy) * sign;
 }
 
-double Scaler_GetScale(const SCALER_TARGET target)
+double UI_Scaler_GetScale(const UI_SCALER_TARGET target)
 {
     switch (target) {
-    case SCALER_TARGET_BAR:
+    case UI_SCALER_TARGET_BAR:
         return g_Config.ui.bar_scale;
-    case SCALER_TARGET_TEXT:
+    case UI_SCALER_TARGET_TEXT:
         return g_Config.ui.text_scale;
-    case SCALER_TARGET_ASSAULT_DIGITS:
+    case UI_SCALER_TARGET_ASSAULT_DIGITS:
         return g_Config.ui.text_scale;
     default:
         return 1.0;
     }
 }
 
-float Scaler_Calc(const float unit, const SCALER_TARGET target)
+float UI_Scaler_Calc(const float unit, const UI_SCALER_TARGET target)
 {
-    return M_DoCalc(unit, 640, 480, Scaler_GetScale(target));
+    return M_DoCalc(unit, 640, 480, UI_Scaler_GetScale(target));
 }
 
-float Scaler_CalcInverse(const float unit, const SCALER_TARGET target)
+float UI_Scaler_CalcInverse(const float unit, const UI_SCALER_TARGET target)
 {
-    return unit * 0x10000 / MAX(1, Scaler_Calc(0x10000, target));
+    return unit * 0x10000 / MAX(1, UI_Scaler_Calc(0x10000, target));
 }

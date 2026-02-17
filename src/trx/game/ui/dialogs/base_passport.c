@@ -1,10 +1,10 @@
 #include <trx/game/ui/dialogs/base_passport.h>
 
 #include <trx/game/inventory.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/resize.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -13,8 +13,8 @@ static int32_t M_GetVisibleRows(void)
     if (g_TRVersion >= 2) {
         return 10;
     } else {
-        const int32_t res_h = Scaler_CalcInverse(
-            Viewport_GetHeight(VIEWPORT_UI), SCALER_TARGET_TEXT);
+        const int32_t res_h = UI_Scaler_CalcInverse(
+            Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT);
         if (res_h <= 240) {
             return 5;
         } else if (res_h <= 384) {

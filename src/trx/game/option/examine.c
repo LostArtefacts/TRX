@@ -7,8 +7,8 @@
 #include <trx/game/inventory_ring/control.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/names.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 #include <trx/strings.h>
 
@@ -51,8 +51,8 @@ static bool M_ShouldShowDialog(const OBJECT_ID obj_id)
 
 static int32_t M_GetMaxRows(void)
 {
-    const int32_t res_h =
-        Scaler_CalcInverse(Viewport_GetHeight(VIEWPORT_UI), SCALER_TARGET_TEXT);
+    const int32_t res_h = UI_Scaler_CalcInverse(
+        Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT);
     if (res_h <= 240) {
         return 5;
     } else if (res_h <= 384) {

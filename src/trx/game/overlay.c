@@ -13,8 +13,8 @@
 #include <trx/game/output.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/savegame.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/strings.h>
 #include <trx/version.h>
 
@@ -99,11 +99,13 @@ static int32_t M_DrawAssaultTimerText(
     const OBJECT *const digits_obj, const char *const text, int32_t x,
     const int32_t y, const RGBA_F color[4])
 {
-    const int32_t scale_h = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t scale_v = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d0 = Scaler_Calc(-6, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d1 = Scaler_Calc(14, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d2 = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t scale_h =
+        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t scale_v =
+        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d0 = UI_Scaler_Calc(-6, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d1 = UI_Scaler_Calc(14, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d2 = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
 
     for (const char *c = text; *c != '\0'; c++) {
         if (*c == '-') {
@@ -139,9 +141,9 @@ static int32_t M_DrawAssaultTimerText(
 
 static int32_t M_MeasureAssaultTimerText(const char *const text)
 {
-    const int32_t d0 = Scaler_Calc(-6, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d1 = Scaler_Calc(14, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d2 = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d0 = UI_Scaler_Calc(-6, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d1 = UI_Scaler_Calc(14, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d2 = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
 
     int32_t w = 0;
     for (const char *c = text; *c != '\0'; c++) {
@@ -195,9 +197,9 @@ static void M_DrawTrackTimer(const GYM_TRACK_TYPE track_type)
     const char *const buffer =
         M_FormatAssaultTimeText(resume->stats.timer, false);
 
-    const int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t y = UI_Scaler_Calc(36, UI_SCALER_TARGET_ASSAULT_DIGITS);
     int32_t x = Viewport_GetCenterX(VIEWPORT_UI)
-        - Scaler_Calc(50, SCALER_TARGET_ASSAULT_DIGITS);
+        - UI_Scaler_Calc(50, UI_SCALER_TARGET_ASSAULT_DIGITS);
 
     M_DrawAssaultTimerText(
         digits_obj, buffer, x, y,
@@ -229,22 +231,24 @@ static void M_DrawAssaultPenalties(
     const char *const buffer =
         String_FormatStatic(fmt, total_sec / 60, total_sec % 60);
 
-    const int32_t scale_h = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t scale_v = Scaler_Calc(PHD_ONE, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t p = Scaler_Calc(1, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d0 = Scaler_Calc(-6, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d1 = Scaler_Calc(14, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d2 = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d3 = Scaler_Calc(8, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t scale_h =
+        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t scale_v =
+        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t p = UI_Scaler_Calc(1, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d0 = UI_Scaler_Calc(-6, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d1 = UI_Scaler_Calc(14, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d2 = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t d3 = UI_Scaler_Calc(8, UI_SCALER_TARGET_ASSAULT_DIGITS);
 
     int32_t x =
         Viewport_GetCenterX(VIEWPORT_UI)
-        - Scaler_Calc(
-            is_target_penalty ? 193 : 175, SCALER_TARGET_ASSAULT_DIGITS);
-    int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
+        - UI_Scaler_Calc(
+            is_target_penalty ? 193 : 175, UI_SCALER_TARGET_ASSAULT_DIGITS);
+    int32_t y = UI_Scaler_Calc(36, UI_SCALER_TARGET_ASSAULT_DIGITS);
     if (is_target_penalty
         && Gym_TrackManager_GetPenaltyFrames(track_type) != 0) {
-        y = Scaler_Calc(64, SCALER_TARGET_ASSAULT_DIGITS);
+        y = UI_Scaler_Calc(64, UI_SCALER_TARGET_ASSAULT_DIGITS);
     }
 
     for (const char *c = buffer; *c != '\0'; c++) {
@@ -313,10 +317,10 @@ static void M_DrawRacetrackLapTimes(const GYM_TRACK_TYPE track_type)
 
     const int32_t w_last = M_MeasureAssaultTimerText(last_text);
     const int32_t w_best = M_MeasureAssaultTimerText(best_text);
-    const int32_t gap = Scaler_Calc(20, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t gap = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
 
     const int32_t cx = Viewport_GetCenterX(VIEWPORT_UI);
-    const int32_t y = Scaler_Calc(36, SCALER_TARGET_ASSAULT_DIGITS);
+    const int32_t y = UI_Scaler_Calc(36, UI_SCALER_TARGET_ASSAULT_DIGITS);
 
     int32_t x = cx - w_last / 2;
     x = M_DrawAssaultTimerText(

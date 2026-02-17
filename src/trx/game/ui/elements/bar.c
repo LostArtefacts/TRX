@@ -2,10 +2,10 @@
 
 #include <trx/config.h>
 #include <trx/game/output.h>
-#include <trx/game/scaler.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/json.h>
 #include <trx/json/util/file.h>
 #include <trx/memory.h>
@@ -51,9 +51,9 @@ static RGBA_8888 M_MixColors(
 static void M_Measure(UI_NODE *const node)
 {
     M_DATA *const data = node->data;
-    const float scale =
-        Scaler_GetScale(
-            data->settings.preview ? SCALER_TARGET_TEXT : SCALER_TARGET_BAR)
+    const float scale = UI_Scaler_GetScale(
+                            data->settings.preview ? UI_SCALER_TARGET_TEXT
+                                                   : UI_SCALER_TARGET_BAR)
         * data->scale;
     node->measure_w = data->settings.w * scale;
     node->measure_h = data->settings.h * scale;
