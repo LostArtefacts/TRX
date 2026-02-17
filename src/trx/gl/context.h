@@ -1,7 +1,6 @@
 #pragma once
 
 #include <trx/game/viewport.h>
-#include <trx/gl/2d/2d_renderer.h>
 #include <trx/gl/common.h>
 #include <trx/gl/renderer.h>
 

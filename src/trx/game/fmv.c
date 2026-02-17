@@ -10,11 +10,11 @@
 #include <trx/game/input.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
+#include <trx/game/output/quad.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
 #include <trx/game/viewport.h>
-#include <trx/gl/context.h>
 #include <trx/log.h>
 #include <trx/strings.h>
 
@@ -70,10 +70,10 @@ static void M_UnlockSurface(void *const surface, void *const user_data)
 
 static void M_UploadSurface(void *const surface, void *const user_data)
 {
-    TRX_GL_2D_RENDERER *const renderer_2d = user_data;
+    OUTPUT_QUAD *const renderer_2d = user_data;
     TRX_GL_2D_SURFACE *const surface_ = surface;
-    TRX_GL_2D_Renderer_Upload(renderer_2d, &surface_->desc, surface_->buffer);
-    TRX_GL_2D_Renderer_Render(renderer_2d);
+    Output_Quad_Upload(renderer_2d, &surface_->desc, surface_->buffer);
+    Output_Quad_Render(renderer_2d);
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_BeginScene();
@@ -96,7 +96,7 @@ static bool M_Play(const char *const file_name)
         return false;
     }
 
-    TRX_GL_2D_RENDERER *renderer_2d = TRX_GL_2D_Renderer_Create();
+    OUTPUT_QUAD *renderer_2d = Output_Quad_Create();
 
     Video_SetSurfaceAllocatorFunc(video, M_AllocateSurface, nullptr);
     Video_SetSurfaceDeallocatorFunc(video, M_DeallocateSurface, nullptr);
@@ -133,7 +133,7 @@ static bool M_Play(const char *const file_name)
     }
     Video_Close(video);
 
-    TRX_GL_2D_Renderer_Destroy(renderer_2d);
+    Output_Quad_Destroy(renderer_2d);
     Output_ApplyRenderSettings();
     return true;
 }

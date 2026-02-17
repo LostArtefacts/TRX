@@ -10,11 +10,11 @@
 #include <trx/game/objects.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/overlay.h>
+#include <trx/game/output/quad.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/scene_source.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
-#include <trx/gl/2d/2d_renderer.h>
 #include <trx/gl/context.h>
 #include <trx/gl/gl/utils.h>
 #include <trx/log.h>
@@ -107,21 +107,21 @@ typedef struct {
     SCENE_SOURCE source;
     MEMORY_ARENA_ALLOCATOR alloc;
     VECTOR *ops[2];
-    TRX_GL_2D_RENDERER *renderer;
+    OUTPUT_QUAD *renderer;
     TRX_GL_TEXTURE solid_black_texture;
     struct {
-        TRX_GL_2D_RENDERER *renderer;
+        OUTPUT_QUAD *renderer;
         uint64_t next_use_token;
         M_IMAGE_CACHE_ENTRY entries[M_IMAGE_CACHE_CAPACITY];
     } image;
     struct {
-        TRX_GL_2D_RENDERER *renderer;
+        OUTPUT_QUAD *renderer;
         M_SNAPSHOT_STATE state;
         bool transition_active;
         FADER transition_fader;
     } snapshot;
     struct {
-        TRX_GL_2D_RENDERER *renderer;
+        OUTPUT_QUAD *renderer;
         bool uploaded;
         int32_t texture_idx;
         int32_t tex_page;
@@ -528,13 +528,13 @@ static void M_DrawOp_BlackRectangle(const M_DRAW_OP_BLACK_RECTANGLE *const op)
         return;
     }
     M_EnsureSolidBlackTexture();
-    TRX_GL_2D_Renderer_SetExternalTexture(
+    Output_Quad_SetExternalTexture(
         p->renderer, p->solid_black_texture.id, 1, 1, false);
-    TRX_GL_2D_Renderer_SetEffect(p->renderer, TRX_GL_2D_EFFECT_NONE);
-    TRX_GL_2D_Renderer_SetRepeat(p->renderer, 1, 1);
-    TRX_GL_2D_Renderer_SetTextureSize(p->renderer, nullptr);
-    TRX_GL_2D_Renderer_SetOpacity(p->renderer, op->opacity);
-    TRX_GL_2D_Renderer_RenderWithBlend(p->renderer);
+    Output_Quad_SetEffect(p->renderer, OUTPUT_QUAD_EFFECT_NONE);
+    Output_Quad_SetRepeat(p->renderer, 1, 1);
+    Output_Quad_SetTextureSize(p->renderer, nullptr);
+    Output_Quad_SetOpacity(p->renderer, op->opacity);
+    Output_Quad_RenderWithBlend(p->renderer);
 }
 
 static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
@@ -544,24 +544,24 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
         return;
     }
 
-    TRX_GL_2D_Renderer_SetExternalTexture(
+    Output_Quad_SetExternalTexture(
         p->image.renderer, op->texture_id, op->width, op->height, op->flip_y);
-    TRX_GL_2D_Renderer_SetEffect(p->image.renderer, TRX_GL_2D_EFFECT_NONE);
-    TRX_GL_2D_Renderer_SetRepeat(p->image.renderer, 1, 1);
-    TRX_GL_2D_Renderer_SetTextureSize(p->image.renderer, nullptr);
+    Output_Quad_SetEffect(p->image.renderer, OUTPUT_QUAD_EFFECT_NONE);
+    Output_Quad_SetRepeat(p->image.renderer, 1, 1);
+    Output_Quad_SetTextureSize(p->image.renderer, nullptr);
     Output_SetDesaturation(op->desaturation);
     if (op->use_fit) {
-        TRX_GL_2D_Renderer_SetFit(
-            p->image.renderer, TRX_GL_2D_FIT_SMART, (float)op->width,
+        Output_Quad_SetFit(
+            p->image.renderer, OUTPUT_QUAD_FIT_SMART, (float)op->width,
             (float)op->height);
     } else {
-        TRX_GL_2D_Renderer_ClearFit(p->image.renderer);
+        Output_Quad_ClearFit(p->image.renderer);
     }
-    TRX_GL_2D_Renderer_SetOpacity(p->image.renderer, op->opacity);
+    Output_Quad_SetOpacity(p->image.renderer, op->opacity);
     if (op->opacity >= 1.0f) {
-        TRX_GL_2D_Renderer_Render(p->image.renderer);
+        Output_Quad_Render(p->image.renderer);
     } else {
-        TRX_GL_2D_Renderer_RenderWithBlend(p->image.renderer);
+        Output_Quad_RenderWithBlend(p->image.renderer);
     }
     Output_SetDesaturation(0.0f);
 }
@@ -576,14 +576,14 @@ static void M_DrawOp_Snapshot(const M_DRAW_OP_SNAPSHOT *const op)
         return;
     }
 
-    TRX_GL_2D_Renderer_SetExternalTexture(
+    Output_Quad_SetExternalTexture(
         p->snapshot.renderer, op->texture_id, op->width, op->height, true);
-    TRX_GL_2D_Renderer_SetEffect(p->snapshot.renderer, TRX_GL_2D_EFFECT_NONE);
-    TRX_GL_2D_Renderer_SetRepeat(p->snapshot.renderer, 1, 1);
-    TRX_GL_2D_Renderer_SetTextureSize(p->snapshot.renderer, nullptr);
-    TRX_GL_2D_Renderer_ClearFit(p->snapshot.renderer);
-    TRX_GL_2D_Renderer_SetOpacity(p->snapshot.renderer, op->opacity);
-    TRX_GL_2D_Renderer_RenderWithBlend(p->snapshot.renderer);
+    Output_Quad_SetEffect(p->snapshot.renderer, OUTPUT_QUAD_EFFECT_NONE);
+    Output_Quad_SetRepeat(p->snapshot.renderer, 1, 1);
+    Output_Quad_SetTextureSize(p->snapshot.renderer, nullptr);
+    Output_Quad_ClearFit(p->snapshot.renderer);
+    Output_Quad_SetOpacity(p->snapshot.renderer, op->opacity);
+    Output_Quad_RenderWithBlend(p->snapshot.renderer);
 }
 
 static bool M_EnsurePatternUploaded(M_PRIV *const p)
@@ -644,8 +644,7 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
         || p->pattern.tex_page != texture->tex_page
         || memcmp(&p->pattern.desc, &desc, sizeof(desc)) != 0) {
         TRX_GL_2D_SURFACE_DESC tmp_desc = desc;
-        TRX_GL_2D_Renderer_Upload(
-            p->pattern.renderer, &tmp_desc, (uint8_t *)page);
+        Output_Quad_Upload(p->pattern.renderer, &tmp_desc, (uint8_t *)page);
         p->pattern.uploaded = true;
         p->pattern.texture_idx = texture_idx;
         p->pattern.tex_page = texture->tex_page;
@@ -670,24 +669,24 @@ static void M_DrawOp_Pattern(const M_DRAW_OP_PATTERN *const op)
     const float screen_ratio = M_GetScreenAspectRatio();
     const int32_t repeat_x = (int32_t)roundf(repeat_y * screen_ratio);
 
-    TRX_GL_2D_Renderer_SetRepeat(p->pattern.renderer, repeat_x, repeat_y);
-    TRX_GL_2D_Renderer_SetTextureSize(
+    Output_Quad_SetRepeat(p->pattern.renderer, repeat_x, repeat_y);
+    Output_Quad_SetTextureSize(
         p->pattern.renderer,
-        &(TRX_GL_TEXTURE_SIZE) {
+        &(OUTPUT_QUAD_TEXTURE_SIZE) {
             .x0 = p->pattern.atlas_size.x0,
             .y0 = p->pattern.atlas_size.y0,
             .x1 = p->pattern.atlas_size.x1,
             .y1 = p->pattern.atlas_size.y1,
         });
-    TRX_GL_2D_Renderer_SetEffect(
+    Output_Quad_SetEffect(
         p->pattern.renderer,
-        op->wave ? TRX_GL_2D_EFFECT_WAVE : TRX_GL_2D_EFFECT_VIGNETTE);
-    TRX_GL_2D_Renderer_ClearFit(p->pattern.renderer);
-    TRX_GL_2D_Renderer_SetOpacity(p->pattern.renderer, op->opacity);
+        op->wave ? OUTPUT_QUAD_EFFECT_WAVE : OUTPUT_QUAD_EFFECT_VIGNETTE);
+    Output_Quad_ClearFit(p->pattern.renderer);
+    Output_Quad_SetOpacity(p->pattern.renderer, op->opacity);
     if (op->opacity >= 1.0f) {
-        TRX_GL_2D_Renderer_Render(p->pattern.renderer);
+        Output_Quad_Render(p->pattern.renderer);
     } else {
-        TRX_GL_2D_Renderer_RenderWithBlend(p->pattern.renderer);
+        Output_Quad_RenderWithBlend(p->pattern.renderer);
     }
 }
 
@@ -707,7 +706,7 @@ static void M_EnsureSnapshotTexture(M_PRIV *const p)
     s->width = w;
     s->height = h;
     M_CreateTextureRGB8(&s->texture, s->width, s->height, nullptr);
-    TRX_GL_2D_Renderer_ClearFit(p->snapshot.renderer);
+    Output_Quad_ClearFit(p->snapshot.renderer);
 }
 
 static void M_RunQueue(const VECTOR *const queue)
@@ -841,7 +840,7 @@ void Output_Overlay_CaptureSnapshot(void)
     // Remove the captured brightness so we can reapply the current multiplier.
     p->snapshot.state.captured_brightness = g_Config.visuals.ui_brightness;
     CLAMPL(p->snapshot.state.captured_brightness, 0.001f);
-    TRX_GL_2D_Renderer_SetBrightnessScale(
+    Output_Quad_SetBrightnessScale(
         p->snapshot.renderer, 1.0f / p->snapshot.state.captured_brightness);
 }
 
@@ -917,10 +916,10 @@ void Output_Overlay_DrawBlackRectangle(const float opacity, const bool post_ui)
 void OutputSource_Overlay_Init(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->renderer = TRX_GL_2D_Renderer_Create();
-    p->image.renderer = TRX_GL_2D_Renderer_Create();
-    p->snapshot.renderer = TRX_GL_2D_Renderer_Create();
-    p->pattern.renderer = TRX_GL_2D_Renderer_Create();
+    p->renderer = Output_Quad_Create();
+    p->image.renderer = Output_Quad_Create();
+    p->snapshot.renderer = Output_Quad_Create();
+    p->pattern.renderer = Output_Quad_Create();
     p->pattern.uploaded = false;
     M_EnsureSolidBlackTexture();
 
@@ -936,19 +935,19 @@ void OutputSource_Overlay_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->renderer != nullptr) {
-        TRX_GL_2D_Renderer_Destroy(p->renderer);
+        Output_Quad_Destroy(p->renderer);
         p->renderer = nullptr;
     }
     if (p->image.renderer != nullptr) {
-        TRX_GL_2D_Renderer_Destroy(p->image.renderer);
+        Output_Quad_Destroy(p->image.renderer);
         p->image.renderer = nullptr;
     }
     if (p->snapshot.renderer != nullptr) {
-        TRX_GL_2D_Renderer_Destroy(p->snapshot.renderer);
+        Output_Quad_Destroy(p->snapshot.renderer);
         p->snapshot.renderer = nullptr;
     }
     if (p->pattern.renderer != nullptr) {
-        TRX_GL_2D_Renderer_Destroy(p->pattern.renderer);
+        Output_Quad_Destroy(p->pattern.renderer);
         p->pattern.renderer = nullptr;
     }
     for (int32_t i = 0; i < M_IMAGE_CACHE_CAPACITY; i++) {
