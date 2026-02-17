@@ -2,7 +2,7 @@
 
 #include <trx/debug.h>
 #include <trx/game/output/shaders/generic.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 
 #include <GL/glew.h>

@@ -1,7 +1,7 @@
-#include <trx/gl/gl/sampler.h>
+#include <trx/gl/sampler.h>
 
 #include <trx/debug.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 
 void TRX_GL_Sampler_Init(TRX_GL_SAMPLER *sampler)
 {

@@ -15,9 +15,9 @@
 #include <trx/game/output/scene_source.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
-#include <trx/gl/context.h>
-#include <trx/gl/gl/texture.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/game/viewport.h>
+#include <trx/gl/texture.h>
+#include <trx/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>

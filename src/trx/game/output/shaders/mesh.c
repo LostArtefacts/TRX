@@ -1,7 +1,7 @@
 #include <trx/game/output/shaders/mesh.h>
 
 #include <trx/game/output/utils.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>

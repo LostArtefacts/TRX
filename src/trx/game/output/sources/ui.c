@@ -6,7 +6,7 @@
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/viewport.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/vector.h>

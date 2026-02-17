@@ -1,7 +1,7 @@
-#include <trx/gl/gl/texture.h>
+#include <trx/gl/texture.h>
 
 #include <trx/debug.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 

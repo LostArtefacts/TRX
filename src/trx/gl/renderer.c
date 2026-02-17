@@ -1,16 +1,16 @@
 #include <trx/gl/renderer.h>
 
 #include <trx/debug.h>
+#include <trx/gl/buffer.h>
 #include <trx/gl/common.h>
 #include <trx/gl/context.h>
-#include <trx/gl/gl/buffer.h>
-#include <trx/gl/gl/fbo.h>
-#include <trx/gl/gl/program.h>
-#include <trx/gl/gl/sampler.h>
-#include <trx/gl/gl/texture.h>
-#include <trx/gl/gl/utils.h>
-#include <trx/gl/gl/vertex_array.h>
+#include <trx/gl/fbo.h>
+#include <trx/gl/program.h>
+#include <trx/gl/sampler.h>
 #include <trx/gl/screenshot.h>
+#include <trx/gl/texture.h>
+#include <trx/gl/utils.h>
+#include <trx/gl/vertex_array.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 

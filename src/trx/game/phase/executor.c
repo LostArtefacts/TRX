@@ -17,7 +17,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 #include <trx/gl/context.h>
-#include <trx/gl/gl/track.h>
+#include <trx/gl/track.h>
 
 #include <stdio.h>
 

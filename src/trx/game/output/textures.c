@@ -7,7 +7,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/shell.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>

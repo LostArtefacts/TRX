@@ -1,4 +1,4 @@
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 
 #include <GL/glew.h>
 

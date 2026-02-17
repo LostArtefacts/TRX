@@ -1,10 +1,10 @@
-#include <trx/gl/gl/program.h>
+#include <trx/gl/program.h>
 
 #include <trx/debug.h>
 #include <trx/filesystem.h>
 #include <trx/game/shell.h>
-#include <trx/gl/gl/track.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/track.h>
+#include <trx/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/vector.h>

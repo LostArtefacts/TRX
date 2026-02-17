@@ -2,9 +2,9 @@
 
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
-#include <trx/gl/gl/utils.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/screenshot.h>
+#include <trx/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 
