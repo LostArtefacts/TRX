@@ -2,6 +2,7 @@
 
 #include <trx/config/types.h>
 #include <trx/core/event_manager.h>
+#include <trx/core/shell.h>
 #include <trx/game/shell/args.h>
 
 #include <SDL2/SDL_events.h>
@@ -19,9 +20,6 @@ const char *Shell_GetConfigDir(void);
 
 int32_t Shell_Main(const SHELL_ARGS *args);
 void Shell_Terminate(int32_t exit_code);
-void Shell_ExitSystem(const char *message);
-void Shell_ExitSystemEx(const char *log_message, const char *dialog_message);
-void Shell_ExitSystemFmt(const char *fmt, ...);
 
 void Shell_ScheduleExit(void);
 bool Shell_IsExiting(void);
