@@ -154,7 +154,7 @@ static void M_TR3_ControlSmall(
     // water extinguishes it.
     if (lara->water_status == LWS_CHEAT) {
         effect->counter = 0;
-        Effect_Kill(Effect_GetNum(effect));
+        Effect_Kill(Effect_GetIndex(effect));
         lara->burn = 0;
         return;
     }
@@ -192,7 +192,7 @@ static void M_TR3_ControlSmall(
     Output_AddDynamicLightRGB(lara_item->pos, 13, color);
 
     if (lara_item->room_num != effect->room_num) {
-        Effect_NewRoom(Effect_GetNum(effect), lara_item->room_num);
+        Effect_UpdateRoom(Effect_GetIndex(effect), lara_item->room_num);
     }
 
     const int32_t wh = Room_GetWaterHeight(effect->pos, effect->room_num);
@@ -204,7 +204,7 @@ static void M_TR3_ControlSmall(
         Lara_TakeDamage(M_ON_FIRE_DAMAGE, true);
     } else {
         effect->counter = 0;
-        Effect_Kill(Effect_GetNum(effect));
+        Effect_Kill(Effect_GetIndex(effect));
         lara->burn = false;
     }
 }
@@ -426,7 +426,7 @@ static void M_TR12_Control(const int16_t effect_num)
             lara_item, &effect->pos, -1 - effect->counter);
         const int16_t room_num = lara_item->room_num;
         if (room_num != effect->room_num) {
-            Effect_NewRoom(effect_num, room_num);
+            Effect_UpdateRoom(effect_num, room_num);
         }
 
         const int32_t water_height =
@@ -434,7 +434,7 @@ static void M_TR12_Control(const int16_t effect_num)
         if ((water_height != NO_HEIGHT && effect->pos.y > water_height)
             || lara_info->water_status == LWS_CHEAT) {
             effect->counter = 0;
-            Effect_Kill(Effect_GetNum(effect));
+            Effect_Kill(Effect_GetIndex(effect));
             lara_info->burn = false;
         } else {
             M_TR12_DoEffects(effect);

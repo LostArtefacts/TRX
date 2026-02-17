@@ -1,4 +1,4 @@
-#include <trx/game/items/common.h>
+#include <trx/game/items/manager.h>
 
 #include <trx/game/carrier.h>
 #include <trx/game/game.h>
@@ -8,10 +8,8 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/shoal.h>
 #include <trx/game/output/const.h>
-#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/game/spawn.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -300,27 +298,6 @@ void Item_Control(void)
     Carrier_AnimateDrops();
 }
 
-void Item_ControlDraw(ITEM *const item)
-{
-    if (g_TRVersion == 3 && item->status != IS_INVISIBLE
-        && item->after_death < 32 && item->after_death > 0) {
-        item->after_death++;
-
-        if (!Item_ShouldSpawnBlood(item)) {
-            return;
-        }
-
-        if (item->after_death == 2 || item->after_death == 5
-            || item->after_death == 11 || item->after_death == 20
-            || item->after_death == 27 || item->after_death == 32
-            || (Random_GetDraw() & 7) == 0) {
-            Spawn_BloodBathD(
-                item->pos.x, item->pos.y - 64, item->pos.z, 0,
-                Random_GetDraw() << 1, item->room_num, 1);
-        }
-    }
-}
-
 void Item_Kill(const int16_t item_num)
 {
     Sparks_DetachItem(item_num);
@@ -527,28 +504,4 @@ int32_t Item_GlobalReplace(
     }
 
     return changed;
-}
-
-bool Item_IsTriggerActive(ITEM *const item)
-{
-    const bool ok = !(item->flags & IF_REVERSE);
-
-    if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-        return !ok;
-    }
-
-    if (!item->timer) {
-        return ok;
-    }
-
-    if (item->timer == -1) {
-        return !ok;
-    }
-
-    item->timer--;
-    if (item->timer == 0) {
-        item->timer = -1;
-    }
-
-    return ok;
 }

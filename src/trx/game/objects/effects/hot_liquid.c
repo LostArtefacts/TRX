@@ -33,7 +33,7 @@ static void M_Control(const int16_t effect_num)
     }
 
     if (effect->room_num != room_num) {
-        Effect_NewRoom(effect_num, room_num);
+        Effect_UpdateRoom(effect_num, room_num);
     }
     Sound_Effect(SFX_BOWL_POUR, &effect->pos, SPM_NORMAL);
 }

@@ -429,7 +429,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "hit_effect_count", lara->hit_effect_count);
     JSONW_WRITE(
         io, "hit_effect",
-        lara->hit_effect ? Effect_GetNum(lara->hit_effect) : 0);
+        lara->hit_effect ? Effect_GetIndex(lara->hit_effect) : 0);
 
     JSONW_WRITE(io, "air", lara->air);
     JSONW_WRITE(io, "sprint_timer", lara->sprint_timer);

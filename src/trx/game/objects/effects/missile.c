@@ -33,7 +33,7 @@ static bool M_HitFloorOrCeiling(EFFECT *const effect)
         return true;
     }
     if (room_num != effect->room_num) {
-        Effect_NewRoom(Effect_GetNum(effect), room_num);
+        Effect_UpdateRoom(Effect_GetIndex(effect), room_num);
     }
     return false;
 }

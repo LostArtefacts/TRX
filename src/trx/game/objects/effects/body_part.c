@@ -85,7 +85,7 @@ static void M_Control_TR12(const int16_t effect_num)
     }
 
     if (room_num != effect->room_num) {
-        Effect_NewRoom(effect_num, room_num);
+        Effect_UpdateRoom(effect_num, room_num);
     }
 }
 
@@ -166,7 +166,7 @@ static void M_Control_TR3(const int16_t effect_num)
     }
 
     if (effect->room_num != room_num) {
-        Effect_NewRoom(effect_num, room_num);
+        Effect_UpdateRoom(effect_num, room_num);
     }
 }
 

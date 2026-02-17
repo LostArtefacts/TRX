@@ -280,7 +280,7 @@ static void M_Control(const int16_t effect_num)
     }
 
     if (effect->room_num != room_num) {
-        Effect_NewRoom(effect_num, lara_item->room_num);
+        Effect_UpdateRoom(effect_num, lara_item->room_num);
     }
 
     if (falloffs[effect->flag1]) {
