@@ -16,8 +16,8 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
-#include <trx/gfx/context.h>
-#include <trx/gfx/gl/track.h>
+#include <trx/gl/context.h>
+#include <trx/gl/gl/track.h>
 
 #include <stdio.h>
 
@@ -75,10 +75,10 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     Output_EndScene();
 
     if (!Output_IsHeadless()
-        || GFX_Context_GetScheduledScreenshotPath() != nullptr) {
+        || TRX_GL_Context_GetScheduledScreenshotPath() != nullptr) {
         Output_FlipScreen();
     } else {
-        GFX_Track_Reset();
+        TRX_GL_Track_Reset();
     }
 }
 
@@ -179,7 +179,7 @@ static void M_Draw(PHASE *const phase)
 
     if (Shell_GetArgs()->debug_render_performance) {
         char buffer[80];
-        const GFX_METRICS metrics = GFX_Track_GetMetrics();
+        const TRX_GL_METRICS metrics = TRX_GL_Track_GetMetrics();
         sprintf(
             buffer, "%.03f KB T:%d U:%d Vo:%d Vt:%d Vb:%d",
             metrics.buffer_total_bytes / 1024.0f, metrics.buffer_transfer_count,
@@ -189,10 +189,10 @@ static void M_Draw(PHASE *const phase)
     }
 
     if (!Output_IsHeadless()
-        || GFX_Context_GetScheduledScreenshotPath() != nullptr) {
+        || TRX_GL_Context_GetScheduledScreenshotPath() != nullptr) {
         Output_FlipScreen();
     } else {
-        GFX_Track_Reset();
+        TRX_GL_Track_Reset();
     }
 }
 

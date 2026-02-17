@@ -8,7 +8,7 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/shell.h>
-#include <trx/gfx/context.h>
+#include <trx/gl/context.h>
 #include <trx/vector.h>
 
 #define M_PROCESS_SOURCES(p, func, ...)                                        \
@@ -30,9 +30,10 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_SetSamplerFilter(
-    const GLuint sampler, const GFX_TEXTURE_FILTER filter)
+    const GLuint sampler, const TRX_GL_TEXTURE_FILTER filter)
 {
-    const GLenum gl_filter = filter == GFX_TF_BILINEAR ? GL_LINEAR : GL_NEAREST;
+    const GLenum gl_filter =
+        filter == TRX_GL_TF_BILINEAR ? GL_LINEAR : GL_NEAREST;
     glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, gl_filter);
     glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, gl_filter);
 }
@@ -104,7 +105,7 @@ static void M_PrepareScene(const M_PRIV *const p)
 {
 #ifndef __APPLE__
     glLineWidth(g_Config.rendering.wireframe_width);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 #endif
 
     glBindSampler(0, p->sampler_id);
@@ -185,7 +186,7 @@ void SceneCompositor_Init(void)
     glSamplerParameteri(p->sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glSamplerParameteri(p->sampler_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glSamplerParameteri(p->sampler_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
 void SceneCompositor_Shutdown(void)
@@ -203,7 +204,7 @@ void SceneCompositor_Shutdown(void)
 bool M_IsActive(void)
 {
     return !Output_IsHeadless() || Shell_GetArgs()->debug_render_performance
-        || GFX_Context_GetScheduledScreenshotPath() != nullptr;
+        || TRX_GL_Context_GetScheduledScreenshotPath() != nullptr;
 }
 
 void SceneCompositor_BeginScene(void)

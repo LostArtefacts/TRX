@@ -1,19 +1,19 @@
-#include <trx/gfx/gl/fbo.h>
+#include <trx/gl/gl/fbo.h>
 
 #include <trx/debug.h>
 #include <trx/game/viewport.h>
-#include <trx/gfx/context.h>
-#include <trx/gfx/gl/buffer.h>
-#include <trx/gfx/gl/program.h>
-#include <trx/gfx/gl/texture.h>
-#include <trx/gfx/gl/utils.h>
-#include <trx/gfx/gl/vertex_array.h>
+#include <trx/gl/context.h>
+#include <trx/gl/gl/buffer.h>
+#include <trx/gl/gl/program.h>
+#include <trx/gl/gl/texture.h>
+#include <trx/gl/gl/utils.h>
+#include <trx/gl/gl/vertex_array.h>
 #include <trx/log.h>
 
 #include <GL/glew.h>
 
-void GFX_GL_FBO_Init(
-    GFX_GL_FBO *const fbo, const int32_t width, const int32_t height,
+void TRX_GL_FBO_Init(
+    TRX_GL_FBO *const fbo, const int32_t width, const int32_t height,
     const GLint internal_format, const GLenum format,
     const bool with_depth_stencil)
 {
@@ -27,9 +27,9 @@ void GFX_GL_FBO_Init(
     ASSERT(height > 0);
 
     // Allocate color texture (no mipmaps for FBO attachments).
-    GFX_GL_Texture_Init(&fbo->texture, GL_TEXTURE_2D);
+    TRX_GL_Texture_Init(&fbo->texture, GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, fbo->texture.id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -38,36 +38,36 @@ void GFX_GL_FBO_Init(
         GL_TEXTURE_2D, 0, internal_format, width, height, 0, format,
         GL_UNSIGNED_BYTE, nullptr);
     glClearColor(0.0, 0.0, 0.0, 1.0);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     glGenFramebuffers(1, &fbo->fbo);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     glBindFramebuffer(GL_FRAMEBUFFER, fbo->fbo);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     glFramebufferTexture2D(
         GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo->texture.id,
         0);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     // direct draw to color attachment 0.
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     if (with_depth_stencil) {
         glGenRenderbuffers(1, &fbo->rbo);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
         glBindRenderbuffer(GL_RENDERBUFFER, fbo->rbo);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
         glRenderbufferStorage(
             GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
         glFramebufferRenderbuffer(
             GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
             fbo->rbo);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
     } else {
         fbo->rbo = 0;
     }
@@ -79,7 +79,7 @@ void GFX_GL_FBO_Init(
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void GFX_GL_FBO_Close(GFX_GL_FBO *fbo)
+void TRX_GL_FBO_Close(TRX_GL_FBO *fbo)
 {
     if (fbo->rbo) {
         glDeleteRenderbuffers(1, &fbo->rbo);
@@ -89,11 +89,11 @@ void GFX_GL_FBO_Close(GFX_GL_FBO *fbo)
         glDeleteFramebuffers(1, &fbo->fbo);
         fbo->fbo = 0;
     }
-    GFX_GL_Texture_Close(&fbo->texture);
+    TRX_GL_Texture_Close(&fbo->texture);
 }
 
-void GFX_GL_FBO_ResizeIfNeeded(
-    GFX_GL_FBO *const fbo, const int32_t width, const int32_t height)
+void TRX_GL_FBO_ResizeIfNeeded(
+    TRX_GL_FBO *const fbo, const int32_t width, const int32_t height)
 {
     if (width == fbo->width && height == fbo->height) {
         return;
@@ -103,19 +103,19 @@ void GFX_GL_FBO_ResizeIfNeeded(
     const GLenum format = fbo->format;
     const bool with_depth_stencil = fbo->with_depth_stencil;
 
-    GFX_GL_FBO_Close(fbo);
-    GFX_GL_FBO_Init(
+    TRX_GL_FBO_Close(fbo);
+    TRX_GL_FBO_Init(
         fbo, width, height, internal_format, format, with_depth_stencil);
 }
 
-void GFX_GL_FBO_Bind(const GFX_GL_FBO *const fbo)
+void TRX_GL_FBO_Bind(const TRX_GL_FBO *const fbo)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo->fbo);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_FBO_Unbind(void)
+void TRX_GL_FBO_Unbind(void)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }

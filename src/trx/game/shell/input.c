@@ -7,7 +7,7 @@
 #include <trx/game/console/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/viewport.h>
-#include <trx/gfx/context.h>
+#include <trx/gl/context.h>
 #include <trx/utils.h>
 
 static void M_ToggleFullscreen(void)
@@ -28,11 +28,11 @@ static void M_ToggleFPSCounter(void)
 
 static void M_ToggleBilinearFilter(void)
 {
-    CYCLE(g_Config.rendering.texture_filter, 1, GFX_TF_NUMBER_OF);
+    CYCLE(g_Config.rendering.texture_filter, 1, TRX_GL_TF_NUMBER_OF);
     Config_Update();
     Console_Log(
         "%s",
-        g_Config.rendering.texture_filter == GFX_TF_BILINEAR
+        g_Config.rendering.texture_filter == TRX_GL_TF_BILINEAR
             ? GS(OSD_BILINEAR_FILTER_ON)
             : GS(OSD_BILINEAR_FILTER_OFF));
 }

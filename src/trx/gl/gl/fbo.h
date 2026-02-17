@@ -3,8 +3,8 @@
 #pragma once
 
 #include <trx/game/viewport.h>
-#include <trx/gfx/context.h>
-#include <trx/gfx/gl/texture.h>
+#include <trx/gl/context.h>
+#include <trx/gl/gl/texture.h>
 
 #include <GL/glew.h>
 
@@ -18,22 +18,22 @@ typedef struct {
     GLint internal_format;
     GLenum format;
     bool with_depth_stencil;
-    GFX_GL_TEXTURE texture;
-} GFX_GL_FBO;
+    TRX_GL_TEXTURE texture;
+} TRX_GL_FBO;
 
 // Initialize an off-screen FBO.
-void GFX_GL_FBO_Init(
-    GFX_GL_FBO *fbo, int32_t width, int32_t height, GLint internal_format,
+void TRX_GL_FBO_Init(
+    TRX_GL_FBO *fbo, int32_t width, int32_t height, GLint internal_format,
     GLenum format, bool with_depth_stencil);
 
 // Close and free the GL resources.
-void GFX_GL_FBO_Close(GFX_GL_FBO *fbo);
+void TRX_GL_FBO_Close(TRX_GL_FBO *fbo);
 
 // Resize the FBO attachments (reallocate textures and RBO).
-void GFX_GL_FBO_ResizeIfNeeded(GFX_GL_FBO *fbo, int32_t width, int32_t height);
+void TRX_GL_FBO_ResizeIfNeeded(TRX_GL_FBO *fbo, int32_t width, int32_t height);
 
 // Bind this FBO for rendering (GL_FRAMEBUFFER).
-void GFX_GL_FBO_Bind(const GFX_GL_FBO *fbo);
+void TRX_GL_FBO_Bind(const TRX_GL_FBO *fbo);
 
 // Bind the default framebuffer (0).
-void GFX_GL_FBO_Unbind(void);
+void TRX_GL_FBO_Unbind(void);

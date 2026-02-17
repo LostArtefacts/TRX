@@ -1,11 +1,11 @@
 #pragma once
 
-#include <trx/gfx/common.h>
+#include <trx/gl/common.h>
 
 #include <stdint.h>
 
 typedef struct {
-    GFX_TEXTURE_FILTER display_filter;
+    TRX_GL_TEXTURE_FILTER display_filter;
     bool enable_wireframe;
     int32_t line_width;
-} GFX_CONFIG;
+} TRX_GL_CONFIG;

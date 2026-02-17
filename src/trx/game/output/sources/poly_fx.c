@@ -253,7 +253,7 @@ static void M_RenderPass(const SCENE_SOURCE *const source, SCENE_PASS pass)
     glBindVertexArray(p->vao);
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
 
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_DYNAMIC_DRAW);
 
@@ -264,7 +264,7 @@ static void M_RenderPass(const SCENE_SOURCE *const source, SCENE_PASS pass)
     Output_MeshShader_UploadWibbleEffect(p->shader, false);
     Output_MeshShader_UploadModelMatrix(p->shader, &g_IDMatrix);
     glDrawArrays(GL_TRIANGLES, 0, p->vertices->count);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)

@@ -7,7 +7,7 @@
 #include <trx/game/output/const.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/vars.h>
-#include <trx/gfx/context.h>
+#include <trx/gl/context.h>
 #include <trx/log.h>
 #include <trx/utils.h>
 
@@ -102,7 +102,7 @@ CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
 void Output_MakeScreenshot(const char *const path)
 {
     LOG_INFO("Taking screenshot");
-    GFX_Context_ScheduleScreenshot(path);
+    TRX_GL_Context_ScheduleScreenshot(path);
 }
 
 void Output_ApplyFOV(void)

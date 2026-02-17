@@ -7,7 +7,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/shell.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -356,7 +356,7 @@ static void M_PrepareEnvMap(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     if (Output_IsHeadless()) {
         const int32_t pattern_size = 256;
@@ -376,7 +376,7 @@ static void M_PrepareEnvMap(void)
         glTexImage2D(
             GL_TEXTURE_2D, 0, GL_RGB, pattern_size, pattern_size, 0, GL_RGB,
             GL_UNSIGNED_BYTE, test_pattern);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
         Memory_FreePointer(&test_pattern);
     }
 }
@@ -407,13 +407,13 @@ static void M_UploadAtlas(void)
         1, // number of mipmaps
         GL_RGBA8, TEXTURE_PAGE_WIDTH, TEXTURE_PAGE_HEIGHT,
         Output_GetTexturePageCount());
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     for (int32_t i = 0; i < Output_GetTexturePageCount(); i++) {
         const RGBA_8888 *const input_ptr = Output_GetTexturePage32(i);
@@ -428,11 +428,11 @@ static void M_UploadAtlas(void)
             1, // depth
             GL_RGBA, GL_UNSIGNED_BYTE, input_ptr);
     }
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     M_PrepareAtlasSizes();
 
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
 static void M_FreeLevelData(void)
@@ -498,7 +498,7 @@ void Output_Textures_UpdateEnvironmentMap(void)
 
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     const GLint vp_x = viewport[0];
     const GLint vp_y = viewport[1];
@@ -513,7 +513,7 @@ void Output_Textures_UpdateEnvironmentMap(void)
 
     glBindTexture(GL_TEXTURE_2D, m_Priv.tex_env_map);
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, w, h, 0);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
 void Output_Textures_CycleAnimations(void)

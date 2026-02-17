@@ -14,7 +14,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
 #include <trx/game/viewport.h>
-#include <trx/gfx/context.h>
+#include <trx/gl/context.h>
 #include <trx/log.h>
 #include <trx/strings.h>
 
@@ -25,24 +25,24 @@ static bool m_IsPlaying = false;
 static void *M_AllocateSurface(
     const int32_t width, const int32_t height, void *const user_data)
 {
-    GFX_2D_SURFACE_DESC surface_desc = {
+    TRX_GL_2D_SURFACE_DESC surface_desc = {
         .width = width,
         .height = height,
         .tex_format = GL_BGRA,
         .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
     };
-    return GFX_2D_Surface_Create(&surface_desc);
+    return TRX_GL_2D_Surface_Create(&surface_desc);
 }
 
 static void M_DeallocateSurface(void *const surface, void *const user_data)
 {
-    GFX_2D_Surface_Free(surface);
+    TRX_GL_2D_Surface_Free(surface);
 }
 
 static void M_ClearSurface(void *const surface, void *const user_data)
 {
     ASSERT(surface != nullptr);
-    GFX_2D_SURFACE *const surface_ = surface;
+    TRX_GL_2D_SURFACE *const surface_ = surface;
     memset(surface_->buffer, 0, surface_->desc.pitch * surface_->desc.height);
 }
 
@@ -60,7 +60,7 @@ static void M_RenderEnd(void *const surface, void *const user_data)
 static void *M_LockSurface(void *const surface, void *const user_data)
 {
     ASSERT(surface != nullptr);
-    GFX_2D_SURFACE *const surface_ = surface;
+    TRX_GL_2D_SURFACE *const surface_ = surface;
     return surface_->buffer;
 }
 
@@ -70,10 +70,10 @@ static void M_UnlockSurface(void *const surface, void *const user_data)
 
 static void M_UploadSurface(void *const surface, void *const user_data)
 {
-    GFX_2D_RENDERER *const renderer_2d = user_data;
-    GFX_2D_SURFACE *const surface_ = surface;
-    GFX_2D_Renderer_Upload(renderer_2d, &surface_->desc, surface_->buffer);
-    GFX_2D_Renderer_Render(renderer_2d);
+    TRX_GL_2D_RENDERER *const renderer_2d = user_data;
+    TRX_GL_2D_SURFACE *const surface_ = surface;
+    TRX_GL_2D_Renderer_Upload(renderer_2d, &surface_->desc, surface_->buffer);
+    TRX_GL_2D_Renderer_Render(renderer_2d);
 
     Output_SwitchViewport(VIEWPORT_UI);
     UI_BeginScene();
@@ -96,7 +96,7 @@ static bool M_Play(const char *const file_name)
         return false;
     }
 
-    GFX_2D_RENDERER *renderer_2d = GFX_2D_Renderer_Create();
+    TRX_GL_2D_RENDERER *renderer_2d = TRX_GL_2D_Renderer_Create();
 
     Video_SetSurfaceAllocatorFunc(video, M_AllocateSurface, nullptr);
     Video_SetSurfaceDeallocatorFunc(video, M_DeallocateSurface, nullptr);
@@ -133,7 +133,7 @@ static bool M_Play(const char *const file_name)
     }
     Video_Close(video);
 
-    GFX_2D_Renderer_Destroy(renderer_2d);
+    TRX_GL_2D_Renderer_Destroy(renderer_2d);
     Output_ApplyRenderSettings();
     return true;
 }

@@ -7,7 +7,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/rooms.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
@@ -126,7 +126,7 @@ void Output_Uniforms_UploadOrthoMatrix(const OUTPUT_UNIFORMS *const uniforms)
     Output_FillMatrix(matrices.mat_view, &g_IDMatrix);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->matrices);
-    GFX_TRACK_SUBDATA(
+    TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(matrices), &matrices);
 }
 
@@ -138,7 +138,7 @@ void Output_Uniforms_UploadViewMatrix(
     Output_FillMatrix(matrices.mat_view, matrix);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->matrices);
-    GFX_TRACK_SUBDATA(
+    TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(matrices), &matrices);
 }
 
@@ -173,7 +173,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
     };
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    GFX_TRACK_SUBDATA(
+    TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(general), &general);
 }
 
@@ -186,7 +186,7 @@ void Output_Uniforms_UploadDesaturation(
     CLAMP(clamped, 0.0f, 1.0f);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    GFX_TRACK_SUBDATA(
+    TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER,
         offsetof(M_UNIFORM_GENERAL, desaturation), sizeof(clamped), &clamped);
 }
@@ -201,7 +201,7 @@ void Output_Uniforms_UploadGameBrightnessMultiplier(
     CLAMP(clamped, CONFIG_MIN_BRIGHTNESS, CONFIG_MAX_BRIGHTNESS);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    GFX_TRACK_SUBDATA(
+    TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER,
         offsetof(M_UNIFORM_GENERAL, brightness_multiplier), sizeof(clamped),
         &clamped);
@@ -216,7 +216,7 @@ void Output_Uniforms_UploadUIBrightnessMultiplier(
     CLAMP(clamped, CONFIG_MIN_BRIGHTNESS, CONFIG_MAX_BRIGHTNESS);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
-    GFX_TRACK_SUBDATA(
+    TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER,
         offsetof(M_UNIFORM_GENERAL, ui_brightness_multiplier), sizeof(clamped),
         &clamped);
@@ -254,7 +254,7 @@ void Output_Uniforms_UploadRoomLights(
     memcpy(&p->last_lights, &lights, sizeof(lights));
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->lights);
-    GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, size, &lights);
+    TRX_GL_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, size, &lights);
 }
 
 void Output_Uniforms_UploadCPULight(
@@ -303,8 +303,9 @@ void Output_Uniforms_UploadCPULight(
     }
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-    GFX_TRACK_SUBDATA(glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);
-    GFX_GL_CheckError();
+    TRX_GL_TRACK_SUBDATA(
+        glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(ls), &ls);
+    TRX_GL_CheckError();
 }
 
 void Output_Uniforms_UploadOwnLight(
@@ -327,7 +328,7 @@ void Output_Uniforms_UploadOwnLight(
             0.0f,
         };
         glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-        GFX_TRACK_SUBDATA(
+        TRX_GL_TRACK_SUBDATA(
             glBufferSubData, GL_UNIFORM_BUFFER,
             offsetof(M_UNIFORM_LS, tr3_ambient), sizeof(ambient), ambient);
         priv->last_own_light_tr3_ambient = info->tr3_ambient;
@@ -339,7 +340,7 @@ void Output_Uniforms_UploadOwnLight(
 
         const float light_adder = info->ls_adder;
         glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
-        GFX_TRACK_SUBDATA(
+        TRX_GL_TRACK_SUBDATA(
             glBufferSubData, GL_UNIFORM_BUFFER, offsetof(M_UNIFORM_LS, adder),
             sizeof(light_adder), &light_adder);
         priv->last_own_light_adder = info->ls_adder;
@@ -372,7 +373,7 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
     glBufferData(
         GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_LS), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     uniforms->priv = (char *)uniforms + sizeof(OUTPUT_UNIFORMS);
     return uniforms;

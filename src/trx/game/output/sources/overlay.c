@@ -14,9 +14,9 @@
 #include <trx/game/output/scene_source.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
-#include <trx/gfx/2d/2d_renderer.h>
-#include <trx/gfx/context.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/2d/2d_renderer.h>
+#include <trx/gl/context.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
@@ -90,7 +90,7 @@ typedef struct {
 
     char *loaded_path;
     float loaded_for_screen_ratio;
-    GFX_GL_TEXTURE texture;
+    TRX_GL_TEXTURE texture;
     int32_t texture_width;
     int32_t texture_height;
 } M_IMAGE_CACHE_ENTRY;
@@ -98,7 +98,7 @@ typedef struct {
 typedef struct {
     bool has_content;
     float captured_brightness;
-    GFX_GL_TEXTURE texture;
+    TRX_GL_TEXTURE texture;
     int32_t width;
     int32_t height;
 } M_SNAPSHOT_STATE;
@@ -107,25 +107,25 @@ typedef struct {
     SCENE_SOURCE source;
     MEMORY_ARENA_ALLOCATOR alloc;
     VECTOR *ops[2];
-    GFX_2D_RENDERER *renderer;
-    GFX_GL_TEXTURE solid_black_texture;
+    TRX_GL_2D_RENDERER *renderer;
+    TRX_GL_TEXTURE solid_black_texture;
     struct {
-        GFX_2D_RENDERER *renderer;
+        TRX_GL_2D_RENDERER *renderer;
         uint64_t next_use_token;
         M_IMAGE_CACHE_ENTRY entries[M_IMAGE_CACHE_CAPACITY];
     } image;
     struct {
-        GFX_2D_RENDERER *renderer;
+        TRX_GL_2D_RENDERER *renderer;
         M_SNAPSHOT_STATE state;
         bool transition_active;
         FADER transition_fader;
     } snapshot;
     struct {
-        GFX_2D_RENDERER *renderer;
+        TRX_GL_2D_RENDERER *renderer;
         bool uploaded;
         int32_t texture_idx;
         int32_t tex_page;
-        GFX_2D_SURFACE_DESC desc;
+        TRX_GL_2D_SURFACE_DESC desc;
         OUTPUT_TEXTURE_SIZE atlas_size;
     } pattern;
 } M_PRIV;
@@ -137,16 +137,16 @@ static M_PRIV m_Priv = {
 };
 
 static bool M_CreateTextureRGB8(
-    GFX_GL_TEXTURE *const texture, const int32_t width, const int32_t height,
+    TRX_GL_TEXTURE *const texture, const int32_t width, const int32_t height,
     const void *const data)
 {
     if (texture == nullptr || width <= 0 || height <= 0) {
         return false;
     }
     if (!texture->initialized) {
-        GFX_GL_Texture_Init(texture, GL_TEXTURE_2D);
+        TRX_GL_Texture_Init(texture, GL_TEXTURE_2D);
     }
-    GFX_GL_Texture_Bind(texture);
+    TRX_GL_Texture_Bind(texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -159,19 +159,19 @@ static bool M_CreateTextureRGB8(
     GLint prev_unpack_alignment = 0;
     glGetIntegerv(GL_UNPACK_ALIGNMENT, &prev_unpack_alignment);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     glTexImage2D(
         GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
         data);
     glPixelStorei(GL_UNPACK_ALIGNMENT, prev_unpack_alignment);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     return true;
 }
 
-static void M_CloseTexture(GFX_GL_TEXTURE *const texture)
+static void M_CloseTexture(TRX_GL_TEXTURE *const texture)
 {
     if (texture != nullptr && texture->initialized) {
-        GFX_GL_Texture_Close(texture);
+        TRX_GL_Texture_Close(texture);
         texture->initialized = false;
     }
 }
@@ -209,7 +209,7 @@ static bool M_PrepareViewportCopy(
 }
 
 static void M_CopyPresentedFrameToTexture(
-    GFX_GL_TEXTURE *const texture, const int32_t width, const int32_t height)
+    TRX_GL_TEXTURE *const texture, const int32_t width, const int32_t height)
 {
     if (texture == nullptr || !texture->initialized || width <= 0
         || height <= 0) {
@@ -232,13 +232,13 @@ static void M_CopyPresentedFrameToTexture(
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     glReadBuffer(GL_FRONT);
 
-    GFX_GL_Texture_Bind(texture);
+    TRX_GL_Texture_Bind(texture);
     glCopyTexSubImage2D(
         GL_TEXTURE_2D, 0, 0, 0, rect.x, rect.y, copy_width, copy_height);
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)prev_read_fbo);
     glReadBuffer(prev_read_buffer);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
 static void M_EnsureSolidBlackTexture(void)
@@ -528,13 +528,13 @@ static void M_DrawOp_BlackRectangle(const M_DRAW_OP_BLACK_RECTANGLE *const op)
         return;
     }
     M_EnsureSolidBlackTexture();
-    GFX_2D_Renderer_SetExternalTexture(
+    TRX_GL_2D_Renderer_SetExternalTexture(
         p->renderer, p->solid_black_texture.id, 1, 1, false);
-    GFX_2D_Renderer_SetEffect(p->renderer, GFX_2D_EFFECT_NONE);
-    GFX_2D_Renderer_SetRepeat(p->renderer, 1, 1);
-    GFX_2D_Renderer_SetTextureSize(p->renderer, nullptr);
-    GFX_2D_Renderer_SetOpacity(p->renderer, op->opacity);
-    GFX_2D_Renderer_RenderWithBlend(p->renderer);
+    TRX_GL_2D_Renderer_SetEffect(p->renderer, TRX_GL_2D_EFFECT_NONE);
+    TRX_GL_2D_Renderer_SetRepeat(p->renderer, 1, 1);
+    TRX_GL_2D_Renderer_SetTextureSize(p->renderer, nullptr);
+    TRX_GL_2D_Renderer_SetOpacity(p->renderer, op->opacity);
+    TRX_GL_2D_Renderer_RenderWithBlend(p->renderer);
 }
 
 static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
@@ -544,24 +544,24 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
         return;
     }
 
-    GFX_2D_Renderer_SetExternalTexture(
+    TRX_GL_2D_Renderer_SetExternalTexture(
         p->image.renderer, op->texture_id, op->width, op->height, op->flip_y);
-    GFX_2D_Renderer_SetEffect(p->image.renderer, GFX_2D_EFFECT_NONE);
-    GFX_2D_Renderer_SetRepeat(p->image.renderer, 1, 1);
-    GFX_2D_Renderer_SetTextureSize(p->image.renderer, nullptr);
+    TRX_GL_2D_Renderer_SetEffect(p->image.renderer, TRX_GL_2D_EFFECT_NONE);
+    TRX_GL_2D_Renderer_SetRepeat(p->image.renderer, 1, 1);
+    TRX_GL_2D_Renderer_SetTextureSize(p->image.renderer, nullptr);
     Output_SetDesaturation(op->desaturation);
     if (op->use_fit) {
-        GFX_2D_Renderer_SetFit(
-            p->image.renderer, GFX_2D_FIT_SMART, (float)op->width,
+        TRX_GL_2D_Renderer_SetFit(
+            p->image.renderer, TRX_GL_2D_FIT_SMART, (float)op->width,
             (float)op->height);
     } else {
-        GFX_2D_Renderer_ClearFit(p->image.renderer);
+        TRX_GL_2D_Renderer_ClearFit(p->image.renderer);
     }
-    GFX_2D_Renderer_SetOpacity(p->image.renderer, op->opacity);
+    TRX_GL_2D_Renderer_SetOpacity(p->image.renderer, op->opacity);
     if (op->opacity >= 1.0f) {
-        GFX_2D_Renderer_Render(p->image.renderer);
+        TRX_GL_2D_Renderer_Render(p->image.renderer);
     } else {
-        GFX_2D_Renderer_RenderWithBlend(p->image.renderer);
+        TRX_GL_2D_Renderer_RenderWithBlend(p->image.renderer);
     }
     Output_SetDesaturation(0.0f);
 }
@@ -576,14 +576,14 @@ static void M_DrawOp_Snapshot(const M_DRAW_OP_SNAPSHOT *const op)
         return;
     }
 
-    GFX_2D_Renderer_SetExternalTexture(
+    TRX_GL_2D_Renderer_SetExternalTexture(
         p->snapshot.renderer, op->texture_id, op->width, op->height, true);
-    GFX_2D_Renderer_SetEffect(p->snapshot.renderer, GFX_2D_EFFECT_NONE);
-    GFX_2D_Renderer_SetRepeat(p->snapshot.renderer, 1, 1);
-    GFX_2D_Renderer_SetTextureSize(p->snapshot.renderer, nullptr);
-    GFX_2D_Renderer_ClearFit(p->snapshot.renderer);
-    GFX_2D_Renderer_SetOpacity(p->snapshot.renderer, op->opacity);
-    GFX_2D_Renderer_RenderWithBlend(p->snapshot.renderer);
+    TRX_GL_2D_Renderer_SetEffect(p->snapshot.renderer, TRX_GL_2D_EFFECT_NONE);
+    TRX_GL_2D_Renderer_SetRepeat(p->snapshot.renderer, 1, 1);
+    TRX_GL_2D_Renderer_SetTextureSize(p->snapshot.renderer, nullptr);
+    TRX_GL_2D_Renderer_ClearFit(p->snapshot.renderer);
+    TRX_GL_2D_Renderer_SetOpacity(p->snapshot.renderer, op->opacity);
+    TRX_GL_2D_Renderer_RenderWithBlend(p->snapshot.renderer);
 }
 
 static bool M_EnsurePatternUploaded(M_PRIV *const p)
@@ -613,7 +613,7 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
         return false;
     }
 
-    const GFX_2D_SURFACE_DESC desc = {
+    const TRX_GL_2D_SURFACE_DESC desc = {
         .width = TEXTURE_PAGE_WIDTH,
         .height = TEXTURE_PAGE_HEIGHT,
         .bit_count = 32,
@@ -643,8 +643,9 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
     if (!p->pattern.uploaded || p->pattern.texture_idx != texture_idx
         || p->pattern.tex_page != texture->tex_page
         || memcmp(&p->pattern.desc, &desc, sizeof(desc)) != 0) {
-        GFX_2D_SURFACE_DESC tmp_desc = desc;
-        GFX_2D_Renderer_Upload(p->pattern.renderer, &tmp_desc, (uint8_t *)page);
+        TRX_GL_2D_SURFACE_DESC tmp_desc = desc;
+        TRX_GL_2D_Renderer_Upload(
+            p->pattern.renderer, &tmp_desc, (uint8_t *)page);
         p->pattern.uploaded = true;
         p->pattern.texture_idx = texture_idx;
         p->pattern.tex_page = texture->tex_page;
@@ -669,24 +670,24 @@ static void M_DrawOp_Pattern(const M_DRAW_OP_PATTERN *const op)
     const float screen_ratio = M_GetScreenAspectRatio();
     const int32_t repeat_x = (int32_t)roundf(repeat_y * screen_ratio);
 
-    GFX_2D_Renderer_SetRepeat(p->pattern.renderer, repeat_x, repeat_y);
-    GFX_2D_Renderer_SetTextureSize(
+    TRX_GL_2D_Renderer_SetRepeat(p->pattern.renderer, repeat_x, repeat_y);
+    TRX_GL_2D_Renderer_SetTextureSize(
         p->pattern.renderer,
-        &(GFX_TEXTURE_SIZE) {
+        &(TRX_GL_TEXTURE_SIZE) {
             .x0 = p->pattern.atlas_size.x0,
             .y0 = p->pattern.atlas_size.y0,
             .x1 = p->pattern.atlas_size.x1,
             .y1 = p->pattern.atlas_size.y1,
         });
-    GFX_2D_Renderer_SetEffect(
+    TRX_GL_2D_Renderer_SetEffect(
         p->pattern.renderer,
-        op->wave ? GFX_2D_EFFECT_WAVE : GFX_2D_EFFECT_VIGNETTE);
-    GFX_2D_Renderer_ClearFit(p->pattern.renderer);
-    GFX_2D_Renderer_SetOpacity(p->pattern.renderer, op->opacity);
+        op->wave ? TRX_GL_2D_EFFECT_WAVE : TRX_GL_2D_EFFECT_VIGNETTE);
+    TRX_GL_2D_Renderer_ClearFit(p->pattern.renderer);
+    TRX_GL_2D_Renderer_SetOpacity(p->pattern.renderer, op->opacity);
     if (op->opacity >= 1.0f) {
-        GFX_2D_Renderer_Render(p->pattern.renderer);
+        TRX_GL_2D_Renderer_Render(p->pattern.renderer);
     } else {
-        GFX_2D_Renderer_RenderWithBlend(p->pattern.renderer);
+        TRX_GL_2D_Renderer_RenderWithBlend(p->pattern.renderer);
     }
 }
 
@@ -706,7 +707,7 @@ static void M_EnsureSnapshotTexture(M_PRIV *const p)
     s->width = w;
     s->height = h;
     M_CreateTextureRGB8(&s->texture, s->width, s->height, nullptr);
-    GFX_2D_Renderer_ClearFit(p->snapshot.renderer);
+    TRX_GL_2D_Renderer_ClearFit(p->snapshot.renderer);
 }
 
 static void M_RunQueue(const VECTOR *const queue)
@@ -840,7 +841,7 @@ void Output_Overlay_CaptureSnapshot(void)
     // Remove the captured brightness so we can reapply the current multiplier.
     p->snapshot.state.captured_brightness = g_Config.visuals.ui_brightness;
     CLAMPL(p->snapshot.state.captured_brightness, 0.001f);
-    GFX_2D_Renderer_SetBrightnessScale(
+    TRX_GL_2D_Renderer_SetBrightnessScale(
         p->snapshot.renderer, 1.0f / p->snapshot.state.captured_brightness);
 }
 
@@ -916,10 +917,10 @@ void Output_Overlay_DrawBlackRectangle(const float opacity, const bool post_ui)
 void OutputSource_Overlay_Init(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->renderer = GFX_2D_Renderer_Create();
-    p->image.renderer = GFX_2D_Renderer_Create();
-    p->snapshot.renderer = GFX_2D_Renderer_Create();
-    p->pattern.renderer = GFX_2D_Renderer_Create();
+    p->renderer = TRX_GL_2D_Renderer_Create();
+    p->image.renderer = TRX_GL_2D_Renderer_Create();
+    p->snapshot.renderer = TRX_GL_2D_Renderer_Create();
+    p->pattern.renderer = TRX_GL_2D_Renderer_Create();
     p->pattern.uploaded = false;
     M_EnsureSolidBlackTexture();
 
@@ -935,19 +936,19 @@ void OutputSource_Overlay_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->renderer != nullptr) {
-        GFX_2D_Renderer_Destroy(p->renderer);
+        TRX_GL_2D_Renderer_Destroy(p->renderer);
         p->renderer = nullptr;
     }
     if (p->image.renderer != nullptr) {
-        GFX_2D_Renderer_Destroy(p->image.renderer);
+        TRX_GL_2D_Renderer_Destroy(p->image.renderer);
         p->image.renderer = nullptr;
     }
     if (p->snapshot.renderer != nullptr) {
-        GFX_2D_Renderer_Destroy(p->snapshot.renderer);
+        TRX_GL_2D_Renderer_Destroy(p->snapshot.renderer);
         p->snapshot.renderer = nullptr;
     }
     if (p->pattern.renderer != nullptr) {
-        GFX_2D_Renderer_Destroy(p->pattern.renderer);
+        TRX_GL_2D_Renderer_Destroy(p->pattern.renderer);
         p->pattern.renderer = nullptr;
     }
     for (int32_t i = 0; i < M_IMAGE_CACHE_CAPACITY; i++) {

@@ -1,7 +1,7 @@
 #include <trx/game/output/shaders/mesh.h>
 
 #include <trx/game/output/utils.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -56,18 +56,18 @@ OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
     shader->base_tr3 = Output_Shader_Create("meshes_tr3.glsl");
 
     Output_Shader_Bind(shader->base_tr12);
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform1i,
         Output_Shader_LookupUniform(shader->base_tr12, "uTexAtlas"), 0);
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform1i,
         Output_Shader_LookupUniform(shader->base_tr12, "uTexEnvMap"), 1);
 
     Output_Shader_Bind(shader->base_tr3);
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(shader->base_tr3, "uTexAtlas"),
         0);
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform1i,
         Output_Shader_LookupUniform(shader->base_tr3, "uTexEnvMap"), 1);
     return shader;
@@ -102,7 +102,7 @@ void Output_MeshShader_UploadModelMatrix(
     GLfloat m[4][4];
     Output_FillMatrix(m, source);
 
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniformMatrix4fv, Output_Shader_LookupUniform(base, "uMatModel"), 1,
         GL_FALSE, &m[0][0]);
 }
@@ -115,7 +115,7 @@ void Output_MeshShader_UploadAlphaDiscard(
     if (is_enabled == shader->is_alpha_discard_enabled[variant_idx]) {
         return;
     }
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(base, "uDiscardAlpha"),
         is_enabled);
     shader->is_alpha_discard_enabled[variant_idx] = is_enabled;
@@ -155,10 +155,10 @@ void Output_MeshShader_UploadWaterEffect(
 
     GLint loc = -1;
     if (Output_Shader_TryLookupUniform(base, "uWaterEffect", &loc)) {
-        GFX_TRACK_UNIFORM(glUniform1i, loc, water_effect);
+        TRX_GL_TRACK_UNIFORM(glUniform1i, loc, water_effect);
     }
     if (Output_Shader_TryLookupUniform(base, "uWaterEffectParams", &loc)) {
-        GFX_TRACK_UNIFORM(glUniform3f, loc, p0, p1, p2);
+        TRX_GL_TRACK_UNIFORM(glUniform3f, loc, p0, p1, p2);
     }
     shader->water_effect[variant_idx] = water_effect;
     shader->water_effect_params[variant_idx][0] = p0;
@@ -174,7 +174,7 @@ void Output_MeshShader_UploadWibbleEffect(
     if (is_enabled == shader->is_wibble_effect[variant_idx]) {
         return;
     }
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(base, "uWibbleEffect"),
         is_enabled);
     shader->is_wibble_effect[variant_idx] = is_enabled;
@@ -190,7 +190,7 @@ void Output_MeshShader_UploadTint(
         && tint.b == shader->tint[variant_idx].b) {
         return;
     }
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform3f, Output_Shader_LookupUniform(base, "uGlobalTint"), tint.r,
         tint.g, tint.b);
     shader->tint[variant_idx] = tint;

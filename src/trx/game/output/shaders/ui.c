@@ -1,11 +1,11 @@
 #include <trx/game/output/shaders/ui.h>
 
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 
 OUTPUT_UI_SHADER *Output_UIShader_Create(void)
 {
     OUTPUT_SHADER *const shader = Output_Shader_Create("ui.glsl");
-    GFX_TRACK_UNIFORM(
+    TRX_GL_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(shader, "uTexAtlas"), 0);
     return shader;
 }
