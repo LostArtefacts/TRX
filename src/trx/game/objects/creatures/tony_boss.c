@@ -1,6 +1,6 @@
-#include <trx/game/carrier.h>
 #include <trx/game/creature.h>
 #include <trx/game/fx/explosion_ring.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>

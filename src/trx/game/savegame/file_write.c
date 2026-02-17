@@ -1,12 +1,12 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
-#include <trx/game/carrier.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>

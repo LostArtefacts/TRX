@@ -1,6 +1,6 @@
 #include <trx/config.h>
-#include <trx/game/carrier.h>
 #include <trx/game/creature.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>

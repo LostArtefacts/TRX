@@ -1,10 +1,10 @@
 #include <trx/benchmark.h>
 #include <trx/debug.h>
-#include <trx/game/carrier.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/level.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/pod.h>
