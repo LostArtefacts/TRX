@@ -34,6 +34,7 @@
 - added Mounted Gun control
 - added Tribe Axeman control
 - added Tribe Pipeman control
+- added Tribe Boss control
 - added Lizard control
 - added Crocodile control
 - added Carcass control (hanging Raptor)
@@ -62,6 +63,7 @@
 - fixed Kayak wake effects sometimes clipping through complex geometry
 - fixed loading screens showing before playing FMVs in Antarctica
 - fixed end credits referencing non-existing image file
+- fixed Puna to no longer hardcode Lizard locations, and instead use relative offsets
 - removed the limitation of one Carcass instance per level working with Piranhas
 - removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
 

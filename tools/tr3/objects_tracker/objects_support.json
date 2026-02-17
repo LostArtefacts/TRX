@@ -140,6 +140,7 @@
   "O_ZIPLINE_HANDLE":         { "status": "fully implemented" },
   "O_LIZARD":                 { "status": "fully implemented" },
   "O_BAT_EMITTER":            { "status": "fully implemented" },
+  "O_TRIBE_BOSS":             { "status": "fully implemented" },
   "O_TRIBE_AXEMAN":           { "status": "fully implemented" },
   "O_TRIBE_PIPEMAN":          { "status": "fully implemented" }
 }

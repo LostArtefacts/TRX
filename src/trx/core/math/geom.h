@@ -4,6 +4,7 @@
 
 XYZ_32 XYZ_32_From16(XYZ_16 src);
 int16_t XYZ_32_GetYaw(XYZ_32 pos);
+int16_t XYZ_32_GetYawDiff(XYZ_32 pos1, const XYZ_32 pos2);
 int16_t XYZ_32_GetPitch(XYZ_32 pos);
 int32_t XYZ_32_GetDistance(const XYZ_32 *pos1, const XYZ_32 *pos2);
 int32_t XYZ_32_GetLength(XYZ_32 pos);

@@ -1989,6 +1989,9 @@
         },
         "bat_emitter": {
             "name": "\\{review}Fledermaus-Emitter",
+        },
+        "tribe_boss": {
+            "name": "\\{review}Stammesanführer",
         }
     }
 }

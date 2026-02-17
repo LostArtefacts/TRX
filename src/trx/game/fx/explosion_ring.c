@@ -10,7 +10,7 @@
 
 static FX_EXPLOSION_RING m_ExplosionRings[6] = {};
 
-void ExplosionRingFX_Reset(void)
+void FX_ExplosionRing_Reset(void)
 {
     for (int32_t i = 0;
          i < (int32_t)(sizeof(m_ExplosionRings) / sizeof(m_ExplosionRings[0]));
@@ -19,7 +19,7 @@ void ExplosionRingFX_Reset(void)
     }
 }
 
-FX_EXPLOSION_RING *ExplosionRingFX_GetRing(const int32_t idx)
+FX_EXPLOSION_RING *FX_ExplosionRing_GetRing(const int32_t idx)
 {
     if (idx < 0
         || idx >= (int32_t)(sizeof(m_ExplosionRings)
@@ -47,7 +47,7 @@ static void M_RotateZX(
     out->z = (yz * sx + zz * cx) >> W2V_SHIFT;
 }
 
-void ExplosionRingFX_Control(void)
+void FX_ExplosionRing_Control(void)
 {
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
         FX_EXPLOSION_RING *const ring = &m_ExplosionRings[i];
@@ -65,7 +65,7 @@ void ExplosionRingFX_Control(void)
     }
 }
 
-void ExplosionRingFX_Draw(void)
+void FX_ExplosionRing_Draw(void)
 {
     const int32_t time4 = Output_GetTimeInGame() * 4;
     const int32_t sprite_base = Object_Get(O_EXPLOSION_1)->mesh_idx;

@@ -12,6 +12,11 @@ int16_t XYZ_32_GetYaw(const XYZ_32 pos)
     return Math_Atan(pos.z, pos.x);
 }
 
+int16_t XYZ_32_GetYawDiff(const XYZ_32 pos1, const XYZ_32 pos2)
+{
+    return Math_Atan(pos2.z - pos1.z, pos2.x - pos1.x);
+}
+
 int16_t XYZ_32_GetPitch(XYZ_32 pos)
 {
     // make sure SQUARE() doesn't get out of bounds

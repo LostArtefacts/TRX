@@ -2000,6 +2000,9 @@
         },
         "bat_emitter": {
             "name": "\\{review}Sgaoiliche Bàta",
+        },
+        "tribe_boss": {
+            "name": "\\{review}Ceannard a' Chinnidh",
         }
     }
 }

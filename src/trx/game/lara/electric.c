@@ -23,6 +23,11 @@ typedef struct {
 
 static M_ELECTRIC_POINT m_ElectricityPoints[32] = {};
 
+XYZ_16 Lara_Electricity_GetPoint(const int32_t idx)
+{
+    return m_ElectricityPoints[idx & 31].pos;
+}
+
 void Lara_Electricity_UpdatePoints(void)
 {
     for (int32_t i = 0; i < 32; i++) {

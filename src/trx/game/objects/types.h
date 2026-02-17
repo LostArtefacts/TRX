@@ -68,6 +68,9 @@ typedef struct OBJECT {
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
     void (*activate_func)(ITEM *item);
     bool (*trigger_func)(ITEM *item, const TRIGGER *trigger);
+    bool (*gun_hit_func)(
+        ITEM *item, const GAME_VECTOR *start, const GAME_VECTOR *hit_pos,
+        int32_t *damage);
     void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
     void (*priv_load_func)(ITEM *item, JSON_READ_IO *io);

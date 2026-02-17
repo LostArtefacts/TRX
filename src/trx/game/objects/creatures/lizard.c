@@ -2,6 +2,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/creatures/tribe_boss.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
@@ -51,8 +52,6 @@ typedef enum {
     M_ANIM_FALL_3 = 30,
     M_ANIM_SLIDE_2 = 31,
 } M_ANIM;
-
-static bool m_LizardActive = false;
 
 static BITE m_BiteHit = {
     .pos = { .x = 0, .y = -120, .z = 120 },
@@ -230,9 +229,9 @@ static void M_Control(const int16_t item_num)
         if (item->current_anim_state != M_STATE_DEATH) {
             Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
             item->current_anim_state = M_STATE_DEATH;
-        } else if (m_LizardActive && Item_GetRelativeFrame(item) == 50) {
+        } else if (
+            TribeBoss_IsLizardActive() && Item_GetRelativeFrame(item) == 50) {
             Creature_Die(item_num, true);
-            m_LizardActive = false;
         }
     } else {
         AI_INFO info;

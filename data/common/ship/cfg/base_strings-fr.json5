@@ -1976,6 +1976,9 @@
         },
         "bat_emitter": {
             "name": "\\{review}Émetteur de chauve-souris",
+        },
+        "tribe_boss": {
+            "name": "\\{review}Chef de tribu",
         }
     }
 }

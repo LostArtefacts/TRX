@@ -90,6 +90,10 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
 
 static bool M_CanExplodeTarget(const ITEM *const item)
 {
+    if (item->object_id == O_TRIBE_BOSS || item->object_id == O_TONY) {
+        return false;
+    }
+
     // TODO: as some creatures have more than one death animation, have a
     // way to expose those specific ones for checking, or delegate
     // responsibility directly to the objects.
@@ -163,7 +167,12 @@ static bool M_TryExplodeItem(
         return false;
     }
 
-    Gun_HitTarget(target_item, nullptr, nullptr, g_Weapons[LGT_GRENADE].damage);
+    const GAME_VECTOR hit_pos = {
+        .pos = projectile_item->pos,
+        .room_num = projectile_item->room_num,
+    };
+    Gun_HitTarget(
+        target_item, nullptr, &hit_pos, g_Weapons[LGT_GRENADE].damage);
     Stats_AddAmmoHits();
 
     if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
