@@ -9,6 +9,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/creatures/skidoo_driver.h>
+#include <trx/game/objects/creatures/tribe_boss.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -1180,6 +1181,10 @@ void Creature_Die(const int16_t item_num, const bool explode)
     ITEM *const item = Item_Get(item_num);
 
     switch (item->object_id) {
+    case O_LIZARD:
+        TribeBoss_SetLizardActive(false);
+        break;
+
     case O_DRAGON_FRONT:
     case O_TORSO:
         item->hit_points = 0;

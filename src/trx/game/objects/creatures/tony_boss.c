@@ -35,14 +35,14 @@ typedef struct {
     XYZ_16 pos;
     RGB_888 sub;
     RGB_888 color;
-} SHIELD_POINT;
+} M_SHIELD_POINT;
 
 typedef struct {
     bool dropped_item;
     uint8_t ring_count;
     int16_t explode_count;
     uint8_t dead;
-    SHIELD_POINT shield[5][8];
+    M_SHIELD_POINT shield[5][8];
     M_PHASE phase;
 
     // Alternates the chosen attack while in the FLOAT state (ROCK_ZAPP vs ZAPP)
@@ -159,7 +159,7 @@ static void M_Explode(ITEM *const item)
         const int32_t x = item->pos.x + (Random_GetDraw() & 0x3FF) - 512;
         const int32_t y = item->pos.y - (Random_GetDraw() & 0x3FF) - 256;
         const int32_t z = item->pos.z + (Random_GetDraw() & 0x3FF) - 512;
-        FX_EXPLOSION_RING *const ring = ExplosionRingFX_GetRing(p->ring_count);
+        FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(p->ring_count);
         if (ring != nullptr) {
             ring->pos.x = x;
             ring->pos.y = y;
@@ -197,7 +197,7 @@ static void M_Explode(ITEM *const item)
         int32_t angle = (time4 & 0x3F) << 3;
 
         for (int32_t j = 0; j < 8; j++) {
-            SHIELD_POINT *const shield = &p->shield[i][j];
+            M_SHIELD_POINT *const shield = &p->shield[i][j];
             shield->pos.x = (dist * Math_Sin(angle << 4)) >> 13;
             shield->pos.y = y;
             shield->pos.z = (dist * Math_Cos(angle << 4)) >> 13;
@@ -257,7 +257,7 @@ static void M_Initialise(int16_t item_num)
         angle = 0;
 
         for (int j = 0; j < 8; j++) {
-            SHIELD_POINT *const shield = &p->shield[i][j];
+            M_SHIELD_POINT *const shield = &p->shield[i][j];
             shield->pos.x = (dist * Math_Sin(angle << 4)) >> 13;
             shield->pos.y = m_Heights[i];
             shield->pos.z = (dist * Math_Cos(angle << 4)) >> 13;
@@ -296,7 +296,7 @@ static void M_Control(const int16_t item_num)
                 p->ring_count = 0;
 
                 for (int i = 0; i < 6; i++) {
-                    FX_EXPLOSION_RING *const ring = ExplosionRingFX_GetRing(i);
+                    FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(i);
                     if (ring == nullptr) {
                         continue;
                     }
@@ -319,7 +319,7 @@ static void M_Control(const int16_t item_num)
             }
 
             if (p->explode_count > 128 && p->ring_count == 6
-                && ExplosionRingFX_GetRing(5)->life == 0) {
+                && FX_ExplosionRing_GetRing(5)->life == 0) {
                 M_Die(item_num);
                 p->dead = true;
             } else {
@@ -479,7 +479,7 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 
     if (p->explode_count != 0 && item->hit_points <= 0) {
-        ExplosionRingFX_Control();
+        FX_ExplosionRing_Control();
     }
 }
 
@@ -495,10 +495,10 @@ static void M_DrawShield(const ITEM *const item)
 
         for (int32_t j = 0; j < 8; j++) {
             const int32_t j2 = (j == 7) ? 0 : (j + 1);
-            const SHIELD_POINT *const s00 = &p->shield[band][j];
-            const SHIELD_POINT *const s01 = &p->shield[band][j2];
-            const SHIELD_POINT *const s10 = &p->shield[band + 1][j];
-            const SHIELD_POINT *const s11 = &p->shield[band + 1][j2];
+            const M_SHIELD_POINT *const s00 = &p->shield[band][j];
+            const M_SHIELD_POINT *const s01 = &p->shield[band][j2];
+            const M_SHIELD_POINT *const s10 = &p->shield[band + 1][j];
+            const M_SHIELD_POINT *const s11 = &p->shield[band + 1][j2];
 
             const int32_t idx00 = band * 8 + j;
             const int32_t idx01 = band * 8 + j2;
@@ -578,7 +578,7 @@ static bool M_Draw(const ITEM *const item)
 
     if (p->explode_count != 0) {
         if (item->hit_points <= 0) {
-            ExplosionRingFX_Draw();
+            FX_ExplosionRing_Draw();
         }
 
         if (p->explode_count != 0 && p->explode_count <= 64) {

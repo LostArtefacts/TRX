@@ -89,6 +89,10 @@ static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
 
 static bool M_CanExplodeTarget(const ITEM *const item)
 {
+    if (item->object_id == O_TRIBE_BOSS || item->object_id == O_TONY) {
+        return false;
+    }
+
     const OBJECT *const object = Object_Get(item->object_id);
     const ITEM_ACTION action = ItemAction_ToGameID(ITEM_ACTION_FINISH_LEVEL);
     for (int32_t i = 0; i < object->anim_count; i++) {
@@ -155,8 +159,12 @@ static bool M_TryExplodeItem(
     }
 
     if (target_item->status == IS_ACTIVE) {
+        const GAME_VECTOR hit_pos = {
+            .pos = projectile_item->pos,
+            .room_num = projectile_item->room_num,
+        };
         Gun_HitTarget(
-            target_item, nullptr, nullptr, g_Weapons[LGT_ROCKET].damage);
+            target_item, nullptr, &hit_pos, g_Weapons[LGT_ROCKET].damage);
         Stats_AddAmmoHits();
 
         if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {

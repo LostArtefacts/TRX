@@ -2018,6 +2018,9 @@
         },
         "bat_emitter": {
             "name": "\\{review}Emettitore di Pipistrelli",
+        },
+        "tribe_boss": {
+            "name": "\\{review}Capo della Tribù",
         }
     }
 }

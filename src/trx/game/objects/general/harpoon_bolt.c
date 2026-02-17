@@ -127,8 +127,10 @@ static void M_Control_TR3(const int16_t item_num)
                     item->pos.x, item->pos.y, item->pos.z, 0, 0, item->room_num,
                     3);
             }
+            const GAME_VECTOR hit_pos = { .pos = item->pos,
+                                          .room_num = item->room_num };
             Gun_HitTarget(
-                target_item, nullptr, nullptr, g_Weapons[LGT_HARPOON].damage);
+                target_item, nullptr, &hit_pos, g_Weapons[LGT_HARPOON].damage);
             Stats_AddAmmoHits();
         }
 
@@ -280,8 +282,12 @@ static void M_Control_TR12(const int16_t item_num)
                     item->pos.x, item->pos.y, item->pos.z, 0, 0, item->room_num,
                     5);
             }
+            const GAME_VECTOR hit_pos = {
+                .pos = item->pos,
+                .room_num = item->room_num,
+            };
             Gun_HitTarget(
-                target_item, nullptr, nullptr, g_Weapons[LGT_HARPOON].damage);
+                target_item, nullptr, &hit_pos, g_Weapons[LGT_HARPOON].damage);
             Stats_AddAmmoHits();
         }
         hit = true;

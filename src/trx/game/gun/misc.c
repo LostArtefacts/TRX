@@ -414,6 +414,15 @@ void Gun_HitTarget(
     ITEM *const item, const GAME_VECTOR *const start,
     const GAME_VECTOR *const hit_pos, int32_t damage)
 {
+    OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->gun_hit_func != nullptr) {
+        const bool use_default =
+            obj->gun_hit_func(item, start, hit_pos, &damage);
+        if (!use_default) {
+            return;
+        }
+    }
+
     const bool make_ricochet = !Item_ShouldSpawnBlood(item);
     if (item->object_id == O_SHIVA && make_ricochet) {
         damage = 0;

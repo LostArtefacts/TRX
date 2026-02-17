@@ -1967,6 +1967,9 @@
         },
         "bat_emitter": {
             "name": "\\{review}Emiter Nietoperza",
+        },
+        "tribe_boss": {
+            "name": "\\{review}Szef plemienia",
         }
     }
 }

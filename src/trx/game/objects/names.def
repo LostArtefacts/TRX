@@ -225,6 +225,7 @@ X_OBJ_NAME_DEFINE(O_COBRA,                 "snake",                 X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_SHIVA,                 "shiva",                 X_OBJ_NAMES("Shiva"))
 X_OBJ_NAME_DEFINE(O_TRIBE_AXEMAN,          "tribe_axeman",          X_OBJ_NAMES("Tribe Axeman"))
 X_OBJ_NAME_DEFINE(O_TRIBE_PIPEMAN,         "tribe_pipeman",         X_OBJ_NAMES("Tribe Blowpipe User"))
+X_OBJ_NAME_DEFINE(O_TRIBE_BOSS,            "tribe_boss",            X_OBJ_NAMES("Tribe Boss"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))

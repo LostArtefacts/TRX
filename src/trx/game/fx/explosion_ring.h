@@ -20,9 +20,9 @@ typedef struct {
     FX_EXPLOSION_VERT verts[16];
 } FX_EXPLOSION_RING;
 
-void ExplosionRingFX_Reset(void);
+void FX_ExplosionRing_Reset(void);
 
-void ExplosionRingFX_Control(void);
-void ExplosionRingFX_Draw(void);
+void FX_ExplosionRing_Control(void);
+void FX_ExplosionRing_Draw(void);
 
-FX_EXPLOSION_RING *ExplosionRingFX_GetRing(int32_t idx);
+FX_EXPLOSION_RING *FX_ExplosionRing_GetRing(int32_t idx);
