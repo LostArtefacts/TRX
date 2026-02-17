@@ -156,7 +156,7 @@ common_sources = [
   'trx/game/camera/photo_mode.c',
   'trx/game/camera/vars.c',
   'trx/game/carrier.c',
-  'trx/game/catalog.c',
+  'trx/game/catalog/manager.c',
   'trx/game/clock/common.c',
   'trx/game/clock/timer.c',
   'trx/game/clock/turbo.c',

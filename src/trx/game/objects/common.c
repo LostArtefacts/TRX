@@ -2,7 +2,7 @@
 
 #include <trx/debug.h>
 #include <trx/game/anims.h>
-#include <trx/game/catalog.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara/common.h>

@@ -5,7 +5,7 @@
 typedef enum {
     NO_OBJECT = -1,
 #define X_CATALOG_ID(enum_value) enum_value,
-#include <trx/game/catalog_objects.def>
+#include <trx/game/catalog/objects.def>
 #undef X_CATALOG_ID
     // sentinel
     O_NUMBER_OF,

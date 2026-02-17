@@ -2,7 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/debug.h>
-#include <trx/game/catalog.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/creature.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>

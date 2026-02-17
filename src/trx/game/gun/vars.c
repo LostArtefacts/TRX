@@ -1,7 +1,7 @@
 #include <trx/game/gun/vars.h>
 
 #include <trx/enum_map.h>
-#include <trx/game/catalog.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/shell.h>
 #include <trx/json/util/file.h>

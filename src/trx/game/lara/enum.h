@@ -7,7 +7,7 @@ typedef enum {
 typedef enum {
     LS_TRX_INVALID = -1,
 #define X_CATALOG_ID(enum_value) enum_value,
-#include <trx/game/catalog_lara_states.def>
+#include <trx/game/catalog/lara_states.def>
 #undef X_CATALOG_ID
     LS_NUMBER_OF,
 } LARA_TRX_STATE;
@@ -19,7 +19,7 @@ typedef enum {
 typedef enum {
     LA_TRX_INVALID = -1,
 #define X_CATALOG_ID(enum_value) enum_value,
-#include <trx/game/catalog_lara_anims.def>
+#include <trx/game/catalog/lara_anims.def>
 #undef X_CATALOG_ID
     LA_NUMBER_OF,
 } LARA_TRX_ANIMATION;

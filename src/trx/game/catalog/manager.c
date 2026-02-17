@@ -1,4 +1,4 @@
-#include <trx/game/catalog.h>
+#include <trx/game/catalog/manager.h>
 
 #include <trx/filesystem.h>
 #include <trx/game/items/actions/ids.h>
@@ -22,25 +22,25 @@ typedef struct {
 
 static const M_ENTRY m_CatalogEntryDefs[] = {
 #define X_CATALOG_ID(enum_value) { CATALOG_MUSIC, enum_value, #enum_value },
-#include <trx/game/catalog_music.def>
+#include <trx/game/catalog/music.def>
 #undef X_CATALOG_ID
 #define X_CATALOG_ID(enum_value) { CATALOG_OBJECTS, enum_value, #enum_value },
-#include <trx/game/catalog_objects.def>
+#include <trx/game/catalog/objects.def>
 #undef X_CATALOG_ID
 #define X_CATALOG_ID(enum_value) { CATALOG_SAMPLES, enum_value, #enum_value },
-#include <trx/game/catalog_samples.def>
+#include <trx/game/catalog/samples.def>
 #undef X_CATALOG_ID
 #define X_CATALOG_ID(enum_value)                                               \
     { CATALOG_LARA_STATES, enum_value, #enum_value },
-#include <trx/game/catalog_lara_states.def>
+#include <trx/game/catalog/lara_states.def>
 #undef X_CATALOG_ID
 #define X_CATALOG_ID(enum_value)                                               \
     { CATALOG_LARA_ANIMS, enum_value, #enum_value },
-#include <trx/game/catalog_lara_anims.def>
+#include <trx/game/catalog/lara_anims.def>
 #undef X_CATALOG_ID
 #define X_CATALOG_ID(enum_value)                                               \
     { CATALOG_ITEM_ACTIONS, enum_value, #enum_value },
-#include <trx/game/catalog_item_actions.def>
+#include <trx/game/catalog/item_actions.def>
 #undef X_CATALOG_ID
 };
 

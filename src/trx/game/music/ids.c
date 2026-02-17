@@ -1,4 +1,4 @@
-#include <trx/game/catalog.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/music.h>
 
 MUSIC_ID Music_ToGameID(const MUSIC_TRX_ID music_track)

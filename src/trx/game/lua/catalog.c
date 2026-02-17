@@ -35,7 +35,7 @@ static void M_PushObjects(lua_State *const L)
 
     int32_t id = 0;
 #define X_CATALOG_ID(enum_value) M_PushCatalogKey(L, #enum_value, "O_", id++);
-#include "trx/game/catalog_objects.def"
+#include "trx/game/catalog/objects.def"
 #undef X_CATALOG_ID
 
     lua_setfield(L, -2, "objects");
@@ -48,7 +48,7 @@ static void M_PushFlipEffects(lua_State *const L)
     int32_t id = 0;
 #define X_CATALOG_ID(enum_value)                                               \
     M_PushCatalogKey(L, #enum_value, "ITEM_ACTION_", id++);
-#include "trx/game/catalog_item_actions.def"
+#include "trx/game/catalog/item_actions.def"
 #undef X_CATALOG_ID
 
     lua_setfield(L, -2, "flip_effects");
@@ -60,7 +60,7 @@ static void M_PushLaraStates(lua_State *const L)
 
     int32_t id = 0;
 #define X_CATALOG_ID(enum_value) M_PushCatalogKey(L, #enum_value, "LS_", id++);
-#include "trx/game/catalog_lara_states.def"
+#include "trx/game/catalog/lara_states.def"
 #undef X_CATALOG_ID
 
     lua_setfield(L, -2, "lara_states");
@@ -72,7 +72,7 @@ static void M_PushLaraAnims(lua_State *const L)
 
     int32_t id = 0;
 #define X_CATALOG_ID(enum_value) M_PushCatalogKey(L, #enum_value, "LA_", id++);
-#include "trx/game/catalog_lara_anims.def"
+#include "trx/game/catalog/lara_anims.def"
 #undef X_CATALOG_ID
 
     lua_setfield(L, -2, "lara_anims");
@@ -84,7 +84,7 @@ static void M_PushMusic(lua_State *const L)
 
     int32_t id = 0;
 #define X_CATALOG_ID(enum_value) M_PushCatalogKey(L, #enum_value, "MX_", id++);
-#include "trx/game/catalog_music.def"
+#include "trx/game/catalog/music.def"
 #undef X_CATALOG_ID
 
     lua_setfield(L, -2, "music");
@@ -96,7 +96,7 @@ static void M_PushSamples(lua_State *const L)
 
     int32_t id = 0;
 #define X_CATALOG_ID(enum_value) M_PushCatalogKey(L, #enum_value, "SFX_", id++);
-#include "trx/game/catalog_samples.def"
+#include "trx/game/catalog/samples.def"
 #undef X_CATALOG_ID
 
     lua_setfield(L, -2, "samples");
