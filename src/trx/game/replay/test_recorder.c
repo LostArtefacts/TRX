@@ -1,4 +1,4 @@
-#include <trx/game/test_recorder.h>
+#include <trx/game/replay/test_recorder.h>
 
 #include <trx/config.h>
 #include <trx/debug.h>
