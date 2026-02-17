@@ -38,20 +38,28 @@ typedef struct {
 
 static M_PRIV m_Priv = {};
 
-static int32_t M_GetTriggerPortalTriangleIndices(
-    const SECTOR *const sector, int32_t indices[3])
+static int32_t M_GetTriggerTriangleIndices(
+    const SECTOR *const sector, int32_t indices[6])
 {
-    if (sector->portal_room.pit == NO_ROOM) {
-        return 0;
-    }
-    if (!sector->floor.is_split) {
-        return 0;
-    }
-
-    const int32_t clockwise[4] = { 0, 3, 2, 1 };
     int32_t skip = -1;
 
-    switch (sector->floor.split.type) {
+    SPLIT_TYPE split = sector->floor.split.type;
+    if (!sector->floor.is_split) {
+        split = SPLIT_NONE;
+    }
+
+    switch (split) {
+    case SPLIT_NONE:
+    case SPLIT_NESW_SOLID:
+        for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
+            indices[i] = OUTPUT_QUAD_TO_FAN(i);
+        }
+        return OUTPUT_QUAD_VERTICES;
+    case SPLIT_NWSE_SOLID:
+        for (int32_t i = 0; i < OUTPUT_QUAD_VERTICES; i++) {
+            indices[i] = OUTPUT_QUAD_TO_FAN_BACK(i);
+        }
+        return OUTPUT_QUAD_VERTICES;
     case SPLIT_NWSE_PORTAL_SW:
         skip = 0;
         break;
@@ -68,13 +76,13 @@ static int32_t M_GetTriggerPortalTriangleIndices(
         return 0;
     }
 
+    const int32_t clockwise[4] = { 0, 3, 2, 1 };
     int32_t count = 0;
     for (int32_t i = 0; i < 4; i++) {
         if (clockwise[i] != skip) {
             indices[count++] = clockwise[i];
         }
     }
-
     return count;
 }
 
@@ -84,6 +92,8 @@ static void M_PrepareRoomTriggers(
     mesh->triggers.vertex_start = p->vertices->count;
     const RGBA_8888 color = { .r = 255, .g = 0, .b = 255, .a = 128 };
     const XZ_16 offsets[4] = { { 0, 0 }, { 0, 1 }, { 1, 1 }, { 1, 0 } };
+
+    int32_t output_indices[OUTPUT_QUAD_VERTICES];
     for (int32_t z = 0; z < room->size.z; z++) {
         for (int32_t x = 0; x < room->size.x; x++) {
             const SECTOR *sector = Room_GetUnitSector(room, x, z);
@@ -91,15 +101,11 @@ static void M_PrepareRoomTriggers(
                 continue;
             }
 
-            int32_t tri_indices[3];
-            const int32_t tri_count =
-                M_GetTriggerPortalTriangleIndices(sector, tri_indices);
             const int32_t vertex_count =
-                tri_count != 0 ? tri_count : OUTPUT_QUAD_VERTICES;
+                M_GetTriggerTriangleIndices(sector, output_indices);
 
             for (int32_t i = 0; i < vertex_count; i++) {
-                const int32_t j =
-                    tri_count != 0 ? tri_indices[i] : OUTPUT_QUAD_TO_FAN(i);
+                int32_t j = output_indices[i];
                 XYZ_16 vertex_pos = {
                     .x = (x + offsets[j].x) * WALL_L,
                     .z = (z + offsets[j].z) * WALL_L,

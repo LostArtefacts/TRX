@@ -7,9 +7,13 @@
 #define OUTPUT_QUAD_VERTICES 6
 #define OUTPUT_TRI_VERTICES 3
 
-#define OUTPUT_QUAD_TO_FAN(i) ((int32_t[]) { 0, 2, 1, 0, 3, 2 }[i])
-#define OUTPUT_QUAD_TO_FAN_CW(i) ((int32_t[]) { 0, 1, 2, 0, 2, 3 }[i])
 #define OUTPUT_TRI_TO_FAN(i) ((int32_t[]) { 0, 2, 1 }[i])
+// |＼|
+#define OUTPUT_QUAD_TO_FAN(i) ((int32_t[]) { 0, 2, 1, 0, 3, 2 }[i])
+// |＼| Opposite winding
+#define OUTPUT_QUAD_TO_FAN_CW(i) ((int32_t[]) { 0, 1, 2, 0, 2, 3 }[i])
+// |／|
+#define OUTPUT_QUAD_TO_FAN_BACK(i) ((int32_t[]) { 0, 3, 1, 1, 3, 2 }[i])
 
 #define L_ATI_FIX 1
 
