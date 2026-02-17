@@ -9,6 +9,7 @@
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/gym.h>
+#include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>

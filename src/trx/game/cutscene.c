@@ -13,6 +13,7 @@
 #include <trx/game/fx/weather.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/smoke.h>
+#include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>

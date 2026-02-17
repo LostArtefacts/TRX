@@ -1,10 +1,11 @@
 #include <trx/core/vector.h>
 
-#define ENUM_MAP_DEFINE(enum_type_name, enum_value, str_value)                 \
+#define ENUM_MAP(enum_type_name, enum_value, str_value)                        \
     EnumMap_Define(                                                            \
-        ENUM_MAP_NAME(enum_type_name), #enum_value, enum_value, str_value);
-#define ENUM_MAP_DEFINE_SELF(enum_type_name, enum_value)                       \
-    ENUM_MAP_DEFINE(enum_type_name, enum_value, #enum_value)
+        ENUM_MAP_NAME(enum_type_name), #enum_value, enum_value, str_value)
+
+#define ENUM_MAP_SELF(enum_type_name, enum_value)                              \
+    ENUM_MAP(enum_type_name, enum_value, #enum_value)
 
 #define ENUM_MAP_GET(enum_type_name, str_value, default_value)                 \
     EnumMap_Get(ENUM_MAP_NAME(enum_type_name), str_value, default_value)
@@ -13,11 +14,6 @@
     EnumMap_ToString(ENUM_MAP_NAME(enum_type_name), enum_value)
 
 #define ENUM_MAP_NAME(enum_type_name) #enum_type_name
-
-// The function to put the EnumMap_Define calls in.
-void EnumMap_Init(void);
-
-void EnumMap_Shutdown(void);
 
 // Associate an integer enum value, such as WEATHER_SNOW, with a string
 // representation such as "snow".

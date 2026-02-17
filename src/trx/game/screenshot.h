@@ -1,9 +1,6 @@
 #pragma once
 
-typedef enum {
-    SCREENSHOT_FORMAT_JPEG,
-    SCREENSHOT_FORMAT_PNG,
-} SCREENSHOT_FORMAT;
+#include <trx/config/enum.h>
 
 void Screenshot_Make(SCREENSHOT_FORMAT format);
 void Screenshot_MakeToPath(const char *path);

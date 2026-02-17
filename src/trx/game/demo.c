@@ -6,6 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>

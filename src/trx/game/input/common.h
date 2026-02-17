@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/config/enum.h>
 #include <trx/core/json.h>
 
 #include <SDL2/SDL_events.h>
@@ -22,20 +23,6 @@ typedef union {
 #undef X_INPUT_ROLE
     };
 } INPUT_STATE;
-
-typedef enum {
-    INPUT_BACKEND_KEYBOARD,
-    INPUT_BACKEND_CONTROLLER,
-    INPUT_BACKEND_NUMBER_OF,
-} INPUT_BACKEND;
-
-typedef enum {
-    INPUT_LAYOUT_DEFAULT,
-    INPUT_LAYOUT_CUSTOM_1,
-    INPUT_LAYOUT_CUSTOM_2,
-    INPUT_LAYOUT_CUSTOM_3,
-    INPUT_LAYOUT_NUMBER_OF,
-} INPUT_LAYOUT;
 
 extern INPUT_STATE g_Input;
 extern INPUT_STATE g_InputDB;
