@@ -956,7 +956,7 @@ void Lara_Control(void)
 
     M_Cheat();
 
-    if (g_TRVersion == 1 && lara_info->interact_target.is_moving
+    if (lara_info->interact_target.is_moving
         && lara_info->interact_target.move_count++ > M_MOVE_TIMEOUT) {
         lara_info->interact_target.is_moving = false;
         lara_info->gun_status = LGS_ARMLESS;
