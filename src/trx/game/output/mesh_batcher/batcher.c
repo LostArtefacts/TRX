@@ -6,6 +6,7 @@
 #include <trx/game/output/uniforms.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 
 #include <uthash.h>

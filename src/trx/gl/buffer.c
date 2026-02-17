@@ -1,8 +1,8 @@
-#include <trx/gl/gl/buffer.h>
+#include <trx/gl/buffer.h>
 
 #include <trx/debug.h>
-#include <trx/gl/gl/track.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/track.h>
+#include <trx/gl/utils.h>
 
 void TRX_GL_Buffer_Init(TRX_GL_BUFFER *buf, GLenum target)
 {

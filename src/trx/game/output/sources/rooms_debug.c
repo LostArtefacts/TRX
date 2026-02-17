@@ -5,7 +5,7 @@
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/random.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/vector.h>

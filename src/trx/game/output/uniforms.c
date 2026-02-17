@@ -7,7 +7,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/rooms.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/utils.h>

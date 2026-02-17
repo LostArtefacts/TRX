@@ -5,7 +5,7 @@
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 

@@ -20,6 +20,7 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/shell.h>
 #include <trx/gl/context.h>
+#include <trx/gl/track.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_UNIFORMS *m_Uniforms = nullptr;

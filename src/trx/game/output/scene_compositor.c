@@ -9,6 +9,7 @@
 #include <trx/game/output/uniforms.h>
 #include <trx/game/shell.h>
 #include <trx/gl/context.h>
+#include <trx/gl/utils.h>
 #include <trx/vector.h>
 
 #define M_PROCESS_SOURCES(p, func, ...)                                        \

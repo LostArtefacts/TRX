@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/gl/gl/track.h>
+#include <trx/gl/track.h>
 #include <trx/log.h>
 
 #include <GL/glew.h>

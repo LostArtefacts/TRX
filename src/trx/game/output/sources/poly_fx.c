@@ -8,6 +8,7 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/sparks.h>
+#include <trx/gl/utils.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
 

@@ -1,7 +1,7 @@
-#include <trx/gl/gl/vertex_array.h>
+#include <trx/gl/vertex_array.h>
 
 #include <trx/debug.h>
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 
 #include <stdint.h>
 

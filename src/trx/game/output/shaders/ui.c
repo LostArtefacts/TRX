@@ -1,6 +1,6 @@
 #include <trx/game/output/shaders/ui.h>
 
-#include <trx/gl/gl/utils.h>
+#include <trx/gl/utils.h>
 
 OUTPUT_UI_SHADER *Output_UIShader_Create(void)
 {

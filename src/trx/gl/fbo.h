@@ -4,7 +4,7 @@
 
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
-#include <trx/gl/gl/texture.h>
+#include <trx/gl/texture.h>
 
 #include <GL/glew.h>
 

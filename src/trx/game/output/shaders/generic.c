@@ -3,7 +3,8 @@
 #include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/viewport.h>
-#include <trx/gl/gl/program.h>
+#include <trx/gl/program.h>
+#include <trx/gl/utils.h>
 #include <trx/memory.h>
 
 #include <uthash.h>
