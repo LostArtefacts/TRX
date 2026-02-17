@@ -5,7 +5,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/game/shell.h>
+#include <trx/core/shell.h>
 
 #include <string.h>
 
