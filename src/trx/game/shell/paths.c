@@ -957,18 +957,8 @@ static bool M_ResolveAttemptVisitor(
     }
 
     if (!ctx->policy->check_exists) {
-        if (ctx->resolved == nullptr) {
-            ctx->resolved = String_FormatStatic("%s", attempt_path);
-        }
-
-        char *full_path = M_ResolveCasePathCached(attempt_path);
-        if (full_path != nullptr) {
-            ctx->resolved = String_FormatStatic("%s", full_path);
-            Memory_FreePointer(&full_path);
-            return false;
-        }
-
-        return true;
+        ctx->resolved = String_FormatStatic("%s", attempt_path);
+        return false;
     }
 
     char *full_path = M_ResolveCasePathCached(attempt_path);
