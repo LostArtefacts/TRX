@@ -1,4 +1,4 @@
-#include <trx/game/catalog.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/items.h>
 
 ITEM_ACTION ItemAction_ToGameID(const ITEM_TRX_ACTION action)

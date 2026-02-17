@@ -7,7 +7,7 @@ typedef enum {
 typedef enum {
     SFX_TRX_INVALID = -1,
 #define X_CATALOG_ID(enum_value) enum_value,
-#include <trx/game/catalog_samples.def>
+#include <trx/game/catalog/samples.def>
 #undef X_CATALOG_ID
 } SAMPLE_TRX_ID;
 
