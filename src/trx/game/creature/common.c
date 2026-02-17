@@ -1,8 +1,8 @@
 #include <trx/config.h>
 #include <trx/game/camera/vars.h>
-#include <trx/game/carrier.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/los.h>

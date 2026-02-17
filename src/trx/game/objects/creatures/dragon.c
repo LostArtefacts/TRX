@@ -2,10 +2,10 @@
 
 #include <trx/debug.h>
 #include <trx/game/camera.h>
-#include <trx/game/carrier.h>
 #include <trx/game/collision.h>
 #include <trx/game/creature.h>
 #include <trx/game/input.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/math.h>

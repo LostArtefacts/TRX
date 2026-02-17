@@ -1,8 +1,8 @@
 #include <trx/game/objects/creatures/skidoo_driver.h>
 
 #include <trx/debug.h>
-#include <trx/game/carrier.h>
 #include <trx/game/creature.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/pathing.h>

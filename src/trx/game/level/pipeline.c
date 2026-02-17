@@ -1,8 +1,8 @@
 #include <trx/benchmark.h>
 #include <trx/config.h>
 #include <trx/filesystem.h>
-#include <trx/game/carrier.h>
 #include <trx/game/inject.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/level.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/objects.h>

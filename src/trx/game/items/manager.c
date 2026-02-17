@@ -1,9 +1,9 @@
 #include <trx/game/items/manager.h>
 
-#include <trx/game/carrier.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/items/carrier.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/shoal.h>
