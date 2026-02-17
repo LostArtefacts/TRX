@@ -1,10 +1,10 @@
 #include <trx/game/camera.h>
+#include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/vehicle.h>
-#include <trx/game/los.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>

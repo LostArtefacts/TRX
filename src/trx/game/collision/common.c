@@ -1,4 +1,4 @@
-#include <trx/game/collision.h>
+#include <trx/game/collision/common.h>
 
 #include <trx/config.h>
 #include <trx/game/interpolation.h>

@@ -1,12 +1,12 @@
 #include <trx/game/spawn.h>
 
 #include <trx/game/collision.h>
+#include <trx/game/collision/los.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/los.h>
 #include <trx/game/math.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>

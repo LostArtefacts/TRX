@@ -1,11 +1,11 @@
 #include <trx/config.h>
 #include <trx/game/camera/vars.h>
+#include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/los.h>
 #include <trx/game/objects/creatures/skidoo_driver.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>

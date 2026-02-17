@@ -1,12 +1,12 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/collision/los.h>
 #include <trx/game/input.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/flare.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/util.h>
-#include <trx/game/los.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/rooms/geometry.h>
 #include <trx/utils.h>

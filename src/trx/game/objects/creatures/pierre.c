@@ -1,7 +1,7 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
-#include <trx/game/los.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
