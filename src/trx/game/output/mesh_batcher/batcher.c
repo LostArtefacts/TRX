@@ -1,5 +1,6 @@
 #include <trx/game/output/mesh_batcher/batcher.h>
 
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/output/shaders/mesh.h>
@@ -7,7 +8,6 @@
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
 
 #include <uthash.h>
 

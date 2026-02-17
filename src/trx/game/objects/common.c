@@ -1,5 +1,7 @@
 #include <trx/game/objects/common.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/anims.h>
 #include <trx/game/catalog/manager.h>
@@ -8,8 +10,6 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output/common.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 
 static OBJECT m_Objects[O_NUMBER_OF] = {};
 static STATIC_OBJECT_3D *m_StaticObjects3D = nullptr;

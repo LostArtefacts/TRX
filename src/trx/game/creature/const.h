@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
-#include <trx/utils.h>
 
 #define FRONT_ARC DEG_90
 #define UNIT_SHADOW 256

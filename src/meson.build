@@ -131,19 +131,33 @@ common_sources = [
   'trx/av/audio_stream.c',
   'trx/av/image.c',
   'trx/av/video.c',
-  'trx/benchmark.c',
-  'trx/bson/parse.c',
-  'trx/bson/write.c',
-  'trx/colors.c',
   'trx/config/common.c',
   'trx/config/dynamic_enum.c',
   'trx/config/file.c',
   'trx/config/map.c',
   'trx/config/priv.c',
   'trx/config/vars.c',
-  'trx/enum_map.c',
-  'trx/event_manager.c',
-  'trx/filesystem.c',
+  'trx/core/benchmark.c',
+  'trx/core/bson/parse.c',
+  'trx/core/bson/write.c',
+  'trx/core/colors.c',
+  'trx/core/enum_map.c',
+  'trx/core/event_manager.c',
+  'trx/core/filesystem.c',
+  'trx/core/json/base.c',
+  'trx/core/json/parse.c',
+  'trx/core/json/util/file.c',
+  'trx/core/json/util/read_io.c',
+  'trx/core/json/util/write_io.c',
+  'trx/core/json/write.c',
+  'trx/core/log.c',
+  'trx/core/memory.c',
+  'trx/core/strings/case_funcs.c',
+  'trx/core/strings/common.c',
+  'trx/core/strings/fuzzy_match.c',
+  'trx/core/thread_pool.c',
+  'trx/core/vector.c',
+  'trx/core/virtual_file.c',
   'trx/game/anims/commands.c',
   'trx/game/anims/common.c',
   'trx/game/anims/frames.c',
@@ -712,34 +726,20 @@ common_sources = [
   'trx/gl/track.c',
   'trx/gl/utils.c',
   'trx/gl/vertex_array.c',
-  'trx/json/base.c',
-  'trx/json/parse.c',
-  'trx/json/util/file.c',
-  'trx/json/util/read_io.c',
-  'trx/json/util/write_io.c',
-  'trx/json/write.c',
-  'trx/log.c',
-  'trx/memory.c',
-  'trx/strings/case_funcs.c',
-  'trx/strings/common.c',
-  'trx/strings/fuzzy_match.c',
-  'trx/thread_pool.c',
-  'trx/vector.c',
   'trx/version.c',
-  'trx/virtual_file.c',
 ]
 
 
 if dep_backtrace.found() and host_machine.system() == 'linux'
-  common_sources += ['trx/log_linux.c']
+  common_sources += ['trx/core/log_linux.c']
 elif host_machine.system() == 'windows'
-  common_sources += ['trx/log_windows.c']
+  common_sources += ['trx/core/log_windows.c']
   dwarfstack = subproject('dwarfstack', default_options: ['warning_level=0'])
   dep_dwarfstack = dwarfstack.get_variable('dep_dwarfstack')
   dep_dbghelp = c_compiler.find_library('dbghelp')
   dependencies += [dep_dbghelp, dep_dwarfstack]
 else
-  common_sources += ['trx/log_unknown.c']
+  common_sources += ['trx/core/log_unknown.c']
 endif
 
 link_args = []

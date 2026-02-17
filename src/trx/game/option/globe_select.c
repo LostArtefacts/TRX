@@ -1,5 +1,6 @@
 #include <trx/game/option/globe_select.h>
 
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
@@ -8,7 +9,6 @@
 #include <trx/game/inventory_ring.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
-#include <trx/utils.h>
 
 typedef struct {
     GAME_STRING_ID gs_area_id;

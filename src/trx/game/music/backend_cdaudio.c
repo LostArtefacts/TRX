@@ -1,12 +1,12 @@
 #include <trx/game/music/backend_cdaudio.h>
 
 #include <trx/av/audio.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/music/const.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 
 #include <inttypes.h>
 #include <stdarg.h>

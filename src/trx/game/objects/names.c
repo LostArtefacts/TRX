@@ -1,12 +1,12 @@
 #include <trx/game/objects/names.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/strings/fuzzy_match.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/vars.h>
-#include <trx/memory.h>
-#include <trx/strings/fuzzy_match.h>
-#include <trx/vector.h>
 
 #include <string.h>
 

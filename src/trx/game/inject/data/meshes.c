@@ -1,8 +1,8 @@
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/sections/append.h>
-#include <trx/memory.h>
 
 static void M_HandleMeshData(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)

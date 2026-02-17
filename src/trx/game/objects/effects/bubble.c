@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 static void M_Control_TR1TR2(const int16_t effect_num)

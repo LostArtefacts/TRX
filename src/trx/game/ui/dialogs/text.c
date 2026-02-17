@@ -1,5 +1,8 @@
 #include <trx/game/ui/dialogs/text.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
@@ -12,9 +15,6 @@
 #include <trx/game/ui/elements/resize.h>
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/stack.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 
 #include <stdio.h>
 #include <string.h>

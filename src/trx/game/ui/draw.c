@@ -1,12 +1,12 @@
 #include <trx/game/ui/draw.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 #include <string.h>

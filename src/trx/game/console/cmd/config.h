@@ -1,8 +1,8 @@
 #pragma once
 
 #include <trx/config/option.h>
+#include <trx/core/vector.h>
 #include <trx/game/console/common.h>
-#include <trx/vector.h>
 
 #include <stddef.h>
 

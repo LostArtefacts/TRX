@@ -1,6 +1,7 @@
 #include <trx/game/ui/common.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/game_strings/entries.h>
@@ -10,7 +11,6 @@
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
-#include <trx/memory.h>
 
 #include <SDL2/SDL.h>
 #include <string.h>

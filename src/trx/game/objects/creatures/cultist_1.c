@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/cultist_common.h>
 #include <trx/game/random.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define CULTIST_1_HITPOINTS     25

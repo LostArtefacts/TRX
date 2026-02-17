@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/virtual_file.h>
+#include <trx/core/virtual_file.h>
 
 #include <stdint.h>
 

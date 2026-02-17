@@ -1,11 +1,11 @@
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/format/priv.h>
 #include <trx/game/shell.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 typedef struct {

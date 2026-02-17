@@ -1,12 +1,12 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/game/const.h>
 #include <trx/game/items/walkable.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 typedef enum {
     // clang-format off

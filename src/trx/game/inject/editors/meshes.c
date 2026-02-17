@@ -1,9 +1,9 @@
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/inject.h>
 #include <trx/game/objects/common.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 typedef struct {
     INJECTION_OBJECT_INFO obj_info;

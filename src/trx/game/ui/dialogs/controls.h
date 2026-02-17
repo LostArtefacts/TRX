@@ -2,7 +2,7 @@
 
 // A controls editor dialog.
 
-#include <trx/event_manager.h>
+#include <trx/core/event_manager.h>
 #include <trx/game/input.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/controls_backend.h>

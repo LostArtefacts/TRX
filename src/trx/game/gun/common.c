@@ -1,5 +1,5 @@
-#include <trx/colors.h>
 #include <trx/config.h>
+#include <trx/core/colors.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/gun.h>

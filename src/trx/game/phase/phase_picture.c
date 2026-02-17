@@ -1,10 +1,10 @@
 #include <trx/game/phase/phase_picture.h>
 
+#include <trx/core/memory.h>
 #include <trx/game/fader.h>
 #include <trx/game/input.h>
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
-#include <trx/memory.h>
 
 typedef enum {
     STATE_FADE_IN,

@@ -1,8 +1,8 @@
 #pragma once
 
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/game/console/types.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 #include <stddef.h>
 

@@ -1,5 +1,6 @@
 #include <trx/game/objects/vehicles/skidoo_common.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/collision.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
@@ -17,7 +18,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define M_RADIUS 500
 #define M_SIDE 260

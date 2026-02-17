@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/input.h>
@@ -9,7 +10,6 @@
 #include <trx/game/lara/util.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/rooms/geometry.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define M_CAM_CRAWL_ELEVATION (-DEG_1 * 23)      // = -4186

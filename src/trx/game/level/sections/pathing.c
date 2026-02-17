@@ -1,4 +1,4 @@
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
 #include <trx/game/const.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/read.h>

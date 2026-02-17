@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
@@ -8,7 +9,6 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
-#include <trx/utils.h>
 
 #define M_CUTSCENE_DELAY (5 * LOGIC_FPS) // = 150
 #define M_BOSS_TYPE O_CULT_3

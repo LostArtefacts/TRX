@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
@@ -6,7 +7,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define M_BIFF_DAMAGE       100

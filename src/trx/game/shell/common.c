@@ -1,9 +1,9 @@
 #include <trx/av/audio.h>
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/shell.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 #ifdef _WIN32
     #include <objbase.h>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/json.h>
+#include <trx/core/json.h>
 
 #include <SDL2/SDL_events.h>
 #include <stdint.h>

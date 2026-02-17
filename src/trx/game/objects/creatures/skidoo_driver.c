@@ -1,5 +1,6 @@
 #include <trx/game/objects/creatures/skidoo_driver.h>
 
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
@@ -7,7 +8,6 @@
 #include <trx/game/objects/vehicles/skidoo_common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/sound.h>
-#include <trx/utils.h>
 
 #define SKIDOO_DRIVER_MIN_TURN (SKIDOO_MAX_TURN / 3) // = 364
 #define SKIDOO_DRIVER_TARGET_ANGLE (DEG_1 * 15) // = 2730

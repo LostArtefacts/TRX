@@ -1,6 +1,6 @@
+#include <trx/core/memory.h>
 #include <trx/game/anims.h>
 #include <trx/game/level/finalize.h>
-#include <trx/memory.h>
 
 void Level_Finalize_LoadAnimCommands(LEVEL_CONTEXT *const ctx)
 {

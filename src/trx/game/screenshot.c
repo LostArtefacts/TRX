@@ -1,14 +1,14 @@
 #include <trx/game/screenshot.h>
 
-#include <trx/filesystem.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/clock.h>
 #include <trx/game/events.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <stdio.h>
 #include <string.h>

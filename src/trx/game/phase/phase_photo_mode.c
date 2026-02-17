@@ -1,6 +1,7 @@
 #include <trx/game/phase/phase_photo_mode.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/game/cutscene.h>
 #include <trx/game/game.h>
 #include <trx/game/phase/executor.h>
@@ -8,7 +9,6 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
-#include <trx/memory.h>
 
 typedef struct {
     bool in_cutscene;

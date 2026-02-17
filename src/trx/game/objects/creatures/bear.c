@@ -1,10 +1,10 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 // clang-format off

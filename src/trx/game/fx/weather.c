@@ -1,6 +1,7 @@
 #include <trx/game/fx/weather.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/game/state.h>
 #include <trx/game/lara.h>
@@ -13,7 +14,6 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
-#include <trx/utils.h>
 
 #include <string.h>
 

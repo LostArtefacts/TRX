@@ -1,11 +1,11 @@
 #include <trx/game/gun/vars.h>
 
-#include <trx/enum_map.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/json/util/file.h>
+#include <trx/core/log.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/shell.h>
-#include <trx/json/util/file.h>
-#include <trx/log.h>
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 

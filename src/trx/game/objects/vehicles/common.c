@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
 #include <trx/game/cutscene.h>
@@ -11,7 +12,6 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/viewport.h>
-#include <trx/utils.h>
 
 typedef enum {
     LA_VEHICLE_HIT_LEFT = 11,

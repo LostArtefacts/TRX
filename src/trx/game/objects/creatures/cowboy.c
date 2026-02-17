@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/music.h>
@@ -5,7 +6,6 @@
 #include <trx/game/pathing.h>
 #include <trx/game/savegame.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define COWBOY_SHOT_DAMAGE 70
 #define COWBOY_WALK_TURN (DEG_1 * 3) // = 546

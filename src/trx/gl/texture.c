@@ -1,9 +1,9 @@
 #include <trx/gl/texture.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 TRX_GL_TEXTURE *TRX_GL_Texture_Create(GLenum target)
 {

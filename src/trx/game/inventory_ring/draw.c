@@ -1,6 +1,7 @@
 #include <trx/game/inventory_ring/draw.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
@@ -16,7 +17,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <math.h>

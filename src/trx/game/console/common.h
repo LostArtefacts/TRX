@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/log.h>
 #include <trx/game/console/types.h>
-#include <trx/log.h>
 
 #include <stdint.h>
 

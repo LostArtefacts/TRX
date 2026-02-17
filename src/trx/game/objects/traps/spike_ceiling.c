@@ -1,11 +1,11 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 
 #define M_DAMAGE 20
 #define M_SPEED 1

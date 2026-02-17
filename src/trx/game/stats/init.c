@@ -1,8 +1,14 @@
 #include <trx/game/stats/init.h>
 
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/json.h>
+#include <trx/core/json/util/file.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/virtual_file.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
@@ -13,12 +19,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
 #include <trx/game/stats.h>
-#include <trx/json.h>
-#include <trx/json/util/file.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/virtual_file.h>
 
 #include <stdlib.h>
 #include <string.h>

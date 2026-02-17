@@ -1,13 +1,13 @@
 #include <trx/game/catalog/manager.h>
 
-#include <trx/filesystem.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/music/ids.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/sound/ids.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 #include <ctype.h>
 #include <string.h>

@@ -1,6 +1,7 @@
 #include <trx/game/output/state.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/output/common.h>
@@ -10,7 +11,6 @@
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/viewport.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <math.h>

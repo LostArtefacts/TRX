@@ -1,17 +1,17 @@
 #include <trx/game/lara/skin/storage.h>
 
 #include <trx/config.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/json/util/file.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lara.h>
 #include <trx/game/shell.h>
-#include <trx/json/util/file.h>
-#include <trx/json/util/read_io.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/vector.h>
 
 #include <string.h>
 #include <uthash.h>

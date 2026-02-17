@@ -1,6 +1,7 @@
 #include <trx/game/phase/phase_pause.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/game/const.h>
 #include <trx/game/fader.h>
 #include <trx/game/game_strings/entries.h>
@@ -11,7 +12,6 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
-#include <trx/memory.h>
 
 #include <stdint.h>
 

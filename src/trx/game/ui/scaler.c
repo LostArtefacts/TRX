@@ -1,8 +1,8 @@
 #include <trx/game/ui/scaler.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/viewport.h>
-#include <trx/utils.h>
 
 static float M_DoCalc(
     const float unit, const float base_width, const float base_height,

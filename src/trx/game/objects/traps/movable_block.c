@@ -1,6 +1,10 @@
 #include <trx/game/objects/traps/movable_block.h>
 
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/items.h>
@@ -10,10 +14,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
-#include <trx/strings.h>
-#include <trx/vector.h>
 
 #define LF_PPREADY 19
 

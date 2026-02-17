@@ -1,10 +1,10 @@
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/dragon.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define M_BOOM_TIME 130
 #define M_BARTOLI_RANGE (WALL_L * 5) // = 5120

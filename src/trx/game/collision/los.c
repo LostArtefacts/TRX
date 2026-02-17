@@ -1,9 +1,9 @@
 #include <trx/game/collision/los.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 #include <math.h>
 

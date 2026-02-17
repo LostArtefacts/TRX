@@ -1,6 +1,7 @@
 #include <trx/game/inventory_ring/priv.h>
 
 #include <trx/config.h>
+#include <trx/core/strings.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
@@ -14,7 +15,6 @@
 #include <trx/game/overlay.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #include <stdio.h>

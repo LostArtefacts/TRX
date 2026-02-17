@@ -1,7 +1,7 @@
 #include <trx/game/phase/executor.h>
 
-#include <trx/benchmark.h>
 #include <trx/config.h>
+#include <trx/core/benchmark.h>
 #include <trx/game/clock.h>
 #include <trx/game/console/common.h>
 #include <trx/game/fader.h>

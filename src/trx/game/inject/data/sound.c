@@ -1,8 +1,8 @@
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/inject.h>
 #include <trx/game/sound.h>
-#include <trx/memory.h>
 #include <trx/version.h>
 
 static void M_HandleSFXData(

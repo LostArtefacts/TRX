@@ -1,13 +1,13 @@
 #include <trx/gl/program.h>
 
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/shell.h>
 #include <trx/gl/track.h>
 #include <trx/gl/utils.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 
 #include <stdio.h>
 #include <string.h>

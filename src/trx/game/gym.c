@@ -1,6 +1,7 @@
 #include <trx/game/gym.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
@@ -12,7 +13,6 @@
 #include <trx/game/pathing/lot.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_NO_TIME (-1)

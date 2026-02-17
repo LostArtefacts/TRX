@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/creatures/worker_common.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define WORKER_2_HITPOINTS 20
 #define WORKER_5_HITPOINTS 20

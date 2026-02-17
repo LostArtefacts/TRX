@@ -1,11 +1,11 @@
 #include <trx/game/items/walkable.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 
 #include <stdlib.h>
 #include <string.h>

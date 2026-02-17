@@ -1,8 +1,8 @@
 #pragma once
 
 #include <trx/config/option.h>
-#include <trx/event_manager.h>
-#include <trx/json.h>
+#include <trx/core/event_manager.h>
+#include <trx/core/json.h>
 
 #include <stdint.h>
 

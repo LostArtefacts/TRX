@@ -1,12 +1,12 @@
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/memory.h>
+#include <trx/core/thread_pool.h>
+#include <trx/core/utils.h>
 #include <trx/game/level/finalize.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
-#include <trx/memory.h>
-#include <trx/thread_pool.h>
-#include <trx/utils.h>
 
 #include <string.h>
 

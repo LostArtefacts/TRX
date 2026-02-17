@@ -1,11 +1,11 @@
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/level/finalize.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 #include <string.h>
 

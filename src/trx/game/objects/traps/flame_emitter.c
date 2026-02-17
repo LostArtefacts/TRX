@@ -1,11 +1,11 @@
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/effects/flame.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 #include <trx/version.h>
 
 typedef struct {

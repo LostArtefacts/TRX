@@ -1,3 +1,5 @@
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/const.h>
@@ -10,8 +12,6 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 static bool M_TrySummon(const GAME_VECTOR target_pos, const OBJECT_ID object_id)
 {

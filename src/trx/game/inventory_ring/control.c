@@ -1,6 +1,7 @@
 #include <trx/game/inventory_ring/control.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
 #include <trx/game/game.h>
@@ -26,7 +27,6 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/memory.h>
 #include <trx/version.h>
 
 #define M_INV_RING_FADE_TIME_FAST                                              \

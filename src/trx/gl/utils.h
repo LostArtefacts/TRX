@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/log.h>
 #include <trx/gl/track.h>
-#include <trx/log.h>
 
 #include <GL/glew.h>
 

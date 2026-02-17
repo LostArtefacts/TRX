@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
@@ -6,7 +7,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define SPIDER_HITPOINTS      5

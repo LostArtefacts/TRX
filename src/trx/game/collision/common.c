@@ -1,13 +1,13 @@
 #include <trx/game/collision/common.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/matrix.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_HEADROOM 160 // Additional collision space above Lara's head.

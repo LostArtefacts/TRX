@@ -1,8 +1,8 @@
 #include <trx/game/game_flow/common.h>
 
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
-#include <trx/memory.h>
 
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GF_COMMAND m_OverrideCommand = { .action = GF_NOOP };

@@ -1,4 +1,8 @@
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
@@ -6,10 +10,6 @@
 #include <trx/game/level/sections/append.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/objects.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 static void M_ReadVertex(XYZ_16 *const vertex, VFILE *const file)
 {

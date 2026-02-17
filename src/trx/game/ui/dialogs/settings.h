@@ -2,12 +2,12 @@
 
 #include <trx/config/option.h>
 #include <trx/config/types.h>
+#include <trx/core/utils.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/text.h>
 #include <trx/game/ui/elements/tab_switch.h>
 #include <trx/game/ui/scrollable.h>
-#include <trx/utils.h>
 
 typedef struct UI_SETTINGS_OPTION UI_SETTINGS_OPTION;
 

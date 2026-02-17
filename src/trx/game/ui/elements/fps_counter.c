@@ -1,8 +1,8 @@
 #include <trx/game/ui/elements/fps_counter.h>
 
+#include <trx/core/memory.h>
 #include <trx/game/clock.h>
 #include <trx/game/ui/elements/label.h>
-#include <trx/memory.h>
 
 #include <stdio.h>
 

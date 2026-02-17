@@ -1,9 +1,9 @@
 #include <trx/av/audio_internal.h>
 
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 #include <trx/version.h>
 
 #include <SDL2/SDL_audio.h>

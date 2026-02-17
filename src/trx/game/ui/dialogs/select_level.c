@@ -1,5 +1,7 @@
 #include <trx/game/ui/dialogs/select_level.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
@@ -14,8 +16,6 @@
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/stack.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 
 typedef struct {
     const char *const text;

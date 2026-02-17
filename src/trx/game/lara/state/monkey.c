@@ -1,11 +1,11 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rooms/enum.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define M_CAM_MONKEY_ELEVATION  (10 * DEG_1)  // = 1820

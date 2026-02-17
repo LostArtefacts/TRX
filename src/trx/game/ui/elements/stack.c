@@ -1,9 +1,9 @@
 #include <trx/game/ui/elements/stack.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/ui/helpers.h>
-#include <trx/utils.h>
 
 #include <math.h>
 #include <stdint.h>

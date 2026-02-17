@@ -1,7 +1,7 @@
+#include <trx/core/log.h>
 #include <trx/game/inject.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/log.h>
 #include <trx/version.h>
 
 static uint16_t *M_GetRoomTexture(

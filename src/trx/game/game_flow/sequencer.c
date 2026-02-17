@@ -1,7 +1,7 @@
 #include <trx/game/game_flow/sequencer.h>
 
+#include <trx/core/enum_map.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow/sequencer_events.h>
 #include <trx/game/inventory.h>

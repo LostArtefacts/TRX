@@ -1,3 +1,7 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
@@ -6,10 +10,6 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 
 #define M_MAX_BATS 32
 #define M_BAT_SPRITE_OFFSET 12

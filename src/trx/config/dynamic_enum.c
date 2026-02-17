@@ -1,10 +1,10 @@
 #include <trx/config/dynamic_enum.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/vector.h>
 
 #include <string.h>
 

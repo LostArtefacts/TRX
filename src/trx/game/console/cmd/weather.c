@@ -1,13 +1,13 @@
-#include <trx/enum_map.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/vector.h>
 
 #include <string.h>
 

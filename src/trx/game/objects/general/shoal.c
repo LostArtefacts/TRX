@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow/util.h>
 #include <trx/game/interpolation.h>
@@ -9,7 +10,6 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <stdint.h>

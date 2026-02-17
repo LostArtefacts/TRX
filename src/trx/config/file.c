@@ -1,15 +1,15 @@
 #include <trx/config/file.h>
 
-#include <trx/colors.h>
 #include <trx/config/common.h>
+#include <trx/core/colors.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/json/util/file.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/console/history.h>
-#include <trx/json/util/file.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/vector.h>
 
 #include <stdio.h>
 #include <string.h>

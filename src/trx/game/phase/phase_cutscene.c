@@ -1,11 +1,11 @@
 #include <trx/game/phase/phase_cutscene.h>
 
+#include <trx/core/memory.h>
 #include <trx/game/cutscene.h>
 #include <trx/game/game.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/output.h>
-#include <trx/memory.h>
 
 typedef struct {
     int32_t level_num;

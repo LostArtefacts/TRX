@@ -1,6 +1,8 @@
-#include <trx/benchmark.h>
 #include <trx/config.h>
-#include <trx/filesystem.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/inject.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/level.h>
@@ -11,8 +13,6 @@
 #include <trx/game/shell/paths.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 #include <trx/version.h>
 
 #include <stdlib.h>

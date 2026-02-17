@@ -1,9 +1,9 @@
 #include <trx/game/phase/phase_game.h>
 
+#include <trx/core/memory.h>
 #include <trx/game/game.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/output.h>
-#include <trx/memory.h>
 
 typedef struct {
     const GF_LEVEL *level;

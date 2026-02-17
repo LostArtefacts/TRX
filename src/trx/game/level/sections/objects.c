@@ -1,13 +1,13 @@
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/objects.h>
 #include <trx/game/shell.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 static void M_ReadPosition(XYZ_32 *const pos, VFILE *const file)
 {

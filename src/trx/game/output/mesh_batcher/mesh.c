@@ -1,7 +1,7 @@
 #include <trx/game/output/mesh_batcher/mesh.h>
 
+#include <trx/core/memory.h>
 #include <trx/game/output/vertex_range.h>
-#include <trx/memory.h>
 
 OUTPUT_MESH *Output_Mesh_Create(void)
 {

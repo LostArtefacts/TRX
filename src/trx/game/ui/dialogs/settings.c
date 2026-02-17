@@ -2,6 +2,9 @@
 
 #include <trx/config.h>
 #include <trx/config/dynamic_enum.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/manager.h>
@@ -11,9 +14,6 @@
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <math.h>

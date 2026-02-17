@@ -1,10 +1,10 @@
 #include <trx/game/viewport.h>
 
 #include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/game/const.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/shell.h>
-#include <trx/log.h>
 
 #define L_DEFAULT_VIEWPORT                                                     \
     { .width = SHELL_HEADLESS_WIDTH, .height = SHELL_HEADLESS_HEIGHT }

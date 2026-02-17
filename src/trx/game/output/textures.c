@@ -1,5 +1,7 @@
 #include <trx/game/output/textures.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
@@ -8,8 +10,6 @@
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/shell.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <string.h>

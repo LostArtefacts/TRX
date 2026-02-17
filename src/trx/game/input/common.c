@@ -1,11 +1,11 @@
 #include <trx/game/input/common.h>
 
-#include <trx/enum_map.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/strings.h>
 #include <trx/game/clock.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #include <SDL2/SDL_keyboard.h>

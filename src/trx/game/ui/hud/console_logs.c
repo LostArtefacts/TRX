@@ -1,12 +1,12 @@
 #include <trx/game/ui/hud/console_logs.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/clock.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/events.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <string.h>
 

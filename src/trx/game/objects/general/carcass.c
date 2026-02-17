@@ -1,7 +1,7 @@
+#include <trx/core/utils.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define M_ROLL_SHIFT       1

@@ -1,8 +1,8 @@
 #include <trx/game/objects/general/bridge_common.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 bool Bridge_IsSameSector(
     const int32_t x, const int32_t z, const ITEM *const item)

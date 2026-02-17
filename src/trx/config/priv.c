@@ -3,14 +3,14 @@
 #include <trx/config/common.h>
 #include <trx/config/file.h>
 #include <trx/config/vars.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/clock.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/const.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 
 #include <stdio.h>
 #include <string.h>

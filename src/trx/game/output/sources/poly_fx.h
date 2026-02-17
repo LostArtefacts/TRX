@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/colors.h>
+#include <trx/core/colors.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/types.h>

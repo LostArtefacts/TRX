@@ -1,10 +1,10 @@
 #include <trx/game/lara/look.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
-#include <trx/utils.h>
 
 static const LARA_TRX_STATE m_StopStates[] = {
     LS_STOP,

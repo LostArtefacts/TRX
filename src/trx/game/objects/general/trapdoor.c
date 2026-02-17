@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 typedef enum {
     TRAPDOOR_STATE_CLOSED,

@@ -1,11 +1,11 @@
+#include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
-#include <trx/log.h>
-#include <trx/utils.h>
 
 bool Stats_IsSecretValid(const int16_t secret_idx)
 {

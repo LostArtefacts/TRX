@@ -1,5 +1,8 @@
 #include <trx/game/rooms/common.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
@@ -9,9 +12,6 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound/common.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 #include <string.h>

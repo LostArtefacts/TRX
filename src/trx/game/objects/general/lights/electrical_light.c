@@ -1,9 +1,9 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 
 typedef struct {
     int32_t life;

@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/vector.h>
 #include <trx/game/shell/mod.h>
-#include <trx/vector.h>
 
 typedef struct {
     VECTOR *original_args;

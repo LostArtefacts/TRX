@@ -1,10 +1,10 @@
 #pragma once
 
-#include <trx/colors.h>
+#include <trx/core/colors.h>
+#include <trx/core/vector.h>
 #include <trx/game/objects/types.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
-#include <trx/vector.h>
 
 void Output_Lights_Init(void);
 void Output_Lights_Shutdown(void);

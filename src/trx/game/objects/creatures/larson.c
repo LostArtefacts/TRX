@@ -1,10 +1,10 @@
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
-#include <trx/utils.h>
 
 #define LARSON_POSE_CHANCE 0x60 // = 96
 #define LARSON_SHOT_DAMAGE 50

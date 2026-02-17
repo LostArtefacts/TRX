@@ -1,5 +1,7 @@
 #include <trx/game/ui/dialogs/save_slot.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/savegame.h>
@@ -14,8 +16,6 @@
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_IMMEDIATE (g_TRVersion >= 2)

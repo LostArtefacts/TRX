@@ -1,8 +1,8 @@
 #include <trx/game/lua/events.h>
 
+#include <trx/core/log.h>
+#include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
-#include <trx/log.h>
-#include <trx/vector.h>
 
 #include <lauxlib.h>
 #include <lua.h>

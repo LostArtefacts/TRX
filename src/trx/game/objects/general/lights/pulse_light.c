@@ -1,7 +1,7 @@
+#include <trx/core/utils.h>
 #include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
-#include <trx/utils.h>
 
 typedef struct {
     int32_t cycle;

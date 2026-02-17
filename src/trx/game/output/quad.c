@@ -1,9 +1,9 @@
 #include <trx/game/output/quad.h>
 
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output/shaders/generic.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
 
 #include <GL/glew.h>
 #include <stddef.h>

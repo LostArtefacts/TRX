@@ -1,13 +1,13 @@
 #include <trx/game/lua/common.h>
 
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/lua/embedded_scripts.h>
 #include <trx/game/lua/events.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <lauxlib.h>
 #include <lua.h>

@@ -1,10 +1,10 @@
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define BALDY_SHOT_DAMAGE 150
 #define BALDY_WALK_TURN (DEG_1 * 3) // = 546

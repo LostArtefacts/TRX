@@ -1,11 +1,11 @@
 #include <trx/game/ui/elements/ammo_label.h>
 
+#include <trx/core/strings.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/ui/elements/label.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #include <stdio.h>

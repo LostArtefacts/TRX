@@ -1,5 +1,7 @@
 #include <trx/game/items/carrier.h>
 
+#include <trx/core/log.h>
+#include <trx/core/vector.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/vars.h>
@@ -7,8 +9,6 @@
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rooms/utils.h>
-#include <trx/log.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 #define M_DROP_FAST_RATE GRAVITY

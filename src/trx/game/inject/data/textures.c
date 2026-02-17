@@ -1,12 +1,12 @@
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output/const.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 static uint16_t M_RemapRGB8(const RGB_888 rgb)
 {

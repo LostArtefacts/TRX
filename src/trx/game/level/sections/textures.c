@@ -1,13 +1,13 @@
-#include <trx/benchmark.h>
-#include <trx/colors.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/colors.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/output.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, VFILE *const file)
 {

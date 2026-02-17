@@ -1,8 +1,8 @@
 #include <trx/game/items/col.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 static BOUNDS_16 m_NullBounds = {};
 static BOUNDS_16 m_InterpolatedBounds = {};

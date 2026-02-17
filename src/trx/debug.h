@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/log.h>
+#include <trx/core/log.h>
 
 #define ASSERT(x)                                                              \
     do {                                                                       \

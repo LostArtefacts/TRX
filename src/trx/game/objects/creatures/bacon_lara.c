@@ -1,12 +1,12 @@
 #include <trx/game/objects/creatures/bacon_lara.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 
 #define M_SMASH_JUMP_FRAME 1
 

@@ -1,5 +1,7 @@
 #include <trx/game/output/sources/poly_fx.h>
 
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/output.h>
@@ -9,8 +11,6 @@
 #include <trx/game/output/utils.h>
 #include <trx/game/sparks.h>
 #include <trx/gl/utils.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 #include <math.h>
 #include <stddef.h>

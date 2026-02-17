@@ -1,3 +1,4 @@
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/anims.h>
 #include <trx/game/inject.h>
@@ -5,7 +6,6 @@
 #include <trx/game/level/context.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/objects.h>
-#include <trx/memory.h>
 
 static void M_HandleAnimData(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)

@@ -1,6 +1,8 @@
 #include <trx/game/cutscene.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
@@ -19,8 +21,6 @@
 #include <trx/game/random.h>
 #include <trx/game/shell.h>
 #include <trx/game/sparks.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 static CAMERA_INFO m_LocalCamera = {};

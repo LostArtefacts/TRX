@@ -1,5 +1,6 @@
 #include <trx/gl/fbo.h>
 
+#include <trx/core/log.h>
 #include <trx/debug.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/buffer.h>
@@ -8,7 +9,6 @@
 #include <trx/gl/texture.h>
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
-#include <trx/log.h>
 
 #include <GL/glew.h>
 

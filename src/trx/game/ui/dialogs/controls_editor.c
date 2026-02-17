@@ -1,6 +1,7 @@
 #include <trx/game/ui/dialogs/controls_editor.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
@@ -22,7 +23,6 @@
 #include <trx/game/ui/elements/window.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 typedef enum {

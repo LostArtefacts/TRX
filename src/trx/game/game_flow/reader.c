@@ -1,8 +1,13 @@
 #include <trx/game/game_flow/reader.h>
 
+#include <trx/core/enum_map.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/json/util/file.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
-#include <trx/filesystem.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/game_flow/vars.h>
@@ -10,11 +15,6 @@
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/shell.h>
-#include <trx/json/util/file.h>
-#include <trx/json/util/read_io.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #include <string.h>

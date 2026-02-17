@@ -1,5 +1,7 @@
 #include <trx/game/items/manager.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
@@ -10,8 +12,6 @@
 #include <trx/game/output/const.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <string.h>

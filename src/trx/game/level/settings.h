@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/colors.h>
+#include <trx/core/colors.h>
 #include <trx/game/game_flow/types.h>
 
 RGB_888 Level_GetWaterColor(void);

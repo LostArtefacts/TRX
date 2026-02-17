@@ -1,5 +1,7 @@
 #include <trx/game/objects/vehicles/quad_bike.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/anims.h>
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
@@ -16,8 +18,6 @@
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 #include <trx/version.h>
 
 static const BITE m_QuadBites[6] = {

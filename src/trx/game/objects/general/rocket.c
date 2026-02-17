@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/water.h>
@@ -14,7 +15,6 @@
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_BLAST_RADIUS WALL_L // = 1024

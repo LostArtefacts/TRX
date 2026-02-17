@@ -1,12 +1,12 @@
 #include <trx/game/objects/general/smashable.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
-#include <trx/utils.h>
 
 static void M_SetBoxBlocked(const ITEM *const item, const bool blocked)
 {

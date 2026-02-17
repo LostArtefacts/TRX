@@ -1,9 +1,9 @@
 #include <trx/av/image.h>
 
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 #include <errno.h>
 #include <libavcodec/avcodec.h>

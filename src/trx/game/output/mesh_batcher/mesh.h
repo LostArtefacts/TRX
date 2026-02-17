@@ -1,10 +1,10 @@
 #pragma once
 
-#include <trx/colors.h>
+#include <trx/core/colors.h>
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/textures.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 
 typedef struct {
     // attribute 2

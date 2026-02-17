@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
@@ -6,7 +7,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_SHARD_DAMAGE 30

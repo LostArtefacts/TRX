@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define M_MONKEY_RADIUS           100

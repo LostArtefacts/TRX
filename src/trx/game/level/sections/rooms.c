@@ -1,5 +1,8 @@
-#include <trx/benchmark.h>
-#include <trx/colors.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/colors.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
@@ -12,9 +15,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 #define M_NO_ROOM_LEGACY 255
 #define M_NO_BOX_TR3_LEGACY 0x7FF

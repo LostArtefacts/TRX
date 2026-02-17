@@ -1,10 +1,10 @@
 #pragma once
 
-#include <trx/filesystem.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/json.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/savegame/types.h>
-#include <trx/json.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 
 #include <stdint.h>
 

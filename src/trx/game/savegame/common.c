@@ -1,7 +1,9 @@
-#include <trx/benchmark.h>
 #include <trx/config.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
 #include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
@@ -14,8 +16,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
 #include <trx/game/shell.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #include <stdio.h>

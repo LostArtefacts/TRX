@@ -1,11 +1,11 @@
 #include <trx/game/lara/electric.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/collision.h>
 #include <trx/game/lara.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
-#include <trx/utils.h>
 
 static const uint8_t m_LaraMeshes[28] = {
     0, 1, 1, 2, 2, 3,  0, 4,  4,  5,  5,  6,  0, 7,
