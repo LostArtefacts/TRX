@@ -4,9 +4,9 @@
 #include <trx/config/const.h>
 #include <trx/config/enum.h>
 #include <trx/game/input.h>
+#include <trx/game/screenshot.h>
 #include <trx/game/sound/enum.h>
 #include <trx/gl/common.h>
-#include <trx/screenshot.h>
 
 typedef struct {
     uint32_t time;

@@ -8,9 +8,9 @@
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/objects/ids.h>
+#include <trx/game/screenshot.h>
 #include <trx/game/ui/settings.h>
 #include <trx/memory.h>
-#include <trx/screenshot.h>
 #include <trx/strings.h>
 
 #include <uthash.h>

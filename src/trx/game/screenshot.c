@@ -1,4 +1,4 @@
-#include <trx/screenshot.h>
+#include <trx/game/screenshot.h>
 
 #include <trx/filesystem.h>
 #include <trx/game/clock.h>
