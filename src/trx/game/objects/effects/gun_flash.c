@@ -1,5 +1,5 @@
-#include <trx/colors.h>
 #include <trx/config.h>
+#include <trx/core/colors.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>

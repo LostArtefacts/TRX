@@ -1,7 +1,7 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 
 static void M_PrivLoad(ITEM *const item, JSON_READ_IO *const io)
 {

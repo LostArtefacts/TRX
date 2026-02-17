@@ -1,6 +1,7 @@
 #include <trx/game/option/examine.h>
 
 #include <trx/config.h>
+#include <trx/core/strings.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
@@ -10,7 +11,6 @@
 #include <trx/game/ui.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
-#include <trx/strings.h>
 
 #define M_EXAMINE_ROTATION_SPEED (DEG_1 * 3)
 

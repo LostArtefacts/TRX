@@ -1,6 +1,7 @@
 #include <trx/game/game_flow/sequencer_events.h>
 
 #include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/debug.h>
 #include <trx/game/fmv.h>
 #include <trx/game/game.h>
@@ -17,7 +18,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell/paths.h>
 #include <trx/game/stats.h>
-#include <trx/log.h>
 #include <trx/version.h>
 
 #define M_GF_HANDLER(name)                                                     \

@@ -1,12 +1,12 @@
 #include <trx/game/items/utils.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 static bool M_UseTR3ExplodingEffects(const ITEM *const item)

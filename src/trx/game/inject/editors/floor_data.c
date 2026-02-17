@@ -1,11 +1,11 @@
 #include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/game/camera.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
-#include <trx/log.h>
 
 #define NULL_FD_INDEX ((uint16_t)(-1))
 

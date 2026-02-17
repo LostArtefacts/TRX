@@ -1,14 +1,14 @@
 #include <trx/game/shell/input.h>
 
 #include <trx/config.h>
-#include <trx/enum_map.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/utils.h>
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
 #include <trx/game/console/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
-#include <trx/utils.h>
 
 static void M_ToggleFullscreen(void)
 {

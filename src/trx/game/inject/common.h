@@ -1,7 +1,7 @@
+#include <trx/core/utils.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/inject/types.h>
 #include <trx/game/level.h>
-#include <trx/utils.h>
 
 #define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
 

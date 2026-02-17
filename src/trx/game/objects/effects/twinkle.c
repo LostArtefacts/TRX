@@ -1,12 +1,12 @@
 #include <trx/game/objects/effects/twinkle.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/collision.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define M_DISAPPEAR_RANGE STEP_L
 

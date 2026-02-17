@@ -1,9 +1,9 @@
 #include <trx/game/output/shaders/mesh.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/output/utils.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <string.h>

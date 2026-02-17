@@ -4,11 +4,11 @@
 #include <trx/config/file.h>
 #include <trx/config/priv.h>
 #include <trx/config/vars.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
 #include <trx/game/shell.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <stdio.h>
 #include <string.h>

@@ -1,7 +1,7 @@
 #include <trx/game/ui/scrollable.h>
 
 #include <trx/config.h>
-#include <trx/utils.h>
+#include <trx/core/utils.h>
 
 static void M_Clamp(UI_SCROLLABLE *const s, const bool include_selected_item)
 {

@@ -1,11 +1,11 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define TREX_HITPOINTS      100

@@ -1,4 +1,4 @@
-#include <trx/log.h>
+#include <trx/core/log.h>
 
 #include <lauxlib.h>
 #include <lua.h>

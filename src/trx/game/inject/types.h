@@ -1,9 +1,9 @@
 #pragma once
 
+#include <trx/core/virtual_file.h>
 #include <trx/game/inject/enum.h>
 #include <trx/game/math.h>
 #include <trx/game/objects/ids.h>
-#include <trx/virtual_file.h>
 
 typedef struct {
     INJECTION_MODE mode;

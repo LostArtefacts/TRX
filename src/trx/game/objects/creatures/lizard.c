@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -5,7 +6,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define M_SWIPE_DAMAGE     120

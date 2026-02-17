@@ -2,6 +2,8 @@
 
 #include <trx/av/audio.h>
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
@@ -9,8 +11,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 #include <trx/version.h>
 
 #include <math.h>

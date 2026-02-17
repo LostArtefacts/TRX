@@ -1,11 +1,11 @@
 #include <trx/config.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/door.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
-#include <trx/vector.h>
 
 typedef enum {
     DRAWBRIDGE_STATE_CLOSED = DOOR_STATE_CLOSED,

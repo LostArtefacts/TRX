@@ -1,15 +1,15 @@
 #include <trx/game/inject/common.h>
 
-#include <trx/benchmark.h>
 #include <trx/config.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/memory.h>
+#include <trx/core/thread_pool.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/items.h>
 #include <trx/game/level.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
-#include <trx/memory.h>
-#include <trx/thread_pool.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 #include <string.h>

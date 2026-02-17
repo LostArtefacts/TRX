@@ -1,11 +1,11 @@
 #include <trx/game/packer.h>
 
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 #include <string.h>
 

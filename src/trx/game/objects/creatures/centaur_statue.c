@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/sound.h>
-#include <trx/utils.h>
 
 #define STATUE_EXPLODE_DIST (WALL_L * 7 / 2) // = 3584
 #define CENTAUR_REARING_ANIM 7

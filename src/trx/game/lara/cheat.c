@@ -1,5 +1,6 @@
 #include <trx/game/lara/cheat.h>
 
+#include <trx/core/vector.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
 #include <trx/game/game.h>
@@ -12,7 +13,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/viewport.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 static void M_GiveAllKeysImpl(void)

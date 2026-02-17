@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
-#include <trx/utils.h>
 
 #define SPHERE_OF_DOOM_RADIUS (STEP_L * 5 / 2) // = 640
 

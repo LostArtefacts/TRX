@@ -1,5 +1,7 @@
 #include <trx/game/ui/dialogs/play_any_level.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/ui/common.h>
@@ -11,8 +13,6 @@
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/stack.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 
 typedef struct {
     int32_t level_num;

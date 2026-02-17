@@ -1,11 +1,11 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define CROCODILE_BITE_DAMAGE 100
 #define CROCODILE_BITE_RANGE SQUARE(435) // = 189225

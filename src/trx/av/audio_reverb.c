@@ -4,9 +4,9 @@
 
 #include <trx/av/audio_internal.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 #include <math.h>
 #include <stdint.h>

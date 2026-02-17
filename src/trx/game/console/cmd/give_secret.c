@@ -1,3 +1,5 @@
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
@@ -6,8 +8,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/game/stats/common.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <stdio.h>
 #include <string.h>

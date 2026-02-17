@@ -1,5 +1,6 @@
 #include <trx/game/objects/creatures/mutant.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
@@ -7,7 +8,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define FLYER_CHARGE_DAMAGE 100
 #define FLYER_LUNGE_DAMAGE 150

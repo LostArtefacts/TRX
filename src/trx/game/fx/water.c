@@ -1,5 +1,6 @@
 #include <trx/game/fx/water.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/items.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
@@ -7,7 +8,6 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
-#include <trx/utils.h>
 
 #include <string.h>
 

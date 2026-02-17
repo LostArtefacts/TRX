@@ -1,6 +1,7 @@
 #include <trx/game/ui/elements/tab_switch.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/game/input/common.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/elements/frame.h>
@@ -8,7 +9,6 @@
 #include <trx/game/ui/elements/pad.h>
 #include <trx/game/ui/elements/row_arrows.h>
 #include <trx/game/ui/elements/stack.h>
-#include <trx/memory.h>
 
 static void M_Draw(
     const UI_TAB_SWITCH_STATE *const s, const bool is_focused,

@@ -1,5 +1,7 @@
 #include <trx/gl/renderer.h>
 
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/gl/buffer.h>
 #include <trx/gl/common.h>
@@ -11,8 +13,6 @@
 #include <trx/gl/texture.h>
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 #include <GL/glew.h>
 #include <SDL2/SDL_video.h>

@@ -1,5 +1,6 @@
-#include <trx/benchmark.h>
 #include <trx/config.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/log.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/footprint.h>
@@ -22,7 +23,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/ui.h>
-#include <trx/log.h>
 
 void Level_Unload(void)
 {

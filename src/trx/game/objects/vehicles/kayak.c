@@ -1,5 +1,8 @@
 #include <trx/game/objects/vehicles/kayak.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
 #include <trx/game/fx/wake.h>
@@ -16,9 +19,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
-#include <trx/utils.h>
 
 typedef enum {
     M_STATE_BACK = 0,

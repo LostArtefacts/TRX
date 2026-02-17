@@ -1,6 +1,6 @@
 #include <trx/game/random.h>
 
-#include <trx/log.h>
+#include <trx/core/log.h>
 
 #include <time.h>
 

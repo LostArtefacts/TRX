@@ -1,5 +1,6 @@
 #include <trx/game/objects/general/flare_item.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/gun.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/matrix.h>
@@ -10,7 +11,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 // clang-format off

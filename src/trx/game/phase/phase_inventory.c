@@ -1,6 +1,7 @@
 #include <trx/game/phase/phase_inventory.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/fader.h>
 #include <trx/game/game_flow.h>
@@ -8,7 +9,6 @@
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
-#include <trx/memory.h>
 
 typedef struct {
     INVENTORY_MODE mode;

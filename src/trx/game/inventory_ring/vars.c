@@ -1,10 +1,10 @@
 #include <trx/game/inventory_ring/vars.h>
 
+#include <trx/core/json/util/file.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/shell.h>
-#include <trx/json/util/file.h>
-#include <trx/memory.h>
 
 CAMERA_INFO g_InvRing_OldCamera = {};
 VECTOR *g_InvRing_Items = nullptr;

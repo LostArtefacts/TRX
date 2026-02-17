@@ -1,5 +1,5 @@
+#include <trx/core/log.h>
 #include <trx/game/inject.h>
-#include <trx/log.h>
 
 static void (*m_Handlers[IDT_NUMBER_OF])(
     const INJECTION_CONTEXT *ctx, const INJECTION *injection,

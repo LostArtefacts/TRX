@@ -1,12 +1,12 @@
 #include <trx/game/interpolation.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 #include <stdint.h>
 

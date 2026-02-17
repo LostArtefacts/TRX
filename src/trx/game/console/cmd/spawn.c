@@ -1,3 +1,5 @@
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/const.h>
@@ -11,8 +13,6 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 static GAME_VECTOR M_GetTargetPos(
     const ITEM *const lara_item, const int16_t angle_add)

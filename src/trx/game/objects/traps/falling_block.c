@@ -1,9 +1,9 @@
+#include <trx/core/vector.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
-#include <trx/vector.h>
 
 typedef struct {
     bool heavy_triggered;

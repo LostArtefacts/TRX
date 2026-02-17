@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/virtual_file.h>
 #include <trx/game/game_flow/types.h>
-#include <trx/virtual_file.h>
 
 typedef enum {
     LEVEL_FORMAT_PROBE_MINIMAL,

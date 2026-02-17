@@ -20,10 +20,10 @@
 
 #include <trx/av/video.h>
 
-#include <trx/filesystem.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>

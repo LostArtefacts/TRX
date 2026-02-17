@@ -1,13 +1,13 @@
 #include <trx/game/savegame/file.h>
 
-#include <trx/bson.h>
+#include <trx/core/bson.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <string.h>

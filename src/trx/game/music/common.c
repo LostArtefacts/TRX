@@ -2,6 +2,9 @@
 
 #include <trx/av/audio.h>
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/level.h>
 #include <trx/game/music.h>
@@ -9,9 +12,6 @@
 #include <trx/game/music/backend_cdaudio_wad.h>
 #include <trx/game/music/backend_files.h>
 #include <trx/game/shell/paths.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 static bool m_Initialised = false;

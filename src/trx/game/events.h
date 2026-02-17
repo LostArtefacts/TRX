@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/event_manager.h>
+#include <trx/core/event_manager.h>
 
 // Game-level event names
 #define GAME_EVENT_SCREENSHOT "screenshot"

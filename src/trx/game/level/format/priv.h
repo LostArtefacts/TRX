@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/utils.h>
 #include <trx/game/level/format/format.h>
-#include <trx/utils.h>
 
 void Level_Format_RegisterLoader(
     int32_t priority, const LEVEL_FORMAT_LOADER *loader);

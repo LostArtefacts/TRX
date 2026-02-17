@@ -1,10 +1,10 @@
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/console/cmd/config.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <string.h>
 

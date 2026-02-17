@@ -1,9 +1,9 @@
 #include <trx/game/ui/elements/scrollable_stack.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/input.h>
 #include <trx/game/ui/helpers.h>
-#include <trx/utils.h>
 
 typedef struct {
     UI_SCROLLABLE *scroll;

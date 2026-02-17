@@ -1,9 +1,9 @@
 #include <trx/gl/screenshot.h>
 
 #include <trx/av/image.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
 
 #include <string.h>
 

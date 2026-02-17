@@ -1,11 +1,11 @@
 #include <trx/game/rooms/geometry.h>
 
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 #define M_WALL_MASK (WALL_L - 1)
 #define M_NEG_TILT(T, H) ((T * (H & M_WALL_MASK)) >> 2)

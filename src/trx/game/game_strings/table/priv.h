@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/vector.h>
 #include <trx/game/game_flow/enum.h>
-#include <trx/vector.h>
 
 #include <stdint.h>
 

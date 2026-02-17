@@ -1,6 +1,7 @@
 #include <trx/game/phase/phase_stats.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/fader.h>
 #include <trx/game/game.h>
@@ -9,7 +10,6 @@
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
-#include <trx/memory.h>
 
 typedef enum {
     STATE_FADE_IN,

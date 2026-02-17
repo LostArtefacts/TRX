@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/virtual_file.h>
 #include <trx/game/game_flow/types.h>
-#include <trx/virtual_file.h>
 
 void Demo_LoadData(VFILE *file, size_t size);
 uint32_t *Demo_GetData(void);

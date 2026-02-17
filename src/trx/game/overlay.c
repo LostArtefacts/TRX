@@ -1,6 +1,7 @@
 #include <trx/game/overlay.h>
 
 #include <trx/config.h>
+#include <trx/core/strings.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
@@ -15,7 +16,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #define M_MAX_PICKUP_DURATION_DISPLAY (LOGIC_FPS * 2)

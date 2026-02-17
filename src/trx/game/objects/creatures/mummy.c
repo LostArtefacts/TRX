@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
@@ -8,7 +9,6 @@
 #include <trx/game/pathing.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
-#include <trx/utils.h>
 
 #define MUMMY_HITPOINTS 18
 

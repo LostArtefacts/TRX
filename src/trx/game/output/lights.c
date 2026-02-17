@@ -1,13 +1,13 @@
 #include <trx/game/output/lights.h>
 
-#include <trx/colors.h>
+#include <trx/core/colors.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/game/const.h>
 #include <trx/game/items/manager.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 #include <string.h>

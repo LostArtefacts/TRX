@@ -1,4 +1,4 @@
-#include <trx/memory.h>
+#include <trx/core/memory.h>
 
 #include <ctype.h>
 #include <lauxlib.h>

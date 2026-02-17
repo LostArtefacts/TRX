@@ -1,6 +1,7 @@
 #include <trx/game/output/draw.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/creature/const.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
@@ -18,7 +19,6 @@
 #include <trx/game/output/state.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_SHADOW_LINE_POINTS 4

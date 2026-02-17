@@ -1,9 +1,11 @@
 #include <trx/game/replay/test_recorder.h>
 
 #include <trx/config.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
-#include <trx/filesystem.h>
 #include <trx/game/console/common.h>
 #include <trx/game/events.h>
 #include <trx/game/input/backends/controller.h>
@@ -11,8 +13,6 @@
 #include <trx/game/input/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <stdlib.h>
 #include <string.h>

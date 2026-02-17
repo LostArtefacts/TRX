@@ -1,13 +1,13 @@
 #include <trx/game/ui/elements/progress_button.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/const.h>
 #include <trx/game/ui/elements/hide.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/pad.h>
 #include <trx/game/ui/elements/sleek_bar.h>
 #include <trx/game/ui/elements/stack.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #define M_HOLD_TIMER_DEBUFF (LOGIC_FPS / 3)
 #define M_HOLD_TIMER_MAX LOGIC_FPS

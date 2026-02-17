@@ -1,8 +1,8 @@
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/inject.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 static void M_TextureEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,

@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
@@ -6,7 +7,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 static void M_TriggerFireBallFlame(
     const int16_t effect_num, const int32_t type, const int32_t xv,

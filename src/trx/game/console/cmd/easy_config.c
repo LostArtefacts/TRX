@@ -1,7 +1,7 @@
 #include <trx/config.h>
+#include <trx/core/strings.h>
 #include <trx/game/console/cmd/config.h>
 #include <trx/game/console/registry.h>
-#include <trx/strings.h>
 
 typedef struct {
     const char *prefix;

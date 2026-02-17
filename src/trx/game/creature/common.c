@@ -1,4 +1,6 @@
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera/vars.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
@@ -11,8 +13,6 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
-#include <trx/log.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 // clang-format off

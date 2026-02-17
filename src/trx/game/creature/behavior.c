@@ -1,8 +1,8 @@
 #include <trx/config.h>
+#include <trx/core/vector.h>
 #include <trx/game/creature.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/stats.h>
-#include <trx/vector.h>
 
 #define M_ALLY_FRIENDLY_FIRE_THRESHOLD 10
 

@@ -1,6 +1,6 @@
 #include <trx/game/ui/helpers.h>
 
-#include <trx/utils.h>
+#include <trx/core/utils.h>
 
 void UI_MeasureWrapper(UI_NODE *const node)
 {

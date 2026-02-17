@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/vector.h>
 #include <trx/game/shell/args.h>
-#include <trx/vector.h>
 
 #include <SDL2/SDL_events.h>
 

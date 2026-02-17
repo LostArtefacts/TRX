@@ -1,11 +1,11 @@
 #include <trx/game/music/backend_cdaudio_wad.h>
 
 #include <trx/av/audio.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <stdio.h>
 #include <string.h>

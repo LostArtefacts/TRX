@@ -1,9 +1,9 @@
 #include <trx/game/ui/elements/label.h>
 
 #include <trx/config.h>
+#include <trx/core/strings.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/game/ui/text.h>
-#include <trx/strings.h>
 
 #include <stdarg.h>
 #include <string.h>

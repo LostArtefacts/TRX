@@ -1,3 +1,4 @@
+#include <trx/core/strings.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game.h>
 #include <trx/game/items.h>
@@ -5,7 +6,6 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/sound.h>
-#include <trx/strings.h>
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {

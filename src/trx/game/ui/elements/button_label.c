@@ -1,8 +1,8 @@
 #include <trx/game/ui/elements/button_label.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/ui/elements/label.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 void UI_ButtonLabel(INPUT_ROLE input_role, const char *const label)
 {

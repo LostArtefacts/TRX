@@ -1,7 +1,7 @@
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/inject.h>
 #include <trx/game/objects/common.h>
-#include <trx/vector.h>
 
 static VECTOR *m_ProcessedMeshes = nullptr;
 

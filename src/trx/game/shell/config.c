@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
@@ -8,7 +9,6 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/viewport.h>
-#include <trx/log.h>
 
 #include <SDL2/SDL_timer.h>
 

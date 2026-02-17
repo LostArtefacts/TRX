@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/colors.h>
+#include <trx/core/colors.h>
 
 #include <stdint.h>
 

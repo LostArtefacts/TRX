@@ -1,11 +1,11 @@
 #include <trx/game/clock/turbo.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/clock/common.h>
 #include <trx/game/clock/timer.h>
 #include <trx/game/console/common.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/utils.h>
 
 #include <math.h>
 

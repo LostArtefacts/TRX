@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/event_manager.h>
+#include <trx/core/event_manager.h>
 
 typedef void (*EVENT_LISTENER)(const EVENT *, void *user_data);
 

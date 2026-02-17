@@ -2,8 +2,8 @@
 // mod/OG fallback.
 #pragma once
 
-#include <trx/event_manager.h>
-#include <trx/vector.h>
+#include <trx/core/event_manager.h>
+#include <trx/core/vector.h>
 
 // Initialize the string bundle manager.
 void GameStringManager_Init(void);

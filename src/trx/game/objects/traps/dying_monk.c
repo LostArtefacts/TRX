@@ -1,8 +1,8 @@
+#include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 #define MAX_ROOMIES 2
 

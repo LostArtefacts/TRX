@@ -1,11 +1,11 @@
-#include <trx/colors.h>
 #include <trx/config/option.h>
 #include <trx/config/types.h>
 #include <trx/config/vars.h>
+#include <trx/core/colors.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
 #include <trx/game/lara/const.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <string.h>

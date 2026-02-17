@@ -1,8 +1,8 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/pathing.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define M_DAMAGE            20

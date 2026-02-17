@@ -1,10 +1,10 @@
 #include <trx/game/shell/args.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/shell/common.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <stdio.h>

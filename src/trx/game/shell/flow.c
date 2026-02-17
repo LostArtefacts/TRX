@@ -1,6 +1,10 @@
 #include <trx/config.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
@@ -29,10 +33,6 @@
 #include <trx/game/stats.h>
 #include <trx/game/ui/settings.h>
 #include <trx/gl/context.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <SDL2/SDL.h>

@@ -1,10 +1,10 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define MONK_HITPOINTS         30

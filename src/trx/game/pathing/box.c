@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
@@ -5,7 +6,6 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define BOX_OVERLAP_BITS 0x3FFF

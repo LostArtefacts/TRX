@@ -2,7 +2,7 @@
 
 // A controls remapper dialog.
 
-#include <trx/event_manager.h>
+#include <trx/core/event_manager.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/ui/common.h>

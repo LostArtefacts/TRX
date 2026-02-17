@@ -1,14 +1,14 @@
 #include <trx/game/game_strings/manager.h>
 
+#include <trx/core/filesystem.h>
+#include <trx/core/json.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_strings/table.h>
-#include <trx/json.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 #include <string.h>
 

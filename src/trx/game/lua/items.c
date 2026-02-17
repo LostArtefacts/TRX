@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/items.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 #include <lauxlib.h>
 

@@ -1,18 +1,18 @@
 #include <trx/game/lara/pose.h>
 
+#include <trx/core/filesystem.h>
+#include <trx/core/json/util/file.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara/hair.h>
 #include <trx/game/objects.h>
 #include <trx/game/shell.h>
-#include <trx/json/util/file.h>
-#include <trx/json/util/read_io.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/vector.h>
 
 #define M_NO_POSE (-1)
 

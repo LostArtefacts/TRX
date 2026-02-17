@@ -1,13 +1,13 @@
 #include <trx/game/output/sources/sprites.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 #include <string.h>
 

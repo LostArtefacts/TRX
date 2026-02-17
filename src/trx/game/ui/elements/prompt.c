@@ -1,5 +1,9 @@
 #include <trx/game/ui/elements/prompt.h>
 
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/input.h>
 #include <trx/game/ui/common.h>
@@ -8,10 +12,6 @@
 #include <trx/game/ui/events.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/game/ui/text.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 
 #include <string.h>
 

@@ -1,11 +1,11 @@
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output/mesh_batcher/mesh.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/vertex_range.h>
-#include <trx/memory.h>
 
 struct MESH_BUILDER {
     size_t pending_vertex_count;

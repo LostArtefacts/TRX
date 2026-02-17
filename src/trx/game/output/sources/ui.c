@@ -1,15 +1,15 @@
 #include <trx/game/output/sources/ui.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 // GL attribute mapping in the shader

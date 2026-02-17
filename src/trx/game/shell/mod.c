@@ -1,10 +1,10 @@
 #include <trx/game/shell/mod.h>
 
+#include <trx/core/filesystem.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/shell/paths.h>
-#include <trx/strings.h>
 
 #include <string.h>
 

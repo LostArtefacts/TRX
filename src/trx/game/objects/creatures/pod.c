@@ -1,9 +1,9 @@
 #include <trx/game/objects/creatures/pod.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
-#include <trx/utils.h>
 
 #define POD_EXPLODE_DIST (WALL_L * 4) // = 4096
 

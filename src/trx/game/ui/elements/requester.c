@@ -1,9 +1,9 @@
 #include <trx/game/ui/elements/requester.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/input.h>
 #include <trx/game/ui.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 void UI_Requester_Init(

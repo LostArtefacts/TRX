@@ -1,9 +1,9 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define BAT_ATTACK_DAMAGE 2
 #define BAT_TURN (20 * DEG_1) // = 3640

@@ -1,10 +1,10 @@
+#include <trx/core/json/util/file.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/table.h>
 #include <trx/game/game_strings/table/priv.h>
 #include <trx/game/shell.h>
-#include <trx/json/util/file.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 #include <string.h>
 

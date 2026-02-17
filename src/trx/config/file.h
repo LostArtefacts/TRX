@@ -1,10 +1,10 @@
 #pragma once
 
 #include <trx/config/option.h>
-#include <trx/enum_map.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/json.h>
+#include <trx/core/vector.h>
 #include <trx/game/gym.h>
-#include <trx/json.h>
-#include <trx/vector.h>
 
 #include <stdint.h>
 

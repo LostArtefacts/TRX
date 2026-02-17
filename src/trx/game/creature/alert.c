@@ -1,7 +1,7 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/pathing.h>
-#include <trx/utils.h>
 
 void Creature_AlertNearbyGuards(const ITEM *const item)
 {

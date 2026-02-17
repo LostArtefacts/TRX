@@ -1,10 +1,10 @@
+#include <trx/core/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define M_ACTIVATE_DIST ((WALL_L * 3) / 2)
 #define M_DAMAGE 100

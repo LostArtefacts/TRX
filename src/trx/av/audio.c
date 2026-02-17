@@ -1,7 +1,7 @@
 #include <trx/av/audio_internal.h>
 
-#include <trx/log.h>
-#include <trx/memory.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>

@@ -1,18 +1,18 @@
 #include <trx/game/ui/text.h>
 
 #include <trx/config.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
-#include <trx/enum_map.h>
 #include <trx/game/input/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <ctype.h>

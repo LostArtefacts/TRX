@@ -1,10 +1,10 @@
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 #define RAT_BITE_DAMAGE 20
 #define RAT_CHARGE_DAMAGE 20

@@ -1,9 +1,9 @@
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/sound.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <stdio.h>
 #include <string.h>

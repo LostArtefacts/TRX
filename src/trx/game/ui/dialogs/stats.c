@@ -1,4 +1,6 @@
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
@@ -9,8 +11,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #include <stdio.h>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/colors.h>
+#include <trx/core/colors.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/objects.h>

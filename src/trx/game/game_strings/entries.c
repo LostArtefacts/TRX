@@ -1,8 +1,8 @@
 #include <trx/game/game_strings/entries.h>
 
-#include <trx/enum_map.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 
 #include <uthash.h>
 

@@ -1,4 +1,6 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/footprint.h>
@@ -10,8 +12,6 @@
 #include <trx/game/output/bind.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 #include <trx/version.h>
 
 #include <string.h>

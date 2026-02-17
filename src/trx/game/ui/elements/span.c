@@ -1,7 +1,7 @@
 #include <trx/game/ui/elements/span.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/ui/helpers.h>
-#include <trx/utils.h>
 
 static void M_Measure(UI_NODE *const node)
 {

@@ -1,13 +1,13 @@
 #include <trx/game/ui/dialogs/setting_helpers/handlers.h>
 
 #include <trx/config.h>
+#include <trx/core/strings.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/gun.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui/settings.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 bool UI_Settings_EnablePS1Crystals_IsAvailable(

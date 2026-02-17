@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/vector.h>
 #include <trx/game/ui/common.h>
-#include <trx/vector.h>
 
 // A widget to cycle through several pages of a text content.
 

@@ -1,7 +1,7 @@
+#include <trx/core/log.h>
 #include <trx/game/camera.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
-#include <trx/log.h>
 
 static void M_ItemPosEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,

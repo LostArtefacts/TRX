@@ -1,6 +1,7 @@
 #include <trx/game/output/scene_compositor.h>
 
 #include <trx/config.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/output/shaders/mesh.h>
@@ -10,7 +11,6 @@
 #include <trx/game/shell.h>
 #include <trx/gl/context.h>
 #include <trx/gl/utils.h>
-#include <trx/vector.h>
 
 #define M_PROCESS_SOURCES(p, func, ...)                                        \
     do {                                                                       \

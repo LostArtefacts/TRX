@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
@@ -19,7 +20,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
-#include <trx/json/util/read_io.h>
 #include <trx/version.h>
 
 #define M_SHOULD JSON_SHOULD

@@ -1,5 +1,7 @@
 #include <trx/game/ui/hud/console.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/console.h>
 #include <trx/game/events.h>
 #include <trx/game/output.h>
@@ -13,8 +15,6 @@
 #include <trx/game/ui/hud/console_logs.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 
 static void M_MoveHistoryUp(UI_CONSOLE_STATE *const s)
 {

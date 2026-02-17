@@ -1,10 +1,10 @@
 #include <trx/game/ui/elements/color_swatch.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
-#include <trx/utils.h>
 
 typedef struct {
     float w;

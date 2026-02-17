@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
@@ -7,7 +8,6 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 #define PIERRE_POSE_CHANCE 0x60 // = 96
 #define PIERRE_SHOT_DAMAGE 50

@@ -1,4 +1,8 @@
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
 #include <trx/game/effects.h>
@@ -13,10 +17,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
-#include <trx/strings.h>
-#include <trx/utils.h>
 
 #define BOAT_FALL_ANIM 15
 #define BOAT_DEATH_ANIM 18

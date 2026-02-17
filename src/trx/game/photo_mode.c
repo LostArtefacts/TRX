@@ -1,6 +1,7 @@
 #include <trx/game/photo_mode.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
 #include <trx/game/console/common.h>
@@ -21,7 +22,6 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
-#include <trx/memory.h>
 
 #define M_INTERPOLATION_STEP 0.25
 

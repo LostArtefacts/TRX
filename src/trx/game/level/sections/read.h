@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/virtual_file.h>
 #include <trx/game/level/context.h>
-#include <trx/virtual_file.h>
 
 #define ANIM_BONE_SIZE 4
 

@@ -1,7 +1,7 @@
 #include <trx/game/input/backends/controller.h>
 
+#include <trx/core/log.h>
 #include <trx/game/input/backends/internal.h>
-#include <trx/log.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>

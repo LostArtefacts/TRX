@@ -1,12 +1,12 @@
 #include <trx/game/output/sources/rooms.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/random.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 typedef struct {

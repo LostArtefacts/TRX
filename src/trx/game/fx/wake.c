@@ -1,9 +1,9 @@
 #include <trx/game/fx/wake.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/math.h>
 #include <trx/game/output/sources/poly_fx.h>
-#include <trx/utils.h>
 
 #define M_MAX_POINTS 32
 

@@ -1,9 +1,9 @@
 #include <trx/game/ui/elements/sleek_bar.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 typedef struct {

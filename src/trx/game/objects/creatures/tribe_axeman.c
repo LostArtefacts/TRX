@@ -1,3 +1,5 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -5,8 +7,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
 
 // clang-format off
 #define M_WALK_TURN    (9 * DEG_1)

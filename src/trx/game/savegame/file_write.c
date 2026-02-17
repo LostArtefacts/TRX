@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
@@ -15,7 +16,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
-#include <trx/json/util/write_io.h>
 #include <trx/version.h>
 
 typedef struct {

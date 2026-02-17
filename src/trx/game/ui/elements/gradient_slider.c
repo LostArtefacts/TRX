@@ -1,12 +1,12 @@
 #include <trx/game/ui/elements/gradient_slider.h>
 
-#include <trx/colors.h>
 #include <trx/config.h>
+#include <trx/core/colors.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/game/ui/text.h>
-#include <trx/utils.h>
 
 #include <math.h>
 #include <string.h>

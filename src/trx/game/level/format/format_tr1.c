@@ -1,9 +1,9 @@
+#include <trx/core/log.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/format/priv.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/output/const.h>
-#include <trx/log.h>
 
 #define M_SAMPLE_COUNT 256
 

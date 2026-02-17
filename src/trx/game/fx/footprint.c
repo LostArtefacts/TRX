@@ -1,6 +1,7 @@
 #include <trx/game/fx/footprint.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/collision.h>
 #include <trx/game/lara.h>
 #include <trx/game/math.h>
@@ -10,7 +11,6 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
-#include <trx/utils.h>
 
 #include <stdlib.h>
 #include <string.h>

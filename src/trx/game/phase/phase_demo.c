@@ -1,5 +1,6 @@
 #include <trx/game/phase/phase_demo.h>
 
+#include <trx/core/memory.h>
 #include <trx/game/demo.h>
 #include <trx/game/fader.h>
 #include <trx/game/game.h>
@@ -7,7 +8,6 @@
 #include <trx/game/inventory_ring.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/shell.h>
-#include <trx/memory.h>
 
 typedef enum {
     STATE_RUN,

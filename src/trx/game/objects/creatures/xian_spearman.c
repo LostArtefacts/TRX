@@ -1,3 +1,4 @@
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
 #include <trx/game/interpolation.h>
@@ -9,7 +10,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/utils.h>
 
 // clang-format off
 #define XIAN_SPEARMAN_HITPOINTS    100

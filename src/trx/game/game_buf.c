@@ -1,7 +1,7 @@
 #include <trx/game/game_buf.h>
 
-#include <trx/enum_map.h>
-#include <trx/memory.h>
+#include <trx/core/enum_map.h>
+#include <trx/core/memory.h>
 
 static MEMORY_ARENA_ALLOCATOR m_Allocator[GBUF_NUM_MALLOC_TYPES] = {};
 

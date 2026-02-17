@@ -1,13 +1,13 @@
 #include <trx/game/lara/hair.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/state.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_HAIR_SEGMENTS 6

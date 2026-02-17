@@ -1,10 +1,10 @@
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
+#include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/anims.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/objects/common.h>
-#include <trx/log.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #include <math.h>

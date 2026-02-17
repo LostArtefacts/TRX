@@ -1,9 +1,9 @@
 #include <trx/game/output/sources/shadows.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/game/output.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
-#include <trx/memory.h>
 
 typedef struct {
     MESH_BATCHER *batcher;

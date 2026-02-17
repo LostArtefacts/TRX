@@ -1,14 +1,14 @@
 #include <trx/game/ui/dialogs/color_editor.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/input.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/elements/color_swatch.h>
 #include <trx/game/ui/elements/gradient_slider.h>
 #include <trx/game/ui/helpers.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_COLOR_EDITOR_PADDING 8.0f

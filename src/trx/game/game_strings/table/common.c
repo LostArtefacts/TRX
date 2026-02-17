@@ -1,3 +1,5 @@
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
@@ -5,8 +7,6 @@
 #include <trx/game/game_strings/table/priv.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/shell.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 #include <string.h>
 

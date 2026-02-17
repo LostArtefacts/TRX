@@ -1,6 +1,8 @@
 #include <trx/game/ui/hud/overlay.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/camera.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
@@ -9,8 +11,6 @@
 #include <trx/game/objects/names.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 typedef struct UI_OVERLAY_STATE {

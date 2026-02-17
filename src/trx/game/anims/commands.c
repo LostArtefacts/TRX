@@ -1,4 +1,4 @@
-#include <trx/benchmark.h>
+#include <trx/core/benchmark.h>
 #include <trx/game/anims.h>
 #include <trx/game/game_buf.h>
 #include <trx/version.h>

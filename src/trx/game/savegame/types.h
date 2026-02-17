@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/filesystem.h>
+#include <trx/core/filesystem.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/savegame/enum.h>
 #include <trx/game/stats/types.h>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trx/config/types.h>
-#include <trx/event_manager.h>
+#include <trx/core/event_manager.h>
 #include <trx/game/shell/args.h>
 
 #include <SDL2/SDL_events.h>

@@ -1,12 +1,12 @@
 #include <trx/game/ui/settings.h>
 
 #include <trx/config.h>
+#include <trx/core/json/util/file.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/shell.h>
-#include <trx/json/util/file.h>
-#include <trx/json/util/read_io.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 
 #include <uthash.h>
 

@@ -1,12 +1,12 @@
 #include <trx/game/pathing/lot.h>
 
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
-#include <trx/utils.h>
 
 static int32_t m_SlotsUsed = 0;
 static CREATURE *m_BaddieSlots = nullptr;

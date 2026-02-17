@@ -1,3 +1,4 @@
+#include <trx/core/log.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -5,7 +6,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
-#include <trx/log.h>
 
 #define M_EPSILON 32
 

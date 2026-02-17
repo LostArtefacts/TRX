@@ -1,4 +1,7 @@
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/rooms.h>
@@ -6,9 +9,6 @@
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/random.h>
 #include <trx/gl/utils.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
-#include <trx/vector.h>
 
 typedef struct {
     XYZW_F pos;

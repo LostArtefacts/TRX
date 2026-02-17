@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/filesystem.h>
+#include <trx/core/filesystem.h>
 #include <trx/game/shell/args.h>
 
 // Shell path module.

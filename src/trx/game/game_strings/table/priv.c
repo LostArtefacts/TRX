@@ -1,8 +1,8 @@
 #include <trx/game/game_strings/table/priv.h>
 
-#include <trx/filesystem.h>
-#include <trx/log.h>
-#include <trx/memory.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 
 static void M_FreeTable(GS_TABLE *const gs_table)
 {

@@ -1,13 +1,13 @@
 #include <trx/game/output/sources/objects.h>
 
 #include <trx/config.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/output/state.h>
-#include <trx/memory.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 typedef struct {

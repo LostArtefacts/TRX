@@ -1,9 +1,9 @@
 #include <trx/game/fader.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/clock.h>
 #include <trx/game/shell.h>
-#include <trx/utils.h>
 
 static void M_Init(FADER *const fader, FADER_ARGS args)
 {

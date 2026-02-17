@@ -1,4 +1,6 @@
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/demo.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow/common.h>
@@ -12,8 +14,6 @@
 #include <trx/game/phase.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell/common.h>
-#include <trx/log.h>
-#include <trx/memory.h>
 
 GF_COMMAND GF_RunTitle(void)
 {

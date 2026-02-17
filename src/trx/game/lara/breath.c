@@ -1,5 +1,6 @@
 #include <trx/game/lara/breath.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/collision.h>
 #include <trx/game/lara.h>
 #include <trx/game/level/settings.h>
@@ -7,7 +8,6 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 static bool M_CanBreatheVisible(const ITEM *const lara_item)

@@ -1,14 +1,14 @@
 #include <trx/game/lara/skin/common.h>
 
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara.h>
-#include <trx/log.h>
-#include <trx/memory.h>
-#include <trx/strings.h>
 #include <trx/version.h>
 
 #define M_NO_OUTFIT (-1)

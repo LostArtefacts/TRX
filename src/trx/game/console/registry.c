@@ -1,7 +1,7 @@
 #include <trx/game/console/registry.h>
 
-#include <trx/memory.h>
-#include <trx/strings.h>
+#include <trx/core/memory.h>
+#include <trx/core/strings.h>
 
 #include <stdio.h>
 #include <string.h>

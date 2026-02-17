@@ -1,11 +1,11 @@
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
-#include <trx/log.h>
-#include <trx/utils.h>
 
 #define SKATE_KID_STOP_SHOT_DAMAGE 50
 #define SKATE_KID_SKATE_SHOT_DAMAGE 40

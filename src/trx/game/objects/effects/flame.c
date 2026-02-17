@@ -1,6 +1,7 @@
 #include <trx/game/objects/effects/flame.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/output.h>
@@ -8,7 +9,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 #define M_LIGHT_INTENSITY 11

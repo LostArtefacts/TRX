@@ -1,6 +1,8 @@
 #include <trx/game/output/func.h>
 
 #include <trx/config.h>
+#include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/math.h>
 #include <trx/game/matrix.h>
@@ -8,8 +10,6 @@
 #include <trx/game/output/state.h>
 #include <trx/game/output/vars.h>
 #include <trx/gl/context.h>
-#include <trx/log.h>
-#include <trx/utils.h>
 
 #include <math.h>
 

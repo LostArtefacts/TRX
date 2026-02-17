@@ -1,11 +1,11 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/spawn.h>
-#include <trx/json/util/read_io.h>
-#include <trx/json/util/write_io.h>
-#include <trx/utils.h>
 #include <trx/version.h>
 
 static BITE m_CobraBite = { .pos = { 0, 0, 0 }, .mesh_num = 13 };
