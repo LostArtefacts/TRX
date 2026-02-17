@@ -7,8 +7,8 @@
 #include <trx/game/game_string.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/names.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/version.h>
@@ -155,8 +155,8 @@ static void M_Arrow(
         if (m_ArrowInfo[arrow].resize) {
             UI_BeginResize(
                 -1.0,
-                UI_BAR_HEIGHT * Scaler_GetScale(SCALER_TARGET_BAR)
-                    / Scaler_GetScale(SCALER_TARGET_TEXT));
+                UI_BAR_HEIGHT * UI_Scaler_GetScale(UI_SCALER_TARGET_BAR)
+                    / UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT));
         }
         UI_Label(m_ArrowInfo[arrow].label);
         if (m_ArrowInfo[arrow].resize) {

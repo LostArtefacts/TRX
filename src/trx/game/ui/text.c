@@ -6,9 +6,9 @@
 #include <trx/game/input/common.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
@@ -137,7 +137,7 @@ static RGBA_F m_TextColor[M_MAX_COLOR][4] = {};
 
 static float M_ScaleScreen(const float value)
 {
-    return Scaler_Calc(value, SCALER_TARGET_TEXT);
+    return UI_Scaler_Calc(value, UI_SCALER_TARGET_TEXT);
 }
 
 static float M_ScaleNeutral(const float value)

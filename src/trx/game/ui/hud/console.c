@@ -3,7 +3,6 @@
 #include <trx/game/console.h>
 #include <trx/game/events.h>
 #include <trx/game/output.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/pad.h>
 #include <trx/game/ui/elements/prompt.h>
@@ -12,6 +11,7 @@
 #include <trx/game/ui/events.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/game/ui/hud/console_logs.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
@@ -87,9 +87,9 @@ static void M_DrawBackdrop(void)
 {
     const int32_t sx = 0;
     const int32_t sw = Viewport_GetWidth(VIEWPORT_UI);
-    const int32_t sh = Scaler_Calc(
+    const int32_t sh = UI_Scaler_Calc(
         // not entirely accurate, but good enough
-        UI_TEXT_HEIGHT * 1.0 + 7 * UI_TEXT_HEIGHT * 0.8, SCALER_TARGET_TEXT);
+        UI_TEXT_HEIGHT * 1.0 + 7 * UI_TEXT_HEIGHT * 0.8, UI_SCALER_TARGET_TEXT);
     const int32_t sy = Viewport_GetHeight(VIEWPORT_UI) - sh;
     const RGBA_8888 top = { 0, 0, 0, 0 };
     const RGBA_8888 bottom = { 0, 0, 0, 196 };

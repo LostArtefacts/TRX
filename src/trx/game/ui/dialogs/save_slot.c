@@ -3,7 +3,6 @@
 #include <trx/game/game_string.h>
 #include <trx/game/input.h>
 #include <trx/game/savegame.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/base_passport.h>
 #include <trx/game/ui/elements/anchor.h>
@@ -13,6 +12,7 @@
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/stack.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 #include <trx/memory.h>
 #include <trx/utils.h>

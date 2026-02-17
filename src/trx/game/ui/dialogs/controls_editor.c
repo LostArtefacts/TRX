@@ -5,7 +5,6 @@
 #include <trx/game/game_string.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
-#include <trx/game/scaler.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui/elements/anchor.h>
@@ -21,6 +20,7 @@
 #include <trx/game/ui/elements/span.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/elements/window.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -134,8 +134,8 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
 
 static int32_t M_GetVisibleRows(void)
 {
-    const int32_t res_h =
-        Scaler_CalcInverse(Viewport_GetHeight(VIEWPORT_UI), SCALER_TARGET_TEXT);
+    const int32_t res_h = UI_Scaler_CalcInverse(
+        Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT);
     if (res_h <= 240) {
         return 5;
     } else if (res_h <= 252) {

@@ -5,7 +5,6 @@
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
-#include <trx/game/scaler.h>
 #include <trx/game/viewport.h>
 #include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
@@ -432,10 +431,9 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
 }
 
 void OutputSource_UI_StagePhotoModeFrame(
-    const VIEWPORT_RECT rect, const RGBA_8888 color, const float thickness)
+    const VIEWPORT_RECT rect, const RGBA_8888 color, const int32_t thickness)
 {
-    const int32_t t =
-        (int32_t)(Scaler_Calc(thickness, SCALER_TARGET_TEXT) + 0.5f);
+    const int32_t t = thickness;
     if (t <= 0) {
         return;
     }

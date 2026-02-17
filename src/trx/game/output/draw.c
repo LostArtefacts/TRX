@@ -17,7 +17,6 @@
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
 #include <trx/game/rooms.h>
-#include <trx/game/scaler.h>
 #include <trx/game/shell.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -381,7 +380,7 @@ void Output_DrawScreenFrame(
     const int32_t sx, const int32_t sy, const int32_t w, const int32_t h,
     const RGBA_8888 col_dark, const RGBA_8888 col_light, const float thickness)
 {
-    const float e = Scaler_Calc(thickness, SCALER_TARGET_TEXT);
+    const float e = thickness;
     const float x0 = sx;
     const float y0 = sy;
     const float x1 = sx + w;
@@ -401,11 +400,11 @@ void Output_DrawScreenFrame(
     // clang-format on
 }
 
-void Output_DrawPhotoModeFrame(void)
+void Output_DrawPhotoModeFrame(const int32_t thickness)
 {
     const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_GAME);
     const RGBA_8888 color = { 255, 0, 0, 96 };
-    OutputSource_UI_StagePhotoModeFrame(rect, color, 4.0f);
+    OutputSource_UI_StagePhotoModeFrame(rect, color, thickness);
 }
 
 void Output_DrawSphere(const XYZ_16 center, const int32_t radius)

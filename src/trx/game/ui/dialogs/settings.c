@@ -6,10 +6,10 @@
 #include <trx/game/const.h>
 #include <trx/game/game_string_manager.h>
 #include <trx/game/input.h>
-#include <trx/game/scaler.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/dialogs/color_editor.h>
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
@@ -56,8 +56,8 @@ typedef struct UI_SETTINGS_STATE {
 
 static int32_t M_GetVisibleRows(void)
 {
-    const int32_t res_h =
-        Scaler_CalcInverse(Viewport_GetHeight(VIEWPORT_UI), SCALER_TARGET_TEXT);
+    const int32_t res_h = UI_Scaler_CalcInverse(
+        Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT);
     static struct {
         int32_t threshold;
         int32_t rows;

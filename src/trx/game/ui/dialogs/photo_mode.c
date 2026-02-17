@@ -3,12 +3,14 @@
 #include <trx/config.h>
 #include <trx/game/game_string.h>
 #include <trx/game/lara/pose.h>
+#include <trx/game/output/draw.h>
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/pad.h>
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/stack.h>
+#include <trx/game/ui/scaler.h>
 
 #include <stdio.h>
 
@@ -100,6 +102,10 @@ static void M_Actions(const PHOTO_MODE current_mode)
 
 void UI_PhotoMode(const PHOTO_MODE current_mode)
 {
+    const int32_t frame_thickness =
+        (int32_t)(UI_Scaler_Calc(4.0f, UI_SCALER_TARGET_TEXT) + 0.5f);
+    Output_DrawPhotoModeFrame(frame_thickness);
+
     if (!g_Config.ui.enable_photo_mode_ui) {
         return;
     }
