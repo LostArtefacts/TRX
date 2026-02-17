@@ -3,6 +3,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/carrier.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
@@ -14,7 +15,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
-#include <trx/game/weather_fx.h>
 #include <trx/json/util/write_io.h>
 #include <trx/version.h>
 
@@ -536,7 +536,7 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "death_count", resume->stats.death_count);
     JSONW_WRITE(io, "are_monks_angry", Creature_AreAlliesHostile());
     JSONW_WRITE(io, "sunset_timer", Output_GetTimeInGame());
-    JSONW_WRITE(io, "weather_type", WeatherFX_GetWeather());
+    JSONW_WRITE(io, "weather_type", FX_Weather_GetWeather());
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");

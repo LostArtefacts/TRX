@@ -1,6 +1,6 @@
+#include <trx/game/fx/water.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
-#include <trx/game/water_fx.h>
 #include <trx/utils.h>
 
 // clang-format off
@@ -17,7 +17,7 @@
 static void M_SpawnSplash(const ITEM *const item)
 {
     const ROOM *const room = Room_Get(item->room_num);
-    const WATER_FX_SPLASH_SETUP setup = {
+    const FX_WATER_SPLASH_SETUP setup = {
         .x = item->pos.x,
         .y = room->max_ceiling,
         .z = item->pos.z,
@@ -40,7 +40,7 @@ static void M_SpawnSplash(const ITEM *const item)
         .outer_xz_vel = 272,
         .outer_friction = 9,
     };
-    WaterFX_SetupSplash(&setup);
+    FX_Water_SetupSplash(&setup);
 }
 
 static void M_Control(const int16_t item_num)

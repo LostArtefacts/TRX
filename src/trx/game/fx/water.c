@@ -1,4 +1,4 @@
-#include <trx/game/water_fx.h>
+#include <trx/game/fx/water.h>
 
 #include <trx/game/items.h>
 #include <trx/game/lara/common.h>
@@ -24,12 +24,12 @@ static const uint8_t m_SplashQuadLinks[32] = {
     12, 13, 4, 5, 13, 14, 5, 6, 14, 15, 6, 7, 15, 8,  7, 0,
 };
 
-static WATER_FX_SPLASH m_Splashes[4];
-static WATER_FX_RIPPLE m_Ripples[16];
+static FX_WATER_SPLASH m_Splashes[4];
+static FX_WATER_RIPPLE m_Ripples[16];
 static int32_t m_SplashCount = 0;
 static int32_t m_Wibble = 0;
 
-void WaterFX_Init(void)
+void FX_Water_Init(void)
 {
     memset(m_Splashes, 0, sizeof(m_Splashes));
     memset(m_Ripples, 0, sizeof(m_Ripples));
@@ -42,7 +42,7 @@ static bool M_IsRoomUnderwater(const int16_t room_num)
     return Room_Get(room_num)->flags.underwater;
 }
 
-WATER_FX_RIPPLE *WaterFX_SetupRipple(
+FX_WATER_RIPPLE *FX_Water_SetupRipple(
     const int32_t x, const int32_t y, const int32_t z, int32_t size,
     const bool is_still)
 {
@@ -57,7 +57,7 @@ WATER_FX_RIPPLE *WaterFX_SetupRipple(
         return nullptr;
     }
 
-    WATER_FX_RIPPLE *const ripple = &m_Ripples[idx];
+    FX_WATER_RIPPLE *const ripple = &m_Ripples[idx];
 
     if (size < 0) {
         ripple->flags = is_still ? 19U : 3U;
@@ -75,9 +75,9 @@ WATER_FX_RIPPLE *WaterFX_SetupRipple(
     return ripple;
 }
 
-void WaterFX_SetupSplash(const WATER_FX_SPLASH_SETUP *const setup_)
+void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
 {
-    WATER_FX_SPLASH_SETUP setup = *setup_;
+    FX_WATER_SPLASH_SETUP setup = *setup_;
 
     int32_t idx = -1;
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Splashes); i++) {
@@ -94,7 +94,7 @@ void WaterFX_SetupSplash(const WATER_FX_SPLASH_SETUP *const setup_)
         return;
     }
 
-    WATER_FX_SPLASH *const splash = &m_Splashes[idx];
+    FX_WATER_SPLASH *const splash = &m_Splashes[idx];
     splash->flags = 3U;
 
     if (setup.outer_friction == -9) {
@@ -107,7 +107,7 @@ void WaterFX_SetupSplash(const WATER_FX_SPLASH_SETUP *const setup_)
     splash->z = setup.z;
     splash->life = 63U;
 
-    WATER_FX_SPLASH_VERT *v = splash->v;
+    FX_WATER_SPLASH_VERT *v = splash->v;
 
     for (int32_t i = 0; i < 8; i++) {
         v->wx = (setup.inner_xz_off * m_SplashRings[i][0]) << 1;
@@ -209,7 +209,7 @@ void WaterFX_SetupSplash(const WATER_FX_SPLASH_SETUP *const setup_)
         SFX_LARA_SPLASH, &(XYZ_32) { setup.x, setup.y, setup.z }, SPM_NORMAL);
 }
 
-void WaterFX_Splash(const ITEM *const item)
+void FX_Water_Splash(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos, &room_num);
@@ -218,7 +218,7 @@ void WaterFX_Splash(const ITEM *const item)
     }
 
     const int32_t water_height = Room_GetWaterHeight(item->pos, room_num);
-    WATER_FX_SPLASH_SETUP setup = {
+    FX_WATER_SPLASH_SETUP setup = {
         .x = item->pos.x,
         .y = water_height,
         .z = item->pos.z,
@@ -241,10 +241,10 @@ void WaterFX_Splash(const ITEM *const item)
         .outer_xz_vel = 544,
         .outer_friction = 9,
     };
-    WaterFX_SetupSplash(&setup);
+    FX_Water_SetupSplash(&setup);
 }
 
-void WaterFX_WadeSplash(
+void FX_Water_WadeSplash(
     const ITEM *const item, const int32_t water_height, const int32_t depth)
 {
     int16_t room_num = item->room_num;
@@ -261,7 +261,7 @@ void WaterFX_WadeSplash(
     }
 
     if (item->fall_speed > 0 && depth < 474 && m_SplashCount == 0) {
-        const WATER_FX_SPLASH_SETUP setup = {
+        const FX_WATER_SPLASH_SETUP setup = {
             .x = item->pos.x,
             .y = water_height,
             .z = item->pos.z,
@@ -284,20 +284,20 @@ void WaterFX_WadeSplash(
             .outer_xz_vel = 272,
             .outer_friction = 9,
         };
-        WaterFX_SetupSplash(&setup);
+        FX_Water_SetupSplash(&setup);
         m_SplashCount = 16;
     } else if (
         (m_Wibble & 0xF) == 0
         && (((Random_GetControl() & 0xF) == 0)
             || item->current_anim_state != LS(LS_STOP))) {
-        WaterFX_SetupRipple(
+        FX_Water_SetupRipple(
             item->pos.x, water_height, item->pos.z,
             -16 - (Random_GetControl() & 0xF),
             item->current_anim_state == LS(LS_STOP));
     }
 }
 
-void WaterFX_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
+void FX_Water_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
 {
     int32_t idx = -1;
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
@@ -310,7 +310,7 @@ void WaterFX_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
         return;
     }
 
-    WATER_FX_RIPPLE *const ripple = &m_Ripples[idx];
+    FX_WATER_RIPPLE *const ripple = &m_Ripples[idx];
     ripple->flags = 0x33U;
     ripple->init = 1U;
     ripple->life = (Random_GetControl() & 7) - 16;
@@ -320,7 +320,7 @@ void WaterFX_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
     ripple->z = pos.z + (Random_GetControl() & 0x3F) - 32;
 }
 
-void WaterFX_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
+void FX_Water_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
 {
     int32_t idx = -1;
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
@@ -333,7 +333,7 @@ void WaterFX_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
         return;
     }
 
-    WATER_FX_RIPPLE *const ripple = &m_Ripples[idx];
+    FX_WATER_RIPPLE *const ripple = &m_Ripples[idx];
     ripple->flags = 0x33U;
     ripple->init = 1U;
     ripple->life = (Random_GetDraw() & 7) - 16;
@@ -350,11 +350,11 @@ static RGBA_8888 M_Gray(int32_t c)
 }
 
 static void M_DrawSplash(
-    const int32_t base_sprite_idx, const WATER_FX_SPLASH *s)
+    const int32_t base_sprite_idx, const FX_WATER_SPLASH *s)
 {
     XYZ_32 points[48];
     for (int32_t i = 0; i < 48; i++) {
-        const WATER_FX_SPLASH_VERT *const v = &s->v[i];
+        const FX_WATER_SPLASH_VERT *const v = &s->v[i];
         points[i] = (XYZ_32) {
             .x = s->x + (v->wx >> 4),
             .y = s->y + v->wy,
@@ -399,7 +399,7 @@ static void M_DrawSplash(
 }
 
 static void M_DrawRipple(
-    const int32_t base_sprite_idx, const WATER_FX_RIPPLE *r)
+    const int32_t base_sprite_idx, const FX_WATER_RIPPLE *r)
 {
     const int32_t n = (int32_t)r->size << 2;
     int32_t sprite_idx = base_sprite_idx + 9;
@@ -452,7 +452,7 @@ static void M_DrawRipple(
         DRAW_BLEND_ADD);
 }
 
-void WaterFX_Draw(void)
+void FX_Water_Draw(void)
 {
     const OBJECT *const explosion = Object_Get(O_EXPLOSION_1);
     if (!explosion->loaded) {
@@ -462,7 +462,7 @@ void WaterFX_Draw(void)
     const int32_t base_sprite_idx = explosion->mesh_idx;
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Splashes); i++) {
-        const WATER_FX_SPLASH *const splash = &m_Splashes[i];
+        const FX_WATER_SPLASH *const splash = &m_Splashes[i];
         if ((splash->flags & 1U) == 0U) {
             continue;
         }
@@ -470,7 +470,7 @@ void WaterFX_Draw(void)
     }
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
-        const WATER_FX_RIPPLE *const ripple = &m_Ripples[i];
+        const FX_WATER_RIPPLE *const ripple = &m_Ripples[i];
         if ((ripple->flags & 1U) == 0U) {
             continue;
         }
@@ -478,21 +478,21 @@ void WaterFX_Draw(void)
     }
 }
 
-void WaterFX_Update(void)
+void FX_Water_Update(void)
 {
     if (m_SplashCount > 0) {
         m_SplashCount--;
     }
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Splashes); i++) {
-        WATER_FX_SPLASH *const splash = &m_Splashes[i];
+        FX_WATER_SPLASH *const splash = &m_Splashes[i];
         if ((splash->flags & 1U) == 0U) {
             continue;
         }
 
         bool set = false;
         for (int32_t j = 0; j < 48; j++) {
-            WATER_FX_SPLASH_VERT *const v = &splash->v[j];
+            FX_WATER_SPLASH_VERT *const v = &splash->v[j];
             v->wx += v->xv >> 2;
             v->wy += (int16_t)(v->yv >> 6);
             v->wz += v->zv >> 2;
@@ -532,7 +532,7 @@ void WaterFX_Update(void)
     }
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
-        WATER_FX_RIPPLE *const ripple = &m_Ripples[i];
+        FX_WATER_RIPPLE *const ripple = &m_Ripples[i];
         if ((ripple->flags & 1U) == 0U) {
             continue;
         }

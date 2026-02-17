@@ -1,15 +1,15 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
-#include <trx/game/footprint_fx.h>
+#include <trx/game/fx/footprint.h>
+#include <trx/game/fx/water.h>
+#include <trx/game/fx/weather.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/game/water_fx.h>
-#include <trx/game/weather_fx.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
 #include <trx/version.h>
@@ -506,10 +506,10 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     }
 
     Output_SetupAboveWater(false);
-    WaterFX_Draw();
-    WeatherFX_Draw();
+    FX_Water_Draw();
+    FX_Weather_Draw();
     Sparks_Draw();
-    FootprintFX_Draw();
+    FX_Footprint_Draw();
 }
 
 void Room_AddDrawnItem(const int16_t room_num, const int16_t item_num)

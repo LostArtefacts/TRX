@@ -1,4 +1,4 @@
-#include <trx/game/footprint_fx.h>
+#include <trx/game/fx/footprint.h>
 #include <trx/game/items/actions.h>
 
 static void M_Footprint(ITEM *const item)
@@ -8,7 +8,7 @@ static void M_Footprint(ITEM *const item)
     }
 
     const bool is_left = ItemAction_GetFXType() == 0x4000;
-    FootprintFX_Add(item, is_left);
+    FX_Footprint_Add(item, is_left);
 }
 
 REGISTER_ITEM_ACTION(ITEM_ACTION_FOOTPRINT, M_Footprint)

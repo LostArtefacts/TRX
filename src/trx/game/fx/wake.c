@@ -1,4 +1,4 @@
-#include <trx/game/wake_fx.h>
+#include <trx/game/fx/wake.h>
 
 #include <trx/game/const.h>
 #include <trx/game/math.h>
@@ -9,7 +9,7 @@
 
 static const XZ_32 m_Offsets[2] = { { .x = -128, 0 }, { .x = 128, .z = 0 } };
 
-static WAKE_FX_POINT m_Points[M_MAX_POINTS][2] = {};
+static FX_WAKE_POINT m_Points[M_MAX_POINTS][2] = {};
 static uint8_t m_Shade = 0;
 static uint8_t m_StartIndex = 0;
 
@@ -28,7 +28,7 @@ static XYZ_32 M_GetWakeOrigin(const ITEM *const item, const XZ_32 offset)
     return pos;
 }
 
-void WakeFX_ClearPoints(void)
+void FX_Wake_ClearPoints(void)
 {
     for (int32_t i = 0; i < M_MAX_POINTS; i++) {
         m_Points[i][0].life = 0;
@@ -36,11 +36,11 @@ void WakeFX_ClearPoints(void)
     }
 }
 
-void WakeFX_Update(void)
+void FX_Wake_Update(void)
 {
     for (int32_t i = 0; i < 2; i++) {
         for (int32_t j = 0; j < M_MAX_POINTS; j++) {
-            WAKE_FX_POINT *const pt = &m_Points[j][i];
+            FX_WAKE_POINT *const pt = &m_Points[j][i];
             if (pt->life > 0) {
                 pt->life--;
                 pt->pos[0].x += pt->vel[0].x;
@@ -52,32 +52,32 @@ void WakeFX_Update(void)
     }
 }
 
-WAKE_FX_POINT *WakeFX_GetPoint(const int32_t wake_idx, const int32_t side)
+FX_WAKE_POINT *FX_Wake_GetPoint(const int32_t wake_idx, const int32_t side)
 {
     return &m_Points[wake_idx][side];
 }
 
-uint8_t WakeFX_GetShade(void)
+uint8_t FX_Wake_GetShade(void)
 {
     return m_Shade;
 }
 
-void WakeFX_SetShade(const uint8_t shade)
+void FX_Wake_SetShade(const uint8_t shade)
 {
     m_Shade = shade;
 }
 
-uint8_t WakeFX_GetStartIndex(void)
+uint8_t FX_Wake_GetStartIndex(void)
 {
     return m_StartIndex;
 }
 
-void WakeFX_AdvanceStartIndex(void)
+void FX_Wake_AdvanceStartIndex(void)
 {
     m_StartIndex = (m_StartIndex + 1) & (M_MAX_POINTS - 1);
 }
 
-void WakeFX_Draw(const ITEM *const item)
+void FX_Wake_Draw(const ITEM *const item)
 {
     const int64_t max_origin_dist_sq =
         XYZ_32_GetLength2_64((XYZ_32) { WALL_L / 2, 0, 0 });
@@ -92,7 +92,7 @@ void WakeFX_Draw(const ITEM *const item)
         }
 
         int32_t current = (m_StartIndex - 1) & (M_MAX_POINTS - 1);
-        const WAKE_FX_POINT *const first_pt = &m_Points[current][side];
+        const FX_WAKE_POINT *const first_pt = &m_Points[current][side];
         if (first_pt->life != 0) {
             const XYZ_32 delta0 = {
                 .x = origin.x - first_pt->pos[0].x,
@@ -117,7 +117,7 @@ void WakeFX_Draw(const ITEM *const item)
         }
 
         for (int32_t nw = 0; nw < M_MAX_POINTS; nw++) {
-            const WAKE_FX_POINT *const pt = &m_Points[current][side];
+            const FX_WAKE_POINT *const pt = &m_Points[current][side];
             if (pt->life == 0U) {
                 break;
             }

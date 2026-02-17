@@ -13,7 +13,7 @@ typedef struct {
     uint8_t life;
     uint8_t size;
     uint8_t init;
-} WATER_FX_RIPPLE;
+} FX_WATER_RIPPLE;
 
 typedef struct {
     int16_t wx;
@@ -26,7 +26,7 @@ typedef struct {
     int16_t ozv;
     uint8_t friction;
     uint8_t gravity;
-} WATER_FX_SPLASH_VERT;
+} FX_WATER_SPLASH_VERT;
 
 typedef struct {
     int32_t x;
@@ -35,8 +35,8 @@ typedef struct {
     uint8_t flags;
     uint8_t life;
     uint8_t pad[2];
-    WATER_FX_SPLASH_VERT v[48];
-} WATER_FX_SPLASH;
+    FX_WATER_SPLASH_VERT v[48];
+} FX_WATER_SPLASH;
 
 typedef struct {
     int32_t x;
@@ -60,17 +60,17 @@ typedef struct {
     int16_t outer_xz_size;
     int16_t outer_xz_vel;
     int16_t outer_friction;
-} WATER_FX_SPLASH_SETUP;
+} FX_WATER_SPLASH_SETUP;
 
-void WaterFX_Init(void);
-void WaterFX_Update(void);
-void WaterFX_Draw(void);
+void FX_Water_Init(void);
+void FX_Water_Update(void);
+void FX_Water_Draw(void);
 
-WATER_FX_RIPPLE *WaterFX_SetupRipple(
+FX_WATER_RIPPLE *FX_Water_SetupRipple(
     int32_t x, int32_t y, int32_t z, int32_t size, bool is_still);
-void WaterFX_SetupSplash(const WATER_FX_SPLASH_SETUP *setup);
-void WaterFX_Splash(const ITEM *item);
-void WaterFX_WadeSplash(const ITEM *item, int32_t water_height, int32_t depth);
+void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *setup);
+void FX_Water_Splash(const ITEM *item);
+void FX_Water_WadeSplash(const ITEM *item, int32_t water_height, int32_t depth);
 
-void WaterFX_TriggerUnderwaterBlood(XYZ_32 pos, int32_t size);
-void WaterFX_TriggerUnderwaterBloodD(XYZ_32 pos, int32_t size);
+void FX_Water_TriggerUnderwaterBlood(XYZ_32 pos, int32_t size);
+void FX_Water_TriggerUnderwaterBloodD(XYZ_32 pos, int32_t size);

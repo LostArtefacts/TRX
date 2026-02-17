@@ -8,7 +8,7 @@
 typedef struct {
     XZ_16 pos;
     RGB_888 color;
-} EXPLOSION_VERT;
+} FX_EXPLOSION_VERT;
 
 typedef struct {
     int16_t on;
@@ -17,12 +17,12 @@ typedef struct {
     int16_t radius;
     XZ_16 rot;
     XYZ_32 pos;
-    EXPLOSION_VERT verts[16];
-} EXPLOSION_RING;
+    FX_EXPLOSION_VERT verts[16];
+} FX_EXPLOSION_RING;
 
 void ExplosionRingFX_Reset(void);
 
 void ExplosionRingFX_Control(void);
 void ExplosionRingFX_Draw(void);
 
-EXPLOSION_RING *ExplosionRingFX_GetRing(int32_t idx);
+FX_EXPLOSION_RING *ExplosionRingFX_GetRing(int32_t idx);

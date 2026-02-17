@@ -1,9 +1,9 @@
 #pragma once
 
+#include <trx/game/fx/weather.h>
 #include <trx/game/game_flow/enum.h>
 #include <trx/game/music/ids.h>
 #include <trx/game/objects/types.h>
-#include <trx/game/weather_fx.h>
 
 #include <stdint.h>
 

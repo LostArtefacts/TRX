@@ -2,6 +2,8 @@
 
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
+#include <trx/game/fx/wake.h>
+#include <trx/game/fx/water.h>
 #include <trx/game/input.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -14,8 +16,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/game/wake_fx.h>
-#include <trx/game/water_fx.h>
 #include <trx/json/util/read_io.h>
 #include <trx/json/util/write_io.h>
 #include <trx/utils.h>
@@ -132,7 +132,7 @@ static void M_Initialise(int16_t item_num)
     p->fall_speed_f = 0;
     p->old_pos = item->pos;
     p->paddle.equipped = false;
-    WakeFX_ClearPoints();
+    FX_Wake_ClearPoints();
 }
 
 static int32_t M_GetInKayak(const int16_t item_num, const COLL_INFO *const coll)
@@ -241,7 +241,7 @@ static void M_DoRipple(
         return;
     }
 
-    WATER_FX_RIPPLE *const ripple = WaterFX_SetupRipple(
+    FX_WATER_RIPPLE *const ripple = FX_Water_SetupRipple(
         pos.x, pos.y, pos.z, -2 - (Random_GetControl() & 1), 0);
     if (ripple != nullptr) {
         ripple->init = 0;
@@ -933,7 +933,7 @@ static void M_KayakSplash(
     if (water == NO_HEIGHT) {
         return;
     }
-    WATER_FX_SPLASH_SETUP splash_setup = {
+    FX_WATER_SPLASH_SETUP splash_setup = {
         .x = item->pos.x,
         .y = item->pos.y,
         .z = item->pos.z,
@@ -956,7 +956,7 @@ static void M_KayakSplash(
         .outer_xz_vel = 272,
         .outer_friction = -9,
     };
-    WaterFX_SetupSplash(&splash_setup);
+    FX_Water_SetupSplash(&splash_setup);
 }
 
 static void M_DoWake(
@@ -967,8 +967,8 @@ static void M_DoWake(
     int16_t angle2;
     XYZ_32 pos;
 
-    const int32_t start_idx = WakeFX_GetStartIndex();
-    if (WakeFX_GetPoint(start_idx, rotate)->life != 0) {
+    const int32_t start_idx = FX_Wake_GetStartIndex();
+    if (FX_Wake_GetPoint(start_idx, rotate)->life != 0) {
         return;
     }
 
@@ -1004,7 +1004,7 @@ static void M_DoWake(
         XYZ_32_OffsetYaw((XYZ_32) {}, angle1, 4),
         XYZ_32_OffsetYaw((XYZ_32) {}, angle2, 6),
     };
-    WAKE_FX_POINT *const pt = WakeFX_GetPoint(start_idx, rotate);
+    FX_WAKE_POINT *const pt = FX_Wake_GetPoint(start_idx, rotate);
     pt->life = 64;
 
     for (int32_t i = 0; i < 2; i++) {
@@ -1016,7 +1016,7 @@ static void M_DoWake(
     }
 
     if (rotate == 1) {
-        WakeFX_AdvanceStartIndex();
+        FX_Wake_AdvanceStartIndex();
     }
 }
 
@@ -1135,7 +1135,7 @@ static bool M_Draw(const ITEM *const item)
     ((ITEM *)item)->pos.y += 32;
     Object_DrawAnimatingItem(item);
     ((ITEM *)item)->pos.y -= 32;
-    WakeFX_Draw(item);
+    FX_Wake_Draw(item);
     return true;
 }
 
@@ -1257,7 +1257,7 @@ bool Kayak_Control(void)
         }
     }
 
-    uint8_t wake_shade = WakeFX_GetShade();
+    uint8_t wake_shade = FX_Wake_GetShade();
     if (item->speed != 0 || lara_info->current.vel.x != 0
         || lara_info->current.vel.z != 0) {
         if (wake_shade < 16) {
@@ -1266,9 +1266,9 @@ bool Kayak_Control(void)
     } else if (wake_shade) {
         wake_shade--;
     }
-    WakeFX_SetShade(wake_shade);
+    FX_Wake_SetShade(wake_shade);
 
-    WakeFX_Update();
+    FX_Wake_Update();
     M_KayakToBaddieCollision(item);
 
     return Lara_Vehicle_GetIndex() != NO_ITEM;

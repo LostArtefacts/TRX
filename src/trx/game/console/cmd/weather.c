@@ -1,10 +1,10 @@
 #include <trx/enum_map.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
+#include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_string.h>
-#include <trx/game/weather_fx.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/vector.h>
@@ -63,7 +63,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         return CR_FAILURE;
     }
 
-    WeatherFX_SetWeather((WEATHER_TYPE)weather_type_raw);
+    FX_Weather_SetWeather((WEATHER_TYPE)weather_type_raw);
     Console_Log(GS(CMD_WEATHER_SET), ctx->args);
     return CR_SUCCESS;
 }

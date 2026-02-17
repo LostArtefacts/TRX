@@ -1,4 +1,4 @@
-#include <trx/game/footprint_fx.h>
+#include <trx/game/fx/footprint.h>
 
 #include <trx/config.h>
 #include <trx/game/collision.h>
@@ -51,13 +51,13 @@ static const SAMPLE_TRX_ID m_StepSounds[14] = {
     SFX_FOOTSTEPS_METAL,
 };
 
-void FootprintFX_Init(void)
+void FX_Footprint_Init(void)
 {
     M_PRIV *const p = &m_Priv;
     memset(p, 0, sizeof(*p));
 }
 
-void FootprintFX_Add(const ITEM *const lara_item, const bool is_left_foot)
+void FX_Footprint_Add(const ITEM *const lara_item, const bool is_left_foot)
 {
     M_PRIV *const p = &m_Priv;
     if (lara_item == nullptr) {
@@ -132,7 +132,7 @@ static int32_t M_GetVertexYOffset(
     return dy;
 }
 
-void FootprintFX_Update(void)
+void FX_Footprint_Update(void)
 {
     if (!g_Config.visuals.enable_footprints) {
         return;
@@ -146,7 +146,7 @@ void FootprintFX_Update(void)
     }
 }
 
-void FootprintFX_Draw(void)
+void FX_Footprint_Draw(void)
 {
     if (!g_Config.visuals.enable_footprints) {
         return;

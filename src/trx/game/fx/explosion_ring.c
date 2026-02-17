@@ -1,4 +1,4 @@
-#include <trx/game/objects/effects/explosion_ring_fx.h>
+#include <trx/game/fx/explosion_ring.h>
 
 #include <trx/game/const.h>
 #include <trx/game/math/func.h>
@@ -8,18 +8,18 @@
 #include <trx/game/random.h>
 #include <trx/utils.h>
 
-static EXPLOSION_RING m_ExplosionRings[6] = {};
+static FX_EXPLOSION_RING m_ExplosionRings[6] = {};
 
 void ExplosionRingFX_Reset(void)
 {
     for (int32_t i = 0;
          i < (int32_t)(sizeof(m_ExplosionRings) / sizeof(m_ExplosionRings[0]));
          i++) {
-        m_ExplosionRings[i] = (EXPLOSION_RING) { 0 };
+        m_ExplosionRings[i] = (FX_EXPLOSION_RING) { 0 };
     }
 }
 
-EXPLOSION_RING *ExplosionRingFX_GetRing(const int32_t idx)
+FX_EXPLOSION_RING *ExplosionRingFX_GetRing(const int32_t idx)
 {
     if (idx < 0
         || idx >= (int32_t)(sizeof(m_ExplosionRings)
@@ -50,7 +50,7 @@ static void M_RotateZX(
 void ExplosionRingFX_Control(void)
 {
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
-        EXPLOSION_RING *const ring = &m_ExplosionRings[i];
+        FX_EXPLOSION_RING *const ring = &m_ExplosionRings[i];
         if (ring->on == 0) {
             continue;
         }
@@ -72,7 +72,7 @@ void ExplosionRingFX_Draw(void)
     const int32_t sprite_idx = sprite_base + 4 + ((time4 >> 4) & 3);
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
-        EXPLOSION_RING *const ring = &m_ExplosionRings[i];
+        FX_EXPLOSION_RING *const ring = &m_ExplosionRings[i];
         if (ring->on == 0) {
             continue;
         }
@@ -82,7 +82,7 @@ void ExplosionRingFX_Draw(void)
             int32_t ang = (time4 & 0x3F) << 3;
             for (int32_t k = 0; k < 8; k++) {
                 const int32_t idx = band * 8 + k;
-                EXPLOSION_VERT *const vtx = &ring->verts[idx];
+                FX_EXPLOSION_VERT *const vtx = &ring->verts[idx];
 
                 vtx->pos.x = (int16_t)((rad * Math_Sin(ang << 4)) >> W2V_SHIFT);
                 vtx->pos.z = (int16_t)((rad * Math_Cos(ang << 4)) >> W2V_SHIFT);
@@ -127,10 +127,10 @@ void ExplosionRingFX_Draw(void)
 
         for (int32_t j = 0; j < 8; j++) {
             const int32_t j2 = (j == 7) ? 0 : (j + 1);
-            const EXPLOSION_VERT *const o0 = &ring->verts[j];
-            const EXPLOSION_VERT *const o1 = &ring->verts[j2];
-            const EXPLOSION_VERT *const i0 = &ring->verts[8 + j];
-            const EXPLOSION_VERT *const i1 = &ring->verts[8 + j2];
+            const FX_EXPLOSION_VERT *const o0 = &ring->verts[j];
+            const FX_EXPLOSION_VERT *const o1 = &ring->verts[j2];
+            const FX_EXPLOSION_VERT *const i0 = &ring->verts[8 + j];
+            const FX_EXPLOSION_VERT *const i1 = &ring->verts[8 + j2];
 
             if ((o0->color.r | o0->color.g | o0->color.b | o1->color.r
                  | o1->color.g | o1->color.b | i0->color.r | i0->color.g
