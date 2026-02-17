@@ -1,7 +1,7 @@
 #include <trx/game/music/backend_files.h>
 
+#include <trx/av/audio.h>
 #include <trx/debug.h>
-#include <trx/engine/audio.h>
 #include <trx/filesystem.h>
 #include <trx/game/shell/paths.h>
 #include <trx/log.h>

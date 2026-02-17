@@ -1,7 +1,7 @@
 #include <trx/game/music/common.h>
 
+#include <trx/av/audio.h>
 #include <trx/config.h>
-#include <trx/engine/audio.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/level.h>
 #include <trx/game/music.h>

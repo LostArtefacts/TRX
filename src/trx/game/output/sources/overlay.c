@@ -1,8 +1,8 @@
 #include <trx/game/output/sources/overlay.h>
 
+#include <trx/av/image.h>
 #include <trx/config.h>
 #include <trx/debug.h>
-#include <trx/engine/image.h>
 #include <trx/filesystem.h>
 #include <trx/game/fader.h>
 #include <trx/game/game.h>

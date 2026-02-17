@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/engine/image.h>
+#include <trx/av/image.h>
 
 #include <GL/glew.h>
 #include <stdint.h>

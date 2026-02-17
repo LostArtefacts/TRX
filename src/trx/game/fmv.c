@@ -1,9 +1,9 @@
 #include <trx/game/fmv.h>
 
+#include <trx/av/audio.h>
+#include <trx/av/video.h>
 #include <trx/config.h>
 #include <trx/debug.h>
-#include <trx/engine/audio.h>
-#include <trx/engine/video.h>
 #include <trx/filesystem.h>
 #include <trx/game/console.h>
 #include <trx/game/game_flow.h>

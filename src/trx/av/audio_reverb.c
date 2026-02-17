@@ -2,7 +2,7 @@
 // Original authors: Ethan Lee, Luigi Auriemma, and the MonoGame Team.
 // License: zlib (see wine/libs/faudio/src/FAudioFX_reverb.c).
 
-#include <trx/engine/audio_internal.h>
+#include <trx/av/audio_internal.h>
 
 #include <trx/debug.h>
 #include <trx/memory.h>

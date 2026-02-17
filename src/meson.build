@@ -125,6 +125,12 @@ dependencies = [
 ]
 
 common_sources = [
+  'trx/av/audio.c',
+  'trx/av/audio_reverb.c',
+  'trx/av/audio_sample.c',
+  'trx/av/audio_stream.c',
+  'trx/av/image.c',
+  'trx/av/video.c',
   'trx/benchmark.c',
   'trx/bson/parse.c',
   'trx/bson/write.c',
@@ -135,12 +141,6 @@ common_sources = [
   'trx/config/map.c',
   'trx/config/priv.c',
   'trx/config/vars.c',
-  'trx/engine/audio.c',
-  'trx/engine/audio_reverb.c',
-  'trx/engine/audio_sample.c',
-  'trx/engine/audio_stream.c',
-  'trx/engine/image.c',
-  'trx/engine/video.c',
   'trx/enum_map.c',
   'trx/event_manager.c',
   'trx/filesystem.c',
