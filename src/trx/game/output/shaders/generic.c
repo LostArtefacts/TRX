@@ -3,7 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/viewport.h>
-#include <trx/gfx/gl/program.h>
+#include <trx/gl/gl/program.h>
 #include <trx/memory.h>
 
 #include <uthash.h>
@@ -17,7 +17,7 @@ typedef struct {
 } M_UNIFORM;
 
 struct OUTPUT_SHADER {
-    GFX_GL_PROGRAM program;
+    TRX_GL_PROGRAM program;
 
     int32_t count;
     M_UNIFORM *uniforms;
@@ -76,11 +76,11 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
 {
     OUTPUT_SHADER *const shader = Memory_Alloc(sizeof(OUTPUT_SHADER));
 
-    GFX_GL_Program_Init(&shader->program);
-    GFX_GL_Program_AttachShader(&shader->program, GL_VERTEX_SHADER, path);
-    GFX_GL_Program_AttachShader(&shader->program, GL_FRAGMENT_SHADER, path);
-    GFX_GL_Program_FragmentData(&shader->program, "outColor");
-    GFX_GL_Program_Link(&shader->program);
+    TRX_GL_Program_Init(&shader->program);
+    TRX_GL_Program_AttachShader(&shader->program, GL_VERTEX_SHADER, path);
+    TRX_GL_Program_AttachShader(&shader->program, GL_FRAGMENT_SHADER, path);
+    TRX_GL_Program_FragmentData(&shader->program, "outColor");
+    TRX_GL_Program_Link(&shader->program);
 
 #if 0
     M_DebugUBO(shader->program.id, 0);
@@ -116,13 +116,13 @@ OUTPUT_SHADER *Output_Shader_Create(const char *const path)
         HASH_ADD_STR(shader->uniform_hash, name, uniform);
     }
 
-    GFX_GL_Program_Bind(&shader->program);
+    TRX_GL_Program_Bind(&shader->program);
     return shader;
 }
 
 void Output_Shader_Free(OUTPUT_SHADER *const shader)
 {
-    GFX_GL_Program_Close(&shader->program);
+    TRX_GL_Program_Close(&shader->program);
     M_UNIFORM *cur, *tmp;
     HASH_ITER(hh, shader->uniform_hash, cur, tmp)
     {
@@ -135,13 +135,13 @@ void Output_Shader_Free(OUTPUT_SHADER *const shader)
 void Output_Shader_Bind(const OUTPUT_SHADER *const shader)
 {
     ASSERT(shader != nullptr);
-    GFX_GL_Program_Bind(&shader->program);
+    TRX_GL_Program_Bind(&shader->program);
     const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms->general);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uniforms->matrices);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, uniforms->lights);
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
 GLint Output_Shader_LookupUniform(

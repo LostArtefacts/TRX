@@ -1,25 +1,25 @@
-#include <trx/gfx/screenshot.h>
+#include <trx/gl/screenshot.h>
 
 #include <trx/av/image.h>
 #include <trx/debug.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 
 #include <string.h>
 
-bool GFX_Screenshot_CaptureToFile(const char *path)
+bool TRX_GL_Screenshot_CaptureToFile(const char *path)
 {
     bool ret = false;
 
     GLint width;
     GLint height;
-    GFX_Screenshot_CaptureToBuffer(
+    TRX_GL_Screenshot_CaptureToBuffer(
         nullptr, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
 
     IMAGE *image = Image_Create(width, height);
     ASSERT(image != nullptr);
 
-    GFX_Screenshot_CaptureToBuffer(
+    TRX_GL_Screenshot_CaptureToBuffer(
         (uint8_t *)image->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
         true);
 
@@ -31,7 +31,7 @@ bool GFX_Screenshot_CaptureToFile(const char *path)
     return ret;
 }
 
-void GFX_Screenshot_CaptureToBuffer(
+void TRX_GL_Screenshot_CaptureToBuffer(
     uint8_t *out_buffer, GLint *out_width, GLint *out_height, GLint depth,
     GLenum format, GLenum type, bool vflip)
 {
@@ -40,7 +40,7 @@ void GFX_Screenshot_CaptureToBuffer(
 
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     GLint x = viewport[0];
     GLint y = viewport[1];
@@ -54,14 +54,14 @@ void GFX_Screenshot_CaptureToBuffer(
     GLint pitch = *out_width * depth;
 
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     glReadBuffer(GL_BACK);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     glReadPixels(x, y, *out_width, *out_height, format, type, out_buffer);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     if (vflip) {
         uint8_t *scanline = Memory_Alloc(pitch);

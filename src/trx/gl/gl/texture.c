@@ -1,82 +1,82 @@
-#include <trx/gfx/gl/texture.h>
+#include <trx/gl/gl/texture.h>
 
 #include <trx/debug.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 
-GFX_GL_TEXTURE *GFX_GL_Texture_Create(GLenum target)
+TRX_GL_TEXTURE *TRX_GL_Texture_Create(GLenum target)
 {
-    GFX_GL_TEXTURE *texture = Memory_Alloc(sizeof(GFX_GL_TEXTURE));
-    GFX_GL_Texture_Init(texture, target);
+    TRX_GL_TEXTURE *texture = Memory_Alloc(sizeof(TRX_GL_TEXTURE));
+    TRX_GL_Texture_Init(texture, target);
     return texture;
 }
 
-void GFX_GL_Texture_Free(GFX_GL_TEXTURE *texture)
+void TRX_GL_Texture_Free(TRX_GL_TEXTURE *texture)
 {
     if (texture != nullptr) {
-        GFX_GL_Texture_Close(texture);
+        TRX_GL_Texture_Close(texture);
         Memory_FreePointer(&texture);
     }
 }
 
-void GFX_GL_Texture_Init(GFX_GL_TEXTURE *texture, GLenum target)
+void TRX_GL_Texture_Init(TRX_GL_TEXTURE *texture, GLenum target)
 {
     ASSERT(texture != nullptr);
     texture->target = target;
     glGenTextures(1, &texture->id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     texture->initialized = true;
 }
 
-void GFX_GL_Texture_Close(GFX_GL_TEXTURE *texture)
+void TRX_GL_Texture_Close(TRX_GL_TEXTURE *texture)
 {
     ASSERT(texture != nullptr);
     if (texture->initialized) {
         glDeleteTextures(1, &texture->id);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
     }
     texture->initialized = false;
 }
 
-void GFX_GL_Texture_Bind(const GFX_GL_TEXTURE *texture)
+void TRX_GL_Texture_Bind(const TRX_GL_TEXTURE *texture)
 {
     ASSERT(texture != nullptr);
     ASSERT(texture->initialized);
     glBindTexture(texture->target, texture->id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_Texture_Load(
-    GFX_GL_TEXTURE *texture, const void *data, int width, int height,
+void TRX_GL_Texture_Load(
+    TRX_GL_TEXTURE *texture, const void *data, int width, int height,
     GLint internal_format, GLint format)
 {
     ASSERT(texture != nullptr);
     ASSERT(texture->initialized);
 
-    GFX_GL_Texture_Bind(texture);
+    TRX_GL_Texture_Bind(texture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(
         GL_TEXTURE_2D, 0, internal_format, width, height, 0, format,
         GL_UNSIGNED_BYTE, data);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     glGenerateMipmap(GL_TEXTURE_2D);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_Texture_LoadFromBackBuffer(GFX_GL_TEXTURE *const texture)
+void TRX_GL_Texture_LoadFromBackBuffer(TRX_GL_TEXTURE *const texture)
 {
     ASSERT(texture != nullptr);
     ASSERT(texture->initialized);
 
-    GFX_GL_Texture_Bind(texture);
+    TRX_GL_Texture_Bind(texture);
 
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     const GLint vp_x = viewport[0];
     const GLint vp_y = viewport[1];
@@ -90,5 +90,5 @@ void GFX_GL_Texture_LoadFromBackBuffer(GFX_GL_TEXTURE *const texture)
     const int32_t h = side;
 
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, w, h, 0);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }

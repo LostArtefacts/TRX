@@ -5,7 +5,7 @@
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
 #include <trx/game/random.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
@@ -178,7 +178,7 @@ static void M_PrepareBuffers(M_PRIV *const p)
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_STATIC_DRAW);
 }

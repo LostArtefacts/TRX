@@ -5,7 +5,7 @@
 #include <trx/config/enum.h>
 #include <trx/game/input.h>
 #include <trx/game/sound/enum.h>
-#include <trx/gfx/common.h>
+#include <trx/gl/common.h>
 #include <trx/screenshot.h>
 
 typedef struct {
@@ -283,9 +283,9 @@ typedef struct {
         bool enable_trapezoid_filter;
         bool enable_lighting;
         bool enable_textures;
-        GFX_TEXTURE_FILTER ui_filter;
-        GFX_TEXTURE_FILTER texture_filter;
-        GFX_TEXTURE_FILTER upscaling_filter;
+        TRX_GL_TEXTURE_FILTER ui_filter;
+        TRX_GL_TEXTURE_FILTER texture_filter;
+        TRX_GL_TEXTURE_FILTER upscaling_filter;
         bool enable_wireframe;
         float wireframe_width;
         bool enable_vsync;

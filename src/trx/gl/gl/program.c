@@ -1,10 +1,10 @@
-#include <trx/gfx/gl/program.h>
+#include <trx/gl/gl/program.h>
 
 #include <trx/debug.h>
 #include <trx/filesystem.h>
 #include <trx/game/shell.h>
-#include <trx/gfx/gl/track.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/track.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 #include <trx/vector.h>
@@ -177,11 +177,11 @@ static char *M_Preprocess(const char *content, GLenum type)
     return processed_content;
 }
 
-bool GFX_GL_Program_Init(GFX_GL_PROGRAM *const program)
+bool TRX_GL_Program_Init(TRX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     program->id = glCreateProgram();
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     if (!program->id) {
         LOG_ERROR("Can't create shader program");
         return false;
@@ -189,26 +189,26 @@ bool GFX_GL_Program_Init(GFX_GL_PROGRAM *const program)
     return true;
 }
 
-void GFX_GL_Program_Close(GFX_GL_PROGRAM *const program)
+void TRX_GL_Program_Close(TRX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     Memory_FreePointer(&program->path);
     if (program->id) {
         glDeleteProgram(program->id);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
         program->id = 0;
     }
 }
 
-void GFX_GL_Program_Bind(const GFX_GL_PROGRAM *const program)
+void TRX_GL_Program_Bind(const TRX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     glUseProgram(program->id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_Program_AttachShader(
-    GFX_GL_PROGRAM *program, GLenum type, const char *path)
+void TRX_GL_Program_AttachShader(
+    TRX_GL_PROGRAM *program, GLenum type, const char *path)
 {
     ASSERT(program != nullptr);
     ASSERT(path != nullptr);
@@ -219,7 +219,7 @@ void GFX_GL_Program_AttachShader(
     program->path = Memory_DupStr(resolved_path);
 
     GLuint shader_id = glCreateShader(type);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     if (!shader_id) {
         Shell_ExitSystem("Failed to create shader");
     }
@@ -243,19 +243,19 @@ void GFX_GL_Program_AttachShader(
     glShaderSource(
         shader_id, 1, (const char *const *)&processed_content, nullptr);
 
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     glCompileShader(shader_id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     int compile_status;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compile_status);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     if (compile_status != GL_TRUE) {
         GLsizei info_log_size = 4096;
         char info_log[info_log_size];
         glGetShaderInfoLog(shader_id, info_log_size, &info_log_size, info_log);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
 
         if (info_log[0]) {
             Shell_ExitSystemFmt(
@@ -268,28 +268,28 @@ void GFX_GL_Program_AttachShader(
     Memory_FreePointer(&processed_content);
 
     glAttachShader(program->id, shader_id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     glDeleteShader(shader_id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_Program_Link(GFX_GL_PROGRAM *const program)
+void TRX_GL_Program_Link(TRX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     glLinkProgram(program->id);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     GLint linkStatus;
     glGetProgramiv(program->id, GL_LINK_STATUS, &linkStatus);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     if (!linkStatus) {
         GLsizei info_log_size = 4096;
         char info_log[info_log_size];
         glGetProgramInfoLog(
             program->id, info_log_size, &info_log_size, info_log);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
         if (info_log[0]) {
             Shell_ExitSystemFmt(
                 "%s: shader linking failed\n%s", program->path, info_log);
@@ -299,56 +299,56 @@ void GFX_GL_Program_Link(GFX_GL_PROGRAM *const program)
     }
 }
 
-void GFX_GL_Program_FragmentData(
-    GFX_GL_PROGRAM *const program, const char *const name)
+void TRX_GL_Program_FragmentData(
+    TRX_GL_PROGRAM *const program, const char *const name)
 {
     ASSERT(program != nullptr);
     glBindFragDataLocation(program->id, 0, name);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
-GLint GFX_GL_Program_UniformLocation(
-    GFX_GL_PROGRAM *const program, const char *const name)
+GLint TRX_GL_Program_UniformLocation(
+    TRX_GL_PROGRAM *const program, const char *const name)
 {
     ASSERT(program != nullptr);
     GLint location = glGetUniformLocation(program->id, name);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
     if (location == -1) {
         LOG_INFO("%s: uniform not found (%s)", program->path, name);
     }
     return location;
 }
 
-void GFX_GL_Program_Uniform4f(
-    GFX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0,
+void TRX_GL_Program_Uniform4f(
+    TRX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0,
     const GLfloat v1, const GLfloat v2, const GLfloat v3)
 {
     ASSERT(program != nullptr);
-    GFX_TRACK_UNIFORM(glUniform4f, loc, v0, v1, v2, v3);
-    GFX_GL_CheckError();
+    TRX_GL_TRACK_UNIFORM(glUniform4f, loc, v0, v1, v2, v3);
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_Program_Uniform1i(
-    GFX_GL_PROGRAM *const program, const GLint loc, const GLint v0)
+void TRX_GL_Program_Uniform1i(
+    TRX_GL_PROGRAM *const program, const GLint loc, const GLint v0)
 {
     ASSERT(program != nullptr);
-    GFX_TRACK_UNIFORM(glUniform1i, loc, v0);
-    GFX_GL_CheckError();
+    TRX_GL_TRACK_UNIFORM(glUniform1i, loc, v0);
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_Program_Uniform1f(
-    GFX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0)
+void TRX_GL_Program_Uniform1f(
+    TRX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0)
 {
     ASSERT(program != nullptr);
-    GFX_TRACK_UNIFORM(glUniform1f, loc, v0);
-    GFX_GL_CheckError();
+    TRX_GL_TRACK_UNIFORM(glUniform1f, loc, v0);
+    TRX_GL_CheckError();
 }
 
-void GFX_GL_Program_Uniform2f(
-    GFX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0,
+void TRX_GL_Program_Uniform2f(
+    TRX_GL_PROGRAM *const program, const GLint loc, const GLfloat v0,
     const GLfloat v1)
 {
     ASSERT(program != nullptr);
-    GFX_TRACK_UNIFORM(glUniform2f, loc, v0, v1);
-    GFX_GL_CheckError();
+    TRX_GL_TRACK_UNIFORM(glUniform2f, loc, v0, v1);
+    TRX_GL_CheckError();
 }

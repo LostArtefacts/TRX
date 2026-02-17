@@ -9,29 +9,29 @@ typedef struct {
     int32_t opaque_vert_count;
     int32_t trans_vert_count;
     int32_t blend_add_vert_count;
-} GFX_METRICS;
+} TRX_GL_METRICS;
 
-extern GFX_METRICS g_GFX_Metrics;
+extern TRX_GL_METRICS g_TRX_GL_Metrics;
 
-#define GFX_TRACK_UNIFORM(fn, ...)                                             \
+#define TRX_GL_TRACK_UNIFORM(fn, ...)                                          \
     do {                                                                       \
-        g_GFX_Metrics.uniform_changes++;                                       \
+        g_TRX_GL_Metrics.uniform_changes++;                                    \
         fn(__VA_ARGS__);                                                       \
     } while (0);
 
-#define GFX_TRACK_DATA(fn, a, b, c, d)                                         \
+#define TRX_GL_TRACK_DATA(fn, a, b, c, d)                                      \
     do {                                                                       \
-        g_GFX_Metrics.buffer_total_bytes += b;                                 \
-        g_GFX_Metrics.buffer_transfer_count++;                                 \
+        g_TRX_GL_Metrics.buffer_total_bytes += b;                              \
+        g_TRX_GL_Metrics.buffer_transfer_count++;                              \
         fn(a, b, c, d);                                                        \
     } while (0);
 
-#define GFX_TRACK_SUBDATA(fn, a, b, c, d)                                      \
+#define TRX_GL_TRACK_SUBDATA(fn, a, b, c, d)                                   \
     do {                                                                       \
-        g_GFX_Metrics.buffer_total_bytes += c;                                 \
-        g_GFX_Metrics.buffer_transfer_count++;                                 \
+        g_TRX_GL_Metrics.buffer_total_bytes += c;                              \
+        g_TRX_GL_Metrics.buffer_transfer_count++;                              \
         fn(a, b, c, d);                                                        \
     } while (0);
 
-void GFX_Track_Reset(void);
-GFX_METRICS GFX_Track_GetMetrics(void);
+void TRX_GL_Track_Reset(void);
+TRX_GL_METRICS TRX_GL_Track_GetMetrics(void);

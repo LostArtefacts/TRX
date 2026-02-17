@@ -153,7 +153,7 @@ static void M_AnimateBinding(
              j < range->vertex_start + range->vertex_count; j++) {
             M_FillTexture(&bind->tex_data[j], &vertices[j]);
         }
-        GFX_TRACK_DATA(
+        TRX_GL_TRACK_DATA(
             glBufferSubData, GL_ARRAY_BUFFER,
             (bind->vertex_start + range->vertex_start) * sizeof(M_MESH_TEXTURE),
             range->vertex_count * sizeof(M_MESH_TEXTURE),
@@ -169,7 +169,7 @@ static void M_UpdateMeshGeometry(
     for (int32_t i = 0; i < bind->vertex_count; i++) {
         M_FillGeometry(&bind->geom_data[i], &vertices[i]);
     }
-    GFX_TRACK_SUBDATA(
+    TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_ARRAY_BUFFER,
         bind->vertex_start * sizeof(M_MESH_GEOM),
         bind->vertex_count * sizeof(M_MESH_GEOM), bind->geom_data);
@@ -220,8 +220,8 @@ static void M_DrawOpaqueVertices(
         indices_offset, // Offset in EBO
         bind->vertex_start // Offset in VBO (baseVertex)
     );
-    GFX_GL_CheckError();
-    g_GFX_Metrics.opaque_vert_count += bind->opaque_index_count;
+    TRX_GL_CheckError();
+    g_TRX_GL_Metrics.opaque_vert_count += bind->opaque_index_count;
 }
 
 static void M_DrawBlendAddVertices(
@@ -235,8 +235,8 @@ static void M_DrawBlendAddVertices(
         indices_offset, // Offset in EBO
         bind->vertex_start // Offset in VBO (baseVertex)
     );
-    GFX_GL_CheckError();
-    g_GFX_Metrics.blend_add_vert_count += bind->blend_add_index_count;
+    TRX_GL_CheckError();
+    g_TRX_GL_Metrics.blend_add_vert_count += bind->blend_add_index_count;
 }
 
 static void M_DrawOpaqueInstance(
@@ -407,7 +407,7 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
         glDrawElements(
             GL_TRIANGLES, sort_ptr->index_count, GL_UNSIGNED_INT, index_offset);
 
-        g_GFX_Metrics.trans_vert_count += sort_ptr->index_count;
+        g_TRX_GL_Metrics.trans_vert_count += sort_ptr->index_count;
     }
 
     Output_AdjustDepth(0.0f, 0.0f);
@@ -677,19 +677,19 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.geom);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
         batcher->vertex_count * sizeof(M_MESH_GEOM), nullptr,
         GL_DYNAMIC_DRAW); // allow updating mesh flags
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.tex);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
         batcher->vertex_count * sizeof(M_MESH_TEXTURE), nullptr,
         GL_DYNAMIC_DRAW); // allow animating textures
 
     glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.shade);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER,
         batcher->vertex_count * sizeof(M_MESH_SHADE), nullptr, GL_DYNAMIC_DRAW);
 
@@ -698,17 +698,17 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
         M_MESH_BUF_BINDING *const bind =
             *(M_MESH_BUF_BINDING **)Vector_Get(batcher->bindings, i);
         glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.geom);
-        GFX_TRACK_SUBDATA(
+        TRX_GL_TRACK_SUBDATA(
             glBufferSubData, GL_ARRAY_BUFFER,
             bind->vertex_start * sizeof(M_MESH_GEOM),
             bind->vertex_count * sizeof(M_MESH_GEOM), bind->geom_data);
         glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.tex);
-        GFX_TRACK_SUBDATA(
+        TRX_GL_TRACK_SUBDATA(
             glBufferSubData, GL_ARRAY_BUFFER,
             bind->vertex_start * sizeof(M_MESH_TEXTURE),
             bind->vertex_count * sizeof(M_MESH_TEXTURE), bind->tex_data);
         glBindBuffer(GL_ARRAY_BUFFER, batcher->vbo.shade);
-        GFX_TRACK_SUBDATA(
+        TRX_GL_TRACK_SUBDATA(
             glBufferSubData, GL_ARRAY_BUFFER,
             bind->vertex_start * sizeof(M_MESH_SHADE),
             bind->vertex_count * sizeof(M_MESH_SHADE), bind->shade_data);
@@ -760,19 +760,19 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
 
     // Upload to GPU
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.opaque);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ELEMENT_ARRAY_BUFFER,
         batcher->opaque_total_indices * sizeof(uint32_t), opaque_indices,
         GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.blend_add);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ELEMENT_ARRAY_BUFFER,
         batcher->blend_add_total_indices * sizeof(uint32_t), blend_indices,
         GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, batcher->ebo.transparent);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ELEMENT_ARRAY_BUFFER,
         batcher->transparent_total_indices * sizeof(uint32_t),
         transparent_indices, GL_STATIC_DRAW);

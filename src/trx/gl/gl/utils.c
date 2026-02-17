@@ -1,8 +1,8 @@
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 
 #include <GL/glew.h>
 
-const char *GFX_GL_GetErrorString(GLenum err)
+const char *TRX_GL_GetErrorString(GLenum err)
 {
     switch (err) {
     case GL_NO_ERROR:
@@ -26,9 +26,9 @@ const char *GFX_GL_GetErrorString(GLenum err)
     }
 }
 
-void GFX_GL_CheckError(void)
+void TRX_GL_CheckError(void)
 {
     for (GLenum err; (err = glGetError()) != GL_NO_ERROR;) {
-        LOG_ERROR("glGetError: (%s)", GFX_GL_GetErrorString(err));
+        LOG_ERROR("glGetError: (%s)", TRX_GL_GetErrorString(err));
     }
 }

@@ -5,7 +5,7 @@
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 
@@ -255,7 +255,7 @@ void OutputSource_Misc_Init(void)
     M_GenerateSphere(p, &p->primitive_ranges[M_PRIMITIVE_SPHERE], 12);
     M_GenerateCuboid(p, &p->primitive_ranges[M_PRIMITIVE_CUBOID]);
 
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER, p->vertex_count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_STATIC_DRAW);
 }

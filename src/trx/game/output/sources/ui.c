@@ -6,7 +6,7 @@
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/viewport.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/vector.h>
@@ -250,7 +250,7 @@ static void M_DrawVertices(const M_PRIV *const p)
 {
     glBindVertexArray(p->vao);
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_STATIC_DRAW);
     glDrawArrays(GL_TRIANGLES, 0, p->vertices->count);

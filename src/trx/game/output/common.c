@@ -19,7 +19,7 @@
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/shell.h>
-#include <trx/gfx/context.h>
+#include <trx/gl/context.h>
 
 static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_UNIFORMS *m_Uniforms = nullptr;
@@ -86,7 +86,7 @@ void Output_Shutdown(void)
     Output_Textures_Shutdown();
     Output_Lights_Shutdown();
 
-    GFX_Context_Detach();
+    TRX_GL_Context_Detach();
 }
 
 bool Output_IsHeadless(void)
@@ -112,9 +112,9 @@ OUTPUT_UI_SHADER *Output_GetUIShader(void)
 void Output_BeginScene(void)
 {
     Output_ApplyFOV();
-    GFX_Context_Clear();
-    GFX_Track_Reset();
-    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
+    TRX_GL_Context_Clear();
+    TRX_GL_Track_Reset();
+    TRX_GL_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
     SceneCompositor_BeginScene();
 }
 
@@ -130,18 +130,18 @@ void Output_Flush(void)
 
 void Output_FlipScreen(void)
 {
-    GFX_Context_SwapBuffers();
+    TRX_GL_Context_SwapBuffers();
 }
 
 void Output_SwitchViewport(const VIEWPORT_SPACE space)
 {
     if (space == VIEWPORT_GAME) {
-        GFX_Renderer_BindGeometryFbo();
+        TRX_GL_Renderer_BindGeometryFbo();
     } else if (space == VIEWPORT_UI) {
-        GFX_Renderer_BindUiFbo();
+        TRX_GL_Renderer_BindUiFbo();
     }
-    GFX_Context_SwitchToViewport(space);
-    GFX_Context_Clear();
+    TRX_GL_Context_SwitchToViewport(space);
+    TRX_GL_Context_Clear();
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
@@ -154,10 +154,10 @@ void Output_ApplyRenderSettings(void)
         return;
     }
 
-    GFX_Context_SetVSync(g_Config.rendering.enable_vsync);
-    GFX_Context_SetDisplayFilter(g_Config.rendering.upscaling_filter);
-    GFX_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
-    GFX_Context_SetLineWidth(g_Config.rendering.wireframe_width);
+    TRX_GL_Context_SetVSync(g_Config.rendering.enable_vsync);
+    TRX_GL_Context_SetDisplayFilter(g_Config.rendering.upscaling_filter);
+    TRX_GL_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
+    TRX_GL_Context_SetLineWidth(g_Config.rendering.wireframe_width);
 }
 
 void Output_ApplyLevelSettings(void)

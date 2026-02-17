@@ -4,7 +4,7 @@
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
-#include <trx/gfx/gl/utils.h>
+#include <trx/gl/gl/utils.h>
 
 typedef struct {
     XYZW_F pos;
@@ -114,13 +114,13 @@ static void M_RenderPass(
         M_GenerateLightningSegment(p, segment);
     }
 
-    GFX_TRACK_DATA(
+    TRX_GL_TRACK_DATA(
         glBufferData, GL_ARRAY_BUFFER, p->vertices->count * sizeof(M_VERTEX),
         Vector_GetData(p->vertices), GL_STATIC_DRAW);
 
     Output_MeshShader_UploadModelMatrix(p->shader, &g_IDMatrix);
     glDrawArrays(GL_TRIANGLES, 0, p->vertices->count);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)

@@ -79,8 +79,8 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[] = {
 };
 
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_TextureFilterEnumEntries[] = {
-    { GFX_TF_POINT, GS_ID(ENUM_TEXTURE_FILTER_POINT) },
-    { GFX_TF_BILINEAR, GS_ID(ENUM_TEXTURE_FILTER_BILINEAR) },
+    { TRX_GL_TF_POINT, GS_ID(ENUM_TEXTURE_FILTER_POINT) },
+    { TRX_GL_TF_BILINEAR, GS_ID(ENUM_TEXTURE_FILTER_BILINEAR) },
     { -1, nullptr },
 };
 

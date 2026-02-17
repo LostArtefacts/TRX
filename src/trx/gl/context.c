@@ -1,10 +1,10 @@
-#include <trx/gfx/context.h>
+#include <trx/gl/context.h>
 
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
-#include <trx/gfx/gl/utils.h>
-#include <trx/gfx/renderer.h>
-#include <trx/gfx/screenshot.h>
+#include <trx/gl/gl/utils.h>
+#include <trx/gl/renderer.h>
+#include <trx/gl/screenshot.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 
@@ -17,30 +17,30 @@ typedef struct {
     SDL_Window *window_handle;
     VIEWPORT_SPACE space;
 
-    GFX_CONFIG config;
+    TRX_GL_CONFIG config;
 
     // Size of the SDL window.
     int32_t window_width;
     int32_t window_height;
 
     char *scheduled_screenshot_path;
-    GFX_RENDERER *renderer;
-} GFX_CONTEXT;
+    TRX_GL_RENDERER *renderer;
+} TRX_GL_CONTEXT;
 
 extern RGBA_F Output_GetFogColor(void);
 
-static GFX_CONTEXT m_Context = {};
+static TRX_GL_CONTEXT m_Context = {};
 
 static bool M_IsExtensionSupported(const char *name)
 {
     int number_of_extensions;
 
     glGetIntegerv(GL_NUM_EXTENSIONS, &number_of_extensions);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     for (int i = 0; i < number_of_extensions; i++) {
         const char *gl_ext = (const char *)glGetStringi(GL_EXTENSIONS, i);
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
 
         if (gl_ext && !strcmp(gl_ext, name)) {
             return true;
@@ -64,15 +64,15 @@ static GLvoid GLAPIENTRY M_GLDebug(
     LOG_INFO("%d %*s", source, len, message);
 }
 
-void GFX_Context_SwitchToViewport(const VIEWPORT_SPACE space)
+void TRX_GL_Context_SwitchToViewport(const VIEWPORT_SPACE space)
 {
     const VIEWPORT_RECT rect = Viewport_GetRect(space);
     m_Context.space = space;
     glViewport(rect.x, rect.y, rect.width, rect.height);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 }
 
-bool GFX_Context_Attach(void *window_handle)
+bool TRX_GL_Context_Attach(void *window_handle)
 {
     const char *shading_ver;
 
@@ -118,12 +118,12 @@ bool GFX_Context_Attach(void *window_handle)
     if (shading_ver != nullptr) {
         LOG_INFO("Shading version string: %s", shading_ver);
     } else {
-        GFX_GL_CheckError();
+        TRX_GL_CheckError();
     }
 
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     // VSync defaults to on unless user disabled it in runtime json
     SDL_GL_SetSwapInterval(1);
@@ -135,7 +135,7 @@ bool GFX_Context_Attach(void *window_handle)
     glEnable(GL_DEBUG_OUTPUT);
 #endif
 
-    m_Context.renderer = &g_GFX_Renderer;
+    m_Context.renderer = &g_TRX_GL_Renderer;
     if (m_Context.renderer->init != nullptr) {
         m_Context.renderer->init(m_Context.renderer, &m_Context.config);
     }
@@ -143,7 +143,7 @@ bool GFX_Context_Attach(void *window_handle)
     return true;
 }
 
-void GFX_Context_Detach(void)
+void TRX_GL_Context_Detach(void)
 {
     if (!m_Context.window_handle) {
         return;
@@ -163,37 +163,37 @@ void GFX_Context_Detach(void)
     m_Context.window_handle = nullptr;
 }
 
-void GFX_Context_SetDisplayFilter(const GFX_TEXTURE_FILTER filter)
+void TRX_GL_Context_SetDisplayFilter(const TRX_GL_TEXTURE_FILTER filter)
 {
     m_Context.config.display_filter = filter;
 }
 
-bool GFX_Context_GetWireframeMode(void)
+bool TRX_GL_Context_GetWireframeMode(void)
 {
     return m_Context.config.enable_wireframe;
 }
 
-void GFX_Context_SetWireframeMode(const bool enable)
+void TRX_GL_Context_SetWireframeMode(const bool enable)
 {
     m_Context.config.enable_wireframe = enable;
 }
 
-void GFX_Context_SetLineWidth(const int32_t line_width)
+void TRX_GL_Context_SetLineWidth(const int32_t line_width)
 {
     m_Context.config.line_width = line_width;
 }
 
-void GFX_Context_SetVSync(bool vsync)
+void TRX_GL_Context_SetVSync(bool vsync)
 {
     SDL_GL_SetSwapInterval(vsync);
 }
 
-void *GFX_Context_GetWindowHandle(void)
+void *TRX_GL_Context_GetWindowHandle(void)
 {
     return m_Context.window_handle;
 }
 
-void GFX_Context_Clear(void)
+void TRX_GL_Context_Clear(void)
 {
     const RGBA_F white = { 1.0f, 1.0f, 1.0f, 0.0f };
     const RGBA_F fog = Output_GetFogColor();
@@ -206,10 +206,10 @@ void GFX_Context_Clear(void)
     glClearBufferfv(GL_COLOR, 0, &color.r);
 }
 
-void GFX_Context_SwapBuffers(void)
+void TRX_GL_Context_SwapBuffers(void)
 {
     glFinish();
-    GFX_GL_CheckError();
+    TRX_GL_CheckError();
 
     if (m_Context.renderer != nullptr
         && m_Context.renderer->swap_buffers != nullptr) {
@@ -217,23 +217,23 @@ void GFX_Context_SwapBuffers(void)
     }
 }
 
-void GFX_Context_ScheduleScreenshot(const char *path)
+void TRX_GL_Context_ScheduleScreenshot(const char *path)
 {
     Memory_FreePointer(&m_Context.scheduled_screenshot_path);
     m_Context.scheduled_screenshot_path = Memory_DupStr(path);
 }
 
-const char *GFX_Context_GetScheduledScreenshotPath(void)
+const char *TRX_GL_Context_GetScheduledScreenshotPath(void)
 {
     return m_Context.scheduled_screenshot_path;
 }
 
-void GFX_Context_ClearScheduledScreenshotPath(void)
+void TRX_GL_Context_ClearScheduledScreenshotPath(void)
 {
     Memory_FreePointer(&m_Context.scheduled_screenshot_path);
 }
 
-GFX_CONFIG *GFX_Context_GetConfig(void)
+TRX_GL_CONFIG *TRX_GL_Context_GetConfig(void)
 {
     return &m_Context.config;
 }

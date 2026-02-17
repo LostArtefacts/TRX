@@ -1,13 +1,13 @@
-#include <trx/gfx/2d/2d_surface.h>
+#include <trx/gl/2d/2d_surface.h>
 
 #include <trx/debug.h>
-#include <trx/gfx/context.h>
+#include <trx/gl/context.h>
 #include <trx/log.h>
 #include <trx/memory.h>
 
 #include <string.h>
 
-static void M_FillDefaultUVs(GFX_2D_SURFACE *const surface)
+static void M_FillDefaultUVs(TRX_GL_2D_SURFACE *const surface)
 {
     surface->desc.uv[0].u = 0;
     surface->desc.uv[0].v = 0;
@@ -19,16 +19,17 @@ static void M_FillDefaultUVs(GFX_2D_SURFACE *const surface)
     surface->desc.uv[3].v = 1;
 }
 
-GFX_2D_SURFACE *GFX_2D_Surface_Create(const GFX_2D_SURFACE_DESC *const desc)
+TRX_GL_2D_SURFACE *TRX_GL_2D_Surface_Create(
+    const TRX_GL_2D_SURFACE_DESC *const desc)
 {
-    GFX_2D_SURFACE *surface = Memory_Alloc(sizeof(GFX_2D_SURFACE));
-    GFX_2D_Surface_Init(surface, desc);
+    TRX_GL_2D_SURFACE *surface = Memory_Alloc(sizeof(TRX_GL_2D_SURFACE));
+    TRX_GL_2D_Surface_Init(surface, desc);
     return surface;
 }
 
-GFX_2D_SURFACE *GFX_2D_Surface_CreateFromImage(const IMAGE *const image)
+TRX_GL_2D_SURFACE *TRX_GL_2D_Surface_CreateFromImage(const IMAGE *const image)
 {
-    GFX_2D_SURFACE *surface = Memory_Alloc(sizeof(GFX_2D_SURFACE));
+    TRX_GL_2D_SURFACE *surface = Memory_Alloc(sizeof(TRX_GL_2D_SURFACE));
     surface->desc.width = image->width;
     surface->desc.height = image->height;
     surface->desc.bit_count = 24;
@@ -43,20 +44,20 @@ GFX_2D_SURFACE *GFX_2D_Surface_CreateFromImage(const IMAGE *const image)
     return surface;
 }
 
-void GFX_2D_Surface_Free(GFX_2D_SURFACE *const surface)
+void TRX_GL_2D_Surface_Free(TRX_GL_2D_SURFACE *const surface)
 {
     if (surface) {
-        GFX_2D_Surface_Close(surface);
+        TRX_GL_2D_Surface_Close(surface);
         Memory_Free(surface);
     }
 }
 
-void GFX_2D_Surface_Init(
-    GFX_2D_SURFACE *const surface, const GFX_2D_SURFACE_DESC *const desc)
+void TRX_GL_2D_Surface_Init(
+    TRX_GL_2D_SURFACE *const surface, const TRX_GL_2D_SURFACE_DESC *const desc)
 {
     surface->desc = *desc;
 
-    GFX_2D_SURFACE_DESC display_desc = {
+    TRX_GL_2D_SURFACE_DESC display_desc = {
         .bit_count = 32,
         .width = Viewport_GetWidth(VIEWPORT_GAME),
         .height = Viewport_GetHeight(VIEWPORT_GAME),
@@ -92,12 +93,13 @@ void GFX_2D_Surface_Init(
     surface->buffer = Memory_Alloc(surface->desc.pitch * surface->desc.height);
 }
 
-void GFX_2D_Surface_Close(GFX_2D_SURFACE *const surface)
+void TRX_GL_2D_Surface_Close(TRX_GL_2D_SURFACE *const surface)
 {
     Memory_FreePointer(&surface->buffer);
 }
 
-void GFX_2D_Surface_Clear(GFX_2D_SURFACE *const surface, const uint8_t value)
+void TRX_GL_2D_Surface_Clear(
+    TRX_GL_2D_SURFACE *const surface, const uint8_t value)
 {
     memset(surface->buffer, value, surface->desc.pitch * surface->desc.height);
 }
