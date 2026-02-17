@@ -4,7 +4,6 @@
 #include <trx/av/video.h>
 #include <trx/config.h>
 #include <trx/debug.h>
-#include <trx/filesystem.h>
 #include <trx/game/console.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
@@ -16,33 +15,57 @@
 #include <trx/game/ui.h>
 #include <trx/game/viewport.h>
 #include <trx/log.h>
+#include <trx/memory.h>
 #include <trx/strings.h>
 
 #include <string.h>
 
 static bool m_IsPlaying = false;
 
+typedef struct {
+    OUTPUT_QUAD_SURFACE_DESC desc;
+    uint8_t *buffer;
+} M_SURFACE;
+
+static OUTPUT_QUAD_SURFACE_DESC M_MakeSurfaceDesc(
+    const int32_t width, const int32_t height)
+{
+    return (OUTPUT_QUAD_SURFACE_DESC) {
+        .width = width,
+        .height = height,
+        .bit_count = 32,
+        .tex_format = GL_BGRA,
+        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
+        .uv = {
+            { .u = 0.0f, .v = 0.0f },
+            { .u = 1.0f, .v = 0.0f },
+            { .u = 1.0f, .v = 1.0f },
+            { .u = 0.0f, .v = 1.0f },
+        },
+        .pitch = width * 4,
+    };
+}
+
 static void *M_AllocateSurface(
     const int32_t width, const int32_t height, void *const user_data)
 {
-    TRX_GL_2D_SURFACE_DESC surface_desc = {
-        .width = width,
-        .height = height,
-        .tex_format = GL_BGRA,
-        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
-    };
-    return TRX_GL_2D_Surface_Create(&surface_desc);
+    M_SURFACE *const surface = Memory_Alloc(sizeof(M_SURFACE));
+    surface->desc = M_MakeSurfaceDesc(width, height);
+    surface->buffer = Memory_Alloc(surface->desc.pitch * surface->desc.height);
+    return surface;
 }
 
 static void M_DeallocateSurface(void *const surface, void *const user_data)
 {
-    TRX_GL_2D_Surface_Free(surface);
+    M_SURFACE *const surface_ = surface;
+    Memory_Free(surface_->buffer);
+    Memory_Free(surface_);
 }
 
 static void M_ClearSurface(void *const surface, void *const user_data)
 {
     ASSERT(surface != nullptr);
-    TRX_GL_2D_SURFACE *const surface_ = surface;
+    M_SURFACE *const surface_ = surface;
     memset(surface_->buffer, 0, surface_->desc.pitch * surface_->desc.height);
 }
 
@@ -60,7 +83,7 @@ static void M_RenderEnd(void *const surface, void *const user_data)
 static void *M_LockSurface(void *const surface, void *const user_data)
 {
     ASSERT(surface != nullptr);
-    TRX_GL_2D_SURFACE *const surface_ = surface;
+    M_SURFACE *const surface_ = surface;
     return surface_->buffer;
 }
 
@@ -71,7 +94,7 @@ static void M_UnlockSurface(void *const surface, void *const user_data)
 static void M_UploadSurface(void *const surface, void *const user_data)
 {
     OUTPUT_QUAD *const renderer_2d = user_data;
-    TRX_GL_2D_SURFACE *const surface_ = surface;
+    M_SURFACE *const surface_ = surface;
     Output_Quad_Upload(renderer_2d, &surface_->desc, surface_->buffer);
     Output_Quad_Render(renderer_2d);
 

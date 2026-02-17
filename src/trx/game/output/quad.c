@@ -1,13 +1,12 @@
 #include <trx/game/output/quad.h>
 
-#include <trx/config.h>
 #include <trx/debug.h>
-#include <trx/game/output.h>
+#include <trx/game/output/shaders/generic.h>
 #include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
-#include <trx/utils.h>
 
 #include <GL/glew.h>
+#include <stddef.h>
 #include <string.h>
 
 typedef enum {
@@ -33,16 +32,16 @@ typedef struct {
 } M_VERTEX;
 
 struct OUTPUT_QUAD {
-    TRX_GL_VERTEX_ARRAY vertex_format;
-    TRX_GL_BUFFER surface_buffer;
-    TRX_GL_TEXTURE surface_texture;
-    TRX_GL_PROGRAM program;
+    GLuint vao;
+    GLuint vbo;
+    GLuint texture;
+    OUTPUT_SHADER *shader;
 
     M_VERTEX *vertices;
     int32_t vertex_count;
 
     bool ready;
-    TRX_GL_2D_SURFACE_DESC desc;
+    OUTPUT_QUAD_SURFACE_DESC desc;
     struct {
         int32_t x;
         int32_t y;
@@ -59,9 +58,8 @@ struct OUTPUT_QUAD {
     bool use_external_texture;
     GLuint external_texture_id;
 
-    // shader variable locations
     GLint loc[M_UNIFORM_NUMBER_OF];
-} M_PRIV;
+};
 
 static const M_VERTEX m_Vertices[] = {
     { .pos = { .x = 0.0, .y = 0.0 }, .uv = { .u = 0.0, .v = 0.0 } },
@@ -71,6 +69,38 @@ static const M_VERTEX m_Vertices[] = {
     { .pos = { .x = 1.0, .y = 0.0 }, .uv = { .u = 1.0, .v = 0.0 } },
     { .pos = { .x = 1.0, .y = 1.0 }, .uv = { .u = 1.0, .v = 1.0 } },
 };
+
+static const OUTPUT_QUAD_SURFACE_UV m_DefaultUV[] = {
+    { .u = 0.0f, .v = 0.0f },
+    { .u = 1.0f, .v = 0.0f },
+    { .u = 1.0f, .v = 1.0f },
+    { .u = 0.0f, .v = 1.0f },
+};
+
+static bool M_AllUVsZero(const OUTPUT_QUAD_SURFACE_DESC *const desc)
+{
+    for (int32_t i = 0; i < 4; i++) {
+        if (desc->uv[i].u != 0.0f || desc->uv[i].v != 0.0f) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static OUTPUT_QUAD_SURFACE_DESC M_NormalizeDesc(
+    const OUTPUT_QUAD_SURFACE_DESC *const desc)
+{
+    OUTPUT_QUAD_SURFACE_DESC out = *desc;
+    if (M_AllUVsZero(desc)) {
+        memcpy(out.uv, m_DefaultUV, sizeof(m_DefaultUV));
+    }
+    return out;
+}
+
+static void M_BindProgram(const OUTPUT_QUAD *const r)
+{
+    Output_Shader_Bind(r->shader);
+}
 
 static void M_UploadVertices(OUTPUT_QUAD *const r)
 {
@@ -101,10 +131,12 @@ static void M_UploadVertices(OUTPUT_QUAD *const r)
             }
         }
     }
-    TRX_GL_Buffer_Bind(&r->surface_buffer);
-    TRX_GL_Buffer_Data(
-        &r->surface_buffer, sizeof(M_VERTEX) * 6 * r->repeat.x * r->repeat.y,
+
+    glBindBuffer(GL_ARRAY_BUFFER, r->vbo);
+    glBufferData(
+        GL_ARRAY_BUFFER, sizeof(M_VERTEX) * 6 * r->repeat.x * r->repeat.y,
         r->vertices, GL_STATIC_DRAW);
+    TRX_GL_CheckError();
 }
 
 OUTPUT_QUAD *Output_Quad_Create(void)
@@ -122,65 +154,55 @@ OUTPUT_QUAD *Output_Quad_Create(void)
 
     r->vertices = nullptr;
     r->vertex_count = 6;
-    r->vertex_format.initialized = false;
     r->use_external_texture = false;
     r->external_texture_id = 0;
 
-    TRX_GL_Buffer_Init(&r->surface_buffer, GL_ARRAY_BUFFER);
-    TRX_GL_Buffer_Bind(&r->surface_buffer);
-    TRX_GL_Buffer_Data(
-        &r->surface_buffer, sizeof(m_Vertices), m_Vertices, GL_STATIC_DRAW);
+    glGenBuffers(1, &r->vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, r->vbo);
+    glBufferData(
+        GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_STATIC_DRAW);
 
-    TRX_GL_VertexArray_Init(&r->vertex_format);
-    TRX_GL_VertexArray_Bind(&r->vertex_format);
-    TRX_GL_VertexArray_Attribute(
-        &r->vertex_format, 0, 2, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
-        offsetof(M_VERTEX, pos));
-    TRX_GL_VertexArray_Attribute(
-        &r->vertex_format, 1, 2, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
-        offsetof(M_VERTEX, uv));
+    glGenVertexArrays(1, &r->vao);
+    glBindVertexArray(r->vao);
+    glBindBuffer(GL_ARRAY_BUFFER, r->vbo);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(
+        0, 2, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        (void *)offsetof(M_VERTEX, pos));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(
+        1, 2, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
+        (void *)offsetof(M_VERTEX, uv));
     TRX_GL_CheckError();
 
-    TRX_GL_Texture_Init(&r->surface_texture, GL_TEXTURE_2D);
+    glGenTextures(1, &r->texture);
+    TRX_GL_CheckError();
 
-    TRX_GL_Program_Init(&r->program);
-    TRX_GL_Program_AttachShader(&r->program, GL_VERTEX_SHADER, "2d.glsl");
-    TRX_GL_Program_AttachShader(&r->program, GL_FRAGMENT_SHADER, "2d.glsl");
-    TRX_GL_Program_FragmentData(&r->program, "outColor");
-    TRX_GL_Program_Link(&r->program);
+    r->shader = Output_Shader_Create("2d.glsl");
 
-    struct {
-        M_UNIFORM loc;
-        const char *name;
-    } uniforms[] = {
-        { M_UNIFORM_TEXTURE_MAIN, "uTexMain" },
-        { M_UNIFORM_TEXTURE_SIZE, "uTexSize" },
-        { M_UNIFORM_EFFECT, "uEffect" },
-        { M_UNIFORM_OPACITY, "uOpacity" },
-        { M_UNIFORM_BRIGHTNESS_SCALE, "uBrightnessScale" },
-        { M_UNIFORM_FIT_MODE, "uFitMode" },
-        { M_UNIFORM_SRC_ASPECT, "uSrcAspect" },
-        { -1, nullptr },
-    };
-    for (int32_t i = 0; uniforms[i].name != nullptr; i++) {
-        r->loc[uniforms[i].loc] =
-            TRX_GL_Program_UniformLocation(&r->program, uniforms[i].name);
-        TRX_GL_CheckError();
-    }
+    r->loc[M_UNIFORM_TEXTURE_MAIN] =
+        Output_Shader_LookupUniform(r->shader, "uTexMain");
+    r->loc[M_UNIFORM_TEXTURE_SIZE] =
+        Output_Shader_LookupUniform(r->shader, "uTexSize");
+    r->loc[M_UNIFORM_EFFECT] =
+        Output_Shader_LookupUniform(r->shader, "uEffect");
+    r->loc[M_UNIFORM_OPACITY] =
+        Output_Shader_LookupUniform(r->shader, "uOpacity");
+    r->loc[M_UNIFORM_BRIGHTNESS_SCALE] =
+        Output_Shader_LookupUniform(r->shader, "uBrightnessScale");
+    r->loc[M_UNIFORM_FIT_MODE] =
+        Output_Shader_LookupUniform(r->shader, "uFitMode");
+    r->loc[M_UNIFORM_SRC_ASPECT] =
+        Output_Shader_LookupUniform(r->shader, "uSrcAspect");
 
-    TRX_GL_Program_Bind(&r->program);
-    TRX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_TEXTURE_MAIN], 0);
-    TRX_GL_Program_Uniform4f(
-        &r->program, r->loc[M_UNIFORM_TEXTURE_SIZE], 0.0f, 0.0f, 1.0f, 1.0f);
-    TRX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
-    TRX_GL_Program_Uniform1f(
-        &r->program, r->loc[M_UNIFORM_OPACITY], r->opacity);
-    TRX_GL_Program_Uniform1f(
-        &r->program, r->loc[M_UNIFORM_BRIGHTNESS_SCALE], r->brightness_scale);
-    TRX_GL_Program_Uniform1i(
-        &r->program, r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
-    TRX_GL_Program_Uniform1f(
-        &r->program, r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
+    M_BindProgram(r);
+    glUniform1i(r->loc[M_UNIFORM_TEXTURE_MAIN], 0);
+    glUniform4f(r->loc[M_UNIFORM_TEXTURE_SIZE], 0.0f, 0.0f, 1.0f, 1.0f);
+    glUniform1i(r->loc[M_UNIFORM_EFFECT], r->effect);
+    glUniform1f(r->loc[M_UNIFORM_OPACITY], r->opacity);
+    glUniform1f(r->loc[M_UNIFORM_BRIGHTNESS_SCALE], r->brightness_scale);
+    glUniform1i(r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
+    glUniform1f(r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
     TRX_GL_CheckError();
 
     return r;
@@ -190,22 +212,35 @@ void Output_Quad_Destroy(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
 
-    TRX_GL_VertexArray_Close(&r->vertex_format);
-    TRX_GL_Buffer_Close(&r->surface_buffer);
-    TRX_GL_Texture_Close(&r->surface_texture);
-    TRX_GL_Program_Close(&r->program);
+    if (r->vao != 0) {
+        glDeleteVertexArrays(1, &r->vao);
+    }
+    if (r->vbo != 0) {
+        glDeleteBuffers(1, &r->vbo);
+    }
+    if (r->texture != 0) {
+        glDeleteTextures(1, &r->texture);
+    }
+    TRX_GL_CheckError();
+
+    if (r->shader != nullptr) {
+        Output_Shader_Free(r->shader);
+    }
     Memory_FreePointer(&r->vertices);
     Memory_Free(r);
 }
 
 void Output_Quad_Upload(
-    OUTPUT_QUAD *const r, TRX_GL_2D_SURFACE_DESC *const desc,
+    OUTPUT_QUAD *const r, const OUTPUT_QUAD_SURFACE_DESC *const desc,
     const uint8_t *const data)
 {
     ASSERT(r != nullptr);
 
+    const OUTPUT_QUAD_SURFACE_DESC normalized_desc = M_NormalizeDesc(desc);
+
     bool reupload_vert = false;
-    if (memcmp(r->desc.uv, desc->uv, sizeof(desc->uv)) != 0) {
+    if (memcmp(r->desc.uv, normalized_desc.uv, sizeof(normalized_desc.uv))
+        != 0) {
         reupload_vert = true;
     }
     if (!r->ready) {
@@ -213,19 +248,20 @@ void Output_Quad_Upload(
     }
 
     glActiveTexture(GL_TEXTURE0);
-    TRX_GL_Texture_Bind(&r->surface_texture);
+    glBindTexture(GL_TEXTURE_2D, r->texture);
 
-    // update buffer if the size is unchanged, otherwise create a new one
-    if (r->desc.width != desc->width || r->desc.height != desc->height
-        || r->desc.tex_format != desc->tex_format
-        || r->desc.tex_type != desc->tex_type) {
+    if (r->desc.width != normalized_desc.width
+        || r->desc.height != normalized_desc.height
+        || r->desc.tex_format != normalized_desc.tex_format
+        || r->desc.tex_type != normalized_desc.tex_type) {
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         TRX_GL_CheckError();
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         TRX_GL_CheckError();
         glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA, desc->width, desc->height, 0,
-            desc->tex_format, desc->tex_type, data);
+            GL_TEXTURE_2D, 0, GL_RGBA, normalized_desc.width,
+            normalized_desc.height, 0, normalized_desc.tex_format,
+            normalized_desc.tex_type, data);
         TRX_GL_CheckError();
     } else {
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -233,13 +269,14 @@ void Output_Quad_Upload(
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         TRX_GL_CheckError();
         glTexSubImage2D(
-            GL_TEXTURE_2D, 0, 0, 0, desc->width, desc->height, desc->tex_format,
-            desc->tex_type, data);
+            GL_TEXTURE_2D, 0, 0, 0, normalized_desc.width,
+            normalized_desc.height, normalized_desc.tex_format,
+            normalized_desc.tex_type, data);
         TRX_GL_CheckError();
     }
 
     r->ready = true;
-    r->desc = *desc;
+    r->desc = normalized_desc;
     r->use_external_texture = false;
     r->external_texture_id = 0;
     if (reupload_vert) {
@@ -257,17 +294,17 @@ void Output_Quad_SetExternalTexture(
 
     const float v0 = flip_y ? 1.0f : 0.0f;
     const float v1 = flip_y ? 0.0f : 1.0f;
-    TRX_GL_2D_SURFACE_DESC desc = {
+    const OUTPUT_QUAD_SURFACE_DESC desc = {
         .width = width,
         .height = height,
         .bit_count = 32,
         .tex_format = GL_RGBA,
         .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
         .uv = {
-            { 0.0f, v0 },
-            { 1.0f, v0 },
-            { 1.0f, v1 },
-            { 0.0f, v1 },
+            { .u = 0.0f, .v = v0 },
+            { .u = 1.0f, .v = v0 },
+            { .u = 1.0f, .v = v1 },
+            { .u = 0.0f, .v = v1 },
         },
         .pitch = width * 4,
     };
@@ -292,16 +329,15 @@ void Output_Quad_SetTextureSize(
     OUTPUT_QUAD *const r, const OUTPUT_QUAD_TEXTURE_SIZE *const size)
 {
     ASSERT(r != nullptr);
-    TRX_GL_Program_Bind(&r->program);
+    M_BindProgram(r);
     if (size == nullptr) {
-        TRX_GL_Program_Uniform4f(
-            &r->program, r->loc[M_UNIFORM_TEXTURE_SIZE], 0.0f, 0.0f, 1.0f,
-            1.0f);
+        glUniform4f(r->loc[M_UNIFORM_TEXTURE_SIZE], 0.0f, 0.0f, 1.0f, 1.0f);
     } else {
-        TRX_GL_Program_Uniform4f(
-            &r->program, r->loc[M_UNIFORM_TEXTURE_SIZE], size->x0, size->y0,
-            size->x1, size->y1);
+        glUniform4f(
+            r->loc[M_UNIFORM_TEXTURE_SIZE], size->x0, size->y0, size->x1,
+            size->y1);
     }
+    TRX_GL_CheckError();
 }
 
 void Output_Quad_SetRepeat(
@@ -321,8 +357,9 @@ void Output_Quad_SetEffect(OUTPUT_QUAD *const r, const uint32_t effect)
     ASSERT(r != nullptr);
 
     if (r->effect != effect) {
-        TRX_GL_Program_Bind(&r->program);
-        TRX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], effect);
+        M_BindProgram(r);
+        glUniform1i(r->loc[M_UNIFORM_EFFECT], effect);
+        TRX_GL_CheckError();
         r->effect = effect;
     }
 }
@@ -332,9 +369,9 @@ void Output_Quad_SetOpacity(OUTPUT_QUAD *const r, const float opacity)
     ASSERT(r != nullptr);
 
     if (r->opacity != opacity) {
-        TRX_GL_Program_Bind(&r->program);
-        TRX_GL_Program_Uniform1f(
-            &r->program, r->loc[M_UNIFORM_OPACITY], opacity);
+        M_BindProgram(r);
+        glUniform1f(r->loc[M_UNIFORM_OPACITY], opacity);
+        TRX_GL_CheckError();
         r->opacity = opacity;
     }
 }
@@ -345,9 +382,9 @@ void Output_Quad_SetBrightnessScale(
     ASSERT(r != nullptr);
 
     if (r->brightness_scale != brightness_scale) {
-        TRX_GL_Program_Bind(&r->program);
-        TRX_GL_Program_Uniform1f(
-            &r->program, r->loc[M_UNIFORM_BRIGHTNESS_SCALE], brightness_scale);
+        M_BindProgram(r);
+        glUniform1f(r->loc[M_UNIFORM_BRIGHTNESS_SCALE], brightness_scale);
+        TRX_GL_CheckError();
         r->brightness_scale = brightness_scale;
     }
 }
@@ -370,11 +407,10 @@ void Output_Quad_SetFit(
     r->fit_mode = fit_mode;
     r->src_aspect = src_aspect;
 
-    TRX_GL_Program_Bind(&r->program);
-    TRX_GL_Program_Uniform1i(
-        &r->program, r->loc[M_UNIFORM_FIT_MODE], (int32_t)fit_mode);
-    TRX_GL_Program_Uniform1f(
-        &r->program, r->loc[M_UNIFORM_SRC_ASPECT], src_aspect);
+    M_BindProgram(r);
+    glUniform1i(r->loc[M_UNIFORM_FIT_MODE], (int32_t)fit_mode);
+    glUniform1f(r->loc[M_UNIFORM_SRC_ASPECT], src_aspect);
+    TRX_GL_CheckError();
 }
 
 void Output_Quad_ClearFit(OUTPUT_QUAD *const r)
@@ -386,28 +422,26 @@ void Output_Quad_ClearFit(OUTPUT_QUAD *const r)
 
     r->fit_mode = OUTPUT_QUAD_FIT_STRETCH;
     r->src_aspect = 1.0f;
-    TRX_GL_Program_Bind(&r->program);
-    TRX_GL_Program_Uniform1i(
-        &r->program, r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
-    TRX_GL_Program_Uniform1f(
-        &r->program, r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
+    M_BindProgram(r);
+    glUniform1i(r->loc[M_UNIFORM_FIT_MODE], (int32_t)r->fit_mode);
+    glUniform1f(r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
+    TRX_GL_CheckError();
 }
 
 void Output_Quad_Render(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
 
-    TRX_GL_Program_Bind(&r->program);
-
-    TRX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
-    TRX_GL_Buffer_Bind(&r->surface_buffer);
-    TRX_GL_VertexArray_Bind(&r->vertex_format);
+    M_BindProgram(r);
+    glUniform1i(r->loc[M_UNIFORM_EFFECT], r->effect);
+    glBindVertexArray(r->vao);
+    glBindBuffer(GL_ARRAY_BUFFER, r->vbo);
 
     glActiveTexture(GL_TEXTURE0);
     if (r->use_external_texture) {
         glBindTexture(GL_TEXTURE_2D, r->external_texture_id);
     } else {
-        TRX_GL_Texture_Bind(&r->surface_texture);
+        glBindTexture(GL_TEXTURE_2D, r->texture);
     }
 
     const GLboolean was_blend_enabled = glIsEnabled(GL_BLEND);
@@ -425,6 +459,7 @@ void Output_Quad_Render(OUTPUT_QUAD *const r)
     }
 
     glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
+
     glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     if (was_depth_test_enabled) {
         glEnable(GL_DEPTH_TEST);
@@ -439,16 +474,16 @@ void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
 
-    TRX_GL_Program_Bind(&r->program);
-    TRX_GL_Program_Uniform1i(&r->program, r->loc[M_UNIFORM_EFFECT], r->effect);
-    TRX_GL_Buffer_Bind(&r->surface_buffer);
-    TRX_GL_VertexArray_Bind(&r->vertex_format);
+    M_BindProgram(r);
+    glUniform1i(r->loc[M_UNIFORM_EFFECT], r->effect);
+    glBindVertexArray(r->vao);
+    glBindBuffer(GL_ARRAY_BUFFER, r->vbo);
 
     glActiveTexture(GL_TEXTURE0);
     if (r->use_external_texture) {
         glBindTexture(GL_TEXTURE_2D, r->external_texture_id);
     } else {
-        TRX_GL_Texture_Bind(&r->surface_texture);
+        glBindTexture(GL_TEXTURE_2D, r->texture);
     }
 
     const GLboolean was_blend_enabled = glIsEnabled(GL_BLEND);

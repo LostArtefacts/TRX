@@ -16,6 +16,7 @@
 #include <trx/game/output/state.h>
 #include <trx/game/output/textures.h>
 #include <trx/gl/context.h>
+#include <trx/gl/gl/texture.h>
 #include <trx/gl/gl/utils.h>
 #include <trx/log.h>
 #include <trx/memory.h>
@@ -125,7 +126,7 @@ typedef struct {
         bool uploaded;
         int32_t texture_idx;
         int32_t tex_page;
-        TRX_GL_2D_SURFACE_DESC desc;
+        OUTPUT_QUAD_SURFACE_DESC desc;
         OUTPUT_TEXTURE_SIZE atlas_size;
     } pattern;
 } M_PRIV;
@@ -613,7 +614,7 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
         return false;
     }
 
-    const TRX_GL_2D_SURFACE_DESC desc = {
+    const OUTPUT_QUAD_SURFACE_DESC desc = {
         .width = TEXTURE_PAGE_WIDTH,
         .height = TEXTURE_PAGE_HEIGHT,
         .bit_count = 32,
@@ -643,7 +644,7 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
     if (!p->pattern.uploaded || p->pattern.texture_idx != texture_idx
         || p->pattern.tex_page != texture->tex_page
         || memcmp(&p->pattern.desc, &desc, sizeof(desc)) != 0) {
-        TRX_GL_2D_SURFACE_DESC tmp_desc = desc;
+        OUTPUT_QUAD_SURFACE_DESC tmp_desc = desc;
         Output_Quad_Upload(p->pattern.renderer, &tmp_desc, (uint8_t *)page);
         p->pattern.uploaded = true;
         p->pattern.texture_idx = texture_idx;
