@@ -1,7 +1,7 @@
 #include <trx/game/ui/dialogs/photo_mode.h>
 
 #include <trx/config.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/output/draw.h>
 #include <trx/game/ui/elements/frame.h>

@@ -1,7 +1,7 @@
 #include <trx/config/dynamic_enum.h>
 
 #include <trx/debug.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/vector.h>

@@ -2,7 +2,7 @@
 
 #include <trx/enum_map.h>
 #include <trx/game/clock.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
 #include <trx/strings.h>

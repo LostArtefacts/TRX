@@ -8,8 +8,8 @@
 #include <trx/game/fmv.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string.h>
-#include <trx/game/game_string_manager.h>
+#include <trx/game/game_strings/entries.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara/pose.h>

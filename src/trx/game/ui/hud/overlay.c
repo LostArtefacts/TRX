@@ -4,7 +4,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/ui.h>

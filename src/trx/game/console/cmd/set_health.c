@@ -1,7 +1,7 @@
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/const.h>
 #include <trx/game/objects/common.h>

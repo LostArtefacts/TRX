@@ -2,7 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/savegame.h>
 #include <trx/game/ui.h>
 #include <trx/memory.h>

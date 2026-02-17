@@ -1,8 +1,8 @@
 #include <trx/config.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
-#include <trx/game/game_string.h>
-#include <trx/game/game_string_manager.h>
+#include <trx/game/game_strings/entries.h>
+#include <trx/game/game_strings/manager.h>
 
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {

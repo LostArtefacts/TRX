@@ -2,7 +2,7 @@
 #include <trx/game/console/registry.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/items.h>
 #include <trx/game/lara/cheat.h>
 #include <trx/game/lara/common.h>

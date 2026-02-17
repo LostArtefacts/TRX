@@ -3,7 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/console/internal.h>
 #include <trx/game/console/registry.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/ui.h>
 #include <trx/memory.h>
 #include <trx/strings.h>

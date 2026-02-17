@@ -1,6 +1,6 @@
 #pragma once
 #include <trx/game/console/enum.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 
 typedef struct {
     const struct CONSOLE_COMMAND *cmd;

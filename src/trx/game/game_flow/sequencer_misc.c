@@ -4,7 +4,7 @@
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/sequencer.h>
 #include <trx/game/game_flow/vars.h>
-#include <trx/game/game_string_table.h>
+#include <trx/game/game_strings/table.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/control.h>
 #include <trx/game/level.h>

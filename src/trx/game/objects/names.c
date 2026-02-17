@@ -1,7 +1,7 @@
 #include <trx/game/objects/names.h>
 
 #include <trx/debug.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/vars.h>
 #include <trx/memory.h>

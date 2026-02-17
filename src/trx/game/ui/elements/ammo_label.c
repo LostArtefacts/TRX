@@ -1,7 +1,7 @@
 #include <trx/game/ui/elements/ammo_label.h>
 
 #include <trx/game/game.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/ui/elements/label.h>

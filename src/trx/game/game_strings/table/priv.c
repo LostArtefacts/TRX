@@ -1,4 +1,4 @@
-#include <trx/game/game_string_table/priv.h>
+#include <trx/game/game_strings/table/priv.h>
 
 #include <trx/filesystem.h>
 #include <trx/log.h>

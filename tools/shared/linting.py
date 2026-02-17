@@ -127,12 +127,6 @@ def get_project_paths(context: LintContext) -> dict[str, Path]:
     return {project: context.src_dir for project in PROJECTS}
 
 
-def get_project_game_strings_path(
-    context: LintContext,
-) -> dict[str, list[Path]]:
-    return list(CommonPaths.src_dir.rglob("**/game_string.def"))[0]
-
-
 def lint_game_flow_schema(context: LintContext):
     schema_path = CommonPaths.docs_dir / "gameflow.schema.json"
     if not schema_path.exists():
