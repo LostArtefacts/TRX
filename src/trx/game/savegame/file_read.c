@@ -3,6 +3,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/carrier.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
@@ -18,7 +19,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
-#include <trx/game/weather_fx.h>
 #include <trx/json/util/read_io.h>
 #include <trx/version.h>
 
@@ -952,9 +952,9 @@ bool SG_File_LoadMisc(JSON_READ_IO *const io)
         if (M_OPTIONAL(JSON_READ(io, "weather_type", &weather_type))) {
             if (weather_type >= (int32_t)WEATHER_NONE
                 && weather_type <= (int32_t)WEATHER_SNOW) {
-                WeatherFX_SetWeather((WEATHER_TYPE)weather_type);
+                FX_Weather_SetWeather((WEATHER_TYPE)weather_type);
             } else {
-                WeatherFX_SetWeather(WEATHER_NONE);
+                FX_Weather_SetWeather(WEATHER_NONE);
             }
         }
     }

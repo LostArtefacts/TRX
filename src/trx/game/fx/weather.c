@@ -1,4 +1,4 @@
-#include <trx/game/weather_fx.h>
+#include <trx/game/fx/weather.h>
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
@@ -372,22 +372,22 @@ static void M_DrawSnow(void)
     }
 }
 
-void WeatherFX_Init(void)
+void FX_Weather_Init(void)
 {
     M_ClearWeather();
 }
 
-WEATHER_TYPE WeatherFX_GetWeather(void)
+WEATHER_TYPE FX_Weather_GetWeather(void)
 {
     return m_WeatherType;
 }
 
-void WeatherFX_SetWeather(const WEATHER_TYPE weather_type)
+void FX_Weather_SetWeather(const WEATHER_TYPE weather_type)
 {
     m_WeatherType = weather_type;
 }
 
-void WeatherFX_Update(void)
+void FX_Weather_Update(void)
 {
     if (!g_Config.visuals.enable_weather) {
         return;
@@ -400,7 +400,7 @@ void WeatherFX_Update(void)
     }
 }
 
-void WeatherFX_Draw(void)
+void FX_Weather_Draw(void)
 {
     if (!g_Config.visuals.enable_weather) {
         return;

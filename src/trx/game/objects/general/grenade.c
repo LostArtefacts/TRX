@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/water.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
@@ -10,7 +11,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/stats.h>
-#include <trx/game/water_fx.h>
 #include <trx/utils.h>
 #include <trx/version.h>
 
@@ -280,7 +280,7 @@ static void M_Control(const int16_t item_num)
                 -2048 - ((int32_t)item->fall_speed << 5);
             const int32_t middle_y_vel =
                 -1024 - ((int32_t)item->fall_speed << 4);
-            WaterFX_SetupSplash(&(WATER_FX_SPLASH_SETUP) {
+            FX_Water_SetupSplash(&(FX_WATER_SPLASH_SETUP) {
                 .x = item->pos.x,
                 .y = new_room->max_ceiling,
                 .z = item->pos.z,

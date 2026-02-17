@@ -1,11 +1,11 @@
 #include <trx/game/sparks/spawners.h>
 
+#include <trx/game/fx/water.h>
 #include <trx/game/lara.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
-#include <trx/game/water_fx.h>
 
 void Sparks_TriggerBubble(
     const int32_t x, const int32_t y, const int32_t z, const int32_t size,
@@ -665,7 +665,7 @@ void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
     y = wh >> 6;
 
     const ROOM *const room = Room_Get(item->room_num);
-    WaterFX_SetupSplash(&(WATER_FX_SPLASH_SETUP) {
+    FX_Water_SetupSplash(&(FX_WATER_SPLASH_SETUP) {
         .x = item->pos.x,
         .y = room->max_ceiling,
         .z = item->pos.z,

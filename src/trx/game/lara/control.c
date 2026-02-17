@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/fx/water.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/gym.h>
@@ -17,7 +18,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
-#include <trx/game/water_fx.h>
 #include <trx/version.h>
 
 // clang-format off
@@ -369,7 +369,7 @@ static void M_UpdateEnvironment(void)
     lara_info->water_surface_dist = -water_height_diff;
 
     if (g_TRVersion == 3) {
-        WaterFX_WadeSplash(item, water_height, water_depth);
+        FX_Water_WadeSplash(item, water_height, water_depth);
     } else if (
         g_Config.gameplay.enable_wading
         && lara_info->water_status != LWS_CHEAT) {

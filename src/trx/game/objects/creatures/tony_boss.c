@@ -1,8 +1,8 @@
 #include <trx/game/carrier.h>
 #include <trx/game/creature.h>
+#include <trx/game/fx/explosion_ring.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/effects/explosion_ring_fx.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/pathing.h>
@@ -159,7 +159,7 @@ static void M_Explode(ITEM *const item)
         const int32_t x = item->pos.x + (Random_GetDraw() & 0x3FF) - 512;
         const int32_t y = item->pos.y - (Random_GetDraw() & 0x3FF) - 256;
         const int32_t z = item->pos.z + (Random_GetDraw() & 0x3FF) - 512;
-        EXPLOSION_RING *const ring = ExplosionRingFX_GetRing(p->ring_count);
+        FX_EXPLOSION_RING *const ring = ExplosionRingFX_GetRing(p->ring_count);
         if (ring != nullptr) {
             ring->pos.x = x;
             ring->pos.y = y;
@@ -296,7 +296,7 @@ static void M_Control(const int16_t item_num)
                 p->ring_count = 0;
 
                 for (int i = 0; i < 6; i++) {
-                    EXPLOSION_RING *const ring = ExplosionRingFX_GetRing(i);
+                    FX_EXPLOSION_RING *const ring = ExplosionRingFX_GetRing(i);
                     if (ring == nullptr) {
                         continue;
                     }

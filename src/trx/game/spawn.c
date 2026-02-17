@@ -2,6 +2,7 @@
 
 #include <trx/game/collision.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/water.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
@@ -13,7 +14,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/sparks/spawners.h>
-#include <trx/game/water_fx.h>
 #include <trx/version.h>
 
 static void M_ShootAtLara(EFFECT *const effect)
@@ -54,7 +54,7 @@ XYZ_32 Spawn_GetRayPos(
 void Spawn_Splash(const ITEM *const item)
 {
     if (g_TRVersion == 3) {
-        WaterFX_Splash(item);
+        FX_Water_Splash(item);
         return;
     }
 
@@ -163,7 +163,7 @@ int16_t Spawn_Blood(
 {
     if (g_TRVersion == 3) {
         if (Room_Get(room_num)->flags.underwater) {
-            WaterFX_TriggerUnderwaterBlood(
+            FX_Water_TriggerUnderwaterBlood(
                 (XYZ_32) { x, y, z }, Random_GetControl() & 7);
         } else {
             Sparks_TriggerBlood(
@@ -194,7 +194,7 @@ int16_t Spawn_BloodD(
 {
     if (g_TRVersion == 3) {
         if (Room_Get(room_num)->flags.underwater) {
-            WaterFX_TriggerUnderwaterBloodD(
+            FX_Water_TriggerUnderwaterBloodD(
                 (XYZ_32) { x, y + 64, z }, Random_GetDraw() & 7);
         } else {
             Sparks_TriggerBloodD(

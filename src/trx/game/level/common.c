@@ -2,7 +2,9 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
-#include <trx/game/footprint_fx.h>
+#include <trx/game/fx/footprint.h>
+#include <trx/game/fx/water.h>
+#include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/game_string_table.h>
 #include <trx/game/gym.h>
@@ -20,8 +22,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/ui.h>
-#include <trx/game/water_fx.h>
-#include <trx/game/weather_fx.h>
 #include <trx/log.h>
 
 void Level_Unload(void)
@@ -98,10 +98,10 @@ bool Level_Initialise(
 
     Effect_InitialiseArray();
     LOT_InitialiseArray();
-    WaterFX_Init();
-    WeatherFX_Init();
-    WeatherFX_SetWeather(level->weather_type);
-    FootprintFX_Init();
+    FX_Water_Init();
+    FX_Weather_Init();
+    FX_Weather_SetWeather(level->weather_type);
+    FX_Footprint_Init();
     Sparks_Init();
 
     Option_Reset();

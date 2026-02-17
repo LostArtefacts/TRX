@@ -6,7 +6,9 @@
 #include <trx/game/collision.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
-#include <trx/game/footprint_fx.h>
+#include <trx/game/fx/footprint.h>
+#include <trx/game/fx/water.h>
+#include <trx/game/fx/weather.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/interpolation.h>
@@ -17,8 +19,6 @@
 #include <trx/game/random.h>
 #include <trx/game/shell.h>
 #include <trx/game/sparks.h>
-#include <trx/game/water_fx.h>
-#include <trx/game/weather_fx.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
 #include <trx/version.h>
@@ -254,9 +254,9 @@ static void M_Control(void)
     Item_Control();
     Effect_Control();
     Sparks_Control();
-    WaterFX_Update();
-    WeatherFX_Update();
-    FootprintFX_Update();
+    FX_Water_Update();
+    FX_Weather_Update();
+    FX_Footprint_Update();
     Output_AnimateTextures(1);
     Lara_Hair_Control(true);
 }

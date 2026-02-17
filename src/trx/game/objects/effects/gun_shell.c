@@ -1,11 +1,11 @@
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/water.h>
 #include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
-#include <trx/game/water_fx.h>
 #include <trx/version.h>
 
 static void M_Control(const int16_t effect_num)
@@ -35,7 +35,7 @@ static void M_Control(const int16_t effect_num)
 
     const ROOM *const room = Room_Get(room_num);
     if (room->flags.underwater) {
-        WaterFX_SetupRipple(
+        FX_Water_SetupRipple(
             effect->pos.x, room->max_ceiling, effect->pos.z,
             -8 - (Random_GetControl() & 3), true);
         Effect_Kill(effect_num);
