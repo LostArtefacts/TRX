@@ -2006,6 +2006,9 @@
         },
         "trex_alpha": {
             "name": "T-Rex Priomh",
+        },
+        "raptor_emitter": {
+            "name": "\\{review}Sgaoiliche Raptor",
         }
     }
 }

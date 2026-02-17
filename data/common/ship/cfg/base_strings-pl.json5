@@ -1973,6 +1973,9 @@
         },
         "trex_alpha": {
             "name": "\\{review}T-Rex Alfa",
+        },
+        "raptor_emitter": {
+            "name": "\\{review}Emiter Raptora",
         }
     }
 }

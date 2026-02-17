@@ -25,7 +25,7 @@
 
 #define M_FNV_1A_BASE 14695981039346656037ULL
 #define M_FNV_1A_PRIME 1099511628211ULL
-#define M_CACHE_VERSION 3
+#define M_CACHE_VERSION 4
 #define M_CACHE_FILENAME "max_stats.cache.json"
 
 static LEVEL_MAX_STATS *m_Stats = nullptr;

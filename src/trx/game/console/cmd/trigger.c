@@ -89,7 +89,7 @@ static void M_ApplyTrigger(const int16_t item_num, const bool enable)
 
     if (enable) {
         item->flags |= IF_CODE_BITS;
-        item->timer = 0;
+        item->timer = 1;
         Item_AddActive(item_num);
         if (obj->intelligent) {
             item->status = IS_ACTIVE;

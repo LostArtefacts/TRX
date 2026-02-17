@@ -21,12 +21,8 @@ static uint8_t M_GetAIBit(const OBJECT_ID object_id)
     }
 }
 
-static void M_AssignAIPickups(void)
+static void M_AssignAIBits(void)
 {
-    if (g_TRVersion < 3) {
-        return;
-    }
-
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
         ITEM *const item = Item_Get(i);
@@ -81,7 +77,7 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
         Item_Initialise(i);
     }
 
-    M_AssignAIPickups();
+    M_AssignAIBits();
     Lara_State_Initialise();
 }
 
