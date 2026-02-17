@@ -4,8 +4,8 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/gl/buffer.h>
-#include <trx/gl/common.h>
 #include <trx/gl/context.h>
+#include <trx/gl/enum.h>
 #include <trx/gl/fbo.h>
 #include <trx/gl/program.h>
 #include <trx/gl/sampler.h>

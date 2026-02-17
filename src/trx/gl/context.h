@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trx/game/viewport.h>
-#include <trx/gl/common.h>
+#include <trx/gl/enum.h>
 #include <trx/gl/renderer.h>
 
 #include <stdint.h>

@@ -6,6 +6,7 @@
 #include <trx/game/input/common.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>
+#include <trx/game/screenshot.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/gl/common.h>
+#include <trx/gl/enum.h>
 
 #include <GL/glew.h>
 

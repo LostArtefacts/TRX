@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/general/flare_item.h>

@@ -3,10 +3,7 @@
 #include <trx/config/const.h>
 #include <trx/config/enum.h>
 #include <trx/core/colors.h>
-#include <trx/game/input.h>
-#include <trx/game/screenshot.h>
-#include <trx/game/sound/enum.h>
-#include <trx/gl/common.h>
+#include <trx/gl/enum.h>
 
 typedef struct {
     uint32_t time;

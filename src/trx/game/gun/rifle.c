@@ -9,6 +9,7 @@
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
+#include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>

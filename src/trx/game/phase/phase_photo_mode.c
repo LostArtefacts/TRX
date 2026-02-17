@@ -6,6 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/photo_mode.h>
+#include <trx/game/screenshot.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>

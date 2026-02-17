@@ -6,6 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>

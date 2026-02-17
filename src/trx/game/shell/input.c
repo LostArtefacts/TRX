@@ -6,7 +6,9 @@
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
 #include <trx/game/console/common.h>
+#include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/screenshot.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
 

@@ -1,5 +1,6 @@
 #include <trx/game/camera.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>

@@ -3,15 +3,6 @@
 #include <trx/config/types.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
-#include <trx/game/game_buf.h>
-#include <trx/game/game_flow/types.h>
-#include <trx/game/gun/types.h>
-#include <trx/game/input.h>
-#include <trx/game/lara/skin/types.h>
-#include <trx/game/lara/types.h>
-#include <trx/game/objects/ids.h>
-#include <trx/game/screenshot.h>
-#include <trx/game/ui/settings.h>
 
 #include <uthash.h>
 
@@ -54,6 +45,13 @@ static void M_ClearId2StrMap(M_ID_TO_STR_ENTRY **map)
     }
 }
 
+static __attribute__((destructor)) void M_Shutdown(void)
+{
+    M_ClearStr2IdMap(&m_Str2IdMap);
+    M_ClearId2StrMap(&m_Id2StrMap);
+    M_ClearId2StrMap(&m_Id2NameMap);
+}
+
 static void M_DefineStr2Id(
     M_STR_TO_ID_ENTRY **map, const char *const enum_type_name,
     const int32_t enum_value, const char *const str_value)
@@ -76,8 +74,8 @@ static void M_DefineId2Str(
     HASH_FIND_STR(*map, key, entry);
     if (entry != nullptr) {
         // The inverse lookup is already defined - do not override it.
-        // (This means that the first call to ENUM_MAP_DEFINE for a given enum
-        // value also determines what serializing it back to string will pick
+        // (This means that the first call to ENUM_MAP for a given enum value
+        // also determines what serializing it back to string will pick
         // in the event there are multiple aliases).
         return;
     }
@@ -138,13 +136,6 @@ const char *EnumMap_GetName(
     return M_Id2Str(&m_Id2NameMap, enum_type_name, enum_value);
 }
 
-void EnumMap_Shutdown(void)
-{
-    M_ClearStr2IdMap(&m_Str2IdMap);
-    M_ClearId2StrMap(&m_Id2StrMap);
-    M_ClearId2StrMap(&m_Id2NameMap);
-}
-
 VECTOR *EnumMap_ListValues(const char *const enum_type_name)
 {
     if (enum_type_name == nullptr) {
@@ -165,9 +156,4 @@ VECTOR *EnumMap_ListValues(const char *const enum_type_name)
         }
     }
     return results;
-}
-
-void EnumMap_Init(void)
-{
-#include <trx/game/enum_map.def>
 }

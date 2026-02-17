@@ -15,6 +15,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/gun.h>
+#include <trx/game/input.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/lara/skin.h>
@@ -128,7 +129,6 @@ static void M_InitModules(void)
 
     GameString_Init();
     GameStringManager_Init();
-    EnumMap_Init();
     UI_Init();
     Overlay_Init();
     GameEvent_Init();
@@ -172,7 +172,6 @@ static void M_ShutdownModules(void)
     GameBuf_Shutdown();
     Catalog_Shutdown();
 
-    EnumMap_Shutdown();
     Log_Shutdown();
 }
 

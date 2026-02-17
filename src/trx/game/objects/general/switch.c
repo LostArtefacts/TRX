@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/const.h>
+#include <trx/game/input.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
