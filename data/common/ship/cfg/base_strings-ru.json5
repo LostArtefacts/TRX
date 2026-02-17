@@ -2002,6 +2002,9 @@
         },
         "trex_alpha": {
             "name": "\\{review}Ти-Рекс Альфа",
+        },
+        "raptor_emitter": {
+            "name": "\\{review}Излучатель Раптора",
         }
     }
 }

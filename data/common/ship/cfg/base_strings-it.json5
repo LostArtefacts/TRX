@@ -2024,6 +2024,9 @@
         },
         "trex_alpha": {
             "name": "\\{review}T-Rex Alpha",
+        },
+        "raptor_emitter": {
+            "name": "\\{review}Emettitore Raptor",
         }
     }
 }

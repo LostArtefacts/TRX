@@ -1522,6 +1522,9 @@
         "electric_fence": {
             "name": "Electric Fence",
         },
+        "raptor_emitter": {
+            "name": "Raptor Emitter",
+        },
         "bat_emitter": {
             "name": "Bat Emitter",
         },

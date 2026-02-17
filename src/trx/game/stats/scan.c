@@ -108,6 +108,12 @@ static void M_CheckTriggers(
 
             const ITEM *const item = Item_Get(item_num);
             switch (item->object_id) {
+            case O_RAPTOR_EMITTER:
+                for (int32_t i = 0; i < sector->trigger->timer; i++) {
+                    M_IncludeKillableItem(stats, item_num);
+                }
+                break;
+
             case O_PIERRE:
                 // Add Pierre pickup and kills if oneshot
                 if (sector->trigger->one_shot) {
