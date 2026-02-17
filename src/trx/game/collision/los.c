@@ -1,4 +1,4 @@
-#include <trx/game/los.h>
+#include <trx/game/collision/los.h>
 
 #include <trx/game/items.h>
 #include <trx/game/objects.h>

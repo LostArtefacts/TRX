@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/collision/los.h>
 #include <trx/game/game.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/misc.h>
@@ -13,7 +14,6 @@
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
-#include <trx/game/los.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/random.h>

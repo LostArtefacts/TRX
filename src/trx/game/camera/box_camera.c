@@ -1,8 +1,8 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/collision/los.h>
 #include <trx/game/lara.h>
-#include <trx/game/los.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 

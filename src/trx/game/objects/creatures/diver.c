@@ -1,9 +1,9 @@
+#include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/const.h>
-#include <trx/game/los.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
