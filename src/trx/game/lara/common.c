@@ -919,7 +919,7 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
             lara_info->gun_status = LGS_HANDS_BUSY;
         }
 
-        lara_info->interact_target.is_moving = true;
+        lara_info->interact_target.is_moving = lara_on_land;
         lara_info->interact_target.move_count = 0;
     }
 
