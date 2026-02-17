@@ -1,7 +1,7 @@
 #include <trx/game/ui/dialogs/play_any_level.h>
 
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/base_passport.h>
 #include <trx/game/ui/elements/anchor.h>

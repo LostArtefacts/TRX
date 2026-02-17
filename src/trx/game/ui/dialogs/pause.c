@@ -1,6 +1,6 @@
 #include <trx/game/ui/dialogs/pause.h>
 
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/elements/label.h>

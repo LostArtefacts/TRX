@@ -4,7 +4,7 @@
 #include <trx/game/clock/common.h>
 #include <trx/game/clock/timer.h>
 #include <trx/game/console/common.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/utils.h>
 
 #include <math.h>

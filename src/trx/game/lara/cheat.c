@@ -3,7 +3,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
 #include <trx/game/game.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>

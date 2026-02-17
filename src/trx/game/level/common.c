@@ -6,7 +6,7 @@
 #include <trx/game/fx/water.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
-#include <trx/game/game_string_table.h>
+#include <trx/game/game_strings/table.h>
 #include <trx/game/gym.h>
 #include <trx/game/lara.h>
 #include <trx/game/level.h>

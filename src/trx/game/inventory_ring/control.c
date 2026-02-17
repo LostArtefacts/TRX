@@ -5,7 +5,7 @@
 #include <trx/game/console.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>

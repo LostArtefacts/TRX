@@ -1,9 +1,9 @@
-#include <trx/game/game_string_manager.h>
+#include <trx/game/game_strings/manager.h>
 
 #include <trx/debug.h>
 #include <trx/filesystem.h>
 #include <trx/game/game_flow/common.h>
-#include <trx/game/game_string_table.h>
+#include <trx/game/game_strings/table.h>
 #include <trx/json.h>
 #include <trx/memory.h>
 #include <trx/strings.h>

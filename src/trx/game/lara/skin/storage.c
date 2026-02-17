@@ -4,7 +4,7 @@
 #include <trx/debug.h>
 #include <trx/enum_map.h>
 #include <trx/game/catalog.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/lara.h>
 #include <trx/game/shell.h>
 #include <trx/json/util/file.h>

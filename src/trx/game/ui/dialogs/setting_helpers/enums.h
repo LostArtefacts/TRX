@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 
 typedef struct {
     int32_t value;

@@ -1,5 +1,5 @@
 #include <trx/config.h>
-#include <trx/game/game_string_manager.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>

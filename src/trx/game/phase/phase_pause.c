@@ -3,7 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/const.h>
 #include <trx/game/fader.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>

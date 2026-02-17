@@ -1,7 +1,7 @@
 #include <trx/config.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/output.h>
 #include <trx/game/screenshot.h>
 #include <trx/strings.h>

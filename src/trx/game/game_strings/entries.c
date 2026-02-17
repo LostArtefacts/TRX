@@ -1,4 +1,4 @@
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 
 #include <trx/enum_map.h>
 #include <trx/memory.h>
@@ -21,7 +21,7 @@ static M_STRING_ENTRY *m_StringTable = nullptr;
 
 void GameString_Init(void)
 {
-#include <trx/game/game_string.def>
+#include <trx/game/game_strings/entries.def>
 }
 
 void GameString_Shutdown(void)

@@ -2,7 +2,7 @@
 
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring.h>

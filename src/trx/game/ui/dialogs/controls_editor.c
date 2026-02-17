@@ -2,7 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/const.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/shell.h>

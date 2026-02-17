@@ -3,7 +3,7 @@
 // A tab switch UI element for navigating between multiple tabs via left/right
 // input.
 
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/scrollable.h>
 

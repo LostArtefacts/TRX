@@ -1,5 +1,5 @@
 #include <trx/config.h>
-#include <trx/game/game_string_manager.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/ui/dialogs/setting_helpers/handlers.h>
 #include <trx/memory.h>
 #include <trx/strings.h>

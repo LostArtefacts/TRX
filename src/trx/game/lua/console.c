@@ -1,6 +1,6 @@
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
 #include <trx/log.h>
 #include <trx/strings.h>

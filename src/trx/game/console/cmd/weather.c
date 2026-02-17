@@ -4,7 +4,7 @@
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/memory.h>
 #include <trx/strings.h>
 #include <trx/vector.h>

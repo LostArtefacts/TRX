@@ -2,7 +2,7 @@
 
 #include <trx/config/option.h>
 #include <trx/config/types.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/text.h>
 #include <trx/game/ui/elements/tab_switch.h>

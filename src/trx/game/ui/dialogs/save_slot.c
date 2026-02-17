@@ -1,6 +1,6 @@
 #include <trx/game/ui/dialogs/save_slot.h>
 
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/savegame.h>
 #include <trx/game/ui/common.h>

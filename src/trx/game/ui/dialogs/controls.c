@@ -1,7 +1,7 @@
 #include <trx/game/ui/dialogs/controls.h>
 
 #include <trx/config.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/ui/dialogs/controls_backend.h>
 #include <trx/game/ui/dialogs/controls_editor.h>

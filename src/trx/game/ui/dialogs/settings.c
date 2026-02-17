@@ -4,7 +4,7 @@
 #include <trx/config/dynamic_enum.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
-#include <trx/game/game_string_manager.h>
+#include <trx/game/game_strings/manager.h>
 #include <trx/game/input.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/dialogs/color_editor.h>

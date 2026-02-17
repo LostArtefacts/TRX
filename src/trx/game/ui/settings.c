@@ -1,7 +1,7 @@
 #include <trx/game/ui/settings.h>
 
 #include <trx/config.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/shell.h>
 #include <trx/json/util/file.h>
 #include <trx/json/util/read_io.h>

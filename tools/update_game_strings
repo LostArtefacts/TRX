@@ -202,7 +202,7 @@ class RunContext:
             if path.suffix in [".c", ".h", ".def"]
         ]
         self.game_strings_def_path = (
-            CommonPaths.src_dir / "game/game_string.def"
+            CommonPaths.src_dir / "game/game_strings/entries.def"
         )
         self.game_strings_dict = get_strings_map(self.game_strings_def_path)
         self.used_game_strings = sum(
@@ -387,7 +387,9 @@ class BlankResolver(BaseResolver):
 
 @step
 def remove_unused_defines(ctx: RunContext) -> None:
-    """Remove any GS_DEFINE() macros from the game_string.def that aren't used."""
+    """Remove any GS_DEFINE() macros from the game_strings/entries.def that
+    aren't used.
+    """
     used = {key for _, key in ctx.used_game_strings}
     orig = ctx.game_strings_def_path.read_text().splitlines(keepends=True)
     filtered: list[str] = []

@@ -4,7 +4,7 @@
 #include <trx/game/cutscene.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string_table.h>
+#include <trx/game/game_strings/table.h>
 #include <trx/game/lara.h>
 #include <trx/game/level.h>
 #include <trx/game/music.h>

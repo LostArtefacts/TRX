@@ -1,8 +1,8 @@
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
-#include <trx/game/game_string.h>
-#include <trx/game/game_string_table.h>
-#include <trx/game/game_string_table/priv.h>
+#include <trx/game/game_strings/entries.h>
+#include <trx/game/game_strings/table.h>
+#include <trx/game/game_strings/table/priv.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/shell.h>
 #include <trx/log.h>

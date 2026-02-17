@@ -1,6 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
-#include <trx/game/game_string.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input/backends/base.h>
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
