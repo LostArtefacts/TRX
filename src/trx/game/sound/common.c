@@ -1,7 +1,7 @@
 #include <trx/game/sound/common.h>
 
+#include <trx/av/audio.h>
 #include <trx/config.h>
-#include <trx/engine/audio.h>
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara.h>

@@ -1,7 +1,7 @@
 #include <trx/gfx/screenshot.h>
 
+#include <trx/av/image.h>
 #include <trx/debug.h>
-#include <trx/engine/image.h>
 #include <trx/gfx/gl/utils.h>
 #include <trx/memory.h>
 

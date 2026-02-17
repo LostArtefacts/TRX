@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <trx/engine/video.h>
+#include <trx/av/video.h>
 
 #include <trx/filesystem.h>
 #include <trx/log.h>

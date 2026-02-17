@@ -1,4 +1,4 @@
-#include <trx/engine/image.h>
+#include <trx/av/image.h>
 
 #include <trx/debug.h>
 #include <trx/filesystem.h>

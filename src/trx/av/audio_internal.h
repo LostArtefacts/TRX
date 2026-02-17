@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/engine/audio.h>
+#include <trx/av/audio.h>
 
 #include <SDL2/SDL_audio.h>
 #include <libavformat/avformat.h>
