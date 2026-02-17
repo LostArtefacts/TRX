@@ -700,7 +700,6 @@ common_sources = [
   'trx/game/ui/settings.c',
   'trx/game/ui/text.c',
   'trx/game/viewport.c',
-  'trx/gl/2d/2d_surface.c',
   'trx/gl/context.c',
   'trx/gl/gl/buffer.c',
   'trx/gl/gl/fbo.c',

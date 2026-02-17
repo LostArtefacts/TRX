@@ -1,18 +1,27 @@
 #pragma once
 
-#include <trx/gl/2d/2d_surface.h>
-#include <trx/gl/config.h>
-#include <trx/gl/gl/buffer.h>
-#include <trx/gl/gl/program.h>
-#include <trx/gl/gl/texture.h>
-#include <trx/gl/gl/vertex_array.h>
-
+#include <GL/glew.h>
 #include <stdint.h>
 
 // Textured screen-space quad renderer used by output code paths such as FMV
 // presentation and overlay composition. It owns GL state/resources needed to
 // upload 2D image data or bind external textures, then draw them with optional
 // fit/repeat/effect controls.
+
+typedef struct {
+    float u;
+    float v;
+} OUTPUT_QUAD_SURFACE_UV;
+
+typedef struct {
+    int32_t width;
+    int32_t height;
+    int32_t bit_count;
+    GLenum tex_format;
+    GLenum tex_type;
+    OUTPUT_QUAD_SURFACE_UV uv[4];
+    int32_t pitch;
+} OUTPUT_QUAD_SURFACE_DESC;
 
 typedef struct {
     float x0;
@@ -43,7 +52,8 @@ void Output_Quad_Destroy(OUTPUT_QUAD *renderer);
 
 // Upload pixel data into the renderer-owned texture.
 void Output_Quad_Upload(
-    OUTPUT_QUAD *renderer, TRX_GL_2D_SURFACE_DESC *desc, const uint8_t *data);
+    OUTPUT_QUAD *renderer, const OUTPUT_QUAD_SURFACE_DESC *desc,
+    const uint8_t *data);
 
 // Bind an external texture as the source image for rendering.
 void Output_Quad_SetExternalTexture(
