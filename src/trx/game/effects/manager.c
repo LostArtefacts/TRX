@@ -1,11 +1,10 @@
-#include <trx/game/effects.h>
+#include <trx/game/effects/manager.h>
 
+#include <trx/game/effects/const.h>
 #include <trx/game/game_buf.h>
-#include <trx/game/matrix.h>
 #include <trx/game/objects.h>
-#include <trx/game/output.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
-#include <trx/version.h>
 
 static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectFree = NO_EFFECT;
@@ -79,7 +78,7 @@ EFFECT *Effect_Get(const int16_t effect_num)
     return &m_Effects[effect_num];
 }
 
-int16_t Effect_GetNum(const EFFECT *effect)
+int16_t Effect_GetIndex(const EFFECT *const effect)
 {
     return effect - m_Effects;
 }
@@ -104,7 +103,7 @@ int16_t Effect_GetActiveNum(void)
 
 int16_t Effect_Create(const int16_t room_num)
 {
-    int16_t effect_num = m_NextEffectFree;
+    const int16_t effect_num = m_NextEffectFree;
     if (effect_num == NO_EFFECT) {
         return NO_EFFECT;
     }
@@ -140,7 +139,7 @@ void Effect_KillAllActive(void)
     int16_t effect_num = Effect_GetActiveNum();
     while (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
-        int16_t next_effect_num = effect->next_active;
+        const int16_t next_effect_num = effect->next_active;
         const OBJECT *const obj = Object_Get(effect->object_id);
 
         if (obj->control_func != nullptr
@@ -151,14 +150,14 @@ void Effect_KillAllActive(void)
     }
 }
 
-void Effect_NewRoom(const int16_t effect_num, const int16_t room_num)
+void Effect_UpdateRoom(const int16_t effect_num, const int16_t room_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
-    ROOM *room = Room_Get(effect->room_num);
+    ROOM *const old_room = Room_Get(effect->room_num);
 
-    int16_t link_num = room->effect_num;
+    int16_t link_num = old_room->effect_num;
     if (link_num == effect_num) {
-        room->effect_num = effect->next_free;
+        old_room->effect_num = effect->next_free;
     } else {
         while (link_num != NO_EFFECT) {
             if (m_Effects[link_num].next_free == effect_num) {
@@ -169,59 +168,8 @@ void Effect_NewRoom(const int16_t effect_num, const int16_t room_num)
         }
     }
 
-    room = Room_Get(room_num);
+    ROOM *const new_room = Room_Get(room_num);
     effect->room_num = room_num;
-    effect->next_free = room->effect_num;
-    room->effect_num = effect_num;
-}
-
-void Effect_Draw(const int16_t effect_num)
-{
-    const EFFECT *const effect = Effect_Get(effect_num);
-    const OBJECT *const obj = Object_Get(effect->object_id);
-    if (!obj->loaded) {
-        return;
-    }
-
-    // TR3 uses BUBBLES1 as a dummy effect carrier and renders the bubble via
-    // an attached spark; keep TR1/TR2 legacy bubble rendering intact.
-    if (g_TRVersion == 3 && effect->object_id == O_BUBBLE_1) {
-        return;
-    }
-
-    if (effect->object_id == O_GLOW) {
-        Output_DrawSprite(
-            effect->interp.result.pos.x, effect->interp.result.pos.y,
-            effect->interp.result.pos.z, Object_Get(O_GLOW)->mesh_idx,
-            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f }, DRAW_BLEND);
-        return;
-    }
-
-    if (obj->mesh_count < 0) {
-        const RGB_F tint =
-            Object_IsType(effect->object_id, g_WaterSpriteObjects)
-            ? (RGB_F) { 1.0f, 1.0f, 1.0f }
-            : Output_GetTint();
-        int16_t shade = effect->shade;
-        if (shade == -1) {
-            Output_CalculateLight(effect->pos, effect->room_num);
-            shade = Output_GetLightAdder();
-        }
-        Output_DrawSprite(
-            effect->interp.result.pos.x, effect->interp.result.pos.y,
-            effect->interp.result.pos.z, obj->mesh_idx - effect->frame_num,
-            shade, tint, DRAW_BLEND);
-    } else {
-        Matrix_Push();
-        Matrix_TranslateAbs32(effect->interp.result.pos);
-        Matrix_Rot16(effect->interp.result.rot);
-        if (obj->mesh_count != 0) {
-            Output_CalculateStaticLight(effect->shade);
-            Object_DrawMesh(obj->mesh_idx, -1, false);
-        } else {
-            Output_CalculateLight(effect->interp.result.pos, effect->room_num);
-            Object_DrawMesh(effect->frame_num, -1, false);
-        }
-        Matrix_Pop();
-    }
+    effect->next_free = new_room->effect_num;
+    new_room->effect_num = effect_num;
 }

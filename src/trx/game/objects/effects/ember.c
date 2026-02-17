@@ -25,7 +25,7 @@ static void M_Control(const int16_t effect_num)
         Lara_TakeDamage(M_DAMAGE, true);
         Effect_Kill(effect_num);
     } else if (room_num != effect->room_num) {
-        Effect_NewRoom(effect_num, room_num);
+        Effect_UpdateRoom(effect_num, room_num);
     }
 }
 

@@ -32,7 +32,7 @@ static void M_Control_TR1TR2(const int16_t effect_num)
     }
 
     if (effect->room_num != room_num) {
-        Effect_NewRoom(effect_num, room_num);
+        Effect_UpdateRoom(effect_num, room_num);
     }
     effect->pos = pos;
 }
@@ -79,7 +79,7 @@ static void M_Control_TR3(const int16_t effect_num)
     }
 
     if (effect->room_num != room_num) {
-        Effect_NewRoom(effect_num, room_num);
+        Effect_UpdateRoom(effect_num, room_num);
     }
 
     effect->pos = pos;

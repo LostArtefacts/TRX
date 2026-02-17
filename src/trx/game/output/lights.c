@@ -2,7 +2,7 @@
 
 #include <trx/colors.h>
 #include <trx/game/const.h>
-#include <trx/game/items/common.h>
+#include <trx/game/items/manager.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>

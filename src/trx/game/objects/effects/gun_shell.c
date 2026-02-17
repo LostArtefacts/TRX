@@ -30,7 +30,7 @@ static void M_Control(const int16_t effect_num)
     const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);
 
     if (effect->room_num != room_num) {
-        Effect_NewRoom(effect_num, room_num);
+        Effect_UpdateRoom(effect_num, room_num);
     }
 
     const ROOM *const room = Room_Get(room_num);
