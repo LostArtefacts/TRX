@@ -1,9 +1,8 @@
-#include <trx/gl/2d/2d_renderer.h>
+#include <trx/game/output/quad.h>
 
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/output.h>
-#include <trx/gl/context.h>
 #include <trx/gl/gl/utils.h>
 #include <trx/memory.h>
 #include <trx/utils.h>
@@ -33,7 +32,7 @@ typedef struct {
     } uv;
 } M_VERTEX;
 
-struct TRX_GL_2D_RENDERER {
+struct OUTPUT_QUAD {
     TRX_GL_VERTEX_ARRAY vertex_format;
     TRX_GL_BUFFER surface_buffer;
     TRX_GL_TEXTURE surface_texture;
@@ -49,12 +48,12 @@ struct TRX_GL_2D_RENDERER {
         int32_t y;
     } repeat;
 
-    TRX_GL_2D_EFFECT effect;
+    OUTPUT_QUAD_EFFECT effect;
 
     float opacity;
     float brightness_scale;
 
-    TRX_GL_2D_FIT_MODE fit_mode;
+    OUTPUT_QUAD_FIT_MODE fit_mode;
     float src_aspect;
 
     bool use_external_texture;
@@ -73,7 +72,7 @@ static const M_VERTEX m_Vertices[] = {
     { .pos = { .x = 1.0, .y = 1.0 }, .uv = { .u = 1.0, .v = 1.0 } },
 };
 
-static void M_UploadVertices(TRX_GL_2D_RENDERER *const r)
+static void M_UploadVertices(OUTPUT_QUAD *const r)
 {
     if (!r->ready) {
         return;
@@ -108,18 +107,17 @@ static void M_UploadVertices(TRX_GL_2D_RENDERER *const r)
         r->vertices, GL_STATIC_DRAW);
 }
 
-TRX_GL_2D_RENDERER *TRX_GL_2D_Renderer_Create(void)
+OUTPUT_QUAD *Output_Quad_Create(void)
 {
-    TRX_GL_2D_RENDERER *const r = Memory_Alloc(sizeof(TRX_GL_2D_RENDERER));
-    const TRX_GL_CONFIG *const config = TRX_GL_Context_GetConfig();
+    OUTPUT_QUAD *const r = Memory_Alloc(sizeof(OUTPUT_QUAD));
 
-    r->effect = TRX_GL_2D_EFFECT_NONE;
+    r->effect = OUTPUT_QUAD_EFFECT_NONE;
     r->opacity = 1.0f;
     r->brightness_scale = 1.0f;
     r->repeat.x = 1;
     r->repeat.y = 1;
 
-    r->fit_mode = TRX_GL_2D_FIT_STRETCH;
+    r->fit_mode = OUTPUT_QUAD_FIT_STRETCH;
     r->src_aspect = 1.0f;
 
     r->vertices = nullptr;
@@ -188,7 +186,7 @@ TRX_GL_2D_RENDERER *TRX_GL_2D_Renderer_Create(void)
     return r;
 }
 
-void TRX_GL_2D_Renderer_Destroy(TRX_GL_2D_RENDERER *const r)
+void Output_Quad_Destroy(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
 
@@ -200,8 +198,8 @@ void TRX_GL_2D_Renderer_Destroy(TRX_GL_2D_RENDERER *const r)
     Memory_Free(r);
 }
 
-void TRX_GL_2D_Renderer_Upload(
-    TRX_GL_2D_RENDERER *const r, TRX_GL_2D_SURFACE_DESC *const desc,
+void Output_Quad_Upload(
+    OUTPUT_QUAD *const r, TRX_GL_2D_SURFACE_DESC *const desc,
     const uint8_t *const data)
 {
     ASSERT(r != nullptr);
@@ -249,8 +247,8 @@ void TRX_GL_2D_Renderer_Upload(
     }
 }
 
-void TRX_GL_2D_Renderer_SetExternalTexture(
-    TRX_GL_2D_RENDERER *const r, const GLuint texture_id, const int32_t width,
+void Output_Quad_SetExternalTexture(
+    OUTPUT_QUAD *const r, const GLuint texture_id, const int32_t width,
     const int32_t height, const bool flip_y)
 {
     ASSERT(r != nullptr);
@@ -283,15 +281,15 @@ void TRX_GL_2D_Renderer_SetExternalTexture(
     }
 }
 
-void TRX_GL_2D_Renderer_ClearExternalTexture(TRX_GL_2D_RENDERER *const r)
+void Output_Quad_ClearExternalTexture(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
     r->use_external_texture = false;
     r->external_texture_id = 0;
 }
 
-void TRX_GL_2D_Renderer_SetTextureSize(
-    TRX_GL_2D_RENDERER *const r, const TRX_GL_TEXTURE_SIZE *const size)
+void Output_Quad_SetTextureSize(
+    OUTPUT_QUAD *const r, const OUTPUT_QUAD_TEXTURE_SIZE *const size)
 {
     ASSERT(r != nullptr);
     TRX_GL_Program_Bind(&r->program);
@@ -306,8 +304,8 @@ void TRX_GL_2D_Renderer_SetTextureSize(
     }
 }
 
-void TRX_GL_2D_Renderer_SetRepeat(
-    TRX_GL_2D_RENDERER *const r, const int32_t x, const int32_t y)
+void Output_Quad_SetRepeat(
+    OUTPUT_QUAD *const r, const int32_t x, const int32_t y)
 {
     ASSERT(r != nullptr);
     if (r->repeat.x == x && r->repeat.y == y) {
@@ -318,8 +316,7 @@ void TRX_GL_2D_Renderer_SetRepeat(
     M_UploadVertices(r);
 }
 
-void TRX_GL_2D_Renderer_SetEffect(
-    TRX_GL_2D_RENDERER *const r, const uint32_t effect)
+void Output_Quad_SetEffect(OUTPUT_QUAD *const r, const uint32_t effect)
 {
     ASSERT(r != nullptr);
 
@@ -330,8 +327,7 @@ void TRX_GL_2D_Renderer_SetEffect(
     }
 }
 
-void TRX_GL_2D_Renderer_SetOpacity(
-    TRX_GL_2D_RENDERER *const r, const float opacity)
+void Output_Quad_SetOpacity(OUTPUT_QUAD *const r, const float opacity)
 {
     ASSERT(r != nullptr);
 
@@ -343,8 +339,8 @@ void TRX_GL_2D_Renderer_SetOpacity(
     }
 }
 
-void TRX_GL_2D_Renderer_SetBrightnessScale(
-    TRX_GL_2D_RENDERER *const r, const float brightness_scale)
+void Output_Quad_SetBrightnessScale(
+    OUTPUT_QUAD *const r, const float brightness_scale)
 {
     ASSERT(r != nullptr);
 
@@ -356,14 +352,14 @@ void TRX_GL_2D_Renderer_SetBrightnessScale(
     }
 }
 
-void TRX_GL_2D_Renderer_SetFit(
-    TRX_GL_2D_RENDERER *const r, const TRX_GL_2D_FIT_MODE fit_mode,
+void Output_Quad_SetFit(
+    OUTPUT_QUAD *const r, const OUTPUT_QUAD_FIT_MODE fit_mode,
     const float src_w, const float src_h)
 {
     ASSERT(r != nullptr);
 
     if (src_w <= 0.0f || src_h <= 0.0f) {
-        TRX_GL_2D_Renderer_ClearFit(r);
+        Output_Quad_ClearFit(r);
         return;
     }
     const float src_aspect = src_w / src_h;
@@ -381,14 +377,14 @@ void TRX_GL_2D_Renderer_SetFit(
         &r->program, r->loc[M_UNIFORM_SRC_ASPECT], src_aspect);
 }
 
-void TRX_GL_2D_Renderer_ClearFit(TRX_GL_2D_RENDERER *const r)
+void Output_Quad_ClearFit(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
-    if (r->fit_mode == TRX_GL_2D_FIT_STRETCH && r->src_aspect == 1.0f) {
+    if (r->fit_mode == OUTPUT_QUAD_FIT_STRETCH && r->src_aspect == 1.0f) {
         return;
     }
 
-    r->fit_mode = TRX_GL_2D_FIT_STRETCH;
+    r->fit_mode = OUTPUT_QUAD_FIT_STRETCH;
     r->src_aspect = 1.0f;
     TRX_GL_Program_Bind(&r->program);
     TRX_GL_Program_Uniform1i(
@@ -397,7 +393,7 @@ void TRX_GL_2D_Renderer_ClearFit(TRX_GL_2D_RENDERER *const r)
         &r->program, r->loc[M_UNIFORM_SRC_ASPECT], r->src_aspect);
 }
 
-void TRX_GL_2D_Renderer_Render(TRX_GL_2D_RENDERER *const r)
+void Output_Quad_Render(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
 
@@ -439,7 +435,7 @@ void TRX_GL_2D_Renderer_Render(TRX_GL_2D_RENDERER *const r)
     TRX_GL_CheckError();
 }
 
-void TRX_GL_2D_Renderer_RenderWithBlend(TRX_GL_2D_RENDERER *const r)
+void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
 {
     ASSERT(r != nullptr);
 
