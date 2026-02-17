@@ -874,21 +874,25 @@ static bool M_ForEachResolveAttempt(
             break;
         }
 
-        const char *const candidate =
-            M_ExpandDynamicPattern(path, pattern, rel, nullptr);
+        char *candidate =
+            Memory_DupStr(M_ExpandDynamicPattern(path, pattern, rel, nullptr));
         if (strchr(candidate, '%') != nullptr) {
+            Memory_FreePointer(&candidate);
             continue;
         }
         if (!callback(candidate, user_data)) {
+            Memory_FreePointer(&candidate);
             return false;
         }
 
         if (policy->extensions == nullptr || policy->is_dir) {
+            Memory_FreePointer(&candidate);
             continue;
         }
 
         const char *const dot = strrchr(candidate, '.');
         if (dot == nullptr) {
+            Memory_FreePointer(&candidate);
             continue;
         }
 
@@ -903,13 +907,16 @@ static bool M_ForEachResolveAttempt(
             const bool keep_going = callback(out, user_data);
             Memory_FreePointer(&out);
             if (!keep_going) {
+                Memory_FreePointer(&candidate);
                 return false;
             }
         }
 
         if (stop_after_first_pattern) {
+            Memory_FreePointer(&candidate);
             break;
         }
+        Memory_FreePointer(&candidate);
     }
 
     return true;
@@ -951,7 +958,7 @@ static bool M_ResolveAttemptVisitor(
 
     if (!ctx->policy->check_exists) {
         if (ctx->resolved == nullptr) {
-            ctx->resolved = attempt_path;
+            ctx->resolved = String_FormatStatic("%s", attempt_path);
         }
 
         char *full_path = M_ResolveCasePathCached(attempt_path);
