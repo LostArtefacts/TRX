@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math/const.h>
+#include <trx/core/math/const.h>
 
 #define LOGIC_FPS 30
 

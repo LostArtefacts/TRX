@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/math.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
@@ -8,7 +9,6 @@
 #include <trx/game/effects.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/traps/gondola.h>

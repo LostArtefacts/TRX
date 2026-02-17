@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/math.h>
 #include <trx/game/items/enum.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/output/types.h>
 

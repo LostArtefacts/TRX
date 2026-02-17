@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math/types.h>
+#include <trx/core/math/types.h>
 
 #define TRIGMULT2(A, B) (((A) * (B)) >> W2V_SHIFT)
 #define TRIGMULT3(A, B, C) (TRIGMULT2((TRIGMULT2(A, B)), C))

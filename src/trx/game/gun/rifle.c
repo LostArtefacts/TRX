@@ -1,6 +1,7 @@
 #include <trx/game/gun/rifle.h>
 
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
 #include <trx/game/gun/common.h>
@@ -9,7 +10,6 @@
 #include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>

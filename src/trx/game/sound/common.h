@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math.h>
+#include <trx/core/math.h>
 #include <trx/game/sound/enum.h>
 #include <trx/game/sound/ids.h>
 #include <trx/game/sound/types.h>

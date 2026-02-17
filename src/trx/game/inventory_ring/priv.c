@@ -1,13 +1,13 @@
 #include <trx/game/inventory_ring/priv.h>
 
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/core/strings.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/vars.h>
-#include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/names.h>

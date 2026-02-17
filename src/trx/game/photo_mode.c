@@ -1,6 +1,7 @@
 #include <trx/game/photo_mode.h>
 
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
@@ -13,7 +14,6 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/hair.h>
 #include <trx/game/lara/pose.h>
-#include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>

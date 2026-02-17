@@ -1,8 +1,8 @@
 #pragma once
 
+#include <trx/core/math.h>
 #include <trx/core/virtual_file.h>
 #include <trx/game/inject/enum.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/ids.h>
 
 typedef struct {

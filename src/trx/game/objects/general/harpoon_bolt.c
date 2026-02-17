@@ -1,9 +1,9 @@
+#include <trx/core/math.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>

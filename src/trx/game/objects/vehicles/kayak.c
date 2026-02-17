@@ -2,6 +2,7 @@
 
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
@@ -11,7 +12,6 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/common.h>
-#include <trx/game/math.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>

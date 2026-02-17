@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math.h>
+#include <trx/core/math.h>
 #include <trx/game/types.h>
 
 #include <stdint.h>

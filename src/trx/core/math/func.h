@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/math/types.h>
+#include <trx/core/math/types.h>
 
 uint32_t Math_Sqrt(uint32_t n);
 uint64_t Math_Sqrt64(uint64_t n);

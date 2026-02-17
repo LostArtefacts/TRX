@@ -1,6 +1,6 @@
-#include <trx/game/math/trig.h>
+#include <trx/core/math/trig.h>
 
-#include <trx/game/math/const.h>
+#include <trx/core/math/const.h>
 
 static const int16_t m_SinTable[0x402] = {
     0x0000, 0x0019, 0x0032, 0x004B, 0x0065, 0x007E, 0x0097, 0x00B0, 0x00C9,

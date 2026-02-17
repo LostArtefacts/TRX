@@ -1,5 +1,5 @@
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
-#include <trx/game/math.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 

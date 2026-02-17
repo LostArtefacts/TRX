@@ -1,8 +1,8 @@
 #pragma once
 
 #include <trx/core/colors.h>
+#include <trx/core/math.h>
 #include <trx/game/items/const.h>
-#include <trx/game/math.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/types.h>
 

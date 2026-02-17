@@ -1,8 +1,8 @@
 #include <trx/game/fx/explosion_ring.h>
 
+#include <trx/core/math/func.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
-#include <trx/game/math/func.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>

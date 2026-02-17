@@ -1,9 +1,9 @@
 #pragma once
 
+#include <trx/core/math.h>
 #include <trx/game/anims.h>
 #include <trx/game/collision.h>
 #include <trx/game/items.h>
-#include <trx/game/math.h>
 #include <trx/game/objects/draw.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/objects/types.h>

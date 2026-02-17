@@ -2,11 +2,11 @@
 
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/math.h>
 #include <trx/game/camera.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
-#include <trx/game/math.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>

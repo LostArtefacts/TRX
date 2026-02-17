@@ -1,4 +1,4 @@
-#include <trx/game/math/util.h>
+#include <trx/core/math/util.h>
 
 bool Bounds32_Intersect(const BOUNDS_32 *const a, const BOUNDS_32 *const b)
 {
