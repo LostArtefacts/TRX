@@ -7,56 +7,64 @@
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
-#define CROCODILE_BITE_DAMAGE 100
-#define CROCODILE_BITE_RANGE SQUARE(435) // = 189225
-#define CROCODILE_DIE_ANIM 11
-#define CROCODILE_FASTTURN_ANGLE 0x4000
-#define CROCODILE_FASTTURN_RANGE SQUARE(WALL_L * 3) // = 9437184
-#define CROCODILE_FASTTURN_TURN (6 * DEG_1) // = 1092
-#define CROCODILE_TOUCH 0x3FC
-#define CROCODILE_TURN (3 * DEG_1) // = 546
-#define CROCODILE_HITPOINTS 20
-#define CROCODILE_RADIUS (WALL_L / 3) // = 341
-#define CROCODILE_SMARTNESS 0x2000
+// clang-format off
+#define M_CROCODILE_BITE_DAMAGE    100
+#define M_CROCODILE_BITE_RANGE     SQUARE(435) // = 189225
+#define M_CROCODILE_FASTTURN_ANGLE 0x4000
+#define M_CROCODILE_FASTTURN_RANGE SQUARE(WALL_L * 3) // = 9437184
+#define M_CROCODILE_FASTTURN_TURN  (6 * DEG_1) // = 1092
+#define M_CROCODILE_TOUCH          0x3FC
+#define M_CROCODILE_TURN           (3 * DEG_1) // = 546
+#define M_CROCODILE_HITPOINTS      20
+#define M_CROCODILE_RADIUS         (WALL_L / 3) // = 341
+#define M_CROCODILE_SMARTNESS      0x2000
 
-#define ALLIGATOR_BITE_DAMAGE 100
-#define ALLIGATOR_DIE_ANIM 4
-#define ALLIGATOR_FLOAT_SPEED (WALL_L / 32) // = 32
-#define ALLIGATOR_TURN (3 * DEG_1) // = 546
-#define ALLIGATOR_HITPOINTS 20
-#define ALLIGATOR_RADIUS (WALL_L / 3) // = 341
-#define ALLIGATOR_SMARTNESS 0x400
-#define ALLIGATOR_BITE_AF 42
-
-typedef enum {
-    CROCODILE_STATE_EMPTY = 0,
-    CROCODILE_STATE_STOP = 1,
-    CROCODILE_STATE_RUN = 2,
-    CROCODILE_STATE_WALK = 3,
-    CROCODILE_STATE_FAST_TURN = 4,
-    CROCODILE_STATE_ATTACK_1 = 5,
-    CROCODILE_STATE_ATTACK_2 = 6,
-    CROCODILE_STATE_DEATH = 7,
-} CROCODILE_STATE;
+#define M_ALLIGATOR_BITE_DAMAGE    100
+#define M_ALLIGATOR_FLOAT_SPEED    (WALL_L / 32) // = 32
+#define M_ALLIGATOR_TURN           (3 * DEG_1) // = 546
+#define M_ALLIGATOR_HITPOINTS      20
+#define M_ALLIGATOR_RADIUS         (WALL_L / 3) // = 341
+#define M_ALLIGATOR_SMARTNESS      0x400
+#define M_ALLIGATOR_BITE_FRAME     42
+// clang-format on
 
 typedef enum {
-    ALLIGATOR_STATE_EMPTY = 0,
-    ALLIGATOR_STATE_SWIM = 1,
-    ALLIGATOR_STATE_ATTACK = 2,
-    ALLIGATOR_STATE_DEATH = 3,
-} ALLIGATOR_STATE;
+    M_CROCODILE_DIE_ANIM = 11,
+} M_CROCODILE_ANIM;
+
+typedef enum {
+    M_ALLIGATOR_DIE_ANIM = 4,
+} M_ALLIGATOR_ANIM;
+
+typedef enum {
+    M_CROCODILE_STATE_EMPTY = 0,
+    M_CROCODILE_STATE_STOP = 1,
+    M_CROCODILE_STATE_RUN = 2,
+    M_CROCODILE_STATE_WALK = 3,
+    M_CROCODILE_STATE_FAST_TURN = 4,
+    M_CROCODILE_STATE_ATTACK_1 = 5,
+    M_CROCODILE_STATE_ATTACK_2 = 6,
+    M_CROCODILE_STATE_DEATH = 7,
+} M_CROCODILE_STATE;
+
+typedef enum {
+    M_ALLIGATOR_STATE_EMPTY = 0,
+    M_ALLIGATOR_STATE_SWIM = 1,
+    M_ALLIGATOR_STATE_ATTACK = 2,
+    M_ALLIGATOR_STATE_DEATH = 3,
+} M_ALLIGATOR_STATE;
 
 static BITE m_CrocodileBite = { .pos = { 5, -21, 467 }, .mesh_num = 9 };
 
 static const HYBRID_INFO m_CrocodileInfo = {
     .land.id = O_CROCODILE,
-    .land.active_anim = CROCODILE_STATE_EMPTY,
-    .land.death_anim = CROCODILE_DIE_ANIM,
-    .land.death_state = CROCODILE_STATE_DEATH,
+    .land.active_anim = M_CROCODILE_STATE_EMPTY,
+    .land.death_anim = M_CROCODILE_DIE_ANIM,
+    .land.death_state = M_CROCODILE_STATE_DEATH,
     .water.id = O_ALLIGATOR,
-    .water.active_anim = ALLIGATOR_STATE_EMPTY,
-    .water.death_anim = ALLIGATOR_DIE_ANIM,
-    .water.death_state = ALLIGATOR_STATE_DEATH,
+    .water.active_anim = M_ALLIGATOR_STATE_EMPTY,
+    .water.death_anim = M_ALLIGATOR_DIE_ANIM,
+    .water.death_state = M_ALLIGATOR_STATE_DEATH,
 };
 
 static void M_UpdateCreatureLOT(const ITEM *const item)
@@ -82,23 +90,19 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 
 static void M_ControlCrocodile(const int16_t item_num)
 {
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->status == IS_INVISIBLE) {
-        if (!LOT_EnableBaddieAI(item_num, 0)) {
-            return;
-        }
-        item->status = IS_ACTIVE;
+    if (!Creature_Activate(item_num)) {
+        return;
     }
 
+    ITEM *const item = Item_Get(item_num);
     CREATURE *const croc = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != CROCODILE_STATE_DEATH) {
-            item->current_anim_state = CROCODILE_STATE_DEATH;
-            Item_SwitchToAnim(item, CROCODILE_DIE_ANIM, 0);
+        if (item->current_anim_state != M_CROCODILE_STATE_DEATH) {
+            item->current_anim_state = M_CROCODILE_STATE_DEATH;
+            Item_SwitchToAnim(item, M_CROCODILE_DIE_ANIM, 0);
         }
     } else {
         AI_INFO info;
@@ -110,75 +114,75 @@ static void M_ControlCrocodile(const int16_t item_num)
 
         Creature_Mood(item, &info, true);
 
-        if (item->current_anim_state == CROCODILE_STATE_FAST_TURN) {
-            item->rot.y += CROCODILE_FASTTURN_TURN;
+        if (item->current_anim_state == M_CROCODILE_STATE_FAST_TURN) {
+            item->rot.y += M_CROCODILE_FASTTURN_TURN;
         } else {
-            angle = Creature_Turn(item, CROCODILE_TURN);
+            angle = Creature_Turn(item, M_CROCODILE_TURN);
         }
 
         switch (item->current_anim_state) {
-        case CROCODILE_STATE_STOP:
-            if (info.bite && info.distance < CROCODILE_BITE_RANGE) {
-                item->goal_anim_state = CROCODILE_STATE_ATTACK_1;
+        case M_CROCODILE_STATE_STOP:
+            if (info.bite && info.distance < M_CROCODILE_BITE_RANGE) {
+                item->goal_anim_state = M_CROCODILE_STATE_ATTACK_1;
             } else if (croc->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = CROCODILE_STATE_RUN;
+                item->goal_anim_state = M_CROCODILE_STATE_RUN;
             } else if (croc->mood == MOOD_ATTACK) {
-                if ((info.angle < -CROCODILE_FASTTURN_ANGLE
-                     || info.angle > CROCODILE_FASTTURN_ANGLE)
-                    && info.distance > CROCODILE_FASTTURN_RANGE) {
-                    item->goal_anim_state = CROCODILE_STATE_FAST_TURN;
+                if ((info.angle < -M_CROCODILE_FASTTURN_ANGLE
+                     || info.angle > M_CROCODILE_FASTTURN_ANGLE)
+                    && info.distance > M_CROCODILE_FASTTURN_RANGE) {
+                    item->goal_anim_state = M_CROCODILE_STATE_FAST_TURN;
                 } else {
-                    item->goal_anim_state = CROCODILE_STATE_RUN;
+                    item->goal_anim_state = M_CROCODILE_STATE_RUN;
                 }
             } else if (croc->mood == MOOD_STALK) {
-                item->goal_anim_state = CROCODILE_STATE_WALK;
+                item->goal_anim_state = M_CROCODILE_STATE_WALK;
             }
             break;
 
-        case CROCODILE_STATE_WALK:
-            if (info.ahead && (item->touch_bits & CROCODILE_TOUCH)) {
-                item->goal_anim_state = CROCODILE_STATE_STOP;
+        case M_CROCODILE_STATE_WALK:
+            if (info.ahead && (item->touch_bits & M_CROCODILE_TOUCH)) {
+                item->goal_anim_state = M_CROCODILE_STATE_STOP;
             } else if (croc->mood == MOOD_ATTACK || croc->mood == MOOD_ESCAPE) {
-                item->goal_anim_state = CROCODILE_STATE_RUN;
+                item->goal_anim_state = M_CROCODILE_STATE_RUN;
             } else if (croc->mood == MOOD_BORED) {
-                item->goal_anim_state = CROCODILE_STATE_STOP;
+                item->goal_anim_state = M_CROCODILE_STATE_STOP;
             }
             break;
 
-        case CROCODILE_STATE_FAST_TURN:
-            if (info.angle > -CROCODILE_FASTTURN_ANGLE
-                && info.angle < CROCODILE_FASTTURN_ANGLE) {
-                item->goal_anim_state = CROCODILE_STATE_WALK;
+        case M_CROCODILE_STATE_FAST_TURN:
+            if (info.angle > -M_CROCODILE_FASTTURN_ANGLE
+                && info.angle < M_CROCODILE_FASTTURN_ANGLE) {
+                item->goal_anim_state = M_CROCODILE_STATE_WALK;
             }
             break;
 
-        case CROCODILE_STATE_RUN:
-            if (info.ahead && (item->touch_bits & CROCODILE_TOUCH)) {
-                item->goal_anim_state = CROCODILE_STATE_STOP;
+        case M_CROCODILE_STATE_RUN:
+            if (info.ahead && (item->touch_bits & M_CROCODILE_TOUCH)) {
+                item->goal_anim_state = M_CROCODILE_STATE_STOP;
             } else if (croc->mood == MOOD_STALK) {
-                item->goal_anim_state = CROCODILE_STATE_WALK;
+                item->goal_anim_state = M_CROCODILE_STATE_WALK;
             } else if (croc->mood == MOOD_BORED) {
-                item->goal_anim_state = CROCODILE_STATE_STOP;
+                item->goal_anim_state = M_CROCODILE_STATE_STOP;
             } else if (
                 croc->mood == MOOD_ATTACK
-                && info.distance > CROCODILE_FASTTURN_RANGE
-                && (info.angle < -CROCODILE_FASTTURN_ANGLE
-                    || info.angle > CROCODILE_FASTTURN_ANGLE)) {
-                item->goal_anim_state = CROCODILE_STATE_STOP;
+                && info.distance > M_CROCODILE_FASTTURN_RANGE
+                && (info.angle < -M_CROCODILE_FASTTURN_ANGLE
+                    || info.angle > M_CROCODILE_FASTTURN_ANGLE)) {
+                item->goal_anim_state = M_CROCODILE_STATE_STOP;
             }
             break;
 
-        case CROCODILE_STATE_ATTACK_1:
-            if (item->required_anim_state == CROCODILE_STATE_EMPTY) {
+        case M_CROCODILE_STATE_ATTACK_1:
+            if (item->required_anim_state == M_CROCODILE_STATE_EMPTY) {
                 Creature_Effect(item, &m_CrocodileBite, Spawn_Blood);
-                Lara_TakeDamage(CROCODILE_BITE_DAMAGE, true);
-                item->required_anim_state = CROCODILE_STATE_STOP;
+                Lara_TakeDamage(M_CROCODILE_BITE_DAMAGE, true);
+                item->required_anim_state = M_CROCODILE_STATE_STOP;
             }
             break;
         }
     }
 
-    if (croc) {
+    if (croc != nullptr) {
         Creature_Head(item, head);
     }
 
@@ -187,7 +191,7 @@ static void M_ControlCrocodile(const int16_t item_num)
         M_UpdateCreatureLOT(item);
     }
 
-    if (croc) {
+    if (croc != nullptr) {
         Creature_Animate(item_num, angle, 0);
     } else {
         Item_Animate(item);
@@ -196,15 +200,11 @@ static void M_ControlCrocodile(const int16_t item_num)
 
 static void M_ControlAlligator(const int16_t item_num)
 {
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->status == IS_INVISIBLE) {
-        if (!LOT_EnableBaddieAI(item_num, 0)) {
-            return;
-        }
-        item->status = IS_ACTIVE;
+    if (!Creature_Activate(item_num)) {
+        return;
     }
 
+    ITEM *const item = Item_Get(item_num);
     CREATURE *const gator = item->creature_data;
     const SECTOR *sector;
     int16_t head = 0;
@@ -213,9 +213,9 @@ static void M_ControlAlligator(const int16_t item_num)
     int32_t wh;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != ALLIGATOR_STATE_DEATH) {
-            item->current_anim_state = ALLIGATOR_STATE_DEATH;
-            Item_SwitchToAnim(item, ALLIGATOR_DIE_ANIM, 0);
+        if (item->current_anim_state != M_ALLIGATOR_STATE_DEATH) {
+            item->current_anim_state = M_ALLIGATOR_STATE_DEATH;
+            Item_SwitchToAnim(item, M_ALLIGATOR_DIE_ANIM, 0);
             item->hit_points = DONT_TARGET;
             Carrier_TestItemDrops(item_num);
         }
@@ -223,8 +223,8 @@ static void M_ControlAlligator(const int16_t item_num)
         // Test if we should convert to a crocodile. If not, control the death
         // pose of the alligator in the water.
         if (!Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
-            if (item->pos.y > wh + ALLIGATOR_FLOAT_SPEED) {
-                item->pos.y -= ALLIGATOR_FLOAT_SPEED;
+            if (item->pos.y > wh + M_ALLIGATOR_FLOAT_SPEED) {
+                item->pos.y -= M_ALLIGATOR_FLOAT_SPEED;
             } else if (item->pos.y < wh) {
                 item->pos.y = wh;
                 if (gator) {
@@ -250,37 +250,37 @@ static void M_ControlAlligator(const int16_t item_num)
     }
 
     Creature_Mood(item, &info, true);
-    Creature_Turn(item, ALLIGATOR_TURN);
+    Creature_Turn(item, M_ALLIGATOR_TURN);
 
     switch (item->current_anim_state) {
-    case ALLIGATOR_STATE_SWIM:
+    case M_ALLIGATOR_STATE_SWIM:
         if (info.bite && item->touch_bits) {
-            item->goal_anim_state = ALLIGATOR_STATE_ATTACK;
+            item->goal_anim_state = M_ALLIGATOR_STATE_ATTACK;
             if (g_Config.gameplay.fix_alligator_ai) {
-                item->required_anim_state = ALLIGATOR_STATE_SWIM;
+                item->required_anim_state = M_ALLIGATOR_STATE_SWIM;
             }
         }
         break;
 
-    case ALLIGATOR_STATE_ATTACK:
+    case M_ALLIGATOR_STATE_ATTACK:
         if (item->frame_num
             == (g_Config.gameplay.fix_alligator_ai
-                    ? ALLIGATOR_BITE_AF
+                    ? M_ALLIGATOR_BITE_FRAME
                     : Item_GetAnim(item)->frame_base)) {
-            item->required_anim_state = ALLIGATOR_STATE_EMPTY;
+            item->required_anim_state = M_ALLIGATOR_STATE_EMPTY;
         }
 
         if (info.bite && item->touch_bits) {
-            if (item->required_anim_state == ALLIGATOR_STATE_EMPTY) {
+            if (item->required_anim_state == M_ALLIGATOR_STATE_EMPTY) {
                 Creature_Effect(item, &m_CrocodileBite, Spawn_Blood);
-                Lara_TakeDamage(ALLIGATOR_BITE_DAMAGE, true);
-                item->required_anim_state = ALLIGATOR_STATE_SWIM;
+                Lara_TakeDamage(M_ALLIGATOR_BITE_DAMAGE, true);
+                item->required_anim_state = M_ALLIGATOR_STATE_SWIM;
             }
             if (g_Config.gameplay.fix_alligator_ai) {
-                item->goal_anim_state = ALLIGATOR_STATE_SWIM;
+                item->goal_anim_state = M_ALLIGATOR_STATE_SWIM;
             }
         } else {
-            item->goal_anim_state = ALLIGATOR_STATE_SWIM;
+            item->goal_anim_state = M_ALLIGATOR_STATE_SWIM;
         }
         break;
     }
@@ -319,9 +319,9 @@ static void M_SetupCrocodile(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlCrocodile;
-    obj->hit_points = CROCODILE_HITPOINTS;
-    obj->radius = CROCODILE_RADIUS;
-    obj->smartness = CROCODILE_SMARTNESS;
+    obj->hit_points = M_CROCODILE_HITPOINTS;
+    obj->radius = M_CROCODILE_RADIUS;
+    obj->smartness = M_CROCODILE_SMARTNESS;
 }
 
 static void M_SetupAlligator(OBJECT *const obj)
@@ -331,9 +331,9 @@ static void M_SetupAlligator(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlAlligator;
-    obj->hit_points = ALLIGATOR_HITPOINTS;
-    obj->radius = ALLIGATOR_RADIUS;
-    obj->smartness = ALLIGATOR_SMARTNESS;
+    obj->hit_points = M_ALLIGATOR_HITPOINTS;
+    obj->radius = M_ALLIGATOR_RADIUS;
+    obj->smartness = M_ALLIGATOR_SMARTNESS;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
 }
 
