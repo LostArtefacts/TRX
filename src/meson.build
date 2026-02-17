@@ -609,7 +609,6 @@ common_sources = [
   'trx/game/output/vars.c',
   'trx/game/output/vertex_range.c',
   'trx/game/overlay.c',
-  'trx/game/packer.c',
   'trx/game/pathing/box.c',
   'trx/game/pathing/lot.c',
   'trx/game/phase/executor.c',
