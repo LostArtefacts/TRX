@@ -241,7 +241,7 @@ void Room_PopulateSectorData(
     sector->trigger = nullptr;
     sector->ladder = LADDER_NONE;
 
-    if (start_index == null_index) {
+    if (start_index == null_index || floor_data == nullptr) {
         return;
     }
 

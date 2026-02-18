@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
@@ -115,10 +116,22 @@ static void M_InsertFloorData(
     const INJECTION *const injection, SECTOR *const sector)
 {
     const int32_t data_length = VFile_ReadS32(injection->fp);
-    int16_t data[data_length];
+    if (data_length < 0) {
+        LOG_WARNING(
+            "Skipping floor data insert with invalid length: %d", data_length);
+        return;
+    }
+
+    if (data_length == 0) {
+        Room_PopulateSectorData(sector, nullptr, NULL_FD_INDEX, NULL_FD_INDEX);
+        return;
+    }
+
+    int16_t *data = Memory_Alloc(sizeof(int16_t) * data_length);
     VFile_Read(injection->fp, data, sizeof(int16_t) * data_length);
 
     if (sector == nullptr) {
+        Memory_FreePointer(&data);
         return;
     }
 
@@ -126,6 +139,7 @@ static void M_InsertFloorData(
     // imported. We pass a dummy null index to allow it to read from the
     // beginning of the array.
     Room_PopulateSectorData(sector, data, 0, NULL_FD_INDEX);
+    Memory_FreePointer(&data);
 }
 
 static void M_RoomShift(
