@@ -66,6 +66,7 @@
 - fixed loading screens showing before playing FMVs in Antarctica
 - fixed end credits referencing non-existing image file
 - fixed Puna to no longer hardcode Lizard locations, and instead use relative offsets
+- fixed Tony briefly appearing for a single frame when loading a save after his death
 - removed the limitation of one Carcass instance per level working with Piranhas
 - removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
 
