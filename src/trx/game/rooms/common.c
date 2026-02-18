@@ -173,9 +173,9 @@ void Room_BuildOutsideTable(void)
                 const ROOM *const room = Room_Get(i);
 
                 const int32_t room_x = (room->pos.z >> WALL_SHIFT)
-                    - (m_OutsideOriginCellZ << M_OUTSIDE_TABLE_STEP_SHIFT);
+                    - (m_OutsideOriginCellZ * M_OUTSIDE_TABLE_STEP);
                 const int32_t room_y = (room->pos.x >> WALL_SHIFT)
-                    - (m_OutsideOriginCellX << M_OUTSIDE_TABLE_STEP_SHIFT);
+                    - (m_OutsideOriginCellX * M_OUTSIDE_TABLE_STEP);
 
                 bool cont = false;
                 for (int32_t ry = 0; ry < M_OUTSIDE_TABLE_STEP && !cont; ry++) {

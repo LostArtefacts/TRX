@@ -45,10 +45,10 @@ static void M_Control(const int16_t item_num)
         EFFECT *const effect = Effect_Get(effect_num);
         effect->object_id = O_SPLASH_1;
         effect->pos.x =
-            item->pos.x + ((Random_GetDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
+            item->pos.x + ((Random_GetDraw() - 0x4000) * WALL_L) / 0x7FFF;
         effect->pos.y = item->pos.y;
         effect->pos.z =
-            item->pos.z + ((Random_GetDraw() - 0x4000) << WALL_SHIFT) / 0x7FFF;
+            item->pos.z + ((Random_GetDraw() - 0x4000) * WALL_L) / 0x7FFF;
         effect->speed = 0;
         effect->frame_num = 0;
         effect->shade = -1;

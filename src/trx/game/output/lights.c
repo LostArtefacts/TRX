@@ -111,9 +111,9 @@ static XYZ_32 M_TR3_NormalizeDeltaWorld(const XYZ_32 delta)
     }
 
     return (XYZ_32) {
-        .x = (dx << W2V_SHIFT) / (int32_t)len,
-        .y = (dy << W2V_SHIFT) / (int32_t)len,
-        .z = (dz << W2V_SHIFT) / (int32_t)len,
+        .x = (dx * (1 << W2V_SHIFT)) / (int32_t)len,
+        .y = (dy * (1 << W2V_SHIFT)) / (int32_t)len,
+        .z = (dz * (1 << W2V_SHIFT)) / (int32_t)len,
     };
 }
 

@@ -165,8 +165,8 @@ static int32_t M_CheckX(
         return 1;
     }
 
-    const int32_t dy = ((target->y - start->y) << WALL_SHIFT) / dx;
-    const int32_t dz = ((target->z - start->z) << WALL_SHIFT) / dx;
+    const int32_t dy = ((target->y - start->y) * WALL_L) / dx;
+    const int32_t dz = ((target->z - start->z) * WALL_L) / dx;
 
     int16_t room_num = start->room_num;
     int16_t last_room_num = start->room_num;
@@ -276,8 +276,8 @@ static int32_t M_CheckZ(
         return 1;
     }
 
-    const int32_t dx = ((target->x - start->x) << WALL_SHIFT) / dz;
-    const int32_t dy = ((target->y - start->y) << WALL_SHIFT) / dz;
+    const int32_t dx = ((target->x - start->x) * WALL_L) / dz;
+    const int32_t dy = ((target->y - start->y) * WALL_L) / dz;
 
     int16_t room_num = start->room_num;
     int16_t last_room_num = start->room_num;
