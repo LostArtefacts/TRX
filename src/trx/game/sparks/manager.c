@@ -230,7 +230,7 @@ static void M_UpdateWind(void)
 
     // Original TR3 uses a 0..4095 angle space; keep the calculations faithful.
     m_TR3DWindAngle =
-        (m_TR3DWindAngle + (((Random_GetControl() & 0x3F) - 32) << 1)) & 0x1FFE;
+        (m_TR3DWindAngle + (((Random_GetControl() & 0x3F) - 32) * 2)) & 0x1FFE;
 
     if (m_TR3DWindAngle < 1024) { // DEG_90
         m_TR3DWindAngle += (1024 - m_TR3DWindAngle) << 1;
@@ -357,7 +357,7 @@ void Sparks_Control(void)
         // Physics
         spark->vel.y += spark->gravity;
         if (spark->max_y_vel != 0) {
-            const int32_t limit = (int32_t)spark->max_y_vel << 5;
+            const int32_t limit = (int32_t)spark->max_y_vel * (1 << 5);
             if ((spark->vel.y < 0 && spark->vel.y < limit)
                 || (spark->vel.y > 0 && spark->vel.y > limit)) {
                 spark->vel.y = limit;

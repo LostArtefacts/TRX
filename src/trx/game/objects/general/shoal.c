@@ -406,7 +406,7 @@ static void M_Control(const int16_t item_num)
             leader->angle_time = (Random_GetControl() & 0xF) + 8;
             int32_t delta = (Random_GetControl() & 0x3F) - 24;
             if ((Random_GetControl() & 3) == 0) {
-                delta <<= 5;
+                delta *= 32;
             }
             leader->angle = (leader->angle + delta) & 0xFFF;
         }

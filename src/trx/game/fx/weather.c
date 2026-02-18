@@ -79,7 +79,7 @@ static void M_SpawnRainDrop(M_RAINDROP *const drop)
     }
 
     const int32_t dist = Random_GetDraw() & M_RAIN_SPAWN_DIST_MASK;
-    const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) << 3;
+    const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) * 8;
 
     drop->pos = (XYZ_32) {
         .x = lara_item->pos.x + ((dist * Math_Sin(angle)) >> W2V_SHIFT),
@@ -130,7 +130,7 @@ static void M_UpdateRain(void)
         }
 
         drop->pos.x += (int32_t)drop->xv + 4 * wind.x;
-        drop->pos.y += (int32_t)drop->yv << 3;
+        drop->pos.y += (int32_t)drop->yv * 8;
         drop->pos.z += (int32_t)drop->zv + 4 * wind.z;
 
         int32_t rnd = Random_GetDraw();
@@ -172,9 +172,9 @@ static void M_DrawRain(void)
 
         const XYZ_32 to = drop->pos;
         const XYZ_32 from = {
-            drop->pos.x - (wind.x << 2),
-            drop->pos.y - ((int32_t)drop->yv << 3),
-            drop->pos.z - (wind.z << 2),
+            drop->pos.x - (wind.x * 4),
+            drop->pos.y - ((int32_t)drop->yv * 8),
+            drop->pos.z - (wind.z * 4),
         };
 
         const RGBA_8888 from_color = { 0, 0, 0x20, 0x00 };
@@ -192,7 +192,7 @@ static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
     }
 
     const int32_t dist = Random_GetDraw() & M_RAIN_SPAWN_DIST_MASK;
-    const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) << 3;
+    const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) * 8;
 
     snow->pos = (XYZ_32) {
         .x = lara_item->pos.x + ((dist * Math_Sin(angle)) >> W2V_SHIFT),
@@ -210,7 +210,7 @@ static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
     snow->stopped = false;
     snow->xv = (int8_t)((Random_GetDraw() & 7) - 4);
     snow->yv =
-        (uint8_t)(((Random_GetDraw() % M_SNOW_YV_RANGE) + M_SNOW_YV_MIN) << 3);
+        (uint8_t)(((Random_GetDraw() % M_SNOW_YV_RANGE) + M_SNOW_YV_MIN) * 8);
     snow->zv = (int8_t)((Random_GetDraw() & 7) - 4);
     snow->life = (uint8_t)(M_SNOW_LIFE_BASE - ((int32_t)snow->yv << 1));
 }
@@ -273,15 +273,15 @@ static void M_UpdateSnow(void)
 
         const XZ_32 wind = Sparks_GetSmokeWind();
 
-        if (snow->xv < (wind.x << 1)) {
+        if (snow->xv < (wind.x * 2)) {
             snow->xv++;
-        } else if (snow->xv > (wind.x << 1)) {
+        } else if (snow->xv > (wind.x * 2)) {
             snow->xv--;
         }
 
-        if (snow->zv < (wind.z << 1)) {
+        if (snow->zv < (wind.z * 2)) {
             snow->zv++;
-        } else if (snow->zv > (wind.z << 1)) {
+        } else if (snow->zv > (wind.z * 2)) {
             snow->zv--;
         }
 

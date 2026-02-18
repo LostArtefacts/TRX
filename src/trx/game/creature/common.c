@@ -628,7 +628,7 @@ int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
 
     int16_t angle = Math_Atan(dz, dx) - item->rot.y;
     if (angle > FRONT_ARC || angle < -FRONT_ARC) {
-        const int32_t range = (item->speed << 14) / max_turn;
+        const int32_t range = (item->speed * (1 << 14)) / max_turn;
         if (SQUARE(dx) + SQUARE(dz) < SQUARE(range)) {
             max_turn /= 2;
         }
@@ -1282,18 +1282,18 @@ int32_t Creature_Vault(
 
         if (old_x_sector >= x_sector) {
             item->rot.y = -DEG_90;
-            item->pos.x = (old_x_sector << WALL_SHIFT) + shift;
+            item->pos.x = (old_x_sector * WALL_L) + shift;
         } else {
             item->rot.y = DEG_90;
-            item->pos.x = (x_sector << WALL_SHIFT) - shift;
+            item->pos.x = (x_sector * WALL_L) - shift;
         }
     } else if (old_x_sector == x_sector) {
         if (old_z_sector >= z_sector) {
             item->rot.y = -DEG_180;
-            item->pos.z = (old_z_sector << WALL_SHIFT) + shift;
+            item->pos.z = (old_z_sector * WALL_L) + shift;
         } else {
             item->rot.y = 0;
-            item->pos.z = (z_sector << WALL_SHIFT) - shift;
+            item->pos.z = (z_sector * WALL_L) - shift;
         }
     }
 

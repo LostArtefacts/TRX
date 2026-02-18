@@ -182,7 +182,7 @@ static int16_t M_GetSplitTiltType(
         }
     }
 
-    return (x_off << 8) | (z_off & 0xFF);
+    return ((uint8_t)x_off << 8) | (z_off & 0xFF);
 }
 
 static bool M_IsPortalSolid(

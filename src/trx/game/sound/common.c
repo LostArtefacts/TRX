@@ -139,7 +139,7 @@ static int32_t M_GetPitch(const SAMPLE_INFO *const sample, const uint32_t flags)
 {
     int32_t pitch = (flags & SPM_PITCH) != 0 ? (flags >> 8) & 0xFFFFFF
                                              : SOUND_DEFAULT_PITCH;
-    pitch += sample->pitch << 9;
+    pitch += sample->pitch * (1 << 9);
     if (!g_Config.audio.enable_pitched_sounds) {
         return pitch;
     }

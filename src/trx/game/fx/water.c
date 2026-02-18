@@ -110,9 +110,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
     FX_WATER_SPLASH_VERT *v = splash->v;
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx = (setup.inner_xz_off * m_SplashRings[i][0]) << 1;
+        v->wx = (setup.inner_xz_off * m_SplashRings[i][0]) * 2;
         v->wy = 0;
-        v->wz = (setup.inner_xz_off * m_SplashRings[i][1]) << 1;
+        v->wz = (setup.inner_xz_off * m_SplashRings[i][1]) * 2;
         v->xv = (setup.inner_xz_vel * m_SplashRings[i][0]) / 12;
         v->yv = 0;
         v->zv = (setup.inner_xz_vel * m_SplashRings[i][1]) / 12;
@@ -126,11 +126,11 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
     for (int32_t i = 0; i < 8; i++) {
         v->wx =
             ((setup.inner_xz_off + setup.inner_xz_size) * m_SplashRings[i][0])
-            << 1;
+            * 2;
         v->wy = setup.inner_y_size;
         v->wz =
             ((setup.inner_xz_off + setup.inner_xz_size) * m_SplashRings[i][1])
-            << 1;
+            * 2;
         v->xv = (setup.inner_xz_vel * m_SplashRings[i][0]) >> 3;
         v->yv = setup.inner_y_vel;
         v->zv = (setup.inner_xz_vel * m_SplashRings[i][1]) >> 3;
@@ -142,9 +142,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx = (setup.middle_xz_off * m_SplashRings[i][0]) << 1;
+        v->wx = (setup.middle_xz_off * m_SplashRings[i][0]) * 2;
         v->wy = 0;
-        v->wz = (setup.middle_xz_off * m_SplashRings[i][1]) << 1;
+        v->wz = (setup.middle_xz_off * m_SplashRings[i][1]) * 2;
         v->xv = (setup.middle_xz_vel * m_SplashRings[i][0]) / 12;
         v->yv = 0;
         v->zv = (setup.middle_xz_vel * m_SplashRings[i][1]) / 12;
@@ -158,11 +158,11 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
     for (int32_t i = 0; i < 8; i++) {
         v->wx =
             ((setup.middle_xz_off + setup.middle_xz_size) * m_SplashRings[i][0])
-            << 1;
+            * 2;
         v->wy = setup.middle_y_size;
         v->wz =
             ((setup.middle_xz_off + setup.middle_xz_size) * m_SplashRings[i][1])
-            << 1;
+            * 2;
         v->xv = (setup.middle_xz_vel * m_SplashRings[i][0]) >> 3;
         v->yv = setup.middle_y_vel;
         v->zv = (setup.middle_xz_vel * m_SplashRings[i][1]) >> 3;
@@ -174,9 +174,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx = (setup.outer_xz_off * m_SplashRings[i][0]) << 1;
+        v->wx = (setup.outer_xz_off * m_SplashRings[i][0]) * 2;
         v->wy = 0;
-        v->wz = (setup.outer_xz_off * m_SplashRings[i][1]) << 1;
+        v->wz = (setup.outer_xz_off * m_SplashRings[i][1]) * 2;
         v->xv = (setup.outer_xz_vel * m_SplashRings[i][0]) / 12;
         v->yv = 0;
         v->zv = (setup.outer_xz_vel * m_SplashRings[i][1]) / 12;
@@ -190,11 +190,11 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
     for (int32_t i = 0; i < 8; i++) {
         v->wx =
             ((setup.outer_xz_off + setup.outer_xz_size) * m_SplashRings[i][0])
-            << 1;
+            * 2;
         v->wy = 0;
         v->wz =
             ((setup.outer_xz_off + setup.outer_xz_size) * m_SplashRings[i][1])
-            << 1;
+            * 2;
         v->xv = (setup.outer_xz_vel * m_SplashRings[i][0]) >> 3;
         v->yv = 0;
         v->zv = (setup.outer_xz_vel * m_SplashRings[i][1]) >> 3;

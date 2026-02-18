@@ -358,9 +358,10 @@ static void M_TranslateRel(MATRIX *const m, const XYZ_32 offset)
 
 static void M_TranslateSet(MATRIX *const m, const XYZ_32 pos)
 {
-    m->_03 = pos.x << W2V_SHIFT;
-    m->_13 = pos.y << W2V_SHIFT;
-    m->_23 = pos.z << W2V_SHIFT;
+    const int64_t scale = (int64_t)(1 << W2V_SHIFT);
+    m->_03 = (int64_t)pos.x * scale;
+    m->_13 = (int64_t)pos.y * scale;
+    m->_23 = (int64_t)pos.z * scale;
 }
 
 void Matrix_Mul3x3_M(
