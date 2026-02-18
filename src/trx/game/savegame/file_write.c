@@ -126,14 +126,31 @@ static void M_WriteItem(
     JSONW_PUSH_ARRAY(io);
     const CARRIED_ITEM *drop_item = item->carried_item;
     while (drop_item != nullptr) {
+        XYZ_32 drop_pos = drop_item->pos;
+        int16_t drop_rot_y = drop_item->rot.y;
+        int16_t drop_room_num = drop_item->room_num;
+        int16_t drop_fall_speed = drop_item->fall_speed;
+        const DROP_STATUS save_status = Carrier_GetSaveStatus(drop_item);
+
+        if ((save_status == DS_FALLING || save_status == DS_DROPPED)
+            && drop_item->spawn_num != NO_ITEM) {
+            const ITEM *const pickup = Item_Get(drop_item->spawn_num);
+            if (pickup != nullptr) {
+                drop_pos = pickup->pos;
+                drop_rot_y = pickup->rot.y;
+                drop_room_num = pickup->room_num;
+                drop_fall_speed = pickup->fall_speed;
+            }
+        }
+
         JSONW_PUSH_OBJECT(io);
         JSONW_WRITE(io, "object_id", Object_ToGameID(drop_item->object_id));
-        M_WriteXYZ32(io, "pos", drop_item->pos);
-        JSONW_WRITE(io, "y_rot", drop_item->rot.y);
-        JSONW_WRITE(io, "room_num", drop_item->room_num);
-        JSONW_WRITE(io, "fall_speed", drop_item->fall_speed);
+        M_WriteXYZ32(io, "pos", drop_pos);
+        JSONW_WRITE(io, "y_rot", drop_rot_y);
+        JSONW_WRITE(io, "room_num", drop_room_num);
+        JSONW_WRITE(io, "fall_speed", drop_fall_speed);
         JSONW_WRITE(io, "spawn_num", drop_item->spawn_num);
-        JSONW_WRITE(io, "status", (int32_t)Carrier_GetSaveStatus(drop_item));
+        JSONW_WRITE(io, "status", (int32_t)save_status);
         JSONW_POP_AND_APPEND(io);
         drop_item = drop_item->next_item;
     }

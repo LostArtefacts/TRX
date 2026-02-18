@@ -430,9 +430,10 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
                 } else {
                     item->carried_item = carried_item;
                 }
-                // Introduced in TRX 1.2
-                M_SHOULD(JSON_READ(io, "spawn_num", &carried_item->spawn_num));
             }
+            // Introduced in TRX 1.2. Must be read for both newly allocated and
+            // pre-existing carried entries (e.g. gameflow-defined drops).
+            M_SHOULD(JSON_READ(io, "spawn_num", &carried_item->spawn_num));
 
             M_MUST(M_ReadObjectID(io, "object_id", &carried_item->object_id));
             M_MUST(JSON_READ(io, "pos", &carried_item->pos));
@@ -441,20 +442,16 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
             M_MUST(JSON_READ(io, "fall_speed", &carried_item->fall_speed));
             M_MUST(JSON_READ(io, "status", &carried_item->status));
 
-            if (carried_item->status == DS_CARRIED
-                && carried_item->spawn_num != NO_ITEM) {
-                ITEM *const pickup_item = Item_Get(carried_item->spawn_num);
-                if (pickup_item != nullptr
-                    && pickup_item->room_num != NO_ROOM) {
-                    Item_UpdateRoom(carried_item->spawn_num, NO_ROOM);
-                }
-            }
+            Carrier_SyncItem(item_num, carried_item);
 
             prev_item = carried_item;
             carried_item = carried_item->next_item;
             M_MUST(JSON_POP(io));
         }
-        Carrier_TestItemDrops(item_num);
+        // TODO: remove legacy branch in TRX 1.5.
+        if (JSON_ReadIO_GetVersion(io) < SG_VERSION_17) {
+            Carrier_TestItemDrops(item_num);
+        }
         M_MUST(JSON_POP(io));
     }
 

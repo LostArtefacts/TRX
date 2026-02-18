@@ -24,6 +24,15 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
+static OBJECT_ID M_ConvertDroppedGun(const OBJECT_ID obj_id)
+{
+    if (g_GameFlow.convert_dropped_guns && Object_IsType(obj_id, g_GunObjects)
+        && Inv_RequestItem(obj_id) && obj_id != O_PISTOL_ITEM) {
+        return Object_GetCognate(obj_id, g_GunAmmoObjectMap);
+    }
+    return obj_id;
+}
+
 static ITEM *M_GetCarrier(const int16_t item_num)
 {
     if (item_num < 0 || item_num >= Item_GetLevelCount()) {
@@ -48,6 +57,28 @@ static ITEM *M_GetCarrier(const int16_t item_num)
     }
 
     return item;
+}
+
+static ITEM *M_EnsureCarriedPickupItem(
+    const ITEM *const carrier, CARRIED_ITEM *const carried_item)
+{
+    if (carried_item->spawn_num == NO_ITEM) {
+        return nullptr;
+    }
+
+    if (carried_item->spawn_num < Item_GetTotalCount()) {
+        return Item_Get(carried_item->spawn_num);
+    }
+
+    // Gameflow drops can reference runtime-spawned pickup indices that do not
+    // exist yet after a fresh level load. Re-spawn and rebind the index.
+    const int16_t spawn_num = Item_Spawn(carrier, carried_item->object_id);
+    if (spawn_num == NO_ITEM) {
+        carried_item->spawn_num = NO_ITEM;
+        return nullptr;
+    }
+    carried_item->spawn_num = spawn_num;
+    return Item_Get(carried_item->spawn_num);
 }
 
 static bool M_IsCarrierType(const OBJECT_ID obj_id)
@@ -277,16 +308,50 @@ bool Carrier_IsItemCarried(const int16_t item_num)
 
 DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
 {
-    // This allows us to save drops as still being carried to allow accurate
-    // placement again in Carrier_TestItemDrops on load.
     if (item->status == DS_DROPPED) {
         const ITEM *const pickup = Item_Get(item->spawn_num);
-        return pickup->status == IS_INVISIBLE ? DS_COLLECTED : DS_CARRIED;
-    } else if (item->status == DS_FALLING) {
-        return DS_CARRIED;
+        return pickup->status == IS_INVISIBLE ? DS_COLLECTED : DS_DROPPED;
+    }
+    return item->status;
+}
+
+void Carrier_SyncItem(
+    const int16_t carrier_item_num, CARRIED_ITEM *const carried_item)
+{
+    const ITEM *const carrier = Item_Get(carrier_item_num);
+    ITEM *const pickup_item = M_EnsureCarriedPickupItem(carrier, carried_item);
+    if (pickup_item == nullptr) {
+        return;
     }
 
-    return item->status;
+    switch (carried_item->status) {
+    case DS_CARRIED:
+        if (pickup_item->room_num != NO_ROOM) {
+            Item_UpdateRoom(carried_item->spawn_num, NO_ROOM);
+        }
+        break;
+
+    case DS_FALLING:
+    case DS_DROPPED:
+        pickup_item->pos = carried_item->pos;
+        pickup_item->rot.y = carried_item->rot.y;
+        pickup_item->fall_speed = carried_item->fall_speed;
+        if (carried_item->status == DS_DROPPED) {
+            pickup_item->status = IS_INACTIVE;
+        } else {
+            m_AnimatingCount++;
+        }
+        pickup_item->object_id = M_ConvertDroppedGun(pickup_item->object_id);
+        Item_UpdateRoom(carried_item->spawn_num, carried_item->room_num);
+        break;
+
+    case DS_COLLECTED:
+        if (pickup_item->room_num != NO_ROOM) {
+            Item_UpdateRoom(carried_item->spawn_num, NO_ROOM);
+        }
+        pickup_item->status = IS_INVISIBLE;
+        break;
+    }
 }
 
 void Carrier_TestItemDrops(const int16_t item_num)
@@ -305,15 +370,9 @@ void Carrier_TestItemDrops(const int16_t item_num)
             continue;
         }
 
-        OBJECT_ID obj_id = item->object_id;
-        if (g_GameFlow.convert_dropped_guns
-            && Object_IsType(obj_id, g_GunObjects) && Inv_RequestItem(obj_id)
-            && obj_id != O_PISTOL_ITEM) {
-            obj_id = Object_GetCognate(obj_id, g_GunAmmoObjectMap);
-        }
-
         if (item->spawn_num == NO_ITEM) {
             // This is a gameflow-defined drop, so a spawn number is required.
+            const OBJECT_ID obj_id = M_ConvertDroppedGun(item->object_id);
             item->spawn_num = Item_Spawn(carrier, obj_id);
         } else {
             // TR2-style item drops will already have a spawn number.
@@ -346,35 +405,6 @@ void Carrier_TestItemDrops(const int16_t item_num)
         }
 
     } while ((item = item->next_item) != nullptr);
-}
-
-void Carrier_TestLegacyDrops(const int16_t item_num)
-{
-    const ITEM *const carrier = Item_Get(item_num);
-    if (carrier->hit_points > 0) {
-        return;
-    }
-
-    // Handle cases where legacy saves have been loaded. Ensure that
-    // the OG enemy will still spawn items if Lara hasn't yet collected
-    // them by using a test cognate in each case. Ensure also that
-    // collected items do not re-spawn now or in future saves.
-    const OBJECT_ID test_id =
-        Object_GetCognate(carrier->object_id, m_LegacyMap);
-    if (test_id == NO_OBJECT) {
-        return;
-    }
-
-    if (!Inv_RequestItem(test_id)) {
-        Carrier_TestItemDrops(item_num);
-    } else {
-        CARRIED_ITEM *item = carrier->carried_item;
-        while (item != nullptr) {
-            // Simulate Lara having picked up the item.
-            item->status = DS_COLLECTED;
-            item = item->next_item;
-        }
-    }
 }
 
 void Carrier_AnimateDrops(void)

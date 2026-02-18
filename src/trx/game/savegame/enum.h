@@ -22,6 +22,9 @@ typedef enum {
     // Music save format switched to stream list with play modes.
     SG_VERSION_16 = 16,
 
+    // Carried-item drops are persisted with truthful statuses/positions.
+    SG_VERSION_17 = 17,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_16,
+    SG_CURRENT_VERSION = SG_VERSION_17,
 } SAVEGAME_VERSION;
