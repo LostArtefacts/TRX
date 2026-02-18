@@ -4,8 +4,8 @@
 
 #include <time.h>
 
-static int32_t m_RandControl = 0xD371F947;
-static int32_t m_RandDraw = 0xD371F947;
+static uint32_t m_RandControl = 0xD371F947U;
+static uint32_t m_RandDraw = 0xD371F947U;
 static bool m_IsDrawFrozen = false;
 
 void Random_Seed(void)
@@ -19,19 +19,19 @@ void Random_Seed(void)
 void Random_SeedControl(int32_t seed)
 {
     LOG_DEBUG("%d", seed);
-    m_RandControl = seed;
+    m_RandControl = (uint32_t)seed;
 }
 
 int32_t Random_GetControl(void)
 {
-    m_RandControl = 0x41C64E6D * m_RandControl + 0x3039;
-    return (m_RandControl >> 10) & 0x7FFF;
+    m_RandControl = 0x41C64E6DU * m_RandControl + 0x3039U;
+    return (int32_t)((m_RandControl >> 10) & 0x7FFFU);
 }
 
 void Random_SeedDraw(int32_t seed)
 {
     LOG_DEBUG("%d", seed);
-    m_RandDraw = seed;
+    m_RandDraw = (uint32_t)seed;
 }
 
 int32_t Random_GetDraw(void)
@@ -40,19 +40,19 @@ int32_t Random_GetDraw(void)
     // as caustic initialisation) and normal game play. RNG should remain static
     // when the game output is paused e.g. inventory, pause screen etc.
     if (!m_IsDrawFrozen) {
-        m_RandDraw = 0x41C64E6D * m_RandDraw + 0x3039;
+        m_RandDraw = 0x41C64E6DU * m_RandDraw + 0x3039U;
     }
-    return (m_RandDraw >> 10) & 0x7FFF;
+    return (int32_t)((m_RandDraw >> 10) & 0x7FFFU);
 }
 
 int32_t Random_GetControlSeed(void)
 {
-    return m_RandControl;
+    return (int32_t)m_RandControl;
 }
 
 int32_t Random_GetDrawSeed(void)
 {
-    return m_RandDraw;
+    return (int32_t)m_RandDraw;
 }
 
 void Random_FreezeDraw(bool is_frozen)
