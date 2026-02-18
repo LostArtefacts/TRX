@@ -24,7 +24,7 @@
 #define M_DEBUG 0
 
 typedef struct {
-    VECTOR *raw_args;
+    SHELL_ARGS *args;
 } M_PARSE_CTX;
 
 // Parsed frame events
@@ -342,7 +342,12 @@ static bool M_ParseArgs(const char *const line, M_PARSE_CTX *const ctx)
         return false;
     }
 
-    ctx->raw_args = Vector_Create(sizeof(const char *));
+    if (ctx->args != nullptr) {
+        Shell_FreeArgs(ctx->args);
+        ctx->args = nullptr;
+    }
+    // Build an owned argv vector for Shell_ParseArgs adoption.
+    VECTOR *raw_args = Vector_Create(sizeof(const char *));
     const char *p = line + 4;
     while (*p != '\0') {
         while (isspace((unsigned char)*p)) {
@@ -362,11 +367,12 @@ static bool M_ParseArgs(const char *const line, M_PARSE_CTX *const ctx)
         memcpy(tmp, start, len);
         tmp[len] = '\0';
         char *arg = Memory_DupStr(tmp);
-        Vector_Add(ctx->raw_args, &arg);
+        Vector_Add(raw_args, &arg);
         if (*p == '"') {
             p++;
         }
     }
+    ctx->args = Shell_ParseArgs(raw_args);
     return true;
 }
 
@@ -520,7 +526,10 @@ SHELL_ARGS *TestReplay_Open(const char *path)
     }
     Vector_Free(lines);
     LOG_INFO("Loaded %zu frames for playback", p->frames->count);
-    return Shell_ParseArgs(ctx.raw_args);
+    if (ctx.args == nullptr) {
+        ctx.args = Shell_ParseArgs(nullptr);
+    }
+    return ctx.args;
 }
 
 void TestReplay_Start(void)
@@ -540,6 +549,7 @@ void TestReplay_Start(void)
             LOG_WARNING("Unknown line: %s", ln);
         }
     }
+    Shell_FreeArgs(ctx.args);
 }
 
 void TestReplay_Close(void)

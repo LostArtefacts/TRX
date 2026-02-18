@@ -4,6 +4,8 @@
 #include <trx/game/shell/mod.h>
 
 typedef struct {
+    // Owned argv snapshot used as backing storage for pointer-valued fields
+    // (e.g. level/replay/test paths). Freed by Shell_FreeArgs.
     VECTOR *original_args;
 
     int32_t engine_version;
@@ -19,4 +21,11 @@ typedef struct {
     bool quiet;
 } SHELL_ARGS;
 
+// Adopts `raw_args`.
+// Requirements:
+// - `raw_args` items must be `char *` allocated on heap (or nullptr).
+// - ownership of vector + strings transfers to returned SHELL_ARGS.
+// - caller must not free or mutate `raw_args` after this call.
 SHELL_ARGS *Shell_ParseArgs(VECTOR *raw_args);
+// Frees SHELL_ARGS and its adopted `original_args` vector + strings.
+void Shell_FreeArgs(SHELL_ARGS *args);
