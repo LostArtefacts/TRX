@@ -45,12 +45,13 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, VFILE *const file)
     const int32_t num_objects = VFile_ReadS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
+        OBJECT fallback_obj = {};
         const int32_t game_obj_id = VFile_ReadS32(file);
         OBJECT *obj = Object_GetByGameID(game_obj_id);
         if (obj == nullptr) {
             if (loader->game_version == 3) {
                 // TODO: remove this check after we implement the items
-                obj = &(OBJECT) {};
+                obj = &fallback_obj;
             } else {
                 Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
             }
