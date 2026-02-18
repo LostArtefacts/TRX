@@ -49,10 +49,12 @@ typedef struct {
 typedef struct {
     bool lizard_active;
 } M_SHARED_PRIV;
+
 typedef struct {
     XYZ_32 pos;
     uint16_t y_rot;
 } M_LIZARD_SUMMON_COORDS;
+
 typedef struct {
     uint8_t dead;
     int16_t attack_count;
@@ -306,6 +308,7 @@ static void M_TriggerLizard(M_PRIV *const p)
     item->status = IS_ACTIVE;
     item->collidable = 1;
     item->flags &= ~(IF_KILLED | IF_ONE_SHOT);
+    item->include_in_kill_stats = false;
 
     // Item_Kill removes it from room item chains; reinsert even when room is
     // unchanged.

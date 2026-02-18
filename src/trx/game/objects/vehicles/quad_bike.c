@@ -712,7 +712,9 @@ static void M_SkidooBaddieCollision(ITEM *const quad)
                 }
                 if (item->hit_points > 0) {
                     item->hit_points = 0;
-                    Stats_AddKill();
+                    if (item->include_in_kill_stats) {
+                        Stats_AddKill();
+                    }
                 }
             }
 

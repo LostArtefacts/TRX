@@ -96,6 +96,12 @@ static bool M_CanDropItemsBack(const ITEM *const item)
     return item->hit_points <= 0 && item->status == IS_DEACTIVATED;
 }
 
+static void M_InitialiseFront(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    item->include_in_kill_stats = false;
+}
+
 static void M_InitialiseBack(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -463,6 +469,7 @@ static void M_SetupFront(OBJECT *const obj)
 
     SOFT_ASSERT(
         Object_Get(O_DRAGON_BACK)->loaded, "Dragon back object missing");
+    obj->initialise_func = M_InitialiseFront;
     obj->handle_save_func = M_HandleSaveFront;
     obj->control_func = M_ControlFront;
     obj->collision_func = M_Collision;
