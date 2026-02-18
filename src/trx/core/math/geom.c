@@ -66,7 +66,10 @@ bool XYZ_32_IsNearby(
 
 int32_t XYZ_32_GetLength(const XYZ_32 pos)
 {
-    return Math_Sqrt(SQUARE(pos.x) + SQUARE(pos.y) + SQUARE(pos.z));
+    return (int32_t)Math_Sqrt64(
+        SQUARE((uint64_t)ABS((int64_t)pos.x))
+        + SQUARE((uint64_t)ABS((int64_t)pos.y))
+        + SQUARE((uint64_t)ABS((int64_t)pos.z)));
 }
 
 int64_t XYZ_32_GetLength2_64(const XYZ_32 pos)

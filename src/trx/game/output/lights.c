@@ -1,6 +1,7 @@
 #include <trx/game/output/lights.h>
 
 #include <trx/core/colors.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/const.h>
@@ -574,12 +575,12 @@ void Output_CalculateStaticMeshLight(
             if (falloff_half <= 0) {
                 continue;
             }
-            const int32_t dx = pos.x - light->pos.x;
-            const int32_t dy = pos.y - light->pos.y;
-            const int32_t dz = pos.z - light->pos.z;
-
-            const uint32_t distance =
-                Math_Sqrt((uint32_t)(SQUARE(dx) + SQUARE(dy) + SQUARE(dz)));
+            const XYZ_32 delta = {
+                .x = pos.x - light->pos.x,
+                .y = pos.y - light->pos.y,
+                .z = pos.z - light->pos.z,
+            };
+            const uint32_t distance = XYZ_32_GetLength(delta);
             if ((int32_t)distance > falloff_half) {
                 continue;
             }
