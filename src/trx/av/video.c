@@ -1590,7 +1590,8 @@ static int M_StreamComponentOpen(M_STATE *is, int stream_index)
     const AVDictionaryEntry *t = nullptr;
     int sample_rate;
     int nb_channels;
-    AVChannelLayout ch_layout;
+    AVChannelLayout ch_layout = {};
+    bool has_ch_layout = false;
     int ret = 0;
 
     if (stream_index < 0 || stream_index >= (signed)ic->nb_streams) {
@@ -1631,7 +1632,11 @@ static int M_StreamComponentOpen(M_STATE *is, int stream_index)
     switch (avctx->codec_type) {
     case AVMEDIA_TYPE_AUDIO:
         sample_rate = avctx->sample_rate;
-        ch_layout = avctx->ch_layout;
+        ret = av_channel_layout_copy(&ch_layout, &avctx->ch_layout);
+        if (ret < 0) {
+            goto fail;
+        }
+        has_ch_layout = true;
 
         if ((ret = M_AudioOpen(is, &ch_layout, sample_rate, &is->audio_tgt))
             < 0) {
@@ -1692,7 +1697,9 @@ static int M_StreamComponentOpen(M_STATE *is, int stream_index)
 fail:
     avcodec_free_context(&avctx);
 out:
-    av_channel_layout_uninit(&ch_layout);
+    if (has_ch_layout) {
+        av_channel_layout_uninit(&ch_layout);
+    }
 
     return ret;
 }
