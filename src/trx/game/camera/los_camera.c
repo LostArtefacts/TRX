@@ -240,14 +240,14 @@ static bool M_UpdateLaraState(void)
     bool same_lara_state =
         m_LastState.lara.current_anim_state == lara_item->current_anim_state
         && m_LastState.lara.goal_anim_state == lara_item->goal_anim_state
-        && XYZ_16_AreEquivalent(&m_LastState.lara.head_rot, &lara->head_rot)
-        && XYZ_32_AreEquivalent(&m_LastState.lara.pos, &lara_item->pos);
+        && XYZ_16_AreEquivalent(m_LastState.lara.head_rot, lara->head_rot)
+        && XYZ_32_AreEquivalent(m_LastState.lara.pos, lara_item->pos);
     bool same_camera_state = m_LastState.cam_type == g_Camera.type;
     if (g_Camera.type != CAM_LOOK) {
         same_lara_state &=
-            XYZ_16_AreEquivalent(&m_LastState.lara.rot, &lara_item->rot)
+            XYZ_16_AreEquivalent(m_LastState.lara.rot, lara_item->rot)
             && XYZ_16_AreEquivalent(
-                &m_LastState.lara.torso_rot, &lara->torso_rot);
+                m_LastState.lara.torso_rot, lara->torso_rot);
         same_camera_state &=
             m_LastState.additional_angle == g_Camera.additional_angle
             && m_LastState.additional_elevation

@@ -870,7 +870,7 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
         if (ABS(height - lara_item->pos.y) > STEP_L * 2) {
             return false;
         }
-        if (XYZ_32_GetDistance(&new_pos, &lara_item->pos) < STEP_L) {
+        if (XYZ_32_GetDistance(new_pos, lara_item->pos) < STEP_L) {
             return true;
         }
     }

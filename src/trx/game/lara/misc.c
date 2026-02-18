@@ -164,7 +164,7 @@ void Lara_RefuseInteraction(void)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (!XYZ_32_AreEquivalent(
-            &lara_info->interact_target.initial_pos, &lara_item->pos)) {
+            lara_info->interact_target.initial_pos, lara_item->pos)) {
         lara_info->interact_target.initial_pos = lara_item->pos;
         Sound_Effect(SFX_LARA_NO, &lara_item->pos, SPM_ALWAYS);
     }

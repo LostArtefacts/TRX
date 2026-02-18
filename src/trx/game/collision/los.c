@@ -144,7 +144,7 @@ int32_t LOS_CheckSmashable(
         }
 
         // Ray segment intersects the object's local AABB
-        const int32_t dist = Item_GetDistance(item, &start);
+        const int32_t dist = Item_GetDistance(item, start);
         if (dist < best_dist) {
             best_dist = dist;
             best_item_num = item_num;

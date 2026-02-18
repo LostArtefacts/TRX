@@ -172,7 +172,7 @@ static void M_ControlPickupAids(ITEM *const item)
         return;
     }
 
-    const int32_t distance = Item_GetDistance(lara, &item->pos);
+    const int32_t distance = Item_GetDistance(lara, item->pos);
     if (distance < M_AID_DIST_MIN || distance > M_AID_DIST_MAX) {
         return;
     }
