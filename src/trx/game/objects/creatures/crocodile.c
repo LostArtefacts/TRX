@@ -206,11 +206,8 @@ static void M_ControlAlligator(const int16_t item_num)
 
     ITEM *const item = Item_Get(item_num);
     CREATURE *const gator = item->creature_data;
-    const SECTOR *sector;
     int16_t head = 0;
     int16_t angle = 0;
-    int16_t room_num;
-    int32_t wh;
 
     if (item->hit_points <= 0) {
         if (item->current_anim_state != M_ALLIGATOR_STATE_DEATH) {
@@ -222,23 +219,9 @@ static void M_ControlAlligator(const int16_t item_num)
 
         // Test if we should convert to a crocodile. If not, control the death
         // pose of the alligator in the water.
-        if (!Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
-            if (item->pos.y > wh + M_ALLIGATOR_FLOAT_SPEED) {
-                item->pos.y -= M_ALLIGATOR_FLOAT_SPEED;
-            } else if (item->pos.y < wh) {
-                item->pos.y = wh;
-                if (gator) {
-                    LOT_DisableBaddieAI(item_num);
-                }
-            }
+        if (!Creature_EnsureHabitat(item_num, nullptr, &m_CrocodileInfo)) {
+            Creature_Float(item_num);
         }
-
-        Item_Animate(item);
-
-        room_num = item->room_num;
-        sector = Room_GetSector(item->pos, &room_num);
-        item->floor = Room_GetHeight(sector, item->pos);
-        Item_UpdateRoom(item_num, room_num);
         return;
     }
 
@@ -288,10 +271,11 @@ static void M_ControlAlligator(const int16_t item_num)
     Creature_Head(item, head);
 
     // Test alive conversion to crocodile and set relevant pathfinding values.
+    int32_t wh = 0;
     if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
         M_UpdateCreatureLOT(item);
-    } else if (item->pos.y < wh + STEP_L) {
-        item->pos.y = wh + STEP_L;
+    } else {
+        CLAMPL(item->pos.y, wh + STEP_L);
     }
 
     Creature_Animate(item_num, angle, 0);
