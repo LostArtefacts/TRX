@@ -230,6 +230,7 @@ void Item_Initialise(const int16_t item_num)
     item->looked_at = false;
     item->enable_interpolation = true;
     item->enable_shadow = true;
+    item->include_in_kill_stats = true;
 
     item->clear_body = false;
     if ((item->flags & IF_KILLED) != 0) {

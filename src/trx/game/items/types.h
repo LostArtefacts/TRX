@@ -67,6 +67,7 @@ typedef struct {
     bool looked_at;
     bool dynamic_light;
     bool clear_body;
+    bool include_in_kill_stats;
 
     struct {
         struct {
