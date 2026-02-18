@@ -345,7 +345,6 @@ void SG_File_DumpFlipmaps(JSON_WRITE_IO *const io)
 void SG_File_DumpCameras(JSON_WRITE_IO *const io)
 {
     JSONW_PUSH_ARRAY(io);
-    JSON_ARRAY *const cameras_arr = JSON_ArrayNew();
     for (int32_t i = 0; i < Camera_GetFixedObjectCount(); i++) {
         const OBJECT_VECTOR *const object = Camera_GetFixedObject(i);
         JSONW_PUSH_VALUE(io, object->flags);
