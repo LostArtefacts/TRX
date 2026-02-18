@@ -6,8 +6,13 @@
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
+#include <trx/version.h>
 
 // clang-format off
+#define M_SHADOW_SIZE              (UNIT_SHADOW / (g_TRVersion < 3 ? 3 : 2))
+#define M_PIVOT_LENGTH             (g_TRVersion < 3 ? 600 : 200)
+#define M_HITPOINTS                (g_TRVersion < 3 ? 20 : 42)
+
 #define M_CROCODILE_BITE_DAMAGE    100
 #define M_CROCODILE_BITE_RANGE     SQUARE(435) // = 189225
 #define M_CROCODILE_FASTTURN_ANGLE 0x4000
@@ -15,14 +20,14 @@
 #define M_CROCODILE_FASTTURN_TURN  (6 * DEG_1) // = 1092
 #define M_CROCODILE_TOUCH          0x3FC
 #define M_CROCODILE_TURN           (3 * DEG_1) // = 546
-#define M_CROCODILE_HITPOINTS      20
+#define M_CROCODILE_HITPOINTS      M_HITPOINTS
 #define M_CROCODILE_RADIUS         (WALL_L / 3) // = 341
 #define M_CROCODILE_SMARTNESS      0x2000
 
 #define M_ALLIGATOR_BITE_DAMAGE    100
 #define M_ALLIGATOR_FLOAT_SPEED    (WALL_L / 32) // = 32
 #define M_ALLIGATOR_TURN           (3 * DEG_1) // = 546
-#define M_ALLIGATOR_HITPOINTS      20
+#define M_ALLIGATOR_HITPOINTS      M_HITPOINTS
 #define M_ALLIGATOR_RADIUS         (WALL_L / 3) // = 341
 #define M_ALLIGATOR_SMARTNESS      0x400
 #define M_ALLIGATOR_BITE_FRAME     42
@@ -219,7 +224,8 @@ static void M_ControlAlligator(const int16_t item_num)
 
         // Test if we should convert to a crocodile. If not, control the death
         // pose of the alligator in the water.
-        if (!Creature_EnsureHabitat(item_num, nullptr, &m_CrocodileInfo)) {
+        if (g_TRVersion >= 3
+            || !Creature_EnsureHabitat(item_num, nullptr, &m_CrocodileInfo)) {
             Creature_Float(item_num);
         }
         return;
@@ -232,7 +238,16 @@ static void M_ControlAlligator(const int16_t item_num)
         head = info.angle;
     }
 
-    Creature_Mood(item, &info, true);
+    Creature_UpdateMood(item, &info, true);
+    if (g_TRVersion >= 3) {
+        const ITEM *const lara_item = Lara_GetItem();
+        if (!Room_Get(lara_item->room_num)->flags.underwater
+            && !Lara_Vehicle_IsMounted()) {
+            gator->mood = MOOD_BORED;
+        }
+    }
+    Creature_ApplyMood(item, &info, true);
+
     Creature_Turn(item, M_ALLIGATOR_TURN);
 
     switch (item->current_anim_state) {
@@ -268,14 +283,16 @@ static void M_ControlAlligator(const int16_t item_num)
         break;
     }
 
-    Creature_Head(item, head);
-
-    // Test alive conversion to crocodile and set relevant pathfinding values.
-    int32_t wh = 0;
-    if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
-        M_UpdateCreatureLOT(item);
+    Creature_Joint(item, 0, head);
+    if (g_TRVersion < 3) {
+        int32_t wh = 0;
+        if (Creature_EnsureHabitat(item_num, &wh, &m_CrocodileInfo)) {
+            M_UpdateCreatureLOT(item);
+        } else {
+            CLAMPL(item->pos.y, wh + STEP_L);
+        }
     } else {
-        CLAMPL(item->pos.y, wh + STEP_L);
+        Creature_Underwater(item, STEP_L);
     }
 
     Creature_Animate(item_num, angle, 0);
@@ -285,8 +302,8 @@ static void M_SetupBase(OBJECT *const obj)
 {
     obj->initialise_func = Creature_Initialise;
     obj->collision_func = Creature_Collision;
-    obj->shadow_size = UNIT_SHADOW / 3;
-    obj->pivot_length = 600;
+    obj->shadow_size = M_SHADOW_SIZE;
+    obj->pivot_length = M_PIVOT_LENGTH;
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;

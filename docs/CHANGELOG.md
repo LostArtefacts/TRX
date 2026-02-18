@@ -35,6 +35,7 @@
 - added Tribe Axeman control
 - added Tribe Pipeman control
 - added Lizard control
+- added Crocodile control
 - added Carcass control (hanging Raptor)
 - added Bat Emitter control with save/load support
 - added Smashable Wall control
