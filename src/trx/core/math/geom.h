@@ -7,9 +7,16 @@ int16_t XYZ_32_GetYaw(XYZ_32 pos);
 int16_t XYZ_32_GetYawDiff(XYZ_32 pos1, const XYZ_32 pos2);
 int16_t XYZ_32_GetPitch(XYZ_32 pos);
 int32_t XYZ_32_GetDistance(const XYZ_32 *pos1, const XYZ_32 *pos2);
+
+// Take length of a vector
 int32_t XYZ_32_GetLength(XYZ_32 pos);
+
+// Take squared length of a vector
+int32_t XYZ_32_GetLength2(XYZ_32 pos);
 int64_t XYZ_32_GetLength2_64(XYZ_32 pos);
+
 int64_t XYZ_32_DotProduct_64(XYZ_32 a, XYZ_32 b);
+
 bool XYZ_32_AreEquivalent(const XYZ_32 *pos1, const XYZ_32 *pos2);
 bool XYZ_32_IsNearby(const XYZ_32 *pos1, const XYZ_32 *pos2, int32_t distance);
 XYZ_32 XYZ_32_FromYawPitch(int16_t yaw, int16_t pitch, int32_t distance);

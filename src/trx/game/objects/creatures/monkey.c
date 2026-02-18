@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
@@ -222,7 +223,7 @@ static void M_Control(const int16_t item_num)
             const int32_t dx = lara_item->pos.x - item->pos.x;
             const int32_t dz = lara_item->pos.z - item->pos.z;
             Math_Atan(dz, dx);
-            dist = SQUARE(dx) + SQUARE(dz);
+            dist = XYZ_32_GetLength2((XYZ_32) { dx, 0, dz });
         }
 
         Creature_UpdateMood(item, &info, true);
