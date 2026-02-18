@@ -79,6 +79,7 @@ typedef struct OBJECT {
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);
     int16_t (*carrier_item_num_func)(const ITEM *item);
+    bool (*can_drop_items_func)(const ITEM *item);
     bool (*can_interpolate_func)(
         const ITEM *item, int32_t frame_a, int32_t frame_b);
     bool (*should_spawn_blood_func)(const ITEM *item);

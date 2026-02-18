@@ -37,6 +37,11 @@ static BITE m_PierreGun1 = { .pos = { 60, 200, 0 }, .mesh_num = 11 };
 static BITE m_PierreGun2 = { .pos = { -57, 200, 0 }, .mesh_num = 14 };
 static int16_t m_PierreItemNum = NO_ITEM;
 
+static bool M_CanDropItems(const ITEM *const item)
+{
+    return item->hit_points <= 0 && (item->flags & IF_ONE_SHOT) != 0;
+}
+
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
@@ -242,14 +247,18 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
     obj->initialise_func = Creature_Initialise;
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
+    obj->can_drop_items_func = M_CanDropItems;
+
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = PIERRE_HITPOINTS;
     obj->radius = PIERRE_RADIUS;
     obj->smartness = PIERRE_SMARTNESS;
+
     obj->intelligent = true;
     obj->save_position = true;
     obj->save_hitpoints = true;

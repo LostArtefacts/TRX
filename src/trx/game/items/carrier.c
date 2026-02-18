@@ -67,16 +67,10 @@ static bool M_IsCarrierType(const OBJECT_ID obj_id)
 static CARRIED_ITEM *M_GetFirstDropItem(const ITEM *const carrier)
 {
     bool can_drop = carrier->hit_points <= 0;
-    // Qualopec mummy can drop items just from having touched it.
-    can_drop |=
-        carrier->object_id == O_MUMMY && carrier->status == IS_DEACTIVATED;
-    // Runaway Pierre can never drop items.
-    can_drop &=
-        (carrier->object_id != O_PIERRE || (carrier->flags & IF_ONE_SHOT) != 0);
-    // Only alive dragons can drop items.
-    can_drop &=
-        (carrier->object_id != O_DRAGON_BACK
-         || carrier->status == IS_DEACTIVATED);
+    const OBJECT *const obj = Object_Get(carrier->object_id);
+    if (obj->can_drop_items_func != nullptr) {
+        can_drop = obj->can_drop_items_func(carrier);
+    }
     return can_drop ? carrier->carried_item : nullptr;
 }
 

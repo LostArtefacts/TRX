@@ -34,6 +34,7 @@ void Object_SetupAllObjects(void)
         obj->collision_func = nullptr;
         obj->add_walkable_func = nullptr;
         obj->is_usable_func = nullptr;
+        obj->can_drop_items_func = nullptr;
         obj->can_interpolate_func = Object_CanInterpolate;
         obj->should_spawn_blood_func = nullptr;
         obj->get_mesh_index_func = nullptr;

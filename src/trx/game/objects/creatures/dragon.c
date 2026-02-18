@@ -91,6 +91,11 @@ static bool M_SetFrontItemNum(
     return true;
 }
 
+static bool M_CanDropItemsBack(const ITEM *const item)
+{
+    return item->hit_points <= 0 && item->status == IS_DEACTIVATED;
+}
+
 static void M_InitialiseBack(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -484,6 +489,7 @@ static void M_SetupBack(OBJECT *const obj)
     obj->initialise_func = M_InitialiseBack;
     obj->control_func = M_ControlBack;
     obj->collision_func = M_Collision;
+    obj->can_drop_items_func = M_CanDropItemsBack;
 
     obj->radius = DRAGON_RADIUS;
 
