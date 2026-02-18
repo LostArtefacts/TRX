@@ -26,7 +26,7 @@
   "O_CARCASS":                { "status": "fully implemented" },
   "O_CEILING_SPIKES":         { "status": "fully implemented" },
   "O_COBRA":                  { "status": "fully implemented" },
-  "O_CROCODILE":              { "status": "fully implemented" },
+  "O_ALLIGATOR":              { "status": "fully implemented" },
   "O_CROW":                   { "status": "partially implemented", "todo": "check 100% parity" },
   "O_DESERT_EAGLE_AMMO_ITEM": { "status": "fully implemented" },
   "O_DESERT_EAGLE_ITEM":      { "status": "fully implemented" },
