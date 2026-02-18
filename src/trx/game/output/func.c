@@ -70,6 +70,10 @@ CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
         CLAMPL(y_max, yv);
     }
 
+    if (num_z == 0) {
+        return CLIP_NOT_VISIBLE; // out of screen
+    }
+
     const VIEWPORT_RECT vp = Viewport_GetRect(VIEWPORT_GAME);
     x_min += vp.w / 2;
     x_max += vp.w / 2;
@@ -77,8 +81,7 @@ CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
     y_max += vp.h / 2;
 
     // clang-format off
-    if (num_z == 0
-        || x_min > g_PhdRight
+    if (x_min > g_PhdRight
         || y_min > g_PhdBottom
         || x_max < g_PhdLeft
         || y_max < g_PhdTop) {
