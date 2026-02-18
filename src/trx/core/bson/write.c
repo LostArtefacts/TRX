@@ -280,7 +280,7 @@ static char *M_WriteBoolWrapped(char *data, const char *key, bool value)
 static char *M_WriteInt32(char *data, const int32_t value)
 {
     ASSERT(data != nullptr);
-    *(int32_t *)data = value;
+    memcpy(data, &value, sizeof(value));
     data += sizeof(int32_t);
     return data;
 }
@@ -297,7 +297,7 @@ static char *M_WriteInt32Wrapped(
 static char *M_WriteDouble(char *data, const double value)
 {
     ASSERT(data != nullptr);
-    *(double *)data = value;
+    memcpy(data, &value, sizeof(value));
     data += sizeof(double);
     return data;
 }
@@ -350,7 +350,8 @@ static char *M_WriteString(char *data, const JSON_STRING *string)
 {
     ASSERT(data != nullptr);
     ASSERT(string != nullptr);
-    *(uint32_t *)data = string->string_size + 1;
+    const uint32_t bson_string_size = string->string_size + 1;
+    memcpy(data, &bson_string_size, sizeof(bson_string_size));
     data += sizeof(uint32_t);
     memcpy(data, string->string, string->string_size);
     data += string->string_size;
@@ -384,7 +385,8 @@ static char *M_WriteArray(char *data, const JSON_ARRAY *array)
         data = M_WriteValueWrapped(data, key, element->value);
     }
     *data++ = '\0';
-    *(int32_t *)old = data - old;
+    const int32_t object_size = data - old;
+    memcpy(old, &object_size, sizeof(object_size));
     return data;
 }
 
@@ -410,7 +412,8 @@ static char *M_WriteObject(char *data, const JSON_OBJECT *object)
         data = M_WriteValueWrapped(data, element->name->string, element->value);
     }
     *data++ = '\0';
-    *(int32_t *)old = data - old;
+    const int32_t object_size = data - old;
+    memcpy(old, &object_size, sizeof(object_size));
     return data;
 }
 

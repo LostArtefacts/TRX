@@ -24,6 +24,20 @@ typedef struct {
 static bool M_GetValueSize(M_STATE *state, uint8_t marker);
 static void M_HandleValue(M_STATE *state, JSON_VALUE *value, uint8_t marker);
 
+static int32_t M_ReadI32(const char *const src)
+{
+    int32_t value = 0;
+    memcpy(&value, src, sizeof(value));
+    return value;
+}
+
+static double M_ReadDouble(const char *const src)
+{
+    double value = 0.0;
+    memcpy(&value, src, sizeof(value));
+    return value;
+}
+
 static bool M_GetObjectKeySize(M_STATE *state)
 {
     ASSERT(state != nullptr);
@@ -71,7 +85,7 @@ static bool M_GetInt32ValueSize(M_STATE *state)
         state->error = BSON_PARSE_ERROR_PREMATURE_END_OF_BUFFER;
         return false;
     }
-    int32_t num = *(int32_t *)&state->src[state->offset];
+    int32_t num = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
 
     state->dom_size += sizeof(JSON_NUMBER);
@@ -86,7 +100,7 @@ static bool M_GetDoubleValueSize(M_STATE *state)
         state->error = BSON_PARSE_ERROR_PREMATURE_END_OF_BUFFER;
         return false;
     }
-    double num = *(double *)&state->src[state->offset];
+    double num = M_ReadDouble(&state->src[state->offset]);
     state->offset += sizeof(double);
 
     state->dom_size += sizeof(JSON_NUMBER);
@@ -101,7 +115,7 @@ static bool M_GetStringValueSize(M_STATE *state)
         state->error = BSON_PARSE_ERROR_PREMATURE_END_OF_BUFFER;
         return false;
     }
-    int32_t size = *(int32_t *)&state->src[state->offset];
+    int32_t size = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
     if (state->offset + size > state->size) {
         state->error = BSON_PARSE_ERROR_PREMATURE_END_OF_BUFFER;
@@ -147,7 +161,7 @@ static bool M_GetArraySize(M_STATE *state)
         state->error = BSON_PARSE_ERROR_PREMATURE_END_OF_BUFFER;
         return false;
     }
-    const int size = *(int32_t *)&state->src[state->offset];
+    const int size = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
 
     while (state->offset < start_offset + size - 1) {
@@ -205,7 +219,7 @@ static bool M_GetObjectSize(M_STATE *state)
         state->error = BSON_PARSE_ERROR_PREMATURE_END_OF_BUFFER;
         return false;
     }
-    const int size = *(int32_t *)&state->src[state->offset];
+    const int size = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
 
     while (state->offset < start_offset + size - 1) {
@@ -314,7 +328,7 @@ static void M_HandleInt32Value(M_STATE *state, JSON_VALUE *value)
     ASSERT(value != nullptr);
 
     ASSERT(state->offset + sizeof(int32_t) <= state->size);
-    int32_t num = *(int32_t *)&state->src[state->offset];
+    int32_t num = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
 
     JSON_NUMBER *number = (JSON_NUMBER *)state->dom;
@@ -336,7 +350,7 @@ static void M_HandleDoubleValue(M_STATE *state, JSON_VALUE *value)
     ASSERT(value != nullptr);
 
     ASSERT(state->offset + sizeof(double) <= state->size);
-    double num = *(double *)&state->src[state->offset];
+    double num = M_ReadDouble(&state->src[state->offset]);
     state->offset += sizeof(double);
 
     JSON_NUMBER *number = (JSON_NUMBER *)state->dom;
@@ -367,7 +381,7 @@ static void M_HandleStringValue(M_STATE *state, JSON_VALUE *value)
     ASSERT(value != nullptr);
 
     ASSERT(state->offset + sizeof(int32_t) <= state->size);
-    int32_t size = *(int32_t *)&state->src[state->offset];
+    int32_t size = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
 
     JSON_STRING *string = (JSON_STRING *)state->dom;
@@ -417,7 +431,7 @@ static void M_HandleArray(M_STATE *state, JSON_ARRAY *array)
 
     const size_t start_offset = state->offset;
     ASSERT(state->offset + sizeof(int32_t) <= state->size);
-    const int size = *(int32_t *)&state->src[state->offset];
+    const int size = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
 
     JSON_ARRAY_ELEMENT *previous = nullptr;
@@ -495,7 +509,7 @@ static void M_HandleObject(M_STATE *state, JSON_OBJECT *object)
 
     const size_t start_offset = state->offset;
     ASSERT(state->offset + sizeof(int32_t) <= state->size);
-    const int size = *(int32_t *)&state->src[state->offset];
+    const int size = M_ReadI32(&state->src[state->offset]);
     state->offset += sizeof(int32_t);
 
     JSON_OBJECT_ELEMENT *previous = nullptr;
