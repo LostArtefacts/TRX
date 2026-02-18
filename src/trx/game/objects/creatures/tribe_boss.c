@@ -258,6 +258,18 @@ static void M_TriggerSummonSmoke(const XYZ_32 pos)
     spark->size.height = spark->dst_size.height >> 1;
 }
 
+static bool M_CanDropItems(const ITEM *const item)
+{
+    if (item->hit_points > 0) {
+        return false;
+    }
+    if ((item->flags & IF_KILLED) != 0) {
+        return true;
+    }
+    return item->current_anim_state == M_STATE_DEATH
+        && Item_GetRelativeFrame(item) > 119;
+}
+
 static const M_LIZARD_SUMMON_COORDS *M_GetLizardSummonCoords(
     const M_PRIV *const p)
 {
@@ -1391,15 +1403,16 @@ static void M_Setup(OBJECT *const obj)
         return;
     }
 
+    obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->draw_func = M_Draw;
     obj->gun_hit_func = M_GunHit;
     obj->should_spawn_blood_func = M_ShouldSpawnBlood;
-    obj->priv_load_func = M_LoadPriv;
-    obj->priv_save_func = M_SavePriv;
-    obj->priv_size = sizeof(M_PRIV);
+    obj->can_drop_items_func = M_CanDropItems;
 
     obj->shadow_size = 0;
     obj->hit_points = 200;

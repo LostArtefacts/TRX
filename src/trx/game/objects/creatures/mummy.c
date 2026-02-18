@@ -18,6 +18,11 @@ typedef enum {
     MUMMY_STATE_DEATH = 2,
 } MUMMY_STATE;
 
+static bool M_CanDropItems(const ITEM *const item)
+{
+    return item->hit_points <= 0 || item->status == IS_DEACTIVATED;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -71,10 +76,14 @@ static void M_Setup(OBJECT *const obj)
     if (!obj->loaded) {
         return;
     }
+
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->can_drop_items_func = M_CanDropItems;
+
     obj->hit_points = MUMMY_HITPOINTS;
+
     obj->save_flags = true;
     obj->save_hitpoints = true;
     obj->save_anim = true;

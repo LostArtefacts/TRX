@@ -227,6 +227,18 @@ static void M_Explode(ITEM *const item)
     }
 }
 
+static bool M_CanDropItems(const ITEM *const item)
+{
+    if (item->hit_points > 0) {
+        return false;
+    }
+    if ((item->flags & IF_KILLED) != 0) {
+        return true;
+    }
+    return item->current_anim_state == M_STATE_DEATH
+        && Item_GetRelativeFrame(item) >= 110;
+}
+
 static void M_Die(int16_t item_num)
 {
     ITEM *item;
@@ -601,6 +613,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->draw_func = M_Draw;
+    obj->can_drop_items_func = M_CanDropItems;
 
     obj->shadow_size = 0;
     obj->hit_points = 100;
