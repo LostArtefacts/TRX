@@ -1,7 +1,7 @@
 import argparse
 import os
 import shutil
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 from subprocess import check_call, run
 from typing import Any, Self
@@ -82,6 +82,7 @@ class PackageOptions(BaseOptions):
 @dataclass
 class BuildOptions(BaseOptions):
     target: str
+    meson_args: list[str] = field(default_factory=list)
 
     strip_tool = "strip"
     upx_tool = "upx"
@@ -135,6 +136,12 @@ class BuildCommand(BaseCommand):
             choices=["debug", "release", "debugoptim"],
             required=True,
         )
+        parser.add_argument(
+            "--meson-arg",
+            dest="meson_args",
+            action="append",
+            default=[],
+        )
 
     def run(self, args: argparse.Namespace) -> None:
         options = BuildOptions.from_args(args)
@@ -147,13 +154,13 @@ class BuildCommand(BaseCommand):
                 "--buildtype",
                 options.target,
                 *options.build_args,
+                *options.meson_args,
                 options.build_root,
                 options.build_target,
             ]
             if pkg_config_path:
                 command.extend(["--pkg-config-path", pkg_config_path])
             check_call(command)
-
         check_call(["meson", "compile", f"TRX"], cwd=options.build_root)
 
         if options.target == "release":
