@@ -586,13 +586,15 @@ static void M_DrawShield(const ITEM *const item)
 static bool M_Draw(const ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-    const bool result = Object_DrawAnimatingItem(item);
+    if ((item->hit_points <= 0 && p->explode_count > 64)) {
+        return false;
+    }
 
+    const bool result = Object_DrawAnimatingItem(item);
     if (p->explode_count != 0) {
         if (item->hit_points <= 0) {
             FX_ExplosionRing_Draw();
         }
-
         if (p->explode_count != 0 && p->explode_count <= 64) {
             M_DrawShield(item);
         }
