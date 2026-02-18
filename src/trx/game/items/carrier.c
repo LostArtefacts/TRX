@@ -136,7 +136,7 @@ static void M_InitialiseDataDrops(void)
         while (pickup_num != NO_ITEM) {
             ITEM *const pickup = Item_Get(pickup_num);
             if (Object_IsType(pickup->object_id, g_PickupObjects)
-                && XYZ_32_AreEquivalent(&pickup->pos, &carrier->pos)) {
+                && XYZ_32_AreEquivalent(pickup->pos, carrier->pos)) {
                 Vector_Add(pickups, (void *)&pickup_num);
                 Item_RemoveDrawn(pickup_num);
                 pickup->room_num = NO_ROOM;

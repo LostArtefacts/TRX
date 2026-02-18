@@ -16,9 +16,9 @@ int16_t Item_GetHeight(const ITEM *const item)
     return height;
 }
 
-int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 *const target)
+int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 target)
 {
-    return XYZ_32_GetDistance(&item->pos, target);
+    return XYZ_32_GetDistance(item->pos, target);
 }
 
 void Item_Translate(
@@ -41,7 +41,7 @@ bool Item_Test3DRange(
 bool Item_IsNearby(
     const ITEM *const item_1, const ITEM *const item_2, const int32_t distance)
 {
-    return XYZ_32_IsNearby(&item_1->pos, &item_2->pos, distance);
+    return XYZ_32_IsNearby(item_1->pos, item_2->pos, distance);
 }
 
 bool Item_TestBoundsCollide(

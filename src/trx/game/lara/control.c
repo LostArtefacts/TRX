@@ -275,7 +275,7 @@ static void M_SoftStaticCollision(COLL_INFO *const coll)
                 Object_Get3DStatic(mesh->static_num);
             if (!obj->collidable
                 || !XYZ_32_IsNearby(
-                    &lara_item->pos, &mesh->pos, M_STATIC_COLL_DIST)) {
+                    lara_item->pos, mesh->pos, M_STATIC_COLL_DIST)) {
                 continue;
             }
 

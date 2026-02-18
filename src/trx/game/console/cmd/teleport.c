@@ -102,7 +102,7 @@ static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
             continue;
         }
 
-        const int32_t distance = Item_GetDistance(item, &lara_item->pos);
+        const int32_t distance = Item_GetDistance(item, lara_item->pos);
         if (distance < closest_distance) {
             closest_distance = distance;
             closest_item_num = item_num;
@@ -126,7 +126,7 @@ static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
                 continue;
             }
 
-            const int32_t distance = Item_GetDistance(item, &lara_item->pos);
+            const int32_t distance = Item_GetDistance(item, lara_item->pos);
             if (distance < near_distance) {
                 continue;
             }

@@ -108,7 +108,7 @@ static void M_Control(int16_t item_num)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dist = XYZ_32_GetDistance(&lara_item->pos, &item->pos);
+    const int32_t dist = XYZ_32_GetDistance(lara_item->pos, item->pos);
     if (dist < 4 * WALL_L) {
         return;
     }

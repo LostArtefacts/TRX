@@ -29,11 +29,11 @@ int16_t XYZ_32_GetPitch(XYZ_32 pos)
     return Math_Atan(Math_Sqrt(SQUARE(pos.x) + SQUARE(pos.z)), -pos.y);
 }
 
-int32_t XYZ_32_GetDistance(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
+int32_t XYZ_32_GetDistance(const XYZ_32 pos1, const XYZ_32 pos2)
 {
-    int64_t x = (int64_t)pos1->x - pos2->x;
-    int64_t y = (int64_t)pos1->y - pos2->y;
-    int64_t z = (int64_t)pos1->z - pos2->z;
+    int64_t x = (int64_t)pos1.x - pos2.x;
+    int64_t y = (int64_t)pos1.y - pos2.y;
+    int64_t z = (int64_t)pos1.z - pos2.z;
 
     int32_t scale = 0;
     while ((int32_t)x != x || (int32_t)y != y || (int32_t)z != z) {
@@ -53,12 +53,12 @@ int32_t XYZ_32_GetDistance(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
 }
 
 bool XYZ_32_IsNearby(
-    const XYZ_32 *const pos1, const XYZ_32 *const pos2, const int32_t distance)
+    const XYZ_32 pos1, const XYZ_32 pos2, const int32_t distance)
 {
     const XYZ_32 delta = {
-        .x = pos1->x - pos2->x,
-        .y = pos1->y - pos2->y,
-        .z = pos1->z - pos2->z,
+        .x = pos1.x - pos2.x,
+        .y = pos1.y - pos2.y,
+        .z = pos1.z - pos2.z,
     };
     return delta.x > -distance && delta.x < distance && delta.y > -distance
         && delta.y < distance && delta.z > -distance && delta.z < distance;
@@ -84,14 +84,14 @@ int64_t XYZ_32_GetLength2_64(const XYZ_32 pos)
         + SQUARE((int64_t)pos.z);
 }
 
-bool XYZ_32_AreEquivalent(const XYZ_32 *const pos1, const XYZ_32 *const pos2)
+bool XYZ_32_AreEquivalent(const XYZ_32 pos1, const XYZ_32 pos2)
 {
-    return pos1->x == pos2->x && pos1->y == pos2->y && pos1->z == pos2->z;
+    return pos1.x == pos2.x && pos1.y == pos2.y && pos1.z == pos2.z;
 }
 
-bool XYZ_16_AreEquivalent(const XYZ_16 *const rot1, const XYZ_16 *const rot2)
+bool XYZ_16_AreEquivalent(const XYZ_16 rot1, const XYZ_16 rot2)
 {
-    return rot1->x == rot2->x && rot1->y == rot2->y && rot1->z == rot2->z;
+    return rot1.x == rot2.x && rot1.y == rot2.y && rot1.z == rot2.z;
 }
 
 XYZ_32 XYZ_32_From16(const XYZ_16 src)

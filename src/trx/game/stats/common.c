@@ -178,7 +178,7 @@ void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     if (level != nullptr) {
         RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-        resume->stats.distance_travelled += XYZ_32_GetDistance(&pos, &last_pos);
+        resume->stats.distance_travelled += XYZ_32_GetDistance(pos, last_pos);
     }
 }
 

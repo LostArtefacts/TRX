@@ -670,7 +670,7 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
         int32_t best_distance = INT32_MAX;
         for (int32_t i = 0; i < points->count; i++) {
             const XYZ_32 *const point = (const XYZ_32 *)Vector_Get(points, i);
-            const int32_t distance = XYZ_32_GetDistance(point, &initial_pos);
+            const int32_t distance = XYZ_32_GetDistance(*point, initial_pos);
             if (distance < best_distance) {
                 best_distance = distance;
                 x = point->x;

@@ -21,7 +21,7 @@ static bool M_TestItemMeta(
 
     const ITEM *const item = Item_Get(item_num);
     return item->object_id == obj_info.id
-        && XYZ_32_AreEquivalent(&item->pos, &pos) && item->room_num == room_num
+        && XYZ_32_AreEquivalent(item->pos, pos) && item->room_num == room_num
         && item->rot.y == y_rot;
 }
 
