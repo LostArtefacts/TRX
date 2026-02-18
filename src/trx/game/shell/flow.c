@@ -30,6 +30,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/shell/platform.h>
+#include <trx/game/shell/session.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui/settings.h>
@@ -39,7 +40,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
-static const SHELL_ARGS *m_ShellArgs = nullptr;
+static SHELL_SESSION *m_Session = nullptr;
 static SDL_Window *m_Window = nullptr;
 
 static void M_CreateGameWindow(void)
@@ -117,7 +118,8 @@ static void M_LoadCatalog(
 
 const SHELL_ARGS *Shell_GetArgs(void)
 {
-    return m_ShellArgs;
+    ASSERT(m_Session != nullptr);
+    return m_Session->args;
 }
 
 static void M_InitModules(void)
@@ -175,50 +177,40 @@ static void M_ShutdownModules(void)
     Log_Shutdown();
 }
 
-static SHELL_ARGS *M_CloneArgs(const SHELL_ARGS *const args)
+static void M_PrepareSystem(void)
 {
-    SHELL_ARGS *const copy = Memory_Alloc(sizeof(SHELL_ARGS));
-    *copy = *args;
-    return copy;
-}
+    SHELL_SESSION *const s = m_Session;
+    ASSERT(s != nullptr);
 
-static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
-{
-    const SHELL_ARGS *new_args = args;
-
-    if (args->test_record_path != nullptr
-        && args->test_replay_path != nullptr) {
+    if (s->args->test_record_path != nullptr
+        && s->args->test_replay_path != nullptr) {
         Shell_ExitSystem("Cannot use both --test-record and --test-replay");
     }
 
-    if (args->test_replay_path != nullptr) {
-        SHELL_ARGS *tmp_args = TestReplay_Open(args->test_replay_path);
+    if (s->args->test_replay_path != nullptr) {
+        SHELL_ARGS *const tmp_args = TestReplay_Open(s->args->test_replay_path);
         if (tmp_args != nullptr) {
-            // original args not needed, free immediately.
-            if (tmp_args->original_args != nullptr) {
-                Vector_Free(tmp_args->original_args);
-                tmp_args->original_args = nullptr;
-            }
-            tmp_args->headless = args->headless;
-            tmp_args->debug_render_performance = args->debug_render_performance;
-            new_args = tmp_args;
+            tmp_args->headless = s->args->headless;
+            tmp_args->debug_render_performance =
+                s->args->debug_render_performance;
+            ShellSession_UseArgs(s, tmp_args);
         }
-    } else if (args->headless) {
+    } else if (s->args->headless) {
         Shell_ExitSystem("--headless can only be used with --test-replay");
     }
 
-    g_TRVersion = new_args->engine_version;
-    if (new_args->engine_version <= 0 || new_args->mod == nullptr) {
+    g_TRVersion = s->args->engine_version;
+    if (s->args->engine_version <= 0 || s->args->mod == nullptr) {
         Shell_ExitSystem(
             "Unknown or ambiguous gameflow file. "
             "Are you missing --engine or --mod?");
     }
 
     LOG_INFO("Engine version: %d", g_TRVersion);
-    LOG_INFO("Mod: %s", new_args->mod->name);
+    LOG_INFO("Mod: %s", s->args->mod->name);
     Config_ApplyDefaultSettings();
 
-    TRXPath_Init(new_args);
+    TRXPath_Init(s->args);
 
     Input_Init();
     Console_Init();
@@ -238,7 +230,7 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
     Lara_Skin_LoadFromFile(
         TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
 
-    if (args->test_replay_path != nullptr) {
+    if (s->args->test_replay_path != nullptr) {
         TestReplay_Start();
     } else {
         char *engine_config_path =
@@ -246,35 +238,28 @@ static const SHELL_ARGS *M_PrepareSystem(const SHELL_ARGS *const args)
         if (engine_config_path == nullptr) {
             Shell_ExitSystem("Failed to resolve engine config path");
         }
-        Config_Read(engine_config_path, Shell_GetGameFlowPath(args->mod));
+        Config_Read(engine_config_path, Shell_GetGameFlowPath(s->args->mod));
         Memory_FreePointer(&engine_config_path);
 
-        if (args->test_record_path != nullptr) {
-            TestRecorder_Open(args->test_record_path, args->original_args);
+        if (s->args->test_record_path != nullptr) {
+            TestRecorder_Open(
+                s->args->test_record_path, s->args->original_args);
         }
     }
     Config_SubscribeChanges(M_HandleConfigChange, nullptr);
 
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
-    if (!new_args->headless) {
+    if (!s->args->headless) {
         Sound_Init();
         Music_Init();
         Sound_SetMasterVolume(g_Config.audio.sound_volume);
         Music_SetVolume(g_Config.audio.music_volume);
     } else {
         Clock_DisableWait();
-        const int32_t fps = new_args->headless_fps > 0 ? new_args->headless_fps
-                                                       : Clock_GetCurrentFPS();
+        const int32_t fps = s->args->headless_fps > 0 ? s->args->headless_fps
+                                                      : Clock_GetCurrentFPS();
         Clock_EnableHeadlessFixedFPS(fps);
     }
-
-    Memory_FreePointer(&m_ShellArgs);
-    if (new_args == args) {
-        m_ShellArgs = M_CloneArgs(args);
-    } else {
-        m_ShellArgs = new_args;
-    }
-    return new_args;
 }
 
 SDL_Window *Shell_GetWindow(void)
@@ -282,28 +267,32 @@ SDL_Window *Shell_GetWindow(void)
     return m_Window;
 }
 
-int32_t Shell_Main(const SHELL_ARGS *args)
+int32_t Shell_Main(const SHELL_ARGS *const args)
 {
+    ASSERT(m_Session == nullptr);
+    m_Session = ShellSession_Create();
+
+    SHELL_SESSION *const s = m_Session;
+    ShellSession_UseArgs(s, args);
+
     LOG_INFO("Game directory: %s", TRXPath_Get(TRX_PATH_TRX_DIR));
 
-    ASSERT(args != nullptr);
-
     M_InitModules();
-    args = M_PrepareSystem(args);
-    if (args->mod == nullptr) {
+    M_PrepareSystem();
+    if (s->args->mod == nullptr) {
         Shell_ExitSystem("No --mod specified.");
         return 1;
     }
-    TRXPath_Init(args);
+    TRXPath_Init(s->args);
     M_CreateGameWindow();
     M_CreateGLContext();
     Output_Init();
-    if (!args->headless) {
+    if (!s->args->headless) {
         M_ShowWindow();
     }
 
     GF_Init();
-    GF_LoadFromFile(Shell_GetGameFlowPath(args->mod));
+    GF_LoadFromFile(Shell_GetGameFlowPath(s->args->mod));
 
     GameStringManager_ClearSourceFiles();
     const char *const common_strings_path = Shell_GetCommonStringsPath();
@@ -311,19 +300,19 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         Shell_ExitSystem("Missing common strings file");
     }
     GameStringManager_AddSourceFile(common_strings_path, false);
-    if (args->mod->base_mod != nullptr) {
+    if (s->args->mod->base_mod != nullptr) {
         const char *const base_strings_path =
-            Shell_GetBaseGameStringsPath(args->mod);
+            Shell_GetBaseGameStringsPath(s->args->mod);
         if (base_strings_path == nullptr) {
             Shell_ExitSystemFmt(
-                "Missing base mod strings file for '%s'", args->mod->name);
+                "Missing base mod strings file for '%s'", s->args->mod->name);
         }
         GameStringManager_AddSourceFile(base_strings_path, false);
     }
-    const char *const mod_strings_path = Shell_GetGameStringsPath(args->mod);
+    const char *const mod_strings_path = Shell_GetGameStringsPath(s->args->mod);
     if (mod_strings_path == nullptr) {
         Shell_ExitSystemFmt(
-            "Missing strings file for selected mod '%s'", args->mod->name);
+            "Missing strings file for selected mod '%s'", s->args->mod->name);
     }
     GameStringManager_AddSourceFile(mod_strings_path, true);
     GameStringManager_DiscoverLanguages();
@@ -405,7 +394,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
             break;
 
         case GF_EXIT_TO_TITLE:
-            if (args->level_to_play != nullptr) {
+            if (s->args->level_to_play != nullptr) {
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
             } else if (g_GameFlow.title_level == nullptr) {
                 Shell_ExitSystem("Missing title level");
@@ -425,7 +414,7 @@ int32_t Shell_Main(const SHELL_ARGS *args)
         }
     }
 
-    if (args->level_to_play != nullptr) {
+    if (s->args->level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
     return 0;
@@ -434,5 +423,8 @@ int32_t Shell_Main(const SHELL_ARGS *args)
 void Shell_Shutdown(void)
 {
     M_ShutdownModules();
-    Memory_FreePointer(&m_ShellArgs);
+    if (m_Session != nullptr) {
+        ShellSession_Free(m_Session);
+        m_Session = nullptr;
+    }
 }

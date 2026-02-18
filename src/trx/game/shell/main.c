@@ -12,16 +12,17 @@ int main(int argc, char *argv[])
 {
     VECTOR *raw_args = Vector_Create(sizeof(const char *));
     for (int32_t i = 1; i < argc; i++) {
-        Vector_Add(raw_args, &argv[i]);
+        char *const copied_arg = Memory_DupStr(argv[i]);
+        Vector_Add(raw_args, &copied_arg);
     }
 
     TRXPath_Init(nullptr);
     Shell_ScanAvailableMods();
     SHELL_ARGS *args = Shell_ParseArgs(raw_args);
     if (args == nullptr) {
-        Vector_Free(raw_args);
         return 0;
     }
+
     TRXPath_Init(args);
 
     char *log_path = String_Format("%s/TRX.log", TRXPath_Get(TRX_PATH_TRX_DIR));
@@ -29,9 +30,8 @@ int main(int argc, char *argv[])
     Memory_FreePointer(&log_path);
 
     LOG_INFO("Starting %s", g_TRXVersion);
-    int32_t exit_code = Shell_Main(args);
-    Memory_FreePointer(&args);
-    Vector_Free(raw_args);
+    const int32_t exit_code = Shell_Main(args);
+
     Shell_Terminate(exit_code);
     return exit_code;
 }

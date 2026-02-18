@@ -3,12 +3,26 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/shell/common.h>
 #include <trx/version.h>
 
 #include <stdio.h>
 #include <string.h>
+
+static void M_FreeArgVector(VECTOR *const args)
+{
+    if (args == nullptr) {
+        return;
+    }
+
+    for (int32_t i = 0; i < args->count; i++) {
+        const char *const arg = *(char **)Vector_Get(args, i);
+        Memory_Free((char *)arg);
+    }
+    Vector_Free(args);
+}
 
 static void M_ShowHelp(void)
 {
@@ -38,27 +52,27 @@ static void M_ShowHelp(void)
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 {
-    SHELL_ARGS *out_args = Memory_Alloc(sizeof(SHELL_ARGS));
-    out_args->save_to_load = -1;
-    out_args->level_to_select = -1;
-    out_args->original_args = args;
-    out_args->engine_version = 0;
+    SHELL_ARGS *const result = Memory_Alloc(sizeof(SHELL_ARGS));
+    result->save_to_load = -1;
+    result->level_to_select = -1;
+    result->original_args = args;
+    result->engine_version = 0;
 
-    // First pass: set the engine version
+    // First pass: set the engine version.
     for (int32_t i = 0; args != nullptr && i < args->count; i++) {
         const char *const arg = *(char **)Vector_Get(args, i);
         const char *const next_arg =
             i + 1 < args->count ? *(char **)Vector_Get(args, i + 1) : nullptr;
         if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
-            String_ParseInteger(next_arg, &out_args->engine_version);
-            CLAMP(out_args->engine_version, 1, 3);
+            String_ParseInteger(next_arg, &result->engine_version);
+            CLAMP(result->engine_version, 1, 3);
             i++;
         }
     }
 
-    out_args->mod = Shell_GetModByType(MOD_BASE_GAME, out_args->engine_version);
+    result->mod = Shell_GetModByType(MOD_BASE_GAME, result->engine_version);
 
-    // Second pass: remaining options
+    // Second pass: remaining options.
     for (int32_t i = 0; args != nullptr && i < args->count; i++) {
         const char *const arg = *(char **)Vector_Get(args, i);
         const char *const next_arg =
@@ -70,22 +84,22 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 
         if (!strcmp(arg, "-h") || !strcmp(arg, "--help")) {
             M_ShowHelp();
-            Memory_FreePointer(&out_args);
+            Shell_FreeArgs(result);
             return nullptr;
         }
         if (!strcmp(arg, "-g") || !strcmp(arg, "--gold")
             || !strcmp(arg, "-gold")) {
-            out_args->mod = Shell_GetModByType(
-                MOD_EXPANSION_PACK, out_args->engine_version);
+            result->mod =
+                Shell_GetModByType(MOD_EXPANSION_PACK, result->engine_version);
         }
 
         if (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc")) {
-            out_args->mod = Shell_GetModByName("tr1-demo-pc");
+            result->mod = Shell_GetModByName("tr1-demo-pc");
         }
         if (!strcmp(arg, "--mod") && next_arg != nullptr) {
             const SHELL_MOD *const mod = Shell_GetModByName(next_arg);
             if (mod != nullptr) {
-                out_args->mod = mod;
+                result->mod = mod;
             }
             i++;
         }
@@ -94,61 +108,72 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             && next_arg != nullptr) {
             int32_t lvnum = -1;
             if (String_ParseInteger(next_arg, &lvnum)) {
-                out_args->level_to_select = lvnum;
+                result->level_to_select = lvnum;
             } else {
-                out_args->level_to_play = next_arg;
-                if (out_args->mod == nullptr && out_args->engine_version == 0) {
+                result->level_to_play = next_arg;
+                if (result->mod == nullptr && result->engine_version == 0) {
                     Shell_ExitSystem(
                         "Either --mod or --engine must be provided for "
                         "--level");
                 }
-                if (out_args->mod != nullptr) {
-                    out_args->mod = Shell_GetModByType(
-                        MOD_DIRECT_LEVEL, out_args->mod->engine_version);
+                if (result->mod != nullptr) {
+                    result->mod = Shell_GetModByType(
+                        MOD_DIRECT_LEVEL, result->mod->engine_version);
                 } else {
-                    out_args->mod = Shell_GetModByType(
-                        MOD_DIRECT_LEVEL, out_args->engine_version);
+                    result->mod = Shell_GetModByType(
+                        MOD_DIRECT_LEVEL, result->engine_version);
                 }
             }
             i++;
         }
         if ((!strcmp(arg, "-s") || !strcmp(arg, "--save"))
             && next_arg != nullptr) {
-            if (String_ParseInteger(next_arg, &out_args->save_to_load)) {
-                out_args->save_to_load--;
+            if (String_ParseInteger(next_arg, &result->save_to_load)) {
+                result->save_to_load--;
             }
             i++;
         }
         if (!strcmp(arg, "--test-record") && next_arg != nullptr) {
-            out_args->test_record_path = next_arg;
+            result->test_record_path = next_arg;
             i++;
         }
         if ((!strcmp(arg, "--test-play") || !strcmp(arg, "--test-replay"))
             && next_arg != nullptr) {
-            out_args->test_replay_path = next_arg;
+            result->test_replay_path = next_arg;
             i++;
         }
         if (!strcmp(arg, "--headless")) {
-            out_args->headless = true;
+            result->headless = true;
         }
         if (!strcmp(arg, "--headless-fps") && next_arg != nullptr) {
             int32_t fps = 0;
             if (String_ParseInteger(next_arg, &fps) && fps > 0) {
-                out_args->headless_fps = fps;
+                result->headless_fps = fps;
             }
             i++;
         }
         if (!strcmp(arg, "--debug-render-performance")) {
-            out_args->debug_render_performance = true;
+            result->debug_render_performance = true;
         }
         if (!strcmp(arg, "-q") || !strcmp(arg, "--quiet")) {
-            out_args->quiet = true;
+            result->quiet = true;
         }
     }
 
-    if (out_args->engine_version == 0 && out_args->mod != nullptr) {
-        out_args->engine_version = out_args->mod->engine_version;
+    if (result->engine_version == 0 && result->mod != nullptr) {
+        result->engine_version = result->mod->engine_version;
     }
 
-    return out_args;
+    return result;
+}
+
+void Shell_FreeArgs(SHELL_ARGS *const args)
+{
+    if (args == nullptr) {
+        return;
+    }
+
+    M_FreeArgVector(args->original_args);
+    args->original_args = nullptr;
+    Memory_Free(args);
 }
