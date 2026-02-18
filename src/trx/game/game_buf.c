@@ -33,6 +33,6 @@ void GameBuf_Shutdown(void)
 
 void *GameBuf_Alloc(const size_t alloc_size, const GAME_BUFFER buffer)
 {
-    const size_t aligned_size = (alloc_size + 3) & ~3;
+    const size_t aligned_size = Memory_Align(alloc_size);
     return Memory_ArenaAlloc(&m_Allocator[buffer], aligned_size);
 }
