@@ -207,7 +207,8 @@ static bool M_ReadBoolCurrent(JSON_READ_IO *const io, bool *const target)
             M_SetError(io, "value out of range: %lld", val);                   \
             return false;                                                      \
         }                                                                      \
-        *(type_ *)target = (type_)val;                                         \
+        const type_ parsed = (type_)val;                                       \
+        memcpy(target, &parsed, sizeof(parsed));                               \
         return true;                                                           \
     }
 L_DEFINE_M_READ_NUM_CURRENT(int8_t, S8, INT8_MIN, INT8_MAX)
@@ -226,7 +227,7 @@ static bool M_ReadNumCurrent_Double(
         return false;
     }
     const double val = JSON_ValueGetDouble(io->current, -1.0);
-    *(double *)target = val;
+    memcpy(target, &val, sizeof(val));
     return true;
 }
 
@@ -237,7 +238,8 @@ static bool M_ReadNumCurrent_Float(JSON_READ_IO *const io, float *const target)
         return false;
     }
     const double val = JSON_ValueGetDouble(io->current, -1.0);
-    *target = (float)val;
+    const float parsed = (float)val;
+    memcpy(target, &parsed, sizeof(parsed));
     return true;
 }
 
