@@ -65,6 +65,7 @@ void Object_SwapMeshEx(
 
 ANIM *Object_GetAnim(const OBJECT *obj, int32_t anim_idx);
 ANIM_BONE *Object_GetBone(const OBJECT *obj, int32_t bone_idx);
+ANIM_BONE *Object_TryGetBone(const OBJECT *obj, int32_t bone_idx);
 
 // Given a key or puzzle object, find a matching receptacle item number to
 // establish the interaction target. Takes into account current Lara's

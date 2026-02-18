@@ -279,6 +279,11 @@ ANIM_BONE *Object_GetBone(const OBJECT *const obj, const int32_t bone_idx)
     return Anim_GetBone(obj->bone_idx + bone_idx);
 }
 
+ANIM_BONE *Object_TryGetBone(const OBJECT *const obj, const int32_t bone_idx)
+{
+    return Anim_TryGetBone(obj->bone_idx + bone_idx);
+}
+
 OBJECT_ID Object_FindReceptacleKey(const OBJECT_ID receptacle_obj_id)
 {
     return Object_GetCognateInverse(

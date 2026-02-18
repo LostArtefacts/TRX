@@ -508,7 +508,7 @@ const ANIM_BONE *Lara_Skin_GetBoneBase(void)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
     const OBJECT *const skin_obj = Object_Get(outfit->obj_id);
-    return Object_GetBone(skin_obj, 0);
+    return Object_TryGetBone(skin_obj, 0);
 }
 
 bool Lara_Skin_IsBraidSupported(void)
@@ -541,7 +541,7 @@ const ANIM_BONE *Lara_Skin_GetBraidBoneBase(void)
     }
 
     const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
-    return Object_GetBone(obj, offset);
+    return Object_TryGetBone(obj, offset);
 }
 
 bool Lara_Skin_AreHolstersVisible(void)
