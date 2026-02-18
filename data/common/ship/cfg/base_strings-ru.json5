@@ -1999,6 +1999,9 @@
         },
         "tribe_boss": {
             "name": "\\{review}Вождь племени",
+        },
+        "trex_alpha": {
+            "name": "\\{review}Ти-Рекс Альфа",
         }
     }
 }

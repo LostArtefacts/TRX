@@ -2021,6 +2021,9 @@
         },
         "tribe_boss": {
             "name": "\\{review}Capo della Tribù",
+        },
+        "trex_alpha": {
+            "name": "\\{review}T-Rex Alpha",
         }
     }
 }

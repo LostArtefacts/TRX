@@ -1009,7 +1009,8 @@ bool Creature_Animate(
         Creature_Tilt(item, tilt * 2);
     }
 
-    if (g_TRVersion < 3 || item->object_id != O_TREX) {
+    if (g_TRVersion < 3
+        || (item->object_id != O_TREX && item->object_id != O_TREX_ALPHA)) {
         const ITEM *const hit_item = M_GetBaddieOverlap(item_num);
         if (g_TRVersion < 3 && hit_item != nullptr) {
             item->pos = old;
@@ -1108,6 +1109,7 @@ bool Creature_Animate(
             int32_t min_y = bounds->min.y;
             switch (item->object_id) {
             case O_TREX:
+            case O_TREX_ALPHA:
             case O_SHIVA:
                 // TODO
                 // case O_MUTANT_2:

@@ -431,6 +431,7 @@ common_sources = [
   'trx/game/objects/creatures/tony_boss.c',
   'trx/game/objects/creatures/torso.c',
   'trx/game/objects/creatures/trex.c',
+  'trx/game/objects/creatures/trex_alpha.c',
   'trx/game/objects/creatures/tribe_axeman.c',
   'trx/game/objects/creatures/tribe_boss.c',
   'trx/game/objects/creatures/tribe_pipeman.c',

@@ -4,6 +4,7 @@
 - added `O_SWITCH_TYPE_WHEEL`, which is similar to `O_SWITCH_TYPE_AIRLOCK` but can be used more than once
 - added `O_SMASH_OBJECT_3`, which can only be broken with triggers or the Crash Site gun
 - added `O_SMASH_OBJECT_4`, which behaves like `O_SMASH_OBJECT_1` but uses `SFX_SHUTTERS_BREAK`
+- added `O_TREX_ALPHA`, which can target raptors and be distracted by flares
 - added support for using more sound slots than originally possible in custom levels (#3898)
 - changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
 - changed Earthquake to support being reset
@@ -38,6 +39,7 @@
 - added Lizard control
 - added Crocodile control
 - added Carcass control (hanging Raptor)
+- added T-Rex control
 - added Bat Emitter control with save/load support
 - added Smashable Wall control
 - added Smashable Shutters control
