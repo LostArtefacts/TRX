@@ -1970,6 +1970,9 @@
         },
         "tribe_boss": {
             "name": "\\{review}Szef plemienia",
+        },
+        "trex_alpha": {
+            "name": "\\{review}T-Rex Alfa",
         }
     }
 }

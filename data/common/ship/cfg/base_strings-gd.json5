@@ -2003,6 +2003,9 @@
         },
         "tribe_boss": {
             "name": "\\{review}Ceannard a' Chinnidh",
+        },
+        "trex_alpha": {
+            "name": "T-Rex Priomh",
         }
     }
 }

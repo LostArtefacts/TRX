@@ -1992,6 +1992,9 @@
         },
         "tribe_boss": {
             "name": "\\{review}Stammesanführer",
+        },
+        "trex_alpha": {
+            "name": "\\{review}T-Rex-Alpha",
         }
     }
 }

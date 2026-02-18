@@ -158,6 +158,7 @@ X_OBJ_NAME_DEFINE(O_APE,                   "ape",                   X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_RAT,                   "rat",                   X_OBJ_NAMES("Rat", "Land Rat"))
 X_OBJ_NAME_DEFINE(O_VOLE,                  "vole",                  X_OBJ_NAMES("Vole", "Water Rat"))
 X_OBJ_NAME_DEFINE(O_TREX,                  "trex",                  X_OBJ_NAMES("T-Rex"))
+X_OBJ_NAME_DEFINE(O_TREX_ALPHA,            "trex_alpha",            X_OBJ_NAMES("T-Rex Alpha"))
 X_OBJ_NAME_DEFINE(O_COMPY,                 "compy",                 X_OBJ_NAMES("Compsognathus"))
 X_OBJ_NAME_DEFINE(O_CARCASS,               "carcass",               X_OBJ_NAMES("Carcass"))
 X_OBJ_NAME_DEFINE(O_RAPTOR,                "raptor",                X_OBJ_NAMES("Raptor"))

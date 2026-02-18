@@ -109,6 +109,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_TONY,
     O_TORSO,
     O_TREX,
+    O_TREX_ALPHA,
     O_VOLE,
     O_VULTURE,
     O_WARRIOR_1,
@@ -164,6 +165,7 @@ const OBJECT_ID g_LoyalObjects[] = {
 const OBJECT_ID g_BossObjects[] = {
     // clang-format off
     O_TREX,
+    O_TREX_ALPHA,
     O_LARSON,
     O_PIERRE,
     O_SKATEKID,
