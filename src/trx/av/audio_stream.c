@@ -234,8 +234,14 @@ static bool M_DecodeFrame(AUDIO_STREAM_SOUND *stream)
         return M_DecodeFrame(stream);
     }
 
+    if (error_code == AVERROR_EOF) {
+        return false;
+    }
+
     if (error_code < 0) {
-        LOG_ERROR("error while decoding audio stream: %d", error_code);
+        LOG_ERROR(
+            "error while decoding audio stream: %d (%s)", error_code,
+            av_err2str(error_code));
         return false;
     }
 
