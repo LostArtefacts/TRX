@@ -72,6 +72,12 @@ int32_t XYZ_32_GetLength(const XYZ_32 pos)
         + SQUARE((uint64_t)ABS((int64_t)pos.z)));
 }
 
+int32_t XYZ_32_GetLength2(const XYZ_32 pos)
+{
+    const int64_t dist_64 = XYZ_32_GetLength2_64(pos);
+    return dist_64 > INT32_MAX ? INT32_MAX : (int32_t)dist_64;
+}
+
 int64_t XYZ_32_GetLength2_64(const XYZ_32 pos)
 {
     return SQUARE((int64_t)pos.x) + SQUARE((int64_t)pos.y)
