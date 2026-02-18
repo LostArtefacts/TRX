@@ -124,6 +124,7 @@ static void M_Collision(
     const ITEM *const item = Item_Get(item_num);
     lara->gun_status = LGS_HANDS_BUSY;
     lara_item->pos = item->pos;
+    lara_item->rot = item->rot;
     Item_SwitchToObjAnim(lara_item, M_ANIM_MOUNT, 0, O_LARA_VEHICLE_ANIM);
     lara_item->current_anim_state = M_STATE_MOUNT;
     lara_item->goal_anim_state = M_STATE_MOUNT;
