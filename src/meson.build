@@ -50,6 +50,7 @@ trx_lua_embed = custom_target(
   ],
 )
 
+prefix_map = fs.relative_to(meson.current_source_dir() / 'trx', meson.global_build_root())
 common_build_opts = [
   '-Wshadow',
   '-Wno-unused',
@@ -59,9 +60,8 @@ common_build_opts = [
   '-DSDL_MAIN_HANDLED',
   '-fms-extensions',
   '-fno-omit-frame-pointer',
-  '-fmacro-prefix-map=@0@/='.format(
-    fs.relative_to(meson.current_source_dir() / 'trx', meson.global_build_root())
-  ),
+  '-fmacro-prefix-map=@0@/='.format(prefix_map),
+  '-fdebug-prefix-map=@0@/=src/'.format(prefix_map),
   '-DDWST_STATIC',
   '-DPCRE2_STATIC',
   '-DPCRE2_CODE_UNIT_WIDTH=8',
