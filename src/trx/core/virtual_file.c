@@ -82,6 +82,12 @@ void VFile_Read(VFILE *const file, void *const target, const size_t size)
 
 bool VFile_TryRead(VFILE *const file, void *const target, const size_t size)
 {
+    ASSERT(file != nullptr);
+    if (size == 0) {
+        return true;
+    }
+    ASSERT(target != nullptr);
+
     const size_t cur_pos = VFile_GetPos(file);
     if (cur_pos + size > file->size) {
         return false;
