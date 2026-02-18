@@ -526,7 +526,7 @@ static bool M_LoadSequence(
         JSON_FAIL();
     }
 
-    size_t event_base_size = sizeof(GF_SEQUENCE_EVENT);
+    const size_t event_base_size = sizeof(GF_SEQUENCE_EVENT);
     size_t total_data_size = 0;
     for (int32_t i = 0; i < seq_count; i++) {
         JSON_MUST(JSON_PUSH_INDEX(io, i));
@@ -536,13 +536,16 @@ static bool M_LoadSequence(
         if (event_extra_size < 0) {
             JSON_FAIL();
         }
-        total_data_size += event_base_size;
-        total_data_size += event_extra_size;
         sequence->length++;
+        total_data_size += Memory_Align((size_t)event_extra_size);
     }
 
+    const size_t events_block_size =
+        Memory_Align((size_t)sequence->length * event_base_size);
+    total_data_size += events_block_size;
+
     char *const data = Memory_Alloc(total_data_size);
-    char *extra_data_ptr = data + event_base_size * sequence->length;
+    char *extra_data_ptr = data + events_block_size;
     sequence->events = (GF_SEQUENCE_EVENT *)data;
 
     int32_t j = 0;
@@ -555,7 +558,7 @@ static bool M_LoadSequence(
             // Parsing this event failed - discard it
             continue;
         }
-        extra_data_ptr += event_extra_size;
+        extra_data_ptr += Memory_Align((size_t)event_extra_size);
         j++;
     }
     JSON_FINISH();
