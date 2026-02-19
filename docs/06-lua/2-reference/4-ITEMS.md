@@ -58,3 +58,37 @@ Module for controlling all moveables behavior.
   local item_hp = trx.items.fn.get(17).hit_points
   local lara_hp = trx.items.fn.get("lara").hit_points
   ```
+
+- [lua]`trx.items.find(query)`  
+  Finds all items matching the query and returns a list of [lua]`trx.items.Item`.
+
+  Supported query fields:
+  - `object_id`
+  - `room_num`
+
+  Unknown query fields are ignored and logged as warnings.
+
+  Example:
+  ```lua
+  local wolves = trx.items.find({ object_id = trx.catalog.objects.wolf })
+  local wolves_in_room_7 = trx.items.find({
+    object_id = trx.catalog.objects.wolf,
+    room_num = 7,
+  })
+  ```
+
+- [lua]`trx.items.first(query)`  
+  Finds the first item matching the query and returns a [lua]`trx.items.Item`, or `nil` if none match.
+
+  Supported query fields:
+  - `object_id`
+  - `room_num`
+
+  Unknown query fields are ignored and logged as warnings.
+
+  Example:
+  ```lua
+  local first_natla = trx.items.first({
+    object_id = trx.catalog.objects.natla,
+  })
+  ```
