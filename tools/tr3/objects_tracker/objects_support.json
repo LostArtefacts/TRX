@@ -116,6 +116,7 @@
   "O_SPIKE_WALL":             { "status": "fully implemented" },
   "O_SPINNING_BLADE":         { "status": "fully implemented" },
   "O_STEAM_EMITTER":          { "status": "fully implemented" },
+  "O_STHPAC_MERCENARY":       { "status": "fully implemented" },
   "O_STROBE_LIGHT":           { "status": "fully implemented" },
   "O_SWITCH_TYPE_BUTTON":     { "status": "fully implemented" },
   "O_SWITCH_TYPE_NORMAL":     { "status": "fully implemented" },

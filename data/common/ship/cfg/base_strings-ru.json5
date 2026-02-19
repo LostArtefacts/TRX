@@ -2005,6 +2005,9 @@
         },
         "raptor_emitter": {
             "name": "\\{review}Излучатель Раптора",
+        },
+        "sthpac_mercenary": {
+            "name": "\\{review}Наёмник из южной части Тихого океана",
         }
     }
 }

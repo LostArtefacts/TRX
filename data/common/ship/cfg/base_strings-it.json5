@@ -2027,6 +2027,9 @@
         },
         "raptor_emitter": {
             "name": "\\{review}Emettitore Raptor",
+        },
+        "sthpac_mercenary": {
+            "name": "\\{review}Mercenario del Pacifico del Sud",
         }
     }
 }

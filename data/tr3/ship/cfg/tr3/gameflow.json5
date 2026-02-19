@@ -166,6 +166,7 @@
         // 6. Crash Site
         {
             "path": "crash.tr2",
+            "script": "crash.lua",
             "music_track": 33,
             "lara_outfit": "tr3_south_pacific",
             "sequence": [

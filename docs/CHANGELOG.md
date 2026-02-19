@@ -50,6 +50,7 @@
 - added Raptor control
 - added Raptor Emitter control
 - added Bat Emitter control with save/load support
+- added South Pacific Mercenary control
 - added Smashable Wall control
 - added Smashable Shutters control
 - added a slide-to-sprint animation state change for Lara, similar to TR1 and TR2

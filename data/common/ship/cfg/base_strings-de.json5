@@ -1998,6 +1998,9 @@
         },
         "raptor_emitter": {
             "name": "\\{review}Raptor-Emitter",
+        },
+        "sthpac_mercenary": {
+            "name": "\\{review}Südsee-Söldner",
         }
     }
 }
