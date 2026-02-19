@@ -41,6 +41,16 @@ EDGE_CATCH Lara_Col_TestEdgeCatch(
 
 bool Lara_Col_TestHangSwingIn(const ITEM *const item, const int16_t angle)
 {
+    // Tests whether a forward hang grab should transition into thin-ledge
+    // swing ("swinging inwards"). The probe samples one click ahead in the
+    // hang direction and requires:
+    // - valid floor at probe point;
+    // - probe floor above Lara;
+    // - enough overhead clearance for swing-in.
+    // The extra clearance guard follows TR3-5 logic: `y - ceiling - 819 > -72`
+    // but uses a relaxed threshold to preserve the animation on certain slope
+    // edge cases.
+
     XYZ_32 pos = item->pos;
     int16_t room_num = item->room_num;
     switch (angle) {
@@ -61,7 +71,11 @@ bool Lara_Col_TestHangSwingIn(const ITEM *const item, const int16_t angle)
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     int32_t height = Room_GetHeight(sector, pos);
     int32_t ceiling = Room_GetCeiling(sector, pos);
-    return height != NO_HEIGHT && height - pos.y > 0 && ceiling - pos.y < -400;
+    const bool has_height = height != NO_HEIGHT;
+    const int32_t height_delta = height - pos.y;
+    const int32_t ceiling_delta = ceiling - pos.y;
+    return has_height && height_delta > 0 && ceiling_delta < -400
+        && pos.y - ceiling - 819 > -110;
 }
 
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
