@@ -21,6 +21,9 @@
 - fixed drawing debug triggers using wrong orientation in some triangular geometry
 - fixed heavy triggers with no `TO_TARGET` / `TO_CAMERA` resetting cameras
 
+**TR1**:
+- fixed a very rare case of raptors using an incorrect death animation
+
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
 - fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)
