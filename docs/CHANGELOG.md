@@ -25,6 +25,9 @@
 - fixed heavy triggers with no `TO_TARGET` / `TO_CAMERA` resetting cameras
 - fixed Lua `trx.catalog` only exposing `objects` and `flip_effects`; it now also exposes `lara_states`, `lara_anims`, `music`, and `samples`
 
+**TR1**:
+- fixed a very rare case of raptors using an incorrect death animation
+
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
 - fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)

@@ -171,16 +171,8 @@ static void M_Control(const int16_t item_num)
     if (item->hit_points <= 0) {
         if (item->current_anim_state != M_STATE_DEATH) {
             item->current_anim_state = M_STATE_DEATH;
-            int32_t death_anim = M_ANIM_DEATH;
-            const int32_t rnd = Random_GetControl();
-            if (!is_tr3) {
-                // TODO: OG bug? Small edge-case of being 2, which gives anim
-                // 11, lunge attack
-                death_anim += rnd / 16200;
-            } else if (rnd <= 0x4000) {
-                death_anim += 1;
-            }
-            Item_SwitchToAnim(item, death_anim, 0);
+            const int32_t offset = Random_GetControl() > 0x4000 ? 0 : 1;
+            Item_SwitchToAnim(item, M_ANIM_DEATH + offset, 0);
         }
         goto finish;
     }
