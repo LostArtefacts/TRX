@@ -112,6 +112,7 @@ void UI_NewGame_Free(UI_NEW_GAME_STATE *const s)
 {
     Vector_Free(s->options);
     UI_Requester_Free(&s->req);
+    Memory_Free(s);
 }
 
 int32_t UI_NewGame_Control(UI_NEW_GAME_STATE *const s)
