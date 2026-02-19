@@ -67,6 +67,10 @@ Module for interacting with the Lara's object.
     relative animation number of the `O_LARA_EXTRA` object.  
     Otherwise, returns -1.
 
+- [lua]`trx.lara.equipped_gun`  
+    Read-only - returns Lara's currently equipped gun ID.
+    Compare values using [lua]`trx.catalog.weapons`.
+
 ## Mesh constants
 
 - `trx.lara.mesh.hips`  

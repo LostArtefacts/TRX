@@ -23,6 +23,11 @@ A convenience module for accessing TRX catalog IDs.
   Examples:   
   - [lua]`if lara.state == trx.catalog.lara_states.run then ...`
 
+- [lua]`trx.catalog.weapons`   
+  This table contains each TRX Lara gun type ID. Names match the keys from `weapons.json5`, with the `LGT_` prefix stripped and lowercased.   
+  Examples:   
+  - [lua]`if trx.lara.equipped_gun == trx.catalog.weapons.desert_eagle then ...`
+
 - [lua]`trx.catalog.lara_anims`   
   This table contains each TRX Lara animation ID. Names match those defined in `catalog_lara_anims.csv`, with the `LA_` prefix stripped and lowercased.   
   Examples:   

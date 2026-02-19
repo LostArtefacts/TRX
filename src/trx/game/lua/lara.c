@@ -140,6 +140,13 @@ static int M_L_LaraGetExtraAnim(lua_State *const L)
     return 1;
 }
 
+// trxc.lara.get_equipped_gun() → int
+static int M_L_LaraGetEquippedGun(lua_State *const L)
+{
+    lua_pushinteger(L, Lara_GetLaraInfo()->gun_type);
+    return 1;
+}
+
 void LUA_CreateLara(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
@@ -217,6 +224,8 @@ void LUA_CreateLara(lua_State *const L)
     lua_setfield(L, -2, "has_pistol_weapon");
     lua_pushcfunction(L, M_L_LaraGetExtraAnim);
     lua_setfield(L, -2, "get_extra_anim");
+    lua_pushcfunction(L, M_L_LaraGetEquippedGun);
+    lua_setfield(L, -2, "get_equipped_gun");
     lua_setfield(L, -2, "lara");
     lua_pop(L, 1);
 }

@@ -7,6 +7,7 @@ local catalog = {
   lara_anims = raw.lara_anims,
   music = raw.music,
   samples = raw.samples,
+  weapons = raw.weapons,
 }
 
 trx.catalog = catalog

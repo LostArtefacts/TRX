@@ -1,4 +1,5 @@
 #include <trx/core/memory.h>
+#include <trx/game/lara/enum.h>
 
 #include <ctype.h>
 #include <lauxlib.h>
@@ -66,6 +67,31 @@ static void M_PushLaraStates(lua_State *const L)
     lua_setfield(L, -2, "lara_states");
 }
 
+static void M_PushWeapons(lua_State *const L)
+{
+    lua_newtable(L);
+
+#define X_LUA_WEAPON(enum_value)                                               \
+    M_PushCatalogKey(L, #enum_value, "LGT_", enum_value);
+    X_LUA_WEAPON(LGT_UNARMED);
+    X_LUA_WEAPON(LGT_PISTOLS);
+    X_LUA_WEAPON(LGT_MAGNUMS);
+    X_LUA_WEAPON(LGT_UZIS);
+    X_LUA_WEAPON(LGT_SHOTGUN);
+    X_LUA_WEAPON(LGT_M16);
+    X_LUA_WEAPON(LGT_GRENADE);
+    X_LUA_WEAPON(LGT_HARPOON);
+    X_LUA_WEAPON(LGT_FLARE);
+    X_LUA_WEAPON(LGT_SKIDOO);
+    X_LUA_WEAPON(LGT_AUTOS);
+    X_LUA_WEAPON(LGT_DESERT_EAGLE);
+    X_LUA_WEAPON(LGT_MP5);
+    X_LUA_WEAPON(LGT_ROCKET);
+#undef X_LUA_WEAPON
+
+    lua_setfield(L, -2, "weapons");
+}
+
 static void M_PushLaraAnims(lua_State *const L)
 {
     lua_newtable(L);
@@ -110,6 +136,7 @@ void LUA_CreateCatalog(lua_State *const L)
     M_PushObjects(L);
     M_PushFlipEffects(L);
     M_PushLaraStates(L);
+    M_PushWeapons(L);
     M_PushLaraAnims(L);
     M_PushMusic(L);
     M_PushSamples(L);
