@@ -792,7 +792,10 @@ void TestReplay_RunFrame(void)
         }
         for (int32_t j = 0; j < f->events->count; j++) {
             const char *const evt = *(char **)Vector_Get(f->events, j);
-            M_ParseEvent(evt);
+            if (!M_ParseEvent(evt)) {
+                LOG_WARNING(
+                    "Unknown replay event on frame %d: %s", p->frame_idx, evt);
+            }
         }
         p->next_frame_idx++;
     }
