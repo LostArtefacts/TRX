@@ -92,6 +92,18 @@ bool Creature_Shoot(
         effect_num = Creature_Effect(item, gun, Spawn_GunShot);
         if (is_hit) {
             Item_TakeDamage(target_item, damage / 10, true);
+
+            const OBJECT *const target_obj = Object_Get(target_item->object_id);
+            int32_t joint = Random_GetControl() & 0xF;
+            if (joint >= target_obj->mesh_count) {
+                joint = 0;
+            }
+
+            XYZ_32 pos = {};
+            Collide_GetJointAbsPosition(target_item, &pos, joint);
+            Spawn_Blood(
+                pos.x, pos.y, pos.z, target_item->speed, target_item->rot.y,
+                target_item->room_num);
         }
     }
     if (effect_num != NO_EFFECT) {

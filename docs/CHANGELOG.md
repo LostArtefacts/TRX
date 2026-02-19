@@ -9,6 +9,7 @@
 - added a new Lua catalog, `trx.catalog.weapons`, for weapon identifiers
 - added a new Lua property, `trx.lara.equipped_gun`, to read Lara's currently equipped gun type
 - added support for using more sound slots than originally possible in custom levels (#3898)
+- added blood effects when enemies shoot any other creature (not just Lara)
 - changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
