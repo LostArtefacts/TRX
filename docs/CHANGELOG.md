@@ -21,6 +21,7 @@
 - fixed very distant Boulders causing camera shake (similar to the Tihocan crocodile targeting bug)
 - fixed drawing debug triggers using wrong orientation in some triangular geometry
 - fixed heavy triggers with no `TO_TARGET` / `TO_CAMERA` resetting cameras
+- fixed Lua `trx.catalog` only exposing `objects` and `flip_effects`; it now also exposes `lara_states`, `lara_anims`, `music`, and `samples`
 
 **TR2**:
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
