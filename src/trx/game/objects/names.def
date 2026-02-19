@@ -224,6 +224,7 @@ X_OBJ_NAME_DEFINE(O_TONY,                  "tony",                  X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_VULTURE,               "vulture",               X_OBJ_NAMES("Vulture"))
 X_OBJ_NAME_DEFINE(O_COBRA,                 "snake",                 X_OBJ_NAMES("Snake", "Cobra"))
 X_OBJ_NAME_DEFINE(O_SHIVA,                 "shiva",                 X_OBJ_NAMES("Shiva"))
+X_OBJ_NAME_DEFINE(O_STHPAC_MERCENARY,      "sthpac_mercenary",      X_OBJ_NAMES("South Pacific Mercenary"))
 X_OBJ_NAME_DEFINE(O_TRIBE_AXEMAN,          "tribe_axeman",          X_OBJ_NAMES("Tribe Axeman"))
 X_OBJ_NAME_DEFINE(O_TRIBE_PIPEMAN,         "tribe_pipeman",         X_OBJ_NAMES("Tribe Blowpipe User"))
 X_OBJ_NAME_DEFINE(O_TRIBE_BOSS,            "tribe_boss",            X_OBJ_NAMES("Tribe Boss"))

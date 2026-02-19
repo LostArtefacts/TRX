@@ -1976,6 +1976,9 @@
         },
         "raptor_emitter": {
             "name": "\\{review}Emiter Raptora",
+        },
+        "sthpac_mercenary": {
+            "name": "\\{review}Najemnik z Południowego Pacyfiku",
         }
     }
 }

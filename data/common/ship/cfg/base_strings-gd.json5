@@ -2009,6 +2009,9 @@
         },
         "raptor_emitter": {
             "name": "\\{review}Sgaoiliche Raptor",
+        },
+        "sthpac_mercenary": {
+            "name": "Saighdear a' Chuain Shèimh a Deas",
         }
     }
 }

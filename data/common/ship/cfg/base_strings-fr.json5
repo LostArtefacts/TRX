@@ -1985,6 +1985,9 @@
         },
         "raptor_emitter": {
             "name": "\\{review}Émetteur de Raptor",
+        },
+        "sthpac_mercenary": {
+            "name": "\\{review}Mercenaire du Pacifique Sud",
         }
     }
 }
