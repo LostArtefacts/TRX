@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/filesystem.h>
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
@@ -18,6 +19,7 @@
 #include <trx/game/shell/events.h>
 
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -41,6 +43,23 @@ typedef struct {
     VECTOR *frames; // Vector of M_FRAME frames to play
     int32_t frame_idx; // Current playback frame index
     int32_t next_frame_idx; // Next frame to process
+    bool replay_quiet;
+    struct {
+        bool seen;
+        bool quiet_applied;
+        LOG_LEVEL log_level_before_quiet;
+        bool summary_printed;
+        bool case_active;
+        char *case_name;
+        int32_t case_checks;
+        int32_t case_fails;
+        int32_t cases_passed;
+        int32_t cases_failed;
+        int32_t checks_passed;
+        int32_t checks_failed;
+        int32_t exit_code_override;
+        bool use_ansi_colors;
+    } test_mode;
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
@@ -56,7 +75,8 @@ static bool M_ParseTextInputEvent(const char *event_str);
 static bool M_ParseCommandEvent(const char *event_str);
 static bool M_ParseNoopEvent(const char *event_str);
 static bool M_ParseLuaEvent(const char *event_str);
-static bool M_ParseAssertEvent(const char *event_str);
+static bool M_ParseTestCaseEvent(const char *event_str);
+static bool M_ParseExpectEvent(const char *event_str);
 
 // Header parsers
 static bool M_ParseSeedControl(const char *line, M_PARSE_CTX *ctx);
@@ -65,36 +85,150 @@ static bool M_ParseBindKeyboard(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseBindController(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseArgs(const char *line, M_PARSE_CTX *ctx);
 static bool M_ParseConfig(const char *line, M_PARSE_CTX *ctx);
+static bool M_ParseTestCaseHeader(const char *line, M_PARSE_CTX *ctx);
 
 static const M_HEADER_HANDLER m_HeaderHandlers[] = {
-    M_ParseSeedControl,
-    M_ParseSeedDraw,
-    M_ParseBindKeyboard,
-    M_ParseBindController,
-    M_ParseArgs,
-    M_ParseConfig,
-    nullptr,
+    M_ParseSeedControl,    M_ParseSeedDraw, M_ParseBindKeyboard,
+    M_ParseBindController, M_ParseArgs,     M_ParseConfig,
+    M_ParseTestCaseHeader, nullptr,
 };
 
 static const M_EVENT_HANDLER m_EventHandlers[] = {
-    M_ParseQuitEvent,
-    M_ParseKeyDownEvent,
-    M_ParseKeyUpEvent,
-    M_ParseTextInputEvent,
-    M_ParseNoopEvent,
-    M_ParseCommandEvent,
-    M_ParseLuaEvent,
-#if M_DEBUG
-    M_ParseAssertEvent,
-#endif
-    nullptr,
+    M_ParseQuitEvent,   M_ParseTestCaseEvent,
+    M_ParseExpectEvent, M_ParseKeyDownEvent,
+    M_ParseKeyUpEvent,  M_ParseTextInputEvent,
+    M_ParseNoopEvent,   M_ParseCommandEvent,
+    M_ParseLuaEvent,    nullptr,
 };
+
+static void M_TestPrint(const char *const fmt, ...)
+{
+    va_list va;
+    va_start(va, fmt);
+    vprintf(fmt, va);
+    printf("\n");
+    fflush(stdout);
+    va_end(va);
+}
+
+static const char *M_TestColor(const char *const color)
+{
+    return m_Priv.test_mode.use_ansi_colors ? color : "";
+}
+
+static const char *M_TestColorReset(void)
+{
+    return m_Priv.test_mode.use_ansi_colors ? LOG_ANSI_COLOR_RESET : "";
+}
+
+static void M_EndTestCase(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (!p->test_mode.case_active) {
+        return;
+    }
+
+    if (p->test_mode.case_fails == 0) {
+        p->test_mode.cases_passed++;
+        M_TestPrint(
+            "%sPASS%s | %s", M_TestColor(LOG_ANSI_COLOR_GREEN),
+            M_TestColorReset(), p->test_mode.case_name);
+    } else {
+        p->test_mode.cases_failed++;
+        M_TestPrint(
+            "%sFAIL%s | %s (%d/%d checks failed)",
+            M_TestColor(LOG_ANSI_COLOR_RED), M_TestColorReset(),
+            p->test_mode.case_name, p->test_mode.case_fails,
+            p->test_mode.case_checks);
+    }
+
+    p->test_mode.case_active = false;
+    Memory_FreePointer(&p->test_mode.case_name);
+    p->test_mode.case_checks = 0;
+    p->test_mode.case_fails = 0;
+}
+
+static void M_TestReportSummary(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (!p->test_mode.seen || p->test_mode.summary_printed) {
+        return;
+    }
+
+    if (p->test_mode.case_active) {
+        M_EndTestCase();
+    }
+
+    M_TestPrint("\n=== TEST_SUMMARY ===");
+    const int32_t total_cases =
+        p->test_mode.cases_passed + p->test_mode.cases_failed;
+    if (p->test_mode.cases_passed > 0) {
+        M_TestPrint(
+            "%sPASSED: %d of %d%s", M_TestColor(LOG_ANSI_COLOR_GREEN),
+            p->test_mode.cases_passed, total_cases, M_TestColorReset());
+    }
+    if (p->test_mode.cases_failed > 0) {
+        M_TestPrint(
+            "%sFAILED: %d of %d%s", M_TestColor(LOG_ANSI_COLOR_RED),
+            p->test_mode.cases_failed, total_cases, M_TestColorReset());
+    }
+    p->test_mode.summary_printed = true;
+}
+
+static void M_ApplyQuietInTestMode(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (!p->replay_quiet || !p->test_mode.seen || p->test_mode.quiet_applied) {
+        return;
+    }
+    p->test_mode.log_level_before_quiet = Log_GetMinLevel();
+    Log_SetMinLevel((LOG_LEVEL)100);
+    p->test_mode.quiet_applied = true;
+}
+
+static void M_TerminateFromTestResult(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (p->test_mode.cases_failed > 0 || p->test_mode.checks_failed > 0) {
+        p->test_mode.exit_code_override = 1;
+    } else {
+        p->test_mode.exit_code_override = 0;
+    }
+
+    SDL_Event event = { .type = SDL_QUIT };
+    Shell_ProcessEvent(&event);
+}
+
+static bool M_ParseQuotedPayload(
+    const char *const event_str, const char *const prefix,
+    const char **const out_start, size_t *const out_len)
+{
+    if (strncmp(event_str, prefix, strlen(prefix)) != 0) {
+        return false;
+    }
+
+    const char *const start = strchr(event_str + strlen(prefix), '"');
+    const char *const end = start ? strrchr(start + 1, '"') : nullptr;
+    if (start == nullptr || end == nullptr || end <= start + 1) {
+        return false;
+    }
+
+    *out_start = start + 1;
+    *out_len = (size_t)(end - (start + 1));
+    return true;
+}
 
 static bool M_ParseQuitEvent(const char *const event_str)
 {
     if (strcmp(event_str, "quit") != 0) {
         return false;
     }
+
+    if (m_Priv.test_mode.seen) {
+        M_TestReportSummary();
+        M_TerminateFromTestResult();
+    }
+
     SDL_Event event = { .type = SDL_QUIT };
     Shell_ProcessEvent(&event);
     return true;
@@ -158,6 +292,87 @@ static bool M_ParseNoopEvent(const char *const event_str)
     return true;
 }
 
+static bool M_ParseTestCaseEvent(const char *const event_str)
+{
+    M_PRIV *const p = &m_Priv;
+    const char *name_start = nullptr;
+    size_t name_len = 0;
+    if (!M_ParseQuotedPayload(event_str, "testcase ", &name_start, &name_len)) {
+        return false;
+    }
+
+    p->test_mode.seen = true;
+    M_ApplyQuietInTestMode();
+
+    if (p->test_mode.case_active) {
+        M_EndTestCase();
+    }
+
+    Memory_FreePointer(&p->test_mode.case_name);
+    p->test_mode.case_name = String_Format("%.*s", (int)name_len, name_start);
+    p->test_mode.case_checks = 0;
+    p->test_mode.case_fails = 0;
+    p->test_mode.case_active = true;
+    return true;
+}
+
+static bool M_ParseTestCaseHeader(const char *const line, M_PARSE_CTX *const)
+{
+    return M_ParseTestCaseEvent(line);
+}
+
+static bool M_ParseExpectEvent(const char *const event_str)
+{
+    M_PRIV *const p = &m_Priv;
+    const char *const prefix = "expect ";
+    if (strncmp(event_str, prefix, strlen(prefix)) != 0) {
+        return false;
+    }
+    const char *expr_start = event_str + strlen(prefix);
+    while (*expr_start == ' ' || *expr_start == '\t') {
+        expr_start++;
+    }
+    if (*expr_start == '\0') {
+        return false;
+    }
+    const size_t expr_len = strlen(expr_start);
+
+    p->test_mode.seen = true;
+    M_ApplyQuietInTestMode();
+
+    if (!p->test_mode.case_active) {
+        M_TestPrint(
+            "%sFAIL%s | expect outside test case",
+            M_TestColor(LOG_ANSI_COLOR_RED), M_TestColorReset());
+        p->test_mode.checks_failed++;
+        p->test_mode.cases_failed++;
+        return true;
+    }
+
+    char *const expr = String_Format("%.*s", (int)expr_len, expr_start);
+    char *const script =
+        String_Format("if not (%s) then error('expect failed') end", expr);
+    LUA_RESULT eval_result = Lua_Eval(script);
+
+    p->test_mode.case_checks++;
+    if (eval_result.code == LUA_OK) {
+        p->test_mode.checks_passed++;
+    } else {
+        p->test_mode.checks_failed++;
+        p->test_mode.case_fails++;
+        M_TestPrint(
+            "%sFAIL%s | %s | expect \"%s\" | %s",
+            M_TestColor(LOG_ANSI_COLOR_RED), M_TestColorReset(),
+            p->test_mode.case_name, expr,
+            eval_result.message != nullptr ? eval_result.message : "lua error");
+    }
+
+    Lua_FreeResult(&eval_result);
+    Memory_Free(script);
+    Memory_Free(expr);
+    return true;
+}
+
 static bool M_ParseCommandEvent(const char *const event_str)
 {
     if (strncmp(event_str, "cmd ", 4) != 0) {
@@ -200,40 +415,6 @@ static bool M_ParseLuaEvent(const char *const event_str)
     }
     Lua_FreeResult(&eval_result);
     return true;
-}
-
-static bool M_ParseAssertEvent(const char *const event_str)
-{
-    const ITEM *const lara_item = Lara_GetItem();
-    const OBJECT_ID obj_id = Lara_GetAnimationObject();
-    const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
-    int32_t x, y, z;
-    if (sscanf(event_str, "assert lara.pos=%d,%d,%d", &x, &y, &z) == 3) {
-        ASSERT(lara_item->pos.x == x);
-        ASSERT(lara_item->pos.y == y);
-        ASSERT(lara_item->pos.z == z);
-        return true;
-    } else if (sscanf(event_str, "assert lara.rot=%d,%d,%d", &x, &y, &z) == 3) {
-        ASSERT(lara_item->rot.x == x);
-        ASSERT(lara_item->rot.y == y);
-        ASSERT(lara_item->rot.z == z);
-        return true;
-    } else if (
-        sscanf(event_str, "assert lara.anim=%d,%d,%d", &x, &y, &z) == 3) {
-        ASSERT(x == obj_id);
-        ASSERT(y == Item_GetRelativeObjAnim(lara_item, obj_id));
-        ASSERT(z == Item_GetRelativeFrame(lara_item));
-        return true;
-    } else if (sscanf(event_str, "assert lara.speed=%d,%d", &x, &y) == 2) {
-        ASSERT(
-            x == (vehicle_item != nullptr ? vehicle_item : lara_item)->speed);
-        ASSERT(
-            y
-            == (vehicle_item != nullptr ? vehicle_item : lara_item)
-                   ->fall_speed);
-        return true;
-    }
-    return false;
 }
 
 static bool M_ParseEvent(const char *const event_str)
@@ -432,6 +613,14 @@ static char *M_SkipWhitespace(char *const line)
 SHELL_ARGS *TestReplay_Open(const char *path)
 {
     M_PRIV *const p = &m_Priv;
+
+    Memory_FreePointer(&p->test_mode.case_name);
+    memset(p, 0, sizeof(m_Priv));
+    p->replay_quiet = Log_GetMinLevel() >= LOG_LEVEL_WARNING;
+    p->test_mode.log_level_before_quiet = Log_GetMinLevel();
+    p->test_mode.use_ansi_colors = Log_ShouldUseAnsiColors();
+    p->test_mode.exit_code_override = -1;
+
     char *data = nullptr;
     size_t size = 0;
     if (!File_Load(path, &data, &size)) {
@@ -529,6 +718,9 @@ SHELL_ARGS *TestReplay_Open(const char *path)
     if (ctx.args == nullptr) {
         ctx.args = Shell_ParseArgs(nullptr);
     }
+    if (ctx.args != nullptr && ctx.args->quiet) {
+        p->replay_quiet = true;
+    }
     return ctx.args;
 }
 
@@ -555,6 +747,14 @@ void TestReplay_Start(void)
 void TestReplay_Close(void)
 {
     M_PRIV *const p = &m_Priv;
+    M_TestReportSummary();
+
+    if (p->test_mode.quiet_applied) {
+        Log_SetMinLevel(p->test_mode.log_level_before_quiet);
+        p->test_mode.quiet_applied = false;
+    }
+
+    Memory_FreePointer(&p->test_mode.case_name);
     if (p->headers) {
         Vector_Free(p->headers);
         p->headers = nullptr;
@@ -597,4 +797,14 @@ void TestReplay_RunFrame(void)
         p->next_frame_idx++;
     }
     p->frame_idx++;
+
+    if (p->test_mode.seen && p->next_frame_idx >= p->frames->count) {
+        M_TestReportSummary();
+        M_TerminateFromTestResult();
+    }
+}
+
+int32_t TestReplay_GetExitCodeOverride(void)
+{
+    return m_Priv.test_mode.exit_code_override;
 }

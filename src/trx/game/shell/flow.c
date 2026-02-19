@@ -418,7 +418,8 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     if (s->args->level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
-    return 0;
+    const int32_t replay_exit_code = TestReplay_GetExitCodeOverride();
+    return replay_exit_code >= 0 ? replay_exit_code : 0;
 }
 
 void Shell_Shutdown(void)

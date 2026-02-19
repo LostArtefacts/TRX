@@ -7,21 +7,15 @@
 
 #define M_FORMAT "%s | %s [%s:%d:%s] "
 
-#define M_ANSI_COLOR_RED "\x1b[31m"
-#define M_ANSI_COLOR_GREEN "\x1b[32m"
-#define M_ANSI_COLOR_YELLOW "\x1b[33m"
-#define M_ANSI_COLOR_CYAN "\x1b[36m"
-#define M_ANSI_COLOR_RESET "\x1b[0m"
-
 static LOG_LEVEL m_LogLevel = LOG_LEVEL_MAX;
 static FILE *m_LogHandle = nullptr;
 static bool m_UseAnsiColors = true;
 
 static const char *const m_LogLevelColors[] = {
-    [LOG_LEVEL_INFO] = M_ANSI_COLOR_RESET,
-    [LOG_LEVEL_WARNING] = M_ANSI_COLOR_YELLOW,
-    [LOG_LEVEL_ERROR] = M_ANSI_COLOR_RED,
-    [LOG_LEVEL_DEBUG] = M_ANSI_COLOR_CYAN,
+    [LOG_LEVEL_INFO] = LOG_ANSI_COLOR_RESET,
+    [LOG_LEVEL_WARNING] = LOG_ANSI_COLOR_YELLOW,
+    [LOG_LEVEL_ERROR] = LOG_ANSI_COLOR_RED,
+    [LOG_LEVEL_DEBUG] = LOG_ANSI_COLOR_CYAN,
 };
 static const char *const m_LogLevelStrings[] = {
     [LOG_LEVEL_INFO] = "INF",
@@ -38,6 +32,16 @@ void Log_Init(const char *path, const LOG_LEVEL min_level)
         m_LogHandle = fopen(path, "w");
     }
     Log_Init_Extra(path);
+}
+
+LOG_LEVEL Log_GetMinLevel(void)
+{
+    return m_LogLevel;
+}
+
+void Log_SetMinLevel(const LOG_LEVEL min_level)
+{
+    m_LogLevel = min_level;
 }
 
 void Log_Message(
@@ -82,7 +86,7 @@ void Log_Message(
         printf(M_FORMAT, log_str, timestamp_str, file, line, func);
         vprintf(fmt, va);
         if (m_UseAnsiColors) {
-            printf("%s", M_ANSI_COLOR_RESET);
+            printf("%s", LOG_ANSI_COLOR_RESET);
         }
         printf("\n");
         fflush(stdout);
