@@ -366,10 +366,20 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         const int16_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
         const int16_t c =
             Lara_CeilingFront(item, item->rot.y, M_WALK_DIST, LARA_HEIGHT);
+        const HEIGHT_TYPE height_type = Room_GetHeightType();
 
-        if (Room_GetHeightType() == HT_BIG_SLOPE && h < 0) {
+        bool inside_wall = false;
+        if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED) {
+            int16_t room_num = item->room_num;
+            const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+            const int16_t sector_height =
+                Room_GetHeightEx(sector, item->pos, true, NO_ITEM);
+            inside_wall = sector_height == NO_HEIGHT;
+        }
+
+        if (height_type == HT_BIG_SLOPE && h < 0 && !inside_wall) {
             item->goal_anim_state = LS_STOP;
-        } else if (c > 0 && !g_Input.action) {
+        } else if (c > 0 && !inside_wall && !g_Input.action) {
             item->goal_anim_state = LS_STOP;
         } else if (g_Input.slow) {
             M_Walk(item, coll);
