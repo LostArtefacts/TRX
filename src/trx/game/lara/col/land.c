@@ -294,6 +294,33 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     Lara_Col_GetInfo(item, coll);
 }
 
+static void M_PullUp(ITEM *const item, COLL_INFO *const coll)
+{
+    const int16_t anim = LA_U(Item_GetRelativeAnim(item));
+    if ((anim != LA_CLIMB_2CLICK && anim != LA_CLIMB_3CLICK)
+        || !Item_TestFrameEqual(item, -1)) {
+        M_Default(item, coll);
+        return;
+    }
+
+    Lara_UpdateRoomToHeight(-WALL_L);
+    Lara_Animate(item);
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->move_angle = item->rot.y + DEG_180;
+    item->gravity = false;
+    item->fall_speed = 0;
+    coll->bad_pos = STEPUP_HEIGHT;
+    coll->bad_neg = -STEPUP_HEIGHT;
+    coll->slopes_are_pits = 1;
+    coll->slopes_are_walls = 1;
+    coll->bad_ceiling = 0;
+    coll->lava_is_pit = 1;
+
+    Lara_Col_GetInfo(item, coll);
+    Lara_Col_Shift(coll);
+}
+
 static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 {
     item->gravity = false;
@@ -914,7 +941,7 @@ REGISTER_LARA_COL(LS_USE_MIDAS,    M_Default)
 REGISTER_LARA_COL(LS_DIE_MIDAS,    M_Default)
 REGISTER_LARA_COL(LS_GYMNAST,      M_Default)
 REGISTER_LARA_COL(LS_WATER_OUT,    M_Default)
-REGISTER_LARA_COL(LS_PULL_UP,      M_Default)
+REGISTER_LARA_COL(LS_PULL_UP,      M_PullUp)
 REGISTER_LARA_COL(LS_CONTROLLED,   M_Default)
 REGISTER_LARA_COL(LS_FLARE_PICKUP, M_Default)
 REGISTER_LARA_COL(LS_WALK,         M_Walk)
