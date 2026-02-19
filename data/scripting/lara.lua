@@ -14,6 +14,7 @@ local getters = {
   outfit = raw.get_outfit,
   holsters_visible = raw.are_holsters_visible,
   has_pistol_weapon = raw.has_pistol_weapon,
+  equipped_gun = raw.get_equipped_gun,
   extra_anim = raw.get_extra_anim,
   item = function()
     return trx.items[raw.get_item()]

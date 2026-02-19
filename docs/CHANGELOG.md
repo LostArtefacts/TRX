@@ -5,7 +5,9 @@
 - added `O_SMASH_OBJECT_3`, which can only be broken with triggers or the Crash Site gun
 - added `O_SMASH_OBJECT_4`, which behaves like `O_SMASH_OBJECT_1` but uses `SFX_SHUTTERS_BREAK`
 - added `O_TREX_ALPHA`, which can target raptors and be distracted by flares
-- added new Lua item query helpers, `trx.items.find(query)` and `trx.items.first(query)`, with support for `object_id` and `room_num` filters
+- added a new Lua item query helpers, `trx.items.find(query)` and `trx.items.first(query)`, with support for `object_id` and `room_num` filters
+- added a new Lua catalog, `trx.catalog.weapons`, for weapon identifiers
+- added a new Lua property, `trx.lara.equipped_gun`, to read Lara's currently equipped gun type
 - added support for using more sound slots than originally possible in custom levels (#3898)
 - changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
 - changed Earthquake to support being reset
