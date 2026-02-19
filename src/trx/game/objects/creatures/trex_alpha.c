@@ -123,8 +123,7 @@ static void M_CalculateTarget(ITEM *const item)
                 .y = (candidate->pos.y - item->pos.y) >> 6,
                 .z = (candidate->pos.z - item->pos.z) >> 6,
             };
-            const int32_t distance =
-                SQUARE(delta.x) + SQUARE(delta.y) + SQUARE(delta.z);
+            const int32_t distance = XYZ_32_GetLength2(delta);
             if (distance < best_distance) {
                 creature->enemy = (ITEM *)candidate;
                 best_distance = distance;

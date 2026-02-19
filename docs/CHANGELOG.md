@@ -44,6 +44,7 @@
 - added Crocodile control
 - added Carcass control (hanging Raptor)
 - added T-Rex control
+- added Raptor control
 - added Raptor Emitter control
 - added Bat Emitter control with save/load support
 - added Smashable Wall control
