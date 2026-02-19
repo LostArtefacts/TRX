@@ -23,3 +23,7 @@ bool TestReplay_IsOpened(void);
 
 // Run all events associated with the given frame.
 void TestReplay_RunFrame(void);
+
+// Returns -1 when replay does not override process exit code.
+// Otherwise 0/1 for replay-driven pass/fail status.
+int32_t TestReplay_GetExitCodeOverride(void);

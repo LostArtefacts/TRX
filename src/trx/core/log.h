@@ -9,6 +9,12 @@ typedef enum {
     LOG_LEVEL_MAX = -1,
 } LOG_LEVEL;
 
+#define LOG_ANSI_COLOR_RED "\x1b[31m"
+#define LOG_ANSI_COLOR_GREEN "\x1b[32m"
+#define LOG_ANSI_COLOR_YELLOW "\x1b[33m"
+#define LOG_ANSI_COLOR_CYAN "\x1b[36m"
+#define LOG_ANSI_COLOR_RESET "\x1b[0m"
+
 #define LOG_GENERIC(level, ...)                                                \
     Log_Message(level, __FILE__, __LINE__, __func__, __VA_ARGS__)
 #define LOG_INFO(...) LOG_GENERIC(LOG_LEVEL_INFO, __VA_ARGS__)
@@ -35,6 +41,8 @@ typedef enum {
         default: LOG_DEBUG(#var ": %p", var))
 
 void Log_Init(const char *path, LOG_LEVEL min_level);
+LOG_LEVEL Log_GetMinLevel(void);
+void Log_SetMinLevel(LOG_LEVEL min_level);
 void Log_Shutdown(void);
 void Log_Message(
     LOG_LEVEL level, const char *file, int line, const char *func,
