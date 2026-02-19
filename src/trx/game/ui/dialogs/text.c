@@ -117,6 +117,7 @@ void UI_TextDialog_Free(UI_TEXT_DIALOG_STATE *const s)
         Vector_Free(s->page_content);
         s->page_content = nullptr;
     }
+    Memory_Free(s);
 }
 
 void UI_TextDialog_Control(UI_TEXT_DIALOG_STATE *const s)
