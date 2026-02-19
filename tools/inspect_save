@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import sys
 import json
 import struct
 import zlib
@@ -25,10 +26,10 @@ def main() -> None:
         flags, counter, level_num, title_size = struct.unpack("I" * 4, handle.read(16))
         title = handle.read(title_size)
         print(json.dumps(data, indent=4))
-        print("flags:", flags)
-        print("counter:", counter)
-        print("level_num:", level_num)
-        print("title:", title)
+        print("flags:", flags, file=sys.stderr)
+        print("counter:", counter, file=sys.stderr)
+        print("level_num:", level_num, file=sys.stderr)
+        print("title:", title, file=sys.stderr)
 
 
 if __name__ == "__main__":
