@@ -181,14 +181,15 @@ static void M_PrepareSystem(void)
 {
     SHELL_SESSION *const s = m_Session;
     ASSERT(s != nullptr);
+    const char *const test_replay_path = s->args->test_replay_path;
 
     if (s->args->test_record_path != nullptr
         && s->args->test_replay_path != nullptr) {
         Shell_ExitSystem("Cannot use both --test-record and --test-replay");
     }
 
-    if (s->args->test_replay_path != nullptr) {
-        SHELL_ARGS *const tmp_args = TestReplay_Open(s->args->test_replay_path);
+    if (test_replay_path != nullptr) {
+        SHELL_ARGS *const tmp_args = TestReplay_Open(test_replay_path);
         if (tmp_args != nullptr) {
             tmp_args->headless = s->args->headless;
             tmp_args->debug_render_performance =
@@ -230,7 +231,7 @@ static void M_PrepareSystem(void)
     Lara_Skin_LoadFromFile(
         TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
 
-    if (s->args->test_replay_path != nullptr) {
+    if (test_replay_path != nullptr) {
         TestReplay_Start();
     } else {
         char *engine_config_path =
