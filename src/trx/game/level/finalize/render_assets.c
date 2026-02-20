@@ -154,12 +154,14 @@ void Level_Finalize_LoadTextures(LEVEL_CONTEXT *const ctx)
     }
 
     for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
-        const OBJECT_MESH *const mesh = Object_GetMesh(i);
+        OBJECT_MESH *const mesh = Object_GetMesh(i);
         for (int32_t j = 0; j < mesh->tex_face3s.count; j++) {
-            const FACE *const face = &mesh->tex_face3s.data[j];
+            FACE *const face = &mesh->tex_face3s.data[j];
             OBJECT_TEXTURE *const texture =
                 Output_GetObjectTexture(face->texture_idx);
             texture->uv_count = 3;
+            face->enable_reflections = texture->draw_type == DRAW_REFLECTIVE;
+            mesh->enable_reflections |= face->enable_reflections;
         }
     }
 
@@ -178,7 +180,7 @@ void Level_Finalize_LoadTextures(LEVEL_CONTEXT *const ctx)
     }
 
     for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
-        const OBJECT_MESH *const mesh = Object_GetMesh(i);
+        OBJECT_MESH *const mesh = Object_GetMesh(i);
         for (int32_t j = 0; j < mesh->tex_face4s.count; j++) {
             FACE *const face = &mesh->tex_face4s.data[j];
             XYZ_16 vertices[4] = {
@@ -188,6 +190,10 @@ void Level_Finalize_LoadTextures(LEVEL_CONTEXT *const ctx)
                 mesh->vertices[face->vertices[3]],
             };
             M_FixTrapezoidRatios(face, vertices);
+            const OBJECT_TEXTURE *const texture =
+                Output_GetObjectTexture(face->texture_idx);
+            face->enable_reflections = texture->draw_type == DRAW_REFLECTIVE;
+            mesh->enable_reflections |= face->enable_reflections;
         }
     }
 }
