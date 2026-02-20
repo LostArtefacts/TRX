@@ -292,8 +292,8 @@ static void M_FireGrenade(void)
     projectile_item->interp.prev.pos = projectile_item->pos;
     Item_Initialise(item_num);
 
-    const SECTOR *const sector =
-        Room_GetSector(origin, &projectile_item->room_num);
+    int16_t room_num = projectile_item->room_num;
+    const SECTOR *const sector = Room_GetSector(origin, &room_num);
     const int32_t height = Room_GetHeight(sector, origin);
     if (height < origin.y) {
         projectile_item->pos = (XYZ_32) {
@@ -302,6 +302,9 @@ static void M_FireGrenade(void)
             .z = lara_item->pos.z,
         };
     }
+
+    Room_GetSector(projectile_item->pos, &room_num);
+    Item_UpdateRoom(item_num, room_num);
 
     projectile_item->rot.x = lara->left_arm.rot.x + lara_item->rot.x;
     projectile_item->rot.y = lara->left_arm.rot.y + lara_item->rot.y;
