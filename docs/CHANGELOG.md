@@ -26,6 +26,7 @@
 - fixed drawing debug triggers using wrong orientation in some triangular geometry
 - fixed heavy triggers with no `TO_TARGET` / `TO_CAMERA` resetting cameras
 - fixed Lua `trx.catalog` only exposing `objects` and `flip_effects`; it now also exposes `lara_states`, `lara_anims`, `music`, and `samples`
+- fixed a freeze if firing a grenade very close to room portals (#4938, regression from 1.2)
 
 **TR1**:
 - fixed a very rare case of raptors using an incorrect death animation
