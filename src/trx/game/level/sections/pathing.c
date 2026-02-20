@@ -27,6 +27,10 @@ void Level_Section_ReadPathingData(LEVEL_CONTEXT *const ctx, VFILE *const file)
         }
         box->height = VFile_ReadS16(file);
         box->overlap_index = VFile_ReadS16(file);
+        if (loader->game_version == 3
+            && (box->overlap_index & BOX_BLOCKABLE) != 0) {
+            box->overlap_index |= BOX_BLOCKED;
+        }
     }
 
     const int32_t num_overlaps = VFile_ReadS32(file);
