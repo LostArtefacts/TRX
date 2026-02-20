@@ -75,7 +75,7 @@ bool Lara_Col_TestHangSwingIn(const ITEM *const item, const int16_t angle)
     const int32_t height_delta = height - pos.y;
     const int32_t ceiling_delta = ceiling - pos.y;
     return has_height && height_delta > 0 && ceiling_delta < -400
-        && pos.y - ceiling - 819 > -110;
+        && (g_TRVersion < 3 || pos.y - ceiling - 819 > -110);
 }
 
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
@@ -126,7 +126,8 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     }
     const int16_t angle = Math_DirectionToAngle(dir);
 
-    const bool swing_in = !ladder_hang && Lara_Col_TestHangSwingIn(item, angle);
+    const bool swing_in = (g_TRVersion < 3 || !ladder_hang)
+        && Lara_Col_TestHangSwingIn(item, angle);
     if (swing_in) {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
     } else {
