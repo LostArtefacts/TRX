@@ -570,6 +570,8 @@
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Permette a Lara di effettuare uno scatto, come in TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Spinta su gradino",
         "SETTING_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Fa in modo che Lara sia spinta giù da un gradino se si preme il tasto Capriola vicino al bordo.",
+        "SETTING_ENABLE_SUNGLASSES": "\\{review}Occhiali da sole di Lara",
+        "SETTING_ENABLE_SUNGLASSES_DESCRIPTION": "\\{review}Attiva gli occhiali da sole di Lara.",
         "SETTING_ENABLE_SWING_CANCEL": "Annulla oscillazione",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Consente di annullare l'animazione di oscillazione di Lara dalle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente",
         "SETTING_ENABLE_TARGET_CHANGE": "Cambio bersaglio",

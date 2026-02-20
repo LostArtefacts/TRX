@@ -193,6 +193,7 @@ static bool M_ReadLara(JSON_READ_IO *const io)
         }
         M_MUST(JSON_POP(io));
         M_MUST(JSON_POP(io));
+        Lara_Skin_ApplyOutfit();
     }
 
     lara->target = nullptr;

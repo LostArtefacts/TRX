@@ -570,6 +570,8 @@
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Pozwala Larze sprintować, podobnie jak w TR3 i nowszych grach.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Przewroty na schodkach",
         "SETTING_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Pozwala Larze uzyskać dodatkowy skok z małych schodków, jeśli spróbuje wykonać przewrót blisko krawędzi.",
+        "SETTING_ENABLE_SUNGLASSES": "\\{review}Okulary przeciwsłoneczne Lary",
+        "SETTING_ENABLE_SUNGLASSES_DESCRIPTION": "\\{review}Włącza okulary przeciwsłoneczne Lary.",
         "SETTING_ENABLE_SWING_CANCEL": "Łapanie krawędzi po puszczeniu",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Pozwala na anulowanie animacji huśtania Lary na krawędzi poprzez jej puszczenie i szybkie złapanie ponownie (tak jak w TR2+).",
         "SETTING_ENABLE_TARGET_CHANGE": "Zmiana celu",

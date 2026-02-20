@@ -196,6 +196,8 @@ void LUA_CreateLara(lua_State *const L)
     lua_setfield(L, -2, "spanner");
     lua_pushinteger(L, EXTRA_MESH_DRINK_CAN);
     lua_setfield(L, -2, "drink_can");
+    lua_pushinteger(L, EXTRA_MESH_GLASSES);
+    lua_setfield(L, -2, "glasses");
     lua_setfield(L, -2, "extra_mesh");
 
     lua_pushcfunction(L, M_L_GetLaraItem);

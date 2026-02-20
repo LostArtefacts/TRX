@@ -174,7 +174,8 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         Output_ApplyLevelSettings();
     }
 
-    if (L_CHANGED(visuals.enable_braid)) {
+    if (L_CHANGED(visuals.enable_braid)
+        || L_CHANGED(visuals.enable_sunglasses)) {
         Lara_Skin_ApplyOutfit();
     }
     if (L_CHANGED(visuals.lara_outfit)) {

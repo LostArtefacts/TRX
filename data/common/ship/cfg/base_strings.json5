@@ -570,6 +570,8 @@
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Allows Lara to sprint, similar to TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Step roll boost",
         "SETTING_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Allows Lara to be boosted off a one-click high step if roll is pressed near the edge.",
+        "SETTING_ENABLE_SUNGLASSES": "Lara's sunglasses",
+        "SETTING_ENABLE_SUNGLASSES_DESCRIPTION": "Enables Lara's sunglasses.",
         "SETTING_ENABLE_SWING_CANCEL": "Swing cancels",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Allows Lara's ledge-swinging animation to be canceled by letting go and quickly grabbing again.",
         "SETTING_ENABLE_TARGET_CHANGE": "Target change",

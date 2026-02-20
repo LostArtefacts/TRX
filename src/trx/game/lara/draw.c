@@ -206,6 +206,7 @@ static bool M_Draw_I(
     Matrix_Rot16_I(lara->interp.result.head_rot);
     M_CacheMatrix(LM_HEAD);
     M_DrawLaraMesh(item, LM_HEAD, clip, true);
+    M_DrawEquipment(LM_HEAD, clip, true);
 
     *g_MatrixPtr = saved_matrix;
     *g_WMatrixPtr = wsaved_matrix;
@@ -494,6 +495,7 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Rot16(lara->interp.result.head_rot);
     M_CacheMatrix(LM_HEAD);
     M_DrawLaraMesh(item, LM_HEAD, clip, false);
+    M_DrawEquipment(LM_HEAD, clip, false);
 
     *g_MatrixPtr = saved_matrix;
     *g_WMatrixPtr = wsaved_matrix;

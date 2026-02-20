@@ -95,6 +95,7 @@ behave. The structure of this file is described below.
   "is_reflective": false,
   "gun_map": 0,
   "combat_face_offset": 1,
+  "supports_sunglasses": true,
   "braid": {
     "mode": "BRAID_MODE_TR1_FULL",
     "mesh_offset": 10,
@@ -166,6 +167,13 @@ behave. The structure of this file is described below.
       face. <code>-1</code> implies no combat face swap. This mesh is used when
       Lara is firing a weapon (traditionally, the <code>O_LARA_UZI</code> head
       mesh was used).
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>supports_sunglasses</code></td>
+    <td>Boolean</td>
+    <td colspan="2">
+      Defines whether or not sunglasses can be used with this outfit.
     </td>
   </tr>
   <tr valign="top">
