@@ -570,6 +570,8 @@
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "Leigidh seo le Lara ruith gu luath, coltach ri TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Brùthadh le rolla bho cheum",
         "SETTING_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Leigidh Lara leum bhon cheum aon-bhriog ma bhriogar rolla faisg air an oir.",
+        "SETTING_ENABLE_SUNGLASSES": "Speuclairean-grèine Lara",
+        "SETTING_ENABLE_SUNGLASSES_DESCRIPTION": "Cuiridh seo an comas speuclairean-grèine Lara.",
         "SETTING_ENABLE_SWING_CANCEL": "Sguir siùdadh",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Leigidh seo le Lara leigeil às nuair a tha i a' siùdadh, agus grèim a ghlacadh sa bhad airson gluasad luath.",
         "SETTING_ENABLE_TARGET_CHANGE": "Atharraich targaid",

@@ -570,6 +570,8 @@
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "\\{review}Позволяет Ларе бегать на спринте, как в TR3 и новее.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Ускорение подъёма",
         "SETTING_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Позволяет Ларе одним щелчком подняться выше, если перекат нажат у края.",
+        "SETTING_ENABLE_SUNGLASSES": "\\{review}Солнцезащитные очки Лары",
+        "SETTING_ENABLE_SUNGLASSES_DESCRIPTION": "\\{review}Включает солнцезащитные очки Лары.",
         "SETTING_ENABLE_SWING_CANCEL": "Отмена раскачивания",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Позволяет отменить анимацию раскачивания Лары на выступе, если отпустить и быстро схватиться за него снова.",
         "SETTING_ENABLE_TARGET_CHANGE": "Изменить цель",

@@ -570,6 +570,8 @@
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "\\{review}Ermöglicht Lara zu sprinten, ähnlich wie in TR3+.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "Stufen-Roll-Boost",
         "SETTING_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "Erlaubt Lara von einer ein-Click hohen Stufe (standard) geboostet zu werden, wenn nahe der Stufen-Kante Rollen gedrückt wird.",
+        "SETTING_ENABLE_SUNGLASSES": "\\{review}Laras Sonnenbrille",
+        "SETTING_ENABLE_SUNGLASSES_DESCRIPTION": "\\{review}Aktiviert Laras Sonnenbrille.",
         "SETTING_ENABLE_SWING_CANCEL": "Schwingen unterbrechen",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Erlaubt, Laras Kanten-Schwinganimation abzubrechen, indem man kurz loslässt und sich schnell wieder festhält.",
         "SETTING_ENABLE_TARGET_CHANGE": "Zielwechsel",

@@ -296,6 +296,17 @@ static void M_SetCombatFace(const bool enabled)
     }
 }
 
+static void M_UpdateSunglasses(void)
+{
+    const bool enabled = g_Config.visuals.enable_sunglasses
+        && M_GetCurrentOutfit()->supports_sunglasses;
+    if (enabled) {
+        Lara_Skin_SetExtraEquipment(LM_HEAD, EXTRA_MESH_GLASSES);
+    } else {
+        Lara_Skin_ClearEquipment(LM_HEAD);
+    }
+}
+
 void Lara_Skin_Initialise(void)
 {
     const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
@@ -463,6 +474,7 @@ void Lara_Skin_ApplyOutfit(void)
     M_SetGunEquipment(LM_THIGH_L, m_HolsterType_L, outfit);
     M_SetGunEquipment(LM_THIGH_R, m_HolsterType_R, outfit);
     M_SetCombatFace(m_UseCombatFace);
+    M_UpdateSunglasses();
 }
 
 void Lara_Skin_SetCombatFace(const bool enabled)

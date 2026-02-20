@@ -570,6 +570,8 @@
         "SETTING_ENABLE_SPRINT_DESCRIPTION": "\\{review}Permet à Lara de sprinter, comme dans TR3 et les suivants.",
         "SETTING_ENABLE_STEP_ROLL_BOOST": "\\{review}Boost de roulade de marche",
         "SETTING_ENABLE_STEP_ROLL_BOOST_DESCRIPTION": "\\{review}Permet à Lara d'être propulsée d'un pas haut à un clic si la roulade est pressée près du bord.",
+        "SETTING_ENABLE_SUNGLASSES": "\\{review}Lunettes de soleil de Lara",
+        "SETTING_ENABLE_SUNGLASSES_DESCRIPTION": "\\{review}Active les lunettes de soleil de Lara.",
         "SETTING_ENABLE_SWING_CANCEL": "Annulation du balancement",
         "SETTING_ENABLE_SWING_CANCEL_DESCRIPTION": "Permet d'annuler l'animation de balancement à un rebord de Lara en relâchant puis en se raccrochant aussitôt, comme possible depuis TR2.",
         "SETTING_ENABLE_TARGET_CHANGE": "Changement de cible",

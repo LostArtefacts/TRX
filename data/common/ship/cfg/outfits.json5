@@ -124,6 +124,7 @@
             "gun_map": 0,
             "footstep_sample_id": "SFX_LARA_BAREFOOT",
             "combat_face_offset": -1,
+            "supports_sunglasses": false,
             "extra_outfits": {
                 "LS_EXTRA_MIDAS_KILL": "tr1_golden_bacon_lara",
             },
@@ -135,6 +136,7 @@
             "mesh_object": "O_LARA_SKIN_SWAP_7",
             "gun_map": 1,
             "is_reflective": true,
+            "supports_sunglasses": false,
             "combat_face_offset": -1,
         },
 
@@ -455,6 +457,7 @@
         "EXTRA_MESH_OAR": 36,
         "EXTRA_MESH_SPANNER": 37,
         "EXTRA_MESH_DRINK_CAN": 38,
+        "EXTRA_MESH_GLASSES": 39,
     },
 
     "gun_maps": [

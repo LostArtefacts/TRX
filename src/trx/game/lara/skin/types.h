@@ -33,6 +33,7 @@ typedef struct {
     LARA_SKIN_GUN_MAP *gun_map;
     LARA_SKIN_BRAID braid;
     bool is_reflective;
+    bool supports_sunglasses;
     SAMPLE_TRX_ID footstep_sample_id;
     int32_t combat_face_offset;
     MESH_PAIR no_holster_offsets;
