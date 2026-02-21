@@ -12,6 +12,8 @@
 #define M_LF_START_HANG    12
 #define M_LF_FAST_FALL     1
 #define M_BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
+#define M_HEAD_CLEARANCE   (-STEP_L / 8) // = -32
+#define M_LADDER_CLEARANCE (-STEPUP_HEIGHT) // = -384
 // clang-format on
 
 EDGE_CATCH Lara_Col_TestEdgeCatch(
@@ -205,7 +207,8 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (coll->coll_type != COLL_FRONT
-        || coll->side_mid.ceiling > -STEPUP_HEIGHT) {
+        || coll->side_mid.ceiling
+            > (lara->climb_status ? M_LADDER_CLEARANCE : M_HEAD_CLEARANCE)) {
         return false;
     }
 
