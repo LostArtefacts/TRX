@@ -475,6 +475,8 @@
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Active la console de développement.",
         "SETTING_ENABLE_CONTROLLED_DROPS": "\\{review}Chutes contrôlées",
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "\\{review}Permet à Lara de se retourner en l'air et d’attraper la corniche qu'elle vient de quitter, si la touche d'action est maintenue pendant la chute.",
+        "SETTING_ENABLE_CRAWLING": "\\{review}Ramper",
+        "SETTING_ENABLE_CRAWLING_DESCRIPTION": "\\{review}Permet à Lara de s’accroupir et de ramper.",
         "SETTING_ENABLE_CRAWL_JUMP": "\\{review}Saut en sortie de conduit",
         "SETTING_ENABLE_CRAWL_JUMP_DESCRIPTION": "\\{review}Permet à Lara de sauter hors des passages étroits.",
         "SETTING_ENABLE_CREDITS": "\\{review}Écrans de crédits",

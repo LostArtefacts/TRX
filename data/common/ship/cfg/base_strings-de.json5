@@ -475,6 +475,8 @@
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Aktiviert die Entwickler-Konsole.",
         "SETTING_ENABLE_CONTROLLED_DROPS": "\\{review}Kontrollierter Fall",
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "\\{review}Ermöglicht Lara, sich in der Luft zu drehen und den Vorsprung zu greifen, den sie gerade verlassen hat, wenn die Aktionstaste beim Fallen gehalten wird.",
+        "SETTING_ENABLE_CRAWLING": "\\{review}Kriechen",
+        "SETTING_ENABLE_CRAWLING_DESCRIPTION": "\\{review}Ermöglicht es Lara, sich zu ducken und zu kriechen.",
         "SETTING_ENABLE_CRAWL_JUMP": "\\{review}Crawl-Absprung",
         "SETTING_ENABLE_CRAWL_JUMP_DESCRIPTION": "\\{review}Ermöglicht es Lara, aus Kriechgängen herauszuspringen.",
         "SETTING_ENABLE_CREDITS": "Credits",

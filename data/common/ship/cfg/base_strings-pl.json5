@@ -475,6 +475,8 @@
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Włącza konsolę umożliwiającą wpisywanie różnych komend.",
         "SETTING_ENABLE_CONTROLLED_DROPS": "Bezpieczne krawędzie",
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Pozwala Larze obrócić się w powietrzu i złapać krawędź z której gracz właśnie się ześliznął, jeśli trzymay jest przycisk akcji.",
+        "SETTING_ENABLE_CRAWLING": "\\{review}Czołganie się",
+        "SETTING_ENABLE_CRAWLING_DESCRIPTION": "\\{review}Pozwala Larze kucać i czołgać się.",
         "SETTING_ENABLE_CRAWL_JUMP": "\\{review}Skok przy wyjściu z czołgania",
         "SETTING_ENABLE_CRAWL_JUMP_DESCRIPTION": "\\{review}Umożliwia Larze wyskoczenie z przestrzeni do czołgania.",
         "SETTING_ENABLE_CREDITS": "Napisy końcowe",

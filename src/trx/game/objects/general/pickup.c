@@ -349,12 +349,18 @@ cleanup:
 static inline bool M_HasValidPickupState(const ITEM *const lara_item)
 {
     // TODO: unify under a pickup style config option, but retain sprint slide
-    // test in TR1/2 mode.
+    // test in TR1/2 mode. Snap-pickups in crawl state do not make sense, so
+    // these always use TR3-style.
     const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
     const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
     if (g_TRVersion < 3) {
-        return state == LS_STOP && anim != LA_SPRINT_SLIDE_STAND_RIGHT
-            && anim != LA_SPRINT_SLIDE_STAND_LEFT;
+        if (anim == LA_SPRINT_SLIDE_STAND_RIGHT
+            || anim == LA_SPRINT_SLIDE_STAND_LEFT) {
+            return false;
+        }
+        if (state == LS_STOP) {
+            return true;
+        }
     }
 
     return (state == LS_STOP && anim == LA_STAND_IDLE)

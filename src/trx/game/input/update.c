@@ -40,7 +40,7 @@ void Input_Update(void)
         g_Input.right = 0;
     }
 
-    if (g_TRVersion < 3) {
+    if (!g_Config.gameplay.enable_crawling) {
         g_Input.crouch = 0;
     }
 
