@@ -17,6 +17,7 @@
 - changed logs to no longer emit ANSI color characters when the game's output is piped to a file / process
 - improved error reporting for gameflow issues to now display full key paths for faulty nodes
 - fixed Lara teleporting after vaulting 2 or 3 clicks when there is a room below the target position that has no immediately adjoining portal (#4530)
+- fixed Lara attempting to jump up (using action) despite the ceiling above her making it impossible to grab any ledge (#3558)
 - fixed NG+ always forcing Lara's default equipped gun at level start even when "remember guns between levels" is enabled (#4711)
 - fixed not restoring Lara's back weapon mesh between levels when "remember guns" is enabled and a rifle-type weapon is equipped at level end
 - fixed a missing footstep sound when Lara starts to sprint
