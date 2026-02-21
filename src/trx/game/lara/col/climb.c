@@ -12,6 +12,7 @@
 #define M_CLIMB_WIDTH_RIGHT      120
 #define M_CLIMB_HEIGHT           (WALL_L / 2) // = 512
 #define M_VAULT_ANGLE            (30 * DEG_1) // = 5460
+#define M_VAULT_GAP              (-LARA_HEIGHT + STEP_L / 8) // = -730
 #define M_LF_HANG                21
 #define M_LF_STOP_HANG           9
 #define M_LF_CLIMB_L_SHIFT_START 28
@@ -918,6 +919,10 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
         Item_SwitchToAnim(item, LA(LA_CLIMB_3CLICK), 0);
         item->pos.y += front_floor + STEP_L * 3;
         lara->gun_status = LGS_HANDS_BUSY;
+    } else if (
+        !lara->climb_status
+        && front_floor - coll->side_mid.ceiling < M_VAULT_GAP) {
+        return false;
     } else if (
         !slope && front_floor >= -STEP_L * 7 - mid
         && front_floor <= -STEP_L * 4 + mid) {
