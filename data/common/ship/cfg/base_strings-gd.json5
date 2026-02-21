@@ -475,6 +475,8 @@
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Cuiridh seo an consol leasachaidh an comas.",
         "SETTING_ENABLE_CONTROLLED_DROPS": "Tuit fo smachd",
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Leigidh seo le Lara tionndadh san adhar agus grèim a ghabhail air an oir a dh'fhàg i, fhad 's a tha am putan gnìomh air a chumail sios tron tuiteam.",
+        "SETTING_ENABLE_CRAWLING": "Snàgail",
+        "SETTING_ENABLE_CRAWLING_DESCRIPTION": "Leigidh seo le Lara cromadh sìos agus snàgail.",
         "SETTING_ENABLE_CRAWL_JUMP": "Leum às snàg",
         "SETTING_ENABLE_CRAWL_JUMP_DESCRIPTION": "Leigidh le Lara leum a-mach à àiteachan snàgaidh.",
         "SETTING_ENABLE_CREDITS": "Sgrìoban creideis",

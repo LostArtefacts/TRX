@@ -475,6 +475,8 @@
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Abilita la console per sviluppatori.",
         "SETTING_ENABLE_CONTROLLED_DROPS": "Cadute controllate",
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Permette a Lara di ruotare a mezz'aria e afferrare la sporgenza della superficie da cui è appena scivolata, se durante la caduta viene premuto il tasto Azione.",
+        "SETTING_ENABLE_CRAWLING": "\\{review}Strisciare",
+        "SETTING_ENABLE_CRAWLING_DESCRIPTION": "\\{review}Permette a Lara di accovacciarsi e strisciare.",
         "SETTING_ENABLE_CRAWL_JUMP": "\\{review}Salto in uscita dal cunicolo",
         "SETTING_ENABLE_CRAWL_JUMP_DESCRIPTION": "\\{review}Consente a Lara di saltare fuori dagli spazi angusti.",
         "SETTING_ENABLE_CREDITS": "Titoli di coda",

@@ -189,6 +189,7 @@
         "enable_reflections",
         "fix_chainblock_secret_sound",
         "enable_compass_stats",
+        "enable_crawling",
         "enable_wading",
         "restore_ps1_enemies",
         "fix_speeches_killing_music",

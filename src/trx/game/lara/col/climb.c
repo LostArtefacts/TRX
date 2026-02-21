@@ -558,7 +558,7 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    if (g_TRVersion == 3 && (g_Input.forward || g_Input.crouch)
+    if (g_Config.gameplay.enable_crawling && (g_Input.forward || g_Input.crouch)
         && coll->side_front.floor > -850 && coll->side_front.floor < -650
         && coll->side_front.floor - coll->side_front.ceiling >= -256
         && coll->side_left2.floor - coll->side_left2.ceiling >= -256

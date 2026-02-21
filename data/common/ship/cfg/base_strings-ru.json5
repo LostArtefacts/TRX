@@ -475,6 +475,8 @@
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Включает консоль разработчика.",
         "SETTING_ENABLE_CONTROLLED_DROPS": "Контролируемое падение",
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Позволяет Ларе развернуться в воздухе и ухватиться за выступ, с которого она только что сошла, если удерживать клавишу действия во время падения.",
+        "SETTING_ENABLE_CRAWLING": "\\{review}Ползание",
+        "SETTING_ENABLE_CRAWLING_DESCRIPTION": "\\{review}Позволяет Ларе приседать и ползать.",
         "SETTING_ENABLE_CRAWL_JUMP": "\\{review}Прыжок при выходе из лазов",
         "SETTING_ENABLE_CRAWL_JUMP_DESCRIPTION": "\\{review}Позволяет Ларе выпрыгивать из лазов.",
         "SETTING_ENABLE_CREDITS": "Включить титры",

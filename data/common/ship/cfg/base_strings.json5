@@ -475,6 +475,8 @@
         "SETTING_ENABLE_CONSOLE_DESCRIPTION": "Enables the developer console.",
         "SETTING_ENABLE_CONTROLLED_DROPS": "Controlled drops",
         "SETTING_ENABLE_CONTROLLED_DROPS_DESCRIPTION": "Allows Lara to turn mid-air and grab the ledge she just stepped off, if the action input is held while falling.",
+        "SETTING_ENABLE_CRAWLING": "Crawling",
+        "SETTING_ENABLE_CRAWLING_DESCRIPTION": "Allows Lara to crouch and crawl.",
         "SETTING_ENABLE_CRAWL_JUMP": "Crawl exit jump",
         "SETTING_ENABLE_CRAWL_JUMP_DESCRIPTION": "Allows Lara to jump out of crawlspaces.",
         "SETTING_ENABLE_CREDITS": "Credit screens",
