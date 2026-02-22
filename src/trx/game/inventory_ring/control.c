@@ -356,6 +356,43 @@ static bool M_CheckDemoTimer(const INV_RING *const ring)
         && ClockTimer_CheckElapsed(&m_DemoTimer, g_Config.flow.demo_delay);
 }
 
+static void M_SetupRingSwitchClose(
+    INV_RING *const ring, const RING_STATUS status_target,
+    const int16_t camera_pitch)
+{
+    InvRing_MotionSetup(
+        ring, RNG_CLOSING, status_target, M_RING_SWITCH_FRAMES / 2);
+    InvRing_MotionRadius(ring, 0);
+    InvRing_MotionRotation(
+        ring, INV_RING_CLOSE_ROTATION,
+        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
+    InvRing_MotionCameraPitch(ring, camera_pitch);
+    ring->motion.misc = camera_pitch;
+}
+
+static void M_TransitionToRing(
+    INV_RING *const ring, const RING_TYPE source_type,
+    const RING_TYPE target_type)
+{
+    InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
+    ring->camera_pitch = -ring->motion.misc;
+    ring->motion.camera_pitch_rate =
+        ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
+    ring->motion.camera_pitch_target = 0;
+    g_InvRing_Source[source_type].current = ring->current_object;
+    g_InvRing_Source[source_type].count = ring->number_of_objects;
+    InvRing_MotionRadius(ring, INV_RING_RADIUS);
+    ring->type = target_type;
+    ring->list = g_InvRing_Source[target_type].items;
+    ring->number_of_objects = g_InvRing_Source[target_type].count;
+    ring->current_object = g_InvRing_Source[target_type].current;
+    InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
+    InvRing_MotionRotation(
+        ring, INV_RING_OPEN_ROTATION,
+        -DEG_90 - ring->angle_adder * ring->current_object);
+    ring->ring_pos.rot.y = ring->motion.rotate_target + INV_RING_OPEN_ROTATION;
+}
+
 static GF_COMMAND M_Control(INV_RING *const ring)
 {
     if (ring->motion.status == RNG_OPENING) {
@@ -573,29 +610,13 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
                 if (g_InvRing_Source[RT_KEYS].count > 0) {
-                    InvRing_MotionSetup(
-                        ring, RNG_CLOSING, RNG_MAIN2KEYS,
-                        M_RING_SWITCH_FRAMES / 2);
-                    InvRing_MotionRadius(ring, 0);
-                    InvRing_MotionRotation(
-                        ring, INV_RING_CLOSE_ROTATION,
-                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
-                    InvRing_MotionCameraPitch(ring, 0x2000);
-                    ring->motion.misc = 0x2000;
+                    M_SetupRingSwitchClose(ring, RNG_MAIN2KEYS, DEG_45);
                 }
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_OPTION) {
                 if (g_InvRing_Source[RT_MAIN].count > 0) {
-                    InvRing_MotionSetup(
-                        ring, RNG_CLOSING, RNG_OPTION2MAIN,
-                        M_RING_SWITCH_FRAMES / 2);
-                    InvRing_MotionRadius(ring, 0);
-                    InvRing_MotionRotation(
-                        ring, INV_RING_CLOSE_ROTATION,
-                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
-                    InvRing_MotionCameraPitch(ring, 0x2000);
-                    ring->motion.misc = 0x2000;
+                    M_SetupRingSwitchClose(ring, RNG_OPTION2MAIN, DEG_45);
                 }
                 g_InputDB = (INPUT_STATE) {};
             }
@@ -606,28 +627,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             if (ring->type == RT_MAIN) {
                 if (g_InvRing_Source[RT_OPTION].count > 0
                     && !InvRing_IsOptionLockedOut()) {
-                    InvRing_MotionSetup(
-                        ring, RNG_CLOSING, RNG_MAIN2OPTION,
-                        M_RING_SWITCH_FRAMES / 2);
-                    InvRing_MotionRadius(ring, 0);
-                    InvRing_MotionRotation(
-                        ring, INV_RING_CLOSE_ROTATION,
-                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
-                    InvRing_MotionCameraPitch(ring, -0x2000);
-                    ring->motion.misc = -0x2000;
+                    M_SetupRingSwitchClose(ring, RNG_MAIN2OPTION, -DEG_45);
                 }
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_KEYS) {
                 if (g_InvRing_Source[RT_MAIN].count > 0) {
-                    InvRing_MotionSetup(
-                        ring, RNG_CLOSING, RNG_KEYS2MAIN,
-                        M_RING_SWITCH_FRAMES / 2);
-                    InvRing_MotionRadius(ring, 0);
-                    InvRing_MotionRotation(
-                        ring, INV_RING_CLOSE_ROTATION,
-                        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
-                    InvRing_MotionCameraPitch(ring, -0x2000);
-                    ring->motion.misc = -0x2000;
+                    M_SetupRingSwitchClose(ring, RNG_KEYS2MAIN, -DEG_45);
                 }
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
@@ -636,90 +641,19 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
 
     case RNG_MAIN2OPTION:
-        InvRing_MotionSetup(
-            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
-        InvRing_MotionRadius(ring, INV_RING_RADIUS);
-        ring->camera_pitch = -ring->motion.misc;
-        ring->motion.camera_pitch_rate =
-            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
-        ring->motion.camera_pitch_target = 0;
-        g_InvRing_Source[RT_MAIN].current = ring->current_object;
-        g_InvRing_Source[RT_MAIN].count = ring->number_of_objects;
-        ring->type = RT_OPTION;
-        ring->list = g_InvRing_Source[RT_OPTION].items;
-        ring->number_of_objects = g_InvRing_Source[RT_OPTION].count;
-        ring->current_object = g_InvRing_Source[RT_OPTION].current;
-        InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
-        InvRing_MotionRotation(
-            ring, INV_RING_OPEN_ROTATION,
-            -DEG_90 - ring->angle_adder * ring->current_object);
-        ring->ring_pos.rot.y =
-            ring->motion.rotate_target + INV_RING_OPEN_ROTATION;
+        M_TransitionToRing(ring, RT_MAIN, RT_OPTION);
         break;
 
     case RNG_MAIN2KEYS:
-        InvRing_MotionSetup(
-            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
-        InvRing_MotionRadius(ring, INV_RING_RADIUS);
-        ring->camera_pitch = -ring->motion.misc;
-        ring->motion.camera_pitch_target = 0;
-        ring->motion.camera_pitch_rate =
-            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
-        g_InvRing_Source[RT_MAIN].current = ring->current_object;
-        g_InvRing_Source[RT_MAIN].count = ring->number_of_objects;
-        ring->type = RT_KEYS;
-        ring->list = g_InvRing_Source[RT_KEYS].items;
-        ring->number_of_objects = g_InvRing_Source[RT_KEYS].count;
-        ring->current_object = g_InvRing_Source[RT_KEYS].current;
-        InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
-        InvRing_MotionRotation(
-            ring, INV_RING_OPEN_ROTATION,
-            -DEG_90 - ring->angle_adder * ring->current_object);
-        ring->ring_pos.rot.y =
-            ring->motion.rotate_target + INV_RING_OPEN_ROTATION;
+        M_TransitionToRing(ring, RT_MAIN, RT_KEYS);
         break;
 
     case RNG_KEYS2MAIN:
-        InvRing_MotionSetup(
-            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
-        InvRing_MotionRadius(ring, INV_RING_RADIUS);
-        ring->camera_pitch = -ring->motion.misc;
-        ring->motion.camera_pitch_target = 0;
-        ring->motion.camera_pitch_rate =
-            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
-        g_InvRing_Source[RT_KEYS].current = ring->current_object;
-        ring->type = RT_MAIN;
-        ring->list = g_InvRing_Source[RT_MAIN].items;
-        ring->number_of_objects = g_InvRing_Source[RT_MAIN].count;
-        ring->current_object = g_InvRing_Source[RT_MAIN].current;
-        InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
-        InvRing_MotionRotation(
-            ring, INV_RING_OPEN_ROTATION,
-            -DEG_90 - ring->angle_adder * ring->current_object);
-        ring->ring_pos.rot.y =
-            ring->motion.rotate_target + INV_RING_OPEN_ROTATION;
+        M_TransitionToRing(ring, RT_KEYS, RT_MAIN);
         break;
 
     case RNG_OPTION2MAIN:
-        InvRing_MotionSetup(
-            ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
-        InvRing_MotionRadius(ring, INV_RING_RADIUS);
-        ring->camera_pitch = -ring->motion.misc;
-        ring->motion.camera_pitch_target = 0;
-        ring->motion.camera_pitch_rate =
-            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
-        g_InvRing_Source[RT_OPTION].count = ring->number_of_objects;
-        g_InvRing_Source[RT_OPTION].current = ring->current_object;
-        ring->type = RT_MAIN;
-        ring->list = g_InvRing_Source[RT_MAIN].items;
-        ring->number_of_objects = g_InvRing_Source[RT_MAIN].count;
-        ring->current_object = g_InvRing_Source[RT_MAIN].current;
-        InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
-        InvRing_MotionRotation(
-            ring, INV_RING_OPEN_ROTATION,
-            -DEG_90 - ring->angle_adder * ring->current_object);
-        ring->ring_pos.rot.y =
-            ring->motion.rotate_target + INV_RING_OPEN_ROTATION;
+        M_TransitionToRing(ring, RT_OPTION, RT_MAIN);
         break;
 
     case RNG_SELECTED: {
