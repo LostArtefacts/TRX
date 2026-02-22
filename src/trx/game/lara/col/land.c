@@ -296,29 +296,12 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
 
 static void M_PullUp(ITEM *const item, COLL_INFO *const coll)
 {
-    const int16_t anim = LA_U(Item_GetRelativeAnim(item));
-    if ((anim != LA_CLIMB_2CLICK && anim != LA_CLIMB_3CLICK)
-        || !Item_TestFrameEqual(item, -1)) {
-        M_Default(item, coll);
-        return;
+    M_Default(item, coll);
+    if (Item_TestAnimEqual(item, LA(LA_CLIMB_2CLICK))
+        && Item_TestFrameEqual(item, -1)) {
+        Lara_UpdateRoomToHeight(-WALL_L);
+        Lara_Animate(item);
     }
-
-    Lara_UpdateRoomToHeight(-WALL_L);
-    Lara_Animate(item);
-
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->move_angle = item->rot.y + DEG_180;
-    item->gravity = false;
-    item->fall_speed = 0;
-    coll->bad_pos = STEPUP_HEIGHT;
-    coll->bad_neg = -STEPUP_HEIGHT;
-    coll->slopes_are_pits = 1;
-    coll->slopes_are_walls = 1;
-    coll->bad_ceiling = 0;
-    coll->lava_is_pit = 1;
-
-    Lara_Col_GetInfo(item, coll);
-    Lara_Col_Shift(coll);
 }
 
 static void M_Walk(ITEM *const item, COLL_INFO *const coll)
