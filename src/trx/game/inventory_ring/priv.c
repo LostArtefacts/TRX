@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#define M_RING_SWITCH_FRAMES (96 / 2)
 #define M_CAMERA_Y_OFFSET (-96)
 #define M_MANUAL_ROT_RESET_RATE 0.15
 
@@ -91,6 +92,50 @@ static void M_HandleRequestedObject(INV_RING *const ring)
     m_RequestedObjectID = NO_OBJECT;
 }
 
+static void M_MotionCameraPos(INV_RING *const ring, const int16_t target)
+{
+    INV_RING_MOTION *const motion = &ring->motion;
+    motion->camera_y_target = target;
+    motion->camera_y_rate = (target - ring->camera.pos.y) / motion->count;
+}
+
+static void M_MotionRadius(INV_RING *const ring, const int16_t target)
+{
+    INV_RING_MOTION *const motion = &ring->motion;
+    motion->radius_target = target;
+    motion->radius_rate = (target - ring->radius) / motion->count;
+}
+
+static void M_MotionItemSelect(
+    INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
+{
+    INV_RING_MOTION *const motion = &ring->motion;
+    motion->item_pt_x_rot_target = inv_item->x_rot_pt_sel;
+    motion->item_pt_x_rot_rate = inv_item->x_rot_pt_sel / motion->count;
+    motion->item_x_rot_target = inv_item->x_rot_sel;
+    motion->item_x_rot_rate =
+        (inv_item->x_rot_sel - inv_item->x_rot_nosel) / motion->count;
+    motion->item_y_trans_target = inv_item->y_trans_sel;
+    motion->item_y_trans_rate = inv_item->y_trans_sel / motion->count;
+    motion->item_z_trans_target = inv_item->z_trans_sel;
+    motion->item_z_trans_rate = inv_item->z_trans_sel / motion->count;
+}
+
+static void M_MotionItemDeselect(
+    INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
+{
+    INV_RING_MOTION *const motion = &ring->motion;
+    motion->item_pt_x_rot_target = 0;
+    motion->item_pt_x_rot_rate = -(inv_item->x_rot_pt_sel / motion->count);
+    motion->item_x_rot_target = inv_item->x_rot_nosel;
+    motion->item_x_rot_rate =
+        (inv_item->x_rot_nosel - inv_item->x_rot_sel) / motion->count;
+    motion->item_y_trans_target = 0;
+    motion->item_y_trans_rate = -(inv_item->y_trans_sel / motion->count);
+    motion->item_z_trans_target = 0;
+    motion->item_z_trans_rate = -(inv_item->z_trans_sel / motion->count);
+}
+
 void InvRing_AdjustMusicVolume(const INV_RING *const ring)
 {
     if (ring->mode == INV_TITLE_MODE) {
@@ -155,8 +200,8 @@ void InvRing_InitRing(
     ring->camera.rot.z = 0;
 
     InvRing_MotionInit(ring, RNG_OPENING, RNG_OPEN, INV_RING_OPEN_FRAMES);
-    InvRing_MotionRadius(ring, INV_RING_RADIUS);
-    InvRing_MotionCameraPos(ring, INV_RING_CAMERA_HEIGHT);
+    M_MotionRadius(ring, INV_RING_RADIUS);
+    M_MotionCameraPos(ring, INV_RING_CAMERA_HEIGHT);
     InvRing_MotionRotation(
         ring, INV_RING_OPEN_ROTATION,
         -DEG_90 - ring->current_object * ring->angle_adder);
@@ -406,11 +451,52 @@ void InvRing_MotionSetup(
     motion->camera_y_rate = 0;
 }
 
-void InvRing_MotionRadius(INV_RING *const ring, const int16_t target)
+void InvRing_SetStatusTransition(
+    INV_RING *const ring, const RING_STATUS status,
+    const RING_STATUS status_target, const int16_t frames)
 {
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->radius_target = target;
-    motion->radius_rate = (target - ring->radius) / motion->count;
+    InvRing_MotionSetup(ring, status, status_target, frames);
+
+    const INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
+
+    switch (status) {
+    case RNG_OPENING:
+        M_MotionRadius(ring, INV_RING_RADIUS);
+        ring->camera_pitch = -ring->motion.misc;
+        ring->motion.camera_pitch_rate =
+            ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
+        ring->motion.camera_pitch_target = 0;
+        break;
+
+    case RNG_CLOSING:
+        M_MotionRadius(ring, 0);
+        if (status_target == RNG_DONE || status_target == RNG_FADING_OUT) {
+            M_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
+        }
+        InvRing_MotionRotation(
+            ring, INV_RING_CLOSE_ROTATION,
+            ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
+        break;
+
+    case RNG_SELECTING:
+        InvRing_MotionRotation(
+            ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
+        M_MotionItemSelect(ring, inv_item);
+        break;
+
+    case RNG_DESELECT:
+    case RNG_EXITING_INVENTORY:
+        M_MotionItemDeselect(ring, inv_item);
+        break;
+
+    case RNG_DESELECTING:
+        InvRing_MotionRotation(
+            ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void InvRing_MotionRotation(
@@ -421,48 +507,11 @@ void InvRing_MotionRotation(
     motion->rotate_rate = rotation / motion->count;
 }
 
-void InvRing_MotionCameraPos(INV_RING *const ring, const int16_t target)
-{
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->camera_y_target = target;
-    motion->camera_y_rate = (target - ring->camera.pos.y) / motion->count;
-}
-
 void InvRing_MotionCameraPitch(INV_RING *const ring, const int16_t target)
 {
     INV_RING_MOTION *const motion = &ring->motion;
     motion->camera_pitch_target = target;
     motion->camera_pitch_rate = target / motion->count;
-}
-
-void InvRing_MotionItemSelect(
-    INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
-{
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->item_pt_x_rot_target = inv_item->x_rot_pt_sel;
-    motion->item_pt_x_rot_rate = inv_item->x_rot_pt_sel / motion->count;
-    motion->item_x_rot_target = inv_item->x_rot_sel;
-    motion->item_x_rot_rate =
-        (inv_item->x_rot_sel - inv_item->x_rot_nosel) / motion->count;
-    motion->item_y_trans_target = inv_item->y_trans_sel;
-    motion->item_y_trans_rate = inv_item->y_trans_sel / motion->count;
-    motion->item_z_trans_target = inv_item->z_trans_sel;
-    motion->item_z_trans_rate = inv_item->z_trans_sel / motion->count;
-}
-
-void InvRing_MotionItemDeselect(
-    INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
-{
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->item_pt_x_rot_target = 0;
-    motion->item_pt_x_rot_rate = -(inv_item->x_rot_pt_sel / motion->count);
-    motion->item_x_rot_target = inv_item->x_rot_nosel;
-    motion->item_x_rot_rate =
-        (inv_item->x_rot_nosel - inv_item->x_rot_sel) / motion->count;
-    motion->item_y_trans_target = 0;
-    motion->item_y_trans_rate = -(inv_item->y_trans_sel / motion->count);
-    motion->item_z_trans_target = 0;
-    motion->item_z_trans_rate = -(inv_item->z_trans_sel / motion->count);
 }
 
 void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)

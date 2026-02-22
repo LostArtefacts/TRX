@@ -360,12 +360,8 @@ static void M_SetupRingSwitchClose(
     INV_RING *const ring, const RING_STATUS status_target,
     const int16_t camera_pitch)
 {
-    InvRing_MotionSetup(
+    InvRing_SetStatusTransition(
         ring, RNG_CLOSING, status_target, M_RING_SWITCH_FRAMES / 2);
-    InvRing_MotionRadius(ring, 0);
-    InvRing_MotionRotation(
-        ring, INV_RING_CLOSE_ROTATION,
-        ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
     InvRing_MotionCameraPitch(ring, camera_pitch);
     ring->motion.misc = camera_pitch;
 }
@@ -374,14 +370,10 @@ static void M_TransitionToRing(
     INV_RING *const ring, const RING_TYPE source_type,
     const RING_TYPE target_type)
 {
-    InvRing_MotionSetup(ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
-    ring->camera_pitch = -ring->motion.misc;
-    ring->motion.camera_pitch_rate =
-        ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
-    ring->motion.camera_pitch_target = 0;
+    InvRing_SetStatusTransition(
+        ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
     g_InvRing_Source[source_type].current = ring->current_object;
     g_InvRing_Source[source_type].count = ring->number_of_objects;
-    InvRing_MotionRadius(ring, INV_RING_RADIUS);
     ring->type = target_type;
     ring->list = g_InvRing_Source[target_type].items;
     ring->number_of_objects = g_InvRing_Source[target_type].count;
@@ -517,10 +509,10 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
 
             if (M_Finish(ring, false).action != GF_NOOP) {
-                InvRing_MotionSetup(
+                InvRing_SetStatusTransition(
                     ring, RNG_CLOSING, RNG_FADING_OUT, INV_RING_CLOSE_FRAMES);
             } else {
-                InvRing_MotionSetup(
+                InvRing_SetStatusTransition(
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
                 if (g_Config.visuals.enable_fade_effects
                     && g_Config.ui.inventory_fade_effects) {
@@ -528,11 +520,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                         &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
                 }
             }
-            InvRing_MotionRadius(ring, 0);
-            InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
-            InvRing_MotionRotation(
-                ring, INV_RING_CLOSE_ROTATION,
-                ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
 
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
@@ -561,11 +548,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 inv_item->goal_frame = inv_item->open_frame;
                 inv_item->anim_direction = 1;
             }
-            InvRing_MotionSetup(
+            InvRing_SetStatusTransition(
                 ring, RNG_SELECTING, RNG_SELECTED, M_SELECTING_FRAMES);
-            InvRing_MotionRotation(
-                ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
-            InvRing_MotionItemSelect(ring, inv_item);
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
 
@@ -674,12 +658,13 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         if (!busy) {
             if (g_InputDB.menu_back && ring->mode != INV_GLOBE_SELECT_MODE) {
-                InvRing_MotionSetup(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
+                InvRing_SetStatusTransition(
+                    ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
                 if (ring->mode == INV_LOAD_MODE || ring->mode == INV_SAVE_MODE
                     || ring->mode == INV_SAVE_CRYSTAL_MODE) {
-                    InvRing_MotionSetup(
+                    InvRing_SetStatusTransition(
                         ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                     g_Input = (INPUT_STATE) {};
                     g_InputDB = (INPUT_STATE) {};
@@ -700,10 +685,10 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                         || inv_item->object_id == O_PDA_OPTION
                         || inv_item->object_id == O_CONTROL_OPTION
                         || inv_item->object_id == O_GLOBE_SELECT_OPTION)) {
-                    InvRing_MotionSetup(
+                    InvRing_SetStatusTransition(
                         ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 } else {
-                    InvRing_MotionSetup(
+                    InvRing_SetStatusTransition(
                         ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
                 }
                 g_Input = (INPUT_STATE) {};
@@ -717,10 +702,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         Option_Close(inv_item);
         Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
-        InvRing_MotionSetup(
+        InvRing_SetStatusTransition(
             ring, RNG_DESELECTING, RNG_OPEN, M_SELECTING_FRAMES);
-        InvRing_MotionRotation(
-            ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) {};
         break;
@@ -735,9 +718,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     inv_item->current_frame = 0;
                 }
 
-                ring->motion.count = M_SELECTING_FRAMES;
-                ring->motion.status = ring->motion.status_target;
-                InvRing_MotionItemDeselect(ring, inv_item);
+                InvRing_SetStatusTransition(
+                    ring, ring->motion.status_target,
+                    ring->motion.status_target, M_SELECTING_FRAMES);
                 break;
             }
         }
@@ -748,11 +731,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         if (ring->motion.count == 0) {
             if (M_Finish(ring, false).action != GF_NOOP) {
                 // Fade to black. Do it later once reaching RNG_FADING_OUT.
-                InvRing_MotionSetup(
+                InvRing_SetStatusTransition(
                     ring, RNG_CLOSING, RNG_FADING_OUT, INV_RING_CLOSE_FRAMES);
             } else {
                 // Fade to game. Do it as soon as the ring starts to close.
-                InvRing_MotionSetup(
+                InvRing_SetStatusTransition(
                     ring, RNG_CLOSING, RNG_DONE, INV_RING_CLOSE_FRAMES);
                 if (g_Config.visuals.enable_fade_effects
                     && g_Config.ui.inventory_fade_effects) {
@@ -760,11 +743,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                         &ring->back_fader, 0.0f, M_INV_RING_FADE_TIME_FAST);
                 }
             }
-            InvRing_MotionRadius(ring, 0);
-            InvRing_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
-            InvRing_MotionRotation(
-                ring, INV_RING_CLOSE_ROTATION,
-                ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
         }
         break;
 
