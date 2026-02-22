@@ -231,7 +231,7 @@ void Lara_Hair_Control(const bool in_cutscene)
     }
 
     Matrix_PushUnit();
-    Matrix_TranslateSet(lara_item->pos.x, lara_item->pos.y, lara_item->pos.z);
+    Matrix_TranslateSet32(lara_item->pos);
     Matrix_Rot16(lara_item->rot);
 
     if (frac == 0 || Lara_Pose_Get() != nullptr) {
@@ -260,7 +260,7 @@ void Lara_Hair_Control(const bool in_cutscene)
             HAIR_SEGMENT *const s = &m_HairSegments[i];
 
             Matrix_PushUnit();
-            Matrix_TranslateSet(ps->pos.x, ps->pos.y, ps->pos.z);
+            Matrix_TranslateSet32(ps->pos);
             Matrix_RotY(ps->rot.y);
             Matrix_RotX(ps->rot.x);
             Matrix_TranslateRel32(bone->pos);
@@ -359,7 +359,7 @@ void Lara_Hair_Control(const bool in_cutscene)
         ps->rot.x = -Math_Atan(distance, s->pos.y - ps->pos.y);
 
         Matrix_PushUnit();
-        Matrix_TranslateSet(ps->pos.x, ps->pos.y, ps->pos.z);
+        Matrix_TranslateSet32(ps->pos);
         Matrix_RotY(ps->rot.y);
         Matrix_RotX(ps->rot.x);
 

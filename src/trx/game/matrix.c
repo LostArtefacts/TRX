@@ -620,10 +620,15 @@ void Matrix_TranslateAbs32(const XYZ_32 offset)
     Matrix_TranslateAbs(offset.x, offset.y, offset.z);
 }
 
-void Matrix_TranslateSet(const int32_t x, const int32_t y, const int32_t z)
+void Matrix_TranslateSet32(const XYZ_32 origin)
 {
-    M_TranslateSet(g_MatrixPtr, (XYZ_32) { x, y, z });
-    M_TranslateSet(g_WMatrixPtr, (XYZ_32) { x, y, z });
+    M_TranslateSet(g_MatrixPtr, origin);
+    M_TranslateSet(g_WMatrixPtr, origin);
+}
+
+void Matrix_TranslateSet32_M(MATRIX *const m, const XYZ_32 origin)
+{
+    M_TranslateSet(m, origin);
 }
 
 void Matrix_InitInterpolate(const int32_t frac, const int32_t rate)

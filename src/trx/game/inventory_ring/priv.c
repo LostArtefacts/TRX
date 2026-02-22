@@ -70,15 +70,7 @@ static void M_AdjustRot(int16_t *const rot, const int16_t dest_rot)
 
 static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
 {
-    const MATRIX *const m = &g_ViewMatrix;
-    return (XYZ_32) {
-        .x = (m->_00 * v_world.x + m->_01 * v_world.y + m->_02 * v_world.z)
-            >> W2V_SHIFT,
-        .y = (m->_10 * v_world.x + m->_11 * v_world.y + m->_12 * v_world.z)
-            >> W2V_SHIFT,
-        .z = (m->_20 * v_world.x + m->_21 * v_world.y + m->_22 * v_world.z)
-            >> W2V_SHIFT,
-    };
+    return Matrix_MulVec32_M(&g_ViewMatrix, v_world);
 }
 
 static void M_HandleRequestedObject(INV_RING *const ring)
