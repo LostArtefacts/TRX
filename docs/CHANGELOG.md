@@ -37,10 +37,12 @@
 
 **TR1**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
+- changed Lara to be able to grab ealier when performing forward jumps, like TR3
 - fixed a very rare case of raptors using an incorrect death animation
 
 **TR2**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
+- changed Lara to be able to grab ealier when performing forward jumps, like TR3
 - fixed secret reward in Venice giving Magnums ammo instead of Automatic Pistol Clips (#4951, regression from 1.1)
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
 - fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)
@@ -93,6 +95,7 @@
 - fixed Tony briefly appearing for a single frame when loading a save after his death
 - removed the limitation of one Carcass instance per level working with Piranhas
 - removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
+- restored the ability for Lara to perform grab cancels, like TR1 and TR2
 
 
 
