@@ -55,7 +55,8 @@ void Matrix_TranslateRel32(XYZ_32 offset);
 void Matrix_TranslateAbs(int32_t x, int32_t y, int32_t z);
 void Matrix_TranslateAbs16(XYZ_16 offset);
 void Matrix_TranslateAbs32(XYZ_32 offset);
-void Matrix_TranslateSet(int32_t x, int32_t y, int32_t z);
+void Matrix_TranslateSet32(XYZ_32 origin);
+void Matrix_TranslateSet32_M(MATRIX *out, XYZ_32 origin);
 
 void Matrix_Push_I(void);
 void Matrix_Pop_I(void);

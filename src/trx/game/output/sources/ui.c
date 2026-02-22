@@ -170,7 +170,7 @@ static void M_Draw3DPickups(const M_PRIV *const p)
         pickup_view_matrix = g_ViewMatrix;
 
         Matrix_PushUnit();
-        Matrix_TranslateSet(origin.x, origin.y, origin.z);
+        Matrix_TranslateSet32(origin);
         Matrix_RotX(DEG_1 * 15);
         Matrix_RotY(-DEG_180);
         Matrix_RotY(pickup->rot_y);

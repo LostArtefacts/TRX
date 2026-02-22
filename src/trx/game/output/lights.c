@@ -649,7 +649,7 @@ void Output_CalculateObjectLighting(
 
     Matrix_PushUnit();
 
-    Matrix_TranslateSet(0, 0, 0);
+    Matrix_TranslateSet32((XYZ_32) {});
     Matrix_Rot16(item->rot);
     Matrix_TranslateRel32((XYZ_32) {
         .x = (bounds->min.x + bounds->max.x) / 2,
