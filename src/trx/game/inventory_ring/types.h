@@ -53,9 +53,6 @@ typedef struct {
 } INVENTORY_ITEM;
 
 typedef struct {
-    int16_t count;
-    RING_STATUS status;
-    RING_STATUS status_target;
     int16_t radius_target;
     int16_t radius_rate;
     int16_t camera_y_target;
@@ -95,6 +92,9 @@ typedef struct {
     int16_t current_object;
     int16_t target_object;
     int16_t number_of_objects;
+    RING_STATUS status;
+    RING_STATUS status_target;
+    int16_t status_frames;
     int16_t angle_adder;
     int16_t rot_adder;
     int16_t rot_adder_l;

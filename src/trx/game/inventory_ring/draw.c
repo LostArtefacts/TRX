@@ -83,32 +83,6 @@ static void M_GlobeSelectApplyLight(
     Output_SetTR3Light(ambient, colors, dirs_view);
 }
 
-static bool M_IsEnterTransition(const INV_RING *const ring)
-{
-    return ring->motion.status == RNG_OPENING;
-}
-
-static bool M_IsExitTransition(const INV_RING *const ring)
-{
-    return ring->motion.status == RNG_EXITING_INVENTORY
-        || ring->motion.status == RNG_FADING_OUT
-        || ring->motion.status == RNG_DONE
-        || (ring->motion.status == RNG_CLOSING
-            && (ring->motion.status_target == RNG_FADING_OUT
-                || ring->motion.status_target == RNG_DONE));
-}
-
-static float M_GetMotionProgress(
-    const int16_t frames_remaining, const int16_t total_frames)
-{
-    if (total_frames == 0) {
-        return 1.0f;
-    }
-    float result = frames_remaining / (float)total_frames;
-    CLAMP(result, 0.0f, 1.0f);
-    return result;
-}
-
 static int32_t M_GetFrames(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
     ANIM_FRAME **const out_frame1, ANIM_FRAME **const out_frame2,
@@ -118,8 +92,7 @@ static int32_t M_GetFrames(
     const INVENTORY_ITEM *const cur_inv_item = ring->list[ring->current_object];
 
     if (inv_item != cur_inv_item || inv_item->current_frame == 0
-        || (ring->motion.status != RNG_SELECTED
-            && ring->motion.status != RNG_CLOSING_ITEM)) {
+        || (ring->status != RNG_SELECTED && ring->status != RNG_CLOSING_ITEM)) {
         // only apply to animations, eg. the states where Inv_AnimateItem is
         // being actively called
         goto fallback;
@@ -157,8 +130,7 @@ static void M_DrawItem(
     const int16_t view_rot_y)
 {
     int32_t shade = M_SHADE_NORMAL;
-    if (ring->motion.status != RNG_FADING_OUT
-        && ring->motion.status != RNG_DONE) {
+    if (ring->status != RNG_FADING_OUT && ring->status != RNG_DONE) {
         if (ring->rotating) {
             float t = (ring->rot_count / (float)INV_RING_ROTATE_DURATION);
             CLAMP(t, 0.0f, 1.0f);
@@ -277,15 +249,15 @@ void InvRing_Draw(INV_RING *const ring)
         ClockTimer_TakeElapsed(&ring->motion_timer) * LOGIC_FPS
         * INV_RING_FRAMES);
 
-    if (ring->motion.status != RNG_OPENING && ring->motion.status != RNG_DONE
-        && ring->motion.status != RNG_FADING_OUT) {
+    if (ring->status != RNG_OPENING && ring->status != RNG_DONE
+        && ring->status != RNG_FADING_OUT) {
         for (int32_t i = 0; i < ring->number_of_objects; i++) {
             InvRing_UpdateInventoryItem(ring, ring->list[i], num_frames);
         }
     }
 
-    if (ring->motion.status != RNG_DONE
-        && (ring->motion.status != RNG_OPENING
+    if (ring->status != RNG_DONE
+        && (ring->status != RNG_OPENING
             || (ring->mode != INV_TITLE_MODE
                 || (!Fader_IsActive(&ring->top_fader)
                     && !Fader_IsActive(&ring->back_fader))))) {
@@ -368,7 +340,7 @@ void InvRing_Draw(INV_RING *const ring)
     if (!(ring->mode == INV_TITLE_MODE
           && (Fader_IsActive(&ring->top_fader)
               || Fader_IsActive(&ring->back_fader))
-          && ring->motion.status == RNG_OPENING)) {
+          && ring->status == RNG_OPENING)) {
         int16_t angle = 0;
         for (int32_t i = 0; i < ring->number_of_objects; i++) {
             INVENTORY_ITEM *const inv_item = ring->list[i];
@@ -387,7 +359,7 @@ void InvRing_Draw(INV_RING *const ring)
     SceneCompositor_Flush();
     Viewport_AlterFOV(old_fov, old_fov_mode);
 
-    if (ring->motion.status == RNG_SELECTED) {
+    if (ring->status == RNG_SELECTED) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item->object_id == O_PASSPORT_CLOSED) {
             inv_item->object_id = O_PASSPORT_OPTION;
@@ -396,7 +368,7 @@ void InvRing_Draw(INV_RING *const ring)
     }
 
     float top_opacity = Fader_GetCurrentValue(&ring->top_fader);
-    if (ring->mode == INV_TITLE_MODE && ring->motion.status != RNG_OPENING) {
+    if (ring->mode == INV_TITLE_MODE && ring->status != RNG_OPENING) {
         top_opacity = 0.0f;
     }
     Output_Overlay_DrawBlackRectangle(top_opacity, true);

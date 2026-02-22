@@ -162,7 +162,7 @@ static void M_RingNotActive(
 
     InvRing_ShowExamine(
         inv_item->object_id,
-        ring->motion.status == RNG_OPEN
+        ring->status == RNG_OPEN
             && Option_Examine_CanExamine(inv_item->object_id));
 }
 
@@ -352,42 +352,34 @@ static bool M_CheckDemoTimer(const INV_RING *const ring)
         return false;
     }
 
-    return ring->motion.status == RNG_OPEN
+    return ring->status == RNG_OPEN
         && ClockTimer_CheckElapsed(&m_DemoTimer, g_Config.flow.demo_delay);
 }
 
 static void M_SetupRingSwitchClose(
-    INV_RING *const ring, const RING_STATUS status_target,
-    const int16_t camera_pitch)
+    INV_RING *const ring, const RING_STATUS status_target)
 {
     InvRing_SetStatusTransition(
         ring, RNG_CLOSING, status_target, M_RING_SWITCH_FRAMES / 2);
-    InvRing_MotionCameraPitch(ring, camera_pitch);
-    ring->motion.misc = camera_pitch;
 }
 
 static void M_TransitionToRing(
     INV_RING *const ring, const RING_TYPE source_type,
     const RING_TYPE target_type)
 {
-    InvRing_SetStatusTransition(
-        ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
     g_InvRing_Source[source_type].current = ring->current_object;
     g_InvRing_Source[source_type].count = ring->number_of_objects;
     ring->type = target_type;
     ring->list = g_InvRing_Source[target_type].items;
     ring->number_of_objects = g_InvRing_Source[target_type].count;
     ring->current_object = g_InvRing_Source[target_type].current;
-    InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
-    InvRing_MotionRotation(
-        ring, INV_RING_OPEN_ROTATION,
-        -DEG_90 - ring->angle_adder * ring->current_object);
-    ring->ring_pos.rot.y = ring->motion.rotate_target + INV_RING_OPEN_ROTATION;
+    InvRing_SetStatusTransition(
+        ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
 }
 
 static GF_COMMAND M_Control(INV_RING *const ring)
 {
-    if (ring->motion.status == RNG_OPENING) {
+    if (ring->status == RNG_OPENING) {
         if (ring->mode == INV_TITLE_MODE
             && (Fader_IsActive(&ring->top_fader)
                 || Fader_IsActive(&ring->back_fader))) {
@@ -401,11 +393,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         }
     }
 
-    if (ring->motion.status == RNG_FADING_OUT) {
+    if (ring->status == RNG_FADING_OUT) {
         if (ring->mode == INV_TITLE_MODE) {
             const GF_COMMAND gf_cmd = M_Finish(ring, true);
             ring->is_done = true;
-            ring->motion.status = RNG_DONE;
+            ring->status = RNG_DONE;
             return gf_cmd;
         }
 
@@ -420,10 +412,10 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             || Fader_IsActive(&ring->back_fader)) {
             return (GF_COMMAND) { .action = GF_NOOP };
         }
-        ring->motion.status = RNG_DONE;
+        ring->status = RNG_DONE;
     }
 
-    if (ring->motion.status == RNG_DONE && !ring->is_done) {
+    if (ring->status == RNG_DONE && !ring->is_done) {
         const GF_COMMAND gf_cmd = M_Finish(ring, true);
         ring->is_done = true;
         // Returning to game – resume music
@@ -468,8 +460,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     if (ring->mode != INV_TITLE_MODE && !Fader_IsActive(&ring->back_fader)
-        && !Fader_IsActive(&ring->top_fader)
-        && ring->motion.status != RNG_OPENING) {
+        && !Fader_IsActive(&ring->top_fader) && ring->status != RNG_OPENING) {
         for (int i = 0; i < ring->number_of_objects; i++) {
             INVENTORY_ITEM *const inv_item = ring->list[i];
             if (inv_item->object_id == O_COMPASS_OPTION) {
@@ -482,7 +473,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         return (GF_COMMAND) { .action = GF_NOOP };
     }
 
-    switch (ring->motion.status) {
+    switch (ring->status) {
     case RNG_OPEN:
         if (g_Input.menu_right && ring->number_of_objects > 1) {
             InvRing_RotateLeft(ring);
@@ -594,13 +585,13 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
                 if (g_InvRing_Source[RT_KEYS].count > 0) {
-                    M_SetupRingSwitchClose(ring, RNG_MAIN2KEYS, DEG_45);
+                    M_SetupRingSwitchClose(ring, RNG_MAIN2KEYS);
                 }
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_OPTION) {
                 if (g_InvRing_Source[RT_MAIN].count > 0) {
-                    M_SetupRingSwitchClose(ring, RNG_OPTION2MAIN, DEG_45);
+                    M_SetupRingSwitchClose(ring, RNG_OPTION2MAIN);
                 }
                 g_InputDB = (INPUT_STATE) {};
             }
@@ -611,12 +602,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             if (ring->type == RT_MAIN) {
                 if (g_InvRing_Source[RT_OPTION].count > 0
                     && !InvRing_IsOptionLockedOut()) {
-                    M_SetupRingSwitchClose(ring, RNG_MAIN2OPTION, -DEG_45);
+                    M_SetupRingSwitchClose(ring, RNG_MAIN2OPTION);
                 }
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_KEYS) {
                 if (g_InvRing_Source[RT_MAIN].count > 0) {
-                    M_SetupRingSwitchClose(ring, RNG_KEYS2MAIN, -DEG_45);
+                    M_SetupRingSwitchClose(ring, RNG_KEYS2MAIN);
                 }
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
@@ -719,8 +710,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 }
 
                 InvRing_SetStatusTransition(
-                    ring, ring->motion.status_target,
-                    ring->motion.status_target, M_SELECTING_FRAMES);
+                    ring, ring->status_target, ring->status_target,
+                    M_SELECTING_FRAMES);
                 break;
             }
         }
@@ -728,7 +719,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     case RNG_EXITING_INVENTORY:
-        if (ring->motion.count == 0) {
+        if (ring->status_frames == 0) {
             if (M_Finish(ring, false).action != GF_NOOP) {
                 // Fade to black. Do it later once reaching RNG_FADING_OUT.
                 InvRing_SetStatusTransition(
@@ -750,11 +741,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         break;
     }
 
-    if (ring->motion.status == RNG_OPEN || ring->motion.status == RNG_SELECTING
-        || ring->motion.status == RNG_SELECTED
-        || ring->motion.status == RNG_DESELECTING
-        || ring->motion.status == RNG_DESELECT
-        || ring->motion.status == RNG_CLOSING_ITEM) {
+    if (ring->status == RNG_OPEN || ring->status == RNG_SELECTING
+        || ring->status == RNG_SELECTED || ring->status == RNG_DESELECTING
+        || ring->status == RNG_DESELECT || ring->status == RNG_CLOSING_ITEM) {
         if (!ring->rotating
             && ((!g_Input.menu_left && !g_Input.menu_right)
                 || ring->number_of_objects <= 1)) {
@@ -766,12 +755,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         M_RingIsNotOpen(ring);
     }
 
-    if (ring->motion.status == RNG_OPENING || ring->motion.status == RNG_CLOSING
-        || ring->motion.status == RNG_MAIN2OPTION
-        || ring->motion.status == RNG_OPTION2MAIN
-        || ring->motion.status == RNG_EXITING_INVENTORY
-        || ring->motion.status == RNG_FADING_OUT
-        || ring->motion.status == RNG_DONE || ring->rotating) {
+    if (ring->status == RNG_OPENING || ring->status == RNG_CLOSING
+        || ring->status == RNG_MAIN2OPTION || ring->status == RNG_OPTION2MAIN
+        || ring->status == RNG_EXITING_INVENTORY
+        || ring->status == RNG_FADING_OUT || ring->status == RNG_DONE
+        || ring->rotating) {
         M_RingActive();
     }
 

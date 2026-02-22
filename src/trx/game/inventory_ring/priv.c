@@ -92,18 +92,57 @@ static void M_HandleRequestedObject(INV_RING *const ring)
     m_RequestedObjectID = NO_OBJECT;
 }
 
+static void M_MotionInit(INV_RING *const ring)
+{
+    INV_RING_MOTION *const motion = &ring->motion;
+    motion->radius_target = 0;
+    motion->radius_rate = 0;
+    motion->camera_y_target = 0;
+    motion->camera_y_rate = 0;
+    motion->camera_pitch_target = 0;
+    motion->camera_pitch_rate = 0;
+    motion->rotate_target = 0;
+    motion->rotate_rate = 0;
+    motion->item_pt_x_rot_target = 0;
+    motion->item_pt_x_rot_rate = 0;
+    motion->item_x_rot_target = 0;
+    motion->item_x_rot_rate = 0;
+    motion->item_y_trans_target = 0;
+    motion->item_y_trans_rate = 0;
+    motion->item_z_trans_target = 0;
+    motion->item_z_trans_rate = 0;
+
+    motion->misc = 0;
+}
+
 static void M_MotionCameraPos(INV_RING *const ring, const int16_t target)
 {
     INV_RING_MOTION *const motion = &ring->motion;
     motion->camera_y_target = target;
-    motion->camera_y_rate = (target - ring->camera.pos.y) / motion->count;
+    motion->camera_y_rate = (target - ring->camera.pos.y) / ring->status_frames;
+}
+
+static void M_MotionCameraPitch(INV_RING *const ring, const int16_t target)
+{
+    INV_RING_MOTION *const motion = &ring->motion;
+    motion->camera_pitch_target = target;
+    motion->camera_pitch_rate = target / ring->status_frames;
+    motion->misc = target;
+}
+
+static void M_MotionRotation(
+    INV_RING *const ring, const int16_t rotation, const int16_t target)
+{
+    INV_RING_MOTION *const motion = &ring->motion;
+    motion->rotate_target = target;
+    motion->rotate_rate = rotation / ring->status_frames;
 }
 
 static void M_MotionRadius(INV_RING *const ring, const int16_t target)
 {
     INV_RING_MOTION *const motion = &ring->motion;
     motion->radius_target = target;
-    motion->radius_rate = (target - ring->radius) / motion->count;
+    motion->radius_rate = (target - ring->radius) / ring->status_frames;
 }
 
 static void M_MotionItemSelect(
@@ -111,14 +150,14 @@ static void M_MotionItemSelect(
 {
     INV_RING_MOTION *const motion = &ring->motion;
     motion->item_pt_x_rot_target = inv_item->x_rot_pt_sel;
-    motion->item_pt_x_rot_rate = inv_item->x_rot_pt_sel / motion->count;
+    motion->item_pt_x_rot_rate = inv_item->x_rot_pt_sel / ring->status_frames;
     motion->item_x_rot_target = inv_item->x_rot_sel;
     motion->item_x_rot_rate =
-        (inv_item->x_rot_sel - inv_item->x_rot_nosel) / motion->count;
+        (inv_item->x_rot_sel - inv_item->x_rot_nosel) / ring->status_frames;
     motion->item_y_trans_target = inv_item->y_trans_sel;
-    motion->item_y_trans_rate = inv_item->y_trans_sel / motion->count;
+    motion->item_y_trans_rate = inv_item->y_trans_sel / ring->status_frames;
     motion->item_z_trans_target = inv_item->z_trans_sel;
-    motion->item_z_trans_rate = inv_item->z_trans_sel / motion->count;
+    motion->item_z_trans_rate = inv_item->z_trans_sel / ring->status_frames;
 }
 
 static void M_MotionItemDeselect(
@@ -126,14 +165,15 @@ static void M_MotionItemDeselect(
 {
     INV_RING_MOTION *const motion = &ring->motion;
     motion->item_pt_x_rot_target = 0;
-    motion->item_pt_x_rot_rate = -(inv_item->x_rot_pt_sel / motion->count);
+    motion->item_pt_x_rot_rate =
+        -(inv_item->x_rot_pt_sel / ring->status_frames);
     motion->item_x_rot_target = inv_item->x_rot_nosel;
     motion->item_x_rot_rate =
-        (inv_item->x_rot_nosel - inv_item->x_rot_sel) / motion->count;
+        (inv_item->x_rot_nosel - inv_item->x_rot_sel) / ring->status_frames;
     motion->item_y_trans_target = 0;
-    motion->item_y_trans_rate = -(inv_item->y_trans_sel / motion->count);
+    motion->item_y_trans_rate = -(inv_item->y_trans_sel / ring->status_frames);
     motion->item_z_trans_target = 0;
-    motion->item_z_trans_rate = -(inv_item->z_trans_sel / motion->count);
+    motion->item_z_trans_rate = -(inv_item->z_trans_sel / ring->status_frames);
 }
 
 void InvRing_AdjustMusicVolume(const INV_RING *const ring)
@@ -199,10 +239,13 @@ void InvRing_InitRing(
     ring->camera.rot.y = 0;
     ring->camera.rot.z = 0;
 
-    InvRing_MotionInit(ring, RNG_OPENING, RNG_OPEN, INV_RING_OPEN_FRAMES);
+    ring->status = RNG_OPENING;
+    ring->status_target = RNG_OPEN;
+    ring->status_frames = INV_RING_OPEN_FRAMES;
+
     M_MotionRadius(ring, INV_RING_RADIUS);
     M_MotionCameraPos(ring, INV_RING_CAMERA_HEIGHT);
-    InvRing_MotionRotation(
+    M_MotionRotation(
         ring, INV_RING_OPEN_ROTATION,
         -DEG_90 - ring->current_object * ring->angle_adder);
 
@@ -318,7 +361,7 @@ void InvRing_DoMotions(INV_RING *const ring)
 {
     INV_RING_MOTION *const motion = &ring->motion;
 
-    if (motion->count != 0) {
+    if (ring->status_frames != 0) {
         ring->radius += motion->radius_rate;
         ring->camera.pos.y += motion->camera_y_rate;
         ring->ring_pos.rot.y += motion->rotate_rate;
@@ -330,9 +373,9 @@ void InvRing_DoMotions(INV_RING *const ring)
         inv_item->y_trans += motion->item_y_trans_rate;
         inv_item->z_trans += motion->item_z_trans_rate;
 
-        motion->count--;
-        if (motion->count == 0) {
-            motion->status = motion->status_target;
+        ring->status_frames--;
+        if (ring->status_frames == 0) {
+            ring->status = ring->status_target;
 
             if (motion->radius_rate != 0) {
                 motion->radius_rate = 0;
@@ -410,52 +453,16 @@ void InvRing_RotateRight(INV_RING *const ring)
     ring->rot_adder = ring->rot_adder_r;
 }
 
-void InvRing_MotionInit(
-    INV_RING *const ring, const RING_STATUS status,
-    const RING_STATUS status_target, const int16_t frames)
-{
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->count = frames;
-    motion->status = status;
-    motion->status_target = status_target;
-
-    motion->radius_target = 0;
-    motion->radius_rate = 0;
-    motion->camera_y_target = 0;
-    motion->camera_y_rate = 0;
-    motion->camera_pitch_target = 0;
-    motion->camera_pitch_rate = 0;
-    motion->rotate_target = 0;
-    motion->rotate_rate = 0;
-    motion->item_pt_x_rot_target = 0;
-    motion->item_pt_x_rot_rate = 0;
-    motion->item_x_rot_target = 0;
-    motion->item_x_rot_rate = 0;
-    motion->item_y_trans_target = 0;
-    motion->item_y_trans_rate = 0;
-    motion->item_z_trans_target = 0;
-    motion->item_z_trans_rate = 0;
-
-    motion->misc = 0;
-}
-
-void InvRing_MotionSetup(
-    INV_RING *const ring, const RING_STATUS status,
-    const RING_STATUS status_target, const int16_t frames)
-{
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->count = frames;
-    motion->status = status;
-    motion->status_target = status_target;
-    motion->radius_rate = 0;
-    motion->camera_y_rate = 0;
-}
-
 void InvRing_SetStatusTransition(
     INV_RING *const ring, const RING_STATUS status,
     const RING_STATUS status_target, const int16_t frames)
 {
-    InvRing_MotionSetup(ring, status, status_target, frames);
+    INV_RING_MOTION *const motion = &ring->motion;
+    ring->status_frames = frames;
+    ring->status = status;
+    ring->status_target = status_target;
+    motion->radius_rate = 0;
+    motion->camera_y_rate = 0;
 
     const INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
 
@@ -466,20 +473,41 @@ void InvRing_SetStatusTransition(
         ring->motion.camera_pitch_rate =
             ring->motion.misc / (M_RING_SWITCH_FRAMES / 2);
         ring->motion.camera_pitch_target = 0;
+        InvRing_CalcAdders(ring, INV_RING_ROTATE_DURATION);
+        M_MotionRotation(
+            ring, INV_RING_OPEN_ROTATION,
+            -DEG_90 - ring->angle_adder * ring->current_object);
+        ring->ring_pos.rot.y =
+            ring->motion.rotate_target + INV_RING_OPEN_ROTATION;
         break;
 
     case RNG_CLOSING:
         M_MotionRadius(ring, 0);
-        if (status_target == RNG_DONE || status_target == RNG_FADING_OUT) {
+
+        switch (status_target) {
+        case RNG_DONE:
+        case RNG_FADING_OUT:
             M_MotionCameraPos(ring, INV_RING_CAMERA_START_HEIGHT);
+            break;
+        case RNG_MAIN2KEYS:
+        case RNG_OPTION2MAIN:
+            M_MotionCameraPitch(ring, DEG_45);
+            break;
+        case RNG_MAIN2OPTION:
+        case RNG_KEYS2MAIN:
+            M_MotionCameraPitch(ring, -DEG_45);
+            break;
+        default:
+            break;
         }
-        InvRing_MotionRotation(
+
+        M_MotionRotation(
             ring, INV_RING_CLOSE_ROTATION,
             ring->ring_pos.rot.y - INV_RING_CLOSE_ROTATION);
         break;
 
     case RNG_SELECTING:
-        InvRing_MotionRotation(
+        M_MotionRotation(
             ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
         M_MotionItemSelect(ring, inv_item);
         break;
@@ -490,28 +518,13 @@ void InvRing_SetStatusTransition(
         break;
 
     case RNG_DESELECTING:
-        InvRing_MotionRotation(
+        M_MotionRotation(
             ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
         break;
 
     default:
         break;
     }
-}
-
-void InvRing_MotionRotation(
-    INV_RING *const ring, const int16_t rotation, const int16_t target)
-{
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->rotate_target = target;
-    motion->rotate_rate = rotation / motion->count;
-}
-
-void InvRing_MotionCameraPitch(INV_RING *const ring, const int16_t target)
-{
-    INV_RING_MOTION *const motion = &ring->motion;
-    motion->camera_pitch_target = target;
-    motion->camera_pitch_rate = target / motion->count;
 }
 
 void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
@@ -748,11 +761,9 @@ void InvRing_UpdateInventoryItem(
             }
         }
     } else if (
-        ring->motion.status == RNG_SELECTED
-        || ring->motion.status == RNG_DESELECTING
-        || ring->motion.status == RNG_SELECTING
-        || ring->motion.status == RNG_DESELECT
-        || ring->motion.status == RNG_CLOSING_ITEM) {
+        ring->status == RNG_SELECTED || ring->status == RNG_DESELECTING
+        || ring->status == RNG_SELECTING || ring->status == RNG_DESELECT
+        || ring->status == RNG_CLOSING_ITEM) {
 
         if (inv_item->has_manual_rot) {
             return;
