@@ -36,15 +36,6 @@ void InvRing_SetStatusTransition(
     INV_RING *ring, RING_STATUS status, RING_STATUS status_target,
     int16_t frames);
 
-void InvRing_MotionInit(
-    INV_RING *ring, RING_STATUS status, RING_STATUS status_target,
-    int16_t frames);
-void InvRing_MotionSetup(
-    INV_RING *ring, RING_STATUS status, RING_STATUS status_target,
-    int16_t frames);
-void InvRing_MotionRotation(INV_RING *ring, int16_t rotation, int16_t target);
-void InvRing_MotionCameraPitch(INV_RING *ring, int16_t target);
-
 void InvRing_ShowItemName(const INVENTORY_ITEM *inv_item);
 void InvRing_ShowItemQuantity(const char *fmt, int32_t qty);
 void InvRing_RemoveItemTexts(void);
