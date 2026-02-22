@@ -159,7 +159,7 @@ static void M_FixStaticsCollision(void)
             .z = obj->collision_bounds.max.z - obj->collision_bounds.min.z,
         };
 
-        if (hitbox.x <= 0 || hitbox.y <= 0 || hitbox.z <= 0) {
+        if (hitbox.x <= 0 && hitbox.y <= 0 && hitbox.z <= 0) {
             LOG_WARNING(
                 "Static %d is marked as collidable, but has degenerate "
                 "hitbox (%d x %d x %d)",
