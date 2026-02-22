@@ -15,6 +15,7 @@
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
 - changed logs to no longer emit ANSI color characters when the game's output is piped to a file / process
+- changed the degenerate static mesh collision check to only apply when all axes have an empty size
 - improved error reporting for gameflow issues to now display full key paths for faulty nodes
 - fixed Lara teleporting after vaulting 2 or 3 clicks when there is a room below the target position that has no immediately adjoining portal (#4530)
 - fixed Lara attempting to jump up (using action) despite the ceiling above her making it impossible to grab any ledge (#3558)
