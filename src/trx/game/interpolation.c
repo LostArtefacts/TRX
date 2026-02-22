@@ -7,6 +7,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
+#include <trx/game/shell.h>
 
 #include <stdint.h>
 
@@ -399,7 +400,7 @@ bool Interpolation_IsEnabled(void)
 
 bool Interpolation_IsActive(void)
 {
-    return m_IsEnabled && M_GetFPS() == 60;
+    return m_IsEnabled && M_GetFPS() == 60 && !Shell_IsExiting();
 }
 
 double Interpolation_GetWorldRate(void)
