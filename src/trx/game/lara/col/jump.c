@@ -94,8 +94,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
         return false;
     }
 
-    if (g_TRVersion >= 3
-        && (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT)) {
+    if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT) {
         int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(
             (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
@@ -330,7 +329,7 @@ static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
 
 static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 {
-    if (g_TRVersion == 3 && item->hit_points <= 0) {
+    if (item->hit_points <= 0) {
         item->goal_anim_state = LS(LS_STOP);
         return;
     }
