@@ -189,6 +189,9 @@ static void M_PrepareSystem(void)
     }
 
     if (test_replay_path != nullptr) {
+        // Allow inferring engine version from outer args for replays lacking
+        // embedded info (created with the old directory layout).
+        g_TRVersion = s->args->engine_version;
         SHELL_ARGS *const tmp_args = TestReplay_Open(test_replay_path);
         if (tmp_args != nullptr) {
             tmp_args->headless = s->args->headless;
@@ -201,14 +204,14 @@ static void M_PrepareSystem(void)
     }
 
     g_TRVersion = s->args->engine_version;
+    LOG_INFO("Engine version: %d", g_TRVersion);
+    LOG_INFO("Mod: %s", s->args->mod != nullptr ? s->args->mod->name : nullptr);
     if (s->args->engine_version <= 0 || s->args->mod == nullptr) {
         Shell_ExitSystem(
             "Unknown or ambiguous gameflow file. "
             "Are you missing --engine or --mod?");
     }
 
-    LOG_INFO("Engine version: %d", g_TRVersion);
-    LOG_INFO("Mod: %s", s->args->mod->name);
     Config_ApplyDefaultSettings();
 
     TRXPath_Init(s->args);
