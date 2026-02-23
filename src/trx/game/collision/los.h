@@ -4,4 +4,5 @@
 
 bool LOS_Check(
     const GAME_VECTOR *start, GAME_VECTOR *target, bool use_detailed_clipping);
-int32_t LOS_CheckSmashable(XYZ_32 start, XYZ_32 target, XYZ_32 *out_hit_pos);
+int32_t LOS_CheckSmashable(
+    GAME_VECTOR start, GAME_VECTOR target, XYZ_32 *out_hit_pos);

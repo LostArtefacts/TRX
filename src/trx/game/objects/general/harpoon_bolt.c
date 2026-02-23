@@ -49,7 +49,10 @@ static void M_Control_TR3(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    const XYZ_32 old_pos = item->pos;
+    const GAME_VECTOR old_pos = {
+        .pos = item->pos,
+        .room_num = item->room_num,
+    };
 
     M_SetTR3ProjectileShade(item);
 
@@ -62,7 +65,11 @@ static void M_Control_TR3(const int16_t item_num)
     item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
 
-    if (Gun_SmashItems(old_pos, item->pos, nullptr, item->object_id)
+    const GAME_VECTOR new_pos = {
+        .pos = item->pos,
+        .room_num = item->room_num,
+    };
+    if (Gun_SmashItems(old_pos, new_pos, nullptr, item->object_id)
         == PROJECTILE_HIT_STOP) {
         Item_Kill(item_num);
         return;
@@ -206,7 +213,10 @@ static void M_Control_TR3(const int16_t item_num)
 static void M_Control_TR12(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    const XYZ_32 old_pos = item->pos;
+    const GAME_VECTOR old_pos = {
+        .pos = item->pos,
+        .room_num = item->room_num,
+    };
 
     if (!Room_Get(item->room_num)->flags.underwater) {
         item->fall_speed += GRAVITY / 2;
@@ -221,8 +231,13 @@ static void M_Control_TR12(const int16_t item_num)
     item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
 
+    const GAME_VECTOR new_pos = {
+        .pos = item->pos,
+        .room_num = item->room_num,
+    };
+
     bool hit = false;
-    if (Gun_SmashItems(old_pos, item->pos, nullptr, item->object_id)
+    if (Gun_SmashItems(old_pos, new_pos, nullptr, item->object_id)
         == PROJECTILE_HIT_STOP) {
         hit = true;
     }

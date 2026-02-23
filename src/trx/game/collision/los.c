@@ -148,7 +148,8 @@ static bool M_ItemIntersectSegment(
 // @param target World-space ray end
 // @return       First smashable item's index, or NO_ITEM if none hit
 int32_t LOS_CheckSmashable(
-    const XYZ_32 start, const XYZ_32 target, XYZ_32 *const out_hit_pos)
+    const GAME_VECTOR start, const GAME_VECTOR target,
+    XYZ_32 *const out_hit_pos)
 {
     int32_t best_dist = INT32_MAX;
     int16_t best_item_num = NO_ITEM;
@@ -165,12 +166,16 @@ int32_t LOS_CheckSmashable(
         }
 
         XYZ_32 hit_pos;
-        if (!M_ItemIntersectSegment(start, target, item, &hit_pos)) {
+        if (!M_ItemIntersectSegment(start.pos, target.pos, item, &hit_pos)) {
+            continue;
+        }
+
+        if (target.room_num != NO_ROOM && item->room_num != target.room_num) {
             continue;
         }
 
         // Ray segment intersects the object's local AABB
-        const int32_t dist = Item_GetDistance(item, start);
+        const int32_t dist = Item_GetDistance(item, start.pos);
         if (dist < best_dist) {
             best_dist = dist;
             best_item_num = item_num;

@@ -374,8 +374,8 @@ void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 }
 
 PROJECTILE_HIT Gun_SmashItems(
-    const XYZ_32 start, const XYZ_32 target, XYZ_32 *const out_hit_pos,
-    const OBJECT_ID missile_obj_id)
+    const GAME_VECTOR start, const GAME_VECTOR target,
+    XYZ_32 *const out_hit_pos, const OBJECT_ID missile_obj_id)
 {
     int32_t hits = 0;
     int16_t last_item_num = NO_ITEM;

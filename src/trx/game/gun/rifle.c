@@ -184,10 +184,13 @@ static void M_FireHarpoon(void)
     }
 
     const WEAPON_INFO *const weapon = &g_Weapons[LGT_HARPOON];
-    const XYZ_32 origin = {
-        .x = lara_item->pos.x,
-        .y = lara_item->pos.y - weapon->gun_height,
-        .z = lara_item->pos.z,
+    const GAME_VECTOR origin = {
+        .pos = {
+            .x = lara_item->pos.x,
+            .y = lara_item->pos.y - weapon->gun_height,
+            .z = lara_item->pos.z,
+        },
+        .room_num = lara_item->room_num,
     };
 
     ITEM *const projectile_item = Item_Get(item_num);
@@ -242,7 +245,12 @@ static void M_FireHarpoon(void)
     projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
-        origin, projectile_item->pos, nullptr, projectile_item->object_id);
+        origin,
+        (GAME_VECTOR) {
+            .pos = projectile_item->pos,
+            .room_num = projectile_item->room_num,
+        },
+        nullptr, projectile_item->object_id);
 
     lara->harpoon_ammo.ammo--;
     Stats_AddAmmoUsed();
@@ -270,10 +278,13 @@ static void M_FireGrenade(void)
         return;
     }
     const WEAPON_INFO *const weapon = &g_Weapons[LGT_GRENADE];
-    const XYZ_32 origin = {
-        .x = lara_item->pos.x,
-        .y = lara_item->pos.y - weapon->gun_height,
-        .z = lara_item->pos.z,
+    const GAME_VECTOR origin = {
+        .pos = {
+            .x = lara_item->pos.x,
+            .y = lara_item->pos.y - weapon->gun_height,
+            .z = lara_item->pos.z,
+        },
+        .room_num = lara_item->room_num,
     };
 
     const int16_t item_num = Item_Create();
@@ -293,12 +304,12 @@ static void M_FireGrenade(void)
     Item_Initialise(item_num);
 
     int16_t room_num = projectile_item->room_num;
-    const SECTOR *const sector = Room_GetSector(origin, &room_num);
-    const int32_t height = Room_GetHeight(sector, origin);
-    if (height < origin.y) {
+    const SECTOR *const sector = Room_GetSector(origin.pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, origin.pos);
+    if (height < origin.pos.y) {
         projectile_item->pos = (XYZ_32) {
             .x = lara_item->pos.x,
-            .y = origin.y,
+            .y = origin.pos.y,
             .z = lara_item->pos.z,
         };
     }
@@ -334,7 +345,12 @@ static void M_FireGrenade(void)
     projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
-        origin, projectile_item->pos, nullptr, projectile_item->object_id);
+        origin,
+        (GAME_VECTOR) {
+            .pos = projectile_item->pos,
+            .room_num = projectile_item->room_num,
+        },
+        nullptr, projectile_item->object_id);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         lara->grenade_ammo.ammo--;
@@ -352,10 +368,13 @@ static void M_FireRocket(void)
         return;
     }
     const WEAPON_INFO *const weapon = &g_Weapons[LGT_ROCKET];
-    const XYZ_32 origin = {
+    const GAME_VECTOR origin = {
+        .pos = {
         .x = lara_item->pos.x,
         .y = lara_item->pos.y - weapon->gun_height,
         .z = lara_item->pos.z,
+        },
+        .room_num = lara_item->room_num,
     };
 
     const int16_t item_num = Item_Create();
@@ -390,7 +409,12 @@ static void M_FireRocket(void)
     projectile_item->status = IS_ACTIVE;
 
     Gun_SmashItems(
-        origin, projectile_item->pos, nullptr, projectile_item->object_id);
+        origin,
+        (GAME_VECTOR) {
+            .pos = projectile_item->pos,
+            .room_num = projectile_item->room_num,
+        },
+        nullptr, projectile_item->object_id);
 
     if (!Game_IsBonusFlagSet(GBF_NGPLUS)) {
         lara->rocket_ammo.ammo--;
