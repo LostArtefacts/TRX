@@ -11,6 +11,12 @@
 #define M_MONKEY_CEILING_SHIFT    50
 #define M_MONKEY_FALL_FRAME       9
 #define M_CAM_MONKEY_ELEVATION   (10 * DEG_1) // = 1820
+#define M_LF_CLIMB_1_START       54
+#define M_LF_CLIMB_1_END         60
+#define M_LF_CLIMB_2_START       78
+#define M_LF_CLIMB_2_END         84
+#define M_LF_CLIMB_3_START       102
+#define M_LF_CLIMB_3_END         155
 // clang-format on
 
 static bool M_CanMonkeySwing(const ITEM *const item)
@@ -19,6 +25,27 @@ static bool M_CanMonkeySwing(const ITEM *const item)
     const SECTOR *const sector = Room_GetSector(
         (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
     return (sector->ladder & LADDER_CEILING) != 0;
+}
+
+static bool M_CanClimb(const ITEM *const item, const COLL_INFO *const coll)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (!lara->climb_status || !g_Input.forward
+        || coll->side_mid.ceiling > -STEP_L) {
+        return false;
+    }
+
+    if (Item_TestAnimEqual(item, LA(LA_MONKEY_IDLE))) {
+        return true;
+    }
+
+    if (!Item_TestAnimEqual(item, LA(LA_SWING_IN_SLOW))) {
+        return false;
+    }
+
+    return Item_TestFrameRange(item, M_LF_CLIMB_1_START, M_LF_CLIMB_1_END)
+        || Item_TestFrameRange(item, M_LF_CLIMB_2_START, M_LF_CLIMB_2_END)
+        || Item_TestFrameRange(item, M_LF_CLIMB_3_START, M_LF_CLIMB_3_END);
 }
 
 static void M_MonkeySwingFall(ITEM *const item)
@@ -127,6 +154,10 @@ static bool M_HandleIdleState(ITEM *const item, COLL_INFO *const coll)
     item->speed = 0;
 
     M_GetMonkeyCollisionInfo(item, coll, item->rot.y, NO_BAD_NEG, false);
+    if (coll->side_mid.ceiling < -STEP_L) {
+        // Lara is in a slow-swing state far below the ceiling.
+        return false;
+    }
 
     if (g_Input.forward && coll->coll_type != COLL_FRONT
         && ABS(coll->side_mid.ceiling - coll->side_front.ceiling)
@@ -168,6 +199,13 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
         && coll->side_right2.floor - coll->side_right2.ceiling >= 0
         && !coll->hit_static) {
         item->goal_anim_state = LS(g_Input.slow ? LS_GYMNAST : LS_PULL_UP);
+        return;
+    }
+
+    if (M_CanClimb(item, coll)) {
+        item->goal_anim_state = LS(LS_HANG);
+        item->current_anim_state = LS(LS_HANG);
+        Item_SwitchToAnim(item, LA(LA_LADDER_UP_HANGING), 0);
         return;
     }
 
