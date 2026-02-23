@@ -111,7 +111,7 @@
             "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "add_secret_reward", "object_id": "magnums_ammo", "quantity": 4},
+                {"type": "add_secret_reward", "object_id": "autos_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "play_music", "music_track": 37},
                 {"type": "level_stats"},
@@ -588,7 +588,7 @@
             "lara_outfit": "tr2_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "venice.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "add_secret_reward", "object_id": "magnums_ammo", "quantity": 4},
+                {"type": "add_secret_reward", "object_id": "autos_ammo", "quantity": 4},
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
