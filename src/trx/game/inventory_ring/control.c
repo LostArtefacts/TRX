@@ -839,6 +839,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr) {
             Inv_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
         }
+    } else if (g_InvRing_Source[RT_GLOBE_SELECT].count == 0) {
+        INVENTORY_ITEM *const globe =
+            InvRing_GetByObjectID(O_GLOBE_SELECT_OPTION);
+        if (globe != nullptr) {
+            Inv_InsertItem(globe);
+        }
     }
 
     g_InvRing_Source[RT_KEYS].current = 0;

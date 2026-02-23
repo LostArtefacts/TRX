@@ -56,6 +56,9 @@ default game flow for examples.
       Ends the current level and opens the globe destination selector.
       Available destinations are configured by the global
       <code><a href="./0-GLOBAL_PROPERTIES.md#globe-select-entries">globe_select_entries</a></code>.
+      You can make the globe selectable at game start. To do this, let the
+      first level contain only the `<code>globe_select</code>` directive, and
+      have its first area link to level 2.
     </td>
   </tr>
   <tr valign="top">
