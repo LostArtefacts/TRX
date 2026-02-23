@@ -203,7 +203,6 @@
         "enable_demo",            // TR2G has no demos
         "enable_fmv",             // TR2G has no FMVs
         "enable_item_examining",  // TR2G has no special item descriptions
-        "disable_trex_collision", // TR2G has no T-Rexes
         "fix_alligator_ai",       // TR2G has no alligators
         "fix_animated_sprites",
         "healthbar_poison_color",
