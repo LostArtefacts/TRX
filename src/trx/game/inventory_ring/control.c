@@ -377,6 +377,32 @@ static void M_TransitionToRing(
         ring, RNG_OPENING, RNG_OPEN, M_RING_SWITCH_FRAMES / 2);
 }
 
+static void M_SnapshotRingState(INV_RING *const ring)
+{
+    ring->prev_radius = ring->radius;
+    ring->prev_camera_y = ring->camera.pos.y;
+    ring->prev_camera_pitch = ring->camera_pitch;
+    ring->prev_ring_rot_y = ring->ring_pos.rot.y;
+}
+
+static void M_SnapshotItemState(INVENTORY_ITEM *const inv_item)
+{
+    inv_item->prev_x_rot_pt = inv_item->x_rot_pt;
+    inv_item->prev_x_rot = inv_item->x_rot;
+    inv_item->prev_y_rot = inv_item->y_rot;
+    inv_item->prev_y_trans = inv_item->y_trans;
+    inv_item->prev_z_trans = inv_item->z_trans;
+    inv_item->prev_manual_rot = inv_item->manual_rot;
+}
+
+static void M_SnapshotFrameState(INV_RING *const ring)
+{
+    M_SnapshotRingState(ring);
+    for (int32_t i = 0; i < ring->number_of_objects; i++) {
+        M_SnapshotItemState(ring->list[i]);
+    }
+}
+
 static GF_COMMAND M_Control(INV_RING *const ring)
 {
     if (ring->status == RNG_OPENING) {
@@ -947,7 +973,40 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
 {
     InvRing_AdjustMusicVolume(ring);
     m_ActiveRing = ring;
-    const GF_COMMAND gf_cmd = M_Control(ring);
+    INVENTORY_ITEM **const prev_list = ring->list;
+    M_SnapshotFrameState(ring);
+    GF_COMMAND gf_cmd = M_Control(ring);
+
+    if (ring->status != RNG_OPENING && ring->status != RNG_DONE
+        && ring->status != RNG_FADING_OUT) {
+        for (int32_t frame = 0; frame < INV_RING_FRAMES; frame++) {
+            for (int32_t i = 0; i < ring->number_of_objects; i++) {
+                InvRing_UpdateInventoryItem(ring, ring->list[i]);
+            }
+        }
+    }
+
+    if (ring->status != RNG_DONE
+        && (ring->status != RNG_OPENING
+            || (ring->mode != INV_TITLE_MODE
+                || (!Fader_IsActive(&ring->top_fader)
+                    && !Fader_IsActive(&ring->back_fader))))) {
+        for (int32_t frame = 0; frame < INV_RING_FRAMES; frame++) {
+            InvRing_DoMotions(ring);
+        }
+    }
+
+    if (ring->list != prev_list) {
+        M_SnapshotFrameState(ring);
+    }
+
+    // Running motions in control can reach RNG_DONE in this same tick.
+    // Finalize immediately so phase code receives the non-NOOP GF command.
+    if (gf_cmd.action == GF_NOOP && ring->status == RNG_DONE
+        && !ring->is_done) {
+        gf_cmd = M_Control(ring);
+    }
+
     m_ActiveRing = nullptr;
     Overlay_Animate(1);
     return gf_cmd;

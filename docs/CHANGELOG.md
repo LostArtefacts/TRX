@@ -32,6 +32,7 @@
 - fixed heavy triggers with no `TO_TARGET` / `TO_CAMERA` resetting cameras
 - fixed Lua `trx.catalog` only exposing `objects` and `flip_effects`; it now also exposes `lara_states`, `lara_anims`, `music`, and `samples`
 - fixed a freeze if firing a grenade very close to room portals (#4938, regression from 1.2)
+- fixed non-deterministic Inventory Ring control (transition speeds depended on v-sync / wall clock timing)
 
 **TR1**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)

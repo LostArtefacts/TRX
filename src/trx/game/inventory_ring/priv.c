@@ -207,6 +207,7 @@ void InvRing_InitRing(
     ring->type = type;
     ring->list = list;
     ring->radius = 0;
+    ring->prev_radius = 0;
     ring->number_of_objects = qty;
     ring->current_object = current;
     ring->angle_adder = DEG_360 / qty;
@@ -222,6 +223,7 @@ void InvRing_InitRing(
     } else {
         ring->camera_pitch = 0;
     }
+    ring->prev_camera_pitch = ring->camera_pitch;
 
     ring->rotating = false;
     ring->rotate_from_object = 0;
@@ -254,14 +256,14 @@ void InvRing_InitRing(
     ring->ring_pos.pos.z = 0;
     ring->ring_pos.rot.x = 0;
     ring->ring_pos.rot.y = ring->motion.rotate_target - INV_RING_OPEN_ROTATION;
+    ring->prev_ring_rot_y = ring->ring_pos.rot.y;
     ring->ring_pos.rot.z = 0;
 
     ring->light.x = -1536;
     ring->light.y = 256;
     ring->light.z = 1024;
 
-    ring->motion_timer.type = CLOCK_TIMER_SIM;
-    ClockTimer_Sync(&ring->motion_timer);
+    ring->prev_camera_y = ring->camera.pos.y;
 
     m_ShowExamine = false;
     m_ShowUseItemButton = false;
@@ -276,11 +278,17 @@ void InvRing_InitInvItem(INVENTORY_ITEM *const inv_item)
     inv_item->goal_frame = 0;
     inv_item->manual_rot = g_IDMatrix;
     inv_item->x_rot_pt = 0;
+    inv_item->prev_x_rot_pt = inv_item->x_rot_pt;
     inv_item->x_rot = inv_item->x_rot_nosel;
+    inv_item->prev_x_rot = inv_item->x_rot;
     inv_item->y_rot = 0;
+    inv_item->prev_y_rot = inv_item->y_rot;
     inv_item->y_trans = 0;
+    inv_item->prev_y_trans = inv_item->y_trans;
     inv_item->z_trans = 0;
+    inv_item->prev_z_trans = inv_item->z_trans;
     inv_item->action = ACTION_USE;
+    inv_item->prev_manual_rot = inv_item->manual_rot;
     if (inv_item->object_id == O_PASSPORT_OPTION) {
         inv_item->object_id = O_PASSPORT_CLOSED;
     }
@@ -740,25 +748,20 @@ void InvRing_RemoveVersionText(void)
 }
 
 void InvRing_UpdateInventoryItem(
-    const INV_RING *const ring, INVENTORY_ITEM *const inv_item,
-    const int32_t num_frames)
+    const INV_RING *const ring, INVENTORY_ITEM *const inv_item)
 {
 
     if (inv_item != ring->list[ring->current_object]) {
-        for (int32_t i = 0; i < num_frames; i++) {
-            if (inv_item->y_rot < 0) {
-                inv_item->y_rot += 256;
-            } else if (inv_item->y_rot > 0) {
-                inv_item->y_rot -= 256;
-            }
+        if (inv_item->y_rot < 0) {
+            inv_item->y_rot += 256;
+        } else if (inv_item->y_rot > 0) {
+            inv_item->y_rot -= 256;
         }
     } else if (ring->rotating) {
-        for (int32_t i = 0; i < num_frames; i++) {
-            if (inv_item->y_rot > 0) {
-                inv_item->y_rot -= 512;
-            } else if (inv_item->y_rot < 0) {
-                inv_item->y_rot += 512;
-            }
+        if (inv_item->y_rot > 0) {
+            inv_item->y_rot -= 512;
+        } else if (inv_item->y_rot < 0) {
+            inv_item->y_rot += 512;
         }
     } else if (
         ring->status == RNG_SELECTED || ring->status == RNG_DESELECTING
@@ -769,16 +772,12 @@ void InvRing_UpdateInventoryItem(
             return;
         }
 
-        for (int32_t i = 0; i < num_frames; i++) {
-            M_AdjustRot(&inv_item->y_rot, inv_item->y_rot_sel);
-            Matrix_Slerp3x3_M(
-                &inv_item->manual_rot, &g_IDMatrix, M_MANUAL_ROT_RESET_RATE);
-        }
+        M_AdjustRot(&inv_item->y_rot, inv_item->y_rot_sel);
+        Matrix_Slerp3x3_M(
+            &inv_item->manual_rot, &g_IDMatrix, M_MANUAL_ROT_RESET_RATE);
     } else if (
         ring->number_of_objects == 1
         || (!g_Input.menu_right && !g_Input.menu_left)) {
-        for (int32_t i = 0; i < num_frames; i++) {
-            inv_item->y_rot += 256;
-        }
+        inv_item->y_rot += 256;
     }
 }

@@ -1,6 +1,7 @@
 #include <trx/game/inventory_ring/draw.h>
 
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/input.h>
@@ -28,6 +29,27 @@
 static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
 {
     return Matrix_MulVec32_M(&g_ViewMatrix, v_world);
+}
+
+static int16_t M_LerpI16(
+    const int16_t prev_value, const int16_t cur_value, const double rate)
+{
+    return (int16_t)round(LERP(prev_value, cur_value, rate));
+}
+
+static int32_t M_LerpI32(
+    const int32_t prev_value, const int32_t cur_value, const double rate)
+{
+    return (int32_t)round(LERP(prev_value, cur_value, rate));
+}
+
+static int16_t M_LerpAngleI16(
+    const int16_t prev_value, const int16_t cur_value, const double rate)
+{
+    const int32_t prev_u16 = (uint16_t)prev_value;
+    const int32_t cur_u16 = (uint16_t)cur_value;
+    const int32_t interp = Math_AngleMean(prev_u16, cur_u16, rate);
+    return (int16_t)(uint16_t)interp;
 }
 
 static float M_GlobeSelectPulse01(const float time)
@@ -115,7 +137,7 @@ static int32_t M_GetFrames(
     *out_frame1 = &obj->frame_base[cur_frame_num];
     *out_frame2 = &obj->frame_base[next_frame_num];
     *out_rate = 10;
-    return (Interpolation_GetWorldRate() - 0.5) * 10.0;
+    return (Interpolation_GetRate() - 0.5) * 10.0;
 
     // OG
 fallback:
@@ -129,6 +151,20 @@ static void M_DrawItem(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
     const int16_t view_rot_y)
 {
+    const double interp_rate = Interpolation_GetRate();
+    const int16_t draw_x_rot_pt = M_LerpAngleI16(
+        inv_item->prev_x_rot_pt, inv_item->x_rot_pt, interp_rate);
+    const int16_t draw_x_rot =
+        M_LerpAngleI16(inv_item->prev_x_rot, inv_item->x_rot, interp_rate);
+    const int16_t draw_y_rot =
+        M_LerpAngleI16(inv_item->prev_y_rot, inv_item->y_rot, interp_rate);
+    const int32_t draw_y_trans =
+        M_LerpI32(inv_item->prev_y_trans, inv_item->y_trans, interp_rate);
+    const int32_t draw_z_trans =
+        M_LerpI32(inv_item->prev_z_trans, inv_item->z_trans, interp_rate);
+    MATRIX draw_manual_rot = inv_item->prev_manual_rot;
+    Matrix_Slerp3x3_M(&draw_manual_rot, &inv_item->manual_rot, interp_rate);
+
     int32_t shade = M_SHADE_NORMAL;
     if (ring->status != RNG_FADING_OUT && ring->status != RNG_DONE) {
         if (ring->rotating) {
@@ -146,16 +182,16 @@ static void M_DrawItem(
     }
     Output_SetLightAdder(shade);
 
-    Matrix_TranslateRel(0, inv_item->y_trans, inv_item->z_trans);
+    Matrix_TranslateRel(0, draw_y_trans, draw_z_trans);
 
-    Matrix_RotX(-inv_item->x_rot_pt);
+    Matrix_RotX(-draw_x_rot_pt);
     Matrix_RotY(-view_rot_y);
-    Matrix_Mul3x3(&inv_item->manual_rot);
+    Matrix_Mul3x3(&draw_manual_rot);
     Matrix_RotY(view_rot_y);
-    Matrix_RotX(inv_item->x_rot_pt);
+    Matrix_RotX(draw_x_rot_pt);
 
-    Matrix_RotY(inv_item->y_rot);
-    Matrix_RotX(inv_item->x_rot);
+    Matrix_RotY(draw_y_rot);
+    Matrix_RotX(draw_x_rot);
 
     const OBJECT *const obj = Object_Get(inv_item->object_id);
     if (!obj->loaded || obj->mesh_count < 0) {
@@ -244,29 +280,22 @@ const INVENTORY_ITEM *InvRing_GetInvItem(const OBJECT_ID obj_id)
 void InvRing_Draw(INV_RING *const ring)
 {
     InvRing_DrawUI(ring);
+    const double interp_rate = Interpolation_GetRate();
+    const int16_t draw_radius =
+        M_LerpI16(ring->prev_radius, ring->radius, interp_rate);
+    const int16_t draw_camera_y =
+        M_LerpI16(ring->prev_camera_y, ring->camera.pos.y, interp_rate);
+    const int16_t draw_ring_rot_y = M_LerpAngleI16(
+        ring->prev_ring_rot_y, ring->ring_pos.rot.y, interp_rate);
+    const int16_t draw_camera_pitch = M_LerpAngleI16(
+        ring->prev_camera_pitch, ring->camera_pitch, interp_rate);
 
-    const int32_t num_frames = round(
-        ClockTimer_TakeElapsed(&ring->motion_timer) * LOGIC_FPS
-        * INV_RING_FRAMES);
-
-    if (ring->status != RNG_OPENING && ring->status != RNG_DONE
-        && ring->status != RNG_FADING_OUT) {
-        for (int32_t i = 0; i < ring->number_of_objects; i++) {
-            InvRing_UpdateInventoryItem(ring, ring->list[i], num_frames);
-        }
-    }
-
-    if (ring->status != RNG_DONE
-        && (ring->status != RNG_OPENING
-            || (ring->mode != INV_TITLE_MODE
-                || (!Fader_IsActive(&ring->top_fader)
-                    && !Fader_IsActive(&ring->back_fader))))) {
-        for (int32_t i = 0; i < num_frames; i++) {
-            InvRing_DoMotions(ring);
-        }
-    }
-
-    ring->camera.pos.z = ring->radius + M_CAMERA_2_RING;
+    INV_RING draw_ring = *ring;
+    draw_ring.radius = draw_radius;
+    draw_ring.camera.pos.y = draw_camera_y;
+    draw_ring.camera_pitch = draw_camera_pitch;
+    draw_ring.ring_pos.rot.y = draw_ring_rot_y;
+    draw_ring.camera.pos.z = draw_radius + M_CAMERA_2_RING;
 
     if (ring->mode == INV_TITLE_MODE) {
         if (ring->background_path != nullptr) {
@@ -329,28 +358,30 @@ void InvRing_Draw(INV_RING *const ring)
 
     XYZ_32 view_pos;
     XYZ_16 view_rot;
-    InvRing_GetView(ring, &view_pos, &view_rot);
+    InvRing_GetView(&draw_ring, &view_pos, &view_rot);
     Matrix_GenerateW2V(&view_pos, &view_rot);
-    InvRing_Light(ring);
+    InvRing_Light(&draw_ring);
 
     Matrix_Push();
-    Matrix_TranslateAbs32(ring->ring_pos.pos);
-    Matrix_Rot16(ring->ring_pos.rot);
+    Matrix_TranslateAbs32(draw_ring.ring_pos.pos);
+    Matrix_Rot16(draw_ring.ring_pos.rot);
 
     if (!(ring->mode == INV_TITLE_MODE
           && (Fader_IsActive(&ring->top_fader)
               || Fader_IsActive(&ring->back_fader))
           && ring->status == RNG_OPENING)) {
         int16_t angle = 0;
-        for (int32_t i = 0; i < ring->number_of_objects; i++) {
-            INVENTORY_ITEM *const inv_item = ring->list[i];
+        for (int32_t i = 0; i < draw_ring.number_of_objects; i++) {
+            INVENTORY_ITEM *const inv_item = draw_ring.list[i];
             Matrix_Push();
             Matrix_RotY(angle);
-            Matrix_TranslateRel(ring->radius, 0, 0);
+            Matrix_TranslateRel(draw_ring.radius, 0, 0);
             Matrix_RotY(DEG_90);
-            Matrix_RotX(inv_item->x_rot_pt);
-            M_DrawItem(ring, inv_item, view_rot.y);
-            angle += ring->angle_adder;
+            const int16_t draw_x_rot_pt = M_LerpAngleI16(
+                inv_item->prev_x_rot_pt, inv_item->x_rot_pt, interp_rate);
+            Matrix_RotX(draw_x_rot_pt);
+            M_DrawItem(&draw_ring, inv_item, view_rot.y);
+            angle += draw_ring.angle_adder;
             Matrix_Pop();
         }
     }

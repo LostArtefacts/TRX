@@ -51,6 +51,6 @@ void InvRing_RemoveVersionText(void);
 void InvRing_DrawUI(INV_RING *ring);
 
 void InvRing_UpdateInventoryItem(
-    const INV_RING *ring, INVENTORY_ITEM *inv_item, int32_t num_frames);
+    const INV_RING *ring, INVENTORY_ITEM *inv_item);
 
 bool InvRing_IsOptionLockedOut(void);
