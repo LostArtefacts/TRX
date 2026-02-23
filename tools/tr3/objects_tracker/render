@@ -43,8 +43,8 @@ def load_support_status(path: Path) -> SupportStatus:
     out: SupportStatus = {}
     for name, payload in raw.items():
         status = Status(payload["status"])
-        todo = payload.get("todo")
-        out[str(name)] = (status, todo)
+        note = payload.get("notes") or payload.get("todo")
+        out[str(name)] = (status, note)
     return out
 
 
@@ -116,6 +116,58 @@ def parse_objects_dump(
 
     object_ids = sorted(used_object_ids)
     return dump, object_ids, data
+
+
+def make_todo_list(
+    catalog: Catalog,
+    support_status: SupportStatus,
+    levels: list[Level],
+) -> str:
+    lines: list[str] = []
+    prev_zone_num: int | None = None
+
+    for level in levels:
+        items = level.get("items") or []
+        if not items:
+            continue
+
+        object_counts: dict[str, int] = {}
+        for item in items:
+            object_id = int(item["object_id"])
+            object_name = get_object_name(catalog, object_id)
+            object_counts[object_name] = object_counts.get(object_name, 0) + 1
+
+        level_rows: list[str] = []
+        sorted_objects = sorted(
+            object_counts.items(),
+            key=lambda pair: (-pair[1], pair[0]),
+        )
+        for object_name, count in sorted_objects:
+            status, note = support_status.get(
+                object_name, (Status.NOT_IMPLEMENTED, None)
+            )
+            if status == Status.FULLY_IMPLEMENTED:
+                continue
+
+            label = "instance" if count == 1 else "instances"
+            suffix = f", {note}" if note else ""
+            level_rows.append(
+                f"\t🟨 `{object_name}` ({count} {label}{suffix})"
+            )
+
+        if not level_rows:
+            continue
+
+        zone_num = int(level.get("zone_num", -1))
+        if prev_zone_num is not None and zone_num != prev_zone_num:
+            lines.append("")
+
+        title = str(level.get("title", "Unknown level"))
+        lines.append(f"🟨 {title}\t")
+        lines.extend(level_rows)
+        prev_zone_num = zone_num
+
+    return "\n".join(lines)
 
 
 def make_svg(
@@ -242,11 +294,19 @@ def main() -> None:
         default=Path(__file__).with_name("objects_support.json"),
         help="Path to objects_support.json (support status mapping).",
     )
+    parser.add_argument(
+        "--todo",
+        action="store_true",
+        help="Output todo list for non-fully-implemented objects per level.",
+    )
     args = parser.parse_args()
 
     catalog = load_catalog(REPO_DIR / "data/tr3/ship/cfg/catalog_objects.csv")
     support_status = load_support_status(args.support)
     levels, object_ids, data = parse_objects_dump(args.dump)
+    if args.todo:
+        print(make_todo_list(catalog, support_status, levels))
+        return
     svg = make_svg(catalog, support_status, levels, object_ids, data)
     print(svg)
 
