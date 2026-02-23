@@ -111,37 +111,46 @@ cleanup:
     return ok;
 }
 
+static bool M_HandleIdleState(ITEM *const item, COLL_INFO *const coll)
+{
+    if (!M_CanMonkeySwing(item)) {
+        return false;
+    }
+
+    if (!g_Input.action || item->hit_points <= 0) {
+        M_MonkeySwingFall(item);
+        return true;
+    }
+
+    item->gravity = false;
+    item->fall_speed = 0;
+    item->speed = 0;
+
+    M_GetMonkeyCollisionInfo(item, coll, item->rot.y, NO_BAD_NEG, false);
+
+    if (g_Input.forward && coll->coll_type != COLL_FRONT
+        && ABS(coll->side_mid.ceiling - coll->side_front.ceiling)
+            < M_MONKEY_CEILING_SHIFT) {
+        item->goal_anim_state = LS(LS_MONKEY_FORWARD);
+    } else if (
+        g_Input.step_left && M_TestMonkeySide(item, coll, -DEG_90, false)) {
+        item->goal_anim_state = LS(LS_MONKEY_LEFT);
+    } else if (
+        g_Input.step_right && M_TestMonkeySide(item, coll, DEG_90, true)) {
+        item->goal_anim_state = LS(LS_MONKEY_RIGHT);
+    } else if (g_Input.left) {
+        item->goal_anim_state = LS(LS_MONKEY_TURN_LEFT);
+    } else if (g_Input.right) {
+        item->goal_anim_state = LS(LS_MONKEY_TURN_RIGHT);
+    }
+
+    Lara_Col_MonkeySwingSnap(item);
+    return true;
+}
+
 static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
 {
-    if (M_CanMonkeySwing(item)) {
-        if (!g_Input.action || item->hit_points <= 0) {
-            M_MonkeySwingFall(item);
-            return;
-        }
-
-        item->gravity = false;
-        item->fall_speed = 0;
-        item->speed = 0;
-
-        M_GetMonkeyCollisionInfo(item, coll, item->rot.y, NO_BAD_NEG, false);
-
-        if (g_Input.forward && coll->coll_type != COLL_FRONT
-            && ABS(coll->side_mid.ceiling - coll->side_front.ceiling)
-                < M_MONKEY_CEILING_SHIFT) {
-            item->goal_anim_state = LS(LS_MONKEY_FORWARD);
-        } else if (
-            g_Input.step_left && M_TestMonkeySide(item, coll, -DEG_90, false)) {
-            item->goal_anim_state = LS(LS_MONKEY_LEFT);
-        } else if (
-            g_Input.step_right && M_TestMonkeySide(item, coll, DEG_90, true)) {
-            item->goal_anim_state = LS(LS_MONKEY_RIGHT);
-        } else if (g_Input.left) {
-            item->goal_anim_state = LS(LS_MONKEY_TURN_LEFT);
-        } else if (g_Input.right) {
-            item->goal_anim_state = LS(LS_MONKEY_TURN_RIGHT);
-        }
-
-        Lara_Col_MonkeySwingSnap(item);
+    if (M_HandleIdleState(item, coll)) {
         return;
     }
 
