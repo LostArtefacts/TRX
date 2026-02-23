@@ -448,7 +448,7 @@ def main() -> None:
                     zone_num = zone_idx
                     break
 
-        level_path = REPO_ROOT / "test/tr3" / level["path"]
+        level_path = REPO_ROOT / "test/trx/games/tr3/levels" / level["path"]
         logger.info("Reading %s", level_path)
 
         parsed = read_tr3_level(str(level_path))
