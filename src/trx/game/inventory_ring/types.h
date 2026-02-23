@@ -40,11 +40,17 @@ typedef struct {
     int16_t x_rot;
     int16_t y_rot_sel;
     int16_t y_rot;
+    int16_t prev_y_rot;
     int32_t y_trans_sel;
     int32_t y_trans;
+    int32_t prev_y_trans;
     int32_t z_trans_sel;
     int32_t z_trans;
+    int32_t prev_z_trans;
+    int16_t prev_x_rot_pt;
+    int16_t prev_x_rot;
     MATRIX manual_rot;
+    MATRIX prev_manual_rot;
     bool has_manual_rot;
     uint32_t meshes_sel;
     uint32_t meshes_drawn;
@@ -84,7 +90,9 @@ typedef struct {
     INVENTORY_ITEM **list;
     RING_TYPE type;
     int16_t radius;
+    int16_t prev_radius;
     int16_t camera_pitch;
+    int16_t prev_camera_pitch;
     bool rotating;
     int16_t rotate_from_object;
     int16_t rotate_to_object;
@@ -103,10 +111,12 @@ typedef struct {
         XYZ_32 pos;
         XYZ_16 rot;
     } ring_pos;
+    int16_t prev_ring_rot_y;
     struct {
         XYZ_32 pos;
         XYZ_16 rot;
     } camera;
+    int16_t prev_camera_y;
     XYZ_32 light;
     INV_RING_MOTION motion;
 
@@ -116,7 +126,6 @@ typedef struct {
     bool has_spun_out;
     int32_t old_fov;
 
-    CLOCK_TIMER motion_timer;
     FADER top_fader;
     FADER back_fader;
 
