@@ -295,7 +295,7 @@ static void M_SetSectorClimbability(
 {
     const int32_t direction = VFile_ReadS32(injection->fp);
     if (sector != nullptr) {
-        sector->ladder = (LADDER_DIRECTION)(direction & 0xF);
+        sector->ladder = (LADDER_DIRECTION)direction;
     }
 }
 

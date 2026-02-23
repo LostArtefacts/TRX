@@ -20,7 +20,7 @@
 
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
-    if (g_TRVersion == 3 && item->hit_points <= 0) {
+    if (item->hit_points <= 0) {
         item->goal_anim_state = LS(LS_STOP);
         return;
     }
