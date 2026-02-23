@@ -562,6 +562,8 @@
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Active le ciel dans les niveaux pris en charge.",
         "SETTING_ENABLE_SLIDE_TO_RUN": "\\{review}Glissade-courir",
         "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "\\{review}Permet à Lara de commencer à courir immédiatement lorsqu'elle touche le sol après avoir glissé en avant sur une pente. Maintenez l'entrée avant pour activer.",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING": "\\{review}Balancement lent sur corniche",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING_DESCRIPTION": "\\{review}Permet à Lara de se balancer lentement lorsqu’elle s’est accrochée à une corniche très fine (style TR3). Si désactivé, Lara se balancera brièvement avant de revenir à une position suspendue immobile (style TR1/2).",
         "SETTING_ENABLE_SMOOTH_BARS": "Barres fluides",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Permet à la barre de santé et à la barre d'air d'utiliser des transitions de couleurs fluides.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "\\{review}Déviation murale fluide",

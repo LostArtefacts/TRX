@@ -41,7 +41,8 @@ EDGE_CATCH Lara_Col_TestEdgeCatch(
         : EDGE_CATCH_NONE;
 }
 
-bool Lara_Col_TestHangSwingIn(const ITEM *const item, const int16_t angle)
+SWING_CATCH Lara_Col_TestHangSwingIn(
+    const ITEM *const item, const int16_t angle)
 {
     // Tests whether a forward hang grab should transition into thin-ledge
     // swing ("swinging inwards"). The probe samples one click ahead in the
@@ -76,8 +77,13 @@ bool Lara_Col_TestHangSwingIn(const ITEM *const item, const int16_t angle)
     const bool has_height = height != NO_HEIGHT;
     const int32_t height_delta = height - pos.y;
     const int32_t ceiling_delta = ceiling - pos.y;
-    return has_height && height_delta > 0 && ceiling_delta < -400
-        && (g_TRVersion < 3 || pos.y - ceiling - 819 > -110);
+    if (!has_height || height_delta <= 0 || ceiling_delta >= -400) {
+        return SWING_CATCH_NONE;
+    }
+    const bool thin_ledge = pos.y - ceiling - 819 > -110;
+    return thin_ledge && g_Config.gameplay.enable_slow_ledge_swing
+        ? SWING_CATCH_SLOW
+        : SWING_CATCH_FAST;
 }
 
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
@@ -94,7 +100,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
         const SECTOR *const sector = Room_GetSector(
             (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
         if ((sector->ladder & LADDER_CEILING) != 0) {
-            Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
+            Item_SwitchToAnim(item, LA(LA_SWING_IN_SLOW), 0);
             item->current_anim_state = LS(LS_MONKEY_IDLE);
             item->goal_anim_state = LS(LS_MONKEY_IDLE);
             item->gravity = false;
@@ -128,10 +134,11 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     }
     const int16_t angle = Math_DirectionToAngle(dir);
 
-    const bool swing_in = (g_TRVersion < 3 || !ladder_hang)
-        && Lara_Col_TestHangSwingIn(item, angle);
-    if (swing_in) {
-        Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
+    const SWING_CATCH swing_catch = Lara_Col_TestHangSwingIn(item, angle);
+    if (swing_catch == SWING_CATCH_SLOW) {
+        Item_SwitchToAnim(item, LA(LA_SWING_IN_SLOW), 0);
+    } else if (swing_catch == SWING_CATCH_FAST) {
+        Item_SwitchToAnim(item, LA(LA_SWING_IN_FAST), 0);
     } else {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), 0);
     }

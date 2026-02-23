@@ -562,6 +562,8 @@
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Enables the skybox in supported levels.",
         "SETTING_ENABLE_SLIDE_TO_RUN": "Slide-to-run",
         "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "Allows Lara to start running immediately when she reaches ground after sliding forwards on a slope. Hold the forward input to activate.",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING": "Slow ledge swing",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING_DESCRIPTION": "Allows Lara to swing slowly when she has grabbed a very thin ledge (TR3 style). If disabled, Lara will swing briefly before coming to a resting hanging position (TR1/2 style).",
         "SETTING_ENABLE_SMOOTH_BARS": "Smooth bars",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Makes the UI bars use smooth color transitions.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Smooth wall deflection",

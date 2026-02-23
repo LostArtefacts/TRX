@@ -18,6 +18,12 @@ typedef enum {
     LANDED_HANDLED,
 } LANDED_STATE;
 
+typedef enum {
+    SWING_CATCH_NONE,
+    SWING_CATCH_FAST,
+    SWING_CATCH_SLOW,
+} SWING_CATCH;
+
 void Lara_Col_Register(
     LARA_TRX_STATE state, void (*handle_func)(ITEM *item, COLL_INFO *coll));
 void Lara_Col_Update(ITEM *item, COLL_INFO *coll);
@@ -27,7 +33,7 @@ bool Lara_Col_TestVault(ITEM *item, COLL_INFO *coll);
 bool Lara_Col_TestSlide(ITEM *item, COLL_INFO *coll);
 bool Lara_Col_TestLadderHang(ITEM *item, const COLL_INFO *coll);
 bool Lara_Col_TestCeiling(ITEM *item, const COLL_INFO *coll);
-bool Lara_Col_TestHangSwingIn(const ITEM *item, int16_t angle);
+SWING_CATCH Lara_Col_TestHangSwingIn(const ITEM *item, int16_t angle);
 EDGE_CATCH Lara_Col_TestEdgeCatch(
     const ITEM *item, const COLL_INFO *coll, int32_t *edge);
 bool Lara_Col_Fallen(ITEM *item, const COLL_INFO *coll);

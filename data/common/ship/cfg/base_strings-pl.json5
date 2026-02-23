@@ -562,6 +562,8 @@
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Włącza niebo w obsługiwanych poziomach.",
         "SETTING_ENABLE_SLIDE_TO_RUN": "Bieg po zjechaniu",
         "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "Umożliwia Larze natychmiastowe wznowienie biegu po zjechaniu w dół stoku. Aby aktywować, należy przytrzymać przycisk ruchu do przodu.",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING": "\\{review}Powolne kołysanie na krawędzi",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING_DESCRIPTION": "\\{review}Umożliwia Larze powolne kołysanie się po uchwyceniu bardzo cienkiej krawędzi (styl TR3). Jeśli wyłączone, Lara zakołysze się tylko krótko, po czym wróci do nieruchomej pozycji wiszącej (styl TR1/2).",
         "SETTING_ENABLE_SMOOTH_BARS": "Wygładzanie pasków",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Sprawia, że paski życia i tlenu używają gładkich przejść kolorów.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Gładkie odbicia od ściany",

@@ -562,6 +562,8 @@
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Aktiviert die Skybox in unterstützten Leveln.",
         "SETTING_ENABLE_SLIDE_TO_RUN": "\\{review}Rutsch-Lauf-Übergang",
         "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "\\{review}Ermöglicht es Lara, sofort loszulaufen, sobald sie nach dem Vorwärtsrutschen auf einer Schräge den Boden erreicht. Halte die Vorwärts-Taste gedrückt, um dies zu aktivieren.",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING": "\\{review}Langsames Schwingen an einer Kante",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING_DESCRIPTION": "\\{review}Ermöglicht es Lara, langsam zu schwingen, wenn sie sich an einer sehr dünnen Kante festhält (TR3-Stil). Ist die Option deaktiviert, schwingt Lara nur kurz und kehrt dann in eine ruhende Hängeposition zurück (TR1/2-Stil).",
         "SETTING_ENABLE_SMOOTH_BARS": "Leisten-Farbverläufe",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Sorgt bei Gesundheitsleisten, Sauerstoffleisten und Gesundheitsleisten von Feinden für einen fließenden Farbübergang.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Sanftes Wand-Abprallen",

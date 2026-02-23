@@ -562,6 +562,8 @@
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Cuiridh seo bogsa-nan-speuran an comas ann an ìrean far a bheil e freagarrach.",
         "SETTING_ENABLE_SLIDE_TO_RUN": "Sleamhnaich-gus-ruith",
         "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "Leigidh seo le Lara ruith sa bhad nuair a ruigeas i air uachdar còmhnard às dèidh a bhith a' sleamhnachadh air leac leathann. Cum am putan air adhart sios gus a ghnìomhachadh.",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING": "Luascadh slaodach",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING_DESCRIPTION": "Leigidh seo le Lara luascadh gu slaodach nuair a tha i air grèim fhaighinn air oir glè thana (stoidhle TR3). Ma tha seo à comas, luaisgidh Lara greiseag ghoirid mus till i gu suidheachadh crochte aig fois (stoidhle TR1/2).",
         "SETTING_ENABLE_SMOOTH_BARS": "Bàraichean rèidh",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Cuiridh seo dath le gluasad rèidh air na bàraichean slàinte, èadhair is nàmhaid.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Ath-bheòthachadh bhalla rèidh",
