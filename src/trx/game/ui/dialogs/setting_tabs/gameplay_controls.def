@@ -20,6 +20,7 @@ X_UI_CFG_BOOL(gameplay.enable_neutral_twists,      SETTING_ENABLE_NEUTRAL_TWISTS
 X_UI_CFG_BOOL(gameplay.enable_slide_to_run,        SETTING_ENABLE_SLIDE_TO_RUN)
 X_UI_CFG_BOOL(gameplay.enable_back_slope_stumble,  SETTING_ENABLE_BACK_SLOPE_STUMBLE)
 X_UI_CFG_BOOL(gameplay.enable_lean_jumping,        SETTING_ENABLE_LEAN_JUMPING)
+X_UI_CFG_BOOL(gameplay.enable_slow_ledge_swing,    SETTING_ENABLE_SLOW_LEDGE_SWING)
 X_UI_CFG_BOOL(gameplay.enable_swing_cancel,        SETTING_ENABLE_SWING_CANCEL)
 X_UI_CFG_BOOL(gameplay.enable_controlled_drops,    SETTING_ENABLE_CONTROLLED_DROPS)
 X_UI_CFG_BOOL(gameplay.enable_ledge_jumps,         SETTING_ENABLE_LEDGE_JUMPS)

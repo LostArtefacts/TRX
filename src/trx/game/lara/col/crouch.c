@@ -410,19 +410,21 @@ static void M_CrawlToClimb(ITEM *const item, COLL_INFO *const coll)
     }
     const int16_t angle = Math_DirectionToAngle(dir);
 
-    if (Lara_Col_TestHangSwingIn(item, angle)) {
+    const SWING_CATCH swing_catch = Lara_Col_TestHangSwingIn(item, angle);
+    if (swing_catch == SWING_CATCH_SLOW) {
         lara->head_rot.x = 0;
         lara->head_rot.y = 0;
         lara->torso_rot.x = 0;
         lara->torso_rot.y = 0;
-        Item_SwitchToAnim(item, LA(LA_REACH_TO_THIN_LEDGE), 0);
-        item->current_anim_state = LS(LS_MONKEY_IDLE);
-        item->goal_anim_state = LS(LS_MONKEY_IDLE);
+        Item_SwitchToAnim(item, LA(LA_SWING_IN_SLOW), 0);
+    } else if (swing_catch == SWING_CATCH_FAST) {
+        Item_SwitchToAnim(item, LA(LA_SWING_IN_FAST), 0);
     } else {
         Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), 0);
-        item->current_anim_state = LS(LS_HANG);
-        item->goal_anim_state = LS(LS_HANG);
     }
+    const ANIM *const anim = Item_GetAnim(item);
+    item->current_anim_state = anim->current_anim_state;
+    item->goal_anim_state = anim->current_anim_state;
 
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     if (edge_catch == EDGE_CATCH_POS) {

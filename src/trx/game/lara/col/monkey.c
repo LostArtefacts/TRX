@@ -146,8 +146,7 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
     }
 
     // Monkey idle state can be the result of swinging on a thin ledge as well
-    // as actually being on monkeybars. LA_REACH_TO_THIN_LEDGE in TR3 links to
-    // this state.
+    // as actually being on monkeybars. LA_SWING_IN_SLOW links to this state.
     Lara_Col_HangTest(item, coll);
     if (item->goal_anim_state != LS(LS_MONKEY_IDLE)) {
         return;

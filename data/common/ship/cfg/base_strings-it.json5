@@ -562,6 +562,8 @@
         "SETTING_ENABLE_SKYBOX_DESCRIPTION": "Abilita il cielo nei livelli supportati.",
         "SETTING_ENABLE_SLIDE_TO_RUN": "Corri dopo scivolata",
         "SETTING_ENABLE_SLIDE_TO_RUN_DESCRIPTION": "Permette a Lara di iniziare a correre immediatamente quando tocca terra dopo essere scivolata in avanti da una pendenza. Per farlo, tieni premuto il tasto Corri.",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING": "\\{review}Oscillazione lenta su sporgenza",
+        "SETTING_ENABLE_SLOW_LEDGE_SWING_DESCRIPTION": "\\{review}Permette a Lara di oscillare lentamente quando si è aggrappata a una sporgenza molto sottile (stile TR3). Se disattivato, Lara oscillerà brevemente prima di tornare a una posizione sospesa di riposo (stile TR1/2).",
         "SETTING_ENABLE_SMOOTH_BARS": "Barre sfumate",
         "SETTING_ENABLE_SMOOTH_BARS_DESCRIPTION": "Fa in modo che la barra della salute e la barra dell'ossigeno utilizzino transizioni di colore uniformi.",
         "SETTING_ENABLE_SMOOTH_WALL_DEFLECT": "Deflessione rapida da muro",
