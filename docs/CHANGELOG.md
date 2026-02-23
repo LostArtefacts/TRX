@@ -82,6 +82,7 @@
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
 - fixed Lara unable to climb small ledges with low crawlspaces
 - fixed Lara using the thin-ledge swing hang animation instead of the normal hang in some 1-click ledge cases
+- fixed Lara being unable to transition from slow swing at the base of a ladder to being able to climb the ladder
 - fixed Lara's cutscene gun shots not rendering muzzle flashes, gun smoke and shell ejections (e.g., Tony cutscene)
 - fixed water ripples triggering z-fighting with 0-click ground surfaces
 - fixed footprints rendering with an excessive Y offset
