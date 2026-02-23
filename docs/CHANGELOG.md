@@ -39,6 +39,7 @@
 
 **TR2**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
+- fixed secret reward in Venice giving Magnums ammo instead of Automatic Pistol Clips (#4951, regression from 1.1)
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
 - fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)
 - fixed loading screens showing before playing FMVs on most levels
