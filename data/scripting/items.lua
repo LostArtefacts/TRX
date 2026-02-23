@@ -87,7 +87,7 @@ end
 local function find_items(query, first_only)
   local matches = first_only and nil or {}
   local count = raw.count()
-  for i = 0, count - 1 do
+  for i = 1, count do
     local item = setmetatable({ idx = i }, Item)
     if is_matching(item, query) then
       if first_only then
