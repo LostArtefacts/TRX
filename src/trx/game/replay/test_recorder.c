@@ -63,11 +63,11 @@ static const char *M_DumpEvent(const SDL_Event *const event)
         const char *result = nullptr;
         if (event->user.code == M_CUSTOM_EVENT_SCREENSHOT) {
             char *path = event->user.data1;
-            result = String_FormatStatic("noop  # cmd \"screenshot %s\"", path);
+            result = String_FormatStatic("noop  # cmd { screenshot %s }", path);
             Memory_FreePointer(&path);
         } else if (event->user.code == M_CUSTOM_EVENT_COMMAND) {
             char *cmd = event->user.data1;
-            result = String_FormatStatic("noop  # cmd \"%s\"", cmd);
+            result = String_FormatStatic("noop  # cmd { %s }", cmd);
             Memory_FreePointer(&cmd);
         }
         return result;
