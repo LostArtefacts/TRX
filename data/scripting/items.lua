@@ -11,6 +11,8 @@ local getters = {
     return trx.rooms[raw.get_room(idx)]
   end,
   status = raw.get_status,
+  flags = raw.get_flags,
+  timer = raw.get_timer,
   object_id = raw.get_object_id,
   hit_points = raw.get_hit_points,
   max_hit_points = raw.get_max_hit_points,
