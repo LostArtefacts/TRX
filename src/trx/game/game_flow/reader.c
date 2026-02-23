@@ -672,8 +672,12 @@ static bool M_LoadLevel(
     {
         const char *tmp = nullptr;
         JSON_MUST(JSON_READ(io, "path", &tmp));
-        level->path =
-            Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_LEVEL_FILE, tmp));
+        if (level->type == GFL_DUMMY || level->type == GFL_CURRENT) {
+            level->path = Memory_DupStr(tmp);
+        } else {
+            level->path = Memory_DupStr(
+                TRXPath_TryResolve(TRX_DYNAMIC_PATH_LEVEL_FILE, tmp));
+        }
     }
     {
         const char *tmp_script = nullptr;
