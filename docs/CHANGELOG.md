@@ -53,6 +53,7 @@
 - fixed loading screens showing before playing FMVs on most levels
 - fixed Lara not being able to move after exiting water, having used an underwater lever with the animated interactions setting enabled (#4912, regression from 1.0)
 - fixed Bell in room 48 being shootable from room 55 (#4949, regression from TR2X 1.4)
+- fixed "Disable T-Rex Collision" option missing from The Golden Mask (there are T-Rex enemies in Nightmare in Vegas)
 - removed the requirement to use `main.sfx` in custom levels (#3898)
 
 **TR3**:
