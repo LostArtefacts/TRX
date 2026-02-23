@@ -350,8 +350,10 @@ static bool M_ParseExpectEvent(const char *const event_str)
     }
 
     char *const expr = String_Format("%.*s", (int)expr_len, expr_start);
-    char *const script =
-        String_Format("if not (%s) then error('expect failed') end", expr);
+    char *const script = String_Format(
+        "if not ((function() return %s\n end)()) then error('expect failed') "
+        "end",
+        expr);
     LUA_RESULT eval_result = Lua_Eval(script);
 
     p->test_mode.case_checks++;
