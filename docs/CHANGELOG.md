@@ -9,6 +9,8 @@
 - added a new Lua item query helpers, `trx.items.find(query)` and `trx.items.first(query)`, with support for `object_id` and `room_num` filters
 - added a new Lua catalog, `trx.catalog.weapons`, for weapon identifiers
 - added a new Lua property, `trx.lara.equipped_gun`, to read Lara's currently equipped gun type
+- added a new Lua property, `trx.Item.flags`, to read current item flags (related to triggers)
+- added a new Lua property, `trx.Item.timer`, to read current item timer value (related to triggers)
 - added support for using more sound slots than originally possible in custom levels (#3898)
 - added blood effects when enemies shoot any other creature (not just Lara)
 - added support for the globe-style level selection mechanic in the new game for level builders (#4920)

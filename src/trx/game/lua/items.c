@@ -114,6 +114,22 @@ static int M_L_ItemGetStatus(lua_State *const L)
     return 1;
 }
 
+// trxc.items.get_flags(index) → int or nil
+static int M_L_ItemGetFlags(lua_State *const L)
+{
+    M_ITEM_GETTER(L);
+    lua_pushinteger(L, (int)item->flags);
+    return 1;
+}
+
+// trxc.items.get_timer(index) → int or nil
+static int M_L_ItemGetTimer(lua_State *const L)
+{
+    M_ITEM_GETTER(L);
+    lua_pushinteger(L, (int)item->timer);
+    return 1;
+}
+
 // trxc.items.get_object_id(index) → int or nil
 static int M_L_ItemGetObjectId(lua_State *const L)
 {
@@ -280,6 +296,10 @@ void LUA_CreateItems(lua_State *const L)
     lua_setfield(L, -2, "get_room");
     lua_pushcfunction(L, M_L_ItemGetStatus);
     lua_setfield(L, -2, "get_status");
+    lua_pushcfunction(L, M_L_ItemGetFlags);
+    lua_setfield(L, -2, "get_flags");
+    lua_pushcfunction(L, M_L_ItemGetTimer);
+    lua_setfield(L, -2, "get_timer");
     lua_pushcfunction(L, M_L_ItemGetObjectId);
     lua_setfield(L, -2, "get_object_id");
     lua_pushcfunction(L, M_L_ItemGetHitPoints);

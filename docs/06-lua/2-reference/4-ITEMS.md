@@ -20,6 +20,8 @@ Module for controlling all moveables behavior.
     - **`room_num`**: room number.
     - **`room`**: [`trx.rooms.Room`] object for the room containing this item.
     - **`status`**: Integer representing the item's status.
+    - **`flags`**: Integer representing the item's trigger-related flags.
+    - **`timer`**: Integer representing the item's trigger-related timer value.
     - **`hit_points`**: Integer representing the item's hit points.
     - **`max_hit_points`**: Integer representing the item's hit points.
     - **`object_id`**: Integer ID of the item's object type.
