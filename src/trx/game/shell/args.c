@@ -69,6 +69,11 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             i++;
         }
     }
+    if (result->engine_version <= 0 && g_TRVersion > 0) {
+        // Hydrate recordings using old-style directory tree to use
+        // runtime engine version if they miss it.
+        result->engine_version = g_TRVersion;
+    }
 
     result->mod = Shell_GetModByType(MOD_BASE_GAME, result->engine_version);
 
