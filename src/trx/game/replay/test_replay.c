@@ -29,6 +29,13 @@ typedef struct {
     SHELL_ARGS *args;
 } M_PARSE_CTX;
 
+typedef struct {
+    bool collecting;
+    int32_t brace_depth;
+    bool in_quote;
+    bool escaped;
+} M_BLOCK_EVENT_CTX;
+
 // Parsed frame events
 typedef struct {
     int32_t frame_idx;
@@ -218,6 +225,162 @@ static bool M_ParseQuotedPayload(
     return true;
 }
 
+static const char *M_SkipWhitespaceConst(const char *const s)
+{
+    const char *p = s;
+    while (*p == ' ' || *p == '\t') {
+        p++;
+    }
+    return p;
+}
+
+static char *M_TrimWhitespaceInPlace(char *const s)
+{
+    char *start = s;
+    while (*start == ' ' || *start == '\t' || *start == '\n'
+           || *start == '\r') {
+        start++;
+    }
+    char *end = start + strlen(start);
+    while (end > start
+           && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '\n'
+               || end[-1] == '\r')) {
+        end--;
+    }
+    *end = '\0';
+    if (start != s) {
+        memmove(s, start, strlen(start) + 1);
+    }
+    return s;
+}
+
+static void M_ScanBraceState(
+    const char *const s, int32_t *const io_brace_depth, bool *const io_in_quote,
+    bool *const io_escaped)
+{
+    for (const char *p = s; *p != '\0'; p++) {
+        if (*io_in_quote) {
+            if (*io_escaped) {
+                *io_escaped = false;
+                continue;
+            }
+            if (*p == '\\') {
+                *io_escaped = true;
+                continue;
+            }
+            if (*p == '"') {
+                *io_in_quote = false;
+            }
+            continue;
+        }
+
+        if (*p == '"') {
+            *io_in_quote = true;
+            continue;
+        }
+        if (*p == '{') {
+            (*io_brace_depth)++;
+            continue;
+        }
+        if (*p == '}') {
+            (*io_brace_depth)--;
+            continue;
+        }
+    }
+}
+
+static const char *M_GetBlockPayloadStartIfAny(const char *const evt)
+{
+    if (strncmp(evt, "expect ", strlen("expect ")) == 0) {
+        return M_SkipWhitespaceConst(evt + strlen("expect "));
+    }
+    if (strncmp(evt, "lua ", strlen("lua ")) == 0) {
+        return M_SkipWhitespaceConst(evt + strlen("lua "));
+    }
+    if (strncmp(evt, "cmd ", strlen("cmd ")) == 0) {
+        return M_SkipWhitespaceConst(evt + strlen("cmd "));
+    }
+    return nullptr;
+}
+
+static bool M_TryStartBlockEvent(
+    M_BLOCK_EVENT_CTX *const ctx, const char *const evt)
+{
+    const char *const payload_start = M_GetBlockPayloadStartIfAny(evt);
+    if (payload_start == nullptr || *payload_start != '{') {
+        return false;
+    }
+
+    ctx->collecting = true;
+    ctx->brace_depth = 0;
+    ctx->in_quote = false;
+    ctx->escaped = false;
+    M_ScanBraceState(
+        payload_start, &ctx->brace_depth, &ctx->in_quote, &ctx->escaped);
+    if (ctx->brace_depth == 0) {
+        ctx->collecting = false;
+    }
+    return true;
+}
+
+static bool M_GetBracedPayload(
+    const char *const event_str, const char *const prefix,
+    const char **const out_start, size_t *const out_len)
+{
+    if (strncmp(event_str, prefix, strlen(prefix)) != 0) {
+        return false;
+    }
+
+    const char *p = M_SkipWhitespaceConst(event_str + strlen(prefix));
+    if (*p != '{') {
+        return false;
+    }
+
+    const char *payload_start = p + 1;
+    int32_t depth = 1;
+    bool in_quote = false;
+    bool escaped = false;
+    p++;
+    for (; *p != '\0'; p++) {
+        if (in_quote) {
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+            if (*p == '\\') {
+                escaped = true;
+                continue;
+            }
+            if (*p == '"') {
+                in_quote = false;
+            }
+            continue;
+        }
+
+        if (*p == '"') {
+            in_quote = true;
+            continue;
+        }
+        if (*p == '{') {
+            depth++;
+            continue;
+        }
+        if (*p == '}') {
+            depth--;
+            if (depth == 0) {
+                const char *trail = M_SkipWhitespaceConst(p + 1);
+                if (*trail != '\0') {
+                    return false;
+                }
+                *out_start = payload_start;
+                *out_len = (size_t)(p - payload_start);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 static bool M_ParseQuitEvent(const char *const event_str)
 {
     if (strcmp(event_str, "quit") != 0) {
@@ -328,14 +491,15 @@ static bool M_ParseExpectEvent(const char *const event_str)
     if (strncmp(event_str, prefix, strlen(prefix)) != 0) {
         return false;
     }
-    const char *expr_start = event_str + strlen(prefix);
-    while (*expr_start == ' ' || *expr_start == '\t') {
-        expr_start++;
+    const char *expr_start = nullptr;
+    size_t expr_len = 0;
+    if (!M_GetBracedPayload(event_str, prefix, &expr_start, &expr_len)) {
+        expr_start = M_SkipWhitespaceConst(event_str + strlen(prefix));
+        if (*expr_start == '\0') {
+            return false;
+        }
+        expr_len = strlen(expr_start);
     }
-    if (*expr_start == '\0') {
-        return false;
-    }
-    const size_t expr_len = strlen(expr_start);
 
     p->test_mode.seen = true;
     M_ApplyQuietInTestMode();
@@ -381,6 +545,19 @@ static bool M_ParseCommandEvent(const char *const event_str)
         return false;
     }
 
+    const char *payload_start = nullptr;
+    size_t payload_len = 0;
+
+    if (M_GetBracedPayload(event_str, "cmd ", &payload_start, &payload_len)) {
+        char *const cmd_str =
+            String_Format("%.*s", (int)payload_len, payload_start);
+        M_TrimWhitespaceInPlace(cmd_str);
+        Console_Eval(cmd_str);
+        Memory_Free(cmd_str);
+        return true;
+    }
+
+    // Legacy quoted command format
     const char *const start = strchr(event_str + 4, '"');
     const char *const end = start ? strrchr(start + 1, '"') : nullptr;
     if (start == nullptr || end == nullptr || end <= start + 1) {
@@ -388,10 +565,7 @@ static bool M_ParseCommandEvent(const char *const event_str)
         return false;
     }
     const size_t len = (size_t)(end - (start + 1));
-    char *const cmd_str = Memory_DupStr(start + 1);
-    if (strlen(cmd_str) > len) {
-        cmd_str[len] = '\0';
-    }
+    char *const cmd_str = String_Format("%.*s", (int)len, start + 1);
     Console_Eval(cmd_str);
     Memory_Free(cmd_str);
     return true;
@@ -404,7 +578,16 @@ static bool M_ParseLuaEvent(const char *const event_str)
         return false;
     }
 
-    LUA_RESULT eval_result = Lua_Eval(event_str + 4);
+    const char *chunk_start = nullptr;
+    size_t chunk_len = 0;
+    LUA_RESULT eval_result = {};
+    if (M_GetBracedPayload(event_str, "lua ", &chunk_start, &chunk_len)) {
+        char *const chunk = String_Format("%.*s", (int)chunk_len, chunk_start);
+        eval_result = Lua_Eval(chunk);
+        Memory_Free(chunk);
+    } else {
+        eval_result = Lua_Eval(event_str + 4);
+    }
     if (eval_result.code == LUA_ERRSYNTAX) {
         LOG_ERROR(
             "LUA syntax error on frame %d: %s", p->frame_idx,
@@ -612,6 +795,12 @@ static char *M_SkipWhitespace(char *const line)
     return start;
 }
 
+static bool M_IsFrameMarkerLine(const char *const line)
+{
+    int32_t delta = 0;
+    return sscanf(line, "@+%d:", &delta) == 1;
+}
+
 SHELL_ARGS *TestReplay_Open(const char *path)
 {
     M_PRIV *const p = &m_Priv;
@@ -678,6 +867,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
                 .frame_idx = last_frame + delta,
                 .events = Vector_Create(sizeof(char *)),
             };
+            M_BLOCK_EVENT_CTX block_ctx = {};
 
             // Primary event on same line
             char *const colon = strchr(ln, ':');
@@ -685,6 +875,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
                 char *const evt = M_SkipWhitespace(colon + 1);
                 if (*evt != '\0') {
                     Vector_Add(frame.events, &evt);
+                    M_TryStartBlockEvent(&block_ctx, evt);
                 }
             }
 
@@ -692,15 +883,33 @@ SHELL_ARGS *TestReplay_Open(const char *path)
             idx++;
             while (idx < lines->count) {
                 char *const cont = *(char **)Vector_Get(lines, idx);
-                if (sscanf(cont, "@+%d:", &delta) == 1) {
+                if (M_IsFrameMarkerLine(cont)) {
                     // Reached next frame - stop
                     break;
                 }
-                // Continued event
+
                 char *const evt = M_SkipWhitespace(cont);
-                if (*evt != '\0') {
-                    Vector_Add(frame.events, &evt);
+                if (*evt == '\0') {
+                    idx++;
+                    continue;
                 }
+
+                if (block_ctx.collecting) {
+                    if (evt > p->data) {
+                        evt[-1] = '\n';
+                    }
+                    M_ScanBraceState(
+                        evt, &block_ctx.brace_depth, &block_ctx.in_quote,
+                        &block_ctx.escaped);
+                    if (block_ctx.brace_depth == 0) {
+                        block_ctx.collecting = false;
+                    }
+                    idx++;
+                    continue;
+                }
+
+                Vector_Add(frame.events, &evt);
+                M_TryStartBlockEvent(&block_ctx, evt);
                 idx++;
             }
             Vector_Add(p->frames, &frame);
