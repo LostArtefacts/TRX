@@ -37,6 +37,7 @@
 - fixed Lua `trx.catalog` only exposing `objects` and `flip_effects`; it now also exposes `lara_states`, `lara_anims`, `music`, and `samples`
 - fixed a freeze if firing a grenade very close to room portals (#4938, regression from 1.2)
 - fixed non-deterministic Inventory Ring control (transition speeds depended on v-sync / wall clock timing)
+- fixed Lara being able to shoot smashable objects located in unreachable overlapping rooms (#4949, regression from TR1X 4.14 / TR2X 1.4)
 
 **TR1**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
@@ -51,6 +52,7 @@
 - fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)
 - fixed loading screens showing before playing FMVs on most levels
 - fixed Lara not being able to move after exiting water, having used an underwater lever with the animated interactions setting enabled (#4912, regression from 1.0)
+- fixed Bell in room 48 being shootable from room 55 (#4949, regression from TR2X 1.4)
 - removed the requirement to use `main.sfx` in custom levels (#3898)
 
 **TR3**:

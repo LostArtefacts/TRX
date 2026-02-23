@@ -112,7 +112,16 @@ bool Creature_Shoot(
 
     XYZ_32 start, target;
     M_CalcShootVectors(item, target_item, &start, &target);
-    Gun_SmashItems(start, target, nullptr, NO_OBJECT);
+    Gun_SmashItems(
+        (GAME_VECTOR) {
+            .pos = start,
+            .room_num = item->room_num,
+        },
+        (GAME_VECTOR) {
+            .pos = target,
+            .room_num = target_item->room_num,
+        },
+        nullptr, NO_OBJECT);
 
     return is_targetable;
 }

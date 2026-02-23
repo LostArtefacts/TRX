@@ -184,7 +184,10 @@ static bool M_TryExplodeItem(
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    const XYZ_32 old_pos = item->pos;
+    const GAME_VECTOR old_pos = {
+        .pos = item->pos,
+        .room_num = item->room_num,
+    };
 
     const ROOM *const room = Room_Get(item->room_num);
     const bool was_underwater = room != nullptr && room->flags.underwater;
@@ -243,7 +246,7 @@ static void M_Control(const int16_t item_num)
 
         const int16_t y_rot = item->rot.y;
         item->rot.y = item->goal_anim_state;
-        Collide_DoProperDetection(item, old_pos);
+        Collide_DoProperDetection(item, old_pos.pos);
         item->goal_anim_state = item->rot.y;
         item->rot.y = y_rot;
 
@@ -315,7 +318,11 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (Gun_SmashItems(old_pos, item->pos, nullptr, item->object_id)
+    const GAME_VECTOR new_pos = {
+        .pos = item->pos,
+        .room_num = item->room_num,
+    };
+    if (Gun_SmashItems(old_pos, new_pos, nullptr, item->object_id)
         == PROJECTILE_HIT_STOP) {
         explode = true;
         radius = M_GetBlastRadius();
@@ -329,7 +336,8 @@ static void M_Control(const int16_t item_num)
             for (int16_t target_item_num = nearby_room->item_num;
                  target_item_num != NO_ITEM;
                  target_item_num = Item_Get(target_item_num)->next_item) {
-                if (!M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
+                if (!M_TryExplodeItem(
+                        item, old_pos.pos, target_item_num, radius)) {
                     continue;
                 }
 
@@ -345,14 +353,14 @@ static void M_Control(const int16_t item_num)
         for (int16_t target_item_num = room->item_num;
              target_item_num != NO_ITEM;
              target_item_num = Item_Get(target_item_num)->next_item) {
-            if (M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
+            if (M_TryExplodeItem(item, old_pos.pos, target_item_num, radius)) {
                 explode = true;
             }
         }
     }
 
     if (explode) {
-        M_Explode(item_num, old_pos);
+        M_Explode(item_num, old_pos.pos);
     }
 }
 
