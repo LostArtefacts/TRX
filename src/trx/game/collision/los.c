@@ -9,9 +9,35 @@
 
 #define M_CLIP_1 8
 #define M_CLIP_2 8
+#define M_MAX_LOS_ROOMS 200
 
-static int32_t m_LOSRooms[200] = {};
+static int32_t m_LOSRooms[M_MAX_LOS_ROOMS] = {};
 static int32_t m_LOSNumRooms = 0;
+
+static inline bool M_TryPushLOSRoom(const int16_t room_num)
+{
+    if (m_LOSNumRooms < M_MAX_LOS_ROOMS) {
+        m_LOSRooms[m_LOSNumRooms++] = room_num;
+        return true;
+    }
+    return false;
+}
+
+static inline bool M_ResetLOSRooms(const int16_t room_num)
+{
+    m_LOSNumRooms = 0;
+    return M_TryPushLOSRoom(room_num);
+}
+
+static inline bool M_RoomInLOSRooms(const int16_t room_num)
+{
+    for (int32_t i = 0; i < m_LOSNumRooms; i++) {
+        if (m_LOSRooms[i] == room_num) {
+            return true;
+        }
+    }
+    return false;
+}
 
 // This routine transforms the world-space LOS segment [start,target] into the
 // object's local coordinates (undoing its translation and Y-rotation), then
@@ -171,8 +197,7 @@ static int32_t M_CheckX(
     int16_t room_num = start->room_num;
     int16_t last_room_num = start->room_num;
 
-    m_LOSRooms[0] = room_num;
-    m_LOSNumRooms = 1;
+    M_ResetLOSRooms(room_num);
 
     if (dx < 0) {
         XYZ_32 cur_pos;
@@ -197,7 +222,7 @@ static int32_t M_CheckX(
 
             if (room_num != last_room_num) {
                 last_room_num = room_num;
-                m_LOSRooms[m_LOSNumRooms++] = room_num;
+                M_TryPushLOSRoom(room_num);
             }
 
             sample_pos.x -= 1;
@@ -241,7 +266,7 @@ static int32_t M_CheckX(
 
             if (room_num != last_room_num) {
                 last_room_num = room_num;
-                m_LOSRooms[m_LOSNumRooms++] = room_num;
+                M_TryPushLOSRoom(room_num);
             }
 
             sample_pos.x += 1;
@@ -282,8 +307,7 @@ static int32_t M_CheckZ(
     int16_t room_num = start->room_num;
     int16_t last_room_num = start->room_num;
 
-    m_LOSRooms[0] = room_num;
-    m_LOSNumRooms = 1;
+    M_ResetLOSRooms(room_num);
 
     if (dz < 0) {
         XYZ_32 cur_pos;
@@ -308,7 +332,7 @@ static int32_t M_CheckZ(
 
             if (room_num != last_room_num) {
                 last_room_num = room_num;
-                m_LOSRooms[m_LOSNumRooms++] = room_num;
+                M_TryPushLOSRoom(room_num);
             }
 
             sample_pos.z -= 1;
@@ -352,7 +376,7 @@ static int32_t M_CheckZ(
 
             if (room_num != last_room_num) {
                 last_room_num = room_num;
-                m_LOSRooms[m_LOSNumRooms++] = room_num;
+                M_TryPushLOSRoom(room_num);
             }
 
             sample_pos.z += 1;
