@@ -19,6 +19,13 @@ local getters = {
   item = function()
     return trx.items[raw.get_item()]
   end,
+  target = function()
+    local target = raw.get_target()
+    if target == nil then
+      return nil
+    end
+    return trx.items[target]
+  end,
 }
 
 local setters = {

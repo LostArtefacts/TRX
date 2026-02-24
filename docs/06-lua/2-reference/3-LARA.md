@@ -12,6 +12,10 @@ Module for interacting with the Lara's object.
     Returns [lua]`trx.items.Item` associated with Lara, or [lua]`nil` if the
     Lara object is not available.
 
+- [lua]`trx.lara.target`  
+    Read-only - returns Lara's current gun target as [lua]`trx.items.Item`,
+    or [lua]`nil` if no target is locked.
+
 - [lua]`trx.lara.exposure_bar`  
     Reads/writes exposure timer (cold water bar). The maximum value is 600.
     If the cold bar setting is disabled on the game flow level, the health must

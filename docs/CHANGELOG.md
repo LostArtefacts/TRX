@@ -9,6 +9,7 @@
 - added a new Lua item query helpers, `trx.items.find(query)` and `trx.items.first(query)`, with support for `object_id` and `room_num` filters
 - added a new Lua catalog, `trx.catalog.weapons`, for weapon identifiers
 - added a new Lua property, `trx.lara.equipped_gun`, to read Lara's currently equipped gun type
+- added a new Lua property, `trx.lara.target`, to read Lara's current locked target item
 - added a new Lua property, `trx.Item.flags`, to read current item flags (related to triggers)
 - added a new Lua property, `trx.Item.timer`, to read current item timer value (related to triggers)
 - added support for using more sound slots than originally possible in custom levels (#3898)

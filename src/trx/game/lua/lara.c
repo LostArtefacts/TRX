@@ -22,6 +22,18 @@ static int M_L_GetLaraItem(lua_State *const L)
     return 1;
 }
 
+// item_num = trxc.lara.get_target()
+static int M_L_GetLaraTarget(lua_State *const L)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->target == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, Item_GetIndex(lara->target) + 1);
+    }
+    return 1;
+}
+
 // trxc.lara.get_exposure_bar() → int
 static int M_L_LaraGetExposureBar(lua_State *const L)
 {
@@ -202,6 +214,8 @@ void LUA_CreateLara(lua_State *const L)
 
     lua_pushcfunction(L, M_L_GetLaraItem);
     lua_setfield(L, -2, "get_item");
+    lua_pushcfunction(L, M_L_GetLaraTarget);
+    lua_setfield(L, -2, "get_target");
     lua_pushcfunction(L, M_L_LaraGetExposureBar);
     lua_setfield(L, -2, "get_exposure_bar");
     lua_pushcfunction(L, M_L_LaraSetExposureBar);
