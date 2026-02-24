@@ -541,14 +541,15 @@ static bool M_ParseExpectEvent(const char *const event_str)
 
 static bool M_ParseCommandEvent(const char *const event_str)
 {
-    if (strncmp(event_str, "cmd ", 4) != 0) {
+    const char *const prefix = "cmd ";
+    if (strncmp(event_str, prefix, strlen(prefix)) != 0) {
         return false;
     }
 
     const char *payload_start = nullptr;
     size_t payload_len = 0;
 
-    if (M_GetBracedPayload(event_str, "cmd ", &payload_start, &payload_len)) {
+    if (M_GetBracedPayload(event_str, prefix, &payload_start, &payload_len)) {
         char *const cmd_str =
             String_Format("%.*s", (int)payload_len, payload_start);
         M_TrimWhitespaceInPlace(cmd_str);
@@ -557,15 +558,29 @@ static bool M_ParseCommandEvent(const char *const event_str)
         return true;
     }
 
-    // Legacy quoted command format
-    const char *const start = strchr(event_str + 4, '"');
-    const char *const end = start ? strrchr(start + 1, '"') : nullptr;
-    if (start == nullptr || end == nullptr || end <= start + 1) {
+    if (M_ParseQuotedPayload(event_str, prefix, &payload_start, &payload_len)) {
+        char *const cmd_str =
+            String_Format("%.*s", (int)payload_len, payload_start);
+        Console_Eval(cmd_str);
+        Memory_Free(cmd_str);
+        return true;
+    }
+
+    payload_start = M_SkipWhitespaceConst(event_str + strlen(prefix));
+    payload_len = strlen(payload_start);
+    if (payload_len == 0) {
         LOG_WARNING("Malformed cmd instruction: %s", event_str);
         return false;
     }
-    const size_t len = (size_t)(end - (start + 1));
-    char *const cmd_str = String_Format("%.*s", (int)len, start + 1);
+
+    char *const cmd_str =
+        String_Format("%.*s", (int)payload_len, payload_start);
+    M_TrimWhitespaceInPlace(cmd_str);
+    if (cmd_str[0] == '\0') {
+        LOG_WARNING("Malformed cmd instruction: %s", event_str);
+        Memory_Free(cmd_str);
+        return false;
+    }
     Console_Eval(cmd_str);
     Memory_Free(cmd_str);
     return true;
