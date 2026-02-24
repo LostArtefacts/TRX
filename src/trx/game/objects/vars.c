@@ -131,9 +131,11 @@ const OBJECT_ID g_CreatureObjects[] = {
     // clang-format on
 };
 
-const OBJECT_ID g_DestructibleCreatureObjects[] = {
+const OBJECT_ID g_ProjectileObjects[] = {
     // clang-format off
-    O_COBRA,
+    O_HARPOON_BOLT,
+    O_GRENADE,
+    O_ROCKET,
     NO_OBJECT,
     // clang-format on
 };

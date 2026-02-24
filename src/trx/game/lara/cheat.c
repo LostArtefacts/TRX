@@ -9,6 +9,7 @@
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
@@ -195,11 +196,7 @@ bool Lara_Cheat_KillEnemy(const int16_t item_num)
     if ((item->flags & IF_KILLED) != 0) {
         return false;
     }
-    if (item->hit_points == DONT_TARGET) {
-        if (item->status != IS_ACTIVE) {
-            return false;
-        }
-    } else if (item->hit_points <= 0) {
+    if (!Item_IsAlive(item) && item->status != IS_ACTIVE) {
         return false;
     }
 

@@ -248,6 +248,11 @@ static void M_FindCarcass(const ITEM *const shoal_item)
     p->carcass_item_num = Item_FindTypeInRoom(shoal_item->room_num, O_CARCASS);
 }
 
+static bool M_IsTargetable(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -727,6 +732,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
+    obj->is_targetable_func = M_IsTargetable;
     obj->draw_func = M_Draw;
     obj->hit_points = NO_ITEM;
     obj->save_position = true;

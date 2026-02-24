@@ -3,7 +3,6 @@
 #include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/game/collision/los.h>
-#include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/pistols.h>
@@ -32,9 +31,102 @@ typedef enum {
 
 static ITEM *m_TargetList[LOT_SLOT_COUNT] = {};
 static ITEM *m_LastTargetList[LOT_SLOT_COUNT] = {};
+static int16_t m_TargetCount = 0;
 
 // TODO: meh
 extern void Smashable_Smash(int16_t item_num);
+
+static bool M_TargetListContains(const ITEM *const item, const int16_t count)
+{
+    for (int16_t i = 0; i < count; i++) {
+        if (m_TargetList[i] == item) {
+            return true;
+        }
+    }
+    return false;
+}
+
+typedef struct {
+    const WEAPON_INFO *weapon;
+    const GAME_VECTOR *start;
+    const ITEM *lara_item;
+    const LARA_INFO *lara;
+    const ITEM *old_target;
+    int32_t max_dist;
+    ITEM *best_target;
+    int16_t best_y_rot;
+    int32_t best_dist;
+    int16_t num_targets;
+    int32_t old_target_dist;
+    int16_t old_target_y_rot;
+    bool old_target_in_list;
+} M_TARGET_CONTEXT;
+
+static void M_ConsiderTarget(M_TARGET_CONTEXT *const ctx, ITEM *const item)
+{
+    if (item == ctx->lara_item || !Item_IsTargetable(item)) {
+        return;
+    }
+
+    const int32_t dx = item->pos.x - ctx->start->x;
+    const int32_t dy = item->pos.y - ctx->start->y;
+    const int32_t dz = item->pos.z - ctx->start->z;
+    if (ABS(dx) > ctx->max_dist || ABS(dy) > ctx->max_dist
+        || ABS(dz) > ctx->max_dist) {
+        return;
+    }
+
+    const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+    if (dist >= SQUARE(ctx->max_dist)) {
+        return;
+    }
+
+    GAME_VECTOR target;
+    Gun_FindTargetPoint(item, &target);
+    if (!LOS_Check(ctx->start, &target, true)) {
+        return;
+    }
+
+    int16_t angles[2];
+    Math_GetVectorAngles(
+        target.x - ctx->start->x, target.y - ctx->start->y,
+        target.z - ctx->start->z, angles);
+    angles[0] -= ctx->lara->torso_rot.y + ctx->lara_item->rot.y;
+    angles[1] -= ctx->lara->torso_rot.x + ctx->lara_item->rot.x;
+
+    if (angles[0] < ctx->weapon->lock_angles[0]
+        || angles[0] > ctx->weapon->lock_angles[1]
+        || angles[1] < ctx->weapon->lock_angles[2]
+        || angles[1] > ctx->weapon->lock_angles[3]) {
+        return;
+    }
+
+    if (ctx->num_targets < LOT_SLOT_COUNT) {
+        m_TargetList[ctx->num_targets] = item;
+        ctx->num_targets++;
+    }
+
+    const int16_t y_rot = ABS(angles[0]);
+    if (item == ctx->old_target) {
+        ctx->old_target_dist = dist;
+        ctx->old_target_y_rot = y_rot;
+        ctx->old_target_in_list = true;
+    }
+
+    if (g_TRVersion == 1) {
+        if (y_rot < ctx->best_y_rot) {
+            ctx->best_dist = dist;
+            ctx->best_y_rot = y_rot;
+            ctx->best_target = item;
+        }
+    } else {
+        if (y_rot < ctx->best_y_rot + M_NEAR_ANGLE && dist < ctx->best_dist) {
+            ctx->best_dist = dist;
+            ctx->best_y_rot = y_rot;
+            ctx->best_target = item;
+        }
+    }
+}
 
 static void M_DrawGunGlow(const XYZ_32 offset, const RGB_F color)
 {
@@ -429,8 +521,9 @@ void Gun_HitTarget(
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if ((item->hit_points == DONT_TARGET && Creature_IsDestructible(item))
-        || (item->hit_points > 0 && item->hit_points <= damage)) {
+    const bool was_alive = item->hit_points > 0;
+    const bool clears_target = was_alive && damage >= item->hit_points;
+    if (clears_target) {
         if (item->include_in_kill_stats) {
             Stats_AddKill();
         }
@@ -451,7 +544,11 @@ void Gun_HitTarget(
                 .pos = hit_pos->pos,
                 .room_num = item->room_num,
             };
-            Spawn_RicochetRay(*start, pos);
+            if (start != nullptr) {
+                Spawn_RicochetRay(*start, pos);
+            } else {
+                Spawn_Ricochet(pos);
+            }
         } else {
             Spawn_Blood(
                 hit_pos->x, hit_pos->y, hit_pos->z, item->speed, item->rot.y,
@@ -496,6 +593,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const old_target = lara->target;
 
     // Preserve OG targeting behavior.
     if (g_Config.gameplay.target_mode == TLM_FULL
@@ -510,71 +608,42 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
         .room_num = lara_item->room_num,
     };
 
-    ITEM *best_target = nullptr;
-    int16_t best_y_rot = INT16_MAX;
-    int16_t num_targets = 0;
-    int32_t best_dist = INT32_MAX;
+    M_TARGET_CONTEXT ctx = {
+        .weapon = weapon,
+        .start = &start,
+        .lara_item = lara_item,
+        .lara = lara,
+        .old_target = old_target,
+        .max_dist = weapon->target_dist,
+        .best_target = nullptr,
+        .best_y_rot = INT16_MAX,
+        .best_dist = INT32_MAX,
+        .num_targets = 0,
+        .old_target_dist = INT32_MAX,
+        .old_target_y_rot = INT16_MAX,
+        .old_target_in_list = false,
+    };
 
-    const int32_t max_dist = weapon->target_dist;
-
+    // First pass: active creatures
     for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
         const CREATURE *const creature = LOT_GetBaddieSlot(i);
         if (creature->item_num == NO_ITEM) {
             continue;
         }
-
-        ITEM *const item = Item_Get(creature->item_num);
-        if (!Creature_IsTargetable(item)) {
-            continue;
-        }
-
-        const int32_t dx = item->pos.x - start.x;
-        const int32_t dy = item->pos.y - start.y;
-        const int32_t dz = item->pos.z - start.z;
-        if (ABS(dx) > max_dist || ABS(dy) > max_dist || ABS(dz) > max_dist) {
-            continue;
-        }
-
-        const int32_t dist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-        if (dist >= SQUARE(max_dist)) {
-            continue;
-        }
-
-        GAME_VECTOR target;
-        Gun_FindTargetPoint(item, &target);
-        if (!LOS_Check(&start, &target, true)) {
-            continue;
-        }
-
-        int16_t angles[2];
-        Math_GetVectorAngles(
-            target.x - start.x, target.y - start.y, target.z - start.z, angles);
-        angles[0] -= lara->torso_rot.y + lara_item->rot.y;
-        angles[1] -= lara->torso_rot.x + lara_item->rot.x;
-
-        if (angles[0] >= weapon->lock_angles[0]
-            && angles[0] <= weapon->lock_angles[1]
-            && angles[1] >= weapon->lock_angles[2]
-            && angles[1] <= weapon->lock_angles[3]) {
-            m_TargetList[num_targets] = item;
-            num_targets++;
-            const int16_t y_rot = ABS(angles[0]);
-            if (g_TRVersion == 1) {
-                if (y_rot < best_y_rot) {
-                    best_dist = dist;
-                    best_y_rot = y_rot;
-                    best_target = item;
-                }
-            } else {
-                if (y_rot < best_y_rot + M_NEAR_ANGLE && dist < best_dist) {
-                    best_dist = dist;
-                    best_y_rot = y_rot;
-                    best_target = item;
-                }
-            }
-        }
+        M_ConsiderTarget(&ctx, Item_Get(creature->item_num));
     }
-    m_TargetList[num_targets] = nullptr;
+
+    // Second pass: other objects, including skidoo driver, whose targetable
+    // ITEM is NOT in the active item list
+    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
+        ITEM *const item = Item_Get(item_num);
+        if (M_TargetListContains(item, ctx.num_targets)) {
+            continue;
+        }
+        M_ConsiderTarget(&ctx, item);
+    }
+
+    m_TargetCount = ctx.num_targets;
 
     if ((g_Config.gameplay.target_mode == TLM_FULL
          || g_Config.gameplay.target_mode == TLM_SEMI)
@@ -583,18 +652,17 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
         return;
     }
 
-    if (num_targets > 0) {
-        for (int32_t slot = 0; slot < LOT_SLOT_COUNT; slot++) {
-            if (m_TargetList[slot] == nullptr) {
-                lara->target = nullptr;
-            }
+    if (ctx.num_targets > 0) {
+        bool found_current_target = false;
+        for (int16_t slot = 0; slot < ctx.num_targets; slot++) {
             if (m_TargetList[slot] == lara->target) {
+                found_current_target = true;
                 break;
             }
         }
 
-        if (lara->target == nullptr) {
-            lara->target = best_target;
+        if (!found_current_target) {
+            lara->target = ctx.best_target;
             m_LastTargetList[0] = nullptr;
         }
     } else {
@@ -617,11 +685,7 @@ void Gun_ChangeTarget(const WEAPON_INFO *const weapon)
     lara->target = nullptr;
     bool found_new_target = false;
 
-    for (int32_t new_target = 0; new_target < LOT_SLOT_COUNT; new_target++) {
-        if (!m_TargetList[new_target]) {
-            break;
-        }
-
+    for (int16_t new_target = 0; new_target < m_TargetCount; new_target++) {
         for (int32_t last_target = 0; last_target < LOT_SLOT_COUNT;
              last_target++) {
             if (!m_LastTargetList[last_target]) {

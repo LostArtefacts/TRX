@@ -297,7 +297,6 @@ static void M_Collision(
         lara_item->goal_anim_state = M_STATE_GET_ON_R;
     }
 
-    item->hit_points = 1;
     lara_item->pos.x = item->pos.x;
     lara_item->pos.y = item->pos.y;
     lara_item->pos.z = item->pos.z;

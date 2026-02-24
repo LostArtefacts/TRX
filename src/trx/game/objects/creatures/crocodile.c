@@ -218,7 +218,7 @@ static void M_ControlAlligator(const int16_t item_num)
         if (item->current_anim_state != M_ALLIGATOR_STATE_DEATH) {
             item->current_anim_state = M_ALLIGATOR_STATE_DEATH;
             Item_SwitchToAnim(item, M_ALLIGATOR_DIE_ANIM, 0);
-            item->hit_points = DONT_TARGET;
+            item->hit_points = 0;
             Carrier_TestItemDrops(item_num);
         }
 

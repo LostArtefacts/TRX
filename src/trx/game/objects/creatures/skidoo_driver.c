@@ -42,7 +42,7 @@ static void M_KillDriver(ITEM *const driver_item)
     Item_RemoveActive(driver_item_num);
     driver_item->collidable = 0;
     driver_item->flags |= IF_ONE_SHOT;
-    driver_item->hit_points = DONT_TARGET;
+    driver_item->hit_points = 0;
 }
 
 static void M_MakeMountable(ITEM *const skidoo_item)
@@ -197,7 +197,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED) {
-            item->hit_points = DONT_TARGET;
+            item->hit_points = 0;
             const M_PRIV *const p = item->priv;
             const int16_t skidoo_num = p->skidoo_item_num;
             ITEM *const skidoo = Item_Get(skidoo_num);
@@ -264,6 +264,11 @@ static void M_Control(const int16_t driver_item_num)
     }
 }
 
+static bool M_IsTargetable(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
@@ -274,6 +279,7 @@ static void M_Setup(OBJECT *const obj)
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->priv_size = sizeof(M_PRIV);
+    obj->is_targetable_func = M_IsTargetable;
 
     obj->hit_points = 1;
 

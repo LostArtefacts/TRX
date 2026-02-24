@@ -4,6 +4,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/vehicle.h>
 #include <trx/game/objects/common.h>
@@ -21,7 +22,7 @@ static int32_t M_CountAliveEnemies(void)
     int32_t count = 0;
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
-        if (item->object_id != M_BOSS_TYPE && Creature_IsAlive(item)
+        if (item->object_id != M_BOSS_TYPE && Item_IsAlive(item)
             && Creature_IsHostile(item)) {
             count++;
         }
@@ -33,7 +34,7 @@ static bool M_IsBossDead(void)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
-        if (item->object_id == M_BOSS_TYPE && !Creature_IsAlive(item)) {
+        if (item->object_id == M_BOSS_TYPE && !Item_IsAlive(item)) {
             return true;
         }
     }

@@ -226,7 +226,7 @@ static void M_Control(const int16_t item_num)
         if (LOS_Check(&start, &target, true)) {
             pierre->flags = 1;
         } else if (pierre->flags > PIERRE_DISAPPEAR) {
-            item->hit_points = DONT_TARGET;
+            item->hit_points = 0;
             LOT_DisableBaddieAI(item_num);
             Item_Kill(item_num);
             m_PierreItemNum = NO_ITEM;
@@ -235,7 +235,7 @@ static void M_Control(const int16_t item_num)
 
     int16_t wh = Room_GetWaterHeight(item->pos, item->room_num);
     if (wh != NO_HEIGHT) {
-        item->hit_points = DONT_TARGET;
+        item->hit_points = 0;
         LOT_DisableBaddieAI(item_num);
         Item_Kill(item_num);
         m_PierreItemNum = NO_ITEM;

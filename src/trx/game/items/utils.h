@@ -15,6 +15,11 @@
 
 bool Item_IsTriggerActive(ITEM *item);
 
+bool Item_IsAlive(const ITEM *item);
+bool Item_IsTargetable(const ITEM *item);
+bool Item_CanTakeDamage(const ITEM *item);
+bool Item_CanBeProjectileTarget(const ITEM *item);
+
 void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);
 
 bool Item_IsMeshVisible(const ITEM *item, int32_t mesh_num);
