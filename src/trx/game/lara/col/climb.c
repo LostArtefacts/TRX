@@ -25,6 +25,7 @@
 
 typedef enum {
     // clang-format off
+    CLIMB_RESULT_CRAWL = -2,
     CLIMB_RESULT_NEG  = -1,
     CLIMB_RESULT_NONE = 0,
     CLIMB_RESULT_POS  = 1,
@@ -471,6 +472,11 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
             return CLIMB_RESULT_NEG;
         }
 
+        if (g_Config.gameplay.enable_crawling
+            && height - ceiling >= M_CLIMB_HEIGHT) {
+            return CLIMB_RESULT_CRAWL;
+        }
+
         return CLIMB_RESULT_NONE;
     }
 
@@ -616,12 +622,19 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
             return;
         }
 
-        if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG) {
+        if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG
+            || result_r == CLIMB_RESULT_CRAWL
+            || result_l == CLIMB_RESULT_CRAWL) {
             if (ABS(ledge_l - ledge_r) > 120) {
                 return;
             }
-            item->goal_anim_state = LS(LS_PULL_UP);
-            item->pos.y += (ledge_l + ledge_r) / 2 - STEP_L;
+            if (result_r == CLIMB_RESULT_NEG && result_l == CLIMB_RESULT_NEG) {
+                item->goal_anim_state = LS(LS_PULL_UP);
+                item->pos.y += (ledge_l + ledge_r) / 2 - STEP_L;
+            } else {
+                item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
+                item->required_anim_state = LS(LS_CROUCH_IDLE);
+            }
             return;
         }
 
@@ -786,12 +799,18 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG) {
+    if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG
+        || result_r == CLIMB_RESULT_CRAWL || result_l == CLIMB_RESULT_CRAWL) {
         item->goal_anim_state = LS(LS_CLIMB_STANCE);
         Lara_Animate(item);
         if (ABS(ledge_l - ledge_r) <= 120) {
-            item->goal_anim_state = LS(LS_PULL_UP);
-            item->pos.y += (ledge_r + ledge_l) / 2 - STEP_L;
+            if (result_r == CLIMB_RESULT_NEG && result_l == CLIMB_RESULT_NEG) {
+                item->goal_anim_state = LS(LS_PULL_UP);
+                item->pos.y += (ledge_r + ledge_l) / 2 - STEP_L;
+            } else {
+                item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
+                item->required_anim_state = LS(LS_CROUCH_IDLE);
+            }
         }
         return;
     }

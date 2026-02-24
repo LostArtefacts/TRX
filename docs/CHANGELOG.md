@@ -87,6 +87,7 @@
   - added a transition from crawl to crouch-roll without having to manually crouch first
   - added the ability to turn while in the crouch idle state
   - restored an unused pickup animation when in the crawling state, bypassing the crouch transition
+- added a transition from ladder to crawlspaces instead of first having to drop and re-grab the ladder (#4954)
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
 - fixed Lara unable to climb small ledges with low crawlspaces
