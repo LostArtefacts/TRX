@@ -145,6 +145,10 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         };
     }
 
+    if (m_Exiting) {
+        return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
+    }
+
     if (phase != nullptr && phase->control != nullptr) {
         return phase->control(phase);
     }

@@ -39,6 +39,7 @@
 - fixed Lua `trx.catalog` only exposing `objects` and `flip_effects`; it now also exposes `lara_states`, `lara_anims`, `music`, and `samples`
 - fixed a freeze if firing a grenade very close to room portals (#4938, regression from 1.2)
 - fixed non-deterministic Inventory Ring control (transition speeds depended on v-sync / wall clock timing)
+- fixed game logic speeding up while the game was fading out after quitting
 - fixed Lara being able to shoot smashable objects located in unreachable overlapping rooms (#4949, regression from TR1X 4.14 / TR2X 1.4)
 
 **TR1**:
