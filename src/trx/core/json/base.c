@@ -502,7 +502,10 @@ void JSON_ObjectEvictKey(JSON_OBJECT *const obj, const char *const key)
             } else {
                 prev->next = elem->next;
             }
+            M_StringFree(elem->name);
+            JSON_ValueFree(elem->value);
             M_ObjectElementFree(elem);
+            obj->length--;
             return;
         }
         prev = elem;
