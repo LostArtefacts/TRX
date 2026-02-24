@@ -13,8 +13,8 @@ Lua scripts can listen for game events using the global `events` API.
 - [lua]`trx.events.after_level_state(callback)`
 - [lua]`trx.events.on_game_start(callback)`
 - [lua]`trx.events.on_pickup(callback)`  
-- [lua]`trx.events.on_control(callback)`  
-- [lua]`trx.events.on_control_post(callback)`  
+- [lua]`trx.events.before_control(callback)`  
+- [lua]`trx.events.after_control(callback)`  
   Register a handler for a game event. Returns `listener_id`.
 - [lua]`trx.events.detach(listener_id)`  
   Remove a previously registered event handler.
@@ -81,7 +81,7 @@ trx.events.on_pickup(function(item_num)
   trx.console.log(trx.items[item_num].object_id)
 end)
 
-local control_handler = trx.events.on_control(function()
+local control_handler = trx.events.before_control(function()
   -- handle control loop event
 end)
 -- detach a handler

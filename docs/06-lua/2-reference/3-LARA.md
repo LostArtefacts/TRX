@@ -23,7 +23,7 @@ Module for interacting with the Lara's object.
     Example:
     ```lua
     -- Infinite oxygen
-    trx.events.on_control_post(function()
+    trx.events.after_control(function()
         trx.lara.air_bar = 1800
     end)
     ```
