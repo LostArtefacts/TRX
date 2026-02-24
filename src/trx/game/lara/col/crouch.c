@@ -20,6 +20,7 @@
 #define M_CRAWL_TO_HANG_XZ_OFFSET  100
 #define M_CRAWL_TO_HANG_FALL_SPEED 512
 #define M_CRAWL_TO_HANG_BAD_CEILING ((STEP_L * 3) / 4) // = 192
+#define M_CRAWL_TO_HANG_FALL_FRAME 9
 // clang-format on
 
 static bool M_DeflectEdgeCrawl(ITEM *const item, COLL_INFO *const coll)
@@ -401,6 +402,16 @@ static void M_CrawlToClimb(ITEM *const item, COLL_INFO *const coll)
     if (edge_catch == EDGE_CATCH_NONE
         || (edge_catch == EDGE_CATCH_NEG
             && !Lara_Col_TestLadderHang(item, coll))) {
+        // LA_CRAWL_TO_HANG_END will loop indefinitely, so in cases where Lara
+        // cannot grab the edge, make her fall and she will then either re-grab
+        // it on a better position, or continue falling if the ledge is a slope.
+        Item_SwitchToAnim(item, LA(LA_JUMP_UP), M_CRAWL_TO_HANG_FALL_FRAME);
+        item->current_anim_state = LS(LS_JUMP_UP);
+        item->goal_anim_state = LS(LS_JUMP_UP);
+        item->gravity = true;
+        item->speed = 2;
+        item->fall_speed = 1;
+        lara->gun_status = LGS_ARMLESS;
         return;
     }
 
