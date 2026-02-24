@@ -6,6 +6,7 @@
 #include <trx/game/fx/water.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/vars.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/state.h>
@@ -123,9 +124,7 @@ static bool M_TryExplodeItem(
         return false;
     }
 
-    if (!Creature_IsTargetable(target_item)
-        && !Creature_IsDestructible(target_item)
-        && !Creature_IsFloating(target_item)) {
+    if (!Item_CanBeProjectileTarget(target_item)) {
         return false;
     }
 
@@ -158,7 +157,7 @@ static bool M_TryExplodeItem(
         return false;
     }
 
-    if (target_item->status == IS_ACTIVE) {
+    if (Item_CanTakeDamage(target_item)) {
         const GAME_VECTOR hit_pos = {
             .pos = projectile_item->pos,
             .room_num = projectile_item->room_num,

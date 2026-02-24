@@ -201,7 +201,7 @@ static void M_Die(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     item->collidable = 0;
-    item->hit_points = DONT_TARGET;
+    item->hit_points = 0;
     Item_Kill(item_num);
     LOT_DisableBaddieAI(item_num);
     item->flags |= IF_INVISIBLE;

@@ -693,7 +693,7 @@ void Creature_Float(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    item->hit_points = DONT_TARGET;
+    item->hit_points = 0;
     item->rot.x = 0;
 
     const int32_t wh = Room_GetWaterHeight(item->pos, item->room_num);
@@ -723,13 +723,6 @@ void Creature_Underwater(ITEM *const item, const int32_t depth)
     } else {
         CLAMPG(item->rot.x, 0);
     }
-}
-
-bool Creature_IsFloating(const ITEM *const item)
-{
-    return Object_IsType(item->object_id, g_WaterObjects)
-        && Object_Get(item->object_id)->intelligent
-        && item->hit_points == DONT_TARGET;
 }
 
 bool Creature_CanSeeEnemy(const ITEM *const item, const AI_INFO *const info)
@@ -1205,7 +1198,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
         if (explode) {
             Item_Explode(item_num, -1, 0);
         }
-        item->hit_points = DONT_TARGET;
+        item->hit_points = 0;
         const int16_t vehicle_item_num = SkidooDriver_GetSkidooItemNum(item);
         if (vehicle_item_num == NO_ITEM) {
             return;
@@ -1220,7 +1213,7 @@ void Creature_Die(const int16_t item_num, const bool explode)
     }
 
     item->collidable = false;
-    item->hit_points = DONT_TARGET;
+    item->hit_points = 0;
     if (explode) {
         Item_Explode(item_num, -1, 0);
         Item_Kill(item_num);
@@ -1301,31 +1294,6 @@ int32_t Creature_Vault(
 
     Item_UpdateRoom(item_num, room_num);
     return vault;
-}
-
-bool Creature_IsAlive(const ITEM *const item)
-{
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->intelligent && Object_IsType(item->object_id, g_WaterObjects)) {
-        return item->hit_points > 0;
-    }
-
-    return (item->hit_points > 0)
-        || (item->hit_points == DONT_TARGET && item->active);
-}
-
-bool Creature_IsTargetable(const ITEM *const item)
-{
-    return item->hit_points != DONT_TARGET && item->hit_points > 0
-        && (!Object_Get(item->object_id)->intelligent
-            || item->status == IS_ACTIVE)
-        && (g_Config.gameplay.enable_ally_targeting
-            || Creature_IsHostile(item));
-}
-
-bool Creature_IsDestructible(const ITEM *const item)
-{
-    return Object_IsType(item->object_id, g_DestructibleCreatureObjects);
 }
 
 int16_t Creature_Effect(

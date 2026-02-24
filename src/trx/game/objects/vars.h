@@ -4,7 +4,7 @@
 #include <trx/game/objects/ids.h>
 
 extern const OBJECT_ID g_CreatureObjects[];
-extern const OBJECT_ID g_DestructibleCreatureObjects[];
+extern const OBJECT_ID g_ProjectileObjects[];
 extern const OBJECT_ID g_WaterObjects[];
 extern const OBJECT_ID g_LoyalObjects[];
 extern const OBJECT_ID g_PickupObjects[];

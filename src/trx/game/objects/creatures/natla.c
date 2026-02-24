@@ -40,6 +40,24 @@ static int32_t M_GetStage2HitPoints(const ITEM *const item)
     return item->max_hit_points / 2;
 }
 
+static bool M_IsTargetable(const ITEM *const item)
+{
+    return item->hit_points > 0
+        && item->current_anim_state != NATLA_STATE_SEMIDEATH;
+}
+
+static bool M_CanTakeDamage(const ITEM *const item)
+{
+    return item->hit_points > 0
+        && item->current_anim_state != NATLA_STATE_SEMIDEATH;
+}
+
+static bool M_CanBeProjectileTarget(const ITEM *const item)
+{
+    return item->hit_points > 0 && item->status == IS_ACTIVE
+        && item->current_anim_state != NATLA_STATE_SEMIDEATH;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -59,7 +77,7 @@ static void M_Control(const int16_t item_num)
     int16_t timer = natla->flags & NATLA_TIMER;
     int16_t facing = (int16_t)(intptr_t)item->priv;
 
-    if (item->hit_points <= 0 && item->hit_points > DONT_TARGET) {
+    if (item->hit_points <= 0) {
         item->goal_anim_state = NATLA_STATE_DEATH;
     } else if (item->hit_points <= M_GetStage2HitPoints(item)) {
         natla->lot.setup.step = STEP_L;
@@ -150,7 +168,7 @@ static void M_Control(const int16_t item_num)
                     LARA_INFO *const lara = Lara_GetLaraInfo();
                     lara->target = nullptr;
                 }
-                item->hit_points = DONT_TARGET;
+                item->hit_points = 1;
             }
             break;
 
@@ -315,6 +333,9 @@ static void M_Setup(OBJECT *const obj)
     obj->radius = NATLA_RADIUS;
     obj->smartness = NATLA_SMARTNESS;
     obj->intelligent = true;
+    obj->is_targetable_func = M_IsTargetable;
+    obj->can_take_damage_func = M_CanTakeDamage;
+    obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_anim = true;

@@ -64,10 +64,8 @@ static void M_Control(const int16_t item_num)
             Stats_AddKill();
         }
         Item_RemoveActive(item_num);
-        if (item->hit_points != DONT_TARGET) {
-            Carrier_TestItemDrops(item_num);
-        }
-        item->hit_points = DONT_TARGET;
+        Carrier_TestItemDrops(item_num);
+        item->hit_points = 0;
     }
 }
 

@@ -37,8 +37,12 @@ void Object_SetupAllObjects(void)
         obj->can_drop_items_func = nullptr;
         obj->can_interpolate_func = Object_CanInterpolate;
         obj->should_spawn_blood_func = nullptr;
+        obj->is_alive_func = nullptr;
+        obj->is_targetable_func = nullptr;
+        obj->can_take_damage_func = nullptr;
+        obj->can_be_projectile_target_func = nullptr;
         obj->get_mesh_index_func = nullptr;
-        obj->hit_points = DONT_TARGET;
+        obj->hit_points = 0;
         obj->pivot_length = 0;
         obj->radius = M_DEFAULT_RADIUS;
         obj->shadow_size = 0;

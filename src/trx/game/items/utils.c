@@ -1,10 +1,12 @@
 #include <trx/game/items/utils.h>
 
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/version.h>
@@ -19,10 +21,103 @@ static bool M_UseTR3ExplodingEffects(const ITEM *const item)
         && !Object_IsType(item->object_id, g_HeavyShatterableObjects);
 }
 
+/*
+bool Creature_IsFloating(const ITEM *const item)
+{
+    return Object_IsType(item->object_id, g_WaterObjects)
+        && Object_Get(item->object_id)->intelligent
+        && item->hit_points == DONT_TARGET;
+}
+
+bool Creature_IsAlive(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->intelligent && Object_IsType(item->object_id, g_WaterObjects)) {
+        return item->hit_points > 0;
+    }
+    return (item->hit_points > 0)
+        || (item->hit_points == DONT_TARGET && item->active);
+}
+
+bool Creature_IsTargetable(const ITEM *const item)
+{
+    return item->hit_points != DONT_TARGET && item->hit_points > 0
+        && (!Object_Get(item->object_id)->intelligent
+            || item->status == IS_ACTIVE)
+        && (g_Config.gameplay.enable_ally_targeting
+            || Creature_IsHostile(item));
+}
+
+bool Creature_IsDestructible(const ITEM *const item)
+{
+    return Object_IsType(item->object_id, g_DestructibleCreatureObjects);
+}
+*/
+
+bool Item_IsAlive(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->is_alive_func != nullptr) {
+        return obj->is_alive_func(item);
+    }
+
+    if (obj->intelligent && Object_IsType(item->object_id, g_WaterObjects)) {
+        return item->hit_points > 0;
+    }
+    return (item->hit_points > 0) || (item->active);
+}
+
+bool Item_IsTargetable(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (Object_IsType(item->object_id, g_ProjectileObjects)) {
+        return false;
+    }
+
+    if (obj->is_targetable_func != nullptr) {
+        return obj->is_targetable_func(item);
+    }
+
+    return item->hit_points > 0
+        && (!Object_Get(item->object_id)->intelligent
+            || item->status == IS_ACTIVE)
+        && (g_Config.gameplay.enable_ally_targeting
+            || Creature_IsHostile(item));
+}
+
+bool Item_CanTakeDamage(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->can_take_damage_func != nullptr) {
+        return obj->can_take_damage_func(item);
+    }
+
+    return Item_IsAlive(item);
+}
+
+bool Item_CanBeProjectileTarget(const ITEM *const item)
+{
+    if (Object_IsType(item->object_id, g_ProjectileObjects)) {
+        return false;
+    }
+
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->can_be_projectile_target_func != nullptr) {
+        return obj->can_be_projectile_target_func(item);
+    }
+
+    if (!item->collidable || item->status == IS_INVISIBLE
+        || obj->collision_func == nullptr) {
+        return false;
+    }
+
+    return Item_IsTargetable(item);
+}
+
 void Item_TakeDamage(
     ITEM *const item, const int16_t damage, const bool hit_status)
 {
-    if (item->hit_points == DONT_TARGET && !Creature_IsDestructible(item)) {
+    if (!Item_CanTakeDamage(item)) {
         return;
     }
 

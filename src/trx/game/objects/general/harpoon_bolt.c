@@ -83,16 +83,11 @@ static void M_Control_TR3(const int16_t item_num)
             continue;
         }
 
-        if (target_item->object_id == O_HARPOON_BOLT) {
-            continue;
-        }
-
         if (!target_item->collidable) {
             continue;
         }
 
-        if (!Creature_IsTargetable(target_item)
-            && !Creature_IsDestructible(target_item)) {
+        if (!Item_CanBeProjectileTarget(target_item)) {
             continue;
         }
 
@@ -128,7 +123,7 @@ static void M_Control_TR3(const int16_t item_num)
             continue;
         }
 
-        if (target_item->status == IS_ACTIVE) {
+        if (Item_CanTakeDamage(target_item)) {
             if (Item_ShouldSpawnBlood(target_item)) {
                 Spawn_BloodBath(
                     item->pos.x, item->pos.y, item->pos.z, 0, 0, item->room_num,
@@ -255,7 +250,7 @@ static void M_Control_TR12(const int16_t item_num)
             continue;
         }
 
-        if (!Creature_IsTargetable(target_item)) {
+        if (!Item_CanBeProjectileTarget(target_item)) {
             continue;
         }
 
@@ -291,7 +286,7 @@ static void M_Control_TR12(const int16_t item_num)
             continue;
         }
 
-        if (target_item->status == IS_ACTIVE) {
+        if (Item_CanTakeDamage(target_item)) {
             if (Item_ShouldSpawnBlood(target_item)) {
                 Spawn_BloodBath(
                     item->pos.x, item->pos.y, item->pos.z, 0, 0, item->room_num,

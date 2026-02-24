@@ -83,6 +83,10 @@ typedef struct OBJECT {
     bool (*can_interpolate_func)(
         const ITEM *item, int32_t frame_a, int32_t frame_b);
     bool (*should_spawn_blood_func)(const ITEM *item);
+    bool (*is_alive_func)(const ITEM *item);
+    bool (*is_targetable_func)(const ITEM *item);
+    bool (*can_take_damage_func)(const ITEM *item);
+    bool (*can_be_projectile_target_func)(const ITEM *item);
     int32_t (*get_mesh_index_func)(const ITEM *item, int32_t mesh_idx);
 
     int16_t anim_idx;

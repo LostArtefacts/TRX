@@ -3,7 +3,6 @@
 #include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/game/collision/los.h>
-#include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/pistols.h>
@@ -429,8 +428,9 @@ void Gun_HitTarget(
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if ((item->hit_points == DONT_TARGET && Creature_IsDestructible(item))
-        || (item->hit_points > 0 && item->hit_points <= damage)) {
+    const bool was_alive = Item_IsAlive(item);
+    const bool clears_target = was_alive && damage >= item->hit_points;
+    if (clears_target) {
         if (item->include_in_kill_stats) {
             Stats_AddKill();
         }
@@ -517,14 +517,11 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 
     const int32_t max_dist = weapon->target_dist;
 
-    for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
-        const CREATURE *const creature = LOT_GetBaddieSlot(i);
-        if (creature->item_num == NO_ITEM) {
-            continue;
-        }
+    for (int16_t item_num = Item_GetNextActive(); item_num != NO_ITEM;) {
+        ITEM *const item = Item_Get(item_num);
+        item_num = item->next_active;
 
-        ITEM *const item = Item_Get(creature->item_num);
-        if (!Creature_IsTargetable(item)) {
+        if (item == lara_item || !Item_IsTargetable(item)) {
             continue;
         }
 
@@ -556,8 +553,10 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
             && angles[0] <= weapon->lock_angles[1]
             && angles[1] >= weapon->lock_angles[2]
             && angles[1] <= weapon->lock_angles[3]) {
-            m_TargetList[num_targets] = item;
-            num_targets++;
+            if (num_targets < LOT_SLOT_COUNT) {
+                m_TargetList[num_targets] = item;
+                num_targets++;
+            }
             const int16_t y_rot = ABS(angles[0]);
             if (g_TRVersion == 1) {
                 if (y_rot < best_y_rot) {

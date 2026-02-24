@@ -24,6 +24,26 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
     return false;
 }
 
+static bool M_IsAlive(const ITEM *const item)
+{
+    return item->hit_points > 0;
+}
+
+static bool M_IsTargetable(const ITEM *const item)
+{
+    return item->object_id == O_LARA && false;
+}
+
+static bool M_CanTakeDamage(const ITEM *const item)
+{
+    return item->object_id == O_LARA && false;
+}
+
+static bool M_CanBeProjectileTarget(const ITEM *const item)
+{
+    return item->object_id == O_LARA && false;
+}
+
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -85,8 +105,12 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->should_spawn_blood_func = M_ShouldSpawnBlood;
+    obj->is_alive_func = M_IsAlive;
+    obj->is_targetable_func = M_IsTargetable;
+    obj->can_take_damage_func = M_CanTakeDamage;
+    obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
 
-    obj->hit_points = DONT_TARGET;
+    obj->hit_points = 1;
     obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 4;
     obj->smartness = -1;

@@ -20,7 +20,6 @@ void Creature_Joint(ITEM *item, int16_t joint, int16_t required);
 
 void Creature_Float(int16_t item_num);
 void Creature_Underwater(ITEM *item, int32_t depth);
-bool Creature_IsFloating(const ITEM *item);
 
 bool Creature_CanSeeEnemy(const ITEM *item, const AI_INFO *info);
 bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
@@ -37,16 +36,11 @@ void Creature_Reset(void);
 bool Creature_AreAlliesHostile(void);
 void Creature_SetAlliesHostile(bool enable);
 void Creature_Hurt(ITEM *item, int32_t damage);
-bool Creature_IsAlive(const ITEM *item);
 bool Creature_IsHostile(const ITEM *item);
 bool Creature_IsAlly(const ITEM *item);
 bool Creature_IsAllyTargetingEnemy(const ITEM *item);
 void Creature_AddAlly(OBJECT_ID obj_id);
 void Creature_AddAllyTargetingEnemy(OBJECT_ID obj_id);
-bool Creature_IsTargetable(const ITEM *item);
-
-// Returns true if the target object can be destroyed with a missile.
-bool Creature_IsDestructible(const ITEM *item);
 
 int16_t Creature_Effect(
     const ITEM *item, const BITE *bite,

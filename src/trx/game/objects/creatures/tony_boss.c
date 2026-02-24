@@ -244,7 +244,7 @@ static void M_Die(int16_t item_num)
     ITEM *item;
 
     item = Item_Get(item_num);
-    item->hit_points = DONT_TARGET;
+    item->hit_points = 0;
     item->collidable = 0;
     Item_Kill(item_num);
     LOT_DisableBaddieAI(item_num);
