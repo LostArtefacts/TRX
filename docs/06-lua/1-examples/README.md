@@ -51,7 +51,7 @@ This will run the provided function once every logical frame, meaning the
 function will always run at 30 FPS regardless of the player's FPS settings.
 
 ```lua
-trx.events.on_control(function()
+trx.events.before_control(function()
   -- handle per-frame control logic
 end)
 ```
@@ -65,7 +65,7 @@ to another.
 ```lua
 local last_room = 0
 
-trx.events.on_control(function()
+trx.events.before_control(function()
   local lara = trx.lara.item
   if lara.room_num ~= last_room then
     last_room = lara.room_num
