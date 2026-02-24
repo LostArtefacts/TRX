@@ -176,19 +176,22 @@ static void M_AlignLaraToItem(const ITEM *const item)
     }
 }
 
-static COMMAND_RESULT M_TeleportToXYZ(float x, const float y, float z)
+static COMMAND_RESULT M_TeleportToXYZ(
+    float x, const float y, float z, const bool precise_coords)
 {
-    if (M_IsFloatRound(x)) {
-        x += 0.5f;
-    }
-    if (M_IsFloatRound(z)) {
-        z += 0.5f;
+    if (!precise_coords) {
+        if (M_IsFloatRound(x)) {
+            x += 0.5f;
+        }
+        if (M_IsFloatRound(z)) {
+            z += 0.5f;
+        }
     }
 
     const XYZ_32 pos = {
-        .x = x * WALL_L,
-        .y = y * WALL_L,
-        .z = z * WALL_L,
+        .x = precise_coords ? x : x * WALL_L,
+        .y = precise_coords ? y : y * WALL_L,
+        .z = precise_coords ? z : z * WALL_L,
     };
     if (!Lara_Cheat_Teleport(pos, NO_ROOM)) {
         Console_LogError(GS(CMD_TELEPORT_POS_FAIL), x, y, z);
@@ -367,8 +370,12 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     float x, y, z;
+    if (sscanf(ctx->args, "precise %f %f %f", &x, &y, &z) == 3) {
+        return M_TeleportToXYZ(x, y, z, true);
+    }
+
     if (sscanf(ctx->args, "%f %f %f", &x, &y, &z) == 3) {
-        return M_TeleportToXYZ(x, y, z);
+        return M_TeleportToXYZ(x, y, z, false);
     }
 
     int16_t num = 0;
