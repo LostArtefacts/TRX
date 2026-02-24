@@ -170,8 +170,15 @@ int32_t LOS_CheckSmashable(
             continue;
         }
 
-        if (target.room_num != NO_ROOM && item->room_num != target.room_num) {
-            continue;
+        // Confirm item is reachable via visible rooms
+        {
+            GAME_VECTOR start_tmp = start;
+            GAME_VECTOR target_tmp = {
+                .pos = item->pos,
+            };
+            if (!LOS_Check(&start_tmp, &target_tmp, false)) {
+                continue;
+            }
         }
 
         // Ray segment intersects the object's local AABB
