@@ -15,6 +15,7 @@
 - added blood effects when enemies shoot any other creature (not just Lara)
 - added support for the globe-style level selection mechanic in the new game for level builders (#4920)
 - added an option to control how Lara swings on thin ledges (Gameplay → Controls → Slow ledge swing) (#3341)
+- added `/tp precise {x} {y} {z}` to teleport using raw world-space coordinates (no `/1024` scaling – matches TRView)
 - changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)

@@ -24,9 +24,10 @@ whichever key you have bound, and not include it as part of the command itself.
   `/tp {room_number}` (legacy)  
   `/tp item {item_number}`  
   `/tp i{item_number}`  
+  `/tp precise {x} {y} {z}`  
   `/tp {x} {y} {z}`  
   `/tp {object}`  
-  Instant travel! Teleports Lara to a random spot within the specified room, to an item's position by item number, to the specified X,Y,Z coordinates, or to the nearest object of a specific type.
+  Instant travel! Teleports Lara to a random spot within the specified room, to an item's position by item number, to the specified X,Y,Z coordinates (grid units), to precise world-space coordinates (no `1024` scaling), or to the nearest object of a specific type.
 
 - `/hp`  
   `/hp {health}`  
