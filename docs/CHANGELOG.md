@@ -17,6 +17,8 @@
 - added support for the globe-style level selection mechanic in the new game for level builders (#4920)
 - added an option to control how Lara swings on thin ledges (Gameplay → Controls → Slow ledge swing) (#3341)
 - added `/tp precise {x} {y} {z}` to teleport using raw world-space coordinates (no `/1024` scaling – matches TRView)
+- added the ability to use glide cameras when using TR3 camera mode
+- added an option to toggle glide cameras (Graphic Options → Visuals → Glide cameras)
 - changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
@@ -110,6 +112,7 @@
 - removed the limitation of one Carcass instance per level working with Piranhas
 - removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
 - restored the ability for Lara to perform grab cancels, like TR1 and TR2
+- restored glide camera functionality
 
 
 

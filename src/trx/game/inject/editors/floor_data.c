@@ -88,7 +88,7 @@ static void M_FixGlideCamera(
     if (sector == nullptr || sector->trigger == nullptr) {
         return;
     }
-    if (!g_Config.visuals.fix_glide_cameras) {
+    if (!g_Config.visuals.enable_glide_cameras) {
         return;
     }
 

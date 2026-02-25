@@ -72,6 +72,7 @@ typedef struct {
         int32_t fov;
 
         CAMERA_MODE camera_mode;
+        bool enable_glide_cameras;
         float game_brightness;
         float ui_brightness;
         float gamma;
@@ -95,7 +96,6 @@ typedef struct {
         bool fix_item_rots;
         bool fix_animated_sprites;
         bool fix_texture_issues;
-        bool fix_glide_cameras;
 
         RGB_888 water_color;
         bool fog_transparency;
