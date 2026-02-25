@@ -264,6 +264,11 @@ static void M_Control(const int16_t driver_item_num)
     }
 }
 
+static bool M_IsTargetable(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     if (!obj->loaded) {
@@ -274,6 +279,7 @@ static void M_Setup(OBJECT *const obj)
     obj->handle_save_func = M_HandleSave;
     obj->control_func = M_Control;
     obj->priv_size = sizeof(M_PRIV);
+    obj->is_targetable_func = M_IsTargetable;
 
     obj->hit_points = 1;
 

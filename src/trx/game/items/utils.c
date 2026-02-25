@@ -21,38 +21,11 @@ static bool M_UseTR3ExplodingEffects(const ITEM *const item)
         && !Object_IsType(item->object_id, g_HeavyShatterableObjects);
 }
 
-/*
-bool Creature_IsFloating(const ITEM *const item)
+static bool M_IsFloating(const ITEM *const item)
 {
     return Object_IsType(item->object_id, g_WaterObjects)
-        && Object_Get(item->object_id)->intelligent
-        && item->hit_points == DONT_TARGET;
+        && Object_Get(item->object_id)->intelligent && item->hit_points <= 0;
 }
-
-bool Creature_IsAlive(const ITEM *const item)
-{
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->intelligent && Object_IsType(item->object_id, g_WaterObjects)) {
-        return item->hit_points > 0;
-    }
-    return (item->hit_points > 0)
-        || (item->hit_points == DONT_TARGET && item->active);
-}
-
-bool Creature_IsTargetable(const ITEM *const item)
-{
-    return item->hit_points != DONT_TARGET && item->hit_points > 0
-        && (!Object_Get(item->object_id)->intelligent
-            || item->status == IS_ACTIVE)
-        && (g_Config.gameplay.enable_ally_targeting
-            || Creature_IsHostile(item));
-}
-
-bool Creature_IsDestructible(const ITEM *const item)
-{
-    return Object_IsType(item->object_id, g_DestructibleCreatureObjects);
-}
-*/
 
 bool Item_IsAlive(const ITEM *const item)
 {
@@ -92,7 +65,7 @@ bool Item_CanTakeDamage(const ITEM *const item)
         return obj->can_take_damage_func(item);
     }
 
-    return Item_IsAlive(item);
+    return Item_IsAlive(item) || M_IsFloating(item);
 }
 
 bool Item_CanBeProjectileTarget(const ITEM *const item)
@@ -104,6 +77,10 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
     const OBJECT *const obj = Object_Get(item->object_id);
     if (obj->can_be_projectile_target_func != nullptr) {
         return obj->can_be_projectile_target_func(item);
+    }
+
+    if (M_IsFloating(item)) {
+        return true;
     }
 
     if (!item->collidable || item->status == IS_INVISIBLE

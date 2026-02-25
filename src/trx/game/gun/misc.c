@@ -517,9 +517,8 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 
     const int32_t max_dist = weapon->target_dist;
 
-    for (int16_t item_num = Item_GetNextActive(); item_num != NO_ITEM;) {
+    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
-        item_num = item->next_active;
 
         if (item == lara_item || !Item_IsTargetable(item)) {
             continue;
