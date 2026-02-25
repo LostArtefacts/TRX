@@ -53,7 +53,7 @@ static inline M_TARGET_STATUS M_HandleCameraTrigger(
     }
 
     g_Camera.type = CAM_FIXED;
-    if (g_Config.visuals.fix_glide_cameras && cam_data->glide != 0) {
+    if (g_Config.visuals.enable_glide_cameras && cam_data->glide != 0) {
         g_Camera.speed = cam_data->glide + 1;
     }
 

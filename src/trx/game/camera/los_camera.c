@@ -560,7 +560,7 @@ static void M_Fixed(void)
     };
 
     g_Camera.fixed_camera = true;
-    M_Move(&target, 1);
+    M_Move(&target, g_Camera.speed);
 
     if (g_Camera.timer != 0) {
         g_Camera.timer--;

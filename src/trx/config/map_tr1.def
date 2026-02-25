@@ -1,6 +1,5 @@
 #include <trx/config/map.def>
 
-X_CFG_BOOL(visuals.fix_glide_cameras,          false)
 X_CFG_BOOL(audio.fix_speeches_killing_music,   true)
 X_CFG_BOOL(gameplay.enable_slow_ledge_swing,   false)
 X_CFG_ENUM(gameplay.jump_lock_mode,            JUMP_LOCK_TUNED, JUMP_LOCK_MODE)

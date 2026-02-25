@@ -622,7 +622,10 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 camera->flags |= IF_ONE_SHOT;
             }
 
-            g_Camera.speed = cam_data->glide + 1;
+            g_Camera.speed = 1;
+            if (g_Config.visuals.enable_glide_cameras) {
+                g_Camera.speed += cam_data->glide;
+            }
             g_Camera.type = is_heavy ? CAM_HEAVY : CAM_FIXED;
             break;
         }

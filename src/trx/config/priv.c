@@ -11,6 +11,7 @@
 #include <trx/game/clock.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/const.h>
+#include <trx/version.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -367,6 +368,13 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         M_MigrateBarColorName(&g_Config.ui.enemy_health_bar.color_allies);
         M_MigrateBarColorName(&g_Config.ui.enemy_health_bar.color_allies_ps1);
     }
+
+    // Pre 1.3 Fixed glide camera option was only visible to TR2 and defaulted
+    // to false in TR1. Now a regular toggle for all camera modes.
+    if (g_TRVersion == 2) {
+        L_READ_BOOL(g_Config.visuals.enable_glide_cameras, "fix_glide_cameras");
+    }
+
     if (g_Config.config_version >= 0
         && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {
         g_Config.config_version = M_CONFIG_VERSION_CURRENT;

@@ -5,7 +5,6 @@ X_UI_CFG_BOOL(visuals.fix_item_rots,                SETTING_FIX_ITEM_ROTS, .cust
 X_UI_CFG_BOOL(audio.load_music_triggers,            SETTING_LOAD_MUSIC_TRIGGERS)
 X_UI_CFG_BOOL(visuals.fix_animated_sprites,         SETTING_FIX_ANIMATED_SPRITES)
 X_UI_CFG_BOOL(gameplay.fix_bridge_collision,        SETTING_FIX_BRIDGE_COLLISION)
-X_UI_CFG_BOOL(visuals.fix_glide_cameras,            SETTING_FIX_GLIDE_CAMERAS)
 
 X_UI_CFG_BOOL(gameplay.fix_walk_run_jump,           SETTING_FIX_WALK_RUN_JUMP)
 X_UI_CFG_BOOL(gameplay.fix_flare_throw_priority,    SETTING_FIX_FLARE_THROW_PRIORITY, .custom_handler = { .is_available = UI_Settings_Flare_IsAvailable })

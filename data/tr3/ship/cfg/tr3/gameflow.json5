@@ -422,6 +422,7 @@
             ],
             "injections": [
                 "lara_guns.bin",
+                "tinnos_cameras.bin",
             ],
         },
 

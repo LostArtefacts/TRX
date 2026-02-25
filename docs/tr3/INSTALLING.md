@@ -166,6 +166,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── cut1_setup.bin
 │   │   ├── cut2_setup.bin
 │   │   ├── cut3_setup.bin
+│   │   ├── cut3_shell.bin
 │   │   ├── cut4_setup.bin
 │   │   ├── cut5_setup.bin
 │   │   ├── cut6_setup.bin
@@ -192,6 +193,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── rapids_sky.bin
 │   │   ├── scotland_sky.bin
 │   │   ├── stpaul_animating_bounds.bin
+│   │   ├── tinnos_cameras.bin
 │   │   └── undersea_animating_bounds.bin
 │   ├── jungle.tr2
 │   ├── main.sfx
@@ -202,6 +204,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── rapids.tr2
 │   ├── roofs.tr2
 │   ├── scripts
+│   │   ├── crash.lua
 │   │   ├── cut8.lua
 │   │   ├── jungle.lua
 │   │   └── zoo.lua
@@ -399,6 +402,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── cut1_setup.bin
         │   │   ├── cut2_setup.bin
         │   │   ├── cut3_setup.bin
+        │   │   ├── cut3_shell.bin
         │   │   ├── cut4_setup.bin
         │   │   ├── cut5_setup.bin
         │   │   ├── cut6_setup.bin
@@ -425,6 +429,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── rapids_sky.bin
         │   │   ├── scotland_sky.bin
         │   │   ├── stpaul_animating_bounds.bin
+        │   │   ├── tinnos_cameras.bin
         │   │   └── undersea_animating_bounds.bin
         │   ├── jungle.tr2
         │   ├── main.sfx
@@ -435,6 +440,7 @@ If you install everything correctly, your game directory should look more or les
         │   ├── rapids.tr2
         │   ├── roofs.tr2
         │   ├── scripts
+        │   │   ├── crash.lua
         │   │   ├── cut8.lua
         │   │   ├── jungle.lua
         │   │   └── zoo.lua
