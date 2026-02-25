@@ -181,6 +181,7 @@ const OBJECT_ID g_BossObjects[] = {
     O_SKIDOO_DRIVER,
     O_SKIDOO_ARMED,
     O_TONY,
+    O_TRIBE_BOSS,
     NO_OBJECT,
     // clang-format on
 };
