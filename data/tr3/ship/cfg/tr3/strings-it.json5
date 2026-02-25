@@ -262,19 +262,19 @@
     ],
     "objects": {
         "quest_1": {
-            "name": "\\{review}Pietra Infada",
+            "name": "Pietra Infada",
             "description": "",
         },
         "quest_2": {
-            "name": "\\{review}Elemento 115",
+            "name": "Elemento 115",
             "description": "",
         },
         "quest_3": {
-            "name": "\\{review}Occhio di Iside",
+            "name": "Occhio di Iside",
             "description": "",
         },
         "quest_4": {
-            "name": "\\{review}Pugnale Ora",
+            "name": "Pugnale Ora",
             "description": "",
         },
         "small_medipack": {
@@ -285,18 +285,18 @@
         }
     },
     "game_strings": {
-        "GLOBE_SELECT_AREA_1": "\\{review}India",
-        "GLOBE_SELECT_AREA_2": "\\{review}Isole del Pacifico Meridionale",
-        "GLOBE_SELECT_AREA_3": "\\{review}Deserto del Nevada",
-        "GLOBE_SELECT_AREA_4": "\\{review}",
-        "GLOBE_SELECT_AREA_5": "\\{review}Londra",
-        "GLOBE_SELECT_AREA_6": "\\{review}Antartide",
+        "GLOBE_SELECT_AREA_1": "India",
+        "GLOBE_SELECT_AREA_2": "Isole del Sud Pacifico",
+        "GLOBE_SELECT_AREA_3": "Nevada",
+        "GLOBE_SELECT_AREA_4": "",
+        "GLOBE_SELECT_AREA_5": "Londra",
+        "GLOBE_SELECT_AREA_6": "Antartide",
         "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
         "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
         "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
         "OVERLAY_ITEM_COUNT_FMT": "%s",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}\\{color 2}%s",
-        "STATS_GYM_ASSAULT_COURSE": "\\{review}\\{color 5}Percorso d'Assalto",
-        "STATS_GYM_RACETRACK_COURSE": "\\{review}\\{color 5}Percorso della Pista di Corsa",
+        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{color 2}%s",
+        "STATS_GYM_ASSAULT_COURSE": "\\{color 5}Corso d'Addestramento",
+        "STATS_GYM_RACETRACK_COURSE": "\\{color 5}Corso di Guida",
     }
 }
