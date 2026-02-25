@@ -544,6 +544,7 @@
         "SETTING_ENABLE_PITCHED_SOUNDS": "Pitched sounds",
         "SETTING_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Allows sound effects to be randomly, slightly pitched to vary the game sounds.",
         "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS": "Play previous levels",
+        "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS_DESCRIPTION": "Enables the \"Play previous levels\" and \"Story so far...\" features in the New Game selection screen.",
         "SETTING_ENABLE_PS1_CRYSTALS": "PS1 crystal tint",
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Save crystals will be drawn with a purple tint, more similar to the PS1 type.",
         "SETTING_ENABLE_PS1_SFX": "PS1 SFX replacements",

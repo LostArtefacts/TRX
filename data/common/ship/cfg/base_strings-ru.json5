@@ -544,6 +544,7 @@
         "SETTING_ENABLE_PITCHED_SOUNDS": "Разнообразные звуки",
         "SETTING_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Случайным образом слегка изменять тон звуковых эффектов, чтобы разнообразить звучание игры.",
         "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS": "\\{review}Играть в предыдущие уровни",
+        "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS_DESCRIPTION": "\\{review}Включает функции \"Играть предыдущие уровни\" и \"История на данный момент...\" в меню выбора Новая игра.",
         "SETTING_ENABLE_PS1_CRYSTALS": "Оттенок кристалла PS1",
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Кристаллы сохранения будут отображаться с фиолетовым оттенком, больше похожим на кристаллы PS1.",
         "SETTING_ENABLE_PS1_SFX": "\\{review}Замены звуковых эффектов PS1",

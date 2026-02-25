@@ -544,6 +544,7 @@
         "SETTING_ENABLE_PITCHED_SOUNDS": "Modulacja wysokości dźwięków",
         "SETTING_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Pozwala na losowe, nieznaczne zmiany tonacji efektów dźwiękowych dla urozmaicenia rozgrywki.",
         "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS": "Zagraj w poprzednie poziomy",
+        "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS_DESCRIPTION": "\\{review}Włącza funkcje \"Graj w poprzednie poziomy\" oraz \"Dotychczasowa historia...\" na ekranie wyboru Nowej Gry.",
         "SETTING_ENABLE_PS1_CRYSTALS": "Fioletowe kryształy",
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Kryształy zapisu będą rysowane z fioletowym odcieniem, bardziej podobnym do odcienia z PS1.",
         "SETTING_ENABLE_PS1_SFX": "Efekty dźwiękowe z PS1",

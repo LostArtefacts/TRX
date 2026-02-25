@@ -544,6 +544,7 @@
         "SETTING_ENABLE_PITCHED_SOUNDS": "Hauteurs aléatoires des sons",
         "SETTING_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Modifie aléatoirement et légèrement la hauteur des effets sonores, afin de leur donner un peu de variation.",
         "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS": "\\{review}Jouer les niveaux précédents",
+        "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS_DESCRIPTION": "\\{review}Active les fonctionnalités \"Jouer aux niveaux précédents\" et \"Histoire jusqu'à présent...\" dans l'écran de sélection Nouveau Jeu.",
         "SETTING_ENABLE_PS1_CRYSTALS": "Teinte des cristaux PS1",
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Les cristaux de sauvegarde seront colorés avec une teinte violette, plus similaires à ceux de la PS1.",
         "SETTING_ENABLE_PS1_SFX": "\\{review}PS1 remplacements SFX",

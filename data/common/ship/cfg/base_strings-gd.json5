@@ -544,6 +544,7 @@
         "SETTING_ENABLE_PITCHED_SOUNDS": "Fuaimean atharraichte",
         "SETTING_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Cuiridh seo cead air buaidhean fuaim le beagan caochlaidhean àirde-fuaim gus iomadachd a thoirt do dh'fhuaimean a' gheama.",
         "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS": "Cluich ìrean roimhe",
+        "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS_DESCRIPTION": "\\{review}Cuir comas air na feartan \"Cluich ìrean roimhe\" agus \"Sgeulachd gu ruige seo...\" anns an sgrion taghaidh Geama Ùr.",
         "SETTING_ENABLE_PS1_CRYSTALS": "Dath criostail PS1",
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Bidh na criostalan sàbhalaidh purpaidh mar a tha iad anns a' PhS1.",
         "SETTING_ENABLE_PS1_SFX": "Cleachd fuaimean a' PhS1",

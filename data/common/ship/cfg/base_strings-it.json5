@@ -544,6 +544,7 @@
         "SETTING_ENABLE_PITCHED_SOUNDS": "Tonalità suoni",
         "SETTING_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Per una maggiore varietà, consente di modificare in modo leggero e casuale la tonalità degli effetti sonori.",
         "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS": "Gioca livelli precedenti",
+        "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS_DESCRIPTION": "Abilita le opzioni \"Gioca livelli precedenti\" e \"Un po' di storia...\" nella schermata di selezione Nuova Partita.",
         "SETTING_ENABLE_PS1_CRYSTALS": "Tinta cristalli PS1",
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "I cristalli di salvataggio saranno di color viola, più simili a quelli della versione PS1.",
         "SETTING_ENABLE_PS1_SFX": "Effetti sonori PS1",

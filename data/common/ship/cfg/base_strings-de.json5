@@ -544,6 +544,7 @@
         "SETTING_ENABLE_PITCHED_SOUNDS": "Gepitchte Sounds",
         "SETTING_ENABLE_PITCHED_SOUNDS_DESCRIPTION": "Erlaubt die zufällige Wiedergabe von Sound-Effekten, leicht gepitched, um die Spiel-Sounds zu variieren.",
         "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS": "\\{review}Vorherige Level spielen",
+        "SETTING_ENABLE_PLAY_PREVIOUS_LEVELS_DESCRIPTION": "\\{review}Aktiviert die Funktionen \"Vorherige Level spielen\" und \"Bisherige Geschichte...\" im Auswahlbildschirm für Neues Spiel.",
         "SETTING_ENABLE_PS1_CRYSTALS": "PS1-Kristall-Farbton",
         "SETTING_ENABLE_PS1_CRYSTALS_DESCRIPTION": "Der Speicherkristall bekommt einen lila Farbton, ähnlich wie bei der PS1-Variante.",
         "SETTING_ENABLE_PS1_SFX": "\\{review}PS1 SFX-Ersetzungen",

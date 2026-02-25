@@ -21,7 +21,7 @@ REVIEW_MARKER = r"\{review}"
 
 RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID|_PTR)?\(([A-Z0-9_]+)\)")
 RE_GAME_STRING_DEFINE = re.compile(
-    r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"([^"]*)"\)'
+    r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"((?:\\.|[^"\\])*)"\)'
 )
 RE_UI_SETTING_USAGE = re.compile(
     r"(?:X_UI_CFG_MANUAL\(\s*|X_UI_CFG[A-Z0-9_]*\([^(),]*,\s*)([A-Z0-9_]+)[,)]",
@@ -104,7 +104,10 @@ def get_strings_map(path: Path) -> dict[str, str]:
     for line in path.read_text().splitlines():
         if match := RE_GAME_STRING_DEFINE.match(line):
             result[match.group(1)] = (
-                match.group(2).replace("\\n", "\n").replace("\\\\", "\\")
+                match.group(2)
+                .replace("\\n", "\n")
+                .replace('\\"', '"')
+                .replace("\\\\", "\\")
             )
     return result
 
