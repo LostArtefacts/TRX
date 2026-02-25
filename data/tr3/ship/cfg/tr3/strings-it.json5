@@ -288,7 +288,7 @@
         "GLOBE_SELECT_AREA_1": "India",
         "GLOBE_SELECT_AREA_2": "Isole del Sud Pacifico",
         "GLOBE_SELECT_AREA_3": "Nevada",
-        "GLOBE_SELECT_AREA_4": "",
+        "GLOBE_SELECT_AREA_4": " ",
         "GLOBE_SELECT_AREA_5": "Londra",
         "GLOBE_SELECT_AREA_6": "Antartide",
         "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
