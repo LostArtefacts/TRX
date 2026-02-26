@@ -195,12 +195,10 @@ static void M_ForwardSurface(ITEM *const item, COLL_INFO *const coll)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->dive_timer = 0;
-    if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
-        if (g_Input.left) {
-            item->rot.y -= LARA_SLOW_TURN;
-        } else if (g_Input.right) {
-            item->rot.y += LARA_SLOW_TURN;
-        }
+    if (g_Input.left) {
+        item->rot.y -= LARA_SLOW_TURN;
+    } else if (g_Input.right) {
+        item->rot.y += LARA_SLOW_TURN;
     }
     if (!g_Input.forward || g_Input.jump) {
         item->goal_anim_state = LS(LS_SURF_TREAD);
@@ -221,31 +219,29 @@ static void M_SideBackSurface(ITEM *const item, COLL_INFO *const coll)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->dive_timer = 0;
 
-    if (!g_Config.input.enable_tr3_sidesteps || !g_Input.slow) {
-        if (g_Input.left) {
-            item->rot.y -= M_TURN_RATE;
-        } else if (g_Input.right) {
-            item->rot.y += M_TURN_RATE;
-        }
+    if (g_Input.left) {
+        item->rot.y -= M_TURN_RATE;
+    } else if (g_Input.right) {
+        item->rot.y += M_TURN_RATE;
+    }
 
-        bool stop = false;
-        switch (LS_U(item->current_anim_state)) {
-        case LS_SURF_BACK:
-            stop = !g_Input.back;
-            break;
-        case LS_SURF_LEFT:
-            stop = !g_Input.step_left;
-            break;
-        case LS_SURF_RIGHT:
-            stop = !g_Input.step_right;
-            break;
-        default:
-            break;
-        }
+    bool stop = false;
+    switch (LS_U(item->current_anim_state)) {
+    case LS_SURF_BACK:
+        stop = !g_Input.back;
+        break;
+    case LS_SURF_LEFT:
+        stop = !g_Input.step_left;
+        break;
+    case LS_SURF_RIGHT:
+        stop = !g_Input.step_right;
+        break;
+    default:
+        break;
+    }
 
-        if (stop) {
-            item->goal_anim_state = LS(LS_SURF_TREAD);
-        }
+    if (stop) {
+        item->goal_anim_state = LS(LS_SURF_TREAD);
     }
 
     item->fall_speed += 8;
