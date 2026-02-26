@@ -53,7 +53,26 @@ void *TRX_GL_Buffer_Map(TRX_GL_BUFFER *buf, GLenum access)
 {
     ASSERT(buf != nullptr);
     ASSERT(buf->initialized);
+#ifdef EMSCRIPTEN_BUILD
+    // glMapBuffer is not available in GL ES 3.0; use glMapBufferRange instead.
+    GLint size = 0;
+    glGetBufferParameteriv(buf->target, GL_BUFFER_SIZE, &size);
+    TRX_GL_CheckError();
+    if (size <= 0) {
+        return NULL;
+    }
+    GLbitfield flags = 0;
+    if (access == GL_READ_ONLY) {
+        flags = GL_MAP_READ_BIT;
+    } else if (access == GL_WRITE_ONLY) {
+        flags = GL_MAP_WRITE_BIT;
+    } else {
+        flags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT;
+    }
+    void *ret = glMapBufferRange(buf->target, 0, size, flags);
+#else
     void *ret = glMapBuffer(buf->target, access);
+#endif
     TRX_GL_CheckError();
     return ret;
 }

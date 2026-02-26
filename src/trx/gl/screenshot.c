@@ -58,8 +58,12 @@ void TRX_GL_Screenshot_CaptureToBuffer(
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     TRX_GL_CheckError();
 
+#ifndef EMSCRIPTEN_BUILD
+    // glReadBuffer(GL_BACK) is not needed on WebGL; the default
+    // read framebuffer is already the back buffer.
     glReadBuffer(GL_BACK);
     TRX_GL_CheckError();
+#endif
     glReadPixels(x, y, *out_width, *out_height, format, type, out_buffer);
     TRX_GL_CheckError();
 

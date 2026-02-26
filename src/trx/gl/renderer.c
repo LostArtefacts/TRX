@@ -14,7 +14,11 @@
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
 
-#include <GL/glew.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <trx/gl/gl_webgl_compat.h>
+#else
+    #include <GL/glew.h>
+#endif
 #include <SDL2/SDL_video.h>
 #include <stdint.h>
 
@@ -62,8 +66,11 @@ static void M_Render(TRX_GL_RENDERER *renderer)
 
     TRX_GL_FBO_Unbind();
 
+#ifndef EMSCRIPTEN_BUILD
+    // glPolygonMode does not exist in GL ES / WebGL.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     TRX_GL_CheckError();
+#endif
 
     TRX_GL_Program_Bind(&p->program);
     TRX_GL_Buffer_Bind(&p->buffer);
@@ -105,8 +112,15 @@ static void M_SwapBuffers(TRX_GL_RENDERER *const renderer)
     SDL_GL_SwapWindow(TRX_GL_Context_GetWindowHandle());
     M_UpdateFBOSizes(renderer);
 
+#ifndef EMSCRIPTEN_BUILD
+    // On desktop GL the swap is synchronous and the default framebuffer
+    // is double-buffered, so we can (and should) clear it for the next
+    // frame.  On WebGL the browser composites the canvas asynchronously
+    // after the JS turn ends; clearing the default framebuffer here
+    // would race with that composite and cause visible black flashing.
     TRX_GL_Context_SwitchToViewport(VIEWPORT_WINDOW);
     TRX_GL_Context_Clear();
+#endif
 
     // Rebind geometry FBO for the next frame
     TRX_GL_Renderer_BindGeometryFbo();

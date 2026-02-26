@@ -56,14 +56,14 @@ float ogPhaseTurns(vec3 worldPos, int scheme)
 float effectChoppy(vec3 worldPos)
 {
     int scheme = clamp(uWaterEffect - 2, 0, 21);
-    float angle = fract(ogPhaseTurns(worldPos, scheme)) * 2 * PI;
+    float angle = fract(ogPhaseTurns(worldPos, scheme)) * 2.0 * PI;
     return -sin(angle) * uWaterEffectParams.x / 2.0;
 }
 
 float effectShimmer(vec3 worldPos)
 {
     int scheme = clamp(uWaterEffect - 2, 0, 21);
-    float angle = fract(ogPhaseTurns(worldPos, scheme)) * 2 * PI;
+    float angle = fract(ogPhaseTurns(worldPos, scheme)) * 2.0 * PI;
     return sin(angle) * uWaterEffectParams.y * 8.0;
 }
 
@@ -79,13 +79,13 @@ int lightFlicker(float t) {
 
 int lightGlow(float time) {
     float phase = mod(time, 32.0) / 32.0;
-    float s = sin(phase * 2 * PI);
+    float s = sin(phase * 2.0 * PI);
     float normalized = (s + 1.0) * 0.5;
     return int(normalized * 31.0);
 }
 
 int lightSunset(float time) {
-    float sunsetProgress = clamp(time / max(1, uSunsetDuration), 0.0, 1.0);
+    float sunsetProgress = clamp(time / max(1.0, uSunsetDuration), 0.0, 1.0);
     return int(sunsetProgress * 31.0);
 }
 
@@ -135,10 +135,10 @@ vec3 safeNormalize(vec3 v)
 float lightObjects(vec3 rawNormal, vec4 vertexPos)
 {
     float lightAdder = uLightAdder;
-    if (uLightDivider != 0) {
+    if (uLightDivider != 0.0) {
         vec3 L = mat3(transpose(uMatView * uMatModel)) * uLightVectorSource.xyz / uLightDivider;
-        lightAdder += dot(L, rawNormal.xyz / (1 << 14)) / 4;
-        lightAdder = clamp(lightAdder, 0, SHADE_MAX);
+        lightAdder += dot(L, rawNormal.xyz / float(1 << 14)) / 4.0;
+        lightAdder = clamp(lightAdder, 0.0, float(SHADE_MAX));
     }
     return lightAdder;
 }
@@ -184,11 +184,11 @@ float lightDynamicTR12Lum(float baseLight, vec4 vertexPos)
         }
 
         float maxShade = exp2(uLights[i].shade);
-        float distTerm = distSq / exp2(2 * uLights[i].falloff - uLights[i].shade);
+        float distTerm = distSq / exp2(2.0 * uLights[i].falloff - uLights[i].shade);
         float shade = maxShade - distTerm;
         lightAdder -= shade;
     }
-    return max(lightAdder, 0);
+    return max(lightAdder, 0.0);
 }
 
 vec3 lightDynamicTR12RGB(vec4 vertexPos)
@@ -255,7 +255,7 @@ float lightLumTR12(float shade, uint flags, vec3 normal, vec4 pos, float phase)
             shade = lightDynamicTR12Lum(shade, pos);
             shade += lightRoom(uRoomLightMode, uTimeInGame, phase);
         }
-        shade = clamp(shade, 0, SHADE_MAX);
+        shade = clamp(shade, 0.0, float(SHADE_MAX));
     }
 
     if (uWaterEffect == 1) {

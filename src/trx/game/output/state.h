@@ -5,7 +5,11 @@
 #include <trx/game/output/uniforms.h>
 #include <trx/game/rooms.h>
 
-#include <GL/glew.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <trx/gl/gl_webgl_compat.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 void Output_SetSkyboxEnabled(bool enabled);
 bool Output_IsSkyboxEnabled(void);

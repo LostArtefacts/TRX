@@ -1,6 +1,10 @@
 #include <trx/gl/utils.h>
 
-#include <GL/glew.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <trx/gl/gl_webgl_compat.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 const char *TRX_GL_GetErrorString(GLenum err)
 {
@@ -26,9 +30,11 @@ const char *TRX_GL_GetErrorString(GLenum err)
     }
 }
 
+#ifndef EMSCRIPTEN_BUILD
 void TRX_GL_CheckError(void)
 {
     for (GLenum err; (err = glGetError()) != GL_NO_ERROR;) {
         LOG_ERROR("glGetError: (%s)", TRX_GL_GetErrorString(err));
     }
 }
+#endif

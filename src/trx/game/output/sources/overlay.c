@@ -83,6 +83,7 @@ typedef struct {
 
 typedef struct {
     bool in_use;
+    bool load_failed;
     uint64_t last_used_token;
     char *file_name;
 
@@ -231,7 +232,13 @@ static void M_CopyPresentedFrameToTexture(
     glGetIntegerv(GL_READ_BUFFER, &prev_read_buffer);
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+#ifdef EMSCRIPTEN_BUILD
+    // WebGL has no GL_FRONT; the default framebuffer's read buffer is
+    // already GL_BACK which contains the last completed frame.
+    glReadBuffer(GL_BACK);
+#else
     glReadBuffer(GL_FRONT);
+#endif
 
     TRX_GL_Texture_Bind(texture);
     glCopyTexSubImage2D(
@@ -448,6 +455,11 @@ static bool M_ImageCache_Load(M_IMAGE_CACHE_ENTRY *const e)
     ASSERT(e != nullptr);
     ASSERT(e->file_name != nullptr);
 
+    // Avoid retrying every frame after a confirmed load failure.
+    if (e->load_failed) {
+        return false;
+    }
+
     if (e->candidates == nullptr && e->scan_path == nullptr) {
         M_ImageCandidates_Scan(e, e->file_name);
     }
@@ -496,6 +508,7 @@ static bool M_ImageCache_Load(M_IMAGE_CACHE_ENTRY *const e)
     e->texture_height = 0;
     Memory_FreePointer(&e->loaded_path);
     e->loaded_for_screen_ratio = 0.0f;
+    e->load_failed = true;
     return false;
 }
 

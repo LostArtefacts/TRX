@@ -3,7 +3,7 @@
 #ifdef VERTEX
 
 uniform mat4 uMatModel;
-uniform bool uWibbleEffect;
+uniform int uWibbleEffect; // bool; use int for WebGL ES compat
 
 #include "billboard.glsl"
 #include "lights.glsl"
@@ -71,7 +71,7 @@ void main(void) {
     gl_Position.z += inPosition.w;
 
     // Apply water wibble effect only to non-sprite vertices
-    if (uWibbleEffect && (inFlags & (VERT_NO_WIBBLE | VERT_BILLBOARD)) == 0u) {
+    if (uWibbleEffect != 0 && (inFlags & (VERT_NO_WIBBLE | VERT_BILLBOARD)) == 0u) {
         gl_Position.xyz = waterWibble(worldPos, gl_Position);
     }
 
@@ -98,13 +98,13 @@ void main(void) {
     vec3 modulate;
     if ((gFlags & VERT_FLAT_SHADED) == 0u) {
         if (uLightingEnabled == 0) {
-            lightIn = vec3(1);
+            lightIn = vec3(1.0);
         } else {
             lightIn = inColor.rgb;
         }
-        modulate = vec3(1);
+        modulate = vec3(1.0);
     } else {
-        lightIn = vec3(1);
+        lightIn = vec3(1.0);
         modulate = inColor.rgb;
     }
 
@@ -140,7 +140,7 @@ void main(void) {
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
 uniform vec3 uTint;
-uniform bool uDiscardAlpha;
+uniform int uDiscardAlpha; // bool; use int for WebGL ES compat
 
 in vec4 gEyePos;
 in vec3 gNormal;
@@ -177,7 +177,7 @@ void main(void) {
 
     // Alpha discard - chroma keying || transparent pixels in the opaque pass
     if (texColor.a <= 0.0
-        || (uDiscardAlpha && texColor.a < 0.99
+        || (uDiscardAlpha != 0 && texColor.a < 0.99
             && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u)) {
         discard;
     }
@@ -186,7 +186,7 @@ void main(void) {
     if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0) {
         vec2 env_uv = (normalize(gNormal) * 0.5 + 0.5).xy;
         env_uv.y = 1.0 - env_uv.y;
-        texColor *= texture(uTexEnvMap, env_uv) * 2;
+        texColor *= texture(uTexEnvMap, env_uv) * 2.0;
     }
 
     // Fog

@@ -1,12 +1,12 @@
 #define PI 3.1415926538
 
-#define WALL_L      1024
-#define WIBBLE_SIZE 32
-#define MAX_WIBBLE  2
+#define WALL_L      1024.0
+#define WIBBLE_SIZE 32.0
+#define MAX_WIBBLE  2.0
 
-#define SHADE_NEUTRAL  0x1000
-#define SHADE_MAX      0x1FFF
-#define SHADE_CAUSTICS 0x300
+#define SHADE_NEUTRAL  4096.0
+#define SHADE_MAX      8191.0
+#define SHADE_CAUSTICS 768.0
 
 #define VERT_NO_WIBBLE         0x0001u
 #define VERT_FLAT_SHADED       0x0002u

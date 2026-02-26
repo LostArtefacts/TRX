@@ -150,13 +150,30 @@ static char *M_Preprocess(const char *content, GLenum type)
 {
     ASSERT(content != nullptr);
 
-    const char *version_ogl33c = "#version 330 core\n";
+#ifdef EMSCRIPTEN_BUILD
+    // WebGL 2.0 uses GLSL ES 3.00.  We also inject a precision qualifier
+    // required by ES and a compatibility define for 'texture' (which is the
+    // same name in both GL 3.3 and ES 3.0, so this is mainly about the
+    // version line and precision).
+    const char *version_line = "#version 300 es\n";
+    const char *precision_line =
+        "precision highp float;\n"
+        "precision highp int;\n"
+        "precision highp sampler2D;\n"
+        "precision highp sampler2DArray;\n"
+        "#define WEBGL_BUILD 1\n";
+#else
+    const char *version_line = "#version 330 core\n";
+    const char *precision_line = "";
+#endif
+
     const char *define_vertex = "#define VERTEX\n";
     const char *define_fragment = "#define FRAGMENT\n";
 
     size_t bufsize = strlen(content) + 1;
 
-    bufsize += strlen(version_ogl33c);
+    bufsize += strlen(version_line);
+    bufsize += strlen(precision_line);
 
     if (type == GL_VERTEX_SHADER) {
         bufsize += strlen(define_vertex);
@@ -165,7 +182,8 @@ static char *M_Preprocess(const char *content, GLenum type)
     }
 
     char *processed_content = Memory_Alloc(bufsize);
-    strcpy(processed_content, version_ogl33c);
+    strcpy(processed_content, version_line);
+    strcat(processed_content, precision_line);
 
     if (type == GL_VERTEX_SHADER) {
         strcat(processed_content, define_vertex);

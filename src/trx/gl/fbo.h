@@ -6,7 +6,11 @@
 #include <trx/gl/context.h>
 #include <trx/gl/texture.h>
 
-#include <GL/glew.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <trx/gl/gl_webgl_compat.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 // Off-screen framebuffer with a single color attachment and optional
 // depth+stencil.

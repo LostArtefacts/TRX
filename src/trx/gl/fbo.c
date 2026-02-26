@@ -10,7 +10,11 @@
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
 
-#include <GL/glew.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <trx/gl/gl_webgl_compat.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 void TRX_GL_FBO_Init(
     TRX_GL_FBO *const fbo, const int32_t width, const int32_t height,
@@ -50,9 +54,12 @@ void TRX_GL_FBO_Init(
         0);
     TRX_GL_CheckError();
 
-    // direct draw to color attachment 0.
+#ifndef EMSCRIPTEN_BUILD
+    // glDrawBuffer is not available in GL ES 3.0; FBOs always draw to
+    // GL_COLOR_ATTACHMENT0 by default on WebGL 2.
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
     TRX_GL_CheckError();
+#endif
 
     if (with_depth_stencil) {
         glGenRenderbuffers(1, &fbo->rbo);

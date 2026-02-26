@@ -110,9 +110,11 @@ static void M_PrepareScene(const M_PRIV *const p)
 #endif
 
     glBindSampler(0, p->sampler_id);
+#ifndef EMSCRIPTEN_BUILD
     glSamplerParameterf(
         p->sampler_id, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         g_Config.rendering.anisotropy_filter);
+#endif
 
     Output_Uniforms_UploadGeneral(Output_GetUniforms());
     Output_Uniforms_UploadRoomLights(Output_GetUniforms(), nullptr);

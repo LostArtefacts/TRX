@@ -37,6 +37,12 @@
     X_DECLARE_MEMBER(int, textures_enabled)                                    \
     X_DECLARE_MEMBER(int, tr_version)
 
+// std140 rounds a block's total size up to a vec4 (16-byte) boundary.
+// Desktop GL silently tolerates undersized buffers, but WebGL 2 strictly
+// validates: "glDrawArrays: uniform buffer that is too small".
+// Round allocation sizes up so the GPU-side check always passes.
+#define M_STD140_SIZE(s) (((s) + 15u) & ~15u)
+
 #pragma pack(push, 4)
 typedef struct {
 #define X_DECLARE_MEMBER(a, b, ...) a b __VA_ARGS__;
@@ -370,23 +376,26 @@ OUTPUT_UNIFORMS *Output_Uniforms_Create(void)
     glGenBuffers(4, &uniforms->general);
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
     glBufferData(
-        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_GENERAL), nullptr, GL_DYNAMIC_DRAW);
+        GL_UNIFORM_BUFFER, M_STD140_SIZE(sizeof(M_UNIFORM_GENERAL)), nullptr,
+        GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms->general);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->matrices);
     glBufferData(
-        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_MATRICES), nullptr,
+        GL_UNIFORM_BUFFER, M_STD140_SIZE(sizeof(M_UNIFORM_MATRICES)), nullptr,
         GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, uniforms->matrices);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->lights);
     glBufferData(
-        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_LIGHTS), nullptr, GL_DYNAMIC_DRAW);
+        GL_UNIFORM_BUFFER, M_STD140_SIZE(sizeof(M_UNIFORM_LIGHTS)), nullptr,
+        GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 2, uniforms->lights);
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->ls);
     glBufferData(
-        GL_UNIFORM_BUFFER, sizeof(M_UNIFORM_LS), nullptr, GL_DYNAMIC_DRAW);
+        GL_UNIFORM_BUFFER, M_STD140_SIZE(sizeof(M_UNIFORM_LS)), nullptr,
+        GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 3, uniforms->ls);
     TRX_GL_CheckError();
 

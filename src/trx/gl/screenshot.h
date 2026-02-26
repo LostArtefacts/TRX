@@ -1,6 +1,10 @@
 #pragma once
 
-#include <GL/glew.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <trx/gl/gl_webgl_compat.h>
+#else
+    #include <GL/glew.h>
+#endif
 #include <stdint.h>
 
 bool TRX_GL_Screenshot_CaptureToFile(const char *path);

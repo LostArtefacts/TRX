@@ -12,7 +12,7 @@ vec4 offsetBillboard(vec3 pos, vec2 disp, mat4 view, mat4 model, mat4 proj, int 
     } else {
         // Base forward for all locked modes
         vec3 forward = -normalize(vec3(view[0][2], view[1][2], view[2][2]));
-        const vec3 worldUp = vec3(0,1,0);
+        const vec3 worldUp = vec3(0.0, 1.0, 0.0);
 
         if (mode != BILLBOARD_LOCK_ROLL) {
             // Kill pitch if requested by any cylindrical/perspective mode
@@ -20,7 +20,7 @@ vec4 offsetBillboard(vec3 pos, vec2 disp, mat4 view, mat4 model, mat4 proj, int 
         }
 
         if (mode == BILLBOARD_LOCK_PERSPECTIVE) {
-            vec4 clip     = proj * view * model * vec4(pos,1);
+            vec4 clip     = proj * view * model * vec4(pos, 1.0);
             float ndcX    = clip.x / clip.w;
             vec3 yawRight = normalize(cross(forward, worldUp));
             float inv     = inversesqrt(1.0 + ndcX * ndcX);
@@ -31,7 +31,7 @@ vec4 offsetBillboard(vec3 pos, vec2 disp, mat4 view, mat4 model, mat4 proj, int 
         up    = normalize(cross(right, forward));
     }
 
-    vec4 wp = model * vec4(pos,1);
+    vec4 wp = model * vec4(pos, 1.0);
     wp.xyz += disp.x * right + disp.y * up;
     return view * wp;
 }

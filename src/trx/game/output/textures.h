@@ -3,7 +3,11 @@
 #include <trx/game/output/scene_source.h>
 #include <trx/game/output/types.h>
 
-#include <GL/glew.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <trx/gl/gl_webgl_compat.h>
+#else
+    #include <GL/glew.h>
+#endif
 
 #pragma pack(push, 1)
 typedef struct {

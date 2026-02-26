@@ -730,18 +730,36 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
 
         // Copy Opaque Indices
         if (bind->opaque_index_count > 0) {
+            const uint32_t *src =
+                Vector_GetData(bind->mesh->opaque_vertex_indices);
+#ifdef EMSCRIPTEN_BUILD
+            // WebGL 2 lacks glDrawElementsBaseVertex, so bake
+            // vertex_start into every index at upload time.
+            for (int32_t j = 0; j < bind->opaque_index_count; j++) {
+                opaque_indices[bind->opaque_index_start + j] =
+                    src[j] + bind->vertex_start;
+            }
+#else
             memcpy(
-                &opaque_indices[bind->opaque_index_start],
-                Vector_GetData(bind->mesh->opaque_vertex_indices),
+                &opaque_indices[bind->opaque_index_start], src,
                 bind->opaque_index_count * sizeof(uint32_t));
+#endif
         }
 
         // Copy Blend Indices
         if (bind->blend_add_index_count > 0) {
+            const uint32_t *src =
+                Vector_GetData(bind->mesh->blend_add_vertex_indices);
+#ifdef EMSCRIPTEN_BUILD
+            for (int32_t j = 0; j < bind->blend_add_index_count; j++) {
+                blend_indices[bind->blend_add_index_start + j] =
+                    src[j] + bind->vertex_start;
+            }
+#else
             memcpy(
-                &blend_indices[bind->blend_add_index_start],
-                Vector_GetData(bind->mesh->blend_add_vertex_indices),
+                &blend_indices[bind->blend_add_index_start], src,
                 bind->blend_add_index_count * sizeof(uint32_t));
+#endif
         }
 
         // Copy Transparent Indices
