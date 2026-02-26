@@ -643,6 +643,8 @@
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Исправлять точность стрельбы из М16/MP5 во время бега Лары.",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "\\{review}Исправить приоритет подбора обезьян",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "\\{review}Атакованные обезьяны будут отдавать приоритет ответной атаке, а не сбору аптечек и ключей.",
+        "SETTING_FIX_PIPEMAN_AIM": "\\{review}Прицел духовой трубки",
+        "SETTING_FIX_PIPEMAN_AIM_DESCRIPTION": "\\{review}Исправляет проблему, из-за которой стрелок с духовой трубкой иногда не может правильно прицелиться в Лару.",
         "SETTING_FIX_QWOP_GLITCH": "Исправить QWOP-состояние",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Исправляет странную анимацию бега, известную как QWOP-состояние, которое иногда возникает, когда Лара приземляется на пол во время прыжка.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Исправить звук секрета",

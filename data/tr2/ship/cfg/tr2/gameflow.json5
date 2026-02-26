@@ -747,5 +747,6 @@
         "restore_ps1_enemies",
         "fix_speeches_killing_music",
         "enable_footprints",
+        "fix_pipeman_aim",
     ],
 }

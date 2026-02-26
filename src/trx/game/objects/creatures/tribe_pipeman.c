@@ -65,12 +65,19 @@ static void M_SpawnDart(ITEM *const item)
     XYZ_32 pos1 = m_ShootHit.pos;
     Collide_GetJointAbsPosition(item, &pos1, m_ShootHit.mesh_num);
 
-    XYZ_32 pos2 = {
-        .x = m_ShootHit.pos.x,
-        .y = m_ShootHit.pos.y,
-        .z = m_ShootHit.pos.z << 1,
-    };
-    Collide_GetJointAbsPosition(item, &pos2, m_ShootHit.mesh_num);
+    XYZ_32 pos2 = {};
+    const CREATURE *const creature = item->creature_data;
+    if (g_Config.gameplay.fix_pipeman_aim && creature->enemy != nullptr) {
+        if (creature->enemy == Lara_GetItem()) {
+            Lara_GetMeshPos(LM_TORSO, &pos2);
+        } else {
+            pos2 = creature->enemy->pos;
+        }
+    } else {
+        pos2 = m_ShootHit.pos;
+        pos2.z <<= 1;
+        Collide_GetJointAbsPosition(item, &pos2, m_ShootHit.mesh_num);
+    }
 
     int16_t angles[2];
     Math_GetVectorAngles(

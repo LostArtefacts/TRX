@@ -223,5 +223,6 @@
         "enable_weather",
         "enable_footprints",
         "fix_monkey_pickup_priority",
+        "fix_pipeman_aim",
     ],
 }
