@@ -15,6 +15,7 @@ TR2X.log
 /TR1X*.exe
 /TR2X*.zip
 /TR2X*.exe
+/TR1.tar.xz
 __pycache__/
 
 # VS garbage
@@ -52,3 +53,7 @@ data/tr3/ship/data/images/
 
 tools/installer/TR1X_Installer/Resources/release.zip
 tools/installer/TR2X_Installer/Resources/release.zip
+
+# Local game data for WebGL builds
+/tr1_data/
+/tr2_data/

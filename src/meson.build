@@ -16,6 +16,11 @@ staticdeps = get_option('staticdeps')
 if host_machine.system() == 'darwin'
   staticdeps = false
 endif
+# Emscripten provides dependencies via ports; never use static linking mode
+is_emscripten = (host_machine.system() == 'emscripten')
+if is_emscripten
+  staticdeps = false
+endif
 
 c_compiler = meson.get_compiler('c')
 git = find_program('git', required: true)
@@ -68,6 +73,11 @@ common_build_opts = [
   '-DDEBUG=' + (get_option('buildtype') == 'debug' ? '1' : '0'),
 ]
 
+if is_emscripten
+  game_engine_versions = {'tr1': '1', 'tr2': '2'}
+  common_build_opts += ['-DEMSCRIPTEN_DEFAULT_ENGINE_VERSION=' + game_engine_versions[get_option('game')]]
+endif
+
 # Some warning names are compiler-specific (e.g. Clang-only) and will spam notes
 # on GCC. Only add the ones the current compiler actually supports.
 compiler_specific_warning_opts = [
@@ -84,25 +94,48 @@ build_opts = (
 add_project_arguments(build_opts, language: 'c')
 
 null_dep = dependency('', required: false)
-dep_avcodec = dependency('libavcodec', static: staticdeps)
-dep_avformat = dependency('libavformat', static: staticdeps)
-dep_avutil = dependency('libavutil', static: staticdeps)
-dep_sdl2 = dependency('SDL2', static: staticdeps)
-dep_glew = dependency('glew', static: staticdeps)
-dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
-dep_backtrace = c_compiler.find_library('backtrace', static: true, required: false)
-dep_swscale = dependency('libswscale', static: staticdeps)
-dep_swresample = dependency('libswresample', static: staticdeps)
-dep_lua = dependency('lua', static: staticdeps)
-c_compiler.check_header('uthash.h', required: true)
-dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : false)
+
+if is_emscripten
+  # Emscripten provides SDL2, zlib, GL ES3 via ports / built-in flags
+  # set in the cross file (emscripten_cross.ini).  Using null_dep avoids
+  # pkg-config picking up native system libraries.
+  dep_sdl2 = null_dep          # provided by -sUSE_SDL=2
+  dep_glew = null_dep          # GLEW is not needed; Emscripten provides GL ES3
+  dep_opengl = null_dep        # GL is linked implicitly via -sFULL_ES3
+  dep_avcodec = null_dep
+  dep_avformat = null_dep
+  dep_avutil = null_dep
+  dep_swscale = null_dep
+  dep_swresample = null_dep
+  dep_backtrace = null_dep
+  dep_zlib = null_dep          # provided by -sUSE_ZLIB=1
+  dep_pcre2 = null_dep
+  dep_lua = null_dep           # provided by --use-port=contrib.lua
+  dep_mathlibrary = null_dep   # Emscripten bundles libm
+  # uthash is header-only; check may fail on cross builds, so skip
+else
+  dep_avcodec = dependency('libavcodec', static: staticdeps)
+  dep_avformat = dependency('libavformat', static: staticdeps)
+  dep_avutil = dependency('libavutil', static: staticdeps)
+  dep_sdl2 = dependency('SDL2', static: staticdeps)
+  dep_glew = dependency('glew', static: staticdeps)
+  dep_pcre2 = dependency('libpcre2-8', static: staticdeps)
+  dep_backtrace = c_compiler.find_library('backtrace', static: true, required: false)
+  dep_swscale = dependency('libswscale', static: staticdeps)
+  dep_swresample = dependency('libswresample', static: staticdeps)
+  dep_lua = dependency('lua', static: staticdeps)
+  c_compiler.check_header('uthash.h', required: true)
+  dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : false)
+endif
 
 dep_zlib = null_dep
-if not staticdeps
+if not staticdeps and not is_emscripten
   dep_zlib = dependency('zlib', static: staticdeps)
 endif
 
-if host_machine.system() == 'windows'
+if is_emscripten
+  dep_opengl = null_dep
+elif host_machine.system() == 'windows'
   dep_opengl = c_compiler.find_library('opengl32')
 else
   dep_opengl = dependency('GL')
@@ -748,7 +781,20 @@ common_sources = [
 ]
 
 
-if dep_backtrace.found() and host_machine.system() == 'linux'
+if is_emscripten
+  common_sources += ['trx/core/log_emscripten.c']
+  common_sources += ['trx/gl/gl_webgl_compat.c']
+  common_sources += ['trx/av/stubs_emscripten.c']
+  common_sources += ['trx/av/audio_sample_emscripten.c']
+  common_sources += ['trx/av/audio_stream_emscripten.c']
+  common_sources += ['trx/av/image_emscripten.c']
+  # Pre-built libwebp decoder for WebP image support (built with emcc).
+  dep_webpdecoder = c_compiler.find_library(
+    'webpdecoder',
+    dirs: [meson.current_source_dir() / 'trx' / 'av' / 'vendor'],
+  )
+  dependencies += [dep_webpdecoder]
+elif dep_backtrace.found() and host_machine.system() == 'linux'
   common_sources += ['trx/core/log_linux.c']
 elif host_machine.system() == 'windows'
   common_sources += ['trx/core/log_windows.c']
@@ -763,6 +809,64 @@ endif
 link_args = []
 if host_machine.system() == 'windows'
   link_args += ['-static']
+elif is_emscripten
+  data_root = meson.project_source_root() + '/../data'
+  link_args += [
+    '-sUSE_SDL=2',
+    '-sUSE_ZLIB=1',
+    '-sFULL_ES3=1',
+    '-sALLOW_MEMORY_GROWTH=1',
+    '-sINITIAL_MEMORY=268435456',
+    '-sSTACK_SIZE=2097152',
+    '-sASYNCIFY',
+    '-sASYNCIFY_STACK_SIZE=131072',
+    # ASYNCIFY cannot trace through function pointers (indirect calls).
+    # We must explicitly list every function on the call path between
+    # main() and emscripten_sleep().  The chain goes through multiple
+    # levels of function-pointer dispatch:
+    #   main → Shell_Main → GF_Do*Sequence → GF_InterpretSequence
+    #   → M_RunEvent → event_handler [fnptr] → GF_Run*/GF_Show*
+    #   → PhaseExecutor_Run → phase->start/control/draw [fnptr]
+    #   → Clock_WaitTick → emscripten_sleep
+    # Level loading also yields:
+    #   GF_InterpretSequence → Level_Initialise → Level_Pipeline_Load
+    #   → emscripten_sleep  (before heavy I/O)
+    #   → M_CompleteSetup → M_InitialiseSamplesFromFile → emscripten_sleep
+    # FMV playback also yields:
+    #   M_HandlePlayFMV → FMV_Play → M_Play → emscripten_sleep
+    '-sASYNCIFY_ADD=["main","Shell_Main","GF_DoFrontendSequence","GF_DoLevelSequence","GF_DoCutsceneSequence","GF_DoDemoSequence","GF_PlayAvailableStory","GF_InterpretSequence","M_RunEvent","M_HandleExitToTitle","M_HandleLevelComplete","M_HandlePlayLevel","M_HandlePlayCutscene","M_HandlePlayFMV","M_HandlePlayMusic","M_HandlePicture","M_HandleInventoryModifier","M_HandleLevelStats","M_HandleTotalStats","M_HandleGlobeSelect","M_HandleSetStartAnim","M_HandleEnableSunset","M_HandleSetupBaconLara","M_HandleDisableFloor","GF_RunTitle","GF_RunGame","GF_ShowInventory","GF_ShowInventoryKeys","GF_RunDemo","GF_RunCutscene","GF_RunGlobeSelect","GF_EnterPhotoMode","GF_PauseGame","PhaseExecutor_Run","M_RunFadeToBlackTransition","M_DrawFadeToBlackTransition","Clock_WaitTick","Game_ProcessInput","Stats_CalculateMaxStats","Level_Initialise","Level_Pipeline_Load","FMV_Play","*M_Play*","*M_CompleteSetup*","*M_InitialiseSamplesFromFile*","*M_LoadFromFile*","*M_Control*","*M_Draw*","*M_Start*","*M_Resume*","*M_Suspend*","*M_End*","*M_HandleOverride*","*M_RequestFadeToBlack*","*M_UsesCrossFadeIn*","*Game_Control*"]',
+    '-sENVIRONMENT=web',
+    '--shell-file=' + meson.project_source_root() + '/../tools/shared/emscripten/shell.html',
+  ]
+  # Preload game data into the Emscripten virtual filesystem.
+  # The engine resolves paths relative to SDL_GetBasePath() which returns "/"
+  # on the web.  Map the ship directories to where the engine expects them:
+  #   data/common/ship/cfg/*    → /cfg/*       (base_strings, ui, etc.)
+  #   data/<game>/ship/cfg/*    → /cfg/*       (gameflow, strings)
+  #   data/common/ship/shaders/ → /shaders/    (GLSL shader files)
+  game = get_option('game')
+  game_data_root = meson.project_source_root() + '/../' + game + '_data/data'
+  game_music_root = meson.project_source_root() + '/../' + game + '_data/music'
+  game_fmv_root = meson.project_source_root() + '/../' + game + '_data/fmv'
+  preload_mappings = [
+    data_root + '/common/ship/cfg@/cfg',
+    data_root + '/' + game + '/ship/cfg@/cfg',
+    data_root + '/common/ship/shaders@/shaders',
+    # Ship data: injections (.bin), Lua scripts, etc.
+    # Mapped to /data so that "data/injections/foo.bin" resolves to
+    # /data/injections/foo.bin in the virtual filesystem.
+    data_root + '/' + game + '/ship/data@/data',
+    game_data_root + '@/data',
+    # Music tracks (FLAC/OGG/MP3) — mapped to /music/ so that the
+    # backend_files music backend finds them via File_DirExists("music").
+    game_music_root + '@/music',
+    # FMV cutscenes (MP4, converted from original formats at build time)
+    # — mapped to /fmv/ so that FMV_Play("fmv/...") finds the .mp4 files.
+    game_fmv_root + '@/fmv',
+  ]
+  foreach mapping : preload_mappings
+    link_args += ['--preload-file', mapping]
+  endforeach
 endif
 
 
@@ -801,6 +905,11 @@ endif
 
 trx_sources = common_sources + [trx_init, trx_resources, trx_lua_embed]
 
+trx_name_suffix = []
+if is_emscripten
+  trx_name_suffix = 'html'
+endif
+
 executable(
   'TRX',
   trx_sources,
@@ -810,6 +919,7 @@ executable(
   install: true,
   install_tag: 'common',
   c_args: ['-I.'],
+  name_suffix: trx_name_suffix,
 )
 
 if host_machine.system() == 'darwin'
