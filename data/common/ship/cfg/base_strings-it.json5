@@ -643,6 +643,8 @@
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Corregge la precisione della mira dell'M16/MP5 mentre Lara corre.",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "Correggi priorità scimmie",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "Le scimmie sotto attacco daranno priorità alla rappresaglia piuttosto che alla raccolta di Kit Medici e Chiavi.",
+        "SETTING_FIX_PIPEMAN_AIM": "\\{review}Corregge la mira del pipeman",
+        "SETTING_FIX_PIPEMAN_AIM_DESCRIPTION": "\\{review}Corregge un problema per cui il pipeman a volte non riesce a mirare correttamente a Lara con i dardi.",
         "SETTING_FIX_QWOP_GLITCH": "Correggi errore QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Risolve il problema per cui a volte Lara, saltando da piccoli gradini, provoca una strana animazione di corsa nota come stato QWOP.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Musica segreti in polifonia",

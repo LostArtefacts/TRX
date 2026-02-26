@@ -183,5 +183,6 @@
         "enable_weather",
         "enable_footprints",
         "ally_hostility_policy",
+        "fix_pipeman_aim",
     ],
 }

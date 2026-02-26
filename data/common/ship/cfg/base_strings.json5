@@ -643,6 +643,8 @@
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Fixes the accuracy of the M16/MP5 while Lara is running.",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "Fix monkey pickup priority",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "Attacked monkeys will prioritize retaliating over collecting Medi packs and Keys.",
+        "SETTING_FIX_PIPEMAN_AIM": "Fix pipeman aim",
+        "SETTING_FIX_PIPEMAN_AIM_DESCRIPTION": "Fixes the pipeman sometimes not being able to aim darts at Lara correctly.",
         "SETTING_FIX_QWOP_GLITCH": "Fix QWOP glitch",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Fixes Lara jumping on small steps sometimes resulting in a weird running animation, known as a QWOP state.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Layered secret music",

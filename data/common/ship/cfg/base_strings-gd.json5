@@ -643,6 +643,8 @@
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Càradh cruinneas M16/MP5 fhad 's a tha Lara a' ruith.",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "Cuir prìomhachas air togail muncaidh ceart",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "Bidh muncaidhean air an ionnsaigh a' cur prìomhachas air freagairt air ais seach a bhith a' cruinneachadh pacaidean Medi agus iuchraichean.",
+        "SETTING_FIX_PIPEMAN_AIM": "Càradh amas an fhir-phìoba",
+        "SETTING_FIX_PIPEMAN_AIM_DESCRIPTION": "Càraichidh seo duilgheadas far nach urrainn don fhear-phìoba uaireannan saighdean a chuimseachadh air Lara gu ceart.",
         "SETTING_FIX_QWOP_GLITCH": "Càraich glitch QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Càradh glitch - ris an canar QWOP - far am bi Lara a' leum air ceumannan beaga agus a' toiseachadh gluasad gu neònach tron làr.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Ceòl dìomhaireachd ioma-fhilleadh",

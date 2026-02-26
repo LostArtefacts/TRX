@@ -193,5 +193,6 @@
         "enable_wading",
         "restore_ps1_enemies",
         "fix_speeches_killing_music",
+        "fix_pipeman_aim",
     ],
 }

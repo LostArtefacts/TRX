@@ -643,6 +643,8 @@
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "Naprawia celność M16/MP5 podczas biegania.",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "Priorytet ataku u małp",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "Zaatakowane małpy skupią się na odwecie zamiast podnosić apteczki i klucze.",
+        "SETTING_FIX_PIPEMAN_AIM": "\\{review}Popraw celowanie dmuchawką",
+        "SETTING_FIX_PIPEMAN_AIM_DESCRIPTION": "\\{review}Naprawia problem, przez który strzelec z dmuchawki czasami nie potrafi poprawnie wycelować w Larę.",
         "SETTING_FIX_QWOP_GLITCH": "Napraw glitch QWOP",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Naprawia rzadki problem pojawiający się, kiedy Lara zeskakuje z małych schodków, co skutkuje dziwną animacją biegu znaną jako stan QWOP.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Warstwowe dźwięki sekretów",

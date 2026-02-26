@@ -643,6 +643,8 @@
         "SETTING_FIX_M16_ACCURACY_DESCRIPTION": "\\{review}Fixt die Genauigkeit des M16/MP5, während Lara rennt.",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY": "\\{review}Behebe die Priorität beim Aufheben von Affen",
         "SETTING_FIX_MONKEY_PICKUP_PRIORITY_DESCRIPTION": "\\{review}Angegriffene Affen werden das Zurückschlagen priorisieren, bevor sie Medi-Packs und Schlüssel aufsammeln.",
+        "SETTING_FIX_PIPEMAN_AIM": "\\{review}Blasrohr-Zielen fixen",
+        "SETTING_FIX_PIPEMAN_AIM_DESCRIPTION": "\\{review}Behebt ein Problem, bei dem der Blasrohrschütze Lara manchmal nicht korrekt mit Pfeilen anvisieren kann.",
         "SETTING_FIX_QWOP_GLITCH": "Fix: QWOP-Glitch",
         "SETTING_FIX_QWOP_GLITCH_DESCRIPTION": "Fixt, dass Lara auf kleinen Stufen springt, was manchmal in einer seltsamen Lauf-Animation resultiert, bekannt als QWOP-Zustand.",
         "SETTING_FIX_SECRETS_KILLING_MUSIC": "Überlagernde Geheimnis-Musik",

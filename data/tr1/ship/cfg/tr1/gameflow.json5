@@ -584,5 +584,6 @@
         "enable_footprints",
         "ally_hostility_policy",
         "fix_monkey_pickup_priority",
+        "fix_pipeman_aim",
     ],
 }
