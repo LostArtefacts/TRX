@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <time.h>
 
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+#endif
+
 static bool m_Disabled = false;
 static Uint64 m_LastCounter = 0;
 static Uint64 m_InitCounter = 0;
@@ -130,7 +134,13 @@ int32_t Clock_WaitTick(void)
         double delay_ms = (needed / m_Frequency) * 1000.0;
 
         if (delay_ms > 0) {
+#ifdef EMSCRIPTEN_BUILD
+            // Use emscripten_sleep() so ASYNCIFY yields to the browser
+            // event loop instead of busy-waiting.
+            emscripten_sleep((unsigned int)delay_ms);
+#else
             SDL_Delay((Uint32)delay_ms);
+#endif
         }
 
         // After waiting, measure again to be accurate
@@ -147,6 +157,14 @@ int32_t Clock_WaitTick(void)
             frames = 1;
         }
     }
+#ifdef EMSCRIPTEN_BUILD
+    else {
+        // Behind schedule — yield once so the browser event loop isn't starved.
+        // The ahead-of-schedule path already yields via
+        // emscripten_sleep(delay_ms).
+        emscripten_sleep(0);
+    }
+#endif
 
     // Consume the frames from the m_Accumulator
     m_Accumulator -= frames * frame_ticks;

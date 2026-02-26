@@ -87,8 +87,20 @@ void Shell_ScanAvailableMods(void)
 
     for (int32_t i = 0; m_KnownMods[i].name != nullptr; i++) {
         SHELL_MOD *const mod = &m_KnownMods[i];
+#ifdef EMSCRIPTEN_BUILD
+        // On the web platform, mark base game mods as available even if the
+        // gameflow file isn't found yet.  Game data may be loaded lazily via
+        // fetch or drag-and-drop after initial page load.
+        if (mod->mod_type == MOD_BASE_GAME) {
+            mod->is_available = true;
+        } else {
+            mod->is_available =
+                TRXPath_Exists(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+        }
+#else
         mod->is_available =
             TRXPath_Exists(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+#endif
     }
 }
 

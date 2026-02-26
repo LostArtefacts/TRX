@@ -21,6 +21,13 @@
 
 #include <stdio.h>
 
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
+#else
+    #define WEBGL_LOG(...) ((void)0)
+#endif
+
 #define M_MAX_PHASES 10
 
 static int32_t m_CurrentFrame = 0;
@@ -202,6 +209,7 @@ static void M_Draw(PHASE *const phase)
 
 GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
 {
+    WEBGL_LOG("[WEBGL] PhaseExecutor_Run entered, stack=%d", m_PhaseStackSize);
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     bool skip_fade_out = false;
 
@@ -231,9 +239,11 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
 
     if (phase->start != nullptr) {
+        WEBGL_LOG("[WEBGL] phase->start() calling...");
         Clock_SyncTick();
         g_OldInputDB = g_Input;
         const PHASE_CONTROL control = phase->start(phase);
+        WEBGL_LOG("[WEBGL] phase->start() returned action=%d", control.action);
         if (Shell_IsExiting()) {
             gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
             goto finish;
@@ -247,9 +257,18 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
         }
     }
 
+    WEBGL_LOG("[WEBGL] Entering main frame loop");
+    static int s_FrameLog = 0;
     while (true) {
         int32_t nframes = Clock_WaitTick();
+        if (s_FrameLog < 10 || s_FrameLog % 60 == 0) {
+            WEBGL_LOG("[WEBGL] frame=%d nframes=%d", s_FrameLog, nframes);
+        }
+        s_FrameLog++;
         int32_t frame = 0;
+#ifdef EMSCRIPTEN_BUILD
+        int no_wait_count = 0;
+#endif
         while (true) {
             const PHASE_CONTROL control = M_Control(phase);
             if (control.action == PHASE_ACTION_END) {
@@ -268,6 +287,13 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
                 }
                 goto finish;
             } else if (control.action == PHASE_ACTION_NO_WAIT) {
+#ifdef EMSCRIPTEN_BUILD
+                // Prevent infinite spin without yielding to browser
+                if (++no_wait_count > 1000) {
+                    emscripten_sleep(0);
+                    no_wait_count = 0;
+                }
+#endif
                 continue;
             }
 

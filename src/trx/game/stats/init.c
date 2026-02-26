@@ -23,6 +23,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
+#else
+    #define WEBGL_LOG(...) ((void)0)
+#endif
+
 #define M_FNV_1A_BASE 14695981039346656037ULL
 #define M_FNV_1A_PRIME 1099511628211ULL
 #define M_CACHE_VERSION 4
@@ -362,47 +369,88 @@ LEVEL_MAX_STATS *Stats_GetLevelMaxStats(const GF_LEVEL *const level)
 void Stats_CalculateMaxStats(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    WEBGL_LOG("[WEBGL] Stats: enter, level_count=%d", level_table->count);
     M_EnsureStatsStorage(level_table->count);
     memset(m_Stats, 0, sizeof(LEVEL_MAX_STATS) * (size_t)m_StatsCapacity);
 
     BENCHMARK benchmark = Benchmark_Start();
     const char *const cache_path = M_GetCachePath();
+    WEBGL_LOG(
+        "[WEBGL] Stats: cache_path=%s", cache_path ? cache_path : "(null)");
     const uint64_t expected_checksum = M_ComputeInputsChecksum(level_table);
+    WEBGL_LOG("[WEBGL] Stats: checksum computed, trying cache...");
     if (M_TryLoadCache(cache_path, expected_checksum, level_table)) {
+        WEBGL_LOG("[WEBGL] Stats: cache HIT, skipping scan");
         goto finish;
     }
+    WEBGL_LOG("[WEBGL] Stats: cache MISS, scanning all levels");
 
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         if (level->type != GFL_NORMAL && level->type != GFL_BONUS) {
+            WEBGL_LOG("[WEBGL] Stats: level[%d] type=%d SKIP", i, level->type);
             continue;
         }
 
+        WEBGL_LOG(
+            "[WEBGL] Stats: level[%d] type=%d path=%s — yielding...", i,
+            level->type, level->path ? level->path : "(null)");
+#ifdef EMSCRIPTEN_BUILD
+        // Yield to the browser between level scans so the page stays
+        // responsive while scanning all level files.
+        emscripten_sleep(0);
+#endif
+        WEBGL_LOG("[WEBGL] Stats: level[%d] — resumed from yield", i);
+
         VFILE *const file = VFile_CreateFromPath(level->path);
         if (file == nullptr) {
+            WEBGL_LOG(
+                "[WEBGL] Stats: level[%d] — VFile_CreateFromPath FAILED", i);
             continue;
         }
+        WEBGL_LOG(
+            "[WEBGL] Stats: level[%d] — file opened, size=%zu", i, file->size);
 
         const LEVEL_FORMAT_LOADER *const loader =
             Level_Format_GuessLoader(file);
         if (loader != nullptr) {
+            WEBGL_LOG(
+                "[WEBGL] Stats: level[%d] — loader found, calling "
+                "Creature_Reset",
+                i);
             Creature_Reset();
 
+            WEBGL_LOG("[WEBGL] Stats: level[%d] — Lua setup", i);
             Lua_ClearLevelListeners();
             Lua_SetScriptContext(LUA_CONTEXT_LEVEL);
             if (level->script_path != nullptr) {
+                WEBGL_LOG(
+                    "[WEBGL] Stats: level[%d] — Lua_EvalFile(%s)", i,
+                    level->script_path);
                 LUA_RESULT res = Lua_EvalFile(level->script_path);
                 if (res.code != LUA_OK) {
                     LOG_ERROR("Lua level script error: %s", res.message);
+                    WEBGL_LOG(
+                        "[WEBGL] Stats: level[%d] — Lua ERROR: %s", i,
+                        res.message);
                 }
                 Lua_FreeResult(&res);
             }
             Lua_SetScriptContext(LUA_CONTEXT_GLOBAL);
+            WEBGL_LOG("[WEBGL] Stats: level[%d] — Lua_FireEvent", i);
             Lua_FireEventInt32(LUA_EVENT_BEFORE_LEVEL_FILE, level->num);
 
+            WEBGL_LOG("[WEBGL] Stats: level[%d] — Inject_InitLevel", i);
             Inject_InitLevel(level, INJECTION_MODE_STATS);
+            WEBGL_LOG("[WEBGL] Stats: level[%d] — loader->probe", i);
             if (loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS)) {
+                WEBGL_LOG(
+                    "[WEBGL] Stats: level[%d] — probe OK, Inject_AllInjections",
+                    i);
                 Inject_AllInjections();
+                WEBGL_LOG(
+                    "[WEBGL] Stats: level[%d] — injections done, linking items",
+                    i);
 
                 for (int32_t item_num = 0; item_num < Item_GetTotalCount();
                      item_num++) {
@@ -411,15 +459,25 @@ void Stats_CalculateMaxStats(void)
                     item->next_item = room->item_num;
                     room->item_num = item_num;
                 }
+                WEBGL_LOG(
+                    "[WEBGL] Stats: level[%d] — Carrier_InitialiseLevel", i);
                 Carrier_InitialiseLevel(level);
 
+                WEBGL_LOG("[WEBGL] Stats: level[%d] — Stats_ScanLevel", i);
                 Stats_ScanLevel(level);
+                WEBGL_LOG("[WEBGL] Stats: level[%d] — scan complete", i);
+            } else {
+                WEBGL_LOG("[WEBGL] Stats: level[%d] — probe FAILED", i);
             }
+            WEBGL_LOG("[WEBGL] Stats: level[%d] — Inject_Cleanup", i);
             Inject_Cleanup();
+        } else {
+            WEBGL_LOG("[WEBGL] Stats: level[%d] — no loader found", i);
         }
 
         GameBuf_Reset();
         VFile_Close(file);
+        WEBGL_LOG("[WEBGL] Stats: level[%d] — iteration complete", i);
 
 #if 0
         const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
@@ -434,9 +492,12 @@ void Stats_CalculateMaxStats(void)
 #endif
     }
 
+    WEBGL_LOG("[WEBGL] Stats: all levels scanned, writing cache...");
     M_WriteCache(cache_path, expected_checksum, level_table);
+    WEBGL_LOG("[WEBGL] Stats: cache written");
 
 finish:
+    WEBGL_LOG("[WEBGL] Stats: computing final stats...");
     const FINAL_STATS final_stats = Stats_ComputeFinalStats(true);
     LOG_INFO("Max pickups: %d", final_stats.max_stats.max_pickup_count);
     LOG_INFO("Max kills:   %d", final_stats.max_stats.max_kill_count);
@@ -444,4 +505,5 @@ finish:
     LOG_INFO("  enemies:   %d", final_stats.max_stats.max_kill_non_ally_count);
     LOG_INFO("Max secrets: %d", final_stats.max_stats.max_secret_count);
     Benchmark_End(&benchmark, nullptr);
+    WEBGL_LOG("[WEBGL] Stats: RETURNING from Stats_CalculateMaxStats");
 }

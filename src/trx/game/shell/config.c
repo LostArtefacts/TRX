@@ -39,6 +39,14 @@ void Shell_SyncToWindow(void)
         g_Config.window.height);
 
     SDL_Window *const window = Shell_GetWindow();
+
+#ifdef EMSCRIPTEN_BUILD
+    // On the web the browser/CSS owns the canvas size; never call
+    // SDL_SetWindowSize or SDL_SetWindowFullscreen — doing so overrides
+    // the CSS-driven dimensions and breaks the aspect ratio.
+    return;
+#endif
+
     if (g_Config.window.is_fullscreen) {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
         SDL_ShowCursor(SDL_DISABLE);

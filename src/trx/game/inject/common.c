@@ -15,6 +15,13 @@
 #include <string.h>
 #include <zlib.h>
 
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
+#else
+    #define WEBGL_LOG(...) ((void)0)
+#endif
+
 #define M_INJECTION_CURRENT_VERSION 6
 #define M_VIRTUAL_NAME "virtual_injection"
 
@@ -353,9 +360,20 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
         return;
     }
 
+    WEBGL_LOG(
+        "[WEBGL] Inject_InitLevel: %d injections, mode=%d", m_NumInjections,
+        mode);
     BENCHMARK benchmark = Benchmark_Start();
 
     m_Injections = Memory_Alloc(sizeof(INJECTION) * m_NumInjections);
+#ifdef EMSCRIPTEN_BUILD
+    // Emscripten does not support pthreads without -pthread and
+    // SharedArrayBuffer.  Load injections sequentially instead of
+    // using a thread pool to avoid SDL_CreateThread crashes.
+    for (int32_t i = 0; i < m_NumInjections; i++) {
+        M_LoadFromFile(&m_Injections[i], level->injections.data_paths[i]);
+    }
+#else
     if (m_NumInjections > 1) {
         M_LOAD_JOB *const jobs =
             Memory_Alloc(sizeof(M_LOAD_JOB) * m_NumInjections);
@@ -377,6 +395,7 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
     } else {
         M_LoadFromFile(&m_Injections[0], level->injections.data_paths[0]);
     }
+#endif
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
         M_InitialiseInjection(&m_Injections[i]);
@@ -399,9 +418,13 @@ void Inject_AppendInjection(VFILE *const file)
 void Inject_AllInjections(void)
 {
     if (m_Injections == nullptr) {
+        WEBGL_LOG("[WEBGL] Inject_AllInjections: no injections");
         return;
     }
 
+    WEBGL_LOG(
+        "[WEBGL] Inject_AllInjections: processing %d injections (mode=%d)",
+        m_NumInjections, m_Context.mode);
     BENCHMARK benchmark = Benchmark_Start();
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
@@ -440,6 +463,17 @@ void Inject_AllInjections(void)
             m_Handlers[chunk.type](&m_Context, chunk);
         }
 
+        {
+            const size_t pos = VFile_GetPos(injection->fp);
+            const size_t sz = injection->fp->size;
+            if (pos != sz) {
+                WEBGL_LOG(
+                    "[WEBGL] Inject_AllInjections: ASSERT WILL FAIL! "
+                    "injection[%d] path=%s pos=%zu size=%zu",
+                    i, injection->path ? injection->path : "(embedded)", pos,
+                    sz);
+            }
+        }
         ASSERT(VFile_GetPos(injection->fp) == injection->fp->size);
     }
 

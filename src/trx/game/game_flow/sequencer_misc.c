@@ -15,14 +15,24 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell/common.h>
 
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
+#else
+    #define WEBGL_LOG(...) ((void)0)
+#endif
+
 GF_COMMAND GF_RunTitle(void)
 {
+    WEBGL_LOG("[WEBGL] GF_RunTitle: initialising title level...");
     Savegame_UnbindSlot();
     GameStringTable_Apply(nullptr);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
     if (!Level_Initialise(title_level, GFSC_NORMAL)) {
+        WEBGL_LOG("[WEBGL] GF_RunTitle: Level_Initialise FAILED");
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
     }
+    WEBGL_LOG("[WEBGL] GF_RunTitle: showing inventory (title mode)...");
     return GF_ShowInventory(INV_TITLE_MODE);
 }
 

@@ -42,6 +42,14 @@
 #include <trx/version.h>
 
 #include <SDL2/SDL.h>
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+    // Direct console output that bypasses file-based logging for diagnostics.
+    // EM_LOG_CONSOLE = 0x02
+    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
+#else
+    #define WEBGL_LOG(...) ((void)0)
+#endif
 #include <stdio.h>
 
 static SHELL_SESSION *m_Session = nullptr;
@@ -73,10 +81,18 @@ static void M_CreateGLContext(void)
     if (TRX_GL_Context_GetWindowHandle() != nullptr) {
         return; // GL context persists across mod switches
     }
+
+#ifdef EMSCRIPTEN_BUILD
+    // WebGL 2.0 = OpenGL ES 3.0
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+#else
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(
         SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
     if (!TRX_GL_Context_Attach(m_Window)) {
         Shell_ExitSystem("System Error: cannot attach opengl context");
     }
@@ -323,6 +339,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
 
     LOG_INFO("Game directory: %s", TRXPath_Get(TRX_PATH_TRX_DIR));
 
+    WEBGL_LOG("[WEBGL] Shell_Main: initializing modules...");
     M_InitModules();
     M_PrepareSystem();
     if (s->args->mod == nullptr) {
@@ -330,6 +347,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         return 1;
     }
     TRXPath_Init(s->args);
+    WEBGL_LOG("[WEBGL] Shell_Main: creating window and GL context...");
     M_CreateGameWindow();
     M_CreateGLContext();
     Output_Init();
@@ -337,6 +355,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         M_ShowWindow();
     }
 
+    WEBGL_LOG("[WEBGL] Shell_Main: loading game flow...");
     GF_Init();
     GF_LoadFromFile(Shell_GetGameFlowPath(s->args->mod));
 
@@ -376,8 +395,13 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         Lua_FreeResult(&res);
     }
 
+    WEBGL_LOG("[WEBGL] Shell_Main: calculating max stats...");
     Stats_CalculateMaxStats();
+    WEBGL_LOG("[WEBGL] Shell_Main: max stats done, starting frontend...");
+    LOG_INFO("[WEBGL] Starting frontend sequence...");
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
+    WEBGL_LOG("[WEBGL] Shell_Main: frontend returned action=%d", gf_cmd.action);
+    LOG_INFO("[WEBGL] Frontend sequence returned action=%d", gf_cmd.action);
 
     bool loop_continue = !Shell_IsExiting();
     while (loop_continue) {

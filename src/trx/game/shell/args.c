@@ -75,6 +75,16 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         result->engine_version = g_TRVersion;
     }
 
+#ifdef EMSCRIPTEN_BUILD
+    // On the web platform, default to the engine version selected at build
+    // time (via -Dgame=tr1/tr2) if no engine version was specified.
+    // Without command-line args, engine_version stays 0 and no mods will be
+    // found (the assertion in Shell_Main requires one of these to be set).
+    if (result->engine_version == 0) {
+        result->engine_version = EMSCRIPTEN_DEFAULT_ENGINE_VERSION;
+    }
+#endif
+
     result->mod = Shell_GetModByType(MOD_BASE_GAME, result->engine_version);
 
     // Second pass: remaining options.

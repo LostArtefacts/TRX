@@ -18,6 +18,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+#endif
+
 typedef struct {
     int32_t game_index;
     int32_t file_index;
@@ -68,6 +72,14 @@ static void M_InitialiseSamplesFromFile(
 
     for (int32_t i = 0, current_sample = 0; current_sample < sample_count;
          i++) {
+#ifdef EMSCRIPTEN_BUILD
+        // Yield periodically during sample loading (every 10 samples)
+        // to keep the browser responsive when loading many audio samples.
+        if (i > 0 && i % 10 == 0) {
+            emscripten_sleep(0);
+        }
+#endif
+
         uint32_t header[11] = {};
         File_ReadData(fp, header, 11 * sizeof(uint32_t));
         if (header[0] != MKTAG('R', 'I', 'F', 'F')
@@ -191,10 +203,26 @@ void Level_Pipeline_Load(const GF_LEVEL *const level)
     LOG_INFO("%d (%s)", level->num, level->path);
     BENCHMARK benchmark = Benchmark_Start();
 
+#ifdef EMSCRIPTEN_BUILD
+    // Yield to the browser before heavy file I/O and parsing to prevent
+    // the event loop from being starved. Level loading can take 50-200ms
+    // for large level files, which would freeze the browser without yielding.
+    emscripten_log(
+        0x02,
+        "[WEBGL] Level_Pipeline_Load: yielding before load (level=%d, path=%s)",
+        level->num, level->path ? level->path : "(null)");
+    emscripten_sleep(0);
+    emscripten_log(
+        0x02, "[WEBGL] Level_Pipeline_Load: resumed, loading file...");
+#endif
+
     Inject_InitLevel(level, INJECTION_MODE_FULL);
     const LEVEL_FORMAT_LOADER *const loader = Level_Format_LoadFromFile(level);
     M_CompleteSetup(loader, level);
     Inject_Cleanup();
 
+#ifdef EMSCRIPTEN_BUILD
+    emscripten_log(0x02, "[WEBGL] Level_Pipeline_Load: complete");
+#endif
     Benchmark_End(&benchmark, nullptr);
 }

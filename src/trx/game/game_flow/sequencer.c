@@ -12,6 +12,13 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 
+#ifdef EMSCRIPTEN_BUILD
+    #include <emscripten.h>
+    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
+#else
+    #define WEBGL_LOG(...) ((void)0)
+#endif
+
 static GF_COMMAND M_RunEvent(
     const GF_LEVEL *const level, const GF_SEQUENCE *const sequence,
     const int32_t event_idx, const GF_SEQUENCE_CONTEXT seq_ctx,
@@ -267,7 +274,11 @@ GF_COMMAND GF_InterpretSequence(
 
     // load the level
     if (seq_ctx != GFSC_STORY || level->type == GFL_CUTSCENE) {
+        WEBGL_LOG(
+            "[WEBGL] GF_InterpretSequence: loading level %d (type=%d)",
+            level->num, level->type);
         if (!Level_Initialise(level, seq_ctx)) {
+            WEBGL_LOG("[WEBGL] GF_InterpretSequence: Level_Initialise FAILED");
             Game_SetCurrentLevel(nullptr);
             GF_SetCurrentLevel(nullptr);
             if (level->type == GFL_TITLE) {
@@ -276,13 +287,22 @@ GF_COMMAND GF_InterpretSequence(
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
             }
         }
+        WEBGL_LOG("[WEBGL] GF_InterpretSequence: level loaded");
     }
 
     const GF_SEQUENCE *const sequence = &level->sequence;
+    WEBGL_LOG(
+        "[WEBGL] GF_InterpretSequence: running %d sequence events",
+        sequence->length);
     for (int32_t i = 0; i < sequence->length; i++) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[i];
+        WEBGL_LOG(
+            "[WEBGL] GF_InterpretSequence: event[%d] type=%d", i, event->type);
         gf_cmd = M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg);
         if (gf_cmd.action != GF_NOOP) {
+            WEBGL_LOG(
+                "[WEBGL] GF_InterpretSequence: event[%d] returned action=%d", i,
+                gf_cmd.action);
             return gf_cmd;
         }
 
