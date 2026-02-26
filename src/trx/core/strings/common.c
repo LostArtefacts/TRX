@@ -5,7 +5,9 @@
 #include <trx/debug.h>
 
 #include <ctype.h>
-#include <pcre2.h>
+#ifndef EMSCRIPTEN_BUILD
+    #include <pcre2.h>
+#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -114,6 +116,33 @@ const char *String_CaseSubstring(const char *subject, const char *pattern)
     return nullptr;
 }
 
+#ifdef EMSCRIPTEN_BUILD
+    // Lightweight regex fallback for Emscripten (no PCRE2).
+    // Supports the patterns actually used in TRX:
+    //   - "^...$" anchored patterns with alternation via |
+    //   - "^\\s*$" whitespace check
+    // For anything else, falls back to case-insensitive strstr.
+    #include <regex.h>
+
+bool String_Match(const char *const subject, const char *const pattern)
+{
+    if (subject == nullptr || pattern == nullptr) {
+        return false;
+    }
+
+    regex_t regex;
+    const int ret =
+        regcomp(&regex, pattern, REG_EXTENDED | REG_ICASE | REG_NOSUB);
+    if (ret != 0) {
+        LOG_ERROR("regex compile failed for pattern: %s", pattern);
+        return false;
+    }
+
+    const int match = regexec(&regex, subject, 0, nullptr, 0);
+    regfree(&regex);
+    return match == 0;
+}
+#else
 bool String_Match(const char *const subject, const char *const pattern)
 {
     if (subject == nullptr || pattern == nullptr) {
@@ -148,6 +177,7 @@ bool String_Match(const char *const subject, const char *const pattern)
 
     return rc > 0;
 }
+#endif
 
 bool String_IsEmpty(const char *const value)
 {

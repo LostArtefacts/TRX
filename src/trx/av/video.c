@@ -1,3 +1,9 @@
+#ifdef EMSCRIPTEN_BUILD
+// FFmpeg video playback is not available on the web platform.
+// The Video_* API is unused; FMV playback uses the browser's HTML5 <video>
+// element instead (see fmv.c).
+#else
+
 /*
  * Copyright (c) 2003 Fabrice Bellard
  *
@@ -18,72 +24,72 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <trx/av/video.h>
+    #include <trx/av/video.h>
 
-#include <trx/core/filesystem.h>
-#include <trx/core/log.h>
-#include <trx/core/memory.h>
-#include <trx/core/strings.h>
+    #include <trx/core/filesystem.h>
+    #include <trx/core/log.h>
+    #include <trx/core/memory.h>
+    #include <trx/core/strings.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_error.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keycode.h>
-#include <SDL2/SDL_mutex.h>
-#include <SDL2/SDL_pixels.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_stdinc.h>
-#include <SDL2/SDL_thread.h>
-#include <SDL2/SDL_video.h>
-#include <errno.h>
-#include <libavcodec/avcodec.h>
-#include <libavcodec/codec.h>
-#include <libavcodec/codec_id.h>
-#include <libavcodec/codec_par.h>
-#include <libavcodec/packet.h>
-#include <libavformat/avformat.h>
-#include <libavformat/avio.h>
-#include <libavutil/attributes.h>
-#include <libavutil/avutil.h>
-#include <libavutil/channel_layout.h>
-#include <libavutil/common.h>
-#include <libavutil/dict.h>
-#include <libavutil/error.h>
-#include <libavutil/fifo.h>
-#include <libavutil/frame.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/macros.h>
-#include <libavutil/mathematics.h>
-#include <libavutil/mem.h>
-#include <libavutil/pixfmt.h>
-#include <libavutil/rational.h>
-#include <libavutil/samplefmt.h>
-#include <libavutil/time.h>
-#include <libswresample/swresample.h>
-#include <libswscale/swscale.h>
-#include <math.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_audio.h>
+    #include <SDL2/SDL_error.h>
+    #include <SDL2/SDL_events.h>
+    #include <SDL2/SDL_keycode.h>
+    #include <SDL2/SDL_mutex.h>
+    #include <SDL2/SDL_pixels.h>
+    #include <SDL2/SDL_rect.h>
+    #include <SDL2/SDL_render.h>
+    #include <SDL2/SDL_stdinc.h>
+    #include <SDL2/SDL_thread.h>
+    #include <SDL2/SDL_video.h>
+    #include <errno.h>
+    #include <libavcodec/avcodec.h>
+    #include <libavcodec/codec.h>
+    #include <libavcodec/codec_id.h>
+    #include <libavcodec/codec_par.h>
+    #include <libavcodec/packet.h>
+    #include <libavformat/avformat.h>
+    #include <libavformat/avio.h>
+    #include <libavutil/attributes.h>
+    #include <libavutil/avutil.h>
+    #include <libavutil/channel_layout.h>
+    #include <libavutil/common.h>
+    #include <libavutil/dict.h>
+    #include <libavutil/error.h>
+    #include <libavutil/fifo.h>
+    #include <libavutil/frame.h>
+    #include <libavutil/imgutils.h>
+    #include <libavutil/macros.h>
+    #include <libavutil/mathematics.h>
+    #include <libavutil/mem.h>
+    #include <libavutil/pixfmt.h>
+    #include <libavutil/rational.h>
+    #include <libavutil/samplefmt.h>
+    #include <libavutil/time.h>
+    #include <libswresample/swresample.h>
+    #include <libswscale/swscale.h>
+    #include <math.h>
+    #include <stdint.h>
+    #include <stdlib.h>
+    #include <string.h>
 
-#define MAX_QUEUE_SIZE (15 * 1024 * 1024)
-#define MIN_FRAMES 25
-#define SDL_AUDIO_MIN_BUFFER_SIZE 512
-#define SDL_AUDIO_MAX_CALLBACKS_PER_SEC 30
-#define AV_SYNC_THRESHOLD_MIN 0.04
-#define AV_SYNC_THRESHOLD_MAX 0.1
-#define AV_SYNC_FRAMEDUP_THRESHOLD 0.1
-#define AV_NOSYNC_THRESHOLD 10.0
-#define SAMPLE_CORRECTION_PERCENT_MAX 10
-#define AUDIO_DIFF_AVG_NB 20
-#define REFRESH_RATE 0.01
-#define SAMPLE_ARRAY_SIZE (8 * 65536)
-#define VIDEO_PICTURE_QUEUE_SIZE 3
-#define SAMPLE_QUEUE_SIZE 9
-#define FRAME_QUEUE_SIZE FFMAX(SAMPLE_QUEUE_SIZE, VIDEO_PICTURE_QUEUE_SIZE)
-#define FF_QUIT_EVENT (SDL_USEREVENT + 2)
+    #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
+    #define MIN_FRAMES 25
+    #define SDL_AUDIO_MIN_BUFFER_SIZE 512
+    #define SDL_AUDIO_MAX_CALLBACKS_PER_SEC 30
+    #define AV_SYNC_THRESHOLD_MIN 0.04
+    #define AV_SYNC_THRESHOLD_MAX 0.1
+    #define AV_SYNC_FRAMEDUP_THRESHOLD 0.1
+    #define AV_NOSYNC_THRESHOLD 10.0
+    #define SAMPLE_CORRECTION_PERCENT_MAX 10
+    #define AUDIO_DIFF_AVG_NB 20
+    #define REFRESH_RATE 0.01
+    #define SAMPLE_ARRAY_SIZE (8 * 65536)
+    #define VIDEO_PICTURE_QUEUE_SIZE 3
+    #define SAMPLE_QUEUE_SIZE 9
+    #define FRAME_QUEUE_SIZE FFMAX(SAMPLE_QUEUE_SIZE, VIDEO_PICTURE_QUEUE_SIZE)
+    #define FF_QUIT_EVENT (SDL_USEREVENT + 2)
 
 typedef struct {
     AVPacket *pkt;
@@ -1322,7 +1328,7 @@ static int M_AudioDecodeFrame(M_STATE *is)
     }
 
     do {
-#if defined(_WIN32)
+    #if defined(_WIN32)
         while (M_FrameQueueNBRemaining(&is->sampq) == 0) {
             if ((av_gettime_relative() - m_AudioCallbackTime) > 1000000LL
                     * is->audio_hw_buf_size / is->audio_tgt.bytes_per_sec / 2) {
@@ -1330,7 +1336,7 @@ static int M_AudioDecodeFrame(M_STATE *is)
             }
             av_usleep(1000);
         }
-#endif
+    #endif
         if (!(af = M_FrameQueuePeekReadable(&is->sampq))) {
             return -1;
         }
@@ -2138,3 +2144,5 @@ void Video_SetRenderEndFunc(
     is->render_end_func = func;
     is->render_end_func_user_data = user_data;
 }
+
+#endif // !EMSCRIPTEN_BUILD

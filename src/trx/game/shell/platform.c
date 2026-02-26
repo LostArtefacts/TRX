@@ -9,8 +9,10 @@
 #endif
 
 #include <SDL2/SDL.h>
-#include <libavcodec/version.h>
-#include <libavutil/log.h>
+#ifndef EMSCRIPTEN_BUILD
+    #include <libavcodec/version.h>
+    #include <libavutil/log.h>
+#endif
 
 void Shell_SetupHiDPI(void)
 {
@@ -22,17 +24,21 @@ void Shell_SetupHiDPI(void)
 
 void Shell_SetupLibAV(void)
 {
-#ifdef _WIN32
+#ifdef EMSCRIPTEN_BUILD
+    // FFmpeg is not available on the web platform; nothing to initialize.
+#else
+    #ifdef _WIN32
     // necessary for SDL_OpenAudioDevice to work with WASAPI
     // https://www.mail-archive.com/ffmpeg-trac@avcodec.org/msg43300.html
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-#endif
+    #endif
 
-#if LIBAVCODEC_VERSION_MAJOR <= 57
+    #if LIBAVCODEC_VERSION_MAJOR <= 57
     av_register_all();
-#endif
+    #endif
 
     av_log_set_level(AV_LOG_ERROR);
+#endif // !EMSCRIPTEN_BUILD
 }
 
 #ifdef _WIN32

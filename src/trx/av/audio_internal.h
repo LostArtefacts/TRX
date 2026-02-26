@@ -3,7 +3,9 @@
 #include <trx/av/audio.h>
 
 #include <SDL2/SDL_audio.h>
-#include <libavformat/avformat.h>
+#ifndef EMSCRIPTEN_BUILD
+    #include <libavformat/avformat.h>
+#endif
 
 #define AUDIO_WORKING_RATE 44100
 #define AUDIO_WORKING_FORMAT AUDIO_F32
@@ -15,9 +17,11 @@ extern SDL_AudioDeviceID g_AudioDeviceID;
 void Audio_LockDevice(void);
 void Audio_UnlockDevice(void);
 
+#ifndef EMSCRIPTEN_BUILD
 int32_t Audio_GetAVChannelLayout(int32_t sample_fmt);
 int32_t Audio_GetAVAudioFormat(int32_t sample_fmt);
 int32_t Audio_GetSDLAudioFormat(enum AVSampleFormat sample_fmt);
+#endif
 
 void Audio_Sample_Init(void);
 void Audio_Sample_Shutdown(void);

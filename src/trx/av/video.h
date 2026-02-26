@@ -1,7 +1,10 @@
 #pragma once
 
-#include <libavutil/pixfmt.h>
 #include <stdint.h>
+
+#ifndef EMSCRIPTEN_BUILD
+
+    #include <libavutil/pixfmt.h>
 
 typedef struct {
     const char *path;
@@ -44,3 +47,5 @@ void Video_Start(VIDEO *video);
 void Video_Stop(VIDEO *video);
 void Video_PumpEvents(VIDEO *video);
 void Video_Close(VIDEO *video);
+
+#endif // !EMSCRIPTEN_BUILD

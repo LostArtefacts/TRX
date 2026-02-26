@@ -1,3 +1,10 @@
+#ifdef EMSCRIPTEN_BUILD
+    // Emscripten needs _POSIX_C_SOURCE for fileno(), fstat(), etc.
+    #ifndef _POSIX_C_SOURCE
+        #define _POSIX_C_SOURCE 200809L
+    #endif
+#endif
+
 #include <trx/core/filesystem.h>
 
 #include <trx/core/log.h>

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <SDL2/SDL_audio.h>
-#include <libavutil/samplefmt.h>
+#ifndef EMSCRIPTEN_BUILD
+    #include <libavutil/samplefmt.h>
+#endif
 #include <stddef.h>
 #include <stdint.h>
 

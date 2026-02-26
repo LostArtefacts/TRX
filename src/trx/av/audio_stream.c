@@ -1,32 +1,37 @@
-#include <trx/av/audio_internal.h>
+#ifdef EMSCRIPTEN_BUILD
+// FFmpeg audio streaming is not available on the web platform.
+// Stub implementations are provided via audio_stream_emscripten.c.
+#else
 
-#include <trx/core/filesystem.h>
-#include <trx/core/log.h>
-#include <trx/core/memory.h>
-#include <trx/core/utils.h>
-#include <trx/debug.h>
+    #include <trx/av/audio_internal.h>
 
-#include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_error.h>
-#include <errno.h>
-#include <libavcodec/avcodec.h>
-#include <libavcodec/codec.h>
-#include <libavcodec/packet.h>
-#include <libavformat/avformat.h>
-#include <libavformat/avio.h>
-#include <libavutil/avutil.h>
-#include <libavutil/error.h>
-#include <libavutil/frame.h>
-#include <libavutil/mem.h>
-#include <libavutil/rational.h>
-#include <libavutil/samplefmt.h>
-#include <libswresample/swresample.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
+    #include <trx/core/filesystem.h>
+    #include <trx/core/log.h>
+    #include <trx/core/memory.h>
+    #include <trx/core/utils.h>
+    #include <trx/debug.h>
 
-#define READ_BUFFER_SIZE                                                       \
-    (AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT))
+    #include <SDL2/SDL_audio.h>
+    #include <SDL2/SDL_error.h>
+    #include <errno.h>
+    #include <libavcodec/avcodec.h>
+    #include <libavcodec/codec.h>
+    #include <libavcodec/packet.h>
+    #include <libavformat/avformat.h>
+    #include <libavformat/avio.h>
+    #include <libavutil/avutil.h>
+    #include <libavutil/error.h>
+    #include <libavutil/frame.h>
+    #include <libavutil/mem.h>
+    #include <libavutil/rational.h>
+    #include <libavutil/samplefmt.h>
+    #include <libswresample/swresample.h>
+    #include <stdint.h>
+    #include <stdio.h>
+    #include <string.h>
+
+    #define READ_BUFFER_SIZE                                                   \
+        (AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT))
 
 typedef enum {
     M_STREAM_SRC_NONE,
@@ -975,3 +980,5 @@ bool Audio_Stream_SetStopTimestamp(int32_t sound_id, double timestamp)
     m_Streams[sound_id].stop_at = timestamp;
     return true;
 }
+
+#endif // !EMSCRIPTEN_BUILD

@@ -167,6 +167,7 @@ uint8_t Audio_GetReverbType(void)
     return reverb_type;
 }
 
+#ifndef EMSCRIPTEN_BUILD
 int32_t Audio_GetAVChannelLayout(const int32_t channels)
 {
     switch (channels) {
@@ -203,3 +204,4 @@ int32_t Audio_GetSDLAudioFormat(const enum AVSampleFormat sample_fmt)
     }
     // clang-format on
 }
+#endif // !EMSCRIPTEN_BUILD

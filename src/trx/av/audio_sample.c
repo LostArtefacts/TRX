@@ -1,28 +1,33 @@
-#include <trx/av/audio_internal.h>
+#ifdef EMSCRIPTEN_BUILD
+// FFmpeg audio samples are not available on the web platform.
+// Stub implementations are provided via audio_sample_emscripten.c.
+#else
 
-#include <trx/core/benchmark.h>
-#include <trx/core/log.h>
-#include <trx/core/memory.h>
-#include <trx/debug.h>
-#include <trx/version.h>
+    #include <trx/av/audio_internal.h>
 
-#include <SDL2/SDL_audio.h>
-#include <errno.h>
-#include <libavcodec/avcodec.h>
-#include <libavcodec/codec.h>
-#include <libavcodec/packet.h>
-#include <libavformat/avformat.h>
-#include <libavformat/avio.h>
-#include <libavutil/avutil.h>
-#include <libavutil/error.h>
-#include <libavutil/frame.h>
-#include <libavutil/mem.h>
-#include <libavutil/samplefmt.h>
-#include <libswresample/swresample.h>
-#include <math.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
+    #include <trx/core/benchmark.h>
+    #include <trx/core/log.h>
+    #include <trx/core/memory.h>
+    #include <trx/debug.h>
+    #include <trx/version.h>
+
+    #include <SDL2/SDL_audio.h>
+    #include <errno.h>
+    #include <libavcodec/avcodec.h>
+    #include <libavcodec/codec.h>
+    #include <libavcodec/packet.h>
+    #include <libavformat/avformat.h>
+    #include <libavformat/avio.h>
+    #include <libavutil/avutil.h>
+    #include <libavutil/error.h>
+    #include <libavutil/frame.h>
+    #include <libavutil/mem.h>
+    #include <libavutil/samplefmt.h>
+    #include <libswresample/swresample.h>
+    #include <math.h>
+    #include <stdint.h>
+    #include <stdio.h>
+    #include <string.h>
 
 typedef struct {
     struct {
@@ -812,3 +817,5 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len)
         }
     }
 }
+
+#endif // !EMSCRIPTEN_BUILD

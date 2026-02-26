@@ -1,26 +1,31 @@
-#include <trx/av/image.h>
+#ifdef EMSCRIPTEN_BUILD
+// FFmpeg image loading/saving is not available on the web platform.
+// Stub implementations are provided via image_emscripten.c.
+#else
 
-#include <trx/core/filesystem.h>
-#include <trx/core/log.h>
-#include <trx/core/memory.h>
-#include <trx/debug.h>
+    #include <trx/av/image.h>
 
-#include <errno.h>
-#include <libavcodec/avcodec.h>
-#include <libavcodec/codec.h>
-#include <libavcodec/codec_id.h>
-#include <libavcodec/packet.h>
-#include <libavformat/avformat.h>
-#include <libavutil/avutil.h>
-#include <libavutil/error.h>
-#include <libavutil/frame.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/mem.h>
-#include <libavutil/pixfmt.h>
-#include <libavutil/rational.h>
-#include <libswscale/swscale.h>
-#include <stdint.h>
-#include <string.h>
+    #include <trx/core/filesystem.h>
+    #include <trx/core/log.h>
+    #include <trx/core/memory.h>
+    #include <trx/debug.h>
+
+    #include <errno.h>
+    #include <libavcodec/avcodec.h>
+    #include <libavcodec/codec.h>
+    #include <libavcodec/codec_id.h>
+    #include <libavcodec/packet.h>
+    #include <libavformat/avformat.h>
+    #include <libavutil/avutil.h>
+    #include <libavutil/error.h>
+    #include <libavutil/frame.h>
+    #include <libavutil/imgutils.h>
+    #include <libavutil/mem.h>
+    #include <libavutil/pixfmt.h>
+    #include <libavutil/rational.h>
+    #include <libswscale/swscale.h>
+    #include <stdint.h>
+    #include <string.h>
 
 typedef struct {
     struct {
@@ -75,12 +80,12 @@ static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
         goto finish;
     }
 
-#if 0
+    #if 0
     error_code = avformat_find_stream_info(format_ctx, nullptr);
     if (error_code < 0) {
         goto finish;
     }
-#endif
+    #endif
 
     AVStream *video_stream = nullptr;
     for (unsigned int i = 0; i < ctx->format_ctx->nb_streams; i++) {
@@ -116,7 +121,7 @@ static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
         goto finish;
     }
 
-#if 0
+    #if 0
     ctx->codec_ctx->thread_count = 0;
     if (ctx->codec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
         ctx->codec_ctx->thread_type = FF_THREAD_FRAME;
@@ -124,7 +129,7 @@ static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
         ctx->codec_ctx->thread_type = FF_THREAD_SLICE;
     else
         ctx->codec_ctx->thread_count = 1; //don't use multithreading
-#endif
+    #endif
 
     error_code = avcodec_open2(ctx->codec_ctx, ctx->codec, nullptr);
     if (error_code < 0) {
@@ -547,3 +552,5 @@ void Image_Free(IMAGE *image)
     }
     Memory_FreePointer(&image);
 }
+
+#endif // !EMSCRIPTEN_BUILD
