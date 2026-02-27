@@ -70,7 +70,7 @@ static bool M_TestStop(const ITEM *const item)
     int16_t room_num = item->room_num;
     XYZ_32 sample_pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, dist);
     const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
-    const int16_t height = Room_GetHeight(sector, sample_pos);
+    const int32_t height = Room_GetHeight(sector, sample_pos);
     if (item->object_id != O_ROLLING_BALL_4) {
         // Allow a more lenient height check if regular boulders fall onto
         // slopes with a ceiling in front.
@@ -80,7 +80,7 @@ static bool M_TestStop(const ITEM *const item)
 
     sample_pos.y -= item_height;
     sector = Room_GetSector(sample_pos, &room_num);
-    const int16_t ceiling = Room_GetCeiling(sector, sample_pos);
+    const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
 
     return height < item->pos.y
         || (!item->gravity && ceiling > item->pos.y - item_height);
@@ -123,7 +123,7 @@ static void M_Control(const int16_t item_num)
     if (item->status != IS_ACTIVE) {
         int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-        const int16_t height = Room_GetHeight(sector, item->pos);
+        const int32_t height = Room_GetHeight(sector, item->pos);
         if (item->floor < height) {
             item->status = IS_ACTIVE;
             item->floor = height;

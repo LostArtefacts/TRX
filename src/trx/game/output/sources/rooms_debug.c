@@ -106,7 +106,7 @@ static void M_PrepareRoomTriggers(
 
             for (int32_t i = 0; i < vertex_count; i++) {
                 int32_t j = output_indices[i];
-                XYZ_16 vertex_pos = {
+                XYZ_32 vertex_pos = {
                     .x = (x + offsets[j].x) * WALL_L,
                     .z = (z + offsets[j].z) * WALL_L,
                 };
@@ -116,7 +116,7 @@ static void M_PrepareRoomTriggers(
                     .y = room->pos.y,
                 };
 
-                const int16_t height = Room_GetFloorHeightForSector(
+                const int32_t height = Room_GetFloorHeightForSector(
                     sector, world_pos.x, world_pos.z, true);
                 vertex_pos.y = height + (Output_GetWaterEffect() ? -16 : -2);
 

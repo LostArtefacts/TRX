@@ -119,7 +119,7 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
     const SECTOR *const sector = Room_GetSector(
         (XYZ_32) { pickup->pos.x, pickup->pos.y - 10, pickup->pos.z },
         &room_num);
-    const int16_t height = Room_GetHeight(sector, pickup->pos);
+    const int32_t height = Room_GetHeight(sector, pickup->pos);
     const bool in_water = Room_Get(pickup->room_num)->flags.underwater;
 
     if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {

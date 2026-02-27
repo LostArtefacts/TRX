@@ -8,40 +8,38 @@
 
 static void M_Control(const int16_t item_num)
 {
-    ITEM *const gondola = Item_Get(item_num);
+    ITEM *const item = Item_Get(item_num);
 
-    switch (gondola->current_anim_state) {
+    switch (item->current_anim_state) {
     case GONDOLA_STATE_FLOATING:
-        if (gondola->goal_anim_state == GONDOLA_STATE_CRASH) {
-            gondola->mesh_bits = 0xFF;
+        if (item->goal_anim_state == GONDOLA_STATE_CRASH) {
+            item->mesh_bits = 0xFF;
             Item_Explode(item_num, 240, 0);
         }
         break;
 
     case GONDOLA_STATE_SINK: {
-        gondola->pos.y = gondola->pos.y + M_SINK_SPEED;
-        const ANIM_FRAME *const frame = Item_GetBestFrame(gondola);
+        item->pos.y = item->pos.y + M_SINK_SPEED;
+        const ANIM_FRAME *const frame = Item_GetBestFrame(item);
         const int16_t room_shift = frame->bounds.min.y + M_SINK_ROOM_SHIFT;
-        int16_t room_num = gondola->room_num;
+        int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(
-            (XYZ_32) { gondola->pos.x, gondola->pos.y + room_shift,
-                       gondola->pos.z },
+            (XYZ_32) { item->pos.x, item->pos.y + room_shift, item->pos.z },
             &room_num);
-        const int32_t height = Room_GetHeight(sector, gondola->pos);
-        gondola->floor = height;
+        item->floor = Room_GetHeight(sector, item->pos);
         Item_UpdateRoom(item_num, room_num);
 
-        if (gondola->pos.y >= height) {
-            gondola->goal_anim_state = GONDOLA_STATE_LAND;
-            gondola->pos.y = height;
+        if (item->pos.y >= item->floor) {
+            item->goal_anim_state = GONDOLA_STATE_LAND;
+            item->pos.y = item->floor;
         }
         break;
     }
     }
 
-    Item_Animate(gondola);
+    Item_Animate(item);
 
-    if (gondola->status == IS_DEACTIVATED) {
+    if (item->status == IS_DEACTIVATED) {
         Item_RemoveActive(item_num);
     }
 }

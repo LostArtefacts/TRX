@@ -50,6 +50,7 @@
 - added support for monkey bars
 - changed Lara to be able to grab ealier when performing forward jumps, like TR3
 - fixed a very rare case of raptors using an incorrect death animation
+- fixed Lara unable to run around in random spots at the bottom of The Great Pyramid's starting pit
 
 **TR2**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)

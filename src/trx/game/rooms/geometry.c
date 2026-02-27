@@ -15,11 +15,11 @@ static int16_t m_AbyssMinHeight = 0;
 static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
-static int16_t M_GetUnsplitSurfaceHeight(
+static int32_t M_GetUnsplitSurfaceHeight(
     const SURFACE surface, const int32_t x, const int32_t z,
     const bool fix_tilts)
 {
-    int16_t height = surface.height;
+    int32_t height = surface.height;
     if (surface.tilt == 0 || (height == NO_HEIGHT && fix_tilts)) {
         return height;
     }
@@ -145,7 +145,7 @@ static int16_t M_GetSplitSurfaceHeight(
     return height;
 }
 
-static int16_t M_GetSurfaceHeight(
+static int32_t M_GetSurfaceHeight(
     const SURFACE surface, const int32_t x, const int32_t z,
     const bool fix_tilts)
 {
@@ -411,12 +411,12 @@ int16_t Room_GetTiltType(const SECTOR *sector, const XYZ_32 pos)
                                   : sector->floor.tilt;
 }
 
-int16_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)
+int32_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)
 {
     return Room_GetHeightEx(sector, pos, false, NO_ITEM);
 }
 
-int16_t Room_GetFloorHeightForSector(
+int32_t Room_GetFloorHeightForSector(
     const SECTOR *const sector, const int32_t x, const int32_t z,
     const bool fix_tilts)
 {
@@ -427,7 +427,7 @@ int16_t Room_GetFloorHeightForSector(
     return M_GetSurfaceHeight(sector->floor, x, z, fix_tilts);
 }
 
-int16_t Room_GetHeightEx(
+int32_t Room_GetHeightEx(
     const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts,
     const int16_t ignore_item_num)
 {
@@ -469,16 +469,16 @@ int16_t Room_GetHeightEx(
     return height;
 }
 
-int16_t Room_GetCeiling(const SECTOR *const sector, const XYZ_32 pos)
+int32_t Room_GetCeiling(const SECTOR *const sector, const XYZ_32 pos)
 {
     return Room_GetCeilingEx(sector, pos, false);
 }
 
-int16_t Room_GetCeilingEx(
+int32_t Room_GetCeilingEx(
     const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts)
 {
     const SECTOR *const sky_sector = Room_GetSkySector(sector, pos.x, pos.z);
-    int16_t height =
+    int32_t height =
         M_GetSurfaceHeight(sky_sector->ceiling, pos.x, pos.z, fix_tilts);
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, pos.x, pos.z);
@@ -632,7 +632,7 @@ bool Room_IsOnWalkable(
 {
     sector = Room_GetPitSector(sector, pos.x, pos.z);
 
-    int16_t height = sector->floor.height;
+    int32_t height = sector->floor.height;
     bool object_found = false;
     for (WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
         // Optionally ignore a walkable.
