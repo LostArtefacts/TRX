@@ -107,7 +107,7 @@ static bool M_CanExplodeTarget(const ITEM *const item)
 }
 
 static bool M_TryExplodeItem(
-    const ITEM *const projectile_item, const XYZ_32 old_pos,
+    const ITEM *const projectile_item, const GAME_VECTOR old_pos,
     const int16_t target_item_num, const int32_t radius)
 {
     ITEM *const target_item = Item_Get(target_item_num);
@@ -163,7 +163,7 @@ static bool M_TryExplodeItem(
             .room_num = projectile_item->room_num,
         };
         Gun_HitTarget(
-            target_item, nullptr, &hit_pos, g_Weapons[LGT_ROCKET].damage);
+            target_item, &old_pos, &hit_pos, g_Weapons[LGT_ROCKET].damage);
         Stats_AddAmmoHits();
 
         if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
@@ -318,8 +318,7 @@ static void M_Control(const int16_t item_num)
             for (int16_t target_item_num = nearby_room->item_num;
                  target_item_num != NO_ITEM;
                  target_item_num = Item_Get(target_item_num)->next_item) {
-                if (!M_TryExplodeItem(
-                        item, old_pos.pos, target_item_num, radius)) {
+                if (!M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
                     continue;
                 }
 
@@ -335,7 +334,7 @@ static void M_Control(const int16_t item_num)
         for (int16_t target_item_num = room->item_num;
              target_item_num != NO_ITEM;
              target_item_num = Item_Get(target_item_num)->next_item) {
-            if (M_TryExplodeItem(item, old_pos.pos, target_item_num, radius)) {
+            if (M_TryExplodeItem(item, old_pos, target_item_num, radius)) {
                 explode = true;
             }
         }

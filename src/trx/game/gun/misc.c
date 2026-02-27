@@ -544,7 +544,11 @@ void Gun_HitTarget(
                 .pos = hit_pos->pos,
                 .room_num = item->room_num,
             };
-            Spawn_RicochetRay(*start, pos);
+            if (start != nullptr) {
+                Spawn_RicochetRay(*start, pos);
+            } else {
+                Spawn_Ricochet(pos);
+            }
         } else {
             Spawn_Blood(
                 hit_pos->x, hit_pos->y, hit_pos->z, item->speed, item->rot.y,
