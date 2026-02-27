@@ -25,6 +25,7 @@ typedef enum {
 } LIFT_ANIM;
 
 typedef struct {
+    WALKABLE_SETUP setup;
     int32_t start_height;
     int32_t wait_time;
     bool is_moving;
@@ -261,7 +262,7 @@ static void M_Initialise(const int16_t item_num)
     p->wait_time = 0;
     p->is_moving = false;
 
-    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
     for (int32_t i = 0; i < positions->count; i++) {
         const GAME_VECTOR linked = {
@@ -270,6 +271,7 @@ static void M_Initialise(const int16_t item_num)
         };
         p->linked[i] = linked;
     }
+    Walkable_AllocateNodes(item, positions->count);
     Vector_Free(positions);
 }
 
@@ -349,6 +351,12 @@ static void M_Control(const int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 }
 
+static WALKABLE_SETUP *M_GetWalkableSetup(const ITEM *const item)
+{
+    M_PRIV *const priv = item->priv;
+    return &priv->setup;
+}
+
 static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -366,6 +374,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->get_walkable_setup_func = M_GetWalkableSetup;
     obj->add_walkable_func = M_AddWalkable;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;

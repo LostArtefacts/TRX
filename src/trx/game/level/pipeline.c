@@ -162,8 +162,6 @@ static void M_CompleteSetup(
     Level_Finalize_LoadAnimCommands(ctx);
     if (g_TRVersion == 1) {
         M_MarkWaterEdgeVertices();
-    } else {
-        Level_Finalize_LoadWalkables(ctx);
     }
     Level_Finalize_LoadObjectsAndItems(ctx);
 

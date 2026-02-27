@@ -83,7 +83,7 @@ void Bridge_FixEmbeddedPosition(int16_t item_num)
 
     // Only move the bridge up if it's at floor level and there
     // isn't a room portal below.
-    if (item->floor != floor_height || sector->portal_room.pit != NO_ROOM) {
+    if (item->pos.y != floor_height || sector->portal_room.pit != NO_ROOM) {
         return;
     }
 

@@ -3,6 +3,10 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/bridge_common.h>
 
+typedef struct {
+    WALKABLE_SETUP setup;
+} M_PRIV;
+
 static int16_t M_GetFloorHeight(
     const ITEM *item, const int32_t x, const int32_t y, const int32_t z,
     const int16_t height)
@@ -46,6 +50,13 @@ static int16_t M_GetCeilingHeight(
 static void M_Initialise(const int16_t item_num)
 {
     Bridge_FixEmbeddedPosition(item_num);
+    Walkable_AllocateNodes(Item_Get(item_num), 1);
+}
+
+static WALKABLE_SETUP *M_GetWalkableSetup(const ITEM *const item)
+{
+    M_PRIV *const priv = item->priv;
+    return &priv->setup;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -53,7 +64,9 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->get_walkable_setup_func = M_GetWalkableSetup;
     obj->add_walkable_func = Bridge_AddWalkable;
+    obj->priv_size = sizeof(M_PRIV);
 }
 
 REGISTER_OBJECT(O_BRIDGE_FLAT, M_Setup)

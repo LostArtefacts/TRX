@@ -14,6 +14,10 @@ typedef enum {
     TRAPDOOR_ANIM_CLOSED = 0,
 } TRAPDOOR_ANIM;
 
+typedef struct {
+    WALKABLE_SETUP setup;
+} M_PRIV;
+
 static bool M_IsItemOnTop(
     const ITEM *const item, const int32_t x, const int32_t z)
 {
@@ -148,6 +152,15 @@ static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
     }
 }
 
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
+    M_GetSectorPositions(item, positions);
+    Walkable_AllocateNodes(item, positions->count);
+    Vector_Free(positions);
+}
+
 static void M_DropStack(const ITEM *const item)
 {
     VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
@@ -157,6 +170,12 @@ static void M_DropStack(const ITEM *const item)
             *(const XYZ_32 *)Vector_Get(positions, i), item->room_num);
     }
     Vector_Free(positions);
+}
+
+static WALKABLE_SETUP *M_GetWalkableSetup(const ITEM *const item)
+{
+    M_PRIV *const priv = item->priv;
+    return &priv->setup;
 }
 
 static void M_AddWalkable(const int16_t item_num)
@@ -189,12 +208,15 @@ static void M_Control(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
     obj->save_flags = true;
     obj->save_anim = true;
+    obj->get_walkable_setup_func = M_GetWalkableSetup;
     obj->add_walkable_func = M_AddWalkable;
+    obj->priv_size = sizeof(M_PRIV);
 }
 
 REGISTER_OBJECT(O_TRAPDOOR_TYPE_1, M_Setup)
