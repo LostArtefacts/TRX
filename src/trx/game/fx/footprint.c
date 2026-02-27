@@ -79,12 +79,12 @@ void FX_Footprint_Add(const ITEM *const lara_item, const bool is_left_foot)
         Sound_Effect(m_StepSounds[sector->fx], &lara_item->pos, SPM_NORMAL);
     }
 
-    if (sector->fx > 4 || sector->walkable != nullptr) {
+    if (sector->fx > 4) {
         return;
     }
 
     const int32_t y = Room_GetHeight(sector, pos);
-    if (y == NO_HEIGHT) {
+    if (y == NO_HEIGHT || Room_IsOnWalkable(sector, pos, y, NO_ITEM)) {
         return;
     }
 
