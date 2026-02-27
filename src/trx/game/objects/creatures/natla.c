@@ -42,18 +42,6 @@ static int32_t M_GetStage2HitPoints(const ITEM *const item)
 
 static bool M_IsTargetable(const ITEM *const item)
 {
-    return item->hit_points > 0
-        && item->current_anim_state != NATLA_STATE_SEMIDEATH;
-}
-
-static bool M_CanTakeDamage(const ITEM *const item)
-{
-    return item->hit_points > 0
-        && item->current_anim_state != NATLA_STATE_SEMIDEATH;
-}
-
-static bool M_CanBeProjectileTarget(const ITEM *const item)
-{
     return item->hit_points > 0 && item->status == IS_ACTIVE
         && item->current_anim_state != NATLA_STATE_SEMIDEATH;
 }
@@ -334,8 +322,6 @@ static void M_Setup(OBJECT *const obj)
     obj->smartness = NATLA_SMARTNESS;
     obj->intelligent = true;
     obj->is_targetable_func = M_IsTargetable;
-    obj->can_take_damage_func = M_CanTakeDamage;
-    obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_anim = true;

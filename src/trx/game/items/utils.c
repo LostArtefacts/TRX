@@ -51,9 +51,7 @@ bool Item_IsTargetable(const ITEM *const item)
         return obj->is_targetable_func(item);
     }
 
-    return item->hit_points > 0
-        && (!Object_Get(item->object_id)->intelligent
-            || item->status == IS_ACTIVE)
+    return item->hit_points > 0 && item->status == IS_ACTIVE
         && (g_Config.gameplay.enable_ally_targeting
             || Creature_IsHostile(item));
 }

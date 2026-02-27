@@ -19,11 +19,6 @@ typedef enum {
     // clang-format on
 } M_STATE;
 
-static bool M_ShouldSpawnBlood(const ITEM *const item)
-{
-    return false;
-}
-
 static bool M_IsAlive(const ITEM *const item)
 {
     return item->hit_points > 0;
@@ -31,17 +26,22 @@ static bool M_IsAlive(const ITEM *const item)
 
 static bool M_IsTargetable(const ITEM *const item)
 {
-    return item->object_id == O_LARA && false;
+    return false;
 }
 
 static bool M_CanTakeDamage(const ITEM *const item)
 {
-    return item->object_id == O_LARA && false;
+    return false;
 }
 
 static bool M_CanBeProjectileTarget(const ITEM *const item)
 {
-    return item->object_id == O_LARA && false;
+    return false;
+}
+
+static bool M_ShouldSpawnBlood(const ITEM *const item)
+{
+    return false;
 }
 
 static void M_Control(const int16_t item_num)
