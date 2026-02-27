@@ -203,7 +203,15 @@ void Lara_TouchDeathSector(const GF_DEATH_TILE death_tile)
     }
 
     if (g_Config.debug.enable_invulnerability) {
-        Lara_CatchFire();
+        switch (death_tile) {
+        case GF_DEATH_TILE_RAPIDS:
+        case GF_DEATH_TILE_ELECTRIC:
+            Lara_CatchFire();
+            break;
+        case GF_DEATH_TILE_LAVA:
+            Lara_TouchLava();
+            break;
+        }
         return;
     }
 
@@ -225,14 +233,14 @@ void Lara_TouchDeathSector(const GF_DEATH_TILE death_tile)
 
 void Lara_TouchLava(void)
 {
-    ITEM *const lara_item = Lara_GetItem();
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_info->water_status != LWS_ABOVE_WATER) {
+    if (g_TRVersion == 3) {
+        Lara_CatchFire();
         return;
     }
 
-    if (g_TRVersion == 3) {
-        Lara_CatchFire();
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (lara_info->burn || lara_info->water_status != LWS_ABOVE_WATER) {
         return;
     }
 
@@ -246,6 +254,7 @@ void Lara_TouchLava(void)
             effect->counter = -1 - 24 * Random_GetControl() / 0x7FFF;
         }
     }
+    lara_info->burn = true;
 }
 
 void Lara_RapidsDrown(void)
