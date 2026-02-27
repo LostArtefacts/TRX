@@ -16,10 +16,6 @@ typedef enum {
     DRAWBRIDGE_ANIM_CLOSED = 3,
 } DRAWBRIDGE_ANIM;
 
-typedef struct {
-    WALKABLE_SETUP setup;
-} M_PRIV;
-
 static bool M_IsItemOnTop(const ITEM *item, int32_t x, int32_t z)
 {
     int32_t ix = item->pos.x >> WALL_SHIFT;
@@ -192,12 +188,6 @@ static void M_Control(int16_t item_num)
     Item_UpdateRoom(item_num, room_num);
 }
 
-static WALKABLE_SETUP *M_GetWalkableSetup(const ITEM *const item)
-{
-    M_PRIV *const priv = item->priv;
-    return &priv->setup;
-}
-
 static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -218,9 +208,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     obj->save_flags = true;
     obj->floor_height_func = M_GetFloorHeight;
-    obj->get_walkable_setup_func = M_GetWalkableSetup;
     obj->add_walkable_func = M_AddWalkable;
-    obj->priv_size = sizeof(M_PRIV);
 }
 
 REGISTER_OBJECT(O_DRAWBRIDGE, M_Setup)

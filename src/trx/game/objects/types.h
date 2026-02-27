@@ -78,7 +78,6 @@ typedef struct OBJECT {
     const OBJECT_BOUNDS *(*bounds_func)(void);
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);
-    WALKABLE_SETUP *(*get_walkable_setup_func)(const ITEM *item);
     int16_t (*carrier_item_num_func)(const ITEM *item);
     bool (*can_drop_items_func)(const ITEM *item);
     bool (*can_interpolate_func)(

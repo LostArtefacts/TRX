@@ -26,7 +26,6 @@ typedef enum {
 } PILLAR_ANIM;
 
 typedef struct {
-    WALKABLE_SETUP setup;
     GAME_VECTOR initial;
     GAME_VECTOR linked;
 } M_PRIV;
@@ -213,12 +212,6 @@ static void M_Control(const int16_t item_num)
     }
 }
 
-static WALKABLE_SETUP *M_GetWalkableSetup(const ITEM *const item)
-{
-    M_PRIV *const priv = item->priv;
-    return &priv->setup;
-}
-
 static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -235,7 +228,6 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_anim = true;
     obj->save_flags = true;
-    obj->get_walkable_setup_func = M_GetWalkableSetup;
     obj->add_walkable_func = M_AddWalkable;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
