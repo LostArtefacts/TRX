@@ -43,7 +43,8 @@
 - fixed non-deterministic Inventory Ring control (transition speeds depended on v-sync / wall clock timing)
 - fixed game logic speeding up while the game was fading out after quitting
 - fixed Lara being able to shoot smashable objects located in unreachable overlapping rooms (#4949, regression from TR1X 4.14 / TR2X 1.4)
-- fixed Lara continuing to side-swim if enhanced sidesteps are enabled, after releasing the direction key but keeping walk pressed
+- fixed touching Lava Wedges causing endless Flame effect spawns when the immunity cheat is on
+- fixed touching Lava tiles causing reduced Flame effect when the immunity cheat is on
 
 **TR1**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
