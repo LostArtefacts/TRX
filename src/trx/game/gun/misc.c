@@ -521,7 +521,7 @@ void Gun_HitTarget(
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const bool was_alive = Item_IsAlive(item);
+    const bool was_alive = item->hit_points > 0;
     const bool clears_target = was_alive && damage >= item->hit_points;
     if (clears_target) {
         if (item->include_in_kill_stats) {
