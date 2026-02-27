@@ -150,26 +150,24 @@ static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
 
 static void M_DropStack(const ITEM *const item)
 {
-    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
     for (int32_t i = 0; i < positions->count; i++) {
         MovableBlock_DropStack(
             *(const XYZ_32 *)Vector_Get(positions, i), item->room_num);
     }
     Vector_Free(positions);
-    positions = nullptr;
 }
 
 static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
-    VECTOR *positions = Vector_Create(sizeof(XYZ_32));
+    VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
     for (int32_t i = 0; i < positions->count; i++) {
         Walkable_Add(item_num, *(const XYZ_32 *)Vector_Get(positions, i));
     }
     Vector_Free(positions);
-    positions = nullptr;
 }
 
 static void M_Control(const int16_t item_num)

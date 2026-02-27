@@ -16,9 +16,57 @@ static SECTOR *M_GetItemPitSector(const XYZ_32 pos, int16_t room_num)
     return Room_GetPitSector(sector, pos.x, pos.z);
 }
 
+static VECTOR *M_GetCandidateSectors(const XYZ_32 base_pos, int16_t room_num)
+{
+    // Probe evenly around the centre position for cases where a walkable is
+    // placed above a triangle portal, so detecting the correct sector at all
+    // possible positions.
+    const XYZ_32 mid_pos = {
+        .x = ROUND_TO_SECTOR(base_pos.x) + STEP_L * 2,
+        .y = base_pos.y,
+        .z = ROUND_TO_SECTOR(base_pos.z) + STEP_L * 2,
+    };
+
+    const XZ_32 deltas[4] = {
+        { -STEP_L, 0 },
+        { STEP_L, 0 },
+        { 0, -STEP_L },
+        { 0, STEP_L },
+    };
+
+    VECTOR *const sectors = Vector_Create(sizeof(SECTOR *));
+    for (int32_t i = 0; i < 4; i++) {
+        const XZ_32 delta = deltas[i];
+        const XYZ_32 pos = {
+            .x = mid_pos.x + delta.x,
+            .y = base_pos.y,
+            .z = mid_pos.z + delta.z,
+        };
+        SECTOR *const sector = M_GetItemPitSector(pos, room_num);
+        if (!Vector_Contains(sectors, &sector)) {
+            Vector_Add(sectors, &sector);
+        }
+    }
+
+    return sectors;
+}
+
+static bool M_SectorContainsWalkable(
+    const SECTOR *const sector, const int16_t item_num)
+{
+    const WALKABLE *walkable = sector->walkable;
+    while (walkable != nullptr) {
+        if (walkable->item_num == item_num) {
+            return true;
+        }
+        walkable = walkable->next;
+    }
+    return false;
+}
+
 static void M_InsertSorted(WALKABLE **walkables, WALKABLE *const node)
 {
-    while (*walkables && (*walkables)->pos.y >= node->pos.y) {
+    while (*walkables != nullptr && (*walkables)->pos.y >= node->pos.y) {
         walkables = &(*walkables)->next;
     }
 
@@ -26,82 +74,66 @@ static void M_InsertSorted(WALKABLE **walkables, WALKABLE *const node)
     *walkables = node;
 }
 
+static void M_Remove(
+    const int16_t item_num, const XYZ_32 pos, const int16_t room_num)
+{
+    VECTOR *const sectors = M_GetCandidateSectors(pos, room_num);
+
+    // Unlink the walkable.
+    for (int32_t i = 0; i < sectors->count; i++) {
+        SECTOR *const sector = *(SECTOR **)Vector_Get(sectors, i);
+        WALKABLE *walkable = sector->walkable;
+        WALKABLE *prev = nullptr;
+        while (walkable != nullptr) {
+            if (walkable->item_num == item_num) {
+                if (prev != nullptr) {
+                    prev->next = walkable->next;
+                } else {
+                    sector->walkable = walkable->next;
+                }
+                break;
+            }
+            prev = walkable;
+            walkable = walkable->next;
+        }
+    }
+
+    Vector_Free(sectors);
+}
+
 void Walkable_Add(const int16_t item_num, const XYZ_32 pos)
 {
     const ITEM *const item = Item_Get(item_num);
-    SECTOR *const sector = M_GetItemPitSector(pos, item->room_num);
+    VECTOR *const sectors = M_GetCandidateSectors(pos, item->room_num);
 
-    // Check if the walkable is already in the sector.
-    const WALKABLE *walkable = sector->walkable;
-    while (walkable != nullptr) {
-        if (walkable->item_num == item_num) {
-            return;
+    for (int32_t i = 0; i < sectors->count; i++) {
+        SECTOR *const sector = *(SECTOR **)Vector_Get(sectors, i);
+        if (M_SectorContainsWalkable(sector, item_num)) {
+            continue;
         }
-        walkable = walkable->next;
+
+        WALKABLE *const node = GameBuf_Alloc(sizeof(WALKABLE), GBUF_WALKABLES);
+        node->item_num = item_num;
+        node->pos = pos;
+        node->next = nullptr;
+        M_InsertSorted(&sector->walkable, node);
     }
 
-    WALKABLE *const node = GameBuf_Alloc(sizeof(WALKABLE), GBUF_WALKABLES);
-    node->item_num = item_num;
-    node->pos = pos;
-    node->next = nullptr;
-    M_InsertSorted(&sector->walkable, node);
+    Vector_Free(sectors);
 }
 
 void Walkable_Remove(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
-    SECTOR *const sector = M_GetItemPitSector(item->pos, item->room_num);
-
-    // Unlink the walkable.
-    WALKABLE *walkable = sector->walkable;
-    WALKABLE *prev = nullptr;
-    while (walkable != nullptr) {
-        if (walkable->item_num == item_num) {
-            if (prev) {
-                prev->next = walkable->next;
-            } else {
-                sector->walkable = walkable->next;
-            }
-            return;
-        }
-        prev = walkable;
-        walkable = walkable->next;
-    }
+    M_Remove(item_num, item->pos, item->room_num);
 }
 
 void Walkable_Reposition(
     const int16_t item_num, const GAME_VECTOR start, const GAME_VECTOR target)
 {
-    const ITEM *const item = Item_Get(item_num);
-    SECTOR *old_sector = M_GetItemPitSector(start.pos, start.room_num);
-
-    // Find and unlink the walkable from the old position.
-    WALKABLE *prev = nullptr;
-    WALKABLE *walkable = old_sector->walkable;
-    while (walkable != nullptr) {
-        if (walkable->item_num == item_num) {
-            if (prev) {
-                prev->next = walkable->next;
-            } else {
-                old_sector->walkable = walkable->next;
-            }
-            break;
-        }
-        prev = walkable;
-        walkable = walkable->next;
-    }
-    // Did not find the walkable.
-    if (walkable == nullptr) {
-        return;
-    }
-
-    // Update position of walkable.
-    walkable->pos = target.pos;
-    walkable->next = nullptr;
-
-    // Link walkable to sector of the new position.
-    SECTOR *new_sector = M_GetItemPitSector(walkable->pos, item->room_num);
-    M_InsertSorted(&new_sector->walkable, walkable);
+    // Arena "leak"...
+    M_Remove(item_num, start.pos, start.room_num);
+    Walkable_Add(item_num, target.pos);
 }
 
 void Walkable_Reset(void)

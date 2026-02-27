@@ -442,28 +442,21 @@ int32_t Room_GetHeightEx(
         height = M_GetSurfaceHeight(pit_sector->floor, pos.x, pos.z, fix_tilts);
     }
 
-    // Climb the stack of walkables.
+    // Climb the stack of walkables. In each iteration the test Y pos is moved
+    // up to match the current height, so preventing testing below previous
+    // walkables.
     int32_t test_y = pos.y;
-    for (WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
-        // Optionally ignore a walkable.
+    for (const WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
         if (w->item_num == ignore_item_num) {
             continue;
         }
         const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->floor_height_func != nullptr) {
-            const int32_t test_height =
-                obj->floor_height_func(item, pos.x, test_y, pos.z, height);
-            // If the floor height changed, try to climb the walkable stack.
-            if (test_height != height) {
-                height = test_height;
-                // Only raise the test y value if the test floor height is above
-                // the original y value.
-                if (pos.y > test_height) {
-                    test_y = test_height;
-                }
-            }
+        if (obj->floor_height_func == nullptr) {
+            continue;
         }
+        height = obj->floor_height_func(item, pos.x, test_y, pos.z, height);
+        test_y = MIN(pos.y, height);
     }
 
     return height;
@@ -483,7 +476,7 @@ int32_t Room_GetCeilingEx(
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, pos.x, pos.z);
 
-    for (WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
+    for (const WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
         const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->ceiling_height_func != nullptr) {
