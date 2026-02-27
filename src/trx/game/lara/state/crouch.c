@@ -9,6 +9,7 @@
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/objects/general/flare_item.h>
+#include <trx/game/rooms.h>
 #include <trx/game/rooms/geometry.h>
 
 // clang-format off
@@ -37,6 +38,10 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
 
     if (item->current_anim_state == LS(LS_CROUCH_IDLE)
         && lara->gun_status != LGS_ARMLESS) {
+        return false;
+    }
+
+    if (Room_Get(item->room_num)->flags.swamp) {
         return false;
     }
 

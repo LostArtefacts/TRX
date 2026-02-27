@@ -46,6 +46,7 @@
 - fixed touching Lava Wedges causing endless Flame effect spawns when the immunity cheat is on
 - fixed touching Lava tiles causing reduced Flame effect when the immunity cheat is on
 - fixed collision issues on bridges, trapdoors, breakable tiles and pushblocks if positioned over a triangle portal (regression from 1.0)
+- fixed Lara being able to sprint through swamps when responsive sprinting is enabled
 
 **TR1**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
