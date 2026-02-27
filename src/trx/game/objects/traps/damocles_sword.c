@@ -51,9 +51,7 @@ static void M_Control(const int16_t item_num)
 
         int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-        const int16_t height = Room_GetHeight(sector, item->pos);
-
-        item->floor = height;
+        item->floor = Room_GetHeight(sector, item->pos);
         Item_UpdateRoom(item_num, room_num);
 
         if (item->pos.y > item->floor) {

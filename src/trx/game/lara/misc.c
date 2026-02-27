@@ -264,7 +264,7 @@ void Lara_RapidsDrown(void)
     lara_info->gun_type = LGT_UNARMED;
 }
 
-int16_t Lara_FloorFront(
+int32_t Lara_FloorFront(
     const ITEM *const item, const int16_t ang, const int32_t dist)
 {
     XYZ_32 pos = item->pos;
@@ -283,7 +283,7 @@ int16_t Lara_FloorFront(
     return height;
 }
 
-int16_t Lara_CeilingFront(
+int32_t Lara_CeilingFront(
     const ITEM *const item, const int16_t ang, const int32_t dist,
     const int32_t item_height)
 {

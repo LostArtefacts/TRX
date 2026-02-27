@@ -307,8 +307,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         }
     }
 
-    int16_t fheight = NO_HEIGHT;
-    int16_t rheight = NO_HEIGHT;
+    int32_t fheight = NO_HEIGHT;
+    int32_t rheight = NO_HEIGHT;
     if (g_Input.forward) {
         fheight = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
     } else if (g_Input.back) {
@@ -323,8 +323,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS(LS_TURN_RIGHT);
         }
     } else if (g_Input.step_left) {
-        const int16_t h = Lara_FloorFront(item, item->rot.y - DEG_90, 148);
-        const int16_t c =
+        const int32_t h = Lara_FloorFront(item, item->rot.y - DEG_90, 148);
+        const int32_t c =
             Lara_CeilingFront(item, item->rot.y - DEG_90, 148, LARA_HEIGHT);
         if (g_TRVersion < 3
             || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
@@ -332,8 +332,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS(LS_STEP_LEFT);
         }
     } else if (g_Input.step_right) {
-        const int16_t h = Lara_FloorFront(item, item->rot.y + DEG_90, 148);
-        const int16_t c =
+        const int32_t h = Lara_FloorFront(item, item->rot.y + DEG_90, 148);
+        const int32_t c =
             Lara_CeilingFront(item, item->rot.y + DEG_90, 148, LARA_HEIGHT);
         if (g_TRVersion < 3
             || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
@@ -363,8 +363,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     } else if (g_Input.jump) {
         item->goal_anim_state = LS(LS_COMPRESS);
     } else if (g_Input.forward) {
-        const int16_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
-        const int16_t c =
+        const int32_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
+        const int32_t c =
             Lara_CeilingFront(item, item->rot.y, M_WALK_DIST, LARA_HEIGHT);
         const HEIGHT_TYPE height_type = Room_GetHeightType();
 
@@ -372,7 +372,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED) {
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-            const int16_t sector_height =
+            const int32_t sector_height =
                 Room_GetHeightEx(sector, item->pos, true, NO_ITEM);
             inside_wall = sector_height == NO_HEIGHT;
         }

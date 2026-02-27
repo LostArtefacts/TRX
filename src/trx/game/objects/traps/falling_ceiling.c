@@ -26,12 +26,13 @@ static void M_Control(const int16_t item_num)
 
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-    const int16_t height = Room_GetHeight(sector, item->pos);
 
-    item->floor = height;
+    item->floor = Room_GetHeight(sector, item->pos);
     Item_UpdateRoom(item_num, room_num);
-    if (item->current_anim_state == TRAP_ACTIVATE && item->pos.y >= height) {
-        item->pos.y = height;
+
+    if (item->current_anim_state == TRAP_ACTIVATE
+        && item->pos.y >= item->floor) {
+        item->pos.y = item->floor;
         item->goal_anim_state = TRAP_WORKING;
         item->fall_speed = 0;
         item->gravity = false;

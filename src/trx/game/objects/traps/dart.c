@@ -106,15 +106,15 @@ static void M_Control(const int16_t item_num)
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     Item_UpdateRoom(item_num, room_num);
-    const int32_t height = Room_GetHeight(sector, item->pos);
 
     if (item->object_id == O_DISC) {
         item->rot.x += M_PITCH;
     }
-    item->floor = height;
+    item->floor = Room_GetHeight(sector, item->pos);
+
     const GAME_VECTOR new_pos = { .pos = item->pos,
                                   .room_num = item->room_num };
-    if (item->pos.y >= height) {
+    if (item->pos.y >= item->floor) {
         M_Hit(
             item_num, Spawn_GetRayPos(old_pos, new_pos, STEP_L / 12),
             old_pos.room_num);

@@ -147,8 +147,8 @@ static bool M_LOS(
 static inline void M_ClampY(int16_t room_num, XYZ_32 *const pos)
 {
     const SECTOR *const sector = Room_GetSector(*pos, &room_num);
-    const int16_t height = Room_GetHeightEx(sector, *pos, true, NO_ITEM);
-    const int16_t ceiling = Room_GetCeilingEx(sector, *pos, true);
+    const int32_t height = Room_GetHeightEx(sector, *pos, true, NO_ITEM);
+    const int32_t ceiling = Room_GetCeilingEx(sector, *pos, true);
 
     if (ceiling < height && ceiling != NO_HEIGHT && height != NO_HEIGHT) {
         if (ceiling > pos->y - 255 && height < pos->y + 255) {
@@ -177,8 +177,8 @@ static bool M_Collide(
     int16_t room_num = ideal->room_num;
     XYZ_32 sample_pos = { .x = pos.x - shift, .y = pos.y, .z = pos.z };
     const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
-    int16_t height = Room_GetHeightEx(sector, sample_pos, true, NO_ITEM);
-    int16_t ceiling = Room_GetCeilingEx(sector, sample_pos, true);
+    int32_t height = Room_GetHeightEx(sector, sample_pos, true, NO_ITEM);
+    int32_t ceiling = Room_GetCeilingEx(sector, sample_pos, true);
     if (L_OUT_OF_BOUNDS) {
         pos.x = ROUND_TO_SECTOR(pos.x) + shift;
     }
@@ -298,8 +298,8 @@ static void M_Move(GAME_VECTOR *const ideal, const int32_t speed)
     }
 
     sector = Room_GetSector(pos, &room_num);
-    int16_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
-    int16_t ceiling = Room_GetCeilingEx(sector, pos, true);
+    int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
+    int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
 
     if (pos.y < ceiling || pos.y > height) {
         M_LOS(&g_Camera.target, &g_Camera.pos, 0);
@@ -438,8 +438,8 @@ static void M_Chase(const ITEM *const item)
 
     XYZ_32 pos = g_Camera.target.pos;
     sector = Room_GetSector(pos, &g_Camera.target.room_num);
-    int16_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
-    int16_t ceiling = Room_GetCeilingEx(sector, pos, true);
+    int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
+    int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
 
     if (ceiling + 16 > height - 16 && height != NO_HEIGHT
         && ceiling != NO_HEIGHT) {
@@ -507,8 +507,8 @@ static void M_Combat(const ITEM *const item)
 
     XYZ_32 pos = g_Camera.target.pos;
     sector = Room_GetSector(pos, &g_Camera.target.room_num);
-    int16_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
-    int16_t ceiling = Room_GetCeilingEx(sector, pos, true);
+    int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
+    int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
 
     if (ceiling + 64 > height - 64 && height != NO_HEIGHT
         && ceiling != NO_HEIGHT) {
@@ -612,8 +612,8 @@ static void M_Look(const ITEM *const item)
     }
 
     sector = Room_GetSector(pos_1, &room_num);
-    int16_t height = Room_GetHeight(sector, pos_1);
-    int16_t ceiling = Room_GetCeiling(sector, pos_1);
+    int32_t height = Room_GetHeight(sector, pos_1);
+    int32_t ceiling = Room_GetCeiling(sector, pos_1);
 
     if (height == NO_HEIGHT || ceiling == NO_HEIGHT || ceiling >= height
         || pos_1.y > height || pos_1.y < ceiling) {
@@ -787,8 +787,8 @@ static void M_ClampResult(void)
     XYZ_32 pos = g_Camera.interp.result.pos;
     int16_t room_num = g_Camera.interp.room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    const int16_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
-    const int16_t ceiling = Room_GetCeilingEx(sector, pos, true);
+    const int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
+    const int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
     if (height == NO_HEIGHT || ceiling == NO_HEIGHT || height < g_Camera.pos.y
         || ceiling > g_Camera.pos.y) {
         pos = g_Camera.pos.pos;

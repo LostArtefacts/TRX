@@ -1097,7 +1097,7 @@ bool Creature_Animate(
     } else {
         sector = Room_GetSector(item->pos, &room_num);
         if (g_TRVersion == 3) {
-            const int16_t ceiling = Room_GetCeiling(sector, item->pos);
+            const int32_t ceiling = Room_GetCeiling(sector, item->pos);
             int32_t min_y = bounds->min.y;
             switch (item->object_id) {
             case O_TREX:

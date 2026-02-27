@@ -100,7 +100,7 @@ static bool M_DrawShadow_Sprite(
 
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(anchor_pos, &room_num);
-            const int16_t height = Room_GetHeight(sector, anchor_pos);
+            const int32_t height = Room_GetHeight(sector, anchor_pos);
             if (height != NO_HEIGHT) {
                 anchor_floor = height;
             }

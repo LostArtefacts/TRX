@@ -45,8 +45,8 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
         return false;
     }
 
-    const int16_t height_far = Lara_FloorFront(item, item->rot.y, STEP_L * 2);
-    const int16_t height_near = Lara_FloorFront(item, item->rot.y, STEP_L);
+    const int32_t height_far = Lara_FloorFront(item, item->rot.y, STEP_L * 2);
+    const int32_t height_near = Lara_FloorFront(item, item->rot.y, STEP_L);
     if (height_far >= STEPUP_HEIGHT || height_near < -STEPUP_HEIGHT) {
         return false;
     }
@@ -88,8 +88,8 @@ static bool M_CanJumpDown(const ITEM *const item, const LARA_INFO *const lara)
         return false;
     }
 
-    const int16_t floor_front = Lara_FloorFront(item, item->rot.y, M_JUMP_DIST);
-    const int16_t ceiling_front =
+    const int32_t floor_front = Lara_FloorFront(item, item->rot.y, M_JUMP_DIST);
+    const int32_t ceiling_front =
         Lara_CeilingFront(item, item->rot.y, M_JUMP_DIST, M_JUMP_HEIGHT);
     if (floor_front < M_JUMP_HEIGHT || ceiling_front == NO_HEIGHT
         || ceiling_front > 0) {

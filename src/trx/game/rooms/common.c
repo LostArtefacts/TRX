@@ -347,12 +347,12 @@ int32_t Room_GetOutsideStatus(const XYZ_32 pos, int16_t *const out_room_num)
 
         int16_t rn = candidate_room_num;
         const SECTOR *const sector = Room_GetSector(pos, &rn);
-        const int16_t floor = Room_GetHeight(sector, pos);
+        const int32_t floor = Room_GetHeight(sector, pos);
         if (floor == NO_HEIGHT || pos.y > floor) {
             return -2;
         }
 
-        const int16_t ceiling = Room_GetCeiling(sector, pos);
+        const int32_t ceiling = Room_GetCeiling(sector, pos);
         if (pos.y < ceiling) {
             return -2;
         }
@@ -635,7 +635,7 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
     }
 
     const SECTOR *sector = Room_GetSector(*out_pos, &room_num);
-    int16_t height = Room_GetHeight(sector, *out_pos);
+    int32_t height = Room_GetHeight(sector, *out_pos);
 
     int32_t x = out_pos->x;
     int32_t y = out_pos->y;
