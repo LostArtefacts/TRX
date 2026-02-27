@@ -16,7 +16,13 @@ typedef struct {
     int32_t count;
 } M_CANDIDATE_SECTORS;
 
-static WALKABLE_SETUP *m_Setup = nullptr;
+typedef struct {
+    WALKABLE *nodes;
+    int32_t capacity;
+    int32_t active_count;
+} M_SETUP;
+
+static M_SETUP *m_Setup = nullptr;
 static int32_t m_SetupCount = 0;
 
 static SECTOR *M_GetItemPitSector(const XYZ_32 pos, int16_t room_num)
@@ -74,7 +80,7 @@ static M_CANDIDATE_SECTORS M_GetCandidateSectors(
     return candidates;
 }
 
-static WALKABLE_SETUP *M_GetSetup(const int16_t item_num)
+static M_SETUP *M_GetSetup(const int16_t item_num)
 {
     ASSERT(m_Setup != nullptr);
     ASSERT(item_num >= 0 && item_num < m_SetupCount);
@@ -113,7 +119,7 @@ static void M_Remove(
         return;
     }
 
-    WALKABLE_SETUP *const setup = M_GetSetup(item_num);
+    M_SETUP *const setup = M_GetSetup(item_num);
     if (setup->capacity == 0 || setup->nodes == nullptr) {
         return;
     }
@@ -143,7 +149,7 @@ static void M_Remove(
 void Walkable_AllocateNodes(const ITEM *const item, const int32_t footprint)
 {
     const int16_t item_num = Item_GetIndex(item);
-    WALKABLE_SETUP *const setup = M_GetSetup(item_num);
+    M_SETUP *const setup = M_GetSetup(item_num);
     setup->capacity = footprint * M_QUADRANT_COUNT;
     setup->active_count = 0;
     setup->nodes = nullptr;
@@ -161,7 +167,7 @@ void Walkable_Add(const int16_t item_num, const XYZ_32 pos)
         return;
     }
 
-    WALKABLE_SETUP *const setup = M_GetSetup(item_num);
+    M_SETUP *const setup = M_GetSetup(item_num);
     if (setup->capacity == 0 || setup->nodes == nullptr) {
         return;
     }
@@ -231,6 +237,6 @@ void Walkable_ResetLevel(void)
     m_Setup = nullptr;
     if (item_count > 0) {
         m_Setup =
-            GameBuf_Alloc(sizeof(WALKABLE_SETUP) * item_count, GBUF_WALKABLES);
+            GameBuf_Alloc(sizeof(M_SETUP) * item_count, GBUF_WALKABLES);
     }
 }
