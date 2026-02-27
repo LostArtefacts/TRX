@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 
+void Walkable_AllocateNodes(const ITEM *item, int32_t footprint);
 void Walkable_Add(int16_t item_num, XYZ_32 pos);
 void Walkable_Remove(int16_t item_num);
 void Walkable_Reset(void);

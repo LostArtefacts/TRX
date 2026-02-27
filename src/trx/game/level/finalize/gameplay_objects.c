@@ -69,13 +69,13 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
     // initialisations may increment the total item count.
     Object_SetupAllObjects();
 
-    // Must take place after object setup but before item initialization.
-    Level_Finalize_LoadWalkables(ctx);
-
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
         Item_Initialise(i);
     }
+
+    // Must take place after item initialization.
+    Level_Finalize_LoadWalkables(ctx);
 
     M_AssignAIBits();
     Lara_State_Initialise();

@@ -6,6 +6,7 @@
 #include <trx/game/rooms.h>
 
 typedef struct {
+    WALKABLE_SETUP setup;
     bool heavy_triggered;
     int32_t origin;
 } M_PRIV;
@@ -30,6 +31,7 @@ static void M_Initialise(const int16_t item_num)
     Trap_Initialise(item_num);
     ITEM *const item = Item_Get(item_num);
     M_CalculateOrigin(item);
+    Walkable_AllocateNodes(item, 1);
 }
 
 static void M_DropStack(const ITEM *const item)
@@ -67,6 +69,12 @@ static int16_t M_GetCeilingHeight(
         return item->pos.y + origin + STEP_L;
     }
     return height;
+}
+
+static WALKABLE_SETUP *M_GetWalkableSetup(const ITEM *const item)
+{
+    M_PRIV *const priv = item->priv;
+    return &priv->setup;
 }
 
 static void M_AddWalkable(const int16_t item_num)
@@ -148,6 +156,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->get_walkable_setup_func = M_GetWalkableSetup;
     obj->add_walkable_func = M_AddWalkable;
     obj->save_position = true;
     obj->save_flags = true;

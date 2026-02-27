@@ -24,6 +24,7 @@ typedef enum {
 } MOVABLE_BLOCK_STATE;
 
 typedef struct {
+    WALKABLE_SETUP setup;
     uint16_t gravity_frames;
     bool is_push_pull;
     bool is_forced_moving;
@@ -470,6 +471,7 @@ static void M_Initialise(const int16_t item_num)
     M_SetInitial(item);
     M_SetLinked(item);
     MovableBlock_UpdateBox(item, true);
+    Walkable_AllocateNodes(item, 1);
 }
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
@@ -868,6 +870,12 @@ static int16_t M_GetCeilingHeight(
     return item->pos.y;
 }
 
+static WALKABLE_SETUP *M_GetWalkableSetup(const ITEM *const item)
+{
+    M_PRIV *const priv = item->priv;
+    return &priv->setup;
+}
+
 static void M_AddWalkable(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
@@ -905,6 +913,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->get_walkable_setup_func = M_GetWalkableSetup;
     obj->add_walkable_func = M_AddWalkable;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;

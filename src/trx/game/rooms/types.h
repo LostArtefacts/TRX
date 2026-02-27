@@ -49,6 +49,12 @@ typedef struct WALKABLE {
 } WALKABLE;
 
 typedef struct {
+    WALKABLE *nodes;
+    int32_t capacity;
+    int32_t active_count;
+} WALKABLE_SETUP;
+
+typedef struct {
     SPLIT_TYPE type;
     int16_t tilts[4];
     int32_t h1;
