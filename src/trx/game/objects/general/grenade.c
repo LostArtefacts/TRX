@@ -91,14 +91,14 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
 
 static bool M_CanExplodeTarget(const ITEM *const item)
 {
-    if (item->object_id == O_TRIBE_BOSS || item->object_id == O_TONY) {
-        return false;
+    const OBJECT *const object = Object_Get(item->object_id);
+    if (object->can_be_exploded_func != nullptr) {
+        return object->can_be_exploded_func(item);
     }
 
     // TODO: as some creatures have more than one death animation, have a
     // way to expose those specific ones for checking, or delegate
     // responsibility directly to the objects.
-    const OBJECT *const object = Object_Get(item->object_id);
     const ITEM_ACTION action = ItemAction_ToGameID(ITEM_ACTION_FINISH_LEVEL);
     for (int32_t i = 0; i < object->anim_count; i++) {
         const ANIM *const anim = Object_GetAnim(object, i);

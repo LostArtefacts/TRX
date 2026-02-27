@@ -239,6 +239,11 @@ static bool M_CanDropItems(const ITEM *const item)
         && Item_GetRelativeFrame(item) >= 110;
 }
 
+static bool M_CanBeExploded(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Die(int16_t item_num)
 {
     ITEM *item;
@@ -616,6 +621,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->draw_func = M_Draw;
     obj->can_drop_items_func = M_CanDropItems;
+    obj->can_be_exploded_func = M_CanBeExploded;
 
     obj->shadow_size = 0;
     obj->hit_points = 100;

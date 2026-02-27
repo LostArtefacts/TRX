@@ -207,6 +207,11 @@ static void M_Die(int16_t item_num)
     item->flags |= IF_INVISIBLE;
 }
 
+static bool M_CanBeExploded(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_TriggerSummonSmoke(const XYZ_32 pos)
 {
     SPARK *const spark = Sparks_GetFreeSpark();
@@ -1416,6 +1421,7 @@ static void M_Setup(OBJECT *const obj)
     obj->gun_hit_func = M_GunHit;
     obj->should_spawn_blood_func = M_ShouldSpawnBlood;
     obj->can_drop_items_func = M_CanDropItems;
+    obj->can_be_exploded_func = M_CanBeExploded;
 
     obj->shadow_size = 0;
     obj->hit_points = 200;

@@ -87,6 +87,7 @@ typedef struct OBJECT {
     bool (*is_targetable_func)(const ITEM *item);
     bool (*can_take_damage_func)(const ITEM *item);
     bool (*can_be_projectile_target_func)(const ITEM *item);
+    bool (*can_be_exploded_func)(const ITEM *item);
     int32_t (*get_mesh_index_func)(const ITEM *item, int32_t mesh_idx);
 
     int16_t anim_idx;
