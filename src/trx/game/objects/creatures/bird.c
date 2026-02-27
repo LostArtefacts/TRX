@@ -16,7 +16,7 @@
 #define M_CROW_START_ANIM   14
 #define M_CROW_DIE_ANIM     1
 #define M_VULTURE_HITPOINTS 18
-// clang-format off
+// clang-format on
 
 typedef enum {
     M_STATE_EMPTY = 0,

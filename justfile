@@ -80,7 +80,7 @@ lint-imports:
 
 [group('lint')]
 lint-format:
-    pre-commit run -a
+    prek -a
 
 [group('lint')]
 lint: (lint-imports) (lint-format)

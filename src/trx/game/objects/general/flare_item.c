@@ -24,7 +24,7 @@
 #define M_MAX_FLARE_AGE_TR3   (30 * LOGIC_FPS)         // = 900
 #define M_FLARE_DYING_AGE_TR3 (M_MAX_FLARE_AGE_TR3 - 90) // = 810
 #define M_FLARE_END_AGE_TR3   (M_MAX_FLARE_AGE_TR3 - 24) // = 876
-// clang-format off
+// clang-format on
 
 typedef struct {
     int32_t raw_age;
@@ -78,14 +78,11 @@ static void M_Control(const int16_t item_num)
     item->pos.y += item->fall_speed;
 
     int16_t room_num = item->room_num;
-    const SECTOR *const sector =
-        Room_GetSector(item->pos, &room_num);
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
 
-    const int32_t height =
-        Room_GetHeight(sector, item->pos);
+    const int32_t height = Room_GetHeight(sector, item->pos);
     if (item->pos.y < height) {
-        const int32_t ceiling =
-            Room_GetCeiling(sector, item->pos);
+        const int32_t ceiling = Room_GetCeiling(sector, item->pos);
         if (item->pos.y < ceiling) {
             item->fall_speed = -item->fall_speed;
             item->pos.y = ceiling;
@@ -240,7 +237,7 @@ static bool M_GenerateLight_TR12(const XYZ_32 pos, const int32_t flare_age)
     if (flare_age < M_FLARE_YOUNG_AGE_TR12) {
         const int32_t intensity = M_FLARE_INTENSITY
                 * (flare_age - M_FLARE_YOUNG_AGE_TR12)
-            / (2 * M_FLARE_YOUNG_AGE_TR12)
+                / (2 * M_FLARE_YOUNG_AGE_TR12)
             + M_FLARE_INTENSITY;
         Output_AddDynamicLight(light_pos, intensity, M_FLARE_FALL_OFF);
         return true;
@@ -313,7 +310,7 @@ static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
             b = rnd4 & 0x7F;
             falloff = (Random_GetControl() & 6) + 8;
             Output_AddDynamicLightRGB(
-                    light_pos, falloff, (RGB_888) { r, g, b });
+                light_pos, falloff, (RGB_888) { r, g, b });
             return false;
         }
     } else {
@@ -324,15 +321,12 @@ static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
         g = (rnd3 & 0x3F) + 64;
         b = rnd4 & 0x1F;
         falloff = 16 - ((flare_age - M_FLARE_END_AGE_TR3) >> 1);
-        Output_AddDynamicLightRGB(
-                light_pos, falloff, (RGB_888) { r, g, b });
+        Output_AddDynamicLightRGB(light_pos, falloff, (RGB_888) { r, g, b });
         return (rnd & 1) != 0;
     }
 
-    Output_AddDynamicLightRGB(
-            light_pos, falloff, (RGB_888) { r, g, b });
+    Output_AddDynamicLightRGB(light_pos, falloff, (RGB_888) { r, g, b });
     return true;
-
 }
 
 void Flare_GenerateEffects(
