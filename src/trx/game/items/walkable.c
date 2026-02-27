@@ -1,17 +1,23 @@
 #include <trx/game/items/walkable.h>
 
 #include <trx/core/log.h>
-#include <trx/core/memory.h>
-#include <trx/core/vector.h>
+#include <trx/debug.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
 
 #include <stdlib.h>
-#include <string.h>
 
 #define M_QUADRANT_COUNT 4
+
+typedef struct {
+    SECTOR *sectors[M_QUADRANT_COUNT];
+    int32_t count;
+} M_CANDIDATE_SECTORS;
+
+static WALKABLE_SETUP *m_Setup = nullptr;
+static int32_t m_SetupCount = 0;
 
 static SECTOR *M_GetItemPitSector(const XYZ_32 pos, int16_t room_num)
 {
@@ -19,11 +25,25 @@ static SECTOR *M_GetItemPitSector(const XYZ_32 pos, int16_t room_num)
     return Room_GetPitSector(sector, pos.x, pos.z);
 }
 
-static VECTOR *M_GetCandidateSectors(const XYZ_32 base_pos, int16_t room_num)
+static bool M_HasCandidateSector(
+    const M_CANDIDATE_SECTORS *const candidates, const SECTOR *const sector)
+{
+    for (int32_t i = 0; i < candidates->count; i++) {
+        if (candidates->sectors[i] == sector) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static M_CANDIDATE_SECTORS M_GetCandidateSectors(
+    const XYZ_32 base_pos, int16_t room_num)
 {
     // Probe evenly around the centre position for cases where a walkable is
     // placed above a triangle portal, so detecting the correct sector at all
     // possible positions.
+    M_CANDIDATE_SECTORS candidates = { 0 };
+
     const XYZ_32 mid_pos = {
         .x = ROUND_TO_SECTOR(base_pos.x) + STEP_L * 2,
         .y = base_pos.y,
@@ -37,7 +57,6 @@ static VECTOR *M_GetCandidateSectors(const XYZ_32 base_pos, int16_t room_num)
         { 0, STEP_L },
     };
 
-    VECTOR *const sectors = Vector_Create(sizeof(SECTOR *));
     for (int32_t i = 0; i < M_QUADRANT_COUNT; i++) {
         const XZ_32 delta = deltas[i];
         const XYZ_32 pos = {
@@ -46,12 +65,20 @@ static VECTOR *M_GetCandidateSectors(const XYZ_32 base_pos, int16_t room_num)
             .z = mid_pos.z + delta.z,
         };
         SECTOR *const sector = M_GetItemPitSector(pos, room_num);
-        if (!Vector_Contains(sectors, &sector)) {
-            Vector_Add(sectors, &sector);
+        if (!M_HasCandidateSector(&candidates, sector)) {
+            candidates.sectors[candidates.count] = sector;
+            candidates.count++;
         }
     }
 
-    return sectors;
+    return candidates;
+}
+
+static WALKABLE_SETUP *M_GetSetup(const int16_t item_num)
+{
+    ASSERT(m_Setup != nullptr);
+    ASSERT(item_num >= 0 && item_num < m_SetupCount);
+    return &m_Setup[item_num];
 }
 
 static bool M_SectorContainsWalkable(
@@ -82,13 +109,18 @@ static void M_Remove(
 {
     const ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->get_walkable_setup_func == nullptr) {
+    if (obj->add_walkable_func == nullptr) {
         return;
     }
 
-    VECTOR *const sectors = M_GetCandidateSectors(pos, room_num);
-    for (int32_t i = 0; i < sectors->count; i++) {
-        SECTOR *const sector = *(SECTOR **)Vector_Get(sectors, i);
+    WALKABLE_SETUP *const setup = M_GetSetup(item_num);
+    if (setup->capacity == 0 || setup->nodes == nullptr) {
+        return;
+    }
+
+    const M_CANDIDATE_SECTORS sectors = M_GetCandidateSectors(pos, room_num);
+    for (int32_t i = 0; i < sectors.count; i++) {
+        SECTOR *const sector = sectors.sectors[i];
         WALKABLE *walkable = sector->walkable;
         WALKABLE *prev = nullptr;
         while (walkable != nullptr) {
@@ -105,39 +137,39 @@ static void M_Remove(
         }
     }
 
-    Vector_Free(sectors);
-
-    WALKABLE_SETUP *const setup = obj->get_walkable_setup_func(item);
     setup->active_count = 0;
 }
 
 void Walkable_AllocateNodes(const ITEM *const item, const int32_t footprint)
 {
-    const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->get_walkable_setup_func == nullptr) {
-        return;
-    }
-
-    WALKABLE_SETUP *const setup = obj->get_walkable_setup_func(item);
+    const int16_t item_num = Item_GetIndex(item);
+    WALKABLE_SETUP *const setup = M_GetSetup(item_num);
     setup->capacity = footprint * M_QUADRANT_COUNT;
     setup->active_count = 0;
-    setup->nodes =
-        GameBuf_Alloc(sizeof(WALKABLE) * setup->capacity, GBUF_WALKABLES);
+    setup->nodes = nullptr;
+    if (setup->capacity > 0) {
+        setup->nodes =
+            GameBuf_Alloc(sizeof(WALKABLE) * setup->capacity, GBUF_WALKABLES);
+    }
 }
 
 void Walkable_Add(const int16_t item_num, const XYZ_32 pos)
 {
     const ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->get_walkable_setup_func == nullptr) {
+    if (obj->add_walkable_func == nullptr) {
         return;
     }
 
-    VECTOR *const sectors = M_GetCandidateSectors(pos, item->room_num);
-    WALKABLE_SETUP *const setup = obj->get_walkable_setup_func(item);
+    WALKABLE_SETUP *const setup = M_GetSetup(item_num);
+    if (setup->capacity == 0 || setup->nodes == nullptr) {
+        return;
+    }
+    const M_CANDIDATE_SECTORS sectors =
+        M_GetCandidateSectors(pos, item->room_num);
 
-    for (int32_t i = 0; i < sectors->count; i++) {
-        SECTOR *const sector = *(SECTOR **)Vector_Get(sectors, i);
+    for (int32_t i = 0; i < sectors.count; i++) {
+        SECTOR *const sector = sectors.sectors[i];
         if (M_SectorContainsWalkable(sector, item_num)) {
             continue;
         }
@@ -157,8 +189,6 @@ void Walkable_Add(const int16_t item_num, const XYZ_32 pos)
         M_InsertSorted(&sector->walkable, node);
         setup->active_count++;
     }
-
-    Vector_Free(sectors);
 }
 
 void Walkable_Remove(const int16_t item_num)
@@ -191,12 +221,16 @@ void Walkable_Reset(void)
             }
         }
     }
+}
 
-    for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
-        ITEM *const item = Item_Get(item_num);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (obj->get_walkable_setup_func != nullptr) {
-            obj->get_walkable_setup_func(item)->active_count = 0;
-        }
+void Walkable_ResetLevel(void)
+{
+    Walkable_Reset();
+    const int32_t item_count = Item_GetLevelCount();
+    m_SetupCount = item_count;
+    m_Setup = nullptr;
+    if (item_count > 0) {
+        m_Setup =
+            GameBuf_Alloc(sizeof(WALKABLE_SETUP) * item_count, GBUF_WALKABLES);
     }
 }

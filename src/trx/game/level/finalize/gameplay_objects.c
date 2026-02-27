@@ -1,5 +1,6 @@
 #include <trx/game/game_flow/util.h>
 #include <trx/game/items.h>
+#include <trx/game/items/walkable.h>
 #include <trx/game/lara.h>
 #include <trx/game/level/finalize.h>
 #include <trx/game/objects.h>
@@ -68,6 +69,7 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
     // have been processed. A cached item count must be used as individual
     // initialisations may increment the total item count.
     Object_SetupAllObjects();
+    Walkable_ResetLevel();
 
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
