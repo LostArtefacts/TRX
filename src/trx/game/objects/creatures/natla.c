@@ -40,6 +40,19 @@ static int32_t M_GetStage2HitPoints(const ITEM *const item)
     return item->max_hit_points / 2;
 }
 
+static bool M_GunHit(
+    ITEM *const item, const GAME_VECTOR *const start,
+    const GAME_VECTOR *const hit_pos, int32_t *const damage)
+{
+    if (item->current_anim_state == NATLA_STATE_SEMIDEATH) {
+        if (damage != nullptr) {
+            *damage = 0;
+        }
+        return false;
+    }
+    return true;
+}
+
 static bool M_IsTargetable(const ITEM *const item)
 {
     return item->hit_points > 0 && item->status == IS_ACTIVE
@@ -65,7 +78,8 @@ static void M_Control(const int16_t item_num)
     int16_t timer = natla->flags & NATLA_TIMER;
     int16_t facing = (int16_t)(intptr_t)item->priv;
 
-    if (item->hit_points <= 0) {
+    if (item->hit_points <= 0
+        && item->current_anim_state != NATLA_STATE_SEMIDEATH) {
         item->goal_anim_state = NATLA_STATE_DEATH;
     } else if (item->hit_points <= M_GetStage2HitPoints(item)) {
         natla->lot.setup.step = STEP_L;
@@ -156,7 +170,7 @@ static void M_Control(const int16_t item_num)
                     LARA_INFO *const lara = Lara_GetLaraInfo();
                     lara->target = nullptr;
                 }
-                item->hit_points = 1;
+                item->hit_points = 0;
             }
             break;
 
@@ -316,12 +330,15 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->initialise_func = Creature_Initialise;
     obj->control_func = M_Control;
+    obj->gun_hit_func = M_GunHit;
+    obj->is_targetable_func = M_IsTargetable;
+
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->hit_points = NATLA_HITPOINTS;
     obj->radius = NATLA_RADIUS;
     obj->smartness = NATLA_SMARTNESS;
+
     obj->intelligent = true;
-    obj->is_targetable_func = M_IsTargetable;
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_anim = true;
