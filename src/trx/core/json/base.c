@@ -155,7 +155,7 @@ JSON_VALUE *JSON_ValueFromObject(JSON_OBJECT *const obj)
 
 void JSON_ValueFree(JSON_VALUE *const value)
 {
-    if (value == nullptr || value->ref_count != 0) {
+    if (value == nullptr) {
         return;
     }
 
@@ -178,7 +178,9 @@ void JSON_ValueFree(JSON_VALUE *const value)
         break;
     }
 
-    Memory_Free(value);
+    if (value->ref_count == 0) {
+        Memory_Free(value);
+    }
 }
 
 bool JSON_ValueIsNull(const JSON_VALUE *const value)
