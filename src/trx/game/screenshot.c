@@ -67,7 +67,7 @@ static char *M_GetScreenshotTitle(void)
         if (clean_level_title != nullptr && strlen(clean_level_title) > 0) {
             return clean_level_title;
         }
-        Memory_FreePointer(clean_level_title);
+        Memory_FreePointer(&clean_level_title);
     }
 
     // If title totally invalid, name it based on level number
