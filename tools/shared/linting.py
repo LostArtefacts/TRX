@@ -114,6 +114,26 @@ def lint_meson_build_sort_order(
                 yield LintWarning(path, "source list is not ordered")
 
 
+def lint_clang_format_markers(
+    context: LintContext, path: Path
+) -> Iterable[LintWarning]:
+    if path.suffix != ".c":
+        return
+    clang_format_off_open = False
+    for i, line in enumerate(path.open("r"), 1):
+        if "// clang-format on" in line:
+            clang_format_off_open = False
+        if "// clang-format off" in line:
+            if clang_format_off_open:
+                yield LintWarning(
+                    path,
+                    "found `// clang-format off` before previous block was closed "
+                    "with `// clang-format on`",
+                    line=i,
+                )
+            clang_format_off_open = True
+
+
 def get_relevant_project(context: LintContext, path: Path) -> str:
     for project, project_path in get_project_paths(context).items():
         if path.absolute().is_relative_to(project_path.absolute()):
@@ -150,6 +170,7 @@ ALL_FILE_LINTERS: list[
     lint_trailing_whitespace,
     lint_const_primitives,
     lint_meson_build_sort_order,
+    lint_clang_format_markers,
 ]
 
 ALL_BULK_LINTERS: list[
