@@ -39,6 +39,11 @@ static const BITE m_EelBite = {
     .mesh_num = 7,
 };
 
+static bool M_IsTargetable(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -107,6 +112,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
+    obj->is_targetable_func = M_IsTargetable;
     obj->priv_size = sizeof(M_PRIV);
 
     obj->hit_points = EEL_HITPOINTS;
