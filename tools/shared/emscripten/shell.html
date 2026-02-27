@@ -38,6 +38,26 @@
             transition: width 0.2s;
         }
         #status { font-size: 0.9em; color: #888; margin-top: 0.5em; }
+        #start-gate {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            background: #000;
+            cursor: pointer;
+        }
+        #start-gate p {
+            color: #c8a040;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.4em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -47,6 +67,9 @@
         <p>Tomb Raider Engine &mdash; WebGL Build</p>
         <div id="progress-bar"><div id="progress-fill"></div></div>
         <p id="status">Initializing...</p>
+    </div>
+    <div id="start-gate" class="hidden">
+        <p>Press any key or button to continue</p>
     </div>
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
 
@@ -85,6 +108,24 @@
         window.onerror = function() {
             Module.setStatus('Exception thrown - see JavaScript console');
         };
+
+        // Let F11 pass through to the browser for native fullscreen toggle.
+        // SDL/Emscripten normally captures all key events and calls
+        // preventDefault(), which blocks the browser's native F11 handling.
+        // By intercepting in the capture phase and stopping propagation,
+        // the browser handles F11 natively (where ESC does not exit
+        // fullscreen, unlike the JavaScript Fullscreen API).
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'F11') {
+                e.stopImmediatePropagation();
+            }
+        }, true);
+
+        // Ensure canvas keeps focus during fullscreen transitions so SDL's
+        // event handlers capture all keyboard input (including Escape).
+        document.addEventListener('fullscreenchange', function() {
+            document.getElementById('canvas').focus();
+        });
     </script>
     {{{ SCRIPT }}}
 </body>

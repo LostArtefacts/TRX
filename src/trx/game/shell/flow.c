@@ -47,6 +47,58 @@
     // Direct console output that bypasses file-based logging for diagnostics.
     // EM_LOG_CONSOLE = 0x02
     #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
+
+// clang-format off
+EM_JS(void, js_show_start_gate, (void), {
+    var gate = document.getElementById('start-gate');
+    if (!gate) return;
+    document.getElementById('loading').classList.add('hidden');
+    gate.classList.remove('hidden');
+    Module._startGateDismissed = false;
+
+    function dismiss() {
+        if (Module._startGateDismissed) return;
+        Module._startGateDismissed = true;
+        gate.classList.add('hidden');
+        document.getElementById('canvas').focus();
+        document.removeEventListener('keydown', dismiss, true);
+        document.removeEventListener('mousedown', dismiss, true);
+        document.removeEventListener('touchstart', dismiss, true);
+    }
+    Module._dismissStartGate = dismiss;
+    document.addEventListener('keydown', dismiss, true);
+    document.addEventListener('mousedown', dismiss, true);
+    document.addEventListener('touchstart', dismiss, true);
+
+    // Poll for gamepad button presses.
+    (function poll() {
+        if (Module._startGateDismissed) return;
+        var gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+        for (var i = 0; i < gamepads.length; i++) {
+            var gp = gamepads[i];
+            if (!gp) continue;
+            for (var j = 0; j < gp.buttons.length; j++) {
+                if (gp.buttons[j].pressed) { dismiss(); return; }
+            }
+        }
+        requestAnimationFrame(poll);
+    })();
+});
+
+EM_JS(int, js_is_start_gate_dismissed, (void), {
+    return Module._startGateDismissed ? 1 : 0;
+});
+// clang-format on
+
+static void M_WaitForUserInput(void)
+{
+    WEBGL_LOG("[WEBGL] Showing start gate, waiting for user interaction...");
+    js_show_start_gate();
+    while (!js_is_start_gate_dismissed()) {
+        emscripten_sleep(50);
+    }
+    WEBGL_LOG("[WEBGL] User interaction received, proceeding.");
+}
 #else
     #define WEBGL_LOG(...) ((void)0)
 #endif
@@ -398,6 +450,9 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     WEBGL_LOG("[WEBGL] Shell_Main: calculating max stats...");
     Stats_CalculateMaxStats();
     WEBGL_LOG("[WEBGL] Shell_Main: max stats done, starting frontend...");
+#ifdef EMSCRIPTEN_BUILD
+    M_WaitForUserInput();
+#endif
     LOG_INFO("[WEBGL] Starting frontend sequence...");
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();
     WEBGL_LOG("[WEBGL] Shell_Main: frontend returned action=%d", gf_cmd.action);
