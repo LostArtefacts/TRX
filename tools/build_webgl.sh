@@ -114,6 +114,14 @@ if [ -d "$FMV_SRC" ]; then
     cp -u "$FMV_SRC"/*.mp4 "$BUILD_DIR/fmv/" 2>/dev/null || true
 fi
 
+# Add cache-busting query strings to the built HTML so that browsers
+# and reverse proxies (nginx, CDNs) never serve stale .js/.wasm/.data.
+CACHE_BUST="v=$(md5sum "$BUILD_DIR/TRX.wasm" | cut -c1-8)"
+echo ""
+echo ">>> Cache-busting: $CACHE_BUST"
+sed -i "s|src=\"TRX.js\"|src=\"TRX.js?${CACHE_BUST}\"|" "$BUILD_DIR/TRX.html"
+sed -i "s|var _trxCacheBust = '';  // __CACHE_BUST__|var _trxCacheBust = '${CACHE_BUST}';|" "$BUILD_DIR/TRX.html"
+
 echo ""
 echo "============================================"
 echo "  Build complete! ($GAME)"

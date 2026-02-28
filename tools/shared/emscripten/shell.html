@@ -74,7 +74,11 @@
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
 
     <script>
+        var _trxCacheBust = '';  // __CACHE_BUST__
         var Module = {
+            locateFile: function(path) {
+                return _trxCacheBust ? path + '?' + _trxCacheBust : path;
+            },
             canvas: (function() { return document.getElementById('canvas'); })(),
             setStatus: function(text) {
                 var status = document.getElementById('status');
