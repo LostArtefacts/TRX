@@ -213,19 +213,17 @@ void Walkable_Reposition(
 void Walkable_Reset(void)
 {
     const int32_t room_count = Room_GetCount();
-    for (int32_t r = 0; r < room_count; r++) {
-        const ROOM *const room = Room_Get(r);
-
-        const int32_t x_max = room->size.x;
-        const int32_t z_max = room->size.z;
-
-        SECTOR *sector = room->sectors;
-        for (int32_t z = 0; z < z_max; z++) {
-            for (int32_t x = 0; x < x_max; x++) {
-                sector->walkable = nullptr;
-                sector++;
-            }
+    for (int32_t room_idx = 0; room_idx < room_count; room_idx++) {
+        const ROOM *const room = Room_Get(room_idx);
+        const int32_t num_sectors = room->size.x * room->size.z;
+        for (int32_t i = 0; i < num_sectors; i++) {
+            room->sectors[i].walkable = nullptr;
         }
+    }
+
+    for (int32_t i = 0; i < m_SetupCount; i++) {
+        M_SETUP *const setup = M_GetSetup(i);
+        setup->active_count = 0;
     }
 }
 
