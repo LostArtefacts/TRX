@@ -104,6 +104,16 @@ echo ""
 echo ">>> Compiling..."
 meson compile -C "$BUILD_DIR" TRX
 
+# Copy FMV cutscenes alongside the build output so they can be streamed
+# on demand via HTTP (they are not embedded in TRX.data).
+FMV_SRC="$PROJECT_ROOT/${GAME}_data/fmv"
+if [ -d "$FMV_SRC" ]; then
+    echo ""
+    echo ">>> Copying FMV files for HTTP streaming..."
+    mkdir -p "$BUILD_DIR/fmv"
+    cp -u "$FMV_SRC"/*.mp4 "$BUILD_DIR/fmv/" 2>/dev/null || true
+fi
+
 echo ""
 echo "============================================"
 echo "  Build complete! ($GAME)"
@@ -112,6 +122,7 @@ echo "  Output files:"
 echo "    $BUILD_DIR/TRX.html"
 echo "    $BUILD_DIR/TRX.js"
 echo "    $BUILD_DIR/TRX.wasm"
+echo "    $BUILD_DIR/fmv/    (streamed on demand)"
 echo ""
 echo "  To test locally:"
 echo "    cd $BUILD_DIR"

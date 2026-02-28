@@ -851,7 +851,6 @@ elif is_emscripten
   game = get_option('game')
   game_data_root = meson.project_source_root() + '/../' + game + '_data/data'
   game_music_root = meson.project_source_root() + '/../' + game + '_data/music'
-  game_fmv_root = meson.project_source_root() + '/../' + game + '_data/fmv'
   preload_mappings = [
     data_root + '/common/ship/cfg@/cfg',
     data_root + '/' + game + '/ship/cfg@/cfg',
@@ -864,9 +863,9 @@ elif is_emscripten
     # Music tracks (FLAC/OGG/MP3) — mapped to /music/ so that the
     # backend_files music backend finds them via File_DirExists("music").
     game_music_root + '@/music',
-    # FMV cutscenes (MP4, converted from original formats at build time)
-    # — mapped to /fmv/ so that FMV_Play("fmv/...") finds the .mp4 files.
-    game_fmv_root + '@/fmv',
+    # FMV cutscenes are NOT preloaded — they are streamed on demand via
+    # HTTP from the fmv/ directory alongside the HTML/JS/WASM files.
+    # See fmv.c js_fmv_open() and build_webgl.sh for the serving setup.
   ]
   foreach mapping : preload_mappings
     link_args += ['--preload-file', mapping]

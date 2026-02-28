@@ -4,9 +4,7 @@
 
     #include <trx/av/audio.h>
     #include <trx/config.h>
-    #include <trx/core/filesystem.h>
     #include <trx/core/log.h>
-    #include <trx/core/memory.h>
     #include <trx/game/console.h>
     #include <trx/game/game_flow.h>
     #include <trx/game/input.h>
@@ -14,7 +12,6 @@
     #include <trx/game/output.h>
     #include <trx/game/output/quad.h>
     #include <trx/game/shell.h>
-    #include <trx/game/shell/paths.h>
     #include <trx/game/sound.h>
     #include <trx/game/ui.h>
     #include <trx/game/viewport.h>
@@ -23,9 +20,6 @@
     #include <emscripten.h>
 
 static bool m_IsPlaying = false;
-static const char *m_Extensions[] = {
-    ".mp4", ".webm", ".mpeg", ".mkv", ".avi", ".fmv", ".rpl", nullptr,
-};
 
 // ---------------------------------------------------------------------------
 // JavaScript interop for HTML5 <video> playback.
@@ -40,37 +34,16 @@ static const char *m_Extensions[] = {
 
 EM_JS(int, js_fmv_open, (const char *path_ptr), {
     var path = UTF8ToString(path_ptr);
-    var data;
-    try {
-        data = FS.readFile(path);
-    } catch (e) {
-        return 0;
-    }
-
-    var ext = path.substring(path.lastIndexOf('.')).toLowerCase();
-    var mimeTypes = {
-        '.mp4'  : 'video/mp4',
-        '.webm' : 'video/webm',
-        '.mkv'  : 'video/x-matroska',
-        '.mpeg' : 'video/mpeg',
-        '.avi'  : 'video/x-msvideo',
-        '.ogg'  : 'video/ogg',
-        '.ogv'  : 'video/ogg',
-    };
-    var mime = mimeTypes[ext] || '';
-
-    var blob = new Blob([data], mime ? { type: mime } : undefined);
-    var url  = URL.createObjectURL(blob);
 
     var video = document.createElement('video');
     video.playsInline = true;
     video.preload     = 'auto';
+    video.crossOrigin = 'anonymous';
     video.style.display = 'none';
     document.body.appendChild(video);
 
     Module._fmv = {
         video : video,
-        url   : url,
         ready : false,
         ended : false,
         error : false,
@@ -86,7 +59,10 @@ EM_JS(int, js_fmv_open, (const char *path_ptr), {
         Module._fmv.error = true;
     });
 
-    video.src = url;
+    // Stream the video directly via HTTP — the browser handles buffering
+    // and progressive download.  The path is relative to the HTML file
+    // (e.g. "fmv/cafe.mp4").
+    video.src = path;
 
     var p = video.play();
     if (p !== undefined) {
@@ -104,7 +80,6 @@ EM_JS(void, js_fmv_destroy, (void), {
     if (fmv.video.parentNode) {
         fmv.video.parentNode.removeChild(fmv.video);
     }
-    URL.revokeObjectURL(fmv.url);
     Module._fmv = null;
 });
 
@@ -262,10 +237,10 @@ bool FMV_Play(const char *const file_name)
         return false;
     }
 
+    // The path is already a fully-formed URL (e.g. "fmv/cafe.mp4"),
+    // constructed at gameflow load time — no VFS extension guessing needed.
     m_IsPlaying = true;
-    char *final_path = TRXPath_GuessExtension(file_name, m_Extensions);
-    const bool result = M_Play(final_path);
-    Memory_FreePointer(&final_path);
+    const bool result = M_Play(file_name);
     m_IsPlaying = false;
     return result;
 }

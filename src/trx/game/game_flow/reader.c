@@ -790,8 +790,18 @@ static bool M_LoadFMV(
     JSON_READ_IO *const io = ctx->io;
     const char *path = nullptr;
     JSON_MUST(JSON_READ(io, "path", &path));
+#ifdef EMSCRIPTEN_BUILD
+    // FMVs are streamed via HTTP, not preloaded into the VFS.
+    // Construct the URL path directly: strip the original extension and
+    // use .mp4 (the web-compatible format provided at build time).
+    const char *const dot = strrchr(path, '.');
+    const int32_t base_len =
+        dot != nullptr ? (int32_t)(dot - path) : (int32_t)strlen(path);
+    fmv->path = String_Format("fmv/%.*s.mp4", base_len, path);
+#else
     fmv->path =
         Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_FMV_FILE, path));
+#endif
     JSON_READ_D(io, "legal", &fmv->is_legal, false);
     JSON_READ_D(io, "credit", &fmv->is_credit, false);
     JSON_FINISH();
