@@ -1,7 +1,7 @@
 CWD := `pwd`
 HOST_USER_UID := `id -u`
 HOST_USER_GID := `id -g`
-DOCKER_IMAGE_VERSION := "20251017.rev1"
+DOCKER_IMAGE_VERSION := "20260228.rev1"
 
 default: (trx-build-win "debug")
 
@@ -39,6 +39,10 @@ _docker_run tag *args:
         --rm \
         --user \
         {{HOST_USER_UID}}:{{HOST_USER_GID}} \
+        -e CCACHE_DIR \
+        -e CCACHE_BASEDIR \
+        -e CCACHE_COMPILERCHECK \
+        -e CCACHE_MAXSIZE \
         -v {{CWD}}:/app/ \
         $full_tag \
         {{args}}

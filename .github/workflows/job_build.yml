@@ -50,9 +50,25 @@ jobs:
           just download-assets 2
           just download-assets 3
 
+      - name: Restore ccache
+        if: ${{ inputs.platform == 'linux' || inputs.platform == 'win' }}
+        uses: actions/cache@v4
+        with:
+          path: .cache/ccache
+          key: ccache-v1-${{ runner.os }}-${{ inputs.platform }}-${{ inputs.target }}-${{ hashFiles('justfile', 'tools/shared/docker/game-linux/Dockerfile', 'tools/shared/docker/game-win/Dockerfile', 'tools/shared/docker/game-win/meson_linux_mingw32.txt') }}
+          restore-keys: |
+            ccache-v1-${{ runner.os }}-${{ inputs.platform }}-${{ inputs.target }}-
+            ccache-v1-${{ runner.os }}-${{ inputs.platform }}-
+
       - name: Package asset (${{ inputs.platform }})
+        env:
+          CCACHE_DIR: /app/.cache/ccache/${{ inputs.platform }}-${{ inputs.target }}
+          CCACHE_BASEDIR: /app
+          CCACHE_COMPILERCHECK: content
+          CCACHE_MAXSIZE: 1G
         run: |
           if [ "${{ inputs.platform }}" = "linux" ] || [ "${{ inputs.platform }}" = "win" ]; then
+            mkdir -p ".cache/ccache/${{ inputs.platform }}-${{ inputs.target }}"
             if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
               just trx-package-${{ inputs.platform }} "${{ inputs.target }}" -o "build/artifacts/"
             else
