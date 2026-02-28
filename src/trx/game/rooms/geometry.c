@@ -445,6 +445,7 @@ int32_t Room_GetHeightEx(
     // Climb the stack of walkables. In each iteration the test Y pos is moved
     // up to match the current height, so preventing testing below previous
     // walkables.
+    int32_t base_height = height;
     int32_t test_y = pos.y;
     for (const WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
         if (w->item_num == ignore_item_num) {
@@ -457,6 +458,11 @@ int32_t Room_GetHeightEx(
         }
         height = obj->floor_height_func(item, pos.x, test_y, pos.z, height);
         test_y = MIN(pos.y, height);
+    }
+
+    if (base_height != height) {
+        // A walkable is present, which always override slopes below.
+        m_HeightType = HT_WALL;
     }
 
     return height;

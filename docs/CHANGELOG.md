@@ -116,6 +116,7 @@
 - fixed Lara sometimes getting stuck when crawling backwards off a tilted ledge (#4956)
 - fixed the Tribe Pipeman sometimes not being able to aim darts at Lara correctly (Gameplay → Fixes → Fix Pipeman aim)
 - fixed Lara's footprints sometimes spawning when standing on a bridge, trapdoor or pushblock
+- fixed Lara being unable to walk or sidestep at times when standing on a bridge that sits over a steep slope (regression from 1.1)
 - removed the limitation of one Carcass instance per level working with Piranhas
 - removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
 - restored the ability for Lara to perform grab cancels, like TR1 and TR2
