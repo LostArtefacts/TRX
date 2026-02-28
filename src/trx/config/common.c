@@ -129,20 +129,19 @@ bool Config_Update(void)
 
 bool Config_Write(void)
 {
-#ifdef EMSCRIPTEN_BUILD
-    // Emscripten's MEMFS is ephemeral — writes are lost on page refresh.
-    // Skip the file I/O to avoid "Can't open file" log spam and the
-    // synchronous write overhead that causes frame stutters.
-    return true;
-#else
     ASSERT(g_Config.default_path != nullptr);
     const CONFIG_IO_ARGS args = {
         .default_path = g_Config.default_path,
         .enforced_path = g_Config.enforced_path,
         .action = &Config_DumpToJSON,
     };
-    return ConfigFile_Write(&args);
+    const bool result = ConfigFile_Write(&args);
+#ifdef EMSCRIPTEN_BUILD
+    if (result) {
+        Shell_PersistConfigToIDBFS();
+    }
 #endif
+    return result;
 }
 
 int32_t Config_SubscribeChanges(

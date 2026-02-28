@@ -88,7 +88,83 @@ EM_JS(void, js_show_start_gate, (void), {
 EM_JS(int, js_is_start_gate_dismissed, (void), {
     return Module._startGateDismissed ? 1 : 0;
 });
+
+// --- IDBFS persistence ---
+
+EM_JS(void, js_init_idbfs, (const char *mount_path), {
+    var path = UTF8ToString(mount_path);
+    try { FS.mkdir('/persist'); } catch(e) {}
+    try { FS.mkdir(path); } catch(e) {}
+    FS.mount(IDBFS, {}, path);
+    try { FS.mkdir(path + '/saves'); } catch(e) {}
+    try { FS.mkdir(path + '/cfg'); } catch(e) {}
+});
+
+EM_JS(void, js_start_idbfs_sync_from_db, (void), {
+    Module._idbfsSyncDone = false;
+    FS.syncfs(true, function(err) {
+        if (err) console.error('[IDBFS] sync from DB error:', err);
+        Module._idbfsSyncDone = true;
+    });
+});
+
+EM_JS(int, js_is_idbfs_sync_done, (void), {
+    return Module._idbfsSyncDone ? 1 : 0;
+});
+
+EM_JS(void, js_restore_config, (const char *src, const char *dst), {
+    try {
+        var data = FS.readFile(UTF8ToString(src));
+        FS.writeFile(UTF8ToString(dst), data);
+    } catch(e) { /* no persisted config yet */ }
+});
+
+EM_JS(void, js_persist_file_and_sync, (const char *src, const char *dst), {
+    var d = UTF8ToString(dst);
+    try { FS.mkdirTree(d.substring(0, d.lastIndexOf('/'))); } catch(e) {}
+    try {
+        FS.writeFile(d, FS.readFile(UTF8ToString(src)));
+    } catch(e) { console.error('[IDBFS] persist failed:', e); }
+    FS.syncfs(false, function(err) {
+        if (err) console.error('[IDBFS] sync error:', err);
+    });
+});
+
+EM_JS(void, js_sync_idbfs_to_db, (void), {
+    FS.syncfs(false, function(err) {
+        if (err) console.error('[IDBFS] sync error:', err);
+    });
+});
 // clang-format on
+
+// setenv is POSIX but not declared under strict C standard modes.
+int setenv(const char *name, const char *value, int overwrite);
+
+static void M_InitIDBFS(void)
+{
+    js_init_idbfs("/persist/" TRX_GAME_ID);
+
+    js_start_idbfs_sync_from_db();
+    while (!js_is_idbfs_sync_done()) {
+        emscripten_sleep(10);
+    }
+    WEBGL_LOG("[WEBGL] IDBFS ready at /persist/%s", TRX_GAME_ID);
+
+    // Redirect saves directory to IDBFS-backed path.
+    char saves_dir[64];
+    snprintf(saves_dir, sizeof(saves_dir), "/persist/%s/saves", TRX_GAME_ID);
+    setenv("TRX_SAVES_DIR", saves_dir, 1);
+
+    // Restore persisted user config to /cfg/ (before Config_Read runs).
+    const int ver = TRX_GAME_ID[2] - '0';
+    char persist_cfg[64];
+    char cfg_path[64];
+    snprintf(
+        persist_cfg, sizeof(persist_cfg), "/persist/%s/cfg/TR%dX.json5",
+        TRX_GAME_ID, ver);
+    snprintf(cfg_path, sizeof(cfg_path), "/cfg/TR%dX.json5", ver);
+    js_restore_config(persist_cfg, cfg_path);
+}
 
 static void M_WaitForUserInput(void)
 {
@@ -98,6 +174,21 @@ static void M_WaitForUserInput(void)
         emscripten_sleep(50);
     }
     WEBGL_LOG("[WEBGL] User interaction received, proceeding.");
+}
+
+void Shell_PersistConfigToIDBFS(void)
+{
+    const int ver = TRX_GAME_ID[2] - '0';
+    char src[64];
+    char dst[64];
+    snprintf(src, sizeof(src), "/cfg/TR%dX.json5", ver);
+    snprintf(dst, sizeof(dst), "/persist/%s/cfg/TR%dX.json5", TRX_GAME_ID, ver);
+    js_persist_file_and_sync(src, dst);
+}
+
+void Shell_PersistSavesToIDBFS(void)
+{
+    js_sync_idbfs_to_db();
 }
 #else
     #define WEBGL_LOG(...) ((void)0)
@@ -393,6 +484,9 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
 
     WEBGL_LOG("[WEBGL] Shell_Main: initializing modules...");
     M_InitModules();
+#ifdef EMSCRIPTEN_BUILD
+    M_InitIDBFS();
+#endif
     M_PrepareSystem();
     if (s->args->mod == nullptr) {
         Shell_ExitSystem("No --mod specified.");

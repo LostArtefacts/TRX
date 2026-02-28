@@ -36,3 +36,8 @@ SHELL_SIZE Shell_GetDefaultSize(void);
 SHELL_SIZE Shell_GetWindowSize(void);
 SHELL_SIZE Shell_GetCurrentSize(void);
 SHELL_SIZE Shell_GetCurrentDisplaySize(void);
+
+#ifdef EMSCRIPTEN_BUILD
+void Shell_PersistConfigToIDBFS(void);
+void Shell_PersistSavesToIDBFS(void);
+#endif
