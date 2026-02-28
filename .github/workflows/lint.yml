@@ -22,20 +22,32 @@ jobs:
           echo 'deb https://apt.llvm.org/noble llvm-toolchain-noble-21 main' | sudo tee -a /etc/apt/sources.list
           echo 'deb-src https://apt.llvm.org/noble llvm-toolchain-noble-21 main' | sudo tee -a /etc/apt/sources.list
           sudo apt update
-          sudo apt-get install -y clang-format-21
+          sudo apt-get install -y clang-format-21 python3-pip pipx
           sudo snap install --edge --classic just
           sudo ln -s /usr/bin/clang-format-21 /usr/local/bin/clang-format
-          sudo apt-get install -y python3-pip
-          sudo python3 -m pip install pyjson5 pre-commit
+          python3 -m pipx install prek
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          sudo python3 -m pip install pyjson5
 
       - name: Check formatted code differences
         run: |
-          just lint-format || /bin/true
-          git diff --exit-code || (
+          set +e
+          just lint-format
+          lint_format_status=$?
+          set -e
+          if ! git diff --quiet; then
+            echo 'Formatting diffs detected in:'
+            git diff --exit-code || (
+              clang-format --version
+              echo 'Please run `just lint` and commit the changes.'
+              exit 1
+            )
+          fi
+          if [ "${lint_format_status}" -ne 0 ]; then
             clang-format --version
-            echo 'Please run `just lint` and commit the changes.'
-            exit 1
-          )
+            echo 'just lint-format failed.'
+            exit "${lint_format_status}"
+          fi
 
       - name: Check imports
         run: |
