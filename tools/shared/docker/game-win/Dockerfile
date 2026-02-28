@@ -180,6 +180,7 @@ RUN apt-get install -y \
         mingw-w64-tools \
         pkg-config \
         upx \
+        ccache \
         python3-pip \
     && python3 -m pip install --break-system-packages \
         pyjson5 \
@@ -198,4 +199,7 @@ ENV PKG_CONFIG_LIBDIR=/ext/lib/
 ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
 ENV C_INCLUDE_PATH=/ext/include/
 ENV PYTHONPATH=/app/tools/
+ENV CCACHE_BASEDIR=/app/
+ENV CCACHE_COMPILERCHECK=content
+ENV CCACHE_DIR=/app/.cache/ccache/win
 ENTRYPOINT ["/app/tools/shared/docker/game-win/entrypoint.sh"]

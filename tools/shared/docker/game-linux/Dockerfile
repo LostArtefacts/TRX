@@ -157,6 +157,7 @@ ENV PKG_CONFIG_PATH=/ext/lib/pkgconfig/
 RUN apt-get install -y \
         pkg-config \
         git \
+        ccache \
         python3-pip \
     && python3 -m pip install --break-system-packages \
         pyjson5 \
@@ -176,4 +177,9 @@ COPY --from=pcre2 /ext/ /ext/
 COPY --from=glew /ext/ /ext/
 
 ENV PYTHONPATH=/app/tools/
+ENV CCACHE_BASEDIR=/app/
+ENV CCACHE_COMPILERCHECK=content
+ENV CCACHE_DIR=/app/.cache/ccache/linux
+ENV CC="ccache gcc"
+ENV CXX="ccache g++"
 ENTRYPOINT ["/app/tools/shared/docker/game-linux/entrypoint.sh"]
