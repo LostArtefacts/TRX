@@ -1974,6 +1974,10 @@
             "title": "Passeport plus réactif",
             "description": "Evite de bloquer complètement les contrôles pendant que les pages tournent : à la place, repousse simplement leur effet.",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Pas de côtés améliorés",
             "description": "Permet d'effectuer des pas de côtés comme à partir de TR3 (exemple : Maj + touches directionelles). Les touches dédiées restent fonctionnelles.",

@@ -208,6 +208,16 @@ bool UI_Settings_Volume_RequestChange(
     return true;
 }
 
+bool UI_Settings_TouchControls_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+#ifdef EMSCRIPTEN_BUILD
+    return true;
+#else
+    return false;
+#endif
+}
+
 bool UI_Settings_Flare_IsAvailable(const UI_SETTINGS_OPTION *const option)
 {
     return g_Weapons[LGT_FLARE].is_available;

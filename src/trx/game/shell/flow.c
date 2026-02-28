@@ -135,6 +135,12 @@ EM_JS(void, js_sync_idbfs_to_db, (void), {
         if (err) console.error('[IDBFS] sync error:', err);
     });
 });
+
+EM_JS(void, js_set_touch_controls_visible, (int visible), {
+    if (Module.setTouchControlsVisible) {
+        Module.setTouchControlsVisible(visible && navigator.maxTouchPoints > 0);
+    }
+});
 // clang-format on
 
 // setenv is POSIX but not declared under strict C standard modes.
@@ -546,6 +552,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     WEBGL_LOG("[WEBGL] Shell_Main: max stats done, starting frontend...");
 #ifdef EMSCRIPTEN_BUILD
     M_WaitForUserInput();
+    js_set_touch_controls_visible(g_Config.input.enable_touch_controls);
 #endif
     LOG_INFO("[WEBGL] Starting frontend sequence...");
     GF_COMMAND gf_cmd = GF_DoFrontendSequence();

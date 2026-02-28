@@ -59,6 +59,7 @@ bool UI_Settings_Language_RequestChangeValue(
 bool UI_Settings_Volume_RequestChange(
     const UI_SETTINGS_OPTION *option, int32_t dir);
 
+bool UI_Settings_TouchControls_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Flare_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Grenade_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_Harpoon_IsAvailable(const UI_SETTINGS_OPTION *option);

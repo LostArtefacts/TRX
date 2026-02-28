@@ -51,6 +51,7 @@ typedef struct {
         bool enable_responsive_passport;
         bool enable_buffering_func_keys;
         bool enable_buffering_inventory;
+        bool enable_touch_controls;
         QUICK_GUNS_MODE quick_guns_mode;
     } input;
 

@@ -1987,6 +1987,10 @@
             "title": "Reaktionsfähiger Ausweis",
             "description": "Deaktiviert, dass man die Umblättern-Animation des Ausweises abwarten muss, sie können nun so schnell umblättern, wie sie wollen.",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Erweiterte Seit-Schritte",
             "description": "Aktiviert Seitschritte im Stil von TR3+, e. g. Shift + Richtungspfeile. Deaktiviert die Seitschritt-Tasten.",

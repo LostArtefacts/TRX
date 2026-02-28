@@ -59,6 +59,62 @@
             50% { opacity: 1; }
         }
         .hidden { display: none !important; }
+
+        /* Touch controls overlay */
+        #touch-controls {
+            display: none;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100dvw; height: 100dvh;
+            z-index: 20;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        .tc-btn {
+            position: absolute;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-size: 3vmin;
+            font-weight: bold;
+            touch-action: none;
+        }
+        .tc-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* D-pad */
+        .tc-dpad { left: 2dvw; bottom: 6dvh; width: 30dvw; height: 30dvw; max-height: 42dvh; }
+        .tc-dpad .tc-btn { width: 33.3%; height: 33.3%; }
+        .tc-dpad .tc-up    { left: 33.3%; top: 0; }
+        .tc-dpad .tc-left  { left: 0; top: 33.3%; }
+        .tc-dpad .tc-right { left: 66.6%; top: 33.3%; }
+        .tc-dpad .tc-down  { left: 33.3%; top: 66.6%; }
+
+        /* Face buttons — 2×2 grid */
+        .tc-face { right: 2dvw; bottom: 6dvh; width: 24dvw; height: 24dvw; max-height: 34dvh; }
+        .tc-face .tc-btn { width: 48%; height: 48%; }
+        .tc-face .tc-jump   { left: 0; top: 0; }
+        .tc-face .tc-action { left: 52%; top: 0; }
+        .tc-face .tc-draw   { left: 0; top: 52%; }
+        .tc-face .tc-roll   { left: 52%; top: 52%; }
+
+        /* Shoulder buttons (Walk / Look) */
+        .tc-walk { right: 26dvw; bottom: calc(6dvh + 24dvw + 1dvh); width: 11dvw; height: 7dvh; }
+        .tc-look { right: 2dvw; bottom: calc(6dvh + 24dvw + 1dvh); width: 11dvw; height: 7dvh; }
+
+        /* Menu / Pause */
+        .tc-menu  { left: 2dvw; top: 2dvh; width: 11dvw; height: 6dvh; font-size: 2.5vmin; }
+        .tc-pause { right: 2dvw; top: 2dvh; width: 11dvw; height: 6dvh; font-size: 2.5vmin; }
     </style>
 </head>
 <body>
@@ -72,6 +128,29 @@
         <p>Press any key or button to continue</p>
     </div>
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+
+    <div id="touch-controls">
+        <!-- D-pad -->
+        <div class="tc-dpad" style="position:absolute;">
+            <div class="tc-btn tc-up"    data-keys="ArrowUp">&#9650;</div>
+            <div class="tc-btn tc-left"  data-keys="ArrowLeft">&#9664;</div>
+            <div class="tc-btn tc-right" data-keys="ArrowRight">&#9654;</div>
+            <div class="tc-btn tc-down"  data-keys="ArrowDown">&#9660;</div>
+        </div>
+        <!-- Face buttons -->
+        <div class="tc-face" style="position:absolute;">
+            <div class="tc-btn tc-jump"   data-keys="AltRight">Jump</div>
+            <div class="tc-btn tc-action" data-keys="ControlRight,Enter">Act</div>
+            <div class="tc-btn tc-draw"   data-keys="Space">Draw</div>
+            <div class="tc-btn tc-roll"   data-keys="End">Roll</div>
+        </div>
+        <!-- Shoulder buttons -->
+        <div class="tc-btn tc-walk" data-keys="ShiftRight">Walk</div>
+        <div class="tc-btn tc-look" data-keys="Numpad0">Look</div>
+        <!-- Top bar -->
+        <div class="tc-btn tc-menu"  data-keys="Escape">Menu</div>
+        <div class="tc-btn tc-pause" data-keys="KeyP">Pause</div>
+    </div>
 
     <script>
         var _trxCacheBust = '';  // __CACHE_BUST__
@@ -130,6 +209,79 @@
         document.addEventListener('fullscreenchange', function() {
             document.getElementById('canvas').focus();
         });
+
+        // --- Touch controls ---
+        (function() {
+            var canvas = document.getElementById('canvas');
+            var overlay = document.getElementById('touch-controls');
+            var buttons = overlay.querySelectorAll('.tc-btn');
+
+            // Map KeyboardEvent.code to a user-friendly key value for the
+            // event's `key` property.  Emscripten's SDL2 primarily uses
+            // `code`, but we set `key` for completeness.
+            var codeToKey = {
+                ArrowUp: 'ArrowUp', ArrowDown: 'ArrowDown',
+                ArrowLeft: 'ArrowLeft', ArrowRight: 'ArrowRight',
+                AltRight: 'Alt', ControlRight: 'Control',
+                ShiftRight: 'Shift', Space: ' ', End: 'End',
+                Numpad0: '0', Escape: 'Escape', KeyP: 'p',
+                Enter: 'Enter'
+            };
+
+            function dispatchKey(code, type) {
+                canvas.dispatchEvent(new KeyboardEvent(type, {
+                    code: code,
+                    key: codeToKey[code] || code,
+                    bubbles: true,
+                    cancelable: true
+                }));
+            }
+
+            buttons.forEach(function(btn) {
+                var codes = btn.getAttribute('data-keys').split(',');
+                var activeTouches = {};  // touchId → true
+
+                btn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    var dominated = Object.keys(activeTouches).length === 0;
+                    for (var i = 0; i < e.changedTouches.length; i++) {
+                        activeTouches[e.changedTouches[i].identifier] = true;
+                    }
+                    if (dominated) {
+                        btn.classList.add('active');
+                        codes.forEach(function(c) { dispatchKey(c, 'keydown'); });
+                    }
+                    canvas.focus();
+                }, { passive: false });
+
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    for (var i = 0; i < e.changedTouches.length; i++) {
+                        delete activeTouches[e.changedTouches[i].identifier];
+                    }
+                    if (Object.keys(activeTouches).length === 0) {
+                        btn.classList.remove('active');
+                        codes.forEach(function(c) { dispatchKey(c, 'keyup'); });
+                    }
+                }, { passive: false });
+
+                btn.addEventListener('touchcancel', function(e) {
+                    e.preventDefault();
+                    for (var i = 0; i < e.changedTouches.length; i++) {
+                        delete activeTouches[e.changedTouches[i].identifier];
+                    }
+                    if (Object.keys(activeTouches).length === 0) {
+                        btn.classList.remove('active');
+                        codes.forEach(function(c) { dispatchKey(c, 'keyup'); });
+                    }
+                }, { passive: false });
+            });
+
+            // Expose visibility control for C (via EM_JS)
+            Module.setTouchControlsVisible = function(show) {
+                overlay.style.display = show ? 'block' : 'none';
+            };
+        })();
     </script>
     {{{ SCRIPT }}}
 </body>

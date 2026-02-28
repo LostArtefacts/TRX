@@ -1971,6 +1971,10 @@
             "title": "Responsywny paszport",
             "description": "Wyłącza blokowanie klawiszy podczas przewracania stron paszportu, zamiast tego kolejkując pożądaną nawigację.",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Ulepszone kroki w bok",
             "description": "Umożliwia chodzenie w bok w stylu TR3+, tj. shift+strzałki kierunkowe. Naturalnie, przyciski dedykowane do kroków w bok nadal będą działać.",

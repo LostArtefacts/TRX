@@ -2027,6 +2027,10 @@
             "title": "Passaporto reattivo",
             "description": "Fa in modo che sfogliare le pagine del passaporto sia più istantaneo, tenendo conto dei tasti premuti dell'utente",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Passi laterali migliorati",
             "description": "Abilita i passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare.",

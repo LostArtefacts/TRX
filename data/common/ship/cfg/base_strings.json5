@@ -2041,6 +2041,10 @@
             "title": "Responsive passport",
             "description": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",
         },
+        "input.enable_touch_controls": {
+            "title": "Touch controls",
+            "description": "Shows on-screen touch buttons for mobile devices.",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Enhanced sidesteps",
             "description": "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work.",
