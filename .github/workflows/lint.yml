@@ -8,28 +8,38 @@ jobs:
   lint:
     name: Run code linters
     runs-on: ubuntu-latest
+    env:
+      PREK_HOME: ${{ github.workspace }}/.cache/prek
+    permissions:
+      contents: read
+      packages: read
+    container:
+      image: ghcr.io/lostartefacts/trx-lint:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: 'true'
-          fetch-depth: 0
+          fetch-depth: 1
+          fetch-tags: false
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
-      - name: Install dependencies
-        run: |
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
-          echo 'deb https://apt.llvm.org/noble llvm-toolchain-noble-21 main' | sudo tee -a /etc/apt/sources.list
-          echo 'deb-src https://apt.llvm.org/noble llvm-toolchain-noble-21 main' | sudo tee -a /etc/apt/sources.list
-          sudo apt update
-          sudo apt-get install -y clang-format-21 python3-pip pipx
-          sudo snap install --edge --classic just
-          sudo ln -s /usr/bin/clang-format-21 /usr/local/bin/clang-format
-          python3 -m pipx install prek
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          sudo python3 -m pip install pyjson5
+      - name: Configure git safe directory
+        working-directory: ${{ github.workspace }}
+        run: git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+
+      - name: Ensure prek cache dir exists
+        run: mkdir -p "${PREK_HOME}"
+
+      - name: Restore prek cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/prek
+          key: prek-v1-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            prek-v1-${{ runner.os }}-
 
       - name: Check formatted code differences
+        working-directory: ${{ github.workspace }}
         run: |
           set +e
           just lint-format
@@ -50,8 +60,9 @@ jobs:
           fi
 
       - name: Check imports
+        working-directory: ${{ github.workspace }}
         run: |
-          git add -A
+          git add -u
           just lint-imports
           git diff --exit-code || (
             include-what-you-use --version
