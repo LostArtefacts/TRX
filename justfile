@@ -87,3 +87,6 @@ lint: (lint-imports) (lint-format)
 
 trx-build-linux target='debug': (image-linux "0") (_docker_run "rrdash/trx-linux" "build" "--target" target)
 trx-build-win target='debug': (image-win "0") (_docker_run "rrdash/trx-win" "build" "--target" target)
+
+trx-package-linux target='debug' *args: (trx-build-linux target) (_docker_run "rrdash/trx-linux" "package-all" args)
+trx-package-win target='debug' *args: (trx-build-win target) (_docker_run "rrdash/trx-win" "package-all" args)
