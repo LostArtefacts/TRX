@@ -377,6 +377,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     // clang-format off
     const bool is_ducked = (
         anim == LA_CRAWL_IDLE ||
+        anim == LA_CRAWL_PICKUP ||
         anim == LA_CROUCH_IDLE ||
         anim == LA_CROUCH_PICKUP ||
         anim == LA_CROUCH_PICKUP_FLARE);
