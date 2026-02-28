@@ -179,36 +179,59 @@ class PackageCommand(BaseCommand):
 
     def run(self, args: argparse.Namespace) -> None:
         options = PackageOptions.from_args(args)
-        if args.output:
-            zip_path = args.output
-            if zip_path.suffix.lower() != ".zip" and not args.no_zip:
-                zip_path /= options.default_stem + ".zip"
-        else:
-            zip_path = Path()
-            if args.no_zip:
-                zip_path /= options.default_stem
-            else:
-                zip_path /= options.default_stem + ".zip"
+        run_package(options=options, output=args.output, no_zip=args.no_zip)
 
-        source_files = [
-            *[
-                (path, str(path.relative_to(ship_dir)))
-                for ship_dir in options.ship_dirs
-                for path in ship_dir.rglob("*")
-                if path.is_file()
-            ],
-            *options.release_zip_files,
-        ]
 
-        if args.no_zip:
-            for src_path, dst_name in source_files:
-                dst_path = zip_path / dst_name
-                dst_path.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy(src_path, dst_path)
+class PackageAllCommand(BaseCommand):
+    name = "package-all"
+
+    def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("--platform")
+        parser.add_argument("-o", "--output-root", type=Path)
+        parser.add_argument("--no-zip", action="store_true")
+
+    def run(self, args: argparse.Namespace) -> None:
+        for tr_version in [1, 2, 3]:
+            options = PackageOptions(platform=args.platform, tr_version=tr_version)
+            output = None
+            if args.output_root:
+                output = args.output_root / f"tr{tr_version}"
+            run_package(options=options, output=output, no_zip=args.no_zip)
+
+
+def run_package(
+    options: PackageOptions, output: Path | None, no_zip: bool
+) -> None:
+    if output:
+        zip_path = output
+        if zip_path.suffix.lower() != ".zip" and not no_zip:
+            zip_path /= options.default_stem + ".zip"
+    else:
+        zip_path = Path()
+        if no_zip:
+            zip_path /= options.default_stem
         else:
-            zip_path.parent.mkdir(parents=True, exist_ok=True)
-            create_zip(zip_path, source_files)
-        print(f"Created {zip_path}")
+            zip_path /= options.default_stem + ".zip"
+
+    source_files = [
+        *[
+            (path, str(path.relative_to(ship_dir)))
+            for ship_dir in options.ship_dirs
+            for path in ship_dir.rglob("*")
+            if path.is_file()
+        ],
+        *options.release_zip_files,
+    ]
+
+    if no_zip:
+        for src_path, dst_name in source_files:
+            dst_path = zip_path / dst_name
+            dst_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(src_path, dst_path)
+    else:
+        zip_path.parent.mkdir(parents=True, exist_ok=True)
+        create_zip(zip_path, source_files)
+    print(f"Created {zip_path}")
 
 
 def parse_args(

@@ -52,22 +52,21 @@ jobs:
 
       - name: Package asset (${{ inputs.platform }})
         run: |
-          if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
-            just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}"
-            just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}"
-            if [ "${{ inputs.platform }}" != "win-installer" ]; then
-              just tr3-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr3_dir }}"
+          if [ "${{ inputs.platform }}" = "linux" ] || [ "${{ inputs.platform }}" = "win" ]; then
+            if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
+              just trx-package-${{ inputs.platform }} "${{ inputs.target }}" -o "build/artifacts/"
             else
-              echo "Skipping TR3 win-installer build (temporarily disabled)"
+              just trx-package-${{ inputs.platform }} "${{ inputs.target }}" -o "build/artifacts/" --no-zip
             fi
           else
-            just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}" --no-zip
-            just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}" --no-zip
-            if [ "${{ inputs.platform }}" != "win-installer" ]; then
-              just tr3-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr3_dir }}" --no-zip
+            if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
+              just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}"
+              just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}"
             else
-              echo "Skipping TR3 win-installer build (temporarily disabled)"
+              just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}" --no-zip
+              just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}" --no-zip
             fi
+            echo "Skipping TR3 win-installer build (temporarily disabled)"
           fi
 
       - name: Upload artifacts (tr1)
@@ -75,12 +74,14 @@ jobs:
         with:
           name: ${{ steps.vars.outputs.tr1_asset }}
           path: ${{ steps.vars.outputs.tr1_dir }}
+          compression-level: 0
 
       - name: Upload artifacts (tr2)
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.vars.outputs.tr2_asset }}
           path: ${{ steps.vars.outputs.tr2_dir }}
+          compression-level: 0
 
       - name: Upload artifacts (tr3)
         if: ${{ inputs.platform != 'win-installer' }}
@@ -88,3 +89,4 @@ jobs:
         with:
           name: ${{ steps.vars.outputs.tr3_asset }}
           path: ${{ steps.vars.outputs.tr3_dir }}
+          compression-level: 0
