@@ -15,9 +15,6 @@
 #   3. Install Meson (>= 1.3.0) and Ninja:
 #      pip install meson ninja
 #
-#   4. Install Lua (for Emscripten):
-#      The build expects lua headers to be available. You may need to build
-#      lua from source with emcc or use emscripten-ports.
 #
 # Usage:
 #   ./tools/build_webgl.sh [tr1|tr2] [debug|release|debugoptim]
