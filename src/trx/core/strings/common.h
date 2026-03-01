@@ -17,6 +17,7 @@ bool String_ParseBool(const char *value, bool *target);
 bool String_ParseInteger(const char *value, int32_t *target);
 bool String_ParseDecimal(const char *value, float *target);
 bool String_ParseRGB888(const char *value, RGB_888 *target);
+bool String_ParseRGBA8888(const char *value, RGBA_8888 *target);
 
 size_t String_GetCharByteSize(const char *ptr);
 char *String_ToUpper(const char *text);

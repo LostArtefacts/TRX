@@ -138,7 +138,7 @@ def get_used_ui_theme_strings(
     source = load_json5_from_string(vfs.get(path))
     if not isinstance(source, dict):
         return
-    for _, theme_data in source.items():
+    for _, theme_data in source.get("bars", {}).items():
         if not isinstance(theme_data, dict):
             continue
         name_gs = theme_data.get("name_gs")

@@ -7,6 +7,7 @@
 #include <trx/core/strings.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/shell.h>
+#include <trx/version.h>
 
 #include <uthash.h>
 
@@ -83,6 +84,9 @@ static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
 };
 
 static M_SETTINGS m_Settings;
+
+static UI_MENU_COLORS_PC m_MenuColorsPC[3]; // indexed [g_TRVersion - 1]
+static UI_MENU_COLORS_PS1 m_MenuColorsPS1[3]; // indexed [g_TRVersion - 1]
 
 static void M_ExitWithJSONError(
     const char *const source_path, const JSON_READ_IO *const io)
@@ -536,13 +540,83 @@ static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
     return &theme->group;
 }
 
+static bool M_LoadMenuColorsPC(
+    JSON_READ_IO *const io, UI_MENU_COLORS_PC *const c)
+{
+    JSON_MUST(JSON_PUSH(io, "background"));
+    JSON_MUST(JSON_READ_A(io, 0, &c->background[0]));
+    JSON_MUST(JSON_READ_A(io, 1, &c->background[1]));
+    JSON_MUST(JSON_POP(io));
+
+    JSON_MUST(JSON_PUSH(io, "background_heavy"));
+    JSON_MUST(JSON_READ_A(io, 0, &c->background_heavy[0]));
+    JSON_MUST(JSON_READ_A(io, 1, &c->background_heavy[1]));
+    JSON_MUST(JSON_POP(io));
+
+    JSON_MUST(JSON_READ(io, "outline_light", &c->outline_light));
+    JSON_MUST(JSON_READ(io, "outline_dark", &c->outline_dark));
+
+    JSON_FINISH();
+}
+
+static bool M_LoadMenuColorsPS1(
+    JSON_READ_IO *const io, UI_MENU_COLORS_PS1 *const c)
+{
+    JSON_MUST(JSON_READ(io, "background_edge", &c->background_edge));
+    JSON_MUST(JSON_READ(io, "background_center", &c->background_center));
+    JSON_MUST(
+        JSON_READ(io, "background_heavy_edge", &c->background_heavy_edge));
+    JSON_MUST(
+        JSON_READ(io, "background_heavy_center", &c->background_heavy_center));
+    JSON_MUST(JSON_READ(io, "heading_edge", &c->heading_edge));
+    JSON_MUST(JSON_READ(io, "heading_center", &c->heading_center));
+    JSON_MUST(JSON_READ(io, "requested_edge", &c->requested_edge));
+    JSON_MUST(JSON_READ(io, "requested_center", &c->requested_center));
+    JSON_MUST(JSON_READ(io, "requested_outline_ch", &c->requested_outline_ch));
+    JSON_MUST(JSON_READ(io, "requested_outline_cv", &c->requested_outline_cv));
+    JSON_MUST(
+        JSON_READ(io, "requested_outline_edge", &c->requested_outline_edge));
+    JSON_MUST(JSON_READ(io, "outline_tl", &c->outline_tl));
+    JSON_MUST(JSON_READ(io, "outline_tr", &c->outline_tr));
+    JSON_MUST(JSON_READ(io, "outline_bl", &c->outline_bl));
+    JSON_MUST(JSON_READ(io, "outline_br", &c->outline_br));
+    JSON_MUST(JSON_READ(io, "heading_outline", &c->heading_outline));
+
+    JSON_FINISH();
+}
+
+static bool M_LoadMenuColors(JSON_READ_IO *const io)
+{
+    static const char *const tr_keys[] = { "tr1", "tr2", "tr3" };
+
+    for (int32_t i = 0; i < 3; i++) {
+        JSON_MUST(JSON_PUSH(io, tr_keys[i]));
+
+        JSON_MUST(JSON_PUSH(io, "pc"));
+        JSON_MUST(M_LoadMenuColorsPC(io, &m_MenuColorsPC[i]));
+        JSON_MUST(JSON_POP(io));
+
+        JSON_MUST(JSON_PUSH(io, "ps1"));
+        JSON_MUST(M_LoadMenuColorsPS1(io, &m_MenuColorsPS1[i]));
+        JSON_MUST(JSON_POP(io));
+
+        JSON_MUST(JSON_POP(io));
+    }
+
+    JSON_FINISH();
+}
+
 void UI_Settings_LoadFromFile(const char *const path)
 {
     JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
 
     M_FreeBarThemes();
-    if (!M_LoadBarThemes(io)) {
+    if (!JSON_PUSH(io, "bars") || !M_LoadBarThemes(io) || !JSON_POP(io)) {
+        M_ExitWithJSONError(path, io);
+    }
+
+    if (!JSON_PUSH(io, "ui") || !M_LoadMenuColors(io) || !JSON_POP(io)) {
         M_ExitWithJSONError(path, io);
     }
 
@@ -614,4 +688,14 @@ const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
         return theme;
     }
     return &group->colors[0].theme;
+}
+
+const UI_MENU_COLORS_PC *UI_Settings_GetMenuColorsPC(void)
+{
+    return &m_MenuColorsPC[g_TRVersion - 1];
+}
+
+const UI_MENU_COLORS_PS1 *UI_Settings_GetMenuColorsPS1(void)
+{
+    return &m_MenuColorsPS1[g_TRVersion - 1];
 }

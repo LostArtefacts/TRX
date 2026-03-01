@@ -330,6 +330,18 @@ static bool M_ReadRGB888Current(JSON_READ_IO *const io, RGB_888 *const target)
     JSON_FINISH();
 }
 
+static bool M_ReadRGBA8888Current(
+    JSON_READ_IO *const io, RGBA_8888 *const target)
+{
+    const char *str = nullptr;
+    JSON_MUST(JSON_READ_CURRENT(io, &str));
+    if (!String_ParseRGBA8888(str, target)) {
+        M_SetError(io, "invalid RGBA color string");
+        JSON_FAIL();
+    }
+    JSON_FINISH();
+}
+
 #define L_DEFINE_JSON_READ_IO_TYPE(name, ctype, impl_func)                     \
     bool JSON_ReadIO_Read##name##Current(                                      \
         JSON_READ_IO *const io, void *const target)                            \
@@ -347,6 +359,7 @@ L_DEFINE_JSON_READ_IO_TYPE(Float, float, M_ReadNumCurrent_Float)
 L_DEFINE_JSON_READ_IO_TYPE(Double, double, M_ReadNumCurrent_Double)
 L_DEFINE_JSON_READ_IO_TYPE(String, const char *, M_ReadStringCurrent)
 L_DEFINE_JSON_READ_IO_TYPE(RGB888, RGB_888, M_ReadRGB888Current)
+L_DEFINE_JSON_READ_IO_TYPE(RGBA8888, RGBA_8888, M_ReadRGBA8888Current)
 #undef L_DEFINE_JSON_READ_IO_TYPE
 
 const char *JSON_ReadIO_GetError(const JSON_READ_IO *const io)
