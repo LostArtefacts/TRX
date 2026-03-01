@@ -132,7 +132,7 @@ static int32_t M_GetVertexYOffset(
     return dy;
 }
 
-void FX_Footprint_Update(void)
+void FX_Footprint_Control(void)
 {
     if (!g_Config.visuals.enable_footprints) {
         return;

@@ -494,10 +494,6 @@ static void M_Control(const int16_t item_num)
     Creature_Joint(item, 1, torso_x);
     Creature_Joint(item, 2, torso_y >> 1);
     Creature_Animate(item_num, angle, 0);
-
-    if (p->explode_count != 0 && item->hit_points <= 0) {
-        FX_ExplosionRing_Control();
-    }
 }
 
 static void M_DrawShield(const ITEM *const item)
@@ -597,9 +593,6 @@ static bool M_Draw(const ITEM *const item)
 
     const bool result = Object_DrawAnimatingItem(item);
     if (p->explode_count != 0) {
-        if (item->hit_points <= 0) {
-            FX_ExplosionRing_Draw();
-        }
         if (p->explode_count != 0 && p->explode_count <= 64) {
             M_DrawShield(item);
         }

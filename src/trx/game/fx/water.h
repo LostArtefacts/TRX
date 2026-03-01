@@ -63,7 +63,7 @@ typedef struct {
 } FX_WATER_SPLASH_SETUP;
 
 void FX_Water_Init(void);
-void FX_Water_Update(void);
+void FX_Water_Control(void);
 void FX_Water_Draw(void);
 
 FX_WATER_RIPPLE *FX_Water_SetupRipple(

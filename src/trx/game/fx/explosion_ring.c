@@ -9,23 +9,22 @@
 #include <trx/game/random.h>
 
 static FX_EXPLOSION_RING m_ExplosionRings[6] = {};
+static bool m_Active = false;
 
 void FX_ExplosionRing_Reset(void)
 {
-    for (int32_t i = 0;
-         i < (int32_t)(sizeof(m_ExplosionRings) / sizeof(m_ExplosionRings[0]));
-         i++) {
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
         m_ExplosionRings[i] = (FX_EXPLOSION_RING) { 0 };
     }
+    m_Active = false;
 }
 
 FX_EXPLOSION_RING *FX_ExplosionRing_GetRing(const int32_t idx)
 {
-    if (idx < 0
-        || idx >= (int32_t)(sizeof(m_ExplosionRings)
-                            / sizeof(m_ExplosionRings[0]))) {
+    if (idx < 0 || idx >= (int32_t)ARRAY_SIZE(m_ExplosionRings)) {
         return nullptr;
     }
+    m_Active = true;
     return &m_ExplosionRings[idx];
 }
 
@@ -49,6 +48,11 @@ static void M_RotateZX(
 
 void FX_ExplosionRing_Control(void)
 {
+    if (!m_Active) {
+        return;
+    }
+
+    bool any_active = false;
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
         FX_EXPLOSION_RING *const ring = &m_ExplosionRings[i];
         if (ring->on == 0) {
@@ -62,6 +66,10 @@ void FX_ExplosionRing_Control(void)
         }
 
         ring->radius += ring->speed;
+        any_active = true;
+    }
+    if (!any_active) {
+        m_Active = false;
     }
 }
 

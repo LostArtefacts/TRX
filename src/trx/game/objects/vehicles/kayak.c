@@ -1268,7 +1268,6 @@ bool Kayak_Control(void)
     }
     FX_Wake_SetShade(wake_shade);
 
-    FX_Wake_Update();
     M_KayakToBaddieCollision(item);
 
     return Lara_Vehicle_GetIndex() != NO_ITEM;
