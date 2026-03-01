@@ -7,6 +7,7 @@
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
 #include <trx/game/ui/scaler.h>
+#include <trx/game/ui/settings.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -16,111 +17,6 @@
 #define M_SCHEDULE_OP(draw_func, inst)                                         \
     M_ScheduleOpHelper(                                                        \
         (M_DRAW_OP_FUNC)draw_func, sizeof(inst), (const M_DRAW_OP *)&inst);
-
-typedef enum {
-    C_BACKGROUND_E,
-    C_BACKGROUND_C,
-    C_BACKGROUND_HEAVY_E,
-    C_BACKGROUND_HEAVY_C,
-    C_HEADING_E,
-    C_HEADING_C,
-    C_REQUESTED_E,
-    C_REQUESTED_C,
-    C_REQUESTED_OUTLINE_CH,
-    C_REQUESTED_OUTLINE_CV,
-    C_REQUESTED_OUTLINE_E,
-    C_BACKGROUND_OUTLINE_TL,
-    C_BACKGROUND_OUTLINE_TR,
-    C_BACKGROUND_OUTLINE_BL,
-    C_BACKGROUND_OUTLINE_BR,
-    C_HEADING_OUTLINE,
-    C_GENERIC_OUTLINE_LIGHT,
-    C_GENERIC_OUTLINE_DARK,
-    C_NUMBER_OF,
-} M_COLOR;
-
-typedef union {
-    M_COLOR colors[2];
-    struct {
-        M_COLOR edge;
-        M_COLOR center;
-    };
-} M_GRADIENT_FILL;
-
-static const M_GRADIENT_FILL m_GradientFills[] = {
-    // clang-format off
-    [TS_BACKGROUND]       = { .edge = C_BACKGROUND_E, .center = C_BACKGROUND_C },
-    [TS_BACKGROUND_HEAVY] = { .edge = C_BACKGROUND_HEAVY_E, .center = C_BACKGROUND_HEAVY_C },
-    [TS_HEADING]          = { .edge = C_HEADING_E, .center = C_HEADING_C },
-    [TS_REQUESTED]        = { .edge = C_REQUESTED_E, .center = C_REQUESTED_C },
-    // clang-format on
-};
-
-static const RGBA_8888 m_MenuColorMap[TR_VERSION_COUNT][C_NUMBER_OF] = {
-    // clang-format off
-    [0] = {
-        [C_BACKGROUND_C]           = { 0x00, 0x00, 0x40, 0x80 },
-        [C_BACKGROUND_E]           = { 0x00, 0x00, 0x00, 0x80 },
-        [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x00, 0x00, 0xE0 },
-        [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
-        [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
-        [C_HEADING_C]              = { 0x80, 0x38, 0x10, 0x80 },
-        [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
-        [C_REQUESTED_C]            = { 0x80, 0x38, 0xDC, 0x80 },
-        //[C_REQUESTED_C]            = { 0x40, 0x1C, 0x78, 0x80 },
-        [C_REQUESTED_OUTLINE_CH]   = { 0xC8, 0xC8, 0xC8, 0xFF },
-        [C_REQUESTED_OUTLINE_CV]   = { 0xC8, 0xC8, 0xC8, 0xFF },
-        [C_REQUESTED_OUTLINE_E]    = { 0x28, 0x28, 0x28, 0xFF },
-        [C_BACKGROUND_OUTLINE_TL]  = { 0x60, 0x60, 0x60, 0xFF },
-        [C_BACKGROUND_OUTLINE_TR]  = { 0x20, 0x20, 0x20, 0xFF },
-        [C_BACKGROUND_OUTLINE_BL]  = { 0x40, 0x40, 0x40, 0xFF },
-        [C_BACKGROUND_OUTLINE_BR]  = { 0x00, 0x00, 0x00, 0xFF },
-        [C_HEADING_OUTLINE]        = { 0x00, 0x00, 0x00, 0xFF },
-        [C_GENERIC_OUTLINE_LIGHT]  = { 0xE8, 0xC0, 0x70, 0xFF },
-        [C_GENERIC_OUTLINE_DARK]   = { 0x8C, 0x70, 0x38, 0xFF },
-    },
-    [1] = {
-        [C_BACKGROUND_E]           = { 0x00, 0x20, 0x00, 0x80 },
-        [C_BACKGROUND_C]           = { 0x00, 0x60, 0x00, 0x80 },
-        [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
-        [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x20, 0x00, 0xE0 },
-        [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
-        [C_HEADING_C]              = { 0x10, 0x80, 0x38, 0x80 },
-        [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
-        [C_REQUESTED_C]            = { 0x38, 0xF0, 0x80, 0x80 },
-        [C_REQUESTED_OUTLINE_CH]   = { 0xFF, 0xFF, 0xFF, 0xFF },
-        [C_REQUESTED_OUTLINE_CV]   = { 0x38, 0xF0, 0x80, 0xFF },
-        [C_REQUESTED_OUTLINE_E]    = { 0x00, 0x00, 0x00, 0xFF },
-        [C_BACKGROUND_OUTLINE_TL]  = { 0x60, 0x60, 0x60, 0xFF },
-        [C_BACKGROUND_OUTLINE_TR]  = { 0x20, 0x20, 0x20, 0xFF },
-        [C_BACKGROUND_OUTLINE_BL]  = { 0x40, 0x40, 0x40, 0xFF },
-        [C_BACKGROUND_OUTLINE_BR]  = { 0x00, 0x00, 0x00, 0xFF },
-        [C_HEADING_OUTLINE]        = { 0x00, 0x00, 0x00, 0xFF },
-        [C_GENERIC_OUTLINE_LIGHT]  = { 0xE8, 0xC0, 0x70, 0xFF },
-        [C_GENERIC_OUTLINE_DARK]   = { 0x8C, 0x70, 0x38, 0xFF },
-    },
-    [2] = {
-        [C_BACKGROUND_E]           = { 0x30, 0x20, 0x00, 0x80 },
-        [C_BACKGROUND_C]           = { 0x00, 0x60, 0x00, 0x80 },
-        [C_BACKGROUND_HEAVY_E]     = { 0x00, 0x00, 0x00, 0xE0 },
-        [C_BACKGROUND_HEAVY_C]     = { 0x00, 0x20, 0x00, 0xE0 },
-        [C_HEADING_E]              = { 0x00, 0x00, 0x00, 0x80 },
-        [C_HEADING_C]              = { 0x10, 0x80, 0x38, 0x80 },
-        [C_REQUESTED_E]            = { 0x00, 0x00, 0x00, 0x80 },
-        [C_REQUESTED_C]            = { 0x38, 0xF0, 0x80, 0x80 },
-        [C_REQUESTED_OUTLINE_CH]   = { 0xFF, 0xFF, 0xFF, 0xFF },
-        [C_REQUESTED_OUTLINE_CV]   = { 0x38, 0xF0, 0x80, 0xFF },
-        [C_REQUESTED_OUTLINE_E]    = { 0x00, 0x00, 0x00, 0xFF },
-        [C_BACKGROUND_OUTLINE_TL]  = { 0x60, 0x60, 0x60, 0xFF },
-        [C_BACKGROUND_OUTLINE_TR]  = { 0x20, 0x20, 0x20, 0xFF },
-        [C_BACKGROUND_OUTLINE_BL]  = { 0x40, 0x40, 0x40, 0xFF },
-        [C_BACKGROUND_OUTLINE_BR]  = { 0x00, 0x00, 0x00, 0xFF },
-        [C_HEADING_OUTLINE]        = { 0x00, 0x00, 0x00, 0xFF },
-        [C_GENERIC_OUTLINE_LIGHT]  = { 0x40, 0x80, 0xC0, 0xFF },
-        [C_GENERIC_OUTLINE_DARK]   = { 0x00, 0x10, 0x40, 0xFF },
-    },
-    // clang-format on
-};
 
 struct M_DRAW_OP;
 typedef void (*M_DRAW_OP_FUNC)(const struct M_DRAW_OP *);
@@ -164,11 +60,6 @@ static M_PRIV m_Priv = {
         .default_chunk_size = 1024 * 4,
     },
 };
-
-static RGBA_8888 M_GetMenuColor(const M_COLOR color)
-{
-    return m_MenuColorMap[g_TRVersion - 1][color];
-}
 
 static void M_DrawScreenQuad(
     const int32_t x0, const int32_t y0, const int32_t x1, const int32_t y1,
@@ -236,12 +127,13 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
     if (g_TRVersion == 1 && op->ui_style == UI_STYLE_PC) {
         const float e =
             UI_Scaler_Calc(M_OUTLINE_THICKNESS, UI_SCALER_TARGET_TEXT);
-        const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
-        const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
+        const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
         M_DrawScreenQuad(
-            op->x0, op->y - e, op->x1, op->y, op->z, cl, cl, cl, cl);
+            op->x0, op->y - e, op->x1, op->y, op->z, c->outline_light,
+            c->outline_light, c->outline_light, c->outline_light);
         M_DrawScreenQuad(
-            op->x0, op->y, op->x1, op->y + e, op->z, cd, cd, cd, cd);
+            op->x0, op->y, op->x1, op->y + e, op->z, c->outline_dark,
+            c->outline_dark, c->outline_dark, c->outline_dark);
     } else if (g_TRVersion == 2 && op->ui_style == UI_STYLE_PC) {
         const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
         M_DrawScreenSprite(
@@ -250,59 +142,70 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
     } else if (g_TRVersion == 3 && op->ui_style == UI_STYLE_PC) {
         const float e1 = UI_Scaler_Calc(1.0f, UI_SCALER_TARGET_TEXT);
         const float e2 = e1 / 3.0f;
-        const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
-        const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
+        const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
         M_DrawScreenQuad(
-            op->x0, op->y - e1, op->x1, op->y + e1, op->z, cd, cd, cd, cd);
+            op->x0, op->y - e1, op->x1, op->y + e1, op->z, c->outline_dark,
+            c->outline_dark, c->outline_dark, c->outline_dark);
         M_DrawScreenQuad(
-            op->x0, op->y - e2, op->x1, op->y + e2, op->z, cl, cl, cl, cl);
+            op->x0, op->y - e2, op->x1, op->y + e2, op->z, c->outline_light,
+            c->outline_light, c->outline_light, c->outline_light);
     } else {
         const float e =
             UI_Scaler_Calc(M_OUTLINE_THICKNESS, UI_SCALER_TARGET_TEXT);
+        const UI_MENU_COLORS_PS1 *const c = UI_Settings_GetMenuColorsPS1();
         M_DrawScreenQuad(
-            op->x0, op->y - e, op->x1, op->y + e, op->z,
-            M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
-            M_GetMenuColor(C_BACKGROUND_OUTLINE_BR),
-            M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
-            M_GetMenuColor(C_BACKGROUND_OUTLINE_BR));
+            op->x0, op->y - e, op->x1, op->y + e, op->z, c->outline_bl,
+            c->outline_br, c->outline_bl, c->outline_br);
     }
 }
 
 static void M_DrawOp_TextBackground(const M_DRAW_OP_TEXT_RECT *const op)
 {
     switch (op->ui_style) {
-    case UI_STYLE_PC:
-        RGBA_8888 c1, c2;
-        if (g_TRVersion == 3 && op->text_style == TS_BACKGROUND_HEAVY) {
-            c1 = (RGBA_8888) { 0, 0x10, 0x20, 0xE0 };
-            c2 = (RGBA_8888) { 0, 0, 0, 0xE0 };
-        } else if (g_TRVersion == 3) {
-            c1 = (RGBA_8888) { 0x00, 0x3F, 0xFF, 0x50 };
-            c2 = (RGBA_8888) { 0x00, 0x3F, 0x1F, 0x50 };
-        } else {
-            const uint8_t a =
-                op->text_style == TS_BACKGROUND_HEAVY ? 0xE0 : 0x80;
-            c1 = (RGBA_8888) { 0, 0, 0, a };
-            c2 = c1;
-        }
-        M_DrawScreenQuad(op->x0, op->y0, op->x1, op->y1, op->z, c1, c1, c2, c2);
+    case UI_STYLE_PC: {
+        const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
+        const RGBA_8888 *const ramp = op->text_style == TS_BACKGROUND_HEAVY
+            ? c->background_heavy
+            : c->background;
+        M_DrawScreenQuad(
+            op->x0, op->y0, op->x1, op->y1, op->z, ramp[0], ramp[0], ramp[1],
+            ramp[1]);
         break;
+    }
 
     case UI_STYLE_PS1: {
+        const UI_MENU_COLORS_PS1 *const c = UI_Settings_GetMenuColorsPS1();
         const int32_t xm = (op->x0 + op->x1) / 2;
         const int32_t ym = (op->y0 + op->y1) / 2;
-        const M_GRADIENT_FILL *const fill = &m_GradientFills[op->text_style];
+        RGBA_8888 edge, center;
+        switch (op->text_style) {
+        case TS_BACKGROUND_HEAVY:
+            edge = c->background_heavy_edge;
+            center = c->background_heavy_center;
+            break;
+        case TS_HEADING:
+            edge = c->heading_edge;
+            center = c->heading_center;
+            break;
+        case TS_REQUESTED:
+            edge = c->requested_edge;
+            center = c->requested_center;
+            break;
+        default:
+            edge = c->background_edge;
+            center = c->background_center;
+            break;
+        }
 
-#define L_DRAW(x0, y0, x1, y1, tl, tr, bl, br)                                 \
-    M_DrawScreenQuad(                                                          \
-        x0, y0, x1, y1, op->z, M_GetMenuColor(fill->colors[tl]),               \
-        M_GetMenuColor(fill->colors[tr]), M_GetMenuColor(fill->colors[bl]),    \
-        M_GetMenuColor(fill->colors[br]));
-        L_DRAW(xm, op->y0, op->x0, ym, 0, 0, 1, 0);
-        L_DRAW(op->x1, op->y0, xm, ym, 0, 0, 0, 1);
-        L_DRAW(xm, ym, op->x0, op->y1, 1, 0, 0, 0);
-        L_DRAW(op->x1, ym, xm, op->y1, 0, 1, 0, 0);
+        // clang-format off
+#define L_DRAW(x0, y0, x1, y1, tl, tr, bl, br) \
+    M_DrawScreenQuad(x0, y0, x1, y1, op->z, tl, tr, bl, br);
+        L_DRAW(xm,     op->y0, op->x0, ym,     edge,   edge,   center, edge  );
+        L_DRAW(op->x1, op->y0, xm,     ym,     edge,   edge,   edge,   center);
+        L_DRAW(xm,     ym,     op->x0, op->y1, center, edge,   edge,   edge  );
+        L_DRAW(op->x1, ym,     xm,     op->y1, edge,   center, edge,   edge  );
 #undef L_DRAW
+        // clang-format on
         break;
     }
     }
@@ -318,11 +221,12 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP_TEXT_RECT *const op)
     switch (op->ui_style) {
     case UI_STYLE_PC:
         if (g_TRVersion == 1) {
-            const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
-            const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
+            const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
             const float thickness =
                 UI_Scaler_Calc(M_OUTLINE_THICKNESS, UI_SCALER_TARGET_TEXT);
-            Output_DrawScreenFrame(x0, y0, x1 - x0, y1 - y0, cd, cl, thickness);
+            Output_DrawScreenFrame(
+                x0, y0, x1 - x0, y1 - y0, c->outline_dark, c->outline_light,
+                thickness);
         } else if (g_TRVersion == 2) {
             const int32_t mesh_idx = Object_Get(O_TEXT_BOX)->mesh_idx;
 
@@ -358,41 +262,41 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP_TEXT_RECT *const op)
             M_DrawScreenSprite(
                 x0, y0, op->z, scale_h, h, mesh_idx + 7, neutral);
         } else if (g_TRVersion == 3) {
-            const RGBA_8888 cd = M_GetMenuColor(C_GENERIC_OUTLINE_DARK);
-            const RGBA_8888 cl = M_GetMenuColor(C_GENERIC_OUTLINE_LIGHT);
+            const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
             const float thickness = UI_Scaler_Calc(1.0f, UI_SCALER_TARGET_TEXT);
-            Output_DrawScreenFrame(x0, y0, x1 - x0, y1 - y0, cd, cd, thickness);
             Output_DrawScreenFrame(
-                x0, y0, x1 - x0, y1 - y0, cl, cl, thickness / 3.0f);
+                x0, y0, x1 - x0, y1 - y0, c->outline_dark, c->outline_dark,
+                thickness);
+            Output_DrawScreenFrame(
+                x0, y0, x1 - x0, y1 - y0, c->outline_light, c->outline_light,
+                thickness / 3.0f);
         }
 
         break;
 
-    case UI_STYLE_PS1:
+    case UI_STYLE_PS1: {
+        const UI_MENU_COLORS_PS1 *const c = UI_Settings_GetMenuColorsPS1();
         switch (op->text_style) {
         case TS_BACKGROUND:
         case TS_BACKGROUND_HEAVY:
             M_DrawScreenGradientBox(
-                x0, y0, x1, y1, op->z, M_GetMenuColor(C_BACKGROUND_OUTLINE_TL),
-                M_GetMenuColor(C_BACKGROUND_OUTLINE_TR),
-                M_GetMenuColor(C_BACKGROUND_OUTLINE_BL),
-                M_GetMenuColor(C_BACKGROUND_OUTLINE_BR), M_OUTLINE_THICKNESS);
+                x0, y0, x1, y1, op->z, c->outline_tl, c->outline_tr,
+                c->outline_bl, c->outline_br, M_OUTLINE_THICKNESS);
             break;
         case TS_HEADING:
             M_DrawScreenGradientBox(
-                x0, y0, x1, y1, op->z, M_GetMenuColor(C_HEADING_OUTLINE),
-                M_GetMenuColor(C_HEADING_OUTLINE),
-                M_GetMenuColor(C_HEADING_OUTLINE),
-                M_GetMenuColor(C_HEADING_OUTLINE), M_OUTLINE_THICKNESS);
+                x0, y0, x1, y1, op->z, c->heading_outline, c->heading_outline,
+                c->heading_outline, c->heading_outline, M_OUTLINE_THICKNESS);
             break;
         case TS_REQUESTED:
             M_DrawScreenCentreGradientBox(
-                x0, y0, x1, y1, op->z, M_GetMenuColor(C_REQUESTED_OUTLINE_E),
-                M_GetMenuColor(C_REQUESTED_OUTLINE_CH),
-                M_GetMenuColor(C_REQUESTED_OUTLINE_CV), M_OUTLINE_THICKNESS);
+                x0, y0, x1, y1, op->z, c->requested_outline_edge,
+                c->requested_outline_ch, c->requested_outline_cv,
+                M_OUTLINE_THICKNESS);
             break;
         }
         break;
+    }
     }
 }
 

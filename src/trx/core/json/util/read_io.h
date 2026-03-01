@@ -27,6 +27,7 @@ typedef struct {
     X(XYZ16, XYZ_16)                                                           \
     X(XYZ32, XYZ_32)                                                           \
     X(RGB888, RGB_888)                                                         \
+    X(RGBA8888, RGBA_8888)                                                     \
     X(String, const char *)
 #define JSON_READ_IO_TYPE_LIST JSON_READ_IO_TYPE_LIST_BASE
 

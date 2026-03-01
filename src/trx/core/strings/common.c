@@ -220,6 +220,17 @@ bool String_ParseRGB888(const char *value, RGB_888 *const target)
         == 3;
 }
 
+bool String_ParseRGBA8888(const char *value, RGBA_8888 *const target)
+{
+    if (value[0] == '#') {
+        value++;
+    }
+    return sscanf(
+               value, "%02hhX%02hhX%02hhX%02hhX", &target->r, &target->g,
+               &target->b, &target->a)
+        == 4;
+}
+
 VECTOR *String_Paginate(const char *const text, const int32_t max_lines)
 {
     VECTOR *const pages = Vector_Create(sizeof(char *));
