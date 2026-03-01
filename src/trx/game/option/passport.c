@@ -320,7 +320,9 @@ static void M_DeterminePages(void)
         m_Priv.mode = M_IMMEDIATE ? M_MODE_PICK_OPTION : M_MODE_BROWSE;
         M_SetPage(PAGE_1, M_ROLE_LOAD_GAME, has_saves);
         M_SetPage(PAGE_2, M_ROLE_NEW_GAME, true);
+#ifndef EMSCRIPTEN_BUILD
         M_SetPage(PAGE_3, M_ROLE_EXIT_GAME, true);
+#endif
         break;
 
     case INV_GAME_MODE:
