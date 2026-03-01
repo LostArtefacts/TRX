@@ -164,13 +164,16 @@ dependencies = [
   dep_zlib,
 ]
 
-common_sources = [
-  'trx/av/audio.c',
-  'trx/av/audio_reverb.c',
+desktop_sources = [
   'trx/av/audio_sample.c',
   'trx/av/audio_stream.c',
   'trx/av/image.c',
   'trx/av/video.c',
+]
+
+common_sources = [
+  'trx/av/audio.c',
+  'trx/av/audio_reverb.c',
   'trx/config/common.c',
   'trx/config/dynamic_enum.c',
   'trx/config/enum.c',
@@ -791,7 +794,6 @@ common_sources = [
 if is_emscripten
   common_sources += ['trx/core/log_emscripten.c']
   common_sources += ['trx/gl/gl_webgl_compat.c']
-  common_sources += ['trx/av/stubs_emscripten.c']
   common_sources += ['trx/av/audio_sample_emscripten.c']
   common_sources += ['trx/av/audio_stream_emscripten.c']
   common_sources += ['trx/av/image_emscripten.c']
@@ -801,16 +803,19 @@ if is_emscripten
     dirs: [meson.current_source_dir() / 'trx' / 'av' / 'vendor'],
   )
   dependencies += [dep_webpdecoder]
-elif dep_backtrace.found() and host_machine.system() == 'linux'
-  common_sources += ['trx/core/log_linux.c']
-elif host_machine.system() == 'windows'
-  common_sources += ['trx/core/log_windows.c']
-  dwarfstack = subproject('dwarfstack', default_options: ['warning_level=0'])
-  dep_dwarfstack = dwarfstack.get_variable('dep_dwarfstack')
-  dep_dbghelp = c_compiler.find_library('dbghelp')
-  dependencies += [dep_dbghelp, dep_dwarfstack]
 else
-  common_sources += ['trx/core/log_unknown.c']
+  common_sources += desktop_sources
+  if dep_backtrace.found() and host_machine.system() == 'linux'
+    common_sources += ['trx/core/log_linux.c']
+  elif host_machine.system() == 'windows'
+    common_sources += ['trx/core/log_windows.c']
+    dwarfstack = subproject('dwarfstack', default_options: ['warning_level=0'])
+    dep_dwarfstack = dwarfstack.get_variable('dep_dwarfstack')
+    dep_dbghelp = c_compiler.find_library('dbghelp')
+    dependencies += [dep_dbghelp, dep_dwarfstack]
+  else
+    common_sources += ['trx/core/log_unknown.c']
+  endif
 endif
 
 link_args = []

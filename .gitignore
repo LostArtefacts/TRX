@@ -57,3 +57,6 @@ tools/installer/TR2X_Installer/Resources/release.zip
 # Local game data for WebGL builds
 /tr1_data/
 /tr2_data/
+
+# Local planning docs (not for upstream)
+/WEBGL_MERGE_PLAN.md

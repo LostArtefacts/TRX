@@ -49,10 +49,12 @@ _docker_run tag *args:
 
 image-win force="1": (_docker_build "tools/shared/docker/game-win/Dockerfile" "rrdash/trx-win" force)
 image-linux force="1": (_docker_build "tools/shared/docker/game-linux/Dockerfile" "rrdash/trx-linux" force)
+image-webgl force="1": (_docker_build "tools/shared/docker/game-webgl/Dockerfile" "rrdash/trx-webgl" force)
 image-win-installer force="1": (_docker_build "tools/shared/docker/installer/Dockerfile" "rrdash/trx-installer" force)
 
 push-image-linux: (image-linux "0") (_docker_push "rrdash/trx-linux")
 push-image-win: (image-win "0") (_docker_push "rrdash/trx-win")
+push-image-webgl: (image-webgl "0") (_docker_push "rrdash/trx-webgl")
 
 import "justfile.tr1"
 import "justfile.tr2"
@@ -91,6 +93,7 @@ lint: (lint-imports) (lint-format)
 
 trx-build-linux target='debug': (image-linux "0") (_docker_run "rrdash/trx-linux" "build" "--target" target)
 trx-build-win target='debug': (image-win "0") (_docker_run "rrdash/trx-win" "build" "--target" target)
+trx-build-webgl game='tr1' target='release': (image-webgl "0") (_docker_run "rrdash/trx-webgl" "build" "--target" target "--game" game)
 
 trx-package-linux target='debug' *args: (trx-build-linux target) (_docker_run "rrdash/trx-linux" "package-all" args)
 trx-package-win target='debug' *args: (trx-build-win target) (_docker_run "rrdash/trx-win" "package-all" args)
