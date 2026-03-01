@@ -38,14 +38,12 @@ typedef enum {
     // clang-format on
 } CULTIST_3_ANIM;
 
-static const BITE m_Cultist3LeftGun = {
-    .pos = { .x = -2, .y = 275, .z = 23 },
-    .mesh_num = 6,
+static const CREATURE_GUN m_Cultist3LeftGun = {
+    .muzzle = { .pos = { .x = -2, .y = 275, .z = 23 }, .mesh_num = 6 },
 };
 
-static const BITE m_Cultist3RightGun = {
-    .pos = { .x = 2, .y = 275, .z = 23 },
-    .mesh_num = 10,
+static const CREATURE_GUN m_Cultist3RightGun = {
+    .muzzle = { .pos = { .x = 2, .y = 275, .z = 23 }, .mesh_num = 10 },
 };
 
 static void M_Initialise(const int16_t item_num)

@@ -25,7 +25,9 @@ typedef enum {
     BALDY_STATE_SHOOT = 6,
 } BALDY_STATE;
 
-static BITE m_BaldyGun = { .pos = { -20, 440, 20 }, .mesh_num = 9 };
+static const CREATURE_GUN m_BaldyGun = {
+    .muzzle = { .pos = { -20, 440, 20 }, .mesh_num = 9 },
+};
 
 static void M_Initialise(const int16_t item_num)
 {

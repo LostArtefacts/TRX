@@ -2,6 +2,7 @@
 
 #include <trx/game/anims/types.h>
 #include <trx/game/collision.h>
+#include <trx/game/effects/types.h>
 #include <trx/game/items/types.h>
 #include <trx/game/pathing/types.h>
 #include <trx/game/rooms/types.h>
@@ -59,8 +60,13 @@ typedef struct OBJECT {
 
     void (*setup_func)(struct OBJECT *obj);
     void (*initialise_func)(int16_t item_num);
+
     void (*control_func)(int16_t item_num);
     bool (*draw_func)(const ITEM *item);
+    // NOTE: not to be union'd with draw_func, due to default draw_func impl
+    // being Object_DrawAnimatingItem which takes an ITEM*
+    bool (*effect_draw_func)(const EFFECT *item);
+
     void (*collision_func)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
     int16_t (*floor_height_func)(
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);

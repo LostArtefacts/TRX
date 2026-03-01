@@ -39,9 +39,8 @@ typedef enum {
     CULTIST_1_ANIM_DEATH = 20,
 } CULTIST_1_ANIM;
 
-static const BITE m_Cultist1Gun = {
-    .pos = { .x = 3, .y = 331, .z = 56 },
-    .mesh_num = 10,
+static const CREATURE_GUN m_Cultist1Gun = {
+    .muzzle = { .pos = { .x = 3, .y = 331, .z = 56 }, .mesh_num = 10 },
 };
 
 static void M_Initialise(const int16_t item_num)

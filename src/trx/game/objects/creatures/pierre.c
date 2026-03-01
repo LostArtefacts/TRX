@@ -33,8 +33,12 @@ typedef enum {
     PIERRE_STATE_SHOOT = 7,
 } PIERRE_STATE;
 
-static BITE m_PierreGun1 = { .pos = { 60, 200, 0 }, .mesh_num = 11 };
-static BITE m_PierreGun2 = { .pos = { -57, 200, 0 }, .mesh_num = 14 };
+static const CREATURE_GUN m_PierreGun1 = {
+    .muzzle = { .pos = { 60, 200, 0 }, .mesh_num = 11 },
+};
+static const CREATURE_GUN m_PierreGun2 = {
+    .muzzle = { .pos = { -57, 200, 0 }, .mesh_num = 14 },
+};
 static int16_t m_PierreItemNum = NO_ITEM;
 
 static bool M_CanDropItems(const ITEM *const item)

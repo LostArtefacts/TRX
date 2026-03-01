@@ -235,6 +235,7 @@ common_sources = [
   'trx/game/fmv.c',
   'trx/game/fx/explosion_ring.c',
   'trx/game/fx/footprint.c',
+  'trx/game/fx/gun_flash.c',
   'trx/game/fx/wake.c',
   'trx/game/fx/water.c',
   'trx/game/fx/weather.c',

@@ -29,6 +29,12 @@ void Effect_Draw(const int16_t effect_num)
         return;
     }
 
+    if (obj->effect_draw_func != nullptr) {
+        if (obj->effect_draw_func(effect)) {
+            return;
+        }
+    }
+
     if (obj->mesh_count < 0) {
         const RGB_F tint =
             Object_IsType(effect->object_id, g_WaterSpriteObjects)

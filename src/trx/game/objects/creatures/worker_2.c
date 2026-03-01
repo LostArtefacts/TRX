@@ -37,9 +37,8 @@ typedef enum {
     WORKER_2_ANIM_DEATH = 19,
 } WORKER_2_ANIM;
 
-static const BITE m_Worker2Gun = {
-    .pos = { .x = 0, .y = 308, .z = 32 },
-    .mesh_num = 9,
+static const CREATURE_GUN m_Worker2Gun = {
+    .muzzle = { .pos = { .x = 0, .y = 308, .z = 32 }, .mesh_num = 9 },
 };
 
 static void M_ShootAtLara(
@@ -55,7 +54,7 @@ static void M_ShootAtLara(
             creature->flags = 5;
         }
     } else {
-        Creature_Effect(item, &m_Worker2Gun, Spawn_FireStream);
+        Creature_Effect(item, &m_Worker2Gun.muzzle, Spawn_FireStream);
     }
 }
 

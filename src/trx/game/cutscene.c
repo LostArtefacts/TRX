@@ -9,6 +9,7 @@
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/footprint.h>
+#include <trx/game/fx/gun_flash.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/gun/misc.h>
@@ -258,6 +259,7 @@ static void M_Control(void)
     FX_Water_Update();
     FX_Weather_Update();
     FX_Footprint_Update();
+    FX_GunFlash_Update();
     Output_AnimateTextures(1);
     Lara_Hair_Control(true);
 }
