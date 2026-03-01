@@ -4,15 +4,11 @@
 #include <trx/core/memory.h>
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
+#include <trx/gl/gl_webgl_compat.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/screenshot.h>
 #include <trx/gl/utils.h>
 
-#ifdef EMSCRIPTEN_BUILD
-    #include <trx/gl/gl_webgl_compat.h>
-#else
-    #include <GL/glew.h>
-#endif
 #include <SDL2/SDL_video.h>
 #include <string.h>
 

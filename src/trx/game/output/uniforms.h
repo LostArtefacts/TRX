@@ -3,12 +3,7 @@
 #include <trx/core/colors.h>
 #include <trx/game/matrix.h>
 #include <trx/game/rooms/types.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <trx/gl/gl_webgl_compat.h>
-#else
-    #include <GL/glew.h>
-#endif
+#include <trx/gl/gl_webgl_compat.h>
 
 typedef struct {
     int32_t ls_adder;

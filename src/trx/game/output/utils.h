@@ -1,12 +1,7 @@
 #pragma once
 
 #include <trx/game/matrix.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <trx/gl/gl_webgl_compat.h>
-#else
-    #include <GL/glew.h>
-#endif
+#include <trx/gl/gl_webgl_compat.h>
 
 #define OUTPUT_QUAD_VERTICES 6
 #define OUTPUT_TRI_VERTICES 3

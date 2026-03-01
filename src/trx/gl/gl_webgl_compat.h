@@ -217,4 +217,6 @@ static inline int glewInit(void)
     return GLEW_OK;
 }
 
+#else
+    #include <GL/glew.h>
 #endif // EMSCRIPTEN_BUILD

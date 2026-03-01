@@ -7,6 +7,7 @@
 #include <trx/gl/context.h>
 #include <trx/gl/enum.h>
 #include <trx/gl/fbo.h>
+#include <trx/gl/gl_webgl_compat.h>
 #include <trx/gl/program.h>
 #include <trx/gl/sampler.h>
 #include <trx/gl/screenshot.h>
@@ -14,11 +15,6 @@
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
 
-#ifdef EMSCRIPTEN_BUILD
-    #include <trx/gl/gl_webgl_compat.h>
-#else
-    #include <GL/glew.h>
-#endif
 #include <SDL2/SDL_video.h>
 #include <stdint.h>
 

@@ -5,16 +5,11 @@
 #include <trx/game/viewport.h>
 #include <trx/gl/buffer.h>
 #include <trx/gl/context.h>
+#include <trx/gl/gl_webgl_compat.h>
 #include <trx/gl/program.h>
 #include <trx/gl/texture.h>
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <trx/gl/gl_webgl_compat.h>
-#else
-    #include <GL/glew.h>
-#endif
 
 void TRX_GL_FBO_Init(
     TRX_GL_FBO *const fbo, const int32_t width, const int32_t height,

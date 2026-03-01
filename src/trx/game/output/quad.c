@@ -3,13 +3,9 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/output/shaders/generic.h>
+#include <trx/gl/gl_webgl_compat.h>
 #include <trx/gl/utils.h>
 
-#ifdef EMSCRIPTEN_BUILD
-    #include <trx/gl/gl_webgl_compat.h>
-#else
-    #include <GL/glew.h>
-#endif
 #include <stddef.h>
 #include <string.h>
 

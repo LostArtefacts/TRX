@@ -4,13 +4,8 @@
 
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
+#include <trx/gl/gl_webgl_compat.h>
 #include <trx/gl/texture.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <trx/gl/gl_webgl_compat.h>
-#else
-    #include <GL/glew.h>
-#endif
 
 // Off-screen framebuffer with a single color attachment and optional
 // depth+stencil.
