@@ -112,7 +112,7 @@ bool FX_GunFlash_Spawn(
     return true;
 }
 
-void FX_GunFlash_Update(void)
+void FX_GunFlash_Control(void)
 {
     for (int32_t i = 0; i < M_MAX_FLASHES; i++) {
         M_GUN_FLASH *const flash = &m_Priv.flashes[i];

@@ -478,7 +478,7 @@ void FX_Water_Draw(void)
     }
 }
 
-void FX_Water_Update(void)
+void FX_Water_Control(void)
 {
     if (m_SplashCount > 0) {
         m_SplashCount--;

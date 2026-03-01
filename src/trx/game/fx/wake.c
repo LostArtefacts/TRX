@@ -12,6 +12,7 @@ static const XZ_32 m_Offsets[2] = { { .x = -128, 0 }, { .x = 128, .z = 0 } };
 static FX_WAKE_POINT m_Points[M_MAX_POINTS][2] = {};
 static uint8_t m_Shade = 0;
 static uint8_t m_StartIndex = 0;
+static bool m_Active = false;
 
 static RGBA_8888 M_GrayFromWakeLife(const int32_t life, const int32_t shift)
 {
@@ -34,10 +35,16 @@ void FX_Wake_ClearPoints(void)
         m_Points[i][0].life = 0;
         m_Points[i][1].life = 0;
     }
+    m_Active = false;
 }
 
-void FX_Wake_Update(void)
+void FX_Wake_Control(void)
 {
+    if (!m_Active) {
+        return;
+    }
+
+    bool any_active = false;
     for (int32_t i = 0; i < 2; i++) {
         for (int32_t j = 0; j < M_MAX_POINTS; j++) {
             FX_WAKE_POINT *const pt = &m_Points[j][i];
@@ -47,8 +54,14 @@ void FX_Wake_Update(void)
                 pt->pos[0].z += pt->vel[0].z;
                 pt->pos[1].x += pt->vel[1].x;
                 pt->pos[1].z += pt->vel[1].z;
+                if (pt->life > 0) {
+                    any_active = true;
+                }
             }
         }
+    }
+    if (!any_active) {
+        m_Active = false;
     }
 }
 
@@ -75,6 +88,7 @@ uint8_t FX_Wake_GetStartIndex(void)
 void FX_Wake_AdvanceStartIndex(void)
 {
     m_StartIndex = (m_StartIndex + 1) & (M_MAX_POINTS - 1);
+    m_Active = true;
 }
 
 void FX_Wake_Draw(const ITEM *const item)

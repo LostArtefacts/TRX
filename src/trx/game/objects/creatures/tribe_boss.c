@@ -995,9 +995,7 @@ static bool M_Draw(const ITEM *const item)
     M_PRIV *const p = item->priv;
     Object_DrawAnimatingItem(item);
 
-    if (p->explode_count) {
-        FX_ExplosionRing_Draw();
-    } else {
+    if (p->explode_count == 0) {
         M_TriggerHeadElectricity(item, false, false, true);
         M_TriggerHeadElectricity(item, true, false, true);
     }
@@ -1310,7 +1308,6 @@ static void M_Control(const int16_t item_num)
                 p->dead = 1;
             }
 
-            FX_ExplosionRing_Control();
             return;
         }
 
@@ -1398,10 +1395,6 @@ static void M_Control(const int16_t item_num)
 
     if (old_y_rot == item->rot.y) {
         p->turned = false;
-    }
-
-    if (p->explode_count != 0 && item->hit_points <= 0) {
-        FX_ExplosionRing_Control();
     }
 }
 

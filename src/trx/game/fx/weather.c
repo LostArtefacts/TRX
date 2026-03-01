@@ -387,7 +387,7 @@ void FX_Weather_SetWeather(const WEATHER_TYPE weather_type)
     m_WeatherType = weather_type;
 }
 
-void FX_Weather_Update(void)
+void FX_Weather_Control(void)
 {
     if (!g_Config.visuals.enable_weather) {
         return;

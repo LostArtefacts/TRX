@@ -8,10 +8,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/footprint.h>
-#include <trx/game/fx/gun_flash.h>
-#include <trx/game/fx/water.h>
-#include <trx/game/fx/weather.h>
+#include <trx/game/fx/fx.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/input.h>
@@ -256,10 +253,7 @@ static void M_Control(void)
     Item_Control();
     Effect_Control();
     Sparks_Control();
-    FX_Water_Update();
-    FX_Weather_Update();
-    FX_Footprint_Update();
-    FX_GunFlash_Update();
+    FX_Control();
     Output_AnimateTextures(1);
     Lara_Hair_Control(true);
 }

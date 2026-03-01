@@ -4,10 +4,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/demo.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/footprint.h>
-#include <trx/game/fx/gun_flash.h>
-#include <trx/game/fx/water.h>
-#include <trx/game/fx/weather.h>
+#include <trx/game/fx/fx.h>
 #include <trx/game/game.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
@@ -176,10 +173,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Sparks_Control();
 
     Lara_Control();
-    FX_Water_Update();
-    FX_Weather_Update();
-    FX_Footprint_Update();
-    FX_GunFlash_Update();
+    FX_Control();
     Lara_Hair_Control(false);
 
     Camera_Update();
