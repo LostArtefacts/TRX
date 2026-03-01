@@ -49,8 +49,8 @@ int16_t Creature_Effect(
         int16_t room_num));
 
 bool Creature_Shoot(
-    ITEM *item, const AI_INFO *info, const BITE *gun, int16_t extra_rotation,
-    int32_t damage);
+    ITEM *item, const AI_INFO *info, const CREATURE_GUN *gun,
+    int16_t extra_rotation, int32_t damage);
 
 int16_t Creature_AIGuard(CREATURE *creature);
 void Creature_GetAITarget(CREATURE *creature);

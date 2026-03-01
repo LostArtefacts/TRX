@@ -27,7 +27,9 @@ typedef enum {
     LARSON_STATE_SHOOT = 7,
 } LARSON_STATE;
 
-static BITE m_LarsonGun = { .pos = { -60, 170, 0 }, .mesh_num = 14 };
+static const CREATURE_GUN m_LarsonGun = {
+    .muzzle = { .pos = { -60, 170, 0 }, .mesh_num = 14 },
+};
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {

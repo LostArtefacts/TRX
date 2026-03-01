@@ -41,9 +41,8 @@ typedef enum {
     BANDIT_2_ANIM_DEATH = 9,
 } BANDIT_2_ANIM;
 
-static const BITE m_Bandit2Gun = {
-    .pos = { .x = -1, .y = 230, .z = 9 },
-    .mesh_num = 17,
+static const CREATURE_GUN m_Bandit2Gun = {
+    .muzzle = { .pos = { .x = -1, .y = 230, .z = 9 }, .mesh_num = 17 },
 };
 
 static void M_Control(const int16_t item_num)

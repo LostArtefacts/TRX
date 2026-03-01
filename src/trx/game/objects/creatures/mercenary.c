@@ -37,9 +37,12 @@ typedef enum {
     M_STATE_SHOOT_3
 } M_STATE;
 
-static BITE m_MercenaryGun = {
-    .pos = { 0, 300, 64 },
-    .mesh_num = 7,
+static const CREATURE_GUN m_MercenaryGun = {
+    .muzzle = { .pos = { 0, 300, 64 }, .mesh_num = 7 },
+    .tr3_enemy_flash = true,
+    .tr3_flash = { .pos = { 0, 300, 56 }, .mesh_num = 7 },
+    .tr3_enemy_weapon_flags = 1,
+    .tr3_flash_shade = 600,
 };
 
 static void M_Initialise(const int16_t item_num)

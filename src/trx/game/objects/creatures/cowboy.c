@@ -26,8 +26,12 @@ typedef enum {
     COWBOY_STATE_SHOOT = 6,
 } COWBOY_STATE;
 
-static BITE m_CowboyGun1 = { .pos = { 1, 200, 41 }, .mesh_num = 5 };
-static BITE m_CowboyGun2 = { .pos = { -2, 200, 40 }, .mesh_num = 8 };
+static const CREATURE_GUN m_CowboyGun1 = {
+    .muzzle = { .pos = { 1, 200, 41 }, .mesh_num = 5 },
+};
+static const CREATURE_GUN m_CowboyGun2 = {
+    .muzzle = { .pos = { -2, 200, 40 }, .mesh_num = 8 },
+};
 
 static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 {
@@ -135,8 +139,8 @@ static void M_Control(const int16_t item_num)
                     Creature_Shoot(
                         item, &info, &m_CowboyGun2, head, COWBOY_SHOT_DAMAGE);
                 } else {
-                    int16_t effect_num =
-                        Creature_Effect(item, &m_CowboyGun2, Spawn_GunShot);
+                    int16_t effect_num = Creature_Effect(
+                        item, &m_CowboyGun2.muzzle, Spawn_GunShot);
                     if (effect_num != NO_EFFECT) {
                         Effect_Get(effect_num)->rot.y += head;
                     }

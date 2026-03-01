@@ -1,9 +1,13 @@
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/gun_flash.h>
 #include <trx/game/gun.h>
+#include <trx/game/items.h>
 #include <trx/game/lara.h>
-#include <trx/game/objects/vars.h>
+#include <trx/game/objects.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
+#include <trx/game/sparks/spawners.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
@@ -33,13 +37,66 @@ static void M_CalcShootVectors(
     target->z += (dist * Math_Cos(angle)) >> W2V_SHIFT;
 }
 
+static void M_TriggerTR3GunShell(
+    const ITEM *const item, const CREATURE_GUN *const gun)
+{
+    const int16_t effect_num = Effect_Create(item->room_num);
+    if (effect_num == NO_EFFECT) {
+        return;
+    }
+
+    XYZ_32 pos = {
+        .x = gun->muzzle.pos.x >> 2,
+        .y = gun->muzzle.pos.y >> 2,
+        .z = gun->muzzle.pos.z >> 2,
+    };
+    Collide_GetJointAbsPosition(item, &pos, gun->muzzle.mesh_num);
+
+    EFFECT *const effect = Effect_Get(effect_num);
+    effect->pos = pos;
+    effect->room_num = item->room_num;
+    effect->rot.x = 0;
+    effect->rot.y = 0;
+    effect->rot.z = (int16_t)Random_GetControl();
+    effect->speed = (int16_t)((Random_GetControl() & 0x1F) + 16);
+    effect->object_id = O_GUN_SHELL;
+    effect->fall_speed = (int16_t)(-48 - (Random_GetControl() & 7));
+    effect->frame_num = Object_Get(O_GUN_SHELL)->mesh_idx;
+    effect->shade = 0x4210;
+    effect->counter = 1;
+    effect->flag1 = item->rot.y + (Random_GetControl() & 0xFFF) - 0x4800;
+}
+
+static void M_TriggerTR3GunSmoke(
+    const ITEM *const item, const CREATURE_GUN *const gun)
+{
+    XYZ_32 pos = {
+        .x = gun->muzzle.pos.x - (gun->muzzle.pos.x >> 2),
+        .y = gun->muzzle.pos.y - (gun->muzzle.pos.y >> 2),
+        .z = gun->muzzle.pos.z - (gun->muzzle.pos.z >> 2),
+    };
+    Collide_GetJointAbsPosition(item, &pos, gun->muzzle.mesh_num);
+
+    GAME_VECTOR smoke_pos = {
+        .pos = pos,
+        .room_num = item->room_num,
+    };
+    Room_GetSector(smoke_pos.pos, &smoke_pos.room_num);
+    Sparks_TriggerGunSmoke(smoke_pos, true, LGT_PISTOLS, 32);
+}
+
 bool Creature_Shoot(
-    ITEM *const item, const AI_INFO *const info, const BITE *const gun,
+    ITEM *const item, const AI_INFO *const info, const CREATURE_GUN *const gun,
     const int16_t extra_rotation, const int32_t damage)
 {
     const ITEM *const lara_item = Lara_GetItem();
     const CREATURE *const creature = item->creature_data;
     ITEM *const target_item = creature->enemy;
+
+    if (g_TRVersion == 3) {
+        M_TriggerTR3GunShell(item, gun);
+        M_TriggerTR3GunSmoke(item, gun);
+    }
 
     bool is_targetable;
     bool is_hit;
@@ -83,13 +140,13 @@ bool Creature_Shoot(
     int16_t effect_num = NO_EFFECT;
     if (target_item == lara_item) {
         if (is_hit) {
-            effect_num = Creature_Effect(item, gun, Spawn_GunHit);
+            effect_num = Creature_Effect(item, &gun->muzzle, Spawn_GunHit);
             Item_TakeDamage(target_item, damage, true);
         } else if (is_targetable) {
-            effect_num = Creature_Effect(item, gun, Spawn_GunMiss);
+            effect_num = Creature_Effect(item, &gun->muzzle, Spawn_GunMiss);
         }
     } else {
-        effect_num = Creature_Effect(item, gun, Spawn_GunShot);
+        effect_num = Creature_Effect(item, &gun->muzzle, Spawn_GunShot);
         if (is_hit) {
             Item_TakeDamage(target_item, damage / 10, true);
 
@@ -106,6 +163,13 @@ bool Creature_Shoot(
                 target_item->room_num);
         }
     }
+
+    if (FX_GunFlash_Spawn(item, gun) && effect_num != NO_EFFECT) {
+        // Kill the old-style flash effect just spawned from previous chunk
+        Effect_Kill(effect_num);
+        effect_num = NO_EFFECT;
+    }
+
     if (effect_num != NO_EFFECT) {
         Effect_Get(effect_num)->rot.y += extra_rotation;
     }

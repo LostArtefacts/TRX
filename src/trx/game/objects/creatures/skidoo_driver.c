@@ -154,9 +154,17 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
                 : SKIDOO_DRIVER_LARA_DAMAGE;
 
             const bool left_targetable = Creature_Shoot(
-                skidoo_item, &info, &g_Skidoo_RightGun, 0, damage);
+                skidoo_item, &info,
+                &(CREATURE_GUN) {
+                    .muzzle = g_Skidoo_RightGun,
+                },
+                0, damage);
             const bool right_targetable = Creature_Shoot(
-                skidoo_item, &info, &g_Skidoo_LeftGun, 0, damage);
+                skidoo_item, &info,
+                &(CREATURE_GUN) {
+                    .muzzle = g_Skidoo_LeftGun,
+                },
+                0, damage);
             if (left_targetable || right_targetable) {
                 driver_data->flags = 5;
             }

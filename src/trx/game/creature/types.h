@@ -49,6 +49,14 @@ typedef struct {
 } BITE;
 
 typedef struct {
+    BITE muzzle;
+    bool tr3_enemy_flash;
+    BITE tr3_flash;
+    int16_t tr3_enemy_weapon_flags;
+    int16_t tr3_flash_shade;
+} CREATURE_GUN;
+
+typedef struct {
     struct {
         OBJECT_ID id;
         int16_t active_anim;

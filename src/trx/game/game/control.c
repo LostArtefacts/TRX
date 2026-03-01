@@ -5,6 +5,7 @@
 #include <trx/game/demo.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/footprint.h>
+#include <trx/game/fx/gun_flash.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
@@ -178,6 +179,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     FX_Water_Update();
     FX_Weather_Update();
     FX_Footprint_Update();
+    FX_GunFlash_Update();
     Lara_Hair_Control(false);
 
     Camera_Update();

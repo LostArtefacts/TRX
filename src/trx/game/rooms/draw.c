@@ -4,6 +4,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/footprint.h>
+#include <trx/game/fx/gun_flash.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/lara.h>
@@ -508,6 +509,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     Output_SetupAboveWater(false);
     FX_Water_Draw();
     FX_Weather_Draw();
+    FX_GunFlash_Draw();
     Sparks_Draw();
     FX_Footprint_Draw();
 }

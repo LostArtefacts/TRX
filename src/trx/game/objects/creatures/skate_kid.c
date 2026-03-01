@@ -35,8 +35,12 @@ typedef struct {
     int16_t skateboard_item_num;
 } M_PRIV;
 
-static BITE m_KidGun1 = { .pos = { 0, 150, 34 }, .mesh_num = 7 };
-static BITE m_KidGun2 = { .pos = { 0, 150, 37 }, .mesh_num = 4 };
+static const CREATURE_GUN m_KidGun1 = {
+    .muzzle = { .pos = { 0, 150, 34 }, .mesh_num = 7 },
+};
+static const CREATURE_GUN m_KidGun2 = {
+    .muzzle = { .pos = { 0, 150, 37 }, .mesh_num = 4 },
+};
 
 static void M_Initialise(const int16_t item_num)
 {
