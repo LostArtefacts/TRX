@@ -69,7 +69,7 @@ EM_JS(int, js_fmv_open, (const char *path_ptr), {
         p.catch(function() { Module._fmv.error = true; });
     }
     return 1;
-});
+})
 
 EM_JS(void, js_fmv_destroy, (void), {
     if (!Module._fmv) return;
@@ -89,19 +89,19 @@ EM_JS(int, js_fmv_poll, (void), {
     if (Module._fmv.error)   return -1;
     if (Module._fmv.ready)   return  1;
     return 0;
-});
+})
 
 EM_JS(int, js_fmv_is_ended, (void), {
     return (Module._fmv && (Module._fmv.ended || Module._fmv.error)) ? 1 : 0;
-});
+})
 
 EM_JS(int, js_fmv_get_width, (void), {
     return Module._fmv ? Module._fmv.video.videoWidth : 0;
-});
+})
 
 EM_JS(int, js_fmv_get_height, (void), {
     return Module._fmv ? Module._fmv.video.videoHeight : 0;
-});
+})
 
 EM_JS(void, js_fmv_set_volume, (float vol), {
     if (Module._fmv) {
@@ -119,7 +119,7 @@ EM_JS(void, js_fmv_upload_frame, (int tex_id), {
     gl.bindTexture(gl.TEXTURE_2D, GL.textures[tex_id]);
     gl.texImage2D(
         gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
-});
+})
 
 // clang-format on
 
