@@ -62,11 +62,8 @@ static void M_Render(TRX_GL_RENDERER *renderer)
 
     TRX_GL_FBO_Unbind();
 
-#ifndef EMSCRIPTEN_BUILD
-    // glPolygonMode does not exist in GL ES / WebGL.
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     TRX_GL_CheckError();
-#endif
 
     TRX_GL_Program_Bind(&p->program);
     TRX_GL_Buffer_Bind(&p->buffer);

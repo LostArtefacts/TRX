@@ -124,11 +124,7 @@ bool TRX_GL_Context_Attach(void *window_handle)
     }
 
     glClearColor(0, 0, 0, 0);
-#ifdef EMSCRIPTEN_BUILD
-    glClearDepthf(1.0f);
-#else
     glClearDepth(1);
-#endif
     TRX_GL_CheckError();
 
 #ifndef EMSCRIPTEN_BUILD

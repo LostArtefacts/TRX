@@ -49,12 +49,8 @@ void TRX_GL_FBO_Init(
         0);
     TRX_GL_CheckError();
 
-#ifndef EMSCRIPTEN_BUILD
-    // glDrawBuffer is not available in GL ES 3.0; FBOs always draw to
-    // GL_COLOR_ATTACHMENT0 by default on WebGL 2.
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
     TRX_GL_CheckError();
-#endif
 
     if (with_depth_stencil) {
         glGenRenderbuffers(1, &fbo->rbo);

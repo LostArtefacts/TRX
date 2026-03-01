@@ -529,12 +529,7 @@ void Output_Textures_UpdateEnvironmentMap(void)
     const int32_t h = side;
 
     glBindTexture(GL_TEXTURE_2D, m_Priv.tex_env_map);
-#ifdef EMSCRIPTEN_BUILD
-    // WebGL 2 / ES 3.0 requires a sized internal format.
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, x, y, w, h, 0);
-#else
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, w, h, 0);
-#endif
     TRX_GL_CheckError();
 }
 

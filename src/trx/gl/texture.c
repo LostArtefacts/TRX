@@ -89,12 +89,6 @@ void TRX_GL_Texture_LoadFromBackBuffer(TRX_GL_TEXTURE *const texture)
     const int32_t w = side;
     const int32_t h = side;
 
-#ifdef EMSCRIPTEN_BUILD
-    // WebGL 2 / ES 3.0 requires a sized internal format for
-    // glCopyTexImage2D; unsized GL_RGB generates GL_INVALID_OPERATION.
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, x, y, w, h, 0);
-#else
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, w, h, 0);
-#endif
     TRX_GL_CheckError();
 }
