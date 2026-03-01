@@ -20,6 +20,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
 #include <trx/game/stats.h>
+#include <trx/platform/yield.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -389,11 +390,9 @@ void Stats_CalculateMaxStats(void)
         WEBGL_LOG(
             "[WEBGL] Stats: level[%d] type=%d path=%s — yielding...", i,
             level->type, level->path ? level->path : "(null)");
-#ifdef EMSCRIPTEN_BUILD
         // Yield to the browser between level scans so the page stays
-        // responsive while scanning all level files.
-        emscripten_sleep(0);
-#endif
+        // responsive while scanning all level files. No-op on desktop.
+        Platform_Yield(0);
         WEBGL_LOG("[WEBGL] Stats: level[%d] — resumed from yield", i);
 
         VFILE *const file = VFile_CreateFromPath(level->path);

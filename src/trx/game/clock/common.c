@@ -4,16 +4,13 @@
 #include <trx/game/clock/const.h>
 #include <trx/game/clock/timer.h>
 #include <trx/game/clock/turbo.h>
+#include <trx/platform/yield.h>
 
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <emscripten.h>
-#endif
 
 static bool m_Disabled = false;
 static Uint64 m_LastCounter = 0;
@@ -134,13 +131,7 @@ int32_t Clock_WaitTick(void)
         double delay_ms = (needed / m_Frequency) * 1000.0;
 
         if (delay_ms > 0) {
-#ifdef EMSCRIPTEN_BUILD
-            // Use emscripten_sleep() so ASYNCIFY yields to the browser
-            // event loop instead of busy-waiting.
-            emscripten_sleep((unsigned int)delay_ms);
-#else
-            SDL_Delay((Uint32)delay_ms);
-#endif
+            Platform_Yield((unsigned int)delay_ms);
         }
 
         // After waiting, measure again to be accurate
@@ -156,15 +147,11 @@ int32_t Clock_WaitTick(void)
             // one frame
             frames = 1;
         }
-    }
-#ifdef EMSCRIPTEN_BUILD
-    else {
+    } else {
         // Behind schedule — yield once so the browser event loop isn't starved.
-        // The ahead-of-schedule path already yields via
-        // emscripten_sleep(delay_ms).
-        emscripten_sleep(0);
+        // On desktop this is a no-op.
+        Platform_Yield(0);
     }
-#endif
 
     // Consume the frames from the m_Accumulator
     m_Accumulator -= frames * frame_ticks;
