@@ -3,6 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
+#include <trx/core/webgl_log.h>
 #include <trx/game/shell.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/shell/mod.h>
@@ -10,15 +11,9 @@
 
 #include <string.h>
 
-#ifdef EMSCRIPTEN_BUILD
-    #include <emscripten.h>
-#endif
-
 int main(int argc, char *argv[])
 {
-#ifdef EMSCRIPTEN_BUILD
-    emscripten_log(0x02, "[WEBGL] main() entered");
-#endif
+    WEBGL_LOG("[WEBGL] main() entered");
     VECTOR *raw_args = Vector_Create(sizeof(const char *));
     for (int32_t i = 1; i < argc; i++) {
         char *const copied_arg = Memory_DupStr(argv[i]);

@@ -12,10 +12,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_messagebox.h>
-#ifndef EMSCRIPTEN_BUILD
-    #include <libavcodec/version.h>
-    #include <libavutil/log.h>
-#endif
+#include <libavcodec/version.h>
+#include <libavutil/log.h>
 #include <stdio.h>
 
 static bool m_IsExiting = false;

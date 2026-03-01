@@ -13,7 +13,6 @@
 #include <SDL2/SDL_timer.h>
 
 #ifdef EMSCRIPTEN_BUILD
-    #include <emscripten.h>
 void js_set_touch_controls_visible(int visible);
 #endif
 
