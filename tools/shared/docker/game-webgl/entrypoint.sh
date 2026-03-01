@@ -5,6 +5,9 @@
 #   docker run ... rrdash/trx-webgl build --target release --game tr1
 set -euo pipefail
 
+# Allow git operations on the volume-mounted repo (different UID).
+git config --global --add safe.directory /app
+
 ACTION="${1:-build}"
 shift || true
 

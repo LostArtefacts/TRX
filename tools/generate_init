@@ -17,8 +17,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def get_init_c() -> str:
+    repo_dir = Path(__file__).resolve().parent.parent
     return TEMPLATE.format(
-        version=generate_version()
+        version=generate_version(repo_dir=repo_dir)
     )
 
 
