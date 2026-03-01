@@ -3,6 +3,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/webgl_log.h>
 #include <trx/game/inject.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/level.h>
@@ -207,13 +208,11 @@ void Level_Pipeline_Load(const GF_LEVEL *const level)
     // Yield to the browser before heavy file I/O and parsing to prevent
     // the event loop from being starved. Level loading can take 50-200ms
     // for large level files, which would freeze the browser without yielding.
-    emscripten_log(
-        0x02,
+    WEBGL_LOG(
         "[WEBGL] Level_Pipeline_Load: yielding before load (level=%d, path=%s)",
         level->num, level->path ? level->path : "(null)");
     emscripten_sleep(0);
-    emscripten_log(
-        0x02, "[WEBGL] Level_Pipeline_Load: resumed, loading file...");
+    WEBGL_LOG("[WEBGL] Level_Pipeline_Load: resumed, loading file...");
 #endif
 
     Inject_InitLevel(level, INJECTION_MODE_FULL);
@@ -221,8 +220,6 @@ void Level_Pipeline_Load(const GF_LEVEL *const level)
     M_CompleteSetup(loader, level);
     Inject_Cleanup();
 
-#ifdef EMSCRIPTEN_BUILD
-    emscripten_log(0x02, "[WEBGL] Level_Pipeline_Load: complete");
-#endif
+    WEBGL_LOG("[WEBGL] Level_Pipeline_Load: complete");
     Benchmark_End(&benchmark, nullptr);
 }

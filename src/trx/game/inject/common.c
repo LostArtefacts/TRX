@@ -5,6 +5,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/thread_pool.h>
 #include <trx/core/vector.h>
+#include <trx/core/webgl_log.h>
 #include <trx/debug.h>
 #include <trx/game/items.h>
 #include <trx/game/level.h>
@@ -14,13 +15,6 @@
 
 #include <string.h>
 #include <zlib.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <emscripten.h>
-    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
-#else
-    #define WEBGL_LOG(...) ((void)0)
-#endif
 
 #define M_INJECTION_CURRENT_VERSION 6
 #define M_VIRTUAL_NAME "virtual_injection"

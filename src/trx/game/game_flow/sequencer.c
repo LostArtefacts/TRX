@@ -1,6 +1,7 @@
 #include <trx/game/game_flow/sequencer.h>
 
 #include <trx/core/enum_map.h>
+#include <trx/core/webgl_log.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow/sequencer_events.h>
@@ -11,13 +12,6 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <emscripten.h>
-    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
-#else
-    #define WEBGL_LOG(...) ((void)0)
-#endif
 
 static GF_COMMAND M_RunEvent(
     const GF_LEVEL *const level, const GF_SEQUENCE *const sequence,

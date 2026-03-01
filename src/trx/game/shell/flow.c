@@ -6,6 +6,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
+#include <trx/core/webgl_log.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/clock.h>
@@ -43,11 +44,9 @@
 #include <trx/version.h>
 
 #include <SDL2/SDL.h>
+
 #ifdef EMSCRIPTEN_BUILD
     #include <emscripten.h>
-    // Direct console output that bypasses file-based logging for diagnostics.
-    // EM_LOG_CONSOLE = 0x02
-    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
 
 // clang-format off
 EM_JS(void, js_show_start_gate, (void), {
@@ -202,8 +201,6 @@ void Shell_PersistSavesToIDBFS(void)
 {
     js_sync_idbfs_to_db();
 }
-#else
-    #define WEBGL_LOG(...) ((void)0)
 #endif
 #include <stdio.h>
 

@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/webgl_log.h>
 #include <trx/game/demo.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow/common.h>
@@ -14,13 +15,6 @@
 #include <trx/game/phase.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell/common.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <emscripten.h>
-    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
-#else
-    #define WEBGL_LOG(...) ((void)0)
-#endif
 
 GF_COMMAND GF_RunTitle(void)
 {

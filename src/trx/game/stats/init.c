@@ -8,6 +8,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/virtual_file.h>
+#include <trx/core/webgl_log.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
@@ -22,13 +23,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-
-#ifdef EMSCRIPTEN_BUILD
-    #include <emscripten.h>
-    #define WEBGL_LOG(...) emscripten_log(0x02, __VA_ARGS__)
-#else
-    #define WEBGL_LOG(...) ((void)0)
-#endif
 
 #define M_FNV_1A_BASE 14695981039346656037ULL
 #define M_FNV_1A_PRIME 1099511628211ULL
