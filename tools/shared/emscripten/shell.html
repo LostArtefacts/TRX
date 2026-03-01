@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <title>TRX - Tomb Raider Engine (WebGL)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
@@ -71,6 +72,18 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-touch-callout: none;
+            --main-size: clamp(64px, 11dvw, 96px);
+            --orbit-size: clamp(34px, 6dvw, 52px);
+            --base-right: 3dvw;
+            --base-bottom: 5dvh;
+            --action-right: calc(var(--base-right) + var(--main-size) * 0.86);
+            --action-bottom: calc(var(--base-bottom) + var(--main-size) * 0.86);
+            --jump-center-right: calc(var(--base-right) + (var(--main-size) / 2));
+            --jump-center-bottom: calc(var(--base-bottom) + (var(--main-size) / 2));
+            --action-center-right: calc(var(--action-right) + (var(--main-size) / 2));
+            --action-center-bottom: calc(var(--action-bottom) + (var(--main-size) / 2));
+            --grid-step-x: calc(var(--action-center-right) - var(--jump-center-right));
+            --grid-step-y: calc(var(--action-center-bottom) - var(--jump-center-bottom));
         }
         .tc-btn {
             position: absolute;
@@ -78,43 +91,128 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: rgba(255, 255, 255, 0.5);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            font-size: 3vmin;
-            font-weight: bold;
+            background: rgba(0, 0, 0, 0.52);
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            border-radius: 999px;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: clamp(18px, 4.5vmin, 30px);
             touch-action: none;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
         }
         .tc-btn.active {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.74);
+            border-color: rgba(255, 255, 255, 0.72);
         }
 
-        /* D-pad */
-        .tc-dpad { left: 2dvw; bottom: 6dvh; width: 30dvw; height: 30dvw; max-height: 42dvh; }
-        .tc-dpad .tc-btn { width: 33.3%; height: 33.3%; }
-        .tc-dpad .tc-up    { left: 33.3%; top: 0; }
-        .tc-dpad .tc-left  { left: 0; top: 33.3%; }
-        .tc-dpad .tc-right { left: 66.6%; top: 33.3%; }
-        .tc-dpad .tc-down  { left: 33.3%; top: 66.6%; }
+        /* Diagonal-capable D-pad */
+        .tc-dpad {
+            position: absolute;
+            left: 3dvw;
+            bottom: 5dvh;
+            width: clamp(108px, 22dvw, 170px);
+            height: clamp(108px, 22dvw, 170px);
+            border-radius: 50%;
+            pointer-events: auto;
+            touch-action: none;
+            background: radial-gradient(circle, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.58) 68%, rgba(0,0,0,0.7) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        .tc-dpad .tc-ring {
+            position: absolute;
+            inset: 18%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+        }
+        .tc-dpad .tc-thumb {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 34%;
+            height: 34%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 40ms linear;
+        }
+        .tc-dpad .tc-dir {
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: clamp(18px, 4.2vmin, 28px);
+            transition: color 80ms ease;
+            pointer-events: none;
+        }
+        .tc-dpad .tc-up { left: 35%; top: 3%; }
+        .tc-dpad .tc-right { right: 3%; top: 35%; }
+        .tc-dpad .tc-down { left: 35%; bottom: 3%; }
+        .tc-dpad .tc-left { left: 3%; top: 35%; }
+        .tc-dpad.tc-press-up .tc-up,
+        .tc-dpad.tc-press-right .tc-right,
+        .tc-dpad.tc-press-down .tc-down,
+        .tc-dpad.tc-press-left .tc-left {
+            color: rgba(255, 255, 255, 0.98);
+        }
 
-        /* Face buttons — 2×2 grid */
-        .tc-face { right: 2dvw; bottom: 6dvh; width: 24dvw; height: 24dvw; max-height: 34dvh; }
-        .tc-face .tc-btn { width: 48%; height: 48%; }
-        .tc-face .tc-jump   { left: 0; top: 0; }
-        .tc-face .tc-action { left: 52%; top: 0; }
-        .tc-face .tc-draw   { left: 0; top: 52%; }
-        .tc-face .tc-roll   { left: 52%; top: 52%; }
+        /* Main action buttons */
+        .tc-jump,
+        .tc-action {
+            width: var(--main-size);
+            height: var(--main-size);
+            font-size: clamp(28px, 5.4vmin, 42px);
+            border-width: 2px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
+        }
+        .tc-jump {
+            right: var(--base-right);
+            bottom: var(--base-bottom);
+        }
+        .tc-action {
+            right: var(--action-right);
+            bottom: var(--action-bottom);
+        }
 
-        /* Shoulder buttons (Walk / Look) */
-        .tc-walk { right: 26dvw; bottom: calc(6dvh + 24dvw + 1dvh); width: 11dvw; height: 7dvh; }
-        .tc-look { right: 2dvw; bottom: calc(6dvh + 24dvw + 1dvh); width: 11dvw; height: 7dvh; }
+        /* Small orbiting buttons around action */
+        .tc-orbit {
+            width: var(--orbit-size);
+            height: var(--orbit-size);
+            font-size: clamp(18px, 3.4vmin, 26px);
+        }
+        /* 3x2 center-aligned grid with fixed Action (top-center) and Jump (bottom-right) */
+        .tc-walk {
+            right: calc(var(--action-center-right) + var(--grid-step-x) - (var(--orbit-size) / 2));
+            bottom: calc(var(--action-center-bottom) - (var(--orbit-size) / 2));
+        }
+        .tc-roll {
+            right: calc(var(--jump-center-right) - (var(--orbit-size) / 2));
+            bottom: calc(var(--action-center-bottom) - (var(--orbit-size) / 2));
+        }
+        .tc-look {
+            right: calc(var(--action-center-right) + var(--grid-step-x) - (var(--orbit-size) / 2));
+            bottom: calc(var(--jump-center-bottom) - (var(--orbit-size) / 2));
+        }
+        .tc-guns {
+            right: calc(var(--action-center-right) - (var(--orbit-size) / 2));
+            bottom: calc(var(--jump-center-bottom) - (var(--orbit-size) / 2));
+        }
 
-        /* Menu / Pause */
-        .tc-menu  { left: 2dvw; top: 2dvh; width: 11dvw; height: 6dvh; font-size: 2.5vmin; }
-        .tc-pause { right: 2dvw; top: 2dvh; width: 11dvw; height: 6dvh; font-size: 2.5vmin; }
+        /* Top bar */
+        .tc-menu,
+        .tc-pause {
+            top: 2dvh;
+            width: clamp(32px, 5.4dvw, 46px);
+            height: clamp(32px, 5.4dvw, 46px);
+            font-size: clamp(13px, 2.5vmin, 19px);
+        }
+        .tc-menu { left: calc(50% - clamp(32px, 5.4dvw, 46px) - 7px); }
+        .tc-pause { left: calc(50% + 8px); right: auto; }
     </style>
 </head>
 <body>
@@ -131,25 +229,24 @@
 
     <div id="touch-controls">
         <!-- D-pad -->
-        <div class="tc-dpad" style="position:absolute;">
-            <div class="tc-btn tc-up"    data-keys="ArrowUp">&#9650;</div>
-            <div class="tc-btn tc-left"  data-keys="ArrowLeft">&#9664;</div>
-            <div class="tc-btn tc-right" data-keys="ArrowRight">&#9654;</div>
-            <div class="tc-btn tc-down"  data-keys="ArrowDown">&#9660;</div>
+        <div class="tc-dpad" id="tc-dpad">
+            <div class="tc-ring"></div>
+            <div class="tc-thumb" id="tc-dpad-thumb"></div>
+            <div class="tc-dir tc-up"><i class="fa-solid fa-caret-up"></i></div>
+            <div class="tc-dir tc-left"><i class="fa-solid fa-caret-left"></i></div>
+            <div class="tc-dir tc-right"><i class="fa-solid fa-caret-right"></i></div>
+            <div class="tc-dir tc-down"><i class="fa-solid fa-caret-down"></i></div>
         </div>
-        <!-- Face buttons -->
-        <div class="tc-face" style="position:absolute;">
-            <div class="tc-btn tc-jump"   data-keys="AltRight">Jump</div>
-            <div class="tc-btn tc-action" data-keys="ControlRight,Enter">Act</div>
-            <div class="tc-btn tc-draw"   data-keys="Space">Draw</div>
-            <div class="tc-btn tc-roll"   data-keys="End">Roll</div>
-        </div>
-        <!-- Shoulder buttons -->
-        <div class="tc-btn tc-walk" data-keys="ShiftRight">Walk</div>
-        <div class="tc-btn tc-look" data-keys="Numpad0">Look</div>
+        <!-- Main + orbiting action buttons -->
+        <div class="tc-btn tc-jump" data-keys="AltRight"><i class="fa-solid fa-up-long"></i></div>
+        <div class="tc-btn tc-action" data-keys="ControlRight,Enter"><i class="fa-solid fa-hand-fist"></i></div>
+        <div class="tc-btn tc-orbit tc-guns" data-keys="Space"><i class="fa-solid fa-gun"></i></div>
+        <div class="tc-btn tc-orbit tc-roll" data-keys="End"><i class="fa-solid fa-rotate-right"></i></div>
+        <div class="tc-btn tc-orbit tc-walk" data-keys="ShiftRight"><i class="fa-solid fa-person-walking"></i></div>
+        <div class="tc-btn tc-orbit tc-look" data-keys="Numpad0"><i class="fa-solid fa-eye"></i></div>
         <!-- Top bar -->
-        <div class="tc-btn tc-menu"  data-keys="Escape">Menu</div>
-        <div class="tc-btn tc-pause" data-keys="KeyP">Pause</div>
+        <div class="tc-btn tc-menu"  data-keys="Escape"><i class="fa-solid fa-bars"></i></div>
+        <div class="tc-btn tc-pause" data-keys="KeyP"><i class="fa-solid fa-pause"></i></div>
     </div>
 
     <script>
@@ -215,6 +312,8 @@
             var canvas = document.getElementById('canvas');
             var overlay = document.getElementById('touch-controls');
             var buttons = overlay.querySelectorAll('.tc-btn');
+            var dpad = document.getElementById('tc-dpad');
+            var dpadThumb = document.getElementById('tc-dpad-thumb');
 
             // Map KeyboardEvent.code to a user-friendly key value for the
             // event's `key` property.  Emscripten's SDL2 primarily uses
@@ -237,7 +336,116 @@
                 }));
             }
 
+            var dpadButtons = [ 'ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft' ];
+            var dpadState = { ArrowUp: false, ArrowRight: false, ArrowDown: false, ArrowLeft: false };
+            var dpadTouchId = null;
+            var dpadThreshold = 0.38;
+
+            function setDpadKey(code, pressed) {
+                if (dpadState[code] === pressed) {
+                    return;
+                }
+                dpadState[code] = pressed;
+                dispatchKey(code, pressed ? 'keydown' : 'keyup');
+            }
+
+            function resetDpad() {
+                dpadButtons.forEach(function(code) { setDpadKey(code, false); });
+                dpad.classList.remove('tc-press-up', 'tc-press-right', 'tc-press-down', 'tc-press-left');
+                dpadThumb.style.transform = 'translate(-50%, -50%)';
+            }
+
+            function updateDpadFromTouch(touch) {
+                var rect = dpad.getBoundingClientRect();
+                var cx = rect.left + rect.width * 0.5;
+                var cy = rect.top + rect.height * 0.5;
+                var dx = touch.clientX - cx;
+                var dy = touch.clientY - cy;
+                var radius = Math.min(rect.width, rect.height) * 0.5;
+                var deadZone = radius * 0.2;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                var nx = 0;
+                var ny = 0;
+
+                if (dist > 0) {
+                    nx = dx / dist;
+                    ny = dy / dist;
+                }
+
+                var thumbDist = Math.min(dist, radius * 0.68);
+                dpadThumb.style.transform =
+                    'translate(calc(-50% + ' + (nx * thumbDist).toFixed(2) + 'px), calc(-50% + '
+                    + (ny * thumbDist).toFixed(2) + 'px))';
+
+                var up = false;
+                var right = false;
+                var down = false;
+                var left = false;
+
+                if (dist >= deadZone) {
+                    up = ny < -dpadThreshold;
+                    right = nx > dpadThreshold;
+                    down = ny > dpadThreshold;
+                    left = nx < -dpadThreshold;
+                }
+
+                setDpadKey('ArrowUp', up);
+                setDpadKey('ArrowRight', right);
+                setDpadKey('ArrowDown', down);
+                setDpadKey('ArrowLeft', left);
+
+                dpad.classList.toggle('tc-press-up', up);
+                dpad.classList.toggle('tc-press-right', right);
+                dpad.classList.toggle('tc-press-down', down);
+                dpad.classList.toggle('tc-press-left', left);
+            }
+
+            dpad.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (dpadTouchId !== null) {
+                    return;
+                }
+                var t = e.changedTouches[0];
+                dpadTouchId = t.identifier;
+                updateDpadFromTouch(t);
+                canvas.focus();
+            }, { passive: false });
+
+            dpad.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                if (dpadTouchId === null) {
+                    return;
+                }
+                for (var i = 0; i < e.changedTouches.length; i++) {
+                    var t = e.changedTouches[i];
+                    if (t.identifier === dpadTouchId) {
+                        updateDpadFromTouch(t);
+                        break;
+                    }
+                }
+            }, { passive: false });
+
+            function maybeEndDpadTouch(e) {
+                e.preventDefault();
+                if (dpadTouchId === null) {
+                    return;
+                }
+                for (var i = 0; i < e.changedTouches.length; i++) {
+                    if (e.changedTouches[i].identifier === dpadTouchId) {
+                        dpadTouchId = null;
+                        resetDpad();
+                        break;
+                    }
+                }
+            }
+
+            dpad.addEventListener('touchend', maybeEndDpadTouch, { passive: false });
+            dpad.addEventListener('touchcancel', maybeEndDpadTouch, { passive: false });
+
             buttons.forEach(function(btn) {
+                if (btn.closest('.tc-dpad')) {
+                    return;
+                }
                 var codes = btn.getAttribute('data-keys').split(',');
                 var activeTouches = {};  // touchId → true
 

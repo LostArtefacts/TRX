@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/config/presets.h>
 #include <trx/core/enum_map.h>
+#include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -83,11 +84,11 @@ EM_JS(void, js_show_start_gate, (void), {
         }
         requestAnimationFrame(poll);
     })();
-});
+})
 
 EM_JS(int, js_is_start_gate_dismissed, (void), {
     return Module._startGateDismissed ? 1 : 0;
-});
+})
 
 // --- IDBFS persistence ---
 
@@ -98,7 +99,7 @@ EM_JS(void, js_init_idbfs, (const char *mount_path), {
     FS.mount(IDBFS, {}, path);
     try { FS.mkdir(path + '/saves'); } catch(e) {}
     try { FS.mkdir(path + '/cfg'); } catch(e) {}
-});
+})
 
 EM_JS(void, js_start_idbfs_sync_from_db, (void), {
     Module._idbfsSyncDone = false;
@@ -106,18 +107,18 @@ EM_JS(void, js_start_idbfs_sync_from_db, (void), {
         if (err) console.error('[IDBFS] sync from DB error:', err);
         Module._idbfsSyncDone = true;
     });
-});
+})
 
 EM_JS(int, js_is_idbfs_sync_done, (void), {
     return Module._idbfsSyncDone ? 1 : 0;
-});
+})
 
 EM_JS(void, js_restore_config, (const char *src, const char *dst), {
     try {
         var data = FS.readFile(UTF8ToString(src));
         FS.writeFile(UTF8ToString(dst), data);
     } catch(e) { /* no persisted config yet */ }
-});
+})
 
 EM_JS(void, js_persist_file_and_sync, (const char *src, const char *dst), {
     var d = UTF8ToString(dst);
@@ -128,19 +129,24 @@ EM_JS(void, js_persist_file_and_sync, (const char *src, const char *dst), {
     FS.syncfs(false, function(err) {
         if (err) console.error('[IDBFS] sync error:', err);
     });
-});
+})
 
 EM_JS(void, js_sync_idbfs_to_db, (void), {
     FS.syncfs(false, function(err) {
         if (err) console.error('[IDBFS] sync error:', err);
     });
-});
+})
 
 EM_JS(void, js_set_touch_controls_visible, (int visible), {
     if (Module.setTouchControlsVisible) {
-        Module.setTouchControlsVisible(visible && navigator.maxTouchPoints > 0);
+        Module.setTouchControlsVisible(visible);
     }
-});
+})
+
+EM_JS(int, js_has_touch_support, (void), {
+    return navigator.maxTouchPoints > 0 ? 1 : 0;
+})
+
 // clang-format on
 
 // setenv is POSIX but not declared under strict C standard modes.
@@ -449,8 +455,16 @@ static void M_PrepareSystem(void)
         if (engine_config_path == nullptr) {
             Shell_ExitSystem("Failed to resolve engine config path");
         }
+#ifdef EMSCRIPTEN_BUILD
+        const bool first_run = !File_Exists(engine_config_path);
+#endif
         Config_Read(engine_config_path, Shell_GetGameFlowPath(s->args->mod));
         Memory_FreePointer(&engine_config_path);
+#ifdef EMSCRIPTEN_BUILD
+        if (first_run && js_has_touch_support()) {
+            g_Config.input.enable_touch_controls = true;
+        }
+#endif
 
         if (s->args->test_record_path != nullptr) {
             TestRecorder_Open(
