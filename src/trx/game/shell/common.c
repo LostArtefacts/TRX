@@ -112,7 +112,16 @@ SHELL_SIZE Shell_GetWindowSize(void)
     SDL_Window *const window = Shell_GetWindow();
     SHELL_SIZE result = { .w = -1, .h = -1 };
     if (window != nullptr) {
+#ifdef EMSCRIPTEN_BUILD
+        // On web with HiDPI enabled, render/backbuffer size can differ from
+        // logical window size. Use drawable size so viewport math matches GL.
+        SDL_GL_GetDrawableSize(window, &result.w, &result.h);
+        if (result.w <= 0 || result.h <= 0) {
+            SDL_GetWindowSize(window, &result.w, &result.h);
+        }
+#else
         SDL_GetWindowSize(window, &result.w, &result.h);
+#endif
     }
     return result;
 }

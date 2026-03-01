@@ -119,6 +119,31 @@ echo ">>> Cache-busting: $CACHE_BUST"
 sed -i "s|src=\"TRX.js\"|src=\"TRX.js?${CACHE_BUST}\"|" "$BUILD_DIR/TRX.html"
 sed -i "s|var _trxCacheBust = '';  // __CACHE_BUST__|var _trxCacheBust = '${CACHE_BUST}';|" "$BUILD_DIR/TRX.html"
 
+# --- PWA assets ---
+SHARED_EMC="$PROJECT_ROOT/tools/shared/emscripten"
+
+# Game display names
+case "$GAME" in
+    tr1) APP_NAME="TR1X"; SHORT_NAME="TR1X" ;;
+    tr2) APP_NAME="TR2X"; SHORT_NAME="TR2X" ;;
+esac
+
+echo ""
+echo ">>> Generating PWA manifest..."
+sed -e "s|__APP_NAME__|${APP_NAME}|g" \
+    -e "s|__SHORT_NAME__|${SHORT_NAME}|g" \
+    "$SHARED_EMC/manifest.webmanifest.in" > "$BUILD_DIR/manifest.webmanifest"
+
+echo ">>> Generating service worker..."
+sed -e "s|__APP_NAME__|${APP_NAME}|g" \
+    -e "s|__SHORT_NAME__|${SHORT_NAME}|g" \
+    -e "s|__CACHE_BUST__|${CACHE_BUST}|g" \
+    "$SHARED_EMC/sw.js.in" > "$BUILD_DIR/sw.js"
+
+echo ">>> Generating PWA icons..."
+ICON_SRC="$PROJECT_ROOT/data/trx/icon.png"
+python3 "$SHARED_EMC/generate_icons.py" "$ICON_SRC" "$BUILD_DIR"
+
 echo ""
 echo "============================================"
 echo "  Build complete! ($GAME)"

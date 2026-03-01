@@ -16,6 +16,9 @@
 
 void Shell_SetupHiDPI(void)
 {
+#ifdef EMSCRIPTEN_BUILD
+    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+#endif
 #ifdef _WIN32
     SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitorv2");
     SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "0");
