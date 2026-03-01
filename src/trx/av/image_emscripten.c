@@ -1,28 +1,26 @@
-#ifdef EMSCRIPTEN_BUILD
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_NO_THREAD_LOCALS
+#include "vendor/stb_image.h"
 
-    #define STB_IMAGE_IMPLEMENTATION
-    #define STBI_NO_THREAD_LOCALS
-    #include "vendor/stb_image.h"
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "vendor/stb_image_resize2.h"
 
-    #define STB_IMAGE_RESIZE_IMPLEMENTATION
-    #include "vendor/stb_image_resize2.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "vendor/stb_image_write.h"
 
-    #define STB_IMAGE_WRITE_IMPLEMENTATION
-    #include "vendor/stb_image_write.h"
+#include <trx/av/image.h>
 
-    #include <trx/av/image.h>
+#include <trx/debug.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
 
-    #include <trx/debug.h>
-    #include <trx/core/filesystem.h>
-    #include <trx/core/log.h>
-    #include <trx/core/memory.h>
+#include "vendor/webp/decode.h"
 
-    #include "vendor/webp/decode.h"
-
-    #include <stdint.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // The native image.c uses M_GetBlit + libswscale for fit modes.
 // We replicate the blit logic here and use stb_image_resize2 instead.
@@ -378,5 +376,3 @@ void Image_Free(IMAGE *image)
     }
     Memory_FreePointer(&image);
 }
-
-#endif // EMSCRIPTEN_BUILD

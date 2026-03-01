@@ -1,22 +1,20 @@
-#ifdef EMSCRIPTEN_BUILD
+#define DR_WAV_IMPLEMENTATION
+#define DR_WAV_NO_STDIO
+#include "vendor/dr_wav.h"
 
-    #define DR_WAV_IMPLEMENTATION
-    #define DR_WAV_NO_STDIO
-    #include "vendor/dr_wav.h"
+#include <trx/av/audio_internal.h>
 
-    #include <trx/av/audio_internal.h>
+#include <trx/core/benchmark.h>
+#include <trx/debug.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/version.h>
 
-    #include <trx/core/benchmark.h>
-    #include <trx/debug.h>
-    #include <trx/core/log.h>
-    #include <trx/core/memory.h>
-    #include <trx/version.h>
-
-    #include <SDL2/SDL_audio.h>
-    #include <math.h>
-    #include <stdint.h>
-    #include <stdio.h>
-    #include <string.h>
+#include <SDL2/SDL_audio.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 typedef struct {
     char *original_data;
@@ -494,5 +492,3 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len)
         }
     }
 }
-
-#endif // EMSCRIPTEN_BUILD

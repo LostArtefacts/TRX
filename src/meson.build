@@ -169,6 +169,7 @@ desktop_sources = [
   'trx/av/audio_stream.c',
   'trx/av/image.c',
   'trx/av/video.c',
+  'trx/game/fmv.c',
 ]
 
 common_sources = [
@@ -277,7 +278,6 @@ common_sources = [
   'trx/game/enum.c',
   'trx/game/events.c',
   'trx/game/fader.c',
-  'trx/game/fmv.c',
   'trx/game/fx/explosion_ring.c',
   'trx/game/fx/footprint.c',
   'trx/game/fx/fx.c',
@@ -797,6 +797,7 @@ if is_emscripten
   common_sources += ['trx/av/audio_sample_emscripten.c']
   common_sources += ['trx/av/audio_stream_emscripten.c']
   common_sources += ['trx/av/image_emscripten.c']
+  common_sources += ['trx/game/fmv_emscripten.c']
   # Pre-built libwebp decoder for WebP image support (built with emcc).
   dep_webpdecoder = c_compiler.find_library(
     'webpdecoder',
@@ -874,7 +875,7 @@ elif is_emscripten
     game_music_root + '@/music',
     # FMV cutscenes are NOT preloaded — they are streamed on demand via
     # HTTP from the fmv/ directory alongside the HTML/JS/WASM files.
-    # See fmv.c js_fmv_open() and build_webgl.sh for the serving setup.
+    # See fmv_emscripten.c js_fmv_open() and build_webgl.sh for the serving setup.
   ]
   foreach mapping : preload_mappings
     link_args += ['--preload-file', mapping]

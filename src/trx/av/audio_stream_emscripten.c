@@ -1,42 +1,40 @@
-#ifdef EMSCRIPTEN_BUILD
+#define DR_FLAC_IMPLEMENTATION
+#define DR_FLAC_NO_STDIO
+#include "vendor/dr_flac.h"
 
-    #define DR_FLAC_IMPLEMENTATION
-    #define DR_FLAC_NO_STDIO
-    #include "vendor/dr_flac.h"
+#define DR_MP3_IMPLEMENTATION
+#define DR_MP3_NO_STDIO
+#include "vendor/dr_mp3.h"
 
-    #define DR_MP3_IMPLEMENTATION
-    #define DR_MP3_NO_STDIO
-    #include "vendor/dr_mp3.h"
+// stb_vorbis needs its implementation compiled in; we use the pushdata API
+// with STB_VORBIS_NO_STDIO to avoid file I/O deps.
+#define STB_VORBIS_NO_STDIO
+#include "vendor/stb_vorbis.c"
 
-    // stb_vorbis needs its implementation compiled in; we use the pushdata API
-    // with STB_VORBIS_NO_STDIO to avoid file I/O deps.
-    #define STB_VORBIS_NO_STDIO
-    #include "vendor/stb_vorbis.c"
+// dr_wav is already implemented in audio_sample_emscripten.c, just need
+// header.
+#define DR_WAV_NO_STDIO
+#include "vendor/dr_wav.h"
 
-    // dr_wav is already implemented in audio_sample_emscripten.c, just need
-    // header.
-    #define DR_WAV_NO_STDIO
-    #include "vendor/dr_wav.h"
+#include <trx/av/audio_internal.h>
 
-    #include <trx/av/audio_internal.h>
+#include <trx/debug.h>
+#include <trx/core/filesystem.h>
+#include <trx/core/log.h>
+#include <trx/core/memory.h>
+#include <trx/core/utils.h>
 
-    #include <trx/debug.h>
-    #include <trx/core/filesystem.h>
-    #include <trx/core/log.h>
-    #include <trx/core/memory.h>
-    #include <trx/core/utils.h>
+#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_error.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
-    #include <SDL2/SDL_audio.h>
-    #include <SDL2/SDL_error.h>
-    #include <stdint.h>
-    #include <stdio.h>
-    #include <string.h>
+#define READ_BUFFER_SIZE                                                       \
+    (AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT))
 
-    #define READ_BUFFER_SIZE                                                   \
-        (AUDIO_SAMPLES * AUDIO_WORKING_CHANNELS * sizeof(AUDIO_WORKING_FORMAT))
-
-    // Decode buffer: how many float frames to decode per Mix iteration.
-    #define DECODE_FRAMES 2048
+// Decode buffer: how many float frames to decode per Mix iteration.
+#define DECODE_FRAMES 2048
 
 typedef enum {
     M_FMT_UNKNOWN,
@@ -838,5 +836,3 @@ void Audio_Stream_Mix(float *dst_buffer, size_t len)
         }
     }
 }
-
-#endif // EMSCRIPTEN_BUILD
