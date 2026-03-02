@@ -3,6 +3,7 @@
 #include <trx/core/bson.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
@@ -28,6 +29,17 @@ static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
 const char *SG_File_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_file_fmt;
+}
+
+const char *SG_File_GetQuickSaveFilePattern(void)
+{
+    const char *const pattern = SG_File_GetSaveFilePattern();
+    const char *const placeholder = strchr(pattern, '%');
+    if (placeholder == nullptr) {
+        return String_FormatStatic("%s_q", pattern);
+    }
+    const int32_t prefix_size = placeholder - pattern;
+    return String_FormatStatic("%.*sq%s", prefix_size, pattern, placeholder);
 }
 
 static JSON_VALUE *M_ParseFromBuffer(
@@ -75,7 +87,8 @@ static JSON_VALUE *M_ReadRaw(MYFILE *const fp, int32_t *const version_out)
 }
 
 static void M_SaveRaw(
-    MYFILE *const fp, const JSON_VALUE *const root, const int32_t level_num)
+    MYFILE *const fp, const JSON_VALUE *const root, const int32_t level_num,
+    const bool is_quick)
 {
     size_t uncompressed_size;
     char *uncompressed = BSON_Write(root, &uncompressed_size);
@@ -98,7 +111,7 @@ static void M_SaveRaw(
         .uncompressed_size = uncompressed_size,
     };
     const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
-        .flags = Game_GetBonusFlag(),
+        .flags = Game_GetBonusFlag() | (is_quick ? SAVEGAME_EXT_FLAG_QUICK : 0),
         .counter = Savegame_GetCounter(),
         .level_num = level->num,
         .title_size = level->title != nullptr ? strlen(level->title) : 0,
@@ -157,12 +170,16 @@ void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     SG_File_DumpFlares(io);
     SG_File_DumpMisc(io);
 
-    M_SaveRaw(fp, JSON_WriteIO_GetRoot(io), current_level->num);
+    M_SaveRaw(
+        fp, JSON_WriteIO_GetRoot(io), current_level->num,
+        info != nullptr && info->is_quick);
     JSON_WriteIO_Destroy(io);
 }
 
 bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 {
+    *info = (SAVEGAME_INFO) {};
+
     SAVEGAME_BSON_HEADER header = {};
     File_Seek(fp, 0, FILE_SEEK_SET);
     if (!File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER))) {
@@ -189,6 +206,7 @@ bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     if (File_ReadData(fp, &extra_header, sizeof(extra_header))) {
         info->counter = extra_header.counter;
         info->level_num = extra_header.level_num;
+        info->is_quick = (extra_header.flags & SAVEGAME_EXT_FLAG_QUICK) != 0;
         info->level_title = Memory_Alloc(extra_header.title_size + 1);
         File_ReadData(fp, info->level_title, extra_header.title_size);
         return true;
@@ -226,7 +244,8 @@ bool SG_File_LoadOnlyResumeInfo(MYFILE *const fp)
 }
 
 bool SG_File_UpdateDeathCounters(
-    MYFILE *const fp, int32_t level_num, const int32_t death_count)
+    MYFILE *const fp, int32_t level_num, const int32_t death_count,
+    const bool is_quick)
 {
     bool result = false;
     JSON_VALUE *const root = M_ReadRaw(fp, nullptr);
@@ -245,7 +264,7 @@ bool SG_File_UpdateDeathCounters(
     JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
 
     File_Seek(fp, 0, FILE_SEEK_SET);
-    M_SaveRaw(fp, root, level_num);
+    M_SaveRaw(fp, root, level_num, is_quick);
     result = true;
 
 cleanup:

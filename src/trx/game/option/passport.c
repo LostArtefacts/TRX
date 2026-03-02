@@ -74,7 +74,7 @@ typedef struct {
 } M_PAGE;
 
 PASSPORT g_Passport = {
-    .select_slot = -1,
+    .select_level = -1,
 };
 
 static struct {
@@ -250,7 +250,7 @@ static void M_SoftClose(INVENTORY_ITEM *const inv_item)
     }
 }
 
-static void M_NavigateInto(const M_PAGE_ROLE role, const int16_t selection)
+static void M_NavigateInto(const M_PAGE_ROLE role, const int32_t selection)
 {
     M_PAGE *const page = M_GetActivePage();
     if (page->nav.depth + 1
@@ -286,7 +286,14 @@ static void M_NavigateOut(INVENTORY_ITEM *const inv_item)
 static void M_Confirm(const PASSPORT_ACTION role, const int32_t argument)
 {
     g_Passport.select_action = role;
-    g_Passport.select_slot = argument;
+    g_Passport.select_level = argument;
+}
+
+static void M_ConfirmSaveSlot(
+    const PASSPORT_ACTION role, const SAVEGAME_SLOT_REF slot)
+{
+    g_Passport.select_action = role;
+    g_Passport.select_save_slot = slot;
 }
 
 static void M_SetPage(
@@ -300,7 +307,8 @@ static void M_DeterminePages(void)
 {
     const bool can_restart = Savegame_RestartAvailable(Savegame_GetBoundSlot());
     const bool saving_enabled =
-        Savegame_GetSlotCount() > 0 && !g_Config.flow.load_save_disabled;
+        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL) > 0
+        && !g_Config.flow.load_save_disabled;
     const bool has_saves = Savegame_GetTotalCount() > 0 && saving_enabled;
 
     for (M_PAGE_NUMBER i = PAGE_1; i < PAGE_COUNT; i++) {
@@ -421,24 +429,27 @@ static void M_DeterminePages(void)
 
 static bool M_ChooseSaveSlot(
     INVENTORY_ITEM *const inv_item, const UI_SAVE_SLOT_DIALOG_TYPE dialog_type,
-    int32_t *const selected_slot)
+    SAVEGAME_SLOT_REF *const selected_slot)
 {
-    *selected_slot = -1;
+    *selected_slot = Savegame_InvalidSlot();
     M_PAGE *const page = M_GetActivePage();
     M_NAV_FRAME *const frame = page->nav.current;
     if (frame->ui.save_slot == nullptr) {
-        int32_t save_slot = page->nav.stack[page->nav.depth].selection;
-        if (save_slot == -1) {
-            save_slot = Savegame_GetMostRecentlyUsedSlot();
+        const int32_t selection = page->nav.stack[page->nav.depth].selection;
+        SAVEGAME_SLOT_REF initial_slot = selection != -1
+            ? Savegame_SlotFromParam(selection)
+            : Savegame_InvalidSlot();
+        if (!Savegame_IsValidSlotRef(initial_slot)) {
+            initial_slot = Savegame_GetMostRecentlyUsedSlot();
         }
-        if (save_slot == -1) {
-            save_slot = Savegame_GetMostRecentlyCreatedSlot();
+        if (!Savegame_IsValidSlotRef(initial_slot)) {
+            initial_slot = Savegame_GetMostRecentlyCreatedSlot();
         }
-        if (save_slot == -1) {
-            save_slot = 0;
+        if (!Savegame_IsValidSlotRef(initial_slot)) {
+            initial_slot = Savegame_NormalSlot(0);
         }
         page->nav.current->ui.save_slot =
-            UI_SaveSlotDialog_Init(dialog_type, save_slot);
+            UI_SaveSlotDialog_Init(dialog_type, initial_slot);
     }
     const UI_SAVE_SLOT_DIALOG_CHOICE choice =
         UI_SaveSlotDialog_Control(frame->ui.save_slot);
@@ -457,7 +468,7 @@ static bool M_ChooseSaveSlot(
         M_NavigateOut(inv_item);
         return true;
     case UI_SAVE_SLOT_DIALOG_CONFIRM:
-        *selected_slot = choice.slot_num;
+        *selected_slot = choice.slot;
         return true;
     }
     return false;
@@ -474,22 +485,22 @@ static bool M_CheckConfirm(const PASSPORT_ACTION action)
 
 static bool M_HandleLoadGame(INVENTORY_ITEM *const inv_item)
 {
-    int32_t selected_slot;
+    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
     const bool result = M_ChooseSaveSlot(
         inv_item, UI_SAVE_SLOT_DIALOG_LOAD_GAME, &selected_slot);
-    if (selected_slot != -1) {
-        M_Confirm(PASSPORT_ACTION_LOAD_GAME, selected_slot);
+    if (Savegame_IsValidSlotRef(selected_slot)) {
+        M_ConfirmSaveSlot(PASSPORT_ACTION_LOAD_GAME, selected_slot);
     }
     return result;
 }
 
 static bool M_HandleSaveGame(INVENTORY_ITEM *const inv_item)
 {
-    int32_t selected_slot;
+    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
     const bool result = M_ChooseSaveSlot(
         inv_item, UI_SAVE_SLOT_DIALOG_SAVE_GAME, &selected_slot);
-    if (selected_slot != -1) {
-        M_Confirm(PASSPORT_ACTION_SAVE_GAME, selected_slot);
+    if (Savegame_IsValidSlotRef(selected_slot)) {
+        M_ConfirmSaveSlot(PASSPORT_ACTION_SAVE_GAME, selected_slot);
     }
     return result;
 }
@@ -639,11 +650,13 @@ static bool M_HandlePlayAnyLevelSelectMode(INVENTORY_ITEM *const inv_item)
 
 static bool M_HandlePlayPrevLevelSelectSlot(INVENTORY_ITEM *const inv_item)
 {
-    int32_t selected_slot;
+    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
     const bool result =
         M_ChooseSaveSlot(inv_item, UI_SAVE_SLOT_DIALOG_GENERIC, &selected_slot);
-    if (selected_slot != -1) {
-        M_NavigateInto(M_ROLE_PLAY_PREV_LEVEL_SELECT_LEVEL, selected_slot);
+    if (Savegame_IsValidSlotRef(selected_slot)) {
+        M_NavigateInto(
+            M_ROLE_PLAY_PREV_LEVEL_SELECT_LEVEL,
+            Savegame_SlotToParam(selected_slot));
     }
     return result;
 }
@@ -651,8 +664,17 @@ static bool M_HandlePlayPrevLevelSelectSlot(INVENTORY_ITEM *const inv_item)
 static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
 {
     M_PAGE *const page = M_GetActivePage();
-    const int32_t save_slot = page->nav.stack[page->nav.depth - 1].selection;
-    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(save_slot);
+    const SAVEGAME_SLOT_REF slot =
+        Savegame_SlotFromParam(page->nav.stack[page->nav.depth - 1].selection);
+    if (!Savegame_IsValidSlotRef(slot)) {
+        M_NavigateOut(inv_item);
+        return true;
+    }
+    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot);
+    if (info == nullptr) {
+        M_NavigateOut(inv_item);
+        return true;
+    }
     if (!info->features.select_level) {
         m_Priv.error_msg = GS_ID(PASSPORT_SAVE_SLOT_UNSUPPORTED);
         if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
@@ -663,7 +685,7 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
     }
     M_NAV_FRAME *const frame = page->nav.current;
     if (frame->ui.select_level == nullptr) {
-        frame->ui.select_level = UI_SelectLevelDialog_Init(save_slot);
+        frame->ui.select_level = UI_SelectLevelDialog_Init(slot);
     }
     const int32_t choice = UI_SelectLevelDialog_Control(frame->ui.select_level);
     if (choice == UI_REQUESTER_NO_CHOICE) {
@@ -676,7 +698,7 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
         M_NavigateOut(inv_item);
         return true;
     } else {
-        Savegame_BindSlot(save_slot);
+        Savegame_BindSlot(slot);
         M_Confirm(PASSPORT_ACTION_SELECT_LEVEL, choice);
         return true;
     }
@@ -685,11 +707,12 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
 
 static bool M_HandleStorySoFar(INVENTORY_ITEM *const inv_item)
 {
-    int32_t selected_slot;
+    SAVEGAME_SLOT_REF selected_slot = Savegame_InvalidSlot();
     const bool result =
         M_ChooseSaveSlot(inv_item, UI_SAVE_SLOT_DIALOG_GENERIC, &selected_slot);
-    if (selected_slot != -1) {
-        M_NavigateInto(M_ROLE_STORY_SO_FAR_CONFIRM, selected_slot);
+    if (Savegame_IsValidSlotRef(selected_slot)) {
+        M_NavigateInto(
+            M_ROLE_STORY_SO_FAR_CONFIRM, Savegame_SlotToParam(selected_slot));
     }
     return result;
 }
@@ -697,9 +720,10 @@ static bool M_HandleStorySoFar(INVENTORY_ITEM *const inv_item)
 static bool M_HandleStorySoFarConfirm(INVENTORY_ITEM *const inv_item)
 {
     M_PAGE *const page = M_GetActivePage();
-    const int32_t save_slot = page->nav.stack[page->nav.depth - 1].selection;
-    if (GF_HasAvailableStory(save_slot)) {
-        M_Confirm(PASSPORT_ACTION_STORY_SO_FAR, save_slot);
+    const SAVEGAME_SLOT_REF slot =
+        Savegame_SlotFromParam(page->nav.stack[page->nav.depth - 1].selection);
+    if (GF_HasAvailableStory(slot)) {
+        M_ConfirmSaveSlot(PASSPORT_ACTION_STORY_SO_FAR, slot);
         g_InputDB.menu_confirm = true;
         M_Close(inv_item);
         return true;

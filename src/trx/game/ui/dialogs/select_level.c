@@ -23,12 +23,13 @@ typedef struct {
 } M_ROW;
 
 typedef struct UI_SELECT_LEVEL_DIALOG_STATE {
-    int32_t save_slot;
+    SAVEGAME_SLOT_REF save_slot;
     VECTOR *rows;
     UI_REQUESTER_STATE req;
 } UI_SELECT_LEVEL_DIALOG_STATE;
 
-UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(const int32_t save_slot)
+UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(
+    const SAVEGAME_SLOT_REF save_slot)
 {
     UI_SELECT_LEVEL_DIALOG_STATE *const s =
         Memory_Alloc(sizeof(UI_SELECT_LEVEL_DIALOG_STATE));

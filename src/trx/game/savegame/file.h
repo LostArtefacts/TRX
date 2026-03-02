@@ -9,12 +9,13 @@
 #include <stdint.h>
 
 const char *SG_File_GetSaveFilePattern(void);
+const char *SG_File_GetQuickSaveFilePattern(void);
 bool SG_File_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
 bool SG_File_LoadFromFile(MYFILE *fp);
 bool SG_File_LoadOnlyResumeInfo(MYFILE *fp);
 void SG_File_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
 bool SG_File_UpdateDeathCounters(
-    MYFILE *fp, int32_t level_num, int32_t death_count);
+    MYFILE *fp, int32_t level_num, int32_t death_count, bool is_quick);
 
 // Start of reader functions ===================================================
 bool SG_File_LoadLara(JSON_READ_IO *io);
@@ -58,3 +59,5 @@ typedef struct {
     int32_t title_size;
 } SAVEGAME_BSON_EXTENDED_HEADER;
 #pragma pack(pop)
+
+#define SAVEGAME_EXT_FLAG_QUICK (1U << 31)

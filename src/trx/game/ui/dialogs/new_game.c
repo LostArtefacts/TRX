@@ -58,19 +58,24 @@ static M_FEATURES M_CheckFeatures(void)
     if (g_Config.flow.load_save_disabled) {
         return features;
     }
-    for (int32_t slot_num = 0; slot_num < Savegame_GetSlotCount(); slot_num++) {
-        if (Savegame_IsSlotFree(slot_num)) {
-            continue;
-        }
-        if (!features.play_prev_levels) {
-            const SAVEGAME_INFO *const info =
-                Savegame_GetSavegameInfo(slot_num);
-            if (info->features.select_level) {
-                features.play_prev_levels = true;
+    for (SAVEGAME_SLOT_POOL pool = 0; pool < SAVEGAME_SLOT_POOL_NUMBER_OF;
+         pool++) {
+        for (int32_t slot_num = 0; slot_num < Savegame_GetSlotCount(pool);
+             slot_num++) {
+            const SAVEGAME_SLOT_REF slot = { .pool = pool, .index = slot_num };
+            if (Savegame_IsSlotFree(slot)) {
+                continue;
             }
-        }
-        if (!features.story_so_far && GF_HasAvailableStory(slot_num)) {
-            features.story_so_far = true;
+            if (!features.play_prev_levels) {
+                const SAVEGAME_INFO *const info =
+                    Savegame_GetSavegameInfo(slot);
+                if (info->features.select_level) {
+                    features.play_prev_levels = true;
+                }
+            }
+            if (!features.story_so_far && GF_HasAvailableStory(slot)) {
+                features.story_so_far = true;
+            }
         }
     }
     return features;

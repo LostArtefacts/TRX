@@ -2,6 +2,7 @@
 
 #include <trx/game/game_flow/types.h>
 #include <trx/game/inventory_ring/types.h>
+#include <trx/game/savegame/types.h>
 
 GF_COMMAND GF_EnterPhotoMode(void);
 GF_COMMAND GF_PauseGame(void);
@@ -23,4 +24,4 @@ GF_COMMAND GF_InterpretSequence(
 GF_COMMAND GF_DoLevelSequence(
     const GF_LEVEL *start_level, GF_SEQUENCE_CONTEXT seq_ctx);
 
-GF_COMMAND GF_PlayAvailableStory(int32_t slot_num);
+GF_COMMAND GF_PlayAvailableStory(SAVEGAME_SLOT_REF slot);

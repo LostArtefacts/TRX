@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <trx/game/savegame/types.h>
 #include <trx/game/ui/common.h>
 
 #include <stdint.h>
@@ -13,7 +14,7 @@
 typedef struct UI_SELECT_LEVEL_DIALOG_STATE UI_SELECT_LEVEL_DIALOG_STATE;
 
 struct UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(
-    int32_t save_slot);
+    SAVEGAME_SLOT_REF save_slot);
 
 void UI_SelectLevelDialog_Free(struct UI_SELECT_LEVEL_DIALOG_STATE *s);
 
