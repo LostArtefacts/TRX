@@ -48,6 +48,7 @@
 - fixed touching Lava tiles causing reduced Flame effect when the immunity cheat is on
 - fixed collision issues on bridges, trapdoors, breakable tiles and pushblocks if positioned over a triangle portal (regression from 1.0)
 - fixed Lara being able to sprint through swamps when responsive sprinting is enabled
+- fixed bar borders scaling poorly (off-by-1px errors, regression from 1.2)
 
 **TR1**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
