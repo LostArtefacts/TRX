@@ -1,5 +1,3 @@
-#include <trx/game/objects/creatures/dragon.h>
-
 #include <trx/core/math.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -113,6 +111,28 @@ static void M_InitialiseBack(const int16_t item_num)
     dragon_front_item->flags = IF_INVISIBLE;
     dragon_front_item->shade.value_1 = -1;
     Item_Initialise(p->dragon_front_item_num);
+}
+
+static void M_ActivateBack(ITEM *const dragon_back_item)
+{
+    if (dragon_back_item->active
+        || dragon_back_item->status == IS_DEACTIVATED) {
+        return;
+    }
+
+    const int16_t dragon_front_item_num = M_GetFrontItemNum(dragon_back_item);
+    if (dragon_front_item_num == NO_ITEM) {
+        return;
+    }
+
+    ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
+    dragon_back_item->touch_bits = 0;
+    dragon_front_item->touch_bits = 0;
+
+    LOT_EnableBaddieAI(dragon_front_item_num, true);
+    Item_AddActive(dragon_front_item_num);
+    Item_AddActive(Item_GetIndex(dragon_back_item));
+    dragon_back_item->status = IS_ACTIVE;
 }
 
 static void M_MarkDragonDead(ITEM *const dragon_back_item)
@@ -486,6 +506,7 @@ static void M_SetupBack(OBJECT *const obj)
     }
 
     obj->initialise_func = M_InitialiseBack;
+    obj->activate_func = M_ActivateBack;
     obj->control_func = M_ControlBack;
     obj->collision_func = M_Collision;
     obj->can_drop_items_func = M_CanDropItemsBack;
@@ -496,28 +517,6 @@ static void M_SetupBack(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     obj->priv_size = sizeof(M_PRIV);
-}
-
-void Dragon_Activate(const int16_t dragon_back_item_num)
-{
-    if (dragon_back_item_num == NO_ITEM) {
-        return;
-    }
-
-    ITEM *const dragon_back_item = Item_Get(dragon_back_item_num);
-    const int16_t dragon_front_item_num = M_GetFrontItemNum(dragon_back_item);
-    if (dragon_front_item_num == NO_ITEM) {
-        return;
-    }
-
-    ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
-    dragon_back_item->touch_bits = 0;
-    dragon_front_item->touch_bits = 0;
-
-    LOT_EnableBaddieAI(dragon_front_item_num, true);
-    Item_AddActive(dragon_front_item_num);
-    Item_AddActive(dragon_back_item_num);
-    dragon_back_item->status = IS_ACTIVE;
 }
 
 REGISTER_OBJECT(O_DRAGON_FRONT, M_SetupFront)
