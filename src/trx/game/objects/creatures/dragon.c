@@ -31,7 +31,7 @@
 #define M_LIVE_TIME      330
 #define M_LIGHT_TIME     (-20)
 #define M_BONE_TIME      (-100)
-#define M_DISSOLVE_TIME  (-200)
+#define M_DISSOLVE_TIME  (-240)
 #define M_DISSOLVE_SHIFT 10
 #define M_HITPOINTS      300
 #define M_TOUCH_DAMAGE   10
@@ -215,14 +215,17 @@ static void M_Bones(const int16_t item_num)
     bone_front->mesh_bits = ~0xC00000u;
 }
 
-static void M_HandleSaveFront(ITEM *const item, const SAVEGAME_STAGE stage)
+static void M_HandleSaveBack(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
         if (item->status == IS_DEACTIVATED) {
-            item->pos.y -= 1010;
+            const int32_t y_pos = item->pos.y;
+            int16_t room_num = item->room_num;
+            const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+            item->pos.y = Room_GetHeight(sector, item->pos);
             const int16_t item_num = Item_GetIndex(item);
             M_Bones(item_num);
-            item->pos.y += 1010;
+            item->pos.y = y_pos;
         }
     }
 }
@@ -317,8 +320,9 @@ static void M_ControlBack(const int16_t item_num)
             }
 
             if (creature->flags == M_BONE_TIME) {
-                M_Bones(dragon_front_item_num);
+                M_Bones(dragon_back_item_num);
             } else if (creature->flags == M_DISSOLVE_TIME) {
+                Room_TestTriggers(dragon_back_item);
                 LOT_DisableBaddieAI(dragon_front_item_num);
                 Item_Kill(dragon_front_item_num);
                 dragon_front_item->status = IS_DEACTIVATED;
@@ -482,7 +486,6 @@ static void M_SetupFront(OBJECT *const obj)
     SOFT_ASSERT(
         Object_Get(O_DRAGON_BACK)->loaded, "Dragon back object missing");
     obj->initialise_func = M_InitialiseFront;
-    obj->handle_save_func = M_HandleSaveFront;
     obj->control_func = M_ControlFront;
     obj->collision_func = M_Collision;
 
@@ -506,6 +509,7 @@ static void M_SetupBack(OBJECT *const obj)
     }
 
     obj->initialise_func = M_InitialiseBack;
+    obj->handle_save_func = M_HandleSaveBack;
     obj->activate_func = M_ActivateBack;
     obj->control_func = M_ControlBack;
     obj->collision_func = M_Collision;
