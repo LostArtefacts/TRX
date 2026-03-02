@@ -16,26 +16,14 @@
 #include <math.h>
 
 typedef struct {
-    float x, y, w, h;
-} M_RECT_F;
+    int32_t x, y, w, h;
+} M_RECT_32;
 
 typedef struct {
     UI_BAR_SETTINGS settings;
     const UI_BAR_THEME *theme;
     float scale;
 } M_DATA;
-
-static void M_DrawBackground(const UI_BAR_THEME *theme, M_RECT_F rect);
-static void M_DrawBorderPC(
-    const UI_BAR_THEME *theme, M_RECT_F rect, float border);
-static void M_DrawBorderPS1(
-    const UI_BAR_THEME *theme, M_RECT_F rect, float border);
-static void M_DrawFillPC(
-    const UI_BAR_THEME *theme, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
-    float percent);
-static void M_DrawFillPS1(
-    const UI_BAR_THEME *theme, const UI_BAR_SETTINGS *settings, M_RECT_F rect,
-    float percent);
 
 static RGBA_8888 M_MixColors(
     const RGBA_8888 c0, const RGBA_8888 c1, const float percent)
@@ -60,14 +48,14 @@ static void M_Measure(UI_NODE *const node)
 }
 
 static void M_DrawBackground(
-    const UI_BAR_THEME *const theme, const M_RECT_F rect)
+    const UI_BAR_THEME *const theme, const M_RECT_32 rect)
 {
     UI_ScheduleDrawScreenFlatQuad(
         rect.x, rect.y, 0, rect.w, rect.h, (RGBA_8888) { 0, 0, 0, 255 });
 }
 
 static void M_DrawBorderPC(
-    const UI_BAR_THEME *const theme, const M_RECT_F rect, const float border)
+    const UI_BAR_THEME *const theme, const M_RECT_32 rect, const float border)
 {
     UI_ScheduleDrawScreenFlatQuad(
         rect.x, rect.y, 0, rect.w, rect.h, theme->border_light);
@@ -77,7 +65,7 @@ static void M_DrawBorderPC(
 }
 
 static void M_DrawBorderPS1(
-    const UI_BAR_THEME *const theme, const M_RECT_F rect, const float border)
+    const UI_BAR_THEME *const theme, const M_RECT_32 rect, const float border)
 {
 #if 0
     Output_DrawScreenGradientQuad(
@@ -90,7 +78,7 @@ static void M_DrawBorderPS1(
 
 static void M_DrawFillPC(
     const UI_BAR_THEME *const theme, const UI_BAR_SETTINGS *const settings,
-    const M_RECT_F rect, const float percent)
+    const M_RECT_32 rect, const float percent)
 {
     if (g_Config.ui.enable_smooth_bars) {
         for (int32_t i = 0; i < UI_BAR_COLOR_STEPS - 1; i++) {
@@ -115,7 +103,7 @@ static void M_DrawFillPC(
 
 static void M_DrawFillPS1(
     const UI_BAR_THEME *const theme, const UI_BAR_SETTINGS *const settings,
-    const M_RECT_F rect, const float percent)
+    const M_RECT_32 rect, const float percent)
 {
     const UI_BAR_TYPE type = settings->type;
     if (g_Config.ui.enable_smooth_bars) {
@@ -156,13 +144,13 @@ static void M_Draw(const UI_NODE *const node)
     percent = (int32_t)(percent * 100) / 100.0f;
 
     // Convert everything to screen coordinates
-    const float x = UI_ScaleX(node->x);
-    const float y = UI_ScaleY(node->y);
-    const float w = UI_ScaleX(node->w);
-    const float h = UI_ScaleY(node->h);
-    const float border = h / (float)(UI_BAR_COLOR_STEPS + 4);
-    const float padding = h / (float)(UI_BAR_COLOR_STEPS + 4);
-    const M_RECT_F outer_rect = {
+    const int32_t x = UI_ScaleX(node->x);
+    const int32_t y = UI_ScaleY(node->y);
+    const int32_t w = UI_ScaleX(node->w);
+    const int32_t h = UI_ScaleY(node->h);
+    const int32_t border = h / (float)(UI_BAR_COLOR_STEPS + 4);
+    const int32_t padding = h / (float)(UI_BAR_COLOR_STEPS + 4);
+    const M_RECT_32 outer_rect = {
         .x = x,
         .y = y,
         .w = w,
