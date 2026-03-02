@@ -31,6 +31,8 @@ X_INPUT_ROLE(INPUT_ROLE_TURBO_CHEAT,             turbo_cheat)
 
 X_INPUT_ROLE(INPUT_ROLE_SAVE,                    save)
 X_INPUT_ROLE(INPUT_ROLE_LOAD,                    load)
+X_INPUT_ROLE(INPUT_ROLE_QUICK_SAVE,              quick_save)
+X_INPUT_ROLE(INPUT_ROLE_QUICK_LOAD,              quick_load)
 
 X_INPUT_ROLE(INPUT_ROLE_SCREENSHOT,              screenshot)
 X_INPUT_ROLE(INPUT_ROLE_FPS,                     toggle_fps_counter)

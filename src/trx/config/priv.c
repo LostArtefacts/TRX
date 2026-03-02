@@ -449,6 +449,7 @@ void Config_Sanitize(void)
     CLAMP(g_Config.visuals.fog_end, 1, 100);
     CLAMP(g_Config.visuals.fov, 30, 150);
     CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
+    CLAMPL(g_Config.gameplay.maximum_quick_save_slots, 0);
     CLAMP(g_Config.visuals.shadow_type, 0, SHADOW_TYPE_NUMBER_OF - 1);
     CLAMP(g_Config.gameplay.loading_screens, 0, LOADING_SCREENS_NEW_GAMES);
 

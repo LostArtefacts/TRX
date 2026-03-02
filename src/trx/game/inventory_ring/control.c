@@ -234,14 +234,15 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     switch (m_InvChosen) {
     case O_PASSPORT_OPTION:
         switch (g_Passport.select_action) {
-        case PASSPORT_ACTION_LOAD_GAME:
+        case PASSPORT_ACTION_LOAD_GAME: {
             if (apply_changes) {
                 Inv_RemoveAllItems();
             }
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
-                .param = g_Passport.select_slot,
+                .param = Savegame_SlotToParam(g_Passport.select_save_slot),
             };
+        }
 
         case PASSPORT_ACTION_NEW_GAME:
             if (apply_changes) {
@@ -250,14 +251,15 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
             Savegame_UnbindSlot();
             return (GF_COMMAND) {
                 .action = GF_START_GAME,
-                .param = g_Passport.select_slot,
+                .param = g_Passport.select_level,
             };
 
-        case PASSPORT_ACTION_SAVE_GAME:
+        case PASSPORT_ACTION_SAVE_GAME: {
             if (apply_changes) {
-                Savegame_Save(g_Passport.select_slot);
+                Savegame_Save(g_Passport.select_save_slot);
             }
             return (GF_COMMAND) { .action = GF_NOOP };
+        }
 
         case PASSPORT_ACTION_RESTART:
             return (GF_COMMAND) {
@@ -274,19 +276,19 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         case PASSPORT_ACTION_SELECT_LEVEL:
             return (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
-                .param = g_Passport.select_slot,
+                .param = g_Passport.select_level,
             };
 
         case PASSPORT_ACTION_GLOBE_SELECT:
             return (GF_COMMAND) {
                 .action = GF_GLOBE_SELECT,
-                .param = g_Passport.select_slot,
+                .param = g_Passport.select_level,
             };
 
         case PASSPORT_ACTION_STORY_SO_FAR:
             return (GF_COMMAND) {
                 .action = GF_STORY_SO_FAR,
-                .param = g_Passport.select_slot,
+                .param = Savegame_SlotToParam(g_Passport.select_save_slot),
             };
         }
         break;
@@ -465,7 +467,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     if (ring->mode == INV_GLOBE_SELECT_MODE) {
         m_StartLevel = -1;
     } else {
-        m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_slot : -1;
+        m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_level : -1;
     }
 
     if (g_Config.gameplay.enable_timer_in_inventory

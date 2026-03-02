@@ -54,12 +54,24 @@ typedef struct {
     LEVEL_STATS stats;
 } RESUME_INFO;
 
+typedef enum {
+    SAVEGAME_SLOT_POOL_NORMAL = 0,
+    SAVEGAME_SLOT_POOL_QUICK = 1,
+    SAVEGAME_SLOT_POOL_NUMBER_OF,
+} SAVEGAME_SLOT_POOL;
+
+typedef struct {
+    SAVEGAME_SLOT_POOL pool;
+    int32_t index;
+} SAVEGAME_SLOT_REF;
+
 typedef struct {
     char *full_path;
     int32_t counter;
     int32_t level_num;
     char *level_title;
     int16_t initial_version;
+    bool is_quick;
     struct {
         bool restart;
         bool select_level;

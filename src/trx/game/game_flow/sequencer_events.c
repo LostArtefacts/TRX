@@ -143,8 +143,8 @@ M_GF_HANDLER(M_HandlePlayLevel)
     // post load
     switch (seq_ctx) {
     case GFSC_SAVED: {
-        const int16_t slot_num = Savegame_GetBoundSlot();
-        if (!Savegame_Load(slot_num)) {
+        const SAVEGAME_SLOT_REF slot = Savegame_GetBoundSlot();
+        if (!Savegame_Load(slot)) {
             LOG_ERROR("Failed to load save file!");
             Game_SetCurrentLevel(nullptr);
             GF_SetCurrentLevel(nullptr);

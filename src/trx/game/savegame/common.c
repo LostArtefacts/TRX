@@ -22,14 +22,17 @@
 #include <string.h>
 
 static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
-static SAVEGAME_INFO *m_SavegameInfo = nullptr;
+static SAVEGAME_INFO *m_NormalSavegameInfo = nullptr;
+static SAVEGAME_INFO *m_QuickSavegameInfo = nullptr;
 static RESUME_INFO *m_ResumeInfo = nullptr;
 static int32_t m_SaveSlots = 0;
+static int32_t m_QuickSaveSlots = 0;
 static int32_t m_SavedGames = 0;
 static int32_t m_SaveCounter = 0;
-static int32_t m_MostRecentlyUsedSlot = -1;
-static int32_t m_MostRecentlyCreatedSlot = -1;
-static int32_t m_BoundSlot = -1;
+static int32_t m_NextQuickSlot = 0;
+static SAVEGAME_SLOT_REF m_MostRecentlyUsedSlot = { .index = -1 };
+static SAVEGAME_SLOT_REF m_MostRecentlyCreatedSlot = { .index = -1 };
+static SAVEGAME_SLOT_REF m_BoundSlot = { .index = -1 };
 
 static const char *M_GetSaveWriteDir(void)
 {
@@ -47,6 +50,38 @@ static char *M_GetSaveWritePath(const char *const file_name)
     return String_Format("%s/%s", M_GetSaveWriteDir(), file_name);
 }
 
+static SAVEGAME_INFO *M_GetSavegameInfoSlot(const SAVEGAME_SLOT_REF slot)
+{
+    switch (slot.pool) {
+    case SAVEGAME_SLOT_POOL_NORMAL:
+        if (slot.index >= 0 && slot.index < m_SaveSlots) {
+            return &m_NormalSavegameInfo[slot.index];
+        }
+        break;
+    case SAVEGAME_SLOT_POOL_QUICK:
+        if (slot.index >= 0 && slot.index < m_QuickSaveSlots) {
+            return &m_QuickSavegameInfo[slot.index];
+        }
+        break;
+    case SAVEGAME_SLOT_POOL_NUMBER_OF:
+        break;
+    }
+    return nullptr;
+}
+
+static const char *M_GetSaveFilePatternForPool(const SAVEGAME_SLOT_POOL pool)
+{
+    switch (pool) {
+    case SAVEGAME_SLOT_POOL_NORMAL:
+        return SG_File_GetSaveFilePattern();
+    case SAVEGAME_SLOT_POOL_QUICK:
+        return SG_File_GetQuickSaveFilePattern();
+    case SAVEGAME_SLOT_POOL_NUMBER_OF:
+        break;
+    }
+    return nullptr;
+}
+
 static void M_CopyResumeInfo(
     RESUME_INFO *const target, const RESUME_INFO *const source)
 {
@@ -57,25 +92,31 @@ static void M_ClearSlot(SAVEGAME_INFO *const savegame_info)
 {
     savegame_info->counter = -1;
     savegame_info->level_num = -1;
+    savegame_info->is_quick = false;
     Memory_FreePointer(&savegame_info->full_path);
     Memory_FreePointer(&savegame_info->level_title);
 }
 
 static void M_ClearSlots(void)
 {
-    if (m_SavegameInfo == nullptr) {
-        return;
+    if (m_NormalSavegameInfo != nullptr) {
+        for (int32_t i = 0; i < m_SaveSlots; i++) {
+            M_ClearSlot(&m_NormalSavegameInfo[i]);
+        }
     }
-
-    for (int32_t i = 0; i < m_SaveSlots; i++) {
-        M_ClearSlot(&m_SavegameInfo[i]);
+    if (m_QuickSavegameInfo != nullptr) {
+        for (int32_t i = 0; i < m_QuickSaveSlots; i++) {
+            M_ClearSlot(&m_QuickSavegameInfo[i]);
+        }
     }
 }
 
-static bool M_FillSlot(const int32_t slot_num, const char *const path)
+static bool M_FillSlot(const SAVEGAME_SLOT_REF slot, const char *const path)
 {
-    ASSERT(slot_num >= 0);
-    SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    SAVEGAME_INFO *const savegame_info = M_GetSavegameInfoSlot(slot);
+    if (savegame_info == nullptr) {
+        return false;
+    }
     bool result = false;
     MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
     if (fp != nullptr) {
@@ -83,6 +124,7 @@ static bool M_FillSlot(const int32_t slot_num, const char *const path)
         if (SG_File_FillInfo(fp, &tmp_savegame_info)) {
             M_ClearSlot(savegame_info);
             *savegame_info = tmp_savegame_info;
+            savegame_info->is_quick = slot.pool == SAVEGAME_SLOT_POOL_QUICK;
             savegame_info->full_path = Memory_DupStr(path);
             result = true;
         }
@@ -108,17 +150,25 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
         }
 
         char *file_name_ci = String_ToUpper(file_name);
-        const char *const pattern = SG_File_GetSaveFilePattern();
-        char *pattern_ci = String_ToUpperPattern(pattern);
+        for (SAVEGAME_SLOT_POOL pool = 0; pool < SAVEGAME_SLOT_POOL_NUMBER_OF;
+             pool++) {
+            const char *const pattern = M_GetSaveFilePatternForPool(pool);
+            char *pattern_ci = String_ToUpperPattern(pattern);
+            int32_t slot_idx = -1;
+            const int32_t parsed = sscanf(file_name_ci, pattern_ci, &slot_idx);
+            Memory_FreePointer(&pattern_ci);
 
-        int32_t slot = -1;
-        const int32_t parsed = sscanf(file_name_ci, pattern_ci, &slot);
-        Memory_FreePointer(&pattern_ci);
+            if (parsed != 1 || slot_idx < 0
+                || slot_idx >= Savegame_GetSlotCount(pool)) {
+                continue;
+            }
 
-        if (parsed == 1 && slot >= 0 && slot < m_SaveSlots) {
             char *file_path = String_Format("%s/%s", dir_path, file_name);
-            M_FillSlot(slot, file_path);
+            M_FillSlot(
+                (SAVEGAME_SLOT_REF) { .pool = pool, .index = slot_idx },
+                file_path);
             Memory_FreePointer(&file_path);
+            break;
         }
         Memory_FreePointer(&file_name_ci);
     }
@@ -233,14 +283,18 @@ void Savegame_SetInitialVersion(const SAVEGAME_VERSION version)
     m_InitialVersion = version;
 }
 
-void Savegame_BindSlot(const int32_t slot_num)
+void Savegame_BindSlot(const SAVEGAME_SLOT_REF slot)
 {
-    m_BoundSlot = slot_num;
-    m_MostRecentlyUsedSlot = slot_num;
-    LOG_DEBUG("Binding save slot %d", slot_num);
+    if (!Savegame_IsValidSlotRef(slot)) {
+        m_BoundSlot = Savegame_InvalidSlot();
+        return;
+    }
+    m_BoundSlot = slot;
+    m_MostRecentlyUsedSlot = slot;
+    LOG_DEBUG("Binding save slot %d:%d", slot.pool, slot.index);
 }
 
-int32_t Savegame_GetMostRecentlyUsedSlot(void)
+SAVEGAME_SLOT_REF Savegame_GetMostRecentlyUsedSlot(void)
 {
     return m_MostRecentlyUsedSlot;
 }
@@ -248,28 +302,24 @@ int32_t Savegame_GetMostRecentlyUsedSlot(void)
 void Savegame_UnbindSlot(void)
 {
     LOG_DEBUG("Resetting the save slot");
-    m_BoundSlot = -1;
+    m_BoundSlot = Savegame_InvalidSlot();
 }
 
-int32_t Savegame_GetBoundSlot(void)
+SAVEGAME_SLOT_REF Savegame_GetBoundSlot(void)
 {
     return m_BoundSlot;
 }
 
-int32_t Savegame_GetLevelNumber(const int32_t slot_num)
+int32_t Savegame_GetLevelNumber(const SAVEGAME_SLOT_REF slot)
 {
-    if (slot_num == -1) {
-        return -1;
-    }
-    return m_SavegameInfo[slot_num].level_num;
+    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot);
+    return info != nullptr ? info->level_num : -1;
 }
 
-bool Savegame_IsSlotFree(const int32_t slot_num)
+bool Savegame_IsSlotFree(const SAVEGAME_SLOT_REF slot)
 {
-    if (slot_num < 0) {
-        return -1;
-    }
-    return m_SavegameInfo[slot_num].level_num == -1;
+    const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot);
+    return info == nullptr || info->level_num == -1;
 }
 
 int32_t Savegame_GetCounter(void)
@@ -282,9 +332,64 @@ int32_t Savegame_GetTotalCount(void)
     return m_SavedGames;
 }
 
-int32_t Savegame_GetMostRecentlyCreatedSlot(void)
+SAVEGAME_SLOT_REF Savegame_GetMostRecentlyCreatedSlot(void)
 {
     return m_MostRecentlyCreatedSlot;
+}
+
+SAVEGAME_SLOT_REF Savegame_NormalSlot(const int32_t index)
+{
+    return (SAVEGAME_SLOT_REF) {
+        .pool = SAVEGAME_SLOT_POOL_NORMAL,
+        .index = index,
+    };
+}
+
+SAVEGAME_SLOT_REF Savegame_QuickSlot(const int32_t index)
+{
+    return (SAVEGAME_SLOT_REF) {
+        .pool = SAVEGAME_SLOT_POOL_QUICK,
+        .index = index,
+    };
+}
+
+SAVEGAME_SLOT_REF Savegame_InvalidSlot(void)
+{
+    return (SAVEGAME_SLOT_REF) {
+        .pool = SAVEGAME_SLOT_POOL_NORMAL,
+        .index = -1,
+    };
+}
+
+bool Savegame_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
+{
+    return slot.pool >= SAVEGAME_SLOT_POOL_NORMAL
+        && slot.pool < SAVEGAME_SLOT_POOL_NUMBER_OF && slot.index >= 0
+        && slot.index < Savegame_GetSlotCount(slot.pool);
+}
+
+int32_t Savegame_SlotToParam(const SAVEGAME_SLOT_REF slot)
+{
+    if (!Savegame_IsValidSlotRef(slot)) {
+        return -1;
+    }
+    const uint32_t packed = ((uint32_t)slot.pool << 31) | (uint32_t)slot.index;
+    return (int32_t)packed;
+}
+
+SAVEGAME_SLOT_REF Savegame_SlotFromParam(const int32_t param)
+{
+    if (param == -1) {
+        return Savegame_InvalidSlot();
+    }
+
+    const uint32_t packed = (uint32_t)param;
+    const SAVEGAME_SLOT_POOL pool = (packed >> 31) & 1;
+    const int32_t index = (int32_t)(packed & 0x7FFFFFFF);
+    return (SAVEGAME_SLOT_REF) {
+        .pool = pool,
+        .index = index,
+    };
 }
 
 void Savegame_Init(void)
@@ -294,8 +399,12 @@ void Savegame_Init(void)
         * (GF_GetLevelTable(GFLT_MAIN)->count
            + GF_GetLevelTable(GFLT_DEMOS)->count));
 
-    m_SaveSlots = Savegame_GetSlotCount();
-    m_SavegameInfo = Memory_Alloc(sizeof(SAVEGAME_INFO) * m_SaveSlots);
+    m_SaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL);
+    m_QuickSaveSlots = Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+    m_NormalSavegameInfo = Memory_Alloc(sizeof(SAVEGAME_INFO) * m_SaveSlots);
+    m_QuickSavegameInfo = m_QuickSaveSlots > 0
+        ? Memory_Alloc(sizeof(SAVEGAME_INFO) * m_QuickSaveSlots)
+        : nullptr;
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_DEMOS);
     for (int32_t i = 0; i < level_table->count; i++) {
@@ -315,19 +424,121 @@ void Savegame_Init(void)
 
 bool Savegame_IsInitialised(void)
 {
-    return m_SavegameInfo != nullptr;
+    return m_NormalSavegameInfo != nullptr;
 }
 
 void Savegame_Shutdown(void)
 {
     M_ClearSlots();
     Memory_FreePointer(&m_ResumeInfo);
-    Memory_FreePointer(&m_SavegameInfo);
+    Memory_FreePointer(&m_NormalSavegameInfo);
+    Memory_FreePointer(&m_QuickSavegameInfo);
 }
 
-int32_t Savegame_GetSlotCount(void)
+int32_t Savegame_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
 {
-    return g_Config.gameplay.maximum_save_slots;
+    switch (pool) {
+    case SAVEGAME_SLOT_POOL_NORMAL:
+        return g_Config.gameplay.maximum_save_slots;
+    case SAVEGAME_SLOT_POOL_QUICK:
+        return g_Config.gameplay.maximum_quick_save_slots;
+    case SAVEGAME_SLOT_POOL_NUMBER_OF:
+        break;
+    }
+    return 0;
+}
+
+SAVEGAME_SLOT_REF Savegame_GetNextQuickSlot(void)
+{
+    if (m_QuickSaveSlots <= 0) {
+        return Savegame_InvalidSlot();
+    }
+    if (m_NextQuickSlot < 0 || m_NextQuickSlot >= m_QuickSaveSlots) {
+        m_NextQuickSlot = 0;
+    }
+    return Savegame_QuickSlot(m_NextQuickSlot);
+}
+
+static bool M_IsQuickSlotSortedBefore(
+    const SAVEGAME_SLOT_REF left, const SAVEGAME_SLOT_REF right)
+{
+    const SAVEGAME_INFO *const left_info = Savegame_GetSavegameInfo(left);
+    const SAVEGAME_INFO *const right_info = Savegame_GetSavegameInfo(right);
+    if (left_info == nullptr || right_info == nullptr) {
+        return false;
+    }
+    if (left_info->counter != right_info->counter) {
+        return left_info->counter > right_info->counter;
+    }
+    return left.index < right.index;
+}
+
+int32_t Savegame_GetQuickVisualCount(void)
+{
+    int32_t count = 0;
+    const int32_t quick_slot_count =
+        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+    for (int32_t i = 0; i < quick_slot_count; i++) {
+        if (!Savegame_IsSlotFree(Savegame_QuickSlot(i))) {
+            count++;
+        }
+    }
+    return count;
+}
+
+SAVEGAME_SLOT_REF Savegame_QuickFromVisualIndex(const int32_t visual_index)
+{
+    if (visual_index < 0) {
+        return Savegame_InvalidSlot();
+    }
+
+    const int32_t quick_slot_count =
+        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+    for (int32_t i = 0; i < quick_slot_count; i++) {
+        const SAVEGAME_SLOT_REF candidate = Savegame_QuickSlot(i);
+        if (Savegame_IsSlotFree(candidate)) {
+            continue;
+        }
+
+        int32_t better_count = 0;
+        for (int32_t j = 0; j < quick_slot_count; j++) {
+            const SAVEGAME_SLOT_REF other = Savegame_QuickSlot(j);
+            if (Savegame_IsSlotFree(other)) {
+                continue;
+            }
+            if (M_IsQuickSlotSortedBefore(other, candidate)) {
+                better_count++;
+            }
+        }
+
+        if (better_count == visual_index) {
+            return candidate;
+        }
+    }
+
+    return Savegame_InvalidSlot();
+}
+
+int32_t Savegame_QuickToVisualIndex(const SAVEGAME_SLOT_REF slot)
+{
+    if (!Savegame_IsValidSlotRef(slot) || slot.pool != SAVEGAME_SLOT_POOL_QUICK
+        || Savegame_IsSlotFree(slot)) {
+        return -1;
+    }
+
+    const int32_t quick_slot_count =
+        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK);
+    int32_t better_count = 0;
+    for (int32_t i = 0; i < quick_slot_count; i++) {
+        const SAVEGAME_SLOT_REF other = Savegame_QuickSlot(i);
+        if (Savegame_IsSlotFree(other)) {
+            continue;
+        }
+        if (M_IsQuickSlotSortedBefore(other, slot)) {
+            better_count++;
+        }
+    }
+    return better_count;
 }
 
 RESUME_INFO *Savegame_GetCurrentInfo(const GF_LEVEL *const level)
@@ -354,12 +565,9 @@ void Savegame_SetCurrentInfo(const int32_t current_slot, const int32_t src_slot)
     m_ResumeInfo[current_slot] = m_ResumeInfo[src_slot];
 }
 
-const SAVEGAME_INFO *Savegame_GetSavegameInfo(const int32_t slot_num)
+const SAVEGAME_INFO *Savegame_GetSavegameInfo(const SAVEGAME_SLOT_REF slot)
 {
-    if (slot_num < 0 || slot_num >= m_SaveSlots) {
-        return nullptr;
-    }
-    return &m_SavegameInfo[slot_num];
+    return M_GetSavegameInfoSlot(slot);
 }
 
 void Savegame_InitCurrentInfo(void)
@@ -727,7 +935,10 @@ void Savegame_ScanSavedGames(void)
 
     m_SaveCounter = 0;
     m_SavedGames = 0;
-    m_MostRecentlyCreatedSlot = -1;
+    m_MostRecentlyCreatedSlot = Savegame_InvalidSlot();
+    m_NextQuickSlot = 0;
+    int32_t newest_quick_counter = -1;
+    int32_t newest_quick_slot = -1;
 
     // Scan low-priority locations first; the write directory is authoritative.
     M_ScanSavedGamesDir(".");
@@ -735,27 +946,46 @@ void Savegame_ScanSavedGames(void)
     M_ScanSavedGamesDir(TRXPath_Get(TRX_PATH_SAVES_DIR));
     M_ScanSavedGamesDir(M_GetSaveWriteDir());
 
-    for (int32_t i = 0; i < m_SaveSlots; i++) {
-        SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[i];
-        if (savegame_info->level_title != nullptr) {
+    for (SAVEGAME_SLOT_POOL pool = 0; pool < SAVEGAME_SLOT_POOL_NUMBER_OF;
+         pool++) {
+        for (int32_t i = 0; i < Savegame_GetSlotCount(pool); i++) {
+            SAVEGAME_INFO *const savegame_info = M_GetSavegameInfoSlot(
+                (SAVEGAME_SLOT_REF) { .pool = pool, .index = i });
+            if (savegame_info->level_title == nullptr) {
+                continue;
+            }
             if (savegame_info->counter > m_SaveCounter) {
                 m_SaveCounter = savegame_info->counter;
-                m_MostRecentlyCreatedSlot = i;
+                m_MostRecentlyCreatedSlot =
+                    (SAVEGAME_SLOT_REF) { .pool = pool, .index = i };
             }
             m_SavedGames++;
+
+            if (pool == SAVEGAME_SLOT_POOL_QUICK
+                && savegame_info->counter > newest_quick_counter) {
+                newest_quick_counter = savegame_info->counter;
+                newest_quick_slot = i;
+            }
         }
+    }
+
+    if (m_QuickSaveSlots > 0 && newest_quick_slot >= 0) {
+        m_NextQuickSlot = (newest_quick_slot + 1) % m_QuickSaveSlots;
     }
 
     Benchmark_End(&benchmark, nullptr);
 }
 
-bool Savegame_Save(const int32_t slot_idx)
+bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
 {
+    if (!Savegame_IsValidSlotRef(slot)) {
+        return false;
+    }
+
     bool result = false;
-    Savegame_BindSlot(slot_idx);
+    Savegame_BindSlot(slot);
 
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    const char *const level_title = current_level->title;
 
     Savegame_PersistGameToCurrentInfo(current_level);
 
@@ -767,30 +997,36 @@ bool Savegame_Save(const int32_t slot_idx)
         }
     }
 
-    SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_idx];
+    SAVEGAME_INFO *const savegame_info = M_GetSavegameInfoSlot(slot);
     const bool was_slot_empty = savegame_info->full_path == nullptr;
 
     m_SaveCounter++;
-    char *file_name = String_Format(SG_File_GetSaveFilePattern(), slot_idx);
+    const char *const save_pattern = M_GetSaveFilePatternForPool(slot.pool);
+    char *file_name = String_Format(save_pattern, slot.index);
     char *full_path = M_GetSaveWritePath(file_name);
     File_EnsureParentDirectories(full_path);
     MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
     if (fp != nullptr) {
+        savegame_info->is_quick = slot.pool == SAVEGAME_SLOT_POOL_QUICK;
         SG_File_SaveToFile(fp, savegame_info);
         File_Close(fp);
         result = true;
     }
     if (result) {
-        M_FillSlot(slot_idx, full_path);
+        M_FillSlot(slot, full_path);
     }
 
     Memory_FreePointer(&file_name);
     Memory_FreePointer(&full_path);
 
     if (result) {
-        m_MostRecentlyCreatedSlot = slot_idx;
+        m_MostRecentlyCreatedSlot = slot;
         if (was_slot_empty) {
             m_SavedGames++;
+        }
+
+        if (slot.pool == SAVEGAME_SLOT_POOL_QUICK && m_QuickSaveSlots > 0) {
+            m_NextQuickSlot = (slot.index + 1) % m_QuickSaveSlots;
         }
     } else {
         m_SaveCounter--;
@@ -799,9 +1035,12 @@ bool Savegame_Save(const int32_t slot_idx)
     return result;
 }
 
-bool Savegame_Load(const int32_t slot_idx)
+bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
 {
-    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_idx];
+    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
+    if (savegame_info == nullptr) {
+        return false;
+    }
     ASSERT(savegame_info->full_path != nullptr);
 
     M_LoadPreprocess();
@@ -814,15 +1053,17 @@ bool Savegame_Load(const int32_t slot_idx)
     }
 
     M_LoadPostprocess();
-    m_InitialVersion = m_SavegameInfo[slot_idx].initial_version;
+    m_InitialVersion = savegame_info->initial_version;
     return result;
 }
 
 bool Savegame_UpdateDeathCounters(
-    const int32_t slot_num, const int32_t death_count)
+    const SAVEGAME_SLOT_REF slot, const int32_t death_count)
 {
-    ASSERT(slot_num >= 0);
-    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
+    if (savegame_info == nullptr) {
+        return false;
+    }
     ASSERT(savegame_info->full_path != nullptr);
 
     bool ret = false;
@@ -830,16 +1071,18 @@ bool Savegame_UpdateDeathCounters(
         File_Open(savegame_info->full_path, FILE_OPEN_READ_WRITE);
     if (fp != nullptr) {
         ret = SG_File_UpdateDeathCounters(
-            fp, savegame_info->level_num, death_count);
+            fp, savegame_info->level_num, death_count, savegame_info->is_quick);
         File_Close(fp);
     }
     return ret;
 }
 
-bool Savegame_LoadOnlyResumeInfo(const int32_t slot_num)
+bool Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
 {
-    ASSERT(slot_num >= 0);
-    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
+    if (savegame_info == nullptr) {
+        return false;
+    }
     ASSERT(savegame_info->full_path != nullptr);
 
     bool ret = false;
@@ -849,15 +1092,15 @@ bool Savegame_LoadOnlyResumeInfo(const int32_t slot_num)
         File_Close(fp);
     }
 
-    Savegame_SetInitialVersion(m_SavegameInfo[slot_num].initial_version);
+    Savegame_SetInitialVersion(savegame_info->initial_version);
     return ret;
 }
 
-bool Savegame_RestartAvailable(const int32_t slot_num)
+bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)
 {
-    if (slot_num == -1) {
+    if (!Savegame_IsValidSlotRef(slot)) {
         return true;
     }
-    const SAVEGAME_INFO *const savegame_info = &m_SavegameInfo[slot_num];
+    const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
     return savegame_info->features.restart;
 }

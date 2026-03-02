@@ -196,7 +196,9 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         }
     }
 
-    if (L_CHANGED(gameplay.maximum_save_slots) && Savegame_IsInitialised()) {
+    if ((L_CHANGED(gameplay.maximum_save_slots)
+         || L_CHANGED(gameplay.maximum_quick_save_slots))
+        && Savegame_IsInitialised()) {
         Savegame_Shutdown();
         Savegame_Init();
         Savegame_ScanSavedGames();

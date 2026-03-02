@@ -122,8 +122,8 @@ void Stats_AddDeath(void)
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
     resume->stats.death_count++;
-    const int32_t save_slot = Savegame_GetBoundSlot();
-    if (save_slot != -1) {
+    const SAVEGAME_SLOT_REF save_slot = Savegame_GetBoundSlot();
+    if (Savegame_IsValidSlotRef(save_slot)) {
         Savegame_UpdateDeathCounters(save_slot, resume->stats.death_count);
     }
 }

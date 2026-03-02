@@ -187,10 +187,17 @@ whichever key you have bound, and not include it as part of the command itself.
   Sends Lara to her humble abode. Even tomb raiders can't skip leg day.
 
 - `/save {slot_num}`  
-  Save your progress to the given slot. Perfect for future regrettable decisions.
+  `/save quick`  
+  `/quicksave`  
+  `/qs`  
+  Save your progress to a normal slot, or do a rotating quick-save.
 
 - `/load {slot_num}`  
-  Time-travel to a previous save. Don't make that regrettable decision again!
+  `/load quick [slot_num]`  
+  `/load q[slot_num]`  
+  `/quickload [slot_num]`  
+  `/ql [slot_num]`  
+  Time-travel to a previous normal save, or load a quick-save by sorted quick-save position (most recent is `1`).
 
 - `/demo`  
   `/demo {num}`  

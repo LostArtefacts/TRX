@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/inventory_ring/types.h>
+#include <trx/game/savegame/types.h>
 
 typedef enum {
     PASSPORT_ACTION_LOAD_GAME,
@@ -16,7 +17,10 @@ typedef enum {
 
 typedef struct {
     PASSPORT_ACTION select_action;
-    int32_t select_slot;
+    union {
+        int32_t select_level;
+        SAVEGAME_SLOT_REF select_save_slot;
+    };
     bool ask_for_save;
 } PASSPORT;
 

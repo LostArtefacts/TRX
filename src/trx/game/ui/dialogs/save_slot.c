@@ -2,6 +2,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/savegame.h>
@@ -22,11 +23,13 @@
 
 typedef struct UI_SAVE_SLOT_DIALOG_STATE {
     UI_SAVE_SLOT_DIALOG_TYPE type;
+    SAVEGAME_SLOT_REF *rows;
+    int32_t row_count;
     UI_REQUESTER_STATE req;
 } UI_SAVE_SLOT_DIALOG_STATE;
 
 static void M_NonEmptySlot(
-    const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx,
+    const UI_SAVE_SLOT_DIALOG_STATE *const s, const SAVEGAME_SLOT_REF slot,
     const SAVEGAME_INFO *const info)
 {
     if (g_TRVersion == 1) {
@@ -43,7 +46,22 @@ static void M_NonEmptySlot(
     UI_Label(info->level_title);
     if (info->counter > 0) {
         UI_Spacer(8.0f, 0.0f);
+        if (slot.pool == SAVEGAME_SLOT_POOL_QUICK) {
+            UI_BeginStackEx((UI_STACK_SETTINGS) {
+                .orientation = UI_STACK_HORIZONTAL,
+                .align = { .h = UI_STACK_H_ALIGN_RIGHT },
+            });
+            if (g_TRVersion != 1) {
+                UI_Label("QS ");
+            }
+        }
         UI_LabelFmt("%d", info->counter);
+        if (slot.pool == SAVEGAME_SLOT_POOL_QUICK) {
+            if (g_TRVersion == 1) {
+                UI_Label(" (QS)");
+            }
+            UI_EndStack();
+        }
     }
 
     UI_EndStack();
@@ -53,28 +71,85 @@ static void M_NonEmptySlot(
 }
 
 static void M_EmptySlot(
-    const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t slot_idx)
+    const UI_SAVE_SLOT_DIALOG_STATE *const s, const SAVEGAME_SLOT_REF slot)
 {
     UI_BeginAnchor(0.5f, 0.5f);
-    UI_LabelFmt(GS(MISC_EMPTY_SLOT_FMT), slot_idx + 1);
+    if (slot.pool == SAVEGAME_SLOT_POOL_QUICK) {
+        UI_LabelFmt("[Q%d] %s", slot.index + 1, GS(MISC_EMPTY_SLOT_FMT));
+    } else {
+        UI_LabelFmt(GS(MISC_EMPTY_SLOT_FMT), slot.index + 1);
+    }
     UI_EndAnchor();
 }
 
+static int32_t M_GetTotalSlots(void)
+{
+    return Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_QUICK)
+        + Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL);
+}
+
+static SAVEGAME_SLOT_REF M_MapRowToSlot(
+    const UI_SAVE_SLOT_DIALOG_STATE *const s, const int32_t row)
+{
+    ASSERT(s != nullptr);
+    if (row < 0 || row >= s->row_count || s->rows == nullptr) {
+        return Savegame_InvalidSlot();
+    }
+    return s->rows[row];
+}
+
+static void M_BuildRows(UI_SAVE_SLOT_DIALOG_STATE *const s)
+{
+    const int32_t max_row_count = MAX(M_GetTotalSlots(), 1);
+    s->rows = Memory_Alloc(sizeof(SAVEGAME_SLOT_REF) * max_row_count);
+    s->row_count = 0;
+
+    const int32_t quick_visual_count = Savegame_GetQuickVisualCount();
+    for (int32_t i = 0; i < quick_visual_count; i++) {
+        const SAVEGAME_SLOT_REF slot = Savegame_QuickFromVisualIndex(i);
+        if (Savegame_IsValidSlotRef(slot)) {
+            s->rows[s->row_count++] = slot;
+        }
+    }
+
+    const int32_t normal_slot_count =
+        Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL);
+    for (int32_t i = 0; i < normal_slot_count; i++) {
+        s->rows[s->row_count++] = Savegame_NormalSlot(i);
+    }
+
+    if (s->row_count == 0) {
+        s->rows[s->row_count++] = Savegame_InvalidSlot();
+    }
+}
+
 UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
-    const UI_SAVE_SLOT_DIALOG_TYPE type, const int32_t save_slot)
+    const UI_SAVE_SLOT_DIALOG_TYPE type, const SAVEGAME_SLOT_REF initial_slot)
 {
     UI_SAVE_SLOT_DIALOG_STATE *const s =
         Memory_Alloc(sizeof(UI_SAVE_SLOT_DIALOG_STATE));
     s->type = type;
+    M_BuildRows(s);
 
-    UI_BasePassportDialog_Init(&s->req, Savegame_GetSlotCount());
-    UI_Requester_SelectRow(&s->req, save_slot);
+    int32_t initial_row = 0;
+    if (Savegame_IsValidSlotRef(initial_slot)) {
+        for (int32_t i = 0; i < s->row_count; i++) {
+            if (s->rows[i].pool == initial_slot.pool
+                && s->rows[i].index == initial_slot.index) {
+                initial_row = i;
+                break;
+            }
+        }
+    }
+    UI_BasePassportDialog_Init(&s->req, s->row_count);
+    UI_Requester_SelectRow(&s->req, initial_row);
     return s;
 }
 
 void UI_SaveSlotDialog_Free(UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
     UI_Requester_Free(&s->req);
+    Memory_FreePointer(&s->rows);
     Memory_Free(s);
 }
 
@@ -88,14 +163,31 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
         return (UI_SAVE_SLOT_DIALOG_CHOICE) {
             .action = UI_SAVE_SLOT_DIALOG_CANCEL,
         };
-    } else if (
-        choice != UI_REQUESTER_NO_CHOICE
-        && (s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME
-            || !Savegame_IsSlotFree(choice))) {
-        return (UI_SAVE_SLOT_DIALOG_CHOICE) {
-            .action = UI_SAVE_SLOT_DIALOG_CONFIRM,
-            .slot_num = sel_row,
-        };
+    }
+    if (choice != UI_REQUESTER_NO_CHOICE) {
+        const SAVEGAME_SLOT_REF slot = M_MapRowToSlot(s, sel_row);
+        if (!Savegame_IsValidSlotRef(slot)) {
+            return (UI_SAVE_SLOT_DIALOG_CHOICE) {
+                .action = UI_SAVE_SLOT_DIALOG_NO_CHOICE,
+            };
+        }
+        const bool is_valid_save_target =
+            s->type == UI_SAVE_SLOT_DIALOG_SAVE_GAME
+            && slot.pool == SAVEGAME_SLOT_POOL_NORMAL;
+        const bool is_valid_load_target =
+            s->type == UI_SAVE_SLOT_DIALOG_LOAD_GAME
+            && !Savegame_IsSlotFree(slot);
+        const bool is_valid_generic_target =
+            s->type == UI_SAVE_SLOT_DIALOG_GENERIC
+            && !Savegame_IsSlotFree(slot);
+
+        if (is_valid_save_target || is_valid_load_target
+            || is_valid_generic_target) {
+            return (UI_SAVE_SLOT_DIALOG_CHOICE) {
+                .action = UI_SAVE_SLOT_DIALOG_CONFIRM,
+                .slot = slot,
+            };
+        }
     }
     return (UI_SAVE_SLOT_DIALOG_CHOICE) {
         .action = UI_SAVE_SLOT_DIALOG_NO_CHOICE,
@@ -123,11 +215,13 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
     const int32_t last = UI_Requester_GetLastRow(&s->req);
     for (int32_t i = first; i < last; ++i) {
         UI_BeginRequesterRow(&s->req, i);
-        const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(i);
-        if (info != nullptr && info->level_title != nullptr) {
-            M_NonEmptySlot(s, i, info);
+        const SAVEGAME_SLOT_REF slot = M_MapRowToSlot(s, i);
+        const SAVEGAME_INFO *const info = Savegame_GetSavegameInfo(slot);
+        if (Savegame_IsValidSlotRef(slot) && info != nullptr
+            && info->level_title != nullptr) {
+            M_NonEmptySlot(s, slot, info);
         } else {
-            M_EmptySlot(s, i);
+            M_EmptySlot(s, slot);
         }
         UI_EndRequesterRow(&s->req, i);
     }

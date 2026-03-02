@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/game_flow/types.h>
+#include <trx/game/savegame/types.h>
 
 void GF_Init(void);
 void GF_Shutdown(void);
@@ -36,4 +37,4 @@ void GF_SetLevelTitle(GF_LEVEL *level, const char *title);
 
 // Returns true if any story cutscenes or FMVs occur before gameplay in any
 // main level up to the level in the specified save slot.
-bool GF_HasAvailableStory(int32_t slot_num);
+bool GF_HasAvailableStory(SAVEGAME_SLOT_REF slot);

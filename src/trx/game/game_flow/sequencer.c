@@ -169,12 +169,12 @@ GF_COMMAND GF_InterpretSequence(
         break;
 
     case GFSC_SELECT: {
-        const int16_t slot_num = Savegame_GetBoundSlot();
-        if (slot_num != -1) {
+        const SAVEGAME_SLOT_REF slot = Savegame_GetBoundSlot();
+        if (Savegame_IsValidSlotRef(slot)) {
             // select level feature
             Savegame_InitCurrentInfo();
             if (level->num > GF_GetFirstLevel()->num) {
-                Savegame_LoadOnlyResumeInfo(slot_num);
+                Savegame_LoadOnlyResumeInfo(slot);
 
                 const int32_t prev_level_num =
                     Savegame_GetCurrentInfo(level)->prev_level;

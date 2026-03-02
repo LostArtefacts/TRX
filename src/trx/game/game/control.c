@@ -1,11 +1,13 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/clock.h>
+#include <trx/game/console.h>
 #include <trx/game/creature.h>
 #include <trx/game/demo.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/fx.h>
 #include <trx/game/game.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
@@ -105,6 +107,51 @@ GF_COMMAND Game_Control(const bool demo_mode)
         return GF_EnterPhotoMode();
     } else if (g_InputDB.pause && lara->death_timer == 0) {
         return GF_PauseGame();
+    }
+
+    if ((g_InputDB.quick_save || g_InputDB.quick_load) && !demo_mode
+        && lara->death_timer == 0 && !lara->extra_anim
+        && !g_Config.flow.load_save_disabled) {
+        bool quick_handled = false;
+        if (g_InputDB.quick_save) {
+            const SAVEGAME_SLOT_REF slot = Savegame_GetNextQuickSlot();
+            if (!Savegame_IsValidSlotRef(slot)) {
+                Console_LogError("%s", GS(OSD_QUICK_SAVE_FAIL_NO_SLOTS));
+            } else if (Savegame_Save(slot)) {
+                Console_Log("%s", GS(OSD_QUICK_SAVE));
+            }
+            quick_handled = true;
+        } else if (g_InputDB.quick_load) {
+            const SAVEGAME_SLOT_REF slot = Savegame_GetBoundSlot();
+            if (!Savegame_IsValidSlotRef(slot)) {
+                Console_LogError("%s", GS(OSD_QUICK_LOAD_FAIL_NO_BOUND_SLOT));
+            } else if (Savegame_IsSlotFree(slot)) {
+                Console_LogError(
+                    "%s", GS(OSD_QUICK_LOAD_FAIL_UNAVAILABLE_BOUND_SLOT));
+            } else {
+                if (slot.pool == SAVEGAME_SLOT_POOL_QUICK) {
+                    const int32_t visual_index =
+                        Savegame_QuickToVisualIndex(slot);
+                    Console_Log(GS(OSD_QUICK_LOAD), visual_index + 1);
+                } else {
+                    Console_Log(GS(OSD_LOAD_GAME), slot.index + 1);
+                }
+                return (GF_COMMAND) {
+                    .action = GF_START_SAVED_GAME,
+                    .param = Savegame_SlotToParam(slot),
+                };
+            }
+            quick_handled = true;
+        }
+
+        if (quick_handled) {
+            // Prevent mixed bindings (quick + normal save/load on same key)
+            // from also opening the passport save/load flow.
+            g_Input.save = false;
+            g_Input.load = false;
+            g_InputDB.save = false;
+            g_InputDB.load = false;
+        }
     }
 
     if (demo_mode) {

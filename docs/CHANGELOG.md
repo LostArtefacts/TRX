@@ -13,6 +13,11 @@
 - added a new Lua property, `trx.Item.flags`, to read current item flags (related to triggers)
 - added a new Lua property, `trx.Item.timer`, to read current item timer value (related to triggers)
 - added support for using more sound slots than originally possible in custom levels (#3898)
+- added support for actual quick saves with round-robin quicksave slot cycling. (#1897)  
+  Note: This feature is disabled by default and needs the player to manually bind new inputs.
+- added quick-save/load command aliases:
+  - `/save quick`, `/quicksave`, `/qs`
+  - `/load quick [slot]`, `/load q[slot]`, `/quickload [slot]`, `/ql [slot]`
 - added blood effects when enemies shoot any other creature (not just Lara)
 - added support for the globe-style level selection mechanic in the new game for level builders (#4920)
 - added an option to control how Lara swings on thin ledges (Gameplay → Controls → Slow ledge swing) (#3341)

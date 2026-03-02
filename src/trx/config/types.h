@@ -249,6 +249,7 @@ typedef struct {
         int32_t camera_speed;
         int32_t start_lara_hitpoints;
         int32_t maximum_save_slots;
+        int32_t maximum_quick_save_slots;
         int32_t harpoon_recoil;
 
         JUMP_LOCK_MODE jump_lock_mode;
