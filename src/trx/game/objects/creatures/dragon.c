@@ -171,9 +171,7 @@ static void M_Bones(const int16_t item_num)
 
     ITEM *const bone_back = Item_Get(bone_back_item_num);
     bone_back->object_id = O_DRAGON_BONES_3;
-    bone_back->pos.x = dragon_item->pos.x;
-    bone_back->pos.y = dragon_item->pos.y;
-    bone_back->pos.z = dragon_item->pos.z;
+    bone_back->pos = dragon_item->pos;
     bone_back->rot.x = 0;
     bone_back->rot.y = dragon_item->rot.y;
     bone_back->rot.z = 0;
@@ -183,9 +181,7 @@ static void M_Bones(const int16_t item_num)
 
     ITEM *const bone_front = Item_Get(bone_front_item_num);
     bone_front->object_id = O_DRAGON_BONES_2;
-    bone_front->pos.x = dragon_item->pos.x;
-    bone_front->pos.y = dragon_item->pos.y;
-    bone_front->pos.z = dragon_item->pos.z;
+    bone_front->pos = dragon_item->pos;
     bone_front->rot.x = 0;
     bone_front->rot.y = dragon_item->rot.y;
     bone_front->rot.z = 0;
@@ -448,12 +444,8 @@ static void M_ControlBack(const int16_t item_num)
     const int16_t anim_num = Item_GetRelativeAnim(dragon_front_item);
     const int16_t frame_num = Item_GetRelativeFrame(dragon_front_item);
     Item_SwitchToAnim(dragon_back_item, anim_num, frame_num);
-    dragon_back_item->pos.x = dragon_front_item->pos.x;
-    dragon_back_item->pos.y = dragon_front_item->pos.y;
-    dragon_back_item->pos.z = dragon_front_item->pos.z;
-    dragon_back_item->rot.x = dragon_front_item->rot.x;
-    dragon_back_item->rot.y = dragon_front_item->rot.y;
-    dragon_back_item->rot.z = dragon_front_item->rot.z;
+    dragon_back_item->pos = dragon_front_item->pos;
+    dragon_back_item->rot = dragon_front_item->rot;
     Item_UpdateRoom(dragon_back_item_num, dragon_front_item->room_num);
 }
 
@@ -511,9 +503,7 @@ int16_t Dragon_CreateInactive(const ITEM *const item)
 
     ITEM *const dragon_back_item = Item_Get(dragon_back_item_num);
     dragon_back_item->object_id = O_DRAGON_BACK;
-    dragon_back_item->pos.x = item->pos.x;
-    dragon_back_item->pos.y = item->pos.y;
-    dragon_back_item->pos.z = item->pos.z;
+    dragon_back_item->pos = item->pos;
     dragon_back_item->rot.y = item->rot.y;
     dragon_back_item->room_num = item->room_num;
     dragon_back_item->flags = IF_INVISIBLE;
@@ -523,9 +513,7 @@ int16_t Dragon_CreateInactive(const ITEM *const item)
 
     ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
     dragon_front_item->object_id = O_DRAGON_FRONT;
-    dragon_front_item->pos.x = item->pos.x;
-    dragon_front_item->pos.y = item->pos.y;
-    dragon_front_item->pos.z = item->pos.z;
+    dragon_front_item->pos = item->pos;
     dragon_front_item->rot.y = item->rot.y;
     dragon_front_item->room_num = item->room_num;
     dragon_front_item->flags = IF_INVISIBLE;
