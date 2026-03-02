@@ -18,49 +18,47 @@
 #include <trx/game/stats.h>
 
 // clang-format off
-#define DRAGON_CLOSE        900
-#define DRAGON_FAR          2300
-#define DRAGON_MID          ((DRAGON_CLOSE + DRAGON_FAR) / 2) // = 1600
-#define DRAGON_L_COL        -512
-#define DRAGON_R_COL        +512
-#define DRAGON_ALMOST_LIVE  100
-#define DRAGON_CLOSE_RANGE  9437184
-#define DRAGON_STOP_RANGE   37748736
-#define DRAGON_TOUCH_DAMAGE 10
-#define DRAGON_SWIPE_DAMAGE 250
-#define DRAGON_WALK_TURN    (DEG_1 * 2) // = 364
-#define DRAGON_NEED_TURN    (DEG_1) // = 182
-#define DRAGON_TOUCH_L      0x7F000000
-#define DRAGON_TOUCH_R      0x000000FE
-#define DRAGON_LIVE_TIME    330
-#define DRAGON_HITPOINTS    300
-#define DRAGON_RADIUS       (WALL_L / 3) // = 341
+#define M_CLOSE_SHIFT    900
+#define M_FAR_SHIFT      2300
+#define M_MID_SHIFT      ((M_CLOSE_SHIFT + M_FAR_SHIFT) / 2) // = 1600
+#define M_COL_L          (-WALL_L / 2) // = -512
+#define M_COL_R          (+WALL_L / 2) // = +512
+#define M_CLOSE_RANGE    SQUARE(WALL_L * 3) // = 9437184
+#define M_STOP_RANGE     SQUARE(WALL_L * 6) // = 37748736
+#define M_WALK_TURN      (DEG_1 * 2) // = 364
+#define M_NEED_TURN      (DEG_1) // = 182
+#define M_TOUCH_L        0x7F000000
+#define M_TOUCH_R        0x000000FE
+#define M_ALMOST_LIVE    100
+#define M_LIVE_TIME      330
+#define M_HITPOINTS      300
+#define M_TOUCH_DAMAGE   10
+#define M_SWIPE_DAMAGE   250
+#define M_RADIUS         (WALL_L / 3) // = 341
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    DRAGON_STATE_EMPTY       = 0,
-    DRAGON_STATE_WALK        = 1,
-    DRAGON_STATE_LEFT        = 2,
-    DRAGON_STATE_RIGHT       = 3,
-    DRAGON_STATE_AIM         = 4,
-    DRAGON_STATE_FIRE        = 5,
-    DRAGON_STATE_STOP        = 6,
-    DRAGON_STATE_TURN_LEFT   = 7,
-    DRAGON_STATE_TURN_RIGHT  = 8,
-    DRAGON_STATE_SWIPE_LEFT  = 9,
-    DRAGON_STATE_SWIPE_RIGHT = 10,
-    DRAGON_STATE_DEATH       = 11,
-    // clang-format on
-} DRAGON_STATE;
+    M_STATE_EMPTY,
+    M_STATE_WALK,
+    M_STATE_LEFT,
+    M_STATE_RIGHT,
+    M_STATE_AIM,
+    M_STATE_FIRE,
+    M_STATE_STOP,
+    M_STATE_TURN_LEFT,
+    M_STATE_TURN_RIGHT,
+    M_STATE_SWIPE_LEFT,
+    M_STATE_SWIPE_RIGHT,
+    M_STATE_DEATH,
+} M_STATE;
 
 typedef enum {
     // clang-format off
-    DRAGON_ANIM_DIE       = 21,
-    DRAGON_ANIM_DEAD      = 22,
-    DRAGON_ANIM_RESURRECT = 23,
+    M_ANIM_DIE       = 21,
+    M_ANIM_DEAD      = 22,
+    M_ANIM_RESURRECT = 23,
     // clang-format on
-} DRAGON_ANIM;
+} M_ANIM;
 
 typedef struct {
     int16_t dragon_front_item_num;
@@ -133,7 +131,7 @@ static void M_PushLaraAway(
 {
     const int32_t cy = Math_Cos(dragon_item->rot.y);
     const int32_t sy = Math_Sin(dragon_item->rot.y);
-    const int32_t base = shift < DRAGON_MID ? DRAGON_CLOSE : DRAGON_FAR;
+    const int32_t base = shift < M_MID_SHIFT ? M_CLOSE_SHIFT : M_FAR_SHIFT;
     lara_item->pos.x += (cy * (base - shift)) >> W2V_SHIFT;
     lara_item->pos.z -= (sy * (base - shift)) >> W2V_SHIFT;
 }
@@ -217,7 +215,7 @@ static void M_Collision(
         return;
     }
 
-    if (item->current_anim_state != DRAGON_STATE_DEATH) {
+    if (item->current_anim_state != M_STATE_DEATH) {
         Lara_Col_ItemPush(item, coll, true, false);
         return;
     }
@@ -228,7 +226,7 @@ static void M_Collision(
     const int32_t sy = Math_Sin(item->rot.y);
     const int32_t side_shift = (cy * dz + sy * dx) >> W2V_SHIFT;
 
-    if (side_shift <= DRAGON_L_COL || side_shift >= DRAGON_R_COL) {
+    if (side_shift <= M_COL_L || side_shift >= M_COL_R) {
         Lara_Col_ItemPush(item, coll, true, false);
         return;
     }
@@ -236,11 +234,11 @@ static void M_Collision(
     const int32_t shift = (cy * dx - sy * dz) >> W2V_SHIFT;
     const int32_t angle = lara_item->rot.y - item->rot.y;
     if (g_Input.action && item->object_id == O_DRAGON_BACK
-        && (Item_TestAnimEqual(item, DRAGON_ANIM_DEAD)
-            || (Item_TestAnimEqual(item, DRAGON_ANIM_RESURRECT)
-                && Item_TestFrameRange(item, 0, DRAGON_ALMOST_LIVE)))
-        && !lara_item->gravity && shift <= DRAGON_MID
-        && shift > DRAGON_CLOSE - 350 && side_shift > -350 && side_shift < 350
+        && (Item_TestAnimEqual(item, M_ANIM_DEAD)
+            || (Item_TestAnimEqual(item, M_ANIM_RESURRECT)
+                && Item_TestFrameRange(item, 0, M_ALMOST_LIVE)))
+        && !lara_item->gravity && shift <= M_MID_SHIFT
+        && shift > M_CLOSE_SHIFT - 350 && side_shift > -350 && side_shift < 350
         && angle > DEG_90 - 30 * DEG_1 && angle < DEG_90 + 30 * DEG_1) {
         M_PullDagger(lara_item, item);
     } else {
@@ -272,18 +270,18 @@ static void M_ControlBack(const int16_t item_num)
     const OBJECT *const front_obj = Object_Get(O_DRAGON_FRONT);
 
     if (dragon_front_item->hit_points <= 0) {
-        if (dragon_front_item->current_anim_state != DRAGON_STATE_DEATH) {
-            Item_SwitchToAnim(dragon_front_item, DRAGON_ANIM_DIE, 0);
-            dragon_front_item->goal_anim_state = DRAGON_STATE_DEATH;
-            dragon_front_item->current_anim_state = DRAGON_STATE_DEATH;
+        if (dragon_front_item->current_anim_state != M_STATE_DEATH) {
+            Item_SwitchToAnim(dragon_front_item, M_ANIM_DIE, 0);
+            dragon_front_item->goal_anim_state = M_STATE_DEATH;
+            dragon_front_item->current_anim_state = M_STATE_DEATH;
             creature->flags = 0;
         } else if (creature->flags >= 0) {
             Spawn_MysticLight(dragon_front_item_num);
             creature->flags++;
-            if (creature->flags == DRAGON_LIVE_TIME) {
-                dragon_front_item->goal_anim_state = DRAGON_STATE_STOP;
+            if (creature->flags == M_LIVE_TIME) {
+                dragon_front_item->goal_anim_state = M_STATE_STOP;
             }
-            if (creature->flags > DRAGON_LIVE_TIME + DRAGON_ALMOST_LIVE) {
+            if (creature->flags > M_LIVE_TIME + M_ALMOST_LIVE) {
                 dragon_front_item->hit_points = front_obj->hit_points / 2;
             }
         } else {
@@ -317,46 +315,46 @@ static void M_ControlBack(const int16_t item_num)
         Creature_AIInfo(dragon_front_item, &info);
         Creature_Mood(dragon_front_item, &info, MOOD_ATTACK);
 
-        angle = Creature_Turn(dragon_front_item, DRAGON_WALK_TURN);
-        const bool is_ahead = info.ahead && info.distance > DRAGON_CLOSE_RANGE
-            && info.distance < DRAGON_STOP_RANGE;
+        angle = Creature_Turn(dragon_front_item, M_WALK_TURN);
+        const bool is_ahead = info.ahead && info.distance > M_CLOSE_RANGE
+            && info.distance < M_STOP_RANGE;
         if (dragon_front_item->touch_bits) {
-            Lara_TakeDamage(DRAGON_TOUCH_DAMAGE, true);
+            Lara_TakeDamage(M_TOUCH_DAMAGE, true);
         }
 
         switch (dragon_front_item->current_anim_state) {
-        case DRAGON_STATE_WALK:
+        case M_STATE_WALK:
             creature->flags = 0;
             if (is_ahead) {
-                dragon_front_item->goal_anim_state = DRAGON_STATE_STOP;
-            } else if (angle < -DRAGON_NEED_TURN) {
-                if (info.distance < DRAGON_STOP_RANGE && info.ahead) {
-                    dragon_front_item->goal_anim_state = DRAGON_STATE_STOP;
+                dragon_front_item->goal_anim_state = M_STATE_STOP;
+            } else if (angle < -M_NEED_TURN) {
+                if (info.distance < M_STOP_RANGE && info.ahead) {
+                    dragon_front_item->goal_anim_state = M_STATE_STOP;
                 } else {
-                    dragon_front_item->goal_anim_state = DRAGON_STATE_LEFT;
+                    dragon_front_item->goal_anim_state = M_STATE_LEFT;
                 }
-            } else if (angle > DRAGON_NEED_TURN) {
-                if (info.distance < DRAGON_STOP_RANGE && info.ahead) {
-                    dragon_front_item->goal_anim_state = DRAGON_STATE_STOP;
+            } else if (angle > M_NEED_TURN) {
+                if (info.distance < M_STOP_RANGE && info.ahead) {
+                    dragon_front_item->goal_anim_state = M_STATE_STOP;
                 } else {
-                    dragon_front_item->goal_anim_state = DRAGON_STATE_RIGHT;
+                    dragon_front_item->goal_anim_state = M_STATE_RIGHT;
                 }
             }
             break;
 
-        case DRAGON_STATE_LEFT:
-            if (angle > -DRAGON_NEED_TURN || is_ahead) {
-                dragon_front_item->goal_anim_state = DRAGON_STATE_WALK;
+        case M_STATE_LEFT:
+            if (angle > -M_NEED_TURN || is_ahead) {
+                dragon_front_item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case DRAGON_STATE_RIGHT:
-            if (angle < DRAGON_NEED_TURN || is_ahead) {
-                dragon_front_item->goal_anim_state = DRAGON_STATE_WALK;
+        case M_STATE_RIGHT:
+            if (angle < M_NEED_TURN || is_ahead) {
+                dragon_front_item->goal_anim_state = M_STATE_WALK;
             }
             break;
 
-        case DRAGON_STATE_AIM:
+        case M_STATE_AIM:
             dragon_front_item->rot.y -= angle;
             if (info.ahead) {
                 head = -info.angle;
@@ -364,14 +362,14 @@ static void M_ControlBack(const int16_t item_num)
 
             if (is_ahead) {
                 creature->flags = 30;
-                dragon_front_item->goal_anim_state = DRAGON_STATE_FIRE;
+                dragon_front_item->goal_anim_state = M_STATE_FIRE;
             } else {
                 creature->flags = 0;
-                dragon_front_item->goal_anim_state = DRAGON_STATE_AIM;
+                dragon_front_item->goal_anim_state = M_STATE_AIM;
             }
             break;
 
-        case DRAGON_STATE_FIRE:
+        case M_STATE_FIRE:
             dragon_front_item->rot.y -= angle;
             if (info.ahead) {
                 head = -info.angle;
@@ -386,56 +384,52 @@ static void M_ControlBack(const int16_t item_num)
                 }
                 creature->flags--;
             } else {
-                dragon_front_item->goal_anim_state = DRAGON_STATE_STOP;
+                dragon_front_item->goal_anim_state = M_STATE_STOP;
             }
             break;
 
-        case DRAGON_STATE_STOP:
+        case M_STATE_STOP:
             dragon_front_item->rot.y -= angle;
             if (is_ahead) {
-                dragon_front_item->goal_anim_state = DRAGON_STATE_AIM;
-            } else if (info.distance > DRAGON_STOP_RANGE || !info.ahead) {
-                dragon_front_item->goal_anim_state = DRAGON_STATE_WALK;
-            } else if (
-                info.distance >= DRAGON_CLOSE_RANGE || creature->flags != 0) {
+                dragon_front_item->goal_anim_state = M_STATE_AIM;
+            } else if (info.distance > M_STOP_RANGE || !info.ahead) {
+                dragon_front_item->goal_anim_state = M_STATE_WALK;
+            } else if (info.distance >= M_CLOSE_RANGE || creature->flags != 0) {
                 if (info.angle < 0) {
-                    dragon_front_item->goal_anim_state = DRAGON_STATE_TURN_LEFT;
+                    dragon_front_item->goal_anim_state = M_STATE_TURN_LEFT;
                 } else {
-                    dragon_front_item->goal_anim_state =
-                        DRAGON_STATE_TURN_RIGHT;
+                    dragon_front_item->goal_anim_state = M_STATE_TURN_RIGHT;
                 }
             } else {
                 creature->flags = 1;
                 if (info.angle < 0) {
-                    dragon_front_item->goal_anim_state =
-                        DRAGON_STATE_SWIPE_LEFT;
+                    dragon_front_item->goal_anim_state = M_STATE_SWIPE_LEFT;
                 } else {
-                    dragon_front_item->goal_anim_state =
-                        DRAGON_STATE_SWIPE_RIGHT;
+                    dragon_front_item->goal_anim_state = M_STATE_SWIPE_RIGHT;
                 }
             }
             break;
 
-        case DRAGON_STATE_TURN_LEFT:
+        case M_STATE_TURN_LEFT:
             creature->flags = 0;
             dragon_front_item->rot.y += -DEG_1 - angle;
             break;
 
-        case DRAGON_STATE_TURN_RIGHT:
+        case M_STATE_TURN_RIGHT:
             creature->flags = 0;
             dragon_front_item->rot.y += DEG_1 - angle;
             break;
 
-        case DRAGON_STATE_SWIPE_LEFT:
-            if ((dragon_front_item->touch_bits & DRAGON_TOUCH_L) != 0) {
-                Lara_TakeDamage(DRAGON_SWIPE_DAMAGE, true);
+        case M_STATE_SWIPE_LEFT:
+            if ((dragon_front_item->touch_bits & M_TOUCH_L) != 0) {
+                Lara_TakeDamage(M_SWIPE_DAMAGE, true);
                 creature->flags = 0;
             }
             break;
 
-        case DRAGON_STATE_SWIPE_RIGHT:
-            if ((dragon_front_item->touch_bits & DRAGON_TOUCH_R) != 0) {
-                Lara_TakeDamage(DRAGON_SWIPE_DAMAGE, true);
+        case M_STATE_SWIPE_RIGHT:
+            if ((dragon_front_item->touch_bits & M_TOUCH_R) != 0) {
+                Lara_TakeDamage(M_SWIPE_DAMAGE, true);
                 creature->flags = 0;
             }
             break;
@@ -474,8 +468,8 @@ static void M_SetupFront(OBJECT *const obj)
     obj->control_func = M_ControlFront;
     obj->collision_func = M_Collision;
 
-    obj->hit_points = DRAGON_HITPOINTS;
-    obj->radius = DRAGON_RADIUS;
+    obj->hit_points = M_HITPOINTS;
+    obj->radius = M_RADIUS;
     obj->pivot_length = 300;
 
     obj->intelligent = true;
@@ -498,7 +492,7 @@ static void M_SetupBack(OBJECT *const obj)
     obj->collision_func = M_Collision;
     obj->can_drop_items_func = M_CanDropItemsBack;
 
-    obj->radius = DRAGON_RADIUS;
+    obj->radius = M_RADIUS;
 
     obj->save_position = true;
     obj->save_flags = true;
