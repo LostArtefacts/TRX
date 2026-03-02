@@ -31,6 +31,10 @@
 #define M_TOUCH_R        0x000000FE
 #define M_ALMOST_LIVE    100
 #define M_LIVE_TIME      330
+#define M_LIGHT_TIME     (-20)
+#define M_BONE_TIME      (-100)
+#define M_DISSOLVE_TIME  (-200)
+#define M_DISSOLVE_SHIFT 10
 #define M_HITPOINTS      300
 #define M_TOUCH_DAMAGE   10
 #define M_SWIPE_DAMAGE   250
@@ -285,26 +289,24 @@ static void M_ControlBack(const int16_t item_num)
                 dragon_front_item->hit_points = front_obj->hit_points / 2;
             }
         } else {
-            if (creature->flags > -20) {
-                // clang-format off
+            if (creature->flags > M_LIGHT_TIME) {
                 Output_AddDynamicLight(
                     dragon_front_item->pos,
                     ((4 * Random_GetDraw()) >> 15) + 12 + creature->flags / 2,
                     ((4 * Random_GetDraw()) >> 15) + 10 + creature->flags / 2);
-                // clang-format on
             }
 
-            if (creature->flags == -100) {
+            if (creature->flags == M_BONE_TIME) {
                 M_Bones(dragon_front_item_num);
-            } else if (creature->flags == -200) {
+            } else if (creature->flags == M_DISSOLVE_TIME) {
                 LOT_DisableBaddieAI(dragon_front_item_num);
                 Item_Kill(dragon_front_item_num);
                 dragon_front_item->status = IS_DEACTIVATED;
                 Item_Kill(dragon_back_item_num);
                 dragon_back_item->status = IS_DEACTIVATED;
-            } else if (creature->flags < -100) {
-                dragon_front_item->pos.y += 10;
-                dragon_back_item->pos.y += 10;
+            } else if (creature->flags < M_BONE_TIME) {
+                dragon_front_item->pos.y += M_DISSOLVE_SHIFT;
+                dragon_back_item->pos.y += M_DISSOLVE_SHIFT;
             }
 
             creature->flags--;
