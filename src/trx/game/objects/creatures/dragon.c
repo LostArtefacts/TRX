@@ -82,17 +82,6 @@ static int16_t M_GetFrontItemNum(const ITEM *const dragon_back_item)
     return p->dragon_front_item_num;
 }
 
-static bool M_SetFrontItemNum(
-    ITEM *const dragon_back_item, const int16_t dragon_front_item_num)
-{
-    M_PRIV *const p = dragon_back_item->priv;
-    if (p == nullptr) {
-        return false;
-    }
-    p->dragon_front_item_num = dragon_front_item_num;
-    return true;
-}
-
 static bool M_CanDropItemsBack(const ITEM *const item)
 {
     return item->hit_points <= 0 && item->status == IS_DEACTIVATED;
@@ -106,9 +95,24 @@ static void M_InitialiseFront(const int16_t item_num)
 
 static void M_InitialiseBack(const int16_t item_num)
 {
-    ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
-    p->dragon_front_item_num = NO_ITEM;
+    ITEM *const dragon_back_item = Item_Get(item_num);
+    M_PRIV *const p = dragon_back_item->priv;
+
+    dragon_back_item->status = IS_INVISIBLE;
+    dragon_back_item->shade.value_1 = -1;
+    dragon_back_item->mesh_bits = 0x1FFFFF;
+
+    p->dragon_front_item_num = Item_CreateLevelItem();
+    ASSERT(p->dragon_front_item_num != NO_ITEM);
+
+    ITEM *const dragon_front_item = Item_Get(p->dragon_front_item_num);
+    dragon_front_item->object_id = O_DRAGON_FRONT;
+    dragon_front_item->pos = dragon_back_item->pos;
+    dragon_front_item->rot.y = dragon_back_item->rot.y;
+    dragon_front_item->room_num = dragon_back_item->room_num;
+    dragon_front_item->flags = IF_INVISIBLE;
+    dragon_front_item->shade.value_1 = -1;
+    Item_Initialise(p->dragon_front_item_num);
 }
 
 static void M_MarkDragonDead(ITEM *const dragon_back_item)
@@ -492,38 +496,6 @@ static void M_SetupBack(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
     obj->priv_size = sizeof(M_PRIV);
-}
-
-int16_t Dragon_CreateInactive(const ITEM *const item)
-{
-    const int16_t dragon_back_item_num = Item_CreateLevelItem();
-    const int16_t dragon_front_item_num = Item_CreateLevelItem();
-    ASSERT(dragon_back_item_num != NO_ITEM);
-    ASSERT(dragon_front_item_num != NO_ITEM);
-
-    ITEM *const dragon_back_item = Item_Get(dragon_back_item_num);
-    dragon_back_item->object_id = O_DRAGON_BACK;
-    dragon_back_item->pos = item->pos;
-    dragon_back_item->rot.y = item->rot.y;
-    dragon_back_item->room_num = item->room_num;
-    dragon_back_item->flags = IF_INVISIBLE;
-    dragon_back_item->shade.value_1 = -1;
-    Item_Initialise(dragon_back_item_num);
-    dragon_back_item->mesh_bits = 0x1FFFFF;
-
-    ITEM *const dragon_front_item = Item_Get(dragon_front_item_num);
-    dragon_front_item->object_id = O_DRAGON_FRONT;
-    dragon_front_item->pos = item->pos;
-    dragon_front_item->rot.y = item->rot.y;
-    dragon_front_item->room_num = item->room_num;
-    dragon_front_item->flags = IF_INVISIBLE;
-    dragon_front_item->shade.value_1 = -1;
-    Item_Initialise(dragon_front_item_num);
-
-    if (!M_SetFrontItemNum(dragon_back_item, dragon_front_item_num)) {
-        return NO_ITEM;
-    }
-    return dragon_back_item_num;
 }
 
 void Dragon_Activate(const int16_t dragon_back_item_num)
