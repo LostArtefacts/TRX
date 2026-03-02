@@ -3,7 +3,6 @@
 #include <trx/game/camera.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/creatures/dragon.h>
 #include <trx/game/spawn.h>
 
 #define M_BOOM_TIME 130
@@ -38,7 +37,11 @@ static void M_ConvertBartoliToDragon(const int16_t item_num)
     const M_PRIV *const p = bartoli_item->priv;
     const int16_t dragon_item_num = p->dragon_item_num;
     if (dragon_item_num != NO_ITEM) {
-        Dragon_Activate(dragon_item_num);
+        ITEM *const dragon_item = Item_Get(dragon_item_num);
+        const OBJECT *const dragon_obj = Object_Get(dragon_item->object_id);
+        if (dragon_obj->activate_func != nullptr) {
+            dragon_obj->activate_func(dragon_item);
+        }
     }
     Item_Kill(item_num);
 }
