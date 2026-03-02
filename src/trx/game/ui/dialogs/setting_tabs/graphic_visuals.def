@@ -1,5 +1,5 @@
-X_UI_CFG_INT32(visuals.fog_start,                  SETTING_FOG_START, .min_value = 1, .max_value = 100)
-X_UI_CFG_INT32(visuals.fog_end,                    SETTING_FOG_END, .min_value = 1, .max_value = 100)
+X_UI_CFG_INT32(visuals.fog_start,                  SETTING_FOG_START, .min_value = 1, .max_value = 100, .delta_slow = 1, .delta_fast = 10)
+X_UI_CFG_INT32(visuals.fog_end,                    SETTING_FOG_END, .min_value = 1, .max_value = 100, .delta_slow = 1, .delta_fast = 10)
 X_UI_CFG_BOOL(visuals.fog_transparency,            SETTING_FOG_TRANSPARENCY)
 X_UI_CFG_RGB888(visuals.fog_color,                 SETTING_FOG_COLOR, -1, .custom_handler = { .format_value = UI_Settings_ColorEditor_FormatValue, .can_change_value = UI_Settings_ColorEditor_CanChangeValue, .is_available = UI_Settings_FogColor_IsAvailable })
 
