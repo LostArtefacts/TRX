@@ -6,6 +6,9 @@
 - added `O_SMASH_OBJECT_3`, which can only be broken with triggers or the Crash Site gun
 - added `O_SMASH_OBJECT_4`, which behaves like `O_SMASH_OBJECT_1` but uses `SFX_SHUTTERS_BREAK`
 - added `O_TREX_ALPHA`, which can target raptors and be distracted by flares
+- added the ability to trigger dragons independently of Bartoli in custom levels (#5011)
+  - place an `O_DRAGON_BACK` item in the editor and trigger it normally
+  - the dragon will spawn immediately when triggered and will be one-phase, so no dagger needs to be pulled
 - added a new Lua item query helpers, `trx.items.find(query)` and `trx.items.first(query)`, with support for `object_id` and `room_num` filters
 - added a new Lua catalog, `trx.catalog.weapons`, for weapon identifiers
 - added a new Lua property, `trx.lara.equipped_gun`, to read Lara's currently equipped gun type

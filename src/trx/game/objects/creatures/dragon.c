@@ -1,3 +1,5 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -29,6 +31,7 @@
 #define M_TOUCH_R        0x000000FE
 #define M_ALMOST_LIVE    100
 #define M_LIVE_TIME      330
+#define M_ONE_PHASE_TIME 178
 #define M_LIGHT_TIME     (-20)
 #define M_BONE_TIME      (-100)
 #define M_DISSOLVE_TIME  (-240)
@@ -62,14 +65,32 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
+typedef enum {
+    M_MODE_ONE_PHASE,
+    M_MODE_TWO_PHASE,
+} M_MODE;
+
 typedef struct {
     int16_t dragon_front_item_num;
+    M_MODE mode;
 } M_PRIV;
 
 static const BITE m_DragonMouth = {
     .pos = { .x = 35, .y = 171, .z = 1168 },
     .mesh_num = 12,
 };
+
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    JSON_SHOULD(JSON_READ(io, "mode", &p->mode));
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "mode", p->mode);
+}
 
 static int16_t M_GetFrontItemNum(const ITEM *const dragon_back_item)
 {
@@ -78,6 +99,12 @@ static int16_t M_GetFrontItemNum(const ITEM *const dragon_back_item)
         return NO_ITEM;
     }
     return p->dragon_front_item_num;
+}
+
+static bool M_IsTwoPhaseMode(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    return p != nullptr && p->mode == M_MODE_TWO_PHASE;
 }
 
 static bool M_CanDropItemsBack(const ITEM *const item)
@@ -95,6 +122,7 @@ static void M_InitialiseBack(const int16_t item_num)
 {
     ITEM *const dragon_back_item = Item_Get(item_num);
     M_PRIV *const p = dragon_back_item->priv;
+    p->mode = M_MODE_TWO_PHASE;
 
     dragon_back_item->status = IS_INVISIBLE;
     dragon_back_item->shade.value_1 = -1;
@@ -111,6 +139,13 @@ static void M_InitialiseBack(const int16_t item_num)
     dragon_front_item->flags = IF_INVISIBLE;
     dragon_front_item->shade.value_1 = -1;
     Item_Initialise(p->dragon_front_item_num);
+}
+
+static bool M_TriggerBack(ITEM *const item, const TRIGGER *const trigger)
+{
+    M_PRIV *const p = item->priv;
+    p->mode = M_MODE_ONE_PHASE;
+    return true;
 }
 
 static void M_ActivateBack(ITEM *const dragon_back_item)
@@ -218,7 +253,7 @@ static void M_Bones(const int16_t item_num)
 static void M_HandleSaveBack(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->status == IS_DEACTIVATED) {
+        if (item->status == IS_DEACTIVATED && M_IsTwoPhaseMode(item)) {
             const int32_t y_pos = item->pos.y;
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
@@ -261,6 +296,7 @@ static void M_Collision(
     const int32_t shift = (cy * dx - sy * dz) >> W2V_SHIFT;
     const int32_t angle = lara_item->rot.y - item->rot.y;
     if (g_Input.action && item->object_id == O_DRAGON_BACK
+        && M_IsTwoPhaseMode(item)
         && (Item_TestAnimEqual(item, M_ANIM_DEAD)
             || (Item_TestAnimEqual(item, M_ANIM_RESURRECT)
                 && Item_TestFrameRange(item, 0, M_ALMOST_LIVE)))
@@ -295,6 +331,7 @@ static void M_ControlBack(const int16_t item_num)
     int16_t head = 0;
     CREATURE *const creature = dragon_front_item->creature_data;
     const OBJECT *const front_obj = Object_Get(O_DRAGON_FRONT);
+    const bool is_two_phase = M_IsTwoPhaseMode(dragon_back_item);
 
     if (dragon_front_item->hit_points <= 0) {
         if (dragon_front_item->current_anim_state != M_STATE_DEATH) {
@@ -303,13 +340,18 @@ static void M_ControlBack(const int16_t item_num)
             dragon_front_item->current_anim_state = M_STATE_DEATH;
             creature->flags = 0;
         } else if (creature->flags >= 0) {
-            Spawn_MysticLight(dragon_front_item_num);
             creature->flags++;
-            if (creature->flags == M_LIVE_TIME) {
-                dragon_front_item->goal_anim_state = M_STATE_STOP;
-            }
-            if (creature->flags > M_LIVE_TIME + M_ALMOST_LIVE) {
-                dragon_front_item->hit_points = front_obj->hit_points / 2;
+            if (is_two_phase) {
+                Spawn_MysticLight(dragon_front_item_num);
+                if (creature->flags == M_LIVE_TIME) {
+                    dragon_front_item->goal_anim_state = M_STATE_STOP;
+                }
+                if (creature->flags > M_LIVE_TIME + M_ALMOST_LIVE) {
+                    dragon_front_item->hit_points = front_obj->hit_points / 2;
+                }
+            } else if (creature->flags == M_ONE_PHASE_TIME) {
+                M_MarkDragonDead(dragon_back_item);
+                creature->flags = M_DISSOLVE_TIME;
             }
         } else {
             if (creature->flags > M_LIGHT_TIME) {
@@ -324,10 +366,19 @@ static void M_ControlBack(const int16_t item_num)
             } else if (creature->flags == M_DISSOLVE_TIME) {
                 Room_TestTriggers(dragon_back_item);
                 LOT_DisableBaddieAI(dragon_front_item_num);
-                Item_Kill(dragon_front_item_num);
                 dragon_front_item->status = IS_DEACTIVATED;
-                Item_Kill(dragon_back_item_num);
                 dragon_back_item->status = IS_DEACTIVATED;
+                if (is_two_phase) {
+                    Item_Kill(dragon_front_item_num);
+                    Item_Kill(dragon_back_item_num);
+                } else {
+                    Item_RemoveActive(dragon_front_item_num);
+                    Item_RemoveActive(dragon_back_item_num);
+                    dragon_front_item->collidable = false;
+                    dragon_back_item->collidable = false;
+                    dragon_front_item->flags |= IF_ONE_SHOT;
+                    dragon_back_item->flags |= IF_ONE_SHOT;
+                }
             } else if (creature->flags < M_BONE_TIME) {
                 dragon_front_item->pos.y += M_DISSOLVE_SHIFT;
                 dragon_back_item->pos.y += M_DISSOLVE_SHIFT;
@@ -510,10 +561,13 @@ static void M_SetupBack(OBJECT *const obj)
 
     obj->initialise_func = M_InitialiseBack;
     obj->handle_save_func = M_HandleSaveBack;
+    obj->trigger_func = M_TriggerBack;
     obj->activate_func = M_ActivateBack;
     obj->control_func = M_ControlBack;
     obj->collision_func = M_Collision;
     obj->can_drop_items_func = M_CanDropItemsBack;
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
 
     obj->radius = M_RADIUS;
 
