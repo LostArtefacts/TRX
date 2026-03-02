@@ -61,8 +61,15 @@ static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    p->dragon_item_num = Dragon_CreateInactive(item);
+    p->dragon_item_num = Item_CreateLevelItem();
     ASSERT(p->dragon_item_num != NO_ITEM);
+
+    ITEM *const dragon_item = Item_Get(p->dragon_item_num);
+    dragon_item->object_id = O_DRAGON_BACK;
+    dragon_item->pos = item->pos;
+    dragon_item->rot.y = item->rot.y;
+    dragon_item->room_num = item->room_num;
+    Item_Initialise(p->dragon_item_num);
 }
 
 static void M_Control(const int16_t item_num)
