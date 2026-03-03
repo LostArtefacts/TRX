@@ -97,6 +97,23 @@ void Room_InitialiseRooms(const int32_t num_rooms)
     m_OutsideOriginCellZ = 0;
 }
 
+void Room_Shutdown(void)
+{
+    m_RoomCount = 0;
+    m_Rooms = nullptr;
+    m_FlipStatus = false;
+    m_FlipEffect = -1;
+    m_FlipTimer = 0;
+    memset(m_FlipSlotFlags, 0, sizeof(m_FlipSlotFlags));
+
+    m_OutsideRoomTable = nullptr;
+    m_OutsideRoomOffsets = nullptr;
+    m_OutsideGridX = 0;
+    m_OutsideGridZ = 0;
+    m_OutsideOriginCellX = 0;
+    m_OutsideOriginCellZ = 0;
+}
+
 int32_t Room_GetCount(void)
 {
     return m_RoomCount;
