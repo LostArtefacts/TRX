@@ -19,10 +19,13 @@ static void M_FreeSequence(GF_SEQUENCE *const sequence)
 
 static void M_FreeInjections(INJECTION_DATA *const injections)
 {
-    for (int32_t i = 0; i < injections->count; i++) {
-        Memory_FreePointer(&injections->data_paths[i]);
+    if (injections->data_paths != nullptr) {
+        for (int32_t i = 0; i < injections->count; i++) {
+            Memory_FreePointer(&injections->data_paths[i]);
+        }
     }
     Memory_FreePointer(&injections->data_paths);
+    injections->count = 0;
 }
 
 static void M_FreeLevel(GF_LEVEL *const level)
