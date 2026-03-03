@@ -199,6 +199,7 @@ void SceneCompositor_Shutdown(void)
     }
     if (p->sampler_id != 0) {
         glDeleteSamplers(1, &p->sampler_id);
+        p->sampler_id = 0;
     }
 }
 
