@@ -30,7 +30,6 @@ void Console_Shutdown(void)
     UI_Console_Free(&m_UIState);
 
     Console_History_Shutdown();
-    Console_Registry_Shutdown();
 
     m_IsOpened = false;
 }
