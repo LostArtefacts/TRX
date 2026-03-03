@@ -30,6 +30,7 @@
 - changed PC and PS1 UI colors to no longer be hardcoded by moving it to `ui.json5` (#5003)
 - changed Fog start and Fog end to change by 10 by default, with Slow allowing 1-step precision (#5015)
 - changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
+- changed `O_MINI_COPTER` to no longer hardcode direction
 - changed Earthquake to support being reset
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
 - changed logs to no longer emit ANSI color characters when the game's output is piped to a file / process
