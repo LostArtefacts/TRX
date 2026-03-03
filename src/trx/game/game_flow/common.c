@@ -72,6 +72,9 @@ void GF_Init(void)
 
 void GF_Shutdown(void)
 {
+    m_CurrentLevel = nullptr;
+    m_OverrideCommand = (GF_COMMAND) { .action = GF_NOOP };
+
     GAME_FLOW *const gf = &g_GameFlow;
     M_FreeInjections(&gf->injections);
 
@@ -91,6 +94,7 @@ void GF_Shutdown(void)
     Memory_FreePointer(&gf->main_menu_background_path);
     Memory_FreePointer(&gf->savegame_file_fmt);
     Memory_FreePointer(&gf->ambient_tracks.ids);
+    gf->ambient_tracks.count = 0;
     Memory_FreePointer(&gf->settings.sfx_path);
     Memory_FreePointer(&gf->main_script_path);
     Memory_FreePointer(&gf->path);
