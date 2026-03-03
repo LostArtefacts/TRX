@@ -135,8 +135,8 @@ bool SG_File_LoadFromFile(MYFILE *const fp)
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version, nullptr);
 
-    M_MUST(SG_File_LoadMisc(io));
     M_MUST(SG_File_LoadResumeInfoList(io));
+    M_MUST(SG_File_LoadMisc(io));
     M_MUST(SG_File_LoadInventory(io));
     M_MUST(SG_File_LoadFlipmaps(io));
     M_MUST(SG_File_LoadCameras(io));
@@ -262,6 +262,25 @@ bool SG_File_UpdateDeathCounters(
     }
     JSON_ObjectEvictKey(misc_obj, "death_count");
     JSON_ObjectAppendInt(misc_obj, "death_count", death_count);
+
+    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+    int32_t resume_idx = -1;
+    for (int32_t i = 0; i < level_table->count; i++) {
+        if (level_table->levels[i].num == level_num) {
+            resume_idx = i;
+            break;
+        }
+    }
+
+    JSON_ARRAY *const resume_arr = JSON_ObjectGetArray(root_obj, "resume_info");
+    if (resume_arr != nullptr && resume_idx != -1) {
+        JSON_OBJECT *const resume_obj =
+            JSON_ArrayGetObject(resume_arr, resume_idx);
+        if (resume_obj != nullptr) {
+            JSON_ObjectEvictKey(resume_obj, "death_count");
+            JSON_ObjectAppendInt(resume_obj, "death_count", death_count);
+        }
+    }
 
     File_Seek(fp, 0, FILE_SEEK_SET);
     M_SaveRaw(fp, root, level_num, is_quick);

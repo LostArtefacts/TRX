@@ -55,6 +55,7 @@
 - fixed collision issues on bridges, trapdoors, breakable tiles and pushblocks if positioned over a triangle portal (regression from 1.0)
 - fixed Lara being able to sprint through swamps when responsive sprinting is enabled
 - fixed bar borders scaling poorly (off-by-1px errors, regression from 1.2)
+- fixed death counter not being preserved in saves after changing levels, causing stopwatch and final statistics to sometimes show 0 deaths
 
 **TR1**:
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
