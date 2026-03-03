@@ -127,4 +127,6 @@ void Memory_ArenaFree(MEMORY_ARENA_ALLOCATOR *const allocator)
         Memory_Free(chunk);
         chunk = next;
     }
+    allocator->first_chunk = nullptr;
+    allocator->current_chunk = nullptr;
 }
