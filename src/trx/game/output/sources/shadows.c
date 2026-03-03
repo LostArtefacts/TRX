@@ -62,13 +62,20 @@ void OutputSource_Shadows_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     if (p->mesh_low != nullptr) {
-        MeshBatcher_RemoveMesh(p->batcher, p->mesh_low);
+        if (p->batcher != nullptr) {
+            MeshBatcher_RemoveMesh(p->batcher, p->mesh_low);
+        }
         Output_Mesh_Destroy(p->mesh_low);
+        p->mesh_low = nullptr;
     }
     if (p->mesh_high != nullptr) {
-        MeshBatcher_RemoveMesh(p->batcher, p->mesh_high);
+        if (p->batcher != nullptr) {
+            MeshBatcher_RemoveMesh(p->batcher, p->mesh_high);
+        }
         Output_Mesh_Destroy(p->mesh_high);
+        p->mesh_high = nullptr;
     }
+    p->batcher = nullptr;
 }
 
 void OutputSource_Shadows_StageShadow(void)
