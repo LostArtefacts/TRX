@@ -1494,6 +1494,10 @@ bool QuadBike_Control(void)
 
 static void M_Setup(OBJECT *const obj)
 {
+    if (!obj->loaded) {
+        return;
+    }
+
     obj->initialise_func = M_Initialise;
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
