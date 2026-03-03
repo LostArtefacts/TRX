@@ -29,6 +29,18 @@
 #define M_CACHE_FILENAME "max_stats.cache.json"
 
 static LEVEL_MAX_STATS *m_Stats = nullptr;
+static int32_t m_StatsCapacity = 0;
+
+static void M_EnsureStatsStorage(const int32_t level_count)
+{
+    ASSERT(level_count >= 0);
+
+    if (m_StatsCapacity != level_count) {
+        m_Stats = Memory_Realloc(
+            m_Stats, sizeof(LEVEL_MAX_STATS) * (size_t)level_count);
+        m_StatsCapacity = level_count;
+    }
+}
 
 static uint64_t M_FNV1a64_Update(
     uint64_t hash, const void *const data, const size_t size)
@@ -275,7 +287,7 @@ static bool M_TryLoadCache(
     }
 
     // Clear any existing stats; cache may not cover every entry.
-    memset(m_Stats, 0, sizeof(LEVEL_MAX_STATS) * (size_t)level_table->count);
+    memset(m_Stats, 0, sizeof(LEVEL_MAX_STATS) * (size_t)m_StatsCapacity);
 
     for (size_t i = 0; i < levels->length; i++) {
         JSON_OBJECT *const entry = JSON_ArrayGetObject(levels, i);
@@ -283,7 +295,7 @@ static bool M_TryLoadCache(
             continue;
         }
         const int32_t level_num = JSON_ObjectGetInt(entry, "num", -1);
-        if (level_num < 0 || level_num >= level_table->count) {
+        if (level_num < 0 || level_num >= m_StatsCapacity) {
             continue;
         }
         JSON_OBJECT *const stats_obj = JSON_ObjectGetObject(entry, "stats");
@@ -336,21 +348,22 @@ __attribute__((destructor)) static void M_Shutdown(void)
         Memory_Free(m_Stats);
         m_Stats = nullptr;
     }
+    m_StatsCapacity = 0;
 }
 
 LEVEL_MAX_STATS *Stats_GetLevelMaxStats(const GF_LEVEL *const level)
 {
     ASSERT(m_Stats != nullptr);
+    ASSERT(level != nullptr);
+    ASSERT(level->num >= 0 && level->num < m_StatsCapacity);
     return &m_Stats[level->num];
 }
 
 void Stats_CalculateMaxStats(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
-
-    if (m_Stats == nullptr) {
-        m_Stats = Memory_Alloc(sizeof(LEVEL_MAX_STATS) * level_table->count);
-    }
+    M_EnsureStatsStorage(level_table->count);
+    memset(m_Stats, 0, sizeof(LEVEL_MAX_STATS) * (size_t)m_StatsCapacity);
 
     BENCHMARK benchmark = Benchmark_Start();
     const char *const cache_path = M_GetCachePath();
