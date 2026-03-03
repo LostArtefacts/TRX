@@ -28,6 +28,7 @@
 #include <trx/game/random.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>
+#include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/shell/platform.h>
@@ -173,6 +174,7 @@ static void M_ShutdownModules(void)
     GameStringManager_Shutdown();
     GameString_Shutdown();
     Walkable_Shutdown();
+    Room_Shutdown();
     GameBuf_Shutdown();
     Catalog_Shutdown();
 
