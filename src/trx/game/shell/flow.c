@@ -77,8 +77,8 @@ static void M_ShowWindow(void)
 
 static void M_HandleConfigChange(const EVENT *const event, void *const data)
 {
-    const CONFIG *const old = &g_Config;
-    const CONFIG *const new = &g_SavedConfig;
+    const CONFIG *const old = &g_SavedConfig;
+    const CONFIG *const new = &g_Config;
     Shell_HandleConfigChange(old, new);
 }
 

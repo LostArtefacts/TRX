@@ -967,6 +967,7 @@ void TestReplay_Start(void)
             LOG_WARNING("Unknown line: %s", ln);
         }
     }
+    g_SavedConfig = g_Config;
     Shell_FreeArgs(ctx.args);
 }
 
