@@ -80,6 +80,7 @@
         "CONSOLE_HELP_LIGHTING": "Attiva o disattiva il sistema di illuminazione.",
         "CONSOLE_HELP_LOAD": "\\{review}Carica il gioco dallo slot di salvataggio indicato o da un salvataggio rapido.",
         "CONSOLE_HELP_LUA": "Esegue la stringa di codice Lua specificata.",
+        "CONSOLE_HELP_MOD": "\\{review}Passa alla mod specificata e riavvia il gioco.",
         "CONSOLE_HELP_MUSIC": "Riproduce la traccia musicale con l'ID specificato.",
         "CONSOLE_HELP_PLAY_CUTSCENE": "Riproduce la scena di intermezzo con il numero specificato.",
         "CONSOLE_HELP_PLAY_DEMO": "Riproduce la demo con il numero specificato.",

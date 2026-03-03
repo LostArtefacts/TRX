@@ -206,6 +206,9 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/title`  
   Had enough? Let's return to the main menu.
 
+- `/mod {name}`  
+  Switches to another installed game/mod pack and reloads the game flow. Great for hopping between adventures without relaunching TRX.
+
 - `/exit`  
   Closes the game. Ends the adventure. We're done here.
 

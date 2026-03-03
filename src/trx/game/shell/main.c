@@ -4,6 +4,8 @@
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/game/shell.h>
+#include <trx/game/shell/common.h>
+#include <trx/game/shell/mod.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -30,7 +32,36 @@ int main(int argc, char *argv[])
     Memory_FreePointer(&log_path);
 
     LOG_INFO("Starting %s", g_TRXVersion);
-    const int32_t exit_code = Shell_Main(args);
+
+    int32_t exit_code;
+    bool restart;
+    do {
+        restart = false;
+        exit_code = Shell_Main(args);
+        // Note: on a mod switch, Shell_Main has already freed args (via the
+        // session) and reset m_Session to nullptr. Do not touch args after
+        // this point in the restart branch.
+
+        const char *const pending_mod = Shell_GetPendingMod();
+        if (pending_mod != nullptr) {
+            const SHELL_MOD *const mod = Shell_GetModByName(pending_mod);
+            Shell_ClearPendingMod();
+            if (mod != nullptr && mod->is_available) {
+                LOG_INFO("Switching mod to: %s", mod->name);
+                SHELL_ARGS *const next_args = Memory_Alloc(sizeof(SHELL_ARGS));
+                *next_args = (SHELL_ARGS) {
+                    .engine_version = mod->engine_version,
+                    .mod = mod,
+                    .level_to_select = -1,
+                    .save_to_load = -1,
+                    .headless = Shell_GetPrevHeadless(),
+                    .quiet = Shell_GetPrevQuiet(),
+                };
+                args = next_args;
+                restart = true;
+            }
+        }
+    } while (restart);
 
     Shell_Terminate(exit_code);
     return exit_code;

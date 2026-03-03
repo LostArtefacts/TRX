@@ -23,6 +23,12 @@ void Shell_Terminate(int32_t exit_code);
 
 void Shell_ScheduleExit(void);
 bool Shell_IsExiting(void);
+
+void Shell_RequestModSwitch(const char *mod_name);
+const char *Shell_GetPendingMod(void);
+void Shell_ClearPendingMod(void);
+bool Shell_GetPrevHeadless(void);
+bool Shell_GetPrevQuiet(void);
 const SHELL_ARGS *Shell_GetArgs(void);
 
 bool Shell_IsFullscreen(void);

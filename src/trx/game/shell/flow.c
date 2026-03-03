@@ -45,9 +45,17 @@
 
 static SHELL_SESSION *m_Session = nullptr;
 static SDL_Window *m_Window = nullptr;
+static char *m_PendingMod = nullptr;
+
+// Flags preserved across mod switches (needed to rebuild args in main()).
+static bool m_PrevHeadless = false;
+static bool m_PrevQuiet = false;
 
 static void M_CreateGameWindow(void)
 {
+    if (m_Window != nullptr) {
+        return; // Window persists across mod switches
+    }
     m_Window = SDL_CreateWindow(
         "TRX", g_Config.window.x, g_Config.window.y, g_Config.window.width,
         g_Config.window.height,
@@ -61,6 +69,9 @@ static void M_CreateGameWindow(void)
 
 static void M_CreateGLContext(void)
 {
+    if (TRX_GL_Context_GetWindowHandle() != nullptr) {
+        return; // GL context persists across mod switches
+    }
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(
@@ -117,6 +128,32 @@ static void M_LoadCatalog(
     if (!Catalog_Load(context, path, allow_duplicates)) {
         Shell_ExitSystemFmt("Failed to load catalogs from %s", path);
     }
+}
+
+void Shell_RequestModSwitch(const char *const mod_name)
+{
+    Memory_FreePointer(&m_PendingMod);
+    m_PendingMod = Memory_DupStr(mod_name);
+}
+
+const char *Shell_GetPendingMod(void)
+{
+    return m_PendingMod;
+}
+
+void Shell_ClearPendingMod(void)
+{
+    Memory_FreePointer(&m_PendingMod);
+}
+
+bool Shell_GetPrevHeadless(void)
+{
+    return m_PrevHeadless;
+}
+
+bool Shell_GetPrevQuiet(void)
+{
+    return m_PrevQuiet;
 }
 
 const SHELL_ARGS *Shell_GetArgs(void)
@@ -178,8 +215,6 @@ static void M_ShutdownModules(void)
     Room_Shutdown();
     GameBuf_Shutdown();
     Catalog_Shutdown();
-
-    Log_Shutdown();
 }
 
 static void M_PrepareSystem(void)
@@ -414,6 +449,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
             break;
 
         case GF_EXIT_GAME:
+        case GF_SWITCH_MOD:
             loop_continue = false;
             break;
 
@@ -428,6 +464,24 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     if (s->args->level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
+
+    if (m_PendingMod != nullptr) {
+        if (TestReplay_IsOpened()) {
+            TestReplay_Close();
+        }
+        if (TestRecorder_IsOpened()) {
+            TestRecorder_Close();
+        }
+        // Save flags needed to rebuild args in main() before freeing the
+        // session (which owns and will free the args struct).
+        m_PrevHeadless = s->args->headless;
+        m_PrevQuiet = s->args->quiet;
+        M_ShutdownModules();
+        ShellSession_Free(m_Session);
+        m_Session = nullptr;
+        return 0;
+    }
+
     const int32_t replay_exit_code = TestReplay_GetExitCodeOverride();
     return replay_exit_code >= 0 ? replay_exit_code : 0;
 }
@@ -435,6 +489,8 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
 void Shell_Shutdown(void)
 {
     M_ShutdownModules();
+    TRX_GL_Context_Detach();
+    Log_Shutdown();
     if (m_Session != nullptr) {
         ShellSession_Free(m_Session);
         m_Session = nullptr;
