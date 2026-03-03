@@ -237,3 +237,9 @@ void Walkable_ResetLevel(void)
         m_Setup = GameBuf_Alloc(sizeof(M_SETUP) * item_count, GBUF_WALKABLES);
     }
 }
+
+void Walkable_Shutdown(void)
+{
+    m_Setup = nullptr;
+    m_SetupCount = 0;
+}
