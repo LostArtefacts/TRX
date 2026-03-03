@@ -9,240 +9,8 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
-        #canvas {
-            display: block;
-            width: 100dvw;
-            height: 100dvh;
-            cursor: default;
-        }
-        #loading {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: #c8a040;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            z-index: 10;
-        }
-        #loading h1 { font-size: 2em; margin-bottom: 0.5em; }
-        #progress-bar {
-            width: 320px;
-            height: 6px;
-            background: #222;
-            border-radius: 3px;
-            margin: 1em auto;
-            overflow: hidden;
-        }
-        #progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #c8a040;
-            transition: width 0.2s;
-        }
-        #status { font-size: 0.9em; color: #888; margin-top: 0.5em; }
-        #start-gate {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            background: #000;
-            cursor: pointer;
-        }
-        #start-gate p {
-            color: #c8a040;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 1.4em;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-        .hidden { display: none !important; }
-
-        /* Touch controls overlay */
-        #touch-controls {
-            display: none;
-            position: absolute;
-            top: 0; left: 0;
-            width: 100dvw; height: 100dvh;
-            z-index: 20;
-            pointer-events: none;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            --main-size: clamp(64px, 11dvw, 96px);
-            --orbit-size: clamp(34px, 6dvw, 52px);
-            --base-right: 3dvw;
-            --base-bottom: 5dvh;
-            --action-right: calc(var(--base-right) + var(--main-size) * 0.86);
-            --action-bottom: calc(var(--base-bottom) + var(--main-size) * 0.86);
-            --jump-center-right: calc(var(--base-right) + (var(--main-size) / 2));
-            --jump-center-bottom: calc(var(--base-bottom) + (var(--main-size) / 2));
-            --action-center-right: calc(var(--action-right) + (var(--main-size) / 2));
-            --action-center-bottom: calc(var(--action-bottom) + (var(--main-size) / 2));
-            --grid-step-x: calc(var(--action-center-right) - var(--jump-center-right));
-            --grid-step-y: calc(var(--action-center-bottom) - var(--jump-center-bottom));
-        }
-        .tc-btn {
-            position: absolute;
-            pointer-events: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.52);
-            border: 1px solid rgba(255, 255, 255, 0.34);
-            border-radius: 999px;
-            color: rgba(255, 255, 255, 0.92);
-            font-size: clamp(18px, 4.5vmin, 30px);
-            touch-action: none;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-        }
-        .tc-btn.active {
-            background: rgba(0, 0, 0, 0.74);
-            border-color: rgba(255, 255, 255, 0.72);
-        }
-
-        /* Diagonal-capable D-pad */
-        .tc-dpad {
-            position: absolute;
-            left: 3dvw;
-            bottom: 5dvh;
-            width: clamp(108px, 22dvw, 170px);
-            height: clamp(108px, 22dvw, 170px);
-            border-radius: 50%;
-            pointer-events: auto;
-            touch-action: none;
-            background: radial-gradient(circle, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.58) 68%, rgba(0,0,0,0.7) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.34);
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-        }
-        .tc-dpad .tc-ring {
-            position: absolute;
-            inset: 18%;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.22);
-        }
-        .tc-dpad .tc-thumb {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 34%;
-            height: 34%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            transition: transform 40ms linear;
-        }
-        .tc-dpad .tc-dir {
-            position: absolute;
-            width: 30%;
-            height: 30%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.55);
-            font-size: clamp(18px, 4.2vmin, 28px);
-            transition: color 80ms ease;
-            pointer-events: none;
-        }
-        .tc-dpad .tc-up { left: 35%; top: 3%; }
-        .tc-dpad .tc-right { right: 3%; top: 35%; }
-        .tc-dpad .tc-down { left: 35%; bottom: 3%; }
-        .tc-dpad .tc-left { left: 3%; top: 35%; }
-        .tc-dpad.tc-press-up .tc-up,
-        .tc-dpad.tc-press-right .tc-right,
-        .tc-dpad.tc-press-down .tc-down,
-        .tc-dpad.tc-press-left .tc-left {
-            color: rgba(255, 255, 255, 0.98);
-        }
-
-        /* Main action buttons */
-        .tc-jump,
-        .tc-action {
-            width: var(--main-size);
-            height: var(--main-size);
-            font-size: clamp(28px, 5.4vmin, 42px);
-            border-width: 2px;
-            box-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
-        }
-        .tc-jump {
-            right: var(--base-right);
-            bottom: var(--base-bottom);
-        }
-        .tc-action {
-            right: var(--action-right);
-            bottom: var(--action-bottom);
-        }
-
-        /* Small orbiting buttons around action */
-        .tc-orbit {
-            width: var(--orbit-size);
-            height: var(--orbit-size);
-            font-size: clamp(18px, 3.4vmin, 26px);
-        }
-        /* 3x2 center-aligned grid with fixed Action (top-center) and Jump (bottom-right) */
-        .tc-walk {
-            right: calc(var(--action-center-right) + var(--grid-step-x) - (var(--orbit-size) / 2));
-            bottom: calc(var(--action-center-bottom) - (var(--orbit-size) / 2));
-        }
-        .tc-roll {
-            right: calc(var(--jump-center-right) - (var(--orbit-size) / 2));
-            bottom: calc(var(--action-center-bottom) - (var(--orbit-size) / 2));
-        }
-        .tc-look {
-            right: calc(var(--action-center-right) + var(--grid-step-x) - (var(--orbit-size) / 2));
-            bottom: calc(var(--jump-center-bottom) - (var(--orbit-size) / 2));
-        }
-        .tc-guns {
-            right: calc(var(--action-center-right) - (var(--orbit-size) / 2));
-            bottom: calc(var(--jump-center-bottom) - (var(--orbit-size) / 2));
-        }
-
-        /* Top bar */
-        .tc-menu,
-        .tc-pause {
-            top: 2dvh;
-            width: clamp(32px, 5.4dvw, 46px);
-            height: clamp(32px, 5.4dvw, 46px);
-            font-size: clamp(13px, 2.5vmin, 19px);
-        }
-        .tc-menu { left: calc(50% - clamp(32px, 5.4dvw, 46px) - 7px); }
-        .tc-pause { left: calc(50% + 8px); right: auto; }
-
-        /* Runtime-applied fold mode (safer than forcing canvas buffer resize) */
-        body.is-folded-horizontal #canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100dvw !important;
-            height: calc(var(--fold-top-height, 50dvh) + 1px) !important;
-        }
-        body.is-folded-horizontal #touch-controls {
-            top: auto !important;
-            bottom: -1px !important;
-            width: 100dvw !important;
-            height: calc(var(--fold-controls-height, 50dvh) + 1px) !important;
-        }
-        body.is-folded-horizontal #start-gate {
-            top: 0 !important;
-            left: 0 !important;
-            width: 100dvw !important;
-            height: calc(var(--fold-top-height, 50dvh) + 1px) !important;
-        }
-        body.is-folded-horizontal #loading {
-            top: calc(var(--fold-top-height, 50dvh) * 0.5) !important;
-        }
-
-    </style>
+    <link rel="stylesheet" href="shell.css">
+    <!-- __ERUDA__ -->
 </head>
 <body>
     <div id="loading">
@@ -253,6 +21,38 @@
     </div>
     <div id="start-gate" class="hidden">
         <p>Press any key or button to continue</p>
+    </div>
+    <div id="upload-screen" class="hidden">
+        <div class="upload-inner">
+            <h1>TRX</h1>
+            <p class="subtitle">Tomb Raider Engine &mdash; WebGL Build</p>
+            <div id="upload-dropzone">
+                <p>Drag &amp; drop game files here</p>
+                <p class="upload-hint">Accepts: folder, .zip, or .tar.gz</p>
+            </div>
+            <div class="upload-buttons">
+                <button id="btn-select-folder" type="button">Select Folder</button>
+                <button id="btn-select-archive" type="button">Select Archive</button>
+            </div>
+            <p class="upload-note">
+                Provide your Tomb Raider game files (original or remastered) from GOG or Steam.<br>
+                Files are stored locally in your browser and never uploaded to any server.
+            </p>
+            <div id="upload-progress" class="hidden">
+                <div class="progress-bar"><div class="progress-fill" id="upload-progress-fill"></div></div>
+                <p class="progress-text" id="upload-progress-text"></p>
+            </div>
+            <p id="upload-error" class="hidden"></p>
+            <div id="upload-warning" class="hidden">
+                <p id="upload-warning-text"></p>
+                <div class="upload-buttons">
+                    <button id="btn-warning-continue" type="button">Continue without FMVs</button>
+                    <button id="btn-warning-cancel" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <input type="file" id="file-input-folder" webkitdirectory multiple style="display:none">
+        <input type="file" id="file-input-archive" accept=".zip,.tar.gz,.tgz" style="display:none">
     </div>
     <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
 
@@ -280,31 +80,70 @@
 
     <script>
         var _trxCacheBust = '';  // __CACHE_BUST__
+        var _trxGameId = 'tr1';  // __GAME_ID__
+        var _trxEngineStarting = false;
         var Module = {
+            noInitialRun: true,
             locateFile: function(path) {
                 return _trxCacheBust ? path + '?' + _trxCacheBust : path;
             },
             canvas: (function() { return document.getElementById('canvas'); })(),
             setStatus: function(text) {
+                if (_trxEngineStarting) return;  // engine owns the loading UI now
                 var status = document.getElementById('status');
                 if (status) status.textContent = text;
-                // Parse progress from Emscripten status messages
+                // Parse progress from Emscripten status messages.
+                // Download phase occupies 0–50% of the bar.
                 var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
                 if (m) {
-                    var pct = (parseFloat(m[2]) / parseFloat(m[4])) * 100;
+                    var pct = (parseFloat(m[2]) / parseFloat(m[4])) * 50;
                     var fill = document.getElementById('progress-fill');
                     if (fill) fill.style.width = pct + '%';
                 }
-                if (text === '') {
-                    document.getElementById('loading').classList.add('hidden');
-                }
             },
             onRuntimeInitialized: function() {
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('canvas').focus();
-                if (typeof Module.syncViewportLayout === 'function') {
-                    Module.syncViewportLayout();
-                }
+                // FS is ready (preloaded data mounted).  Decide whether to
+                // start the game immediately or show the upload UI.
+                var gdm = new GameDataManager(_trxGameId);
+                gdm.hasGameData().then(function(hasData) {
+                    if (hasData) {
+                        // Return visit — load from IndexedDB and start.
+                        // Game data loading occupies 50–100% of the bar.
+                        document.getElementById('status').textContent = 'Loading game data...';
+                        return gdm.loadToFS(function(loaded, total) {
+                            var pct = 50 + Math.round((loaded / total) * 50);
+                            document.getElementById('progress-fill').style.width = pct + '%';
+                            document.getElementById('status').textContent =
+                                'Loading game data... (' + loaded + '/' + total + ')';
+                        }).then(function() {
+                            _trxStartGame();
+                        });
+                    } else if (gdm.hasPreloadedGameData()) {
+                        // Build includes game data — start immediately and
+                        // dump to IndexedDB in the background for offline use.
+                        _trxStartGame();
+                        setTimeout(function() {
+                            gdm.dumpPreloadedToIDB().then(function() {
+                                console.log('[TRX] Game data cached to IndexedDB for offline use.');
+                            }).catch(function(err) {
+                                console.warn('[TRX] Failed to cache game data:', err);
+                            });
+                        }, 2000);
+                    } else {
+                        // No game data anywhere — show upload UI.
+                        document.getElementById('loading').classList.add('hidden');
+                        _trxShowUploadUI(gdm);
+                    }
+                }).catch(function(err) {
+                    console.error('[TRX] Game data check failed:', err);
+                    // Try to start anyway (might work if data was preloaded).
+                    if (gdm.hasPreloadedGameData()) {
+                        _trxStartGame();
+                    } else {
+                        document.getElementById('loading').classList.add('hidden');
+                        _trxShowUploadUI(gdm);
+                    }
+                });
             },
             print: function(text) { console.log(text); },
             printErr: function(text) { console.error(text); },
@@ -316,6 +155,134 @@
                     : 'Starting...');
             }
         };
+
+        function _trxStartGame() {
+            // Keep #loading visible — the C code hides it via js_show_start_gate
+            // once initialization is complete.  The flag prevents Emscripten's
+            // setStatus('') from hiding it prematurely.
+            _trxEngineStarting = true;
+            document.getElementById('status').textContent = 'Starting engine...';
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('upload-screen').classList.add('hidden');
+            document.getElementById('canvas').focus();
+            if (typeof Module.syncViewportLayout === 'function') {
+                Module.syncViewportLayout();
+            }
+            Module.callMain([]);
+        }
+
+        function _trxShowUploadUI(gdm) {
+            var screen = document.getElementById('upload-screen');
+            var dropzone = document.getElementById('upload-dropzone');
+            var progressDiv = document.getElementById('upload-progress');
+            var progressFill = document.getElementById('upload-progress-fill');
+            var progressText = document.getElementById('upload-progress-text');
+            var errorEl = document.getElementById('upload-error');
+            var folderInput = document.getElementById('file-input-folder');
+            var archiveInput = document.getElementById('file-input-archive');
+
+            screen.classList.remove('hidden');
+
+            function showError(msg) {
+                errorEl.textContent = msg;
+                errorEl.classList.remove('hidden');
+            }
+
+            function hideError() {
+                errorEl.classList.add('hidden');
+            }
+
+            var warningDiv = document.getElementById('upload-warning');
+            var warningText = document.getElementById('upload-warning-text');
+
+            function showWarning(msg) {
+                return new Promise(function(resolve, reject) {
+                    progressDiv.classList.add('hidden');
+                    warningText.textContent = msg;
+                    warningDiv.classList.remove('hidden');
+
+                    var btnContinue = document.getElementById('btn-warning-continue');
+                    var btnCancel = document.getElementById('btn-warning-cancel');
+
+                    function cleanup() {
+                        btnContinue.removeEventListener('click', onContinue);
+                        btnCancel.removeEventListener('click', onCancel);
+                        warningDiv.classList.add('hidden');
+                    }
+                    function onContinue() {
+                        cleanup();
+                        progressDiv.classList.remove('hidden');
+                        resolve();
+                    }
+                    function onCancel() {
+                        cleanup();
+                        reject(new Error('Upload cancelled.'));
+                    }
+
+                    btnContinue.addEventListener('click', onContinue);
+                    btnCancel.addEventListener('click', onCancel);
+                });
+            }
+
+            function handleFiles(files) {
+                if (!files || files.length === 0) return;
+                hideError();
+                warningDiv.classList.add('hidden');
+                progressDiv.classList.remove('hidden');
+                progressFill.style.width = '0%';
+                progressText.textContent = 'Processing...';
+
+                gdm.processUpload(files, function(msg, frac) {
+                    progressFill.style.width = Math.round(frac * 100) + '%';
+                    progressText.textContent = msg;
+                }, showWarning).then(function() {
+                    _trxStartGame();
+                }).catch(function(err) {
+                    progressDiv.classList.add('hidden');
+                    if (err.message === 'Upload cancelled.') return;
+                    showError(err.message || 'Failed to process game files.');
+                    console.error('[TRX] Upload error:', err);
+                });
+            }
+
+            // Drag and drop
+            dropzone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('drag-over');
+            });
+            dropzone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('drag-over');
+            });
+            dropzone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('drag-over');
+                handleFiles(e.dataTransfer.files);
+            });
+            dropzone.addEventListener('click', function() {
+                archiveInput.click();
+            });
+
+            // Button handlers
+            document.getElementById('btn-select-folder').addEventListener('click', function(e) {
+                e.stopPropagation();
+                folderInput.click();
+            });
+            document.getElementById('btn-select-archive').addEventListener('click', function(e) {
+                e.stopPropagation();
+                archiveInput.click();
+            });
+
+            folderInput.addEventListener('change', function() {
+                handleFiles(folderInput.files);
+            });
+            archiveInput.addEventListener('change', function() {
+                handleFiles(archiveInput.files);
+            });
+        }
 
         // Keep fold posture state in sync without forcing canvas buffer size.
         (function() {
@@ -646,6 +613,8 @@
             navigator.serviceWorker.register('sw.js');
         }
     </script>
+    <script src="vendor/fflate.min.js"></script>
+    <script src="gamedata.js"></script>
     {{{ SCRIPT }}}
 </body>
 </html>

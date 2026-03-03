@@ -849,6 +849,7 @@ elif is_emscripten
     #   M_HandlePlayFMV → FMV_Play → M_Play → emscripten_sleep
     '-sASYNCIFY_ADD=["main","Shell_Main","*M_InitIDBFS*","*M_WaitForUserInput*","GF_DoFrontendSequence","GF_DoLevelSequence","GF_DoCutsceneSequence","GF_DoDemoSequence","GF_PlayAvailableStory","GF_InterpretSequence","*M_RunEvent*","*M_HandleExitToTitle*","*M_HandleLevelComplete*","*M_HandlePlayLevel*","*M_HandlePlayCutscene*","*M_HandlePlayFMV*","*M_HandlePlayMusic*","*M_HandlePicture*","*M_HandleInventoryModifier*","*M_HandleLevelStats*","*M_HandleTotalStats*","*M_HandleGlobeSelect*","*M_HandleSetStartAnim*","*M_HandleEnableSunset*","*M_HandleSetupBaconLara*","*M_HandleDisableFloor*","GF_RunTitle","GF_RunGame","GF_ShowInventory","GF_ShowInventoryKeys","GF_RunDemo","GF_RunCutscene","GF_RunGlobeSelect","GF_EnterPhotoMode","GF_PauseGame","PhaseExecutor_Run","*M_RunFadeToBlackTransition*","*M_DrawFadeToBlackTransition*","Clock_WaitTick","Game_ProcessInput","Stats_CalculateMaxStats","Level_Initialise","Level_Pipeline_Load","FMV_Play","*M_Play*","*M_CompleteSetup*","*M_InitialiseSamplesFromFile*","*M_LoadFromFile*","*M_Control*","*M_Draw*","*M_Start*","*M_Resume*","*M_Suspend*","*M_End*","*M_HandleOverride*","*M_RequestFadeToBlack*","*M_UsesCrossFadeIn*","*Game_Control*"]',
     '-sENVIRONMENT=web',
+    '-sEXPORTED_RUNTIME_METHODS=["callMain"]',
     '-lidbfs.js',
     '--shell-file=' + meson.project_source_root() + '/../tools/shared/emscripten/shell.html',
   ]
@@ -869,14 +870,30 @@ elif is_emscripten
     # Mapped to /data so that "data/injections/foo.bin" resolves to
     # /data/injections/foo.bin in the virtual filesystem.
     data_root + '/' + game + '/ship/data@/data',
-    game_data_root + '@/data',
-    # Music tracks (FLAC/OGG/MP3) — mapped to /music/ so that the
-    # backend_files music backend finds them via File_DirExists("music").
-    game_music_root + '@/music',
     # FMV cutscenes are NOT preloaded — they are streamed on demand via
     # HTTP from the fmv/ directory alongside the HTML/JS/WASM files.
     # See fmv_emscripten.c js_fmv_open() and build_webgl.sh for the serving setup.
   ]
+
+  # User game data (level files, music) can be bundled at build time or
+  # uploaded by the user at runtime.  The webgl_bundle_gamedata option
+  # controls this: 'auto' bundles if the directories exist, 'yes' always
+  # bundles (fails if missing), 'no' never bundles.
+  webgl_gamedata = get_option('webgl_bundle_gamedata')
+  bundle_gamedata = false
+  if webgl_gamedata == 'auto'
+    bundle_gamedata = fs.is_dir(game_data_root)
+  elif webgl_gamedata == 'yes'
+    bundle_gamedata = true
+  endif
+
+  if bundle_gamedata
+    preload_mappings += [game_data_root + '@/data']
+    if fs.is_dir(game_music_root)
+      preload_mappings += [game_music_root + '@/music']
+    endif
+  endif
+
   foreach mapping : preload_mappings
     link_args += ['--preload-file', mapping]
   endforeach

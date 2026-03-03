@@ -56,10 +56,18 @@ EM_JS(int, js_fmv_open, (const char *path_ptr), {
         Module._fmv.error = true;
     });
 
-    // Stream the video directly via HTTP — the browser handles buffering
-    // and progressive download.  The path is relative to the HTML file
-    // (e.g. "fmv/cafe.mp4").
-    video.src = path;
+    // Check for user-uploaded FMV stored as a blob in IndexedDB (via the
+    // game data manager).  Falls back to streaming via HTTP.
+    // Blob keys are lowercased by gamedata.js; FMV paths from the gameflow
+    // may be uppercase (e.g. "fmv/LOGO.mp4"), so normalise before lookup.
+    var blobKey = path.toLowerCase();
+    if (Module._fmvBlobs && Module._fmvBlobs[blobKey]) {
+        var blobUrl = URL.createObjectURL(Module._fmvBlobs[blobKey]);
+        Module._fmv.blobUrl = blobUrl;
+        video.src = blobUrl;
+    } else {
+        video.src = path;
+    }
 
     var p = video.play();
     if (p !== undefined) {
@@ -71,6 +79,10 @@ EM_JS(int, js_fmv_open, (const char *path_ptr), {
 EM_JS(void, js_fmv_destroy, (void), {
     if (!Module._fmv) return;
     var fmv = Module._fmv;
+    // Revoke blob URL if one was created for this playback.
+    if (fmv.blobUrl) {
+        URL.revokeObjectURL(fmv.blobUrl);
+    }
     fmv.video.pause();
     fmv.video.removeAttribute('src');
     fmv.video.load();

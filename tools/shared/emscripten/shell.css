@@ -1,0 +1,338 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
+#canvas {
+    display: block;
+    width: 100dvw;
+    height: 100dvh;
+    cursor: default;
+}
+#loading {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: #c8a040;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    z-index: 10;
+}
+#loading h1 { font-size: 2em; margin-bottom: 0.5em; }
+#progress-bar {
+    width: 320px;
+    height: 6px;
+    background: #222;
+    border-radius: 3px;
+    margin: 1em auto;
+    overflow: hidden;
+}
+#progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #c8a040;
+    transition: width 0.2s;
+}
+#status { font-size: 0.9em; color: #888; margin-top: 0.5em; }
+#start-gate {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: #000;
+    cursor: pointer;
+}
+#start-gate p {
+    color: #c8a040;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.4em;
+    animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+.hidden { display: none !important; }
+
+/* Upload UI */
+#upload-screen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: #000;
+}
+#upload-screen .upload-inner {
+    color: #c8a040;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    max-width: 480px;
+    width: 90%;
+}
+#upload-screen h1 { font-size: 2em; margin-bottom: 0.3em; }
+#upload-screen .subtitle {
+    font-size: 0.95em;
+    color: #888;
+    margin-bottom: 1.5em;
+}
+#upload-dropzone {
+    border: 2px dashed #555;
+    border-radius: 12px;
+    padding: 2em 1.5em;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 1em;
+}
+#upload-dropzone.drag-over {
+    border-color: #c8a040;
+    background: rgba(200, 160, 64, 0.08);
+}
+#upload-dropzone p {
+    margin: 0.4em 0;
+    font-size: 1.1em;
+}
+#upload-dropzone .upload-hint {
+    font-size: 0.85em;
+    color: #666;
+}
+.upload-buttons {
+    display: flex;
+    gap: 0.8em;
+    justify-content: center;
+    margin-bottom: 1.2em;
+}
+.upload-buttons button {
+    padding: 0.6em 1.4em;
+    border: 1px solid #c8a040;
+    border-radius: 6px;
+    background: transparent;
+    color: #c8a040;
+    font-size: 0.95em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+.upload-buttons button:hover {
+    background: rgba(200, 160, 64, 0.15);
+}
+.upload-note {
+    font-size: 0.82em;
+    color: #555;
+    line-height: 1.5;
+}
+#upload-progress {
+    margin-top: 1.2em;
+}
+#upload-progress .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #222;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.6em;
+}
+#upload-progress .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #c8a040;
+    transition: width 0.15s;
+}
+#upload-progress .progress-text {
+    font-size: 0.85em;
+    color: #888;
+}
+#upload-error {
+    color: #e04040;
+    font-size: 0.9em;
+    margin-top: 0.8em;
+}
+#upload-warning {
+    margin-top: 1em;
+    padding: 1em;
+    border: 1px solid #c8a040;
+    border-radius: 8px;
+    background: rgba(200, 160, 64, 0.08);
+}
+#upload-warning p {
+    color: #c8a040;
+    font-size: 0.9em;
+    margin-bottom: 0.8em;
+}
+
+/* Touch controls overlay */
+#touch-controls {
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100dvw; height: 100dvh;
+    z-index: 20;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    --main-size: clamp(64px, 11dvw, 96px);
+    --orbit-size: clamp(34px, 6dvw, 52px);
+    --base-right: 3dvw;
+    --base-bottom: 5dvh;
+    --action-right: calc(var(--base-right) + var(--main-size) * 0.86);
+    --action-bottom: calc(var(--base-bottom) + var(--main-size) * 0.86);
+    --jump-center-right: calc(var(--base-right) + (var(--main-size) / 2));
+    --jump-center-bottom: calc(var(--base-bottom) + (var(--main-size) / 2));
+    --action-center-right: calc(var(--action-right) + (var(--main-size) / 2));
+    --action-center-bottom: calc(var(--action-bottom) + (var(--main-size) / 2));
+    --grid-step-x: calc(var(--action-center-right) - var(--jump-center-right));
+    --grid-step-y: calc(var(--action-center-bottom) - var(--jump-center-bottom));
+}
+.tc-btn {
+    position: absolute;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.52);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: clamp(18px, 4.5vmin, 30px);
+    touch-action: none;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+.tc-btn.active {
+    background: rgba(0, 0, 0, 0.74);
+    border-color: rgba(255, 255, 255, 0.72);
+}
+
+/* Diagonal-capable D-pad */
+.tc-dpad {
+    position: absolute;
+    left: 3dvw;
+    bottom: 5dvh;
+    width: clamp(108px, 22dvw, 170px);
+    height: clamp(108px, 22dvw, 170px);
+    border-radius: 50%;
+    pointer-events: auto;
+    touch-action: none;
+    background: radial-gradient(circle, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.58) 68%, rgba(0,0,0,0.7) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+.tc-dpad .tc-ring {
+    position: absolute;
+    inset: 18%;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.tc-dpad .tc-thumb {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 34%;
+    height: 34%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: transform 40ms linear;
+}
+.tc-dpad .tc-dir {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: clamp(18px, 4.2vmin, 28px);
+    transition: color 80ms ease;
+    pointer-events: none;
+}
+.tc-dpad .tc-up { left: 35%; top: 3%; }
+.tc-dpad .tc-right { right: 3%; top: 35%; }
+.tc-dpad .tc-down { left: 35%; bottom: 3%; }
+.tc-dpad .tc-left { left: 3%; top: 35%; }
+.tc-dpad.tc-press-up .tc-up,
+.tc-dpad.tc-press-right .tc-right,
+.tc-dpad.tc-press-down .tc-down,
+.tc-dpad.tc-press-left .tc-left {
+    color: rgba(255, 255, 255, 0.98);
+}
+
+/* Main action buttons */
+.tc-jump,
+.tc-action {
+    width: var(--main-size);
+    height: var(--main-size);
+    font-size: clamp(28px, 5.4vmin, 42px);
+    border-width: 2px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
+}
+.tc-jump {
+    right: var(--base-right);
+    bottom: var(--base-bottom);
+}
+.tc-action {
+    right: var(--action-right);
+    bottom: var(--action-bottom);
+}
+
+/* Small orbiting buttons around action */
+.tc-orbit {
+    width: var(--orbit-size);
+    height: var(--orbit-size);
+    font-size: clamp(18px, 3.4vmin, 26px);
+}
+/* 3x2 center-aligned grid with fixed Action (top-center) and Jump (bottom-right) */
+.tc-walk {
+    right: calc(var(--action-center-right) + var(--grid-step-x) - (var(--orbit-size) / 2));
+    bottom: calc(var(--action-center-bottom) - (var(--orbit-size) / 2));
+}
+.tc-roll {
+    right: calc(var(--jump-center-right) - (var(--orbit-size) / 2));
+    bottom: calc(var(--action-center-bottom) - (var(--orbit-size) / 2));
+}
+.tc-look {
+    right: calc(var(--action-center-right) + var(--grid-step-x) - (var(--orbit-size) / 2));
+    bottom: calc(var(--jump-center-bottom) - (var(--orbit-size) / 2));
+}
+.tc-guns {
+    right: calc(var(--action-center-right) - (var(--orbit-size) / 2));
+    bottom: calc(var(--jump-center-bottom) - (var(--orbit-size) / 2));
+}
+
+/* Top bar */
+.tc-menu,
+.tc-pause {
+    top: 2dvh;
+    width: clamp(32px, 5.4dvw, 46px);
+    height: clamp(32px, 5.4dvw, 46px);
+    font-size: clamp(13px, 2.5vmin, 19px);
+}
+.tc-menu { left: calc(50% - clamp(32px, 5.4dvw, 46px) - 7px); }
+.tc-pause { left: calc(50% + 8px); right: auto; }
+
+/* Runtime-applied fold mode (safer than forcing canvas buffer resize) */
+body.is-folded-horizontal #canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100dvw !important;
+    height: calc(var(--fold-top-height, 50dvh) + 1px) !important;
+}
+body.is-folded-horizontal #touch-controls {
+    top: auto !important;
+    bottom: -1px !important;
+    width: 100dvw !important;
+    height: calc(var(--fold-controls-height, 50dvh) + 1px) !important;
+}
+body.is-folded-horizontal #start-gate {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100dvw !important;
+    height: calc(var(--fold-top-height, 50dvh) + 1px) !important;
+}
+body.is-folded-horizontal #loading {
+    top: calc(var(--fold-top-height, 50dvh) * 0.5) !important;
+}

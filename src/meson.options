@@ -1,2 +1,3 @@
 option('staticdeps', type: 'boolean', value: true, description: 'Try to build against static dependencies. default: true')
 option('game', type: 'combo', choices: ['tr1', 'tr2'], value: 'tr1', description: 'Which game to build for Emscripten (tr1 or tr2)')
+option('webgl_bundle_gamedata', type: 'combo', choices: ['auto', 'yes', 'no'], value: 'auto', description: 'Bundle user game data in WebGL builds (auto=if present)')

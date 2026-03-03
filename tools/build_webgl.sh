@@ -17,7 +17,11 @@
 #
 #
 # Usage:
-#   ./tools/build_webgl.sh [tr1|tr2] [debug|release|debugoptim]
+#   ./tools/build_webgl.sh [tr1|tr2] [debug|release|debugoptim] [--no-game-data]
+#
+# Options:
+#   --no-game-data   Do not bundle user game data even if present.
+#                    Users will upload their own game files at runtime.
 #
 # Output:
 #   build/webgl-<game>/TRX.html
@@ -33,12 +37,28 @@ CROSS_FILE="$PROJECT_ROOT/tools/shared/emscripten/emscripten_cross.ini"
 
 GAME="${1:-tr1}"
 BUILD_TYPE="${2:-debug}"
+NO_GAME_DATA=false
+ENABLE_ERUDA=false
+
+# Parse remaining arguments
+shift 2 2>/dev/null || true
+for arg in "$@"; do
+    case "$arg" in
+        --no-game-data) NO_GAME_DATA=true ;;
+        --eruda) ENABLE_ERUDA=true ;;
+        *) echo "Unknown option: $arg"; exit 1 ;;
+    esac
+done
+
 BUILD_DIR="$PROJECT_ROOT/build/webgl-${GAME}"
 
 echo "============================================"
 echo "  TRX WebGL Build"
 echo "  Game: $GAME"
 echo "  Build type: $BUILD_TYPE"
+if $NO_GAME_DATA; then
+echo "  Game data: excluded (user upload at runtime)"
+fi
 echo "============================================"
 
 # Validate game selection
@@ -77,6 +97,25 @@ case "$BUILD_TYPE" in
         ;;
 esac
 
+# Determine game data bundling option
+if $NO_GAME_DATA; then
+    GAMEDATA_OPT="no"
+else
+    GAMEDATA_OPT="auto"
+fi
+
+# TRX images (title screens, legal notices, credits) live in the game
+# data directory but are TRX-authored assets.  Copy them into ship data
+# so they are always bundled regardless of the game data flag.
+IMAGES_SRC="$PROJECT_ROOT/${GAME}_data/data/images"
+IMAGES_DST="$PROJECT_ROOT/data/${GAME}/ship/data/images"
+if [ -d "$IMAGES_SRC" ]; then
+    echo ""
+    echo ">>> Copying TRX images into ship data..."
+    mkdir -p "$IMAGES_DST"
+    cp -u "$IMAGES_SRC"/* "$IMAGES_DST/"
+fi
+
 # Setup or reconfigure
 if [ ! -f "$BUILD_DIR/build.ninja" ]; then
     echo ""
@@ -86,6 +125,7 @@ if [ ! -f "$BUILD_DIR/build.ninja" ]; then
         --buildtype "$MESON_BUILDTYPE" \
         -Dstaticdeps=false \
         -Dgame="$GAME" \
+        -Dwebgl_bundle_gamedata="$GAMEDATA_OPT" \
         "$BUILD_DIR" \
         "$PROJECT_ROOT/src/"
 else
@@ -94,6 +134,7 @@ else
     meson configure \
         --buildtype "$MESON_BUILDTYPE" \
         -Dgame="$GAME" \
+        -Dwebgl_bundle_gamedata="$GAMEDATA_OPT" \
         "$BUILD_DIR"
 fi
 
@@ -103,13 +144,25 @@ meson compile -C "$BUILD_DIR" TRX
 
 # Copy FMV cutscenes alongside the build output so they can be streamed
 # on demand via HTTP (they are not embedded in TRX.data).
-FMV_SRC="$PROJECT_ROOT/${GAME}_data/fmv"
-if [ -d "$FMV_SRC" ]; then
-    echo ""
-    echo ">>> Copying FMV files for HTTP streaming..."
-    mkdir -p "$BUILD_DIR/fmv"
-    cp -u "$FMV_SRC"/*.mp4 "$BUILD_DIR/fmv/" 2>/dev/null || true
+if ! $NO_GAME_DATA; then
+    FMV_SRC="$PROJECT_ROOT/${GAME}_data/fmv"
+    if [ -d "$FMV_SRC" ]; then
+        echo ""
+        echo ">>> Copying FMV files for HTTP streaming..."
+        mkdir -p "$BUILD_DIR/fmv"
+        cp -u "$FMV_SRC"/*.mp4 "$BUILD_DIR/fmv/" 2>/dev/null || true
+    fi
 fi
+
+# Copy game data upload support files (always included — the runtime
+# decides whether to show the upload UI or use preloaded data).
+SHARED_EMC="$PROJECT_ROOT/tools/shared/emscripten"
+echo ""
+echo ">>> Copying game data upload scripts..."
+cp "$SHARED_EMC/shell.css" "$BUILD_DIR/shell.css"
+cp "$SHARED_EMC/gamedata.js" "$BUILD_DIR/gamedata.js"
+mkdir -p "$BUILD_DIR/vendor"
+cp "$SHARED_EMC/vendor/fflate.min.js" "$BUILD_DIR/vendor/fflate.min.js"
 
 # Add cache-busting query strings to the built HTML so that browsers
 # and reverse proxies (nginx, CDNs) never serve stale .js/.wasm/.data.
@@ -118,9 +171,20 @@ echo ""
 echo ">>> Cache-busting: $CACHE_BUST"
 sed -i "s|src=\"TRX.js\"|src=\"TRX.js?${CACHE_BUST}\"|" "$BUILD_DIR/TRX.html"
 sed -i "s|var _trxCacheBust = '';  // __CACHE_BUST__|var _trxCacheBust = '${CACHE_BUST}';|" "$BUILD_DIR/TRX.html"
+sed -i "s|var _trxGameId = 'tr1';  // __GAME_ID__|var _trxGameId = '${GAME}';|" "$BUILD_DIR/TRX.html"
+sed -i "s|href=\"shell.css\"|href=\"shell.css?${CACHE_BUST}\"|" "$BUILD_DIR/TRX.html"
+sed -i "s|src=\"gamedata.js\"|src=\"gamedata.js?${CACHE_BUST}\"|" "$BUILD_DIR/TRX.html"
+sed -i "s|src=\"vendor/fflate.min.js\"|src=\"vendor/fflate.min.js?${CACHE_BUST}\"|" "$BUILD_DIR/TRX.html"
+
+# Inject eruda mobile debugger for test/debug builds.
+if $ENABLE_ERUDA; then
+    echo ""
+    echo ">>> Injecting eruda mobile debugger..."
+    ERUDA_TAGS='<script src="https:\/\/cdn.jsdelivr.net\/npm\/eruda"><\/script><script>eruda.init();<\/script>'
+    sed -i "s|<!-- __ERUDA__ -->|${ERUDA_TAGS}|" "$BUILD_DIR/TRX.html"
+fi
 
 # --- PWA assets ---
-SHARED_EMC="$PROJECT_ROOT/tools/shared/emscripten"
 
 # Game display names
 case "$GAME" in
@@ -152,7 +216,9 @@ echo "  Output files:"
 echo "    $BUILD_DIR/TRX.html"
 echo "    $BUILD_DIR/TRX.js"
 echo "    $BUILD_DIR/TRX.wasm"
+if [ -d "$BUILD_DIR/fmv" ]; then
 echo "    $BUILD_DIR/fmv/    (streamed on demand)"
+fi
 echo ""
 echo "  To test locally:"
 echo "    cd $BUILD_DIR"

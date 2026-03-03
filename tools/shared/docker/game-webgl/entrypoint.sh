@@ -13,18 +13,21 @@ shift || true
 
 TARGET="debug"
 GAME="tr1"
+EXTRA_ARGS=()
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --target) TARGET="$2"; shift 2 ;;
-        --game)   GAME="$2";   shift 2 ;;
-        *)        shift ;;
+        --target)        TARGET="$2"; shift 2 ;;
+        --game)          GAME="$2";   shift 2 ;;
+        --no-game-data)  EXTRA_ARGS+=("--no-game-data"); shift ;;
+        --eruda)         EXTRA_ARGS+=("--eruda"); shift ;;
+        *)               shift ;;
     esac
 done
 
 case "$ACTION" in
     build)
-        exec /app/tools/build_webgl.sh "$GAME" "$TARGET"
+        exec /app/tools/build_webgl.sh "$GAME" "$TARGET" "${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"}"
         ;;
     *)
         echo "Unknown action: $ACTION (expected: build)"

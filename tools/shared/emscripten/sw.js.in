@@ -7,15 +7,17 @@ var PRECACHE_URLS = [
     'TRX.html',
     'TRX.js',
     'TRX.wasm',
+    'shell.css',
+    'gamedata.js',
+    'vendor/fflate.min.js',
     'manifest.webmanifest',
     'icon-192.png',
     'icon-512.png'
 ];
 
-// Assets that must never be cached (too large or streamed).
+// Assets that are streamed and should not be intercepted.
 function shouldSkip(url) {
-    return url.pathname.endsWith('/TRX.data')
-        || url.pathname.indexOf('/fmv/') !== -1;
+    return url.pathname.indexOf('/fmv/') !== -1;
 }
 
 self.addEventListener('install', function(event) {
@@ -51,7 +53,7 @@ self.addEventListener('fetch', function(event) {
         return;
     }
 
-    // Never cache TRX.data or FMV files.
+    // Never cache or intercept FMV streaming requests.
     if (shouldSkip(url)) {
         return;
     }
@@ -61,9 +63,21 @@ self.addEventListener('fetch', function(event) {
         return;
     }
 
+    // For TRX.data: cache on first use (it's large but needed for offline).
+    // For everything else: serve from precache or fetch.
     event.respondWith(
         caches.match(event.request, { ignoreSearch: true }).then(function(cached) {
-            return cached || fetch(event.request);
+            if (cached) return cached;
+            return fetch(event.request).then(function(response) {
+                // Cache TRX.data on first successful fetch for offline support.
+                if (url.pathname.endsWith('/TRX.data') && response.ok) {
+                    var clone = response.clone();
+                    caches.open(CACHE_NAME).then(function(cache) {
+                        cache.put(event.request, clone);
+                    });
+                }
+                return response;
+            });
         })
     );
 });
