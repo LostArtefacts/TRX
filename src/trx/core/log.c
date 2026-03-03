@@ -26,6 +26,10 @@ static const char *const m_LogLevelStrings[] = {
 
 void Log_Init(const char *path, const LOG_LEVEL min_level)
 {
+    if (m_LogHandle != nullptr) {
+        fclose(m_LogHandle);
+        m_LogHandle = nullptr;
+    }
     m_LogLevel = min_level;
     m_UseAnsiColors = Log_ShouldUseAnsiColors();
     if (path != nullptr) {
@@ -100,5 +104,6 @@ void Log_Shutdown(void)
     Log_Shutdown_Extra();
     if (m_LogHandle != nullptr) {
         fclose(m_LogHandle);
+        m_LogHandle = nullptr;
     }
 }
