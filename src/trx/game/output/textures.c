@@ -454,6 +454,9 @@ static void M_FreeLevelData(void)
     Memory_FreePointer(&m_Priv.uvws.flags);
     Memory_FreePointer(&m_Priv.uvws.has_transparency_objects);
     Memory_FreePointer(&m_Priv.atlas_sizes.data);
+
+    memset(&m_Priv.uvws, 0, sizeof(m_Priv.uvws));
+    memset(&m_Priv.atlas_sizes, 0, sizeof(m_Priv.atlas_sizes));
 }
 
 void Output_Textures_Init(void)
@@ -479,6 +482,20 @@ void Output_Textures_Shutdown(void)
         glDeleteTextures(1, &m_Priv.tex_env_map);
         m_Priv.tex_env_map = 0;
     }
+
+    // These are GameBuf-backed and become invalid once GameBuf_Shutdown runs.
+    m_TexturePageCount = 0;
+    m_TexturePages8 = nullptr;
+    m_TexturePages32 = nullptr;
+    m_TexturePageLocks = nullptr;
+    m_PaletteSize = 0;
+    m_Palette8 = nullptr;
+    m_Palette16 = nullptr;
+    m_ObjectTextureCount = 0;
+    m_SpriteTextureCount = 0;
+    m_ObjectTextures = nullptr;
+    m_SpriteTextures = nullptr;
+    m_AnimTextureRanges = nullptr;
 }
 
 void Output_Textures_ObserveLevelLoad(void)
