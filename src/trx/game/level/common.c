@@ -62,6 +62,8 @@ bool Level_Initialise(
     }
     if (level->type != GFL_TITLE && level->type != GFL_CUTSCENE) {
         Game_SetCurrentLevel(level);
+    } else {
+        Game_SetCurrentLevel(nullptr);
     }
     GF_SetCurrentLevel(level);
 
