@@ -258,6 +258,7 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "ammo_used", resume->stats.ammo_used);
     JSONW_WRITE(io, "distance_travelled", resume->stats.distance_travelled);
     JSONW_WRITE(io, "medipacks_used", resume->stats.medipacks_used);
+    JSONW_WRITE(io, "death_count", resume->stats.death_count);
 }
 
 static int32_t M_GetMusicTrackFlagsCount(void)
