@@ -86,8 +86,6 @@ void Output_Shutdown(void)
 
     Output_Textures_Shutdown();
     Output_Lights_Shutdown();
-
-    TRX_GL_Context_Detach();
 }
 
 bool Output_IsHeadless(void)

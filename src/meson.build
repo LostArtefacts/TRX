@@ -200,6 +200,7 @@ common_sources = [
   'trx/game/console/cmd/kill.c',
   'trx/game/console/cmd/load_game.c',
   'trx/game/console/cmd/lua.c',
+  'trx/game/console/cmd/mod.c',
   'trx/game/console/cmd/music.c',
   'trx/game/console/cmd/play_cutscene.c',
   'trx/game/console/cmd/play_demo.c',
