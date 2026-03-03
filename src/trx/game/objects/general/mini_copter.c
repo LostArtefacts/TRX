@@ -9,7 +9,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const ITEM *const lara_item = Lara_GetItem();
 
-    item->pos.z += 100;
+    item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, 100);
 
     XYZ_32 pos = lara_item->pos;
     pos.x += ((item->pos.x - lara_item->pos.x) >> 2);
