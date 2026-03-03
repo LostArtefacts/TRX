@@ -13,7 +13,7 @@ typedef struct M_NODE {
 
 static M_NODE *m_List = nullptr;
 
-void Console_Registry_Shutdown(void)
+__attribute__((destructor)) static void M_Shutdown(void)
 {
     M_NODE *current = m_List;
 
