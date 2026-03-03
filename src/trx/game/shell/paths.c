@@ -56,6 +56,7 @@ typedef struct {
 } M_DIR_CACHE_ENTRY;
 
 typedef struct {
+    uint32_t generation;
     TRX_DYNAMIC_PATH path;
     char *rel;
     char *resolved;
@@ -206,6 +207,21 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
 static M_CONTEXT m_Context = {};
 static VECTOR *m_DirCache = nullptr; // M_DIR_CACHE_ENTRY
 static VECTOR *m_ResolveCache = nullptr; // M_RESOLVE_CACHE_ENTRY
+static uint32_t m_ResolveCacheGeneration = 0;
+
+static void M_ClearResolveCache(void)
+{
+    if (m_ResolveCache == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_ResolveCache->count; i++) {
+        M_RESOLVE_CACHE_ENTRY *const e = Vector_Get(m_ResolveCache, i);
+        Memory_FreePointer(&e->rel);
+        Memory_FreePointer(&e->resolved);
+    }
+    Vector_Free(m_ResolveCache);
+    m_ResolveCache = nullptr;
+}
 
 // Returns a non-owning pointer that may reference static formatting storage.
 // Do not free it.
@@ -419,7 +435,8 @@ static M_RESOLVE_CACHE_ENTRY *M_FindResolveCache(
     }
     for (int32_t i = 0; i < m_ResolveCache->count; i++) {
         M_RESOLVE_CACHE_ENTRY *const e = Vector_Get(m_ResolveCache, i);
-        if (e->path == path && strcmp(e->rel, rel) == 0) {
+        if (e->generation == m_ResolveCacheGeneration && e->path == path
+            && strcmp(e->rel, rel) == 0) {
             return e;
         }
     }
@@ -445,6 +462,7 @@ static void M_SetResolveCache(
         return;
     }
     M_RESOLVE_CACHE_ENTRY entry = {
+        .generation = m_ResolveCacheGeneration,
         .path = path,
         .rel = Memory_DupStr(rel),
         .resolved = resolved != nullptr ? Memory_DupStr(resolved) : nullptr,
@@ -740,15 +758,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
         Vector_Free(m_DirCache);
         m_DirCache = nullptr;
     }
-    if (m_ResolveCache != nullptr) {
-        for (int32_t i = 0; i < m_ResolveCache->count; i++) {
-            M_RESOLVE_CACHE_ENTRY *const e = Vector_Get(m_ResolveCache, i);
-            Memory_FreePointer(&e->rel);
-            Memory_FreePointer(&e->resolved);
-        }
-        Vector_Free(m_ResolveCache);
-        m_ResolveCache = nullptr;
-    }
+    M_ClearResolveCache();
     m_Context.args = nullptr;
     m_Context.mod_chain_count = 0;
     m_Context.inited = false;
@@ -757,6 +767,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
 void TRXPath_Init(const SHELL_ARGS *const args)
 {
     m_Context.args = args;
+    m_ResolveCacheGeneration++;
 
     if (m_Context.trx_dir == nullptr) {
         const char *const base = SDL_GetBasePath();
@@ -1044,6 +1055,13 @@ const char *TRXPath_PeekResolve(
         path, rel, M_ResolveAttemptVisitor, &ctx, !policy->check_exists);
     if (ctx.resolved != nullptr) {
         M_SetResolveCache(path, rel, ctx.resolved);
+        if (rel != nullptr) {
+            const M_RESOLVE_CACHE_ENTRY *const cached =
+                M_FindResolveCache(path, rel);
+            if (cached != nullptr && cached->found) {
+                return cached->resolved;
+            }
+        }
         return ctx.resolved;
     }
 
