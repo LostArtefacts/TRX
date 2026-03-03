@@ -17,6 +17,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory_ring.h>
+#include <trx/game/items/walkable.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/lara/skin.h>
 #include <trx/game/lua.h>
@@ -171,6 +172,7 @@ static void M_ShutdownModules(void)
 
     GameStringManager_Shutdown();
     GameString_Shutdown();
+    Walkable_Shutdown();
     GameBuf_Shutdown();
     Catalog_Shutdown();
 
