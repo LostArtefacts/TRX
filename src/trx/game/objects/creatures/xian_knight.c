@@ -113,7 +113,7 @@ static void M_Control(const int16_t item_num)
         creature->lot.setup.fly = STEP_L / 4;
         Creature_AIInfo(item, &info);
     }
-    Creature_Mood(item, &info, MOOD_ATTACK);
+    Creature_Mood(item, &info, true);
 
     angle = Creature_Turn(item, creature->maximum_turn);
     if (item->current_anim_state != XIAN_KNIGHT_STATE_START) {

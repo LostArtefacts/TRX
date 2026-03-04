@@ -98,7 +98,7 @@ static int16_t M_ControlAlive(ITEM *const driver_item, ITEM *const skidoo_item)
 
     AI_INFO info;
     Creature_AIInfo(skidoo_item, &info);
-    Creature_Mood(skidoo_item, &info, MOOD_ATTACK);
+    Creature_Mood(skidoo_item, &info, true);
 
     int16_t angle = Creature_Turn(skidoo_item, SKIDOO_MAX_TURN / 2);
 

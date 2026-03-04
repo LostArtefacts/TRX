@@ -390,7 +390,7 @@ static void M_ControlBack(const int16_t item_num)
     } else {
         AI_INFO info;
         Creature_AIInfo(dragon_front_item, &info);
-        Creature_Mood(dragon_front_item, &info, MOOD_ATTACK);
+        Creature_Mood(dragon_front_item, &info, true);
 
         angle = Creature_Turn(dragon_front_item, M_WALK_TURN);
         const bool is_ahead = info.ahead && info.distance > M_CLOSE_RANGE

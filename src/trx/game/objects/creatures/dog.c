@@ -67,7 +67,7 @@ static void M_Control(const int16_t item_num)
     if (item->hit_points > 0) {
         AI_INFO info;
         Creature_AIInfo(item, &info);
-        Creature_Mood(item, &info, MOOD_BORED);
+        Creature_Mood(item, &info, false);
 
         if (info.ahead) {
             head = info.angle;

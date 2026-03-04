@@ -84,7 +84,7 @@ static void M_Control(const int16_t item_num)
     if (info.ahead) {
         head = info.angle;
     }
-    Creature_Mood(item, &info, MOOD_ATTACK);
+    Creature_Mood(item, &info, true);
     angle = Creature_Turn(item, creature->maximum_turn);
 
     if (item->touch_bits != 0) {

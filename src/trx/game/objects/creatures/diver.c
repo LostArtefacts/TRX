@@ -83,7 +83,7 @@ static void M_Control(const int16_t item_num)
 
     AI_INFO info;
     Creature_AIInfo(item, &info);
-    Creature_Mood(item, &info, MOOD_BORED);
+    Creature_Mood(item, &info, false);
 
     bool shoot;
     const ITEM *const lara_item = Lara_GetItem();
