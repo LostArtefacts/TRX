@@ -295,6 +295,7 @@
         "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
         "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
         "OVERLAY_ITEM_COUNT_FMT": "%s",
+        "PAUSE_PAUSED": "\\{color 5}Pause",
         "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}\\{color 2}%s",
         "STATS_GYM_ASSAULT_COURSE": "\\{review}\\{color 5}Angriffskurs",
         "STATS_GYM_RACETRACK_COURSE": "\\{review}\\{color 5}Rennstrecke",
