@@ -898,6 +898,26 @@ void Output_Overlay_DrawGame(void)
     Interpolation_Enable();
 }
 
+void Output_Overlay_DrawGameMonoCool(const float desaturation)
+{
+    Output_SetDesaturation(desaturation);
+    Output_SetGlobalTint(Color_Mix(
+        COLOR_RGB_F_WHITE, ((RGB_F) { 0.666f, 0.666f, 1.0f }), desaturation));
+    Output_Overlay_DrawGame();
+    Output_SetGlobalTint(COLOR_RGB_F_WHITE);
+    Output_SetDesaturation(0.0f);
+}
+
+void Output_Overlay_DrawGameMonoWarm(const float desaturation)
+{
+    Output_SetDesaturation(desaturation);
+    Output_SetGlobalTint(Color_Mix(
+        COLOR_RGB_F_WHITE, ((RGB_F) { 1.0f, 0.666f, 0.666f }), desaturation));
+    Output_Overlay_DrawGame();
+    Output_SetGlobalTint(COLOR_RGB_F_WHITE);
+    Output_SetDesaturation(0.0f);
+}
+
 void Output_Overlay_DrawGameMono(const float desaturation)
 {
     Output_SetDesaturation(desaturation);

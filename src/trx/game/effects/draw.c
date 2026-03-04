@@ -25,7 +25,7 @@ void Effect_Draw(const int16_t effect_num)
         Output_DrawSprite(
             effect->interp.result.pos.x, effect->interp.result.pos.y,
             effect->interp.result.pos.z, Object_Get(O_GLOW)->mesh_idx,
-            effect->shade, (RGB_F) { 1.0f, 1.0f, 1.0f }, DRAW_BLEND);
+            effect->shade, COLOR_RGB_F_WHITE, DRAW_BLEND);
         return;
     }
 
@@ -38,7 +38,7 @@ void Effect_Draw(const int16_t effect_num)
     if (obj->mesh_count < 0) {
         const RGB_F tint =
             Object_IsType(effect->object_id, g_WaterSpriteObjects)
-            ? (RGB_F) { 1.0f, 1.0f, 1.0f }
+            ? COLOR_RGB_F_WHITE
             : Output_GetTint();
         int16_t shade = effect->shade;
         if (shade == -1) {

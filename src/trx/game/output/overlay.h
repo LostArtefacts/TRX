@@ -2,6 +2,8 @@
 
 void Output_Overlay_DrawGame(void);
 void Output_Overlay_DrawGameMono(float desaturation);
+void Output_Overlay_DrawGameMonoCool(float desaturation);
+void Output_Overlay_DrawGameMonoWarm(float desaturation);
 void Output_Overlay_DrawPattern(bool wave);
 void Output_Overlay_DrawPatternOpacity(bool wave, float opacity);
 void Output_Overlay_DrawBlackRectangle(float opacity, bool post_ui);
