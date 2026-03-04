@@ -113,7 +113,7 @@ if is_emscripten
   dep_backtrace = null_dep
   dep_zlib = null_dep          # provided by -sUSE_ZLIB=1
   dep_pcre2 = null_dep
-  dep_lua = null_dep           # provided by --use-port=contrib.lua
+  dep_lua = dependency('lua', static: true)
   dep_mathlibrary = null_dep   # Emscripten bundles libm
   # uthash is header-only; use vendored copy for cross builds
   add_project_arguments(
