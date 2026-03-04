@@ -9,7 +9,8 @@
 #include <trx/version.h>
 
 // clang-format off
-#define M_WALK_DIST                140  // OG: 104
+#define M_WALK_DIST                104
+#define M_WALK_BACK_DIST           140
 #define M_LF_ROLL                  2
 #define M_CANCEL_POSE_TIME         (10 * LOGIC_FPS)               // = 300
 #define M_CANCEL_POSE_CHANCE       0x40                           // = 64
@@ -313,7 +314,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     if (g_Input.forward) {
         fheight = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
     } else if (g_Input.back) {
-        rheight = Lara_FloorFront(item, item->rot.y + DEG_180, M_WALK_DIST);
+        rheight =
+            Lara_FloorFront(item, item->rot.y + DEG_180, M_WALK_BACK_DIST);
     }
 
     const ROOM *const room = Room_Get(item->room_num);
@@ -364,23 +366,18 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     } else if (g_Input.jump) {
         item->goal_anim_state = LS(LS_COMPRESS);
     } else if (g_Input.forward) {
-        const int32_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
-        const int32_t c =
-            Lara_CeilingFront(item, item->rot.y, M_WALK_DIST, LARA_HEIGHT);
-        const HEIGHT_TYPE height_type = Room_GetHeightType();
-
-        bool inside_wall = false;
-        if (g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_FIXED) {
-            int16_t room_num = item->room_num;
-            const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-            const int32_t sector_height =
-                Room_GetHeightEx(sector, item->pos, true, NO_ITEM);
-            inside_wall = sector_height == NO_HEIGHT;
+        bool bad_floor = false;
+        bool bad_ceiling = false;
+        if (g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_FIXED) {
+            const int32_t h = Lara_FloorFront(item, item->rot.y, M_WALK_DIST);
+            const int32_t c =
+                Lara_CeilingFront(item, item->rot.y, M_WALK_DIST, LARA_HEIGHT);
+            const HEIGHT_TYPE height_type = Room_GetHeightType();
+            bad_floor = height_type == HT_BIG_SLOPE && h < 0;
+            bad_ceiling = c > 0 && !g_Input.action;
         }
 
-        if (height_type == HT_BIG_SLOPE && h < 0 && !inside_wall) {
-            item->goal_anim_state = LS_STOP;
-        } else if (c > 0 && !inside_wall && !g_Input.action) {
+        if (bad_floor || bad_ceiling) {
             item->goal_anim_state = LS_STOP;
         } else if (g_Input.slow) {
             M_Walk(item, coll);
