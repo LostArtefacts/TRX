@@ -10,6 +10,7 @@
 #include <trx/game/console.h>
 #include <trx/game/events.h>
 #include <trx/game/fmv.h>
+#include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
@@ -423,6 +424,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         }
     }
 
+    Game_SetCurrentLevel(nullptr);
     if (s->args->level_to_play != nullptr) {
         Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
     }
