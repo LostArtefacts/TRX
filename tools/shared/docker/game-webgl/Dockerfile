@@ -57,10 +57,16 @@ RUN cd /tmp/FFmpeg \
 # Final image
 FROM base
 
+# pkg-config is needed for Meson to find FFmpeg libraries
+RUN apt-get update && apt-get install -y pkg-config
+
 # Carry over the FFmpeg static libraries and headers from the build stage
 COPY --from=libav \
     /emsdk/upstream/emscripten/cache/sysroot/usr/ \
     /emsdk/upstream/emscripten/cache/sysroot/usr/
+
+# Point pkg-config at the Emscripten sysroot so it finds FFmpeg's .pc files
+ENV PKG_CONFIG_LIBDIR=/emsdk/upstream/emscripten/cache/sysroot/usr/lib/pkgconfig
 
 RUN mkdir -p /app
 WORKDIR /app
