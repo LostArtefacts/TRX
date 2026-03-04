@@ -944,7 +944,14 @@ void Savegame_ScanSavedGames(void)
     M_ScanSavedGamesDir(".");
     M_ScanSavedGamesDir(TRXPath_Get(TRX_PATH_LEGACY_SAVES_DIR));
     M_ScanSavedGamesDir(TRXPath_Get(TRX_PATH_SAVES_DIR));
-    M_ScanSavedGamesDir(M_GetSaveWriteDir());
+
+    {
+        // M_GetSaveWriteDir may use static formatting storage, so copy it
+        // before scanning because nested formatting calls during scan can
+        // overwrite it.
+        AUTO_FREE char *write_dir = Memory_DupStr(M_GetSaveWriteDir());
+        M_ScanSavedGamesDir(write_dir);
+    }
 
     for (SAVEGAME_SLOT_POOL pool = 0; pool < SAVEGAME_SLOT_POOL_NUMBER_OF;
          pool++) {

@@ -72,3 +72,5 @@ void Memory_ArenaReset(MEMORY_ARENA_ALLOCATOR *allocator);
 // Frees the entire buffer owned by the arena allocator. allocator must not be
 // nullptr.
 void Memory_ArenaFree(MEMORY_ARENA_ALLOCATOR *allocator);
+
+#define AUTO_FREE __attribute__((cleanup(Memory_FreePointer)))

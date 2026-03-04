@@ -21,20 +21,12 @@ typedef struct {
 
 static M_STATIC_BUFFER m_StaticBufferRing[M_MAX_STATIC_BUFFERS] = {};
 static int m_StaticBufNext = 0;
-static bool m_ExitRegistered = false;
 
-static void M_Shutdown(void)
+__attribute__((destructor)) static void M_Shutdown(void)
 {
     for (int32_t i = 0; i < M_MAX_STATIC_BUFFERS; i++) {
-        Memory_Free(m_StaticBufferRing[i].buf);
-    }
-}
-
-static void M_EnsureShutdown(void)
-{
-    if (!m_ExitRegistered) {
-        atexit(M_Shutdown);
-        m_ExitRegistered = true;
+        Memory_FreePointer(&m_StaticBufferRing[i].buf);
+        m_StaticBufferRing[i].capacity = 0;
     }
 }
 
@@ -322,7 +314,6 @@ const char *String_FormatStatic(const char *const fmt, ...)
 
 const char *String_FormatStaticV(const char *const fmt, va_list args)
 {
-    M_EnsureShutdown();
     M_STATIC_BUFFER *const buffer = M_CycleStaticBuffer();
     String_FormatIntoV(&buffer->buf, &buffer->capacity, fmt, args);
     return buffer->buf;
