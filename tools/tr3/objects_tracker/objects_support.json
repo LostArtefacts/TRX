@@ -15,7 +15,7 @@
   "O_ANIMATING_4":            { "status": "fully implemented" },
   "O_ANIMATING_5":            { "status": "fully implemented" },
   "O_ANIMATING_6":            { "status": "fully implemented" },
-  "O_ASSAULT_TARGET":         { "status": "partially implemented", "todo": "some collision problems" },
+  "O_ASSAULT_TARGET":         { "status": "fully implemented" },
   "O_BEACON_LIGHT":           { "status": "fully implemented" },
   "O_BLADE":                  { "status": "fully implemented" },
   "O_BLUE_LIGHT":             { "status": "fully implemented" },
