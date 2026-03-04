@@ -91,7 +91,7 @@ static void M_Control(const int16_t item_num)
 
     AI_INFO info;
     Creature_AIInfo(item, &info);
-    Creature_Mood(item, &info, MOOD_ATTACK);
+    Creature_Mood(item, &info, true);
 
     const int16_t angle = Creature_Turn(item, creature->maximum_turn);
 
