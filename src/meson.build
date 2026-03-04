@@ -105,11 +105,11 @@ if is_emscripten
   dep_sdl2 = null_dep          # provided by -sUSE_SDL=2
   dep_glew = null_dep          # GLEW is not needed; Emscripten provides GL ES3
   dep_opengl = null_dep        # GL is linked implicitly via -sFULL_ES3
-  dep_avcodec = null_dep
-  dep_avformat = null_dep
-  dep_avutil = null_dep
-  dep_swscale = null_dep
-  dep_swresample = null_dep
+  dep_avcodec = dependency('libavcodec', static: true)
+  dep_avformat = dependency('libavformat', static: true)
+  dep_avutil = dependency('libavutil', static: true)
+  dep_swscale = dependency('libswscale', static: true)
+  dep_swresample = dependency('libswresample', static: true)
   dep_backtrace = null_dep
   dep_zlib = null_dep          # provided by -sUSE_ZLIB=1
   dep_pcre2 = null_dep
@@ -791,21 +791,12 @@ common_sources = [
 ]
 
 
+common_sources += desktop_sources
+
 if is_emscripten
   common_sources += ['trx/core/log_emscripten.c']
   common_sources += ['trx/gl/gl_webgl_compat.c']
-  common_sources += ['trx/av/audio_sample_emscripten.c']
-  common_sources += ['trx/av/audio_stream_emscripten.c']
-  common_sources += ['trx/av/image_emscripten.c']
-  common_sources += ['trx/game/fmv_emscripten.c']
-  # Pre-built libwebp decoder for WebP image support (built with emcc).
-  dep_webpdecoder = c_compiler.find_library(
-    'webpdecoder',
-    dirs: [meson.current_source_dir() / 'trx' / 'av' / 'vendor'],
-  )
-  dependencies += [dep_webpdecoder]
 else
-  common_sources += desktop_sources
   if dep_backtrace.found() and host_machine.system() == 'linux'
     common_sources += ['trx/core/log_linux.c']
   elif host_machine.system() == 'windows'
@@ -825,6 +816,8 @@ if host_machine.system() == 'windows'
 elif is_emscripten
   data_root = meson.project_source_root() + '/../data'
   link_args += [
+    '-pthread',
+    '-sPTHREAD_POOL_SIZE=4',
     '-sUSE_SDL=2',
     '-sUSE_ZLIB=1',
     '-sFULL_ES3=1',
@@ -845,9 +838,11 @@ elif is_emscripten
     #   GF_InterpretSequence → Level_Initialise → Level_Pipeline_Load
     #   → emscripten_sleep  (before heavy I/O)
     #   → M_CompleteSetup → M_InitialiseSamplesFromFile → emscripten_sleep
-    # FMV playback also yields:
-    #   M_HandlePlayFMV → FMV_Play → M_Play → emscripten_sleep
-    '-sASYNCIFY_ADD=["main","Shell_Main","*M_InitIDBFS*","*M_WaitForUserInput*","GF_DoFrontendSequence","GF_DoLevelSequence","GF_DoCutsceneSequence","GF_DoDemoSequence","GF_PlayAvailableStory","GF_InterpretSequence","*M_RunEvent*","*M_HandleExitToTitle*","*M_HandleLevelComplete*","*M_HandlePlayLevel*","*M_HandlePlayCutscene*","*M_HandlePlayFMV*","*M_HandlePlayMusic*","*M_HandlePicture*","*M_HandleInventoryModifier*","*M_HandleLevelStats*","*M_HandleTotalStats*","*M_HandleGlobeSelect*","*M_HandleSetStartAnim*","*M_HandleEnableSunset*","*M_HandleSetupBaconLara*","*M_HandleDisableFloor*","GF_RunTitle","GF_RunGame","GF_ShowInventory","GF_ShowInventoryKeys","GF_RunDemo","GF_RunCutscene","GF_RunGlobeSelect","GF_EnterPhotoMode","GF_PauseGame","PhaseExecutor_Run","*M_RunFadeToBlackTransition*","*M_DrawFadeToBlackTransition*","Clock_WaitTick","Game_ProcessInput","Stats_CalculateMaxStats","Level_Initialise","Level_Pipeline_Load","FMV_Play","*M_Play*","*M_CompleteSetup*","*M_InitialiseSamplesFromFile*","*M_LoadFromFile*","*M_Control*","*M_Draw*","*M_Start*","*M_Resume*","*M_Suspend*","*M_End*","*M_HandleOverride*","*M_RequestFadeToBlack*","*M_UsesCrossFadeIn*","*Game_Control*"]',
+    # FMV playback also yields (FFmpeg video decoding runs in worker
+    # threads; only the main-thread pump needs ASYNCIFY):
+    #   M_HandlePlayFMV → FMV_Play → M_Play → Video_PumpEvents
+    #   → emscripten_sleep
+    '-sASYNCIFY_ADD=["main","Shell_Main","*M_InitIDBFS*","*M_WaitForUserInput*","GF_DoFrontendSequence","GF_DoLevelSequence","GF_DoCutsceneSequence","GF_DoDemoSequence","GF_PlayAvailableStory","GF_InterpretSequence","*M_RunEvent*","*M_HandleExitToTitle*","*M_HandleLevelComplete*","*M_HandlePlayLevel*","*M_HandlePlayCutscene*","*M_HandlePlayFMV*","*M_HandlePlayMusic*","*M_HandlePicture*","*M_HandleInventoryModifier*","*M_HandleLevelStats*","*M_HandleTotalStats*","*M_HandleGlobeSelect*","*M_HandleSetStartAnim*","*M_HandleEnableSunset*","*M_HandleSetupBaconLara*","*M_HandleDisableFloor*","GF_RunTitle","GF_RunGame","GF_ShowInventory","GF_ShowInventoryKeys","GF_RunDemo","GF_RunCutscene","GF_RunGlobeSelect","GF_EnterPhotoMode","GF_PauseGame","PhaseExecutor_Run","*M_RunFadeToBlackTransition*","*M_DrawFadeToBlackTransition*","Clock_WaitTick","Game_ProcessInput","Stats_CalculateMaxStats","Level_Initialise","Level_Pipeline_Load","FMV_Play","Video_PumpEvents","*M_Play*","*M_CompleteSetup*","*M_InitialiseSamplesFromFile*","*M_LoadFromFile*","*M_Control*","*M_Draw*","*M_Start*","*M_Resume*","*M_Suspend*","*M_End*","*M_HandleOverride*","*M_RequestFadeToBlack*","*M_UsesCrossFadeIn*","*Game_Control*"]',
     '-sENVIRONMENT=web',
     '-sEXPORTED_RUNTIME_METHODS=["callMain"]',
     '-lidbfs.js',
@@ -870,9 +865,6 @@ elif is_emscripten
     # Mapped to /data so that "data/injections/foo.bin" resolves to
     # /data/injections/foo.bin in the virtual filesystem.
     data_root + '/' + game + '/ship/data@/data',
-    # FMV cutscenes are NOT preloaded — they are streamed on demand via
-    # HTTP from the fmv/ directory alongside the HTML/JS/WASM files.
-    # See fmv_emscripten.c js_fmv_open() and build_webgl.sh for the serving setup.
   ]
 
   # User game data (level files, music) can be bundled at build time or
@@ -887,10 +879,14 @@ elif is_emscripten
     bundle_gamedata = true
   endif
 
+  game_fmv_root = meson.project_source_root() + '/../' + game + '_data/fmv'
   if bundle_gamedata
     preload_mappings += [game_data_root + '@/data']
     if fs.is_dir(game_music_root)
       preload_mappings += [game_music_root + '@/music']
+    endif
+    if fs.is_dir(game_fmv_root)
+      preload_mappings += [game_fmv_root + '@/fmv']
     endif
   endif
 

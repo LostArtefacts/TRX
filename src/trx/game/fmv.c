@@ -34,8 +34,13 @@ static OUTPUT_QUAD_SURFACE_DESC M_MakeSurfaceDesc(
         .width = width,
         .height = height,
         .bit_count = 32,
+#ifdef EMSCRIPTEN_BUILD
+        .tex_format = GL_RGBA,
+        .tex_type = GL_UNSIGNED_BYTE,
+#else
         .tex_format = GL_BGRA,
         .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
+#endif
         .uv = {
             { .u = 0.0f, .v = 0.0f },
             { .u = 1.0f, .v = 0.0f },
@@ -142,7 +147,11 @@ static bool M_Play(const char *const file_name)
         Video_SetSurfaceSize(
             video, Viewport_GetWidth(VIEWPORT_GAME),
             Viewport_GetHeight(VIEWPORT_GAME));
+#ifdef EMSCRIPTEN_BUILD
+        Video_SetSurfacePixelFormat(video, AV_PIX_FMT_RGBA);
+#else
         Video_SetSurfacePixelFormat(video, AV_PIX_FMT_BGRA);
+#endif
 
         Video_PumpEvents(video);
 

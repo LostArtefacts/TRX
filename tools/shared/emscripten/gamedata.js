@@ -21,7 +21,7 @@ var GameDataManager = (function () {
     var LEVEL_EXTS = ['.phd', '.tr2', '.psx', '.tub'];
     var MUSIC_EXTS = ['.flac', '.ogg', '.mp3', '.wav'];
     var SFX_EXTS   = ['.sfx'];
-    var FMV_EXTS   = ['.mp4'];
+    var FMV_EXTS   = ['.mp4', '.rpl', '.ogv', '.avi'];
     var AUDIO_EXTS = ['.wad'];  // cdaudio.wad for TR3
     var CUT_EXTS   = ['.tr2'];  // cutscene files live in cuts/
 
@@ -154,13 +154,7 @@ var GameDataManager = (function () {
                 var total = meta ? meta.fileCount : 0;
                 var loaded = 0;
                 return self._getAllFiles(db, function (path, data) {
-                    // FMV files go to blob cache, not FS.
-                    if (_isFMV(path)) {
-                        if (!Module._fmvBlobs) Module._fmvBlobs = {};
-                        Module._fmvBlobs[path] = new Blob([data], { type: 'video/mp4' });
-                    } else {
-                        _writeToFS(path, new Uint8Array(data));
-                    }
+                    _writeToFS(path, new Uint8Array(data));
                     loaded++;
                     if (onProgress) onProgress(loaded, total);
                 });
@@ -224,6 +218,7 @@ var GameDataManager = (function () {
 
         walk('/data');
         walk('/music');
+        walk('/fmv');
         walk('/cuts');
         walk('/audio');
 
@@ -297,7 +292,7 @@ var GameDataManager = (function () {
             var proceed = hasFMV || !onWarning
                 ? Promise.resolve()
                 : onWarning(
-                    'No compatible FMV videos (.mp4) were found. '
+                    'No FMV videos (.rpl, .ogv, .mp4, .avi) were found. '
                     + 'The game will work, but FMVs will be skipped.'
                 );
 
@@ -332,12 +327,7 @@ var GameDataManager = (function () {
                 report('Loading into game...', 0.95);
                 for (var i = 0; i < mapped.length; i++) {
                     var entry = mapped[i];
-                    if (_isFMV(entry.path)) {
-                        if (!Module._fmvBlobs) Module._fmvBlobs = {};
-                        Module._fmvBlobs[entry.path] = new Blob([entry.data], { type: 'video/mp4' });
-                    } else {
-                        _writeToFS(entry.path, entry.data);
-                    }
+                    _writeToFS(entry.path, entry.data);
                 }
                 report('Done!', 1.0);
             });
@@ -615,7 +605,7 @@ var GameDataManager = (function () {
             return 'music/' + lowerBase;
         }
 
-        // --- FMV cutscenes (MP4 only — browsers can't play .RPL) ---
+        // --- FMV cutscenes (.rpl, .ogv, .mp4, .avi — decoded by FFmpeg) ---
         if (_hasExt(ext, FMV_EXTS)) {
             return 'fmv/' + lowerBase;
         }

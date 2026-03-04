@@ -142,15 +142,15 @@ echo ""
 echo ">>> Compiling..."
 meson compile -C "$BUILD_DIR" TRX
 
-# Copy FMV cutscenes alongside the build output so they can be streamed
-# on demand via HTTP (they are not embedded in TRX.data).
+# When game data is not bundled into TRX.data, copy FMV files alongside
+# the build output.  FFmpeg in WASM decodes all formats; copy everything.
 if ! $NO_GAME_DATA; then
     FMV_SRC="$PROJECT_ROOT/${GAME}_data/fmv"
     if [ -d "$FMV_SRC" ]; then
         echo ""
-        echo ">>> Copying FMV files for HTTP streaming..."
+        echo ">>> Copying FMV files..."
         mkdir -p "$BUILD_DIR/fmv"
-        cp -u "$FMV_SRC"/*.mp4 "$BUILD_DIR/fmv/" 2>/dev/null || true
+        cp -u "$FMV_SRC"/* "$BUILD_DIR/fmv/" 2>/dev/null || true
     fi
 fi
 
@@ -220,8 +220,15 @@ if [ -d "$BUILD_DIR/fmv" ]; then
 echo "    $BUILD_DIR/fmv/    (streamed on demand)"
 fi
 echo ""
-echo "  To test locally:"
+echo "  To test locally (COOP/COEP headers required for pthreads):"
 echo "    cd $BUILD_DIR"
-echo "    python3 -m http.server 8080"
+echo "    python3 -c \""
+echo "import http.server"
+echo "class H(http.server.SimpleHTTPRequestHandler):"
+echo "    def end_headers(self):"
+echo "        self.send_header('Cross-Origin-Opener-Policy','same-origin')"
+echo "        self.send_header('Cross-Origin-Embedder-Policy','require-corp')"
+echo "        super().end_headers()"
+echo "http.server.HTTPServer(('',8080),H).serve_forever()\""
 echo "    # Open http://localhost:8080/TRX.html"
 echo "============================================"
