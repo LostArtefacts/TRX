@@ -201,15 +201,20 @@ static void M_SetArm(const int32_t flare_frame)
     lara_info->left_arm.frame_base = anim->frame_ptr;
 }
 
-static void M_ControlArmless(void)
+static bool M_CanUseFlareControl(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item->current_anim_state == LS(LS_PICKUP)) {
+        const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+        return anim != LA_CROUCH_PICKUP && anim != LA_CRAWL_PICKUP;
+    }
+    return Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
+}
+
+static void M_ControlArmless(void)
+{
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-
-    const bool is_mounted_or_armed =
-        Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
-
-    if (is_mounted_or_armed) {
+    if (M_CanUseFlareControl()) {
         if (!lara_info->flare.control) {
             lara_info->left_arm.frame_num = LF_FL_2_HOLD;
             lara_info->flare.control = true;
@@ -231,8 +236,7 @@ static void M_ControlBusyHands(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->flare.control =
-        Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
+    lara_info->flare.control = M_CanUseFlareControl();
     M_ControlInHand();
     M_SetArm(lara_info->left_arm.frame_num);
 }
