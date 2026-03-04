@@ -104,6 +104,12 @@ static void M_End(PHASE *const phase)
     UI_Pause_Free(&p->ui.state);
 }
 
+static bool M_IsFadeActive(M_PRIV *const p)
+{
+    return Fader_IsActive(&p->fader) && g_Config.ui.pause_fade_effects
+        && g_Config.ui.pause_background_style != BK_NONE;
+}
+
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
@@ -119,8 +125,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         if (g_InputDB.pause) {
             M_ReturnToGame(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        } else if (
-            !Fader_IsActive(&p->fader) || !g_Config.ui.pause_fade_effects) {
+        } else if (!M_IsFadeActive(p)) {
             p->state = STATE_WAIT;
             M_CreateText(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
@@ -155,7 +160,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     }
 
     case STATE_FADE_OUT:
-        if (!Fader_IsActive(&p->fader) || !g_Config.ui.pause_fade_effects) {
+        if (!M_IsFadeActive(p)) {
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = p->action },
@@ -175,6 +180,10 @@ static void M_Draw(PHASE *const phase)
         ? Fader_GetCurrentValue(&p->fader)
         : p->fader.args.target;
     switch (g_Config.ui.pause_background_style) {
+    case BK_NONE:
+        Output_Overlay_DrawGame();
+        break;
+
     case BK_TRANSPARENT_MEDIUM:
         Output_Overlay_DrawGame();
         Output_Overlay_DrawBlackRectangle(progress * 0.5f, false);
@@ -185,8 +194,21 @@ static void M_Draw(PHASE *const phase)
         Output_Overlay_DrawBlackRectangle(progress * 0.8f, false);
         break;
 
+    case BK_BLACK:
+        Output_Overlay_DrawGame();
+        Output_Overlay_DrawBlackRectangle(progress, false);
+        break;
+
     case BK_MONOCHROME:
         Output_Overlay_DrawGameMono(progress);
+        break;
+
+    case BK_MONOCHROME_COOL:
+        Output_Overlay_DrawGameMonoCool(progress);
+        break;
+
+    case BK_MONOCHROME_WARM:
+        Output_Overlay_DrawGameMonoWarm(progress);
         break;
 
     case BK_PATTERN_STATIC:

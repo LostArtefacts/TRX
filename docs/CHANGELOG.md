@@ -1,4 +1,11 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
+- added new backgrounds to Inventory Ring / Pause screen / Stats screen styles:
+    - Transparent: like TR2 PS1 Pause Screen
+    - Black: like the Remasters
+    - Monochrome (cool): like TR3 PS1 Inventory Screen
+    - Monochrome (warm): like TR3 PS1 Pause Screen
+
+
 
 **TR3**:
 - fixed Pause text color

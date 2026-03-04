@@ -2,6 +2,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/game/output/state.h>
 #include <trx/game/output/utils.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
@@ -180,18 +181,23 @@ void Output_MeshShader_UploadWibbleEffect(
     shader->is_wibble_effect[variant_idx] = is_enabled;
 }
 
-void Output_MeshShader_UploadTint(
-    OUTPUT_MESH_SHADER *const shader, const RGB_F tint)
+void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *const shader, RGB_F tint)
 {
     const int32_t variant_idx = M_GetVariantIndex();
     OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
-    if (tint.r == shader->tint[variant_idx].r
-        && tint.g == shader->tint[variant_idx].g
-        && tint.b == shader->tint[variant_idx].b) {
+    const RGB_F global_tint = Output_GetGlobalTint();
+    const RGB_F effective_tint = {
+        tint.r * global_tint.r,
+        tint.g * global_tint.g,
+        tint.b * global_tint.b,
+    };
+    if (effective_tint.r == shader->tint[variant_idx].r
+        && effective_tint.g == shader->tint[variant_idx].g
+        && effective_tint.b == shader->tint[variant_idx].b) {
         return;
     }
     TRX_GL_TRACK_UNIFORM(
-        glUniform3f, Output_Shader_LookupUniform(base, "uGlobalTint"), tint.r,
-        tint.g, tint.b);
-    shader->tint[variant_idx] = tint;
+        glUniform3f, Output_Shader_LookupUniform(base, "uGlobalTint"),
+        effective_tint.r, effective_tint.g, effective_tint.b);
+    shader->tint[variant_idx] = effective_tint;
 }

@@ -260,7 +260,7 @@ static void M_RenderPass(const SCENE_SOURCE *const source, SCENE_PASS pass)
 
     // PolyFX primitives are staged with Output_GetTint() already applied at
     // stage time, because different rooms can have different water state.
-    Output_MeshShader_UploadTint(p->shader, (RGB_F) { 1.0f, 1.0f, 1.0f });
+    Output_MeshShader_UploadTint(p->shader, COLOR_RGB_F_WHITE);
     Output_MeshShader_UploadWaterEffect(p->shader, 0);
     Output_MeshShader_UploadWibbleEffect(p->shader, false);
     Output_MeshShader_UploadModelMatrix(p->shader, &g_IDMatrix);

@@ -309,6 +309,7 @@ void InvRing_Draw(INV_RING *const ring)
 
         switch (ring->background_style) {
         case BK_NONE:
+            Output_Overlay_DrawGame();
             break;
 
         case BK_TRANSPARENT_MEDIUM:
@@ -321,8 +322,21 @@ void InvRing_Draw(INV_RING *const ring)
             Output_Overlay_DrawBlackRectangle(opacity * 0.8f, false);
             break;
 
+        case BK_BLACK:
+            Output_Overlay_DrawGame();
+            Output_Overlay_DrawBlackRectangle(opacity * 1.0f, false);
+            break;
+
         case BK_MONOCHROME:
             Output_Overlay_DrawGameMono(opacity);
+            break;
+
+        case BK_MONOCHROME_COOL:
+            Output_Overlay_DrawGameMonoCool(opacity);
+            break;
+
+        case BK_MONOCHROME_WARM:
+            Output_Overlay_DrawGameMonoWarm(opacity);
             break;
 
         case BK_PATTERN_STATIC:

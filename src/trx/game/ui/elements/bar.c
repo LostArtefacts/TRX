@@ -25,17 +25,6 @@ typedef struct {
     float scale;
 } M_DATA;
 
-static RGBA_8888 M_MixColors(
-    const RGBA_8888 c0, const RGBA_8888 c1, const float percent)
-{
-    return (RGBA_8888) {
-        .r = (uint8_t)(c0.r * (1.0f - percent) + c1.r * percent),
-        .g = (uint8_t)(c0.g * (1.0f - percent) + c1.g * percent),
-        .b = (uint8_t)(c0.b * (1.0f - percent) + c1.b * percent),
-        .a = (uint8_t)(c0.a * (1.0f - percent) + c1.a * percent),
-    };
-}
-
 static void M_Measure(UI_NODE *const node)
 {
     M_DATA *const data = node->data;
@@ -112,8 +101,8 @@ static void M_DrawFillPS1(
             const RGBA_8888 ctr = theme->ramp_right[i];
             const RGBA_8888 cbl = theme->ramp_left[i + 1];
             const RGBA_8888 cbr = theme->ramp_right[i + 1];
-            const RGBA_8888 ctrm = M_MixColors(ctl, ctr, percent);
-            const RGBA_8888 cbrm = M_MixColors(cbl, cbr, percent);
+            const RGBA_8888 ctrm = Color_Mix(ctl, ctr, percent);
+            const RGBA_8888 cbrm = Color_Mix(cbl, cbr, percent);
             const int32_t lsy = rect.y + i * rect.h / (UI_BAR_COLOR_STEPS - 1);
             const int32_t lsh =
                 rect.y + (i + 1) * rect.h / (UI_BAR_COLOR_STEPS - 1) - lsy;
@@ -124,7 +113,7 @@ static void M_DrawFillPS1(
         for (int32_t i = 0; i < UI_BAR_COLOR_STEPS; i++) {
             const RGBA_8888 cl = theme->ramp_left[i];
             const RGBA_8888 cr = theme->ramp_right[i];
-            const RGBA_8888 crm = M_MixColors(cl, cr, percent);
+            const RGBA_8888 crm = Color_Mix(cl, cr, percent);
             const int32_t lsy = rect.y + i * rect.h / UI_BAR_COLOR_STEPS;
             const int32_t lsh =
                 rect.y + (i + 1) * rect.h / UI_BAR_COLOR_STEPS - lsy;

@@ -194,7 +194,7 @@ void main(void) {
         texColor = applyFog(texColor, length(gEyePos.xyz));
     }
 
-    texColor.rgb *= uGlobalTint * uBrightnessMultiplier;
+    texColor.rgb *= uBrightnessMultiplier;
 
     // Optional desaturation (0 = original, 1 = monochrome).
     if (uDesaturation > 0.0) {
@@ -202,6 +202,8 @@ void main(void) {
         float y = dot(texColor.rgb, luma) * 0.5;
         texColor.rgb = mix(texColor.rgb, vec3(y), clamp(uDesaturation, 0.0, 1.0));
     }
+
+    texColor.rgb *= uGlobalTint;
 
     outColor = texColor;
 }

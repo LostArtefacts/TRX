@@ -51,6 +51,48 @@ RGBA_8888 Color_ARGB1555ToRGBA8888(const uint16_t argb1555)
     };
 }
 
+RGB_F Color_MixRGBF_Impl(
+    const RGB_F color_1, const RGB_F color_2, const float ratio)
+{
+    return (RGB_F) {
+        .r = color_1.r + (color_2.r - color_1.r) * ratio,
+        .g = color_1.g + (color_2.g - color_1.g) * ratio,
+        .b = color_1.b + (color_2.b - color_1.b) * ratio,
+    };
+}
+
+RGBA_F Color_MixRGBAF_Impl(
+    const RGBA_F color_1, const RGBA_F color_2, const float ratio)
+{
+    return (RGBA_F) {
+        .r = color_1.r + (color_2.r - color_1.r) * ratio,
+        .g = color_1.g + (color_2.g - color_1.g) * ratio,
+        .b = color_1.b + (color_2.b - color_1.b) * ratio,
+        .a = color_1.a + (color_2.a - color_1.a) * ratio,
+    };
+}
+
+RGB_888 Color_MixRGB888_Impl(
+    const RGB_888 color_1, const RGB_888 color_2, const float ratio)
+{
+    return (RGB_888) {
+        .r = (uint8_t)(color_1.r + (color_2.r - color_1.r) * ratio),
+        .g = (uint8_t)(color_1.g + (color_2.g - color_1.g) * ratio),
+        .b = (uint8_t)(color_1.b + (color_2.b - color_1.b) * ratio),
+    };
+}
+
+RGBA_8888 Color_MixRGBA8888_Impl(
+    const RGBA_8888 color_1, const RGBA_8888 color_2, const float ratio)
+{
+    return (RGBA_8888) {
+        .r = (uint8_t)(color_1.r + (color_2.r - color_1.r) * ratio),
+        .g = (uint8_t)(color_1.g + (color_2.g - color_1.g) * ratio),
+        .b = (uint8_t)(color_1.b + (color_2.b - color_1.b) * ratio),
+        .a = (uint8_t)(color_1.a + (color_2.a - color_1.a) * ratio),
+    };
+}
+
 RGB_888 Color_HSLToRGB(const float h, const float s, const float l)
 {
     float hue = h < 0.0f ? 0.0f : fmodf(h, 360.0f);

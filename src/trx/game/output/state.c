@@ -45,6 +45,8 @@ static float m_Desaturation = 0.0f;
 static int32_t m_TintOverrideDepth = 0;
 static RGB_F m_TintOverrideStack[8] = {};
 
+static RGB_F m_GlobalTint = { 1.0f, 1.0f, 1.0f };
+
 float Output_GetTime(void)
 {
     return m_Time;
@@ -177,6 +179,16 @@ void Output_SetWaterColor(const RGB_888 color)
     m_WaterColor.b = color.b / 255.0f;
 }
 
+RGB_F Output_GetGlobalTint(void)
+{
+    return m_GlobalTint;
+}
+
+void Output_SetGlobalTint(const RGB_F tint)
+{
+    m_GlobalTint = tint;
+}
+
 RGB_F Output_GetTint(void)
 {
     if (m_TintOverrideDepth != 0) {
@@ -185,7 +197,7 @@ RGB_F Output_GetTint(void)
     if (m_IsShadeEffect) {
         return m_WaterColor;
     }
-    return (RGB_F) { 1.0f, 1.0f, 1.0f };
+    return COLOR_RGB_F_WHITE;
 }
 
 void Output_PushTintOverride(const RGB_F tint)
