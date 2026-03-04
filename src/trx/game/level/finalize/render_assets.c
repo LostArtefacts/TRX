@@ -222,13 +222,6 @@ void Level_Finalize_LoadTexturePages(LEVEL_CONTEXT *const ctx)
     Benchmark_End(&benchmark, "copied texture data");
 
     {
-#ifdef EMSCRIPTEN_BUILD
-        // No pthreads in Emscripten — premultiply sequentially.
-        for (int32_t i = 0; i < num_pages; i++) {
-            int32_t page = i;
-            M_PremultiplyTexturePage(&page);
-        }
-#else
         int32_t *pages = Memory_Alloc(num_pages * sizeof(int32_t));
         THREAD_POOL *const pool = ThreadPool_Create(-1);
         for (int32_t i = 0; i < num_pages; i++) {
@@ -240,7 +233,6 @@ void Level_Finalize_LoadTexturePages(LEVEL_CONTEXT *const ctx)
         ThreadPool_Wait(pool);
         ThreadPool_Destroy(pool);
         Memory_Free(pages);
-#endif
     }
     Benchmark_End(&benchmark, "premultiplied alpha");
 

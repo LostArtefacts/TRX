@@ -360,14 +360,6 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
     BENCHMARK benchmark = Benchmark_Start();
 
     m_Injections = Memory_Alloc(sizeof(INJECTION) * m_NumInjections);
-#ifdef EMSCRIPTEN_BUILD
-    // Emscripten does not support pthreads without -pthread and
-    // SharedArrayBuffer.  Load injections sequentially instead of
-    // using a thread pool to avoid SDL_CreateThread crashes.
-    for (int32_t i = 0; i < m_NumInjections; i++) {
-        M_LoadFromFile(&m_Injections[i], level->injections.data_paths[i]);
-    }
-#else
     if (m_NumInjections > 1) {
         M_LOAD_JOB *const jobs =
             Memory_Alloc(sizeof(M_LOAD_JOB) * m_NumInjections);
@@ -389,7 +381,6 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
     } else {
         M_LoadFromFile(&m_Injections[0], level->injections.data_paths[0]);
     }
-#endif
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
         M_InitialiseInjection(&m_Injections[i]);
