@@ -9,6 +9,7 @@
 
 **TR3**:
 - added Train control
+- added Patrol Dog control
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
@@ -102,6 +103,7 @@ Showcase: https://youtu.be/FgB9JgDM65E
 
 **TR3**:
 - added reverb support
+- added Patrol Dog control
 - added Kayak control
 - added Compsognathus control
 - added Mounted Gun control

@@ -417,7 +417,7 @@ class BaseResolver:
             if not trans_value:
                 missing[key] = base_value
         for chunk in chunks(list(missing.items()), n=50):
-            filled = self.fill_chunk(chunk)
+            filled = dict(self.fill_chunk(chunk))
             for key, value in filled.items():
                 root_set(self.trans_file.data, key, value)
 

@@ -803,6 +803,19 @@
                 "Doberman",
             ]
         },
+        "patrol_dog": {
+            "name": [
+                "Dog",
+                "Patrol Dog",
+            ]
+        },
+        "huskie": {
+            "name": [
+                "Dog",
+                "Patrol Dog",
+                "Huskie",
+            ]
+        },
         "cult_1": {
             "name": "Masked Goon 1",
         },
