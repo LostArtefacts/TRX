@@ -49,10 +49,7 @@ static void M_Flood(ITEM *const item)
         pos.y += 100 * (LOGIC_FPS - flip_timer);
     }
 
-    // TODO: unify
-    Sound_Effect(
-        g_TRVersion == 1 ? SFX_WATERFALL_BIG : SFX_WATERFALL_LOOP, &pos,
-        SPM_NORMAL);
+    Sound_Effect(SFX_FLOOD, &pos, SPM_NORMAL);
     Room_IncrementFlipTimer(1);
 }
 

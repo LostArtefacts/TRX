@@ -29,6 +29,11 @@ title: Migrating levels
     - `window_1` → `smash_object_1`
     - `window_2` → `smash_object_2`
 
+3. **Flooding flip effect sound ID was changed**:
+    In `cfg/catalog_samples.csv`, add an alias for `SFX_FLOOD`:
+    - TR1: `81, SFX_FLOOD`
+    - TR2: `79, SFX_FLOOD`
+
 ### Version 1.1 to 1.2
 
 1. **Lara skin system**:  
