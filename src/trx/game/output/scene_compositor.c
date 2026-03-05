@@ -31,10 +31,10 @@ typedef struct {
 static M_PRIV m_Priv = {};
 
 static void M_SetSamplerFilter(
-    const GLuint sampler, const TRX_GL_TEXTURE_FILTER filter)
+    const GLuint sampler, const TEXTURE_FILTER filter)
 {
     const GLenum gl_filter =
-        filter == TRX_GL_TF_BILINEAR ? GL_LINEAR : GL_NEAREST;
+        filter == TEXTURE_FILTER_BILINEAR ? GL_LINEAR : GL_NEAREST;
     glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, gl_filter);
     glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, gl_filter);
 }

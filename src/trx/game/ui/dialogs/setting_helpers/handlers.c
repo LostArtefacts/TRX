@@ -79,14 +79,14 @@ bool UI_Settings_EnemyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return UI_Settings_Bar_IsAvailable(option)
-        && g_Config.ui.enemy_health_bar.show_mode != BSM_NEVER;
+        && g_Config.ui.enemy_health_bar.show_mode != BAR_SHOW_MODE_NEVER;
 }
 
 bool UI_Settings_AllyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return UI_Settings_Bar_IsAvailable(option)
-        && g_Config.ui.enemy_health_bar.show_mode == BSM_ALWAYS
+        && g_Config.ui.enemy_health_bar.show_mode == BAR_SHOW_MODE_ALWAYS
         && g_Config.gameplay.enable_ally_targeting;
 }
 

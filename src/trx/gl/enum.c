@@ -4,6 +4,6 @@
 
 static __attribute__((constructor)) void M_Init(void)
 {
-    ENUM_MAP(TRX_GL_TEXTURE_FILTER, TRX_GL_TF_BILINEAR, "bilinear");
-    ENUM_MAP(TRX_GL_TEXTURE_FILTER, TRX_GL_TF_POINT, "point");
+    ENUM_MAP(TEXTURE_FILTER, TEXTURE_FILTER_BILINEAR, "bilinear");
+    ENUM_MAP(TEXTURE_FILTER, TEXTURE_FILTER_POINT, "point");
 }

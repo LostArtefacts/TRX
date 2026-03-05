@@ -30,19 +30,19 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
             int32_t w, h;
         } ar = { .w = 1, .h = 1 };
         switch (g_Config.rendering.aspect_mode) {
-        case AM_4_3:
+        case ASPECT_MODE_4_3:
             ar.w = 4;
             ar.h = 3;
             break;
-        case AM_16_9:
+        case ASPECT_MODE_16_9:
             ar.w = 16;
             ar.h = 9;
             break;
-        case AM_16_10:
+        case ASPECT_MODE_16_10:
             ar.w = 16;
             ar.h = 10;
             break;
-        case AM_ANY:
+        case ASPECT_MODE_ANY:
             ar.w = target->width;
             ar.h = target->height;
             break;
@@ -52,7 +52,7 @@ void Viewport_Init(int32_t x, int32_t y, int32_t width, int32_t height)
         y = 0;
         width = target->width;
         height = target->height;
-        if (g_Config.rendering.aspect_mode != AM_ANY) {
+        if (g_Config.rendering.aspect_mode != ASPECT_MODE_ANY) {
             width = height * ar.w / ar.h;
         }
     }
@@ -147,7 +147,7 @@ void Viewport_Reset(void)
 
     int32_t border_x = window->width * g_Config.rendering.borders;
     const int32_t border_y = window->height * g_Config.rendering.borders;
-    if (g_Config.rendering.aspect_mode == AM_ANY) {
+    if (g_Config.rendering.aspect_mode == ASPECT_MODE_ANY) {
         border_x = border_y;
     }
     const int32_t max_w = window->width - border_x;
@@ -155,16 +155,16 @@ void Viewport_Reset(void)
 
     double aspect_ratio = 0.0;
     switch (g_Config.rendering.aspect_mode) {
-    case AM_4_3:
+    case ASPECT_MODE_4_3:
         aspect_ratio = 4.0 / 3.0;
         break;
-    case AM_16_9:
+    case ASPECT_MODE_16_9:
         aspect_ratio = 16.0 / 9.0;
         break;
-    case AM_16_10:
+    case ASPECT_MODE_16_10:
         aspect_ratio = 16.0 / 10.0;
         break;
-    case AM_ANY:
+    case ASPECT_MODE_ANY:
     default:
         aspect_ratio = (double)max_w / (double)max_h; // just match window
         break;

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/config/dynamic_enum.h>
+#include <trx/core/enum_map.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
@@ -280,7 +281,11 @@ static const char *M_FormatRowValue(
     case COT_ENUM: {
         const M_ENUM_LOOKUP enum_lookup = M_GetEnumEntry(option);
         ASSERT(enum_lookup.entry != nullptr);
-        return (char *)GameString_Get(enum_lookup.entry->name);
+        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+        if (cfg_opt == nullptr) {
+            return nullptr;
+        }
+        return EnumMap_GetLabel(cfg_opt->param, enum_lookup.entry->value);
     }
     default:
         break;
@@ -354,6 +359,10 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         return result;
     }
     case COT_ENUM: {
+        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
+        if (cfg_opt == nullptr) {
+            return 0.0f;
+        }
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
         const int32_t current_value = *(int32_t *)option->target;
@@ -363,7 +372,8 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
                 entry++;
                 continue;
             }
-            const char *const value = GameString_Get(entry->name);
+            const char *const value =
+                EnumMap_GetLabel(cfg_opt->param, entry->value);
             const float value_w = UI_Label_MeasureW(value);
             result = MAX(result, value_w);
             entry++;

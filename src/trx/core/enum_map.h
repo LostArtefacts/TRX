@@ -46,6 +46,12 @@ const char *EnumMap_GetName(const char *enum_type_name, int32_t enum_value);
 // @return                  String representation of the enum, such as "snow".
 const char *EnumMap_ToString(const char *enum_type_name, int32_t enum_value);
 
+// Retrieve a localized label for the given enum value.
+// @param enum_type_name    Name of the enum type, such as "WEATHER".
+// @param enum_value        Value of the enum, such as 1.
+// @return                  Localized label or nullptr if missing.
+const char *EnumMap_GetLabel(const char *enum_type_name, int32_t enum_value);
+
 // Returns a vector of valid string values for the given enum_type_name.
 //
 // The returned vector must be freed via Vector_Free(). The string pointers

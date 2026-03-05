@@ -27,7 +27,12 @@ RE_UI_SETTING_USAGE = re.compile(
     r"X_UI_CFG[A-Z0-9_]*\(\s*([a-z0-9_.]+)\s*[,)]",
     flags=re.M | re.DOTALL,
 )
-RE_ENUM_USAGE = re.compile(r"\b([A-Z0-9_]+)\b")
+RE_ENUM_MAP_USAGE = re.compile(
+    r"ENUM_MAP\(\s*[A-Z0-9_]+\s*,\s*([A-Z0-9_]+)\s*,"
+)
+RE_INPUT_ROLE_USAGE = re.compile(
+    r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
+)
 RE_OBJ_NAME_DEFINE = re.compile(
     r'^X_OBJ_NAME_DEFINE\(\s*\w+\s*,\s*"([^"]+)"\s*,\s*X_OBJ_NAMES\(\s*(.+?)\s*\)\s*\)$'
 )
@@ -257,7 +262,7 @@ def root_flatten(file_data: dict[str, Any]) -> dict[str, Any]:
 
 
 def get_used_strings(
-    path: Path, include_enums: bool = False, aliases: dict[str, str] | None = None
+    path: Path, aliases: dict[str, str] | None = None
 ) -> Iterable[tuple[int, str]]:
     source = re.sub("//.*", "", path.read_text(), flags=re.M)
     source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
@@ -273,11 +278,14 @@ def get_used_strings(
         yield source.count("\n", 0, match.start()) + 1, (
             f"settings/{option_name}/description"
         )
-    if include_enums and path.suffix == ".def":
-        for match in re.finditer(RE_ENUM_USAGE, source):
-            yield source.count(
-                "\n", 0, match.start()
-            ) + 1, "ENUM_" + match.group(1)
+    for match in re.finditer(RE_ENUM_MAP_USAGE, source):
+        yield source.count(
+            "\n", 0, match.start()
+        ) + 1, "ENUM_" + match.group(1)
+    for match in re.finditer(RE_INPUT_ROLE_USAGE, source):
+        yield source.count(
+            "\n", 0, match.start()
+        ) + 1, "ENUM_" + match.group(1)
 
 
 def get_used_ui_theme_strings(
@@ -363,7 +371,7 @@ class RunContext:
             [
                 list(
                     get_used_strings(
-                        path, include_enums=True, aliases=self.config_aliases
+                        path, aliases=self.config_aliases
                     )
                 )
                 for path in source_files

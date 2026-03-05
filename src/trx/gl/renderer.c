@@ -56,7 +56,7 @@ static void M_Render(TRX_GL_RENDERER *renderer)
     M_CONTEXT *const p = renderer->priv;
     ASSERT(p != nullptr);
 
-    const GLuint filter = p->config->display_filter == TRX_GL_TF_BILINEAR
+    const GLuint filter = p->config->display_filter == TEXTURE_FILTER_BILINEAR
         ? GL_LINEAR
         : GL_NEAREST;
 

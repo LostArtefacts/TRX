@@ -18,13 +18,13 @@ bool UI_EnemyHealthBar(void)
 
     bool show = g_Config.ui.show_bars;
     switch (g_Config.ui.enemy_health_bar.show_mode) {
-    case BSM_NEVER:
+    case BAR_SHOW_MODE_NEVER:
         show &= false;
         break;
-    case BSM_ALWAYS:
+    case BAR_SHOW_MODE_ALWAYS:
         show &= true;
         break;
-    case BSM_BOSS_ONLY:
+    case BAR_SHOW_MODE_BOSS_ONLY:
         show &= Object_IsType(target->object_id, g_BossObjects);
         break;
     }
