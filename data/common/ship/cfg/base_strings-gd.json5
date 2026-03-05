@@ -1652,6 +1652,12 @@
         },
         "train": {
             "name": "Trèan",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Cù",
+        },
+        "huskie": {
+            "name": "\\{review}Cù",
         }
     },
     "settings": {

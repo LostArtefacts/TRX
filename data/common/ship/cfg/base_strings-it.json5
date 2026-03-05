@@ -1674,6 +1674,12 @@
         },
         "train": {
             "name": "\\{review}Treno",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Cane",
+        },
+        "huskie": {
+            "name": "\\{review}Cane",
         }
     },
     "settings": {

@@ -422,6 +422,7 @@ common_sources = [
   'trx/game/objects/creatures/mummy.c',
   'trx/game/objects/creatures/mutant.c',
   'trx/game/objects/creatures/natla.c',
+  'trx/game/objects/creatures/patrol_dog.c',
   'trx/game/objects/creatures/pierre.c',
   'trx/game/objects/creatures/pod.c',
   'trx/game/objects/creatures/raptor.c',

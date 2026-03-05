@@ -178,6 +178,8 @@ X_OBJ_NAME_DEFINE(O_BALDY,                 "baldy",                 X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_NATLA,                 "natla",                 X_OBJ_NAMES("Natla"))
 X_OBJ_NAME_DEFINE(O_TORSO,                 "torso",                 X_OBJ_NAMES("Torso", "Adam", "Giant Mutant"))
 X_OBJ_NAME_DEFINE(O_DOG,                   "dog",                   X_OBJ_NAMES("Dog", "Doberman"))
+X_OBJ_NAME_DEFINE(O_PATROL_DOG,            "patrol_dog",            X_OBJ_NAMES("Dog", "Patrol Dog"))
+X_OBJ_NAME_DEFINE(O_HUSKIE,                "huskie",                X_OBJ_NAMES("Dog", "Patrol Dog", "Huskie"))
 X_OBJ_NAME_DEFINE(O_CULT_1,                "cult_1",                X_OBJ_NAMES("Masked Goon 1"))
 X_OBJ_NAME_DEFINE(O_CULT_1A,               "cult_1a",               X_OBJ_NAMES("Masked Goon 2"))
 X_OBJ_NAME_DEFINE(O_CULT_1B,               "cult_1b",               X_OBJ_NAMES("Masked Goon 3"))

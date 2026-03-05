@@ -1628,6 +1628,12 @@
         },
         "train": {
             "name": "\\{review}Train",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Chien",
+        },
+        "huskie": {
+            "name": "\\{review}Chien",
         }
     },
     "settings": {

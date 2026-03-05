@@ -1648,6 +1648,12 @@
         },
         "train": {
             "name": "\\{review}Поезд",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Собака",
+        },
+        "huskie": {
+            "name": "\\{review}Собака",
         }
     },
     "settings": {

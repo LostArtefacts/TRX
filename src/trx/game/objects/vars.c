@@ -77,6 +77,8 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_DINO_WARRIOR,
     O_DIVER,
     O_DOG,
+    O_PATROL_DOG,
+    O_HUSKIE,
     O_DRAGON_FRONT,
     O_EAGLE,
     O_EEL,

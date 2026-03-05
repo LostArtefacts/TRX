@@ -1641,6 +1641,12 @@
         },
         "train": {
             "name": "\\{review}Zug",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Hund",
+        },
+        "huskie": {
+            "name": "\\{review}Hund",
         }
     },
     "settings": {
