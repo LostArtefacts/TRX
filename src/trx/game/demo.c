@@ -29,11 +29,11 @@
         gameplay.look_mode,                                                    \
         g_TRVersion >= 2 ? LOOK_MODE_ENHANCED : LOOK_MODE_RESTRICTED);         \
     X_PROCESS_CONFIG(gameplay.start_lara_hitpoints, LARA_MAX_HITPOINTS);       \
-    X_PROCESS_CONFIG(gameplay.target_mode, TLM_FULL);                          \
+    X_PROCESS_CONFIG(gameplay.target_mode, TARGET_LOCK_MODE_FULL);             \
     X_PROCESS_CONFIG(                                                          \
         gameplay.wall_glitch_mode,                                             \
         g_TRVersion >= 2 ? WALL_GLITCH_TR2 : WALL_GLITCH_TR1);                 \
-    X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_DRAW_ONLY);             \
+    X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_MODE_DRAW_ONLY);        \
     X_PROCESS_CONFIG(visuals.enable_fire_lighting, false);                     \
     X_PROCESS_CONFIG(debug.enable_invulnerability, false);
 

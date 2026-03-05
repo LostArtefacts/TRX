@@ -530,7 +530,7 @@ static bool M_ShouldLoadMusicTimestamp(
 {
     const bool is_ambient = mode == MPM_LOOP && track_id == ambient_track;
     return !is_ambient
-        || g_Config.audio.music_load_condition == MUSIC_LOAD_ALWAYS;
+        || g_Config.audio.music_load_condition == MUSIC_LOAD_CONDITION_ALWAYS;
 }
 
 static bool M_ReadMusicTracks(JSON_READ_IO *const io)
@@ -545,7 +545,7 @@ static bool M_ReadMusicTracks(JSON_READ_IO *const io)
         Music_Play_Direct(ambient_track, MPM_LOOP);
     }
 
-    if (g_Config.audio.music_load_condition == MUSIC_LOAD_NEVER) {
+    if (g_Config.audio.music_load_condition == MUSIC_LOAD_CONDITION_NEVER) {
         return true;
     }
 

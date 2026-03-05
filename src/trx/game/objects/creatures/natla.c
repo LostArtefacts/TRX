@@ -165,8 +165,8 @@ static void M_Control(const int16_t item_num)
                                                               : MPM_NO_REPEAT;
                 Music_Play(MX_NATLA_SPEECH, mode);
             } else {
-                if (g_Config.gameplay.target_mode == TLM_SEMI
-                    || g_Config.gameplay.target_mode == TLM_NONE) {
+                if (g_Config.gameplay.target_mode == TARGET_LOCK_MODE_SEMI
+                    || g_Config.gameplay.target_mode == TARGET_LOCK_MODE_NONE) {
                     LARA_INFO *const lara = Lara_GetLaraInfo();
                     lara->target = nullptr;
                 }

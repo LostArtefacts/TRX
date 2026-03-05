@@ -190,9 +190,10 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         const JSON_VALUE *const value =
             JSON_ObjectGetValue(parent_obj, "load_current_music");
         if (JSON_ValueIsTrue(value)) {
-            g_Config.audio.music_load_condition = MUSIC_LOAD_NON_AMBIENT;
+            g_Config.audio.music_load_condition =
+                MUSIC_LOAD_CONDITION_NON_AMBIENT;
         } else if (JSON_ValueIsFalse(value)) {
-            g_Config.audio.music_load_condition = MUSIC_LOAD_NEVER;
+            g_Config.audio.music_load_condition = MUSIC_LOAD_CONDITION_NEVER;
         }
     }
 
@@ -416,10 +417,10 @@ void Config_DumpToJSON(JSON_OBJECT *root_obj)
 
 void Config_Sanitize(void)
 {
-    if (g_Config.rendering.aspect_mode != AM_ANY
-        && g_Config.rendering.aspect_mode != AM_16_9
-        && g_Config.rendering.aspect_mode != AM_16_10) {
-        g_Config.rendering.aspect_mode = AM_4_3;
+    if (g_Config.rendering.aspect_mode != ASPECT_MODE_ANY
+        && g_Config.rendering.aspect_mode != ASPECT_MODE_16_9
+        && g_Config.rendering.aspect_mode != ASPECT_MODE_16_10) {
+        g_Config.rendering.aspect_mode = ASPECT_MODE_4_3;
     }
     CLAMP(g_Config.audio.master_volume, 0.0f, 1.0f);
     CLAMP(g_Config.audio.sound_volume, 0.0f, 1.0f);

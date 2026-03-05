@@ -139,7 +139,7 @@ static bool M_NeedToUndraw(void)
         return true;
     }
     if (M_QuickDrawWeapon()) {
-        if (g_Config.input.quick_guns_mode == QUICK_GUNS_DRAW_AND_HOLSTER
+        if (g_Config.input.quick_guns_mode == QUICK_GUNS_MODE_DRAW_AND_HOLSTER
             || lara->request_gun_type != lara->gun_type) {
             return true;
         }

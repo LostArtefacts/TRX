@@ -1,10 +1,9 @@
 #pragma once
 
-#include <trx/game/game_strings/entries.h>
+#include <stdint.h>
 
 typedef struct {
     int32_t value;
-    GAME_STRING_ID name;
 } UI_SETTINGS_ENUM_ENTRY;
 
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[];
@@ -13,8 +12,6 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_QuickGunsModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_JumpLockModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_TargetModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_EnemyHealthBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[];

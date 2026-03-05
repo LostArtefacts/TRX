@@ -281,7 +281,7 @@ static bool M_RegionBars(
 static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(0.0f, 0.0f);
-    if (!M_RegionBars(s, BL_TOP_LEFT)) {
+    if (!M_RegionBars(s, BAR_LOCATION_TOP_LEFT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_TL);
     }
     if (g_Config.ui.enable_game_ui) {
@@ -296,7 +296,7 @@ static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
 static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(0.5f, 0.0f);
-    M_RegionBars(s, BL_TOP_CENTER);
+    M_RegionBars(s, BAR_LOCATION_TOP_CENTER);
     {
         const char *const txt = M_ResolveOverlayText(&s->top_text);
         if (txt != nullptr) {
@@ -315,7 +315,7 @@ static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
 static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(1.0f, 0.0f);
-    if (!M_RegionBars(s, BL_TOP_RIGHT)) {
+    if (!M_RegionBars(s, BAR_LOCATION_TOP_RIGHT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_TR);
     }
     if (g_Config.ui.enable_game_ui) {
@@ -330,7 +330,7 @@ static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
 static void M_BottomLeftRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(0.0f, 1.0f);
-    if (!M_RegionBars(s, BL_BOTTOM_LEFT)) {
+    if (!M_RegionBars(s, BAR_LOCATION_BOTTOM_LEFT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_BL);
     }
     UI_EndOverlayRegion();
@@ -355,14 +355,14 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
             }
         }
     }
-    M_RegionBars(s, BL_BOTTOM_CENTER);
+    M_RegionBars(s, BAR_LOCATION_BOTTOM_CENTER);
     UI_EndOverlayRegion();
 }
 
 static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(1.0f, 1.0f);
-    if (!M_RegionBars(s, BL_BOTTOM_RIGHT)) {
+    if (!M_RegionBars(s, BAR_LOCATION_BOTTOM_RIGHT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_BR);
     }
     if (s->show_version) {
