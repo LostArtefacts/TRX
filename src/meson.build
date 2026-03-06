@@ -567,6 +567,7 @@ common_sources = [
   'trx/game/objects/traps/springboard.c',
   'trx/game/objects/traps/teeth_trap.c',
   'trx/game/objects/traps/thors_hammer.c',
+  'trx/game/objects/traps/train.c',
   'trx/game/objects/vars.c',
   'trx/game/objects/vehicles/boat.c',
   'trx/game/objects/vehicles/common.c',

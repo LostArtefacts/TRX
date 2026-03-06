@@ -126,6 +126,7 @@
   "O_TEETH_TRAP":             { "status": "fully implemented" },
   "O_TIGER":                  { "status": "fully implemented" },
   "O_TONY":                   { "status": "fully implemented" },
+  "O_TRAIN":                  { "status": "fully implemented" },
   "O_TRAPDOOR_TYPE_1":        { "status": "fully implemented" },
   "O_TRAPDOOR_TYPE_2":        { "status": "fully implemented" },
   "O_TREX_ALPHA":             { "status": "fully implemented" },

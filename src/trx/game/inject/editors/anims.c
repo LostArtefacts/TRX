@@ -54,5 +54,24 @@ static void M_FrameReplacements(
     }
 }
 
+static void M_AnimEdits(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
+        const OBJECT *const obj = Object_Get(obj_info.id);
+        const int32_t anim_idx = VFile_ReadS32(injection->fp);
+        const int32_t velocity = VFile_ReadS32(injection->fp);
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            continue;
+        }
+
+        ANIM *const anim = Object_GetAnim(obj, anim_idx);
+        anim->velocity = velocity;
+    }
+}
+
 REGISTER_INJECT_EDITOR(IDT_FRAME_EDITS, M_FrameEdits)
 REGISTER_INJECT_EDITOR(IDT_FRAME_REPLACE, M_FrameReplacements)
+REGISTER_INJECT_EDITOR(IDT_ANIM_EDITS, M_AnimEdits)

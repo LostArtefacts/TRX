@@ -1670,6 +1670,9 @@
         },
         "sthpac_mercenary": {
             "name": "Mercenario del Sud Pacifico",
+        },
+        "train": {
+            "name": "\\{review}Treno",
         }
     },
     "settings": {

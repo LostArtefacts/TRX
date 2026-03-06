@@ -1644,6 +1644,9 @@
         },
         "sthpac_mercenary": {
             "name": "\\{review}Наёмник из южной части Тихого океана",
+        },
+        "train": {
+            "name": "\\{review}Поезд",
         }
     },
     "settings": {

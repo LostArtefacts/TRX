@@ -1624,6 +1624,9 @@
         },
         "sthpac_mercenary": {
             "name": "\\{review}Mercenaire du Pacifique Sud",
+        },
+        "train": {
+            "name": "\\{review}Train",
         }
     },
     "settings": {
