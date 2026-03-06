@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
 
 **TR3**:
+- fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed Pause text color
 
 
