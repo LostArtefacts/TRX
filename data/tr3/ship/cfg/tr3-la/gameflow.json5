@@ -125,6 +125,7 @@
                 "antarc_airlock.bin",
                 "lara_guns.bin",
                 "undersea_animating_bounds.bin",
+                "undersea_train.bin",
             ],
         },
 
@@ -144,6 +145,7 @@
             ],
             "injections": [
                 "lara_guns.bin",
+                "zoo_train.bin",
             ],
         },
 

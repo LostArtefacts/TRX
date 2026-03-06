@@ -1615,6 +1615,9 @@
         },
         "sthpac_mercenary": {
             "name": "Najemnik",
+        },
+        "train": {
+            "name": "\\{review}Pociąg",
         }
     },
     "settings": {

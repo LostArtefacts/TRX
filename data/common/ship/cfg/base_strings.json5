@@ -1164,6 +1164,9 @@
         "raptor_emitter": {
             "name": "Raptor Emitter",
         },
+        "train": {
+            "name": "Train",
+        },
         "bat_emitter": {
             "name": "Bat Emitter",
         },

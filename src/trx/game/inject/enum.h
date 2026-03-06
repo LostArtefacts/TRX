@@ -84,7 +84,8 @@ typedef enum {
     IDT_OBJ_TYPE_EDITS   = 31,
     IDT_FRAME_REPLACE    = 32,
     IDT_ITEM_FLAG_EDITS  = 33,
-    IDT_NUMBER_OF        = 34,
+    IDT_ANIM_EDITS       = 34,
+    IDT_NUMBER_OF        = 35,
 } INJECTION_DATA_TYPE;
 
 typedef enum {

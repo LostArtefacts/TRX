@@ -1637,6 +1637,9 @@
         },
         "sthpac_mercenary": {
             "name": "\\{review}Südsee-Söldner",
+        },
+        "train": {
+            "name": "\\{review}Zug",
         }
     },
     "settings": {
