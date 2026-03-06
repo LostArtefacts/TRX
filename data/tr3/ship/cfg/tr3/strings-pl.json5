@@ -220,19 +220,19 @@
             "title": "Wszystkich Świętych",
             "objects": {
                 "quest_1": {
-                    "name": "\\{review}Kamień Infada",
+                    "name": "Kamień Infada",
                     "description": "",
                 },
                 "quest_2": {
-                    "name": "\\{review}Pierwiastek 115",
+                    "name": "Pierwiastek 115",
                     "description": "",
                 },
                 "quest_3": {
-                    "name": "\\{review}Oko Izydy",
+                    "name": "Oko Izydy",
                     "description": "",
                 },
                 "quest_4": {
-                    "name": "\\{review}Sztylet Ora",
+                    "name": "Sztylet Ora",
                     "description": "",
                 },
                 "key_1": {
@@ -277,18 +277,18 @@
         }
     ],
     "game_strings": {
-        "GLOBE_SELECT_AREA_1": "\\{review}Indie",
-        "GLOBE_SELECT_AREA_2": "\\{review}Wyspy Południowego Pacyfiku",
-        "GLOBE_SELECT_AREA_3": "\\{review}Pustynia Nevada",
-        "GLOBE_SELECT_AREA_4": "\\{review}",
-        "GLOBE_SELECT_AREA_5": "\\{review}Londyn",
-        "GLOBE_SELECT_AREA_6": "\\{review}Antarktyda",
-        "INVENTORY_RING_HEADING_FMT": "\\{review}\\{color 5}%s",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{review}\\{color 3}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{review}\\{color 5}%s",
-        "OVERLAY_ITEM_COUNT_FMT": "\\{review}%s",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}\\{color 2}%s",
-        "STATS_GYM_ASSAULT_COURSE": "\\{review}\\{color 5}Tor Przeszkód",
-        "STATS_GYM_RACETRACK_COURSE": "\\{review}\\{color 5}Tor Wyścigowy",
+        "GLOBE_SELECT_AREA_1": "Indie",
+        "GLOBE_SELECT_AREA_2": "Wyspy Południowego Pacyfiku",
+        "GLOBE_SELECT_AREA_3": "Pustynia Nevada",
+        "GLOBE_SELECT_AREA_4": " ",
+        "GLOBE_SELECT_AREA_5": "Londyn",
+        "GLOBE_SELECT_AREA_6": "\\{Antarktyda",
+        "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
+        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
+        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
+        "OVERLAY_ITEM_COUNT_FMT": "%s",
+        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{color 2}%s",
+        "STATS_GYM_ASSAULT_COURSE": "\\{color 5}Tor Przeszkód",
+        "STATS_GYM_RACETRACK_COURSE": "\\{color 5}Tor Wyścigowy",
     }
 }
