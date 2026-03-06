@@ -3,6 +3,7 @@
 #include <trx/av/audio.h>
 #include <trx/av/video.h>
 #include <trx/config.h>
+#include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -21,6 +22,10 @@
 #include <string.h>
 
 static bool m_IsPlaying = false;
+
+static const char *const m_FallbackExts[] = {
+    ".mp4", ".mpeg", ".webm", ".avi", ".fmv", ".rpl", nullptr,
+};
 
 typedef struct {
     OUTPUT_QUAD_SURFACE_DESC desc;
@@ -44,6 +49,37 @@ static OUTPUT_QUAD_SURFACE_DESC M_MakeSurfaceDesc(
         },
         .pitch = width * 4,
     };
+}
+
+static int32_t M_OpenAudioStream(const char *const file_name)
+{
+    int32_t audio_id = Audio_Stream_CreateFromFile(file_name);
+    if (audio_id != AUDIO_NO_SOUND) {
+        return audio_id;
+    }
+
+    // The video file may lack an audio stream (e.g. remastered .ogv).
+    // Try other FMV extensions to find a file that contains audio.
+    const char *const dot = strrchr(file_name, '.');
+    if (dot == nullptr) {
+        return AUDIO_NO_SOUND;
+    }
+
+    const size_t base_len = (size_t)(dot - file_name);
+    for (const char *const *ext = m_FallbackExts; *ext != nullptr; ext++) {
+        char *const candidate =
+            String_Format("%.*s%s", (int)base_len, file_name, *ext);
+        if (File_Exists(candidate)) {
+            audio_id = Audio_Stream_CreateFromFile(candidate);
+            Memory_Free(candidate);
+            if (audio_id != AUDIO_NO_SOUND) {
+                return audio_id;
+            }
+        } else {
+            Memory_Free(candidate);
+        }
+    }
+    return AUDIO_NO_SOUND;
 }
 
 static void *M_AllocateSurface(
@@ -129,16 +165,24 @@ static bool M_Play(const char *const file_name)
     Video_SetSurfaceLockFunc(video, M_LockSurface, nullptr);
     Video_SetSurfaceUnlockFunc(video, M_UnlockSurface, nullptr);
     Video_SetSurfaceUploadFunc(video, M_UploadSurface, renderer_2d);
+    Video_SetAudioEnabled(video, false);
+
+    const int32_t audio_id = M_OpenAudioStream(file_name);
 
     g_OldInputDB = g_Input;
     Video_Start(video);
     while (video->is_playing) {
         Shell_ProcessEvents();
-        Video_SetVolume(
-            video,
-            Audio_IsMuted()
-                ? 0.0f
-                : g_Config.audio.master_volume * g_Config.audio.fmv_volume);
+
+        const float volume = Audio_IsMuted()
+            ? 0.0f
+            : g_Config.audio.master_volume * g_Config.audio.fmv_volume;
+        Audio_Stream_SetVolume(audio_id, volume);
+        const double audio_ts = Audio_Stream_GetTimestamp(audio_id);
+        if (audio_ts >= 0.0) {
+            Video_SetExternalAudioClock(video, audio_ts);
+        }
+
         Video_SetSurfaceSize(
             video, Viewport_GetWidth(VIEWPORT_GAME),
             Viewport_GetHeight(VIEWPORT_GAME));
@@ -154,6 +198,8 @@ static bool M_Play(const char *const file_name)
             break;
         }
     }
+
+    Audio_Stream_Close(audio_id);
     Video_Close(video);
 
     Output_Quad_Destroy(renderer_2d);
