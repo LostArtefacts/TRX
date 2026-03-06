@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.2.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
+
+## [1.3](https://github.com/LostArtefacts/TRX/compare/trx-1.2.2...trx-1.3) - 2026-03-06
+Showcase: https://youtu.be/FgB9JgDM65E
 - added the ability to freely rotate examinable items
 - added a color editor dialog for fog and water colors in Graphic Options → Visuals
 - added an option for Lara to wear sunglasses (Graphic Options → Visuals → Sunglasses) (#4869)
