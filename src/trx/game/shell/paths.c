@@ -67,7 +67,7 @@ typedef bool (*M_RESOLVE_ATTEMPT_CALLBACK)(
     const char *attempt_path, void *user_data);
 
 static const char *m_FMVExtensions[] = {
-    ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".rpl", nullptr,
+    ".mp4", ".mkv", ".mpeg", ".avi", ".ogv", ".webm", ".rpl", nullptr,
 };
 
 static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = {
