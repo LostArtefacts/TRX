@@ -1799,9 +1799,8 @@ static int M_ReadThread(void *arg)
         AVRational sar = av_guess_sample_aspect_ratio(ic, st, nullptr);
     }
 
-    if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-        M_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_AUDIO]);
-    }
+    // Audio is handled externally via Audio_Stream, so skip opening
+    // the audio component here to avoid a second SDL audio device.
 
     ret = -1;
     if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
@@ -2145,4 +2144,10 @@ void Video_SetRenderEndFunc(
     M_STATE *const is = video->priv;
     is->render_end_func = func;
     is->render_end_func_user_data = user_data;
+}
+
+void Video_SetExternalAudioClock(VIDEO *const video, const double timestamp)
+{
+    M_STATE *const is = video->priv;
+    M_SetClock(&is->extclk, timestamp, is->extclk.serial);
 }

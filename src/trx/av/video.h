@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stdint.h>
-
 #include <libavutil/pixfmt.h>
+#include <stdint.h>
 
 typedef struct {
     const char *path;
@@ -41,6 +40,7 @@ void Video_SetRenderBeginFunc(
 void Video_SetRenderEndFunc(
     VIDEO *video, void (*func)(void *surface, void *user_data),
     void *user_data);
+void Video_SetExternalAudioClock(VIDEO *video, double timestamp);
 void Video_Start(VIDEO *video);
 void Video_Stop(VIDEO *video);
 void Video_PumpEvents(VIDEO *video);
