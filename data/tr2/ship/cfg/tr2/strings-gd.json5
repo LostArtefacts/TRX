@@ -328,8 +328,12 @@
             "name": "Pasgan Mòr Slàinte",
         }
     },
-    "game_strings": {
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Càraichidh bugan ann an 40 Famhair, Long-bhriste na Maria Doria agus An Deic far nach gluais planntrais anns an uisge.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Càraichidh ionnsaigh a' mhathain anns a' Mhasg Òir gus nach caill e Lara.",
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Càraichidh ionnsaigh a' mhathain anns a' Mhasg Òir gus nach caill e Lara.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Càraichidh bugan ann an 40 Famhair, Long-bhriste na Maria Doria agus An Deic far nach gluais planntrais anns an uisge.",
+        }
     }
 }

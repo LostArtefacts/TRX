@@ -328,8 +328,12 @@
             "name": "Large Medipack",
         }
     },
-    "game_strings": {
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixes original issues in 40 Fathoms, Wreck of the Maria Doria and The Deck where plant sprites in water areas do not animate.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Fixes original issues in 40 Fathoms, Wreck of the Maria Doria and The Deck where plant sprites in water areas do not animate.",
+        }
     }
 }

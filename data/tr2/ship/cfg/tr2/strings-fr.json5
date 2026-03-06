@@ -328,8 +328,12 @@
             "name": "\\{review}Grand medipack",
         }
     },
-    "game_strings": {
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "\\{review}Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques du 40 brasses, Épave du Maria Doria et Le Pont.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "\\{review}Corrige l'attaque de patte d'ours dans The Golden Mask pour qu'elle ne manque pas Lara.",
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "\\{review}Corrige l'attaque de patte d'ours dans The Golden Mask pour qu'elle ne manque pas Lara.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "\\{review}Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques du 40 brasses, Épave du Maria Doria et Le Pont.",
+        }
     }
 }

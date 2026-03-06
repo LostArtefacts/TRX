@@ -54,6 +54,25 @@ typedef struct UI_SETTINGS_STATE {
     int32_t listener_id;
 } UI_SETTINGS_STATE;
 
+static const char *M_GetOptionTitle(const UI_SETTINGS_OPTION *const option)
+{
+    if (option == nullptr || option->target == nullptr) {
+        return "";
+    }
+    const char *const result =
+        Config_GetOptionTitle(Config_GetOption(option->target));
+    return result != nullptr ? result : "";
+}
+
+static const char *M_GetOptionDescription(
+    const UI_SETTINGS_OPTION *const option)
+{
+    if (option == nullptr || option->target == nullptr) {
+        return nullptr;
+    }
+    return Config_GetOptionDescription(Config_GetOption(option->target));
+}
+
 static int32_t M_GetVisibleRows(void)
 {
     const int32_t res_h = UI_Scaler_CalcInverse(
@@ -167,7 +186,7 @@ static const UI_SETTINGS_OPTION *M_GetOptionByRow(
     const UI_SETTINGS_STATE *const s, const int32_t row_idx)
 {
     int32_t count = 0;
-    for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+    for (int32_t i = 0; s->options[i].target != nullptr; i++) {
         const UI_SETTINGS_OPTION *const opt = &s->options[i];
         if (M_IsOptionHidden(opt)) {
             continue;
@@ -451,19 +470,17 @@ static float M_GetMaxLabelWidth(const UI_SETTINGS_STATE *const s)
     float result = -1.0f;
     if (s->tabs != nullptr) {
         for (int32_t i = 0; i < s->tab_count; i++) {
-            for (int32_t j = 0; s->tabs[i].options[j].label_id != nullptr;
-                 j++) {
+            for (int32_t j = 0; s->tabs[i].options[j].target != nullptr; j++) {
                 const UI_SETTINGS_OPTION *const option = &s->tabs[i].options[j];
                 const float label_w =
-                    UI_Label_MeasureW(GameString_Get(option->label_id));
+                    UI_Label_MeasureW(M_GetOptionTitle(option));
                 result = MAX(label_w, result);
             }
         }
     } else {
-        for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+        for (int32_t i = 0; s->options[i].target != nullptr; i++) {
             const UI_SETTINGS_OPTION *const option = &s->options[i];
-            const float label_w =
-                UI_Label_MeasureW(GameString_Get(option->label_id));
+            const float label_w = UI_Label_MeasureW(M_GetOptionTitle(option));
             result = MAX(label_w, result);
         }
     }
@@ -478,15 +495,14 @@ static float M_GetMaxValueWidth(const UI_SETTINGS_STATE *const s)
 
     if (s->tabs != nullptr) {
         for (int32_t i = 0; i < s->tab_count; i++) {
-            for (int32_t j = 0; s->tabs[i].options[j].label_id != nullptr;
-                 j++) {
+            for (int32_t j = 0; s->tabs[i].options[j].target != nullptr; j++) {
                 const UI_SETTINGS_OPTION *const option = &s->tabs[i].options[j];
                 const float value_w = M_MeasureMaxValueWidth(option);
                 result = MAX(value_w, result);
             }
         }
     } else {
-        for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+        for (int32_t i = 0; s->options[i].target != nullptr; i++) {
             const UI_SETTINGS_OPTION *const option = &s->options[i];
             const float value_w = M_MeasureMaxValueWidth(option);
             result = MAX(value_w, result);
@@ -506,11 +522,11 @@ static bool M_CanExamine(
         return false;
     }
     const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row_idx);
-    if (option == nullptr || option->description_id == 0) {
+    if (option == nullptr || M_GetOptionDescription(option) == nullptr) {
         return false;
     }
-    const char *const title = GameString_Get(option->label_id);
-    const char *const text = GameString_Get(option->description_id);
+    const char *const title = M_GetOptionTitle(option);
+    const char *const text = M_GetOptionDescription(option);
     return title != nullptr && text != nullptr;
 }
 
@@ -543,7 +559,7 @@ static void M_RestoreDefault(
 static void M_RecomputeSizes(UI_SETTINGS_STATE *const s)
 {
     int32_t row_count = 0;
-    for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+    for (int32_t i = 0; s->options[i].target != nullptr; i++) {
         if (!M_IsOptionHidden(&s->options[i])) {
             row_count++;
         }
@@ -632,7 +648,7 @@ UI_SETTINGS_STATE *UI_Settings_Init(
     UI_SETTINGS_STATE *const s = M_InitCommon(title);
     s->options = options;
     s->max_group_items = 0;
-    for (int32_t i = 0; s->options[i].label_id != nullptr; i++) {
+    for (int32_t i = 0; s->options[i].target != nullptr; i++) {
         if (!M_IsOptionHidden(&s->options[i])) {
             s->max_group_items++;
         }
@@ -656,7 +672,7 @@ UI_SETTINGS_STATE *UI_Settings_InitWithTabs(
     int32_t visible_tab_count = 0;
     for (int32_t i = 0; i < tab_count; i++) {
         int32_t tab_items = 0;
-        for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
+        for (int32_t j = 0; tabs[i].options[j].target != nullptr; j++) {
             if (!M_IsOptionHidden(&tabs[i].options[j])) {
                 tab_items++;
             }
@@ -677,7 +693,7 @@ UI_SETTINGS_STATE *UI_Settings_InitWithTabs(
     s->max_group_items = 0;
     for (int32_t i = 0; i < tab_count; i++) {
         int32_t tab_items = 0;
-        for (int32_t j = 0; tabs[i].options[j].label_id != nullptr; j++) {
+        for (int32_t j = 0; tabs[i].options[j].target != nullptr; j++) {
             if (!M_IsOptionHidden(&tabs[i].options[j])) {
                 tab_items++;
             }
@@ -949,7 +965,7 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
         {
             const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, row);
             const char *const name =
-                option ? GameString_Get(option->label_id) : "";
+                option != nullptr ? M_GetOptionTitle(option) : "";
             M_OptionLabel(option, name, /* star_if_enforced */ true);
         }
         UI_EndResize();
@@ -1022,8 +1038,8 @@ void UI_Settings(UI_SETTINGS_STATE *const s)
     if (s->description.show) {
         const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, sel_row);
         if (option != nullptr) {
-            const char *title = GameString_Get(option->label_id);
-            const char *text = GameString_Get(option->description_id);
+            const char *title = M_GetOptionTitle(option);
+            const char *text = M_GetOptionDescription(option);
             if (title != nullptr && text != nullptr) {
                 if (Config_IsOptionEnforced(option->target)) {
                     title = String_FormatStatic("%s*", title);

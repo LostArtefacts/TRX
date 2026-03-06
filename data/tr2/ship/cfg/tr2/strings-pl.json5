@@ -328,8 +328,12 @@
             "name": "Duża apteczka",
         }
     },
-    "game_strings": {
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Przywraca brakującą animację glonów w podwodnych poziomach.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Przywraca brakującą animację glonów w podwodnych poziomach.",
+        }
     }
 }

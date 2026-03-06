@@ -301,7 +301,9 @@ void UI_ColorEditorDialog(UI_COLOR_EDITOR_DIALOG_STATE *const s)
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
     });
     UI_BeginAnchor(0.5f, 0.5f);
-    UI_Label(GameString_Get(s->option->label_id));
+    const char *const title =
+        Config_GetOptionTitle(Config_GetOption(s->option->target));
+    UI_Label(title != nullptr ? title : "");
     UI_EndAnchor();
     UI_Spacer(M_COLOR_EDITOR_TITLE_MARGIN, M_COLOR_EDITOR_TITLE_MARGIN);
 

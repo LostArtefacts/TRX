@@ -214,8 +214,6 @@
     },
     "game_strings": {
         "MISC_EMPTY_SLOT_FMT": "- EMPLACEMENT VIDE -",
-        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Génère un éclairage dynamique pour les coups de feu et les explosions, comme apparu depuis TR2.",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques de La Citerne et de la Tombe de Tihocan.",
         "STATS_AMMO": "TIRS RÉUSSIS/EFFECTUÉS",
         "STATS_AMMO_HITS": "\\{review}COUPS",
         "STATS_AMMO_USED": "\\{review}MUNITIONS UTILISÉES",
@@ -228,5 +226,13 @@
         "STATS_PICKUPS": "OBJETS RAMASSÉS",
         "STATS_SECRETS": "SECRETS",
         "STATS_TIME_TAKEN": "TEMPS ÉCOULÉ",
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Génère un éclairage dynamique pour les coups de feu et les explosions, comme apparu depuis TR2.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques de La Citerne et de la Tombe de Tihocan.",
+        }
     }
 }
