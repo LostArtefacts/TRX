@@ -214,8 +214,6 @@
     },
     "game_strings": {
         "MISC_EMPTY_SLOT_FMT": "- SLOT FALAMH %d -",
-        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Cuiridh seo solais fiùghantach ri losgadh armachd is spreadhaidhean, coltach ri TR2+.",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Càraichidh bugan san t-Siasarn is Uaigh Tihocan far nach gluais planntrais anns an uisge.",
         "STATS_AMMO": "BUAIDHEAN / LOSGADH",
         "STATS_AMMO_HITS": "BUILEACHDAN",
         "STATS_AMMO_USED": "AMHACHD AIR A CHLEACHD",
@@ -228,5 +226,13 @@
         "STATS_PICKUPS": "TOGAILTEAN",
         "STATS_SECRETS": "DÌOMHAIREACHDAN",
         "STATS_TIME_TAKEN": "ÙINE AIR A GHABHAIL",
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Cuiridh seo solais fiùghantach ri losgadh armachd is spreadhaidhean, coltach ri TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Càraichidh bugan san t-Siasarn is Uaigh Tihocan far nach gluais planntrais anns an uisge.",
+        }
     }
 }

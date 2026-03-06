@@ -214,8 +214,6 @@
     },
     "game_strings": {
         "MISC_EMPTY_SLOT_FMT": "- SLOT VUOTO %d -",
-        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Abilita l'illuminazione dinamica per spari ed esplosioni, simile a TR2+.",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Risolve i problemi preesistenti nella Cisterna e nella Tomba di Tihocan per cui gli sprite delle piante nelle aree acquatiche non si animano.",
         "STATS_AMMO": "MUNIZIONI A SEGNO/USATE",
         "STATS_AMMO_HITS": "COLPI A SEGNO",
         "STATS_AMMO_USED": "MUNIZIONI USATE",
@@ -228,5 +226,13 @@
         "STATS_PICKUPS": "OGGETTI",
         "STATS_SECRETS": "SEGRETI",
         "STATS_TIME_TAKEN": "TEMPO IMPIEGATO",
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Abilita l'illuminazione dinamica per spari ed esplosioni, simile a TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Risolve i problemi preesistenti nella Cisterna e nella Tomba di Tihocan per cui gli sprite delle piante nelle aree acquatiche non si animano.",
+        }
     }
 }

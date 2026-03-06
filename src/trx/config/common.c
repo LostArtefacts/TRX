@@ -8,6 +8,7 @@
 #include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/shell.h>
 
 #include <stdio.h>
@@ -298,6 +299,23 @@ const char *Config_GetOptionValueAsString(const CONFIG_OPTION *const option)
     default:
         return nullptr;
     }
+}
+
+const char *Config_GetOptionTitle(const CONFIG_OPTION *const opt)
+{
+    if (opt == nullptr || opt->name == nullptr) {
+        return nullptr;
+    }
+    return GameString_Get(String_FormatStatic("settings/%s/title", opt->name));
+}
+
+const char *Config_GetOptionDescription(const CONFIG_OPTION *const opt)
+{
+    if (opt == nullptr || opt->name == nullptr) {
+        return nullptr;
+    }
+    return GameString_Get(
+        String_FormatStatic("settings/%s/description", opt->name));
 }
 
 bool Config_SetOptionValueFromString(

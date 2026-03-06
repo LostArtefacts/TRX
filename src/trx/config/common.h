@@ -38,6 +38,12 @@ const char *Config_ResolveOptionName(const char *option_name);
 // Retrieve an option given a string path.
 const CONFIG_OPTION *Config_GetOptionByPath(const char *path);
 
+// Returns translated title for a config option.
+const char *Config_GetOptionTitle(const CONFIG_OPTION *opt);
+
+// Returns translated description for a config option.
+const char *Config_GetOptionDescription(const CONFIG_OPTION *opt);
+
 // Formats the current value of a config option as a static string.
 // The string must not be freed and is short lived.
 const char *Config_GetOptionValueAsString(const CONFIG_OPTION *option);

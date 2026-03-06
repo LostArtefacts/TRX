@@ -214,8 +214,6 @@
     },
     "game_strings": {
         "MISC_EMPTY_SLOT_FMT": "- Leerer SLOT %d -",
-        "SETTING_ENABLE_GUN_LIGHTING_DESCRIPTION": "Aktiviert die Verwendung von dynamischer Beleuchtung für Schüsse und Explosionen., ähnlich wie in TR2+.",
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Fixt originale Fehler in Die Zisterne und Grab des Tihocan, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
         "STATS_AMMO": "Munition Treffer/Verbraucht",
         "STATS_AMMO_HITS": "\\{review}TREFFER",
         "STATS_AMMO_USED": "\\{review}VERBRAUCHTE MUNITION",
@@ -228,5 +226,13 @@
         "STATS_PICKUPS": "Pickups",
         "STATS_SECRETS": "Geheimnisse",
         "STATS_TIME_TAKEN": "Benötigte Zeit",
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Aktiviert die Verwendung von dynamischer Beleuchtung für Schüsse und Explosionen., ähnlich wie in TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Fixt originale Fehler in Die Zisterne und Grab des Tihocan, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
+        }
     }
 }

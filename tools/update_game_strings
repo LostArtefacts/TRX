@@ -21,10 +21,10 @@ REVIEW_MARKER = r"\{review}"
 
 RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID|_PTR)?\(([A-Z0-9_]+)\)")
 RE_GAME_STRING_DEFINE = re.compile(
-    r'GS_DEFINE\(\s*([A-Z0-9_]+)\s*,\s*"((?:\\.|[^"\\])*)"\)'
+    r'GS_DEFINE\(\s*([A-Za-z0-9_./]+)\s*,\s*"((?:\\.|[^"\\])*)"\)'
 )
 RE_UI_SETTING_USAGE = re.compile(
-    r"(?:X_UI_CFG_MANUAL\(\s*|X_UI_CFG[A-Z0-9_]*\([^(),]*,\s*)([A-Z0-9_]+)[,)]",
+    r"X_UI_CFG[A-Z0-9_]*\(\s*([a-z0-9_.]+)\s*[,)]",
     flags=re.M | re.DOTALL,
 )
 RE_ENUM_USAGE = re.compile(r"\b([A-Z0-9_]+)\b")
@@ -33,10 +33,32 @@ RE_OBJ_NAME_DEFINE = re.compile(
 )
 
 
+def sort_mapping_rec(value: Any) -> Any:
+    if isinstance(value, dict):
+        if set(value.keys()).issubset({"title", "description"}):
+            ordered: dict[str, Any] = {}
+            if "title" in value:
+                ordered["title"] = sort_mapping_rec(value["title"])
+            if "description" in value:
+                ordered["description"] = sort_mapping_rec(value["description"])
+            for key in sorted(value.keys()):
+                if key not in ordered:
+                    ordered[key] = sort_mapping_rec(value[key])
+            return ordered
+        return {
+            key: sort_mapping_rec(value[key]) for key in sorted(value.keys())
+        }
+    if isinstance(value, list):
+        return [sort_mapping_rec(item) for item in value]
+    return value
+
+
 def format_strings_file(source: Any) -> str:
     source = deepcopy(source)
     if source.get("game_strings"):
-        source["game_strings"] = dict(sorted(source["game_strings"].items()))
+        source["game_strings"] = sort_mapping_rec(source["game_strings"])
+    if source.get("settings"):
+        source["settings"] = sort_mapping_rec(source["settings"])
     content = write_json_to_string(source)
     content = (
         """{
@@ -62,6 +84,10 @@ def clean(source: str | list[str] | None) -> str | list[str] | None:
         return source
     if isinstance(source, list):
         return [clean(item) for item in source]
+    if isinstance(source, dict):
+        return {key: clean(value) for key, value in source.items()}
+    if not isinstance(source, str):
+        return source
     return source.replace(REVIEW_MARKER, "")
 
 
@@ -112,17 +138,141 @@ def get_strings_map(path: Path) -> dict[str, str]:
     return result
 
 
+def get_config_aliases(path: Path) -> dict[str, str]:
+    aliases: dict[str, str] = {}
+    if not path.exists():
+        return aliases
+    ex_re = re.compile(
+        r'^X_CFG_[A-Z0-9_]+_EX\(\s*"([^"]+)"\s*,\s*([a-z0-9_.]+)\s*,'
+    )
+    for line in path.read_text().splitlines():
+        if match := ex_re.match(line.strip()):
+            aliases[match.group(2)] = match.group(1)
+    return aliases
+
+
+def gs_get(game_strings: dict[str, Any], key: str) -> Any:
+    if "/" not in key:
+        return game_strings.get(key)
+    parts = key.split("/")
+    cur: Any = game_strings
+    for part in parts:
+        if not isinstance(cur, dict):
+            return None
+        cur = cur.get(part)
+        if cur is None:
+            return None
+    return cur
+
+
+def gs_set(game_strings: dict[str, Any], key: str, value: Any) -> None:
+    if "/" not in key:
+        game_strings[key] = value
+        return
+    parts = key.split("/")
+    cur: dict[str, Any] = game_strings
+    for part in parts[:-1]:
+        nxt = cur.get(part)
+        if not isinstance(nxt, dict):
+            nxt = {}
+            cur[part] = nxt
+        cur = nxt
+    cur[parts[-1]] = value
+
+
+def gs_delete(game_strings: dict[str, Any], key: str) -> None:
+    if "/" not in key:
+        game_strings.pop(key, None)
+        return
+    parts = key.split("/")
+    cur: Any = game_strings
+    for part in parts[:-1]:
+        if not isinstance(cur, dict):
+            return
+        cur = cur.get(part)
+        if cur is None:
+            return
+    if isinstance(cur, dict):
+        cur.pop(parts[-1], None)
+
+
+def gs_flatten(game_strings: dict[str, Any], prefix: str = "") -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in game_strings.items():
+        full_key = f"{prefix}/{key}" if prefix else key
+        if isinstance(value, dict):
+            result.update(gs_flatten(value, full_key))
+        else:
+            result[full_key] = value
+    return result
+
+
+def root_get(file_data: dict[str, Any], key: str) -> Any:
+    if key.startswith("settings/"):
+        settings = file_data.get("settings", {})
+        if not isinstance(settings, dict):
+            return None
+        return gs_get(settings, key[len("settings/") :])
+    game_strings = file_data.get("game_strings", {})
+    if not isinstance(game_strings, dict):
+        return None
+    return gs_get(game_strings, key)
+
+
+def root_set(file_data: dict[str, Any], key: str, value: Any) -> None:
+    if key.startswith("settings/"):
+        settings = file_data.setdefault("settings", {})
+        if not isinstance(settings, dict):
+            settings = {}
+            file_data["settings"] = settings
+        gs_set(settings, key[len("settings/") :], value)
+        return
+    game_strings = file_data.setdefault("game_strings", {})
+    if not isinstance(game_strings, dict):
+        game_strings = {}
+        file_data["game_strings"] = game_strings
+    gs_set(game_strings, key, value)
+
+
+def root_delete(file_data: dict[str, Any], key: str) -> None:
+    if key.startswith("settings/"):
+        settings = file_data.get("settings", {})
+        if isinstance(settings, dict):
+            gs_delete(settings, key[len("settings/") :])
+        return
+    game_strings = file_data.get("game_strings", {})
+    if isinstance(game_strings, dict):
+        gs_delete(game_strings, key)
+
+
+def root_flatten(file_data: dict[str, Any]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    game_strings = file_data.get("game_strings", {})
+    if isinstance(game_strings, dict):
+        result.update(gs_flatten(game_strings))
+    settings = file_data.get("settings", {})
+    if isinstance(settings, dict):
+        result.update(gs_flatten(settings, "settings"))
+    return result
+
+
 def get_used_strings(
-    path: Path, include_enums: bool = False
+    path: Path, include_enums: bool = False, aliases: dict[str, str] | None = None
 ) -> Iterable[tuple[int, str]]:
     source = re.sub("//.*", "", path.read_text(), flags=re.M)
+    source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
     for match in re.finditer(RE_GAME_STRING_USAGE, source):
         yield source.count("\n", 0, match.start()) + 1, match.group(1)
     for match in re.finditer(RE_UI_SETTING_USAGE, source):
-        yield source.count("\n", 0, match.start()) + 1, match.group(1)
-        yield source.count("\n", 0, match.start()) + 1, match.group(
-            1
-        ) + "_DESCRIPTION"
+        option_name = match.group(1)
+        if aliases is not None:
+            option_name = aliases.get(option_name, option_name)
+        yield source.count("\n", 0, match.start()) + 1, (
+            f"settings/{option_name}/title"
+        )
+        yield source.count("\n", 0, match.start()) + 1, (
+            f"settings/{option_name}/description"
+        )
     if include_enums and path.suffix == ".def":
         for match in re.finditer(RE_ENUM_USAGE, source):
             yield source.count(
@@ -204,13 +354,18 @@ class RunContext:
             for path in find_versioned_files(REPO_DIR)
             if path.suffix in [".c", ".h", ".def"]
         ]
+        self.config_aliases = get_config_aliases(CommonPaths.src_dir / "config/map.def")
         self.game_strings_def_path = (
             CommonPaths.src_dir / "game/game_strings/entries.def"
         )
         self.game_strings_dict = get_strings_map(self.game_strings_def_path)
         self.used_game_strings = sum(
             [
-                list(get_used_strings(path, include_enums=True))
+                list(
+                    get_used_strings(
+                        path, include_enums=True, aliases=self.config_aliases
+                    )
+                )
                 for path in source_files
             ],
             [],
@@ -248,17 +403,23 @@ class BaseResolver:
         return self.trans_file.data
 
     def fill_base_strings(self) -> None:
-        base_gs = self.base_file.data.get("game_strings", {})
-        trans_gs = self.trans_file.data.setdefault("game_strings", {})
+        base_gs = root_flatten(self.base_file.data)
+        trans_gs = root_flatten(self.trans_file.data)
         source = trans_gs if self.trans_file.extends else base_gs
-        missing = {
-            key: clean(base_gs.get(key))
-            for key in source
-            if not clean(trans_gs.get(key))
-        }
+        missing = {}
+        for key in source:
+            base_value = clean(base_gs.get(key))
+            trans_value = clean(trans_gs.get(key))
+            if isinstance(base_value, (dict, list)):
+                if not trans_value:
+                    root_set(self.trans_file.data, key, base_value)
+                continue
+            if not trans_value:
+                missing[key] = base_value
         for chunk in chunks(list(missing.items()), n=50):
             filled = self.fill_chunk(chunk)
-            trans_gs.update(filled)
+            for key, value in filled.items():
+                root_set(self.trans_file.data, key, value)
 
     def fill_object_names(self) -> None:
         base_objs = self.base_file.data.get("objects", {})
@@ -408,28 +569,45 @@ def remove_unused_defines(ctx: RunContext) -> None:
 @step
 def sync_base_strings(ctx: RunContext) -> None:
     """Sync base strings and clear changed keys in translations and mods."""
-    old = ctx.base.main.data.get("game_strings", {})
+    old_flat = root_flatten(ctx.base.main.data)
     used = {key for _, key in ctx.used_game_strings}
-    new = dict(ctx.game_strings_dict)
-    for key in sorted(used):
-        if key not in new and key in old:
-            new[key] = old[key]
-    changed = [k for k, v in new.items() if old.get(k) != v]
-    ctx.base.main.data["game_strings"] = new
+    new_flat = dict(ctx.game_strings_dict)
+    missing_used = sorted(
+        key
+        for key in used
+        if key.startswith("settings/") and key not in new_flat
+    )
+    if missing_used:
+        preview = "\n".join(f"  - {key}" for key in missing_used[:20])
+        extra = "" if len(missing_used) <= 20 else f"\n  ... and {len(missing_used) - 20} more"
+        sys.exit(
+            "Error: used game string keys are missing from "
+            "src/trx/game/game_strings/entries.def:\n"
+            f"{preview}{extra}"
+        )
+    changed = [k for k, v in new_flat.items() if old_flat.get(k) != v]
+
+    # Preserve non-settings keys that exist in JSON but are not defined in
+    # entries.def (dynamic/runtime keys such as BAR_LOOK_*).
+    for key, value in old_flat.items():
+        if key.startswith("settings/"):
+            continue
+        if key not in new_flat:
+            new_flat[key] = value
+    ctx.base.main.data["game_strings"] = {}
+    ctx.base.main.data["settings"] = {}
+    for key, value in new_flat.items():
+        root_set(ctx.base.main.data, key, value)
     for key in changed:
         for file in ctx.base.translations.values():
             if not file.extends:
-                file.data.setdefault("game_strings", {})[key] = REVIEW_MARKER
+                root_set(file.data, key, REVIEW_MARKER)
         for gs in ctx.mods.values():
-            if gs.main.data.get("game_strings", {}).get(key):
-                gs.main.data.setdefault("game_strings", {})[
-                    key
-                ] = REVIEW_MARKER
+            if root_get(gs.main.data, key):
+                root_set(gs.main.data, key, REVIEW_MARKER)
                 for file in gs.translations.values():
                     if not file.extends:
-                        file.data.setdefault("game_strings", {})[
-                            key
-                        ] = REVIEW_MARKER
+                        root_set(file.data, key, REVIEW_MARKER)
 
     old = ctx.base.main.data.get("objects", {})
     new = ctx.object_names_dict
@@ -477,18 +655,17 @@ def remove_duplicate_mod_strings(ctx: RunContext) -> None:
     """Removes mods base keys if they're identical to the main base strings.
     Only applies to game strings.
     """
-    base_gs = ctx.base.main.data.get("game_strings", {})
+    base_gs = root_flatten(ctx.base.main.data)
     for gs in ctx.mods.values():
-        mod_gs = gs.main.data.get("game_strings")
+        mod_gs = root_flatten(gs.main.data)
         if not mod_gs:
             continue
         for key in list(mod_gs.keys()):
             if key in base_gs and base_gs[key] == mod_gs[key]:
-                del mod_gs[key]
+                root_delete(gs.main.data, key)
                 for file in gs.translations.values():
-                    ts = file.data.get("game_strings")
-                    if ts and key in ts:
-                        del ts[key]
+                    if root_get(file.data, key) is not None:
+                        root_delete(file.data, key)
 
 
 @step
@@ -499,12 +676,12 @@ def remove_extra_translation_strings(ctx: RunContext) -> None:
     for gs in (ctx.base, *ctx.mods.values()):
         base_data = gs.main.data
         for file in gs.translations.values():
-            gs_trans = file.data.get("game_strings")
+            gs_trans = root_flatten(file.data)
             if gs_trans:
-                allowed = base_data.get("game_strings", {})
+                allowed = root_flatten(base_data)
                 for key in list(gs_trans):
                     if key not in allowed:
-                        del gs_trans[key]
+                        root_delete(file.data, key)
             obj_trans = file.data.get("objects")
             if obj_trans:
                 allowed_objs = base_data.get("objects", {})
@@ -518,11 +695,13 @@ def sort_game_strings(ctx):
     """Sort game strings by key."""
     for file in ctx.all_files:
         if game_strings_dict := file.data.get("game_strings"):
-            file.data["game_strings"] = dict(
-                sorted(game_strings_dict.items(), key=lambda kv: kv[0])
-            )
+            file.data["game_strings"] = sort_mapping_rec(game_strings_dict)
         elif not file.data.get("game_strings"):
             file.data.pop("game_strings", None)
+        if settings_dict := file.data.get("settings"):
+            file.data["settings"] = sort_mapping_rec(settings_dict)
+        elif not file.data.get("settings"):
+            file.data.pop("settings", None)
 
 
 @step

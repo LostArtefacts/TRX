@@ -328,8 +328,12 @@
             "name": "Kit Medico Grande",
         }
     },
-    "game_strings": {
-        "SETTING_FIX_ANIMATED_SPRITES_DESCRIPTION": "Risolve i problemi preesistenti nei livelli 'In Profondità', 'Relitto della Maria Doria' e 'Sul Ponte' per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",
-        "SETTING_FIX_BEAR_AI_DESCRIPTION": "Risolve il problema nel pacchetto di espansione La Maschera Dorata per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Risolve il problema nel pacchetto di espansione La Maschera Dorata per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Risolve i problemi preesistenti nei livelli 'In Profondità', 'Relitto della Maria Doria' e 'Sul Ponte' per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",
+        }
     }
 }
