@@ -271,6 +271,8 @@ typedef struct {
 
     void (*surface_upload_func)(void *surface, void *user_data);
     void *surface_upload_func_user_data;
+
+    bool audio_enabled;
 } M_STATE;
 
 static int64_t m_AudioCallbackTime;
@@ -1795,7 +1797,7 @@ static int M_ReadThread(void *arg)
         AVRational sar = av_guess_sample_aspect_ratio(ic, st, nullptr);
     }
 
-    if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+    if (is->audio_enabled && st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
         M_StreamComponentOpen(is, st_index[AVMEDIA_TYPE_AUDIO]);
     }
 
@@ -1997,6 +1999,12 @@ void Video_PumpEvents(VIDEO *video)
     video->is_playing = !is->abort_request && !is->playback_finished;
 }
 
+void Video_SetAudioEnabled(VIDEO *const video, const bool enabled)
+{
+    M_STATE *const is = video->priv;
+    is->audio_enabled = enabled;
+}
+
 void Video_SetVolume(VIDEO *const video, const double volume)
 {
     M_STATE *const is = video->priv;
@@ -2137,4 +2145,10 @@ void Video_SetRenderEndFunc(
     M_STATE *const is = video->priv;
     is->render_end_func = func;
     is->render_end_func_user_data = user_data;
+}
+
+void Video_SetExternalAudioClock(VIDEO *const video, const double timestamp)
+{
+    M_STATE *const is = video->priv;
+    M_SetClock(&is->extclk, timestamp, is->extclk.serial);
 }

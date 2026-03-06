@@ -9,6 +9,9 @@
     - Black: like the Remasters
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
+- added support for `.ogv` and `.fmv` FMV extensions, with `.ogv` preferred over `.fmv` for remaster compatibility
+- improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
+- added audio fallback for FMV files that lack an audio stream (e.g. remastered `.ogv`), probing alternative extensions for a companion audio track
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 

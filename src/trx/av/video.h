@@ -13,6 +13,7 @@ typedef void *(*VIDEO_SURFACE_ALLOCATOR_FUNC)(
     int32_t width, int32_t height, void *user_data);
 
 VIDEO *Video_Open(const char *path);
+void Video_SetAudioEnabled(VIDEO *video, bool enabled);
 void Video_SetVolume(VIDEO *video, double volume);
 void Video_SetSurfaceSize(VIDEO *video, int32_t width, int32_t height);
 void Video_SetSurfacePixelFormat(VIDEO *video, enum AVPixelFormat pixel_format);
@@ -40,6 +41,7 @@ void Video_SetRenderBeginFunc(
 void Video_SetRenderEndFunc(
     VIDEO *video, void (*func)(void *surface, void *user_data),
     void *user_data);
+void Video_SetExternalAudioClock(VIDEO *video, double timestamp);
 void Video_Start(VIDEO *video);
 void Video_Stop(VIDEO *video);
 void Video_PumpEvents(VIDEO *video);
