@@ -18,6 +18,7 @@
 --enable-decoder=opus
 --enable-decoder=aac
 --enable-decoder=adpcm_ima_wav
+--enable-decoder=adpcm_xa
 --enable-demuxer=mov
 --enable-demuxer=mp3
 --enable-demuxer=avi

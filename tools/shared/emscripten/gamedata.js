@@ -21,7 +21,7 @@ var GameDataManager = (function () {
     var LEVEL_EXTS = ['.phd', '.tr2', '.psx', '.tub'];
     var MUSIC_EXTS = ['.flac', '.ogg', '.mp3', '.wav'];
     var SFX_EXTS   = ['.sfx'];
-    var FMV_EXTS   = ['.mp4', '.rpl', '.ogv', '.avi'];
+    var FMV_EXTS   = ['.mp4', '.rpl', '.ogv', '.avi', '.fmv'];
     var AUDIO_EXTS = ['.wad'];  // cdaudio.wad for TR3
     var CUT_EXTS   = ['.tr2'];  // cutscene files live in cuts/
 
