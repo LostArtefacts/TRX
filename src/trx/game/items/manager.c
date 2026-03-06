@@ -333,6 +333,7 @@ void Item_KillAllActive(void)
 
         if (item->active && (item->flags & IF_REVERSE) == 0
             && item->object_id != O_LARA
+            && item->object_id != O_SAVE_CRYSTAL_ITEM
             && !Object_IsType(item->object_id, g_PickupObjects)
             && !Object_IsType(item->object_id, g_DoorObjects)) {
             Item_Kill(item_num);

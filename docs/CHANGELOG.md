@@ -8,6 +8,7 @@
 
 
 **TR3**:
+- fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed Pause text color
 
 
