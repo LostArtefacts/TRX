@@ -6,6 +6,7 @@
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
 - fixed main.sfx resolution being enforced (regression from 1.3)
+- fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057)
 
 **TR3**:
 - added Train control
