@@ -80,6 +80,7 @@
         "CONSOLE_HELP_LIGHTING": "Włącza lub wyłącza system oświetlenia.",
         "CONSOLE_HELP_LOAD": "Ładuje grę z danego slotu zapisu lub szybkiego zapisu.",
         "CONSOLE_HELP_LUA": "Wykonuje podany kod Lua.",
+        "CONSOLE_HELP_MOD": "\\{review}Przełącza na określony mod i ponownie uruchamia grę.",
         "CONSOLE_HELP_MUSIC": "Odtwarza utwór muzyczny o podanym identyfikatorze.",
         "CONSOLE_HELP_PLAY_CUTSCENE": "Wczytuje przerywnik o podanym numerze.",
         "CONSOLE_HELP_PLAY_DEMO": "Wczytuje demo o podanym numerze.",
@@ -1618,6 +1619,18 @@
         },
         "train": {
             "name": "\\{review}Pociąg",
+        },
+        "patrol_dog": {
+            "name": [
+                "Pies",
+                "Pies patrolowy",
+            ]
+        },
+        "huskie": {
+            "name": [
+                "Pies",
+                "Huskie",
+            ]
         }
     },
     "settings": {

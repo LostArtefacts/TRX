@@ -309,7 +309,9 @@ void InvRing_Draw(INV_RING *const ring)
 
         switch (ring->background_style) {
         case BK_NONE:
-            Output_Overlay_DrawGame();
+            if (ring->mode != INV_GLOBE_SELECT_MODE) {
+                Output_Overlay_DrawGame();
+            }
             break;
 
         case BK_TRANSPARENT_MEDIUM:

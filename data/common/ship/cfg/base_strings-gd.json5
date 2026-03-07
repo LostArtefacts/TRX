@@ -80,6 +80,7 @@
         "CONSOLE_HELP_LIGHTING": "Tionndaidh siostam solais",
         "CONSOLE_HELP_LOAD": "Luchdaich geama bhon t-slot sàbhalaidh ainmichte neo slot luath.",
         "CONSOLE_HELP_LUA": "Ruith an t-sreang còd Lua a chaidh a thoirt seachad.",
+        "CONSOLE_HELP_MOD": "\\{review}A' gluasad gu am mod sònraichte agus a' tòiseachadh a' gheama a-rithist.",
         "CONSOLE_HELP_MUSIC": "Cluich slighe-ciùil leis an ID ainmichte.",
         "CONSOLE_HELP_PLAY_CUTSCENE": "Cluich sealladh-film leis an àireamh ainmichte.",
         "CONSOLE_HELP_PLAY_DEMO": "Cluich taisbeanadh leis an àireamh ainmichte.",
@@ -1651,6 +1652,12 @@
         },
         "train": {
             "name": "Trèan",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Cù",
+        },
+        "huskie": {
+            "name": "\\{review}Cù",
         }
     },
     "settings": {

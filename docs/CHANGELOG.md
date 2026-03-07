@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
+- added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
 - added new backgrounds to Inventory Ring / Pause screen / Stats screen styles:
     - Transparent: like TR2 PS1 Pause Screen
     - Black: like the Remasters
@@ -6,10 +7,10 @@
     - Monochrome (warm): like TR3 PS1 Pause Screen
 - fixed main.sfx resolution being enforced (regression from 1.3)
 
-
-
 **TR3**:
 - added Train control
+- added Patrol Dog control
+- added Crow control
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
@@ -103,6 +104,7 @@ Showcase: https://youtu.be/FgB9JgDM65E
 
 **TR3**:
 - added reverb support
+- added Patrol Dog control
 - added Kayak control
 - added Compsognathus control
 - added Mounted Gun control

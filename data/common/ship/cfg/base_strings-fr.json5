@@ -80,6 +80,7 @@
         "CONSOLE_HELP_LIGHTING": "\\{review}Active le système d'éclairage.",
         "CONSOLE_HELP_LOAD": "\\{review}Charge la partie depuis l'emplacement de sauvegarde donné ou depuis une sauvegarde rapide.",
         "CONSOLE_HELP_LUA": "\\{review}Exécute la chaîne de code Lua donnée.",
+        "CONSOLE_HELP_MOD": "\\{review}Bascule vers le mod spécifié et redémarre le jeu.",
         "CONSOLE_HELP_MUSIC": "Lance la piste musicale pour l'identifiant donné.",
         "CONSOLE_HELP_PLAY_CUTSCENE": "Lance la cinématique correspondant au numéro donné.",
         "CONSOLE_HELP_PLAY_DEMO": "Lance la démo correspondant au numéro donné.",
@@ -1627,6 +1628,12 @@
         },
         "train": {
             "name": "\\{review}Train",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Chien",
+        },
+        "huskie": {
+            "name": "\\{review}Chien",
         }
     },
     "settings": {

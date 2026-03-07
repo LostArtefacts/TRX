@@ -80,6 +80,7 @@
         "CONSOLE_HELP_LIGHTING": "Aktiviet oder deaktiviert Beleuchtungs-Sytem.",
         "CONSOLE_HELP_LOAD": "\\{review}Lädt das Spiel aus dem angegebenen Speicherplatz oder von einem Schnell-Speicher.",
         "CONSOLE_HELP_LUA": "\\{review}Führt den angegebenen Lua-Code-String aus.",
+        "CONSOLE_HELP_MOD": "\\{review}Wechselt zum angegebenen Mod und startet das Spiel neu.",
         "CONSOLE_HELP_MUSIC": "Spielt Musik-Titel mit dazugehöriger ID ab.",
         "CONSOLE_HELP_PLAY_CUTSCENE": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",
         "CONSOLE_HELP_PLAY_DEMO": "Spielt eine Demo mit der angegebenen Nummer ab.",
@@ -1640,6 +1641,12 @@
         },
         "train": {
             "name": "\\{review}Zug",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Hund",
+        },
+        "huskie": {
+            "name": "\\{review}Hund",
         }
     },
     "settings": {

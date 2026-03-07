@@ -187,6 +187,10 @@ RGB_F Output_GetGlobalTint(void)
 void Output_SetGlobalTint(const RGB_F tint)
 {
     m_GlobalTint = tint;
+    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
+    if (uniforms != nullptr) {
+        Output_Uniforms_UploadGlobalTint(uniforms, m_GlobalTint);
+    }
 }
 
 RGB_F Output_GetTint(void)
