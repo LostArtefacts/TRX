@@ -185,19 +185,13 @@ void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *const shader, RGB_F tint)
 {
     const int32_t variant_idx = M_GetVariantIndex();
     OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
-    const RGB_F global_tint = Output_GetGlobalTint();
-    const RGB_F effective_tint = {
-        tint.r * global_tint.r,
-        tint.g * global_tint.g,
-        tint.b * global_tint.b,
-    };
-    if (effective_tint.r == shader->tint[variant_idx].r
-        && effective_tint.g == shader->tint[variant_idx].g
-        && effective_tint.b == shader->tint[variant_idx].b) {
+    if (tint.r == shader->tint[variant_idx].r
+        && tint.g == shader->tint[variant_idx].g
+        && tint.b == shader->tint[variant_idx].b) {
         return;
     }
     TRX_GL_TRACK_UNIFORM(
-        glUniform3f, Output_Shader_LookupUniform(base, "uGlobalTint"),
-        effective_tint.r, effective_tint.g, effective_tint.b);
-    shader->tint[variant_idx] = effective_tint;
+        glUniform3f, Output_Shader_LookupUniform(base, "uTint"), tint.r, tint.g,
+        tint.b);
+    shader->tint[variant_idx] = tint;
 }
