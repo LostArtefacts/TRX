@@ -10,15 +10,27 @@ static OBJECT_VECTOR *m_FixedObjects = nullptr;
 
 void Camera_InitialiseFixedObjects(const int32_t num_objects)
 {
-    m_FixedObjectCount = num_objects;
-    m_FixedObjects = num_objects == 0
-        ? nullptr
-        : GameBuf_Alloc(num_objects * sizeof(OBJECT_VECTOR), GBUF_CAMERAS);
+    m_FixedObjectCount = num_objects + 1;
+    m_FixedObjects =
+        GameBuf_Alloc(m_FixedObjectCount * sizeof(OBJECT_VECTOR), GBUF_CAMERAS);
 }
 
 int32_t Camera_GetFixedObjectCount(void)
 {
-    return m_FixedObjectCount;
+    return m_FixedObjectCount - 1;
+}
+
+int32_t Camera_GetDynamicFixedObjectIdx(void)
+{
+    return m_FixedObjectCount - 1;
+}
+
+void Camera_UpdateDynamicFixedObject(const XYZ_32 pos, const int16_t room_num)
+{
+    const int32_t idx = Camera_GetDynamicFixedObjectIdx();
+    OBJECT_VECTOR *const camera = Camera_GetFixedObject(idx);
+    camera->pos = pos;
+    camera->data = room_num;
 }
 
 OBJECT_VECTOR *Camera_GetFixedObject(const int32_t object_idx)

@@ -4,10 +4,14 @@
     - Black: like the Remasters
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
+- fixed main.sfx resolution being enforced (regression from 1.3)
 
 
 
 **TR3**:
+- added Train control
+- changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
+- fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed Pause text color
 

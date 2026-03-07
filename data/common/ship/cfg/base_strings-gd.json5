@@ -1648,6 +1648,9 @@
         },
         "sthpac_mercenary": {
             "name": "Saighdear a' Chuain Shèimh a Deas",
+        },
+        "train": {
+            "name": "Trèan",
         }
     },
     "settings": {

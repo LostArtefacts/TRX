@@ -194,7 +194,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── scotland_sky.bin
 │   │   ├── stpaul_animating_bounds.bin
 │   │   ├── tinnos_cameras.bin
-│   │   └── undersea_animating_bounds.bin
+│   │   ├── undersea_animating_bounds.bin
+│   │   ├── undersea_train.bin
+│   │   └── zoo_train.bin
 │   ├── jungle.tr2
 │   ├── main.sfx
 │   ├── mines.tr2
@@ -430,7 +432,9 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── scotland_sky.bin
         │   │   ├── stpaul_animating_bounds.bin
         │   │   ├── tinnos_cameras.bin
-        │   │   └── undersea_animating_bounds.bin
+        │   │   ├── undersea_animating_bounds.bin
+        │   │   ├── undersea_train.bin
+        │   │   └── zoo_train.bin
         │   ├── jungle.tr2
         │   ├── main.sfx
         │   ├── mines.tr2

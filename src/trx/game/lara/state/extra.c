@@ -283,6 +283,26 @@ static void M_EndHouse(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_TrainKill(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.num = Camera_GetDynamicFixedObjectIdx();
+    g_Camera.type = CAM_FIXED;
+    g_Camera.speed = 1;
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->hit_direction = DIR_UNKNOWN;
+    item->gravity = false;
+    item->hit_points = -1;
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    item->pos.y = Room_GetHeight(sector, item->pos);
+
+    if (Item_TestFrameEqual(item, -30)) {
+        lara->death_timer = 1;
+    }
+}
+
 // clang-format off
 REGISTER_LARA_EXTRA(LS_EXTRA_BREATH,         M_Breath)
 REGISTER_LARA_EXTRA(LS_EXTRA_SCION_PICKUP_1, M_ScionPedestal)
@@ -301,4 +321,5 @@ REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE,    M_StartHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_END_HOUSE,      M_EndHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_SHIVA_KILL,     M_BeastKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_RAPIDS_DROWN,   M_RapidsDrown)
+REGISTER_LARA_EXTRA(LS_EXTRA_TRAIN_KILL,     M_TrainKill)
 // clang-format on
