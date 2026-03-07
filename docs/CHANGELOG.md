@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
 - fixed main.sfx resolution being enforced (regression from 1.3)
+- fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057)
 
 
 
