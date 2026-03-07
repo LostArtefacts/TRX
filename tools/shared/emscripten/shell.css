@@ -233,8 +233,13 @@ html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
     -webkit-backdrop-filter: blur(2px);
 }
 .tc-btn svg {
-    width: clamp(18px, 4.5vmin, 30px);
-    height: clamp(18px, 4.5vmin, 30px);
+    width: auto;
+    height: clamp(15px, 3.8vmin, 25px);
+}
+.tc-btn.tc-jump svg,
+.tc-btn.tc-action svg {
+    width: auto;
+    height: clamp(22px, 5.5vmin, 36px);
 }
 .tc-btn.active {
     background: rgba(0, 0, 0, 0.74);
@@ -352,6 +357,11 @@ html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
 }
 .tc-menu { left: calc(50% - clamp(32px, 5.4dvw, 46px) - 7px); }
 .tc-pause { left: calc(50% + 8px); right: auto; }
+.tc-menu svg,
+.tc-pause svg {
+    height: 50%;
+    width: auto;
+}
 
 /* Runtime-applied fold mode (safer than forcing canvas buffer resize) */
 body.is-folded-horizontal #canvas {
