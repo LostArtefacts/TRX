@@ -1765,7 +1765,9 @@ static int M_ReadThread(void *arg)
     is->ic = ic;
 
     avformat_find_stream_info(ic, nullptr);
+#if LIBAVFORMAT_VERSION_MAJOR < 59
     av_format_inject_global_side_data(ic);
+#endif
 
     if (ic->pb) {
         ic->pb->eof_reached = 0;

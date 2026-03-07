@@ -88,8 +88,9 @@ runs:
         # Install to separate staging paths for all architectures in
         # preparation for fusing universal libraries in a follow-up step.
         cd "$RUNNER_TEMP"
-        git clone --depth 1 --branch "n7.1" https://github.com/FFmpeg/FFmpeg ffmpeg-arm64
+        git clone https://github.com/FFmpeg/FFmpeg ffmpeg-arm64
         cd ffmpeg-arm64
+        git checkout 066432ebcf
 
         # Common FFmpeg configure options
         FFMPEG_CONFIG_OPTIONS=" \
@@ -109,8 +110,9 @@ runs:
         sudo make install
 
         cd "$RUNNER_TEMP"
-        git clone --depth 1 --branch "n7.1" https://github.com/FFmpeg/FFmpeg ffmpeg-x86-64
+        git clone https://github.com/FFmpeg/FFmpeg ffmpeg-x86-64
         cd ffmpeg-x86-64
+        git checkout 066432ebcf
         # Configure for x86-64.
         ./configure \
           --arch=x86_64 \
@@ -134,7 +136,6 @@ runs:
           "libavfilter"
           "libavformat"
           "libavutil"
-          "libpostproc"
           "libswresample"
           "libswscale"
         )
