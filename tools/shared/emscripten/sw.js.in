@@ -24,6 +24,8 @@ self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(CACHE_NAME).then(function(cache) {
             return cache.addAll(PRECACHE_URLS);
+        }).then(function() {
+            return self.skipWaiting();
         })
     );
 });
@@ -60,6 +62,17 @@ self.addEventListener('fetch', function(event) {
 
     // Pass through range requests (needed for FMV video streaming).
     if (event.request.headers.get('Range')) {
+        return;
+    }
+
+    // Navigation requests (the HTML page): network-first so updates are
+    // picked up without a hard refresh, with cache fallback for offline.
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request).catch(function() {
+                return caches.match(event.request, { ignoreSearch: true });
+            })
+        );
         return;
     }
 
