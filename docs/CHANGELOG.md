@@ -25,6 +25,7 @@
 - fixed reverb affecting inventory ring sounds (#5056)
 - fixed Pause text color
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
+- fixed too low volume in all FMVs (except logo which used a different codec)
 
 
 

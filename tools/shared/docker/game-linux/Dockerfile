@@ -52,9 +52,8 @@ RUN apt-get install -y \
     gcc \
     zlib1g-dev
 RUN git clone \
-    --depth 1 \
-    --branch "n7.1" \
     https://github.com/FFmpeg/FFmpeg
+RUN cd FFmpeg && git checkout 066432ebcf
 COPY ./tools/ffmpeg_flags.txt /tmp/ffmpeg_flags.txt
 RUN cd FFmpeg \
     && ./configure \

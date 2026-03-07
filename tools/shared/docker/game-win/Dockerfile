@@ -15,6 +15,7 @@ ENV TZ=Europe/Warsaw
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
+        gcc \
         gcc-mingw-w64-i686 \
         g++-mingw-w64-i686 \
         git \
@@ -55,9 +56,8 @@ FROM mingw AS libav
 RUN apt-get install -y \
     nasm
 RUN git clone \
-    --depth 1 \
-    --branch "n7.1" \
     https://github.com/FFmpeg/FFmpeg
+RUN cd FFmpeg && git checkout 066432ebcf
 COPY --from=zlib /ext/ /usr/i686-w64-mingw32/
 COPY ./tools/ffmpeg_flags.txt /tmp/ffmpeg_flags.txt
 RUN cd FFmpeg \
@@ -68,7 +68,7 @@ RUN cd FFmpeg \
         --prefix=/ext/ \
         --cc=i686-w64-mingw32-gcc \
         --cxx=i686-w64-mingw32-g++ \
-        --host-cc=i686-w64-mingw32-gcc \
+        --host-cc=gcc \
         --strip=i686-w64-mingw32-strip \
         --pkg-config=i686-w64-mingw32-pkg-config \
         --enable-static \
