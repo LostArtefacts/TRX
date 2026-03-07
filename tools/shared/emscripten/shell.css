@@ -228,10 +228,13 @@ html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
     border: 1px solid rgba(255, 255, 255, 0.34);
     border-radius: 999px;
     color: rgba(255, 255, 255, 0.92);
-    font-size: clamp(18px, 4.5vmin, 30px);
     touch-action: none;
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
+}
+.tc-btn svg {
+    width: clamp(18px, 4.5vmin, 30px);
+    height: clamp(18px, 4.5vmin, 30px);
 }
 .tc-btn.active {
     background: rgba(0, 0, 0, 0.74);
@@ -279,9 +282,12 @@ html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.55);
-    font-size: clamp(18px, 4.2vmin, 28px);
     transition: color 80ms ease;
     pointer-events: none;
+}
+.tc-dpad .tc-dir svg {
+    width: clamp(18px, 4.2vmin, 28px);
+    height: clamp(18px, 4.2vmin, 28px);
 }
 .tc-dpad .tc-up { left: 35%; top: 3%; }
 .tc-dpad .tc-right { right: 3%; top: 35%; }
