@@ -160,6 +160,40 @@ html, body { width: 100%; height: 100dvh; overflow: hidden; background: #000; }
     margin-bottom: 0.8em;
 }
 
+/* Language selection */
+#upload-lang-select {
+    margin-top: 1em;
+    padding: 1em;
+    border: 1px solid #c8a040;
+    border-radius: 8px;
+    background: rgba(200, 160, 64, 0.08);
+}
+#upload-lang-select p {
+    color: #c8a040;
+    font-size: 0.9em;
+    margin-bottom: 0.8em;
+}
+.lang-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    justify-content: center;
+}
+.lang-list button {
+    padding: 0.5em 1em;
+    border: 1px solid #c8a040;
+    border-radius: 6px;
+    background: transparent;
+    color: #c8a040;
+    font-size: 0.85em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+.lang-list button:hover {
+    background: rgba(200, 160, 64, 0.15);
+}
+
 /* Touch controls overlay */
 #touch-controls {
     display: none;

@@ -257,7 +257,10 @@ var GameDataManager = (function () {
     // Calls `onProgress(message, fraction)` with status updates.
     // `onWarning(message)` is called when no FMV cutscenes are found;
     // it must return a Promise that resolves to continue or rejects to cancel.
-    GameDataManager.prototype.processUpload = function (items, onProgress, onWarning) {
+    // `onLanguageSelect(languages)` is called when multiple audio language
+    // directories are detected (e.g. SFX/DE/, SFX/FR/); it must return a
+    // Promise resolving to the chosen language code (e.g. "en").
+    GameDataManager.prototype.processUpload = function (items, onProgress, onWarning, onLanguageSelect) {
         var self = this;
 
         function report(msg, frac) {
@@ -270,8 +273,23 @@ var GameDataManager = (function () {
                 throw new Error('No game files found in the upload.');
             }
 
+            // Detect multiple audio language directories (e.g. SFX/DE/,
+            // SFX/FR/) and let the user pick before mapping.
+            var languages = _detectAudioLanguages(entries);
+            var langStep;
+            if (languages.length > 1 && onLanguageSelect) {
+                report('Selecting audio language...', 0.65);
+                langStep = onLanguageSelect(languages).then(function (lang) {
+                    return _filterByLanguage(entries, lang);
+                });
+            } else {
+                langStep = Promise.resolve(entries);
+            }
+
+            return langStep.then(function (filteredEntries) {
+
             report('Mapping files...', 0.7);
-            var mapped = _mapFiles(entries, self.gameId);
+            var mapped = _mapFiles(filteredEntries, self.gameId);
             if (mapped.length === 0) {
                 throw new Error('No recognised game files found. Please provide your original Tomb Raider game files.');
             }
@@ -333,6 +351,8 @@ var GameDataManager = (function () {
             });
 
             }); // proceed.then
+
+            }); // langStep.then
         });
     };
 
@@ -654,6 +674,58 @@ var GameDataManager = (function () {
         }
         // No RIFF found — return as-is and let the engine report the error.
         return data;
+    }
+
+    // -----------------------------------------------------------------------
+    // Audio language detection / filtering
+    // -----------------------------------------------------------------------
+
+    // Language codes found in the remastered release's TRACKS/ directories.
+    var LANG_NAMES = {
+        de: 'German',   en: 'English',  es: 'Spanish',
+        fr: 'French',   it: 'Italian',  ja: 'Japanese',
+        ru: 'Russian'
+    };
+
+    // Scan uploaded entries for language-specific audio directories under
+    // TRACKS/ (e.g. TRACKS/EN/22.OGG, TRACKS/RU/22.OGG).  Only languages
+    // that have voiced dialogue tracks are offered.  Returns a sorted
+    // array of { code, name } objects, or an empty array if fewer than
+    // two language variants are found.
+    function _detectAudioLanguages(entries) {
+        var found = {};
+        for (var i = 0; i < entries.length; i++) {
+            var path = entries[i].path.replace(/\\/g, '/').toLowerCase();
+            var m = path.match(/(?:^|\/)tracks\/([a-z]{2})\//);
+            if (m) {
+                found[m[1]] = true;
+            }
+        }
+        var codes = Object.keys(found);
+        if (codes.length <= 1) return [];
+        codes.sort();
+        return codes.map(function (c) {
+            return { code: c, name: LANG_NAMES[c] || c.toUpperCase() };
+        });
+    }
+
+    // Remove entries from non-selected language directories under SFX/
+    // or TRACKS/.  Entries not inside any language subdirectory are kept.
+    function _filterByLanguage(entries, lang) {
+        var lowerLang = lang.toLowerCase();
+        var filtered = [];
+        for (var i = 0; i < entries.length; i++) {
+            var path = entries[i].path.replace(/\\/g, '/').toLowerCase();
+            var m = path.match(/(?:^|\/)(sfx|tracks)\/([a-z]{2})\//);
+            if (m) {
+                if (m[2] === lowerLang) {
+                    filtered.push(entries[i]);
+                }
+            } else {
+                filtered.push(entries[i]);
+            }
+        }
+        return filtered;
     }
 
     // -----------------------------------------------------------------------

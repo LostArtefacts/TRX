@@ -49,6 +49,10 @@
                     <button id="btn-warning-cancel" type="button">Cancel</button>
                 </div>
             </div>
+            <div id="upload-lang-select" class="hidden">
+                <p>Multiple audio languages detected. Please select one:</p>
+                <div id="upload-lang-list" class="lang-list"></div>
+            </div>
         </div>
         <input type="file" id="file-input-folder" webkitdirectory multiple style="display:none">
         <input type="file" id="file-input-archive" accept=".zip,.tar.gz,.tgz" style="display:none">
@@ -223,10 +227,35 @@
                 });
             }
 
+            var langSelectDiv = document.getElementById('upload-lang-select');
+            var langList = document.getElementById('upload-lang-list');
+
+            function showLanguageSelect(languages) {
+                return new Promise(function(resolve) {
+                    progressDiv.classList.add('hidden');
+                    langList.innerHTML = '';
+                    for (var i = 0; i < languages.length; i++) {
+                        (function(lang) {
+                            var btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.textContent = lang.name;
+                            btn.addEventListener('click', function() {
+                                langSelectDiv.classList.add('hidden');
+                                progressDiv.classList.remove('hidden');
+                                resolve(lang.code);
+                            });
+                            langList.appendChild(btn);
+                        })(languages[i]);
+                    }
+                    langSelectDiv.classList.remove('hidden');
+                });
+            }
+
             function handleFiles(files) {
                 if (!files || files.length === 0) return;
                 hideError();
                 warningDiv.classList.add('hidden');
+                langSelectDiv.classList.add('hidden');
                 progressDiv.classList.remove('hidden');
                 progressFill.style.width = '0%';
                 progressText.textContent = 'Processing...';
@@ -234,7 +263,7 @@
                 gdm.processUpload(files, function(msg, frac) {
                     progressFill.style.width = Math.round(frac * 100) + '%';
                     progressText.textContent = msg;
-                }, showWarning).then(function() {
+                }, showWarning, showLanguageSelect).then(function() {
                     _trxStartGame();
                 }).catch(function(err) {
                     progressDiv.classList.add('hidden');
