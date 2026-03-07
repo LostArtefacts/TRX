@@ -43,15 +43,19 @@ static void M_InitialiseSamplesFromFile(
     if (file_name == nullptr) {
         file_name = "main.sfx";
     }
+    MYFILE *fp = nullptr;
     const char *const full_path =
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_SFX_FILE, file_name);
-    LOG_DEBUG("Loading samples from %s", full_path);
+        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_SFX_FILE, file_name);
+    if (full_path == nullptr) {
+        goto finish;
+    }
 
-    MYFILE *const fp = File_Open(full_path, FILE_OPEN_READ);
+    fp = File_Open(full_path, FILE_OPEN_READ);
     if (fp == nullptr) {
         LOG_ERROR("Could not open %s samples file", full_path);
         goto finish;
     }
+    LOG_DEBUG("Loading samples from %s", full_path);
 
     const int32_t sample_count = info->samples.offset_count;
     entries = Memory_Alloc(sizeof(M_SAMPLE_ENTRY) * sample_count);
