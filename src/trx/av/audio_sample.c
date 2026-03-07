@@ -475,6 +475,13 @@ static bool M_ConvertSample(const int32_t sample_id)
     return result;
 }
 
+static bool M_IsOriginalDataDefined(const int32_t sample_id)
+{
+    ASSERT(sample_id >= 0 && sample_id < m_LoadedSamplesCount);
+    const AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
+    return sample->original_data != nullptr;
+}
+
 void Audio_Sample_Init(void)
 {
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES;
@@ -569,6 +576,10 @@ int32_t Audio_Sample_Play(
 
     if (sample_id < 0 || sample_id >= m_LoadedSamplesCount) {
         LOG_DEBUG("Invalid sample id: %d", sample_id);
+        return AUDIO_NO_SOUND;
+    }
+
+    if (!M_IsOriginalDataDefined(sample_id)) {
         return AUDIO_NO_SOUND;
     }
 
