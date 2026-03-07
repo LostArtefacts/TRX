@@ -1546,6 +1546,9 @@
                 "Cane da Pattuglia",
                 "Husky",
             ]
+        },
+        "electric_cleaner": {
+            "name": "\\{review}Pulitore Elettrico",
         }
     },
     "settings": {

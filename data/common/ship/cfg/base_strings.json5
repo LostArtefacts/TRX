@@ -858,6 +858,9 @@
         "disc_emitter": {
             "name": "Disc Emitter",
         },
+        "electric_cleaner": {
+            "name": "Electric Cleaner",
+        },
         "ember": {
             "name": "Ember",
         },

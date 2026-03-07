@@ -9,5 +9,5 @@ void Room_PopulateSectorData(
 void Room_ReadTriangulation(
     SURFACE *surface, int16_t func_data, int16_t tilt_data);
 
-void Room_TestTriggers(const ITEM *item);
-void Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
+bool Room_TestTriggers(const ITEM *item);
+bool Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);

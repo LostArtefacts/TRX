@@ -1490,6 +1490,9 @@
                 "Pies",
                 "Huskie",
             ]
+        },
+        "electric_cleaner": {
+            "name": "\\{review}Elektryczny czyściciel",
         }
     },
     "settings": {

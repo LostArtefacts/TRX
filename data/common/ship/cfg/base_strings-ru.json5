@@ -1513,6 +1513,9 @@
         },
         "huskie": {
             "name": "\\{review}Собака",
+        },
+        "electric_cleaner": {
+            "name": "\\{review}Электрический очиститель",
         }
     },
     "settings": {

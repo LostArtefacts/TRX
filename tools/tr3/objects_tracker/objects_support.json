@@ -43,6 +43,7 @@
   "O_DOOR_TYPE_8":            { "status": "fully implemented" },
   "O_EARTHQUAKE":             { "status": "fully implemented" },
   "O_ELECTRICAL_LIGHT":       { "status": "fully implemented" },
+  "O_ELECTRIC_CLEANER":       { "status": "fully implemented" },
   "O_ELECTRIC_FENCE":         { "status": "fully implemented" },
   "O_FALLING_BLOCK_1":        { "status": "fully implemented" },
   "O_FALLING_CEILING_1":      { "status": "fully implemented" },

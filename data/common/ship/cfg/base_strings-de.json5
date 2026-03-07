@@ -1506,6 +1506,9 @@
         },
         "huskie": {
             "name": "\\{review}Hund",
+        },
+        "electric_cleaner": {
+            "name": "\\{review}Elektrischer Reiniger",
         }
     },
     "settings": {

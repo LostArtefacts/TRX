@@ -538,6 +538,7 @@ common_sources = [
   'trx/game/objects/setup.c',
   'trx/game/objects/traps/blade.c',
   'trx/game/objects/traps/bubble_emitter.c',
+  'trx/game/objects/traps/cleaner.c',
   'trx/game/objects/traps/common.c',
   'trx/game/objects/traps/damocles_sword.c',
   'trx/game/objects/traps/dart.c',

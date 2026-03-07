@@ -239,6 +239,7 @@ X_OBJ_NAME_DEFINE(O_DART,                  "dart",                  X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_DART_EMITTER,          "dart_emitter",          X_OBJ_NAMES("Dart Emitter"))
 X_OBJ_NAME_DEFINE(O_DISC,                  "disc",                  X_OBJ_NAMES("Disc"))
 X_OBJ_NAME_DEFINE(O_DISC_EMITTER,          "disc_emitter",          X_OBJ_NAMES("Disc Emitter"))
+X_OBJ_NAME_DEFINE(O_ELECTRIC_CLEANER,      "electric_cleaner",      X_OBJ_NAMES("Electric Cleaner"))
 X_OBJ_NAME_DEFINE(O_EMBER,                 "ember",                 X_OBJ_NAMES("Ember"))
 X_OBJ_NAME_DEFINE(O_EMBER_EMITTER,         "ember_emitter",         X_OBJ_NAMES("Ember Emitter"))
 X_OBJ_NAME_DEFINE(O_FALLING_BLOCK_1,       "falling_block_1",       X_OBJ_NAMES("Falling Block 1", "Collapsible Floor 1", "Collapsible Tiles 1"))
