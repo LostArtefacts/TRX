@@ -65,32 +65,53 @@ self.addEventListener('fetch', function(event) {
         return;
     }
 
-    // Navigation requests (the HTML page): network-first so updates are
-    // picked up without a hard refresh, with cache fallback for offline.
-    if (event.request.mode === 'navigate') {
+    // Large binary assets: cache-first (these are big and only change
+    // between builds, which get a fresh CACHE_NAME via precache).
+    var path = url.pathname;
+    if (path.endsWith('.wasm') || path.endsWith('.data')
+        || path.endsWith('.png') || path.endsWith('.webmanifest')) {
         event.respondWith(
-            fetch(event.request).catch(function() {
-                return caches.match(event.request, { ignoreSearch: true });
+            caches.match(event.request, { ignoreSearch: true }).then(function(cached) {
+                if (cached) return cached;
+                return fetch(event.request).then(function(response) {
+                    if (response.ok) {
+                        var clone = response.clone();
+                        caches.open(CACHE_NAME).then(function(cache) {
+                            cache.put(event.request, clone);
+                        });
+                    }
+                    return response;
+                });
             })
         );
         return;
     }
 
-    // For TRX.data: cache on first use (it's large but needed for offline).
-    // For everything else: serve from precache or fetch.
+    // Everything else (HTML, JS, CSS): network-first so updates are
+    // picked up on a normal refresh, with cache fallback for offline.
+    // Use cache: 'no-cache' to bypass the browser HTTP cache (sends a
+    // conditional request so unchanged files still return 304).
     event.respondWith(
-        caches.match(event.request, { ignoreSearch: true }).then(function(cached) {
-            if (cached) return cached;
-            return fetch(event.request).then(function(response) {
-                // Cache TRX.data on first successful fetch for offline support.
-                if (url.pathname.endsWith('/TRX.data') && response.ok) {
-                    var clone = response.clone();
-                    caches.open(CACHE_NAME).then(function(cache) {
-                        cache.put(event.request, clone);
-                    });
+        fetch(event.request, { cache: 'no-cache' }).then(function(response) {
+            if (response.ok) {
+                var clone = response.clone();
+                caches.open(CACHE_NAME).then(function(cache) {
+                    cache.put(event.request, clone);
+                });
+            }
+            return response;
+        }).catch(function() {
+            return caches.match(event.request, { ignoreSearch: true }).then(
+                function(cached) {
+                    // For navigation requests, fall back to the app shell
+                    // if the exact URL isn't cached (e.g. "/" vs "TRX.html").
+                    if (cached) return cached;
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('TRX.html', { ignoreSearch: true });
+                    }
+                    return cached;
                 }
-                return response;
-            });
+            );
         })
     );
 });
