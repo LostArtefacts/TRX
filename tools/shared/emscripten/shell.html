@@ -641,7 +641,7 @@
         })();
         // --- Service Worker (PWA) ---
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' });
         }
     </script>
     <script src="vendor/fflate.min.js"></script>
