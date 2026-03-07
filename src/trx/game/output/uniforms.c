@@ -18,6 +18,7 @@
 #include <string.h>
 
 #define M_GLOBAL_MEMBERS                                                       \
+    X_DECLARE_MEMBER(float, global_tint, [4])                                  \
     X_DECLARE_MEMBER(float, fog_color, [4])                                    \
     X_DECLARE_MEMBER(float, fog_distance, [2])                                 \
     X_DECLARE_MEMBER(float, viewport_size, [2])                                \
@@ -170,6 +171,12 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
             Output_GetFogColor().b,
             Output_GetFogColor().a,
         },
+        .global_tint = {
+            Output_GetGlobalTint().r,
+            Output_GetGlobalTint().g,
+            Output_GetGlobalTint().b,
+            1.0f,
+        },
     };
 
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
@@ -181,14 +188,22 @@ void Output_Uniforms_UploadDesaturation(
     const OUTPUT_UNIFORMS *const uniforms, const float desaturation)
 {
     ASSERT(uniforms != nullptr);
-
     float clamped = desaturation;
     CLAMP(clamped, 0.0f, 1.0f);
-
     glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
     TRX_GL_TRACK_SUBDATA(
         glBufferSubData, GL_UNIFORM_BUFFER,
         offsetof(M_UNIFORM_GENERAL, desaturation), sizeof(clamped), &clamped);
+}
+
+void Output_Uniforms_UploadGlobalTint(
+    const OUTPUT_UNIFORMS *const uniforms, const RGB_F tint)
+{
+    ASSERT(uniforms != nullptr);
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
+    TRX_GL_TRACK_SUBDATA(
+        glBufferSubData, GL_UNIFORM_BUFFER,
+        offsetof(M_UNIFORM_GENERAL, global_tint), sizeof(tint), &tint);
 }
 
 void Output_Uniforms_UploadGameBrightnessMultiplier(

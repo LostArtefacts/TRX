@@ -139,7 +139,7 @@ void main(void) {
 
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
-uniform vec3 uGlobalTint;
+uniform vec3 uTint;
 uniform bool uDiscardAlpha;
 
 in vec4 gEyePos;
@@ -195,6 +195,7 @@ void main(void) {
     }
 
     texColor.rgb *= uBrightnessMultiplier;
+    texColor.rgb *= uTint;
 
     // Optional desaturation (0 = original, 1 = monochrome).
     if (uDesaturation > 0.0) {
@@ -203,7 +204,7 @@ void main(void) {
         texColor.rgb = mix(texColor.rgb, vec3(y), clamp(uDesaturation, 0.0, 1.0));
     }
 
-    texColor.rgb *= uGlobalTint;
+    texColor *= uGlobalTint;
 
     outColor = texColor;
 }
