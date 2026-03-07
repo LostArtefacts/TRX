@@ -358,15 +358,15 @@ void Room_ReadTriangulation(
     }
 }
 
-void Room_TestTriggers(const ITEM *const item)
+bool Room_TestTriggers(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
     const SECTOR *sector = Room_GetSector(
         (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
 
-    Room_TestSectorTrigger(item, sector);
+    bool result = Room_TestSectorTrigger(item, sector);
     if (item->object_id != O_TORSO) {
-        return;
+        return result;
     }
 
     for (int32_t dx = -1; dx < 2; dx++) {
@@ -383,12 +383,14 @@ void Room_TestTriggers(const ITEM *const item)
                     item->pos.z + dz * WALL_L,
                 },
                 &room_num);
-            Room_TestSectorTrigger(item, sector);
+            result |= Room_TestSectorTrigger(item, sector);
         }
     }
+
+    return result;
 }
 
-void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
+bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool is_heavy = item->object_id != O_LARA;
@@ -403,7 +405,7 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     const TRIGGER *const trigger = sector->trigger;
     if (trigger == nullptr) {
-        return;
+        return false;
     }
 
     if (g_Camera.type != CAM_HEAVY) {
@@ -419,27 +421,27 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     if (is_heavy) {
         if (trigger->type != TT_HEAVY) {
-            return;
+            return false;
         }
     } else {
         switch (trigger->type) {
         case TT_PAD:
         case TT_ANTIPAD:
             if (!Gym_TrackManager_OnPadContact(GYM_TRACK_ASSAULT, false)) {
-                return;
+                return false;
             }
             if (item->pos.y != item->floor) {
-                return;
+                return false;
             }
             if (item->object_id == O_LARA
                 && !Gym_TrackManager_OnPadContact(GYM_TRACK_ASSAULT, true)) {
-                return;
+                return false;
             }
             break;
 
         case TT_SWITCH: {
             if (!Switch_Trigger(trigger->item_index, trigger->timer)) {
-                return;
+                return false;
             }
             const ITEM *const switch_item = Item_Get(trigger->item_index);
             switch_off = switch_item->current_anim_state == SWITCH_STATE_OFF;
@@ -448,25 +450,25 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TT_KEY: {
             if (!Keyhole_Trigger(trigger->item_index)) {
-                return;
+                return false;
             }
             break;
         }
 
         case TT_PICKUP: {
             if (!Pickup_Trigger(trigger->item_index)) {
-                return;
+                return false;
             }
             break;
         }
 
         case TT_HEAVY:
         case TT_DUMMY:
-            return;
+            return false;
 
         case TT_COMBAT:
             if (lara_info->gun_status != LGS_READY) {
-                return;
+                return false;
             }
             break;
 
@@ -754,4 +756,6 @@ void Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         Room_SetFlipEffect(new_effect);
         Room_SetFlipTimer(0);
     }
+
+    return true;
 }

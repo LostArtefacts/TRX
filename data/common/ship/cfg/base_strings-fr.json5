@@ -1650,6 +1650,9 @@
         },
         "huskie": {
             "name": "\\{review}Chien",
+        },
+        "electric_cleaner": {
+            "name": "\\{review}Nettoyeur électrique",
         }
     },
     "settings": {

@@ -29,6 +29,7 @@ typedef struct {
     bool is_forced_moving;
     int16_t extra_rotations[3];
     int16_t original_rot;
+    int16_t interaction_rot;
     GAME_VECTOR initial;
     GAME_VECTOR linked;
 } M_PRIV;
@@ -132,6 +133,25 @@ static GAME_VECTOR M_GetLinked(const ITEM *const item)
     return p->linked;
 }
 
+static void M_UpdateStoppers(const ITEM *const item, const bool enabled)
+{
+    const M_PRIV *const p = item->priv;
+    int16_t dir = p->interaction_rot;
+    if (!enabled) {
+        dir += DEG_180;
+    }
+    const ROOM *room = Room_Get(item->room_num);
+    SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    sector->stopper = enabled;
+
+    const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, dir, WALL_L);
+    int16_t room_num = item->room_num;
+    Room_GetSector(pos, &room_num);
+    room = Room_Get(room_num);
+    sector = Room_GetWorldSector(room, pos.x, pos.z);
+    sector->stopper = enabled;
+}
+
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -150,6 +170,7 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     JSON_SHOULD(JSON_READ(io, "counter_rot_1", &p->extra_rotations[1]));
     JSON_SHOULD(JSON_READ(io, "counter_rot_2", &p->extra_rotations[2]));
     JSON_SHOULD(JSON_READ(io, "original_rot", &p->original_rot));
+    JSON_SHOULD(JSON_READ(io, "interaction_rot", &p->interaction_rot));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
@@ -169,6 +190,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "counter_rot_1", p->extra_rotations[1]);
     JSONW_WRITE(io, "counter_rot_2", p->extra_rotations[2]);
     JSONW_WRITE(io, "original_rot", p->original_rot);
+    JSONW_WRITE(io, "interaction_rot", p->interaction_rot);
 }
 
 static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
@@ -232,6 +254,10 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
         return false;
     }
 
+    if (sector->stopper) {
+        return false;
+    }
+
     const XYZ_32 sample_pos = { base_pos.x, base_pos.y - block_height,
                                 base_pos.z };
     sector = Room_GetSector(sample_pos, &room_num);
@@ -286,6 +312,10 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
     }
 
     if (Room_GetHeight(sector, base_pos) != base_pos.y) {
+        return false;
+    }
+
+    if (sector->stopper) {
         return false;
     }
 
@@ -612,16 +642,19 @@ static void M_Collision(
             return;
         }
 
+        M_PRIV *const p = item->priv;
         if (g_Input.forward) {
             if (!M_TestPush(item, WALL_L, quadrant)) {
                 return;
             }
+            p->interaction_rot = lara_item->rot.y;
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PUSH;
             lara_item->goal_anim_state = LS(LS_PUSH_BLOCK);
         } else if (g_Input.back) {
             if (!M_TestPull(item, WALL_L, quadrant)) {
                 return;
             }
+            p->interaction_rot = lara_item->rot.y + DEG_180;
             item->goal_anim_state = MOVABLE_BLOCK_STATE_PULL;
             lara_item->goal_anim_state = LS(LS_PULL_BLOCK);
         } else {
@@ -631,6 +664,7 @@ static void M_Collision(
         M_SetLinked(item);
         item->status = IS_ACTIVE;
         Item_AddActive(item_num);
+        M_UpdateStoppers(item, true);
         MovableBlock_UpdateBox(item, false);
         Item_Animate(item);
         Lara_Animate(lara_item);
@@ -770,6 +804,7 @@ static void M_Control(const int16_t item_num)
         M_SetLinked(item);
         item->status = IS_INACTIVE;
         Item_RemoveActive(item_num);
+        M_UpdateStoppers(item, false);
         MovableBlock_UpdateBox(item, true);
         Room_TestTriggers(item);
     }
