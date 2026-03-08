@@ -924,6 +924,12 @@ static void M_Update(
     }
 }
 
+bool Camera_LOSCheck(
+    GAME_VECTOR *const start, GAME_VECTOR *const target, const int32_t shift)
+{
+    return M_LOS(start, target, shift);
+}
+
 bool Camera_Collide(
     GAME_VECTOR *const ideal, const int32_t shift, const bool y_first)
 {

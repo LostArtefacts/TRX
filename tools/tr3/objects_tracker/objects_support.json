@@ -96,6 +96,7 @@
   "O_PUZZLE_ITEM_3":          { "status": "fully implemented" },
   "O_PUZZLE_ITEM_4":          { "status": "fully implemented" },
   "O_QUAD_BIKE":              { "status": "fully implemented" },
+  "O_UPV":                    { "status": "fully implemented" },
   "O_KAYAK":                  { "status": "fully implemented" },
   "O_QUEST_ITEM_1":           { "status": "fully implemented" },
   "O_QUEST_ITEM_2":           { "status": "fully implemented" },

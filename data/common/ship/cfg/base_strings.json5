@@ -542,6 +542,12 @@
         "kayak": {
             "name": "Kayak",
         },
+        "upv": {
+            "name": [
+                "UPV",
+                "Minisub",
+            ]
+        },
         "mounted_gun": {
             "name": "Mounted Gun",
         },

@@ -20,3 +20,5 @@ bool Collide_TestBoundsCollide(
     const COLL_ITEM *src_item, const COLL_ITEM *dst_item, int32_t radius);
 
 void Collide_DoProperDetection(ITEM *item, XYZ_32 old_pos);
+
+void Collide_ShiftItem(ITEM *item, COLL_INFO *coll);

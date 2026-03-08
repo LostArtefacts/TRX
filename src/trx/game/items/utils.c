@@ -253,26 +253,27 @@ int16_t Item_FindTypeInRoom(const int16_t room_num, const OBJECT_ID obj_id)
     return NO_ITEM;
 }
 
-bool Item_IsTriggerActive(ITEM *const item)
+bool Item_IsTriggerActiveRO(const ITEM *const item)
 {
     const bool ok = (item->flags & IF_REVERSE) == 0;
-
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
         return !ok;
     }
-
     if (item->timer == 0) {
         return ok;
     }
-
     if (item->timer == -1) {
         return !ok;
     }
+    return ok;
+}
 
+bool Item_IsTriggerActive(ITEM *const item)
+{
+    bool result = Item_IsTriggerActiveRO(item);
     item->timer--;
     if (item->timer == 0) {
         item->timer = -1;
     }
-
-    return ok;
+    return result;
 }

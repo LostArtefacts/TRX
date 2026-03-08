@@ -1516,6 +1516,9 @@
         },
         "punk_2": {
             "name": "\\{review}Punk 2",
+        },
+        "upv": {
+            "name": "\\{review}Mini-U-Boot",
         }
     },
     "settings": {

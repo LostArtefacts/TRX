@@ -582,6 +582,7 @@ common_sources = [
   'trx/game/objects/vehicles/skidoo_armed.c',
   'trx/game/objects/vehicles/skidoo_common.c',
   'trx/game/objects/vehicles/skidoo_fast.c',
+  'trx/game/objects/vehicles/upv.c',
   'trx/game/option/common.c',
   'trx/game/option/controls.c',
   'trx/game/option/examine.c',

@@ -123,13 +123,7 @@ void Lara_Col_GetInfo(const ITEM *const item, COLL_INFO *const coll)
 
 void Lara_Col_Shift(COLL_INFO *const coll)
 {
-    ITEM *const lara_item = Lara_GetItem();
-    lara_item->pos.x += coll->shift.x;
-    lara_item->pos.y += coll->shift.y;
-    lara_item->pos.z += coll->shift.z;
-    coll->shift.x = 0;
-    coll->shift.y = 0;
-    coll->shift.z = 0;
+    Collide_ShiftItem(Lara_GetItem(), coll);
 }
 
 void Lara_Col_MonkeySwingSnap(ITEM *const item)

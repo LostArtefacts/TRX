@@ -11,6 +11,16 @@ bool Lara_Vehicle_IsMounted(void)
     return m_VehicleItemNum != NO_ITEM;
 }
 
+bool Lara_Vehicle_IsOnType(const OBJECT_ID obj_id)
+{
+    if (!Lara_Vehicle_IsMounted()) {
+        return false;
+    }
+
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
+    return vehicle->object_id == obj_id;
+}
+
 void Lara_Vehicle_SetIndex(const int16_t item_num)
 {
     m_VehicleItemNum = item_num;
