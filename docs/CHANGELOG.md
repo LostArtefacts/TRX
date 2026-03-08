@@ -5,6 +5,7 @@
 
 **TR3**:
 - fixed reverb affecting inventory ring sounds (#5056)
+- fixed the secret sound not playing in some installations, whereby `cdaudio.wad` contains invalid track sizes (#5049)
 
 
 
