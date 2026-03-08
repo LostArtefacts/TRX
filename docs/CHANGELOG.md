@@ -29,6 +29,7 @@
 - fixed Pause text color
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 - fixed too low volume in all FMVs (except logo which used a different codec)
+- fixed the secret sound not playing in some installations, whereby `cdaudio.wad` contains invalid track sizes (#5049)
 
 
 

@@ -5,6 +5,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 
 #include <stdio.h>
@@ -65,15 +66,28 @@ static bool M_LoadTrackAsWaveFile(
         return false;
     }
 
-    const size_t total_size =
-        M_CDAUDIO_WAD_WAV_HEADER_SIZE + (size_t)track->size;
-    uint8_t *const buf = Memory_Alloc(total_size);
-
     MYFILE *const fp = File_Open(data->path, FILE_OPEN_READ);
     if (fp == nullptr) {
-        Memory_Free(buf);
         return false;
     }
+
+    const size_t file_size = File_Size(fp);
+    if ((size_t)track->offset >= file_size) {
+        LOG_ERROR(
+            "Invalid track offset for %d: offset %lu, file size %zu", track_id,
+            track->offset, file_size);
+        File_Close(fp);
+        return false;
+    }
+
+    // Some installations have invalid track sizes which would result in reading
+    // beyond EOF if left unchecked. The data can still be valid, so clamp such
+    // tracks to the logical remaining file length.
+    const size_t remaining = file_size - (size_t)track->offset;
+    const size_t track_size =
+        M_CDAUDIO_WAD_WAV_HEADER_SIZE + (size_t)track->size;
+    const size_t total_size = MIN(track_size, remaining);
+    uint8_t *const buf = Memory_Alloc(total_size);
 
     File_Seek(fp, (size_t)track->offset, FILE_SEEK_SET);
     const bool ok = File_ReadData(fp, buf, total_size);
