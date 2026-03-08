@@ -30,11 +30,11 @@ static void M_ToggleFPSCounter(void)
 
 static void M_ToggleBilinearFilter(void)
 {
-    CYCLE(g_Config.rendering.texture_filter, 1, TRX_GL_TF_NUMBER_OF);
+    CYCLE(g_Config.rendering.texture_filter, 1, TEXTURE_FILTER_NUMBER_OF);
     Config_Update();
     Console_Log(
         "%s",
-        g_Config.rendering.texture_filter == TRX_GL_TF_BILINEAR
+        g_Config.rendering.texture_filter == TEXTURE_FILTER_BILINEAR
             ? GS(OSD_BILINEAR_FILTER_ON)
             : GS(OSD_BILINEAR_FILTER_OFF));
 }

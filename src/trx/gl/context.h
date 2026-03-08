@@ -9,7 +9,7 @@
 bool TRX_GL_Context_Attach(void *window_handle);
 void TRX_GL_Context_Detach(void);
 
-void TRX_GL_Context_SetDisplayFilter(TRX_GL_TEXTURE_FILTER filter);
+void TRX_GL_Context_SetDisplayFilter(TEXTURE_FILTER filter);
 bool TRX_GL_Context_GetWireframeMode(void);
 void TRX_GL_Context_SetWireframeMode(bool enable);
 void TRX_GL_Context_SetLineWidth(int32_t line_width);

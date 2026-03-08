@@ -135,7 +135,7 @@ static char *M_GetValueForConsole(const CONFIG_OPTION *const option)
         return Memory_DupStr("(null)");
     }
 
-    const char *const value = Config_GetOptionValueAsString(option);
+    const char *const value = Config_GetOptionValueAsString(option, false);
     if (value == nullptr) {
         return nullptr;
     }

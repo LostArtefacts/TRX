@@ -1,11 +1,18 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
+- added experimental support for config presets (Gameplay Options → Presets)
+     Currently very basic presets available only – looking for help with improving them :)
 - added new backgrounds to Inventory Ring / Pause screen / Stats screen styles:
     - Transparent: like TR2 PS1 Pause Screen
     - Black: like the Remasters
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
 - fixed main.sfx resolution being enforced (regression from 1.3)
+- fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
+- fixed save counters sometimes drifting after dying and reloading (#5054, regression from TR1X 4.9 / TRX 1.0)
+
+**TR2**:
+- fixed guns as secret rewards not being converted to the equivalent ammo if Lara already has the gun
 
 **TR3**:
 - added Train control
@@ -14,7 +21,10 @@
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
+- fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
+- fixed reverb affecting inventory ring sounds (#5056)
 - fixed Pause text color
+- fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 
 
 

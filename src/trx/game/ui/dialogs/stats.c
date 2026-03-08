@@ -255,7 +255,8 @@ static void M_RowFromRole(
     const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
     const int32_t param)
 {
-    const char *const num_fmt = g_Config.ui.stat_detail_mode == SDM_MINIMAL
+    const char *const num_fmt =
+        g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_MINIMAL
         ? GS(STATS_BASIC_FMT)
         : GS(STATS_DETAIL_FMT);
 
@@ -391,7 +392,7 @@ static void M_RowFromRole(
 static void M_CommonRows(const UI_STATS_DIALOG_STATE *const s)
 {
     if (g_TRVersion == 1) {
-        if (g_Config.ui.stat_detail_mode == SDM_MINIMAL) {
+        if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_MINIMAL) {
             M_RowFromRole(s, M_ROW_KILLS, 0);
             M_RowFromRole(s, M_ROW_PICKUPS, 0);
             M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
@@ -401,18 +402,18 @@ static void M_CommonRows(const UI_STATS_DIALOG_STATE *const s)
             M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
             M_RowFromRole(s, M_ROW_PICKUPS, 0);
             M_RowFromRole(s, M_ROW_KILLS, 0);
-            if (g_Config.ui.stat_detail_mode == SDM_FULL) {
+            if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_FULL) {
                 M_RowFromRole(s, M_ROW_AMMO, 0);
                 M_RowFromRole(s, M_ROW_MEDIPACKS_USED, 0);
                 M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, 0);
             }
         }
     } else {
-        if (g_Config.ui.stat_detail_mode == SDM_FULL) {
+        if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_FULL) {
             M_RowFromRole(s, M_ROW_PICKUPS, 0);
         }
         M_RowFromRole(s, M_ROW_KILLS, 0);
-        if (g_Config.ui.stat_detail_mode == SDM_FULL) {
+        if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_FULL) {
             M_RowFromRole(s, M_ROW_AMMO, 0);
         } else {
             M_RowFromRole(s, M_ROW_AMMO_USED, 0);

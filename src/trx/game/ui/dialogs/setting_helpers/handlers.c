@@ -7,6 +7,7 @@
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
+#include <trx/game/ui/dialogs/settings_editor.h>
 #include <trx/game/ui/settings.h>
 #include <trx/version.h>
 
@@ -79,14 +80,14 @@ bool UI_Settings_EnemyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return UI_Settings_Bar_IsAvailable(option)
-        && g_Config.ui.enemy_health_bar.show_mode != BSM_NEVER;
+        && g_Config.ui.enemy_health_bar.show_mode != BAR_SHOW_MODE_NEVER;
 }
 
 bool UI_Settings_AllyHealthbar_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return UI_Settings_Bar_IsAvailable(option)
-        && g_Config.ui.enemy_health_bar.show_mode == BSM_ALWAYS
+        && g_Config.ui.enemy_health_bar.show_mode == BAR_SHOW_MODE_ALWAYS
         && g_Config.gameplay.enable_ally_targeting;
 }
 
@@ -197,7 +198,7 @@ bool UI_Settings_ShadowType_IsEnumValueAvailable(
 bool UI_Settings_Volume_RequestChange(
     const UI_SETTINGS_OPTION *const option, const int32_t dir)
 {
-    UI_Settings_RequestChange(option, dir);
+    UI_SettingsEditor_RequestChange(option, dir);
     if (option->target == &g_Config.audio.music_volume) {
         Music_SetVolume(g_Config.audio.music_volume);
     } else if (option->target == &g_Config.audio.sound_volume) {

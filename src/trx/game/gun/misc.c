@@ -527,7 +527,7 @@ void Gun_HitTarget(
         if (item->include_in_kill_stats) {
             Stats_AddKill();
         }
-        if (g_Config.gameplay.target_mode == TLM_SEMI) {
+        if (g_Config.gameplay.target_mode == TARGET_LOCK_MODE_SEMI) {
             lara->target = nullptr;
         }
     }
@@ -596,7 +596,7 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
     const ITEM *const old_target = lara->target;
 
     // Preserve OG targeting behavior.
-    if (g_Config.gameplay.target_mode == TLM_FULL
+    if (g_Config.gameplay.target_mode == TARGET_LOCK_MODE_FULL
         && !g_Config.gameplay.enable_target_change && !g_Input.action) {
         lara->target = nullptr;
     }
@@ -645,8 +645,8 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
 
     m_TargetCount = ctx.num_targets;
 
-    if ((g_Config.gameplay.target_mode == TLM_FULL
-         || g_Config.gameplay.target_mode == TLM_SEMI)
+    if ((g_Config.gameplay.target_mode == TARGET_LOCK_MODE_FULL
+         || g_Config.gameplay.target_mode == TARGET_LOCK_MODE_SEMI)
         && g_Input.action && lara->target != nullptr) {
         Gun_TargetInfo(weapon);
         return;

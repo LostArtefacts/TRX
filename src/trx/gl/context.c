@@ -163,7 +163,7 @@ void TRX_GL_Context_Detach(void)
     m_Context.window_handle = nullptr;
 }
 
-void TRX_GL_Context_SetDisplayFilter(const TRX_GL_TEXTURE_FILTER filter)
+void TRX_GL_Context_SetDisplayFilter(const TEXTURE_FILTER filter)
 {
     m_Context.config.display_filter = filter;
 }

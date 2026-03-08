@@ -46,7 +46,14 @@ const char *Config_GetOptionDescription(const CONFIG_OPTION *opt);
 
 // Formats the current value of a config option as a static string.
 // The string must not be freed and is short lived.
-const char *Config_GetOptionValueAsString(const CONFIG_OPTION *option);
+const char *Config_GetOptionValueAsString(
+    const CONFIG_OPTION *option, bool human_readable);
+
+// Normalizes an option value string using the same parser/formatter as config
+// runtime values.
+// Returns an allocated string that must be freed by the caller.
+char *Config_NormalizeOptionValueString(
+    const CONFIG_OPTION *option, const char *value, bool human_readable);
 
 // Updates the given setting's value from string.
 bool Config_SetOptionValueFromString(

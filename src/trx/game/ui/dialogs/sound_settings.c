@@ -4,6 +4,7 @@
 #include <trx/game/lara/const.h>
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
 #include <trx/game/ui/dialogs/setting_helpers/handlers.h>
+#include <trx/game/ui/dialogs/settings_tabs.h>
 
 static const UI_SETTINGS_OPTION m_SoundVolumeOptions[] = {
 #include <trx/game/ui/dialogs/setting_tabs/sound_volume.def>
@@ -15,29 +16,30 @@ static const UI_SETTINGS_OPTION m_SoundMiscOptions[] = {
     { .target = nullptr },
 };
 
-static const UI_SETTINGS_TAB m_Tabs[] = {
-    { GS_ID(SOUND_SETTINGS_VOLUME_TAB), m_SoundVolumeOptions },
-    { GS_ID(SOUND_SETTINGS_MISC_TAB), m_SoundMiscOptions },
-};
-
-UI_SETTINGS_STATE *UI_SoundSettings_Init(void)
+UI_SETTINGS_DIALOG_STATE *UI_SoundSettings_Init(void)
 {
-    return UI_Settings_InitWithTabs(
-        GS_ID(SOUND_SETTINGS_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]),
-        m_Tabs);
+    const UI_SETTINGS_TAB tabs[] = {
+        UI_SettingsTab_MakeEditor(
+            GS_ID(SOUND_SETTINGS_VOLUME_TAB), m_SoundVolumeOptions),
+        UI_SettingsTab_MakeEditor(
+            GS_ID(SOUND_SETTINGS_MISC_TAB), m_SoundMiscOptions),
+    };
+
+    return UI_SettingsDialog_Init(
+        GS_ID(SOUND_SETTINGS_TITLE), ARRAY_SIZE(tabs), tabs);
 }
 
-void UI_SoundSettings_Free(UI_SETTINGS_STATE *const s)
+void UI_SoundSettings_Free(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    UI_Settings_Free(s);
+    UI_SettingsDialog_Free(s);
 }
 
-bool UI_SoundSettings_Control(UI_SETTINGS_STATE *const s)
+bool UI_SoundSettings_Control(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    return UI_Settings_Control(s);
+    return UI_SettingsDialog_Control(s);
 }
 
-void UI_SoundSettings(UI_SETTINGS_STATE *const s)
+void UI_SoundSettings(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    UI_Settings(s);
+    UI_SettingsDialog(s);
 }

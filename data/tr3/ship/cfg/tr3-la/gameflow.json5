@@ -186,6 +186,9 @@
 
     "hidden_config": [
         "enable_3d_pickups", // TR3 has no sprite pickups
+        "enable_item_examining",
+        "disable_trex_collision",
+        "fix_bear_ai",
         "enable_save_crystals",
         "enable_ps1_crystals",
         "enable_reflections",
@@ -194,6 +197,7 @@
         "enable_crawling",
         "enable_wading",
         "restore_ps1_enemies",
+        "change_pierre_spawn",
         "fix_speeches_killing_music",
         "fix_pipeman_aim",
     ],

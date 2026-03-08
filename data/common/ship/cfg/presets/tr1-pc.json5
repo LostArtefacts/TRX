@@ -1,0 +1,10 @@
+{
+    "name_gs": "CONFIG_PRESET_TR1_PC",
+    "config": {
+        "ui.menu_style": "pc",
+        "ui.enable_smooth_bars": true,
+        "ui.bar_look": "tr1_pc",
+        "audio.enable_ps1_sfx": false,
+        "gameplay.restore_ps1_enemies": false,
+    },
+}

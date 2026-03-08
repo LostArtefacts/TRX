@@ -285,9 +285,9 @@ typedef struct {
         bool enable_trapezoid_filter;
         bool enable_lighting;
         bool enable_textures;
-        TRX_GL_TEXTURE_FILTER ui_filter;
-        TRX_GL_TEXTURE_FILTER texture_filter;
-        TRX_GL_TEXTURE_FILTER upscaling_filter;
+        TEXTURE_FILTER ui_filter;
+        TEXTURE_FILTER texture_filter;
+        TEXTURE_FILTER upscaling_filter;
         bool enable_wireframe;
         float wireframe_width;
         bool enable_vsync;

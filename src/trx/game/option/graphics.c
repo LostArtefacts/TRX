@@ -4,7 +4,7 @@
 #include <trx/game/ui/dialogs/graphic_settings.h>
 
 typedef struct {
-    UI_SETTINGS_STATE *ui_state;
+    UI_SETTINGS_DIALOG_STATE *ui_state;
 } M_PRIV;
 
 static M_PRIV m_Priv = {};

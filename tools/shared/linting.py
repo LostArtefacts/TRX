@@ -5,6 +5,7 @@ import sys
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from shared.paths import PROJECT_PATHS, CommonPaths
 
@@ -162,6 +163,78 @@ def lint_game_flow_schema(context: LintContext):
                 yield LintWarning(game_flow_path, error)
 
 
+def _get_known_config_keys(config_map_paths: list[Path]) -> set[str]:
+    known_keys: set[str] = set()
+    # Match the first argument of X_CFG_* macros:
+    # - bare key form: X_CFG_BOOL(audio.master_volume, ...)
+    # - explicit string key form: X_CFG_ENUM_EX("ui.airbar_location", ...)
+    pattern = re.compile(
+        r"""^X_CFG_[A-Z0-9_]+(?:_EX)?\(\s*(?:"([^"]+)"|([a-zA-Z0-9_.]+))\s*,"""
+    )
+    for config_map_path in config_map_paths:
+        if not config_map_path.exists():
+            continue
+        for line in config_map_path.read_text(encoding="utf-8").splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            match = pattern.match(stripped)
+            if not match:
+                continue
+            key = match.group(1) or match.group(2)
+            if key:
+                known_keys.add(key)
+    return known_keys
+
+
+def _get_preset_config_entries(preset_path: Path) -> dict[str, Any]:
+    try:
+        preset_data = load_json5(preset_path)
+    except Exception as ex:
+        raise ValueError(f"failed to parse JSON5: {ex!s}") from ex
+
+    if not isinstance(preset_data, dict):
+        raise ValueError("root must be an object")
+
+    config_data = preset_data.get("config")
+    if config_data is None:
+        raise ValueError("missing 'config' object")
+    if not isinstance(config_data, dict):
+        raise ValueError("'config' must be an object")
+    return config_data
+
+
+def lint_preset_setting_keys(context: LintContext) -> Iterable[LintWarning]:
+    config_dir = CommonPaths.src_dir / "config"
+    config_map_paths = [
+        config_dir / "map.def",
+        config_dir / "map_tr1.def",
+        config_dir / "map_tr2.def",
+        config_dir / "map_tr3.def",
+    ]
+    known_keys = _get_known_config_keys(config_map_paths)
+    if not known_keys:
+        yield LintWarning(config_dir / "map.def", "unable to parse config keys")
+        return
+
+    presets_dir = CommonPaths.shipped_data_dir / "cfg/presets"
+    if not presets_dir.exists():
+        return
+
+    for preset_path in sorted(presets_dir.glob("*.json5")):
+        try:
+            config_data = _get_preset_config_entries(preset_path)
+        except ValueError as ex:
+            yield LintWarning(preset_path, str(ex))
+            continue
+
+        for key in config_data:
+            if key not in known_keys:
+                yield LintWarning(
+                    preset_path, f"unknown preset setting key: '{key}'"
+                )
+
+
 ALL_FILE_LINTERS: list[
     Callable[[LintContext, Path], Iterable[LintWarning]]
 ] = [
@@ -182,6 +255,7 @@ ALL_REPO_LINTERS: list[
     Callable[[LintContext, list[Path]], Iterable[LintWarning]]
 ] = [
     lint_game_flow_schema,
+    lint_preset_setting_keys,
 ]
 
 
