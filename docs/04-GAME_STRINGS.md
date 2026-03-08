@@ -284,21 +284,25 @@ The document is organized as follows:
 
 ## Common Object IDs and names
 
-| JSON key   | Object ID (TR1) | Object ID (TR2) |
-|------------|-----------------|-----------------|
-| `key_1`    | 129 and 133     | 193 and 197     |
-| `key_2`    | 130 and 134     | 194 and 198     |
-| `key_3`    | 131 and 135     | 195 and 199     |
-| `key_4`    | 132 and 136     | 196 and 200     |
-| `pickup_1` | 141 and 148     | 205 and 207     |
-| `pickup_2` | 142 and 149     | 206 and 208     |
-| `puzzle_1` | 110 and 114     | 174 and 178     |
-| `puzzle_2` | 111 and 115     | 175 and 179     |
-| `puzzle_3` | 112 and 116     | 176 and 180     |
-| `puzzle_4` | 113 and 117     | 177 and 181     |
-| `secret_1` | -               | 190             |
-| `secret_2` | -               | 191             |
-| `secret_3` | -               | 192             |
+| JSON key   | Object ID (TR1) | Object ID (TR2) | Object ID (TR3) |
+|------------|-----------------|-----------------|-----------------|
+| `key_1`    | 129 and 133     | 193 and 197     | 224 and 228     |
+| `key_2`    | 130 and 134     | 194 and 198     | 225 and 229     |
+| `key_3`    | 131 and 135     | 195 and 199     | 226 and 230     |
+| `key_4`    | 132 and 136     | 196 and 200     | 227 and 231     |
+| `pickup_1` | 141 and 148     | 205 and 207     | 236 and 238     |
+| `pickup_2` | 142 and 149     | 206 and 208     | 237 and 239     |
+| `puzzle_1` | 110 and 114     | 174 and 178     | 205 and 209     |
+| `puzzle_2` | 111 and 115     | 175 and 179     | 206 and 210     |
+| `puzzle_3` | 112 and 116     | 176 and 180     | 207 and 211     |
+| `puzzle_4` | 113 and 117     | 177 and 181     | 208 and 212     |
+| `quest_1`  | -               | -               | 240 and 244     |
+| `quest_2`  | -               | -               | 241 and 245     |
+| `quest_3`  | -               | -               | 242 and 246     |
+| `quest_4`  | -               | -               | 243 and 247     |
+| `secret_1` | -               | 190             | -               |
+| `secret_2` | -               | 191             | -               |
+| `secret_3` | -               | 192             | -               |
 
 > [!NOTE]
 > Nearly all pickup items exist in two forms, as early games differentiate
