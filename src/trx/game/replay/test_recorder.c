@@ -213,7 +213,7 @@ static void M_DumpConfig(MYFILE *const fp)
             ? "config %s \"%s\"\n"
             : "config %s %s\n";
         File_WriteString(
-            fp, fmt, opt->name, Config_GetOptionValueAsString(opt));
+            fp, fmt, opt->name, Config_GetOptionValueAsString(opt, false));
     }
     Vector_Free(opts);
 }

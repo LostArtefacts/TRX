@@ -1,5 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
+- added experimental support for config presets (Gameplay Options → Presets)
+     Currently very basic presets available only – looking for help with improving them :)
 - added new backgrounds to Inventory Ring / Pause screen / Stats screen styles:
     - Transparent: like TR2 PS1 Pause Screen
     - Black: like the Remasters

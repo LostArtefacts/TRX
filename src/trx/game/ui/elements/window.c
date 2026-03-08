@@ -81,7 +81,9 @@ void UI_BeginWindow(UI_WINDOW_SETTINGS settings)
         .show_scroll_hints = show_scroll_hints,
     };
 
-    UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
+    UI_BeginFrame(
+        settings.heavy ? UI_FRAME_DIALOG_BACKGROUND_HEAVY
+                       : UI_FRAME_DIALOG_BACKGROUND);
     UI_BeginPad(M_GetOuterPad(), M_GetOuterPad());
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,

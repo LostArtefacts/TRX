@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/ui/dialogs/setting_helpers/enums.h>
 #include <trx/game/ui/dialogs/setting_helpers/handlers.h>
+#include <trx/game/ui/dialogs/settings_tabs.h>
 
 static const UI_SETTINGS_OPTION m_VisualsOptions[] = {
 #include <trx/game/ui/dialogs/setting_tabs/graphic_visuals.def>
@@ -24,31 +25,33 @@ static const UI_SETTINGS_OPTION m_RenderOptions[] = {
     { .target = nullptr },
 };
 
-static const UI_SETTINGS_TAB m_Tabs[] = {
-    { GS_ID(GRAPHIC_SETTINGS_VISUALS_TAB), m_VisualsOptions },
-    { GS_ID(GRAPHIC_SETTINGS_UI_TAB), m_UIOptions },
-    { GS_ID(GRAPHIC_SETTINGS_UI_BARS_TAB), m_UIBarsOptions },
-    { GS_ID(GRAPHIC_SETTINGS_RENDERING_TAB), m_RenderOptions },
-};
-
-UI_SETTINGS_STATE *UI_GraphicSettings_Init(void)
+UI_SETTINGS_DIALOG_STATE *UI_GraphicSettings_Init(void)
 {
-    return UI_Settings_InitWithTabs(
-        GS_ID(GRAPHIC_SETTINGS_TITLE), sizeof(m_Tabs) / sizeof(m_Tabs[0]),
-        m_Tabs);
+    const UI_SETTINGS_TAB tabs[] = {
+        UI_SettingsTab_MakeEditor(
+            GS_ID(GRAPHIC_SETTINGS_VISUALS_TAB), m_VisualsOptions),
+        UI_SettingsTab_MakeEditor(GS_ID(GRAPHIC_SETTINGS_UI_TAB), m_UIOptions),
+        UI_SettingsTab_MakeEditor(
+            GS_ID(GRAPHIC_SETTINGS_UI_BARS_TAB), m_UIBarsOptions),
+        UI_SettingsTab_MakeEditor(
+            GS_ID(GRAPHIC_SETTINGS_RENDERING_TAB), m_RenderOptions),
+    };
+
+    return UI_SettingsDialog_Init(
+        GS_ID(GRAPHIC_SETTINGS_TITLE), ARRAY_SIZE(tabs), tabs);
 }
 
-void UI_GraphicSettings_Free(UI_SETTINGS_STATE *const s)
+void UI_GraphicSettings_Free(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    UI_Settings_Free(s);
+    UI_SettingsDialog_Free(s);
 }
 
-bool UI_GraphicSettings_Control(UI_SETTINGS_STATE *const s)
+bool UI_GraphicSettings_Control(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    return UI_Settings_Control(s);
+    return UI_SettingsDialog_Control(s);
 }
 
-void UI_GraphicSettings(UI_SETTINGS_STATE *const s)
+void UI_GraphicSettings(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    UI_Settings(s);
+    UI_SettingsDialog(s);
 }
