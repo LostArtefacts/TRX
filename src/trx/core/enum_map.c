@@ -112,14 +112,13 @@ static const char *M_Id2Str(
 
 void EnumMap_Define(
     const char *const enum_type_name, const char *const enum_name,
-    const int32_t enum_value, const char *const str_value)
+    const char *const label_key, const int32_t enum_value,
+    const char *const str_value)
 {
     M_DefineStr2Id(&m_Str2IdMap, enum_type_name, enum_value, str_value);
     M_DefineId2Str(&m_Id2StrMap, enum_type_name, enum_value, str_value);
     M_DefineId2Str(&m_Id2NameMap, enum_type_name, enum_value, enum_name);
-    M_DefineId2Str(
-        &m_Id2LabelKeyMap, enum_type_name, enum_value,
-        String_FormatStatic("ENUM_%s", enum_name));
+    M_DefineId2Str(&m_Id2LabelKeyMap, enum_type_name, enum_value, label_key);
 }
 
 int32_t EnumMap_Get(

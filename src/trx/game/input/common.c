@@ -382,7 +382,7 @@ INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
 
 const char *Input_GetRoleName(const INPUT_ROLE role)
 {
-    return GS_ENUM(INPUT_ROLE, role);
+    return EnumMap_GetLabel(ENUM_MAP_NAME(INPUT_ROLE), role);
 }
 
 const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod)

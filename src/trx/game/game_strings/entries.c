@@ -1,8 +1,6 @@
 #include <trx/game/game_strings/entries.h>
 
-#include <trx/core/enum_map.h>
 #include <trx/core/memory.h>
-#include <trx/core/strings.h>
 
 #include <uthash.h>
 
@@ -65,14 +63,6 @@ const char *const *GameString_GetPtr(const char *const key)
     M_STRING_ENTRY *entry;
     HASH_FIND_STR(m_StringTable, key, entry);
     return entry ? &entry->slot->value : nullptr;
-}
-
-const char *GameString_GetEnum(
-    const char *const enum_name, const int32_t enum_value)
-{
-    const char *const key =
-        String_FormatStatic("ENUM_%s", EnumMap_GetName(enum_name, enum_value));
-    return GameString_Get(key);
 }
 
 void GameString_Clear(void)

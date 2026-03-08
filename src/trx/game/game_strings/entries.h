@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-
 // Define a game string mapping: associates an ID with a text value.
 // @param id    Compile-time identifier for the string.
 // @param value Text to map to the identifier.
@@ -10,12 +8,6 @@
 // Retrieve a game string by its identifier.
 // @param id    Compile-time identifier for the string.
 #define GS(id) GameString_Get(#id)
-
-// Retrieve a game string for an enum value.
-// @param enum_name   Compile-time enum type identifier (e.g. WEATHER).
-// @param enum_value  Enum value to look up (e.g. WEATHER_SNOW).
-#define GS_ENUM(enum_name, enum_value)                                         \
-    GameString_GetEnum(#enum_name, enum_value)
 
 // Return the identifier itself as a string literal.
 #define GS_ID(id) (#id)
@@ -43,12 +35,6 @@ bool GameString_IsKnown(const char *key);
 // @param key   Identifier for the string.
 // @return      Text mapped to the identifier, or nullptr if unknown.
 const char *GameString_Get(const char *key);
-
-// Retrieve a game string for an enum value.
-// @param enum_name     Name of the enum type (e.g. "WEATHER").
-// @param enum_value    Enum value to look up (e.g. WEATHER_SNOW).
-// @return              Mapped text for the enum, or nullptr if not defined.
-const char *GameString_GetEnum(const char *enum_name, int32_t enum_value);
 
 // Clear all existing game string mappings.
 // Slots remain allocated but values reset.

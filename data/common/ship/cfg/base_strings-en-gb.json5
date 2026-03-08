@@ -5,8 +5,6 @@
     "extends": "en",
     "game_strings": {
         "CONTROLS_CUSTOMIZE": "Customise Controls",
-        "ENUM_BAR_LOCATION_BOTTOM_CENTER": "Bottom centre",
-        "ENUM_BAR_LOCATION_TOP_CENTER": "Top centre",
         "STATS_DISTANCE_TRAVELLED": "Distance Travelled",
     },
     "settings": {
@@ -100,6 +98,12 @@
         "visuals.water_color": {
             "title": "Water colour",
             "description": "Colour of the water.",
+        }
+    },
+    "enums": {
+        "BAR_LOCATION": {
+            "BAR_LOCATION_BOTTOM_CENTER": "Bottom centre",
+            "BAR_LOCATION_TOP_CENTER": "Top centre",
         }
     }
 }
