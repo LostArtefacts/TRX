@@ -167,8 +167,12 @@ static void M_ModifyInventory_GunOrAmmo(
 
     if (Inv_RequestItem(gun_object_id)) {
         if (type == GF_INV_SECRET) {
-            ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_object_id];
-            for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+            // Convert already collected guns into ammo to maintain stats
+            // accuracy.
+            const int32_t count = m_SecretInvItems[ammo_object_id]
+                + m_SecretInvItems[gun_object_id];
+            ammo_info->ammo += ammo_qty * count;
+            for (int32_t i = 0; i < count; i++) {
                 M_CollectNewPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {

@@ -4,6 +4,9 @@
 - fixed save counters sometimes drifting after dying and reloading (#5054, regression from TR1X 4.9 / TRX 1.0)
 - fixed flare and gun flash being drawn with a water tint when in shallow water regardless of responsive tint option (#5072, regression from 1.2)
 
+**TR2**:
+- fixed guns as secret rewards not being converted to the equivalent ammo if Lara already has the gun
+
 **TR3**:
 - fixed reverb affecting inventory ring sounds (#5056)
 - fixed the secret sound not playing in some installations, whereby `cdaudio.wad` contains invalid track sizes (#5049)
