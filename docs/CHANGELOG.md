@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
 - fixed main.sfx resolution being enforced (regression from 1.3)
 - fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
+- fixed save counters sometimes drifting after dying and reloading (#5054, regression from TR1X 4.9 / TRX 1.0)
 
 **TR3**:
 - fixed reverb affecting inventory ring sounds (#5056)
