@@ -323,6 +323,20 @@ def get_used_outfit_strings(
             yield 0, name_gs
 
 
+def get_used_preset_strings(
+    vfs: VirtualFilesystem, presets_dir: Path
+) -> Iterable[tuple[int, str]]:
+    if not presets_dir.exists():
+        return
+    for preset_path in presets_dir.glob("*.json5"):
+        source = load_json5_from_string(vfs.get(preset_path))
+        if not isinstance(source, dict):
+            continue
+        name_gs = source.get("name_gs")
+        if isinstance(name_gs, str):
+            yield 0, name_gs
+
+
 def get_objects_map(paths: list[Path]) -> dict[str, list[str]]:
     """
     Parse object-name definitions from names.def-like files.
@@ -386,6 +400,11 @@ class RunContext:
         self.used_game_strings += list(
             get_used_outfit_strings(
                 vfs, CommonPaths.shipped_data_dir / "cfg/outfits.json5"
+            )
+        )
+        self.used_game_strings += list(
+            get_used_preset_strings(
+                vfs, CommonPaths.shipped_data_dir / "cfg/presets"
             )
         )
         self.object_names_dict = get_objects_map(source_files)

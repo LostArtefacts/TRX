@@ -11,7 +11,7 @@ static int M_L_ConfigGet(lua_State *const L)
     if (opt == nullptr) {
         return luaL_error(L, "Unknown option: %s", key);
     }
-    const char *const value = Config_GetOptionValueAsString(opt);
+    const char *const value = Config_GetOptionValueAsString(opt, false);
     lua_pushstring(L, value);
     return 1;
 }
@@ -39,7 +39,7 @@ static int M_L_ConfigList(lua_State *const L)
     lua_newtable(L);
     const CONFIG_OPTION *opt = Config_GetOptionMap();
     while (opt->name != nullptr) {
-        const char *const value = Config_GetOptionValueAsString(opt);
+        const char *const value = Config_GetOptionValueAsString(opt, false);
         lua_pushstring(L, value);
         lua_setfield(L, -2, opt->name);
         opt++;

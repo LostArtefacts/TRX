@@ -58,7 +58,8 @@ static void M_LogOption(const CONFIG_OPTION *const option)
 {
     char *const name = Console_Cmd_Config_NormalizeKey(option->name);
     Console_Log(
-        GS(OSD_CONFIG_OPTION_SET), name, Config_GetOptionValueAsString(option));
+        GS(OSD_CONFIG_OPTION_SET), name,
+        Config_GetOptionValueAsString(option, false));
     Memory_Free(name);
 }
 
@@ -66,7 +67,8 @@ static void M_ShowOption(const CONFIG_OPTION *const option)
 {
     char *const name = Console_Cmd_Config_NormalizeKey(option->name);
     Console_Log(
-        GS(OSD_CONFIG_OPTION_GET), name, Config_GetOptionValueAsString(option));
+        GS(OSD_CONFIG_OPTION_GET), name,
+        Config_GetOptionValueAsString(option, false));
     Memory_Free(name);
 }
 

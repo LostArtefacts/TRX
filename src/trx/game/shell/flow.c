@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/config/presets.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -273,6 +274,7 @@ static void M_PrepareSystem(void)
         TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "ui.json5"));
     Lara_Skin_LoadFromFile(
         TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
+    Config_Presets_ScanFiles();
 
     if (test_replay_path != nullptr) {
         TestReplay_Start();
