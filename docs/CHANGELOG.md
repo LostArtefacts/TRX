@@ -2,6 +2,9 @@
 - fixed main.sfx resolution being enforced (regression from 1.3)
 - fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
 
+**TR3**:
+- fixed reverb affecting inventory ring sounds (#5056)
+
 
 
 ## [1.3](https://github.com/LostArtefacts/TRX/compare/trx-1.2.2...trx-1.3) - 2026-03-06
