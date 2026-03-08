@@ -1516,6 +1516,12 @@
         },
         "electric_cleaner": {
             "name": "\\{review}Электрический очиститель",
+        },
+        "punk_1": {
+            "name": "\\{review}Панк 1",
+        },
+        "punk_2": {
+            "name": "\\{review}Панк 2",
         }
     },
     "settings": {

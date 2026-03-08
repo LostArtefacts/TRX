@@ -48,15 +48,6 @@ static void M_AssignAIBits(void)
                     Item_Kill(ai_item_num);
                     ai_item->room_num = NO_ROOM;
                 }
-#if 0
-            // TODO
-            } else if (
-                ai_item->object_number == O_FLAME_EMITTER
-                && item->object_number == O_PUNK1) {
-                item->item_flags[2] = 3; // ehh
-                Item_Kill(ai_item_num);
-                ai_item->room_num = NO_ROOM;
-#endif
             }
             ai_item_num = next_num;
         }

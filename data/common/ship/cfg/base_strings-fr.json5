@@ -1496,6 +1496,12 @@
         },
         "electric_cleaner": {
             "name": "\\{review}Nettoyeur électrique",
+        },
+        "punk_1": {
+            "name": "\\{review}Punk 1",
+        },
+        "punk_2": {
+            "name": "\\{review}Punk 2",
         }
     },
     "settings": {

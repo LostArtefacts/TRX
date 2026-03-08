@@ -97,6 +97,8 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_NATLA,
     O_PIERRE,
     O_PUMA,
+    O_PUNK_1,
+    O_PUNK_2,
     O_RAPTOR,
     O_RAT,
     O_SHARK,

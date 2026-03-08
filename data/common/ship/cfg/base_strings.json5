@@ -837,6 +837,12 @@
         "tribe_boss": {
             "name": "Tribe Boss",
         },
+        "punk_1": {
+            "name": "Punk 1",
+        },
+        "punk_2": {
+            "name": "Punk 2",
+        },
         "blade": {
             "name": "Wall-mounted Blade",
         },

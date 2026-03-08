@@ -85,6 +85,8 @@
   "O_PROPELLER_2":            { "status": "partially implemented", "todo": "check 100% parity" },
   "O_PROPELLER_3":            { "status": "partially implemented", "todo": "check 100% parity" },
   "O_PULSE_LIGHT":            { "status": "fully implemented" },
+  "O_PUNK_1":                 { "status": "fully implemented" },
+  "O_PUNK_2":                 { "status": "fully implemented" },
   "O_PUZZLE_HOLE_1":          { "status": "fully implemented" },
   "O_PUZZLE_HOLE_2":          { "status": "fully implemented" },
   "O_PUZZLE_HOLE_3":          { "status": "fully implemented" },

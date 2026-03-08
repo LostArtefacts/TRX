@@ -1493,6 +1493,12 @@
         },
         "electric_cleaner": {
             "name": "\\{review}Elektryczny czyściciel",
+        },
+        "punk_1": {
+            "name": "\\{review}Punk 1",
+        },
+        "punk_2": {
+            "name": "\\{review}Punk 2",
         }
     },
     "settings": {
