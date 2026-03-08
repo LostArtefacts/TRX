@@ -2,6 +2,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/table.h>
@@ -178,22 +179,40 @@ static void M_LoadTableFromJSON(
         }
     }
 
-    // Load game_strings
-    JSON_OBJECT *const jgs_obj = JSON_ObjectGetObject(root_obj, "game_strings");
-    JSON_OBJECT *const settings_obj =
-        JSON_ObjectGetObject(root_obj, "settings");
-    if (jgs_obj != nullptr || settings_obj != nullptr) {
-        size_t gs_count = 0;
-        size_t gs_capacity = 64;
-        out_table->game_strings =
-            Memory_Alloc(sizeof(GS_GAME_STRING_ENTRY) * gs_capacity);
+    // Load localized string tables.
+    const char *const flat_sections[] = { "game_strings" };
+    const char *const nested_sections[] = { "settings", "enums" };
+    size_t gs_count = 0;
+    size_t gs_capacity = 0;
 
-        if (jgs_obj != nullptr) {
-            M_LoadFlatGameStrings(jgs_obj, out_table, &gs_count, &gs_capacity);
+    for (size_t i = 0; i < ARRAY_SIZE(flat_sections); i++) {
+        JSON_OBJECT *const section_obj =
+            JSON_ObjectGetObject(root_obj, flat_sections[i]);
+        if (section_obj == nullptr) {
+            continue;
+        }
+        if (gs_capacity == 0) {
+            gs_capacity = 64;
+            out_table->game_strings =
+                Memory_Alloc(sizeof(GS_GAME_STRING_ENTRY) * gs_capacity);
+        }
+        M_LoadFlatGameStrings(section_obj, out_table, &gs_count, &gs_capacity);
+    }
+
+    for (size_t i = 0; i < ARRAY_SIZE(nested_sections); i++) {
+        if (JSON_ObjectGetObject(root_obj, nested_sections[i]) == nullptr) {
+            continue;
+        }
+        if (gs_capacity == 0) {
+            gs_capacity = 64;
+            out_table->game_strings =
+                Memory_Alloc(sizeof(GS_GAME_STRING_ENTRY) * gs_capacity);
         }
         M_LoadNestedGameStrings(
-            root_obj, "settings", out_table, &gs_count, &gs_capacity);
+            root_obj, nested_sections[i], out_table, &gs_count, &gs_capacity);
+    }
 
+    if (gs_capacity != 0) {
         if (gs_count + 1 > gs_capacity) {
             gs_capacity++;
             out_table->game_strings = Memory_Realloc(

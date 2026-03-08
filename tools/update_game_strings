@@ -30,12 +30,33 @@ RE_UI_SETTING_USAGE = re.compile(
 RE_ENUM_MAP_USAGE = re.compile(
     r"ENUM_MAP\(\s*[A-Z0-9_]+\s*,\s*([A-Z0-9_]+)\s*,"
 )
+RE_ENUM_MAP_DEFINE = re.compile(
+    r"ENUM_MAP\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*,"
+)
+RE_ENUM_MAP_SELF_DEFINE = re.compile(
+    r"ENUM_MAP_SELF\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*\)"
+)
 RE_INPUT_ROLE_USAGE = re.compile(
     r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
 )
 RE_OBJ_NAME_DEFINE = re.compile(
     r'^X_OBJ_NAME_DEFINE\(\s*\w+\s*,\s*"([^"]+)"\s*,\s*X_OBJ_NAMES\(\s*(.+?)\s*\)\s*\)$'
 )
+ROOT_PREFIXES = ("settings", "enums")
+ROOT_SECTIONS = ("game_strings", "enums", "settings")
+
+
+def enum_label_key(enum_type: str, enum_value: str) -> str:
+    return f"enums/{enum_type}/{enum_value}"
+
+
+def resolve_enum_label_key(
+    enum_value: str, enum_value_types: dict[str, str]
+) -> str:
+    enum_type = enum_value_types.get(enum_value)
+    if enum_type is None:
+        return f"ENUM_{enum_value}"
+    return enum_label_key(enum_type, enum_value)
 
 
 def sort_mapping_rec(value: Any) -> Any:
@@ -60,10 +81,9 @@ def sort_mapping_rec(value: Any) -> Any:
 
 def format_strings_file(source: Any) -> str:
     source = deepcopy(source)
-    if source.get("game_strings"):
-        source["game_strings"] = sort_mapping_rec(source["game_strings"])
-    if source.get("settings"):
-        source["settings"] = sort_mapping_rec(source["settings"])
+    for section in ROOT_SECTIONS:
+        if source.get(section):
+            source[section] = sort_mapping_rec(source[section])
     content = write_json_to_string(source)
     content = (
         """{
@@ -212,57 +232,63 @@ def gs_flatten(game_strings: dict[str, Any], prefix: str = "") -> dict[str, Any]
     return result
 
 
-def root_get(file_data: dict[str, Any], key: str) -> Any:
-    if key.startswith("settings/"):
-        settings = file_data.get("settings", {})
-        if not isinstance(settings, dict):
-            return None
-        return gs_get(settings, key[len("settings/") :])
-    game_strings = file_data.get("game_strings", {})
-    if not isinstance(game_strings, dict):
+def split_root_key(key: str) -> tuple[str, str]:
+    for prefix in ROOT_PREFIXES:
+        full_prefix = f"{prefix}/"
+        if key.startswith(full_prefix):
+            return prefix, key[len(full_prefix) :]
+    return "game_strings", key
+
+
+def get_root_dict(
+    file_data: dict[str, Any], section: str, create: bool = False
+) -> dict[str, Any] | None:
+    section_data = file_data.get(section)
+    if isinstance(section_data, dict):
+        return section_data
+    if not create:
         return None
-    return gs_get(game_strings, key)
+    section_data = {}
+    file_data[section] = section_data
+    return section_data
+
+
+def root_get(file_data: dict[str, Any], key: str) -> Any:
+    section, path = split_root_key(key)
+    section_data = get_root_dict(file_data, section)
+    if section_data is None:
+        return None
+    return gs_get(section_data, path)
 
 
 def root_set(file_data: dict[str, Any], key: str, value: Any) -> None:
-    if key.startswith("settings/"):
-        settings = file_data.setdefault("settings", {})
-        if not isinstance(settings, dict):
-            settings = {}
-            file_data["settings"] = settings
-        gs_set(settings, key[len("settings/") :], value)
-        return
-    game_strings = file_data.setdefault("game_strings", {})
-    if not isinstance(game_strings, dict):
-        game_strings = {}
-        file_data["game_strings"] = game_strings
-    gs_set(game_strings, key, value)
+    section, path = split_root_key(key)
+    section_data = get_root_dict(file_data, section, create=True)
+    gs_set(section_data, path, value)
 
 
 def root_delete(file_data: dict[str, Any], key: str) -> None:
-    if key.startswith("settings/"):
-        settings = file_data.get("settings", {})
-        if isinstance(settings, dict):
-            gs_delete(settings, key[len("settings/") :])
-        return
-    game_strings = file_data.get("game_strings", {})
-    if isinstance(game_strings, dict):
-        gs_delete(game_strings, key)
+    section, path = split_root_key(key)
+    section_data = get_root_dict(file_data, section)
+    if section_data is not None:
+        gs_delete(section_data, path)
 
 
 def root_flatten(file_data: dict[str, Any]) -> dict[str, Any]:
     result: dict[str, Any] = {}
-    game_strings = file_data.get("game_strings", {})
-    if isinstance(game_strings, dict):
-        result.update(gs_flatten(game_strings))
-    settings = file_data.get("settings", {})
-    if isinstance(settings, dict):
-        result.update(gs_flatten(settings, "settings"))
+    for section in ROOT_SECTIONS:
+        section_data = get_root_dict(file_data, section)
+        if section_data is None:
+            continue
+        if section == "game_strings":
+            result.update(gs_flatten(section_data))
+        else:
+            result.update(gs_flatten(section_data, section))
     return result
 
 
 def get_used_strings(
-    path: Path, aliases: dict[str, str] | None = None
+    path: Path, enum_value_types: dict[str, str], aliases: dict[str, str] | None = None
 ) -> Iterable[tuple[int, str]]:
     source = re.sub("//.*", "", path.read_text(), flags=re.M)
     source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
@@ -279,13 +305,28 @@ def get_used_strings(
             f"settings/{option_name}/description"
         )
     for match in re.finditer(RE_ENUM_MAP_USAGE, source):
-        yield source.count(
-            "\n", 0, match.start()
-        ) + 1, "ENUM_" + match.group(1)
+        enum_value = match.group(1)
+        yield source.count("\n", 0, match.start()) + 1, resolve_enum_label_key(
+            enum_value, enum_value_types
+        )
     for match in re.finditer(RE_INPUT_ROLE_USAGE, source):
-        yield source.count(
-            "\n", 0, match.start()
-        ) + 1, "ENUM_" + match.group(1)
+        enum_value = match.group(1)
+        yield source.count("\n", 0, match.start()) + 1, enum_label_key(
+            "INPUT_ROLE", enum_value
+        )
+
+
+def get_enum_value_types(paths: list[Path]) -> dict[str, str]:
+    value_types: dict[str, str] = {}
+    for path in paths:
+        source = re.sub("//.*", "", path.read_text(), flags=re.M)
+        source = re.sub(r"/\*.*?\*/", "", source, flags=re.S)
+        source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
+        for enum_type, enum_value in RE_ENUM_MAP_DEFINE.findall(source):
+            value_types[enum_value] = enum_type
+        for enum_type, enum_value in RE_ENUM_MAP_SELF_DEFINE.findall(source):
+            value_types[enum_value] = enum_type
+    return value_types
 
 
 def get_used_ui_theme_strings(
@@ -376,6 +417,7 @@ class RunContext:
             for path in find_versioned_files(REPO_DIR)
             if path.suffix in [".c", ".h", ".def"]
         ]
+        self.enum_value_types = get_enum_value_types(source_files)
         self.config_aliases = get_config_aliases(CommonPaths.src_dir / "config/map.def")
         self.game_strings_def_path = (
             CommonPaths.src_dir / "game/game_strings/entries.def"
@@ -385,7 +427,9 @@ class RunContext:
             [
                 list(
                     get_used_strings(
-                        path, aliases=self.config_aliases
+                        path,
+                        enum_value_types=self.enum_value_types,
+                        aliases=self.config_aliases,
                     )
                 )
                 for path in source_files
@@ -614,15 +658,16 @@ def sync_base_strings(ctx: RunContext) -> None:
         )
     changed = [k for k, v in new_flat.items() if old_flat.get(k) != v]
 
-    # Preserve non-settings keys that exist in JSON but are not defined in
-    # entries.def (dynamic/runtime keys such as BAR_LOOK_*).
+    # Preserve keys that exist in JSON but are not defined in entries.def,
+    # except prefixed sections (dynamic/runtime keys such as BAR_LOOK_*).
     for key, value in old_flat.items():
-        if key.startswith("settings/"):
+        section, _ = split_root_key(key)
+        if section != "game_strings":
             continue
         if key not in new_flat:
             new_flat[key] = value
-    ctx.base.main.data["game_strings"] = {}
-    ctx.base.main.data["settings"] = {}
+    for section in ROOT_SECTIONS:
+        ctx.base.main.data[section] = {}
     for key, value in new_flat.items():
         root_set(ctx.base.main.data, key, value)
     for key in changed:
@@ -721,14 +766,11 @@ def remove_extra_translation_strings(ctx: RunContext) -> None:
 def sort_game_strings(ctx):
     """Sort game strings by key."""
     for file in ctx.all_files:
-        if game_strings_dict := file.data.get("game_strings"):
-            file.data["game_strings"] = sort_mapping_rec(game_strings_dict)
-        elif not file.data.get("game_strings"):
-            file.data.pop("game_strings", None)
-        if settings_dict := file.data.get("settings"):
-            file.data["settings"] = sort_mapping_rec(settings_dict)
-        elif not file.data.get("settings"):
-            file.data.pop("settings", None)
+        for section in ROOT_SECTIONS:
+            if section_data := file.data.get(section):
+                file.data[section] = sort_mapping_rec(section_data)
+            elif not file.data.get(section):
+                file.data.pop(section, None)
 
 
 @step
