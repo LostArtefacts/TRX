@@ -4,10 +4,14 @@
 #include <trx/game/game.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/output.h>
+#include <trx/game/sound.h>
 
 typedef struct {
     const GF_LEVEL *level;
     GF_SEQUENCE_CONTEXT seq_ctx;
+    struct {
+        uint8_t reverb_type;
+    } stashed_state;
 } M_PRIV;
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
@@ -29,16 +33,22 @@ static void M_End(PHASE *const phase)
 {
     Game_End();
     Game_SetIsPlaying(false);
+    Sound_SetReverbType(0);
 }
 
 static void M_Suspend(PHASE *const phase)
 {
     Game_SetIsPlaying(false);
+    M_PRIV *const p = phase->priv;
+    p->stashed_state.reverb_type = Sound_GetReverbType();
+    Sound_SetReverbType(0);
 }
 
 static void M_Resume(PHASE *const phase)
 {
     Game_SetIsPlaying(true);
+    M_PRIV *const p = phase->priv;
+    Sound_SetReverbType(p->stashed_state.reverb_type);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)

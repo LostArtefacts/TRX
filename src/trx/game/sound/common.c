@@ -331,6 +331,16 @@ void Sound_SetMasterVolume(const float volume)
     m_MasterVolume = volume;
 }
 
+uint8_t Sound_GetReverbType(void)
+{
+    return Audio_GetReverbType();
+}
+
+void Sound_SetReverbType(uint8_t reverb_type)
+{
+    Audio_SetReverbType(reverb_type);
+}
+
 void Sound_ResetSamples(void)
 {
     if (!Sound_IsInitialised()) {
