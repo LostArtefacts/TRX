@@ -103,6 +103,7 @@ static void M_SaveRaw(
     }
 
     const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
+    const JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
     const SAVEGAME_BSON_HEADER header = {
         .magic = M_MAGIC_TRX,
         .initial_version = Savegame_GetInitialVersion(),
@@ -112,7 +113,8 @@ static void M_SaveRaw(
     };
     const SAVEGAME_BSON_EXTENDED_HEADER extra_header = {
         .flags = Game_GetBonusFlag() | (is_quick ? SAVEGAME_EXT_FLAG_QUICK : 0),
-        .counter = Savegame_GetCounter(),
+        .counter =
+            JSON_ObjectGetInt(root_obj, "save_counter", Savegame_GetCounter()),
         .level_num = level->num,
         .title_size = level->title != nullptr ? strlen(level->title) : 0,
     };
