@@ -1,6 +1,5 @@
 #include <trx/game/camera/environment.h>
 
-#include <trx/av/audio.h>
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/game.h>
@@ -130,7 +129,7 @@ void Camera_EnsureEnvironment(void)
         const ROOM *const room = Room_Get(g_Camera.mic_pos.room_num);
         reverb_type = room->reverb_info;
     }
-    Audio_SetReverbType(reverb_type);
+    Sound_SetReverbType(reverb_type);
 }
 
 void Camera_UpdateMicPosition(void)

@@ -20,7 +20,8 @@
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
-- fixed "Change Pierre spawn mode" showing up in TR3 gameplay settings (#5055)
+- fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
+- fixed reverb affecting inventory ring sounds (#5056)
 - fixed Pause text color
 
 

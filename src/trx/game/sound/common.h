@@ -15,6 +15,8 @@ void Sound_Shutdown(void);
 bool Sound_IsInitialised(void);
 
 void Sound_SetMasterVolume(float volume);
+uint8_t Sound_GetReverbType(void);
+void Sound_SetReverbType(uint8_t reverb_type);
 
 void Sound_ResetSamples(void);
 
