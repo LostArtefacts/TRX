@@ -142,6 +142,9 @@ void Camera_UpdateMicPosition(void)
             lara_info->torso_rot.y + lara_info->head_rot.y + lara_item->rot.y;
         g_Camera.mic_pos.room_num = lara_item->room_num;
         XYZ_32 pos = { 0, 16, 0 };
+        if (lara_info->water_status == LWS_SURFACE) {
+            pos.y = -36;
+        }
         if (lara_info->water_surface_dist != -NO_HEIGHT
             && Lara_GetMeshPos(LM_HEAD, &pos)) {
             g_Camera.mic_pos.pos = pos;
