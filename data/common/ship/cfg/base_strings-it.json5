@@ -1691,13 +1691,13 @@
         "patrol_dog": {
             "name": [
                 "Cane",
-                "Cane da Guardia",
+                "Cane da Pattuglia",
             ]
         },
         "huskie": {
             "name": [
                 "Cane",
-                "Cane da Guardia",
+                "Cane da Pattuglia",
                 "Husky",
             ]
         }
