@@ -1,7 +1,7 @@
 {
   "bars": {
     "tr1_pc": {
-      "name_gs": "BAR_LOOK_TR1_PC",
+      "name_gs": "dynamic/enums/bar_look/tr1_pc",
       "scale": 1,
       "style": "pc",
       "border_light": "#353535",
@@ -23,7 +23,7 @@
       }
     },
     "tr2_pc": {
-      "name_gs": "BAR_LOOK_TR2_PC",
+      "name_gs": "dynamic/enums/bar_look/tr2_pc",
       "scale": 0.75,
       "style": "pc",
       "border_light": "#FFFFFF",
@@ -45,7 +45,7 @@
       }
     },
     "tr3_pc": {
-      "name_gs": "BAR_LOOK_TR3_PC",
+      "name_gs": "dynamic/enums/bar_look/tr3_pc",
       "scale": 0.75,
       "style": "pc",
       "border_light": "#FFFFFF",
@@ -67,7 +67,7 @@
       }
     },
     "tr2_ps1": {
-      "name_gs": "BAR_LOOK_TR2_PS1",
+      "name_gs": "dynamic/enums/bar_look/tr2_ps1",
       "scale": 1,
       "style": "ps1",
       "border_tl": "#508282",
@@ -86,7 +86,7 @@
       }
     },
     "tr3_ps1": {
-      "name_gs": "BAR_LOOK_TR3_PS1",
+      "name_gs": "dynamic/enums/bar_look/tr3_ps1",
       "scale": 1,
       "style": "ps1",
       "border_tl": "#508282",

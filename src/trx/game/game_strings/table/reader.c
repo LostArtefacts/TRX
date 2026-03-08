@@ -181,7 +181,7 @@ static void M_LoadTableFromJSON(
 
     // Load localized string tables.
     const char *const flat_sections[] = { "game_strings" };
-    const char *const nested_sections[] = { "settings", "enums" };
+    const char *const nested_sections[] = { "settings", "enums", "dynamic" };
     size_t gs_count = 0;
     size_t gs_capacity = 0;
 
