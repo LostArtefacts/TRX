@@ -54,6 +54,13 @@ If you install everything correctly, your game directory should look more or les
 │   ├── inv_ring.json5
 │   ├── outfits.json5
 │   ├── poses.json5
+│   ├── presets
+│   │   ├── tr1-pc.json5
+│   │   ├── tr1-ps1.json5
+│   │   ├── tr2-pc.json5
+│   │   ├── tr2-ps1.json5
+│   │   ├── tr3-pc.json5
+│   │   └── tr3-ps1.json5
 │   ├── tr2
 │   │   ├── gameflow.json5
 │   │   ├── strings-de.json5
@@ -535,6 +542,13 @@ If you install everything correctly, your game directory should look more or les
         │   ├── inv_ring.json5
         │   ├── outfits.json5
         │   ├── poses.json5
+        │   ├── presets
+        │   │   ├── tr1-pc.json5
+        │   │   ├── tr1-ps1.json5
+        │   │   ├── tr2-pc.json5
+        │   │   ├── tr2-ps1.json5
+        │   │   ├── tr3-pc.json5
+        │   │   └── tr3-ps1.json5
         │   ├── tr2
         │   │   ├── gameflow.json5
         │   │   ├── strings-de.json5
