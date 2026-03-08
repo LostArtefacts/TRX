@@ -90,7 +90,7 @@ behave. The structure of this file is described below.
 
 ```json
 "tr1_classic": {
-  "name_gs": "LARA_OUTFIT_TR1_CLASSIC",
+  "name_gs": "dynamic/enums/lara_outfit/tr1_classic",
   "mesh_object": "O_LARA_SKIN_SWAP_2",
   "is_reflective": false,
   "gun_map": 0,
@@ -128,8 +128,8 @@ behave. The structure of this file is described below.
     <td><code>name_gs</code></td>
     <td>String</td>
     <td colspan="2">
-      The game string enum key used for localized UI labels for this outfit
-      (for example, <code>LARA_OUTFIT_TR1_CLASSIC</code>).
+      The game string key used for localized UI labels for this outfit
+      (for example, <code>dynamic/enums/lara_outfit/tr1_classic</code>).
     </td>
   </tr>
   <tr valign="top">
