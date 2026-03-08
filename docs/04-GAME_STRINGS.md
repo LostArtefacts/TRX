@@ -97,6 +97,29 @@ The document is organized as follows:
         "STATS_TIME_TAKEN": "Time Taken",
         // etc
     },
+    "settings": {
+        "visuals.lara_outfit": {
+            "title": "Lara's outfit",
+            "description": "Changes Lara's appearance.",
+        },
+        // etc
+    },
+    "enums": {
+        "ASPECT_MODE": {
+            "ASPECT_MODE_ANY": "Any",
+            // etc
+        },
+        // etc
+    },
+    "dynamic": {
+        "enums": {
+            "lara_outfit": {
+                "default": "Default",
+                "tr1_classic": "TR1 Classic",
+                // etc
+            },
+        },
+    },
 }
 ```
 
@@ -105,7 +128,7 @@ The document is organized as follows:
     <th>Property</th>
     <th>Type</th>
     <th>Required</th>
-    <th>Description</th>
+    <th>Scope / Description</th>
   </tr>
 
   <tr valign="top">
@@ -129,7 +152,9 @@ The document is organized as follows:
     </td>
     <td>String</td>
     <td>Yes</td>
-    <td colspan="2">The title of the level.</td>
+    <td>
+      Level entry field (<code>levels[].title</code>).
+    </td>
   </tr>
 
   <tr valign="top">
@@ -150,44 +175,51 @@ The document is organized as follows:
     <td>String-to-string map</td>
     <td>No</td>
     <td>
-      General game/UI strings.
+      General game/UI strings (legacy flat keys).
     </td>
   </tr>
 
   <tr valign="top">
     <td>
-      <code>name</code>
+      <code>settings</code>
     </td>
-    <td>String&nbsp;/&nbsp;String&nbsp;array</td>
+    <td>Nested object map</td>
     <td>No</td>
-    <td colspan="2">
-      Allows to rename any object, including key items and pickups.
-      Can be a list of strings – objects that show up in the inventory ring will
-      use the first name; the additional names can be used with various console
-      commands such as <code>/tp</code> and <code>/give</code>.
+    <td>
+      Localized setting labels and descriptions, keyed by option path
+      (<code>&lt;option&gt;/title</code> and
+      <code>&lt;option&gt;/description</code>).
     </td>
   </tr>
 
   <tr valign="top">
     <td>
-      <code>description</code>
+      <code>enums</code>
     </td>
-    <td>String</td>
+    <td>Nested object map</td>
     <td>No</td>
-    <td colspan="2">
-      Allows longer text descriptions to be defined for key and puzzle items.
-      Players can examine items in the inventory when this text has been
-      defined. Use <code>\n</code> in the text to create new lines; you can also
-      use <code>\f</code> to force a page break. Long text will be automatically
-      wrapped and paginated as necessary. If an empty string is defined, the UI
-      will not be shown and the inventory item simply focused instead.
+    <td>
+      Static enum labels in the form
+      <code>enums/&lt;ENUM_TYPE&gt;/&lt;ENUM_VALUE&gt;</code>.
+    </td>
+  </tr>
+
+  <tr valign="top">
+    <td>
+      <code>dynamic</code>
+    </td>
+    <td>Nested object map</td>
+    <td>No</td>
+    <td>
+      Runtime dynamic-enum labels in the form
+      <code>dynamic/enums/&lt;domain&gt;/&lt;value&gt;</code>.
     </td>
   </tr>
   <tr valign="top">
     <td><code>language_name</code></td>
     <td>String</td>
     <td>No (only in common file)</td>
-    <td colspan="2">
+    <td>
       The display name of the language (e.g., "English", "Français") shown in
       the language selection UI. Should only be defined in the
       <code>base_strings.json5</code> file.
@@ -197,9 +229,48 @@ The document is organized as follows:
     <td><code>extends</code></td>
     <td>String</td>
     <td>No</td>
-    <td colspan="2">
+    <td>
       Fallback to another language code for missing entries. For dialects (e.g., "fr-ca"),
       specify <code>"extends": "fr"</code> to inherit missing layers from the parent language.
+    </td>
+  </tr>
+</table>
+
+### Object entry fields
+
+<table>
+  <tr valign="top" align="left">
+    <th>Property</th>
+    <th>Type</th>
+    <th>Required</th>
+    <th>Scope / Description</th>
+  </tr>
+
+  <tr valign="top">
+    <td>
+      <code>name</code>
+    </td>
+    <td>String&nbsp;/&nbsp;String&nbsp;array</td>
+    <td>No</td>
+    <td>
+      Object entry field (<code>objects.&lt;id&gt;.name</code>).
+      Allows renaming any object, including key items and pickups. Can be a
+      list of strings: inventory objects use the first name; additional names
+      can be used with commands like <code>/tp</code> and <code>/give</code>.
+    </td>
+  </tr>
+
+  <tr valign="top">
+    <td>
+      <code>description</code>
+    </td>
+    <td>String</td>
+    <td>No</td>
+    <td>
+      Object entry field (<code>objects.&lt;id&gt;.description</code>).
+      Defines longer text for key and puzzle items. Use <code>\n</code> for
+      new lines and <code>\f</code> for page breaks. Empty strings suppress the
+      examine text UI.
     </td>
   </tr>
 </table>
