@@ -333,7 +333,7 @@
             "description": "Risolve il problema nel pacchetto di espansione La Maschera Dorata per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         },
         "visuals.fix_animated_sprites": {
-            "description": "Risolve i problemi preesistenti nei livelli 'In Profondità', 'Relitto della Maria Doria' e 'Sul Ponte' per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",
+            "description": "Risolve i problemi preesistenti nei livelli \"In Profondità\", \"Relitto della Maria Doria\" e \"Sul Ponte\" per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",
         }
     }
 }
