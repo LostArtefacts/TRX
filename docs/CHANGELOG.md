@@ -24,6 +24,7 @@
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
 - fixed reverb affecting inventory ring sounds (#5056)
 - fixed Pause text color
+- fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 
 
 

@@ -25,7 +25,7 @@ static bool M_IsOnWalkable(
 // state, Lara won't walk up big slopes or walk down into lava pits.
 static void M_FillSide(
     const COLL_INFO *const coll, COLL_SIDE *const side, const XYZ_32 pos,
-    const int32_t obj_height, int16_t *const room_num)
+    const XZ_32 probe, const int32_t obj_height, int16_t *const room_num)
 {
     const int32_t y = pos.y - obj_height;
     const int32_t y_top = y - M_HEADROOM;
@@ -36,8 +36,12 @@ static void M_FillSide(
         ? &local_room_num
         : room_num;
 
-    const XYZ_32 sample_pos = { .x = pos.x, .y = y_top, .z = pos.z };
-    const SECTOR *const sector = Room_GetSector(sample_pos, test_room_num);
+    const XYZ_32 sample_pos = {
+        .x = pos.x + probe.x,
+        .y = y_top,
+        .z = pos.z + probe.z,
+    };
+    const SECTOR *sector = Room_GetSector(sample_pos, test_room_num);
     int32_t height = Room_GetHeight(sector, sample_pos);
     int32_t ceiling = Room_GetCeiling(sector, sample_pos);
     const int32_t room_height = height;
@@ -56,15 +60,31 @@ static void M_FillSide(
     side->type = Room_GetHeightType();
 
     const bool is_on_walkable = M_IsOnWalkable(sector, sample_pos, room_height);
+
+    const bool is_front = side == &coll->side_front;
+    if (is_front) {
+        XYZ_32 front_probe_pos = sample_pos;
+        front_probe_pos.x += probe.x;
+        front_probe_pos.z += probe.z;
+        sector = Room_GetSector(front_probe_pos, room_num);
+        height = Room_GetHeight(sector, front_probe_pos);
+        if (height != NO_HEIGHT) {
+            height -= pos.y;
+        }
+    }
+
     if (!is_on_walkable) {
         if (coll->slopes_are_walls
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
-            && side->floor < 0) {
+            && side->floor < 0
+            && (!is_front
+                || (side->floor < coll->side_mid.floor
+                    && height < side->floor))) {
             side->floor = -32767;
         } else if (
             coll->slopes_are_pits
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
-            && side->floor > 0) {
+            && side->floor > (is_front ? coll->side_mid.floor : 0)) {
             side->floor = STEP_L * 2;
         } else if (
             coll->lava_is_pit && side->floor > 0
@@ -322,56 +342,47 @@ void Collide_GetCollisionInfo(
         coll->tilt_x = (int8_t)tilt;
     }
 
-    int32_t x_left;
-    int32_t z_left;
-    int32_t x_right;
-    int32_t z_right;
-    int32_t x_front;
-    int32_t z_front;
+    XZ_32 probe_left = {};
+    XZ_32 probe_right = {};
+    XZ_32 probe_front = {};
     switch (coll->quadrant) {
     case DIR_NORTH:
-        x_front = (coll->radius * Math_Sin(coll->facing)) >> W2V_SHIFT;
-        z_front = coll->radius;
-        x_left = -coll->radius;
-        z_left = coll->radius;
-        x_right = coll->radius;
-        z_right = coll->radius;
+        probe_front.x = (coll->radius * Math_Sin(coll->facing)) >> W2V_SHIFT;
+        probe_front.z = coll->radius;
+        probe_left.x = -coll->radius;
+        probe_left.z = coll->radius;
+        probe_right.x = coll->radius;
+        probe_right.z = coll->radius;
         break;
 
     case DIR_EAST:
-        x_front = coll->radius;
-        z_front = (coll->radius * Math_Cos(coll->facing)) >> W2V_SHIFT;
-        x_left = coll->radius;
-        z_left = coll->radius;
-        x_right = coll->radius;
-        z_right = -coll->radius;
+        probe_front.x = coll->radius;
+        probe_front.z = (coll->radius * Math_Cos(coll->facing)) >> W2V_SHIFT;
+        probe_left.x = coll->radius;
+        probe_left.z = coll->radius;
+        probe_right.x = coll->radius;
+        probe_right.z = -coll->radius;
         break;
 
     case DIR_SOUTH:
-        x_front = (coll->radius * Math_Sin(coll->facing)) >> W2V_SHIFT;
-        z_front = -coll->radius;
-        x_left = coll->radius;
-        z_left = -coll->radius;
-        x_right = -coll->radius;
-        z_right = -coll->radius;
+        probe_front.x = (coll->radius * Math_Sin(coll->facing)) >> W2V_SHIFT;
+        probe_front.z = -coll->radius;
+        probe_left.x = coll->radius;
+        probe_left.z = -coll->radius;
+        probe_right.x = -coll->radius;
+        probe_right.z = -coll->radius;
         break;
 
     case DIR_WEST:
-        x_front = -coll->radius;
-        z_front = (coll->radius * Math_Cos(coll->facing)) >> W2V_SHIFT;
-        x_left = -coll->radius;
-        z_left = -coll->radius;
-        x_right = -coll->radius;
-        z_right = coll->radius;
+        probe_front.x = -coll->radius;
+        probe_front.z = (coll->radius * Math_Cos(coll->facing)) >> W2V_SHIFT;
+        probe_left.x = -coll->radius;
+        probe_left.z = -coll->radius;
+        probe_right.x = -coll->radius;
+        probe_right.z = coll->radius;
         break;
 
     default:
-        x_front = 0;
-        z_front = 0;
-        x_left = 0;
-        z_left = 0;
-        x_right = 0;
-        z_right = 0;
         break;
     }
 
@@ -379,31 +390,25 @@ void Collide_GetCollisionInfo(
         room_num = prev_room_num;
     }
 
+    const XYZ_32 probe_base = { x_pos, y_pos, z_pos };
     M_FillSide(
-        coll, &coll->side_front,
-        (XYZ_32) { .x = x_pos + x_front, .z = z_pos + z_front, .y = y_pos },
-        obj_height, &room_num);
+        coll, &coll->side_front, probe_base, probe_front, obj_height,
+        &room_num);
 
     int16_t room_num2;
     room_num2 = prev_room_num;
     M_FillSide(
-        coll, &coll->side_left,
-        (XYZ_32) { .x = x_pos + x_left, .z = z_pos + z_left, .y = y_pos },
-        obj_height, &room_num2);
+        coll, &coll->side_left, probe_base, probe_left, obj_height, &room_num2);
     room_num2 = prev_room_num;
     M_FillSide(
-        coll, &coll->side_right,
-        (XYZ_32) { .x = x_pos + x_right, .z = z_pos + z_right, .y = y_pos },
-        obj_height, &room_num2);
+        coll, &coll->side_right, probe_base, probe_right, obj_height,
+        &room_num2);
 
     M_FillSide(
-        coll, &coll->side_left2,
-        (XYZ_32) { .x = x_pos + x_left, .z = z_pos + z_left, .y = y_pos },
-        obj_height, &room_num);
+        coll, &coll->side_left2, probe_base, probe_left, obj_height, &room_num);
     M_FillSide(
-        coll, &coll->side_right2,
-        (XYZ_32) { .x = x_pos + x_right, .z = z_pos + z_right, .y = y_pos },
-        obj_height, &room_num);
+        coll, &coll->side_right2, probe_base, probe_right, obj_height,
+        &room_num);
 
     const int16_t static_room_num = g_TRVersion >= 3 ? prev_room_num : room_num;
     if (Collide_CollideStaticObjects(
@@ -454,12 +459,14 @@ void Collide_GetCollisionInfo(
             case DIR_NORTH:
             case DIR_SOUTH:
                 coll->shift.x = coll->old.x - x_pos;
-                coll->shift.z = Room_FindGridShift(z_pos + z_front, z_pos);
+                coll->shift.z =
+                    Room_FindGridShift(z_pos + probe_front.z, z_pos);
                 break;
 
             case DIR_EAST:
             case DIR_WEST:
-                coll->shift.x = Room_FindGridShift(x_pos + x_front, x_pos);
+                coll->shift.x =
+                    Room_FindGridShift(x_pos + probe_front.x, x_pos);
                 coll->shift.z = coll->old.z - z_pos;
                 break;
 
@@ -489,14 +496,14 @@ void Collide_GetCollisionInfo(
             switch (coll->quadrant) {
             case DIR_NORTH:
             case DIR_SOUTH:
-                coll->shift.x =
-                    Room_FindGridShift(x_pos + x_left, x_pos + x_front);
+                coll->shift.x = Room_FindGridShift(
+                    x_pos + probe_left.x, x_pos + probe_front.x);
                 break;
 
             case DIR_EAST:
             case DIR_WEST:
-                coll->shift.z =
-                    Room_FindGridShift(z_pos + z_left, z_pos + z_front);
+                coll->shift.z = Room_FindGridShift(
+                    z_pos + probe_left.z, z_pos + probe_front.z);
                 break;
 
             default:
@@ -517,14 +524,14 @@ void Collide_GetCollisionInfo(
             switch (coll->quadrant) {
             case DIR_NORTH:
             case DIR_SOUTH:
-                coll->shift.x =
-                    Room_FindGridShift(x_pos + x_right, x_pos + x_front);
+                coll->shift.x = Room_FindGridShift(
+                    x_pos + probe_right.x, x_pos + probe_front.x);
                 break;
 
             case DIR_EAST:
             case DIR_WEST:
-                coll->shift.z =
-                    Room_FindGridShift(z_pos + z_right, z_pos + z_front);
+                coll->shift.z = Room_FindGridShift(
+                    z_pos + probe_right.z, z_pos + probe_front.z);
                 break;
 
             default:
