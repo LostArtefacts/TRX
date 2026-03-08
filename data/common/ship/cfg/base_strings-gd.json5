@@ -1520,6 +1520,12 @@
         },
         "electric_cleaner": {
             "name": "Inneal-glanaidh",
+        },
+        "punk_1": {
+            "name": "Punc 1",
+        },
+        "punk_2": {
+            "name": "Punc 2",
         }
     },
     "settings": {

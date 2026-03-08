@@ -264,6 +264,7 @@
         // 11. Lud's Gate
         {
             "path": "tower.tr2",
+            "script": "tower.lua",
             "music_track": 31,
             "lara_outfit": "tr3_catsuit",
             "sequence": [

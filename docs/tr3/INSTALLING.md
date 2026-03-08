@@ -216,6 +216,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── crash.lua
 │   │   ├── cut8.lua
 │   │   ├── jungle.lua
+│   │   ├── tower.lua
 │   │   └── zoo.lua
 │   ├── sewer.tr2
 │   ├── shore.tr2
@@ -461,6 +462,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── crash.lua
         │   │   ├── cut8.lua
         │   │   ├── jungle.lua
+        │   │   ├── tower.lua
         │   │   └── zoo.lua
         │   ├── sewer.tr2
         │   ├── shore.tr2

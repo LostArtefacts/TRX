@@ -230,6 +230,8 @@ X_OBJ_NAME_DEFINE(O_STHPAC_MERCENARY,      "sthpac_mercenary",      X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_TRIBE_AXEMAN,          "tribe_axeman",          X_OBJ_NAMES("Tribe Axeman"))
 X_OBJ_NAME_DEFINE(O_TRIBE_PIPEMAN,         "tribe_pipeman",         X_OBJ_NAMES("Tribe Blowpipe User"))
 X_OBJ_NAME_DEFINE(O_TRIBE_BOSS,            "tribe_boss",            X_OBJ_NAMES("Tribe Boss"))
+X_OBJ_NAME_DEFINE(O_PUNK_1,                "punk_1",                X_OBJ_NAMES("Punk 1"))
+X_OBJ_NAME_DEFINE(O_PUNK_2,                "punk_2",                X_OBJ_NAMES("Punk 2"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))
