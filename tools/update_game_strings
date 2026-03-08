@@ -19,7 +19,12 @@ from shared.vfs import VirtualFilesystem
 
 REVIEW_MARKER = r"\{review}"
 
-RE_GAME_STRING_USAGE = re.compile(r"GS(?:_ID|_PTR)?\(([A-Z0-9_]+)\)")
+RE_GAME_STRING_USAGE = re.compile(
+    r"GS(?:_ID(?:_RAW)?|_PTR)?\(\s*([A-Za-z0-9_./-]+)\s*\)"
+)
+RE_GAME_STRING_USAGE_RAW = re.compile(
+    r'GS_ID_RAW\(\s*"((?:\\.|[^"\\])*)"\s*\)'
+)
 RE_GAME_STRING_DEFINE = re.compile(
     r'GS_DEFINE\(\s*([A-Za-z0-9_./]+)\s*,\s*"((?:\\.|[^"\\])*)"\)'
 )
@@ -42,8 +47,8 @@ RE_INPUT_ROLE_USAGE = re.compile(
 RE_OBJ_NAME_DEFINE = re.compile(
     r'^X_OBJ_NAME_DEFINE\(\s*\w+\s*,\s*"([^"]+)"\s*,\s*X_OBJ_NAMES\(\s*(.+?)\s*\)\s*\)$'
 )
-ROOT_PREFIXES = ("settings", "enums")
-ROOT_SECTIONS = ("game_strings", "enums", "settings")
+ROOT_PREFIXES = ("settings", "enums", "dynamic")
+ROOT_SECTIONS = ("game_strings", "enums", "dynamic", "settings")
 
 
 def enum_label_key(enum_type: str, enum_value: str) -> str:
@@ -294,6 +299,13 @@ def get_used_strings(
     source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
     for match in re.finditer(RE_GAME_STRING_USAGE, source):
         yield source.count("\n", 0, match.start()) + 1, match.group(1)
+    for match in re.finditer(RE_GAME_STRING_USAGE_RAW, source):
+        yield source.count("\n", 0, match.start()) + 1, (
+            match.group(1)
+            .replace("\\n", "\n")
+            .replace('\\"', '"')
+            .replace("\\\\", "\\")
+        )
     for match in re.finditer(RE_UI_SETTING_USAGE, source):
         option_name = match.group(1)
         if aliases is not None:

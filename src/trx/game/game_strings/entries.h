@@ -11,6 +11,8 @@
 
 // Return the identifier itself as a string literal.
 #define GS_ID(id) (#id)
+// Return a raw key string as-is.
+#define GS_ID_RAW(raw_id) (raw_id)
 
 typedef const char *GAME_STRING_ID;
 
