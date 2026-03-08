@@ -8,6 +8,9 @@
 - fixed main.sfx resolution being enforced (regression from 1.3)
 - fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
 
+**TR2**:
+- fixed guns as secret rewards not being converted to the equivalent ammo if Lara already has the gun
+
 **TR3**:
 - added Train control
 - added Patrol Dog control
