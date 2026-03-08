@@ -490,7 +490,7 @@ bool Sound_Effect_Direct(
         return false;
     }
 
-    if (flags != SPM_ALWAYS) {
+    if ((flags & SPM_ALWAYS) == 0) {
         const bool play_underwater = (flags & SPM_UNDERWATER) != 0;
         const ROOM *const room = Room_Get(g_Camera.pos.room_num);
         const bool room_submerged = room != nullptr && room->flags.underwater;

@@ -15,6 +15,7 @@ void Camera_ApplyBounce(void);
 void Camera_ClampInterpResult(void);
 const CAMERA_LOOK_SETTINGS *Camera_GetLookSettings(bool on_surface);
 
+bool Camera_LOSCheck(GAME_VECTOR *start, GAME_VECTOR *target, int32_t shift);
 bool Camera_Collide(GAME_VECTOR *ideal, int32_t shift, bool y_first);
 
 void Camera_RegisterStrategy(CAMERA_MODE mode, CAMERA_STRATEGY strategy);

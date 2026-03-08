@@ -1523,6 +1523,9 @@
         },
         "punk_2": {
             "name": "\\{review}Панк 2",
+        },
+        "upv": {
+            "name": "\\{review}Минисуб",
         }
     },
     "settings": {

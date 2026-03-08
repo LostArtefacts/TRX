@@ -496,6 +496,12 @@ int32_t Room_GetCeilingEx(
 
 int32_t Room_GetWaterHeight(const XYZ_32 pos, int16_t room_num)
 {
+    return Room_GetWaterHeightEx(pos, room_num, true);
+}
+
+int32_t Room_GetWaterHeightEx(
+    const XYZ_32 pos, int16_t room_num, const bool fix_tilts)
+{
     const int32_t x = pos.x;
     const int32_t y = pos.y;
     const int32_t z = pos.z;
@@ -536,17 +542,23 @@ int32_t Room_GetWaterHeight(const XYZ_32 pos, int16_t room_num)
                && !M_IsPortalSolid(sector->ceiling, x, z)) {
             room = Room_Get(sector->portal_room.sky);
             if (!room->flags.underwater && !room->flags.swamp) {
-                break;
+                if (fix_tilts) {
+                    break;
+                } else {
+                    return room->min_floor;
+                }
             }
             sector = Room_GetWorldSector(room, x, z);
         }
-        return M_GetSurfaceHeight(sector->ceiling, x, z, true);
+        return fix_tilts ? M_GetSurfaceHeight(sector->ceiling, x, z, true)
+                         : room->max_ceiling;
     } else {
         while (sector->portal_room.pit != NO_ROOM
                && !M_IsPortalSolid(sector->floor, x, z)) {
             room = Room_Get(sector->portal_room.pit);
             if (room->flags.underwater || room->flags.swamp) {
-                return M_GetSurfaceHeight(sector->floor, x, z, true);
+                return fix_tilts ? M_GetSurfaceHeight(sector->floor, x, z, true)
+                                 : room->max_ceiling;
             }
             sector = Room_GetWorldSector(room, x, z);
         }

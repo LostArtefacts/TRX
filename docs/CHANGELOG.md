@@ -12,6 +12,7 @@
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
 
 **TR3**:
+- added UPV control
 - added Train control
 - added Patrol Dog control
 - added Crow control
@@ -43,6 +44,7 @@
 - fixed reverb affecting inventory ring sounds (#5056)
 - fixed Pause text color
 - fixed the secret sound not playing in some installations, whereby `cdaudio.wad` contains invalid track sizes (#5049)
+- fixed mounting a UPV causing Lara's braid to stand upright (OG)
 
 
 

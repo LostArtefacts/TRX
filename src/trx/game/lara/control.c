@@ -41,6 +41,7 @@
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 extern bool Skidoo_Control(void);
+extern bool UPV_Control(void);
 extern bool QuadBike_Control(void);
 extern bool Kayak_Control(void);
 extern bool MountedGun_Control(void);
@@ -601,16 +602,25 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
                 return;
             }
             break;
+
         case O_QUAD_BIKE:
             if (QuadBike_Control()) {
                 return;
             }
             break;
+
         case O_KAYAK:
             if (Kayak_Control()) {
                 return;
             }
             break;
+
+        case O_UPV:
+            if (UPV_Control()) {
+                return;
+            }
+            break;
+
         case O_MOUNTED_GUN:
             if (MountedGun_Control()) {
                 coll->enable_hit = false;
@@ -619,6 +629,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
                 return;
             }
             break;
+
         default:
             Gun_Control();
             return;
@@ -858,8 +869,10 @@ static void M_HandleEnvironment(void)
                     Lara_TakeDamage(M_SWAMP_DAMAGE, false);
                 }
             }
-        } else {
-            lara_info->air = LARA_MAX_AIR;
+        } else if (!Lara_Vehicle_IsOnType(O_UPV) && item->hit_points >= 0) {
+            // TODO: make option for air replenish mode
+            lara_info->air += g_TRVersion >= 3 ? 10 : LARA_MAX_AIR;
+            CLAMPG(lara_info->air, LARA_MAX_AIR);
         }
         M_HandleAboveWater(&coll);
         break;

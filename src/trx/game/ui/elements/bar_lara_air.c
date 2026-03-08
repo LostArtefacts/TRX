@@ -1,8 +1,7 @@
 #include <trx/game/ui/elements/bar_lara_air.h>
 
 #include <trx/config.h>
-#include <trx/game/lara/common.h>
-#include <trx/game/lara/const.h>
+#include <trx/game/lara.h>
 #include <trx/game/rooms.h>
 #include <trx/game/ui/elements/bar.h>
 
@@ -19,7 +18,9 @@ bool UI_LaraAirBar(const bool blink_state)
     const bool show = g_Config.ui.show_bars
         && (lara->water_status == LWS_UNDERWATER
             || lara->water_status == LWS_SURFACE
-            || (room->flags.swamp && lara->air < LARA_MAX_AIR));
+            || (room->flags.swamp && lara->air < LARA_MAX_AIR)
+            || (lara->water_status == LWS_ABOVE_WATER
+                && Lara_Vehicle_IsOnType(O_UPV)));
     if (!show) {
         return false;
     }

@@ -13,6 +13,7 @@
         }                                                                      \
     } while (0)
 
+bool Item_IsTriggerActiveRO(const ITEM *item);
 bool Item_IsTriggerActive(ITEM *item);
 
 bool Item_IsAlive(const ITEM *item);

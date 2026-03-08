@@ -310,31 +310,49 @@ void Lara_Hair_Control(const bool in_cutscene)
         s->pos.y += m_HairVelocity[i].y * 3 / 4;
         s->pos.z += m_HairVelocity[i].z * 3 / 4;
 
-        switch (lara_info->water_status) {
-        case LWS_ABOVE_WATER:
-            s->pos.y += 10;
-            if (water_height != NO_HEIGHT && s->pos.y > water_height) {
-                s->pos.y = water_height;
-            } else if (s->pos.y > height) {
-                s->pos.y = height;
-            } else if (g_TRVersion == 3) {
-                if (Room_Get(room_num)->flags.wind) {
-                    s->pos.x += smoke_wind.x;
-                    s->pos.z += smoke_wind.z;
-                }
-            } else {
-                s->pos.z += hair_wind_z;
+        if (g_TRVersion == 3) {
+            if (lara_info->water_status == LWS_ABOVE_WATER
+                && Room_Get(room_num)->flags.wind) {
+                s->pos.x += smoke_wind.x;
+                s->pos.z += smoke_wind.z;
             }
-            break;
 
-        case LWS_UNDERWATER:
-        case LWS_SURFACE:
-        case LWS_WADE:
-            CLAMP(s->pos.y, water_height, height);
-            break;
+            if (water_height == NO_HEIGHT || s->pos.y < water_height) {
+                s->pos.y += 10;
+                if (water_height != NO_HEIGHT && s->pos.y > water_height) {
+                    s->pos.y = water_height;
+                }
+            }
 
-        default:
-            break;
+            if (s->pos.y > height) {
+                s->pos.x = m_HairVelocity[0].x;
+                if (s->pos.y - height <= STEP_L) {
+                    s->pos.y = height;
+                }
+                s->pos.z = m_HairVelocity[0].z;
+            }
+        } else {
+            switch (lara_info->water_status) {
+            case LWS_ABOVE_WATER:
+                s->pos.y += 10;
+                if (water_height != NO_HEIGHT && s->pos.y > water_height) {
+                    s->pos.y = water_height;
+                } else if (s->pos.y > height) {
+                    s->pos.y = height;
+                } else {
+                    s->pos.z += hair_wind_z;
+                }
+                break;
+
+            case LWS_UNDERWATER:
+            case LWS_SURFACE:
+            case LWS_WADE:
+                CLAMP(s->pos.y, water_height, height);
+                break;
+
+            default:
+                break;
+            }
         }
 
         for (int32_t j = 0; j < M_HAIR_SPHERES; j++) {
