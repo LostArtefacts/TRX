@@ -19,6 +19,7 @@
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed Pause text color
+- fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 
 
 
