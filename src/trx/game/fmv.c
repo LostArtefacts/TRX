@@ -4,7 +4,6 @@
 #include <trx/av/video.h>
 #include <trx/av/video_platform.h>
 #include <trx/config.h>
-#include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -132,32 +131,7 @@ static bool M_Play(const char *const file_name)
     Video_SetSurfaceUnlockFunc(video, M_UnlockSurface, nullptr);
     Video_SetSurfaceUploadFunc(video, M_UploadSurface, renderer_2d);
 
-    int32_t audio_id = Audio_Stream_CreateFromFile(file_name);
-    if (audio_id == AUDIO_NO_SOUND) {
-        // The video file may lack an audio stream (e.g. remastered .ogv).
-        // Try other FMV extensions to find a file that contains audio.
-        static const char *const fallback_exts[] = {
-            ".fmv", ".rpl", ".avi", ".mp4", ".mkv", ".mpeg", ".webm", nullptr,
-        };
-        const char *const dot = strrchr(file_name, '.');
-        if (dot != nullptr) {
-            const size_t base_len = (size_t)(dot - file_name);
-            for (const char *const *ext = fallback_exts; *ext != nullptr;
-                 ext++) {
-                char *const candidate =
-                    String_Format("%.*s%s", (int)base_len, file_name, *ext);
-                if (File_Exists(candidate)) {
-                    audio_id = Audio_Stream_CreateFromFile(candidate);
-                    Memory_Free(candidate);
-                    if (audio_id != AUDIO_NO_SOUND) {
-                        break;
-                    }
-                } else {
-                    Memory_Free(candidate);
-                }
-            }
-        }
-    }
+    const int32_t audio_id = Audio_Stream_CreateFromFile(file_name);
 
     g_OldInputDB = g_Input;
     Video_Start(video);
