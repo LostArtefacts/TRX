@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3.1...develop) - ××××-××-××
 - added an option to let Lara stay crouched without holding the button (Gameplay → Controls → Toggle crouch) (#5006)
 - added an option to let Lara keep sprinting without holding the button (Gameplay → Controls → Toggle sprint) (#5006)
+- added WebGL/Emscripten build support — play TR1 and TR2 in the browser
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
 - added experimental support for config presets (Gameplay Options → Presets)
      Currently very basic presets available only – looking for help with improving them :)
