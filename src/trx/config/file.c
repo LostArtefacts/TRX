@@ -1,7 +1,6 @@
 #include <trx/config/file.h>
 
 #include <trx/config/common.h>
-#include <trx/game/shell.h>
 #include <trx/core/colors.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json/util/file.h>
@@ -11,6 +10,7 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/console/history.h>
+#include <trx/game/shell.h>
 
 #include <stdio.h>
 #include <string.h>
