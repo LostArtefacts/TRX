@@ -405,6 +405,12 @@ void Gun_DrawFlash(
         Matrix_RotZ(rot.z);
     }
 
+    const GAME_VECTOR pos = {
+        .room_num = Lara_GetItem()->room_num,
+        .pos = Matrix_MulVec32_M(g_WMatrixPtr, (XYZ_32) {}),
+    };
+    Output_PushTintOverride(Lara_GetMeshTint(pos));
+
     if (g_TRVersion < 3) {
         Output_CalculateStaticLight(weapon.flash_shade);
     } else {
@@ -416,6 +422,7 @@ void Gun_DrawFlash(
     }
 
     M_DrawGunGlow(weapon.glow_pos, weapon.glow_color);
+    Output_PopTintOverride();
 }
 
 void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
