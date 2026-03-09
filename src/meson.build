@@ -797,8 +797,10 @@ if is_emscripten
   common_sources += ['trx/core/log_emscripten.c']
   common_sources += ['trx/gl/gl_webgl_compat.c']
   common_sources += ['trx/game/shell/flow_emscripten.c']
+  common_sources += ['trx/game/input/backends/touch.c']
 else
   common_sources += ['trx/game/shell/flow_generic.c']
+  common_sources += ['trx/game/input/backends/touch_generic.c']
   if dep_backtrace.found() and host_machine.system() == 'linux'
     common_sources += ['trx/core/log_linux.c']
   elif host_machine.system() == 'windows'

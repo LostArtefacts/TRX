@@ -4,6 +4,7 @@
 #include <trx/game/input/backends/base.h>
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
+#include <trx/game/input/backends/touch.h>
 #include <trx/game/input/common.h>
 #include <trx/game/lara.h>
 #include <trx/version.h>
@@ -26,6 +27,7 @@ void Input_Update(void)
         &g_Input, &g_Input_Keyboard, g_Config.input.keyboard_layout);
     M_UpdateFromBackend(
         &g_Input, &g_Input_Controller, g_Config.input.controller_layout);
+    M_UpdateFromBackend(&g_Input, &g_Input_Touch, INPUT_LAYOUT_DEFAULT);
 
     g_Input.camera_reset |= g_Input.look;
     g_Input.menu_up |= g_Input.forward;
