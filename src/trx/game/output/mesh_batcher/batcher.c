@@ -748,7 +748,7 @@ void MeshBatcher_Seal(MESH_BATCHER *const batcher)
 
         // Copy Blend Indices
         if (bind->blend_add_index_count > 0) {
-            const uint32_t *src =
+            uint32_t *const src =
                 Vector_GetData(bind->mesh->blend_add_vertex_indices);
 #ifdef EMSCRIPTEN_BUILD
             for (int32_t j = 0; j < bind->blend_add_index_count; j++) {

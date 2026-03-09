@@ -60,7 +60,7 @@ static void M_CreateGameWindow(void)
         return; // Window persists across mod switches
     }
 
-    uint32_t window_flags = SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE
+    const uint32_t window_flags = SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE
         | SDL_WINDOW_OPENGL | Shell_GetWindowExtraFlags();
 
     m_Window = SDL_CreateWindow(

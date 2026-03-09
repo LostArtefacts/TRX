@@ -26,6 +26,7 @@
 #define M_MAX_PHASES 10
 
 static int32_t m_CurrentFrame = 0;
+static int32_t m_FrameLog = 0;
 static bool m_Exiting;
 static FADER m_ExitFader;
 static int32_t m_PhaseStackSize = 0;
@@ -253,13 +254,12 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
 
     WEBGL_LOG("[WEBGL] Entering main frame loop");
-    static int s_FrameLog = 0;
     while (true) {
         int32_t nframes = Clock_WaitTick();
-        if (s_FrameLog < 10 || s_FrameLog % 60 == 0) {
-            WEBGL_LOG("[WEBGL] frame=%d nframes=%d", s_FrameLog, nframes);
+        if (m_FrameLog < 10 || m_FrameLog % 60 == 0) {
+            WEBGL_LOG("[WEBGL] frame=%d nframes=%d", m_FrameLog, nframes);
         }
-        s_FrameLog++;
+        m_FrameLog++;
         int32_t frame = 0;
         int no_wait_count = 0;
         while (true) {
