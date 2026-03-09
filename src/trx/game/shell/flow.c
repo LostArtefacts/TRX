@@ -44,7 +44,6 @@
 #include <trx/version.h>
 
 #include <SDL2/SDL.h>
-
 #include <stdio.h>
 
 static SHELL_SESSION *m_Session = nullptr;

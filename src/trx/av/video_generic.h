@@ -1,7 +1,6 @@
 #pragma once
 
 #include <GL/glew.h>
-
 #include <libavutil/pixfmt.h>
 
 #define VIDEO_PIX_FMT AV_PIX_FMT_BGRA
