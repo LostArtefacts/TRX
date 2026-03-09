@@ -2054,6 +2054,10 @@
             "title": "Position der Sauerstoffleiste",
             "description": "Position, an der die Sauerstoffleiste angezeigt wird.",
         },
+        "ui.ammo_counter_location": {
+            "title": "\\{review}Munitionszähler-Position",
+            "description": "\\{review}Position, an der der Munitionszähler angezeigt wird.",
+        },
         "ui.bar_look": {
             "title": "\\{review}Aussehen der Balken",
             "description": "\\{review}Steuert das visuelle Erscheinungsbild der UI-Leisten.",
@@ -2342,14 +2346,6 @@
             "BK_TRANSPARENT_DARK": "\\{review}Sehr dunkel",
             "BK_TRANSPARENT_MEDIUM": "\\{review}Dunkel",
         },
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "Unten Mitte",
-            "BAR_LOCATION_BOTTOM_LEFT": "Unten links",
-            "BAR_LOCATION_BOTTOM_RIGHT": "Unten rechts",
-            "BAR_LOCATION_TOP_CENTER": "Oben Mitte",
-            "BAR_LOCATION_TOP_LEFT": "Oben links",
-            "BAR_LOCATION_TOP_RIGHT": "Oben rechts",
-        },
         "BAR_SHOW_MODE": {
             "BAR_SHOW_MODE_ALWAYS": "Immer",
             "BAR_SHOW_MODE_BOSS_ONLY": "Nur Boss-Gegner",
@@ -2487,6 +2483,14 @@
         "TEXTURE_FILTER": {
             "TEXTURE_FILTER_BILINEAR": "Bilinear",
             "TEXTURE_FILTER_POINT": "Aus",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Unten Mitte",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Unten links",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Unten rechts",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Oben Mitte",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Oben links",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Oben rechts",
         },
         "UI_STYLE": {
             "UI_STYLE_PC": "PC",

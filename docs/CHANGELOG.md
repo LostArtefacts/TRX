@@ -7,6 +7,7 @@
     - Black: like the Remasters
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
+- added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
 - fixed main.sfx resolution being enforced (regression from 1.3)
 - fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
 - fixed save counters sometimes drifting after dying and reloading (#5054, regression from TR1X 4.9 / TRX 1.0)

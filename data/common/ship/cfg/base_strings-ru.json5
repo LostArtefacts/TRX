@@ -2061,6 +2061,10 @@
             "title": "Положение шкалы воздуха",
             "description": "Место, где отображается шкала воздуха.",
         },
+        "ui.ammo_counter_location": {
+            "title": "\\{review}Расположение счетчика боеприпасов",
+            "description": "\\{review}Место, где отображается счетчик боеприпасов.",
+        },
         "ui.bar_look": {
             "title": "\\{review}Внешний вид панелей",
             "description": "\\{review}Управляет визуальным отображением панелей интерфейса.",
@@ -2349,14 +2353,6 @@
             "BK_TRANSPARENT_DARK": "\\{review}Очень темно",
             "BK_TRANSPARENT_MEDIUM": "\\{review}Темно",
         },
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "Внизу по центру",
-            "BAR_LOCATION_BOTTOM_LEFT": "Внизу слева",
-            "BAR_LOCATION_BOTTOM_RIGHT": "Внизу справа",
-            "BAR_LOCATION_TOP_CENTER": "Вверху по центру",
-            "BAR_LOCATION_TOP_LEFT": "Вверху слева",
-            "BAR_LOCATION_TOP_RIGHT": "Вверху справа",
-        },
         "BAR_SHOW_MODE": {
             "BAR_SHOW_MODE_ALWAYS": "Всегда",
             "BAR_SHOW_MODE_BOSS_ONLY": "Только боссы",
@@ -2494,6 +2490,14 @@
         "TEXTURE_FILTER": {
             "TEXTURE_FILTER_BILINEAR": "Билинейная",
             "TEXTURE_FILTER_POINT": "Точечная выборка",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Внизу по центру",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Внизу слева",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Внизу справа",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Вверху по центру",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Вверху слева",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Вверху справа",
         },
         "UI_STYLE": {
             "UI_STYLE_PC": "PC",

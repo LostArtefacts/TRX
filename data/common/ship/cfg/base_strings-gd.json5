@@ -2065,6 +2065,10 @@
             "title": "Suidheachadh bàr-èadhair",
             "description": "Far a nochdas am bàr-èadhair air an sgrion.",
         },
+        "ui.ammo_counter_location": {
+            "title": "\\{review}Àite cunntair ammo",
+            "description": "\\{review}Àite far am bi an cunntair ammo air a thaisbeanadh.",
+        },
         "ui.bar_look": {
             "title": "Coltas nam bàraichean",
             "description": "Atharraichidh seo coltas nam bàraichean EA.",
@@ -2353,14 +2357,6 @@
             "BK_TRANSPARENT_DARK": "Fìor dhorcha",
             "BK_TRANSPARENT_MEDIUM": "Dorcha",
         },
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "Bonn na meadhan",
-            "BAR_LOCATION_BOTTOM_LEFT": "Bonn-clì",
-            "BAR_LOCATION_BOTTOM_RIGHT": "Bonn-deas",
-            "BAR_LOCATION_TOP_CENTER": "Bàrr na meadhan",
-            "BAR_LOCATION_TOP_LEFT": "Bàrr-clì",
-            "BAR_LOCATION_TOP_RIGHT": "Bàrr-deas",
-        },
         "BAR_SHOW_MODE": {
             "BAR_SHOW_MODE_ALWAYS": "An-còmhnaidh",
             "BAR_SHOW_MODE_BOSS_ONLY": "A-mhàin ri boss",
@@ -2498,6 +2494,14 @@
         "TEXTURE_FILTER": {
             "TEXTURE_FILTER_BILINEAR": "Da-lìnear",
             "TEXTURE_FILTER_POINT": "Dheth",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bonn na meadhan",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Bonn-clì",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Bonn-deas",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Bàrr na meadhan",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Bàrr-clì",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Bàrr-deas",
         },
         "UI_STYLE": {
             "UI_STYLE_PC": "PC",

@@ -14,7 +14,7 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_EnemyHealthBarShowModeEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BarLocationEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_UIElementLocationEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_BackgroundStyleEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_CameraModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_FOVModeEnumEntries[];
