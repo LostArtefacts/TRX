@@ -4,6 +4,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/webgl_log.h>
+#include <trx/game/clock.h>
 #include <trx/game/inject.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/level.h>
@@ -14,7 +15,6 @@
 #include <trx/game/shell/paths.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
-#include <trx/platform/yield.h>
 #include <trx/version.h>
 
 #include <stdlib.h>
@@ -73,7 +73,7 @@ static void M_InitialiseSamplesFromFile(
         // Yield periodically during sample loading (every 10 samples)
         // to keep the browser responsive. No-op on desktop.
         if (i > 0 && i % 10 == 0) {
-            Platform_Yield(0);
+            Clock_Delay(0);
         }
 
         uint32_t header[11] = {};
@@ -204,7 +204,7 @@ void Level_Pipeline_Load(const GF_LEVEL *const level)
     WEBGL_LOG(
         "[WEBGL] Level_Pipeline_Load: yielding before load (level=%d, path=%s)",
         level->num, level->path ? level->path : "(null)");
-    Platform_Yield(0);
+    Clock_Delay(0);
     WEBGL_LOG("[WEBGL] Level_Pipeline_Load: resumed, loading file...");
 
     Inject_InitLevel(level, INJECTION_MODE_FULL);

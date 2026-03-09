@@ -4,7 +4,6 @@
 #include <trx/game/clock/const.h>
 #include <trx/game/clock/timer.h>
 #include <trx/game/clock/turbo.h>
-#include <trx/platform/yield.h>
 
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
@@ -131,7 +130,7 @@ int32_t Clock_WaitTick(void)
         double delay_ms = (needed / m_Frequency) * 1000.0;
 
         if (delay_ms > 0) {
-            Platform_Yield((unsigned int)delay_ms);
+            Clock_Delay((int32_t)delay_ms);
         }
 
         // After waiting, measure again to be accurate
@@ -150,7 +149,7 @@ int32_t Clock_WaitTick(void)
     } else {
         // Behind schedule — yield once so the browser event loop isn't starved.
         // On desktop this is a no-op.
-        Platform_Yield(0);
+        Clock_Delay(0);
     }
 
     // Consume the frames from the m_Accumulator

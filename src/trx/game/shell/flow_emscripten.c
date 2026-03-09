@@ -1,7 +1,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/webgl_log.h>
+#include <trx/game/clock.h>
 #include <trx/game/shell.h>
-#include <trx/platform/yield.h>
 #include <trx/version.h>
 
 #include <SDL2/SDL.h>
@@ -118,7 +118,7 @@ void Shell_InitIDBFS(void)
 
     js_start_idbfs_sync_from_db();
     while (!js_is_idbfs_sync_done()) {
-        emscripten_sleep(10);
+        Clock_Delay(10);
     }
     WEBGL_LOG("[WEBGL] IDBFS ready at /persist/%s", TRX_GAME_ID);
 
@@ -143,7 +143,7 @@ void Shell_WaitForUserInput(void)
     WEBGL_LOG("[WEBGL] Showing start gate, waiting for user interaction...");
     js_show_start_gate();
     while (!js_is_start_gate_dismissed()) {
-        emscripten_sleep(50);
+        Clock_Delay(50);
     }
     WEBGL_LOG("[WEBGL] User interaction received, proceeding.");
 }

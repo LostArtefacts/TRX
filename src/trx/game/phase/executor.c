@@ -19,7 +19,6 @@
 #include <trx/game/ui.h>
 #include <trx/gl/context.h>
 #include <trx/gl/track.h>
-#include <trx/platform/yield.h>
 
 #include <stdio.h>
 
@@ -283,7 +282,7 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
                 // Prevent infinite spin without yielding to browser.
                 // On desktop this is a no-op.
                 if (++no_wait_count > 1000) {
-                    Platform_Yield(0);
+                    Clock_Delay(0);
                     no_wait_count = 0;
                 }
                 continue;

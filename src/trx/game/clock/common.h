@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 void Clock_Init(void);
+void Clock_Delay(int32_t ms);
 
 // Disables any kind of waiting in Clock_WaitTick
 void Clock_DisableWait(void);
