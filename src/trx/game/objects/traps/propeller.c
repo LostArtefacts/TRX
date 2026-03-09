@@ -6,22 +6,44 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
+#include <trx/version.h>
 
-#define PROPELLER_DAMAGE 200
+#define M_DAMAGE 200
 
 typedef enum {
     // clang-format off
-    PROPELLER_STATE_ON  = 0,
-    PROPELLER_STATE_OFF = 1,
+    M_STATE_ON  = 0,
+    M_STATE_OFF = 1,
     // clang-format on
-} PROPELLER_STATE;
+} M_STATE;
+
+static void M_Collision(
+    const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status == IS_ACTIVE && item->object_id == O_PROPELLER_2
+        && item->current_anim_state == M_STATE_OFF) {
+        Object_Collision(item_num, lara_item, coll);
+    } else {
+        Object_Collision_Trap(item_num, lara_item, coll);
+    }
+}
 
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = Propeller_Control;
-    obj->collision_func = Object_Collision_Trap;
+    obj->collision_func = M_Collision;
     obj->save_flags = true;
     obj->save_anim = true;
+}
+
+static void M_SpawnBlood(const ITEM *const item, const int32_t count)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const XYZ_32 pos = lara_item->pos;
+    Spawn_BloodBath(
+        pos.x, pos.y - WALL_L / 2, pos.z, Random_GetDraw() >> 10,
+        item->rot.y + DEG_90, lara_item->room_num, count);
 }
 
 void Propeller_Control(const int16_t item_num)
@@ -29,16 +51,17 @@ void Propeller_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
 
     if (Item_IsTriggerActive(item) && !(item->flags & IF_ONE_SHOT)) {
-        item->goal_anim_state = PROPELLER_STATE_ON;
+        item->goal_anim_state = M_STATE_ON;
 
         if ((item->touch_bits & 6) != 0) {
-            Lara_TakeDamage(PROPELLER_DAMAGE, true);
+            Lara_TakeDamage(M_DAMAGE, true);
+            if (g_TRVersion == 3 && GF_BadGetLevelNum() == 9) {
+                // TODO: allow assigning trap damage via Lua
+                Lara_GetItem()->hit_points = -1;
+                M_SpawnBlood(item, 5);
+            }
 
-            const ITEM *const lara_item = Lara_GetItem();
-            Spawn_BloodBath(
-                lara_item->pos.x, lara_item->pos.y - WALL_L / 2,
-                lara_item->pos.z, Random_GetDraw() >> 10, item->rot.y + 0x4000,
-                lara_item->room_num, 3);
+            M_SpawnBlood(item, 3);
 
             if (item->object_id == O_POWER_SAW) {
                 Sound_Effect(SFX_SAW_STOP, &item->pos, SPM_NORMAL);
@@ -52,15 +75,13 @@ void Propeller_Control(const int16_t item_num)
         } else {
             Sound_Effect(SFX_SMALL_FAN_ON, &item->pos, SPM_NORMAL);
         }
-    } else if (item->goal_anim_state != PROPELLER_STATE_OFF) {
+    } else if (item->goal_anim_state != M_STATE_OFF) {
         if (item->object_id == O_PROPELLER_1) {
             Sound_Effect(SFX_AIRPLANE_IDLE, &item->pos, SPM_NORMAL);
         } else if (item->object_id == O_PROPELLER_2) {
-            // NOTE: this sound effect is not present in the OG files
-            // TODO: fix me
-            Sound_Effect_Direct(216, &item->pos, SPM_UNDERWATER);
+            Sound_Effect(SFX_UNDERWATER_FAN_OFF, &item->pos, SPM_UNDERWATER);
         }
-        item->goal_anim_state = PROPELLER_STATE_OFF;
+        item->goal_anim_state = M_STATE_OFF;
     }
 
     Item_Animate(item);
