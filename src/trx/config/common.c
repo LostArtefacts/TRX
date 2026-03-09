@@ -135,11 +135,7 @@ bool Config_Write(void)
         .enforced_path = g_Config.enforced_path,
         .action = &Config_DumpToJSON,
     };
-    const bool result = ConfigFile_Write(&args);
-    if (result) {
-        Shell_PersistConfigToIDBFS();
-    }
-    return result;
+    return ConfigFile_Write(&args);
 }
 
 int32_t Config_SubscribeChanges(

@@ -1,6 +1,7 @@
 #include <trx/config/file.h>
 
 #include <trx/config/common.h>
+#include <trx/game/shell.h>
 #include <trx/core/colors.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json/util/file.h>
@@ -146,6 +147,9 @@ bool ConfigFile_Write(const CONFIG_IO_ARGS *const args)
 
     JSON_VALUE *const new_root = JSON_ValueFromObject(root_obj);
     const bool updated = JSONFile_Write(args->default_path, new_root);
+    if (updated) {
+        Shell_PersistConfigToIDBFS();
+    }
 
     JSON_ValueFree(new_root);
     JSON_ValueFree(old_root);
