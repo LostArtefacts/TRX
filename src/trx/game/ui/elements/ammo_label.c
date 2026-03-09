@@ -10,11 +10,11 @@
 
 #include <stdio.h>
 
-void UI_AmmoLabel(void)
+bool UI_AmmoLabel(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->gun_status != LGS_READY || Game_IsBonusFlagSet(GBF_NGPLUS)) {
-        return;
+        return false;
     }
 
     int32_t ammo = 0;
@@ -23,7 +23,7 @@ void UI_AmmoLabel(void)
 
     switch (lara->gun_type) {
     case LGT_PISTOLS:
-        return;
+        return false;
     case LGT_SHOTGUN:
         ammo = lara->shotgun_ammo.ammo / Gun_GetAmmoClipCount(LGT_SHOTGUN);
         if (use_icon) {
@@ -64,7 +64,7 @@ void UI_AmmoLabel(void)
         ammo = lara->harpoon_ammo.ammo;
         break;
     default:
-        return;
+        return false;
     }
 
     const char *inner_text = nullptr;
@@ -77,4 +77,5 @@ void UI_AmmoLabel(void)
         String_FormatStatic(GS(OVERLAY_ITEM_COUNT_FMT), inner_text);
 
     UI_LabelEx(outer_text, (UI_LABEL_SETTINGS) { .scale = 1.5f });
+    return true;
 }

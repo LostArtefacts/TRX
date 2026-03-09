@@ -2108,6 +2108,10 @@
             "title": "Airbar location",
             "description": "Location where the airbar is displayed.",
         },
+        "ui.ammo_counter_location": {
+            "title": "Ammo counter location",
+            "description": "Location where the ammo counter is displayed.",
+        },
         "ui.bar_look": {
             "title": "Bars appearance",
             "description": "Controls the visual appearance of the UI bars.",
@@ -2396,14 +2400,6 @@
             "BK_TRANSPARENT_DARK": "Very dark",
             "BK_TRANSPARENT_MEDIUM": "Dark",
         },
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "Bottom center",
-            "BAR_LOCATION_BOTTOM_LEFT": "Bottom left",
-            "BAR_LOCATION_BOTTOM_RIGHT": "Bottom right",
-            "BAR_LOCATION_TOP_CENTER": "Top center",
-            "BAR_LOCATION_TOP_LEFT": "Top left",
-            "BAR_LOCATION_TOP_RIGHT": "Top right",
-        },
         "BAR_SHOW_MODE": {
             "BAR_SHOW_MODE_ALWAYS": "Always",
             "BAR_SHOW_MODE_BOSS_ONLY": "Boss only",
@@ -2541,6 +2537,14 @@
         "TEXTURE_FILTER": {
             "TEXTURE_FILTER_BILINEAR": "Bilinear",
             "TEXTURE_FILTER_POINT": "Point",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bottom center",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Bottom left",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Bottom right",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Top center",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Top left",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Top right",
         },
         "UI_STYLE": {
             "UI_STYLE_PC": "PC",

@@ -2041,6 +2041,10 @@
             "title": "Emplacement de la barre d'air",
             "description": "Emplacement de la barre d'air.",
         },
+        "ui.ammo_counter_location": {
+            "title": "\\{review}Emplacement du compteur de munitions",
+            "description": "\\{review}Emplacement où le compteur de munitions est affiché.",
+        },
         "ui.bar_look": {
             "title": "\\{review}Apparence des barres",
             "description": "\\{review}Contrôle l'apparence visuelle des barres de l'interface utilisateur.",
@@ -2329,14 +2333,6 @@
             "BK_TRANSPARENT_DARK": "\\{review}Très sombre",
             "BK_TRANSPARENT_MEDIUM": "\\{review}Sombre",
         },
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "En bas centré",
-            "BAR_LOCATION_BOTTOM_LEFT": "En bas à gauche",
-            "BAR_LOCATION_BOTTOM_RIGHT": "En bas à droite",
-            "BAR_LOCATION_TOP_CENTER": "En haut centré",
-            "BAR_LOCATION_TOP_LEFT": "En haut à gauche",
-            "BAR_LOCATION_TOP_RIGHT": "En haut à droit",
-        },
         "BAR_SHOW_MODE": {
             "BAR_SHOW_MODE_ALWAYS": "Toujours",
             "BAR_SHOW_MODE_BOSS_ONLY": "Boss uniquement",
@@ -2474,6 +2470,14 @@
         "TEXTURE_FILTER": {
             "TEXTURE_FILTER_BILINEAR": "Bilinéraire",
             "TEXTURE_FILTER_POINT": "\\{review}Point",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "En bas centré",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "En bas à gauche",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "En bas à droite",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "En haut centré",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "En haut à gauche",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "En haut à droit",
         },
         "UI_STYLE": {
             "UI_STYLE_PC": "PC",

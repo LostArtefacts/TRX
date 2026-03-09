@@ -18,3 +18,5 @@ X_UI_CFG_BOOL(ui.stats_fade_effects,            .custom_handler = { .is_availabl
 
 X_UI_CFG_BOOL(visuals.enable_fade_effects)
 X_UI_CFG_BOOL(visuals.enable_exit_fade_effects, .custom_handler = { .is_available = UI_Settings_EnableFadeEffects_IsAvailable })
+
+X_UI_CFG_ENUM(ui.ammo_counter.location,         .misc = UI_Settings_UIElementLocationEnumEntries)

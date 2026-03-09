@@ -2038,6 +2038,10 @@
             "title": "Lokalizacja paska tlenu",
             "description": "Miejsce, w którym wyświetlany jest pasek tlenu.",
         },
+        "ui.ammo_counter_location": {
+            "title": "\\{review}Lokalizacja licznika amunicji",
+            "description": "\\{review}Miejsce, w którym wyświetlany jest licznik amunicji.",
+        },
         "ui.bar_look": {
             "title": "Wygląd pasków",
             "description": "Steruje wyglądem pasków życia i tlenu.",
@@ -2326,14 +2330,6 @@
             "BK_TRANSPARENT_DARK": "Bardzo ciemne",
             "BK_TRANSPARENT_MEDIUM": "Ciemne",
         },
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "Dół na środku",
-            "BAR_LOCATION_BOTTOM_LEFT": "Dół po lewej",
-            "BAR_LOCATION_BOTTOM_RIGHT": "Dół po prawej",
-            "BAR_LOCATION_TOP_CENTER": "Góra na środku",
-            "BAR_LOCATION_TOP_LEFT": "Góra po lewej",
-            "BAR_LOCATION_TOP_RIGHT": "Góra po prawej",
-        },
         "BAR_SHOW_MODE": {
             "BAR_SHOW_MODE_ALWAYS": "Zawsze",
             "BAR_SHOW_MODE_BOSS_ONLY": "Tylko bossowie",
@@ -2471,6 +2467,14 @@
         "TEXTURE_FILTER": {
             "TEXTURE_FILTER_BILINEAR": "Dwuliniowy",
             "TEXTURE_FILTER_POINT": "Punktowy",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Dół na środku",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Dół po lewej",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Dół po prawej",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Góra na środku",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Góra po lewej",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Góra po prawej",
         },
         "UI_STYLE": {
             "UI_STYLE_PC": "PC",

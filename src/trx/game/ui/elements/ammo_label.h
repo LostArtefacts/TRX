@@ -2,4 +2,4 @@
 
 #include <trx/game/ui/common.h>
 
-void UI_AmmoLabel(void);
+bool UI_AmmoLabel(void);

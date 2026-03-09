@@ -101,9 +101,9 @@
         }
     },
     "enums": {
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "Bottom centre",
-            "BAR_LOCATION_TOP_CENTER": "Top centre",
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bottom centre",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Top centre",
         }
     }
 }

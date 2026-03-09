@@ -2094,6 +2094,10 @@
             "title": "Posizione barra ossigeno",
             "description": "Posizione in cui viene visualizzata la barra dell'ossigeno.",
         },
+        "ui.ammo_counter_location": {
+            "title": "\\{review}Posizione del contatore munizioni",
+            "description": "\\{review}Posizione in cui viene visualizzato il contatore munizioni.",
+        },
         "ui.bar_look": {
             "title": "Aspetto barre",
             "description": "Controlla l'aspetto visivo delle barre dell'interfaccia utente.",
@@ -2382,14 +2386,6 @@
             "BK_TRANSPARENT_DARK": "Molto scuro",
             "BK_TRANSPARENT_MEDIUM": "Scuro",
         },
-        "BAR_LOCATION": {
-            "BAR_LOCATION_BOTTOM_CENTER": "In basso al centro",
-            "BAR_LOCATION_BOTTOM_LEFT": "In basso a sinistra",
-            "BAR_LOCATION_BOTTOM_RIGHT": "In basso a destra",
-            "BAR_LOCATION_TOP_CENTER": "In alto al centro",
-            "BAR_LOCATION_TOP_LEFT": "In alto a sinistra",
-            "BAR_LOCATION_TOP_RIGHT": "In alto a destra",
-        },
         "BAR_SHOW_MODE": {
             "BAR_SHOW_MODE_ALWAYS": "Sempre",
             "BAR_SHOW_MODE_BOSS_ONLY": "Solo per i Boss",
@@ -2527,6 +2523,14 @@
         "TEXTURE_FILTER": {
             "TEXTURE_FILTER_BILINEAR": "Bilineare",
             "TEXTURE_FILTER_POINT": "Nitido",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "In basso al centro",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "In basso a sinistra",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "In basso a destra",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "In alto al centro",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "In alto a sinistra",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "In alto a destra",
         },
         "UI_STYLE": {
             "UI_STYLE_PC": "PC",
