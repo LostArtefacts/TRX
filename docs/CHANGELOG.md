@@ -10,6 +10,7 @@
 - fixed main.sfx resolution being enforced (regression from 1.3)
 - fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
 - fixed save counters sometimes drifting after dying and reloading (#5054, regression from TR1X 4.9 / TRX 1.0)
+- fixed flare and gun flash being drawn with a water tint when in shallow water regardless of responsive tint option (#5072, regression from 1.2)
 
 **TR2**:
 - fixed guns as secret rewards not being converted to the equivalent ammo if Lara already has the gun
