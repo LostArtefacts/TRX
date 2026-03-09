@@ -85,6 +85,17 @@ RUN cd /tmp/lua/src \
 COPY tools/shared/docker/game-webgl/lua.pc /emsdk/upstream/emscripten/cache/sysroot/usr/lib/pkgconfig/lua.pc
 
 
+# uthash — header-only hash table library
+FROM base AS uthash
+
+RUN apt-get update && apt-get install -y wget
+RUN wget -qO /tmp/uthash.tar.gz https://github.com/troydhanson/uthash/archive/v2.3.0.tar.gz \
+    && mkdir /tmp/uthash && tar xzf /tmp/uthash.tar.gz -C /tmp/uthash --strip-components=1 \
+    && mkdir -p /emsdk/upstream/emscripten/cache/sysroot/usr/include \
+    && cp /tmp/uthash/src/*.h /emsdk/upstream/emscripten/cache/sysroot/usr/include/ \
+    && rm -rf /tmp/uthash /tmp/uthash.tar.gz
+
+
 # Final image
 FROM base
 
@@ -100,6 +111,11 @@ COPY --from=libav \
 COPY --from=lua \
     /emsdk/upstream/emscripten/cache/sysroot/usr/ \
     /emsdk/upstream/emscripten/cache/sysroot/usr/
+
+# Carry over the uthash headers from the build stage
+COPY --from=uthash \
+    /emsdk/upstream/emscripten/cache/sysroot/usr/include/ \
+    /emsdk/upstream/emscripten/cache/sysroot/usr/include/
 
 # Point pkg-config at the Emscripten sysroot so it finds FFmpeg's .pc files
 ENV PKG_CONFIG_LIBDIR=/emsdk/upstream/emscripten/cache/sysroot/usr/lib/pkgconfig

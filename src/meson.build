@@ -115,11 +115,7 @@ if is_emscripten
   dep_pcre2 = null_dep
   dep_lua = dependency('lua', static: true)
   dep_mathlibrary = null_dep   # Emscripten bundles libm
-  # uthash is header-only; use vendored copy for cross builds
-  add_project_arguments(
-    '-I' + meson.project_source_root() + '/../tools/shared/emscripten/include',
-    language: 'c',
-  )
+  c_compiler.check_header('uthash.h', required: true)
 else
   dep_avcodec = dependency('libavcodec', static: staticdeps)
   dep_avformat = dependency('libavformat', static: staticdeps)
