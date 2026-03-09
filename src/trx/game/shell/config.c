@@ -12,10 +12,6 @@
 
 #include <SDL2/SDL_timer.h>
 
-#ifdef EMSCRIPTEN_BUILD
-void js_set_touch_controls_visible(int visible);
-#endif
-
 static Uint64 m_UpdateDebounce = 0;
 static bool m_IgnoreConfigChanges = false;
 static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
@@ -216,10 +212,8 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         Savegame_ScanSavedGames();
     }
 
-#ifdef EMSCRIPTEN_BUILD
     if (L_CHANGED(input.enable_touch_controls)) {
-        js_set_touch_controls_visible(g_Config.input.enable_touch_controls);
+        Shell_SetTouchControlsVisible(g_Config.input.enable_touch_controls);
     }
-#endif
 #undef L_CHANGED
 }

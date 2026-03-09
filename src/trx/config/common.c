@@ -136,11 +136,9 @@ bool Config_Write(void)
         .action = &Config_DumpToJSON,
     };
     const bool result = ConfigFile_Write(&args);
-#ifdef EMSCRIPTEN_BUILD
     if (result) {
         Shell_PersistConfigToIDBFS();
     }
-#endif
     return result;
 }
 

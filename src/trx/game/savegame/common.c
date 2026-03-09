@@ -1035,9 +1035,7 @@ bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
         if (slot.pool == SAVEGAME_SLOT_POOL_QUICK && m_QuickSaveSlots > 0) {
             m_NextQuickSlot = (slot.index + 1) % m_QuickSaveSlots;
         }
-#ifdef EMSCRIPTEN_BUILD
         Shell_PersistSavesToIDBFS();
-#endif
     } else {
         m_SaveCounter--;
     }

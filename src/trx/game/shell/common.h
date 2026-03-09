@@ -37,7 +37,12 @@ SHELL_SIZE Shell_GetWindowSize(void);
 SHELL_SIZE Shell_GetCurrentSize(void);
 SHELL_SIZE Shell_GetCurrentDisplaySize(void);
 
-#ifdef EMSCRIPTEN_BUILD
+// Platform-specific functions (flow_emscripten.c / flow_generic.c).
+void Shell_InitIDBFS(void);
+void Shell_WaitForUserInput(void);
 void Shell_PersistConfigToIDBFS(void);
 void Shell_PersistSavesToIDBFS(void);
-#endif
+bool Shell_HasTouchSupport(void);
+void Shell_SetTouchControlsVisible(bool visible);
+uint32_t Shell_GetWindowExtraFlags(void);
+void Shell_SetupGLContextVersion(void);
