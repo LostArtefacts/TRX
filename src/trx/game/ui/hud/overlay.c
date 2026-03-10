@@ -288,8 +288,8 @@ static bool M_CommonRegion(
     shown |= M_LaraSprintBar(s, location);
     shown |= M_LaraExposureBar(s, location);
     shown |= M_EnemyHealthBar(location);
-    shown |= M_AmmoLabel(location);
     UI_EndStack();
+    shown |= M_AmmoLabel(location);
     return shown;
 }
 
