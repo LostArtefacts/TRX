@@ -258,6 +258,7 @@
             ],
             "injections": [
                 "lara_guns.bin",
+                "aldwych_fd.bin",
             ],
         },
 
