@@ -156,6 +156,7 @@ bool Lara_Col_Fallen(ITEM *const item, const COLL_INFO *const coll)
     item->gravity = true;
     item->fall_speed = 0;
     lara->sprinting = false;
+    lara->crouching = false;
     return true;
 }
 
@@ -191,6 +192,7 @@ bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
         if (item->current_anim_state == LS(LS_SLIDE)
             && m_OldSlideAngle == angle) {
             lara->sprinting = false;
+            lara->crouching = false;
             return true;
         }
         item->goal_anim_state = LS(LS_SLIDE);
@@ -201,6 +203,7 @@ bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
         if (item->current_anim_state == LS(LS_SLIDE_BACK)
             && m_OldSlideAngle == angle) {
             lara->sprinting = false;
+            lara->crouching = false;
             return true;
         }
         item->goal_anim_state = LS(LS_SLIDE_BACK);
@@ -211,6 +214,7 @@ bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
 
     lara->move_angle = angle;
     lara->sprinting = false;
+    lara->crouching = false;
     m_OldSlideAngle = angle;
     return true;
 }
@@ -227,7 +231,6 @@ static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
         item->current_anim_state = LS(LS_STOP);
         item->gravity = false;
         item->speed = 0;
-        lara->sprinting = false;
         return true;
 
     case COLL_LEFT:
@@ -251,6 +254,10 @@ bool Lara_Col_TestCeiling(ITEM *const item, const COLL_INFO *const coll)
         return false;
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->sprinting = false;
+    lara->crouching = false;
+
     item->pos = coll->old;
     item->goal_anim_state = LS(LS_STOP);
     item->current_anim_state = LS(LS_STOP);
@@ -265,6 +272,7 @@ static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->sprinting = false;
+    lara->crouching = false;
 
     if (g_Config.gameplay.enable_smooth_wall_deflect) {
         switch (LS_U(coll->old_anim_state)) {

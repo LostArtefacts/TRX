@@ -539,7 +539,7 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!lara->climb_status && M_TestLedgeJump(item, coll)) {
         item->goal_anim_state = LS(g_Input.forward ? LS_JUMP_UP : LS_JUMP_BACK);
         return;
@@ -572,6 +572,7 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
         && !coll->hit_static) {
         item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
         item->required_anim_state = LS(LS_CROUCH_IDLE);
+        lara->crouching = true;
     } else if (
         g_Input.back && lara->climb_status
         && Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
@@ -599,6 +600,7 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.forward) {
         if (item->goal_anim_state == LS(LS_PULL_UP)) {
             return;
@@ -634,6 +636,7 @@ static void M_StanceLadder(ITEM *const item, COLL_INFO *const coll)
             } else {
                 item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
                 item->required_anim_state = LS(LS_CROUCH_IDLE);
+                lara->crouching = true;
             }
             return;
         }
@@ -799,6 +802,7 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG
         || result_r == CLIMB_RESULT_CRAWL || result_l == CLIMB_RESULT_CRAWL) {
         item->goal_anim_state = LS(LS_CLIMB_STANCE);
@@ -810,6 +814,7 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
             } else {
                 item->goal_anim_state = LS(LS_CLIMB_TO_CRAWL);
                 item->required_anim_state = LS(LS_CROUCH_IDLE);
+                lara->crouching = true;
             }
         }
         return;
@@ -987,6 +992,7 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     item->rot.y = angle;
     Lara_Col_Shift(coll);
     lara->sprinting = false;
+    lara->crouching = false;
     return true;
 }
 

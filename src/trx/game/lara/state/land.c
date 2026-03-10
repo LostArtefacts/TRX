@@ -324,6 +324,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    lara->crouching = false;
     item->goal_anim_state = LS(LS_STOP);
     if (g_Input.look) {
         Lara_Look_UpDown();
