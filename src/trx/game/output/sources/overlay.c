@@ -693,8 +693,8 @@ static void M_DrawOp_Pattern(const M_DRAW_OP_PATTERN *const op)
 
 static void M_EnsureSnapshotTexture(M_PRIV *const p)
 {
-    const int32_t w = Viewport_GetWidth(VIEWPORT_GAME);
-    const int32_t h = Viewport_GetHeight(VIEWPORT_GAME);
+    const int32_t w = Viewport_GetWidth(VIEWPORT_TARGET);
+    const int32_t h = Viewport_GetHeight(VIEWPORT_TARGET);
     if (w <= 0 || h <= 0) {
         return;
     }
