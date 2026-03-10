@@ -43,7 +43,12 @@ typedef struct {
     int32_t rot;
     int32_t rot_x;
     int16_t fan_rot;
-    uint8_t flags;
+    struct {
+        bool control;
+        bool surface;
+        bool dive;
+        bool dead;
+    } flags;
     int8_t weapon_timer;
     bool current_weapon; // left|right
 } M_PRIV;
@@ -71,15 +76,6 @@ typedef enum {
     // clang-format on
 } M_ANIM;
 
-typedef enum {
-    // clang-format off
-    M_FLAG_CONTROL = 1,
-    M_FLAG_SURFACE = 2,
-    M_FLAG_DIVE    = 4,
-    M_FLAG_DEAD    = 8,
-    // clang-format on
-} M_FLAG;
-
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -87,9 +83,15 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     JSON_SHOULD(JSON_READ(io, "rot", &p->rot));
     JSON_SHOULD(JSON_READ(io, "rot_x", &p->rot_x));
     JSON_SHOULD(JSON_READ(io, "fan_rot", &p->fan_rot));
-    JSON_SHOULD(JSON_READ(io, "flags", &p->flags));
     JSON_SHOULD(JSON_READ(io, "weapon_timer", &p->weapon_timer));
     JSON_SHOULD(JSON_READ(io, "current_weapon", &p->current_weapon));
+    if (JSON_SHOULD(JSON_PUSH(io, "flags"))) {
+        JSON_SHOULD(JSON_READ(io, "control", &p->flags.control));
+        JSON_SHOULD(JSON_READ(io, "surface", &p->flags.surface));
+        JSON_SHOULD(JSON_READ(io, "dive", &p->flags.dive));
+        JSON_SHOULD(JSON_READ(io, "dead", &p->flags.dead));
+        JSON_POP(io);
+    }
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
@@ -99,19 +101,21 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "rot", p->rot);
     JSONW_WRITE(io, "rot_x", p->rot_x);
     JSONW_WRITE(io, "fan_rot", p->fan_rot);
-    JSONW_WRITE(io, "flags", p->flags);
     JSONW_WRITE(io, "weapon_timer", p->weapon_timer);
     JSONW_WRITE(io, "current_weapon", p->current_weapon);
+    JSONW_PUSH_OBJECT(io);
+    JSONW_WRITE(io, "control", p->flags.control);
+    JSONW_WRITE(io, "surface", p->flags.surface);
+    JSONW_WRITE(io, "dive", p->flags.dive);
+    JSONW_WRITE(io, "dead", p->flags.dead);
+    JSONW_POP_AND_SET(io, "flags");
 }
 
 static void M_Initialise(int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    p->rot = 0;
-    p->vel = 0;
-    p->flags = M_FLAG_SURFACE;
-    p->weapon_timer = 0;
+    p->flags.surface = true;
 }
 
 static bool M_CanGetOn(const ITEM *const item)
@@ -348,7 +352,7 @@ static void M_UserInput(
             lara_item->gravity = 0;
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;
-            p->flags |= M_FLAG_DEAD;
+            p->flags.dead = true;
         }
 
         item->speed = 0;
@@ -404,7 +408,7 @@ static void M_UserInput(
             p->rot += M_ROT_ACCELERATION;
         }
 
-        if ((p->flags & M_FLAG_SURFACE) != 0) {
+        if (p->flags.surface) {
             if (item->rot.x > 9100) {
                 item->rot.x -= 182;
             } else if (item->rot.x < 9100) {
@@ -417,9 +421,8 @@ static void M_UserInput(
         }
 
         if (g_Input.jump) {
-            if ((p->flags & M_FLAG_SURFACE) != 0 && g_Input.forward
-                && item->rot.x > -2730) {
-                p->flags |= M_FLAG_DIVE;
+            if (p->flags.surface && g_Input.forward && item->rot.x > -2730) {
+                p->flags.dive = true;
             }
 
             p->vel += M_ACCELERATION;
@@ -440,7 +443,7 @@ static void M_UserInput(
             p->rot += M_ROT_SLOWACCEL;
         }
 
-        if ((p->flags & M_FLAG_SURFACE) != 0) {
+        if (p->flags.surface) {
             if (item->rot.x > 9100) {
                 item->rot.x -= 182;
             } else if (item->rot.x < 9100) {
@@ -453,19 +456,18 @@ static void M_UserInput(
         }
 
         if (g_Input.roll && M_CanGetOff(item)) {
-            if ((p->flags & M_FLAG_SURFACE) != 0) {
+            if (p->flags.surface) {
                 lara_item->goal_anim_state = M_STATE_GET_OFF_SURFACE;
             } else {
                 lara_item->goal_anim_state = M_STATE_GET_OFF;
             }
 
-            p->flags &= ~M_FLAG_CONTROL;
+            p->flags.control = false;
             Sound_StopEffect(SFX_UPV_LOOP);
             Sound_Effect(SFX_UPV_STOP, &item->pos, SPM_ALWAYS);
         } else if (g_Input.jump) {
-            if ((p->flags & M_FLAG_SURFACE) != 0 && g_Input.forward
-                && item->rot.x > -2730) {
-                p->flags |= M_FLAG_DIVE;
+            if (p->flags.surface && g_Input.forward && item->rot.x > -2730) {
+                p->flags.dive = true;
             }
 
             lara_item->goal_anim_state = M_STATE_MOVE;
@@ -482,7 +484,7 @@ static void M_UserInput(
             }
 
             if (frame == 50) {
-                p->flags |= M_FLAG_CONTROL;
+                p->flags.control = true;
             }
         } else if (anim == M_ANIM_GET_ON) {
             if (frame == 30) {
@@ -490,7 +492,7 @@ static void M_UserInput(
             }
 
             if (frame == 42) {
-                p->flags |= M_FLAG_CONTROL;
+                p->flags.control = true;
             }
         }
         break;
@@ -524,11 +526,11 @@ static void M_UserInput(
         break;
     }
 
-    if ((p->flags & M_FLAG_DIVE) != 0) {
+    if (p->flags.dive) {
         if (item->rot.x > -2730) {
             item->rot.x -= 910;
         } else {
-            p->flags &= ~M_FLAG_DIVE;
+            p->flags.dive = false;
         }
     }
 
@@ -864,7 +866,7 @@ bool UPV_Control(void)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     M_PRIV *const p = item->priv;
 
-    if ((p->flags & M_FLAG_DEAD) == 0) {
+    if (!p->flags.dead) {
         M_UserInput(item, lara_item, p);
         item->speed = p->vel >> 16;
         item->rot.x += p->rot_x >> 16;
@@ -890,7 +892,7 @@ bool UPV_Control(void)
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     item->floor = Room_GetHeight(sector, item->pos);
 
-    if ((p->flags & M_FLAG_CONTROL) != 0 && (p->flags & M_FLAG_DEAD) == 0) {
+    if (p->flags.control && !p->flags.dead) {
         const int32_t water_height =
             Room_GetWaterHeightEx(item->pos, room_num, false);
 
@@ -900,27 +902,27 @@ bool UPV_Control(void)
                 item->pos.y = water_height + 210;
             }
 
-            if ((p->flags & M_FLAG_SURFACE) == 0) {
+            if (!p->flags.surface) {
                 Sound_Effect(SFX_LARA_BREATH, &lara_item->pos, SPM_ALWAYS);
-                p->flags &= ~M_FLAG_DIVE;
+                p->flags.dive = false;
             }
 
-            p->flags |= M_FLAG_SURFACE;
+            p->flags.surface = true;
         } else if (
             water_height != NO_HEIGHT && water_height - item->pos.y >= -210) {
             item->pos.y = water_height + 210;
 
-            if ((p->flags & M_FLAG_SURFACE) == 0) {
+            if (!p->flags.surface) {
                 Sound_Effect(SFX_LARA_BREATH, &lara_item->pos, SPM_ALWAYS);
-                p->flags &= ~M_FLAG_DIVE;
+                p->flags.dive = false;
             }
 
-            p->flags |= M_FLAG_SURFACE;
+            p->flags.surface = true;
         } else {
-            p->flags &= ~M_FLAG_SURFACE;
+            p->flags.surface = false;
         }
 
-        if ((p->flags & M_FLAG_SURFACE) != 0) {
+        if (p->flags.surface) {
             if (lara_item->hit_points >= 0) {
                 lara->air += 10;
                 CLAMPG(lara->air, LARA_MAX_AIR);
@@ -938,14 +940,13 @@ bool UPV_Control(void)
     Room_TestTriggers(item);
 
     if (Lara_Vehicle_GetItem() == nullptr) {
-        if ((p->flags & M_FLAG_DEAD) == 0) {
+        if (!p->flags.dead) {
             return false;
         }
-    } else if ((p->flags & M_FLAG_DEAD) == 0) {
+    } else if (!p->flags.dead) {
         M_DoCurrent(item);
 
-        if (g_Input.action && (p->flags & M_FLAG_CONTROL) != 0
-            && p->weapon_timer == 0) {
+        if (g_Input.action && p->flags.control && p->weapon_timer == 0) {
             M_FireHarpoon(item);
             p->weapon_timer = 15;
         }
@@ -962,7 +963,7 @@ bool UPV_Control(void)
         Item_Animate(lara_item);
         M_BackgroundCollision(item, lara_item, p);
 
-        if ((p->flags & M_FLAG_CONTROL) != 0) {
+        if (p->flags.control) {
             Sound_Effect(
                 SFX_UPV_LOOP, &item->pos,
                 (item->speed << 16) | 0x1000000 | SPM_PITCH | SPM_ALWAYS);
@@ -972,8 +973,7 @@ bool UPV_Control(void)
             Item_GetRelativeObjAnim(lara_item, O_LARA_VEHICLE_ANIM);
         const int16_t frame_idx = Item_GetRelativeFrame(lara_item);
         Item_SwitchToAnim(item, anim_idx, frame_idx);
-        g_Camera.target_elevation =
-            (p->flags & M_FLAG_SURFACE) != 0 ? M_CAM_ELEVATION : 0;
+        g_Camera.target_elevation = p->flags.surface ? M_CAM_ELEVATION : 0;
         return true;
     }
 
