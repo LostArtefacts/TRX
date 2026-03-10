@@ -234,6 +234,9 @@ X_OBJ_NAME_DEFINE(O_TRIBE_BOSS,            "tribe_boss",            X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PUNK_1,                "punk_1",                X_OBJ_NAMES("Punk 1"))
 X_OBJ_NAME_DEFINE(O_PUNK_2,                "punk_2",                X_OBJ_NAMES("Punk 2"))
 X_OBJ_NAME_DEFINE(O_SECURITY_GUARD,        "security_guard",        X_OBJ_NAMES("Security Guard"))
+X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_1",                X_OBJ_NAMES("SWAT 1"))
+X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_2",                X_OBJ_NAMES("SWAT 2"))
+X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_3",                X_OBJ_NAMES("SWAT 3"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))

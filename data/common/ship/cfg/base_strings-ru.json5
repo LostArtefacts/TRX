@@ -2543,6 +2543,15 @@
         "strobe_light": {
             "name": "\\{review}Стробоскопический свет",
         },
+        "swat_1": {
+            "name": "\\{review}SWAT 1",
+        },
+        "swat_2": {
+            "name": "\\{review}SWAT 2",
+        },
+        "swat_3": {
+            "name": "\\{review}SWAT 3",
+        },
         "swinging_axe": {
             "name": "\\{review}Pаскачивающийся топор",
         },

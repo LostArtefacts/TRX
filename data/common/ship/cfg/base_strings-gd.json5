@@ -2545,6 +2545,15 @@
         "strobe_light": {
             "name": "Solas Sròb",
         },
+        "swat_1": {
+            "name": "SWAT 1",
+        },
+        "swat_2": {
+            "name": "SWAT 2",
+        },
+        "swat_3": {
+            "name": "SWAT 3",
+        },
         "swinging_axe": {
             "name": "Tuagh",
         },
