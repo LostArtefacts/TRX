@@ -34,6 +34,7 @@
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 - fixed too low volume in all FMVs (except logo which used a different codec)
 - fixed the secret sound not playing in some installations, whereby `cdaudio.wad` contains invalid track sizes (#5049)
+- fixed Lara by default being unable to climb out of water onto steep slopes (change manually in Gameplay → Fixes → Fix water exit)
 
 
 
