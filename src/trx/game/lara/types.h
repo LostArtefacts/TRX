@@ -89,7 +89,6 @@ typedef struct {
     bool climb_status;
     bool is_crouched;
     bool keep_crouched;
-    bool sprinting;
     bool killed_loyal_item;
 
     struct {
@@ -121,4 +120,8 @@ typedef struct {
     int32_t tr3_smoke_count_r;
     LARA_GUN_TYPE tr3_smoke_weapon;
     bool has_fired;
+
+    // TRR modern controls stuff
+    bool crouching;
+    bool sprinting;
 } LARA_INFO;

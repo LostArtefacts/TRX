@@ -45,7 +45,8 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
         return false;
     }
 
-    if (!g_Input.crouch
+    if (!(g_Config.gameplay.enable_toggle_crouch ? lara->crouching
+                                                 : g_Input.crouch)
         && (!lara->keep_crouched || lara->water_status == LWS_WADE)) {
         return false;
     }
@@ -119,6 +120,9 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 1;
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
+        ? lara->crouching
+        : g_Input.crouch || lara->keep_crouched;
     lara->sprinting = false;
     lara->is_crouched = true;
 
@@ -135,8 +139,8 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
         Lara_Look_UpDown();
     }
 
-    if ((g_Input.forward || g_Input.back) && lara->gun_status == LGS_ARMLESS
-        && M_CanEnterCrawlFromCrouch(item)) {
+    if ((g_Input.forward || g_Input.back) && crouch_active
+        && lara->gun_status == LGS_ARMLESS && M_CanEnterCrawlFromCrouch(item)) {
         lara->torso_rot.x = 0;
         lara->torso_rot.y = 0;
         item->goal_anim_state = LS(LS_CRAWL_IDLE);
@@ -149,7 +153,7 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
         Item_SwitchToAnim(item, LA(LA_CROUCH_ROLL_FORWARD_START), 0);
         item->current_anim_state = LS(LS_CROUCH_ROLL);
         item->goal_anim_state = LS(LS_CROUCH_ROLL);
-    } else if (M_CanJumpDown(item, lara)) {
+    } else if (crouch_active && M_CanJumpDown(item, lara)) {
         Lara_AnimateUntil(item, LS(LS_CRAWL_IDLE));
         item->goal_anim_state = LS(LS_CRAWL_JUMP_DOWN);
     }
@@ -228,6 +232,9 @@ static void M_CrawlForward(ITEM *const item, COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
+        ? lara->crouching
+        : g_Input.crouch || lara->keep_crouched;
     lara->torso_rot.x = 0;
     lara->torso_rot.y = 0;
     coll->enable_hit = 0;
@@ -238,7 +245,7 @@ static void M_CrawlForward(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (!g_Input.forward || (!g_Input.crouch && !lara->keep_crouched)) {
+    if (!g_Input.forward || (!crouch_active && !lara->keep_crouched)) {
         item->goal_anim_state = LS(LS_CRAWL_IDLE);
         return;
     }
