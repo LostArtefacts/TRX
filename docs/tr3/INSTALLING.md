@@ -161,6 +161,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── title_eu.webp
 │   │   └── title_us.webp
 │   ├── injections
+│   │   ├── aldwych_fd.bin
 │   │   ├── antarc_airlock.bin
 │   │   ├── antarc_sky.bin
 │   │   ├── area51_sky.bin
@@ -407,6 +408,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── title_eu.webp
         │   │   └── title_us.webp
         │   ├── injections
+        │   │   ├── aldwych_fd.bin
         │   │   ├── antarc_airlock.bin
         │   │   ├── antarc_sky.bin
         │   │   ├── area51_sky.bin
