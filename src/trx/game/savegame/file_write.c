@@ -439,6 +439,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "climb_status", lara->climb_status);
     JSONW_WRITE(io, "is_crouched", lara->is_crouched);
     JSONW_WRITE(io, "keep_crouched", lara->keep_crouched);
+    JSONW_WRITE(io, "sprinting", lara->sprinting);
 
     JSONW_WRITE(io, "pose_count", lara->pose_count);
     JSONW_WRITE(io, "hit_frame", lara->hit_frame);

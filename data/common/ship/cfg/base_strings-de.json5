@@ -1818,6 +1818,10 @@
             "title": "Timer zählt im Inventar",
             "description": "Lässt den In-Game-Timer weiterlaufen, selbst wenn während des Spiels das Inventar geöffnet ist.",
         },
+        "gameplay.enable_toggle_sprint": {
+            "title": "\\{review}Sprint umschalten",
+            "description": "\\{review}Ermöglicht es Lara, nach einmaligem Drücken der Sprint-Taste weiterzulaufen. Drücke erneut Sprint, um das Sprinten zu beenden.",
+        },
         "gameplay.enable_total_stats": {
             "title": "Finale Statistik-Anzeige",
             "description": "Aktiviert die Erstellung einer Gesamtstatistik vom ganzen Spiel, die nach dem Abspielen der Credits angezeigt wird.",

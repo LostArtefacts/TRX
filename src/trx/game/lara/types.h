@@ -89,6 +89,7 @@ typedef struct {
     bool climb_status;
     bool is_crouched;
     bool keep_crouched;
+    bool sprinting;
     bool killed_loyal_item;
 
     struct {

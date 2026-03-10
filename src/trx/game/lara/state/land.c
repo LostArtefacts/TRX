@@ -113,6 +113,19 @@ static LARA_STATE M_GetRunToCrouchState(void)
         g_Config.gameplay.enable_responsive_crawl ? LS_CROUCH_IDLE : LS_STOP);
 }
 
+static bool M_RequestSprint(LARA_INFO *const lara)
+{
+    if (g_Config.gameplay.enable_toggle_sprint) {
+        if (g_InputDB.sprint) {
+            lara->sprinting = !lara->sprinting;
+        }
+        return lara->sprinting;
+    } else {
+        lara->sprinting = false;
+        return g_Input.sprint;
+    }
+}
+
 static void M_Run(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -129,7 +142,14 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_Input.sprint && g_Config.gameplay.enable_sprint
+    const bool sprint_requested = M_RequestSprint(lara);
+    if ((item->hit_points <= 0 || lara->sprint_timer <= 0
+         || lara->water_status == LWS_WADE || !g_Config.gameplay.enable_sprint)
+        && g_Config.gameplay.enable_toggle_sprint) {
+        lara->sprinting = false;
+    }
+
+    if (sprint_requested && g_Config.gameplay.enable_sprint
         && lara->water_status != LWS_WADE
         && item->current_anim_state == LS(LS_RUN) && lara->sprint_timer > 0
         && (g_Config.gameplay.enable_responsive_sprint
@@ -189,12 +209,14 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Wade(ITEM *const item, COLL_INFO *const coll)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->sprinting = false;
+
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS(LS_STOP);
         return;
     }
 
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     g_Camera.target_elevation = CAM_WADE_ELEVATION;
 
     const ROOM *const room = Room_Get(item->room_num);
@@ -266,12 +288,14 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
 
 static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->sprinting = false;
+
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS(LS_DEATH);
         return;
     }
 
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara->interact_target.is_moving) {
         return;
     }
@@ -669,8 +693,16 @@ static void M_Special(ITEM *const item, COLL_INFO *const coll)
 static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (item->hit_points <= 0 || lara->sprint_timer <= 0 || !g_Input.sprint
-        || lara->water_status == LWS_WADE) {
+    if (g_Config.gameplay.enable_toggle_sprint && g_InputDB.sprint) {
+        lara->sprinting = false;
+        item->goal_anim_state = LS(LS_RUN);
+        return;
+    }
+
+    if (item->hit_points <= 0 || lara->sprint_timer <= 0
+        || lara->water_status == LWS_WADE
+        || (!g_Config.gameplay.enable_toggle_sprint && !g_Input.sprint)) {
+        lara->sprinting = false;
         item->goal_anim_state = LS(LS_RUN);
         return;
     }
@@ -706,6 +738,9 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
 
 static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->sprinting = false;
+
     if (item->goal_anim_state != LS(LS_DEATH)
         && item->goal_anim_state != LS(LS_STOP)
         && item->goal_anim_state != LS(LS_RUN)

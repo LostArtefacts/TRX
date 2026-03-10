@@ -16,6 +16,7 @@ X_UI_CFG_BOOL(gameplay.enable_crawl_jump,        .custom_handler = { .is_availab
 X_UI_CFG_BOOL(gameplay.enable_crouch_roll,       .custom_handler = { .is_available = UI_Settings_Crawl_IsAvailable })
 X_UI_CFG_BOOL(gameplay.enable_sprint)
 X_UI_CFG_BOOL(gameplay.enable_responsive_sprint, .custom_handler = { .is_available = UI_Settings_Sprint_IsAvailable })
+X_UI_CFG_BOOL(gameplay.enable_toggle_sprint,     .custom_handler = { .is_available = UI_Settings_Sprint_IsAvailable })
 X_UI_CFG_BOOL(gameplay.enable_neutral_twists)
 X_UI_CFG_BOOL(gameplay.enable_slide_to_run)
 X_UI_CFG_BOOL(gameplay.enable_back_slope_stumble)
