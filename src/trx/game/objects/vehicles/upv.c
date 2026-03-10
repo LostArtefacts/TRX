@@ -3,7 +3,6 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
-#include <trx/game/fx/wake.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
@@ -81,9 +80,6 @@ typedef enum {
     // clang-format on
 } M_FLAG;
 
-static uint8_t m_WakeShade = 0;
-static uint8_t m_CurrentStartWake = 0;
-
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -116,8 +112,6 @@ static void M_Initialise(int16_t item_num)
     p->vel = 0;
     p->flags = M_FLAG_SURFACE;
     p->weapon_timer = 0;
-
-    FX_Wake_ClearPoints();
 }
 
 static bool M_CanGetOn(const ITEM *const item)
@@ -321,9 +315,6 @@ static bool M_Draw(const ITEM *const item)
     }
 
     Matrix_Pop();
-    if (Item_IsTriggerActiveRO(item)) {
-        FX_Wake_Draw(item);
-    }
     return true;
 }
 
@@ -805,34 +796,6 @@ static void M_TriggerMist(
     spark->size.height = spark->src_size.height;
 }
 
-static void M_DoWake(ITEM *const item, const int32_t side)
-{
-    if (!Item_IsTriggerActive(item)) {
-        return;
-    }
-
-    FX_WAKE_POINT *const wake_point =
-        FX_Wake_GetPoint(m_CurrentStartWake, side);
-    if (wake_point->life == 0) {
-        return;
-    }
-
-    wake_point->life = 64;
-
-    for (int32_t i = 0; i < 2; i++) {
-        const BITE *const bite = &m_UPVBites[(side << 1) + 2 + i];
-        XYZ_32 pos = bite->pos;
-        Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
-        wake_point->pos[i].x = pos.x;
-        wake_point->pos[i].y = pos.y + 128;
-        wake_point->pos[i].z = pos.z;
-    }
-
-    if (side == 1) {
-        m_CurrentStartWake = (m_CurrentStartWake + 1) & 0x1F;
-    }
-}
-
 static void M_Control(int16_t item_num)
 {
     XYZ_32 pos;
@@ -889,25 +852,9 @@ static void M_Control(int16_t item_num)
         Output_AddDynamicLightRGB(pos, 8 * i + 16, (RGB_888) { c, c, c });
     }
 
-    const int32_t time4 = Output_GetTimeInGame() * 4;
-    if (!(time4 & 0xF) && p->vel) {
-        M_DoWake(item, 0);
-        M_DoWake(item, 1);
-    }
-
-    if (p->vel == 0) {
-        if (m_WakeShade) {
-            m_WakeShade--;
-        }
-    } else if (m_WakeShade < 16) {
-        m_WakeShade += 2;
-    }
-
     if (p->weapon_timer > 0) {
         p->weapon_timer--;
     }
-
-    FX_Wake_Control();
 }
 
 bool UPV_Control(void)
