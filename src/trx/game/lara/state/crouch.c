@@ -119,6 +119,7 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 1;
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->sprinting = false;
     lara->is_crouched = true;
 
     if (item->hit_points <= 0) {

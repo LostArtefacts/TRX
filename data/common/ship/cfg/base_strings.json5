@@ -1873,6 +1873,10 @@
             "title": "Timer counts in inventory",
             "description": "Makes the in-game timer work even while the game is showing the inventory.",
         },
+        "gameplay.enable_toggle_sprint": {
+            "title": "Toggle sprint",
+            "description": "Allows Lara to keep sprinting after pressing the sprint input once. Press sprint again to stop sprinting.",
+        },
         "gameplay.enable_total_stats": {
             "title": "Final statistics screen",
             "description": "Enables a total game statistics screen that plays after the credits.",

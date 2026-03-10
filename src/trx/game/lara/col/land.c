@@ -138,7 +138,7 @@ static bool M_CanControlDrop(
 
 bool Lara_Col_Fallen(ITEM *const item, const COLL_INFO *const coll)
 {
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (coll->side_mid.floor <= STEPUP_HEIGHT
         || lara->water_status == LWS_WADE) {
         return false;
@@ -155,6 +155,7 @@ bool Lara_Col_Fallen(ITEM *const item, const COLL_INFO *const coll)
     }
     item->gravity = true;
     item->fall_speed = 0;
+    lara->sprinting = false;
     return true;
 }
 
@@ -185,9 +186,11 @@ bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
     const int16_t angle_dif = angle - item->rot.y;
     Lara_Col_Shift(coll);
 
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (angle_dif >= -DEG_90 && angle_dif <= DEG_90) {
         if (item->current_anim_state == LS(LS_SLIDE)
             && m_OldSlideAngle == angle) {
+            lara->sprinting = false;
             return true;
         }
         item->goal_anim_state = LS(LS_SLIDE);
@@ -197,6 +200,7 @@ bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
     } else {
         if (item->current_anim_state == LS(LS_SLIDE_BACK)
             && m_OldSlideAngle == angle) {
+            lara->sprinting = false;
             return true;
         }
         item->goal_anim_state = LS(LS_SLIDE_BACK);
@@ -205,14 +209,16 @@ bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
         item->rot.y = angle + DEG_180;
     }
 
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->move_angle = angle;
+    lara->sprinting = false;
     m_OldSlideAngle = angle;
     return true;
 }
 
 static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+
     switch (coll->coll_type) {
     case COLL_FRONT:
     case COLL_TOP_FRONT:
@@ -221,6 +227,7 @@ static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
         item->current_anim_state = LS(LS_STOP);
         item->gravity = false;
         item->speed = 0;
+        lara->sprinting = false;
         return true;
 
     case COLL_LEFT:
@@ -256,6 +263,9 @@ bool Lara_Col_TestCeiling(ITEM *const item, const COLL_INFO *const coll)
 
 static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->sprinting = false;
+
     if (g_Config.gameplay.enable_smooth_wall_deflect) {
         switch (LS_U(coll->old_anim_state)) {
         case LS_STOP:
@@ -274,6 +284,7 @@ static void M_CollideStop(ITEM *const item, const COLL_INFO *const coll)
             }
             Lara_Animate(item);
             return;
+
         default:
             break;
         }
@@ -839,6 +850,7 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         item->rot.z = 0;
         if (M_TestWall(item, STEP_L, 0, -STEP_L * 5 / 2)) {
             Item_SwitchToAnim(item, LA(LA_WALL_SMASH_LEFT), 0);
+            lara->sprinting = false;
             return;
         }
 

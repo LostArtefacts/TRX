@@ -225,6 +225,7 @@ typedef struct {
         bool enable_crawl_jump;
         bool enable_sprint;
         bool enable_responsive_sprint;
+        bool enable_toggle_sprint;
         bool enable_slow_ledge_swing;
         int32_t idle_pose_timeout;
         bool enable_idle_pose_camera;

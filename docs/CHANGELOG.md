@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
+- added an option to let Lara keep sprinting without holding the button (Gameplay → Controls → Toggle sprint) (#5006)
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
 - added experimental support for config presets (Gameplay Options → Presets)
      Currently very basic presets available only – looking for help with improving them :)
@@ -122,7 +123,6 @@ Showcase: https://youtu.be/FgB9JgDM65E
 
 **TR3**:
 - added reverb support
-- added Patrol Dog control
 - added Kayak control
 - added Compsognathus control
 - added Mounted Gun control

@@ -976,6 +976,7 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
             Lara_Animate(item);
             item->rot.y = angle;
             lara->gun_status = LGS_HANDS_BUSY;
+            lara->sprinting = false;
             return true;
         }
         return false;
@@ -985,6 +986,7 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
 
     item->rot.y = angle;
     Lara_Col_Shift(coll);
+    lara->sprinting = false;
     return true;
 }
 

@@ -1830,6 +1830,10 @@
             "title": "Gleoc sa chlàr-seilbhe",
             "description": "Leigidh seo leis a' ghleoc a leantainn air adhart fiù 's nuair a tha an clàr-seilbhe fosgailte.",
         },
+        "gameplay.enable_toggle_sprint": {
+            "title": "\\{review}Cuir air adhart ruith gu luath",
+            "description": "\\{review}Leigidh seo le Lara ruith gu luath às dèidh a bhith a' brùthadh air a' phutan ruith gu luath aon turas. Brùth air a' phutan ruith gu luath a-rithist gus stad a chur air ruith gu luath.",
+        },
         "gameplay.enable_total_stats": {
             "title": "Sgrion staitistig deireannach",
             "description": "Cuiridh seo sgrion staitistig iomlan air adhart às dèidh nan creideasan.",
