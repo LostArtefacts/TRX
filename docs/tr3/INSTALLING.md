@@ -162,6 +162,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   └── title_us.webp
 │   ├── injections
 │   │   ├── aldwych_fd.bin
+│   │   ├── aldwych_pickup_meshes.bin
 │   │   ├── antarc_airlock.bin
 │   │   ├── antarc_sky.bin
 │   │   ├── area51_sky.bin
@@ -409,6 +410,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   └── title_us.webp
         │   ├── injections
         │   │   ├── aldwych_fd.bin
+        │   │   ├── aldwych_pickup_meshes.bin
         │   │   ├── antarc_airlock.bin
         │   │   ├── antarc_sky.bin
         │   │   ├── area51_sky.bin
