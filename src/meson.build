@@ -435,6 +435,7 @@ common_sources = [
   'trx/game/objects/creatures/skate_kid.c',
   'trx/game/objects/creatures/skidoo_driver.c',
   'trx/game/objects/creatures/spider.c',
+  'trx/game/objects/creatures/swat.c',
   'trx/game/objects/creatures/tiger.c',
   'trx/game/objects/creatures/tony_boss.c',
   'trx/game/objects/creatures/torso.c',
