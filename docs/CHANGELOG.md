@@ -22,6 +22,7 @@
 - added Crow control
 - added Electric Cleaner control
 - added Punk control, including `O_PUNK_2`, which was unused in OG
+- changed Ammo Counter to appear in red when the Menu Style is set to PS1
 - changed Punks to have friendliness assignable through Lua, so removing the hard-coded behaviour in the Lud's Gate level sequence
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - fixed Lara dying from touching Trains that haven't yet been activated

@@ -1,5 +1,6 @@
 #include <trx/game/ui/elements/ammo_label.h>
 
+#include <trx/config.h>
 #include <trx/core/strings.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
@@ -73,8 +74,10 @@ bool UI_AmmoLabel(void)
     } else {
         inner_text = String_FormatStatic("%6d", ammo);
     }
-    const char *const outer_text =
-        String_FormatStatic(GS(OVERLAY_ITEM_COUNT_FMT), inner_text);
+    const char *const outer_text = String_FormatStatic(
+        g_Config.ui.menu_style == UI_STYLE_PS1 ? GS(OVERLAY_ITEM_COUNT_FMT_PS1)
+                                               : GS(OVERLAY_ITEM_COUNT_FMT_PC),
+        inner_text);
 
     UI_LabelEx(outer_text, (UI_LABEL_SETTINGS) { .scale = 1.5f });
     return true;
