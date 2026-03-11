@@ -634,6 +634,15 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
             Gun_Control();
             return;
         }
+
+        if (!Lara_Vehicle_IsMounted()
+            && (lara_info->water_status == LWS_UNDERWATER
+                || lara_info->water_status == LWS_SURFACE)) {
+            // When dismounting an underwater vehicle, do not continue
+            // with above-surface control, and instead run relevant
+            // underwater or surface routines
+            return;
+        }
     }
 
     lara_info->is_crouched = false;
