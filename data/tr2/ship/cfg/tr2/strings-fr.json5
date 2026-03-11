@@ -1,6 +1,36 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "\\{review}Corrige l'attaque de patte d'ours dans The Golden Mask pour qu'elle ne manque pas Lara.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "\\{review}Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques du 40 brasses, Épave du Maria Doria et Le Pont.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "\\{review}Grand medipack",
+        },
+        "small_medipack": {
+            "name": "\\{review}Petit medipack",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "\\{review}Scène cinématique 1",
+        },
+        {
+            "title": "\\{review}Scène cinématique 2",
+        },
+        {
+            "title": "\\{review}Scène cinématique 3",
+        },
+        {
+            "title": "\\{review}Scène cinématique 4",
+        }
+    ],
     "levels": [
         {
             "title": "\\{review}Demeure de Lara",
@@ -305,35 +335,5 @@
                 }
             }
         }
-    ],
-    "cutscenes": [
-        {
-            "title": "\\{review}Scène cinématique 1",
-        },
-        {
-            "title": "\\{review}Scène cinématique 2",
-        },
-        {
-            "title": "\\{review}Scène cinématique 3",
-        },
-        {
-            "title": "\\{review}Scène cinématique 4",
-        }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "\\{review}Petit medipack",
-        },
-        "large_medipack": {
-            "name": "\\{review}Grand medipack",
-        }
-    },
-    "settings": {
-        "gameplay.fix_bear_ai": {
-            "description": "\\{review}Corrige l'attaque de patte d'ours dans The Golden Mask pour qu'elle ne manque pas Lara.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "\\{review}Corrige le fait que les sprites des végétations ne s'animent pas dans les zones aquatiques du 40 brasses, Épave du Maria Doria et Le Pont.",
-        }
-    }
+    ]
 }

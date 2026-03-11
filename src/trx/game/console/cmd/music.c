@@ -12,11 +12,11 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     } else if (String_ParseInteger(ctx->args, &track_to_play)) {
         if (track_to_play == 0 || track_to_play == -1) {
             Music_Stop();
-            Console_Log(GS(CMD_PLAY_MUSIC_STOPPED));
+            Console_Log(GS("console/cmd/play_music/stopped"));
         } else if (Music_Play_Direct(track_to_play, MPM_ONCE)) {
-            Console_Log(GS(CMD_PLAY_MUSIC_TRACK), track_to_play);
+            Console_Log(GS("console/cmd/play_music/track"), track_to_play);
         } else {
-            Console_LogError(GS(CMD_INVALID_MUSIC_TRACK));
+            Console_LogError(GS("console/cmd/play_music/invalid_track"));
         }
         return CR_SUCCESS;
     } else {
@@ -24,4 +24,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 }
 
-REGISTER_CONSOLE_COMMAND("music", M_Entrypoint, GS_ID(CONSOLE_HELP_MUSIC))
+REGISTER_CONSOLE_COMMAND("music", M_Entrypoint, GS_ID("console/cmd/music/help"))

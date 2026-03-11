@@ -1,6 +1,55 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "misc": {
+            "empty_slot_fmt": "- EMPTY SLOT %d -",
+        },
+        "stats": {
+            "ammo": "AMMO HITS/USED",
+            "ammo_hits": "HITS",
+            "ammo_used": "AMMO USED",
+            "deaths": "DEATHS",
+            "distance_travelled": "DISTANCE TRAVELED",
+            "kills": "KILLS",
+            "level": "LEVEL",
+            "medipacks_used": "HEALTH PACKS USED",
+            "none": "NONE",
+            "pickups": "PICKUPS",
+            "secrets": "SECRETS",
+            "time_taken": "TIME TAKEN",
+        }
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Enables dynamic lighting to be generated for gunshots and explosions, similar to TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Large Medi Pack",
+        },
+        "small_medipack": {
+            "name": "Small Medi Pack",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Cutscene 1",
+        },
+        {
+            "title": "Cutscene 2",
+        },
+        {
+            "title": "Cutscene 3",
+        },
+        {
+            "title": "Cutscene 4",
+        }
+    ],
     "levels": [
         {
             "title": "Lara's Home",
@@ -169,20 +218,6 @@
             "title": "Current Position",
         }
     ],
-    "cutscenes": [
-        {
-            "title": "Cutscene 1",
-        },
-        {
-            "title": "Cutscene 2",
-        },
-        {
-            "title": "Cutscene 3",
-        },
-        {
-            "title": "Cutscene 4",
-        }
-    ],
     "demos": [
         {
             "title": "City of Vilcabamba",
@@ -203,36 +238,5 @@
                 }
             }
         }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Small Medi Pack",
-        },
-        "large_medipack": {
-            "name": "Large Medi Pack",
-        }
-    },
-    "game_strings": {
-        "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT %d -",
-        "STATS_AMMO": "AMMO HITS/USED",
-        "STATS_AMMO_HITS": "HITS",
-        "STATS_AMMO_USED": "AMMO USED",
-        "STATS_DEATHS": "DEATHS",
-        "STATS_DISTANCE_TRAVELLED": "DISTANCE TRAVELED",
-        "STATS_KILLS": "KILLS",
-        "STATS_LEVEL": "LEVEL",
-        "STATS_MEDIPACKS_USED": "HEALTH PACKS USED",
-        "STATS_NONE": "NONE",
-        "STATS_PICKUPS": "PICKUPS",
-        "STATS_SECRETS": "SECRETS",
-        "STATS_TIME_TAKEN": "TIME TAKEN",
-    },
-    "settings": {
-        "visuals.enable_gun_lighting": {
-            "description": "Enables dynamic lighting to be generated for gunshots and explosions, similar to TR2+.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "Fixes original issues in The Cistern and Tomb of Tihocan where plant sprites in water areas do not animate.",
-        }
-    }
+    ]
 }

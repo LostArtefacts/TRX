@@ -2,7 +2,9 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "extends": "en",
-    "game_strings": {
-        "STATS_DISTANCE_TRAVELLED": "DISTANCE TRAVELLED",
+    "general": {
+        "stats": {
+            "distance_travelled": "DISTANCE TRAVELLED",
+        }
     }
 }

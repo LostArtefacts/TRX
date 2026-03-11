@@ -114,7 +114,7 @@ static void M_Header(void *const user_data)
 {
     UI_CONFIG_PRESETS_STATE *const s = user_data;
     if (s->phase == M_PHASE_CONFIRM) {
-        UI_Label(GS(CONFIG_PRESETS_CONFIRM_DESCRIPTION));
+        UI_Label(GS("general/config_presets/confirm_description"));
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
     }
 }
@@ -124,7 +124,7 @@ static void M_Footer(void *const user_data)
     UI_CONFIG_PRESETS_STATE *const s = user_data;
     if (s->phase == M_PHASE_CONFIRM) {
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
-        UI_Label(GS(CONFIG_PRESETS_CONFIRM_RESTART_NOTE));
+        UI_Label(GS("general/config_presets/confirm_restart_note"));
     }
 }
 
@@ -282,7 +282,7 @@ void UI_ConfigPresets(UI_CONFIG_PRESETS_STATE *const s)
 
     if (count <= 0) {
         UI_BeginAnchor(0.5f, 0.5f);
-        UI_Label(GS(CONFIG_PRESETS_EMPTY));
+        UI_Label(GS("general/config_presets/empty"));
         UI_EndAnchor();
     }
 
@@ -299,8 +299,8 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
     const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
     const char *const preset_name =
         preset != nullptr ? GameString_Get(preset->name_gs) : "";
-    const char *const title =
-        String_FormatStatic(GS(CONFIG_PRESETS_TITLE_FMT), preset_name);
+    const char *const title = String_FormatStatic(
+        GS("general/config_presets/title_fmt"), preset_name);
 
     UI_BeginModal(0.5f, 0.5f);
     UI_BeginPad(6.0f, 6.0f);
@@ -318,11 +318,11 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
 
     if (s->phase == M_PHASE_APPLIED) {
         UI_BeginPad(6.0f, 6.0f);
-        UI_LabelFmt("%s", GS(CONFIG_PRESETS_APPLIED));
+        UI_LabelFmt("%s", GS("general/config_presets/applied"));
         UI_EndPad();
     } else if (s->phase == M_PHASE_NO_CHANGES) {
         UI_BeginPad(6.0f, 6.0f);
-        UI_LabelFmt("%s", GS(CONFIG_PRESETS_NO_CHANGES));
+        UI_LabelFmt("%s", GS("general/config_presets/no_changes"));
         UI_EndPad();
     } else if (s->phase == M_PHASE_CONFIRM) {
         UI_BeginResize(M_CONFIRM_DIALOG_W, -1.0f);

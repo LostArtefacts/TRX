@@ -55,15 +55,16 @@ static const char *M_FormatPresent(void)
 static void M_LogInvalid(const int32_t idx)
 {
     Console_LogError(
-        GS(CMD_INVALID_SECRET), String_FormatStatic(M_FMT_NUM, idx + 1),
-        M_FormatAvailable());
+        GS("console/cmd/give/invalid_secret"),
+        String_FormatStatic(M_FMT_NUM, idx + 1), M_FormatAvailable());
 }
 
 static COMMAND_RESULT M_TakeSecret(const int32_t idx)
 {
     if (Stats_RemoveSecret(idx)) {
         Console_Log(
-            GS(CMD_GIVE_SECRET_TAKEN), String_FormatStatic(M_FMT_NUM, idx + 1));
+            GS("console/cmd/give/secret_taken"),
+            String_FormatStatic(M_FMT_NUM, idx + 1));
         return CR_SUCCESS;
     }
     M_LogInvalid(idx);
@@ -74,7 +75,8 @@ static COMMAND_RESULT M_GiveSecret(const int32_t idx)
 {
     if (Stats_AddSecret(idx)) {
         Console_Log(
-            GS(CMD_GIVE_SECRET_GIVEN), String_FormatStatic(M_FMT_NUM, idx + 1));
+            GS("console/cmd/give/secret_given"),
+            String_FormatStatic(M_FMT_NUM, idx + 1));
         return CR_SUCCESS;
     }
     M_LogInvalid(idx);
@@ -91,8 +93,8 @@ static COMMAND_RESULT M_ListSecrets(void)
 
     const char *const buf = M_FormatPresent();
     Console_Log(
-        strcmp(buf, "") == 0 ? GS(CMD_GIVE_SECRET_NONE)
-                             : GS(CMD_GIVE_SECRET_LIST),
+        strcmp(buf, "") == 0 ? GS("console/cmd/give/secret_none")
+                             : GS("console/cmd/give/secret_list"),
         info->stats.secret_count, max_stats->max_secret_count, buf);
     return CR_SUCCESS;
 }
@@ -168,4 +170,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 }
 
 REGISTER_CONSOLE_COMMAND(
-    "secret", M_Entrypoint, GS_ID(CONSOLE_HELP_GIVE_SECRET))
+    "secret", M_Entrypoint, GS_ID("console/cmd/give_secret/help"))

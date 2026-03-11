@@ -102,7 +102,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
 
     GAME_VECTOR target_pos;
     if (!M_FindValidTargetPos(lara_item, &target_pos)) {
-        Console_LogError(GS(CMD_ITEM_SPAWN_FAILED));
+        Console_LogError(GS("console/cmd/spawn/fail"));
         return CR_FAILURE;
     }
 
@@ -116,7 +116,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     }
 
     if (match_count <= 0) {
-        Console_LogError(GS(OSD_INVALID_ITEM), args);
+        Console_LogError(GS("general/osd/invalid_item"), args);
         Memory_FreePointer(&matches);
         return CR_FAILURE;
     }
@@ -138,7 +138,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
         return CR_FAILURE;
     }
 
-    Console_Log(GS(CMD_ITEM_SPAWNED));
+    Console_Log(GS("console/cmd/spawn/success"));
     return CR_SUCCESS;
 }
 

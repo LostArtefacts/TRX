@@ -32,10 +32,10 @@ static void M_Title(const PHOTO_MODE current_mode)
     });
     switch (current_mode) {
     case PHOTO_MODE_CAMERA:
-        UI_Label(GS(PHOTO_MODE_TITLE_CAMERA_POS));
+        UI_Label(GS("general/photo_mode/title_camera_pos"));
         break;
     case PHOTO_MODE_LARA_POS:
-        UI_Label(GS(PHOTO_MODE_TITLE_LARA_POS));
+        UI_Label(GS("general/photo_mode/title_lara_pos"));
         break;
     }
     UI_Label("\\{input step_left}\\{input step_right}");
@@ -77,28 +77,28 @@ static void M_Actions(const PHOTO_MODE current_mode)
 {
     switch (current_mode) {
     case PHOTO_MODE_CAMERA:
-        UI_Label(GS(PHOTO_MODE_CAMERA_MOVE_PROMPT));
-        UI_Label(GS(PHOTO_MODE_CAMERA_ROTATE_PROMPT));
-        UI_Label(GS(PHOTO_MODE_CAMERA_ROLL_PROMPT));
-        UI_Label(GS(PHOTO_MODE_CAMERA_ROTATE_90_PROMPT));
-        UI_Label(GS(PHOTO_MODE_CAMERA_RESET_PROMPT));
+        UI_Label(GS("general/photo_mode/camera_move_prompt"));
+        UI_Label(GS("general/photo_mode/camera_rotate_prompt"));
+        UI_Label(GS("general/photo_mode/camera_roll_prompt"));
+        UI_Label(GS("general/photo_mode/camera_rotate_90_prompt"));
+        UI_Label(GS("general/photo_mode/camera_reset_prompt"));
         break;
     case PHOTO_MODE_LARA_POS:
-        UI_Label(GS(PHOTO_MODE_LARA_MOVE_PROMPT));
-        UI_Label(GS(PHOTO_MODE_LARA_ROTATE_PROMPT));
-        UI_Label(GS(PHOTO_MODE_LARA_ROLL_PROMPT));
-        UI_Label(GS(PHOTO_MODE_LARA_ROTATE_90_PROMPT));
-        UI_Label(GS(PHOTO_MODE_LARA_RESET_PROMPT));
+        UI_Label(GS("general/photo_mode/lara_move_prompt"));
+        UI_Label(GS("general/photo_mode/lara_rotate_prompt"));
+        UI_Label(GS("general/photo_mode/lara_roll_prompt"));
+        UI_Label(GS("general/photo_mode/lara_rotate_90_prompt"));
+        UI_Label(GS("general/photo_mode/lara_reset_prompt"));
         break;
     }
-    UI_Label(GS(PHOTO_MODE_FOV_PROMPT));
+    UI_Label(GS("general/photo_mode/fov_prompt"));
     if (Lara_Pose_IsAvailable()) {
-        UI_Label(GS(PHOTO_MODE_CHANGE_LARA_POSE));
+        UI_Label(GS("general/photo_mode/change_lara_pose"));
     }
-    UI_Label(GS(PHOTO_MODE_ADVANCE_FRAME));
-    UI_Label(GS(PHOTO_MODE_TOGGLE_HELP));
-    UI_Label(GS(PHOTO_MODE_SNAP_PROMPT));
-    UI_Label(GS(MISC_EXIT));
+    UI_Label(GS("general/photo_mode/advance_frame"));
+    UI_Label(GS("general/photo_mode/toggle_help"));
+    UI_Label(GS("general/photo_mode/snap_prompt"));
+    UI_Label(GS("general/misc/exit"));
 }
 
 void UI_PhotoMode(const PHOTO_MODE current_mode)

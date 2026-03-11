@@ -1,6 +1,55 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "misc": {
+            "empty_slot_fmt": "- ПУСТОЙ СЛОТ %d -",
+        },
+        "stats": {
+            "ammo": "Попадания/выстрелы",
+            "ammo_hits": "\\{review}ПОПАДАНИЯ",
+            "ammo_used": "\\{review}ИСПОЛЬЗОВАННЫЕ ПАТРОНЫ",
+            "deaths": "Смертей",
+            "distance_travelled": "Пройденное расстояние",
+            "kills": "Убито",
+            "level": "Уровень",
+            "medipacks_used": "Использовано аптечек",
+            "none": "\\{review}НЕТ",
+            "pickups": "Предметы",
+            "secrets": "Секреты",
+            "time_taken": "Время",
+        }
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Позволяет генерировать динамическое освещение для выстрелов и взрывов, аналогично TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Исправляет изначальные проблемы в Цистерне и Гробнице Тихокана, из-за которых спрайты растений в водных зонах не анимировались.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Большая аптечка",
+        },
+        "small_medipack": {
+            "name": "Маленькая аптечка",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Cutscene 1",
+        },
+        {
+            "title": "Cutscene 2",
+        },
+        {
+            "title": "Cutscene 3",
+        },
+        {
+            "title": "Cutscene 4",
+        }
+    ],
     "levels": [
         {
             "title": "Дом Лары",
@@ -169,20 +218,6 @@
             "title": "Current Position",
         }
     ],
-    "cutscenes": [
-        {
-            "title": "Cutscene 1",
-        },
-        {
-            "title": "Cutscene 2",
-        },
-        {
-            "title": "Cutscene 3",
-        },
-        {
-            "title": "Cutscene 4",
-        }
-    ],
     "demos": [
         {
             "title": "Город Вилкабамба",
@@ -203,36 +238,5 @@
                 }
             }
         }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Маленькая аптечка",
-        },
-        "large_medipack": {
-            "name": "Большая аптечка",
-        }
-    },
-    "game_strings": {
-        "MISC_EMPTY_SLOT_FMT": "- ПУСТОЙ СЛОТ %d -",
-        "STATS_AMMO": "Попадания/выстрелы",
-        "STATS_AMMO_HITS": "\\{review}ПОПАДАНИЯ",
-        "STATS_AMMO_USED": "\\{review}ИСПОЛЬЗОВАННЫЕ ПАТРОНЫ",
-        "STATS_DEATHS": "Смертей",
-        "STATS_DISTANCE_TRAVELLED": "Пройденное расстояние",
-        "STATS_KILLS": "Убито",
-        "STATS_LEVEL": "Уровень",
-        "STATS_MEDIPACKS_USED": "Использовано аптечек",
-        "STATS_NONE": "\\{review}НЕТ",
-        "STATS_PICKUPS": "Предметы",
-        "STATS_SECRETS": "Секреты",
-        "STATS_TIME_TAKEN": "Время",
-    },
-    "settings": {
-        "visuals.enable_gun_lighting": {
-            "description": "Позволяет генерировать динамическое освещение для выстрелов и взрывов, аналогично TR2+.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "Исправляет изначальные проблемы в Цистерне и Гробнице Тихокана, из-за которых спрайты растений в водных зонах не анимировались.",
-        }
-    }
+    ]
 }

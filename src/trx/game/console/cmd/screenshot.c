@@ -18,4 +18,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
 }
 
 REGISTER_CONSOLE_COMMAND(
-    "screenshot", M_Entrypoint, GS_ID(CONSOLE_HELP_SCREENSHOT))
+    "screenshot", M_Entrypoint, GS_ID("console/cmd/screenshot/help"))

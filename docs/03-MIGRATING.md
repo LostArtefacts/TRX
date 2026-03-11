@@ -6,6 +6,12 @@ title: Migrating levels
 
 ## TRX
 
+### Version 1.3 to 1.4
+
+1. **Update strings file structure**
+   The flat string section has been replaced with nested root sections.
+   Please see shipped string files or documentation for details.
+
 ### Version 1.2 to 1.3
 
 1. **TR1 missile catalog names were renamed**:

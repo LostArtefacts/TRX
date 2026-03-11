@@ -214,7 +214,7 @@ static void M_FormatIconSecrets(
     *ptr++ = '\0';
 
     if (num_secrets == 0) {
-        strcpy(out, GS(STATS_NONE));
+        strcpy(out, GS("general/stats/none"));
     }
 }
 
@@ -257,22 +257,24 @@ static void M_RowFromRole(
 {
     const char *const num_fmt =
         g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_MINIMAL
-        ? GS(STATS_BASIC_FMT)
-        : GS(STATS_DETAIL_FMT);
+        ? GS("general/stats/basic_fmt")
+        : GS("general/stats/detail_fmt");
 
     switch (role) {
     case M_ROW_LEVEL_COUNTER:
         M_Row(
-            s, GS(STATS_LEVEL),
+            s, GS("general/stats/level"),
             String_FormatStatic(
-                GS(STATS_DETAIL_FMT),
+                GS("general/stats/detail_fmt"),
                 GF_GetLevelOrdinalNumber(
                     GFLT_MAIN, GF_GetLevel(GFLT_MAIN, s->args.level_num)),
                 GF_GetLevelCount(GFLT_MAIN)));
         break;
 
     case M_ROW_TIMER:
-        M_Row(s, GS(STATS_TIME_TAKEN), M_FormatTime(s, s->stats->timer));
+        M_Row(
+            s, GS("general/stats/time_taken"),
+            M_FormatTime(s, s->stats->timer));
         break;
 
     case M_ROW_ICON_SECRETS: {
@@ -282,21 +284,21 @@ static void M_RowFromRole(
         }
         char buf[256];
         M_FormatIconSecrets(buf, (LEVEL_STATS *)s->stats);
-        M_Row(s, GS(STATS_SECRETS), buf);
+        M_Row(s, GS("general/stats/secrets"), buf);
         break;
     }
 
     case M_ROW_NUM_SECRETS:
         M_Row(
-            s, GS(STATS_SECRETS),
+            s, GS("general/stats/secrets"),
             String_FormatStatic(
-                GS(STATS_DETAIL_FMT), s->stats->secret_count,
+                GS("general/stats/detail_fmt"), s->stats->secret_count,
                 s->max_stats->max_secret_count));
         break;
 
     case M_ROW_PICKUPS:
         M_Row(
-            s, GS(STATS_PICKUPS),
+            s, GS("general/stats/pickups"),
             String_FormatStatic(
                 num_fmt, s->stats->pickup_count,
                 s->max_stats->max_pickup_count));
@@ -304,50 +306,52 @@ static void M_RowFromRole(
 
     case M_ROW_KILLS:
         M_Row(
-            s, GS(STATS_KILLS),
+            s, GS("general/stats/kills"),
             String_FormatStatic(
                 num_fmt, s->stats->kill_count, s->max_stats->max_kill_count));
         break;
 
     case M_ROW_DEATHS:
         M_Row(
-            s, GS(STATS_DEATHS),
-            String_FormatStatic(GS(STATS_BASIC_FMT), s->stats->death_count));
+            s, GS("general/stats/deaths"),
+            String_FormatStatic(
+                GS("general/stats/basic_fmt"), s->stats->death_count));
         break;
 
     case M_ROW_AMMO:
         M_Row(
-            s, GS(STATS_AMMO),
+            s, GS("general/stats/ammo"),
             String_FormatStatic(
-                GS(PAGINATION_NAV), s->stats->ammo_hits, s->stats->ammo_used));
+                GS("general/misc/pagination_nav"), s->stats->ammo_hits,
+                s->stats->ammo_used));
         break;
 
     case M_ROW_AMMO_USED:
         M_Row(
-            s, GS(STATS_AMMO_USED),
+            s, GS("general/stats/ammo_used"),
             String_FormatStatic("%d", s->stats->ammo_used));
         break;
 
     case M_ROW_AMMO_HITS:
         M_Row(
-            s, GS(STATS_AMMO_HITS),
+            s, GS("general/stats/ammo_hits"),
             String_FormatStatic("%d", s->stats->ammo_hits));
         break;
 
     case M_ROW_MEDIPACKS_USED:
         M_Row(
-            s, GS(STATS_MEDIPACKS_USED),
+            s, GS("general/stats/medipacks_used"),
             String_FormatStatic("%.1f", s->stats->medipacks_used));
         break;
 
     case M_ROW_DISTANCE_TRAVELLED:
         M_Row(
-            s, GS(STATS_DISTANCE_TRAVELLED),
+            s, GS("general/stats/distance_travelled"),
             M_FormatDistance(s->stats->distance_travelled));
         break;
 
     case M_ROW_ASSAULT_COURSE_TITLE:
-        M_RowCentered(s, GS(STATS_GYM_ASSAULT_COURSE));
+        M_RowCentered(s, GS("general/stats/gym_assault_course"));
         break;
 
     case M_ROW_ASSAULT_COURSE_ROW:
@@ -358,11 +362,11 @@ static void M_RowFromRole(
         const GYM_TRACK_ENTRY *const entry =
             &s->assault_stats[track_type]->entries[param];
         const char *const attempt_str = String_FormatStatic(
-            "%2d: %s %d", param + 1, GS(STATS_ASSAULT_FINISH),
+            "%2d: %s %d", param + 1, GS("general/stats/assault_finish"),
             entry->attempt_num);
         const char *const time_str = String_FormatStatic(
-            param == 0 ? GS(STATS_ASSAULT_BEST_TIME_FMT)
-                       : GS(STATS_ASSAULT_OTHER_TIMES_FMT),
+            param == 0 ? GS("general/stats/assault_best_time_fmt")
+                       : GS("general/stats/assault_other_times_fmt"),
             M_FormatRecordTime(entry->time));
         if (g_TRVersion == 3) {
             M_RowCentered(s, time_str);
@@ -373,11 +377,11 @@ static void M_RowFromRole(
     }
 
     case M_ROW_ASSAULT_NO_TIMES_SET:
-        M_RowCentered(s, GS(STATS_ASSAULT_NO_TIMES_SET));
+        M_RowCentered(s, GS("general/stats/assault_no_times_set"));
         break;
 
     case M_ROW_RACETRACK_TITLE:
-        M_RowCentered(s, GS(STATS_GYM_RACETRACK_COURSE));
+        M_RowCentered(s, GS("general/stats/gym_racetrack_course"));
         break;
 
     case M_ROW_SPACER:
@@ -471,12 +475,12 @@ static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
         const GF_LEVEL_TYPE level_type =
             GF_GetLevel(GFLT_MAIN, s->args.level_num)->type;
         const char *const title = level_type == GFL_BONUS
-            ? GS(STATS_BONUS_STATISTICS)
-            : GS(STATS_FINAL_STATISTICS);
+            ? GS("general/stats/bonus_statistics")
+            : GS("general/stats/final_statistics");
         return title;
     }
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
-        return GS(STATS_ASSAULT_TITLE);
+        return GS("general/stats/assault_title");
     }
     return nullptr;
 }

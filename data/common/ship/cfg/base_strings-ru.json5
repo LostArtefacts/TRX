@@ -2,1530 +2,669 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "language_name": "Русский",
-    "game_strings": {
-        "ACTION_EXAMINE_ITEM": "Осмотреть",
-        "ACTION_HIDE_DIALOG": "Скрыть диалог",
-        "ACTION_RESET_DEFAULTS": "Сброс",
-        "ACTION_ROTATE": "Повернуть",
-        "ACTION_UNBIND": "Очистить",
-        "ACTION_USE_ITEM": "Использовать",
-        "CMD_GIVE_SECRET_GIVEN": "Добавлен секрет %s",
-        "CMD_GIVE_SECRET_LIST": "Собрано секретов: %d из %d (%s)",
-        "CMD_GIVE_SECRET_NONE": "Собрано секретов: %d из %d",
-        "CMD_GIVE_SECRET_TAKEN": "Удалён секрет %s",
-        "CMD_IMMUNE_SWITCHED_OFF": "Лара теперь уязвима",
-        "CMD_IMMUNE_SWITCHED_ON": "Теперь Лара неуязвима для повреждений",
-        "CMD_INF_SPRINT_SWITCHED_OFF": "\\{review}Лара больше не может бегать вечно",
-        "CMD_INF_SPRINT_SWITCHED_ON": "\\{review}Лара теперь может бегать вечно",
-        "CMD_INVALID_MUSIC_TRACK": "Невалидная музыка",
-        "CMD_INVALID_SECRET": "Невалидный секрет: %s (валидные секреты: %s)",
-        "CMD_INVALID_WEATHER": "\\{review}Неверная погода: %s (допустимо: %s)",
-        "CMD_ITEM_SPAWNED": "\\{review}Запрошенный объект появился рядом с Ларой",
-        "CMD_ITEM_SPAWN_FAILED": "\\{review}Не удалось создать запрошенный объект",
-        "CMD_LUA_RUNTIME_ERROR": "Ошибка выполнения Lua: %s",
-        "CMD_LUA_SYNTAX_ERROR": "Ошибка синтаксиса Lua: %s",
-        "CMD_PLAY_MUSIC_STOPPED": "\\{review}Музыка остановлена",
-        "CMD_PLAY_MUSIC_TRACK": "Воспроизведение музыки %d",
-        "CMD_TELEPORT_ITEM": "Телепортировано к объекту: %d",
-        "CMD_TELEPORT_ITEM_FAIL": "Невозможно телепортировать к объекту: %d",
-        "CMD_TELEPORT_OBJECT": "Телепортировано к объекту: %s",
-        "CMD_TELEPORT_OBJECT_FAIL": "Невозможно телепортировать к объекту: %s",
-        "CMD_TELEPORT_POS": "Телепортировано в позицию: %.3f %.3f %.3f",
-        "CMD_TELEPORT_POS_FAIL": "Невозможно телепортировать в позицию: %.3f %.3f %.3f",
-        "CMD_TELEPORT_ROOM": "Телепортировано в комнату: %d",
-        "CMD_TELEPORT_ROOM_FAIL": "Невозможно телепортировать в комнату: %d",
-        "CMD_TRIGGER_DONE": "\\{review}Активированный предмет(ы): %s",
-        "CMD_TRIGGER_INVALID_ITEM": "\\{review}Недопустимый предмет: %s",
-        "CMD_TRIGGER_NOT_FOUND": "\\{review}Совпадающие предметы не найдены для: %s",
-        "CMD_TRIGGER_NO_MATCH": "\\{review}Неизвестная цель: %s",
-        "CMD_UNTRIGGER_DONE": "\\{review}Неактивированный предмет(ы): %s",
-        "CMD_WEATHER_SET": "\\{review}Погода установлена на %s",
-        "CMD_WINSTON_DEAD": "\\{review}Ваш дворецкий мёртв. Ты монстр!",
-        "CMD_WINSTON_SPAWNED": "\\{review}Вызван Уинстон рядом с Ларой",
-        "CMD_WINSTON_SPAWN_FAILED": "\\{review}Не удалось вызвать Уинстона",
-        "CMD_WINSTON_TELEPORTED": "\\{review}Вызван Уинстон рядом с Ларой",
-        "COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER": "\\{review}Настройки отключены для этого набора уровней.",
-        "COMMON_SETTINGS_CHROMA": "Chroma",
-        "COMMON_SETTINGS_EDIT_VALUE": "Изменить значение",
-        "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "Этот параметр принудительно установлен редактором уровней и не может быть изменён.",
-        "COMMON_SETTINGS_HUE": "Оттенок",
-        "COMMON_SETTINGS_LIGHTNESS": "Светлота",
-        "COMMON_SETTINGS_RESTORE_DEFAULT": "По умолчанию",
-        "COMMON_SETTINGS_TOGGLE_HELP": "Показать помощь",
-        "CONFIG_PRESETS_APPLIED": "\\{review}Предустановка применена.",
-        "CONFIG_PRESETS_CONFIRM_DESCRIPTION": "\\{review}Следующие настройки будут изменены:",
-        "CONFIG_PRESETS_CONFIRM_RESTART_NOTE": "\\{review}Примечание: для вступления изменений в силу может потребоваться перезапуск игры.",
-        "CONFIG_PRESETS_EMPTY": "\\{review}Пресеты не найдены.",
-        "CONFIG_PRESETS_NO_CHANGES": "\\{review}Нет изменений для применения.",
-        "CONFIG_PRESETS_TITLE_FMT": "\\{review}Применить предустановку %s?",
-        "CONFIG_PRESET_TR1_PC": "\\{review}TR1 PC",
-        "CONFIG_PRESET_TR1_PS1": "\\{review}TR1 PS1",
-        "CONFIG_PRESET_TR2_PC": "\\{review}TR2 PC",
-        "CONFIG_PRESET_TR2_PS1": "\\{review}TR2 PS1",
-        "CONFIG_PRESET_TR3_PC": "\\{review}TR3 PC",
-        "CONFIG_PRESET_TR3_PS1": "\\{review}TR3 PS1",
-        "CONSOLE_CMD_HELP_LIST": "Доступные команды:",
-        "CONSOLE_HELP_BRAID": "Переключает косу Лары.",
-        "CONSOLE_HELP_CHEATS": "Вкл/выкл внутриигровые читы.",
-        "CONSOLE_HELP_CLEAR": "\\{review}Очищает видимые журналы консоли.",
-        "CONSOLE_HELP_DEBUG": "Переключает визуальную отладочную информацию.",
-        "CONSOLE_HELP_DRAIN": "Осушает текущую комнату, удаляет воду.",
-        "CONSOLE_HELP_END_LEVEL": "Завершает текущий уровень.",
-        "CONSOLE_HELP_EXIT": "Выходит из игры.",
-        "CONSOLE_HELP_FLIPMAP": "Переключает переворачивание карты.",
-        "CONSOLE_HELP_FLOOD": "Затапливает текущую комнату водой.",
-        "CONSOLE_HELP_FLY": "Переключает режим полета.",
-        "CONSOLE_HELP_FPS": "Изменяет значение FPS.",
-        "CONSOLE_HELP_GIVE": "Добавляет указанный предмет в инвентарь Лары.",
-        "CONSOLE_HELP_GIVE_SECRET": "Перечисляет секреты Лары, или добавляет/удаляет секрет по номеру.",
-        "CONSOLE_HELP_HEAL": "Восстанавливает здоровье Лары.",
-        "CONSOLE_HELP_HELP": "Показывает справку по всем командам или подробную справку по одной.",
-        "CONSOLE_HELP_HP": "Устанавливает здоровье Лары на указанное значение.",
-        "CONSOLE_HELP_IMMUNE": "Переключает неуязвимость (в некоторых ситуациях Лара всё ещё может умереть).",
-        "CONSOLE_HELP_INF_SPRINT": "\\{review}Переключает бесконечный бег.",
-        "CONSOLE_HELP_KILL": "Убивает ближайших врагов.",
-        "CONSOLE_HELP_LIGHTING": "Переключает освещение.",
-        "CONSOLE_HELP_LOAD": "\\{review}Загружает игру из указанного слота сохранения или из быстрого сохранения.",
-        "CONSOLE_HELP_LUA": "Выполняет заданную строку кода Lua.",
-        "CONSOLE_HELP_MOD": "\\{review}Переключается на указанный мод и перезапускает игру.",
-        "CONSOLE_HELP_MUSIC": "Воспроизводит музыкальную дорожку с указанным идентификатором.",
-        "CONSOLE_HELP_PLAY_CUTSCENE": "Воспроизводит кат-сцену с указанным номером.",
-        "CONSOLE_HELP_PLAY_DEMO": "Воспроизводит демо с указанным номером.",
-        "CONSOLE_HELP_PLAY_GYM": "Воспроизводит уровень Тренажёрный зал",
-        "CONSOLE_HELP_PLAY_LEVEL": "Воспроизводит уровень с указанным именем или номером",
-        "CONSOLE_HELP_POS": "Показывает позицию Лары",
-        "CONSOLE_HELP_SAVE": "\\{review}Сохраняет игру в указанный слот сохранения или в следующий слот быстрого сохранения.",
-        "CONSOLE_HELP_SCREENSHOT": "\\{review}Сохраняет скриншот на диск с возможным указанием пути.",
-        "CONSOLE_HELP_SET": "Отображает или обновляет указанный параметр конфигурации",
-        "CONSOLE_HELP_SFX": "Воспроизводит звуковой эффект с указанным идентификатором",
-        "CONSOLE_HELP_SPEED": "Изменяет скорость игры",
-        "CONSOLE_HELP_STRINGS": "Перезагружает текущие языковые файлы с диска.",
-        "CONSOLE_HELP_TEXTURES": "\\{review}Переключает отображение текстур.",
-        "CONSOLE_HELP_TITLE": "Возвращает на титульный экран",
-        "CONSOLE_HELP_TP": "Телепортирует Лару в указанную позицию или номер комнаты.",
-        "CONSOLE_HELP_TRIGGER": "\\{review}Активирует или деактивирует предмет по идентификатору, имени предмета или имени объекта.",
-        "CONSOLE_HELP_VSYNC": "Переключает вертикальную синхронизацию.",
-        "CONSOLE_HELP_WEATHER": "\\{review}Изменяет текущий тип погоды.",
-        "CONSOLE_HELP_WIREFRAME": "Переключает рендеринг каркаса.",
-        "CONTROLS_BACKEND_CONTROLLER": "Контроллер",
-        "CONTROLS_BACKEND_KEYBOARD": "Клавиатура",
-        "CONTROLS_CUSTOMIZE": "Настроить управление",
-        "CONTROLS_CUSTOM_1": "Пользовательская схема 1",
-        "CONTROLS_CUSTOM_2": "Пользовательская схема 2",
-        "CONTROLS_CUSTOM_3": "Пользовательская схема 3",
-        "CONTROLS_DEFAULT_KEYS": "По умолчанию",
-        "CONTROLS_SECTION_BASICS": "Движение",
-        "CONTROLS_SECTION_ITEMS": "Предметы",
-        "CONTROLS_SECTION_MISC": "Разное",
-        "CONTROLS_SECTION_SYSTEM": "Система",
-        "GAMEPLAY_SETTINGS_CONTROLS_TAB": "Управление",
-        "GAMEPLAY_SETTINGS_FIXES_TAB": "Исправления",
-        "GAMEPLAY_SETTINGS_GENERAL_TAB": "Основные",
-        "GAMEPLAY_SETTINGS_MODS_TAB": "Модификации",
-        "GAMEPLAY_SETTINGS_PRESETS_TAB": "\\{review}Пресеты",
-        "GAMEPLAY_SETTINGS_TITLE": "Игровой процесс",
-        "GLOBE_SELECT_AREA_1": "\\{review}Зона 1",
-        "GLOBE_SELECT_AREA_2": "\\{review}Зона 2",
-        "GLOBE_SELECT_AREA_3": "\\{review}Зона 3",
-        "GLOBE_SELECT_AREA_4": "\\{review}Зона 4",
-        "GLOBE_SELECT_AREA_5": "\\{review}Зона 5",
-        "GLOBE_SELECT_AREA_6": "\\{review}Зона 6",
-        "GRAPHIC_SETTINGS_RENDERING_TAB": "Графика",
-        "GRAPHIC_SETTINGS_TITLE": "Настройки изображения",
-        "GRAPHIC_SETTINGS_UI_BARS_TAB": "\\{review}Брусья",
-        "GRAPHIC_SETTINGS_UI_TAB": "Интерфейс",
-        "GRAPHIC_SETTINGS_VISUALS_TAB": "Визуальные эффекты",
-        "INVENTORY_RING_HEADING_ADVENTURE": "\\{review}Приключение",
-        "INVENTORY_RING_HEADING_FMT": "%s",
-        "INVENTORY_RING_HEADING_GAME_OVER": "Конец игры",
-        "INVENTORY_RING_HEADING_INVENTORY": "Инвентарь",
-        "INVENTORY_RING_HEADING_ITEMS": "Предметы",
-        "INVENTORY_RING_HEADING_OPTION": "Настройки",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{small}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "%s",
-        "MISC_DEMO_MODE": "Демо режим",
-        "MISC_DIRECTION_KEYS_CONTROLLER": "Крестовина",
-        "MISC_DIRECTION_KEYS_KEYBOARD": "Стрелки",
-        "MISC_EMPTY_SLOT_FMT": "- ПУСТОЙ СЛОТ %d -",
-        "MISC_EXIT": "Выход",
-        "MISC_HOLD_FMT": "удерж. %s",
-        "MISC_OFF": "Выкл",
-        "MISC_ON": "Вкл",
-        "OSD_AMBIGUOUS_INPUT_2": "Неоднозначный ввод: %s и %s",
-        "OSD_AMBIGUOUS_INPUT_3": "Неоднозначный ввод: %s, %s, ...",
-        "OSD_BILINEAR_FILTER_OFF": "\\{review}Билинейная фильтрация: выкл",
-        "OSD_BILINEAR_FILTER_ON": "\\{review}Билинейная фильтрация: вкл",
-        "OSD_COMMAND_BAD_INVOCATION": "Недопустимый вызов: %s",
-        "OSD_COMMAND_BOOL": "вкл, выкл",
-        "OSD_COMMAND_DECIMAL": "[десятичн.]",
-        "OSD_COMMAND_INTEGER": "[цел.]",
-        "OSD_COMMAND_PERCENT": "[цел.]",
-        "OSD_COMMAND_UNAVAILABLE": "Команда недоступна",
-        "OSD_COMMAND_VALID_VALUES": "Корректные значения: %s",
-        "OSD_COMPLETE_LEVEL": "Уровень завершён!",
-        "OSD_CONFIG_OPTION_GET": "%s установлен на %s",
-        "OSD_CONFIG_OPTION_SET": "%s изменён на %s",
-        "OSD_CONFIG_OPTION_UNKNOWN_OPTION": "Неизвестная опция: %s",
-        "OSD_CURRENT_HEALTH_GET": "Текущее здоровье Лары: %d",
-        "OSD_CURRENT_HEALTH_SET": "Здоровье Лары установлено на %d",
-        "OSD_DOOR_CLOSE": "Сезам, закройся!",
-        "OSD_DOOR_OPEN": "Сезам, откройся!",
-        "OSD_DOOR_OPEN_FAIL": "Рядом с Ларой нет дверей",
-        "OSD_FLIPMAP_FAIL_ALREADY_OFF": "Перевёрнутая карта уже выключена",
-        "OSD_FLIPMAP_FAIL_ALREADY_ON": "Перевёрнутая карта уже включена",
-        "OSD_FLIPMAP_OFF": "Перевёрнутая карта выключена",
-        "OSD_FLIPMAP_ON": "Перевёрнутая карта включена",
-        "OSD_FLY_MODE_OFF": "Режим полёта выключен",
-        "OSD_FLY_MODE_ON": "Режим полёта включен",
-        "OSD_FPS_COUNTER_OFF": "Счётчик FPS выключен",
-        "OSD_FPS_COUNTER_ON": "Счётчик FPS включен",
-        "OSD_GIVE_ITEM": "%s добавлен в инвентарь Лары",
-        "OSD_GIVE_ITEM_ALL_GUNS": "Оружие к бою - Лара вооружена до зубов!",
-        "OSD_GIVE_ITEM_ALL_KEYS": "Сюрприз! Все необходимые Ларе предметы теперь в её рюкзаке.",
-        "OSD_GIVE_ITEM_CHEAT": "Рюкзак Лары только что стал намного тяжелее!",
-        "OSD_HEAL_ALREADY_FULL_HP": "Лара уже полностью здорова",
-        "OSD_HEAL_SUCCESS": "Лара исцелена!",
-        "OSD_INVALID_CUTSCENE": "Невалидная заставка",
-        "OSD_INVALID_DEMO": "С этим демо что-то не так...",
-        "OSD_INVALID_ITEM": "Неизвестный предмет: %s",
-        "OSD_INVALID_LEVEL": "Невалидный уровень",
-        "OSD_INVALID_OBJECT": "Невалидный объект",
-        "OSD_INVALID_ROOM": "Невалидная комната: %d. Валидные комнаты 0-%d",
-        "OSD_INVALID_SAMPLE": "Невалидный звук: %d",
-        "OSD_KILL": "Пока-пока!",
-        "OSD_KILL_ALL": "Бах! Все враги убиты: %d!",
-        "OSD_KILL_ALL_FAIL": "Ого! Врагов больше не осталось...",
-        "OSD_KILL_FAIL": "Поблизости нет врагов...",
-        "OSD_LIGHTING_CONTRAST_FMT": "\\{review}Контраст освещения: %s",
-        "OSD_LOAD_GAME": "Игра загружена из слота %d",
-        "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Неверный слот сохранения %d",
-        "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Слот сохранения %d недоступен",
-        "OSD_OBJECT_NOT_FOUND": "Объект не найден",
-        "OSD_PLAY_CUTSCENE": "Загрузка заставки %d",
-        "OSD_PLAY_DEMO": "Загрузка демо %d",
-        "OSD_PLAY_LEVEL": "Загрузка %s",
-        "OSD_POS_LARA_MISSING": "Лара отсутствует",
-        "OSD_POS_LARA_POS_FMT": "Комната: %d\nПозиция: %.3f, %.3f, %.3f\nВращение: %.3f,%.3f,%.3f",
-        "OSD_POS_LEVEL_FMT": "Уровень %d",
-        "OSD_POS_LEVEL_FMT_CUTSCENE": "Заставка %d",
-        "OSD_POS_LEVEL_FMT_DEMO": "Демо %d",
-        "OSD_QUICK_LOAD": "\\{review}Быстро загруженный слот %d",
-        "OSD_QUICK_LOAD_FAIL_NO_BOUND_SLOT": "\\{review}В данный момент не привязан ни один слот сохранения",
-        "OSD_QUICK_LOAD_FAIL_UNAVAILABLE_BOUND_SLOT": "\\{review}Привязанный слот сохранения недоступен",
-        "OSD_QUICK_SAVE": "\\{review}Быстро сохранено",
-        "OSD_QUICK_SAVE_FAIL_NO_SLOTS": "\\{review}Слоты быстрого сохранения не настроены",
-        "OSD_SAVE_GAME": "Игра сохранена в слот %d",
-        "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Неверный слот сохранения %d",
-        "OSD_SOUND_AVAILABLE_SAMPLES": "Доступные звуки : %s",
-        "OSD_SOUND_PLAYING_SAMPLE": "Воспроизведение звука %d",
-        "OSD_SPEED_GET": "Текущая скорость: %d",
-        "OSD_SPEED_SET": "Скорость установлена на %d",
-        "OSD_STRINGS_FAILED": "Ошибка перезагрузки языковых файлов",
-        "OSD_STRINGS_RELOADED": "Языковые файлы перезагружены",
-        "OSD_TEXTURES_OFF": "\\{review}Текстуры: выключены",
-        "OSD_TEXTURES_ON": "\\{review}Текстуры: включены",
-        "OSD_TRAPEZOID_FILTER_OFF": "Четырёхугольная интерполяция выключена",
-        "OSD_TRAPEZOID_FILTER_ON": "Четырёхугольная интерполяция включена",
-        "OSD_UI_OFF": "Интерфейс выключен",
-        "OSD_UI_ON": "Интерфейс включен",
-        "OSD_UNKNOWN_COMMAND": "Неизвестная команда: %s",
-        "OSD_UPSCALING_FACTOR": "Коэффициент масштабирования: x%d",
-        "OSD_WIREFRAME_MODE_OFF": "\\{review}Режим каркаса: выкл",
-        "OSD_WIREFRAME_MODE_ON": "\\{review}Режим каркаса: вкл",
-        "OVERLAY_DEBUG_ANIMATION": "Анимация: ",
-        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}Состояние: ",
-        "OVERLAY_DEBUG_CAMERA_POS": "\\{review}Положение камеры: ",
-        "OVERLAY_DEBUG_CAMERA_TARGET": "\\{review}Цель камеры: ",
-        "OVERLAY_DEBUG_IMMUNE": "Неуязвимость вкл.",
-        "OVERLAY_DEBUG_POSITION": "Позиция: ",
-        "OVERLAY_DEBUG_ROTATION": "Поворот: ",
-        "OVERLAY_DEBUG_SPEED": "Скорость: ",
-        "OVERLAY_ITEM_COUNT_FMT_PC": "\\{small}%s",
-        "OVERLAY_ITEM_COUNT_FMT_PS1": "\\{small}%s",
-        "PAGINATION_NAV": "%d / %d",
-        "PASSPORT_EXIT_GAME": "Выход",
-        "PASSPORT_EXIT_TO_TITLE": "Выйти в меню",
-        "PASSPORT_LOAD_GAME": "Загрузить игру",
-        "PASSPORT_MODE_NEW_GAME": "Новая игра",
-        "PASSPORT_MODE_NEW_GAME_JP": "Японская новая игра",
-        "PASSPORT_MODE_NEW_GAME_JP_PLUS": "Японская новая игра+",
-        "PASSPORT_MODE_NEW_GAME_PLUS": "Новая игра+",
-        "PASSPORT_NEW_GAME": "Новая игра",
-        "PASSPORT_PLAY_PREVIOUS_LEVELS": "\\{review}Играть в предыдущие уровни",
-        "PASSPORT_RESTART_LEVEL": "Перезапустить уровень",
-        "PASSPORT_SAVE_GAME": "Сохранить игру",
-        "PASSPORT_SAVE_SLOT_UNSUPPORTED": "\\{review}Это сохранение не поддерживает эту функцию.",
-        "PASSPORT_SELECT_LEVEL": "Выбор уровня",
-        "PASSPORT_SELECT_MODE": "Выбор режима",
-        "PASSPORT_SELECT_SAVE": "\\{review}Выбрать сохранение",
-        "PASSPORT_STORY_SO_FAR": "История до сих пор...",
-        "PAUSE_ARE_YOU_SURE": "Вы уверены?",
-        "PAUSE_CONTINUE": "Остаться",
-        "PAUSE_EXIT_TO_TITLE": "Выйти в меню?",
-        "PAUSE_NO": "Нет",
-        "PAUSE_PAUSED": "Пауза",
-        "PAUSE_QUIT": "Выйти в меню",
-        "PAUSE_YES": "Да",
-        "PHOTO_MODE_ADVANCE_FRAME": "Дополнительный кадр",
-        "PHOTO_MODE_CAMERA_MOVE_PROMPT": "Двигать камеру",
-        "PHOTO_MODE_CAMERA_RESET_PROMPT": "Сбросить камеру",
-        "PHOTO_MODE_CAMERA_ROLL_PROMPT": "Вращать камеру",
-        "PHOTO_MODE_CAMERA_ROTATE_90_PROMPT": "Поворот на 90°",
-        "PHOTO_MODE_CAMERA_ROTATE_PROMPT": "Повернуть камеру",
-        "PHOTO_MODE_CHANGE_LARA_POSE": "Изменить позу Лары",
-        "PHOTO_MODE_FOV_PROMPT": "Изменить угол обзора",
-        "PHOTO_MODE_LARA_MOVE_PROMPT": "Двигать Лару",
-        "PHOTO_MODE_LARA_RESET_PROMPT": "Сбросить Лару",
-        "PHOTO_MODE_LARA_ROLL_PROMPT": "Вращать Лару",
-        "PHOTO_MODE_LARA_ROTATE_90_PROMPT": "Поворот Лары на 90°",
-        "PHOTO_MODE_LARA_ROTATE_PROMPT": "Повернуть Лару",
-        "PHOTO_MODE_SNAP_PROMPT": "Сделать скриншот",
-        "PHOTO_MODE_TITLE_CAMERA_POS": "Фоторежим",
-        "PHOTO_MODE_TITLE_LARA_POS": "Положение Лары",
-        "PHOTO_MODE_TOGGLE_HELP": "Вкл/выкл помощь",
-        "SOUND_SETTINGS_MISC_TAB": "\\{review}Разное",
-        "SOUND_SETTINGS_TITLE": "Настройки звука",
-        "SOUND_SETTINGS_VOLUME_TAB": "\\{review}Громкость",
-        "STATS_AMMO": "Попадания/выстрелы",
-        "STATS_AMMO_HITS": "\\{review}Попадания",
-        "STATS_AMMO_USED": "\\{review}Использовано боеприпасов",
-        "STATS_ASSAULT_BEST_TIME_FMT": "\\{review}%s",
-        "STATS_ASSAULT_FINISH": "\\{review}Завершить",
-        "STATS_ASSAULT_NO_TIMES_SET": "\\{review}Время не установлено",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}%s",
-        "STATS_ASSAULT_TITLE": "\\{review}ЛУЧШИЕ ВРЕМЕНА",
-        "STATS_BASIC_FMT": "%d",
-        "STATS_BONUS_STATISTICS": "Бонусная статистика",
-        "STATS_DEATHS": "Смертей",
-        "STATS_DETAIL_FMT": "%d из %d",
-        "STATS_DISTANCE_TRAVELLED": "Пройденное расстояние",
-        "STATS_FINAL_STATISTICS": "Финальная статистика",
-        "STATS_GYM_ASSAULT_COURSE": "\\{review}Полоса препятствий",
-        "STATS_GYM_RACETRACK_COURSE": "\\{review}Гоночная трасса",
-        "STATS_KILLS": "Убито",
-        "STATS_LEVEL": "Уровень",
-        "STATS_MEDIPACKS_USED": "Использовано аптечек",
-        "STATS_NONE": "\\{review}Нет",
-        "STATS_PICKUPS": "Предметы",
-        "STATS_SECRETS": "Секреты",
-        "STATS_TIME_TAKEN": "Время",
-    },
-    "objects": {
-        "flare": {
-            "name": "\\{review}Вспышка",
+    "general": {
+        "actions": {
+            "examine_item": "Осмотреть",
+            "hide_dialog": "Скрыть диалог",
+            "reset_defaults": "Сброс",
+            "rotate": "Повернуть",
+            "unbind": "Очистить",
+            "use_item": "Использовать",
         },
-        "flares_box": {
-            "name": "\\{review}Коробка вспышки",
+        "config_presets": {
+            "applied": "\\{review}Предустановка применена.",
+            "confirm_description": "\\{review}Следующие настройки будут изменены:",
+            "confirm_restart_note": "\\{review}Примечание: для вступления изменений в силу может потребоваться перезапуск игры.",
+            "empty": "\\{review}Пресеты не найдены.",
+            "no_changes": "\\{review}Нет изменений для применения.",
+            "title_fmt": "\\{review}Применить предустановку %s?",
         },
-        "grenade": {
-            "name": "Граната",
+        "globe_select": {
+            "area_1": "\\{review}Зона 1",
+            "area_2": "\\{review}Зона 2",
+            "area_3": "\\{review}Зона 3",
+            "area_4": "\\{review}Зона 4",
+            "area_5": "\\{review}Зона 5",
+            "area_6": "\\{review}Зона 6",
         },
-        "pistols": {
-            "name": "Пистолеты",
+        "inventory_ring": {
+            "heading_adventure": "\\{review}Приключение",
+            "heading_fmt": "%s",
+            "heading_game_over": "Конец игры",
+            "heading_inventory": "Инвентарь",
+            "heading_items": "Предметы",
+            "heading_option": "Настройки",
+            "item_count_fmt": "\\{small}%s",
+            "object_name_fmt": "%s",
         },
-        "shotgun": {
-            "name": "Дробовик",
+        "misc": {
+            "demo_mode": "Демо режим",
+            "direction_keys_controller": "Крестовина",
+            "direction_keys_keyboard": "Стрелки",
+            "empty_slot_fmt": "- ПУСТОЙ СЛОТ %d -",
+            "exit": "Выход",
+            "hold_fmt": "удерж. %s",
+            "off": "Выкл",
+            "on": "Вкл",
+            "pagination_nav": "%d / %d",
         },
-        "uzis": {
-            "name": "Узи",
+        "osd": {
+            "ambiguous_input_2": "Неоднозначный ввод: %s и %s",
+            "ambiguous_input_3": "Неоднозначный ввод: %s, %s, ...",
+            "bilinear_filter_off": "\\{review}Билинейная фильтрация: выкл",
+            "bilinear_filter_on": "\\{review}Билинейная фильтрация: вкл",
+            "command_bad_invocation": "Недопустимый вызов: %s",
+            "command_bool": "вкл, выкл",
+            "command_decimal": "[десятичн.]",
+            "command_integer": "[цел.]",
+            "command_percent": "[цел.]",
+            "command_unavailable": "Команда недоступна",
+            "command_valid_values": "Корректные значения: %s",
+            "complete_level": "Уровень завершён!",
+            "config_option_get": "%s установлен на %s",
+            "config_option_set": "%s изменён на %s",
+            "config_option_unknown_option": "Неизвестная опция: %s",
+            "current_health_get": "Текущее здоровье Лары: %d",
+            "current_health_set": "Здоровье Лары установлено на %d",
+            "door_close": "Сезам, закройся!",
+            "door_open": "Сезам, откройся!",
+            "door_open_fail": "Рядом с Ларой нет дверей",
+            "flipmap_fail_already_off": "Перевёрнутая карта уже выключена",
+            "flipmap_fail_already_on": "Перевёрнутая карта уже включена",
+            "flipmap_off": "Перевёрнутая карта выключена",
+            "flipmap_on": "Перевёрнутая карта включена",
+            "fly_mode_off": "Режим полёта выключен",
+            "fly_mode_on": "Режим полёта включен",
+            "fps_counter_off": "Счётчик FPS выключен",
+            "fps_counter_on": "Счётчик FPS включен",
+            "give_item": "%s добавлен в инвентарь Лары",
+            "give_item_all_guns": "Оружие к бою - Лара вооружена до зубов!",
+            "give_item_all_keys": "Сюрприз! Все необходимые Ларе предметы теперь в её рюкзаке.",
+            "give_item_cheat": "Рюкзак Лары только что стал намного тяжелее!",
+            "heal_already_full_hp": "Лара уже полностью здорова",
+            "heal_success": "Лара исцелена!",
+            "invalid_cutscene": "Невалидная заставка",
+            "invalid_demo": "С этим демо что-то не так...",
+            "invalid_item": "Неизвестный предмет: %s",
+            "invalid_level": "Невалидный уровень",
+            "invalid_object": "Невалидный объект",
+            "invalid_room": "Невалидная комната: %d. Валидные комнаты 0-%d",
+            "invalid_sample": "Невалидный звук: %d",
+            "kill": "Пока-пока!",
+            "kill_all": "Бах! Все враги убиты: %d!",
+            "kill_all_fail": "Ого! Врагов больше не осталось...",
+            "kill_fail": "Поблизости нет врагов...",
+            "lighting_contrast_fmt": "\\{review}Контраст освещения: %s",
+            "load_game": "Игра загружена из слота %d",
+            "load_game_fail_invalid_slot": "Неверный слот сохранения %d",
+            "load_game_fail_unavailable_slot": "Слот сохранения %d недоступен",
+            "object_not_found": "Объект не найден",
+            "play_cutscene": "Загрузка заставки %d",
+            "play_demo": "Загрузка демо %d",
+            "play_level": "Загрузка %s",
+            "pos_lara_missing": "Лара отсутствует",
+            "pos_lara_pos_fmt": "Комната: %d\nПозиция: %.3f, %.3f, %.3f\nВращение: %.3f,%.3f,%.3f",
+            "pos_level_fmt": "Уровень %d",
+            "pos_level_fmt_cutscene": "Заставка %d",
+            "pos_level_fmt_demo": "Демо %d",
+            "quick_load": "\\{review}Быстро загруженный слот %d",
+            "quick_load_fail_no_bound_slot": "\\{review}В данный момент не привязан ни один слот сохранения",
+            "quick_load_fail_unavailable_bound_slot": "\\{review}Привязанный слот сохранения недоступен",
+            "quick_save": "\\{review}Быстро сохранено",
+            "quick_save_fail_no_slots": "\\{review}Слоты быстрого сохранения не настроены",
+            "save_game": "Игра сохранена в слот %d",
+            "save_game_fail_invalid_slot": "Неверный слот сохранения %d",
+            "sound_available_samples": "Доступные звуки : %s",
+            "sound_playing_sample": "Воспроизведение звука %d",
+            "speed_get": "Текущая скорость: %d",
+            "speed_set": "Скорость установлена на %d",
+            "strings_failed": "Ошибка перезагрузки языковых файлов",
+            "strings_reloaded": "Языковые файлы перезагружены",
+            "textures_off": "\\{review}Текстуры: выключены",
+            "textures_on": "\\{review}Текстуры: включены",
+            "trapezoid_filter_off": "Четырёхугольная интерполяция выключена",
+            "trapezoid_filter_on": "Четырёхугольная интерполяция включена",
+            "ui_off": "Интерфейс выключен",
+            "ui_on": "Интерфейс включен",
+            "unknown_command": "Неизвестная команда: %s",
+            "upscaling_factor": "Коэффициент масштабирования: x%d",
+            "wireframe_mode_off": "\\{review}Режим каркаса: выкл",
+            "wireframe_mode_on": "\\{review}Режим каркаса: вкл",
         },
-        "shotgun_ammo": {
-            "name": "Патроны для дробовика",
-        },
-        "uzis_ammo": {
-            "name": "Обоймы для узи",
-        },
-        "pickup_1": {
-            "name": "Предмет 1",
-        },
-        "pickup_2": {
-            "name": "Предмет 2",
-        },
-        "key_1": {
-            "name": "Ключ 1",
-        },
-        "key_2": {
-            "name": "Ключ 2",
-        },
-        "key_3": {
-            "name": "Ключ 3",
-        },
-        "key_4": {
-            "name": "Ключ 4",
-        },
-        "puzzle_1": {
-            "name": "Элемент головоломки 1",
-        },
-        "puzzle_2": {
-            "name": "Элемент головоломки 2",
-        },
-        "puzzle_3": {
-            "name": "Элемент головоломки 3",
-        },
-        "puzzle_4": {
-            "name": "Элемент головоломки 4",
-        },
-        "lead_bar": {
-            "name": "Свинцовый слиток",
-        },
-        "scion": {
-            "name": "Наследие",
-        },
-        "compass": {
-            "name": "Компас",
-        },
-        "stopwatch": {
-            "name": "\\{review}Статистика",
+        "overlay": {
+            "debug_animation": "Анимация: ",
+            "debug_animation_state": "\\{review}Состояние: ",
+            "debug_camera_pos": "\\{review}Положение камеры: ",
+            "debug_camera_target": "\\{review}Цель камеры: ",
+            "debug_immune": "Неуязвимость вкл.",
+            "debug_position": "Позиция: ",
+            "debug_rotation": "Поворот: ",
+            "debug_speed": "Скорость: ",
+            "item_count_fmt_pc": "\\{small}%s",
+            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
-            "name": "Игра",
-        },
-        "photo": {
-            "name": "Дом Лары",
-        },
-        "graphics": {
-            "name": "Изображение",
-        },
-        "controls": {
-            "name": "Управление",
-        },
-        "sound": {
-            "name": "Звук",
-        },
-        "gamma": {
-            "name": "Гамма",
-        },
-        "pda": {
-            "name": "Игровой процесс",
-        },
-        "lara": {
-            "name": "Лара",
-        },
-        "lara_hair": {
-            "name": "Коса Лары",
-        },
-        "lara_pistols": {
-            "name": "Анимация пистолетов",
-        },
-        "lara_shotgun": {
-            "name": "Анимация дробовика",
-        },
-        "lara_magnums": {
-            "name": "Анимация магнумов",
-        },
-        "lara_autos": {
-            "name": "\\{review}Анимация автоматических пистолетов",
-        },
-        "lara_desert_eagle": {
-            "name": "\\{review}Анимация Дезерт Игл",
-        },
-        "lara_uzis": {
-            "name": "Анимация узи",
-        },
-        "lara_flare": {
-            "name": "\\{review}Анимация фальшфейера",
-        },
-        "lara_extra": {
-            "name": "Дополнительная анимация Лары",
-        },
-        "boat": {
-            "name": "Лодка",
-        },
-        "bacon_lara": {
-            "name": "Двойник Лары",
-        },
-        "wolf": {
-            "name": "Волк",
-        },
-        "bear": {
-            "name": "Медведь",
-        },
-        "bat": {
-            "name": "Летучая мышь",
-        },
-        "crocodile": {
-            "name": "Крокодил",
-        },
-        "alligator": {
-            "name": "Аллигатор",
-        },
-        "lion": {
-            "name": "Лев",
-        },
-        "lioness": {
-            "name": [
-                "Львица",
-                "Лев",
-            ]
-        },
-        "puma": {
-            "name": "Пума",
-        },
-        "ape": {
-            "name": "Обезьяна",
-        },
-        "rat": {
-            "name": [
-                "Крыса",
-                "Крыса на земле",
-            ]
-        },
-        "vole": {
-            "name": [
-                "Плавающая крыса",
-                "Крыса в воде",
-            ]
-        },
-        "trex": {
-            "name": "Тираннозавр",
-        },
-        "raptor": {
-            "name": "Раптор",
-        },
-        "mutant_1": {
-            "name": "Мутант 1",
-        },
-        "mutant_2": {
-            "name": "Мутант 2",
-        },
-        "mutant_3": {
-            "name": "Мутант 3",
-        },
-        "centaur": {
-            "name": "Кентавр",
-        },
-        "mummy": {
-            "name": "Мумия",
-        },
-        "dino_mutant": {
-            "name": "Динозавр-мутант",
-        },
-        "fish_mutant": {
-            "name": "Рыба-мутант",
-        },
-        "larson": {
-            "name": "Ларсон",
-        },
-        "pierre": {
-            "name": "Пьер",
-        },
-        "skateboard": {
-            "name": "Скейтборд",
-        },
-        "skate_kid": {
-            "name": "Скейтер",
-        },
-        "cowboy": {
-            "name": "Ковбой",
-        },
-        "baldy": {
-            "name": "Лысый дядька",
-        },
-        "natla": {
-            "name": "Натла",
-        },
-        "torso": {
-            "name": [
-                "Торсо",
-                "Адам",
-                "Безногий мутант",
-            ]
-        },
-        "centaur_statue": {
-            "name": "Статуя",
-        },
-        "pods": {
-            "name": "Гнездо",
-        },
-        "big_pod": {
-            "name": "Большое гнездо",
-        },
-        "damocles_sword": {
-            "name": "Дамоклов меч",
-        },
-        "dart": {
-            "name": "Дротик",
-        },
-        "dart_emitter": {
-            "name": "Дротикомёт",
-        },
-        "ember": {
-            "name": "Уголь",
-        },
-        "ember_emitter": {
-            "name": "Источник углей",
-        },
-        "falling_block_1": {
-            "name": [
-                "Падающий блок",
-                "Разрушающийся пол",
-                "Разрушающиеся плиты",
-            ]
-        },
-        "falling_ceiling_1": {
-            "name": "Падающий потолок 1",
-        },
-        "falling_ceiling_2": {
-            "name": "Падающий потолок 2",
-        },
-        "flame": {
-            "name": [
-                "Пламя",
-                "Огонь",
-            ]
-        },
-        "flame_emitter": {
-            "name": [
-                "Источник пламени",
-                "Источник огня",
-            ]
-        },
-        "lava_wedge": {
-            "name": "Лава",
-        },
-        "lightning_emitter": {
-            "name": "Излучатель молний",
-        },
-        "midas_touch": {
-            "name": "Рука Мидаса",
-        },
-        "pendulum_1": {
-            "name": "Маятник",
-        },
-        "rolling_ball_1": {
-            "name": [
-                "Валун",
-                "Катящийся камень",
-            ]
-        },
-        "spikes": {
-            "name": "Шипы",
-        },
-        "teeth_trap": {
-            "name": [
-                "Зубная ловушка",
-                "Клацающая дверь",
-            ]
-        },
-        "thors_handle": {
-            "name": "Рукоять молота Тора",
-        },
-        "thors_head": {
-            "name": "Молот Тора",
-        },
-        "bridge_flat": {
-            "name": "Плоский мост",
-        },
-        "bridge_tilt_1": {
-            "name": "Наклонный мост 1",
-        },
-        "bridge_tilt_2": {
-            "name": "Наклонный мост 2",
-        },
-        "cog_1": {
-            "name": "Шестерёнка 1",
-        },
-        "cog_2": {
-            "name": "Шестерёнка 2",
-        },
-        "cog_3": {
-            "name": "Шестерёнка 3",
-        },
-        "door_1": {
-            "name": "Дверь 1",
-        },
-        "door_2": {
-            "name": "Дверь 2",
-        },
-        "door_3": {
-            "name": "Дверь 3",
-        },
-        "door_4": {
-            "name": "Дверь 4",
-        },
-        "door_5": {
-            "name": "Дверь 5",
-        },
-        "door_6": {
-            "name": "Дверь 6",
-        },
-        "door_7": {
-            "name": "Дверь 7",
-        },
-        "door_8": {
-            "name": "Дверь 8",
-        },
-        "drawbridge": {
-            "name": "Подъемный мост",
-        },
-        "key_hole_1": {
-            "name": "Замочная скважина 1",
-        },
-        "key_hole_2": {
-            "name": "Замочная скважина 2",
-        },
-        "key_hole_3": {
-            "name": "Замочная скважина 3",
-        },
-        "key_hole_4": {
-            "name": "Замочная скважина 4",
-        },
-        "movable_block_1": {
-            "name": [
-                "Нажимной блок 1",
-                "Передвижной блок 1",
-            ]
-        },
-        "movable_block_2": {
-            "name": [
-                "Нажимной блок 2",
-                "Передвижной блок 2",
-            ]
-        },
-        "movable_block_3": {
-            "name": [
-                "Нажимной блок 3",
-                "Передвижной блок 3",
-            ]
-        },
-        "movable_block_4": {
-            "name": [
-                "Нажимной блок 4",
-                "Передвижной блок 4",
-            ]
-        },
-        "moving_bar": {
-            "name": "Движущаяся планка",
-        },
-        "portacabin": {
-            "name": "Кабина",
-        },
-        "puzzle_done_1": {
-            "name": "Головоломка 1 (готово)",
-        },
-        "puzzle_done_2": {
-            "name": "Головоломка 2 (готово)",
-        },
-        "puzzle_done_3": {
-            "name": "Головоломка 3 (готово)",
-        },
-        "puzzle_done_4": {
-            "name": "Головоломка 4 (готово)",
-        },
-        "puzzle_hole_1": {
-            "name": "Головоломка 1 (пусто)",
-        },
-        "puzzle_hole_2": {
-            "name": "Головоломка 2 (пусто)",
-        },
-        "puzzle_hole_3": {
-            "name": "Головоломка 3 (пусто)",
-        },
-        "puzzle_hole_4": {
-            "name": "Головоломка 4 (пусто)",
-        },
-        "save_crystal": {
-            "name": "Кристалл сохранения",
-        },
-        "scion_holder": {
-            "name": "Постамент Наследия",
-        },
-        "sliding_pillar": {
-            "name": "Скользящая колонна",
-        },
-        "switch_type_normal": {
-            "name": [
-                "Рычаг",
-                "Переключатель",
-            ]
-        },
-        "switch_type_uw": {
-            "name": [
-                "Подводный рычаг",
-                "Подводный переключатель",
-            ]
-        },
-        "trapdoor_1": {
-            "name": "Люк 1",
-        },
-        "trapdoor_2": {
-            "name": "Люк 2",
-        },
-        "trapdoor_3": {
-            "name": "Люк 3",
-        },
-        "alphabet": {
-            "name": "\\{review}Шрифт по умолчанию",
-        },
-        "blood_1": {
-            "name": "Кровь 1",
-        },
-        "blood_2": {
-            "name": "Кровь 2",
-        },
-        "body_part": {
-            "name": "Часть тела",
-        },
-        "bubble_1": {
-            "name": "Пузыри 1",
-        },
-        "bubble_2": {
-            "name": "Пузыри 2",
-        },
-        "bubble_emitter": {
-            "name": "Источник пузырей",
-        },
-        "camera_target": {
-            "name": "Цель камеры",
-        },
-        "dart_effect": {
-            "name": "Эффект дротика",
-        },
-        "dust": {
-            "name": "Пыль",
-        },
-        "earthquake": {
-            "name": "Землетрясение",
-        },
-        "explosion_1": {
-            "name": "Взрыв 1",
-        },
-        "explosion_2": {
-            "name": "Взрыв 2",
-        },
-        "flare_fire": {
-            "name": "\\{review}Огонь фальшфейера",
-        },
-        "glow": {
-            "name": "Свечение",
-        },
-        "gun_flash": {
-            "name": "Вспышка выстрела",
-        },
-        "natla_gun": {
-            "name": "\\{review}Пушка Натлы",
-        },
-        "missile_atlantean_shard": {
-            "name": "\\{review}Снаряд (Атлантический осколок)",
-        },
-        "missile_atlantean_bomb": {
-            "name": "\\{review}Снаряд (Атлантическая бомба)",
-        },
-        "pickup_aid": {
-            "name": "Первая помощь",
-        },
-        "player_1": {
-            "name": "Актёр заставки 1",
-        },
-        "player_2": {
-            "name": "Актёр заставки 2",
-        },
-        "player_3": {
-            "name": "Актёр заставки 3",
-        },
-        "player_4": {
-            "name": "Актёр заставки 4",
-        },
-        "ricochet": {
-            "name": "Рикошет",
-        },
-        "skybox": {
-            "name": "Скайбокс",
-        },
-        "splash_1": {
-            "name": "Всплеск 1",
-        },
-        "splash_2": {
-            "name": "Всплеск 2",
-        },
-        "twinkle": {
-            "name": "Искры",
-        },
-        "waterfall": {
-            "name": "Водопадный туман",
-        },
-        "winston": {
-            "name": "\\{review}Уинстон",
-        },
-        "harpoon_gun": {
-            "name": "\\{review}Гарпунное ружьё",
-        },
-        "m16": {
-            "name": "\\{review}M16",
-        },
-        "grenade_launcher": {
-            "name": "\\{review}Гранатомёт",
-        },
-        "pistols_ammo": {
-            "name": "\\{review}Магазины для пистолета",
-        },
-        "harpoon_gun_ammo": {
-            "name": "\\{review}Гарпуны",
-        },
-        "m16_ammo": {
-            "name": "\\{review}Магазины для M16",
-        },
-        "grenade_launcher_ammo": {
-            "name": "\\{review}Гранаты",
-        },
-        "secret_1": {
-            "name": "\\{review}Секрет 1",
-        },
-        "secret_2": {
-            "name": "\\{review}Секрет 2",
-        },
-        "secret_3": {
-            "name": "\\{review}Секрет 3",
-        },
-        "lara_m16": {
-            "name": "\\{review}Анимация M16",
-        },
-        "lara_mp5": {
-            "name": "\\{review}Анимация MP5",
-        },
-        "lara_grenade": {
-            "name": "\\{review}Анимация гранатомёта",
-        },
-        "lara_rocket": {
-            "name": "\\{review}Анимация ракетной установки",
-        },
-        "lara_harpoon": {
-            "name": "\\{review}Анимация гарпуна",
-        },
-        "lara_skidoo": {
-            "name": "\\{review}Анимация снегохода",
-        },
-        "lara_boat": {
-            "name": "\\{review}Анимация лодки",
-        },
-        "skidoo_fast": {
-            "name": "\\{review}Красный снегоход",
-        },
-        "dog": {
-            "name": [
-                "\\{review}Собака",
-                "\\{review}Доберман",
-            ]
-        },
-        "cult_1": {
-            "name": "\\{review}Бандит в маске 1",
-        },
-        "cult_1a": {
-            "name": "\\{review}Бандит в маске 2",
-        },
-        "cult_1b": {
-            "name": "\\{review}Бандит в маске 3",
-        },
-        "cult_2": {
-            "name": "\\{review}Метатель ножей",
-        },
-        "cult_3": {
-            "name": "\\{review}Бандит с дробовиком",
-        },
-        "mouse": {
-            "name": "\\{review}Крыса",
-        },
-        "dragon_front": {
-            "name": "\\{review}Дракон спереди",
-        },
-        "dragon_back": {
-            "name": "\\{review}Дракон сзади",
-        },
-        "shark": {
-            "name": "\\{review}Акула",
-        },
-        "eel": {
-            "name": "\\{review}Угорь",
-        },
-        "big_eel": {
-            "name": "\\{review}Большой угорь",
-        },
-        "barracuda": {
-            "name": "\\{review}Барракуда",
-        },
-        "diver": {
-            "name": "\\{review}Водолаз",
-        },
-        "worker_1": {
-            "name": "\\{review}Бандит с пистолетом 1",
-        },
-        "worker_2": {
-            "name": "\\{review}Бандит с пистолетом 2",
-        },
-        "worker_3": {
-            "name": "\\{review}Бандит с палкой 1",
-        },
-        "worker_4": {
-            "name": "\\{review}Бандит с палкой 2",
-        },
-        "worker_5": {
-            "name": "\\{review}Бандит с огнемётом",
-        },
-        "jelly": {
-            "name": "\\{review}Медуза",
-        },
-        "spider": {
-            "name": "\\{review}Паук",
-        },
-        "big_spider": {
-            "name": "\\{review}Гигантский паук",
-        },
-        "crow": {
-            "name": "\\{review}Ворон",
-        },
-        "tiger": {
-            "name": "\\{review}Тигр",
-        },
-        "bartoli": {
-            "name": "\\{review}Марко Бартоли",
-        },
-        "xian_spearman": {
-            "name": "\\{review}Ксианский копейщик",
-        },
-        "xian_spearman_statue": {
-            "name": "\\{review}Статуя ксианского копейщика",
-        },
-        "xian_knight": {
-            "name": "\\{review}Ксианский рыцарь",
-        },
-        "xian_knight_statue": {
-            "name": "\\{review}Статуя ксианского рыцаря",
-        },
-        "yeti": {
-            "name": "\\{review}Йети",
-        },
-        "bird_guardian": {
-            "name": "\\{review}Птице-монстр",
-        },
-        "eagle": {
-            "name": "\\{review}Орел",
-        },
-        "bandit_1": {
-            "name": [
-                "\\{review}Наёмник 1",
-                "\\{review}Маскированный головорез 1",
-            ]
-        },
-        "bandit_2": {
-            "name": [
-                "\\{review}Наёмник 2",
-                "\\{review}Маскированный головорез 2",
-            ]
-        },
-        "bandit_2b": {
-            "name": [
-                "\\{review}Наёмник 3",
-                "\\{review}Маскированный головорез 3",
-            ]
-        },
-        "skidoo_armed": {
-            "name": "\\{review}Чёрный снегоход",
-        },
-        "skidoo_driver": {
-            "name": "\\{review}Водитель чёрного снегохода",
-        },
-        "monk_1": {
-            "name": "\\{review}Монах 1",
-        },
-        "monk_2": {
-            "name": "\\{review}Монах 2",
-        },
-        "blade": {
-            "name": "\\{review}Клинок на стене",
-        },
-        "ceiling_spikes": {
-            "name": "\\{review}Острый потолок",
-        },
-        "disc": {
-            "name": "\\{review}Диск",
-        },
-        "disc_emitter": {
-            "name": "\\{review}Излучатель дисков",
-        },
-        "falling_block_2": {
-            "name": [
-                "\\{review}Падающий блок 2",
-                "\\{review}Обрушивающийся пол 2",
-                "\\{review}Обрушивающиеся плитки 2",
-            ]
-        },
-        "falling_block_3": {
-            "name": [
-                "\\{review}Падающий блок 3",
-                "\\{review}Обрушивающийся пол 3",
-                "\\{review}Обрушивающиеся плитки 3",
-            ]
-        },
-        "gondola": {
-            "name": "\\{review}Гондола",
-        },
-        "hook": {
-            "name": "\\{review}Крюк",
-        },
-        "icicle": {
-            "name": "\\{review}Сосульки",
-        },
-        "killer_statue": {
-            "name": "\\{review}Статуя с мечом",
-        },
-        "mine": {
-            "name": "\\{review}Водная мина",
-        },
-        "pendulum_2": {
-            "name": [
-                "\\{review}Маятник",
-                "\\{review}Песчаный ящик",
-                "\\{review}Качающийся топор",
-                "\\{review}Качающийся ящик",
-            ]
-        },
-        "power_saw": {
-            "name": "\\{review}Электропила",
-        },
-        "propeller_1": {
-            "name": "\\{review}Винт самолёта",
-        },
-        "propeller_2": {
-            "name": "\\{review}Подводный винт",
-        },
-        "propeller_3": {
-            "name": "\\{review}Воздушный вентилятор",
-        },
-        "rolling_ball_2": {
-            "name": [
-                "\\{review}Камень 2",
-                "\\{review}Катающийся шар 2",
-            ]
-        },
-        "rolling_ball_3": {
-            "name": [
-                "\\{review}Камень 3",
-                "\\{review}Катающийся шар 3",
-            ]
-        },
-        "rolling_ball_4": {
-            "name": [
-                "\\{review}Камень 4",
-                "\\{review}Катающийся шар 4",
-            ]
-        },
-        "swinging_axe": {
-            "name": "\\{review}Pаскачивающийся топор",
-        },
-        "spike_wall": {
-            "name": "\\{review}Стена с шипами",
-        },
-        "spinning_blade": {
-            "name": "\\{review}Вращающийся клинок",
-        },
-        "bell": {
-            "name": "\\{review}Колокол",
-        },
-        "big_bowl": {
-            "name": "\\{review}Чаша с лавой",
-        },
-        "general": {
-            "name": "\\{review}Миниподводная лодка",
-        },
-        "lift": {
-            "name": "\\{review}Лифт",
-        },
-        "springboard": {
-            "name": "\\{review}Прыжковая доска",
-        },
-        "switch_type_airlock": {
-            "name": "\\{review}Переключатель воздушного шлюза",
-        },
-        "switch_type_button": {
-            "name": [
-                "\\{review}Кнопка",
-                "\\{review}Нажимная кнопка",
-                "\\{review}Выключатель",
-            ]
-        },
-        "switch_type_small": {
-            "name": "\\{review}Маленький выключатель",
-        },
-        "smashable_1": {
-            "name": "\\{review}Разбиваемое окно 1",
-        },
-        "smashable_2": {
-            "name": "\\{review}Разбиваемое окно 2",
-        },
-        "smashable_3": {
-            "name": "\\{review}Разбиваемое окно 3",
-        },
-        "smashable_4": {
-            "name": "\\{review}Разбиваемое окно 4",
-        },
-        "zipline_handle": {
-            "name": "\\{review}Рукоятка зиплайна",
-        },
-        "alarm_sound": {
-            "name": "\\{review}Тревога",
-        },
-        "assault_digits": {
-            "name": "\\{review}Цифры штурма",
-        },
-        "bird_tweeter_1": {
-            "name": "\\{review}Капающая вода",
-        },
-        "bird_tweeter_2": {
-            "name": "\\{review}Поющие птицы",
-        },
-        "boat_bits": {
-            "name": "\\{review}Обломки лодки",
-        },
-        "clock_chimes": {
-            "name": "\\{review}Часы убежища Бартоли",
-        },
-        "combat_end": {
-            "name": "\\{review}Конец боя",
-        },
-        "copter": {
-            "name": "\\{review}Вертолет",
-        },
-        "cut_shotgun": {
-            "name": "\\{review}Анимация дробовика",
-        },
-        "detonator_box": {
-            "name": "\\{review}Коробка детонатора",
-        },
-        "ding_dong": {
-            "name": "\\{review}Дверной звонок",
-        },
-        "dragon_bones_1": {
-            "name": "\\{review}Заполнитель",
-        },
-        "dragon_bones_2": {
-            "name": "\\{review}Передние кости дракона",
-        },
-        "dragon_bones_3": {
-            "name": "\\{review}Задние кости дракона",
-        },
-        "dying_monk": {
-            "name": "\\{review}Умирающий монах",
-        },
-        "fx_reserved": {
-            "name": "\\{review}Серый диск",
-        },
-        "glow_reserved": {
-            "name": "\\{review}Сияние карты",
-        },
-        "gong": {
-            "name": "\\{review}Гонг",
-        },
-        "gong_bonger": {
-            "name": "\\{review}Палка для гонга",
-        },
-        "harpoon_bolt": {
-            "name": "\\{review}Гарпунный болт",
-        },
-        "hot_liquid": {
-            "name": "\\{review}Дополнительный огонь",
-        },
-        "inv_background": {
-            "name": "\\{review}Фон меню",
-        },
-        "lara_alarm": {
-            "name": "\\{review}Звонок тревоги",
-        },
-        "m16_flash": {
-            "name": "\\{review}Вспышка M16",
-        },
-        "mesh_swap_1": {
-            "name": "\\{review}Замена модели 1",
-        },
-        "mesh_swap_2": {
-            "name": "\\{review}Замена модели 2",
-        },
-        "mesh_swap_3": {
-            "name": "\\{review}Замена модели 3",
-        },
-        "mini_copter": {
-            "name": "\\{review}Вертолет 2",
-        },
-        "missile_flame": {
-            "name": "\\{review}Снаряд (Пламя)",
-        },
-        "missile_poison": {
-            "name": "\\{review}Снаряд (Яд)",
-        },
-        "missile_harpoon": {
-            "name": "\\{review}Снаряд (Гарпун)",
-        },
-        "missile_knife": {
-            "name": "\\{review}Снаряд (Нож)",
-        },
-        "player_5": {
-            "name": "\\{review}Актер катсцены 5",
-        },
-        "player_6": {
-            "name": "\\{review}Актер катсцены 6",
-        },
-        "player_7": {
-            "name": "\\{review}Актер катсцены 7",
-        },
-        "player_8": {
-            "name": "\\{review}Актер катсцены 8",
-        },
-        "player_9": {
-            "name": "\\{review}Актер катсцены 9",
-        },
-        "player_10": {
-            "name": "\\{review}Актер катсцены 10",
-        },
-        "skidoo_track": {
-            "name": "\\{review}Гусеница снегохода",
-        },
-        "snow_sprite": {
-            "name": "\\{review}След снегохода",
-        },
-        "sphere_of_doom_1": {
-            "name": "\\{review}Взрыв дракона 1",
-        },
-        "sphere_of_doom_2": {
-            "name": "\\{review}Взрыв дракона 2",
-        },
-        "sphere_of_doom_3": {
-            "name": "\\{review}Взрыв дракона 3",
-        },
-        "text_box": {
-            "name": "\\{review}Рамка интерфейса",
-        },
-        "water_sprite": {
-            "name": "\\{review}След лодки",
-        },
-        "alphabet_small": {
-            "name": "\\{review}Маленький шрифт",
-        },
-        "magnums": {
-            "name": "Магнумы",
-        },
-        "autos": {
-            "name": "\\{review}Автоматические пистолеты",
-        },
-        "magnums_ammo": {
-            "name": "Обоймы для магнума",
-        },
-        "autos_ammo": {
-            "name": "\\{review}Обоймы для автоматических пистолетов",
-        },
-        "desert_eagle": {
-            "name": "\\{review}Дезерт Игл",
-        },
-        "desert_eagle_ammo": {
-            "name": "\\{review}Магазины Дезерт Игл",
-        },
-        "mp5": {
-            "name": "\\{review}MP5",
-        },
-        "mp5_ammo": {
-            "name": "\\{review}Магазины для MP5",
-        },
-        "rocket_launcher": {
-            "name": "\\{review}Ракетная установка",
-        },
-        "rocket_launcher_ammo": {
-            "name": "\\{review}Ракеты",
-        },
-        "rocket": {
-            "name": "\\{review}Ракета",
-        },
-        "animating_1": {
-            "name": "\\{review}Анимация объекта 1",
-        },
-        "animating_2": {
-            "name": "\\{review}Анимация объекта 2",
-        },
-        "animating_3": {
-            "name": "\\{review}Анимация объекта 3",
-        },
-        "animating_4": {
-            "name": "\\{review}Анимация объекта 4",
-        },
-        "animating_5": {
-            "name": "\\{review}Анимация объекта 5",
-        },
-        "animating_6": {
-            "name": "\\{review}Анимация объекта 6",
-        },
-        "winston_army": {
-            "name": "\\{review}Уинстон (армия)",
-        },
-        "shadow": {
-            "name": "\\{review}Тень",
-        },
-        "assault_target": {
-            "name": "\\{review}Цель атаки",
-        },
-        "electrical_light": {
-            "name": "\\{review}Электрический свет",
-        },
-        "smoke_emitter_white": {
-            "name": "\\{review}Дымовой излучатель (белый)",
-        },
-        "smoke_emitter_black": {
-            "name": "\\{review}Дымовой излучатель (черный)",
-        },
-        "steam_emitter": {
-            "name": "\\{review}Паровой излучатель",
-        },
-        "quad_bike": {
-            "name": "\\{review}Квадроцикл",
-        },
-        "flame_emitter_big": {
-            "name": "\\{review}Генератор пламени (Большой)",
-        },
-        "flame_emitter_small": {
-            "name": "\\{review}Генератор пламени (Малый)",
-        },
-        "flame_emitter_jet": {
-            "name": "\\{review}Генератор пламени (Струйный)",
-        },
-        "flame_emitter_side": {
-            "name": "\\{review}Генератор пламени (Боковой)",
-        },
-        "tropical_fish": {
-            "name": "\\{review}Тропическая рыба",
-        },
-        "pirahnas": {
-            "name": "\\{review}Пираньи",
-        },
-        "gun_shell": {
-            "name": "\\{review}Патрон для пистолета",
-        },
-        "shotgun_shell": {
-            "name": "\\{review}Патрон для дробовика",
-        },
-        "quest_1": {
-            "name": "\\{review}Предмет задания 1",
-        },
-        "quest_2": {
-            "name": "\\{review}Предмет задания 2",
-        },
-        "quest_3": {
-            "name": "\\{review}Предмет задания 3",
-        },
-        "quest_4": {
-            "name": "\\{review}Предмет задания 4",
-        },
-        "globe": {
-            "name": "\\{review}Глобус",
-        },
-        "kill_all_triggered": {
-            "name": "\\{review}Полное уничтожение (активировано)",
-        },
-        "monkey": {
-            "name": "\\{review}Обезьяна",
-        },
-        "tony": {
-            "name": "\\{review}Тони",
-        },
-        "vulture": {
-            "name": "\\{review}Стервятник",
-        },
-        "snake": {
-            "name": "\\{review}Змей",
-        },
-        "poison_dart": {
-            "name": "\\{review}Отравленный дротик",
-        },
-        "poison_dart_emitter": {
-            "name": "\\{review}Метатель отравленных дротиков",
-        },
-        "red_light": {
-            "name": "\\{review}Красный свет",
-        },
-        "green_light": {
-            "name": "\\{review}Зеленый свет",
-        },
-        "blue_light": {
-            "name": "\\{review}Синий свет",
-        },
-        "amber_light": {
-            "name": "\\{review}Янтарный свет",
-        },
-        "white_light": {
-            "name": "\\{review}Белый свет",
-        },
-        "on_off_light": {
-            "name": "\\{review}Включение/выключение света",
-        },
-        "pulse_light": {
-            "name": "\\{review}Импульсный свет",
-        },
-        "strobe_light": {
-            "name": "\\{review}Стробоскопический свет",
-        },
-        "beacon_light": {
-            "name": "\\{review}Маячковый свет",
-        },
-        "shiva": {
-            "name": "\\{review}Шива",
-        },
-        "electric_fence": {
-            "name": "\\{review}Электрический забор",
-        },
-        "switch_type_wheel": {
-            "name": "\\{review}Колёсный переключатель",
-        },
-        "kayak": {
-            "name": "\\{review}Каяк",
-        },
-        "mounted_gun": {
-            "name": "\\{review}Установленный пулемёт",
-        },
-        "tribe_axeman": {
-            "name": "\\{review}Топорщик племени",
-        },
-        "compy": {
-            "name": "\\{review}Компсогнат",
-        },
-        "tribe_pipeman": {
-            "name": "\\{review}Пользователь духовой трубки племени",
-        },
-        "lizard": {
-            "name": "\\{review}Ящерица",
-        },
-        "carcass": {
-            "name": "\\{review}Туша",
-        },
-        "bat_emitter": {
-            "name": "\\{review}Излучатель летучих мышей",
-        },
-        "tribe_boss": {
-            "name": "\\{review}Вождь племени",
-        },
-        "trex_alpha": {
-            "name": "\\{review}Ти-Рекс Альфа",
-        },
-        "raptor_emitter": {
-            "name": "\\{review}Излучатель Раптора",
-        },
-        "sthpac_mercenary": {
-            "name": "\\{review}Наёмник из южной части Тихого океана",
-        },
-        "train": {
-            "name": "\\{review}Поезд",
-        },
-        "patrol_dog": {
-            "name": "\\{review}Собака",
-        },
-        "huskie": {
-            "name": "\\{review}Собака",
-        },
-        "electric_cleaner": {
-            "name": "\\{review}Электрический очиститель",
-        },
-        "punk_1": {
-            "name": "\\{review}Панк 1",
-        },
-        "punk_2": {
-            "name": "\\{review}Панк 2",
-        },
-        "upv": {
-            "name": "\\{review}Минисуб",
+            "exit_game": "Выход",
+            "exit_to_title": "Выйти в меню",
+            "load_game": "Загрузить игру",
+            "mode_new_game": "Новая игра",
+            "mode_new_game_jp": "Японская новая игра",
+            "mode_new_game_jp_plus": "Японская новая игра+",
+            "mode_new_game_plus": "Новая игра+",
+            "new_game": "Новая игра",
+            "play_previous_levels": "\\{review}Играть в предыдущие уровни",
+            "restart_level": "Перезапустить уровень",
+            "save_game": "Сохранить игру",
+            "save_slot_unsupported": "\\{review}Это сохранение не поддерживает эту функцию.",
+            "select_level": "Выбор уровня",
+            "select_mode": "Выбор режима",
+            "select_save": "\\{review}Выбрать сохранение",
+            "story_so_far": "История до сих пор...",
+        },
+        "pause": {
+            "are_you_sure": "Вы уверены?",
+            "continue": "Остаться",
+            "exit_to_title": "Выйти в меню?",
+            "no": "Нет",
+            "paused": "Пауза",
+            "quit": "Выйти в меню",
+            "yes": "Да",
+        },
+        "photo_mode": {
+            "advance_frame": "Дополнительный кадр",
+            "camera_move_prompt": "Двигать камеру",
+            "camera_reset_prompt": "Сбросить камеру",
+            "camera_roll_prompt": "Вращать камеру",
+            "camera_rotate_90_prompt": "Поворот на 90°",
+            "camera_rotate_prompt": "Повернуть камеру",
+            "change_lara_pose": "Изменить позу Лары",
+            "fov_prompt": "Изменить угол обзора",
+            "lara_move_prompt": "Двигать Лару",
+            "lara_reset_prompt": "Сбросить Лару",
+            "lara_roll_prompt": "Вращать Лару",
+            "lara_rotate_90_prompt": "Поворот Лары на 90°",
+            "lara_rotate_prompt": "Повернуть Лару",
+            "snap_prompt": "Сделать скриншот",
+            "title_camera_pos": "Фоторежим",
+            "title_lara_pos": "Положение Лары",
+            "toggle_help": "Вкл/выкл помощь",
+        },
+        "settings": {
+            "common": {
+                "all_hidden_disclaimer": "\\{review}Настройки отключены для этого набора уровней.",
+                "chroma": "Chroma",
+                "edit_value": "Изменить значение",
+                "frozen_option_disclaimer": "Этот параметр принудительно установлен редактором уровней и не может быть изменён.",
+                "hue": "Оттенок",
+                "lightness": "Светлота",
+                "restore_default": "По умолчанию",
+                "toggle_help": "Показать помощь",
+            },
+            "controls": {
+                "backend": {
+                    "controller": "Контроллер",
+                    "keyboard": "Клавиатура",
+                },
+                "customize": "Настроить управление",
+                "layout": {
+                    "custom_1": "Пользовательская схема 1",
+                    "custom_2": "Пользовательская схема 2",
+                    "custom_3": "Пользовательская схема 3",
+                    "default": "По умолчанию",
+                },
+                "tabs": {
+                    "basics": "Движение",
+                    "items": "Предметы",
+                    "misc": "Разное",
+                    "system": "Система",
+                }
+            },
+            "gameplay": {
+                "tabs": {
+                    "controls": "Управление",
+                    "fixes": "Исправления",
+                    "general": "Основные",
+                    "mods": "Модификации",
+                    "presets": "\\{review}Пресеты",
+                },
+                "title": "Игровой процесс",
+            },
+            "graphic_settings": {
+                "tabs": {
+                    "bars": "\\{review}Брусья",
+                    "rendering": "Графика",
+                    "ui": "Интерфейс",
+                    "visuals": "Визуальные эффекты",
+                },
+                "title": "Настройки изображения",
+            },
+            "sound": {
+                "tabs": {
+                    "misc": "\\{review}Разное",
+                    "volume": "\\{review}Громкость",
+                },
+                "title": "Настройки звука",
+            }
+        },
+        "stats": {
+            "ammo": "Попадания/выстрелы",
+            "ammo_hits": "\\{review}Попадания",
+            "ammo_used": "\\{review}Использовано боеприпасов",
+            "assault_best_time_fmt": "\\{review}%s",
+            "assault_finish": "\\{review}Завершить",
+            "assault_no_times_set": "\\{review}Время не установлено",
+            "assault_other_times_fmt": "\\{review}%s",
+            "assault_title": "\\{review}ЛУЧШИЕ ВРЕМЕНА",
+            "basic_fmt": "%d",
+            "bonus_statistics": "Бонусная статистика",
+            "deaths": "Смертей",
+            "detail_fmt": "%d из %d",
+            "distance_travelled": "Пройденное расстояние",
+            "final_statistics": "Финальная статистика",
+            "gym_assault_course": "\\{review}Полоса препятствий",
+            "gym_racetrack_course": "\\{review}Гоночная трасса",
+            "kills": "Убито",
+            "level": "Уровень",
+            "medipacks_used": "Использовано аптечек",
+            "none": "\\{review}Нет",
+            "pickups": "Предметы",
+            "secrets": "Секреты",
+            "time_taken": "Время",
+        }
+    },
+    "console": {
+        "cmd": {
+            "braid": {
+                "help": "Переключает косу Лары.",
+            },
+            "cheats": {
+                "help": "Вкл/выкл внутриигровые читы.",
+            },
+            "clear": {
+                "help": "\\{review}Очищает видимые журналы консоли.",
+            },
+            "debug": {
+                "help": "Переключает визуальную отладочную информацию.",
+            },
+            "drain": {
+                "help": "Осушает текущую комнату, удаляет воду.",
+            },
+            "end_level": {
+                "help": "Завершает текущий уровень.",
+            },
+            "exit": {
+                "help": "Выходит из игры.",
+            },
+            "flipmap": {
+                "help": "Переключает переворачивание карты.",
+            },
+            "flood": {
+                "help": "Затапливает текущую комнату водой.",
+            },
+            "fly": {
+                "help": "Переключает режим полета.",
+            },
+            "fps": {
+                "help": "Изменяет значение FPS.",
+            },
+            "give": {
+                "help": "Добавляет указанный предмет в инвентарь Лары.",
+                "invalid_secret": "Невалидный секрет: %s (валидные секреты: %s)",
+                "secret_given": "Добавлен секрет %s",
+                "secret_list": "Собрано секретов: %d из %d (%s)",
+                "secret_none": "Собрано секретов: %d из %d",
+                "secret_taken": "Удалён секрет %s",
+            },
+            "give_secret": {
+                "help": "Перечисляет секреты Лары, или добавляет/удаляет секрет по номеру.",
+            },
+            "heal": {
+                "help": "Восстанавливает здоровье Лары.",
+            },
+            "help": {
+                "help": "Показывает справку по всем командам или подробную справку по одной.",
+                "list": "Доступные команды:",
+            },
+            "hp": {
+                "help": "Устанавливает здоровье Лары на указанное значение.",
+            },
+            "immune": {
+                "help": "Переключает неуязвимость (в некоторых ситуациях Лара всё ещё может умереть).",
+                "off": "Лара теперь уязвима",
+                "on": "Теперь Лара неуязвима для повреждений",
+            },
+            "inf_sprint": {
+                "help": "\\{review}Переключает бесконечный бег.",
+                "off": "\\{review}Лара больше не может бегать вечно",
+                "on": "\\{review}Лара теперь может бегать вечно",
+            },
+            "kill": {
+                "help": "Убивает ближайших врагов.",
+            },
+            "lighting": {
+                "help": "Переключает освещение.",
+            },
+            "load": {
+                "help": "\\{review}Загружает игру из указанного слота сохранения или из быстрого сохранения.",
+            },
+            "lua": {
+                "help": "Выполняет заданную строку кода Lua.",
+                "runtime_error": "Ошибка выполнения Lua: %s",
+                "syntax_error": "Ошибка синтаксиса Lua: %s",
+            },
+            "mod": {
+                "help": "\\{review}Переключается на указанный мод и перезапускает игру.",
+            },
+            "music": {
+                "help": "Воспроизводит музыкальную дорожку с указанным идентификатором.",
+            },
+            "play_cutscene": {
+                "help": "Воспроизводит кат-сцену с указанным номером.",
+            },
+            "play_demo": {
+                "help": "Воспроизводит демо с указанным номером.",
+            },
+            "play_gym": {
+                "help": "Воспроизводит уровень Тренажёрный зал",
+            },
+            "play_level": {
+                "help": "Воспроизводит уровень с указанным именем или номером",
+            },
+            "play_music": {
+                "invalid_track": "Невалидная музыка",
+                "stopped": "\\{review}Музыка остановлена",
+                "track": "Воспроизведение музыки %d",
+            },
+            "pos": {
+                "help": "Показывает позицию Лары",
+            },
+            "save": {
+                "help": "\\{review}Сохраняет игру в указанный слот сохранения или в следующий слот быстрого сохранения.",
+            },
+            "screenshot": {
+                "help": "\\{review}Сохраняет скриншот на диск с возможным указанием пути.",
+            },
+            "set": {
+                "help": "Отображает или обновляет указанный параметр конфигурации",
+            },
+            "sfx": {
+                "help": "Воспроизводит звуковой эффект с указанным идентификатором",
+            },
+            "spawn": {
+                "fail": "\\{review}Не удалось создать запрошенный объект",
+                "success": "\\{review}Запрошенный объект появился рядом с Ларой",
+            },
+            "speed": {
+                "help": "Изменяет скорость игры",
+            },
+            "strings": {
+                "help": "Перезагружает текущие языковые файлы с диска.",
+            },
+            "teleport": {
+                "item": "Телепортировано к объекту: %d",
+                "item_fail": "Невозможно телепортировать к объекту: %d",
+                "object": "Телепортировано к объекту: %s",
+                "object_fail": "Невозможно телепортировать к объекту: %s",
+                "pos": "Телепортировано в позицию: %.3f %.3f %.3f",
+                "pos_fail": "Невозможно телепортировать в позицию: %.3f %.3f %.3f",
+                "room": "Телепортировано в комнату: %d",
+                "room_fail": "Невозможно телепортировать в комнату: %d",
+            },
+            "textures": {
+                "help": "\\{review}Переключает отображение текстур.",
+            },
+            "title": {
+                "help": "Возвращает на титульный экран",
+            },
+            "tp": {
+                "help": "Телепортирует Лару в указанную позицию или номер комнаты.",
+            },
+            "trigger": {
+                "help": "\\{review}Активирует или деактивирует предмет по идентификатору, имени предмета или имени объекта.",
+                "invalid_item": "\\{review}Недопустимый предмет: %s",
+                "no_match": "\\{review}Неизвестная цель: %s",
+                "not_found": "\\{review}Совпадающие предметы не найдены для: %s",
+                "triggered": "\\{review}Активированный предмет(ы): %s",
+                "untriggered": "\\{review}Неактивированный предмет(ы): %s",
+            },
+            "vsync": {
+                "help": "Переключает вертикальную синхронизацию.",
+            },
+            "weather": {
+                "help": "\\{review}Изменяет текущий тип погоды.",
+                "invalid": "\\{review}Неверная погода: %s (допустимо: %s)",
+                "set": "\\{review}Погода установлена на %s",
+            },
+            "winston": {
+                "dead": "\\{review}Ваш дворецкий мёртв. Ты монстр!",
+                "spawn_failed": "\\{review}Не удалось вызвать Уинстона",
+                "spawned": "\\{review}Вызван Уинстон рядом с Ларой",
+                "teleported": "\\{review}Вызван Уинстон рядом с Ларой",
+            },
+            "wireframe": {
+                "help": "Переключает рендеринг каркаса.",
+            }
+        }
+    },
+    "dynamic": {
+        "config_presets": {
+            "tr1_pc": "\\{review}TR1 PC",
+            "tr1_ps1": "\\{review}TR1 PS1",
+            "tr2_pc": "\\{review}TR2 PC",
+            "tr2_ps1": "\\{review}TR2 PS1",
+            "tr3_pc": "\\{review}TR3 PC",
+            "tr3_ps1": "\\{review}TR3 PS1",
+        },
+        "enums": {
+            "bar_look": {
+                "tr1_pc": "TR1 PC",
+                "tr2_pc": "TR2 PC",
+                "tr2_ps1": "\\{review}TR2 PS1",
+                "tr3_pc": "TR3 PC",
+                "tr3_ps1": "TR3 PS1",
+            },
+            "lara_outfit": {
+                "default": "\\{review}По умолчанию",
+                "tr1_bacon_lara": "\\{review}Лара Бекон",
+                "tr1_classic": "\\{review}TR1 Классический",
+                "tr1_combo": "\\{review}TR1 Комбинированный",
+                "tr1_golden_bacon_lara": "\\{review}Золотая Лара Бекон",
+                "tr1_golden_lara": "\\{review}TR1 Золотая Лара",
+                "tr1_gym": "\\{review}TR1 Тренировочный",
+                "tr1_mauled": "\\{review}TR1 Искалеченная",
+                "tr23_golden_lara": "\\{review}TR2/3 Золотая Лара",
+                "tr2_bomber_jacket": "\\{review}Куртка-бомбер",
+                "tr2_classic": "\\{review}TR2 Классический",
+                "tr2_diving_suit": "\\{review}Водолазный костюм",
+                "tr2_gym": "\\{review}TR2 Тренировочный",
+                "tr2_robe": "\\{review}Платье",
+                "tr2_vegas": "\\{review}Лас-Вегас",
+                "tr3_antarctica": "\\{review}Антарктида",
+                "tr3_catsuit": "\\{review}Кэтсьют",
+                "tr3_classic": "\\{review}TR3 Классический",
+                "tr3_gym": "\\{review}TR3 Тренировочный",
+                "tr3_nevada": "\\{review}Невада",
+                "tr3_south_pacific": "\\{review}Южный Тихий океан",
+            }
+        }
+    },
+    "enums": {
+        "ALLY_HOSTILITY_POLICY": {
+            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "\\{review}Индивидуально",
+            "ALLY_HOSTILITY_POLICY_SHARED": "\\{review}Общее",
+        },
+        "ASPECT_MODE": {
+            "ASPECT_MODE_16_10": "16:10",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_ANY": "АВТО",
+        },
+        "BACKGROUND_TYPE": {
+            "BK_BLACK": "\\{review}Черный",
+            "BK_IMAGE": "\\{review}Изображение",
+            "BK_MONOCHROME": "\\{review}Монохром",
+            "BK_MONOCHROME_COOL": "\\{review}Монохромный (холодный)",
+            "BK_MONOCHROME_WARM": "\\{review}Монохромный (теплый)",
+            "BK_NONE": "\\{review}Прозрачный",
+            "BK_PATTERN_STATIC": "\\{review}Статический",
+            "BK_PATTERN_WAVE": "\\{review}Волна",
+            "BK_TRANSPARENT_DARK": "\\{review}Очень темно",
+            "BK_TRANSPARENT_MEDIUM": "\\{review}Темно",
+        },
+        "BAR_SHOW_MODE": {
+            "BAR_SHOW_MODE_ALWAYS": "Всегда",
+            "BAR_SHOW_MODE_BOSS_ONLY": "Только боссы",
+            "BAR_SHOW_MODE_NEVER": "Никогда",
+        },
+        "BILLBOARD_LOCK_MODE": {
+            "BILLBOARD_LOCK_NONE": "\\{review}Нет",
+            "BILLBOARD_LOCK_PERSPECTIVE": "\\{review}Перспектива",
+            "BILLBOARD_LOCK_ROLL": "\\{review}Крен",
+            "BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Крен и тангаж",
+        },
+        "CAMERA_MODE": {
+            "CAMERA_MODE_TR1": "TR1",
+            "CAMERA_MODE_TR2": "TR2",
+            "CAMERA_MODE_TR3": "\\{review}TR3",
+        },
+        "INPUT_BACKEND": {
+            "INPUT_BACKEND_CONTROLLER": "\\{review}Контроллер",
+            "INPUT_BACKEND_KEYBOARD": "\\{review}Клавиатура",
+        },
+        "INPUT_ROLE": {
+            "INPUT_ROLE_ACTION": "Действие",
+            "INPUT_ROLE_CAMERA_BACK": "Камера назад",
+            "INPUT_ROLE_CAMERA_DOWN": "Камера вниз",
+            "INPUT_ROLE_CAMERA_FORWARD": "Камера вперёд",
+            "INPUT_ROLE_CAMERA_LEFT": "Камера влево",
+            "INPUT_ROLE_CAMERA_RESET": "\\{review}Сброс камеры",
+            "INPUT_ROLE_CAMERA_RIGHT": "Камера вправо",
+            "INPUT_ROLE_CAMERA_UP": "Камера вверх",
+            "INPUT_ROLE_CHANGE_OUTFIT": "\\{review}Сменить костюм",
+            "INPUT_ROLE_CHANGE_TARGET": "Изменить цель",
+            "INPUT_ROLE_CROUCH": "\\{review}Присесть",
+            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "\\{review}Цикл контраста освещения",
+            "INPUT_ROLE_DOWN": "Назад",
+            "INPUT_ROLE_DRAW_WEAPON": "Оружие",
+            "INPUT_ROLE_ENTER_CONSOLE": "Консоль разработчика",
+            "INPUT_ROLE_EQUIP_AUTOS": "Оснастить автоматические пистолеты",
+            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Оснастить Дезерт Игл",
+            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Оснастить гранатомет",
+            "INPUT_ROLE_EQUIP_HARPOON": "\\{review}Оснастить гарпуном",
+            "INPUT_ROLE_EQUIP_M16": "\\{review}Оснастить M16",
+            "INPUT_ROLE_EQUIP_MAGNUMS": "Магнумы",
+            "INPUT_ROLE_EQUIP_MP5": "\\{review}Оснастить MP5",
+            "INPUT_ROLE_EQUIP_PISTOLS": "Пистолеты",
+            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Экипировать ракетную установку",
+            "INPUT_ROLE_EQUIP_SHOTGUN": "Дробовик",
+            "INPUT_ROLE_EQUIP_UZIS": "Узи",
+            "INPUT_ROLE_FLY_CHEAT": "Чит Полёт",
+            "INPUT_ROLE_FPS": "Показать FPS",
+            "INPUT_ROLE_INVENTORY": "Инвентарь",
+            "INPUT_ROLE_ITEM_CHEAT": "Чит Предметы",
+            "INPUT_ROLE_JUMP": "Прыжок",
+            "INPUT_ROLE_LEFT": "Влево",
+            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Чит Пропуск уровня",
+            "INPUT_ROLE_LOAD": "\\{review}Загрузить",
+            "INPUT_ROLE_LOOK": "Обзор",
+            "INPUT_ROLE_PAUSE": "Пауза",
+            "INPUT_ROLE_QUICK_LOAD": "\\{review}Быстрая загрузка",
+            "INPUT_ROLE_QUICK_SAVE": "\\{review}Быстрое сохранение",
+            "INPUT_ROLE_RIGHT": "Вправо",
+            "INPUT_ROLE_ROLL": "Кувырок",
+            "INPUT_ROLE_SAVE": "\\{review}Сохранить",
+            "INPUT_ROLE_SCREENSHOT": "\\{review}Скриншот",
+            "INPUT_ROLE_SLOW": "Ходьба",
+            "INPUT_ROLE_SPRINT": "\\{review}Бег",
+            "INPUT_ROLE_STEP_LEFT": "Шаг влево",
+            "INPUT_ROLE_STEP_RIGHT": "Шаг вправо",
+            "INPUT_ROLE_SWITCH_BORDERS": "Изменить размер рамки",
+            "INPUT_ROLE_SWITCH_UPSCALING": "Изменить коэффициент масштабирования",
+            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "\\{review}Переключить билинейную фильтрацию",
+            "INPUT_ROLE_TOGGLE_FULLSCREEN": "\\{review}Переключить полноэкранный режим",
+            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Фоторежим",
+            "INPUT_ROLE_TOGGLE_TEXTURES": "\\{review}Переключить текстуры",
+            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Вкл/выкл четырёхугольную интерполяцию",
+            "INPUT_ROLE_TOGGLE_UI": "Вкл/выкл интерфейс",
+            "INPUT_ROLE_TOGGLE_WIREFRAME": "\\{review}Переключить каркасный режим",
+            "INPUT_ROLE_TURBO_CHEAT": "Турбо скорость",
+            "INPUT_ROLE_UP": "Вперёд",
+            "INPUT_ROLE_USE_BIG_MEDI": "Большая аптечка",
+            "INPUT_ROLE_USE_FLARE": "\\{review}Вспышка",
+            "INPUT_ROLE_USE_SMALL_MEDI": "Малая аптечка",
+        },
+        "JUMP_LOCK_MODE": {
+            "JUMP_LOCK_DISABLED": "Отключена",
+            "JUMP_LOCK_LEGACY": "Оригинал",
+            "JUMP_LOCK_TUNED": "Оптимально",
+        },
+        "LIGHTING_CONTRAST": {
+            "LIGHTING_CONTRAST_HIGH": "Высокая",
+            "LIGHTING_CONTRAST_LOW": "Низкая",
+            "LIGHTING_CONTRAST_MEDIUM": "Средняя",
+        },
+        "LOADING_SCREENS_MODE": {
+            "LOADING_SCREENS_ALWAYS": "\\{review}Всегда",
+            "LOADING_SCREENS_DISABLED": "\\{review}Отключено",
+            "LOADING_SCREENS_NEW_GAMES": "\\{review}Новые игры",
+        },
+        "LOOK_MODE": {
+            "LOOK_MODE_ENHANCED": "Расширенный",
+            "LOOK_MODE_RESTRICTED": "Ограниченный",
+            "LOOK_MODE_UNRESTRICTED": "Неограниченный",
+        },
+        "MUSIC_LOAD_CONDITION": {
+            "MUSIC_LOAD_CONDITION_ALWAYS": "Всегда",
+            "MUSIC_LOAD_CONDITION_NEVER": "Никогда",
+            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Кроме фона",
+        },
+        "PROJECTILE_AREA_DAMAGE": {
+            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "\\{review}Множественное сканирование",
+            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "\\{review}Однократное сканирование",
+        },
+        "QUICK_GUNS_MODE": {
+            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Достать или убрать",
+            "QUICK_GUNS_MODE_DRAW_ONLY": "Только достать",
+        },
+        "SCREENSHOT_FORMAT": {
+            "SCREENSHOT_FORMAT_JPEG": "JPG",
+            "SCREENSHOT_FORMAT_PNG": "PNG",
+        },
+        "SHADOW_TYPE": {
+            "SHADOW_TYPE_CIRCLE": "\\{review}Круг",
+            "SHADOW_TYPE_OCTAGON": "\\{review}Восьмиугольник",
+            "SHADOW_TYPE_SPRITE": "\\{review}Спрайт",
+        },
+        "STAT_DETAIL_MODE": {
+            "STAT_DETAIL_MODE_DETAILED": "Подробная",
+            "STAT_DETAIL_MODE_FULL": "Полная",
+            "STAT_DETAIL_MODE_MINIMAL": "Минимальная",
+        },
+        "TARGET_LOCK_MODE": {
+            "TARGET_LOCK_MODE_FULL": "Полный захват",
+            "TARGET_LOCK_MODE_NONE": "Без захвата",
+            "TARGET_LOCK_MODE_SEMI": "Полузахват",
+        },
+        "TEXTURE_FILTER": {
+            "TEXTURE_FILTER_BILINEAR": "Билинейная",
+            "TEXTURE_FILTER_POINT": "Точечная выборка",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Внизу по центру",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Внизу слева",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Внизу справа",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Вверху по центру",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Вверху слева",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Вверху справа",
+        },
+        "UI_STYLE": {
+            "UI_STYLE_PC": "PC",
+            "UI_STYLE_PS1": "PS1",
+        },
+        "WALL_GLITCH_MODE": {
+            "WALL_GLITCH_FIXED": "Исправлен",
+            "WALL_GLITCH_TR1": "TR1",
+            "WALL_GLITCH_TR2": "TR2",
         }
     },
     "settings": {
@@ -2342,217 +1481,1222 @@
             "description": "Цвет воды.",
         }
     },
-    "enums": {
-        "ALLY_HOSTILITY_POLICY": {
-            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "\\{review}Индивидуально",
-            "ALLY_HOSTILITY_POLICY_SHARED": "\\{review}Общее",
+    "objects": {
+        "alarm_sound": {
+            "name": "\\{review}Тревога",
         },
-        "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
-            "ASPECT_MODE_4_3": "4:3",
-            "ASPECT_MODE_ANY": "АВТО",
+        "alligator": {
+            "name": "Аллигатор",
         },
-        "BACKGROUND_TYPE": {
-            "BK_BLACK": "\\{review}Черный",
-            "BK_IMAGE": "\\{review}Изображение",
-            "BK_MONOCHROME": "\\{review}Монохром",
-            "BK_MONOCHROME_COOL": "\\{review}Монохромный (холодный)",
-            "BK_MONOCHROME_WARM": "\\{review}Монохромный (теплый)",
-            "BK_NONE": "\\{review}Прозрачный",
-            "BK_PATTERN_STATIC": "\\{review}Статический",
-            "BK_PATTERN_WAVE": "\\{review}Волна",
-            "BK_TRANSPARENT_DARK": "\\{review}Очень темно",
-            "BK_TRANSPARENT_MEDIUM": "\\{review}Темно",
+        "alphabet": {
+            "name": "\\{review}Шрифт по умолчанию",
         },
-        "BAR_SHOW_MODE": {
-            "BAR_SHOW_MODE_ALWAYS": "Всегда",
-            "BAR_SHOW_MODE_BOSS_ONLY": "Только боссы",
-            "BAR_SHOW_MODE_NEVER": "Никогда",
+        "alphabet_small": {
+            "name": "\\{review}Маленький шрифт",
         },
-        "BILLBOARD_LOCK_MODE": {
-            "BILLBOARD_LOCK_NONE": "\\{review}Нет",
-            "BILLBOARD_LOCK_PERSPECTIVE": "\\{review}Перспектива",
-            "BILLBOARD_LOCK_ROLL": "\\{review}Крен",
-            "BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Крен и тангаж",
+        "amber_light": {
+            "name": "\\{review}Янтарный свет",
         },
-        "CAMERA_MODE": {
-            "CAMERA_MODE_TR1": "TR1",
-            "CAMERA_MODE_TR2": "TR2",
-            "CAMERA_MODE_TR3": "\\{review}TR3",
+        "animating_1": {
+            "name": "\\{review}Анимация объекта 1",
         },
-        "INPUT_BACKEND": {
-            "INPUT_BACKEND_CONTROLLER": "\\{review}Контроллер",
-            "INPUT_BACKEND_KEYBOARD": "\\{review}Клавиатура",
+        "animating_2": {
+            "name": "\\{review}Анимация объекта 2",
         },
-        "INPUT_ROLE": {
-            "INPUT_ROLE_ACTION": "Действие",
-            "INPUT_ROLE_CAMERA_BACK": "Камера назад",
-            "INPUT_ROLE_CAMERA_DOWN": "Камера вниз",
-            "INPUT_ROLE_CAMERA_FORWARD": "Камера вперёд",
-            "INPUT_ROLE_CAMERA_LEFT": "Камера влево",
-            "INPUT_ROLE_CAMERA_RESET": "\\{review}Сброс камеры",
-            "INPUT_ROLE_CAMERA_RIGHT": "Камера вправо",
-            "INPUT_ROLE_CAMERA_UP": "Камера вверх",
-            "INPUT_ROLE_CHANGE_OUTFIT": "\\{review}Сменить костюм",
-            "INPUT_ROLE_CHANGE_TARGET": "Изменить цель",
-            "INPUT_ROLE_CROUCH": "\\{review}Присесть",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "\\{review}Цикл контраста освещения",
-            "INPUT_ROLE_DOWN": "Назад",
-            "INPUT_ROLE_DRAW_WEAPON": "Оружие",
-            "INPUT_ROLE_ENTER_CONSOLE": "Консоль разработчика",
-            "INPUT_ROLE_EQUIP_AUTOS": "Оснастить автоматические пистолеты",
-            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Оснастить Дезерт Игл",
-            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "\\{review}Оснастить гранатомет",
-            "INPUT_ROLE_EQUIP_HARPOON": "\\{review}Оснастить гарпуном",
-            "INPUT_ROLE_EQUIP_M16": "\\{review}Оснастить M16",
-            "INPUT_ROLE_EQUIP_MAGNUMS": "Магнумы",
-            "INPUT_ROLE_EQUIP_MP5": "\\{review}Оснастить MP5",
-            "INPUT_ROLE_EQUIP_PISTOLS": "Пистолеты",
-            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Экипировать ракетную установку",
-            "INPUT_ROLE_EQUIP_SHOTGUN": "Дробовик",
-            "INPUT_ROLE_EQUIP_UZIS": "Узи",
-            "INPUT_ROLE_FLY_CHEAT": "Чит Полёт",
-            "INPUT_ROLE_FPS": "Показать FPS",
-            "INPUT_ROLE_INVENTORY": "Инвентарь",
-            "INPUT_ROLE_ITEM_CHEAT": "Чит Предметы",
-            "INPUT_ROLE_JUMP": "Прыжок",
-            "INPUT_ROLE_LEFT": "Влево",
-            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Чит Пропуск уровня",
-            "INPUT_ROLE_LOAD": "\\{review}Загрузить",
-            "INPUT_ROLE_LOOK": "Обзор",
-            "INPUT_ROLE_PAUSE": "Пауза",
-            "INPUT_ROLE_QUICK_LOAD": "\\{review}Быстрая загрузка",
-            "INPUT_ROLE_QUICK_SAVE": "\\{review}Быстрое сохранение",
-            "INPUT_ROLE_RIGHT": "Вправо",
-            "INPUT_ROLE_ROLL": "Кувырок",
-            "INPUT_ROLE_SAVE": "\\{review}Сохранить",
-            "INPUT_ROLE_SCREENSHOT": "\\{review}Скриншот",
-            "INPUT_ROLE_SLOW": "Ходьба",
-            "INPUT_ROLE_SPRINT": "\\{review}Бег",
-            "INPUT_ROLE_STEP_LEFT": "Шаг влево",
-            "INPUT_ROLE_STEP_RIGHT": "Шаг вправо",
-            "INPUT_ROLE_SWITCH_BORDERS": "Изменить размер рамки",
-            "INPUT_ROLE_SWITCH_UPSCALING": "Изменить коэффициент масштабирования",
-            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "\\{review}Переключить билинейную фильтрацию",
-            "INPUT_ROLE_TOGGLE_FULLSCREEN": "\\{review}Переключить полноэкранный режим",
-            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Фоторежим",
-            "INPUT_ROLE_TOGGLE_TEXTURES": "\\{review}Переключить текстуры",
-            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Вкл/выкл четырёхугольную интерполяцию",
-            "INPUT_ROLE_TOGGLE_UI": "Вкл/выкл интерфейс",
-            "INPUT_ROLE_TOGGLE_WIREFRAME": "\\{review}Переключить каркасный режим",
-            "INPUT_ROLE_TURBO_CHEAT": "Турбо скорость",
-            "INPUT_ROLE_UP": "Вперёд",
-            "INPUT_ROLE_USE_BIG_MEDI": "Большая аптечка",
-            "INPUT_ROLE_USE_FLARE": "\\{review}Вспышка",
-            "INPUT_ROLE_USE_SMALL_MEDI": "Малая аптечка",
+        "animating_3": {
+            "name": "\\{review}Анимация объекта 3",
         },
-        "JUMP_LOCK_MODE": {
-            "JUMP_LOCK_DISABLED": "Отключена",
-            "JUMP_LOCK_LEGACY": "Оригинал",
-            "JUMP_LOCK_TUNED": "Оптимально",
+        "animating_4": {
+            "name": "\\{review}Анимация объекта 4",
         },
-        "LIGHTING_CONTRAST": {
-            "LIGHTING_CONTRAST_HIGH": "Высокая",
-            "LIGHTING_CONTRAST_LOW": "Низкая",
-            "LIGHTING_CONTRAST_MEDIUM": "Средняя",
+        "animating_5": {
+            "name": "\\{review}Анимация объекта 5",
         },
-        "LOADING_SCREENS_MODE": {
-            "LOADING_SCREENS_ALWAYS": "\\{review}Всегда",
-            "LOADING_SCREENS_DISABLED": "\\{review}Отключено",
-            "LOADING_SCREENS_NEW_GAMES": "\\{review}Новые игры",
+        "animating_6": {
+            "name": "\\{review}Анимация объекта 6",
         },
-        "LOOK_MODE": {
-            "LOOK_MODE_ENHANCED": "Расширенный",
-            "LOOK_MODE_RESTRICTED": "Ограниченный",
-            "LOOK_MODE_UNRESTRICTED": "Неограниченный",
+        "ape": {
+            "name": "Обезьяна",
         },
-        "MUSIC_LOAD_CONDITION": {
-            "MUSIC_LOAD_CONDITION_ALWAYS": "Всегда",
-            "MUSIC_LOAD_CONDITION_NEVER": "Никогда",
-            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Кроме фона",
+        "assault_digits": {
+            "name": "\\{review}Цифры штурма",
         },
-        "PROJECTILE_AREA_DAMAGE": {
-            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "\\{review}Множественное сканирование",
-            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "\\{review}Однократное сканирование",
+        "assault_target": {
+            "name": "\\{review}Цель атаки",
         },
-        "QUICK_GUNS_MODE": {
-            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Достать или убрать",
-            "QUICK_GUNS_MODE_DRAW_ONLY": "Только достать",
+        "autos": {
+            "name": "\\{review}Автоматические пистолеты",
         },
-        "SCREENSHOT_FORMAT": {
-            "SCREENSHOT_FORMAT_JPEG": "JPG",
-            "SCREENSHOT_FORMAT_PNG": "PNG",
+        "autos_ammo": {
+            "name": "\\{review}Обоймы для автоматических пистолетов",
         },
-        "SHADOW_TYPE": {
-            "SHADOW_TYPE_CIRCLE": "\\{review}Круг",
-            "SHADOW_TYPE_OCTAGON": "\\{review}Восьмиугольник",
-            "SHADOW_TYPE_SPRITE": "\\{review}Спрайт",
+        "bacon_lara": {
+            "name": "Двойник Лары",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Подробная",
-            "STAT_DETAIL_MODE_FULL": "Полная",
-            "STAT_DETAIL_MODE_MINIMAL": "Минимальная",
+        "baldy": {
+            "name": "Лысый дядька",
         },
-        "TARGET_LOCK_MODE": {
-            "TARGET_LOCK_MODE_FULL": "Полный захват",
-            "TARGET_LOCK_MODE_NONE": "Без захвата",
-            "TARGET_LOCK_MODE_SEMI": "Полузахват",
+        "bandit_1": {
+            "name": [
+                "\\{review}Наёмник 1",
+                "\\{review}Маскированный головорез 1",
+            ]
         },
-        "TEXTURE_FILTER": {
-            "TEXTURE_FILTER_BILINEAR": "Билинейная",
-            "TEXTURE_FILTER_POINT": "Точечная выборка",
+        "bandit_2": {
+            "name": [
+                "\\{review}Наёмник 2",
+                "\\{review}Маскированный головорез 2",
+            ]
         },
-        "UI_ELEMENT_LOCATION": {
-            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Внизу по центру",
-            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Внизу слева",
-            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Внизу справа",
-            "UI_ELEMENT_LOCATION_TOP_CENTER": "Вверху по центру",
-            "UI_ELEMENT_LOCATION_TOP_LEFT": "Вверху слева",
-            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Вверху справа",
+        "bandit_2b": {
+            "name": [
+                "\\{review}Наёмник 3",
+                "\\{review}Маскированный головорез 3",
+            ]
         },
-        "UI_STYLE": {
-            "UI_STYLE_PC": "PC",
-            "UI_STYLE_PS1": "PS1",
+        "barracuda": {
+            "name": "\\{review}Барракуда",
         },
-        "WALL_GLITCH_MODE": {
-            "WALL_GLITCH_FIXED": "Исправлен",
-            "WALL_GLITCH_TR1": "TR1",
-            "WALL_GLITCH_TR2": "TR2",
-        }
-    },
-    "dynamic": {
-        "enums": {
-            "bar_look": {
-                "tr1_pc": "TR1 PC",
-                "tr2_pc": "TR2 PC",
-                "tr2_ps1": "\\{review}TR2 PS1",
-                "tr3_pc": "TR3 PC",
-                "tr3_ps1": "TR3 PS1",
-            },
-            "lara_outfit": {
-                "default": "\\{review}По умолчанию",
-                "tr1_bacon_lara": "\\{review}Лара Бекон",
-                "tr1_classic": "\\{review}TR1 Классический",
-                "tr1_combo": "\\{review}TR1 Комбинированный",
-                "tr1_golden_bacon_lara": "\\{review}Золотая Лара Бекон",
-                "tr1_golden_lara": "\\{review}TR1 Золотая Лара",
-                "tr1_gym": "\\{review}TR1 Тренировочный",
-                "tr1_mauled": "\\{review}TR1 Искалеченная",
-                "tr23_golden_lara": "\\{review}TR2/3 Золотая Лара",
-                "tr2_bomber_jacket": "\\{review}Куртка-бомбер",
-                "tr2_classic": "\\{review}TR2 Классический",
-                "tr2_diving_suit": "\\{review}Водолазный костюм",
-                "tr2_gym": "\\{review}TR2 Тренировочный",
-                "tr2_robe": "\\{review}Платье",
-                "tr2_vegas": "\\{review}Лас-Вегас",
-                "tr3_antarctica": "\\{review}Антарктида",
-                "tr3_catsuit": "\\{review}Кэтсьют",
-                "tr3_classic": "\\{review}TR3 Классический",
-                "tr3_gym": "\\{review}TR3 Тренировочный",
-                "tr3_nevada": "\\{review}Невада",
-                "tr3_south_pacific": "\\{review}Южный Тихий океан",
-            }
+        "bartoli": {
+            "name": "\\{review}Марко Бартоли",
+        },
+        "bat": {
+            "name": "Летучая мышь",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Излучатель летучих мышей",
+        },
+        "beacon_light": {
+            "name": "\\{review}Маячковый свет",
+        },
+        "bear": {
+            "name": "Медведь",
+        },
+        "bell": {
+            "name": "\\{review}Колокол",
+        },
+        "big_bowl": {
+            "name": "\\{review}Чаша с лавой",
+        },
+        "big_eel": {
+            "name": "\\{review}Большой угорь",
+        },
+        "big_pod": {
+            "name": "Большое гнездо",
+        },
+        "big_spider": {
+            "name": "\\{review}Гигантский паук",
+        },
+        "bird_guardian": {
+            "name": "\\{review}Птице-монстр",
+        },
+        "bird_tweeter_1": {
+            "name": "\\{review}Капающая вода",
+        },
+        "bird_tweeter_2": {
+            "name": "\\{review}Поющие птицы",
+        },
+        "blade": {
+            "name": "\\{review}Клинок на стене",
+        },
+        "blood_1": {
+            "name": "Кровь 1",
+        },
+        "blood_2": {
+            "name": "Кровь 2",
+        },
+        "blue_light": {
+            "name": "\\{review}Синий свет",
+        },
+        "boat": {
+            "name": "Лодка",
+        },
+        "boat_bits": {
+            "name": "\\{review}Обломки лодки",
+        },
+        "body_part": {
+            "name": "Часть тела",
+        },
+        "bridge_flat": {
+            "name": "Плоский мост",
+        },
+        "bridge_tilt_1": {
+            "name": "Наклонный мост 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Наклонный мост 2",
+        },
+        "bubble_1": {
+            "name": "Пузыри 1",
+        },
+        "bubble_2": {
+            "name": "Пузыри 2",
+        },
+        "bubble_emitter": {
+            "name": "Источник пузырей",
+        },
+        "camera_target": {
+            "name": "Цель камеры",
+        },
+        "carcass": {
+            "name": "\\{review}Туша",
+        },
+        "ceiling_spikes": {
+            "name": "\\{review}Острый потолок",
+        },
+        "centaur": {
+            "name": "Кентавр",
+        },
+        "centaur_statue": {
+            "name": "Статуя",
+        },
+        "clock_chimes": {
+            "name": "\\{review}Часы убежища Бартоли",
+        },
+        "cog_1": {
+            "name": "Шестерёнка 1",
+        },
+        "cog_2": {
+            "name": "Шестерёнка 2",
+        },
+        "cog_3": {
+            "name": "Шестерёнка 3",
+        },
+        "combat_end": {
+            "name": "\\{review}Конец боя",
+        },
+        "compass": {
+            "name": "Компас",
+        },
+        "compy": {
+            "name": "\\{review}Компсогнат",
+        },
+        "controls": {
+            "name": "Управление",
+        },
+        "copter": {
+            "name": "\\{review}Вертолет",
+        },
+        "cowboy": {
+            "name": "Ковбой",
+        },
+        "crocodile": {
+            "name": "Крокодил",
+        },
+        "crow": {
+            "name": "\\{review}Ворон",
+        },
+        "cult_1": {
+            "name": "\\{review}Бандит в маске 1",
+        },
+        "cult_1a": {
+            "name": "\\{review}Бандит в маске 2",
+        },
+        "cult_1b": {
+            "name": "\\{review}Бандит в маске 3",
+        },
+        "cult_2": {
+            "name": "\\{review}Метатель ножей",
+        },
+        "cult_3": {
+            "name": "\\{review}Бандит с дробовиком",
+        },
+        "cut_shotgun": {
+            "name": "\\{review}Анимация дробовика",
+        },
+        "damocles_sword": {
+            "name": "Дамоклов меч",
+        },
+        "dart": {
+            "name": "Дротик",
+        },
+        "dart_effect": {
+            "name": "Эффект дротика",
+        },
+        "dart_emitter": {
+            "name": "Дротикомёт",
+        },
+        "desert_eagle": {
+            "name": "\\{review}Дезерт Игл",
+        },
+        "desert_eagle_ammo": {
+            "name": "\\{review}Магазины Дезерт Игл",
+        },
+        "detonator_box": {
+            "name": "\\{review}Коробка детонатора",
+        },
+        "ding_dong": {
+            "name": "\\{review}Дверной звонок",
+        },
+        "dino_mutant": {
+            "name": "Динозавр-мутант",
+        },
+        "disc": {
+            "name": "\\{review}Диск",
+        },
+        "disc_emitter": {
+            "name": "\\{review}Излучатель дисков",
+        },
+        "diver": {
+            "name": "\\{review}Водолаз",
+        },
+        "dog": {
+            "name": [
+                "\\{review}Собака",
+                "\\{review}Доберман",
+            ]
+        },
+        "door_1": {
+            "name": "Дверь 1",
+        },
+        "door_2": {
+            "name": "Дверь 2",
+        },
+        "door_3": {
+            "name": "Дверь 3",
+        },
+        "door_4": {
+            "name": "Дверь 4",
+        },
+        "door_5": {
+            "name": "Дверь 5",
+        },
+        "door_6": {
+            "name": "Дверь 6",
+        },
+        "door_7": {
+            "name": "Дверь 7",
+        },
+        "door_8": {
+            "name": "Дверь 8",
+        },
+        "dragon_back": {
+            "name": "\\{review}Дракон сзади",
+        },
+        "dragon_bones_1": {
+            "name": "\\{review}Заполнитель",
+        },
+        "dragon_bones_2": {
+            "name": "\\{review}Передние кости дракона",
+        },
+        "dragon_bones_3": {
+            "name": "\\{review}Задние кости дракона",
+        },
+        "dragon_front": {
+            "name": "\\{review}Дракон спереди",
+        },
+        "drawbridge": {
+            "name": "Подъемный мост",
+        },
+        "dust": {
+            "name": "Пыль",
+        },
+        "dying_monk": {
+            "name": "\\{review}Умирающий монах",
+        },
+        "eagle": {
+            "name": "\\{review}Орел",
+        },
+        "earthquake": {
+            "name": "Землетрясение",
+        },
+        "eel": {
+            "name": "\\{review}Угорь",
+        },
+        "electric_cleaner": {
+            "name": "\\{review}Электрический очиститель",
+        },
+        "electric_fence": {
+            "name": "\\{review}Электрический забор",
+        },
+        "electrical_light": {
+            "name": "\\{review}Электрический свет",
+        },
+        "ember": {
+            "name": "Уголь",
+        },
+        "ember_emitter": {
+            "name": "Источник углей",
+        },
+        "explosion_1": {
+            "name": "Взрыв 1",
+        },
+        "explosion_2": {
+            "name": "Взрыв 2",
+        },
+        "falling_block_1": {
+            "name": [
+                "Падающий блок",
+                "Разрушающийся пол",
+                "Разрушающиеся плиты",
+            ]
+        },
+        "falling_block_2": {
+            "name": [
+                "\\{review}Падающий блок 2",
+                "\\{review}Обрушивающийся пол 2",
+                "\\{review}Обрушивающиеся плитки 2",
+            ]
+        },
+        "falling_block_3": {
+            "name": [
+                "\\{review}Падающий блок 3",
+                "\\{review}Обрушивающийся пол 3",
+                "\\{review}Обрушивающиеся плитки 3",
+            ]
+        },
+        "falling_ceiling_1": {
+            "name": "Падающий потолок 1",
+        },
+        "falling_ceiling_2": {
+            "name": "Падающий потолок 2",
+        },
+        "fish_mutant": {
+            "name": "Рыба-мутант",
+        },
+        "flame": {
+            "name": [
+                "Пламя",
+                "Огонь",
+            ]
+        },
+        "flame_emitter": {
+            "name": [
+                "Источник пламени",
+                "Источник огня",
+            ]
+        },
+        "flame_emitter_big": {
+            "name": "\\{review}Генератор пламени (Большой)",
+        },
+        "flame_emitter_jet": {
+            "name": "\\{review}Генератор пламени (Струйный)",
+        },
+        "flame_emitter_side": {
+            "name": "\\{review}Генератор пламени (Боковой)",
+        },
+        "flame_emitter_small": {
+            "name": "\\{review}Генератор пламени (Малый)",
+        },
+        "flare": {
+            "name": "\\{review}Вспышка",
+        },
+        "flare_fire": {
+            "name": "\\{review}Огонь фальшфейера",
+        },
+        "flares_box": {
+            "name": "\\{review}Коробка вспышки",
+        },
+        "fx_reserved": {
+            "name": "\\{review}Серый диск",
+        },
+        "gamma": {
+            "name": "Гамма",
+        },
+        "general": {
+            "name": "\\{review}Миниподводная лодка",
+        },
+        "globe": {
+            "name": "\\{review}Глобус",
+        },
+        "glow": {
+            "name": "Свечение",
+        },
+        "glow_reserved": {
+            "name": "\\{review}Сияние карты",
+        },
+        "gondola": {
+            "name": "\\{review}Гондола",
+        },
+        "gong": {
+            "name": "\\{review}Гонг",
+        },
+        "gong_bonger": {
+            "name": "\\{review}Палка для гонга",
+        },
+        "graphics": {
+            "name": "Изображение",
+        },
+        "green_light": {
+            "name": "\\{review}Зеленый свет",
+        },
+        "grenade": {
+            "name": "Граната",
+        },
+        "grenade_launcher": {
+            "name": "\\{review}Гранатомёт",
+        },
+        "grenade_launcher_ammo": {
+            "name": "\\{review}Гранаты",
+        },
+        "gun_flash": {
+            "name": "Вспышка выстрела",
+        },
+        "gun_shell": {
+            "name": "\\{review}Патрон для пистолета",
+        },
+        "harpoon_bolt": {
+            "name": "\\{review}Гарпунный болт",
+        },
+        "harpoon_gun": {
+            "name": "\\{review}Гарпунное ружьё",
+        },
+        "harpoon_gun_ammo": {
+            "name": "\\{review}Гарпуны",
+        },
+        "hook": {
+            "name": "\\{review}Крюк",
+        },
+        "hot_liquid": {
+            "name": "\\{review}Дополнительный огонь",
+        },
+        "huskie": {
+            "name": "\\{review}Собака",
+        },
+        "icicle": {
+            "name": "\\{review}Сосульки",
+        },
+        "inv_background": {
+            "name": "\\{review}Фон меню",
+        },
+        "jelly": {
+            "name": "\\{review}Медуза",
+        },
+        "kayak": {
+            "name": "\\{review}Каяк",
+        },
+        "key_1": {
+            "name": "Ключ 1",
+        },
+        "key_2": {
+            "name": "Ключ 2",
+        },
+        "key_3": {
+            "name": "Ключ 3",
+        },
+        "key_4": {
+            "name": "Ключ 4",
+        },
+        "key_hole_1": {
+            "name": "Замочная скважина 1",
+        },
+        "key_hole_2": {
+            "name": "Замочная скважина 2",
+        },
+        "key_hole_3": {
+            "name": "Замочная скважина 3",
+        },
+        "key_hole_4": {
+            "name": "Замочная скважина 4",
+        },
+        "kill_all_triggered": {
+            "name": "\\{review}Полное уничтожение (активировано)",
+        },
+        "killer_statue": {
+            "name": "\\{review}Статуя с мечом",
+        },
+        "lara": {
+            "name": "Лара",
+        },
+        "lara_alarm": {
+            "name": "\\{review}Звонок тревоги",
+        },
+        "lara_autos": {
+            "name": "\\{review}Анимация автоматических пистолетов",
+        },
+        "lara_boat": {
+            "name": "\\{review}Анимация лодки",
+        },
+        "lara_desert_eagle": {
+            "name": "\\{review}Анимация Дезерт Игл",
+        },
+        "lara_extra": {
+            "name": "Дополнительная анимация Лары",
+        },
+        "lara_flare": {
+            "name": "\\{review}Анимация фальшфейера",
+        },
+        "lara_grenade": {
+            "name": "\\{review}Анимация гранатомёта",
+        },
+        "lara_hair": {
+            "name": "Коса Лары",
+        },
+        "lara_harpoon": {
+            "name": "\\{review}Анимация гарпуна",
+        },
+        "lara_m16": {
+            "name": "\\{review}Анимация M16",
+        },
+        "lara_magnums": {
+            "name": "Анимация магнумов",
+        },
+        "lara_mp5": {
+            "name": "\\{review}Анимация MP5",
+        },
+        "lara_pistols": {
+            "name": "Анимация пистолетов",
+        },
+        "lara_rocket": {
+            "name": "\\{review}Анимация ракетной установки",
+        },
+        "lara_shotgun": {
+            "name": "Анимация дробовика",
+        },
+        "lara_skidoo": {
+            "name": "\\{review}Анимация снегохода",
+        },
+        "lara_uzis": {
+            "name": "Анимация узи",
+        },
+        "larson": {
+            "name": "Ларсон",
+        },
+        "lava_wedge": {
+            "name": "Лава",
+        },
+        "lead_bar": {
+            "name": "Свинцовый слиток",
+        },
+        "lift": {
+            "name": "\\{review}Лифт",
+        },
+        "lightning_emitter": {
+            "name": "Излучатель молний",
+        },
+        "lion": {
+            "name": "Лев",
+        },
+        "lioness": {
+            "name": [
+                "Львица",
+                "Лев",
+            ]
+        },
+        "lizard": {
+            "name": "\\{review}Ящерица",
+        },
+        "m16": {
+            "name": "\\{review}M16",
+        },
+        "m16_ammo": {
+            "name": "\\{review}Магазины для M16",
+        },
+        "m16_flash": {
+            "name": "\\{review}Вспышка M16",
+        },
+        "magnums": {
+            "name": "Магнумы",
+        },
+        "magnums_ammo": {
+            "name": "Обоймы для магнума",
+        },
+        "mesh_swap_1": {
+            "name": "\\{review}Замена модели 1",
+        },
+        "mesh_swap_2": {
+            "name": "\\{review}Замена модели 2",
+        },
+        "mesh_swap_3": {
+            "name": "\\{review}Замена модели 3",
+        },
+        "midas_touch": {
+            "name": "Рука Мидаса",
+        },
+        "mine": {
+            "name": "\\{review}Водная мина",
+        },
+        "mini_copter": {
+            "name": "\\{review}Вертолет 2",
+        },
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Снаряд (Атлантическая бомба)",
+        },
+        "missile_atlantean_shard": {
+            "name": "\\{review}Снаряд (Атлантический осколок)",
+        },
+        "missile_flame": {
+            "name": "\\{review}Снаряд (Пламя)",
+        },
+        "missile_harpoon": {
+            "name": "\\{review}Снаряд (Гарпун)",
+        },
+        "missile_knife": {
+            "name": "\\{review}Снаряд (Нож)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Снаряд (Яд)",
+        },
+        "monk_1": {
+            "name": "\\{review}Монах 1",
+        },
+        "monk_2": {
+            "name": "\\{review}Монах 2",
+        },
+        "monkey": {
+            "name": "\\{review}Обезьяна",
+        },
+        "mounted_gun": {
+            "name": "\\{review}Установленный пулемёт",
+        },
+        "mouse": {
+            "name": "\\{review}Крыса",
+        },
+        "movable_block_1": {
+            "name": [
+                "Нажимной блок 1",
+                "Передвижной блок 1",
+            ]
+        },
+        "movable_block_2": {
+            "name": [
+                "Нажимной блок 2",
+                "Передвижной блок 2",
+            ]
+        },
+        "movable_block_3": {
+            "name": [
+                "Нажимной блок 3",
+                "Передвижной блок 3",
+            ]
+        },
+        "movable_block_4": {
+            "name": [
+                "Нажимной блок 4",
+                "Передвижной блок 4",
+            ]
+        },
+        "moving_bar": {
+            "name": "Движущаяся планка",
+        },
+        "mp5": {
+            "name": "\\{review}MP5",
+        },
+        "mp5_ammo": {
+            "name": "\\{review}Магазины для MP5",
+        },
+        "mummy": {
+            "name": "Мумия",
+        },
+        "mutant_1": {
+            "name": "Мутант 1",
+        },
+        "mutant_2": {
+            "name": "Мутант 2",
+        },
+        "mutant_3": {
+            "name": "Мутант 3",
+        },
+        "natla": {
+            "name": "Натла",
+        },
+        "natla_gun": {
+            "name": "\\{review}Пушка Натлы",
+        },
+        "on_off_light": {
+            "name": "\\{review}Включение/выключение света",
+        },
+        "passport": {
+            "name": "Игра",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Собака",
+        },
+        "pda": {
+            "name": "Игровой процесс",
+        },
+        "pendulum_1": {
+            "name": "Маятник",
+        },
+        "pendulum_2": {
+            "name": [
+                "\\{review}Маятник",
+                "\\{review}Песчаный ящик",
+                "\\{review}Качающийся топор",
+                "\\{review}Качающийся ящик",
+            ]
+        },
+        "photo": {
+            "name": "Дом Лары",
+        },
+        "pickup_1": {
+            "name": "Предмет 1",
+        },
+        "pickup_2": {
+            "name": "Предмет 2",
+        },
+        "pickup_aid": {
+            "name": "Первая помощь",
+        },
+        "pierre": {
+            "name": "Пьер",
+        },
+        "pirahnas": {
+            "name": "\\{review}Пираньи",
+        },
+        "pistols": {
+            "name": "Пистолеты",
+        },
+        "pistols_ammo": {
+            "name": "\\{review}Магазины для пистолета",
+        },
+        "player_1": {
+            "name": "Актёр заставки 1",
+        },
+        "player_10": {
+            "name": "\\{review}Актер катсцены 10",
+        },
+        "player_2": {
+            "name": "Актёр заставки 2",
+        },
+        "player_3": {
+            "name": "Актёр заставки 3",
+        },
+        "player_4": {
+            "name": "Актёр заставки 4",
+        },
+        "player_5": {
+            "name": "\\{review}Актер катсцены 5",
+        },
+        "player_6": {
+            "name": "\\{review}Актер катсцены 6",
+        },
+        "player_7": {
+            "name": "\\{review}Актер катсцены 7",
+        },
+        "player_8": {
+            "name": "\\{review}Актер катсцены 8",
+        },
+        "player_9": {
+            "name": "\\{review}Актер катсцены 9",
+        },
+        "pods": {
+            "name": "Гнездо",
+        },
+        "poison_dart": {
+            "name": "\\{review}Отравленный дротик",
+        },
+        "poison_dart_emitter": {
+            "name": "\\{review}Метатель отравленных дротиков",
+        },
+        "portacabin": {
+            "name": "Кабина",
+        },
+        "power_saw": {
+            "name": "\\{review}Электропила",
+        },
+        "propeller_1": {
+            "name": "\\{review}Винт самолёта",
+        },
+        "propeller_2": {
+            "name": "\\{review}Подводный винт",
+        },
+        "propeller_3": {
+            "name": "\\{review}Воздушный вентилятор",
+        },
+        "pulse_light": {
+            "name": "\\{review}Импульсный свет",
+        },
+        "puma": {
+            "name": "Пума",
+        },
+        "punk_1": {
+            "name": "\\{review}Панк 1",
+        },
+        "punk_2": {
+            "name": "\\{review}Панк 2",
+        },
+        "puzzle_1": {
+            "name": "Элемент головоломки 1",
+        },
+        "puzzle_2": {
+            "name": "Элемент головоломки 2",
+        },
+        "puzzle_3": {
+            "name": "Элемент головоломки 3",
+        },
+        "puzzle_4": {
+            "name": "Элемент головоломки 4",
+        },
+        "puzzle_done_1": {
+            "name": "Головоломка 1 (готово)",
+        },
+        "puzzle_done_2": {
+            "name": "Головоломка 2 (готово)",
+        },
+        "puzzle_done_3": {
+            "name": "Головоломка 3 (готово)",
+        },
+        "puzzle_done_4": {
+            "name": "Головоломка 4 (готово)",
+        },
+        "puzzle_hole_1": {
+            "name": "Головоломка 1 (пусто)",
+        },
+        "puzzle_hole_2": {
+            "name": "Головоломка 2 (пусто)",
+        },
+        "puzzle_hole_3": {
+            "name": "Головоломка 3 (пусто)",
+        },
+        "puzzle_hole_4": {
+            "name": "Головоломка 4 (пусто)",
+        },
+        "quad_bike": {
+            "name": "\\{review}Квадроцикл",
+        },
+        "quest_1": {
+            "name": "\\{review}Предмет задания 1",
+        },
+        "quest_2": {
+            "name": "\\{review}Предмет задания 2",
+        },
+        "quest_3": {
+            "name": "\\{review}Предмет задания 3",
+        },
+        "quest_4": {
+            "name": "\\{review}Предмет задания 4",
+        },
+        "raptor": {
+            "name": "Раптор",
+        },
+        "raptor_emitter": {
+            "name": "\\{review}Излучатель Раптора",
+        },
+        "rat": {
+            "name": [
+                "Крыса",
+                "Крыса на земле",
+            ]
+        },
+        "red_light": {
+            "name": "\\{review}Красный свет",
+        },
+        "ricochet": {
+            "name": "Рикошет",
+        },
+        "rocket": {
+            "name": "\\{review}Ракета",
+        },
+        "rocket_launcher": {
+            "name": "\\{review}Ракетная установка",
+        },
+        "rocket_launcher_ammo": {
+            "name": "\\{review}Ракеты",
+        },
+        "rolling_ball_1": {
+            "name": [
+                "Валун",
+                "Катящийся камень",
+            ]
+        },
+        "rolling_ball_2": {
+            "name": [
+                "\\{review}Камень 2",
+                "\\{review}Катающийся шар 2",
+            ]
+        },
+        "rolling_ball_3": {
+            "name": [
+                "\\{review}Камень 3",
+                "\\{review}Катающийся шар 3",
+            ]
+        },
+        "rolling_ball_4": {
+            "name": [
+                "\\{review}Камень 4",
+                "\\{review}Катающийся шар 4",
+            ]
+        },
+        "save_crystal": {
+            "name": "Кристалл сохранения",
+        },
+        "scion": {
+            "name": "Наследие",
+        },
+        "scion_holder": {
+            "name": "Постамент Наследия",
+        },
+        "secret_1": {
+            "name": "\\{review}Секрет 1",
+        },
+        "secret_2": {
+            "name": "\\{review}Секрет 2",
+        },
+        "secret_3": {
+            "name": "\\{review}Секрет 3",
+        },
+        "shadow": {
+            "name": "\\{review}Тень",
+        },
+        "shark": {
+            "name": "\\{review}Акула",
+        },
+        "shiva": {
+            "name": "\\{review}Шива",
+        },
+        "shotgun": {
+            "name": "Дробовик",
+        },
+        "shotgun_ammo": {
+            "name": "Патроны для дробовика",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Патрон для дробовика",
+        },
+        "skate_kid": {
+            "name": "Скейтер",
+        },
+        "skateboard": {
+            "name": "Скейтборд",
+        },
+        "skidoo_armed": {
+            "name": "\\{review}Чёрный снегоход",
+        },
+        "skidoo_driver": {
+            "name": "\\{review}Водитель чёрного снегохода",
+        },
+        "skidoo_fast": {
+            "name": "\\{review}Красный снегоход",
+        },
+        "skidoo_track": {
+            "name": "\\{review}Гусеница снегохода",
+        },
+        "skybox": {
+            "name": "Скайбокс",
+        },
+        "sliding_pillar": {
+            "name": "Скользящая колонна",
+        },
+        "smashable_1": {
+            "name": "\\{review}Разбиваемое окно 1",
+        },
+        "smashable_2": {
+            "name": "\\{review}Разбиваемое окно 2",
+        },
+        "smashable_3": {
+            "name": "\\{review}Разбиваемое окно 3",
+        },
+        "smashable_4": {
+            "name": "\\{review}Разбиваемое окно 4",
+        },
+        "smoke_emitter_black": {
+            "name": "\\{review}Дымовой излучатель (черный)",
+        },
+        "smoke_emitter_white": {
+            "name": "\\{review}Дымовой излучатель (белый)",
+        },
+        "snake": {
+            "name": "\\{review}Змей",
+        },
+        "snow_sprite": {
+            "name": "\\{review}След снегохода",
+        },
+        "sound": {
+            "name": "Звук",
+        },
+        "sphere_of_doom_1": {
+            "name": "\\{review}Взрыв дракона 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "\\{review}Взрыв дракона 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "\\{review}Взрыв дракона 3",
+        },
+        "spider": {
+            "name": "\\{review}Паук",
+        },
+        "spike_wall": {
+            "name": "\\{review}Стена с шипами",
+        },
+        "spikes": {
+            "name": "Шипы",
+        },
+        "spinning_blade": {
+            "name": "\\{review}Вращающийся клинок",
+        },
+        "splash_1": {
+            "name": "Всплеск 1",
+        },
+        "splash_2": {
+            "name": "Всплеск 2",
+        },
+        "springboard": {
+            "name": "\\{review}Прыжковая доска",
+        },
+        "steam_emitter": {
+            "name": "\\{review}Паровой излучатель",
+        },
+        "sthpac_mercenary": {
+            "name": "\\{review}Наёмник из южной части Тихого океана",
+        },
+        "stopwatch": {
+            "name": "\\{review}Статистика",
+        },
+        "strobe_light": {
+            "name": "\\{review}Стробоскопический свет",
+        },
+        "swinging_axe": {
+            "name": "\\{review}Pаскачивающийся топор",
+        },
+        "switch_type_airlock": {
+            "name": "\\{review}Переключатель воздушного шлюза",
+        },
+        "switch_type_button": {
+            "name": [
+                "\\{review}Кнопка",
+                "\\{review}Нажимная кнопка",
+                "\\{review}Выключатель",
+            ]
+        },
+        "switch_type_normal": {
+            "name": [
+                "Рычаг",
+                "Переключатель",
+            ]
+        },
+        "switch_type_small": {
+            "name": "\\{review}Маленький выключатель",
+        },
+        "switch_type_uw": {
+            "name": [
+                "Подводный рычаг",
+                "Подводный переключатель",
+            ]
+        },
+        "switch_type_wheel": {
+            "name": "\\{review}Колёсный переключатель",
+        },
+        "teeth_trap": {
+            "name": [
+                "Зубная ловушка",
+                "Клацающая дверь",
+            ]
+        },
+        "text_box": {
+            "name": "\\{review}Рамка интерфейса",
+        },
+        "thors_handle": {
+            "name": "Рукоять молота Тора",
+        },
+        "thors_head": {
+            "name": "Молот Тора",
+        },
+        "tiger": {
+            "name": "\\{review}Тигр",
+        },
+        "tony": {
+            "name": "\\{review}Тони",
+        },
+        "torso": {
+            "name": [
+                "Торсо",
+                "Адам",
+                "Безногий мутант",
+            ]
+        },
+        "train": {
+            "name": "\\{review}Поезд",
+        },
+        "trapdoor_1": {
+            "name": "Люк 1",
+        },
+        "trapdoor_2": {
+            "name": "Люк 2",
+        },
+        "trapdoor_3": {
+            "name": "Люк 3",
+        },
+        "trex": {
+            "name": "Тираннозавр",
+        },
+        "trex_alpha": {
+            "name": "\\{review}Ти-Рекс Альфа",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Топорщик племени",
+        },
+        "tribe_boss": {
+            "name": "\\{review}Вождь племени",
+        },
+        "tribe_pipeman": {
+            "name": "\\{review}Пользователь духовой трубки племени",
+        },
+        "tropical_fish": {
+            "name": "\\{review}Тропическая рыба",
+        },
+        "twinkle": {
+            "name": "Искры",
+        },
+        "upv": {
+            "name": "\\{review}Минисуб",
+        },
+        "uzis": {
+            "name": "Узи",
+        },
+        "uzis_ammo": {
+            "name": "Обоймы для узи",
+        },
+        "vole": {
+            "name": [
+                "Плавающая крыса",
+                "Крыса в воде",
+            ]
+        },
+        "vulture": {
+            "name": "\\{review}Стервятник",
+        },
+        "water_sprite": {
+            "name": "\\{review}След лодки",
+        },
+        "waterfall": {
+            "name": "Водопадный туман",
+        },
+        "white_light": {
+            "name": "\\{review}Белый свет",
+        },
+        "winston": {
+            "name": "\\{review}Уинстон",
+        },
+        "winston_army": {
+            "name": "\\{review}Уинстон (армия)",
+        },
+        "wolf": {
+            "name": "Волк",
+        },
+        "worker_1": {
+            "name": "\\{review}Бандит с пистолетом 1",
+        },
+        "worker_2": {
+            "name": "\\{review}Бандит с пистолетом 2",
+        },
+        "worker_3": {
+            "name": "\\{review}Бандит с палкой 1",
+        },
+        "worker_4": {
+            "name": "\\{review}Бандит с палкой 2",
+        },
+        "worker_5": {
+            "name": "\\{review}Бандит с огнемётом",
+        },
+        "xian_knight": {
+            "name": "\\{review}Ксианский рыцарь",
+        },
+        "xian_knight_statue": {
+            "name": "\\{review}Статуя ксианского рыцаря",
+        },
+        "xian_spearman": {
+            "name": "\\{review}Ксианский копейщик",
+        },
+        "xian_spearman_statue": {
+            "name": "\\{review}Статуя ксианского копейщика",
+        },
+        "yeti": {
+            "name": "\\{review}Йети",
+        },
+        "zipline_handle": {
+            "name": "\\{review}Рукоятка зиплайна",
         }
     }
 }

@@ -24,8 +24,8 @@ static void M_ToggleFPSCounter(void)
     Config_Update();
     Console_Log(
         "%s",
-        g_Config.ui.enable_fps_counter ? GS(OSD_FPS_COUNTER_ON)
-                                       : GS(OSD_FPS_COUNTER_OFF));
+        g_Config.ui.enable_fps_counter ? GS("general/osd/fps_counter_on")
+                                       : GS("general/osd/fps_counter_off"));
 }
 
 static void M_ToggleBilinearFilter(void)
@@ -35,8 +35,8 @@ static void M_ToggleBilinearFilter(void)
     Console_Log(
         "%s",
         g_Config.rendering.texture_filter == TEXTURE_FILTER_BILINEAR
-            ? GS(OSD_BILINEAR_FILTER_ON)
-            : GS(OSD_BILINEAR_FILTER_OFF));
+            ? GS("general/osd/bilinear_filter_on")
+            : GS("general/osd/bilinear_filter_off"));
 }
 
 static void M_ToggleTrapezoidFilter(void)
@@ -46,8 +46,8 @@ static void M_ToggleTrapezoidFilter(void)
     Console_Log(
         "%s",
         g_Config.rendering.enable_trapezoid_filter
-            ? GS(OSD_TRAPEZOID_FILTER_ON)
-            : GS(OSD_TRAPEZOID_FILTER_OFF));
+            ? GS("general/osd/trapezoid_filter_on")
+            : GS("general/osd/trapezoid_filter_off"));
 }
 
 static void M_ToggleWireframe(void)
@@ -56,8 +56,9 @@ static void M_ToggleWireframe(void)
     Config_Update();
     Console_Log(
         "%s",
-        g_Config.rendering.enable_wireframe ? GS(OSD_WIREFRAME_MODE_ON)
-                                            : GS(OSD_WIREFRAME_MODE_OFF));
+        g_Config.rendering.enable_wireframe
+            ? GS("general/osd/wireframe_mode_on")
+            : GS("general/osd/wireframe_mode_off"));
 }
 
 static void M_ToggleTextures(void)
@@ -66,8 +67,8 @@ static void M_ToggleTextures(void)
     Config_Update();
     Console_Log(
         "%s",
-        g_Config.rendering.enable_textures ? GS(OSD_TEXTURES_ON)
-                                           : GS(OSD_TEXTURES_OFF));
+        g_Config.rendering.enable_textures ? GS("general/osd/textures_on")
+                                           : GS("general/osd/textures_off"));
 }
 
 static void M_CycleLightingContrast(void)
@@ -77,7 +78,7 @@ static void M_CycleLightingContrast(void)
         LIGHTING_CONTRAST_NUMBER_OF);
     Config_Update();
     Console_Log(
-        GS(OSD_LIGHTING_CONTRAST_FMT),
+        GS("general/osd/lighting_contrast_fmt"),
         ENUM_MAP_TO_STRING(
             LIGHTING_CONTRAST, g_Config.rendering.lighting_contrast));
 }
@@ -86,7 +87,9 @@ static void M_CycleUpscalingFactor(void)
 {
     g_Config.rendering.upscaling_factor += g_Input.slow ? -1 : 1;
     Config_Update();
-    Console_Log(GS(OSD_UPSCALING_FACTOR), g_Config.rendering.upscaling_factor);
+    Console_Log(
+        GS("general/osd/upscaling_factor"),
+        g_Config.rendering.upscaling_factor);
 }
 
 static void M_CycleBorders(void)

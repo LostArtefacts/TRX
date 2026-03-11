@@ -29,16 +29,21 @@ UI_SETTINGS_DIALOG_STATE *UI_GraphicSettings_Init(void)
 {
     const UI_SETTINGS_TAB tabs[] = {
         UI_SettingsTab_MakeEditor(
-            GS_ID(GRAPHIC_SETTINGS_VISUALS_TAB), m_VisualsOptions),
-        UI_SettingsTab_MakeEditor(GS_ID(GRAPHIC_SETTINGS_UI_TAB), m_UIOptions),
+            GS_ID("general/settings/graphic_settings/tabs/visuals"),
+            m_VisualsOptions),
         UI_SettingsTab_MakeEditor(
-            GS_ID(GRAPHIC_SETTINGS_UI_BARS_TAB), m_UIBarsOptions),
+            GS_ID("general/settings/graphic_settings/tabs/ui"), m_UIOptions),
         UI_SettingsTab_MakeEditor(
-            GS_ID(GRAPHIC_SETTINGS_RENDERING_TAB), m_RenderOptions),
+            GS_ID("general/settings/graphic_settings/tabs/bars"),
+            m_UIBarsOptions),
+        UI_SettingsTab_MakeEditor(
+            GS_ID("general/settings/graphic_settings/tabs/rendering"),
+            m_RenderOptions),
     };
 
     return UI_SettingsDialog_Init(
-        GS_ID(GRAPHIC_SETTINGS_TITLE), ARRAY_SIZE(tabs), tabs);
+        GS_ID("general/settings/graphic_settings/title"), ARRAY_SIZE(tabs),
+        tabs);
 }
 
 void UI_GraphicSettings_Free(UI_SETTINGS_DIALOG_STATE *const s)

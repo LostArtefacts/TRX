@@ -19,8 +19,8 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 }
 
 REGISTER_CONSOLE_COMMAND(
-    "endlevel", M_Entrypoint, GS_ID(CONSOLE_HELP_END_LEVEL))
+    "endlevel", M_Entrypoint, GS_ID("console/cmd/end_level/help"))
 REGISTER_CONSOLE_COMMAND(
-    "nextlevel", M_Entrypoint, GS_ID(CONSOLE_HELP_END_LEVEL))
+    "nextlevel", M_Entrypoint, GS_ID("console/cmd/end_level/help"))
 REGISTER_CONSOLE_COMMAND("end-level", M_Entrypoint, nullptr)
 REGISTER_CONSOLE_COMMAND("next-level", M_Entrypoint, nullptr)

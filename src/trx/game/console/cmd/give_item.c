@@ -74,13 +74,13 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         const char *const obj_name =
             matches[i].matched_name != nullptr ? matches[i].matched_name : args;
         Inv_AddItemNTimes(obj_id, num);
-        Console_Log(GS(OSD_GIVE_ITEM), obj_name);
+        Console_Log(GS("general/osd/give_item"), obj_name);
         found = true;
     }
     Memory_FreePointer(&matches);
 
     if (!found) {
-        Console_LogError(GS(OSD_INVALID_ITEM), args);
+        Console_LogError(GS("general/osd/invalid_item"), args);
         return CR_FAILURE;
     }
 
@@ -88,4 +88,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 }
 
 REGISTER_CONSOLE_COMMAND(
-    "give|keys|(?:more)?guns", M_Entrypoint, GS_ID(CONSOLE_HELP_GIVE))
+    "give|keys|(?:more)?guns", M_Entrypoint, GS_ID("console/cmd/give/help"))

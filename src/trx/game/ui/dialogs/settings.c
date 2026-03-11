@@ -346,7 +346,7 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
             .orientation = UI_STACK_VERTICAL,
             .align = { .h = UI_STACK_H_ALIGN_CENTER },
         });
-        UI_Label(GS(COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER));
+        UI_Label(GS("general/settings/common/all_hidden_disclaimer"));
         UI_EndStack();
         UI_EndPad();
         UI_EndResize();

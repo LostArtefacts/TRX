@@ -68,7 +68,7 @@ int32_t UI_PlayAnyLevelDialog_Control(UI_PLAY_ANY_LEVEL_DIALOG_STATE *const s)
 void UI_PlayAnyLevelDialog(UI_PLAY_ANY_LEVEL_DIALOG_STATE *const s)
 {
     UI_BeginBasePassportDialog();
-    UI_BeginRequester(&s->req, GS(PASSPORT_SELECT_LEVEL));
+    UI_BeginRequester(&s->req, GS("general/passport/select_level"));
 
     for (int32_t i = 0; i < s->rows->count; i++) {
         if (UI_Requester_IsRowVisible(&s->req, i)) {

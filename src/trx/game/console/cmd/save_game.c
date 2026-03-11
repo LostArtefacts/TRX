@@ -33,12 +33,12 @@ static COMMAND_RESULT M_HandleQuickSave(void)
 {
     const SAVEGAME_SLOT_REF slot = Savegame_GetNextQuickSlot();
     if (!Savegame_IsValidSlotRef(slot)) {
-        Console_LogError(GS(OSD_QUICK_SAVE_FAIL_NO_SLOTS));
+        Console_LogError(GS("general/osd/quick_save_fail_no_slots"));
         return CR_FAILURE;
     }
 
     Savegame_Save(slot);
-    Console_Log(GS(OSD_QUICK_SAVE));
+    Console_Log(GS("general/osd/quick_save"));
     return CR_SUCCESS;
 }
 
@@ -66,12 +66,13 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
             slot_num - 1; // convert 1-indexing to 0-indexing
         if (slot_idx < 0
             || slot_idx >= Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL)) {
-            Console_LogError(GS(OSD_SAVE_GAME_FAIL_INVALID_SLOT), slot_num);
+            Console_LogError(
+                GS("general/osd/save_game_fail_invalid_slot"), slot_num);
             return CR_BAD_INVOCATION;
         }
 
         Savegame_Save(Savegame_NormalSlot(slot_idx));
-        Console_Log(GS(OSD_SAVE_GAME), slot_num);
+        Console_Log(GS("general/osd/save_game"), slot_num);
         return CR_SUCCESS;
     }
 
@@ -81,6 +82,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_BAD_INVOCATION;
 }
 
-REGISTER_CONSOLE_COMMAND("save", M_Entrypoint, GS_ID(CONSOLE_HELP_SAVE))
-REGISTER_CONSOLE_COMMAND("quicksave", M_EntrypointQS, GS_ID(CONSOLE_HELP_SAVE))
-REGISTER_CONSOLE_COMMAND("qs", M_EntrypointQS, GS_ID(CONSOLE_HELP_SAVE))
+REGISTER_CONSOLE_COMMAND("save", M_Entrypoint, GS_ID("console/cmd/save/help"))
+REGISTER_CONSOLE_COMMAND(
+    "quicksave", M_EntrypointQS, GS_ID("console/cmd/save/help"))
+REGISTER_CONSOLE_COMMAND("qs", M_EntrypointQS, GS_ID("console/cmd/save/help"))

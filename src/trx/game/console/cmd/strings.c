@@ -8,11 +8,12 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     const bool success = GameStringManager_ReloadLanguage(g_Config.language);
     if (success) {
-        Console_Log("%s", GS(OSD_STRINGS_RELOADED));
+        Console_Log("%s", GS("general/osd/strings_reloaded"));
     } else {
-        Console_LogError("%s", GS(OSD_STRINGS_FAILED));
+        Console_LogError("%s", GS("general/osd/strings_failed"));
     }
     return success ? CR_SUCCESS : CR_FAILURE;
 }
 
-REGISTER_CONSOLE_COMMAND("strings", M_Entrypoint, GS_ID(CONSOLE_HELP_STRINGS))
+REGISTER_CONSOLE_COMMAND(
+    "strings", M_Entrypoint, GS_ID("console/cmd/strings/help"))

@@ -29,7 +29,7 @@ static COMMAND_RESULT M_ListAllCommands(void)
             strcat(buf, ", ");
         }
     }
-    Console_Log("%s", GS(CONSOLE_CMD_HELP_LIST));
+    Console_Log("%s", GS("console/cmd/help/list"));
     Console_Log("%s", buf);
     Memory_Free(buf);
     Vector_Free(vec);
@@ -40,7 +40,7 @@ static COMMAND_RESULT M_ShowSpecificCommand(const char *const cmd_name)
 {
     const CONSOLE_COMMAND *cmd = Console_Registry_Get(cmd_name);
     if (cmd == nullptr || cmd->help_id == nullptr) {
-        Console_LogError(GS(OSD_UNKNOWN_COMMAND), cmd_name);
+        Console_LogError(GS("general/osd/unknown_command"), cmd_name);
         return CR_FAILURE;
     }
     const char *const help = GameString_Get(cmd->help_id);
@@ -56,4 +56,4 @@ static COMMAND_RESULT M_Help(const COMMAND_CONTEXT *const ctx)
     return M_ListAllCommands();
 }
 
-REGISTER_CONSOLE_COMMAND("help", M_Help, GS_ID(CONSOLE_HELP_HELP))
+REGISTER_CONSOLE_COMMAND("help", M_Help, GS_ID("console/cmd/help/help"))

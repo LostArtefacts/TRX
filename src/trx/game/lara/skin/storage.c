@@ -47,7 +47,7 @@ static void M_SeedDynamicEnumValues(void)
         Config_GetOption(&g_Config.visuals.lara_outfit);
     Config_DynamicEnum_ResetValues(option);
     Config_DynamicEnum_AddValue(
-        option, nullptr, GS_ID_RAW("dynamic/enums/lara_outfit/default"));
+        option, nullptr, GS_ID("dynamic/enums/lara_outfit/default"));
     for (int32_t i = 0; i < m_OutfitCount; i++) {
         Config_DynamicEnum_AddValue(
             option, m_Outfits[i].name, m_Outfits[i].name_gs);

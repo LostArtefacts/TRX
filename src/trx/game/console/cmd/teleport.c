@@ -194,29 +194,29 @@ static COMMAND_RESULT M_TeleportToXYZ(
         .z = precise_coords ? z : z * WALL_L,
     };
     if (!Lara_Cheat_Teleport(pos, NO_ROOM)) {
-        Console_LogError(GS(CMD_TELEPORT_POS_FAIL), x, y, z);
+        Console_LogError(GS("console/cmd/teleport/pos_fail"), x, y, z);
         return CR_FAILURE;
     }
 
-    Console_Log(GS(CMD_TELEPORT_POS), x, y, z);
+    Console_Log(GS("console/cmd/teleport/pos"), x, y, z);
     return CR_SUCCESS;
 }
 
 static COMMAND_RESULT M_TeleportToItemNum(const int16_t item_num)
 {
     if (item_num < 0 || item_num >= Item_GetTotalCount()) {
-        Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+        Console_LogError(GS("console/cmd/teleport/item_fail"), item_num);
         return CR_FAILURE;
     }
 
     const ITEM *const item = Item_Get(item_num);
     if (item == nullptr || item->room_num == NO_ROOM) {
-        Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+        Console_LogError(GS("console/cmd/teleport/item_fail"), item_num);
         return CR_FAILURE;
     }
 
     if ((item->flags & IF_KILLED) != 0) {
-        Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+        Console_LogError(GS("console/cmd/teleport/item_fail"), item_num);
         return CR_FAILURE;
     }
 
@@ -227,18 +227,19 @@ static COMMAND_RESULT M_TeleportToItemNum(const int16_t item_num)
     };
     if (Lara_Cheat_Teleport(pos, item->room_num)) {
         M_AlignLaraToItem(item);
-        Console_Log(GS(CMD_TELEPORT_ITEM), item_num);
+        Console_Log(GS("console/cmd/teleport/item"), item_num);
         return CR_SUCCESS;
     }
 
-    Console_LogError(GS(CMD_TELEPORT_ITEM_FAIL), item_num);
+    Console_LogError(GS("console/cmd/teleport/item_fail"), item_num);
     return CR_FAILURE;
 }
 
 static COMMAND_RESULT M_TeleportToRoom(const int16_t room_num)
 {
     if (room_num < 0 || room_num >= Room_GetCount()) {
-        Console_LogWarning(GS(OSD_INVALID_ROOM), room_num, Room_GetCount() - 1);
+        Console_LogWarning(
+            GS("general/osd/invalid_room"), room_num, Room_GetCount() - 1);
         return CR_FAILURE;
     }
 
@@ -264,11 +265,11 @@ static COMMAND_RESULT M_TeleportToRoom(const int16_t room_num)
     }
 
     if (!success) {
-        Console_LogError(GS(CMD_TELEPORT_ROOM_FAIL), room_num);
+        Console_LogError(GS("console/cmd/teleport/room_fail"), room_num);
         return CR_FAILURE;
     }
 
-    Console_Log(GS(CMD_TELEPORT_ROOM), room_num);
+    Console_Log(GS("console/cmd/teleport/room"), room_num);
     return CR_SUCCESS;
 }
 
@@ -281,7 +282,7 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
 
     const ITEM *const best_item = M_GetItemToTeleporTo(user_input);
     if (best_item == nullptr) {
-        Console_LogError(GS(CMD_TELEPORT_OBJECT_FAIL), user_input);
+        Console_LogError(GS("console/cmd/teleport/object_fail"), user_input);
         return CR_FAILURE;
     }
 
@@ -307,9 +308,9 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
     };
     if (Lara_Cheat_Teleport(pos, best_item->room_num)) {
         M_AlignLaraToItem(best_item);
-        Console_Log(GS(CMD_TELEPORT_OBJECT), reported_name);
+        Console_Log(GS("console/cmd/teleport/object"), reported_name);
     } else {
-        Console_LogError(GS(CMD_TELEPORT_OBJECT_FAIL), reported_name);
+        Console_LogError(GS("console/cmd/teleport/object_fail"), reported_name);
     }
     return CR_SUCCESS;
 }
@@ -400,4 +401,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return M_TeleportToObject(ctx->args);
 }
 
-REGISTER_CONSOLE_COMMAND("tp", M_Entrypoint, GS_ID(CONSOLE_HELP_TP))
+REGISTER_CONSOLE_COMMAND("tp", M_Entrypoint, GS_ID("console/cmd/tp/help"))

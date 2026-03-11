@@ -14,7 +14,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         const GF_LEVEL_TABLE *const level_table =
             GF_GetLevelTable(GFLT_CUTSCENES);
         if (cutscene_to_load < 0 || cutscene_to_load >= level_table->count) {
-            Console_LogError(GS(OSD_INVALID_CUTSCENE));
+            Console_LogError(GS("general/osd/invalid_cutscene"));
             return CR_FAILURE;
         }
         const GF_LEVEL *const level = &level_table->levels[cutscene_to_load];
@@ -22,13 +22,14 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
             .action = GF_START_CINE,
             .param = cutscene_to_load,
         });
-        Console_Log(GS(OSD_PLAY_CUTSCENE), level->num + 1);
+        Console_Log(GS("general/osd/play_cutscene"), level->num + 1);
         return CR_SUCCESS;
     } else {
         return CR_BAD_INVOCATION;
     }
 }
 
-REGISTER_CONSOLE_COMMAND("cut", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_CUTSCENE))
 REGISTER_CONSOLE_COMMAND(
-    "cutscene", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_CUTSCENE))
+    "cut", M_Entrypoint, GS_ID("console/cmd/play_cutscene/help"))
+REGISTER_CONSOLE_COMMAND(
+    "cutscene", M_Entrypoint, GS_ID("console/cmd/play_cutscene/help"))

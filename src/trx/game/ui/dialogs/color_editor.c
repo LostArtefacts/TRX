@@ -54,7 +54,7 @@ static M_ROW_DEF m_RowDefs[M_COLOR_ROW_COUNT];
 __attribute__((constructor)) static void M_Init(void)
 {
     m_RowDefs[M_COLOR_ROW_HUE] = (M_ROW_DEF) {
-        .label_id = GS_ID(COMMON_SETTINGS_HUE),
+        .label_id = GS_ID("general/settings/common/hue"),
         .stop_count = 7,
         .stops = {
             { .h = 0.0f, .use_state_c = true, .use_state_l = true },
@@ -68,7 +68,7 @@ __attribute__((constructor)) static void M_Init(void)
     };
 
     m_RowDefs[M_COLOR_ROW_CHROMA] = (M_ROW_DEF) {
-        .label_id = GS_ID(COMMON_SETTINGS_CHROMA),
+        .label_id = GS_ID("general/settings/common/chroma"),
         .stop_count = 2,
         .stops = {
             { .c = 0.0f, .use_state_h = true, .use_state_l = true },
@@ -77,7 +77,7 @@ __attribute__((constructor)) static void M_Init(void)
     };
 
     m_RowDefs[M_COLOR_ROW_LIGHTNESS] = (M_ROW_DEF) {
-        .label_id = GS_ID(COMMON_SETTINGS_LIGHTNESS),
+        .label_id = GS_ID("general/settings/common/lightness"),
         .stop_count = 3,
         .stops = {
             { .l = 0.0f, .use_state_h = true, .use_state_c = true },

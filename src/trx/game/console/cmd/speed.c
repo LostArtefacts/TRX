@@ -7,7 +7,7 @@
 static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (String_Equivalent(ctx->args, "")) {
-        Console_Log(GS(OSD_SPEED_GET), Clock_GetTurboSpeed());
+        Console_Log(GS("general/osd/speed_get"), Clock_GetTurboSpeed());
         return CR_SUCCESS;
     }
 
@@ -20,4 +20,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_BAD_INVOCATION;
 }
 
-REGISTER_CONSOLE_COMMAND("speed", M_Entrypoint, GS_ID(CONSOLE_HELP_SPEED))
+REGISTER_CONSOLE_COMMAND("speed", M_Entrypoint, GS_ID("console/cmd/speed/help"))

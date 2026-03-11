@@ -1,6 +1,55 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "misc": {
+            "empty_slot_fmt": "- SLOT VUOTO %d -",
+        },
+        "stats": {
+            "ammo": "MUNIZIONI A SEGNO/USATE",
+            "ammo_hits": "COLPI A SEGNO",
+            "ammo_used": "MUNIZIONI USATE",
+            "deaths": "MORTI",
+            "distance_travelled": "DISTANZA PERCORSA",
+            "kills": "UCCISIONI",
+            "level": "LIVELLO",
+            "medipacks_used": "KIT MEDICI USATI",
+            "none": "NESSUNO",
+            "pickups": "OGGETTI",
+            "secrets": "SEGRETI",
+            "time_taken": "TEMPO IMPIEGATO",
+        }
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Abilita l'illuminazione dinamica per spari ed esplosioni, simile a TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Risolve i problemi preesistenti nei livelli \"Cisterna\" e \"Tomba di Tihocan\" per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Kit Medico Grande",
+        },
+        "small_medipack": {
+            "name": "Kit Medico Piccolo",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Intermezzo 1",
+        },
+        {
+            "title": "Intermezzo 2",
+        },
+        {
+            "title": "Intermezzo 3",
+        },
+        {
+            "title": "Intermezzo 4",
+        }
+    ],
     "levels": [
         {
             "title": "Casa di Lara",
@@ -169,20 +218,6 @@
             "title": "Posizione Attuale",
         }
     ],
-    "cutscenes": [
-        {
-            "title": "Intermezzo 1",
-        },
-        {
-            "title": "Intermezzo 2",
-        },
-        {
-            "title": "Intermezzo 3",
-        },
-        {
-            "title": "Intermezzo 4",
-        }
-    ],
     "demos": [
         {
             "title": "Città di Vilcabamba",
@@ -203,36 +238,5 @@
                 }
             }
         }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Kit Medico Piccolo",
-        },
-        "large_medipack": {
-            "name": "Kit Medico Grande",
-        }
-    },
-    "game_strings": {
-        "MISC_EMPTY_SLOT_FMT": "- SLOT VUOTO %d -",
-        "STATS_AMMO": "MUNIZIONI A SEGNO/USATE",
-        "STATS_AMMO_HITS": "COLPI A SEGNO",
-        "STATS_AMMO_USED": "MUNIZIONI USATE",
-        "STATS_DEATHS": "MORTI",
-        "STATS_DISTANCE_TRAVELLED": "DISTANZA PERCORSA",
-        "STATS_KILLS": "UCCISIONI",
-        "STATS_LEVEL": "LIVELLO",
-        "STATS_MEDIPACKS_USED": "KIT MEDICI USATI",
-        "STATS_NONE": "NESSUNO",
-        "STATS_PICKUPS": "OGGETTI",
-        "STATS_SECRETS": "SEGRETI",
-        "STATS_TIME_TAKEN": "TEMPO IMPIEGATO",
-    },
-    "settings": {
-        "visuals.enable_gun_lighting": {
-            "description": "Abilita l'illuminazione dinamica per spari ed esplosioni, simile a TR2+.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "Risolve i problemi preesistenti nei livelli \"Cisterna\" e \"Tomba di Tihocan\" per cui le animazioni degli sprite delle piante nelle aree acquatiche non funzionano.",
-        }
-    }
+    ]
 }

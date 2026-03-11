@@ -192,17 +192,17 @@ static void M_DebugPosTopLeft(void)
     UI_BeginStack(UI_STACK_HORIZONTAL);
     UI_BeginStack(UI_STACK_VERTICAL);
     if (g_Config.debug.enable_debug_pos) {
-        UI_Label(GS(OVERLAY_DEBUG_POSITION));
-        UI_Label(GS(OVERLAY_DEBUG_ROTATION));
-        UI_Label(GS(OVERLAY_DEBUG_SPEED));
+        UI_Label(GS("general/overlay/debug_position"));
+        UI_Label(GS("general/overlay/debug_rotation"));
+        UI_Label(GS("general/overlay/debug_speed"));
     }
     if (g_Config.debug.enable_debug_anim) {
-        UI_Label(GS(OVERLAY_DEBUG_ANIMATION));
-        UI_Label(GS(OVERLAY_DEBUG_ANIMATION_STATE));
+        UI_Label(GS("general/overlay/debug_animation"));
+        UI_Label(GS("general/overlay/debug_animation_state"));
     }
     if (g_Config.debug.enable_debug_camera) {
-        UI_Label(GS(OVERLAY_DEBUG_CAMERA_POS));
-        UI_Label(GS(OVERLAY_DEBUG_CAMERA_TARGET));
+        UI_Label(GS("general/overlay/debug_camera_pos"));
+        UI_Label(GS("general/overlay/debug_camera_target"));
     }
     UI_EndStack();
     UI_BeginStack(UI_STACK_VERTICAL);
@@ -269,7 +269,8 @@ static void M_DebugPosTopRight(void)
     if (g_Config.debug.enable_debug_status
         && g_Config.debug.enable_invulnerability) {
         UI_LabelEx(
-            GS(OVERLAY_DEBUG_IMMUNE), (UI_LABEL_SETTINGS) { .scale = 0.8 });
+            GS("general/overlay/debug_immune"),
+            (UI_LABEL_SETTINGS) { .scale = 0.8 });
     }
     UI_EndStack();
 }

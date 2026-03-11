@@ -38,9 +38,9 @@ static void M_DrawRotateHint(void *const user_data)
 {
     UI_ButtonLabelEx(
         g_Config.input.backend == INPUT_BACKEND_KEYBOARD
-            ? GS(MISC_DIRECTION_KEYS_KEYBOARD)
-            : GS(MISC_DIRECTION_KEYS_CONTROLLER),
-        GS(ACTION_ROTATE));
+            ? GS("general/misc/direction_keys_keyboard")
+            : GS("general/misc/direction_keys_controller"),
+        GS("general/actions/rotate"));
 }
 
 static bool M_ShouldShowDialog(const OBJECT_ID obj_id)
@@ -165,7 +165,7 @@ void Option_Examine_Draw(void)
     }
 
     if (M_ShouldShowDialog(p->object_id) && !p->is_dialog_hidden) {
-        const char *const footer_label = GS(ACTION_HIDE_DIALOG);
+        const char *const footer_label = GS("general/actions/hide_dialog");
         UI_TextDialogEx(
             p->ui.state,
             (UI_TEXT_DIALOG_SETTINGS) {

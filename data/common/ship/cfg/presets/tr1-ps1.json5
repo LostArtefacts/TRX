@@ -1,5 +1,5 @@
 {
-    "name_gs": "CONFIG_PRESET_TR1_PS1",
+    "name_gs": "dynamic/config_presets/tr1_ps1",
     "config": {
         "ui.menu_style": "ps1",
         "ui.enable_smooth_bars": false,

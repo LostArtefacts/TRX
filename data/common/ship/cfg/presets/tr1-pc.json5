@@ -1,5 +1,5 @@
 {
-    "name_gs": "CONFIG_PRESET_TR1_PC",
+    "name_gs": "dynamic/config_presets/tr1_pc",
     "config": {
         "ui.menu_style": "pc",
         "ui.enable_smooth_bars": true,

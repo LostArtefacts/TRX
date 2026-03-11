@@ -131,7 +131,7 @@ bool Lara_Cheat_GiveAllKeys(void)
     M_GiveAllKeysImpl();
 
     Sound_Effect(SFX_LARA_KEY, nullptr, SPM_ALWAYS);
-    Console_Log(GS(OSD_GIVE_ITEM_ALL_KEYS));
+    Console_Log(GS("general/osd/give_item_all_keys"));
     return true;
 }
 
@@ -144,7 +144,7 @@ bool Lara_Cheat_GiveAllGuns(const bool ignore_exclusions)
     M_GiveAllGunsImpl(ignore_exclusions);
 
     Sound_Effect(SFX_LARA_RELOAD, nullptr, SPM_ALWAYS);
-    Console_Log(GS(OSD_GIVE_ITEM_ALL_GUNS));
+    Console_Log(GS("general/osd/give_item_all_guns"));
     return true;
 }
 
@@ -174,7 +174,7 @@ bool Lara_Cheat_GiveAllItems(void)
     M_GiveAllMedpacksImpl();
 
     Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_NORMAL);
-    Console_Log(GS(OSD_GIVE_ITEM_CHEAT));
+    Console_Log(GS("general/osd/give_item_cheat"));
     return true;
 }
 
@@ -187,7 +187,7 @@ void Lara_Cheat_GetStuff(void)
 void Lara_Cheat_EndLevel(void)
 {
     Game_SetIsLevelComplete(true);
-    Console_Log(GS(OSD_COMPLETE_LEVEL));
+    Console_Log(GS("general/osd/complete_level"));
 }
 
 bool Lara_Cheat_KillEnemy(const int16_t item_num)
@@ -253,10 +253,12 @@ bool Lara_Cheat_OpenNearestDoor(void)
     }
 
     if (opened > 0 || closed > 0) {
-        Console_Log(opened > 0 ? GS(OSD_DOOR_OPEN) : GS(OSD_DOOR_CLOSE));
+        Console_Log(
+            opened > 0 ? GS("general/osd/door_open")
+                       : GS("general/osd/door_close"));
         return true;
     }
-    Console_LogError(GS(OSD_DOOR_OPEN_FAIL));
+    Console_LogError(GS("general/osd/door_open_fail"));
     return false;
 }
 
@@ -327,7 +329,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     Lara_Skin_ApplyOutfit();
     g_Camera.type = CAM_CHASE;
 
-    Console_Log(GS(OSD_FLY_MODE_ON));
+    Console_Log(GS("general/osd/fly_mode_on"));
     return true;
 }
 
@@ -377,7 +379,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         Lara_Control();
     }
 
-    Console_Log(GS(OSD_FLY_MODE_OFF));
+    Console_Log(GS("general/osd/fly_mode_off"));
     return true;
 }
 

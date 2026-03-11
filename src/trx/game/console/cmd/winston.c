@@ -25,7 +25,7 @@ static bool M_TrySummon(const GAME_VECTOR target_pos, const OBJECT_ID object_id)
                 LOT_EnableBaddieAI(item_num, true);
             } else if ((item->flags & IF_KILLED) != 0) {
                 Music_Stop();
-                Console_Log(GS(CMD_WINSTON_DEAD));
+                Console_Log(GS("console/cmd/winston/dead"));
                 return true;
             }
             item->pos.x = target_pos.x;
@@ -62,20 +62,20 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
         .room_num = lara_item->room_num,
     };
     if (!Room_FindValidPos(&target_pos.pos, &target_pos.room_num)) {
-        Console_LogError(GS(CMD_WINSTON_SPAWN_FAILED));
+        Console_LogError(GS("console/cmd/winston/spawn_failed"));
         return CR_FAILURE;
     }
 
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->killed_loyal_item) {
         Music_Stop();
-        Console_Log(GS(CMD_WINSTON_DEAD));
+        Console_Log(GS("console/cmd/winston/dead"));
         return CR_FAILURE;
     }
 
     if (M_TrySummon(target_pos, O_WINSTON_ARMY)
         || M_TrySummon(target_pos, O_WINSTON)) {
-        Console_Log(GS(CMD_WINSTON_TELEPORTED));
+        Console_Log(GS("console/cmd/winston/teleported"));
         return CR_SUCCESS;
     }
 
@@ -96,7 +96,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     new_item->status = IS_ACTIVE;
     LOT_EnableBaddieAI(item_num, true);
 
-    Console_Log(GS(CMD_WINSTON_SPAWNED));
+    Console_Log(GS("console/cmd/winston/spawned"));
     return CR_SUCCESS;
 }
 

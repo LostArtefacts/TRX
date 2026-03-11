@@ -116,25 +116,28 @@ GF_COMMAND Game_Control(const bool demo_mode)
         if (g_InputDB.quick_save) {
             const SAVEGAME_SLOT_REF slot = Savegame_GetNextQuickSlot();
             if (!Savegame_IsValidSlotRef(slot)) {
-                Console_LogError("%s", GS(OSD_QUICK_SAVE_FAIL_NO_SLOTS));
+                Console_LogError(
+                    "%s", GS("general/osd/quick_save_fail_no_slots"));
             } else if (Savegame_Save(slot)) {
-                Console_Log("%s", GS(OSD_QUICK_SAVE));
+                Console_Log("%s", GS("general/osd/quick_save"));
             }
             quick_handled = true;
         } else if (g_InputDB.quick_load) {
             const SAVEGAME_SLOT_REF slot = Savegame_GetBoundSlot();
             if (!Savegame_IsValidSlotRef(slot)) {
-                Console_LogError("%s", GS(OSD_QUICK_LOAD_FAIL_NO_BOUND_SLOT));
+                Console_LogError(
+                    "%s", GS("general/osd/quick_load_fail_no_bound_slot"));
             } else if (Savegame_IsSlotFree(slot)) {
                 Console_LogError(
-                    "%s", GS(OSD_QUICK_LOAD_FAIL_UNAVAILABLE_BOUND_SLOT));
+                    "%s",
+                    GS("general/osd/quick_load_fail_unavailable_bound_slot"));
             } else {
                 if (slot.pool == SAVEGAME_SLOT_POOL_QUICK) {
                     const int32_t visual_index =
                         Savegame_QuickToVisualIndex(slot);
-                    Console_Log(GS(OSD_QUICK_LOAD), visual_index + 1);
+                    Console_Log(GS("general/osd/quick_load"), visual_index + 1);
                 } else {
-                    Console_Log(GS(OSD_LOAD_GAME), slot.index + 1);
+                    Console_Log(GS("general/osd/load_game"), slot.index + 1);
                 }
                 return (GF_COMMAND) {
                     .action = GF_START_SAVED_GAME,

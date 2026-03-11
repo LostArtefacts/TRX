@@ -31,15 +31,15 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     int32_t reindex = 0;
     switch (current_level->type) {
     case GFL_CUTSCENE:
-        level_type_fmt = GS(OSD_POS_LEVEL_FMT_CUTSCENE);
+        level_type_fmt = GS("general/osd/pos_level_fmt_cutscene");
         reindex = 1;
         break;
     case GFL_DEMO:
-        level_type_fmt = GS(OSD_POS_LEVEL_FMT_DEMO);
+        level_type_fmt = GS("general/osd/pos_level_fmt_demo");
         reindex = 1;
         break;
     default:
-        level_type_fmt = GS(OSD_POS_LEVEL_FMT);
+        level_type_fmt = GS("general/osd/pos_level_fmt");
         reindex = GF_GetGymLevel() == nullptr ? 1 : 0;
         break;
     }
@@ -50,7 +50,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     const ITEM *const lara_item = Lara_GetItem();
     const char *details;
     if (lara_item == nullptr) {
-        details = String_FormatStatic("%s", GS(OSD_POS_LARA_MISSING));
+        details = String_FormatStatic("%s", GS("general/osd/pos_lara_missing"));
     } else {
         int16_t room_num = lara_item->room_num;
         const ROOM *const room = Room_Get(room_num);
@@ -58,7 +58,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
             room_num = room->flipped_room;
         }
         details = String_FormatStatic(
-            GS(OSD_POS_LARA_POS_FMT), room_num,
+            GS("general/osd/pos_lara_pos_fmt"), room_num,
             lara_item->pos.x / (float)WALL_L, lara_item->pos.y / (float)WALL_L,
             lara_item->pos.z / (float)WALL_L,
             lara_item->rot.x * 360.0f / (float)DEG_360,
@@ -78,4 +78,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("pos", M_Entrypoint, GS_ID(CONSOLE_HELP_POS))
+REGISTER_CONSOLE_COMMAND("pos", M_Entrypoint, GS_ID("console/cmd/pos/help"))

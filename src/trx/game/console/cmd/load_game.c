@@ -86,7 +86,8 @@ static COMMAND_RESULT M_ExecuteLoad(const M_SLOT_REQUEST request)
         const int32_t visual_count = Savegame_GetQuickVisualCount();
         const int32_t visual_slot = request.has_slot_num ? request.slot_num : 1;
         if (visual_slot < 1 || visual_slot > visual_count) {
-            Console_LogError(GS(OSD_LOAD_GAME_FAIL_INVALID_SLOT), visual_slot);
+            Console_LogError(
+                GS("general/osd/load_game_fail_invalid_slot"), visual_slot);
             return CR_FAILURE;
         }
         slot = Savegame_QuickFromVisualIndex(visual_slot - 1);
@@ -97,7 +98,8 @@ static COMMAND_RESULT M_ExecuteLoad(const M_SLOT_REQUEST request)
         if (slot_idx < 0
             || slot_idx >= Savegame_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL)) {
             Console_LogError(
-                GS(OSD_LOAD_GAME_FAIL_INVALID_SLOT), request.slot_num);
+                GS("general/osd/load_game_fail_invalid_slot"),
+                request.slot_num);
             return CR_FAILURE;
         }
         slot = Savegame_NormalSlot(slot_idx);
@@ -105,7 +107,7 @@ static COMMAND_RESULT M_ExecuteLoad(const M_SLOT_REQUEST request)
 
     if (Savegame_IsSlotFree(slot)) {
         Console_LogError(
-            GS(OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT), shown_slot_num);
+            GS("general/osd/load_game_fail_unavailable_slot"), shown_slot_num);
         return CR_FAILURE;
     }
 
@@ -114,9 +116,9 @@ static COMMAND_RESULT M_ExecuteLoad(const M_SLOT_REQUEST request)
         .param = Savegame_SlotToParam(slot),
     });
     if (request.pool == SAVEGAME_SLOT_POOL_QUICK) {
-        Console_Log(GS(OSD_QUICK_LOAD), shown_slot_num);
+        Console_Log(GS("general/osd/quick_load"), shown_slot_num);
     } else {
-        Console_Log(GS(OSD_LOAD_GAME), shown_slot_num);
+        Console_Log(GS("general/osd/load_game"), shown_slot_num);
     }
     return CR_SUCCESS;
 }
@@ -144,6 +146,7 @@ static COMMAND_RESULT M_EntrypointQL(const COMMAND_CONTEXT *const ctx)
     return M_ExecuteLoad(request);
 }
 
-REGISTER_CONSOLE_COMMAND("load", M_Entrypoint, GS_ID(CONSOLE_HELP_LOAD))
-REGISTER_CONSOLE_COMMAND("quickload", M_EntrypointQL, GS_ID(CONSOLE_HELP_LOAD))
-REGISTER_CONSOLE_COMMAND("ql", M_EntrypointQL, GS_ID(CONSOLE_HELP_LOAD))
+REGISTER_CONSOLE_COMMAND("load", M_Entrypoint, GS_ID("console/cmd/load/help"))
+REGISTER_CONSOLE_COMMAND(
+    "quickload", M_EntrypointQL, GS_ID("console/cmd/load/help"))
+REGISTER_CONSOLE_COMMAND("ql", M_EntrypointQL, GS_ID("console/cmd/load/help"))

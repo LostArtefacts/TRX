@@ -1,6 +1,12 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "objects": {
+        "quest_1": {
+            "description": "",
+            "name": "Dłoń Rathmore'a",
+        }
+    },
     "levels": [
         {
             "title": "Dom Lary",
@@ -82,11 +88,5 @@
                 }
             }
         }
-    ],
-    "objects": {
-        "quest_1": {
-            "name": "Dłoń Rathmore'a",
-            "description": "",
-        }
-    }
+    ]
 }

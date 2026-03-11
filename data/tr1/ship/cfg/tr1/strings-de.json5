@@ -1,6 +1,55 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "misc": {
+            "empty_slot_fmt": "- Leerer SLOT %d -",
+        },
+        "stats": {
+            "ammo": "Munition Treffer/Verbraucht",
+            "ammo_hits": "\\{review}TREFFER",
+            "ammo_used": "\\{review}VERBRAUCHTE MUNITION",
+            "deaths": "Tode",
+            "distance_travelled": "Zurückgelegte Distanz",
+            "kills": "Besiegte Gegner",
+            "level": "Level",
+            "medipacks_used": "Benötigte Medi-Packs",
+            "none": "\\{review}KEINE",
+            "pickups": "Pickups",
+            "secrets": "Geheimnisse",
+            "time_taken": "Benötigte Zeit",
+        }
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Aktiviert die Verwendung von dynamischer Beleuchtung für Schüsse und Explosionen., ähnlich wie in TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Fixt originale Fehler in Die Zisterne und Grab des Tihocan, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Großes Medi-Pack",
+        },
+        "small_medipack": {
+            "name": "Kleines Medi-Pack",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Zwischensequenz 1",
+        },
+        {
+            "title": "Zwischensequenz 2",
+        },
+        {
+            "title": "Zwischensequenz 3",
+        },
+        {
+            "title": "Zwischensequenz 4",
+        }
+    ],
     "levels": [
         {
             "title": "Laras Haus",
@@ -169,20 +218,6 @@
             "title": "Aktuelle Position",
         }
     ],
-    "cutscenes": [
-        {
-            "title": "Zwischensequenz 1",
-        },
-        {
-            "title": "Zwischensequenz 2",
-        },
-        {
-            "title": "Zwischensequenz 3",
-        },
-        {
-            "title": "Zwischensequenz 4",
-        }
-    ],
     "demos": [
         {
             "title": "Die Stadt Vilcabamba",
@@ -203,36 +238,5 @@
                 }
             }
         }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Kleines Medi-Pack",
-        },
-        "large_medipack": {
-            "name": "Großes Medi-Pack",
-        }
-    },
-    "game_strings": {
-        "MISC_EMPTY_SLOT_FMT": "- Leerer SLOT %d -",
-        "STATS_AMMO": "Munition Treffer/Verbraucht",
-        "STATS_AMMO_HITS": "\\{review}TREFFER",
-        "STATS_AMMO_USED": "\\{review}VERBRAUCHTE MUNITION",
-        "STATS_DEATHS": "Tode",
-        "STATS_DISTANCE_TRAVELLED": "Zurückgelegte Distanz",
-        "STATS_KILLS": "Besiegte Gegner",
-        "STATS_LEVEL": "Level",
-        "STATS_MEDIPACKS_USED": "Benötigte Medi-Packs",
-        "STATS_NONE": "\\{review}KEINE",
-        "STATS_PICKUPS": "Pickups",
-        "STATS_SECRETS": "Geheimnisse",
-        "STATS_TIME_TAKEN": "Benötigte Zeit",
-    },
-    "settings": {
-        "visuals.enable_gun_lighting": {
-            "description": "Aktiviert die Verwendung von dynamischer Beleuchtung für Schüsse und Explosionen., ähnlich wie in TR2+.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "Fixt originale Fehler in Die Zisterne und Grab des Tihocan, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
-        }
-    }
+    ]
 }

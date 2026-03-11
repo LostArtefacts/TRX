@@ -176,7 +176,8 @@ void UI_ToggleState(bool *const config_setting)
 {
     *config_setting ^= true;
     Config_Update();
-    Console_Log(*config_setting ? GS(OSD_UI_ON) : GS(OSD_UI_OFF));
+    Console_Log(
+        *config_setting ? GS("general/osd/ui_on") : GS("general/osd/ui_off"));
 }
 
 void UI_HandleKeyDown(const uint32_t key)

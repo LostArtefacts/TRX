@@ -32,28 +32,6 @@ static void M_AppendGameStringEntry(
     };
 }
 
-static void M_LoadFlatGameStrings(
-    JSON_OBJECT *const jgs_obj, GS_TABLE *const out_table,
-    size_t *const io_count, size_t *const io_capacity)
-{
-    for (JSON_OBJECT_ELEMENT *elem = jgs_obj->start; elem != nullptr;
-         elem = elem->next) {
-        const char *const key = elem->name->string;
-        const char *const value =
-            JSON_ValueGetString(elem->value, JSON_INVALID_STRING);
-        if (key == JSON_INVALID_STRING) {
-            LOG_WARNING("Invalid game string key");
-            continue;
-        }
-        if (value == JSON_INVALID_STRING) {
-            LOG_WARNING("Invalid game string entry '%s'", key);
-            continue;
-        }
-        M_AppendGameStringEntry(
-            out_table, io_count, io_capacity, Memory_DupStr(key), value);
-    }
-}
-
 static void M_LoadNestedGameStrings(
     JSON_OBJECT *const root_obj, const char *const root_key,
     GS_TABLE *const out_table, size_t *const io_count,
@@ -180,24 +158,11 @@ static void M_LoadTableFromJSON(
     }
 
     // Load localized string tables.
-    const char *const flat_sections[] = { "game_strings" };
-    const char *const nested_sections[] = { "settings", "enums", "dynamic" };
+    const char *const nested_sections[] = {
+        "general", "console", "settings", "enums", "dynamic",
+    };
     size_t gs_count = 0;
     size_t gs_capacity = 0;
-
-    for (size_t i = 0; i < ARRAY_SIZE(flat_sections); i++) {
-        JSON_OBJECT *const section_obj =
-            JSON_ObjectGetObject(root_obj, flat_sections[i]);
-        if (section_obj == nullptr) {
-            continue;
-        }
-        if (gs_capacity == 0) {
-            gs_capacity = 64;
-            out_table->game_strings =
-                Memory_Alloc(sizeof(GS_GAME_STRING_ENTRY) * gs_capacity);
-        }
-        M_LoadFlatGameStrings(section_obj, out_table, &gs_count, &gs_capacity);
-    }
 
     for (size_t i = 0; i < ARRAY_SIZE(nested_sections); i++) {
         if (JSON_ObjectGetObject(root_obj, nested_sections[i]) == nullptr) {

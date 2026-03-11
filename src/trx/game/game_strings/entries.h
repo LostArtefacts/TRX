@@ -5,14 +5,14 @@
 // @param value Text to map to the identifier.
 #define GS_DEFINE(id, value) GameString_Define(#id, value);
 
-// Retrieve a game string by its identifier.
-// @param id    Compile-time identifier for the string.
-#define GS(id) GameString_Get(#id)
+// Retrieve a game string by a slash-separated path literal.
+#define GS(path) GameString_Get(path)
 
-// Return the identifier itself as a string literal.
-#define GS_ID(id) (#id)
-// Return a raw key string as-is.
-#define GS_ID_RAW(raw_id) (raw_id)
+// Return a slash-separated path literal as-is.
+#define GS_ID(path) (path)
+
+// Retrieve a stable slot pointer for a slash-separated path literal.
+#define GS_PTR(path) GameString_GetPtr(path)
 
 typedef const char *GAME_STRING_ID;
 
@@ -48,6 +48,3 @@ void GameString_Clear(void);
 // @param key   Identifier for the string.
 // @return      Address of the internal string pointer, or nullptr if unknown.
 const char *const *GameString_GetPtr(const char *key);
-
-// Retrieve a stable slot pointer for a compile-time string identifier.
-#define GS_PTR(id) GameString_GetPtr(#id)

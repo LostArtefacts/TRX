@@ -185,7 +185,7 @@ static void M_ChangePageTextContent(const char *const content)
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_LITERAL,
         .literal = content,
-        .fmt_gs_key = GS_ID(INVENTORY_RING_OBJECT_NAME_FMT),
+        .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
     });
 }
 
@@ -676,7 +676,7 @@ static bool M_HandlePlayPrevLevelSelectLevel(INVENTORY_ITEM *const inv_item)
         return true;
     }
     if (!info->features.select_level) {
-        m_Priv.error_msg = GS_ID(PASSPORT_SAVE_SLOT_UNSUPPORTED);
+        m_Priv.error_msg = GS_ID("general/passport/save_slot_unsupported");
         if (g_InputDB.menu_back || g_InputDB.menu_confirm) {
             M_NavigateOut(inv_item);
             return true;
@@ -731,7 +731,7 @@ static bool M_HandleStorySoFarConfirm(INVENTORY_ITEM *const inv_item)
         M_NavigateOut(inv_item);
         return true;
     } else {
-        m_Priv.error_msg = GS_ID(PASSPORT_SAVE_SLOT_UNSUPPORTED);
+        m_Priv.error_msg = GS_ID("general/passport/save_slot_unsupported");
         return false;
     }
     return false;
@@ -756,62 +756,62 @@ static bool M_ShowPage(INVENTORY_ITEM *const inv_item)
 {
     static M_PAGE_HANDLER m_PageHandlers[] = {
         [M_ROLE_LOAD_GAME] = {
-            .title = GS_ID(PASSPORT_LOAD_GAME),
+            .title = GS_ID("general/passport/load_game"),
             .func = M_HandleLoadGame,
             .flat = false,
         },
         [M_ROLE_SAVE_GAME] = {
-            .title = GS_ID(PASSPORT_SAVE_GAME),
+            .title = GS_ID("general/passport/save_game"),
             .func = M_HandleSaveGame,
             .flat = false,
         },
         [M_ROLE_NEW_GAME] = {
-            .title = GS_ID(PASSPORT_NEW_GAME),
+            .title = GS_ID("general/passport/new_game"),
             .func = M_HandleNewGame,
             .flat = false,
         },
         [M_ROLE_PLAY_ANY_LEVEL_SELECT_LEVEL] = {
-            .title = GS_ID(PASSPORT_SELECT_LEVEL),
+            .title = GS_ID("general/passport/select_level"),
             .func = M_HandlePlayAnyLevel,
             .flat = false,
         },
         [M_ROLE_PLAY_ANY_LEVEL_SELECT_MODE] = {
-            .title = GS_ID( PASSPORT_SELECT_LEVEL),
+            .title = GS_ID("general/passport/select_level"),
             .func = M_HandlePlayAnyLevelSelectMode,
             .flat = false,
         },
         [M_ROLE_PLAY_PREV_LEVEL_SELECT_SLOT] = {
-            .title = GS_ID(PASSPORT_PLAY_PREVIOUS_LEVELS),
+            .title = GS_ID("general/passport/play_previous_levels"),
             .func = M_HandlePlayPrevLevelSelectSlot,
             .flat = false,
         },
         [M_ROLE_PLAY_PREV_LEVEL_SELECT_LEVEL] = {
-            .title = GS_ID(PASSPORT_PLAY_PREVIOUS_LEVELS),
+            .title = GS_ID("general/passport/play_previous_levels"),
             .func = M_HandlePlayPrevLevelSelectLevel,
             .flat = false,
         },
         [M_ROLE_RESTART_LEVEL] = {
-            .title = GS_ID(PASSPORT_RESTART_LEVEL),
+            .title = GS_ID("general/passport/restart_level"),
             .func = M_HandleRestartLevel,
             .flat = true,
         },
         [M_ROLE_EXIT_GAME] = {
-            .title = GS_ID(PASSPORT_EXIT_GAME),
+            .title = GS_ID("general/passport/exit_game"),
             .func = M_HandleExitGame,
             .flat = true,
         },
         [M_ROLE_EXIT_TO_TITLE] = {
-            .title = GS_ID(PASSPORT_EXIT_TO_TITLE),
+            .title = GS_ID("general/passport/exit_to_title"),
             .func = M_HandleExitToTitle,
             .flat = true,
         },
         [M_ROLE_STORY_SO_FAR] = {
-            .title = GS_ID(PASSPORT_STORY_SO_FAR),
+            .title = GS_ID("general/passport/story_so_far"),
             .func = M_HandleStorySoFar,
             .flat = false,
         },
         [M_ROLE_STORY_SO_FAR_CONFIRM] = {
-            .title = GS_ID(PASSPORT_STORY_SO_FAR),
+            .title = GS_ID("general/passport/story_so_far"),
             .func = M_HandleStorySoFarConfirm,
             .flat = false,
         },
