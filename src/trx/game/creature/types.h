@@ -36,8 +36,8 @@ typedef struct {
     int16_t zone_num;
     int16_t enemy_zone_num;
     int32_t distance;
-    int32_t ahead;
-    int32_t bite;
+    bool ahead;
+    bool bite;
     int16_t angle;
     int16_t x_angle;
     int16_t enemy_facing;

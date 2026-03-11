@@ -90,7 +90,7 @@ static void M_Control(const int16_t item_num)
         switch (item->current_anim_state) {
         case WORKER_3_STATE_STOP:
             creature->flags = 0;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = 0;
@@ -104,7 +104,7 @@ static void M_Control(const int16_t item_num)
                 } else {
                     item->goal_anim_state = WORKER_3_STATE_WAIT;
                 }
-            } else if (info.bite == 0) {
+            } else if (!info.bite) {
                 item->goal_anim_state = WORKER_3_STATE_RUN;
             } else if (info.distance < WORKER_3_ATTACK_0_RANGE) {
                 item->goal_anim_state = WORKER_3_STATE_AIM_0;
@@ -118,7 +118,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_3_STATE_WAIT:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             if (creature->mood != MOOD_BORED) {
@@ -130,7 +130,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_3_STATE_WALK:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = WORKER_3_WALK_TURN;
@@ -141,7 +141,7 @@ static void M_Control(const int16_t item_num)
                     item->required_anim_state = WORKER_3_STATE_WAIT;
                     item->goal_anim_state = WORKER_3_STATE_STOP;
                 }
-            } else if (info.bite == 0) {
+            } else if (!info.bite) {
                 item->goal_anim_state = WORKER_3_STATE_RUN;
             } else if (info.distance < WORKER_3_ATTACK_0_RANGE) {
                 item->goal_anim_state = WORKER_3_STATE_STOP;
@@ -153,7 +153,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_3_STATE_RUN:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = WORKER_3_RUN_TURN;
@@ -161,17 +161,17 @@ static void M_Control(const int16_t item_num)
             if (creature->mood == MOOD_ESCAPE) {
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = WORKER_3_STATE_WALK;
-            } else if (info.ahead != 0 && info.distance < WORKER_3_WALK_RANGE) {
+            } else if (info.ahead && info.distance < WORKER_3_WALK_RANGE) {
                 item->goal_anim_state = WORKER_3_STATE_WALK;
             }
             break;
 
         case WORKER_3_STATE_AIM_0:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             creature->flags = 0;
-            if (info.bite != 0 && info.distance < WORKER_3_ATTACK_0_RANGE) {
+            if (info.bite && info.distance < WORKER_3_ATTACK_0_RANGE) {
                 item->goal_anim_state = WORKER_3_STATE_PUNCH_0;
             } else {
                 item->goal_anim_state = WORKER_3_STATE_STOP;
@@ -179,11 +179,11 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_3_STATE_AIM_1:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             creature->flags = 0;
-            if (info.ahead != 0 && info.distance < WORKER_3_ATTACK_1_RANGE) {
+            if (info.ahead && info.distance < WORKER_3_ATTACK_1_RANGE) {
                 item->goal_anim_state = WORKER_3_STATE_PUNCH_1;
             } else {
                 item->goal_anim_state = WORKER_3_STATE_STOP;
@@ -191,11 +191,11 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_3_STATE_AIM_2:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             creature->flags = 0;
-            if (info.bite != 0 && info.distance < WORKER_3_ATTACK_2_RANGE) {
+            if (info.bite && info.distance < WORKER_3_ATTACK_2_RANGE) {
                 item->goal_anim_state = WORKER_3_STATE_PUNCH_2;
             } else {
                 item->goal_anim_state = WORKER_3_STATE_WALK;
@@ -203,7 +203,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_3_STATE_PUNCH_0:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags == 0
@@ -216,7 +216,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_3_STATE_PUNCH_1:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags == 0
@@ -226,14 +226,14 @@ static void M_Control(const int16_t item_num)
                 Sound_Effect(SFX_ENEMY_HIT_1, &item->pos, SPM_NORMAL);
                 creature->flags = 1;
             }
-            if (info.ahead != 0 && info.distance > WORKER_3_ATTACK_1_RANGE
+            if (info.ahead && info.distance > WORKER_3_ATTACK_1_RANGE
                 && info.distance < WORKER_3_ATTACK_2_RANGE) {
                 item->goal_anim_state = WORKER_3_STATE_PUNCH_2;
             }
             break;
 
         case WORKER_3_STATE_PUNCH_2:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags != 2

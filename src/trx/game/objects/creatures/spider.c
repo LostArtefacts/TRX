@@ -81,7 +81,7 @@ static void M_Control(const int16_t item_num)
                 if (Random_GetControl() < 256) {
                     item->goal_anim_state = SPIDER_STATE_WALK_1;
                 }
-            } else if (info.ahead != 0 && item->touch_bits != 0) {
+            } else if (info.ahead && item->touch_bits != 0) {
                 item->goal_anim_state = SPIDER_STATE_ATTACK_1;
             } else if (creature->mood == MOOD_STALK) {
                 item->goal_anim_state = SPIDER_STATE_WALK_1;
@@ -108,13 +108,11 @@ static void M_Control(const int16_t item_num)
             creature->flags = 0;
             if (creature->mood == MOOD_BORED || creature->mood == MOOD_STALK) {
                 item->goal_anim_state = SPIDER_STATE_WALK_1;
-            } else if (info.ahead != 0 && item->touch_bits != 0) {
+            } else if (info.ahead && item->touch_bits != 0) {
                 item->goal_anim_state = SPIDER_STATE_STOP;
-            } else if (
-                info.ahead != 0 && info.distance < SPIDER_ATTACK_3_RANGE) {
+            } else if (info.ahead && info.distance < SPIDER_ATTACK_3_RANGE) {
                 item->goal_anim_state = SPIDER_STATE_ATTACK_3;
-            } else if (
-                info.ahead != 0 && info.distance < SPIDER_ATTACK_2_RANGE) {
+            } else if (info.ahead && info.distance < SPIDER_ATTACK_2_RANGE) {
                 item->goal_anim_state = SPIDER_STATE_ATTACK_2;
             }
             break;

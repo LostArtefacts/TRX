@@ -100,7 +100,7 @@ static void M_Control(const int16_t item_num)
                 item->required_anim_state = Random_GetControl() < 0x4000
                     ? CULTIST_1_STATE_AIM_1
                     : CULTIST_1_STATE_AIM_3;
-            } else if (creature->mood == MOOD_BORED && info.ahead != 0) {
+            } else if (creature->mood == MOOD_BORED && info.ahead) {
                 const int16_t random = Random_GetControl();
                 if (random < CULTIST_1_POSE_CHANCE) {
                     item->required_anim_state = CULTIST_1_STATE_WAIT_2;
@@ -127,7 +127,7 @@ static void M_Control(const int16_t item_num)
             } else if (
                 creature->mood != MOOD_BORED
                 || Random_GetControl() < CULTIST_1_UNPOSE_CHANCE
-                || info.ahead == 0) {
+                || !info.ahead) {
                 item->goal_anim_state = CULTIST_1_STATE_STOP;
             }
             break;
@@ -141,10 +141,10 @@ static void M_Control(const int16_t item_num)
                 item->required_anim_state = Random_GetControl() < 0x4000
                     ? CULTIST_1_STATE_AIM_1
                     : CULTIST_1_STATE_AIM_3;
-            } else if (info.distance > CULTIST_1_RUN_RANGE || info.ahead == 0) {
+            } else if (info.distance > CULTIST_1_RUN_RANGE || !info.ahead) {
                 item->goal_anim_state = CULTIST_1_STATE_RUN;
             } else if (
-                creature->mood == MOOD_BORED && info.ahead != 0
+                creature->mood == MOOD_BORED && info.ahead
                 && Random_GetControl() < CULTIST_1_UNWALK_CHANCE) {
                 item->goal_anim_state = CULTIST_1_STATE_STOP;
             }
@@ -173,7 +173,7 @@ static void M_Control(const int16_t item_num)
         case CULTIST_1_STATE_AIM_1:
         case CULTIST_1_STATE_AIM_3:
             creature->flags = 0;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->mood == MOOD_ESCAPE) {
@@ -190,7 +190,7 @@ static void M_Control(const int16_t item_num)
 
         case CULTIST_1_STATE_SHOOT_1:
         case CULTIST_1_STATE_SHOOT_3:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags == 0) {
@@ -201,7 +201,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case CULTIST_1_STATE_SHOOT_2:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (item->required_anim_state == CULTIST_1_STATE_EMPTY) {

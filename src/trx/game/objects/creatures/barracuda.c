@@ -60,7 +60,7 @@ static void M_Control(const int16_t item_num)
             creature->flags = 0;
             if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = BARRACUDA_STATE_SWIM_1;
-            } else if (info.ahead != 0 && info.distance < BARA_ATTACK_1_RANGE) {
+            } else if (info.ahead && info.distance < BARA_ATTACK_1_RANGE) {
                 item->goal_anim_state = BARRACUDA_STATE_ATTACK_1;
             } else if (creature->mood == MOOD_STALK) {
                 item->goal_anim_state = BARRACUDA_STATE_SWIM_1;
@@ -73,8 +73,7 @@ static void M_Control(const int16_t item_num)
             creature->maximum_turn = BARA_SWIM_1_TURN;
             if (creature->mood == MOOD_BORED) {
             } else if (
-                info.ahead != 0
-                && (item->touch_bits & BARRACUDA_TOUCH_BITS) != 0) {
+                info.ahead && (item->touch_bits & BARRACUDA_TOUCH_BITS) != 0) {
                 item->goal_anim_state = BARRACUDA_STATE_STOP;
             } else if (creature->mood != MOOD_STALK) {
                 item->goal_anim_state = BARRACUDA_STATE_SWIM_2;
@@ -86,9 +85,9 @@ static void M_Control(const int16_t item_num)
             creature->flags = 0;
             if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = BARRACUDA_STATE_SWIM_1;
-            } else if (info.ahead != 0 && info.distance < BARA_ATTACK_2_RANGE) {
+            } else if (info.ahead && info.distance < BARA_ATTACK_2_RANGE) {
                 item->goal_anim_state = BARRACUDA_STATE_ATTACK_2;
-            } else if (info.ahead != 0 && info.distance < BARA_ATTACK_1_RANGE) {
+            } else if (info.ahead && info.distance < BARA_ATTACK_1_RANGE) {
                 item->goal_anim_state = BARRACUDA_STATE_STOP;
             } else if (creature->mood == MOOD_STALK) {
                 item->goal_anim_state = BARRACUDA_STATE_SWIM_1;

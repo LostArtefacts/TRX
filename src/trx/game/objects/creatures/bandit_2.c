@@ -73,7 +73,7 @@ static void M_Control(const int16_t item_num)
 
         switch (item->current_anim_state) {
         case BANDIT_2_STATE_WAIT:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = 0;
@@ -94,7 +94,7 @@ static void M_Control(const int16_t item_num)
                     }
                 }
             } else if (creature->mood == MOOD_BORED) {
-                if (info.ahead == 0 || Random_GetControl() < 0x100) {
+                if (!info.ahead || Random_GetControl() < 0x100) {
                     item->goal_anim_state = BANDIT_2_STATE_WALK;
                 }
             } else {
@@ -103,7 +103,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case BANDIT_2_STATE_WALK:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = BANDIT_2_WALK_TURN;
@@ -125,7 +125,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case BANDIT_2_STATE_RUN:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = BANDIT_2_RUN_TURN;
@@ -141,14 +141,14 @@ static void M_Control(const int16_t item_num)
         case BANDIT_2_STATE_AIM_1:
         case BANDIT_2_STATE_AIM_2:
         case BANDIT_2_STATE_AIM_4:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             creature->flags = 0;
             break;
 
         case BANDIT_2_STATE_AIM_5:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             creature->flags = 0;
@@ -162,7 +162,7 @@ static void M_Control(const int16_t item_num)
         case BANDIT_2_STATE_SHOOT_1:
         case BANDIT_2_STATE_SHOOT_2:
         case BANDIT_2_STATE_SHOOT_5:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags == 0) {
@@ -176,7 +176,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case BANDIT_2_STATE_SHOOT_4A:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags != 1) {
@@ -193,7 +193,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case BANDIT_2_STATE_SHOOT_4B:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->flags != 2) {

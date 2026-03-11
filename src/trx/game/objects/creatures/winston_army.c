@@ -165,7 +165,7 @@ static void M_Control(const int16_t item_num)
             if (lara->target == item) {
                 item->goal_anim_state = M_STATE_STOP;
             } else if (info.distance < M_STOP_RANGE) {
-                if (info.ahead != 0) {
+                if (info.ahead) {
                     item->goal_anim_state = M_STATE_STOP;
                     if (creature->flags & 1) {
                         creature->flags--;

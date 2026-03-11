@@ -87,7 +87,7 @@ static void M_Control(const int16_t item_num)
         switch (item->current_anim_state) {
         case CULTIST_3_STATE_STOP:
         case CULTIST_3_STATE_WAIT:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (creature->mood == MOOD_BORED && lara_item->hit_points <= 0) {
@@ -101,19 +101,19 @@ static void M_Control(const int16_t item_num)
             } else if (creature->mood == MOOD_ESCAPE) {
                 item->goal_anim_state = CULTIST_3_STATE_RUN;
             } else if (creature->mood == MOOD_ATTACK) {
-                if (info.distance > CULTIST_3_RUN_RANGE || info.ahead == 0) {
+                if (info.distance > CULTIST_3_RUN_RANGE || !info.ahead) {
                     item->goal_anim_state = CULTIST_3_STATE_RUN;
                 } else {
                     item->goal_anim_state = CULTIST_3_STATE_WALK;
                 }
-            } else if (creature->mood == MOOD_STALK || info.ahead == 0) {
+            } else if (creature->mood == MOOD_STALK || !info.ahead) {
                 item->goal_anim_state = CULTIST_3_STATE_WALK;
             }
             break;
 
         case CULTIST_3_STATE_WALK:
             creature->maximum_turn = CULTIST_3_WALK_TURN;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
@@ -129,12 +129,12 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = CULTIST_3_STATE_RUN;
             } else if (
                 creature->mood == MOOD_STALK || creature->mood == MOOD_ATTACK) {
-                if (info.distance > CULTIST_3_RUN_RANGE || info.ahead == 0) {
+                if (info.distance > CULTIST_3_RUN_RANGE || !info.ahead) {
                     item->goal_anim_state = CULTIST_3_STATE_RUN;
                 }
             } else if (lara_item->hit_points <= 0) {
                 item->goal_anim_state = CULTIST_3_STATE_WAIT;
-            } else if (info.ahead != 0) {
+            } else if (info.ahead) {
                 item->goal_anim_state = CULTIST_3_STATE_STOP;
             }
             break;
@@ -142,7 +142,7 @@ static void M_Control(const int16_t item_num)
         case CULTIST_3_STATE_RUN:
             creature->maximum_turn = CULTIST_3_RUN_TURN;
             tilt = angle / 4;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
@@ -159,14 +159,14 @@ static void M_Control(const int16_t item_num)
                 } else {
                     item->goal_anim_state = CULTIST_3_STATE_STOP;
                 }
-            } else if (info.ahead != 0 && info.distance < CULTIST_3_RUN_RANGE) {
+            } else if (info.ahead && info.distance < CULTIST_3_RUN_RANGE) {
                 item->goal_anim_state = CULTIST_3_STATE_WALK;
             }
             break;
 
         case CULTIST_3_STATE_AIM_L:
             creature->flags = 0;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
                 left = info.angle;
             }
@@ -179,7 +179,7 @@ static void M_Control(const int16_t item_num)
 
         case CULTIST_3_STATE_AIM_R:
             creature->flags = 0;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
                 right = info.angle;
             }
@@ -192,7 +192,7 @@ static void M_Control(const int16_t item_num)
 
         case CULTIST_3_STATE_AIM_2:
             creature->flags = 0;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 body = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
@@ -203,7 +203,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case CULTIST_3_STATE_SHOOT_L:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
                 left = info.angle;
             }
@@ -216,7 +216,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case CULTIST_3_STATE_SHOOT_R:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
                 right = info.angle;
             }
@@ -229,7 +229,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case CULTIST_3_STATE_SHOOT_2:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 body = info.angle;
             }
             if (creature->flags == 0) {

@@ -86,7 +86,7 @@ static void M_Control(const int16_t item_num)
 
         switch (item->current_anim_state) {
         case WORKER_2_STATE_STOP:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->flags = 0;
@@ -104,7 +104,7 @@ static void M_Control(const int16_t item_num)
                 } else {
                     item->goal_anim_state = WORKER_2_STATE_AIM_3;
                 }
-            } else if (creature->mood == MOOD_BORED && info.ahead != 0) {
+            } else if (creature->mood == MOOD_BORED && info.ahead) {
                 item->goal_anim_state = WORKER_2_STATE_WAIT;
             } else if (info.distance > WORKER_2_RUN_RANGE) {
                 item->goal_anim_state = WORKER_2_STATE_RUN;
@@ -114,18 +114,18 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_2_STATE_WAIT:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             if (Creature_CanTargetEnemy(item, &info)) {
                 item->goal_anim_state = WORKER_2_STATE_SHOOT_1;
-            } else if (creature->mood != MOOD_BORED || info.ahead == 0) {
+            } else if (creature->mood != MOOD_BORED || !info.ahead) {
                 item->goal_anim_state = WORKER_2_STATE_STOP;
             }
             break;
 
         case WORKER_2_STATE_WALK:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->flags = 0;
@@ -139,7 +139,7 @@ static void M_Control(const int16_t item_num)
                 } else {
                     item->goal_anim_state = WORKER_2_STATE_AIM_2;
                 }
-            } else if (creature->mood == MOOD_BORED && info.ahead != 0) {
+            } else if (creature->mood == MOOD_BORED && info.ahead) {
                 item->goal_anim_state = WORKER_2_STATE_STOP;
             } else if (info.distance > WORKER_2_RUN_RANGE) {
                 item->goal_anim_state = WORKER_2_STATE_RUN;
@@ -147,7 +147,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case WORKER_2_STATE_RUN:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             tilt = angle / 2;
@@ -164,7 +164,7 @@ static void M_Control(const int16_t item_num)
         case WORKER_2_STATE_AIM_1:
         case WORKER_2_STATE_AIM_3:
             creature->flags = 0;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
                 if (!Creature_CanTargetEnemy(item, &info)) {
                     item->goal_anim_state = WORKER_2_STATE_STOP;
@@ -178,7 +178,7 @@ static void M_Control(const int16_t item_num)
 
         case WORKER_2_STATE_AIM_2:
             creature->flags = 0;
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
                 if (Creature_CanTargetEnemy(item, &info)) {
                     item->goal_anim_state = WORKER_2_STATE_SHOOT_2;
@@ -190,7 +190,7 @@ static void M_Control(const int16_t item_num)
 
         case WORKER_2_STATE_SHOOT_1:
         case WORKER_2_STATE_SHOOT_2:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             M_ShootAtLara(item, creature, &info, head);
@@ -204,7 +204,7 @@ static void M_Control(const int16_t item_num)
                     item->goal_anim_state = WORKER_2_STATE_STOP;
                 }
             }
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             M_ShootAtLara(item, creature, &info, head);

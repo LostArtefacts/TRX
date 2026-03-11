@@ -73,7 +73,7 @@ static void M_Control(const int16_t item_num)
         Creature_Mood(item, &info, true);
 
         angle = Creature_Turn(item, creature->maximum_turn);
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
 
@@ -81,19 +81,19 @@ static void M_Control(const int16_t item_num)
         switch (item->current_anim_state) {
         case MONK_STATE_WAIT_1:
             creature->flags &= 0xFFF;
-            if (!Creature_IsHostile(item) && info.ahead != 0
+            if (!Creature_IsHostile(item) && info.ahead
                 && lara->target == item) {
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = MONK_STATE_WALK;
             } else if (creature->mood == MOOD_ESCAPE) {
                 item->goal_anim_state = MONK_STATE_RUN;
-            } else if (info.ahead != 0 && info.distance < MONK_CLOSE_RANGE) {
+            } else if (info.ahead && info.distance < MONK_CLOSE_RANGE) {
                 if (Random_GetControl() < 0x7000) {
                     item->goal_anim_state = MONK_STATE_ATTACK_1;
                 } else {
                     item->goal_anim_state = MONK_STATE_WAIT_2;
                 }
-            } else if (info.ahead == 0) {
+            } else if (!info.ahead) {
                 item->goal_anim_state = MONK_STATE_RUN;
             } else if (info.distance < MONK_LONG_RANGE) {
                 item->goal_anim_state = MONK_STATE_ATTACK_4;
@@ -106,13 +106,13 @@ static void M_Control(const int16_t item_num)
 
         case MONK_STATE_WAIT_2:
             creature->flags &= 0xFFF;
-            if (!Creature_IsHostile(item) && info.ahead != 0
+            if (!Creature_IsHostile(item) && info.ahead
                 && lara->target == item) {
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = MONK_STATE_WALK;
             } else if (creature->mood == MOOD_ESCAPE) {
                 item->goal_anim_state = MONK_STATE_RUN;
-            } else if (info.ahead != 0 && info.distance < MONK_CLOSE_RANGE) {
+            } else if (info.ahead && info.distance < MONK_CLOSE_RANGE) {
                 const int16_t random = Random_GetControl();
                 if (random < 0x3000) {
                     item->goal_anim_state = MONK_STATE_ATTACK_2;
@@ -121,7 +121,7 @@ static void M_Control(const int16_t item_num)
                 } else {
                     item->goal_anim_state = MONK_STATE_WAIT_1;
                 }
-            } else if (info.ahead != 0 && info.distance < MONK_WALK_RANGE) {
+            } else if (info.ahead && info.distance < MONK_WALK_RANGE) {
                 item->goal_anim_state = MONK_STATE_WALK;
             } else {
                 item->goal_anim_state = MONK_STATE_RUN;
@@ -131,7 +131,7 @@ static void M_Control(const int16_t item_num)
         case MONK_STATE_WALK:
             creature->maximum_turn = MONK_WALK_TURN;
             if (creature->mood == MOOD_BORED) {
-                if (!Creature_IsHostile(item) && info.ahead != 0
+                if (!Creature_IsHostile(item) && info.ahead
                     && lara->target == item) {
                     if (Random_GetControl() < 0x4000) {
                         item->goal_anim_state = MONK_STATE_WAIT_1;
@@ -141,13 +141,13 @@ static void M_Control(const int16_t item_num)
                 }
             } else if (creature->mood == MOOD_ESCAPE) {
                 item->goal_anim_state = MONK_STATE_RUN;
-            } else if (info.ahead != 0 && info.distance < MONK_CLOSE_RANGE) {
+            } else if (info.ahead && info.distance < MONK_CLOSE_RANGE) {
                 if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = MONK_STATE_WAIT_1;
                 } else {
                     item->goal_anim_state = MONK_STATE_WAIT_2;
                 }
-            } else if (info.ahead == 0 || info.distance > MONK_WALK_RANGE) {
+            } else if (!info.ahead || info.distance > MONK_WALK_RANGE) {
                 item->goal_anim_state = MONK_STATE_RUN;
             }
             break;
@@ -162,19 +162,19 @@ static void M_Control(const int16_t item_num)
             if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = MONK_STATE_WAIT_1;
             } else if (creature->mood == MOOD_ESCAPE) {
-            } else if (info.ahead != 0 && info.distance < MONK_CLOSE_RANGE) {
+            } else if (info.ahead && info.distance < MONK_CLOSE_RANGE) {
                 if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = MONK_STATE_WAIT_1;
                 } else {
                     item->goal_anim_state = MONK_STATE_WAIT_2;
                 }
-            } else if (info.ahead != 0 && info.distance < MONK_ATTACK_5_RANGE) {
+            } else if (info.ahead && info.distance < MONK_ATTACK_5_RANGE) {
                 item->goal_anim_state = MONK_STATE_ATTACK_5;
             }
             break;
 
         case MONK_STATE_AIM_3:
-            if (info.ahead == 0 || info.distance > MONK_CLOSE_RANGE) {
+            if (!info.ahead || info.distance > MONK_CLOSE_RANGE) {
                 item->goal_anim_state = MONK_STATE_WAIT_2;
             } else {
                 item->goal_anim_state = MONK_STATE_ATTACK_3;

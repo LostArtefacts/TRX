@@ -432,7 +432,7 @@ static void M_Control(const int16_t item_num)
 
         creature->maximum_turn = M_WALK_TURN;
         creature->flags = 0;
-        if (info.bite != 0 && info.distance < M_ATTACK_RANGE_1) {
+        if (info.bite && info.distance < M_ATTACK_RANGE_1) {
             item->goal_anim_state = M_STATE_PUNCH_1;
         } else {
             item->goal_anim_state = M_STATE_STOP;
@@ -462,7 +462,7 @@ static void M_Control(const int16_t item_num)
 
         creature->maximum_turn = M_WALK_TURN;
         creature->flags = 0;
-        if (info.bite != 0 && info.distance < M_ATTACK_RANGE_3) {
+        if (info.bite && info.distance < M_ATTACK_RANGE_3) {
             item->goal_anim_state = M_STATE_PUNCH_3;
         } else {
             item->goal_anim_state = M_STATE_WALK;

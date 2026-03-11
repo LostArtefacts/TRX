@@ -146,7 +146,7 @@ static void M_Control(const int16_t item_num)
 
         case M_STATE_ATTACK_1:
             creature->maximum_turn = 0;
-            if (creature->flags != 1 && info.ahead != 0
+            if (creature->flags != 1 && info.ahead
                 && (item->touch_bits & M_TOUCH_BITS) != 0) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
                 Lara_TakeDamage(M_BITE_DAMAGE, true);

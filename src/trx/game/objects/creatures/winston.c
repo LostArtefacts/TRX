@@ -64,12 +64,12 @@ static void M_Control(const int16_t item_num)
 
     if (item->current_anim_state == WINSTON_STATE_STOP) {
         if (item->goal_anim_state != WINSTON_STATE_WALK
-            && (info.distance > M_STOP_RANGE || info.ahead == 0)) {
+            && (info.distance > M_STOP_RANGE || !info.ahead)) {
             item->goal_anim_state = WINSTON_STATE_WALK;
             Sound_Effect(SFX_WINSTON_GRUNT_2, &item->pos, SPM_NORMAL);
         }
     } else if (info.distance < M_STOP_RANGE) {
-        if (info.ahead != 0) {
+        if (info.ahead) {
             item->goal_anim_state = WINSTON_STATE_STOP;
             if ((creature->flags & 1) != 0) {
                 creature->flags--;

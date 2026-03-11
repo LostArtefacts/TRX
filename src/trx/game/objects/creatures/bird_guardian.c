@@ -65,7 +65,7 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
         Creature_Mood(item, &info, true);
 
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         angle = Creature_Turn(item, creature->maximum_turn);
@@ -73,16 +73,15 @@ static void M_Control(const int16_t item_num)
         switch (item->current_anim_state) {
         case BIRD_GUARDIAN_STATE_WAIT:
             creature->maximum_turn = 0;
-            if (info.ahead != 0
-                && info.distance < BIRD_GUARDIAN_ATTACK_1_RANGE) {
+            if (info.ahead && info.distance < BIRD_GUARDIAN_ATTACK_1_RANGE) {
                 if (Random_GetControl() < 0x4000) {
                     item->goal_anim_state = BIRD_GUARDIAN_STATE_AIM_1;
                 } else {
                     item->goal_anim_state = BIRD_GUARDIAN_STATE_AIM_3;
                 }
-            } else if (info.ahead != 0 && creature->mood == MOOD_BORED) {
+            } else if (info.ahead && creature->mood == MOOD_BORED) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT_2;
-            } else if (info.ahead != 0 && creature->mood == MOOD_STALK) {
+            } else if (info.ahead && creature->mood == MOOD_STALK) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT_2;
             } else {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WALK;
@@ -92,27 +91,25 @@ static void M_Control(const int16_t item_num)
         case BIRD_GUARDIAN_STATE_WAIT_2:
             if (creature->mood != MOOD_BORED) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT;
-            } else if (info.ahead == 0) {
+            } else if (!info.ahead) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT;
             }
             break;
 
         case BIRD_GUARDIAN_STATE_WALK:
             creature->maximum_turn = BIRD_GUARDIAN_WALK_TURN;
-            if (info.ahead != 0
-                && info.distance < BIRD_GUARDIAN_ATTACK_2_RANGE) {
+            if (info.ahead && info.distance < BIRD_GUARDIAN_ATTACK_2_RANGE) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_AIM_2;
-            } else if (info.ahead != 0 && creature->mood == MOOD_BORED) {
+            } else if (info.ahead && creature->mood == MOOD_BORED) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT;
-            } else if (info.ahead != 0 && creature->mood == MOOD_STALK) {
+            } else if (info.ahead && creature->mood == MOOD_STALK) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT;
             }
             break;
 
         case BIRD_GUARDIAN_STATE_AIM_1:
             creature->flags = 0;
-            if (info.ahead != 0
-                && info.distance < BIRD_GUARDIAN_ATTACK_1_RANGE) {
+            if (info.ahead && info.distance < BIRD_GUARDIAN_ATTACK_1_RANGE) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_PUNCH_1;
             } else {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT;
@@ -121,8 +118,7 @@ static void M_Control(const int16_t item_num)
 
         case BIRD_GUARDIAN_STATE_AIM_2:
             creature->flags = 0;
-            if (info.ahead != 0
-                && info.distance < BIRD_GUARDIAN_ATTACK_2_RANGE) {
+            if (info.ahead && info.distance < BIRD_GUARDIAN_ATTACK_2_RANGE) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_PUNCH_2;
             } else {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WALK;
@@ -131,8 +127,7 @@ static void M_Control(const int16_t item_num)
 
         case BIRD_GUARDIAN_STATE_AIM_3:
             creature->flags = 0;
-            if (info.ahead != 0
-                && info.distance < BIRD_GUARDIAN_ATTACK_1_RANGE) {
+            if (info.ahead && info.distance < BIRD_GUARDIAN_ATTACK_1_RANGE) {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_PUNCH_3;
             } else {
                 item->goal_anim_state = BIRD_GUARDIAN_STATE_WAIT;
