@@ -270,10 +270,12 @@ bool Item_IsTriggerActiveRO(const ITEM *const item)
 
 bool Item_IsTriggerActive(ITEM *const item)
 {
-    bool result = Item_IsTriggerActiveRO(item);
-    item->timer--;
-    if (item->timer == 0) {
-        item->timer = -1;
+    const bool result = Item_IsTriggerActiveRO(item);
+    if (item->timer != 0 && item->timer != -1) {
+        item->timer--;
+        if (item->timer == 0) {
+            item->timer = -1;
+        }
     }
     return result;
 }
