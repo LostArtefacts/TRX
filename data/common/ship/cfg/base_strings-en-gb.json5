@@ -1,11 +1,23 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
-    "language_name": "English (British)",
     "extends": "en",
-    "game_strings": {
-        "CONTROLS_CUSTOMIZE": "Customise Controls",
-        "STATS_DISTANCE_TRAVELLED": "Distance Travelled",
+    "language_name": "English (British)",
+    "general": {
+        "settings": {
+            "controls": {
+                "customize": "Customise Controls",
+            }
+        },
+        "stats": {
+            "distance_travelled": "Distance Travelled",
+        }
+    },
+    "enums": {
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bottom centre",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Top centre",
+        }
     },
     "settings": {
         "gameplay.enable_bouncy_grenades": {
@@ -98,12 +110,6 @@
         "visuals.water_color": {
             "title": "Water colour",
             "description": "Colour of the water.",
-        }
-    },
-    "enums": {
-        "UI_ELEMENT_LOCATION": {
-            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bottom centre",
-            "UI_ELEMENT_LOCATION_TOP_CENTER": "Top centre",
         }
     }
 }

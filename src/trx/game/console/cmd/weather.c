@@ -57,15 +57,17 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     if (weather_type_raw == -1) {
         char *available = M_GetAvailableWeatherTypes();
         if (available != nullptr) {
-            Console_LogError(GS(CMD_INVALID_WEATHER), ctx->args, available);
+            Console_LogError(
+                GS("console/cmd/weather/invalid"), ctx->args, available);
         }
         Memory_FreePointer(&available);
         return CR_FAILURE;
     }
 
     FX_Weather_SetWeather((WEATHER_TYPE)weather_type_raw);
-    Console_Log(GS(CMD_WEATHER_SET), ctx->args);
+    Console_Log(GS("console/cmd/weather/set"), ctx->args);
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("weather", M_Entrypoint, GS_ID(CONSOLE_HELP_WEATHER))
+REGISTER_CONSOLE_COMMAND(
+    "weather", M_Entrypoint, GS_ID("console/cmd/weather/help"))

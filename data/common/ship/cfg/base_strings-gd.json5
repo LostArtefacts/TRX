@@ -2,1534 +2,669 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "language_name": "Gàidhlig",
-    "game_strings": {
-        "ACTION_EXAMINE_ITEM": "Sgrùd",
-        "ACTION_HIDE_DIALOG": "Falaich an còmhradh",
-        "ACTION_RESET_DEFAULTS": "Ath-shuidhich",
-        "ACTION_ROTATE": "Tionndaidh",
-        "ACTION_UNBIND": "Falamhaich",
-        "ACTION_USE_ITEM": "Cleachd",
-        "CMD_GIVE_SECRET_GIVEN": "Chaidh dìomhaireachd %s air a chur ris",
-        "CMD_GIVE_SECRET_LIST": "Dìomhaireachdan air an cruinneachadh: %d de %d (%s)",
-        "CMD_GIVE_SECRET_NONE": "Dìomhaireachdan air an cruinneachadh: %d de %d",
-        "CMD_GIVE_SECRET_TAKEN": "Chaidh dìomhaireachd %s air a thoirt air falbh",
-        "CMD_IMMUNE_SWITCHED_OFF": "Tha Lara so-leònte a-nis",
-        "CMD_IMMUNE_SWITCHED_ON": "Tha Lara do-ruigsinneach do mhilleadh a-nis",
-        "CMD_INF_SPRINT_SWITCHED_OFF": "Chan urrainn do Lara ruith gu luath gun chrìoch tuilleadh",
-        "CMD_INF_SPRINT_SWITCHED_ON": "'S urrainn do Lara ruith gu luath gun chrìoch a-nis",
-        "CMD_INVALID_MUSIC_TRACK": "Slighe-ciùil mì-dhligheach",
-        "CMD_INVALID_SECRET": "Dìomhaireachd mì-dhligheach: %s (dìomhaireachdan dligheach: %s)",
-        "CMD_INVALID_WEATHER": "Aimsir neo-dhligheach: %s (dligheach: %s)",
-        "CMD_ITEM_SPAWNED": "Chaidh an nì air iarraidh a chruthachadh faisg air Lara",
-        "CMD_ITEM_SPAWN_FAILED": "Cha deach an nì air iarraidh a chruthachadh",
-        "CMD_LUA_RUNTIME_ERROR": "Mearachd a' ruith Lua: %s",
-        "CMD_LUA_SYNTAX_ERROR": "Mearachd sìntacs Lua: %s",
-        "CMD_PLAY_MUSIC_STOPPED": "Sguir an ceòl",
-        "CMD_PLAY_MUSIC_TRACK": "A' cluich ciùil %d",
-        "CMD_TELEPORT_ITEM": "Air a ghluasad gu nì: %d",
-        "CMD_TELEPORT_ITEM_FAIL": "Dh'fhàillig gluasad gu nì: %d",
-        "CMD_TELEPORT_OBJECT": "Air a ghluasad gu oibseact: %s",
-        "CMD_TELEPORT_OBJECT_FAIL": "Dh'fhàillig gluasad gu oibseact: %s",
-        "CMD_TELEPORT_POS": "Air a ghluasad gu suidheachadh: %.3f %.3f %.3f",
-        "CMD_TELEPORT_POS_FAIL": "Dh'fhàillig gluasad gu suidheachadh: %.3f %.3f %.3f",
-        "CMD_TELEPORT_ROOM": "Air a ghluasad gu seòmar: %d",
-        "CMD_TELEPORT_ROOM_FAIL": "Dh'fhàillig gluasad gu seòmar: %d",
-        "CMD_TRIGGER_DONE": "Nìomhaichte nithean: %s",
-        "CMD_TRIGGER_INVALID_ITEM": "Nì ceàrr: %s",
-        "CMD_TRIGGER_NOT_FOUND": "Cha deach nithean freagarrach a lorg airson: %s",
-        "CMD_TRIGGER_NO_MATCH": "Targaid neo-aithnichte: %s",
-        "CMD_UNTRIGGER_DONE": "Gun nìomhaichte nithean: %s",
-        "CMD_WEATHER_SET": "Suidhich an aimsir gu %s",
-        "CMD_WINSTON_DEAD": "Tha am butlar agad marbh. 'S tu nad fuamhaire!",
-        "CMD_WINSTON_SPAWNED": "Thàinig Winston faisg air Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "Cha do shoirbhich le Winston a ghairm",
-        "CMD_WINSTON_TELEPORTED": "Thàinig Winston faisg air Lara",
-        "COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER": "Tha na roghainnean ciorramach airson nan ìrean seo.",
-        "COMMON_SETTINGS_CHROMA": "Chroma",
-        "COMMON_SETTINGS_EDIT_VALUE": "Deasaich luach",
-        "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "Tha an suidheachadh seo air a chur an gnìomh le ùghdar nan ìrean agus chan urrainnear ga atharrachadh.",
-        "COMMON_SETTINGS_HUE": "Tuar",
-        "COMMON_SETTINGS_LIGHTNESS": "Soilleireachd",
-        "COMMON_SETTINGS_RESTORE_DEFAULT": "Ath-shuidhich",
-        "COMMON_SETTINGS_TOGGLE_HELP": "Tionndaidh cuideachadh",
-        "CONFIG_PRESETS_APPLIED": "\\{review}Ro-shealladh air a chur an sàs.",
-        "CONFIG_PRESETS_CONFIRM_DESCRIPTION": "\\{review}Bidh na suidheachaidhean a leanas air an atharrachadh:",
-        "CONFIG_PRESETS_CONFIRM_RESTART_NOTE": "\\{review}Nota: dh’fhaodadh gum feum cuid de shuidheachaidhean ath-thòiseachadh a’ gheama airson buaidh fhaighinn.",
-        "CONFIG_PRESETS_EMPTY": "\\{review}Cha deach ro-shealladh sam bith a lorg.",
-        "CONFIG_PRESETS_NO_CHANGES": "\\{review}Chan eil atharrachaidhean ri chur an gnìomh.",
-        "CONFIG_PRESETS_TITLE_FMT": "\\{review}Cuir an ro-shealladh %s an sàs?",
-        "CONFIG_PRESET_TR1_PC": "\\{review}TR1 PC",
-        "CONFIG_PRESET_TR1_PS1": "\\{review}TR1 PS1",
-        "CONFIG_PRESET_TR2_PC": "\\{review}TR2 PC",
-        "CONFIG_PRESET_TR2_PS1": "\\{review}TR2 PS1",
-        "CONFIG_PRESET_TR3_PC": "\\{review}TR3 PC",
-        "CONFIG_PRESET_TR3_PS1": "\\{review}TR3 PS1",
-        "CONSOLE_CMD_HELP_LIST": "Òrdughan rim faighinn:",
-        "CONSOLE_HELP_BRAID": "Tionndaidheas feaman-fuilt Lara.",
-        "CONSOLE_HELP_CHEATS": "Tionndaidheas cleasan a' gheama.",
-        "CONSOLE_HELP_CLEAR": "Glanas logaichean consol follaiseach.",
-        "CONSOLE_HELP_DEBUG": "Tionndaidheas fiosrachadh deasbug.",
-        "CONSOLE_HELP_DRAIN": "Drèaneas an t-seomair làithreach.",
-        "CONSOLE_HELP_END_LEVEL": "Crìochnaicheas an ìre làithreach.",
-        "CONSOLE_HELP_EXIT": "Dùinidh an gèama.",
-        "CONSOLE_HELP_FLIPMAP": "Tionndaidheas am mapa-flip.",
-        "CONSOLE_HELP_FLOOD": "Lìonas an t-seomair làithreach le uisge.",
-        "CONSOLE_HELP_FLY": "Tionndaidheas an cleas itealach.",
-        "CONSOLE_HELP_FPS": "Atharraicheas an suidheachadh FPS.",
-        "CONSOLE_HELP_GIVE": "Cuireas nì sònraichte anns clàr-seilbhe Lara.",
-        "CONSOLE_HELP_GIVE_SECRET": "Seall liosta de dhìomhaireachdan Lara, neo cuir/thoir air falbh fear a rèir àireamh.",
-        "CONSOLE_HELP_HEAL": "Leighis Lara gu slàinte làn a-rithist.",
-        "CONSOLE_HELP_HELP": "Seallas cuideachadh airson gach àithne neo cuideachadh mionaideach airson tè shonraichte.",
-        "CONSOLE_HELP_HP": "Suidhicheas slàinte Lara gu àireamh ainmichte.",
-        "CONSOLE_HELP_IMMUNE": "Tionndaidh neo-bhàsmhorachd. (Faodaidh Lara fhathast bàsachadh ann an cuid de shuidheachaidhean.)",
-        "CONSOLE_HELP_INF_SPRINT": "Cuir às do ruith-luath gun chrìoch.",
-        "CONSOLE_HELP_KILL": "Cuir às do nàimhdean a tha faisg air làimh.",
-        "CONSOLE_HELP_LIGHTING": "Tionndaidh siostam solais",
-        "CONSOLE_HELP_LOAD": "Luchdaich geama bhon t-slot sàbhalaidh ainmichte neo slot luath.",
-        "CONSOLE_HELP_LUA": "Ruith an t-sreang còd Lua a chaidh a thoirt seachad.",
-        "CONSOLE_HELP_MOD": "\\{review}A' gluasad gu am mod sònraichte agus a' tòiseachadh a' gheama a-rithist.",
-        "CONSOLE_HELP_MUSIC": "Cluich slighe-ciùil leis an ID ainmichte.",
-        "CONSOLE_HELP_PLAY_CUTSCENE": "Cluich sealladh-film leis an àireamh ainmichte.",
-        "CONSOLE_HELP_PLAY_DEMO": "Cluich taisbeanadh leis an àireamh ainmichte.",
-        "CONSOLE_HELP_PLAY_GYM": "Cluich ìre an t-Seòmair-eacarsaich.",
-        "CONSOLE_HELP_PLAY_LEVEL": "Cluich ìre leis an ainm neo àireamh ainmichte.",
-        "CONSOLE_HELP_POS": "Seall suidheachadh Lara.",
-        "CONSOLE_HELP_SAVE": "Sàbhail geama dhan t-slot ainmichte neo dhan ath shlot luath.",
-        "CONSOLE_HELP_SCREENSHOT": "Sàbhail glacadh-sgrìn gu diosc, le slighe fhaidhle roghainneil.",
-        "CONSOLE_HELP_SET": "Seall neo ùraich roghainn rèiteachaidh ainmichte.",
-        "CONSOLE_HELP_SFX": "Cluich buaidh-fuaime leis an ID ainmichte.",
-        "CONSOLE_HELP_SPEED": "Atharraich astar a' gheama.",
-        "CONSOLE_HELP_STRINGS": "Ath-luchdaich faidhlichean cànain làithreach on diosg.",
-        "CONSOLE_HELP_TEXTURES": "Cuir air neo dheth an gnìomh teacsaichean.",
-        "CONSOLE_HELP_TITLE": "Till gu scrion a' thiotail.",
-        "CONSOLE_HELP_TP": "Gluais Lara gu suidheachadh neo àireamh rùm ainmichte.",
-        "CONSOLE_HELP_TRIGGER": "Nì nìomhaichte neo gun nìomhaichte le id, ainm nì, neo ainm nì.",
-        "CONSOLE_HELP_VSYNC": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
-        "CONSOLE_HELP_WEATHER": "Atharraichidh seo an aimsir.",
-        "CONSOLE_HELP_WIREFRAME": "Tionndaidh reandaradh frèam-uèir air neo dheth.",
-        "CONTROLS_BACKEND_CONTROLLER": "Rianadair",
-        "CONTROLS_BACKEND_KEYBOARD": "Meur-chlàr",
-        "CONTROLS_CUSTOMIZE": "Gnàthaich na Smachdan",
-        "CONTROLS_CUSTOM_1": "Iuchraichean Cleachdaiche 1",
-        "CONTROLS_CUSTOM_2": "Iuchraichean Cleachdaiche 2",
-        "CONTROLS_CUSTOM_3": "Iuchraichean Cleachdaiche 3",
-        "CONTROLS_DEFAULT_KEYS": "Iuchraichean Bunaiteach",
-        "CONTROLS_SECTION_BASICS": "Gluasad",
-        "CONTROLS_SECTION_ITEMS": "Nithean",
-        "CONTROLS_SECTION_MISC": "Measgaichte",
-        "CONTROLS_SECTION_SYSTEM": "Siostam",
-        "GAMEPLAY_SETTINGS_CONTROLS_TAB": "Smachdan",
-        "GAMEPLAY_SETTINGS_FIXES_TAB": "Càradh",
-        "GAMEPLAY_SETTINGS_GENERAL_TAB": "Cumanta",
-        "GAMEPLAY_SETTINGS_MODS_TAB": "Mods",
-        "GAMEPLAY_SETTINGS_PRESETS_TAB": "\\{review}Ro-shealladh",
-        "GAMEPLAY_SETTINGS_TITLE": "Roghainnean Cluiche",
-        "GLOBE_SELECT_AREA_1": "Raon 1",
-        "GLOBE_SELECT_AREA_2": "Raon 2",
-        "GLOBE_SELECT_AREA_3": "Raon 3",
-        "GLOBE_SELECT_AREA_4": "Raon 4",
-        "GLOBE_SELECT_AREA_5": "Raon 5",
-        "GLOBE_SELECT_AREA_6": "Raon 6",
-        "GRAPHIC_SETTINGS_RENDERING_TAB": "Reandaradh",
-        "GRAPHIC_SETTINGS_TITLE": "Roghainnean Grafaigeach",
-        "GRAPHIC_SETTINGS_UI_BARS_TAB": "Bàr",
-        "GRAPHIC_SETTINGS_UI_TAB": "Eadar-aghaidh",
-        "GRAPHIC_SETTINGS_VISUALS_TAB": "Lèirsinneachd",
-        "INVENTORY_RING_HEADING_ADVENTURE": "Cuairt-dànachd",
-        "INVENTORY_RING_HEADING_FMT": "%s",
-        "INVENTORY_RING_HEADING_GAME_OVER": "GEAMA DEIREANNACH",
-        "INVENTORY_RING_HEADING_INVENTORY": "CLÀR-SEILBHE",
-        "INVENTORY_RING_HEADING_ITEMS": "NITHEAN",
-        "INVENTORY_RING_HEADING_OPTION": "ROGHAINN",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{small}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "%s",
-        "MISC_DEMO_MODE": "Modh Taisbeanaidh",
-        "MISC_DIRECTION_KEYS_CONTROLLER": "D-pad",
-        "MISC_DIRECTION_KEYS_KEYBOARD": "Saigheadan",
-        "MISC_EMPTY_SLOT_FMT": "- SLOT FALAMH -",
-        "MISC_EXIT": "Dùin",
-        "MISC_HOLD_FMT": "Cùm %s",
-        "MISC_OFF": "Dheth",
-        "MISC_ON": "Air",
-        "OSD_AMBIGUOUS_INPUT_2": "Cur-a-steach neo-shoilleir: %s agus %s",
-        "OSD_AMBIGUOUS_INPUT_3": "Cur-a-steach neo-shoilleir: %s, %s, ...",
-        "OSD_BILINEAR_FILTER_OFF": "Criathradh teacsdaire: dheth",
-        "OSD_BILINEAR_FILTER_ON": "Criathradh teacsdaire: air",
-        "OSD_COMMAND_BAD_INVOCATION": "Iarrtas mì-dhligheach: %s",
-        "OSD_COMMAND_BOOL": "air, dheth",
-        "OSD_COMMAND_DECIMAL": "[deicheach]",
-        "OSD_COMMAND_INTEGER": "[àireamh slàn]",
-        "OSD_COMMAND_PERCENT": "[àireamh slàn]",
-        "OSD_COMMAND_UNAVAILABLE": "Chan eil an àithne seo ri làimh an-dràsta",
-        "OSD_COMMAND_VALID_VALUES": "Luachan dligheach: %s",
-        "OSD_COMPLETE_LEVEL": "Ìre deiseil!",
-        "OSD_CONFIG_OPTION_GET": "Tha %s air a rèiteachadh gu %s",
-        "OSD_CONFIG_OPTION_SET": "%s air atharrachadh gu %s",
-        "OSD_CONFIG_OPTION_UNKNOWN_OPTION": "Roghainn neo-aithnichte: %s",
-        "OSD_CURRENT_HEALTH_GET": "Slàinte làithreach Lara: %d",
-        "OSD_CURRENT_HEALTH_SET": "Slàinte Lara air a shuidheachadh gu %d",
-        "OSD_DOOR_CLOSE": "Dùin Sesame!",
-        "OSD_DOOR_OPEN": "Fosgail Sesame!",
-        "OSD_DOOR_OPEN_FAIL": "Chan eil doras sam bith faisg air Lara",
-        "OSD_FLIPMAP_FAIL_ALREADY_OFF": "Tha am mapa-flip mar-thà DHETH",
-        "OSD_FLIPMAP_FAIL_ALREADY_ON": "Tha am mapa-flip mar-thà AIR",
-        "OSD_FLIPMAP_OFF": "Mapa-flip air a chur DHETH",
-        "OSD_FLIPMAP_ON": "Mapa-flip air a chur AIR",
-        "OSD_FLY_MODE_OFF": "Modh itealaich air a chur dheth",
-        "OSD_FLY_MODE_ON": "Modh itealaich air a chur air",
-        "OSD_FPS_COUNTER_OFF": "Cuntair FPS dheth",
-        "OSD_FPS_COUNTER_ON": "Cuntair FPS air",
-        "OSD_GIVE_ITEM": "Chaidh %s air a chur ri clàr-seilbhe Lara",
-        "OSD_GIVE_ITEM_ALL_GUNS": "Glasaich is losgaidh – tha Lara armaichte gu fiadhaich!",
-        "OSD_GIVE_ITEM_ALL_KEYS": "Ionndrainn! Tha a h-uile iuchair aig Lara a-nis.",
-        "OSD_GIVE_ITEM_CHEAT": "Tha baga-droma Lara mòran nas truime a-nis!",
-        "OSD_HEAL_ALREADY_FULL_HP": "Tha slàinte làn aig Lara mu thràth",
-        "OSD_HEAL_SUCCESS": "Chaidh slàinte Lara a lìonadh gu lèir",
-        "OSD_INVALID_CUTSCENE": "Sealladh-film mì-dhligheach",
-        "OSD_INVALID_DEMO": "Taisbeanadh mì-dhligheach",
-        "OSD_INVALID_ITEM": "Nì neo-aithnichte: %s",
-        "OSD_INVALID_LEVEL": "Ìre mì-dhligheach",
-        "OSD_INVALID_OBJECT": "Oibseact mì-dhligheach",
-        "OSD_INVALID_ROOM": "Seòmar mì-dhligheach: %d. Seòmraichean dligheach: 0 gu %d",
-        "OSD_INVALID_SAMPLE": "Fuaim mì-dhligheach: %d",
-        "OSD_KILL": "Beannachd leat!",
-        "OSD_KILL_ALL": "Puf! Chaidh %d nàimhdean air falbh!",
-        "OSD_KILL_ALL_FAIL": "Och, chan eil nàimhdean air fhàgail airson marbhadh...",
-        "OSD_KILL_FAIL": "Chan eil nàmhaid sam bith faisg air làimh...",
-        "OSD_LIGHTING_CONTRAST_FMT": "Coimeas Solais: %s",
-        "OSD_LOAD_GAME": "Geama air a luchdadh bho slot %d",
-        "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Slot mì-dhligheach: %d",
-        "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Chan eil slot sàbhalaidh %d ri làimh",
-        "OSD_OBJECT_NOT_FOUND": "Cha deach an t-oibseact a lorg",
-        "OSD_PLAY_CUTSCENE": "A' luchdachadh sealladh-film %d",
-        "OSD_PLAY_DEMO": "A' luchdachadh taisbeanaidh %d",
-        "OSD_PLAY_LEVEL": "A' luchdachadh %s",
-        "OSD_POS_LARA_MISSING": "Chan eil Lara an làthair",
-        "OSD_POS_LARA_POS_FMT": "Seomair: %d\nSuidheachadh: %.3f, %.3f, %.3f\nCuairteachadh: %.3f, %.3f, %.3f",
-        "OSD_POS_LEVEL_FMT": "Ìre %d",
-        "OSD_POS_LEVEL_FMT_CUTSCENE": "Sealladh-film %d",
-        "OSD_POS_LEVEL_FMT_DEMO": "Taisbeanadh %d",
-        "OSD_QUICK_LOAD": "Slot luchdaichte gu luath %d",
-        "OSD_QUICK_LOAD_FAIL_NO_BOUND_SLOT": "Chan eil slot sàbhalaidh sam bith ceangailte an-dràsta",
-        "OSD_QUICK_LOAD_FAIL_UNAVAILABLE_BOUND_SLOT": "Chan eil an slot sàbhalaidh ceangailte rim faotainn",
-        "OSD_QUICK_SAVE": "Sàbhailte gu luath",
-        "OSD_QUICK_SAVE_FAIL_NO_SLOTS": "Chan eil slotan sàbhalaidh luath sam bith air an rèiteachadh",
-        "OSD_SAVE_GAME": "Geama air a shàbhaladh gu slot %d",
-        "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Slot sàbhalaidh mì-dhligheach: %d",
-        "OSD_SOUND_AVAILABLE_SAMPLES": "Fuaimean ri làimh: %s",
-        "OSD_SOUND_PLAYING_SAMPLE": "A' cluich fuaim %d",
-        "OSD_SPEED_GET": "Astar làithreach: %d",
-        "OSD_SPEED_SET": "Astar air a shuidheachadh air %d",
-        "OSD_STRINGS_FAILED": "Dh'fhàillig ath-luchdadh nam faidhlichean cànain",
-        "OSD_STRINGS_RELOADED": "Chaidh na faidhlichean cànain ath-luchdachadh",
-        "OSD_TEXTURES_OFF": "Teacsaichean: dheth",
-        "OSD_TEXTURES_ON": "Teacsaichean: air",
-        "OSD_TRAPEZOID_FILTER_OFF": "Criathradh trapeasoid dheth",
-        "OSD_TRAPEZOID_FILTER_ON": "Criathradh trapeasoid air",
-        "OSD_UI_OFF": "Eadar-aghaidh dheth",
-        "OSD_UI_ON": "Eadar-aghaidh air",
-        "OSD_UNKNOWN_COMMAND": "Àithne neo-aithnichte: %s",
-        "OSD_UPSCALING_FACTOR": "Factar sgèileachaidh: x%d",
-        "OSD_WIREFRAME_MODE_OFF": "Modh frèam-uèir: dheth",
-        "OSD_WIREFRAME_MODE_ON": "Modh frèam-uèir: air",
-        "OVERLAY_DEBUG_ANIMATION": "Beothachadh: ",
-        "OVERLAY_DEBUG_ANIMATION_STATE": "Stàit: ",
-        "OVERLAY_DEBUG_CAMERA_POS": "Tùs a' chamara: ",
-        "OVERLAY_DEBUG_CAMERA_TARGET": "Targaid a' chamara: ",
-        "OVERLAY_DEBUG_IMMUNE": "Neo-bhàsmhorachd air",
-        "OVERLAY_DEBUG_POSITION": "Suidheachadh: ",
-        "OVERLAY_DEBUG_ROTATION": "Cuairteachadh: ",
-        "OVERLAY_DEBUG_SPEED": "Luas: ",
-        "OVERLAY_ITEM_COUNT_FMT_PC": "\\{small}%s",
-        "OVERLAY_ITEM_COUNT_FMT_PS1": "\\{small}%s",
-        "PAGINATION_NAV": "%d / %d",
-        "PASSPORT_EXIT_GAME": "Dùin an Geama",
-        "PASSPORT_EXIT_TO_TITLE": "Till gu Tiotal",
-        "PASSPORT_LOAD_GAME": "Luchdaich Geama",
-        "PASSPORT_MODE_NEW_GAME": "Geama Ùr",
-        "PASSPORT_MODE_NEW_GAME_JP": "GÙ Iapanach",
-        "PASSPORT_MODE_NEW_GAME_JP_PLUS": "GÙ+ Iapanach",
-        "PASSPORT_MODE_NEW_GAME_PLUS": "Geama Ùr+",
-        "PASSPORT_NEW_GAME": "Geama Ùr",
-        "PASSPORT_PLAY_PREVIOUS_LEVELS": "Cluich ìrean roimhe",
-        "PASSPORT_RESTART_LEVEL": "Ath-thòisich an Ìre",
-        "PASSPORT_SAVE_GAME": "Sàbhail Geama",
-        "PASSPORT_SAVE_SLOT_UNSUPPORTED": "Cha bheir an sàbhaladh seo taic don fheart seo.",
-        "PASSPORT_SELECT_LEVEL": "Tagh Ìre",
-        "PASSPORT_SELECT_MODE": "Tagh Modh",
-        "PASSPORT_SELECT_SAVE": "Tagh Sàbhail",
-        "PASSPORT_STORY_SO_FAR": "An sgeul gu ruige seo...",
-        "PAUSE_ARE_YOU_SURE": "A bheil thu cinnteach?",
-        "PAUSE_CONTINUE": "Lean air adhart",
-        "PAUSE_EXIT_TO_TITLE": "Theid dhan tiotal?",
-        "PAUSE_NO": "Chan eil",
-        "PAUSE_PAUSED": "Air a stad",
-        "PAUSE_QUIT": "Dùin",
-        "PAUSE_YES": "Tha",
-        "PHOTO_MODE_ADVANCE_FRAME": "Frèam air adhart",
-        "PHOTO_MODE_CAMERA_MOVE_PROMPT": "Gluais an camara",
-        "PHOTO_MODE_CAMERA_RESET_PROMPT": "Ath-shuidhich an camara",
-        "PHOTO_MODE_CAMERA_ROLL_PROMPT": "Rolla an camara",
-        "PHOTO_MODE_CAMERA_ROTATE_90_PROMPT": "Cuairtich 90 ceum",
-        "PHOTO_MODE_CAMERA_ROTATE_PROMPT": "Cuairtich an camara",
-        "PHOTO_MODE_CHANGE_LARA_POSE": "Atharraich seasamh",
-        "PHOTO_MODE_FOV_PROMPT": "Atharraich FOV",
-        "PHOTO_MODE_LARA_MOVE_PROMPT": "Gluais Lara",
-        "PHOTO_MODE_LARA_RESET_PROMPT": "Ath-shuidhich Lara",
-        "PHOTO_MODE_LARA_ROLL_PROMPT": "Rolla Lara",
-        "PHOTO_MODE_LARA_ROTATE_90_PROMPT": "Tionndaidh Lara 90°",
-        "PHOTO_MODE_LARA_ROTATE_PROMPT": "Tionndaidh Lara",
-        "PHOTO_MODE_SNAP_PROMPT": "Tog dealbh",
-        "PHOTO_MODE_TITLE_CAMERA_POS": "Modh Dealbh",
-        "PHOTO_MODE_TITLE_LARA_POS": "A' gluasad Lara",
-        "PHOTO_MODE_TOGGLE_HELP": "Tionndaidh cuideachadh",
-        "SOUND_SETTINGS_MISC_TAB": "Iomlan",
-        "SOUND_SETTINGS_TITLE": "Roghainnean Fuaime",
-        "SOUND_SETTINGS_VOLUME_TAB": "Tomhas",
-        "STATS_AMMO": "Buaidhean / Losgadh",
-        "STATS_AMMO_HITS": "Buaidhean",
-        "STATS_AMMO_USED": "Losgadh",
-        "STATS_ASSAULT_BEST_TIME_FMT": "%s",
-        "STATS_ASSAULT_FINISH": "Crìochnaich",
-        "STATS_ASSAULT_NO_TIMES_SET": "Gun Àmanan Fhathast",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "%s",
-        "STATS_ASSAULT_TITLE": "NA H-ÀMANAN AS FHEÀRR",
-        "STATS_BASIC_FMT": "%d",
-        "STATS_BONUS_STATISTICS": "Staitistig a Bharrachd",
-        "STATS_DEATHS": "Bàsan",
-        "STATS_DETAIL_FMT": "%d de %d",
-        "STATS_DISTANCE_TRAVELLED": "Astar air a Shiubhal",
-        "STATS_FINAL_STATISTICS": "Staitistig Dheireannach",
-        "STATS_GYM_ASSAULT_COURSE": "Cùrsa Ionnsaigh",
-        "STATS_GYM_RACETRACK_COURSE": "Cùrsa Rèis",
-        "STATS_KILLS": "Marbhain",
-        "STATS_LEVEL": "Ìre",
-        "STATS_MEDIPACKS_USED": "Pasganan Cleachdte",
-        "STATS_NONE": "Gin sam bith",
-        "STATS_PICKUPS": "Togailtean",
-        "STATS_SECRETS": "Dìomhaireachdan",
-        "STATS_TIME_TAKEN": "Ùine air a Ghabhail",
-    },
-    "objects": {
-        "flare": {
-            "name": "Lòchran",
+    "general": {
+        "actions": {
+            "examine_item": "Sgrùd",
+            "hide_dialog": "Falaich an còmhradh",
+            "reset_defaults": "Ath-shuidhich",
+            "rotate": "Tionndaidh",
+            "unbind": "Falamhaich",
+            "use_item": "Cleachd",
         },
-        "flares_box": {
-            "name": "Bogsa Lòchrain",
+        "config_presets": {
+            "applied": "\\{review}Ro-shealladh air a chur an sàs.",
+            "confirm_description": "\\{review}Bidh na suidheachaidhean a leanas air an atharrachadh:",
+            "confirm_restart_note": "\\{review}Nota: dh’fhaodadh gum feum cuid de shuidheachaidhean ath-thòiseachadh a’ gheama airson buaidh fhaighinn.",
+            "empty": "\\{review}Cha deach ro-shealladh sam bith a lorg.",
+            "no_changes": "\\{review}Chan eil atharrachaidhean ri chur an gnìomh.",
+            "title_fmt": "\\{review}Cuir an ro-shealladh %s an sàs?",
         },
-        "grenade": {
-            "name": "Grenèad",
+        "globe_select": {
+            "area_1": "Raon 1",
+            "area_2": "Raon 2",
+            "area_3": "Raon 3",
+            "area_4": "Raon 4",
+            "area_5": "Raon 5",
+            "area_6": "Raon 6",
         },
-        "pistols": {
-            "name": "Piostalan",
+        "inventory_ring": {
+            "heading_adventure": "Cuairt-dànachd",
+            "heading_fmt": "%s",
+            "heading_game_over": "GEAMA DEIREANNACH",
+            "heading_inventory": "CLÀR-SEILBHE",
+            "heading_items": "NITHEAN",
+            "heading_option": "ROGHAINN",
+            "item_count_fmt": "\\{small}%s",
+            "object_name_fmt": "%s",
         },
-        "shotgun": {
-            "name": "Gunna-sgaoil",
+        "misc": {
+            "demo_mode": "Modh Taisbeanaidh",
+            "direction_keys_controller": "D-pad",
+            "direction_keys_keyboard": "Saigheadan",
+            "empty_slot_fmt": "- SLOT FALAMH -",
+            "exit": "Dùin",
+            "hold_fmt": "Cùm %s",
+            "off": "Dheth",
+            "on": "Air",
+            "pagination_nav": "%d / %d",
         },
-        "uzis": {
-            "name": "Uzis",
+        "osd": {
+            "ambiguous_input_2": "Cur-a-steach neo-shoilleir: %s agus %s",
+            "ambiguous_input_3": "Cur-a-steach neo-shoilleir: %s, %s, ...",
+            "bilinear_filter_off": "Criathradh teacsdaire: dheth",
+            "bilinear_filter_on": "Criathradh teacsdaire: air",
+            "command_bad_invocation": "Iarrtas mì-dhligheach: %s",
+            "command_bool": "air, dheth",
+            "command_decimal": "[deicheach]",
+            "command_integer": "[àireamh slàn]",
+            "command_percent": "[àireamh slàn]",
+            "command_unavailable": "Chan eil an àithne seo ri làimh an-dràsta",
+            "command_valid_values": "Luachan dligheach: %s",
+            "complete_level": "Ìre deiseil!",
+            "config_option_get": "Tha %s air a rèiteachadh gu %s",
+            "config_option_set": "%s air atharrachadh gu %s",
+            "config_option_unknown_option": "Roghainn neo-aithnichte: %s",
+            "current_health_get": "Slàinte làithreach Lara: %d",
+            "current_health_set": "Slàinte Lara air a shuidheachadh gu %d",
+            "door_close": "Dùin Sesame!",
+            "door_open": "Fosgail Sesame!",
+            "door_open_fail": "Chan eil doras sam bith faisg air Lara",
+            "flipmap_fail_already_off": "Tha am mapa-flip mar-thà DHETH",
+            "flipmap_fail_already_on": "Tha am mapa-flip mar-thà AIR",
+            "flipmap_off": "Mapa-flip air a chur DHETH",
+            "flipmap_on": "Mapa-flip air a chur AIR",
+            "fly_mode_off": "Modh itealaich air a chur dheth",
+            "fly_mode_on": "Modh itealaich air a chur air",
+            "fps_counter_off": "Cuntair FPS dheth",
+            "fps_counter_on": "Cuntair FPS air",
+            "give_item": "Chaidh %s air a chur ri clàr-seilbhe Lara",
+            "give_item_all_guns": "Glasaich is losgaidh – tha Lara armaichte gu fiadhaich!",
+            "give_item_all_keys": "Ionndrainn! Tha a h-uile iuchair aig Lara a-nis.",
+            "give_item_cheat": "Tha baga-droma Lara mòran nas truime a-nis!",
+            "heal_already_full_hp": "Tha slàinte làn aig Lara mu thràth",
+            "heal_success": "Chaidh slàinte Lara a lìonadh gu lèir",
+            "invalid_cutscene": "Sealladh-film mì-dhligheach",
+            "invalid_demo": "Taisbeanadh mì-dhligheach",
+            "invalid_item": "Nì neo-aithnichte: %s",
+            "invalid_level": "Ìre mì-dhligheach",
+            "invalid_object": "Oibseact mì-dhligheach",
+            "invalid_room": "Seòmar mì-dhligheach: %d. Seòmraichean dligheach: 0 gu %d",
+            "invalid_sample": "Fuaim mì-dhligheach: %d",
+            "kill": "Beannachd leat!",
+            "kill_all": "Puf! Chaidh %d nàimhdean air falbh!",
+            "kill_all_fail": "Och, chan eil nàimhdean air fhàgail airson marbhadh...",
+            "kill_fail": "Chan eil nàmhaid sam bith faisg air làimh...",
+            "lighting_contrast_fmt": "Coimeas Solais: %s",
+            "load_game": "Geama air a luchdadh bho slot %d",
+            "load_game_fail_invalid_slot": "Slot mì-dhligheach: %d",
+            "load_game_fail_unavailable_slot": "Chan eil slot sàbhalaidh %d ri làimh",
+            "object_not_found": "Cha deach an t-oibseact a lorg",
+            "play_cutscene": "A' luchdachadh sealladh-film %d",
+            "play_demo": "A' luchdachadh taisbeanaidh %d",
+            "play_level": "A' luchdachadh %s",
+            "pos_lara_missing": "Chan eil Lara an làthair",
+            "pos_lara_pos_fmt": "Seomair: %d\nSuidheachadh: %.3f, %.3f, %.3f\nCuairteachadh: %.3f, %.3f, %.3f",
+            "pos_level_fmt": "Ìre %d",
+            "pos_level_fmt_cutscene": "Sealladh-film %d",
+            "pos_level_fmt_demo": "Taisbeanadh %d",
+            "quick_load": "Slot luchdaichte gu luath %d",
+            "quick_load_fail_no_bound_slot": "Chan eil slot sàbhalaidh sam bith ceangailte an-dràsta",
+            "quick_load_fail_unavailable_bound_slot": "Chan eil an slot sàbhalaidh ceangailte rim faotainn",
+            "quick_save": "Sàbhailte gu luath",
+            "quick_save_fail_no_slots": "Chan eil slotan sàbhalaidh luath sam bith air an rèiteachadh",
+            "save_game": "Geama air a shàbhaladh gu slot %d",
+            "save_game_fail_invalid_slot": "Slot sàbhalaidh mì-dhligheach: %d",
+            "sound_available_samples": "Fuaimean ri làimh: %s",
+            "sound_playing_sample": "A' cluich fuaim %d",
+            "speed_get": "Astar làithreach: %d",
+            "speed_set": "Astar air a shuidheachadh air %d",
+            "strings_failed": "Dh'fhàillig ath-luchdadh nam faidhlichean cànain",
+            "strings_reloaded": "Chaidh na faidhlichean cànain ath-luchdachadh",
+            "textures_off": "Teacsaichean: dheth",
+            "textures_on": "Teacsaichean: air",
+            "trapezoid_filter_off": "Criathradh trapeasoid dheth",
+            "trapezoid_filter_on": "Criathradh trapeasoid air",
+            "ui_off": "Eadar-aghaidh dheth",
+            "ui_on": "Eadar-aghaidh air",
+            "unknown_command": "Àithne neo-aithnichte: %s",
+            "upscaling_factor": "Factar sgèileachaidh: x%d",
+            "wireframe_mode_off": "Modh frèam-uèir: dheth",
+            "wireframe_mode_on": "Modh frèam-uèir: air",
         },
-        "shotgun_ammo": {
-            "name": "Sligean Gunna-sgaoil",
-        },
-        "uzis_ammo": {
-            "name": "Lòin Uzi",
-        },
-        "pickup_1": {
-            "name": "Nì Togail 1",
-        },
-        "pickup_2": {
-            "name": "Nì Togail 2",
-        },
-        "key_1": {
-            "name": "Iuchair 1",
-        },
-        "key_2": {
-            "name": "Iuchair 2",
-        },
-        "key_3": {
-            "name": "Iuchair 3",
-        },
-        "key_4": {
-            "name": "Iuchair 4",
-        },
-        "puzzle_1": {
-            "name": "Nì Tòimhseachain 1",
-        },
-        "puzzle_2": {
-            "name": "Nì Tòimhseachain 2",
-        },
-        "puzzle_3": {
-            "name": "Nì Tòimhseachain 3",
-        },
-        "puzzle_4": {
-            "name": "Nì Tòimhseachain 4",
-        },
-        "lead_bar": {
-            "name": "Bàr Luaidhe",
-        },
-        "scion": {
-            "name": "Scion",
-        },
-        "compass": {
-            "name": "Staitistig",
-        },
-        "stopwatch": {
-            "name": "Staitistig",
+        "overlay": {
+            "debug_animation": "Beothachadh: ",
+            "debug_animation_state": "Stàit: ",
+            "debug_camera_pos": "Tùs a' chamara: ",
+            "debug_camera_target": "Targaid a' chamara: ",
+            "debug_immune": "Neo-bhàsmhorachd air",
+            "debug_position": "Suidheachadh: ",
+            "debug_rotation": "Cuairteachadh: ",
+            "debug_speed": "Luas: ",
+            "item_count_fmt_pc": "\\{small}%s",
+            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
-            "name": "Geama",
-        },
-        "photo": {
-            "name": "Dachaigh Lara",
-        },
-        "graphics": {
-            "name": "Grafaigean",
-        },
-        "controls": {
-            "name": "Smachdan",
-        },
-        "sound": {
-            "name": "Fuaim",
-        },
-        "gamma": {
-            "name": "Gamma",
-        },
-        "pda": {
-            "name": "Cluiche",
-        },
-        "lara": {
-            "name": "Lara",
-        },
-        "lara_hair": {
-            "name": "Feaman-fuilt Lara",
-        },
-        "lara_pistols": {
-            "name": "Beòthalachd Piostalan",
-        },
-        "lara_shotgun": {
-            "name": "Beòthalachd Gunna-sgaoil",
-        },
-        "lara_magnums": {
-            "name": "Beòthalachd Magnuman",
-        },
-        "lara_autos": {
-            "name": "Beòthalachd Piostalan Fèin-obrachail",
-        },
-        "lara_desert_eagle": {
-            "name": "Beòthalachd an Desert Eagle",
-        },
-        "lara_uzis": {
-            "name": "Beòthalachd Uzis",
-        },
-        "lara_flare": {
-            "name": "Beòthalachd Lòchran",
-        },
-        "lara_extra": {
-            "name": "Beòthalachd Eile Lara",
-        },
-        "boat": {
-            "name": "Bàta",
-        },
-        "bacon_lara": {
-            "name": "Lara Bèicein",
-        },
-        "wolf": {
-            "name": "Madadh-allaidh",
-        },
-        "bear": {
-            "name": "Mathan",
-        },
-        "bat": {
-            "name": "Ialtag",
-        },
-        "crocodile": {
-            "name": [
-                "Crocadal",
-                "Crogall",
-            ]
-        },
-        "alligator": {
-            "name": "Ailigeutair",
-        },
-        "lion": {
-            "name": "Leòmhann",
-        },
-        "lioness": {
-            "name": [
-                "Leòmhann-Boireann",
-                "Leòmhann",
-            ]
-        },
-        "puma": {
-            "name": "Pùma",
-        },
-        "ape": {
-            "name": "Apa",
-        },
-        "rat": {
-            "name": [
-                "Radan",
-                "Radan-tìre",
-            ]
-        },
-        "vole": {
-            "name": [
-                "Luch-uisge",
-                "Radan-uisge",
-            ]
-        },
-        "trex": {
-            "name": [
-                "T-Rex",
-                "Dìneasair-mòr",
-            ]
-        },
-        "raptor": {
-            "name": [
-                "Raptor",
-                "Dìneasair-beag",
-            ]
-        },
-        "mutant_1": {
-            "name": "Mùthaidh 1",
-        },
-        "mutant_2": {
-            "name": "Mùthaidh 2",
-        },
-        "mutant_3": {
-            "name": "Mùthaidh 3",
-        },
-        "centaur": {
-            "name": "Ceud-damh",
-        },
-        "mummy": {
-            "name": "Spaoileadan",
-        },
-        "dino_mutant": {
-            "name": "Dìneasair-mùthaidh",
-        },
-        "fish_mutant": {
-            "name": "Iasg-mùthaidh",
-        },
-        "larson": {
-            "name": "Larson",
-        },
-        "pierre": {
-            "name": "Pierre",
-        },
-        "skateboard": {
-            "name": "Speile-bhòrd",
-        },
-        "skate_kid": {
-            "name": "Balach Speile-bhòrd",
-        },
-        "cowboy": {
-            "name": "Gille-cruidh",
-        },
-        "baldy": {
-            "name": "Baldaidh",
-        },
-        "natla": {
-            "name": "Natla",
-        },
-        "torso": {
-            "name": [
-                "Torsachan",
-                "Adhamh",
-                "Mùthaidh Mòr",
-            ]
-        },
-        "centaur_statue": {
-            "name": "Ìomhaigh",
-        },
-        "pods": {
-            "name": "Spàlagan",
-        },
-        "big_pod": {
-            "name": "Spàlag Mhòr",
-        },
-        "damocles_sword": {
-            "name": "Claidheamh Damocles",
-        },
-        "dart": {
-            "name": "Dàrt",
-        },
-        "dart_emitter": {
-            "name": "Sgaoiladair Dàrt",
-        },
-        "disc": {
-            "name": "Sgian-cruinnte",
-        },
-        "disc_emitter": {
-            "name": "Sgaoiladair Sgian-cruinnte",
-        },
-        "ember": {
-            "name": "Èibhleag",
-        },
-        "ember_emitter": {
-            "name": "Sgaoiladair Èibhleag",
-        },
-        "falling_block_1": {
-            "name": [
-                "Bloc Tuiteamach 1",
-                "Làr Bristeach 1",
-                "Leacan Bristeach 1",
-            ]
-        },
-        "falling_ceiling_1": {
-            "name": "Mullach Tuiteamach 1",
-        },
-        "falling_ceiling_2": {
-            "name": "Mullach Tuiteamach 2",
-        },
-        "flame": {
-            "name": [
-                "Lasair",
-                "Teine",
-            ]
-        },
-        "flame_emitter": {
-            "name": [
-                "Sgaoiladair Lasair",
-                "Sgaoiladair Teine",
-            ]
-        },
-        "lava_wedge": {
-            "name": "Cliathaich Teine-teinteach",
-        },
-        "lightning_emitter": {
-            "name": "Sgaoiladair Dealanaich",
-        },
-        "midas_touch": {
-            "name": "Làmh Mìdas",
-        },
-        "pendulum_1": {
-            "name": "Poca-gainmhich",
-        },
-        "rolling_ball_1": {
-            "name": [
-                "Ulbhag 1",
-                "Ball-rollaidh 1",
-            ]
-        },
-        "spikes": {
-            "name": "Geugan",
-        },
-        "teeth_trap": {
-            "name": [
-                "Ribe Fiaclan",
-                "Doras 'Clang-Clang'",
-            ]
-        },
-        "thors_handle": {
-            "name": "Làimhseachadh Òrd Thor",
-        },
-        "thors_head": {
-            "name": "Òrd Thor",
-        },
-        "bridge_flat": {
-            "name": "Drochaid Rèidh",
-        },
-        "bridge_tilt_1": {
-            "name": "Drochaid Claonadh 1",
-        },
-        "bridge_tilt_2": {
-            "name": "Drochaid Claonadh 2",
-        },
-        "cog_1": {
-            "name": "Inneal Gèaraichean 1",
-        },
-        "cog_2": {
-            "name": "Inneal Gèaraichean 2",
-        },
-        "cog_3": {
-            "name": "Inneal Gèaraichean 3",
-        },
-        "door_1": {
-            "name": "Doras 1",
-        },
-        "door_2": {
-            "name": "Doras 2",
-        },
-        "door_3": {
-            "name": "Doras 3",
-        },
-        "door_4": {
-            "name": "Doras 4",
-        },
-        "door_5": {
-            "name": "Doras 5",
-        },
-        "door_6": {
-            "name": "Doras 6",
-        },
-        "door_7": {
-            "name": "Doras 7",
-        },
-        "door_8": {
-            "name": "Doras 8",
-        },
-        "drawbridge": {
-            "name": "Drochaid-tarraing",
-        },
-        "key_hole_1": {
-            "name": "Toll Iuchrach 1",
-        },
-        "key_hole_2": {
-            "name": "Toll Iuchrach 2",
-        },
-        "key_hole_3": {
-            "name": "Toll Iuchrach 3",
-        },
-        "key_hole_4": {
-            "name": "Toll Iuchrach 4",
-        },
-        "movable_block_1": {
-            "name": [
-                "Bloc Putaidh 1",
-                "Bloc Gluasadach 1",
-            ]
-        },
-        "movable_block_2": {
-            "name": [
-                "Bloc Putaidh 2",
-                "Bloc Gluasadach 2",
-            ]
-        },
-        "movable_block_3": {
-            "name": [
-                "Bloc Putaidh 3",
-                "Bloc Gluasadach 3",
-            ]
-        },
-        "movable_block_4": {
-            "name": [
-                "Bloc Putaidh 4",
-                "Bloc Gluasadach 4",
-            ]
-        },
-        "moving_bar": {
-            "name": "Bàr Gluasadach",
-        },
-        "portacabin": {
-            "name": "Caban So-ghiùlain",
-        },
-        "puzzle_done_1": {
-            "name": "Toll Tòimhseachain 1 (Deiseil)",
-        },
-        "puzzle_done_2": {
-            "name": "Toll Tòimhseachain 2 (Deiseil)",
-        },
-        "puzzle_done_3": {
-            "name": "Toll Tòimhseachain 3 (Deiseil)",
-        },
-        "puzzle_done_4": {
-            "name": "Toll Tòimhseachain 4 (Deiseil)",
-        },
-        "puzzle_hole_1": {
-            "name": "Toll Tòimhseachain 1 (Falamh)",
-        },
-        "puzzle_hole_2": {
-            "name": "Toll Tòimhseachain 2 (Falamh)",
-        },
-        "puzzle_hole_3": {
-            "name": "Toll Tòimhseachain 3 (Falamh)",
-        },
-        "puzzle_hole_4": {
-            "name": "Toll Tòimhseachain 4 (Falamh)",
-        },
-        "save_crystal": {
-            "name": "Criostal Geama Sàbhalaidh",
-        },
-        "scion_holder": {
-            "name": "Greimiche Scion",
-        },
-        "sliding_pillar": {
-            "name": "Colbh Sleamhnachaidh",
-        },
-        "switch_type_normal": {
-            "name": [
-                "Luaidhe",
-                "Suids",
-            ]
-        },
-        "switch_type_uw": {
-            "name": [
-                "Luaidhe fon-Uisge",
-                "Suids fon-Uisge",
-            ]
-        },
-        "trapdoor_1": {
-            "name": "Làr-lùbte 1",
-        },
-        "trapdoor_2": {
-            "name": "Làr-lùbte 2",
-        },
-        "trapdoor_3": {
-            "name": "Làr-lùbte 3",
-        },
-        "alphabet": {
-            "name": "Clò àbhaisteach",
-        },
-        "blood_1": {
-            "name": "Fuil 1",
-        },
-        "blood_2": {
-            "name": "Fuil 2",
-        },
-        "body_part": {
-            "name": "Pàirt Corp",
-        },
-        "bubble_1": {
-            "name": "Builgean 1",
-        },
-        "bubble_2": {
-            "name": "Builgean 2",
-        },
-        "bubble_emitter": {
-            "name": "Sgaoiladair Builgean",
-        },
-        "camera_target": {
-            "name": "Targaid Camara",
-        },
-        "dart_effect": {
-            "name": "Buaidh Dàrt",
-        },
-        "dust": {
-            "name": "Duslach",
-        },
-        "earthquake": {
-            "name": "Crith-thalmhainn",
-        },
-        "explosion_1": {
-            "name": "Spreadhadh 1",
-        },
-        "explosion_2": {
-            "name": "Spreadhadh 2",
-        },
-        "flare_fire": {
-            "name": "Teinntreach Lòchran",
-        },
-        "glow": {
-            "name": "Gàir",
-        },
-        "gun_flash": {
-            "name": "Lasadh Ghunna",
-        },
-        "natla_gun": {
-            "name": "Gunna Natla",
-        },
-        "missile_atlantean_shard": {
-            "name": "Missil (Slinneag Atlanteach)",
-        },
-        "missile_atlantean_bomb": {
-            "name": "Missil (Boma Atlanteach)",
-        },
-        "pickup_aid": {
-            "name": "Cobhair Togail",
-        },
-        "player_1": {
-            "name": "Actair 1",
-        },
-        "player_2": {
-            "name": "Actair 2",
-        },
-        "player_3": {
-            "name": "Actair 3",
-        },
-        "player_4": {
-            "name": "Actair 4",
-        },
-        "ricochet": {
-            "name": "Leabaidh-loisgte",
-        },
-        "skybox": {
-            "name": "Bogsa-na-Speuran",
-        },
-        "splash_1": {
-            "name": "Riplean Uisge 1",
-        },
-        "splash_2": {
-            "name": "Riplean Uisge 2",
-        },
-        "twinkle": {
-            "name": "Priobag",
-        },
-        "waterfall": {
-            "name": "Ceò Eas",
-        },
-        "winston": {
-            "name": "Winston",
-        },
-        "harpoon_gun": {
-            "name": "Harpùn",
-        },
-        "m16": {
-            "name": "M16",
-        },
-        "grenade_launcher": {
-            "name": "Lannsair Grenèad",
-        },
-        "pistols_ammo": {
-            "name": "Lòin Phiostail",
-        },
-        "harpoon_gun_ammo": {
-            "name": "Harpùnaichean",
-        },
-        "m16_ammo": {
-            "name": "Lòin M16",
-        },
-        "grenade_launcher_ammo": {
-            "name": "Grenèadan",
-        },
-        "secret_1": {
-            "name": "Dìomhair 1",
-        },
-        "secret_2": {
-            "name": "Dìomhair 2",
-        },
-        "secret_3": {
-            "name": "Dìomhair 3",
-        },
-        "lara_m16": {
-            "name": "Beòthalachd M16",
-        },
-        "lara_mp5": {
-            "name": "Beòthalachd MP5",
-        },
-        "lara_grenade": {
-            "name": "Beòthalachd Lannsair Grenèad",
-        },
-        "lara_rocket": {
-            "name": "Beòthalachd Lannsair Rocaid",
-        },
-        "lara_harpoon": {
-            "name": "Beòthalachd Harpùn",
-        },
-        "lara_skidoo": {
-            "name": "Beòthalachd Cairt-shneachda",
-        },
-        "lara_boat": {
-            "name": "Beòthalachd Bàta",
-        },
-        "skidoo_fast": {
-            "name": "Cairt-shneachda Dhearg",
-        },
-        "dog": {
-            "name": [
-                "Cù",
-                "Doberman",
-            ]
-        },
-        "cult_1": {
-            "name": "Ruspal le Masg 1",
-        },
-        "cult_1a": {
-            "name": "Ruspal le Masg 2",
-        },
-        "cult_1b": {
-            "name": "Ruspal le Masg 3",
-        },
-        "cult_2": {
-            "name": "Fear-sgian",
-        },
-        "cult_3": {
-            "name": "Ruspal le Gunna-sgaoil",
-        },
-        "mouse": {
-            "name": "Radan",
-        },
-        "dragon_front": {
-            "name": "Aghaidh an Dràgon",
-        },
-        "dragon_back": {
-            "name": "Cùl an Dràgon",
-        },
-        "shark": {
-            "name": "Cearban",
-        },
-        "eel": {
-            "name": "Easgann",
-        },
-        "big_eel": {
-            "name": "Easgann Mhòr",
-        },
-        "barracuda": {
-            "name": "Barracuda",
-        },
-        "diver": {
-            "name": "Sgùba-dhaibhear",
-        },
-        "worker_1": {
-            "name": "Ruspal-gunna 1",
-        },
-        "worker_2": {
-            "name": "Ruspal-gunna 2",
-        },
-        "worker_3": {
-            "name": "Ruspal-bata 1",
-        },
-        "worker_4": {
-            "name": "Ruspal-bata 2",
-        },
-        "worker_5": {
-            "name": "Ruspal Teine-tilgidh",
-        },
-        "jelly": {
-            "name": "Muir-tèachd",
-        },
-        "spider": {
-            "name": "Damhan-allaidh",
-        },
-        "big_spider": {
-            "name": "Damhan-allaidh Fuamhaireil",
-        },
-        "crow": {
-            "name": "Feannag",
-        },
-        "tiger": {
-            "name": "Tìgear",
-        },
-        "bartoli": {
-            "name": "Marco Bartoli",
-        },
-        "xian_spearman": {
-            "name": "Sleaghadair Xian",
-        },
-        "xian_spearman_statue": {
-            "name": "Ìomhaigh Sleaghadair Xian",
-        },
-        "xian_knight": {
-            "name": "Ridir Xian",
-        },
-        "xian_knight_statue": {
-            "name": "Ìomhaigh Ridir Xian",
-        },
-        "yeti": {
-            "name": "Iètaidh",
-        },
-        "bird_guardian": {
-            "name": "Eun-uilebheisteach",
-        },
-        "eagle": {
-            "name": "Iolaire",
-        },
-        "bandit_1": {
-            "name": [
-                "Saighdear-duais 1",
-                "Ruspal le Masg 1",
-            ]
-        },
-        "bandit_2": {
-            "name": [
-                "Saighdear-duais 2",
-                "Ruspal le Masg 2",
-            ]
-        },
-        "bandit_2b": {
-            "name": [
-                "Saighdear-duais 3",
-                "Ruspal le Masg 3",
-            ]
-        },
-        "skidoo_armed": {
-            "name": "Cairt-shneachda Dhubh",
-        },
-        "skidoo_driver": {
-            "name": "Draibhear Cairt-shneachda Dhubh",
-        },
-        "monk_1": {
-            "name": "Manach 1",
-        },
-        "monk_2": {
-            "name": "Manach 2",
-        },
-        "blade": {
-            "name": "Iarann air Balla",
-        },
-        "ceiling_spikes": {
-            "name": "Mullach-gheugan",
-        },
-        "falling_block_2": {
-            "name": [
-                "Bloc Tuiteamach 2",
-                "Làr Bristeach 2",
-                "Leacan Bristeach 2",
-            ]
-        },
-        "falling_block_3": {
-            "name": [
-                "Bloc Tuiteamach 3",
-                "Làr Bristeach 3",
-                "Leacan Bristeach 3",
-                "Bùird Cugalach",
-            ]
-        },
-        "gondola": {
-            "name": "Carbad-crochte",
-        },
-        "hook": {
-            "name": "Dubhan",
-        },
-        "icicle": {
-            "name": "Bioranan-deighe",
-        },
-        "killer_statue": {
-            "name": "Ìomhaigh le Claidheamh",
-        },
-        "mine": {
-            "name": "Mèinn Uisgeach",
-        },
-        "pendulum_2": {
-            "name": "Bocsa",
-        },
-        "power_saw": {
-            "name": "Sàbh-dealain",
-        },
-        "propeller_1": {
-            "name": "Proipeilear-plèana",
-        },
-        "propeller_2": {
-            "name": "Proipeilear fo Uisge",
-        },
-        "propeller_3": {
-            "name": "Gaothran",
-        },
-        "rolling_ball_2": {
-            "name": [
-                "Ulbhag 2",
-                "Ball-rollaidh 2",
-            ]
-        },
-        "rolling_ball_3": {
-            "name": [
-                "Ulbhag 3",
-                "Ball-rollaidh 3",
-            ]
-        },
-        "rolling_ball_4": {
-            "name": [
-                "Ulbhag 4",
-                "Ball-rollaidh 4",
-            ]
-        },
-        "swinging_axe": {
-            "name": "Tuagh",
-        },
-        "spike_wall": {
-            "name": "Balla-gheugan",
-        },
-        "spinning_blade": {
-            "name": "Iarann Rothachadh",
-        },
-        "bell": {
-            "name": "Clag",
-        },
-        "big_bowl": {
-            "name": "Bobhla Teine-teinteach",
-        },
-        "general": {
-            "name": "Bàt-aigeil Beag",
-        },
-        "lift": {
-            "name": "Lioft",
-        },
-        "springboard": {
-            "name": "Bòrd-flosgaidh",
-        },
-        "switch_type_airlock": {
-            "name": "Suids Stopadh-adhair",
-        },
-        "switch_type_button": {
-            "name": [
-                "Putan",
-                "Suids",
-            ]
-        },
-        "switch_type_small": {
-            "name": "Suids Beag",
-        },
-        "smashable_1": {
-            "name": "Uinneag Bhristeach 1",
-        },
-        "smashable_2": {
-            "name": "Uinneag Bhristeach 2",
-        },
-        "smashable_3": {
-            "name": "Uinneag Bhristeach 3",
-        },
-        "smashable_4": {
-            "name": "Uinneag Bhristeach 4",
-        },
-        "zipline_handle": {
-            "name": "Greim Càball-slaodaidh",
-        },
-        "alarm_sound": {
-            "name": "Inneal-rabhaidh",
-        },
-        "assault_digits": {
-            "name": "Àireamhan an t-Seòmair-eacarsaich",
-        },
-        "bird_tweeter_1": {
-            "name": "Sileadair Uisge",
-        },
-        "bird_tweeter_2": {
-            "name": "Eòin a' Seinn",
-        },
-        "boat_bits": {
-            "name": "Pìosan a' Bhàta",
-        },
-        "clock_chimes": {
-            "name": "Gleoc Bartoli",
-        },
-        "combat_end": {
-            "name": "Crioch-shabaid",
-        },
-        "copter": {
-            "name": "Heileacoptair",
-        },
-        "cut_shotgun": {
-            "name": "Beòthalachd Gunna-sgaoil Fhrais",
-        },
-        "detonator_box": {
-            "name": "Spreadhaichear",
-        },
-        "ding_dong": {
-            "name": "Clag an Dorais",
-        },
-        "dragon_bones_1": {
-            "name": "Neach-àite",
-        },
-        "dragon_bones_2": {
-            "name": "Cnàmhan Aghaidh an Dràgon",
-        },
-        "dragon_bones_3": {
-            "name": "Cnàmhan Cùl an Dràgon",
-        },
-        "dying_monk": {
-            "name": "Manach a' Bàsachadh",
-        },
-        "fx_reserved": {
-            "name": "Cearcall Glas",
-        },
-        "glow_reserved": {
-            "name": "Gàir Mapa",
-        },
-        "gong": {
-            "name": "Gong",
-        },
-        "gong_bonger": {
-            "name": "Bata a' Ghong",
-        },
-        "harpoon_bolt": {
-            "name": "Harpùn",
-        },
-        "hot_liquid": {
-            "name": "Leaghan Teth",
-        },
-        "inv_background": {
-            "name": "Inneach a' Chlàr-seilbhe",
-        },
-        "lara_alarm": {
-            "name": "Rabhadair-mhèirleach",
-        },
-        "m16_flash": {
-            "name": "Lasadh M16",
-        },
-        "mesh_swap_1": {
-            "name": "Suaip Lìonra 1",
-        },
-        "mesh_swap_2": {
-            "name": "Suaip Lìonra 2",
-        },
-        "mesh_swap_3": {
-            "name": "Suaip Lìonra 3",
-        },
-        "mini_copter": {
-            "name": "Heileacoptair 2",
-        },
-        "missile_flame": {
-            "name": "Missil (Teine)",
-        },
-        "missile_poison": {
-            "name": "Missil (Puinnsean)",
-        },
-        "missile_harpoon": {
-            "name": "Missil (Harpùn)",
-        },
-        "missile_knife": {
-            "name": "Missil (Sgian)",
-        },
-        "player_5": {
-            "name": "Actair 5",
-        },
-        "player_6": {
-            "name": "Actair 6",
-        },
-        "player_7": {
-            "name": "Actair 7",
-        },
-        "player_8": {
-            "name": "Actair 8",
-        },
-        "player_9": {
-            "name": "Actair 9",
-        },
-        "player_10": {
-            "name": "Actair 10",
-        },
-        "skidoo_track": {
-            "name": "Crios Cairt-shneachda",
-        },
-        "snow_sprite": {
-            "name": "Rotal Cairt-shneachda",
-        },
-        "sphere_of_doom_1": {
-            "name": "Spreadhadh Dràgon 1",
-        },
-        "sphere_of_doom_2": {
-            "name": "Spreadhadh Dràgon 2",
-        },
-        "sphere_of_doom_3": {
-            "name": "Spreadhadh Dràgon 3",
-        },
-        "text_box": {
-            "name": "Frèam Eadar-aghaidh",
-        },
-        "water_sprite": {
-            "name": "Rotal Bàta",
-        },
-        "alphabet_small": {
-            "name": "Clò beag",
-        },
-        "magnums": {
-            "name": "Magnuman",
-        },
-        "autos": {
-            "name": "Piostalan Fèin-obrachail",
-        },
-        "magnums_ammo": {
-            "name": "Lòin Magnum",
-        },
-        "autos_ammo": {
-            "name": "Lòin Gunna Fèin-obrachail",
-        },
-        "desert_eagle": {
-            "name": "Desert Eagle",
-        },
-        "desert_eagle_ammo": {
-            "name": "Lòin an Desert Eagle",
-        },
-        "mp5": {
-            "name": "MP5",
-        },
-        "mp5_ammo": {
-            "name": "Lòin MP5",
-        },
-        "rocket_launcher": {
-            "name": "Lannsair Rocaid",
-        },
-        "rocket_launcher_ammo": {
-            "name": "Rocaidean",
-        },
-        "rocket": {
-            "name": "Rocaid",
-        },
-        "animating_1": {
-            "name": "Beòthaladh 1",
-        },
-        "animating_2": {
-            "name": "Beòthaladh 2",
-        },
-        "animating_3": {
-            "name": "Beòthaladh 3",
-        },
-        "animating_4": {
-            "name": "Beòthaladh 4",
-        },
-        "animating_5": {
-            "name": "Beòthaladh 5",
-        },
-        "animating_6": {
-            "name": "Beòthaladh 6",
-        },
-        "winston_army": {
-            "name": "Winston (armachd)",
-        },
-        "shadow": {
-            "name": "Faileas",
-        },
-        "assault_target": {
-            "name": "Targaid Ionnsaigh",
-        },
-        "electrical_light": {
-            "name": "Solais Dealain",
-        },
-        "smoke_emitter_white": {
-            "name": "Sgaoileadair Smùid (Geal)",
-        },
-        "smoke_emitter_black": {
-            "name": "Sgaoileadair Smùid (Dubh)",
-        },
-        "steam_emitter": {
-            "name": "Sgaoileadair Steimhe",
-        },
-        "quad_bike": {
-            "name": "Quad-baidhsagal",
-        },
-        "flame_emitter_big": {
-            "name": "Sgaoileadair Teine (Mòr)",
-        },
-        "flame_emitter_small": {
-            "name": "Sgaoileadair Teine (Beag)",
-        },
-        "flame_emitter_jet": {
-            "name": "Sgaoileadair Teine (Jet)",
-        },
-        "flame_emitter_side": {
-            "name": "Sgaoileadair Teine (Gu Taobh)",
-        },
-        "tropical_fish": {
-            "name": "Iasg Tropaigeach",
-        },
-        "pirahnas": {
-            "name": "Pirahnan",
-        },
-        "gun_shell": {
-            "name": "Sgèith Gheir",
-        },
-        "shotgun_shell": {
-            "name": "Sgèith Gunna-sgaoil",
-        },
-        "quest_1": {
-            "name": "Nì Tòir 1",
-        },
-        "quest_2": {
-            "name": "Nì Tòir 2",
-        },
-        "quest_3": {
-            "name": "Nì Tòir 3",
-        },
-        "quest_4": {
-            "name": "Nì Tòir 4",
-        },
-        "globe": {
-            "name": "Cruinne",
-        },
-        "kill_all_triggered": {
-            "name": "Cur às do gach rud",
-        },
-        "monkey": {
-            "name": "Muncaidh",
-        },
-        "tony": {
-            "name": "Tònaidh",
-        },
-        "vulture": {
-            "name": "Fitheach",
-        },
-        "snake": {
-            "name": "Nathair",
-        },
-        "poison_dart": {
-            "name": "Dàrt Phuinnseanta",
-        },
-        "poison_dart_emitter": {
-            "name": "Sgaoiladair Dàrt Phuinnseanta",
-        },
-        "red_light": {
-            "name": "Solas Dearg",
-        },
-        "green_light": {
-            "name": "Solas Uaine",
-        },
-        "blue_light": {
-            "name": "Solas Gorm",
-        },
-        "amber_light": {
-            "name": "Solas Òmar",
-        },
-        "white_light": {
-            "name": "Solas Geal",
-        },
-        "on_off_light": {
-            "name": "Solas Air/Dheth",
-        },
-        "pulse_light": {
-            "name": "Solas Cuisle",
-        },
-        "strobe_light": {
-            "name": "Solas Sròb",
-        },
-        "beacon_light": {
-            "name": "Solas Beura",
-        },
-        "shiva": {
-            "name": "Sìabha",
-        },
-        "electric_fence": {
-            "name": "Feansa Dealain",
-        },
-        "switch_type_wheel": {
-            "name": "Suids Cuidhle",
-        },
-        "kayak": {
-            "name": "Càbaig",
-        },
-        "mounted_gun": {
-            "name": "Gunna Stèidhichte",
-        },
-        "tribe_axeman": {
-            "name": "Fear-treubh le Tuagh",
-        },
-        "compy": {
-            "name": "Compsognathus",
-        },
-        "tribe_pipeman": {
-            "name": "Fear-treubh le Dàrt",
-        },
-        "lizard": {
-            "name": "Laghairt",
-        },
-        "carcass": {
-            "name": "Closach",
-        },
-        "bat_emitter": {
-            "name": "Sgaoiladair Bàta",
-        },
-        "tribe_boss": {
-            "name": "Ceannard an Treubh",
-        },
-        "trex_alpha": {
-            "name": "T-Rex Priomh",
-        },
-        "raptor_emitter": {
-            "name": "Sgaoiladair Raptor",
-        },
-        "sthpac_mercenary": {
-            "name": "Saighdear a' Chuain Shèimh a Deas",
-        },
-        "train": {
-            "name": "Trèan",
-        },
-        "patrol_dog": {
-            "name": "\\{review}Cù",
-        },
-        "huskie": {
-            "name": "\\{review}Cù",
-        },
-        "electric_cleaner": {
-            "name": "Inneal-glanaidh",
-        },
-        "punk_1": {
-            "name": "Punc 1",
-        },
-        "punk_2": {
-            "name": "Punc 2",
-        },
-        "upv": {
-            "name": "Carbad fon uisge",
+            "exit_game": "Dùin an Geama",
+            "exit_to_title": "Till gu Tiotal",
+            "load_game": "Luchdaich Geama",
+            "mode_new_game": "Geama Ùr",
+            "mode_new_game_jp": "GÙ Iapanach",
+            "mode_new_game_jp_plus": "GÙ+ Iapanach",
+            "mode_new_game_plus": "Geama Ùr+",
+            "new_game": "Geama Ùr",
+            "play_previous_levels": "Cluich ìrean roimhe",
+            "restart_level": "Ath-thòisich an Ìre",
+            "save_game": "Sàbhail Geama",
+            "save_slot_unsupported": "Cha bheir an sàbhaladh seo taic don fheart seo.",
+            "select_level": "Tagh Ìre",
+            "select_mode": "Tagh Modh",
+            "select_save": "Tagh Sàbhail",
+            "story_so_far": "An sgeul gu ruige seo...",
+        },
+        "pause": {
+            "are_you_sure": "A bheil thu cinnteach?",
+            "continue": "Lean air adhart",
+            "exit_to_title": "Theid dhan tiotal?",
+            "no": "Chan eil",
+            "paused": "Air a stad",
+            "quit": "Dùin",
+            "yes": "Tha",
+        },
+        "photo_mode": {
+            "advance_frame": "Frèam air adhart",
+            "camera_move_prompt": "Gluais an camara",
+            "camera_reset_prompt": "Ath-shuidhich an camara",
+            "camera_roll_prompt": "Rolla an camara",
+            "camera_rotate_90_prompt": "Cuairtich 90 ceum",
+            "camera_rotate_prompt": "Cuairtich an camara",
+            "change_lara_pose": "Atharraich seasamh",
+            "fov_prompt": "Atharraich FOV",
+            "lara_move_prompt": "Gluais Lara",
+            "lara_reset_prompt": "Ath-shuidhich Lara",
+            "lara_roll_prompt": "Rolla Lara",
+            "lara_rotate_90_prompt": "Tionndaidh Lara 90°",
+            "lara_rotate_prompt": "Tionndaidh Lara",
+            "snap_prompt": "Tog dealbh",
+            "title_camera_pos": "Modh Dealbh",
+            "title_lara_pos": "A' gluasad Lara",
+            "toggle_help": "Tionndaidh cuideachadh",
+        },
+        "settings": {
+            "common": {
+                "all_hidden_disclaimer": "Tha na roghainnean ciorramach airson nan ìrean seo.",
+                "chroma": "Chroma",
+                "edit_value": "Deasaich luach",
+                "frozen_option_disclaimer": "Tha an suidheachadh seo air a chur an gnìomh le ùghdar nan ìrean agus chan urrainnear ga atharrachadh.",
+                "hue": "Tuar",
+                "lightness": "Soilleireachd",
+                "restore_default": "Ath-shuidhich",
+                "toggle_help": "Tionndaidh cuideachadh",
+            },
+            "controls": {
+                "backend": {
+                    "controller": "Rianadair",
+                    "keyboard": "Meur-chlàr",
+                },
+                "customize": "Gnàthaich na Smachdan",
+                "layout": {
+                    "custom_1": "Iuchraichean Cleachdaiche 1",
+                    "custom_2": "Iuchraichean Cleachdaiche 2",
+                    "custom_3": "Iuchraichean Cleachdaiche 3",
+                    "default": "Iuchraichean Bunaiteach",
+                },
+                "tabs": {
+                    "basics": "Gluasad",
+                    "items": "Nithean",
+                    "misc": "Measgaichte",
+                    "system": "Siostam",
+                }
+            },
+            "gameplay": {
+                "tabs": {
+                    "controls": "Smachdan",
+                    "fixes": "Càradh",
+                    "general": "Cumanta",
+                    "mods": "Mods",
+                    "presets": "\\{review}Ro-shealladh",
+                },
+                "title": "Roghainnean Cluiche",
+            },
+            "graphic_settings": {
+                "tabs": {
+                    "bars": "Bàr",
+                    "rendering": "Reandaradh",
+                    "ui": "Eadar-aghaidh",
+                    "visuals": "Lèirsinneachd",
+                },
+                "title": "Roghainnean Grafaigeach",
+            },
+            "sound": {
+                "tabs": {
+                    "misc": "Iomlan",
+                    "volume": "Tomhas",
+                },
+                "title": "Roghainnean Fuaime",
+            }
+        },
+        "stats": {
+            "ammo": "Buaidhean / Losgadh",
+            "ammo_hits": "Buaidhean",
+            "ammo_used": "Losgadh",
+            "assault_best_time_fmt": "%s",
+            "assault_finish": "Crìochnaich",
+            "assault_no_times_set": "Gun Àmanan Fhathast",
+            "assault_other_times_fmt": "%s",
+            "assault_title": "NA H-ÀMANAN AS FHEÀRR",
+            "basic_fmt": "%d",
+            "bonus_statistics": "Staitistig a Bharrachd",
+            "deaths": "Bàsan",
+            "detail_fmt": "%d de %d",
+            "distance_travelled": "Astar air a Shiubhal",
+            "final_statistics": "Staitistig Dheireannach",
+            "gym_assault_course": "Cùrsa Ionnsaigh",
+            "gym_racetrack_course": "Cùrsa Rèis",
+            "kills": "Marbhain",
+            "level": "Ìre",
+            "medipacks_used": "Pasganan Cleachdte",
+            "none": "Gin sam bith",
+            "pickups": "Togailtean",
+            "secrets": "Dìomhaireachdan",
+            "time_taken": "Ùine air a Ghabhail",
+        }
+    },
+    "console": {
+        "cmd": {
+            "braid": {
+                "help": "Tionndaidheas feaman-fuilt Lara.",
+            },
+            "cheats": {
+                "help": "Tionndaidheas cleasan a' gheama.",
+            },
+            "clear": {
+                "help": "Glanas logaichean consol follaiseach.",
+            },
+            "debug": {
+                "help": "Tionndaidheas fiosrachadh deasbug.",
+            },
+            "drain": {
+                "help": "Drèaneas an t-seomair làithreach.",
+            },
+            "end_level": {
+                "help": "Crìochnaicheas an ìre làithreach.",
+            },
+            "exit": {
+                "help": "Dùinidh an gèama.",
+            },
+            "flipmap": {
+                "help": "Tionndaidheas am mapa-flip.",
+            },
+            "flood": {
+                "help": "Lìonas an t-seomair làithreach le uisge.",
+            },
+            "fly": {
+                "help": "Tionndaidheas an cleas itealach.",
+            },
+            "fps": {
+                "help": "Atharraicheas an suidheachadh FPS.",
+            },
+            "give": {
+                "help": "Cuireas nì sònraichte anns clàr-seilbhe Lara.",
+                "invalid_secret": "Dìomhaireachd mì-dhligheach: %s (dìomhaireachdan dligheach: %s)",
+                "secret_given": "Chaidh dìomhaireachd %s air a chur ris",
+                "secret_list": "Dìomhaireachdan air an cruinneachadh: %d de %d (%s)",
+                "secret_none": "Dìomhaireachdan air an cruinneachadh: %d de %d",
+                "secret_taken": "Chaidh dìomhaireachd %s air a thoirt air falbh",
+            },
+            "give_secret": {
+                "help": "Seall liosta de dhìomhaireachdan Lara, neo cuir/thoir air falbh fear a rèir àireamh.",
+            },
+            "heal": {
+                "help": "Leighis Lara gu slàinte làn a-rithist.",
+            },
+            "help": {
+                "help": "Seallas cuideachadh airson gach àithne neo cuideachadh mionaideach airson tè shonraichte.",
+                "list": "Òrdughan rim faighinn:",
+            },
+            "hp": {
+                "help": "Suidhicheas slàinte Lara gu àireamh ainmichte.",
+            },
+            "immune": {
+                "help": "Tionndaidh neo-bhàsmhorachd. (Faodaidh Lara fhathast bàsachadh ann an cuid de shuidheachaidhean.)",
+                "off": "Tha Lara so-leònte a-nis",
+                "on": "Tha Lara do-ruigsinneach do mhilleadh a-nis",
+            },
+            "inf_sprint": {
+                "help": "Cuir às do ruith-luath gun chrìoch.",
+                "off": "Chan urrainn do Lara ruith gu luath gun chrìoch tuilleadh",
+                "on": "'S urrainn do Lara ruith gu luath gun chrìoch a-nis",
+            },
+            "kill": {
+                "help": "Cuir às do nàimhdean a tha faisg air làimh.",
+            },
+            "lighting": {
+                "help": "Tionndaidh siostam solais",
+            },
+            "load": {
+                "help": "Luchdaich geama bhon t-slot sàbhalaidh ainmichte neo slot luath.",
+            },
+            "lua": {
+                "help": "Ruith an t-sreang còd Lua a chaidh a thoirt seachad.",
+                "runtime_error": "Mearachd a' ruith Lua: %s",
+                "syntax_error": "Mearachd sìntacs Lua: %s",
+            },
+            "mod": {
+                "help": "\\{review}A' gluasad gu am mod sònraichte agus a' tòiseachadh a' gheama a-rithist.",
+            },
+            "music": {
+                "help": "Cluich slighe-ciùil leis an ID ainmichte.",
+            },
+            "play_cutscene": {
+                "help": "Cluich sealladh-film leis an àireamh ainmichte.",
+            },
+            "play_demo": {
+                "help": "Cluich taisbeanadh leis an àireamh ainmichte.",
+            },
+            "play_gym": {
+                "help": "Cluich ìre an t-Seòmair-eacarsaich.",
+            },
+            "play_level": {
+                "help": "Cluich ìre leis an ainm neo àireamh ainmichte.",
+            },
+            "play_music": {
+                "invalid_track": "Slighe-ciùil mì-dhligheach",
+                "stopped": "Sguir an ceòl",
+                "track": "A' cluich ciùil %d",
+            },
+            "pos": {
+                "help": "Seall suidheachadh Lara.",
+            },
+            "save": {
+                "help": "Sàbhail geama dhan t-slot ainmichte neo dhan ath shlot luath.",
+            },
+            "screenshot": {
+                "help": "Sàbhail glacadh-sgrìn gu diosc, le slighe fhaidhle roghainneil.",
+            },
+            "set": {
+                "help": "Seall neo ùraich roghainn rèiteachaidh ainmichte.",
+            },
+            "sfx": {
+                "help": "Cluich buaidh-fuaime leis an ID ainmichte.",
+            },
+            "spawn": {
+                "fail": "Cha deach an nì air iarraidh a chruthachadh",
+                "success": "Chaidh an nì air iarraidh a chruthachadh faisg air Lara",
+            },
+            "speed": {
+                "help": "Atharraich astar a' gheama.",
+            },
+            "strings": {
+                "help": "Ath-luchdaich faidhlichean cànain làithreach on diosg.",
+            },
+            "teleport": {
+                "item": "Air a ghluasad gu nì: %d",
+                "item_fail": "Dh'fhàillig gluasad gu nì: %d",
+                "object": "Air a ghluasad gu oibseact: %s",
+                "object_fail": "Dh'fhàillig gluasad gu oibseact: %s",
+                "pos": "Air a ghluasad gu suidheachadh: %.3f %.3f %.3f",
+                "pos_fail": "Dh'fhàillig gluasad gu suidheachadh: %.3f %.3f %.3f",
+                "room": "Air a ghluasad gu seòmar: %d",
+                "room_fail": "Dh'fhàillig gluasad gu seòmar: %d",
+            },
+            "textures": {
+                "help": "Cuir air neo dheth an gnìomh teacsaichean.",
+            },
+            "title": {
+                "help": "Till gu scrion a' thiotail.",
+            },
+            "tp": {
+                "help": "Gluais Lara gu suidheachadh neo àireamh rùm ainmichte.",
+            },
+            "trigger": {
+                "help": "Nì nìomhaichte neo gun nìomhaichte le id, ainm nì, neo ainm nì.",
+                "invalid_item": "Nì ceàrr: %s",
+                "no_match": "Targaid neo-aithnichte: %s",
+                "not_found": "Cha deach nithean freagarrach a lorg airson: %s",
+                "triggered": "Nìomhaichte nithean: %s",
+                "untriggered": "Gun nìomhaichte nithean: %s",
+            },
+            "vsync": {
+                "help": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
+            },
+            "weather": {
+                "help": "Atharraichidh seo an aimsir.",
+                "invalid": "Aimsir neo-dhligheach: %s (dligheach: %s)",
+                "set": "Suidhich an aimsir gu %s",
+            },
+            "winston": {
+                "dead": "Tha am butlar agad marbh. 'S tu nad fuamhaire!",
+                "spawn_failed": "Cha do shoirbhich le Winston a ghairm",
+                "spawned": "Thàinig Winston faisg air Lara",
+                "teleported": "Thàinig Winston faisg air Lara",
+            },
+            "wireframe": {
+                "help": "Tionndaidh reandaradh frèam-uèir air neo dheth.",
+            }
+        }
+    },
+    "dynamic": {
+        "config_presets": {
+            "tr1_pc": "\\{review}TR1 PC",
+            "tr1_ps1": "\\{review}TR1 PS1",
+            "tr2_pc": "\\{review}TR2 PC",
+            "tr2_ps1": "\\{review}TR2 PS1",
+            "tr3_pc": "\\{review}TR3 PC",
+            "tr3_ps1": "\\{review}TR3 PS1",
+        },
+        "enums": {
+            "bar_look": {
+                "tr1_pc": "TR1 PC",
+                "tr2_pc": "TR2 PC",
+                "tr2_ps1": "TR2 PS1",
+                "tr3_pc": "TR3 PC",
+                "tr3_ps1": "TR3 PS1",
+            },
+            "lara_outfit": {
+                "default": "Bunaiteach",
+                "tr1_bacon_lara": "Lara Bacon",
+                "tr1_classic": "TR1 Clasaigeach",
+                "tr1_combo": "TR1 Cothlamadh",
+                "tr1_golden_bacon_lara": "Lara Bacon Òir",
+                "tr1_golden_lara": "TR1 Lara Òir",
+                "tr1_gym": "TR1 Trèanadh",
+                "tr1_mauled": "TR1 Air a Leòn",
+                "tr23_golden_lara": "TR2/3 Lara Òir",
+                "tr2_bomber_jacket": "Seacaid Bomber",
+                "tr2_classic": "TR2 Clasaigeach",
+                "tr2_diving_suit": "Deise Dàibhidh",
+                "tr2_gym": "TR2 Trèanadh",
+                "tr2_robe": "Ròba",
+                "tr2_vegas": "Las Vegas",
+                "tr3_antarctica": "An Antartaig",
+                "tr3_catsuit": "Lunnainn",
+                "tr3_classic": "TR3 Clasaigeach",
+                "tr3_gym": "TR3 Trèanadh",
+                "tr3_nevada": "Nevada",
+                "tr3_south_pacific": "A' Chuain Sèimh a Deas",
+            }
+        }
+    },
+    "enums": {
+        "ALLY_HOSTILITY_POLICY": {
+            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "Fa leth",
+            "ALLY_HOSTILITY_POLICY_SHARED": "Air a cho-roinn",
+        },
+        "ASPECT_MODE": {
+            "ASPECT_MODE_16_10": "16:10",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_ANY": "Gin sam bith",
+        },
+        "BACKGROUND_TYPE": {
+            "BK_BLACK": "\\{review}Dubh",
+            "BK_IMAGE": "\\{review}Ìomhaigh",
+            "BK_MONOCHROME": "Aon-dhathach",
+            "BK_MONOCHROME_COOL": "\\{review}Monochrome (fuar)",
+            "BK_MONOCHROME_WARM": "\\{review}Monochrome (blàth)",
+            "BK_NONE": "\\{review}Soilleir",
+            "BK_PATTERN_STATIC": "Statach",
+            "BK_PATTERN_WAVE": "Crathadh",
+            "BK_TRANSPARENT_DARK": "Fìor dhorcha",
+            "BK_TRANSPARENT_MEDIUM": "Dorcha",
+        },
+        "BAR_SHOW_MODE": {
+            "BAR_SHOW_MODE_ALWAYS": "An-còmhnaidh",
+            "BAR_SHOW_MODE_BOSS_ONLY": "A-mhàin ri boss",
+            "BAR_SHOW_MODE_NEVER": "Na seall idir",
+        },
+        "BILLBOARD_LOCK_MODE": {
+            "BILLBOARD_LOCK_NONE": "Gin sam bith",
+            "BILLBOARD_LOCK_PERSPECTIVE": "Sealladh",
+            "BILLBOARD_LOCK_ROLL": "Rothladh",
+            "BILLBOARD_LOCK_ROLL_PITCH": "Rothladh is claonadh",
+        },
+        "CAMERA_MODE": {
+            "CAMERA_MODE_TR1": "TR1",
+            "CAMERA_MODE_TR2": "TR2",
+            "CAMERA_MODE_TR3": "TR3",
+        },
+        "INPUT_BACKEND": {
+            "INPUT_BACKEND_CONTROLLER": "\\{review}Smachdair",
+            "INPUT_BACKEND_KEYBOARD": "\\{review}Meur-chlàr",
+        },
+        "INPUT_ROLE": {
+            "INPUT_ROLE_ACTION": "Gnìomh",
+            "INPUT_ROLE_CAMERA_BACK": "Camara air Ais",
+            "INPUT_ROLE_CAMERA_DOWN": "Camara Sios",
+            "INPUT_ROLE_CAMERA_FORWARD": "Camara air Adhart",
+            "INPUT_ROLE_CAMERA_LEFT": "Camara gu Chlì",
+            "INPUT_ROLE_CAMERA_RESET": "Ath-shuidhich an camara",
+            "INPUT_ROLE_CAMERA_RIGHT": "Camara gu Dheas",
+            "INPUT_ROLE_CAMERA_UP": "Camara Suas",
+            "INPUT_ROLE_CHANGE_OUTFIT": "Atharraich aodach",
+            "INPUT_ROLE_CHANGE_TARGET": "Atharraich an Targaid",
+            "INPUT_ROLE_CROUCH": "Crùb",
+            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cuairt Coimeas Solais",
+            "INPUT_ROLE_DOWN": "Air Ais",
+            "INPUT_ROLE_DRAW_WEAPON": "Uidheamaich",
+            "INPUT_ROLE_ENTER_CONSOLE": "Consol Leasachaidh",
+            "INPUT_ROLE_EQUIP_AUTOS": "Uidheamaich Piostalan Fèin-obrachail",
+            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "Uidheamaich an Desert Eagle",
+            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Uidheamaich Lannsair Grenèad",
+            "INPUT_ROLE_EQUIP_HARPOON": "Uidheamaich Harpùn",
+            "INPUT_ROLE_EQUIP_M16": "Uidheamaich M16",
+            "INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Magnuman",
+            "INPUT_ROLE_EQUIP_MP5": "Uidheamaich MP5",
+            "INPUT_ROLE_EQUIP_PISTOLS": "Uidheamaich Piostalan",
+            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Uidheamaich Lannsair Rocaid",
+            "INPUT_ROLE_EQUIP_SHOTGUN": "Uidheamaich Gunna-sgaoil",
+            "INPUT_ROLE_EQUIP_UZIS": "Uidheamaich Uzis",
+            "INPUT_ROLE_FLY_CHEAT": "Cleas Itealaich",
+            "INPUT_ROLE_FPS": "Seall FPS",
+            "INPUT_ROLE_INVENTORY": "Clàr-seilbhe",
+            "INPUT_ROLE_ITEM_CHEAT": "Cleas Nì",
+            "INPUT_ROLE_JUMP": "Leum",
+            "INPUT_ROLE_LEFT": "Gu Chlì",
+            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Cleas Ìre",
+            "INPUT_ROLE_LOAD": "Luchdaich",
+            "INPUT_ROLE_LOOK": "Coimhead",
+            "INPUT_ROLE_PAUSE": "Stad",
+            "INPUT_ROLE_QUICK_LOAD": "Luchdaich gu luath",
+            "INPUT_ROLE_QUICK_SAVE": "Sàbhail gu luath",
+            "INPUT_ROLE_RIGHT": "Gu Dheas",
+            "INPUT_ROLE_ROLL": "Rolla",
+            "INPUT_ROLE_SAVE": "Sàbhail",
+            "INPUT_ROLE_SCREENSHOT": "Glacadh-sgrìn",
+            "INPUT_ROLE_SLOW": "Coisich",
+            "INPUT_ROLE_SPRINT": "Ruith gu Luath",
+            "INPUT_ROLE_STEP_LEFT": "Ceum air Chlì",
+            "INPUT_ROLE_STEP_RIGHT": "Ceum air Dheas",
+            "INPUT_ROLE_SWITCH_BORDERS": "Atharraich Meud nan Iomallan",
+            "INPUT_ROLE_SWITCH_UPSCALING": "Atharraich Factar Sgèileachaidh",
+            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Tionndaidh Criathradh Teacsdaire",
+            "INPUT_ROLE_TOGGLE_FULLSCREEN": "Tionndaidh Modh-làn-sgrìn",
+            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Tionndaidh Modh Dealbh",
+            "INPUT_ROLE_TOGGLE_TEXTURES": "Cuir dheth Teacsaichean",
+            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Tionndaidh Criathradh Trapeasoid",
+            "INPUT_ROLE_TOGGLE_UI": "Tionndaidh an Eadar-aghaidh",
+            "INPUT_ROLE_TOGGLE_WIREFRAME": "Tionndaidh air frèam-uèir",
+            "INPUT_ROLE_TURBO_CHEAT": "Luas Turbo",
+            "INPUT_ROLE_UP": "Ruith",
+            "INPUT_ROLE_USE_BIG_MEDI": "Pasgan Mòr",
+            "INPUT_ROLE_USE_FLARE": "Cleachd Lòchran",
+            "INPUT_ROLE_USE_SMALL_MEDI": "Pasgan Beag",
+        },
+        "JUMP_LOCK_MODE": {
+            "JUMP_LOCK_DISABLED": "Dheth",
+            "JUMP_LOCK_LEGACY": "Dualchasach",
+            "JUMP_LOCK_TUNED": "Fìnealta",
+        },
+        "LIGHTING_CONTRAST": {
+            "LIGHTING_CONTRAST_HIGH": "Àrd",
+            "LIGHTING_CONTRAST_LOW": "Ìosal",
+            "LIGHTING_CONTRAST_MEDIUM": "Meadhanach",
+        },
+        "LOADING_SCREENS_MODE": {
+            "LOADING_SCREENS_ALWAYS": "An-còmhnaidh",
+            "LOADING_SCREENS_DISABLED": "Ciorramach",
+            "LOADING_SCREENS_NEW_GAMES": "Geamannan ùra",
+        },
+        "LOOK_MODE": {
+            "LOOK_MODE_ENHANCED": "Leasaichte",
+            "LOOK_MODE_RESTRICTED": "Cuibhrichte",
+            "LOOK_MODE_UNRESTRICTED": "Neo-chuibhrichte",
+        },
+        "MUSIC_LOAD_CONDITION": {
+            "MUSIC_LOAD_CONDITION_ALWAYS": "An-còmhnaidh",
+            "MUSIC_LOAD_CONDITION_NEVER": "A-riamh",
+            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Neo-àrainneachd",
+        },
+        "PROJECTILE_AREA_DAMAGE": {
+            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "Ioma-sgèile",
+            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "Ioma-singilte",
+        },
+        "QUICK_GUNS_MODE": {
+            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Tarraing/falach",
+            "QUICK_GUNS_MODE_DRAW_ONLY": "Tarraing a-mhàin",
+        },
+        "SCREENSHOT_FORMAT": {
+            "SCREENSHOT_FORMAT_JPEG": "JPG",
+            "SCREENSHOT_FORMAT_PNG": "PNG",
+        },
+        "SHADOW_TYPE": {
+            "SHADOW_TYPE_CIRCLE": "Cearcall",
+            "SHADOW_TYPE_OCTAGON": "Ochd-cheàrnach",
+            "SHADOW_TYPE_SPRITE": "Spraide",
+        },
+        "STAT_DETAIL_MODE": {
+            "STAT_DETAIL_MODE_DETAILED": "Mionaideach",
+            "STAT_DETAIL_MODE_FULL": "Làn",
+            "STAT_DETAIL_MODE_MINIMAL": "As lugha",
+        },
+        "TARGET_LOCK_MODE": {
+            "TARGET_LOCK_MODE_FULL": "Glas làn",
+            "TARGET_LOCK_MODE_NONE": "Gun ghlas",
+            "TARGET_LOCK_MODE_SEMI": "Leth-ghlas",
+        },
+        "TEXTURE_FILTER": {
+            "TEXTURE_FILTER_BILINEAR": "Da-lìnear",
+            "TEXTURE_FILTER_POINT": "Dheth",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bonn na meadhan",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Bonn-clì",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Bonn-deas",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Bàrr na meadhan",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Bàrr-clì",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Bàrr-deas",
+        },
+        "UI_STYLE": {
+            "UI_STYLE_PC": "PC",
+            "UI_STYLE_PS1": "PS1",
+        },
+        "WALL_GLITCH_MODE": {
+            "WALL_GLITCH_FIXED": "Air a chàradh",
+            "WALL_GLITCH_TR1": "TR1",
+            "WALL_GLITCH_TR2": "TR2",
         }
     },
     "settings": {
@@ -2346,217 +1481,1226 @@
             "description": "Dath an uisge.",
         }
     },
-    "enums": {
-        "ALLY_HOSTILITY_POLICY": {
-            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "Fa leth",
-            "ALLY_HOSTILITY_POLICY_SHARED": "Air a cho-roinn",
+    "objects": {
+        "alarm_sound": {
+            "name": "Inneal-rabhaidh",
         },
-        "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
-            "ASPECT_MODE_4_3": "4:3",
-            "ASPECT_MODE_ANY": "Gin sam bith",
+        "alligator": {
+            "name": "Ailigeutair",
         },
-        "BACKGROUND_TYPE": {
-            "BK_BLACK": "\\{review}Dubh",
-            "BK_IMAGE": "\\{review}Ìomhaigh",
-            "BK_MONOCHROME": "Aon-dhathach",
-            "BK_MONOCHROME_COOL": "\\{review}Monochrome (fuar)",
-            "BK_MONOCHROME_WARM": "\\{review}Monochrome (blàth)",
-            "BK_NONE": "\\{review}Soilleir",
-            "BK_PATTERN_STATIC": "Statach",
-            "BK_PATTERN_WAVE": "Crathadh",
-            "BK_TRANSPARENT_DARK": "Fìor dhorcha",
-            "BK_TRANSPARENT_MEDIUM": "Dorcha",
+        "alphabet": {
+            "name": "Clò àbhaisteach",
         },
-        "BAR_SHOW_MODE": {
-            "BAR_SHOW_MODE_ALWAYS": "An-còmhnaidh",
-            "BAR_SHOW_MODE_BOSS_ONLY": "A-mhàin ri boss",
-            "BAR_SHOW_MODE_NEVER": "Na seall idir",
+        "alphabet_small": {
+            "name": "Clò beag",
         },
-        "BILLBOARD_LOCK_MODE": {
-            "BILLBOARD_LOCK_NONE": "Gin sam bith",
-            "BILLBOARD_LOCK_PERSPECTIVE": "Sealladh",
-            "BILLBOARD_LOCK_ROLL": "Rothladh",
-            "BILLBOARD_LOCK_ROLL_PITCH": "Rothladh is claonadh",
+        "amber_light": {
+            "name": "Solas Òmar",
         },
-        "CAMERA_MODE": {
-            "CAMERA_MODE_TR1": "TR1",
-            "CAMERA_MODE_TR2": "TR2",
-            "CAMERA_MODE_TR3": "TR3",
+        "animating_1": {
+            "name": "Beòthaladh 1",
         },
-        "INPUT_BACKEND": {
-            "INPUT_BACKEND_CONTROLLER": "\\{review}Smachdair",
-            "INPUT_BACKEND_KEYBOARD": "\\{review}Meur-chlàr",
+        "animating_2": {
+            "name": "Beòthaladh 2",
         },
-        "INPUT_ROLE": {
-            "INPUT_ROLE_ACTION": "Gnìomh",
-            "INPUT_ROLE_CAMERA_BACK": "Camara air Ais",
-            "INPUT_ROLE_CAMERA_DOWN": "Camara Sios",
-            "INPUT_ROLE_CAMERA_FORWARD": "Camara air Adhart",
-            "INPUT_ROLE_CAMERA_LEFT": "Camara gu Chlì",
-            "INPUT_ROLE_CAMERA_RESET": "Ath-shuidhich an camara",
-            "INPUT_ROLE_CAMERA_RIGHT": "Camara gu Dheas",
-            "INPUT_ROLE_CAMERA_UP": "Camara Suas",
-            "INPUT_ROLE_CHANGE_OUTFIT": "Atharraich aodach",
-            "INPUT_ROLE_CHANGE_TARGET": "Atharraich an Targaid",
-            "INPUT_ROLE_CROUCH": "Crùb",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cuairt Coimeas Solais",
-            "INPUT_ROLE_DOWN": "Air Ais",
-            "INPUT_ROLE_DRAW_WEAPON": "Uidheamaich",
-            "INPUT_ROLE_ENTER_CONSOLE": "Consol Leasachaidh",
-            "INPUT_ROLE_EQUIP_AUTOS": "Uidheamaich Piostalan Fèin-obrachail",
-            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "Uidheamaich an Desert Eagle",
-            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Uidheamaich Lannsair Grenèad",
-            "INPUT_ROLE_EQUIP_HARPOON": "Uidheamaich Harpùn",
-            "INPUT_ROLE_EQUIP_M16": "Uidheamaich M16",
-            "INPUT_ROLE_EQUIP_MAGNUMS": "Uidheamaich Magnuman",
-            "INPUT_ROLE_EQUIP_MP5": "Uidheamaich MP5",
-            "INPUT_ROLE_EQUIP_PISTOLS": "Uidheamaich Piostalan",
-            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Uidheamaich Lannsair Rocaid",
-            "INPUT_ROLE_EQUIP_SHOTGUN": "Uidheamaich Gunna-sgaoil",
-            "INPUT_ROLE_EQUIP_UZIS": "Uidheamaich Uzis",
-            "INPUT_ROLE_FLY_CHEAT": "Cleas Itealaich",
-            "INPUT_ROLE_FPS": "Seall FPS",
-            "INPUT_ROLE_INVENTORY": "Clàr-seilbhe",
-            "INPUT_ROLE_ITEM_CHEAT": "Cleas Nì",
-            "INPUT_ROLE_JUMP": "Leum",
-            "INPUT_ROLE_LEFT": "Gu Chlì",
-            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Cleas Ìre",
-            "INPUT_ROLE_LOAD": "Luchdaich",
-            "INPUT_ROLE_LOOK": "Coimhead",
-            "INPUT_ROLE_PAUSE": "Stad",
-            "INPUT_ROLE_QUICK_LOAD": "Luchdaich gu luath",
-            "INPUT_ROLE_QUICK_SAVE": "Sàbhail gu luath",
-            "INPUT_ROLE_RIGHT": "Gu Dheas",
-            "INPUT_ROLE_ROLL": "Rolla",
-            "INPUT_ROLE_SAVE": "Sàbhail",
-            "INPUT_ROLE_SCREENSHOT": "Glacadh-sgrìn",
-            "INPUT_ROLE_SLOW": "Coisich",
-            "INPUT_ROLE_SPRINT": "Ruith gu Luath",
-            "INPUT_ROLE_STEP_LEFT": "Ceum air Chlì",
-            "INPUT_ROLE_STEP_RIGHT": "Ceum air Dheas",
-            "INPUT_ROLE_SWITCH_BORDERS": "Atharraich Meud nan Iomallan",
-            "INPUT_ROLE_SWITCH_UPSCALING": "Atharraich Factar Sgèileachaidh",
-            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Tionndaidh Criathradh Teacsdaire",
-            "INPUT_ROLE_TOGGLE_FULLSCREEN": "Tionndaidh Modh-làn-sgrìn",
-            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Tionndaidh Modh Dealbh",
-            "INPUT_ROLE_TOGGLE_TEXTURES": "Cuir dheth Teacsaichean",
-            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Tionndaidh Criathradh Trapeasoid",
-            "INPUT_ROLE_TOGGLE_UI": "Tionndaidh an Eadar-aghaidh",
-            "INPUT_ROLE_TOGGLE_WIREFRAME": "Tionndaidh air frèam-uèir",
-            "INPUT_ROLE_TURBO_CHEAT": "Luas Turbo",
-            "INPUT_ROLE_UP": "Ruith",
-            "INPUT_ROLE_USE_BIG_MEDI": "Pasgan Mòr",
-            "INPUT_ROLE_USE_FLARE": "Cleachd Lòchran",
-            "INPUT_ROLE_USE_SMALL_MEDI": "Pasgan Beag",
+        "animating_3": {
+            "name": "Beòthaladh 3",
         },
-        "JUMP_LOCK_MODE": {
-            "JUMP_LOCK_DISABLED": "Dheth",
-            "JUMP_LOCK_LEGACY": "Dualchasach",
-            "JUMP_LOCK_TUNED": "Fìnealta",
+        "animating_4": {
+            "name": "Beòthaladh 4",
         },
-        "LIGHTING_CONTRAST": {
-            "LIGHTING_CONTRAST_HIGH": "Àrd",
-            "LIGHTING_CONTRAST_LOW": "Ìosal",
-            "LIGHTING_CONTRAST_MEDIUM": "Meadhanach",
+        "animating_5": {
+            "name": "Beòthaladh 5",
         },
-        "LOADING_SCREENS_MODE": {
-            "LOADING_SCREENS_ALWAYS": "An-còmhnaidh",
-            "LOADING_SCREENS_DISABLED": "Ciorramach",
-            "LOADING_SCREENS_NEW_GAMES": "Geamannan ùra",
+        "animating_6": {
+            "name": "Beòthaladh 6",
         },
-        "LOOK_MODE": {
-            "LOOK_MODE_ENHANCED": "Leasaichte",
-            "LOOK_MODE_RESTRICTED": "Cuibhrichte",
-            "LOOK_MODE_UNRESTRICTED": "Neo-chuibhrichte",
+        "ape": {
+            "name": "Apa",
         },
-        "MUSIC_LOAD_CONDITION": {
-            "MUSIC_LOAD_CONDITION_ALWAYS": "An-còmhnaidh",
-            "MUSIC_LOAD_CONDITION_NEVER": "A-riamh",
-            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Neo-àrainneachd",
+        "assault_digits": {
+            "name": "Àireamhan an t-Seòmair-eacarsaich",
         },
-        "PROJECTILE_AREA_DAMAGE": {
-            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "Ioma-sgèile",
-            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "Ioma-singilte",
+        "assault_target": {
+            "name": "Targaid Ionnsaigh",
         },
-        "QUICK_GUNS_MODE": {
-            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Tarraing/falach",
-            "QUICK_GUNS_MODE_DRAW_ONLY": "Tarraing a-mhàin",
+        "autos": {
+            "name": "Piostalan Fèin-obrachail",
         },
-        "SCREENSHOT_FORMAT": {
-            "SCREENSHOT_FORMAT_JPEG": "JPG",
-            "SCREENSHOT_FORMAT_PNG": "PNG",
+        "autos_ammo": {
+            "name": "Lòin Gunna Fèin-obrachail",
         },
-        "SHADOW_TYPE": {
-            "SHADOW_TYPE_CIRCLE": "Cearcall",
-            "SHADOW_TYPE_OCTAGON": "Ochd-cheàrnach",
-            "SHADOW_TYPE_SPRITE": "Spraide",
+        "bacon_lara": {
+            "name": "Lara Bèicein",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Mionaideach",
-            "STAT_DETAIL_MODE_FULL": "Làn",
-            "STAT_DETAIL_MODE_MINIMAL": "As lugha",
+        "baldy": {
+            "name": "Baldaidh",
         },
-        "TARGET_LOCK_MODE": {
-            "TARGET_LOCK_MODE_FULL": "Glas làn",
-            "TARGET_LOCK_MODE_NONE": "Gun ghlas",
-            "TARGET_LOCK_MODE_SEMI": "Leth-ghlas",
+        "bandit_1": {
+            "name": [
+                "Saighdear-duais 1",
+                "Ruspal le Masg 1",
+            ]
         },
-        "TEXTURE_FILTER": {
-            "TEXTURE_FILTER_BILINEAR": "Da-lìnear",
-            "TEXTURE_FILTER_POINT": "Dheth",
+        "bandit_2": {
+            "name": [
+                "Saighdear-duais 2",
+                "Ruspal le Masg 2",
+            ]
         },
-        "UI_ELEMENT_LOCATION": {
-            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bonn na meadhan",
-            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Bonn-clì",
-            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Bonn-deas",
-            "UI_ELEMENT_LOCATION_TOP_CENTER": "Bàrr na meadhan",
-            "UI_ELEMENT_LOCATION_TOP_LEFT": "Bàrr-clì",
-            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Bàrr-deas",
+        "bandit_2b": {
+            "name": [
+                "Saighdear-duais 3",
+                "Ruspal le Masg 3",
+            ]
         },
-        "UI_STYLE": {
-            "UI_STYLE_PC": "PC",
-            "UI_STYLE_PS1": "PS1",
+        "barracuda": {
+            "name": "Barracuda",
         },
-        "WALL_GLITCH_MODE": {
-            "WALL_GLITCH_FIXED": "Air a chàradh",
-            "WALL_GLITCH_TR1": "TR1",
-            "WALL_GLITCH_TR2": "TR2",
-        }
-    },
-    "dynamic": {
-        "enums": {
-            "bar_look": {
-                "tr1_pc": "TR1 PC",
-                "tr2_pc": "TR2 PC",
-                "tr2_ps1": "TR2 PS1",
-                "tr3_pc": "TR3 PC",
-                "tr3_ps1": "TR3 PS1",
-            },
-            "lara_outfit": {
-                "default": "Bunaiteach",
-                "tr1_bacon_lara": "Lara Bacon",
-                "tr1_classic": "TR1 Clasaigeach",
-                "tr1_combo": "TR1 Cothlamadh",
-                "tr1_golden_bacon_lara": "Lara Bacon Òir",
-                "tr1_golden_lara": "TR1 Lara Òir",
-                "tr1_gym": "TR1 Trèanadh",
-                "tr1_mauled": "TR1 Air a Leòn",
-                "tr23_golden_lara": "TR2/3 Lara Òir",
-                "tr2_bomber_jacket": "Seacaid Bomber",
-                "tr2_classic": "TR2 Clasaigeach",
-                "tr2_diving_suit": "Deise Dàibhidh",
-                "tr2_gym": "TR2 Trèanadh",
-                "tr2_robe": "Ròba",
-                "tr2_vegas": "Las Vegas",
-                "tr3_antarctica": "An Antartaig",
-                "tr3_catsuit": "Lunnainn",
-                "tr3_classic": "TR3 Clasaigeach",
-                "tr3_gym": "TR3 Trèanadh",
-                "tr3_nevada": "Nevada",
-                "tr3_south_pacific": "A' Chuain Sèimh a Deas",
-            }
+        "bartoli": {
+            "name": "Marco Bartoli",
+        },
+        "bat": {
+            "name": "Ialtag",
+        },
+        "bat_emitter": {
+            "name": "Sgaoiladair Bàta",
+        },
+        "beacon_light": {
+            "name": "Solas Beura",
+        },
+        "bear": {
+            "name": "Mathan",
+        },
+        "bell": {
+            "name": "Clag",
+        },
+        "big_bowl": {
+            "name": "Bobhla Teine-teinteach",
+        },
+        "big_eel": {
+            "name": "Easgann Mhòr",
+        },
+        "big_pod": {
+            "name": "Spàlag Mhòr",
+        },
+        "big_spider": {
+            "name": "Damhan-allaidh Fuamhaireil",
+        },
+        "bird_guardian": {
+            "name": "Eun-uilebheisteach",
+        },
+        "bird_tweeter_1": {
+            "name": "Sileadair Uisge",
+        },
+        "bird_tweeter_2": {
+            "name": "Eòin a' Seinn",
+        },
+        "blade": {
+            "name": "Iarann air Balla",
+        },
+        "blood_1": {
+            "name": "Fuil 1",
+        },
+        "blood_2": {
+            "name": "Fuil 2",
+        },
+        "blue_light": {
+            "name": "Solas Gorm",
+        },
+        "boat": {
+            "name": "Bàta",
+        },
+        "boat_bits": {
+            "name": "Pìosan a' Bhàta",
+        },
+        "body_part": {
+            "name": "Pàirt Corp",
+        },
+        "bridge_flat": {
+            "name": "Drochaid Rèidh",
+        },
+        "bridge_tilt_1": {
+            "name": "Drochaid Claonadh 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Drochaid Claonadh 2",
+        },
+        "bubble_1": {
+            "name": "Builgean 1",
+        },
+        "bubble_2": {
+            "name": "Builgean 2",
+        },
+        "bubble_emitter": {
+            "name": "Sgaoiladair Builgean",
+        },
+        "camera_target": {
+            "name": "Targaid Camara",
+        },
+        "carcass": {
+            "name": "Closach",
+        },
+        "ceiling_spikes": {
+            "name": "Mullach-gheugan",
+        },
+        "centaur": {
+            "name": "Ceud-damh",
+        },
+        "centaur_statue": {
+            "name": "Ìomhaigh",
+        },
+        "clock_chimes": {
+            "name": "Gleoc Bartoli",
+        },
+        "cog_1": {
+            "name": "Inneal Gèaraichean 1",
+        },
+        "cog_2": {
+            "name": "Inneal Gèaraichean 2",
+        },
+        "cog_3": {
+            "name": "Inneal Gèaraichean 3",
+        },
+        "combat_end": {
+            "name": "Crioch-shabaid",
+        },
+        "compass": {
+            "name": "Staitistig",
+        },
+        "compy": {
+            "name": "Compsognathus",
+        },
+        "controls": {
+            "name": "Smachdan",
+        },
+        "copter": {
+            "name": "Heileacoptair",
+        },
+        "cowboy": {
+            "name": "Gille-cruidh",
+        },
+        "crocodile": {
+            "name": [
+                "Crocadal",
+                "Crogall",
+            ]
+        },
+        "crow": {
+            "name": "Feannag",
+        },
+        "cult_1": {
+            "name": "Ruspal le Masg 1",
+        },
+        "cult_1a": {
+            "name": "Ruspal le Masg 2",
+        },
+        "cult_1b": {
+            "name": "Ruspal le Masg 3",
+        },
+        "cult_2": {
+            "name": "Fear-sgian",
+        },
+        "cult_3": {
+            "name": "Ruspal le Gunna-sgaoil",
+        },
+        "cut_shotgun": {
+            "name": "Beòthalachd Gunna-sgaoil Fhrais",
+        },
+        "damocles_sword": {
+            "name": "Claidheamh Damocles",
+        },
+        "dart": {
+            "name": "Dàrt",
+        },
+        "dart_effect": {
+            "name": "Buaidh Dàrt",
+        },
+        "dart_emitter": {
+            "name": "Sgaoiladair Dàrt",
+        },
+        "desert_eagle": {
+            "name": "Desert Eagle",
+        },
+        "desert_eagle_ammo": {
+            "name": "Lòin an Desert Eagle",
+        },
+        "detonator_box": {
+            "name": "Spreadhaichear",
+        },
+        "ding_dong": {
+            "name": "Clag an Dorais",
+        },
+        "dino_mutant": {
+            "name": "Dìneasair-mùthaidh",
+        },
+        "disc": {
+            "name": "Sgian-cruinnte",
+        },
+        "disc_emitter": {
+            "name": "Sgaoiladair Sgian-cruinnte",
+        },
+        "diver": {
+            "name": "Sgùba-dhaibhear",
+        },
+        "dog": {
+            "name": [
+                "Cù",
+                "Doberman",
+            ]
+        },
+        "door_1": {
+            "name": "Doras 1",
+        },
+        "door_2": {
+            "name": "Doras 2",
+        },
+        "door_3": {
+            "name": "Doras 3",
+        },
+        "door_4": {
+            "name": "Doras 4",
+        },
+        "door_5": {
+            "name": "Doras 5",
+        },
+        "door_6": {
+            "name": "Doras 6",
+        },
+        "door_7": {
+            "name": "Doras 7",
+        },
+        "door_8": {
+            "name": "Doras 8",
+        },
+        "dragon_back": {
+            "name": "Cùl an Dràgon",
+        },
+        "dragon_bones_1": {
+            "name": "Neach-àite",
+        },
+        "dragon_bones_2": {
+            "name": "Cnàmhan Aghaidh an Dràgon",
+        },
+        "dragon_bones_3": {
+            "name": "Cnàmhan Cùl an Dràgon",
+        },
+        "dragon_front": {
+            "name": "Aghaidh an Dràgon",
+        },
+        "drawbridge": {
+            "name": "Drochaid-tarraing",
+        },
+        "dust": {
+            "name": "Duslach",
+        },
+        "dying_monk": {
+            "name": "Manach a' Bàsachadh",
+        },
+        "eagle": {
+            "name": "Iolaire",
+        },
+        "earthquake": {
+            "name": "Crith-thalmhainn",
+        },
+        "eel": {
+            "name": "Easgann",
+        },
+        "electric_cleaner": {
+            "name": "Inneal-glanaidh",
+        },
+        "electric_fence": {
+            "name": "Feansa Dealain",
+        },
+        "electrical_light": {
+            "name": "Solais Dealain",
+        },
+        "ember": {
+            "name": "Èibhleag",
+        },
+        "ember_emitter": {
+            "name": "Sgaoiladair Èibhleag",
+        },
+        "explosion_1": {
+            "name": "Spreadhadh 1",
+        },
+        "explosion_2": {
+            "name": "Spreadhadh 2",
+        },
+        "falling_block_1": {
+            "name": [
+                "Bloc Tuiteamach 1",
+                "Làr Bristeach 1",
+                "Leacan Bristeach 1",
+            ]
+        },
+        "falling_block_2": {
+            "name": [
+                "Bloc Tuiteamach 2",
+                "Làr Bristeach 2",
+                "Leacan Bristeach 2",
+            ]
+        },
+        "falling_block_3": {
+            "name": [
+                "Bloc Tuiteamach 3",
+                "Làr Bristeach 3",
+                "Leacan Bristeach 3",
+                "Bùird Cugalach",
+            ]
+        },
+        "falling_ceiling_1": {
+            "name": "Mullach Tuiteamach 1",
+        },
+        "falling_ceiling_2": {
+            "name": "Mullach Tuiteamach 2",
+        },
+        "fish_mutant": {
+            "name": "Iasg-mùthaidh",
+        },
+        "flame": {
+            "name": [
+                "Lasair",
+                "Teine",
+            ]
+        },
+        "flame_emitter": {
+            "name": [
+                "Sgaoiladair Lasair",
+                "Sgaoiladair Teine",
+            ]
+        },
+        "flame_emitter_big": {
+            "name": "Sgaoileadair Teine (Mòr)",
+        },
+        "flame_emitter_jet": {
+            "name": "Sgaoileadair Teine (Jet)",
+        },
+        "flame_emitter_side": {
+            "name": "Sgaoileadair Teine (Gu Taobh)",
+        },
+        "flame_emitter_small": {
+            "name": "Sgaoileadair Teine (Beag)",
+        },
+        "flare": {
+            "name": "Lòchran",
+        },
+        "flare_fire": {
+            "name": "Teinntreach Lòchran",
+        },
+        "flares_box": {
+            "name": "Bogsa Lòchrain",
+        },
+        "fx_reserved": {
+            "name": "Cearcall Glas",
+        },
+        "gamma": {
+            "name": "Gamma",
+        },
+        "general": {
+            "name": "Bàt-aigeil Beag",
+        },
+        "globe": {
+            "name": "Cruinne",
+        },
+        "glow": {
+            "name": "Gàir",
+        },
+        "glow_reserved": {
+            "name": "Gàir Mapa",
+        },
+        "gondola": {
+            "name": "Carbad-crochte",
+        },
+        "gong": {
+            "name": "Gong",
+        },
+        "gong_bonger": {
+            "name": "Bata a' Ghong",
+        },
+        "graphics": {
+            "name": "Grafaigean",
+        },
+        "green_light": {
+            "name": "Solas Uaine",
+        },
+        "grenade": {
+            "name": "Grenèad",
+        },
+        "grenade_launcher": {
+            "name": "Lannsair Grenèad",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Grenèadan",
+        },
+        "gun_flash": {
+            "name": "Lasadh Ghunna",
+        },
+        "gun_shell": {
+            "name": "Sgèith Gheir",
+        },
+        "harpoon_bolt": {
+            "name": "Harpùn",
+        },
+        "harpoon_gun": {
+            "name": "Harpùn",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Harpùnaichean",
+        },
+        "hook": {
+            "name": "Dubhan",
+        },
+        "hot_liquid": {
+            "name": "Leaghan Teth",
+        },
+        "huskie": {
+            "name": "\\{review}Cù",
+        },
+        "icicle": {
+            "name": "Bioranan-deighe",
+        },
+        "inv_background": {
+            "name": "Inneach a' Chlàr-seilbhe",
+        },
+        "jelly": {
+            "name": "Muir-tèachd",
+        },
+        "kayak": {
+            "name": "Càbaig",
+        },
+        "key_1": {
+            "name": "Iuchair 1",
+        },
+        "key_2": {
+            "name": "Iuchair 2",
+        },
+        "key_3": {
+            "name": "Iuchair 3",
+        },
+        "key_4": {
+            "name": "Iuchair 4",
+        },
+        "key_hole_1": {
+            "name": "Toll Iuchrach 1",
+        },
+        "key_hole_2": {
+            "name": "Toll Iuchrach 2",
+        },
+        "key_hole_3": {
+            "name": "Toll Iuchrach 3",
+        },
+        "key_hole_4": {
+            "name": "Toll Iuchrach 4",
+        },
+        "kill_all_triggered": {
+            "name": "Cur às do gach rud",
+        },
+        "killer_statue": {
+            "name": "Ìomhaigh le Claidheamh",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_alarm": {
+            "name": "Rabhadair-mhèirleach",
+        },
+        "lara_autos": {
+            "name": "Beòthalachd Piostalan Fèin-obrachail",
+        },
+        "lara_boat": {
+            "name": "Beòthalachd Bàta",
+        },
+        "lara_desert_eagle": {
+            "name": "Beòthalachd an Desert Eagle",
+        },
+        "lara_extra": {
+            "name": "Beòthalachd Eile Lara",
+        },
+        "lara_flare": {
+            "name": "Beòthalachd Lòchran",
+        },
+        "lara_grenade": {
+            "name": "Beòthalachd Lannsair Grenèad",
+        },
+        "lara_hair": {
+            "name": "Feaman-fuilt Lara",
+        },
+        "lara_harpoon": {
+            "name": "Beòthalachd Harpùn",
+        },
+        "lara_m16": {
+            "name": "Beòthalachd M16",
+        },
+        "lara_magnums": {
+            "name": "Beòthalachd Magnuman",
+        },
+        "lara_mp5": {
+            "name": "Beòthalachd MP5",
+        },
+        "lara_pistols": {
+            "name": "Beòthalachd Piostalan",
+        },
+        "lara_rocket": {
+            "name": "Beòthalachd Lannsair Rocaid",
+        },
+        "lara_shotgun": {
+            "name": "Beòthalachd Gunna-sgaoil",
+        },
+        "lara_skidoo": {
+            "name": "Beòthalachd Cairt-shneachda",
+        },
+        "lara_uzis": {
+            "name": "Beòthalachd Uzis",
+        },
+        "larson": {
+            "name": "Larson",
+        },
+        "lava_wedge": {
+            "name": "Cliathaich Teine-teinteach",
+        },
+        "lead_bar": {
+            "name": "Bàr Luaidhe",
+        },
+        "lift": {
+            "name": "Lioft",
+        },
+        "lightning_emitter": {
+            "name": "Sgaoiladair Dealanaich",
+        },
+        "lion": {
+            "name": "Leòmhann",
+        },
+        "lioness": {
+            "name": [
+                "Leòmhann-Boireann",
+                "Leòmhann",
+            ]
+        },
+        "lizard": {
+            "name": "Laghairt",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "m16_ammo": {
+            "name": "Lòin M16",
+        },
+        "m16_flash": {
+            "name": "Lasadh M16",
+        },
+        "magnums": {
+            "name": "Magnuman",
+        },
+        "magnums_ammo": {
+            "name": "Lòin Magnum",
+        },
+        "mesh_swap_1": {
+            "name": "Suaip Lìonra 1",
+        },
+        "mesh_swap_2": {
+            "name": "Suaip Lìonra 2",
+        },
+        "mesh_swap_3": {
+            "name": "Suaip Lìonra 3",
+        },
+        "midas_touch": {
+            "name": "Làmh Mìdas",
+        },
+        "mine": {
+            "name": "Mèinn Uisgeach",
+        },
+        "mini_copter": {
+            "name": "Heileacoptair 2",
+        },
+        "missile_atlantean_bomb": {
+            "name": "Missil (Boma Atlanteach)",
+        },
+        "missile_atlantean_shard": {
+            "name": "Missil (Slinneag Atlanteach)",
+        },
+        "missile_flame": {
+            "name": "Missil (Teine)",
+        },
+        "missile_harpoon": {
+            "name": "Missil (Harpùn)",
+        },
+        "missile_knife": {
+            "name": "Missil (Sgian)",
+        },
+        "missile_poison": {
+            "name": "Missil (Puinnsean)",
+        },
+        "monk_1": {
+            "name": "Manach 1",
+        },
+        "monk_2": {
+            "name": "Manach 2",
+        },
+        "monkey": {
+            "name": "Muncaidh",
+        },
+        "mounted_gun": {
+            "name": "Gunna Stèidhichte",
+        },
+        "mouse": {
+            "name": "Radan",
+        },
+        "movable_block_1": {
+            "name": [
+                "Bloc Putaidh 1",
+                "Bloc Gluasadach 1",
+            ]
+        },
+        "movable_block_2": {
+            "name": [
+                "Bloc Putaidh 2",
+                "Bloc Gluasadach 2",
+            ]
+        },
+        "movable_block_3": {
+            "name": [
+                "Bloc Putaidh 3",
+                "Bloc Gluasadach 3",
+            ]
+        },
+        "movable_block_4": {
+            "name": [
+                "Bloc Putaidh 4",
+                "Bloc Gluasadach 4",
+            ]
+        },
+        "moving_bar": {
+            "name": "Bàr Gluasadach",
+        },
+        "mp5": {
+            "name": "MP5",
+        },
+        "mp5_ammo": {
+            "name": "Lòin MP5",
+        },
+        "mummy": {
+            "name": "Spaoileadan",
+        },
+        "mutant_1": {
+            "name": "Mùthaidh 1",
+        },
+        "mutant_2": {
+            "name": "Mùthaidh 2",
+        },
+        "mutant_3": {
+            "name": "Mùthaidh 3",
+        },
+        "natla": {
+            "name": "Natla",
+        },
+        "natla_gun": {
+            "name": "Gunna Natla",
+        },
+        "on_off_light": {
+            "name": "Solas Air/Dheth",
+        },
+        "passport": {
+            "name": "Geama",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Cù",
+        },
+        "pda": {
+            "name": "Cluiche",
+        },
+        "pendulum_1": {
+            "name": "Poca-gainmhich",
+        },
+        "pendulum_2": {
+            "name": "Bocsa",
+        },
+        "photo": {
+            "name": "Dachaigh Lara",
+        },
+        "pickup_1": {
+            "name": "Nì Togail 1",
+        },
+        "pickup_2": {
+            "name": "Nì Togail 2",
+        },
+        "pickup_aid": {
+            "name": "Cobhair Togail",
+        },
+        "pierre": {
+            "name": "Pierre",
+        },
+        "pirahnas": {
+            "name": "Pirahnan",
+        },
+        "pistols": {
+            "name": "Piostalan",
+        },
+        "pistols_ammo": {
+            "name": "Lòin Phiostail",
+        },
+        "player_1": {
+            "name": "Actair 1",
+        },
+        "player_10": {
+            "name": "Actair 10",
+        },
+        "player_2": {
+            "name": "Actair 2",
+        },
+        "player_3": {
+            "name": "Actair 3",
+        },
+        "player_4": {
+            "name": "Actair 4",
+        },
+        "player_5": {
+            "name": "Actair 5",
+        },
+        "player_6": {
+            "name": "Actair 6",
+        },
+        "player_7": {
+            "name": "Actair 7",
+        },
+        "player_8": {
+            "name": "Actair 8",
+        },
+        "player_9": {
+            "name": "Actair 9",
+        },
+        "pods": {
+            "name": "Spàlagan",
+        },
+        "poison_dart": {
+            "name": "Dàrt Phuinnseanta",
+        },
+        "poison_dart_emitter": {
+            "name": "Sgaoiladair Dàrt Phuinnseanta",
+        },
+        "portacabin": {
+            "name": "Caban So-ghiùlain",
+        },
+        "power_saw": {
+            "name": "Sàbh-dealain",
+        },
+        "propeller_1": {
+            "name": "Proipeilear-plèana",
+        },
+        "propeller_2": {
+            "name": "Proipeilear fo Uisge",
+        },
+        "propeller_3": {
+            "name": "Gaothran",
+        },
+        "pulse_light": {
+            "name": "Solas Cuisle",
+        },
+        "puma": {
+            "name": "Pùma",
+        },
+        "punk_1": {
+            "name": "Punc 1",
+        },
+        "punk_2": {
+            "name": "Punc 2",
+        },
+        "puzzle_1": {
+            "name": "Nì Tòimhseachain 1",
+        },
+        "puzzle_2": {
+            "name": "Nì Tòimhseachain 2",
+        },
+        "puzzle_3": {
+            "name": "Nì Tòimhseachain 3",
+        },
+        "puzzle_4": {
+            "name": "Nì Tòimhseachain 4",
+        },
+        "puzzle_done_1": {
+            "name": "Toll Tòimhseachain 1 (Deiseil)",
+        },
+        "puzzle_done_2": {
+            "name": "Toll Tòimhseachain 2 (Deiseil)",
+        },
+        "puzzle_done_3": {
+            "name": "Toll Tòimhseachain 3 (Deiseil)",
+        },
+        "puzzle_done_4": {
+            "name": "Toll Tòimhseachain 4 (Deiseil)",
+        },
+        "puzzle_hole_1": {
+            "name": "Toll Tòimhseachain 1 (Falamh)",
+        },
+        "puzzle_hole_2": {
+            "name": "Toll Tòimhseachain 2 (Falamh)",
+        },
+        "puzzle_hole_3": {
+            "name": "Toll Tòimhseachain 3 (Falamh)",
+        },
+        "puzzle_hole_4": {
+            "name": "Toll Tòimhseachain 4 (Falamh)",
+        },
+        "quad_bike": {
+            "name": "Quad-baidhsagal",
+        },
+        "quest_1": {
+            "name": "Nì Tòir 1",
+        },
+        "quest_2": {
+            "name": "Nì Tòir 2",
+        },
+        "quest_3": {
+            "name": "Nì Tòir 3",
+        },
+        "quest_4": {
+            "name": "Nì Tòir 4",
+        },
+        "raptor": {
+            "name": [
+                "Raptor",
+                "Dìneasair-beag",
+            ]
+        },
+        "raptor_emitter": {
+            "name": "Sgaoiladair Raptor",
+        },
+        "rat": {
+            "name": [
+                "Radan",
+                "Radan-tìre",
+            ]
+        },
+        "red_light": {
+            "name": "Solas Dearg",
+        },
+        "ricochet": {
+            "name": "Leabaidh-loisgte",
+        },
+        "rocket": {
+            "name": "Rocaid",
+        },
+        "rocket_launcher": {
+            "name": "Lannsair Rocaid",
+        },
+        "rocket_launcher_ammo": {
+            "name": "Rocaidean",
+        },
+        "rolling_ball_1": {
+            "name": [
+                "Ulbhag 1",
+                "Ball-rollaidh 1",
+            ]
+        },
+        "rolling_ball_2": {
+            "name": [
+                "Ulbhag 2",
+                "Ball-rollaidh 2",
+            ]
+        },
+        "rolling_ball_3": {
+            "name": [
+                "Ulbhag 3",
+                "Ball-rollaidh 3",
+            ]
+        },
+        "rolling_ball_4": {
+            "name": [
+                "Ulbhag 4",
+                "Ball-rollaidh 4",
+            ]
+        },
+        "save_crystal": {
+            "name": "Criostal Geama Sàbhalaidh",
+        },
+        "scion": {
+            "name": "Scion",
+        },
+        "scion_holder": {
+            "name": "Greimiche Scion",
+        },
+        "secret_1": {
+            "name": "Dìomhair 1",
+        },
+        "secret_2": {
+            "name": "Dìomhair 2",
+        },
+        "secret_3": {
+            "name": "Dìomhair 3",
+        },
+        "shadow": {
+            "name": "Faileas",
+        },
+        "shark": {
+            "name": "Cearban",
+        },
+        "shiva": {
+            "name": "Sìabha",
+        },
+        "shotgun": {
+            "name": "Gunna-sgaoil",
+        },
+        "shotgun_ammo": {
+            "name": "Sligean Gunna-sgaoil",
+        },
+        "shotgun_shell": {
+            "name": "Sgèith Gunna-sgaoil",
+        },
+        "skate_kid": {
+            "name": "Balach Speile-bhòrd",
+        },
+        "skateboard": {
+            "name": "Speile-bhòrd",
+        },
+        "skidoo_armed": {
+            "name": "Cairt-shneachda Dhubh",
+        },
+        "skidoo_driver": {
+            "name": "Draibhear Cairt-shneachda Dhubh",
+        },
+        "skidoo_fast": {
+            "name": "Cairt-shneachda Dhearg",
+        },
+        "skidoo_track": {
+            "name": "Crios Cairt-shneachda",
+        },
+        "skybox": {
+            "name": "Bogsa-na-Speuran",
+        },
+        "sliding_pillar": {
+            "name": "Colbh Sleamhnachaidh",
+        },
+        "smashable_1": {
+            "name": "Uinneag Bhristeach 1",
+        },
+        "smashable_2": {
+            "name": "Uinneag Bhristeach 2",
+        },
+        "smashable_3": {
+            "name": "Uinneag Bhristeach 3",
+        },
+        "smashable_4": {
+            "name": "Uinneag Bhristeach 4",
+        },
+        "smoke_emitter_black": {
+            "name": "Sgaoileadair Smùid (Dubh)",
+        },
+        "smoke_emitter_white": {
+            "name": "Sgaoileadair Smùid (Geal)",
+        },
+        "snake": {
+            "name": "Nathair",
+        },
+        "snow_sprite": {
+            "name": "Rotal Cairt-shneachda",
+        },
+        "sound": {
+            "name": "Fuaim",
+        },
+        "sphere_of_doom_1": {
+            "name": "Spreadhadh Dràgon 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "Spreadhadh Dràgon 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "Spreadhadh Dràgon 3",
+        },
+        "spider": {
+            "name": "Damhan-allaidh",
+        },
+        "spike_wall": {
+            "name": "Balla-gheugan",
+        },
+        "spikes": {
+            "name": "Geugan",
+        },
+        "spinning_blade": {
+            "name": "Iarann Rothachadh",
+        },
+        "splash_1": {
+            "name": "Riplean Uisge 1",
+        },
+        "splash_2": {
+            "name": "Riplean Uisge 2",
+        },
+        "springboard": {
+            "name": "Bòrd-flosgaidh",
+        },
+        "steam_emitter": {
+            "name": "Sgaoileadair Steimhe",
+        },
+        "sthpac_mercenary": {
+            "name": "Saighdear a' Chuain Shèimh a Deas",
+        },
+        "stopwatch": {
+            "name": "Staitistig",
+        },
+        "strobe_light": {
+            "name": "Solas Sròb",
+        },
+        "swinging_axe": {
+            "name": "Tuagh",
+        },
+        "switch_type_airlock": {
+            "name": "Suids Stopadh-adhair",
+        },
+        "switch_type_button": {
+            "name": [
+                "Putan",
+                "Suids",
+            ]
+        },
+        "switch_type_normal": {
+            "name": [
+                "Luaidhe",
+                "Suids",
+            ]
+        },
+        "switch_type_small": {
+            "name": "Suids Beag",
+        },
+        "switch_type_uw": {
+            "name": [
+                "Luaidhe fon-Uisge",
+                "Suids fon-Uisge",
+            ]
+        },
+        "switch_type_wheel": {
+            "name": "Suids Cuidhle",
+        },
+        "teeth_trap": {
+            "name": [
+                "Ribe Fiaclan",
+                "Doras 'Clang-Clang'",
+            ]
+        },
+        "text_box": {
+            "name": "Frèam Eadar-aghaidh",
+        },
+        "thors_handle": {
+            "name": "Làimhseachadh Òrd Thor",
+        },
+        "thors_head": {
+            "name": "Òrd Thor",
+        },
+        "tiger": {
+            "name": "Tìgear",
+        },
+        "tony": {
+            "name": "Tònaidh",
+        },
+        "torso": {
+            "name": [
+                "Torsachan",
+                "Adhamh",
+                "Mùthaidh Mòr",
+            ]
+        },
+        "train": {
+            "name": "Trèan",
+        },
+        "trapdoor_1": {
+            "name": "Làr-lùbte 1",
+        },
+        "trapdoor_2": {
+            "name": "Làr-lùbte 2",
+        },
+        "trapdoor_3": {
+            "name": "Làr-lùbte 3",
+        },
+        "trex": {
+            "name": [
+                "T-Rex",
+                "Dìneasair-mòr",
+            ]
+        },
+        "trex_alpha": {
+            "name": "T-Rex Priomh",
+        },
+        "tribe_axeman": {
+            "name": "Fear-treubh le Tuagh",
+        },
+        "tribe_boss": {
+            "name": "Ceannard an Treubh",
+        },
+        "tribe_pipeman": {
+            "name": "Fear-treubh le Dàrt",
+        },
+        "tropical_fish": {
+            "name": "Iasg Tropaigeach",
+        },
+        "twinkle": {
+            "name": "Priobag",
+        },
+        "upv": {
+            "name": "Carbad fon uisge",
+        },
+        "uzis": {
+            "name": "Uzis",
+        },
+        "uzis_ammo": {
+            "name": "Lòin Uzi",
+        },
+        "vole": {
+            "name": [
+                "Luch-uisge",
+                "Radan-uisge",
+            ]
+        },
+        "vulture": {
+            "name": "Fitheach",
+        },
+        "water_sprite": {
+            "name": "Rotal Bàta",
+        },
+        "waterfall": {
+            "name": "Ceò Eas",
+        },
+        "white_light": {
+            "name": "Solas Geal",
+        },
+        "winston": {
+            "name": "Winston",
+        },
+        "winston_army": {
+            "name": "Winston (armachd)",
+        },
+        "wolf": {
+            "name": "Madadh-allaidh",
+        },
+        "worker_1": {
+            "name": "Ruspal-gunna 1",
+        },
+        "worker_2": {
+            "name": "Ruspal-gunna 2",
+        },
+        "worker_3": {
+            "name": "Ruspal-bata 1",
+        },
+        "worker_4": {
+            "name": "Ruspal-bata 2",
+        },
+        "worker_5": {
+            "name": "Ruspal Teine-tilgidh",
+        },
+        "xian_knight": {
+            "name": "Ridir Xian",
+        },
+        "xian_knight_statue": {
+            "name": "Ìomhaigh Ridir Xian",
+        },
+        "xian_spearman": {
+            "name": "Sleaghadair Xian",
+        },
+        "xian_spearman_statue": {
+            "name": "Ìomhaigh Sleaghadair Xian",
+        },
+        "yeti": {
+            "name": "Iètaidh",
+        },
+        "zipline_handle": {
+            "name": "Greim Càball-slaodaidh",
         }
     }
 }

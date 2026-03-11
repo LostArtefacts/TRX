@@ -318,7 +318,7 @@ static const char *M_FormatBool(const bool value)
 
 static const char *M_FormatBoolHuman(const bool value)
 {
-    return value ? GS(MISC_ON) : GS(MISC_OFF);
+    return value ? GS("general/misc/on") : GS("general/misc/off");
 }
 
 static const char *M_FormatInt32(const int32_t value)

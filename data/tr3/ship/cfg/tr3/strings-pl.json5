@@ -1,6 +1,68 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "globe_select": {
+            "area_1": "Indie",
+            "area_2": "Wyspy Południowego Pacyfiku",
+            "area_3": "Pustynia Nevada",
+            "area_4": " ",
+            "area_5": "Londyn",
+            "area_6": "\\{Antarktyda",
+        },
+        "inventory_ring": {
+            "heading_fmt": "\\{color 5}%s",
+            "item_count_fmt": "\\{color 3}%s",
+            "object_name_fmt": "\\{color 5}%s",
+        },
+        "overlay": {
+            "item_count_fmt_pc": "%s",
+            "item_count_fmt_ps1": "\\{color 3}%s",
+        },
+        "pause": {
+            "paused": "\\{color 5}Pauza",
+        },
+        "stats": {
+            "assault_other_times_fmt": "\\{color 2}%s",
+            "gym_assault_course": "\\{color 5}Tor Przeszkód",
+            "gym_racetrack_course": "\\{color 5}Tor Wyścigowy",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Scena Przerywnikowa 1",
+        },
+        {
+            "title": "Scena Przerywnikowa 2",
+        },
+        {
+            "title": "Scena Przerywnikowa 3",
+        },
+        {
+            "title": "Scena Przerywnikowa 4",
+        },
+        {
+            "title": "Scena Przerywnikowa 5",
+        },
+        {
+            "title": "Scena Przerywnikowa 6",
+        },
+        {
+            "title": "Scena Przerywnikowa 7",
+        },
+        {
+            "title": "Scena Przerywnikowa 8",
+        },
+        {
+            "title": "Scena Przerywnikowa 9",
+        },
+        {
+            "title": "Scena Przerywnikowa 10",
+        },
+        {
+            "title": "Scena Przerywnikowa 11",
+        }
+    ],
     "levels": [
         {
             "title": "Dom Lary",
@@ -240,57 +302,5 @@
                 }
             }
         }
-    ],
-    "cutscenes": [
-        {
-            "title": "Scena Przerywnikowa 1",
-        },
-        {
-            "title": "Scena Przerywnikowa 2",
-        },
-        {
-            "title": "Scena Przerywnikowa 3",
-        },
-        {
-            "title": "Scena Przerywnikowa 4",
-        },
-        {
-            "title": "Scena Przerywnikowa 5",
-        },
-        {
-            "title": "Scena Przerywnikowa 6",
-        },
-        {
-            "title": "Scena Przerywnikowa 7",
-        },
-        {
-            "title": "Scena Przerywnikowa 8",
-        },
-        {
-            "title": "Scena Przerywnikowa 9",
-        },
-        {
-            "title": "Scena Przerywnikowa 10",
-        },
-        {
-            "title": "Scena Przerywnikowa 11",
-        }
-    ],
-    "game_strings": {
-        "GLOBE_SELECT_AREA_1": "Indie",
-        "GLOBE_SELECT_AREA_2": "Wyspy Południowego Pacyfiku",
-        "GLOBE_SELECT_AREA_3": "Pustynia Nevada",
-        "GLOBE_SELECT_AREA_4": " ",
-        "GLOBE_SELECT_AREA_5": "Londyn",
-        "GLOBE_SELECT_AREA_6": "\\{Antarktyda",
-        "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
-        "OVERLAY_ITEM_COUNT_FMT_PC": "%s",
-        "OVERLAY_ITEM_COUNT_FMT_PS1": "\\{color 3}%s",
-        "PAUSE_PAUSED": "\\{color 5}Pauza",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{color 2}%s",
-        "STATS_GYM_ASSAULT_COURSE": "\\{color 5}Tor Przeszkód",
-        "STATS_GYM_RACETRACK_COURSE": "\\{color 5}Tor Wyścigowy",
-    }
+    ]
 }

@@ -1,6 +1,92 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "globe_select": {
+            "area_1": "\\{review}Indien",
+            "area_2": "\\{review}Südseeinseln",
+            "area_3": "\\{review}Nevada-Wüste",
+            "area_4": "\\{review}",
+            "area_5": "\\{review}London",
+            "area_6": "\\{review}Antarktis",
+        },
+        "inventory_ring": {
+            "heading_fmt": "\\{color 5}%s",
+            "item_count_fmt": "\\{color 3}%s",
+            "object_name_fmt": "\\{color 5}%s",
+        },
+        "overlay": {
+            "item_count_fmt_pc": "%s",
+            "item_count_fmt_ps1": "\\{color 3}%s",
+        },
+        "pause": {
+            "paused": "\\{color 5}Pause",
+        },
+        "stats": {
+            "assault_other_times_fmt": "\\{review}\\{color 2}%s",
+            "gym_assault_course": "\\{review}\\{color 5}Angriffskurs",
+            "gym_racetrack_course": "\\{review}\\{color 5}Rennstrecke",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Großes Medi-Pack",
+        },
+        "quest_1": {
+            "description": "",
+            "name": "\\{review}Infada-Stein",
+        },
+        "quest_2": {
+            "description": "",
+            "name": "\\{review}Element 115",
+        },
+        "quest_3": {
+            "description": "",
+            "name": "\\{review}Auge des Isis",
+        },
+        "quest_4": {
+            "description": "",
+            "name": "\\{review}Ora-Dolch",
+        },
+        "small_medipack": {
+            "name": "Kleines Medi-Pack",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Zwischensequenz 1",
+        },
+        {
+            "title": "Zwischensequenz 2",
+        },
+        {
+            "title": "Zwischensequenz 3",
+        },
+        {
+            "title": "Zwischensequenz 4",
+        },
+        {
+            "title": "Zwischensequenz 5",
+        },
+        {
+            "title": "Zwischensequenz 6",
+        },
+        {
+            "title": "Zwischensequenz 7",
+        },
+        {
+            "title": "Zwischensequenz 8",
+        },
+        {
+            "title": "Zwischensequenz 9",
+        },
+        {
+            "title": "Zwischensequenz 10",
+        },
+        {
+            "title": "Zwischensequenz 11",
+        }
+    ],
     "levels": [
         {
             "title": "Laras Anwesen",
@@ -224,81 +310,5 @@
                 }
             }
         }
-    ],
-    "cutscenes": [
-        {
-            "title": "Zwischensequenz 1",
-        },
-        {
-            "title": "Zwischensequenz 2",
-        },
-        {
-            "title": "Zwischensequenz 3",
-        },
-        {
-            "title": "Zwischensequenz 4",
-        },
-        {
-            "title": "Zwischensequenz 5",
-        },
-        {
-            "title": "Zwischensequenz 6",
-        },
-        {
-            "title": "Zwischensequenz 7",
-        },
-        {
-            "title": "Zwischensequenz 8",
-        },
-        {
-            "title": "Zwischensequenz 9",
-        },
-        {
-            "title": "Zwischensequenz 10",
-        },
-        {
-            "title": "Zwischensequenz 11",
-        }
-    ],
-    "objects": {
-        "quest_1": {
-            "name": "\\{review}Infada-Stein",
-            "description": "",
-        },
-        "quest_2": {
-            "name": "\\{review}Element 115",
-            "description": "",
-        },
-        "quest_3": {
-            "name": "\\{review}Auge des Isis",
-            "description": "",
-        },
-        "quest_4": {
-            "name": "\\{review}Ora-Dolch",
-            "description": "",
-        },
-        "small_medipack": {
-            "name": "Kleines Medi-Pack",
-        },
-        "large_medipack": {
-            "name": "Großes Medi-Pack",
-        }
-    },
-    "game_strings": {
-        "GLOBE_SELECT_AREA_1": "\\{review}Indien",
-        "GLOBE_SELECT_AREA_2": "\\{review}Südseeinseln",
-        "GLOBE_SELECT_AREA_3": "\\{review}Nevada-Wüste",
-        "GLOBE_SELECT_AREA_4": "\\{review}",
-        "GLOBE_SELECT_AREA_5": "\\{review}London",
-        "GLOBE_SELECT_AREA_6": "\\{review}Antarktis",
-        "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
-        "OVERLAY_ITEM_COUNT_FMT_PC": "%s",
-        "OVERLAY_ITEM_COUNT_FMT_PS1": "\\{color 3}%s",
-        "PAUSE_PAUSED": "\\{color 5}Pause",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}\\{color 2}%s",
-        "STATS_GYM_ASSAULT_COURSE": "\\{review}\\{color 5}Angriffskurs",
-        "STATS_GYM_RACETRACK_COURSE": "\\{review}\\{color 5}Rennstrecke",
-    }
+    ]
 }

@@ -1,6 +1,36 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Przywraca brakującą animację glonów w podwodnych poziomach.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Duża apteczka",
+        },
+        "small_medipack": {
+            "name": "Mała apteczka",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Przerywnik 1",
+        },
+        {
+            "title": "Przerywnik 2",
+        },
+        {
+            "title": "Przerywnik 3",
+        },
+        {
+            "title": "Przerywnik 4",
+        }
+    ],
     "levels": [
         {
             "title": "Dom Lary",
@@ -305,35 +335,5 @@
                 }
             }
         }
-    ],
-    "cutscenes": [
-        {
-            "title": "Przerywnik 1",
-        },
-        {
-            "title": "Przerywnik 2",
-        },
-        {
-            "title": "Przerywnik 3",
-        },
-        {
-            "title": "Przerywnik 4",
-        }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Mała apteczka",
-        },
-        "large_medipack": {
-            "name": "Duża apteczka",
-        }
-    },
-    "settings": {
-        "gameplay.fix_bear_ai": {
-            "description": "Naprawia atak niedźwiedzia w dodatku Złota Maska, aby nie chybiał Lary.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "Przywraca brakującą animację glonów w podwodnych poziomach.",
-        }
-    }
+    ]
 }

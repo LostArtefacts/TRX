@@ -14,9 +14,9 @@ typedef struct {
 } M_OPTION;
 
 static const M_OPTION m_Options[] = {
-    { .gs_id = GS_ID(CONTROLS_BACKEND_KEYBOARD),
+    { .gs_id = GS_ID("general/settings/controls/backend/keyboard"),
       .backend = INPUT_BACKEND_KEYBOARD },
-    { .gs_id = GS_ID(CONTROLS_BACKEND_CONTROLLER),
+    { .gs_id = GS_ID("general/settings/controls/backend/controller"),
       .backend = INPUT_BACKEND_CONTROLLER },
     { .gs_id = nullptr },
 };
@@ -54,7 +54,7 @@ int32_t UI_ControlsBackend_Control(UI_CONTROLS_BACKEND_STATE *const s)
 void UI_ControlsBackend(UI_CONTROLS_BACKEND_STATE *const s)
 {
     UI_BeginModal(0.5f, 2.0f / 3.0f);
-    UI_BeginRequester(&s->req, GS(CONTROLS_CUSTOMIZE));
+    UI_BeginRequester(&s->req, GS("general/settings/controls/customize"));
 
     for (int32_t i = UI_Requester_GetFirstRow(&s->req);
          i < UI_Requester_GetLastRow(&s->req); i++) {

@@ -48,10 +48,10 @@ static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 static void M_DrawExamineHint(void *const user_data)
 {
     UI_BeginStack(UI_STACK_HORIZONTAL);
-    UI_ButtonLabel(INPUT_ROLE_LOOK, GS(ACTION_EXAMINE_ITEM));
+    UI_ButtonLabel(INPUT_ROLE_LOOK, GS("general/actions/examine_item"));
     if (m_ShowUseItemButton) {
         UI_Spacer(60.0f, 0.0f);
-        UI_ButtonLabel(INPUT_ROLE_ACTION, GS(ACTION_USE_ITEM));
+        UI_ButtonLabel(INPUT_ROLE_ACTION, GS("general/actions/use_item"));
     }
     UI_EndStack();
 }
@@ -585,14 +585,14 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_OBJECT_NAME,
         .object_id = inv_item->object_id,
-        .fmt_gs_key = GS_ID(INVENTORY_RING_OBJECT_NAME_FMT),
+        .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
     });
 }
 
 void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
 {
     const char *const full_fmt =
-        String_FormatStatic(GS(INVENTORY_RING_ITEM_COUNT_FMT), fmt);
+        String_FormatStatic(GS("general/inventory_ring/item_count_fmt"), fmt);
     String_FormatInto(&m_CountText, &m_CountTextCap, full_fmt, qty);
 }
 
@@ -675,30 +675,30 @@ void InvRing_ShowHeader(INV_RING *const ring)
     case RT_MAIN:
         Overlay_SetTopText((OVERLAY_TEXT) {
             .kind = UI_OVERLAY_TEXT_GS_KEY,
-            .gs_key = GS_ID(INVENTORY_RING_HEADING_INVENTORY),
-            .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+            .gs_key = GS_ID("general/inventory_ring/heading_inventory"),
+            .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
         });
         break;
     case RT_OPTION:
         if (ring->mode == INV_DEATH_MODE) {
             Overlay_SetTopText((OVERLAY_TEXT) {
                 .kind = UI_OVERLAY_TEXT_GS_KEY,
-                .gs_key = GS_ID(INVENTORY_RING_HEADING_GAME_OVER),
-                .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+                .gs_key = GS_ID("general/inventory_ring/heading_game_over"),
+                .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
             });
         } else {
             Overlay_SetTopText((OVERLAY_TEXT) {
                 .kind = UI_OVERLAY_TEXT_GS_KEY,
-                .gs_key = GS_ID(INVENTORY_RING_HEADING_OPTION),
-                .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+                .gs_key = GS_ID("general/inventory_ring/heading_option"),
+                .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
             });
         }
         break;
     case RT_KEYS:
         Overlay_SetTopText((OVERLAY_TEXT) {
             .kind = UI_OVERLAY_TEXT_GS_KEY,
-            .gs_key = GS_ID(INVENTORY_RING_HEADING_ITEMS),
-            .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
+            .gs_key = GS_ID("general/inventory_ring/heading_items"),
+            .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
         });
         break;
     case RT_GLOBE_SELECT:

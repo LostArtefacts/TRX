@@ -18,7 +18,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     if (demo_to_load < 0 || demo_to_load >= level_table->count) {
-        Console_LogError(GS(OSD_INVALID_DEMO));
+        Console_LogError(GS("general/osd/invalid_demo"));
         return CR_FAILURE;
     }
     const GF_LEVEL *const level = &level_table->levels[demo_to_load];
@@ -26,8 +26,9 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         .action = GF_START_DEMO,
         .param = demo_to_load,
     });
-    Console_Log(GS(OSD_PLAY_DEMO), level->num + 1);
+    Console_Log(GS("general/osd/play_demo"), level->num + 1);
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("demo", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_DEMO))
+REGISTER_CONSOLE_COMMAND(
+    "demo", M_Entrypoint, GS_ID("console/cmd/play_demo/help"))

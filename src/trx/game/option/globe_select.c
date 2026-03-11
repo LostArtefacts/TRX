@@ -15,12 +15,12 @@ typedef struct {
 } M_AREA_STRING_ENTRY;
 
 static const M_AREA_STRING_ENTRY m_AreaStrings[] = {
-    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_1) },
-    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_2) },
-    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_3) },
-    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_4) }, // Unused Peru
-    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_5) },
-    { .gs_area_id = GS_ID(GLOBE_SELECT_AREA_6) },
+    { .gs_area_id = GS_ID("general/globe_select/area_1") },
+    { .gs_area_id = GS_ID("general/globe_select/area_2") },
+    { .gs_area_id = GS_ID("general/globe_select/area_3") },
+    { .gs_area_id = GS_ID("general/globe_select/area_4") }, // Unused Peru
+    { .gs_area_id = GS_ID("general/globe_select/area_5") },
+    { .gs_area_id = GS_ID("general/globe_select/area_6") },
 };
 
 static int32_t M_GetEntryCount(void)
@@ -196,8 +196,8 @@ void Option_GlobeSelect_Control(
 
     Overlay_SetTopText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_GS_KEY,
-        .fmt_gs_key = GS_ID(INVENTORY_RING_HEADING_FMT),
-        .literal = GS_ID(INVENTORY_RING_HEADING_ADVENTURE),
+        .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
+        .literal = GS_ID("general/inventory_ring/heading_adventure"),
     });
 
     if (ring->globe_select.selection < 0) {
@@ -222,7 +222,7 @@ void Option_GlobeSelect_Control(
         && ring->globe_select.selection < (int32_t)ARRAY_SIZE(m_AreaStrings)) {
         Overlay_SetBottomText((OVERLAY_TEXT) {
             .kind = UI_OVERLAY_TEXT_GS_KEY,
-            .fmt_gs_key = GS_ID(INVENTORY_RING_OBJECT_NAME_FMT),
+            .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
             .literal = m_AreaStrings[ring->globe_select.selection].gs_area_id,
         });
     } else {

@@ -1,6 +1,36 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara, im Addon 'Die Goldene Maske', nicht mehr verfehlen.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "\\{review}Fixt originale Fehler in 40 Faden, Das Wrack der Maria Doria und An Deck, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Großes Medi-Pack",
+        },
+        "small_medipack": {
+            "name": "Kleines Medi-Pack",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Cutscene 1",
+        },
+        {
+            "title": "Cutscene 2",
+        },
+        {
+            "title": "Cutscene 3",
+        },
+        {
+            "title": "Cutscene 4",
+        }
+    ],
     "levels": [
         {
             "title": "Laras Haus",
@@ -305,35 +335,5 @@
                 }
             }
         }
-    ],
-    "cutscenes": [
-        {
-            "title": "Cutscene 1",
-        },
-        {
-            "title": "Cutscene 2",
-        },
-        {
-            "title": "Cutscene 3",
-        },
-        {
-            "title": "Cutscene 4",
-        }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Kleines Medi-Pack",
-        },
-        "large_medipack": {
-            "name": "Großes Medi-Pack",
-        }
-    },
-    "settings": {
-        "gameplay.fix_bear_ai": {
-            "description": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara, im Addon 'Die Goldene Maske', nicht mehr verfehlen.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "\\{review}Fixt originale Fehler in 40 Faden, Das Wrack der Maria Doria und An Deck, bei denen Pflanzen-Sprites in Wassergebieten nicht animiert sind.",
-        }
-    }
+    ]
 }

@@ -21,9 +21,9 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (lara_item->hit_points == LARA_MAX_HITPOINTS) {
-        Console_LogWarning(GS(OSD_HEAL_ALREADY_FULL_HP));
+        Console_LogWarning(GS("general/osd/heal_already_full_hp"));
     } else {
-        Console_Log(GS(OSD_HEAL_SUCCESS));
+        Console_Log(GS("general/osd/heal_success"));
     }
 
     lara_item->hit_points = LARA_MAX_HITPOINTS;
@@ -32,4 +32,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("heal", M_Entrypoint, GS_ID(CONSOLE_HELP_HEAL))
+REGISTER_CONSOLE_COMMAND("heal", M_Entrypoint, GS_ID("console/cmd/heal/help"))

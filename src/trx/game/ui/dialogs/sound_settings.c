@@ -20,13 +20,13 @@ UI_SETTINGS_DIALOG_STATE *UI_SoundSettings_Init(void)
 {
     const UI_SETTINGS_TAB tabs[] = {
         UI_SettingsTab_MakeEditor(
-            GS_ID(SOUND_SETTINGS_VOLUME_TAB), m_SoundVolumeOptions),
+            GS_ID("general/settings/sound/tabs/volume"), m_SoundVolumeOptions),
         UI_SettingsTab_MakeEditor(
-            GS_ID(SOUND_SETTINGS_MISC_TAB), m_SoundMiscOptions),
+            GS_ID("general/settings/sound/tabs/misc"), m_SoundMiscOptions),
     };
 
     return UI_SettingsDialog_Init(
-        GS_ID(SOUND_SETTINGS_TITLE), ARRAY_SIZE(tabs), tabs);
+        GS_ID("general/settings/sound/title"), ARRAY_SIZE(tabs), tabs);
 }
 
 void UI_SoundSettings_Free(UI_SETTINGS_DIALOG_STATE *const s)

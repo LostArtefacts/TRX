@@ -1,6 +1,36 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "settings": {
+        "gameplay.fix_bear_ai": {
+            "description": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Fixes original issues in 40 Fathoms, Wreck of the Maria Doria and The Deck where plant sprites in water areas do not animate.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Large Medipack",
+        },
+        "small_medipack": {
+            "name": "Small Medipack",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Cutscene 1",
+        },
+        {
+            "title": "Cutscene 2",
+        },
+        {
+            "title": "Cutscene 3",
+        },
+        {
+            "title": "Cutscene 4",
+        }
+    ],
     "levels": [
         {
             "title": "Lara's Home",
@@ -305,35 +335,5 @@
                 }
             }
         }
-    ],
-    "cutscenes": [
-        {
-            "title": "Cutscene 1",
-        },
-        {
-            "title": "Cutscene 2",
-        },
-        {
-            "title": "Cutscene 3",
-        },
-        {
-            "title": "Cutscene 4",
-        }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Small Medipack",
-        },
-        "large_medipack": {
-            "name": "Large Medipack",
-        }
-    },
-    "settings": {
-        "gameplay.fix_bear_ai": {
-            "description": "Fixes the bear pat attack in The Golden Mask so it does not miss Lara.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "Fixes original issues in 40 Fathoms, Wreck of the Maria Doria and The Deck where plant sprites in water areas do not animate.",
-        }
-    }
+    ]
 }

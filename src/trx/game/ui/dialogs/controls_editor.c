@@ -37,7 +37,7 @@ typedef enum {
 
 static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     {
-        .header_gs = GS_ID(CONTROLS_SECTION_BASICS),
+        .header_gs = GS_ID("general/settings/controls/tabs/basics"),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
                 { .role = INPUT_ROLE_UP },
@@ -59,7 +59,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 
     {
-        .header_gs = GS_ID(CONTROLS_SECTION_ITEMS),
+        .header_gs = GS_ID("general/settings/controls/tabs/items"),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
                 { .role = INPUT_ROLE_USE_FLARE },
@@ -81,7 +81,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 
     {
-        .header_gs = GS_ID(CONTROLS_SECTION_MISC),
+        .header_gs = GS_ID("general/settings/controls/tabs/misc"),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
                 { .role = INPUT_ROLE_CHANGE_TARGET },
@@ -101,7 +101,7 @@ static const UI_CONTROLS_EDITOR_GROUP m_Groups[] = {
     },
 
     {
-        .header_gs = GS_ID(CONTROLS_SECTION_SYSTEM),
+        .header_gs = GS_ID("general/settings/controls/tabs/system"),
         .rows =
             (UI_CONTROLS_EDITOR_ROW[]) {
                 { .role = INPUT_ROLE_INVENTORY },
@@ -497,11 +497,11 @@ void UI_ControlsEditor_Init(
     UI_Flash_Init(&s->flash, LOGIC_FPS * 2 / 3);
 
     s->reset_bindings_button = UI_ProgressButton_Init(
-        s->backend, INPUT_ROLE_RESET_BINDINGS, GS_ID(ACTION_RESET_DEFAULTS),
-        M_ResetLayout, s);
+        s->backend, INPUT_ROLE_RESET_BINDINGS,
+        GS_ID("general/actions/reset_defaults"), M_ResetLayout, s);
     s->unbind_key_button = UI_ProgressButton_Init(
-        s->backend, INPUT_ROLE_UNBIND_KEY, GS_ID(ACTION_UNBIND), M_UnbindKey,
-        s);
+        s->backend, INPUT_ROLE_UNBIND_KEY, GS_ID("general/actions/unbind"),
+        M_UnbindKey, s);
 
     {
         UI_TAB_SWITCH_TAB layout_tabs[INPUT_LAYOUT_NUMBER_OF];
@@ -608,7 +608,7 @@ void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
     });
 
     UI_BeginWindow((UI_WINDOW_SETTINGS) {
-        .title = GS(CONTROLS_CUSTOMIZE),
+        .title = GS("general/settings/controls/customize"),
         .scrollable = nullptr,
         .title_spacing = -1.0f,
         .header_func = M_Header,

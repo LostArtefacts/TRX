@@ -217,13 +217,13 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     if (target_result != M_TARGET_OK) {
         switch (target_result) {
         case M_TARGET_INVALID_ITEM:
-            Console_LogError(GS(CMD_TRIGGER_INVALID_ITEM), ctx->args);
+            Console_LogError(GS("console/cmd/trigger/invalid_item"), ctx->args);
             break;
         case M_TARGET_NO_MATCH:
-            Console_LogError(GS(CMD_TRIGGER_NO_MATCH), ctx->args);
+            Console_LogError(GS("console/cmd/trigger/no_match"), ctx->args);
             break;
         case M_TARGET_NOT_FOUND:
-            Console_LogError(GS(CMD_TRIGGER_NOT_FOUND), ctx->args);
+            Console_LogError(GS("console/cmd/trigger/not_found"), ctx->args);
             break;
         case M_TARGET_OK:
             break;
@@ -241,12 +241,16 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     char *collapsed =
         M_BuildCollapsedItemNums(item_nums, target_item_nums->count);
     Console_Log(
-        enable ? GS(CMD_TRIGGER_DONE) : GS(CMD_UNTRIGGER_DONE), collapsed);
+        enable ? GS("console/cmd/trigger/triggered")
+               : GS("console/cmd/trigger/untriggered"),
+        collapsed);
     Memory_FreePointer(&collapsed);
     Vector_Free(target_item_nums);
 
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("trigger", M_Entrypoint, GS_ID(CONSOLE_HELP_TRIGGER))
-REGISTER_CONSOLE_COMMAND("untrigger", M_Entrypoint, GS_ID(CONSOLE_HELP_TRIGGER))
+REGISTER_CONSOLE_COMMAND(
+    "trigger", M_Entrypoint, GS_ID("console/cmd/trigger/help"))
+REGISTER_CONSOLE_COMMAND(
+    "untrigger", M_Entrypoint, GS_ID("console/cmd/trigger/help"))

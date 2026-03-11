@@ -54,18 +54,20 @@ static const CONFIG_OPTION *M_GetOptionFromKey(const char *const key)
     VECTOR *matches = String_FuzzyMatch(key, source);
     const CONFIG_OPTION *result = nullptr;
     if (matches->count == 0) {
-        Console_LogError(GS(OSD_CONFIG_OPTION_UNKNOWN_OPTION), key);
+        Console_LogError(GS("general/osd/config_option_unknown_option"), key);
     } else if (matches->count == 1) {
         const STRING_FUZZY_MATCH *const match = Vector_Get(matches, 0);
         result = match->value;
     } else if (matches->count == 2) {
         const STRING_FUZZY_MATCH *const match1 = Vector_Get(matches, 0);
         const STRING_FUZZY_MATCH *const match2 = Vector_Get(matches, 1);
-        Console_LogError(GS(OSD_AMBIGUOUS_INPUT_2), match1->key, match2->key);
+        Console_LogError(
+            GS("general/osd/ambiguous_input_2"), match1->key, match2->key);
     } else if (matches->count >= 3) {
         const STRING_FUZZY_MATCH *const match1 = Vector_Get(matches, 0);
         const STRING_FUZZY_MATCH *const match2 = Vector_Get(matches, 1);
-        Console_LogError(GS(OSD_AMBIGUOUS_INPUT_3), match1->key, match2->key);
+        Console_LogError(
+            GS("general/osd/ambiguous_input_3"), match1->key, match2->key);
     }
 
     for (int32_t i = 0; i < source->count; i++) {
@@ -247,20 +249,20 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
 
     switch (option->type) {
     case COT_BOOL:
-        return Memory_DupStr(GS(OSD_COMMAND_BOOL));
+        return Memory_DupStr(GS("general/osd/command_bool"));
 
     case COT_INVERTED_BOOL:
-        return Memory_DupStr(GS(OSD_COMMAND_BOOL));
+        return Memory_DupStr(GS("general/osd/command_bool"));
 
     case COT_INT32:
-        return Memory_DupStr(GS(OSD_COMMAND_INTEGER));
+        return Memory_DupStr(GS("general/osd/command_integer"));
 
     case COT_DOUBLE:
     case COT_FLOAT:
-        return Memory_DupStr(GS(OSD_COMMAND_DECIMAL));
+        return Memory_DupStr(GS("general/osd/command_decimal"));
 
     case COT_FLOAT_PERCENT:
-        return Memory_DupStr(GS(OSD_COMMAND_PERCENT));
+        return Memory_DupStr(GS("general/osd/command_percent"));
 
     case COT_ENUM: {
         const char *enum_name = (const char *)option->param;
@@ -324,7 +326,8 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
             result = CR_FAILURE;
             goto cleanup;
         }
-        Console_Log(GS(OSD_CONFIG_OPTION_GET), normalized_name, value_str);
+        Console_Log(
+            GS("general/osd/config_option_get"), normalized_name, value_str);
         Memory_FreePointer(&value_str);
         result = CR_SUCCESS;
         goto cleanup;
@@ -334,15 +337,17 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
         Config_Update();
         char *value_str = M_GetValueForConsole(option);
         ASSERT(value_str != nullptr);
-        Console_Log(GS(OSD_CONFIG_OPTION_SET), normalized_name, value_str);
+        Console_Log(
+            GS("general/osd/config_option_set"), normalized_name, value_str);
         Memory_FreePointer(&value_str);
         result = CR_SUCCESS;
     } else {
         // Report bad invocation on the provided new value
-        Console_LogError(GS(OSD_COMMAND_BAD_INVOCATION), new_value);
+        Console_LogError(GS("general/osd/command_bad_invocation"), new_value);
         char *available_options = M_GetAvailableOptions(option);
         if (available_options != nullptr) {
-            Console_Log(GS(OSD_COMMAND_VALID_VALUES), available_options);
+            Console_Log(
+                GS("general/osd/command_valid_values"), available_options);
             Memory_FreePointer(&available_options);
         }
         result = CR_FAILURE;
@@ -358,4 +363,4 @@ VECTOR *Console_Cmd_Config_GetOptionsFromKey(const char *const key)
     return M_GetOptionsFuzzy(key);
 }
 
-REGISTER_CONSOLE_COMMAND("set", M_Entrypoint, GS_ID(CONSOLE_HELP_SET))
+REGISTER_CONSOLE_COMMAND("set", M_Entrypoint, GS_ID("console/cmd/set/help"))

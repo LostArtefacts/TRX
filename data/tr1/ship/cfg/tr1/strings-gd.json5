@@ -1,6 +1,55 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "misc": {
+            "empty_slot_fmt": "- SLOT FALAMH %d -",
+        },
+        "stats": {
+            "ammo": "BUAIDHEAN / LOSGADH",
+            "ammo_hits": "BUILEACHDAN",
+            "ammo_used": "AMHACHD AIR A CHLEACHD",
+            "deaths": "BÀSAN",
+            "distance_travelled": "ASTAR AIR A SHIUBHAL",
+            "kills": "MARBHAIN",
+            "level": "ÌRE",
+            "medipacks_used": "PASGANAN CLEACHDTE",
+            "none": "GIN",
+            "pickups": "TOGAILTEAN",
+            "secrets": "DÌOMHAIREACHDAN",
+            "time_taken": "ÙINE AIR A GHABHAIL",
+        }
+    },
+    "settings": {
+        "visuals.enable_gun_lighting": {
+            "description": "Cuiridh seo solais fiùghantach ri losgadh armachd is spreadhaidhean, coltach ri TR2+.",
+        },
+        "visuals.fix_animated_sprites": {
+            "description": "Càraichidh bugan san t-Siasarn is Uaigh Tihocan far nach gluais planntrais anns an uisge.",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Pasgan Mòr Slàinte",
+        },
+        "small_medipack": {
+            "name": "Pasgan Beag Slàinte",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Sealladh-film 1",
+        },
+        {
+            "title": "Sealladh-film 2",
+        },
+        {
+            "title": "Sealladh-film 3",
+        },
+        {
+            "title": "Sealladh-film 4",
+        }
+    ],
     "levels": [
         {
             "title": "Dachaigh Lara",
@@ -169,20 +218,6 @@
             "title": "Ionad Làithreach",
         }
     ],
-    "cutscenes": [
-        {
-            "title": "Sealladh-film 1",
-        },
-        {
-            "title": "Sealladh-film 2",
-        },
-        {
-            "title": "Sealladh-film 3",
-        },
-        {
-            "title": "Sealladh-film 4",
-        }
-    ],
     "demos": [
         {
             "title": "Baile Vilcabamba",
@@ -203,36 +238,5 @@
                 }
             }
         }
-    ],
-    "objects": {
-        "small_medipack": {
-            "name": "Pasgan Beag Slàinte",
-        },
-        "large_medipack": {
-            "name": "Pasgan Mòr Slàinte",
-        }
-    },
-    "game_strings": {
-        "MISC_EMPTY_SLOT_FMT": "- SLOT FALAMH %d -",
-        "STATS_AMMO": "BUAIDHEAN / LOSGADH",
-        "STATS_AMMO_HITS": "BUILEACHDAN",
-        "STATS_AMMO_USED": "AMHACHD AIR A CHLEACHD",
-        "STATS_DEATHS": "BÀSAN",
-        "STATS_DISTANCE_TRAVELLED": "ASTAR AIR A SHIUBHAL",
-        "STATS_KILLS": "MARBHAIN",
-        "STATS_LEVEL": "ÌRE",
-        "STATS_MEDIPACKS_USED": "PASGANAN CLEACHDTE",
-        "STATS_NONE": "GIN",
-        "STATS_PICKUPS": "TOGAILTEAN",
-        "STATS_SECRETS": "DÌOMHAIREACHDAN",
-        "STATS_TIME_TAKEN": "ÙINE AIR A GHABHAIL",
-    },
-    "settings": {
-        "visuals.enable_gun_lighting": {
-            "description": "Cuiridh seo solais fiùghantach ri losgadh armachd is spreadhaidhean, coltach ri TR2+.",
-        },
-        "visuals.fix_animated_sprites": {
-            "description": "Càraichidh bugan san t-Siasarn is Uaigh Tihocan far nach gluais planntrais anns an uisge.",
-        }
-    }
+    ]
 }

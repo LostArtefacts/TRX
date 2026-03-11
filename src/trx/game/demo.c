@@ -200,7 +200,7 @@ bool Demo_Start(const int32_t level_num)
 
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_GS_KEY,
-        .gs_key = GS_ID(MISC_DEMO_MODE),
+        .gs_key = GS_ID("general/misc/demo_mode"),
         .flash_enabled = true,
     });
     return true;
@@ -227,7 +227,7 @@ void Demo_Unpause(void)
     M_PrepareConfig(p);
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_GS_KEY,
-        .gs_key = GS_ID(MISC_DEMO_MODE),
+        .gs_key = GS_ID("general/misc/demo_mode"),
         .flash_enabled = true,
     });
 }
@@ -254,7 +254,7 @@ void Demo_StopFlashing(void)
 {
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = UI_OVERLAY_TEXT_GS_KEY,
-        .gs_key = GS_ID(MISC_DEMO_MODE),
+        .gs_key = GS_ID("general/misc/demo_mode"),
         .flash_enabled = false,
     });
 }

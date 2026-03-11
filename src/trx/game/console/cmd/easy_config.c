@@ -34,11 +34,14 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     return CR_FAILURE;
 }
 
-REGISTER_CONSOLE_COMMAND("braid", M_Entrypoint, GS_ID(CONSOLE_HELP_BRAID))
-REGISTER_CONSOLE_COMMAND("cheats", M_Entrypoint, GS_ID(CONSOLE_HELP_CHEATS))
-REGISTER_CONSOLE_COMMAND("vsync", M_Entrypoint, GS_ID(CONSOLE_HELP_VSYNC))
+REGISTER_CONSOLE_COMMAND("braid", M_Entrypoint, GS_ID("console/cmd/braid/help"))
 REGISTER_CONSOLE_COMMAND(
-    "wireframe", M_Entrypoint, GS_ID(CONSOLE_HELP_WIREFRAME))
-REGISTER_CONSOLE_COMMAND("fps", M_Entrypoint, GS_ID(CONSOLE_HELP_FPS))
-REGISTER_CONSOLE_COMMAND("lighting", M_Entrypoint, GS_ID(CONSOLE_HELP_LIGHTING))
-REGISTER_CONSOLE_COMMAND("textures", M_Entrypoint, GS_ID(CONSOLE_HELP_TEXTURES))
+    "cheats", M_Entrypoint, GS_ID("console/cmd/cheats/help"))
+REGISTER_CONSOLE_COMMAND("vsync", M_Entrypoint, GS_ID("console/cmd/vsync/help"))
+REGISTER_CONSOLE_COMMAND(
+    "wireframe", M_Entrypoint, GS_ID("console/cmd/wireframe/help"))
+REGISTER_CONSOLE_COMMAND("fps", M_Entrypoint, GS_ID("console/cmd/fps/help"))
+REGISTER_CONSOLE_COMMAND(
+    "lighting", M_Entrypoint, GS_ID("console/cmd/lighting/help"))
+REGISTER_CONSOLE_COMMAND(
+    "textures", M_Entrypoint, GS_ID("console/cmd/textures/help"))

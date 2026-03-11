@@ -20,10 +20,7 @@ from shared.vfs import VirtualFilesystem
 REVIEW_MARKER = r"\{review}"
 
 RE_GAME_STRING_USAGE = re.compile(
-    r"GS(?:_ID(?:_RAW)?|_PTR)?\(\s*([A-Za-z0-9_./-]+)\s*\)"
-)
-RE_GAME_STRING_USAGE_RAW = re.compile(
-    r'GS_ID_RAW\(\s*"((?:\\.|[^"\\])*)"\s*\)'
+    r'GS(?:_ID|_PTR)?\(\s*"((?:\\.|[^"\\])*)"\s*\)'
 )
 RE_GAME_STRING_DEFINE = re.compile(
     r'GS_DEFINE\(\s*([A-Za-z0-9_./]+)\s*,\s*"((?:\\.|[^"\\])*)"\)'
@@ -47,8 +44,20 @@ RE_INPUT_ROLE_USAGE = re.compile(
 RE_OBJ_NAME_DEFINE = re.compile(
     r'^X_OBJ_NAME_DEFINE\(\s*\w+\s*,\s*"([^"]+)"\s*,\s*X_OBJ_NAMES\(\s*(.+?)\s*\)\s*\)$'
 )
-ROOT_PREFIXES = ("settings", "enums", "dynamic")
-ROOT_SECTIONS = ("game_strings", "enums", "dynamic", "settings")
+ROOT_SECTIONS = ("general", "console", "enums", "dynamic", "settings")
+TOP_LEVEL_SECTION_ORDER = (
+    "extends",
+    "language_name",
+    "general",
+    "console",
+    "dynamic",
+    "enums",
+    "settings",
+    "objects",
+    "cutscenes",
+    "levels",
+    "demos",
+)
 
 
 def enum_label_key(enum_type: str, enum_value: str) -> str:
@@ -86,10 +95,21 @@ def sort_mapping_rec(value: Any) -> Any:
 
 def format_strings_file(source: Any) -> str:
     source = deepcopy(source)
-    for section in ROOT_SECTIONS:
-        if source.get(section):
-            source[section] = sort_mapping_rec(source[section])
-    content = write_json_to_string(source)
+    ordered_source: dict[str, Any] = {}
+    for section in TOP_LEVEL_SECTION_ORDER:
+        if section in source:
+            value = source[section]
+            ordered_source[section] = (
+                sort_mapping_rec(value) if isinstance(value, dict) else value
+            )
+    for section in sorted(source.keys()):
+        if section in ordered_source:
+            continue
+        value = source[section]
+        ordered_source[section] = (
+            sort_mapping_rec(value) if isinstance(value, dict) else value
+        )
+    content = write_json_to_string(ordered_source)
     content = (
         """{
     // For usage, refer to the documentation here:
@@ -238,11 +258,11 @@ def gs_flatten(game_strings: dict[str, Any], prefix: str = "") -> dict[str, Any]
 
 
 def split_root_key(key: str) -> tuple[str, str]:
-    for prefix in ROOT_PREFIXES:
+    for prefix in ROOT_SECTIONS:
         full_prefix = f"{prefix}/"
         if key.startswith(full_prefix):
             return prefix, key[len(full_prefix) :]
-    return "game_strings", key
+    raise ValueError(f"game string key must have a known root prefix: {key}")
 
 
 def get_root_dict(
@@ -285,10 +305,7 @@ def root_flatten(file_data: dict[str, Any]) -> dict[str, Any]:
         section_data = get_root_dict(file_data, section)
         if section_data is None:
             continue
-        if section == "game_strings":
-            result.update(gs_flatten(section_data))
-        else:
-            result.update(gs_flatten(section_data, section))
+        result.update(gs_flatten(section_data, section))
     return result
 
 
@@ -298,8 +315,6 @@ def get_used_strings(
     source = re.sub("//.*", "", path.read_text(), flags=re.M)
     source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
     for match in re.finditer(RE_GAME_STRING_USAGE, source):
-        yield source.count("\n", 0, match.start()) + 1, match.group(1)
-    for match in re.finditer(RE_GAME_STRING_USAGE_RAW, source):
         yield source.count("\n", 0, match.start()) + 1, (
             match.group(1)
             .replace("\\n", "\n")
@@ -670,14 +685,6 @@ def sync_base_strings(ctx: RunContext) -> None:
         )
     changed = [k for k, v in new_flat.items() if old_flat.get(k) != v]
 
-    # Preserve keys that exist in JSON but are not defined in entries.def,
-    # except prefixed sections (dynamic/runtime keys such as BAR_LOOK_*).
-    for key, value in old_flat.items():
-        section, _ = split_root_key(key)
-        if section != "game_strings":
-            continue
-        if key not in new_flat:
-            new_flat[key] = value
     for section in ROOT_SECTIONS:
         ctx.base.main.data[section] = {}
     for key, value in new_flat.items():

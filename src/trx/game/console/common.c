@@ -113,7 +113,7 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 
     const CONSOLE_COMMAND *const matching_cmd = Console_Registry_Get(cmdline);
     if (matching_cmd == nullptr) {
-        Console_LogError(GS(OSD_UNKNOWN_COMMAND), cmdline);
+        Console_LogError(GS("general/osd/unknown_command"), cmdline);
         return CR_BAD_INVOCATION;
     }
 
@@ -136,11 +136,11 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 
     switch (result) {
     case CR_BAD_INVOCATION:
-        Console_LogError(GS(OSD_COMMAND_BAD_INVOCATION), cmdline);
+        Console_LogError(GS("general/osd/command_bad_invocation"), cmdline);
         break;
 
     case CR_UNAVAILABLE:
-        Console_LogError(GS(OSD_COMMAND_UNAVAILABLE));
+        Console_LogError(GS("general/osd/command_unavailable"));
         break;
 
     case CR_SUCCESS:

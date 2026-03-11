@@ -1,6 +1,92 @@
 {
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "globe_select": {
+            "area_1": "India",
+            "area_2": "Isole del Sud Pacifico",
+            "area_3": "Nevada",
+            "area_4": " ",
+            "area_5": "Londra",
+            "area_6": "Antartide",
+        },
+        "inventory_ring": {
+            "heading_fmt": "\\{color 5}%s",
+            "item_count_fmt": "\\{color 3}%s",
+            "object_name_fmt": "\\{color 5}%s",
+        },
+        "overlay": {
+            "item_count_fmt_pc": "%s",
+            "item_count_fmt_ps1": "\\{color 3}%s",
+        },
+        "pause": {
+            "paused": "\\{color 5}Pausa",
+        },
+        "stats": {
+            "assault_other_times_fmt": "\\{color 2}%s",
+            "gym_assault_course": "\\{color 5}Corso d'Addestramento",
+            "gym_racetrack_course": "\\{color 5}Corso di Guida",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Kit Medico Grande",
+        },
+        "quest_1": {
+            "description": "",
+            "name": "Pietra Infada",
+        },
+        "quest_2": {
+            "description": "",
+            "name": "Elemento 115",
+        },
+        "quest_3": {
+            "description": "",
+            "name": "Occhio di Iside",
+        },
+        "quest_4": {
+            "description": "",
+            "name": "Pugnale Ora",
+        },
+        "small_medipack": {
+            "name": "Kit Medico Piccolo",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Intermezzo 1",
+        },
+        {
+            "title": "Intermezzo 2",
+        },
+        {
+            "title": "Intermezzo 3",
+        },
+        {
+            "title": "Intermezzo 4",
+        },
+        {
+            "title": "Intermezzo 5",
+        },
+        {
+            "title": "Intermezzo 6",
+        },
+        {
+            "title": "Intermezzo 7",
+        },
+        {
+            "title": "Intermezzo 8",
+        },
+        {
+            "title": "Intermezzo 9",
+        },
+        {
+            "title": "Intermezzo 10",
+        },
+        {
+            "title": "Intermezzo 11",
+        }
+    ],
     "levels": [
         {
             "title": "Casa di Lara",
@@ -224,81 +310,5 @@
                 }
             }
         }
-    ],
-    "cutscenes": [
-        {
-            "title": "Intermezzo 1",
-        },
-        {
-            "title": "Intermezzo 2",
-        },
-        {
-            "title": "Intermezzo 3",
-        },
-        {
-            "title": "Intermezzo 4",
-        },
-        {
-            "title": "Intermezzo 5",
-        },
-        {
-            "title": "Intermezzo 6",
-        },
-        {
-            "title": "Intermezzo 7",
-        },
-        {
-            "title": "Intermezzo 8",
-        },
-        {
-            "title": "Intermezzo 9",
-        },
-        {
-            "title": "Intermezzo 10",
-        },
-        {
-            "title": "Intermezzo 11",
-        }
-    ],
-    "objects": {
-        "quest_1": {
-            "name": "Pietra Infada",
-            "description": "",
-        },
-        "quest_2": {
-            "name": "Elemento 115",
-            "description": "",
-        },
-        "quest_3": {
-            "name": "Occhio di Iside",
-            "description": "",
-        },
-        "quest_4": {
-            "name": "Pugnale Ora",
-            "description": "",
-        },
-        "small_medipack": {
-            "name": "Kit Medico Piccolo",
-        },
-        "large_medipack": {
-            "name": "Kit Medico Grande",
-        }
-    },
-    "game_strings": {
-        "GLOBE_SELECT_AREA_1": "India",
-        "GLOBE_SELECT_AREA_2": "Isole del Sud Pacifico",
-        "GLOBE_SELECT_AREA_3": "Nevada",
-        "GLOBE_SELECT_AREA_4": " ",
-        "GLOBE_SELECT_AREA_5": "Londra",
-        "GLOBE_SELECT_AREA_6": "Antartide",
-        "INVENTORY_RING_HEADING_FMT": "\\{color 5}%s",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{color 3}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "\\{color 5}%s",
-        "OVERLAY_ITEM_COUNT_FMT_PC": "%s",
-        "OVERLAY_ITEM_COUNT_FMT_PS1": "\\{color 3}%s",
-        "PAUSE_PAUSED": "\\{color 5}Pausa",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{color 2}%s",
-        "STATS_GYM_ASSAULT_COURSE": "\\{color 5}Corso d'Addestramento",
-        "STATS_GYM_RACETRACK_COURSE": "\\{color 5}Corso di Guida",
-    }
+    ]
 }

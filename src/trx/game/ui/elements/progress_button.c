@@ -64,7 +64,7 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
         return;
     }
     const char *const value_label =
-        String_FormatStatic(GS(MISC_HOLD_FMT), key_name);
+        String_FormatStatic(GS("general/misc/hold_fmt"), key_name);
 
     const float pad[2] = { 6.0f, 3.0f };
     const float spacing = 2.0f;

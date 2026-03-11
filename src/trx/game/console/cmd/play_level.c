@@ -63,7 +63,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 
     if (level == nullptr || level->type == GFL_DUMMY
         || level->type == GFL_CURRENT) {
-        Console_LogError(GS(OSD_INVALID_LEVEL));
+        Console_LogError(GS("general/osd/invalid_level"));
         return CR_FAILURE;
     }
 
@@ -71,9 +71,11 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
         .action = GF_SELECT_GAME,
         .param = level->num,
     });
-    Console_Log(GS(OSD_PLAY_LEVEL), level->title);
+    Console_Log(GS("general/osd/play_level"), level->title);
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("play", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_LEVEL))
-REGISTER_CONSOLE_COMMAND("level", M_Entrypoint, GS_ID(CONSOLE_HELP_PLAY_LEVEL))
+REGISTER_CONSOLE_COMMAND(
+    "play", M_Entrypoint, GS_ID("console/cmd/play_level/help"))
+REGISTER_CONSOLE_COMMAND(
+    "level", M_Entrypoint, GS_ID("console/cmd/play_level/help"))

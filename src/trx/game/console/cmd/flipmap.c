@@ -26,15 +26,19 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 
     if (Room_GetFlipStatus() == new_state) {
         Console_LogWarning(
-            new_state ? GS(OSD_FLIPMAP_FAIL_ALREADY_ON)
-                      : GS(OSD_FLIPMAP_FAIL_ALREADY_OFF));
+            new_state ? GS("general/osd/flipmap_fail_already_on")
+                      : GS("general/osd/flipmap_fail_already_off"));
         return CR_SUCCESS;
     }
 
     Room_FlipMap();
-    Console_Log(new_state ? GS(OSD_FLIPMAP_ON) : GS(OSD_FLIPMAP_OFF));
+    Console_Log(
+        new_state ? GS("general/osd/flipmap_on")
+                  : GS("general/osd/flipmap_off"));
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("flip", M_Entrypoint, GS_ID(CONSOLE_HELP_FLIPMAP))
-REGISTER_CONSOLE_COMMAND("flipmap", M_Entrypoint, GS_ID(CONSOLE_HELP_FLIPMAP))
+REGISTER_CONSOLE_COMMAND(
+    "flip", M_Entrypoint, GS_ID("console/cmd/flipmap/help"))
+REGISTER_CONSOLE_COMMAND(
+    "flipmap", M_Entrypoint, GS_ID("console/cmd/flipmap/help"))

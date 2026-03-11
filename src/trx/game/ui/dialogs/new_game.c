@@ -26,27 +26,27 @@ typedef struct UI_NEW_GAME_STATE {
 
 static const M_OPTION m_Options[] = {
     {
-        .label_id = GS_ID(PASSPORT_MODE_NEW_GAME),
+        .label_id = GS_ID("general/passport/mode_new_game"),
         .choice = UI_NEW_GAME_CHOICE_NG,
     },
     {
-        .label_id = GS_ID(PASSPORT_MODE_NEW_GAME_PLUS),
+        .label_id = GS_ID("general/passport/mode_new_game_plus"),
         .choice = UI_NEW_GAME_CHOICE_NGPLUS,
     },
     {
-        .label_id = GS_ID(PASSPORT_MODE_NEW_GAME_JP),
+        .label_id = GS_ID("general/passport/mode_new_game_jp"),
         .choice = UI_NEW_GAME_CHOICE_JP_NG,
     },
     {
-        .label_id = GS_ID(PASSPORT_MODE_NEW_GAME_JP_PLUS),
+        .label_id = GS_ID("general/passport/mode_new_game_jp_plus"),
         .choice = UI_NEW_GAME_CHOICE_JP_NGPLUS,
     },
     {
-        .label_id = GS_ID(PASSPORT_PLAY_PREVIOUS_LEVELS),
+        .label_id = GS_ID("general/passport/play_previous_levels"),
         .choice = UI_NEW_GAME_CHOICE_PLAY_PREV_LEVELS,
     },
     {
-        .label_id = GS_ID(PASSPORT_STORY_SO_FAR),
+        .label_id = GS_ID("general/passport/story_so_far"),
         .choice = UI_NEW_GAME_CHOICE_STORY_SO_FAR,
     },
     { .label_id = nullptr, .choice = (UI_NEW_GAME_CHOICE)-1 },
@@ -133,7 +133,7 @@ int32_t UI_NewGame_Control(UI_NEW_GAME_STATE *const s)
 void UI_NewGame(UI_NEW_GAME_STATE *const s)
 {
     UI_BeginModal(0.5f, 2.0f / 3.0f);
-    UI_BeginRequester(&s->req, GS(PASSPORT_SELECT_MODE));
+    UI_BeginRequester(&s->req, GS("general/passport/select_mode"));
 
     bool line_drawn = false;
     for (int32_t i = 0; i < s->options->count; i++) {

@@ -248,8 +248,8 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     switch (option->option_type) {
     case COT_BOOL:
     case COT_INVERTED_BOOL: {
-        const float min_value_w = UI_Label_MeasureW(GS(MISC_OFF));
-        const float max_value_w = UI_Label_MeasureW(GS(MISC_ON));
+        const float min_value_w = UI_Label_MeasureW(GS("general/misc/off"));
+        const float max_value_w = UI_Label_MeasureW(GS("general/misc/on"));
         return MAX(min_value_w, max_value_w);
     }
     case COT_INT32: {
@@ -663,7 +663,8 @@ void UI_SettingsEditor_DrawOverlay(UI_SETTINGS_EDITOR_STATE *const s)
                     title = String_FormatStatic("%s*", title);
                     text = String_FormatStatic(
                         "* %s\n\n%s",
-                        *GS_PTR(COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER),
+                        *GS_PTR(
+                            "general/settings/common/frozen_option_disclaimer"),
                         text);
                 }
                 UI_TextDialog(s->description.state, title, text);
@@ -829,13 +830,17 @@ void UI_SettingsEditor_DrawFooter(
     });
     UI_BeginHide(!can_examine && !can_edit_value);
     if (can_edit_value) {
-        UI_LabelFmt("\\{input action} %s", GS(COMMON_SETTINGS_EDIT_VALUE));
+        UI_LabelFmt(
+            "\\{input action} %s", GS("general/settings/common/edit_value"));
     } else {
-        UI_LabelFmt("\\{input look} %s", GS(COMMON_SETTINGS_TOGGLE_HELP));
+        UI_LabelFmt(
+            "\\{input look} %s", GS("general/settings/common/toggle_help"));
     }
     UI_EndHide();
     UI_BeginHide(!can_restore_default);
-    UI_LabelFmt("\\{input unbind_key} %s", GS(COMMON_SETTINGS_RESTORE_DEFAULT));
+    UI_LabelFmt(
+        "\\{input unbind_key} %s",
+        GS("general/settings/common/restore_default"));
     UI_EndHide();
     UI_EndStack();
 }

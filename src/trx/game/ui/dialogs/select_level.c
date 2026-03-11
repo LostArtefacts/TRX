@@ -81,7 +81,7 @@ int32_t UI_SelectLevelDialog_Control(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 void UI_SelectLevelDialog(UI_SELECT_LEVEL_DIALOG_STATE *const s)
 {
     UI_BeginBasePassportDialog();
-    UI_BeginRequester(&s->req, GS(PASSPORT_SELECT_LEVEL));
+    UI_BeginRequester(&s->req, GS("general/passport/select_level"));
 
     const SAVEGAME_INFO *info = Savegame_GetSavegameInfo(s->save_slot);
     for (int32_t i = 0; i < s->rows->count; i++) {

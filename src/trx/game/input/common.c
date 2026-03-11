@@ -74,10 +74,13 @@ static bool m_IsRoleNonUnbindable[INPUT_ROLE_NUMBER_OF] = {
 };
 
 static const GAME_STRING_ID m_LayoutMap[INPUT_LAYOUT_NUMBER_OF] = {
-    [INPUT_LAYOUT_DEFAULT] = GS_ID(CONTROLS_DEFAULT_KEYS),
-    [INPUT_LAYOUT_CUSTOM_1] = GS_ID(CONTROLS_CUSTOM_1),
-    [INPUT_LAYOUT_CUSTOM_2] = GS_ID(CONTROLS_CUSTOM_2),
-    [INPUT_LAYOUT_CUSTOM_3] = GS_ID(CONTROLS_CUSTOM_3),
+    [INPUT_LAYOUT_DEFAULT] = GS_ID("general/settings/controls/layout/default"),
+    [INPUT_LAYOUT_CUSTOM_1] =
+        GS_ID("general/settings/controls/layout/custom_1"),
+    [INPUT_LAYOUT_CUSTOM_2] =
+        GS_ID("general/settings/controls/layout/custom_2"),
+    [INPUT_LAYOUT_CUSTOM_3] =
+        GS_ID("general/settings/controls/layout/custom_3"),
 };
 
 static INPUT_BACKEND_IMPL *M_GetBackend(const INPUT_BACKEND backend)

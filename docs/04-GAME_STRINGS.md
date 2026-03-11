@@ -64,6 +64,7 @@ The document is organized as follows:
 
 ```json5
 {
+    "language_name": "English",
     "levels": [
         {
             "title": "City of Vilcabamba",
@@ -81,35 +82,27 @@ The document is organized as follows:
                 },
                 // etc
             },
-            "game_strings": {
-                "STATS_TIME_TAKEN": "Time Taken",
-                // etc
+            "general": {
+                "stats": {
+                    "time_taken": "Time Taken",
+                    // etc
+                },
             },
         },
         // etc
     ],
-    "objects": {
-        "lara": {"name": "Lara"},
-        "dog": {"names": ["Dog", "Doberman"]},
-        // etc
-    },
-    "game_strings": {
-        "STATS_TIME_TAKEN": "Time Taken",
-        // etc
-    },
-    "settings": {
-        "visuals.lara_outfit": {
-            "title": "Lara's outfit",
-            "description": "Changes Lara's appearance.",
-        },
-        // etc
-    },
-    "enums": {
-        "ASPECT_MODE": {
-            "ASPECT_MODE_ANY": "Any",
+    "general": {
+        "stats": {
+            "time_taken": "Time Taken",
             // etc
         },
-        // etc
+    },
+    "console": {
+        "cmd": {
+            "help": {
+                "help": "Shows help for all commands or detailed help for one.",
+            },
+        },
     },
     "dynamic": {
         "enums": {
@@ -120,6 +113,25 @@ The document is organized as follows:
             },
         },
     },
+    "enums": {
+        "ASPECT_MODE": {
+            "ASPECT_MODE_ANY": "Any",
+            // etc
+        },
+        // etc
+    },
+    "settings": {
+        "visuals.lara_outfit": {
+            "title": "Lara's outfit",
+            "description": "Changes Lara's appearance.",
+        },
+        // etc
+    },
+    "objects": {
+        "lara": {"name": "Lara"},
+        "dog": {"names": ["Dog", "Doberman"]},
+        // etc
+    }
 }
 ```
 
@@ -132,6 +144,27 @@ The document is organized as follows:
   </tr>
 
   <tr valign="top">
+    <td><code>extends</code></td>
+    <td>String</td>
+    <td>No</td>
+    <td>
+      Fallback to another language code for missing entries. For dialects (e.g., "fr-ca"),
+      specify <code>"extends": "fr"</code> to inherit missing layers from the parent language.
+    </td>
+  </tr>
+
+  <tr valign="top">
+    <td><code>language_name</code></td>
+    <td>String</td>
+    <td>No (only in common file)</td>
+    <td>
+      The display name of the language (e.g., "English", "Français") shown in
+      the language selection UI. Should only be defined in the
+      <code>base_strings.json5</code> file.
+    </td>
+  </tr>
+
+  <tr valign="top">
     <td>
       <code>levels</code>
     </td>
@@ -140,7 +173,8 @@ The document is organized as follows:
     <td>
       This is where overrides for individual level details are defined. If a
       level doesn't override a string through its <code>objects</code> or
-      <code>game_strings</code>, it'll be looked up in the global scope next.
+      nested string sections such as <code>general</code> or
+      <code>console</code>, it'll be looked up in the global scope next.
       If the global scope doesn't define it either, it'll default to an
       internal default value shipped with the engine.
     </td>
@@ -170,12 +204,25 @@ The document is organized as follows:
 
   <tr valign="top">
     <td>
-      <code>game_strings</code>
+      <code>general</code>
     </td>
-    <td>String-to-string map</td>
+    <td>Nested object map</td>
     <td>No</td>
     <td>
-      General game/UI strings (legacy flat keys).
+      General gameplay, UI, and menu strings in the form
+      <code>general/&lt;group&gt;/&lt;key&gt;</code>.
+    </td>
+  </tr>
+
+  <tr valign="top">
+    <td>
+      <code>console</code>
+    </td>
+    <td>Nested object map</td>
+    <td>No</td>
+    <td>
+      Developer-console labels, help text, and command messages in the form
+      <code>console/&lt;group&gt;/&lt;key&gt;</code>.
     </td>
   </tr>
 
@@ -213,25 +260,6 @@ The document is organized as follows:
     <td>
       Runtime dynamic-enum labels in the form
       <code>dynamic/enums/&lt;domain&gt;/&lt;value&gt;</code>.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>language_name</code></td>
-    <td>String</td>
-    <td>No (only in common file)</td>
-    <td>
-      The display name of the language (e.g., "English", "Français") shown in
-      the language selection UI. Should only be defined in the
-      <code>base_strings.json5</code> file.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>extends</code></td>
-    <td>String</td>
-    <td>No</td>
-    <td>
-      Fallback to another language code for missing entries. For dialects (e.g., "fr-ca"),
-      specify <code>"extends": "fr"</code> to inherit missing layers from the parent language.
     </td>
   </tr>
 </table>

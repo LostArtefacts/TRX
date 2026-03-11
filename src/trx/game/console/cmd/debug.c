@@ -58,7 +58,7 @@ static void M_LogOption(const CONFIG_OPTION *const option)
 {
     char *const name = Console_Cmd_Config_NormalizeKey(option->name);
     Console_Log(
-        GS(OSD_CONFIG_OPTION_SET), name,
+        GS("general/osd/config_option_set"), name,
         Config_GetOptionValueAsString(option, false));
     Memory_Free(name);
 }
@@ -67,7 +67,7 @@ static void M_ShowOption(const CONFIG_OPTION *const option)
 {
     char *const name = Console_Cmd_Config_NormalizeKey(option->name);
     Console_Log(
-        GS(OSD_CONFIG_OPTION_GET), name,
+        GS("general/osd/config_option_get"), name,
         Config_GetOptionValueAsString(option, false));
     Memory_Free(name);
 }
@@ -144,7 +144,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
 
     VECTOR *const matches = M_BuildMatches(key);
     if (matches->count == 0) {
-        Console_LogError(GS(OSD_CONFIG_OPTION_UNKNOWN_OPTION), key);
+        Console_LogError(GS("general/osd/config_option_unknown_option"), key);
         Vector_Free(matches);
         Memory_Free(args);
         return CR_FAILURE;
@@ -169,4 +169,4 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *ctx)
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("debug", M_Entrypoint, GS_ID(CONSOLE_HELP_DEBUG))
+REGISTER_CONSOLE_COMMAND("debug", M_Entrypoint, GS_ID("console/cmd/debug/help"))

@@ -2,1580 +2,669 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "language_name": "English",
-    "game_strings": {
-        "ACTION_EXAMINE_ITEM": "Examine",
-        "ACTION_HIDE_DIALOG": "Hide dialog",
-        "ACTION_RESET_DEFAULTS": "Reset All",
-        "ACTION_ROTATE": "Rotate",
-        "ACTION_UNBIND": "Unbind",
-        "ACTION_USE_ITEM": "Use",
-        "CMD_GIVE_SECRET_GIVEN": "Added secret %s",
-        "CMD_GIVE_SECRET_LIST": "Secrets collected: %d of %d (%s)",
-        "CMD_GIVE_SECRET_NONE": "Secrets collected: %d of %d",
-        "CMD_GIVE_SECRET_TAKEN": "Removed secret %s",
-        "CMD_IMMUNE_SWITCHED_OFF": "Lara is now vulnerable",
-        "CMD_IMMUNE_SWITCHED_ON": "Lara is now impervious to damage",
-        "CMD_INF_SPRINT_SWITCHED_OFF": "Lara can no longer sprint forever",
-        "CMD_INF_SPRINT_SWITCHED_ON": "Lara can now sprint forever",
-        "CMD_INVALID_MUSIC_TRACK": "Invalid music track",
-        "CMD_INVALID_SECRET": "Invalid secret: %s (valid secrets: %s)",
-        "CMD_INVALID_WEATHER": "Invalid weather: %s (valid: %s)",
-        "CMD_ITEM_SPAWNED": "Requested object spawned near Lara",
-        "CMD_ITEM_SPAWN_FAILED": "Failed to spawn requested object",
-        "CMD_LUA_RUNTIME_ERROR": "Lua runtime error: %s",
-        "CMD_LUA_SYNTAX_ERROR": "Lua syntax error: %s",
-        "CMD_PLAY_MUSIC_STOPPED": "Music stopped",
-        "CMD_PLAY_MUSIC_TRACK": "Playing music track %d",
-        "CMD_TELEPORT_ITEM": "Teleported to item: %d",
-        "CMD_TELEPORT_ITEM_FAIL": "Failed to teleport to item: %d",
-        "CMD_TELEPORT_OBJECT": "Teleported to object: %s",
-        "CMD_TELEPORT_OBJECT_FAIL": "Failed to teleport to object: %s",
-        "CMD_TELEPORT_POS": "Teleported to position: %.3f %.3f %.3f",
-        "CMD_TELEPORT_POS_FAIL": "Failed to teleport to position: %.3f %.3f %.3f",
-        "CMD_TELEPORT_ROOM": "Teleported to room: %d",
-        "CMD_TELEPORT_ROOM_FAIL": "Failed to teleport to room: %d",
-        "CMD_TRIGGER_DONE": "Triggered item(s): %s",
-        "CMD_TRIGGER_INVALID_ITEM": "Invalid item: %s",
-        "CMD_TRIGGER_NOT_FOUND": "No matching items found for: %s",
-        "CMD_TRIGGER_NO_MATCH": "Unknown target: %s",
-        "CMD_UNTRIGGER_DONE": "Untriggered item(s): %s",
-        "CMD_WEATHER_SET": "Weather set to %s",
-        "CMD_WINSTON_DEAD": "Your butler is dead. You monster!",
-        "CMD_WINSTON_SPAWNED": "Summoned Winston near Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "Failed to summon Winston",
-        "CMD_WINSTON_TELEPORTED": "Summoned Winston near Lara",
-        "COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER": "Settings are disabled for this level set.",
-        "COMMON_SETTINGS_CHROMA": "Chroma",
-        "COMMON_SETTINGS_EDIT_VALUE": "Edit value",
-        "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "This setting is enforced by the level builder and cannot be changed.",
-        "COMMON_SETTINGS_HUE": "Hue",
-        "COMMON_SETTINGS_LIGHTNESS": "Lightness",
-        "COMMON_SETTINGS_RESTORE_DEFAULT": "Restore default",
-        "COMMON_SETTINGS_TOGGLE_HELP": "Toggle help",
-        "CONFIG_PRESETS_APPLIED": "Preset applied.",
-        "CONFIG_PRESETS_CONFIRM_DESCRIPTION": "The following settings will be changed:",
-        "CONFIG_PRESETS_CONFIRM_RESTART_NOTE": "Note: some settings may require a game restart to take effect.",
-        "CONFIG_PRESETS_EMPTY": "No presets found.",
-        "CONFIG_PRESETS_NO_CHANGES": "No changes to apply.",
-        "CONFIG_PRESETS_TITLE_FMT": "Apply preset %s?",
-        "CONFIG_PRESET_TR1_PC": "TR1 PC",
-        "CONFIG_PRESET_TR1_PS1": "TR1 PS1",
-        "CONFIG_PRESET_TR2_PC": "TR2 PC",
-        "CONFIG_PRESET_TR2_PS1": "TR2 PS1",
-        "CONFIG_PRESET_TR3_PC": "TR3 PC",
-        "CONFIG_PRESET_TR3_PS1": "TR3 PS1",
-        "CONSOLE_CMD_HELP_LIST": "Available commands:",
-        "CONSOLE_HELP_BRAID": "Toggles Lara's braid.",
-        "CONSOLE_HELP_CHEATS": "Toggles in-game cheats on or off.",
-        "CONSOLE_HELP_CLEAR": "Clears visible console logs.",
-        "CONSOLE_HELP_DEBUG": "Toggles visual debug information.",
-        "CONSOLE_HELP_DRAIN": "Dries the current room, removing the water.",
-        "CONSOLE_HELP_END_LEVEL": "Ends the current level.",
-        "CONSOLE_HELP_EXIT": "Exits the game.",
-        "CONSOLE_HELP_FLIPMAP": "Toggles the flip map.",
-        "CONSOLE_HELP_FLOOD": "Submerges the current room with water.",
-        "CONSOLE_HELP_FLY": "Toggles the fly-mode cheat.",
-        "CONSOLE_HELP_FPS": "Changes the FPS value.",
-        "CONSOLE_HELP_GIVE": "Adds a given item to Lara's inventory.",
-        "CONSOLE_HELP_GIVE_SECRET": "Lists Lara's secrets, or takes/gives a secret by number.",
-        "CONSOLE_HELP_HEAL": "Heals Lara back to full health.",
-        "CONSOLE_HELP_HELP": "Shows help for all commands or detailed help for one.",
-        "CONSOLE_HELP_HP": "Sets Lara's health to the specified value.",
-        "CONSOLE_HELP_IMMUNE": "Toggles invulnerability. (Lara can still be killed in some circumstances.)",
-        "CONSOLE_HELP_INF_SPRINT": "Toggles infinite sprint.",
-        "CONSOLE_HELP_KILL": "Kills nearby enemies.",
-        "CONSOLE_HELP_LIGHTING": "Toggles lighting system.",
-        "CONSOLE_HELP_LOAD": "Loads game from the given save slot or from a quick save.",
-        "CONSOLE_HELP_LUA": "Executes the given Lua code string.",
-        "CONSOLE_HELP_MOD": "Switches to the specified mod and restarts the game.",
-        "CONSOLE_HELP_MUSIC": "Plays a music track with the given id.",
-        "CONSOLE_HELP_PLAY_CUTSCENE": "Plays a cutscene with the given number.",
-        "CONSOLE_HELP_PLAY_DEMO": "Plays a demo with the given number.",
-        "CONSOLE_HELP_PLAY_GYM": "Plays the Gym level.",
-        "CONSOLE_HELP_PLAY_LEVEL": "Plays a level with the given name or number.",
-        "CONSOLE_HELP_POS": "Shows Lara's position.",
-        "CONSOLE_HELP_SAVE": "Saves game to the given save slot or to the next quick save slot.",
-        "CONSOLE_HELP_SCREENSHOT": "Saves a screenshot to disk at optional location.",
-        "CONSOLE_HELP_SET": "Displays or updates the given configuration setting.",
-        "CONSOLE_HELP_SFX": "Plays a sound effect with the given id.",
-        "CONSOLE_HELP_SPEED": "Changes the game's speed.",
-        "CONSOLE_HELP_STRINGS": "Reloads the current language files from disk.",
-        "CONSOLE_HELP_TEXTURES": "Toggles textures.",
-        "CONSOLE_HELP_TITLE": "Returns to the title screen.",
-        "CONSOLE_HELP_TP": "Teleports Lara to a given position or room number.",
-        "CONSOLE_HELP_TRIGGER": "Triggers or untriggers an item by id, item name, or object name.",
-        "CONSOLE_HELP_VSYNC": "Toggles vertical sync.",
-        "CONSOLE_HELP_WEATHER": "Changes the current weather type.",
-        "CONSOLE_HELP_WIREFRAME": "Toggles wireframe rendering.",
-        "CONTROLS_BACKEND_CONTROLLER": "Controller",
-        "CONTROLS_BACKEND_KEYBOARD": "Keyboard",
-        "CONTROLS_CUSTOMIZE": "Customize Controls",
-        "CONTROLS_CUSTOM_1": "User Keys 1",
-        "CONTROLS_CUSTOM_2": "User Keys 2",
-        "CONTROLS_CUSTOM_3": "User Keys 3",
-        "CONTROLS_DEFAULT_KEYS": "Default Keys",
-        "CONTROLS_SECTION_BASICS": "Movement",
-        "CONTROLS_SECTION_ITEMS": "Items",
-        "CONTROLS_SECTION_MISC": "Misc",
-        "CONTROLS_SECTION_SYSTEM": "System",
-        "GAMEPLAY_SETTINGS_CONTROLS_TAB": "Controls",
-        "GAMEPLAY_SETTINGS_FIXES_TAB": "Fixes",
-        "GAMEPLAY_SETTINGS_GENERAL_TAB": "General",
-        "GAMEPLAY_SETTINGS_MODS_TAB": "Mods",
-        "GAMEPLAY_SETTINGS_PRESETS_TAB": "Presets",
-        "GAMEPLAY_SETTINGS_TITLE": "Gameplay Options",
-        "GLOBE_SELECT_AREA_1": "Area 1",
-        "GLOBE_SELECT_AREA_2": "Area 2",
-        "GLOBE_SELECT_AREA_3": "Area 3",
-        "GLOBE_SELECT_AREA_4": "Area 4",
-        "GLOBE_SELECT_AREA_5": "Area 5",
-        "GLOBE_SELECT_AREA_6": "Area 6",
-        "GRAPHIC_SETTINGS_RENDERING_TAB": "Rendering",
-        "GRAPHIC_SETTINGS_TITLE": "Graphic Options",
-        "GRAPHIC_SETTINGS_UI_BARS_TAB": "Bars",
-        "GRAPHIC_SETTINGS_UI_TAB": "UI",
-        "GRAPHIC_SETTINGS_VISUALS_TAB": "Visuals",
-        "INVENTORY_RING_HEADING_ADVENTURE": "Adventure",
-        "INVENTORY_RING_HEADING_FMT": "%s",
-        "INVENTORY_RING_HEADING_GAME_OVER": "GAME OVER",
-        "INVENTORY_RING_HEADING_INVENTORY": "INVENTORY",
-        "INVENTORY_RING_HEADING_ITEMS": "ITEMS",
-        "INVENTORY_RING_HEADING_OPTION": "OPTION",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{small}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "%s",
-        "MISC_DEMO_MODE": "Demo Mode",
-        "MISC_DIRECTION_KEYS_CONTROLLER": "D-Pad",
-        "MISC_DIRECTION_KEYS_KEYBOARD": "Arrows",
-        "MISC_EMPTY_SLOT_FMT": "- EMPTY SLOT -",
-        "MISC_EXIT": "Exit",
-        "MISC_HOLD_FMT": "Hold %s",
-        "MISC_OFF": "Off",
-        "MISC_ON": "On",
-        "OSD_AMBIGUOUS_INPUT_2": "Ambiguous input: %s and %s",
-        "OSD_AMBIGUOUS_INPUT_3": "Ambiguous input: %s, %s, ...",
-        "OSD_BILINEAR_FILTER_OFF": "Bilinear filter: off",
-        "OSD_BILINEAR_FILTER_ON": "Bilinear filter: on",
-        "OSD_COMMAND_BAD_INVOCATION": "Invalid invocation: %s",
-        "OSD_COMMAND_BOOL": "on, off",
-        "OSD_COMMAND_DECIMAL": "[decimal]",
-        "OSD_COMMAND_INTEGER": "[integer]",
-        "OSD_COMMAND_PERCENT": "[integer]",
-        "OSD_COMMAND_UNAVAILABLE": "This command is not currently available",
-        "OSD_COMMAND_VALID_VALUES": "Valid values: %s",
-        "OSD_COMPLETE_LEVEL": "Level complete!",
-        "OSD_CONFIG_OPTION_GET": "%s is currently set to %s",
-        "OSD_CONFIG_OPTION_SET": "%s changed to %s",
-        "OSD_CONFIG_OPTION_UNKNOWN_OPTION": "Unknown option: %s",
-        "OSD_CURRENT_HEALTH_GET": "Current Lara's health: %d",
-        "OSD_CURRENT_HEALTH_SET": "Lara's health set to %d",
-        "OSD_DOOR_CLOSE": "Close Sesame!",
-        "OSD_DOOR_OPEN": "Open Sesame!",
-        "OSD_DOOR_OPEN_FAIL": "No doors in Lara's proximity",
-        "OSD_FLIPMAP_FAIL_ALREADY_OFF": "Flipmap is already OFF",
-        "OSD_FLIPMAP_FAIL_ALREADY_ON": "Flipmap is already ON",
-        "OSD_FLIPMAP_OFF": "Flipmap set to OFF",
-        "OSD_FLIPMAP_ON": "Flipmap set to ON",
-        "OSD_FLY_MODE_OFF": "Fly mode disabled",
-        "OSD_FLY_MODE_ON": "Fly mode enabled",
-        "OSD_FPS_COUNTER_OFF": "FPS counter: off",
-        "OSD_FPS_COUNTER_ON": "FPS counter: on",
-        "OSD_GIVE_ITEM": "Added %s to Lara's inventory",
-        "OSD_GIVE_ITEM_ALL_GUNS": "Lock'n'load - Lara's armed to the teeth!",
-        "OSD_GIVE_ITEM_ALL_KEYS": "Surprise! Every key item Lara needs is now in her backpack.",
-        "OSD_GIVE_ITEM_CHEAT": "Lara's backpack just got way heavier!",
-        "OSD_HEAL_ALREADY_FULL_HP": "Lara's already at full health",
-        "OSD_HEAL_SUCCESS": "Healed Lara back to full health",
-        "OSD_INVALID_CUTSCENE": "Invalid cutscene",
-        "OSD_INVALID_DEMO": "Invalid demo",
-        "OSD_INVALID_ITEM": "Unknown item: %s",
-        "OSD_INVALID_LEVEL": "Invalid level",
-        "OSD_INVALID_OBJECT": "Invalid object",
-        "OSD_INVALID_ROOM": "Invalid room: %d. Valid rooms are 0-%d",
-        "OSD_INVALID_SAMPLE": "Invalid sound: %d",
-        "OSD_KILL": "Bye-bye!",
-        "OSD_KILL_ALL": "Poof! %d enemies gone!",
-        "OSD_KILL_ALL_FAIL": "Uh-oh, there are no enemies left to kill...",
-        "OSD_KILL_FAIL": "No enemy nearby...",
-        "OSD_LIGHTING_CONTRAST_FMT": "Lighting Contrast: %s",
-        "OSD_LOAD_GAME": "Loaded game from save slot %d",
-        "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
-        "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Save slot %d is not available",
-        "OSD_OBJECT_NOT_FOUND": "Object not found",
-        "OSD_PLAY_CUTSCENE": "Loading cutscene %d",
-        "OSD_PLAY_DEMO": "Loading demo %d",
-        "OSD_PLAY_LEVEL": "Loading %s",
-        "OSD_POS_LARA_MISSING": "Lara not present",
-        "OSD_POS_LARA_POS_FMT": "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
-        "OSD_POS_LEVEL_FMT": "Level %d",
-        "OSD_POS_LEVEL_FMT_CUTSCENE": "Cutscene %d",
-        "OSD_POS_LEVEL_FMT_DEMO": "Demo %d",
-        "OSD_QUICK_LOAD": "Quick-loaded slot %d",
-        "OSD_QUICK_LOAD_FAIL_NO_BOUND_SLOT": "No save slot is currently bound",
-        "OSD_QUICK_LOAD_FAIL_UNAVAILABLE_BOUND_SLOT": "The bound save slot is not available",
-        "OSD_QUICK_SAVE": "Quick-saved",
-        "OSD_QUICK_SAVE_FAIL_NO_SLOTS": "No quick save slots are configured",
-        "OSD_SAVE_GAME": "Saved game to save slot %d",
-        "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Invalid save slot %d",
-        "OSD_SOUND_AVAILABLE_SAMPLES": "Available sounds: %s",
-        "OSD_SOUND_PLAYING_SAMPLE": "Playing sound %d",
-        "OSD_SPEED_GET": "Current speed: %d",
-        "OSD_SPEED_SET": "Speed set to %d",
-        "OSD_STRINGS_FAILED": "Failed to reload the language files",
-        "OSD_STRINGS_RELOADED": "Language files reloaded",
-        "OSD_TEXTURES_OFF": "Textures: off",
-        "OSD_TEXTURES_ON": "Textures: on",
-        "OSD_TRAPEZOID_FILTER_OFF": "Trapezoid filter: off",
-        "OSD_TRAPEZOID_FILTER_ON": "Trapezoid filter: on",
-        "OSD_UI_OFF": "UI disabled",
-        "OSD_UI_ON": "UI enabled",
-        "OSD_UNKNOWN_COMMAND": "Unknown command: %s",
-        "OSD_UPSCALING_FACTOR": "Upscaling Factor: x%d",
-        "OSD_WIREFRAME_MODE_OFF": "Wireframe mode: off",
-        "OSD_WIREFRAME_MODE_ON": "Wireframe mode: on",
-        "OVERLAY_DEBUG_ANIMATION": "Animation: ",
-        "OVERLAY_DEBUG_ANIMATION_STATE": "State: ",
-        "OVERLAY_DEBUG_CAMERA_POS": "Camera origin: ",
-        "OVERLAY_DEBUG_CAMERA_TARGET": "Camera target: ",
-        "OVERLAY_DEBUG_IMMUNE": "Invulnerability on",
-        "OVERLAY_DEBUG_POSITION": "Position: ",
-        "OVERLAY_DEBUG_ROTATION": "Rotation: ",
-        "OVERLAY_DEBUG_SPEED": "Speed: ",
-        "OVERLAY_ITEM_COUNT_FMT_PC": "\\{small}%s",
-        "OVERLAY_ITEM_COUNT_FMT_PS1": "\\{small}%s",
-        "PAGINATION_NAV": "%d / %d",
-        "PASSPORT_EXIT_GAME": "Exit Game",
-        "PASSPORT_EXIT_TO_TITLE": "Exit to Title",
-        "PASSPORT_LOAD_GAME": "Load Game",
-        "PASSPORT_MODE_NEW_GAME": "New Game",
-        "PASSPORT_MODE_NEW_GAME_JP": "Japanese NG",
-        "PASSPORT_MODE_NEW_GAME_JP_PLUS": "Japanese NG+",
-        "PASSPORT_MODE_NEW_GAME_PLUS": "New Game+",
-        "PASSPORT_NEW_GAME": "New Game",
-        "PASSPORT_PLAY_PREVIOUS_LEVELS": "Play previous levels",
-        "PASSPORT_RESTART_LEVEL": "Restart Level",
-        "PASSPORT_SAVE_GAME": "Save Game",
-        "PASSPORT_SAVE_SLOT_UNSUPPORTED": "This save does not support this feature.",
-        "PASSPORT_SELECT_LEVEL": "Select Level",
-        "PASSPORT_SELECT_MODE": "Select Mode",
-        "PASSPORT_SELECT_SAVE": "Select Save",
-        "PASSPORT_STORY_SO_FAR": "Story so far...",
-        "PAUSE_ARE_YOU_SURE": "Are you sure?",
-        "PAUSE_CONTINUE": "Continue",
-        "PAUSE_EXIT_TO_TITLE": "Exit to title?",
-        "PAUSE_NO": "No",
-        "PAUSE_PAUSED": "Paused",
-        "PAUSE_QUIT": "Quit",
-        "PAUSE_YES": "Yes",
-        "PHOTO_MODE_ADVANCE_FRAME": "Advance frame",
-        "PHOTO_MODE_CAMERA_MOVE_PROMPT": "Move camera",
-        "PHOTO_MODE_CAMERA_RESET_PROMPT": "Reset camera",
-        "PHOTO_MODE_CAMERA_ROLL_PROMPT": "Roll camera",
-        "PHOTO_MODE_CAMERA_ROTATE_90_PROMPT": "Rotate camera 90°",
-        "PHOTO_MODE_CAMERA_ROTATE_PROMPT": "Rotate camera",
-        "PHOTO_MODE_CHANGE_LARA_POSE": "Change Lara's pose",
-        "PHOTO_MODE_FOV_PROMPT": "Adjust FOV",
-        "PHOTO_MODE_LARA_MOVE_PROMPT": "Move Lara",
-        "PHOTO_MODE_LARA_RESET_PROMPT": "Reset Lara",
-        "PHOTO_MODE_LARA_ROLL_PROMPT": "Roll Lara",
-        "PHOTO_MODE_LARA_ROTATE_90_PROMPT": "Rotate Lara 90°",
-        "PHOTO_MODE_LARA_ROTATE_PROMPT": "Rotate Lara",
-        "PHOTO_MODE_SNAP_PROMPT": "Take picture",
-        "PHOTO_MODE_TITLE_CAMERA_POS": "Photo Mode",
-        "PHOTO_MODE_TITLE_LARA_POS": "Moving Lara",
-        "PHOTO_MODE_TOGGLE_HELP": "Toggle help",
-        "SOUND_SETTINGS_MISC_TAB": "Misc",
-        "SOUND_SETTINGS_TITLE": "Sound Options",
-        "SOUND_SETTINGS_VOLUME_TAB": "Volume",
-        "STATS_AMMO": "Ammo Hits/Used",
-        "STATS_AMMO_HITS": "Hits",
-        "STATS_AMMO_USED": "Ammo Used",
-        "STATS_ASSAULT_BEST_TIME_FMT": "%s",
-        "STATS_ASSAULT_FINISH": "Finish",
-        "STATS_ASSAULT_NO_TIMES_SET": "No Times Set",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "%s",
-        "STATS_ASSAULT_TITLE": "BEST TIMES",
-        "STATS_BASIC_FMT": "%d",
-        "STATS_BONUS_STATISTICS": "Bonus Statistics",
-        "STATS_DEATHS": "Deaths",
-        "STATS_DETAIL_FMT": "%d of %d",
-        "STATS_DISTANCE_TRAVELLED": "Distance Traveled",
-        "STATS_FINAL_STATISTICS": "Final Statistics",
-        "STATS_GYM_ASSAULT_COURSE": "Assault Course",
-        "STATS_GYM_RACETRACK_COURSE": "Race Track Course",
-        "STATS_KILLS": "Kills",
-        "STATS_LEVEL": "Level",
-        "STATS_MEDIPACKS_USED": "Health Packs Used",
-        "STATS_NONE": "None",
-        "STATS_PICKUPS": "Pickups",
-        "STATS_SECRETS": "Secrets Found",
-        "STATS_TIME_TAKEN": "Time Taken",
-    },
-    "objects": {
-        "flare": {
-            "name": "Flare",
+    "general": {
+        "actions": {
+            "examine_item": "Examine",
+            "hide_dialog": "Hide dialog",
+            "reset_defaults": "Reset All",
+            "rotate": "Rotate",
+            "unbind": "Unbind",
+            "use_item": "Use",
         },
-        "flares_box": {
-            "name": "Flares Box",
+        "config_presets": {
+            "applied": "Preset applied.",
+            "confirm_description": "The following settings will be changed:",
+            "confirm_restart_note": "Note: some settings may require a game restart to take effect.",
+            "empty": "No presets found.",
+            "no_changes": "No changes to apply.",
+            "title_fmt": "Apply preset %s?",
         },
-        "grenade": {
-            "name": "Grenade",
+        "globe_select": {
+            "area_1": "Area 1",
+            "area_2": "Area 2",
+            "area_3": "Area 3",
+            "area_4": "Area 4",
+            "area_5": "Area 5",
+            "area_6": "Area 6",
         },
-        "small_medipack": {
-            "name": "Small Medipack",
+        "inventory_ring": {
+            "heading_adventure": "Adventure",
+            "heading_fmt": "%s",
+            "heading_game_over": "GAME OVER",
+            "heading_inventory": "INVENTORY",
+            "heading_items": "ITEMS",
+            "heading_option": "OPTION",
+            "item_count_fmt": "\\{small}%s",
+            "object_name_fmt": "%s",
         },
-        "large_medipack": {
-            "name": "Large Medipack",
+        "misc": {
+            "demo_mode": "Demo Mode",
+            "direction_keys_controller": "D-Pad",
+            "direction_keys_keyboard": "Arrows",
+            "empty_slot_fmt": "- EMPTY SLOT -",
+            "exit": "Exit",
+            "hold_fmt": "Hold %s",
+            "off": "Off",
+            "on": "On",
+            "pagination_nav": "%d / %d",
         },
-        "pistols": {
-            "name": "Pistols",
+        "osd": {
+            "ambiguous_input_2": "Ambiguous input: %s and %s",
+            "ambiguous_input_3": "Ambiguous input: %s, %s, ...",
+            "bilinear_filter_off": "Bilinear filter: off",
+            "bilinear_filter_on": "Bilinear filter: on",
+            "command_bad_invocation": "Invalid invocation: %s",
+            "command_bool": "on, off",
+            "command_decimal": "[decimal]",
+            "command_integer": "[integer]",
+            "command_percent": "[integer]",
+            "command_unavailable": "This command is not currently available",
+            "command_valid_values": "Valid values: %s",
+            "complete_level": "Level complete!",
+            "config_option_get": "%s is currently set to %s",
+            "config_option_set": "%s changed to %s",
+            "config_option_unknown_option": "Unknown option: %s",
+            "current_health_get": "Current Lara's health: %d",
+            "current_health_set": "Lara's health set to %d",
+            "door_close": "Close Sesame!",
+            "door_open": "Open Sesame!",
+            "door_open_fail": "No doors in Lara's proximity",
+            "flipmap_fail_already_off": "Flipmap is already OFF",
+            "flipmap_fail_already_on": "Flipmap is already ON",
+            "flipmap_off": "Flipmap set to OFF",
+            "flipmap_on": "Flipmap set to ON",
+            "fly_mode_off": "Fly mode disabled",
+            "fly_mode_on": "Fly mode enabled",
+            "fps_counter_off": "FPS counter: off",
+            "fps_counter_on": "FPS counter: on",
+            "give_item": "Added %s to Lara's inventory",
+            "give_item_all_guns": "Lock'n'load - Lara's armed to the teeth!",
+            "give_item_all_keys": "Surprise! Every key item Lara needs is now in her backpack.",
+            "give_item_cheat": "Lara's backpack just got way heavier!",
+            "heal_already_full_hp": "Lara's already at full health",
+            "heal_success": "Healed Lara back to full health",
+            "invalid_cutscene": "Invalid cutscene",
+            "invalid_demo": "Invalid demo",
+            "invalid_item": "Unknown item: %s",
+            "invalid_level": "Invalid level",
+            "invalid_object": "Invalid object",
+            "invalid_room": "Invalid room: %d. Valid rooms are 0-%d",
+            "invalid_sample": "Invalid sound: %d",
+            "kill": "Bye-bye!",
+            "kill_all": "Poof! %d enemies gone!",
+            "kill_all_fail": "Uh-oh, there are no enemies left to kill...",
+            "kill_fail": "No enemy nearby...",
+            "lighting_contrast_fmt": "Lighting Contrast: %s",
+            "load_game": "Loaded game from save slot %d",
+            "load_game_fail_invalid_slot": "Invalid save slot %d",
+            "load_game_fail_unavailable_slot": "Save slot %d is not available",
+            "object_not_found": "Object not found",
+            "play_cutscene": "Loading cutscene %d",
+            "play_demo": "Loading demo %d",
+            "play_level": "Loading %s",
+            "pos_lara_missing": "Lara not present",
+            "pos_lara_pos_fmt": "Room: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
+            "pos_level_fmt": "Level %d",
+            "pos_level_fmt_cutscene": "Cutscene %d",
+            "pos_level_fmt_demo": "Demo %d",
+            "quick_load": "Quick-loaded slot %d",
+            "quick_load_fail_no_bound_slot": "No save slot is currently bound",
+            "quick_load_fail_unavailable_bound_slot": "The bound save slot is not available",
+            "quick_save": "Quick-saved",
+            "quick_save_fail_no_slots": "No quick save slots are configured",
+            "save_game": "Saved game to save slot %d",
+            "save_game_fail_invalid_slot": "Invalid save slot %d",
+            "sound_available_samples": "Available sounds: %s",
+            "sound_playing_sample": "Playing sound %d",
+            "speed_get": "Current speed: %d",
+            "speed_set": "Speed set to %d",
+            "strings_failed": "Failed to reload the language files",
+            "strings_reloaded": "Language files reloaded",
+            "textures_off": "Textures: off",
+            "textures_on": "Textures: on",
+            "trapezoid_filter_off": "Trapezoid filter: off",
+            "trapezoid_filter_on": "Trapezoid filter: on",
+            "ui_off": "UI disabled",
+            "ui_on": "UI enabled",
+            "unknown_command": "Unknown command: %s",
+            "upscaling_factor": "Upscaling Factor: x%d",
+            "wireframe_mode_off": "Wireframe mode: off",
+            "wireframe_mode_on": "Wireframe mode: on",
         },
-        "shotgun": {
-            "name": "Shotgun",
-        },
-        "magnums": {
-            "name": "Magnums",
-        },
-        "autos": {
-            "name": "Automatic Pistols",
-        },
-        "desert_eagle": {
-            "name": "Desert Eagle",
-        },
-        "uzis": {
-            "name": "Uzis",
-        },
-        "harpoon_gun": {
-            "name": "Harpoon Gun",
-        },
-        "m16": {
-            "name": "M16",
-        },
-        "mp5": {
-            "name": "MP5",
-        },
-        "grenade_launcher": {
-            "name": "Grenade Launcher",
-        },
-        "rocket_launcher": {
-            "name": "Rocket Launcher",
-        },
-        "pistols_ammo": {
-            "name": "Pistol Clips",
-        },
-        "shotgun_ammo": {
-            "name": "Shotgun Shells",
-        },
-        "magnums_ammo": {
-            "name": "Magnum Clips",
-        },
-        "autos_ammo": {
-            "name": "Automatic Pistol Clips",
-        },
-        "desert_eagle_ammo": {
-            "name": "Desert Eagle Clips",
-        },
-        "uzis_ammo": {
-            "name": "Uzi Clips",
-        },
-        "harpoon_gun_ammo": {
-            "name": "Harpoons",
-        },
-        "m16_ammo": {
-            "name": "M16 Clips",
-        },
-        "mp5_ammo": {
-            "name": "MP5 Clips",
-        },
-        "grenade_launcher_ammo": {
-            "name": "Grenades",
-        },
-        "rocket_launcher_ammo": {
-            "name": "Rockets",
-        },
-        "pickup_1": {
-            "name": "Pickup Item 1",
-        },
-        "pickup_2": {
-            "name": "Pickup Item 2",
-        },
-        "quest_1": {
-            "name": "Quest Item 1",
-        },
-        "quest_2": {
-            "name": "Quest Item 2",
-        },
-        "quest_3": {
-            "name": "Quest Item 3",
-        },
-        "quest_4": {
-            "name": "Quest Item 4",
-        },
-        "key_1": {
-            "name": "Key 1",
-        },
-        "key_2": {
-            "name": "Key 2",
-        },
-        "key_3": {
-            "name": "Key 3",
-        },
-        "key_4": {
-            "name": "Key 4",
-        },
-        "puzzle_1": {
-            "name": "Puzzle Item 1",
-        },
-        "puzzle_2": {
-            "name": "Puzzle Item 2",
-        },
-        "puzzle_3": {
-            "name": "Puzzle Item 3",
-        },
-        "puzzle_4": {
-            "name": "Puzzle Item 4",
-        },
-        "lead_bar": {
-            "name": "Lead Bar",
-        },
-        "scion": {
-            "name": "Scion",
-        },
-        "secret_1": {
-            "name": "Secret 1",
-        },
-        "secret_2": {
-            "name": "Secret 2",
-        },
-        "secret_3": {
-            "name": "Secret 3",
-        },
-        "compass": {
-            "name": "Compass",
-        },
-        "stopwatch": {
-            "name": "Statistics",
+        "overlay": {
+            "debug_animation": "Animation: ",
+            "debug_animation_state": "State: ",
+            "debug_camera_pos": "Camera origin: ",
+            "debug_camera_target": "Camera target: ",
+            "debug_immune": "Invulnerability on",
+            "debug_position": "Position: ",
+            "debug_rotation": "Rotation: ",
+            "debug_speed": "Speed: ",
+            "item_count_fmt_pc": "\\{small}%s",
+            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
-            "name": "Game",
-        },
-        "photo": {
-            "name": "Lara's Home",
-        },
-        "graphics": {
-            "name": "Graphics",
-        },
-        "controls": {
-            "name": "Controls",
-        },
-        "sound": {
-            "name": "Sound",
-        },
-        "gamma": {
-            "name": "Gamma",
-        },
-        "globe": {
-            "name": "Globe",
-        },
-        "pda": {
-            "name": "Gameplay",
-        },
-        "lara": {
-            "name": "Lara",
-        },
-        "lara_hair": {
-            "name": "Lara's Braid",
-        },
-        "lara_pistols": {
-            "name": "Pistols Animation",
-        },
-        "lara_shotgun": {
-            "name": "Shotgun Animation",
-        },
-        "lara_magnums": {
-            "name": "Magnums Animation",
-        },
-        "lara_autos": {
-            "name": "Automatic Pistols Animation",
-        },
-        "lara_desert_eagle": {
-            "name": "Desert Eagle Animation",
-        },
-        "lara_uzis": {
-            "name": "Uzis Animation",
-        },
-        "lara_m16": {
-            "name": "M16 Animation",
-        },
-        "lara_mp5": {
-            "name": "MP5 Animation",
-        },
-        "lara_grenade": {
-            "name": "Grenade Launcher Animation",
-        },
-        "lara_rocket": {
-            "name": "Rocket Launcher Animation",
-        },
-        "lara_harpoon": {
-            "name": "Harpoon Animation",
-        },
-        "lara_flare": {
-            "name": "Flare Animation",
-        },
-        "lara_extra": {
-            "name": "Lara's Extra Animation",
-        },
-        "lara_skidoo": {
-            "name": "Snowmobile Animation",
-        },
-        "lara_boat": {
-            "name": "Boat Animation",
-        },
-        "skidoo_fast": {
-            "name": "Red Snowmobile",
-        },
-        "boat": {
-            "name": "Boat",
-        },
-        "quad_bike": {
-            "name": "Quad Bike",
-        },
-        "kayak": {
-            "name": "Kayak",
-        },
-        "upv": {
-            "name": [
-                "UPV",
-                "Minisub",
-            ]
-        },
-        "mounted_gun": {
-            "name": "Mounted Gun",
-        },
-        "bacon_lara": {
-            "name": "Bacon Lara",
-        },
-        "wolf": {
-            "name": "Wolf",
-        },
-        "bear": {
-            "name": "Bear",
-        },
-        "bat": {
-            "name": "Bat",
-        },
-        "lizard": {
-            "name": "Lizard",
-        },
-        "crocodile": {
-            "name": "Crocodile",
-        },
-        "alligator": {
-            "name": "Alligator",
-        },
-        "lion": {
-            "name": "Lion",
-        },
-        "lioness": {
-            "name": [
-                "Lioness",
-                "Lion",
-            ]
-        },
-        "puma": {
-            "name": "Puma",
-        },
-        "ape": {
-            "name": "Ape",
-        },
-        "rat": {
-            "name": [
-                "Rat",
-                "Land Rat",
-            ]
-        },
-        "vole": {
-            "name": [
-                "Vole",
-                "Water Rat",
-            ]
-        },
-        "trex": {
-            "name": "T-Rex",
-        },
-        "trex_alpha": {
-            "name": "T-Rex Alpha",
-        },
-        "compy": {
-            "name": "Compsognathus",
-        },
-        "carcass": {
-            "name": "Carcass",
-        },
-        "raptor": {
-            "name": "Raptor",
-        },
-        "mutant_1": {
-            "name": "Mutant 1",
-        },
-        "mutant_2": {
-            "name": "Mutant 2",
-        },
-        "mutant_3": {
-            "name": "Mutant 3",
-        },
-        "centaur": {
-            "name": "Centaur",
-        },
-        "mummy": {
-            "name": "Mummy",
-        },
-        "dino_mutant": {
-            "name": "Dino Mutant",
-        },
-        "fish_mutant": {
-            "name": "Mutant Fish",
-        },
-        "larson": {
-            "name": "Larson",
-        },
-        "pierre": {
-            "name": "Pierre",
-        },
-        "skateboard": {
-            "name": "Skateboard",
-        },
-        "skate_kid": {
-            "name": "Skate Kid",
-        },
-        "cowboy": {
-            "name": "Cowboy",
-        },
-        "baldy": {
-            "name": "Baldy",
-        },
-        "natla": {
-            "name": "Natla",
-        },
-        "torso": {
-            "name": [
-                "Torso",
-                "Adam",
-                "Giant Mutant",
-            ]
-        },
-        "dog": {
-            "name": [
-                "Dog",
-                "Doberman",
-            ]
-        },
-        "patrol_dog": {
-            "name": [
-                "Dog",
-                "Patrol Dog",
-            ]
-        },
-        "huskie": {
-            "name": [
-                "Dog",
-                "Patrol Dog",
-                "Huskie",
-            ]
-        },
-        "cult_1": {
-            "name": "Masked Goon 1",
-        },
-        "cult_1a": {
-            "name": "Masked Goon 2",
-        },
-        "cult_1b": {
-            "name": "Masked Goon 3",
-        },
-        "cult_2": {
-            "name": "Knife Thrower",
-        },
-        "cult_3": {
-            "name": "Shotgun Goon",
-        },
-        "mouse": {
-            "name": "Rat",
-        },
-        "monkey": {
-            "name": "Monkey",
-        },
-        "dragon_front": {
-            "name": "Dragon Front",
-        },
-        "dragon_back": {
-            "name": "Dragon Back",
-        },
-        "shark": {
-            "name": "Shark",
-        },
-        "eel": {
-            "name": "Eel",
-        },
-        "big_eel": {
-            "name": "Big Eel",
-        },
-        "barracuda": {
-            "name": "Barracuda",
-        },
-        "diver": {
-            "name": "Scuba Diver",
-        },
-        "worker_1": {
-            "name": "Gunman Goon 1",
-        },
-        "worker_2": {
-            "name": "Gunman Goon 2",
-        },
-        "worker_3": {
-            "name": "Stick Wielding Goon 1",
-        },
-        "worker_4": {
-            "name": "Stick Wielding Goon 2",
-        },
-        "worker_5": {
-            "name": "Flamethrower Goon",
-        },
-        "jelly": {
-            "name": "Jellyfish",
-        },
-        "spider": {
-            "name": "Spider",
-        },
-        "big_spider": {
-            "name": "Giant Spider",
-        },
-        "crow": {
-            "name": "Crow",
-        },
-        "tiger": {
-            "name": "Tiger",
-        },
-        "bartoli": {
-            "name": "Marco Bartoli",
-        },
-        "xian_spearman": {
-            "name": "Xian Spearman",
-        },
-        "xian_spearman_statue": {
-            "name": "Xian Spearman Statue",
-        },
-        "xian_knight": {
-            "name": "Xian Knight",
-        },
-        "xian_knight_statue": {
-            "name": "Xian Knight Statue",
-        },
-        "yeti": {
-            "name": "Yeti",
-        },
-        "bird_guardian": {
-            "name": "Bird Monster",
-        },
-        "eagle": {
-            "name": "Eagle",
-        },
-        "bandit_1": {
-            "name": [
-                "Mercenary 1",
-                "Masked Goon 1",
-            ]
-        },
-        "bandit_2": {
-            "name": [
-                "Mercenary 2",
-                "Masked Goon 2",
-            ]
-        },
-        "bandit_2b": {
-            "name": [
-                "Mercenary 3",
-                "Masked Goon 3",
-            ]
-        },
-        "skidoo_armed": {
-            "name": "Black Snowmobile",
-        },
-        "skidoo_driver": {
-            "name": "Black Snowmobile Driver",
-        },
-        "monk_1": {
-            "name": "Monk 1",
-        },
-        "monk_2": {
-            "name": "Monk 2",
-        },
-        "centaur_statue": {
-            "name": "Centaur Statue",
-        },
-        "pods": {
-            "name": "Pod",
-        },
-        "big_pod": {
-            "name": "Big Pod",
-        },
-        "tony": {
-            "name": "Tony",
-        },
-        "vulture": {
-            "name": "Vulture",
-        },
-        "snake": {
-            "name": [
-                "Snake",
-                "Cobra",
-            ]
-        },
-        "shiva": {
-            "name": "Shiva",
-        },
-        "sthpac_mercenary": {
-            "name": "South Pacific Mercenary",
-        },
-        "tribe_axeman": {
-            "name": "Tribe Axeman",
-        },
-        "tribe_pipeman": {
-            "name": "Tribe Blowpipe User",
-        },
-        "tribe_boss": {
-            "name": "Tribe Boss",
-        },
-        "punk_1": {
-            "name": "Punk 1",
-        },
-        "punk_2": {
-            "name": "Punk 2",
-        },
-        "blade": {
-            "name": "Wall-mounted Blade",
-        },
-        "ceiling_spikes": {
-            "name": "Spiky Ceiling",
-        },
-        "damocles_sword": {
-            "name": "Damocles Sword",
-        },
-        "dart": {
-            "name": "Dart",
-        },
-        "dart_emitter": {
-            "name": "Dart Emitter",
-        },
-        "disc": {
-            "name": "Disc",
-        },
-        "disc_emitter": {
-            "name": "Disc Emitter",
-        },
-        "electric_cleaner": {
-            "name": "Electric Cleaner",
-        },
-        "ember": {
-            "name": "Ember",
-        },
-        "ember_emitter": {
-            "name": "Ember Emitter",
-        },
-        "falling_block_1": {
-            "name": [
-                "Falling Block 1",
-                "Collapsible Floor 1",
-                "Collapsible Tiles 1",
-            ]
-        },
-        "falling_block_2": {
-            "name": [
-                "Falling Block 2",
-                "Collapsible Floor 2",
-                "Collapsible Tiles 2",
-            ]
-        },
-        "falling_block_3": {
-            "name": [
-                "Falling Block 3",
-                "Collapsible Floor 3",
-                "Collapsible Tiles 3",
-            ]
-        },
-        "falling_ceiling_1": {
-            "name": "Falling Ceiling 1",
-        },
-        "falling_ceiling_2": {
-            "name": "Falling Ceiling 2",
-        },
-        "flame": {
-            "name": [
-                "Flame",
-                "Fire",
-            ]
-        },
-        "flame_emitter": {
-            "name": [
-                "Flame Emitter",
-                "Fire Emitter",
-            ]
-        },
-        "flame_emitter_big": {
-            "name": [
-                "Flame Emitter (Big)",
-                "Fire Emitter (Big)",
-            ]
-        },
-        "flame_emitter_small": {
-            "name": [
-                "Flame Emitter (Small)",
-                "Fire Emitter (Small)",
-            ]
-        },
-        "flame_emitter_jet": {
-            "name": [
-                "Flame Emitter (Jet)",
-                "Fire Emitter (Jet)",
-            ]
-        },
-        "flame_emitter_side": {
-            "name": [
-                "Flame Emitter (Side)",
-                "Fire Emitter (Side)",
-            ]
-        },
-        "gondola": {
-            "name": "Gondola",
-        },
-        "hook": {
-            "name": "Hook",
-        },
-        "icicle": {
-            "name": "Icicles",
-        },
-        "killer_statue": {
-            "name": "Statue with Sword",
-        },
-        "lava_wedge": {
-            "name": "Lava Wedge",
-        },
-        "lightning_emitter": {
-            "name": "Lightning Emitter",
-        },
-        "midas_touch": {
-            "name": "Midas Hand",
-        },
-        "mine": {
-            "name": "Aquatic Mine",
-        },
-        "pendulum_1": {
-            "name": [
-                "Pendulum",
-                "Sandbag",
-                "Swinging box",
-            ]
-        },
-        "pendulum_2": {
-            "name": [
-                "Pendulum",
-                "Sandbag",
-                "Swinging box",
-            ]
-        },
-        "poison_dart": {
-            "name": "Poison Dart",
-        },
-        "poison_dart_emitter": {
-            "name": "Poison Dart Emitter",
-        },
-        "power_saw": {
-            "name": "Power Saw",
-        },
-        "propeller_1": {
-            "name": "Airplane Propeller",
-        },
-        "propeller_2": {
-            "name": "Underwater Propeller",
-        },
-        "propeller_3": {
-            "name": "Air Fan",
-        },
-        "rolling_ball_1": {
-            "name": [
-                "Boulder 1",
-                "Rolling Ball 1",
-            ]
-        },
-        "rolling_ball_2": {
-            "name": [
-                "Boulder 2",
-                "Rolling Ball 2",
-            ]
-        },
-        "rolling_ball_3": {
-            "name": [
-                "Boulder 3",
-                "Rolling Ball 3",
-            ]
-        },
-        "rolling_ball_4": {
-            "name": [
-                "Boulder 4",
-                "Rolling Ball 4",
-            ]
-        },
-        "spikes": {
-            "name": "Spikes",
-        },
-        "spike_wall": {
-            "name": "Spike Wall",
-        },
-        "spinning_blade": {
-            "name": "Spinning Blade",
-        },
-        "swinging_axe": {
-            "name": "Swinging Axe",
-        },
-        "teeth_trap": {
-            "name": [
-                "Teeth Trap",
-                "Clang-clang Door",
-            ]
-        },
-        "thors_handle": {
-            "name": "Thor's Hammer Handle",
-        },
-        "thors_head": {
-            "name": "Thor's Hammer",
-        },
-        "electric_fence": {
-            "name": "Electric Fence",
-        },
-        "raptor_emitter": {
-            "name": "Raptor Emitter",
-        },
-        "train": {
-            "name": "Train",
-        },
-        "bat_emitter": {
-            "name": "Bat Emitter",
-        },
-        "bell": {
-            "name": "Bell",
-        },
-        "big_bowl": {
-            "name": "Lava Bowl",
-        },
-        "bridge_flat": {
-            "name": "Bridge Flat",
-        },
-        "bridge_tilt_1": {
-            "name": "Bridge Tilt 1",
-        },
-        "bridge_tilt_2": {
-            "name": "Bridge Tilt 2",
-        },
-        "cog_1": {
-            "name": "Cog 1",
-        },
-        "cog_2": {
-            "name": "Cog 2",
-        },
-        "cog_3": {
-            "name": "Cog 3",
-        },
-        "door_1": {
-            "name": "Door 1",
-        },
-        "door_2": {
-            "name": "Door 2",
-        },
-        "door_3": {
-            "name": "Door 3",
-        },
-        "door_4": {
-            "name": "Door 4",
-        },
-        "door_5": {
-            "name": "Door 5",
-        },
-        "door_6": {
-            "name": "Door 6",
-        },
-        "door_7": {
-            "name": "Door 7",
-        },
-        "door_8": {
-            "name": "Door 8",
-        },
-        "drawbridge": {
-            "name": "Drawbridge",
-        },
-        "general": {
-            "name": "Minisub",
-        },
-        "key_hole_1": {
-            "name": "Keyhole 1",
-        },
-        "key_hole_2": {
-            "name": "Keyhole 2",
-        },
-        "key_hole_3": {
-            "name": "Keyhole 3",
-        },
-        "key_hole_4": {
-            "name": "Keyhole 4",
-        },
-        "kill_all_triggered": {
-            "name": "Kill All Triggered",
-        },
-        "lift": {
-            "name": "Lift",
-        },
-        "movable_block_1": {
-            "name": [
-                "Push Block 1",
-                "Movable Block 1",
-            ]
-        },
-        "movable_block_2": {
-            "name": [
-                "Push Block 2",
-                "Movable Block 2",
-            ]
-        },
-        "movable_block_3": {
-            "name": [
-                "Push Block 3",
-                "Movable Block 3",
-            ]
-        },
-        "movable_block_4": {
-            "name": [
-                "Push Block 4",
-                "Movable Block 4",
-            ]
-        },
-        "moving_bar": {
-            "name": "Moving Bar",
-        },
-        "portacabin": {
-            "name": "Portable Cabin",
-        },
-        "puzzle_done_1": {
-            "name": "Puzzle Hole 1 (Done)",
-        },
-        "puzzle_done_2": {
-            "name": "Puzzle Hole 2 (Done)",
-        },
-        "puzzle_done_3": {
-            "name": "Puzzle Hole 3 (Done)",
-        },
-        "puzzle_done_4": {
-            "name": "Puzzle Hole 4 (Done)",
-        },
-        "puzzle_hole_1": {
-            "name": "Puzzle Hole 1 (Empty)",
-        },
-        "puzzle_hole_2": {
-            "name": "Puzzle Hole 2 (Empty)",
-        },
-        "puzzle_hole_3": {
-            "name": "Puzzle Hole 3 (Empty)",
-        },
-        "puzzle_hole_4": {
-            "name": "Puzzle Hole 4 (Empty)",
-        },
-        "save_crystal": {
-            "name": "Savegame Crystal",
-        },
-        "scion_holder": {
-            "name": "Scion Holder",
-        },
-        "sliding_pillar": {
-            "name": "Sliding Pillar",
-        },
-        "smashable_1": {
-            "name": [
-                "Smashable 1",
-                "Breakable Window 1",
-            ]
-        },
-        "smashable_2": {
-            "name": [
-                "Smashable 2",
-                "Breakable Window 2",
-            ]
-        },
-        "smashable_3": {
-            "name": [
-                "Smashable 3",
-                "Breakable Window 3",
-            ]
-        },
-        "smashable_4": {
-            "name": [
-                "Smashable 4",
-                "Breakable Window 4",
-            ]
-        },
-        "springboard": {
-            "name": "Springboard",
-        },
-        "switch_type_airlock": {
-            "name": "Airlock Switch",
-        },
-        "switch_type_button": {
-            "name": [
-                "Button",
-                "Push Button",
-                "Switch",
-            ]
-        },
-        "switch_type_normal": {
-            "name": [
-                "Lever",
-                "Switch",
-            ]
-        },
-        "switch_type_small": {
-            "name": "Small Switch",
-        },
-        "switch_type_uw": {
-            "name": [
-                "Underwater Lever",
-                "Underwater Switch",
-            ]
-        },
-        "switch_type_wheel": {
-            "name": [
-                "Wheel Switch",
-                "Pulley Switch",
-                "Valve Switch",
-            ]
-        },
-        "trapdoor_1": {
-            "name": "Trapdoor 1",
-        },
-        "trapdoor_2": {
-            "name": "Trapdoor 2",
-        },
-        "trapdoor_3": {
-            "name": "Trapdoor 3",
-        },
-        "zipline_handle": {
-            "name": "Zipline Handle",
-        },
-        "electrical_light": {
-            "name": "Electrical Light",
-        },
-        "red_light": {
-            "name": "Red Light",
-        },
-        "green_light": {
-            "name": "Green Light",
-        },
-        "blue_light": {
-            "name": "Blue Light",
-        },
-        "amber_light": {
-            "name": "Amber Light",
-        },
-        "white_light": {
-            "name": "White Light",
-        },
-        "on_off_light": {
-            "name": "On/Off Light",
-        },
-        "pulse_light": {
-            "name": "Pulse Light",
-        },
-        "strobe_light": {
-            "name": "Strobe Light",
-        },
-        "beacon_light": {
-            "name": "Beacon Light",
-        },
-        "smoke_emitter_white": {
-            "name": "Smoke Emitter (White)",
-        },
-        "smoke_emitter_black": {
-            "name": "Smoke Emitter (Black)",
-        },
-        "steam_emitter": {
-            "name": "Steam Emitter",
-        },
-        "alarm_sound": {
-            "name": "Alarm",
-        },
-        "alphabet": {
-            "name": "Default font",
-        },
-        "alphabet_small": {
-            "name": "Small font",
-        },
-        "assault_digits": {
-            "name": "Assault Digits",
-        },
-        "assault_target": {
-            "name": "Assault Target",
-        },
-        "bird_tweeter_1": {
-            "name": "Dripping Water",
-        },
-        "bird_tweeter_2": {
-            "name": "Singing Birds",
-        },
-        "blood_1": {
-            "name": "Blood 1",
-        },
-        "blood_2": {
-            "name": "Blood 2",
-        },
-        "boat_bits": {
-            "name": "Boat Bits",
-        },
-        "body_part": {
-            "name": "Body Part",
-        },
-        "bubble_1": {
-            "name": "Bubble 1",
-        },
-        "bubble_2": {
-            "name": "Bubble 2",
-        },
-        "bubble_emitter": {
-            "name": "Bubble Emitter",
-        },
-        "camera_target": {
-            "name": "Camera Target",
-        },
-        "clock_chimes": {
-            "name": "Bartoli Hideout clock",
-        },
-        "combat_end": {
-            "name": "Combat End",
-        },
-        "copter": {
-            "name": "Helicopter",
-        },
-        "cut_shotgun": {
-            "name": "Shotgun Shower Animation",
-        },
-        "dart_effect": {
-            "name": "Dart Effect",
-        },
-        "detonator_box": {
-            "name": "Detonator Box",
-        },
-        "ding_dong": {
-            "name": "Doorbell",
-        },
-        "dragon_bones_1": {
-            "name": "Placeholder",
-        },
-        "dragon_bones_2": {
-            "name": "Dragon Bones Front",
-        },
-        "dragon_bones_3": {
-            "name": "Dragon Bones Back",
-        },
-        "dust": {
-            "name": "Dust",
-        },
-        "dying_monk": {
-            "name": "Dying monk",
-        },
-        "earthquake": {
-            "name": "Earthquake",
-        },
-        "explosion_1": {
-            "name": "Explosion 1",
-        },
-        "explosion_2": {
-            "name": "Explosion 2",
-        },
-        "flare_fire": {
-            "name": "Flare sparks",
-        },
-        "fx_reserved": {
-            "name": "Gray disk",
-        },
-        "glow": {
-            "name": "Glow",
-        },
-        "glow_reserved": {
-            "name": "Map Glow",
-        },
-        "gong": {
-            "name": "Gong",
-        },
-        "gong_bonger": {
-            "name": "Gong Stick",
-        },
-        "gun_flash": {
-            "name": "Gun Flash",
-        },
-        "gun_shell": {
-            "name": "Gun Shell",
-        },
-        "shotgun_shell": {
-            "name": "Shotgun Shell",
-        },
-        "harpoon_bolt": {
-            "name": "Harpoon Bolt",
-        },
-        "hot_liquid": {
-            "name": "Extra Fire",
-        },
-        "shadow": {
-            "name": "Shadow",
-        },
-        "inv_background": {
-            "name": "Menu Background",
-        },
-        "lara_alarm": {
-            "name": "Alarm Bell",
-        },
-        "m16_flash": {
-            "name": "M16 Flash",
-        },
-        "mesh_swap_1": {
-            "name": "Mesh Swap 1",
-        },
-        "mesh_swap_2": {
-            "name": "Mesh Swap 2",
-        },
-        "mesh_swap_3": {
-            "name": "Mesh Swap 3",
-        },
-        "mini_copter": {
-            "name": "Helicopter 2",
-        },
-        "natla_gun": {
-            "name": "Natla's Gun",
-        },
-        "missile_atlantean_shard": {
-            "name": "Missile (Atlantean Shard)",
-        },
-        "missile_atlantean_bomb": {
-            "name": "Missile (Atlantean Bomb)",
-        },
-        "missile_flame": {
-            "name": "Missile (Flame)",
-        },
-        "missile_poison": {
-            "name": "Missile (Poison)",
-        },
-        "missile_harpoon": {
-            "name": "Missile (Harpoon)",
-        },
-        "missile_knife": {
-            "name": "Missile (Knife)",
-        },
-        "pickup_aid": {
-            "name": "Pickup Aid",
-        },
-        "player_1": {
-            "name": "Cutscene Actor 1",
-        },
-        "player_2": {
-            "name": "Cutscene Actor 2",
-        },
-        "player_3": {
-            "name": "Cutscene Actor 3",
-        },
-        "player_4": {
-            "name": "Cutscene Actor 4",
-        },
-        "player_5": {
-            "name": "Cutscene Actor 5",
-        },
-        "player_6": {
-            "name": "Cutscene Actor 6",
-        },
-        "player_7": {
-            "name": "Cutscene Actor 7",
-        },
-        "player_8": {
-            "name": "Cutscene Actor 8",
-        },
-        "player_9": {
-            "name": "Cutscene Actor 9",
-        },
-        "player_10": {
-            "name": "Cutscene Actor 10",
-        },
-        "rocket": {
-            "name": "Rocket",
-        },
-        "ricochet": {
-            "name": "Ricochet",
-        },
-        "skidoo_track": {
-            "name": "Snowmobile Track",
-        },
-        "skybox": {
-            "name": "Skybox",
-        },
-        "snow_sprite": {
-            "name": "Snowmobile Wake",
-        },
-        "sphere_of_doom_1": {
-            "name": "Dragon Explosion 1",
-        },
-        "sphere_of_doom_2": {
-            "name": "Dragon Explosion 2",
-        },
-        "sphere_of_doom_3": {
-            "name": "Dragon Explosion 3",
-        },
-        "splash_1": {
-            "name": "Water Ripples 1",
-        },
-        "splash_2": {
-            "name": "Water Ripples 2",
-        },
-        "text_box": {
-            "name": "UI Frame",
-        },
-        "twinkle": {
-            "name": "Sparkles",
-        },
-        "waterfall": {
-            "name": "Waterfall Mist",
-        },
-        "water_sprite": {
-            "name": "Boat Wake",
-        },
-        "winston": {
-            "name": "Winston",
-        },
-        "winston_army": {
-            "name": "Winston (army)",
-        },
-        "animating_1": {
-            "name": "Animating Object 1",
-        },
-        "animating_2": {
-            "name": "Animating Object 2",
-        },
-        "animating_3": {
-            "name": "Animating Object 3",
-        },
-        "animating_4": {
-            "name": "Animating Object 4",
-        },
-        "animating_5": {
-            "name": "Animating Object 5",
-        },
-        "animating_6": {
-            "name": "Animating Object 6",
-        },
-        "tropical_fish": {
-            "name": "Tropical Fish",
-        },
-        "pirahnas": {
-            "name": "Pirahnas",
+            "exit_game": "Exit Game",
+            "exit_to_title": "Exit to Title",
+            "load_game": "Load Game",
+            "mode_new_game": "New Game",
+            "mode_new_game_jp": "Japanese NG",
+            "mode_new_game_jp_plus": "Japanese NG+",
+            "mode_new_game_plus": "New Game+",
+            "new_game": "New Game",
+            "play_previous_levels": "Play previous levels",
+            "restart_level": "Restart Level",
+            "save_game": "Save Game",
+            "save_slot_unsupported": "This save does not support this feature.",
+            "select_level": "Select Level",
+            "select_mode": "Select Mode",
+            "select_save": "Select Save",
+            "story_so_far": "Story so far...",
+        },
+        "pause": {
+            "are_you_sure": "Are you sure?",
+            "continue": "Continue",
+            "exit_to_title": "Exit to title?",
+            "no": "No",
+            "paused": "Paused",
+            "quit": "Quit",
+            "yes": "Yes",
+        },
+        "photo_mode": {
+            "advance_frame": "Advance frame",
+            "camera_move_prompt": "Move camera",
+            "camera_reset_prompt": "Reset camera",
+            "camera_roll_prompt": "Roll camera",
+            "camera_rotate_90_prompt": "Rotate camera 90°",
+            "camera_rotate_prompt": "Rotate camera",
+            "change_lara_pose": "Change Lara's pose",
+            "fov_prompt": "Adjust FOV",
+            "lara_move_prompt": "Move Lara",
+            "lara_reset_prompt": "Reset Lara",
+            "lara_roll_prompt": "Roll Lara",
+            "lara_rotate_90_prompt": "Rotate Lara 90°",
+            "lara_rotate_prompt": "Rotate Lara",
+            "snap_prompt": "Take picture",
+            "title_camera_pos": "Photo Mode",
+            "title_lara_pos": "Moving Lara",
+            "toggle_help": "Toggle help",
+        },
+        "settings": {
+            "common": {
+                "all_hidden_disclaimer": "Settings are disabled for this level set.",
+                "chroma": "Chroma",
+                "edit_value": "Edit value",
+                "frozen_option_disclaimer": "This setting is enforced by the level builder and cannot be changed.",
+                "hue": "Hue",
+                "lightness": "Lightness",
+                "restore_default": "Restore default",
+                "toggle_help": "Toggle help",
+            },
+            "controls": {
+                "backend": {
+                    "controller": "Controller",
+                    "keyboard": "Keyboard",
+                },
+                "customize": "Customize Controls",
+                "layout": {
+                    "custom_1": "User Keys 1",
+                    "custom_2": "User Keys 2",
+                    "custom_3": "User Keys 3",
+                    "default": "Default Keys",
+                },
+                "tabs": {
+                    "basics": "Movement",
+                    "items": "Items",
+                    "misc": "Misc",
+                    "system": "System",
+                }
+            },
+            "gameplay": {
+                "tabs": {
+                    "controls": "Controls",
+                    "fixes": "Fixes",
+                    "general": "General",
+                    "mods": "Mods",
+                    "presets": "Presets",
+                },
+                "title": "Gameplay Options",
+            },
+            "graphic_settings": {
+                "tabs": {
+                    "bars": "Bars",
+                    "rendering": "Rendering",
+                    "ui": "UI",
+                    "visuals": "Visuals",
+                },
+                "title": "Graphic Options",
+            },
+            "sound": {
+                "tabs": {
+                    "misc": "Misc",
+                    "volume": "Volume",
+                },
+                "title": "Sound Options",
+            }
+        },
+        "stats": {
+            "ammo": "Ammo Hits/Used",
+            "ammo_hits": "Hits",
+            "ammo_used": "Ammo Used",
+            "assault_best_time_fmt": "%s",
+            "assault_finish": "Finish",
+            "assault_no_times_set": "No Times Set",
+            "assault_other_times_fmt": "%s",
+            "assault_title": "BEST TIMES",
+            "basic_fmt": "%d",
+            "bonus_statistics": "Bonus Statistics",
+            "deaths": "Deaths",
+            "detail_fmt": "%d of %d",
+            "distance_travelled": "Distance Traveled",
+            "final_statistics": "Final Statistics",
+            "gym_assault_course": "Assault Course",
+            "gym_racetrack_course": "Race Track Course",
+            "kills": "Kills",
+            "level": "Level",
+            "medipacks_used": "Health Packs Used",
+            "none": "None",
+            "pickups": "Pickups",
+            "secrets": "Secrets Found",
+            "time_taken": "Time Taken",
+        }
+    },
+    "console": {
+        "cmd": {
+            "braid": {
+                "help": "Toggles Lara's braid.",
+            },
+            "cheats": {
+                "help": "Toggles in-game cheats on or off.",
+            },
+            "clear": {
+                "help": "Clears visible console logs.",
+            },
+            "debug": {
+                "help": "Toggles visual debug information.",
+            },
+            "drain": {
+                "help": "Dries the current room, removing the water.",
+            },
+            "end_level": {
+                "help": "Ends the current level.",
+            },
+            "exit": {
+                "help": "Exits the game.",
+            },
+            "flipmap": {
+                "help": "Toggles the flip map.",
+            },
+            "flood": {
+                "help": "Submerges the current room with water.",
+            },
+            "fly": {
+                "help": "Toggles the fly-mode cheat.",
+            },
+            "fps": {
+                "help": "Changes the FPS value.",
+            },
+            "give": {
+                "help": "Adds a given item to Lara's inventory.",
+                "invalid_secret": "Invalid secret: %s (valid secrets: %s)",
+                "secret_given": "Added secret %s",
+                "secret_list": "Secrets collected: %d of %d (%s)",
+                "secret_none": "Secrets collected: %d of %d",
+                "secret_taken": "Removed secret %s",
+            },
+            "give_secret": {
+                "help": "Lists Lara's secrets, or takes/gives a secret by number.",
+            },
+            "heal": {
+                "help": "Heals Lara back to full health.",
+            },
+            "help": {
+                "help": "Shows help for all commands or detailed help for one.",
+                "list": "Available commands:",
+            },
+            "hp": {
+                "help": "Sets Lara's health to the specified value.",
+            },
+            "immune": {
+                "help": "Toggles invulnerability. (Lara can still be killed in some circumstances.)",
+                "off": "Lara is now vulnerable",
+                "on": "Lara is now impervious to damage",
+            },
+            "inf_sprint": {
+                "help": "Toggles infinite sprint.",
+                "off": "Lara can no longer sprint forever",
+                "on": "Lara can now sprint forever",
+            },
+            "kill": {
+                "help": "Kills nearby enemies.",
+            },
+            "lighting": {
+                "help": "Toggles lighting system.",
+            },
+            "load": {
+                "help": "Loads game from the given save slot or from a quick save.",
+            },
+            "lua": {
+                "help": "Executes the given Lua code string.",
+                "runtime_error": "Lua runtime error: %s",
+                "syntax_error": "Lua syntax error: %s",
+            },
+            "mod": {
+                "help": "Switches to the specified mod and restarts the game.",
+            },
+            "music": {
+                "help": "Plays a music track with the given id.",
+            },
+            "play_cutscene": {
+                "help": "Plays a cutscene with the given number.",
+            },
+            "play_demo": {
+                "help": "Plays a demo with the given number.",
+            },
+            "play_gym": {
+                "help": "Plays the Gym level.",
+            },
+            "play_level": {
+                "help": "Plays a level with the given name or number.",
+            },
+            "play_music": {
+                "invalid_track": "Invalid music track",
+                "stopped": "Music stopped",
+                "track": "Playing music track %d",
+            },
+            "pos": {
+                "help": "Shows Lara's position.",
+            },
+            "save": {
+                "help": "Saves game to the given save slot or to the next quick save slot.",
+            },
+            "screenshot": {
+                "help": "Saves a screenshot to disk at optional location.",
+            },
+            "set": {
+                "help": "Displays or updates the given configuration setting.",
+            },
+            "sfx": {
+                "help": "Plays a sound effect with the given id.",
+            },
+            "spawn": {
+                "fail": "Failed to spawn requested object",
+                "success": "Requested object spawned near Lara",
+            },
+            "speed": {
+                "help": "Changes the game's speed.",
+            },
+            "strings": {
+                "help": "Reloads the current language files from disk.",
+            },
+            "teleport": {
+                "item": "Teleported to item: %d",
+                "item_fail": "Failed to teleport to item: %d",
+                "object": "Teleported to object: %s",
+                "object_fail": "Failed to teleport to object: %s",
+                "pos": "Teleported to position: %.3f %.3f %.3f",
+                "pos_fail": "Failed to teleport to position: %.3f %.3f %.3f",
+                "room": "Teleported to room: %d",
+                "room_fail": "Failed to teleport to room: %d",
+            },
+            "textures": {
+                "help": "Toggles textures.",
+            },
+            "title": {
+                "help": "Returns to the title screen.",
+            },
+            "tp": {
+                "help": "Teleports Lara to a given position or room number.",
+            },
+            "trigger": {
+                "help": "Triggers or untriggers an item by id, item name, or object name.",
+                "invalid_item": "Invalid item: %s",
+                "no_match": "Unknown target: %s",
+                "not_found": "No matching items found for: %s",
+                "triggered": "Triggered item(s): %s",
+                "untriggered": "Untriggered item(s): %s",
+            },
+            "vsync": {
+                "help": "Toggles vertical sync.",
+            },
+            "weather": {
+                "help": "Changes the current weather type.",
+                "invalid": "Invalid weather: %s (valid: %s)",
+                "set": "Weather set to %s",
+            },
+            "winston": {
+                "dead": "Your butler is dead. You monster!",
+                "spawn_failed": "Failed to summon Winston",
+                "spawned": "Summoned Winston near Lara",
+                "teleported": "Summoned Winston near Lara",
+            },
+            "wireframe": {
+                "help": "Toggles wireframe rendering.",
+            }
+        }
+    },
+    "dynamic": {
+        "config_presets": {
+            "tr1_pc": "TR1 PC",
+            "tr1_ps1": "TR1 PS1",
+            "tr2_pc": "TR2 PC",
+            "tr2_ps1": "TR2 PS1",
+            "tr3_pc": "TR3 PC",
+            "tr3_ps1": "TR3 PS1",
+        },
+        "enums": {
+            "bar_look": {
+                "tr1_pc": "TR1 PC",
+                "tr2_pc": "TR2 PC",
+                "tr2_ps1": "TR2 PS1",
+                "tr3_pc": "TR3 PC",
+                "tr3_ps1": "TR3 PS1",
+            },
+            "lara_outfit": {
+                "default": "Default",
+                "tr1_bacon_lara": "Bacon Lara",
+                "tr1_classic": "TR1 Classic",
+                "tr1_combo": "TR1 Combo",
+                "tr1_golden_bacon_lara": "Golden Bacon Lara",
+                "tr1_golden_lara": "TR1 Golden Lara",
+                "tr1_gym": "TR1 Gym",
+                "tr1_mauled": "TR1 Mauled",
+                "tr23_golden_lara": "TR2/3 Golden Lara",
+                "tr2_bomber_jacket": "Bomber Jacket",
+                "tr2_classic": "TR2 Classic",
+                "tr2_diving_suit": "Diving Suit",
+                "tr2_gym": "TR2 Gym",
+                "tr2_robe": "Robe",
+                "tr2_vegas": "Vegas",
+                "tr3_antarctica": "Antarctica",
+                "tr3_catsuit": "Catsuit",
+                "tr3_classic": "TR3 Classic",
+                "tr3_gym": "TR3 Gym",
+                "tr3_nevada": "Nevada",
+                "tr3_south_pacific": "South Pacific",
+            }
+        }
+    },
+    "enums": {
+        "ALLY_HOSTILITY_POLICY": {
+            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "Individual",
+            "ALLY_HOSTILITY_POLICY_SHARED": "Shared",
+        },
+        "ASPECT_MODE": {
+            "ASPECT_MODE_16_10": "16:10",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_ANY": "Any",
+        },
+        "BACKGROUND_TYPE": {
+            "BK_BLACK": "Black",
+            "BK_IMAGE": "Image",
+            "BK_MONOCHROME": "Monochrome",
+            "BK_MONOCHROME_COOL": "Monochrome (cool)",
+            "BK_MONOCHROME_WARM": "Monochrome (warm)",
+            "BK_NONE": "Transparent",
+            "BK_PATTERN_STATIC": "Static",
+            "BK_PATTERN_WAVE": "Wave",
+            "BK_TRANSPARENT_DARK": "Very dark",
+            "BK_TRANSPARENT_MEDIUM": "Dark",
+        },
+        "BAR_SHOW_MODE": {
+            "BAR_SHOW_MODE_ALWAYS": "Always",
+            "BAR_SHOW_MODE_BOSS_ONLY": "Boss only",
+            "BAR_SHOW_MODE_NEVER": "Never",
+        },
+        "BILLBOARD_LOCK_MODE": {
+            "BILLBOARD_LOCK_NONE": "None",
+            "BILLBOARD_LOCK_PERSPECTIVE": "Perspective",
+            "BILLBOARD_LOCK_ROLL": "Roll",
+            "BILLBOARD_LOCK_ROLL_PITCH": "Roll & pitch",
+        },
+        "CAMERA_MODE": {
+            "CAMERA_MODE_TR1": "TR1",
+            "CAMERA_MODE_TR2": "TR2",
+            "CAMERA_MODE_TR3": "TR3",
+        },
+        "INPUT_BACKEND": {
+            "INPUT_BACKEND_CONTROLLER": "Controller",
+            "INPUT_BACKEND_KEYBOARD": "Keyboard",
+        },
+        "INPUT_ROLE": {
+            "INPUT_ROLE_ACTION": "Action",
+            "INPUT_ROLE_CAMERA_BACK": "Camera Back",
+            "INPUT_ROLE_CAMERA_DOWN": "Camera Down",
+            "INPUT_ROLE_CAMERA_FORWARD": "Camera Forward",
+            "INPUT_ROLE_CAMERA_LEFT": "Camera Left",
+            "INPUT_ROLE_CAMERA_RESET": "Camera Reset",
+            "INPUT_ROLE_CAMERA_RIGHT": "Camera Right",
+            "INPUT_ROLE_CAMERA_UP": "Camera Up",
+            "INPUT_ROLE_CHANGE_OUTFIT": "Change Outfit",
+            "INPUT_ROLE_CHANGE_TARGET": "Change Target",
+            "INPUT_ROLE_CROUCH": "Crouch",
+            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cycle Lighting Contrast",
+            "INPUT_ROLE_DOWN": "Back",
+            "INPUT_ROLE_DRAW_WEAPON": "Draw Weapon",
+            "INPUT_ROLE_ENTER_CONSOLE": "Dev Console",
+            "INPUT_ROLE_EQUIP_AUTOS": "Equip Automatic Pistols",
+            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "Equip Desert Eagle",
+            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
+            "INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
+            "INPUT_ROLE_EQUIP_M16": "Equip M16",
+            "INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
+            "INPUT_ROLE_EQUIP_MP5": "Equip MP5",
+            "INPUT_ROLE_EQUIP_PISTOLS": "Equip Pistols",
+            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Equip Rocket Launcher",
+            "INPUT_ROLE_EQUIP_SHOTGUN": "Equip Shotgun",
+            "INPUT_ROLE_EQUIP_UZIS": "Equip Uzis",
+            "INPUT_ROLE_FLY_CHEAT": "Fly Cheat",
+            "INPUT_ROLE_FPS": "Show FPS",
+            "INPUT_ROLE_INVENTORY": "Inventory",
+            "INPUT_ROLE_ITEM_CHEAT": "Item Cheat",
+            "INPUT_ROLE_JUMP": "Jump",
+            "INPUT_ROLE_LEFT": "Left",
+            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Level Skip",
+            "INPUT_ROLE_LOAD": "Load",
+            "INPUT_ROLE_LOOK": "Look",
+            "INPUT_ROLE_PAUSE": "Pause",
+            "INPUT_ROLE_QUICK_LOAD": "Quick Load",
+            "INPUT_ROLE_QUICK_SAVE": "Quick Save",
+            "INPUT_ROLE_RIGHT": "Right",
+            "INPUT_ROLE_ROLL": "Roll",
+            "INPUT_ROLE_SAVE": "Save",
+            "INPUT_ROLE_SCREENSHOT": "Screenshot",
+            "INPUT_ROLE_SLOW": "Walk",
+            "INPUT_ROLE_SPRINT": "Sprint",
+            "INPUT_ROLE_STEP_LEFT": "Step Left",
+            "INPUT_ROLE_STEP_RIGHT": "Step Right",
+            "INPUT_ROLE_SWITCH_BORDERS": "Switch Borders Size",
+            "INPUT_ROLE_SWITCH_UPSCALING": "Switch Upscaling Factor",
+            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Toggle Bilinear Filter",
+            "INPUT_ROLE_TOGGLE_FULLSCREEN": "Toggle Fullscreen",
+            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Toggle Photo Mode",
+            "INPUT_ROLE_TOGGLE_TEXTURES": "Toggle Textures",
+            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Toggle Trapezoid Filter",
+            "INPUT_ROLE_TOGGLE_UI": "Toggle UI",
+            "INPUT_ROLE_TOGGLE_WIREFRAME": "Toggle Wireframe",
+            "INPUT_ROLE_TURBO_CHEAT": "Turbo Speed",
+            "INPUT_ROLE_UP": "Run",
+            "INPUT_ROLE_USE_BIG_MEDI": "Large Medi",
+            "INPUT_ROLE_USE_FLARE": "Flare",
+            "INPUT_ROLE_USE_SMALL_MEDI": "Small Medi",
+        },
+        "JUMP_LOCK_MODE": {
+            "JUMP_LOCK_DISABLED": "Disabled",
+            "JUMP_LOCK_LEGACY": "Legacy",
+            "JUMP_LOCK_TUNED": "Tuned",
+        },
+        "LIGHTING_CONTRAST": {
+            "LIGHTING_CONTRAST_HIGH": "High",
+            "LIGHTING_CONTRAST_LOW": "Low",
+            "LIGHTING_CONTRAST_MEDIUM": "Medium",
+        },
+        "LOADING_SCREENS_MODE": {
+            "LOADING_SCREENS_ALWAYS": "Always",
+            "LOADING_SCREENS_DISABLED": "Disabled",
+            "LOADING_SCREENS_NEW_GAMES": "New games",
+        },
+        "LOOK_MODE": {
+            "LOOK_MODE_ENHANCED": "Enhanced",
+            "LOOK_MODE_RESTRICTED": "Restricted",
+            "LOOK_MODE_UNRESTRICTED": "Unrestricted",
+        },
+        "MUSIC_LOAD_CONDITION": {
+            "MUSIC_LOAD_CONDITION_ALWAYS": "Always",
+            "MUSIC_LOAD_CONDITION_NEVER": "Never",
+            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Non-ambient",
+        },
+        "PROJECTILE_AREA_DAMAGE": {
+            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "Multi-sweep",
+            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "Single-sweep",
+        },
+        "QUICK_GUNS_MODE": {
+            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Draw or holster",
+            "QUICK_GUNS_MODE_DRAW_ONLY": "Draw only",
+        },
+        "SCREENSHOT_FORMAT": {
+            "SCREENSHOT_FORMAT_JPEG": "JPG",
+            "SCREENSHOT_FORMAT_PNG": "PNG",
+        },
+        "SHADOW_TYPE": {
+            "SHADOW_TYPE_CIRCLE": "Circle",
+            "SHADOW_TYPE_OCTAGON": "Octagon",
+            "SHADOW_TYPE_SPRITE": "Sprite",
+        },
+        "STAT_DETAIL_MODE": {
+            "STAT_DETAIL_MODE_DETAILED": "Detailed",
+            "STAT_DETAIL_MODE_FULL": "Full",
+            "STAT_DETAIL_MODE_MINIMAL": "Minimal",
+        },
+        "TARGET_LOCK_MODE": {
+            "TARGET_LOCK_MODE_FULL": "Full lock",
+            "TARGET_LOCK_MODE_NONE": "No lock",
+            "TARGET_LOCK_MODE_SEMI": "Semi lock",
+        },
+        "TEXTURE_FILTER": {
+            "TEXTURE_FILTER_BILINEAR": "Bilinear",
+            "TEXTURE_FILTER_POINT": "Point",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bottom center",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Bottom left",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Bottom right",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Top center",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Top left",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Top right",
+        },
+        "UI_STYLE": {
+            "UI_STYLE_PC": "PC",
+            "UI_STYLE_PS1": "PS1",
+        },
+        "WALL_GLITCH_MODE": {
+            "WALL_GLITCH_FIXED": "Fixed",
+            "WALL_GLITCH_TR1": "TR1",
+            "WALL_GLITCH_TR2": "TR2",
         }
     },
     "settings": {
@@ -2392,217 +1481,1272 @@
             "description": "Color of the water.",
         }
     },
-    "enums": {
-        "ALLY_HOSTILITY_POLICY": {
-            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "Individual",
-            "ALLY_HOSTILITY_POLICY_SHARED": "Shared",
+    "objects": {
+        "alarm_sound": {
+            "name": "Alarm",
         },
-        "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
-            "ASPECT_MODE_4_3": "4:3",
-            "ASPECT_MODE_ANY": "Any",
+        "alligator": {
+            "name": "Alligator",
         },
-        "BACKGROUND_TYPE": {
-            "BK_BLACK": "Black",
-            "BK_IMAGE": "Image",
-            "BK_MONOCHROME": "Monochrome",
-            "BK_MONOCHROME_COOL": "Monochrome (cool)",
-            "BK_MONOCHROME_WARM": "Monochrome (warm)",
-            "BK_NONE": "Transparent",
-            "BK_PATTERN_STATIC": "Static",
-            "BK_PATTERN_WAVE": "Wave",
-            "BK_TRANSPARENT_DARK": "Very dark",
-            "BK_TRANSPARENT_MEDIUM": "Dark",
+        "alphabet": {
+            "name": "Default font",
         },
-        "BAR_SHOW_MODE": {
-            "BAR_SHOW_MODE_ALWAYS": "Always",
-            "BAR_SHOW_MODE_BOSS_ONLY": "Boss only",
-            "BAR_SHOW_MODE_NEVER": "Never",
+        "alphabet_small": {
+            "name": "Small font",
         },
-        "BILLBOARD_LOCK_MODE": {
-            "BILLBOARD_LOCK_NONE": "None",
-            "BILLBOARD_LOCK_PERSPECTIVE": "Perspective",
-            "BILLBOARD_LOCK_ROLL": "Roll",
-            "BILLBOARD_LOCK_ROLL_PITCH": "Roll & pitch",
+        "amber_light": {
+            "name": "Amber Light",
         },
-        "CAMERA_MODE": {
-            "CAMERA_MODE_TR1": "TR1",
-            "CAMERA_MODE_TR2": "TR2",
-            "CAMERA_MODE_TR3": "TR3",
+        "animating_1": {
+            "name": "Animating Object 1",
         },
-        "INPUT_BACKEND": {
-            "INPUT_BACKEND_CONTROLLER": "Controller",
-            "INPUT_BACKEND_KEYBOARD": "Keyboard",
+        "animating_2": {
+            "name": "Animating Object 2",
         },
-        "INPUT_ROLE": {
-            "INPUT_ROLE_ACTION": "Action",
-            "INPUT_ROLE_CAMERA_BACK": "Camera Back",
-            "INPUT_ROLE_CAMERA_DOWN": "Camera Down",
-            "INPUT_ROLE_CAMERA_FORWARD": "Camera Forward",
-            "INPUT_ROLE_CAMERA_LEFT": "Camera Left",
-            "INPUT_ROLE_CAMERA_RESET": "Camera Reset",
-            "INPUT_ROLE_CAMERA_RIGHT": "Camera Right",
-            "INPUT_ROLE_CAMERA_UP": "Camera Up",
-            "INPUT_ROLE_CHANGE_OUTFIT": "Change Outfit",
-            "INPUT_ROLE_CHANGE_TARGET": "Change Target",
-            "INPUT_ROLE_CROUCH": "Crouch",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cycle Lighting Contrast",
-            "INPUT_ROLE_DOWN": "Back",
-            "INPUT_ROLE_DRAW_WEAPON": "Draw Weapon",
-            "INPUT_ROLE_ENTER_CONSOLE": "Dev Console",
-            "INPUT_ROLE_EQUIP_AUTOS": "Equip Automatic Pistols",
-            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "Equip Desert Eagle",
-            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Equip Grenade Launcher",
-            "INPUT_ROLE_EQUIP_HARPOON": "Equip Harpoon Gun",
-            "INPUT_ROLE_EQUIP_M16": "Equip M16",
-            "INPUT_ROLE_EQUIP_MAGNUMS": "Equip Magnums",
-            "INPUT_ROLE_EQUIP_MP5": "Equip MP5",
-            "INPUT_ROLE_EQUIP_PISTOLS": "Equip Pistols",
-            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "Equip Rocket Launcher",
-            "INPUT_ROLE_EQUIP_SHOTGUN": "Equip Shotgun",
-            "INPUT_ROLE_EQUIP_UZIS": "Equip Uzis",
-            "INPUT_ROLE_FLY_CHEAT": "Fly Cheat",
-            "INPUT_ROLE_FPS": "Show FPS",
-            "INPUT_ROLE_INVENTORY": "Inventory",
-            "INPUT_ROLE_ITEM_CHEAT": "Item Cheat",
-            "INPUT_ROLE_JUMP": "Jump",
-            "INPUT_ROLE_LEFT": "Left",
-            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Level Skip",
-            "INPUT_ROLE_LOAD": "Load",
-            "INPUT_ROLE_LOOK": "Look",
-            "INPUT_ROLE_PAUSE": "Pause",
-            "INPUT_ROLE_QUICK_LOAD": "Quick Load",
-            "INPUT_ROLE_QUICK_SAVE": "Quick Save",
-            "INPUT_ROLE_RIGHT": "Right",
-            "INPUT_ROLE_ROLL": "Roll",
-            "INPUT_ROLE_SAVE": "Save",
-            "INPUT_ROLE_SCREENSHOT": "Screenshot",
-            "INPUT_ROLE_SLOW": "Walk",
-            "INPUT_ROLE_SPRINT": "Sprint",
-            "INPUT_ROLE_STEP_LEFT": "Step Left",
-            "INPUT_ROLE_STEP_RIGHT": "Step Right",
-            "INPUT_ROLE_SWITCH_BORDERS": "Switch Borders Size",
-            "INPUT_ROLE_SWITCH_UPSCALING": "Switch Upscaling Factor",
-            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Toggle Bilinear Filter",
-            "INPUT_ROLE_TOGGLE_FULLSCREEN": "Toggle Fullscreen",
-            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Toggle Photo Mode",
-            "INPUT_ROLE_TOGGLE_TEXTURES": "Toggle Textures",
-            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Toggle Trapezoid Filter",
-            "INPUT_ROLE_TOGGLE_UI": "Toggle UI",
-            "INPUT_ROLE_TOGGLE_WIREFRAME": "Toggle Wireframe",
-            "INPUT_ROLE_TURBO_CHEAT": "Turbo Speed",
-            "INPUT_ROLE_UP": "Run",
-            "INPUT_ROLE_USE_BIG_MEDI": "Large Medi",
-            "INPUT_ROLE_USE_FLARE": "Flare",
-            "INPUT_ROLE_USE_SMALL_MEDI": "Small Medi",
+        "animating_3": {
+            "name": "Animating Object 3",
         },
-        "JUMP_LOCK_MODE": {
-            "JUMP_LOCK_DISABLED": "Disabled",
-            "JUMP_LOCK_LEGACY": "Legacy",
-            "JUMP_LOCK_TUNED": "Tuned",
+        "animating_4": {
+            "name": "Animating Object 4",
         },
-        "LIGHTING_CONTRAST": {
-            "LIGHTING_CONTRAST_HIGH": "High",
-            "LIGHTING_CONTRAST_LOW": "Low",
-            "LIGHTING_CONTRAST_MEDIUM": "Medium",
+        "animating_5": {
+            "name": "Animating Object 5",
         },
-        "LOADING_SCREENS_MODE": {
-            "LOADING_SCREENS_ALWAYS": "Always",
-            "LOADING_SCREENS_DISABLED": "Disabled",
-            "LOADING_SCREENS_NEW_GAMES": "New games",
+        "animating_6": {
+            "name": "Animating Object 6",
         },
-        "LOOK_MODE": {
-            "LOOK_MODE_ENHANCED": "Enhanced",
-            "LOOK_MODE_RESTRICTED": "Restricted",
-            "LOOK_MODE_UNRESTRICTED": "Unrestricted",
+        "ape": {
+            "name": "Ape",
         },
-        "MUSIC_LOAD_CONDITION": {
-            "MUSIC_LOAD_CONDITION_ALWAYS": "Always",
-            "MUSIC_LOAD_CONDITION_NEVER": "Never",
-            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Non-ambient",
+        "assault_digits": {
+            "name": "Assault Digits",
         },
-        "PROJECTILE_AREA_DAMAGE": {
-            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "Multi-sweep",
-            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "Single-sweep",
+        "assault_target": {
+            "name": "Assault Target",
         },
-        "QUICK_GUNS_MODE": {
-            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Draw or holster",
-            "QUICK_GUNS_MODE_DRAW_ONLY": "Draw only",
+        "autos": {
+            "name": "Automatic Pistols",
         },
-        "SCREENSHOT_FORMAT": {
-            "SCREENSHOT_FORMAT_JPEG": "JPG",
-            "SCREENSHOT_FORMAT_PNG": "PNG",
+        "autos_ammo": {
+            "name": "Automatic Pistol Clips",
         },
-        "SHADOW_TYPE": {
-            "SHADOW_TYPE_CIRCLE": "Circle",
-            "SHADOW_TYPE_OCTAGON": "Octagon",
-            "SHADOW_TYPE_SPRITE": "Sprite",
+        "bacon_lara": {
+            "name": "Bacon Lara",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Detailed",
-            "STAT_DETAIL_MODE_FULL": "Full",
-            "STAT_DETAIL_MODE_MINIMAL": "Minimal",
+        "baldy": {
+            "name": "Baldy",
         },
-        "TARGET_LOCK_MODE": {
-            "TARGET_LOCK_MODE_FULL": "Full lock",
-            "TARGET_LOCK_MODE_NONE": "No lock",
-            "TARGET_LOCK_MODE_SEMI": "Semi lock",
+        "bandit_1": {
+            "name": [
+                "Mercenary 1",
+                "Masked Goon 1",
+            ]
         },
-        "TEXTURE_FILTER": {
-            "TEXTURE_FILTER_BILINEAR": "Bilinear",
-            "TEXTURE_FILTER_POINT": "Point",
+        "bandit_2": {
+            "name": [
+                "Mercenary 2",
+                "Masked Goon 2",
+            ]
         },
-        "UI_ELEMENT_LOCATION": {
-            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bottom center",
-            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Bottom left",
-            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Bottom right",
-            "UI_ELEMENT_LOCATION_TOP_CENTER": "Top center",
-            "UI_ELEMENT_LOCATION_TOP_LEFT": "Top left",
-            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Top right",
+        "bandit_2b": {
+            "name": [
+                "Mercenary 3",
+                "Masked Goon 3",
+            ]
         },
-        "UI_STYLE": {
-            "UI_STYLE_PC": "PC",
-            "UI_STYLE_PS1": "PS1",
+        "barracuda": {
+            "name": "Barracuda",
         },
-        "WALL_GLITCH_MODE": {
-            "WALL_GLITCH_FIXED": "Fixed",
-            "WALL_GLITCH_TR1": "TR1",
-            "WALL_GLITCH_TR2": "TR2",
-        }
-    },
-    "dynamic": {
-        "enums": {
-            "bar_look": {
-                "tr1_pc": "TR1 PC",
-                "tr2_pc": "TR2 PC",
-                "tr2_ps1": "TR2 PS1",
-                "tr3_pc": "TR3 PC",
-                "tr3_ps1": "TR3 PS1",
-            },
-            "lara_outfit": {
-                "default": "Default",
-                "tr1_bacon_lara": "Bacon Lara",
-                "tr1_classic": "TR1 Classic",
-                "tr1_combo": "TR1 Combo",
-                "tr1_golden_bacon_lara": "Golden Bacon Lara",
-                "tr1_golden_lara": "TR1 Golden Lara",
-                "tr1_gym": "TR1 Gym",
-                "tr1_mauled": "TR1 Mauled",
-                "tr23_golden_lara": "TR2/3 Golden Lara",
-                "tr2_bomber_jacket": "Bomber Jacket",
-                "tr2_classic": "TR2 Classic",
-                "tr2_diving_suit": "Diving Suit",
-                "tr2_gym": "TR2 Gym",
-                "tr2_robe": "Robe",
-                "tr2_vegas": "Vegas",
-                "tr3_antarctica": "Antarctica",
-                "tr3_catsuit": "Catsuit",
-                "tr3_classic": "TR3 Classic",
-                "tr3_gym": "TR3 Gym",
-                "tr3_nevada": "Nevada",
-                "tr3_south_pacific": "South Pacific",
-            }
+        "bartoli": {
+            "name": "Marco Bartoli",
+        },
+        "bat": {
+            "name": "Bat",
+        },
+        "bat_emitter": {
+            "name": "Bat Emitter",
+        },
+        "beacon_light": {
+            "name": "Beacon Light",
+        },
+        "bear": {
+            "name": "Bear",
+        },
+        "bell": {
+            "name": "Bell",
+        },
+        "big_bowl": {
+            "name": "Lava Bowl",
+        },
+        "big_eel": {
+            "name": "Big Eel",
+        },
+        "big_pod": {
+            "name": "Big Pod",
+        },
+        "big_spider": {
+            "name": "Giant Spider",
+        },
+        "bird_guardian": {
+            "name": "Bird Monster",
+        },
+        "bird_tweeter_1": {
+            "name": "Dripping Water",
+        },
+        "bird_tweeter_2": {
+            "name": "Singing Birds",
+        },
+        "blade": {
+            "name": "Wall-mounted Blade",
+        },
+        "blood_1": {
+            "name": "Blood 1",
+        },
+        "blood_2": {
+            "name": "Blood 2",
+        },
+        "blue_light": {
+            "name": "Blue Light",
+        },
+        "boat": {
+            "name": "Boat",
+        },
+        "boat_bits": {
+            "name": "Boat Bits",
+        },
+        "body_part": {
+            "name": "Body Part",
+        },
+        "bridge_flat": {
+            "name": "Bridge Flat",
+        },
+        "bridge_tilt_1": {
+            "name": "Bridge Tilt 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Bridge Tilt 2",
+        },
+        "bubble_1": {
+            "name": "Bubble 1",
+        },
+        "bubble_2": {
+            "name": "Bubble 2",
+        },
+        "bubble_emitter": {
+            "name": "Bubble Emitter",
+        },
+        "camera_target": {
+            "name": "Camera Target",
+        },
+        "carcass": {
+            "name": "Carcass",
+        },
+        "ceiling_spikes": {
+            "name": "Spiky Ceiling",
+        },
+        "centaur": {
+            "name": "Centaur",
+        },
+        "centaur_statue": {
+            "name": "Centaur Statue",
+        },
+        "clock_chimes": {
+            "name": "Bartoli Hideout clock",
+        },
+        "cog_1": {
+            "name": "Cog 1",
+        },
+        "cog_2": {
+            "name": "Cog 2",
+        },
+        "cog_3": {
+            "name": "Cog 3",
+        },
+        "combat_end": {
+            "name": "Combat End",
+        },
+        "compass": {
+            "name": "Compass",
+        },
+        "compy": {
+            "name": "Compsognathus",
+        },
+        "controls": {
+            "name": "Controls",
+        },
+        "copter": {
+            "name": "Helicopter",
+        },
+        "cowboy": {
+            "name": "Cowboy",
+        },
+        "crocodile": {
+            "name": "Crocodile",
+        },
+        "crow": {
+            "name": "Crow",
+        },
+        "cult_1": {
+            "name": "Masked Goon 1",
+        },
+        "cult_1a": {
+            "name": "Masked Goon 2",
+        },
+        "cult_1b": {
+            "name": "Masked Goon 3",
+        },
+        "cult_2": {
+            "name": "Knife Thrower",
+        },
+        "cult_3": {
+            "name": "Shotgun Goon",
+        },
+        "cut_shotgun": {
+            "name": "Shotgun Shower Animation",
+        },
+        "damocles_sword": {
+            "name": "Damocles Sword",
+        },
+        "dart": {
+            "name": "Dart",
+        },
+        "dart_effect": {
+            "name": "Dart Effect",
+        },
+        "dart_emitter": {
+            "name": "Dart Emitter",
+        },
+        "desert_eagle": {
+            "name": "Desert Eagle",
+        },
+        "desert_eagle_ammo": {
+            "name": "Desert Eagle Clips",
+        },
+        "detonator_box": {
+            "name": "Detonator Box",
+        },
+        "ding_dong": {
+            "name": "Doorbell",
+        },
+        "dino_mutant": {
+            "name": "Dino Mutant",
+        },
+        "disc": {
+            "name": "Disc",
+        },
+        "disc_emitter": {
+            "name": "Disc Emitter",
+        },
+        "diver": {
+            "name": "Scuba Diver",
+        },
+        "dog": {
+            "name": [
+                "Dog",
+                "Doberman",
+            ]
+        },
+        "door_1": {
+            "name": "Door 1",
+        },
+        "door_2": {
+            "name": "Door 2",
+        },
+        "door_3": {
+            "name": "Door 3",
+        },
+        "door_4": {
+            "name": "Door 4",
+        },
+        "door_5": {
+            "name": "Door 5",
+        },
+        "door_6": {
+            "name": "Door 6",
+        },
+        "door_7": {
+            "name": "Door 7",
+        },
+        "door_8": {
+            "name": "Door 8",
+        },
+        "dragon_back": {
+            "name": "Dragon Back",
+        },
+        "dragon_bones_1": {
+            "name": "Placeholder",
+        },
+        "dragon_bones_2": {
+            "name": "Dragon Bones Front",
+        },
+        "dragon_bones_3": {
+            "name": "Dragon Bones Back",
+        },
+        "dragon_front": {
+            "name": "Dragon Front",
+        },
+        "drawbridge": {
+            "name": "Drawbridge",
+        },
+        "dust": {
+            "name": "Dust",
+        },
+        "dying_monk": {
+            "name": "Dying monk",
+        },
+        "eagle": {
+            "name": "Eagle",
+        },
+        "earthquake": {
+            "name": "Earthquake",
+        },
+        "eel": {
+            "name": "Eel",
+        },
+        "electric_cleaner": {
+            "name": "Electric Cleaner",
+        },
+        "electric_fence": {
+            "name": "Electric Fence",
+        },
+        "electrical_light": {
+            "name": "Electrical Light",
+        },
+        "ember": {
+            "name": "Ember",
+        },
+        "ember_emitter": {
+            "name": "Ember Emitter",
+        },
+        "explosion_1": {
+            "name": "Explosion 1",
+        },
+        "explosion_2": {
+            "name": "Explosion 2",
+        },
+        "falling_block_1": {
+            "name": [
+                "Falling Block 1",
+                "Collapsible Floor 1",
+                "Collapsible Tiles 1",
+            ]
+        },
+        "falling_block_2": {
+            "name": [
+                "Falling Block 2",
+                "Collapsible Floor 2",
+                "Collapsible Tiles 2",
+            ]
+        },
+        "falling_block_3": {
+            "name": [
+                "Falling Block 3",
+                "Collapsible Floor 3",
+                "Collapsible Tiles 3",
+            ]
+        },
+        "falling_ceiling_1": {
+            "name": "Falling Ceiling 1",
+        },
+        "falling_ceiling_2": {
+            "name": "Falling Ceiling 2",
+        },
+        "fish_mutant": {
+            "name": "Mutant Fish",
+        },
+        "flame": {
+            "name": [
+                "Flame",
+                "Fire",
+            ]
+        },
+        "flame_emitter": {
+            "name": [
+                "Flame Emitter",
+                "Fire Emitter",
+            ]
+        },
+        "flame_emitter_big": {
+            "name": [
+                "Flame Emitter (Big)",
+                "Fire Emitter (Big)",
+            ]
+        },
+        "flame_emitter_jet": {
+            "name": [
+                "Flame Emitter (Jet)",
+                "Fire Emitter (Jet)",
+            ]
+        },
+        "flame_emitter_side": {
+            "name": [
+                "Flame Emitter (Side)",
+                "Fire Emitter (Side)",
+            ]
+        },
+        "flame_emitter_small": {
+            "name": [
+                "Flame Emitter (Small)",
+                "Fire Emitter (Small)",
+            ]
+        },
+        "flare": {
+            "name": "Flare",
+        },
+        "flare_fire": {
+            "name": "Flare sparks",
+        },
+        "flares_box": {
+            "name": "Flares Box",
+        },
+        "fx_reserved": {
+            "name": "Gray disk",
+        },
+        "gamma": {
+            "name": "Gamma",
+        },
+        "general": {
+            "name": "Minisub",
+        },
+        "globe": {
+            "name": "Globe",
+        },
+        "glow": {
+            "name": "Glow",
+        },
+        "glow_reserved": {
+            "name": "Map Glow",
+        },
+        "gondola": {
+            "name": "Gondola",
+        },
+        "gong": {
+            "name": "Gong",
+        },
+        "gong_bonger": {
+            "name": "Gong Stick",
+        },
+        "graphics": {
+            "name": "Graphics",
+        },
+        "green_light": {
+            "name": "Green Light",
+        },
+        "grenade": {
+            "name": "Grenade",
+        },
+        "grenade_launcher": {
+            "name": "Grenade Launcher",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Grenades",
+        },
+        "gun_flash": {
+            "name": "Gun Flash",
+        },
+        "gun_shell": {
+            "name": "Gun Shell",
+        },
+        "harpoon_bolt": {
+            "name": "Harpoon Bolt",
+        },
+        "harpoon_gun": {
+            "name": "Harpoon Gun",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Harpoons",
+        },
+        "hook": {
+            "name": "Hook",
+        },
+        "hot_liquid": {
+            "name": "Extra Fire",
+        },
+        "huskie": {
+            "name": [
+                "Dog",
+                "Patrol Dog",
+                "Huskie",
+            ]
+        },
+        "icicle": {
+            "name": "Icicles",
+        },
+        "inv_background": {
+            "name": "Menu Background",
+        },
+        "jelly": {
+            "name": "Jellyfish",
+        },
+        "kayak": {
+            "name": "Kayak",
+        },
+        "key_1": {
+            "name": "Key 1",
+        },
+        "key_2": {
+            "name": "Key 2",
+        },
+        "key_3": {
+            "name": "Key 3",
+        },
+        "key_4": {
+            "name": "Key 4",
+        },
+        "key_hole_1": {
+            "name": "Keyhole 1",
+        },
+        "key_hole_2": {
+            "name": "Keyhole 2",
+        },
+        "key_hole_3": {
+            "name": "Keyhole 3",
+        },
+        "key_hole_4": {
+            "name": "Keyhole 4",
+        },
+        "kill_all_triggered": {
+            "name": "Kill All Triggered",
+        },
+        "killer_statue": {
+            "name": "Statue with Sword",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_alarm": {
+            "name": "Alarm Bell",
+        },
+        "lara_autos": {
+            "name": "Automatic Pistols Animation",
+        },
+        "lara_boat": {
+            "name": "Boat Animation",
+        },
+        "lara_desert_eagle": {
+            "name": "Desert Eagle Animation",
+        },
+        "lara_extra": {
+            "name": "Lara's Extra Animation",
+        },
+        "lara_flare": {
+            "name": "Flare Animation",
+        },
+        "lara_grenade": {
+            "name": "Grenade Launcher Animation",
+        },
+        "lara_hair": {
+            "name": "Lara's Braid",
+        },
+        "lara_harpoon": {
+            "name": "Harpoon Animation",
+        },
+        "lara_m16": {
+            "name": "M16 Animation",
+        },
+        "lara_magnums": {
+            "name": "Magnums Animation",
+        },
+        "lara_mp5": {
+            "name": "MP5 Animation",
+        },
+        "lara_pistols": {
+            "name": "Pistols Animation",
+        },
+        "lara_rocket": {
+            "name": "Rocket Launcher Animation",
+        },
+        "lara_shotgun": {
+            "name": "Shotgun Animation",
+        },
+        "lara_skidoo": {
+            "name": "Snowmobile Animation",
+        },
+        "lara_uzis": {
+            "name": "Uzis Animation",
+        },
+        "large_medipack": {
+            "name": "Large Medipack",
+        },
+        "larson": {
+            "name": "Larson",
+        },
+        "lava_wedge": {
+            "name": "Lava Wedge",
+        },
+        "lead_bar": {
+            "name": "Lead Bar",
+        },
+        "lift": {
+            "name": "Lift",
+        },
+        "lightning_emitter": {
+            "name": "Lightning Emitter",
+        },
+        "lion": {
+            "name": "Lion",
+        },
+        "lioness": {
+            "name": [
+                "Lioness",
+                "Lion",
+            ]
+        },
+        "lizard": {
+            "name": "Lizard",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "m16_ammo": {
+            "name": "M16 Clips",
+        },
+        "m16_flash": {
+            "name": "M16 Flash",
+        },
+        "magnums": {
+            "name": "Magnums",
+        },
+        "magnums_ammo": {
+            "name": "Magnum Clips",
+        },
+        "mesh_swap_1": {
+            "name": "Mesh Swap 1",
+        },
+        "mesh_swap_2": {
+            "name": "Mesh Swap 2",
+        },
+        "mesh_swap_3": {
+            "name": "Mesh Swap 3",
+        },
+        "midas_touch": {
+            "name": "Midas Hand",
+        },
+        "mine": {
+            "name": "Aquatic Mine",
+        },
+        "mini_copter": {
+            "name": "Helicopter 2",
+        },
+        "missile_atlantean_bomb": {
+            "name": "Missile (Atlantean Bomb)",
+        },
+        "missile_atlantean_shard": {
+            "name": "Missile (Atlantean Shard)",
+        },
+        "missile_flame": {
+            "name": "Missile (Flame)",
+        },
+        "missile_harpoon": {
+            "name": "Missile (Harpoon)",
+        },
+        "missile_knife": {
+            "name": "Missile (Knife)",
+        },
+        "missile_poison": {
+            "name": "Missile (Poison)",
+        },
+        "monk_1": {
+            "name": "Monk 1",
+        },
+        "monk_2": {
+            "name": "Monk 2",
+        },
+        "monkey": {
+            "name": "Monkey",
+        },
+        "mounted_gun": {
+            "name": "Mounted Gun",
+        },
+        "mouse": {
+            "name": "Rat",
+        },
+        "movable_block_1": {
+            "name": [
+                "Push Block 1",
+                "Movable Block 1",
+            ]
+        },
+        "movable_block_2": {
+            "name": [
+                "Push Block 2",
+                "Movable Block 2",
+            ]
+        },
+        "movable_block_3": {
+            "name": [
+                "Push Block 3",
+                "Movable Block 3",
+            ]
+        },
+        "movable_block_4": {
+            "name": [
+                "Push Block 4",
+                "Movable Block 4",
+            ]
+        },
+        "moving_bar": {
+            "name": "Moving Bar",
+        },
+        "mp5": {
+            "name": "MP5",
+        },
+        "mp5_ammo": {
+            "name": "MP5 Clips",
+        },
+        "mummy": {
+            "name": "Mummy",
+        },
+        "mutant_1": {
+            "name": "Mutant 1",
+        },
+        "mutant_2": {
+            "name": "Mutant 2",
+        },
+        "mutant_3": {
+            "name": "Mutant 3",
+        },
+        "natla": {
+            "name": "Natla",
+        },
+        "natla_gun": {
+            "name": "Natla's Gun",
+        },
+        "on_off_light": {
+            "name": "On/Off Light",
+        },
+        "passport": {
+            "name": "Game",
+        },
+        "patrol_dog": {
+            "name": [
+                "Dog",
+                "Patrol Dog",
+            ]
+        },
+        "pda": {
+            "name": "Gameplay",
+        },
+        "pendulum_1": {
+            "name": [
+                "Pendulum",
+                "Sandbag",
+                "Swinging box",
+            ]
+        },
+        "pendulum_2": {
+            "name": [
+                "Pendulum",
+                "Sandbag",
+                "Swinging box",
+            ]
+        },
+        "photo": {
+            "name": "Lara's Home",
+        },
+        "pickup_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_2": {
+            "name": "Pickup Item 2",
+        },
+        "pickup_aid": {
+            "name": "Pickup Aid",
+        },
+        "pierre": {
+            "name": "Pierre",
+        },
+        "pirahnas": {
+            "name": "Pirahnas",
+        },
+        "pistols": {
+            "name": "Pistols",
+        },
+        "pistols_ammo": {
+            "name": "Pistol Clips",
+        },
+        "player_1": {
+            "name": "Cutscene Actor 1",
+        },
+        "player_10": {
+            "name": "Cutscene Actor 10",
+        },
+        "player_2": {
+            "name": "Cutscene Actor 2",
+        },
+        "player_3": {
+            "name": "Cutscene Actor 3",
+        },
+        "player_4": {
+            "name": "Cutscene Actor 4",
+        },
+        "player_5": {
+            "name": "Cutscene Actor 5",
+        },
+        "player_6": {
+            "name": "Cutscene Actor 6",
+        },
+        "player_7": {
+            "name": "Cutscene Actor 7",
+        },
+        "player_8": {
+            "name": "Cutscene Actor 8",
+        },
+        "player_9": {
+            "name": "Cutscene Actor 9",
+        },
+        "pods": {
+            "name": "Pod",
+        },
+        "poison_dart": {
+            "name": "Poison Dart",
+        },
+        "poison_dart_emitter": {
+            "name": "Poison Dart Emitter",
+        },
+        "portacabin": {
+            "name": "Portable Cabin",
+        },
+        "power_saw": {
+            "name": "Power Saw",
+        },
+        "propeller_1": {
+            "name": "Airplane Propeller",
+        },
+        "propeller_2": {
+            "name": "Underwater Propeller",
+        },
+        "propeller_3": {
+            "name": "Air Fan",
+        },
+        "pulse_light": {
+            "name": "Pulse Light",
+        },
+        "puma": {
+            "name": "Puma",
+        },
+        "punk_1": {
+            "name": "Punk 1",
+        },
+        "punk_2": {
+            "name": "Punk 2",
+        },
+        "puzzle_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_4": {
+            "name": "Puzzle Item 4",
+        },
+        "puzzle_done_1": {
+            "name": "Puzzle Hole 1 (Done)",
+        },
+        "puzzle_done_2": {
+            "name": "Puzzle Hole 2 (Done)",
+        },
+        "puzzle_done_3": {
+            "name": "Puzzle Hole 3 (Done)",
+        },
+        "puzzle_done_4": {
+            "name": "Puzzle Hole 4 (Done)",
+        },
+        "puzzle_hole_1": {
+            "name": "Puzzle Hole 1 (Empty)",
+        },
+        "puzzle_hole_2": {
+            "name": "Puzzle Hole 2 (Empty)",
+        },
+        "puzzle_hole_3": {
+            "name": "Puzzle Hole 3 (Empty)",
+        },
+        "puzzle_hole_4": {
+            "name": "Puzzle Hole 4 (Empty)",
+        },
+        "quad_bike": {
+            "name": "Quad Bike",
+        },
+        "quest_1": {
+            "name": "Quest Item 1",
+        },
+        "quest_2": {
+            "name": "Quest Item 2",
+        },
+        "quest_3": {
+            "name": "Quest Item 3",
+        },
+        "quest_4": {
+            "name": "Quest Item 4",
+        },
+        "raptor": {
+            "name": "Raptor",
+        },
+        "raptor_emitter": {
+            "name": "Raptor Emitter",
+        },
+        "rat": {
+            "name": [
+                "Rat",
+                "Land Rat",
+            ]
+        },
+        "red_light": {
+            "name": "Red Light",
+        },
+        "ricochet": {
+            "name": "Ricochet",
+        },
+        "rocket": {
+            "name": "Rocket",
+        },
+        "rocket_launcher": {
+            "name": "Rocket Launcher",
+        },
+        "rocket_launcher_ammo": {
+            "name": "Rockets",
+        },
+        "rolling_ball_1": {
+            "name": [
+                "Boulder 1",
+                "Rolling Ball 1",
+            ]
+        },
+        "rolling_ball_2": {
+            "name": [
+                "Boulder 2",
+                "Rolling Ball 2",
+            ]
+        },
+        "rolling_ball_3": {
+            "name": [
+                "Boulder 3",
+                "Rolling Ball 3",
+            ]
+        },
+        "rolling_ball_4": {
+            "name": [
+                "Boulder 4",
+                "Rolling Ball 4",
+            ]
+        },
+        "save_crystal": {
+            "name": "Savegame Crystal",
+        },
+        "scion": {
+            "name": "Scion",
+        },
+        "scion_holder": {
+            "name": "Scion Holder",
+        },
+        "secret_1": {
+            "name": "Secret 1",
+        },
+        "secret_2": {
+            "name": "Secret 2",
+        },
+        "secret_3": {
+            "name": "Secret 3",
+        },
+        "shadow": {
+            "name": "Shadow",
+        },
+        "shark": {
+            "name": "Shark",
+        },
+        "shiva": {
+            "name": "Shiva",
+        },
+        "shotgun": {
+            "name": "Shotgun",
+        },
+        "shotgun_ammo": {
+            "name": "Shotgun Shells",
+        },
+        "shotgun_shell": {
+            "name": "Shotgun Shell",
+        },
+        "skate_kid": {
+            "name": "Skate Kid",
+        },
+        "skateboard": {
+            "name": "Skateboard",
+        },
+        "skidoo_armed": {
+            "name": "Black Snowmobile",
+        },
+        "skidoo_driver": {
+            "name": "Black Snowmobile Driver",
+        },
+        "skidoo_fast": {
+            "name": "Red Snowmobile",
+        },
+        "skidoo_track": {
+            "name": "Snowmobile Track",
+        },
+        "skybox": {
+            "name": "Skybox",
+        },
+        "sliding_pillar": {
+            "name": "Sliding Pillar",
+        },
+        "small_medipack": {
+            "name": "Small Medipack",
+        },
+        "smashable_1": {
+            "name": [
+                "Smashable 1",
+                "Breakable Window 1",
+            ]
+        },
+        "smashable_2": {
+            "name": [
+                "Smashable 2",
+                "Breakable Window 2",
+            ]
+        },
+        "smashable_3": {
+            "name": [
+                "Smashable 3",
+                "Breakable Window 3",
+            ]
+        },
+        "smashable_4": {
+            "name": [
+                "Smashable 4",
+                "Breakable Window 4",
+            ]
+        },
+        "smoke_emitter_black": {
+            "name": "Smoke Emitter (Black)",
+        },
+        "smoke_emitter_white": {
+            "name": "Smoke Emitter (White)",
+        },
+        "snake": {
+            "name": [
+                "Snake",
+                "Cobra",
+            ]
+        },
+        "snow_sprite": {
+            "name": "Snowmobile Wake",
+        },
+        "sound": {
+            "name": "Sound",
+        },
+        "sphere_of_doom_1": {
+            "name": "Dragon Explosion 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "Dragon Explosion 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "Dragon Explosion 3",
+        },
+        "spider": {
+            "name": "Spider",
+        },
+        "spike_wall": {
+            "name": "Spike Wall",
+        },
+        "spikes": {
+            "name": "Spikes",
+        },
+        "spinning_blade": {
+            "name": "Spinning Blade",
+        },
+        "splash_1": {
+            "name": "Water Ripples 1",
+        },
+        "splash_2": {
+            "name": "Water Ripples 2",
+        },
+        "springboard": {
+            "name": "Springboard",
+        },
+        "steam_emitter": {
+            "name": "Steam Emitter",
+        },
+        "sthpac_mercenary": {
+            "name": "South Pacific Mercenary",
+        },
+        "stopwatch": {
+            "name": "Statistics",
+        },
+        "strobe_light": {
+            "name": "Strobe Light",
+        },
+        "swinging_axe": {
+            "name": "Swinging Axe",
+        },
+        "switch_type_airlock": {
+            "name": "Airlock Switch",
+        },
+        "switch_type_button": {
+            "name": [
+                "Button",
+                "Push Button",
+                "Switch",
+            ]
+        },
+        "switch_type_normal": {
+            "name": [
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_small": {
+            "name": "Small Switch",
+        },
+        "switch_type_uw": {
+            "name": [
+                "Underwater Lever",
+                "Underwater Switch",
+            ]
+        },
+        "switch_type_wheel": {
+            "name": [
+                "Wheel Switch",
+                "Pulley Switch",
+                "Valve Switch",
+            ]
+        },
+        "teeth_trap": {
+            "name": [
+                "Teeth Trap",
+                "Clang-clang Door",
+            ]
+        },
+        "text_box": {
+            "name": "UI Frame",
+        },
+        "thors_handle": {
+            "name": "Thor's Hammer Handle",
+        },
+        "thors_head": {
+            "name": "Thor's Hammer",
+        },
+        "tiger": {
+            "name": "Tiger",
+        },
+        "tony": {
+            "name": "Tony",
+        },
+        "torso": {
+            "name": [
+                "Torso",
+                "Adam",
+                "Giant Mutant",
+            ]
+        },
+        "train": {
+            "name": "Train",
+        },
+        "trapdoor_1": {
+            "name": "Trapdoor 1",
+        },
+        "trapdoor_2": {
+            "name": "Trapdoor 2",
+        },
+        "trapdoor_3": {
+            "name": "Trapdoor 3",
+        },
+        "trex": {
+            "name": "T-Rex",
+        },
+        "trex_alpha": {
+            "name": "T-Rex Alpha",
+        },
+        "tribe_axeman": {
+            "name": "Tribe Axeman",
+        },
+        "tribe_boss": {
+            "name": "Tribe Boss",
+        },
+        "tribe_pipeman": {
+            "name": "Tribe Blowpipe User",
+        },
+        "tropical_fish": {
+            "name": "Tropical Fish",
+        },
+        "twinkle": {
+            "name": "Sparkles",
+        },
+        "upv": {
+            "name": [
+                "UPV",
+                "Minisub",
+            ]
+        },
+        "uzis": {
+            "name": "Uzis",
+        },
+        "uzis_ammo": {
+            "name": "Uzi Clips",
+        },
+        "vole": {
+            "name": [
+                "Vole",
+                "Water Rat",
+            ]
+        },
+        "vulture": {
+            "name": "Vulture",
+        },
+        "water_sprite": {
+            "name": "Boat Wake",
+        },
+        "waterfall": {
+            "name": "Waterfall Mist",
+        },
+        "white_light": {
+            "name": "White Light",
+        },
+        "winston": {
+            "name": "Winston",
+        },
+        "winston_army": {
+            "name": "Winston (army)",
+        },
+        "wolf": {
+            "name": "Wolf",
+        },
+        "worker_1": {
+            "name": "Gunman Goon 1",
+        },
+        "worker_2": {
+            "name": "Gunman Goon 2",
+        },
+        "worker_3": {
+            "name": "Stick Wielding Goon 1",
+        },
+        "worker_4": {
+            "name": "Stick Wielding Goon 2",
+        },
+        "worker_5": {
+            "name": "Flamethrower Goon",
+        },
+        "xian_knight": {
+            "name": "Xian Knight",
+        },
+        "xian_knight_statue": {
+            "name": "Xian Knight Statue",
+        },
+        "xian_spearman": {
+            "name": "Xian Spearman",
+        },
+        "xian_spearman_statue": {
+            "name": "Xian Spearman Statue",
+        },
+        "yeti": {
+            "name": "Yeti",
+        },
+        "zipline_handle": {
+            "name": "Zipline Handle",
         }
     }
 }

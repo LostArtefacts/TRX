@@ -20,10 +20,12 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     Console_Log(
-        g_Config.debug.enable_invulnerability ? GS(CMD_IMMUNE_SWITCHED_ON)
-                                              : GS(CMD_IMMUNE_SWITCHED_OFF));
+        g_Config.debug.enable_invulnerability ? GS("console/cmd/immune/on")
+                                              : GS("console/cmd/immune/off"));
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("immune", M_Entrypoint, GS_ID(CONSOLE_HELP_IMMUNE))
-REGISTER_CONSOLE_COMMAND("immunity", M_Entrypoint, GS_ID(CONSOLE_HELP_IMMUNE))
+REGISTER_CONSOLE_COMMAND(
+    "immune", M_Entrypoint, GS_ID("console/cmd/immune/help"))
+REGISTER_CONSOLE_COMMAND(
+    "immunity", M_Entrypoint, GS_ID("console/cmd/immune/help"))

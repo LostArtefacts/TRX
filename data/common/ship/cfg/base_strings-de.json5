@@ -2,1523 +2,669 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "language_name": "Deutsch",
-    "game_strings": {
-        "ACTION_EXAMINE_ITEM": "Untersuchen",
-        "ACTION_HIDE_DIALOG": "Dialog ausblenden",
-        "ACTION_RESET_DEFAULTS": "Auf Standard zurücksetzen",
-        "ACTION_ROTATE": "Drehen",
-        "ACTION_UNBIND": "Freigeben",
-        "ACTION_USE_ITEM": "Benutzen",
-        "CMD_GIVE_SECRET_GIVEN": "Geheimnis hinzugefügt %s",
-        "CMD_GIVE_SECRET_LIST": "Gesammelte Geheimnisse: %d von %d (%s)",
-        "CMD_GIVE_SECRET_NONE": "Gesammelte Geheimnisse: %d von %d",
-        "CMD_GIVE_SECRET_TAKEN": "Geheimnis enfernt %s",
-        "CMD_IMMUNE_SWITCHED_OFF": "Lara ist nun verwundbar",
-        "CMD_IMMUNE_SWITCHED_ON": "Lara ist nun unverwundbar",
-        "CMD_INF_SPRINT_SWITCHED_OFF": "\\{review}Lara kann nicht mehr ewig sprinten",
-        "CMD_INF_SPRINT_SWITCHED_ON": "\\{review}Lara kann jetzt ewig sprinten",
-        "CMD_INVALID_MUSIC_TRACK": "Unzulässiger Musik Titel",
-        "CMD_INVALID_SECRET": "Unzulässiges Geheimnis: #%d (zulässige Geheimnisse: %s)",
-        "CMD_INVALID_WEATHER": "\\{review}Ungültiges Wetter: %s (gültig: %s)",
-        "CMD_ITEM_SPAWNED": "\\{review}Angefordertes Objekt in der Nähe von Lara erzeugt",
-        "CMD_ITEM_SPAWN_FAILED": "\\{review}Erzeugen des angeforderten Objekts fehlgeschlagen",
-        "CMD_LUA_RUNTIME_ERROR": "\\{review}Lua-Laufzeitfehler: %s",
-        "CMD_LUA_SYNTAX_ERROR": "\\{review}Lua-Syntaxfehler: %s",
-        "CMD_PLAY_MUSIC_STOPPED": "\\{review}Musik gestoppt",
-        "CMD_PLAY_MUSIC_TRACK": "Spiele Musiktitel %d",
-        "CMD_TELEPORT_ITEM": "Teleportiert zu Objekt: %d",
-        "CMD_TELEPORT_ITEM_FAIL": "Fehlgeschlagene Teleportation zu Objekt: %d",
-        "CMD_TELEPORT_OBJECT": "Teleportiert zu Objekt: %s",
-        "CMD_TELEPORT_OBJECT_FAIL": "Fehlgeschlagene Teleportation zu Objekt: %s",
-        "CMD_TELEPORT_POS": "Teleportiere zu Position: %.3f %.3f %.3f",
-        "CMD_TELEPORT_POS_FAIL": "Fehlgeschlagene Teleportation zu Position: %.3f %.3f %.3f",
-        "CMD_TELEPORT_ROOM": "Teleportiere zu Raum: %d",
-        "CMD_TELEPORT_ROOM_FAIL": "Teleportation zu Raum: %d",
-        "CMD_TRIGGER_DONE": "\\{review}Ausgelöstes Element(e): %s",
-        "CMD_TRIGGER_INVALID_ITEM": "\\{review}Ungültiges Element: %s",
-        "CMD_TRIGGER_NOT_FOUND": "\\{review}Keine passenden Elemente gefunden für: %s",
-        "CMD_TRIGGER_NO_MATCH": "\\{review}Unbekanntes Ziel: %s",
-        "CMD_UNTRIGGER_DONE": "\\{review}Nicht ausgelöstes Element(e): %s",
-        "CMD_WEATHER_SET": "\\{review}Wetter auf %s eingestellt",
-        "CMD_WINSTON_DEAD": "Der Butler ist tot. Du Monster!",
-        "CMD_WINSTON_SPAWNED": "Winston herbeigerufen, nahe Lara",
-        "CMD_WINSTON_SPAWN_FAILED": "Herbeirufen von Winston fehlgeschlagen",
-        "CMD_WINSTON_TELEPORTED": "Winston herbeigerufen, nahe Lara",
-        "COMMON_SETTINGS_ALL_HIDDEN_DISCLAIMER": "\\{review}Die Einstellungen sind für dieses Level-Set deaktiviert.",
-        "COMMON_SETTINGS_CHROMA": "Chroma",
-        "COMMON_SETTINGS_EDIT_VALUE": "Wert bearbeiten",
-        "COMMON_SETTINGS_FROZEN_OPTION_DISCLAIMER": "Diese Einstellung ist vom Ersteller des Levels erzwungen und kann nicht geändert werden.",
-        "COMMON_SETTINGS_HUE": "Farbton",
-        "COMMON_SETTINGS_LIGHTNESS": "Helligkeit",
-        "COMMON_SETTINGS_RESTORE_DEFAULT": "Standard wiederherstellen",
-        "COMMON_SETTINGS_TOGGLE_HELP": "Hilfe Ein/Aus",
-        "CONFIG_PRESETS_APPLIED": "\\{review}Voreinstellung angewendet.",
-        "CONFIG_PRESETS_CONFIRM_DESCRIPTION": "\\{review}Die folgenden Einstellungen werden geändert:",
-        "CONFIG_PRESETS_CONFIRM_RESTART_NOTE": "\\{review}Hinweis: Einige Einstellungen erfordern möglicherweise einen Neustart des Spiels, um wirksam zu werden.",
-        "CONFIG_PRESETS_EMPTY": "\\{review}Keine Voreinstellungen gefunden.",
-        "CONFIG_PRESETS_NO_CHANGES": "\\{review}Keine Änderungen anzuwenden.",
-        "CONFIG_PRESETS_TITLE_FMT": "\\{review}Voreinstellung %s anwenden?",
-        "CONFIG_PRESET_TR1_PC": "\\{review}TR1 PC",
-        "CONFIG_PRESET_TR1_PS1": "\\{review}TR1 PS1",
-        "CONFIG_PRESET_TR2_PC": "\\{review}TR2 PC",
-        "CONFIG_PRESET_TR2_PS1": "\\{review}TR2 PS1",
-        "CONFIG_PRESET_TR3_PC": "\\{review}TR3 PC",
-        "CONFIG_PRESET_TR3_PS1": "\\{review}TR3 PS1",
-        "CONSOLE_CMD_HELP_LIST": "Verfügbare Kommandos:",
-        "CONSOLE_HELP_BRAID": "Aktiviert und deaktiviert Laras Zopf.",
-        "CONSOLE_HELP_CHEATS": "Schaltet In-Game Cheats ein oder aus.",
-        "CONSOLE_HELP_CLEAR": "\\{review}Löscht sichtbare Konsolenprotokolle.",
-        "CONSOLE_HELP_DEBUG": "Aktiviert und deaktiviert visuele Debuginformationen.",
-        "CONSOLE_HELP_DRAIN": "Entfernt das gesamte Wasser aus dem Raum, in dem sie sich im Moment befinden.",
-        "CONSOLE_HELP_END_LEVEL": "Beendet das aktuelle Level.",
-        "CONSOLE_HELP_EXIT": "Beendet das Spiel.",
-        "CONSOLE_HELP_FLIPMAP": "Aktiviert und deaktiviert die Flip-Map.",
-        "CONSOLE_HELP_FLOOD": "Überflutet den Raum, in dem sie sich im Moment befinden, mit Wasser.",
-        "CONSOLE_HELP_FLY": "Aktiviert und deaktiviert den Flug-Modus-Cheat.",
-        "CONSOLE_HELP_FPS": "Erhöht oder senkt den FPS-Wert.",
-        "CONSOLE_HELP_GIVE": "Fügt ein angegebenes Item zu Laras Inventar hinzu.",
-        "CONSOLE_HELP_GIVE_SECRET": "Listet Laras Geheimnisse auf oder nimmt/gibt ein nach Nummern sortiertes Geheimnis.",
-        "CONSOLE_HELP_HEAL": "Heilt Lara zurück auf volle Lebensenergie.",
-        "CONSOLE_HELP_HELP": "Zeigt Hilfe für alle Kommandos oder detaillierte Hilfe für ein bestimmtes.",
-        "CONSOLE_HELP_HP": "Stellt Laras Lebensenergie auf den bestimmten Wert ein.",
-        "CONSOLE_HELP_IMMUNE": "Aktiviet oder deaktiviert Unverwundbarkeit. (Lara kann unter bestimmten Umständen immernoch sterben.)",
-        "CONSOLE_HELP_INF_SPRINT": "\\{review}Schaltet unendliches Sprinten um.",
-        "CONSOLE_HELP_KILL": "Tötet in der Nähe befindliche Feinde.",
-        "CONSOLE_HELP_LIGHTING": "Aktiviet oder deaktiviert Beleuchtungs-Sytem.",
-        "CONSOLE_HELP_LOAD": "\\{review}Lädt das Spiel aus dem angegebenen Speicherplatz oder von einem Schnell-Speicher.",
-        "CONSOLE_HELP_LUA": "\\{review}Führt den angegebenen Lua-Code-String aus.",
-        "CONSOLE_HELP_MOD": "\\{review}Wechselt zum angegebenen Mod und startet das Spiel neu.",
-        "CONSOLE_HELP_MUSIC": "Spielt Musik-Titel mit dazugehöriger ID ab.",
-        "CONSOLE_HELP_PLAY_CUTSCENE": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",
-        "CONSOLE_HELP_PLAY_DEMO": "Spielt eine Demo mit der angegebenen Nummer ab.",
-        "CONSOLE_HELP_PLAY_GYM": "Startet das Gym-Level.",
-        "CONSOLE_HELP_PLAY_LEVEL": "Startet einen Level mit dem angegebenen Namen oder der dazugehörigen Nummer.",
-        "CONSOLE_HELP_POS": "Zeigt Laras Position an.",
-        "CONSOLE_HELP_SAVE": "\\{review}Speichert das Spiel im angegebenen Speicherplatz oder im nächsten Schnell-Speicherplatz.",
-        "CONSOLE_HELP_SCREENSHOT": "\\{review}Speichert einen Screenshot auf der Festplatte, mit optionalem Pfad.",
-        "CONSOLE_HELP_SET": "Aktualisiert oder zeigt die angegebene Konfigurations-Einstellung an.",
-        "CONSOLE_HELP_SFX": "Spielt einen Sound-Effekt mit der angegebenen ID ab.",
-        "CONSOLE_HELP_SPEED": "Ändert die Geschwindigkeit des Spiels.",
-        "CONSOLE_HELP_STRINGS": "Lädt erneut die aktuellen Sprachdateien von der Festplatte.",
-        "CONSOLE_HELP_TEXTURES": "\\{review}Schaltet die Texturen ein oder aus.",
-        "CONSOLE_HELP_TITLE": "Bringt sie zurück zum Titel-Bildschirm.",
-        "CONSOLE_HELP_TP": "Teleportiert Lara zu der angegebenen Position oder Raum-Nummer.",
-        "CONSOLE_HELP_TRIGGER": "\\{review}Löst ein Element durch ID, Elementname oder Objektnamen aus oder setzt es zurück.",
-        "CONSOLE_HELP_VSYNC": "Vertical Sync. Ein/Aus",
-        "CONSOLE_HELP_WEATHER": "\\{review}Ändert den aktuellen Wettertyp.",
-        "CONSOLE_HELP_WIREFRAME": "Aktiviert und deaktiviert den Gitterrahmen-Render.",
-        "CONTROLS_BACKEND_CONTROLLER": "Kontroller",
-        "CONTROLS_BACKEND_KEYBOARD": "Tastatur",
-        "CONTROLS_CUSTOMIZE": "Steuerung anpassen",
-        "CONTROLS_CUSTOM_1": "Eigene Steuerung 1",
-        "CONTROLS_CUSTOM_2": "Eigene Steuerung 2",
-        "CONTROLS_CUSTOM_3": "Eigene Steuerung 3",
-        "CONTROLS_DEFAULT_KEYS": "Standardtasten",
-        "CONTROLS_SECTION_BASICS": "Bewegung",
-        "CONTROLS_SECTION_ITEMS": "Items",
-        "CONTROLS_SECTION_MISC": "Sonstiges",
-        "CONTROLS_SECTION_SYSTEM": "System",
-        "GAMEPLAY_SETTINGS_CONTROLS_TAB": "Steuerung",
-        "GAMEPLAY_SETTINGS_FIXES_TAB": "Fixes",
-        "GAMEPLAY_SETTINGS_GENERAL_TAB": "Allgemeines",
-        "GAMEPLAY_SETTINGS_MODS_TAB": "Mods",
-        "GAMEPLAY_SETTINGS_PRESETS_TAB": "\\{review}Voreinstellungen",
-        "GAMEPLAY_SETTINGS_TITLE": "Gameplay-Optionen",
-        "GLOBE_SELECT_AREA_1": "\\{review}Bereich 1",
-        "GLOBE_SELECT_AREA_2": "\\{review}Bereich 2",
-        "GLOBE_SELECT_AREA_3": "\\{review}Bereich 3",
-        "GLOBE_SELECT_AREA_4": "\\{review}Bereich 4",
-        "GLOBE_SELECT_AREA_5": "\\{review}Bereich 5",
-        "GLOBE_SELECT_AREA_6": "\\{review}Bereich 6",
-        "GRAPHIC_SETTINGS_RENDERING_TAB": "\\{review}Rendern",
-        "GRAPHIC_SETTINGS_TITLE": "Grafik Optionen",
-        "GRAPHIC_SETTINGS_UI_BARS_TAB": "\\{review}Leisten",
-        "GRAPHIC_SETTINGS_UI_TAB": "\\{review}Benutzeroberfläche",
-        "GRAPHIC_SETTINGS_VISUALS_TAB": "\\{review}Darstellung",
-        "INVENTORY_RING_HEADING_ADVENTURE": "\\{review}Abenteuer",
-        "INVENTORY_RING_HEADING_FMT": "%s",
-        "INVENTORY_RING_HEADING_GAME_OVER": "GAME OVER",
-        "INVENTORY_RING_HEADING_INVENTORY": "INVENTAR",
-        "INVENTORY_RING_HEADING_ITEMS": "ITEMS",
-        "INVENTORY_RING_HEADING_OPTION": "OPTION",
-        "INVENTORY_RING_ITEM_COUNT_FMT": "\\{small}%s",
-        "INVENTORY_RING_OBJECT_NAME_FMT": "%s",
-        "MISC_DEMO_MODE": "Demo Modus",
-        "MISC_DIRECTION_KEYS_CONTROLLER": "Steuerkreuz",
-        "MISC_DIRECTION_KEYS_KEYBOARD": "Pfeile",
-        "MISC_EMPTY_SLOT_FMT": "- LEERER SLOT -",
-        "MISC_EXIT": "Beenden",
-        "MISC_HOLD_FMT": "Gedrückt halten %s",
-        "MISC_OFF": "Aus",
-        "MISC_ON": "Ein",
-        "OSD_AMBIGUOUS_INPUT_2": "Mehrdeutige Eingabe: %s und %s",
-        "OSD_AMBIGUOUS_INPUT_3": "Mehrdeutige Eingabe: %s, %s, ...",
-        "OSD_BILINEAR_FILTER_OFF": "Bilinear-Filter: aus",
-        "OSD_BILINEAR_FILTER_ON": "Bilinear-Filter: ein",
-        "OSD_COMMAND_BAD_INVOCATION": "Unzulässiger Aufruf: %s",
-        "OSD_COMMAND_BOOL": "ein, aus",
-        "OSD_COMMAND_DECIMAL": "[Dezimal]",
-        "OSD_COMMAND_INTEGER": "[Integer]",
-        "OSD_COMMAND_PERCENT": "[Integer]",
-        "OSD_COMMAND_UNAVAILABLE": "Dieses Kommando ist momentan nicht ausführbar",
-        "OSD_COMMAND_VALID_VALUES": "Zulässige Werte: %s",
-        "OSD_COMPLETE_LEVEL": "Level abgeschlossen!",
-        "OSD_CONFIG_OPTION_GET": "%s ist momentan eingestellt auf %s",
-        "OSD_CONFIG_OPTION_SET": "%s geändert zu %s",
-        "OSD_CONFIG_OPTION_UNKNOWN_OPTION": "Unbekannte Option: %s",
-        "OSD_CURRENT_HEALTH_GET": "Laras aktuelle Lebensenergie: %d",
-        "OSD_CURRENT_HEALTH_SET": "Laras Lebensenergie eingestellt auf %d",
-        "OSD_DOOR_CLOSE": "Sesam, schließe dich!",
-        "OSD_DOOR_OPEN": "Sesam, öffne dich!",
-        "OSD_DOOR_OPEN_FAIL": "Keine Türen in Laras Nähe",
-        "OSD_FLIPMAP_FAIL_ALREADY_OFF": "Flipmap ist bereits AUS",
-        "OSD_FLIPMAP_FAIL_ALREADY_ON": "Flipmap ist bereits AN",
-        "OSD_FLIPMAP_OFF": "Flipmap ",
-        "OSD_FLIPMAP_ON": "Flipmap eingeschaltet",
-        "OSD_FLY_MODE_OFF": "Flug-Modus ausgeschaltet",
-        "OSD_FLY_MODE_ON": "Flug-Modus eingeschaltet",
-        "OSD_FPS_COUNTER_OFF": "FPS-Counter ausgeschaltet",
-        "OSD_FPS_COUNTER_ON": "FPS-Counter eingeschaltet",
-        "OSD_GIVE_ITEM": "Es wurde %s zu Laras Inventar hinzugefügt.",
-        "OSD_GIVE_ITEM_ALL_GUNS": "Geladen und entsichert - Lara ist bis zu ihren Zähnen bewaffnet!",
-        "OSD_GIVE_ITEM_ALL_KEYS": "Überraschung! Jedes Schlüsselitem, dass Lara benötigt, ist jetzt in ihrem Inventar.",
-        "OSD_GIVE_ITEM_CHEAT": "Laras Rucksack ist schwerer geworden!",
-        "OSD_HEAL_ALREADY_FULL_HP": "Laras Gesundheit ist schon vollständig gefüllt.",
-        "OSD_HEAL_SUCCESS": "Laras Gesundheit ist wieder vollständig wiederhergestellt.",
-        "OSD_INVALID_CUTSCENE": "Unzulässige Zwischensequenz",
-        "OSD_INVALID_DEMO": "Unzulässige Demo",
-        "OSD_INVALID_ITEM": "Unbekanntes Item: %s",
-        "OSD_INVALID_LEVEL": "Unzulässiger Level",
-        "OSD_INVALID_OBJECT": "Unzulässiges Objekt",
-        "OSD_INVALID_ROOM": "Unzulässiger Raum: %d. Zulässige Räume sind 0-%d",
-        "OSD_INVALID_SAMPLE": "Unzulässiger Sound: %d",
-        "OSD_KILL": "Bye-bye!",
-        "OSD_KILL_ALL": "Poof! %d Feinde verschwunden!",
-        "OSD_KILL_ALL_FAIL": "Oh oh, es sind keine Feinde mehr zum Töten da...",
-        "OSD_KILL_FAIL": "Kein Feind in der Nähe...",
-        "OSD_LIGHTING_CONTRAST_FMT": "Beleuchtungs-Kontrast: %s",
-        "OSD_LOAD_GAME": "Spiel laden von folgendem Speicher-Slot %d",
-        "OSD_LOAD_GAME_FAIL_INVALID_SLOT": "Unzulässiger Speicher-Slot %d",
-        "OSD_LOAD_GAME_FAIL_UNAVAILABLE_SLOT": "Speicher-Slot %d ist nicht verfügbar",
-        "OSD_OBJECT_NOT_FOUND": "Objekt nicht gefunden",
-        "OSD_PLAY_CUTSCENE": "Lade Zwischensequenz %d",
-        "OSD_PLAY_DEMO": "Lade Demo %d",
-        "OSD_PLAY_LEVEL": "Lade %s",
-        "OSD_POS_LARA_MISSING": "Lara nicht vorhanden",
-        "OSD_POS_LARA_POS_FMT": "Raum: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
-        "OSD_POS_LEVEL_FMT": "Level %d",
-        "OSD_POS_LEVEL_FMT_CUTSCENE": "Zwischensequenz %d",
-        "OSD_POS_LEVEL_FMT_DEMO": "Demo %d",
-        "OSD_QUICK_LOAD": "\\{review}Schnell geladener Slot %d",
-        "OSD_QUICK_LOAD_FAIL_NO_BOUND_SLOT": "\\{review}Kein Speicherplatz ist derzeit zugewiesen",
-        "OSD_QUICK_LOAD_FAIL_UNAVAILABLE_BOUND_SLOT": "\\{review}Der zugewiesene Speicherplatz ist nicht verfügbar",
-        "OSD_QUICK_SAVE": "\\{review}Schnell gespeichert",
-        "OSD_QUICK_SAVE_FAIL_NO_SLOTS": "\\{review}Keine Schnellspeicherplätze konfiguriert",
-        "OSD_SAVE_GAME": "Spiel gespeichert auf Speicher-Slot %d",
-        "OSD_SAVE_GAME_FAIL_INVALID_SLOT": "Unzulässiger Speicher-Slot %d",
-        "OSD_SOUND_AVAILABLE_SAMPLES": "Verfügbare Sounds: %s",
-        "OSD_SOUND_PLAYING_SAMPLE": "Spiele Sound: %d",
-        "OSD_SPEED_GET": "Momentane Geschwindigkeit: %d",
-        "OSD_SPEED_SET": "Geschwindigkeit eingestellt auf %d",
-        "OSD_STRINGS_FAILED": "Neu Laden der Sprachdateien ist fehlgeschlagen",
-        "OSD_STRINGS_RELOADED": "Sprachdateien neu geladen",
-        "OSD_TEXTURES_OFF": "\\{review}Texturen: aus",
-        "OSD_TEXTURES_ON": "\\{review}Texturen: an",
-        "OSD_TRAPEZOID_FILTER_OFF": "Deaktiviert Trapezoid-Filter",
-        "OSD_TRAPEZOID_FILTER_ON": "Aktiviert Trapezoid-Filter",
-        "OSD_UI_OFF": "UI deakiviert",
-        "OSD_UI_ON": "UI aktiviert",
-        "OSD_UNKNOWN_COMMAND": "Unbekanntes Kommando: %s",
-        "OSD_UPSCALING_FACTOR": "Uscaling-Faktor: x%d",
-        "OSD_WIREFRAME_MODE_OFF": "Gitterrahmen-Modus: aus",
-        "OSD_WIREFRAME_MODE_ON": "Gitterrahmen-Modus: ein",
-        "OVERLAY_DEBUG_ANIMATION": "Animation: ",
-        "OVERLAY_DEBUG_ANIMATION_STATE": "\\{review}Status: ",
-        "OVERLAY_DEBUG_CAMERA_POS": "\\{review}Kamerastandort: ",
-        "OVERLAY_DEBUG_CAMERA_TARGET": "\\{review}Kameraziel: ",
-        "OVERLAY_DEBUG_IMMUNE": "Unverwundbarkeit ein",
-        "OVERLAY_DEBUG_POSITION": "Position: ",
-        "OVERLAY_DEBUG_ROTATION": "Rotation: ",
-        "OVERLAY_DEBUG_SPEED": "Geschwindigkeit: ",
-        "OVERLAY_ITEM_COUNT_FMT_PC": "\\{small}%s",
-        "OVERLAY_ITEM_COUNT_FMT_PS1": "\\{small}%s",
-        "PAGINATION_NAV": "%d / %d",
-        "PASSPORT_EXIT_GAME": "Spiel beenden",
-        "PASSPORT_EXIT_TO_TITLE": "Zurück zum Hauptmenü",
-        "PASSPORT_LOAD_GAME": "Spiel laden",
-        "PASSPORT_MODE_NEW_GAME": "Neues Spiel",
-        "PASSPORT_MODE_NEW_GAME_JP": "Japanisch NS",
-        "PASSPORT_MODE_NEW_GAME_JP_PLUS": "Japanisch NS+",
-        "PASSPORT_MODE_NEW_GAME_PLUS": "Neues Spiel+",
-        "PASSPORT_NEW_GAME": "Neues Spiel",
-        "PASSPORT_PLAY_PREVIOUS_LEVELS": "\\{review}Vorherige Level spielen",
-        "PASSPORT_RESTART_LEVEL": "Level Neu starten",
-        "PASSPORT_SAVE_GAME": "Spiel speichern",
-        "PASSPORT_SAVE_SLOT_UNSUPPORTED": "\\{review}Dieser Speicherstand unterstützt diese Funktion nicht.",
-        "PASSPORT_SELECT_LEVEL": "Level auswählen",
-        "PASSPORT_SELECT_MODE": "Modus Auswählen",
-        "PASSPORT_SELECT_SAVE": "\\{review}Speicher auswählen",
-        "PASSPORT_STORY_SO_FAR": "Bisherige Geschichte...",
-        "PAUSE_ARE_YOU_SURE": "Sind sie sicher?",
-        "PAUSE_CONTINUE": "Fortsetzen",
-        "PAUSE_EXIT_TO_TITLE": "Wirklich zum Hauptmenü zurückkehren?",
-        "PAUSE_NO": "Nein",
-        "PAUSE_PAUSED": "Pause",
-        "PAUSE_QUIT": "Beenden",
-        "PAUSE_YES": "Ja",
-        "PHOTO_MODE_ADVANCE_FRAME": "Frame Vorwärts",
-        "PHOTO_MODE_CAMERA_MOVE_PROMPT": "Kamera bewegen",
-        "PHOTO_MODE_CAMERA_RESET_PROMPT": "Kamera zurücksetzen",
-        "PHOTO_MODE_CAMERA_ROLL_PROMPT": "Rolle Kamera",
-        "PHOTO_MODE_CAMERA_ROTATE_90_PROMPT": "Rotiere um 90 Grad",
-        "PHOTO_MODE_CAMERA_ROTATE_PROMPT": "Rotiere Kamera",
-        "PHOTO_MODE_CHANGE_LARA_POSE": "Pose ändern",
-        "PHOTO_MODE_FOV_PROMPT": "FOV einstellen",
-        "PHOTO_MODE_LARA_MOVE_PROMPT": "\\{review}Bewege Lara",
-        "PHOTO_MODE_LARA_RESET_PROMPT": "\\{review}Setze Lara zurück",
-        "PHOTO_MODE_LARA_ROLL_PROMPT": "\\{review}Rolle Lara",
-        "PHOTO_MODE_LARA_ROTATE_90_PROMPT": "\\{review}Drehe Lara um 90°",
-        "PHOTO_MODE_LARA_ROTATE_PROMPT": "\\{review}Drehe Lara",
-        "PHOTO_MODE_SNAP_PROMPT": "Bild aufnehmen",
-        "PHOTO_MODE_TITLE_CAMERA_POS": "Foto-Modus",
-        "PHOTO_MODE_TITLE_LARA_POS": "\\{review}Lara bewegen",
-        "PHOTO_MODE_TOGGLE_HELP": "Hilfe Ein/Aus",
-        "SOUND_SETTINGS_MISC_TAB": "\\{review}Verschiedenes",
-        "SOUND_SETTINGS_TITLE": "Sound-Optionen",
-        "SOUND_SETTINGS_VOLUME_TAB": "\\{review}Lautstärke",
-        "STATS_AMMO": "Munition Treffer/Verbraucht",
-        "STATS_AMMO_HITS": "Treffer",
-        "STATS_AMMO_USED": "Benötigte Munition",
-        "STATS_ASSAULT_BEST_TIME_FMT": "\\{review}%s",
-        "STATS_ASSAULT_FINISH": "Zeit",
-        "STATS_ASSAULT_NO_TIMES_SET": "Keine Zeiten gesetzt",
-        "STATS_ASSAULT_OTHER_TIMES_FMT": "\\{review}%s",
-        "STATS_ASSAULT_TITLE": "Bestzeiten",
-        "STATS_BASIC_FMT": "%d",
-        "STATS_BONUS_STATISTICS": "Bonusstatistiken",
-        "STATS_DEATHS": "Tode",
-        "STATS_DETAIL_FMT": "%d von %d",
-        "STATS_DISTANCE_TRAVELLED": "Zurückgelegte Distanz",
-        "STATS_FINAL_STATISTICS": "Finale Statistiken",
-        "STATS_GYM_ASSAULT_COURSE": "\\{review}Angriffskurs",
-        "STATS_GYM_RACETRACK_COURSE": "\\{review}Rennstrecke",
-        "STATS_KILLS": "Besiegte Gegner",
-        "STATS_LEVEL": "Level",
-        "STATS_MEDIPACKS_USED": "Benötigte Medi-Packs",
-        "STATS_NONE": "None",
-        "STATS_PICKUPS": "Pickups",
-        "STATS_SECRETS": "Gefundene Geheimnisse",
-        "STATS_TIME_TAKEN": "Benötigte Zeit",
-    },
-    "objects": {
-        "flare": {
-            "name": "Fackel",
+    "general": {
+        "actions": {
+            "examine_item": "Untersuchen",
+            "hide_dialog": "Dialog ausblenden",
+            "reset_defaults": "Auf Standard zurücksetzen",
+            "rotate": "Drehen",
+            "unbind": "Freigeben",
+            "use_item": "Benutzen",
         },
-        "flares_box": {
-            "name": "Flares Box",
+        "config_presets": {
+            "applied": "\\{review}Voreinstellung angewendet.",
+            "confirm_description": "\\{review}Die folgenden Einstellungen werden geändert:",
+            "confirm_restart_note": "\\{review}Hinweis: Einige Einstellungen erfordern möglicherweise einen Neustart des Spiels, um wirksam zu werden.",
+            "empty": "\\{review}Keine Voreinstellungen gefunden.",
+            "no_changes": "\\{review}Keine Änderungen anzuwenden.",
+            "title_fmt": "\\{review}Voreinstellung %s anwenden?",
         },
-        "grenade": {
-            "name": "Granate",
+        "globe_select": {
+            "area_1": "\\{review}Bereich 1",
+            "area_2": "\\{review}Bereich 2",
+            "area_3": "\\{review}Bereich 3",
+            "area_4": "\\{review}Bereich 4",
+            "area_5": "\\{review}Bereich 5",
+            "area_6": "\\{review}Bereich 6",
         },
-        "pistols": {
-            "name": "Pistolen",
+        "inventory_ring": {
+            "heading_adventure": "\\{review}Abenteuer",
+            "heading_fmt": "%s",
+            "heading_game_over": "GAME OVER",
+            "heading_inventory": "INVENTAR",
+            "heading_items": "ITEMS",
+            "heading_option": "OPTION",
+            "item_count_fmt": "\\{small}%s",
+            "object_name_fmt": "%s",
         },
-        "shotgun": {
-            "name": "Schrotflinte",
+        "misc": {
+            "demo_mode": "Demo Modus",
+            "direction_keys_controller": "Steuerkreuz",
+            "direction_keys_keyboard": "Pfeile",
+            "empty_slot_fmt": "- LEERER SLOT -",
+            "exit": "Beenden",
+            "hold_fmt": "Gedrückt halten %s",
+            "off": "Aus",
+            "on": "Ein",
+            "pagination_nav": "%d / %d",
         },
-        "uzis": {
-            "name": "Uzis",
+        "osd": {
+            "ambiguous_input_2": "Mehrdeutige Eingabe: %s und %s",
+            "ambiguous_input_3": "Mehrdeutige Eingabe: %s, %s, ...",
+            "bilinear_filter_off": "Bilinear-Filter: aus",
+            "bilinear_filter_on": "Bilinear-Filter: ein",
+            "command_bad_invocation": "Unzulässiger Aufruf: %s",
+            "command_bool": "ein, aus",
+            "command_decimal": "[Dezimal]",
+            "command_integer": "[Integer]",
+            "command_percent": "[Integer]",
+            "command_unavailable": "Dieses Kommando ist momentan nicht ausführbar",
+            "command_valid_values": "Zulässige Werte: %s",
+            "complete_level": "Level abgeschlossen!",
+            "config_option_get": "%s ist momentan eingestellt auf %s",
+            "config_option_set": "%s geändert zu %s",
+            "config_option_unknown_option": "Unbekannte Option: %s",
+            "current_health_get": "Laras aktuelle Lebensenergie: %d",
+            "current_health_set": "Laras Lebensenergie eingestellt auf %d",
+            "door_close": "Sesam, schließe dich!",
+            "door_open": "Sesam, öffne dich!",
+            "door_open_fail": "Keine Türen in Laras Nähe",
+            "flipmap_fail_already_off": "Flipmap ist bereits AUS",
+            "flipmap_fail_already_on": "Flipmap ist bereits AN",
+            "flipmap_off": "Flipmap ",
+            "flipmap_on": "Flipmap eingeschaltet",
+            "fly_mode_off": "Flug-Modus ausgeschaltet",
+            "fly_mode_on": "Flug-Modus eingeschaltet",
+            "fps_counter_off": "FPS-Counter ausgeschaltet",
+            "fps_counter_on": "FPS-Counter eingeschaltet",
+            "give_item": "Es wurde %s zu Laras Inventar hinzugefügt.",
+            "give_item_all_guns": "Geladen und entsichert - Lara ist bis zu ihren Zähnen bewaffnet!",
+            "give_item_all_keys": "Überraschung! Jedes Schlüsselitem, dass Lara benötigt, ist jetzt in ihrem Inventar.",
+            "give_item_cheat": "Laras Rucksack ist schwerer geworden!",
+            "heal_already_full_hp": "Laras Gesundheit ist schon vollständig gefüllt.",
+            "heal_success": "Laras Gesundheit ist wieder vollständig wiederhergestellt.",
+            "invalid_cutscene": "Unzulässige Zwischensequenz",
+            "invalid_demo": "Unzulässige Demo",
+            "invalid_item": "Unbekanntes Item: %s",
+            "invalid_level": "Unzulässiger Level",
+            "invalid_object": "Unzulässiges Objekt",
+            "invalid_room": "Unzulässiger Raum: %d. Zulässige Räume sind 0-%d",
+            "invalid_sample": "Unzulässiger Sound: %d",
+            "kill": "Bye-bye!",
+            "kill_all": "Poof! %d Feinde verschwunden!",
+            "kill_all_fail": "Oh oh, es sind keine Feinde mehr zum Töten da...",
+            "kill_fail": "Kein Feind in der Nähe...",
+            "lighting_contrast_fmt": "Beleuchtungs-Kontrast: %s",
+            "load_game": "Spiel laden von folgendem Speicher-Slot %d",
+            "load_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
+            "load_game_fail_unavailable_slot": "Speicher-Slot %d ist nicht verfügbar",
+            "object_not_found": "Objekt nicht gefunden",
+            "play_cutscene": "Lade Zwischensequenz %d",
+            "play_demo": "Lade Demo %d",
+            "play_level": "Lade %s",
+            "pos_lara_missing": "Lara nicht vorhanden",
+            "pos_lara_pos_fmt": "Raum: %d\nPosition: %.3f, %.3f, %.3f\nRotation: %.3f, %.3f, %.3f",
+            "pos_level_fmt": "Level %d",
+            "pos_level_fmt_cutscene": "Zwischensequenz %d",
+            "pos_level_fmt_demo": "Demo %d",
+            "quick_load": "\\{review}Schnell geladener Slot %d",
+            "quick_load_fail_no_bound_slot": "\\{review}Kein Speicherplatz ist derzeit zugewiesen",
+            "quick_load_fail_unavailable_bound_slot": "\\{review}Der zugewiesene Speicherplatz ist nicht verfügbar",
+            "quick_save": "\\{review}Schnell gespeichert",
+            "quick_save_fail_no_slots": "\\{review}Keine Schnellspeicherplätze konfiguriert",
+            "save_game": "Spiel gespeichert auf Speicher-Slot %d",
+            "save_game_fail_invalid_slot": "Unzulässiger Speicher-Slot %d",
+            "sound_available_samples": "Verfügbare Sounds: %s",
+            "sound_playing_sample": "Spiele Sound: %d",
+            "speed_get": "Momentane Geschwindigkeit: %d",
+            "speed_set": "Geschwindigkeit eingestellt auf %d",
+            "strings_failed": "Neu Laden der Sprachdateien ist fehlgeschlagen",
+            "strings_reloaded": "Sprachdateien neu geladen",
+            "textures_off": "\\{review}Texturen: aus",
+            "textures_on": "\\{review}Texturen: an",
+            "trapezoid_filter_off": "Deaktiviert Trapezoid-Filter",
+            "trapezoid_filter_on": "Aktiviert Trapezoid-Filter",
+            "ui_off": "UI deakiviert",
+            "ui_on": "UI aktiviert",
+            "unknown_command": "Unbekanntes Kommando: %s",
+            "upscaling_factor": "Uscaling-Faktor: x%d",
+            "wireframe_mode_off": "Gitterrahmen-Modus: aus",
+            "wireframe_mode_on": "Gitterrahmen-Modus: ein",
         },
-        "shotgun_ammo": {
-            "name": "Schrot-Munition",
-        },
-        "uzis_ammo": {
-            "name": "Uzi-Munition",
-        },
-        "pickup_1": {
-            "name": "Pickup Item 1",
-        },
-        "pickup_2": {
-            "name": "Pickup Item 2",
-        },
-        "key_1": {
-            "name": "Key 1",
-        },
-        "key_2": {
-            "name": "Key 2",
-        },
-        "key_3": {
-            "name": "Key 3",
-        },
-        "key_4": {
-            "name": "Key 4",
-        },
-        "puzzle_1": {
-            "name": "Puzzle Item 1",
-        },
-        "puzzle_2": {
-            "name": "Puzzle Item 2",
-        },
-        "puzzle_3": {
-            "name": "Puzzle Item 3",
-        },
-        "puzzle_4": {
-            "name": "Puzzle Item 4",
-        },
-        "lead_bar": {
-            "name": "Bleibarren",
-        },
-        "scion": {
-            "name": "Scion",
-        },
-        "compass": {
-            "name": "Statistiken",
-        },
-        "stopwatch": {
-            "name": "\\{review}Statistiken",
+        "overlay": {
+            "debug_animation": "Animation: ",
+            "debug_animation_state": "\\{review}Status: ",
+            "debug_camera_pos": "\\{review}Kamerastandort: ",
+            "debug_camera_target": "\\{review}Kameraziel: ",
+            "debug_immune": "Unverwundbarkeit ein",
+            "debug_position": "Position: ",
+            "debug_rotation": "Rotation: ",
+            "debug_speed": "Geschwindigkeit: ",
+            "item_count_fmt_pc": "\\{small}%s",
+            "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
-            "name": "Spiel",
-        },
-        "photo": {
-            "name": "Laras Haus",
-        },
-        "graphics": {
-            "name": "Grafikeinstellungen",
-        },
-        "controls": {
-            "name": "Steuerung",
-        },
-        "sound": {
-            "name": "Sound",
-        },
-        "gamma": {
-            "name": "\\{review}Gamma",
-        },
-        "pda": {
-            "name": "Gameplay",
-        },
-        "lara": {
-            "name": "Lara",
-        },
-        "lara_hair": {
-            "name": "Laras Zopf",
-        },
-        "lara_pistols": {
-            "name": "Pistolen-Animation",
-        },
-        "lara_shotgun": {
-            "name": "Schrotflinten-Animation",
-        },
-        "lara_magnums": {
-            "name": "Magnum-Animation",
-        },
-        "lara_autos": {
-            "name": "\\{review}Animation automatischer Pistolen",
-        },
-        "lara_desert_eagle": {
-            "name": "\\{review}Animation der Desert Eagle",
-        },
-        "lara_uzis": {
-            "name": "Uzi-Animation",
-        },
-        "lara_flare": {
-            "name": "Fackel-Animation",
-        },
-        "lara_extra": {
-            "name": "Laras Extra Animation",
-        },
-        "boat": {
-            "name": "Boot",
-        },
-        "bacon_lara": {
-            "name": "Schinken Lara",
-        },
-        "wolf": {
-            "name": "Wolf",
-        },
-        "bear": {
-            "name": "Bär",
-        },
-        "bat": {
-            "name": "Fledermaus",
-        },
-        "crocodile": {
-            "name": "Krokodil",
-        },
-        "alligator": {
-            "name": "Alligator",
-        },
-        "lion": {
-            "name": "Löwe",
-        },
-        "lioness": {
-            "name": [
-                "Löwin",
-                "Löwe",
-            ]
-        },
-        "puma": {
-            "name": "Puma",
-        },
-        "ape": {
-            "name": "Affe",
-        },
-        "rat": {
-            "name": [
-                "Ratte",
-                "Landratte",
-            ]
-        },
-        "vole": {
-            "name": [
-                "Wühlmaus",
-                "Wasserratte",
-            ]
-        },
-        "trex": {
-            "name": "T-Rex",
-        },
-        "raptor": {
-            "name": "Raptor",
-        },
-        "mutant_1": {
-            "name": "Mutant 1",
-        },
-        "mutant_2": {
-            "name": "Mutant 2",
-        },
-        "mutant_3": {
-            "name": "Mutant 3",
-        },
-        "centaur": {
-            "name": "Zentaur",
-        },
-        "mummy": {
-            "name": "Mumie",
-        },
-        "dino_mutant": {
-            "name": "Dino Mutant",
-        },
-        "fish_mutant": {
-            "name": "Fisch Mutant",
-        },
-        "larson": {
-            "name": "Larson",
-        },
-        "pierre": {
-            "name": "Pierre",
-        },
-        "skateboard": {
-            "name": "Skateboard",
-        },
-        "skate_kid": {
-            "name": "Skate Kid",
-        },
-        "cowboy": {
-            "name": "Cowboy",
-        },
-        "baldy": {
-            "name": "Glatzkopf",
-        },
-        "natla": {
-            "name": "Natla",
-        },
-        "torso": {
-            "name": [
-                "Torso",
-                "Adam",
-                "Riesenmutant",
-            ]
-        },
-        "centaur_statue": {
-            "name": "Statue",
-        },
-        "pods": {
-            "name": "Pod",
-        },
-        "big_pod": {
-            "name": "Big Pod",
-        },
-        "damocles_sword": {
-            "name": "Schwert des Damokles",
-        },
-        "dart": {
-            "name": "Pfeil",
-        },
-        "dart_emitter": {
-            "name": "Pfeilerzeuger",
-        },
-        "disc": {
-            "name": "Scheibe",
-        },
-        "disc_emitter": {
-            "name": "Scheiben-Erzeuger",
-        },
-        "ember": {
-            "name": "Glut",
-        },
-        "ember_emitter": {
-            "name": "Gluterzeuger",
-        },
-        "falling_block_1": {
-            "name": [
-                "Fallender Block 1",
-                "Zerbrechbarer Boden 1",
-                "Zerbrechbare Kacheln 1",
-            ]
-        },
-        "falling_ceiling_1": {
-            "name": "Falling Ceiling 1",
-        },
-        "falling_ceiling_2": {
-            "name": "Fallende Decke 2",
-        },
-        "flame": {
-            "name": [
-                "Flamme",
-                "Feuer",
-            ]
-        },
-        "flame_emitter": {
-            "name": [
-                "Flamenerzeuger",
-                "Feuererzeuger",
-            ]
-        },
-        "lava_wedge": {
-            "name": "Lava-Keil",
-        },
-        "lightning_emitter": {
-            "name": "Blitzerzeuger",
-        },
-        "midas_touch": {
-            "name": "Hand des Midas",
-        },
-        "pendulum_1": {
-            "name": "Sandsack",
-        },
-        "rolling_ball_1": {
-            "name": [
-                "Fels 1",
-                "Rollender Ball",
-            ]
-        },
-        "spikes": {
-            "name": "Stacheln",
-        },
-        "teeth_trap": {
-            "name": "Zahn-Falle",
-        },
-        "thors_handle": {
-            "name": "Thors Hammer Griff",
-        },
-        "thors_head": {
-            "name": "Thors Hammer",
-        },
-        "bridge_flat": {
-            "name": "Brücke Flach",
-        },
-        "bridge_tilt_1": {
-            "name": "Brücke Tilt 1",
-        },
-        "bridge_tilt_2": {
-            "name": "Brücke Tilt 2",
-        },
-        "cog_1": {
-            "name": "Zahnrad 1",
-        },
-        "cog_2": {
-            "name": "Zahnrad 2",
-        },
-        "cog_3": {
-            "name": "Zahnrad 3",
-        },
-        "door_1": {
-            "name": "Tür 1",
-        },
-        "door_2": {
-            "name": "Tür 2",
-        },
-        "door_3": {
-            "name": "Tür 3",
-        },
-        "door_4": {
-            "name": "Tür 4",
-        },
-        "door_5": {
-            "name": "Tür 5",
-        },
-        "door_6": {
-            "name": "Tür 6",
-        },
-        "door_7": {
-            "name": "Tür 7",
-        },
-        "door_8": {
-            "name": "Tür 8",
-        },
-        "drawbridge": {
-            "name": "Zugbrücke",
-        },
-        "key_hole_1": {
-            "name": "Keyhole 1",
-        },
-        "key_hole_2": {
-            "name": "Keyhole 2",
-        },
-        "key_hole_3": {
-            "name": "Keyhole 3",
-        },
-        "key_hole_4": {
-            "name": "Keyhole 4",
-        },
-        "movable_block_1": {
-            "name": [
-                "Drückbarer Block 1",
-                "Bewegbarer Block 1",
-            ]
-        },
-        "movable_block_2": {
-            "name": [
-                "Drückbarer Block 2",
-                "Bewegbarer Block 2",
-            ]
-        },
-        "movable_block_3": {
-            "name": [
-                "Drückbarer Block 3",
-                "Bewegbarer Block 3",
-            ]
-        },
-        "movable_block_4": {
-            "name": [
-                "Drückbarer Block 4",
-                "Bewegbarer Block 4",
-            ]
-        },
-        "moving_bar": {
-            "name": "Moving Bar",
-        },
-        "portacabin": {
-            "name": "Portable Cabin",
-        },
-        "puzzle_done_1": {
-            "name": "Puzzle Hole 1 (Done)",
-        },
-        "puzzle_done_2": {
-            "name": "Puzzle Hole 2 (Done)",
-        },
-        "puzzle_done_3": {
-            "name": "Puzzle Hole 3 (Done)",
-        },
-        "puzzle_done_4": {
-            "name": "Puzzle Hole 4 (Done)",
-        },
-        "puzzle_hole_1": {
-            "name": "Puzzle Hole 1 (Empty)",
-        },
-        "puzzle_hole_2": {
-            "name": "Puzzle Hole 2 (Empty)",
-        },
-        "puzzle_hole_3": {
-            "name": "Puzzle Hole 3 (Empty)",
-        },
-        "puzzle_hole_4": {
-            "name": "Puzzle Hole 4 (Empty)",
-        },
-        "save_crystal": {
-            "name": "Speicherkristall",
-        },
-        "scion_holder": {
-            "name": "Scion-Halter",
-        },
-        "sliding_pillar": {
-            "name": "Sliding Pillar",
-        },
-        "switch_type_normal": {
-            "name": [
-                "Lever",
-                "Switch",
-            ]
-        },
-        "switch_type_uw": {
-            "name": [
-                "Underwater Lever",
-                "Underwater Switch",
-            ]
-        },
-        "trapdoor_1": {
-            "name": "Falltür 1",
-        },
-        "trapdoor_2": {
-            "name": "Falltür 2",
-        },
-        "trapdoor_3": {
-            "name": "Falltür 3",
-        },
-        "alphabet": {
-            "name": "\\{review}Standard Schriftart",
-        },
-        "blood_1": {
-            "name": "Blut 1",
-        },
-        "blood_2": {
-            "name": "Blut 2",
-        },
-        "body_part": {
-            "name": "Körperteil",
-        },
-        "bubble_1": {
-            "name": "Blase 1",
-        },
-        "bubble_2": {
-            "name": "Blase 2",
-        },
-        "bubble_emitter": {
-            "name": "Blasenerzeuger",
-        },
-        "camera_target": {
-            "name": "Kamera-Ziel",
-        },
-        "dart_effect": {
-            "name": "Pfeil-Effekt",
-        },
-        "dust": {
-            "name": "Staub",
-        },
-        "earthquake": {
-            "name": "Erdbeben",
-        },
-        "explosion_1": {
-            "name": "Explosion 1",
-        },
-        "explosion_2": {
-            "name": "Explosion 2",
-        },
-        "flare_fire": {
-            "name": "Fackel-Funken",
-        },
-        "glow": {
-            "name": "Glühen",
-        },
-        "gun_flash": {
-            "name": "Waffen Blitz",
-        },
-        "natla_gun": {
-            "name": "\\{review}Natlas Waffe",
-        },
-        "missile_atlantean_shard": {
-            "name": "\\{review}Geschoss (Atlantischer Splitter)",
-        },
-        "missile_atlantean_bomb": {
-            "name": "\\{review}Geschoss (Atlantische Bombe)",
-        },
-        "pickup_aid": {
-            "name": "Pickup-Hilfe",
-        },
-        "player_1": {
-            "name": "Zwischensequenz-Schauspieler 1",
-        },
-        "player_2": {
-            "name": "Zwischensequenz-Schauspieler 2",
-        },
-        "player_3": {
-            "name": "Zwischensequenz-Schauspieler 3",
-        },
-        "player_4": {
-            "name": "Zwischensequenz-Schauspieler 4",
-        },
-        "ricochet": {
-            "name": "Querschläger",
-        },
-        "skybox": {
-            "name": "Skybox",
-        },
-        "splash_1": {
-            "name": "Wasserkräuselungen 1",
-        },
-        "splash_2": {
-            "name": "Water-Kräuseln 2",
-        },
-        "twinkle": {
-            "name": "Funken",
-        },
-        "waterfall": {
-            "name": "Wasserfall Nebel",
-        },
-        "winston": {
-            "name": "Winston",
-        },
-        "harpoon_gun": {
-            "name": "Harpune",
-        },
-        "m16": {
-            "name": "M16",
-        },
-        "grenade_launcher": {
-            "name": "Granatenwerfer",
-        },
-        "pistols_ammo": {
-            "name": "Pistolen Munition",
-        },
-        "harpoon_gun_ammo": {
-            "name": "Pfeile",
-        },
-        "m16_ammo": {
-            "name": "M16-Munition",
-        },
-        "grenade_launcher_ammo": {
-            "name": "Granaten",
-        },
-        "secret_1": {
-            "name": "Geheimnis 1",
-        },
-        "secret_2": {
-            "name": "Geheimnis 2",
-        },
-        "secret_3": {
-            "name": "Geheimnis 3",
-        },
-        "lara_m16": {
-            "name": "M16-Animation",
-        },
-        "lara_mp5": {
-            "name": "\\{review}MP5-Animation",
-        },
-        "lara_grenade": {
-            "name": "Grantenwerfer-Animation",
-        },
-        "lara_rocket": {
-            "name": "\\{review}Animation des Raketenwerfers",
-        },
-        "lara_harpoon": {
-            "name": "Harpunen-Animation",
-        },
-        "lara_skidoo": {
-            "name": "Schneeemobil-Animation",
-        },
-        "lara_boat": {
-            "name": "Boots-Animation",
-        },
-        "skidoo_fast": {
-            "name": "Rotes Schneemobil",
-        },
-        "dog": {
-            "name": [
-                "Hund",
-                "Dobermann",
-            ]
-        },
-        "cult_1": {
-            "name": "Maskierter Schläger 1",
-        },
-        "cult_1a": {
-            "name": "Maskierter Schläger 2",
-        },
-        "cult_1b": {
-            "name": "Maskierter Schläger 3",
-        },
-        "cult_2": {
-            "name": "Messerwerfer",
-        },
-        "cult_3": {
-            "name": "Schrotflinten Schläger",
-        },
-        "mouse": {
-            "name": "Ratte",
-        },
-        "dragon_front": {
-            "name": "Drache Vorderseite",
-        },
-        "dragon_back": {
-            "name": "Drachen Hinterseite",
-        },
-        "shark": {
-            "name": "Hai",
-        },
-        "eel": {
-            "name": "Aal",
-        },
-        "big_eel": {
-            "name": "Großer Aal",
-        },
-        "barracuda": {
-            "name": "Barrakuda",
-        },
-        "diver": {
-            "name": "Taucher",
-        },
-        "worker_1": {
-            "name": "Schläger Schütze 1",
-        },
-        "worker_2": {
-            "name": "Schläger Schütze 2",
-        },
-        "worker_3": {
-            "name": "Schlagstock schwingender Schläger 1",
-        },
-        "worker_4": {
-            "name": "Schlagstock schwingender Schläger 2",
-        },
-        "worker_5": {
-            "name": "Typ mit Flammenwerfer",
-        },
-        "jelly": {
-            "name": "Qualle",
-        },
-        "spider": {
-            "name": "Spinne",
-        },
-        "big_spider": {
-            "name": "Riesen-Spider",
-        },
-        "crow": {
-            "name": "Krähe",
-        },
-        "tiger": {
-            "name": "Tiger",
-        },
-        "bartoli": {
-            "name": "Marco Bartoli",
-        },
-        "xian_spearman": {
-            "name": "Xian Speerträger",
-        },
-        "xian_spearman_statue": {
-            "name": "Xian Speerträger Statue",
-        },
-        "xian_knight": {
-            "name": "Xian Ritter",
-        },
-        "xian_knight_statue": {
-            "name": "Xian Ritter Statue",
-        },
-        "yeti": {
-            "name": "Yeti",
-        },
-        "bird_guardian": {
-            "name": "Vogel-Monster",
-        },
-        "eagle": {
-            "name": "Adler",
-        },
-        "bandit_1": {
-            "name": [
-                "Söldner 1",
-                "Masked Goon 1",
-            ]
-        },
-        "bandit_2": {
-            "name": [
-                "Söldner 2",
-                "Maskierter Schläger 2",
-            ]
-        },
-        "bandit_2b": {
-            "name": [
-                "Söldner 3",
-                "Maskierter Schläger 3",
-            ]
-        },
-        "skidoo_armed": {
-            "name": "Schwarzes Schneemobil",
-        },
-        "skidoo_driver": {
-            "name": "Fahrer schwarzes Schneemobil",
-        },
-        "monk_1": {
-            "name": "Mönch 1",
-        },
-        "monk_2": {
-            "name": "Mönch 2",
-        },
-        "blade": {
-            "name": "Wall-mounted Blade",
-        },
-        "ceiling_spikes": {
-            "name": "Spiky Ceiling",
-        },
-        "falling_block_2": {
-            "name": [
-                "Fallender Block 2",
-                "Zerbrechbarer Boden 2",
-                "Zerbrechbare Kacheln 2",
-            ]
-        },
-        "falling_block_3": {
-            "name": [
-                "Fallender Block 3",
-                "Zerbrechbarer Boden 3",
-                "Zerbrechbare Kacheln 3",
-                "Lose Bretter",
-            ]
-        },
-        "gondola": {
-            "name": "Gondel",
-        },
-        "hook": {
-            "name": "Hook",
-        },
-        "icicle": {
-            "name": "Icicles",
-        },
-        "killer_statue": {
-            "name": "Statue with Sword",
-        },
-        "mine": {
-            "name": "Wassermine",
-        },
-        "pendulum_2": {
-            "name": "Swinging Box",
-        },
-        "power_saw": {
-            "name": "Power Saw",
-        },
-        "propeller_1": {
-            "name": "Airplane Propeller",
-        },
-        "propeller_2": {
-            "name": "Underwater Propeller",
-        },
-        "propeller_3": {
-            "name": "Air Fan",
-        },
-        "rolling_ball_2": {
-            "name": [
-                "Boulder 2",
-                "Rolling Ball 2",
-            ]
-        },
-        "rolling_ball_3": {
-            "name": [
-                "Boulder 3",
-                "Rolling Ball 3",
-            ]
-        },
-        "rolling_ball_4": {
-            "name": [
-                "Boulder 4",
-                "Rolling Ball 4",
-            ]
-        },
-        "swinging_axe": {
-            "name": "\\{review}Schwingende Axt",
-        },
-        "spike_wall": {
-            "name": "Spike Wall",
-        },
-        "spinning_blade": {
-            "name": "Spinning Blade",
-        },
-        "bell": {
-            "name": "Bell",
-        },
-        "big_bowl": {
-            "name": "Lava-Schüssel",
-        },
-        "general": {
-            "name": "Mini U-Boot",
-        },
-        "lift": {
-            "name": "Aufzug",
-        },
-        "springboard": {
-            "name": "Springboard",
-        },
-        "switch_type_airlock": {
-            "name": "Airlock Switch",
-        },
-        "switch_type_button": {
-            "name": [
-                "Button",
-                "Push Button",
-                "Switch",
-            ]
-        },
-        "switch_type_small": {
-            "name": "Small Switch",
-        },
-        "smashable_1": {
-            "name": "Breakable Window 1",
-        },
-        "smashable_2": {
-            "name": "Breakable Window 2",
-        },
-        "smashable_3": {
-            "name": "Breakable Window 3",
-        },
-        "smashable_4": {
-            "name": "Breakable Window 4",
-        },
-        "zipline_handle": {
-            "name": "Zipline Handle",
-        },
-        "alarm_sound": {
-            "name": "Alarm",
-        },
-        "assault_digits": {
-            "name": "Assault Digits",
-        },
-        "bird_tweeter_1": {
-            "name": "Dripping Water",
-        },
-        "bird_tweeter_2": {
-            "name": "Singing Birds",
-        },
-        "boat_bits": {
-            "name": "Boots-Einzelteile",
-        },
-        "clock_chimes": {
-            "name": "Bartoli Hideout clock",
-        },
-        "combat_end": {
-            "name": "Kampf Ende",
-        },
-        "copter": {
-            "name": "Helikopter",
-        },
-        "cut_shotgun": {
-            "name": "Schrotflinten Dusch Animation",
-        },
-        "detonator_box": {
-            "name": "Zünder",
-        },
-        "ding_dong": {
-            "name": "Türklingel",
-        },
-        "dragon_bones_1": {
-            "name": "Platzhalter",
-        },
-        "dragon_bones_2": {
-            "name": "Drachen-Knochen Vorn",
-        },
-        "dragon_bones_3": {
-            "name": "Drachen-Knochen Hinten",
-        },
-        "dying_monk": {
-            "name": "sterbender Mönch",
-        },
-        "fx_reserved": {
-            "name": "Gray disk",
-        },
-        "glow_reserved": {
-            "name": "Karten-Glühen",
-        },
-        "gong": {
-            "name": "Gong",
-        },
-        "gong_bonger": {
-            "name": "Gong Schlegel",
-        },
-        "harpoon_bolt": {
-            "name": "Harpunen Pfeil",
-        },
-        "hot_liquid": {
-            "name": "Extra Feuer",
-        },
-        "inv_background": {
-            "name": "Menü Hintergrund",
-        },
-        "lara_alarm": {
-            "name": "Alarmglocke",
-        },
-        "m16_flash": {
-            "name": "M16 Blitz",
-        },
-        "mesh_swap_1": {
-            "name": "Mesh Swap 1",
-        },
-        "mesh_swap_2": {
-            "name": "Mesh Swap 2",
-        },
-        "mesh_swap_3": {
-            "name": "\\{review}Mesh Swap 3",
-        },
-        "mini_copter": {
-            "name": "Helikopter 2",
-        },
-        "missile_flame": {
-            "name": "\\{review}Geschoss (Flamme)",
-        },
-        "missile_poison": {
-            "name": "\\{review}Geschoss (Gift)",
-        },
-        "missile_harpoon": {
-            "name": "\\{review}Geschoss (Harpune)",
-        },
-        "missile_knife": {
-            "name": "\\{review}Geschoss (Messer)",
-        },
-        "player_5": {
-            "name": "Zwischensequenz-Schauspieler 5",
-        },
-        "player_6": {
-            "name": "Zwischensequenz-Schauspieler 6",
-        },
-        "player_7": {
-            "name": "Zwischensequenz-Schauspieler 7",
-        },
-        "player_8": {
-            "name": "Zwischensequenz-Schauspieler 8",
-        },
-        "player_9": {
-            "name": "Zwischensequenz-Schauspieler 9",
-        },
-        "player_10": {
-            "name": "Zwischensequenz-Schauspieler 10",
-        },
-        "skidoo_track": {
-            "name": "Snowmobile Track",
-        },
-        "snow_sprite": {
-            "name": "Snowmobile Wake",
-        },
-        "sphere_of_doom_1": {
-            "name": "Dragon Explosion 1",
-        },
-        "sphere_of_doom_2": {
-            "name": "Dragon Explosion 2",
-        },
-        "sphere_of_doom_3": {
-            "name": "Dragon Explosion 3",
-        },
-        "text_box": {
-            "name": "UI Frame",
-        },
-        "water_sprite": {
-            "name": "Boat Wake",
-        },
-        "alphabet_small": {
-            "name": "\\{review}Kleine Schriftart",
-        },
-        "magnums": {
-            "name": "Magnums",
-        },
-        "autos": {
-            "name": "Automatik",
-        },
-        "magnums_ammo": {
-            "name": "Magnum Munition",
-        },
-        "autos_ammo": {
-            "name": "Automatik-Munition",
-        },
-        "desert_eagle": {
-            "name": "\\{review}Desert Eagle",
-        },
-        "desert_eagle_ammo": {
-            "name": "\\{review}Magazine der Desert Eagle",
-        },
-        "mp5": {
-            "name": "\\{review}MP5",
-        },
-        "mp5_ammo": {
-            "name": "\\{review}MP5-Munition",
-        },
-        "rocket_launcher": {
-            "name": "\\{review}Raketenwerfer",
-        },
-        "rocket_launcher_ammo": {
-            "name": "\\{review}Raketen",
-        },
-        "rocket": {
-            "name": "\\{review}Rakete",
-        },
-        "animating_1": {
-            "name": "\\{review}Objekt 1 wird animiert",
-        },
-        "animating_2": {
-            "name": "\\{review}Objekt 2 wird animiert",
-        },
-        "animating_3": {
-            "name": "\\{review}Objekt 3 wird animiert",
-        },
-        "animating_4": {
-            "name": "\\{review}Objekt 4 wird animiert",
-        },
-        "animating_5": {
-            "name": "\\{review}Objekt 5 wird animiert",
-        },
-        "animating_6": {
-            "name": "\\{review}Objekt 6 wird animiert",
-        },
-        "winston_army": {
-            "name": "\\{review}Winston (Armee)",
-        },
-        "shadow": {
-            "name": "\\{review}Schatten",
-        },
-        "assault_target": {
-            "name": "\\{review}Angriffsziele",
-        },
-        "electrical_light": {
-            "name": "\\{review}Elektrisches Licht",
-        },
-        "smoke_emitter_white": {
-            "name": "\\{review}Rauchgenerator (Weiß)",
-        },
-        "smoke_emitter_black": {
-            "name": "\\{review}Rauchgenerator (Schwarz)",
-        },
-        "steam_emitter": {
-            "name": "\\{review}Dampfgenerator",
-        },
-        "quad_bike": {
-            "name": "\\{review}Quad",
-        },
-        "flame_emitter_big": {
-            "name": "\\{review}Flammenwerfer (Groß)",
-        },
-        "flame_emitter_small": {
-            "name": "\\{review}Flammenwerfer (Klein)",
-        },
-        "flame_emitter_jet": {
-            "name": "\\{review}Flammenwerfer (Strahl)",
-        },
-        "flame_emitter_side": {
-            "name": "\\{review}Flammenwerfer (Seite)",
-        },
-        "tropical_fish": {
-            "name": "\\{review}Tropischer Fisch",
-        },
-        "pirahnas": {
-            "name": "\\{review}Piranhas",
-        },
-        "gun_shell": {
-            "name": "\\{review}Gewehrpatrone",
-        },
-        "shotgun_shell": {
-            "name": "\\{review}Schrotpatrone",
-        },
-        "quest_1": {
-            "name": "\\{review}Quest-Gegenstand 1",
-        },
-        "quest_2": {
-            "name": "\\{review}Quest-Gegenstand 2",
-        },
-        "quest_3": {
-            "name": "\\{review}Quest-Gegenstand 3",
-        },
-        "quest_4": {
-            "name": "\\{review}Quest-Gegenstand 4",
-        },
-        "globe": {
-            "name": "\\{review}Globus",
-        },
-        "kill_all_triggered": {
-            "name": "\\{review}Alle töten (ausgelöst)",
-        },
-        "monkey": {
-            "name": "\\{review}Affe",
-        },
-        "tony": {
-            "name": "\\{review}Tony",
-        },
-        "vulture": {
-            "name": "\\{review}Geier",
-        },
-        "snake": {
-            "name": "\\{review}Schlange",
-        },
-        "poison_dart": {
-            "name": "\\{review}Giftpfeil",
-        },
-        "poison_dart_emitter": {
-            "name": "\\{review}Giftpfeilwerfer",
-        },
-        "red_light": {
-            "name": "\\{review}Rotes Licht",
-        },
-        "green_light": {
-            "name": "\\{review}Grünes Licht",
-        },
-        "blue_light": {
-            "name": "\\{review}Blaues Licht",
-        },
-        "amber_light": {
-            "name": "\\{review}Bernsteinfarbenes Licht",
-        },
-        "white_light": {
-            "name": "\\{review}Weißes Licht",
-        },
-        "on_off_light": {
-            "name": "\\{review}An/Aus Licht",
-        },
-        "pulse_light": {
-            "name": "\\{review}Pulsierendes Licht",
-        },
-        "strobe_light": {
-            "name": "\\{review}Stroboskoplicht",
-        },
-        "beacon_light": {
-            "name": "\\{review}Leuchtfeuer",
-        },
-        "shiva": {
-            "name": "\\{review}Shiva",
-        },
-        "electric_fence": {
-            "name": "\\{review}Elektrischer Zaun",
-        },
-        "switch_type_wheel": {
-            "name": "\\{review}Radswitch",
-        },
-        "kayak": {
-            "name": "\\{review}Kajak",
-        },
-        "mounted_gun": {
-            "name": "\\{review}Montiertes Geschütz",
-        },
-        "tribe_axeman": {
-            "name": "\\{review}Stammesaxtkämpfer",
-        },
-        "compy": {
-            "name": "\\{review}Compsognathus",
-        },
-        "tribe_pipeman": {
-            "name": "\\{review}Stammes-Blasrohrbenutzer",
-        },
-        "lizard": {
-            "name": "\\{review}Echse",
-        },
-        "carcass": {
-            "name": "\\{review}Kadaver",
-        },
-        "bat_emitter": {
-            "name": "\\{review}Fledermaus-Emitter",
-        },
-        "tribe_boss": {
-            "name": "\\{review}Stammesanführer",
-        },
-        "trex_alpha": {
-            "name": "\\{review}T-Rex-Alpha",
-        },
-        "raptor_emitter": {
-            "name": "\\{review}Raptor-Emitter",
-        },
-        "sthpac_mercenary": {
-            "name": "\\{review}Südsee-Söldner",
-        },
-        "train": {
-            "name": "\\{review}Zug",
-        },
-        "patrol_dog": {
-            "name": "\\{review}Hund",
-        },
-        "huskie": {
-            "name": "\\{review}Hund",
-        },
-        "electric_cleaner": {
-            "name": "\\{review}Elektrischer Reiniger",
-        },
-        "punk_1": {
-            "name": "\\{review}Punk 1",
-        },
-        "punk_2": {
-            "name": "\\{review}Punk 2",
-        },
-        "upv": {
-            "name": "\\{review}Mini-U-Boot",
+            "exit_game": "Spiel beenden",
+            "exit_to_title": "Zurück zum Hauptmenü",
+            "load_game": "Spiel laden",
+            "mode_new_game": "Neues Spiel",
+            "mode_new_game_jp": "Japanisch NS",
+            "mode_new_game_jp_plus": "Japanisch NS+",
+            "mode_new_game_plus": "Neues Spiel+",
+            "new_game": "Neues Spiel",
+            "play_previous_levels": "\\{review}Vorherige Level spielen",
+            "restart_level": "Level Neu starten",
+            "save_game": "Spiel speichern",
+            "save_slot_unsupported": "\\{review}Dieser Speicherstand unterstützt diese Funktion nicht.",
+            "select_level": "Level auswählen",
+            "select_mode": "Modus Auswählen",
+            "select_save": "\\{review}Speicher auswählen",
+            "story_so_far": "Bisherige Geschichte...",
+        },
+        "pause": {
+            "are_you_sure": "Sind sie sicher?",
+            "continue": "Fortsetzen",
+            "exit_to_title": "Wirklich zum Hauptmenü zurückkehren?",
+            "no": "Nein",
+            "paused": "Pause",
+            "quit": "Beenden",
+            "yes": "Ja",
+        },
+        "photo_mode": {
+            "advance_frame": "Frame Vorwärts",
+            "camera_move_prompt": "Kamera bewegen",
+            "camera_reset_prompt": "Kamera zurücksetzen",
+            "camera_roll_prompt": "Rolle Kamera",
+            "camera_rotate_90_prompt": "Rotiere um 90 Grad",
+            "camera_rotate_prompt": "Rotiere Kamera",
+            "change_lara_pose": "Pose ändern",
+            "fov_prompt": "FOV einstellen",
+            "lara_move_prompt": "\\{review}Bewege Lara",
+            "lara_reset_prompt": "\\{review}Setze Lara zurück",
+            "lara_roll_prompt": "\\{review}Rolle Lara",
+            "lara_rotate_90_prompt": "\\{review}Drehe Lara um 90°",
+            "lara_rotate_prompt": "\\{review}Drehe Lara",
+            "snap_prompt": "Bild aufnehmen",
+            "title_camera_pos": "Foto-Modus",
+            "title_lara_pos": "\\{review}Lara bewegen",
+            "toggle_help": "Hilfe Ein/Aus",
+        },
+        "settings": {
+            "common": {
+                "all_hidden_disclaimer": "\\{review}Die Einstellungen sind für dieses Level-Set deaktiviert.",
+                "chroma": "Chroma",
+                "edit_value": "Wert bearbeiten",
+                "frozen_option_disclaimer": "Diese Einstellung ist vom Ersteller des Levels erzwungen und kann nicht geändert werden.",
+                "hue": "Farbton",
+                "lightness": "Helligkeit",
+                "restore_default": "Standard wiederherstellen",
+                "toggle_help": "Hilfe Ein/Aus",
+            },
+            "controls": {
+                "backend": {
+                    "controller": "Kontroller",
+                    "keyboard": "Tastatur",
+                },
+                "customize": "Steuerung anpassen",
+                "layout": {
+                    "custom_1": "Eigene Steuerung 1",
+                    "custom_2": "Eigene Steuerung 2",
+                    "custom_3": "Eigene Steuerung 3",
+                    "default": "Standardtasten",
+                },
+                "tabs": {
+                    "basics": "Bewegung",
+                    "items": "Items",
+                    "misc": "Sonstiges",
+                    "system": "System",
+                }
+            },
+            "gameplay": {
+                "tabs": {
+                    "controls": "Steuerung",
+                    "fixes": "Fixes",
+                    "general": "Allgemeines",
+                    "mods": "Mods",
+                    "presets": "\\{review}Voreinstellungen",
+                },
+                "title": "Gameplay-Optionen",
+            },
+            "graphic_settings": {
+                "tabs": {
+                    "bars": "\\{review}Leisten",
+                    "rendering": "\\{review}Rendern",
+                    "ui": "\\{review}Benutzeroberfläche",
+                    "visuals": "\\{review}Darstellung",
+                },
+                "title": "Grafik Optionen",
+            },
+            "sound": {
+                "tabs": {
+                    "misc": "\\{review}Verschiedenes",
+                    "volume": "\\{review}Lautstärke",
+                },
+                "title": "Sound-Optionen",
+            }
+        },
+        "stats": {
+            "ammo": "Munition Treffer/Verbraucht",
+            "ammo_hits": "Treffer",
+            "ammo_used": "Benötigte Munition",
+            "assault_best_time_fmt": "\\{review}%s",
+            "assault_finish": "Zeit",
+            "assault_no_times_set": "Keine Zeiten gesetzt",
+            "assault_other_times_fmt": "\\{review}%s",
+            "assault_title": "Bestzeiten",
+            "basic_fmt": "%d",
+            "bonus_statistics": "Bonusstatistiken",
+            "deaths": "Tode",
+            "detail_fmt": "%d von %d",
+            "distance_travelled": "Zurückgelegte Distanz",
+            "final_statistics": "Finale Statistiken",
+            "gym_assault_course": "\\{review}Angriffskurs",
+            "gym_racetrack_course": "\\{review}Rennstrecke",
+            "kills": "Besiegte Gegner",
+            "level": "Level",
+            "medipacks_used": "Benötigte Medi-Packs",
+            "none": "None",
+            "pickups": "Pickups",
+            "secrets": "Gefundene Geheimnisse",
+            "time_taken": "Benötigte Zeit",
+        }
+    },
+    "console": {
+        "cmd": {
+            "braid": {
+                "help": "Aktiviert und deaktiviert Laras Zopf.",
+            },
+            "cheats": {
+                "help": "Schaltet In-Game Cheats ein oder aus.",
+            },
+            "clear": {
+                "help": "\\{review}Löscht sichtbare Konsolenprotokolle.",
+            },
+            "debug": {
+                "help": "Aktiviert und deaktiviert visuele Debuginformationen.",
+            },
+            "drain": {
+                "help": "Entfernt das gesamte Wasser aus dem Raum, in dem sie sich im Moment befinden.",
+            },
+            "end_level": {
+                "help": "Beendet das aktuelle Level.",
+            },
+            "exit": {
+                "help": "Beendet das Spiel.",
+            },
+            "flipmap": {
+                "help": "Aktiviert und deaktiviert die Flip-Map.",
+            },
+            "flood": {
+                "help": "Überflutet den Raum, in dem sie sich im Moment befinden, mit Wasser.",
+            },
+            "fly": {
+                "help": "Aktiviert und deaktiviert den Flug-Modus-Cheat.",
+            },
+            "fps": {
+                "help": "Erhöht oder senkt den FPS-Wert.",
+            },
+            "give": {
+                "help": "Fügt ein angegebenes Item zu Laras Inventar hinzu.",
+                "invalid_secret": "Unzulässiges Geheimnis: #%d (zulässige Geheimnisse: %s)",
+                "secret_given": "Geheimnis hinzugefügt %s",
+                "secret_list": "Gesammelte Geheimnisse: %d von %d (%s)",
+                "secret_none": "Gesammelte Geheimnisse: %d von %d",
+                "secret_taken": "Geheimnis enfernt %s",
+            },
+            "give_secret": {
+                "help": "Listet Laras Geheimnisse auf oder nimmt/gibt ein nach Nummern sortiertes Geheimnis.",
+            },
+            "heal": {
+                "help": "Heilt Lara zurück auf volle Lebensenergie.",
+            },
+            "help": {
+                "help": "Zeigt Hilfe für alle Kommandos oder detaillierte Hilfe für ein bestimmtes.",
+                "list": "Verfügbare Kommandos:",
+            },
+            "hp": {
+                "help": "Stellt Laras Lebensenergie auf den bestimmten Wert ein.",
+            },
+            "immune": {
+                "help": "Aktiviet oder deaktiviert Unverwundbarkeit. (Lara kann unter bestimmten Umständen immernoch sterben.)",
+                "off": "Lara ist nun verwundbar",
+                "on": "Lara ist nun unverwundbar",
+            },
+            "inf_sprint": {
+                "help": "\\{review}Schaltet unendliches Sprinten um.",
+                "off": "\\{review}Lara kann nicht mehr ewig sprinten",
+                "on": "\\{review}Lara kann jetzt ewig sprinten",
+            },
+            "kill": {
+                "help": "Tötet in der Nähe befindliche Feinde.",
+            },
+            "lighting": {
+                "help": "Aktiviet oder deaktiviert Beleuchtungs-Sytem.",
+            },
+            "load": {
+                "help": "\\{review}Lädt das Spiel aus dem angegebenen Speicherplatz oder von einem Schnell-Speicher.",
+            },
+            "lua": {
+                "help": "\\{review}Führt den angegebenen Lua-Code-String aus.",
+                "runtime_error": "\\{review}Lua-Laufzeitfehler: %s",
+                "syntax_error": "\\{review}Lua-Syntaxfehler: %s",
+            },
+            "mod": {
+                "help": "\\{review}Wechselt zum angegebenen Mod und startet das Spiel neu.",
+            },
+            "music": {
+                "help": "Spielt Musik-Titel mit dazugehöriger ID ab.",
+            },
+            "play_cutscene": {
+                "help": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",
+            },
+            "play_demo": {
+                "help": "Spielt eine Demo mit der angegebenen Nummer ab.",
+            },
+            "play_gym": {
+                "help": "Startet das Gym-Level.",
+            },
+            "play_level": {
+                "help": "Startet einen Level mit dem angegebenen Namen oder der dazugehörigen Nummer.",
+            },
+            "play_music": {
+                "invalid_track": "Unzulässiger Musik Titel",
+                "stopped": "\\{review}Musik gestoppt",
+                "track": "Spiele Musiktitel %d",
+            },
+            "pos": {
+                "help": "Zeigt Laras Position an.",
+            },
+            "save": {
+                "help": "\\{review}Speichert das Spiel im angegebenen Speicherplatz oder im nächsten Schnell-Speicherplatz.",
+            },
+            "screenshot": {
+                "help": "\\{review}Speichert einen Screenshot auf der Festplatte, mit optionalem Pfad.",
+            },
+            "set": {
+                "help": "Aktualisiert oder zeigt die angegebene Konfigurations-Einstellung an.",
+            },
+            "sfx": {
+                "help": "Spielt einen Sound-Effekt mit der angegebenen ID ab.",
+            },
+            "spawn": {
+                "fail": "\\{review}Erzeugen des angeforderten Objekts fehlgeschlagen",
+                "success": "\\{review}Angefordertes Objekt in der Nähe von Lara erzeugt",
+            },
+            "speed": {
+                "help": "Ändert die Geschwindigkeit des Spiels.",
+            },
+            "strings": {
+                "help": "Lädt erneut die aktuellen Sprachdateien von der Festplatte.",
+            },
+            "teleport": {
+                "item": "Teleportiert zu Objekt: %d",
+                "item_fail": "Fehlgeschlagene Teleportation zu Objekt: %d",
+                "object": "Teleportiert zu Objekt: %s",
+                "object_fail": "Fehlgeschlagene Teleportation zu Objekt: %s",
+                "pos": "Teleportiere zu Position: %.3f %.3f %.3f",
+                "pos_fail": "Fehlgeschlagene Teleportation zu Position: %.3f %.3f %.3f",
+                "room": "Teleportiere zu Raum: %d",
+                "room_fail": "Teleportation zu Raum: %d",
+            },
+            "textures": {
+                "help": "\\{review}Schaltet die Texturen ein oder aus.",
+            },
+            "title": {
+                "help": "Bringt sie zurück zum Titel-Bildschirm.",
+            },
+            "tp": {
+                "help": "Teleportiert Lara zu der angegebenen Position oder Raum-Nummer.",
+            },
+            "trigger": {
+                "help": "\\{review}Löst ein Element durch ID, Elementname oder Objektnamen aus oder setzt es zurück.",
+                "invalid_item": "\\{review}Ungültiges Element: %s",
+                "no_match": "\\{review}Unbekanntes Ziel: %s",
+                "not_found": "\\{review}Keine passenden Elemente gefunden für: %s",
+                "triggered": "\\{review}Ausgelöstes Element(e): %s",
+                "untriggered": "\\{review}Nicht ausgelöstes Element(e): %s",
+            },
+            "vsync": {
+                "help": "Vertical Sync. Ein/Aus",
+            },
+            "weather": {
+                "help": "\\{review}Ändert den aktuellen Wettertyp.",
+                "invalid": "\\{review}Ungültiges Wetter: %s (gültig: %s)",
+                "set": "\\{review}Wetter auf %s eingestellt",
+            },
+            "winston": {
+                "dead": "Der Butler ist tot. Du Monster!",
+                "spawn_failed": "Herbeirufen von Winston fehlgeschlagen",
+                "spawned": "Winston herbeigerufen, nahe Lara",
+                "teleported": "Winston herbeigerufen, nahe Lara",
+            },
+            "wireframe": {
+                "help": "Aktiviert und deaktiviert den Gitterrahmen-Render.",
+            }
+        }
+    },
+    "dynamic": {
+        "config_presets": {
+            "tr1_pc": "\\{review}TR1 PC",
+            "tr1_ps1": "\\{review}TR1 PS1",
+            "tr2_pc": "\\{review}TR2 PC",
+            "tr2_ps1": "\\{review}TR2 PS1",
+            "tr3_pc": "\\{review}TR3 PC",
+            "tr3_ps1": "\\{review}TR3 PS1",
+        },
+        "enums": {
+            "bar_look": {
+                "tr1_pc": "TR1 PC",
+                "tr2_pc": "\\{review}TR2 PC",
+                "tr2_ps1": "\\{review}TR2 PS1",
+                "tr3_pc": "\\{review}TR3 PC",
+                "tr3_ps1": "TR3 PS1",
+            },
+            "lara_outfit": {
+                "default": "\\{review}Standard",
+                "tr1_bacon_lara": "\\{review}Bacon-Lara",
+                "tr1_classic": "\\{review}TR1 Klassisch",
+                "tr1_combo": "\\{review}TR1 Kombiniert",
+                "tr1_golden_bacon_lara": "\\{review}Goldene Bacon-Lara",
+                "tr1_golden_lara": "\\{review}TR1 Goldene Lara",
+                "tr1_gym": "\\{review}TR1 Trainingsanzug",
+                "tr1_mauled": "\\{review}TR1 Verletzt",
+                "tr23_golden_lara": "\\{review}TR2/3 Goldene Lara",
+                "tr2_bomber_jacket": "\\{review}Bomberjacke",
+                "tr2_classic": "\\{review}TR2 Klassisch",
+                "tr2_diving_suit": "\\{review}Tauchanzug",
+                "tr2_gym": "\\{review}TR2 Trainingsanzug",
+                "tr2_robe": "\\{review}Robe",
+                "tr2_vegas": "\\{review}Las Vegas",
+                "tr3_antarctica": "\\{review}Antarktis",
+                "tr3_catsuit": "\\{review}Catsuit",
+                "tr3_classic": "\\{review}TR3 Klassisch",
+                "tr3_gym": "\\{review}TR3 Trainingsanzug",
+                "tr3_nevada": "\\{review}Nevada",
+                "tr3_south_pacific": "\\{review}Südpazifik",
+            }
+        }
+    },
+    "enums": {
+        "ALLY_HOSTILITY_POLICY": {
+            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "\\{review}Individuell",
+            "ALLY_HOSTILITY_POLICY_SHARED": "\\{review}Geteilt",
+        },
+        "ASPECT_MODE": {
+            "ASPECT_MODE_16_10": "16:10",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_ANY": "\\{review}Auto",
+        },
+        "BACKGROUND_TYPE": {
+            "BK_BLACK": "\\{review}Schwarz",
+            "BK_IMAGE": "\\{review}Bild",
+            "BK_MONOCHROME": "\\{review}Monochrom",
+            "BK_MONOCHROME_COOL": "\\{review}Monochrom (kühl)",
+            "BK_MONOCHROME_WARM": "\\{review}Monochrom (warm)",
+            "BK_NONE": "\\{review}Transparent",
+            "BK_PATTERN_STATIC": "\\{review}Statisch",
+            "BK_PATTERN_WAVE": "\\{review}Welle",
+            "BK_TRANSPARENT_DARK": "\\{review}Sehr dunkel",
+            "BK_TRANSPARENT_MEDIUM": "\\{review}Dunkel",
+        },
+        "BAR_SHOW_MODE": {
+            "BAR_SHOW_MODE_ALWAYS": "Immer",
+            "BAR_SHOW_MODE_BOSS_ONLY": "Nur Boss-Gegner",
+            "BAR_SHOW_MODE_NEVER": "Nie",
+        },
+        "BILLBOARD_LOCK_MODE": {
+            "BILLBOARD_LOCK_NONE": "\\{review}Keine",
+            "BILLBOARD_LOCK_PERSPECTIVE": "\\{review}Perspektive",
+            "BILLBOARD_LOCK_ROLL": "\\{review}Roll",
+            "BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Roll & Neigung",
+        },
+        "CAMERA_MODE": {
+            "CAMERA_MODE_TR1": "TR1",
+            "CAMERA_MODE_TR2": "TR2",
+            "CAMERA_MODE_TR3": "\\{review}TR3",
+        },
+        "INPUT_BACKEND": {
+            "INPUT_BACKEND_CONTROLLER": "\\{review}Controller",
+            "INPUT_BACKEND_KEYBOARD": "\\{review}Tastatur",
+        },
+        "INPUT_ROLE": {
+            "INPUT_ROLE_ACTION": "Aktion",
+            "INPUT_ROLE_CAMERA_BACK": "Kamera zurück",
+            "INPUT_ROLE_CAMERA_DOWN": "Kamera runter",
+            "INPUT_ROLE_CAMERA_FORWARD": "Kamera Vorwärts",
+            "INPUT_ROLE_CAMERA_LEFT": "Kamera Links",
+            "INPUT_ROLE_CAMERA_RESET": "Kamera zurücksetzen",
+            "INPUT_ROLE_CAMERA_RIGHT": "Kamera Rechts",
+            "INPUT_ROLE_CAMERA_UP": "Kamera Hoch",
+            "INPUT_ROLE_CHANGE_OUTFIT": "\\{review}Outfit wechseln",
+            "INPUT_ROLE_CHANGE_TARGET": "Ziel wechseln",
+            "INPUT_ROLE_CROUCH": "\\{review}Ducken",
+            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Beleuchtungs-Kontrast durchschalten",
+            "INPUT_ROLE_DOWN": "Zurück",
+            "INPUT_ROLE_DRAW_WEAPON": "Waffe ziehen",
+            "INPUT_ROLE_ENTER_CONSOLE": "Entwickler-Konsole",
+            "INPUT_ROLE_EQUIP_AUTOS": "Automatik-Pistolen ausrüsten",
+            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Desert Eagle ausrüsten",
+            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
+            "INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",
+            "INPUT_ROLE_EQUIP_M16": "M16-ausrüsten",
+            "INPUT_ROLE_EQUIP_MAGNUMS": "Magnums ausrüsten",
+            "INPUT_ROLE_EQUIP_MP5": "\\{review}MP5 ausrüsten",
+            "INPUT_ROLE_EQUIP_PISTOLS": "Pistolen ausrüsten",
+            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Raketenwerfer ausrüsten",
+            "INPUT_ROLE_EQUIP_SHOTGUN": "Schrotflinte ausrüsten",
+            "INPUT_ROLE_EQUIP_UZIS": "Uzis ausrüsten",
+            "INPUT_ROLE_FLY_CHEAT": "Flug-Cheat",
+            "INPUT_ROLE_FPS": "FPS anzeigen",
+            "INPUT_ROLE_INVENTORY": "Inventar",
+            "INPUT_ROLE_ITEM_CHEAT": "Item Cheat",
+            "INPUT_ROLE_JUMP": "Springen",
+            "INPUT_ROLE_LEFT": "Links",
+            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Level überspringen",
+            "INPUT_ROLE_LOAD": "\\{review}Laden",
+            "INPUT_ROLE_LOOK": "Umsehen",
+            "INPUT_ROLE_PAUSE": "Pause",
+            "INPUT_ROLE_QUICK_LOAD": "\\{review}Schnellladen",
+            "INPUT_ROLE_QUICK_SAVE": "\\{review}Schnellspeichern",
+            "INPUT_ROLE_RIGHT": "Rechts",
+            "INPUT_ROLE_ROLL": "Rolle",
+            "INPUT_ROLE_SAVE": "\\{review}Speichern",
+            "INPUT_ROLE_SCREENSHOT": "Bildschirmfoto",
+            "INPUT_ROLE_SLOW": "Gehen",
+            "INPUT_ROLE_SPRINT": "\\{review}Sprinten",
+            "INPUT_ROLE_STEP_LEFT": "Seit-Schritt Links",
+            "INPUT_ROLE_STEP_RIGHT": "Seit-Schritt Rechts",
+            "INPUT_ROLE_SWITCH_BORDERS": "Wechsel zwischen Rahmen-Größen",
+            "INPUT_ROLE_SWITCH_UPSCALING": "Wechsel zwischen Upscaling-Faktoren",
+            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Bilinear-Filter Ein/Aus",
+            "INPUT_ROLE_TOGGLE_FULLSCREEN": "Vollbild Ein/Aus",
+            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Foto-Modus Ein/Aus",
+            "INPUT_ROLE_TOGGLE_TEXTURES": "\\{review}Texturen umschalten",
+            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Trapezoid-Filter Ein/Aus",
+            "INPUT_ROLE_TOGGLE_UI": "UI Ein/Aus",
+            "INPUT_ROLE_TOGGLE_WIREFRAME": "Drahtgitter Ein/Aus",
+            "INPUT_ROLE_TURBO_CHEAT": "Turbo Geschwindigkeit",
+            "INPUT_ROLE_UP": "Laufen",
+            "INPUT_ROLE_USE_BIG_MEDI": "Großes Medi-Pack",
+            "INPUT_ROLE_USE_FLARE": "Fackel",
+            "INPUT_ROLE_USE_SMALL_MEDI": "Kleines Medi-Pack",
+        },
+        "JUMP_LOCK_MODE": {
+            "JUMP_LOCK_DISABLED": "Deaktiviert",
+            "JUMP_LOCK_LEGACY": "Original",
+            "JUMP_LOCK_TUNED": "Getuned",
+        },
+        "LIGHTING_CONTRAST": {
+            "LIGHTING_CONTRAST_HIGH": "Hoch",
+            "LIGHTING_CONTRAST_LOW": "Niedrig",
+            "LIGHTING_CONTRAST_MEDIUM": "Mittel",
+        },
+        "LOADING_SCREENS_MODE": {
+            "LOADING_SCREENS_ALWAYS": "\\{review}Immer",
+            "LOADING_SCREENS_DISABLED": "\\{review}Deaktiviert",
+            "LOADING_SCREENS_NEW_GAMES": "\\{review}Neue Spiele",
+        },
+        "LOOK_MODE": {
+            "LOOK_MODE_ENHANCED": "Erweitert",
+            "LOOK_MODE_RESTRICTED": "Beschränkt",
+            "LOOK_MODE_UNRESTRICTED": "Unbeschränkt",
+        },
+        "MUSIC_LOAD_CONDITION": {
+            "MUSIC_LOAD_CONDITION_ALWAYS": "Immer",
+            "MUSIC_LOAD_CONDITION_NEVER": "Nie",
+            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Nicht-Umgebung",
+        },
+        "PROJECTILE_AREA_DAMAGE": {
+            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "\\{review}Mehrfachfeger",
+            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "\\{review}Einzelfeger",
+        },
+        "QUICK_GUNS_MODE": {
+            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Ziehen oder wegstecken",
+            "QUICK_GUNS_MODE_DRAW_ONLY": "Nur ziehen",
+        },
+        "SCREENSHOT_FORMAT": {
+            "SCREENSHOT_FORMAT_JPEG": "JPG",
+            "SCREENSHOT_FORMAT_PNG": "PNG",
+        },
+        "SHADOW_TYPE": {
+            "SHADOW_TYPE_CIRCLE": "\\{review}Kreis",
+            "SHADOW_TYPE_OCTAGON": "\\{review}Achteck",
+            "SHADOW_TYPE_SPRITE": "\\{review}Sprite",
+        },
+        "STAT_DETAIL_MODE": {
+            "STAT_DETAIL_MODE_DETAILED": "Detailliert",
+            "STAT_DETAIL_MODE_FULL": "Voll",
+            "STAT_DETAIL_MODE_MINIMAL": "Minimal",
+        },
+        "TARGET_LOCK_MODE": {
+            "TARGET_LOCK_MODE_FULL": "Volles Lock-On",
+            "TARGET_LOCK_MODE_NONE": "Kein Lock-On",
+            "TARGET_LOCK_MODE_SEMI": "Halbes Lock-On",
+        },
+        "TEXTURE_FILTER": {
+            "TEXTURE_FILTER_BILINEAR": "Bilinear",
+            "TEXTURE_FILTER_POINT": "Aus",
+        },
+        "UI_ELEMENT_LOCATION": {
+            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Unten Mitte",
+            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Unten links",
+            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Unten rechts",
+            "UI_ELEMENT_LOCATION_TOP_CENTER": "Oben Mitte",
+            "UI_ELEMENT_LOCATION_TOP_LEFT": "Oben links",
+            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Oben rechts",
+        },
+        "UI_STYLE": {
+            "UI_STYLE_PC": "PC",
+            "UI_STYLE_PS1": "PS1",
+        },
+        "WALL_GLITCH_MODE": {
+            "WALL_GLITCH_FIXED": "Gefixt",
+            "WALL_GLITCH_TR1": "TR1",
+            "WALL_GLITCH_TR2": "TR2",
         }
     },
     "settings": {
@@ -2335,217 +1481,1215 @@
             "description": "Farbe des Wassers.",
         }
     },
-    "enums": {
-        "ALLY_HOSTILITY_POLICY": {
-            "ALLY_HOSTILITY_POLICY_INDIVIDUAL": "\\{review}Individuell",
-            "ALLY_HOSTILITY_POLICY_SHARED": "\\{review}Geteilt",
+    "objects": {
+        "alarm_sound": {
+            "name": "Alarm",
         },
-        "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
-            "ASPECT_MODE_4_3": "4:3",
-            "ASPECT_MODE_ANY": "\\{review}Auto",
+        "alligator": {
+            "name": "Alligator",
         },
-        "BACKGROUND_TYPE": {
-            "BK_BLACK": "\\{review}Schwarz",
-            "BK_IMAGE": "\\{review}Bild",
-            "BK_MONOCHROME": "\\{review}Monochrom",
-            "BK_MONOCHROME_COOL": "\\{review}Monochrom (kühl)",
-            "BK_MONOCHROME_WARM": "\\{review}Monochrom (warm)",
-            "BK_NONE": "\\{review}Transparent",
-            "BK_PATTERN_STATIC": "\\{review}Statisch",
-            "BK_PATTERN_WAVE": "\\{review}Welle",
-            "BK_TRANSPARENT_DARK": "\\{review}Sehr dunkel",
-            "BK_TRANSPARENT_MEDIUM": "\\{review}Dunkel",
+        "alphabet": {
+            "name": "\\{review}Standard Schriftart",
         },
-        "BAR_SHOW_MODE": {
-            "BAR_SHOW_MODE_ALWAYS": "Immer",
-            "BAR_SHOW_MODE_BOSS_ONLY": "Nur Boss-Gegner",
-            "BAR_SHOW_MODE_NEVER": "Nie",
+        "alphabet_small": {
+            "name": "\\{review}Kleine Schriftart",
         },
-        "BILLBOARD_LOCK_MODE": {
-            "BILLBOARD_LOCK_NONE": "\\{review}Keine",
-            "BILLBOARD_LOCK_PERSPECTIVE": "\\{review}Perspektive",
-            "BILLBOARD_LOCK_ROLL": "\\{review}Roll",
-            "BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Roll & Neigung",
+        "amber_light": {
+            "name": "\\{review}Bernsteinfarbenes Licht",
         },
-        "CAMERA_MODE": {
-            "CAMERA_MODE_TR1": "TR1",
-            "CAMERA_MODE_TR2": "TR2",
-            "CAMERA_MODE_TR3": "\\{review}TR3",
+        "animating_1": {
+            "name": "\\{review}Objekt 1 wird animiert",
         },
-        "INPUT_BACKEND": {
-            "INPUT_BACKEND_CONTROLLER": "\\{review}Controller",
-            "INPUT_BACKEND_KEYBOARD": "\\{review}Tastatur",
+        "animating_2": {
+            "name": "\\{review}Objekt 2 wird animiert",
         },
-        "INPUT_ROLE": {
-            "INPUT_ROLE_ACTION": "Aktion",
-            "INPUT_ROLE_CAMERA_BACK": "Kamera zurück",
-            "INPUT_ROLE_CAMERA_DOWN": "Kamera runter",
-            "INPUT_ROLE_CAMERA_FORWARD": "Kamera Vorwärts",
-            "INPUT_ROLE_CAMERA_LEFT": "Kamera Links",
-            "INPUT_ROLE_CAMERA_RESET": "Kamera zurücksetzen",
-            "INPUT_ROLE_CAMERA_RIGHT": "Kamera Rechts",
-            "INPUT_ROLE_CAMERA_UP": "Kamera Hoch",
-            "INPUT_ROLE_CHANGE_OUTFIT": "\\{review}Outfit wechseln",
-            "INPUT_ROLE_CHANGE_TARGET": "Ziel wechseln",
-            "INPUT_ROLE_CROUCH": "\\{review}Ducken",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Beleuchtungs-Kontrast durchschalten",
-            "INPUT_ROLE_DOWN": "Zurück",
-            "INPUT_ROLE_DRAW_WEAPON": "Waffe ziehen",
-            "INPUT_ROLE_ENTER_CONSOLE": "Entwickler-Konsole",
-            "INPUT_ROLE_EQUIP_AUTOS": "Automatik-Pistolen ausrüsten",
-            "INPUT_ROLE_EQUIP_DESERT_EAGLE": "\\{review}Desert Eagle ausrüsten",
-            "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Granatenwerfer ausrüsten",
-            "INPUT_ROLE_EQUIP_HARPOON": "Harpune ausrüsen",
-            "INPUT_ROLE_EQUIP_M16": "M16-ausrüsten",
-            "INPUT_ROLE_EQUIP_MAGNUMS": "Magnums ausrüsten",
-            "INPUT_ROLE_EQUIP_MP5": "\\{review}MP5 ausrüsten",
-            "INPUT_ROLE_EQUIP_PISTOLS": "Pistolen ausrüsten",
-            "INPUT_ROLE_EQUIP_ROCKET_LAUNCHER": "\\{review}Raketenwerfer ausrüsten",
-            "INPUT_ROLE_EQUIP_SHOTGUN": "Schrotflinte ausrüsten",
-            "INPUT_ROLE_EQUIP_UZIS": "Uzis ausrüsten",
-            "INPUT_ROLE_FLY_CHEAT": "Flug-Cheat",
-            "INPUT_ROLE_FPS": "FPS anzeigen",
-            "INPUT_ROLE_INVENTORY": "Inventar",
-            "INPUT_ROLE_ITEM_CHEAT": "Item Cheat",
-            "INPUT_ROLE_JUMP": "Springen",
-            "INPUT_ROLE_LEFT": "Links",
-            "INPUT_ROLE_LEVEL_SKIP_CHEAT": "Level überspringen",
-            "INPUT_ROLE_LOAD": "\\{review}Laden",
-            "INPUT_ROLE_LOOK": "Umsehen",
-            "INPUT_ROLE_PAUSE": "Pause",
-            "INPUT_ROLE_QUICK_LOAD": "\\{review}Schnellladen",
-            "INPUT_ROLE_QUICK_SAVE": "\\{review}Schnellspeichern",
-            "INPUT_ROLE_RIGHT": "Rechts",
-            "INPUT_ROLE_ROLL": "Rolle",
-            "INPUT_ROLE_SAVE": "\\{review}Speichern",
-            "INPUT_ROLE_SCREENSHOT": "Bildschirmfoto",
-            "INPUT_ROLE_SLOW": "Gehen",
-            "INPUT_ROLE_SPRINT": "\\{review}Sprinten",
-            "INPUT_ROLE_STEP_LEFT": "Seit-Schritt Links",
-            "INPUT_ROLE_STEP_RIGHT": "Seit-Schritt Rechts",
-            "INPUT_ROLE_SWITCH_BORDERS": "Wechsel zwischen Rahmen-Größen",
-            "INPUT_ROLE_SWITCH_UPSCALING": "Wechsel zwischen Upscaling-Faktoren",
-            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Bilinear-Filter Ein/Aus",
-            "INPUT_ROLE_TOGGLE_FULLSCREEN": "Vollbild Ein/Aus",
-            "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Foto-Modus Ein/Aus",
-            "INPUT_ROLE_TOGGLE_TEXTURES": "\\{review}Texturen umschalten",
-            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Trapezoid-Filter Ein/Aus",
-            "INPUT_ROLE_TOGGLE_UI": "UI Ein/Aus",
-            "INPUT_ROLE_TOGGLE_WIREFRAME": "Drahtgitter Ein/Aus",
-            "INPUT_ROLE_TURBO_CHEAT": "Turbo Geschwindigkeit",
-            "INPUT_ROLE_UP": "Laufen",
-            "INPUT_ROLE_USE_BIG_MEDI": "Großes Medi-Pack",
-            "INPUT_ROLE_USE_FLARE": "Fackel",
-            "INPUT_ROLE_USE_SMALL_MEDI": "Kleines Medi-Pack",
+        "animating_3": {
+            "name": "\\{review}Objekt 3 wird animiert",
         },
-        "JUMP_LOCK_MODE": {
-            "JUMP_LOCK_DISABLED": "Deaktiviert",
-            "JUMP_LOCK_LEGACY": "Original",
-            "JUMP_LOCK_TUNED": "Getuned",
+        "animating_4": {
+            "name": "\\{review}Objekt 4 wird animiert",
         },
-        "LIGHTING_CONTRAST": {
-            "LIGHTING_CONTRAST_HIGH": "Hoch",
-            "LIGHTING_CONTRAST_LOW": "Niedrig",
-            "LIGHTING_CONTRAST_MEDIUM": "Mittel",
+        "animating_5": {
+            "name": "\\{review}Objekt 5 wird animiert",
         },
-        "LOADING_SCREENS_MODE": {
-            "LOADING_SCREENS_ALWAYS": "\\{review}Immer",
-            "LOADING_SCREENS_DISABLED": "\\{review}Deaktiviert",
-            "LOADING_SCREENS_NEW_GAMES": "\\{review}Neue Spiele",
+        "animating_6": {
+            "name": "\\{review}Objekt 6 wird animiert",
         },
-        "LOOK_MODE": {
-            "LOOK_MODE_ENHANCED": "Erweitert",
-            "LOOK_MODE_RESTRICTED": "Beschränkt",
-            "LOOK_MODE_UNRESTRICTED": "Unbeschränkt",
+        "ape": {
+            "name": "Affe",
         },
-        "MUSIC_LOAD_CONDITION": {
-            "MUSIC_LOAD_CONDITION_ALWAYS": "Immer",
-            "MUSIC_LOAD_CONDITION_NEVER": "Nie",
-            "MUSIC_LOAD_CONDITION_NON_AMBIENT": "Nicht-Umgebung",
+        "assault_digits": {
+            "name": "Assault Digits",
         },
-        "PROJECTILE_AREA_DAMAGE": {
-            "PROJECTILE_AREA_DAMAGE_MULTI_SWEEP": "\\{review}Mehrfachfeger",
-            "PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP": "\\{review}Einzelfeger",
+        "assault_target": {
+            "name": "\\{review}Angriffsziele",
         },
-        "QUICK_GUNS_MODE": {
-            "QUICK_GUNS_MODE_DRAW_AND_HOLSTER": "Ziehen oder wegstecken",
-            "QUICK_GUNS_MODE_DRAW_ONLY": "Nur ziehen",
+        "autos": {
+            "name": "Automatik",
         },
-        "SCREENSHOT_FORMAT": {
-            "SCREENSHOT_FORMAT_JPEG": "JPG",
-            "SCREENSHOT_FORMAT_PNG": "PNG",
+        "autos_ammo": {
+            "name": "Automatik-Munition",
         },
-        "SHADOW_TYPE": {
-            "SHADOW_TYPE_CIRCLE": "\\{review}Kreis",
-            "SHADOW_TYPE_OCTAGON": "\\{review}Achteck",
-            "SHADOW_TYPE_SPRITE": "\\{review}Sprite",
+        "bacon_lara": {
+            "name": "Schinken Lara",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Detailliert",
-            "STAT_DETAIL_MODE_FULL": "Voll",
-            "STAT_DETAIL_MODE_MINIMAL": "Minimal",
+        "baldy": {
+            "name": "Glatzkopf",
         },
-        "TARGET_LOCK_MODE": {
-            "TARGET_LOCK_MODE_FULL": "Volles Lock-On",
-            "TARGET_LOCK_MODE_NONE": "Kein Lock-On",
-            "TARGET_LOCK_MODE_SEMI": "Halbes Lock-On",
+        "bandit_1": {
+            "name": [
+                "Söldner 1",
+                "Masked Goon 1",
+            ]
         },
-        "TEXTURE_FILTER": {
-            "TEXTURE_FILTER_BILINEAR": "Bilinear",
-            "TEXTURE_FILTER_POINT": "Aus",
+        "bandit_2": {
+            "name": [
+                "Söldner 2",
+                "Maskierter Schläger 2",
+            ]
         },
-        "UI_ELEMENT_LOCATION": {
-            "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Unten Mitte",
-            "UI_ELEMENT_LOCATION_BOTTOM_LEFT": "Unten links",
-            "UI_ELEMENT_LOCATION_BOTTOM_RIGHT": "Unten rechts",
-            "UI_ELEMENT_LOCATION_TOP_CENTER": "Oben Mitte",
-            "UI_ELEMENT_LOCATION_TOP_LEFT": "Oben links",
-            "UI_ELEMENT_LOCATION_TOP_RIGHT": "Oben rechts",
+        "bandit_2b": {
+            "name": [
+                "Söldner 3",
+                "Maskierter Schläger 3",
+            ]
         },
-        "UI_STYLE": {
-            "UI_STYLE_PC": "PC",
-            "UI_STYLE_PS1": "PS1",
+        "barracuda": {
+            "name": "Barrakuda",
         },
-        "WALL_GLITCH_MODE": {
-            "WALL_GLITCH_FIXED": "Gefixt",
-            "WALL_GLITCH_TR1": "TR1",
-            "WALL_GLITCH_TR2": "TR2",
-        }
-    },
-    "dynamic": {
-        "enums": {
-            "bar_look": {
-                "tr1_pc": "TR1 PC",
-                "tr2_pc": "\\{review}TR2 PC",
-                "tr2_ps1": "\\{review}TR2 PS1",
-                "tr3_pc": "\\{review}TR3 PC",
-                "tr3_ps1": "TR3 PS1",
-            },
-            "lara_outfit": {
-                "default": "\\{review}Standard",
-                "tr1_bacon_lara": "\\{review}Bacon-Lara",
-                "tr1_classic": "\\{review}TR1 Klassisch",
-                "tr1_combo": "\\{review}TR1 Kombiniert",
-                "tr1_golden_bacon_lara": "\\{review}Goldene Bacon-Lara",
-                "tr1_golden_lara": "\\{review}TR1 Goldene Lara",
-                "tr1_gym": "\\{review}TR1 Trainingsanzug",
-                "tr1_mauled": "\\{review}TR1 Verletzt",
-                "tr23_golden_lara": "\\{review}TR2/3 Goldene Lara",
-                "tr2_bomber_jacket": "\\{review}Bomberjacke",
-                "tr2_classic": "\\{review}TR2 Klassisch",
-                "tr2_diving_suit": "\\{review}Tauchanzug",
-                "tr2_gym": "\\{review}TR2 Trainingsanzug",
-                "tr2_robe": "\\{review}Robe",
-                "tr2_vegas": "\\{review}Las Vegas",
-                "tr3_antarctica": "\\{review}Antarktis",
-                "tr3_catsuit": "\\{review}Catsuit",
-                "tr3_classic": "\\{review}TR3 Klassisch",
-                "tr3_gym": "\\{review}TR3 Trainingsanzug",
-                "tr3_nevada": "\\{review}Nevada",
-                "tr3_south_pacific": "\\{review}Südpazifik",
-            }
+        "bartoli": {
+            "name": "Marco Bartoli",
+        },
+        "bat": {
+            "name": "Fledermaus",
+        },
+        "bat_emitter": {
+            "name": "\\{review}Fledermaus-Emitter",
+        },
+        "beacon_light": {
+            "name": "\\{review}Leuchtfeuer",
+        },
+        "bear": {
+            "name": "Bär",
+        },
+        "bell": {
+            "name": "Bell",
+        },
+        "big_bowl": {
+            "name": "Lava-Schüssel",
+        },
+        "big_eel": {
+            "name": "Großer Aal",
+        },
+        "big_pod": {
+            "name": "Big Pod",
+        },
+        "big_spider": {
+            "name": "Riesen-Spider",
+        },
+        "bird_guardian": {
+            "name": "Vogel-Monster",
+        },
+        "bird_tweeter_1": {
+            "name": "Dripping Water",
+        },
+        "bird_tweeter_2": {
+            "name": "Singing Birds",
+        },
+        "blade": {
+            "name": "Wall-mounted Blade",
+        },
+        "blood_1": {
+            "name": "Blut 1",
+        },
+        "blood_2": {
+            "name": "Blut 2",
+        },
+        "blue_light": {
+            "name": "\\{review}Blaues Licht",
+        },
+        "boat": {
+            "name": "Boot",
+        },
+        "boat_bits": {
+            "name": "Boots-Einzelteile",
+        },
+        "body_part": {
+            "name": "Körperteil",
+        },
+        "bridge_flat": {
+            "name": "Brücke Flach",
+        },
+        "bridge_tilt_1": {
+            "name": "Brücke Tilt 1",
+        },
+        "bridge_tilt_2": {
+            "name": "Brücke Tilt 2",
+        },
+        "bubble_1": {
+            "name": "Blase 1",
+        },
+        "bubble_2": {
+            "name": "Blase 2",
+        },
+        "bubble_emitter": {
+            "name": "Blasenerzeuger",
+        },
+        "camera_target": {
+            "name": "Kamera-Ziel",
+        },
+        "carcass": {
+            "name": "\\{review}Kadaver",
+        },
+        "ceiling_spikes": {
+            "name": "Spiky Ceiling",
+        },
+        "centaur": {
+            "name": "Zentaur",
+        },
+        "centaur_statue": {
+            "name": "Statue",
+        },
+        "clock_chimes": {
+            "name": "Bartoli Hideout clock",
+        },
+        "cog_1": {
+            "name": "Zahnrad 1",
+        },
+        "cog_2": {
+            "name": "Zahnrad 2",
+        },
+        "cog_3": {
+            "name": "Zahnrad 3",
+        },
+        "combat_end": {
+            "name": "Kampf Ende",
+        },
+        "compass": {
+            "name": "Statistiken",
+        },
+        "compy": {
+            "name": "\\{review}Compsognathus",
+        },
+        "controls": {
+            "name": "Steuerung",
+        },
+        "copter": {
+            "name": "Helikopter",
+        },
+        "cowboy": {
+            "name": "Cowboy",
+        },
+        "crocodile": {
+            "name": "Krokodil",
+        },
+        "crow": {
+            "name": "Krähe",
+        },
+        "cult_1": {
+            "name": "Maskierter Schläger 1",
+        },
+        "cult_1a": {
+            "name": "Maskierter Schläger 2",
+        },
+        "cult_1b": {
+            "name": "Maskierter Schläger 3",
+        },
+        "cult_2": {
+            "name": "Messerwerfer",
+        },
+        "cult_3": {
+            "name": "Schrotflinten Schläger",
+        },
+        "cut_shotgun": {
+            "name": "Schrotflinten Dusch Animation",
+        },
+        "damocles_sword": {
+            "name": "Schwert des Damokles",
+        },
+        "dart": {
+            "name": "Pfeil",
+        },
+        "dart_effect": {
+            "name": "Pfeil-Effekt",
+        },
+        "dart_emitter": {
+            "name": "Pfeilerzeuger",
+        },
+        "desert_eagle": {
+            "name": "\\{review}Desert Eagle",
+        },
+        "desert_eagle_ammo": {
+            "name": "\\{review}Magazine der Desert Eagle",
+        },
+        "detonator_box": {
+            "name": "Zünder",
+        },
+        "ding_dong": {
+            "name": "Türklingel",
+        },
+        "dino_mutant": {
+            "name": "Dino Mutant",
+        },
+        "disc": {
+            "name": "Scheibe",
+        },
+        "disc_emitter": {
+            "name": "Scheiben-Erzeuger",
+        },
+        "diver": {
+            "name": "Taucher",
+        },
+        "dog": {
+            "name": [
+                "Hund",
+                "Dobermann",
+            ]
+        },
+        "door_1": {
+            "name": "Tür 1",
+        },
+        "door_2": {
+            "name": "Tür 2",
+        },
+        "door_3": {
+            "name": "Tür 3",
+        },
+        "door_4": {
+            "name": "Tür 4",
+        },
+        "door_5": {
+            "name": "Tür 5",
+        },
+        "door_6": {
+            "name": "Tür 6",
+        },
+        "door_7": {
+            "name": "Tür 7",
+        },
+        "door_8": {
+            "name": "Tür 8",
+        },
+        "dragon_back": {
+            "name": "Drachen Hinterseite",
+        },
+        "dragon_bones_1": {
+            "name": "Platzhalter",
+        },
+        "dragon_bones_2": {
+            "name": "Drachen-Knochen Vorn",
+        },
+        "dragon_bones_3": {
+            "name": "Drachen-Knochen Hinten",
+        },
+        "dragon_front": {
+            "name": "Drache Vorderseite",
+        },
+        "drawbridge": {
+            "name": "Zugbrücke",
+        },
+        "dust": {
+            "name": "Staub",
+        },
+        "dying_monk": {
+            "name": "sterbender Mönch",
+        },
+        "eagle": {
+            "name": "Adler",
+        },
+        "earthquake": {
+            "name": "Erdbeben",
+        },
+        "eel": {
+            "name": "Aal",
+        },
+        "electric_cleaner": {
+            "name": "\\{review}Elektrischer Reiniger",
+        },
+        "electric_fence": {
+            "name": "\\{review}Elektrischer Zaun",
+        },
+        "electrical_light": {
+            "name": "\\{review}Elektrisches Licht",
+        },
+        "ember": {
+            "name": "Glut",
+        },
+        "ember_emitter": {
+            "name": "Gluterzeuger",
+        },
+        "explosion_1": {
+            "name": "Explosion 1",
+        },
+        "explosion_2": {
+            "name": "Explosion 2",
+        },
+        "falling_block_1": {
+            "name": [
+                "Fallender Block 1",
+                "Zerbrechbarer Boden 1",
+                "Zerbrechbare Kacheln 1",
+            ]
+        },
+        "falling_block_2": {
+            "name": [
+                "Fallender Block 2",
+                "Zerbrechbarer Boden 2",
+                "Zerbrechbare Kacheln 2",
+            ]
+        },
+        "falling_block_3": {
+            "name": [
+                "Fallender Block 3",
+                "Zerbrechbarer Boden 3",
+                "Zerbrechbare Kacheln 3",
+                "Lose Bretter",
+            ]
+        },
+        "falling_ceiling_1": {
+            "name": "Falling Ceiling 1",
+        },
+        "falling_ceiling_2": {
+            "name": "Fallende Decke 2",
+        },
+        "fish_mutant": {
+            "name": "Fisch Mutant",
+        },
+        "flame": {
+            "name": [
+                "Flamme",
+                "Feuer",
+            ]
+        },
+        "flame_emitter": {
+            "name": [
+                "Flamenerzeuger",
+                "Feuererzeuger",
+            ]
+        },
+        "flame_emitter_big": {
+            "name": "\\{review}Flammenwerfer (Groß)",
+        },
+        "flame_emitter_jet": {
+            "name": "\\{review}Flammenwerfer (Strahl)",
+        },
+        "flame_emitter_side": {
+            "name": "\\{review}Flammenwerfer (Seite)",
+        },
+        "flame_emitter_small": {
+            "name": "\\{review}Flammenwerfer (Klein)",
+        },
+        "flare": {
+            "name": "Fackel",
+        },
+        "flare_fire": {
+            "name": "Fackel-Funken",
+        },
+        "flares_box": {
+            "name": "Flares Box",
+        },
+        "fx_reserved": {
+            "name": "Gray disk",
+        },
+        "gamma": {
+            "name": "\\{review}Gamma",
+        },
+        "general": {
+            "name": "Mini U-Boot",
+        },
+        "globe": {
+            "name": "\\{review}Globus",
+        },
+        "glow": {
+            "name": "Glühen",
+        },
+        "glow_reserved": {
+            "name": "Karten-Glühen",
+        },
+        "gondola": {
+            "name": "Gondel",
+        },
+        "gong": {
+            "name": "Gong",
+        },
+        "gong_bonger": {
+            "name": "Gong Schlegel",
+        },
+        "graphics": {
+            "name": "Grafikeinstellungen",
+        },
+        "green_light": {
+            "name": "\\{review}Grünes Licht",
+        },
+        "grenade": {
+            "name": "Granate",
+        },
+        "grenade_launcher": {
+            "name": "Granatenwerfer",
+        },
+        "grenade_launcher_ammo": {
+            "name": "Granaten",
+        },
+        "gun_flash": {
+            "name": "Waffen Blitz",
+        },
+        "gun_shell": {
+            "name": "\\{review}Gewehrpatrone",
+        },
+        "harpoon_bolt": {
+            "name": "Harpunen Pfeil",
+        },
+        "harpoon_gun": {
+            "name": "Harpune",
+        },
+        "harpoon_gun_ammo": {
+            "name": "Pfeile",
+        },
+        "hook": {
+            "name": "Hook",
+        },
+        "hot_liquid": {
+            "name": "Extra Feuer",
+        },
+        "huskie": {
+            "name": "\\{review}Hund",
+        },
+        "icicle": {
+            "name": "Icicles",
+        },
+        "inv_background": {
+            "name": "Menü Hintergrund",
+        },
+        "jelly": {
+            "name": "Qualle",
+        },
+        "kayak": {
+            "name": "\\{review}Kajak",
+        },
+        "key_1": {
+            "name": "Key 1",
+        },
+        "key_2": {
+            "name": "Key 2",
+        },
+        "key_3": {
+            "name": "Key 3",
+        },
+        "key_4": {
+            "name": "Key 4",
+        },
+        "key_hole_1": {
+            "name": "Keyhole 1",
+        },
+        "key_hole_2": {
+            "name": "Keyhole 2",
+        },
+        "key_hole_3": {
+            "name": "Keyhole 3",
+        },
+        "key_hole_4": {
+            "name": "Keyhole 4",
+        },
+        "kill_all_triggered": {
+            "name": "\\{review}Alle töten (ausgelöst)",
+        },
+        "killer_statue": {
+            "name": "Statue with Sword",
+        },
+        "lara": {
+            "name": "Lara",
+        },
+        "lara_alarm": {
+            "name": "Alarmglocke",
+        },
+        "lara_autos": {
+            "name": "\\{review}Animation automatischer Pistolen",
+        },
+        "lara_boat": {
+            "name": "Boots-Animation",
+        },
+        "lara_desert_eagle": {
+            "name": "\\{review}Animation der Desert Eagle",
+        },
+        "lara_extra": {
+            "name": "Laras Extra Animation",
+        },
+        "lara_flare": {
+            "name": "Fackel-Animation",
+        },
+        "lara_grenade": {
+            "name": "Grantenwerfer-Animation",
+        },
+        "lara_hair": {
+            "name": "Laras Zopf",
+        },
+        "lara_harpoon": {
+            "name": "Harpunen-Animation",
+        },
+        "lara_m16": {
+            "name": "M16-Animation",
+        },
+        "lara_magnums": {
+            "name": "Magnum-Animation",
+        },
+        "lara_mp5": {
+            "name": "\\{review}MP5-Animation",
+        },
+        "lara_pistols": {
+            "name": "Pistolen-Animation",
+        },
+        "lara_rocket": {
+            "name": "\\{review}Animation des Raketenwerfers",
+        },
+        "lara_shotgun": {
+            "name": "Schrotflinten-Animation",
+        },
+        "lara_skidoo": {
+            "name": "Schneeemobil-Animation",
+        },
+        "lara_uzis": {
+            "name": "Uzi-Animation",
+        },
+        "larson": {
+            "name": "Larson",
+        },
+        "lava_wedge": {
+            "name": "Lava-Keil",
+        },
+        "lead_bar": {
+            "name": "Bleibarren",
+        },
+        "lift": {
+            "name": "Aufzug",
+        },
+        "lightning_emitter": {
+            "name": "Blitzerzeuger",
+        },
+        "lion": {
+            "name": "Löwe",
+        },
+        "lioness": {
+            "name": [
+                "Löwin",
+                "Löwe",
+            ]
+        },
+        "lizard": {
+            "name": "\\{review}Echse",
+        },
+        "m16": {
+            "name": "M16",
+        },
+        "m16_ammo": {
+            "name": "M16-Munition",
+        },
+        "m16_flash": {
+            "name": "M16 Blitz",
+        },
+        "magnums": {
+            "name": "Magnums",
+        },
+        "magnums_ammo": {
+            "name": "Magnum Munition",
+        },
+        "mesh_swap_1": {
+            "name": "Mesh Swap 1",
+        },
+        "mesh_swap_2": {
+            "name": "Mesh Swap 2",
+        },
+        "mesh_swap_3": {
+            "name": "\\{review}Mesh Swap 3",
+        },
+        "midas_touch": {
+            "name": "Hand des Midas",
+        },
+        "mine": {
+            "name": "Wassermine",
+        },
+        "mini_copter": {
+            "name": "Helikopter 2",
+        },
+        "missile_atlantean_bomb": {
+            "name": "\\{review}Geschoss (Atlantische Bombe)",
+        },
+        "missile_atlantean_shard": {
+            "name": "\\{review}Geschoss (Atlantischer Splitter)",
+        },
+        "missile_flame": {
+            "name": "\\{review}Geschoss (Flamme)",
+        },
+        "missile_harpoon": {
+            "name": "\\{review}Geschoss (Harpune)",
+        },
+        "missile_knife": {
+            "name": "\\{review}Geschoss (Messer)",
+        },
+        "missile_poison": {
+            "name": "\\{review}Geschoss (Gift)",
+        },
+        "monk_1": {
+            "name": "Mönch 1",
+        },
+        "monk_2": {
+            "name": "Mönch 2",
+        },
+        "monkey": {
+            "name": "\\{review}Affe",
+        },
+        "mounted_gun": {
+            "name": "\\{review}Montiertes Geschütz",
+        },
+        "mouse": {
+            "name": "Ratte",
+        },
+        "movable_block_1": {
+            "name": [
+                "Drückbarer Block 1",
+                "Bewegbarer Block 1",
+            ]
+        },
+        "movable_block_2": {
+            "name": [
+                "Drückbarer Block 2",
+                "Bewegbarer Block 2",
+            ]
+        },
+        "movable_block_3": {
+            "name": [
+                "Drückbarer Block 3",
+                "Bewegbarer Block 3",
+            ]
+        },
+        "movable_block_4": {
+            "name": [
+                "Drückbarer Block 4",
+                "Bewegbarer Block 4",
+            ]
+        },
+        "moving_bar": {
+            "name": "Moving Bar",
+        },
+        "mp5": {
+            "name": "\\{review}MP5",
+        },
+        "mp5_ammo": {
+            "name": "\\{review}MP5-Munition",
+        },
+        "mummy": {
+            "name": "Mumie",
+        },
+        "mutant_1": {
+            "name": "Mutant 1",
+        },
+        "mutant_2": {
+            "name": "Mutant 2",
+        },
+        "mutant_3": {
+            "name": "Mutant 3",
+        },
+        "natla": {
+            "name": "Natla",
+        },
+        "natla_gun": {
+            "name": "\\{review}Natlas Waffe",
+        },
+        "on_off_light": {
+            "name": "\\{review}An/Aus Licht",
+        },
+        "passport": {
+            "name": "Spiel",
+        },
+        "patrol_dog": {
+            "name": "\\{review}Hund",
+        },
+        "pda": {
+            "name": "Gameplay",
+        },
+        "pendulum_1": {
+            "name": "Sandsack",
+        },
+        "pendulum_2": {
+            "name": "Swinging Box",
+        },
+        "photo": {
+            "name": "Laras Haus",
+        },
+        "pickup_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_2": {
+            "name": "Pickup Item 2",
+        },
+        "pickup_aid": {
+            "name": "Pickup-Hilfe",
+        },
+        "pierre": {
+            "name": "Pierre",
+        },
+        "pirahnas": {
+            "name": "\\{review}Piranhas",
+        },
+        "pistols": {
+            "name": "Pistolen",
+        },
+        "pistols_ammo": {
+            "name": "Pistolen Munition",
+        },
+        "player_1": {
+            "name": "Zwischensequenz-Schauspieler 1",
+        },
+        "player_10": {
+            "name": "Zwischensequenz-Schauspieler 10",
+        },
+        "player_2": {
+            "name": "Zwischensequenz-Schauspieler 2",
+        },
+        "player_3": {
+            "name": "Zwischensequenz-Schauspieler 3",
+        },
+        "player_4": {
+            "name": "Zwischensequenz-Schauspieler 4",
+        },
+        "player_5": {
+            "name": "Zwischensequenz-Schauspieler 5",
+        },
+        "player_6": {
+            "name": "Zwischensequenz-Schauspieler 6",
+        },
+        "player_7": {
+            "name": "Zwischensequenz-Schauspieler 7",
+        },
+        "player_8": {
+            "name": "Zwischensequenz-Schauspieler 8",
+        },
+        "player_9": {
+            "name": "Zwischensequenz-Schauspieler 9",
+        },
+        "pods": {
+            "name": "Pod",
+        },
+        "poison_dart": {
+            "name": "\\{review}Giftpfeil",
+        },
+        "poison_dart_emitter": {
+            "name": "\\{review}Giftpfeilwerfer",
+        },
+        "portacabin": {
+            "name": "Portable Cabin",
+        },
+        "power_saw": {
+            "name": "Power Saw",
+        },
+        "propeller_1": {
+            "name": "Airplane Propeller",
+        },
+        "propeller_2": {
+            "name": "Underwater Propeller",
+        },
+        "propeller_3": {
+            "name": "Air Fan",
+        },
+        "pulse_light": {
+            "name": "\\{review}Pulsierendes Licht",
+        },
+        "puma": {
+            "name": "Puma",
+        },
+        "punk_1": {
+            "name": "\\{review}Punk 1",
+        },
+        "punk_2": {
+            "name": "\\{review}Punk 2",
+        },
+        "puzzle_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_4": {
+            "name": "Puzzle Item 4",
+        },
+        "puzzle_done_1": {
+            "name": "Puzzle Hole 1 (Done)",
+        },
+        "puzzle_done_2": {
+            "name": "Puzzle Hole 2 (Done)",
+        },
+        "puzzle_done_3": {
+            "name": "Puzzle Hole 3 (Done)",
+        },
+        "puzzle_done_4": {
+            "name": "Puzzle Hole 4 (Done)",
+        },
+        "puzzle_hole_1": {
+            "name": "Puzzle Hole 1 (Empty)",
+        },
+        "puzzle_hole_2": {
+            "name": "Puzzle Hole 2 (Empty)",
+        },
+        "puzzle_hole_3": {
+            "name": "Puzzle Hole 3 (Empty)",
+        },
+        "puzzle_hole_4": {
+            "name": "Puzzle Hole 4 (Empty)",
+        },
+        "quad_bike": {
+            "name": "\\{review}Quad",
+        },
+        "quest_1": {
+            "name": "\\{review}Quest-Gegenstand 1",
+        },
+        "quest_2": {
+            "name": "\\{review}Quest-Gegenstand 2",
+        },
+        "quest_3": {
+            "name": "\\{review}Quest-Gegenstand 3",
+        },
+        "quest_4": {
+            "name": "\\{review}Quest-Gegenstand 4",
+        },
+        "raptor": {
+            "name": "Raptor",
+        },
+        "raptor_emitter": {
+            "name": "\\{review}Raptor-Emitter",
+        },
+        "rat": {
+            "name": [
+                "Ratte",
+                "Landratte",
+            ]
+        },
+        "red_light": {
+            "name": "\\{review}Rotes Licht",
+        },
+        "ricochet": {
+            "name": "Querschläger",
+        },
+        "rocket": {
+            "name": "\\{review}Rakete",
+        },
+        "rocket_launcher": {
+            "name": "\\{review}Raketenwerfer",
+        },
+        "rocket_launcher_ammo": {
+            "name": "\\{review}Raketen",
+        },
+        "rolling_ball_1": {
+            "name": [
+                "Fels 1",
+                "Rollender Ball",
+            ]
+        },
+        "rolling_ball_2": {
+            "name": [
+                "Boulder 2",
+                "Rolling Ball 2",
+            ]
+        },
+        "rolling_ball_3": {
+            "name": [
+                "Boulder 3",
+                "Rolling Ball 3",
+            ]
+        },
+        "rolling_ball_4": {
+            "name": [
+                "Boulder 4",
+                "Rolling Ball 4",
+            ]
+        },
+        "save_crystal": {
+            "name": "Speicherkristall",
+        },
+        "scion": {
+            "name": "Scion",
+        },
+        "scion_holder": {
+            "name": "Scion-Halter",
+        },
+        "secret_1": {
+            "name": "Geheimnis 1",
+        },
+        "secret_2": {
+            "name": "Geheimnis 2",
+        },
+        "secret_3": {
+            "name": "Geheimnis 3",
+        },
+        "shadow": {
+            "name": "\\{review}Schatten",
+        },
+        "shark": {
+            "name": "Hai",
+        },
+        "shiva": {
+            "name": "\\{review}Shiva",
+        },
+        "shotgun": {
+            "name": "Schrotflinte",
+        },
+        "shotgun_ammo": {
+            "name": "Schrot-Munition",
+        },
+        "shotgun_shell": {
+            "name": "\\{review}Schrotpatrone",
+        },
+        "skate_kid": {
+            "name": "Skate Kid",
+        },
+        "skateboard": {
+            "name": "Skateboard",
+        },
+        "skidoo_armed": {
+            "name": "Schwarzes Schneemobil",
+        },
+        "skidoo_driver": {
+            "name": "Fahrer schwarzes Schneemobil",
+        },
+        "skidoo_fast": {
+            "name": "Rotes Schneemobil",
+        },
+        "skidoo_track": {
+            "name": "Snowmobile Track",
+        },
+        "skybox": {
+            "name": "Skybox",
+        },
+        "sliding_pillar": {
+            "name": "Sliding Pillar",
+        },
+        "smashable_1": {
+            "name": "Breakable Window 1",
+        },
+        "smashable_2": {
+            "name": "Breakable Window 2",
+        },
+        "smashable_3": {
+            "name": "Breakable Window 3",
+        },
+        "smashable_4": {
+            "name": "Breakable Window 4",
+        },
+        "smoke_emitter_black": {
+            "name": "\\{review}Rauchgenerator (Schwarz)",
+        },
+        "smoke_emitter_white": {
+            "name": "\\{review}Rauchgenerator (Weiß)",
+        },
+        "snake": {
+            "name": "\\{review}Schlange",
+        },
+        "snow_sprite": {
+            "name": "Snowmobile Wake",
+        },
+        "sound": {
+            "name": "Sound",
+        },
+        "sphere_of_doom_1": {
+            "name": "Dragon Explosion 1",
+        },
+        "sphere_of_doom_2": {
+            "name": "Dragon Explosion 2",
+        },
+        "sphere_of_doom_3": {
+            "name": "Dragon Explosion 3",
+        },
+        "spider": {
+            "name": "Spinne",
+        },
+        "spike_wall": {
+            "name": "Spike Wall",
+        },
+        "spikes": {
+            "name": "Stacheln",
+        },
+        "spinning_blade": {
+            "name": "Spinning Blade",
+        },
+        "splash_1": {
+            "name": "Wasserkräuselungen 1",
+        },
+        "splash_2": {
+            "name": "Water-Kräuseln 2",
+        },
+        "springboard": {
+            "name": "Springboard",
+        },
+        "steam_emitter": {
+            "name": "\\{review}Dampfgenerator",
+        },
+        "sthpac_mercenary": {
+            "name": "\\{review}Südsee-Söldner",
+        },
+        "stopwatch": {
+            "name": "\\{review}Statistiken",
+        },
+        "strobe_light": {
+            "name": "\\{review}Stroboskoplicht",
+        },
+        "swinging_axe": {
+            "name": "\\{review}Schwingende Axt",
+        },
+        "switch_type_airlock": {
+            "name": "Airlock Switch",
+        },
+        "switch_type_button": {
+            "name": [
+                "Button",
+                "Push Button",
+                "Switch",
+            ]
+        },
+        "switch_type_normal": {
+            "name": [
+                "Lever",
+                "Switch",
+            ]
+        },
+        "switch_type_small": {
+            "name": "Small Switch",
+        },
+        "switch_type_uw": {
+            "name": [
+                "Underwater Lever",
+                "Underwater Switch",
+            ]
+        },
+        "switch_type_wheel": {
+            "name": "\\{review}Radswitch",
+        },
+        "teeth_trap": {
+            "name": "Zahn-Falle",
+        },
+        "text_box": {
+            "name": "UI Frame",
+        },
+        "thors_handle": {
+            "name": "Thors Hammer Griff",
+        },
+        "thors_head": {
+            "name": "Thors Hammer",
+        },
+        "tiger": {
+            "name": "Tiger",
+        },
+        "tony": {
+            "name": "\\{review}Tony",
+        },
+        "torso": {
+            "name": [
+                "Torso",
+                "Adam",
+                "Riesenmutant",
+            ]
+        },
+        "train": {
+            "name": "\\{review}Zug",
+        },
+        "trapdoor_1": {
+            "name": "Falltür 1",
+        },
+        "trapdoor_2": {
+            "name": "Falltür 2",
+        },
+        "trapdoor_3": {
+            "name": "Falltür 3",
+        },
+        "trex": {
+            "name": "T-Rex",
+        },
+        "trex_alpha": {
+            "name": "\\{review}T-Rex-Alpha",
+        },
+        "tribe_axeman": {
+            "name": "\\{review}Stammesaxtkämpfer",
+        },
+        "tribe_boss": {
+            "name": "\\{review}Stammesanführer",
+        },
+        "tribe_pipeman": {
+            "name": "\\{review}Stammes-Blasrohrbenutzer",
+        },
+        "tropical_fish": {
+            "name": "\\{review}Tropischer Fisch",
+        },
+        "twinkle": {
+            "name": "Funken",
+        },
+        "upv": {
+            "name": "\\{review}Mini-U-Boot",
+        },
+        "uzis": {
+            "name": "Uzis",
+        },
+        "uzis_ammo": {
+            "name": "Uzi-Munition",
+        },
+        "vole": {
+            "name": [
+                "Wühlmaus",
+                "Wasserratte",
+            ]
+        },
+        "vulture": {
+            "name": "\\{review}Geier",
+        },
+        "water_sprite": {
+            "name": "Boat Wake",
+        },
+        "waterfall": {
+            "name": "Wasserfall Nebel",
+        },
+        "white_light": {
+            "name": "\\{review}Weißes Licht",
+        },
+        "winston": {
+            "name": "Winston",
+        },
+        "winston_army": {
+            "name": "\\{review}Winston (Armee)",
+        },
+        "wolf": {
+            "name": "Wolf",
+        },
+        "worker_1": {
+            "name": "Schläger Schütze 1",
+        },
+        "worker_2": {
+            "name": "Schläger Schütze 2",
+        },
+        "worker_3": {
+            "name": "Schlagstock schwingender Schläger 1",
+        },
+        "worker_4": {
+            "name": "Schlagstock schwingender Schläger 2",
+        },
+        "worker_5": {
+            "name": "Typ mit Flammenwerfer",
+        },
+        "xian_knight": {
+            "name": "Xian Ritter",
+        },
+        "xian_knight_statue": {
+            "name": "Xian Ritter Statue",
+        },
+        "xian_spearman": {
+            "name": "Xian Speerträger",
+        },
+        "xian_spearman_statue": {
+            "name": "Xian Speerträger Statue",
+        },
+        "yeti": {
+            "name": "Yeti",
+        },
+        "zipline_handle": {
+            "name": "Zipline Handle",
         }
     }
 }

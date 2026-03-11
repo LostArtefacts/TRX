@@ -55,7 +55,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
 {
     if (String_IsEmpty(ctx->args)) {
         char *ranges = M_CreateRangeString();
-        Console_Log(GS(OSD_SOUND_AVAILABLE_SAMPLES), ranges);
+        Console_Log(GS("general/osd/sound_available_samples"), ranges);
         Memory_FreePointer(&ranges);
         return CR_SUCCESS;
     }
@@ -66,13 +66,13 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     if (!Sound_IsAvailable_Direct(sfx_id)) {
-        Console_LogError(GS(OSD_INVALID_SAMPLE), sfx_id);
+        Console_LogError(GS("general/osd/invalid_sample"), sfx_id);
         return CR_FAILURE;
     }
 
-    Console_Log(GS(OSD_SOUND_PLAYING_SAMPLE), sfx_id);
+    Console_Log(GS("general/osd/sound_playing_sample"), sfx_id);
     Sound_Effect_Direct(sfx_id, nullptr, SPM_ALWAYS);
     return CR_SUCCESS;
 }
 
-REGISTER_CONSOLE_COMMAND("sfx", M_Entrypoint, GS_ID(CONSOLE_HELP_SFX))
+REGISTER_CONSOLE_COMMAND("sfx", M_Entrypoint, GS_ID("console/cmd/sfx/help"))

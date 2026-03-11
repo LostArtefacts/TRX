@@ -82,8 +82,9 @@ bool UI_AmmoLabel(void)
         inner_text = String_FormatStatic("%6d", ammo);
     }
     const char *const outer_text = String_FormatStatic(
-        g_Config.ui.menu_style == UI_STYLE_PS1 ? GS(OVERLAY_ITEM_COUNT_FMT_PS1)
-                                               : GS(OVERLAY_ITEM_COUNT_FMT_PC),
+        g_Config.ui.menu_style == UI_STYLE_PS1
+            ? GS("general/overlay/item_count_fmt_ps1")
+            : GS("general/overlay/item_count_fmt_pc"),
         inner_text);
 
     UI_LabelEx(outer_text, (UI_LABEL_SETTINGS) { .scale = 1.5f });

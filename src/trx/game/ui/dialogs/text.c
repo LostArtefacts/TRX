@@ -188,8 +188,8 @@ void UI_TextDialogEx(
         }
         char page_indicator[100];
         sprintf(
-            page_indicator, *GS_PTR(PAGINATION_NAV), s->current_page + 1,
-            s->page_content->count);
+            page_indicator, *GS_PTR("general/misc/pagination_nav"),
+            s->current_page + 1, s->page_content->count);
         UI_Label(page_indicator);
         if (s->current_page < s->page_content->count - 1) {
             UI_Label(" \\{button right}");

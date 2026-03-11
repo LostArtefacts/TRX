@@ -75,9 +75,10 @@ static void M_EmptySlot(
 {
     UI_BeginAnchor(0.5f, 0.5f);
     if (slot.pool == SAVEGAME_SLOT_POOL_QUICK) {
-        UI_LabelFmt("[Q%d] %s", slot.index + 1, GS(MISC_EMPTY_SLOT_FMT));
+        UI_LabelFmt(
+            "[Q%d] %s", slot.index + 1, GS("general/misc/empty_slot_fmt"));
     } else {
-        UI_LabelFmt(GS(MISC_EMPTY_SLOT_FMT), slot.index + 1);
+        UI_LabelFmt(GS("general/misc/empty_slot_fmt"), slot.index + 1);
     }
     UI_EndAnchor();
 }
@@ -200,13 +201,13 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
     const char *title = nullptr;
     switch (s->type) {
     case UI_SAVE_SLOT_DIALOG_SAVE_GAME:
-        title = GS(PASSPORT_SAVE_GAME);
+        title = GS("general/passport/save_game");
         break;
     case UI_SAVE_SLOT_DIALOG_LOAD_GAME:
-        title = GS(PASSPORT_LOAD_GAME);
+        title = GS("general/passport/load_game");
         break;
     case UI_SAVE_SLOT_DIALOG_GENERIC:
-        title = GS(PASSPORT_SELECT_SAVE);
+        title = GS("general/passport/select_save");
         break;
     }
     UI_BeginRequester(&s->req, title);

@@ -20,10 +20,11 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     Console_Log(
-        g_Config.debug.enable_endless_sprint ? GS(CMD_INF_SPRINT_SWITCHED_ON)
-                                             : GS(CMD_INF_SPRINT_SWITCHED_OFF));
+        g_Config.debug.enable_endless_sprint
+            ? GS("console/cmd/inf_sprint/on")
+            : GS("console/cmd/inf_sprint/off"));
     return CR_SUCCESS;
 }
 
 REGISTER_CONSOLE_COMMAND(
-    "restless", M_Entrypoint, GS_ID(CONSOLE_HELP_INF_SPRINT))
+    "restless", M_Entrypoint, GS_ID("console/cmd/inf_sprint/help"))
