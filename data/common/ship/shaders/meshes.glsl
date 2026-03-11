@@ -131,7 +131,9 @@ void main(void) {
         gColor.rgb = gammaCurve(gColor.rgb, gamma_exp);
     }
     gColor.rgb *= mul;
-    gColor.rgb = clamp(gColor.rgb + lr.add, 0.0, 1.0);
+    // Preserve the >1.0 lighting range until after texturing so TR1/TR2
+    // high contrast can still brighten textured geometry.
+    gColor.rgb += lr.add;
 #endif
 }
 
