@@ -110,11 +110,11 @@ static void M_Control(const int16_t item_num)
                     item->goal_anim_state = YETI_STATE_WALK;
                 }
             } else if (
-                info.ahead != 0 && info.distance < YETI_ATTACK_1_RANGE
+                info.ahead && info.distance < YETI_ATTACK_1_RANGE
                 && Random_GetControl() < YETI_ATTACK_1_CHANCE) {
                 item->goal_anim_state = YETI_STATE_ATTACK_1;
                 break;
-            } else if (info.ahead != 0 && info.distance < YETI_ATTACK_2_RANGE) {
+            } else if (info.ahead && info.distance < YETI_ATTACK_2_RANGE) {
                 item->goal_anim_state = YETI_STATE_ATTACK_2;
             } else if (creature->mood == MOOD_STALK) {
                 item->goal_anim_state = YETI_STATE_WALK;
@@ -177,7 +177,7 @@ static void M_Control(const int16_t item_num)
                     item->goal_anim_state = YETI_STATE_STOP;
                 }
             } else if (creature->mood == MOOD_ATTACK) {
-                if (info.ahead != 0 && info.distance < YETI_ATTACK_2_RANGE) {
+                if (info.ahead && info.distance < YETI_ATTACK_2_RANGE) {
                     item->goal_anim_state = YETI_STATE_STOP;
                 } else if (info.distance > YETI_RUN_RANGE) {
                     item->goal_anim_state = YETI_STATE_RUN;
@@ -192,9 +192,9 @@ static void M_Control(const int16_t item_num)
                 break;
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = YETI_STATE_WALK;
-            } else if (info.ahead != 0 && info.distance < YETI_ATTACK_2_RANGE) {
+            } else if (info.ahead && info.distance < YETI_ATTACK_2_RANGE) {
                 item->goal_anim_state = YETI_STATE_STOP;
-            } else if (info.ahead != 0 && info.distance < YETI_ATTACK_3_RANGE) {
+            } else if (info.ahead && info.distance < YETI_ATTACK_3_RANGE) {
                 item->goal_anim_state = YETI_STATE_ATTACK_3;
             } else if (creature->mood == MOOD_STALK) {
                 item->goal_anim_state = YETI_STATE_WALK;

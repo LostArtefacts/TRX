@@ -63,7 +63,7 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
         Creature_UpdateMood(item, &info, true);
 
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
 
@@ -82,7 +82,7 @@ static void M_Control(const int16_t item_num)
             if (creature->mood == MOOD_ESCAPE) {
                 if (g_TRVersion < 3) {
                     item->goal_anim_state = TIGER_STATE_RUN;
-                } else if (lara->target == item || info.ahead == 0) {
+                } else if (lara->target == item || !info.ahead) {
                     item->goal_anim_state = TIGER_STATE_RUN;
                 } else {
                     item->goal_anim_state = TIGER_STATE_STOP;
@@ -93,11 +93,11 @@ static void M_Control(const int16_t item_num)
                 }
                 item->goal_anim_state = TIGER_STATE_WALK;
             } else if (
-                (g_TRVersion == 3 ? info.bite != 0 : info.ahead != 0)
+                (g_TRVersion == 3 ? info.bite : info.ahead)
                 && info.distance < TIGER_ATTACK_1_RANGE) {
                 item->goal_anim_state = TIGER_STATE_ATTACK_1;
             } else if (
-                (g_TRVersion == 3 ? info.bite != 0 : info.ahead != 0)
+                (g_TRVersion == 3 ? info.bite : info.ahead)
                 && info.distance < TIGER_ATTACK_3_RANGE) {
                 creature->maximum_turn = TIGER_WALK_TURN;
                 item->goal_anim_state = TIGER_STATE_ATTACK_3;
@@ -128,10 +128,10 @@ static void M_Control(const int16_t item_num)
             creature->maximum_turn = TIGER_RUN_TURN;
             if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = TIGER_STATE_STOP;
-            } else if (creature->flags != 0 && info.ahead != 0) {
+            } else if (creature->flags != 0 && info.ahead) {
                 item->goal_anim_state = TIGER_STATE_STOP;
             } else if (
-                (g_TRVersion == 3 ? info.bite != 0 : info.ahead != 0)
+                (g_TRVersion == 3 ? info.bite : info.ahead)
                 && info.distance < TIGER_ATTACK_2_RANGE) {
                 const ITEM *const lara_item = Lara_GetItem();
                 if (lara_item->speed != 0) {
@@ -146,7 +146,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = TIGER_STATE_STOP;
             } else if (
                 g_TRVersion == 3 && creature->mood == MOOD_ESCAPE
-                && lara->target != item && info.ahead != 0) {
+                && lara->target != item && info.ahead) {
                 item->goal_anim_state = TIGER_STATE_STOP;
             }
             creature->flags = 0;

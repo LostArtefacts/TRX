@@ -133,13 +133,12 @@ static void M_Control(const int16_t item_num)
 
     case XIAN_KNIGHT_STATE_STOP:
         creature->maximum_turn = 0;
-        if (info.ahead != 0) {
+        if (info.ahead) {
             neck = info.angle;
         }
         if (lara_item->hit_points <= 0) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_WAIT;
-        } else if (
-            info.bite != 0 && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
+        } else if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
             if (Random_GetControl() < 0x4000) {
                 item->goal_anim_state = XIAN_KNIGHT_STATE_AIM_1;
             } else {
@@ -154,13 +153,12 @@ static void M_Control(const int16_t item_num)
 
     case XIAN_KNIGHT_STATE_WALK:
         creature->maximum_turn = XIAN_KNIGHT_WALK_TURN;
-        if (info.ahead != 0) {
+        if (info.ahead) {
             neck = info.angle;
         }
         if (lara_item->hit_points <= 0) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
-        } else if (
-            info.bite != 0 && info.distance < XIAN_KNIGHT_ATTACK_3_RANGE) {
+        } else if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_3_RANGE) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_AIM_3;
         } else if (info.zone_num != info.enemy_zone_num) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
@@ -169,7 +167,7 @@ static void M_Control(const int16_t item_num)
 
     case XIAN_KNIGHT_STATE_FLY:
         creature->maximum_turn = XIAN_KNIGHT_FLY_TURN;
-        if (info.ahead != 0) {
+        if (info.ahead) {
             neck = info.angle;
         }
         M_SparkleTrail(item);
@@ -180,10 +178,10 @@ static void M_Control(const int16_t item_num)
 
     case XIAN_KNIGHT_STATE_AIM_1:
         creature->flags = 0;
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
-        if (info.bite != 0 && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
+        if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_SLASH_1;
         } else {
             item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
@@ -192,10 +190,10 @@ static void M_Control(const int16_t item_num)
 
     case XIAN_KNIGHT_STATE_AIM_2:
         creature->flags = 0;
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
-        if (info.bite != 0 && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
+        if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_1_RANGE) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_SLASH_2;
         } else {
             item->goal_anim_state = XIAN_KNIGHT_STATE_STOP;
@@ -204,10 +202,10 @@ static void M_Control(const int16_t item_num)
 
     case XIAN_KNIGHT_STATE_AIM_3:
         creature->flags = 0;
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
-        if (info.bite != 0 && info.distance < XIAN_KNIGHT_ATTACK_3_RANGE) {
+        if (info.bite && info.distance < XIAN_KNIGHT_ATTACK_3_RANGE) {
             item->goal_anim_state = XIAN_KNIGHT_STATE_SLASH_3;
         } else {
             item->goal_anim_state = XIAN_KNIGHT_STATE_WALK;
@@ -217,7 +215,7 @@ static void M_Control(const int16_t item_num)
     case XIAN_KNIGHT_STATE_SLASH_1:
     case XIAN_KNIGHT_STATE_SLASH_2:
     case XIAN_KNIGHT_STATE_SLASH_3:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         if (creature->flags == 0

@@ -58,7 +58,7 @@ static void M_Control(const int16_t item_num)
             creature->flags = 0;
             if (creature->mood == MOOD_BORED) {
                 break;
-            } else if (info.ahead != 0 && item->touch_bits != 0) {
+            } else if (info.ahead && item->touch_bits != 0) {
                 item->goal_anim_state = BIG_SPIDER_STATE_ATTACK_1;
             } else if (creature->mood == MOOD_STALK) {
                 item->goal_anim_state = BIG_SPIDER_STATE_WALK_1;
@@ -72,7 +72,7 @@ static void M_Control(const int16_t item_num)
         case BIG_SPIDER_STATE_WALK_1:
             if (creature->mood == MOOD_BORED) {
                 break;
-            } else if (info.ahead != 0 && item->touch_bits != 0) {
+            } else if (info.ahead && item->touch_bits != 0) {
                 item->goal_anim_state = BIG_SPIDER_STATE_STOP;
             } else if (
                 creature->mood == MOOD_ESCAPE
@@ -83,7 +83,7 @@ static void M_Control(const int16_t item_num)
 
         case BIG_SPIDER_STATE_WALK_2:
             creature->flags = 0;
-            if (info.ahead != 0 && item->touch_bits != 0) {
+            if (info.ahead && item->touch_bits != 0) {
                 item->goal_anim_state = BIG_SPIDER_STATE_STOP;
             } else if (
                 creature->mood == MOOD_BORED || creature->mood == MOOD_STALK) {

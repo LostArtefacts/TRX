@@ -161,7 +161,7 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_STOP:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             neck = info.angle;
         }
         creature->maximum_turn = 0;
@@ -172,7 +172,7 @@ static void M_Control(const int16_t item_num)
             } else if (random < XIAN_WALK_CHANCE) {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
             }
-        } else if (info.ahead != 0 && info.distance < XIAN_ATTACK_1_RANGE) {
+        } else if (info.ahead && info.distance < XIAN_ATTACK_1_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_AIM_1;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
@@ -180,7 +180,7 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_STOP_2:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             neck = info.angle;
         }
         creature->maximum_turn = 0;
@@ -193,7 +193,7 @@ static void M_Control(const int16_t item_num)
             } else if (random < XIAN_WALK_CHANCE) {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
             }
-        } else if (info.ahead != 0 && info.distance < XIAN_ATTACK_5_RANGE) {
+        } else if (info.ahead && info.distance < XIAN_ATTACK_5_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_AIM_5;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
@@ -201,7 +201,7 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_WALK:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             neck = info.angle;
         }
         creature->maximum_turn = XIAN_WALK_TURN;
@@ -214,7 +214,7 @@ static void M_Control(const int16_t item_num)
             } else if (random < XIAN_WALK_CHANCE) {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP_2;
             }
-        } else if (info.ahead != 0 && info.distance < XIAN_ATTACK_4_RANGE) {
+        } else if (info.ahead && info.distance < XIAN_ATTACK_4_RANGE) {
             if (info.distance < XIAN_ATTACK_2_RANGE) {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_AIM_2;
             } else {
@@ -224,13 +224,13 @@ static void M_Control(const int16_t item_num)
                     item->goal_anim_state = XIAN_SPEARMAN_STATE_AIM_4;
                 }
             }
-        } else if (info.ahead == 0 || info.distance > XIAN_RUN_RANGE) {
+        } else if (!info.ahead || info.distance > XIAN_RUN_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_RUN;
         }
         break;
 
     case XIAN_SPEARMAN_STATE_RUN:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             neck = info.angle;
         }
         creature->maximum_turn = XIAN_RUN_TURN;
@@ -241,17 +241,17 @@ static void M_Control(const int16_t item_num)
             } else {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP_2;
             }
-        } else if (info.ahead != 0 && info.distance < XIAN_ATTACK_6_RANGE) {
+        } else if (info.ahead && info.distance < XIAN_ATTACK_6_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_AIM_6;
         }
         break;
 
     case XIAN_SPEARMAN_STATE_AIM_1:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         creature->flags = 0;
-        if (info.ahead == 0 || info.distance > XIAN_ATTACK_1_RANGE) {
+        if (!info.ahead || info.distance > XIAN_ATTACK_1_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_HIT_1;
@@ -259,11 +259,11 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_AIM_2:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         creature->flags = 0;
-        if (info.ahead == 0 || info.distance > XIAN_ATTACK_2_RANGE) {
+        if (!info.ahead || info.distance > XIAN_ATTACK_2_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_HIT_2;
@@ -271,11 +271,11 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_AIM_3:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         creature->flags = 0;
-        if (info.ahead == 0 || info.distance > XIAN_ATTACK_3_RANGE) {
+        if (!info.ahead || info.distance > XIAN_ATTACK_3_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_HIT_2;
@@ -283,11 +283,11 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_AIM_4:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         creature->flags = 0;
-        if (info.ahead == 0 || info.distance > XIAN_ATTACK_4_RANGE) {
+        if (!info.ahead || info.distance > XIAN_ATTACK_4_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_HIT_2;
@@ -295,11 +295,11 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_AIM_5:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         creature->flags = 0;
-        if (info.ahead == 0 || info.distance > XIAN_ATTACK_5_RANGE) {
+        if (!info.ahead || info.distance > XIAN_ATTACK_5_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP_2;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_HIT_5;
@@ -307,11 +307,11 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_AIM_6:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         creature->flags = 0;
-        if (info.ahead == 0 || info.distance > XIAN_ATTACK_6_RANGE) {
+        if (!info.ahead || info.distance > XIAN_ATTACK_6_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_RUN;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_HIT_6;
@@ -325,11 +325,11 @@ static void M_Control(const int16_t item_num)
     case XIAN_SPEARMAN_STATE_HIT_2:
     case XIAN_SPEARMAN_STATE_HIT_3:
     case XIAN_SPEARMAN_STATE_HIT_4:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         M_DoDamage(item, creature, XIAN_SPEARMAN_HIT_2_DAMAGE);
-        if (info.ahead != 0 && info.distance < XIAN_ATTACK_1_RANGE) {
+        if (info.ahead && info.distance < XIAN_ATTACK_1_RANGE) {
             const int32_t random = Random_GetControl();
             if (random < 0x4000) {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP;
@@ -342,11 +342,11 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_HIT_5:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         M_DoDamage(item, creature, XIAN_SPEARMAN_HIT_5_DAMAGE);
-        if (info.ahead != 0 && info.distance < XIAN_ATTACK_1_RANGE) {
+        if (info.ahead && info.distance < XIAN_ATTACK_1_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP_2;
@@ -354,18 +354,18 @@ static void M_Control(const int16_t item_num)
         break;
 
     case XIAN_SPEARMAN_STATE_HIT_6:
-        if (info.ahead != 0) {
+        if (info.ahead) {
             head = info.angle;
         }
         M_DoDamage(item, creature, XIAN_SPEARMAN_HIT_6_DAMAGE);
-        if (info.ahead != 0 && info.distance < XIAN_ATTACK_1_RANGE) {
+        if (info.ahead && info.distance < XIAN_ATTACK_1_RANGE) {
             const int32_t random = Random_GetControl();
             if (random < 0x4000) {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP;
             } else {
                 item->goal_anim_state = XIAN_SPEARMAN_STATE_STOP_2;
             }
-        } else if (info.ahead != 0 && info.distance < XIAN_ATTACK_4_RANGE) {
+        } else if (info.ahead && info.distance < XIAN_ATTACK_4_RANGE) {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_WALK;
         } else {
             item->goal_anim_state = XIAN_SPEARMAN_STATE_RUN;

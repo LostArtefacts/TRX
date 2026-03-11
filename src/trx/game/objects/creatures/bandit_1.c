@@ -74,7 +74,7 @@ static void M_Control(const int16_t item_num)
 
         switch (item->current_anim_state) {
         case BANDIT_1_STATE_WAIT:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = 0;
@@ -94,7 +94,7 @@ static void M_Control(const int16_t item_num)
                     }
                 }
             } else if (creature->mood == MOOD_BORED) {
-                if (info.ahead != 0) {
+                if (info.ahead) {
                     item->goal_anim_state = BANDIT_1_STATE_WAIT;
                 } else {
                     item->goal_anim_state = BANDIT_1_STATE_WALK;
@@ -105,7 +105,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case BANDIT_1_STATE_WALK:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             creature->maximum_turn = BANDIT_1_WALK_TURN;
@@ -119,7 +119,7 @@ static void M_Control(const int16_t item_num)
                     item->goal_anim_state = BANDIT_1_STATE_WAIT;
                 }
             } else if (creature->mood == MOOD_BORED) {
-                if (info.ahead != 0) {
+                if (info.ahead) {
                     item->goal_anim_state = BANDIT_1_STATE_WALK;
                 } else {
                     item->goal_anim_state = BANDIT_1_STATE_WAIT;
@@ -130,7 +130,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case BANDIT_1_STATE_RUN:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 neck = info.angle;
             }
             tilt = angle / 2;
@@ -147,7 +147,7 @@ static void M_Control(const int16_t item_num)
         case BANDIT_1_STATE_SHOOT_2:
         case BANDIT_1_STATE_SHOOT_3A:
         case BANDIT_1_STATE_SHOOT_3B:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (!Creature_Shoot(
@@ -158,7 +158,7 @@ static void M_Control(const int16_t item_num)
 
         case BANDIT_1_STATE_SHOOT_4A:
         case BANDIT_1_STATE_SHOOT_4B:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
             if (!Creature_Shoot(

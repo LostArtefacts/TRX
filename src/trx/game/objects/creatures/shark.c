@@ -75,7 +75,7 @@ static void M_Control(const int16_t item_num)
         case SHARK_STATE_STOP:
             creature->flags = 0;
             creature->maximum_turn = 0;
-            if (info.ahead != 0 && info.distance < SHARK_ATTACK_1_RANGE
+            if (info.ahead && info.distance < SHARK_ATTACK_1_RANGE
                 && info.zone_num == info.enemy_zone_num) {
                 item->goal_anim_state = SHARK_STATE_ATTACK_1;
             } else {
@@ -86,12 +86,11 @@ static void M_Control(const int16_t item_num)
         case SHARK_STATE_SWIM_1:
             creature->maximum_turn = SHARK_SWIM_1_TURN;
             if (creature->mood == MOOD_BORED) {
-            } else if (
-                info.ahead != 0 && info.distance < SHARK_ATTACK_1_RANGE) {
+            } else if (info.ahead && info.distance < SHARK_ATTACK_1_RANGE) {
                 item->goal_anim_state = SHARK_STATE_STOP;
             } else if (
                 creature->mood == MOOD_ESCAPE
-                || info.distance > SHARK_SWIM_2_RANGE || info.ahead == 0) {
+                || info.distance > SHARK_SWIM_2_RANGE || !info.ahead) {
                 item->goal_anim_state = SHARK_STATE_SWIM_2;
             }
             break;
@@ -103,7 +102,7 @@ static void M_Control(const int16_t item_num)
                 item->goal_anim_state = SHARK_STATE_SWIM_1;
             } else if (creature->mood == MOOD_ESCAPE) {
             } else if (
-                info.ahead != 0 && info.distance < SHARK_ATTACK_2_RANGE
+                info.ahead && info.distance < SHARK_ATTACK_2_RANGE
                 && info.zone_num == info.enemy_zone_num) {
                 if (Random_GetControl() < SHARK_ATTACK_1_CHANCE) {
                     item->goal_anim_state = SHARK_STATE_STOP;
@@ -115,7 +114,7 @@ static void M_Control(const int16_t item_num)
 
         case SHARK_STATE_ATTACK_1:
         case SHARK_STATE_ATTACK_2:
-            if (info.ahead != 0) {
+            if (info.ahead) {
                 head = info.angle;
             }
 
