@@ -10,6 +10,7 @@
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
+- fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 
 **TR3**:
 - added Train control
