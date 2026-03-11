@@ -67,10 +67,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── gameflow.json5
 │   │   ├── strings-de.json5
 │   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
 │   │   └── strings.json5
 │   ├── tr3-level
 │   │   ├── gameflow.json5
 │   │   ├── strings-it.json5
+│   │   ├── strings-pl.json5
 │   │   └── strings.json5
 │   ├── TR3X.json5*
 │   ├── ui.json5
@@ -316,10 +318,12 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── gameflow.json5
         │   │   ├── strings-de.json5
         │   │   ├── strings-it.json5
+        │   │   ├── strings-pl.json5
         │   │   └── strings.json5
         │   ├── tr3-level
         │   │   ├── gameflow.json5
         │   │   ├── strings-it.json5
+        │   │   ├── strings-pl.json5
         │   │   └── strings.json5
         │   ├── ui.json5
         │   └── weapons.json5
