@@ -279,6 +279,7 @@
             ],
             "injections": [
                 "lara_guns.bin",
+                "luds_diver_animation.bin",
             ],
         },
 

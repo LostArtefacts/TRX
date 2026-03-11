@@ -196,6 +196,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── lara_gym_guns.bin
 │   │   ├── lara_outfits.bin
 │   │   ├── london_sky.bin
+│   │   ├── luds_diver_animation.bin
 │   │   ├── misc_sprites.bin
 │   │   ├── nevada_sky.bin
 │   │   ├── ora_dagger.bin
@@ -447,6 +448,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── lara_gym_guns.bin
         │   │   ├── lara_outfits.bin
         │   │   ├── london_sky.bin
+        │   │   ├── luds_diver_animation.bin
         │   │   ├── misc_sprites.bin
         │   │   ├── nevada_sky.bin
         │   │   ├── ora_dagger.bin
