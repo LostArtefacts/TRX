@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3.1...develop) - ××××-××-××
 - added an option to let Lara stay crouched without holding the button (Gameplay → Controls → Toggle crouch) (#5006)
 - added an option to let Lara keep sprinting without holding the button (Gameplay → Controls → Toggle sprint) (#5006)
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
@@ -10,14 +10,6 @@
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
-- fixed main.sfx resolution being enforced (regression from 1.3)
-- fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
-- fixed save counters sometimes drifting after dying and reloading (#5054, regression from TR1X 4.9 / TRX 1.0)
-- fixed flare and gun flash being drawn with a water tint when in shallow water regardless of responsive tint option (#5072, regression from 1.2)
-- fixed fade transitions using the wrong picture size when upscaling or borders are enabled (#5081, regression)
-
-**TR2**:
-- fixed guns as secret rewards not being converted to the equivalent ammo if Lara already has the gun
 
 **TR3**:
 - added Train control
@@ -31,12 +23,26 @@
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
-- fixed reverb affecting inventory ring sounds (#5056)
-- fixed Pause text color
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 - fixed too low volume in all FMVs (except logo which used a different codec)
-- fixed the secret sound not playing in some installations, whereby `cdaudio.wad` contains invalid track sizes (#5049)
 - fixed Lara by default being unable to climb out of water onto steep slopes (change manually in Gameplay → Fixes → Fix water exit)
+
+
+
+## [1.3.1](https://github.com/LostArtefacts/TRX/compare/trx-1.3...trx-1.3.1) - 2026-03-11
+- fixed main.sfx resolution being enforced (regression from 1.3)
+- fixed the microphone entering underwater mode too eagerly when `Microphone near Lara` is enabled (#5057, #4888)
+- fixed save counters sometimes drifting after dying and reloading (#5054, regression from TR1X 4.9 / TRX 1.0)
+- fixed flare and gun flash being drawn with a water tint when in shallow water regardless of responsive tint option (#5072, regression from 1.2)
+- fixed fade transitions using the wrong picture size when upscaling or borders are enabled (#5081, regression)
+
+**TR2**:
+- fixed guns as secret rewards not being converted to the equivalent ammo if Lara already has the gun
+
+**TR3**:
+- fixed reverb affecting inventory ring sounds (#5056)
+- fixed Pause text color
+- fixed the secret sound not playing in some installations, whereby `cdaudio.wad` contains invalid track sizes (#5049)
 
 
 
