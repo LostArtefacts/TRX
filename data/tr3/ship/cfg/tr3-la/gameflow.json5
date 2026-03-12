@@ -89,6 +89,7 @@
             "injections": [
                 "lara_guns.bin",
                 "scotland_sky.bin",
+                "willsden_heli.bin",
             ],
         },
 
