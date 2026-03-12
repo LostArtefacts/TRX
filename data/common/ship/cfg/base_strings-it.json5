@@ -2452,6 +2452,9 @@
         "secret_3": {
             "name": "Segreto 3",
         },
+        "security_guard": {
+            "name": "\\{review}Guardia di Sicurezza",
+        },
         "shadow": {
             "name": "Ombra",
         },

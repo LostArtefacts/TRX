@@ -2422,6 +2422,9 @@
         "secret_3": {
             "name": "Geheimnis 3",
         },
+        "security_guard": {
+            "name": "\\{review}Sicherheitsmann",
+        },
         "shadow": {
             "name": "\\{review}Schatten",
         },
