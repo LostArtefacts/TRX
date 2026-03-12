@@ -1893,6 +1893,9 @@
         "gamma": {
             "name": "Гамма",
         },
+        "gas_emitter_green": {
+            "name": "\\{review}Излучатель Газа (Зелёный)",
+        },
         "general": {
             "name": "\\{review}Миниподводная лодка",
         },

@@ -503,6 +503,7 @@ common_sources = [
   'trx/game/objects/general/earthquake.c',
   'trx/game/objects/general/final_cutscene.c',
   'trx/game/objects/general/flare_item.c',
+  'trx/game/objects/general/gas_emitter.c',
   'trx/game/objects/general/general.c',
   'trx/game/objects/general/gong.c',
   'trx/game/objects/general/gong_bonger.c',

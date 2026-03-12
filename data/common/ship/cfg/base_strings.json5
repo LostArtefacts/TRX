@@ -1905,6 +1905,9 @@
         "gamma": {
             "name": "Gamma",
         },
+        "gas_emitter_green": {
+            "name": "Gas Emitter (Green)",
+        },
         "general": {
             "name": "Minisub",
         },

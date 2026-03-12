@@ -1906,6 +1906,9 @@
         "gamma": {
             "name": "Gamma",
         },
+        "gas_emitter_green": {
+            "name": "\\{review}Emettitore di Gas (Verde)",
+        },
         "general": {
             "name": "Minisommergibile",
         },

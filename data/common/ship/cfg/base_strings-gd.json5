@@ -1897,6 +1897,9 @@
         "gamma": {
             "name": "Gamma",
         },
+        "gas_emitter_green": {
+            "name": "Sgaoileadair Ghasa (Uaine)",
+        },
         "general": {
             "name": "Bàt-aigeil Beag",
         },

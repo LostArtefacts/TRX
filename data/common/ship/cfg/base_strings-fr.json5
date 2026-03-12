@@ -1894,6 +1894,9 @@
         "gamma": {
             "name": "\\{review}Gamma",
         },
+        "gas_emitter_green": {
+            "name": "\\{review}Émetteur de Gaz (Vert)",
+        },
         "general": {
             "name": "\\{review}Minisous-marin",
         },
