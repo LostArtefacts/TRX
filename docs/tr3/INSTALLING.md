@@ -207,6 +207,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── tinnos_cameras.bin
 │   │   ├── undersea_animating_bounds.bin
 │   │   ├── undersea_train.bin
+│   │   ├── willsden_heli.bin
 │   │   └── zoo_train.bin
 │   ├── jungle.tr2
 │   ├── main.sfx
@@ -457,6 +458,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── tinnos_cameras.bin
         │   │   ├── undersea_animating_bounds.bin
         │   │   ├── undersea_train.bin
+        │   │   ├── willsden_heli.bin
         │   │   └── zoo_train.bin
         │   ├── jungle.tr2
         │   ├── main.sfx

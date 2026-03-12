@@ -5,9 +5,15 @@ static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
 
-    if (Item_IsTriggerActive(item)) {
-        Item_Animate(item);
+    if (!Item_IsTriggerActive(item)) {
+        return;
     }
+
+    Item_Animate(item);
+
+    int16_t room_num = item->room_num;
+    Room_GetSector(item->pos, &room_num);
+    Item_UpdateRoom(item_num, room_num);
 }
 
 static void M_Setup(OBJECT *const obj)

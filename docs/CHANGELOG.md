@@ -22,6 +22,7 @@
 - changed Ammo Counter to appear in red when the Menu Style is set to PS1
 - changed Punks to have friendliness assignable through Lua, so removing the hard-coded behaviour in the Lud's Gate level sequence
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
+- fixed the helicopter in Highland Fling briefly disappearing when crossing room portals (regression from 1.1)
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)

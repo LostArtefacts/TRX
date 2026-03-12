@@ -191,38 +191,38 @@ bool Object_DrawAnimatingItemWithSwap(
 
     const int16_t *extra_rotation = item->extra_rotations;
 
-    Object_DrawInterpolatedObjectWithSwap(
+    bool result = Object_DrawInterpolatedObjectWithSwap(
         obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate,
         swap_obj);
     if (g_Config.debug.enable_debug_bounding_boxes) {
         Output_DrawCuboid(bounds);
     }
     Matrix_Pop();
-    return true;
+    return result;
 }
 
-void Object_DrawInterpolatedObject(
+bool Object_DrawInterpolatedObject(
     const OBJECT *const obj, const uint32_t mesh_mask,
     const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
-    Object_DrawInterpolatedObjectWithSwap(
+    return Object_DrawInterpolatedObjectWithSwap(
         obj, mesh_mask, extra_rotation, frame1, frame2, frac, rate, nullptr);
 }
 
-void Object_DrawInterpolatedObjectWithSwap(
+bool Object_DrawInterpolatedObjectWithSwap(
     const OBJECT *const obj, const uint32_t mesh_mask,
     const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate,
     const OBJECT *const mesh_swap)
 {
     if (frame1 == nullptr) {
-        return;
+        return false;
     }
     ASSERT(frame1 != nullptr);
     const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
     if (clip == CLIP_NOT_VISIBLE) {
-        return;
+        return false;
     }
 
     ASSERT(rate != 0);
@@ -287,6 +287,7 @@ void Object_DrawInterpolatedObjectWithSwap(
     }
 
     Matrix_Pop();
+    return true;
 }
 
 void Object_ApplyExtraRotation(
