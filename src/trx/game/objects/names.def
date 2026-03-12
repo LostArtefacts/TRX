@@ -359,6 +359,7 @@ X_OBJ_NAME_DEFINE(O_BEACON_LIGHT,          "beacon_light",          X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_WHITE,   "smoke_emitter_white",   X_OBJ_NAMES("Smoke Emitter (White)"))
 X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_BLACK,   "smoke_emitter_black",   X_OBJ_NAMES("Smoke Emitter (Black)"))
 X_OBJ_NAME_DEFINE(O_STEAM_EMITTER,         "steam_emitter",         X_OBJ_NAMES("Steam Emitter"))
+X_OBJ_NAME_DEFINE(O_GAS_EMITTER_GREEN,     "gas_emitter_green",     X_OBJ_NAMES("Gas Emitter (Green)"))
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "alarm_sound",             X_OBJ_NAMES("Alarm"))

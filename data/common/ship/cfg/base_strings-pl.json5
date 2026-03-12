@@ -1890,6 +1890,9 @@
         "gamma": {
             "name": "Gamma",
         },
+        "gas_emitter_green": {
+            "name": "\\{review}Emiter Gazu (Zielony)",
+        },
         "general": {
             "name": "Miniłódź podwodna",
         },

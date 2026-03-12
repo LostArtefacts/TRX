@@ -52,6 +52,7 @@
   "O_FLAME_EMITTER_SIDE":     { "status": "fully implemented" },
   "O_FLAME_EMITTER_SMALL":    { "status": "fully implemented" },
   "O_FLAREBOX_ITEM":          { "status": "fully implemented" },
+  "O_GAS_EMITTER_GREEN":      { "status": "fully implemented" },
   "O_GREEN_LIGHT":            { "status": "fully implemented" },
   "O_GRENADE_AMMO_ITEM":      { "status": "fully implemented" },
   "O_GRENADE_GUN_ITEM":       { "status": "fully implemented" },
