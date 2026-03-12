@@ -2428,6 +2428,9 @@
         "secret_3": {
             "name": "Dìomhair 3",
         },
+        "security_guard": {
+            "name": "Geàrd Tèarainteachd",
+        },
         "shadow": {
             "name": "Faileas",
         },

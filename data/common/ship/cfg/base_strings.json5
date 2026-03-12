@@ -2451,6 +2451,9 @@
         "secret_3": {
             "name": "Secret 3",
         },
+        "security_guard": {
+            "name": "Security Guard",
+        },
         "shadow": {
             "name": "Shadow",
         },

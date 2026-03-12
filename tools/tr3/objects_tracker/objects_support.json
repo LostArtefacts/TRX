@@ -109,6 +109,7 @@
   "O_ROLLING_BALL_1":         { "status": "fully implemented" },
   "O_ROLLING_BALL_4":         { "status": "fully implemented" },
   "O_SAVE_CRYSTAL_ITEM":      { "status": "fully implemented" },
+  "O_SECURITY_GUARD":         { "status": "fully implemented" },
   "O_SHIVA":                  { "status": "fully implemented" },
   "O_SHOTGUN_AMMO_ITEM":      { "status": "fully implemented" },
   "O_SHOTGUN_ITEM":           { "status": "fully implemented" },

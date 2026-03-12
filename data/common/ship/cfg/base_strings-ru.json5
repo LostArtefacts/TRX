@@ -2426,6 +2426,9 @@
         "secret_3": {
             "name": "\\{review}Секрет 3",
         },
+        "security_guard": {
+            "name": "\\{review}Охранник",
+        },
         "shadow": {
             "name": "\\{review}Тень",
         },
