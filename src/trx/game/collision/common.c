@@ -1085,8 +1085,40 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
             item->pos = old_pos;
         }
     } else {
-        // NOTE: OG had additional processing of walkables here, which have
-        // been reworked in TRX.
+        if (item->fall_speed >= 0) {
+            const XYZ_32 test_pos = {
+                item->pos.x,
+                old_pos.y,
+                item->pos.z,
+            };
+            room_num = item->room_num;
+            sector = Room_GetSector(test_pos, &room_num);
+            height = Room_GetHeight(sector, test_pos);
+            const bool on_walkable =
+                Room_IsOnWalkable(sector, test_pos, height, NO_ITEM);
+
+            if (item->pos.y >= height && on_walkable) {
+                if (item->fall_speed > 16) {
+                    if (item->object_id == O_GRENADE) {
+                        item->fall_speed = -(item->fall_speed / 2);
+                    } else {
+                        item->fall_speed = -(item->fall_speed / 4);
+                        CLAMPL(item->fall_speed, -100);
+                    }
+                } else if (item->fall_speed > 0) {
+                    item->fall_speed = 0;
+                    if (item->object_id == O_GRENADE) {
+                        item->speed--;
+                        item->required_anim_state = 1;
+                        item->rot.x = 0;
+                    } else {
+                        item->speed -= 3;
+                    }
+                    CLAMPL(item->speed, 0);
+                }
+                item->pos.y = height;
+            }
+        }
 
         room_num = item->room_num;
         sector = Room_GetSector(item->pos, &room_num);
