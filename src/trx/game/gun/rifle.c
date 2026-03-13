@@ -7,6 +7,7 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/control.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/smashing.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/input.h>

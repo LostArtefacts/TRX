@@ -1891,6 +1891,9 @@
         "flares_box": {
             "name": "Bogsa Lòchrain",
         },
+        "fuse_box": {
+            "name": "\\{review}Bogsa Fuse",
+        },
         "fx_reserved": {
             "name": "Cearcall Glas",
         },
@@ -2499,6 +2502,9 @@
         },
         "snow_sprite": {
             "name": "Rotal Cairt-shneachda",
+        },
+        "sophia": {
+            "name": "\\{review}Sophia",
         },
         "sound": {
             "name": "Fuaim",

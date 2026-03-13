@@ -77,6 +77,11 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
         return obj->can_be_projectile_target_func(item);
     }
 
+    if (Object_IsType(item->object_id, g_ShatterableObjects)
+        || Object_IsType(item->object_id, g_SmashableObjects)) {
+        return true;
+    }
+
     if (M_IsFloating(item)) {
         return true;
     }

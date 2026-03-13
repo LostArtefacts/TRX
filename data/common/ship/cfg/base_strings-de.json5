@@ -1888,6 +1888,9 @@
         "flares_box": {
             "name": "Flares Box",
         },
+        "fuse_box": {
+            "name": "\\{review}Sicherungskasten",
+        },
         "fx_reserved": {
             "name": "Gray disk",
         },
@@ -2493,6 +2496,9 @@
         },
         "snow_sprite": {
             "name": "Snowmobile Wake",
+        },
+        "sophia": {
+            "name": "\\{review}Sophia",
         },
         "sound": {
             "name": "Sound",

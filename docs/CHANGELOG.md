@@ -10,9 +10,9 @@
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
 - added support for `.ogv` and `.fmv` FMV extensions, with `.ogv` preferred over `.fmv` for remaster compatibility
-- improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
 - added audio fallback for FMV files that lack an audio stream (e.g. remastered `.ogv`), probing alternative extensions for a companion audio track
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
+- improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 - fixed the photo mode red frame not covering the full screen when using integer upscaling
 - fixed boulders that have moved vertically reactivating for a frame after loading a save (regression from 1.2)
@@ -26,6 +26,7 @@
 - added Train control
 - added Patrol Dog control
 - added Crow control
+- added Fuse Box control
 - added Electric Cleaner control
 - added Punk control, including `O_PUNK_2`, which was unused in OG
 - added Security Guard control

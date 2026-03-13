@@ -5,6 +5,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/smashing.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -157,20 +158,28 @@ static bool M_TryExplodeItem(
         return false;
     }
 
-    if (Item_CanTakeDamage(target_item)) {
-        const GAME_VECTOR hit_pos = {
-            .pos = projectile_item->pos,
-            .room_num = projectile_item->room_num,
-        };
-        Gun_HitTarget(
-            target_item, &old_pos, &hit_pos, g_Weapons[LGT_ROCKET].damage);
-        Stats_AddAmmoHits();
-
-        if (target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
-            Creature_Die(target_item_num, true);
-        }
+    if (!Item_CanTakeDamage(target_item)) {
+        return false;
     }
 
+    const GAME_VECTOR hit_pos = {
+        .pos = projectile_item->pos,
+        .room_num = projectile_item->room_num,
+    };
+    Gun_HitTarget(
+        target_item, &old_pos, &hit_pos, g_Weapons[LGT_ROCKET].damage);
+    Stats_AddAmmoHits();
+
+    if (Gun_GetSmashPolicy(target_item) == GUN_SMASH_POLICY_HEAVY) {
+        if (Object_IsType(projectile_item->object_id, g_HeavyMissileObjects)) {
+            Gun_SmashItem(target_item_num);
+        }
+    } else if (Gun_GetSmashPolicy(target_item) != GUN_SMASH_POLICY_NONE) {
+        Gun_SmashItem(target_item_num);
+    } else if (
+        target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
+        Creature_Die(target_item_num, true);
+    }
     return true;
 }
 

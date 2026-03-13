@@ -1888,6 +1888,9 @@
         "flares_box": {
             "name": "\\{review}Boîte de fusées éclairantes",
         },
+        "fuse_box": {
+            "name": "\\{review}Boîte à fusibles",
+        },
         "fx_reserved": {
             "name": "\\{review}Disque gris",
         },
@@ -2487,6 +2490,9 @@
         },
         "snow_sprite": {
             "name": "\\{review}Sillage de Motoneige",
+        },
+        "sophia": {
+            "name": "\\{review}Sophia",
         },
         "sound": {
             "name": "\\{review}Son",

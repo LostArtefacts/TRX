@@ -9,6 +9,7 @@
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/pistols.h>
 #include <trx/game/gun/rifle.h>
+#include <trx/game/gun/smashing.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/input.h>

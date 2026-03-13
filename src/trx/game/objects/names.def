@@ -237,6 +237,7 @@ X_OBJ_NAME_DEFINE(O_SECURITY_GUARD,        "security_guard",        X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_1",                X_OBJ_NAMES("SWAT 1"))
 X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_2",                X_OBJ_NAMES("SWAT 2"))
 X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_3",                X_OBJ_NAMES("SWAT 3"))
+X_OBJ_NAME_DEFINE(O_SOPHIA,                "sophia",                X_OBJ_NAMES("Sophia"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))
@@ -363,6 +364,7 @@ X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_WHITE,   "smoke_emitter_white",   X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_BLACK,   "smoke_emitter_black",   X_OBJ_NAMES("Smoke Emitter (Black)"))
 X_OBJ_NAME_DEFINE(O_STEAM_EMITTER,         "steam_emitter",         X_OBJ_NAMES("Steam Emitter"))
 X_OBJ_NAME_DEFINE(O_GAS_EMITTER_GREEN,     "gas_emitter_green",     X_OBJ_NAMES("Gas Emitter (Green)"))
+X_OBJ_NAME_DEFINE(O_FUSE_BOX,              "fuse_box",              X_OBJ_NAMES("Fuse Box"))
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "alarm_sound",             X_OBJ_NAMES("Alarm"))

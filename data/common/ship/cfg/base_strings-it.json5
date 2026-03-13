@@ -1900,6 +1900,9 @@
         "flares_box": {
             "name": "Scatola Razzi",
         },
+        "fuse_box": {
+            "name": "\\{review}Scatola dei fusibili",
+        },
         "fx_reserved": {
             "name": "Disco Grigio",
         },
@@ -2526,6 +2529,9 @@
         },
         "snow_sprite": {
             "name": "Scia Motoslitta",
+        },
+        "sophia": {
+            "name": "\\{review}Sophia",
         },
         "sound": {
             "name": "Suono",

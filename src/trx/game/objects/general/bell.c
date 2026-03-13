@@ -6,6 +6,11 @@ typedef enum {
     BELL_STATE_SWING = 1,
 } BELL_STATE;
 
+static bool M_ShouldSpawnBlood(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -28,6 +33,8 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
+    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
+
     obj->save_flags = true;
     obj->save_anim = true;
 }

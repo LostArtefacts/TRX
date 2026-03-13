@@ -1884,6 +1884,9 @@
         "flares_box": {
             "name": "Paczka flar",
         },
+        "fuse_box": {
+            "name": "\\{review}Skrzynka bezpieczników",
+        },
         "fx_reserved": {
             "name": "Szary dysk",
         },
@@ -2477,6 +2480,9 @@
         },
         "snow_sprite": {
             "name": "Ślad skutera śnieżnego",
+        },
+        "sophia": {
+            "name": "\\{review}Sophia",
         },
         "sound": {
             "name": "Dźwięk",
