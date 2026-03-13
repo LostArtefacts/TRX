@@ -55,7 +55,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (item->fall_speed) {
+    if (item->fall_speed != 0) {
         item->rot.x += DEG_1 * 3;
         item->rot.z += DEG_1 * 5;
     } else {
@@ -63,11 +63,8 @@ static void M_Control(const int16_t item_num)
         item->rot.z = 0;
     }
 
-    const int32_t x = item->pos.x;
-    const int32_t y = item->pos.y;
-    const int32_t z = item->pos.z;
-    item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-    item->pos.x += (item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+    const XYZ_32 old_pos = item->pos;
+    item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, item->speed);
 
     if (room->flags.underwater) {
         item->fall_speed += (5 - item->fall_speed) / 2;
@@ -77,38 +74,7 @@ static void M_Control(const int16_t item_num)
     }
     item->pos.y += item->fall_speed;
 
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-
-    const int32_t height = Room_GetHeight(sector, item->pos);
-    if (item->pos.y < height) {
-        const int32_t ceiling = Room_GetCeiling(sector, item->pos);
-        if (item->pos.y < ceiling) {
-            item->fall_speed = -item->fall_speed;
-            item->pos.y = ceiling;
-        }
-    } else {
-        if (y > height) {
-            item->pos.x = x;
-            item->pos.y = y;
-            item->pos.z = z;
-            item->rot.y += DEG_180;
-            item->speed /= 2;
-            room_num = item->room_num;
-        } else {
-            if (item->fall_speed > 40) {
-                item->fall_speed = 40 - item->fall_speed;
-                CLAMPL(item->fall_speed, -100);
-            } else {
-                item->fall_speed = 0;
-                item->speed -= 3;
-                CLAMPL(item->speed, 0);
-            }
-            item->pos.y = height;
-        }
-    }
-
-    Item_UpdateRoom(item_num, room_num);
+    Collide_DoProperDetection(item, old_pos);
 
     int32_t flare_age = FlareItem_GetAge(item);
     bool is_active = FlareItem_IsActive(item);

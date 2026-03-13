@@ -17,6 +17,7 @@
 - fixed boulders that have moved vertically reactivating for a frame after loading a save (regression from 1.2)
 
 **TR2**:
+- fixed thrown flares falling through trapdoors and becoming stuck in the void if thrown underwater near the floor (#3708)
 - fixed flamethrowers and Dragon's breath doing weird animation when hitting floor (#5104, regression from 1.3)
 
 **TR3**:
@@ -38,6 +39,7 @@
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 - fixed too low volume in all FMVs (except logo which used a different codec)
 - fixed Lara by default being unable to climb out of water onto steep slopes (change manually in Gameplay → Fixes → Fix water exit)
+- fixed thrown flares falling through trapdoors (regression from 1.1)
 
 
 
