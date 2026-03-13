@@ -14,6 +14,7 @@
 - added audio fallback for FMV files that lack an audio stream (e.g. remastered `.ogv`), probing alternative extensions for a companion audio track
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
+- fixed boulders that have moved vertically reactivating for a frame after loading a save (regression from 1.2)
 
 **TR2**:
 - fixed flamethrowers and Dragon's breath doing weird animation when hitting floor (#5104, regression from 1.3)

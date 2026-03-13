@@ -245,6 +245,7 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    obj->load_floor = true;
 }
 
 REGISTER_OBJECT(O_ROLLING_BALL_1, M_Setup)

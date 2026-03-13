@@ -115,6 +115,7 @@ typedef struct OBJECT {
     bool save_hitpoints;
     bool save_flags;
     bool save_anim;
+    bool load_floor;
     bool semi_transparent;
 } OBJECT;
 
