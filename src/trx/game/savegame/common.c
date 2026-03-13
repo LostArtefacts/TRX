@@ -189,7 +189,7 @@ static void M_LoadPostprocess(void)
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
 
-        if (obj->save_position && obj->shadow_size) {
+        if (obj->save_position && (obj->shadow_size != 0 || obj->load_floor)) {
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
             item->floor = Room_GetHeight(sector, item->pos);

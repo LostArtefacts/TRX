@@ -54,6 +54,7 @@ void Object_SetupAllObjects(void)
         obj->save_hitpoints = false;
         obj->save_flags = false;
         obj->save_anim = false;
+        obj->load_floor = false;
         obj->intelligent = false;
         obj->smartness = -1;
 
