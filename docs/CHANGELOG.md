@@ -15,6 +15,9 @@
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 
+**TR2**:
+- fixed flamethrowers and Dragon's breath doing weird animation when hitting floor (#5104, regression from 1.3)
+
 **TR3**:
 - added UPV control
 - added Train control

@@ -159,8 +159,8 @@ static void M_ControlFlame(const int16_t effect_num)
 
     M_Move(effect);
     if (M_HitFloorOrCeiling(effect)) {
-        Sparks_TriggerFlamethrowerHitFlame(effect->pos);
         if (g_TRVersion == 3) {
+            Sparks_TriggerFlamethrowerHitFlame(effect->pos);
             const RGB_888 color = { 255, 192, Random_GetControl() & 0x3F };
             Output_AddDynamicLightRGB(effect->pos, 24, color);
         } else {
