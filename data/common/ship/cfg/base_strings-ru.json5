@@ -1887,6 +1887,9 @@
         "flares_box": {
             "name": "\\{review}Коробка вспышки",
         },
+        "fuse_box": {
+            "name": "\\{review}Коробка предохранителей",
+        },
         "fx_reserved": {
             "name": "\\{review}Серый диск",
         },
@@ -2497,6 +2500,9 @@
         },
         "snow_sprite": {
             "name": "\\{review}След снегохода",
+        },
+        "sophia": {
+            "name": "\\{review}София",
         },
         "sound": {
             "name": "Звук",

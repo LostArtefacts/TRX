@@ -1,6 +1,7 @@
 #include <trx/core/math.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/smashing.h>
 #include <trx/game/gun/vars.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
