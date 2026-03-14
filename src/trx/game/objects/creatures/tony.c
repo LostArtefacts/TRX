@@ -1,3 +1,5 @@
+#include "tony_internal.h"
+
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
@@ -41,7 +43,7 @@ typedef struct {
     bool dropped_item;
     uint8_t ring_count;
     int16_t explode_count;
-    uint8_t dead;
+    bool dead;
     M_SHIELD_POINT shield[5][8];
     M_PHASE phase;
 
@@ -56,10 +58,6 @@ static const int32_t m_DHeights1[5] = { -7680, -4224, -768, 2688, 6144 };
 static const int32_t m_DHeights2[5] = { -1536, -1152, -768, -384, 0 };
 static int32_t m_DeathDist[5] = {};
 static int32_t m_DeathHeights[5] = {};
-
-extern void TonyBoss_TriggerFireBall(
-    ITEM *item, int32_t type, XYZ_32 *pos, int16_t room_num, int16_t angle,
-    int32_t speed);
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -156,22 +154,22 @@ static void M_Explode(ITEM *const item)
         && (p->explode_count == 1 || p->explode_count == 15
             || p->explode_count == 25 || p->explode_count == 35
             || p->explode_count == 45 || p->explode_count == 55)) {
-        const int32_t x = item->pos.x + (Random_GetDraw() & 0x3FF) - 512;
-        const int32_t y = item->pos.y - (Random_GetDraw() & 0x3FF) - 256;
-        const int32_t z = item->pos.z + (Random_GetDraw() & 0x3FF) - 512;
+        const XYZ_32 pos = {
+            .x = item->pos.x + (Random_GetDraw() & 0x3FF) - 512,
+            .y = item->pos.y - (Random_GetDraw() & 0x3FF) - 256,
+            .z = item->pos.z + (Random_GetDraw() & 0x3FF) - 512,
+        };
+
         FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(p->ring_count);
         if (ring != nullptr) {
-            ring->pos.x = x;
-            ring->pos.y = y;
-            ring->pos.z = z;
+            ring->pos = pos;
             ring->on = 2;
+            p->ring_count++;
         }
-        p->ring_count++;
 
-        Sparks_TriggerExplosionSparks((XYZ_32) { x, y, z }, 3, -2, 0, 0);
-
+        Sparks_TriggerExplosionSparks(pos, 3, -2, 0, 0);
         for (int32_t i = 0; i < 2; i++) {
-            Sparks_TriggerExplosionSparks((XYZ_32) { x, y, z }, 3, -1, 0, 0);
+            Sparks_TriggerExplosionSparks(pos, 3, -1, 0, 0);
         }
 
         Sound_Effect(SFX_BLAST_CIRCLE, &item->pos, 0x800000 | SPM_PITCH);
@@ -203,7 +201,7 @@ static void M_Explode(ITEM *const item)
             shield->pos.z = (dist * Math_Cos(angle << 4)) >> 13;
 
             if (i == 0 || i == 16 || p->explode_count >= 64) {
-                shield->color = (RGB_888) { 0 };
+                shield->color = COLOR_RGB_888_BLACK;
             } else {
                 int32_t r = (Random_GetDraw() & 0x1F) + 224;
                 int32_t g = (r >> 2) + (Random_GetDraw() & 0x3F);
@@ -244,13 +242,11 @@ static bool M_CanBeExploded(const ITEM *const item)
     return false;
 }
 
-static void M_Die(int16_t item_num)
+static void M_Die(const int16_t item_num)
 {
-    ITEM *item;
-
-    item = Item_Get(item_num);
+    ITEM *const item = Item_Get(item_num);
     item->hit_points = 0;
-    item->collidable = 0;
+    item->collidable = false;
     Item_Kill(item_num);
     LOT_DisableBaddieAI(item_num);
     item->flags |= IF_INVISIBLE;
@@ -258,8 +254,6 @@ static void M_Die(int16_t item_num)
 
 static void M_Initialise(int16_t item_num)
 {
-    int32_t y, angle;
-
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     p->dead = false;
@@ -269,16 +263,16 @@ static void M_Initialise(int16_t item_num)
     p->attack_toggle = false;
     p->phase = M_PHASE_DORMANT;
 
-    for (int i = 0; i < 5; i++) {
+    for (int32_t i = 0; i < 5; i++) {
         const int32_t dist = m_Dist[i];
-        angle = 0;
+        int32_t angle = 0;
 
-        for (int j = 0; j < 8; j++) {
+        for (int32_t j = 0; j < 8; j++) {
             M_SHIELD_POINT *const shield = &p->shield[i][j];
             shield->pos.x = (dist * Math_Sin(angle << 4)) >> 13;
             shield->pos.y = m_Heights[i];
             shield->pos.z = (dist * Math_Cos(angle << 4)) >> 13;
-            shield->color = (RGB_888) { 0 };
+            shield->color = COLOR_RGB_888_BLACK;
             angle += 512;
         }
     }
@@ -312,7 +306,7 @@ static void M_Control(const int16_t item_num)
             if (!p->explode_count) {
                 p->ring_count = 0;
 
-                for (int i = 0; i < 6; i++) {
+                for (int32_t i = 0; i < 6; i++) {
                     FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(i);
                     if (ring == nullptr) {
                         continue;
@@ -420,7 +414,7 @@ static void M_Control(const int16_t item_num)
             tony->maximum_turn = 182;
             if (Item_GetRelativeFrame(item) == 28) {
                 TonyBoss_TriggerFireBall(
-                    item, 2, 0, item->room_num, item->rot.y, 0);
+                    item, 2, nullptr, item->room_num, item->rot.y, 0);
             }
             break;
 
@@ -429,8 +423,10 @@ static void M_Control(const int16_t item_num)
             torso_x = info.x_angle;
             tony->maximum_turn = 0;
             if (Item_GetRelativeFrame(item) == 40) {
-                TonyBoss_TriggerFireBall(item, 0, 0, item->room_num, 0, 0);
-                TonyBoss_TriggerFireBall(item, 1, 0, item->room_num, 0, 0);
+                TonyBoss_TriggerFireBall(
+                    item, 0, nullptr, item->room_num, 0, 0);
+                TonyBoss_TriggerFireBall(
+                    item, 1, nullptr, item->room_num, 0, 0);
             }
             break;
 
