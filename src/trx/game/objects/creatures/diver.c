@@ -167,7 +167,7 @@ static void M_Control(const int16_t item_num)
         if (shoot) {
             neck = -info.angle;
         }
-        if (!creature->flags) {
+        if (creature->flags == 0) {
             Creature_Effect(item, &m_DiverBite, Spawn_Harpoon);
             creature->flags = 1;
         }
@@ -177,7 +177,7 @@ static void M_Control(const int16_t item_num)
         if (shoot) {
             head = info.angle;
         }
-        if (!creature->flags) {
+        if (creature->flags == 0) {
             Creature_Effect(item, &m_DiverBite, Spawn_Harpoon);
             creature->flags = 1;
         }
@@ -253,8 +253,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
     obj->save_anim = true;
 
-    Object_GetBone(obj, 10)->rot.y = true;
-    Object_GetBone(obj, 14)->rot.z = true;
+    if (g_TRVersion < 3) {
+        Object_GetBone(obj, 10)->rot.y = true;
+        Object_GetBone(obj, 14)->rot.z = true;
+    }
 }
 
 REGISTER_OBJECT(O_DIVER, M_Setup)
