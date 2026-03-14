@@ -24,5 +24,11 @@ void FX_ExplosionRing_Reset(void);
 
 void FX_ExplosionRing_Control(void);
 void FX_ExplosionRing_Draw(void);
+void FX_ExplosionRing_SpawnKnockBack(XYZ_32 pos);
+void FX_ExplosionRing_BounceKnockBack(void);
+bool FX_ExplosionRing_IsKnockBackActive(void);
 
 FX_EXPLOSION_RING *FX_ExplosionRing_GetRing(int32_t idx);
+FX_EXPLOSION_RING *FX_ExplosionRing_GetSummonRing(int32_t idx);
+FX_EXPLOSION_RING *FX_ExplosionRing_GetKnockBackRing(int32_t idx);
+const FX_EXPLOSION_RING *FX_ExplosionRing_PeekKnockBackRing(int32_t idx);

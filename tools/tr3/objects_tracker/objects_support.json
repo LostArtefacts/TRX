@@ -123,6 +123,7 @@
   "O_SMASH_OBJECT_4":         { "status": "fully implemented" },
   "O_SMOKE_EMITTER_BLACK":    { "status": "fully implemented" },
   "O_SMOKE_EMITTER_WHITE":    { "status": "fully implemented" },
+  "O_SOPHIA":                 { "status": "fully implemented" },
   "O_SPIKES":                 { "status": "fully implemented" },
   "O_SPIKE_WALL":             { "status": "fully implemented" },
   "O_SPINNING_BLADE":         { "status": "fully implemented" },

@@ -32,6 +32,7 @@
 - added Train control
 - added Patrol Dog control
 - added Crow control
+- added Sophia control
 - added Fuse Box control
 - added Electric Cleaner control
 - added Punk control, including `O_PUNK_2`, which was unused in OG
