@@ -164,6 +164,7 @@ static void M_Explode(ITEM *const item)
         if (ring != nullptr) {
             ring->pos = pos;
             ring->on = 2;
+            FX_ExplosionRing_Sync(ring);
             p->ring_count++;
         }
 
@@ -317,6 +318,7 @@ static void M_Control(const int16_t item_num)
                     ring->speed = 128 + (i << 5);
                     ring->rot.x = ((Random_GetControl() & 0x1FF) - 256) & 0xFFF;
                     ring->rot.z = ((Random_GetControl() & 0x1FF) - 256) & 0xFFF;
+                    FX_ExplosionRing_Sync(ring);
                 }
 
                 if (!p->dropped_item) {
