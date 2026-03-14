@@ -52,11 +52,18 @@ static void M_ConvertToBlood(
     EFFECT *const effect, const SAMPLE_TRX_ID sample_id)
 {
     ITEM *const lara_item = Lara_GetItem();
-    effect->object_id = O_BLOOD_1;
-    effect->frame_num = 0;
-    effect->speed = lara_item->speed;
-    effect->rot.y = lara_item->rot.y;
-    effect->counter = 0;
+    if (g_TRVersion >= 3) {
+        Spawn_Blood(
+            effect->pos.x, effect->pos.y, effect->pos.z, lara_item->speed,
+            lara_item->rot.y, lara_item->room_num);
+        Effect_Kill(Effect_GetIndex(effect));
+    } else {
+        effect->object_id = O_BLOOD_1;
+        effect->speed = lara_item->speed;
+        effect->rot.y = lara_item->rot.y;
+        effect->frame_num = 0;
+        effect->counter = 0;
+    }
     Sound_Effect(sample_id, &effect->pos, SPM_NORMAL);
 }
 

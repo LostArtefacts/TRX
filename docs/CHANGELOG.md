@@ -38,6 +38,7 @@
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - fixed the helicopter in Highland Fling briefly disappearing when crossing room portals (regression from 1.1)
 - fixed Lara dying from touching Trains that haven't yet been activated
+- fixed harpoons from Divers not spawning blood when they hit Lara
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
