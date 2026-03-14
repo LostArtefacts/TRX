@@ -7,6 +7,7 @@
 #include <trx/game/level/sections/append.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output/const.h>
+#include <trx/version.h>
 
 static uint16_t M_RemapRGB8(const RGB_888 rgb)
 {
@@ -160,7 +161,7 @@ static void M_HandleTextureInfo(
         case IDT_OBJECT_TEXTURES:
             Level_Section_AppendObjectTextures(
                 level_info->textures.object_count, page_base, data_count,
-                chunk.injection->fp);
+                chunk.injection->fp, g_TRVersion >= 3);
             level_info->textures.object_count += data_count;
             break;
         case IDT_SPRITE_TEXTURES:

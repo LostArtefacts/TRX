@@ -9,6 +9,30 @@
 #include <trx/game/level/sections/read.h>
 #include <trx/game/output.h>
 
+static void M_DecodeTR3ObjectTextureUVs(OBJECT_TEXTURE *const texture)
+{
+    int16_t *const uv = (int16_t *)&texture->uv[0].u;
+    uint8_t flags = 0;
+
+    for (int32_t i = 0; i < 8; i++) {
+        if ((uv[i] & 0x80) != 0) {
+            uv[i] |= 0x00FF;
+            flags |= 1 << i;
+        } else {
+            uv[i] &= 0xFF00;
+        }
+    }
+
+    for (int32_t i = 0; i < 8; i++) {
+        if ((flags & 1) != 0) {
+            uv[i] -= 256;
+        } else {
+            uv[i] += 256;
+        }
+        flags >>= 1;
+    }
+}
+
 void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, VFILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -104,13 +128,15 @@ void Level_Section_ReadObjectTextures(
     LOG_INFO("object textures: %d", num_textures);
     Output_InitialiseObjectTextures(
         num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
-    Level_Section_AppendObjectTextures(0, 0, num_textures, file);
+    Level_Section_AppendObjectTextures(
+        0, 0, num_textures, file, ctx->loader->game_version >= 3);
     Benchmark_End(&benchmark, nullptr);
 }
 
 void Level_Section_AppendObjectTextures(
     const int32_t base_idx, const int16_t base_page_idx,
-    const int32_t num_textures, VFILE *const file)
+    const int32_t num_textures, VFILE *const file,
+    const bool use_tr3_adjustment)
 {
     for (int32_t i = 0; i < num_textures; i++) {
         OBJECT_TEXTURE *const texture = Output_GetObjectTexture(base_idx + i);
@@ -120,6 +146,9 @@ void Level_Section_AppendObjectTextures(
         for (int32_t j = 0; j < 4; j++) {
             texture->uv[j].u = VFile_ReadU16(file);
             texture->uv[j].v = VFile_ReadU16(file);
+        }
+        if (use_tr3_adjustment) {
+            M_DecodeTR3ObjectTextureUVs(texture);
         }
     }
 }

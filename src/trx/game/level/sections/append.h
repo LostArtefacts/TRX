@@ -19,6 +19,7 @@ void Level_Section_AppendAnimBones(
 void Level_Section_AppendAnimFrames(
     int32_t base_idx, int32_t num_frames, VFILE *file);
 void Level_Section_AppendObjectTextures(
-    int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
+    int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file,
+    bool use_tr3_adjustment);
 void Level_Section_AppendSpriteTextures(
     int32_t base_idx, int16_t base_page_idx, int32_t num_textures, VFILE *file);
