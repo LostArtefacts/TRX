@@ -87,6 +87,11 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
         max_y = 200;
         break;
 
+    case O_SOPHIA_LASER_BOLT:
+        max_xz = 1000;
+        max_y = 1000;
+        break;
+
     case O_HARPOON_BOLT:
         max_xz = 300;
         max_y = 200;

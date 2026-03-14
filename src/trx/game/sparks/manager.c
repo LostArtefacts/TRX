@@ -467,7 +467,11 @@ void Sparks_Control(void)
             falloff = 31;
         }
 
-        Output_AddDynamicLightRGB(pos, falloff, (RGB_888) { r, g, b });
+        if ((spark->flags & SPARK_F_GREEN) != 0U) {
+            Output_AddDynamicLightRGB(pos, falloff, (RGB_888) { b, r, g });
+        } else {
+            Output_AddDynamicLightRGB(pos, falloff, (RGB_888) { r, g, b });
+        }
     }
 }
 
