@@ -204,7 +204,7 @@ static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
     lara_item->pos = dragon_back_item->pos;
     lara_item->rot = dragon_back_item->rot;
     lara_item->fall_speed = 0;
-    lara_item->gravity = 0;
+    lara_item->gravity = false;
     lara_item->speed = 0;
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();

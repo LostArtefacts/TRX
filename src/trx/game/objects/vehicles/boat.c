@@ -637,7 +637,7 @@ static void M_Collision(
     lara_item->pos.x = boat_item->pos.x;
     lara_item->pos.y = boat_item->pos.y + BOAT_SHIFT_Y;
     lara_item->pos.z = boat_item->pos.z;
-    lara_item->gravity = 0;
+    lara_item->gravity = false;
     lara_item->rot.x = 0;
     lara_item->rot.y = boat_item->rot.y;
     lara_item->rot.z = 0;
@@ -821,7 +821,7 @@ static void M_Control(const int16_t item_num)
         Item_SwitchToAnim(lara_item, LA(LA_JUMP_FORWARD), 0);
         lara_item->goal_anim_state = LS(LS_JUMP_FORWARD);
         lara_item->current_anim_state = LS(LS_JUMP_FORWARD);
-        lara_item->gravity = 1;
+        lara_item->gravity = true;
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
         lara_item->speed = 20;

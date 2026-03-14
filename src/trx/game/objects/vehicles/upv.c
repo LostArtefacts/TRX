@@ -354,7 +354,7 @@ static void M_UserInput(
             lara_item->current_anim_state = LS_UW_DEATH;
             lara_item->goal_anim_state = LS_UW_DEATH;
             lara_item->fall_speed = 0;
-            lara_item->gravity = 0;
+            lara_item->gravity = false;
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;
             p->flags.dead = true;
@@ -384,7 +384,7 @@ static void M_UserInput(
             lara_item->current_anim_state = LS_SURF_TREAD;
             lara_item->goal_anim_state = LS_SURF_TREAD;
             lara_item->fall_speed = 0;
-            lara_item->gravity = 0;
+            lara_item->gravity = false;
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;
             Lara_UpdateRoomToHeight(-381);
@@ -519,7 +519,7 @@ static void M_UserInput(
             Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_IDLE), 0);
             lara_item->current_anim_state = LS_TREAD;
             lara_item->fall_speed = 0;
-            lara_item->gravity = 0;
+            lara_item->gravity = false;
             lara_item->rot.x = 0;
             lara_item->rot.z = 0;
             Lara_UpdateRoomToHeight(0);
@@ -994,7 +994,7 @@ bool UPV_Control(void)
     item->current_anim_state = M_STATE_POSE;
     item->goal_anim_state = M_STATE_POSE;
     item->fall_speed = 0;
-    item->gravity = 1;
+    item->gravity = true;
     item->speed = 0;
     Item_Animate(item);
     return true;

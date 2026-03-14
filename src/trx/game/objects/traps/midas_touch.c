@@ -33,7 +33,7 @@ static void M_KillLara(const ITEM *const item)
 
     Lara_SwitchToExtraState(LS_EXTRA_MIDAS_KILL);
     lara_item->hit_points = -1;
-    lara_item->gravity = 0;
+    lara_item->gravity = false;
     lara->gun_type = LGT_UNARMED;
     lara->air = -1;
 

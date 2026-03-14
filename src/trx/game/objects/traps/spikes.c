@@ -50,7 +50,7 @@ static void M_Collision(
         lara_item->current_anim_state = LS(LS_DEATH);
         lara_item->goal_anim_state = LS(LS_DEATH);
         lara_item->pos.y = item->pos.y;
-        lara_item->gravity = 0;
+        lara_item->gravity = false;
     }
 }
 

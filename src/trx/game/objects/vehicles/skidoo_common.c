@@ -746,7 +746,7 @@ bool Skidoo_CheckGetOff(void)
         }
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
-        lara_item->gravity = 1;
+        lara_item->gravity = true;
         lara->gun_status = LGS_ARMLESS;
         lara->move_angle = skidoo->rot.y;
         skidoo->flags |= IF_ONE_SHOT;
