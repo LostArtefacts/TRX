@@ -54,6 +54,11 @@ typedef struct {
     BITE tr3_flash;
     int16_t tr3_enemy_weapon_flags;
     int16_t tr3_flash_shade;
+    struct {
+        BITE bite;
+        RGBA_8888 color;
+        float width;
+    } tr3_laser;
 } CREATURE_GUN;
 
 typedef struct {
