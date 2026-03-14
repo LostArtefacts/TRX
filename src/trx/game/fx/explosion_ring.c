@@ -3,6 +3,7 @@
 #include <trx/core/math/func.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
@@ -31,6 +32,26 @@ static void M_RotateZX(
     out->x = xz;
     out->y = (yz * cx - zz * sx) >> W2V_SHIFT;
     out->z = (yz * sx + zz * cx) >> W2V_SHIFT;
+}
+
+static void M_RememberRing(FX_EXPLOSION_RING *const ring)
+{
+    ring->prev_radius = ring->radius;
+    ring->prev_rot = ring->rot;
+    ring->prev_pos = ring->pos;
+}
+
+static void M_InterpolateRing(
+    const FX_EXPLOSION_RING *const ring, FX_EXPLOSION_RING *const out)
+{
+    *out = *ring;
+    const double ratio = Interpolation_GetWorldRate();
+    out->radius = (int16_t)LERP(ring->prev_radius, ring->radius, ratio);
+    out->rot.x = Math_AngleMean(ring->prev_rot.x, ring->rot.x, ratio);
+    out->rot.z = Math_AngleMean(ring->prev_rot.z, ring->rot.z, ratio);
+    out->pos.x = (int32_t)LERP(ring->prev_pos.x, ring->pos.x, ratio);
+    out->pos.y = (int32_t)LERP(ring->prev_pos.y, ring->pos.y, ratio);
+    out->pos.z = (int32_t)LERP(ring->prev_pos.z, ring->pos.z, ratio);
 }
 
 static void M_BuildRingCircle(
@@ -160,6 +181,7 @@ static void M_ControlExplosionRings(void)
             continue;
         }
 
+        M_RememberRing(ring);
         ring->life--;
         if (ring->life == 0) {
             ring->on = 0;
@@ -183,6 +205,7 @@ static void M_ControlSummonRings(void)
             continue;
         }
 
+        M_RememberRing(ring);
         ring->life--;
         ring->radius -= ring->speed;
         if (ring->life == 0 || ring->radius <= 0) {
@@ -207,6 +230,7 @@ static void M_ControlKnockBackRings(void)
             continue;
         }
 
+        M_RememberRing(ring);
         ring->life--;
         if (ring->life == 0) {
             ring->on = 0;
@@ -229,31 +253,34 @@ static void M_ControlKnockBackRings(void)
 static void M_DrawExplosionRings(const int32_t angle_base)
 {
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
+        FX_EXPLOSION_RING draw_ring = {};
         FX_EXPLOSION_RING *const ring = &m_ExplosionRings[i];
         if (ring->on == 0) {
             continue;
         }
 
-        int32_t rad = ring->radius;
+        M_InterpolateRing(ring, &draw_ring);
+
+        int32_t rad = draw_ring.radius;
         for (int32_t band = 0; band < 2; band++) {
-            M_BuildRingCircle(ring, rad, band, false, angle_base);
+            M_BuildRingCircle(&draw_ring, rad, band, false, angle_base);
             for (int32_t k = 0; k < 8; k++) {
-                FX_EXPLOSION_VERT *const vtx = &ring->verts[band * 8 + k];
+                FX_EXPLOSION_VERT *const vtx = &draw_ring.verts[band * 8 + k];
 
                 int32_t r = 0;
                 int32_t g = 0;
                 int32_t b = 0;
-                if (ring->on == 2) {
+                if (draw_ring.on == 2) {
                     // Tony
                     r = (Random_GetDraw() & 0x1F) + 224;
                     g = (r >> 2) + (Random_GetDraw() & 0x3F);
                     b = Random_GetDraw() & 0x3F;
-                } else if (ring->on == 3) {
+                } else if (draw_ring.on == 3) {
                     // Sophia
                     r = Random_GetDraw() & 0x3F;
                     g = (Random_GetDraw() & 0x1F) + 224;
                     b = (g >> 2) + (Random_GetDraw() & 0x3F);
-                } else if (ring->on == 4) {
+                } else if (draw_ring.on == 4) {
                     // Puna
                     r = Random_GetDraw() & 0x1F;
                     b = (Random_GetDraw() & 0x3F) + 224;
@@ -274,27 +301,30 @@ static void M_DrawExplosionRings(const int32_t angle_base)
             rad >>= 1;
         }
 
-        M_DrawTexturedRing(ring);
+        M_DrawTexturedRing(&draw_ring);
     }
 }
 
 static void M_DrawSummonRings(const int32_t angle_base)
 {
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_SummonRings); i++) {
+        FX_EXPLOSION_RING draw_ring = {};
         FX_EXPLOSION_RING *const ring = &m_SummonRings[i];
         if (ring->on == 0) {
             continue;
         }
 
+        M_InterpolateRing(ring, &draw_ring);
+
         const int32_t fade = ring->life > 32 ? (64 - ring->life) << 1
             : ring->life < 8                 ? ring->life << 3
                                              : 64;
-        int32_t rad = ring->radius;
+        int32_t rad = draw_ring.radius;
         for (int32_t band = 0; band < 2; band++) {
-            M_BuildRingCircle(ring, rad, band, true, angle_base);
+            M_BuildRingCircle(&draw_ring, rad, band, true, angle_base);
             if (band == 0) {
                 for (int32_t k = 0; k < 8; k++) {
-                    FX_EXPLOSION_VERT *const vtx = &ring->verts[k];
+                    FX_EXPLOSION_VERT *const vtx = &draw_ring.verts[k];
                     const int32_t g = (Random_GetDraw() & 0x1F) + 224;
                     const int32_t b = (g >> 2) + (Random_GetDraw() & 0x3F);
                     const int32_t r = Random_GetDraw() & 0x3F;
@@ -308,26 +338,29 @@ static void M_DrawSummonRings(const int32_t angle_base)
             rad >>= 1;
         }
 
-        M_DrawFlatRing(ring);
+        M_DrawFlatRing(&draw_ring);
     }
 }
 
 static void M_DrawKnockBackRings(const int32_t angle_base)
 {
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_KnockBackRings); i++) {
+        FX_EXPLOSION_RING draw_ring = {};
         FX_EXPLOSION_RING *const ring = &m_KnockBackRings[i];
         if (ring->on == 0) {
             continue;
         }
 
+        M_InterpolateRing(ring, &draw_ring);
+
         int32_t fade = ring->life > 24 ? (32 - ring->life) << 2
             : ring->life < 16          ? ring->life << 1
                                        : 32;
-        int32_t rad = ring->radius;
+        int32_t rad = draw_ring.radius;
         for (int32_t band = 0; band < 2; band++) {
-            M_BuildRingCircle(ring, rad, band, false, angle_base);
+            M_BuildRingCircle(&draw_ring, rad, band, false, angle_base);
             for (int32_t k = 0; k < 8; k++) {
-                FX_EXPLOSION_VERT *const vtx = &ring->verts[band * 8 + k];
+                FX_EXPLOSION_VERT *const vtx = &draw_ring.verts[band * 8 + k];
                 const int32_t g = (Random_GetDraw() & 0x1F) + 224;
                 const int32_t b = (g >> 2) + (Random_GetDraw() & 0x3F);
                 const int32_t r = Random_GetDraw() & 0x3F;
@@ -341,7 +374,7 @@ static void M_DrawKnockBackRings(const int32_t angle_base)
             fade >>= 1;
         }
 
-        M_DrawTexturedRing(ring);
+        M_DrawTexturedRing(&draw_ring);
     }
 }
 
@@ -357,6 +390,14 @@ void FX_ExplosionRing_Reset(void)
     m_ExplosionActive = false;
     m_SummonActive = false;
     m_KnockBackActive = false;
+}
+
+void FX_ExplosionRing_Sync(FX_EXPLOSION_RING *const ring)
+{
+    if (ring == nullptr) {
+        return;
+    }
+    M_RememberRing(ring);
 }
 
 FX_EXPLOSION_RING *FX_ExplosionRing_GetRing(const int32_t idx)
@@ -422,6 +463,7 @@ void FX_ExplosionRing_SpawnKnockBack(const XYZ_32 pos)
         ring->rot.x = 0;
         ring->rot.z = 0;
         ring->radius = ((i == 1) + 2) << 8;
+        FX_ExplosionRing_Sync(ring);
     }
     m_KnockBackActive = true;
 }
