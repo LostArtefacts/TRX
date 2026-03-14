@@ -32,6 +32,7 @@
 - added Security Guard control
 - added Propeller control
 - added SWAT control
+- added Diver control
 - changed Ammo Counter to appear in red when the Menu Style is set to PS1
 - changed Punks to have friendliness assignable through Lua, so removing the hard-coded behaviour in the Lud's Gate level sequence
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
