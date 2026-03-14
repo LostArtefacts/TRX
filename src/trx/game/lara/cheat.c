@@ -302,7 +302,7 @@ bool Lara_Cheat_EnterFlyMode(void)
         lara_item->current_anim_state = LS(LS_SWIM);
         lara_item->goal_anim_state = LS(LS_SWIM);
         Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_SWIM_FORWARD_DRIFT), 0);
-        lara_item->gravity = 0;
+        lara_item->gravity = false;
         lara_item->rot.x = 30 * DEG_1;
         lara_item->fall_speed = 30;
         lara_info->head_rot.x = 0;

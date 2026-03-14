@@ -39,7 +39,7 @@ static void M_Control(const int16_t item_num)
             }
 
             lara_item->fall_speed = -240;
-            lara_item->gravity = 1;
+            lara_item->gravity = true;
 
             Item_SwitchToAnim(lara_item, LA(LA_FALL_START), 0);
             lara_item->current_anim_state = LS(LS_JUMP_FORWARD);

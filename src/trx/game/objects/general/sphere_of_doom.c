@@ -33,7 +33,7 @@ static void M_Collision(
         lara_item->rot.y = angle + DEG_180;
     }
 
-    lara_item->gravity = 1;
+    lara_item->gravity = true;
     lara_item->fall_speed = -50;
     lara_item->pos.x =
         item->pos.x + (((radius + 50) * Math_Sin(angle)) >> W2V_SHIFT);
