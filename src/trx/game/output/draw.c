@@ -402,7 +402,7 @@ void Output_DrawScreenFrame(
 
 void Output_DrawPhotoModeFrame(const int32_t thickness)
 {
-    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_GAME);
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_UI);
     const RGBA_8888 color = { 255, 0, 0, 96 };
     OutputSource_UI_StagePhotoModeFrame(rect, color, thickness);
 }
