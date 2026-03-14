@@ -70,6 +70,11 @@ static OBJECT_TEXTURE *m_ObjectTextures = nullptr;
 static SPRITE_TEXTURE *m_SpriteTextures = nullptr;
 static ANIMATED_TEXTURE_RANGE *m_AnimTextureRanges = nullptr;
 
+static float M_NormalizeObjectUV(const uint16_t uv)
+{
+    return uv / 65535.0f;
+}
+
 static void M_PrepareObjectAnimationRanges(void)
 {
     size_t required_size = 0;
@@ -175,10 +180,10 @@ static void M_FillAtlasObjectSize(const int32_t i)
         size->x1 = MAX(size->x1, texture->uv[j].u);
         size->y1 = MAX(size->y1, texture->uv[j].v);
     }
-    size->x0 /= 65535.0;
-    size->y0 /= 65535.0;
-    size->x1 /= 65535.0;
-    size->y1 /= 65535.0;
+    size->x0 = M_NormalizeObjectUV(size->x0);
+    size->y0 = M_NormalizeObjectUV(size->y0);
+    size->x1 = M_NormalizeObjectUV(size->x1);
+    size->y1 = M_NormalizeObjectUV(size->y1);
 }
 
 static void M_FillAtlasSpriteSize(const int32_t i)
@@ -201,8 +206,8 @@ static void M_FillObjectUVW(const int32_t i)
     const OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
     OUTPUT_UVW *const corners = m_Priv.uvws.data_objects[i].corners;
     for (int32_t j = 0; j < 4; j++) {
-        corners[j].u = texture->uv[j].u / 65535.0f;
-        corners[j].v = texture->uv[j].v / 65535.0f;
+        corners[j].u = M_NormalizeObjectUV(texture->uv[j].u);
+        corners[j].v = M_NormalizeObjectUV(texture->uv[j].v);
         corners[j].w = texture->tex_page;
     }
 }
