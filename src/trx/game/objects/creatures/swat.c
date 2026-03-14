@@ -1,4 +1,5 @@
 #include <trx/game/creature.h>
+#include <trx/game/fx/laser.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
@@ -48,6 +49,14 @@ static const CREATURE_GUN m_SwatGun = {
     .tr3_flash = { .pos = { 0, 300, 56 }, .mesh_num = 7 },
     .tr3_enemy_weapon_flags = 1,
     .tr3_flash_shade = 600,
+    .tr3_laser = {
+        .bite = {
+            .pos = { 0, 200, 106 },
+            .mesh_num = 7,
+        },
+        .color = { 0xFF, 0x02, 0x03, 0xDE },
+        .width = 2.0f,
+    },
 };
 
 static void M_Initialise(const int16_t item_num)
@@ -57,6 +66,13 @@ static void M_Initialise(const int16_t item_num)
     Item_SwitchToAnim(item, M_ANIM_STAND, 0);
     item->goal_anim_state = M_STATE_STOP;
     item->current_anim_state = M_STATE_STOP;
+}
+
+static void M_TriggerLaser(const ITEM *const item)
+{
+    if (item->hit_points > 0 || !Item_TestFrameEqual(item, -1)) {
+        FX_Laser_Spawn(item, &m_SwatGun);
+    }
 }
 
 static void M_FireFinalShot(
@@ -339,6 +355,8 @@ finish:
     Creature_Joint(item, 1, torso_x);
     Creature_Joint(item, 2, head);
     Creature_Animate(item_num, angle, 0);
+
+    M_TriggerLaser(item);
 }
 
 static void M_Setup(OBJECT *const obj)
