@@ -1,3 +1,5 @@
+#include "tony_internal.h"
+
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
