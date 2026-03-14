@@ -4,6 +4,9 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/effects.h>
+#include <trx/game/interpolation.h>
+#include <trx/game/items.h>
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/shaders/mesh.h>
@@ -79,6 +82,56 @@ static int32_t M_GetViewDepth(const XYZ_32 pos)
         g_ViewMatrix._22 * pos.z +
         g_ViewMatrix._23;
     // clang-format on
+}
+
+static XYZ_32 M_GetSparkRenderPos(const SPARK *const spark, const float ratio)
+{
+    const bool use_current_state =
+        (int32_t)spark->s_life - (int32_t)spark->life <= 1;
+    if (use_current_state) {
+        return Sparks_GetWorldPos(spark);
+    }
+
+    if ((spark->flags & SPARK_F_ATTACHED_NODE) != 0U) {
+        const XYZ_32 current_pos = Sparks_GetWorldPos(spark);
+        return (XYZ_32) {
+            .x = (int32_t)LERP(spark->prev_world_pos.x, current_pos.x, ratio),
+            .y = (int32_t)LERP(spark->prev_world_pos.y, current_pos.y, ratio),
+            .z = (int32_t)LERP(spark->prev_world_pos.z, current_pos.z, ratio),
+        };
+    }
+
+    const XYZ_32 local_pos = {
+        .x = (int32_t)LERP(spark->prev_pos.x, spark->pos.x, ratio),
+        .y = (int32_t)LERP(spark->prev_pos.y, spark->pos.y, ratio),
+        .z = (int32_t)LERP(spark->prev_pos.z, spark->pos.z, ratio),
+    };
+
+    if ((spark->flags & SPARK_F_FX) != 0U) {
+        const EFFECT *const effect = Effect_Get(spark->effect_num);
+        if ((spark->flags & SPARK_F_ATTACHED_POS) != 0U) {
+            return effect->interp.result.pos;
+        }
+        return (XYZ_32) {
+            .x = effect->interp.result.pos.x + local_pos.x,
+            .y = effect->interp.result.pos.y + local_pos.y,
+            .z = effect->interp.result.pos.z + local_pos.z,
+        };
+    }
+
+    if ((spark->flags & SPARK_F_ITEM) != 0U) {
+        const ITEM *const item = Item_Get(spark->item_num);
+        if ((spark->flags & SPARK_F_ATTACHED_POS) != 0U) {
+            return item->interp.result.pos;
+        }
+        return (XYZ_32) {
+            .x = item->interp.result.pos.x + local_pos.x,
+            .y = item->interp.result.pos.y + local_pos.y,
+            .z = item->interp.result.pos.z + local_pos.z,
+        };
+    }
+
+    return local_pos;
 }
 
 static void M_ApplyTintToColors(RGBA_8888 color[4], const uint8_t corner_count)
@@ -662,7 +715,10 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     }
 
     DRAW_TYPE draw_type = spark->draw_type;
-    const XYZ_32 pos = Sparks_GetWorldPos(spark);
+    const float ratio = Interpolation_GetWorldRate();
+    const bool use_current_state =
+        (int32_t)spark->s_life - (int32_t)spark->life <= 1;
+    const XYZ_32 pos = M_GetSparkRenderPos(spark, ratio);
     const XYZ_32 world_pos[4] = { pos, pos, pos, pos };
 
     const int64_t zv = M_GetViewDepth(pos);
@@ -677,8 +733,29 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         vpos_z = 1;
     }
 
-    int32_t sw = (int32_t)spark->size.width;
-    int32_t sh = (int32_t)spark->size.height;
+    const RGB_888 render_color = use_current_state
+        ? spark->color
+        : (RGB_888) {
+              .r = (uint8_t)LERP(
+                  (int32_t)spark->prev_color.r, (int32_t)spark->color.r, ratio),
+              .g = (uint8_t)LERP(
+                  (int32_t)spark->prev_color.g, (int32_t)spark->color.g, ratio),
+              .b = (uint8_t)LERP(
+                  (int32_t)spark->prev_color.b, (int32_t)spark->color.b, ratio),
+          };
+
+    const int32_t render_width = use_current_state
+        ? (int32_t)spark->size.width
+        : (int32_t)LERP(
+              (int32_t)spark->prev_size.width, (int32_t)spark->size.width,
+              ratio);
+    const int32_t render_height = use_current_state
+        ? (int32_t)spark->size.height
+        : (int32_t)LERP(
+              (int32_t)spark->prev_size.height, (int32_t)spark->size.height,
+              ratio);
+    int32_t sw = render_width;
+    int32_t sh = render_height;
 
     const bool use_sprite = (spark->flags & SPARK_F_SPRITE) != 0U;
     if ((spark->flags & SPARK_F_SCALE) != 0U) {
@@ -687,8 +764,8 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         sh = (int32_t)(((((int64_t)sh * g_PhdPersp) << scalar) / vpos_z));
 
         if (use_sprite) {
-            const int32_t max_w = (int32_t)spark->size.width << scalar;
-            const int32_t max_h = (int32_t)spark->size.height << scalar;
+            const int32_t max_w = render_width << scalar;
+            const int32_t max_h = render_height << scalar;
             int32_t min_wh = 4;
             if ((spark->flags & SPARK_F_ATTACHED_NODE) != 0U
                 && spark->node_num == 0U) {
@@ -697,8 +774,8 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
             CLAMP(sw, min_wh, max_w);
             CLAMP(sh, min_wh, max_h);
         } else {
-            const int32_t max_w = (int32_t)spark->size.width << 2;
-            const int32_t max_h = (int32_t)spark->size.height << 2;
+            const int32_t max_w = render_width << 2;
+            const int32_t max_h = render_height << 2;
             CLAMP(sw, 1, max_w);
             CLAMP(sh, 1, max_h);
         }
@@ -713,10 +790,15 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         { w, -h },
     };
 
-    RGBA_8888 color = { spark->color.r, spark->color.g, spark->color.b, 255 };
+    RGBA_8888 color = { render_color.r, render_color.g, render_color.b, 255 };
 
     if ((spark->flags & SPARK_F_ROTATE) != 0U) {
-        const int32_t angle = (int32_t)spark->rot_angle * DEG_360 / 0xFFF.p0;
+        const int32_t rot_angle = use_current_state
+            ? (int32_t)spark->rot_angle
+            : Math_AngleMean(
+                  (int32_t)spark->prev_rot_angle, (int32_t)spark->rot_angle,
+                  ratio);
+        const int32_t angle = rot_angle * DEG_360 / 0xFFF.p0;
         const float s = Math_Sin(angle) / (float)(1 << W2V_SHIFT);
         const float c = Math_Cos(angle) / (float)(1 << W2V_SHIFT);
         for (int32_t i = 0; i < 4; i++) {

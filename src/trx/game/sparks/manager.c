@@ -278,6 +278,12 @@ void Sparks_Control(void)
 
         const int32_t lived = (int32_t)spark->s_life - (int32_t)spark->life;
 
+        spark->prev_pos = spark->pos;
+        spark->prev_world_pos = Sparks_GetWorldPos(spark);
+        spark->prev_color = spark->color;
+        spark->prev_size = spark->size;
+        spark->prev_rot_angle = spark->rot_angle;
+
         // Color fade: src -> dst, then fade-to-black.
         if (lived < (int32_t)spark->col_fade_speed
             && spark->col_fade_speed != 0U) {

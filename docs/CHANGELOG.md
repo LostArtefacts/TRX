@@ -43,6 +43,7 @@
 - added SWAT control
 - added Diver control
 - added Pendulum control
+- changed sparks to use 60 FPS interpolation
 - changed explosion rings to use 60 FPS interpolation
 - changed Ammo Counter to appear in red when the Menu Style is set to PS1
 - changed Punks to have friendliness assignable through Lua, so removing the hard-coded behaviour in the Lud's Gate level sequence

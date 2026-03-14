@@ -16,15 +16,18 @@ typedef struct SPARK {
     // NOTE: `pos` is either absolute world position, or a relative offset when
     // attached to an FX/ITEM and not using `SPARK_F_ATTACHED_POS`.
     XYZ_32 pos;
+    XYZ_32 prev_pos;
+    XYZ_32 prev_world_pos;
     XYZ_32 vel;
     struct {
         uint8_t width;
         uint8_t height;
-    } src_size, dst_size, size;
+    } src_size, dst_size, size, prev_size;
 
     RGB_888 src_color;
     RGB_888 dst_color;
     RGB_888 color;
+    RGB_888 prev_color;
 
     uint8_t scalar;
     uint8_t col_fade_speed;
@@ -46,6 +49,7 @@ typedef struct SPARK {
     int8_t dynamic;
 
     uint16_t rot_angle; // 0..0xFFF
+    uint16_t prev_rot_angle; // 0..0xFFF
     int8_t rot_add;
 
     int32_t sprite_idx;
