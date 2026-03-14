@@ -3,33 +3,34 @@
 #include <trx/game/effects.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
-#include <trx/game/lara/const.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
-#define DIVER_SWIM_TURN     (3 * DEG_1) // = 546
-#define DIVER_FRONT_ARC     DEG_45
-#define DIVER_DIE_ANIM      16
-#define DIVER_HITPOINTS     20
-#define DIVER_RADIUS        (WALL_L / 3) // = 341
+#define M_SWIM_TURN (3 * DEG_1)  // = 546
+#define M_FRONT_ARC DEG_45
+#define M_HITPOINTS 20
+#define M_RADIUS    (WALL_L / 3) // = 341
 // clang-format on
 
 typedef enum {
-    // clang-format off
-    DIVER_STATE_EMPTY   = 0,
-    DIVER_STATE_SWIM_1  = 1,
-    DIVER_STATE_SWIM_2  = 2,
-    DIVER_STATE_SHOOT_1 = 3,
-    DIVER_STATE_AIM_1   = 4,
-    DIVER_STATE_NULL_1  = 5,
-    DIVER_STATE_AIM_2   = 6,
-    DIVER_STATE_SHOOT_2 = 7,
-    DIVER_STATE_NULL_2  = 8,
-    DIVER_STATE_DEATH   = 9,
+    M_STATE_EMPTY,
+    M_STATE_SWIM_1,
+    M_STATE_SWIM_2,
+    M_STATE_SHOOT_1,
+    M_STATE_AIM_1,
+    M_STATE_NULL_1,
+    M_STATE_AIM_2,
+    M_STATE_SHOOT_2,
+    M_STATE_NULL_2,
+    M_STATE_DEATH,
     // clang-format on
 } DIVER_STATE;
+
+typedef enum {
+    M_ANIM_DEATH = 16,
+} M_ANIM;
 
 static const BITE m_DiverBite = {
     .pos = { .x = 17, .y = 164, .z = 44 },
@@ -72,9 +73,9 @@ static void M_Control(const int16_t item_num)
     CREATURE *const creature = item->creature_data;
 
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != DIVER_STATE_DEATH) {
-            Item_SwitchToAnim(item, DIVER_DIE_ANIM, 0);
-            item->current_anim_state = DIVER_STATE_DEATH;
+        if (item->current_anim_state != M_STATE_DEATH) {
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
+            item->current_anim_state = M_STATE_DEATH;
             Carrier_TestItemDrops(item_num);
         }
         Creature_Float(item_num);
@@ -105,15 +106,13 @@ static void M_Control(const int16_t item_num)
         shoot = LOS_Check(&start, &target, true);
 
         if (shoot) {
-            creature->target.x = lara_item->pos.x;
-            creature->target.y = lara_item->pos.y;
-            creature->target.z = lara_item->pos.z;
+            creature->target = lara_item->pos;
         }
 
-        if (info.angle < -DIVER_FRONT_ARC || info.angle > DIVER_FRONT_ARC) {
+        if (info.angle < -M_FRONT_ARC || info.angle > M_FRONT_ARC) {
             shoot = false;
         }
-    } else if (info.angle > -DIVER_FRONT_ARC && info.angle < DIVER_FRONT_ARC) {
+    } else if (info.angle > -M_FRONT_ARC && info.angle < M_FRONT_ARC) {
         const GAME_VECTOR start = {
             .x = item->pos.x,
             .y = item->pos.y,
@@ -136,35 +135,35 @@ static void M_Control(const int16_t item_num)
     int16_t angle = Creature_Turn(item, creature->maximum_turn);
     int32_t water_level =
         M_GetWaterSurface(item->pos.x, item->pos.y, item->pos.z, item->room_num)
-        + 512;
+        + STEP_L * 2;
 
     switch (item->current_anim_state) {
-    case DIVER_STATE_SWIM_1:
-        creature->maximum_turn = DIVER_SWIM_TURN;
+    case M_STATE_SWIM_1:
+        creature->maximum_turn = M_SWIM_TURN;
         if (shoot) {
             neck = -info.angle;
         }
         if (creature->target.y < water_level
             && item->pos.y < water_level + creature->lot.setup.fly) {
-            item->goal_anim_state = DIVER_STATE_SWIM_2;
+            item->goal_anim_state = M_STATE_SWIM_2;
         } else if (creature->mood != MOOD_ESCAPE && shoot) {
-            item->goal_anim_state = DIVER_STATE_AIM_1;
+            item->goal_anim_state = M_STATE_AIM_1;
         }
         break;
 
-    case DIVER_STATE_SWIM_2:
-        creature->maximum_turn = DIVER_SWIM_TURN;
+    case M_STATE_SWIM_2:
+        creature->maximum_turn = M_SWIM_TURN;
         if (shoot) {
             head = info.angle;
         }
         if (creature->target.y > water_level) {
-            item->goal_anim_state = DIVER_STATE_SWIM_1;
+            item->goal_anim_state = M_STATE_SWIM_1;
         } else if (creature->mood != MOOD_ESCAPE && shoot) {
-            item->goal_anim_state = DIVER_STATE_AIM_2;
+            item->goal_anim_state = M_STATE_AIM_2;
         }
         break;
 
-    case DIVER_STATE_SHOOT_1:
+    case M_STATE_SHOOT_1:
         if (shoot) {
             neck = -info.angle;
         }
@@ -174,7 +173,7 @@ static void M_Control(const int16_t item_num)
         }
         break;
 
-    case DIVER_STATE_SHOOT_2:
+    case M_STATE_SHOOT_2:
         if (shoot) {
             head = info.angle;
         }
@@ -184,7 +183,7 @@ static void M_Control(const int16_t item_num)
         }
         break;
 
-    case DIVER_STATE_AIM_1:
+    case M_STATE_AIM_1:
         creature->flags = 0;
         if (shoot) {
             neck = -info.angle;
@@ -192,22 +191,22 @@ static void M_Control(const int16_t item_num)
         if (!shoot || creature->mood == MOOD_ESCAPE
             || (creature->target.y < water_level
                 && item->pos.y < water_level + creature->lot.setup.fly)) {
-            item->goal_anim_state = DIVER_STATE_SWIM_1;
+            item->goal_anim_state = M_STATE_SWIM_1;
         } else {
-            item->goal_anim_state = DIVER_STATE_SHOOT_1;
+            item->goal_anim_state = M_STATE_SHOOT_1;
         }
         break;
 
-    case DIVER_STATE_AIM_2:
+    case M_STATE_AIM_2:
         creature->flags = 0;
         if (shoot) {
             head = info.angle;
         }
         if (!shoot || creature->mood == MOOD_ESCAPE
             || creature->target.y > water_level) {
-            item->goal_anim_state = DIVER_STATE_SWIM_2;
+            item->goal_anim_state = M_STATE_SWIM_2;
         } else {
-            item->goal_anim_state = DIVER_STATE_SHOOT_2;
+            item->goal_anim_state = M_STATE_SHOOT_2;
         }
         break;
 
@@ -221,9 +220,9 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 
     switch (item->current_anim_state) {
-    case DIVER_STATE_SWIM_1:
-    case DIVER_STATE_AIM_1:
-    case DIVER_STATE_SHOOT_1:
+    case M_STATE_SWIM_1:
+    case M_STATE_AIM_1:
+    case M_STATE_SHOOT_1:
         Creature_Underwater(item, WALL_L / 2);
         break;
 
@@ -242,8 +241,8 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->hit_points = DIVER_HITPOINTS;
-    obj->radius = DIVER_RADIUS;
+    obj->hit_points = M_HITPOINTS;
+    obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 50;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
