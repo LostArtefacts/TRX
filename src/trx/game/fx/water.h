@@ -9,6 +9,9 @@ typedef struct {
     int32_t x;
     int32_t y;
     int32_t z;
+    int32_t prev_size;
+    int32_t prev_life;
+    int32_t prev_init;
     uint8_t flags;
     uint8_t life;
     uint8_t size;
@@ -19,6 +22,9 @@ typedef struct {
     int16_t wx;
     int16_t wy;
     int16_t wz;
+    int16_t prev_wx;
+    int16_t prev_wy;
+    int16_t prev_wz;
     int16_t xv;
     int32_t yv;
     int16_t zv;
@@ -32,6 +38,7 @@ typedef struct {
     int32_t x;
     int32_t y;
     int32_t z;
+    int32_t prev_life;
     uint8_t flags;
     uint8_t life;
     uint8_t pad[2];
