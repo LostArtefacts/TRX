@@ -33,6 +33,7 @@
   "O_DING_DONG":              { "status": "fully implemented" },
   "O_DIVER":                  { "status": "fully implemented" },
   "O_DOG":                    { "status": "fully implemented" },
+  "O_PATROL_DOG":             { "status": "fully implemented" },
   "O_HUSKIE":                 { "status": "fully implemented" },
   "O_DOOR_TYPE_1":            { "status": "fully implemented" },
   "O_DOOR_TYPE_2":            { "status": "fully implemented" },
