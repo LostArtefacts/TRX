@@ -203,9 +203,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── pda_model.bin
 │   │   ├── pickup_aid.bin
 │   │   ├── rapids_sky.bin
+│   │   ├── reunion_flames.bin
 │   │   ├── scotland_sky.bin
 │   │   ├── stpaul_animating_bounds.bin
 │   │   ├── tinnos_cameras.bin
+│   │   ├── tinnos_flames.bin
 │   │   ├── undersea_animating_bounds.bin
 │   │   ├── undersea_train.bin
 │   │   ├── willsden_heli.bin
@@ -455,9 +457,11 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── pda_model.bin
         │   │   ├── pickup_aid.bin
         │   │   ├── rapids_sky.bin
+        │   │   ├── reunion_flames.bin
         │   │   ├── scotland_sky.bin
         │   │   ├── stpaul_animating_bounds.bin
         │   │   ├── tinnos_cameras.bin
+        │   │   ├── tinnos_flames.bin
         │   │   ├── undersea_animating_bounds.bin
         │   │   ├── undersea_train.bin
         │   │   ├── willsden_heli.bin
