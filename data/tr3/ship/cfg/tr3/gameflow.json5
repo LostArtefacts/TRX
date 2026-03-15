@@ -482,6 +482,7 @@
                 "lara_guns.bin",
                 "stpaul_animating_bounds.bin",
             ],
+            "unobtainable_pickups": 9,
         },
     ],
 
