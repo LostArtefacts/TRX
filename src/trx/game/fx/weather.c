@@ -5,6 +5,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/game/state.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/shaders/mesh.h>
@@ -35,6 +36,8 @@
 
 typedef struct {
     XYZ_32 pos;
+    XYZ_32 prev_pos;
+    int32_t prev_yv;
     int8_t xv;
     uint8_t yv;
     int8_t zv;
@@ -43,7 +46,10 @@ typedef struct {
 
 typedef struct {
     XYZ_32 pos;
+    XYZ_32 prev_pos;
     bool stopped;
+    int32_t prev_yv;
+    int32_t prev_life;
     int8_t xv;
     uint8_t yv;
     int8_t zv;
@@ -99,6 +105,8 @@ static void M_SpawnRainDrop(M_RAINDROP *const drop)
     drop->xv = (int8_t)((Random_GetDraw() & 7) - 4);
     drop->zv = (int8_t)((Random_GetDraw() & 7) - 4);
     drop->life = (uint8_t)(M_RAIN_LIFE_BASE - ((int32_t)drop->yv << 1));
+    drop->prev_pos = drop->pos;
+    drop->prev_yv = drop->yv;
 }
 
 static void M_UpdateRain(void)
@@ -117,6 +125,9 @@ static void M_UpdateRain(void)
         if (drop->pos.x == 0) {
             continue;
         }
+
+        drop->prev_pos = drop->pos;
+        drop->prev_yv = drop->yv;
 
         int16_t room_num = NO_ROOM;
         const int32_t outside = Room_GetOutsideStatus(drop->pos, &room_num);
@@ -163,6 +174,9 @@ static void M_UpdateRain(void)
 static void M_DrawRain(void)
 {
     const XZ_32 wind = Sparks_GetSmokeWind();
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
 
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
         const M_RAINDROP *const drop = &m_Raindrops[i];
@@ -170,11 +184,20 @@ static void M_DrawRain(void)
             continue;
         }
 
-        const XYZ_32 to = drop->pos;
+        const int32_t yv = do_interp
+            ? (int32_t)LERP(drop->prev_yv, drop->yv, ratio)
+            : (int32_t)drop->yv;
+        const XYZ_32 to = do_interp
+            ? (XYZ_32) {
+                  .x = (int32_t)LERP(drop->prev_pos.x, drop->pos.x, ratio),
+                  .y = (int32_t)LERP(drop->prev_pos.y, drop->pos.y, ratio),
+                  .z = (int32_t)LERP(drop->prev_pos.z, drop->pos.z, ratio),
+              }
+            : drop->pos;
         const XYZ_32 from = {
-            drop->pos.x - (wind.x * 4),
-            drop->pos.y - ((int32_t)drop->yv * 8),
-            drop->pos.z - (wind.z * 4),
+            to.x - (wind.x * 4),
+            to.y - (yv * 8),
+            to.z - (wind.z * 4),
         };
 
         const RGBA_8888 from_color = { 0, 0, 0x20, 0x00 };
@@ -213,6 +236,9 @@ static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
         (uint8_t)(((Random_GetDraw() % M_SNOW_YV_RANGE) + M_SNOW_YV_MIN) * 8);
     snow->zv = (int8_t)((Random_GetDraw() & 7) - 4);
     snow->life = (uint8_t)(M_SNOW_LIFE_BASE - ((int32_t)snow->yv << 1));
+    snow->prev_pos = snow->pos;
+    snow->prev_yv = snow->yv;
+    snow->prev_life = snow->life;
 }
 
 static void M_UpdateSnow(void)
@@ -229,6 +255,10 @@ static void M_UpdateSnow(void)
         if (snow->pos.x == 0) {
             continue;
         }
+
+        snow->prev_pos = snow->pos;
+        snow->prev_yv = snow->yv;
+        snow->prev_life = snow->life;
 
         const XYZ_32 old_pos = snow->pos;
 
@@ -300,13 +330,22 @@ static void M_DrawSnow(void)
     }
 
     const int32_t sprite_idx = obj->mesh_idx;
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
     for (int32_t i = 0; i < M_MAX_WEATHER; i++) {
         M_SNOWFLAKE *const snow = &m_Snowflakes[i];
         if (snow->pos.x == 0) {
             continue;
         }
 
-        const XYZ_32 center = snow->pos;
+        const XYZ_32 center = do_interp
+            ? (XYZ_32) {
+                  .x = (int32_t)LERP(snow->prev_pos.x, snow->pos.x, ratio),
+                  .y = (int32_t)LERP(snow->prev_pos.y, snow->pos.y, ratio),
+                  .z = (int32_t)LERP(snow->prev_pos.z, snow->pos.z, ratio),
+              }
+            : snow->pos;
         const int64_t zv = M_GetViewDepth(center);
         const int64_t near_z = Output_GetNearZ();
         const int64_t far_z = Output_GetFarZ();
@@ -324,6 +363,13 @@ static void M_DrawSnow(void)
             continue;
         }
 
+        const int32_t yv = do_interp
+            ? (int32_t)LERP(snow->prev_yv, snow->yv, ratio)
+            : (int32_t)snow->yv;
+        const int32_t life = do_interp
+            ? (int32_t)LERP(snow->prev_life, snow->life, ratio)
+            : (int32_t)snow->life;
+
         const int32_t game_w = Viewport_GetWidth(VIEWPORT_GAME);
         const int32_t game_h = Viewport_GetHeight(VIEWPORT_GAME);
         const int32_t ui_w = Viewport_GetWidth(VIEWPORT_UI);
@@ -339,12 +385,12 @@ static void M_DrawSnow(void)
         };
 
         uint32_t c;
-        if ((snow->yv & 7) < 7) {
-            c = (uint32_t)(snow->yv & 7);
-        } else if (snow->life > 18) {
+        if ((yv & 7) < 7) {
+            c = (uint32_t)(yv & 7);
+        } else if (life > 18) {
             c = 15;
         } else {
-            c = snow->life;
+            c = (uint32_t)life;
         }
         c <<= 3;
         CLAMPG(c, 255);
