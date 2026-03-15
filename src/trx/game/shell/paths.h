@@ -15,6 +15,7 @@
 #define TRX_PATH_DIR_LIST(X)                                                   \
     X(TRX_DIR,          trx_dir,          "%trx_dir%")                         \
     X(CONFIG_DIR,       config_dir,       "%config_dir%")                      \
+    X(CACHE_DIR,        cache_dir,        "%cache_dir%")                      \
     X(GAMES_DIR,        games_dir,        "%games_dir%")                       \
     X(SCREENSHOTS_DIR,  screenshots_dir,  "%screenshots_dir%")                 \
     X(SAVES_DIR,        saves_dir,        "%saves_dir%")                       \
