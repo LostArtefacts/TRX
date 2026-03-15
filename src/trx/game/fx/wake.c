@@ -3,6 +3,7 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/output/sources/poly_fx.h>
 
 #define M_MAX_POINTS 32
@@ -23,9 +24,9 @@ static RGBA_8888 M_GrayFromWakeLife(const int32_t life, const int32_t shift)
 
 static XYZ_32 M_GetWakeOrigin(const ITEM *const item, const XZ_32 offset)
 {
-    XYZ_32 pos = item->pos;
-    pos = XYZ_32_OffsetYaw(pos, item->rot.y, offset.z);
-    pos = XYZ_32_OffsetYaw(pos, item->rot.y + DEG_90, offset.x);
+    XYZ_32 pos = item->interp.result.pos;
+    pos = XYZ_32_OffsetYaw(pos, item->interp.result.rot.y, offset.z);
+    pos = XYZ_32_OffsetYaw(pos, item->interp.result.rot.y + DEG_90, offset.x);
     return pos;
 }
 
@@ -49,6 +50,8 @@ void FX_Wake_Control(void)
         for (int32_t j = 0; j < M_MAX_POINTS; j++) {
             FX_WAKE_POINT *const pt = &m_Points[j][i];
             if (pt->life > 0) {
+                pt->prev_pos[0] = pt->pos[0];
+                pt->prev_pos[1] = pt->pos[1];
                 pt->life--;
                 pt->pos[0].x += pt->vel[0].x;
                 pt->pos[0].z += pt->vel[0].z;
@@ -95,6 +98,9 @@ void FX_Wake_Draw(const ITEM *const item)
 {
     const int64_t max_origin_dist_sq =
         XYZ_32_GetLength2_64((XYZ_32) { WALL_L / 2, 0, 0 });
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
 
     for (int32_t side = 0; side < 2; side++) {
         const XYZ_32 origin = M_GetWakeOrigin(item, m_Offsets[side]);
@@ -108,15 +114,35 @@ void FX_Wake_Draw(const ITEM *const item)
         int32_t current = (m_StartIndex - 1) & (M_MAX_POINTS - 1);
         const FX_WAKE_POINT *const first_pt = &m_Points[current][side];
         if (first_pt->life != 0) {
+            const XYZ_32 first_pos0 = do_interp
+                ? (XYZ_32) {
+                      .x = (int32_t)LERP(
+                          first_pt->prev_pos[0].x, first_pt->pos[0].x, ratio),
+                      .y = (int32_t)LERP(
+                          first_pt->prev_pos[0].y, first_pt->pos[0].y, ratio),
+                      .z = (int32_t)LERP(
+                          first_pt->prev_pos[0].z, first_pt->pos[0].z, ratio),
+                  }
+                : first_pt->pos[0];
+            const XYZ_32 first_pos1 = do_interp
+                ? (XYZ_32) {
+                      .x = (int32_t)LERP(
+                          first_pt->prev_pos[1].x, first_pt->pos[1].x, ratio),
+                      .y = (int32_t)LERP(
+                          first_pt->prev_pos[1].y, first_pt->pos[1].y, ratio),
+                      .z = (int32_t)LERP(
+                          first_pt->prev_pos[1].z, first_pt->pos[1].z, ratio),
+                  }
+                : first_pt->pos[1];
             const XYZ_32 delta0 = {
-                .x = origin.x - first_pt->pos[0].x,
+                .x = origin.x - first_pos0.x,
                 .y = 0,
-                .z = origin.z - first_pt->pos[0].z,
+                .z = origin.z - first_pos0.z,
             };
             const XYZ_32 delta1 = {
-                .x = origin.x - first_pt->pos[1].x,
+                .x = origin.x - first_pos1.x,
                 .y = 0,
-                .z = origin.z - first_pt->pos[1].z,
+                .z = origin.z - first_pos1.z,
             };
             const int64_t dist0_sq = XYZ_32_GetLength2_64(delta0);
             const int64_t dist1_sq = XYZ_32_GetLength2_64(delta1);
@@ -125,8 +151,8 @@ void FX_Wake_Draw(const ITEM *const item)
                 && dist1_sq > max_origin_dist_sq) {
                 // Prevent a long bridge quad when the hull origin drifts away
                 // from the latest wake segment (e.g. moving over dry slopes).
-                prev[0] = first_pt->pos[1];
-                prev[1] = first_pt->pos[0];
+                prev[0] = first_pos1;
+                prev[1] = first_pos0;
             }
         }
 
@@ -148,7 +174,28 @@ void FX_Wake_Draw(const ITEM *const item)
                 M_GrayFromWakeLife(c34, 2),
             };
 
-            XYZ_32 curr[2] = { pt->pos[0], pt->pos[1] };
+            XYZ_32 curr[2] = {
+                do_interp
+                    ? (XYZ_32) {
+                          .x = (int32_t)LERP(
+                              pt->prev_pos[0].x, pt->pos[0].x, ratio),
+                          .y = (int32_t)LERP(
+                              pt->prev_pos[0].y, pt->pos[0].y, ratio),
+                          .z = (int32_t)LERP(
+                              pt->prev_pos[0].z, pt->pos[0].z, ratio),
+                      }
+                    : pt->pos[0],
+                do_interp
+                    ? (XYZ_32) {
+                          .x = (int32_t)LERP(
+                              pt->prev_pos[1].x, pt->pos[1].x, ratio),
+                          .y = (int32_t)LERP(
+                              pt->prev_pos[1].y, pt->pos[1].y, ratio),
+                          .z = (int32_t)LERP(
+                              pt->prev_pos[1].z, pt->pos[1].z, ratio),
+                      }
+                    : pt->pos[1],
+            };
             const XYZ_32 quad_world[4] = {
                 prev[0],
                 prev[1],
