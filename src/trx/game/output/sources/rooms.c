@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
@@ -25,6 +26,10 @@ static SCENE_PASS M_GetScenePass(const FACE *const face)
 static void M_AddRoomFace(
     MESH_BUILDER *const builder, const FACE *const face, const ROOM *const room)
 {
+    OUTPUT_MESH_VERTEX vertices[4];
+
+    ASSERT(face->vertex_count <= 4);
+
     for (int32_t i = 0; i < face->vertex_count; i++) {
         const ROOM_VERTEX *const room_vert =
             &room->mesh.vertices[face->vertices[i]];
@@ -46,7 +51,7 @@ static void M_AddRoomFace(
         flags |= VERT_USE_DYNAMIC_LIGHT;
 
         const XYZ_16 *const pos = &room_vert->pos;
-        const OUTPUT_MESH_VERTEX vertex = {
+        vertices[i] = (OUTPUT_MESH_VERTEX) {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
             .flags = flags,
             .uvw_idx = Output_Textures_GetObjectUVWIndex(face->texture_idx, i),
@@ -58,8 +63,8 @@ static void M_AddRoomFace(
                 [1] = face->texture_zw[i].w,
             },
         };
-        MeshBuilder_AddVertex(builder, &vertex);
     }
+    MeshBuilder_AddVertices(builder, vertices, face->vertex_count);
     MeshBuilder_AddFan(builder, M_GetScenePass(face), face->double_sided);
 }
 

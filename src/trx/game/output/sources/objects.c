@@ -15,6 +15,7 @@ typedef struct {
 } M_MESH;
 
 typedef struct {
+    MEMORY_ARENA_ALLOCATOR alloc;
     MESH_BATCHER *batcher;
     int16_t skybox_shade;
     size_t mesh_count;
@@ -46,7 +47,10 @@ static void M_AddObjectFace(
     const FACE *const face, uint16_t flags)
 {
     RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
+    OUTPUT_MESH_VERTEX vertices[4];
     int32_t uvw_idx = -1;
+
+    ASSERT(face->vertex_count <= 4);
 
     if (flags & VERT_FLAT_SHADED) {
         if (g_TRVersion == 1) {
@@ -80,7 +84,7 @@ static void M_AddObjectFace(
         if ((flags & VERT_FLAT_SHADED) == 0) {
             uvw_idx = Output_Textures_GetObjectUVWIndex(face->texture_idx, i);
         }
-        const OUTPUT_MESH_VERTEX vertex = {
+        vertices[i] = (OUTPUT_MESH_VERTEX) {
             .pos = { .x = pos->x, .y = pos->y, .z = pos->z },
             .normal = { .x = normal.x, .y = normal.y, .z = normal.z },
             .flags = flags,
@@ -92,8 +96,9 @@ static void M_AddObjectFace(
                 [1] = face->texture_zw[i].w,
             },
         };
-        MeshBuilder_AddVertex(builder, &vertex);
     }
+
+    MeshBuilder_AddVertices(builder, vertices, face->vertex_count);
     MeshBuilder_AddFan(
         builder, M_GetScenePass(face, flags), face->double_sided);
 }
@@ -101,7 +106,7 @@ static void M_AddObjectFace(
 static void M_PrepareMeshes(M_PRIV *const p)
 {
     p->mesh_count = Object_GetMeshCount();
-    p->meshes = Memory_Alloc(sizeof(M_MESH) * p->mesh_count);
+    p->meshes = Memory_ArenaAlloc(&p->alloc, sizeof(M_MESH) * p->mesh_count);
 
     MESH_BUILDER *const builder = MeshBuilder_Create();
     for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
@@ -145,8 +150,9 @@ static void M_FreeMeshes(M_PRIV *const p)
                 Output_Mesh_Destroy(p->meshes[i].mesh_batch);
             }
         }
-        Memory_FreePointer(&p->meshes);
+        p->meshes = nullptr;
     }
+    Memory_ArenaReset(&p->alloc);
 }
 
 static void M_UpdateShadesSkybox(
@@ -227,6 +233,7 @@ void OutputSource_Objects_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     M_FreeMeshes(p);
+    Memory_ArenaFree(&p->alloc);
 }
 
 void OutputSource_Objects_ObserveLevelLoad(void)
