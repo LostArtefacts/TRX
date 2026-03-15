@@ -3,6 +3,7 @@
 #include <trx/core/math.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
@@ -16,9 +17,12 @@
 
 typedef struct {
     XYZ_32 pos;
+    XYZ_32 prev_pos;
     int16_t angle;
+    int16_t prev_angle;
     int16_t speed;
     uint8_t wing_y_off;
+    uint8_t prev_wing_y_off;
     bool active;
     uint8_t life;
 } M_BAT;
@@ -63,6 +67,34 @@ static int32_t M_GetWingYOffset(const int32_t corner, const uint8_t wing_y_off)
 
     const int16_t angle = wing_y_off << 10;
     return (Math_Sin(angle) >> 6) - 512;
+}
+
+static void M_RememberBat(M_BAT *const bat)
+{
+    bat->prev_pos = bat->pos;
+    bat->prev_angle = bat->angle;
+    bat->prev_wing_y_off = bat->wing_y_off;
+}
+
+static uint8_t M_GetInterpolatedWingYOffset(
+    const M_BAT *const bat, const double ratio)
+{
+    int32_t wing_diff =
+        (int32_t)bat->wing_y_off - (int32_t)bat->prev_wing_y_off;
+    if (wing_diff > 32) {
+        wing_diff -= 64;
+    } else if (wing_diff < -32) {
+        wing_diff += 64;
+    }
+
+    int32_t wing_interp = LERP(
+        (int32_t)bat->prev_wing_y_off,
+        (int32_t)bat->prev_wing_y_off + wing_diff, ratio);
+    wing_interp %= 64;
+    if (wing_interp < 0) {
+        wing_interp += 64;
+    }
+    return (uint8_t)wing_interp;
 }
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -173,6 +205,9 @@ static bool M_Draw(const ITEM *const item)
 
     const RGBA_8888 color = { 0x60, 0xA0, 0xF8, 0xFF };
     const RGBA_8888 tri_color[3] = { color, color, color };
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
 
     for (int32_t i = 0; i < M_MAX_BATS; i++) {
         const M_BAT *const bat = &p->bats[i];
@@ -180,14 +215,29 @@ static bool M_Draw(const ITEM *const item)
             continue;
         }
 
+        const XYZ_32 draw_pos = do_interp
+            ? (XYZ_32) {
+                  .x = (int32_t)LERP(bat->prev_pos.x, bat->pos.x, ratio),
+                  .y = (int32_t)LERP(bat->prev_pos.y, bat->pos.y, ratio),
+                  .z = (int32_t)LERP(bat->prev_pos.z, bat->pos.z, ratio),
+              }
+            : bat->pos;
+        const int16_t draw_angle = do_interp
+            ? (Math_AngleMean(bat->prev_angle << 4, bat->angle << 4, ratio)
+               >> 4)
+            : bat->angle;
+        const uint8_t draw_wing_y_off = do_interp
+            ? M_GetInterpolatedWingYOffset(bat, ratio)
+            : bat->wing_y_off;
+
         XYZ_32 world[5] = {};
         Matrix_Push();
-        Matrix_TranslateAbs32(bat->pos);
-        Matrix_RotY(bat->angle << 4);
+        Matrix_TranslateAbs32(draw_pos);
+        Matrix_RotY(draw_angle << 4);
         for (int32_t j = 0; j < 5; j++) {
             const XYZ_32 local = {
                 .x = m_BatMesh[j].x,
-                .y = m_BatMesh[j].y + M_GetWingYOffset(j, bat->wing_y_off),
+                .y = m_BatMesh[j].y + M_GetWingYOffset(j, draw_wing_y_off),
                 .z = m_BatMesh[j].z,
             };
             world[j] = Matrix_MulVec32_M(g_WMatrixPtr, local);
@@ -220,6 +270,8 @@ static void M_Update(M_PRIV *const p)
         if (!bat->active) {
             continue;
         }
+
+        M_RememberBat(bat);
 
         if ((i & 3) == 0 && (Random_GetControl() & 7) == 0) {
             Sound_Effect(SFX_BATS_1, &bat->pos, SPM_NORMAL);
@@ -276,6 +328,7 @@ static void M_TriggerBats(M_PRIV *const p, const XYZ_32 pos, int16_t ang)
         bat->wing_y_off = Random_GetControl() & 0x3F;
         bat->life = (Random_GetControl() & 7) + 144;
         bat->active = true;
+        M_RememberBat(bat);
     }
 
     p->bats_alive = true;
