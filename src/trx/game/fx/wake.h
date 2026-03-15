@@ -4,6 +4,7 @@
 
 typedef struct {
     XYZ_32 pos[2];
+    XYZ_32 prev_pos[2];
     XZ_32 vel[2];
     uint8_t life;
 } FX_WAKE_POINT;
