@@ -102,10 +102,19 @@ void *Vector_GetData(const VECTOR *const vector)
     return P(vector).items;
 }
 
+void *Vector_Expand(VECTOR *const vector, const int32_t count)
+{
+    ASSERT(count >= 0);
+    M_EnsureCapacity(vector, count);
+    char *const items = P(vector).items;
+    void *const result = items + vector->count * vector->item_size;
+    vector->count += count;
+    return result;
+}
+
 void Vector_Add(VECTOR *const vector, const void *const item)
 {
-    M_EnsureCapacity(vector, 1);
-    Vector_Insert(vector, vector->count, item);
+    memcpy(Vector_Expand(vector, 1), item, vector->item_size);
 }
 
 void Vector_Insert(

@@ -19,6 +19,10 @@ void MeshBuilder_Destroy(MESH_BUILDER *builder);
 void MeshBuilder_AddVertex(
     MESH_BUILDER *builder, const OUTPUT_MESH_VERTEX *vertex);
 
+void MeshBuilder_AddVertices(
+    MESH_BUILDER *builder, const OUTPUT_MESH_VERTEX *vertices,
+    size_t vertex_count);
+
 // Add a face using the recently added vertices.
 void MeshBuilder_AddFace(
     MESH_BUILDER *builder, SCENE_PASS pass, const int32_t *indices,

@@ -7,6 +7,8 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/output/vertex_range.h>
 
+#include <string.h>
+
 struct MESH_BUILDER {
     size_t pending_vertex_count;
     OUTPUT_MESH *mesh;
@@ -18,6 +20,65 @@ static void M_EnsureMesh(MESH_BUILDER *const builder)
     if (builder->mesh == nullptr) {
         builder->mesh = Output_Mesh_Create();
         builder->pending_vertex_count = 0;
+    }
+}
+
+static void M_AddAnimatedVertexRanges(
+    OUTPUT_MESH *const mesh, const OUTPUT_MESH_VERTEX *const vertices,
+    const size_t vertex_count, const size_t vertex_start)
+{
+    size_t range_start = 0;
+    size_t range_count = 0;
+
+    for (size_t i = 0; i < vertex_count; i++) {
+        const bool animated = !(vertices[i].flags & VERT_FLAT_SHADED)
+            && Output_Textures_IsObjectTextureAnimated(vertices[i].uvw_idx / 4);
+        if (!animated) {
+            if (range_count > 0) {
+                Vector_Add(
+                    mesh->animated_vertices,
+                    &(OUTPUT_VERTEX_RANGE) {
+                        .vertex_start = vertex_start + range_start,
+                        .vertex_count = range_count,
+                    });
+                range_count = 0;
+            }
+            continue;
+        }
+
+        if (range_count == 0) {
+            range_start = i;
+        }
+        range_count++;
+    }
+
+    if (range_count > 0) {
+        Vector_Add(
+            mesh->animated_vertices,
+            &(OUTPUT_VERTEX_RANGE) {
+                .vertex_start = vertex_start + range_start,
+                .vertex_count = range_count,
+            });
+    }
+}
+
+static void M_FillFanIndices(
+    VECTOR *const indices, const size_t vertex_count, const bool double_sided)
+{
+    ASSERT(vertex_count >= 3);
+    const size_t tri_count = vertex_count - 2;
+    const size_t index_count = tri_count * 3 * (double_sided ? 2 : 1);
+    int32_t *const out = Vector_Expand(indices, index_count);
+    for (size_t i = 0, j = 0; i < tri_count; i++) {
+        out[j++] = 0;
+        out[j++] = i + 2;
+        out[j++] = i + 1;
+
+        if (double_sided) {
+            out[j++] = i + 1;
+            out[j++] = i + 2;
+            out[j++] = 0;
+        }
     }
 }
 
@@ -46,21 +107,26 @@ void MeshBuilder_Destroy(MESH_BUILDER *const builder)
 void MeshBuilder_AddVertex(
     MESH_BUILDER *const builder, const OUTPUT_MESH_VERTEX *const vertex)
 {
+    MeshBuilder_AddVertices(builder, vertex, 1);
+}
+
+void MeshBuilder_AddVertices(
+    MESH_BUILDER *const builder, const OUTPUT_MESH_VERTEX *const vertices,
+    const size_t vertex_count)
+{
     ASSERT(builder != nullptr);
+    ASSERT(vertex_count > 0);
     M_EnsureMesh(builder);
     ASSERT(builder->mesh != nullptr);
     ASSERT(!builder->mesh->sealed);
-    if (!(vertex->flags & VERT_FLAT_SHADED)
-        && Output_Textures_IsObjectTextureAnimated(vertex->uvw_idx / 4)) {
-        Vector_Add(
-            builder->mesh->animated_vertices,
-            &(OUTPUT_VERTEX_RANGE) {
-                .vertex_start = builder->mesh->vertices->count,
-                .vertex_count = 1,
-            });
-    }
-    Vector_Add(builder->mesh->vertices, vertex);
-    builder->pending_vertex_count++;
+
+    const size_t vertex_start = builder->mesh->vertices->count;
+    memcpy(
+        Vector_Expand(builder->mesh->vertices, vertex_count), vertices,
+        sizeof(OUTPUT_MESH_VERTEX) * vertex_count);
+    M_AddAnimatedVertexRanges(
+        builder->mesh, vertices, vertex_count, vertex_start);
+    builder->pending_vertex_count += vertex_count;
 }
 
 void MeshBuilder_AddFace(
@@ -100,18 +166,12 @@ void MeshBuilder_AddFace(
         }
         Vector_Add(builder->mesh->transparent_faces, &face);
     }
-    if (pass == SCENE_PASS_BLEND_ADD) {
-        for (size_t i = 0; i < idx_count; i++) {
-            Vector_Add(
-                builder->mesh->blend_add_vertex_indices,
-                &(uint32_t) { start + indices[i] });
-        }
-    } else {
-        for (size_t i = 0; i < idx_count; i++) {
-            Vector_Add(
-                builder->mesh->opaque_vertex_indices,
-                &(uint32_t) { start + indices[i] });
-        }
+    VECTOR *const target = pass == SCENE_PASS_BLEND_ADD
+        ? builder->mesh->blend_add_vertex_indices
+        : builder->mesh->opaque_vertex_indices;
+    uint32_t *const out = Vector_Expand(target, idx_count);
+    for (size_t i = 0; i < idx_count; i++) {
+        out[i] = start + indices[i];
     }
     builder->pending_vertex_count = 0;
 }
@@ -123,20 +183,7 @@ void MeshBuilder_AddFan(
     M_EnsureMesh(builder);
     const size_t vtx_count = builder->pending_vertex_count;
     ASSERT(vtx_count >= 3);
-    const size_t tri_count = vtx_count - 2;
-    for (size_t i = 0; i < tri_count; i++) {
-        // front side
-        Vector_Add(builder->indices, &(int32_t) { 0 });
-        Vector_Add(builder->indices, &(int32_t) { i + 2 });
-        Vector_Add(builder->indices, &(int32_t) { i + 1 });
-
-        if (double_sided) {
-            // back side (inverted winding)
-            Vector_Add(builder->indices, &(int32_t) { i + 1 });
-            Vector_Add(builder->indices, &(int32_t) { i + 2 });
-            Vector_Add(builder->indices, &(int32_t) { 0 });
-        }
-    }
+    M_FillFanIndices(builder->indices, vtx_count, double_sided);
     MeshBuilder_AddFace(
         builder, pass, Vector_GetData(builder->indices),
         builder->indices->count);
