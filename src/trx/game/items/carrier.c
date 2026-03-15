@@ -24,6 +24,20 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
+static bool M_ShouldCenterDrop(const OBJECT_ID obj_id)
+{
+    switch (obj_id) {
+    case O_QUEST_ITEM_1:
+    case O_QUEST_ITEM_2:
+    case O_QUEST_ITEM_3:
+    case O_QUEST_ITEM_4:
+        return false;
+
+    default:
+        return g_TRVersion == 3;
+    }
+}
+
 static OBJECT_ID M_ConvertDroppedGun(const OBJECT_ID obj_id)
 {
     if (g_GameFlow.convert_dropped_guns && Object_IsType(obj_id, g_GunObjects)
@@ -384,7 +398,7 @@ void Carrier_TestItemDrops(const int16_t item_num)
         }
 
         ITEM *const pickup = Item_Get(item->spawn_num);
-        if (g_TRVersion == 3) {
+        if (M_ShouldCenterDrop(pickup->object_id)) {
             int16_t room_num = carrier->room_num;
             pickup->pos.x = ROUND_TO_SECTOR(carrier->pos.x) + WALL_L / 2;
             pickup->pos.z = ROUND_TO_SECTOR(carrier->pos.z) + WALL_L / 2;
