@@ -77,7 +77,7 @@ static void M_FireFinalShot(
     AI_INFO info = {};
     Creature_AIInfo(item, &info);
 
-    if (!Creature_CanSeeEnemy(item, &info) || ABS(info.angle) >= DEG_45) {
+    if (!Creature_CanTargetEnemy(item, &info) || ABS(info.angle) >= DEG_45) {
         return;
     }
 
@@ -203,7 +203,7 @@ static void M_Control(const int16_t item_num)
             item->goal_anim_state = M_STATE_DUCK_START;
         } else if (creature->mood == MOOD_ESCAPE) {
             item->goal_anim_state = M_STATE_RUN;
-        } else if (Creature_CanSeeEnemy(item, &info)) {
+        } else if (Creature_CanTargetEnemy(item, &info)) {
             if (info.distance > M_WALK_DIST) {
                 item->goal_anim_state = M_STATE_WALK;
             } else {
@@ -243,7 +243,7 @@ static void M_Control(const int16_t item_num)
             item->goal_anim_state = M_STATE_WAIT;
         } else if (creature->mood == MOOD_ESCAPE) {
             item->goal_anim_state = M_STATE_RUN;
-        } else if (Creature_CanSeeEnemy(item, &info)) {
+        } else if (Creature_CanTargetEnemy(item, &info)) {
             if (info.distance > M_WALK_DIST
                 && info.zone_num == info.enemy_zone_num) {
                 item->goal_anim_state = M_STATE_AIM_4;
@@ -274,7 +274,7 @@ static void M_Control(const int16_t item_num)
             item->required_anim_state = M_STATE_DUCK_START;
             item->goal_anim_state = M_STATE_WAIT;
         } else if (creature->mood != MOOD_ESCAPE) {
-            if (Creature_CanSeeEnemy(item, &info)
+            if (Creature_CanTargetEnemy(item, &info)
                 || ((item->ai_bits & AI_FOLLOW) != 0
                     && (creature->reached_goal || enemy_dist > M_WALK_DIST))) {
                 item->goal_anim_state = M_STATE_WAIT;
@@ -393,7 +393,7 @@ static void M_Control(const int16_t item_num)
         }
         creature->maximum_turn = 0;
 
-        if (Creature_CanSeeEnemy(item, &info)) {
+        if (Creature_CanTargetEnemy(item, &info)) {
             item->goal_anim_state = M_STATE_DUCK_AIM;
         } else if (
             item->hit_status || !near_cover
@@ -410,7 +410,7 @@ static void M_Control(const int16_t item_num)
         }
         creature->maximum_turn = M_DUCK_TURN;
 
-        if (Creature_CanSeeEnemy(item, &info)) {
+        if (Creature_CanTargetEnemy(item, &info)) {
             item->goal_anim_state = M_STATE_DUCK_SHOOT;
         } else {
             item->goal_anim_state = M_STATE_DUCKED;
@@ -438,7 +438,8 @@ static void M_Control(const int16_t item_num)
         }
         creature->maximum_turn = M_WALK_TURN;
 
-        if (Creature_CanSeeEnemy(item, &info) || item->hit_status || !near_cover
+        if (Creature_CanTargetEnemy(item, &info) || item->hit_status
+            || !near_cover
             || (info.ahead && (Random_GetControl() & M_DUCK_END_CHANCE) == 0)) {
             item->goal_anim_state = M_STATE_DUCKED;
         }
