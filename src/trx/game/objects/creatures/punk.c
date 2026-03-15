@@ -102,19 +102,13 @@ static void M_Initialise(const int16_t item_num)
 static void M_InitialiseStick(ITEM *const punk_item)
 {
     M_PRIV *const p = punk_item->priv;
-    ROOM *const room = Room_Get(punk_item->room_num);
-    int16_t item_num = room->item_num;
-    while (item_num != NO_ITEM) {
-        ITEM *const item = Item_Get(item_num);
-        const int16_t next_num = item->next_item;
-        if (item->object_id == O_FLAME_EMITTER_BIG
-            && XYZ_32_AreEquivalent(item->pos, punk_item->pos)) {
-            p->stick.on_fire = true;
-            Item_Kill(item_num);
-            item->room_num = NO_ROOM;
-            break;
-        }
-        item_num = next_num;
+    const int16_t fire_item_idx = Item_FindTypeAtPos(
+        punk_item->room_num, punk_item->pos, O_FLAME_EMITTER_BIG);
+    if (fire_item_idx != NO_ITEM) {
+        ITEM *const fire_item = Item_Get(fire_item_idx);
+        Item_Kill(fire_item_idx);
+        fire_item->room_num = NO_ROOM;
+        p->stick.on_fire = true;
     }
 
     p->stick.initialised = true;
