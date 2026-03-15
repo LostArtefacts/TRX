@@ -44,6 +44,40 @@ static struct {
     { .gun_type = LGT_UNKNOWN, .input_role = (INPUT_ROLE)-1 },
 };
 
+static void M_CheckSmashablesBehindTarget(
+    const GAME_VECTOR start, const GAME_VECTOR hit_pos, const int32_t max_dist)
+{
+    // OG does a raycast instead of segment cast when checking for smashables.
+    // TRX normally doesn't do that, but in the Reunion battle against Sophia,
+    // Sophia stands directly in front of the Fuse Box, preventing Lara from
+    // shooting her which is a breaking behavior.
+    //
+    // This function does additional smashable pass by emulating the OG raycast.
+    const int32_t hit_dist = XYZ_32_GetDistance(start.pos, hit_pos.pos);
+    if (hit_dist >= max_dist) {
+        return;
+    }
+
+    const int32_t offset = STEP_L / 16;
+    GAME_VECTOR follow_start = {
+        .x = hit_pos.x + ((offset * g_MatrixPtr->_20) >> W2V_SHIFT),
+        .y = hit_pos.y + ((offset * g_MatrixPtr->_21) >> W2V_SHIFT),
+        .z = hit_pos.z + ((offset * g_MatrixPtr->_22) >> W2V_SHIFT),
+        .room_num = hit_pos.room_num,
+    };
+    Room_GetSector(follow_start.pos, &follow_start.room_num);
+
+    GAME_VECTOR follow_end = {
+        .x = start.x + ((max_dist * g_MatrixPtr->_20) >> W2V_SHIFT),
+        .y = start.y + ((max_dist * g_MatrixPtr->_21) >> W2V_SHIFT),
+        .z = start.z + ((max_dist * g_MatrixPtr->_22) >> W2V_SHIFT),
+        .room_num = start.room_num,
+    };
+    Room_GetSector(follow_end.pos, &follow_end.room_num);
+
+    Gun_SmashItems(follow_start, follow_end, nullptr, NO_OBJECT);
+}
+
 static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
 {
     return gun_type == LGT_HARPOON;
@@ -513,6 +547,7 @@ int32_t Gun_FireWeapon(
         if (!object_on_los) {
             Spawn_RicochetRay(start, hit_pos);
         }
+        M_CheckSmashablesBehindTarget(start, hit_pos, weapon->target_dist);
         return -1;
     }
 
@@ -528,5 +563,6 @@ int32_t Gun_FireWeapon(
     Gun_HitTarget(
         target, &start, &hit_pos,
         weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
+    M_CheckSmashablesBehindTarget(start, hit_pos, weapon->target_dist);
     return 1;
 }
