@@ -14,6 +14,11 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
     return !g_Config.visuals.fix_texture_issues;
 }
 
+static bool M_CanTakeDamage(const ITEM *const item)
+{
+    return item->status == IS_ACTIVE;
+}
+
 static void M_Control(const int16_t item_num)
 {
     static int32_t counter = 0;
@@ -65,6 +70,7 @@ static void M_Control(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
+    obj->can_take_damage_func = M_CanTakeDamage;
     obj->should_spawn_blood_func = M_ShouldSpawnBlood;
     obj->hit_points = 5;
     obj->save_flags = true;
