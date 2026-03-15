@@ -258,6 +258,21 @@ int16_t Item_FindTypeInRoom(const int16_t room_num, const OBJECT_ID obj_id)
     return NO_ITEM;
 }
 
+int16_t Item_FindTypeAtPos(
+    const int16_t room_num, const XYZ_32 pos, const OBJECT_ID obj_id)
+{
+    const ROOM *const room = Room_Get(room_num);
+    int16_t item_num = room->item_num;
+    while (item_num != NO_ITEM) {
+        const ITEM *const item = Item_Get(item_num);
+        if (item->object_id == obj_id && XYZ_32_AreEquivalent(item->pos, pos)) {
+            return item_num;
+        }
+        item_num = item->next_item;
+    }
+    return NO_ITEM;
+}
+
 bool Item_IsTriggerActiveRO(const ITEM *const item)
 {
     const bool ok = (item->flags & IF_REVERSE) == 0;
