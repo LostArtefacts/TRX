@@ -18,9 +18,11 @@
 - fixed boulders that have moved vertically reactivating for a frame after loading a save (regression from 1.2)
 
 **TR1**:
+- added the ability to use flames on Pendulums, similar to TR3
 - fixed Scion taking damage before activation (regression from 1.0)
 
 **TR2**:
+- added the ability to use flames on Pendulums, similar to TR3
 - fixed thrown flares falling through trapdoors and becoming stuck in the void if thrown underwater near the floor (#3708)
 - fixed flamethrowers and Dragon's breath doing weird animation when hitting floor (#5104, regression from 1.3)
 
