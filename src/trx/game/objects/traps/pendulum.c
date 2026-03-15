@@ -1,11 +1,14 @@
+#include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/game/effects.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/traps/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
@@ -20,6 +23,7 @@
 typedef struct {
     bool initialised;
     bool on_fire;
+    int16_t effect_num;
 } M_PRIV;
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -27,6 +31,9 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     M_PRIV *const p = item->priv;
     JSON_SHOULD(JSON_READ(io, "initialised", &p->initialised));
     JSON_SHOULD(JSON_READ(io, "on_fire", &p->on_fire));
+    if (g_Config.gameplay.enable_enhanced_saves) {
+        JSON_SHOULD(JSON_READ(io, "fx_num", &p->effect_num));
+    }
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
@@ -34,13 +41,23 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "initialised", p->initialised);
     JSONW_WRITE(io, "on_fire", p->on_fire);
+    JSONW_WRITE(io, "fx_num", Effect_GetInOrderNum(p->effect_num));
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->effect_num = NO_EFFECT;
 }
 
 static void M_InitialiseFire(ITEM *const pendulum_item)
 {
     M_PRIV *const p = pendulum_item->priv;
+    const OBJECT_ID fire_obj_id =
+        g_TRVersion < 3 ? O_FLAME_EMITTER : O_FLAME_EMITTER_BIG;
     const int16_t fire_item_idx = Item_FindTypeAtPos(
-        pendulum_item->room_num, pendulum_item->pos, O_FLAME_EMITTER_BIG);
+        pendulum_item->room_num, pendulum_item->pos, fire_obj_id);
     if (fire_item_idx != NO_ITEM) {
         ITEM *const fire_item = Item_Get(fire_item_idx);
         Item_Kill(fire_item_idx);
@@ -120,6 +137,42 @@ static void M_TriggerFireLight(const ITEM *const item)
     Output_AddDynamicLightRGB(pos, M_FIRE_FALLOFF, color);
 }
 
+static void M_TriggerFireEffect(const ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    EFFECT *effect = nullptr;
+    if (p->effect_num == NO_EFFECT) {
+        p->effect_num = Effect_Create(item->room_num);
+        if (p->effect_num == NO_EFFECT) {
+            return;
+        }
+        effect = Effect_Get(p->effect_num);
+        effect->object_id = O_FLAME;
+        effect->counter = 0;
+        effect->frame_num = 0;
+    } else {
+        effect = Effect_Get(p->effect_num);
+    }
+
+    XYZ_32 pos = { -32, -STEP_L - 16, 0 };
+    Collide_GetJointAbsPosition(item, &pos, 5);
+    effect->pos = pos;
+}
+
+static void M_KillFireEffect(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    if (p->effect_num == NO_EFFECT) {
+        return;
+    }
+
+    Effect_Kill(p->effect_num);
+    p->effect_num = NO_EFFECT;
+    if (g_TRVersion == 1) {
+        Sound_StopEffect(SFX_LOOP_FOR_SMALL_FIRES);
+    }
+}
+
 static inline int16_t M_GetDamage(const OBJECT_ID obj_id)
 {
     return obj_id == O_SWINGING_AXE ? M_AXE_DAMAGE : M_PENDULUM_DAMAGE;
@@ -157,6 +210,7 @@ static void M_Control(const int16_t item_num)
             item->status = IS_INACTIVE;
             Item_RemoveActive(item_num);
             item->enable_interpolation = false;
+            M_KillFireEffect(item);
             return;
         }
     }
@@ -188,6 +242,8 @@ static void M_Control(const int16_t item_num)
         if (g_TRVersion >= 3) {
             M_TriggerFireSparks(item);
             M_TriggerFireLight(item);
+        } else {
+            M_TriggerFireEffect(item);
         }
     }
 
@@ -203,6 +259,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 
 static void M_SetupCommon(OBJECT *const obj)
 {
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->handle_save_func = M_HandleSave;
     obj->priv_size = sizeof(M_PRIV);
