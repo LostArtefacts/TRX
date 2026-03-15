@@ -5,6 +5,7 @@
 #include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
+#include <trx/game/fx/explosion_ring.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
@@ -179,6 +180,7 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
 static void M_LoadPreprocess(void)
 {
     Savegame_InitCurrentInfo();
+    FX_ExplosionRing_Reset();
 }
 
 static void M_LoadPostprocess(void)
