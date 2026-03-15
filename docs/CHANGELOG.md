@@ -12,6 +12,7 @@
 - added support for `.ogv` and `.fmv` FMV extensions, with `.ogv` preferred over `.fmv` for remaster compatibility
 - added audio fallback for FMV files that lack an audio stream (e.g. remastered `.ogv`), probing alternative extensions for a companion audio track
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
+- changed level load routines to work faster by caching loading artifacts in `cache/`
 - improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 - fixed the photo mode red frame not covering the full screen when using integer upscaling

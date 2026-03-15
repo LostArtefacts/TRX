@@ -17,6 +17,7 @@ void Shell_Shutdown(void);
 
 SDL_Window *Shell_GetWindow(void);
 const char *Shell_GetConfigDir(void);
+const char *Shell_GetCacheDir(void);
 
 int32_t Shell_Main(const SHELL_ARGS *args);
 void Shell_Terminate(int32_t exit_code);
