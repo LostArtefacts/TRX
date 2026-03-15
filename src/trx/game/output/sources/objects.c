@@ -12,7 +12,6 @@
 
 typedef struct {
     OUTPUT_MESH *mesh_batch;
-    int32_t *light_idx_map;
 } M_MESH;
 
 typedef struct {
@@ -99,20 +98,6 @@ static void M_AddObjectFace(
         builder, M_GetScenePass(face, flags), face->double_sided);
 }
 
-static int32_t *M_PrepareLightIndexMap(
-    const OBJECT_MESH *const obj_mesh, const int32_t vertex_count)
-{
-    int32_t v = 0;
-    int32_t *const light_idx_map = Memory_Alloc(sizeof(int32_t) * vertex_count);
-    for (int32_t i = 0; i < obj_mesh->all_faces.count; i++) {
-        const FACE *const face = &obj_mesh->all_faces.data[i];
-        for (int32_t j = 0; j < face->vertex_count; j++) {
-            light_idx_map[v++] = face->vertices[j];
-        }
-    }
-    return light_idx_map;
-}
-
 static void M_PrepareMeshes(M_PRIV *const p)
 {
     p->mesh_count = Object_GetMeshCount();
@@ -146,8 +131,6 @@ static void M_PrepareMeshes(M_PRIV *const p)
         if (mesh != nullptr) {
             MeshBatcher_AddMesh(p->batcher, mesh);
             new_batch->mesh_batch = mesh;
-            new_batch->light_idx_map =
-                M_PrepareLightIndexMap(obj_mesh, mesh->vertices->count);
         }
     }
     MeshBuilder_Destroy(builder);
@@ -161,7 +144,6 @@ static void M_FreeMeshes(M_PRIV *const p)
             if (p->meshes[i].mesh_batch != nullptr) {
                 Output_Mesh_Destroy(p->meshes[i].mesh_batch);
             }
-            Memory_FreePointer(&p->meshes[i].light_idx_map);
         }
         Memory_FreePointer(&p->meshes);
     }
