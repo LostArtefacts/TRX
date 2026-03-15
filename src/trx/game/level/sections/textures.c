@@ -1,13 +1,19 @@
 #include <trx/core/benchmark.h>
 #include <trx/core/colors.h>
+#include <trx/core/hash.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/inject.h>
+#include <trx/game/level/cache.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/output.h>
+
+#define M_TEXTURE_PAGE_CACHE_VERSION 1
 
 static void M_DecodeTR3ObjectTextureUVs(OBJECT_TEXTURE *const texture)
 {
@@ -31,6 +37,77 @@ static void M_DecodeTR3ObjectTextureUVs(OBJECT_TEXTURE *const texture)
         }
         flags >>= 1;
     }
+}
+
+static uint64_t M_ComputeExpandedTexturePagesChecksum(
+    const LEVEL_FORMAT_LOADER *const loader, const int32_t num_pages)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level == nullptr) {
+        return 0;
+    }
+
+    uint64_t checksum = LevelCache_InitChecksum(
+        "expanded_texture_pages", M_TEXTURE_PAGE_CACHE_VERSION);
+    checksum = LevelCache_UpdateLevelChecksum(checksum, level);
+    checksum = Hash_FNV1a64_UpdateU32(checksum, loader->game_version);
+    checksum = Hash_FNV1a64_UpdateU32(checksum, num_pages);
+    return checksum;
+}
+
+static const char *M_GetExpandedTexturePagesCacheFilename(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    const char *const level_key = LevelCache_GetLevelKey(level);
+    if (level_key == nullptr) {
+        return nullptr;
+    }
+
+    return String_FormatStatic(
+        "expanded_texture_pages_%s.cache.dat", level_key);
+}
+
+static bool M_TryLoadExpandedTexturePagesCache(
+    const LEVEL_FORMAT_LOADER *const loader, const int32_t num_pages,
+    RGBA_8888 *const output)
+{
+    const char *const cache_filename = M_GetExpandedTexturePagesCacheFilename();
+    const uint64_t checksum =
+        M_ComputeExpandedTexturePagesChecksum(loader, num_pages);
+    if (cache_filename == nullptr || checksum == 0) {
+        return false;
+    }
+
+    MYFILE *const file = LevelCache_OpenBinaryRead(cache_filename, checksum);
+    if (file == nullptr) {
+        return false;
+    }
+
+    const bool ok = File_ReadData(
+        file, output, num_pages * TEXTURE_PAGE_SIZE * sizeof(*output));
+    File_Close(file);
+    return ok;
+}
+
+static void M_WriteExpandedTexturePagesCache(
+    const LEVEL_FORMAT_LOADER *const loader, const int32_t num_pages,
+    const RGBA_8888 *const output)
+{
+    const char *const cache_filename = M_GetExpandedTexturePagesCacheFilename();
+    const uint64_t checksum =
+        M_ComputeExpandedTexturePagesChecksum(loader, num_pages);
+    if (cache_filename == nullptr || checksum == 0) {
+        return;
+    }
+
+    MYFILE *const file = LevelCache_OpenBinaryWrite(cache_filename, checksum);
+    if (file == nullptr) {
+        return;
+    }
+
+    File_WriteData(
+        file, output, num_pages * TEXTURE_PAGE_SIZE * sizeof(*output));
+    File_Close(file);
 }
 
 void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, VFILE *const file)
@@ -106,13 +183,19 @@ void Level_Section_ReadTexturePages(LEVEL_CONTEXT *const ctx, VFILE *const file)
     } else {
         const int32_t texture_size_16_bit =
             num_pages * TEXTURE_PAGE_SIZE * sizeof(uint16_t);
-        uint16_t *input = Memory_Alloc(texture_size_16_bit);
-        uint16_t *input_ptr = input;
-        VFile_Read(file, input, texture_size_16_bit);
-        for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
-            *output++ = Color_ARGB1555ToRGBA8888(*input_ptr++);
+        if (M_TryLoadExpandedTexturePagesCache(loader, num_pages, output)) {
+            VFile_Skip(file, texture_size_16_bit);
+        } else {
+            uint16_t *input = Memory_Alloc(texture_size_16_bit);
+            uint16_t *input_ptr = input;
+            VFile_Read(file, input, texture_size_16_bit);
+            for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
+                *output++ = Color_ARGB1555ToRGBA8888(*input_ptr++);
+            }
+            M_WriteExpandedTexturePagesCache(
+                loader, num_pages, info->textures.pages_32);
+            Memory_FreePointer(&input);
         }
-        Memory_FreePointer(&input);
     }
 
     Benchmark_End(&benchmark, nullptr);
