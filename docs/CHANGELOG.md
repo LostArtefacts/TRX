@@ -45,6 +45,7 @@
 - added Pendulum control
 - added 60 FPS interpolation to:
     - sparks
+    - weather effects
     - water effects
     - wake effects
     - explosion rings

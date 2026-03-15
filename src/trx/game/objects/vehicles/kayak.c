@@ -1011,6 +1011,7 @@ static void M_DoWake(
         pt->pos[i].x = pos.x;
         pt->pos[i].y = item->pos.y + 32;
         pt->pos[i].z = pos.z;
+        pt->prev_pos[i] = pt->pos[i];
         pt->vel[i].x = vel[i].x;
         pt->vel[i].z = vel[i].z;
     }
