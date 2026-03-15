@@ -175,7 +175,7 @@ static void M_Control(const int16_t item_num)
             head = 0;
         } else if (creature->mood == MOOD_ESCAPE) {
             item->goal_anim_state = M_STATE_RUN;
-        } else if (Creature_CanSeeEnemy(item, &info)) {
+        } else if (Creature_CanTargetEnemy(item, &info)) {
             if (info.distance >= M_SHOOT_RANGE
                 && info.zone_num == info.enemy_zone_num) {
                 item->goal_anim_state = M_STATE_WALK;
@@ -211,7 +211,7 @@ static void M_Control(const int16_t item_num)
             || ((item->ai_bits & AI_FOLLOW) != 0
                 && (creature->reached_goal || enemy_dist > M_RUN_RANGE))) {
             item->goal_anim_state = M_STATE_STOP;
-        } else if (Creature_CanSeeEnemy(item, &info)) {
+        } else if (Creature_CanTargetEnemy(item, &info)) {
             if (info.distance < M_SHOOT_RANGE
                 || info.zone_num != info.enemy_zone_num) {
                 item->goal_anim_state = M_STATE_STOP;
@@ -241,7 +241,8 @@ static void M_Control(const int16_t item_num)
         } else if (creature->mood == MOOD_ESCAPE) {
             break;
         } else if (
-            Creature_CanSeeEnemy(item, &info) || creature->mood == MOOD_BORED) {
+            Creature_CanTargetEnemy(item, &info)
+            || creature->mood == MOOD_BORED) {
             item->goal_anim_state = M_STATE_WALK;
         } else if (
             creature->mood == MOOD_STALK && (item->ai_bits & AI_FOLLOW) == 0
@@ -260,7 +261,7 @@ static void M_Control(const int16_t item_num)
             if ((Random_GetControl() & 0xFF) == 0) {
                 item->goal_anim_state = M_STATE_STOP;
             }
-        } else if (Creature_CanSeeEnemy(item, &info)) {
+        } else if (Creature_CanTargetEnemy(item, &info)) {
             item->goal_anim_state = M_STATE_SHOOT_1;
         } else if (creature->mood != MOOD_BORED || !info.ahead) {
             item->goal_anim_state = M_STATE_STOP;
@@ -273,7 +274,7 @@ static void M_Control(const int16_t item_num)
         if (item->current_anim_state == M_STATE_SHOOT_3
             && item->goal_anim_state != M_STATE_STOP
             && (creature->mood == MOOD_ESCAPE || info.distance > M_SHOOT_RANGE
-                || !Creature_CanSeeEnemy(item, &info))) {
+                || !Creature_CanTargetEnemy(item, &info))) {
             item->goal_anim_state = M_STATE_STOP;
         }
 
@@ -300,7 +301,7 @@ static void M_Control(const int16_t item_num)
 
         torso_x = info.x_angle;
         torso_y = info.angle;
-        if (Creature_CanSeeEnemy(item, &info)) {
+        if (Creature_CanTargetEnemy(item, &info)) {
             if (item->current_anim_state == M_STATE_AIM_1) {
                 item->goal_anim_state = M_STATE_SHOOT_1;
             } else if (item->current_anim_state == M_STATE_AIM_2) {

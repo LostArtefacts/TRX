@@ -731,13 +731,14 @@ bool Creature_CanSeeEnemy(const ITEM *const item, const AI_INFO *const info)
     // when there's CanTargetEnemy().
 
     const CREATURE *const creature = item->creature_data;
-    const ITEM *const enemy = creature->enemy;
+    const ITEM *const enemy =
+        creature->enemy != nullptr ? creature->enemy : Lara_GetItem();
 
     if (enemy == nullptr || enemy->hit_points <= 0
         || (enemy != Lara_GetItem() && enemy->creature_data == nullptr)
         || info->angle - creature->joint_rotation[2] <= -DEG_90
         || info->angle - creature->joint_rotation[2] >= DEG_90
-        || info->distance >= CREATURE_SHOOT_RANGE || !info->ahead) {
+        || info->distance >= CREATURE_SHOOT_RANGE) {
         return false;
     }
 
