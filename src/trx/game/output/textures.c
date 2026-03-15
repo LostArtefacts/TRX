@@ -1,17 +1,21 @@
 #include <trx/game/output/textures.h>
 
+#include <trx/core/hash.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/game_flow.h>
+#include <trx/game/level/cache.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/vertex_range.h>
-#include <trx/game/shell.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
+#include <SDL2/SDL_mutex.h>
 #include <string.h>
 
 typedef struct {
@@ -69,6 +73,85 @@ static int32_t m_SpriteTextureCount = 0;
 static OBJECT_TEXTURE *m_ObjectTextures = nullptr;
 static SPRITE_TEXTURE *m_SpriteTextures = nullptr;
 static ANIMATED_TEXTURE_RANGE *m_AnimTextureRanges = nullptr;
+
+#define M_TRANSPARENCY_CACHE_VERSION 1
+static uint64_t M_ComputeTransparencyChecksum(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level == nullptr) {
+        return 0;
+    }
+
+    uint64_t hash = LevelCache_InitChecksum(
+        "object_transparency_cache", M_TRANSPARENCY_CACHE_VERSION);
+    hash = LevelCache_UpdateLevelChecksum(hash, level);
+    hash = Hash_FNV1a64_UpdateU32(hash, Output_GetObjectTextureCount());
+    return hash;
+}
+
+static const char *M_GetTransparencyCacheFilename(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    const char *const level_key = LevelCache_GetLevelKey(level);
+    if (level_key == nullptr) {
+        return nullptr;
+    }
+
+    return String_FormatStatic("object_transparency_%s.cache.dat", level_key);
+}
+
+static bool M_TryLoadTransparencyCache(void)
+{
+    const int32_t texture_count = Output_GetObjectTextureCount();
+    const uint64_t expected_checksum = M_ComputeTransparencyChecksum();
+    const char *const cache_filename = M_GetTransparencyCacheFilename();
+    if (cache_filename == nullptr || expected_checksum == 0
+        || texture_count <= 0) {
+        return false;
+    }
+
+    MYFILE *const file =
+        LevelCache_OpenBinaryRead(cache_filename, expected_checksum);
+    if (file == nullptr) {
+        return false;
+    }
+
+    const int32_t version = File_ReadS32(file);
+    const int32_t cached_texture_count = File_ReadS32(file);
+    if (version != M_TRANSPARENCY_CACHE_VERSION
+        || cached_texture_count != texture_count
+        || !File_ReadData(
+            file, m_Priv.uvws.has_transparency_objects,
+            sizeof(bool) * (size_t)texture_count)) {
+        File_Close(file);
+        return false;
+    }
+
+    File_Close(file);
+    return true;
+}
+
+static void M_WriteTransparencyCache(void)
+{
+    const int32_t texture_count = Output_GetObjectTextureCount();
+    const uint64_t checksum = M_ComputeTransparencyChecksum();
+    const char *const cache_filename = M_GetTransparencyCacheFilename();
+    if (cache_filename == nullptr || checksum == 0 || texture_count <= 0) {
+        return;
+    }
+
+    MYFILE *const file = LevelCache_OpenBinaryWrite(cache_filename, checksum);
+    if (file == nullptr) {
+        return;
+    }
+
+    File_WriteS32(file, M_TRANSPARENCY_CACHE_VERSION);
+    File_WriteS32(file, texture_count);
+    File_WriteData(
+        file, m_Priv.uvws.has_transparency_objects,
+        sizeof(bool) * (size_t)texture_count);
+    File_Close(file);
+}
 
 static float M_NormalizeObjectUV(const uint16_t uv)
 {
@@ -507,7 +590,10 @@ void Output_Textures_ObserveLevelLoad(void)
 {
     M_FreeLevelData();
     M_PrepareUVWs();
-    M_PrepareObjectTransparencyFlags();
+    if (!M_TryLoadTransparencyCache()) {
+        M_PrepareObjectTransparencyFlags();
+        M_WriteTransparencyCache();
+    }
     M_PrepareAnimationRanges();
     M_UploadAtlas();
 }

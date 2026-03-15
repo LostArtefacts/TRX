@@ -21,6 +21,7 @@
 typedef struct {
     char *trx_dir;
     char *config_dir;
+    char *cache_dir;
     char *games_dir;
     char *screenshots_dir;
     char *saves_dir;
@@ -713,6 +714,7 @@ static void M_SeedResolverCaches(void)
     const char *const dirs[] = {
         m_Context.trx_dir,
         m_Context.config_dir,
+        m_Context.cache_dir,
         m_Context.games_dir,
         m_Context.screenshots_dir,
         m_Context.saves_dir,
@@ -741,6 +743,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
 {
     Memory_FreePointer(&m_Context.trx_dir);
     Memory_FreePointer(&m_Context.config_dir);
+    Memory_FreePointer(&m_Context.cache_dir);
     Memory_FreePointer(&m_Context.games_dir);
     Memory_FreePointer(&m_Context.screenshots_dir);
     Memory_FreePointer(&m_Context.saves_dir);
@@ -782,6 +785,8 @@ void TRXPath_Init(const SHELL_ARGS *const args)
 
     M_SetDirFromEnv(
         &m_Context.config_dir, getenv("TRX_CONFIG_DIR"), "cfg", false);
+    M_SetDirFromEnv(
+        &m_Context.cache_dir, getenv("TRX_CACHE_DIR"), "cache", false);
 
     if (!M_SetDirFromEnv(
             &m_Context.games_dir, getenv("TRX_GAMES_DIR"), "games", true)) {

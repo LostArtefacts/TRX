@@ -1,12 +1,10 @@
 #include <trx/game/stats/init.h>
 
 #include <trx/core/benchmark.h>
-#include <trx/core/filesystem.h>
+#include <trx/core/hash.h>
 #include <trx/core/json.h>
-#include <trx/core/json/util/file.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/core/strings.h>
 #include <trx/core/virtual_file.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
@@ -14,17 +12,14 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/inject.h>
 #include <trx/game/items/carrier.h>
+#include <trx/game/level/cache.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
 #include <trx/game/rooms.h>
-#include <trx/game/shell.h>
 #include <trx/game/stats.h>
 
-#include <stdlib.h>
 #include <string.h>
 
-#define M_FNV_1A_BASE 14695981039346656037ULL
-#define M_FNV_1A_PRIME 1099511628211ULL
 #define M_CACHE_VERSION 4
 #define M_CACHE_FILENAME "max_stats.cache.json"
 
@@ -42,86 +37,17 @@ static void M_EnsureStatsStorage(const int32_t level_count)
     }
 }
 
-static uint64_t M_FNV1a64_Update(
-    uint64_t hash, const void *const data, const size_t size)
-{
-    const uint8_t *cur = (const uint8_t *)data;
-    for (size_t i = 0; i < size; i++) {
-        hash ^= cur[i];
-        hash *= M_FNV_1A_PRIME;
-    }
-    return hash;
-}
-
-static uint64_t M_FNV1a64_UpdateU32(const uint64_t hash, const uint32_t value)
-{
-    return M_FNV1a64_Update(hash, &value, sizeof(value));
-}
-
-static uint64_t M_FNV1a64_UpdateU64(const uint64_t hash, const uint64_t value)
-{
-    return M_FNV1a64_Update(hash, &value, sizeof(value));
-}
-
-static uint64_t M_FNV1a64_UpdateString(uint64_t hash, const char *const value)
-{
-    if (value == nullptr) {
-        return M_FNV1a64_UpdateU32(hash, 0);
-    }
-    const uint32_t len = (uint32_t)strlen(value);
-    hash = M_FNV1a64_UpdateU32(hash, len);
-    return M_FNV1a64_Update(hash, value, len);
-}
-
-static void M_GetLevelFileMeta(
-    const char *const path, uint64_t *const out_size, uint64_t *const out_mtime)
-{
-    uint64_t size = 0;
-    uint64_t mtime = 0;
-    File_GetMeta(path, &size, &mtime);
-
-    if (out_size != nullptr) {
-        *out_size = size;
-    }
-    if (out_mtime != nullptr) {
-        *out_mtime = mtime;
-    }
-}
-
 static uint64_t M_ComputeInputsChecksum(const GF_LEVEL_TABLE *const level_table)
 {
-    uint64_t hash = M_FNV_1A_BASE;
-
-    hash = M_FNV1a64_UpdateString(hash, "max_stats_cache");
-    hash = M_FNV1a64_UpdateU32(hash, (uint32_t)M_CACHE_VERSION);
-    hash = M_FNV1a64_UpdateU32(hash, (uint32_t)level_table->count);
+    uint64_t hash = LevelCache_InitChecksum("max_stats_cache", M_CACHE_VERSION);
+    hash = Hash_FNV1a64_UpdateU32(hash, (uint32_t)level_table->count);
 
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
-
-        hash = M_FNV1a64_UpdateU32(hash, (uint32_t)level->num);
-        hash = M_FNV1a64_UpdateU32(hash, (uint32_t)level->type);
-        hash = M_FNV1a64_UpdateString(hash, level->path);
-        if (level->path != nullptr) {
-            uint64_t file_size = 0;
-            uint64_t file_mtime = 0;
-            M_GetLevelFileMeta(level->path, &file_size, &file_mtime);
-            hash = M_FNV1a64_UpdateU64(hash, file_size);
-            hash = M_FNV1a64_UpdateU64(hash, file_mtime);
-        }
+        hash = LevelCache_UpdateLevelChecksum(hash, level);
     }
 
     return hash;
-}
-
-static const char *M_GetCachePath(void)
-{
-    const SHELL_ARGS *const args = Shell_GetArgs();
-    if (args == nullptr || args->mod == nullptr || args->mod->name == nullptr) {
-        return nullptr;
-    }
-    return String_FormatStatic(
-        "%s/%s/%s", Shell_GetConfigDir(), args->mod->name, M_CACHE_FILENAME);
 }
 
 static JSON_OBJECT *M_SerializeLevelMaxStats(const LEVEL_MAX_STATS *const stats)
@@ -237,14 +163,10 @@ static bool M_DeserializeLevelMaxStats(
 }
 
 static bool M_TryLoadCache(
-    const char *const cache_path, const uint64_t expected_checksum,
-    const GF_LEVEL_TABLE *const level_table)
+    const uint64_t expected_checksum, const GF_LEVEL_TABLE *const level_table)
 {
-    if (cache_path == nullptr) {
-        return false;
-    }
-
-    JSON_VALUE *const root_value = JSONFile_Read(cache_path);
+    JSON_VALUE *const root_value =
+        LevelCache_ReadJSON(M_CACHE_FILENAME, expected_checksum);
     if (root_value == nullptr) {
         return false;
     }
@@ -257,18 +179,6 @@ static bool M_TryLoadCache(
 
     const int32_t version = JSON_ObjectGetInt(root, "version", -1);
     if (version != M_CACHE_VERSION) {
-        JSON_ValueFree(root_value);
-        return false;
-    }
-
-    const char *const checksum_str =
-        JSON_ObjectGetString(root, "checksum", nullptr);
-    if (checksum_str == nullptr) {
-        JSON_ValueFree(root_value);
-        return false;
-    }
-    const uint64_t checksum = (uint64_t)strtoull(checksum_str, nullptr, 16);
-    if (checksum != expected_checksum) {
         JSON_ValueFree(root_value);
         return false;
     }
@@ -310,20 +220,10 @@ static bool M_TryLoadCache(
 }
 
 static void M_WriteCache(
-    const char *const cache_path, const uint64_t checksum,
-    const GF_LEVEL_TABLE *const level_table)
+    const uint64_t checksum, const GF_LEVEL_TABLE *const level_table)
 {
-    if (cache_path == nullptr) {
-        return;
-    }
-
-    File_EnsureParentDirectories(cache_path);
-
     JSON_OBJECT *const root = JSON_ObjectNew();
     JSON_ObjectAppendInt(root, "version", M_CACHE_VERSION);
-    JSON_ObjectAppendString(root, "algorithm", "fnv1a64");
-    JSON_ObjectAppendString(
-        root, "checksum", String_FormatStatic("%016" PRIx64, checksum));
     JSON_ObjectAppendInt(root, "level_count", level_table->count);
 
     JSON_ARRAY *const levels = JSON_ArrayNew();
@@ -338,7 +238,7 @@ static void M_WriteCache(
     JSON_ObjectAppendArray(root, "levels", levels);
 
     JSON_VALUE *const root_value = JSON_ValueFromObject(root);
-    JSONFile_Write(cache_path, root_value);
+    LevelCache_WriteJSON(M_CACHE_FILENAME, checksum, root_value);
     JSON_ValueFree(root_value);
 }
 
@@ -366,9 +266,8 @@ void Stats_CalculateMaxStats(void)
     memset(m_Stats, 0, sizeof(LEVEL_MAX_STATS) * (size_t)m_StatsCapacity);
 
     BENCHMARK benchmark = Benchmark_Start();
-    const char *const cache_path = M_GetCachePath();
     const uint64_t expected_checksum = M_ComputeInputsChecksum(level_table);
-    if (M_TryLoadCache(cache_path, expected_checksum, level_table)) {
+    if (M_TryLoadCache(expected_checksum, level_table)) {
         goto finish;
     }
 
@@ -434,7 +333,7 @@ void Stats_CalculateMaxStats(void)
 #endif
     }
 
-    M_WriteCache(cache_path, expected_checksum, level_table);
+    M_WriteCache(expected_checksum, level_table);
 
 finish:
     const FINAL_STATS final_stats = Stats_ComputeFinalStats(true);
