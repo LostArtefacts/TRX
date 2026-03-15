@@ -1,6 +1,7 @@
 #include <trx/game/fx/water.h>
 
 #include <trx/core/utils.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects.h>
@@ -42,6 +43,24 @@ static bool M_IsRoomUnderwater(const int16_t room_num)
     return Room_Get(room_num)->flags.underwater;
 }
 
+static void M_RememberRipple(FX_WATER_RIPPLE *const ripple)
+{
+    ripple->prev_size = ripple->size;
+    ripple->prev_life = ripple->life;
+    ripple->prev_init = ripple->init;
+}
+
+static void M_RememberSplash(FX_WATER_SPLASH *const splash)
+{
+    splash->prev_life = splash->life;
+    for (int32_t i = 0; i < 48; i++) {
+        FX_WATER_SPLASH_VERT *const v = &splash->v[i];
+        v->prev_wx = v->wx;
+        v->prev_wy = v->wy;
+        v->prev_wz = v->wz;
+    }
+}
+
 FX_WATER_RIPPLE *FX_Water_SetupRipple(
     const int32_t x, const int32_t y, const int32_t z, int32_t size,
     const bool is_still)
@@ -72,6 +91,7 @@ FX_WATER_RIPPLE *FX_Water_SetupRipple(
     ripple->x = (Random_GetControl() & 0x7F) + x - 64;
     ripple->y = y;
     ripple->z = (Random_GetControl() & 0x7F) + z - 64;
+    M_RememberRipple(ripple);
     return ripple;
 }
 
@@ -120,6 +140,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
         v->ozv = v->zv >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)(setup.inner_friction - 2);
+        v->prev_wx = v->wx;
+        v->prev_wy = v->wy;
+        v->prev_wz = v->wz;
         v++;
     }
 
@@ -138,6 +161,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
         v->ozv = v->zv >> 3;
         v->gravity = (uint8_t)setup.inner_gravity;
         v->friction = (uint8_t)setup.inner_friction;
+        v->prev_wx = v->wx;
+        v->prev_wy = v->wy;
+        v->prev_wz = v->wz;
         v++;
     }
 
@@ -152,6 +178,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
         v->ozv = v->zv >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)(setup.middle_friction - 2);
+        v->prev_wx = v->wx;
+        v->prev_wy = v->wy;
+        v->prev_wz = v->wz;
         v++;
     }
 
@@ -170,6 +199,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
         v->ozv = v->zv >> 3;
         v->gravity = (uint8_t)setup.middle_gravity;
         v->friction = (uint8_t)setup.middle_friction;
+        v->prev_wx = v->wx;
+        v->prev_wy = v->wy;
+        v->prev_wz = v->wz;
         v++;
     }
 
@@ -184,6 +216,9 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
         v->ozv = v->zv >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)(setup.outer_friction - 2);
+        v->prev_wx = v->wx;
+        v->prev_wy = v->wy;
+        v->prev_wz = v->wz;
         v++;
     }
 
@@ -202,8 +237,12 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
         v->ozv = v->zv >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)setup.outer_friction;
+        v->prev_wx = v->wx;
+        v->prev_wy = v->wy;
+        v->prev_wz = v->wz;
         v++;
     }
+    splash->prev_life = splash->life;
 
     Sound_Effect(
         SFX_LARA_SPLASH, &(XYZ_32) { setup.x, setup.y, setup.z }, SPM_NORMAL);
@@ -318,6 +357,7 @@ void FX_Water_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
     ripple->x = pos.x + (Random_GetControl() & 0x3F) - 32;
     ripple->y = pos.y;
     ripple->z = pos.z + (Random_GetControl() & 0x3F) - 32;
+    M_RememberRipple(ripple);
 }
 
 void FX_Water_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
@@ -341,6 +381,7 @@ void FX_Water_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
     ripple->x = pos.x + (Random_GetDraw() & 0x3F) - 32;
     ripple->y = pos.y;
     ripple->z = pos.z + (Random_GetDraw() & 0x3F) - 32;
+    M_RememberRipple(ripple);
 }
 
 static RGBA_8888 M_Gray(int32_t c)
@@ -352,13 +393,22 @@ static RGBA_8888 M_Gray(int32_t c)
 static void M_DrawSplash(
     const int32_t base_sprite_idx, const FX_WATER_SPLASH *s)
 {
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+
     XYZ_32 points[48];
     for (int32_t i = 0; i < 48; i++) {
         const FX_WATER_SPLASH_VERT *const v = &s->v[i];
         points[i] = (XYZ_32) {
-            .x = s->x + (v->wx >> 4),
-            .y = s->y + v->wy,
-            .z = s->z + (v->wz >> 4),
+            .x = s->x
+                + ((do_interp ? (int16_t)LERP(v->prev_wx, v->wx, ratio) : v->wx)
+                   >> 4),
+            .y = s->y
+                + (do_interp ? (int16_t)LERP(v->prev_wy, v->wy, ratio) : v->wy),
+            .z = s->z
+                + ((do_interp ? (int16_t)LERP(v->prev_wz, v->wz, ratio) : v->wz)
+                   >> 4),
         };
     }
 
@@ -369,11 +419,15 @@ static void M_DrawSplash(
             sprite_idx = base_sprite_idx + 4 + ((m_Wibble >> 4) & 3);
         }
 
-        int32_t c = (int32_t)s->life << 1;
+        const int32_t life = do_interp
+            ? (int32_t)LERP(s->prev_life, s->life, ratio)
+            : (int32_t)s->life;
+
+        int32_t c = life << 1;
         CLAMPG(c, 255);
         const RGBA_8888 c1 = M_Gray(c);
 
-        c = ((int32_t)s->life - ((int32_t)s->life >> 2)) << 1;
+        c = (life - (life >> 2)) << 1;
         CLAMPG(c, 255);
         const RGBA_8888 c2 = M_Gray(c);
 
@@ -401,7 +455,16 @@ static void M_DrawSplash(
 static void M_DrawRipple(
     const int32_t base_sprite_idx, const FX_WATER_RIPPLE *r)
 {
-    const int32_t n = (int32_t)r->size << 2;
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+    const int32_t size = do_interp ? (int32_t)LERP(r->prev_size, r->size, ratio)
+                                   : (int32_t)r->size;
+    const int32_t init = do_interp ? (int32_t)LERP(r->prev_init, r->init, ratio)
+                                   : (int32_t)r->init;
+    const int32_t life = do_interp ? (int32_t)LERP(r->prev_life, r->life, ratio)
+                                   : (int32_t)r->life;
+    const int32_t n = size << 2;
     int32_t sprite_idx = base_sprite_idx + 9;
     RGBA_8888 color;
 
@@ -411,18 +474,18 @@ static void M_DrawRipple(
         if ((r->flags & 0x20U) != 0U) {
             sprite_idx = base_sprite_idx;
             if (censored) {
-                color = (RGBA_8888) { r->life / 2, 0, r->life, 255 };
+                color = (RGBA_8888) { life / 2, 0, life, 255 };
             } else {
-                color = (RGBA_8888) { r->life, 0, 0, 255 };
+                color = (RGBA_8888) { life, 0, 0, 255 };
             }
         } else {
-            int32_t c1 = r->init != 0U ? (r->init >> 2) : (r->life >> 2);
+            int32_t c1 = init != 0 ? (init >> 2) : (life >> 2);
             c1 <<= 3;
             CLAMPG(c1, 255);
             color = M_Gray(c1);
         }
     } else {
-        int32_t c1 = r->init != 0U ? (r->init >> 1) : (r->life >> 1);
+        int32_t c1 = init != 0 ? (init >> 1) : (life >> 1);
         c1 <<= 3;
         CLAMPG(c1, 255);
         color = M_Gray(c1);
@@ -490,6 +553,8 @@ void FX_Water_Control(void)
             continue;
         }
 
+        M_RememberSplash(splash);
+
         bool set = false;
         for (int32_t j = 0; j < 48; j++) {
             FX_WATER_SPLASH_VERT *const v = &splash->v[j];
@@ -536,6 +601,8 @@ void FX_Water_Control(void)
         if ((ripple->flags & 1U) == 0U) {
             continue;
         }
+
+        M_RememberRipple(ripple);
 
         if (ripple->size < 254U) {
             ripple->size += 2U;

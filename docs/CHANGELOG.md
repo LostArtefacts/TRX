@@ -45,6 +45,7 @@
 - added Pendulum control
 - added 60 FPS interpolation to:
     - sparks
+    - water effects
     - wake effects
     - explosion rings
 - changed Ammo Counter to appear in red when the Menu Style is set to PS1
