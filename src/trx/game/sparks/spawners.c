@@ -558,7 +558,8 @@ void Sparks_TriggerBlood(
         spark->fade_to_black = 8;
         spark->life = 24;
         spark->s_life = 24;
-        spark->draw_type = 1;
+        spark->draw_type = DRAW_BLEND;
+        spark->extras = 0;
         spark->dynamic = -1;
         spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
         spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
@@ -613,7 +614,8 @@ void Sparks_TriggerBloodD(
         spark->fade_to_black = 8;
         spark->life = 24;
         spark->s_life = 24;
-        spark->draw_type = 1;
+        spark->draw_type = DRAW_BLEND;
+        spark->extras = 0;
         spark->dynamic = -1;
         spark->pos.x = pos.x + (Random_GetDraw() & 0x1F) - 16;
         spark->pos.y = pos.y + (Random_GetDraw() & 0x1F) - 16;
@@ -1118,6 +1120,7 @@ void Sparks_TriggerFlareSparks(
     spark->life = 10;
     spark->s_life = 10;
     spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
     spark->dynamic = -1;
     spark->pos.x = pos.x + (Random_GetDraw() & 7) - 3;
     spark->pos.y = pos.y + (Random_GetDraw() & 7) - 3;
@@ -1209,6 +1212,7 @@ void Sparks_TriggerRicochet(
     spark->life = 24;
     spark->s_life = 24;
     spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
     spark->dynamic = -1;
     spark->pos.x = pos.x;
     spark->pos.y = pos.y;
@@ -1242,6 +1246,7 @@ void Sparks_TriggerRicochet(
     spark->dst_color.g = c;
     spark->dst_color.b = c;
     spark->draw_type = DRAW_BLEND_SUB;
+    spark->extras = 0;
     spark->col_fade_speed = 8;
     spark->fade_to_black = 16;
     spark->life = 28;
@@ -1386,6 +1391,7 @@ void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
     spark->life = 10;
     spark->s_life = 10;
     spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
     spark->dynamic = -1;
     spark->pos.x = pos.x + (Random_GetControl() & 7) - 3;
     spark->pos.y = pos.y + (Random_GetControl() & 7) - 3;

@@ -89,7 +89,7 @@ static void M_TriggerGas(
     }
 
     spark->s_life = spark->life;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
     spark->extras = 0;
     spark->dynamic = -1;
     spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;

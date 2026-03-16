@@ -34,7 +34,7 @@ static void M_TriggerFireBallFlame(
 
     spark->fade_to_black = 8;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
     spark->life = (Random_GetControl() & 7) + 24;
     spark->s_life = spark->life;
     spark->extras = 0;

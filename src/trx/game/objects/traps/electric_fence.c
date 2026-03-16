@@ -35,6 +35,7 @@ static void M_TriggerFenceSparks(const XYZ_32 pos, const bool kill)
     spark->col_fade_speed = 8;
     spark->fade_to_black = 16;
     spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
     spark->life = 32 + (Random_GetControl() & 7);
     spark->s_life = spark->life;
     spark->dynamic = -1;
