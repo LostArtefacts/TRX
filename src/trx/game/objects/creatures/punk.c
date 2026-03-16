@@ -133,7 +133,6 @@ static void M_TriggerFireSparks(const ITEM *const item)
     spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
 
     spark->fade_to_black = 8;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
@@ -181,6 +180,7 @@ static void M_TriggerFireSparks(const ITEM *const item)
     size >>= 2;
     spark->dst_size.width = size;
     spark->dst_size.height = size;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_TriggerFireLight(const ITEM *const item)

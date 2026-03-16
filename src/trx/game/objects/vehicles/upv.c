@@ -756,7 +756,6 @@ static void M_TriggerMist(
     spark->dst_color.r = 64;
     spark->dst_color.g = 64;
     spark->dst_color.b = 64;
-    spark->color = spark->src_color;
 
     spark->fade_to_black = 12;
     spark->col_fade_speed = (Random_GetControl() & 3) + 4;
@@ -801,6 +800,7 @@ static void M_TriggerMist(
     spark->src_size.height = spark->src_size.width;
     spark->size.width = spark->src_size.width;
     spark->size.height = spark->src_size.height;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_Control(int16_t item_num)

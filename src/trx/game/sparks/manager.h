@@ -13,6 +13,8 @@ XYZ_32 Sparks_GetWorldPos(const SPARK *spark);
 
 SPARK *Sparks_GetFreeSpark(void);
 SPARK *Sparks_GetSpark(int32_t idx);
+void Sparks_Sync(SPARK *spark);
+void Sparks_FinishSetup(SPARK *spark);
 
 int8_t Sparks_AllocDynamic(uint8_t flags);
 void Sparks_FreeDynamic(int8_t idx);

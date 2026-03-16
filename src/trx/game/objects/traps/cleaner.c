@@ -83,6 +83,7 @@ static void M_TriggerSparks(
     spark->dst_color.r = spark->src_color.b >> 2;
     spark->dst_color.g = spark->src_color.b >> 1;
     spark->dst_color.b = (Random_GetControl() & 0x3F) + 192;
+
     spark->col_fade_speed = 8;
     spark->fade_to_black = 8;
     spark->draw_type = 2;
@@ -108,6 +109,7 @@ static void M_TriggerSparks(
     spark->dst_size.height = spark->size.height >> 1;
     spark->max_y_vel = 0;
     spark->gravity = (Random_GetControl() & 3) + 4;
+    Sparks_FinishSetup(spark);
 }
 
 static XZ_32 M_GetDirection(const int16_t yaw)

@@ -100,7 +100,6 @@ static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
         spark->dst_color.g = 64;
         spark->dst_color.b = 64;
     }
-    spark->color = spark->src_color;
 
     spark->col_fade_speed = 8;
     spark->fade_to_black = 64;
@@ -159,6 +158,7 @@ static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
         spark->dst_size.width + (Random_GetControl() & 0x1F) + 32;
     spark->size.height = spark->dst_size.height >> 3;
     spark->src_size.height = spark->size.height;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_Damage(

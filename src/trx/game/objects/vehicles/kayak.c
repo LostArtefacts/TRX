@@ -1031,7 +1031,7 @@ static void M_TriggerRapidsMist(const XYZ_32 pos)
     spark->dst_color.r = 192;
     spark->dst_color.g = 192;
     spark->dst_color.b = 192;
-    spark->color = spark->src_color;
+
     spark->col_fade_speed = 2;
     spark->fade_to_black = 4;
     spark->draw_type = DRAW_BLEND_ADD;
@@ -1071,6 +1071,7 @@ static void M_TriggerRapidsMist(const XYZ_32 pos)
     spark->src_size.height = spark->src_size.width;
     spark->size.height = spark->src_size.width;
     spark->dst_size.height = spark->dst_size.width;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_KayakToBaddieCollision(const ITEM *const p)

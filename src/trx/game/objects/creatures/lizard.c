@@ -77,7 +77,6 @@ static void M_TriggerGas(
     spark->dst_color.r = 0;
     spark->dst_color.g = (Random_GetControl() & 0xF) + 32;
     spark->dst_color.b = 0;
-    spark->color = spark->src_color;
 
     if (vel.x != 0 || vel.y != 0 || vel.z != 0) {
         spark->col_fade_speed = 6;
@@ -152,6 +151,7 @@ static void M_TriggerGas(
         spark->src_size.height = spark->size.height;
         spark->dst_size.height = spark->dst_size.width;
     }
+    Sparks_FinishSetup(spark);
 }
 
 static int16_t M_TriggerGasThrower(

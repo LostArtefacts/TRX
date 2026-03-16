@@ -131,6 +131,30 @@ SPARK *Sparks_GetSpark(const int32_t idx)
     return &m_Sparks[idx];
 }
 
+void Sparks_Sync(SPARK *const spark)
+{
+    if (spark == nullptr) {
+        return;
+    }
+
+    const XYZ_32 world_pos = Sparks_GetWorldPos(spark);
+    spark->prev_pos = spark->pos;
+    spark->prev_world_pos = world_pos;
+    spark->prev_color = spark->color;
+    spark->prev_size = spark->size;
+    spark->prev_rot_angle = spark->rot_angle;
+}
+
+void Sparks_FinishSetup(SPARK *const spark)
+{
+    if (spark == nullptr) {
+        return;
+    }
+
+    spark->color = spark->src_color;
+    Sparks_Sync(spark);
+}
+
 int8_t Sparks_AllocDynamic(const uint8_t flags)
 {
     for (int32_t i = 0; i < M_MAX_SPARK_DYNAMICS; i++) {
@@ -411,6 +435,7 @@ void Sparks_Control(void)
             if (lived > b) {
                 spark->pos = Sparks_GetWorldPos(spark);
                 spark->flags &= ~(SPARK_F_ATTACHED_NODE | SPARK_F_ITEM);
+                Sparks_Sync(spark);
             }
         }
     }
