@@ -28,6 +28,7 @@
 - added the ability to use flames on Pendulums, similar to TR3
 - fixed thrown flares falling through trapdoors and becoming stuck in the void if thrown underwater near the floor (#3708)
 - fixed flamethrowers and Dragon's breath doing weird animation when hitting floor (#5104, regression from 1.3)
+- fixed yetis dealing no damage during their charge attack (#5126, regression from TR2X 0.8)
 
 **TR3**:
 - added UPV control
