@@ -264,6 +264,7 @@ static void M_TriggerSummonSmoke(const XYZ_32 pos)
         spark->dst_size.width + (Random_GetControl() & 0x1F) + 32;
     spark->src_size.height = spark->dst_size.height >> 1;
     spark->size.height = spark->dst_size.height >> 1;
+    Sparks_FinishSetup(spark);
 }
 
 static bool M_CanDropItems(const ITEM *const item)
@@ -351,7 +352,6 @@ static void M_TriggerElectricSparks(
     spark->src_color.r = 255;
     spark->src_color.g = 255;
     spark->src_color.b = 255;
-    spark->color = spark->src_color;
 
     if (shield) {
         spark->dst_color.r = 255;
@@ -399,6 +399,7 @@ static void M_TriggerElectricSparks(
     spark->dst_size.height = (Random_GetControl() & 3) + 4;
     spark->gravity = 15;
     spark->max_y_vel = 0;
+    Sparks_FinishSetup(spark);
 }
 
 static bool M_LaraOnLOS(

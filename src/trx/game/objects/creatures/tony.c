@@ -101,7 +101,7 @@ static void M_TriggerFlame(int16_t item_num, int32_t node)
     spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
+
     spark->fade_to_black = 8;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
     spark->draw_type = 2;
@@ -144,6 +144,7 @@ static void M_TriggerFlame(int16_t item_num, int32_t node)
     spark->size.height = spark->size.width;
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = spark->size.height >> 2;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_Explode(ITEM *const item)

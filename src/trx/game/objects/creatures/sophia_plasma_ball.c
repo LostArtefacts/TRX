@@ -30,7 +30,6 @@ static void M_TriggerPlasmaBallFlame(const int16_t effect_num, const XYZ_32 vel)
     spark->dst_color.r = 32;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 192;
     spark->dst_color.b = (Random_GetControl() & 0x3F) + 128;
-    spark->color = spark->src_color;
 
     spark->fade_to_black = 8;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
@@ -73,6 +72,7 @@ static void M_TriggerPlasmaBallFlame(const int16_t effect_num, const XYZ_32 vel)
     spark->src_size.height = spark->size.height;
     spark->dst_size.width = spark->size.width >> 2;
     spark->dst_size.height = spark->size.height >> 2;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_Control(const int16_t effect_num)

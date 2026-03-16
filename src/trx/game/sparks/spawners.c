@@ -27,7 +27,6 @@ void Sparks_TriggerBubble(
     SPARK *const spark = Sparks_GetFreeSpark();
     *spark = (SPARK) {
         .on = true,
-        .color = { 0, 0, 0 },
         .src_color = { 0, 0, 0 },
         .dst_color = { 144, 144, 144 },
         .fade_to_black = 2,
@@ -59,6 +58,7 @@ void Sparks_TriggerBubble(
     spark->dst_size.width = dst;
     spark->dst_size.height = dst;
     spark->size = spark->src_size;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerWaterfallMist(
@@ -80,7 +80,6 @@ void Sparks_TriggerWaterfallMist(
 
         *spark = (SPARK) {
             .on = true,
-            .color = { 128, 128, 128 },
             .src_color = { 128, 128, 128 },
             .dst_color = { 192, 192, 192 },
             .col_fade_speed = 2,
@@ -125,6 +124,7 @@ void Sparks_TriggerWaterfallMist(
         spark->dst_size.width = dst_size;
         spark->dst_size.height = dst_size;
         spark->size = spark->src_size;
+        Sparks_FinishSetup(spark);
     }
 }
 
@@ -143,7 +143,6 @@ void Sparks_TriggerBreath(
 
     *spark = (SPARK) {
         .on = true,
-        .color = { 0, 0, 0 },
         .src_color = { 0, 0, 0 },
         .dst_color = { 32, 32, 32 },
         .col_fade_speed = 4,
@@ -180,6 +179,7 @@ void Sparks_TriggerBreath(
     spark->dst_size.width = dst_size;
     spark->dst_size.height = dst_size;
     spark->size = spark->src_size;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerFireFlame(
@@ -212,7 +212,6 @@ void Sparks_TriggerFireFlame(
         spark->src_color.g = (Random_GetControl() & 0x1F) + 48;
         spark->src_color.b = 48;
     }
-    spark->color = spark->src_color;
 
     if (type != 254) {
         spark->dst_color.r = (Random_GetControl() & 0x3F) - 64;
@@ -339,6 +338,7 @@ void Sparks_TriggerFireFlame(
         spark->dst_size.width = size >> 4;
         spark->dst_size.height = size >> 4;
     }
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerFireSmoke(
@@ -360,7 +360,6 @@ void Sparks_TriggerFireSmoke(
     spark->dst_color.r = 32;
     spark->dst_color.g = 32;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
 
     if (body_part == -1) {
         if (type == 255) {
@@ -416,6 +415,7 @@ void Sparks_TriggerFireSmoke(
     spark->src_size.height = spark->src_size.width;
     spark->size.height = spark->src_size.width;
     spark->dst_size.height = spark->dst_size.width;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerStaticFlame(const XYZ_32 pos, const int32_t size)
@@ -436,7 +436,6 @@ void Sparks_TriggerStaticFlame(const XYZ_32 pos, const int32_t size)
     spark->dst_color.r = spark->src_color.r;
     spark->dst_color.g = spark->src_color.g;
     spark->dst_color.b = 64;
-    spark->color = spark->src_color;
     spark->col_fade_speed = 1;
     spark->fade_to_black = 0;
     spark->life = 2;
@@ -462,6 +461,7 @@ void Sparks_TriggerStaticFlame(const XYZ_32 pos, const int32_t size)
     spark->src_size.width = size;
     spark->size.height = size;
     spark->size.width = size;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerSideFlame(
@@ -484,7 +484,6 @@ void Sparks_TriggerSideFlame(
     spark->dst_color.r = (Random_GetControl() & 0x3F) - 64;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 0x80;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
     spark->fade_to_black = 8;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
     spark->draw_type = DRAW_BLEND_ADD;
@@ -527,6 +526,7 @@ void Sparks_TriggerSideFlame(
     spark->src_size.height = size >> 1;
     spark->size.width = size >> 1;
     spark->size.height = size >> 1;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerBlood(
@@ -553,7 +553,6 @@ void Sparks_TriggerBlood(
             spark->dst_color.g = 0;
             spark->dst_color.b = 24;
         }
-        spark->color = spark->src_color;
 
         spark->col_fade_speed = 8;
         spark->fade_to_black = 8;
@@ -581,6 +580,7 @@ void Sparks_TriggerBlood(
         spark->src_size.height = 2;
         spark->dst_size.width = 2 - (Random_GetControl() & 1);
         spark->dst_size.height = 2 - (Random_GetControl() & 1);
+        Sparks_FinishSetup(spark);
     }
 }
 
@@ -608,7 +608,6 @@ void Sparks_TriggerBloodD(
             spark->dst_color.g = 0;
             spark->dst_color.b = 24;
         }
-        spark->color = spark->src_color;
 
         spark->col_fade_speed = 8;
         spark->fade_to_black = 8;
@@ -635,6 +634,7 @@ void Sparks_TriggerBloodD(
         spark->src_size.height = 2;
         spark->dst_size.width = 2 - (Random_GetDraw() & 1);
         spark->dst_size.height = 2 - (Random_GetDraw() & 1);
+        Sparks_FinishSetup(spark);
     }
 }
 
@@ -713,7 +713,6 @@ void Sparks_TriggerExplosionSparks(
     SPARK *const spark = Sparks_GetFreeSpark();
     *spark = (SPARK) {
         .on = true,
-        .color = { 255, 0, 0 },
         .src_color = { 255, 0, 0 },
         .dst_color = { 0, 0, 0 },
         .draw_type = DRAW_BLEND_ADD,
@@ -758,7 +757,6 @@ void Sparks_TriggerExplosionSparks(
         spark->fade_to_black = 16;
         spark->life = (uint8_t)((Random_GetControl() & 7) + 24);
     }
-    spark->color = spark->src_color;
     spark->s_life = spark->life;
 
     if (dynamic == -2) {
@@ -803,6 +801,7 @@ void Sparks_TriggerExplosionSparks(
     } else {
         Sparks_TriggerExplosionSmokeEnd(pos, uw, room_num);
     }
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
@@ -823,7 +822,6 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
     SPARK *const spark = Sparks_GetFreeSpark();
     *spark = (SPARK) {
         .on = true,
-        .color = { 128, 64, 0 },
         .src_color = { 128, 64, 0 },
         .dst_color = { 128, 128, 128 },
         .col_fade_speed = 8,
@@ -850,6 +848,7 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
     spark->dst_size.width = (uint8_t)(size << 1);
     spark->dst_size.height = spark->dst_size.width;
     spark->size = spark->src_size;
+    Sparks_FinishSetup(spark);
 
     for (int32_t i = 0; i < 7; i++) {
         const XYZ_32 bubble_pos = {
@@ -880,7 +879,6 @@ void Sparks_TriggerExplosionSmoke(
     spark->dst_color.r = 64;
     spark->dst_color.g = 64;
     spark->dst_color.b = 64;
-    spark->color = spark->src_color;
     spark->col_fade_speed = 2;
     spark->fade_to_black = 8;
     spark->draw_type = DRAW_BLEND_SUB;
@@ -916,6 +914,7 @@ void Sparks_TriggerExplosionSmoke(
         spark->dst_size.width + (Random_GetControl() & 0x1F) + 32;
     spark->size.height = spark->dst_size.height >> 3;
     spark->src_size.height = spark->size.height;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerExplosionSmokeEnd(
@@ -947,7 +946,6 @@ void Sparks_TriggerExplosionSmokeEnd(
         spark->dst_color.g = 64;
         spark->dst_color.b = 64;
     }
-    spark->color = spark->src_color;
 
     spark->col_fade_speed = 8;
     spark->fade_to_black = 64;
@@ -1001,6 +999,7 @@ void Sparks_TriggerExplosionSmokeEnd(
     spark->size.height = (uint8_t)(spark->dst_size.height >> 3);
     spark->src_size.height = spark->size.height;
     spark->room_num = (uint8_t)room_num;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
@@ -1021,7 +1020,6 @@ void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
     spark->dst_color.r = 64;
     spark->dst_color.g = 48;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
     spark->col_fade_speed = 8;
     spark->fade_to_black = 4;
     spark->draw_type = DRAW_BLEND_ADD;
@@ -1092,6 +1090,7 @@ void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
         spark->gravity = -4 - (Random_GetControl() & 3);
         spark->max_y_vel = -4 - (Random_GetControl() & 3);
     }
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerFlareSparks(
@@ -1113,7 +1112,6 @@ void Sparks_TriggerFlareSparks(
     spark->dst_color.r = 255;
     spark->dst_color.g = (Random_GetDraw() & 0x7F) + 64;
     spark->dst_color.b = 192 - spark->dst_color.g;
-    spark->color = spark->src_color;
     spark->col_fade_speed = 3;
     spark->fade_to_black = 5;
     spark->life = 10;
@@ -1137,6 +1135,7 @@ void Sparks_TriggerFlareSparks(
     spark->max_y_vel = 0;
     spark->gravity = 0;
     spark->flags = SPARK_F_SCALE;
+    Sparks_FinishSetup(spark);
 
     if (!smoke) {
         return;
@@ -1150,7 +1149,6 @@ void Sparks_TriggerFlareSparks(
     smoke_spark->dst_color.r = 32;
     smoke_spark->dst_color.g = 32;
     smoke_spark->dst_color.b = 32;
-    spark->color = spark->src_color;
     smoke_spark->col_fade_speed = (Random_GetDraw() & 3) + 8;
     smoke_spark->fade_to_black = 4;
     smoke_spark->draw_type = DRAW_BLEND_ADD;
@@ -1191,6 +1189,7 @@ void Sparks_TriggerFlareSparks(
     smoke_spark->dst_size.height = smoke_spark->dst_size.width;
     smoke_spark->src_size.height = smoke_spark->dst_size.height >> 3;
     smoke_spark->size.height = smoke_spark->dst_size.height >> 3;
+    Sparks_FinishSetup(smoke_spark);
 }
 
 void Sparks_TriggerRicochet(
@@ -1201,11 +1200,9 @@ void Sparks_TriggerRicochet(
     spark->src_color.r = 255;
     spark->src_color.g = (Random_GetControl() & 0x1F) + 32;
     spark->src_color.b = 0;
-    spark->color = spark->src_color;
     spark->dst_color.r = 192;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 96;
     spark->dst_color.b = 0;
-    spark->color = spark->src_color;
     spark->col_fade_speed = 8;
     spark->fade_to_black = 8;
     spark->life = 24;
@@ -1231,6 +1228,7 @@ void Sparks_TriggerRicochet(
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = (Random_GetControl() & 1) + 1;
     spark->max_y_vel = 0;
+    Sparks_FinishSetup(spark);
 
     spark = Sparks_GetFreeSpark();
     spark->on = true;
@@ -1238,7 +1236,6 @@ void Sparks_TriggerRicochet(
     spark->src_color.r = c;
     spark->src_color.g = c;
     spark->src_color.b = c;
-    spark->color = spark->src_color;
     c >>= 1;
     spark->dst_color.r = c;
     spark->dst_color.g = c;
@@ -1267,6 +1264,7 @@ void Sparks_TriggerRicochet(
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = (Random_GetControl() & 1) + 1;
     spark->max_y_vel = 0;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerGunSmoke(
@@ -1288,7 +1286,6 @@ void Sparks_TriggerGunSmokeDirected(
     spark->dst_color.r = shade << 2;
     spark->dst_color.g = shade << 2;
     spark->dst_color.b = shade << 2;
-    spark->color = spark->src_color;
     spark->col_fade_speed = 4;
     spark->fade_to_black = 32 - (initial << 4);
     spark->life = (Random_GetControl() & 3) + 40;
@@ -1370,6 +1367,7 @@ void Sparks_TriggerGunSmokeDirected(
         spark->src_size.height = spark->size.width;
         spark->dst_size.height = size;
     }
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
@@ -1382,7 +1380,6 @@ void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
     spark->dst_color.r = 255;
     spark->dst_color.g = (Random_GetControl() & 0x7F) + 64;
     spark->dst_color.b = 0;
-    spark->color = spark->src_color;
     spark->col_fade_speed = 3;
     spark->fade_to_black = 5;
     spark->life = 10;
@@ -1406,6 +1403,7 @@ void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
     spark->size.height = (Random_GetControl() & 3) + 4;
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = 1;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerRocketSmoke(
@@ -1420,7 +1418,6 @@ void Sparks_TriggerRocketSmoke(
     spark->dst_color.r = c + 64;
     spark->dst_color.g = c + 64;
     spark->dst_color.b = c + 64;
-    spark->color = spark->src_color;
     spark->fade_to_black = 12;
     spark->col_fade_speed = (Random_GetControl() & 3) + 4;
     spark->draw_type = DRAW_BLEND_ADD;
@@ -1461,6 +1458,7 @@ void Sparks_TriggerRocketSmoke(
     spark->src_size.height = size >> 2;
     spark->size.height = size >> 2;
     spark->dst_size.height = size;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerRocketFlame(
@@ -1475,7 +1473,6 @@ void Sparks_TriggerRocketFlame(
     spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
     spark->fade_to_black = 12;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
     spark->draw_type = DRAW_BLEND_ADD;
@@ -1517,6 +1514,7 @@ void Sparks_TriggerRocketFlame(
     spark->size.height = spark->size.width;
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = 2;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
@@ -1537,7 +1535,6 @@ void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
     spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
 
     spark->fade_to_black = 8;
     spark->col_fade_speed = (Random_GetControl() & 3) + 8;
@@ -1580,6 +1577,7 @@ void Sparks_TriggerFlamethrowerHitFlame(const XYZ_32 pos)
     spark->size.height = spark->size.width;
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = spark->size.height >> 4;
+    Sparks_FinishSetup(spark);
 }
 
 void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
@@ -1610,7 +1608,6 @@ void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
         spark->dst_color.g = 64;
         spark->dst_color.b = 64;
     }
-    spark->color = spark->src_color;
 
     spark->col_fade_speed = 8;
     spark->fade_to_black = 23;
@@ -1669,4 +1666,5 @@ void Sparks_TriggerFlamethrowerSmoke(const XYZ_32 pos, const bool uw)
         spark->dst_size.width + (Random_GetControl() & 0x1F) + 32;
     spark->size.height = spark->dst_size.height >> 3;
     spark->src_size.height = spark->size.height;
+    Sparks_FinishSetup(spark);
 }

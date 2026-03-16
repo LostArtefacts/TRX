@@ -449,7 +449,6 @@ static void M_TriggerExhaustSmoke(
         spark->dst_color.g = 96;
         spark->dst_color.b = 128;
     }
-    spark->color = spark->src_color;
 
     spark->col_fade_speed = 4;
     spark->fade_to_black = 4;
@@ -498,6 +497,7 @@ static void M_TriggerExhaustSmoke(
     spark->dst_size.height = spark->dst_size.width;
     spark->src_size.height = spark->dst_size.height >> 1;
     spark->size.height = spark->dst_size.height >> 1;
+    Sparks_FinishSetup(spark);
 }
 
 static bool M_SkidooCanGetOff(const int32_t lr)

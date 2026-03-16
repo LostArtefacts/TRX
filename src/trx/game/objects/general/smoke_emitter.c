@@ -35,6 +35,7 @@ static void M_Control(const int16_t item_num)
     spark->dst_color.r = 32;
     spark->dst_color.g = 32;
     spark->dst_color.b = 32;
+
     spark->fade_to_black = 64;
     spark->col_fade_speed = (Random_GetControl() & 7) + 16;
     spark->life = (Random_GetControl() & 0xF) + 96;
@@ -91,6 +92,7 @@ static void M_Control(const int16_t item_num)
         spark->dst_color.g = 24;
         spark->dst_color.b = 24;
     }
+    Sparks_FinishSetup(spark);
 }
 
 static void M_Setup(OBJECT *const obj)

@@ -31,7 +31,7 @@ static void M_TriggerFireBallFlame(
     spark->dst_color.r = (Random_GetControl() & 0x3F) + 192;
     spark->dst_color.g = (Random_GetControl() & 0x3F) + 128;
     spark->dst_color.b = 32;
-    spark->color = spark->src_color;
+
     spark->fade_to_black = 8;
     spark->col_fade_speed = (Random_GetControl() & 3) + 12;
     spark->draw_type = 2;
@@ -90,6 +90,7 @@ static void M_TriggerFireBallFlame(
         spark->gravity = 0;
         spark->scalar = 2;
     }
+    Sparks_FinishSetup(spark);
 }
 
 void TonyBoss_TriggerFireBall(

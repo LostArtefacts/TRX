@@ -30,7 +30,7 @@ static void M_Control(const int16_t item_num)
     spark->dst_color.r = 12;
     spark->dst_color.g = 32;
     spark->dst_color.b = 0;
-    spark->color = spark->src_color;
+
     spark->fade_to_black = 32;
     spark->col_fade_speed = (Random_GetControl() & 7) + 24;
     spark->draw_type = DRAW_BLEND_ADD;
@@ -69,6 +69,7 @@ static void M_Control(const int16_t item_num)
     spark->size.height = (size + (Random_GetControl() & 0x1F) + 32) >> 1;
     spark->src_size.height = spark->size.height;
     spark->dst_size.height = spark->size.height;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_Setup(OBJECT *const obj)

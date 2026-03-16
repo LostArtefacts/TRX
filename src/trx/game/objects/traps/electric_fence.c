@@ -31,7 +31,6 @@ static void M_TriggerFenceSparks(const XYZ_32 pos, const bool kill)
     spark->dst_color.b = (Random_GetControl() & 0x3F) + 192;
     spark->dst_color.r = spark->dst_color.b >> 2;
     spark->dst_color.g = spark->dst_color.b >> 1; // OG: 1
-    spark->color = spark->src_color;
 
     spark->col_fade_speed = 8;
     spark->fade_to_black = 16;
@@ -58,6 +57,7 @@ static void M_TriggerFenceSparks(const XYZ_32 pos, const bool kill)
     spark->size.height = spark->size.width * 2;
     spark->src_size.height = spark->src_size.width * 2;
     spark->dst_size.height = spark->dst_size.width * 2;
+    Sparks_FinishSetup(spark);
 }
 
 static void M_TouchFence(const XZ_32 spark_axis, XYZ_32 spark_pos)
