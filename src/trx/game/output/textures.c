@@ -689,7 +689,7 @@ SCENE_PASS Output_Textures_GetObjectTextureScenePass(const int32_t texture_idx)
 {
     switch (Output_GetObjectTexture(texture_idx)->draw_type) {
     case DRAW_OPAQUE:
-    case DRAW_REFLECTIVE:
+    case DRAW_REFLECTIVE_OPAQUE:
         return SCENE_PASS_OPAQUE;
     case DRAW_BLEND:
         if (!m_Priv.uvws.animated_objects[texture_idx]
@@ -698,6 +698,7 @@ SCENE_PASS Output_Textures_GetObjectTextureScenePass(const int32_t texture_idx)
         }
         return SCENE_PASS_TRANSPARENT;
     case DRAW_BLEND_ADD:
+    case DRAW_REFLECTIVE_BLEND_ADD:
         return SCENE_PASS_BLEND_ADD;
     case DRAW_BLEND_SUB:
         return SCENE_PASS_BLEND_SUB;

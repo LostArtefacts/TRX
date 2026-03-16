@@ -640,6 +640,11 @@
             "STAT_DETAIL_MODE_FULL": "Làn",
             "STAT_DETAIL_MODE_MINIMAL": "As lugha",
         },
+        "SUNGLASSES_MODE": {
+            "SUNGLASSES_MODE_OFF": "Dheth",
+            "SUNGLASSES_MODE_OPAQUE": "Neo-shoilleir",
+            "SUNGLASSES_MODE_TRANSPARENT": "Follaiseach",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Glas làn",
             "TARGET_LOCK_MODE_NONE": "Gun ghlas",
@@ -1416,10 +1421,6 @@
             "title": "Bogsa-nan-Speuran",
             "description": "Cuiridh seo bogsa-nan-speuran an comas ann an ìrean far a bheil e freagarrach.",
         },
-        "visuals.enable_sunglasses": {
-            "title": "Speuclairean-grèine Lara",
-            "description": "Cuiridh seo an comas speuclairean-grèine Lara.",
-        },
         "visuals.enable_weather": {
             "title": "Aimsir",
             "description": "Cuir air neo dheth an aimsir anns na h-ìrean anns a bheil i an àite.",
@@ -1471,6 +1472,10 @@
         "visuals.shadow_type": {
             "title": "Cruth nan faileasan",
             "description": "Tagh mar a thèid faileasan nithean air an sealltainn.\n\n- Ochd-cheàrnach: faileas seann TR1 agus TR2\n- Cearcall: faileas cruinn\n- Spraide: faileas stèidhichte air teacsa TR3",
+        },
+        "visuals.sunglasses_mode": {
+            "title": "Speuclairean-grèine Lara",
+            "description": "Atharraichidh seo stoidhle speuclairean-grèine Lara. Nòta: bidh na lionsan meòrachail ma tha an roghainn iomchaidh air a chur an comas.\n\n- Dheth: Cha bhi speuclairean-grèine air Lara.\n- Neo-shoilleir: Bidh lionsan neo-shoilleir air speuclairean-grèine Lara.\n- Follaiseach: Bidh lionsan leth-fhoilleiseach air speuclairean-grèine Lara.",
         },
         "visuals.ui_brightness": {
             "title": "Soilleireachd EA",

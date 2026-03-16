@@ -640,6 +640,11 @@
             "STAT_DETAIL_MODE_FULL": "Полная",
             "STAT_DETAIL_MODE_MINIMAL": "Минимальная",
         },
+        "SUNGLASSES_MODE": {
+            "SUNGLASSES_MODE_OFF": "\\{review}Выкл",
+            "SUNGLASSES_MODE_OPAQUE": "\\{review}Непрозрачный",
+            "SUNGLASSES_MODE_TRANSPARENT": "\\{review}Прозрачный",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Полный захват",
             "TARGET_LOCK_MODE_NONE": "Без захвата",
@@ -1416,10 +1421,6 @@
             "title": "Скайбоксы",
             "description": "Показывать текстуры неба и горизонта на поддерживаемых уровнях.",
         },
-        "visuals.enable_sunglasses": {
-            "title": "\\{review}Солнцезащитные очки Лары",
-            "description": "\\{review}Включает солнцезащитные очки Лары.",
-        },
         "visuals.enable_weather": {
             "title": "\\{review}Погода",
             "description": "\\{review}Включает отображение погодных эффектов в поддерживаемых уровнях.",
@@ -1471,6 +1472,10 @@
         "visuals.shadow_type": {
             "title": "\\{review}Форма теней",
             "description": "\\{review}Выбирает способ отображения теней объектов.\n\n- Восьмиугольник: старые тени из TR1 и TR2\n- Круг: круглые тени\n- Спрайт: тени на основе текстур из TR3",
+        },
+        "visuals.sunglasses_mode": {
+            "title": "\\{review}Солнцезащитные очки Лары",
+            "description": "\\{review}Изменяет стиль солнцезащитных очков Лары. Примечание: линзы будут отражающими, если соответствующая опция включена.\n\n- Выкл: Лара не будет носить солнцезащитные очки.\n- Непрозрачный: У солнцезащитных очков Лары будут непрозрачные линзы.\n- Прозрачный: У солнцезащитных очков Лары будут полупрозрачные линзы.",
         },
         "visuals.ui_brightness": {
             "title": "Яркость интерфейса",

@@ -376,6 +376,15 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
         L_READ_BOOL(g_Config.visuals.enable_glide_cameras, "fix_glide_cameras");
     }
 
+    // TRX ..1.4: sunglasses on/off changed to mode.
+    if (JSON_ObjectGetValue(parent_obj, "sunglasses_mode") == nullptr) {
+        const JSON_VALUE *const value =
+            JSON_ObjectGetValue(parent_obj, "enable_sunglasses");
+        g_Config.visuals.sunglasses_mode = JSON_ValueIsTrue(value)
+            ? SUNGLASSES_MODE_OPAQUE
+            : SUNGLASSES_MODE_OFF;
+    }
+
     if (g_Config.config_version >= 0
         && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {
         g_Config.config_version = M_CONFIG_VERSION_CURRENT;

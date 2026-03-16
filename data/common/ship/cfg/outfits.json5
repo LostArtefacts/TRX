@@ -457,7 +457,8 @@
         "EXTRA_MESH_OAR": 36,
         "EXTRA_MESH_SPANNER": 37,
         "EXTRA_MESH_DRINK_CAN": 38,
-        "EXTRA_MESH_GLASSES": 39,
+        "EXTRA_MESH_GLASSES_OPAQUE": 39,
+        "EXTRA_MESH_GLASSES_TRANSPARENT": 40,
     },
 
     "gun_maps": [

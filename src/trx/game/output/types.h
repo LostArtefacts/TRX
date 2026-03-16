@@ -24,7 +24,8 @@ typedef enum {
     DRAW_BLEND = 1,
     DRAW_BLEND_ADD = 2,
     DRAW_BLEND_SUB = 3,
-    DRAW_REFLECTIVE = 8,
+    DRAW_REFLECTIVE_OPAQUE = 8,
+    DRAW_REFLECTIVE_BLEND_ADD = 9,
 } DRAW_TYPE;
 
 typedef struct {

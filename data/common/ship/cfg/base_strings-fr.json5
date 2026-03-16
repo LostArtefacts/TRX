@@ -640,6 +640,11 @@
             "STAT_DETAIL_MODE_FULL": "Complet",
             "STAT_DETAIL_MODE_MINIMAL": "Minimal",
         },
+        "SUNGLASSES_MODE": {
+            "SUNGLASSES_MODE_OFF": "\\{review}Désactivé",
+            "SUNGLASSES_MODE_OPAQUE": "\\{review}Opaque",
+            "SUNGLASSES_MODE_TRANSPARENT": "\\{review}Transparent",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Complet",
             "TARGET_LOCK_MODE_NONE": "Aucun",
@@ -1416,10 +1421,6 @@
             "title": "Ciel",
             "description": "Active le ciel dans les niveaux pris en charge.",
         },
-        "visuals.enable_sunglasses": {
-            "title": "\\{review}Lunettes de soleil de Lara",
-            "description": "\\{review}Active les lunettes de soleil de Lara.",
-        },
         "visuals.enable_weather": {
             "title": "\\{review}Météo",
             "description": "\\{review}Active le rendu des effets météorologiques dans les niveaux pris en charge.",
@@ -1471,6 +1472,10 @@
         "visuals.shadow_type": {
             "title": "\\{review}Forme des ombres",
             "description": "\\{review}Sélectionne la manière dont les ombres des entités sont rendues.\n\n- Octogone : ombres des anciens TR1 et TR2\n- Cercle : ombres rondes\n- Sprite : ombres basées sur des textures TR3",
+        },
+        "visuals.sunglasses_mode": {
+            "title": "\\{review}Lunettes de soleil de Lara",
+            "description": "\\{review}Modifie le style des lunettes de soleil de Lara. Remarque : les verres seront réfléchissants si l’option correspondante est activée.\n\n- Désactivé : Lara ne portera pas de lunettes de soleil.\n- Opaque : Les lunettes de soleil de Lara auront des verres opaques.\n- Transparent : Les lunettes de soleil de Lara auront des verres semi-transparents.",
         },
         "visuals.ui_brightness": {
             "title": "Luminosité de l'interface",

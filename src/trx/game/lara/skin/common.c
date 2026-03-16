@@ -298,13 +298,17 @@ static void M_SetCombatFace(const bool enabled)
 
 static void M_UpdateSunglasses(void)
 {
-    const bool enabled = g_Config.visuals.enable_sunglasses
-        && M_GetCurrentOutfit()->supports_sunglasses;
-    if (enabled) {
-        Lara_Skin_SetExtraEquipment(LM_HEAD, EXTRA_MESH_GLASSES);
-    } else {
+    const SUNGLASSES_MODE mode = g_Config.visuals.sunglasses_mode;
+    if (mode == SUNGLASSES_MODE_OFF
+        || !M_GetCurrentOutfit()->supports_sunglasses) {
         Lara_Skin_ClearEquipment(LM_HEAD);
+        return;
     }
+
+    const LARA_SKIN_EXTRA_MESH mesh = mode == SUNGLASSES_MODE_OPAQUE
+        ? EXTRA_MESH_GLASSES_OPAQUE
+        : EXTRA_MESH_GLASSES_TRANSPARENT;
+    Lara_Skin_SetExtraEquipment(LM_HEAD, mesh);
 }
 
 void Lara_Skin_Initialise(void)

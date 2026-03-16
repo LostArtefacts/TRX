@@ -154,3 +154,10 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_ShadowTypeEnumEntries[] = {
     { SHADOW_TYPE_SPRITE },
     { -1 },
 };
+
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_SunglassesModeEnumEntries[] = {
+    { SUNGLASSES_MODE_OFF },
+    { SUNGLASSES_MODE_OPAQUE },
+    { SUNGLASSES_MODE_TRANSPARENT },
+    { -1 },
+};
