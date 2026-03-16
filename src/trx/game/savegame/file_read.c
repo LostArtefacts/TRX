@@ -17,6 +17,7 @@
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
+#include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
@@ -938,6 +939,22 @@ bool SG_File_LoadMisc(JSON_READ_IO *const io)
         int32_t sunset_timer;
         M_MUST(JSON_READ(io, "sunset_timer", &sunset_timer));
         Output_SetTimeInGame(sunset_timer);
+    }
+
+    {
+        // Introduced in TRX 1.4
+        int32_t rng_control_seed = 0;
+        if (M_OPTIONAL(JSON_READ(io, "rng_control_seed", &rng_control_seed))) {
+            Random_SeedControl(rng_control_seed);
+        }
+    }
+
+    {
+        // Introduced in TRX 1.4
+        int32_t rng_draw_seed = 0;
+        if (M_OPTIONAL(JSON_READ(io, "rng_draw_seed", &rng_draw_seed))) {
+            Random_SeedDraw(rng_draw_seed);
+        }
     }
 
     {
