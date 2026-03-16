@@ -14,6 +14,7 @@
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
 - added simple level-load caching by introducing a `cache/` folder
 - added an option for Lara to wear semi-transparent sunglasses (Graphic Options → Lara's sunglasses)
+- changed the reflections option to be available in all game modes (Graphic Options → Enable reflections)
 - improved level loading times by 10%
 - improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)

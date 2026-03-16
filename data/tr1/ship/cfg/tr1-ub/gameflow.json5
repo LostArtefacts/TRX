@@ -162,7 +162,6 @@
         "enable_save_crystals",   // UB has no save crystals
         "enable_ps1_crystals",    // UB has no save crystals
         "enable_item_examining",  // UB has no special item descriptions
-        "enable_reflections",     // UB has no reflective objects
         "healthbar_poison_color",
         "healthbar_poison_color_ps1",
         "enemy_healthbar_color_allies",
