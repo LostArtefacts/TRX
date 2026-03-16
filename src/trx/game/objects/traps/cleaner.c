@@ -86,7 +86,8 @@ static void M_TriggerSparks(
 
     spark->col_fade_speed = 8;
     spark->fade_to_black = 8;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
     spark->dynamic = -1;
     spark->life = (Random_GetControl() & 7) + 20;
     spark->s_life = spark->life;

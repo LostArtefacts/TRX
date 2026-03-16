@@ -225,7 +225,7 @@ static void M_TriggerSummonSmoke(const XYZ_32 pos)
     spark->dst_color.b = 0;
     spark->fade_to_black = 64;
     spark->col_fade_speed = (Random_GetControl() & 7) + 16;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
     spark->life = (Random_GetControl() & 0xF) + 96;
     spark->s_life = spark->life;
     spark->extras = 0;
@@ -373,7 +373,8 @@ static void M_TriggerElectricSparks(
     spark->fade_to_black = 8;
     spark->life = 16;
     spark->s_life = 16;
-    spark->draw_type = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
     spark->dynamic = -1;
     spark->pos.x = (Random_GetControl() & 0x1F) + pos.x - 16;
     spark->pos.y = (Random_GetControl() & 0x1F) + pos.y - 16;

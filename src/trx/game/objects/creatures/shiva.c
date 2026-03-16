@@ -107,9 +107,9 @@ static void M_TriggerSmoke(const XYZ_32 pos, const bool uw)
     spark->s_life = spark->life;
 
     if (uw) {
-        spark->draw_type = 2;
+        spark->draw_type = DRAW_BLEND_ADD;
     } else {
-        spark->draw_type = 3;
+        spark->draw_type = DRAW_BLEND_SUB;
     }
 
     spark->extras = 0;
