@@ -61,6 +61,7 @@
 - fixed `O_KILL_ALL_TRIGGERED` removing unused Save Crystals (#5035)
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
+- fixed rain not spawning in outside rooms in the Thames Wharf cutscene
 - fixed too low volume in all FMVs (except logo which used a different codec)
 - fixed Lara by default being unable to climb out of water onto steep slopes (change manually in Gameplay → Fixes → Fix water exit)
 - fixed thrown flares falling through trapdoors (regression from 1.1)
