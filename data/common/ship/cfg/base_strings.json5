@@ -640,6 +640,11 @@
             "STAT_DETAIL_MODE_FULL": "Full",
             "STAT_DETAIL_MODE_MINIMAL": "Minimal",
         },
+        "SUNGLASSES_MODE": {
+            "SUNGLASSES_MODE_OFF": "Off",
+            "SUNGLASSES_MODE_OPAQUE": "Opaque",
+            "SUNGLASSES_MODE_TRANSPARENT": "Transparent",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Full lock",
             "TARGET_LOCK_MODE_NONE": "No lock",
@@ -1416,10 +1421,6 @@
             "title": "Skyboxes",
             "description": "Enables the skybox in supported levels.",
         },
-        "visuals.enable_sunglasses": {
-            "title": "Lara's sunglasses",
-            "description": "Enables Lara's sunglasses.",
-        },
         "visuals.enable_weather": {
             "title": "Weather",
             "description": "Enables rendering of weather effects in supported levels.",
@@ -1471,6 +1472,10 @@
         "visuals.shadow_type": {
             "title": "Shadows shape",
             "description": "Selects how entity shadows are rendered.\n\n- Octagon: old TR1 and TR2 shadows\n- Circle: round shadows\n- Sprite: TR3 texture-based shadows",
+        },
+        "visuals.sunglasses_mode": {
+            "title": "Lara's sunglasses",
+            "description": "Changes the style of Lara's sunglasses. Note that lenses will be reflective if the relevant option is enabled.\n\n- Off: Lara will not wear sunglasses.\n- Opaque: Lara's sunglasses will have opaque lenses.\n- Transparent: Lara's sunglasses will have semi-transparent lenses.",
         },
         "visuals.ui_brightness": {
             "title": "UI brightness",

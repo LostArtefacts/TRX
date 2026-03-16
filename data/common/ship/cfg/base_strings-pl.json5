@@ -640,6 +640,11 @@
             "STAT_DETAIL_MODE_FULL": "Pełne",
             "STAT_DETAIL_MODE_MINIMAL": "Minimalne",
         },
+        "SUNGLASSES_MODE": {
+            "SUNGLASSES_MODE_OFF": "\\{review}Wyłączone",
+            "SUNGLASSES_MODE_OPAQUE": "\\{review}Nieprzezroczyste",
+            "SUNGLASSES_MODE_TRANSPARENT": "\\{review}Przezroczyste",
+        },
         "TARGET_LOCK_MODE": {
             "TARGET_LOCK_MODE_FULL": "Całkowity",
             "TARGET_LOCK_MODE_NONE": "Brak",
@@ -1416,10 +1421,6 @@
             "title": "Niebo",
             "description": "Włącza niebo w obsługiwanych poziomach.",
         },
-        "visuals.enable_sunglasses": {
-            "title": "Okulary przeciwsłoneczne",
-            "description": "Włącza okulary przeciwsłoneczne Lary.",
-        },
         "visuals.enable_weather": {
             "title": "Pogoda",
             "description": "Włącza efekty pogodowe w obsługiwanych poziomach.",
@@ -1471,6 +1472,10 @@
         "visuals.shadow_type": {
             "title": "Kształt cieni",
             "description": "Wybiera sposób rysowania cieni obiektów.\n\n- Ośmiokąt: stare cienie z TR1 i TR2\n- Elipsa: zaokrąglone cienie\n- Sprite: cienie oparte na teksturach z TR3",
+        },
+        "visuals.sunglasses_mode": {
+            "title": "Okulary przeciwsłoneczne",
+            "description": "\\{review}Zmienia styl okularów przeciwsłonecznych Lary. Uwaga: soczewki będą refleksyjne, jeśli odpowiednia opcja jest włączona.\n\n- Wyłączone: Lara nie będzie nosić okularów przeciwsłonecznych.\n- Nieprzezroczyste: Okulary przeciwsłoneczne Lary będą miały nieprzezroczyste soczewki.\n- Przezroczyste: Okulary przeciwsłoneczne Lary będą miały półprzezroczyste soczewki.",
         },
         "visuals.ui_brightness": {
             "title": "Jasność interfejsu",

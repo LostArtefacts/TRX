@@ -155,7 +155,7 @@ void OutputSource_Sprites_Stage(
         .light_info = light_info,
     };
 
-    if (draw_type == DRAW_BLEND_ADD) {
+    if (draw_type == DRAW_BLEND_ADD || draw_type == DRAW_REFLECTIVE_BLEND_ADD) {
         inst.mesh = p->meshes_blend_add[sprite_idx];
         MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_BLEND_ADD);
     } else {

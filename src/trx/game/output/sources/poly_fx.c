@@ -456,7 +456,7 @@ static void M_StagePrim(
 static VECTOR *M_GetScheduledVectorForDrawType(
     M_PRIV *const p, const DRAW_TYPE draw_type)
 {
-    if (draw_type == DRAW_BLEND_ADD) {
+    if (draw_type == DRAW_BLEND_ADD || draw_type == DRAW_REFLECTIVE_BLEND_ADD) {
         return p->scheduled_blend_add;
     }
     if (draw_type == DRAW_BLEND_SUB) {
@@ -815,7 +815,8 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     if ((spark->flags & SPARK_F_SPRITE) == 0U) {
         flags |= VERT_FLAT_SHADED;
         sprite_idx = -1;
-        if (draw_type == DRAW_BLEND_ADD) {
+        if (draw_type == DRAW_BLEND_ADD
+            || draw_type == DRAW_REFLECTIVE_BLEND_ADD) {
             color.a = 128;
         }
         draw_type = DRAW_BLEND;

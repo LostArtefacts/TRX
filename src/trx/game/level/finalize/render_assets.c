@@ -141,6 +141,16 @@ static void M_PremultiplyTexturePage(void *userdata)
     Output_UnlockTexturePage32(page);
 }
 
+static void M_UpdateReflectivity(OBJECT_MESH *const mesh, FACE *const face)
+{
+    const OBJECT_TEXTURE *const texture =
+        Output_GetObjectTexture(face->texture_idx);
+    const bool reflective = texture->draw_type == DRAW_REFLECTIVE_OPAQUE
+        || texture->draw_type == DRAW_REFLECTIVE_BLEND_ADD;
+    face->enable_reflections |= reflective;
+    mesh->enable_reflections |= reflective;
+}
+
 void Level_Finalize_LoadTextures(LEVEL_CONTEXT *const ctx)
 {
     for (int32_t room_num = 0; room_num < Room_GetCount(); room_num++) {
@@ -160,8 +170,7 @@ void Level_Finalize_LoadTextures(LEVEL_CONTEXT *const ctx)
             OBJECT_TEXTURE *const texture =
                 Output_GetObjectTexture(face->texture_idx);
             texture->uv_count = 3;
-            face->enable_reflections = texture->draw_type == DRAW_REFLECTIVE;
-            mesh->enable_reflections |= face->enable_reflections;
+            M_UpdateReflectivity(mesh, face);
         }
     }
 
@@ -190,10 +199,7 @@ void Level_Finalize_LoadTextures(LEVEL_CONTEXT *const ctx)
                 mesh->vertices[face->vertices[3]],
             };
             M_FixTrapezoidRatios(face, vertices);
-            const OBJECT_TEXTURE *const texture =
-                Output_GetObjectTexture(face->texture_idx);
-            face->enable_reflections = texture->draw_type == DRAW_REFLECTIVE;
-            mesh->enable_reflections |= face->enable_reflections;
+            M_UpdateReflectivity(mesh, face);
         }
     }
 }

@@ -121,5 +121,7 @@ Module for interacting with the Lara's object.
     An index to the spanner mesh used when Lara is in the minecart.
 - `trx.lara.extra_mesh.drink_can`  
     An index to the drink can mesh used in the High Security Compound cutscene.
-- `trx.lara.extra_mesh.glasses`  
-    An index to Lara's sunglasses mesh.
+- `trx.lara.extra_mesh.glasses_opaque`  
+    An index to Lara's opaque sunglasses mesh.
+- `trx.lara.extra_mesh.glasses_transparent`  
+    An index to Lara's transparent sunglasses mesh.
