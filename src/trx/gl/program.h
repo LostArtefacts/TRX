@@ -2,7 +2,7 @@
 
 #include <trx/gl/enum.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 typedef struct {
     char *path;

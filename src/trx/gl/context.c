@@ -8,7 +8,7 @@
 #include <trx/gl/screenshot.h>
 #include <trx/gl/utils.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 #include <SDL2/SDL_video.h>
 #include <string.h>
 
@@ -31,6 +31,13 @@ extern RGBA_F Output_GetFogColor(void);
 
 static TRX_GL_CONTEXT m_Context = {};
 
+static bool s_is_gles = false;
+
+bool TRX_GL_Context_IsGLES(void)
+{
+    return s_is_gles;
+}
+
 static bool M_IsExtensionSupported(const char *name)
 {
     int number_of_extensions;
@@ -49,19 +56,24 @@ static bool M_IsExtensionSupported(const char *name)
     return false;
 }
 
-static GLvoid GLAPIENTRY M_GLDebug(
-    const GLenum source, const GLenum type, const GLuint id,
-    const GLenum severity, const GLsizei length, const GLchar *const message,
-    const void *const user_param)
+static void M_GLDebug(GLenum source, GLenum type, GLuint id,
+                      GLenum severity, GLsizei length,
+                      const GLchar *message, const void *userParam)
 {
-    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) {
-        return;
+    // corpo funzione
+}
+
+static void M_SetupGLAttributes(const bool gles)
+{
+    if (gles) {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    } else {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     }
-    size_t len = strlen(message);
-    if (len > 0 && message[len - 1] == '\n') {
-        len--;
-    }
-    LOG_INFO("%d %*s", source, len, message);
 }
 
 void TRX_GL_Context_SwitchToViewport(const VIEWPORT_SPACE space)
@@ -81,12 +93,33 @@ bool TRX_GL_Context_Attach(void *window_handle)
         return false;
     }
 
-    LOG_INFO("Attaching to window %p", window_handle);
+    // Determine whether to request an OpenGL ES context.
+    // Use TRX_USE_GLES=1 to force GLES (useful for iOS/ANGLE builds).
+    bool use_gles = false;
+    const char *use_gles_env = getenv("TRX_USE_GLES");
+    if (use_gles_env != nullptr && use_gles_env[0] != '\0' && strcmp(use_gles_env, "0") != 0) {
+        use_gles = true;
+    }
+
+    M_SetupGLAttributes(use_gles);
+
+    LOG_INFO("Attaching to window %p (GLES=%d)", window_handle, use_gles);
     m_Context.context = SDL_GL_CreateContext(window_handle);
+    if (m_Context.context == nullptr && use_gles) {
+        LOG_WARNING(
+            "GLES context failed (%s), retrying with desktop OpenGL",
+            SDL_GetError());
+        M_SetupGLAttributes(false);
+        m_Context.context = SDL_GL_CreateContext(window_handle);
+        use_gles = false;
+    }
+
     if (m_Context.context == nullptr) {
         LOG_ERROR("Can't create OpenGL context: %s", SDL_GetError());
         return false;
     }
+
+    s_is_gles = use_gles;
 
     m_Context.config.line_width = 1;
     m_Context.config.enable_wireframe = false;
@@ -100,19 +133,44 @@ bool TRX_GL_Context_Attach(void *window_handle)
             "Can't activate OpenGL context: %s", SDL_GetError());
     }
 
-    const GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        if (err != 4) {
+    SDL_GLContext current = SDL_GL_GetCurrentContext();
+    SDL_Window *current_window = SDL_GL_GetCurrentWindow();
+    LOG_INFO("SDL current context %p (expected %p), window %p (expected %p)",
+        current, m_Context.context, current_window, m_Context.window_handle);
+
+    int actual_major = 0;
+    int actual_minor = 0;
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &actual_major);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &actual_minor);
+
+    LOG_INFO("SDL says GL context version %d.%d (GLES=%d)",
+        actual_major, actual_minor, use_gles);
+
+#ifndef TRX_USE_GLES
+    // GLEW must be initialized before calling any GL functions on desktop OpenGL.
+    // Ensure core profile functions are loaded.
+    glewExperimental = GL_TRUE;
+    const GLenum glew_err = glewInit();
+    if (glew_err != GLEW_OK) {
+        if (glew_err != 4) {
             Shell_ExitSystemFmt(
-                "Can't initialize GLEW for OpenGL extension loading: %d", err);
+                "Can't initialize GLEW for OpenGL extension loading: %d", glew_err);
         }
         // https://github.com/nigels-com/glew/issues/417
-        LOG_WARNING("GLEW failed to init: %d", err);
+        LOG_WARNING("GLEW failed to init: %d", glew_err);
     }
+    TRX_GL_CheckError();
+#endif
 
-    LOG_INFO("OpenGL vendor string:   %s", glGetString(GL_VENDOR));
-    LOG_INFO("OpenGL renderer string: %s", glGetString(GL_RENDERER));
-    LOG_INFO("OpenGL version string:  %s", glGetString(GL_VERSION));
+    const GLubyte *vendor = glGetString(GL_VENDOR);
+    const GLubyte *renderer = glGetString(GL_RENDERER);
+    const GLubyte *version = glGetString(GL_VERSION);
+
+    LOG_INFO("OpenGL vendor string:   %s", vendor ? (const char *)vendor : "(null)");
+    LOG_INFO("OpenGL renderer string: %s", renderer ? (const char *)renderer : "(null)");
+    LOG_INFO("OpenGL version string:  %s", version ? (const char *)version : "(null)");
+
+    TRX_GL_CheckError();
 
     shading_ver = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
     if (shading_ver != nullptr) {
@@ -122,7 +180,7 @@ bool TRX_GL_Context_Attach(void *window_handle)
     }
 
     glClearColor(0, 0, 0, 0);
-    glClearDepth(1);
+    glClearDepthf(1.0f);
     TRX_GL_CheckError();
 
     // VSync defaults to on unless user disabled it in runtime json

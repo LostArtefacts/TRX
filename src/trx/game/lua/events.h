@@ -1,7 +1,7 @@
 // Lua event listener support
 #pragma once
 
-#include <lualib.h>
+#include <lua/lualib.h>
 #include <stdint.h>
 
 // Event types for Lua listeners

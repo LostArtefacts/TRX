@@ -1,11 +1,12 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 typedef struct {
     bool initialized;
     GLuint id;
     GLenum target;
+    GLsizeiptr size;
 } TRX_GL_BUFFER;
 
 void TRX_GL_Buffer_Init(TRX_GL_BUFFER *buf, GLenum target);

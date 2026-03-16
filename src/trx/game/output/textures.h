@@ -3,7 +3,7 @@
 #include <trx/game/output/scene_source.h>
 #include <trx/game/output/types.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 #pragma pack(push, 1)
 typedef struct {

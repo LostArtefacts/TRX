@@ -1,7 +1,7 @@
 #include <trx/core/log.h>
 
-#include <lauxlib.h>
-#include <lua.h>
+#include <lua/lauxlib.h>
+#include <lua/lua.h>
 
 // trxc.log.log(level, msg)
 static int M_L_LogGeneric(lua_State *const L)

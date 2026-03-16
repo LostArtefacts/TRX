@@ -1,3 +1,9 @@
+#ifdef GL_ES
+#version 300 es
+precision highp float;
+precision mediump sampler2D;
+#endif
+
 #define BILLBOARD_LOCK_NONE        0
 #define BILLBOARD_LOCK_ROLL        1
 #define BILLBOARD_LOCK_ROLL_PITCH  2

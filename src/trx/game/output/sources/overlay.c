@@ -618,8 +618,13 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
         .width = TEXTURE_PAGE_WIDTH,
         .height = TEXTURE_PAGE_HEIGHT,
         .bit_count = 32,
-        .tex_format = GL_RGBA,
-        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
+        #ifndef GL_BGRA
+        #define GL_BGRA 0x80E1
+        #endif
+
+        #ifndef GL_UNSIGNED_INT_8_8_8_8_REV
+        #define GL_UNSIGNED_INT_8_8_8_8_REV 0x8367
+        #endif
         .uv = {
             {
                 texture->uv[0].u / 256.0f / TEXTURE_PAGE_WIDTH,

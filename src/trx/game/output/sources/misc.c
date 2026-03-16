@@ -182,6 +182,9 @@ static void M_RenderPass(
     glVertexAttrib3f(OUTPUT_MESH_ATTR_UVW, 0.0f, 0.0f, 0.0f);
     glVertexAttrib4f(OUTPUT_MESH_ATTR_TEXTURE_SIZE, 0.0f, 0.0f, 1.0f, 1.0f);
     glVertexAttrib2f(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 1.0f, 1.0f);
+    #ifdef __APPLE__  // o USE_GLES se hai un define specifico per GLES
+    #define glVertexAttribI1ui(index, x) glVertexAttribI4ui(index, x, 0, 0, 0)
+    #endif
     glVertexAttribI1ui(
         OUTPUT_MESH_ATTR_FLAGS,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE);
@@ -196,12 +199,13 @@ static void M_RenderPass(
         glDisableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
         glVertexAttrib4f(
             OUTPUT_MESH_ATTR_COLOR, color.r, color.g, color.b, color.a);
-        GLint bound_polygon_mode[2];
-        glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        // glPolygonMode removed for GLES - wireframe not supported
+        // GLint bound_polygon_mode[2];
+        // glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         M_DrawScheduled(p, p->scheduled_spheres);
         glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
-        glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
+        // glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     }
     if (p->scheduled_cuboids->count > 0) {
         const bool wireframe_state = g_Config.rendering.enable_wireframe;
@@ -209,12 +213,13 @@ static void M_RenderPass(
         glDisableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
         glVertexAttrib4f(
             OUTPUT_MESH_ATTR_COLOR, color.r, color.g, color.b, color.a);
-        GLint bound_polygon_mode2[2];
-        glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode2[0]);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        // glPolygonMode removed for GLES - wireframe not supported
+        // GLint bound_polygon_mode2[2];
+        // glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode2[0]);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         M_DrawScheduled(p, p->scheduled_cuboids);
         glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
-        glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode2[0]);
+        // glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode2[0]);
     }
 }
 

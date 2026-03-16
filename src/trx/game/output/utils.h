@@ -2,7 +2,7 @@
 
 #include <trx/game/matrix.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 #define OUTPUT_QUAD_VERTICES 6
 #define OUTPUT_TRI_VERTICES 3

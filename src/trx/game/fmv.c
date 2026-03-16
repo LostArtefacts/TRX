@@ -39,8 +39,13 @@ static OUTPUT_QUAD_SURFACE_DESC M_MakeSurfaceDesc(
         .width = width,
         .height = height,
         .bit_count = 32,
-        .tex_format = GL_BGRA,
-        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
+        #ifndef GL_BGRA
+        #define GL_BGRA 0x80E1
+        #endif
+
+        #ifndef GL_UNSIGNED_INT_8_8_8_8_REV
+        #define GL_UNSIGNED_INT_8_8_8_8_REV 0x8367
+        #endif
         .uv = {
             { .u = 0.0f, .v = 0.0f },
             { .u = 1.0f, .v = 0.0f },

@@ -103,6 +103,9 @@ static void M_RenderPass(
     glVertexAttrib3f(OUTPUT_MESH_ATTR_UVW, 0.0f, 0.0f, 0.0f);
     glVertexAttrib4f(OUTPUT_MESH_ATTR_TEXTURE_SIZE, 0.0f, 0.0f, 1.0f, 1.0f);
     glVertexAttrib2f(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO, 1.0f, 1.0f);
+    #ifdef __APPLE__  // o USE_GLES se hai un define specifico per GLES
+    #define glVertexAttribI1ui(index, x) glVertexAttribI4ui(index, x, 0, 0, 0)
+    #endif
     glVertexAttribI1ui(
         OUTPUT_MESH_ATTR_FLAGS,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_BILLBOARD

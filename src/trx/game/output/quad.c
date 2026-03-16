@@ -5,7 +5,7 @@
 #include <trx/game/output/shaders/generic.h>
 #include <trx/gl/utils.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -298,8 +298,13 @@ void Output_Quad_SetExternalTexture(
         .width = width,
         .height = height,
         .bit_count = 32,
-        .tex_format = GL_RGBA,
-        .tex_type = GL_UNSIGNED_INT_8_8_8_8_REV,
+        #ifndef GL_BGRA
+        #define GL_BGRA 0x80E1
+        #endif
+
+        #ifndef GL_UNSIGNED_INT_8_8_8_8_REV
+        #define GL_UNSIGNED_INT_8_8_8_8_REV 0x8367
+        #endif
         .uv = {
             { .u = 0.0f, .v = v0 },
             { .u = 1.0f, .v = v0 },
@@ -448,10 +453,13 @@ void Output_Quad_Render(OUTPUT_QUAD *const r)
     if (was_blend_enabled) {
         glDisable(GL_BLEND);
     }
-
+    #ifndef GL_POLYGON_MODE
+    #define GL_POLYGON_MODE 0
+    #endif
     GLint bound_polygon_mode[2];
     glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode removed for GLES - always fill
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     const GLboolean was_depth_test_enabled = glIsEnabled(GL_DEPTH_TEST);
     if (was_depth_test_enabled) {
@@ -460,7 +468,8 @@ void Output_Quad_Render(OUTPUT_QUAD *const r)
 
     glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
 
-    glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
+    // glPolygonMode removed for GLES
+    // glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     if (was_depth_test_enabled) {
         glEnable(GL_DEPTH_TEST);
     }
@@ -496,7 +505,8 @@ void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
 
     GLint bound_polygon_mode[2];
     glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode removed for GLES - always fill
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     const GLboolean was_depth_test_enabled = glIsEnabled(GL_DEPTH_TEST);
     if (was_depth_test_enabled) {
@@ -505,7 +515,8 @@ void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
 
     glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
 
-    glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
+    // glPolygonMode removed for GLES
+    // glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     if (was_depth_test_enabled) {
         glEnable(GL_DEPTH_TEST);
     }

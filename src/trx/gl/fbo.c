@@ -10,7 +10,7 @@
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 void TRX_GL_FBO_Init(
     TRX_GL_FBO *const fbo, const int32_t width, const int32_t height,
@@ -51,7 +51,8 @@ void TRX_GL_FBO_Init(
     TRX_GL_CheckError();
 
     // direct draw to color attachment 0.
-    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+    GLenum bufs[1] = { GL_COLOR_ATTACHMENT0 };
+    glDrawBuffers(1, bufs);
     TRX_GL_CheckError();
 
     if (with_depth_stencil) {
@@ -72,8 +73,10 @@ void TRX_GL_FBO_Init(
         fbo->rbo = 0;
     }
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        LOG_ERROR("framebuffer is not complete!");
+    const GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        LOG_ERROR(
+            "framebuffer is not complete! status=0x%04X (%u)", status, status);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

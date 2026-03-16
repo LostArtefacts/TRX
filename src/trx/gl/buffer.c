@@ -53,7 +53,7 @@ void *TRX_GL_Buffer_Map(TRX_GL_BUFFER *buf, GLenum access)
 {
     ASSERT(buf != nullptr);
     ASSERT(buf->initialized);
-    void *ret = glMapBuffer(buf->target, access);
+    void *ret = glMapBufferRange(buf->target, 0, buf->size, access);
     TRX_GL_CheckError();
     return ret;
 }

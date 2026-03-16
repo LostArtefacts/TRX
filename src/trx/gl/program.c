@@ -8,6 +8,7 @@
 #include <trx/game/shell.h>
 #include <trx/gl/track.h>
 #include <trx/gl/utils.h>
+#include <trx/gl/context.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -150,13 +151,15 @@ static char *M_Preprocess(const char *content, GLenum type)
 {
     ASSERT(content != nullptr);
 
-    const char *version_ogl33c = "#version 330 core\n";
+    const char *version = TRX_GL_Context_IsGLES()
+        ? "#version 300 es\n"
+        : "#version 330 core\n";
     const char *define_vertex = "#define VERTEX\n";
     const char *define_fragment = "#define FRAGMENT\n";
 
     size_t bufsize = strlen(content) + 1;
 
-    bufsize += strlen(version_ogl33c);
+    bufsize += strlen(version);
 
     if (type == GL_VERTEX_SHADER) {
         bufsize += strlen(define_vertex);
@@ -165,7 +168,7 @@ static char *M_Preprocess(const char *content, GLenum type)
     }
 
     char *processed_content = Memory_Alloc(bufsize);
-    strcpy(processed_content, version_ogl33c);
+    strcpy(processed_content, version);
 
     if (type == GL_VERTEX_SHADER) {
         strcat(processed_content, define_vertex);
@@ -303,7 +306,6 @@ void TRX_GL_Program_FragmentData(
     TRX_GL_PROGRAM *const program, const char *const name)
 {
     ASSERT(program != nullptr);
-    glBindFragDataLocation(program->id, 0, name);
     TRX_GL_CheckError();
 }
 

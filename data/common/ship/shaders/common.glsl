@@ -1,3 +1,9 @@
+#ifdef GL_ES
+#version 300 es
+precision highp float;
+precision mediump sampler2D;
+#endif
+
 #define PI 3.1415926538
 
 #define WALL_L      1024

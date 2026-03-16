@@ -4,8 +4,8 @@
 #include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
 
-#include <lauxlib.h>
-#include <lua.h>
+#include <lua/lauxlib.h>
+#include <lua/lua.h>
 
 typedef struct {
     int32_t ref;

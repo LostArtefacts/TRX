@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 typedef struct {
     bool initialized;

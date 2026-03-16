@@ -4,7 +4,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/rooms/types.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 typedef struct {
     int32_t ls_adder;

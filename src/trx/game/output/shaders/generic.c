@@ -52,6 +52,10 @@ static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
         program_id, block_idx, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES,
         (GLint *)uniform_indices);
 
+    #ifdef USE_GLES
+        // Non facciamo nulla, solo placeholder
+        #define glGetActiveUniformName(program, index, bufSize, length, name) ((void)0)
+        #endif
     // Query offsets
     GLint *const offsets = Memory_Alloc(sizeof(GLint) * uniform_count);
     glGetActiveUniformsiv(
@@ -59,11 +63,21 @@ static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
 
     // Print block name and all members
     LOG_DEBUG("Uniform Block %u: %s", block_idx, block_name);
+
     for (GLint i = 0; i < uniform_count; ++i) {
-        char name[256];
-        GLsizei length;
-        glGetActiveUniformName(
-            program_id, uniform_indices[i], sizeof(name), &length, name);
+        GLuint idx = uniform_indices[i];   // prendi l'indice corretto
+        GLint uniform_size = 0;
+        GLint uniform_type = 0;
+
+        // Leggi dimensione e tipo della uniform
+        glGetActiveUniformsiv(program_id, 1, &idx, GL_UNIFORM_SIZE, &uniform_size);
+        glGetActiveUniformsiv(program_id, 1, &idx, GL_UNIFORM_TYPE, &uniform_type);
+
+        // Leggi il nome della uniform
+        GLsizei length = 0;
+        char name[256] = {0};
+        glGetActiveUniform(program_id, idx, sizeof(name), &length, &uniform_size, &uniform_type, name);
+
         LOG_DEBUG("  %s → offset %d", name, offsets[i]);
     }
 

@@ -108,7 +108,9 @@ static void M_PrepareScene(const M_PRIV *const p)
     glLineWidth(g_Config.rendering.wireframe_width);
     TRX_GL_CheckError();
 #endif
-
+#ifndef GL_TEXTURE_MAX_ANISOTROPY_EXT
+#define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
+#endif
     glBindSampler(0, p->sampler_id);
     glSamplerParameterf(
         p->sampler_id, GL_TEXTURE_MAX_ANISOTROPY_EXT,
@@ -136,9 +138,10 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     OUTPUT_MESH_SHADER *const shader = Output_GetMeshShader();
     Output_MeshShader_Bind(shader);
 
-    glPolygonMode(
-        GL_FRONT_AND_BACK,
-        g_Config.rendering.enable_wireframe ? GL_LINE : GL_FILL);
+    // glPolygonMode removed for GLES - wireframe not supported
+    // glPolygonMode(
+    //     GL_FRONT_AND_BACK,
+    //     g_Config.rendering.enable_wireframe ? GL_LINE : GL_FILL);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_POLYGON_OFFSET_FILL);

@@ -275,7 +275,8 @@ static void M_RenderPass(
         return;
     }
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode removed for GLES - always fill
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     if (p->vertices->count > 0) {
         M_DrawVertices(p);
     }

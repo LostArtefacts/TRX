@@ -17,6 +17,8 @@ void TRX_GL_Context_SetVSync(bool vsync);
 
 void *TRX_GL_Context_GetWindowHandle(void);
 
+bool TRX_GL_Context_IsGLES(void);
+
 void TRX_GL_Context_Clear(void);
 void TRX_GL_Context_SwapBuffers(void);
 void TRX_GL_Context_SetRendered(void);

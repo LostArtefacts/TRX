@@ -6,7 +6,7 @@
 #include <trx/gl/context.h>
 #include <trx/gl/texture.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 // Off-screen framebuffer with a single color attachment and optional
 // depth+stencil.

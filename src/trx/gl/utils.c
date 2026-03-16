@@ -1,6 +1,6 @@
 #include <trx/gl/utils.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 
 const char *TRX_GL_GetErrorString(GLenum err)
 {
@@ -17,10 +17,6 @@ const char *TRX_GL_GetErrorString(GLenum err)
         return "GL_INVALID_FRAMEBUFFER_OPERATION";
     case GL_OUT_OF_MEMORY:
         return "GL_OUT_OF_MEMORY";
-    case GL_STACK_UNDERFLOW:
-        return "GL_STACK_UNDERFLOW";
-    case GL_STACK_OVERFLOW:
-        return "GL_STACK_OVERFLOW";
     default:
         return "UNKNOWN";
     }

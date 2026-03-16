@@ -104,6 +104,10 @@ endif
 
 if host_machine.system() == 'windows'
   dep_opengl = c_compiler.find_library('opengl32')
+elif host_machine.system() == 'darwin'
+  # On macOS prefer the Apple OpenGL framework rather than any Homebrew/Mesa
+  # libGL that may be installed.
+  dep_opengl = dependency('opengl', method: 'extraframework')
 else
   dep_opengl = dependency('GL')
 endif

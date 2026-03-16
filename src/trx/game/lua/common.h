@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lualib.h>
+#include <lua/lualib.h>
 #include <stdint.h>
 
 // Result of evaluating a Lua chunk.

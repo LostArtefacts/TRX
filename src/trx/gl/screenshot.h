@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 #include <stdint.h>
 
 bool TRX_GL_Screenshot_CaptureToFile(const char *path);

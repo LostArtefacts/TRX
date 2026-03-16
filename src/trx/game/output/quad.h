@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 #include <stdint.h>
 
 // Textured screen-space quad renderer used by output code paths such as FMV

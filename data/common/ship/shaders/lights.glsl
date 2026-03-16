@@ -1,3 +1,9 @@
+#ifdef GL_ES
+#version 300 es
+precision highp float;
+precision mediump sampler2D;
+#endif
+
 #define MAX_LIGHTS 32
 
 #define RLM_NORMAL  0

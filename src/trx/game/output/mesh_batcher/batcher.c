@@ -216,7 +216,7 @@ static void M_DrawOpaqueVertices(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     const void *indices_offset =
         (void *)(intptr_t)(bind->opaque_index_start * sizeof(uint32_t));
-    glDrawElementsBaseVertex(
+    glDrawElementsInstanced(
         GL_TRIANGLES, bind->opaque_index_count, GL_UNSIGNED_INT,
         indices_offset, // Offset in EBO
         bind->vertex_start // Offset in VBO (baseVertex)
@@ -231,7 +231,7 @@ static void M_DrawBlendAddVertices(
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     const void *indices_offset =
         (void *)(intptr_t)(bind->blend_add_index_start * sizeof(uint32_t));
-    glDrawElementsBaseVertex(
+    glDrawElementsInstanced(
         GL_TRIANGLES, bind->blend_add_index_count, GL_UNSIGNED_INT,
         indices_offset, // Offset in EBO
         bind->vertex_start // Offset in VBO (baseVertex)

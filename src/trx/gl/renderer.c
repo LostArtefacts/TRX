@@ -14,7 +14,7 @@
 #include <trx/gl/utils.h>
 #include <trx/gl/vertex_array.h>
 
-#include <GL/glew.h>
+#include <trx/gl/gl.h>
 #include <SDL2/SDL_video.h>
 #include <stdint.h>
 
@@ -62,7 +62,8 @@ static void M_Render(TRX_GL_RENDERER *renderer)
 
     TRX_GL_FBO_Unbind();
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode removed for GLES compatibility - always fill mode
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     TRX_GL_CheckError();
 
     TRX_GL_Program_Bind(&p->program);
