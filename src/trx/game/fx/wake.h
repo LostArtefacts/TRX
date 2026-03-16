@@ -9,7 +9,7 @@ typedef struct {
     uint8_t life;
 } FX_WAKE_POINT;
 
-void FX_Wake_ClearPoints(void);
+void FX_Wake_Reset(void);
 void FX_Wake_Control(void);
 
 FX_WAKE_POINT *FX_Wake_GetPoint(int32_t wake_idx, int32_t side);

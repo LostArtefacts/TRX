@@ -3,7 +3,7 @@
 #include <trx/core/vector.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/fx.h>
+#include <trx/game/fx.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>

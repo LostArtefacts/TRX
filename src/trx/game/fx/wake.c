@@ -30,7 +30,7 @@ static XYZ_32 M_GetWakeOrigin(const ITEM *const item, const XZ_32 offset)
     return pos;
 }
 
-void FX_Wake_ClearPoints(void)
+void FX_Wake_Reset(void)
 {
     for (int32_t i = 0; i < M_MAX_POINTS; i++) {
         m_Points[i][0].life = 0;
