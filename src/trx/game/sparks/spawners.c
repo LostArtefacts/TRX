@@ -795,6 +795,7 @@ void Sparks_TriggerExplosionSparks(
         const RGB_888 dst = spark->dst_color;
         spark->src_color = (RGB_888) { src.b, src.r, src.g };
         spark->dst_color = (RGB_888) { dst.b, dst.r, dst.g };
+        spark->color = spark->src_color;
         spark->flags |= SPARK_F_GREEN;
     } else if (extras != 0) {
         Sparks_TriggerExplosionSmoke(pos, uw, room_num);
