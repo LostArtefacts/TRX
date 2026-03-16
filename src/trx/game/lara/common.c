@@ -129,6 +129,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->interact_target.item_num = NO_ITEM;
     lara_info->interact_target.move_count = 0;
     lara_info->poison_timer = 0;
+    lara_info->tr3_smoke_count_l = 0;
+    lara_info->tr3_smoke_count_r = 0;
 
     LOT_InitialiseLOT(&lara_info->lot);
     lara_info->lot.setup.step = WALL_L * 20;

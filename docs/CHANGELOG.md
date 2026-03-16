@@ -66,6 +66,7 @@
 - fixed thrown flares falling through trapdoors (regression from 1.1)
 - fixed some level textures appearing slightly misaligned on room geometry
 - fixed potential AI behavioural differences in the South Pacific Mercenary (regression from 1.2)
+- fixed smoke from Lara's guns persisting between levels (regression from 1.1)
 
 
 
