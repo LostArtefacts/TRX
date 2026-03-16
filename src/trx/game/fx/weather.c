@@ -77,26 +77,35 @@ static int64_t M_GetViewDepth(const XYZ_32 pos)
     // clang-format on
 }
 
-static void M_SpawnRainDrop(M_RAINDROP *const drop)
+static bool M_SpawnParticle(XYZ_32 *const pos)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item == nullptr) {
-        return;
+        return false;
+    }
+
+    XYZ_32 lara_pos = {};
+    if (!Lara_GetMeshPos(LM_HIPS, &lara_pos)) {
+        lara_pos = lara_item->pos;
     }
 
     const int32_t dist = Random_GetDraw() & M_RAIN_SPAWN_DIST_MASK;
     const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) * 8;
-
-    drop->pos = (XYZ_32) {
-        .x = lara_item->pos.x + ((dist * Math_Sin(angle)) >> W2V_SHIFT),
-        .z = lara_item->pos.z + ((dist * Math_Cos(angle)) >> W2V_SHIFT),
-        .y = lara_item->pos.y + M_RAIN_BASE_Y_OFF
-            - (Random_GetDraw() & M_RAIN_Y_RND_MASK),
-    };
+    *pos = XYZ_32_OffsetYaw(lara_pos, angle, dist);
+    pos->y += M_RAIN_BASE_Y_OFF - (Random_GetDraw() & M_RAIN_Y_RND_MASK);
 
     int16_t room_num = NO_ROOM;
-    if (Room_GetOutsideStatus(drop->pos, &room_num) != 1) {
-        drop->pos.x = 0;
+    if (Room_GetOutsideStatus(*pos, &room_num) != 1) {
+        pos->x = 0;
+        return false;
+    }
+
+    return true;
+}
+
+static void M_SpawnRainDrop(M_RAINDROP *const drop)
+{
+    if (!M_SpawnParticle(&drop->pos)) {
         return;
     }
 
@@ -209,24 +218,7 @@ static void M_DrawRain(void)
 
 static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return;
-    }
-
-    const int32_t dist = Random_GetDraw() & M_RAIN_SPAWN_DIST_MASK;
-    const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) * 8;
-
-    snow->pos = (XYZ_32) {
-        .x = lara_item->pos.x + ((dist * Math_Sin(angle)) >> W2V_SHIFT),
-        .z = lara_item->pos.z + ((dist * Math_Cos(angle)) >> W2V_SHIFT),
-        .y = lara_item->pos.y + M_RAIN_BASE_Y_OFF
-            - (Random_GetDraw() & M_RAIN_Y_RND_MASK),
-    };
-
-    int16_t room_num = NO_ROOM;
-    if (Room_GetOutsideStatus(snow->pos, &room_num) != 1) {
-        snow->pos.x = 0;
+    if (!M_SpawnParticle(&snow->pos)) {
         return;
     }
 
