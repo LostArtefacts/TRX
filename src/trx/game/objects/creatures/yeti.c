@@ -237,7 +237,7 @@ static void M_Control(const int16_t item_num)
             body = head;
             head = 0;
 
-            if (creature->flags != 0
+            if (creature->flags == 0
                 && (item->touch_bits & M_TOUCH_BITS_LR) != 0) {
                 if ((item->touch_bits & M_TOUCH_BITS_L) != 0) {
                     Creature_Effect(item, &m_YetiBiteL, Spawn_Blood);
