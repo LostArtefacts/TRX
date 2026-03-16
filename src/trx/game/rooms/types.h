@@ -22,6 +22,7 @@ typedef struct {
 } TRIGGER_CAMERA_DATA;
 
 typedef struct {
+    bool enabled;
     TRIGGER_TYPE type;
     int8_t timer;
     int16_t mask;

@@ -11,6 +11,7 @@
     - Black: like the Remasters
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
+- added support for TR4-style trigger-triggerers (named `O_TRIGGER_GATE` in TRX) for custom levels
 - added support for `.wma` music files for broader custom level compatibility
 - added support for `.ogv` and `.fmv` FMV extensions, with `.ogv` preferred over `.fmv` for remaster compatibility
 - added audio fallback for FMV files that lack an audio stream (e.g. remastered `.ogv`), probing alternative extensions for a companion audio track

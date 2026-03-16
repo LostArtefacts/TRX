@@ -52,6 +52,7 @@ static const int16_t *M_ReadTrigger(
     TRIGGER *const trigger = GameBuf_Alloc(sizeof(TRIGGER), GBUF_FLOOR_DATA);
 
     const int16_t trig_setup = *data++;
+    trigger->enabled = true;
     trigger->type = M_TRIG_TYPE(fd_entry);
     trigger->timer = M_TRIG_TIMER(trig_setup);
     trigger->one_shot = M_TRIG_ONE_SHOT(trig_setup);
@@ -404,7 +405,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     }
 
     const TRIGGER *const trigger = sector->trigger;
-    if (trigger == nullptr) {
+    if (trigger == nullptr || !trigger->enabled) {
         return false;
     }
 

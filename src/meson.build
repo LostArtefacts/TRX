@@ -544,6 +544,7 @@ common_sources = [
   'trx/game/objects/general/sphere_of_doom.c',
   'trx/game/objects/general/switch.c',
   'trx/game/objects/general/trapdoor.c',
+  'trx/game/objects/general/trigger_gate.c',
   'trx/game/objects/general/waterfall.c',
   'trx/game/objects/general/zipline.c',
   'trx/game/objects/names.c',
