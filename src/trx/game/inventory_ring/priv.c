@@ -191,8 +191,10 @@ void InvRing_AdjustMusicVolume(const INV_RING *const ring)
         : g_Config.audio.inventory_music_volume;
     Music_SetVolume(base_volume * multiplier);
 
-    Sound_ResetAmbient();
-    Sound_UpdateEffects();
+    if (ring->mode != INV_GLOBE_SELECT_MODE) {
+        Sound_ResetAmbient();
+        Sound_UpdateEffects();
+    }
 }
 
 void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)

@@ -69,6 +69,7 @@
 - fixed some level textures appearing slightly misaligned on room geometry
 - fixed potential AI behavioural differences in the South Pacific Mercenary (regression from 1.2)
 - fixed smoke from Lara's guns persisting between levels (regression from 1.1)
+- fixed sound effects potentially playing after completing a level and entering into the globe select screen (regression from 1.2)
 
 
 
