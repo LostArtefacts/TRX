@@ -132,7 +132,7 @@ static void M_Initialise(int16_t item_num)
     p->fall_speed_f = 0;
     p->old_pos = item->pos;
     p->paddle.equipped = false;
-    FX_Wake_ClearPoints();
+    FX_Wake_Reset();
 }
 
 static int32_t M_GetInKayak(const int16_t item_num, const COLL_INFO *const coll)

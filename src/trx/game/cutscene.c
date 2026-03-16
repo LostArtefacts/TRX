@@ -8,7 +8,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/const.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/fx.h>
+#include <trx/game/fx.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/input.h>

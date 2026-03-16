@@ -51,7 +51,7 @@ static const SAMPLE_TRX_ID m_StepSounds[14] = {
     SFX_FOOTSTEPS_METAL,
 };
 
-void FX_Footprint_Init(void)
+void FX_Footprint_Reset(void)
 {
     M_PRIV *const p = &m_Priv;
     memset(p, 0, sizeof(*p));

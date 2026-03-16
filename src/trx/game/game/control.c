@@ -5,7 +5,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/demo.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/fx.h>
+#include <trx/game/fx.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gym.h>

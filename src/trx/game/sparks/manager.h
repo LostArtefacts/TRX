@@ -2,7 +2,7 @@
 
 #include <trx/game/sparks/types.h>
 
-void Sparks_Init(void);
+void Sparks_Reset(void);
 void Sparks_Control(void);
 void Sparks_Draw(void);
 

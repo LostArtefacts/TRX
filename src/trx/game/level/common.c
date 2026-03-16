@@ -3,10 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
-#include <trx/game/fx/footprint.h>
-#include <trx/game/fx/gun_flash.h>
-#include <trx/game/fx/water.h>
-#include <trx/game/fx/weather.h>
+#include <trx/game/fx.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/table.h>
 #include <trx/game/gym.h>
@@ -99,11 +96,9 @@ bool Level_Initialise(
 
     Effect_InitialiseArray();
     LOT_InitialiseArray();
-    FX_Water_Init();
-    FX_Weather_Init();
+    FX_Reset();
     FX_Weather_SetWeather(level->weather_type);
-    FX_Footprint_Init();
-    Sparks_Init();
+    Sparks_Reset();
 
     Option_Reset();
     Overlay_Reset();

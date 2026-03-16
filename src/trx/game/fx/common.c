@@ -1,4 +1,4 @@
-#include <trx/game/fx/fx.h>
+#include <trx/game/fx/common.h>
 
 #include <trx/game/fx/explosion_ring.h>
 #include <trx/game/fx/footprint.h>
@@ -27,4 +27,13 @@ void FX_Draw(void)
     FX_GunFlash_Draw();
     FX_Laser_Draw();
     FX_Footprint_Draw();
+}
+
+void FX_Reset(void)
+{
+    FX_Water_Reset();
+    FX_Weather_Reset();
+    FX_Footprint_Reset();
+    FX_Wake_Reset();
+    FX_ExplosionRing_Reset();
 }

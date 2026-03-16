@@ -177,7 +177,7 @@ void Sparks_FreeDynamic(const int8_t idx)
     m_Dynamics[idx].on = false;
 }
 
-void Sparks_Init(void)
+void Sparks_Reset(void)
 {
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
         m_Sparks[i].on = false;

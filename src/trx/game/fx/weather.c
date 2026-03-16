@@ -418,7 +418,7 @@ static void M_DrawSnow(void)
     }
 }
 
-void FX_Weather_Init(void)
+void FX_Weather_Reset(void)
 {
     M_ClearWeather();
 }

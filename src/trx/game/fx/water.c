@@ -30,7 +30,7 @@ static FX_WATER_RIPPLE m_Ripples[16];
 static int32_t m_SplashCount = 0;
 static int32_t m_Wibble = 0;
 
-void FX_Water_Init(void)
+void FX_Water_Reset(void)
 {
     memset(m_Splashes, 0, sizeof(m_Splashes));
     memset(m_Ripples, 0, sizeof(m_Ripples));

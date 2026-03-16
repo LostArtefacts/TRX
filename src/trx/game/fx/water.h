@@ -69,7 +69,7 @@ typedef struct {
     int16_t outer_friction;
 } FX_WATER_SPLASH_SETUP;
 
-void FX_Water_Init(void);
+void FX_Water_Reset(void);
 void FX_Water_Control(void);
 void FX_Water_Draw(void);
 
