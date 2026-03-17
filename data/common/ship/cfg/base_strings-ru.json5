@@ -465,6 +465,8 @@
             },
             "lara_outfit": {
                 "default": "\\{review}По умолчанию",
+                "golden_sophia": "\\{review}Золотая София",
+                "sophia": "\\{review}София",
                 "tr1_bacon_lara": "\\{review}Лара Бекон",
                 "tr1_classic": "\\{review}TR1 Классический",
                 "tr1_combo": "\\{review}TR1 Комбинированный",
@@ -475,7 +477,8 @@
                 "tr23_golden_lara": "\\{review}TR2/3 Золотая Лара",
                 "tr2_bomber_jacket": "\\{review}Куртка-бомбер",
                 "tr2_classic": "\\{review}TR2 Классический",
-                "tr2_diving_suit": "\\{review}Водолазный костюм",
+                "tr2_diving_suit": "\\{review}Водолазный костюм 1",
+                "tr2_diving_suit_alpha": "\\{review}Водолазный костюм 2",
                 "tr2_gym": "\\{review}TR2 Тренировочный",
                 "tr2_robe": "\\{review}Платье",
                 "tr2_vegas": "\\{review}Лас-Вегас",

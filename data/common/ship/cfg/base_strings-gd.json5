@@ -465,6 +465,8 @@
             },
             "lara_outfit": {
                 "default": "Bunaiteach",
+                "golden_sophia": "Sophia Òir",
+                "sophia": "Sophia",
                 "tr1_bacon_lara": "Lara Bacon",
                 "tr1_classic": "TR1 Clasaigeach",
                 "tr1_combo": "TR1 Cothlamadh",
@@ -475,7 +477,8 @@
                 "tr23_golden_lara": "TR2/3 Lara Òir",
                 "tr2_bomber_jacket": "Seacaid Bomber",
                 "tr2_classic": "TR2 Clasaigeach",
-                "tr2_diving_suit": "Deise Dàibhidh",
+                "tr2_diving_suit": "Deise Dàibhidh 1",
+                "tr2_diving_suit_alpha": "Deise Dàibhidh 2",
                 "tr2_gym": "TR2 Trèanadh",
                 "tr2_robe": "Ròba",
                 "tr2_vegas": "Las Vegas",

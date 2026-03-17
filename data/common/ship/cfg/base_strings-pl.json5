@@ -465,6 +465,8 @@
             },
             "lara_outfit": {
                 "default": "Domyślny",
+                "golden_sophia": "\\{review}Złota Sophia",
+                "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "TR1 klon Lary",
                 "tr1_classic": "TR1 klasyczny",
                 "tr1_combo": "TR1 alternatywny",
@@ -475,7 +477,8 @@
                 "tr23_golden_lara": "TR2/3 złota Lara",
                 "tr2_bomber_jacket": "TR2 kurtka pilotka",
                 "tr2_classic": "TR2 klasyczny",
-                "tr2_diving_suit": "TR2 pianka do pływania",
+                "tr2_diving_suit": "TR2 pianka do pływania 1",
+                "tr2_diving_suit_alpha": "\\{review}TR2 pianka do pływania 2",
                 "tr2_gym": "TR2 dres",
                 "tr2_robe": "TR2 szlafrok",
                 "tr2_vegas": "TR2 Las Vegas",
