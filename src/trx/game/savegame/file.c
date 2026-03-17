@@ -144,6 +144,7 @@ bool SG_File_LoadFromFile(MYFILE *const fp)
     M_MUST(SG_File_LoadCameras(io));
     M_MUST(SG_File_LoadItems(io));
     M_MUST(SG_File_LoadEffects(io));
+    M_MUST(SG_File_LoadFX(io));
     M_MUST(SG_File_LoadFlares(io));
     M_MUST(SG_File_LoadMusic(io));
     M_MUST(SG_File_LoadLara(io));
@@ -167,6 +168,7 @@ void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     SG_File_DumpCameras(io);
     SG_File_DumpItems(io);
     SG_File_DumpEffects(io);
+    SG_File_DumpFX(io);
     SG_File_DumpLara(io);
     SG_File_DumpMusic(io);
     SG_File_DumpFlares(io);
