@@ -144,11 +144,12 @@ static void M_Explode(ITEM *const item)
             .y = item->pos.y - (Random_GetDraw() & 0x3FF) - 256,
             .z = (Random_GetDraw() & 0x3FF) + item->pos.z - 512,
         };
-        FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(p->ring_count);
+        FX_RING *const ring =
+            FX_Ring_GetRing(FX_RING_TYPE_BLAST, p->ring_count);
         if (ring != nullptr) {
             ring->pos = pos;
             ring->on = 4;
-            FX_ExplosionRing_Sync(ring);
+            FX_Ring_Sync(ring);
         }
         p->ring_count++;
         Sparks_TriggerExplosionSparks(pos, 3, -2, 2, 0);
@@ -1281,7 +1282,8 @@ static void M_Control(const int16_t item_num)
                 Sound_Effect(SFX_EXPLOSION_2, &item->pos, SPM_NORMAL);
 
                 for (int32_t i = 0; i < 6; i++) {
-                    FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(i);
+                    FX_RING *const ring =
+                        FX_Ring_GetRing(FX_RING_TYPE_BLAST, i);
                     if (ring == nullptr) {
                         continue;
                     }
@@ -1291,7 +1293,7 @@ static void M_Control(const int16_t item_num)
                     ring->speed = (i << 5) + 128;
                     ring->rot.x = ((Random_GetControl() & 0x1FF) - 256) & 0xFFF;
                     ring->rot.z = ((Random_GetControl() & 0x1FF) - 256) & 0xFFF;
-                    FX_ExplosionRing_Sync(ring);
+                    FX_Ring_Sync(ring);
                 }
 
                 if (!p->dropped_item) {
@@ -1305,7 +1307,7 @@ static void M_Control(const int16_t item_num)
             }
 
             if (p->explode_count <= 128 || p->ring_count != 6
-                || FX_ExplosionRing_GetRing(5)->life != 0) {
+                || FX_Ring_GetRing(FX_RING_TYPE_BLAST, 5)->life != 0) {
                 M_Explode(item);
             } else {
                 M_Die(item_num);
