@@ -32,6 +32,7 @@ typedef struct {
     OBJECT_ID obj_id;
     LARA_SKIN_GUN_MAP *gun_map;
     LARA_SKIN_BRAID braid;
+    bool is_selectable;
     bool is_reflective;
     bool supports_sunglasses;
     SAMPLE_TRX_ID footstep_sample_id;

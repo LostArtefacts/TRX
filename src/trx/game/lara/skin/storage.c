@@ -49,6 +49,9 @@ static void M_SeedDynamicEnumValues(void)
     Config_DynamicEnum_AddValue(
         option, nullptr, GS_ID("dynamic/enums/lara_outfit/default"));
     for (int32_t i = 0; i < m_OutfitCount; i++) {
+        if (!m_Outfits[i].outfit.is_selectable) {
+            continue;
+        }
         Config_DynamicEnum_AddValue(
             option, m_Outfits[i].name, m_Outfits[i].name_gs);
     }
@@ -298,6 +301,7 @@ static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
     outfit->obj_id = mesh_object_id;
 
     JSON_READ_D(io, "is_reflective", &outfit->is_reflective, false);
+    JSON_READ_D(io, "is_selectable", &outfit->is_selectable, true);
     JSON_READ_D(io, "combat_face_offset", &outfit->combat_face_offset, -1);
     JSON_READ_D(io, "supports_sunglasses", &outfit->supports_sunglasses, true);
 
