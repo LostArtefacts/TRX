@@ -55,6 +55,13 @@ static void M_SpriteEdits(
         if (obj == nullptr || !obj->loaded) {
             continue;
         }
+        if (obj->mesh_idx < 0
+            || obj->mesh_idx >= Output_GetSpriteTextureCount()) {
+            LOG_WARNING(
+                "Invalid sprite texture index %d for object %d", obj->mesh_idx,
+                obj_info.id);
+            continue;
+        }
         SPRITE_TEXTURE *const sprite_texture =
             Output_GetSpriteTexture(obj->mesh_idx);
         sprite_texture->x0 = x0;

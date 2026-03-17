@@ -12,6 +12,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/inject.h>
 #include <trx/game/items/carrier.h>
+#include <trx/game/level.h>
 #include <trx/game/level/cache.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
@@ -285,6 +286,7 @@ void Stats_CalculateMaxStats(void)
         const LEVEL_FORMAT_LOADER *const loader =
             Level_Format_GuessLoader(file);
         if (loader != nullptr) {
+            Level_Unload();
             Creature_Reset();
 
             Lua_ClearLevelListeners();
