@@ -13,4 +13,5 @@
 #include <trx/game/ui/dialogs/select_level.h>
 #include <trx/game/ui/dialogs/sound_settings.h>
 #include <trx/game/ui/dialogs/stats.h>
+#include <trx/game/ui/dialogs/switch_mod.h>
 #include <trx/game/ui/dialogs/text.h>

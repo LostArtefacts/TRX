@@ -157,9 +157,11 @@
             "save_game": "Zapisz grę",
             "save_slot_unsupported": "Ten zapis nie obsługuje tej funkcji.",
             "select_level": "Wybierz poziom",
+            "select_mod": "\\{review}Wybierz grę",
             "select_mode": "Wybierz tryb",
             "select_save": "Wybierz zapis",
             "story_so_far": "Co się wydarzyło do tej pory",
+            "switch_mod": "\\{review}Zmień grę",
         },
         "pause": {
             "are_you_sure": "Czy na pewno?",
@@ -488,6 +490,29 @@
                 "tr3_gym": "TR3 dres",
                 "tr3_nevada": "TR3 Nevada",
                 "tr3_south_pacific": "TR3 Południowy Pacyfik",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "\\{review}Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "\\{review}Tomb Raider I Demo",
+            },
+            "tr1-ub": {
+                "title": "\\{review}Niedokończona sprawa",
+            },
+            "tr2": {
+                "title": "\\{review}Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "\\{review}Złota Maska",
+            },
+            "tr3": {
+                "title": "\\{review}Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "\\{review}Zaginiony Artefakt",
             }
         }
     },

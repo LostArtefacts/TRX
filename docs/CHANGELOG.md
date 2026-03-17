@@ -3,6 +3,7 @@
 - added an option to let Lara keep sprinting without holding the button (Gameplay → Controls → Toggle sprint) (#5006)
 - added two additional outfits for Lara
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
+- added a new option in the New Game dialog, "Switch Game", to switch between installed game/mod packs without relaunching
 - added experimental support for config presets (Gameplay Options → Presets)
      Currently very basic presets available only – looking for help with improving them :)
 - added new backgrounds to Inventory Ring / Pause screen / Stats screen styles:
