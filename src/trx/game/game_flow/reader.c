@@ -179,6 +179,72 @@ static bool M_LoadSettings(
     JSON_FINISH();
 }
 
+// Read a "path" value that may be either a plain string or an array of
+// candidate strings tried in order.
+// Pass optional=true to allow the key to be absent (out_path is set to nullptr
+// in that case).
+// Pass path_type=(TRX_DYNAMIC_PATH)-1 to skip resolution and return the first
+// candidate as-is.
+static bool M_ReadPath(
+    JSON_READ_IO *const io, const char *const key, const bool optional,
+    const TRX_DYNAMIC_PATH path_type, char **const out_path)
+{
+    ASSERT(key != nullptr);
+    *out_path = nullptr;
+    const bool resolve = path_type != (TRX_DYNAMIC_PATH)-1;
+
+    if (!JSON_PUSH(io, key)) {
+        if (optional) {
+            return true;
+        }
+        return false;
+    }
+
+    // All failure paths below must pop before returning to keep the
+    // push/pop depth balanced and avoid corrupting the parser state.
+    bool ok = false;
+    JSON_ARRAY *const path_array =
+        JSON_ValueAsArray(JSON_ReadIO_GetCurrentValue(io));
+    const int32_t count = path_array != nullptr ? JSON_ARRAY_LEN(io) : 1;
+    if (count <= 0) {
+        JSON_ReadIO_SetError(io, "path array must contain at least one entry");
+    } else {
+        for (int32_t i = 0; i < count; i++) {
+            const char *path = nullptr;
+            const bool read_ok = path_array != nullptr
+                ? JSON_READ_A(io, i, &path)
+                : JSON_READ_CURRENT(io, &path);
+            if (!read_ok) {
+                break;
+            }
+            if (!resolve) {
+                *out_path = Memory_DupStr(path);
+                ok = true;
+                break;
+            }
+            const char *const resolved = TRXPath_PeekResolve(path_type, path);
+            if (resolved != nullptr) {
+                *out_path = Memory_DupStr(resolved);
+                ok = true;
+                break;
+            }
+        }
+        if (!ok && resolve) {
+            if (optional) {
+                ok = true; // leave *out_path as nullptr
+            } else {
+                JSON_ReadIO_SetError(
+                    io, "failed to resolve any path candidate");
+            }
+        }
+    }
+
+    if (!JSON_POP(io)) {
+        return false;
+    }
+    return ok;
+}
+
 static bool M_LoadLevelItemDrops(
     const M_CONTEXT *const ctx, GF_LEVEL *const level)
 {
@@ -347,10 +413,9 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
 {
     JSON_READ_IO *const io = ctx->io;
-    const char *path;
-    JSON_READ_D(io, "path", &path, nullptr);
-    char *expanded_path =
-        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, path));
+    char *expanded_path = nullptr;
+    JSON_MUST(M_ReadPath(
+        io, "path", true, TRX_DYNAMIC_PATH_IMAGE_FILE, &expanded_path));
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
         event_data->path = (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
@@ -369,6 +434,9 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
         + (expanded_path == nullptr ? 0 : strlen(expanded_path) + 1);
     Memory_FreePointer(&expanded_path);
     return out_size;
+fail:
+    Memory_FreePointer(&expanded_path);
+    return 0;
 }
 
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
@@ -670,14 +738,11 @@ static bool M_LoadLevel(
     }
 
     {
-        const char *tmp = nullptr;
-        JSON_MUST(JSON_READ(io, "path", &tmp));
-        if (level->type == GFL_DUMMY || level->type == GFL_CURRENT) {
-            level->path = Memory_DupStr(tmp);
-        } else {
-            level->path = Memory_DupStr(
-                TRXPath_TryResolve(TRX_DYNAMIC_PATH_LEVEL_FILE, tmp));
-        }
+        const TRX_DYNAMIC_PATH path_type =
+            (level->type == GFL_DUMMY || level->type == GFL_CURRENT)
+            ? (TRX_DYNAMIC_PATH)-1
+            : TRX_DYNAMIC_PATH_LEVEL_FILE;
+        JSON_MUST(M_ReadPath(io, "path", false, path_type, &level->path));
     }
     {
         const char *tmp_script = nullptr;
@@ -788,10 +853,9 @@ static bool M_LoadFMV(
     GF_FMV *const fmv = target_elem;
     ASSERT(user_arg == nullptr);
     JSON_READ_IO *const io = ctx->io;
-    const char *path = nullptr;
-    JSON_MUST(JSON_READ(io, "path", &path));
-    fmv->path =
-        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_FMV_FILE, path));
+    char *path = nullptr;
+    JSON_MUST(M_ReadPath(io, "path", false, TRX_DYNAMIC_PATH_FMV_FILE, &path));
+    fmv->path = path;
     JSON_READ_D(io, "legal", &fmv->is_legal, false);
     JSON_READ_D(io, "credit", &fmv->is_credit, false);
     JSON_FINISH();
