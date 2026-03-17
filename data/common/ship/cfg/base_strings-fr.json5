@@ -465,6 +465,8 @@
             },
             "lara_outfit": {
                 "default": "\\{review}Par défaut",
+                "golden_sophia": "\\{review}Sophia Dorée",
+                "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "\\{review}Lara Bacon",
                 "tr1_classic": "\\{review}TR1 Classique",
                 "tr1_combo": "\\{review}TR1 Combinée",
@@ -475,7 +477,8 @@
                 "tr23_golden_lara": "\\{review}TR2/3 Lara Dorée",
                 "tr2_bomber_jacket": "\\{review}Blouson aviateur",
                 "tr2_classic": "\\{review}TR2 Classique",
-                "tr2_diving_suit": "\\{review}Combinaison de plongée",
+                "tr2_diving_suit": "\\{review}Combinaison de plongée 1",
+                "tr2_diving_suit_alpha": "\\{review}Combinaison de plongée 2",
                 "tr2_gym": "\\{review}TR2 Entraînement",
                 "tr2_robe": "\\{review}Robe",
                 "tr2_vegas": "\\{review}Las Vegas",
