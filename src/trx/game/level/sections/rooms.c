@@ -82,7 +82,7 @@ static void M_ReadRoomMesh(
                 vertex->flags.disable_wibble = false;
                 vertex->flags.move = false;
                 vertex->flags.glow = false;
-                vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
+                vertex->color = COLOR_RGBA_8888_WHITE;
             } else if (loader->game_version == 2) {
                 vertex->light_base = VFile_ReadS16(file);
                 vertex->light_table_value = VFile_ReadU8(file);
@@ -91,7 +91,7 @@ static void M_ReadRoomMesh(
                 vertex->flags.move = false;
                 vertex->flags.glow = false;
                 VFile_Skip(file, 2);
-                vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
+                vertex->color = COLOR_RGBA_8888_WHITE;
             } else if (loader->game_version == 3) {
                 VFile_Skip(file, 2); // lighting - unused in TR3
                 const uint16_t flags = VFile_ReadU16(file);

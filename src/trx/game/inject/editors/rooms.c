@@ -242,7 +242,14 @@ static void M_AddRoomVertex(const INJECTION *const injection)
         .y = VFile_ReadS16(injection->fp),
         .z = VFile_ReadS16(injection->fp),
     };
-    const int16_t shade = VFile_ReadS16(injection->fp);
+    int16_t shade = 0;
+    RGBA_8888 color = COLOR_RGBA_8888_WHITE;
+    if (g_TRVersion < 3) {
+        shade = VFile_ReadS16(injection->fp);
+    } else {
+        color = Color_ARGB1555ToRGBA8888(VFile_ReadU16(injection->fp));
+        color.a = 255;
+    }
 
     ROOM *const room = Room_Get(target_room);
     ROOM_VERTEX *const vertex = &room->mesh.vertices[room->mesh.num_vertices];
@@ -252,7 +259,7 @@ static void M_AddRoomVertex(const INJECTION *const injection)
     vertex->flags.move = false;
     vertex->flags.glow = false;
     vertex->light_table_value = 0;
-    vertex->color = (RGBA_8888) { 255, 255, 255, 255 };
+    vertex->color = color;
     room->mesh.num_vertices++;
 }
 
