@@ -231,6 +231,7 @@ static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_STORED)) {
         Lara_Skin_ClearEquipment(LM_HAND_R);
         Inv_AddItem(O_PUZZLE_ITEM_2);
+        Stats_AddPickup();
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_DISPLAY)) {
         Overlay_AddDisplayPickup(O_PUZZLE_ITEM_2);
     } else if (Item_TestFrameEqual(item, M_LF_DRAGON_DAGGER_ANIM_END)) {
