@@ -157,9 +157,11 @@
             "save_game": "Save Game",
             "save_slot_unsupported": "This save does not support this feature.",
             "select_level": "Select Level",
+            "select_mod": "Select Game",
             "select_mode": "Select Mode",
             "select_save": "Select Save",
             "story_so_far": "Story so far...",
+            "switch_mod": "Switch Game",
         },
         "pause": {
             "are_you_sure": "Are you sure?",
@@ -485,6 +487,29 @@
                 "tr3_gym": "TR3 Gym",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "South Pacific",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "Tomb Raider I Demo",
+            },
+            "tr1-ub": {
+                "title": "Unfinished Business",
+            },
+            "tr2": {
+                "title": "Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "The Golden Mask",
+            },
+            "tr3": {
+                "title": "Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "The Lost Artifact",
             }
         }
     },

@@ -157,9 +157,11 @@
             "save_game": "Сохранить игру",
             "save_slot_unsupported": "\\{review}Это сохранение не поддерживает эту функцию.",
             "select_level": "Выбор уровня",
+            "select_mod": "\\{review}Выбрать игру",
             "select_mode": "Выбор режима",
             "select_save": "\\{review}Выбрать сохранение",
             "story_so_far": "История до сих пор...",
+            "switch_mod": "\\{review}Сменить игру",
         },
         "pause": {
             "are_you_sure": "Вы уверены?",
@@ -485,6 +487,29 @@
                 "tr3_gym": "\\{review}TR3 Тренировочный",
                 "tr3_nevada": "\\{review}Невада",
                 "tr3_south_pacific": "\\{review}Южный Тихий океан",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "\\{review}Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "\\{review}Демо Tomb Raider I",
+            },
+            "tr1-ub": {
+                "title": "\\{review}Незавершённое дело",
+            },
+            "tr2": {
+                "title": "\\{review}Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "\\{review}Золотая маска",
+            },
+            "tr3": {
+                "title": "\\{review}Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "\\{review}Потерянный артефакт",
             }
         }
     },

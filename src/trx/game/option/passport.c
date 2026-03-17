@@ -10,6 +10,7 @@
 #include <trx/game/inventory_ring.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
+#include <trx/game/shell/common.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
 #include <trx/version.h>
@@ -21,6 +22,7 @@ typedef enum {
     M_ROLE_PLAY_ANY_LEVEL_SELECT_MODE,
     M_ROLE_PLAY_PREV_LEVEL_SELECT_SLOT,
     M_ROLE_PLAY_PREV_LEVEL_SELECT_LEVEL,
+    M_ROLE_SWITCH_MOD,
     M_ROLE_STORY_SO_FAR,
     M_ROLE_STORY_SO_FAR_CONFIRM,
     M_ROLE_NEW_GAME,
@@ -59,6 +61,7 @@ typedef struct {
         UI_SELECT_LEVEL_DIALOG_STATE *select_level;
         UI_PLAY_ANY_LEVEL_DIALOG_STATE *play_any_level;
         UI_SAVE_SLOT_DIALOG_STATE *save_slot;
+        UI_SWITCH_MOD_DIALOG_STATE *switch_mod;
     } ui;
 } M_NAV_FRAME;
 
@@ -116,6 +119,10 @@ static void M_FreeDialogs(M_NAV_FRAME *const frame)
     if (frame->ui.save_slot != nullptr) {
         UI_SaveSlotDialog_Free(frame->ui.save_slot);
         frame->ui.save_slot = nullptr;
+    }
+    if (frame->ui.switch_mod != nullptr) {
+        UI_SwitchModDialog_Free(frame->ui.switch_mod);
+        frame->ui.switch_mod = nullptr;
     }
     if (frame->ui.new_game != nullptr) {
         UI_NewGame_Free(frame->ui.new_game);
@@ -513,7 +520,8 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
     // If no options – start the game already
     if (!g_Config.gameplay.enable_game_modes
         && !g_Config.profile.new_game_plus_unlock
-        && !g_Config.gameplay.enable_play_previous_levels) {
+        && !g_Config.gameplay.enable_play_previous_levels
+        && !UI_NewGame_HasModChoices()) {
         // But only if in title mode
         if (g_InputDB.menu_confirm
             || (!M_IMMEDIATE && g_Inv_Mode == INV_TITLE_MODE)) {
@@ -561,6 +569,9 @@ static bool M_HandleNewGame(INVENTORY_ITEM *const inv_item)
         case UI_NEW_GAME_CHOICE_JP_NGPLUS:
             Game_SetBonusFlag(GBF_JAPANESE | GBF_NGPLUS);
             M_Confirm(PASSPORT_ACTION_NEW_GAME, GF_GetFirstLevel()->num);
+            return true;
+        case UI_NEW_GAME_CHOICE_SWITCH_MOD:
+            M_NavigateInto(M_ROLE_SWITCH_MOD, -1);
             return true;
         case UI_NEW_GAME_CHOICE_PLAY_PREV_LEVELS:
             M_NavigateInto(M_ROLE_PLAY_PREV_LEVEL_SELECT_SLOT, -1);
@@ -646,6 +657,32 @@ static bool M_HandlePlayAnyLevelSelectMode(INVENTORY_ITEM *const inv_item)
         }
     }
     return false;
+}
+
+static bool M_HandleSwitchMod(INVENTORY_ITEM *const inv_item)
+{
+    M_PAGE *const page = M_GetActivePage();
+    M_NAV_FRAME *const frame = page->nav.current;
+    if (frame->ui.switch_mod == nullptr) {
+        frame->ui.switch_mod = UI_SwitchModDialog_Init();
+    }
+
+    const int32_t choice = UI_SwitchModDialog_Control(frame->ui.switch_mod);
+    if (choice == UI_REQUESTER_NO_CHOICE) {
+        return false;
+    }
+    if (choice == UI_REQUESTER_CANCEL) {
+        M_NavigateOut(inv_item);
+        return true;
+    }
+
+    const char *const mod_name =
+        UI_SwitchModDialog_GetSelectedMod(frame->ui.switch_mod, choice);
+    Shell_RequestModSwitch(mod_name);
+    M_Confirm(PASSPORT_ACTION_SWITCH_MOD, -1);
+    g_InputDB.menu_confirm = true;
+    M_Close(inv_item);
+    return true;
 }
 
 static bool M_HandlePlayPrevLevelSelectSlot(INVENTORY_ITEM *const inv_item)
@@ -790,6 +827,11 @@ static bool M_ShowPage(INVENTORY_ITEM *const inv_item)
             .func = M_HandlePlayPrevLevelSelectLevel,
             .flat = false,
         },
+        [M_ROLE_SWITCH_MOD] = {
+            .title = GS_ID("general/passport/switch_mod"),
+            .func = M_HandleSwitchMod,
+            .flat = false,
+        },
         [M_ROLE_RESTART_LEVEL] = {
             .title = GS_ID("general/passport/restart_level"),
             .func = M_HandleRestartLevel,
@@ -932,6 +974,9 @@ void Option_Passport_Draw(INVENTORY_ITEM *const inv_item)
     }
     if (frame->ui.select_level != nullptr) {
         UI_SelectLevelDialog(frame->ui.select_level);
+    }
+    if (frame->ui.switch_mod != nullptr) {
+        UI_SwitchModDialog(frame->ui.switch_mod);
     }
     if (frame->ui.save_slot != nullptr) {
         UI_SaveSlotDialog(frame->ui.save_slot);

@@ -23,7 +23,7 @@ RE_GAME_STRING_USAGE = re.compile(
     r'GS(?:_ID|_PTR)?\(\s*"((?:\\.|[^"\\])*)"\s*\)'
 )
 RE_GAME_STRING_DEFINE = re.compile(
-    r'GS_DEFINE\(\s*([A-Za-z0-9_./]+)\s*,\s*"((?:\\.|[^"\\])*)"\)'
+    r'GS_DEFINE\(\s*([A-Za-z0-9_./-]+)\s*,\s*"((?:\\.|[^"\\])*)"\)'
 )
 RE_UI_SETTING_USAGE = re.compile(
     r"X_UI_CFG[A-Z0-9_]*\(\s*([a-z0-9_.]+)\s*[,)]",
@@ -391,6 +391,15 @@ def get_used_outfit_strings(
             yield 0, name_gs
 
 
+def get_used_mod_strings(
+    project_paths: dict,
+) -> Iterable[tuple[int, str]]:
+    for paths in project_paths.values():
+        for mod_path in paths.shipped_data_dir.glob("cfg/*"):
+            if (mod_path / "gameflow.json5").exists():
+                yield 0, f"dynamic/mods/{mod_path.name}/title"
+
+
 def get_used_preset_strings(
     vfs: VirtualFilesystem, presets_dir: Path
 ) -> Iterable[tuple[int, str]]:
@@ -478,6 +487,7 @@ class RunContext:
                 vfs, CommonPaths.shipped_data_dir / "cfg/presets"
             )
         )
+        self.used_game_strings += list(get_used_mod_strings(PROJECT_PATHS))
         self.object_names_dict = get_objects_map(source_files)
 
     @property

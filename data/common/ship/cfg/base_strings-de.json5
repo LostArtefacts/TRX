@@ -157,9 +157,11 @@
             "save_game": "Spiel speichern",
             "save_slot_unsupported": "\\{review}Dieser Speicherstand unterstützt diese Funktion nicht.",
             "select_level": "Level auswählen",
+            "select_mod": "\\{review}Spiel auswählen",
             "select_mode": "Modus Auswählen",
             "select_save": "\\{review}Speicher auswählen",
             "story_so_far": "Bisherige Geschichte...",
+            "switch_mod": "\\{review}Spiel wechseln",
         },
         "pause": {
             "are_you_sure": "Sind sie sicher?",
@@ -485,6 +487,29 @@
                 "tr3_gym": "\\{review}TR3 Trainingsanzug",
                 "tr3_nevada": "\\{review}Nevada",
                 "tr3_south_pacific": "\\{review}Südpazifik",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "\\{review}Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "\\{review}Tomb Raider I Demo",
+            },
+            "tr1-ub": {
+                "title": "\\{review}Unvollendete Angelegenheiten",
+            },
+            "tr2": {
+                "title": "\\{review}Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "\\{review}Die Goldene Maske",
+            },
+            "tr3": {
+                "title": "\\{review}Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "\\{review}Das Verlorene Artefakt",
             }
         }
     },

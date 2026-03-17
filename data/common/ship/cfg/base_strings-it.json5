@@ -157,9 +157,11 @@
             "save_game": "Salva Partita",
             "save_slot_unsupported": "Questo salvataggio non supporta questa funzione.",
             "select_level": "Seleziona Livello",
+            "select_mod": "\\{review}Seleziona Gioco",
             "select_mode": "Seleziona Modalità",
             "select_save": "Seleziona Salvataggio",
             "story_so_far": "Un po' di storia...",
+            "switch_mod": "\\{review}Cambia Gioco",
         },
         "pause": {
             "are_you_sure": "Sei sicuro?",
@@ -485,6 +487,29 @@
                 "tr3_gym": "Allenamento TR3",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "Sud Pacifico",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "\\{review}Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "\\{review}Demo di Tomb Raider I",
+            },
+            "tr1-ub": {
+                "title": "\\{review}Affari Incompiuti",
+            },
+            "tr2": {
+                "title": "\\{review}Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "\\{review}La Maschera d'Oro",
+            },
+            "tr3": {
+                "title": "\\{review}Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "\\{review}L'Artifatto Perduto",
             }
         }
     },

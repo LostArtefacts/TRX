@@ -2,6 +2,7 @@
 
 #include <trx/core/filesystem.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/shell/paths.h>
@@ -92,6 +93,19 @@ void Shell_ScanAvailableMods(void)
     }
 }
 
+int32_t Shell_GetModCount(void)
+{
+    return ARRAY_SIZE(m_KnownMods) - 1;
+}
+
+const SHELL_MOD *Shell_GetMod(const int32_t index)
+{
+    if (index < 0 || index >= Shell_GetModCount()) {
+        return nullptr;
+    }
+    return &m_KnownMods[index];
+}
+
 const SHELL_MOD *Shell_GetModByName(const char *const name)
 {
     for (int32_t i = 0; m_KnownMods[i].name != nullptr; i++) {
@@ -129,6 +143,12 @@ const SHELL_MOD *Shell_GetModByType(
     }
 
     return found;
+}
+
+bool Shell_CanSwitchToMod(const SHELL_MOD *const mod)
+{
+    return mod != nullptr && mod->is_available
+        && mod->mod_type != MOD_DIRECT_LEVEL;
 }
 
 bool Shell_IsCurrentMod(const char *const name)

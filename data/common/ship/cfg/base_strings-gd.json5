@@ -157,9 +157,11 @@
             "save_game": "Sàbhail Geama",
             "save_slot_unsupported": "Cha bheir an sàbhaladh seo taic don fheart seo.",
             "select_level": "Tagh Ìre",
+            "select_mod": "\\{review}Tagh Geama",
             "select_mode": "Tagh Modh",
             "select_save": "Tagh Sàbhail",
             "story_so_far": "An sgeul gu ruige seo...",
+            "switch_mod": "\\{review}Atharraich Geama",
         },
         "pause": {
             "are_you_sure": "A bheil thu cinnteach?",
@@ -485,6 +487,29 @@
                 "tr3_gym": "TR3 Trèanadh",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "A' Chuain Sèimh a Deas",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "\\{review}Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "\\{review}Tomb Raider I Deuchainn",
+            },
+            "tr1-ub": {
+                "title": "\\{review}Gnothach Neo-chrìochnaichte",
+            },
+            "tr2": {
+                "title": "\\{review}Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "\\{review}An Masg Òir",
+            },
+            "tr3": {
+                "title": "\\{review}Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "\\{review}An T-Seann Earraicht",
             }
         }
     },

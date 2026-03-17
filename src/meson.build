@@ -700,6 +700,7 @@ common_sources = [
   'trx/game/ui/dialogs/settings_tabs.c',
   'trx/game/ui/dialogs/sound_settings.c',
   'trx/game/ui/dialogs/stats.c',
+  'trx/game/ui/dialogs/switch_mod.c',
   'trx/game/ui/dialogs/text.c',
   'trx/game/ui/draw.c',
   'trx/game/ui/elements/ammo_label.c',

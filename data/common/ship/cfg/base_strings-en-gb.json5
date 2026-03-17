@@ -13,6 +13,13 @@
             "distance_travelled": "Distance Travelled",
         }
     },
+    "dynamic": {
+        "mods": {
+            "tr3-la": {
+                "title": "The Lost Artefact",
+            }
+        }
+    },
     "enums": {
         "UI_ELEMENT_LOCATION": {
             "UI_ELEMENT_LOCATION_BOTTOM_CENTER": "Bottom centre",
