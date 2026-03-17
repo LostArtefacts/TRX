@@ -481,6 +481,7 @@
             "name_gs": "dynamic/enums/lara_outfit/golden_sophia",
             "mesh_object": "O_LARA_SKIN_SWAP_22",
             "gun_map": 1,
+            "is_selectable": false,
             "is_reflective": true,
             "combat_face_offset": -1,
         },

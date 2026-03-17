@@ -430,7 +430,8 @@ void Lara_Skin_CycleOutfit(const int32_t dir)
         type += dir;
         type += outfit_count;
         type %= outfit_count;
-    } while (!Lara_Skin_IsOutfitAvailable(type));
+    } while (!Lara_Skin_IsOutfitAvailable(type)
+             || !Lara_Skin_GetOutfit(type)->is_selectable);
 
     M_SetConfigOutfit(Lara_Skin_GetOutfitName(type));
     Config_Update();
