@@ -21,18 +21,24 @@ typedef struct {
     XYZ_32 pos;
     XYZ_32 prev_pos;
     FX_EXPLOSION_VERT verts[16];
-} FX_EXPLOSION_RING;
+} FX_RING;
 
-void FX_ExplosionRing_Reset(void);
+typedef enum {
+    FX_RING_TYPE_BLAST,
+    FX_RING_TYPE_SUMMON,
+    FX_RING_TYPE_KNOCKBACK,
+    FX_RING_TYPE_NUMBER_OF,
+} FX_RING_TYPE;
 
-void FX_ExplosionRing_Control(void);
-void FX_ExplosionRing_Draw(void);
-void FX_ExplosionRing_SpawnKnockBack(XYZ_32 pos);
-void FX_ExplosionRing_BounceKnockBack(void);
-bool FX_ExplosionRing_IsKnockBackActive(void);
-void FX_ExplosionRing_Sync(FX_EXPLOSION_RING *ring);
+void FX_Ring_Reset(void);
 
-FX_EXPLOSION_RING *FX_ExplosionRing_GetRing(int32_t idx);
-FX_EXPLOSION_RING *FX_ExplosionRing_GetSummonRing(int32_t idx);
-FX_EXPLOSION_RING *FX_ExplosionRing_GetKnockBackRing(int32_t idx);
-const FX_EXPLOSION_RING *FX_ExplosionRing_PeekKnockBackRing(int32_t idx);
+void FX_Ring_Control(void);
+void FX_Ring_Draw(void);
+void FX_Ring_SpawnKnockBack(XYZ_32 pos);
+void FX_Ring_BounceKnockBack(void);
+
+void FX_Ring_Sync(FX_RING *ring);
+
+bool FX_Ring_IsRingActive(FX_RING_TYPE type);
+FX_RING *FX_Ring_GetRing(FX_RING_TYPE type, int32_t idx);
+FX_RING *FX_Ring_PeekRing(FX_RING_TYPE type, int32_t idx);

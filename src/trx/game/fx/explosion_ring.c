@@ -9,12 +9,10 @@
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 
-static FX_EXPLOSION_RING m_ExplosionRings[6] = {};
-static FX_EXPLOSION_RING m_SummonRings[6] = {};
-static FX_EXPLOSION_RING m_KnockBackRings[3] = {};
-static bool m_ExplosionActive = false;
-static bool m_SummonActive = false;
-static bool m_KnockBackActive = false;
+#define M_MAX_RINGS 6
+
+static FX_RING m_Rings[FX_RING_TYPE_NUMBER_OF][M_MAX_RINGS] = {};
+static bool m_Active[FX_RING_TYPE_NUMBER_OF] = {};
 
 static void M_RotateZX(
     XYZ_32 *const out, const XYZ_32 in, const int32_t rot_z,
@@ -34,15 +32,14 @@ static void M_RotateZX(
     out->z = (yz * sx + zz * cx) >> W2V_SHIFT;
 }
 
-static void M_RememberRing(FX_EXPLOSION_RING *const ring)
+static void M_RememberRing(FX_RING *const ring)
 {
     ring->prev_radius = ring->radius;
     ring->prev_rot = ring->rot;
     ring->prev_pos = ring->pos;
 }
 
-static void M_InterpolateRing(
-    const FX_EXPLOSION_RING *const ring, FX_EXPLOSION_RING *const out)
+static void M_InterpolateRing(const FX_RING *const ring, FX_RING *const out)
 {
     *out = *ring;
     const double ratio = Interpolation_GetWorldRate();
@@ -55,7 +52,7 @@ static void M_InterpolateRing(
 }
 
 static void M_BuildRingCircle(
-    FX_EXPLOSION_RING *const ring, const int32_t radius, const int32_t band,
+    FX_RING *const ring, const int32_t radius, const int32_t band,
     const bool clear_inner, const int32_t angle_base)
 {
     int32_t angle = angle_base;
@@ -70,7 +67,7 @@ static void M_BuildRingCircle(
     }
 }
 
-static void M_DrawTexturedRing(const FX_EXPLOSION_RING *const ring)
+static void M_DrawTexturedRing(const FX_RING *const ring)
 {
     const int32_t time4 = Output_GetTimeInGame() * 4;
     const int32_t sprite_base = Object_Get(O_EXPLOSION_1)->mesh_idx;
@@ -119,7 +116,7 @@ static void M_DrawTexturedRing(const FX_EXPLOSION_RING *const ring)
     }
 }
 
-static void M_DrawFlatRing(const FX_EXPLOSION_RING *const ring)
+static void M_DrawFlatRing(const FX_RING *const ring)
 {
     const int32_t rot_z = ring->rot.z << 4;
     const int32_t rot_x = ring->rot.x << 4;
@@ -175,8 +172,8 @@ static void M_DrawFlatRing(const FX_EXPLOSION_RING *const ring)
 static void M_ControlExplosionRings(void)
 {
     bool any_active = false;
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
-        FX_EXPLOSION_RING *const ring = &m_ExplosionRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_BLAST][i];
         if (ring->on == 0) {
             continue;
         }
@@ -192,15 +189,15 @@ static void M_ControlExplosionRings(void)
         any_active = true;
     }
     if (!any_active) {
-        m_ExplosionActive = false;
+        m_Active[FX_RING_TYPE_BLAST] = false;
     }
 }
 
 static void M_ControlSummonRings(void)
 {
     bool any_active = false;
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_SummonRings); i++) {
-        FX_EXPLOSION_RING *const ring = &m_SummonRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_SUMMON][i];
         if (ring->on == 0) {
             continue;
         }
@@ -217,15 +214,15 @@ static void M_ControlSummonRings(void)
         any_active = true;
     }
     if (!any_active) {
-        m_SummonActive = false;
+        m_Active[FX_RING_TYPE_SUMMON] = false;
     }
 }
 
 static void M_ControlKnockBackRings(void)
 {
     bool any_active = false;
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_KnockBackRings); i++) {
-        FX_EXPLOSION_RING *const ring = &m_KnockBackRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_KNOCKBACK][i];
         if (ring->on == 0) {
             continue;
         }
@@ -246,15 +243,15 @@ static void M_ControlKnockBackRings(void)
         any_active = true;
     }
     if (!any_active) {
-        m_KnockBackActive = false;
+        m_Active[FX_RING_TYPE_KNOCKBACK] = false;
     }
 }
 
 static void M_DrawExplosionRings(const int32_t angle_base)
 {
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
-        FX_EXPLOSION_RING draw_ring = {};
-        FX_EXPLOSION_RING *const ring = &m_ExplosionRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING draw_ring = {};
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_BLAST][i];
         if (ring->on == 0) {
             continue;
         }
@@ -307,9 +304,9 @@ static void M_DrawExplosionRings(const int32_t angle_base)
 
 static void M_DrawSummonRings(const int32_t angle_base)
 {
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_SummonRings); i++) {
-        FX_EXPLOSION_RING draw_ring = {};
-        FX_EXPLOSION_RING *const ring = &m_SummonRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING draw_ring = {};
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_SUMMON][i];
         if (ring->on == 0) {
             continue;
         }
@@ -344,9 +341,9 @@ static void M_DrawSummonRings(const int32_t angle_base)
 
 static void M_DrawKnockBackRings(const int32_t angle_base)
 {
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_KnockBackRings); i++) {
-        FX_EXPLOSION_RING draw_ring = {};
-        FX_EXPLOSION_RING *const ring = &m_KnockBackRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING draw_ring = {};
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_KNOCKBACK][i];
         if (ring->on == 0) {
             continue;
         }
@@ -378,21 +375,17 @@ static void M_DrawKnockBackRings(const int32_t angle_base)
     }
 }
 
-void FX_ExplosionRing_Reset(void)
+void FX_Ring_Reset(void)
 {
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_ExplosionRings); i++) {
-        m_ExplosionRings[i] = (FX_EXPLOSION_RING) { 0 };
-        m_SummonRings[i] = (FX_EXPLOSION_RING) { 0 };
+    for (FX_RING_TYPE type = 0; type < FX_RING_TYPE_NUMBER_OF; type++) {
+        for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+            m_Rings[type][i] = (FX_RING) {};
+        }
+        m_Active[type] = false;
     }
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_KnockBackRings); i++) {
-        m_KnockBackRings[i] = (FX_EXPLOSION_RING) { 0 };
-    }
-    m_ExplosionActive = false;
-    m_SummonActive = false;
-    m_KnockBackActive = false;
 }
 
-void FX_ExplosionRing_Sync(FX_EXPLOSION_RING *const ring)
+void FX_Ring_Sync(FX_RING *const ring)
 {
     if (ring == nullptr) {
         return;
@@ -400,60 +393,42 @@ void FX_ExplosionRing_Sync(FX_EXPLOSION_RING *const ring)
     M_RememberRing(ring);
 }
 
-FX_EXPLOSION_RING *FX_ExplosionRing_GetRing(const int32_t idx)
+FX_RING *FX_Ring_GetRing(const FX_RING_TYPE type, const int32_t idx)
 {
-    if (idx < 0 || idx >= (int32_t)ARRAY_SIZE(m_ExplosionRings)) {
+    if (idx < 0 || idx >= M_MAX_RINGS) {
         return nullptr;
     }
-    m_ExplosionActive = true;
-    return &m_ExplosionRings[idx];
+    m_Active[type] = true;
+    return &m_Rings[type][idx];
 }
 
-FX_EXPLOSION_RING *FX_ExplosionRing_GetSummonRing(const int32_t idx)
+FX_RING *FX_Ring_PeekRing(const FX_RING_TYPE type, const int32_t idx)
 {
-    if (idx < 0 || idx >= (int32_t)ARRAY_SIZE(m_SummonRings)) {
+    if (idx < 0 || idx >= M_MAX_RINGS) {
         return nullptr;
     }
-    m_SummonActive = true;
-    return &m_SummonRings[idx];
+    return &m_Rings[type][idx];
 }
 
-FX_EXPLOSION_RING *FX_ExplosionRing_GetKnockBackRing(const int32_t idx)
+void FX_Ring_Control(void)
 {
-    if (idx < 0 || idx >= (int32_t)ARRAY_SIZE(m_KnockBackRings)) {
-        return nullptr;
-    }
-    m_KnockBackActive = true;
-    return &m_KnockBackRings[idx];
-}
-
-const FX_EXPLOSION_RING *FX_ExplosionRing_PeekKnockBackRing(const int32_t idx)
-{
-    if (idx < 0 || idx >= (int32_t)ARRAY_SIZE(m_KnockBackRings)) {
-        return nullptr;
-    }
-    return &m_KnockBackRings[idx];
-}
-
-void FX_ExplosionRing_Control(void)
-{
-    if (m_ExplosionActive) {
+    if (m_Active[FX_RING_TYPE_BLAST]) {
         M_ControlExplosionRings();
     }
 
-    if (m_SummonActive) {
+    if (m_Active[FX_RING_TYPE_SUMMON]) {
         M_ControlSummonRings();
     }
 
-    if (m_KnockBackActive) {
+    if (m_Active[FX_RING_TYPE_KNOCKBACK]) {
         M_ControlKnockBackRings();
     }
 }
 
-void FX_ExplosionRing_SpawnKnockBack(const XYZ_32 pos)
+void FX_Ring_SpawnKnockBack(const XYZ_32 pos)
 {
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_KnockBackRings); i++) {
-        FX_EXPLOSION_RING *const ring = &m_KnockBackRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_KNOCKBACK][i];
         ring->on = 1;
         ring->life = 32;
         ring->speed = ((i == 1) + 1) << 4;
@@ -463,25 +438,25 @@ void FX_ExplosionRing_SpawnKnockBack(const XYZ_32 pos)
         ring->rot.x = 0;
         ring->rot.z = 0;
         ring->radius = ((i == 1) + 2) << 8;
-        FX_ExplosionRing_Sync(ring);
+        FX_Ring_Sync(ring);
     }
-    m_KnockBackActive = true;
+    m_Active[FX_RING_TYPE_KNOCKBACK] = true;
 }
 
-void FX_ExplosionRing_BounceKnockBack(void)
+void FX_Ring_BounceKnockBack(void)
 {
-    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_KnockBackRings); i++) {
-        FX_EXPLOSION_RING *const ring = &m_KnockBackRings[i];
+    for (int32_t i = 0; i < M_MAX_RINGS; i++) {
+        FX_RING *const ring = &m_Rings[FX_RING_TYPE_KNOCKBACK][i];
         ring->speed = (int16_t)((-ring->speed) >> 2);
     }
 }
 
-bool FX_ExplosionRing_IsKnockBackActive(void)
+bool FX_Ring_IsRingActive(const FX_RING_TYPE type)
 {
-    return m_KnockBackActive;
+    return m_Active[type];
 }
 
-void FX_ExplosionRing_Draw(void)
+void FX_Ring_Draw(void)
 {
     const int32_t time4 = Output_GetTimeInGame() * 4;
     const int32_t angle_base = (time4 & 0x3F) << 3;

@@ -110,11 +110,12 @@ static void M_ExplodeLondonBoss(const ITEM *const item)
             .z = item->pos.z + (Random_GetDraw() & 0x3FF) - 512,
         };
 
-        FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(p->ring_count);
+        FX_RING *const ring =
+            FX_Ring_GetRing(FX_RING_TYPE_BLAST, p->ring_count);
         if (ring != nullptr) {
             ring->pos = pos;
             ring->on = 3;
-            FX_ExplosionRing_Sync(ring);
+            FX_Ring_Sync(ring);
             p->ring_count++;
         }
 
@@ -175,7 +176,7 @@ static void M_Die(const int16_t item_num)
     item->flags |= IF_INVISIBLE;
 }
 
-static bool M_KnockBackCollision(const FX_EXPLOSION_RING *const ring)
+static bool M_KnockBackCollision(const FX_RING *const ring)
 {
     ITEM *const lara_item = Lara_GetItem();
     if (Lara_GetLaraInfo()->water_status == LWS_CHEAT) {
@@ -383,14 +384,15 @@ static void M_Control(const int16_t item_num)
                 p->ring_count = 0;
 
                 for (int32_t i = 0; i < 6; i++) {
-                    FX_EXPLOSION_RING *const ring = FX_ExplosionRing_GetRing(i);
+                    FX_RING *const ring =
+                        FX_Ring_GetRing(FX_RING_TYPE_BLAST, i);
                     ring->on = 0;
                     ring->life = 32;
                     ring->radius = 512;
                     ring->speed = 128 + (i << 5);
                     ring->rot.x = ((Random_GetControl() & 0x1FF) - 256) << 4;
                     ring->rot.z = ((Random_GetControl() & 0x1FF) - 256) << 4;
-                    FX_ExplosionRing_Sync(ring);
+                    FX_Ring_Sync(ring);
                 }
 
                 if (!p->dropped_item) {
@@ -404,7 +406,7 @@ static void M_Control(const int16_t item_num)
             }
 
             if (p->explode_count > 128 && p->ring_count == 6
-                && FX_ExplosionRing_GetRing(5)->life == 0) {
+                && FX_Ring_GetRing(FX_RING_TYPE_BLAST, 5)->life == 0) {
                 M_Die(item_num);
                 p->dead = 1;
             } else {
@@ -634,8 +636,8 @@ static void M_Control(const int16_t item_num)
                 Sophia_TriggerLaserBolt(pos, item, 2, 0);
 
                 for (int32_t i = 0; i < 6; i++) {
-                    FX_EXPLOSION_RING *const ring =
-                        FX_ExplosionRing_GetSummonRing(i);
+                    FX_RING *const ring =
+                        FX_Ring_GetRing(FX_RING_TYPE_SUMMON, i);
                     if (ring->on == 0) {
                         const int32_t r = Random_GetControl() & 0x3FF;
                         ring->on = 3;
@@ -649,7 +651,7 @@ static void M_Control(const int16_t item_num)
                         ring->rot.z =
                             16 * ((Random_GetControl() & 0x1FF) - 256);
                         ring->radius = 2048 - ABS(r - 512);
-                        FX_ExplosionRing_Sync(ring);
+                        FX_Ring_Sync(ring);
                         break;
                     }
                 }
@@ -774,16 +776,15 @@ static void M_Control(const int16_t item_num)
         };
         if (XYZ_32_GetLength(delta) < 2816) {
             p->knockback_active = true;
-            FX_ExplosionRing_SpawnKnockBack(item->pos);
+            FX_Ring_SpawnKnockBack(item->pos);
         }
     } else if (p->knockback_active) {
-        const FX_EXPLOSION_RING *const ring =
-            FX_ExplosionRing_PeekKnockBackRing(1);
+        const FX_RING *const ring = FX_Ring_PeekRing(FX_RING_TYPE_KNOCKBACK, 1);
         if (ring != nullptr && ring->on != 0 && ring->speed >= 0
             && M_KnockBackCollision(ring)) {
-            FX_ExplosionRing_BounceKnockBack();
+            FX_Ring_BounceKnockBack();
         }
-        if (!FX_ExplosionRing_IsKnockBackActive()) {
+        if (!FX_Ring_IsRingActive(FX_RING_TYPE_KNOCKBACK)) {
             p->knockback_active = false;
         }
     }
