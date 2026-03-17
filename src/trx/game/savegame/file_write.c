@@ -3,6 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/effects.h>
+#include <trx/game/fx/explosion_ring.h>
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/inventory.h>
@@ -274,6 +275,35 @@ static int32_t M_GetMusicTrackFlagsCount(void)
     return last_index + 1;
 }
 
+static void M_WriteFXRings(
+    JSON_WRITE_IO *const io, const FX_RING_TYPE type, const char *const key)
+{
+    if (!FX_Ring_IsRingActive(type)) {
+        return;
+    }
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0;; i++) {
+        const FX_RING *const ring = FX_Ring_PeekRing(type, i);
+        if (ring == nullptr) {
+            break;
+        }
+
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "on", ring->on);
+        JSONW_WRITE(io, "life", ring->life);
+        JSONW_WRITE(io, "speed", ring->speed);
+        JSONW_WRITE(io, "radius", ring->radius);
+        JSONW_WRITE(io, "prev_radius", ring->prev_radius);
+        M_WriteXYZ16(io, "rot", (XYZ_16) { ring->rot.x, 0, ring->rot.z });
+        M_WriteXYZ16(
+            io, "prev_rot", (XYZ_16) { ring->prev_rot.x, 0, ring->prev_rot.z });
+        M_WriteXYZ32(io, "pos", ring->pos);
+        M_WriteXYZ32(io, "prev_pos", ring->prev_pos);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, key);
+}
+
 void SG_File_DumpFlares(JSON_WRITE_IO *const io)
 {
     JSONW_PUSH_ARRAY(io);
@@ -322,7 +352,18 @@ void SG_File_DumpEffects(JSON_WRITE_IO *const io)
         JSONW_WRITE(io, "shade", effect->shade);
         JSONW_POP_AND_APPEND(io);
     }
-    JSONW_POP_AND_SET(io, "fx");
+    JSONW_POP_AND_SET(io, "effects");
+}
+
+void SG_File_DumpFX(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_OBJECT(io);
+    JSONW_PUSH_OBJECT(io);
+    M_WriteFXRings(io, FX_RING_TYPE_BLAST, "blast");
+    M_WriteFXRings(io, FX_RING_TYPE_KNOCKBACK, "knockback");
+    M_WriteFXRings(io, FX_RING_TYPE_SUMMON, "summon");
+    JSONW_POP_AND_SET_NZ(io, "rings");
+    JSONW_POP_AND_SET_NZ(io, "vfx");
 }
 
 void SG_File_DumpInventory(JSON_WRITE_IO *const io)

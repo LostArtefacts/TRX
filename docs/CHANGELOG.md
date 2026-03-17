@@ -58,6 +58,7 @@
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - changed Pendulums that have flames to be setup by placing a flame emitter at the same position, rather than setting the item's timer via its trigger
 - changed Meteorite Artefacts to be exempted from drop tile centering
+- fixed a soft lock preventing Lara from picking up the artefact, when saving/loading during boss explosion sequence (regression from 1.2)
 - fixed the helicopter in Highland Fling briefly disappearing when crossing room portals (regression from 1.1)
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed harpoons from Divers not spawning blood when they hit Lara

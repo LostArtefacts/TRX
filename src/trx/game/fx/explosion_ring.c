@@ -9,6 +9,8 @@
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 
+#include <string.h>
+
 #define M_MAX_RINGS 6
 
 static FX_RING m_Rings[FX_RING_TYPE_NUMBER_OF][M_MAX_RINGS] = {};
@@ -377,12 +379,8 @@ static void M_DrawKnockBackRings(const int32_t angle_base)
 
 void FX_Ring_Reset(void)
 {
-    for (FX_RING_TYPE type = 0; type < FX_RING_TYPE_NUMBER_OF; type++) {
-        for (int32_t i = 0; i < M_MAX_RINGS; i++) {
-            m_Rings[type][i] = (FX_RING) {};
-        }
-        m_Active[type] = false;
-    }
+    memset(m_Rings, 0, sizeof(m_Rings));
+    memset(m_Active, 0, sizeof(m_Active));
 }
 
 void FX_Ring_Sync(FX_RING *const ring)
