@@ -1,6 +1,22 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "TRX gameflow schema",
+  "$defs": {
+    "path": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      ]
+    }
+  },
   "type": "object",
   "properties": {
     "main_menu_picture": {
@@ -150,7 +166,7 @@
       "type": "object",
       "properties": {
         "path": {
-          "type": "string"
+          "$ref": "#/$defs/path"
         },
         "music_track": {
           "type": "integer"
@@ -188,7 +204,7 @@
           "description": "Path to a Lua script executed after loading this level."
         },
         "path": {
-          "type": "string"
+          "$ref": "#/$defs/path"
         },
         "music_track": {
           "type": "integer"
@@ -345,7 +361,7 @@
       "type": "object",
       "properties": {
         "path": {
-          "type": "string"
+          "$ref": "#/$defs/path"
         },
         "legal": {
           "type": "boolean"
@@ -503,7 +519,7 @@
           "const": "display_picture"
         },
         "path": {
-          "type": "string"
+          "$ref": "#/$defs/path"
         },
         "display_time": {
           "type": "number"
