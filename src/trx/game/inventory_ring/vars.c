@@ -36,6 +36,9 @@ void InvRing_LoadVars(const char *const path)
         Memory_Free(item);
     }
     Vector_Clear(g_InvRing_Items);
+    for (int32_t i = 0; i < RT_NUMBER_OF; i++) {
+        g_InvRing_Source[i].count = 0;
+    }
 
     JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_ARRAY *const arr = JSON_ValueAsArray(root);
