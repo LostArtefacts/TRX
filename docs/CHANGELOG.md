@@ -72,6 +72,7 @@
 - fixed rain not spawning in outside rooms in the Thames Wharf cutscene
 - fixed the punk in the cutscene before Lud's Gate walking through a wall
 - fixed Lara appearing frozen at the beginning of the cutscene before City
+- fixed incorrect texturing on the fish in City
 - fixed too low volume in all FMVs (except logo which used a different codec)
 - fixed Lara by default being unable to climb out of water onto steep slopes (change manually in Gameplay → Fixes → Fix water exit)
 - fixed thrown flares falling through trapdoors (regression from 1.1)

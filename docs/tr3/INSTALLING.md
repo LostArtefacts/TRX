@@ -169,6 +169,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── antarc_sky.bin
 │   │   ├── area51_sky.bin
 │   │   ├── cavern_sky.bin
+│   │   ├── city_textures.bin
 │   │   ├── coastal_airlock.bin
 │   │   ├── coastal_animating_bounds.bin
 │   │   ├── coastal_sky.bin
@@ -424,6 +425,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── antarc_sky.bin
         │   │   ├── area51_sky.bin
         │   │   ├── cavern_sky.bin
+        │   │   ├── city_textures.bin
         │   │   ├── coastal_airlock.bin
         │   │   ├── coastal_animating_bounds.bin
         │   │   ├── coastal_sky.bin
