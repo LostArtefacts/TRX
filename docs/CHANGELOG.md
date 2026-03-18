@@ -30,6 +30,7 @@
 
 **TR2**:
 - added the ability to use flames on Pendulums, similar to TR3
+- fixed Bartoli appearing frozen towards the end of the Opera House cutscene
 - fixed pulling the Dagger of Xian from dragon's corpse not counting as a pickup (regression from 1.0)
 - fixed thrown flares falling through trapdoors and becoming stuck in the void if thrown underwater near the floor (#3708)
 - fixed flamethrowers and Dragon's breath doing weird animation when hitting floor (#5104, regression from 1.3)
