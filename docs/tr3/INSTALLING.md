@@ -180,6 +180,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── cut3_shell.bin
 │   │   ├── cut4_setup.bin
 │   │   ├── cut5_setup.bin
+│   │   ├── cut5_textures.bin
 │   │   ├── cut6_setup.bin
 │   │   ├── cut7_setup.bin
 │   │   ├── cut8_setup.bin
@@ -434,6 +435,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── cut3_shell.bin
         │   │   ├── cut4_setup.bin
         │   │   ├── cut5_setup.bin
+        │   │   ├── cut5_textures.bin
         │   │   ├── cut6_setup.bin
         │   │   ├── cut7_setup.bin
         │   │   ├── cut8_setup.bin
