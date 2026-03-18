@@ -483,6 +483,7 @@
             "injections": [
                 "lara_guns.bin",
                 "stpaul_animating_bounds.bin",
+                "stpaul_textures.bin",
             ],
             "unobtainable_pickups": 9,
         },
