@@ -301,6 +301,7 @@
             "injections": [
                 "lara_guns.bin",
                 "globe_model.bin",
+                "city_textures.bin",
             ],
         },
 
