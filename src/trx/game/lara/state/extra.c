@@ -70,16 +70,22 @@ static const M_MIDAS_STEP m_MidasSteps[] = {
 static void M_ScionPedestal(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (Item_TestFrameEqual(item, M_LF_PICKUP_SCION)
-        && lara->interact_target.item_num != NO_ITEM) {
-        ITEM *const scion = Item_Get(lara->interact_target.item_num);
-        Overlay_AddDisplayPickup(scion->object_id);
-        Inv_AddItem(scion->object_id);
-        scion->status = IS_INVISIBLE;
-        Item_RemoveDrawn(lara->interact_target.item_num);
-        Stats_AddPickup();
-        lara->interact_target.item_num = NO_ITEM;
+    if (!Item_TestFrameEqual(item, M_LF_PICKUP_SCION)
+        || lara->interact_target.item_num == NO_ITEM) {
+        return;
     }
+
+    ITEM *const scion = Item_Get(lara->interact_target.item_num);
+    const ITEM_ACTION action = ItemAction_ToGameID(ITEM_ACTION_FINISH_LEVEL);
+    if (!Anim_HasFXCommand(Item_GetAnim(item), action)) {
+        Overlay_AddDisplayPickup(scion->object_id);
+    }
+
+    Inv_AddItem(scion->object_id);
+    scion->status = IS_INVISIBLE;
+    Item_RemoveDrawn(lara->interact_target.item_num);
+    Stats_AddPickup();
+    lara->interact_target.item_num = NO_ITEM;
 }
 
 static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)

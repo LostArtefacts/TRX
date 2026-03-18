@@ -27,6 +27,7 @@
 **TR1**:
 - added the ability to use flames on Pendulums, similar to TR3
 - changed skyboxes in TR1 to be drawn only if the appropriate room flag is set
+- changed the scion pickup in Sanctuary of the Scion to not be displayed on-screen briefly before the level ends (#3682)
 - fixed Scion taking damage before activation (regression from 1.0)
 
 **TR2**:
