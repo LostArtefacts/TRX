@@ -10,6 +10,7 @@
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/textures.h>
+#include <trx/game/output/uniforms.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -110,11 +111,21 @@ int32_t Output_GetFogEnd(void)
 void Output_SetFogStart(const int32_t dist)
 {
     m_FogStart = dist;
+    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
+    if (uniforms != nullptr) {
+        Output_Uniforms_UploadFogDistance(
+            uniforms, Output_GetFogStart(), Output_GetFogEnd());
+    }
 }
 
 void Output_SetFogEnd(const int32_t dist)
 {
     m_FogEnd = dist;
+    const OUTPUT_UNIFORMS *const uniforms = Output_GetUniforms();
+    if (uniforms != nullptr) {
+        Output_Uniforms_UploadFogDistance(
+            uniforms, Output_GetFogStart(), Output_GetFogEnd());
+    }
 }
 
 void Output_SetupBelowWater(const bool underwater)

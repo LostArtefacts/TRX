@@ -37,6 +37,8 @@ void Output_Uniforms_UploadCPULight(
 void Output_Uniforms_UploadOwnLight(
     const OUTPUT_UNIFORMS *uniforms, const OUTPUT_LIGHT_INFO *info);
 
+void Output_Uniforms_UploadFogDistance(
+    const OUTPUT_UNIFORMS *uniforms, float start, float end);
 void Output_Uniforms_UploadDesaturation(
     const OUTPUT_UNIFORMS *uniforms, float desaturation);
 void Output_Uniforms_UploadGlobalTint(
