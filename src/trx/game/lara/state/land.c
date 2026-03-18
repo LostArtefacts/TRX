@@ -181,7 +181,8 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         const int16_t unlock_frame =
             m_JumpLockFrames[g_Config.gameplay.jump_lock_mode];
         if (Item_TestAnimEqual(item, LA(LA_RUN_START))) {
-            m_JumpPermitted = false;
+            m_JumpPermitted =
+                g_Config.gameplay.jump_lock_mode == JUMP_LOCK_DISABLED;
         } else if (
             !Item_TestAnimEqual(item, LA(LA_RUN))
             || Item_TestFrameEqual(item, unlock_frame)) {
