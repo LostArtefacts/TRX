@@ -9,6 +9,7 @@
     - Black: like the Remasters
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
+- added support for `.wma` music files for broader custom level compatibility
 - added support for `.ogv` and `.fmv` FMV extensions, with `.ogv` preferred over `.fmv` for remaster compatibility
 - added audio fallback for FMV files that lack an audio stream (e.g. remastered `.ogv`), probing alternative extensions for a companion audio track
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
