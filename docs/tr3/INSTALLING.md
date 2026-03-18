@@ -208,6 +208,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── reunion_flames.bin
 │   │   ├── scotland_sky.bin
 │   │   ├── stpaul_animating_bounds.bin
+│   │   ├── stpaul_textures.bin
 │   │   ├── tinnos_cameras.bin
 │   │   ├── tinnos_flames.bin
 │   │   ├── undersea_animating_bounds.bin
@@ -464,6 +465,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── reunion_flames.bin
         │   │   ├── scotland_sky.bin
         │   │   ├── stpaul_animating_bounds.bin
+        │   │   ├── stpaul_textures.bin
         │   │   ├── tinnos_cameras.bin
         │   │   ├── tinnos_flames.bin
         │   │   ├── undersea_animating_bounds.bin
