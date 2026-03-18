@@ -6,6 +6,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
@@ -191,6 +192,15 @@ bool Demo_Start(const int32_t level_num)
         Lara_Cheat_GetStuff();
     } else {
         lara->last_gun_type = LGT_PISTOLS;
+    }
+
+    if (Gun_IsRifleType(lara->last_gun_type)) {
+        Gun_SetLaraBackMesh(lara->last_gun_type);
+    } else if (
+        lara->last_gun_type != LGT_UNARMED
+        && lara->last_gun_type != LGT_FLARE) {
+        Gun_SetLaraHolsterLMesh(lara->last_gun_type);
+        Gun_SetLaraHolsterRMesh(lara->last_gun_type);
     }
 
     Camera_Initialise();
