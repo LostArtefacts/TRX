@@ -463,9 +463,6 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     }
 
     Game_SetCurrentLevel(nullptr);
-    if (s->args->level_to_play != nullptr) {
-        Memory_FreePointer(&g_GameFlow.level_tables[GFLT_MAIN].levels[0].path);
-    }
 
     if (m_PendingMod != nullptr) {
         if (TestReplay_IsOpened()) {

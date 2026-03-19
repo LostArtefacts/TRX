@@ -27,7 +27,7 @@
 
     "levels": [
         {
-            "path": "PLACEHOLDER",
+            "path": "%direct_level%",
             "music_track": 0,
             "lara_outfit": "tr1_classic",
             "sequence": [
