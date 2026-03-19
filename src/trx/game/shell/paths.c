@@ -508,6 +508,13 @@ static const char *M_GetBaseModID(void)
     return nullptr;
 }
 
+static const char *M_GetDirectLevelArg(void)
+{
+    return m_Context.args != nullptr && m_Context.args->level_to_play != nullptr
+        ? m_Context.args->level_to_play
+        : "";
+}
+
 static const char *M_GetBaseModDir(void)
 {
     return M_GetModDir(M_GetBaseModID());
@@ -669,6 +676,7 @@ char *TRXPath_ExpandVars(const char *const in)
           M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_SCRIPT_FILE) },
         { "%base_mod%", base_mod_id != nullptr ? base_mod_id : "" },
         { "%base_mod_dir%", M_GetBaseModDir() },
+        { "%direct_level%", M_GetDirectLevelArg() },
         { "%tr_version%", String_FormatStatic("%d", g_TRVersion) },
     };
 
@@ -877,8 +885,14 @@ static bool M_ForEachResolveAttempt(
     ASSERT(path >= 0 && path < TRX_DYNAMIC_PATH_NUMBER_OF);
     ASSERT(callback != nullptr);
 
-    if (rel != nullptr && File_IsAbsolute(rel)) {
-        return callback(rel, user_data);
+    char *expanded_rel = TRXPath_ExpandVars(rel);
+    const char *const effective_rel =
+        expanded_rel != nullptr ? expanded_rel : rel;
+
+    if (effective_rel != nullptr && File_IsAbsolute(effective_rel)) {
+        const bool result = callback(effective_rel, user_data);
+        Memory_FreePointer(&expanded_rel);
+        return result;
     }
 
     const M_DYNAMIC_PATH_POLICY *const policy = &m_PathPolicies[path];
@@ -890,8 +904,8 @@ static bool M_ForEachResolveAttempt(
             break;
         }
 
-        char *candidate =
-            Memory_DupStr(M_ExpandDynamicPattern(path, pattern, rel, nullptr));
+        char *candidate = Memory_DupStr(
+            M_ExpandDynamicPattern(path, pattern, effective_rel, nullptr));
         if (strchr(candidate, '%') != nullptr) {
             Memory_FreePointer(&candidate);
             continue;
@@ -935,6 +949,7 @@ static bool M_ForEachResolveAttempt(
         Memory_FreePointer(&candidate);
     }
 
+    Memory_FreePointer(&expanded_rel);
     return true;
 }
 
