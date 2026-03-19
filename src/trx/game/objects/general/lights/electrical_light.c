@@ -46,6 +46,11 @@ static void M_Control(const int16_t item_num)
     } else {
         rg = 31 - (Random_GetControl() % 4);
         b = 31 - (Random_GetControl() % 2);
+
+        if (item->object_id == O_FLICKERING_LIGHT
+            && (Random_GetControl() < 0x200)) {
+            p->life = 0;
+        }
     }
 
     rg <<= 3;
@@ -76,3 +81,4 @@ static void M_Setup(OBJECT *const obj)
 }
 
 REGISTER_OBJECT(O_ELECTRICAL_LIGHT, M_Setup)
+REGISTER_OBJECT(O_FLICKERING_LIGHT, M_Setup)
