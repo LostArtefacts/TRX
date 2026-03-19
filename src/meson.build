@@ -243,6 +243,7 @@ common_sources = [
   'trx/game/fx/laser.c',
   'trx/game/fx/wake.c',
   'trx/game/fx/water.c',
+  'trx/game/fx/water_particles.c',
   'trx/game/fx/weather.c',
   'trx/game/game/control.c',
   'trx/game/game/draw.c',

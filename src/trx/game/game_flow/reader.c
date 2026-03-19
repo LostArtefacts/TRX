@@ -787,6 +787,7 @@ static bool M_LoadLevel(
             level->weather_type = ENUM_MAP_GET(WEATHER_TYPE, tmp, WEATHER_NONE);
         }
     }
+    JSON_READ_D(io, "water_particles", &level->water_particles, false);
 
     JSON_READ_D(io, "unobtainable_pickups", &level->unobtainable.pickups, 0);
     JSON_READ_D(io, "unobtainable_kills", &level->unobtainable.kills, 0);
