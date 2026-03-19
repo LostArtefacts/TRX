@@ -18,59 +18,17 @@ Subsequent builds:
 
 ## Compiling
 
-### Compiling on Ubuntu
+### Compiling on Linux
 
-- **With Docker**:
-
-    Make sure to install Docker and [just](https://github.com/casey/just).
-    To see the list of all possible build targets, run `just -l`. To build the
-    images, use the `just *-build-*` commands relevant to the game and platform
-    you want to build for. The binaries should appear in the `build/`
-    directory.
-
-- **Without Docker**:
-
-    This scenario is not officially supported, but you can see how it's done by
-    examining the files in the `tools/*/docker/` directory for the external
-    dependencies and `meson.build` for the local files, then tailoring your
-    system to match the process.
-
+Follow [this guide](BUILDING_ON_LINUX.md).
 
 ### Compiling on Windows
 
-- **Using WSL**:
-
-    Install WSL (video guide: https://www.youtube.com/watch?v=5RTSlby-l9w)
-
-    - Run Powershell as Administrator
-    - Copy and paste the following command: `Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux`
-    - Restart the computer
-    - Go to Windows App Store
-    - Install Ubuntu
-
-    Run WSL and continue with the instructions from the `Compiling on Ubuntu` section.
+Follow [this guide](BUILDING_ON_WINDOWS.md).
 
 ### Compiling on MacOS
 
-MacPorts:
-https://github.com/macports/macports-base/releases
-
-
-
-- **With Docker**:
-
-    Make sure to install Docker and [just](https://github.com/casey/just).
-    To see the list of all possible build targets, run `just -l`. To build the
-    images, use the `just *-build-*` commands relevant to the game and platform
-    you want to build for. The binaries should appear in the `build/`
-    directory.
-
-- **Without Docker**:
-
-    This scenario is not officially supported, but you can see how it's done by
-    examining the files in the `tools/*/docker/` directory for the external
-    dependencies and `meson.build` for the local files, then tailoring your
-    system to match the process.
+Follow [this guide](BUILDING_ON_MACOS.md).
 
 
 ### Supported compilers

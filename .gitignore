@@ -35,6 +35,9 @@ Release/
 *.filters
 .dotnet/
 
+# MacOS garbage
+.DS_Store
+
 # libtrx artefacts
 **/subprojects/packagecache/
 **/subprojects/dwarfstack-*/
