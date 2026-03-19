@@ -18,7 +18,9 @@ Subsequent builds:
 
 ## Compiling
 
-### Compiling on Ubuntu
+### Compiling on Linux
+
+You can follow [this guide](BUILDING_ON_LINUX.md)
 
 - **With Docker**:
 
@@ -48,14 +50,14 @@ Subsequent builds:
     - Go to Windows App Store
     - Install Ubuntu
 
-    Run WSL and continue with the instructions from the `Compiling on Ubuntu` section.
+    Run WSL and continue with the instructions from the `Compiling on Linux` section.
 
 ### Compiling on MacOS
 
 MacPorts:
 https://github.com/macports/macports-base/releases
 
-
+You can follow [this guide](BUILDING_ON_MACOS.md)
 
 - **With Docker**:
 
