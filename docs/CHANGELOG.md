@@ -18,6 +18,7 @@
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
 - added simple level-load caching by introducing a `cache/` folder
 - added an option for Lara to wear semi-transparent sunglasses (Graphic Options → Lara's sunglasses)
+- added four additional general animating object slots, `O_ANIMATING_7` to `O_ANIMATING_10`
 - changed the reflections option to be available in all game modes (Graphic Options → Enable reflections)
 - changed the delay in performing a running jump by one frame less, when jump lock mode is set to disabled (Gameplay → Controls → Jump lock mode) (#3841)
 - improved level loading times by 15%
