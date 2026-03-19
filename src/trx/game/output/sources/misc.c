@@ -13,7 +13,6 @@
 
 typedef struct {
     XYZW_F pos;
-    RGBA_8888 color;
 } M_VERTEX;
 
 typedef enum {
@@ -25,6 +24,7 @@ typedef enum {
 typedef struct {
     MATRIX matrix;
     M_PRIMITIVE_TYPE prim_type;
+    RGBA_8888 color;
 } M_INSTANCE;
 
 typedef struct {
@@ -32,7 +32,6 @@ typedef struct {
     OUTPUT_MESH_SHADER *shader;
     OUTPUT_VERTEX_RANGE primitive_ranges[M_PRIMITIVE_NUMBER_OF];
     VECTOR *vertices;
-    VECTOR *scheduled;
     VECTOR *scheduled_spheres;
     VECTOR *scheduled_cuboids;
     GLuint vao;
@@ -56,7 +55,6 @@ static void M_GenerateSphere(
     const int32_t subdivisions)
 {
     // More subdivisions means smoother spheres.
-    const RGBA_8888 color = { 255, 0, 0, 255 };
     const int32_t position_count = SQUARE(subdivisions + 1);
     XYZW_F positions[position_count];
     int32_t index = 0;
@@ -98,7 +96,6 @@ static void M_GenerateSphere(
                     p->vertices,
                     &(M_VERTEX) {
                         .pos = positions[indices[l]],
-                        .color = color,
                     });
             }
             for (int32_t k = 0; k < OUTPUT_QUAD_VERTICES; k++) {
@@ -107,7 +104,6 @@ static void M_GenerateSphere(
                     p->vertices,
                     &(M_VERTEX) {
                         .pos = positions[indices[l]],
-                        .color = color,
                     });
             }
         }
@@ -118,7 +114,6 @@ static void M_GenerateSphere(
 static void M_GenerateCuboid(
     M_PRIV *const p, OUTPUT_VERTEX_RANGE *const target_range)
 {
-    const RGBA_8888 color = { 255, 0, 0, 255 };
     const XYZW_F vertices[8] = {
         { -1, -1, 1, 0 },  { 1, -1, 1, 0 },
         { 1, 1, 1, 0 },    { -1, 1, 1, 0 }, // front
@@ -135,7 +130,6 @@ static void M_GenerateCuboid(
                 p->vertices,
                 &(M_VERTEX) {
                     .pos = vertices[order[i][j]],
-                    .color = color,
                 });
         }
     }
@@ -147,6 +141,11 @@ static void M_DrawScheduled(M_PRIV *const p, VECTOR *const scheduled)
     for (int32_t i = 0; i < scheduled->count; i++) {
         const M_INSTANCE *const instance = Vector_Get(scheduled, i);
         Output_MeshShader_UploadModelMatrix(p->shader, &instance->matrix);
+        const RGBA_8888 c = instance->color;
+        glVertexAttrib4f(
+            OUTPUT_MESH_ATTR_COLOR, c.r / 255.0f, c.g / 255.0f, c.b / 255.0f,
+            c.a / 255.0f);
+
         const OUTPUT_VERTEX_RANGE *const range =
             &p->primitive_ranges[instance->prim_type];
         glDrawArrays(GL_TRIANGLES, range->vertex_start, range->vertex_count);
@@ -156,7 +155,6 @@ static void M_DrawScheduled(M_PRIV *const p, VECTOR *const scheduled)
 static void M_RenderBegin(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Clear(p->scheduled);
     Vector_Clear(p->scheduled_spheres);
     Vector_Clear(p->scheduled_cuboids);
 }
@@ -165,8 +163,7 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
     return pass == SCENE_PASS_TRANSPARENT
-        && (p->scheduled->count > 0 || p->scheduled_spheres->count > 0
-            || p->scheduled_cuboids->count > 0);
+        && (p->scheduled_spheres->count > 0 || p->scheduled_cuboids->count > 0);
 }
 
 static void M_RenderPass(
@@ -186,36 +183,17 @@ static void M_RenderPass(
         OUTPUT_MESH_ATTR_FLAGS,
         VERT_FLAT_SHADED | VERT_NO_LIGHTING | VERT_NO_WIBBLE);
     glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
-    M_DrawScheduled(p, p->scheduled);
 
+    GLint bound_polygon_mode[2];
+    glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (p->scheduled_spheres->count > 0) {
-        const bool wireframe_state = g_Config.rendering.enable_wireframe;
-        const RGBA_F color_black = { 0.0f, 0.0f, 0.0f, 0.5f };
-        const RGBA_F color_white = { 1.0f, 1.0f, 1.0f, 0.5f };
-        const RGBA_F color = wireframe_state ? color_black : color_white;
-        glDisableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
-        glVertexAttrib4f(
-            OUTPUT_MESH_ATTR_COLOR, color.r, color.g, color.b, color.a);
-        GLint bound_polygon_mode[2];
-        glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode[0]);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         M_DrawScheduled(p, p->scheduled_spheres);
-        glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
-        glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     }
     if (p->scheduled_cuboids->count > 0) {
-        const bool wireframe_state = g_Config.rendering.enable_wireframe;
-        const RGBA_F color = { 1.0f, 0.0f, 0.0f, 1.0f };
-        glDisableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
-        glVertexAttrib4f(
-            OUTPUT_MESH_ATTR_COLOR, color.r, color.g, color.b, color.a);
-        GLint bound_polygon_mode2[2];
-        glGetIntegerv(GL_POLYGON_MODE, &bound_polygon_mode2[0]);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         M_DrawScheduled(p, p->scheduled_cuboids);
-        glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
-        glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode2[0]);
     }
+    glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
 }
 
 void OutputSource_Misc_Init(void)
@@ -223,7 +201,6 @@ void OutputSource_Misc_Init(void)
     M_PRIV *const p = &m_Priv;
     p->shader = Output_GetMeshShader();
     p->vertices = Vector_Create(sizeof(M_VERTEX));
-    p->scheduled = Vector_Create(sizeof(M_INSTANCE));
     p->scheduled_spheres = Vector_Create(sizeof(M_INSTANCE));
     p->scheduled_cuboids = Vector_Create(sizeof(M_INSTANCE));
     p->source.render_begin = M_RenderBegin;
@@ -238,7 +215,7 @@ void OutputSource_Misc_Init(void)
     glBindBuffer(GL_ARRAY_BUFFER, p->vbo);
 
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_POS);
-    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
+    glDisableVertexAttribArray(OUTPUT_MESH_ATTR_COLOR);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_NORMAL);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
     glDisableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
@@ -248,9 +225,6 @@ void OutputSource_Misc_Init(void)
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_POS, 4, GL_FLOAT, GL_FALSE, sizeof(M_VERTEX),
         (void *)(intptr_t)offsetof(M_VERTEX, pos));
-    glVertexAttribPointer(
-        OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(M_VERTEX),
-        (void *)(intptr_t)offsetof(M_VERTEX, color));
 
     M_GenerateSphere(p, &p->primitive_ranges[M_PRIMITIVE_SPHERE], 12);
     M_GenerateCuboid(p, &p->primitive_ranges[M_PRIMITIVE_CUBOID]);
@@ -266,10 +240,6 @@ void OutputSource_Misc_Shutdown(void)
     if (p->vertices != nullptr) {
         Vector_Free(p->vertices);
         p->vertices = nullptr;
-    }
-    if (p->scheduled != nullptr) {
-        Vector_Free(p->scheduled);
-        p->scheduled = nullptr;
     }
     if (p->scheduled_spheres != nullptr) {
         Vector_Free(p->scheduled_spheres);
@@ -289,22 +259,24 @@ void OutputSource_Misc_Shutdown(void)
     }
 }
 
-void OutputSource_Misc_StageSphere(void)
+void OutputSource_Misc_StageSphere(const RGBA_8888 color)
 {
     M_PRIV *const p = &m_Priv;
     M_INSTANCE inst = {
         .matrix = *g_WMatrixPtr,
         .prim_type = M_PRIMITIVE_SPHERE,
+        .color = color,
     };
     Vector_Add(p->scheduled_spheres, &inst);
 }
 
-void OutputSource_Misc_StageCuboid(void)
+void OutputSource_Misc_StageCuboid(const RGBA_8888 color)
 {
     M_PRIV *const p = &m_Priv;
     M_INSTANCE inst = {
         .matrix = *g_WMatrixPtr,
         .prim_type = M_PRIMITIVE_CUBOID,
+        .color = color,
     };
     Vector_Add(p->scheduled_cuboids, &inst);
 }

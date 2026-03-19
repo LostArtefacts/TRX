@@ -35,3 +35,5 @@ void Output_DrawPhotoModeFrame(int32_t thickness);
 
 void Output_DrawSphere(XYZ_16 center, int32_t radius);
 void Output_DrawCuboid(const BOUNDS_16 *bounds);
+void Output_DrawSphereEx(XYZ_16 center, int32_t radius, RGBA_8888 color);
+void Output_DrawCuboidEx(const BOUNDS_16 *bounds, RGBA_8888 color);
