@@ -220,6 +220,10 @@
           ],
           "description": "Enables a per-level weather effect."
         },
+        "water_particles": {
+          "type": "boolean",
+          "description": "TR3 only. Enables PSX-style underwater water particles in this level."
+        },
         "cold_water": {
           "type": "boolean"
         },

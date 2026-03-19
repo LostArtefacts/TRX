@@ -78,6 +78,7 @@
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 - fixed rain not spawning in outside rooms in the Thames Wharf cutscene
+- added PSX-style underwater water particles to Madubu Gorge, Aldwych, and Lud's Gate
 - fixed the punk in the cutscene before Lud's Gate walking through a wall
 - fixed Lara appearing frozen at the beginning of the cutscene before City
 - fixed incorrect texturing on the fish in City

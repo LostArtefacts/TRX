@@ -22,6 +22,7 @@ Following are each of the properties available within a level.
     "music_track": 57,
     "lara_outfit": "tr2_classic",
     "weather_type": "rain",
+    "water_particles": true,
     "death_tile": "rapids",
     "water_color": [0.7, 0.5, 0.85],
     "cold_water": true,
@@ -139,6 +140,14 @@ Following are each of the properties available within a level.
       TR3 only. Enables per-level weather.
       Valid values: <code>rain</code>, <code>snow</code>.
       Omit for none.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>water_particles</code></td>
+    <td>Boolean</td>
+    <td colspan="2">
+      TR3 only. Enables PSX-style underwater water particles for this level.
+      These follow the weather effects toggle.
     </td>
   </tr>
   <tr valign="top">

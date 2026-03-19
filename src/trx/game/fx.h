@@ -7,4 +7,5 @@
 #include <trx/game/fx/laser.h>
 #include <trx/game/fx/wake.h>
 #include <trx/game/fx/water.h>
+#include <trx/game/fx/water_particles.h>
 #include <trx/game/fx/weather.h>
