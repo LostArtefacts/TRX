@@ -409,14 +409,29 @@ void Output_DrawPhotoModeFrame(const int32_t thickness)
 
 void Output_DrawSphere(const XYZ_16 center, const int32_t radius)
 {
+    const bool wireframe_state = g_Config.rendering.enable_wireframe;
+    const RGBA_8888 color_black = { 0, 0, 0, 128 };
+    const RGBA_8888 color_white = { 255, 255, 255, 128 };
+    const RGBA_8888 color = wireframe_state ? color_black : color_white;
+    Output_DrawSphereEx(center, radius, color);
+}
+
+void Output_DrawSphereEx(
+    const XYZ_16 center, const int32_t radius, const RGBA_8888 color)
+{
     Matrix_Push();
     Matrix_TranslateRel16(center);
     Matrix_Scale(radius << W2V_SHIFT);
-    OutputSource_Misc_StageSphere();
+    OutputSource_Misc_StageSphere(color);
     Matrix_Pop();
 }
 
 void Output_DrawCuboid(const BOUNDS_16 *const bounds)
+{
+    Output_DrawCuboidEx(bounds, (RGBA_8888) { 255, 0, 0, 255 });
+}
+
+void Output_DrawCuboidEx(const BOUNDS_16 *const bounds, const RGBA_8888 color)
 {
     const int32_t x0 = bounds->min.x;
     const int32_t x1 = bounds->max.x;
@@ -435,6 +450,6 @@ void Output_DrawCuboid(const BOUNDS_16 *const bounds)
     Matrix_ScaleX(x_size << W2V_SHIFT);
     Matrix_ScaleY(y_size << W2V_SHIFT);
     Matrix_ScaleZ(z_size << W2V_SHIFT);
-    OutputSource_Misc_StageCuboid();
+    OutputSource_Misc_StageCuboid(color);
     Matrix_Pop();
 }
