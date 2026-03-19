@@ -19,7 +19,7 @@
 - added an option for Lara to wear semi-transparent sunglasses (Graphic Options → Lara's sunglasses)
 - changed the reflections option to be available in all game modes (Graphic Options → Enable reflections)
 - changed the delay in performing a running jump by one frame less, when jump lock mode is set to disabled (Gameplay → Controls → Jump lock mode) (#3841)
-- improved level loading times by 10%
+- improved level loading times by 15%
 - improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 - fixed the photo mode red frame not covering the full screen when using integer upscaling

@@ -2,12 +2,20 @@
 #include <trx/core/colors.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/thread_pool.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/output.h>
+
+typedef struct {
+    const RGB_888 *palette;
+    const uint8_t *input_8_page;
+    const uint16_t *input_16_page;
+    RGBA_8888 *output_32_page;
+} M_TEXTURE_PAGE_DECODE_JOB;
 
 static void M_DecodeTR3ObjectTextureUVs(OBJECT_TEXTURE *const texture)
 {
@@ -30,6 +38,34 @@ static void M_DecodeTR3ObjectTextureUVs(OBJECT_TEXTURE *const texture)
             uv[i] += 256;
         }
         flags >>= 1;
+    }
+}
+
+static void M_Decode8BitTexturePage(void *const userdata)
+{
+    const M_TEXTURE_PAGE_DECODE_JOB *const job = userdata;
+    const uint8_t *input = job->input_8_page;
+    RGBA_8888 *output = job->output_32_page;
+
+    for (int32_t i = 0; i < TEXTURE_PAGE_SIZE; i++) {
+        const uint8_t index = *input++;
+        const RGB_888 pix = job->palette[index];
+        output->r = pix.r;
+        output->g = pix.g;
+        output->b = pix.b;
+        output->a = index == 0 ? 0 : 0xFF;
+        output++;
+    }
+}
+
+static void M_Decode16BitTexturePage(void *const userdata)
+{
+    const M_TEXTURE_PAGE_DECODE_JOB *const job = userdata;
+    const uint16_t *input = job->input_16_page;
+    RGBA_8888 *output = job->output_32_page;
+
+    for (int32_t i = 0; i < TEXTURE_PAGE_SIZE; i++) {
+        *output++ = Color_ARGB1555ToRGBA8888(*input++);
     }
 }
 
@@ -90,30 +126,38 @@ void Level_Section_ReadTexturePages(LEVEL_CONTEXT *const ctx, VFILE *const file)
     VFile_Read(file, info->textures.pages_8, num_pages * TEXTURE_PAGE_SIZE);
 
     info->textures.pages_32 = Memory_Alloc(texture_size_32_bit);
-    RGBA_8888 *output = info->textures.pages_32;
+
+    THREAD_POOL *const pool = ThreadPool_Create(-1);
+    M_TEXTURE_PAGE_DECODE_JOB *const jobs =
+        Memory_Alloc(sizeof(*jobs) * num_pages);
+    uint16_t *input_16 = nullptr;
+    for (int32_t i = 0; i < num_pages; i++) {
+        jobs[i].palette = info->palette.data_24;
+        jobs[i].input_8_page = &info->textures.pages_8[i * TEXTURE_PAGE_SIZE];
+        jobs[i].input_16_page = nullptr;
+        jobs[i].output_32_page =
+            &info->textures.pages_32[i * TEXTURE_PAGE_SIZE];
+    }
 
     if (loader->game_version == 1) {
-        const uint8_t *input = info->textures.pages_8;
-        for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
-            const uint8_t index = *input++;
-            const RGB_888 pix = info->palette.data_24[index];
-            output->r = pix.r;
-            output->g = pix.g;
-            output->b = pix.b;
-            output->a = index == 0 ? 0 : 0xFF;
-            output++;
+        for (int32_t i = 0; i < num_pages; i++) {
+            ThreadPool_AddJob(pool, M_Decode8BitTexturePage, &jobs[i]);
         }
     } else {
         const int32_t texture_size_16_bit =
             num_pages * TEXTURE_PAGE_SIZE * sizeof(uint16_t);
-        uint16_t *input = Memory_Alloc(texture_size_16_bit);
-        uint16_t *input_ptr = input;
-        VFile_Read(file, input, texture_size_16_bit);
-        for (int32_t i = 0; i < num_pages * TEXTURE_PAGE_SIZE; i++) {
-            *output++ = Color_ARGB1555ToRGBA8888(*input_ptr++);
+        input_16 = Memory_Alloc(texture_size_16_bit);
+        VFile_Read(file, input_16, texture_size_16_bit);
+        for (int32_t i = 0; i < num_pages; i++) {
+            jobs[i].input_16_page = &input_16[i * TEXTURE_PAGE_SIZE];
+            ThreadPool_AddJob(pool, M_Decode16BitTexturePage, &jobs[i]);
         }
-        Memory_FreePointer(&input);
     }
+
+    ThreadPool_Wait(pool);
+    Memory_FreePointer(&input_16);
+    Memory_Free(jobs);
+    ThreadPool_Destroy(pool);
 
     Benchmark_End(&benchmark, nullptr);
 }
