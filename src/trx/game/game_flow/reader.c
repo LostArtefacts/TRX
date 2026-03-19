@@ -414,11 +414,11 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
 {
     JSON_READ_IO *const io = ctx->io;
     char *expanded_path = nullptr;
-    JSON_MUST(M_ReadPath(
-        io, "path", true, TRX_DYNAMIC_PATH_IMAGE_FILE, &expanded_path));
+    JSON_SHOULD(M_ReadPath(
+        io, "path", false, TRX_DYNAMIC_PATH_IMAGE_FILE, &expanded_path));
+
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
-        event_data->path = (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
         JSON_READ_D(io, "legal", &event_data->is_legal, false);
         JSON_READ_D(io, "credit", &event_data->is_credit, false);
         JSON_READ_D(io, "display_time", &event_data->display_time, 5.0f);
@@ -426,14 +426,20 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
         JSON_READ_D(
             io, "fade_out_time", &event_data->fade_out_time, 1.0f / 3.0f);
         if (expanded_path != nullptr) {
+            event_data->path =
+                (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
             strcpy(event_data->path, expanded_path);
+        } else {
+            event_data->path = nullptr;
         }
         event->data = event_data;
     }
+
     const int32_t out_size = sizeof(GF_DISPLAY_PICTURE_DATA)
         + (expanded_path == nullptr ? 0 : strlen(expanded_path) + 1);
     Memory_FreePointer(&expanded_path);
     return out_size;
+
 fail:
     Memory_FreePointer(&expanded_path);
     return 0;
@@ -442,10 +448,10 @@ fail:
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
 {
     JSON_READ_IO *const io = ctx->io;
-    const char *path;
-    JSON_READ_D(io, "background_path", &path, nullptr);
-    char *expanded_path =
-        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, path));
+    char *expanded_path = nullptr;
+    JSON_SHOULD(M_ReadPath(
+        io, "background_path", false, TRX_DYNAMIC_PATH_IMAGE_FILE,
+        &expanded_path));
     if (expanded_path == nullptr) {
         if (event != nullptr) {
             event->data = nullptr;
@@ -855,7 +861,8 @@ static bool M_LoadFMV(
     ASSERT(user_arg == nullptr);
     JSON_READ_IO *const io = ctx->io;
     char *path = nullptr;
-    JSON_MUST(M_ReadPath(io, "path", false, TRX_DYNAMIC_PATH_FMV_FILE, &path));
+    JSON_SHOULD(
+        M_ReadPath(io, "path", false, TRX_DYNAMIC_PATH_FMV_FILE, &path));
     fmv->path = path;
     JSON_READ_D(io, "legal", &fmv->is_legal, false);
     JSON_READ_D(io, "credit", &fmv->is_credit, false);
