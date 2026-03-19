@@ -72,7 +72,7 @@ Showcase: https://www.youtube.com/watch?v=iV8G9lhxVQ8
 
 >[!WARNING]
 >Attention level builders: this version introduces backwards incompatible changes to the file structure.
->Please refer to the [migration guide](../03-MIGRATING.md) to see how to update your levels.
+>Please refer to the [migration guide](../trx/MIGRATING.md) to see how to update your levels.
 
 - added lighting contrast option (Graphic options → Rendering → Lighting contrast)
 - added new command switches:
@@ -94,7 +94,7 @@ Showcase: https://www.youtube.com/watch?v=iV8G9lhxVQ8
 - added Russian translation
 - added German translation
 - added skyboxes to The Cistern and Tomb of Tihocan (#2143)
-- added a new `/lua` console command (for now, [it cannot do much](../06-lua/))
+- added a new `/lua` console command (for now, [it cannot do much](../trx/lua/))
 - added a new `/restless` console command, which enables or disables infinite sprint
 - added debug room clip feature (`/debug 1`)
 - improved object loading error messages when an invalid object ID is detected
@@ -380,7 +380,7 @@ Showcase: https://www.youtube.com/watch?v=JVtcZoNoeRM
 ## [4.10](https://github.com/LostArtefacts/TRX/compare/tr1-4.9...tr1-4.10) - 2025-04-30
 Showcase: https://www.youtube.com/watch?v=qJPq9obD6Cc
 - added an ability to customize the fog distances (#634)
-- added an ability to customize the water color [see the reference](../08-WATER_COLORS.md) (#1532)  
+- added an ability to customize the water color [see the reference](../WATER_COLORS.md) (#1532)  
 - added support for a hex water color notation (eg. `#80FFFF`) in the game flow file
 - added support for antitriggers, like TR2+ (#2580)
 - added support for aspect ratio-specific images (#1840)
@@ -497,9 +497,9 @@ Showcase: https://www.youtube.com/watch?v=td2Qz3nbRVo
 >[!WARNING]
 >Attention level builders: this version introduces backwards incompatible changes to the game flow file.
 >Please refer to the following documents to see how to update your levels:
->- [Migration guide](../03-MIGRATING.md)
->- [Game flow documentation](../05-game_flow/)
->- [Game strings documentation](../04-GAME_STRINGS.md)
+>- [Migration guide](../trx/MIGRATING.md)
+>- [Game flow documentation](../trx/game_flow/)
+>- [Game strings documentation](../trx/GAME_STRINGS.md)
 
 - added the ability to hold left/right to move through menus more quickly (#2298)
 - added an option for pickup aids, which will show an intermittent twinkle when Lara is nearby pickup items (#2076)

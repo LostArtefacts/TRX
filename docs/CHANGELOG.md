@@ -677,14 +677,14 @@ Showcase: https://youtu.be/vVU9vbUXTXc
 **Common**:
 - added LUA scripting engine
     Supports basic events, item interactions, teleporting and much more.
-    See [the documentation](../06-lua) for details.
+    See [the documentation](../trx/lua) for details.
 - added a game flow option for cold water in custom levels, similar to TR3 (#4021)
 - added a splash effect when Lara jumps in wading depth water, similar to TR3+ (#3975)
 - added bounding box debugging (`/debug 1` or `/set debug-cuboids 1`)
 - added support for object, music, sound, flip effects, Lara state, and Lara animation slots overrides through CSV catalogs  
     Lets builders link hardcoded logic to slots of their choice, allowing object sharing between games (for example, use TR1 bats in TR2).  
     This feature is experimental — some objects may not behave correctly. Please report any bugs encountered! 🩷  
-    See [the documentation](../07-CATALOGS.md) for details.
+    See [the documentation](../CATALOGS.md) for details.
 - added `enable_debug_camera` setting that shows camera position in realtime (reachable via `/debug` and `/set`)
 - added the ability to fast-forward through cutscenes with the right button (+5 s) or with slow+right (+1 s)
 - added support for dark theme on Windows
