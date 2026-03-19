@@ -258,6 +258,9 @@ M_GF_HANDLER(M_HandlePicture)
     }
 
     GF_DISPLAY_PICTURE_DATA *data = event->data;
+    if (data->path == nullptr) {
+        return gf_cmd;
+    }
     if (data->is_legal && !g_Config.gameplay.enable_legal) {
         return gf_cmd;
     }
