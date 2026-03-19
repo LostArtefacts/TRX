@@ -6,6 +6,8 @@
 --enable-decoder=mpeg4
 --enable-decoder=mdec
 --enable-decoder=mp3
+--enable-decoder=wmav1
+--enable-decoder=wmav2
 --enable-decoder=h264
 --enable-decoder=h264_qsv
 --enable-decoder=libopenh264
@@ -15,6 +17,7 @@
 --enable-demuxer=h264
 --enable-demuxer=str
 --enable-demuxer=image2
+--enable-demuxer=asf
 --enable-parser=mpegaudio
 --enable-zlib
 --enable-small

@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     int32_t exit_code;
     bool restart;
     do {
+        TRXPath_Init(args);
         restart = false;
         exit_code = Shell_Main(args);
         // Note: on a mod switch, Shell_Main has already freed args (via the
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
                     .quiet = Shell_GetPrevQuiet(),
                 };
                 args = next_args;
+                TRXPath_Init(args);
                 restart = true;
             }
         }

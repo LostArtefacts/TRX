@@ -1,7 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3.1...develop) - ××××-××-××
 - added an option to let Lara stay crouched without holding the button (Gameplay → Controls → Toggle crouch) (#5006)
 - added an option to let Lara keep sprinting without holding the button (Gameplay → Controls → Toggle sprint) (#5006)
+- added two additional outfits for Lara
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
+- added a new option in the New Game dialog, "Switch Game", to switch between installed game/mod packs without relaunching
 - added experimental support for config presets (Gameplay Options → Presets)
      Currently very basic presets available only – looking for help with improving them :)
 - added new backgrounds to Inventory Ring / Pause screen / Stats screen styles:
@@ -9,6 +11,7 @@
     - Black: like the Remasters
     - Monochrome (cool): like TR3 PS1 Inventory Screen
     - Monochrome (warm): like TR3 PS1 Pause Screen
+- added support for `.wma` music files for broader custom level compatibility
 - added support for `.ogv` and `.fmv` FMV extensions, with `.ogv` preferred over `.fmv` for remaster compatibility
 - added audio fallback for FMV files that lack an audio stream (e.g. remastered `.ogv`), probing alternative extensions for a companion audio track
 - added an option to move Ammo counter location (Graphic Options → UI → Ammo counter location) (#5076)
@@ -20,14 +23,19 @@
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 - fixed the photo mode red frame not covering the full screen when using integer upscaling
 - fixed boulders that have moved vertically reactivating for a frame after loading a save (regression from 1.2)
+- fixed low fog distances affecting 3D pickups and inventory ring view
 
 **TR1**:
 - added the ability to use flames on Pendulums, similar to TR3
 - changed skyboxes in TR1 to be drawn only if the appropriate room flag is set
+- changed the scion pickup in Sanctuary of the Scion to not be displayed on-screen briefly before the level ends (#3682)
 - fixed Scion taking damage before activation (regression from 1.0)
 
 **TR2**:
 - added the ability to use flames on Pendulums, similar to TR3
+- changed demos to show accurate gun meshes before Lara draws her pre-selected weapon (#3585)
+- fixed Bartoli appearing frozen towards the end of the Opera House cutscene
+- fixed pulling the Dagger of Xian from dragon's corpse not counting as a pickup (regression from 1.0)
 - fixed thrown flares falling through trapdoors and becoming stuck in the void if thrown underwater near the floor (#3708)
 - fixed flamethrowers and Dragon's breath doing weird animation when hitting floor (#5104, regression from 1.3)
 - fixed yetis dealing no damage during their charge attack (#5126, regression from TR2X 0.8)
@@ -58,6 +66,7 @@
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
 - changed Pendulums that have flames to be setup by placing a flame emitter at the same position, rather than setting the item's timer via its trigger
 - changed Meteorite Artefacts to be exempted from drop tile centering
+- fixed a soft lock preventing Lara from picking up the artefact, when saving/loading during boss explosion sequence (regression from 1.2)
 - fixed the helicopter in Highland Fling briefly disappearing when crossing room portals (regression from 1.1)
 - fixed Lara dying from touching Trains that haven't yet been activated
 - fixed harpoons from Divers not spawning blood when they hit Lara
@@ -65,6 +74,10 @@
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 - fixed rain not spawning in outside rooms in the Thames Wharf cutscene
+- fixed the punk in the cutscene before Lud's Gate walking through a wall
+- fixed Lara appearing frozen at the beginning of the cutscene before City
+- fixed incorrect texturing on the fish in City
+- fixed the Eye of Isis not showing in the inventory in All Hallows
 - fixed too low volume in all FMVs (except logo which used a different codec)
 - fixed Lara by default being unable to climb out of water onto steep slopes (change manually in Gameplay → Fixes → Fix water exit)
 - fixed thrown flares falling through trapdoors (regression from 1.1)

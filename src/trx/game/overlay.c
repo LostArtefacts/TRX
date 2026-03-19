@@ -40,6 +40,7 @@ typedef struct {
 
 static UI_OVERLAY_STATE *m_UI = nullptr;
 static DISPLAY_PICKUP m_Pickups[OUTPUT_UI_MAX_PICKUPS] = {};
+static bool m_PickupsActive;
 
 static const RGBA_F m_WhiteTextColor[4] = {
     { 1.0f, 1.0f, 1.0f, 1.0f },
@@ -418,6 +419,7 @@ static void M_DrawPickups(void)
 
 static void M_AnimatePickups(const int32_t frames)
 {
+    m_PickupsActive = false;
     for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
         DISPLAY_PICKUP *const pickup = &m_Pickups[i];
         pickup->elapsed += frames;
@@ -428,17 +430,21 @@ static void M_AnimatePickups(const int32_t frames)
                 pickup->elapsed = 0;
                 pickup->phase = DPP_DISPLAY;
             }
+            m_PickupsActive = true;
             break;
         case DPP_DISPLAY:
             if (pickup->elapsed >= M_MAX_PICKUP_DURATION_DISPLAY) {
                 pickup->elapsed = 0;
                 pickup->phase = DPP_EASE_OUT;
             }
+            m_PickupsActive = true;
             break;
         case DPP_EASE_OUT:
             if (pickup->elapsed >= M_MAX_PICKUP_DURATION_EASE_OUT) {
                 pickup->elapsed = 0;
                 pickup->phase = DPP_DEAD;
+            } else {
+                m_PickupsActive = true;
             }
             break;
         case DPP_DEAD:
@@ -496,8 +502,16 @@ void Overlay_DrawGameInfo(void)
         return;
     }
 
-    if (g_Config.ui.show_pickups_overlay) {
+    if (g_Config.ui.show_pickups_overlay && m_PickupsActive) {
+        SceneCompositor_Flush();
+        const int32_t old_fog_start = Output_GetFogStart();
+        const int32_t old_fog_end = Output_GetFogEnd();
+        Output_SetFogStart(0);
+        Output_SetFogEnd(20 * WALL_L);
         M_DrawPickups();
+        SceneCompositor_Flush();
+        Output_SetFogStart(old_fog_start);
+        Output_SetFogEnd(old_fog_end);
     }
 
     if (Gym_TrackManager_GetLapTimeDisplayTimer(GYM_TRACK_QUAD) > 0) {

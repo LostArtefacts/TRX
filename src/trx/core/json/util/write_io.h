@@ -24,7 +24,9 @@ JSON_VALUE *JSON_WriteIO_GetRoot(JSON_WRITE_IO *io);
 void JSON_WriteIO_PushObject(JSON_WRITE_IO *io);
 void JSON_WriteIO_PushArray(JSON_WRITE_IO *io);
 void JSON_WriteIO_PopAndSet(JSON_WRITE_IO *io, const char *key);
+void JSON_WriteIO_PopAndSetNZ(JSON_WRITE_IO *io, const char *key);
 void JSON_WriteIO_PopAndAppend(JSON_WRITE_IO *io);
+void JSON_WriteIO_DiscardCurrent(JSON_WRITE_IO *io);
 JSON_OBJECT *JSON_WriteIO_GetCurrentObject(JSON_WRITE_IO *io);
 
 void JSON_WriteIO_PushBool(JSON_WRITE_IO *io, bool value);
@@ -37,6 +39,7 @@ void JSON_WriteIO_PushString(JSON_WRITE_IO *io, const char *value);
 #define JSONW_PUSH_OBJECT(io) JSON_WriteIO_PushObject((io))
 #define JSONW_PUSH_ARRAY(io) JSON_WriteIO_PushArray((io))
 #define JSONW_POP_AND_SET(io, key) JSON_WriteIO_PopAndSet((io), (key))
+#define JSONW_POP_AND_SET_NZ(io, key) JSON_WriteIO_PopAndSetNZ((io), (key))
 #define JSONW_POP_AND_APPEND(io) JSON_WriteIO_PopAndAppend((io))
 
 #define JSONW_PUSH_VALUE(io, value)                                            \

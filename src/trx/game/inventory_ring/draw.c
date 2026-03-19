@@ -376,6 +376,11 @@ void InvRing_Draw(INV_RING *const ring)
     XYZ_16 view_rot;
     InvRing_GetView(&draw_ring, &view_pos, &view_rot);
     Matrix_GenerateW2V(&view_pos, &view_rot);
+    const int32_t old_fog_start = Output_GetFogStart();
+    const int32_t old_fog_end = Output_GetFogEnd();
+    Output_SetFogStart(0);
+    Output_SetFogEnd(20 * WALL_L);
+
     InvRing_Light(&draw_ring);
 
     Matrix_Push();
@@ -404,6 +409,8 @@ void InvRing_Draw(INV_RING *const ring)
 
     Matrix_Pop();
     SceneCompositor_Flush();
+    Output_SetFogStart(old_fog_start);
+    Output_SetFogEnd(old_fog_end);
     Viewport_AlterFOV(old_fov, old_fov_mode);
 
     if (ring->status == RNG_SELECTED) {

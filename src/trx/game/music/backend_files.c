@@ -16,7 +16,7 @@ typedef struct {
 } M_BACKEND_DATA;
 
 static const char *m_ExtensionsToTry[] = {
-    ".flac", ".ogg", ".mp3", ".wav", nullptr,
+    ".flac", ".ogg", ".mp3", ".wav", ".wma", nullptr,
 };
 
 static char *M_GetTrackFileName(const char *base_dir, int32_t track)

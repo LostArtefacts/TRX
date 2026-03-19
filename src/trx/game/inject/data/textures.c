@@ -161,7 +161,7 @@ static void M_HandleTextureInfo(
         case IDT_OBJECT_TEXTURES:
             Level_Section_AppendObjectTextures(
                 level_info->textures.object_count, page_base, data_count,
-                chunk.injection->fp, g_TRVersion >= 3);
+                chunk.injection->fp, false);
             level_info->textures.object_count += data_count;
             break;
         case IDT_SPRITE_TEXTURES:

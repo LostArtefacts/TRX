@@ -184,6 +184,18 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         glBufferSubData, GL_UNIFORM_BUFFER, 0, sizeof(general), &general);
 }
 
+void Output_Uniforms_UploadFogDistance(
+    const OUTPUT_UNIFORMS *const uniforms, const float start, const float end)
+{
+    ASSERT(uniforms != nullptr);
+    const float fog_distance[2] = { start, end };
+    glBindBuffer(GL_UNIFORM_BUFFER, uniforms->general);
+    TRX_GL_TRACK_SUBDATA(
+        glBufferSubData, GL_UNIFORM_BUFFER,
+        offsetof(M_UNIFORM_GENERAL, fog_distance), sizeof(fog_distance),
+        &fog_distance);
+}
+
 void Output_Uniforms_UploadDesaturation(
     const OUTPUT_UNIFORMS *const uniforms, const float desaturation)
 {

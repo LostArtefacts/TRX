@@ -30,6 +30,16 @@ void InvRing_LoadVars(const char *const path)
 {
 #define L_READ_INT(key, target) target = JSON_ObjectGetInt(obj, key, target);
 
+    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
+        INVENTORY_ITEM *const item =
+            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
+        Memory_Free(item);
+    }
+    Vector_Clear(g_InvRing_Items);
+    for (int32_t i = 0; i < RT_NUMBER_OF; i++) {
+        g_InvRing_Source[i].count = 0;
+    }
+
     JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_ARRAY *const arr = JSON_ValueAsArray(root);
     if (arr == nullptr) {

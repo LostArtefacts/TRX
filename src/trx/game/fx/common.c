@@ -10,7 +10,7 @@
 
 void FX_Control(void)
 {
-    FX_ExplosionRing_Control();
+    FX_Ring_Control();
     FX_Wake_Control();
     FX_Water_Control();
     FX_Weather_Control();
@@ -21,7 +21,7 @@ void FX_Control(void)
 
 void FX_Draw(void)
 {
-    FX_ExplosionRing_Draw();
+    FX_Ring_Draw();
     FX_Water_Draw();
     FX_Weather_Draw();
     FX_GunFlash_Draw();
@@ -35,5 +35,5 @@ void FX_Reset(void)
     FX_Weather_Reset();
     FX_Footprint_Reset();
     FX_Wake_Reset();
-    FX_ExplosionRing_Reset();
+    FX_Ring_Reset();
 }

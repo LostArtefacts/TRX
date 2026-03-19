@@ -46,6 +46,29 @@ void JSON_WriteIO_PopAndSet(JSON_WRITE_IO *const io, const char *const key)
     M_Pop(io);
 }
 
+void JSON_WriteIO_DiscardCurrent(JSON_WRITE_IO *const io)
+{
+    JSON_ValueFree(io->current);
+    M_Pop(io);
+}
+
+void JSON_WriteIO_PopAndSetNZ(JSON_WRITE_IO *const io, const char *const key)
+{
+    const JSON_OBJECT *const obj = JSON_ValueAsObject(io->current);
+    if (obj != nullptr && obj->length == 0) {
+        JSON_WriteIO_DiscardCurrent(io);
+        return;
+    }
+
+    const JSON_ARRAY *const arr = JSON_ValueAsArray(io->current);
+    if (arr != nullptr && arr->length == 0) {
+        JSON_WriteIO_DiscardCurrent(io);
+        return;
+    }
+
+    JSON_WriteIO_PopAndSet(io, key);
+}
+
 void JSON_WriteIO_PopAndAppend(JSON_WRITE_IO *const io)
 {
     JSON_ARRAY *const parent =

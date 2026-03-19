@@ -254,6 +254,9 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
                 .param = g_Passport.select_level,
             };
 
+        case PASSPORT_ACTION_SWITCH_MOD:
+            return (GF_COMMAND) { .action = GF_SWITCH_MOD };
+
         case PASSPORT_ACTION_SAVE_GAME: {
             if (apply_changes) {
                 Savegame_Save(g_Passport.select_save_slot);

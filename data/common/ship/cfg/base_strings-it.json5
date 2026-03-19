@@ -157,9 +157,11 @@
             "save_game": "Salva Partita",
             "save_slot_unsupported": "Questo salvataggio non supporta questa funzione.",
             "select_level": "Seleziona Livello",
+            "select_mod": "\\{review}Seleziona Gioco",
             "select_mode": "Seleziona Modalità",
             "select_save": "Seleziona Salvataggio",
             "story_so_far": "Un po' di storia...",
+            "switch_mod": "\\{review}Cambia Gioco",
         },
         "pause": {
             "are_you_sure": "Sei sicuro?",
@@ -465,6 +467,8 @@
             },
             "lara_outfit": {
                 "default": "Predefinito",
+                "golden_sophia": "\\{review}Sophia Dorata",
+                "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "Sosia di Lara",
                 "tr1_classic": "Classico TR1",
                 "tr1_combo": "Combinato TR1",
@@ -475,7 +479,8 @@
                 "tr23_golden_lara": "Lara Dorata TR2/3",
                 "tr2_bomber_jacket": "Giubbotto pesante",
                 "tr2_classic": "Classico TR2",
-                "tr2_diving_suit": "Muta subacquea",
+                "tr2_diving_suit": "Muta subacquea 1",
+                "tr2_diving_suit_alpha": "\\{review}Muta subacquea 2",
                 "tr2_gym": "Allenamento TR2",
                 "tr2_robe": "Vestaglia",
                 "tr2_vegas": "Las Vegas",
@@ -485,6 +490,29 @@
                 "tr3_gym": "Allenamento TR3",
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "Sud Pacifico",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "\\{review}Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "\\{review}Demo di Tomb Raider I",
+            },
+            "tr1-ub": {
+                "title": "\\{review}Affari Incompiuti",
+            },
+            "tr2": {
+                "title": "\\{review}Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "\\{review}La Maschera d'Oro",
+            },
+            "tr3": {
+                "title": "\\{review}Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "\\{review}L'Artifatto Perduto",
             }
         }
     },

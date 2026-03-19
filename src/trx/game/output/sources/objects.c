@@ -46,7 +46,7 @@ static void M_AddObjectFace(
     MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
     const FACE *const face, uint16_t flags)
 {
-    RGBA_8888 color = (RGBA_8888) { 255, 255, 255, 255 };
+    RGBA_8888 color = COLOR_RGBA_8888_WHITE;
     OUTPUT_MESH_VERTEX vertices[4];
     int32_t uvw_idx = -1;
 

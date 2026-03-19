@@ -157,9 +157,11 @@
             "save_game": "Zapisz grę",
             "save_slot_unsupported": "Ten zapis nie obsługuje tej funkcji.",
             "select_level": "Wybierz poziom",
+            "select_mod": "\\{review}Wybierz grę",
             "select_mode": "Wybierz tryb",
             "select_save": "Wybierz zapis",
             "story_so_far": "Co się wydarzyło do tej pory",
+            "switch_mod": "\\{review}Zmień grę",
         },
         "pause": {
             "are_you_sure": "Czy na pewno?",
@@ -465,6 +467,8 @@
             },
             "lara_outfit": {
                 "default": "Domyślny",
+                "golden_sophia": "\\{review}Złota Sophia",
+                "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "TR1 klon Lary",
                 "tr1_classic": "TR1 klasyczny",
                 "tr1_combo": "TR1 alternatywny",
@@ -475,7 +479,8 @@
                 "tr23_golden_lara": "TR2/3 złota Lara",
                 "tr2_bomber_jacket": "TR2 kurtka pilotka",
                 "tr2_classic": "TR2 klasyczny",
-                "tr2_diving_suit": "TR2 pianka do pływania",
+                "tr2_diving_suit": "TR2 pianka do pływania 1",
+                "tr2_diving_suit_alpha": "\\{review}TR2 pianka do pływania 2",
                 "tr2_gym": "TR2 dres",
                 "tr2_robe": "TR2 szlafrok",
                 "tr2_vegas": "TR2 Las Vegas",
@@ -485,6 +490,29 @@
                 "tr3_gym": "TR3 dres",
                 "tr3_nevada": "TR3 Nevada",
                 "tr3_south_pacific": "TR3 Południowy Pacyfik",
+            }
+        },
+        "mods": {
+            "tr1": {
+                "title": "\\{review}Tomb Raider I",
+            },
+            "tr1-demo-pc": {
+                "title": "\\{review}Tomb Raider I Demo",
+            },
+            "tr1-ub": {
+                "title": "\\{review}Niedokończona sprawa",
+            },
+            "tr2": {
+                "title": "\\{review}Tomb Raider II",
+            },
+            "tr2-gm": {
+                "title": "\\{review}Złota Maska",
+            },
+            "tr3": {
+                "title": "\\{review}Tomb Raider III",
+            },
+            "tr3-la": {
+                "title": "\\{review}Zaginiony Artefakt",
             }
         }
     },
