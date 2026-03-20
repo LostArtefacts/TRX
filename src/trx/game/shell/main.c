@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     Memory_FreePointer(&log_path);
 
     LOG_INFO("Starting %s", g_TRXVersion);
+    Shell_ValidateMods();
 
     int32_t exit_code;
     bool restart;

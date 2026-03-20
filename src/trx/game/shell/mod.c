@@ -4,8 +4,10 @@
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/game_flow/reader.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/shell/paths.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -90,7 +92,34 @@ void Shell_ScanAvailableMods(void)
         SHELL_MOD *const mod = &m_KnownMods[i];
         mod->is_available =
             TRXPath_Exists(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+        mod->is_valid = mod->is_available;
     }
+}
+
+void Shell_ValidateMods(void)
+{
+    const int32_t original_tr_version = g_TRVersion;
+
+    for (int32_t i = 0; m_KnownMods[i].name != nullptr; i++) {
+        SHELL_MOD *const mod = &m_KnownMods[i];
+        if (!mod->is_available) {
+            mod->is_valid = false;
+            continue;
+        }
+
+        const SHELL_ARGS args = {
+            .engine_version = mod->engine_version,
+            .mod = mod,
+            .level_to_select = -1,
+            .save_to_load = -1,
+        };
+        g_TRVersion = mod->engine_version;
+        TRXPath_Init(&args);
+
+        mod->is_valid = GF_ValidateMod(mod->name, Shell_GetGameFlowPath(mod));
+    }
+
+    g_TRVersion = original_tr_version;
 }
 
 int32_t Shell_GetModCount(void)
@@ -147,7 +176,7 @@ const SHELL_MOD *Shell_GetModByType(
 
 bool Shell_CanSwitchToMod(const SHELL_MOD *const mod)
 {
-    return mod != nullptr && mod->is_available
+    return mod != nullptr && mod->is_available && mod->is_valid
         && mod->mod_type != MOD_DIRECT_LEVEL;
 }
 

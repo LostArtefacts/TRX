@@ -14,7 +14,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     }
 
     const SHELL_MOD *const mod = Shell_GetModByName(ctx->args);
-    if (mod == nullptr || !mod->is_available) {
+    if (!Shell_CanSwitchToMod(mod)) {
         Console_LogError("Invalid mod: %s", ctx->args);
         return CR_FAILURE;
     }
