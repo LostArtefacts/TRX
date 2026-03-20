@@ -1,7 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3.1...develop) - ××××-××-××
 - added an option to let Lara stay crouched without holding the button (Gameplay → Controls → Toggle crouch) (#5006)
 - added an option to let Lara keep sprinting without holding the button (Gameplay → Controls → Toggle sprint) (#5006)
-- added two additional outfits for Lara
+- added three additional outfits for Lara
 - added a new console command, `/mod {name}`, to switch between installed game/mod packs without relaunching
 - added a new option in the New Game dialog, "Switch Game", to switch between installed game/mod packs without relaunching
 - added experimental support for config presets (Gameplay Options → Presets)
