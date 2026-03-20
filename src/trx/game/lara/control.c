@@ -60,6 +60,10 @@ static void M_Cheat(void)
         return;
     }
 
+    if (!Game_IsPlayable()) {
+        return;
+    }
+
     if (g_InputDB.level_skip_cheat) {
         Lara_Cheat_EndLevel();
     }

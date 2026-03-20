@@ -104,6 +104,10 @@ static LARA_GUN_TYPE M_NeedToQuickDraw(void)
 
 static bool M_QuickDrawWeapon(void)
 {
+    if (!Game_IsPlayable()) {
+        return false;
+    }
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const LARA_GUN_TYPE gun_type = M_NeedToQuickDraw();
     if (gun_type != LGT_UNKNOWN) {

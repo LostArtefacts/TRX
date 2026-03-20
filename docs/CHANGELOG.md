@@ -28,6 +28,7 @@
 - fixed the photo mode red frame not covering the full screen when using integer upscaling
 - fixed boulders that have moved vertically reactivating for a frame after loading a save (regression from 1.2)
 - fixed low fog distances affecting 3D pickups and inventory ring view
+- fixed being able to use cheats and weapon hotkeys in demos (#5163, regression from 1.0)
 
 **TR1**:
 - added the ability to use flames on Pendulums, similar to TR3
