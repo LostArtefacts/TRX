@@ -84,9 +84,10 @@ void Demo_LoadData(VFILE *const file, const size_t size)
     }
 }
 
-bool Demo_GetInput(void)
+bool Demo_UpdateInput(void)
 {
     M_PRIV *const p = &m_Priv;
+    const INPUT_STATE old_demo_input = g_Input;
 
     union {
         uint32_t any;
@@ -142,6 +143,11 @@ bool Demo_GetInput(void)
         .load         = demo_input.load,
         // clang-format on
     };
+
+    g_InputDB = g_Input;
+    for (int32_t i = 0; i < INPUT_STATE_ANY_WORDS; i++) {
+        g_InputDB.any[i] &= ~old_demo_input.any[i];
+    }
 
     p->demo_ptr++;
     return true;
