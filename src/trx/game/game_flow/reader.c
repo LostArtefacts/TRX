@@ -747,6 +747,8 @@ static bool M_LoadLevel(
         const TRX_DYNAMIC_PATH path_type =
             (level->type == GFL_DUMMY || level->type == GFL_CURRENT)
             ? (TRX_DYNAMIC_PATH)-1
+            : (level->type == GFL_TITLE || level->type == GFL_GYM)
+            ? TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE
             : TRX_DYNAMIC_PATH_LEVEL_FILE;
         JSON_MUST(M_ReadPath(io, "path", false, path_type, &level->path));
     }
