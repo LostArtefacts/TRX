@@ -98,6 +98,31 @@
             },
         },
 
+        // TR1 N-Gage
+        "tr1_ngage": {
+            "name_gs": "dynamic/enums/lara_outfit/tr1_ngage",
+            "mesh_object": "O_LARA_SKIN_SWAP_24",
+            "gun_map": 0,
+            "combat_face_offset": 1,
+            "braid": {
+                "mode": "BRAID_MODE_TR1_HEAD_ONLY",
+                "mesh_offset": 10,
+                "gold_offset": 16,
+                "hair_pos": {
+                    "x": 0,
+                    "y": 20,
+                    "z": -45,
+                },
+            },
+            "no_holster_offsets": {
+                "thigh_r": 25,
+                "thigh_l": 26,
+            },
+            "extra_outfits": {
+                "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
+            },
+        },
+
         // TR1 Golden Lara
         "tr1_golden_lara": {
             "name_gs": "dynamic/enums/lara_outfit/tr1_golden_lara",

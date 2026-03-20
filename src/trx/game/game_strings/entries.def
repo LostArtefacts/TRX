@@ -14,6 +14,7 @@ GS_DEFINE(dynamic/enums/lara_outfit/tr1_golden_bacon_lara,                  "Gol
 GS_DEFINE(dynamic/enums/lara_outfit/tr1_golden_lara,                        "TR1 Golden Lara")
 GS_DEFINE(dynamic/enums/lara_outfit/tr1_gym,                                "TR1 Gym")
 GS_DEFINE(dynamic/enums/lara_outfit/tr1_mauled,                             "TR1 Mauled")
+GS_DEFINE(dynamic/enums/lara_outfit/tr1_ngage,                              "TR1 N-Gage")
 GS_DEFINE(dynamic/enums/lara_outfit/tr23_golden_lara,                       "TR2/3 Golden Lara")
 GS_DEFINE(dynamic/enums/lara_outfit/tr2_bomber_jacket,                      "Bomber Jacket")
 GS_DEFINE(dynamic/enums/lara_outfit/tr2_classic,                            "TR2 Classic")
