@@ -15,9 +15,11 @@ typedef struct {
     int32_t engine_version;
     const char *base_mod;
     bool is_available;
+    bool is_valid;
 } SHELL_MOD;
 
 void Shell_ScanAvailableMods(void);
+void Shell_ValidateMods(void);
 int32_t Shell_GetModCount(void);
 const SHELL_MOD *Shell_GetMod(int32_t index);
 const SHELL_MOD *Shell_GetModByName(const char *name);

@@ -23,6 +23,7 @@ typedef struct {
     GAME_FLOW *gf;
     const char *script_path;
     JSON_READ_IO *io;
+    bool validation_mode;
 } M_CONTEXT;
 
 #define M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(name)                            \
@@ -93,18 +94,18 @@ static void M_ExitWithJSONError(const M_CONTEXT *const ctx)
 }
 
 static bool M_ReadObjectID(
-    JSON_READ_IO *const io, OBJECT_ID *const object_id_out)
+    const M_CONTEXT *const ctx, OBJECT_ID *const object_id_out)
 {
     int32_t game_id;
-    if (JSON_OPTIONAL(JSON_READ_CURRENT(io, &game_id))) {
+    if (JSON_OPTIONAL(JSON_READ_CURRENT(ctx->io, &game_id))) {
         *object_id_out = Object_FromGameID(game_id);
     } else {
         const char *object_key;
-        JSON_MUST(JSON_READ_CURRENT(io, &object_key));
+        JSON_MUST(JSON_READ_CURRENT(ctx->io, &object_key));
         *object_id_out = Object_IdFromKey(object_key);
     }
-    if (*object_id_out == NO_OBJECT) {
-        JSON_ReadIO_SetError(io, "'object_id' must be a valid object id");
+    if (!ctx->validation_mode && *object_id_out == NO_OBJECT) {
+        JSON_ReadIO_SetError(ctx->io, "'object_id' must be a valid object id");
         JSON_FAIL();
     }
     JSON_FINISH();
@@ -287,7 +288,7 @@ static bool M_LoadLevelItemDrops(
         for (int32_t j = 0; j < data->count; j++) {
             JSON_MUST(JSON_PUSH_INDEX(io, j));
             OBJECT_ID id = NO_OBJECT;
-            JSON_MUST(M_ReadObjectID(io, &id));
+            JSON_MUST(M_ReadObjectID(ctx, &id));
             data->object_ids[j] = (int16_t)id;
             JSON_MUST(JSON_POP(io));
         }
@@ -473,7 +474,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
     JSON_READ_IO *const io = ctx->io;
     OBJECT_ID obj_id = NO_OBJECT;
     JSON_MUST(JSON_PUSH(io, "object_id"));
-    JSON_MUST(M_ReadObjectID(io, &obj_id));
+    JSON_MUST(M_ReadObjectID(ctx, &obj_id));
     JSON_MUST(JSON_POP(io));
     if (event != nullptr) {
         GF_ADD_ITEM_DATA *const event_data = extra_data;
@@ -777,7 +778,9 @@ static bool M_LoadLevel(
         if (!outfit_optional) {
             const char *tmp = nullptr;
             JSON_MUST(JSON_READ(io, "lara_outfit", &tmp));
-            if (!Lara_Skin_IsOutfitAvailable(Lara_Skin_FindOutfitByName(tmp))) {
+            if (!ctx->validation_mode
+                && !Lara_Skin_IsOutfitAvailable(
+                    Lara_Skin_FindOutfitByName(tmp))) {
                 JSON_ReadIO_SetError(
                     io, "invalid 'lara_outfit' value (%s)", tmp);
                 JSON_FAIL();
@@ -902,30 +905,19 @@ static bool M_LoadGlobalInjections(const M_CONTEXT *const ctx)
     JSON_FINISH();
 }
 
-void GF_LoadFromFile(const char *const path)
-{
-    char *script_data = nullptr;
-    if (!File_Load(path, &script_data, nullptr)) {
-        Shell_ExitSystemFmt("Failed to open script file %s", path);
-    }
-
-    GF_LoadFromString(script_data, path);
-    Memory_FreePointer(&script_data);
-}
-
-void GF_LoadFromString(
-    const char *const script_data, const char *const script_path)
+static bool M_LoadGameFlowDoc(
+    JSON_VALUE *const doc, const char *const path, const bool exit_on_error,
+    const bool validation_mode)
 {
     GF_Shutdown();
 
-    M_CONTEXT ctx = { .gf = &g_GameFlow };
+    M_CONTEXT ctx = { .gf = &g_GameFlow, .validation_mode = validation_mode };
     ctx.gf->main_script_path = nullptr;
-    ctx.gf->path = Memory_DupStr(script_path);
+    ctx.gf->path = Memory_DupStr(path);
     ctx.script_path = g_GameFlow.path;
     ctx.io = nullptr;
 
-    JSON_VALUE *const doc = JSONFile_ReadEx(script_path, true);
-    ctx.io = JSON_ReadIO_Create(doc, 0, script_path);
+    ctx.io = JSON_ReadIO_Create(doc, 0, path);
 
     JSON_MUST(M_LoadRoot(&ctx));
     JSON_MUST(M_LoadSettings(&ctx, &ctx.gf->settings));
@@ -939,7 +931,49 @@ void GF_LoadFromString(
 
     JSON_ReadIO_Destroy(ctx.io);
     JSON_ValueFree(doc);
-    return;
+    return true;
 fail:
-    M_ExitWithJSONError(&ctx);
+    if (exit_on_error) {
+        M_ExitWithJSONError(&ctx);
+    } else {
+        LOG_WARNING("%s", JSON_ReadIO_GetError(ctx.io));
+        JSON_ReadIO_Destroy(ctx.io);
+        JSON_ValueFree(doc);
+        GF_Shutdown();
+    }
+    return false;
+}
+
+static bool M_LoadGameFlowEx(
+    const char *const path, const bool exit_on_error,
+    const bool validation_mode)
+{
+    JSON_VALUE *const doc = JSONFile_ReadEx(path, exit_on_error);
+    if (doc == nullptr) {
+        if (exit_on_error) {
+            Shell_ExitSystemFmt("Failed to open script file %s", path);
+        }
+        return false;
+    }
+    return M_LoadGameFlowDoc(doc, path, exit_on_error, validation_mode);
+}
+
+void GF_LoadFromFile(const char *const path)
+{
+    M_LoadGameFlowEx(path, true, false);
+}
+
+bool GF_TryLoadFromFile(const char *const path)
+{
+    return M_LoadGameFlowEx(path, false, false);
+}
+
+bool GF_ValidateMod(const char *const mod_name, const char *const path)
+{
+    if (!M_LoadGameFlowEx(path, false, true)) {
+        LOG_WARNING("Mod '%s' has invalid gameflow data", mod_name);
+        return false;
+    }
+    GF_Shutdown();
+    return true;
 }
