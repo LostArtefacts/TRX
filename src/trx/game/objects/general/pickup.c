@@ -110,6 +110,9 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 
 static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
 {
+    if (trigger == nullptr) {
+        return false;
+    }
     if (trigger->type == TT_SWITCH) {
         item->flags ^= trigger->mask;
     } else if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {

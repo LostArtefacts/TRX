@@ -6,6 +6,9 @@
 - changed `--level` to no longer require `-e/--engine` to work
 
 **TR3**:
+- added Security Laser (Alarm) control
+- added Security Laser (Damage) control
+- added Security Laser (Kill) control
 - restored the cutscene at the beginning of High Security Compound
 
 
@@ -87,6 +90,7 @@ Showcase: https://youtu.be/8SavYv2SawI
 - added Electric Cleaner control
 - added Punk control, including `O_PUNK_2`, which was unused in OG
 - added Security Guard control
+- added Security Laser control
 - added Propeller control
 - added SWAT control
 - added Diver control

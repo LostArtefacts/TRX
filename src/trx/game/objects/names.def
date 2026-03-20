@@ -277,6 +277,9 @@ X_OBJ_NAME_DEFINE(O_POWER_SAW,             "power_saw",             X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PROPELLER_1,           "propeller_1",           X_OBJ_NAMES("Airplane Propeller"))
 X_OBJ_NAME_DEFINE(O_PROPELLER_2,           "propeller_2",           X_OBJ_NAMES("Underwater Propeller"))
 X_OBJ_NAME_DEFINE(O_PROPELLER_3,           "propeller_3",           X_OBJ_NAMES("Air Fan"))
+X_OBJ_NAME_DEFINE(O_SECURITY_LASER_ALARM,  "security_laser_alarm",  X_OBJ_NAMES("Security Laser (Alarm)"))
+X_OBJ_NAME_DEFINE(O_SECURITY_LASER_DEADLY, "security_laser_deadly", X_OBJ_NAMES("Security Laser (Deadly)"))
+X_OBJ_NAME_DEFINE(O_SECURITY_LASER_KILLER, "security_laser_killer", X_OBJ_NAMES("Security Laser (Killer)"))
 X_OBJ_NAME_DEFINE(O_ROLLING_BALL_1,        "rolling_ball_1",        X_OBJ_NAMES("Boulder 1", "Rolling Ball 1"))
 X_OBJ_NAME_DEFINE(O_ROLLING_BALL_2,        "rolling_ball_2",        X_OBJ_NAMES("Boulder 2", "Rolling Ball 2"))
 X_OBJ_NAME_DEFINE(O_ROLLING_BALL_3,        "rolling_ball_3",        X_OBJ_NAMES("Boulder 3", "Rolling Ball 3"))
@@ -365,6 +368,7 @@ X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_BLACK,   "smoke_emitter_black",   X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_STEAM_EMITTER,         "steam_emitter",         X_OBJ_NAMES("Steam Emitter"))
 X_OBJ_NAME_DEFINE(O_GAS_EMITTER_GREEN,     "gas_emitter_green",     X_OBJ_NAMES("Gas Emitter (Green)"))
 X_OBJ_NAME_DEFINE(O_FUSE_BOX,              "fuse_box",              X_OBJ_NAMES("Fuse Box"))
+X_OBJ_NAME_DEFINE(O_ROBOT_SENTRY_GUN,      "robot_sentry_gun",      X_OBJ_NAMES("Robot Sentry Gun"))
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "alarm_sound",             X_OBJ_NAMES("Alarm"))

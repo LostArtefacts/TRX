@@ -2440,6 +2440,9 @@
         "ricochet": {
             "name": "Ricochet",
         },
+        "robot_sentry_gun": {
+            "name": "Robot Sentry Gun",
+        },
         "rocket": {
             "name": "Rocket",
         },
@@ -2493,6 +2496,15 @@
         },
         "security_guard": {
             "name": "Security Guard",
+        },
+        "security_laser_alarm": {
+            "name": "Security Laser (Alarm)",
+        },
+        "security_laser_deadly": {
+            "name": "Security Laser (Deadly)",
+        },
+        "security_laser_killer": {
+            "name": "Security Laser (Killer)",
         },
         "shadow": {
             "name": "Shadow",
