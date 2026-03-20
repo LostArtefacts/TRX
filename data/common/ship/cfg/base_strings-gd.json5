@@ -2417,6 +2417,9 @@
         "ricochet": {
             "name": "Leabaidh-loisgte",
         },
+        "robot_sentry_gun": {
+            "name": "\\{review}Gun Sentry Robot",
+        },
         "rocket": {
             "name": "Rocaid",
         },
@@ -2470,6 +2473,15 @@
         },
         "security_guard": {
             "name": "Geàrd Tèarainteachd",
+        },
+        "security_laser_alarm": {
+            "name": "\\{review}Laser Tèarainteachd (Rabhadh)",
+        },
+        "security_laser_deadly": {
+            "name": "\\{review}Laser Tèarainteachd (Marbhtach)",
+        },
+        "security_laser_killer": {
+            "name": "\\{review}Laser Tèarainteachd (Mharbhadh)",
         },
         "shadow": {
             "name": "Faileas",

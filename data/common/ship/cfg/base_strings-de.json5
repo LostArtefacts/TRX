@@ -2411,6 +2411,9 @@
         "ricochet": {
             "name": "Querschläger",
         },
+        "robot_sentry_gun": {
+            "name": "\\{review}Roboter-Wachgeschütz",
+        },
         "rocket": {
             "name": "\\{review}Rakete",
         },
@@ -2464,6 +2467,15 @@
         },
         "security_guard": {
             "name": "\\{review}Sicherheitsmann",
+        },
+        "security_laser_alarm": {
+            "name": "\\{review}Sicherheitslaser (Alarm)",
+        },
+        "security_laser_deadly": {
+            "name": "\\{review}Sicherheitslaser (Tödlich)",
+        },
+        "security_laser_killer": {
+            "name": "\\{review}Sicherheitslaser (Killer)",
         },
         "shadow": {
             "name": "\\{review}Schatten",

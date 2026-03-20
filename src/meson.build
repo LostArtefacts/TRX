@@ -577,6 +577,7 @@ common_sources = [
   'trx/game/objects/traps/propeller.c',
   'trx/game/objects/traps/raptor_emitter.c',
   'trx/game/objects/traps/rolling_ball.c',
+  'trx/game/objects/traps/security_laser.c',
   'trx/game/objects/traps/sliding_pillar.c',
   'trx/game/objects/traps/spike_ceiling.c',
   'trx/game/objects/traps/spike_wall.c',

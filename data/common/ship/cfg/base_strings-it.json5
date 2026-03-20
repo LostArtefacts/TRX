@@ -2441,6 +2441,9 @@
         "ricochet": {
             "name": "Rimbalzo",
         },
+        "robot_sentry_gun": {
+            "name": "\\{review}Cannone Sentinella Robot",
+        },
         "rocket": {
             "name": "Razzo",
         },
@@ -2494,6 +2497,15 @@
         },
         "security_guard": {
             "name": "\\{review}Guardia di Sicurezza",
+        },
+        "security_laser_alarm": {
+            "name": "\\{review}Laser di Sicurezza (Allarme)",
+        },
+        "security_laser_deadly": {
+            "name": "\\{review}Laser di Sicurezza (Letale)",
+        },
+        "security_laser_killer": {
+            "name": "\\{review}Laser di Sicurezza (Assassino)",
         },
         "shadow": {
             "name": "Ombra",
