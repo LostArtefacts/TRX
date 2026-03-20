@@ -100,13 +100,21 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
     [TRX_DYNAMIC_PATH_LEVEL_FILE] = {
         .patterns = {
             "%mod_dir%/levels/%rel%",
-            "%base_mod_dir%/levels/%rel%",
             "%trx_dir%/data/%rel%",
             "%trx_dir%/%rel%",
             // TR3 legacy cutscenes
             "%trx_dir%/cuts/%rel%",
             "%mod_dir%/cuts/%rel%",
-            "%base_mod_dir%/cuts/%rel%",
+            nullptr,
+        },
+        .check_exists = true,
+    },
+    [TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE] = {
+        .patterns = {
+            "%mod_dir%/levels/%rel%",
+            "%base_mod_dir%/levels/%rel%",
+            "%trx_dir%/data/%rel%",
+            "%trx_dir%/%rel%",
             nullptr,
         },
         .check_exists = true,
@@ -532,6 +540,7 @@ static const char *M_GetBaseDirForDynamicPath(const TRX_DYNAMIC_PATH path)
     case TRX_DYNAMIC_PATH_CATALOG:
         return m_Context.config_dir;
     case TRX_DYNAMIC_PATH_LEVEL_FILE:
+    case TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE:
     case TRX_DYNAMIC_PATH_SFX_FILE:
         return M_GetLegacyDataDir();
     case TRX_DYNAMIC_PATH_IMAGE_FILE:
