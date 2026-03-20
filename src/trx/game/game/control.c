@@ -101,13 +101,22 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     Input_Update();
     Shell_ProcessInput();
-    Game_ProcessInput();
-
     if (g_InputDB.toggle_photo_mode) {
         return GF_EnterPhotoMode();
     } else if (g_InputDB.pause && lara->death_timer == 0) {
         return GF_PauseGame();
     }
+    if (demo_mode) {
+        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
+        if (!Demo_UpdateInput()) {
+            g_Input = (INPUT_STATE) {};
+            g_InputDB = (INPUT_STATE) {};
+            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        }
+    }
+    Game_ProcessInput();
 
     if ((g_InputDB.quick_save || g_InputDB.quick_load) && !demo_mode
         && lara->death_timer == 0 && !lara->extra_anim
@@ -154,16 +163,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
             g_Input.load = false;
             g_InputDB.save = false;
             g_InputDB.load = false;
-        }
-    }
-
-    if (demo_mode) {
-        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-        }
-        if (!Demo_GetInput()) {
-            g_Input = (INPUT_STATE) {};
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
     }
 
