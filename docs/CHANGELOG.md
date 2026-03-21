@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.3.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4...develop) - ××××-××-××
+
+## [1.4](https://github.com/LostArtefacts/TRX/compare/trx-1.3.1...trx-1.4) - 2026-03-21
+Showcase: https://youtu.be/8SavYv2SawI
 - added an option to let Lara stay crouched without holding the button (Gameplay → Controls → Toggle crouch) (#5006)
 - added an option to let Lara keep sprinting without holding the button (Gameplay → Controls → Toggle sprint) (#5006)
 - added three additional outfits for Lara
