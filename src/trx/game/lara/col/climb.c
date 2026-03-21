@@ -21,6 +21,7 @@
 #define M_LEDGE_JUMP_PUSH_HEIGHT (STEP_L - 16)                    // = 240
 #define M_LEDGE_JUMP_HEIGHT_UP   (LARA_HEIGHT + (STEP_L * 3) / 8) // = 858
 #define M_LEDGE_JUMP_HEIGHT_BACK (LARA_HEIGHT - (STEP_L * 5) / 4) // = 442
+#define M_HANG_SHIFT             (g_TRVersion >= 3 ? 4 : 2)
 // clang-format on
 
 typedef enum {
@@ -46,25 +47,25 @@ static M_CLIMB_RESULT M_TestClimbPos(
     case DIR_NORTH:
         x = item->pos.x + right;
         z = item->pos.z + front;
-        z_front = 2;
+        z_front = M_HANG_SHIFT;
         break;
 
     case DIR_EAST:
         x = item->pos.x + front;
         z = item->pos.z - right;
-        x_front = 2;
+        x_front = M_HANG_SHIFT;
         break;
 
     case DIR_SOUTH:
         x = item->pos.x - right;
         z = item->pos.z - front;
-        z_front = -2;
+        z_front = -M_HANG_SHIFT;
         break;
 
     case DIR_WEST:
         x = item->pos.x - front;
         z = item->pos.z + right;
-        x_front = -2;
+        x_front = -M_HANG_SHIFT;
         break;
 
     default:
@@ -247,19 +248,18 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
     lara->move_angle = item->rot.y;
 
     const DIRECTION dir = Math_GetDirection(item->rot.y);
-    const int32_t hang_test_shift = g_TRVersion >= 3 ? 4 : 2;
     switch (dir) {
     case DIR_NORTH:
-        item->pos.z += hang_test_shift;
+        item->pos.z += M_HANG_SHIFT;
         break;
     case DIR_EAST:
-        item->pos.x += hang_test_shift;
+        item->pos.x += M_HANG_SHIFT;
         break;
     case DIR_SOUTH:
-        item->pos.z -= hang_test_shift;
+        item->pos.z -= M_HANG_SHIFT;
         break;
     case DIR_WEST:
-        item->pos.x -= hang_test_shift;
+        item->pos.x -= M_HANG_SHIFT;
         break;
     default:
         break;
@@ -403,25 +403,25 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
     case DIR_NORTH:
         x = item->pos.x + right;
         z = item->pos.z + front;
-        z_front = 2;
+        z_front = M_HANG_SHIFT;
         break;
 
     case DIR_EAST:
         x = item->pos.x + front;
         z = item->pos.z - right;
-        x_front = 2;
+        x_front = M_HANG_SHIFT;
         break;
 
     case DIR_SOUTH:
         x = item->pos.x - right;
         z = item->pos.z - front;
-        z_front = -2;
+        z_front = -M_HANG_SHIFT;
         break;
 
     case DIR_WEST:
         z = item->pos.z + right;
         x = item->pos.x - front;
-        x_front = -2;
+        x_front = -M_HANG_SHIFT;
         break;
 
     default:
