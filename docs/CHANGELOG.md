@@ -9,6 +9,7 @@
 - added Security Laser (Alarm) control
 - added Security Laser (Damage) control
 - added Security Laser (Kill) control
+- added Civilian control
 - restored the cutscene at the beginning of High Security Compound
 
 

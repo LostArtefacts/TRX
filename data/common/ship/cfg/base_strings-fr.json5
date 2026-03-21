@@ -1684,6 +1684,9 @@
         "centaur_statue": {
             "name": "Statue",
         },
+        "civilian": {
+            "name": "\\{review}Civil",
+        },
         "clock_chimes": {
             "name": "\\{review}Horloge de la cachette de Bartoli",
         },

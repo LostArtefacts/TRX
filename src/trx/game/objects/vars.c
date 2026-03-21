@@ -64,6 +64,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_BIRD_GUARDIAN,
     O_CENTAUR,
     O_CENTAUR_STATUE,
+    O_CIVILIAN,
     O_COBRA,
     O_COMPY,
     O_COWBOY,

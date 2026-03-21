@@ -1684,6 +1684,9 @@
         "centaur_statue": {
             "name": "Ìomhaigh",
         },
+        "civilian": {
+            "name": "Fear-sìobhalta",
+        },
         "clock_chimes": {
             "name": "Gleoc Bartoli",
         },

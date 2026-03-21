@@ -1684,6 +1684,9 @@
         "centaur_statue": {
             "name": "Centaur Statue",
         },
+        "civilian": {
+            "name": "Civilian",
+        },
         "clock_chimes": {
             "name": "Bartoli Hideout clock",
         },

@@ -1684,6 +1684,9 @@
         "centaur_statue": {
             "name": "Statua Centauro",
         },
+        "civilian": {
+            "name": "\\{review}Civile",
+        },
         "clock_chimes": {
             "name": "Orologio Covo di Bartoli",
         },
