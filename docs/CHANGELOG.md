@@ -91,6 +91,7 @@
 - fixed potential AI behavioural differences in the South Pacific Mercenary (regression from 1.2)
 - fixed smoke from Lara's guns persisting between levels (regression from 1.1)
 - fixed sound effects potentially playing after completing a level and entering into the globe select screen (regression from 1.2)
+- fixed audio lag and framerate drops near the end of an audio track that's playing when no active sound effects are playing (#5167, regression from 1.3)
 
 
 
