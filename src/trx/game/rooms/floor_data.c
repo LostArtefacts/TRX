@@ -540,7 +540,13 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 if (is_shoal_object) {
                     Shoal_TriggerDeactivate(trig_item);
                 }
-                trig_item->flags &= ~trigger->mask;
+
+                // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
+                if (g_TRVersion >= 3) {
+                    trig_item->flags &= ~(IF_CODE_BITS | IF_REVERSE);
+                } else {
+                    trig_item->flags &= ~trigger->mask;
+                }
                 if (trigger->one_shot) {
                     if (g_TRVersion == 3) {
                         trig_item->flags |= IF_ONE_SHOT_ANTITRIGGER;
