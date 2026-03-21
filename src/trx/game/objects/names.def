@@ -238,6 +238,7 @@ X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_1",                X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_2",                X_OBJ_NAMES("SWAT 2"))
 X_OBJ_NAME_DEFINE(O_SWAT_1,                "swat_3",                X_OBJ_NAMES("SWAT 3"))
 X_OBJ_NAME_DEFINE(O_SOPHIA,                "sophia",                X_OBJ_NAMES("Sophia"))
+X_OBJ_NAME_DEFINE(O_CIVILIAN,              "civilian",              X_OBJ_NAMES("Civilian"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))

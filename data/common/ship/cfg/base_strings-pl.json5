@@ -1687,6 +1687,9 @@
         "centaur_statue": {
             "name": "Posąg",
         },
+        "civilian": {
+            "name": "\\{review}Cywil",
+        },
         "clock_chimes": {
             "name": "Zegar kryjówki Bartoliego",
         },

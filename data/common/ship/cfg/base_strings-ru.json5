@@ -1684,6 +1684,9 @@
         "centaur_statue": {
             "name": "Статуя",
         },
+        "civilian": {
+            "name": "\\{review}Гражданский",
+        },
         "clock_chimes": {
             "name": "\\{review}Часы убежища Бартоли",
         },
