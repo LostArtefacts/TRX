@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4...develop) - ××××-××-××
+- fixed Lara using the ladder-to-crouch animation in some rare cases despite there being headroom in front of her (regression from 1.2)
 
 **TR3**:
 - fixed door 34 in Thames Wharf closing permanently during the flipmap puzzle (#5170, regression from 1.1)
