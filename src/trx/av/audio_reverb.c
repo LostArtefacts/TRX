@@ -30,6 +30,7 @@
 #define M_REVERB_MAX_REFLECTIONS_DELAY 300
 #define M_REVERB_MAX_REVERB_DELAY 85
 #define M_REVERB_MIN_DECAY_TIME 0.1f
+#define M_REVERB_DENORMAL_EPSILON 1e-15f
 
 #define M_REVERB_WET_GAIN 1.20f // TRX addition
 #define M_DELAY_MAX_MS 300
@@ -188,7 +189,7 @@ static inline uint32_t M_MsToSamples(
 
 static inline float M_Undenormalize(const float sample_in)
 {
-    return sample_in;
+    return fabsf(sample_in) < M_REVERB_DENORMAL_EPSILON ? 0.0f : sample_in;
 }
 
 static inline void M_DspDelay_Initialize(
