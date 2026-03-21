@@ -808,7 +808,7 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_CLIMB_STANCE);
         Lara_Animate(item);
         if (ABS(ledge_l - ledge_r) <= 120) {
-            if (result_r == CLIMB_RESULT_NEG && result_l == CLIMB_RESULT_NEG) {
+            if (result_r == CLIMB_RESULT_NEG || result_l == CLIMB_RESULT_NEG) {
                 item->goal_anim_state = LS(LS_PULL_UP);
                 item->pos.y += (ledge_r + ledge_l) / 2 - STEP_L;
             } else {
