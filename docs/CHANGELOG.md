@@ -2,6 +2,7 @@
 
 **TR3**:
 - fixed door 34 in Thames Wharf closing permanently during the flipmap puzzle (#5170, regression from 1.1)
+- fixed Lara being unable to move after grabbing ladders in specific geometry (#5169, regression from 1.1)
 
 
 
