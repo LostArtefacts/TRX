@@ -695,15 +695,17 @@ static void M_Special(ITEM *const item, COLL_INFO *const coll)
 static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_Config.gameplay.enable_toggle_sprint && g_InputDB.sprint) {
+
+    if (item->hit_points <= 0 || lara->sprint_timer <= 0
+        || lara->water_status == LWS_WADE) {
         lara->sprinting = false;
         item->goal_anim_state = LS(LS_RUN);
         return;
     }
 
-    if (item->hit_points <= 0 || lara->sprint_timer <= 0
-        || lara->water_status == LWS_WADE
-        || (!g_Config.gameplay.enable_toggle_sprint && !g_Input.sprint)) {
+    if (g_Config.gameplay.enable_toggle_sprint
+            ? (!lara->sprinting || g_InputDB.sprint)
+            : !g_Input.sprint) {
         lara->sprinting = false;
         item->goal_anim_state = LS(LS_RUN);
         return;
