@@ -310,6 +310,21 @@ static void M_TrainKill(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_JailWakeUp(ITEM *const item, COLL_INFO *const coll)
+{
+    if (!Item_TestFrameEqual(item, -2)) {
+        return;
+    }
+
+    Item_Animate(item);
+    XYZ_32 pos = {};
+    Lara_GetMeshPos(LM_HIPS, &pos);
+    item->pos.x = pos.x;
+    item->pos.z = pos.z;
+    item->interp.prev.pos = item->pos;
+    item->interp.prev.rot = item->rot;
+}
+
 // clang-format off
 REGISTER_LARA_EXTRA(LS_EXTRA_BREATH,         M_Breath)
 REGISTER_LARA_EXTRA(LS_EXTRA_SCION_PICKUP_1, M_ScionPedestal)
@@ -329,4 +344,5 @@ REGISTER_LARA_EXTRA(LS_EXTRA_END_HOUSE,      M_EndHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_SHIVA_KILL,     M_BeastKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_RAPIDS_DROWN,   M_RapidsDrown)
 REGISTER_LARA_EXTRA(LS_EXTRA_TRAIN_KILL,     M_TrainKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_JAIL_WAKE_UP,   M_JailWakeUp)
 // clang-format on

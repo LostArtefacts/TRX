@@ -15,6 +15,15 @@ static void M_Turn180(ITEM *const item)
     }
 }
 
+static void M_Turn90(ITEM *const item)
+{
+    if (item == nullptr) {
+        return;
+    }
+
+    item->rot.y += DEG_90;
+}
+
 static void M_InvisibilityOn(ITEM *const item)
 {
     if (item != nullptr) {
@@ -97,6 +106,7 @@ static void M_SwapMeshesWithMeshSwap3(ITEM *const item)
 }
 
 REGISTER_ITEM_ACTION(ITEM_ACTION_TURN_180, M_Turn180)
+REGISTER_ITEM_ACTION(ITEM_ACTION_TURN_90, M_Turn90)
 REGISTER_ITEM_ACTION(ITEM_ACTION_INVISIBILITY_ON, M_InvisibilityOn)
 REGISTER_ITEM_ACTION(ITEM_ACTION_INVISIBILITY_OFF, M_InvisibilityOff)
 REGISTER_ITEM_ACTION(ITEM_ACTION_SHADOW_ON, M_ShadowOn)
