@@ -715,8 +715,8 @@
             "description": "Ustawia mikrofon na pozycji Lary. Domyślnie mikrofon jest na pozycji kamery. Wpływa to głównie na głośność efektów – czy przy kamerach daleko od Lary będą one cicho, czy głośno.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "Wstrzymaj muzykę w ekwipunku",
-            "description": "Wstrzymuje dźwięki gry, dźwięki otoczenia i muzykę na ekranie ekwipunku.",
+            "title": "\\{review}Odtwarzaj muzykę w ekwipunku",
+            "description": "\\{review}Pozwala na odtwarzanie dźwięków gry, dźwięków otoczenia i muzyki podczas przeglądania ekwipunku.",
         },
         "audio.enable_music_in_menu": {
             "title": "Muzyka w menu głównym",

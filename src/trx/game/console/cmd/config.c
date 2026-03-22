@@ -251,9 +251,6 @@ static char *M_GetAvailableOptions(const CONFIG_OPTION *const option)
     case COT_BOOL:
         return Memory_DupStr(GS("general/osd/command_bool"));
 
-    case COT_INVERTED_BOOL:
-        return Memory_DupStr(GS("general/osd/command_bool"));
-
     case COT_INT32:
         return Memory_DupStr(GS("general/osd/command_integer"));
 

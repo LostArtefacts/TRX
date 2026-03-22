@@ -715,8 +715,8 @@
             "description": "Place le micro au niveau de Lara. Si cette option est désactivée, le micro sera placé au niveau de la caméra.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "Suspendre la musique dans l'inventaire",
-            "description": "Suspend les effets sonores du jeu, l'ambiance et la musique dans l'écran d'inventaire.",
+            "title": "\\{review}Jouer de la musique dans l'inventaire",
+            "description": "\\{review}Permet aux sons du jeu, à l'ambiance et à la musique de continuer à jouer dans l'écran d'inventaire.",
         },
         "audio.enable_music_in_menu": {
             "title": "Musique du menu principal",

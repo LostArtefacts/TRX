@@ -715,8 +715,8 @@
             "description": "Setzt das Mikrofon auf Laras Position. Wenn deaktiviert, wird das Mikrofon auf der Position der Kamera gesetzt.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "Musik im Inventar pausieren",
-            "description": "Pausiert Spiel-Sounds, Umgebungsgeräusche und Musik im Inventar-Fenster.",
+            "title": "\\{review}Musik im Inventar abspielen",
+            "description": "\\{review}Lässt Spielgeräusche, Umgebungsgeräusche und Musik im Inventarbildschirm weiterlaufen.",
         },
         "audio.enable_music_in_menu": {
             "title": "Hauptmenü-Musik",

@@ -55,9 +55,6 @@ typedef struct UI_SETTINGS_OPTION {
 
 #define X_UI_CFG_BOOL(target_, ...) X_UI_CFG(COT_BOOL, target_, ##__VA_ARGS__)
 
-#define X_UI_CFG_BOOL_INV(target_, ...)                                        \
-    X_UI_CFG(COT_INVERTED_BOOL, target_, ##__VA_ARGS__)
-
 #define X_UI_CFG_INT32(target_, ...) X_UI_CFG(COT_INT32, target_, ##__VA_ARGS__)
 
 #define X_UI_CFG_FLOAT(target_, ...) X_UI_CFG(COT_FLOAT, target_, ##__VA_ARGS__)
