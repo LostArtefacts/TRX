@@ -1,7 +1,13 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...develop) - ××××-××-××
 - added remembering of the last played mod
 - added a new console command, `/tp enemy`, to cycle Lara through hostile creatures in the current level
+- added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°
 - changed `--level` to no longer require `-e/--engine` to work
+
+**TR3**:
+- restored the cutscene at the beginning of High Security Compound
+
+
 
 ## [1.4.1](https://github.com/LostArtefacts/TRX/compare/trx-1.4...trx-1.4.1) - 2026-03-23
 - fixed Lara using the ladder-to-crouch animation in some rare cases despite there being headroom in front of her (regression from 1.2)

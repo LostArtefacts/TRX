@@ -335,6 +335,7 @@
             "lara_outfit": "tr3_nevada",
             "sequence": [
                 {"type": "loading_screen", "path": "nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "set_lara_start_anim", "anim": 20},
                 {"type": "remove_weapons"},
                 {"type": "remove_ammo"},
                 {"type": "remove_medipacks"},
@@ -349,6 +350,7 @@
             "injections": [
                 "area51_sky.bin",
                 "lara_guns.bin",
+                "compound_cine.bin",
             ],
         },
 
