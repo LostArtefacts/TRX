@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4...develop) - ××××-××-××
 - fixed Lara using the ladder-to-crouch animation in some rare cases despite there being headroom in front of her (regression from 1.2)
 - fixed toggle-sprint key failing to cancel sprint mid-run (#5174)
+- fixed toggle-duck key failing to keep Lara ducked in run-to-duck and sprint-to-duck paths (#5177)
 
 **TR3**:
 - fixed door 34 in Thames Wharf closing permanently during the flipmap puzzle (#5170, regression from 1.1)

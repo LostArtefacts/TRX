@@ -126,6 +126,19 @@ static bool M_RequestSprint(LARA_INFO *const lara)
     }
 }
 
+static bool M_RequestDuck(LARA_INFO *const lara)
+{
+    if (g_Config.gameplay.enable_toggle_crouch) {
+        if (g_InputDB.crouch) {
+            lara->crouching = true;
+        }
+        return lara->crouching;
+    } else {
+        lara->crouching = false;
+        return g_Input.crouch;
+    }
+}
+
 static void M_Run(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -158,7 +171,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Input.crouch) {
+    if (M_RequestDuck(lara)) {
         item->goal_anim_state = M_GetRunToCrouchState();
         return;
     }
@@ -301,7 +314,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Input.crouch && lara->water_status != LWS_WADE
+    if (M_RequestDuck(lara) && lara->water_status != LWS_WADE
         && item->current_anim_state == LS(LS_STOP)
         && (lara->gun_status == LGS_ARMLESS || !Gun_IsRifleType(lara->gun_type))
         && !Lara_Vehicle_IsMounted()) {
@@ -715,7 +728,7 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         lara->sprint_timer--;
     }
 
-    if (g_Input.crouch) {
+    if (M_RequestDuck(lara)) {
         item->goal_anim_state = M_GetRunToCrouchState();
         return;
     }
