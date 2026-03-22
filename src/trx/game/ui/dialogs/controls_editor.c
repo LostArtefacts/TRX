@@ -260,8 +260,8 @@ static UI_CONTROLS_CHOICE M_NavigateLayout(UI_CONTROLS_EDITOR_STATE *const s)
         return UI_CONTROLS_CHOICE_EXIT;
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
-    } else if (UI_TabSwitch_Control(
-                   s->layout_tab_switch, UI_TAB_SWITCH_NORMAL)) {
+    } else if (
+        UI_TabSwitch_Control(s->layout_tab_switch, UI_TAB_SWITCH_NORMAL)) {
         s->active_layout = s->layout_tab_switch->active_tab_idx;
         const EVENT event = {
             .name = "layout_change",
@@ -291,8 +291,8 @@ static UI_CONTROLS_CHOICE M_NavigateGroup(UI_CONTROLS_EDITOR_STATE *const s)
         return UI_CONTROLS_CHOICE_EXIT;
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
-    } else if (UI_TabSwitch_Control(
-                   s->controls_tab_switch, UI_TAB_SWITCH_NORMAL)) {
+    } else if (
+        UI_TabSwitch_Control(s->controls_tab_switch, UI_TAB_SWITCH_NORMAL)) {
         s->active_group = &m_Groups[s->controls_tab_switch->active_tab_idx];
         UI_Scrollable_SetMaxItems(
             &s->scroll, M_GetInputRoleCount(s->active_group));
@@ -314,8 +314,8 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
         s->phase = M_PHASE_NAVIGATE_INPUTS_DEBOUNCE;
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
-    } else if (UI_TabSwitch_Control(
-                   s->controls_tab_switch, UI_TAB_SWITCH_NORMAL)) {
+    } else if (
+        UI_TabSwitch_Control(s->controls_tab_switch, UI_TAB_SWITCH_NORMAL)) {
         s->active_group = &m_Groups[s->controls_tab_switch->active_tab_idx];
         UI_Scrollable_SetMaxItems(
             &s->scroll, M_GetInputRoleCount(s->active_group));

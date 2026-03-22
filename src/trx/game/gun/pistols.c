@@ -95,14 +95,14 @@ static void M_SetArmInfo(LARA_ARM *const arm, const int32_t frame)
     int16_t anim_idx;
     if (Anim_TestAbsFrameRange(frame, setup->aim.start, setup->aim.end)) {
         anim_idx = LA_PISTOLS_AIM;
-    } else if (Anim_TestAbsFrameRange(
-                   frame, setup->undraw.start, setup->undraw.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame, setup->undraw.start, setup->undraw.end)) {
         anim_idx = LA_PISTOLS_UNDRAW;
-    } else if (Anim_TestAbsFrameRange(
-                   frame, setup->draw.start, setup->draw.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame, setup->draw.start, setup->draw.end)) {
         anim_idx = LA_PISTOLS_DRAW;
-    } else if (Anim_TestAbsFrameRange(
-                   frame, setup->recoil.start, setup->recoil.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame, setup->recoil.start, setup->recoil.end)) {
         anim_idx = LA_PISTOLS_RECOIL;
     } else {
         return;
@@ -131,8 +131,8 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
         if (Anim_TestAbsFrameRange(
                 frame_r, setup->recoil.start, setup->recoil.end)) {
             frame_r = setup->aim.end;
-        } else if (Anim_TestAbsFrameRange(
-                       frame_r, setup->aim.bend, setup->aim.end)) {
+        } else if (
+            Anim_TestAbsFrameRange(frame_r, setup->aim.bend, setup->aim.end)) {
             frame_r--;
         }
         if (m_SoundRight) {
@@ -166,8 +166,9 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 M_FireSound(weapon->sample_num, true);
                 m_SoundRight = false;
             }
-        } else if (Anim_TestAbsFrameRange(
-                       frame_r, setup->recoil.start, setup->recoil.end)) {
+        } else if (
+            Anim_TestAbsFrameRange(
+                frame_r, setup->recoil.start, setup->recoil.end)) {
             frame_r++;
             if (frame_r == setup->recoil.start + weapon->recoil_frame) {
                 frame_r = setup->aim.end;
@@ -185,16 +186,16 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
         if (Anim_TestAbsFrameRange(
                 frame_l, setup->recoil.start, setup->recoil.end)) {
             frame_l = setup->aim.end;
-        } else if (Anim_TestAbsFrameRange(
-                       frame_l, setup->aim.bend, setup->aim.end)) {
+        } else if (
+            Anim_TestAbsFrameRange(frame_l, setup->aim.bend, setup->aim.end)) {
             frame_l--;
         }
         if (m_SoundLeft) {
             M_FireSound(weapon->sample_num, true);
             m_SoundLeft = false;
         }
-    } else if (Anim_TestAbsFrameRange(
-                   frame_l, setup->aim.start, setup->aim.extend)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame_l, setup->aim.start, setup->aim.extend)) {
         frame_l++;
     } else if (frame_l == setup->aim.end) {
         if (g_Input.action) {
@@ -223,8 +224,9 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             M_FireSound(weapon->sample_num, true);
             m_SoundLeft = false;
         }
-    } else if (Anim_TestAbsFrameRange(
-                   frame_l, setup->recoil.start, setup->recoil.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(
+            frame_l, setup->recoil.start, setup->recoil.end)) {
         frame_l++;
         if (frame_l == setup->recoil.start + weapon->recoil_frame) {
             frame_l = setup->aim.end;
@@ -324,8 +326,8 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
     if (Anim_TestAbsFrameRange(
             frame_l, setup->recoil.start, setup->recoil.end)) {
         frame_l = setup->aim.end;
-    } else if (Anim_TestAbsFrameRange(
-                   frame_l, setup->aim.bend, setup->aim.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame_l, setup->aim.bend, setup->aim.end)) {
         lara->left_arm.rot.x -= lara->left_arm.rot.x / frame_l;
         lara->left_arm.rot.y -= lara->left_arm.rot.y / frame_l;
         frame_l--;
@@ -337,8 +339,8 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
     } else if (Anim_TestAbsFrameEqual(frame_l, setup->draw.start)) {
         Gun_Pistols_UndrawMeshLeft(weapon_type);
         frame_l--;
-    } else if (Anim_TestAbsFrameRange(
-                   frame_l, setup->undraw.bend, setup->draw.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame_l, setup->undraw.bend, setup->draw.end)) {
         frame_l--;
     }
     M_SetArmInfo(&lara->left_arm, frame_l);
@@ -347,8 +349,8 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
     if (Anim_TestAbsFrameRange(
             frame_r, setup->recoil.start, setup->recoil.end)) {
         frame_r = setup->aim.end;
-    } else if (Anim_TestAbsFrameRange(
-                   frame_r, setup->aim.bend, setup->aim.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame_r, setup->aim.bend, setup->aim.end)) {
         lara->right_arm.rot.x -= lara->right_arm.rot.x / frame_r;
         lara->right_arm.rot.y -= lara->right_arm.rot.y / frame_r;
         frame_r--;
@@ -360,8 +362,8 @@ void Gun_Pistols_Undraw(const LARA_GUN_TYPE weapon_type)
     } else if (Anim_TestAbsFrameEqual(frame_r, setup->draw.start)) {
         Gun_Pistols_UndrawMeshRight(weapon_type);
         frame_r--;
-    } else if (Anim_TestAbsFrameRange(
-                   frame_r, setup->undraw.bend, setup->draw.end)) {
+    } else if (
+        Anim_TestAbsFrameRange(frame_r, setup->undraw.bend, setup->draw.end)) {
         frame_r--;
     }
     M_SetArmInfo(&lara->right_arm, frame_r);
