@@ -35,13 +35,23 @@ typedef struct UI_SETTINGS_EDITOR_STATE {
     UI_COLOR_EDITOR_DIALOG_STATE *color_editor;
 } UI_SETTINGS_EDITOR_STATE;
 
+static const CONFIG_OPTION *M_GetConfigOption(
+    const UI_SETTINGS_OPTION *const option)
+{
+    ASSERT(option != nullptr);
+    ASSERT(option->target != nullptr);
+    const CONFIG_OPTION *const result = Config_GetOption(option->target);
+    ASSERT(result != nullptr);
+    return result;
+}
+
 static const char *M_GetOptionDescription(
     const UI_SETTINGS_OPTION *const option)
 {
     if (option == nullptr || option->target == nullptr) {
         return nullptr;
     }
-    return Config_GetOptionDescription(Config_GetOption(option->target));
+    return Config_GetOptionDescription(M_GetConfigOption(option));
 }
 
 static const char *M_GetOptionTitle(const UI_SETTINGS_OPTION *const option)
@@ -49,8 +59,7 @@ static const char *M_GetOptionTitle(const UI_SETTINGS_OPTION *const option)
     if (option == nullptr || option->target == nullptr) {
         return "";
     }
-    const char *const result =
-        Config_GetOptionTitle(Config_GetOption(option->target));
+    const char *const result = Config_GetOptionTitle(M_GetConfigOption(option));
     return result != nullptr ? result : "";
 }
 
@@ -108,7 +117,7 @@ static bool M_IsBarColorEnum(const UI_SETTINGS_OPTION *const option)
 
 static bool M_IsColorEditorOption(const UI_SETTINGS_OPTION *const option)
 {
-    return option != nullptr && option->option_type == COT_RGB888;
+    return option != nullptr && M_GetConfigOption(option)->type == COT_RGB888;
 }
 
 static bool M_HasAvailableEnumValue(const UI_SETTINGS_OPTION *const option)
@@ -136,7 +145,7 @@ static bool M_IsOptionHidden(const UI_SETTINGS_OPTION *const option)
     if (Config_IsOptionHidden(option->target)) {
         return true;
     }
-    if (option->option_type == COT_ENUM && option->misc != nullptr
+    if (M_GetConfigOption(option)->type == COT_ENUM && option->misc != nullptr
         && !M_HasAvailableEnumValue(option)) {
         return true;
     }
@@ -228,8 +237,7 @@ static const char *M_FormatRowValue(
         return option->custom_handler.format_value(option);
     }
 
-    const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
-    ASSERT(cfg_opt != nullptr);
+    const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
     return Config_GetOptionValueAsString(cfg_opt, true);
 }
 
@@ -245,7 +253,7 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         return M_BAR_WIDTH * g_Config.ui.text_scale;
     }
 
-    switch (option->option_type) {
+    switch (M_GetConfigOption(option)->type) {
     case COT_BOOL: {
         const float min_value_w = UI_Label_MeasureW(GS("general/misc/off"));
         const float max_value_w = UI_Label_MeasureW(GS("general/misc/on"));
@@ -285,10 +293,7 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     case COT_STRING:
         return UI_Label_MeasureW(*(char **)option->target);
     case COT_DYNAMIC_ENUM: {
-        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
-        if (cfg_opt == nullptr) {
-            return 0.0f;
-        }
+        const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         float result = 0.0f;
         const int32_t count = Config_DynamicEnum_GetValueCount(cfg_opt);
         for (int32_t i = 0; i < count; i++) {
@@ -298,8 +303,7 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
         return result;
     }
     case COT_ENUM: {
-        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
-        ASSERT(cfg_opt != nullptr);
+        const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         float result = 0.0f;
         const UI_SETTINGS_ENUM_ENTRY *entry = option->misc;
         const int32_t current_value = *(int32_t *)option->target;
@@ -336,7 +340,7 @@ static bool M_CanChangeValue(
         return option->custom_handler.can_change_value(option, dir);
     }
 
-    switch (option->option_type) {
+    switch (M_GetConfigOption(option)->type) {
     case COT_BOOL:
         return true;
 
@@ -370,10 +374,7 @@ static bool M_CanChangeValue(
         return false;
 
     case COT_DYNAMIC_ENUM: {
-        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
-        if (cfg_opt == nullptr) {
-            return false;
-        }
+        const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         return Config_DynamicEnum_CanCycle(
             cfg_opt, *(char **)option->target, dir);
     }
@@ -489,7 +490,7 @@ void UI_SettingsEditor_RequestChange(
     }
     delta *= dir;
 
-    switch (option->option_type) {
+    switch (M_GetConfigOption(option)->type) {
     case COT_BOOL:
         *(bool *)option->target = !*(bool *)option->target;
         break;
@@ -540,10 +541,7 @@ void UI_SettingsEditor_RequestChange(
         break;
     }
     case COT_DYNAMIC_ENUM: {
-        const CONFIG_OPTION *const cfg_opt = Config_GetOption(option->target);
-        if (cfg_opt == nullptr) {
-            break;
-        }
+        const CONFIG_OPTION *const cfg_opt = M_GetConfigOption(option);
         const char *const next = Config_DynamicEnum_GetNext(
             cfg_opt, *(char **)option->target, delta);
         if (next != nullptr
@@ -809,7 +807,7 @@ void UI_SettingsEditor_DrawFooter(
 
     const bool can_edit_value = dialog_phase == UI_SETTINGS_PHASE_EDIT_SETTINGS
         && row_idx >= 0 && option != nullptr
-        && option->option_type == COT_RGB888;
+        && M_GetConfigOption(option)->type == COT_RGB888;
     const bool can_examine = dialog_phase == UI_SETTINGS_PHASE_EDIT_SETTINGS
         && row_idx >= 0 && option != nullptr
         && M_GetOptionDescription(option) != nullptr
