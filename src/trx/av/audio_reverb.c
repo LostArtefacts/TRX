@@ -227,7 +227,7 @@ static inline void M_DspDelay_Write(
     M_DSP_DELAY *const filter, const float sample)
 {
     ASSERT(filter->write_idx < filter->capacity);
-    filter->buffer[filter->write_idx] = sample;
+    filter->buffer[filter->write_idx] = M_Undenormalize(sample);
     filter->write_idx = (filter->write_idx + 1) % filter->capacity;
 }
 
@@ -301,9 +301,11 @@ static inline float M_DspBiQuad_Process(
     M_DSP_BI_QUAD *const filter, const float sample_in)
 {
     const float result = (filter->a0 * sample_in) + filter->delay0;
-    filter->delay0 =
+    const float delay0 =
         (filter->a1 * sample_in) - (filter->b1 * result) + filter->delay1;
-    filter->delay1 = (filter->a2 * sample_in) - (filter->b2 * result);
+    const float delay1 = (filter->a2 * sample_in) - (filter->b2 * result);
+    filter->delay0 = M_Undenormalize(delay0);
+    filter->delay1 = M_Undenormalize(delay1);
 
     return M_Undenormalize((result * filter->c0) + (sample_in * filter->d0));
 }

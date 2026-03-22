@@ -10,6 +10,7 @@
 - fixed Lara being unable to move after grabbing ladders in specific geometry (#5169, regression from 1.1)
 - fixed a missing camera shake effect in room 135 in Aldwych (#5183)
 - fixed a missing sound effect during the flip map in the Egyptian room in Lud's Gate (#5183)
+- fixed potential framerate drops during audio playback when no active sound effects are playing (regression from 1.3)
 
 
 
