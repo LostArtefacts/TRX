@@ -33,6 +33,12 @@ int main(int argc, char *argv[])
 
     LOG_INFO("Starting %s", g_TRXVersion);
     Shell_ValidateMods();
+    if (args->mod == nullptr || !args->mod->is_valid) {
+        args->mod = Shell_SelectStartupMod(args->engine_version);
+        if (args->mod != nullptr && args->engine_version == 0) {
+            args->engine_version = args->mod->engine_version;
+        }
+    }
 
     int32_t exit_code;
     bool restart;

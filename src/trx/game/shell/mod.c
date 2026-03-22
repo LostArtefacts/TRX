@@ -7,6 +7,7 @@
 #include <trx/game/game_flow/reader.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/shell/paths.h>
+#include <trx/game/shell/state.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -144,6 +145,39 @@ const SHELL_MOD *Shell_GetModByName(const char *const name)
         }
     }
     return nullptr;
+}
+
+static bool M_MatchesEngineVersion(
+    const SHELL_MOD *const mod, const int32_t engine_version)
+{
+    return engine_version == 0 || mod->engine_version == engine_version;
+}
+
+static const SHELL_MOD *M_GetFirstAvailableMod(const int32_t engine_version)
+{
+    for (int32_t i = 0; m_KnownMods[i].name != nullptr; i++) {
+        const SHELL_MOD *const mod = &m_KnownMods[i];
+        if (!Shell_CanSwitchToMod(mod)
+            || !M_MatchesEngineVersion(mod, engine_version)) {
+            continue;
+        }
+        return mod;
+    }
+    return nullptr;
+}
+
+const SHELL_MOD *Shell_SelectStartupMod(const int32_t engine_version)
+{
+    const char *const last_played_mod = ShellState_GetLastPlayedMod();
+    if (last_played_mod != nullptr) {
+        const SHELL_MOD *const mod = Shell_GetModByName(last_played_mod);
+        if (mod != nullptr && Shell_CanSwitchToMod(mod)
+            && M_MatchesEngineVersion(mod, engine_version)) {
+            return mod;
+        }
+    }
+
+    return M_GetFirstAvailableMod(engine_version);
 }
 
 const SHELL_MOD *Shell_GetModByType(

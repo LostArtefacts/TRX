@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...develop) - ××××-××-××
+- added remembering of the last played mod
 
 ## [1.4.1](https://github.com/LostArtefacts/TRX/compare/trx-1.4...trx-1.4.1) - 2026-03-23
 - fixed Lara using the ladder-to-crouch animation in some rare cases despite there being headroom in front of her (regression from 1.2)

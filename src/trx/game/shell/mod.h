@@ -23,6 +23,7 @@ void Shell_ValidateMods(void);
 int32_t Shell_GetModCount(void);
 const SHELL_MOD *Shell_GetMod(int32_t index);
 const SHELL_MOD *Shell_GetModByName(const char *name);
+const SHELL_MOD *Shell_SelectStartupMod(int32_t engine_version);
 const SHELL_MOD *Shell_GetModByType(
     SHELL_MOD_TYPE mod_type, int32_t engine_version);
 bool Shell_CanSwitchToMod(const SHELL_MOD *mod);

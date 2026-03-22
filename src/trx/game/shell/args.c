@@ -53,6 +53,7 @@ static void M_ShowHelp(void)
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 {
     SHELL_ARGS *const result = Memory_Alloc(sizeof(SHELL_ARGS));
+    bool wants_gold = false;
     result->save_to_load = -1;
     result->level_to_select = -1;
     result->original_args = args;
@@ -75,8 +76,6 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         result->engine_version = g_TRVersion;
     }
 
-    result->mod = Shell_GetModByType(MOD_BASE_GAME, result->engine_version);
-
     // Second pass: remaining options.
     for (int32_t i = 0; args != nullptr && i < args->count; i++) {
         const char *const arg = *(char **)Vector_Get(args, i);
@@ -94,8 +93,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
         if (!strcmp(arg, "-g") || !strcmp(arg, "--gold")
             || !strcmp(arg, "-gold")) {
-            result->mod =
-                Shell_GetModByType(MOD_EXPANSION_PACK, result->engine_version);
+            wants_gold = true;
         }
 
         if (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc")) {
@@ -116,18 +114,11 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 result->level_to_select = lvnum;
             } else {
                 result->level_to_play = next_arg;
-                if (result->mod == nullptr && result->engine_version == 0) {
-                    Shell_ExitSystem(
-                        "Either --mod or --engine must be provided for "
-                        "--level");
+                if (result->engine_version == 0) {
+                    Shell_ExitSystem("--engine must be provided for --level.");
                 }
-                if (result->mod != nullptr) {
-                    result->mod = Shell_GetModByType(
-                        MOD_DIRECT_LEVEL, result->mod->engine_version);
-                } else {
-                    result->mod = Shell_GetModByType(
-                        MOD_DIRECT_LEVEL, result->engine_version);
-                }
+                result->mod = Shell_GetModByType(
+                    MOD_DIRECT_LEVEL, result->engine_version);
             }
             i++;
         }
@@ -165,8 +156,22 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
     }
 
+    if (result->mod == nullptr) {
+        result->mod = Shell_SelectStartupMod(result->engine_version);
+    }
     if (result->engine_version == 0 && result->mod != nullptr) {
         result->engine_version = result->mod->engine_version;
+    }
+    if (wants_gold) {
+        const int32_t engine_version = result->engine_version != 0
+            ? result->engine_version
+            : (result->mod != nullptr ? result->mod->engine_version : 0);
+        const SHELL_MOD *const gold_mod =
+            Shell_GetModByType(MOD_EXPANSION_PACK, engine_version);
+        if (gold_mod != nullptr) {
+            result->mod = gold_mod;
+            result->engine_version = gold_mod->engine_version;
+        }
     }
 
     return result;
