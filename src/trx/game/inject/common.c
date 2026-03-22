@@ -46,8 +46,15 @@ static bool M_IsRelevant(
     const bool stats = (ctx->mode == INJECTION_MODE_STATS);
 
     if (stats) {
-        return type == IFT_GENERAL || type == IFT_FLOOR_DATA
-            || type == IFT_PS1_ENEMY;
+        switch (type) {
+        case IFT_GENERAL:
+        case IFT_FLOOR_DATA:
+        case IFT_PS1_ENEMY:
+            break;
+
+        default:
+            return false;
+        }
     }
 
     switch (type) {
