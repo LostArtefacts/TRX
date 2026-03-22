@@ -715,8 +715,8 @@
             "description": "Imposta il microfono in modo che sia collocato nella posizione di Lara. Se disabilitato, il microfono sarà collocato nella posizione della telecamera.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "Ferma musica nell'inventario",
-            "description": "Mette in pausa i suoni di gioco, la musica e i suoni ambientali nella schermata dell'inventario.",
+            "title": "\\{review}Riproduci musica nell'inventario",
+            "description": "\\{review}Consente ai suoni di gioco, all'ambiente e alla musica di continuare a suonare nella schermata dell'inventario.",
         },
         "audio.enable_music_in_menu": {
             "title": "Musica menu principale",

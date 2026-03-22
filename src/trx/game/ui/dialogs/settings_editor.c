@@ -246,8 +246,7 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_OPTION *const option)
     }
 
     switch (option->option_type) {
-    case COT_BOOL:
-    case COT_INVERTED_BOOL: {
+    case COT_BOOL: {
         const float min_value_w = UI_Label_MeasureW(GS("general/misc/off"));
         const float max_value_w = UI_Label_MeasureW(GS("general/misc/on"));
         return MAX(min_value_w, max_value_w);
@@ -339,7 +338,6 @@ static bool M_CanChangeValue(
 
     switch (option->option_type) {
     case COT_BOOL:
-    case COT_INVERTED_BOOL:
         return true;
 
     case COT_INT32:
@@ -493,7 +491,6 @@ void UI_SettingsEditor_RequestChange(
 
     switch (option->option_type) {
     case COT_BOOL:
-    case COT_INVERTED_BOOL:
         *(bool *)option->target = !*(bool *)option->target;
         break;
     case COT_INT32:

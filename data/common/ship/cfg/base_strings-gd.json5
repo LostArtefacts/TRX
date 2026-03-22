@@ -715,8 +715,8 @@
             "description": "Cuiridh seo am micreofon aig suidheachadh Lara. Ma thèid seo air a chur dheth, bidh e aig suidheachadh a' chamara.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "Stad ceòl sa chlàr-seilbhe",
-            "description": "Cuiridh seo ceòl is fuaimean àrainneachdail 'nan stad san sgrion chlàr-seilbhe.",
+            "title": "\\{review}Cluich ceòl anns an stòras",
+            "description": "\\{review}Leig le fuaimean a’ gheama, fuaimean àrainneachd agus ceòl a bhith a’ cluich fhathast air an sgrion clàr-stòraidh.",
         },
         "audio.enable_music_in_menu": {
             "title": "Ceòl sa phrìomh chlàr",

@@ -187,7 +187,6 @@ bool Config_IsOptionAtDefault(const void *const target)
     }
     switch (option->type) {
     case COT_BOOL:
-    case COT_INVERTED_BOOL:
         return *(bool *)option->target == *(bool *)option->default_value;
     case COT_INT32:
         return *(int32_t *)option->target == *(int32_t *)option->default_value;
@@ -228,7 +227,6 @@ bool Config_RestoreOptionDefault(const void *const target)
     }
     switch (option->type) {
     case COT_BOOL:
-    case COT_INVERTED_BOOL:
         *(bool *)option->target = *(bool *)option->default_value;
         return true;
     case COT_INT32:
@@ -376,9 +374,6 @@ const char *Config_GetOptionValueAsString(
     case COT_BOOL:
         return human_readable ? M_FormatBoolHuman(*(bool *)option->target)
                               : M_FormatBool(*(bool *)option->target);
-    case COT_INVERTED_BOOL:
-        return human_readable ? M_FormatBoolHuman(!*(bool *)option->target)
-                              : M_FormatBool(!*(bool *)option->target);
     case COT_INT32:
         return M_FormatInt32(*(int32_t *)option->target);
     case COT_FLOAT:
@@ -452,10 +447,6 @@ char *Config_NormalizeOptionValueString(
         L_NORMALIZE_TYPED(
             bool, M_ParseBool(input, &parsed),
             human_readable ? M_FormatBoolHuman(parsed) : M_FormatBool(parsed));
-    case COT_INVERTED_BOOL:
-        L_NORMALIZE_TYPED(
-            bool, M_ParseBool(input, &parsed),
-            human_readable ? M_FormatBoolHuman(!parsed) : M_FormatBool(parsed));
     case COT_INT32:
         L_NORMALIZE_TYPED(
             int32_t, M_ParseInt32(input, &parsed), M_FormatInt32(parsed));
@@ -506,15 +497,6 @@ bool Config_SetOptionValueFromString(
         bool parsed;
         if (M_ParseBool(new_value, &parsed)) {
             *(bool *)option->target = parsed;
-            return true;
-        }
-        break;
-    }
-
-    case COT_INVERTED_BOOL: {
-        bool parsed;
-        if (M_ParseBool(new_value, &parsed)) {
-            *(bool *)option->target = !parsed;
             return true;
         }
         break;

@@ -715,8 +715,8 @@
             "description": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "Pause music in inventory",
-            "description": "Pauses game sounds, ambient and music in the inventory screen.",
+            "title": "Play music in inventory",
+            "description": "Lets game sounds, ambient and music continue playing in the inventory screen.",
         },
         "audio.enable_music_in_menu": {
             "title": "Main menu music",
