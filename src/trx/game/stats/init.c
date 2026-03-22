@@ -1,5 +1,6 @@
 #include <trx/game/stats/init.h>
 
+#include <trx/config.h>
 #include <trx/core/benchmark.h>
 #include <trx/core/hash.h>
 #include <trx/core/json.h>
@@ -42,6 +43,8 @@ static uint64_t M_ComputeInputsChecksum(const GF_LEVEL_TABLE *const level_table)
 {
     uint64_t hash = LevelCache_InitChecksum("max_stats_cache", M_CACHE_VERSION);
     hash = Hash_FNV1a64_UpdateU32(hash, (uint32_t)level_table->count);
+    hash = Hash_FNV1a64_UpdateU32(
+        hash, (uint32_t)g_Config.gameplay.restore_ps1_enemies);
 
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
