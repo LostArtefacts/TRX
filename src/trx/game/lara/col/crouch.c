@@ -88,19 +88,17 @@ static void M_Crouch(ITEM *const item, COLL_INFO *const coll)
     }
 
     lara->keep_crouched = coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
-    if (g_Config.gameplay.enable_toggle_crouch && g_InputDB.crouch) {
-        lara->crouching = !lara->crouching;
-    }
-
     Lara_Col_Shift(coll);
     item->pos.y += coll->side_mid.floor;
 
     const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
-        ? lara->crouching
+        ? !(lara->crouching && g_InputDB.crouch)
         : g_Input.crouch;
+
     if ((!crouch_active || lara->water_status == LWS_WADE)
         && !lara->keep_crouched
         && Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))) {
+        lara->crouching = false;
         item->goal_anim_state = LS(LS_STOP);
     } else if (g_Config.gameplay.enable_responsive_crawl) {
         if (g_Input.left) {
@@ -216,9 +214,6 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
     }
 
     lara->keep_crouched = coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
-    if (g_Config.gameplay.enable_toggle_crouch && g_InputDB.crouch) {
-        lara->crouching = !lara->crouching;
-    }
 
     Lara_Col_Shift(coll);
     item->pos.y += coll->side_mid.floor;
@@ -226,7 +221,9 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
     const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
         ? lara->crouching
         : g_Input.crouch;
-    if ((!crouch_active && !lara->keep_crouched) || g_Input.draw) {
+    if ((!crouch_active && !lara->keep_crouched) || g_Input.draw
+        || (g_Config.gameplay.enable_toggle_crouch && !g_Input.forward
+            && g_InputDB.crouch)) {
         item->goal_anim_state = LS(LS_CROUCH_IDLE);
         return;
     }

@@ -121,7 +121,7 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
-        ? lara->crouching
+        ? lara->crouching || lara->keep_crouched
         : g_Input.crouch || lara->keep_crouched;
     lara->sprinting = false;
     lara->is_crouched = true;
