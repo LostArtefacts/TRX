@@ -6,6 +6,8 @@
 **TR3**:
 - fixed door 34 in Thames Wharf closing permanently during the flipmap puzzle (#5170, regression from 1.1)
 - fixed Lara being unable to move after grabbing ladders in specific geometry (#5169, regression from 1.1)
+- fixed a missing camera shake effect in room 135 in Aldwych (#5183)
+- fixed a missing sound effect during the flip map in the Egyptian room in Lud's Gate (#5183)
 
 
 

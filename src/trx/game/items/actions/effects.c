@@ -215,6 +215,18 @@ static void M_Boiler(ITEM *const item)
     Room_SetFlipEffect(-1);
 }
 
+static void M_CameraShake(ITEM *const item)
+{
+    g_Camera.bounce = -350;
+    Room_SetFlipEffect(-1);
+}
+
+static void M_LoweringBlock(ITEM *const item)
+{
+    Sound_Effect(SFX_LOWERING_BLOCK, nullptr, SPM_NORMAL);
+    Room_SetFlipEffect(-1);
+}
+
 REGISTER_ITEM_ACTION(ITEM_ACTION_CHAIN_BLOCK, M_ChainBlock)
 REGISTER_ITEM_ACTION(ITEM_ACTION_FLOOD, M_Flood)
 REGISTER_ITEM_ACTION(ITEM_ACTION_EXPLOSION, M_Explosion)
@@ -232,3 +244,5 @@ REGISTER_ITEM_ACTION(ITEM_ACTION_CURTAIN, M_Curtain)
 REGISTER_ITEM_ACTION(ITEM_ACTION_SET_CHANGE, M_SetChange)
 REGISTER_ITEM_ACTION(ITEM_ACTION_STATUE, M_Statue)
 REGISTER_ITEM_ACTION(ITEM_ACTION_BOILER, M_Boiler)
+REGISTER_ITEM_ACTION(ITEM_ACTION_CAMERA_SHAKE, M_CameraShake)
+REGISTER_ITEM_ACTION(ITEM_ACTION_LOWERING_BLOCK, M_LoweringBlock)
