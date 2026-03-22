@@ -22,13 +22,22 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/tp {room_number}`  
   `/tp room {room_number}`  
   `/tp r{room_number}`  
-  `/tp {room_number}` (legacy)  
   `/tp item {item_number}`  
   `/tp i{item_number}`  
   `/tp precise {x} {y} {z}`  
   `/tp {x} {y} {z}`  
   `/tp {object}`  
-  Instant travel! Teleports Lara to a random spot within the specified room, to an item's position by item number, to the specified X,Y,Z coordinates (grid units), to precise world-space coordinates (no `1024` scaling), or to the nearest object of a specific type.
+  `/tp enemy`  
+  `/tp pickup`  
+  Instant travel! Teleports Lara to:
+  - a random spot within the specified room;
+  - an item's position by item number;
+  - the specified X,Y,Z coordinates in grid units;
+  - the specified world-space coordinates with `precise` (no `1024` scaling);
+  - the next pickup in round-robin order with `pickup`;
+  - the next hostile creature in round-robin order with `enemy`;
+  - the nearest object of a specific type.
+  - legacy: `/tp {room_number}` is still accepted.
 
 - `/hp`  
   `/hp {health}`  
