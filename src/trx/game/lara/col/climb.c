@@ -768,8 +768,9 @@ static void M_UpLadder(ITEM *const item, COLL_INFO *const coll)
     int32_t yshift;
     if (Item_TestFrameEqual(item, 0)) {
         yshift = 0;
-    } else if (Item_TestFrameRange(
-                   item, M_LF_CLIMB_L_SHIFT_START, M_LF_CLIMB_L_SHIFT_END)) {
+    } else if (
+        Item_TestFrameRange(
+            item, M_LF_CLIMB_L_SHIFT_START, M_LF_CLIMB_L_SHIFT_END)) {
         yshift = -STEP_L;
     } else if (Item_TestFrameEqual(item, M_LF_CLIMB_R_SHIFT)) {
         yshift = -STEP_L * 2;
@@ -834,8 +835,9 @@ static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
     int32_t yshift;
     if (Item_TestFrameEqual(item, 0)) {
         yshift = 0;
-    } else if (Item_TestFrameRange(
-                   item, M_LF_CLIMB_L_SHIFT_START, M_LF_CLIMB_L_SHIFT_END)) {
+    } else if (
+        Item_TestFrameRange(
+            item, M_LF_CLIMB_L_SHIFT_START, M_LF_CLIMB_L_SHIFT_END)) {
         yshift = STEP_L;
     } else if (Item_TestFrameEqual(item, M_LF_CLIMB_R_SHIFT)) {
         yshift = STEP_L * 2;
