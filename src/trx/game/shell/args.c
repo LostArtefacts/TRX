@@ -1,10 +1,13 @@
 #include <trx/game/shell/args.h>
 
+#include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
+#include <trx/core/virtual_file.h>
 #include <trx/debug.h>
+#include <trx/game/level/format/format.h>
 #include <trx/game/shell/common.h>
 #include <trx/version.h>
 
@@ -48,6 +51,23 @@ static void M_ShowHelp(void)
     puts(
         "--debug-render-performance: output diagnostic information after each "
         "frame.");
+}
+
+static int32_t M_GuessEngineVersionFromLevelPath(const char *const path)
+{
+    if (path == nullptr || !File_Exists(path)) {
+        return 0;
+    }
+
+    VFILE *const file = VFile_CreateFromPath(path);
+    if (file == nullptr) {
+        return 0;
+    }
+
+    const LEVEL_FORMAT_LOADER *const loader = Level_Format_GuessLoader(file);
+    const int32_t game_version = loader != nullptr ? loader->game_version : 0;
+    VFile_Close(file);
+    return game_version;
 }
 
 SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
@@ -115,7 +135,13 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             } else {
                 result->level_to_play = next_arg;
                 if (result->engine_version == 0) {
-                    Shell_ExitSystem("--engine must be provided for --level.");
+                    result->engine_version =
+                        M_GuessEngineVersionFromLevelPath(next_arg);
+                }
+                if (result->engine_version == 0) {
+                    Shell_ExitSystem(
+                        "Cannot determine engine version for --level. "
+                        "Please provide --engine.");
                 }
                 result->mod = Shell_GetModByType(
                     MOD_DIRECT_LEVEL, result->engine_version);
