@@ -3,6 +3,7 @@
 #include <trx/game/console/common.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/const.h>
+#include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/items.h>
@@ -11,6 +12,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/objects/vars.h>
+#include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 
@@ -82,6 +84,18 @@ static bool M_CanTargetItem(
     return true;
 }
 
+static bool M_CanTargetEnemyItem(const ITEM *const item)
+{
+    if (!Creature_IsHostile(item) || item->room_num == NO_ROOM
+        || item->hit_points <= 0 || (item->flags & IF_KILLED) != 0) {
+        return false;
+    }
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    return Room_GetHeight(sector, item->pos) != NO_HEIGHT;
+}
+
 static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
 {
     int32_t match_count = 0;
@@ -138,6 +152,31 @@ static const ITEM *M_GetItemToTeleporTo(const char *const user_input)
 
     Memory_FreePointer(&matches);
     return Item_Get(best_item_num);
+}
+
+static const ITEM *M_GetHostileEnemyToTeleportTo(void)
+{
+    const int32_t item_count = Item_GetTotalCount();
+    if (item_count <= 0) {
+        return nullptr;
+    }
+
+    int16_t start_idx = 0;
+    if (m_LastTeleportedItemNum >= 0 && m_LastTeleportedItemNum < item_count) {
+        start_idx = (m_LastTeleportedItemNum + 1) % item_count;
+    }
+
+    for (int32_t i = 0; i < item_count; i++) {
+        const int16_t item_num = (start_idx + i) % item_count;
+        const ITEM *const item = Item_Get(item_num);
+        if (!M_CanTargetEnemyItem(item)) {
+            continue;
+        }
+        m_LastTeleportedItemNum = item_num;
+        return item;
+    }
+
+    return nullptr;
 }
 
 static inline bool M_IsFloatRound(const float num)
@@ -315,6 +354,29 @@ static COMMAND_RESULT M_TeleportToObject(const char *const user_input)
     return CR_SUCCESS;
 }
 
+static COMMAND_RESULT M_TeleportToEnemy(void)
+{
+    ITEM *const enemy_item = (ITEM *)M_GetHostileEnemyToTeleportTo();
+    if (enemy_item == nullptr) {
+        Console_LogError(GS("console/cmd/teleport/object_fail"), "enemy");
+        return CR_FAILURE;
+    }
+
+    const XYZ_32 pos = {
+        .x = enemy_item->pos.x,
+        .y = enemy_item->pos.y - STEP_L / 4,
+        .z = enemy_item->pos.z,
+    };
+    if (!Lara_Cheat_Teleport(pos, enemy_item->room_num)) {
+        Console_LogError(GS("console/cmd/teleport/object_fail"), "enemy");
+        return CR_FAILURE;
+    }
+
+    M_AlignLaraToItem(enemy_item);
+    Console_Log(GS("console/cmd/teleport/object"), "enemy");
+    return CR_SUCCESS;
+}
+
 static bool M_TryParseTagNumber(
     const char *const args, const char tag, int16_t *const out_num)
 {
@@ -396,6 +458,10 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     int16_t room_num = -1;
     if (sscanf(ctx->args, "%hd", &room_num) == 1) { // legacy
         return M_TeleportToRoom(room_num);
+    }
+
+    if (String_Equivalent(ctx->args, "enemy")) {
+        return M_TeleportToEnemy();
     }
 
     return M_TeleportToObject(ctx->args);

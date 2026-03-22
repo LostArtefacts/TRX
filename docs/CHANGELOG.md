@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...develop) - ××××-××-××
 - added remembering of the last played mod
+- added a new console command, `/tp enemy`, to cycle Lara through hostile creatures in the current level
 - changed `--level` to no longer require `-e/--engine` to work
 
 ## [1.4.1](https://github.com/LostArtefacts/TRX/compare/trx-1.4...trx-1.4.1) - 2026-03-23
