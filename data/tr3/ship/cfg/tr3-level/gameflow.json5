@@ -1,7 +1,7 @@
 {
     // This file is used to enable the -l argument support.
 
-    "main_menu_picture": "todo.webp",
+    "main_menu_picture": "title_eu.webp",
     "savegame_file_fmt": "save_tr3_custom_%02d.dat",
 
     "demo_version": false,
