@@ -35,6 +35,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/shell/platform.h>
 #include <trx/game/shell/session.h>
+#include <trx/game/shell/state.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui/settings.h>
@@ -248,9 +249,10 @@ static void M_PrepareSystem(void)
     LOG_INFO("Engine version: %d", g_TRVersion);
     LOG_INFO("Mod: %s", s->args->mod != nullptr ? s->args->mod->name : nullptr);
     if (s->args->engine_version <= 0 || s->args->mod == nullptr) {
-        Shell_ExitSystem(
-            "Unknown or ambiguous gameflow file. "
-            "Are you missing --engine or --mod?");
+        Shell_ExitSystem("No playable mods available.");
+    }
+    if (s->args->mod->mod_type != MOD_DIRECT_LEVEL) {
+        ShellState_RememberLastPlayedMod(s->args->mod->name);
     }
 
     Config_ApplyDefaultSettings();
