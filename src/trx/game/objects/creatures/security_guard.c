@@ -87,17 +87,16 @@ static void M_FireFinalShot(
     Sound_Effect(SFX_SECURITY_GUARD_FIRE, &item->pos, SPM_NORMAL);
 }
 
-static bool M_IsNearCover(
-    const ITEM *const item, const int32_t enemy_angle, const int32_t enemy_dist)
+static bool M_IsNearCover(const ITEM *const item, const AI_INFO *const info)
 {
     const XYZ_32 pos =
-        XYZ_32_OffsetYaw(item->pos, item->rot.y + enemy_angle, WALL_L);
+        XYZ_32_OffsetYaw(item->pos, item->rot.y + info->angle, WALL_L);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     const int32_t height = Room_GetHeight(sector, pos);
     return item->pos.y > height + STEPUP_HEIGHT
         && item->pos.y < height + STEPUP_HEIGHT * 3
-        && enemy_dist > M_ALERT_DIST;
+        && info->distance > M_ALERT_DIST;
 }
 
 static bool M_ShouldDuck(const ITEM *const item, const bool near_cover)
@@ -144,26 +143,26 @@ static void M_Control(const int16_t item_num)
     AI_INFO info = {};
     Creature_AIInfo(item, &info);
 
-    int32_t enemy_dist;
-    int32_t enemy_angle;
+    AI_INFO lara_info = {};
     if (creature->enemy == lara_item) {
-        enemy_dist = info.distance;
-        enemy_angle = info.angle;
+        lara_info.distance = info.distance;
+        lara_info.angle = info.angle;
     } else {
         const int32_t dx = lara_item->pos.x - item->pos.x;
         const int32_t dz = lara_item->pos.z - item->pos.z;
-        enemy_angle = Math_Atan(dz, dx) - item->rot.y;
-        enemy_dist = XYZ_32_GetLength2((XYZ_32) { dx, 0, dz });
+        lara_info.angle = Math_Atan(dz, dx) - item->rot.y;
+        lara_info.distance = XYZ_32_GetLength2((XYZ_32) { dx, 0, dz });
     }
 
     Creature_Mood(item, &info, creature->enemy != lara_item);
     angle = Creature_Turn(item, creature->maximum_turn);
-    const bool near_cover = M_IsNearCover(item, enemy_angle, enemy_dist);
+    const bool near_cover = M_IsNearCover(item, &lara_info);
 
     ITEM *const enemy = creature->enemy;
     creature->enemy = lara_item;
     if (item->hit_status
-        || ((enemy_dist < M_ALERT_DIST || Creature_CanSeeEnemy(item, &info))
+        || ((lara_info.distance < M_ALERT_DIST
+             || Creature_CanSeeEnemy(item, &lara_info))
             && ABS(lara_item->pos.y - item->pos.y) < M_ALERT_HEIGHT)) {
         if (!creature->alerted) {
             Sound_Effect(SFX_ENGLISH_HOY, &item->pos, SPM_NORMAL);
@@ -177,7 +176,7 @@ static void M_Control(const int16_t item_num)
 
     switch (item->current_anim_state) {
     case M_STATE_WAIT:
-        head = enemy_angle;
+        head = lara_info.angle;
         creature->maximum_turn = 0;
 
         if (anim_idx == M_ANIM_WALK_STOP || anim_idx == M_ANIM_RUN_STOP_1
@@ -219,7 +218,8 @@ static void M_Control(const int16_t item_num)
         } else if (
             creature->mood == MOOD_BORED
             || ((item->ai_bits & AI_FOLLOW) != 0
-                && (creature->reached_goal || enemy_dist > M_WALK_DIST))) {
+                && (creature->reached_goal
+                    || lara_info.distance > M_WALK_DIST))) {
             if (info.ahead) {
                 item->goal_anim_state = M_STATE_WAIT;
             } else {
@@ -232,7 +232,7 @@ static void M_Control(const int16_t item_num)
         break;
 
     case M_STATE_WALK:
-        head = enemy_angle;
+        head = lara_info.angle;
         creature->maximum_turn = M_WALK_TURN;
 
         if ((item->ai_bits & AI_PATROL_1) != 0) {
@@ -276,7 +276,8 @@ static void M_Control(const int16_t item_num)
         } else if (creature->mood != MOOD_ESCAPE) {
             if (Creature_CanTargetEnemy(item, &info)
                 || ((item->ai_bits & AI_FOLLOW) != 0
-                    && (creature->reached_goal || enemy_dist > M_WALK_DIST))) {
+                    && (creature->reached_goal
+                        || lara_info.distance > M_WALK_DIST))) {
                 item->goal_anim_state = M_STATE_WAIT;
             } else if (creature->mood == MOOD_BORED) {
                 item->goal_anim_state = M_STATE_WALK;
