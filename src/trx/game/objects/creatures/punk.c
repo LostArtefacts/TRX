@@ -286,16 +286,15 @@ static void M_Control(const int16_t item_num)
     AI_INFO info = {};
     Creature_AIInfo(item, &info);
 
-    int32_t enemy_dist;
-    int32_t enemy_angle;
+    AI_INFO lara_info = {};
     if (creature->enemy == lara_item) {
-        enemy_dist = info.distance;
-        enemy_angle = info.angle;
+        lara_info.distance = info.distance;
+        lara_info.angle = info.angle;
     } else {
         const int32_t dx = lara_item->pos.x - item->pos.x;
         const int32_t dz = lara_item->pos.z - item->pos.z;
-        enemy_angle = Math_Atan(dz, dx) - item->rot.y;
-        enemy_dist = XYZ_32_GetLength2((XYZ_32) { dx, 0, dz });
+        lara_info.angle = Math_Atan(dz, dx) - item->rot.y;
+        lara_info.distance = XYZ_32_GetLength2((XYZ_32) { dx, 0, dz });
     }
 
     if (!creature->alerted && creature->enemy == lara_item) {
@@ -308,7 +307,8 @@ static void M_Control(const int16_t item_num)
     ITEM *const enemy = creature->enemy;
     creature->enemy = lara_item;
     if (item->hit_status
-        || ((enemy_dist < M_ALERT_DIST || Creature_CanSeeEnemy(item, &info))
+        || ((lara_info.distance < M_ALERT_DIST
+             || Creature_CanSeeEnemy(item, &lara_info))
             && ABS(lara_item->pos.y - item->pos.y) < M_ALERT_HEIGHT
             && Creature_IsHostile(item) && (item->ai_bits & AI_FOLLOW) == 0)) {
         if (!creature->alerted) {
@@ -329,7 +329,7 @@ static void M_Control(const int16_t item_num)
 
         creature->flags = 0;
         creature->maximum_turn = 0;
-        head = enemy_angle;
+        head = lara_info.angle;
 
         if ((item->ai_bits & AI_GUARD) != 0) {
             head = Creature_AIGuard(creature);
@@ -351,7 +351,8 @@ static void M_Control(const int16_t item_num)
         } else if (
             creature->mood == MOOD_BORED
             || ((item->ai_bits & AI_FOLLOW) != 0
-                && (creature->reached_goal || enemy_dist > M_RUN_DIST))) {
+                && (creature->reached_goal
+                    || lara_info.distance > M_RUN_DIST))) {
             if (item->required_anim_state != M_STATE_NULL) {
                 item->goal_anim_state = item->required_anim_state;
             } else if (info.ahead) {
@@ -372,7 +373,7 @@ static void M_Control(const int16_t item_num)
 
     case M_STATE_WALK:
         creature->maximum_turn = M_WALK_TURN;
-        head = enemy_angle;
+        head = lara_info.angle;
 
         if ((item->ai_bits & AI_PATROL_1) != 0) {
             item->goal_anim_state = M_STATE_WALK;
@@ -409,7 +410,7 @@ static void M_Control(const int16_t item_num)
             }
         } else if (
             (item->ai_bits & AI_FOLLOW) != 0
-            && (creature->reached_goal || enemy_dist > M_RUN_DIST)) {
+            && (creature->reached_goal || lara_info.distance > M_RUN_DIST)) {
             item->goal_anim_state = M_STATE_STOP;
         } else if (creature->mood == MOOD_BORED) {
             item->goal_anim_state = M_STATE_WALK;
