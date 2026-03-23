@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...develop) - ××××-××-××
+
+## [1.4.1](https://github.com/LostArtefacts/TRX/compare/trx-1.4...trx-1.4.1) - 2026-03-23
 - fixed Lara using the ladder-to-crouch animation in some rare cases despite there being headroom in front of her (regression from 1.2)
 - fixed toggle-sprint key failing to cancel sprint mid-run (#5174, regression from 1.4)
 - fixed toggle-duck key failing to keep Lara ducked in run-to-duck and sprint-to-duck paths (#5177, regression from 1.4)
