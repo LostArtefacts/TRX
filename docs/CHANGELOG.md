@@ -4,6 +4,8 @@
 - fixed toggle-duck key failing to keep Lara ducked in run-to-duck and sprint-to-duck paths (#5177, regression from 1.4)
 - fixed flipped state of "Pause music in inventory", changed to "Enable music in inventory" (regression from 1.4)
 - fixed final statistics in City of Khamoon counting the optional PS1 mummy when Restore PS1 enemies is disabled (#5188, regression from 1.1)
+- fixed bouncy grenades getting stuck in certain geometry (#5202, regression from 1.2)
+- fixed thrown flares getting stuck in certain geometry (#5202, regression from 1.4)
 
 **TR3**:
 - fixed door 34 in Thames Wharf closing permanently during the flipmap puzzle (#5170, regression from 1.1)
