@@ -11,6 +11,7 @@
 - fixed a missing camera shake effect in room 135 in Aldwych (#5183)
 - fixed a missing sound effect during the flip map in the Egyptian room in Lud's Gate (#5183)
 - fixed potential framerate drops during audio playback when no active sound effects are playing (regression from 1.3)
+- fixed some enemies automatically being hostile when triggered if other enemies have been killed (#5203, regression from 1.1)
 
 
 

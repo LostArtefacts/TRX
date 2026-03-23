@@ -1440,7 +1440,7 @@ void Creature_GetAITarget(CREATURE *const creature)
                     creature->enemy = lara_item;
                     item->ai_bits &= ~(AI_AMBUSH | AI_MODIFY);
                     item->ai_bits |= AI_GUARD;
-                    creature->alerted = 0;
+                    creature->alerted = false;
                 }
             }
         } else {
@@ -1449,7 +1449,7 @@ void Creature_GetAITarget(CREATURE *const creature)
     } else if (ai_bits & AI_FOLLOW) {
         if (creature->hurt_by_lara) {
             creature->enemy = lara_item;
-            creature->alerted = 1;
+            creature->alerted = true;
             item->ai_bits &= ~AI_FOLLOW;
         } else if (item->hit_status) {
             item->ai_bits &= ~AI_FOLLOW;
