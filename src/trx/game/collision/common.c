@@ -767,8 +767,8 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
             yang = (uint16_t)item->rot.y;
 
             const int16_t tilt = Room_GetTiltType(sector, item->pos);
-            const int8_t tiltyoff = tilt >> 8;
-            const int8_t tiltxoff = (int8_t)tilt;
+            const int8_t tiltxoff = tilt >> 8;
+            const int8_t tiltyoff = (int8_t)tilt;
             if (tiltyoff < 0) {
                 if (yang >= DEG_180) {
                     bs = 1;
@@ -834,8 +834,8 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
             item->speed -= item->speed >> 2;
 
             const int16_t tilt = Room_GetTiltType(sector, item->pos);
-            const int8_t tiltyoff = tilt >> 8;
-            const int8_t tiltxoff = (int8_t)tilt;
+            const int8_t tiltxoff = tilt >> 8;
+            const int8_t tiltyoff = (int8_t)tilt;
             if (tiltyoff < 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2) {
                 if ((uint16_t)item->rot.y > DEG_180) {
                     item->rot.y = -1 - item->rot.y;
