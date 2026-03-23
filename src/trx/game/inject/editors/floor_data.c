@@ -250,6 +250,9 @@ static void M_RoomProperties(
     room->flags.inside      = (flags & 0x40) != 0;
     room->flags.swamp       = (flags & 0x80) != 0;
     // clang-format on
+    if (injection->version >= INJ_VERSION_8) {
+        room->reverb_info = VFile_ReadU8(injection->fp);
+    }
 }
 
 static void M_SectorOverwrite(
