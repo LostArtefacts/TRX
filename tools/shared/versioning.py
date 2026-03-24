@@ -17,11 +17,14 @@ def generate_version(repo_dir: Path | None = None) -> str:
 
 
 def generate_package_name(
-    engine_version: str, platform: str, game_version: int
+    engine_version: str, platform: str, game_version: int | None
 ) -> str:
     if platform == "win":
         platform = "windows"
     elif platform == "win-installer":
         platform = "windows_installer"
     platform = platform.title()
-    return f"TRX-{engine_version}-{platform}-tr{game_version}"
+    parts = ["TRX", engine_version, platform]
+    if game_version is not None:
+        parts.append(f"tr{game_version}")
+    return "-".join(parts)

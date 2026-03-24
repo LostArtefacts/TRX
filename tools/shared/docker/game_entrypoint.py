@@ -35,7 +35,7 @@ class BaseOptions:
 
 @dataclass
 class PackageOptions(BaseOptions):
-    tr_version: int
+    tr_version: int | None
     platform: str
 
     @property
@@ -50,10 +50,13 @@ class PackageOptions(BaseOptions):
     def ship_dirs(self) -> list[Path]:
         if self.platform == "win-installer":
             return []
-        return [
-            Path(f"/app/data/common/ship/"),
-            Path(f"/app/data/tr{self.tr_version}/ship/"),
-        ]
+        elif self.tr_version is None:
+            return [Path(f"/app/data/trx/ship/")]
+        else:
+            return [
+                Path(f"/app/data/common/ship/"),
+                Path(f"/app/data/tr{self.tr_version}/ship/"),
+            ]
 
     @property
     def release_zip_files(self) -> list[tuple[Path, str]]:
@@ -63,6 +66,7 @@ class PackageOptions(BaseOptions):
         elif self.platform == "win":
             return [(self.build_root / f"TRX.exe", f"TRX.exe")]
         elif self.platform == "win-installer":
+            assert self.tr_version is not None
             return [
                 (
                     TOOLS_DIR
@@ -191,11 +195,14 @@ class PackageAllCommand(BaseCommand):
         parser.add_argument("--no-zip", action="store_true")
 
     def run(self, args: argparse.Namespace) -> None:
-        for tr_version in [1, 2, 3]:
+        for tr_version in [1, 2, 3, None]:
             options = PackageOptions(platform=args.platform, tr_version=tr_version)
             output = None
             if args.output_root:
-                output = args.output_root / f"tr{tr_version}"
+                if tr_version is not None:
+                    output = args.output_root / f"tr{tr_version}"
+                else:
+                    output = args.output_root / "trx"
             run_package(options=options, output=output, no_zip=args.no_zip)
 
 
@@ -213,15 +220,25 @@ def run_package(
         else:
             zip_path /= options.default_stem + ".zip"
 
-    source_files = [
-        *[
-            (path, str(path.relative_to(ship_dir)))
-            for ship_dir in options.ship_dirs
-            for path in ship_dir.rglob("*")
-            if path.is_file()
-        ],
-        *options.release_zip_files,
-    ]
+
+    source_files: list[tuple[Path, str] | Path] = []
+
+    for ship_dir in options.ship_dirs:
+        stack = [ship_dir]
+        while stack:
+            current = stack.pop()
+            for item in current.iterdir():
+                try:
+                    real = item.resolve(strict=True)
+                except FileNotFoundError:
+                    continue  # broken link, ignore
+                if real.is_file():
+                    source_files.append((real, str(item.relative_to(ship_dir))))
+                elif real.is_dir():
+                    stack.append(item)
+
+    for path in options.release_zip_files:
+        source_files.append(path)
 
     if no_zip:
         for src_path, dst_name in source_files:

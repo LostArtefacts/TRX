@@ -277,7 +277,7 @@ def parse_args() -> argparse.Namespace:
 def collect(root_dir: Path) -> Iterable[Path]:
     return (
         path.relative_to(root_dir)
-        for path in root_dir.rglob("*")
+        for path in root_dir.rglob("*", recurse_symlinks=True)
         if path.is_file()
         and path.name not in IGNORED_FILES
     )

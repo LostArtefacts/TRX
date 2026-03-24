@@ -1,17 +1,1 @@
-{
-    // For usage, refer to the documentation here:
-    // https://lostartefacts.dev/trx/docs/stable/game_strings
-    "levels": [
-        {
-            "title": "Città di Vilcabamba",
-            "objects": {
-                "key_1": {
-                    "name": "Chiave d'Argento",
-                },
-                "puzzle_1": {
-                    "name": "Idolo d'Oro",
-                }
-            }
-        }
-    ]
-}
+../../../../trx/ship/games/tr1-demo-pc/strings-it.json5
