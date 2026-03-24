@@ -35,6 +35,7 @@ static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 
 static void M_Use(ITEM *const lara_item, ITEM *const receptacle_item)
 {
+    receptacle_item->rot.y = lara_item->rot.y;
     Lara_AlignPosition(receptacle_item, &m_Position);
 
     Lara_SwitchToExtraState(LS_EXTRA_PLUNGER);
@@ -107,9 +108,7 @@ static void M_Collision(
         goto normal_collision;
     }
 
-    if (item->object_id == O_GONG) {
-        item->rot = old_rot;
-    }
+    item->rot = old_rot;
 
     if (!GF_ShowInventoryKeys(item->object_id)) {
         Lara_RefuseInteraction();
