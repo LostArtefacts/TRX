@@ -9,6 +9,7 @@
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
 - fixed the Detonator Box being difficult to activate when selecting the key manually from the inventory (#5215, regression from TR2X 1.3)
+- fixed the Detonator Box rotating if Lara interacts with it but then doesn't pick the key from the inventory (#5215, regression from TR2X 1.3)
 
 **TR3**:
 - added Security Laser (Alarm) control
