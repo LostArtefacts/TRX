@@ -7,13 +7,15 @@ typedef enum {
     MOD_EXPANSION_PACK,
     MOD_MISC,
     MOD_DIRECT_LEVEL,
+    MOD_CUSTOM,
 } SHELL_MOD_TYPE;
 
 typedef struct {
-    const char *name;
+    char *name;
+    char *title;
     SHELL_MOD_TYPE mod_type;
     int32_t engine_version;
-    const char *base_mod;
+    char *base_mod;
     bool is_available;
     bool is_valid;
 } SHELL_MOD;

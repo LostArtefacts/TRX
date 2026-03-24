@@ -1,6 +1,9 @@
 {
     // This file is used to enable the -l argument support.
 
+    "engine": 1,
+    "extends": "tr1",
+
     "main_menu_picture": "title.webp",
     "savegame_file_fmt": "save_tmp_%02d.dat",
 

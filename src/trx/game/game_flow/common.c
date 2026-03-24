@@ -97,6 +97,8 @@ void GF_Shutdown(void)
     gf->ambient_tracks.count = 0;
     Memory_FreePointer(&gf->settings.sfx_path);
     Memory_FreePointer(&gf->main_script_path);
+    Memory_FreePointer(&gf->meta.name);
+    Memory_FreePointer(&gf->meta.extends);
     Memory_FreePointer(&gf->path);
 }
 

@@ -98,6 +98,18 @@ remains distinct for each game.
   </tr>
   <tr valign="top">
     <td>
+      <a name="extends"></a>
+      <code>extends</code>
+    </td>
+    <td>String</td>
+    <td>
+      Directory name of the base mod this mod extends. Used for asset fallback
+      and engine version resolution. Required for custom mods to appear in the
+      Switch Game menu.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
       <a name="fog-transparency"></a>
       <code>fog_transparency</code>
     </td>
@@ -233,6 +245,17 @@ remains distinct for each game.
     <td>
       Path to a global Lua script to execute after game initialization, before
       the first level loads.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td>
+      <a name="name"></a>
+      <code>name</code>
+    </td>
+    <td>String</td>
+    <td>
+      Human-readable display name for this mod, shown in the Switch Game menu.
+      If not set, the directory name is used as a fallback.
     </td>
   </tr>
   <tr valign="top">

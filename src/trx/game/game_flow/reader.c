@@ -306,10 +306,32 @@ static void M_CopyRootSettingsIntoLevel(
     dst->sfx_path = nullptr;
 }
 
+static void M_ReadModMeta(JSON_READ_IO *const io, GF_MOD_META *const meta)
+{
+    meta->name = nullptr;
+    meta->engine = 0;
+    meta->extends = nullptr;
+
+    const char *tmp_s = nullptr;
+    if (JSON_OPTIONAL(JSON_READ(io, "name", &tmp_s)) && tmp_s != nullptr) {
+        meta->name = Memory_DupStr(tmp_s);
+    }
+
+    JSON_OPTIONAL(JSON_READ(io, "engine", &meta->engine));
+
+    tmp_s = nullptr;
+    if (JSON_OPTIONAL(JSON_READ(io, "extends", &tmp_s)) && tmp_s != nullptr) {
+        meta->extends = Memory_DupStr(tmp_s);
+    }
+}
+
 static bool M_LoadRoot(const M_CONTEXT *const ctx)
 {
     JSON_READ_IO *const io = ctx->io;
     const char *tmp_s = nullptr;
+
+    M_ReadModMeta(io, &ctx->gf->meta);
+
     JSON_MUST(JSON_READ(io, "main_menu_picture", &tmp_s));
     ctx->gf->main_menu_background_path =
         Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
@@ -975,5 +997,21 @@ bool GF_ValidateMod(const char *const mod_name, const char *const path)
         return false;
     }
     GF_Shutdown();
+    return true;
+}
+
+bool GF_ReadModMeta(const char *const path, GF_MOD_META *const meta)
+{
+    ASSERT(meta != nullptr);
+
+    JSON_VALUE *const doc = JSONFile_Read(path);
+    if (doc == nullptr) {
+        return false;
+    }
+
+    JSON_READ_IO *const io = JSON_ReadIO_Create(doc, 0, path);
+    M_ReadModMeta(io, meta);
+    JSON_ReadIO_Destroy(io);
+    JSON_ValueFree(doc);
     return true;
 }

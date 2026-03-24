@@ -19,6 +19,19 @@
   },
   "type": "object",
   "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable display name for this mod, shown in the Switch Game menu."
+    },
+    "engine": {
+      "type": "integer",
+      "enum": [1, 2, 3],
+      "description": "Engine version this mod runs on (1 = TR1, 2 = TR2, 3 = TR3)."
+    },
+    "extends": {
+      "type": "string",
+      "description": "Directory name of the base mod this mod extends. Used for asset fallback."
+    },
     "main_menu_picture": {
       "type": "string",
       "description": "Path to the main menu background image."
@@ -138,6 +151,7 @@
     }
   },
   "required": [
+    "engine",
     "main_menu_picture",
     "savegame_file_fmt",
     "levels"

@@ -13,6 +13,7 @@
 
 typedef struct {
     const char *name;
+    const char *title;
 } M_ROW;
 
 struct UI_SWITCH_MOD_DIALOG_STATE {
@@ -35,7 +36,8 @@ UI_SWITCH_MOD_DIALOG_STATE *UI_SwitchModDialog_Init(void)
         if (Shell_IsCurrentMod(mod->name)) {
             current_row = s->rows->count;
         }
-        Vector_Add(s->rows, &(M_ROW) { .name = mod->name });
+        Vector_Add(
+            s->rows, &(M_ROW) { .name = mod->name, .title = mod->title });
     }
 
     UI_BasePassportDialog_Init(&s->req, s->rows->count);
@@ -79,10 +81,13 @@ void UI_SwitchModDialog(UI_SWITCH_MOD_DIALOG_STATE *const s)
         const M_ROW *const row = Vector_Get(s->rows, i);
         UI_BeginRequesterRow(&s->req, i);
         UI_BeginAnchor(0.5f, 0.5f);
-        const char *const key =
+        const char *const gs_key =
             String_FormatStatic("dynamic/mods/%s/title", row->name);
-        const char *const title = GS(key);
-        UI_Label(title != nullptr ? title : row->name);
+        const char *const gs_title = GS(gs_key);
+        const char *const display = gs_title != nullptr ? gs_title
+            : row->title != nullptr                     ? row->title
+                                                        : row->name;
+        UI_Label(display);
         UI_EndAnchor();
         UI_EndRequesterRow(&s->req, i);
     }

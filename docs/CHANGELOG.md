@@ -2,6 +2,7 @@
 - added remembering of the last played mod
 - added a new console command, `/tp enemy`, to cycle Lara through hostile creatures in the current level
 - added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°
+- added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
 - changed `--level` to no longer require `-e/--engine` to work
 
 **TR3**:
