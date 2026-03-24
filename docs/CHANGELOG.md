@@ -5,11 +5,15 @@
 - added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
 - changed `--level` to no longer require `-e/--engine` to work
 
+**TR2**:
+- changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
+
 **TR3**:
 - added Security Laser (Alarm) control
 - added Security Laser (Damage) control
 - added Security Laser (Kill) control
 - added Civilian control
+- added Detonator Box control
 - restored the cutscene at the beginning of High Security Compound
 
 

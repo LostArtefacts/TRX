@@ -256,6 +256,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── deck_plants.bin
 │   │   ├── deck_secret_fd.bin
 │   │   ├── deck_textures.bin
+│   │   ├── detonator_lights.bin
 │   │   ├── diving_cameras.bin
 │   │   ├── diving_itemrots.bin
 │   │   ├── diving_music_tracks.bin
@@ -743,6 +744,7 @@ If you install everything correctly, your game directory should look more or les
         │   │   ├── deck_plants.bin
         │   │   ├── deck_secret_fd.bin
         │   │   ├── deck_textures.bin
+        │   │   ├── detonator_lights.bin
         │   │   ├── diving_cameras.bin
         │   │   ├── diving_itemrots.bin
         │   │   ├── diving_music_tracks.bin

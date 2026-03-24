@@ -8,8 +8,6 @@
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
 
-#define M_EXPLOSION_START_FRAME 76
-#define M_EXPLOSION_END_FRAME 99
 #define M_EXPLOSION_ACTION_FRAME 80
 
 static XYZ_32 m_Position = { .x = 0, .y = 0, .z = 0 };
@@ -62,8 +60,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     Item_Animate(item);
 
-    if (Item_TestFrameRange(
-            item, M_EXPLOSION_START_FRAME, M_EXPLOSION_END_FRAME)) {
+    if (item->dynamic_light) {
         Output_AddDynamicLight(item->pos, 13, 11);
     }
 

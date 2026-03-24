@@ -151,6 +151,7 @@
                 "common_pickup_meshes.bin",
                 "door108_sfx.bin",
                 "lara_guns.bin",
+                "detonator_lights.bin",
             ],
         },
 
