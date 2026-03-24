@@ -3,6 +3,7 @@
 #include <trx/av/audio.h>
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/memory.h>
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
@@ -101,20 +102,18 @@ static int32_t M_GetDistance(
     if (pos == nullptr) {
         return 0;
     }
-    const int32_t dx = pos->x - g_Camera.mic_pos.x;
-    const int32_t dy = pos->y - g_Camera.mic_pos.y;
-    const int32_t dz = pos->z - g_Camera.mic_pos.z;
-    if (ABS(dx) > sample->range || ABS(dy) > sample->range
-        || ABS(dz) > sample->range) {
+    const XYZ_32 delta = {
+        .x = pos->x - g_Camera.mic_pos.x,
+        .y = pos->y - g_Camera.mic_pos.y,
+        .z = pos->z - g_Camera.mic_pos.z,
+    };
+    const int32_t distance = XYZ_32_GetLength(delta);
+    if (distance > sample->range) {
         return INT32_MAX;
-    }
-    const uint32_t distance = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-    if (distance > SQUARE(sample->range)) {
-        return INT32_MAX;
-    } else if (distance < SQUARE(M_SOUND_CLOSE_RANGE)) {
+    } else if (distance < M_SOUND_CLOSE_RANGE) {
         return 0;
     } else {
-        return Math_Sqrt(distance) - M_SOUND_CLOSE_RANGE;
+        return distance - M_SOUND_CLOSE_RANGE;
     }
 }
 
