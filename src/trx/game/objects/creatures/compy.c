@@ -96,6 +96,9 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
+    int16_t angle = 0;
+    int16_t torso = 0;
+    int16_t head = 0;
 
     if (p->carcass_item_num == NO_ITEM) {
         M_FindCarcass(item);
@@ -176,9 +179,9 @@ static void M_Control(const int16_t item_num)
         break;
     }
 
-    const int16_t angle = Creature_Turn(item, creature->maximum_turn);
-    const int16_t torso = info.ahead ? info.angle : 0;
-    const int16_t head = -(info.angle / 4);
+    angle = Creature_Turn(item, creature->maximum_turn);
+    torso = info.ahead ? info.angle : 0;
+    head = -(info.angle / 4);
     item->timer++;
 
     if (item->hit_status && item->timer > 200 && Random_GetControl() < 0xC1C) {

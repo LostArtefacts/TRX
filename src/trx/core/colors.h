@@ -39,29 +39,21 @@ RGBA_8888 Color_MixRGBA8888_Impl(
     _Generic(                                                                  \
         (color),                                                               \
         RGB_888: Color_RGB888ToRGBA8888_Impl,                                  \
-        const RGB_888: Color_RGB888ToRGBA8888_Impl,                            \
-        RGB_F: Color_RGBFToRGBAF_Impl,                                         \
-        const RGB_F: Color_RGBFToRGBAF_Impl)(color)
+        RGB_F: Color_RGBFToRGBAF_Impl)(color)
 
 #define Color_RGBToRGBAEx(color, alpha)                                        \
     _Generic(                                                                  \
         (color),                                                               \
         RGB_888: Color_RGB888ToRGBA8888Ex_Impl,                                \
-        const RGB_888: Color_RGB888ToRGBA8888Ex_Impl,                          \
-        RGB_F: Color_RGBFToRGBAFEx_Impl,                                       \
-        const RGB_F: Color_RGBFToRGBAFEx_Impl)(color, alpha)
+        RGB_F: Color_RGBFToRGBAFEx_Impl)(color, alpha)
 
 #define Color_Mix(color_1, color_2, ratio)                                     \
     _Generic(                                                                  \
         (color_1),                                                             \
         RGB_F: Color_MixRGBF_Impl,                                             \
-        const RGB_F: Color_MixRGBF_Impl,                                       \
         RGBA_F: Color_MixRGBAF_Impl,                                           \
-        const RGBA_F: Color_MixRGBAF_Impl,                                     \
         RGB_888: Color_MixRGB888_Impl,                                         \
-        const RGB_888: Color_MixRGB888_Impl,                                   \
-        RGBA_8888: Color_MixRGBA8888_Impl,                                     \
-        const RGBA_8888: Color_MixRGBA8888_Impl)(color_1, color_2, ratio)
+        RGBA_8888: Color_MixRGBA8888_Impl)(color_1, color_2, ratio)
 
 RGB_888 Color_HSLToRGB(float h, float s, float l);
 void Color_RGBToHSL(RGB_888 color, float *out_h, float *out_s, float *out_l);
