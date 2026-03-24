@@ -16,12 +16,12 @@ static XYZ_32 m_Position = { .x = 0, .y = 0, .z = 0 };
 
 static const OBJECT_BOUNDS m_Bounds = {
     .shift = {
-        .min = { .x = -WALL_L / 2, .y = -100, .z = -WALL_L / 2 - 300, },
-        .max = { .x = +WALL_L, .y = +100, .z = -WALL_L / 2 + 100, },
+        .min = { .x = -WALL_L / 4, .y = -100, .z = -WALL_L / 4, },
+        .max = { .x = +WALL_L / 4, .y = +100, .z = +WALL_L / 4, },
     },
     .rot = {
-        .min = { .x = -30 * DEG_1, .y = 0, .z = 0, },
-        .max = { .x = +30 * DEG_1, .y = 0, .z = 0, },
+        .min = { .x = -10 * DEG_1, .y = 0, .z = 0, },
+        .max = { .x = +10 * DEG_1, .y = 0, .z = 0, },
     },
     .ignore_rot = true,
 };
@@ -128,7 +128,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
     obj->control_func = M_Control;
-    obj->bounds_func = Pickup_Bounds;
+    obj->bounds_func = M_Bounds;
     obj->save_flags = true;
     obj->save_anim = true;
 }

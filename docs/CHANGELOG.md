@@ -1,6 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...develop) - ××××-××-××
 - fixed 3D pickups and inventory ring view still affected by fog (regression from 1.4)
 
+**TR2**:
+- fixed the Detonator Box being difficult to activate when selecting the key manually from the inventory (#5215, regression from TR2X 1.3)
+
 
 
 ## [1.4.1](https://github.com/LostArtefacts/TRX/compare/trx-1.4...trx-1.4.1) - 2026-03-23
