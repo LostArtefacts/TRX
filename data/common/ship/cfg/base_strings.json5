@@ -2353,6 +2353,9 @@
         "power_saw": {
             "name": "Power Saw",
         },
+        "prisoner": {
+            "name": "Prisoner",
+        },
         "propeller_1": {
             "name": "Airplane Propeller",
         },

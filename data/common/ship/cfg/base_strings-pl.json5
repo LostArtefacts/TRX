@@ -2314,6 +2314,9 @@
         "power_saw": {
             "name": "Piła tarczowa",
         },
+        "prisoner": {
+            "name": "\\{review}Więzień",
+        },
         "propeller_1": {
             "name": "Śmigło samolotu",
         },

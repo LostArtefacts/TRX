@@ -2327,6 +2327,9 @@
         "power_saw": {
             "name": "Sàbh-dealain",
         },
+        "prisoner": {
+            "name": "Prìosanach",
+        },
         "propeller_1": {
             "name": "Proipeilear-plèana",
         },

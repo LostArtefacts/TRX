@@ -15,6 +15,7 @@
 - added Sentry Gun control
 - added Civilian control
 - added Detonator Box control
+- added Prisoner control
 - restored the cutscene at the beginning of High Security Compound
 
 

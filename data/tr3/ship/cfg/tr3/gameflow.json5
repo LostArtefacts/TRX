@@ -333,6 +333,7 @@
         // 14. High Security Compound
         {
             "path": "compound.tr2",
+            "script": "compound.lua",
             "music_track": 27,
             "lara_outfit": "tr3_nevada",
             "sequence": [
@@ -359,6 +360,7 @@
         // 15. Area 51
         {
             "path": "area51.tr2",
+            "script": "area51.lua",
             "music_track": 27,
             "death_tile": "electric",
             "lara_outfit": "tr3_nevada",

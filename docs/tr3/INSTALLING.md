@@ -225,6 +225,8 @@ If you install everything correctly, your game directory should look more or les
 │   ├── rapids.tr2
 │   ├── roofs.tr2
 │   ├── scripts
+│   │   ├── area51.lua
+│   │   ├── compound.lua
 │   │   ├── crash.lua
 │   │   ├── cut8.lua
 │   │   ├── jungle.lua
@@ -483,6 +485,8 @@ If you install everything correctly, your game directory should look more or les
         │   ├── rapids.tr2
         │   ├── roofs.tr2
         │   ├── scripts
+        │   │   ├── area51.lua
+        │   │   ├── compound.lua
         │   │   ├── crash.lua
         │   │   ├── cut8.lua
         │   │   ├── jungle.lua
