@@ -4,6 +4,7 @@
 - added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°
 - added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
 - changed `--level` to no longer require `-e/--engine` to work
+- fixed 3D pickups and inventory ring view still affected by fog (regression from 1.4)
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels

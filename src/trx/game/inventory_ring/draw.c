@@ -378,8 +378,8 @@ void InvRing_Draw(INV_RING *const ring)
     Matrix_GenerateW2V(&view_pos, &view_rot);
     const int32_t old_fog_start = Output_GetFogStart();
     const int32_t old_fog_end = Output_GetFogEnd();
-    Output_SetFogStart(0);
-    Output_SetFogEnd(20 * WALL_L);
+    Output_SetFogStart(20 * WALL_L);
+    Output_SetFogEnd(100 * WALL_L);
 
     InvRing_Light(&draw_ring);
 
