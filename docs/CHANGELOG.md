@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.2...develop) - ××××-××-××
+
+## [1.4.2](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...trx-1.4.2) - 2026-03-24
 - fixed 3D pickups and inventory ring view still affected by fog (regression from 1.4)
 
 **TR2**:
