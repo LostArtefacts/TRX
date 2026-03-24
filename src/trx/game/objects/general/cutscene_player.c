@@ -12,7 +12,6 @@ static void M_Initialise(const int16_t item_num)
     Item_AddActive(item_num);
     ITEM *const item = Item_Get(item_num);
     item->rot.y = 0;
-    item->dynamic_light = false;
 }
 
 static void M_Control(const int16_t item_num)

@@ -7,6 +7,13 @@ order: 3
 
 ## TRX
 
+### Version 1.4 to 1.5
+
+1. **Update TR2 detonator box**
+   Dynamic light output when using the detonator is no longer hard-coded and now
+   uses animation commands. The updated OG asset is available to download 
+   [here](INJECTIONS.md#builder-workflow-keep-the-codebincode-or-bake-into-your-wad).
+
 ### Version 1.3 to 1.4
 
 1. **Update strings file structure**

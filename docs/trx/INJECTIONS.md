@@ -144,6 +144,7 @@ generally be removed from your custom gameflow unless you know what you're doing
 | `*_skybox.bin`           | TR1      | Predefined skybox injected into specific levels, and specific rooms marked to use it.       |
 | `*_textures.bin`         | TR1, TR2 | Texture fixes in original levels (e.g., gaps, wrong colors).                                |
 | `cistern_plants.bin`     | TR1      | Disables animation on sprite ID 193 in The Cistern and Tomb of Tihocan.                     |
+| `detonator_lights.bin`   | TR2      | Adds animation commands to the Bartoli's Hideout detonator to control the dynamic lighting. |
 | `khamoon_mummy.bin`      | TR1      | Mummy in City of Khamoon room 25 (present on PS1, missing on PC).                           |
 | `seaweed_collision.bin`  | TR2      | Fixes seaweed in Living Quarters blocking Lara from exiting the water.                      |
 | `breakable_tile_sfx.bin` | TR2      | Adds missing breakable tiles (collapsing floor) sounds that are otherwise silent in the OG. |
