@@ -1,9 +1,1 @@
-{
-    // For usage, refer to the documentation here:
-    // https://lostartefacts.dev/trx/docs/stable/game_strings
-    "levels": [
-        {
-            "title": "\\{review}Niveau de test",
-        }
-    ]
-}
+../../../../trx/ship/games/tr1-level/strings-fr.json5

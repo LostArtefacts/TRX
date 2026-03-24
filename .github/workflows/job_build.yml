@@ -39,9 +39,11 @@ jobs:
           echo "tr1_dir=build/artifacts/tr1/" >> $GITHUB_OUTPUT
           echo "tr2_dir=build/artifacts/tr2/" >> $GITHUB_OUTPUT
           echo "tr3_dir=build/artifacts/tr3/" >> $GITHUB_OUTPUT
+          echo "trx_dir=build/artifacts/trx/" >> $GITHUB_OUTPUT
           echo "tr1_asset=$(just output-package-name --game 1 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
           echo "tr2_asset=$(just output-package-name --game 2 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
           echo "tr3_asset=$(just output-package-name --game 3 --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
+          echo "trx_asset=$(just output-package-name --platform ${{ inputs.platform }})" >> $GITHUB_OUTPUT
 
       - name: Download large assets
         if: ${{ inputs.target == 'release' }}
@@ -105,4 +107,12 @@ jobs:
         with:
           name: ${{ steps.vars.outputs.tr3_asset }}
           path: ${{ steps.vars.outputs.tr3_dir }}
+          compression-level: 0
+
+      - name: Upload artifacts (combined)
+        if: ${{ inputs.platform != 'win-installer' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.trx_asset }}
+          path: ${{ steps.vars.outputs.trx_dir }}
           compression-level: 0

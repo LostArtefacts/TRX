@@ -95,7 +95,7 @@ dep_swscale = dependency('libswscale', static: staticdeps)
 dep_swresample = dependency('libswresample', static: staticdeps)
 dep_lua = dependency('lua', static: staticdeps)
 c_compiler.check_header('uthash.h', required: true)
-dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required : false)
+dep_mathlibrary = c_compiler.find_library('m', static: staticdeps, required: false)
 
 dep_zlib = null_dep
 if not staticdeps
@@ -833,27 +833,18 @@ executable(
 )
 
 if host_machine.system() == 'darwin'
-  install_subdir('../data/tr1/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr1')
-  install_subdir('../data/tr1/ship/data', install_dir : 'Contents/Resources', install_tag: 'tr1')
-  install_subdir('../data/common/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr1')
-  install_subdir('../data/common/ship/shaders', install_dir : 'Contents/Resources', install_tag: 'tr1')
-  install_data('../data/tr1/mac/icon.icns', install_dir : 'Contents/Resources', install_tag: 'tr1')
-  install_data('../data/tr1/mac/Info.plist', install_dir : 'Contents', install_tag: 'tr1')
+  mac_install_tree = files('../tools/shared/mac/install_tree')
+
+  foreach game_id : ['tr1', 'tr2', 'tr3']
+    meson.add_install_script(mac_install_tree, '--source', '../data/@0@/ship/cfg'.format(game_id), '--dest', 'Contents/Resources/cfg', install_tag: game_id)
+    meson.add_install_script(mac_install_tree, '--source', '../data/@0@/ship/data'.format(game_id), '--dest', 'Contents/Resources/data', install_tag: game_id)
+    meson.add_install_script(mac_install_tree, '--source', '../data/common/ship/cfg', '--dest', 'Contents/Resources/cfg', install_tag: game_id)
+    meson.add_install_script(mac_install_tree, '--source', '../data/common/ship/shaders', '--dest', 'Contents/Resources/shaders', install_tag: game_id)
+    install_data('../data/@0@/mac/icon.icns'.format(game_id), install_dir: 'Contents/Resources', install_tag: game_id)
+    install_data('../data/@0@/mac/Info.plist'.format(game_id), install_dir: 'Contents', install_tag: game_id)
+  endforeach
+
   meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR1X', install_tag: 'tr1')
-
-  install_subdir('../data/tr2/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr2')
-  install_subdir('../data/tr2/ship/data', install_dir : 'Contents/Resources', install_tag: 'tr2')
-  install_subdir('../data/common/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr2')
-  install_subdir('../data/common/ship/shaders', install_dir : 'Contents/Resources', install_tag: 'tr2')
-  install_data('../data/tr2/mac/icon.icns', install_dir : 'Contents/Resources', install_tag: 'tr2')
-  install_data('../data/tr2/mac/Info.plist', install_dir : 'Contents', install_tag: 'tr2')
   meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR2X', install_tag: 'tr2')
-
-  install_subdir('../data/tr3/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr3')
-  install_subdir('../data/tr3/ship/data', install_dir : 'Contents/Resources', install_tag: 'tr3')
-  install_subdir('../data/common/ship/cfg', install_dir : 'Contents/Resources', install_tag: 'tr3')
-  install_subdir('../data/common/ship/shaders', install_dir : 'Contents/Resources', install_tag: 'tr3')
-  install_data('../data/tr3/mac/icon.icns', install_dir : 'Contents/Resources', install_tag: 'tr3')
-  install_data('../data/tr3/mac/Info.plist', install_dir : 'Contents', install_tag: 'tr3')
   meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR3X', install_tag: 'tr3')
 endif
