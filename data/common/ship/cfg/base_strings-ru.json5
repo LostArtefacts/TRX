@@ -2418,9 +2418,6 @@
         "ricochet": {
             "name": "Рикошет",
         },
-        "robot_sentry_gun": {
-            "name": "\\{review}Робот-страж",
-        },
         "rocket": {
             "name": "\\{review}Ракета",
         },
@@ -2483,6 +2480,9 @@
         },
         "security_laser_killer": {
             "name": "\\{review}Охранный лазер (Убийственный)",
+        },
+        "sentry_gun": {
+            "name": "\\{review}Робот-страж",
         },
         "shadow": {
             "name": "\\{review}Тень",

@@ -763,6 +763,10 @@ bool Creature_CanSeeEnemy(const ITEM *const item, const AI_INFO *const info)
 bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
 {
     const CREATURE *const creature = item->creature_data;
+    if (creature == nullptr) {
+        return false;
+    }
+
     const ITEM *const enemy =
         creature->enemy != nullptr ? creature->enemy : Lara_GetItem();
     if (enemy == nullptr || !info->ahead

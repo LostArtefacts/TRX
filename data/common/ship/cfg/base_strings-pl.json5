@@ -2407,9 +2407,6 @@
         "ricochet": {
             "name": "Odbicie",
         },
-        "robot_sentry_gun": {
-            "name": "\\{review}Robotyczny karabin strażniczy",
-        },
         "rocket": {
             "name": "Rakieta",
         },
@@ -2460,6 +2457,9 @@
         },
         "security_laser_killer": {
             "name": "\\{review}Laser zabezpieczający (Zabójczy)",
+        },
+        "sentry_gun": {
+            "name": "Działko automatyczne",
         },
         "shadow": {
             "name": "Cień",

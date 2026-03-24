@@ -43,6 +43,7 @@ static const CREATURE_GUN m_MercenaryGun = {
     .tr3_flash = { .pos = { 0, 300, 56 }, .mesh_num = 7 },
     .tr3_enemy_weapon_flags = 1,
     .tr3_flash_shade = 600,
+    .tr3_flash_rot_x = -DEG_90,
 };
 
 static void M_Initialise(const int16_t item_num)

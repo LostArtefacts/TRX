@@ -369,7 +369,7 @@ X_OBJ_NAME_DEFINE(O_SMOKE_EMITTER_BLACK,   "smoke_emitter_black",   X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_STEAM_EMITTER,         "steam_emitter",         X_OBJ_NAMES("Steam Emitter"))
 X_OBJ_NAME_DEFINE(O_GAS_EMITTER_GREEN,     "gas_emitter_green",     X_OBJ_NAMES("Gas Emitter (Green)"))
 X_OBJ_NAME_DEFINE(O_FUSE_BOX,              "fuse_box",              X_OBJ_NAMES("Fuse Box"))
-X_OBJ_NAME_DEFINE(O_ROBOT_SENTRY_GUN,      "robot_sentry_gun",      X_OBJ_NAMES("Robot Sentry Gun"))
+X_OBJ_NAME_DEFINE(O_SENTRY_GUN,            "sentry_gun",            X_OBJ_NAMES("Sentry Gun"))
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "alarm_sound",             X_OBJ_NAMES("Alarm"))

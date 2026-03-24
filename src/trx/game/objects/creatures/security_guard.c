@@ -64,6 +64,7 @@ static const CREATURE_GUN m_GuardGun = {
     .tr3_flash = { .pos = { 0, 192, 40 }, .mesh_num = 13 },
     .tr3_enemy_weapon_flags = 0,
     .tr3_flash_shade = 600,
+    .tr3_flash_rot_x = -DEG_90,
 };
 
 static void M_FireFinalShot(

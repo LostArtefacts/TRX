@@ -51,6 +51,10 @@ typedef struct {
 typedef struct JSON_READ_IO JSON_READ_IO;
 typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
+typedef enum {
+    OBJECT_EVENT_ALERT,
+} OBJECT_EVENT;
+
 typedef struct OBJECT {
     int16_t mesh_count;
     int16_t mesh_idx;
@@ -73,6 +77,7 @@ typedef struct OBJECT {
     int16_t (*ceiling_height_func)(
         const ITEM *item, int32_t x, int32_t y, int32_t z, int16_t height);
     void (*activate_func)(ITEM *item);
+    void (*event_func)(ITEM *item, OBJECT_EVENT event, const void *data);
     bool (*trigger_func)(ITEM *item, const TRIGGER *trigger);
     bool (*gun_hit_func)(
         ITEM *item, const GAME_VECTOR *start, const GAME_VECTOR *hit_pos,

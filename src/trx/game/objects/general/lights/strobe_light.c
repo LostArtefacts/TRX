@@ -1,5 +1,8 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/game/collision/los.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
@@ -7,7 +10,22 @@
 
 typedef struct {
     int32_t life;
+    bool alarm_active;
 } M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    JSON_OPTIONAL(JSON_READ(io, "life", &p->life));
+    JSON_OPTIONAL(JSON_READ(io, "alarm_active", &p->alarm_active));
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "life", p->life);
+    JSONW_WRITE(io, "alarm_active", p->alarm_active);
+}
 
 void M_TriggerAlertLight(
     const XYZ_32 pos, const RGB_888 color, const int16_t angle,
@@ -33,16 +51,14 @@ void M_TriggerAlertLight(
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
     if (!Item_IsTriggerActive(item)) {
         return;
     }
 
-// TODO: implement this eventually
-#if 0
-    if (GF_BadGetLevelNum() == 15 && !item->really_active) {
+    if (GF_BadGetLevelNum() == 15 && !p->alarm_active) {
         return;
     }
-#endif
 
     item->rot.y += 2912;
     const int16_t angle = item->rot.y + 0x5800;
@@ -64,21 +80,33 @@ static void M_Control(const int16_t item_num)
         Sound_Effect(SFX_ALARM_1, &item->pos, SPM_NORMAL);
     }
 
-// TODO: implement this eventually
-#if 0
     p->life++;
 
     if (p->life > 60 * LOGIC_FPS) {
-        item->really_active = 0;
+        p->alarm_active = false;
         p->life = 0;
     }
-#endif
+}
+
+static void M_HandleEvent(
+    ITEM *const item, const OBJECT_EVENT event, const void *const data)
+{
+    M_PRIV *const p = item->priv;
+    if (event != OBJECT_EVENT_ALERT) {
+        return;
+    }
+
+    p->alarm_active = true;
+    p->life = 0;
 }
 
 static void M_Setup(OBJECT *const obj)
 {
     obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->control_func = M_Control;
+    obj->event_func = M_HandleEvent;
     obj->save_flags = true;
 }
 
