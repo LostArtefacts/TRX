@@ -2444,9 +2444,6 @@
         "ricochet": {
             "name": "Rimbalzo",
         },
-        "robot_sentry_gun": {
-            "name": "Torretta di Guardia",
-        },
         "rocket": {
             "name": "Razzo",
         },
@@ -2509,6 +2506,9 @@
         },
         "security_laser_killer": {
             "name": "Laser di Sicurezza (Letale)",
+        },
+        "sentry_gun": {
+            "name": "Torretta di Guardia",
         },
         "shadow": {
             "name": "Ombra",

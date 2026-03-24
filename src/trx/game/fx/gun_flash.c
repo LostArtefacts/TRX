@@ -14,14 +14,13 @@
 #define M_MAX_FLASHES 32
 #define M_LIFETIME 3
 #define M_AXIS_UNIT 1024
-#define M_FLASH_PITCH -16380
 
 typedef struct {
     bool active;
     int16_t owner_item_num;
     int16_t room_num;
     int16_t lifetime;
-    int16_t roll_z;
+    XZ_16 rot;
     BITE bite;
     OBJECT_ID flash_object_id;
     XYZ_32 light_pos;
@@ -102,7 +101,7 @@ bool FX_GunFlash_Spawn(
     flash->owner_item_num = Item_GetIndex(owner_item);
     flash->room_num = owner_item->room_num;
     flash->lifetime = M_LIFETIME;
-    flash->roll_z = M_GetRandomRoll();
+    flash->rot = (XZ_16) { .x = gun->tr3_flash_rot_x, .z = M_GetRandomRoll() };
     flash->bite = gun->tr3_flash;
     flash->flash_object_id =
         (gun->tr3_enemy_weapon_flags & 1) != 0 ? O_M16_FLASH : O_GUN_FLASH;
@@ -127,7 +126,7 @@ void FX_GunFlash_Control(void)
         }
 
         flash->room_num = owner_item->room_num;
-        flash->roll_z = M_GetRandomRoll();
+        flash->rot.z = M_GetRandomRoll();
 
         XYZ_32 light_pos = flash->bite.pos;
         Collide_GetJointAbsPosition(
@@ -186,8 +185,8 @@ void FX_GunFlash_Draw(void)
         *g_WMatrixPtr = g_IDMatrix;
         Matrix_TranslateAbs32(flash_pos);
         Matrix_Mul3x3(&flash_rot);
-        Matrix_RotX(M_FLASH_PITCH);
-        Matrix_RotZ(flash->roll_z);
+        Matrix_RotX(flash->rot.x);
+        Matrix_RotZ(flash->rot.z);
         Output_CalculateStaticLightRGB_F((RGB_F) { 1.0f, 0.89f, 0.13f });
         Object_DrawMesh(flash_obj->mesh_idx, -1, false);
         Matrix_Pop();

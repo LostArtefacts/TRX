@@ -12,6 +12,7 @@
 - added Security Laser (Alarm) control
 - added Security Laser (Damage) control
 - added Security Laser (Kill) control
+- added Sentry Gun control
 - added Civilian control
 - added Detonator Box control
 - restored the cutscene at the beginning of High Security Compound

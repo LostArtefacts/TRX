@@ -103,6 +103,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_RAPTOR,
     O_RAT,
     O_SECURITY_GUARD,
+    O_SENTRY_GUN,
     O_SHARK,
     O_SHIVA,
     O_SKATEKID,

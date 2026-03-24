@@ -2408,9 +2408,6 @@
         "ricochet": {
             "name": "\\{review}Ricochet",
         },
-        "robot_sentry_gun": {
-            "name": "\\{review}Tourelle robotisée",
-        },
         "rocket": {
             "name": "\\{review}Roquette",
         },
@@ -2473,6 +2470,9 @@
         },
         "security_laser_killer": {
             "name": "\\{review}Laser de sécurité (Tueur)",
+        },
+        "sentry_gun": {
+            "name": "\\{review}Tourelle robotisée",
         },
         "shadow": {
             "name": "\\{review}Ombre",

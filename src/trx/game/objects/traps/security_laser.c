@@ -11,6 +11,11 @@
 static uint8_t m_LaserShades[32] = {};
 static const int16_t m_DefaultBeamCount = 1;
 
+static bool M_IsTargetable(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_LaserSplitterToggle(ITEM *const item)
 {
     int16_t room_num = item->room_num;
@@ -324,10 +329,14 @@ static void M_Control(const int16_t item_num)
                 ITEM *const target_item = Item_Get(j);
 
                 if ((target_item->object_id == O_STROBE_LIGHT
-                     || target_item->object_id == O_ROBOT_SENTRY_GUN)
+                     || target_item->object_id == O_SENTRY_GUN)
                     && Item_IsTriggerActive(target_item)) {
-                    // TODO
-                    // target_item->really_active = 1;
+                    OBJECT *const target_obj =
+                        Object_Get(target_item->object_id);
+                    if (target_obj->event_func != nullptr) {
+                        target_obj->event_func(
+                            target_item, OBJECT_EVENT_ALERT, nullptr);
+                    }
                 }
             }
         }
@@ -385,6 +394,7 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
     obj->draw_func = M_DrawLaser;
+    obj->is_targetable_func = M_IsTargetable;
     obj->trigger_func = M_Trigger;
     obj->hit_points = m_DefaultBeamCount;
 

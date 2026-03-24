@@ -49,6 +49,7 @@ static const CREATURE_GUN m_SwatGun = {
     .tr3_flash = { .pos = { 0, 300, 56 }, .mesh_num = 7 },
     .tr3_enemy_weapon_flags = 1,
     .tr3_flash_shade = 600,
+    .tr3_flash_rot_x = -DEG_90,
     .tr3_laser = {
         .bite = {
             .pos = { 0, 200, 106 },
