@@ -1,15 +1,12 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.2...develop) - ××××-××-××
 - added remembering of the last played mod
 - added a new console command, `/tp enemy`, to cycle Lara through hostile creatures in the current level
 - added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°
 - added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
 - changed `--level` to no longer require `-e/--engine` to work
-- fixed 3D pickups and inventory ring view still affected by fog (regression from 1.4)
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
-- fixed the Detonator Box being difficult to activate when selecting the key manually from the inventory (#5215, regression from TR2X 1.3)
-- fixed the Detonator Box rotating if Lara interacts with it but then doesn't pick the key from the inventory (#5215, regression from TR2X 1.3)
 
 **TR3**:
 - added Security Laser (Alarm) control
@@ -19,6 +16,15 @@
 - added Civilian control
 - added Detonator Box control
 - restored the cutscene at the beginning of High Security Compound
+
+
+
+## [1.4.2](https://github.com/LostArtefacts/TRX/compare/trx-1.4.1...trx-1.4.2) - 2026-03-24
+- fixed 3D pickups and inventory ring view still affected by fog (regression from 1.4)
+
+**TR2**:
+- fixed the Detonator Box being difficult to activate when selecting the key manually from the inventory (#5215, regression from TR2X 1.3)
+- fixed the Detonator Box rotating if Lara interacts with it but then doesn't pick the key from the inventory (#5215, regression from TR2X 1.3)
 
 
 
