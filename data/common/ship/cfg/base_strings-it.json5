@@ -2354,6 +2354,9 @@
         "power_saw": {
             "name": "Sega Elettrica",
         },
+        "prisoner": {
+            "name": "\\{review}Prigioniero",
+        },
         "propeller_1": {
             "name": "Elica Aeroplano",
         },

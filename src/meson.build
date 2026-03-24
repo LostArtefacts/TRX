@@ -433,6 +433,7 @@ common_sources = [
   'trx/game/objects/creatures/patrol_dog.c',
   'trx/game/objects/creatures/pierre.c',
   'trx/game/objects/creatures/pod.c',
+  'trx/game/objects/creatures/prisoner.c',
   'trx/game/objects/creatures/punk.c',
   'trx/game/objects/creatures/raptor.c',
   'trx/game/objects/creatures/rat.c',

@@ -2321,6 +2321,9 @@
         "power_saw": {
             "name": "\\{review}Scie Électrique",
         },
+        "prisoner": {
+            "name": "\\{review}Prisonnier",
+        },
         "propeller_1": {
             "name": "\\{review}Hélice d'Avion",
         },

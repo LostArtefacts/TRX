@@ -88,6 +88,7 @@
   "O_PIRAHNAS":               { "status": "fully implemented" },
   "O_PISTOL_ITEM":            { "status": "fully implemented" },
   "O_POISON_DART_EMITTER":    { "status": "fully implemented" },
+  "O_PRISONER":               { "status": "fully implemented" },
   "O_PROPELLER_2":            { "status": "fully implemented" },
   "O_PROPELLER_3":            { "status": "fully implemented" },
   "O_PULSE_LIGHT":            { "status": "fully implemented" },

@@ -2328,6 +2328,9 @@
         "power_saw": {
             "name": "\\{review}Электропила",
         },
+        "prisoner": {
+            "name": "\\{review}Заключённый",
+        },
         "propeller_1": {
             "name": "\\{review}Винт самолёта",
         },
