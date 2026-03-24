@@ -488,6 +488,7 @@ class RunContext:
             )
         )
         self.used_game_strings += list(get_used_mod_strings(PROJECT_PATHS))
+
         self.object_names_dict = get_objects_map(source_files)
 
     @property

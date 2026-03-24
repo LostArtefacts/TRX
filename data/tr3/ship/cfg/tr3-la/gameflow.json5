@@ -2,6 +2,9 @@
     // NOTE: bad changes to this file may result in crashes.
     // Lines starting with double slashes are comments and are ignored.
 
+    "engine": 3,
+    "extends": "tr3",
+
     "main_menu_picture": "title_eu_gm.webp",
     "savegame_file_fmt": "save_trla_%02d.dat",
 

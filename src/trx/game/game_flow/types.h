@@ -151,11 +151,23 @@ typedef struct {
 } GF_GLOBE_ENTRY;
 
 // ----------------------------------------------------------------------------
+// Mod metadata
+// ----------------------------------------------------------------------------
+
+typedef struct {
+    char *name;
+    int32_t engine;
+    char *extends;
+} GF_MOD_META;
+
+// ----------------------------------------------------------------------------
 // Game flow structures
 // ----------------------------------------------------------------------------
 
 typedef struct {
     char *path;
+
+    GF_MOD_META meta;
 
     GF_LEVEL *title_level;
     GF_LEVEL_TABLE level_tables[GFLT_NUMBER_OF];
