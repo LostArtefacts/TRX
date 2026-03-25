@@ -26,6 +26,7 @@ typedef struct {
     INPUT_BACKEND backend;
     INPUT_LAYOUT active_layout;
     INPUT_ROLE active_role;
+    int32_t active_slot;
     const UI_CONTROLS_EDITOR_GROUP *active_group;
     UI_FLASH_STATE flash;
     EVENT_MANAGER *events;

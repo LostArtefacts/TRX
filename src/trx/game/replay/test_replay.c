@@ -680,7 +680,7 @@ static bool M_ParseBindKeyboard(const char *const line, M_PARSE_CTX *const ctx)
     JSON_ObjectAppendInt(bind, "scancode", sc);
     JSON_ObjectAppendInt(bind, "mod", mod);
     g_Input_Keyboard.assign_from_json_object(
-        g_Config.input.keyboard_layout, role, bind);
+        g_Config.input.keyboard_layout, role, 0, bind);
     JSON_ObjectFree(bind);
     return true;
 }
@@ -710,7 +710,7 @@ static bool M_ParseBindController(
         JSON_ObjectAppendInt(bind, "bind", b);
         JSON_ObjectAppendInt(bind, "axis_dir", ad);
         g_Input_Controller.assign_from_json_object(
-            g_Config.input.controller_layout, role, bind);
+            g_Config.input.controller_layout, role, 0, bind);
         JSON_ObjectFree(bind);
         return true;
     }

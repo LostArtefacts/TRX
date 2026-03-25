@@ -225,7 +225,7 @@ static void M_DumpBindings(MYFILE *const fp)
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         JSON_OBJECT *bind = JSON_ObjectNew();
         if (g_Input_Keyboard.assign_to_json_object(
-                g_Config.input.keyboard_layout, role, bind)) {
+                g_Config.input.keyboard_layout, role, 0, bind)) {
             const SDL_Scancode sc =
                 JSON_ObjectGetInt(bind, "scancode", SDL_SCANCODE_UNKNOWN);
             File_WriteString(
@@ -239,7 +239,7 @@ static void M_DumpBindings(MYFILE *const fp)
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         JSON_OBJECT *bind = JSON_ObjectNew();
         if (g_Input_Controller.assign_to_json_object(
-                g_Config.input.controller_layout, role, bind)) {
+                g_Config.input.controller_layout, role, 0, bind)) {
             const int32_t bt = JSON_ObjectGetInt(bind, "button_type", 0);
             const int32_t b = JSON_ObjectGetInt(bind, "bind", 0);
             const int32_t ad = JSON_ObjectGetInt(bind, "axis_dir", 0);

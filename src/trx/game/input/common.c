@@ -57,6 +57,22 @@ static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
     // clang-format on
 };
 
+static bool m_IsRoleImmediate[INPUT_ROLE_NUMBER_OF] = {
+    // clang-format off
+    [INPUT_ROLE_UP]          = true,
+    [INPUT_ROLE_DOWN]        = true,
+    [INPUT_ROLE_LEFT]        = true,
+    [INPUT_ROLE_RIGHT]       = true,
+    [INPUT_ROLE_JUMP]        = true,
+    [INPUT_ROLE_ACTION]      = true,
+    [INPUT_ROLE_ROLL]        = true,
+    [INPUT_ROLE_STEP_LEFT]   = true,
+    [INPUT_ROLE_STEP_RIGHT]  = true,
+    [INPUT_ROLE_CROUCH]      = true,
+    [INPUT_ROLE_SPRINT]      = true,
+    // clang-format on
+};
+
 static bool m_IsRoleNonUnbindable[INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
     [INPUT_ROLE_UP]          = true,
@@ -169,6 +185,11 @@ bool Input_IsRoleUnbindable(const INPUT_ROLE role)
     return !m_IsRoleNonUnbindable[role];
 }
 
+bool Input_IsRoleImmediate(const INPUT_ROLE role)
+{
+    return m_IsRoleImmediate[role];
+}
+
 bool Input_IsPressed(const INPUT_ROLE role)
 {
     return M_IsPressed(g_Input, role);
@@ -195,7 +216,7 @@ bool Input_IsKeyConflicted(
 
 bool Input_ReadAndAssignRole(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
-    const INPUT_ROLE role)
+    const INPUT_ROLE role, const int32_t slot)
 {
     // Check for canceling from other devices
     for (INPUT_BACKEND other_backend = 0;
@@ -209,21 +230,21 @@ bool Input_ReadAndAssignRole(
         }
     }
 
-    return M_GetBackend(backend)->read_and_assign(layout, role);
+    return M_GetBackend(backend)->read_and_assign(layout, role, slot);
 }
 
 void Input_UnassignRole(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
-    const INPUT_ROLE role)
+    const INPUT_ROLE role, const int32_t slot)
 {
-    M_GetBackend(backend)->unassign_role(layout, role);
+    M_GetBackend(backend)->unassign_role(layout, role, slot);
 }
 
 const char *Input_GetKeyName(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
-    const INPUT_ROLE role)
+    const INPUT_ROLE role, const int32_t slot)
 {
-    return M_GetBackend(backend)->get_name(layout, role);
+    return M_GetBackend(backend)->get_name(layout, role, slot);
 }
 
 void Input_ResetLayout(const INPUT_BACKEND backend, const INPUT_LAYOUT layout)
@@ -333,17 +354,22 @@ bool Input_AssignFromJSONObject(
         return false;
     }
 
+    const int32_t slot = JSON_ObjectGetInt(bind_obj, "slot", 0);
     return M_GetBackend(backend)->assign_from_json_object(
-        layout, role, bind_obj);
+        layout, role, slot, bind_obj);
 }
 
 bool Input_AssignToJSONObject(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
-    JSON_OBJECT *const bind_obj, const INPUT_ROLE role)
+    JSON_OBJECT *const bind_obj, const INPUT_ROLE role, const int32_t slot)
 {
     JSON_ObjectAppendString(
         bind_obj, "role", ENUM_MAP_TO_STRING(INPUT_ROLE, role));
-    return M_GetBackend(backend)->assign_to_json_object(layout, role, bind_obj);
+    if (slot != 0) {
+        JSON_ObjectAppendInt(bind_obj, "slot", slot);
+    }
+    return M_GetBackend(backend)->assign_to_json_object(
+        layout, role, slot, bind_obj);
 }
 
 const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout)
@@ -465,4 +491,20 @@ bool InputState_IsAnyPressed(const INPUT_STATE state)
         }
     }
     return false;
+}
+
+bool InputState_GetRole(const INPUT_STATE state, const INPUT_ROLE role)
+{
+    return M_IsPressed(state, role);
+}
+
+void InputState_SetRole(
+    INPUT_STATE *const state, const INPUT_ROLE role, const bool value)
+{
+    *state = M_SetPressed(*state, role, value);
+}
+
+void InputState_ClearRole(INPUT_STATE *const state, const INPUT_ROLE role)
+{
+    *state = M_SetPressed(*state, role, false);
 }

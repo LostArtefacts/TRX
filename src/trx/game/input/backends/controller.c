@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>
+#include <string.h>
 
 typedef enum {
     BT_BUTTON = 0,
@@ -91,7 +92,17 @@ static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
 #define M_NAME_Y              "\\{controller button y}"
 // clang-format on
 
-static CONTROLLER_MAP m_Layout[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF];
+typedef struct {
+    int32_t key_count;
+    CONTROLLER_MAP keys[INPUT_COMBO_MAX_KEYS];
+} CONTROLLER_BINDING;
+
+typedef struct {
+    CONTROLLER_BINDING slots[INPUT_BINDING_SLOTS];
+} CONTROLLER_ROLE_BINDING;
+
+static CONTROLLER_ROLE_BINDING m_Layout[INPUT_LAYOUT_NUMBER_OF]
+                                       [INPUT_ROLE_NUMBER_OF];
 
 static SDL_GameController *m_Controller = nullptr;
 static const char *m_ControllerName = nullptr;
@@ -236,37 +247,93 @@ static int16_t M_JoyAxis(const SDL_GameControllerAxis axis)
     return m_AxisState[axis];
 }
 
-static bool M_GetBindState(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+static bool M_CheckMap(const CONTROLLER_MAP *const map)
 {
-    const CONTROLLER_MAP assigned = m_Layout[layout][role];
-    if (assigned.type == BT_BUTTON) {
-        return M_JoyBtn(assigned.bind.button);
+    if (map->type == BT_BUTTON) {
+        return M_JoyBtn(map->bind.button);
     } else {
-        return M_JoyAxis(assigned.bind.axis) == assigned.axis_dir;
+        return M_JoyAxis(map->bind.axis) == map->axis_dir;
     }
 }
 
-static int16_t M_GetUniqueBind(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+static bool M_CheckBinding(const CONTROLLER_BINDING *const bind)
 {
-    const CONTROLLER_MAP assigned = m_Layout[layout][role];
-    if (assigned.type == BT_AXIS) {
-        // Add SDL_CONTROLLER_BUTTON_MAX as an axis offset because button and
-        // axis enum values overlap. Also offset depending on axis direction.
-        if (assigned.axis_dir == -1) {
-            return assigned.bind.axis + SDL_CONTROLLER_BUTTON_MAX;
-        } else {
-            return assigned.bind.axis + SDL_CONTROLLER_BUTTON_MAX + 10;
+    if (bind->key_count == 0) {
+        return false;
+    }
+    for (int32_t k = 0; k < bind->key_count; k++) {
+        if (!M_CheckMap(&bind->keys[k])) {
+            return false;
         }
     }
-    return assigned.bind.button;
+    return true;
+}
+
+static bool M_IsMapImmediate(
+    const INPUT_LAYOUT layout, const CONTROLLER_MAP *const map);
+
+static bool M_GetBindState(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+{
+    for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+        const CONTROLLER_BINDING *bind = &m_Layout[layout][role].slots[slot];
+        if (bind->key_count >= 2 && M_IsMapImmediate(layout, &bind->keys[0])) {
+            continue;
+        }
+        if (M_CheckBinding(bind)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static const CONTROLLER_BINDING *M_GetBinding(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
+{
+    return &m_Layout[layout][role].slots[slot];
+}
+
+static bool M_MapsEqual(
+    const CONTROLLER_MAP *const a, const CONTROLLER_MAP *const b)
+{
+    if (a->type != b->type) {
+        return false;
+    }
+    if (a->type == BT_BUTTON) {
+        return a->bind.button == b->bind.button;
+    }
+    return a->bind.axis == b->bind.axis && a->axis_dir == b->axis_dir;
+}
+
+static bool M_BindingsEqual(
+    const CONTROLLER_BINDING *const a, const CONTROLLER_BINDING *const b)
+{
+    if (a->key_count != b->key_count || a->key_count == 0) {
+        return false;
+    }
+    for (int32_t i = 0; i < a->key_count; i++) {
+        if (!M_MapsEqual(&a->keys[i], &b->keys[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 static bool M_CheckConflict(
     const INPUT_LAYOUT layout, const INPUT_ROLE role1, const INPUT_ROLE role2)
 {
-    const int16_t bind1 = M_GetUniqueBind(layout, role1);
-    const int16_t bind2 = M_GetUniqueBind(layout, role2);
-    return bind1 == bind2;
+    for (int32_t s1 = 0; s1 < INPUT_BINDING_SLOTS; s1++) {
+        const CONTROLLER_BINDING *b1 = M_GetBinding(layout, role1, s1);
+        if (b1->key_count == 0) {
+            continue;
+        }
+        for (int32_t s2 = 0; s2 < INPUT_BINDING_SLOTS; s2++) {
+            const CONTROLLER_BINDING *b2 = M_GetBinding(layout, role2, s2);
+            if (M_BindingsEqual(b1, b2)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 static void M_AssignConflict(
@@ -275,51 +342,83 @@ static void M_AssignConflict(
     m_Conflicts[layout][role] = conflict;
 }
 
+static bool M_ComboStartsWithImmediate(
+    const INPUT_LAYOUT layout, const CONTROLLER_BINDING *const bind);
+
 static void M_CheckConflicts(const INPUT_LAYOUT layout)
 {
     Input_ConflictHelper(layout, M_CheckConflict, M_AssignConflict);
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (m_Conflicts[layout][role]) {
+            continue;
+        }
+        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
+            const CONTROLLER_BINDING *b = M_GetBinding(layout, role, s);
+            if (M_ComboStartsWithImmediate(layout, b)) {
+                m_Conflicts[layout][role] = true;
+                break;
+            }
+        }
+    }
 }
 
 static int16_t M_GetAssignedButtonType(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role)
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    return m_Layout[layout][role].type;
+    const CONTROLLER_BINDING *bind = M_GetBinding(layout, role, slot);
+    return bind->key_count > 0 ? bind->keys[0].type : BT_BUTTON;
 }
 
 static int16_t M_GetAssignedBind(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role)
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    const CONTROLLER_MAP assigned = m_Layout[layout][role];
-    if (assigned.type == BT_BUTTON) {
-        return assigned.bind.button;
+    const CONTROLLER_BINDING *bind = M_GetBinding(layout, role, slot);
+    if (bind->key_count == 0) {
+        return SDL_CONTROLLER_BUTTON_INVALID;
+    }
+    const CONTROLLER_MAP *map = &bind->keys[0];
+    if (map->type == BT_BUTTON) {
+        return map->bind.button;
     } else {
-        return assigned.bind.axis;
+        return map->bind.axis;
     }
 }
 
 static int16_t M_GetAssignedAxisDir(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role)
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    return m_Layout[layout][role].axis_dir;
+    const CONTROLLER_BINDING *bind = M_GetBinding(layout, role, slot);
+    return bind->key_count > 0 ? bind->keys[0].axis_dir : 0;
+}
+
+static void M_AssignBinding(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot,
+    const CONTROLLER_BINDING *const bind)
+{
+    m_Layout[layout][role].slots[slot] = *bind;
+    M_CheckConflicts(layout);
 }
 
 static void M_AssignButton(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int16_t button)
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot,
+    const int16_t button)
 {
-    m_Layout[layout][role].type = BT_BUTTON;
-    m_Layout[layout][role].bind.button = button;
-    m_Layout[layout][role].axis_dir = 0;
-    M_CheckConflicts(layout);
+    const CONTROLLER_BINDING bind = {
+        .key_count = button != SDL_CONTROLLER_BUTTON_INVALID ? 1 : 0,
+        .keys = { { BT_BUTTON, { .button = button }, 0 } },
+    };
+    M_AssignBinding(layout, role, slot, &bind);
 }
 
 static void M_AssignAxis(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int16_t axis,
-    const int16_t axis_dir)
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot,
+    const int16_t axis, const int16_t axis_dir)
 {
-    m_Layout[layout][role].type = BT_AXIS;
-    m_Layout[layout][role].bind.axis = axis;
-    m_Layout[layout][role].axis_dir = axis_dir;
-    M_CheckConflicts(layout);
+    const CONTROLLER_BINDING bind = {
+        .key_count = 1,
+        .keys = { { BT_AXIS, { .axis = axis }, axis_dir } },
+    };
+    M_AssignBinding(layout, role, slot, &bind);
 }
 
 static SDL_GameController *M_FindController(void)
@@ -352,8 +451,7 @@ static SDL_GameController *M_FindController(void)
 static void M_ResetLayout(const INPUT_LAYOUT layout)
 {
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        const CONTROLLER_MAP default_btn = m_Layout[INPUT_LAYOUT_DEFAULT][role];
-        m_Layout[layout][role] = default_btn;
+        m_Layout[layout][role] = m_Layout[INPUT_LAYOUT_DEFAULT][role];
     }
     M_CheckConflicts(layout);
 }
@@ -369,16 +467,21 @@ static void M_Discover(void)
 
 static void M_Init(void)
 {
-    // first, reset the roles to null
+    // first, reset all roles to unbound
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        m_Layout[INPUT_LAYOUT_DEFAULT][role] = (CONTROLLER_MAP) {
-            BT_BUTTON, { SDL_CONTROLLER_BUTTON_INVALID }, 0
-        };
+        for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+            m_Layout[INPUT_LAYOUT_DEFAULT][role].slots[slot] =
+                (CONTROLLER_BINDING) { .key_count = 0 };
+        }
     }
-    // then load actually defined default bindings
+    // then load actually defined default bindings into slot 0
     for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
         const BUILTIN_CONTROLLER_LAYOUT *const builtin = &m_BuiltinLayout[i];
-        m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role] = builtin->map;
+        m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role].slots[0] =
+            (CONTROLLER_BINDING) {
+                .key_count = 1,
+                .keys = { builtin->map },
+            };
     }
     M_CheckConflicts(INPUT_LAYOUT_DEFAULT);
 
@@ -477,83 +580,479 @@ static bool M_IsRoleConflicted(const INPUT_LAYOUT layout, const INPUT_ROLE role)
     return m_Conflicts[layout][role];
 }
 
-static const char *M_GetName(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+static const char *M_GetMapName(const CONTROLLER_MAP *const map)
 {
-    const CONTROLLER_MAP check = m_Layout[layout][role];
-    if (check.type == BT_BUTTON) {
-        return M_GetButtonName(check.bind.button);
+    if (map->type == BT_BUTTON) {
+        return M_GetButtonName(map->bind.button);
     } else {
-        return M_GetAxisName(check.bind.axis, check.axis_dir);
+        return M_GetAxisName(map->bind.axis, map->axis_dir);
     }
 }
 
-static void M_UnassignRole(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+static const char *M_GetName(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    M_AssignButton(layout, role, -1);
+    const CONTROLLER_BINDING *bind = M_GetBinding(layout, role, slot);
+    if (bind->key_count == 0) {
+        return nullptr;
+    }
+    if (bind->key_count == 1) {
+        return M_GetMapName(&bind->keys[0]);
+    }
+    // Build composite name for multi-key combo
+    static char buf[256];
+    buf[0] = '\0';
+    for (int32_t k = 0; k < bind->key_count; k++) {
+        if (k > 0) {
+            strcat(buf, "+");
+        }
+        const char *name = M_GetMapName(&bind->keys[k]);
+        if (name != nullptr) {
+            strcat(buf, name);
+        }
+    }
+    return buf;
+}
+
+static void M_UnassignRole(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
+{
+    const CONTROLLER_BINDING empty = { .key_count = 0 };
+    M_AssignBinding(layout, role, slot, &empty);
 }
 
 static bool M_AssignFromJSONObject(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role,
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot,
     JSON_OBJECT *const bind_obj)
 {
-    int16_t button_type = M_GetAssignedButtonType(layout, role);
-    button_type = JSON_ObjectGetInt(bind_obj, "button_type", button_type);
-
-    int16_t bind = M_GetAssignedBind(layout, role);
-    bind = JSON_ObjectGetInt(bind_obj, "bind", bind);
-
-    int16_t axis_dir = M_GetAssignedAxisDir(layout, role);
-    axis_dir = JSON_ObjectGetInt(bind_obj, "axis_dir", axis_dir);
-
-    if (button_type == BT_BUTTON) {
-        M_AssignButton(layout, role, bind);
+    JSON_ARRAY *const combo_arr = JSON_ObjectGetArray(bind_obj, "combo");
+    if (combo_arr != nullptr) {
+        // New combo format: "combo": [{button_type, bind, axis_dir}, ...]
+        const int32_t count = combo_arr->length < INPUT_COMBO_MAX_KEYS
+            ? (int32_t)combo_arr->length
+            : INPUT_COMBO_MAX_KEYS;
+        CONTROLLER_BINDING cb = { .key_count = count };
+        for (int32_t i = 0; i < count; i++) {
+            JSON_OBJECT *const key_obj = JSON_ArrayGetObject(combo_arr, i);
+            cb.keys[i].type =
+                JSON_ObjectGetInt(key_obj, "button_type", BT_BUTTON);
+            const int16_t b = JSON_ObjectGetInt(
+                key_obj, "bind", SDL_CONTROLLER_BUTTON_INVALID);
+            if (cb.keys[i].type == BT_BUTTON) {
+                cb.keys[i].bind.button = b;
+            } else {
+                cb.keys[i].bind.axis = b;
+            }
+            cb.keys[i].axis_dir = JSON_ObjectGetInt(key_obj, "axis_dir", 0);
+        }
+        M_AssignBinding(layout, role, slot, &cb);
     } else {
-        M_AssignAxis(layout, role, bind, axis_dir);
+        // Legacy single-key format
+        int16_t button_type = M_GetAssignedButtonType(layout, role, slot);
+        button_type = JSON_ObjectGetInt(bind_obj, "button_type", button_type);
+
+        int16_t bind = M_GetAssignedBind(layout, role, slot);
+        bind = JSON_ObjectGetInt(bind_obj, "bind", bind);
+
+        int16_t axis_dir = M_GetAssignedAxisDir(layout, role, slot);
+        axis_dir = JSON_ObjectGetInt(bind_obj, "axis_dir", axis_dir);
+
+        if (button_type == BT_BUTTON) {
+            M_AssignButton(layout, role, slot, bind);
+        } else {
+            M_AssignAxis(layout, role, slot, bind, axis_dir);
+        }
     }
     return true;
 }
 
 static bool M_AssignToJSONObject(
-    const INPUT_LAYOUT layout, const INPUT_ROLE role,
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot,
     JSON_OBJECT *const bind_obj)
 {
-    const int16_t default_button_type =
-        M_GetAssignedButtonType(INPUT_LAYOUT_DEFAULT, role);
-    const int16_t default_axis_dir =
-        M_GetAssignedAxisDir(INPUT_LAYOUT_DEFAULT, role);
-    const int16_t default_bind = M_GetAssignedBind(INPUT_LAYOUT_DEFAULT, role);
+    const CONTROLLER_BINDING *user = M_GetBinding(layout, role, slot);
+    const CONTROLLER_BINDING *def =
+        M_GetBinding(INPUT_LAYOUT_DEFAULT, role, slot);
 
-    const int16_t user_button_type = M_GetAssignedButtonType(layout, role);
-    const int16_t user_axis_dir = M_GetAssignedAxisDir(layout, role);
-    const int16_t user_bind = M_GetAssignedBind(layout, role);
-
-    if (user_button_type == default_button_type
-        && user_axis_dir == default_axis_dir && user_bind == default_bind) {
+    if (M_BindingsEqual(user, def)
+        || (user->key_count == 0 && def->key_count == 0)) {
         return false;
     }
 
-    JSON_ObjectAppendInt(bind_obj, "button_type", user_button_type);
-    JSON_ObjectAppendInt(bind_obj, "bind", user_bind);
-    JSON_ObjectAppendInt(bind_obj, "axis_dir", user_axis_dir);
+    if (user->key_count == 0) {
+        // Explicitly unbound
+        JSON_ObjectAppendInt(bind_obj, "button_type", (int16_t)BT_BUTTON);
+        JSON_ObjectAppendInt(
+            bind_obj, "bind", (int16_t)SDL_CONTROLLER_BUTTON_INVALID);
+        JSON_ObjectAppendInt(bind_obj, "axis_dir", (int16_t)0);
+    } else if (user->key_count == 1) {
+        // Single key (legacy format for backward compat)
+        const CONTROLLER_MAP *map = &user->keys[0];
+        JSON_ObjectAppendInt(bind_obj, "button_type", map->type);
+        JSON_ObjectAppendInt(
+            bind_obj, "bind",
+            map->type == BT_BUTTON ? map->bind.button : map->bind.axis);
+        JSON_ObjectAppendInt(bind_obj, "axis_dir", map->axis_dir);
+    } else {
+        // Multi-key combo
+        JSON_ARRAY *const arr = JSON_ArrayNew();
+        for (int32_t i = 0; i < user->key_count; i++) {
+            const CONTROLLER_MAP *map = &user->keys[i];
+            JSON_OBJECT *const key_obj = JSON_ObjectNew();
+            JSON_ObjectAppendInt(key_obj, "button_type", map->type);
+            JSON_ObjectAppendInt(
+                key_obj, "bind",
+                map->type == BT_BUTTON ? map->bind.button : map->bind.axis);
+            JSON_ObjectAppendInt(key_obj, "axis_dir", map->axis_dir);
+            JSON_ArrayAppendObject(arr, key_obj);
+        }
+        JSON_ObjectAppendArray(bind_obj, "combo", arr);
+    }
     return true;
 }
 
-static bool M_ReadAndAssign(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+// Per-button/axis tracking for combo prefix deferral.
+// Index: buttons use their enum directly, axes use
+// SDL_CONTROLLER_BUTTON_MAX + axis*2 + (axis_dir == 1 ? 1 : 0).
+#define M_PREFIX_SLOTS (SDL_CONTROLLER_BUTTON_MAX + SDL_CONTROLLER_AXIS_MAX * 2)
+static bool m_PrefixWasHeld[M_PREFIX_SLOTS];
+static bool m_PrefixComboFired[M_PREFIX_SLOTS];
+
+static int32_t M_MapToPrefixIdx(const CONTROLLER_MAP *const map)
 {
-    for (SDL_GameControllerButton button = 0;
-         button < SDL_CONTROLLER_BUTTON_MAX; button++) {
-        if (M_JoyBtn(button)) {
-            M_AssignButton(layout, role, button);
-            return true;
+    if (map->type == BT_BUTTON) {
+        return map->bind.button;
+    }
+    return SDL_CONTROLLER_BUTTON_MAX + map->bind.axis * 2
+        + (map->axis_dir == 1 ? 1 : 0);
+}
+
+static bool M_IsInputHeld(const CONTROLLER_MAP *const map)
+{
+    return M_CheckMap(map);
+}
+
+static bool M_IsComboInput(
+    const INPUT_LAYOUT layout, const CONTROLLER_MAP *const map)
+{
+    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
+        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
+            const CONTROLLER_BINDING *b = M_GetBinding(layout, r, s);
+            if (b->key_count < 2) {
+                continue;
+            }
+            for (int32_t k = 0; k < b->key_count; k++) {
+                if (M_MapsEqual(&b->keys[k], map)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+static INPUT_ROLE M_FindSingleInputRole(
+    const INPUT_LAYOUT layout, const CONTROLLER_MAP *const map)
+{
+    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
+        if (Input_IsRoleImmediate(r)) {
+            continue;
+        }
+        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
+            const CONTROLLER_BINDING *b = M_GetBinding(layout, r, s);
+            if (b->key_count == 1 && M_MapsEqual(&b->keys[0], map)) {
+                return r;
+            }
+        }
+    }
+    return (INPUT_ROLE)-1;
+}
+
+static bool M_IsProperSubset(
+    const CONTROLLER_BINDING *const sub, const CONTROLLER_BINDING *const super)
+{
+    if (sub->key_count == 0 || sub->key_count >= super->key_count) {
+        return false;
+    }
+    for (int32_t i = 0; i < sub->key_count; i++) {
+        bool found = false;
+        for (int32_t j = 0; j < super->key_count; j++) {
+            if (M_MapsEqual(&sub->keys[i], &super->keys[j])) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static const CONTROLLER_BINDING *M_GetPressedBinding(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role)
+{
+    for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+        const CONTROLLER_BINDING *bind = M_GetBinding(layout, role, slot);
+        if (M_CheckBinding(bind)) {
+            return bind;
+        }
+    }
+    return nullptr;
+}
+
+static void M_ResolvePrefixDeferral(
+    const INPUT_LAYOUT layout, INPUT_STATE *const result,
+    const CONTROLLER_MAP *const map)
+{
+    const int32_t idx = M_MapToPrefixIdx(map);
+    const bool held = M_IsInputHeld(map);
+
+    if (held && M_IsComboInput(layout, map)) {
+        const INPUT_ROLE role = M_FindSingleInputRole(layout, map);
+        if (role != (INPUT_ROLE)-1) {
+            InputState_ClearRole(result, role);
+        }
+    }
+
+    if (!held && m_PrefixWasHeld[idx] && !m_PrefixComboFired[idx]) {
+        const INPUT_ROLE role = M_FindSingleInputRole(layout, map);
+        if (role != (INPUT_ROLE)-1) {
+            InputState_SetRole(result, role, true);
+        }
+    }
+
+    m_PrefixWasHeld[idx] = held;
+}
+
+// Check if a binding is a proper subset of ANY binding in the layout.
+static bool M_HasLongerCombo(
+    const INPUT_LAYOUT layout, const INPUT_ROLE skip_role,
+    const CONTROLLER_BINDING *const bind)
+{
+    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
+        if (r == skip_role) {
+            continue;
+        }
+        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
+            const CONTROLLER_BINDING *b = M_GetBinding(layout, r, s);
+            if (M_IsProperSubset(bind, b)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Per-role deferral tracking for combo disambiguation.
+static bool m_RoleWasActive[INPUT_ROLE_NUMBER_OF];
+static bool m_RoleLongerFired[INPUT_ROLE_NUMBER_OF];
+
+static void M_ResolveCombos(
+    const INPUT_LAYOUT layout, INPUT_STATE *const result)
+{
+    // Phase 1: Collect active bindings.
+    const CONTROLLER_BINDING *active[INPUT_ROLE_NUMBER_OF] = {};
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (InputState_GetRole(*result, role)) {
+            active[role] = M_GetPressedBinding(layout, role);
+        }
+    }
+
+    // Phase 2: Subset suppression — longer active combos suppress shorter.
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (active[role] == nullptr) {
+            continue;
+        }
+        for (INPUT_ROLE other = 0; other < INPUT_ROLE_NUMBER_OF; other++) {
+            if (other == role || active[other] == nullptr) {
+                continue;
+            }
+            if (M_IsProperSubset(active[role], active[other])) {
+                InputState_ClearRole(result, role);
+                break;
+            }
+        }
+    }
+
+    // Phase 3: Combo deferral — if an active combo's binding is a proper
+    // subset of some (not necessarily active) longer binding, defer it.
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (active[role] == nullptr) {
+            continue;
+        }
+        if (Input_IsRoleImmediate(role) && active[role]->key_count <= 1) {
+            continue;
+        }
+        if (M_HasLongerCombo(layout, role, active[role])) {
+            InputState_ClearRole(result, role);
+            if (!m_RoleWasActive[role]) {
+                m_RoleLongerFired[role] = false;
+            }
+            m_RoleWasActive[role] = true;
+        }
+    }
+
+    // Reset prefix tracking for newly pressed inputs.
+    for (SDL_GameControllerButton btn = 0; btn < SDL_CONTROLLER_BUTTON_MAX;
+         btn++) {
+        const int32_t idx = (int32_t)btn;
+        if (M_JoyBtn(btn) && !m_PrefixWasHeld[idx]) {
+            m_PrefixComboFired[idx] = false;
         }
     }
     for (SDL_GameControllerAxis axis = 0; axis < SDL_CONTROLLER_AXIS_MAX;
          axis++) {
-        int16_t axis_dir = M_JoyAxis(axis);
-        if (axis_dir != 0) {
-            M_AssignAxis(layout, role, axis, axis_dir);
+        for (int16_t dir = -1; dir <= 1; dir += 2) {
+            const CONTROLLER_MAP map = { BT_AXIS, { .axis = axis }, dir };
+            const int32_t idx = M_MapToPrefixIdx(&map);
+            if (M_JoyAxis(axis) == dir && !m_PrefixWasHeld[idx]) {
+                m_PrefixComboFired[idx] = false;
+            }
+        }
+    }
+
+    // Phase 4: Mark longer-combo-fired state.
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (active[role] == nullptr || active[role]->key_count < 2) {
+            continue;
+        }
+        for (int32_t k = 0; k < active[role]->key_count; k++) {
+            const int32_t idx = M_MapToPrefixIdx(&active[role]->keys[k]);
+            m_PrefixComboFired[idx] = true;
+        }
+        for (INPUT_ROLE other = 0; other < INPUT_ROLE_NUMBER_OF; other++) {
+            if (!m_RoleWasActive[other]) {
+                continue;
+            }
+            const CONTROLLER_BINDING *ob = M_GetPressedBinding(layout, other);
+            if (ob != nullptr && M_IsProperSubset(ob, active[role])) {
+                m_RoleLongerFired[other] = true;
+            }
+        }
+    }
+
+    // Phase 5: Fire deferred roles on release.
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (!m_RoleWasActive[role]) {
+            continue;
+        }
+        const CONTROLLER_BINDING *bind = M_GetPressedBinding(layout, role);
+        if (bind != nullptr) {
+            continue;
+        }
+        if (!m_RoleLongerFired[role]) {
+            InputState_SetRole(result, role, true);
+        }
+        m_RoleWasActive[role] = false;
+        m_RoleLongerFired[role] = false;
+    }
+
+    // Phase 6: Single-input prefix deferral.
+    for (SDL_GameControllerButton btn = 0; btn < SDL_CONTROLLER_BUTTON_MAX;
+         btn++) {
+        const CONTROLLER_MAP map = { BT_BUTTON, { .button = btn }, 0 };
+        M_ResolvePrefixDeferral(layout, result, &map);
+    }
+    for (SDL_GameControllerAxis axis = 0; axis < SDL_CONTROLLER_AXIS_MAX;
+         axis++) {
+        for (int16_t dir = -1; dir <= 1; dir += 2) {
+            const CONTROLLER_MAP map = { BT_AXIS, { .axis = axis }, dir };
+            M_ResolvePrefixDeferral(layout, result, &map);
+        }
+    }
+}
+
+// Check whether a controller map is bound to any immediate role.
+static bool M_IsMapImmediate(
+    const INPUT_LAYOUT layout, const CONTROLLER_MAP *const map)
+{
+    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
+        if (!Input_IsRoleImmediate(r)) {
+            continue;
+        }
+        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
+            const CONTROLLER_BINDING *b = M_GetBinding(layout, r, s);
+            if (b->key_count == 1 && M_MapsEqual(&b->keys[0], map)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static bool M_ComboStartsWithImmediate(
+    const INPUT_LAYOUT layout, const CONTROLLER_BINDING *const bind)
+{
+    if (bind->key_count < 2) {
+        return false;
+    }
+    return M_IsMapImmediate(layout, &bind->keys[0]);
+}
+
+// Combo capture state for listen mode.
+static CONTROLLER_BINDING m_CaptureBuffer = { .key_count = 0 };
+static bool m_CaptureActive = false;
+
+static bool M_CaptureHasMap(const CONTROLLER_MAP *const map)
+{
+    for (int32_t i = 0; i < m_CaptureBuffer.key_count; i++) {
+        if (M_MapsEqual(&m_CaptureBuffer.keys[i], map)) {
             return true;
         }
+    }
+    return false;
+}
+
+static bool M_ReadAndAssign(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
+{
+    // Count currently held inputs and accumulate new ones into the buffer.
+    bool any_held = false;
+    for (SDL_GameControllerButton button = 0;
+         button < SDL_CONTROLLER_BUTTON_MAX; button++) {
+        if (!M_JoyBtn(button)) {
+            continue;
+        }
+        any_held = true;
+        const CONTROLLER_MAP map = { BT_BUTTON, { .button = button }, 0 };
+        if (!M_CaptureHasMap(&map)
+            && m_CaptureBuffer.key_count < INPUT_COMBO_MAX_KEYS) {
+            m_CaptureBuffer.keys[m_CaptureBuffer.key_count++] = map;
+        }
+        m_CaptureActive = true;
+    }
+    for (SDL_GameControllerAxis axis = 0; axis < SDL_CONTROLLER_AXIS_MAX;
+         axis++) {
+        const int16_t axis_dir = M_JoyAxis(axis);
+        if (axis_dir == 0) {
+            continue;
+        }
+        any_held = true;
+        const CONTROLLER_MAP map = { BT_AXIS, { .axis = axis }, axis_dir };
+        if (!M_CaptureHasMap(&map)
+            && m_CaptureBuffer.key_count < INPUT_COMBO_MAX_KEYS) {
+            m_CaptureBuffer.keys[m_CaptureBuffer.key_count++] = map;
+        }
+        m_CaptureActive = true;
+    }
+
+    // If the first input captured is bound to an immediate role (movement,
+    // action, etc.), assign as single key right away — don't wait for combo.
+    if (m_CaptureActive && m_CaptureBuffer.key_count == 1 && any_held
+        && M_IsMapImmediate(layout, &m_CaptureBuffer.keys[0])) {
+        M_AssignBinding(layout, role, slot, &m_CaptureBuffer);
+        m_CaptureBuffer.key_count = 0;
+        m_CaptureActive = false;
+        return true;
+    }
+
+    // All inputs released after at least one was captured — assign the chord.
+    if (!any_held && m_CaptureActive) {
+        M_AssignBinding(layout, role, slot, &m_CaptureBuffer);
+        m_CaptureBuffer.key_count = 0;
+        m_CaptureActive = false;
+        return true;
     }
     return false;
 }
@@ -572,4 +1071,5 @@ INPUT_BACKEND_IMPL g_Input_Controller = {
     .assign_to_json_object = M_AssignToJSONObject,
     .reset_layout = M_ResetLayout,
     .read_and_assign = M_ReadAndAssign,
+    .resolve_combos = M_ResolveCombos,
 };

@@ -6,6 +6,9 @@
 #include <SDL2/SDL_events.h>
 #include <stdint.h>
 
+#define INPUT_COMBO_MAX_KEYS 3
+#define INPUT_BINDING_SLOTS 2
+
 typedef enum {
 #define X_INPUT_ROLE(role_name, state_name) role_name,
 #include <trx/game/input/roles.def>
@@ -45,6 +48,10 @@ bool Input_IsRoleRebindable(INPUT_ROLE role);
 // Checks whether the given role can be completely unbound by the player.
 bool Input_IsRoleUnbindable(INPUT_ROLE role);
 
+// Checks whether the given role uses keys that fire immediately and cannot
+// be the first key of a combo (movement, jump, action, draw weapon).
+bool Input_IsRoleImmediate(INPUT_ROLE role);
+
 // Returns whether the key assigned to the given role is also used elsewhere
 // within the custom layout.
 bool Input_IsKeyConflicted(
@@ -66,18 +73,18 @@ bool Input_IsPressedEx(
 // If there is anything pressed, assigns the pressed key to the given key role
 // and returns true. If nothing is pressed, immediately returns false.
 bool Input_ReadAndAssignRole(
-    INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
+    INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
 
 // Remove assigned key from a given key role.
 void Input_UnassignRole(
-    INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
+    INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
 
 // Get a stable pointer to the layout human-readable name.
 const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout);
 
 // Given the input layout and input key role, get the assigned key name.
 const char *Input_GetKeyName(
-    INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
+    INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
 
 // Reset a given layout to the default.
 void Input_ResetLayout(INPUT_BACKEND backend, INPUT_LAYOUT layout);
@@ -100,10 +107,12 @@ bool Input_AssignFromJSONObject(
 // configuration.
 bool Input_AssignToJSONObject(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, JSON_OBJECT *bind_obj,
-    INPUT_ROLE role);
+    INPUT_ROLE role, int32_t slot);
 
+// Return a copy of the input state with only newly pressed roles set.
 INPUT_STATE Input_GetDebounced(const INPUT_STATE input);
 
+// Get the human-readable name of the given role.
 const char *Input_GetRoleName(INPUT_ROLE role);
 
 // Serialize a scancode and modifier mask into a human-readable key
@@ -116,6 +125,20 @@ const char *Input_KeyDescFromSDL(SDL_Scancode scancode, SDL_Keymod mod);
 bool Input_ParseKeyDesc(
     const char *desc, SDL_Scancode *scancode, SDL_Keymod *mod);
 
+// Reset all roles in the input state to inactive.
 void InputState_Clear(INPUT_STATE *state);
+
+// Copy the source input state into the destination.
 void InputState_Copy(INPUT_STATE *dst, INPUT_STATE src);
+
+// Check whether any role is active in the input state.
 bool InputState_IsAnyPressed(INPUT_STATE state);
+
+// Check whether the given role is active in the input state.
+bool InputState_GetRole(INPUT_STATE state, INPUT_ROLE role);
+
+// Set or clear the given role in the input state.
+void InputState_SetRole(INPUT_STATE *state, INPUT_ROLE role, bool value);
+
+// Clear the given role in the input state.
+void InputState_ClearRole(INPUT_STATE *state, INPUT_ROLE role);

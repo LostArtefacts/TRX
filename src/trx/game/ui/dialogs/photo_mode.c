@@ -19,7 +19,7 @@ static bool M_HasIcon(const INPUT_ROLE role)
 {
     return Input_GetKeyName(
                g_Config.input.backend,
-               g_Config.input.layout[g_Config.input.backend], role)
+               g_Config.input.layout[g_Config.input.backend], role, 0)
         != nullptr;
 }
 

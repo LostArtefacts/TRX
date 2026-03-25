@@ -221,7 +221,8 @@ static void M_UnbindKey(void *const arg)
     Sound_Effect(
         g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPINOUT, nullptr,
         SPM_NORMAL);
-    Input_UnassignRole(s->backend, s->active_layout, s->active_role);
+    Input_UnassignRole(
+        s->backend, s->active_layout, s->active_role, s->active_slot);
     g_Config.dirty = true;
     Config_Update();
 }
@@ -315,10 +316,15 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
     } else if (
-        UI_TabSwitch_Control(s->controls_tab_switch, UI_TAB_SWITCH_NORMAL)) {
+        UI_TabSwitch_Control(s->controls_tab_switch, UI_TAB_SWITCH_NO_ARROWS)) {
         s->active_group = &m_Groups[s->controls_tab_switch->active_tab_idx];
         UI_Scrollable_SetMaxItems(
             &s->scroll, M_GetInputRoleCount(s->active_group));
+    } else if (g_InputDB.menu_left) {
+        s->active_slot =
+            (s->active_slot - 1 + INPUT_BINDING_SLOTS) % INPUT_BINDING_SLOTS;
+    } else if (g_InputDB.menu_right) {
+        s->active_slot = (s->active_slot + 1) % INPUT_BINDING_SLOTS;
     } else if (g_InputDB.menu_up) {
         if (!UI_Scrollable_SelectPrev(&s->scroll, false)) {
             s->phase = M_PHASE_NAVIGATE_GROUP;
@@ -350,7 +356,7 @@ static UI_CONTROLS_CHOICE M_NavigateInputsDebounce(
 static UI_CONTROLS_CHOICE M_Listen(UI_CONTROLS_EDITOR_STATE *const s)
 {
     if (!Input_ReadAndAssignRole(
-            s->backend, s->active_layout, s->active_role)) {
+            s->backend, s->active_layout, s->active_role, s->active_slot)) {
         return UI_CONTROLS_CHOICE_NOOP;
     }
 
@@ -407,31 +413,40 @@ static void M_InputLabel(
     }
 }
 
-static void M_InputChoice(
-    UI_CONTROLS_EDITOR_STATE *const s, const UI_CONTROLS_EDITOR_ROW *const row)
+static void M_InputSlot(
+    UI_CONTROLS_EDITOR_STATE *const s, const UI_CONTROLS_EDITOR_ROW *const row,
+    const int32_t slot)
 {
     const bool is_flashing =
         Input_IsKeyConflicted(s->backend, s->active_layout, row->role);
-    const bool is_selected = s->active_role == row->role
+    const bool is_active_row = s->active_role == row->role;
+    const bool is_listening = is_active_row && s->active_slot == slot
         && (s->phase == M_PHASE_LISTEN
             || s->phase == M_PHASE_NAVIGATE_INPUTS_DEBOUNCE);
+    const bool is_slot_selected = is_active_row && s->active_slot == slot
+        && (s->phase == M_PHASE_NAVIGATE_INPUTS
+            || s->phase == M_PHASE_LISTEN_DEBOUNCE);
 
     if (is_flashing) {
         UI_BeginFlash(&s->flash);
     }
-    if (is_selected) {
+    if (is_listening || is_slot_selected) {
         UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
     }
     const char *key_name =
-        Input_GetKeyName(s->backend, s->active_layout, row->role);
+        Input_GetKeyName(s->backend, s->active_layout, row->role, slot);
     if (key_name == nullptr) {
-        UI_Label("");
+        if (s->active_layout != INPUT_LAYOUT_DEFAULT) {
+            UI_Label("—");
+        } else {
+            UI_Label("");
+        }
     } else if (!M_IsRoleUsable(row->role)) {
         UI_LabelFmt("\\{dim}%s\\{/dim}", key_name);
     } else {
         UI_Label(key_name);
     }
-    if (is_selected) {
+    if (is_listening || is_slot_selected) {
         UI_EndFrame();
     }
     if (is_flashing) {
@@ -453,11 +468,13 @@ static void M_Group(
 
         const UI_CONTROLS_EDITOR_ROW *const row = &group->rows[row_idx];
         UI_BeginStack(UI_STACK_HORIZONTAL);
-        UI_BeginResize(s->input_size, -1.0f);
-        UI_BeginAnchor(0.0f, 0.5f);
-        M_InputChoice(s, row);
-        UI_EndAnchor();
-        UI_EndResize();
+        for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+            UI_BeginResize(s->input_size, -1.0f);
+            UI_BeginAnchor(0.0f, 0.5f);
+            M_InputSlot(s, row, slot);
+            UI_EndAnchor();
+            UI_EndResize();
+        }
         UI_BeginResize(s->label_size, -1.0f);
         UI_BeginAnchor(0.0f, 0.5f);
         M_InputLabel(s, row);
@@ -491,6 +508,7 @@ void UI_ControlsEditor_Init(
 {
     s->backend = backend;
     s->active_layout = layout;
+    s->active_slot = 0;
     s->phase = M_PHASE_NAVIGATE_LAYOUT;
 
     s->events = events;

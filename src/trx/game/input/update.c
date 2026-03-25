@@ -27,6 +27,11 @@ void Input_Update(void)
     M_UpdateFromBackend(
         &g_Input, &g_Input_Controller, g_Config.input.controller_layout);
 
+    // Suppress roles whose bindings are subsets of longer active combos.
+    g_Input_Keyboard.resolve_combos(g_Config.input.keyboard_layout, &g_Input);
+    g_Input_Controller.resolve_combos(
+        g_Config.input.controller_layout, &g_Input);
+
     g_Input.camera_reset |= g_Input.look;
     g_Input.menu_up |= g_Input.forward;
     g_Input.menu_down |= g_Input.back;
