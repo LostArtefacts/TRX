@@ -2222,6 +2222,9 @@
         "mp5_ammo": {
             "name": "Lòin MP5",
         },
+        "mp_1": {
+            "name": "MP 1",
+        },
         "mummy": {
             "name": "Spaoileadan",
         },

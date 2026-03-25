@@ -16,6 +16,7 @@
 - added Civilian control
 - added Detonator Box control
 - added Prisoner control
+- added MP 1 control
 - restored the cutscene at the beginning of High Security Compound
 
 

@@ -2238,6 +2238,9 @@
         "mp5_ammo": {
             "name": "Caricatori per MP5",
         },
+        "mp_1": {
+            "name": "\\{review}MP 1",
+        },
         "mummy": {
             "name": "Mummia",
         },
