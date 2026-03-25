@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.4.2...develop) - ××××-××-××
+- added multi-key combo shortcuts (up to 3 keys) with two binding slots per action for both keyboard and controller
 - added remembering of the last played mod
 - added a new console command, `/tp enemy`, to cycle Lara through hostile creatures in the current level
 - added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°

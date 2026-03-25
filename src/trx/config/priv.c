@@ -119,12 +119,15 @@ static void M_DumpInputLayout(
 
     bool has_elements = false;
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        JSON_OBJECT *const bind_obj = JSON_ObjectNew();
-        if (Input_AssignToJSONObject(backend, layout, bind_obj, role)) {
-            has_elements = true;
-            JSON_ArrayAppendObject(arr, bind_obj);
-        } else {
-            JSON_ObjectFree(bind_obj);
+        for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+            JSON_OBJECT *const bind_obj = JSON_ObjectNew();
+            if (Input_AssignToJSONObject(
+                    backend, layout, bind_obj, role, slot)) {
+                has_elements = true;
+                JSON_ArrayAppendObject(arr, bind_obj);
+            } else {
+                JSON_ObjectFree(bind_obj);
+            }
         }
     }
 

@@ -59,7 +59,7 @@ void UI_ProgressButton_Free(UI_PROGRESS_BUTTON_STATE *s)
 void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
 {
     const char *const key_name =
-        Input_GetKeyName(s->backend, INPUT_LAYOUT_DEFAULT, s->role);
+        Input_GetKeyName(s->backend, INPUT_LAYOUT_DEFAULT, s->role, 0);
     if (key_name == nullptr) {
         return;
     }

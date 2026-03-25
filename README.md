@@ -116,6 +116,8 @@ running all 3 games), please refer to [this document](docs/CHANGELOG.md).
     TRX supports a wide variety of controllers out of the box with no
     additional software required. The keyboard or controller controls
     can be fully customized in the Controls menu with multiple layouts.
+    Multi-key combo shortcuts (up to 3 keys) and two binding slots per
+    action are also supported.
 
 6. **What about TR3 support?**
 
