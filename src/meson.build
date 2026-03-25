@@ -427,6 +427,7 @@ common_sources = [
   'trx/game/objects/creatures/monkey.c',
   'trx/game/objects/creatures/mouse.c',
   'trx/game/objects/creatures/mp_1.c',
+  'trx/game/objects/creatures/mp_2.c',
   'trx/game/objects/creatures/mummy.c',
   'trx/game/objects/creatures/mutant.c',
   'trx/game/objects/creatures/natla.c',

@@ -94,6 +94,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_MONK_3,
     O_MOUSE,
     O_MP_1,
+    O_MP_2,
     O_MUMMY,
     O_NATLA,
     O_PATROL_DOG,

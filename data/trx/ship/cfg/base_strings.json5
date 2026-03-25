@@ -2240,6 +2240,9 @@
         "mp_1": {
             "name": "MP 1",
         },
+        "mp_2": {
+            "name": "MP 2",
+        },
         "mummy": {
             "name": "Mummy",
         },
