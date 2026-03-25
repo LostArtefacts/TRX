@@ -2218,6 +2218,9 @@
         "mp5_ammo": {
             "name": "\\{review}Магазины для MP5",
         },
+        "mp_1": {
+            "name": "\\{review}МП 1",
+        },
         "mummy": {
             "name": "Мумия",
         },

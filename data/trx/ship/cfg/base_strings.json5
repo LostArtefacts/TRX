@@ -2237,6 +2237,9 @@
         "mp5_ammo": {
             "name": "MP5 Clips",
         },
+        "mp_1": {
+            "name": "MP 1",
+        },
         "mummy": {
             "name": "Mummy",
         },

@@ -2219,6 +2219,9 @@
         "mp5_ammo": {
             "name": "\\{review}MP5-Munition",
         },
+        "mp_1": {
+            "name": "\\{review}MP 1",
+        },
         "mummy": {
             "name": "Mumie",
         },

@@ -2216,6 +2216,9 @@
         "mp5_ammo": {
             "name": "\\{review}Chargeurs de MP5",
         },
+        "mp_1": {
+            "name": "\\{review}MP 1",
+        },
         "mummy": {
             "name": "Momie",
         },
