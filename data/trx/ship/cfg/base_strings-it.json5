@@ -2241,6 +2241,9 @@
         "mp_1": {
             "name": "\\{review}MP 1",
         },
+        "mp_2": {
+            "name": "\\{review}MP 2",
+        },
         "mummy": {
             "name": "Mummia",
         },
