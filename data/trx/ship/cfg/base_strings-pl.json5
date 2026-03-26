@@ -2233,6 +2233,9 @@
         "on_off_light": {
             "name": "Światło włącz/wyłącz",
         },
+        "orca": {
+            "name": "\\{review}Orka",
+        },
         "passport": {
             "name": "Gra",
         },

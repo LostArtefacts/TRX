@@ -2265,6 +2265,9 @@
         "on_off_light": {
             "name": "Luce Accesa/Spenta",
         },
+        "orca": {
+            "name": "\\{review}Orca",
+        },
         "passport": {
             "name": "Partita",
         },

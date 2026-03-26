@@ -2243,6 +2243,9 @@
         "on_off_light": {
             "name": "\\{review}Lumière Marche/Arrêt",
         },
+        "orca": {
+            "name": "\\{review}Orque",
+        },
         "passport": {
             "name": "\\{review}Jeu",
         },

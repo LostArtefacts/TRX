@@ -1057,8 +1057,7 @@ bool Creature_Animate(
                 min_y = 0;
                 break;
             case O_SHARK:
-                // TODO
-                // case O_WHALE:
+            case O_ORCA:
                 min_y = 128;
                 break;
             default:

@@ -97,6 +97,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_MP_2,
     O_MUMMY,
     O_NATLA,
+    O_ORCA,
     O_PATROL_DOG,
     O_PIERRE,
     O_PRISONER,
@@ -167,6 +168,7 @@ const OBJECT_ID g_WaterObjects[] = {
     O_PROPELLER_2,
     O_SHARK,
     O_VOLE,
+    O_ORCA,
     NO_OBJECT,
     // clang-format on
 };
