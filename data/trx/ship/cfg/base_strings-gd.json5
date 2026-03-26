@@ -1552,6 +1552,15 @@
         "ape": {
             "name": "Apa",
         },
+        "area_51_rocket": {
+            "name": "\\{review}Ròcaid Sgìre 51",
+        },
+        "area_51_rocket_blast": {
+            "name": "\\{review}Spreadh Ròcaid Sgìre 51",
+        },
+        "area_51_rocket_support": {
+            "name": "\\{review}Taic Ròcaid Sgìre 51",
+        },
         "assault_digits": {
             "name": "Àireamhan an t-Seòmair-eacarsaich",
         },

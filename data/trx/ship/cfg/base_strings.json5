@@ -1552,6 +1552,15 @@
         "ape": {
             "name": "Ape",
         },
+        "area_51_rocket": {
+            "name": "Area 51 Rocket",
+        },
+        "area_51_rocket_blast": {
+            "name": "Area 51 Rocket Blast",
+        },
+        "area_51_rocket_support": {
+            "name": "Area 51 Rocket Support",
+        },
         "assault_digits": {
             "name": "Assault Digits",
         },

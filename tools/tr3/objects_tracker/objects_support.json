@@ -171,5 +171,8 @@
   "O_TRIBE_AXEMAN":           { "status": "fully implemented" },
   "O_TRIBE_PIPEMAN":          { "status": "fully implemented" },
   "O_DETONATOR_BOX":          { "status": "fully implemented" },
-  "O_SENTRY_GUN":             { "status": "fully implemented" }
+  "O_SENTRY_GUN":             { "status": "fully implemented" },
+  "O_AREA_51_ROCKET":         { "status": "fully implemented" },
+  "O_AREA_51_ROCKET_BLAST":   { "status": "fully implemented" },
+  "O_AREA_51_ROCKET_SUPPORT": { "status": "fully implemented" }
 }

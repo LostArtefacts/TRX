@@ -1552,6 +1552,15 @@
         "ape": {
             "name": "Scimmia",
         },
+        "area_51_rocket": {
+            "name": "\\{review}Razzo Area 51",
+        },
+        "area_51_rocket_blast": {
+            "name": "\\{review}Esplosione Razzo Area 51",
+        },
+        "area_51_rocket_support": {
+            "name": "\\{review}Supporto Razzo Area 51",
+        },
         "assault_digits": {
             "name": "Cifre Corso d'Addestramento",
         },

@@ -375,6 +375,9 @@ X_OBJ_NAME_DEFINE(O_STEAM_EMITTER,         "steam_emitter",         X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_GAS_EMITTER_GREEN,     "gas_emitter_green",     X_OBJ_NAMES("Gas Emitter (Green)"))
 X_OBJ_NAME_DEFINE(O_FUSE_BOX,              "fuse_box",              X_OBJ_NAMES("Fuse Box"))
 X_OBJ_NAME_DEFINE(O_SENTRY_GUN,            "sentry_gun",            X_OBJ_NAMES("Sentry Gun"))
+X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET,        "area_51_rocket",        X_OBJ_NAMES("Area 51 Rocket"))
+X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET_BLAST,  "area_51_rocket_blast",  X_OBJ_NAMES("Area 51 Rocket Blast"))
+X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET_SUPPORT,"area_51_rocket_support",X_OBJ_NAMES("Area 51 Rocket Support"))
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "alarm_sound",             X_OBJ_NAMES("Alarm"))

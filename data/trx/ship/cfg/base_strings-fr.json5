@@ -1552,6 +1552,15 @@
         "ape": {
             "name": "Singe",
         },
+        "area_51_rocket": {
+            "name": "\\{review}Fusée Zone 51",
+        },
+        "area_51_rocket_blast": {
+            "name": "\\{review}Explosion de la Fusée Zone 51",
+        },
+        "area_51_rocket_support": {
+            "name": "\\{review}Support de la Fusée Zone 51",
+        },
         "assault_digits": {
             "name": "\\{review}Chiffres d'assaut",
         },

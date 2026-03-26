@@ -1552,6 +1552,15 @@
         "ape": {
             "name": "Affe",
         },
+        "area_51_rocket": {
+            "name": "\\{review}Area 51 Rakete",
+        },
+        "area_51_rocket_blast": {
+            "name": "\\{review}Area 51 Raketenstart",
+        },
+        "area_51_rocket_support": {
+            "name": "\\{review}Area 51 Raketenunterstützung",
+        },
         "assault_digits": {
             "name": "Assault Digits",
         },

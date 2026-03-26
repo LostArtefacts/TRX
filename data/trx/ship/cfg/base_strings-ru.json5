@@ -1552,6 +1552,15 @@
         "ape": {
             "name": "Обезьяна",
         },
+        "area_51_rocket": {
+            "name": "\\{review}Ракета Зоны 51",
+        },
+        "area_51_rocket_blast": {
+            "name": "\\{review}Взрыв ракеты Зоны 51",
+        },
+        "area_51_rocket_support": {
+            "name": "\\{review}Поддержка ракеты Зоны 51",
+        },
         "assault_digits": {
             "name": "\\{review}Цифры штурма",
         },
