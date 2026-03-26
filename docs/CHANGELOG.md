@@ -18,6 +18,7 @@
 - added Prisoner control
 - added MP 1 control
 - added MP 2 control
+- added Hook control
 - restored the cutscene at the beginning of High Security Compound
 
 
