@@ -23,6 +23,7 @@
 - added MP 1 control
 - added MP 2 control
 - added Orca control
+- added Area 51 Rocket control
 - added Hook control
 - restored the cutscene at the beginning of High Security Compound
 

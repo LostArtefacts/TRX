@@ -1555,6 +1555,15 @@
                 "Goryl",
             ]
         },
+        "area_51_rocket": {
+            "name": "\\{review}Rakieta Strefa 51",
+        },
+        "area_51_rocket_blast": {
+            "name": "\\{review}Wystrzał Rakiety Strefa 51",
+        },
+        "area_51_rocket_support": {
+            "name": "\\{review}Wsparcie Rakiety Strefa 51",
+        },
         "assault_digits": {
             "name": "Cyferki",
         },
