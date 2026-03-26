@@ -33,6 +33,7 @@
   "O_DESERT_EAGLE_ITEM":      { "status": "fully implemented" },
   "O_DING_DONG":              { "status": "fully implemented" },
   "O_DIVER":                  { "status": "fully implemented" },
+  "O_ORCA":                   { "status": "fully implemented" },
   "O_DOG":                    { "status": "fully implemented" },
   "O_PATROL_DOG":             { "status": "fully implemented" },
   "O_HUSKIE":                 { "status": "fully implemented" },

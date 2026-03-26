@@ -2246,6 +2246,9 @@
         "on_off_light": {
             "name": "\\{review}An/Aus Licht",
         },
+        "orca": {
+            "name": "\\{review}Orca",
+        },
         "passport": {
             "name": "Spiel",
         },

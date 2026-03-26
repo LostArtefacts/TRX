@@ -2245,6 +2245,9 @@
         "on_off_light": {
             "name": "\\{review}Включение/выключение света",
         },
+        "orca": {
+            "name": "\\{review}Косатка",
+        },
         "passport": {
             "name": "Игра",
         },

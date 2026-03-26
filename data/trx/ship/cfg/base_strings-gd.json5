@@ -2249,6 +2249,9 @@
         "on_off_light": {
             "name": "Solas Air/Dheth",
         },
+        "orca": {
+            "name": "\\{review}Orca",
+        },
         "passport": {
             "name": "Geama",
         },
