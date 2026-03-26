@@ -218,133 +218,129 @@ static void M_TriggerRocketSmoke(
     Sparks_FinishSetup(spark);
 }
 
-static void M_ControlMain(const int16_t item_num)
+static void M_ControlRocket(ITEM *const item)
 {
-    ITEM *const item = Item_Get(item_num);
-    if (!Item_IsTriggerActive(item)) {
-        return;
-    }
+    if (item->required_anim_state < M_SMOKE_END) {
+        item->required_anim_state += 8;
 
-    if (item->object_id == O_AREA_51_ROCKET) {
         if (item->required_anim_state < M_SMOKE_END) {
-            item->required_anim_state += 8;
-
-            if (item->required_anim_state < M_SMOKE_END) {
-                Sound_Effect(SFX_LARA_FLARE_BURN, nullptr, SPM_NORMAL);
-                item->current_anim_state = 0;
-                item->goal_anim_state = 0;
-            } else {
-                item->required_anim_state += 2048;
-                item->goal_anim_state = 64;
-                Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
-            }
+            Sound_Effect(SFX_LARA_FLARE_BURN, nullptr, SPM_NORMAL);
+            item->current_anim_state = 0;
+            item->goal_anim_state = 0;
         } else {
-            if (item->current_anim_state) {
-                Sound_Effect(SFX_HUGE_ROCKET_LOOP, nullptr, SPM_NORMAL);
-                item->required_anim_state += 32;
-
-                if (item->required_anim_state > 16000) {
-                    Item_Kill(item_num);
-                } else {
-                    const int32_t base = 0x4000 - item->required_anim_state;
-                    RGB_888 color = {
-                        .r =
-                            (base * ((Random_GetControl() & 0x1F) + 224)) >> 12,
-                        .g = (base * ((Random_GetControl() & 0x3F) + 96)) >> 12,
-                        .b = (base * (Random_GetControl() & 0x1F)) >> 12,
-                    };
-                    Output_AddDynamicLightRGB(
-                        (XYZ_32) { .x = item->pos.x - 7680,
-                                   .y = M_GetFloorY(item)
-                                       - (Random_GetControl() & 0x1FF) - 256,
-                                   .z = item->pos.z - 1024 },
-                        24, color);
-                    g_Camera.bounce =
-                        -((0x4000 - item->required_anim_state) >> 6);
-                }
-
-                return;
-            }
-
-            if (!Lara_GetLaraInfo()->burn) {
-                int32_t rad = item->goal_anim_state;
-                CLAMPG(rad, 8192);
-
-                const ITEM *const lara_item = Lara_GetItem();
-                if (lara_item->pos.x > item->pos.x - rad - 1536) {
-                    Lara_TakeDamage(lara_item->hit_points, false);
-                    Lara_CatchFire();
-                }
-
-                item->goal_anim_state += 80;
-            }
-
-            item->required_anim_state += 32;
+            item->required_anim_state += 2048;
+            item->goal_anim_state = 64;
+            Sound_Effect(SFX_EXPLOSION_2, nullptr, SPM_NORMAL);
         }
-
-        if (item->required_anim_state < 4096 + M_SMOKE_END) {
-            if (item->goal_anim_state > 768) {
-                Sound_Effect(SFX_HUGE_ROCKET_LOOP, nullptr, SPM_NORMAL);
-            }
-
-            if (item->goal_anim_state > 1024) {
-                item->goal_anim_state = 1024;
-            }
-        } else {
+    } else {
+        if (item->current_anim_state) {
             Sound_Effect(SFX_HUGE_ROCKET_LOOP, nullptr, SPM_NORMAL);
-            if (item->required_anim_state > 12288) {
-                item->required_anim_state = 12288;
-            }
+            item->required_anim_state += 32;
 
-            if (item->goal_anim_state > 22528) {
-                for (int32_t i = 0; i < 64; i++) {
-                    const XYZ_32 pos = {
-                        .x = item->pos.x - (Random_GetControl() & 0xFFF) - 5632,
-                        .y = M_GetFloorY(item) - (Random_GetControl() & 0x7FF),
-                        .z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048,
-                    };
-                    M_TriggerBlastFire(pos, false, i);
-                }
-
-                for (int32_t i = 64; i < 96; i++) {
-                    const XYZ_32 pos = {
-                        .x = item->pos.x - (Random_GetControl() & 0xFFF) - 5632,
-                        .y = M_GetFloorY(item) - (Random_GetControl() & 0x7FF),
-                        .z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048,
-                    };
-                    M_TriggerBlastFire(pos, true, i);
-                }
-
+            if (item->required_anim_state > 16000) {
+                Item_Kill(Item_GetIndex(item));
+            } else {
+                const int32_t base = 0x4000 - item->required_anim_state;
+                const RGB_888 color = {
+                    .r = (base * ((Random_GetControl() & 0x1F) + 224)) >> 12,
+                    .g = (base * ((Random_GetControl() & 0x3F) + 96)) >> 12,
+                    .b = (base * (Random_GetControl() & 0x1F)) >> 12,
+                };
+                Output_AddDynamicLightRGB(
+                    (XYZ_32) {
+                        .x = item->pos.x - 7680,
+                        .y = M_GetFloorY(item) - (Random_GetControl() & 0x1FF)
+                            - 256,
+                        .z = item->pos.z - 1024,
+                    },
+                    24, color);
                 g_Camera.bounce = -((0x4000 - item->required_anim_state) >> 6);
-                item->current_anim_state = 1;
-                return;
             }
 
-            item->fall_speed--;
-            CLAMPL(item->fall_speed, -1024);
-
-            if (item->fall_speed < -72) {
-                m_SupportFallen = true;
-            }
-
-            item->pos.y += item->fall_speed >> 2;
-            int16_t room_num = item->room_num;
-            Room_GetSector(item->pos, &room_num);
-
-            if (item->room_num != room_num) {
-                Item_UpdateRoom(item_num, room_num);
-            }
+            return;
         }
 
-        if (item->required_anim_state >= 0x2000) {
+        if (!Lara_GetLaraInfo()->burn) {
+            int32_t rad = item->goal_anim_state;
+            CLAMPG(rad, 8192);
+
+            const ITEM *const lara_item = Lara_GetItem();
+            if (lara_item->pos.x > item->pos.x - rad - 1536) {
+                Lara_TakeDamage(lara_item->hit_points, false);
+                Lara_CatchFire();
+            }
+
+            item->goal_anim_state += 80;
+        }
+
+        item->required_anim_state += 32;
+    }
+
+    if (item->required_anim_state < 4096 + M_SMOKE_END) {
+        if (item->goal_anim_state > 768) {
+            Sound_Effect(SFX_HUGE_ROCKET_LOOP, nullptr, SPM_NORMAL);
+        }
+
+        if (item->goal_anim_state > 1024) {
+            item->goal_anim_state = 1024;
+        }
+    } else {
+        Sound_Effect(SFX_HUGE_ROCKET_LOOP, nullptr, SPM_NORMAL);
+        if (item->required_anim_state > 12288) {
+            item->required_anim_state = 12288;
+        }
+
+        if (item->goal_anim_state > 22528) {
+            for (int32_t i = 0; i < 64; i++) {
+                const XYZ_32 pos = {
+                    .x = item->pos.x - (Random_GetControl() & 0xFFF) - 5632,
+                    .y = M_GetFloorY(item) - (Random_GetControl() & 0x7FF),
+                    .z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048,
+                };
+                M_TriggerBlastFire(pos, false, i);
+            }
+
+            for (int32_t i = 64; i < 96; i++) {
+                const XYZ_32 pos = {
+                    .x = item->pos.x - (Random_GetControl() & 0xFFF) - 5632,
+                    .y = M_GetFloorY(item) - (Random_GetControl() & 0x7FF),
+                    .z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048,
+                };
+                M_TriggerBlastFire(pos, true, i);
+            }
+
             g_Camera.bounce = -((0x4000 - item->required_anim_state) >> 6);
-        } else if (item->required_anim_state <= 64) {
-            g_Camera.bounce = -1;
-        } else {
-            g_Camera.bounce = -(item->required_anim_state >> 6);
+            item->current_anim_state = 1;
+            return;
+        }
+
+        item->fall_speed--;
+        CLAMPL(item->fall_speed, -1024);
+
+        if (item->fall_speed < -72) {
+            m_SupportFallen = true;
+        }
+
+        item->pos.y += item->fall_speed >> 2;
+        int16_t room_num = item->room_num;
+        Room_GetSector(item->pos, &room_num);
+
+        if (item->room_num != room_num) {
+            Item_UpdateRoom(Item_GetIndex(item), room_num);
         }
     }
 
+    if (item->required_anim_state >= 0x2000) {
+        g_Camera.bounce = -((0x4000 - item->required_anim_state) >> 6);
+    } else if (item->required_anim_state <= 64) {
+        g_Camera.bounce = -1;
+    } else {
+        g_Camera.bounce = -(item->required_anim_state >> 6);
+    }
+}
+
+static void M_ControlBlast(ITEM *const item)
+{
     const int32_t time4 = Output_GetTimeInGame() * 4;
     if (!(time4 & 0xC)) {
         int32_t yv;
@@ -358,24 +354,32 @@ static void M_ControlMain(const int16_t item_num)
 
         const bool fire = item->required_anim_state >= M_SMOKE_END;
         M_TriggerRocketSmoke(
-            (XYZ_32) { .x = item->pos.x - 896,
-                       .y = item->pos.y - 64,
-                       .z = item->pos.z - 512 },
+            (XYZ_32) {
+                .x = item->pos.x - 896,
+                .y = item->pos.y - 64,
+                .z = item->pos.z - 512,
+            },
             yv, fire);
         M_TriggerRocketSmoke(
-            (XYZ_32) { .x = item->pos.x - 128,
-                       .y = item->pos.y - 64,
-                       .z = item->pos.z - 512 },
+            (XYZ_32) {
+                .x = item->pos.x - 128,
+                .y = item->pos.y - 64,
+                .z = item->pos.z - 512,
+            },
             yv, fire);
         M_TriggerRocketSmoke(
-            (XYZ_32) { .x = item->pos.x - 512,
-                       .y = item->pos.y - 64,
-                       .z = item->pos.z - 896 },
+            (XYZ_32) {
+                .x = item->pos.x - 512,
+                .y = item->pos.y - 64,
+                .z = item->pos.z - 896,
+            },
             yv, fire);
         M_TriggerRocketSmoke(
-            (XYZ_32) { .x = item->pos.x - 512,
-                       .y = item->pos.y - 64,
-                       .z = item->pos.z - 128 },
+            (XYZ_32) {
+                .x = item->pos.x - 512,
+                .y = item->pos.y - 64,
+                .z = item->pos.z - 128,
+            },
             yv, fire);
     }
 
@@ -386,9 +390,11 @@ static void M_ControlMain(const int16_t item_num)
             .b = Random_GetControl() & 0x1F,
         };
         Output_AddDynamicLightRGB(
-            (XYZ_32) { .x = item->pos.x - 512,
-                       .y = item->pos.y,
-                       .z = item->pos.z - 512 },
+            (XYZ_32) {
+                .x = item->pos.x - 512,
+                .y = item->pos.y,
+                .z = item->pos.z - 512,
+            },
             31, color);
 
         int32_t rad = item->goal_anim_state;
@@ -419,6 +425,20 @@ static void M_ControlMain(const int16_t item_num)
             M_TriggerBlastFire(pos, true, -1);
         }
     }
+}
+
+static void M_ControlMain(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (!Item_IsTriggerActive(item)) {
+        return;
+    }
+
+    if (item->object_id == O_AREA_51_ROCKET) {
+        M_ControlRocket(item);
+    }
+
+    M_ControlBlast(item);
 }
 
 void M_InitialiseSupport(const int16_t item_num)
