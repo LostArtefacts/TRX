@@ -228,10 +228,11 @@ static void M_DumpBindings(MYFILE *const fp)
                 g_Config.input.keyboard_layout, role, 0, bind)) {
             const SDL_Scancode sc =
                 JSON_ObjectGetInt(bind, "scancode", SDL_SCANCODE_UNKNOWN);
+            const char *const key_desc =
+                sc == SDL_SCANCODE_UNKNOWN ? "" : Input_KeyDescFromSDL(sc, 0);
             File_WriteString(
                 fp, "bind keyboard %s \"%s\"\n",
-                ENUM_MAP_TO_STRING(INPUT_ROLE, role),
-                Input_KeyDescFromSDL(sc, 0));
+                ENUM_MAP_TO_STRING(INPUT_ROLE, role), key_desc);
         }
         JSON_ObjectFree(bind);
     }
