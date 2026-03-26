@@ -1,13 +1,14 @@
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
+#include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 
-#define M_FIRE_ROOM 52
 #define M_SMOKE_END 512
 
 typedef enum {
@@ -15,11 +16,57 @@ typedef enum {
     M_SUPPORT_STATE_FALL = 2,
 } M_SUPPORT_STATE;
 
+typedef struct {
+    int16_t fire_room_num;
+} M_PRIV;
+
 static bool m_SupportFallen = false;
 
-static int32_t M_GetFloorY(void)
+static bool M_DoesRoomLeadToItemCeilingPos(
+    const ITEM *const item, const int16_t room_num)
 {
-    return Room_Get(M_FIRE_ROOM)->min_floor;
+    const SECTOR *const sector =
+        Room_GetWorldSector(Room_Get(room_num), item->pos.x, item->pos.z);
+    return sector->portal_room.sky == item->room_num;
+}
+
+static int16_t M_FindFireRoomNum(const ITEM *const item)
+{
+    int16_t fire_room_num = item->room_num;
+    const XYZ_32 probe_pos = {
+        .x = item->pos.x,
+        .y = item->pos.y + WALL_L,
+        .z = item->pos.z,
+    };
+    const int16_t room_num = Room_GetIndexFromPos(probe_pos);
+    if (room_num != NO_ROOM && room_num != fire_room_num
+        && M_DoesRoomLeadToItemCeilingPos(item, room_num)) {
+        fire_room_num = room_num;
+    }
+    return fire_room_num;
+}
+
+static void M_InitialiseMain(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->priv == nullptr) {
+        item->priv = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
+    }
+
+    M_PRIV *const p = item->priv;
+    p->fire_room_num = M_FindFireRoomNum(item);
+}
+
+static int32_t M_GetFloorY(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    if (p != nullptr && p->fire_room_num != NO_ROOM) {
+        return Room_Get(p->fire_room_num)->min_floor;
+    }
+
+    int16_t room_num = item->room_num;
+    Room_GetSector(item->pos, &room_num);
+    return Room_Get(room_num)->min_floor;
 }
 
 static void M_TriggerBlastFire(
@@ -208,7 +255,7 @@ static void M_ControlMain(const int16_t item_num)
                     };
                     Output_AddDynamicLightRGB(
                         (XYZ_32) { .x = item->pos.x - 7680,
-                                   .y = M_GetFloorY()
+                                   .y = M_GetFloorY(item)
                                        - (Random_GetControl() & 0x1FF) - 256,
                                    .z = item->pos.z - 1024 },
                         24, color);
@@ -253,7 +300,7 @@ static void M_ControlMain(const int16_t item_num)
                 for (int32_t i = 0; i < 64; i++) {
                     const XYZ_32 pos = {
                         .x = item->pos.x - (Random_GetControl() & 0xFFF) - 5632,
-                        .y = M_GetFloorY() - (Random_GetControl() & 0x7FF),
+                        .y = M_GetFloorY(item) - (Random_GetControl() & 0x7FF),
                         .z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048,
                     };
                     M_TriggerBlastFire(pos, false, i);
@@ -262,7 +309,7 @@ static void M_ControlMain(const int16_t item_num)
                 for (int32_t i = 64; i < 96; i++) {
                     const XYZ_32 pos = {
                         .x = item->pos.x - (Random_GetControl() & 0xFFF) - 5632,
-                        .y = M_GetFloorY() - (Random_GetControl() & 0x7FF),
+                        .y = M_GetFloorY(item) - (Random_GetControl() & 0x7FF),
                         .z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048,
                     };
                     M_TriggerBlastFire(pos, true, i);
@@ -350,7 +397,7 @@ static void M_ControlMain(const int16_t item_num)
 
         XYZ_32 pos = {
             .x = item->pos.x - (Random_GetControl() & 0x7FF) - rad + 512,
-            .y = M_GetFloorY() - (y_mask & Random_GetControl()),
+            .y = M_GetFloorY(item) - (y_mask & Random_GetControl()),
             .z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048,
         };
 
@@ -367,7 +414,7 @@ static void M_ControlMain(const int16_t item_num)
 
         if (time4 & 4) {
             pos.x = item->pos.x - (Random_GetControl() & 0x3FF) - rad - 512;
-            pos.y = M_GetFloorY() - (y_mask & Random_GetControl());
+            pos.y = M_GetFloorY(item) - (y_mask & Random_GetControl());
             pos.z = item->pos.z + (Random_GetControl() & 0x7FF) - 2048;
             M_TriggerBlastFire(pos, true, -1);
         }
@@ -396,6 +443,7 @@ static void M_ControlSupport(const int16_t item_num)
 
 static void M_SetupRocket(OBJECT *const obj)
 {
+    obj->initialise_func = M_InitialiseMain;
     obj->control_func = M_ControlMain;
     obj->save_position = true;
     obj->save_flags = true;
@@ -404,6 +452,7 @@ static void M_SetupRocket(OBJECT *const obj)
 
 static void M_SetupBlast(OBJECT *const obj)
 {
+    obj->initialise_func = M_InitialiseMain;
     obj->control_func = M_ControlMain;
     obj->draw_func = nullptr;
     obj->save_flags = true;
