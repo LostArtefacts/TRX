@@ -8,6 +8,7 @@
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
+- fixed the total possible kill count in Furnace of the Gods being inaccurate if the monks are attacked (#5229)
 
 **TR3**:
 - added Security Laser (Alarm) control
