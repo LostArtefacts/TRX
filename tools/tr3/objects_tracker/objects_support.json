@@ -62,7 +62,7 @@
   "O_GRENADE_GUN_ITEM":       { "status": "fully implemented" },
   "O_HARPOON_AMMO_ITEM":      { "status": "fully implemented" },
   "O_HARPOON_ITEM":           { "status": "fully implemented" },
-  "O_HOOK":                   { "status": "partially implemented", "todo": "check 100% parity" },
+  "O_HOOK":                   { "status": "fully implemented" },
   "O_ICICLE":                 { "status": "fully implemented" },
   "O_KEY_HOLE_1":             { "status": "fully implemented" },
   "O_KEY_HOLE_2":             { "status": "fully implemented" },
