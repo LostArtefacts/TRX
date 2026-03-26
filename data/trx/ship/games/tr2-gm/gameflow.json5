@@ -122,6 +122,7 @@
                 "furnace_textures.bin",
                 "winston_model.bin",
             ],
+            "unobtainable_ally_kills": 2,
         },
 
         // 4. Kingdom
