@@ -665,16 +665,18 @@ static bool M_ParseBindKeyboard(const char *const line, M_PARSE_CTX *const ctx)
     }
     const char *const start = strchr(p, '"');
     const char *const end = start ? strrchr(start + 1, '"') : nullptr;
-    if (start == nullptr || end == nullptr || end <= start + 1) {
+    if (start == nullptr || end == nullptr || end < start + 1) {
         LOG_WARNING("Malformed bind keyboard instruction: %s", line);
         return false;
     }
     const size_t slen = end - (start + 1);
     const char *desc = String_FormatStatic("%.*s", slen, start + 1);
-    SDL_Scancode sc;
-    SDL_Keymod mod;
-    if (!Input_ParseKeyDesc(desc, &sc, &mod)) {
-        return false;
+    SDL_Scancode sc = SDL_SCANCODE_UNKNOWN;
+    SDL_Keymod mod = KMOD_NONE;
+    if (desc[0] != '\0') {
+        if (!Input_ParseKeyDesc(desc, &sc, &mod)) {
+            return false;
+        }
     }
     JSON_OBJECT *const bind = JSON_ObjectNew();
     JSON_ObjectAppendInt(bind, "scancode", sc);
