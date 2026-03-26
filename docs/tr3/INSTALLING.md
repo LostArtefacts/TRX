@@ -33,23 +33,6 @@ If you install everything correctly, your game directory should look more or les
 ├── audio
 │   └── cdaudio.wad
 ├── cfg
-│   ├── base_strings-de.json5
-│   ├── base_strings-en-gb.json5
-│   ├── base_strings-fr.json5
-│   ├── base_strings-gd.json5
-│   ├── base_strings-it.json5
-│   ├── base_strings-pl.json5
-│   ├── base_strings-ru.json5
-│   ├── base_strings.json5
-│   ├── catalog_item_actions.csv
-│   ├── catalog_lara_anims.csv
-│   ├── catalog_lara_states.csv
-│   ├── catalog_music.csv
-│   ├── catalog_objects.csv
-│   ├── catalog_samples.csv
-│   ├── inv_ring.json5
-│   ├── outfits.json5
-│   ├── poses.json5
 │   ├── presets
 │   │   ├── tr1-pc.json5
 │   │   ├── tr1-ps1.json5
@@ -74,6 +57,23 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   └── strings.json5
+│   ├── base_strings-de.json5
+│   ├── base_strings-en-gb.json5
+│   ├── base_strings-fr.json5
+│   ├── base_strings-gd.json5
+│   ├── base_strings-it.json5
+│   ├── base_strings-pl.json5
+│   ├── base_strings-ru.json5
+│   ├── base_strings.json5
+│   ├── catalog_item_actions.csv
+│   ├── catalog_lara_anims.csv
+│   ├── catalog_lara_states.csv
+│   ├── catalog_music.csv
+│   ├── catalog_objects.csv
+│   ├── catalog_samples.csv
+│   ├── inv_ring.json5
+│   ├── outfits.json5
+│   ├── poses.json5
 │   ├── TR3X.json5*
 │   ├── ui.json5
 │   └── weapons.json5
@@ -90,13 +90,6 @@ If you install everything correctly, your game directory should look more or les
 │   ├── cut11.tr2
 │   └── cut12.tr2
 ├── data
-│   ├── antarc.tr2
-│   ├── area51.tr2
-│   ├── chamber.tr2
-│   ├── city.tr2
-│   ├── compound.tr2
-│   ├── crash.tr2
-│   ├── house.tr2
 │   ├── images
 │   │   ├── 4x3
 │   │   │   ├── antarc.webp
@@ -119,22 +112,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── theend2.webp
 │   │   │   ├── title_eu.webp
 │   │   │   └── title_us.webp
-│   │   ├── antarc.webp
-│   │   ├── credit01.webp
-│   │   ├── credit02.webp
-│   │   ├── credit03.webp
-│   │   ├── credit04.webp
-│   │   ├── credit05.webp
-│   │   ├── credit06.webp
-│   │   ├── credit07.webp
-│   │   ├── credit08.webp
-│   │   ├── credit09.webp
-│   │   ├── house.webp
-│   │   ├── india.webp
-│   │   ├── legal_eu.webp
-│   │   ├── legal_us.webp
-│   │   ├── london.webp
-│   │   ├── nevada.webp
 │   │   ├── og
 │   │   │   ├── antarc.webp
 │   │   │   ├── credit01.webp
@@ -158,6 +135,22 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── theend.webp
 │   │   │   ├── title_eu.webp
 │   │   │   └── title_us.webp
+│   │   ├── antarc.webp
+│   │   ├── credit01.webp
+│   │   ├── credit02.webp
+│   │   ├── credit03.webp
+│   │   ├── credit04.webp
+│   │   ├── credit05.webp
+│   │   ├── credit06.webp
+│   │   ├── credit07.webp
+│   │   ├── credit08.webp
+│   │   ├── credit09.webp
+│   │   ├── house.webp
+│   │   ├── india.webp
+│   │   ├── legal_eu.webp
+│   │   ├── legal_us.webp
+│   │   ├── london.webp
+│   │   ├── nevada.webp
 │   │   ├── southpac.webp
 │   │   ├── theend2.webp
 │   │   ├── title_eu.webp
@@ -216,14 +209,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── undersea_train.bin
 │   │   ├── willsden_heli.bin
 │   │   └── zoo_train.bin
-│   ├── jungle.tr2
-│   ├── main.sfx
-│   ├── mines.tr2
-│   ├── nevada.tr2
-│   ├── office.tr2
-│   ├── quadchas.tr2
-│   ├── rapids.tr2
-│   ├── roofs.tr2
 │   ├── scripts
 │   │   ├── area51.lua
 │   │   ├── compound.lua
@@ -232,16 +217,38 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── jungle.lua
 │   │   ├── tower.lua
 │   │   └── zoo.lua
+│   ├── antarc.tr2
+│   ├── area51.tr2
+│   ├── chamber.tr2
+│   ├── chunnel.tr2
+│   ├── city.tr2
+│   ├── compound.tr2
+│   ├── crash.tr2
+│   ├── house.tr2
+│   ├── jungle.tr2
+│   ├── main.sfx
+│   ├── main_la.sfx
+│   ├── mines.tr2
+│   ├── nevada.tr2
+│   ├── office.tr2
+│   ├── quadchas.tr2
+│   ├── rapids.tr2
+│   ├── roofs.tr2
+│   ├── scotland.tr2
 │   ├── sewer.tr2
 │   ├── shore.tr2
+│   ├── slinc.tr2
 │   ├── stpaul.tr2
 │   ├── temple.tr2
 │   ├── title.tr2
+│   ├── title_la.tr2
 │   ├── tombpc.dat
 │   ├── tonyboss.tr2
 │   ├── tower.tr2
 │   ├── triboss.tr2
-│   └── vict.tr2
+│   ├── undersea.tr2
+│   ├── willsden.tr2
+│   └── zoo.tr2
 ├── fmv
 │   ├── crsh_eng.rpl
 │   ├── endgame.rpl
@@ -286,239 +293,246 @@ If you install everything correctly, your game directory should look more or les
 <details data-id="file-tree-mac">
 <pre><code>.
 └── Contents
+    ├── Resources
+    │   ├── audio
+    │   │   └── cdaudio.wad
+    │   ├── cfg
+    │   │   ├── presets
+    │   │   │   ├── tr1-pc.json5
+    │   │   │   ├── tr1-ps1.json5
+    │   │   │   ├── tr2-pc.json5
+    │   │   │   ├── tr2-ps1.json5
+    │   │   │   ├── tr3-pc.json5
+    │   │   │   └── tr3-ps1.json5
+    │   │   ├── tr3
+    │   │   │   ├── gameflow.json5
+    │   │   │   ├── strings-de.json5
+    │   │   │   ├── strings-it.json5
+    │   │   │   ├── strings-pl.json5
+    │   │   │   └── strings.json5
+    │   │   ├── tr3-la
+    │   │   │   ├── gameflow.json5
+    │   │   │   ├── strings-de.json5
+    │   │   │   ├── strings-it.json5
+    │   │   │   ├── strings-pl.json5
+    │   │   │   └── strings.json5
+    │   │   ├── tr3-level
+    │   │   │   ├── gameflow.json5
+    │   │   │   ├── strings-it.json5
+    │   │   │   ├── strings-pl.json5
+    │   │   │   └── strings.json5
+    │   │   ├── base_strings-de.json5
+    │   │   ├── base_strings-en-gb.json5
+    │   │   ├── base_strings-fr.json5
+    │   │   ├── base_strings-gd.json5
+    │   │   ├── base_strings-it.json5
+    │   │   ├── base_strings-pl.json5
+    │   │   ├── base_strings-ru.json5
+    │   │   ├── base_strings.json5
+    │   │   ├── catalog_item_actions.csv
+    │   │   ├── catalog_lara_anims.csv
+    │   │   ├── catalog_lara_states.csv
+    │   │   ├── catalog_music.csv
+    │   │   ├── catalog_objects.csv
+    │   │   ├── catalog_samples.csv
+    │   │   ├── inv_ring.json5
+    │   │   ├── outfits.json5
+    │   │   ├── poses.json5
+    │   │   ├── ui.json5
+    │   │   └── weapons.json5
+    │   ├── cuts
+    │   │   ├── cut1.tr2
+    │   │   ├── cut2.tr2
+    │   │   ├── cut3.tr2
+    │   │   ├── cut4.tr2
+    │   │   ├── cut5.tr2
+    │   │   ├── cut6.tr2
+    │   │   ├── cut7.tr2
+    │   │   ├── cut8.tr2
+    │   │   ├── cut9.tr2
+    │   │   ├── cut11.tr2
+    │   │   └── cut12.tr2
+    │   ├── data
+    │   │   ├── images
+    │   │   │   ├── 4x3
+    │   │   │   │   ├── antarc.webp
+    │   │   │   │   ├── credit01.webp
+    │   │   │   │   ├── credit02.webp
+    │   │   │   │   ├── credit03.webp
+    │   │   │   │   ├── credit04.webp
+    │   │   │   │   ├── credit05.webp
+    │   │   │   │   ├── credit06.webp
+    │   │   │   │   ├── credit07.webp
+    │   │   │   │   ├── credit08.webp
+    │   │   │   │   ├── credit09.webp
+    │   │   │   │   ├── house.webp
+    │   │   │   │   ├── india.webp
+    │   │   │   │   ├── legal_eu.webp
+    │   │   │   │   ├── legal_us.webp
+    │   │   │   │   ├── london.webp
+    │   │   │   │   ├── nevada.webp
+    │   │   │   │   ├── southpac.webp
+    │   │   │   │   ├── theend2.webp
+    │   │   │   │   ├── title_eu.webp
+    │   │   │   │   └── title_us.webp
+    │   │   │   ├── og
+    │   │   │   │   ├── antarc.webp
+    │   │   │   │   ├── credit01.webp
+    │   │   │   │   ├── credit02.webp
+    │   │   │   │   ├── credit03.webp
+    │   │   │   │   ├── credit04.webp
+    │   │   │   │   ├── credit05.webp
+    │   │   │   │   ├── credit06.webp
+    │   │   │   │   ├── credit07.webp
+    │   │   │   │   ├── credit08.webp
+    │   │   │   │   ├── credit09.webp
+    │   │   │   │   ├── house.webp
+    │   │   │   │   ├── india.webp
+    │   │   │   │   ├── legal_eu.webp
+    │   │   │   │   ├── legal_us.webp
+    │   │   │   │   ├── london.webp
+    │   │   │   │   ├── nevada.webp
+    │   │   │   │   ├── nevadafff.webp
+    │   │   │   │   ├── southpac.webp
+    │   │   │   │   ├── theend2.webp
+    │   │   │   │   ├── theend.webp
+    │   │   │   │   ├── title_eu.webp
+    │   │   │   │   └── title_us.webp
+    │   │   │   ├── antarc.webp
+    │   │   │   ├── credit01.webp
+    │   │   │   ├── credit02.webp
+    │   │   │   ├── credit03.webp
+    │   │   │   ├── credit04.webp
+    │   │   │   ├── credit05.webp
+    │   │   │   ├── credit06.webp
+    │   │   │   ├── credit07.webp
+    │   │   │   ├── credit08.webp
+    │   │   │   ├── credit09.webp
+    │   │   │   ├── house.webp
+    │   │   │   ├── india.webp
+    │   │   │   ├── legal_eu.webp
+    │   │   │   ├── legal_us.webp
+    │   │   │   ├── london.webp
+    │   │   │   ├── nevada.webp
+    │   │   │   ├── southpac.webp
+    │   │   │   ├── theend2.webp
+    │   │   │   ├── title_eu.webp
+    │   │   │   └── title_us.webp
+    │   │   ├── injections
+    │   │   │   ├── aldwych_fd.bin
+    │   │   │   ├── aldwych_pickup_meshes.bin
+    │   │   │   ├── antarc_airlock.bin
+    │   │   │   ├── antarc_sky.bin
+    │   │   │   ├── area51_sky.bin
+    │   │   │   ├── cavern_sky.bin
+    │   │   │   ├── city_textures.bin
+    │   │   │   ├── coastal_airlock.bin
+    │   │   │   ├── coastal_animating_bounds.bin
+    │   │   │   ├── coastal_sky.bin
+    │   │   │   ├── compound_cine.bin
+    │   │   │   ├── crash_pickup_meshes.bin
+    │   │   │   ├── crash_sky.bin
+    │   │   │   ├── cut1_setup.bin
+    │   │   │   ├── cut2_setup.bin
+    │   │   │   ├── cut3_setup.bin
+    │   │   │   ├── cut3_shell.bin
+    │   │   │   ├── cut4_setup.bin
+    │   │   │   ├── cut5_setup.bin
+    │   │   │   ├── cut5_textures.bin
+    │   │   │   ├── cut6_setup.bin
+    │   │   │   ├── cut7_setup.bin
+    │   │   │   ├── cut8_setup.bin
+    │   │   │   ├── cut9_setup.bin
+    │   │   │   ├── cut11_setup.bin
+    │   │   │   ├── cut12_setup.bin
+    │   │   │   ├── font.bin
+    │   │   │   ├── globe_model.bin
+    │   │   │   ├── gym_sky.bin
+    │   │   │   ├── india_sky.bin
+    │   │   │   ├── lara_animations.bin
+    │   │   │   ├── lara_extra.bin
+    │   │   │   ├── lara_guns.bin
+    │   │   │   ├── lara_gym_guns.bin
+    │   │   │   ├── lara_outfits.bin
+    │   │   │   ├── london_sky.bin
+    │   │   │   ├── luds_diver_animation.bin
+    │   │   │   ├── misc_sprites.bin
+    │   │   │   ├── nevada_sky.bin
+    │   │   │   ├── ora_dagger.bin
+    │   │   │   ├── pda_model.bin
+    │   │   │   ├── pickup_aid.bin
+    │   │   │   ├── rapids_sky.bin
+    │   │   │   ├── reunion_flames.bin
+    │   │   │   ├── scotland_sky.bin
+    │   │   │   ├── stpaul_animating_bounds.bin
+    │   │   │   ├── stpaul_textures.bin
+    │   │   │   ├── tinnos_cameras.bin
+    │   │   │   ├── tinnos_flames.bin
+    │   │   │   ├── undersea_animating_bounds.bin
+    │   │   │   ├── undersea_train.bin
+    │   │   │   ├── willsden_heli.bin
+    │   │   │   └── zoo_train.bin
+    │   │   ├── scripts
+    │   │   │   ├── area51.lua
+    │   │   │   ├── compound.lua
+    │   │   │   ├── crash.lua
+    │   │   │   ├── cut8.lua
+    │   │   │   ├── jungle.lua
+    │   │   │   ├── tower.lua
+    │   │   │   └── zoo.lua
+    │   │   ├── antarc.tr2
+    │   │   ├── area51.tr2
+    │   │   ├── chamber.tr2
+    │   │   ├── chunnel.tr2
+    │   │   ├── city.tr2
+    │   │   ├── compound.tr2
+    │   │   ├── crash.tr2
+    │   │   ├── house.tr2
+    │   │   ├── jungle.tr2
+    │   │   ├── main.sfx
+    │   │   ├── main_la.sfx
+    │   │   ├── mines.tr2
+    │   │   ├── nevada.tr2
+    │   │   ├── office.tr2
+    │   │   ├── quadchas.tr2
+    │   │   ├── rapids.tr2
+    │   │   ├── roofs.tr2
+    │   │   ├── scotland.tr2
+    │   │   ├── sewer.tr2
+    │   │   ├── shore.tr2
+    │   │   ├── slinc.tr2
+    │   │   ├── stpaul.tr2
+    │   │   ├── temple.tr2
+    │   │   ├── title.tr2
+    │   │   ├── title_la.tr2
+    │   │   ├── tombpc.dat
+    │   │   ├── tonyboss.tr2
+    │   │   ├── tower.tr2
+    │   │   ├── triboss.tr2
+    │   │   ├── undersea.tr2
+    │   │   ├── willsden.tr2
+    │   │   └── zoo.tr2
+    │   ├── fmv
+    │   │   ├── crsh_eng.rpl
+    │   │   ├── endgame.rpl
+    │   │   ├── intr_eng.rpl
+    │   │   ├── logo.rpl
+    │   │   └── sail_eng.rpl
+    │   ├── shaders
+    │   │   ├── 2d.glsl
+    │   │   ├── billboard.glsl
+    │   │   ├── common.glsl
+    │   │   ├── fbo.glsl
+    │   │   ├── lights.glsl
+    │   │   ├── meshes.glsl
+    │   │   ├── meshes_tr3.glsl
+    │   │   ├── meshes_tr12.glsl
+    │   │   └── ui.glsl
+    │   └── icon.icns
     ├── _CodeSignature
     ├── Frameworks
     ├── info.plist
-    ├── MacOS
-    └── Resources
-        ├── audio
-        │   └── cdaudio.wad
-        ├── cfg
-        │   ├── base_strings-de.json5
-        │   ├── base_strings-en-gb.json5
-        │   ├── base_strings-fr.json5
-        │   ├── base_strings-gd.json5
-        │   ├── base_strings-it.json5
-        │   ├── base_strings-pl.json5
-        │   ├── base_strings-ru.json5
-        │   ├── base_strings.json5
-        │   ├── catalog_item_actions.csv
-        │   ├── catalog_lara_anims.csv
-        │   ├── catalog_lara_states.csv
-        │   ├── catalog_music.csv
-        │   ├── catalog_objects.csv
-        │   ├── catalog_samples.csv
-        │   ├── inv_ring.json5
-        │   ├── outfits.json5
-        │   ├── poses.json5
-        │   ├── presets
-        │   │   ├── tr1-pc.json5
-        │   │   ├── tr1-ps1.json5
-        │   │   ├── tr2-pc.json5
-        │   │   ├── tr2-ps1.json5
-        │   │   ├── tr3-pc.json5
-        │   │   └── tr3-ps1.json5
-        │   ├── tr3
-        │   │   ├── gameflow.json5
-        │   │   ├── strings-de.json5
-        │   │   ├── strings-it.json5
-        │   │   ├── strings-pl.json5
-        │   │   └── strings.json5
-        │   ├── tr3-la
-        │   │   ├── gameflow.json5
-        │   │   ├── strings-de.json5
-        │   │   ├── strings-it.json5
-        │   │   ├── strings-pl.json5
-        │   │   └── strings.json5
-        │   ├── tr3-level
-        │   │   ├── gameflow.json5
-        │   │   ├── strings-it.json5
-        │   │   ├── strings-pl.json5
-        │   │   └── strings.json5
-        │   ├── ui.json5
-        │   └── weapons.json5
-        ├── cuts
-        │   ├── cut1.tr2
-        │   ├── cut2.tr2
-        │   ├── cut3.tr2
-        │   ├── cut4.tr2
-        │   ├── cut5.tr2
-        │   ├── cut6.tr2
-        │   ├── cut7.tr2
-        │   ├── cut8.tr2
-        │   ├── cut9.tr2
-        │   ├── cut11.tr2
-        │   └── cut12.tr2
-        ├── data
-        │   ├── antarc.tr2
-        │   ├── area51.tr2
-        │   ├── chamber.tr2
-        │   ├── city.tr2
-        │   ├── compound.tr2
-        │   ├── crash.tr2
-        │   ├── house.tr2
-        │   ├── images
-        │   │   ├── 4x3
-        │   │   │   ├── antarc.webp
-        │   │   │   ├── credit01.webp
-        │   │   │   ├── credit02.webp
-        │   │   │   ├── credit03.webp
-        │   │   │   ├── credit04.webp
-        │   │   │   ├── credit05.webp
-        │   │   │   ├── credit06.webp
-        │   │   │   ├── credit07.webp
-        │   │   │   ├── credit08.webp
-        │   │   │   ├── credit09.webp
-        │   │   │   ├── house.webp
-        │   │   │   ├── india.webp
-        │   │   │   ├── legal_eu.webp
-        │   │   │   ├── legal_us.webp
-        │   │   │   ├── london.webp
-        │   │   │   ├── nevada.webp
-        │   │   │   ├── southpac.webp
-        │   │   │   ├── theend2.webp
-        │   │   │   ├── title_eu.webp
-        │   │   │   └── title_us.webp
-        │   │   ├── antarc.webp
-        │   │   ├── credit01.webp
-        │   │   ├── credit02.webp
-        │   │   ├── credit03.webp
-        │   │   ├── credit04.webp
-        │   │   ├── credit05.webp
-        │   │   ├── credit06.webp
-        │   │   ├── credit07.webp
-        │   │   ├── credit08.webp
-        │   │   ├── credit09.webp
-        │   │   ├── house.webp
-        │   │   ├── india.webp
-        │   │   ├── legal_eu.webp
-        │   │   ├── legal_us.webp
-        │   │   ├── london.webp
-        │   │   ├── nevada.webp
-        │   │   ├── og
-        │   │   │   ├── antarc.webp
-        │   │   │   ├── credit01.webp
-        │   │   │   ├── credit02.webp
-        │   │   │   ├── credit03.webp
-        │   │   │   ├── credit04.webp
-        │   │   │   ├── credit05.webp
-        │   │   │   ├── credit06.webp
-        │   │   │   ├── credit07.webp
-        │   │   │   ├── credit08.webp
-        │   │   │   ├── credit09.webp
-        │   │   │   ├── house.webp
-        │   │   │   ├── india.webp
-        │   │   │   ├── legal_eu.webp
-        │   │   │   ├── legal_us.webp
-        │   │   │   ├── london.webp
-        │   │   │   ├── nevada.webp
-        │   │   │   ├── nevadafff.webp
-        │   │   │   ├── southpac.webp
-        │   │   │   ├── theend2.webp
-        │   │   │   ├── theend.webp
-        │   │   │   ├── title_eu.webp
-        │   │   │   └── title_us.webp
-        │   │   ├── southpac.webp
-        │   │   ├── theend2.webp
-        │   │   ├── title_eu.webp
-        │   │   └── title_us.webp
-        │   ├── injections
-        │   │   ├── aldwych_fd.bin
-        │   │   ├── aldwych_pickup_meshes.bin
-        │   │   ├── antarc_airlock.bin
-        │   │   ├── antarc_sky.bin
-        │   │   ├── area51_sky.bin
-        │   │   ├── cavern_sky.bin
-        │   │   ├── city_textures.bin
-        │   │   ├── coastal_airlock.bin
-        │   │   ├── coastal_animating_bounds.bin
-        │   │   ├── coastal_sky.bin
-        │   │   ├── compound_cine.bin
-        │   │   ├── crash_pickup_meshes.bin
-        │   │   ├── crash_sky.bin
-        │   │   ├── cut1_setup.bin
-        │   │   ├── cut2_setup.bin
-        │   │   ├── cut3_setup.bin
-        │   │   ├── cut3_shell.bin
-        │   │   ├── cut4_setup.bin
-        │   │   ├── cut5_setup.bin
-        │   │   ├── cut5_textures.bin
-        │   │   ├── cut6_setup.bin
-        │   │   ├── cut7_setup.bin
-        │   │   ├── cut8_setup.bin
-        │   │   ├── cut9_setup.bin
-        │   │   ├── cut11_setup.bin
-        │   │   ├── cut12_setup.bin
-        │   │   ├── font.bin
-        │   │   ├── globe_model.bin
-        │   │   ├── gym_sky.bin
-        │   │   ├── india_sky.bin
-        │   │   ├── lara_animations.bin
-        │   │   ├── lara_extra.bin
-        │   │   ├── lara_guns.bin
-        │   │   ├── lara_gym_guns.bin
-        │   │   ├── lara_outfits.bin
-        │   │   ├── london_sky.bin
-        │   │   ├── luds_diver_animation.bin
-        │   │   ├── misc_sprites.bin
-        │   │   ├── nevada_sky.bin
-        │   │   ├── ora_dagger.bin
-        │   │   ├── pda_model.bin
-        │   │   ├── pickup_aid.bin
-        │   │   ├── rapids_sky.bin
-        │   │   ├── reunion_flames.bin
-        │   │   ├── scotland_sky.bin
-        │   │   ├── stpaul_animating_bounds.bin
-        │   │   ├── stpaul_textures.bin
-        │   │   ├── tinnos_cameras.bin
-        │   │   ├── tinnos_flames.bin
-        │   │   ├── undersea_animating_bounds.bin
-        │   │   ├── undersea_train.bin
-        │   │   ├── willsden_heli.bin
-        │   │   └── zoo_train.bin
-        │   ├── jungle.tr2
-        │   ├── main.sfx
-        │   ├── mines.tr2
-        │   ├── nevada.tr2
-        │   ├── office.tr2
-        │   ├── quadchas.tr2
-        │   ├── rapids.tr2
-        │   ├── roofs.tr2
-        │   ├── scripts
-        │   │   ├── area51.lua
-        │   │   ├── compound.lua
-        │   │   ├── crash.lua
-        │   │   ├── cut8.lua
-        │   │   ├── jungle.lua
-        │   │   ├── tower.lua
-        │   │   └── zoo.lua
-        │   ├── sewer.tr2
-        │   ├── shore.tr2
-        │   ├── stpaul.tr2
-        │   ├── temple.tr2
-        │   ├── title.tr2
-        │   ├── tombpc.dat
-        │   ├── tonyboss.tr2
-        │   ├── tower.tr2
-        │   ├── triboss.tr2
-        │   └── vict.tr2
-        ├── fmv
-        │   ├── crsh_eng.rpl
-        │   ├── endgame.rpl
-        │   ├── intr_eng.rpl
-        │   ├── logo.rpl
-        │   └── sail_eng.rpl
-        ├── icon.icns
-        └── shaders
-            ├── 2d.glsl
-            ├── billboard.glsl
-            ├── common.glsl
-            ├── fbo.glsl
-            ├── lights.glsl
-            ├── meshes.glsl
-            ├── meshes_tr3.glsl
-            ├── meshes_tr12.glsl
-            └── ui.glsl</code></pre>
+    └── MacOS</code></pre>
 </details>
 
 *\* Will not be present until the game has been launched.*

@@ -81,6 +81,7 @@ Download the latest TRX release for TR1-TR3:
 * [Tomb Raider 1](docs/tr1/INSTALLING.md).
 * [Tomb Raider 2](docs/tr2/INSTALLING.md).
 * [Tomb Raider 3](docs/tr3/INSTALLING.md).
+* [Combined directory tree](docs/trx/INSTALLING.md).
 
 ### Changelog
 

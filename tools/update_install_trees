@@ -2,8 +2,9 @@
 import argparse
 import re
 from collections import defaultdict
-from collections.abc import Callable, Iterable
+from collections.abc import Iterable
 from pathlib import Path
+from typing import Any
 
 from shared.paths import DATA_DIR, DOCS_DIR, PROJECT_PATHS, REPO_DIR
 from shared.vfs import VirtualFilesystem
@@ -11,22 +12,15 @@ from shared.vfs import VirtualFilesystem
 DATA_REPO_ROOT_DIR = REPO_DIR.parent / "TRX-data"
 
 IGNORED_FILES = """
-    max_stats.cache.json
+max_stats.cache.json
 """
 
 TR1_OG_FILES = """
-data/cat.phd
 data/cut1.phd
 data/cut2.phd
 data/cut3.phd
 data/cut4.phd
-data/egypt.phd
-data/end2.phd
-data/end.phd
 data/gym.phd
-data/level10a.phd
-data/level10b.phd
-data/level10c.phd
 data/level1.phd
 data/level2.phd
 data/level3a.phd
@@ -39,6 +33,9 @@ data/level7b.phd
 data/level8a.phd
 data/level8b.phd
 data/level8c.phd
+data/level10a.phd
+data/level10b.phd
+data/level10c.phd
 data/title.phd
 fmv/cafe.rpl
 fmv/canyon.rpl
@@ -112,6 +109,13 @@ music/track59.flac
 music/track60.flac
 """
 
+TR1_UB_OG_FILES = """
+data/cat.phd
+data/egypt.phd
+data/end.phd
+data/end2.phd
+"""
+
 TR2_OG_FILES = """
 data/assault.tr2
 data/boat.tr2
@@ -126,21 +130,14 @@ data/floating.tr2
 data/house.tr2
 data/icecave.tr2
 data/keel.tr2
-data/level1.tr2
-data/level2.tr2
-data/level3.tr2
-data/level4.tr2
-data/level5.tr2
 data/living.tr2
 data/main.sfx
-data/main_gm.sfx
 data/monastry.tr2
 data/opera.tr2
 data/platform.tr2
 data/rig.tr2
 data/skidoo.tr2
 data/title.tr2
-data/title_gm.tr2
 data/unwater.tr2
 data/venice.tr2
 data/wall.tr2
@@ -215,6 +212,16 @@ music/60.mp3
 music/61.mp3
 """
 
+TR2_GM_OG_FILES = """
+data/level1.tr2
+data/level2.tr2
+data/level3.tr2
+data/level4.tr2
+data/level5.tr2
+data/main_gm.sfx
+data/title_gm.tr2
+"""
+
 TR3_OG_FILES = """
 data/main.sfx
 data/tombpc.dat
@@ -247,7 +254,6 @@ data/title.tr2
 data/tonyboss.tr2
 data/tower.tr2
 data/triboss.tr2
-data/vict.tr2
 cuts/cut3.tr2
 cuts/cut4.tr2
 cuts/cut5.tr2
@@ -259,6 +265,113 @@ cuts/cut11.tr2
 cuts/cut12.tr2
 data/area51.tr2
 """
+
+TR3_LA_OG_FILES = """
+data/chunnel.tr2
+data/scotland.tr2
+data/slinc.tr2
+data/undersea.tr2
+data/willsden.tr2
+data/zoo.tr2
+data/main_la.sfx
+data/title_la.tr2
+"""
+
+OG_FILE_GROUPS = {
+    "tr1": tuple(Path(line) for line in TR1_OG_FILES.splitlines() if line),
+    "tr1-ub": tuple(Path(line) for line in TR1_UB_OG_FILES.splitlines() if line),
+    "tr2": tuple(Path(line) for line in TR2_OG_FILES.splitlines() if line),
+    "tr2-gm": tuple(Path(line) for line in TR2_GM_OG_FILES.splitlines() if line),
+    "tr3": tuple(Path(line) for line in TR3_OG_FILES.splitlines() if line),
+    "tr3-la": tuple(Path(line) for line in TR3_LA_OG_FILES.splitlines() if line),
+}
+
+OG_PREFIX_TARGETS: dict[str, dict[str, Path]] = {
+    "tr1": {
+        "data": Path("games/tr1/levels"),
+        "fmv": Path("games/tr1/fmv"),
+        "music": Path("games/tr1/music"),
+    },
+    "tr1-ub": {
+        "data": Path("games/tr1-ub/levels"),
+    },
+    "tr2": {
+        "data": Path("games/tr2/levels"),
+        "fmv": Path("games/tr2/fmv"),
+        "music": Path("games/tr2/music"),
+    },
+    "tr2-gm": {
+        "data": Path("games/tr2-gm/levels"),
+    },
+    "tr3": {
+        "data": Path("games/tr3/levels"),
+        "fmv": Path("games/tr3/fmv"),
+        "audio": Path("games/tr3/audio"),
+        "cuts": Path("games/tr3/cuts"),
+    },
+    "tr3-la": {
+        "data": Path("games/tr3-la/levels"),
+    },
+}
+
+OG_FILE_OVERRIDES: dict[str, dict[Path, Path]] = {
+    "tr2": {
+        Path("data/main.sfx"): Path("games/tr2/main.sfx"),
+    },
+    "tr2-gm": {
+        Path("data/main_gm.sfx"): Path("games/tr2-gm/main_gm.sfx"),
+    },
+    "tr3": {
+        Path("data/main.sfx"): Path("games/tr3/main.sfx"),
+        Path("data/tombpc.dat"): Path("games/tr3/tombpc.dat"),
+    },
+    "tr3-la": {
+        Path("data/main_la.sfx"): Path("games/tr3-la/main_la.sfx"),
+    },
+}
+
+LEGACY_DOC_CONFIGS = [
+    {
+        "doc": PROJECT_PATHS[1].docs_dir / "INSTALLING.md",
+        "config": "TR1X",
+        "ship_roots": [
+            DATA_DIR / "common/ship",
+            PROJECT_PATHS[1].data_dir / "ship",
+            DATA_REPO_ROOT_DIR / "tr1/ship",
+            DATA_REPO_ROOT_DIR / "tr1ub/ship",
+        ],
+        "og_groups": ["tr1", "tr1-ub"],
+    },
+    {
+        "doc": PROJECT_PATHS[2].docs_dir / "INSTALLING.md",
+        "config": "TR2X",
+        "ship_roots": [
+            DATA_DIR / "common/ship",
+            PROJECT_PATHS[2].data_dir / "ship",
+            DATA_REPO_ROOT_DIR / "tr2/ship",
+            DATA_REPO_ROOT_DIR / "tr2gm/ship",
+        ],
+        "og_groups": ["tr2", "tr2-gm"],
+    },
+    {
+        "doc": PROJECT_PATHS[3].docs_dir / "INSTALLING.md",
+        "config": "TR3X",
+        "ship_roots": [
+            DATA_DIR / "common/ship",
+            PROJECT_PATHS[3].data_dir / "ship",
+            DATA_REPO_ROOT_DIR / "tr3/ship",
+        ],
+        "og_groups": ["tr3", "tr3-la"],
+    },
+]
+
+TRX_IMAGE_ROOTS = {
+    "tr1": DATA_REPO_ROOT_DIR / "tr1/ship/data/images",
+    "tr1-ub": DATA_REPO_ROOT_DIR / "tr1ub/ship/data/images",
+    "tr2": DATA_REPO_ROOT_DIR / "tr2/ship/data/images",
+    "tr2-gm": DATA_REPO_ROOT_DIR / "tr2gm/ship/data/images",
+    "tr3": DATA_REPO_ROOT_DIR / "tr3/ship/data/images",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -275,95 +388,96 @@ def parse_args() -> argparse.Namespace:
 
 
 def collect(root_dir: Path) -> Iterable[Path]:
-    return (
+    paths = [
         path.relative_to(root_dir)
         for path in root_dir.rglob("*", recurse_symlinks=True)
-        if path.is_file()
-        and path.name not in IGNORED_FILES
+        if path.is_file() and path.name not in IGNORED_FILES
+    ]
+    return sorted(paths)
+
+
+def remap_og_path(path: Path, game: str) -> Path | None:
+    override = OG_FILE_OVERRIDES.get(game, {}).get(path)
+    if override is not None:
+        return override
+    if path.parts[0] in OG_PREFIX_TARGETS[game]:
+        return OG_PREFIX_TARGETS[game][path.parts[0]] / path.relative_to(
+            path.parts[0]
+        )
+    return None
+
+
+def remap_og_paths(paths: Iterable[Path], game: str) -> Iterable[Path]:
+    for path in paths:
+        mapped = remap_og_path(path, game)
+        if mapped is not None:
+            yield mapped
+
+
+def collect_many(root_dirs: Iterable[Path]) -> Iterable[Path]:
+    for root_dir in root_dirs:
+        yield from collect(root_dir)
+
+
+def iter_og_groups(group_names: Iterable[str]) -> Iterable[Path]:
+    for group_name in group_names:
+        yield from OG_FILE_GROUPS[group_name]
+
+
+def iter_trx_image_paths() -> Iterable[Path]:
+    for game, root_dir in TRX_IMAGE_ROOTS.items():
+        for path in collect(root_dir):
+            yield Path("games") / game / "images" / path
+
+
+def build_legacy_win_paths(config: dict[str, Any]) -> Iterable[Path]:
+    yield Path("TRX.exe")
+    yield Path(f"cfg/{config['config']}.json5*")
+    yield from iter_og_groups(config["og_groups"])
+    yield from collect_many(config["ship_roots"])
+
+
+def build_legacy_mac_paths(config: dict[str, Any]) -> Iterable[Path]:
+    yield Path("Contents/_CodeSignature")
+    yield Path("Contents/Frameworks")
+    yield Path("Contents/info.plist")
+    yield Path("Contents/MacOS")
+    yield from (
+        Path("Contents/Resources") / sub
+        for sub in collect_many(config["ship_roots"])
     )
+    yield from (
+        Path("Contents/Resources") / sub
+        for sub in iter_og_groups(config["og_groups"])
+    )
+    yield Path("Contents/Resources/icon.icns")
 
 
-def tr1_og_files() -> Iterable[Path]:
-    yield from (Path(line) for line in TR1_OG_FILES.splitlines() if line)
-
-
-def tr1_ship_files() -> Iterable[Path]:
-    yield from collect(DATA_DIR / "common/ship")
-    yield from collect(PROJECT_PATHS[1].data_dir / "ship")
-    yield from collect(DATA_REPO_ROOT_DIR / "tr1/ship")
-    yield from collect(DATA_REPO_ROOT_DIR / "tr1ub/ship")
-
-
-def tr1_files_win() -> Iterable[Path]:
+def build_trx_win_paths() -> Iterable[Path]:
     yield Path("TRX.exe")
+    yield Path("cfg/shell.json5*")
     yield Path("cfg/TR1X.json5*")
-    yield from tr1_og_files()
-    yield from tr1_ship_files()
-
-
-def tr1_files_mac() -> Iterable[Path]:
-    yield Path("Contents/_CodeSignature")
-    yield Path("Contents/Frameworks")
-    yield Path("Contents/info.plist")
-    yield Path("Contents/MacOS")
-    yield from (Path("Contents/Resources/") / sub for sub in tr1_ship_files())
-    yield from (Path("Contents/Resources/") / sub for sub in tr1_og_files())
-    yield Path("Contents/Resources/icon.icns")
-
-
-def tr2_og_files() -> Iterable[Path]:
-    yield from (Path(line) for line in TR2_OG_FILES.splitlines() if line)
-
-
-def tr2_ship_files() -> Iterable[Path]:
-    yield from collect(DATA_DIR / "common/ship")
-    yield from collect(PROJECT_PATHS[2].data_dir / "ship")
-    yield from collect(DATA_REPO_ROOT_DIR / "tr2/ship")
-    yield from collect(DATA_REPO_ROOT_DIR / "tr2gm/ship")
-
-
-def tr2_files_win() -> Iterable[Path]:
-    yield Path("TRX.exe")
     yield Path("cfg/TR2X.json5*")
-    yield from tr2_og_files()
-    yield from tr2_ship_files()
-
-
-def tr2_files_mac() -> Iterable[Path]:
-    yield Path("Contents/_CodeSignature")
-    yield Path("Contents/Frameworks")
-    yield Path("Contents/info.plist")
-    yield Path("Contents/MacOS")
-    yield from (Path("Contents/Resources/") / sub for sub in tr2_ship_files())
-    yield from (Path("Contents/Resources/") / sub for sub in tr2_og_files())
-    yield Path("Contents/Resources/icon.icns")
-
-
-def tr3_og_files() -> Iterable[Path]:
-    yield from (Path(line) for line in TR3_OG_FILES.splitlines() if line)
-
-
-def tr3_ship_files() -> Iterable[Path]:
-    yield from collect(DATA_DIR / "common/ship")
-    yield from collect(PROJECT_PATHS[3].data_dir / "ship")
-    yield from collect(DATA_REPO_ROOT_DIR / "tr3/ship")
-
-
-def tr3_files_win() -> Iterable[Path]:
-    yield Path("TRX.exe")
     yield Path("cfg/TR3X.json5*")
-    yield from tr3_og_files()
-    yield from tr3_ship_files()
+    yield from collect(DATA_DIR / "trx/ship")
+    yield from iter_trx_image_paths()
+    for group_name in OG_FILE_GROUPS:
+        yield from remap_og_paths(OG_FILE_GROUPS[group_name], group_name)
 
 
-def tr3_files_mac() -> Iterable[Path]:
-    yield Path("Contents/_CodeSignature")
-    yield Path("Contents/Frameworks")
-    yield Path("Contents/info.plist")
-    yield Path("Contents/MacOS")
-    yield from (Path("Contents/Resources/") / sub for sub in tr3_ship_files())
-    yield from (Path("Contents/Resources/") / sub for sub in tr3_og_files())
-    yield Path("Contents/Resources/icon.icns")
+def build_doc_trees() -> Iterable[tuple[Path, str, list[Path]]]:
+    for config in LEGACY_DOC_CONFIGS:
+        yield (
+            config["doc"],
+            "win",
+            list(build_legacy_win_paths(config)),
+        )
+        yield (
+            config["doc"],
+            "mac",
+            list(build_legacy_mac_paths(config)),
+        )
+    yield (DOCS_DIR / "trx/INSTALLING.md", "win", list(build_trx_win_paths()))
 
 
 
@@ -389,7 +503,10 @@ def make_tree_string(paths: list[Path]) -> str:
 
     # recursive render
     def render(node: Node, prefix: str = "") -> list[str]:
-        entries = sorted(node.keys(), key=natural_sort_key)
+        entries = sorted(
+            node.keys(),
+            key=lambda name: (0 if node[name] else 1, natural_sort_key(name)),
+        )
         lines = []
         for i, name in enumerate(entries):
             last = i == len(entries) - 1
@@ -405,7 +522,6 @@ def make_tree_string(paths: list[Path]) -> str:
 
 def process_install_doc(content: str, platform: str, paths: list[Path]) -> str:
     result: list[str] = []
-    found_marker = False
     lines = content.splitlines()
     while lines:
         line = lines.pop(0)
@@ -430,18 +546,9 @@ def main() -> None:
     args = parse_args()
     vfs = VirtualFilesystem()
 
-    trees: list[Path, str, Callable[[], Iterable[Path]]] = [
-        (PROJECT_PATHS[1].docs_dir / "INSTALLING.md", "win", tr1_files_win),
-        (PROJECT_PATHS[1].docs_dir / "INSTALLING.md", "mac", tr1_files_mac),
-        (PROJECT_PATHS[2].docs_dir / "INSTALLING.md", "win", tr2_files_win),
-        (PROJECT_PATHS[2].docs_dir / "INSTALLING.md", "mac", tr2_files_mac),
-        (PROJECT_PATHS[3].docs_dir / "INSTALLING.md", "win", tr3_files_win),
-        (PROJECT_PATHS[3].docs_dir / "INSTALLING.md", "mac", tr3_files_mac),
-    ]
-
-    for path, platform, func in trees:
+    for path, platform, paths in build_doc_trees():
         vfs.put(
-            path, process_install_doc(vfs.get(path), platform, list(func()))
+            path, process_install_doc(vfs.get(path), platform, paths)
         )
 
     if args.dry_run:
