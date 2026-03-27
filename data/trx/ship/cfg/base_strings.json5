@@ -2488,6 +2488,9 @@
                 "Rolling Ball 4",
             ]
         },
+        "rotating_laser": {
+            "name": "Rotating Laser",
+        },
         "save_crystal": {
             "name": "Savegame Crystal",
         },

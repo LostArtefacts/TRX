@@ -2440,6 +2440,9 @@
         "rolling_ball_4": {
             "name": "Głaz 4",
         },
+        "rotating_laser": {
+            "name": "\\{review}Obracające się lasery",
+        },
         "save_crystal": {
             "name": "Kryształ do zapisu",
         },

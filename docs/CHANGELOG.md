@@ -15,6 +15,7 @@
 - added Security Laser (Alarm) control
 - added Security Laser (Damage) control
 - added Security Laser (Kill) control
+- added Rotating Laser control
 - added Sentry Gun control
 - added Civilian control
 - added Detonator Box control

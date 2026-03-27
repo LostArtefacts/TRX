@@ -2465,6 +2465,9 @@
                 "Ball-rollaidh 4",
             ]
         },
+        "rotating_laser": {
+            "name": "\\{review}Laser rothlach",
+        },
         "save_crystal": {
             "name": "Criostal Geama Sàbhalaidh",
         },
