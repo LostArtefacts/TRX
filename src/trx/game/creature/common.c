@@ -15,6 +15,8 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/spawn.h>
+#include <trx/game/stats.h>
 #include <trx/version.h>
 
 // clang-format off
@@ -31,6 +33,7 @@
 #define M_JOINT_ARC        0x3000
 #define M_MAX_X_ROT        (20 * DEG_1) // = 3640
 #define M_BITE_DISTANCE    (g_TRVersion < 3 ? STEP_L : STEP_L * 2)
+#define M_BOX_DAMAGE       20
 // clang-format on
 
 static const LARA_TRX_STATE m_CrouchShiftStates[] = {
@@ -1190,6 +1193,33 @@ void Creature_SpecialKill(
     Lara_SwitchToExtraState(lara_kill_state);
 
     g_Camera.pos.room_num = lara_item->room_num;
+}
+
+void Creature_TestBoxDamage(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->box_num == NO_BOX
+        || (Box_GetBox(item->box_num)->overlap_index & BOX_BLOCKED) == 0) {
+        return;
+    }
+
+    const XYZ_32 pos = {
+        .x = item->pos.x,
+        .y = item->pos.y - (Random_GetControl() & 0xFF) - 32,
+        .z = item->pos.z,
+    };
+    Spawn_BloodBath(
+        pos.x, pos.y, pos.z, (Random_GetControl() & 0x7F) + STEP_L / 2,
+        Random_GetControl() << 1, item->room_num, 3);
+
+    if (item->hit_points <= 0) {
+        return;
+    }
+
+    item->hit_points -= M_BOX_DAMAGE;
+    if (item->hit_points <= 0) {
+        Stats_AddKill();
+    }
 }
 
 void Creature_Die(const int16_t item_num, const bool explode)
