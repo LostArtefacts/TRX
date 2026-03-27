@@ -2456,6 +2456,9 @@
                 "Rolling Ball 4",
             ]
         },
+        "rotating_laser": {
+            "name": "\\{review}Rotierender Laser",
+        },
         "save_crystal": {
             "name": "Speicherkristall",
         },

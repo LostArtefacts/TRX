@@ -2450,6 +2450,9 @@
                 "\\{review}Boule Roulante 4",
             ]
         },
+        "rotating_laser": {
+            "name": "\\{review}Laser rotatif",
+        },
         "save_crystal": {
             "name": "Cristal de Sauvegarde",
         },

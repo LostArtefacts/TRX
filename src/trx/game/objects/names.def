@@ -281,6 +281,7 @@ X_OBJ_NAME_DEFINE(O_POWER_SAW,             "power_saw",             X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PROPELLER_1,           "propeller_1",           X_OBJ_NAMES("Airplane Propeller"))
 X_OBJ_NAME_DEFINE(O_PROPELLER_2,           "propeller_2",           X_OBJ_NAMES("Underwater Propeller"))
 X_OBJ_NAME_DEFINE(O_PROPELLER_3,           "propeller_3",           X_OBJ_NAMES("Air Fan"))
+X_OBJ_NAME_DEFINE(O_ROTATING_LASER,        "rotating_laser",        X_OBJ_NAMES("Rotating Laser"))
 X_OBJ_NAME_DEFINE(O_SECURITY_LASER_ALARM,  "security_laser_alarm",  X_OBJ_NAMES("Security Laser (Alarm)"))
 X_OBJ_NAME_DEFINE(O_SECURITY_LASER_DEADLY, "security_laser_deadly", X_OBJ_NAMES("Security Laser (Deadly)"))
 X_OBJ_NAME_DEFINE(O_SECURITY_LASER_KILLER, "security_laser_killer", X_OBJ_NAMES("Security Laser (Killer)"))

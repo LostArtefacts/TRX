@@ -2486,6 +2486,9 @@
                 "Masso Rotolante 4",
             ]
         },
+        "rotating_laser": {
+            "name": "\\{review}Laser rotante",
+        },
         "save_crystal": {
             "name": "Cristallo di Salvataggio",
         },
