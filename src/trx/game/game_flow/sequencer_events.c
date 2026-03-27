@@ -295,15 +295,12 @@ M_GF_HANDLER(M_HandleLevelStats)
         return gf_cmd;
     }
 
-    const bool use_bare_style = g_TRVersion == 1
-        && g_Config.ui.stat_detail_mode != STAT_DETAIL_MODE_FULL;
-
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
         .background_type = Game_IsInGym() ? BK_TRANSPARENT_MEDIUM
                                           : g_Config.ui.stats_background_style,
         .level_num = -1,
         .show_final_stats = false,
-        .use_bare_style = use_bare_style,
+        .use_bare_style = g_Config.ui.stats.style == STATS_STYLE_BARE,
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);

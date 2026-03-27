@@ -235,6 +235,7 @@
                 "tabs": {
                     "bars": "Barre",
                     "rendering": "Schermo",
+                    "stats": "\\{review}Statistiche",
                     "ui": "Interfaccia",
                     "visuals": "Grafica",
                 },
@@ -664,10 +665,9 @@
             "SHADOW_TYPE_OCTAGON": "Ottagono",
             "SHADOW_TYPE_SPRITE": "Sprite",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Dettagliato",
-            "STAT_DETAIL_MODE_FULL": "Completo",
-            "STAT_DETAIL_MODE_MINIMAL": "Minimo",
+        "STATS_STYLE": {
+            "STATS_STYLE_BARE": "\\{review}Semplice",
+            "STATS_STYLE_BORDERED": "\\{review}Con bordo",
         },
         "SUNGLASSES_MODE": {
             "SUNGLASSES_MODE_OFF": "Disattivato",
@@ -881,10 +881,6 @@
         "gameplay.enable_cutscenes": {
             "title": "Scene di intermezzo",
             "description": "Abilita la riproduzione delle scene di intermezzo.",
-        },
-        "gameplay.enable_deaths_counter": {
-            "title": "Conta morti di Lara",
-            "description": "Permette di mostrare il conteggio delle morti nella bussola e nelle statistiche del livello. Il conteggio delle morti viene aggiornato nel salvataggio attualmente caricato ogni volta che Lara muore.",
         },
         "gameplay.enable_demo": {
             "title": "Modalità demo",
@@ -1266,10 +1262,6 @@
             "title": "Barre sfumate",
             "description": "Fa in modo che la barra della salute e la barra dell'ossigeno utilizzino transizioni di colore uniformi.",
         },
-        "ui.enable_stats_level_header": {
-            "title": "Numero livello",
-            "description": "Mostra il numero del livello attuale nella parte superiore della schermata delle statistiche del livello.",
-        },
         "ui.enable_wraparound": {
             "title": "Scorrimento continuo",
             "description": "Consente la navigazione direzionale nei menu senza soluzione di continuità.",
@@ -1374,9 +1366,49 @@
             "title": "Posizione barra resistenza",
             "description": "Posizione in cui viene visualizzata la barra della resistenza.",
         },
-        "ui.stat_detail_mode": {
-            "title": "Dettagli statistiche",
-            "description": "Consente di scegliere tra vari livelli di dettaglio per la visualizzazione delle statistiche.\n\n- Minimo: mostra la finestra delle statistiche originale.\n- Dettagliato: mostra tutte le statistiche della modalità 'Minimo' e, in aggiunta, i conteggi massimi accanto ad ogni informazione.\n- Completo: mostra tutte le statistiche della modalità 'Dettagliato' e, in aggiunta, nuove informazioni non disponibili nella finestra originale.",
+        "ui.stats.show_ammo": {
+            "title": "\\{review}Colpi munizioni usati",
+            "description": "\\{review}Mostra la riga delle munizioni nelle statistiche del livello.",
+        },
+        "ui.stats.show_deaths": {
+            "title": "\\{review}Morti",
+            "description": "\\{review}Mostra le morti di Lara nelle statistiche della bussola e nelle statistiche del livello. Il conteggio delle morti viene aggiornato nel salvataggio attualmente caricato non appena Lara muore.",
+        },
+        "ui.stats.show_distance_travelled": {
+            "title": "\\{review}Distanza percorsa",
+            "description": "\\{review}Mostra la riga della distanza percorsa nelle statistiche del livello.",
+        },
+        "ui.stats.show_kills": {
+            "title": "\\{review}Uccisioni",
+            "description": "\\{review}Mostra la riga delle uccisioni nelle statistiche del livello.",
+        },
+        "ui.stats.show_level_header": {
+            "title": "\\{review}Contatore livello",
+            "description": "\\{review}Mostra il numero del livello corrente in cima alle statistiche del livello.",
+        },
+        "ui.stats.show_medipacks_used": {
+            "title": "\\{review}Kit di salute usati",
+            "description": "\\{review}Mostra la riga dei kit di salute usati nelle statistiche del livello.",
+        },
+        "ui.stats.show_pickups": {
+            "title": "\\{review}Raccolte",
+            "description": "\\{review}Mostra la riga delle raccolte nelle statistiche del livello.",
+        },
+        "ui.stats.show_secrets": {
+            "title": "\\{review}Segreti trovati",
+            "description": "\\{review}Mostra la riga dei segreti trovati nelle statistiche del livello.",
+        },
+        "ui.stats.show_time_taken": {
+            "title": "\\{review}Tempo impiegato",
+            "description": "\\{review}Mostra la riga del tempo impiegato nelle statistiche del livello.",
+        },
+        "ui.stats.show_totals": {
+            "title": "\\{review}Mostra totali",
+            "description": "\\{review}Mostra i totali accanto agli oggetti raccolti e alle uccisioni nelle statistiche del livello.",
+        },
+        "ui.stats.style": {
+            "title": "\\{review}Stile delle statistiche",
+            "description": "\\{review}Controlla come viene visualizzata la finestra delle statistiche.\n\n- Semplice: mostra il layout più semplice senza cornice.\n- Con bordo: mostra il layout con cornice.",
         },
         "ui.stats_background_style": {
             "title": "Sfondo statistiche",

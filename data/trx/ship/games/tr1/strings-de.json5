@@ -6,18 +6,7 @@
             "empty_slot_fmt": "- Leerer SLOT %d -",
         },
         "stats": {
-            "ammo": "Munition Treffer/Verbraucht",
-            "ammo_hits": "\\{review}TREFFER",
-            "ammo_used": "\\{review}VERBRAUCHTE MUNITION",
-            "deaths": "Tode",
-            "distance_travelled": "Zurückgelegte Distanz",
-            "kills": "Besiegte Gegner",
-            "level": "Level",
-            "medipacks_used": "Benötigte Medi-Packs",
-            "none": "\\{review}KEINE",
-            "pickups": "Pickups",
-            "secrets": "Geheimnisse",
-            "time_taken": "Benötigte Zeit",
+            "secrets": "\\{review}Geheimnisse",
         }
     },
     "settings": {

@@ -11,7 +11,7 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LookModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_QuickGunsModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_JumpLockModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_WallGlitchEnumEntries[];
-extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatsStyleEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_EnemyHealthBarShowModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_UIElementLocationEnumEntries[];

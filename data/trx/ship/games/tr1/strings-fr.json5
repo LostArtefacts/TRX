@@ -6,18 +6,7 @@
             "empty_slot_fmt": "- EMPLACEMENT VIDE -",
         },
         "stats": {
-            "ammo": "TIRS RÉUSSIS/EFFECTUÉS",
-            "ammo_hits": "\\{review}COUPS",
-            "ammo_used": "\\{review}MUNITIONS UTILISÉES",
-            "deaths": "MORTS",
-            "distance_travelled": "DISTANCE PARCOURUE",
-            "kills": "ENNEMIS TUÉS",
-            "level": "\\{review}NIVEAU",
-            "medipacks_used": "TROUSSES DE SOIN UTILISÉES",
-            "none": "\\{review}AUCUN",
-            "pickups": "OBJETS RAMASSÉS",
-            "secrets": "SECRETS",
-            "time_taken": "TEMPS ÉCOULÉ",
+            "secrets": "\\{review}Secrets",
         }
     },
     "settings": {

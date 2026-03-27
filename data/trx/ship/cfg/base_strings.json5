@@ -235,6 +235,7 @@
                 "tabs": {
                     "bars": "Bars",
                     "rendering": "Rendering",
+                    "stats": "Stats",
                     "ui": "UI",
                     "visuals": "Visuals",
                 },
@@ -664,10 +665,9 @@
             "SHADOW_TYPE_OCTAGON": "Octagon",
             "SHADOW_TYPE_SPRITE": "Sprite",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Detailed",
-            "STAT_DETAIL_MODE_FULL": "Full",
-            "STAT_DETAIL_MODE_MINIMAL": "Minimal",
+        "STATS_STYLE": {
+            "STATS_STYLE_BARE": "Bare",
+            "STATS_STYLE_BORDERED": "Bordered",
         },
         "SUNGLASSES_MODE": {
             "SUNGLASSES_MODE_OFF": "Off",
@@ -881,10 +881,6 @@
         "gameplay.enable_cutscenes": {
             "title": "Cutscenes",
             "description": "Enables cutscenes playing.",
-        },
-        "gameplay.enable_deaths_counter": {
-            "title": "Count Lara's deaths",
-            "description": "Enables showing a deaths counter in the compass and in the level statistics. Death count is updated in the currently loaded save as soon as Lara dies.",
         },
         "gameplay.enable_demo": {
             "title": "Demo mode",
@@ -1266,10 +1262,6 @@
             "title": "Smooth bars",
             "description": "Makes the UI bars use smooth color transitions.",
         },
-        "ui.enable_stats_level_header": {
-            "title": "Level counter",
-            "description": "Shows the current level number at the top of the level statistics.",
-        },
         "ui.enable_wraparound": {
             "title": "Scroll wrap",
             "description": "Lets directional navigation in menus loop around.",
@@ -1374,9 +1366,49 @@
             "title": "Sprintbar location",
             "description": "Location where the sprintbar is displayed.",
         },
-        "ui.stat_detail_mode": {
-            "title": "Statistics details",
-            "description": "Allows various levels of stat detail.\n\n- Minimal: shows the original statistics dialog.\n- Detailed: shows all stats from minimal as well as the maximum counts near each field.\n- Full: shows all stats from detailed as well as new rows not available in the original dialog.",
+        "ui.stats.show_ammo": {
+            "title": "Ammo hits/used",
+            "description": "Shows the ammo row in the level statistics.",
+        },
+        "ui.stats.show_deaths": {
+            "title": "Deaths",
+            "description": "Shows Lara's deaths in the compass statistics and in the level statistics. Death count is updated in the currently loaded save as soon as Lara dies.",
+        },
+        "ui.stats.show_distance_travelled": {
+            "title": "Distance traveled",
+            "description": "Shows the distance traveled row in the level statistics.",
+        },
+        "ui.stats.show_kills": {
+            "title": "Kills",
+            "description": "Shows the kills row in the level statistics.",
+        },
+        "ui.stats.show_level_header": {
+            "title": "Level counter",
+            "description": "Shows the current level number at the top of the level statistics.",
+        },
+        "ui.stats.show_medipacks_used": {
+            "title": "Health packs used",
+            "description": "Shows the health packs used row in the level statistics.",
+        },
+        "ui.stats.show_pickups": {
+            "title": "Pickups",
+            "description": "Shows the pickups row in the level statistics.",
+        },
+        "ui.stats.show_secrets": {
+            "title": "Secrets found",
+            "description": "Shows the secrets found row in the level statistics.",
+        },
+        "ui.stats.show_time_taken": {
+            "title": "Time taken",
+            "description": "Shows the time taken row in the level statistics.",
+        },
+        "ui.stats.show_totals": {
+            "title": "Show totals",
+            "description": "Shows totals next to pickups and kills in the level statistics.",
+        },
+        "ui.stats.style": {
+            "title": "Statistics style",
+            "description": "Controls how the statistics dialog is displayed.\n\n- Bare: shows the simpler unframed layout.\n- Bordered: shows the boxed layout.",
         },
         "ui.stats_background_style": {
             "title": "Stats background",

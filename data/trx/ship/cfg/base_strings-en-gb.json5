@@ -107,6 +107,10 @@
             "title": "Sprintbar colour",
             "description": "Colour of the sprintbar.",
         },
+        "ui.stats.show_distance_travelled": {
+            "title": "Distance travelled",
+            "description": "Shows the distance travelled row in the level statistics.",
+        },
         "visuals.fog_color": {
             "title": "Fog colour",
             "description": "Colour of the fog.",

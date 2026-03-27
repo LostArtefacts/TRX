@@ -56,6 +56,24 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
+    if (!Game_IsInGym()) {
+        p->ui_state = UI_StatsDialog_Init((UI_STATS_DIALOG_ARGS) {
+            .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
+                                             : UI_STATS_DIALOG_MODE_LEVEL,
+            .style = p->args.use_bare_style ? UI_STATS_DIALOG_STYLE_BARE
+                                            : UI_STATS_DIALOG_STYLE_BORDERED,
+            .level_num = p->args.level_num != -1 ? p->args.level_num
+                                                 : Game_GetCurrentLevel()->num,
+        });
+        if (p->args.show_final_stats
+            && !UI_StatsDialog_HasVisibleRows(p->ui_state)) {
+            UI_StatsDialog_Free(p->ui_state);
+            p->ui_state = nullptr;
+            p->state = STATE_FINISH;
+            return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
+        }
+    }
+
     switch (p->args.background_type) {
     case BK_IMAGE:
         if (p->args.background_path == nullptr) {
@@ -90,14 +108,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         }
 
         p->ui_active = true;
-        p->ui_state = UI_StatsDialog_Init((UI_STATS_DIALOG_ARGS) {
-            .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
-                                             : UI_STATS_DIALOG_MODE_LEVEL,
-            .style = p->args.use_bare_style ? UI_STATS_DIALOG_STYLE_BARE
-                                            : UI_STATS_DIALOG_STYLE_BORDERED,
-            .level_num = p->args.level_num != -1 ? p->args.level_num
-                                                 : Game_GetCurrentLevel()->num,
-        });
     }
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };

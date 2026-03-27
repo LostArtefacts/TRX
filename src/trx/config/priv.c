@@ -181,6 +181,105 @@ static void M_MigrateBarColorName(char **const value_ptr)
     }
 }
 
+typedef enum {
+    M_LEGACY_STATS_DETAILS_MINIMAL,
+    M_LEGACY_STATS_DETAILS_DETAILED,
+    M_LEGACY_STATS_DETAILS_FULL,
+} M_LEGACY_STATS_DETAILS;
+
+static bool M_TryGetLegacyStatsDetails(
+    JSON_OBJECT *const parent_obj, M_LEGACY_STATS_DETAILS *const out_value)
+{
+    const JSON_VALUE *const value =
+        JSON_ObjectGetValue(parent_obj, "stat_detail_mode");
+    if (value == nullptr) {
+        return false;
+    }
+
+    if (value->type == JSON_TYPE_STRING) {
+        const char *const value_str = JSON_ValueGetString(value, nullptr);
+        if (String_Equivalent(value_str, "minimal")) {
+            *out_value = M_LEGACY_STATS_DETAILS_MINIMAL;
+            return true;
+        }
+        if (String_Equivalent(value_str, "detailed")) {
+            *out_value = M_LEGACY_STATS_DETAILS_DETAILED;
+            return true;
+        }
+        if (String_Equivalent(value_str, "full")) {
+            *out_value = M_LEGACY_STATS_DETAILS_FULL;
+            return true;
+        }
+        return false;
+    }
+
+    if (value->type == JSON_TYPE_NUMBER) {
+        switch (JSON_ValueGetInt(value, M_LEGACY_STATS_DETAILS_FULL)) {
+        case M_LEGACY_STATS_DETAILS_MINIMAL:
+            *out_value = M_LEGACY_STATS_DETAILS_MINIMAL;
+            return true;
+        case M_LEGACY_STATS_DETAILS_DETAILED:
+            *out_value = M_LEGACY_STATS_DETAILS_DETAILED;
+            return true;
+        case M_LEGACY_STATS_DETAILS_FULL:
+            *out_value = M_LEGACY_STATS_DETAILS_FULL;
+            return true;
+        default:
+            break;
+        }
+    }
+
+    return false;
+}
+
+static void M_MigrateLegacyStatsOptions(JSON_OBJECT *const parent_obj)
+{
+    M_LEGACY_STATS_DETAILS legacy_details = M_LEGACY_STATS_DETAILS_FULL;
+    const bool has_legacy_details =
+        M_TryGetLegacyStatsDetails(parent_obj, &legacy_details);
+    if (!has_legacy_details) {
+        return;
+    }
+
+    if (JSON_ObjectGetValue(parent_obj, "style") == nullptr) {
+        g_Config.ui.stats.style =
+            g_TRVersion == 1 && legacy_details != M_LEGACY_STATS_DETAILS_FULL
+            ? STATS_STYLE_BARE
+            : STATS_STYLE_BORDERED;
+    }
+
+    if (JSON_ObjectGetValue(parent_obj, "show_totals") == nullptr) {
+        g_Config.ui.stats.show_totals =
+            legacy_details != M_LEGACY_STATS_DETAILS_MINIMAL;
+    }
+
+    if (legacy_details == M_LEGACY_STATS_DETAILS_FULL) {
+        return;
+    }
+
+    if (JSON_ObjectGetValue(parent_obj, "show_time_taken") == nullptr) {
+        g_Config.ui.stats.show_time_taken = true;
+    }
+    if (JSON_ObjectGetValue(parent_obj, "show_secrets") == nullptr) {
+        g_Config.ui.stats.show_secrets = true;
+    }
+    if (JSON_ObjectGetValue(parent_obj, "show_pickups") == nullptr) {
+        g_Config.ui.stats.show_pickups = g_TRVersion == 1;
+    }
+    if (JSON_ObjectGetValue(parent_obj, "show_kills") == nullptr) {
+        g_Config.ui.stats.show_kills = true;
+    }
+    if (JSON_ObjectGetValue(parent_obj, "show_ammo") == nullptr) {
+        g_Config.ui.stats.show_ammo = g_TRVersion != 1;
+    }
+    if (JSON_ObjectGetValue(parent_obj, "show_medipacks_used") == nullptr) {
+        g_Config.ui.stats.show_medipacks_used = g_TRVersion != 1;
+    }
+    if (JSON_ObjectGetValue(parent_obj, "show_distance_travelled") == nullptr) {
+        g_Config.ui.stats.show_distance_travelled = g_TRVersion != 1;
+    }
+}
+
 static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
 {
 #define L_READ_BOOL(target, key)                                               \
@@ -387,6 +486,15 @@ static void M_LoadLegacyOptions(JSON_OBJECT *const parent_obj)
             ? SUNGLASSES_MODE_OPAQUE
             : SUNGLASSES_MODE_OFF;
     }
+
+    if (JSON_ObjectGetValue(parent_obj, "show_level_header") == nullptr) {
+        L_READ_BOOL(
+            g_Config.ui.stats.show_level_header, "enable_stats_level_header");
+    }
+    if (JSON_ObjectGetValue(parent_obj, "show_deaths") == nullptr) {
+        L_READ_BOOL(g_Config.ui.stats.show_deaths, "enable_deaths_counter");
+    }
+    M_MigrateLegacyStatsOptions(parent_obj);
 
     if (g_Config.config_version >= 0
         && g_Config.config_version < M_CONFIG_VERSION_CURRENT) {

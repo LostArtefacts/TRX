@@ -30,7 +30,9 @@ static void M_Init(M_PRIV *const p, INVENTORY_ITEM *const inv_item)
         .mode = Game_IsInGym() && Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)
             ? UI_STATS_DIALOG_MODE_ASSAULT_COURSE
             : UI_STATS_DIALOG_MODE_LEVEL,
-        .style = UI_STATS_DIALOG_STYLE_BORDERED,
+        .style = g_Config.ui.stats.style == STATS_STYLE_BARE
+            ? UI_STATS_DIALOG_STYLE_BARE
+            : UI_STATS_DIALOG_STYLE_BORDERED,
         .level_num = Game_GetCurrentLevel()->num,
     });
 }
