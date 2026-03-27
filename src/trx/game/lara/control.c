@@ -291,7 +291,7 @@ static void M_ObjectCollision(COLL_INFO *const coll)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->hit_direction = -1;
+    lara_info->hit_direction = DIR_UNKNOWN;
     lara_item->hit_status = false;
     if (lara_item->hit_points <= 0) {
         return;
@@ -344,7 +344,7 @@ static void M_ObjectCollision(COLL_INFO *const coll)
         lara_info->hit_effect_count--;
     }
 
-    if (lara_info->hit_direction == -1) {
+    if (lara_info->hit_direction < 0) {
         lara_info->hit_frame = 0;
     }
 }

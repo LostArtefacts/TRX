@@ -630,7 +630,7 @@ static void M_Collision(
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->water_status = LWS_ABOVE_WATER;
-    lara->hit_direction = -1;
+    lara->hit_direction = DIR_UNKNOWN;
 
     ITEM *const boat_item = Item_Get(item_num);
 

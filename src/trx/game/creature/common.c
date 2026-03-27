@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera/vars.h>
 #include <trx/game/collision/los.h>
@@ -800,15 +801,11 @@ void Creature_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
         return;
     }
     if (!Collide_TestCollision(item, lara_item)) {
-        return;
-    }
-
-    if (!coll->enable_baddie_push) {
         return;
     }
 
@@ -817,10 +814,31 @@ void Creature_Collision(
         return;
     }
 
-    Lara_Col_ItemPush(
-        item, coll,
-        (g_TRVersion >= 2 || item->hit_points > 0) ? coll->enable_hit : false,
-        false);
+    if (coll->enable_baddie_push) {
+        Lara_Col_ItemPush(
+            item, coll,
+            (g_TRVersion >= 2 || item->hit_points > 0) ? coll->enable_hit
+                                                       : false,
+            false);
+    } else if (coll->enable_hit && g_TRVersion == 3) {
+        const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+        const int32_t s = Math_Sin(lara_item->rot.y);
+        const int32_t c = Math_Cos(lara_item->rot.y);
+        const int32_t x = (bounds->min.x + bounds->max.x) / 2;
+        const int32_t z = (bounds->max.z - bounds->min.z) / 2;
+        const int32_t rx =
+            (lara_item->pos.x - item->pos.x) - ((c * x + s * z) >> W2V_SHIFT);
+        const int32_t rz =
+            (lara_item->pos.z - item->pos.z) - ((c * z - s * x) >> W2V_SHIFT);
+
+        if (bounds->max.z - bounds->min.z > STEP_L) {
+            lara->hit_direction =
+                (lara_item->rot.y + DEG_180 - Math_Atan(rz, rx) + DEG_45)
+                >> W2V_SHIFT;
+            lara->hit_frame++;
+            CLAMPG(lara->hit_frame, 30);
+        }
+    }
 }
 
 bool Creature_Animate(

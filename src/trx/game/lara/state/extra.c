@@ -153,7 +153,7 @@ static void M_YetiKill(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_angle = M_CAM_YETI_KILL_ANGLE;
     g_Camera.target_distance = M_CAM_YETI_KILL_DISTANCE;
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->hit_direction = -1;
+    lara->hit_direction = DIR_UNKNOWN;
     if (Item_TestFrameRange(item, 0, M_LF_YETI_DEATH_TIMER_DELAY)) {
         lara->death_timer = 1;
     }
@@ -164,7 +164,7 @@ static void M_SharkKill(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_angle = M_CAM_SHARK_KILL_ANGLE;
     g_Camera.target_distance = M_CAM_SHARK_KILL_DISTANCE;
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->hit_direction = -1;
+    lara->hit_direction = DIR_UNKNOWN;
 
     if (Item_TestFrameEqual(item, M_LF_SHARK_DEATH_END)) {
         const int32_t water_height =

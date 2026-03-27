@@ -92,7 +92,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->flare.frame_num = 0;
     lara_info->calc_fall_speed = 0;
     lara_info->pose_count = 0;
-    lara_info->hit_direction = -1;
+    lara_info->hit_direction = DIR_UNKNOWN;
     lara_info->hit_effect = nullptr;
     lara_info->hit_effect_count = 0;
     lara_info->hit_frame = 0;
