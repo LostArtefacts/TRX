@@ -237,7 +237,7 @@ void Skidoo_Collision(
     Item_SwitchToObjAnim(lara_item, anim_idx, 0, O_LARA_SKIDOO);
     lara_item->current_anim_state = LARA_STATE_SKIDOO_GET_ON;
     lara->gun_status = LGS_ARMLESS;
-    lara->hit_direction = -1;
+    lara->hit_direction = DIR_UNKNOWN;
 
     ITEM *const item = Item_Get(item_num);
     lara_item->pos.x = item->pos.x;

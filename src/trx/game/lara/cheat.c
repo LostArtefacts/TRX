@@ -314,7 +314,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     lara_info->hit_effect_count = 0;
     lara_info->hit_effect = nullptr;
     lara_info->hit_frame = 0;
-    lara_info->hit_direction = -1;
+    lara_info->hit_direction = DIR_UNKNOWN;
     lara_info->air = LARA_MAX_AIR;
     lara_info->death_timer = 0;
     lara_info->mesh_effects = 0;
@@ -443,7 +443,7 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
     lara_info->hit_effect_count = 0;
     lara_info->hit_effect = nullptr;
     lara_info->hit_frame = 0;
-    lara_info->hit_direction = -1;
+    lara_info->hit_direction = DIR_UNKNOWN;
     lara_info->air = LARA_MAX_AIR;
     lara_info->death_timer = 0;
     lara_info->mesh_effects = 0;

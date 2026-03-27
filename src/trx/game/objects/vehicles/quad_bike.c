@@ -305,7 +305,7 @@ static void M_Collision(
     lara->head_rot.x = 0;
     lara->torso_rot.y = 0;
     lara->torso_rot.x = 0;
-    lara->hit_direction = -1;
+    lara->hit_direction = DIR_UNKNOWN;
     Item_Animate(lara_item);
 
     // TODO: do not hardcode this
