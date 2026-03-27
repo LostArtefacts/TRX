@@ -260,6 +260,7 @@
             "assault_title": "\\{review}MEILLEURS TEMPS",
             "basic_fmt": "%d",
             "bonus_statistics": "Statistiques bonus",
+            "crystals": "\\{review}Cristaux",
             "deaths": "Morts",
             "detail_fmt": "%d sur %d",
             "distance_travelled": "Distance parcourue",
@@ -1370,6 +1371,10 @@
             "title": "\\{review}Munitions touchées/utilisées",
             "description": "\\{review}Affiche la ligne des munitions dans les statistiques du niveau.",
         },
+        "ui.stats.show_crystals": {
+            "title": "\\{review}Cristaux",
+            "description": "\\{review}Affiche la rangée des cristaux dans les statistiques du niveau.",
+        },
         "ui.stats.show_deaths": {
             "title": "\\{review}Décès",
             "description": "\\{review}Affiche les décès de Lara dans les statistiques de la boussole et dans les statistiques du niveau. Le nombre de décès est mis à jour dans la sauvegarde actuellement chargée dès que Lara meurt.",
@@ -1404,7 +1409,7 @@
         },
         "ui.stats.show_totals": {
             "title": "\\{review}Afficher les totaux",
-            "description": "\\{review}Affiche les totaux à côté des objets ramassés et des éliminations dans les statistiques du niveau.",
+            "description": "\\{review}Affiche les totaux à côté des statistiques lorsque cela est applicable. Les secrets ne sont pas affectés par ce paramètre.",
         },
         "ui.stats.style": {
             "title": "\\{review}Style des statistiques",

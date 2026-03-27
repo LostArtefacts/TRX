@@ -763,6 +763,7 @@ static bool M_ReadResumeInfo(JSON_READ_IO *const io, RESUME_INFO *const resume)
     M_MUST(
         JSON_READ(io, "distance_travelled", &resume->stats.distance_travelled));
     M_MUST(JSON_READ(io, "kills", &resume->stats.kill_count));
+    M_SHOULD(JSON_READ(io, "crystals", &resume->stats.crystal_count));
     M_MUST(JSON_READ(io, "pickups", &resume->stats.pickup_count));
     M_MUST(JSON_READ(io, "secrets", &resume->stats.secret_flags));
     M_SHOULD(JSON_READ(io, "death_count", &resume->stats.death_count));

@@ -1,4 +1,6 @@
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
@@ -6,13 +8,42 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/stats.h>
 #include <trx/version.h>
 
 typedef struct {
     bool initialised;
+    bool counted_for_stats;
     bool used_for_save;
     int16_t initial_angle;
 } M_PRIV;
+
+static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    JSON_SHOULD(JSON_READ(io, "counted_for_stats", &p->counted_for_stats));
+    JSON_SHOULD(JSON_READ(io, "used_for_save", &p->used_for_save));
+    JSON_SHOULD(JSON_READ(io, "initialised", &p->initialised));
+    JSON_SHOULD(JSON_READ(io, "initial_angle", &p->initial_angle));
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "counted_for_stats", p->counted_for_stats);
+    JSONW_WRITE(io, "used_for_save", p->used_for_save);
+    JSONW_WRITE(io, "initialised", p->initialised);
+    JSONW_WRITE(io, "initial_angle", p->initial_angle);
+}
+
+static void M_CountCrystal(M_PRIV *const p)
+{
+    if (p->counted_for_stats) {
+        return;
+    }
+    p->counted_for_stats = true;
+    Stats_AddCrystal();
+}
 
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
@@ -57,6 +88,12 @@ static const OBJECT_BOUNDS *M_Bounds(void)
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    M_PRIV *const p = item->priv;
+    p->initialised = false;
+    p->counted_for_stats = false;
+    p->used_for_save = false;
+    p->initial_angle = 0;
+
     if (g_TRVersion != 3) {
         if (g_Config.gameplay.enable_save_crystals) {
             Item_AddActive(item_num);
@@ -121,6 +158,8 @@ static void M_ControlHeal(const int16_t item_num)
     const int32_t dy = ABS(item->pos.y - lara_item->pos.y);
     const int32_t dz = ABS(item->pos.z - lara_item->pos.z);
     if (dx < STEP_L && dy < WALL_L && dz < STEP_L) {
+        M_CountCrystal(p);
+
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->poison_timer = 0;
         lara_item->hit_points += LARA_MAX_HITPOINTS / 2;
@@ -179,6 +218,7 @@ static void M_CollisionSave(
     }
 
     M_PRIV *const p = item->priv;
+    M_CountCrystal(p);
     p->used_for_save = true;
     GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
 }
@@ -187,6 +227,8 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->handle_save_func = M_HandleSave;
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->priv_size = sizeof(M_PRIV);
     if (g_TRVersion == 3) {
         obj->control_func = M_ControlHeal;

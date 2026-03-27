@@ -255,6 +255,7 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "timer", resume->stats.timer);
     JSONW_WRITE(io, "kills", resume->stats.kill_count);
     JSONW_WRITE(io, "secrets", resume->stats.secret_flags);
+    JSONW_WRITE(io, "crystals", resume->stats.crystal_count);
     JSONW_WRITE(io, "pickups", resume->stats.pickup_count);
     JSONW_WRITE(io, "ammo_hits", resume->stats.ammo_hits);
     JSONW_WRITE(io, "ammo_used", resume->stats.ammo_used);

@@ -5,7 +5,9 @@
 - added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°
 - added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
 - added expanded statistics screen customization, including per-row toggles and a choice between bare and bordered layouts (Graphic Options → Stats)
+- added optional save/heal crystal counts to level and final statistics (#5180)
 - changed `--level` to no longer require `-e/--engine` to work
+- improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - fixed recordings keeping unbound hotkeys active during playback
 
 **TR2**:
@@ -85,7 +87,6 @@ Showcase: https://youtu.be/8SavYv2SawI
 - added `O_FLICKERING_LIGHT`, which is similar to `O_ELECTRICAL_LIGHT` but is permanently flickering
 - changed the reflections option to be available in all game modes (Graphic Options → Enable reflections)
 - changed the delay in performing a running jump by one frame less, when jump lock mode is set to disabled (Gameplay → Controls → Jump lock mode) (#3841)
-- improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - improved level loading times by 15%
 - improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
@@ -119,7 +120,6 @@ Showcase: https://youtu.be/8SavYv2SawI
 - added Electric Cleaner control
 - added Punk control, including `O_PUNK_2`, which was unused in OG
 - added Security Guard control
-- added Security Laser control
 - added Propeller control
 - added SWAT control
 - added Diver control

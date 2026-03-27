@@ -260,6 +260,7 @@
             "assault_title": "BEST TIMES",
             "basic_fmt": "%d",
             "bonus_statistics": "Bonus Statistics",
+            "crystals": "Crystals",
             "deaths": "Deaths",
             "detail_fmt": "%d of %d",
             "distance_travelled": "Distance Traveled",
@@ -1370,6 +1371,10 @@
             "title": "Ammo hits/used",
             "description": "Shows the ammo row in the level statistics.",
         },
+        "ui.stats.show_crystals": {
+            "title": "Crystals",
+            "description": "Shows the crystals row in the level statistics.",
+        },
         "ui.stats.show_deaths": {
             "title": "Deaths",
             "description": "Shows Lara's deaths in the compass statistics and in the level statistics. Death count is updated in the currently loaded save as soon as Lara dies.",
@@ -1404,7 +1409,7 @@
         },
         "ui.stats.show_totals": {
             "title": "Show totals",
-            "description": "Shows totals next to pickups and kills in the level statistics.",
+            "description": "Shows totals next to stats when applicable. Secrets remain unaffected by this setting.",
         },
         "ui.stats.style": {
             "title": "Statistics style",

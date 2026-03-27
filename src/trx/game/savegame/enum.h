@@ -25,6 +25,9 @@ typedef enum {
     // Carried-item drops are persisted with truthful statuses/positions.
     SG_VERSION_17 = 17,
 
+    // Crystal statistics are persisted in savegames.
+    SG_VERSION_18 = 18,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_17,
+    SG_CURRENT_VERSION = SG_VERSION_18,
 } SAVEGAME_VERSION;

@@ -122,6 +122,7 @@ typedef struct {
             bool show_level_header;
             bool show_time_taken;
             bool show_secrets;
+            bool show_crystals;
             bool show_pickups;
             bool show_kills;
             bool show_ammo;

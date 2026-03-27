@@ -4,6 +4,7 @@
 
 bool UI_Settings_EnablePS1Crystals_IsAvailable(
     const UI_SETTINGS_OPTION *option);
+bool UI_Settings_ShowCrystals_IsAvailable(const UI_SETTINGS_OPTION *option);
 
 bool UI_Settings_FixItemRots_IsAvailable(const UI_SETTINGS_OPTION *option);
 bool UI_Settings_FixStepGlitch_IsAvailable(const UI_SETTINGS_OPTION *option);
