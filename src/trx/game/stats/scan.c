@@ -146,6 +146,7 @@ static void M_CheckTriggers(
 
             case O_EEL:
             case O_BIG_EEL:
+            case O_ORCA:
                 break;
 
             case O_SCION_ITEM_3:
