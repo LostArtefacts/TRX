@@ -10,7 +10,6 @@
 // clang-format off
 #define M_RADIUS       (WALL_L / 10)      // = 102
 #define M_HIT_POINTS   45
-#define M_BOX_DAMAGE   20
 #define M_DAMAGE       28
 #define M_ALERT_DIST   SQUARE(WALL_L)     // = 1048576
 #define M_ALERT_HEIGHT (WALL_L * 2)       // = 2048
@@ -115,18 +114,7 @@ static void M_Control(const int16_t item_num)
     int16_t torso_x = 0;
     int16_t torso_y = 0;
 
-    if (item->box_num != NO_BOX
-        && (Box_GetBox(item->box_num)->overlap_index & BOX_BLOCKED) != 0) {
-        const XYZ_32 pos = {
-            .x = item->pos.x,
-            .y = item->pos.y - (Random_GetControl() & 0xFF) - 32,
-            .z = item->pos.z,
-        };
-        Spawn_BloodBath(
-            pos.x, pos.y, pos.z, (Random_GetControl() & 0x7F) + STEP_L / 2,
-            Random_GetControl() << 1, item->room_num, 3);
-        item->hit_points -= M_BOX_DAMAGE;
-    }
+    Creature_TestBoxDamage(item_num);
 
     if (item->hit_points <= 0) {
         if (item->current_anim_state != M_STATE_DEATH) {
