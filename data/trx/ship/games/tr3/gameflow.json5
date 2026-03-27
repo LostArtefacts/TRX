@@ -355,6 +355,8 @@
                 "lara_guns.bin",
                 "compound_cine.bin",
             ],
+            "unobtainable_kills": 9,
+            "unobtainable_ally_kills": 8,
         },
 
         // 15. Area 51
