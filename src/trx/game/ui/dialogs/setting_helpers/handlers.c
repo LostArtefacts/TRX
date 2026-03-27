@@ -7,6 +7,7 @@
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/sound.h>
+#include <trx/game/stats.h>
 #include <trx/game/ui/dialogs/settings_editor.h>
 #include <trx/game/ui/settings.h>
 #include <trx/version.h>
@@ -15,6 +16,18 @@ bool UI_Settings_EnablePS1Crystals_IsAvailable(
     const UI_SETTINGS_OPTION *const option)
 {
     return g_Config.gameplay.enable_save_crystals;
+}
+
+bool UI_Settings_ShowCrystals_IsAvailable(
+    const UI_SETTINGS_OPTION *const option)
+{
+    if (!Stats_GameHasCrystals()) {
+        return false;
+    }
+    if (g_TRVersion <= 2 && !g_Config.gameplay.enable_save_crystals) {
+        return false;
+    }
+    return true;
 }
 
 bool UI_Settings_EnableFadeEffects_IsAvailable(

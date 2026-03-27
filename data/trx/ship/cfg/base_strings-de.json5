@@ -260,6 +260,7 @@
             "assault_title": "Bestzeiten",
             "basic_fmt": "%d",
             "bonus_statistics": "Bonusstatistiken",
+            "crystals": "\\{review}Kristalle",
             "deaths": "Tode",
             "detail_fmt": "%d von %d",
             "distance_travelled": "Zurückgelegte Distanz",
@@ -1370,6 +1371,10 @@
             "title": "\\{review}Munition Treffer/Verbraucht",
             "description": "\\{review}Zeigt die Munitionszeile in den Levelstatistiken an.",
         },
+        "ui.stats.show_crystals": {
+            "title": "\\{review}Kristalle",
+            "description": "\\{review}Zeigt die Kristallreihe in den Levelstatistiken an.",
+        },
         "ui.stats.show_deaths": {
             "title": "\\{review}Tode",
             "description": "\\{review}Zeigt Laras Tode in den Kompassstatistiken und in den Levelstatistiken an. Die Todesanzahl wird im aktuell geladenen Speicherstand aktualisiert, sobald Lara stirbt.",
@@ -1404,7 +1409,7 @@
         },
         "ui.stats.show_totals": {
             "title": "\\{review}Summen anzeigen",
-            "description": "\\{review}Zeigt Summen neben Aufnahmen und Kills in den Levelstatistiken an.",
+            "description": "\\{review}Zeigt Gesamtwerte neben den Statistiken an, wenn zutreffend. Geheimnisse bleiben von dieser Einstellung unberührt.",
         },
         "ui.stats.style": {
             "title": "\\{review}Stil der Statistiken",

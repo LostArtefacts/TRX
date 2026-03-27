@@ -198,6 +198,11 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
             LOG_TRACE(
                 "+1 pickup from pickup item %d in room %d", i, item->room_num);
             stats->max_pickup_count++;
+        } else if (item->object_id == O_SAVE_CRYSTAL_ITEM) {
+            LOG_TRACE(
+                "+1 crystal from save crystal item %d in room %d", i,
+                item->room_num);
+            stats->max_crystal_count++;
         }
     }
 

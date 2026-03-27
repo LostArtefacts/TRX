@@ -260,6 +260,7 @@
             "assault_title": "NAJLEPSZE CZASY",
             "basic_fmt": "%d",
             "bonus_statistics": "Statystyki bonusowe",
+            "crystals": "\\{review}Kryształy",
             "deaths": "Śmierci",
             "detail_fmt": "%d z %d",
             "distance_travelled": "Przebyta odległość",
@@ -1370,6 +1371,10 @@
             "title": "\\{review}Trafienia/amunicja użyta",
             "description": "\\{review}Pokazuje wiersz amunicji w statystykach poziomu.",
         },
+        "ui.stats.show_crystals": {
+            "title": "\\{review}Kryształy",
+            "description": "\\{review}Pokazuje wiersz kryształów w statystykach poziomu.",
+        },
         "ui.stats.show_deaths": {
             "title": "\\{review}Śmierci",
             "description": "\\{review}Pokazuje śmierci Lary w statystykach kompasu i statystykach poziomu. Liczba śmierci jest aktualizowana w aktualnie załadowanym zapisie zaraz po śmierci Lary.",
@@ -1404,7 +1409,7 @@
         },
         "ui.stats.show_totals": {
             "title": "\\{review}Pokaż sumy",
-            "description": "\\{review}Pokazuje sumy obok zebranych przedmiotów i zabójstw w statystykach poziomu.",
+            "description": "\\{review}Pokazuje sumy obok statystyk, gdy jest to możliwe. Sekrety pozostają niezmienione przez to ustawienie.",
         },
         "ui.stats.style": {
             "title": "\\{review}Styl statystyk",

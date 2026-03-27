@@ -263,6 +263,9 @@ static void M_MigrateLegacyStatsOptions(JSON_OBJECT *const parent_obj)
     if (JSON_ObjectGetValue(parent_obj, "show_secrets") == nullptr) {
         g_Config.ui.stats.show_secrets = true;
     }
+    if (JSON_ObjectGetValue(parent_obj, "show_crystals") == nullptr) {
+        g_Config.ui.stats.show_crystals = false;
+    }
     if (JSON_ObjectGetValue(parent_obj, "show_pickups") == nullptr) {
         g_Config.ui.stats.show_pickups = g_TRVersion == 1;
     }

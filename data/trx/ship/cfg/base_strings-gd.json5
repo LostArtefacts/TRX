@@ -260,6 +260,7 @@
             "assault_title": "NA H-ÀMANAN AS FHEÀRR",
             "basic_fmt": "%d",
             "bonus_statistics": "Staitistig a Bharrachd",
+            "crystals": "\\{review}Criostalan",
             "deaths": "Bàsan",
             "detail_fmt": "%d de %d",
             "distance_travelled": "Astar air a Shiubhal",
@@ -1370,6 +1371,10 @@
             "title": "\\{review}Bualadh ammo / cleachdadh",
             "description": "\\{review}Seall an loidhne ammo anns na staitistig ìre.",
         },
+        "ui.stats.show_crystals": {
+            "title": "\\{review}Criostalan",
+            "description": "\\{review}Tha e a’ sealltainn an rìgh criostalan ann an staitistig an ìre.",
+        },
         "ui.stats.show_deaths": {
             "title": "\\{review}Bàs",
             "description": "\\{review}Seall bàsan Lara anns na staitistig compais agus anns na staitistig ìre. Tha cunntas bàis air ùrachadh anns an sàbhalaidh a tha air a luchdachadh an-dràsta cho luath ‘s a bhàsaich Lara.",
@@ -1404,7 +1409,7 @@
         },
         "ui.stats.show_totals": {
             "title": "\\{review}Seall na suimean",
-            "description": "\\{review}Seall na suimean ri taobh nan nithean a chaidh a thogail agus nam marbhadh anns na staitistig ìre.",
+            "description": "\\{review}Sealltainn iomlanan ri taobh staitistig nuair a tha sin iomchaidh. Chan eil dìomhaireachdan air an toirt buaidh leis an suidheachadh seo.",
         },
         "ui.stats.style": {
             "title": "\\{review}Stoidhle staitistig",

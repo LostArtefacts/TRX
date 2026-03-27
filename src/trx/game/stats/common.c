@@ -146,6 +146,15 @@ void Stats_AddKill(void)
     }
 }
 
+void Stats_AddCrystal(void)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    if (level != nullptr) {
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
+        resume->stats.crystal_count++;
+    }
+}
+
 void Stats_AddPickup(void)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
@@ -197,6 +206,7 @@ FINAL_STATS Stats_ComputeFinalStats(const bool include_bonus_levels)
         if (resume != nullptr) {
 #define L_ADD(prop) result.stats.prop += resume->stats.prop;
             L_ADD(kill_count);
+            L_ADD(crystal_count);
             L_ADD(pickup_count);
             L_ADD(secret_count);
             L_ADD(timer);
@@ -214,6 +224,7 @@ FINAL_STATS Stats_ComputeFinalStats(const bool include_bonus_levels)
             L_ADD(max_kill_count);
             L_ADD(max_kill_ally_count);
             L_ADD(max_kill_non_ally_count);
+            L_ADD(max_crystal_count);
             L_ADD(max_pickup_count);
             L_ADD(max_secret_count);
             L_ADD(max_pickup_secret_count);

@@ -11,6 +11,7 @@ typedef struct {
     size_t max_kill_count;
     size_t max_kill_ally_count;
     size_t max_kill_non_ally_count;
+    size_t max_crystal_count;
     size_t max_pickup_count;
     size_t max_secret_count;
     uint32_t all_secrets_mask;
@@ -34,6 +35,7 @@ typedef struct STATS_COMMON {
     uint32_t ammo_hits;
     uint32_t distance_travelled;
     double medipacks_used;
+    uint16_t crystal_count;
     uint16_t pickup_count;
     int32_t death_count;
     uint16_t secrets_mask;
