@@ -6,18 +6,7 @@
             "empty_slot_fmt": "- ПУСТОЙ СЛОТ %d -",
         },
         "stats": {
-            "ammo": "Попадания/выстрелы",
-            "ammo_hits": "\\{review}ПОПАДАНИЯ",
-            "ammo_used": "\\{review}ИСПОЛЬЗОВАННЫЕ ПАТРОНЫ",
-            "deaths": "Смертей",
-            "distance_travelled": "Пройденное расстояние",
-            "kills": "Убито",
-            "level": "Уровень",
-            "medipacks_used": "Использовано аптечек",
-            "none": "\\{review}НЕТ",
-            "pickups": "Предметы",
-            "secrets": "Секреты",
-            "time_taken": "Время",
+            "secrets": "\\{review}Секреты",
         }
     },
     "settings": {

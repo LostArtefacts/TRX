@@ -3,10 +3,9 @@
 #include <trx/config.h>
 #include <trx/game/lara/const.h>
 
-const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatDetailModeEnumEntries[] = {
-    { STAT_DETAIL_MODE_MINIMAL },
-    { STAT_DETAIL_MODE_DETAILED },
-    { STAT_DETAIL_MODE_FULL },
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_StatsStyleEnumEntries[] = {
+    { STATS_STYLE_BARE },
+    { STATS_STYLE_BORDERED },
     { -1 },
 };
 

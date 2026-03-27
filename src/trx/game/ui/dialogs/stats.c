@@ -22,6 +22,7 @@ typedef enum {
     M_ROW_GENERIC,
     M_ROW_LEVEL_COUNTER,
     M_ROW_TIMER,
+    M_ROW_AUTO_SECRETS,
     M_ROW_ICON_SECRETS,
     M_ROW_NUM_SECRETS,
     M_ROW_PICKUPS,
@@ -65,6 +66,7 @@ typedef struct UI_STATS_DIALOG_STATE {
 
     const M_LOOK *look;
     bool has_floordata_secrets;
+    bool has_visible_rows;
 } UI_STATS_DIALOG_STATE;
 
 static const M_LOOK m_Looks[TR_VERSION_COUNT] = {
@@ -225,7 +227,13 @@ static void M_RowCentered(
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_CENTER },
     });
-    UI_Label(text);
+    if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
+        char *text_upper = String_ToUpper(text);
+        UI_Label(text_upper);
+        Memory_FreePointer(&text_upper);
+    } else {
+        UI_Label(text);
+    }
     UI_EndStack();
 }
 
@@ -234,11 +242,13 @@ static void M_Row(
     const char *const value)
 {
     if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
+        char *key_upper = String_ToUpper(key);
         UI_BeginStack(UI_STACK_HORIZONTAL);
-        UI_Label(key);
+        UI_Label(key_upper);
         UI_Label(" ");
         UI_Label(value);
         UI_EndStack();
+        Memory_FreePointer(&key_upper);
     } else {
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_HORIZONTAL,
@@ -255,10 +265,9 @@ static void M_RowFromRole(
     const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
     const int32_t param)
 {
-    const char *const num_fmt =
-        g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_MINIMAL
-        ? GS("general/stats/basic_fmt")
-        : GS("general/stats/detail_fmt");
+    const char *const num_fmt = g_Config.ui.stats.show_totals
+        ? GS("general/stats/detail_fmt")
+        : GS("general/stats/basic_fmt");
 
     switch (role) {
     case M_ROW_LEVEL_COUNTER:
@@ -277,11 +286,16 @@ static void M_RowFromRole(
             M_FormatTime(s, s->stats->timer));
         break;
 
-    case M_ROW_ICON_SECRETS: {
-        if (s->has_floordata_secrets) {
+    case M_ROW_AUTO_SECRETS:
+        if (s->args.mode == UI_STATS_DIALOG_MODE_FINAL
+            || s->has_floordata_secrets) {
             M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
-            break;
+        } else {
+            M_RowFromRole(s, M_ROW_ICON_SECRETS, 0);
         }
+        break;
+
+    case M_ROW_ICON_SECRETS: {
         char buf[256];
         M_FormatIconSecrets(buf, (LEVEL_STATS *)s->stats);
         M_Row(s, GS("general/stats/secrets"), buf);
@@ -393,77 +407,109 @@ static void M_RowFromRole(
     }
 }
 
-static void M_CommonRows(const UI_STATS_DIALOG_STATE *const s)
+static bool M_EmitRow(
+    const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
+    const int32_t param)
 {
-    if (g_TRVersion == 1) {
-        if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_MINIMAL) {
-            M_RowFromRole(s, M_ROW_KILLS, 0);
-            M_RowFromRole(s, M_ROW_PICKUPS, 0);
-            M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
-            M_RowFromRole(s, M_ROW_TIMER, 0);
-        } else {
-            M_RowFromRole(s, M_ROW_TIMER, 0);
-            M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
-            M_RowFromRole(s, M_ROW_PICKUPS, 0);
-            M_RowFromRole(s, M_ROW_KILLS, 0);
-            if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_FULL) {
-                M_RowFromRole(s, M_ROW_AMMO, 0);
-                M_RowFromRole(s, M_ROW_MEDIPACKS_USED, 0);
-                M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, 0);
-            }
+    M_RowFromRole(s, role, param);
+    return true;
+}
+
+static bool M_EmitDummyRow(
+    const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
+    const int32_t param)
+{
+    return true;
+}
+
+static bool M_EmitConfiguredStatsRows(
+    const UI_STATS_DIALOG_STATE *const s, const bool dry_run)
+{
+    bool has_rows = false;
+    bool (*emit_row_func)(const UI_STATS_DIALOG_STATE *, M_ROW_ROLE, int32_t) =
+        dry_run ? M_EmitDummyRow : M_EmitRow;
+
+    if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
+        if (g_Config.ui.stats.show_kills) {
+            has_rows |= emit_row_func(s, M_ROW_KILLS, 0);
+        }
+        if (g_Config.ui.stats.show_pickups) {
+            has_rows |= emit_row_func(s, M_ROW_PICKUPS, 0);
+        }
+        if (g_Config.ui.stats.show_secrets
+            && s->max_stats->max_secret_count != 0) {
+            has_rows |= emit_row_func(s, M_ROW_AUTO_SECRETS, 0);
+        }
+        if (g_Config.ui.stats.show_time_taken) {
+            has_rows |= emit_row_func(s, M_ROW_TIMER, 0);
         }
     } else {
-        if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_FULL) {
-            M_RowFromRole(s, M_ROW_PICKUPS, 0);
+        if (g_Config.ui.stats.show_time_taken) {
+            has_rows |= emit_row_func(s, M_ROW_TIMER, 0);
         }
-        M_RowFromRole(s, M_ROW_KILLS, 0);
-        if (g_Config.ui.stat_detail_mode == STAT_DETAIL_MODE_FULL) {
-            M_RowFromRole(s, M_ROW_AMMO, 0);
-        } else {
-            M_RowFromRole(s, M_ROW_AMMO_USED, 0);
-            M_RowFromRole(s, M_ROW_AMMO_HITS, 0);
+        if (g_Config.ui.stats.show_secrets
+            && s->max_stats->max_secret_count != 0) {
+            has_rows |= emit_row_func(s, M_ROW_AUTO_SECRETS, 0);
         }
-        M_RowFromRole(s, M_ROW_MEDIPACKS_USED, 0);
-        M_RowFromRole(s, M_ROW_DISTANCE_TRAVELLED, 0);
+        if (g_Config.ui.stats.show_pickups) {
+            has_rows |= emit_row_func(s, M_ROW_PICKUPS, 0);
+        }
+        if (g_Config.ui.stats.show_kills) {
+            has_rows |= emit_row_func(s, M_ROW_KILLS, 0);
+        }
     }
 
-    if (g_Config.gameplay.enable_deaths_counter && s->stats->death_count >= 0) {
-        // Always use sum of all levels for the deaths.
-        // Deaths get stored in the resume info for the level they happen
-        // on, so if the player dies in Vilcabamba and reloads Caves, they
-        // should still see an incremented death counter.
-        M_RowFromRole(s, M_ROW_DEATHS, 0);
+    if (g_Config.ui.stats.show_ammo) {
+        if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
+            M_RowFromRole(s, M_ROW_AMMO_USED, 0);
+            M_RowFromRole(s, M_ROW_AMMO_HITS, 0);
+        } else {
+            M_RowFromRole(s, M_ROW_AMMO, 0);
+        }
+        has_rows = true;
     }
+    if (g_Config.ui.stats.show_medipacks_used) {
+        has_rows |= emit_row_func(s, M_ROW_MEDIPACKS_USED, 0);
+    }
+    if (g_Config.ui.stats.show_distance_travelled) {
+        has_rows |= emit_row_func(s, M_ROW_DISTANCE_TRAVELLED, 0);
+    }
+    if (g_Config.ui.stats.show_deaths && s->stats->death_count >= 0) {
+        // Always use the sum of all levels for deaths.
+        // Deaths get stored in the resume info for the level they happen on,
+        // so if the player dies in Vilcabamba and reloads Caves, they should
+        // still see an incremented death counter.
+        has_rows |= emit_row_func(s, M_ROW_DEATHS, 0);
+    }
+
+    return has_rows;
+}
+
+static bool M_HasVisibleRows(const UI_STATS_DIALOG_STATE *const s)
+{
+    if (s->args.mode == UI_STATS_DIALOG_MODE_LEVEL
+        && g_Config.ui.stats.show_level_header) {
+        return true;
+    }
+
+    return M_EmitConfiguredStatsRows(s, true);
 }
 
 static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *const s)
 {
-    if (g_Config.ui.enable_stats_level_header) {
-        M_RowFromRole(s, M_ROW_LEVEL_COUNTER, 0);
+    if (g_Config.ui.stats.show_level_header) {
+        M_EmitRow(s, M_ROW_LEVEL_COUNTER, 0);
     }
-
-    if (g_TRVersion == 1) {
-        M_CommonRows(s);
-    } else {
-        M_RowFromRole(s, M_ROW_TIMER, 0);
-        if (s->max_stats->max_secret_count != 0) {
-            M_RowFromRole(s, M_ROW_ICON_SECRETS, 0);
-        }
-        M_CommonRows(s);
+    if (!s->has_visible_rows) {
+        M_RowCentered(s, GS("general/osd/complete_level"));
+        return;
     }
+    M_EmitConfiguredStatsRows(s, false);
 }
 
 static void M_FinalStatsRows(const UI_STATS_DIALOG_STATE *const s)
 {
-    if (g_TRVersion == 1) {
-        M_CommonRows(s);
-    } else {
-        M_RowFromRole(s, M_ROW_TIMER, 0);
-        if (s->max_stats->max_secret_count != 0) {
-            M_RowFromRole(s, M_ROW_NUM_SECRETS, 0);
-        }
-        M_CommonRows(s);
-    }
+    M_EmitConfiguredStatsRows(s, false);
 }
 
 static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
@@ -639,6 +685,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
                 s->has_floordata_secrets = true;
             }
         }
+        s->has_visible_rows = M_HasVisibleRows(s);
         break;
 
     case UI_STATS_DIALOG_MODE_FINAL:
@@ -649,6 +696,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
         s->stats = &s->final_stats.stats;
         s->max_stats = &s->final_stats.max_stats;
         M_AdjustMaxKills(s, M_HasHurtAlliesEver(include_bonus_levels));
+        s->has_visible_rows = M_HasVisibleRows(s);
         break;
 
     case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
@@ -658,6 +706,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
                 Gym_TrackManager_GetStats(track_type);
         }
         s->scrollable.max_items = M_GetAssaultCourseRowCount(s);
+        s->has_visible_rows = true;
         break;
     }
 
@@ -667,6 +716,11 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
 void UI_StatsDialog_Free(UI_STATS_DIALOG_STATE *const s)
 {
     Memory_Free(s);
+}
+
+bool UI_StatsDialog_HasVisibleRows(const UI_STATS_DIALOG_STATE *const s)
+{
+    return s->has_visible_rows;
 }
 
 int32_t UI_StatsDialog_Control(UI_STATS_DIALOG_STATE *const s)

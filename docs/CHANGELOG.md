@@ -4,6 +4,7 @@
 - added a new console command, `/tp enemy`, to cycle Lara through hostile creatures in the current level
 - added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°
 - added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
+- added expanded statistics screen customization, including per-row toggles and a choice between bare and bordered layouts (Graphic Options → Stats)
 - changed `--level` to no longer require `-e/--engine` to work
 - fixed recordings keeping unbound hotkeys active during playback
 

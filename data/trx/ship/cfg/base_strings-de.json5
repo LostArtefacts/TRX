@@ -235,6 +235,7 @@
                 "tabs": {
                     "bars": "\\{review}Leisten",
                     "rendering": "\\{review}Rendern",
+                    "stats": "\\{review}Statistiken",
                     "ui": "\\{review}Benutzeroberfläche",
                     "visuals": "\\{review}Darstellung",
                 },
@@ -664,10 +665,9 @@
             "SHADOW_TYPE_OCTAGON": "\\{review}Achteck",
             "SHADOW_TYPE_SPRITE": "\\{review}Sprite",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Detailliert",
-            "STAT_DETAIL_MODE_FULL": "Voll",
-            "STAT_DETAIL_MODE_MINIMAL": "Minimal",
+        "STATS_STYLE": {
+            "STATS_STYLE_BARE": "\\{review}Einfach",
+            "STATS_STYLE_BORDERED": "\\{review}Mit Rahmen",
         },
         "SUNGLASSES_MODE": {
             "SUNGLASSES_MODE_OFF": "\\{review}Aus",
@@ -881,10 +881,6 @@
         "gameplay.enable_cutscenes": {
             "title": "Zwischensequenzen",
             "description": "Aktiviert das Abspielen von Zwischensequenzen.",
-        },
-        "gameplay.enable_deaths_counter": {
-            "title": "Laras Tode zählen",
-            "description": "Aktiviert die Aufzählung von Laras Toden im Kompass und in den Level-Statistiken. Die Anzahl der Tode wird im aktuell geladenen Speicherstand aktualisiert, sobald sie stirbt.",
         },
         "gameplay.enable_demo": {
             "title": "Demo-Modus",
@@ -1266,10 +1262,6 @@
             "title": "Leisten-Farbverläufe",
             "description": "Sorgt bei Gesundheitsleisten, Sauerstoffleisten und Gesundheitsleisten von Feinden für einen fließenden Farbübergang.",
         },
-        "ui.enable_stats_level_header": {
-            "title": "Level-Zähler",
-            "description": "Zeigt die aktuelle Level-Nummer ganz oben in den Level-Statistiken an.",
-        },
         "ui.enable_wraparound": {
             "title": "Scroll-Schleife",
             "description": "Ermöglicht die Richtungsnavigation in Menüs in einer Schleife.",
@@ -1374,9 +1366,49 @@
             "title": "\\{review}Position der Sprintanleiste",
             "description": "\\{review}Position, an der die Sprinleiste angezeigt wird.",
         },
-        "ui.stat_detail_mode": {
-            "title": "Statistik-Details",
-            "description": "\\{review}Ermöglicht verschiedene Detailstufen der Statistik.\n\n- Minimal: zeigt den ursprünglichen Statistikdialog.\n- Detailliert: zeigt alle Statistiken aus Minimal sowie die maximalen Werte neben jedem Feld.\n- Vollständig: zeigt alle Statistiken aus Detailliert sowie neue Zeilen, die im ursprünglichen Dialog nicht verfügbar sind.",
+        "ui.stats.show_ammo": {
+            "title": "\\{review}Munition Treffer/Verbraucht",
+            "description": "\\{review}Zeigt die Munitionszeile in den Levelstatistiken an.",
+        },
+        "ui.stats.show_deaths": {
+            "title": "\\{review}Tode",
+            "description": "\\{review}Zeigt Laras Tode in den Kompassstatistiken und in den Levelstatistiken an. Die Todesanzahl wird im aktuell geladenen Speicherstand aktualisiert, sobald Lara stirbt.",
+        },
+        "ui.stats.show_distance_travelled": {
+            "title": "\\{review}Zurückgelegte Distanz",
+            "description": "\\{review}Zeigt die Zeile der zurückgelegten Distanz in den Levelstatistiken an.",
+        },
+        "ui.stats.show_kills": {
+            "title": "\\{review}Kills",
+            "description": "\\{review}Zeigt die Kills-Zeile in den Levelstatistiken an.",
+        },
+        "ui.stats.show_level_header": {
+            "title": "\\{review}Levelzähler",
+            "description": "\\{review}Zeigt die aktuelle Levelnummer oben in den Levelstatistiken an.",
+        },
+        "ui.stats.show_medipacks_used": {
+            "title": "\\{review}Verwendete Gesundheitssets",
+            "description": "\\{review}Zeigt die Zeile der verwendeten Gesundheitssets in den Levelstatistiken an.",
+        },
+        "ui.stats.show_pickups": {
+            "title": "\\{review}Aufnahmen",
+            "description": "\\{review}Zeigt die Aufnahmen-Zeile in den Levelstatistiken an.",
+        },
+        "ui.stats.show_secrets": {
+            "title": "\\{review}Gefundene Geheimnisse",
+            "description": "\\{review}Zeigt die Zeile der gefundenen Geheimnisse in den Levelstatistiken an.",
+        },
+        "ui.stats.show_time_taken": {
+            "title": "\\{review}Benötigte Zeit",
+            "description": "\\{review}Zeigt die Zeile der benötigten Zeit in den Levelstatistiken an.",
+        },
+        "ui.stats.show_totals": {
+            "title": "\\{review}Summen anzeigen",
+            "description": "\\{review}Zeigt Summen neben Aufnahmen und Kills in den Levelstatistiken an.",
+        },
+        "ui.stats.style": {
+            "title": "\\{review}Stil der Statistiken",
+            "description": "\\{review}Steuert, wie der Statistikdialog angezeigt wird.\n\n- Einfach: zeigt das einfachere, rahmenlose Layout.\n- Mit Rahmen: zeigt das Layout mit Rahmen.",
         },
         "ui.stats_background_style": {
             "title": "\\{review}Statistik-Hintergrund",

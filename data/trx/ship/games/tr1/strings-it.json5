@@ -6,18 +6,7 @@
             "empty_slot_fmt": "- SLOT VUOTO %d -",
         },
         "stats": {
-            "ammo": "MUNIZIONI A SEGNO/USATE",
-            "ammo_hits": "COLPI A SEGNO",
-            "ammo_used": "MUNIZIONI USATE",
-            "deaths": "MORTI",
-            "distance_travelled": "DISTANZA PERCORSA",
-            "kills": "UCCISIONI",
-            "level": "LIVELLO",
-            "medipacks_used": "KIT MEDICI USATI",
-            "none": "NESSUNO",
-            "pickups": "OGGETTI",
-            "secrets": "SEGRETI",
-            "time_taken": "TEMPO IMPIEGATO",
+            "secrets": "\\{review}Segreti",
         }
     },
     "settings": {

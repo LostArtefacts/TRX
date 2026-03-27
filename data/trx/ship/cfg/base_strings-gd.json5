@@ -235,6 +235,7 @@
                 "tabs": {
                     "bars": "Bàr",
                     "rendering": "Reandaradh",
+                    "stats": "\\{review}Staitistig",
                     "ui": "Eadar-aghaidh",
                     "visuals": "Lèirsinneachd",
                 },
@@ -664,10 +665,9 @@
             "SHADOW_TYPE_OCTAGON": "Ochd-cheàrnach",
             "SHADOW_TYPE_SPRITE": "Spraide",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Mionaideach",
-            "STAT_DETAIL_MODE_FULL": "Làn",
-            "STAT_DETAIL_MODE_MINIMAL": "As lugha",
+        "STATS_STYLE": {
+            "STATS_STYLE_BARE": "\\{review}Furasta",
+            "STATS_STYLE_BORDERED": "\\{review}Leacanach",
         },
         "SUNGLASSES_MODE": {
             "SUNGLASSES_MODE_OFF": "Dheth",
@@ -881,10 +881,6 @@
         "gameplay.enable_cutscenes": {
             "title": "Seallaidhean-film",
             "description": "Cuiridh seo cluich seallaidhean-film an comas.",
-        },
-        "gameplay.enable_deaths_counter": {
-            "title": "Cunntair bhàsan Lara",
-            "description": "Seallaidh seo cunntas bàsan Lara anns a' chombaist agus anns na staitistig. Thèid seo ùrachadh sa bhad nuair a bhàsaicheas Lara.",
         },
         "gameplay.enable_demo": {
             "title": "Modh taisbeanaidh",
@@ -1266,10 +1262,6 @@
             "title": "Bàraichean rèidh",
             "description": "Cuiridh seo dath le gluasad rèidh air na bàraichean slàinte, èadhair is nàmhaid.",
         },
-        "ui.enable_stats_level_header": {
-            "title": "Àireamh-ìre",
-            "description": "Seallaidh seo àireamh na h-ìre làithreach aig mullach staitistig na h-ìre.",
-        },
         "ui.enable_wraparound": {
             "title": "Sgrolaich timcheall",
             "description": "Leigidh seòladh stiùiridh ann an clàran-bìdh lùbadh timcheall.",
@@ -1374,9 +1366,49 @@
             "title": "Suidheachadh bàr ruith luath",
             "description": "Far a nochdas am bàr ruith luath air an sgrion.",
         },
-        "ui.stat_detail_mode": {
-            "title": "Fiosrachadh staitistig",
-            "description": "Leigeas le diofar ìrean de mion-fhiosrachadh staitistige.\n\n- As ìsle: seallas an còmhradh staitistige tùsail.\n- Mion-fhiosraichte: seallas gach stait bho as ìsle a bharrachd air na cunntasan as àirde ri taobh gach raon.\n- Làn: seallas gach stait bho mion-fhiosraichte a bharrachd air sreathan ùra nach robh rim faighinn anns an còmhradh tùsail.",
+        "ui.stats.show_ammo": {
+            "title": "\\{review}Bualadh ammo / cleachdadh",
+            "description": "\\{review}Seall an loidhne ammo anns na staitistig ìre.",
+        },
+        "ui.stats.show_deaths": {
+            "title": "\\{review}Bàs",
+            "description": "\\{review}Seall bàsan Lara anns na staitistig compais agus anns na staitistig ìre. Tha cunntas bàis air ùrachadh anns an sàbhalaidh a tha air a luchdachadh an-dràsta cho luath ‘s a bhàsaich Lara.",
+        },
+        "ui.stats.show_distance_travelled": {
+            "title": "\\{review}Astar air a siubhal",
+            "description": "\\{review}Seall an loidhne astar air a siubhal anns na staitistig ìre.",
+        },
+        "ui.stats.show_kills": {
+            "title": "\\{review}Murtan",
+            "description": "\\{review}Seall an loidhne murtan anns na staitistig ìre.",
+        },
+        "ui.stats.show_level_header": {
+            "title": "\\{review}Àireamh ìre",
+            "description": "\\{review}Seall àireamh an ìre làithreach aig mullach nan staitistig ìre.",
+        },
+        "ui.stats.show_medipacks_used": {
+            "title": "\\{review}Pacaidean slàinte air an cleachdadh",
+            "description": "\\{review}Seall an loidhne pacaidean slàinte air an cleachdadh anns na staitistig ìre.",
+        },
+        "ui.stats.show_pickups": {
+            "title": "\\{review}Togalaichean",
+            "description": "\\{review}Seall an loidhne togalaichean anns na staitistig ìre.",
+        },
+        "ui.stats.show_secrets": {
+            "title": "\\{review}Dìomhair air an lorg",
+            "description": "\\{review}Seall an loidhne dìomhair air an lorg anns na staitistig ìre.",
+        },
+        "ui.stats.show_time_taken": {
+            "title": "\\{review}Ùine a ghabh",
+            "description": "\\{review}Seall an loidhne ùine a ghabh anns na staitistig ìre.",
+        },
+        "ui.stats.show_totals": {
+            "title": "\\{review}Seall na suimean",
+            "description": "\\{review}Seall na suimean ri taobh nan nithean a chaidh a thogail agus nam marbhadh anns na staitistig ìre.",
+        },
+        "ui.stats.style": {
+            "title": "\\{review}Stoidhle staitistig",
+            "description": "\\{review}Smachd air mar a thèid an còmhradh staitistig a thaisbeanadh.\n\n- Furasta: seall an cruth nas sìmplidh gun fhrèam.\n- Leacanach: seall an cruth le bogsaichean.",
         },
         "ui.stats_background_style": {
             "title": "Dealbh-cùil staitistig",

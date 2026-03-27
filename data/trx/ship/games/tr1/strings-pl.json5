@@ -6,18 +6,7 @@
             "empty_slot_fmt": "- PUSTY SLOT %d -",
         },
         "stats": {
-            "ammo": "AMUNICJA/TRAFIENIA",
-            "ammo_hits": "TRAFIENIA",
-            "ammo_used": "ZUŻYTA AMUNICJA",
-            "deaths": "ŚMIERCI",
-            "distance_travelled": "PRZEBYTA ODLEGŁOŚĆ",
-            "kills": "ZABÓJSTWA",
-            "level": "POZIOM",
-            "medipacks_used": "UŻYTE APTECZKI",
-            "none": "BRAK",
-            "pickups": "PRZEDMIOTY",
-            "secrets": "SEKRETY",
-            "time_taken": "SPĘDZONY CZAS",
+            "secrets": "\\{review}Sekrety",
         }
     },
     "settings": {

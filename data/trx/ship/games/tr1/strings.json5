@@ -6,18 +6,7 @@
             "empty_slot_fmt": "- EMPTY SLOT %d -",
         },
         "stats": {
-            "ammo": "AMMO HITS/USED",
-            "ammo_hits": "HITS",
-            "ammo_used": "AMMO USED",
-            "deaths": "DEATHS",
-            "distance_travelled": "DISTANCE TRAVELED",
-            "kills": "KILLS",
-            "level": "LEVEL",
-            "medipacks_used": "HEALTH PACKS USED",
-            "none": "NONE",
-            "pickups": "PICKUPS",
-            "secrets": "SECRETS",
-            "time_taken": "TIME TAKEN",
+            "secrets": "Secrets",
         }
     },
     "settings": {

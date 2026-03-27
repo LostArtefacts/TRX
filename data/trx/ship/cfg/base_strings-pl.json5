@@ -235,6 +235,7 @@
                 "tabs": {
                     "bars": "Paski",
                     "rendering": "Obraz",
+                    "stats": "\\{review}Statystyki",
                     "ui": "Interfejs",
                     "visuals": "Wygląd",
                 },
@@ -664,10 +665,9 @@
             "SHADOW_TYPE_OCTAGON": "Ośmiokąt",
             "SHADOW_TYPE_SPRITE": "Sprite",
         },
-        "STAT_DETAIL_MODE": {
-            "STAT_DETAIL_MODE_DETAILED": "Rozszerzone",
-            "STAT_DETAIL_MODE_FULL": "Pełne",
-            "STAT_DETAIL_MODE_MINIMAL": "Minimalne",
+        "STATS_STYLE": {
+            "STATS_STYLE_BARE": "\\{review}Prosty",
+            "STATS_STYLE_BORDERED": "\\{review}Z obramowaniem",
         },
         "SUNGLASSES_MODE": {
             "SUNGLASSES_MODE_OFF": "\\{review}Wyłączone",
@@ -881,10 +881,6 @@
         "gameplay.enable_cutscenes": {
             "title": "Przerywniki",
             "description": "Włącza odtwarzanie przerywników (cutscenek).",
-        },
-        "gameplay.enable_deaths_counter": {
-            "title": "Licznik śmierci Lary",
-            "description": "Włącza wyświetlanie licznika śmierci w statystykach poziomu. Liczba śmierci jest aktualizowana w aktualnie wczytanym zapisie w momencie, kiedy Lara ginie.",
         },
         "gameplay.enable_demo": {
             "title": "Tryb demo",
@@ -1266,10 +1262,6 @@
             "title": "Wygładzanie pasków",
             "description": "Sprawia, że paski życia i tlenu używają gładkich przejść kolorów.",
         },
-        "ui.enable_stats_level_header": {
-            "title": "Numer poziomu w statystykach",
-            "description": "Wyświetla numer bieżącego poziomu na ekranach statystyk.",
-        },
         "ui.enable_wraparound": {
             "title": "Cykliczne przewijanie",
             "description": "Zawijanie poza ostatni element spowoduje powrót na początek listy i na odwrót.",
@@ -1374,9 +1366,49 @@
             "title": "Pozycja paska sprintu",
             "description": "Lokalizacja, w której wyświetlany jest pasek sprintu.",
         },
-        "ui.stat_detail_mode": {
-            "title": "Poziom szczegółów statystyk",
-            "description": "Pozwala na różne poziomy szczegółowości ekranu statystyk.\n\n- Minimalny: pokazuje oryginalne okno statystyk.\n- Szczegółowy: pokazuje dodatkowo maksymalne wartości obok każdego pola.\n- Pełny: pokazuje także statystyki niedostępne w oryginalnej wersji gry.",
+        "ui.stats.show_ammo": {
+            "title": "\\{review}Trafienia/amunicja użyta",
+            "description": "\\{review}Pokazuje wiersz amunicji w statystykach poziomu.",
+        },
+        "ui.stats.show_deaths": {
+            "title": "\\{review}Śmierci",
+            "description": "\\{review}Pokazuje śmierci Lary w statystykach kompasu i statystykach poziomu. Liczba śmierci jest aktualizowana w aktualnie załadowanym zapisie zaraz po śmierci Lary.",
+        },
+        "ui.stats.show_distance_travelled": {
+            "title": "\\{review}Przebyta odległość",
+            "description": "\\{review}Pokazuje wiersz przebytej odległości w statystykach poziomu.",
+        },
+        "ui.stats.show_kills": {
+            "title": "\\{review}Zabójstwa",
+            "description": "\\{review}Pokazuje wiersz zabójstw w statystykach poziomu.",
+        },
+        "ui.stats.show_level_header": {
+            "title": "\\{review}Licznik poziomu",
+            "description": "\\{review}Pokazuje aktualny numer poziomu na górze statystyk poziomu.",
+        },
+        "ui.stats.show_medipacks_used": {
+            "title": "\\{review}Użyte apteczki",
+            "description": "\\{review}Pokazuje wiersz użytych apteczek w statystykach poziomu.",
+        },
+        "ui.stats.show_pickups": {
+            "title": "\\{review}Zebrane przedmioty",
+            "description": "\\{review}Pokazuje wiersz zebranych przedmiotów w statystykach poziomu.",
+        },
+        "ui.stats.show_secrets": {
+            "title": "\\{review}Odnalezione sekrety",
+            "description": "\\{review}Pokazuje wiersz odnalezionych sekretów w statystykach poziomu.",
+        },
+        "ui.stats.show_time_taken": {
+            "title": "\\{review}Czas",
+            "description": "\\{review}Pokazuje wiersz czasu w statystykach poziomu.",
+        },
+        "ui.stats.show_totals": {
+            "title": "\\{review}Pokaż sumy",
+            "description": "\\{review}Pokazuje sumy obok zebranych przedmiotów i zabójstw w statystykach poziomu.",
+        },
+        "ui.stats.style": {
+            "title": "\\{review}Styl statystyk",
+            "description": "\\{review}Kontroluje sposób wyświetlania okna statystyk.\n\n- Prosty: pokazuje prostszy układ bez ramki.\n- Z obramowaniem: pokazuje układ z ramką.",
         },
         "ui.stats_background_style": {
             "title": "Tło statystyk",

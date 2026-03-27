@@ -116,8 +116,19 @@ typedef struct {
         float pickup_scale;
 
         UI_STYLE menu_style;
-        STAT_DETAIL_MODE stat_detail_mode;
-        bool enable_stats_level_header;
+        struct {
+            STATS_STYLE style;
+            bool show_totals;
+            bool show_level_header;
+            bool show_time_taken;
+            bool show_secrets;
+            bool show_pickups;
+            bool show_kills;
+            bool show_ammo;
+            bool show_medipacks_used;
+            bool show_distance_travelled;
+            bool show_deaths;
+        } stats;
 
         BACKGROUND_TYPE inventory_background_style;
         BACKGROUND_TYPE stats_background_style;
@@ -186,7 +197,6 @@ typedef struct {
         bool disable_healing_between_levels;
         bool disable_medpacks;
         bool disable_extra_guns;
-        bool enable_deaths_counter;
         bool enable_pickup_aids;
         bool enable_save_crystals;
         bool enable_enhanced_saves;

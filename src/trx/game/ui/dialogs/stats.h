@@ -24,5 +24,6 @@ typedef struct UI_STATS_DIALOG_STATE UI_STATS_DIALOG_STATE;
 
 UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(UI_STATS_DIALOG_ARGS args);
 void UI_StatsDialog_Free(UI_STATS_DIALOG_STATE *s);
+bool UI_StatsDialog_HasVisibleRows(const UI_STATS_DIALOG_STATE *s);
 int32_t UI_StatsDialog_Control(UI_STATS_DIALOG_STATE *s);
 void UI_StatsDialog(UI_STATS_DIALOG_STATE *s);

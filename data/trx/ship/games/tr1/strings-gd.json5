@@ -6,18 +6,7 @@
             "empty_slot_fmt": "- SLOT FALAMH %d -",
         },
         "stats": {
-            "ammo": "BUAIDHEAN / LOSGADH",
-            "ammo_hits": "BUILEACHDAN",
-            "ammo_used": "AMHACHD AIR A CHLEACHD",
-            "deaths": "BÀSAN",
-            "distance_travelled": "ASTAR AIR A SHIUBHAL",
-            "kills": "MARBHAIN",
-            "level": "ÌRE",
-            "medipacks_used": "PASGANAN CLEACHDTE",
-            "none": "GIN",
-            "pickups": "TOGAILTEAN",
-            "secrets": "DÌOMHAIREACHDAN",
-            "time_taken": "ÙINE AIR A GHABHAIL",
+            "secrets": "\\{review}Dùnadh",
         }
     },
     "settings": {
