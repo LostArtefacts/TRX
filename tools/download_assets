@@ -8,14 +8,14 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 from zipfile import ZipFile
 
-from shared.paths import PROJECT_PATHS
+from shared.paths import DATA_DIR, PROJECT_PATHS
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Downloads large binary assets into local "
-            "data/*/ship/ directories."
+            "Downloads large binary assets for both the legacy per-game "
+            "ship layouts and the combined data/trx/ship hierarchy."
         )
     )
     parser.add_argument(
@@ -23,6 +23,11 @@ def parse_args() -> argparse.Namespace:
         choices=["1", "2", "3", "all"],
         default="all",
         nargs="?",
+    )
+    parser.add_argument(
+        "--combined",
+        action="store_true",
+        help="Also download assets for the combined data/trx/ship hierarchy.",
     )
     return parser.parse_args()
 
@@ -60,7 +65,7 @@ def download_assets(asset_urls: list[str], target_dir: Path) -> None:
 
 def main() -> None:
     args = parse_args()
-    asset_urls_map: dict[int, list[str]] = {
+    legacy_asset_urls_map: dict[int, list[str]] = {
         1: [
             "https://lostartefacts.dev/aux/tr1x/main.zip",
             "https://lostartefacts.dev/aux/tr1x/trub.zip",
@@ -71,15 +76,32 @@ def main() -> None:
         ],
         3: ["https://lostartefacts.dev/aux/tr3x/main.zip"],
     }
+    combined_asset_urls_map: dict[int, list[str]] = {
+        1: [
+            "https://lostartefacts.dev/aux/trx/tr1.zip",
+            "https://lostartefacts.dev/aux/trx/tr1-ub.zip",
+            "https://lostartefacts.dev/aux/trx/tr1-demo-pc.zip",
+        ],
+        2: [
+            "https://lostartefacts.dev/aux/trx/tr2.zip",
+            "https://lostartefacts.dev/aux/trx/tr2-gm.zip",
+        ],
+        3: ["https://lostartefacts.dev/aux/trx/tr3.zip"],
+    }
 
     versions = {"1": [1], "2": [2], "3": [3], "all": [1, 2, 3]}[
         args.game_version
     ]
     for version in versions:
         download_assets(
-            asset_urls_map[version],
+            legacy_asset_urls_map[version],
             target_dir=PROJECT_PATHS[version].shipped_data_dir,
         )
+        if args.combined:
+            download_assets(
+                combined_asset_urls_map[version],
+                target_dir=DATA_DIR / "trx" / "ship",
+            )
 
 
 if __name__ == "__main__":

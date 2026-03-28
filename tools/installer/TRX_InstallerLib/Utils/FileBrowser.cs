@@ -9,7 +9,7 @@ public class FileBrowser
         using var dlg = new FolderBrowserDialog()
         {
             Description = Language.Instance.Controls!["label_select_folder"],
-            SelectedPath = initialDirectory,
+            SelectedPath = initialDirectory ?? string.Empty,
             ShowNewFolderButton = true,
         };
         if (dlg.ShowDialog() == DialogResult.OK)

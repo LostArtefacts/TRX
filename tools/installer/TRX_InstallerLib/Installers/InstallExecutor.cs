@@ -106,4 +106,5 @@ public class InstallExecutor
         }
         await InstallUtils.DownloadZip($"{_resourceBaseURL}/{zipName}", targetDirectory, progress);
     }
+
 }

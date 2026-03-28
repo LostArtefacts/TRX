@@ -1,0 +1,10 @@
+{
+  "Controls": {
+    "window_title_main": "TRX Installer",
+    "step_source_heading": "Step 1: Installation options",
+    "step_source_content": "",
+    "step_settings_heading": "Step 1: Installation options",
+    "step_install_heading": "Step 2: Installing",
+    "step_finish_heading": "Step 3: Done"
+  }
+}

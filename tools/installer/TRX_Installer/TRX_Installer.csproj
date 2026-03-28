@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyName>TRX_Installer</AssemblyName>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationIcon>..\TR2X_Installer\Resources\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiscUtils.Iso9660" Version="0.16.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\const.json" />
+    <EmbeddedResource Include="Resources\Lang\en.json" />
+    <EmbeddedResource Include="Resources\release.zip" Condition="Exists('Resources\release.zip')" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\TR2X_Installer\Resources\CDRom.png" Link="Resources\CDRom.png" />
+    <Resource Include="..\TR2X_Installer\Resources\GOG.png" Link="Resources\GOG.png" />
+    <Resource Include="..\TR2X_Installer\Resources\icon.ico" Link="Resources\icon.ico" />
+    <Resource Include="..\TR2X_Installer\Resources\side1.jpg" Link="Resources\side1.jpg" />
+    <Resource Include="..\TR2X_Installer\Resources\side2.jpg" Link="Resources\side2.jpg" />
+    <Resource Include="..\TR2X_Installer\Resources\side3.jpg" Link="Resources\side3.jpg" />
+    <Resource Include="..\TR2X_Installer\Resources\side4.jpg" Link="Resources\side4.jpg" />
+    <Resource Include="..\TR2X_Installer\Resources\Steam.png" Link="Resources\Steam.png" />
+    <Resource Include="..\TR2X_Installer\Resources\TR2X.png" Link="Resources\TR2X.png" />
+  </ItemGroup>
+</Project>

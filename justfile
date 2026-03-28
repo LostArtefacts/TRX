@@ -92,5 +92,14 @@ lint: (lint-imports) (lint-format)
 trx-build-linux target='debug': (image-linux "0") (_docker_run "rrdash/trx-linux" "build" "--target" target)
 trx-build-win target='debug': (image-win "0") (_docker_run "rrdash/trx-win" "build" "--target" target)
 
+trx-build-win-installer target='release' *args: \
+    (trx-build-win target) \
+    (_docker_run "rrdash/trx-win" "package" "-o" "tools/installer/TRX_Installer/Resources/release.zip") \
+    (image-win-installer "0") \
+    (_docker_run "rrdash/trx-installer" "trx")
+
 trx-package-linux target='debug' *args: (trx-build-linux target) (_docker_run "rrdash/trx-linux" "package-all" args)
 trx-package-win target='debug' *args: (trx-build-win target) (_docker_run "rrdash/trx-win" "package-all" args)
+trx-package-win-installer target='release' *args: \
+    (trx-build-win-installer target args) \
+    (_docker_run "rrdash/trx-win" "package" "--platform" "win-installer" args)
