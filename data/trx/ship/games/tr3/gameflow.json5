@@ -34,6 +34,7 @@
         "lara_extra.bin",
         "misc_sprites.bin",
         "lara_outfits.bin",
+        "pickup_aid.bin",
     ],
 
     "globe_select_entries": [
