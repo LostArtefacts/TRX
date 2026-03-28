@@ -786,6 +786,8 @@ __attribute__((destructor)) static void M_Shutdown(void)
 
 void TRXPath_Init(const SHELL_ARGS *const args)
 {
+    M_Shutdown();
+
     m_Context.args = args;
     m_ResolveCacheGeneration++;
 
@@ -921,6 +923,7 @@ static bool M_ForEachResolveAttempt(
         }
         if (!callback(candidate, user_data)) {
             Memory_FreePointer(&candidate);
+            Memory_FreePointer(&expanded_rel);
             return false;
         }
 
@@ -947,6 +950,7 @@ static bool M_ForEachResolveAttempt(
             Memory_FreePointer(&out);
             if (!keep_going) {
                 Memory_FreePointer(&candidate);
+                Memory_FreePointer(&expanded_rel);
                 return false;
             }
         }
