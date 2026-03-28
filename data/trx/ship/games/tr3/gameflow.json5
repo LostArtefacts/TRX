@@ -122,6 +122,7 @@
             "injections": [
                 "india_sky.bin",
                 "lara_guns.bin",
+                "ganges_door131_frames.bin",
             ],
         },
 
@@ -327,6 +328,7 @@
             "injections": [
                 "lara_guns.bin",
                 "nevada_sky.bin",
+                "nevada_door132_frames.bin",
             ],
         },
 
@@ -401,6 +403,7 @@
                 "antarc_airlock.bin",
                 "antarc_sky.bin",
                 "lara_guns.bin",
+                "antarc_door134_frames.bin",
             ],
         },
 
@@ -473,6 +476,7 @@
                 "cavern_sky.bin",
                 "lara_guns.bin",
                 "ora_dagger.bin",
+                "cavern_door131_frames.bin",
             ],
         },
 
