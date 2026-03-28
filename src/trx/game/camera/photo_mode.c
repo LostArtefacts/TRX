@@ -41,7 +41,7 @@ static void M_ResetCamera(const bool exiting)
     g_Camera = exiting ? m_OriginalCamera : m_StartingCamera;
     // ensure Camera_EnsureEnvironment() picks up the flag change
     g_Camera.underwater = camera.underwater;
-    Viewport_AlterFOV(m_OriginalFOV, m_OriginalFOVMode);
+    Viewport_AlterFOV(exiting ? -1 : m_OriginalFOV, m_OriginalFOVMode);
     m_CurrentFOV = m_OriginalFOV / DEG_1;
 }
 
