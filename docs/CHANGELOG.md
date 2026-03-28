@@ -36,6 +36,7 @@
 - fixed the Area 51 sliding doors being offset too far from the floor
 - fixed bad vertices in staircase static meshes in Aldwych and Lud's Gate, allowing for visible gaps in geometry (#5182)
 - fixed bad positioning of light static meshes in Aldwych that could result in Lara not grabbing certain ledges (#5181)
+- fixed several missing textures in Lud's Gate room 77
 
 
 
