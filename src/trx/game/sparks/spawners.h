@@ -27,6 +27,8 @@ void Sparks_TriggerSideFlame(
 
 void Sparks_TriggerDartSmoke(XYZ_32 pos, XZ_32 vel, bool hit);
 
+void Sparks_TriggerPickupAid(XYZ_32 pos, XZ_32 vel);
+
 void Sparks_TriggerFlareSparks(XYZ_32 pos, XYZ_32 vel, bool smoke);
 
 void Sparks_TriggerRicochet(GAME_VECTOR pos, int32_t angle, int32_t size);

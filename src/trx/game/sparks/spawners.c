@@ -1096,6 +1096,81 @@ void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
     Sparks_FinishSetup(spark);
 }
 
+void Sparks_TriggerPickupAid(const XYZ_32 pos, const XZ_32 vel)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    const int32_t dx = lara_item->pos.x - pos.x;
+    const int32_t dz = lara_item->pos.z - pos.z;
+    const int32_t max_dist = 16 * WALL_L;
+    if (dx < -max_dist || dx > max_dist || dz < -max_dist || dz > max_dist) {
+        return;
+    }
+
+    SPARK *const spark = Sparks_GetFreeSpark();
+    spark->on = true;
+    spark->src_color.r = 48;
+    spark->src_color.g = 40;
+    spark->src_color.b = 36;
+    spark->dst_color.r = (Random_GetDraw() & 0x20) + 96;
+    spark->dst_color.g = spark->dst_color.r;
+    spark->dst_color.b = 96;
+    spark->col_fade_speed = 8;
+    spark->fade_to_black = 2;
+    spark->draw_type = DRAW_BLEND_ADD;
+    spark->extras = 0;
+    spark->life = (Random_GetControl() & 3) + 7;
+    spark->s_life = spark->life;
+    spark->dynamic = -1;
+    spark->pos = pos;
+    spark->pos.y -= Random_GetControl() & 16;
+
+    if (vel.x != 0) {
+        spark->vel.x = -vel.x;
+    } else {
+        spark->vel.x = (Random_GetControl() & 0x20) - 16;
+    }
+
+    spark->vel.y = -4 - (Random_GetControl() & 3);
+
+    if (vel.z != 0) {
+        spark->vel.z = -vel.z;
+    } else {
+        spark->vel.z = (Random_GetControl() & 0x20) - 16;
+    }
+
+    spark->friction = 3;
+
+    if ((Random_GetControl() & 1) != 0) {
+        spark->flags = SPARK_F_ROTATE | SPARK_F_SPRITE | SPARK_F_SCALE;
+        spark->rot_angle = Random_GetControl() & 0xFFF;
+
+        if ((Random_GetControl() & 1) != 0) {
+            spark->rot_add = -16 - (Random_GetControl() & 0xF);
+        } else {
+            spark->rot_add = (Random_GetControl() & 0xF) + 16;
+        }
+    } else {
+        spark->flags = SPARK_F_SPRITE | SPARK_F_SCALE;
+    }
+
+    const OBJECT *const obj = Object_Get(O_PICKUP_AID);
+    const int32_t mesh_count = ABS(obj->mesh_count) - 1;
+    spark->sprite_idx = obj->mesh_idx + (Random_GetControl() & mesh_count);
+
+    spark->scalar = 1;
+    int32_t rnd = (Random_GetControl() & 0x3F) + 36;
+    spark->dst_size.width = (uint8_t)rnd;
+    spark->size.width = spark->dst_size.width >> 4;
+    spark->src_size.width = spark->size.width;
+    spark->dst_size.height = (uint8_t)rnd;
+    spark->size.height = spark->dst_size.height >> 4;
+    spark->src_size.height = spark->size.height;
+    spark->gravity = -4 - (Random_GetControl() & 3);
+    spark->max_y_vel = -4 - (Random_GetControl() & 3);
+
+    Sparks_FinishSetup(spark);
+}
+
 void Sparks_TriggerFlareSparks(
     const XYZ_32 pos, const XYZ_32 vel, const bool smoke)
 {
