@@ -15,6 +15,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
+#include <trx/game/sparks.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
@@ -69,6 +70,16 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
 
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
+
+static const OBJECT_ID m_QuestObjects[] = {
+    // clang-format off
+    O_QUEST_ITEM_1,
+    O_QUEST_ITEM_2,
+    O_QUEST_ITEM_3,
+    O_QUEST_ITEM_4,
+    NO_OBJECT,
+    // clang-format on
+};
 
 typedef struct {
     int32_t aid_timer;
@@ -156,14 +167,20 @@ static void M_SpawnPickupAid(const ITEM *const item)
         .room_num = item->room_num,
     };
 
-    const int16_t effect_num = Effect_Create(pos.room_num);
-    if (effect_num != NO_EFFECT) {
-        EFFECT *const effect = Effect_Get(effect_num);
-        effect->room_num = pos.room_num;
-        effect->pos = pos.pos;
-        effect->counter = 0;
-        effect->object_id = O_PICKUP_AID;
-        effect->frame_num = 0;
+    if (g_TRVersion >= 3) {
+        for (int32_t i = 0; i < (Random_GetControl() & 3) + 4; i++) {
+            Sparks_TriggerPickupAid(pos.pos, (XZ_32) {});
+        }
+    } else {
+        const int16_t effect_num = Effect_Create(pos.room_num);
+        if (effect_num != NO_EFFECT) {
+            EFFECT *const effect = Effect_Get(effect_num);
+            effect->room_num = pos.room_num;
+            effect->pos = pos.pos;
+            effect->counter = 0;
+            effect->object_id = O_PICKUP_AID;
+            effect->frame_num = 0;
+        }
     }
 }
 
@@ -204,7 +221,7 @@ static void M_ControlPickupLights(ITEM *const item)
     Output_AddDynamicLightRGB(item->pos, 8, (RGB_888) { 0, c, c >> 1 });
 }
 
-static void M_Control(int16_t item_num)
+static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     if (item->status == IS_INVISIBLE || item->status == IS_DEACTIVATED) {
@@ -212,17 +229,15 @@ static void M_Control(int16_t item_num)
         return;
     }
 
-    if (g_Config.gameplay.enable_pickup_aids && item->room_num != NO_ROOM) {
-        M_ControlPickupAids(item);
+    if (item->room_num == NO_ROOM) {
+        return;
     }
 
-    if (g_TRVersion == 3 && item->room_num != NO_ROOM
-        && (item->object_id == O_QUEST_ITEM_1
-            || item->object_id == O_QUEST_ITEM_2
-            || item->object_id == O_QUEST_ITEM_3
-            || item->object_id == O_QUEST_ITEM_4)) {
+    if (g_TRVersion == 3 && Object_IsType(item->object_id, m_QuestObjects)) {
         item->rot.y += 1024;
         M_ControlPickupLights(item);
+    } else if (g_Config.gameplay.enable_pickup_aids) {
+        M_ControlPickupAids(item);
     }
 }
 
@@ -242,11 +257,7 @@ static void M_DoPickup(const int16_t item_num)
     item->status = IS_INVISIBLE;
     item->flags |= IF_KILLED;
 
-    if (g_TRVersion == 3
-        && (item->object_id == O_QUEST_ITEM_1
-            || item->object_id == O_QUEST_ITEM_2
-            || item->object_id == O_QUEST_ITEM_3
-            || item->object_id == O_QUEST_ITEM_4)) {
+    if (g_TRVersion == 3 && Object_IsType(item->object_id, m_QuestObjects)) {
         if (GF_BadGetLevelNum() == 19
             || (GF_BadIsMod("tr3-la") && GF_BadGetLevelNum() == 4)) {
             Item_Kill(item_num);
