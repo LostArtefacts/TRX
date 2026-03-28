@@ -1,0 +1,208 @@
+<Window x:Class="TRX_Installer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:TRX_Installer"
+        Title="TRX Installer"
+        MinWidth="480" MinHeight="380"
+        Width="{Binding WindowWidth, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, FallbackValue=700}"
+        Height="520"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisible" />
+        <local:BoolToVisibilityConverter x:Key="BoolToHidden" TrueValue="Collapsed" FalseValue="Visible" />
+        <Style x:Key="heading" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="MinWidth" Value="70" />
+            <Setter Property="Margin" Value="8,0,0,0" />
+        </Style>
+        <Style TargetType="Image">
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Sidebar image -->
+        <Rectangle Grid.Row="0" Grid.Column="0" Width="160"
+                   Visibility="{Binding IsSidebarVisible, Mode=OneWay, Converter={StaticResource BoolToVisible}}">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="{Binding SidebarImage, Mode=OneWay}"
+                            Stretch="UniformToFill"
+                            AlignmentX="Center" AlignmentY="Center" />
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- Step content -->
+        <Grid Grid.Row="0" Grid.Column="1" Margin="16,16,16,0">
+
+            <!-- Step 1: Setup -->
+            <Grid Visibility="{Binding IsSetupStep, Mode=OneWay, Converter={StaticResource BoolToVisible}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Style="{StaticResource heading}">Step 1: Select components</TextBlock>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding Components}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,8" Padding="10"
+                                        BorderThickness="1" BorderBrush="#22000000">
+                                    <StackPanel>
+                                        <!-- Title + source status -->
+                                        <CheckBox IsChecked="{Binding Install}" Margin="0,0,0,4">
+                                            <TextBlock TextWrapping="Wrap">
+                                                <Run FontWeight="SemiBold" Text="{Binding Title, Mode=OneWay}" />
+                                                <Run Text="  " />
+                                                <Run Foreground="{Binding SourceStatusBrush, Mode=OneWay}" Text="{Binding SourceStatus, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </CheckBox>
+
+                                        <!-- Description -->
+                                        <TextBlock Margin="22,0,0,4" TextWrapping="Wrap"
+                                                   FontSize="11" Foreground="#555555"
+                                                   Text="{Binding Description, Mode=OneWay}" />
+
+                                        <!-- Variant radio buttons (e.g. TR1:UB fan-made vs vanilla) -->
+                                        <ListBox Margin="22,4,0,0"
+                                                 Visibility="{Binding HasDownloadOptions, Mode=OneWay, Converter={StaticResource BoolToVisible}}"
+                                                 ItemsSource="{Binding DownloadOptions}"
+                                                 SelectedItem="{Binding SelectedDownloadOption}"
+                                                 Background="Transparent" BorderThickness="0">
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ListBoxItem">
+                                                                <RadioButton Margin="0,2,0,0"
+                                                                             Content="{Binding Title, Mode=OneWay}"
+                                                                             IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                        </ListBox>
+
+                                        <!-- Source directory (source-based components only) -->
+                                        <Grid Margin="22,4,0,0"
+                                              Visibility="{Binding HasSource, Mode=OneWay, Converter={StaticResource BoolToVisible}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="11"
+                                                       Text="{Binding SourceDirectory}"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <Button Grid.Column="1" Padding="6,2" FontSize="11"
+                                                    Click="ChooseSource_Click" Tag="{Binding}">Change...</Button>
+                                        </Grid>
+
+                                        <!-- Optional downloads (music checkboxes) -->
+                                        <ItemsControl Margin="22,4,0,0"
+                                                      Visibility="{Binding HasOptionalDownloads, Mode=OneWay, Converter={StaticResource BoolToVisible}}"
+                                                      ItemsSource="{Binding OptionalDownloads}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox Margin="0,2,0,0" FontSize="11"
+                                                              IsChecked="{Binding IsEnabled}"
+                                                              Content="{Binding Title, Mode=OneWay}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Destination folder -->
+                <Grid Grid.Row="2" Margin="0,8,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">Destination folder:</TextBlock>
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                               Text="{Binding TargetDirectory}" TextTrimming="CharacterEllipsis" />
+                    <Button Grid.Column="2" Padding="8,3" Click="ChooseTarget_Click">Change...</Button>
+                </Grid>
+            </Grid>
+
+            <!-- Step 2: Installing -->
+            <Grid Visibility="{Binding IsInstallingStep, Mode=OneWay, Converter={StaticResource BoolToVisible}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Style="{StaticResource heading}">Step 2: Installing</TextBlock>
+                <TextBlock Grid.Row="1" Margin="0,0,0,8"
+                           Text="{Binding InstallDescription, Mode=OneWay}" />
+                <ProgressBar Grid.Row="2" Margin="0,0,0,12" Height="18"
+                             Minimum="0"
+                             Maximum="{Binding OuterMaximumProgress}"
+                             Value="{Binding OuterCurrentProgress}" />
+                <TextBlock Grid.Row="3" Margin="0,0,0,8" FontSize="11" Foreground="#555555"
+                           Text="{Binding InstallSubDescription, Mode=OneWay}" />
+                <ProgressBar Grid.Row="4" Margin="0,0,0,12" Height="14"
+                             Minimum="0"
+                             Maximum="{Binding InnerMaximumProgress}"
+                             Value="{Binding InnerCurrentProgress}" />
+                <TextBox x:Name="_logTextBox" Grid.Row="5" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Text="{Binding LogText, Mode=OneWay}" />
+            </Grid>
+
+            <!-- Step 3: Finish -->
+            <StackPanel Visibility="{Binding IsFinishStep, Mode=OneWay, Converter={StaticResource BoolToVisible}}">
+                <TextBlock Style="{StaticResource heading}">Step 3: Done!</TextBlock>
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,24">Installation complete. To configure advanced features, edit the JSON files in the cfg/ directory with a text editor.
+
+Happy raiding :)</TextBlock>
+                <CheckBox IsChecked="{Binding OpenFolder}" Margin="0,0,0,12">Open installation folder after closing</CheckBox>
+                <CheckBox IsChecked="{Binding CreateShortcut}" Margin="0,0,0,12">Create desktop shortcut</CheckBox>
+            </StackPanel>
+        </Grid>
+
+        <!-- Navigation bar -->
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+            <StackPanel Margin="12" HorizontalAlignment="Right" Orientation="Horizontal"
+                        Grid.IsSharedSizeScope="True">
+                <Button Click="Next_Click"
+                        IsEnabled="{Binding CanGoNext, Mode=OneWay}"
+                        Visibility="{Binding IsFinishStep, Mode=OneWay, Converter={StaticResource BoolToHidden}}"
+                        Content="{Binding NextButtonText, Mode=OneWay}" />
+                <Button Click="Cancel_Click"
+                        Content="{Binding CancelButtonText, Mode=OneWay}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

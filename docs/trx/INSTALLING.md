@@ -2,7 +2,13 @@
 
 ## Installing (simplified)
 
-**The combined TRX installer is not ready yet. Please use the zip package for now.**
+1. Download the latest combined TRX installer.
+2. Choose a destination directory for TRX itself.
+3. Select whichever game packs you want to add:
+   - `TR1`, `TR2`, and `TR3` from your original Steam, GOG, or disc installs.
+   - `TR1:UB`, `TR1 PC Demo`, and `TR2:GM` as direct downloads from Lost Artefacts.
+   - `TR3:LA` from your original disc install.
+4. Let the installer remap the original files into the combined `games/<game-id>/` hierarchy.
 
 > [!NOTE]
 > When downloading TRX, you might see a warning from Windows Defender, your browser, or another security tool. Modern antivirus systems use AI-based heuristics - they flag anything uncommon or unsigned as suspicious, even if it's perfectly safe. TRX can trigger these alerts because:
@@ -49,8 +55,8 @@ When using the combined zip, please do not copy your original files into top-lev
   - `data/level3.tr2` → `games/tr2-gm/levels/level3.tr2`
   - `data/level4.tr2` → `games/tr2-gm/levels/level4.tr2`
   - `data/level5.tr2` → `games/tr2-gm/levels/level5.tr2`
-  - `data/title_gm.tr2` → `games/tr2-gm/levels/title_gm.tr2`
-  - `data/main_gm.sfx` → `games/tr2-gm/main_gm.sfx`
+  - `data/title.tr2` → `games/tr2-gm/levels/title.tr2`
+  - `data/main.sfx` → `games/tr2-gm/main.sfx`
 - **Tomb Raider 3**
   - `data/*.tr2` → `games/tr3/levels/*.tr2`
   - `data/main.sfx` → `games/tr3/main.sfx`
@@ -64,8 +70,8 @@ When using the combined zip, please do not copy your original files into top-lev
   - `data/undersea.tr2` → `games/tr3-la/levels/undersea.tr2`
   - `data/willsden.tr2` → `games/tr3-la/levels/willsden.tr2`
   - `data/zoo.tr2` → `games/tr3-la/levels/zoo.tr2`
-  - `data/title_la.tr2` → `games/tr3-la/levels/title_la.tr2`
-  - `data/main_la.sfx` → `games/tr3-la/main_la.sfx`
+  - `data/title.tr2` → `games/tr3-la/levels/title.tr2`
+  - `data/main.sfx` → `games/tr3-la/main.sfx`
 
 ## Verifying the installation
 
@@ -804,7 +810,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── level3.tr2
 │   │   │   ├── level4.tr2
 │   │   │   ├── level5.tr2
-│   │   │   └── title_gm.tr2
+│   │   │   └── title.tr2
 │   │   ├── gameflow.json5
 │   │   ├── main.sfx
 │   │   ├── strings-de.json5
@@ -1020,7 +1026,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── chunnel.tr2
 │   │   │   ├── scotland.tr2
 │   │   │   ├── slinc.tr2
-│   │   │   ├── title_la.tr2
+│   │   │   ├── title.tr2
 │   │   │   ├── undersea.tr2
 │   │   │   ├── willsden.tr2
 │   │   │   └── zoo.tr2

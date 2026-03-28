@@ -14,7 +14,7 @@ public class InstallSettingsStep : BaseLanguageViewModel, IStep
         };
     }
 
-    public bool CanProceedToNextStep => InstallSettings.TargetDirectory != null;
+    public bool CanProceedToNextStep => true;
     public bool CanProceedToPreviousStep => true;
     public InstallSettings InstallSettings { get; }
     public string SidebarImage => AssemblyUtils.GetEmbeddedResourcePath("side2.jpg");

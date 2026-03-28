@@ -5,6 +5,7 @@ namespace TRX_InstallerLib.Models;
 
 public class InstallSettings : BaseNotifyPropertyChanged
 {
+
     public bool CreateDesktopShortcut
     {
         get => _createDesktopShortcut;

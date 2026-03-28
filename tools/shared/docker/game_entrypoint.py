@@ -66,7 +66,18 @@ class PackageOptions(BaseOptions):
         elif self.platform == "win":
             return [(self.build_root / f"TRX.exe", f"TRX.exe")]
         elif self.platform == "win-installer":
-            assert self.tr_version is not None
+            if self.tr_version is None:
+                return [
+                    (
+                        TOOLS_DIR / "installer/out/TRX_Installer.exe",
+                        generate_package_name(
+                            engine_version=self.version,
+                            platform=self.platform,
+                            game_version=self.tr_version,
+                        )
+                        + ".exe",
+                    )
+                ]
             return [
                 (
                     TOOLS_DIR
@@ -177,7 +188,7 @@ class PackageCommand(BaseCommand):
 
     def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument("--platform")
-        parser.add_argument("--tr-version", type=int, required=True)
+        parser.add_argument("--tr-version", type=int)
         parser.add_argument("-o", "--output", type=Path)
         parser.add_argument("--no-zip", action="store_true")
 

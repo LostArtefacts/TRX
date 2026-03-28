@@ -51,6 +51,7 @@ jobs:
           just download-assets 1
           just download-assets 2
           just download-assets 3
+          just download-assets --combined
 
       - name: Restore ccache
         if: ${{ inputs.platform == 'linux' || inputs.platform == 'win' }}
@@ -80,11 +81,12 @@ jobs:
             if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
               just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}"
               just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}"
+              just trx-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.trx_dir }}"
             else
               just tr1-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr1_dir }}" --no-zip
               just tr2-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.tr2_dir }}" --no-zip
+              just trx-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.trx_dir }}" --no-zip
             fi
-            echo "Skipping TR3 win-installer build (temporarily disabled)"
           fi
 
       - name: Upload artifacts (tr1)
@@ -110,7 +112,6 @@ jobs:
           compression-level: 0
 
       - name: Upload artifacts (combined)
-        if: ${{ inputs.platform != 'win-installer' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.vars.outputs.trx_asset }}
