@@ -30,6 +30,7 @@
 - added Orca control
 - added Area 51 Rocket control
 - added Hook control
+- added pickup aids (Graphic Options → Visuals → Pickup aids) (#5239)
 - restored the cutscene at the beginning of High Security Compound
 - changed Area 51 Rocket to no longer hardcode room 52 as the fire blast room; instead it checks for presence of an upwards portal pointing to the rocket room
 - changed enemies who are killed by lasers to be included in the stats
