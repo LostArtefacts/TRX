@@ -10,6 +10,7 @@
 - improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - fixed recordings keeping unbound hotkeys active during playback
 - fixed being unable to change FOV after using photo mode without restarting the level (#5246, regression from 1.0)
+- fixed Lara getting stuck if using crouch-roll near very low ceilings (#5248)
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels

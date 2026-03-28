@@ -142,7 +142,10 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
 
         Lara_Col_Shift(coll);
 
-        if (!Lara_Col_TestCeiling(item, coll)) {
+        if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_CLAMP) {
+            item->pos = coll->old;
+            item->speed = 0;
+        } else {
             item->pos.y += coll->side_mid.floor;
         }
     }
