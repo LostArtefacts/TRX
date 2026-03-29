@@ -13,6 +13,7 @@
 - fixed Lara getting stuck if using crouch-roll near very low ceilings (#5248)
 - fixed Bell in room 48 being shootable from room 55 again (#4949, regression from TRX 1.4 Sophia Reunion targeting fix)
 - fixed certain TR1 1.1 savegames refusing to load (#5252, regression from 1.2)
+- fixed the total kill count including allies if hostility policy is set to individual and Lara shoots a hostile enemy (#5255, regression from 1.2)
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
