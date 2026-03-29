@@ -110,6 +110,7 @@ typedef struct {
         bool enable_wraparound;
         bool enable_fps_counter;
         bool show_pickups_overlay;
+        bool show_title_version;
 
         float text_scale;
         float bar_scale;

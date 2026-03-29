@@ -1355,6 +1355,10 @@
             "title": "Powiadomienia o podniesieniu",
             "description": "Wyświetla przedmioty w prawym dolnym rogu, gdy Lara coś podnosi.",
         },
+        "ui.show_title_version": {
+            "title": "\\{review}Tekst wersji tytułu",
+            "description": "\\{review}Wyświetla ciąg wersji TRX w pierścieniu ekwipunku tytułu.",
+        },
         "ui.sprintbar_color": {
             "title": "Kolor paska sprintu",
             "description": "Kolor paska sprintu",
