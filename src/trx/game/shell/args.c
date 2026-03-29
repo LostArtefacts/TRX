@@ -134,6 +134,10 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
             int32_t lvnum = -1;
             if (String_ParseInteger(next_arg, &lvnum)) {
                 result->level_to_select = lvnum;
+                if (result->mod == nullptr && result->engine_version > 0) {
+                    result->mod = Shell_GetModByType(
+                        MOD_BASE_GAME, result->engine_version);
+                }
             } else {
                 result->level_to_play = next_arg;
                 if (result->engine_version == 0) {
