@@ -45,8 +45,13 @@ static struct {
 };
 
 static void M_CheckSmashablesBehindTarget(
-    const GAME_VECTOR start, const GAME_VECTOR hit_pos, const int32_t max_dist)
+    const ITEM *const target, const GAME_VECTOR start,
+    const GAME_VECTOR hit_pos, const int32_t max_dist)
 {
+    if (target == nullptr || target->object_id != O_SOPHIA) {
+        return;
+    }
+
     // OG does a raycast instead of segment cast when checking for smashables.
     // TRX normally doesn't do that, but in the Reunion battle against Sophia,
     // Sophia stands directly in front of the Fuse Box, preventing Lara from
@@ -547,7 +552,6 @@ int32_t Gun_FireWeapon(
         if (!object_on_los) {
             Spawn_RicochetRay(start, hit_pos);
         }
-        M_CheckSmashablesBehindTarget(start, hit_pos, weapon->target_dist);
         return -1;
     }
 
@@ -563,6 +567,6 @@ int32_t Gun_FireWeapon(
     Gun_HitTarget(
         target, &start, &hit_pos,
         weapon->damage * (Game_IsBonusFlagSet(GBF_JAPANESE) ? 2 : 1));
-    M_CheckSmashablesBehindTarget(start, hit_pos, weapon->target_dist);
+    M_CheckSmashablesBehindTarget(target, start, hit_pos, weapon->target_dist);
     return 1;
 }

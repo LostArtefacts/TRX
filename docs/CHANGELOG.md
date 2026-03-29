@@ -11,6 +11,7 @@
 - fixed recordings keeping unbound hotkeys active during playback
 - fixed being unable to change FOV after using photo mode without restarting the level (#5246, regression from TR1X 4.15)
 - fixed Lara getting stuck if using crouch-roll near very low ceilings (#5248)
+- fixed Bell in room 48 being shootable from room 55 again (#4949, regression from TRX 1.4 Sophia Reunion targeting fix)
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
