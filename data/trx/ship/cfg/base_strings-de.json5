@@ -1355,6 +1355,10 @@
             "title": "Pickup-Anzeige",
             "description": "Zeigt Gegenstände unten rechts an, wenn Lara etwas aufnimmt.",
         },
+        "ui.show_title_version": {
+            "title": "\\{review}Titel Versionsanzeige",
+            "description": "\\{review}Zeigt die TRX Versionszeichenfolge im Inventarring des Titels an.",
+        },
         "ui.sprintbar_color": {
             "title": "\\{review}Farbe der Sprintleiste",
             "description": "\\{review}Farbe der Sprintleiste",

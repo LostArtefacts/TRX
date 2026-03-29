@@ -1355,6 +1355,10 @@
             "title": "Affichage des objets ramassés",
             "description": "Affiche les objets en bas à droite lorsque Lara ramasse quelque chose.",
         },
+        "ui.show_title_version": {
+            "title": "\\{review}Texte de la version du titre",
+            "description": "\\{review}Affiche la chaîne de version TRX dans l'anneau d'inventaire du titre.",
+        },
         "ui.sprintbar_color": {
             "title": "\\{review}Couleur de la barre de sprint",
             "description": "\\{review}Couleur de la barre de sprint.",

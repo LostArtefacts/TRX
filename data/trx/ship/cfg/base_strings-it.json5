@@ -1355,6 +1355,10 @@
             "title": "Notifiche raccolta",
             "description": "Mostra gli oggetti nell'angolo in basso a destra quando Lara raccoglie qualcosa.",
         },
+        "ui.show_title_version": {
+            "title": "\\{review}Testo versione titolo",
+            "description": "\\{review}Mostra la stringa della versione TRX nell'anello dell'inventario del titolo.",
+        },
         "ui.sprintbar_color": {
             "title": "Colore barra resistenza",
             "description": "Colore della barra della resistenza visualizzata durante uno scatto.",

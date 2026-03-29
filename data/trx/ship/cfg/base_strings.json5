@@ -1355,6 +1355,10 @@
             "title": "Pickups overlay",
             "description": "Shows items in the bottom-right corner when Lara picks something up.",
         },
+        "ui.show_title_version": {
+            "title": "Title version text",
+            "description": "Shows the TRX version string in the title inventory ring.",
+        },
         "ui.sprintbar_color": {
             "title": "Sprintbar color",
             "description": "Color of the sprintbar.",

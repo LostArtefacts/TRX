@@ -5,6 +5,7 @@
 - added a new animation command, `ITEM_ACTION_TURN_90`, which will rotate the affected item 90°
 - added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
 - added expanded statistics screen customization, including per-row toggles and a choice between bare and bordered layouts (Graphic Options → Stats)
+- added an option to show or hide the version text in the title inventory ring (#5235)
 - added optional save/heal crystal counts to level and final statistics (#5180)
 - added the ability for security lasers to activate heavy triggers when tripped by Lara (#5225)
 - changed `--level` to no longer require `-e/--engine` to work

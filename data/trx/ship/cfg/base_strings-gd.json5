@@ -1355,6 +1355,10 @@
             "title": "Taisbeanadh thogailtean",
             "description": "Seallaidh seo togailtean san oisean deas-ìosal nuair a thogas Lara rudeigin.",
         },
+        "ui.show_title_version": {
+            "title": "\\{review}Teacsa teacsa dreach",
+            "description": "\\{review}Seallas an sreang teacsa dreach TRX ann an fàinne clàr-stòrais na tiotal.",
+        },
         "ui.sprintbar_color": {
             "title": "Dath bàr ruith luath",
             "description": "Dath a' bhàr ruith luath.",

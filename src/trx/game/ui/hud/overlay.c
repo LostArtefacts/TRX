@@ -378,7 +378,7 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
     if (!M_CommonRegion(s, UI_ELEMENT_LOCATION_BOTTOM_RIGHT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_BR);
     }
-    if (s->show_version) {
+    if (s->show_version && g_Config.ui.show_title_version) {
         UI_LabelEx(g_TRXVersion, (UI_LABEL_SETTINGS) { .scale = 0.5f });
     }
     UI_EndOverlayRegion();
