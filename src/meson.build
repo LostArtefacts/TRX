@@ -292,6 +292,7 @@ common_sources = [
   'trx/game/input/backends/controller.c',
   'trx/game/input/backends/internal.c',
   'trx/game/input/backends/keyboard.c',
+  'trx/game/input/combo.c',
   'trx/game/input/common.c',
   'trx/game/input/update.c',
   'trx/game/interpolation.c',

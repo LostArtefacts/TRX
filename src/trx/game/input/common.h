@@ -49,8 +49,20 @@ bool Input_IsRoleRebindable(INPUT_ROLE role);
 bool Input_IsRoleUnbindable(INPUT_ROLE role);
 
 // Checks whether the given role uses keys that fire immediately and cannot
-// be the first key of a combo (movement, jump, action, draw weapon).
+// be the first key of a combo (movement, jump, action, roll).
 bool Input_IsRoleImmediate(INPUT_ROLE role);
+
+// Checks whether the given role is a held state that fires immediately but
+// can still be the first key of a combo (look, walk). Unlike immediate
+// roles, these don't block combo formation because the held state is not
+// disrupted when a longer combo completes.
+bool Input_IsRoleSustained(INPUT_ROLE role);
+
+// Checks whether the given role captures other inputs when held, redirecting
+// them to different actions (e.g. look mode repurposes movement keys for
+// camera control). Capturing roles can start combos with immediate keys
+// because the immediate keys lose their normal meaning while captured.
+bool Input_IsRoleCapturing(INPUT_ROLE role);
 
 // Returns whether the key assigned to the given role is also used elsewhere
 // within the custom layout.

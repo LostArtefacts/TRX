@@ -134,9 +134,9 @@ bool UI_ScrollableStack_Control(
             return UI_Scrollable_ScrollUp(s, g_Config.ui.enable_wraparound);
         }
     } else {
-        if (g_InputDB.menu_right || g_InputDB.step_right) {
+        if (g_InputDB.menu_right || g_InputDB.menu_tab_right) {
             return UI_Scrollable_ScrollDown(s, g_Config.ui.enable_wraparound);
-        } else if (g_InputDB.menu_left || g_InputDB.step_left) {
+        } else if (g_InputDB.menu_left || g_InputDB.menu_tab_left) {
             return UI_Scrollable_ScrollUp(s, g_Config.ui.enable_wraparound);
         }
     }

@@ -1,6 +1,7 @@
 #include <trx/game/input/backends/keyboard.h>
 
 #include <trx/game/input/backends/internal.h>
+#include <trx/game/input/combo.h>
 #include <trx/version.h>
 
 #include <SDL2/SDL_keyboard.h>
@@ -350,15 +351,18 @@ static bool M_CheckBinding(const KEYBOARD_BINDING *const bind)
     return true;
 }
 
-static bool M_IsScancodeImmediate(
-    const INPUT_LAYOUT layout, const SDL_Scancode scancode);
+// Combo adapter forward declarations.
+static INPUT_COMBO_BINDING M_GetComboBinding(
+    INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
+static bool M_ComboKeysEqual(const void *a, const void *b);
 
 static bool M_Key(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 {
     for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
         const KEYBOARD_BINDING *bind = &m_Layout[layout][role].slots[slot];
         if (bind->key_count >= 2
-            && M_IsScancodeImmediate(layout, bind->keys[0])) {
+            && Input_ComboIsKeyImmediate(
+                layout, &bind->keys[0], M_GetComboBinding, M_ComboKeysEqual)) {
             continue;
         }
         if (M_CheckBinding(bind)) {
@@ -412,24 +416,11 @@ static void M_AssignConflict(
     m_Conflicts[layout][role] = conflict;
 }
 
-static bool M_ComboStartsWithImmediate(
-    const INPUT_LAYOUT layout, const KEYBOARD_BINDING *const bind);
-
 static void M_CheckConflicts(const INPUT_LAYOUT layout)
 {
     Input_ConflictHelper(layout, M_CheckConflict, M_AssignConflict);
-    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
-        if (m_Conflicts[layout][role]) {
-            continue;
-        }
-        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
-            const KEYBOARD_BINDING *b = M_GetBinding(layout, role, s);
-            if (M_ComboStartsWithImmediate(layout, b)) {
-                m_Conflicts[layout][role] = true;
-                break;
-            }
-        }
-    }
+    Input_ComboCheckConflicts(
+        layout, M_GetComboBinding, M_ComboKeysEqual, m_Conflicts[layout]);
 }
 
 static void M_AssignBinding(
@@ -627,60 +618,30 @@ static bool M_AssignToJSONObject(
 static bool m_PrefixWasHeld[SDL_NUM_SCANCODES];
 static bool m_PrefixComboFired[SDL_NUM_SCANCODES];
 
-static bool M_IsComboKey(const INPUT_LAYOUT layout, const SDL_Scancode sc)
+// Combo adapter functions for the shared combo layer.
+static INPUT_COMBO_BINDING M_GetComboBinding(
+    const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
-        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
-            const KEYBOARD_BINDING *b = M_GetBinding(layout, r, s);
-            if (b->key_count < 2) {
-                continue;
-            }
-            for (int32_t k = 0; k < b->key_count; k++) {
-                if (b->keys[k] == sc) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
+    const KEYBOARD_BINDING *b = M_GetBinding(layout, role, slot);
+    return (INPUT_COMBO_BINDING) {
+        .key_count = b->key_count,
+        .keys = b->keys,
+        .key_stride = sizeof(SDL_Scancode),
+    };
 }
 
-static INPUT_ROLE M_FindSingleKeyRole(
-    const INPUT_LAYOUT layout, const SDL_Scancode sc)
+static bool M_ComboKeysEqual(const void *const a, const void *const b)
 {
-    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
-        if (Input_IsRoleImmediate(r)) {
-            continue;
-        }
-        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
-            const KEYBOARD_BINDING *b = M_GetBinding(layout, r, s);
-            if (b->key_count == 1 && b->keys[0] == sc) {
-                return r;
-            }
-        }
-    }
-    return (INPUT_ROLE)-1;
+    return *(const SDL_Scancode *)a == *(const SDL_Scancode *)b;
 }
 
-static bool M_IsProperSubset(
-    const KEYBOARD_BINDING *const sub, const KEYBOARD_BINDING *const super)
+static INPUT_COMBO_BINDING M_ToCombo(const KEYBOARD_BINDING *const b)
 {
-    if (sub->key_count == 0 || sub->key_count >= super->key_count) {
-        return false;
-    }
-    for (int32_t i = 0; i < sub->key_count; i++) {
-        bool found = false;
-        for (int32_t j = 0; j < super->key_count; j++) {
-            if (sub->keys[i] == super->keys[j]) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            return false;
-        }
-    }
-    return true;
+    return (INPUT_COMBO_BINDING) {
+        .key_count = b->key_count,
+        .keys = b->keys,
+        .key_stride = sizeof(SDL_Scancode),
+    };
 }
 
 static const KEYBOARD_BINDING *M_GetPressedBinding(
@@ -693,25 +654,6 @@ static const KEYBOARD_BINDING *M_GetPressedBinding(
         }
     }
     return nullptr;
-}
-
-// Check if a binding is a proper subset of ANY binding in the layout.
-static bool M_HasLongerCombo(
-    const INPUT_LAYOUT layout, const INPUT_ROLE skip_role,
-    const KEYBOARD_BINDING *const bind)
-{
-    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
-        if (r == skip_role) {
-            continue;
-        }
-        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
-            const KEYBOARD_BINDING *b = M_GetBinding(layout, r, s);
-            if (M_IsProperSubset(bind, b)) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 // Per-role deferral tracking for combo disambiguation.
@@ -729,6 +671,17 @@ static void M_ResolveCombos(
         }
     }
 
+    // Suppress invalid combos (non-capturing sustained + immediate).
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (active[role] != nullptr
+            && Input_ComboSustainedHasImmediate(
+                layout, M_ToCombo(active[role]), M_GetComboBinding,
+                M_ComboKeysEqual)) {
+            InputState_ClearRole(result, role);
+            active[role] = nullptr;
+        }
+    }
+
     // Phase 2: Subset suppression — longer active combos suppress shorter.
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         if (active[role] == nullptr) {
@@ -738,7 +691,9 @@ static void M_ResolveCombos(
             if (other == role || active[other] == nullptr) {
                 continue;
             }
-            if (M_IsProperSubset(active[role], active[other])) {
+            if (Input_ComboIsProperSubset(
+                    M_ToCombo(active[role]), M_ToCombo(active[other]),
+                    M_ComboKeysEqual)) {
                 InputState_ClearRole(result, role);
                 break;
             }
@@ -752,10 +707,14 @@ static void M_ResolveCombos(
         if (active[role] == nullptr) {
             continue;
         }
-        if (Input_IsRoleImmediate(role) && active[role]->key_count <= 1) {
+        if (((Input_IsRoleImmediate(role) || Input_IsRoleSustained(role))
+             && active[role]->key_count <= 1)
+            || !Input_IsRoleRebindable(role)) {
             continue;
         }
-        if (M_HasLongerCombo(layout, role, active[role])) {
+        if (Input_ComboHasLonger(
+                layout, role, M_ToCombo(active[role]), M_GetComboBinding,
+                M_ComboKeysEqual)) {
             InputState_ClearRole(result, role);
             if (!m_RoleWasActive[role]) {
                 m_RoleLongerFired[role] = false;
@@ -787,7 +746,9 @@ static void M_ResolveCombos(
                 continue;
             }
             const KEYBOARD_BINDING *ob = M_GetPressedBinding(layout, other);
-            if (ob != nullptr && M_IsProperSubset(ob, active[role])) {
+            if (ob != nullptr
+                && Input_ComboIsProperSubset(
+                    M_ToCombo(ob), M_ToCombo(active[role]), M_ComboKeysEqual)) {
                 m_RoleLongerFired[other] = true;
             }
         }
@@ -804,7 +765,6 @@ static void M_ResolveCombos(
         if (bind != nullptr) {
             continue;
         }
-        // Binding is no longer fully held — release transition.
         if (!m_RoleLongerFired[role]) {
             InputState_SetRole(result, role, true);
         }
@@ -812,19 +772,23 @@ static void M_ResolveCombos(
         m_RoleLongerFired[role] = false;
     }
 
-    // Phase 6: Single-key prefix deferral (unchanged).
+    // Phase 6: Single-key prefix deferral.
     for (SDL_Scancode sc = 0; sc < SDL_NUM_SCANCODES; sc++) {
         const bool held = KEY_DOWN(sc);
 
-        if (held && M_IsComboKey(layout, sc)) {
-            const INPUT_ROLE role = M_FindSingleKeyRole(layout, sc);
+        if (held
+            && Input_ComboIsStarter(
+                layout, &sc, M_GetComboBinding, M_ComboKeysEqual)) {
+            const INPUT_ROLE role = Input_ComboFindDeferrableRole(
+                layout, &sc, M_GetComboBinding, M_ComboKeysEqual);
             if (role != (INPUT_ROLE)-1) {
                 InputState_ClearRole(result, role);
             }
         }
 
         if (!held && m_PrefixWasHeld[sc] && !m_PrefixComboFired[sc]) {
-            const INPUT_ROLE role = M_FindSingleKeyRole(layout, sc);
+            const INPUT_ROLE role = Input_ComboFindDeferrableRole(
+                layout, &sc, M_GetComboBinding, M_ComboKeysEqual);
             if (role != (INPUT_ROLE)-1) {
                 InputState_SetRole(result, role, true);
             }
@@ -832,33 +796,6 @@ static void M_ResolveCombos(
 
         m_PrefixWasHeld[sc] = held;
     }
-}
-
-// Check whether a scancode is bound to any immediate role in the given layout.
-static bool M_IsScancodeImmediate(
-    const INPUT_LAYOUT layout, const SDL_Scancode scancode)
-{
-    for (INPUT_ROLE r = 0; r < INPUT_ROLE_NUMBER_OF; r++) {
-        if (!Input_IsRoleImmediate(r)) {
-            continue;
-        }
-        for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
-            const KEYBOARD_BINDING *b = M_GetBinding(layout, r, s);
-            if (b->key_count == 1 && b->keys[0] == scancode) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-static bool M_ComboStartsWithImmediate(
-    const INPUT_LAYOUT layout, const KEYBOARD_BINDING *const bind)
-{
-    if (bind->key_count < 2) {
-        return false;
-    }
-    return M_IsScancodeImmediate(layout, bind->keys[0]);
 }
 
 // Combo capture state for listen mode.
@@ -895,7 +832,9 @@ static bool M_ReadAndAssign(
     // If the first key captured is bound to an immediate role (movement,
     // action, etc.), assign as single key right away — don't wait for combo.
     if (m_CaptureActive && m_CaptureBuffer.key_count == 1 && any_held
-        && M_IsScancodeImmediate(layout, m_CaptureBuffer.keys[0])) {
+        && Input_ComboIsKeyImmediate(
+            layout, &m_CaptureBuffer.keys[0], M_GetComboBinding,
+            M_ComboKeysEqual)) {
         M_AssignBinding(layout, role, slot, &m_CaptureBuffer);
         m_CaptureBuffer.key_count = 0;
         m_CaptureActive = false;
