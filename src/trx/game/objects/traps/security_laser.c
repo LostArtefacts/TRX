@@ -306,6 +306,7 @@ static void M_Control(const int16_t item_num)
     const XZ_32 direction = M_GetLaserDirection(item);
 
     int32_t beam_y = 0;
+    bool tripped = false;
     for (int32_t beam_idx = 0; beam_idx < item->hit_points; beam_idx++) {
         GAME_VECTOR start;
         GAME_VECTOR target;
@@ -325,6 +326,7 @@ static void M_Control(const int16_t item_num)
                     lara_item->room_num, 1);
             }
 
+            tripped = true;
             for (int32_t j = 0; j < Item_GetLevelCount(); j++) {
                 ITEM *const target_item = Item_Get(j);
 
@@ -342,6 +344,10 @@ static void M_Control(const int16_t item_num)
         }
 
         beam_y -= 256;
+    }
+
+    if (tripped) {
+        Room_TestTriggers(item);
     }
 }
 
