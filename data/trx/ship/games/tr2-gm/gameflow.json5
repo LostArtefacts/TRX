@@ -13,7 +13,7 @@
     "convert_dropped_guns": true,
 
     "title": {
-        "path": "title_gm.tr2",
+        "path": ["title_gm.tr2", "title.tr2"],
         "music_track": 60,
         "sequence": [
             {"type": "display_picture", "path": "legal_eu_gm.webp", "legal": true},
@@ -29,7 +29,7 @@
         ]
     },
 
-    "sfx_path": "main_gm.sfx",
+    "sfx_path": ["main_gm.sfx", "main.sfx"],
     "injections": [
         "font.bin",
         "lara_animations.bin",
