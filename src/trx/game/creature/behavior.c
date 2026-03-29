@@ -61,13 +61,17 @@ void Creature_Hurt(ITEM *const item, const int32_t damage)
         creature->hurt_by_lara = true;
     }
 
+    if (!Creature_IsAlly(item)) {
+        return;
+    }
+
     switch (g_Config.gameplay.ally_hostility_policy) {
     case ALLY_HOSTILITY_POLICY_INDIVIDUAL:
         Stats_MarkAlliesHostile();
         break;
 
     case ALLY_HOSTILITY_POLICY_SHARED:
-        if (!m_AlliesHostile && Creature_IsAlly(item)) {
+        if (!m_AlliesHostile) {
             if (creature != nullptr) {
                 creature->damage_from_lara += damage;
             }
