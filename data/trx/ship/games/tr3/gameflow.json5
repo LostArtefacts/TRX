@@ -333,6 +333,7 @@
                 "nevada_sky.bin",
                 "nevada_door132_frames.bin",
             ],
+            "unobtainable_pickups": 1,
         },
 
         // 14. High Security Compound
