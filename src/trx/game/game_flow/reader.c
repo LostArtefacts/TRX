@@ -116,70 +116,6 @@ static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
     return m_SequenceEventHandlers;
 }
 
-static bool M_LoadSettings(
-    const M_CONTEXT *const ctx, GF_LEVEL_SETTINGS *const settings)
-{
-    JSON_READ_IO *const io = ctx->io;
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_start"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_start.value));
-        settings->fog_start.is_present = true;
-        JSON_MUST(JSON_POP(io));
-    }
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_end"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_end.value));
-        settings->fog_end.is_present = true;
-        JSON_MUST(JSON_POP(io));
-    }
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_transparency"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_transparency.value));
-        settings->fog_transparency.is_present = true;
-        JSON_MUST(JSON_POP(io));
-    }
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_color"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_color.value));
-        settings->fog_color.is_present = true;
-        JSON_MUST(JSON_POP(io));
-    }
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "water_color"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->water_color.value));
-        settings->water_color.is_present = true;
-        JSON_MUST(JSON_POP(io));
-    }
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "cold_water"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->cold_water.value));
-        settings->cold_water.is_present = true;
-        JSON_MUST(JSON_POP(io));
-    }
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "death_tile"))) {
-        const char *tmp_s = nullptr;
-        JSON_MUST(JSON_READ_CURRENT(io, &tmp_s));
-        const int32_t value =
-            EnumMap_Get(ENUM_MAP_NAME(GF_DEATH_TILE), tmp_s, -1);
-        if (value < 0) {
-            JSON_ReadIO_SetError(io, "Invalid death_tile value '%s'", tmp_s);
-            JSON_FAIL();
-        }
-        settings->death_tile.is_present = true;
-        settings->death_tile.value = value;
-        JSON_MUST(JSON_POP(io));
-    }
-
-    if (JSON_OPTIONAL(JSON_PUSH(io, "sfx_path"))) {
-        const char *tmp_s = nullptr;
-        JSON_MUST(JSON_READ_CURRENT(io, &tmp_s));
-        settings->sfx_path = Memory_DupStr(tmp_s);
-        JSON_MUST(JSON_POP(io));
-    }
-    JSON_FINISH();
-}
-
 // Read a "path" value that may be either a plain string or an array of
 // candidate strings tried in order.
 // Pass optional=true to allow the key to be absent (out_path is set to nullptr
@@ -246,6 +182,70 @@ static bool M_ReadPath(
     return ok;
 }
 
+static bool M_LoadSettings(
+    const M_CONTEXT *const ctx, GF_LEVEL_SETTINGS *const settings)
+{
+    JSON_READ_IO *const io = ctx->io;
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_start"))) {
+        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_start.value));
+        settings->fog_start.is_present = true;
+        JSON_MUST(JSON_POP(io));
+    }
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_end"))) {
+        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_end.value));
+        settings->fog_end.is_present = true;
+        JSON_MUST(JSON_POP(io));
+    }
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_transparency"))) {
+        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_transparency.value));
+        settings->fog_transparency.is_present = true;
+        JSON_MUST(JSON_POP(io));
+    }
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_color"))) {
+        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_color.value));
+        settings->fog_color.is_present = true;
+        JSON_MUST(JSON_POP(io));
+    }
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "water_color"))) {
+        JSON_MUST(JSON_READ_CURRENT(io, &settings->water_color.value));
+        settings->water_color.is_present = true;
+        JSON_MUST(JSON_POP(io));
+    }
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "cold_water"))) {
+        JSON_MUST(JSON_READ_CURRENT(io, &settings->cold_water.value));
+        settings->cold_water.is_present = true;
+        JSON_MUST(JSON_POP(io));
+    }
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "death_tile"))) {
+        const char *tmp_s = nullptr;
+        JSON_MUST(JSON_READ_CURRENT(io, &tmp_s));
+        const int32_t value =
+            EnumMap_Get(ENUM_MAP_NAME(GF_DEATH_TILE), tmp_s, -1);
+        if (value < 0) {
+            JSON_ReadIO_SetError(io, "Invalid death_tile value '%s'", tmp_s);
+            JSON_FAIL();
+        }
+        settings->death_tile.is_present = true;
+        settings->death_tile.value = value;
+        JSON_MUST(JSON_POP(io));
+    }
+
+    if (JSON_OPTIONAL(JSON_PUSH(io, "sfx_path"))) {
+        JSON_MUST(JSON_POP(io));
+        JSON_SHOULD(M_ReadPath(
+            io, "sfx_path", false, TRX_DYNAMIC_PATH_SFX_FILE,
+            &settings->sfx_path));
+    }
+    JSON_FINISH();
+}
+
 static bool M_LoadLevelItemDrops(
     const M_CONTEXT *const ctx, GF_LEVEL *const level)
 {
@@ -303,7 +303,8 @@ static void M_CopyRootSettingsIntoLevel(
     GF_LEVEL_SETTINGS *const dst, const GF_LEVEL_SETTINGS *const src)
 {
     *dst = *src;
-    dst->sfx_path = nullptr;
+    dst->sfx_path =
+        src->sfx_path != nullptr ? Memory_DupStr(src->sfx_path) : nullptr;
 }
 
 static void M_ReadModMeta(JSON_READ_IO *const io, GF_MOD_META *const meta)

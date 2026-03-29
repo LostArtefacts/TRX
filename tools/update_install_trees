@@ -319,14 +319,16 @@ OG_FILE_OVERRIDES: dict[str, dict[Path, Path]] = {
         Path("data/main.sfx"): Path("games/tr2/main.sfx"),
     },
     "tr2-gm": {
-        Path("data/main_gm.sfx"): Path("games/tr2-gm/main_gm.sfx"),
+        Path("data/main_gm.sfx"): Path("games/tr2-gm/main.sfx"),
+        Path("data/title_gm.tr2"): Path("games/tr2-gm/levels/title.tr2"),
     },
     "tr3": {
         Path("data/main.sfx"): Path("games/tr3/main.sfx"),
         Path("data/tombpc.dat"): Path("games/tr3/tombpc.dat"),
     },
     "tr3-la": {
-        Path("data/main_la.sfx"): Path("games/tr3-la/main_la.sfx"),
+        Path("data/main_la.sfx"): Path("games/tr3-la/main.sfx"),
+        Path("data/title_la.tr2"): Path("games/tr3-la/levels/title.tr2"),
     },
 }
 
@@ -338,7 +340,7 @@ LEGACY_DOC_CONFIGS = [
             DATA_DIR / "common/ship",
             PROJECT_PATHS[1].data_dir / "ship",
             DATA_REPO_ROOT_DIR / "tr1/ship",
-            DATA_REPO_ROOT_DIR / "tr1ub/ship",
+            DATA_REPO_ROOT_DIR / "tr1-ub/ship",
         ],
         "og_groups": ["tr1", "tr1-ub"],
     },
@@ -349,7 +351,7 @@ LEGACY_DOC_CONFIGS = [
             DATA_DIR / "common/ship",
             PROJECT_PATHS[2].data_dir / "ship",
             DATA_REPO_ROOT_DIR / "tr2/ship",
-            DATA_REPO_ROOT_DIR / "tr2gm/ship",
+            DATA_REPO_ROOT_DIR / "tr2-gm/ship",
         ],
         "og_groups": ["tr2", "tr2-gm"],
     },

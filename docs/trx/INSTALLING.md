@@ -806,7 +806,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── level5.tr2
 │   │   │   └── title_gm.tr2
 │   │   ├── gameflow.json5
-│   │   ├── main_gm.sfx
+│   │   ├── main.sfx
 │   │   ├── strings-de.json5
 │   │   ├── strings-fr.json5
 │   │   ├── strings-gd.json5
@@ -910,11 +910,16 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── injections
 │   │   │   ├── aldwych_fd.bin
 │   │   │   ├── aldwych_pickup_meshes.bin
+│   │   │   ├── aldwych_textures.bin
 │   │   │   ├── antarc_airlock.bin
+│   │   │   ├── antarc_door134_frames.bin
 │   │   │   ├── antarc_sky.bin
 │   │   │   ├── area51_sky.bin
+│   │   │   ├── area51_textures.bin
+│   │   │   ├── cavern_door131_frames.bin
 │   │   │   ├── cavern_sky.bin
 │   │   │   ├── city_textures.bin
+│   │   │   ├── cliff_door132_frames.bin
 │   │   │   ├── coastal_airlock.bin
 │   │   │   ├── coastal_animating_bounds.bin
 │   │   │   ├── coastal_sky.bin
@@ -935,6 +940,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut11_setup.bin
 │   │   │   ├── cut12_setup.bin
 │   │   │   ├── font.bin
+│   │   │   ├── ganges_door131_frames.bin
 │   │   │   ├── globe_model.bin
 │   │   │   ├── gym_sky.bin
 │   │   │   ├── india_sky.bin
@@ -945,7 +951,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── london_sky.bin
 │   │   │   ├── luds_diver_animation.bin
+│   │   │   ├── luds_textures.bin
 │   │   │   ├── misc_sprites.bin
+│   │   │   ├── nevada_door132_frames.bin
 │   │   │   ├── nevada_sky.bin
 │   │   │   ├── ora_dagger.bin
 │   │   │   ├── pda_model.bin
@@ -1017,7 +1025,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── willsden.tr2
 │   │   │   └── zoo.tr2
 │   │   ├── gameflow.json5
-│   │   ├── main_la.sfx
+│   │   ├── main.sfx
 │   │   ├── strings-de.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5

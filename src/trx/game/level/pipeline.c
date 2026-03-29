@@ -37,25 +37,17 @@ static void M_InitialiseSamplesFromFile(
     M_SAMPLE_ENTRY *entries = nullptr;
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
 
-    if (file_name == nullptr) {
-        file_name = g_GameFlow.settings.sfx_path;
-    }
-    if (file_name == nullptr) {
-        file_name = "main.sfx";
-    }
     MYFILE *fp = nullptr;
-    const char *const full_path =
-        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_SFX_FILE, file_name);
-    if (full_path == nullptr) {
+    if (file_name == nullptr) {
         goto finish;
     }
 
-    fp = File_Open(full_path, FILE_OPEN_READ);
+    fp = File_Open(file_name, FILE_OPEN_READ);
     if (fp == nullptr) {
-        LOG_ERROR("Could not open %s samples file", full_path);
+        LOG_ERROR("Could not open %s samples file", file_name);
         goto finish;
     }
-    LOG_DEBUG("Loading samples from %s", full_path);
+    LOG_DEBUG("Loading samples from %s", file_name);
 
     const int32_t sample_count = info->samples.offset_count;
     entries = Memory_Alloc(sizeof(M_SAMPLE_ENTRY) * sample_count);

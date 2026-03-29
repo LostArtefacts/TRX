@@ -12,7 +12,7 @@
     "convert_dropped_guns": true,
 
     "title": {
-        "path": "title_la.tr2",
+        "path": ["title_la.tr2", "title.tr2"],
         "music_track": 5,
         "sequence": [
             {"type": "display_picture", "path": "legal_eu.webp", "legal": true},
@@ -27,7 +27,7 @@
         35, 36, 73, 74, 75, 76, 77, 78,
     ],
 
-    "sfx_path": "main_la.sfx",
+    "sfx_path": ["main_la.sfx", "main.sfx"],
     "injections": [
         "font.bin",
         "lara_animations.bin",

@@ -53,7 +53,7 @@
       "description": "Configuration for the title screen."
     },
     "sfx_path": {
-      "type": "string",
+      "$ref": "#/$defs/path",
       "description": "Path to the sound effects (.sfx) file to use in the game."
     },
     "injections": {
