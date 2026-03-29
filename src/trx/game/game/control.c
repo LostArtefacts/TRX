@@ -119,10 +119,10 @@ GF_COMMAND Game_Control(const bool demo_mode)
     Game_ProcessInput();
 
     if ((g_InputDB.quick_save || g_InputDB.quick_load) && !demo_mode
-        && lara->death_timer == 0 && !lara->extra_anim
         && !g_Config.flow.load_save_disabled) {
         bool quick_handled = false;
-        if (g_InputDB.quick_save) {
+        if (g_InputDB.quick_save && !lara->extra_anim
+            && lara->death_timer == 0) {
             const SAVEGAME_SLOT_REF slot = Savegame_GetNextQuickSlot();
             if (!Savegame_IsValidSlotRef(slot)) {
                 Console_LogError(

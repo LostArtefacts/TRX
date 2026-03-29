@@ -16,19 +16,6 @@ static bool M_TryParseQuickKeyword(const char *const args)
         || sscanf(args, " q %c", &tail) == 0;
 }
 
-static bool M_IsBlank(const char *const str)
-{
-    if (str == nullptr) {
-        return true;
-    }
-    for (const char *c = str; *c != '\0'; c++) {
-        if (*c != ' ' && *c != '\t') {
-            return false;
-        }
-    }
-    return true;
-}
-
 static COMMAND_RESULT M_HandleQuickSave(void)
 {
     const SAVEGAME_SLOT_REF slot = Savegame_GetNextQuickSlot();
@@ -48,7 +35,7 @@ static COMMAND_RESULT M_EntrypointQS(const COMMAND_CONTEXT *const ctx)
         return CR_UNAVAILABLE;
     }
 
-    if (!M_IsBlank(ctx->args)) {
+    if (!String_IsEmpty(ctx->args)) {
         return CR_BAD_INVOCATION;
     }
     return M_HandleQuickSave();
