@@ -367,9 +367,9 @@ LEGACY_DOC_CONFIGS = [
 
 TRX_IMAGE_ROOTS = {
     "tr1": DATA_REPO_ROOT_DIR / "tr1/ship/data/images",
-    "tr1-ub": DATA_REPO_ROOT_DIR / "tr1ub/ship/data/images",
+    "tr1-ub": DATA_REPO_ROOT_DIR / "tr1-ub/ship/data/images",
     "tr2": DATA_REPO_ROOT_DIR / "tr2/ship/data/images",
-    "tr2-gm": DATA_REPO_ROOT_DIR / "tr2gm/ship/data/images",
+    "tr2-gm": DATA_REPO_ROOT_DIR / "tr2-gm/ship/data/images",
     "tr3": DATA_REPO_ROOT_DIR / "tr3/ship/data/images",
 }
 
