@@ -93,11 +93,11 @@ bool UI_TabSwitch_Control(
     UI_TAB_SWITCH_STATE *const s, const UI_TAB_SWITCH_FLAGS flags)
 {
     if ((!(flags & UI_TAB_SWITCH_NO_ARROWS) && g_InputDB.menu_left)
-        || g_InputDB.step_left) {
+        || g_InputDB.menu_tab_left) {
         return UI_TabSwitch_Cycle(s, -1);
     } else if (
         (!(flags & UI_TAB_SWITCH_NO_ARROWS) && g_InputDB.menu_right)
-        || g_InputDB.step_right) {
+        || g_InputDB.menu_tab_right) {
         return UI_TabSwitch_Cycle(s, 1);
     }
     return false;

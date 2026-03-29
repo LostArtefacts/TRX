@@ -23,6 +23,8 @@ X_INPUT_ROLE(INPUT_ROLE_MENU_UP,                 menu_up)
 X_INPUT_ROLE(INPUT_ROLE_MENU_DOWN,               menu_down)
 X_INPUT_ROLE(INPUT_ROLE_MENU_RIGHT,              menu_right)
 X_INPUT_ROLE(INPUT_ROLE_MENU_SKIP,               menu_skip)
+X_INPUT_ROLE(INPUT_ROLE_MENU_TAB_LEFT,           menu_tab_left)
+X_INPUT_ROLE(INPUT_ROLE_MENU_TAB_RIGHT,          menu_tab_right)
 
 X_INPUT_ROLE(INPUT_ROLE_FLY_CHEAT,               fly_cheat)
 X_INPUT_ROLE(INPUT_ROLE_ITEM_CHEAT,              item_cheat)

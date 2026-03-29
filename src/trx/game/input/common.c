@@ -54,22 +54,37 @@ static bool m_IsRoleHardcoded[INPUT_ROLE_NUMBER_OF] = {
     [INPUT_ROLE_MENU_RIGHT]               = true,
     [INPUT_ROLE_MENU_UP]                  = true,
     [INPUT_ROLE_MENU_DOWN]                = true,
+    [INPUT_ROLE_MENU_TAB_LEFT]            = true,
+    [INPUT_ROLE_MENU_TAB_RIGHT]           = true,
     // clang-format on
 };
 
 static bool m_IsRoleImmediate[INPUT_ROLE_NUMBER_OF] = {
     // clang-format off
-    [INPUT_ROLE_UP]          = true,
-    [INPUT_ROLE_DOWN]        = true,
-    [INPUT_ROLE_LEFT]        = true,
-    [INPUT_ROLE_RIGHT]       = true,
-    [INPUT_ROLE_JUMP]        = true,
+    [INPUT_ROLE_UP]              = true,
+    [INPUT_ROLE_DOWN]            = true,
+    [INPUT_ROLE_LEFT]            = true,
+    [INPUT_ROLE_RIGHT]           = true,
+    [INPUT_ROLE_JUMP]            = true,
+    [INPUT_ROLE_ROLL]            = true,
+    // clang-format on
+};
+
+static bool m_IsRoleSustained[INPUT_ROLE_NUMBER_OF] = {
+    // clang-format off
     [INPUT_ROLE_ACTION]      = true,
-    [INPUT_ROLE_ROLL]        = true,
     [INPUT_ROLE_STEP_LEFT]   = true,
     [INPUT_ROLE_STEP_RIGHT]  = true,
+    [INPUT_ROLE_LOOK]        = true,
+    [INPUT_ROLE_SLOW]        = true,
     [INPUT_ROLE_CROUCH]      = true,
     [INPUT_ROLE_SPRINT]      = true,
+    // clang-format on
+};
+
+static bool m_IsRoleCapturing[INPUT_ROLE_NUMBER_OF] = {
+    // clang-format off
+    [INPUT_ROLE_LOOK] = true,
     // clang-format on
 };
 
@@ -188,6 +203,16 @@ bool Input_IsRoleUnbindable(const INPUT_ROLE role)
 bool Input_IsRoleImmediate(const INPUT_ROLE role)
 {
     return m_IsRoleImmediate[role];
+}
+
+bool Input_IsRoleSustained(const INPUT_ROLE role)
+{
+    return m_IsRoleSustained[role];
+}
+
+bool Input_IsRoleCapturing(const INPUT_ROLE role)
+{
+    return m_IsRoleCapturing[role];
 }
 
 bool Input_IsPressed(const INPUT_ROLE role)
