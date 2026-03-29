@@ -350,6 +350,14 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
     }
 
     if (obj->save_flags) {
+        if (!JSON_ReadIO_HasKey(io, "flags")) {
+            // TRX 1.1 save-crystal entries were serialized as bare items
+            // without save-state fields. Treat them as default-state crystals
+            // so those legacy saves remain loadable.
+            if (object_id == O_SAVE_CRYSTAL_ITEM) {
+                goto skip_flags;
+            }
+        }
         M_MUST(JSON_READ(io, "flags", &item->flags));
         M_MUST(JSON_READ(io, "timer", &item->timer));
         ITEM_STATUS saved_status = item->status;
@@ -417,6 +425,7 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
             }
         }
     }
+skip_flags:
 
     if (M_SHOULD(JSON_PUSH(io, "carried_items"))) {
         CARRIED_ITEM *carried_item = item->carried_item;
