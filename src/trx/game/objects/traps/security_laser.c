@@ -66,94 +66,6 @@ static void M_LaserSplitterToggle(ITEM *const item)
     }
 }
 
-static bool M_IsLaraOnLOS(
-    const GAME_VECTOR *const start, const GAME_VECTOR *const target)
-{
-    const ITEM *const lara_item = Lara_GetItem();
-    const XYZ_32 delta = {
-        .x = target->x - start->x,
-        .y = target->y - start->y,
-        .z = target->z - start->z,
-    };
-    struct {
-        int16_t min, max;
-    } x_extent, z_extent;
-
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
-
-    if ((lara_item->rot.y + DEG_45) & DEG_90) {
-        x_extent.min = bounds->min.z;
-        x_extent.max = bounds->max.z;
-        z_extent.min = bounds->min.x;
-        z_extent.max = bounds->max.x;
-    } else {
-        x_extent.min = bounds->min.x;
-        x_extent.max = bounds->max.x;
-        z_extent.min = bounds->min.z;
-        z_extent.max = bounds->max.z;
-    }
-
-    int32_t flag = 0;
-
-    if (ABS(delta.z) > ABS(delta.x)) {
-        int32_t dist = lara_item->pos.z - start->z + z_extent.min;
-
-        for (int32_t i = 0; i < 2; i++) {
-            if ((delta.z ^ dist) >= 0) {
-                const int32_t y = delta.y * dist / delta.z;
-
-                if (y > lara_item->pos.y - start->y + bounds->min.y
-                    && y < lara_item->pos.y - start->y + bounds->max.y) {
-                    const int32_t x = delta.x * dist / delta.z;
-
-                    if (x < lara_item->pos.x + x_extent.min - start->x) {
-                        flag |= 1;
-                    } else if (x > lara_item->pos.x + x_extent.max - start->x) {
-                        flag |= 2;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-
-            dist = lara_item->pos.z - start->z + z_extent.max;
-        }
-
-        if (flag == 3) {
-            return true;
-        }
-    } else {
-        int32_t dist = lara_item->pos.x + x_extent.min - start->x;
-
-        for (int32_t i = 0; i < 2; i++) {
-            if ((delta.x ^ dist) >= 0) {
-                const int32_t y = delta.y * dist / delta.x;
-
-                if (y > lara_item->pos.y - start->y + bounds->min.y
-                    && y < lara_item->pos.y - start->y + bounds->max.y) {
-                    const int32_t z = delta.z * dist / delta.x;
-
-                    if (z < lara_item->pos.z - start->z + z_extent.min) {
-                        flag |= 1;
-                    } else if (z > lara_item->pos.z - start->z + z_extent.max) {
-                        flag |= 2;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-
-            dist = lara_item->pos.x + x_extent.max - start->x;
-        }
-
-        if (flag == 3) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 static void M_UpdateLaserShades(void)
 {
     for (int32_t shade_idx = 0; shade_idx < 32; shade_idx++) {
@@ -227,7 +139,7 @@ static bool M_GetLaserSegment(
     t->z = item->pos.z - (dir.z << 5);
 
     LOS_Check(s, t, true);
-    return M_IsLaraOnLOS(s, t);
+    return LOS_CheckItemIntersectSegment(s, t, Lara_GetItem());
 }
 
 static void M_DrawLaserBeam(
@@ -373,17 +285,8 @@ static bool M_DrawLaser(const ITEM *const item)
     for (int32_t beam_idx = 0; beam_idx < item->hit_points; beam_idx++) {
         GAME_VECTOR start;
         GAME_VECTOR target;
-        if (M_GetLaserSegment(item, direction, beam_y, &start, &target)) {
-            const ITEM *const lara_item = Lara_GetItem();
-            if (item->rot.y == 0 || item->rot.y == -DEG_180) {
-                target.z = lara_item->pos.z;
-            } else {
-                target.x = lara_item->pos.x;
-            }
-        }
-
+        M_GetLaserSegment(item, direction, beam_y, &start, &target);
         M_DrawLaserBeam(&start, &target, color);
-
         beam_y -= 256;
     }
     return true;
