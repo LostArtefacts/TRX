@@ -51,18 +51,18 @@ static inline bool M_RoomInLOSRooms(const int16_t room_num)
 // @param target World-space ray end
 // @param item   Item to check
 // @return       Whether the item collides with the segment
-static bool M_ItemIntersectSegment(
-    const XYZ_32 start, const XYZ_32 target, const ITEM *const item,
-    XYZ_32 *const out_hit_pos)
+bool LOS_CheckItemIntersectSegment(
+    const GAME_VECTOR *const start, GAME_VECTOR *const target,
+    const ITEM *const item)
 {
-    const double dx = target.x - start.x;
-    const double dy = target.y - start.y;
-    const double dz = target.z - start.z;
+    const double dx = target->x - start->x;
+    const double dy = target->y - start->y;
+    const double dz = target->z - start->z;
 
     // Translate into object-local space
-    const double ox = start.x - item->pos.x;
-    const double oy = start.y - item->pos.y;
-    const double oz = start.z - item->pos.z;
+    const double ox = start->x - item->pos.x;
+    const double oy = start->y - item->pos.y;
+    const double oz = start->z - item->pos.z;
 
     // Unrotate by -rot.y around Y axis
     const float c = cosf(-item->rot.y * M_PI / DEG_180);
@@ -132,12 +132,10 @@ static bool M_ItemIntersectSegment(
         return false;
     }
 
-    if (out_hit_pos != nullptr) {
-        // world-space hit position = start + t0 * (target-start)
-        out_hit_pos->x = start.x + t0 * dx;
-        out_hit_pos->y = start.y + t0 * dy;
-        out_hit_pos->z = start.z + t0 * dz;
-    }
+    // world-space hit position = start + t0 * (target-start)
+    target->x = start->x + t0 * dx;
+    target->y = start->y + t0 * dy;
+    target->z = start->z + t0 * dz;
 
     return true;
 }
@@ -165,8 +163,8 @@ int32_t LOS_CheckSmashable(
             continue;
         }
 
-        XYZ_32 hit_pos;
-        if (!M_ItemIntersectSegment(start.pos, target.pos, item, &hit_pos)) {
+        GAME_VECTOR hit_pos = target;
+        if (!LOS_CheckItemIntersectSegment(&start, &hit_pos, item)) {
             continue;
         }
 
@@ -187,7 +185,7 @@ int32_t LOS_CheckSmashable(
             best_dist = dist;
             best_item_num = item_num;
             if (out_hit_pos != nullptr) {
-                *out_hit_pos = hit_pos;
+                *out_hit_pos = hit_pos.pos;
             }
         }
     }
