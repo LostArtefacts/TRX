@@ -74,6 +74,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 {
     SHELL_ARGS *const result = Memory_Alloc(sizeof(SHELL_ARGS));
     bool wants_gold = false;
+    bool explicit_engine_version = false;
     result->save_to_load = -1;
     result->level_to_select = -1;
     result->original_args = args;
@@ -87,6 +88,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         if (!strcmp(arg, "-e") || !strcmp(arg, "--engine")) {
             String_ParseInteger(next_arg, &result->engine_version);
             CLAMP(result->engine_version, 1, 3);
+            explicit_engine_version = true;
             i++;
         }
     }
@@ -185,7 +187,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
     if (result->mod == nullptr) {
         result->mod = Shell_SelectStartupMod(result->engine_version);
     }
-    if (result->engine_version == 0 && result->mod != nullptr) {
+    if (!explicit_engine_version && result->mod != nullptr) {
         result->engine_version = result->mod->engine_version;
     }
     if (wants_gold) {
