@@ -14,24 +14,11 @@ typedef struct {
     bool has_slot_num;
 } M_SLOT_REQUEST;
 
-static bool M_IsBlank(const char *const str)
-{
-    if (str == nullptr) {
-        return true;
-    }
-    for (const char *c = str; *c != '\0'; c++) {
-        if (*c != ' ' && *c != '\t') {
-            return false;
-        }
-    }
-    return true;
-}
-
 static bool M_TryParseQuickArg(
     const char *const args, int32_t *const slot_num, bool *const has_slot_num)
 {
     *has_slot_num = false;
-    if (M_IsBlank(args)) {
+    if (String_IsEmpty(args)) {
         return true;
     }
 
