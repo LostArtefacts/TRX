@@ -8,6 +8,8 @@
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
+#define M_DAMAGE 10
+
 static uint8_t m_LaserShades[32] = {};
 static const int16_t m_DefaultBeamCount = 1;
 
@@ -292,6 +294,44 @@ static void M_Initialise(const int16_t item_num)
     M_LaserSplitterToggle(item);
 }
 
+static void M_DamageLara(const ITEM *const item, const int32_t beam_y)
+{
+    if (item->object_id == O_SECURITY_LASER_ALARM) {
+        return;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    if (item->object_id == O_SECURITY_LASER_KILLER) {
+        Lara_TakeDamage(lara_item->hit_points, false);
+    } else {
+        Lara_TakeDamage(M_DAMAGE, false);
+    }
+
+    Spawn_BloodBath(
+        lara_item->pos.x, item->pos.y + beam_y, lara_item->pos.z,
+        (Random_GetDraw() & 0x7F) + 128, Random_GetDraw() << 1,
+        lara_item->room_num, 1);
+}
+
+static void M_ActivateTriggers(const ITEM *const item)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const target_item = Item_Get(i);
+        if ((target_item->object_id != O_STROBE_LIGHT
+             && target_item->object_id != O_SENTRY_GUN)
+            || !Item_IsTriggerActive(target_item)) {
+            continue;
+        }
+
+        const OBJECT *const target_obj = Object_Get(target_item->object_id);
+        if (target_obj->event_func != nullptr) {
+            target_obj->event_func(target_item, OBJECT_EVENT_ALERT, nullptr);
+        }
+    }
+
+    Room_TestTriggers(item);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -312,42 +352,14 @@ static void M_Control(const int16_t item_num)
         GAME_VECTOR target;
 
         if (M_GetLaserSegment(item, direction, beam_y, &start, &target)) {
-            ITEM *const lara_item = Lara_GetItem();
-            if (item->object_id != O_SECURITY_LASER_ALARM) {
-                if (item->object_id == O_SECURITY_LASER_KILLER) {
-                    Lara_TakeDamage(lara_item->hit_points, false);
-                } else {
-                    Lara_TakeDamage(10, false);
-                }
-
-                Spawn_BloodBath(
-                    lara_item->pos.x, item->pos.y + beam_y, lara_item->pos.z,
-                    (Random_GetDraw() & 0x7F) + 128, Random_GetDraw() << 1,
-                    lara_item->room_num, 1);
-            }
-
             tripped = true;
-            for (int32_t j = 0; j < Item_GetLevelCount(); j++) {
-                ITEM *const target_item = Item_Get(j);
-
-                if ((target_item->object_id == O_STROBE_LIGHT
-                     || target_item->object_id == O_SENTRY_GUN)
-                    && Item_IsTriggerActive(target_item)) {
-                    OBJECT *const target_obj =
-                        Object_Get(target_item->object_id);
-                    if (target_obj->event_func != nullptr) {
-                        target_obj->event_func(
-                            target_item, OBJECT_EVENT_ALERT, nullptr);
-                    }
-                }
-            }
+            M_DamageLara(item, beam_y);
         }
-
         beam_y -= 256;
     }
 
     if (tripped) {
-        Room_TestTriggers(item);
+        M_ActivateTriggers(item);
     }
 }
 
