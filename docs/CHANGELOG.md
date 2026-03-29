@@ -9,7 +9,7 @@
 - changed `--level` to no longer require `-e/--engine` to work
 - improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - fixed recordings keeping unbound hotkeys active during playback
-- fixed being unable to change FOV after using photo mode without restarting the level (#5246, regression from 1.0)
+- fixed being unable to change FOV after using photo mode without restarting the level (#5246, regression from TR1X 4.15)
 - fixed Lara getting stuck if using crouch-roll near very low ceilings (#5248)
 
 **TR2**:
