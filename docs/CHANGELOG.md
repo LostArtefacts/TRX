@@ -6,6 +6,7 @@
 - added dynamic mod discovery from the games/ directory using new `extends` and `name` fields in gameflow.json5
 - added expanded statistics screen customization, including per-row toggles and a choice between bare and bordered layouts (Graphic Options → Stats)
 - added optional save/heal crystal counts to level and final statistics (#5180)
+- added the ability for security lasers to activate heavy triggers when tripped by Lara (#5225)
 - changed `--level` to no longer require `-e/--engine` to work
 - improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - fixed recordings keeping unbound hotkeys active during playback
