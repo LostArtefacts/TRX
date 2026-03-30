@@ -592,6 +592,9 @@ void Lara_Skin_SetExtraEquipment(
 void Lara_Skin_SetGunEquipment(
     const LARA_MESH mesh, const LARA_GUN_TYPE gun_type)
 {
+    if (gun_type < 0 || gun_type >= NUM_WEAPONS) {
+        return;
+    }
     M_SetGunEquipment(mesh, gun_type, M_GetCurrentOutfit());
 
     if (mesh == LM_THIGH_L) {
