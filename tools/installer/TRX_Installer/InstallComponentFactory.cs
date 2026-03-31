@@ -198,6 +198,7 @@ internal static class InstallComponentFactory
             "tr3-la",
             "TR3:LA",
             "The Lost Artifact files from disc or an existing TRX installation.",
+            downloadUrl: $"{ResourceBaseUrl}/tr3-la.zip",
             sourceOptions:
             [
                 new InstallSourceOption(
