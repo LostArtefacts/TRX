@@ -9,6 +9,7 @@
 - added optional save/heal crystal counts to level and final statistics (#5180)
 - added the ability for security lasers to activate heavy triggers when tripped by Lara (#5225)
 - changed `--level` to no longer require `-e/--engine` to work
+- changed background images on title, inventory, and statistics screens to always use smooth bilinear filtering instead of the pixel-sharp look
 - improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - fixed recordings keeping unbound hotkeys active during playback
 - fixed being unable to change FOV after using photo mode without restarting the level (#5246, regression from TR1X 4.15)

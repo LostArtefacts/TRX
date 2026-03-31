@@ -59,6 +59,7 @@ typedef struct {
     float desaturation;
     bool flip_y;
     bool use_fit;
+    TEXTURE_FILTER texture_filter;
 } M_DRAW_OP_IMAGE;
 
 typedef struct {
@@ -550,6 +551,7 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
     Output_Quad_SetEffect(p->image.renderer, OUTPUT_QUAD_EFFECT_NONE);
     Output_Quad_SetRepeat(p->image.renderer, 1, 1);
     Output_Quad_SetTextureSize(p->image.renderer, nullptr);
+    Output_Quad_SetFilter(p->image.renderer, op->texture_filter);
     Output_SetDesaturation(op->desaturation);
     if (op->use_fit) {
         Output_Quad_SetFit(
@@ -565,6 +567,37 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
         Output_Quad_RenderWithBlend(p->image.renderer);
     }
     Output_SetDesaturation(0.0f);
+}
+
+static void M_DrawImageImpl(
+    const char *const file_name, const float intensity,
+    const TEXTURE_FILTER texture_filter)
+{
+    if (!Output_Overlay_LoadImage(file_name)) {
+        return;
+    }
+
+    const M_PRIV *const p = &m_Priv;
+    for (int32_t i = 0; i < M_IMAGE_CACHE_CAPACITY; i++) {
+        const M_IMAGE_CACHE_ENTRY *const e = &p->image.entries[i];
+        if (e->in_use && e->file_name != nullptr
+            && String_Equivalent(e->file_name, file_name)
+            && e->texture.initialized) {
+            M_SCHEDULE_OP(
+                false, M_DrawOp_Image,
+                ((M_DRAW_OP_IMAGE) {
+                    .texture_id = e->texture.id,
+                    .width = e->texture_width,
+                    .height = e->texture_height,
+                    .opacity = 1.0f,
+                    .desaturation = intensity,
+                    .flip_y = false,
+                    .use_fit = true,
+                    .texture_filter = texture_filter,
+                }));
+            return;
+        }
+    }
 }
 
 static void M_DrawOp_Snapshot(const M_DRAW_OP_SNAPSHOT *const op)
@@ -682,6 +715,8 @@ static void M_DrawOp_Pattern(const M_DRAW_OP_PATTERN *const op)
     Output_Quad_SetEffect(
         p->pattern.renderer,
         op->wave ? OUTPUT_QUAD_EFFECT_WAVE : OUTPUT_QUAD_EFFECT_VIGNETTE);
+    Output_Quad_SetFilter(
+        p->pattern.renderer, g_Config.rendering.texture_filter);
     Output_Quad_ClearFit(p->pattern.renderer);
     Output_Quad_SetOpacity(p->pattern.renderer, op->opacity);
     if (op->opacity >= 1.0f) {
@@ -790,36 +825,18 @@ bool Output_Overlay_LoadImage(const char *const file_name)
 
 void Output_Overlay_DrawImage(const char *const file_name)
 {
-    Output_Overlay_DrawImageMono(file_name, 0.0f);
+    M_DrawImageImpl(file_name, 0.0f, TEXTURE_FILTER_POINT);
+}
+
+void Output_Overlay_DrawImageBilinear(const char *const file_name)
+{
+    M_DrawImageImpl(file_name, 0.0f, TEXTURE_FILTER_BILINEAR);
 }
 
 void Output_Overlay_DrawImageMono(
     const char *const file_name, const float intensity)
 {
-    if (!Output_Overlay_LoadImage(file_name)) {
-        return;
-    }
-
-    const M_PRIV *const p = &m_Priv;
-    for (int32_t i = 0; i < M_IMAGE_CACHE_CAPACITY; i++) {
-        const M_IMAGE_CACHE_ENTRY *const e = &p->image.entries[i];
-        if (e->in_use && e->file_name != nullptr
-            && String_Equivalent(e->file_name, file_name)
-            && e->texture.initialized) {
-            M_SCHEDULE_OP(
-                false, M_DrawOp_Image,
-                ((M_DRAW_OP_IMAGE) {
-                    .texture_id = e->texture.id,
-                    .width = e->texture_width,
-                    .height = e->texture_height,
-                    .opacity = 1.0f,
-                    .desaturation = intensity,
-                    .flip_y = false,
-                    .use_fit = true,
-                }));
-            return;
-        }
-    }
+    M_DrawImageImpl(file_name, intensity, TEXTURE_FILTER_POINT);
 }
 
 void Output_Overlay_CaptureSnapshot(void)

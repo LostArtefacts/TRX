@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/gl/enum.h>
+
 #include <GL/glew.h>
 #include <stdint.h>
 
@@ -75,6 +77,7 @@ void Output_Quad_SetOpacity(OUTPUT_QUAD *renderer, float opacity);
 // Set brightness scaling multiplier applied in shader.
 void Output_Quad_SetBrightnessScale(
     OUTPUT_QUAD *renderer, float brightness_scale);
+void Output_Quad_SetFilter(OUTPUT_QUAD *renderer, TEXTURE_FILTER filter_mode);
 
 // Configure fitting mode and source aspect ratio handling.
 void Output_Quad_SetFit(
