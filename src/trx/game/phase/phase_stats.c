@@ -228,7 +228,7 @@ static void M_Draw(PHASE *const phase)
 
     case BK_IMAGE:
         if (p->args.background_path != nullptr) {
-            Output_Overlay_DrawImage(p->args.background_path);
+            Output_Overlay_DrawImageBilinear(p->args.background_path);
         }
         Output_Overlay_DrawBlackRectangle(progress, false);
         break;

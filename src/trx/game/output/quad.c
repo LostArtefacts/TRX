@@ -51,6 +51,7 @@ struct OUTPUT_QUAD {
 
     float opacity;
     float brightness_scale;
+    TEXTURE_FILTER filter_mode;
 
     OUTPUT_QUAD_FIT_MODE fit_mode;
     float src_aspect;
@@ -146,6 +147,7 @@ OUTPUT_QUAD *Output_Quad_Create(void)
     r->effect = OUTPUT_QUAD_EFFECT_NONE;
     r->opacity = 1.0f;
     r->brightness_scale = 1.0f;
+    r->filter_mode = TEXTURE_FILTER_POINT;
     r->repeat.x = 1;
     r->repeat.y = 1;
 
@@ -389,6 +391,13 @@ void Output_Quad_SetBrightnessScale(
     }
 }
 
+void Output_Quad_SetFilter(
+    OUTPUT_QUAD *const r, const TEXTURE_FILTER filter_mode)
+{
+    ASSERT(r != nullptr);
+    r->filter_mode = filter_mode;
+}
+
 void Output_Quad_SetFit(
     OUTPUT_QUAD *const r, const OUTPUT_QUAD_FIT_MODE fit_mode,
     const float src_w, const float src_h)
@@ -443,6 +452,13 @@ void Output_Quad_Render(OUTPUT_QUAD *const r)
     } else {
         glBindTexture(GL_TEXTURE_2D, r->texture);
     }
+    const GLint gl_filter =
+        r->filter_mode == TEXTURE_FILTER_BILINEAR ? GL_LINEAR : GL_NEAREST;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter);
+    GLint prev_sampler = 0;
+    glGetIntegeri_v(GL_SAMPLER_BINDING, 0, &prev_sampler);
+    glBindSampler(0, 0);
 
     const GLboolean was_blend_enabled = glIsEnabled(GL_BLEND);
     if (was_blend_enabled) {
@@ -460,6 +476,7 @@ void Output_Quad_Render(OUTPUT_QUAD *const r)
 
     glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
 
+    glBindSampler(0, (GLuint)prev_sampler);
     glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     if (was_depth_test_enabled) {
         glEnable(GL_DEPTH_TEST);
@@ -485,6 +502,13 @@ void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
     } else {
         glBindTexture(GL_TEXTURE_2D, r->texture);
     }
+    const GLint gl_filter =
+        r->filter_mode == TEXTURE_FILTER_BILINEAR ? GL_LINEAR : GL_NEAREST;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter);
+    GLint prev_sampler = 0;
+    glGetIntegeri_v(GL_SAMPLER_BINDING, 0, &prev_sampler);
+    glBindSampler(0, 0);
 
     const GLboolean was_blend_enabled = glIsEnabled(GL_BLEND);
     GLint prev_blend_src = 0;
@@ -505,6 +529,7 @@ void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
 
     glDrawArrays(GL_TRIANGLES, 0, r->vertex_count);
 
+    glBindSampler(0, (GLuint)prev_sampler);
     glPolygonMode(GL_FRONT_AND_BACK, bound_polygon_mode[0]);
     if (was_depth_test_enabled) {
         glEnable(GL_DEPTH_TEST);

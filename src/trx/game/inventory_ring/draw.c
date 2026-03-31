@@ -299,7 +299,7 @@ void InvRing_Draw(INV_RING *const ring)
 
     if (ring->mode == INV_TITLE_MODE) {
         if (ring->background_path != nullptr) {
-            Output_Overlay_DrawImage(ring->background_path);
+            Output_Overlay_DrawImageBilinear(ring->background_path);
         }
         Interpolation_Interpolate();
     } else {
@@ -353,7 +353,7 @@ void InvRing_Draw(INV_RING *const ring)
         case BK_IMAGE:
             if (ring->background_path != nullptr
                 && Output_Overlay_LoadImage(ring->background_path)) {
-                Output_Overlay_DrawImage(ring->background_path);
+                Output_Overlay_DrawImageBilinear(ring->background_path);
                 Output_Overlay_DrawBlackRectangle(1.0f - opacity, false);
             } else {
                 Output_Overlay_DrawBlackRectangle(1.0f, false);
