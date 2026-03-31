@@ -37,6 +37,8 @@
 - added Area 51 Rocket control
 - added Hook control
 - added pickup aids (Graphic Options → Visuals → Pickup aids) (#5239)
+- added high-resolution 16:9 and 4:3 images for TR3:LA  
+    To download the new images ahead of a stable release, please see the [TRX data](https://github.com/LostArtefacts/TRX-data) repository.
 - restored the cutscene at the beginning of High Security Compound
 - changed Area 51 Rocket to no longer hardcode room 52 as the fire blast room; instead it checks for presence of an upwards portal pointing to the rocket room
 - changed enemies who are killed by lasers to be included in the stats
