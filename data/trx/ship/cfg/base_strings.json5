@@ -1023,6 +1023,10 @@
             "title": "Smooth swimming",
             "description": "Gives Lara's underwater turn rate an acceleration curve for smoother movement, as per TR2+ originally. Disabling this option will give Lara a snappier turn rate, per original TR1.",
         },
+        "gameplay.enable_unreliable_vehicles": {
+            "title": "Unreliable vehicles",
+            "description": "Adds a chance for vehicles to malfunction while Lara is using them.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Underwater roll",
             "description": "Allows Lara to roll while underwater.",

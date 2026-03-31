@@ -14,6 +14,7 @@
 #include <trx/game/lara/skin/common.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -1161,6 +1162,10 @@ bool Kayak_Control(void)
     ITEM *const item = Lara_Vehicle_GetItem();
     M_PRIV *const p = item->priv;
     const int32_t time4 = Output_GetTimeInGame() * 4;
+
+    if (Vehicle_TestMalfunction(item)) {
+        return false;
+    }
 
     const LARA_SKIN_EQUIPMENT *const hand_r_equipment =
         Lara_Skin_GetEquipment(LM_HAND_R);

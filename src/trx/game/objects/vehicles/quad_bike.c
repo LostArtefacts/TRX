@@ -12,6 +12,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -1307,6 +1308,10 @@ bool QuadBike_Control(void)
     ITEM *const lara_item = Lara_GetItem();
     M_PRIV *const p = item->priv;
     M_QUAD_BIKE_INFO *const quad = &p->quad;
+
+    if (Vehicle_TestMalfunction(item)) {
+        return false;
+    }
 
     int32_t hit_wall = M_SkidooDynamics(item);
     bool killed = false;

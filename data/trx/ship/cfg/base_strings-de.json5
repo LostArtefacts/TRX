@@ -1023,6 +1023,10 @@
             "title": "Flüssiges Schwimmverhalten",
             "description": "Verpasst Laras Drehgeschwindigkeit unter Wasser eine Beschleunigungskurve für ein runderes Steuerungsverhalten, ähnlich wie in TR2+.",
         },
+        "gameplay.enable_unreliable_vehicles": {
+            "title": "\\{review}Unzuverlässige Fahrzeuge",
+            "description": "\\{review}Fügt eine Chance hinzu, dass Fahrzeuge ausfallen, während Lara sie benutzt.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Rolle unter Wasser",
             "description": "Erlaubt Lara, eine Rolle unter Wasser durchzuführen, ähnlich wie in TR2+.",

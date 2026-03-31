@@ -11,6 +11,8 @@
 #include <trx/game/music.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
+#include <trx/game/random.h>
+#include <trx/game/sound.h>
 #include <trx/game/viewport.h>
 
 typedef enum {
@@ -133,4 +135,35 @@ int32_t Vehicle_GetCollisionAnim(const ITEM *const vehicle, XYZ_32 *const moved)
     }
 
     return 0;
+}
+
+bool Vehicle_TestMalfunction(ITEM *const vehicle)
+{
+    if (!g_Config.gameplay.enable_unreliable_vehicles) {
+        return false;
+    }
+
+    ITEM *const lara_item = Lara_GetItem();
+    if ((lara_item->flags & IF_ONE_SHOT) != 0) {
+        return false;
+    }
+
+    const int32_t t = Output_GetTimeInGame();
+    const int32_t r = Random_GetControl() - 1;
+    if (((r ^ t) & 0x3FF) != 0) {
+        return false;
+    }
+
+    Item_Explode(Item_GetIndex(vehicle), -1, 1);
+    Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
+    Lara_Vehicle_SetIndex(NO_ITEM);
+    vehicle->flags |= IF_ONE_SHOT;
+    Item_RemoveDrawn(Item_GetIndex(vehicle));
+
+    Sound_Effect(SFX_LARA_FALL, &lara_item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, SPM_NORMAL);
+    Item_Explode(Lara_GetLaraInfo()->item_num, -1, 1);
+    lara_item->hit_points = 0;
+    lara_item->flags |= IF_ONE_SHOT;
+    return true;
 }

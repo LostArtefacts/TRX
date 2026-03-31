@@ -1023,6 +1023,10 @@
             "title": "Zwinniejsze pływanie",
             "description": "Powoduje, że Lara przyspiesza płynniej, ale wolniej podczas obracania pod wodą (tak jak w TR2+). Wyłączenie tej opcji zapewni Larze szybszą prędkość skrętu (tak jak w TR1).",
         },
+        "gameplay.enable_unreliable_vehicles": {
+            "title": "\\{review}Zawodne pojazdy",
+            "description": "\\{review}Dodaje szansę na awarię pojazdów podczas ich używania przez Larę.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Przewroty pod wodą",
             "description": "Pozwala Larze na przewrót pod wodą.",

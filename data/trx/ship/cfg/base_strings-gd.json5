@@ -1023,6 +1023,10 @@
             "title": "Snàmh rèidh",
             "description": "Cuiridh seo lùb luathaidh air tionndadh Lara fon uisge airson gluasad nas rèidh, mar ann an TR2 bho thùs.",
         },
+        "gameplay.enable_unreliable_vehicles": {
+            "title": "Carbadan neo-earbsach",
+            "description": "Cuiridh seo cothrom gun fàillig carbadan nuair a tha Lara gan cleachdadh.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Rolla fon uisge",
             "description": "Leigidh le Lara rolla a dhèanamh fon uisge.",

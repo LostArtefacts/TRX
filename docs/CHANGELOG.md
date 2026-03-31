@@ -8,6 +8,7 @@
 - added an option to show or hide the version text in the title inventory ring (#5235)
 - added optional save/heal crystal counts to level and final statistics (#5180)
 - added the ability for security lasers to activate heavy triggers when tripped by Lara (#5225)
+- added the ability for vehicles to malfunction at any given moment while Lara is using them (Gameplay → General → Unreliable vehicles)
 - changed `--level` to no longer require `-e/--engine` to work
 - improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - fixed recordings keeping unbound hotkeys active during playback

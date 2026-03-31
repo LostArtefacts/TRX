@@ -663,6 +663,10 @@ static void M_Control(const int16_t item_num)
     ITEM *const boat_item = Item_Get(item_num);
     M_PRIV *const p = boat_item->priv;
 
+    if (Vehicle_TestMalfunction(boat_item)) {
+        return;
+    }
+
     bool drive = false;
     int32_t no_turn = 1;
     int32_t collide = M_Dynamics(item_num);

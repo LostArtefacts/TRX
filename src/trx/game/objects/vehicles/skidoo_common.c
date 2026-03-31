@@ -794,6 +794,10 @@ bool Skidoo_Control(void)
     SKIDOO_INFO *const skidoo_data = skidoo->priv;
     int32_t collide = Skidoo_Dynamics(skidoo);
 
+    if (Vehicle_TestMalfunction(skidoo)) {
+        return false;
+    }
+
     XYZ_32 fl;
     XYZ_32 fr;
     const int32_t hfl = Skidoo_TestHeight(skidoo, M_FRONT, -M_SIDE, &fl);

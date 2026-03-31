@@ -31,3 +31,5 @@ X_UI_CFG(gameplay.enable_killer_pushblocks)
 X_UI_CFG(gameplay.enable_boulder_shake)
 X_UI_CFG(gameplay.enable_ally_targeting)
 X_UI_CFG_ENUM(gameplay.ally_hostility_policy, .misc = UI_Settings_AllyHostilityPolicyEnumEntries)
+
+X_UI_CFG(gameplay.enable_unreliable_vehicles)

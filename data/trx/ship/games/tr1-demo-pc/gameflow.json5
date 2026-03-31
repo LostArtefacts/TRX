@@ -83,5 +83,6 @@
         "ally_hostility_policy",
         "fix_monkey_pickup_priority",
         "fix_pipeman_aim",
+        "enable_unreliable_vehicles",
     ],
 }

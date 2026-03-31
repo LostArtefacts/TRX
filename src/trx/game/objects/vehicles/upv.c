@@ -8,6 +8,7 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/los.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
@@ -870,6 +871,10 @@ bool UPV_Control(void)
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
     M_PRIV *const p = item->priv;
+
+    if (Vehicle_TestMalfunction(item)) {
+        return false;
+    }
 
     if (!p->flags.dead) {
         M_UserInput(item, lara_item, p);

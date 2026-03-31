@@ -1023,6 +1023,10 @@
             "title": "Nuoto naturale",
             "description": "Fornisce alla velocità di virata subacquea di Lara una curva di accelerazione per movimenti più fluidi, come in TR2+. Disabilitando questa opzione, Lara avrà una velocità di virata più rapida, come in TR1.",
         },
+        "gameplay.enable_unreliable_vehicles": {
+            "title": "\\{review}Veicoli inaffidabili",
+            "description": "\\{review}Aggiunge una probabilità che i veicoli si guastino mentre Lara li utilizza.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Capriola sott'acqua",
             "description": "Permette a Lara di eseguire capriole mentre è sott'acqua.",

@@ -1023,6 +1023,10 @@
             "title": "Nage fluide",
             "description": "\\{review}Applique une accélération progressive aux rotations de Lara sous l'eau pour un mouvement plus naturel, comme c'est fait depuis TR2. Désactiver cette option donnera à Lara une vitesse de rotation plus rapide, comme dans TR1 d'origine.",
         },
+        "gameplay.enable_unreliable_vehicles": {
+            "title": "\\{review}Véhicules peu fiables",
+            "description": "\\{review}Ajoute une probabilité que les véhicules tombent en panne pendant que Lara les utilise.",
+        },
         "gameplay.enable_uw_roll": {
             "title": "Roulade sous-marine",
             "description": "\\{review}Permet à Lara de faire une roulade pour se retourner sous l'eau.",

@@ -7,6 +7,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/vehicles/common.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
@@ -281,6 +282,10 @@ bool MountedGun_Control(void)
     ITEM *const lara_item = Lara_GetItem();
     ITEM *const gun_item = Lara_Vehicle_GetItem();
     M_PRIV *const p = gun_item->priv;
+
+    if (Vehicle_TestMalfunction(gun_item)) {
+        return false;
+    }
 
     M_UserControl(gun_item);
 
