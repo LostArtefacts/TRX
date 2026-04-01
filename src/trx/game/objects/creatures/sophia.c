@@ -17,6 +17,7 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
+#include <trx/game/stats.h>
 
 // clang-format off
 #define M_SMALL_FLASH    10
@@ -324,6 +325,7 @@ static void M_Control(const int16_t item_num)
     if (p->death_counter == 0 && p->fuse_box_num != NO_ITEM) {
         const ITEM *const fuse_box = Item_Get(p->fuse_box_num);
         if (!Item_TestAnimEqual(fuse_box, 0)) {
+            Stats_AddKill();
             p->death_counter = 1;
         }
     }
