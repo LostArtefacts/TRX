@@ -24,3 +24,6 @@ Module for inspecting the active camera state.
   ```lua
   trx.camera.shake(200)
   ```
+
+- [lua]`trx.camera.reset()`  
+  Resets the camera based on Lara's current position.  

@@ -8,6 +8,7 @@
 - added an option to show or hide the version text in the title inventory ring (#5235)
 - added optional save/heal crystal counts to level and final statistics (#5180)
 - added the ability for security lasers to activate heavy triggers when tripped by Lara (#5225)
+- added `trx.camera.reset()` to Lua, which will reposition the camera based on Lara's position
 - changed `--level` to no longer require `-e/--engine` to work
 - changed background images on title, inventory, and statistics screens to always use smooth bilinear filtering instead of the pixel-sharp look
 - improved rendering line segments (poison darts, rain drops, SWAT laser sights)
