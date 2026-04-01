@@ -29,6 +29,11 @@ static bool M_IsTargetable(const ITEM *const item)
     return false;
 }
 
+static bool M_CanBeProjectileTarget(const ITEM *const item)
+{
+    return false;
+}
+
 static void M_Control(int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -165,6 +170,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
     obj->is_targetable_func = M_IsTargetable;
+    obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
 
     obj->shadow_size = 128;
     obj->pivot_length = 200;
