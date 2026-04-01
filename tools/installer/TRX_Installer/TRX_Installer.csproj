@@ -17,7 +17,7 @@
     <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
     <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <ApplicationIcon>..\TR2X_Installer\Resources\icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,14 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="..\TR2X_Installer\Resources\CDRom.png" Link="Resources\CDRom.png" />
-    <Resource Include="..\TR2X_Installer\Resources\GOG.png" Link="Resources\GOG.png" />
-    <Resource Include="..\TR2X_Installer\Resources\icon.ico" Link="Resources\icon.ico" />
-    <Resource Include="..\TR2X_Installer\Resources\side1.jpg" Link="Resources\side1.jpg" />
-    <Resource Include="..\TR2X_Installer\Resources\side2.jpg" Link="Resources\side2.jpg" />
-    <Resource Include="..\TR2X_Installer\Resources\side3.jpg" Link="Resources\side3.jpg" />
-    <Resource Include="..\TR2X_Installer\Resources\side4.jpg" Link="Resources\side4.jpg" />
-    <Resource Include="..\TR2X_Installer\Resources\Steam.png" Link="Resources\Steam.png" />
-    <Resource Include="..\TR2X_Installer\Resources\TR2X.png" Link="Resources\TR2X.png" />
+    <Resource Include="Resources\icon.ico" />
+    <Resource Include="Resources\side1.jpg" />
+    <Resource Include="Resources\side2.jpg" />
+    <Resource Include="Resources\side3.jpg" />
+    <Resource Include="Resources\side4.jpg" />
   </ItemGroup>
 </Project>
