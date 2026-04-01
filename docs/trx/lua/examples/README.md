@@ -33,7 +33,8 @@ end)
 
 ### Teleporting Lara upon picking up a medipack
 
-This will teleport Lara back to the starting point in TR1 Caves.
+This will teleport Lara back to the starting point in TR1 Caves. Resetting the 
+camera may be required in some cases.
 
 ```lua
 trx.events.on_pickup(function(pickup_item)
@@ -43,6 +44,7 @@ trx.events.on_pickup(function(pickup_item)
     y = 3 * 1024,
     z = 3.5 * 1024,
   }
+  trx.camera.reset()
 end)
 ```
 

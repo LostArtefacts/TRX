@@ -1,4 +1,4 @@
-#include <trx/game/camera/vars.h>
+#include <trx/game/camera.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/rooms/const.h>
 
@@ -59,6 +59,13 @@ static int M_L_CameraShake(lua_State *const L)
     return 0;
 }
 
+// trxc.camera.reset()
+static int M_L_CameraReset(lua_State *const L)
+{
+    Camera_ResetPosition();
+    return 0;
+}
+
 void LUA_CreateCamera(lua_State *const L)
 {
     lua_getglobal(L, "trxc");
@@ -73,6 +80,8 @@ void LUA_CreateCamera(lua_State *const L)
     lua_setfield(L, -2, "get_target_room");
     lua_pushcfunction(L, M_L_CameraShake);
     lua_setfield(L, -2, "shake");
+    lua_pushcfunction(L, M_L_CameraReset);
+    lua_setfield(L, -2, "reset");
     lua_setfield(L, -2, "camera");
     lua_pop(L, 1);
 }

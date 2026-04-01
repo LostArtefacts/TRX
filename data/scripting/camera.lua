@@ -13,6 +13,7 @@ local getters = {
 
 local camera = {
   shake = raw.shake,
+  reset = raw.reset,
 }
 
 setmetatable(camera, {
