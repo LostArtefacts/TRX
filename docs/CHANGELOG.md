@@ -21,6 +21,7 @@
 - fixed quick-load remaining unavailable while Lara is in her death animation (#5264, regression from 1.3)
 - fixed destroying the Fuse Box to defeat Sophia in City and Reunion not counting as a kill in the level statistics
 - fixed potential freezing issues after moving an item to a different room via Lua
+- fixed crash when issuing `/mod tr1-ub` when playing late TR1 levels
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
