@@ -137,8 +137,6 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->lot.setup.drop = -WALL_L * 20;
     lara_info->lot.setup.fly = STEP_L;
 
-    Lara_Control_Initialise(level->type, m_StartAnimState);
-
     Lara_Skin_Initialise();
     if (level->type == GFL_CUTSCENE) {
         Lara_Mesh_Initialise(level);
@@ -146,6 +144,8 @@ void Lara_Initialise(const GF_LEVEL *const level)
     } else {
         Lara_InitialiseInventory(level);
     }
+
+    Lara_Control_Initialise(level->type, m_StartAnimState);
 }
 
 void Lara_InitialiseInventory(const GF_LEVEL *const level)

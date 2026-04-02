@@ -2,6 +2,7 @@ X_UI_CFG(gameplay.enable_legal)
 X_UI_CFG(gameplay.enable_credits)
 X_UI_CFG(gameplay.enable_fmv)
 X_UI_CFG(gameplay.enable_demo)
+X_UI_CFG(gameplay.enable_cinematics)
 X_UI_CFG(gameplay.enable_cutscenes)
 X_UI_CFG_ENUM(gameplay.loading_screens,       .misc = UI_Settings_LoadingScreensModeEnumEntries)
 

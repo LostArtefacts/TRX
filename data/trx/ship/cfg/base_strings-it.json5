@@ -851,6 +851,10 @@
             "title": "Trucchi",
             "description": "Abilita vari trucchi:\n\n- L: termina immediatamente il livello.\n- I: dà a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n  - tasto CAMMINA: disabilita il trucco DOZY.\n  - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi).",
         },
+        "gameplay.enable_cinematics": {
+            "title": "\\{review}Sequenze scriptate",
+            "description": "\\{review}Abilita le sequenze scriptate all’inizio di alcuni livelli che le prevedono.",
+        },
         "gameplay.enable_compass_stats": {
             "title": "Statistiche livello bussola",
             "description": "Abilita la visualizzazione delle statistiche del livello quando è selezionata la bussola.",
