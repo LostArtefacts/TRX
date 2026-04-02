@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision.h>
 #include <trx/game/game.h>
@@ -27,7 +28,6 @@
 #define M_LF_DRAGON_DAGGER_ANIM_END    239
 #define M_LF_START_HOUSE_BEGIN         1
 #define M_LF_START_HOUSE_DAGGER_STORED 401
-#define M_LF_START_HOUSE_END           427
 #define M_LF_SHOWER_START              1
 #define M_LF_SHOWER_SHOTGUN_PICKUP     316
 #define M_CAM_YETI_KILL_ANGLE         (160 * DEG_1) // = 29120
@@ -245,11 +245,6 @@ static void M_PullDagger(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static void M_StartAnim(ITEM *const item, COLL_INFO *const coll)
-{
-    Room_TestTriggers(item);
-}
-
 static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
 {
     if (Item_TestFrameEqual(item, M_LF_START_HOUSE_BEGIN)) {
@@ -259,9 +254,6 @@ static void M_StartHouse(ITEM *const item, COLL_INFO *const coll)
         Lara_Skin_ClearEquipment(LM_HAND_R);
         Lara_Skin_SetExtraEquipment(LM_HIPS, EXTRA_MESH_DAGGER_HIPS);
         Inv_AddItem(O_PUZZLE_ITEM_1);
-    } else if (Item_TestFrameEqual(item, M_LF_START_HOUSE_END)) {
-        g_Camera.type = CAM_CHASE;
-        Viewport_AlterFOV(-1, FOV_MODE_GAME);
     }
 }
 
@@ -317,6 +309,10 @@ static void M_JailWakeUp(ITEM *const item, COLL_INFO *const coll)
     }
 
     Item_Animate(item);
+    if (!g_Config.gameplay.enable_cinematics) {
+        return;
+    }
+
     XYZ_32 pos = {};
     Lara_GetMeshPos(LM_HIPS, &pos);
     item->pos.x = pos.x;
@@ -338,7 +334,6 @@ REGISTER_LARA_EXTRA(LS_EXTRA_GONG_BONG,      M_GongBong)
 REGISTER_LARA_EXTRA(LS_EXTRA_TREX_KILL,      M_BeastKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_TORSO_KILL,     M_BeastKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_PULL_DAGGER,    M_PullDagger)
-REGISTER_LARA_EXTRA(LS_EXTRA_START_ANIM,     M_StartAnim)
 REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE,    M_StartHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_END_HOUSE,      M_EndHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_SHIVA_KILL,     M_BeastKill)

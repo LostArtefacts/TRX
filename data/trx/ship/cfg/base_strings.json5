@@ -851,6 +851,10 @@
             "title": "Cheats",
             "description": "Enables various cheats:\n\n- L: immediately end the level.\n- I: give Lara all weapons; a boost of ammo and medipacks; and all plot items for the current level.\n- O: enable fly cheat (swimming midair).\n  - WALK key: exit fly mode.\n  - GUN key: open the closest door (doesn't work in some places).",
         },
+        "gameplay.enable_cinematics": {
+            "title": "Cinematics",
+            "description": "Enables cinematics at the beginning of certain levels that have them defined.",
+        },
         "gameplay.enable_compass_stats": {
             "title": "Level statistics in compass",
             "description": "Enables showing level statistics when the compass is selected.",

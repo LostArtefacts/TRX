@@ -923,6 +923,28 @@ static void M_HandleEnvironment(void)
     M_HandleExposure();
 }
 
+static void M_HandleStartState(const LARA_EXTRA_STATE start_state)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    const XYZ_16 old_rot = lara_item->rot;
+
+    Lara_SwitchToExtraState(start_state);
+    if (g_Config.gameplay.enable_cinematics) {
+        Camera_InvokeCinematic(lara_item, 0, 0);
+        return;
+    }
+
+    // Skip the starting cinematic, but force animation control to play out to
+    // honour extra state specifics.
+    COLL_INFO coll = {};
+    do {
+        Lara_State_Update(lara_item, &coll);
+        Lara_Animate(lara_item);
+    } while (lara_info->extra_anim);
+    lara_item->rot = old_rot;
+}
+
 void Lara_Control_Initialise(
     const GF_LEVEL_TYPE level_type, const LARA_EXTRA_STATE start_state)
 {
@@ -932,8 +954,7 @@ void Lara_Control_Initialise(
     if ((level_type == GFL_NORMAL || level_type == GFL_BONUS)
         && start_state != LS_EXTRA_BREATH) {
         lara_info->water_status = LWS_ABOVE_WATER;
-        Lara_SwitchToExtraState(start_state);
-        Camera_InvokeCinematic(lara_item, 0, 0);
+        M_HandleStartState(start_state);
     } else if (Room_Get(lara_item->room_num)->flags.underwater) {
         lara_info->water_status = LWS_UNDERWATER;
         lara_item->fall_speed = 0;

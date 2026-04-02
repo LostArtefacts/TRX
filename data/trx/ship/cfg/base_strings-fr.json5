@@ -851,6 +851,10 @@
             "title": "Triche",
             "description": "Active plusieurs fonctions de triche :\n- L: termine immédiatement le niveau.\n- I: donne toutes les armes à Lara, le maximum en munitions et trousses de soin, et tous les éléments utiles au niveau en cours.\n- O: Fait voler Lara (nager dans les airs).\n  - Touche MARCHER : Revenir au sol.\n  - Touche ESPACE : Ouvre les portes fermées (peut ne pas fonctionner sur certaines).",
         },
+        "gameplay.enable_cinematics": {
+            "title": "\\{review}Séquences scénarisées",
+            "description": "\\{review}Active les séquences scénarisées au début de certains niveaux.",
+        },
         "gameplay.enable_compass_stats": {
             "title": "Statistiques dans la boussole",
             "description": "Affiche les statistiques du niveau lorsque la boussole est sélectionnée.",

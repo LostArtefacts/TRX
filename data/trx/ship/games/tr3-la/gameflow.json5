@@ -206,5 +206,6 @@
         "change_pierre_spawn",
         "fix_speeches_killing_music",
         "fix_pipeman_aim",
+        "enable_cinematics",
     ],
 }
