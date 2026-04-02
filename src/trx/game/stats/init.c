@@ -12,11 +12,13 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/inject.h>
+#include <trx/game/items.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/level.h>
 #include <trx/game/level/cache.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
+#include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
 
@@ -28,6 +30,31 @@
 static LEVEL_MAX_STATS *m_Stats = nullptr;
 static int32_t m_StatsCapacity = 0;
 static bool m_GameHasCrystals = false;
+
+static const OBJECT_ID m_FullInitObjectIDs[] = {
+    O_BARTOLI, O_CENTAUR_STATUE, O_PODS, O_BIG_POD, NO_OBJECT,
+};
+
+static bool M_ShouldUseFullInitialisation(const OBJECT_ID object_id)
+{
+    for (int32_t i = 0; m_FullInitObjectIDs[i] != NO_OBJECT; i++) {
+        if (m_FullInitObjectIDs[i] == object_id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void M_SetupStatsFullInitObjects(void)
+{
+    for (int32_t i = 0; m_FullInitObjectIDs[i] != NO_OBJECT; i++) {
+        OBJECT *const obj = Object_Get(m_FullInitObjectIDs[i]);
+        if (!obj->loaded || obj->setup_func == nullptr) {
+            continue;
+        }
+        obj->setup_func(obj);
+    }
+}
 
 static void M_EnsureStatsStorage(const int32_t level_count)
 {
@@ -318,13 +345,18 @@ void Stats_CalculateMaxStats(void)
             Inject_InitLevel(level, INJECTION_MODE_STATS);
             if (loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS)) {
                 Inject_AllInjections();
+                M_SetupStatsFullInitObjects();
 
-                for (int32_t item_num = 0; item_num < Item_GetTotalCount();
-                     item_num++) {
+                const int32_t item_count = Item_GetLevelCount();
+                for (int32_t item_num = 0; item_num < item_count; item_num++) {
                     ITEM *const item = Item_Get(item_num);
-                    ROOM *const room = Room_Get(item->room_num);
-                    item->next_item = room->item_num;
-                    room->item_num = item_num;
+                    if (M_ShouldUseFullInitialisation(item->object_id)) {
+                        Item_Initialise(item_num);
+                    } else {
+                        ROOM *const room = Room_Get(item->room_num);
+                        item->next_item = room->item_num;
+                        room->item_num = item_num;
+                    }
                 }
                 Carrier_InitialiseLevel(level);
 
