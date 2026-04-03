@@ -225,7 +225,7 @@ static void M_DebugPosTopLeft(void)
             Item_GetRelativeFrame(lara)));
         UI_Label(String_FormatStatic(
             "\\{small}%d, %d (%d)", lara->current_anim_state,
-            lara->goal_anim_state, obj_id));
+            lara->goal_anim_state, Object_ToGameID(obj_id)));
     }
     if (g_Config.debug.enable_debug_camera) {
         UI_Label(String_FormatStatic(
