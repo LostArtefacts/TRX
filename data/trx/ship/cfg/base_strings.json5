@@ -2231,6 +2231,9 @@
         "mine": {
             "name": "Aquatic Mine",
         },
+        "mine_cart": {
+            "name": "Mine Cart",
+        },
         "mini_copter": {
             "name": "Helicopter 2",
         },

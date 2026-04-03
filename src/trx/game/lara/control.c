@@ -45,6 +45,7 @@ extern bool UPV_Control(void);
 extern bool QuadBike_Control(void);
 extern bool Kayak_Control(void);
 extern bool MountedGun_Control(void);
+extern bool MineCart_Control(void);
 
 static SECTOR *M_GetCurrentSector(void)
 {
@@ -626,6 +627,12 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
                 coll->enable_hit = false;
                 coll->enable_baddie_push = false;
                 M_ObjectCollision(coll);
+                return;
+            }
+            break;
+
+        case O_MINE_CART:
+            if (MineCart_Control()) {
                 return;
             }
             break;

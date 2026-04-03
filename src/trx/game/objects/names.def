@@ -143,6 +143,7 @@ X_OBJ_NAME_DEFINE(O_QUAD_BIKE,             "quad_bike",             X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_KAYAK,                 "kayak",                 X_OBJ_NAMES("Kayak"))
 X_OBJ_NAME_DEFINE(O_UPV,                   "upv",                   X_OBJ_NAMES("UPV", "Minisub"))
 X_OBJ_NAME_DEFINE(O_MOUNTED_GUN,           "mounted_gun",           X_OBJ_NAMES("Mounted Gun"))
+X_OBJ_NAME_DEFINE(O_MINE_CART,             "mine_cart",             X_OBJ_NAMES("Mine Cart"))
 
 // Enemies
 X_OBJ_NAME_DEFINE(O_BACON_LARA,            "bacon_lara",            X_OBJ_NAMES("Bacon Lara"))

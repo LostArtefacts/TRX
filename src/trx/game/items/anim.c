@@ -44,7 +44,13 @@ ANIM *Item_GetAnim(const ITEM *const item)
 
 bool Item_TestAnimEqual(const ITEM *const item, const int16_t anim_idx)
 {
-    const OBJECT *const obj = Object_Get(item->object_id);
+    return Item_TestObjAnimEqual(item, anim_idx, item->object_id);
+}
+
+bool Item_TestObjAnimEqual(
+    const ITEM *const item, const int16_t anim_idx, const OBJECT_ID obj_id)
+{
+    const OBJECT *const obj = Object_Get(obj_id);
     return item->anim_num == obj->anim_idx + anim_idx;
 }
 

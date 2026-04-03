@@ -2213,6 +2213,9 @@
         "mine": {
             "name": "Wassermine",
         },
+        "mine_cart": {
+            "name": "\\{review}Grubenwagen",
+        },
         "mini_copter": {
             "name": "Helikopter 2",
         },

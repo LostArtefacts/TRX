@@ -2212,6 +2212,9 @@
         "mine": {
             "name": "Mina wodna",
         },
+        "mine_cart": {
+            "name": "\\{review}Wózek Kopalniany",
+        },
         "mini_copter": {
             "name": "Helikopter 2",
         },

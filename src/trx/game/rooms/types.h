@@ -71,6 +71,7 @@ typedef struct {
     int16_t box;
     bool is_death_sector;
     LADDER_DIRECTION ladder;
+    MINE_CART_TYPE mine_cart_type;
     TRIGGER *trigger;
     WALKABLE *walkable;
     struct {
