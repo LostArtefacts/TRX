@@ -193,7 +193,8 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "interaction_rot", p->interaction_rot);
 }
 
-static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
+static bool M_TestCurrentSector(
+    const ITEM *const item, const int32_t block_height)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
@@ -214,7 +215,9 @@ static bool M_TestCurrentSector(ITEM *item, int32_t block_height)
     return true;
 }
 
-static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
+static bool M_TestPush(
+    const ITEM *const item, const int32_t block_height,
+    const DIRECTION quadrant)
 {
     if (!M_TestCurrentSector(item, block_height)) {
         return false;
@@ -268,7 +271,9 @@ static bool M_TestPush(ITEM *item, int32_t block_height, DIRECTION quadrant)
     return true;
 }
 
-static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
+static bool M_TestPull(
+    const ITEM *const item, const int32_t block_height,
+    const DIRECTION quadrant)
 {
     if (!M_TestCurrentSector(item, block_height)) {
         return false;
@@ -340,7 +345,7 @@ static bool M_TestPull(ITEM *item, int32_t block_height, DIRECTION quadrant)
         return false;
     }
 
-    ITEM *const lara_item = Lara_GetItem();
+    const ITEM *const lara_item = Lara_GetItem();
     base_pos.x = lara_item->pos.x + x_add;
     base_pos.y = lara_item->pos.y;
     base_pos.z = lara_item->pos.z + z_add;
@@ -382,6 +387,15 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
         }
     }
     return false;
+}
+
+static bool M_TestSolidPortal(const ITEM *const item)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeightEx(sector, item->pos, true, NO_ITEM);
+    return height == NO_HEIGHT;
 }
 
 static bool M_TestDeathCollision(const ITEM *const item, const ITEM *const lara)
@@ -596,11 +610,8 @@ static void M_Collision(
             return;
         }
 
-        int16_t room_num = lara_item->room_num;
-        Room_GetSector(
-            (XYZ_32) { item->pos.x, item->pos.y - STEP_L / 2, item->pos.z },
-            &room_num);
-        if (room_num != item->room_num) {
+        // Prevent Lara moving a block through a non-passable portal
+        if (M_TestSolidPortal(item)) {
             return;
         }
 
