@@ -2232,6 +2232,9 @@
         "mine": {
             "name": "Miniera Acquatica",
         },
+        "mine_cart": {
+            "name": "\\{review}Vagoncino da miniera",
+        },
         "mini_copter": {
             "name": "Elicottero 2",
         },

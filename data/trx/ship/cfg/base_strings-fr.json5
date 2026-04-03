@@ -2210,6 +2210,9 @@
         "mine": {
             "name": "\\{review}Mine aquatique",
         },
+        "mine_cart": {
+            "name": "\\{review}Wagonnet de Mine",
+        },
         "mini_copter": {
             "name": "\\{review}Hélicoptère 2",
         },

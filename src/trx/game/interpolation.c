@@ -80,6 +80,11 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
         max_xz = 300;
         break;
 
+    case O_MINE_CART:
+        max_xz = 512;
+        max_y = 200;
+        break;
+
     case O_POISON_DART:
     case O_ROCKET:
     case O_HEAVY_ROCKET:

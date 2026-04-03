@@ -2212,6 +2212,9 @@
         "mine": {
             "name": "\\{review}Водная мина",
         },
+        "mine_cart": {
+            "name": "\\{review}Шахтная Вагонетка",
+        },
         "mini_copter": {
             "name": "\\{review}Вертолет 2",
         },

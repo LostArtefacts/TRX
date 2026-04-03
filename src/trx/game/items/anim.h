@@ -5,6 +5,8 @@
 
 ANIM *Item_GetAnim(const ITEM *item);
 bool Item_TestAnimEqual(const ITEM *item, int16_t anim_idx);
+bool Item_TestObjAnimEqual(
+    const ITEM *item, int16_t anim_idx, OBJECT_ID obj_id);
 int16_t Item_GetRelativeAnim(const ITEM *item);
 int16_t Item_GetRelativeObjAnim(const ITEM *item, OBJECT_ID obj_id);
 int16_t Item_GetRelativeFrame(const ITEM *item);

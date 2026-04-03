@@ -241,6 +241,7 @@ void Room_PopulateSectorData(
     sector->is_death_sector = false;
     sector->trigger = nullptr;
     sector->ladder = LADDER_NONE;
+    sector->mine_cart_type = MINE_CART_NONE;
 
     if (start_index == null_index || floor_data == nullptr) {
         return;
@@ -299,6 +300,16 @@ void Room_PopulateSectorData(
         case FT_ROOF_NESW_PORTAL_NW:
         case FT_ROOF_NESW_PORTAL_SE:
             Room_ReadTriangulation(&sector->ceiling, fd_entry, *data++);
+            break;
+
+        case FT_MINE_CART_LEFT:
+            sector->mine_cart_type = MINE_CART_LEFT;
+            break;
+
+        case FT_MINE_CART_RIGHT:
+            sector->mine_cart_type = sector->mine_cart_type == MINE_CART_LEFT
+                ? MINE_CART_STOP
+                : MINE_CART_RIGHT;
             break;
 
         default:

@@ -43,6 +43,8 @@ typedef enum {
     FT_ROOF_NESW_PORTAL_NW = 17,
     FT_ROOF_NESW_PORTAL_SE = 18,
     FT_MONKEY = 19,
+    FT_MINE_CART_LEFT = 20,
+    FT_MINE_CART_RIGHT = 21,
 } FLOOR_TYPE;
 
 typedef enum {
@@ -96,3 +98,10 @@ typedef enum {
     LADDER_WEST = 1 << 3,
     LADDER_CEILING = 1 << 4,
 } LADDER_DIRECTION;
+
+typedef enum {
+    MINE_CART_NONE,
+    MINE_CART_LEFT,
+    MINE_CART_RIGHT,
+    MINE_CART_STOP,
+} MINE_CART_TYPE;
