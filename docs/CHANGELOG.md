@@ -24,6 +24,7 @@
 - fixed potential freezing issues after moving an item to a different room via Lua
 - fixed crash when issuing `/mod tr1-ub` when playing late TR1 levels
 - fixed Lara being unable to draw weapons if animated interactions are enabled and she is hit by an enemy while moving towards a pickup (#5288, regression from TR1X 4.13)
+- fixed interaction issues with pushblocks when in shallow water (regression from 1.0)
 
 **TR2**:
 - changed the Detonator Box to no longer hard-code dynamic light output; refer to the migration guide for custom levels
