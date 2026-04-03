@@ -181,6 +181,10 @@ void Lara_TakeHit(ITEM *const lara_item, const int32_t dx, const int32_t dz)
             &lara_item->pos, SPM_NORMAL);
     }
     lara_info->hit_frame++;
+    if (lara_info->interact_target.is_moving
+        && lara_info->gun_status == LGS_HANDS_BUSY) {
+        lara_info->gun_status = LGS_ARMLESS;
+    }
     lara_info->interact_target.is_moving = false;
     lara_info->interact_target.item_num = NO_ITEM;
     CLAMPG(lara_info->hit_frame, 34);

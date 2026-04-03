@@ -931,14 +931,8 @@ bool Lara_MovePosition(const ITEM *const ref_item, const XYZ_32 *const vec)
     ITEM_ADJUST_ROT(lara_item->rot.y, new_rot.y, rotation);
     ITEM_ADJUST_ROT(lara_item->rot.z, new_rot.z, rotation);
 
-    // clang-format off
-    return lara_item->pos.x == new_pos.x
-        && lara_item->pos.y == new_pos.y
-        && lara_item->pos.z == new_pos.z
-        && lara_item->rot.x == new_rot.x
-        && lara_item->rot.y == new_rot.y
-        && lara_item->rot.z == new_rot.z;
-    // clang-format on
+    return XYZ_32_AreEquivalent(lara_item->pos, new_pos)
+        && XYZ_16_AreEquivalent(lara_item->rot, new_rot);
 }
 
 LARA_ANIMATION Lara_AnimToGameID(const LARA_TRX_ANIMATION anim)
