@@ -515,6 +515,8 @@ static bool M_ReadEffect(JSON_READ_IO *const io)
     }
     M_MUST(JSON_READ(io, "counter", &effect->counter));
     M_MUST(JSON_READ(io, "shade", &effect->shade));
+    JSON_SHOULD(JSON_READ(io, "flag1", &effect->flag1));
+    JSON_SHOULD(JSON_READ(io, "flag2", &effect->flag2));
     M_FINISH();
 }
 
