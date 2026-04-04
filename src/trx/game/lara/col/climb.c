@@ -456,7 +456,7 @@ static M_CLIMB_RESULT M_TestClimbUpPos(
     sample_pos.x = x2;
     sample_pos.z = z2;
     sector = Room_GetSector(sample_pos, &room_num);
-    height = Room_GetHeight(sector, sample_pos);
+    height = Room_GetHeightEx(sector, sample_pos, true, NO_ITEM);
     if (height == NO_HEIGHT) {
         *ledge = NO_HEIGHT;
         return CLIMB_RESULT_POS;
