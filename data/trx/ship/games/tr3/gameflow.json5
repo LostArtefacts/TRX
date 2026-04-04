@@ -430,6 +430,7 @@
             ],
             "injections": [
                 "lara_guns.bin",
+                "drill_collision.bin",
             ],
         },
 
