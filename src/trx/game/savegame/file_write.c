@@ -351,6 +351,8 @@ void SG_File_DumpEffects(JSON_WRITE_IO *const io)
         JSONW_WRITE(io, "frame_number", effect->frame_num);
         JSONW_WRITE(io, "counter", effect->counter);
         JSONW_WRITE(io, "shade", effect->shade);
+        JSONW_WRITE(io, "flag1", effect->flag1);
+        JSONW_WRITE(io, "flag2", effect->flag2);
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "effects");
