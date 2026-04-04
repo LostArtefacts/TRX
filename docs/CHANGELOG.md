@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.5...develop) - ××××-××-××
+- fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)
 
 ## [1.5](https://github.com/LostArtefacts/TRX/compare/trx-1.4.2...trx-1.5) - 2026-04-04
 Showcase: https://youtu.be/TTlajgcM9-8

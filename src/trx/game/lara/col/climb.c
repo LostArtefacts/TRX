@@ -270,7 +270,12 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     Lara_Col_GetInfo(item, coll);
 
-    if (lara->climb_status) {
+    // Note lara->climb_status does not mean she is using a ladder, rather the
+    // floor data below her supports it.
+    const bool can_use_ladder = lara->climb_status
+        && item->current_anim_state != LS(LS_SHIMMY_LEFT)
+        && item->current_anim_state != LS(LS_SHIMMY_RIGHT);
+    if (can_use_ladder) {
         if (!g_Input.action || item->hit_points <= 0) {
             XYZ_32 pos = {
                 .x = 0,
@@ -296,9 +301,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
         }
 
         if (!Lara_Col_TestLadderHang(item, coll)) {
-            item->pos.x = coll->old.x;
-            item->pos.y = coll->old.y;
-            item->pos.z = coll->old.z;
+            item->pos = coll->old;
             item->goal_anim_state = LS(LS_HANG);
             item->current_anim_state = LS(LS_HANG);
             Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
