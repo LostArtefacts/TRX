@@ -350,6 +350,10 @@ static void M_Control(const int16_t item_num)
     }
 
     if (explode) {
+        if (was_underwater) {
+            item->pos = old_pos.pos;
+            Item_UpdateRoom(item_num, old_pos.room_num);
+        }
         M_Explode(item_num, old_pos.pos);
     }
 }
