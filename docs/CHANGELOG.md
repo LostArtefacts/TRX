@@ -57,6 +57,7 @@
 - fixed bad positioning of light static meshes in Aldwych that could result in Lara not grabbing certain ledges (#5181)
 - fixed several missing textures in Lud's Gate room 77
 - fixed Tony's fireballs flying the wrong way and piling up after loading a save (regression from 1.1)
+- fixed rockets exploding underwater being able to create a water splash in the wrong place (regression from 1.1)
 
 
 
