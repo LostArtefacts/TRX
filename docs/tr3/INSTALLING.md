@@ -188,6 +188,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── cut9_setup.bin
 │   │   ├── cut11_setup.bin
 │   │   ├── cut12_setup.bin
+│   │   ├── drill_collision.bin
 │   │   ├── font.bin
 │   │   ├── ganges_door131_frames.bin
 │   │   ├── globe_model.bin
