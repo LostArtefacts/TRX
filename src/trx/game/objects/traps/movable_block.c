@@ -392,9 +392,10 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
 static bool M_TestSolidPortal(const ITEM *const item)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    int16_t room_num = lara_item->room_num;
-    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-    const int32_t height = Room_GetHeightEx(sector, item->pos, true, NO_ITEM);
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(lara_item->pos, &room_num);
+    const int32_t height =
+        Room_GetHeightEx(sector, lara_item->pos, true, NO_ITEM);
     return height == NO_HEIGHT;
 }
 
