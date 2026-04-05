@@ -3,6 +3,7 @@
 - fixed incorrect transparent and yellow pixels on TR2 and TR3 outfit heads when bilinear filtering is enabled (#5300)
 - fixed climbing issues on ladders that are against walls that (incorrectly) contain tilt data within them (#5304, regression from 1.1)
 - fixed Lara not transitioning immediately to run after vaulting two clicks when forward is held (#5305, regression from 1.3)
+- fixed settings list auto-scroll sometimes stopping after switching to a different mod (regression from 1.4)
 
 **TR3**:
 - fixed the satellite dish in High Security Compound room 44 being clipped out of view too soon (missing animation bounds) (#5297, regression from 1.1)

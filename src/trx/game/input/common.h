@@ -35,6 +35,7 @@ void Input_Init(void);
 void Input_Shutdown(void);
 void Input_Discover(void);
 void Input_Update(void);
+void Input_Reset(void);
 
 // Processes a SDL event to update global input state before polling.
 // @param event     Event to process.
