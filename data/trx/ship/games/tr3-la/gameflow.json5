@@ -188,7 +188,6 @@
 
     "fmvs": [
         {"path": "logo.rpl", "legal": true},
-        {"path": "intr_eng.rpl"},
     ],
 
     "hidden_config": [
