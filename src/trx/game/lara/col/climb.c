@@ -234,6 +234,18 @@ static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
     return true;
 }
 
+static bool M_TestHangStop(
+    const ITEM *const item, const COLL_INFO *const coll, const bool front_floor,
+    int32_t *const height_diff)
+{
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    *height_diff = coll->side_front.floor - bounds->min.y;
+    return ABS(coll->side_left2.floor - coll->side_right2.floor) >= SLOPE_DIF
+        || coll->side_mid.ceiling >= 0 || coll->coll_type != COLL_FRONT
+        || front_floor || coll->hit_static || *height_diff < -SLOPE_DIF
+        || *height_diff > SLOPE_DIF;
+}
+
 void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
 {
     coll->bad_pos = NO_BAD_POS;
@@ -270,12 +282,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = 0;
     Lara_Col_GetInfo(item, coll);
 
-    // Note lara->climb_status does not mean she is using a ladder, rather the
-    // floor data below her supports it.
-    const bool can_use_ladder = lara->climb_status
-        && item->current_anim_state != LS(LS_SHIMMY_LEFT)
-        && item->current_anim_state != LS(LS_SHIMMY_RIGHT);
-    if (can_use_ladder) {
+    if (lara->climb_status) {
         if (!g_Input.action || item->hit_points <= 0) {
             XYZ_32 pos = {
                 .x = 0,
@@ -301,10 +308,15 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
         }
 
         if (!Lara_Col_TestLadderHang(item, coll)) {
-            item->pos = coll->old;
-            item->goal_anim_state = LS(LS_HANG);
-            item->current_anim_state = LS(LS_HANG);
-            Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
+            int32_t height_diff = 0;
+            if ((item->current_anim_state != LS(LS_SHIMMY_LEFT)
+                 && item->current_anim_state != LS(LS_SHIMMY_RIGHT))
+                || M_TestHangStop(item, coll, flag, &height_diff)) {
+                item->pos = coll->old;
+                item->goal_anim_state = LS(LS_HANG);
+                item->current_anim_state = LS(LS_HANG);
+                Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
+            }
             return;
         }
 
@@ -336,12 +348,8 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    const int32_t hdif = coll->side_front.floor - bounds->min.y;
-
-    if (ABS(coll->side_left2.floor - coll->side_right2.floor) >= SLOPE_DIF
-        || coll->side_mid.ceiling >= 0 || coll->coll_type != COLL_FRONT || flag
-        || coll->hit_static || hdif < -SLOPE_DIF || hdif > SLOPE_DIF) {
+    int32_t height_diff = 0;
+    if (M_TestHangStop(item, coll, flag, &height_diff)) {
         item->pos = coll->old;
         if (item->current_anim_state == LS(LS_SHIMMY_LEFT)
             || item->current_anim_state == LS(LS_SHIMMY_RIGHT)) {
@@ -367,8 +375,8 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
         break;
     }
 
-    if (g_TRVersion >= 2 || (hdif >= -STEP_L && hdif <= STEP_L)) {
-        item->pos.y += hdif;
+    if (g_TRVersion >= 2 || (height_diff >= -STEP_L && height_diff <= STEP_L)) {
+        item->pos.y += height_diff;
     }
 }
 
