@@ -71,5 +71,31 @@ static void M_SpriteEdits(
     }
 }
 
+static void M_AnimTextureEdits(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
+{
+    for (int32_t i = 0; i < data_count; i++) {
+        const int32_t range_idx = VFile_ReadS32(injection->fp);
+        const int32_t num_textures = VFile_ReadS32(injection->fp);
+        if (num_textures <= 0) {
+            continue;
+        }
+
+        ANIMATED_TEXTURE_RANGE *const range =
+            Output_GetAnimatedTextureRange(range_idx);
+        const size_t range_size = num_textures * sizeof(int16_t);
+        if (range->num_textures == num_textures) {
+            VFile_Read(injection->fp, range->textures, range_size);
+        } else {
+            LOG_WARNING(
+                "Expected %d textures for animation range %d; got %d",
+                range->num_textures, range_idx, num_textures);
+            VFile_Skip(injection->fp, range_size);
+        }
+    }
+}
+
 REGISTER_INJECT_EDITOR(IDT_TEXTURE_EDITS, M_TextureEdits)
 REGISTER_INJECT_EDITOR(IDT_SPRITE_EDITS, M_SpriteEdits)
+REGISTER_INJECT_EDITOR(IDT_ANIM_TEXTURES, M_AnimTextureEdits)

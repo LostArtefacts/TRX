@@ -202,6 +202,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── london_sky.bin
 │   │   ├── luds_diver_animation.bin
 │   │   ├── luds_textures.bin
+│   │   ├── mines_textures.bin
 │   │   ├── misc_sprites.bin
 │   │   ├── nevada_door132_frames.bin
 │   │   ├── nevada_sky.bin
@@ -474,6 +475,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── london_sky.bin
     │   │   │   ├── luds_diver_animation.bin
     │   │   │   ├── luds_textures.bin
+    │   │   │   ├── mines_textures.bin
     │   │   │   ├── misc_sprites.bin
     │   │   │   ├── nevada_door132_frames.bin
     │   │   │   ├── nevada_sky.bin
