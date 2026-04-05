@@ -1,20 +1,40 @@
 #include <trx/game/phase/phase_cutscene.h>
 
+#include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/game/cutscene.h>
+#include <trx/game/fader.h>
 #include <trx/game/game.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
+#include <trx/version.h>
+
+#define M_CROSS_FADE_DURATION 0.5f
 
 typedef struct {
-    int32_t level_num;
+    PHASE_CUTSCENE_ARGS args;
+    FADER cross_fader;
 } M_PRIV;
+
+static bool M_UsesCrossFadeIn(PHASE *const phase)
+{
+    M_PRIV *const p = phase->priv;
+    return p->args.cross_fade_in && g_Config.visuals.enable_fade_effects
+        && g_TRVersion == 3;
+}
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    if (!Cutscene_Start(p->level_num)) {
+    if (phase->uses_cross_fade_in != nullptr
+        && phase->uses_cross_fade_in(phase)) {
+        Output_Overlay_CaptureSnapshot();
+        Fader_InitTo(&p->cross_fader, 1.0f, 0.0f, M_CROSS_FADE_DURATION);
+    }
+
+    if (!Cutscene_Start(p->args.level_num)) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END,
             .gf_cmd = { .action = GF_NOOP },
@@ -61,13 +81,17 @@ static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Cutscene_Draw();
+    if (phase->uses_cross_fade_in != nullptr
+        && phase->uses_cross_fade_in(phase)) {
+        Output_Overlay_DrawSnapshot(Fader_GetCurrentValue(&p->cross_fader));
+    }
 }
 
-PHASE *Phase_Cutscene_Create(const int32_t level_num)
+PHASE *Phase_Cutscene_Create(const PHASE_CUTSCENE_ARGS args)
 {
     PHASE *const phase = Memory_Alloc(sizeof(PHASE));
     M_PRIV *const p = Memory_Alloc(sizeof(M_PRIV));
-    p->level_num = level_num;
+    p->args = args;
     phase->priv = p;
     phase->start = M_Start;
     phase->end = M_End;
@@ -75,6 +99,7 @@ PHASE *Phase_Cutscene_Create(const int32_t level_num)
     phase->resume = M_Resume;
     phase->control = M_Control;
     phase->draw = M_Draw;
+    phase->uses_cross_fade_in = M_UsesCrossFadeIn;
     return phase;
 }
 

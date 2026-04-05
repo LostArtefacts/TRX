@@ -174,7 +174,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
     if (level->type == GFL_DEMO) {
         gf_cmd = GF_RunDemo(level->num);
     } else if (level->type == GFL_CUTSCENE) {
-        gf_cmd = GF_RunCutscene(level->num);
+        gf_cmd = GF_RunCutscene(level->num, (bool)(intptr_t)seq_ctx_arg);
     } else {
         if (seq_ctx != GFSC_SAVED && level != GF_GetFirstLevel()) {
             Lara_RevertToPistolsIfNeeded();
@@ -191,9 +191,13 @@ M_GF_HANDLER(M_HandlePlayCutscene)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
+    const GF_SEQUENCE_EVENT *const prev_event =
+        event_idx > 0 ? &sequence->events[event_idx - 1] : nullptr;
     const int16_t cutscene_num = (int16_t)(intptr_t)event->data;
+    const bool cross_fade_in =
+        prev_event != nullptr && prev_event->type == GFS_LOOP_GAME;
     if (seq_ctx != GFSC_SAVED && g_Config.gameplay.enable_cutscenes) {
-        gf_cmd = GF_DoCutsceneSequence(cutscene_num);
+        gf_cmd = GF_DoCutsceneSequence(cutscene_num, cross_fade_in);
         if (gf_cmd.action == GF_LEVEL_COMPLETE) {
             gf_cmd.action = GF_NOOP;
         }
