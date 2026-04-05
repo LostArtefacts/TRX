@@ -77,9 +77,12 @@ GF_COMMAND GF_RunDemo(const int32_t demo_num)
     return gf_cmd;
 }
 
-GF_COMMAND GF_RunCutscene(const int32_t cutscene_num)
+GF_COMMAND GF_RunCutscene(const int32_t cutscene_num, const bool cross_fade_in)
 {
-    PHASE *const cutscene_phase = Phase_Cutscene_Create(cutscene_num);
+    PHASE *const cutscene_phase = Phase_Cutscene_Create((PHASE_CUTSCENE_ARGS) {
+        .level_num = cutscene_num,
+        .cross_fade_in = cross_fade_in,
+    });
     const GF_COMMAND gf_cmd = PhaseExecutor_Run(cutscene_phase);
     Phase_Cutscene_Destroy(cutscene_phase);
     return gf_cmd;
@@ -181,14 +184,16 @@ GF_COMMAND GF_DoDemoSequence(int32_t demo_num)
     return GF_InterpretSequence(level, GFSC_NORMAL, nullptr);
 }
 
-GF_COMMAND GF_DoCutsceneSequence(const int32_t cutscene_num)
+GF_COMMAND GF_DoCutsceneSequence(
+    const int32_t cutscene_num, const bool cross_fade_in)
 {
     const GF_LEVEL *const level = GF_GetLevel(GFLT_CUTSCENES, cutscene_num);
     if (level == nullptr) {
         LOG_ERROR("Missing cutscene: %d", cutscene_num);
         return (GF_COMMAND) { .action = GF_NOOP };
     }
-    return GF_InterpretSequence(level, GFSC_NORMAL, nullptr);
+    return GF_InterpretSequence(
+        level, GFSC_NORMAL, (void *)(intptr_t)cross_fade_in);
 }
 
 GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)

@@ -430,7 +430,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
             break;
 
         case GF_START_CINE:
-            gf_cmd = GF_DoCutsceneSequence(gf_cmd.param);
+            gf_cmd = GF_DoCutsceneSequence(gf_cmd.param, false);
             break;
 
         case GF_START_DEMO:
