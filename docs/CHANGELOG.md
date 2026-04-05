@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.5...develop) - ××××-××-××
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)
+- fixed incorrect transparent and yellow pixels on TR2 and TR3 outfit heads when bilinear filtering is enabled (#5300)
 - fixed climbing issues on ladders that are against walls that (incorrectly) contain tilt data within them (#5304, regression from 1.1)
 - fixed Lara not transitioning immediately to run after vaulting two clicks when forward is held (#5305, regression from 1.3)
 
