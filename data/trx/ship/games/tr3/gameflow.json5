@@ -362,6 +362,7 @@
                 "lara_guns.bin",
                 "compound_cine.bin",
                 "compound_animating_bounds.bin",
+                "compound_textures.bin",
             ],
             "unobtainable_kills": 9,
             "unobtainable_ally_kills": 8,
