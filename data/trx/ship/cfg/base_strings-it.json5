@@ -235,7 +235,7 @@
                 "tabs": {
                     "bars": "Barre",
                     "rendering": "Schermo",
-                    "stats": "\\{review}Statistiche",
+                    "stats": "Statistiche",
                     "ui": "Interfaccia",
                     "visuals": "Grafica",
                 },
@@ -260,7 +260,7 @@
             "assault_title": "MIGLIORI TEMPI",
             "basic_fmt": "%d",
             "bonus_statistics": "Statistiche Bonus",
-            "crystals": "\\{review}Cristalli",
+            "crystals": "Cristalli",
             "deaths": "Morti",
             "detail_fmt": "%d di %d",
             "distance_travelled": "Distanza Percorsa",
@@ -667,8 +667,8 @@
             "SHADOW_TYPE_SPRITE": "Sprite",
         },
         "STATS_STYLE": {
-            "STATS_STYLE_BARE": "\\{review}Semplice",
-            "STATS_STYLE_BORDERED": "\\{review}Con bordo",
+            "STATS_STYLE_BARE": "Senza bordi",
+            "STATS_STYLE_BORDERED": "Con bordi",
         },
         "SUNGLASSES_MODE": {
             "SUNGLASSES_MODE_OFF": "Disattivato",
@@ -852,8 +852,8 @@
             "description": "Abilita vari trucchi:\n\n- L: termina immediatamente il livello.\n- I: dà a Lara tutte le armi; maggior quantità di munizioni e kit medici; tutti gli oggetti necessari per superare il livello.\n- O: abilita il trucco DOZY (nuotare a mezz'aria).\n  - tasto CAMMINA: disabilita il trucco DOZY.\n  - tasto ESTRAI ARMA: apre la porta più vicina (non funziona in certi casi).",
         },
         "gameplay.enable_cinematics": {
-            "title": "\\{review}Sequenze scriptate",
-            "description": "\\{review}Abilita le sequenze scriptate all’inizio di alcuni livelli che le prevedono.",
+            "title": "Scene iniziali",
+            "description": "Abilita le scene iniziali nei livelli in cui sono previste.",
         },
         "gameplay.enable_compass_stats": {
             "title": "Statistiche livello bussola",
@@ -1360,8 +1360,8 @@
             "description": "Mostra gli oggetti nell'angolo in basso a destra quando Lara raccoglie qualcosa.",
         },
         "ui.show_title_version": {
-            "title": "\\{review}Testo versione titolo",
-            "description": "\\{review}Mostra la stringa della versione TRX nell'anello dell'inventario del titolo.",
+            "title": "Mostra versione",
+            "description": "Mostra la versione di TRX nel menu principale.",
         },
         "ui.sprintbar_color": {
             "title": "Colore barra resistenza",
@@ -1376,52 +1376,52 @@
             "description": "Posizione in cui viene visualizzata la barra della resistenza.",
         },
         "ui.stats.show_ammo": {
-            "title": "\\{review}Colpi munizioni usati",
-            "description": "\\{review}Mostra la riga delle munizioni nelle statistiche del livello.",
+            "title": "Munizioni usate",
+            "description": "Mostra le informazioni sulle munizioni usate e dei colpi a segno nelle statistiche del livello.",
         },
         "ui.stats.show_crystals": {
-            "title": "\\{review}Cristalli",
-            "description": "\\{review}Mostra la riga dei cristalli nelle statistiche del livello.",
+            "title": "Cristalli",
+            "description": "Mostra le informazioni sui cristalli usati o raccolti nelle statistiche del livello.",
         },
         "ui.stats.show_deaths": {
-            "title": "\\{review}Morti",
-            "description": "\\{review}Mostra le morti di Lara nelle statistiche della bussola e nelle statistiche del livello. Il conteggio delle morti viene aggiornato nel salvataggio attualmente caricato non appena Lara muore.",
+            "title": "Morti",
+            "description": "Mostra il conteggio delle morti di Lara nella bussola e nelle statistiche del livello. Il conteggio viene aggiornato nel salvataggio attualmente caricato non appena Lara muore.",
         },
         "ui.stats.show_distance_travelled": {
-            "title": "\\{review}Distanza percorsa",
-            "description": "\\{review}Mostra la riga della distanza percorsa nelle statistiche del livello.",
+            "title": "Distanza percorsa",
+            "description": "Mostra le informazioni sulla distanza percorsa nelle statistiche del livello.",
         },
         "ui.stats.show_kills": {
-            "title": "\\{review}Uccisioni",
-            "description": "\\{review}Mostra la riga delle uccisioni nelle statistiche del livello.",
+            "title": "Uccisioni",
+            "description": "Mostra le informazioni sulle uccisioni nelle statistiche del livello.",
         },
         "ui.stats.show_level_header": {
-            "title": "\\{review}Contatore livello",
-            "description": "\\{review}Mostra il numero del livello corrente in cima alle statistiche del livello.",
+            "title": "Indicatore livello",
+            "description": "Mostra il numero del livello attuale nella parte superiore delle statistiche del livello.",
         },
         "ui.stats.show_medipacks_used": {
-            "title": "\\{review}Kit di salute usati",
-            "description": "\\{review}Mostra la riga dei kit di salute usati nelle statistiche del livello.",
+            "title": "Kit medici usati",
+            "description": "Mostra le informazioni sui kit medici usati nelle statistiche del livello.",
         },
         "ui.stats.show_pickups": {
-            "title": "\\{review}Raccolte",
-            "description": "\\{review}Mostra la riga delle raccolte nelle statistiche del livello.",
+            "title": "Oggetti raccolti",
+            "description": "Mostra le informazioni sugli oggetti raccolti nelle statistiche del livello.",
         },
         "ui.stats.show_secrets": {
-            "title": "\\{review}Segreti trovati",
-            "description": "\\{review}Mostra la riga dei segreti trovati nelle statistiche del livello.",
+            "title": "Segreti scoperti",
+            "description": "Mostra le informazioni sui segreti scoperti nelle statistiche del livello.",
         },
         "ui.stats.show_time_taken": {
-            "title": "\\{review}Tempo impiegato",
-            "description": "\\{review}Mostra la riga del tempo impiegato nelle statistiche del livello.",
+            "title": "Tempo impiegato",
+            "description": "Mostra il tempo impiegato nelle statistiche del livello.",
         },
         "ui.stats.show_totals": {
-            "title": "\\{review}Mostra totali",
-            "description": "\\{review}Mostra i totali accanto alle statistiche quando applicabile. I segreti rimangono invariati da questa impostazione.",
+            "title": "Mostra totali",
+            "description": "Mostra i totali accanto alle statistiche, ove applicabile. I segreti non sono influenzati da questa impostazione.",
         },
         "ui.stats.style": {
-            "title": "\\{review}Stile delle statistiche",
-            "description": "\\{review}Controlla come viene visualizzata la finestra delle statistiche.\n\n- Semplice: mostra il layout più semplice senza cornice.\n- Con bordo: mostra il layout con cornice.",
+            "title": "Stile statistiche",
+            "description": "Controlla come viene visualizzata la finestra delle statistiche.\n\n- Senza bordi: mostra le informazioni come un semplice elenco, senza bordi.\n- Con bordi: mostra le informazioni all'interno di una finestra.",
         },
         "ui.stats_background_style": {
             "title": "Sfondo statistiche",
@@ -1598,13 +1598,13 @@
             "name": "Scimmia",
         },
         "area_51_rocket": {
-            "name": "\\{review}Razzo Area 51",
+            "name": "Razzo Area 51",
         },
         "area_51_rocket_blast": {
-            "name": "\\{review}Esplosione Razzo Area 51",
+            "name": "Esplosione Razzo Area 51",
         },
         "area_51_rocket_support": {
-            "name": "\\{review}Supporto Razzo Area 51",
+            "name": "Supporto Razzo Area 51",
         },
         "assault_digits": {
             "name": "Cifre Corso d'Addestramento",
@@ -2293,10 +2293,10 @@
             "name": "Caricatori per MP5",
         },
         "mp_1": {
-            "name": "\\{review}MP 1",
+            "name": "MP 1",
         },
         "mp_2": {
-            "name": "\\{review}MP 2",
+            "name": "MP 2",
         },
         "mummy": {
             "name": "Mummia",
@@ -2320,7 +2320,7 @@
             "name": "Luce Accesa/Spenta",
         },
         "orca": {
-            "name": "\\{review}Orca",
+            "name": "Orca",
         },
         "passport": {
             "name": "Partita",
@@ -2418,7 +2418,7 @@
             "name": "Sega Elettrica",
         },
         "prisoner": {
-            "name": "\\{review}Prigioniero",
+            "name": "Prigioniero",
         },
         "propeller_1": {
             "name": "Elica Aeroplano",
@@ -2544,7 +2544,7 @@
             ]
         },
         "rotating_laser": {
-            "name": "\\{review}Laser rotante",
+            "name": "Laser rotante",
         },
         "save_crystal": {
             "name": "Cristallo di Salvataggio",

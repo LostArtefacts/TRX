@@ -1,0 +1,10 @@
+{
+  "Controls": {
+    "window_title_main": "Programma di installazione di TRX",
+    "step_source_heading": "Fase 1: Opzioni d'installazione",
+    "step_source_content": "",
+    "step_settings_heading": "Fase 1: Opzioni d'installazione",
+    "step_install_heading": "Fase 2: Installazione",
+    "step_finish_heading": "Fase 3: Completato"
+  }
+}
