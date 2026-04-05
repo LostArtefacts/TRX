@@ -39,22 +39,8 @@
     ],
 
     "levels": [
-        // 0. Lara's Home
-        {
-            "type": "gym",
-            "path": "house.tr2",
-            "music_track": -1,
-            "lara_outfit": "tr3_gym",
-            "sequence": [
-                {"type": "loading_screen", "path": "house.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "loop_game"},
-                {"type": "level_stats"},
-            ],
-            "injections": [
-                "gym_sky.bin",
-                "lara_gym_guns.bin",
-            ],
-        },
+        // 0. Legacy savegame placeholder
+        {"type": "dummy"},
 
         // 1. Highland Fling
         {
