@@ -12,6 +12,7 @@
 **TR3**:
 - added Mine Cart control
 - changed Sophia's final height to follow the level setup instead of using a fixed value
+- restored the animated mine cart tracks in RX-Tech Mines
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
 - fixed Fire Lighting option having no effect
 - fixed the satellite dish in High Security Compound room 44 being clipped out of view too soon (missing animation bounds) (#5297, regression from 1.1)
