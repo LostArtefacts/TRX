@@ -11,6 +11,7 @@
 - fixed It's a Madhouse! street lamps being too bright
 - fixed TR3:LA playing TR3 intro FMV
 - fixed Willard's Lair having wrong kill count
+- fixed Reunion having wrong pickup and secret count
 
 
 
