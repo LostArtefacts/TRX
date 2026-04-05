@@ -7,6 +7,7 @@
 - fixed Lara not transitioning immediately to run after vaulting two clicks when forward is held (#5305, regression from 1.3)
 
 **TR3**:
+- fixed Fire Lighting option having no effect
 - fixed the satellite dish in High Security Compound room 44 being clipped out of view too soon (missing animation bounds) (#5297, regression from 1.1)
 - fixed It's a Madhouse! street lamps being too bright
 - fixed TR3:LA playing TR3 intro FMV
