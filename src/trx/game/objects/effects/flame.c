@@ -1,6 +1,7 @@
 #include <trx/game/objects/effects/flame.h>
 
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
@@ -304,9 +305,11 @@ static void M_TR3_Control(const int16_t effect_num)
     }
 
     // Light & proximity damage logic (applies to most flame types).
-    int32_t x = effect->pos.x + ((rnd & 0xF) << 5);
-    int32_t y = effect->pos.y + ((rnd & 0xF0) << 1);
-    int32_t z = effect->pos.z + ((rnd >> 3) & 0x1E0);
+    const XYZ_32 light_pos = {
+        .x = effect->pos.x + ((rnd & 0xF) << 5),
+        .y = effect->pos.y + ((rnd & 0xF0) << 1),
+        .z = effect->pos.z + ((rnd >> 3) & 0x1E0),
+    };
     RGB_888 color = {
         .r = (rnd & 0x3F) + 192,
         .g = ((rnd >> 4) & 0x1F) + 96,
@@ -328,16 +331,14 @@ static void M_TR3_Control(const int16_t effect_num)
 
     if (g_Config.visuals.enable_fire_lighting) {
         if (effect->frame_num == FLAME_SIDE) {
-            const int32_t angle =
-                (((effect->rot.y >> 3) & 0xFFFE) - 4096) & 0x1FFE;
-            const int32_t s = (dist * Math_Sin(angle << 3)) >> W2V_SHIFT;
-            const int32_t c = (dist * Math_Cos(angle << 3)) >> W2V_SHIFT;
+            const int16_t angle =
+                ((((effect->rot.y >> 3) & 0xFFFE) - 4096) & 0x1FFE) << 3;
             Output_AddDynamicLightRGB(
-                (XYZ_32) { x + s, y, z + c }, (effect->flag2 != 0) ? 6 : 13,
-                color);
+                XYZ_32_OffsetYaw(light_pos, angle, dist),
+                (effect->flag2 != 0) ? 6 : 13, color);
         } else {
             Output_AddDynamicLightRGB(
-                (XYZ_32) { x, y, z }, 16 - (effect->frame_num << 2), color);
+                light_pos, 16 - (effect->frame_num << 2), color);
         }
     }
 
@@ -353,9 +354,12 @@ static void M_TR3_Control(const int16_t effect_num)
         }
     } else if (effect->frame_num != FLAME_SMALL) {
         if (Lara_IsNearItem(&effect->pos, M_DAMAGE_PROXIMITY)) {
-            x = lara_item->pos.x - effect->pos.x;
-            z = lara_item->pos.z - effect->pos.z;
-            dist = SQUARE(x) + SQUARE(z);
+            const XYZ_32 delta = {
+                .x = lara_item->pos.x - effect->pos.x,
+                .y = 0,
+                .z = lara_item->pos.z - effect->pos.z,
+            };
+            dist = XYZ_32_GetLength2(delta);
             Lara_TakeDamage(M_TOO_NEAR_DAMAGE, true);
 
             if (dist < 202500) {
