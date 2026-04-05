@@ -310,6 +310,7 @@ static void M_AddRoomStatic3D(const INJECTION *const injection)
         mesh->shade.value_2 = mesh->shade.value_1;
     }
     mesh->static_num = VFile_ReadS16(injection->fp);
+    mesh->draw_num = -1;
 
     room->num_static_meshes++;
 }

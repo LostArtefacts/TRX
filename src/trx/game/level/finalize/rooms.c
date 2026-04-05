@@ -2,6 +2,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
+#include <trx/debug.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/level/finalize.h>
 #include <trx/game/objects.h>
@@ -67,6 +68,7 @@ static void M_ComputePortalBounds(void)
 static void M_FixStaticsVisibility(void)
 {
     int32_t total_rooms = Room_GetCount();
+    int32_t draw_num = 0;
     VECTOR **room_stat_vecs =
         Memory_Alloc(sizeof(*room_stat_vecs) * total_rooms);
 
@@ -76,6 +78,8 @@ static void M_FixStaticsVisibility(void)
         for (int32_t m = 0; m < room->num_static_meshes; m++) {
             STATIC_MESH *const static_mesh = &room->static_meshes[m];
             if (Object_IsValidStatid3D(static_mesh->static_num)) {
+                ASSERT(draw_num < MAX_ITEMS);
+                static_mesh->draw_num = draw_num++;
                 Vector_Add(room_stat_vecs[i], static_mesh);
             } else {
                 LOG_WARNING(
