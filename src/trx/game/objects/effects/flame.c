@@ -174,22 +174,23 @@ static void M_TR3_ControlSmall(
         }
     }
 
-    RGB_888 color;
+    if (g_Config.visuals.enable_fire_lighting) {
+        RGB_888 color;
 #if 0
-    // TODO: implement this for Willard
-    if (lara->burn_green) {
-        color.r = (rnd >> 2) & 0x3F;
-        color.g = (rnd & 0x3F) + 192;
-        color.b = ((rnd >> 4) & 0x1F) + 96;
-    } else
+        // TODO: implement this for Willard
+        if (lara->burn_green) {
+            color.r = (rnd >> 2) & 0x3F;
+            color.g = (rnd & 0x3F) + 192;
+            color.b = ((rnd >> 4) & 0x1F) + 96;
+        } else
 #endif
-    {
-        color.r = (rnd & 0x3F) + 192;
-        color.g = ((rnd >> 4) & 0x1F) + 96;
-        color.b = 0;
+        {
+            color.r = (rnd & 0x3F) + 192;
+            color.g = ((rnd >> 4) & 0x1F) + 96;
+            color.b = 0;
+        }
+        Output_AddDynamicLightRGB(lara_item->pos, 13, color);
     }
-
-    Output_AddDynamicLightRGB(lara_item->pos, 13, color);
 
     if (lara_item->room_num != effect->room_num) {
         Effect_UpdateRoom(Effect_GetIndex(effect), lara_item->room_num);
@@ -323,15 +324,21 @@ static void M_TR3_Control(const int16_t effect_num)
         } else {
             dist = (128 - effect->flag1) << 5;
         }
+    }
 
-        const int32_t angle = (((effect->rot.y >> 3) & 0xFFFE) - 4096) & 0x1FFE;
-        const int32_t s = (dist * Math_Sin(angle << 3)) >> W2V_SHIFT;
-        const int32_t c = (dist * Math_Cos(angle << 3)) >> W2V_SHIFT;
-        Output_AddDynamicLightRGB(
-            (XYZ_32) { x + s, y, z + c }, (effect->flag2 != 0) ? 6 : 13, color);
-    } else {
-        Output_AddDynamicLightRGB(
-            (XYZ_32) { x, y, z }, 16 - (effect->frame_num << 2), color);
+    if (g_Config.visuals.enable_fire_lighting) {
+        if (effect->frame_num == FLAME_SIDE) {
+            const int32_t angle =
+                (((effect->rot.y >> 3) & 0xFFFE) - 4096) & 0x1FFE;
+            const int32_t s = (dist * Math_Sin(angle << 3)) >> W2V_SHIFT;
+            const int32_t c = (dist * Math_Cos(angle << 3)) >> W2V_SHIFT;
+            Output_AddDynamicLightRGB(
+                (XYZ_32) { x + s, y, z + c }, (effect->flag2 != 0) ? 6 : 13,
+                color);
+        } else {
+            Output_AddDynamicLightRGB(
+                (XYZ_32) { x, y, z }, 16 - (effect->frame_num << 2), color);
+        }
     }
 
     Sound_Effect(SFX_LOOP_FOR_SMALL_FIRES, &effect->pos, SPM_NORMAL);
