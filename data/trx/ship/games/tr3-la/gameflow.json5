@@ -184,6 +184,8 @@
                 "lara_guns.bin",
                 "reunion_flames.bin",
             ],
+            "unobtainable_pickups": 1,
+            "unobtainable_secrets": 1,
         },
     ],
 
