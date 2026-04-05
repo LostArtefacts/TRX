@@ -131,6 +131,7 @@ typedef struct {
     RGBA_8888 color;
     SHADE shade;
     int16_t static_num;
+    int16_t draw_num;
 } STATIC_MESH;
 
 typedef struct {

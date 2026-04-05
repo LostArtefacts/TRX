@@ -9,6 +9,11 @@
 
 
 
+**TR3**:
+- fixed It's a Madhouse! street lamps being too bright
+
+
+
 ## [1.5](https://github.com/LostArtefacts/TRX/compare/trx-1.4.2...trx-1.5) - 2026-04-04
 Showcase: https://youtu.be/TTlajgcM9-8
 - added multi-key combo shortcuts (up to 3 keys) with two binding slots per action for both keyboard and controller

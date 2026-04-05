@@ -368,6 +368,7 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
             mesh->rot.y = VFile_ReadS16(file);
             M_ReadShade(loader, &mesh->shade, file);
             mesh->static_num = VFile_ReadS16(file);
+            mesh->draw_num = -1;
         }
 
         room->flipped_room = VFile_ReadS16(file);

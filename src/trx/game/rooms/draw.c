@@ -78,6 +78,7 @@ static inline void M_DrawSet_ForEach(
 }
 
 static VECTOR *m_RoomsToDraw = nullptr;
+static ROOM_DRAWSET m_DrawnStatics = {};
 
 static int32_t m_Outside;
 static int32_t m_OutsideRight;
@@ -375,6 +376,9 @@ static void M_DrawSingleRoom(const ROOM *const room)
 
     for (int32_t i = 0; i < room->num_static_meshes; i++) {
         const STATIC_MESH *const mesh = &room->static_meshes[i];
+        if (M_DrawSet_Has(&m_DrawnStatics, mesh->draw_num)) {
+            continue;
+        }
         const STATIC_OBJECT_3D *const obj =
             Object_Get3DStatic(mesh->static_num);
         if (!obj->visible) {
@@ -386,6 +390,7 @@ static void M_DrawSingleRoom(const ROOM *const room)
         Matrix_RotY(mesh->rot.y);
         const CLIP clip = Output_CheckBoundsClip(&obj->draw_bounds);
         if (clip != CLIP_NOT_VISIBLE) {
+            M_DrawSet_Add(&m_DrawnStatics, mesh->draw_num);
             Output_CalculateStaticMeshLight(mesh->pos, mesh->shade, room);
             Object_DrawMesh(obj->mesh_idx, clip, false);
             if (g_Config.debug.enable_debug_bounding_boxes) {
@@ -421,6 +426,7 @@ static void M_DrawSingleRoom(const ROOM *const room)
 void Room_DrawReset(void)
 {
     M_EnsureRoomsToDraw();
+    M_DrawSet_Init(&m_DrawnStatics);
     Vector_Clear(m_RoomsToDraw);
 }
 
