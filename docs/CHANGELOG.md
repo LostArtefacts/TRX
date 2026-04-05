@@ -15,6 +15,10 @@
 - restored the animated mine cart tracks in RX-Tech Mines
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
 - fixed Fire Lighting option having no effect
+- fixed missing conveyor belt animations in High Security Compound
+- fixed z-fighting in High Security Compound rooms 135/179
+- fixed transparent and magenta pixels on grating textures in High Security Compound and Area 51
+- fixed an incorrect window texture in High Security Compound room 105
 - fixed the satellite dish in High Security Compound room 44 being clipped out of view too soon (missing animation bounds) (#5297, regression from 1.1)
 - fixed It's a Madhouse! street lamps being too bright
 - fixed TR3:LA playing TR3 intro FMV

@@ -173,6 +173,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── coastal_sky.bin
 │   │   ├── compound_animating_bounds.bin
 │   │   ├── compound_cine.bin
+│   │   ├── compound_textures.bin
 │   │   ├── crash_pickup_meshes.bin
 │   │   ├── crash_sky.bin
 │   │   ├── cut1_setup.bin
@@ -447,6 +448,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── coastal_sky.bin
     │   │   │   ├── compound_animating_bounds.bin
     │   │   │   ├── compound_cine.bin
+    │   │   │   ├── compound_textures.bin
     │   │   │   ├── crash_pickup_meshes.bin
     │   │   │   ├── crash_sky.bin
     │   │   │   ├── cut1_setup.bin
