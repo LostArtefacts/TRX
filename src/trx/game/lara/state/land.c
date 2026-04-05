@@ -75,6 +75,14 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 0;
 }
 
+static void M_PullUp(ITEM *const item, COLL_INFO *const coll)
+{
+    M_Default(item, coll);
+    if (g_Input.forward && Item_TestAnimEqual(item, LA(LA_CLIMB_2CLICK_END))) {
+        item->goal_anim_state = LS(LS_RUN);
+    }
+}
+
 static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -767,8 +775,8 @@ static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
 }
 
 // clang-format off
-REGISTER_LARA_STATE(LS_PULL_UP,      M_Default)
 REGISTER_LARA_STATE(LS_GYMNAST,      M_Default)
+REGISTER_LARA_STATE(LS_PULL_UP,      M_PullUp)
 REGISTER_LARA_STATE(LS_WALK,         M_Walk)
 REGISTER_LARA_STATE(LS_RUN,          M_Run)
 REGISTER_LARA_STATE(LS_STOP,         M_Stop)
