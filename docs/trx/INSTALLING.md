@@ -929,6 +929,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── coastal_airlock.bin
 │   │   │   ├── coastal_animating_bounds.bin
 │   │   │   ├── coastal_sky.bin
+│   │   │   ├── compound_animating_bounds.bin
 │   │   │   ├── compound_cine.bin
 │   │   │   ├── crash_pickup_meshes.bin
 │   │   │   ├── crash_sky.bin

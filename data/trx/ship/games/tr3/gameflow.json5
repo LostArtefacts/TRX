@@ -360,6 +360,7 @@
                 "area51_sky.bin",
                 "lara_guns.bin",
                 "compound_cine.bin",
+                "compound_animating_bounds.bin",
             ],
             "unobtainable_kills": 9,
             "unobtainable_ally_kills": 8,
