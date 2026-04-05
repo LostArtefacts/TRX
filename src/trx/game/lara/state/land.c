@@ -736,6 +736,15 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         lara->sprint_timer--;
     }
 
+    if (g_Input.roll) {
+        Lara_Col_WadeSplash(item);
+        lara->sprinting = false;
+        item->current_anim_state = LS(LS_ROLL);
+        item->goal_anim_state = LS(LS_STOP);
+        Item_SwitchToAnim(item, LA(LA_ROLL_START), M_LF_ROLL);
+        return;
+    }
+
     if (M_RequestDuck(lara)) {
         item->goal_anim_state = M_GetRunToCrouchState();
         return;
