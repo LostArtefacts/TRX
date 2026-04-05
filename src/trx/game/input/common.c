@@ -156,12 +156,27 @@ static INPUT_STATE M_SetPressed(
     return input;
 }
 
+void Input_Reset(void)
+{
+    InputState_Clear(&g_Input);
+    InputState_Clear(&g_InputDB);
+    InputState_Clear(&g_OldInputDB);
+
+    for (int32_t i = 0; m_HoldChecks[i].role != (INPUT_ROLE)-1; i++) {
+        M_HOLD_CHECK *const hold_check = &m_HoldChecks[i];
+        hold_check->state = HOLD_INACTIVE;
+        ClockTimer_Sync(&hold_check->delay_timer);
+        ClockTimer_Sync(&hold_check->repeat_timer);
+    }
+}
+
 void Input_Init(void)
 {
     for (int32_t i = 0; m_HoldChecks[i].role != (INPUT_ROLE)-1; i++) {
         m_HoldChecks[i].delay_timer.type = CLOCK_TIMER_REAL;
         m_HoldChecks[i].repeat_timer.type = CLOCK_TIMER_REAL;
     }
+    Input_Reset();
     if (g_Input_Keyboard.init != nullptr) {
         g_Input_Keyboard.init();
     }
@@ -172,6 +187,7 @@ void Input_Init(void)
 
 void Input_Shutdown(void)
 {
+    Input_Reset();
     if (g_Input_Keyboard.shutdown != nullptr) {
         g_Input_Keyboard.shutdown();
     }

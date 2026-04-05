@@ -5,6 +5,7 @@
 - fixed incorrect transparent and yellow pixels on TR2 and TR3 outfit heads when bilinear filtering is enabled (#5300)
 - fixed climbing issues on ladders that are against walls that (incorrectly) contain tilt data within them (#5304, regression from 1.1)
 - fixed Lara not transitioning immediately to run after vaulting two clicks when forward is held (#5305, regression from 1.3)
+- fixed settings list auto-scroll sometimes stopping after switching to a different mod (regression from 1.4)
 
 **TR3**:
 - fixed Fire Lighting option having no effect
