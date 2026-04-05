@@ -95,6 +95,7 @@
                 "scotland_sky.bin",
                 "willsden_heli.bin",
             ],
+            "unobtainable_kills": 1,
         },
 
         // 3. Shakespeare Cliff

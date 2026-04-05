@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.5...develop) - ××××-××-××
+- fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)
 - fixed incorrect transparent and yellow pixels on TR2 and TR3 outfit heads when bilinear filtering is enabled (#5300)
 - fixed climbing issues on ladders that are against walls that (incorrectly) contain tilt data within them (#5304, regression from 1.1)
@@ -6,16 +7,9 @@
 
 **TR3**:
 - fixed the satellite dish in High Security Compound room 44 being clipped out of view too soon (missing animation bounds) (#5297, regression from 1.1)
-
-
-
-**TR3**:
 - fixed It's a Madhouse! street lamps being too bright
-
-
-
-**TR3**:
 - fixed TR3:LA playing TR3 intro FMV
+- fixed Willard's Lair having wrong kill count
 
 
 

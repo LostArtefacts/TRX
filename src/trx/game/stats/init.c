@@ -77,6 +77,10 @@ static uint64_t M_ComputeInputsChecksum(const GF_LEVEL_TABLE *const level_table)
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         hash = LevelCache_UpdateLevelChecksum(hash, level);
+        hash = Hash_FNV1a64_UpdateU32(hash, level->unobtainable.pickups);
+        hash = Hash_FNV1a64_UpdateU32(hash, level->unobtainable.kills);
+        hash = Hash_FNV1a64_UpdateU32(hash, level->unobtainable.ally_kills);
+        hash = Hash_FNV1a64_UpdateU32(hash, level->unobtainable.secrets);
     }
 
     return hash;
