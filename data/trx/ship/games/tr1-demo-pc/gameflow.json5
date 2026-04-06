@@ -4,6 +4,7 @@
 
     "engine": 1,
     "extends": "tr1",
+    "name": "TR1 PC Demo",
 
     // path to the main menu background image
     "main_menu_picture": "title.webp",

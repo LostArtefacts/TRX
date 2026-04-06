@@ -1049,8 +1049,15 @@ If you install everything correctly, your game directory should look more or les
 
 ## Playing the game
 
-- To play the selected game, run `TRX.exe`.
-- To launch an expansion pack, use the same command line switches as before, for example `TRX.exe --gold`.
+- To play the last selected game or expansion, run `TRX.exe`.
+- To launch a specific base game from a shortcut, use one of the following commands:
+    - `TRX.exe --mod tr1`
+    - `TRX.exe --mod tr2`
+    - `TRX.exe --mod tr3`
+- To launch a specific expansion pack from a shortcut, use one of the following commands:
+    - `TRX.exe --mod tr1-ub`
+    - `TRX.exe --mod tr2-gm`
+    - `TRX.exe --mod tr3-la`
 
 # macOS
 

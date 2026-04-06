@@ -4,6 +4,7 @@
 
     "engine": 2,
     "extends": "tr2",
+    "name": "The Golden Mask",
 
     "main_menu_picture": "title_eu_gm.webp",
     "savegame_file_fmt": "save_trgm_%02d.dat",

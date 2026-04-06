@@ -29,28 +29,50 @@ static void M_FreeArgVector(VECTOR *const args)
 
 static void M_ShowHelp(void)
 {
-    puts("Currently available options:");
+    puts("Available options:");
     puts("");
-    if (Shell_GetModByName("tr1-ub") != nullptr) {
-        puts("-g/--gold: launch The Unfinished Business expansion pack.");
-    }
-    if (Shell_GetModByName("tr1-demo-pc") != nullptr) {
-        puts("   --demo-pc: launch the PC demo level file.");
-    }
-    if (Shell_GetModByName("tr2-gm") != nullptr) {
-        puts("-g/--gold: launch The Golden Mask expansion pack.");
-    }
-    puts("--mod <MOD_ID>: launch a specific mod by id (e.g. tr1, tr1-ub).");
-    puts("-l/--level <PATH>: launch a specific level file.");
+    puts("-h/--help: show this help.");
+    puts("   --mod <MOD_ID>: launch a specific game or mod directly.");
+    puts("-e/--engine <1|2|3>: pick a game engine explicitly.");
+    puts("-l/--level <PATH|NUM>: launch a level file or level number.");
     puts("-s/--save <NUM>: launch from a specific save slot (starts at 1).");
-    puts("--test-record <PATH>: record gameplay events to file.");
-    puts("--test-replay <PATH>: replay gameplay events from file.");
-    puts("--headless: replay gameplay without showing a game window.");
-    puts("--headless-fps: control the frame rate at which to run a gameplay.");
-    puts("-q: silence logs and only show errors.");
+    puts("   --test-record <PATH>: record gameplay events to file.");
     puts(
-        "--debug-render-performance: output diagnostic information after each "
+        "   --test-replay/--test-play <PATH>: replay gameplay events from "
+        "file.");
+    puts("   --headless: replay gameplay without showing a game window.");
+    puts(
+        "   --headless-fps <NUM>: control replay frame rate in headless mode.");
+    puts("-q/--quiet: silence logs and only show errors.");
+    puts(
+        "   --debug-render-performance: output diagnostic information after "
+        "each "
         "frame.");
+    puts("");
+
+    puts("Available mods:");
+    for (int32_t i = 0; i < Shell_GetModCount(); i++) {
+        const SHELL_MOD *const mod = Shell_GetMod(i);
+        if (mod == nullptr || !mod->is_available) {
+            continue;
+        }
+        if (mod->mod_type == MOD_DIRECT_LEVEL) {
+            continue;
+        }
+        if (mod->title != nullptr && strcmp(mod->title, mod->name) != 0) {
+            printf("  %s (%s)\n", mod->name, mod->title);
+        } else {
+            printf("  %s\n", mod->name);
+        }
+    }
+    puts("");
+
+    puts("Legacy options:");
+    puts("-g/--gold/-gold: launch the matching Gold expansion pack.");
+    if (Shell_GetModByName("tr1-demo-pc") != nullptr) {
+        puts("   --demo-pc/-demo_pc: launch the TR1 PC demo.");
+    }
+    puts("These options are deprecated; please use --mod instead.");
 }
 
 static int32_t M_GuessEngineVersionFromLevelPath(const char *const path)
