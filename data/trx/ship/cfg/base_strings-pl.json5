@@ -2509,6 +2509,9 @@
         "rotating_laser": {
             "name": "\\{review}Obracające się lasery",
         },
+        "rx_worker_1": {
+            "name": "\\{review}RX Pracownik 1",
+        },
         "save_crystal": {
             "name": "Kryształ do zapisu",
         },
