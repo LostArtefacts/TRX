@@ -7,12 +7,21 @@ order: 1
 
 Currently the following command line interface options are available:
 
-- `-g`, `--gold` (legacy: `-gold`)  
-  Runs the Unfinished Business or the Golden Mask expansion pack, depending
-  on the game.
+- `--mod <MOD_ID>`  
+  Runs a specific game or mod directly.
+  Available mods:
+  - `tr1` (Tomb Raider I)
+  - `tr1-ub` (Tomb Raider I: Unfinished Business)
+  - `tr1-demo-pc` (Tomb Raider I: PC Demo)
+  - `tr2` (Tomb Raider II)
+  - `tr2-gm` (Tomb Raider II: The Golden Mask)
+  - `tr3` (Tomb Raider III)
+  - `tr3-la` (Tomb Raider III: The Lost Artifact)
 
-- `--demo-pc` (legacy: `-demo_pc`) (TR1 only)  
-  Runs the PC demo level.
+  TRX remembers the last selected game or expansion when no explicit startup
+  option is given. Because of that, `TRX.exe` starts whichever game or
+  expansion was selected most recently. Use `TRX.exe --mod` to force the
+  matching expansion pack from a shortcut.
 
 - `-l <path|num>`, `--level <path|num>`  
   Runs the game immediately launching it into the specified level. If `<path>`
@@ -45,6 +54,20 @@ Currently the following command line interface options are available:
   Suppresses most of output to the standard output, keeping only errors.
   The log file is written to normally.
 
+> [!TIP]
+> If you want `TRX.exe` to start the main game again after using an expansion
+> shortcut, switch back to the main game in the passport first, or launch it
+> with `--mod`/`--engine` from the shortcut as needed.
+
 > [!NOTE]
 > Gameplay capture is considered an internal testing tool, and may be
 > subject to breaking changes without warnings.
+
+# Legacy command line options
+
+- `-g`, `--gold` (legacy: `-gold`)  
+  Runs the Unfinished Business or the Golden Mask expansion pack, depending
+  on the last launched game. Please use `--mod` option instead.
+
+- `--demo-pc` (legacy: `-demo_pc`) (TR1 only)  
+  Runs the PC demo level. Please use `--mod` option instead.

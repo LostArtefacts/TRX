@@ -3,6 +3,7 @@
     // Lines starting with double slashes are comments and are ignored.
 
     "engine": 2,
+    "name": "Tomb Raider II",
 
     "main_menu_picture": "title_eu.webp",
     "savegame_file_fmt": "save_tr2_%02d.dat",

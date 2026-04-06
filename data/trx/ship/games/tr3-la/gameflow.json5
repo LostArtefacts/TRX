@@ -4,6 +4,7 @@
 
     "engine": 3,
     "extends": "tr3",
+    "name": "The Lost Artifact",
 
     "main_menu_picture": "title_eu_la.webp",
     "savegame_file_fmt": "save_trla_%02d.dat",

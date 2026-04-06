@@ -4,6 +4,7 @@
 
     "engine": 1,
     "extends": "tr1",
+    "name": "Unfinished Business",
 
     "main_menu_picture": "title_ub.webp",
     "savegame_file_fmt": "save_trub_%02d.dat",
