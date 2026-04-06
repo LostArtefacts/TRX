@@ -6,6 +6,7 @@
 - fixed climbing issues on ladders that are against walls that (incorrectly) contain tilt data within them (#5304, regression from 1.1)
 - fixed Lara not transitioning immediately to run after vaulting two clicks when forward is held (#5305, regression from 1.3)
 - fixed settings list auto-scroll sometimes stopping after switching to a different mod (regression from 1.4)
+- fixed first-time keyboard keybindings conflicting after switching to a different mod (regression from 1.4)
 
 **TR3**:
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
