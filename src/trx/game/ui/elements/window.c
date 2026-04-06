@@ -1,5 +1,6 @@
 #include <trx/game/ui/elements/window.h>
 
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/ui.h>
 #include <trx/version.h>
@@ -10,7 +11,7 @@ typedef struct {
 } M_CONTEXT;
 
 static M_CONTEXT m_ContextStack[16];
-static int32_t m_ContextStackSize = 0;
+static size_t m_ContextStackSize = 0;
 
 static bool M_ShouldShowScrollHints(const UI_WINDOW_SETTINGS *const settings)
 {
@@ -73,9 +74,7 @@ static void M_Title(const char *const title)
 void UI_BeginWindow(UI_WINDOW_SETTINGS settings)
 {
     const bool show_scroll_hints = M_ShouldShowScrollHints(&settings);
-    ASSERT(
-        m_ContextStackSize
-        < (int32_t)(sizeof(m_ContextStack) / sizeof(m_ContextStack[0])));
+    ASSERT(m_ContextStackSize < ARRAY_SIZE(m_ContextStack));
     m_ContextStack[m_ContextStackSize++] = (M_CONTEXT) {
         .settings = settings,
         .show_scroll_hints = show_scroll_hints,

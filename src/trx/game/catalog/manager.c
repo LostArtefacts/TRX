@@ -3,6 +3,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/music/ids.h>
@@ -45,8 +46,7 @@ static const M_ENTRY m_CatalogEntryDefs[] = {
 };
 
 // Number of catalog entries
-static const size_t m_CatalogEntryCount =
-    sizeof(m_CatalogEntryDefs) / sizeof(m_CatalogEntryDefs[0]);
+static const size_t m_CatalogEntryCount = ARRAY_SIZE(m_CatalogEntryDefs);
 
 // Internal map from name to CATALOG_ID
 typedef struct {

@@ -1,5 +1,6 @@
 #include <trx/game/input/backends/keyboard.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/input/backends/internal.h>
 #include <trx/game/input/combo.h>
 #include <trx/version.h>
@@ -27,13 +28,15 @@ typedef struct {
 static bool m_KeyboardState[SDL_NUM_SCANCODES] = {};
 static bool m_Conflicts[INPUT_LAYOUT_NUMBER_OF][INPUT_ROLE_NUMBER_OF] = {};
 
-static BUILTIN_KEYBOARD_LAYOUT m_BuiltinLayout[] = {
+static const BUILTIN_KEYBOARD_LAYOUT m_BuiltinLayoutBase[] = {
 // clang-format off
 #define INPUT_KEYBOARD_ASSIGN(role, key) { role, key },
 #include <trx/game/input/backends/keyboard.def>
     { -1, SDL_SCANCODE_UNKNOWN },
     // clang-format on
 };
+
+static BUILTIN_KEYBOARD_LAYOUT m_BuiltinLayout[ARRAY_SIZE(m_BuiltinLayoutBase)];
 
 static KEYBOARD_ROLE_BINDING m_Layout[INPUT_LAYOUT_NUMBER_OF]
                                      [INPUT_ROLE_NUMBER_OF];
@@ -476,6 +479,8 @@ static void M_HandleBuiltInDefaults(void)
 
 static void M_Init(void)
 {
+    memcpy(m_BuiltinLayout, m_BuiltinLayoutBase, sizeof(m_BuiltinLayout));
+
     // first, reset all roles to unbound
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
