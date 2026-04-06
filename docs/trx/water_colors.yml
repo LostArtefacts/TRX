@@ -1,0 +1,104 @@
+name: Water colors
+order: 8
+
+TR1 DOS:
+  - name: original DOS version color
+    color: "#99B2FF"
+
+TR1 PC:
+  - name: default TombATI color
+    color: "#72FFFF"
+
+TR2 PC:
+  - name: default PC hardware renderer color
+    color: "#80DFFF"
+  - name: default PC software renderer color
+    color: "#AAAAFF"
+
+TR2 PS1:
+  - name: Lara's Home
+    color: "#80FFFF"
+  - name: The Great Wall
+    color: "#B2E5E5"
+  - name: Venice
+    color: "#CCFF80"
+  - name: Bartoli's Hideout
+    color: "#CCFF80"
+  - name: Opera House
+    color: "#CCFF80"
+  - name: Offshore Rig
+    color: "#80FFFF"
+  - name: Diving Area
+    color: "#80FFFF"
+  - name: 40 Fathoms
+    color: "#80FFFF"
+  - name: Wreck of the Maria Doria
+    color: "#80FFFF"
+  - name: Living Quarters
+    color: "#80FFFF"
+  - name: The Deck
+    color: "#80FFFF"
+  - name: Tibetan Foothills
+    color: "#B2E5E5"
+  - name: Barkhang Monastery
+    color: "#80FFFF"
+  - name: Catacombs of the Talion
+    color: "#80FFFF"
+  - name: Ice Palace
+    color: "#80FFFF"
+  - name: Temple of Xian
+    color: "#CCFF99"
+  - name: Floating Islands
+    color: "#CCFFCC"
+  - name: Dragon's Lair
+    color: "#CCFFCC"
+  - name: Home Sweet Home
+    color: "#80FFFF"
+
+TR3 PC:
+  - name: default PC renderer color
+    color: "#80E0FF"
+
+TR3 PS1:
+  - name: Lara's Home
+    color: "#CCFF80"
+  - name: Jungle
+    color: "#CCFF80"
+  - name: Temple Ruins
+    color: "#CCFF80"
+  - name: The River Ganges
+    color: "#CCFF80"
+  - name: Caves of Kaliya
+    color: "#CCFF80"
+  - name: Coastal Village
+    color: "#80FFFF"
+  - name: Crash Site
+    color: "#FFFFFF"
+  - name: Madubu Gorge
+    color: "#FFFFFF"
+  - name: Temple of Puna (no water)
+    color: "#80E0FF"
+  - name: Thames Wharf
+    color: "#FFFFFF"
+  - name: Aldwych
+    color: "#CCFF80"
+  - name: Lud's Gate
+    color: "#CCFF80"
+  - name: City
+    color: "#CCFF80"
+  - name: Nevada Desert
+    color: "#FFFFFF"
+  - name: High Security Compound
+    color: "#FFFFFF"
+  - name: Area 51
+    color: "#FFFFFF"
+  - name: Antarctica
+    color: "#80FFFF"
+  - name: RX-Tech Mines
+    color: "#CCFFCC"
+  - name: Lost City of Tinnos
+    color: "#80E0FF"
+  - name: Meteorite Cavern (no water)
+    color: "#80E0FF"
+  - name: All Hallows
+    color: "#B2E6E6"
