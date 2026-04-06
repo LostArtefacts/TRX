@@ -2537,6 +2537,9 @@
         "rotating_laser": {
             "name": "\\{review}Вращающийся лазер",
         },
+        "rx_worker_1": {
+            "name": "\\{review}RX Рабочий 1",
+        },
         "save_crystal": {
             "name": "Кристалл сохранения",
         },

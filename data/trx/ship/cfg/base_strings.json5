@@ -2562,6 +2562,9 @@
         "rotating_laser": {
             "name": "Rotating Laser",
         },
+        "rx_worker_1": {
+            "name": "RX Worker 1",
+        },
         "save_crystal": {
             "name": "Savegame Crystal",
         },

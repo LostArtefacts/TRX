@@ -2563,6 +2563,9 @@
         "rotating_laser": {
             "name": "Laser rotante",
         },
+        "rx_worker_1": {
+            "name": "\\{review}RX Operaio 1",
+        },
         "save_crystal": {
             "name": "Cristallo di Salvataggio",
         },
