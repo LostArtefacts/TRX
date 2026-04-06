@@ -1,0 +1,110 @@
+#!/usr/bin/env -S uv run --script
+#
+# /// script
+# requires-python = ">=3.14"
+# dependencies = ["pyyaml"]
+# ///
+
+from pathlib import Path
+from typing import Any
+
+import yaml
+
+ROOT = Path(__file__).resolve().parent.parent
+YAML_PATH = ROOT / "docs" / "trx" / "water_colors.yml"
+MD_PATH = ROOT / "docs" / "trx" / "WATER_COLORS.md"
+
+
+def format_array(hex_color: str) -> str:
+    values = [int(hex_color[i : i + 2], 16) / 255.0 for i in (1, 3, 5)]
+    formatted = ", ".join(
+        f"{value:.3f}".rstrip("0").rstrip(".") for value in values
+    )
+    return f"[{formatted}]"
+
+
+def split_group_name(group_name: str) -> tuple[str, str]:
+    parts = group_name.rsplit(" ", 1)
+    if len(parts) == 2 and parts[1] in {"DOS", "PC", "PS1"}:
+        return parts[0], parts[1]
+    return group_name, ""
+
+
+def build_table(data: dict[str, Any]) -> list[str]:
+    group_rows: list[tuple[str, str, list[dict[str, Any]]]] = []
+
+    for group_name, entries in data.items():
+        if group_name in {"name", "order"}:
+            continue
+        assert isinstance(entries, list)
+        game_name, platform_name = split_group_name(group_name)
+        group_rows.append((game_name, platform_name, entries))
+
+    lines: list[str] = []
+    table_start_lines: list[str] = [
+        "<table>",
+        "<thead>",
+        "    <tr>",
+        "        <th>Platform</th>",
+        "        <th>Color</th>",
+        "        <th>Color&nbsp;(array)</th>",
+        "        <th>Usage</th>",
+        "    </tr>",
+        "</thead>",
+        "<tbody>",
+    ]
+    table_end_lines: list[str] = ["</tbody>", "</table>"]
+
+    current_game_name = None
+    for game_name, platform_name, entries in group_rows:
+        if game_name != current_game_name:
+            if current_game_name is not None:
+                lines.extend(table_end_lines)
+                lines.append("")
+            lines.append(f'<h4 colspan="4">{game_name}</h4>')
+            lines.extend(table_start_lines)
+            current_game_name = game_name
+
+        rowspan = len(entries)
+        for i, entry in enumerate(entries):
+            color = entry["color"]
+            usage = entry["name"]
+            platform_cell = (
+                f'        <td rowspan="{rowspan}">{platform_name}</td>'
+                if i == 0
+                else None
+            )
+            lines.append("    <tr>")
+            if platform_cell is not None:
+                lines.append(platform_cell)
+            lines.append(
+                f'        <td><img src="https://dummyimage.com/20x20/{color[1:].lower()}/{color[1:].lower()}.png" width="20" height="20" alt="{color}" valign="middle"/> <code>{color}</code></td>'
+            )
+            lines.append(
+                f"        <td><code>{format_array(color)}</code></td>"
+            )
+            lines.append(f"        <td>{usage}</td>")
+            lines.append("    </tr>")
+
+    lines.extend(table_end_lines)
+    return lines
+
+
+def main() -> None:
+    data = yaml.safe_load(YAML_PATH.read_text())
+    lines = [
+        "---",
+        f"title: {data['name']}",
+        f"order: {data['order']}",
+        "---",
+        "",
+        f"# {data['name']}",
+        "",
+        *build_table(data),
+        "",
+    ]
+    MD_PATH.write_text("\n".join(lines))
+
+
+if __name__ == "__main__":
+    main()
