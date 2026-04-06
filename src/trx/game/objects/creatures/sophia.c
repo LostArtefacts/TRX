@@ -32,7 +32,6 @@
 #define M_RUN_TURN       (7 * DEG_1)
 #define M_WALK_RANGE     SQUARE(WALL_L)
 #define M_LAUGH_CHANCE   0x100
-#define M_FINAL_HEIGHT   -11776
 #define M_BIG_ZAP_TIMER  600
 // clang-format on
 
@@ -82,6 +81,7 @@ typedef struct {
     uint8_t wand_glow_phase;
     bool knockback_active;
     M_SHIELD_POINT shield[5][8];
+    int32_t final_height;
 } M_PRIV;
 
 static const BITE m_WandBite[3] = {
@@ -223,11 +223,24 @@ static bool M_KnockBackCollision(const FX_RING *const ring)
     return true;
 }
 
-static void M_AssignFuseBox(const ITEM *const item)
+static int32_t M_FindFinalHeight(void)
 {
-    M_PRIV *const p = item->priv;
-    p->fuse_box_num = NO_ITEM;
+    int32_t height = NO_HEIGHT;
+    for (int16_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const item = Item_Get(i);
+        if (item->object_id != O_AI_AMBUSH) {
+            continue;
+        }
+        if (height == NO_HEIGHT || item->pos.y < height) {
+            height = item->pos.y;
+        }
+    }
+    return height;
+}
 
+static int16_t M_FindFuseBox(const ITEM *const item)
+{
+    int16_t fuse_box_num = NO_ITEM;
     int32_t best_dist = INT32_MAX;
     for (int16_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const other_item = Item_Get(i);
@@ -242,9 +255,10 @@ static void M_AssignFuseBox(const ITEM *const item)
         });
         if (dist < best_dist) {
             best_dist = dist;
-            p->fuse_box_num = i;
+            fuse_box_num = i;
         }
     }
+    return fuse_box_num;
 }
 
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
@@ -281,7 +295,8 @@ static void M_Initialise(const int16_t item_num)
     p->dead = 0;
     p->ring_count = 0;
     p->explode_count = 0;
-    M_AssignFuseBox(item);
+    p->final_height = M_FindFinalHeight();
+    p->fuse_box_num = M_FindFuseBox(item);
 
     for (int32_t i = 0; i < 5; i++) {
         const int32_t dist = m_Dist[i];
@@ -502,18 +517,18 @@ static void M_Control(const int16_t item_num)
 
             if (item->ai_bits & AI_GUARD) {
                 if ((lara_info.angle < -0x3000 || lara_info.angle > 0x3000)
-                    && item->pos.y > M_FINAL_HEIGHT) {
+                    && item->pos.y > p->final_height) {
                     item->goal_anim_state = M_STATE_WALK;
                     creature->maximum_turn = M_WALK_TURN;
                 }
             } else if (
-                (item->pos.y <= M_FINAL_HEIGHT
+                (item->pos.y <= p->final_height
                  || item->pos.y < lara_item->pos.y)
                 && !(Random_GetControl() & 0xF) && !p->charged && item->timer) {
                 item->goal_anim_state = M_STATE_LAUGH;
             } else if (
                 creature->reached_goal || lara_item->pos.y > item->pos.y
-                || item->pos.y <= M_FINAL_HEIGHT) {
+                || item->pos.y <= p->final_height) {
                 if (p->charged) {
                     item->goal_anim_state = M_STATE_BIG_ZAP;
                 } else if (item->timer) {
