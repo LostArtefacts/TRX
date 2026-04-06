@@ -6,6 +6,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/version.h>
 
 typedef struct {
     XYZ_32 normal;
@@ -87,6 +88,11 @@ static void M_Control(const int16_t item_num)
         item->timer = 0;
     }
     Item_Animate(item);
+
+    if (g_TRVersion >= 3 && (item->flags & IF_ONE_SHOT_SWITCH) != 0) {
+        item->flags &= ~IF_ONE_SHOT_SWITCH;
+        item->flags |= IF_ONE_SHOT;
+    }
 }
 
 static void M_AlignLara(ITEM *const lara_item, ITEM *const switch_item)
@@ -246,12 +252,16 @@ static void M_CollisionControlled(
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
+    ITEM *const item = Item_Get(item_num);
+    if (g_TRVersion >= 3 && (item->flags & IF_ONE_SHOT) != 0) {
+        return;
+    }
+
     if (g_Config.gameplay.enable_walk_to_items) {
         M_CollisionControlled(item_num, lara_item, coll);
         return;
     }
 
-    ITEM *const item = Item_Get(item_num);
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 

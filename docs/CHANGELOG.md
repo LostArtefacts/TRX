@@ -16,6 +16,7 @@
 - fixed TR3:LA playing TR3 intro FMV
 - fixed Willard's Lair having wrong kill count
 - fixed Reunion having wrong pickup and secret count
+- fixed being able to re-use switches that are intended to only be used once (#5328, regression from 1.1)
 
 
 
