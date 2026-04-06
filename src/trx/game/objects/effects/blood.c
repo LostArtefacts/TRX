@@ -26,4 +26,5 @@ static void M_Setup(OBJECT *const obj)
     obj->semi_transparent = g_TRVersion >= 2;
 }
 
-REGISTER_OBJECT(O_BLOOD_1, M_Setup)
+REGISTER_OBJECT(O_BLOOD, M_Setup)
+REGISTER_OBJECT(O_BLOOD_PINK, M_Setup)

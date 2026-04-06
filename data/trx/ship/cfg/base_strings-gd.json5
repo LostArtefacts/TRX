@@ -553,6 +553,11 @@
             "BILLBOARD_LOCK_ROLL": "Rothladh",
             "BILLBOARD_LOCK_ROLL_PITCH": "Rothladh is claonadh",
         },
+        "BLOOD_EFFECTS": {
+            "BLOOD_EFFECTS_DISABLED": "\\{review}Ciorramh",
+            "BLOOD_EFFECTS_PINK": "\\{review}Pinc",
+            "BLOOD_EFFECTS_RED": "\\{review}Dearg",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1435,6 +1440,10 @@
             "title": "Meud teacsa",
             "description": "Atharraicheas meud an teacsa.",
         },
+        "visuals.blood_effects": {
+            "title": "\\{review}Buaidhean fuil",
+            "description": "\\{review}Smachd air dathan spàirn fola.\n\n- Ciorramh: chan eilear a’ sealltainn spàirn fola sam bith.\n- Pinc: an àbhaist ann an sgaoilidhean PC Gearmailteach de TR3.\n- Dearg: an àbhaist anns a h-uile sgaoileadh reic eile.",
+        },
         "visuals.camera_mode": {
             "title": "Modh camara",
             "description": "Atharraichidh seo an doigh anns a bhios a' chamara ag obair, m.e. aig àm ghnìomhan shonraichte, mar a bhith a' cleachdadh iuchraichean.",
@@ -1687,11 +1696,11 @@
         "blade": {
             "name": "Iarann air Balla",
         },
-        "blood_1": {
-            "name": "Fuil 1",
+        "blood": {
+            "name": "\\{review}Fuil",
         },
-        "blood_2": {
-            "name": "Fuil 2",
+        "blood_pink": {
+            "name": "\\{review}Fuil (air a sgaradh)",
         },
         "blue_light": {
             "name": "Solas Gorm",

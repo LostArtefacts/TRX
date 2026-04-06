@@ -7,6 +7,15 @@ order: 3
 
 ## TRX
 
+### Version 1.5 to 1.6
+
+1. **TR1 and TR2 blood catalog names were renamed**:
+    In `cfg/catalog_objects.csv`, update old symbols to the new names:
+    - `O_BLOOD_1` → `O_BLOOD`
+
+    This also affects catalog-derived Lua names (`trx.catalog.objects`):
+    - `blood_1` → `blood`
+
 ### Version 1.4 to 1.5
 
 1. **Update TR2 detonator box**

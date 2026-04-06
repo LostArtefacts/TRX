@@ -553,6 +553,11 @@
             "BILLBOARD_LOCK_ROLL": "Obrót",
             "BILLBOARD_LOCK_ROLL_PITCH": "Obrót i pochylenie",
         },
+        "BLOOD_EFFECTS": {
+            "BLOOD_EFFECTS_DISABLED": "\\{review}Wyłączone",
+            "BLOOD_EFFECTS_PINK": "\\{review}Różowy",
+            "BLOOD_EFFECTS_RED": "\\{review}Czerwony",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1435,6 +1440,10 @@
             "title": "Skala tekstu",
             "description": "Zmienia rozmiar tekstu interfejsu.",
         },
+        "visuals.blood_effects": {
+            "title": "\\{review}Efekty krwi",
+            "description": "\\{review}Kontroluje kolory iskier krwi.\n\n- Wyłączone: nie pokazuje iskier krwi.\n- Różowy: domyślny w niemieckich wersjach PC TR3.\n- Czerwony: domyślny we wszystkich innych wersjach detalicznych.",
+        },
         "visuals.camera_mode": {
             "title": "Tryb kamery",
             "description": "Zmienia zachowanie kamery podczas niektórych akcji, np. kiedy Lara używa kluczy lub dźwigni.",
@@ -1690,11 +1699,11 @@
         "blade": {
             "name": "Ostrze na ścianie",
         },
-        "blood_1": {
-            "name": "Krew 1",
+        "blood": {
+            "name": "\\{review}Krew",
         },
-        "blood_2": {
-            "name": "Krew 2",
+        "blood_pink": {
+            "name": "\\{review}Krew (ocenzurowana)",
         },
         "blue_light": {
             "name": "Niebieskie światło",

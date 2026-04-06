@@ -154,6 +154,13 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_ShadowTypeEnumEntries[] = {
     { -1 },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_BloodEffectsEnumEntries[] = {
+    { BLOOD_EFFECTS_DISABLED },
+    { BLOOD_EFFECTS_PINK },
+    { BLOOD_EFFECTS_RED },
+    { -1 },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_SunglassesModeEnumEntries[] = {
     { SUNGLASSES_MODE_OFF },
     { SUNGLASSES_MODE_OPAQUE },

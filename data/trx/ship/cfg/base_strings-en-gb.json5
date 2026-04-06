@@ -111,6 +111,9 @@
             "title": "Distance travelled",
             "description": "Shows the distance travelled row in the level statistics.",
         },
+        "visuals.blood_effects": {
+            "description": "Controls blood spark colours.\n\n- Disabled: no blood sparks are shown.\n- Pink: the default in German PC releases of TR3.\n- Red: the default in all other retail releases.",
+        },
         "visuals.fog_color": {
             "title": "Fog colour",
             "description": "Colour of the fog.",
