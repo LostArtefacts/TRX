@@ -441,10 +441,15 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
 
         case TT_SWITCH: {
-            if (!Switch_Trigger(trigger->item_index, trigger->timer)) {
+            const bool switch_result =
+                Switch_Trigger(trigger->item_index, trigger->timer);
+            ITEM *const switch_item = Item_Get(trigger->item_index);
+            if (g_TRVersion >= 3 && trigger->one_shot) {
+                switch_item->flags |= IF_ONE_SHOT_SWITCH;
+            }
+            if (!switch_result) {
                 return false;
             }
-            const ITEM *const switch_item = Item_Get(trigger->item_index);
             switch_off = switch_item->current_anim_state == SWITCH_STATE_OFF;
             break;
         }
