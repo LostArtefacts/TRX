@@ -553,6 +553,11 @@
             "BILLBOARD_LOCK_ROLL": "\\{review}Roll",
             "BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Roll & Neigung",
         },
+        "BLOOD_EFFECTS": {
+            "BLOOD_EFFECTS_DISABLED": "\\{review}Deaktiviert",
+            "BLOOD_EFFECTS_PINK": "\\{review}Pink",
+            "BLOOD_EFFECTS_RED": "\\{review}Rot",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1435,6 +1440,10 @@
             "title": "Textgröße",
             "description": "Ändert die Größe des UI-Textes.",
         },
+        "visuals.blood_effects": {
+            "title": "\\{review}Bluteffekte",
+            "description": "\\{review}Steuert die Farben der Blutspritzer.\n\n- Deaktiviert: Es werden keine Blutspritzer angezeigt.\n- Pink: Standard in den deutschen PC-Versionen von TR3.\n- Rot: Standard in allen anderen Einzelhandelsversionen.",
+        },
         "visuals.camera_mode": {
             "title": "Kamera-Modus",
             "description": "Passt das Kameraverhalten während Aktionen, wie dem Benutzen von Schlüsseln, ausegführt werden.",
@@ -1687,11 +1696,11 @@
         "blade": {
             "name": "Wall-mounted Blade",
         },
-        "blood_1": {
-            "name": "Blut 1",
+        "blood": {
+            "name": "\\{review}Blut",
         },
-        "blood_2": {
-            "name": "Blut 2",
+        "blood_pink": {
+            "name": "\\{review}Blut (zensiert)",
         },
         "blue_light": {
             "name": "\\{review}Blaues Licht",

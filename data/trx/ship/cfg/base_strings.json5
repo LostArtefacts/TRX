@@ -553,6 +553,11 @@
             "BILLBOARD_LOCK_ROLL": "Roll",
             "BILLBOARD_LOCK_ROLL_PITCH": "Roll & pitch",
         },
+        "BLOOD_EFFECTS": {
+            "BLOOD_EFFECTS_DISABLED": "Disabled",
+            "BLOOD_EFFECTS_PINK": "Pink",
+            "BLOOD_EFFECTS_RED": "Red",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1435,6 +1440,10 @@
             "title": "Text scale",
             "description": "Changes the size of UI text.",
         },
+        "visuals.blood_effects": {
+            "title": "Blood effects",
+            "description": "Controls blood spark colors.\n\n- Disabled: no blood sparks are shown.\n- Pink: the default in German PC releases of TR3.\n- Red: the default in all other retail releases.",
+        },
         "visuals.camera_mode": {
             "title": "Camera mode",
             "description": "Adjusts how camera behaves during actions like using keys.",
@@ -1687,11 +1696,11 @@
         "blade": {
             "name": "Wall-mounted Blade",
         },
-        "blood_1": {
-            "name": "Blood 1",
+        "blood": {
+            "name": "Blood",
         },
-        "blood_2": {
-            "name": "Blood 2",
+        "blood_pink": {
+            "name": "Blood (censored)",
         },
         "blue_light": {
             "name": "Blue Light",

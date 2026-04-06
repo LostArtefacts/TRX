@@ -88,6 +88,7 @@ typedef struct {
         char *lara_outfit;
         SUNGLASSES_MODE sunglasses_mode;
         SHADOW_TYPE shadow_type;
+        BLOOD_EFFECTS blood_effects;
         bool enable_skybox;
         bool enable_weather;
         bool enable_footprints;

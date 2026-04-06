@@ -575,6 +575,7 @@ void Config_Sanitize(void)
     CLAMPL(g_Config.gameplay.maximum_save_slots, 0);
     CLAMPL(g_Config.gameplay.maximum_quick_save_slots, 0);
     CLAMP(g_Config.visuals.shadow_type, 0, SHADOW_TYPE_NUMBER_OF - 1);
+    CLAMP(g_Config.visuals.blood_effects, 0, BLOOD_EFFECTS_NUMBER_OF - 1);
     CLAMP(g_Config.gameplay.loading_screens, 0, LOADING_SCREENS_NEW_GAMES);
 
     if (g_Config.rendering.fps != 30 && g_Config.rendering.fps != 60) {

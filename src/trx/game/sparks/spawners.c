@@ -1,11 +1,31 @@
 #include <trx/game/sparks/spawners.h>
 
+#include <trx/config.h>
 #include <trx/game/fx/water.h>
 #include <trx/game/lara.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
+
+static bool M_GetBloodSparkColors(RGB_888 *const src, RGB_888 *const dst)
+{
+    switch (g_Config.visuals.blood_effects) {
+    case BLOOD_EFFECTS_DISABLED:
+        return false;
+    case BLOOD_EFFECTS_PINK:
+        *src = (RGB_888) { 112, 0, 224 };
+        *dst = (RGB_888) { 96, 0, 192 };
+        return true;
+    case BLOOD_EFFECTS_RED:
+        *src = (RGB_888) { 224, 0, 32 };
+        *dst = (RGB_888) { 192, 0, 24 };
+        return true;
+    case BLOOD_EFFECTS_NUMBER_OF:
+        break;
+    }
+    return false;
+}
 
 void Sparks_TriggerBubble(
     const int32_t x, const int32_t y, const int32_t z, const int32_t size,
@@ -532,27 +552,17 @@ void Sparks_TriggerSideFlame(
 void Sparks_TriggerBlood(
     const XYZ_32 pos, int32_t angle_12, const int32_t count)
 {
-    const bool censored = false;
+    RGB_888 src_color;
+    RGB_888 dst_color;
+    if (!M_GetBloodSparkColors(&src_color, &dst_color)) {
+        return;
+    }
 
     for (int32_t i = 0; i < count; i++) {
         SPARK *const spark = Sparks_GetFreeSpark();
         spark->on = true;
-
-        if (censored) {
-            spark->src_color.r = 112;
-            spark->src_color.g = 0;
-            spark->src_color.b = 224;
-            spark->dst_color.r = 96;
-            spark->dst_color.g = 0;
-            spark->dst_color.b = 192;
-        } else {
-            spark->src_color.r = 224;
-            spark->src_color.g = 0;
-            spark->src_color.b = 32;
-            spark->dst_color.r = 192;
-            spark->dst_color.g = 0;
-            spark->dst_color.b = 24;
-        }
+        spark->src_color = src_color;
+        spark->dst_color = dst_color;
 
         spark->col_fade_speed = 8;
         spark->fade_to_black = 8;
@@ -588,27 +598,17 @@ void Sparks_TriggerBlood(
 void Sparks_TriggerBloodD(
     const XYZ_32 pos, int32_t angle_12, const int32_t count)
 {
-    const bool censored = false;
+    RGB_888 src_color;
+    RGB_888 dst_color;
+    if (!M_GetBloodSparkColors(&src_color, &dst_color)) {
+        return;
+    }
 
     for (int32_t i = 0; i < count; i++) {
         SPARK *const spark = Sparks_GetFreeSpark();
         spark->on = true;
-
-        if (censored) {
-            spark->src_color.r = 112;
-            spark->src_color.g = 0;
-            spark->src_color.b = 224;
-            spark->dst_color.r = 96;
-            spark->dst_color.g = 0;
-            spark->dst_color.b = 192;
-        } else {
-            spark->src_color.r = 224;
-            spark->src_color.g = 0;
-            spark->src_color.b = 32;
-            spark->dst_color.r = 192;
-            spark->dst_color.g = 0;
-            spark->dst_color.b = 24;
-        }
+        spark->src_color = src_color;
+        spark->dst_color = dst_color;
 
         spark->col_fade_speed = 8;
         spark->fade_to_black = 8;

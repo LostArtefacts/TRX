@@ -1,5 +1,6 @@
 #include <trx/game/spawn.h>
 
+#include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/game/collision.h>
 #include <trx/game/collision/los.h>
@@ -173,6 +174,23 @@ int16_t Spawn_Blood(
         return NO_EFFECT;
     }
 
+    OBJECT_ID object_id = NO_OBJECT;
+    switch (g_Config.visuals.blood_effects) {
+    case BLOOD_EFFECTS_DISABLED:
+        return NO_EFFECT;
+    case BLOOD_EFFECTS_PINK:
+        object_id = O_BLOOD_PINK;
+        break;
+    case BLOOD_EFFECTS_RED:
+        object_id = O_BLOOD;
+        break;
+    case BLOOD_EFFECTS_NUMBER_OF:
+        return NO_EFFECT;
+    }
+    if (object_id == NO_OBJECT) {
+        return NO_EFFECT;
+    }
+
     const int16_t effect_num = Effect_Create(room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
@@ -182,7 +200,7 @@ int16_t Spawn_Blood(
         effect->rot.y = y_rot;
         effect->speed = speed;
         effect->frame_num = 0;
-        effect->object_id = O_BLOOD_1;
+        effect->object_id = object_id;
         effect->counter = 0;
     }
     return effect_num;

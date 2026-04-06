@@ -553,6 +553,11 @@
             "BILLBOARD_LOCK_ROLL": "\\{review}Крен",
             "BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Крен и тангаж",
         },
+        "BLOOD_EFFECTS": {
+            "BLOOD_EFFECTS_DISABLED": "\\{review}Отключено",
+            "BLOOD_EFFECTS_PINK": "\\{review}Розовый",
+            "BLOOD_EFFECTS_RED": "\\{review}Красный",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1435,6 +1440,10 @@
             "title": "Размер текста",
             "description": "Изменяет размер текста интерфейса.",
         },
+        "visuals.blood_effects": {
+            "title": "\\{review}Эффекты крови",
+            "description": "\\{review}Управляет цветами искр крови.\n\n- Отключено: искры крови не отображаются.\n- Розовый: стандартный цвет в немецких версиях TR3 для ПК.\n- Красный: стандартный цвет во всех остальных розничных версиях.",
+        },
         "visuals.camera_mode": {
             "title": "Режим камеры",
             "description": "Регулирует поведение камеры во время таких действий, как нажатие клавиш.",
@@ -1687,11 +1696,11 @@
         "blade": {
             "name": "\\{review}Клинок на стене",
         },
-        "blood_1": {
-            "name": "Кровь 1",
+        "blood": {
+            "name": "\\{review}Кровь",
         },
-        "blood_2": {
-            "name": "Кровь 2",
+        "blood_pink": {
+            "name": "\\{review}Кровь (цензурировано)",
         },
         "blue_light": {
             "name": "\\{review}Синий свет",

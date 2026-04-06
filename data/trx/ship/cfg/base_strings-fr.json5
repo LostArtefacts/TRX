@@ -553,6 +553,11 @@
             "BILLBOARD_LOCK_ROLL": "\\{review}Roulis",
             "BILLBOARD_LOCK_ROLL_PITCH": "\\{review}Roulis et tangage",
         },
+        "BLOOD_EFFECTS": {
+            "BLOOD_EFFECTS_DISABLED": "\\{review}Désactivé",
+            "BLOOD_EFFECTS_PINK": "\\{review}Rose",
+            "BLOOD_EFFECTS_RED": "\\{review}Rouge",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1435,6 +1440,10 @@
             "title": "Échelle de texte",
             "description": "Change la taille du texte de l'interface utilisateur.",
         },
+        "visuals.blood_effects": {
+            "title": "\\{review}Effets de sang",
+            "description": "\\{review}Contrôle les couleurs des étincelles de sang.\n\n- Désactivé : aucune étincelle de sang n'est affichée.\n- Rose : la valeur par défaut dans les versions PC allemandes de TR3.\n- Rouge : la valeur par défaut dans toutes les autres versions commerciales.",
+        },
         "visuals.camera_mode": {
             "title": "Mode caméra",
             "description": "Ajuste le comportement de la caméra lors d'actions comme l'utilisation de clés.",
@@ -1687,11 +1696,11 @@
         "blade": {
             "name": "\\{review}Lame Murale",
         },
-        "blood_1": {
-            "name": "\\{review}Sang 1",
+        "blood": {
+            "name": "\\{review}Sang",
         },
-        "blood_2": {
-            "name": "Sang 2",
+        "blood_pink": {
+            "name": "\\{review}Sang (censuré)",
         },
         "blue_light": {
             "name": "\\{review}Lumière Bleue",

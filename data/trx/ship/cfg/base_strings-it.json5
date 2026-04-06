@@ -553,6 +553,11 @@
             "BILLBOARD_LOCK_ROLL": "Rotazione",
             "BILLBOARD_LOCK_ROLL_PITCH": "Rotaz. e inclinaz.",
         },
+        "BLOOD_EFFECTS": {
+            "BLOOD_EFFECTS_DISABLED": "\\{review}Disabilitato",
+            "BLOOD_EFFECTS_PINK": "\\{review}Rosa",
+            "BLOOD_EFFECTS_RED": "\\{review}Rosso",
+        },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
             "CAMERA_MODE_TR2": "TR2",
@@ -1435,6 +1440,10 @@
             "title": "Scala testo",
             "description": "Modifica la dimensione del testo dell'interfaccia utente.",
         },
+        "visuals.blood_effects": {
+            "title": "\\{review}Effetti sangue",
+            "description": "\\{review}Controlla i colori delle scintille di sangue.\n\n- Disabilitato: nessuna scintilla di sangue viene mostrata.\n- Rosa: il default nelle versioni tedesche per PC di TR3.\n- Rosso: il default in tutte le altre versioni retail.",
+        },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
             "description": "Regola il comportamento della telecamera durante azioni come l'uso degli oggetti chiave.",
@@ -1687,11 +1696,11 @@
         "blade": {
             "name": "Lama a Parete",
         },
-        "blood_1": {
-            "name": "Sangue 1",
+        "blood": {
+            "name": "\\{review}Sangue",
         },
-        "blood_2": {
-            "name": "Sangue 2",
+        "blood_pink": {
+            "name": "\\{review}Sangue (censurato)",
         },
         "blue_light": {
             "name": "Luce Blu",

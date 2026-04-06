@@ -1,5 +1,6 @@
 #include <trx/game/fx/water.h>
 
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
@@ -59,6 +60,24 @@ static void M_RememberSplash(FX_WATER_SPLASH *const splash)
         v->prev_wy = v->wy;
         v->prev_wz = v->wz;
     }
+}
+
+static bool M_GetUnderwaterBloodColor(
+    RGBA_8888 *const color, const int32_t life)
+{
+    switch (g_Config.visuals.blood_effects) {
+    case BLOOD_EFFECTS_DISABLED:
+        return false;
+    case BLOOD_EFFECTS_PINK:
+        *color = (RGBA_8888) { life / 2, 0, life, 255 };
+        return true;
+    case BLOOD_EFFECTS_RED:
+        *color = (RGBA_8888) { life, 0, 0, 255 };
+        return true;
+    case BLOOD_EFFECTS_NUMBER_OF:
+        break;
+    }
+    return false;
 }
 
 FX_WATER_RIPPLE *FX_Water_SetupRipple(
@@ -468,15 +487,11 @@ static void M_DrawRipple(
     int32_t sprite_idx = base_sprite_idx + 9;
     RGBA_8888 color;
 
-    const bool censored = false;
-
     if ((r->flags & 0x10U) != 0U) {
         if ((r->flags & 0x20U) != 0U) {
             sprite_idx = base_sprite_idx;
-            if (censored) {
-                color = (RGBA_8888) { life / 2, 0, life, 255 };
-            } else {
-                color = (RGBA_8888) { life, 0, 0, 255 };
+            if (!M_GetUnderwaterBloodColor(&color, life)) {
+                return;
             }
         } else {
             int32_t c1 = init != 0 ? (init >> 2) : (life >> 2);
