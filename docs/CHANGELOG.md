@@ -16,6 +16,7 @@
 - added Mine Cart control
 - added RX-Tech Worker 1 control
 - added RX-Tech Worker 2 control
+- added RX-Tech Worker 3 control
 - changed Sophia's final height to follow the level setup instead of using a fixed value
 - restored the animated mine cart tracks in RX-Tech Mines
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs

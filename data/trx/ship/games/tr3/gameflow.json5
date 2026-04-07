@@ -418,6 +418,7 @@
         // 17. RX-Tech Mines
         {
             "path": "mines.tr2",
+            "script": "mines.lua",
             "music_track": 30,
             "lara_outfit": "tr3_antarctica",
             "cold_water": true,

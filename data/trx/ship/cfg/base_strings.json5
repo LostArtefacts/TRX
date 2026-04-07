@@ -2568,6 +2568,12 @@
         "rx_worker_2": {
             "name": "RX Worker 2",
         },
+        "rx_worker_3": {
+            "name": [
+                "RX Worker 3",
+                "Flamethrower",
+            ]
+        },
         "save_crystal": {
             "name": "Savegame Crystal",
         },
