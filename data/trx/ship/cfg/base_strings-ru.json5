@@ -144,6 +144,11 @@
             "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
+            "delete_save": "\\{review}Удалить",
+            "delete_save_confirm": "\\{review}Удалить это сохранение?",
+            "delete_save_failed": "\\{review}Не удалось удалить выбранное сохранение.",
+            "delete_save_no": "\\{review}Нет",
+            "delete_save_yes": "\\{review}Да",
             "exit_game": "Выход",
             "exit_to_title": "Выйти в меню",
             "load_game": "Загрузить игру",

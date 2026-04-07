@@ -144,6 +144,11 @@
             "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
+            "delete_save": "\\{review}Supprimer",
+            "delete_save_confirm": "\\{review}Supprimer cette sauvegarde ?",
+            "delete_save_failed": "\\{review}Échec de la suppression de la sauvegarde choisie.",
+            "delete_save_no": "\\{review}Non",
+            "delete_save_yes": "\\{review}Oui",
             "exit_game": "Quitter le jeu",
             "exit_to_title": "Retourner à l'écran titre",
             "load_game": "Charger une partie",

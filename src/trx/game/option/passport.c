@@ -477,6 +477,9 @@ static bool M_ChooseSaveSlot(
     case UI_SAVE_SLOT_DIALOG_CONFIRM:
         *selected_slot = choice.slot;
         return true;
+    case UI_SAVE_SLOT_DIALOG_DELETE_FAILED:
+        m_Priv.error_msg = GS_ID("general/passport/delete_save_failed");
+        return false;
     }
     return false;
 }

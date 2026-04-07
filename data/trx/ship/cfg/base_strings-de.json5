@@ -144,6 +144,11 @@
             "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
+            "delete_save": "\\{review}Löschen",
+            "delete_save_confirm": "\\{review}Diesen Speicherstand löschen?",
+            "delete_save_failed": "\\{review}Der ausgewählte Speicherstand konnte nicht gelöscht werden.",
+            "delete_save_no": "\\{review}Nein",
+            "delete_save_yes": "\\{review}Ja",
             "exit_game": "Spiel beenden",
             "exit_to_title": "Zurück zum Hauptmenü",
             "load_game": "Spiel laden",

@@ -144,6 +144,11 @@
             "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
+            "delete_save": "\\{review}Sguab às",
+            "delete_save_confirm": "\\{review}A bheil thu airson an t-sàbhail seo a sguabadh às?",
+            "delete_save_failed": "\\{review}Dh'fhàillig an sguabadh às air an t-sàbhail a chaidh a thaghadh.",
+            "delete_save_no": "\\{review}Chan eil",
+            "delete_save_yes": "\\{review}Tha",
             "exit_game": "Dùin an Geama",
             "exit_to_title": "Till gu Tiotal",
             "load_game": "Luchdaich Geama",

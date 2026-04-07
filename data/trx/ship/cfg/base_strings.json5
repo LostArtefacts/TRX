@@ -144,6 +144,11 @@
             "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
+            "delete_save": "Delete",
+            "delete_save_confirm": "Delete this save?",
+            "delete_save_failed": "Failed to delete the chosen save.",
+            "delete_save_no": "No",
+            "delete_save_yes": "Yes",
             "exit_game": "Exit Game",
             "exit_to_title": "Exit to Title",
             "load_game": "Load Game",
