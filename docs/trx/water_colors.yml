@@ -11,7 +11,7 @@ TR1 PC:
 
 TR2 PC:
   - name: default PC hardware renderer color
-    color: "#80DFFF"
+    color: "#80E0FF"
   - name: default PC software renderer color
     color: "#AAAAFF"
 
