@@ -4,6 +4,7 @@
 #include <trx/core/vector.h>
 #include <trx/game/objects/types.h>
 #include <trx/game/rooms.h>
+#include <trx/game/types.h>
 #include <trx/game/viewport.h>
 
 void Output_Lights_Init(void);
@@ -16,6 +17,8 @@ void Output_CalculateStaticLightRGB15(int16_t rgb15);
 void Output_CalculateStaticLightRGB_F(RGB_F rgb);
 void Output_CalculateStaticMeshLight(XYZ_32 pos, SHADE shade, const ROOM *room);
 void Output_CalculateObjectLighting(const ITEM *item, const BOUNDS_16 *bounds);
+void Output_CalculateObjectLightingAt(
+    const ITEM *item, const GAME_VECTOR sample_pos);
 int32_t Output_GetRoomLightShade(ROOM_LIGHT_MODE mode);
 
 int32_t Output_GetSunsetDuration(void);

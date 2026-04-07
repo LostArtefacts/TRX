@@ -19,6 +19,7 @@
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
 - fixed Fire Lighting option having no effect
 - fixed missing conveyor belt animations in High Security Compound
+- fixed delayed lighting updates on Lara during movement, particularly noticeable on ladders (regression from 1.1)
 - fixed z-fighting in High Security Compound rooms 135/179
 - fixed transparent and magenta pixels on grating textures in High Security Compound and Area 51
 - fixed an incorrect window texture in High Security Compound room 105
