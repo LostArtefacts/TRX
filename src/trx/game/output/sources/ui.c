@@ -130,6 +130,7 @@ static XYZ_32 M_VectorViewFromWorld(
 
 static void M_Draw3DPickups(const M_PRIV *const p)
 {
+    SceneCompositor_SetSamplerFilter(g_Config.rendering.texture_filter);
     Output_MeshShader_Bind(Output_GetMeshShader());
 
     for (int32_t i = 0; i < p->scheduled_pickups->count; i++) {
@@ -244,6 +245,8 @@ static void M_Draw3DPickups(const M_PRIV *const p)
             p->objects_source->render_end(p->objects_source);
         }
     }
+
+    SceneCompositor_SetSamplerFilter(g_Config.rendering.ui_filter);
 }
 
 static void M_DrawVertices(const M_PRIV *const p)

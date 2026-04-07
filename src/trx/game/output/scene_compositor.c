@@ -252,3 +252,9 @@ void SceneCompositor_AddSource(const SCENE_SOURCE *const source)
     M_PRIV *const p = &m_Priv;
     Vector_Add(p->sources, &source);
 }
+
+void SceneCompositor_SetSamplerFilter(const TEXTURE_FILTER filter)
+{
+    M_PRIV *const p = &m_Priv;
+    M_SetSamplerFilter(p->sampler_id, filter);
+}

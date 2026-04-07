@@ -3,6 +3,7 @@
 - fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)
 - fixed incorrect transparent and yellow pixels on TR2 and TR3 outfit heads when bilinear filtering is enabled (#5300)
+- fixed rotating 3D pickup notifications following the UI filter setting instead of the in-game texture filter
 - fixed climbing issues on ladders that are against walls that (incorrectly) contain tilt data within them (#5304, regression from 1.1)
 - fixed Lara not transitioning immediately to run after vaulting two clicks when forward is held (#5305, regression from 1.3)
 - fixed settings list auto-scroll sometimes stopping after switching to a different mod (regression from 1.4)
