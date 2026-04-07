@@ -10,6 +10,7 @@
 - fixed Lara not transitioning immediately to run after vaulting two clicks when forward is held (#5305, regression from 1.3)
 - fixed settings list auto-scroll sometimes stopping after switching to a different mod (regression from 1.4)
 - fixed first-time keyboard keybindings conflicting after switching to a different mod (regression from 1.4)
+- fixed boulders stopping too soon on some slopes with low ceilings (#5337, regression from 1.2)
 
 **TR3**:
 - added Mine Cart control
@@ -30,6 +31,7 @@
 - fixed Reunion having wrong pickup and secret count
 - fixed being able to re-use switches that are intended to only be used once (#5328, regression from 1.1)
 - fixed capitalization of the "Empty Slot" text in passport
+- fixed the second boulder at the beginning of Reunion stopping too early (regression from 1.2)
 
 
 
