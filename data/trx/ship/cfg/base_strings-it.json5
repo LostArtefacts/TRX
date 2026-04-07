@@ -2566,6 +2566,9 @@
         "rx_worker_1": {
             "name": "\\{review}RX Operaio 1",
         },
+        "rx_worker_2": {
+            "name": "\\{review}RX Operaio 2",
+        },
         "save_crystal": {
             "name": "Cristallo di Salvataggio",
         },

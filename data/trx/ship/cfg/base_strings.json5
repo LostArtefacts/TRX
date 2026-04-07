@@ -2565,6 +2565,9 @@
         "rx_worker_1": {
             "name": "RX Worker 1",
         },
+        "rx_worker_2": {
+            "name": "RX Worker 2",
+        },
         "save_crystal": {
             "name": "Savegame Crystal",
         },

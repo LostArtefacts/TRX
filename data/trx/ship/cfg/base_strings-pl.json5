@@ -2517,6 +2517,9 @@
         "rx_worker_1": {
             "name": "\\{review}RX Pracownik 1",
         },
+        "rx_worker_2": {
+            "name": "\\{review}RX Pracownik 2",
+        },
         "save_crystal": {
             "name": "Kryształ do zapisu",
         },

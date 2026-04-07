@@ -120,6 +120,7 @@
   "O_ROLLING_BALL_1":         { "status": "fully implemented" },
   "O_ROLLING_BALL_4":         { "status": "fully implemented" },
   "O_RX_WORKER_1":            { "status": "fully implemented" },
+  "O_RX_WORKER_2":            { "status": "fully implemented" },
   "O_SAVE_CRYSTAL_ITEM":      { "status": "fully implemented" },
   "O_ROTATING_LASER":         { "status": "fully implemented" },
   "O_SECURITY_LASER_ALARM":   { "status": "fully implemented" },

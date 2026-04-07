@@ -2536,6 +2536,9 @@
         "rx_worker_1": {
             "name": "\\{review}RX Arbeiter 1",
         },
+        "rx_worker_2": {
+            "name": "\\{review}RX Arbeiter 2",
+        },
         "save_crystal": {
             "name": "Speicherkristall",
         },

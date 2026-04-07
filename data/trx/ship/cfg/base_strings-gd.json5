@@ -2542,6 +2542,9 @@
         "rx_worker_1": {
             "name": "Neach-obrach RX 1",
         },
+        "rx_worker_2": {
+            "name": "Neach-obrach RX 2",
+        },
         "save_crystal": {
             "name": "Criostal Geama Sàbhalaidh",
         },
