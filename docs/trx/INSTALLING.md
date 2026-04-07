@@ -1061,6 +1061,45 @@ If you install everything correctly, your game directory should look more or les
     - `TRX.exe --mod tr2-gm`
     - `TRX.exe --mod tr3-la`
 
+## Migrating from previous TRX installations
+
+If TRX shows an error like `Mixed mod layout detected: found legacy mod data`,
+your install contains a mix of the old layout and the new one. Older combined
+builds stored mod definitions under `cfg/<game-id>/`, with the matching game
+files in top-level folders such as `data/`, `fmv/`, `music/`, `audio/`, and
+`cuts/`. Current combined builds keep each game together under
+`games/<game-id>/`. That means each game now has its own directory, such as:
+
+- `games/tr1/`
+- `games/tr2/`
+- `games/tr3/`
+
+Inside each of those folders you will find the game's own files, for example
+`levels/`, `fmv/`, `music/`, `audio/`, `cuts/`, and the mod's `gameflow.json5`. To fix the error:
+
+1. Keep the shared `cfg/` directory from the current combined TRX build.
+2. Remove any legacy per-game folders from `cfg/`, such as:
+   - `cfg/tr1/`,
+   - `cfg/tr1-demo-pc`,
+   - `cfg/tr1-level/`,
+   - `cfg/tr1-ub/`,
+   - `cfg/tr2/`,
+   - `cfg/tr2-gm/`,
+   - `cfg/tr2-level/`,
+   - `cfg/tr3/`,
+   - `cfg/tr3-la/`,
+   - `cfg/tr3-level/`.
+3. Move or re-copy your original game files into the matching
+   `games/<game-id>/` folders listed above.
+4. Do not keep the same game in both places at once. For example, if you use
+   `games/tr1/`, do not also keep `cfg/tr1/` and `data/`.
+
+If you are updating from an older combined install, the simplest fix is usually
+to start from a fresh extract of the latest TRX zip and then copy your original
+game files into `games/<game-id>/` again.
+
+
+
 # macOS
 
 ## Installing
