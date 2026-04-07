@@ -2547,6 +2547,9 @@
         "rx_worker_2": {
             "name": "\\{review}RX Рабочий 2",
         },
+        "rx_worker_3": {
+            "name": "\\{review}RX Рабочий 3",
+        },
         "save_crystal": {
             "name": "Кристалл сохранения",
         },
