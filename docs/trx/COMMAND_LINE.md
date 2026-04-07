@@ -37,10 +37,10 @@ Currently the following command line interface options are available:
 - `--test-record <PATH>`:  
   Records gameplay events to an external text file.
 
-  `--test-replay <PATH>`, `--test-play <PATH>`:  
+- `--test-replay <PATH>`, `--test-play <PATH>`:  
   Replays gameplay events from an external text file.
 
-  `--headless`:  
+- `--headless`:  
   Runs the game in command line only. Only available with `--test-replay`.
 
 - `--headless-fps <num>`:  
