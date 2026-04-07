@@ -648,7 +648,6 @@ void Output_CalculateObjectLighting(
     }
 
     Matrix_PushUnit();
-
     Matrix_TranslateSet32((XYZ_32) {});
     Matrix_Rot16(item->rot);
     Matrix_TranslateRel32((XYZ_32) {
@@ -656,17 +655,28 @@ void Output_CalculateObjectLighting(
         .y = (bounds->max.y + bounds->min.y) / 2,
         .z = (bounds->max.z + bounds->min.z) / 2,
     });
-    const XYZ_32 pos = {
-        .x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
-        .y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
-        .z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+    const GAME_VECTOR sample_pos = {
+        .room_num = item->room_num,
+        .pos = {
+            .x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
+            .y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
+            .z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+        },
     };
     Matrix_Pop();
 
+    Output_CalculateObjectLightingAt(item, sample_pos);
+}
+
+void Output_CalculateObjectLightingAt(
+    const ITEM *const item, const GAME_VECTOR sample_pos)
+{
+    int16_t room_num = sample_pos.room_num;
+    Room_GetSector(sample_pos.pos, &room_num);
     if (g_TRVersion >= 3) {
-        M_TR3_CalculateLightSmoothed(item, pos, Room_Get(item->room_num));
+        M_TR3_CalculateLightSmoothed(item, sample_pos.pos, Room_Get(room_num));
     } else {
-        Output_CalculateLight(pos, item->room_num);
+        Output_CalculateLight(sample_pos.pos, room_num);
     }
 }
 
