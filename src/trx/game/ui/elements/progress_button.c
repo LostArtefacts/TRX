@@ -58,6 +58,7 @@ void UI_ProgressButton_Free(UI_PROGRESS_BUTTON_STATE *s)
 
 void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
 {
+    const float scale = 0.85f;
     const char *const key_name =
         Input_GetKeyName(s->backend, INPUT_LAYOUT_DEFAULT, s->role, 0);
     if (key_name == nullptr) {
@@ -65,6 +66,8 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
     }
     const char *const value_label =
         String_FormatStatic(GS("general/misc/hold_fmt"), key_name);
+    const char *const text =
+        String_FormatStatic("%s: %s", GameString_Get(s->text), value_label);
 
     const float pad[2] = { 6.0f, 3.0f };
     const float spacing = 2.0f;
@@ -83,7 +86,7 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
             .v = spacing,
         },
     });
-    UI_LabelFmt("%s: %s", GameString_Get(s->text), value_label);
+    UI_LabelEx(text, (UI_LABEL_SETTINGS) { .scale = scale });
     UI_BeginHide(progress < 0.0f);
     UI_SleekBar(progress);
     UI_EndHide();

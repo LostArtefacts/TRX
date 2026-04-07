@@ -44,9 +44,7 @@ void UI_BasePassportDialog_Control(UI_REQUESTER_STATE *const req)
 
 void UI_BeginBasePassportDialog(void)
 {
-    const float modal_y = g_TRVersion == 1
-        ? (g_Inv_Mode == INV_TITLE_MODE ? 0.72f : 0.55f)
-        : (g_Inv_Mode == INV_TITLE_MODE ? 0.8f : 0.65f);
+    const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.81f : 0.62f;
     UI_BeginModal(0.5f, modal_y);
     UI_BeginResize(300.0f, -1.0f);
 }

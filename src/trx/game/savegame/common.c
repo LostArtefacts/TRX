@@ -1042,6 +1042,40 @@ bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
     return result;
 }
 
+bool Savegame_Delete(const SAVEGAME_SLOT_REF slot)
+{
+    if (!Savegame_IsValidSlotRef(slot) || Savegame_IsSlotFree(slot)) {
+        return false;
+    }
+
+    SAVEGAME_INFO *const savegame_info = M_GetSavegameInfoSlot(slot);
+    if (savegame_info == nullptr || savegame_info->full_path == nullptr) {
+        return false;
+    }
+
+    const bool result = remove(savegame_info->full_path) == 0;
+    if (!result) {
+        return false;
+    }
+
+    M_ClearSlot(savegame_info);
+    if (m_SavedGames > 0) {
+        m_SavedGames--;
+    }
+    if (m_BoundSlot.pool == slot.pool && m_BoundSlot.index == slot.index) {
+        m_BoundSlot = Savegame_InvalidSlot();
+    }
+    if (m_MostRecentlyUsedSlot.pool == slot.pool
+        && m_MostRecentlyUsedSlot.index == slot.index) {
+        m_MostRecentlyUsedSlot = Savegame_InvalidSlot();
+    }
+    if (m_MostRecentlyCreatedSlot.pool == slot.pool
+        && m_MostRecentlyCreatedSlot.index == slot.index) {
+        m_MostRecentlyCreatedSlot = Savegame_InvalidSlot();
+    }
+    return true;
+}
+
 bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
 {
     const SAVEGAME_INFO *const savegame_info = Savegame_GetSavegameInfo(slot);
