@@ -2540,6 +2540,9 @@
         "rx_worker_1": {
             "name": "\\{review}RX Рабочий 1",
         },
+        "rx_worker_2": {
+            "name": "\\{review}RX Рабочий 2",
+        },
         "save_crystal": {
             "name": "Кристалл сохранения",
         },

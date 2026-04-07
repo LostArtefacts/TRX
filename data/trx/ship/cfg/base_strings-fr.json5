@@ -2530,6 +2530,9 @@
         "rx_worker_1": {
             "name": "\\{review}RX Ouvrier 1",
         },
+        "rx_worker_2": {
+            "name": "\\{review}RX Ouvrier 2",
+        },
         "save_crystal": {
             "name": "Cristal de Sauvegarde",
         },
