@@ -15,6 +15,9 @@
             "item_count_fmt": "\\{color 3}%s",
             "object_name_fmt": "\\{color 5}%s",
         },
+        "misc": {
+            "empty_slot_fmt": "- Leerer Slot -",
+        },
         "overlay": {
             "item_count_fmt_pc": "%s",
             "item_count_fmt_ps1": "\\{color 3}%s",
