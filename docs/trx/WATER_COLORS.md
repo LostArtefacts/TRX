@@ -44,8 +44,8 @@ order: 8
 <tbody>
     <tr>
         <td rowspan="2">PC</td>
-        <td><img src="https://dummyimage.com/20x20/80dfff/80dfff.png" width="20" height="20" alt="#80DFFF" valign="middle"/> <code>#80DFFF</code></td>
-        <td><code>[0.502, 0.875, 1]</code></td>
+        <td><img src="https://dummyimage.com/20x20/80e0ff/80e0ff.png" width="20" height="20" alt="#80E0FF" valign="middle"/> <code>#80E0FF</code></td>
+        <td><code>[0.502, 0.878, 1]</code></td>
         <td>default PC hardware renderer color</td>
     </tr>
     <tr>
