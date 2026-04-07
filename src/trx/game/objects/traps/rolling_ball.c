@@ -12,6 +12,7 @@
 
 #define M_DAMAGE_AIR 100
 #define M_SHAKE_RANGE (WALL_L * 10) // = 10240
+#define M_CLEARANCE_UNIT (STEP_L * 3) // = 768
 
 static void M_Roll(ITEM *const item)
 {
@@ -62,28 +63,33 @@ static bool M_TestStop(const ITEM *const item)
         break;
     }
 
-    const ANIM_FRAME *const frame = Item_GetBestFrame(item);
-    const BOUNDS_16 *const bounds = &frame->bounds;
-    int16_t item_height =
-        ROUND_TO_HALF_CLICK(ABS(bounds->max.y - bounds->min.y));
-
     int16_t room_num = item->room_num;
     XYZ_32 sample_pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, dist);
     const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
     const int32_t height = Room_GetHeight(sector, sample_pos);
-    if (item->object_id != O_ROLLING_BALL_4) {
-        // Allow a more lenient height check if regular boulders fall onto
-        // slopes with a ceiling in front.
-        const int32_t height_scale = Room_GetHeightType() != HT_WALL ? 2 : 1;
-        CLAMPG(item_height, STEP_L * 3 / height_scale);
+    if (height == NO_HEIGHT || height < item->pos.y) {
+        // Stop at a wall or raised floor.
+        return true;
+    }
+
+    const ANIM_FRAME *const frame = Item_GetBestFrame(item);
+    const BOUNDS_16 *const bounds = &frame->bounds;
+    int16_t item_height = ROUND_TO_CLICK_UP(ABS(bounds->max.y - bounds->min.y));
+    if (item_height > M_CLEARANCE_UNIT) {
+        item_height = (item_height / M_CLEARANCE_UNIT) * M_CLEARANCE_UNIT;
     }
 
     sample_pos.y -= item_height;
     sector = Room_GetSector(sample_pos, &room_num);
     const int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+    if (ceiling == NO_HEIGHT || (ceiling > item->pos.y && !item->gravity)) {
+        // Stop at a wall or if the ceiling in front is below the floor, as long
+        // as the boulder is not falling.
+        return true;
+    }
 
-    return height < item->pos.y
-        || (!item->gravity && ceiling > item->pos.y - item_height);
+    // Stop if the gap in front is too small to logically fit.
+    return ABS(ceiling - height) < item_height;
 }
 
 static void M_Stop(ITEM *const item, const XYZ_32 old_pos)
