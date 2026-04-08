@@ -9,6 +9,7 @@
 #include <trx/debug.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/shell/common.h>
+#include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
 #include <stdio.h>
@@ -161,10 +162,28 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                         MOD_BASE_GAME, result->engine_version);
                 }
             } else {
-                result->level_to_play = next_arg;
+                char **const level_arg = Vector_Get(args, i + 1);
+                ASSERT(level_arg != nullptr);
+
+                const char *const resolved_level_path =
+                    TRXPath_PeekResolveUserPath(
+                        TRX_DYNAMIC_PATH_LEVEL_FILE, next_arg);
+                result->level_to_play = resolved_level_path != nullptr
+                    ? Memory_DupStr(resolved_level_path)
+                    : nullptr;
+                if (result->level_to_play == nullptr) {
+                    Shell_ExitSystemFmt(
+                        "Cannot find level file '%s'. Relative paths are "
+                        "resolved from the current working directory, then "
+                        "from the game directory.",
+                        next_arg);
+                }
+                Memory_Free(*level_arg);
+                *level_arg = (char *)result->level_to_play;
+
                 if (result->engine_version == 0) {
-                    result->engine_version =
-                        M_GuessEngineVersionFromLevelPath(next_arg);
+                    result->engine_version = M_GuessEngineVersionFromLevelPath(
+                        result->level_to_play);
                 }
                 if (result->engine_version == 0) {
                     Shell_ExitSystem(

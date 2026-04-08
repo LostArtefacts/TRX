@@ -88,3 +88,11 @@ bool TRXPath_Exists(TRX_DYNAMIC_PATH path, const char *rel);
 // Returns an owning canonical path or nullptr if no candidate exists; caller
 // must free.
 char *TRXPath_GuessExtension(const char *path, const char **extensions);
+
+// Resolve a user-supplied path by trying:
+// 1. absolute path as-is
+// 2. current working directory for relative paths
+// 3. normal TRX path policy fallback for the given dynamic path
+// Returns nullptr on miss; does not log.
+const char *TRXPath_PeekResolveUserPath(
+    TRX_DYNAMIC_PATH path, const char *input_path);
