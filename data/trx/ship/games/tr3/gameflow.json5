@@ -434,6 +434,7 @@
                 "lara_guns.bin",
                 "drill_collision.bin",
                 "mines_textures.bin",
+                "flamethrower_sfx.bin",
             ],
         },
 
@@ -488,6 +489,7 @@
                 "lara_guns.bin",
                 "ora_dagger.bin",
                 "cavern_door131_frames.bin",
+                "flamethrower_sfx.bin",
             ],
         },
 
