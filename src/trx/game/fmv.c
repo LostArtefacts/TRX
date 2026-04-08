@@ -9,11 +9,15 @@
 #include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/console.h>
+#include <trx/game/fader.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/output/quad.h>
+#include <trx/game/overlay.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
@@ -27,10 +31,19 @@ static const char *const m_FallbackExts[] = {
     ".mp4", ".mpeg", ".webm", ".avi", ".fmv", ".rpl", nullptr,
 };
 
+#define M_FADE_TIME 0.4f
+#define M_PAUSE_OVERLAY_OPACITY 0.8f
+
 typedef struct {
     OUTPUT_QUAD_SURFACE_DESC desc;
     uint8_t *buffer;
 } M_SURFACE;
+
+typedef struct {
+    OUTPUT_QUAD *renderer_2d;
+    bool show_pause_overlay;
+    FADER pause_fader;
+} M_RENDER_CONTEXT;
 
 static OUTPUT_QUAD_SURFACE_DESC M_MakeSurfaceDesc(
     const int32_t width, const int32_t height)
@@ -110,6 +123,37 @@ static void M_RenderBegin(void *const surface, void *const user_data)
     Output_BeginScene();
 }
 
+static void M_DrawUI(void)
+{
+    UI_BeginScene();
+    Overlay_Draw();
+    Console_Draw();
+    Console_Control();
+    Console_Control();
+    UI_EndScene();
+    UI_Draw();
+}
+
+static float M_GetPauseOverlayOpacity(const M_RENDER_CONTEXT *const ctx)
+{
+    if (!g_Config.ui.pause_fade_effects) {
+        return ctx->show_pause_overlay ? M_PAUSE_OVERLAY_OPACITY : 0.0f;
+    }
+    return Fader_GetCurrentValue(&ctx->pause_fader) * M_PAUSE_OVERLAY_OPACITY;
+}
+
+static bool M_ShouldShowPauseText(const M_RENDER_CONTEXT *const ctx)
+{
+    if (!ctx->show_pause_overlay) {
+        return false;
+    }
+    if (!g_Config.ui.pause_fade_effects) {
+        return true;
+    }
+    return !Fader_IsActive(&ctx->pause_fader)
+        && Fader_GetCurrentValue(&ctx->pause_fader) >= 1.0f;
+}
+
 static void M_RenderEnd(void *const surface, void *const user_data)
 {
     Output_EndScene();
@@ -129,18 +173,48 @@ static void M_UnlockSurface(void *const surface, void *const user_data)
 
 static void M_UploadSurface(void *const surface, void *const user_data)
 {
-    OUTPUT_QUAD *const renderer_2d = user_data;
+    M_RENDER_CONTEXT *const ctx = user_data;
     M_SURFACE *const surface_ = surface;
-    Output_Quad_Upload(renderer_2d, &surface_->desc, surface_->buffer);
-    Output_Quad_Render(renderer_2d);
+    const float overlay_opacity = M_GetPauseOverlayOpacity(ctx);
+    Output_Quad_Upload(ctx->renderer_2d, &surface_->desc, surface_->buffer);
+
+    Output_SwitchViewport(VIEWPORT_GAME);
+    Output_Quad_Render(ctx->renderer_2d);
+    if (overlay_opacity > 0.0f) {
+        Output_Overlay_DrawBlackRectangle(overlay_opacity, false);
+    }
 
     Output_SwitchViewport(VIEWPORT_UI);
-    UI_BeginScene();
-    Console_Draw();
-    Console_Control();
-    Console_Control();
-    UI_EndScene();
-    UI_Draw();
+    M_DrawUI();
+}
+
+static void M_SetPauseText(const bool show)
+{
+    if (show) {
+        Overlay_SetBottomText((OVERLAY_TEXT) {
+            .kind = UI_OVERLAY_TEXT_GS_KEY,
+            .gs_key = GS_ID("general/pause/paused"),
+        });
+    } else {
+        Overlay_SetBottomText((OVERLAY_TEXT) {});
+    }
+}
+
+static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
+{
+    const float overlay_opacity = M_GetPauseOverlayOpacity(ctx);
+    Output_BeginScene();
+    Output_SwitchViewport(VIEWPORT_GAME);
+    Output_Quad_Render(ctx->renderer_2d);
+    if (overlay_opacity > 0.0f) {
+        Output_Overlay_DrawBlackRectangle(overlay_opacity, false);
+    }
+
+    Output_SwitchViewport(VIEWPORT_UI);
+    M_DrawUI();
+
+    Output_EndScene();
+    Output_FlipScreen();
 }
 
 static bool M_Play(const char *const file_name)
@@ -155,7 +229,9 @@ static bool M_Play(const char *const file_name)
         return false;
     }
 
-    OUTPUT_QUAD *renderer_2d = Output_Quad_Create();
+    M_RENDER_CONTEXT render_ctx = {
+        .renderer_2d = Output_Quad_Create(),
+    };
 
     Video_SetSurfaceAllocatorFunc(video, M_AllocateSurface, nullptr);
     Video_SetSurfaceDeallocatorFunc(video, M_DeallocateSurface, nullptr);
@@ -164,19 +240,30 @@ static bool M_Play(const char *const file_name)
     Video_SetRenderEndFunc(video, M_RenderEnd, nullptr);
     Video_SetSurfaceLockFunc(video, M_LockSurface, nullptr);
     Video_SetSurfaceUnlockFunc(video, M_UnlockSurface, nullptr);
-    Video_SetSurfaceUploadFunc(video, M_UploadSurface, renderer_2d);
+    Video_SetSurfaceUploadFunc(video, M_UploadSurface, &render_ctx);
     Video_SetAudioEnabled(video, false);
 
     const int32_t audio_id = M_OpenAudioStream(file_name);
+    bool input_paused = false;
     bool paused = false;
 
     g_OldInputDB = g_Input;
+    Fader_InitTo(&render_ctx.pause_fader, 0.0f, 0.0f, 0.0f);
+    M_SetPauseText(false);
     Video_Start(video);
     while (video->is_playing) {
         Shell_ProcessEvents();
 
-        const bool should_pause =
+        const bool focus_paused =
             g_Config.gameplay.pause_on_focus_lost && !Shell_IsFocused();
+        Input_Update();
+        Shell_ProcessInput();
+
+        render_ctx.show_pause_overlay = input_paused;
+        M_SetPauseText(M_ShouldShowPauseText(&render_ctx));
+        Overlay_Control();
+
+        const bool should_pause = focus_paused || input_paused;
         if (should_pause != paused) {
             Video_SetPaused(video, should_pause);
             Audio_Stream_SetPaused(audio_id, should_pause);
@@ -199,19 +286,31 @@ static bool M_Play(const char *const file_name)
 
         Video_PumpEvents(video);
 
-        Input_Update();
-        Shell_ProcessInput();
-        if (g_InputDB.menu_back || g_InputDB.menu_confirm
+        if (paused) {
+            M_RedrawFrame(&render_ctx);
+        }
+
+        if ((g_InputDB.pause || (input_paused && g_InputDB.menu_back))
+            && !focus_paused) {
+            input_paused = !input_paused;
+            if (g_Config.ui.pause_fade_effects) {
+                Fader_InitFromCurrent(
+                    &render_ctx.pause_fader, input_paused ? 1.0f : 0.0f,
+                    M_FADE_TIME);
+            }
+        } else if (
+            (!paused && (g_InputDB.menu_back || g_InputDB.menu_confirm))
             || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
             Video_Stop(video);
             break;
         }
     }
 
+    M_SetPauseText(false);
     Audio_Stream_Close(audio_id);
     Video_Close(video);
 
-    Output_Quad_Destroy(renderer_2d);
+    Output_Quad_Destroy(render_ctx.renderer_2d);
     Output_ApplyRenderSettings();
     return true;
 }
