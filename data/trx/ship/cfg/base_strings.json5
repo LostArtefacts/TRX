@@ -2881,6 +2881,9 @@
         "wasp_mutant": {
             "name": "Wasp Mutant",
         },
+        "wasp_mutant_emitter": {
+            "name": "Wasp Mutant Emitter",
+        },
         "water_sprite": {
             "name": "Boat Wake",
         },

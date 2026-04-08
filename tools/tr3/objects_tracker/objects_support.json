@@ -167,6 +167,7 @@
   "O_UZI_ITEM":               { "status": "fully implemented" },
   "O_VULTURE":                { "status": "fully implemented" },
   "O_WASP_MUTANT":            { "status": "fully implemented" },
+  "O_WASP_MUTANT_EMITTER":    { "status": "fully implemented" },
   "O_WATERFALL":              { "status": "fully implemented" },
   "O_WHITE_LIGHT":            { "status": "fully implemented" },
   "O_WILLARD":                { "status": "fully implemented" },

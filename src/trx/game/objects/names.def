@@ -308,6 +308,7 @@ X_OBJ_NAME_DEFINE(O_THORS_HANDLE,          "thors_handle",          X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_THORS_HEAD,            "thors_head",            X_OBJ_NAMES("Thor's Hammer"))
 X_OBJ_NAME_DEFINE(O_ELECTRIC_FENCE,        "electric_fence",        X_OBJ_NAMES("Electric Fence"))
 X_OBJ_NAME_DEFINE(O_RAPTOR_EMITTER,        "raptor_emitter",        X_OBJ_NAMES("Raptor Emitter"))
+X_OBJ_NAME_DEFINE(O_WASP_MUTANT_EMITTER,   "wasp_mutant_emitter",   X_OBJ_NAMES("Wasp Mutant Emitter"))
 X_OBJ_NAME_DEFINE(O_TRAIN,                 "train",                 X_OBJ_NAMES("Train"))
 
 // General objects

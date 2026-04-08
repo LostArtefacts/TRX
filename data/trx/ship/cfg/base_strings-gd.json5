@@ -2832,6 +2832,9 @@
         "wasp_mutant": {
             "name": "Mùtant Speach",
         },
+        "wasp_mutant_emitter": {
+            "name": "Sgaoiladair Mùtant Speach",
+        },
         "water_sprite": {
             "name": "Rotal Bàta",
         },
