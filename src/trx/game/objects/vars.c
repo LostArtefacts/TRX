@@ -136,6 +136,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_WARRIOR_1,
     O_WARRIOR_2,
     O_WARRIOR_3,
+    O_WASP_MUTANT,
     O_WILLARD,
     O_WOLF,
     O_WORKER_1,

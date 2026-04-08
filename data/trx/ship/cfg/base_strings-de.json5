@@ -2818,6 +2818,9 @@
         "vulture": {
             "name": "\\{review}Geier",
         },
+        "wasp_mutant": {
+            "name": "\\{review}Wespenmutant",
+        },
         "water_sprite": {
             "name": "Boat Wake",
         },
