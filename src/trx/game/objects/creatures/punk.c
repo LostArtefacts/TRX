@@ -187,9 +187,9 @@ static void M_TriggerFireLight(const ITEM *const item)
 {
     const int32_t rnd = Random_GetControl();
     XYZ_32 pos = {
-        .x = (rnd & 0xF) + m_Bite.pos.x - 8,
-        .y = ((rnd >> 4) & 0xF) + m_Bite.pos.y - 8,
-        .z = ((rnd >> 8) & 0xF) + m_Bite.pos.z - 8,
+        .x = m_Bite.pos.x + (rnd & 0xF) - 8,
+        .y = m_Bite.pos.y + ((rnd >> 4) & 0xF) - 8,
+        .z = m_Bite.pos.z + ((rnd >> 8) & 0xF) - 8,
     };
     Collide_GetJointAbsPosition(item, &pos, m_Bite.mesh_num);
     const RGB_888 color = {

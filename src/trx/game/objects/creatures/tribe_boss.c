@@ -140,9 +140,9 @@ static void M_Explode(ITEM *const item)
         || p->explode_count == 25 || p->explode_count == 35
         || p->explode_count == 45 || p->explode_count == 55) {
         const XYZ_32 pos = {
-            .x = (Random_GetDraw() & 0x3FF) + item->pos.x - 512,
+            .x = item->pos.x + (Random_GetDraw() & 0x3FF) - 512,
             .y = item->pos.y - (Random_GetDraw() & 0x3FF) - 256,
-            .z = (Random_GetDraw() & 0x3FF) + item->pos.z - 512,
+            .z = item->pos.z + (Random_GetDraw() & 0x3FF) - 512,
         };
         FX_RING *const ring =
             FX_Ring_GetRing(FX_RING_TYPE_BLAST, p->ring_count);
@@ -377,9 +377,9 @@ static void M_TriggerElectricSparks(
     spark->draw_type = DRAW_BLEND_ADD;
     spark->extras = 0;
     spark->dynamic = -1;
-    spark->pos.x = (Random_GetControl() & 0x1F) + pos.x - 16;
-    spark->pos.y = (Random_GetControl() & 0x1F) + pos.y - 16;
-    spark->pos.z = (Random_GetControl() & 0x1F) + pos.z - 16;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
     spark->vel.x = 4 * (Random_GetControl() & 0x1FF) - 1024;
     spark->vel.y = 2 * (Random_GetControl() & 0x1FF) - 512;
     spark->vel.z = 4 * (Random_GetControl() & 0x1FF) - 1024;
