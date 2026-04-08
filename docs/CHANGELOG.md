@@ -17,6 +17,7 @@
 - changed Sophia's final height to follow the level setup instead of using a fixed value
 - restored the animated mine cart tracks in RX-Tech Mines
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
+- fixed letterboxing of images on 16:10 resolution
 - fixed Fire Lighting option having no effect
 - fixed missing conveyor belt animations in High Security Compound
 - fixed delayed lighting updates on Lara during movement, particularly noticeable on ladders (regression from 1.1)
