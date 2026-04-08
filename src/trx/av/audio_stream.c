@@ -601,6 +601,12 @@ bool Audio_Stream_Unpause(int32_t sound_id)
     return true;
 }
 
+bool Audio_Stream_SetPaused(const int32_t sound_id, const bool is_paused)
+{
+    return is_paused ? Audio_Stream_Pause(sound_id)
+                     : Audio_Stream_Unpause(sound_id);
+}
+
 int32_t Audio_Stream_CreateFromFile(const char *file_path)
 {
     if (!g_AudioDeviceID) {
