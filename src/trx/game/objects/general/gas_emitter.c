@@ -38,9 +38,9 @@ static void M_Control(const int16_t item_num)
     spark->life = (Random_GetControl() & 7) + 64;
     spark->s_life = spark->life;
     spark->dynamic = -1;
-    spark->pos.x = (Random_GetControl() & 0x1FF) + item->pos.x - 256;
+    spark->pos.x = item->pos.x + (Random_GetControl() & 0x1FF) - 256;
     spark->pos.y = item->pos.y - (Random_GetControl() & 0xF) - 264;
-    spark->pos.z = (Random_GetControl() & 0x3FF) + item->pos.z - 512;
+    spark->pos.z = item->pos.z + (Random_GetControl() & 0x3FF) - 512;
     spark->vel.x = (Random_GetControl() & 0xFF) - 128;
     spark->vel.y = -1 - (Random_GetControl() & 1);
     spark->vel.z = (Random_GetControl() & 0xFF) - 128;

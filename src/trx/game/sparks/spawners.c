@@ -855,9 +855,9 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
 
     for (int32_t i = 0; i < 7; i++) {
         const XYZ_32 bubble_pos = {
-            .x = (Random_GetControl() & 0x1FF) + pos.x - 256,
-            .y = (Random_GetControl() & 0x7F) + pos.y - 64,
-            .z = (Random_GetControl() & 0x1FF) + pos.z - 256,
+            .x = pos.x + (Random_GetControl() & 0x1FF) - 256,
+            .y = pos.y + (Random_GetControl() & 0x7F) - 64,
+            .z = pos.z + (Random_GetControl() & 0x1FF) - 256,
         };
         Spawn_BubbleEx(&bubble_pos, room_num, 6, 15);
     }
@@ -889,9 +889,9 @@ void Sparks_TriggerExplosionSmoke(
     spark->life = (uint8_t)((Random_GetControl() & 3) + 10);
     spark->s_life = spark->life;
     spark->dynamic = -1;
-    spark->pos.x = (Random_GetControl() & 0x1FF) + pos.x - 256;
-    spark->pos.y = (Random_GetControl() & 0x1FF) + pos.y - 256;
-    spark->pos.z = (Random_GetControl() & 0x1FF) + pos.z - 256;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1FF) - 256;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1FF) - 256;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1FF) - 256;
     spark->vel.x = ((Random_GetControl() & 0xFFF) - 2048) >> 2;
     spark->vel.y = (Random_GetControl() & 0xFF) - 128;
     spark->vel.z = ((Random_GetControl() & 0xFFF) - 2048) >> 2;
@@ -959,9 +959,9 @@ void Sparks_TriggerExplosionSmokeEnd(
 
     spark->extras = 0;
     spark->dynamic = -1;
-    spark->pos.x = (Random_GetControl() & 0x1F) + pos.x - 16;
-    spark->pos.y = (Random_GetControl() & 0x1F) + pos.y - 16;
-    spark->pos.z = (Random_GetControl() & 0x1F) + pos.z - 16;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
     spark->vel.x = ((Random_GetControl() & 0xFFF) - 2048) >> 2;
     spark->vel.y = (Random_GetControl() & 0xFF) - 128;
     spark->vel.z = ((Random_GetControl() & 0xFFF) - 2048) >> 2;
@@ -1030,9 +1030,9 @@ void Sparks_TriggerDartSmoke(const XYZ_32 pos, const XZ_32 vel, const bool hit)
     spark->life = (Random_GetControl() & 3) + 32;
     spark->s_life = spark->life;
     spark->dynamic = -1;
-    spark->pos.x = (Random_GetControl() & 0x1F) + pos.x - 16;
-    spark->pos.y = (Random_GetControl() & 0x1F) + pos.y - 16;
-    spark->pos.z = (Random_GetControl() & 0x1F) + pos.z - 16;
+    spark->pos.x = pos.x + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.y = pos.y + (Random_GetControl() & 0x1F) - 16;
+    spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
 
     if (hit) {
         spark->vel.x = (Random_GetControl() & 0xFF) - vel.x - 128;
@@ -1200,9 +1200,9 @@ void Sparks_TriggerFlareSparks(
     spark->pos.x = pos.x + (Random_GetDraw() & 7) - 3;
     spark->pos.y = pos.y + (Random_GetDraw() & 7) - 3;
     spark->pos.z = pos.z + (Random_GetDraw() & 7) - 3;
-    spark->vel.x = (int16_t)((Random_GetDraw() & 0xFF) + vel.x - 128);
-    spark->vel.y = (int16_t)((Random_GetDraw() & 0xFF) + vel.y - 128);
-    spark->vel.z = (int16_t)((Random_GetDraw() & 0xFF) + vel.z - 128);
+    spark->vel.x = (int16_t)(vel.x + (Random_GetDraw() & 0xFF) - 128);
+    spark->vel.y = (int16_t)(vel.y + (Random_GetDraw() & 0xFF) - 128);
+    spark->vel.z = (int16_t)(vel.z + (Random_GetDraw() & 0xFF) - 128);
     spark->friction = 34;
     spark->scalar = 1;
     spark->size.width = (Random_GetDraw() & 3) + 4;
@@ -1238,9 +1238,9 @@ void Sparks_TriggerFlareSparks(
     smoke_spark->pos.z = pos.z + (vel.z >> 5);
     smoke_spark->extras = 0;
     smoke_spark->dynamic = -1;
-    smoke_spark->vel.x = (int16_t)((Random_GetDraw() & 0x3F) + vel.x - 32);
+    smoke_spark->vel.x = (int16_t)(vel.x + (Random_GetDraw() & 0x3F) - 32);
     smoke_spark->vel.y = (int16_t)vel.y;
-    smoke_spark->vel.z = (int16_t)((Random_GetDraw() & 0x3F) + vel.z - 32);
+    smoke_spark->vel.z = (int16_t)(vel.z + (Random_GetDraw() & 0x3F) - 32);
     smoke_spark->friction = 4;
 
     if (Random_GetDraw() & 1) {

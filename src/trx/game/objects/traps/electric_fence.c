@@ -70,10 +70,10 @@ static void M_TouchFence(const XZ_32 spark_axis, XYZ_32 spark_pos)
     for (int32_t i = 0; i < iterations; i++) {
         if (spark_axis.x != 0) {
             spark_pos.x =
-                (Random_GetControl() & 0x1FF) + lara_item->pos.x - 256;
+                lara_item->pos.x + (Random_GetControl() & 0x1FF) - 256;
         } else {
             spark_pos.z =
-                (Random_GetControl() & 0x1FF) + lara_item->pos.z - 256;
+                lara_item->pos.z + (Random_GetControl() & 0x1FF) - 256;
         }
 
         spark_pos.y = lara_item->pos.y - Random_GetControl() % 768;

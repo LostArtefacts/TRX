@@ -764,9 +764,9 @@ static void M_TriggerMist(
     spark->life = (Random_GetControl() & 3) + 20;
     spark->s_life = spark->life;
     spark->dynamic = -1;
-    spark->pos.x = (Random_GetControl() & 0xF) + pos.x - 8;
-    spark->pos.y = (Random_GetControl() & 0xF) + pos.y - 8;
-    spark->pos.z = (Random_GetControl() & 0xF) + pos.z - 8;
+    spark->pos.x = pos.x + (Random_GetControl() & 0xF) - 8;
+    spark->pos.y = pos.y + (Random_GetControl() & 0xF) - 8;
+    spark->pos.z = pos.z + (Random_GetControl() & 0xF) - 8;
 
     spark->vel.x = (Random_GetControl() & 0x7F)
         + ((speed * Math_Sin(angle)) >> (W2V_SHIFT + 2)) - 64;
@@ -824,9 +824,9 @@ static void M_Control(int16_t item_num)
 
             if (!(Random_GetControl() & 1)) {
                 XYZ_32 bubble_pos = {
-                    .x = (Random_GetControl() & 0x3F) + pos.x - 32,
+                    .x = pos.x + (Random_GetControl() & 0x3F) - 32,
                     .y = pos.y + 128,
-                    .z = (Random_GetControl() & 0x3F) + pos.z - 32,
+                    .z = pos.z + (Random_GetControl() & 0x3F) - 32,
                 };
                 int16_t room_num = item->room_num;
                 Room_GetSector(bubble_pos, &room_num);
