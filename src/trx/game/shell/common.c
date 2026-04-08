@@ -17,6 +17,7 @@
 #include <stdio.h>
 
 static bool m_IsExiting = false;
+static bool m_IsFocused = true;
 
 static void M_ShowFatalError(
     const char *const log_message, const char *const dialog_message)
@@ -145,4 +146,14 @@ void Shell_ScheduleExit(void)
 bool Shell_IsExiting(void)
 {
     return m_IsExiting;
+}
+
+void Shell_SetIsFocused(const bool is_focused)
+{
+    m_IsFocused = is_focused;
+}
+
+bool Shell_IsFocused(void)
+{
+    return m_IsFocused;
 }

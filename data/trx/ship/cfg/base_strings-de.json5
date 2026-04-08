@@ -1145,6 +1145,10 @@
             "title": "Anzahl der Speicher-Slots",
             "description": "Ändert die Anzahl der verfügbaren Speicher-Slots.",
         },
+        "gameplay.pause_on_focus_lost": {
+            "title": "\\{review}Pause bei Fokusverlust",
+            "description": "\\{review}Stoppt den Spielfortschritt, wenn das Spiel-Fenster den Fokus verliert.",
+        },
         "gameplay.projectile_area_damage": {
             "title": "\\{review}Flächenschaden durch Projektile",
             "description": "\\{review}Steuert, wie der Wirkungsbereich für Raketenwerfer und Granatwerfer sich ausbreitet.\n\n- Einzelfeger: Verhalten von TR1 & TR2.\n- Mehrfachfeger: Verhalten von TR3.\n\nDie Mehrfachfeger-Option führt oft zu doppeltem Schaden bei einzelnen Gegnern.",

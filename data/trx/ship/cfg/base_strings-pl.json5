@@ -1145,6 +1145,10 @@
             "title": "Liczba slotów zapisu",
             "description": "Zmienia liczbę dostępnych slotów na zapisy.",
         },
+        "gameplay.pause_on_focus_lost": {
+            "title": "\\{review}Pauza po utracie fokusu",
+            "description": "\\{review}Zatrzymuje postęp rozgrywki, gdy okno gry traci fokus.",
+        },
         "gameplay.projectile_area_damage": {
             "title": "Przebieg eksplozji pocisków",
             "description": "Kontroluje metodę liczenia zasięgu eksplozji pocisków z wyrzutni rakiet i granatników.\n\n- Pojedynczy przebieg: zachowanie z TR1 i TR2.\n- Wielokrotny przebieg: zachowanie z TR3.\n\nWielokrotny przebieg często powoduje podwójne obrażenia dla pojedynczych celów.",

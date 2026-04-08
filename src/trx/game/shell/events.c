@@ -48,6 +48,7 @@ static void M_HandleKeyUp(const SDL_Event *const event)
 
 static void M_HandleFocusGained(void)
 {
+    Shell_SetIsFocused(true);
     if (g_Config.audio.mute_out_of_focus) {
         Audio_Unmute();
     }
@@ -55,6 +56,7 @@ static void M_HandleFocusGained(void)
 
 static void M_HandleFocusLost(void)
 {
+    Shell_SetIsFocused(false);
     if (g_Config.audio.mute_out_of_focus) {
         Audio_Mute();
     }

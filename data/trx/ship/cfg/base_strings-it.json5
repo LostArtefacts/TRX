@@ -1145,6 +1145,10 @@
             "title": "Slot di salvataggio",
             "description": "Modifica il numero di slot di salvataggio disponibili.",
         },
+        "gameplay.pause_on_focus_lost": {
+            "title": "\\{review}Pausa quando si perde il focus",
+            "description": "\\{review}Interrompe il progresso del gioco quando la finestra del gioco perde il focus.",
+        },
         "gameplay.projectile_area_damage": {
             "title": "Area danni proiettile",
             "description": "Controlla la propagazione dei danni del Lanciarazzi e del Lanciagranate.\n\n- Diffusione singola: comportamento di TR1 e TR2.\n- Diffusione multipla: comportamento di TR3.\n\nL'opzione \"Diffusione multipla\" spesso causa danni doppi ai singoli nemici.",
