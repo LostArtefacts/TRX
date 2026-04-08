@@ -109,6 +109,7 @@ static void M_CheckTriggers(
             const ITEM *const item = Item_Get(item_num);
             switch (item->object_id) {
             case O_RAPTOR_EMITTER:
+            case O_WASP_MUTANT_EMITTER:
                 for (int32_t i = 0; i < sector->trigger->timer; i++) {
                     M_IncludeKillableItem(stats, item_num);
                 }

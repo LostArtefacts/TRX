@@ -2828,6 +2828,9 @@
         "wasp_mutant": {
             "name": "\\{review}Осинный Мутант",
         },
+        "wasp_mutant_emitter": {
+            "name": "\\{review}Излучатель Осиного Мутанта",
+        },
         "water_sprite": {
             "name": "\\{review}След лодки",
         },

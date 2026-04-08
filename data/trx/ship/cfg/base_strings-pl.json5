@@ -2805,6 +2805,9 @@
         "wasp_mutant": {
             "name": "\\{review}Osi Mutant",
         },
+        "wasp_mutant_emitter": {
+            "name": "\\{review}Emiter Osiego Mutanta",
+        },
         "water_sprite": {
             "name": "Ślad łodzi",
         },

@@ -2861,6 +2861,9 @@
         "wasp_mutant": {
             "name": "\\{review}Mutante Vespa",
         },
+        "wasp_mutant_emitter": {
+            "name": "\\{review}Emettitore di Mutante Vespa",
+        },
         "water_sprite": {
             "name": "Scia Barca",
         },

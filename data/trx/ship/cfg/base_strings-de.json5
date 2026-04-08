@@ -2821,6 +2821,9 @@
         "wasp_mutant": {
             "name": "\\{review}Wespenmutant",
         },
+        "wasp_mutant_emitter": {
+            "name": "\\{review}Wespenmutanten-Emitter",
+        },
         "water_sprite": {
             "name": "Boat Wake",
         },

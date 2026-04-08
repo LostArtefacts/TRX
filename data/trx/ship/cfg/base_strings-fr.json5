@@ -2808,6 +2808,9 @@
         "wasp_mutant": {
             "name": "\\{review}Mutant Guêpe",
         },
+        "wasp_mutant_emitter": {
+            "name": "\\{review}Émetteur de Mutant Guêpe",
+        },
         "water_sprite": {
             "name": "\\{review}Sillage de Bateau",
         },
