@@ -168,11 +168,20 @@ static bool M_Play(const char *const file_name)
     Video_SetAudioEnabled(video, false);
 
     const int32_t audio_id = M_OpenAudioStream(file_name);
+    bool paused = false;
 
     g_OldInputDB = g_Input;
     Video_Start(video);
     while (video->is_playing) {
         Shell_ProcessEvents();
+
+        const bool should_pause =
+            g_Config.gameplay.pause_on_focus_lost && !Shell_IsFocused();
+        if (should_pause != paused) {
+            Video_SetPaused(video, should_pause);
+            Audio_Stream_SetPaused(audio_id, should_pause);
+            paused = should_pause;
+        }
 
         const float volume = Audio_IsMuted()
             ? 0.0f

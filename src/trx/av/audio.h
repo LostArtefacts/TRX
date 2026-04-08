@@ -21,6 +21,7 @@ bool Audio_IsMuted(void);
 
 bool Audio_Stream_Pause(int32_t sound_id);
 bool Audio_Stream_Unpause(int32_t sound_id);
+bool Audio_Stream_SetPaused(int32_t sound_id, bool is_paused);
 int32_t Audio_Stream_CreateFromFile(const char *path);
 int32_t Audio_Stream_CreateFromMemory(uint8_t *data, size_t size);
 bool Audio_Stream_Close(int32_t sound_id);

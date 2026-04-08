@@ -2152,3 +2152,12 @@ void Video_SetExternalAudioClock(VIDEO *const video, const double timestamp)
     M_STATE *const is = video->priv;
     M_SetClock(&is->extclk, timestamp, is->extclk.serial);
 }
+
+void Video_SetPaused(VIDEO *const video, const bool paused)
+{
+    M_STATE *const is = video->priv;
+    is->paused = paused;
+    if (!paused) {
+        is->force_refresh = true;
+    }
+}
