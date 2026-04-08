@@ -173,6 +173,13 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 }
                 result->mod = Shell_GetModByType(
                     MOD_DIRECT_LEVEL, result->engine_version);
+                if (result->mod == nullptr) {
+                    Shell_ExitSystemFmt(
+                        "Engine %d does not support --level with a file path "
+                        "because no direct-level mod is available for that "
+                        "engine.",
+                        result->engine_version);
+                }
             }
             i++;
         }
