@@ -1145,6 +1145,10 @@
             "title": "Àireamh de shloinn sàbhalaidh",
             "description": "Atharraichidh seo an àireamh de shloinnean sàbhalaidh a tha rim faotainn.",
         },
+        "gameplay.pause_on_focus_lost": {
+            "title": "\\{review}Cuir air fois nuair a chaill thu fòcas",
+            "description": "\\{review}Bidh e a’ stad geama bho bhith a’ dol air adhart nuair a bhios uinneag a’ gheama a’ call fòcas.",
+        },
         "gameplay.projectile_area_damage": {
             "title": "Dàil sgìre pròiseactail",
             "description": "Smachd air mar a sgaoileas an raon-buaidh airson an Lannsair Grenèad agus Lannsair Rocaid.\n\n- Ioma-singilte: mar TR2.\n- Ioma-sgèile: mar TR3.\n\nBidh an roghainn Ioma-sgèile gu tric a' leantainn gu dùbailteachadh a' mhillidh air nàimhdean fa leth.",

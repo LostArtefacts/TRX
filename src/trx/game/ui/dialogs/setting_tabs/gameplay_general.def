@@ -17,6 +17,7 @@ X_UI_CFG(gameplay.enable_compass_stats)
 X_UI_CFG(gameplay.enable_total_stats)
 
 X_UI_CFG(gameplay.enable_timer_in_inventory)
+X_UI_CFG(gameplay.pause_on_focus_lost)
 
 X_UI_CFG(gameplay.maximum_save_slots,         .min_value = 1, .max_value = 1000, .delta_fast = 10, .delta_slow = 1)
 X_UI_CFG(gameplay.maximum_quick_save_slots,   .min_value = 0, .max_value = 1000, .delta_fast = 10, .delta_slow = 1)

@@ -1145,6 +1145,10 @@
             "title": "Nombre d'emplacements de sauvegarde",
             "description": "Change le nombre d'emplacements de sauvegarde disponibles.",
         },
+        "gameplay.pause_on_focus_lost": {
+            "title": "\\{review}Pause lorsque la fenêtre perd le focus",
+            "description": "\\{review}Interrompt la progression du jeu lorsque la fenêtre du jeu perd le focus.",
+        },
         "gameplay.projectile_area_damage": {
             "title": "\\{review}Dégâts de zone de projectile",
             "description": "\\{review}Contrôle la propagation de la zone d'effet pour le Lance-roquettes et le Lance-grenades.\n\n- Balayage unique : comportement de TR1 & TR2.\n- Balayage multiple : comportement de TR3.\n\nL'option de balayage multiple entraîne souvent des dégâts doublés sur les ennemis individuels.",

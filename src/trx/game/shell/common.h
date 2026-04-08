@@ -24,6 +24,8 @@ void Shell_Terminate(int32_t exit_code);
 
 void Shell_ScheduleExit(void);
 bool Shell_IsExiting(void);
+void Shell_SetIsFocused(bool is_focused);
+bool Shell_IsFocused(void);
 
 void Shell_RequestModSwitch(const char *mod_name);
 const char *Shell_GetPendingMod(void);

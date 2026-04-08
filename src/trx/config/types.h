@@ -217,6 +217,7 @@ typedef struct {
         LOADING_SCREENS_MODE loading_screens;
         bool enable_compass_stats;
         bool enable_total_stats;
+        bool pause_on_focus_lost;
 
         bool enable_jump_twists;
         bool enable_uw_roll;

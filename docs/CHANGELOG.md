@@ -1,7 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.5...develop) - ××××-××-××
 - added the ability to do a forward roll without releasing sprint first (#5270)
 - added the ability to turn off or censor blood effects (Graphic Options → Visuals → Blood effects)
-- added the ability to delete saves directly from the passport save and load screens
+- added the ability to delete saves directly from the passport save and load screens (#5309)
+- added an option to stop the game from advancing when the window loses focus (Gameplay Options → General → Pause when focus lost) (#3978)
 - improved `--level PATH` so it accepts relative paths and reports clearer startup errors when the level cannot be launched
 - fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)

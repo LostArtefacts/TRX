@@ -1145,6 +1145,10 @@
             "title": "Number of save slots",
             "description": "Changes the number of available save slots.",
         },
+        "gameplay.pause_on_focus_lost": {
+            "title": "Pause when focus lost",
+            "description": "Stops gameplay from advancing when the game window loses focus.",
+        },
         "gameplay.projectile_area_damage": {
             "title": "Projectile area damage",
             "description": "Controls how the area-of-effect for Rocket Launcher and Grenade Launcher propagates.\n\n- Single-sweep: TR1 & TR2 behavior.\n- Multi-sweep: TR3 behavior.\n\nThe multi-sweep option often ends up doing double damage to individual enemies.",
