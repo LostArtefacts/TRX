@@ -183,15 +183,15 @@ static void M_Explode(ITEM *const item)
                 .z = ((rad * Math_Cos(angle << 4)) >> 13),
             };
 
-            if (i == 0 || i == 16 || p->explode_count >= 64) {
-                shield->color = (RGB_888) {};
-            } else {
+            if (i != 0 && i != 4 && p->explode_count < 64) {
                 const int32_t m = 64 - p->explode_count;
                 int32_t r = (m * (Random_GetDraw() & 0x1F)) >> 6;
                 int32_t b = (Random_GetDraw() & 0x3F) + 224;
                 int32_t g = (m * ((b >> 2) + (Random_GetDraw() & 0x3F))) >> 6;
                 b = (m * b) >> 6;
                 shield->color = (RGB_888) { r, g, b };
+            } else {
+                shield->color = (RGB_888) {};
             }
 
             angle = (angle + 512) & 0xFFF;

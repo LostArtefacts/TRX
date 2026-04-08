@@ -149,9 +149,7 @@ static void M_ExplodeLondonBoss(const ITEM *const item)
             shield->pos.y = y;
             shield->pos.z = (dist * Math_Cos(angle << 4)) >> 13;
 
-            if (i == 0 || i == 16 || p->explode_count >= 64) {
-                shield->color = COLOR_RGB_888_BLACK;
-            } else {
+            if (i != 0 && i != 4 && p->explode_count < 64) {
                 const int32_t r = Random_GetDraw() & 0x3F;
                 const int32_t g = (Random_GetDraw() & 0x1F) + 224;
                 const int32_t b = (g >> 2) + (Random_GetDraw() & 0x3F);
@@ -160,6 +158,8 @@ static void M_ExplodeLondonBoss(const ITEM *const item)
                     .g = ((64 - p->explode_count) * g) >> 6,
                     .b = ((64 - p->explode_count) * b) >> 6,
                 };
+            } else {
+                shield->color = COLOR_RGB_888_BLACK;
             }
 
             angle = (angle + 512) & 0xFFF;
