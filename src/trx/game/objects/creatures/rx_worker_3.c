@@ -491,19 +491,17 @@ static void M_Control(const int16_t item_num)
             item->goal_anim_state = stop_state;
         }
 
-        if (creature->flags < M_MAX_FLAME_SPEED) {
-            M_TriggerFlamethrower(item, creature->flags);
-        } else {
-            M_TriggerFlamethrower(item, (Random_GetControl() & 0x1F) + 12);
-#if false
-            // TODO: implement burn event once O_BURNT_MUTANT control added.
-            if (enemy != nullptr && enemy->object_id == O_BURNT_MUTANT) {
-                enemy->item_flags[0]++;
-            }
-#endif
-        }
-
+        const int16_t speed = creature->flags < M_MAX_FLAME_SPEED
+            ? creature->flags
+            : ((Random_GetControl() & 0x1F) + 12);
+        M_TriggerFlamethrower(item, speed);
         Sound_Effect(SFX_FLAME_THROWER_LOOP, &item->pos, SPM_NORMAL);
+        if (enemy != nullptr) {
+            const OBJECT *const obj = Object_Get(enemy->object_id);
+            if (obj->event_func != nullptr) {
+                obj->event_func(enemy, OBJECT_EVENT_BURNT, nullptr);
+            }
+        }
         break;
     }
 
