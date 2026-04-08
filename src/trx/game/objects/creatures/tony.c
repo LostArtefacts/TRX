@@ -450,7 +450,7 @@ static void M_Control(const int16_t item_num)
         || item->current_anim_state == M_STATE_BIG_ROOM) {
         int32_t f = Item_GetRelativeFrame(item);
         if (f > 16) {
-            f = Anim_GetAnim(item->anim_num)->frame_end - item->frame_num;
+            f = Item_GetAnim(item)->frame_end - item->frame_num;
             CLAMPG(f, 16);
         }
 

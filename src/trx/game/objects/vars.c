@@ -134,6 +134,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_WARRIOR_1,
     O_WARRIOR_2,
     O_WARRIOR_3,
+    O_WILLARD,
     O_WOLF,
     O_WORKER_1,
     O_WORKER_2,
@@ -204,6 +205,7 @@ const OBJECT_ID g_BossObjects[] = {
     O_TONY,
     O_TRIBE_BOSS,
     O_SOPHIA,
+    O_WILLARD,
     NO_OBJECT,
     // clang-format on
 };

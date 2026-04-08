@@ -18,6 +18,7 @@
 
 **TR3**:
 - added Mine Cart control
+- added Willard control
 - added RX-Tech Worker 1 control
 - added RX-Tech Worker 2 control
 - added RX-Tech Worker 3 control

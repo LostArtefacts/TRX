@@ -226,6 +226,7 @@ X_OBJ_NAME_DEFINE(O_CENTAUR_STATUE,        "centaur_statue",        X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_PODS,                  "pods",                  X_OBJ_NAMES("Pod"))
 X_OBJ_NAME_DEFINE(O_BIG_POD,               "big_pod",               X_OBJ_NAMES("Big Pod"))
 X_OBJ_NAME_DEFINE(O_TONY,                  "tony",                  X_OBJ_NAMES("Tony"))
+X_OBJ_NAME_DEFINE(O_WILLARD,               "willard",               X_OBJ_NAMES("Willard"))
 X_OBJ_NAME_DEFINE(O_VULTURE,               "vulture",               X_OBJ_NAMES("Vulture"))
 X_OBJ_NAME_DEFINE(O_COBRA,                 "snake",                 X_OBJ_NAMES("Snake", "Cobra"))
 X_OBJ_NAME_DEFINE(O_SHIVA,                 "shiva",                 X_OBJ_NAMES("Shiva"))

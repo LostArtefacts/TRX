@@ -103,6 +103,17 @@ void JSON_WriteIO_PushDouble(JSON_WRITE_IO *const io, const double value)
     M_PushValue(io, JSON_ValueFromDouble(value));
 }
 
+void JSON_WriteIO_PushRGB888(JSON_WRITE_IO *const io, const RGB_888 value)
+{
+    JSON_WriteIO_PushArray(io);
+    JSON_WriteIO_PushDouble(io, (double)value.r / 255.0);
+    JSON_WriteIO_PopAndAppend(io);
+    JSON_WriteIO_PushDouble(io, (double)value.g / 255.0);
+    JSON_WriteIO_PopAndAppend(io);
+    JSON_WriteIO_PushDouble(io, (double)value.b / 255.0);
+    JSON_WriteIO_PopAndAppend(io);
+}
+
 void JSON_WriteIO_PushXYZ16(JSON_WRITE_IO *const io, const XYZ_16 value)
 {
     JSON_WriteIO_PushObject(io);

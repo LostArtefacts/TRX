@@ -25,6 +25,11 @@ static const uint8_t m_TR3_XZOffsets[16][2] = {
     { 9, 55 },  { 24, 55 }, { 40, 55 }, { 55, 55 },
 };
 
+static bool M_IsGreenAttachedFlame(const EFFECT *const effect)
+{
+    return effect->counter < 0 && effect->frame_num == FLAME_GREEN;
+}
+
 static void M_TR3_SideFlameDetection(
     const EFFECT *const effect, const int32_t length)
 {
@@ -160,32 +165,25 @@ static void M_TR3_ControlSmall(
         return;
     }
 
+    const bool is_green = M_IsGreenAttachedFlame(effect);
+    const int32_t flame_type = is_green ? 254 : 255;
     for (int i = 0; i < LM_NUMBER_OF; i++) {
         if ((time4 & 0xC) == 0) {
             effect->pos.x = 0;
             effect->pos.y = 0;
             effect->pos.z = 0;
             Collide_GetJointAbsPosition(lara_item, &effect->pos, i);
-#if 0
-            // TODO: implement this for Willard
-            Sparks_TriggerFireFlame(effect->pos, -1, 255 - lara->burn_green);
-#else
-            Sparks_TriggerFireFlame(effect->pos, -1, 255);
-#endif
+            Sparks_TriggerFireFlame(effect->pos, -1, flame_type);
         }
     }
 
     if (g_Config.visuals.enable_fire_lighting) {
         RGB_888 color;
-#if 0
-        // TODO: implement this for Willard
-        if (lara->burn_green) {
+        if (is_green) {
             color.r = (rnd >> 2) & 0x3F;
             color.g = (rnd & 0x3F) + 192;
             color.b = ((rnd >> 4) & 0x1F) + 96;
-        } else
-#endif
-        {
+        } else {
             color.r = (rnd & 0x3F) + 192;
             color.g = ((rnd >> 4) & 0x1F) + 96;
             color.b = 0;
@@ -296,7 +294,8 @@ static void M_TR3_Control(const int16_t effect_num)
     // Animation & particle logic.
     if (effect->frame_num == FLAME_BIG) {
         M_TR3_ControlBig(effect, time4, rnd);
-    } else if (effect->frame_num == FLAME_SMALL) {
+    } else if (
+        effect->frame_num == FLAME_SMALL || effect->frame_num == FLAME_GREEN) {
         M_TR3_ControlSmall(effect, time4, rnd);
     } else if (effect->frame_num == FLAME_JET) {
         M_TR3_ControlJet(effect, time4, rnd);
@@ -352,7 +351,8 @@ static void M_TR3_Control(const int16_t effect_num)
         if (!lara->burn && dist) {
             M_TR3_SideFlameDetection(effect, dist);
         }
-    } else if (effect->frame_num != FLAME_SMALL) {
+    } else if (
+        effect->frame_num != FLAME_SMALL && effect->frame_num != FLAME_GREEN) {
         if (Lara_IsNearItem(&effect->pos, M_DAMAGE_PROXIMITY)) {
             const XYZ_32 delta = {
                 .x = lara_item->pos.x - effect->pos.x,

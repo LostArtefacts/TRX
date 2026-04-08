@@ -406,7 +406,7 @@ bool Lara_IsM16Active(void)
         || item->current_anim_state == 4;
 }
 
-void Lara_CatchFire(void)
+void Lara_CatchFireEx(const FLAME_TYPE type)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->burn || lara_info->water_status == LWS_CHEAT) {
@@ -428,10 +428,15 @@ void Lara_CatchFire(void)
     } else {
         effect->pos = lara_item->pos;
     }
-    effect->frame_num = g_TRVersion == 3 ? FLAME_SMALL : 0;
+    effect->frame_num = g_TRVersion == 3 ? type : 0;
     effect->object_id = O_FLAME;
     effect->counter = -1;
     lara_info->burn = true;
+}
+
+void Lara_CatchFire(void)
+{
+    Lara_CatchFireEx(FLAME_SMALL);
 }
 
 void Lara_Extinguish(void)

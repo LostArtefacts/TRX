@@ -5,4 +5,5 @@ typedef enum {
     FLAME_SMALL,
     FLAME_JET,
     FLAME_SIDE,
+    FLAME_GREEN,
 } FLAME_TYPE;
