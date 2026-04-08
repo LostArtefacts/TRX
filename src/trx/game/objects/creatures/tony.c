@@ -203,9 +203,7 @@ static void M_Explode(ITEM *const item)
             shield->pos.y = y;
             shield->pos.z = (dist * Math_Cos(angle << 4)) >> 13;
 
-            if (i == 0 || i == 16 || p->explode_count >= 64) {
-                shield->color = COLOR_RGB_888_BLACK;
-            } else {
+            if (i != 0 && i != 4 && p->explode_count < 64) {
                 int32_t r = (Random_GetDraw() & 0x1F) + 224;
                 int32_t g = (r >> 2) + (Random_GetDraw() & 0x3F);
                 int32_t b = Random_GetDraw() & 0x3F;
@@ -221,6 +219,8 @@ static void M_Explode(ITEM *const item)
                 }
 
                 shield->color = (RGB_888) { r, g, b };
+            } else {
+                shield->color = COLOR_RGB_888_BLACK;
             }
 
             angle = (angle + 512) & 0xFFF;
