@@ -2878,6 +2878,9 @@
         "vulture": {
             "name": "Vulture",
         },
+        "wasp_mutant": {
+            "name": "Wasp Mutant",
+        },
         "water_sprite": {
             "name": "Boat Wake",
         },

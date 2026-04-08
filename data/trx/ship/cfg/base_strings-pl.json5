@@ -2802,6 +2802,9 @@
         "vulture": {
             "name": "Sęp",
         },
+        "wasp_mutant": {
+            "name": "\\{review}Osi Mutant",
+        },
         "water_sprite": {
             "name": "Ślad łodzi",
         },

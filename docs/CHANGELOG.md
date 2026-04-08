@@ -26,6 +26,7 @@
 - added Crawler Mutant control
 - added Dying Mutant control
 - added Hybrid Mutant control
+- added Wasp Mutant control
 - changed Sophia's final height to follow the level setup instead of using a fixed value
 - restored the animated mine cart tracks in RX-Tech Mines
 - restored the missing flamethrower blast sound effect in RX-Tech Mines and Meteorite Cavern

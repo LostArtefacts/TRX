@@ -2825,6 +2825,9 @@
         "vulture": {
             "name": "\\{review}Стервятник",
         },
+        "wasp_mutant": {
+            "name": "\\{review}Осинный Мутант",
+        },
         "water_sprite": {
             "name": "\\{review}След лодки",
         },

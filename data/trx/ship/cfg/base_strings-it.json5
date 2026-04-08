@@ -2858,6 +2858,9 @@
         "vulture": {
             "name": "Avvoltoio",
         },
+        "wasp_mutant": {
+            "name": "\\{review}Mutante Vespa",
+        },
         "water_sprite": {
             "name": "Scia Barca",
         },

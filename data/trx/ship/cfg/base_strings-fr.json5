@@ -2805,6 +2805,9 @@
         "vulture": {
             "name": "\\{review}Vautour",
         },
+        "wasp_mutant": {
+            "name": "\\{review}Mutant Guêpe",
+        },
         "water_sprite": {
             "name": "\\{review}Sillage de Bateau",
         },
