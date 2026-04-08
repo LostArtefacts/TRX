@@ -2091,6 +2091,9 @@
                 "Husky",
             ]
         },
+        "hybrid_mutant": {
+            "name": "\\{review}Mutante Ibrido",
+        },
         "icicle": {
             "name": "Ghiaccioli",
         },

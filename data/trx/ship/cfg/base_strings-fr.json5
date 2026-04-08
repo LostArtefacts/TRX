@@ -2075,6 +2075,9 @@
         "huskie": {
             "name": "\\{review}Chien",
         },
+        "hybrid_mutant": {
+            "name": "\\{review}Mutant Hybride",
+        },
         "icicle": {
             "name": "\\{review}Glaçons",
         },

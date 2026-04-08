@@ -84,6 +84,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_EEL,
     O_FISH,
     O_HUSKIE,
+    O_HYBRID_MUTANT,
     O_JELLY,
     O_LARSON,
     O_LION,

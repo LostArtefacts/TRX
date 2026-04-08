@@ -420,6 +420,7 @@ common_sources = [
   'trx/game/objects/creatures/dog.c',
   'trx/game/objects/creatures/dragon.c',
   'trx/game/objects/creatures/eel.c',
+  'trx/game/objects/creatures/hybrid_mutant.c',
   'trx/game/objects/creatures/jelly.c',
   'trx/game/objects/creatures/larson.c',
   'trx/game/objects/creatures/lion.c',

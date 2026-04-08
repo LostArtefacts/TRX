@@ -2074,6 +2074,9 @@
                 "Huskie",
             ]
         },
+        "hybrid_mutant": {
+            "name": "\\{review}Hybrydowy Mutant",
+        },
         "icicle": {
             "name": "Sopel lodu",
         },

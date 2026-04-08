@@ -2075,6 +2075,9 @@
         "huskie": {
             "name": "\\{review}Hund",
         },
+        "hybrid_mutant": {
+            "name": "\\{review}Hybridmutant",
+        },
         "icicle": {
             "name": "Icicles",
         },
