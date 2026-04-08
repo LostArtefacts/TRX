@@ -16,6 +16,22 @@ order: 3
     This also affects catalog-derived Lua names (`trx.catalog.objects`):
     - `blood_1` → `blood`
 
+2. **Update weapon ammo quantities**:
+   In `weapons.json5`, the old `pickup_qty` and `pickup_qty_alt` fields have
+   been reorganized under a new nested `ammo` object. This lets weapon pickups
+   grant a different amount of ammo than their matching ammo pickups.
+
+   To match the previous setup:
+
+   1. Open `weapons.json5`.
+   2. For each weapon entry:
+      - Create a nested `ammo` object if it doesn't already exist.
+      - Move the value from `pickup_qty` into both `ammo.initial_qty` and
+        `ammo.pickup_qty` fields.
+   3. If the weapon had a `pickup_qty_alt` field (e.g. flares):
+      - Move that value into `ammo.pickup_qty_alt`.
+   4. Remove the old `pickup_qty` and `pickup_qty_alt` fields.
+
 ### Version 1.4 to 1.5
 
 1. **Update TR2 detonator box**

@@ -15,6 +15,12 @@ static bool M_IsGunType(
     return g_Weapons[gun_type].type == weapon_type;
 }
 
+static int32_t M_GetAmmoQuantity(
+    const LARA_GUN_TYPE gun_type, const int32_t shell_count)
+{
+    return MAX(1, shell_count) * Gun_GetAmmoClipCount(gun_type);
+}
+
 void Gun_AddDynamicLight(void)
 {
     if (!g_Config.visuals.enable_gun_lighting) {
@@ -126,10 +132,14 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     // clang-format on
 }
 
-int32_t Gun_GetAmmoQuantity(const LARA_GUN_TYPE gun_type)
+int32_t Gun_GetAmmoInitialQuantity(const LARA_GUN_TYPE gun_type)
 {
-    return MAX(1, g_Weapons[gun_type].pickup_qty)
-        * Gun_GetAmmoClipCount(gun_type);
+    return M_GetAmmoQuantity(gun_type, g_Weapons[gun_type].ammo.initial_qty);
+}
+
+int32_t Gun_GetAmmoPickupQuantity(const LARA_GUN_TYPE gun_type)
+{
+    return M_GetAmmoQuantity(gun_type, g_Weapons[gun_type].ammo.pickup_qty);
 }
 
 int32_t Gun_GetAmmoClipCount(const LARA_GUN_TYPE gun_type)
@@ -139,7 +149,7 @@ int32_t Gun_GetAmmoClipCount(const LARA_GUN_TYPE gun_type)
 
 int32_t Gun_GetAmmoShellCount(const LARA_GUN_TYPE gun_type)
 {
-    return Gun_GetAmmoQuantity(gun_type) / Gun_GetAmmoClipCount(gun_type);
+    return Gun_GetAmmoPickupQuantity(gun_type) / Gun_GetAmmoClipCount(gun_type);
 }
 
 AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)

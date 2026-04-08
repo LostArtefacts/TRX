@@ -175,7 +175,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_MAGNUM_AMMO_ITEM,
-                resume->magnum_ammo / Gun_GetAmmoQuantity(LGT_MAGNUMS));
+                resume->magnum_ammo / Gun_GetAmmoPickupQuantity(LGT_MAGNUMS));
             lara_info->magnum_ammo.ammo = 0;
         }
 
@@ -186,7 +186,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_AUTOS_AMMO_ITEM,
-                resume->autos_ammo / Gun_GetAmmoQuantity(LGT_AUTOS));
+                resume->autos_ammo / Gun_GetAmmoPickupQuantity(LGT_AUTOS));
             lara_info->autos_ammo.ammo = 0;
         }
 
@@ -198,7 +198,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             Inv_AddItemNTimes(
                 O_DESERT_EAGLE_AMMO_ITEM,
                 resume->desert_eagle_ammo
-                    / Gun_GetAmmoQuantity(LGT_DESERT_EAGLE));
+                    / Gun_GetAmmoPickupQuantity(LGT_DESERT_EAGLE));
             lara_info->desert_eagle_ammo.ammo = 0;
         }
 
@@ -209,7 +209,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_UZI_AMMO_ITEM,
-                resume->uzi_ammo / Gun_GetAmmoQuantity(LGT_UZIS));
+                resume->uzi_ammo / Gun_GetAmmoPickupQuantity(LGT_UZIS));
             lara_info->uzi_ammo.ammo = 0;
         }
 
@@ -220,7 +220,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_SHOTGUN_AMMO_ITEM,
-                resume->shotgun_ammo / Gun_GetAmmoQuantity(LGT_SHOTGUN));
+                resume->shotgun_ammo / Gun_GetAmmoPickupQuantity(LGT_SHOTGUN));
             lara_info->shotgun_ammo.ammo = 0;
         }
 
@@ -239,7 +239,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_M16_AMMO_ITEM,
-                resume->m16_ammo / Gun_GetAmmoQuantity(LGT_M16));
+                resume->m16_ammo / Gun_GetAmmoPickupQuantity(LGT_M16));
             lara_info->m16_ammo.ammo = 0;
         }
 
@@ -250,7 +250,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_MP5_AMMO_ITEM,
-                resume->mp5_ammo / Gun_GetAmmoQuantity(LGT_MP5));
+                resume->mp5_ammo / Gun_GetAmmoPickupQuantity(LGT_MP5));
             lara_info->mp5_ammo.ammo = 0;
         }
 
@@ -261,7 +261,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_GRENADE_AMMO_ITEM,
-                resume->grenade_ammo / Gun_GetAmmoQuantity(LGT_GRENADE));
+                resume->grenade_ammo / Gun_GetAmmoPickupQuantity(LGT_GRENADE));
             lara_info->grenade_ammo.ammo = 0;
         }
 
@@ -272,7 +272,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_ROCKET_AMMO_ITEM,
-                resume->rocket_ammo / Gun_GetAmmoQuantity(LGT_ROCKET));
+                resume->rocket_ammo / Gun_GetAmmoPickupQuantity(LGT_ROCKET));
             lara_info->rocket_ammo.ammo = 0;
         }
 
@@ -283,7 +283,7 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         } else {
             Inv_AddItemNTimes(
                 O_HARPOON_AMMO_ITEM,
-                resume->harpoon_ammo / Gun_GetAmmoQuantity(LGT_HARPOON));
+                resume->harpoon_ammo / Gun_GetAmmoPickupQuantity(LGT_HARPOON));
             lara_info->harpoon_ammo.ammo = 0;
         }
 
