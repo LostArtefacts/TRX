@@ -2825,6 +2825,9 @@
         "white_light": {
             "name": "\\{review}Белый свет",
         },
+        "willard": {
+            "name": "\\{review}Уиллард",
+        },
         "winston": {
             "name": "\\{review}Уинстон",
         },

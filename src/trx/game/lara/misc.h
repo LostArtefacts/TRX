@@ -3,6 +3,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/game_flow/enum.h>
 #include <trx/game/lara/enum.h>
+#include <trx/game/objects/effects/flame.h>
 
 void Lara_GetJointAbsPosition(XYZ_32 *vec, LARA_MESH joint);
 void Lara_RefuseInteraction(void);
@@ -15,6 +16,7 @@ void Lara_RapidsDrown(void);
 int32_t Lara_FloorFront(const ITEM *item, int16_t ang, int32_t dist);
 int32_t Lara_CeilingFront(
     const ITEM *item, int16_t ang, int32_t dist, int32_t item_height);
+void Lara_CatchFireEx(FLAME_TYPE type);
 void Lara_CatchFire(void);
 
 void Lara_UpdateRoomToHeight(int32_t height);

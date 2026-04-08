@@ -2818,6 +2818,9 @@
         "white_light": {
             "name": "\\{review}Weißes Licht",
         },
+        "willard": {
+            "name": "\\{review}Willard",
+        },
         "winston": {
             "name": "Winston",
         },

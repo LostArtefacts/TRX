@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/colors.h>
 #include <trx/core/json.h>
 #include <trx/core/math/types.h>
 
@@ -32,6 +33,7 @@ JSON_OBJECT *JSON_WriteIO_GetCurrentObject(JSON_WRITE_IO *io);
 void JSON_WriteIO_PushBool(JSON_WRITE_IO *io, bool value);
 void JSON_WriteIO_PushInt(JSON_WRITE_IO *io, int32_t value);
 void JSON_WriteIO_PushDouble(JSON_WRITE_IO *io, double value);
+void JSON_WriteIO_PushRGB888(JSON_WRITE_IO *io, RGB_888 value);
 void JSON_WriteIO_PushXYZ16(JSON_WRITE_IO *io, XYZ_16 value);
 void JSON_WriteIO_PushXYZ32(JSON_WRITE_IO *io, XYZ_32 value);
 void JSON_WriteIO_PushString(JSON_WRITE_IO *io, const char *value);
@@ -54,6 +56,7 @@ void JSON_WriteIO_PushString(JSON_WRITE_IO *io, const char *value);
         uint32_t: JSON_WriteIO_PushInt,                                        \
         float: JSON_WriteIO_PushDouble,                                        \
         double: JSON_WriteIO_PushDouble,                                       \
+        RGB_888: JSON_WriteIO_PushRGB888,                                      \
         XYZ_16: JSON_WriteIO_PushXYZ16,                                        \
         XYZ_32: JSON_WriteIO_PushXYZ32,                                        \
         const char *: JSON_WriteIO_PushString,                                 \

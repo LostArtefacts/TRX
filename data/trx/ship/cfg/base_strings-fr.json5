@@ -2805,6 +2805,9 @@
         "white_light": {
             "name": "\\{review}Lumière Blanche",
         },
+        "willard": {
+            "name": "\\{review}Willard",
+        },
         "winston": {
             "name": "\\{review}Winston",
         },
