@@ -1789,6 +1789,9 @@
         "cowboy": {
             "name": "Le Cowboy",
         },
+        "crawler_mutant": {
+            "name": "\\{review}Mutant Rampant",
+        },
         "crocodile": {
             "name": "Crocodile",
         },

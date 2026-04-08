@@ -1792,6 +1792,9 @@
         "cowboy": {
             "name": "Kowboj",
         },
+        "crawler_mutant": {
+            "name": "\\{review}Pełzający Mutant",
+        },
         "crocodile": {
             "name": "Krokodyl",
         },

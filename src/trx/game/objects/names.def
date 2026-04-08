@@ -248,6 +248,7 @@ X_OBJ_NAME_DEFINE(O_MP_2,                  "mp_2",                  X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_RX_WORKER_1,           "rx_worker_1",           X_OBJ_NAMES("RX Worker 1"))
 X_OBJ_NAME_DEFINE(O_RX_WORKER_2,           "rx_worker_2",           X_OBJ_NAMES("RX Worker 2"))
 X_OBJ_NAME_DEFINE(O_RX_WORKER_3,           "rx_worker_3",           X_OBJ_NAMES("RX Worker 3", "Flamethrower"))
+X_OBJ_NAME_DEFINE(O_CRAWLER_MUTANT,        "crawler_mutant",        X_OBJ_NAMES("Crawler Mutant"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))
