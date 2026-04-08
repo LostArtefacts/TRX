@@ -4,6 +4,7 @@
 - added the ability to delete saves directly from the passport save and load screens (#5309)
 - added the ability to pause FMVs with the Pause input (#1754)
 - added an option to stop the game from advancing when the window loses focus (Gameplay Options → General → Pause when focus lost) (#3978)
+- improved weapon setup so picking up a weapon can now give a different amount of ammo than picking up its matching ammo item (#5352)
 - improved `--level PATH` so it accepts relative paths and reports clearer startup errors when the level cannot be launched
 - fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)

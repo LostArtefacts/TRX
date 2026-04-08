@@ -14,8 +14,8 @@ INVENTORY_MODE g_Inv_Mode = INV_TITLE_MODE;
 static int32_t M_GetFlareQuantity(void)
 {
     return Game_IsBonusFlagSet(GBF_JAPANESE)
-        ? g_Weapons[LGT_FLARE].pickup_qty_alt
-        : g_Weapons[LGT_FLARE].pickup_qty;
+        ? g_Weapons[LGT_FLARE].ammo.pickup_qty_alt
+        : g_Weapons[LGT_FLARE].ammo.pickup_qty;
 }
 
 static INVENTORY_ITEM *M_GetGunInvItem(const LARA_GUN_TYPE gun_type)
@@ -83,12 +83,11 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     for (int32_t i = Inv_RequestItem(ammo_object); i > 0; i--) {
         Inv_RemoveItem(ammo_object);
-        M_IncreaseAmmo(gun_type, ammo_qty);
+        M_IncreaseAmmo(gun_type, Gun_GetAmmoPickupQuantity(gun_type));
     }
-    M_IncreaseAmmo(gun_type, ammo_qty);
+    M_IncreaseAmmo(gun_type, Gun_GetAmmoInitialQuantity(gun_type));
     Inv_InsertItem(M_GetGunInvItem(gun_type));
     if (lara->last_gun_type == LGT_UNARMED) {
         lara->last_gun_type = gun_type;
@@ -99,9 +98,8 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
 static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
     if (Inv_RequestItem(gun_object)) {
-        M_IncreaseAmmo(gun_type, ammo_qty);
+        M_IncreaseAmmo(gun_type, Gun_GetAmmoPickupQuantity(gun_type));
     } else {
         Inv_InsertItem(M_GetAmmoInvItem(gun_type));
     }

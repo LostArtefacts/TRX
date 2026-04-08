@@ -121,19 +121,19 @@ static void M_ModifyResumeInfo_GunOrAmmo(
 {
     const OBJECT_ID gun_object_id = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object_id = Gun_GetAmmoObject(gun_type);
-    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
-    AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
+    const int32_t ammo_pickup_qty = Gun_GetAmmoPickupQuantity(gun_type);
+    const int32_t ammo_initial_qty = Gun_GetAmmoInitialQuantity(gun_type);
 
     if (!M_CanHaveItem(gun_object_id) || !M_CanHaveItem(ammo_object_id)) {
         return;
     }
 
     M_ResumeInfo_AddAmmo(
-        resume, gun_type, ammo_qty * m_Add2InvItems[ammo_object_id]);
+        resume, gun_type, ammo_pickup_qty * m_Add2InvItems[ammo_object_id]);
     if (!M_ResumeInfo_HasWeapon(resume, gun_type)
         && m_Add2InvItems[gun_object_id] > 0) {
         M_ResumeInfo_SetWeapon(resume, gun_type, true);
-        M_ResumeInfo_AddAmmo(resume, gun_type, ammo_qty);
+        M_ResumeInfo_AddAmmo(resume, gun_type, ammo_initial_qty);
     }
 }
 
@@ -158,7 +158,8 @@ static void M_ModifyInventory_GunOrAmmo(
 {
     const OBJECT_ID gun_object_id = Gun_GetGunObject(gun_type);
     const OBJECT_ID ammo_object_id = Gun_GetAmmoObject(gun_type);
-    const int32_t ammo_qty = Gun_GetAmmoQuantity(gun_type);
+    const int32_t ammo_pickup_qty = Gun_GetAmmoPickupQuantity(gun_type);
+    const int32_t ammo_initial_qty = Gun_GetAmmoInitialQuantity(gun_type);
     AMMO_INFO *const ammo_info = Gun_GetAmmoInfo(gun_type);
 
     if (!M_CanHaveItem(gun_object_id) || !M_CanHaveItem(ammo_object_id)) {
@@ -169,14 +170,18 @@ static void M_ModifyInventory_GunOrAmmo(
         if (type == GF_INV_SECRET) {
             // Convert already collected guns into ammo to maintain stats
             // accuracy.
-            const int32_t count = m_SecretInvItems[ammo_object_id]
-                + m_SecretInvItems[gun_object_id];
-            ammo_info->ammo += ammo_qty * count;
-            for (int32_t i = 0; i < count; i++) {
+            ammo_info->ammo +=
+                ammo_pickup_qty * m_SecretInvItems[ammo_object_id];
+            ammo_info->ammo +=
+                ammo_initial_qty * m_SecretInvItems[gun_object_id];
+            for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+                M_CollectNewPickup(ammo_object_id);
+            }
+            for (int32_t i = 0; i < m_SecretInvItems[gun_object_id]; i++) {
                 M_CollectNewPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
-            ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_object_id];
+            ammo_info->ammo += ammo_pickup_qty * m_Add2InvItems[ammo_object_id];
         }
     } else if (
         (type == GF_INV_REGULAR && m_Add2InvItems[gun_object_id] > 0)
@@ -185,13 +190,14 @@ static void M_ModifyInventory_GunOrAmmo(
         Inv_AddItem(gun_object_id);
 
         if (type == GF_INV_SECRET) {
-            ammo_info->ammo += ammo_qty * m_SecretInvItems[ammo_object_id];
+            ammo_info->ammo +=
+                ammo_pickup_qty * m_SecretInvItems[ammo_object_id];
             M_CollectNewPickup(gun_object_id);
             for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
                 M_CollectNewPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
-            ammo_info->ammo += ammo_qty * m_Add2InvItems[ammo_object_id];
+            ammo_info->ammo += ammo_pickup_qty * m_Add2InvItems[ammo_object_id];
         }
     } else if (type == GF_INV_SECRET) {
         for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {

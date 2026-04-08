@@ -122,14 +122,24 @@ described in the table below.
     <td>These values are used to test if Lara is able to lock on to a target.</td>
   </tr>
   <tr valign="top">
-    <td><code>pickup_qty</code></td>
-    <td>Integer</td>
-    <td>The amount of ammo given for the weapon when equivalent ammo object is picked up.</td>
+    <td><code>ammo</code></td>
+    <td>Object</td>
+    <td>Configures how much ammo a weapon gives when acquired and when its matching ammo pickup is collected.</td>
   </tr>
   <tr valign="top">
-    <td><code>pickup_qty_alt</code></td>
+    <td><code>ammo.initial_qty</code></td>
     <td>Integer</td>
-    <td>As per <code>pickup_qty</code>, but this applies exclusively to flares when playing Japanese NG.</td>
+    <td>The amount of ammo given when the weapon itself is collected.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>ammo.pickup_qty</code></td>
+    <td>Integer</td>
+    <td>The amount of ammo given when the equivalent ammo object is picked up.</td>
+  </tr>
+  <tr valign="top">
+    <td><code>ammo.pickup_qty_alt</code></td>
+    <td>Integer</td>
+    <td>As per <code>ammo.pickup_qty</code>, but this applies exclusively to flares when playing Japanese NG.</td>
   </tr>
   <tr valign="top">
     <td><code>recoil_frame</code></td>

@@ -57,6 +57,21 @@ static void M_ReadXYZ32(JSON_VALUE *const value, XYZ_32 *const target)
     }
 }
 
+static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
+{
+    JSON_OBJECT *const ammo_obj = JSON_ObjectGetObject(obj, "ammo");
+    if (ammo_obj == nullptr) {
+        return;
+    }
+
+    g_Weapons[type].ammo.initial_qty = JSON_ObjectGetInt(
+        ammo_obj, "initial_qty", g_Weapons[type].ammo.initial_qty);
+    g_Weapons[type].ammo.pickup_qty = JSON_ObjectGetInt(
+        ammo_obj, "pickup_qty", g_Weapons[type].ammo.pickup_qty);
+    g_Weapons[type].ammo.pickup_qty_alt = JSON_ObjectGetInt(
+        ammo_obj, "pickup_qty_alt", g_Weapons[type].ammo.pickup_qty_alt);
+}
+
 void Gun_LoadVars(const char *const path)
 {
 #define L_READ_ANGLE(name, target)                                             \
@@ -108,8 +123,6 @@ void Gun_LoadVars(const char *const path)
         L_READ_ANGLE("shot_accuracy", g_Weapons[type].shot_accuracy);
         L_READ_INT("gun_height", g_Weapons[type].gun_height);
         L_READ_INT("damage", g_Weapons[type].damage);
-        L_READ_INT("pickup_qty", g_Weapons[type].pickup_qty);
-        L_READ_INT("pickup_qty_alt", g_Weapons[type].pickup_qty_alt);
         L_READ_DIST("target_dist", g_Weapons[type].target_dist);
         L_READ_INT("equip_anim_idx", g_Weapons[type].equip_anim_idx);
         L_READ_INT("draw_frame", g_Weapons[type].draw_frame);
@@ -146,6 +159,8 @@ void Gun_LoadVars(const char *const path)
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "shell_pos_alt"),
             &g_Weapons[type].shell_pos_alt);
+
+        M_ReadAmmoInfo(obj, type);
 
         // sample_num
         const char *const sample =

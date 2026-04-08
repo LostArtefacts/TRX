@@ -644,7 +644,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     } else {
         resume->flags.has_shotgun = false;
         resume->shotgun_ammo = Inv_RequestItem(O_SHOTGUN_AMMO_ITEM)
-            * Gun_GetAmmoQuantity(LGT_SHOTGUN);
+            * Gun_GetAmmoPickupQuantity(LGT_SHOTGUN);
     }
 
     if (Inv_RequestItem(O_MAGNUM_ITEM)) {
@@ -653,7 +653,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     } else {
         resume->flags.has_magnums = false;
         resume->magnum_ammo = Inv_RequestItem(O_MAGNUM_AMMO_ITEM)
-            * Gun_GetAmmoQuantity(LGT_MAGNUMS);
+            * Gun_GetAmmoPickupQuantity(LGT_MAGNUMS);
     }
 
     if (Inv_RequestItem(O_AUTOS_ITEM)) {
@@ -661,8 +661,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->autos_ammo = lara->autos_ammo.ammo;
     } else {
         resume->flags.has_autos = false;
-        resume->autos_ammo =
-            Inv_RequestItem(O_AUTOS_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_AUTOS);
+        resume->autos_ammo = Inv_RequestItem(O_AUTOS_AMMO_ITEM)
+            * Gun_GetAmmoPickupQuantity(LGT_AUTOS);
     }
 
     if (Inv_RequestItem(O_DESERT_EAGLE_ITEM)) {
@@ -671,7 +671,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     } else {
         resume->flags.has_desert_eagle = false;
         resume->desert_eagle_ammo = Inv_RequestItem(O_DESERT_EAGLE_AMMO_ITEM)
-            * Gun_GetAmmoQuantity(LGT_DESERT_EAGLE);
+            * Gun_GetAmmoPickupQuantity(LGT_DESERT_EAGLE);
     }
 
     if (Inv_RequestItem(O_UZI_ITEM)) {
@@ -679,8 +679,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->uzi_ammo = lara->uzi_ammo.ammo;
     } else {
         resume->flags.has_uzis = false;
-        resume->uzi_ammo =
-            Inv_RequestItem(O_UZI_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_UZIS);
+        resume->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM)
+            * Gun_GetAmmoPickupQuantity(LGT_UZIS);
     }
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
@@ -695,8 +695,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->m16_ammo = lara->m16_ammo.ammo;
     } else {
         resume->flags.has_m16 = false;
-        resume->m16_ammo =
-            Inv_RequestItem(O_M16_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_M16);
+        resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM)
+            * Gun_GetAmmoPickupQuantity(LGT_M16);
     }
 
     if (Inv_RequestItem(O_MP5_ITEM)) {
@@ -704,8 +704,8 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
         resume->mp5_ammo = lara->mp5_ammo.ammo;
     } else {
         resume->flags.has_mp5 = false;
-        resume->mp5_ammo =
-            Inv_RequestItem(O_MP5_AMMO_ITEM) * Gun_GetAmmoQuantity(LGT_MP5);
+        resume->mp5_ammo = Inv_RequestItem(O_MP5_AMMO_ITEM)
+            * Gun_GetAmmoPickupQuantity(LGT_MP5);
     }
 
     if (Inv_RequestItem(O_HARPOON_ITEM)) {
@@ -714,7 +714,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     } else {
         resume->flags.has_harpoon = false;
         resume->harpoon_ammo = Inv_RequestItem(O_HARPOON_AMMO_ITEM)
-            * Gun_GetAmmoQuantity(LGT_HARPOON);
+            * Gun_GetAmmoPickupQuantity(LGT_HARPOON);
     }
 
     if (Inv_RequestItem(O_GRENADE_GUN_ITEM)) {
@@ -723,7 +723,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     } else {
         resume->flags.has_grenade = false;
         resume->grenade_ammo = Inv_RequestItem(O_GRENADE_AMMO_ITEM)
-            * Gun_GetAmmoQuantity(LGT_GRENADE);
+            * Gun_GetAmmoPickupQuantity(LGT_GRENADE);
     }
 
     if (Inv_RequestItem(O_ROCKET_GUN_ITEM)) {
@@ -732,7 +732,7 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     } else {
         resume->flags.has_rocket = false;
         resume->rocket_ammo = Inv_RequestItem(O_ROCKET_AMMO_ITEM)
-            * Gun_GetAmmoQuantity(LGT_ROCKET);
+            * Gun_GetAmmoPickupQuantity(LGT_ROCKET);
     }
 
     resume->equipped_gun_type = lara->last_gun_type;
