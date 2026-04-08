@@ -35,6 +35,7 @@
   "O_DING_DONG":              { "status": "fully implemented" },
   "O_DIVER":                  { "status": "fully implemented" },
   "O_DYING_MUTANT":           { "status": "fully implemented" },
+  "O_HYBRID_MUTANT":          { "status": "fully implemented" },
   "O_ORCA":                   { "status": "fully implemented" },
   "O_DOG":                    { "status": "fully implemented" },
   "O_PATROL_DOG":             { "status": "fully implemented" },

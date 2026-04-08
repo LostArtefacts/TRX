@@ -2090,6 +2090,9 @@
                 "Huskie",
             ]
         },
+        "hybrid_mutant": {
+            "name": "Hybrid Mutant",
+        },
         "icicle": {
             "name": "Icicles",
         },
