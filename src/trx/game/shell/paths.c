@@ -16,6 +16,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_WIN32)
+    #include <direct.h>
+#else
+    #include <unistd.h>
+#endif
+
 #define M_MAX_MOD_CHAIN 8
 
 typedef struct {
@@ -389,6 +395,21 @@ static char *M_ResolveCasePathCached(const char *const path)
 
     Memory_FreePointer(&path_copy);
     return current_path;
+}
+
+static char *M_GetCurrentDirectory(void)
+{
+#if defined(_WIN32)
+    char *const cwd = _getcwd(nullptr, 0);
+#else
+    char *const cwd = getcwd(nullptr, 0);
+#endif
+    if (cwd == nullptr) {
+        return nullptr;
+    }
+    char *const result = Memory_DupStr(cwd);
+    free(cwd);
+    return result;
 }
 
 static char *M_GuessExtensionCached(
@@ -1059,6 +1080,43 @@ static const char *M_GetResolveError(
     return out;
 }
 
+static const char *M_PeekResolvedUserPathCandidate(
+    const M_DYNAMIC_PATH_POLICY *const policy, const char *const candidate)
+{
+    ASSERT(policy != nullptr);
+
+    if (candidate == nullptr) {
+        return nullptr;
+    }
+
+    if (!policy->check_exists) {
+        return String_FormatStatic("%s", candidate);
+    }
+
+    if (policy->is_dir) {
+        char *dir_path = M_ResolveCasePathCached(candidate);
+        if (dir_path == nullptr) {
+            return nullptr;
+        }
+        M_DIR_CACHE_ENTRY *const dir_cache = M_LoadDirCache(dir_path);
+        if (dir_cache == nullptr || !dir_cache->exists) {
+            Memory_FreePointer(&dir_path);
+            return nullptr;
+        }
+        const char *const resolved = String_FormatStatic("%s", dir_path);
+        Memory_FreePointer(&dir_path);
+        return resolved;
+    }
+
+    char *full_path = M_ResolveCasePathCached(candidate);
+    if (full_path == nullptr) {
+        return nullptr;
+    }
+    const char *const resolved = String_FormatStatic("%s", full_path);
+    Memory_FreePointer(&full_path);
+    return resolved;
+}
+
 const char *TRXPath_PeekResolve(
     const TRX_DYNAMIC_PATH path, const char *const rel)
 {
@@ -1164,4 +1222,37 @@ char *TRXPath_GuessExtension(const char *const path, const char **extensions)
         TRXPath_Init(m_Context.args);
     }
     return M_GuessExtensionCached(path, extensions);
+}
+
+const char *TRXPath_PeekResolveUserPath(
+    const TRX_DYNAMIC_PATH path, const char *const input_path)
+{
+    if (!m_Context.inited) {
+        TRXPath_Init(m_Context.args);
+    }
+    ASSERT(path >= 0 && path < TRX_DYNAMIC_PATH_NUMBER_OF);
+    const M_DYNAMIC_PATH_POLICY *const policy = &m_PathPolicies[path];
+    ASSERT(policy != nullptr);
+
+    if (input_path == nullptr) {
+        return nullptr;
+    }
+
+    if (File_IsAbsolute(input_path)) {
+        return M_PeekResolvedUserPathCandidate(policy, input_path);
+    }
+
+    char *cwd = M_GetCurrentDirectory();
+    if (cwd != nullptr) {
+        char *cwd_path = String_Format("%s/%s", cwd, input_path);
+        Memory_FreePointer(&cwd);
+        const char *const resolved =
+            M_PeekResolvedUserPathCandidate(policy, cwd_path);
+        Memory_FreePointer(&cwd_path);
+        if (resolved != nullptr) {
+            return resolved;
+        }
+    }
+
+    return TRXPath_PeekResolve(path, input_path);
 }

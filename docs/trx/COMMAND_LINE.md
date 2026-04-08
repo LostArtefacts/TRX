@@ -25,10 +25,12 @@ Currently the following command line interface options are available:
 
 - `-l <path|num>`, `--level <path|num>`  
   Runs the game immediately launching it into the specified level. If `<path>`
-  is provided, runs the custom level located in the specified location, which
-  should be absolute. Internally, this option uses `tr*-level/gameflow.json5`
-  as a template instructing it how to run the game. If `<num>` is an integer,
-  plays the level with the given number within the main game flow (1-based).
+  is provided, runs the custom level located in the specified location. If the
+  path is relative, it is resolved from the current working directory first,
+  then from the game directory. Internally, this option uses
+  `tr*-level/gameflow.json5` as a template instructing it how to run the game.
+  If `<num>` is an integer, plays the level with the given number within the
+  main game flow (1-based).
 
 - `-s <num>`, `--save <num>`:  
   Runs the game immediately loading a specific save slot. The first save starts
