@@ -209,6 +209,14 @@ static void M_BeastKill(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+static void M_WillardKill(ITEM *const item, COLL_INFO *const coll)
+{
+    g_Camera.type = CAM_CHASE;
+    g_Camera.flags = CF_FOLLOW_CENTRE;
+    g_Camera.target_angle = M_CAM_BEAST_KILL_ANGLE;
+    g_Camera.target_elevation = M_CAM_BEAST_KILL_ELEVATION;
+}
+
 static void M_RapidsDrown(ITEM *const item, COLL_INFO *const coll)
 {
     Collide_GetCollisionInfo(
@@ -337,6 +345,7 @@ REGISTER_LARA_EXTRA(LS_EXTRA_PULL_DAGGER,    M_PullDagger)
 REGISTER_LARA_EXTRA(LS_EXTRA_START_HOUSE,    M_StartHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_END_HOUSE,      M_EndHouse)
 REGISTER_LARA_EXTRA(LS_EXTRA_SHIVA_KILL,     M_BeastKill)
+REGISTER_LARA_EXTRA(LS_EXTRA_WILLARD_KILL,   M_WillardKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_RAPIDS_DROWN,   M_RapidsDrown)
 REGISTER_LARA_EXTRA(LS_EXTRA_TRAIN_KILL,     M_TrainKill)
 REGISTER_LARA_EXTRA(LS_EXTRA_JAIL_WAKE_UP,   M_JailWakeUp)
