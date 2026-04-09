@@ -1906,6 +1906,9 @@
         "dying_monk": {
             "name": "\\{review}Moine mourant",
         },
+        "dying_mutant": {
+            "name": "\\{review}Mutant Mourant",
+        },
         "eagle": {
             "name": "\\{review}Aigle",
         },

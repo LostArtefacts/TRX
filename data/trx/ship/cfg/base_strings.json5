@@ -1906,6 +1906,9 @@
         "dying_monk": {
             "name": "Dying monk",
         },
+        "dying_mutant": {
+            "name": "Dying Mutant",
+        },
         "eagle": {
             "name": "Eagle",
         },
