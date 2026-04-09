@@ -4,6 +4,7 @@
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/creature.h>
+#include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -69,6 +70,18 @@ void Lara_InitialiseLoad(int16_t item_num)
     }
 }
 
+static int32_t M_GetStartingHitPoints(void)
+{
+    if (g_Config.gameplay.disable_healing_between_levels) {
+        const GF_LEVEL *const current_level = Game_GetCurrentLevel();
+        RESUME_INFO *const resume = Savegame_GetCurrentInfo(current_level);
+        if (resume != nullptr) {
+            return resume->lara_hitpoints;
+        }
+    }
+    return g_Config.gameplay.start_lara_hitpoints;
+}
+
 void Lara_Initialise(const GF_LEVEL *const level)
 {
     ITEM *const lara_item = Lara_GetItem();
@@ -79,13 +92,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     m_DeathCameraTarget = NO_ITEM;
     Lara_Vehicle_SetIndex(NO_ITEM);
 
-    RESUME_INFO *const resume = Savegame_GetCurrentInfo(level);
-    if (resume != nullptr && g_Config.gameplay.disable_healing_between_levels) {
-        lara_item->hit_points = resume->lara_hitpoints;
-    } else {
-        lara_item->hit_points = g_Config.gameplay.start_lara_hitpoints;
-    }
-
+    lara_item->hit_points = M_GetStartingHitPoints();
     lara_info->gun_item_num = NO_ITEM;
     lara_info->flare.age = 0;
     lara_info->flare.control = false;
