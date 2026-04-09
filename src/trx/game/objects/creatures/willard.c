@@ -18,6 +18,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
+#include <trx/game/stats.h>
 
 // clang-format off
 #define M_TURN              (5 * DEG_1)
@@ -393,6 +394,7 @@ static void M_Explode(ITEM *const item)
 static void M_Die(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    Stats_AddKill();
     item->hit_points = 0;
     item->collidable = false;
     Item_Kill(item_num);
@@ -405,6 +407,7 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     M_ResetPriv(p);
+    item->include_in_kill_stats = false;
 }
 
 static void M_Control(const int16_t item_num)
