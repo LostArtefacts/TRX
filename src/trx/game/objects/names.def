@@ -252,6 +252,7 @@ X_OBJ_NAME_DEFINE(O_CRAWLER_MUTANT,        "crawler_mutant",        X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_DYING_MUTANT,          "dying_mutant",          X_OBJ_NAMES("Dying Mutant"))
 X_OBJ_NAME_DEFINE(O_HYBRID_MUTANT,         "hybrid_mutant",         X_OBJ_NAMES("Hybrid Mutant"))
 X_OBJ_NAME_DEFINE(O_WASP_MUTANT,           "wasp_mutant",           X_OBJ_NAMES("Wasp Mutant"))
+X_OBJ_NAME_DEFINE(O_CLAW_MUTANT,           "claw_mutant",           X_OBJ_NAMES("Claw Mutant"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                 "blade",                 X_OBJ_NAMES("Wall-mounted Blade"))

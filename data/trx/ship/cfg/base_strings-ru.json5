@@ -1771,6 +1771,9 @@
         "civilian": {
             "name": "\\{review}Гражданский",
         },
+        "claw_mutant": {
+            "name": "\\{review}Когтистый Мутант",
+        },
         "clock_chimes": {
             "name": "\\{review}Часы убежища Бартоли",
         },

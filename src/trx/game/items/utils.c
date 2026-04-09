@@ -17,7 +17,9 @@ static bool M_UseTR3ExplodingEffects(const ITEM *const item)
         return false;
     }
 
-    return !Object_IsType(item->object_id, g_ShatterableObjects)
+    // TODO: potentially add a flag/function ptr to OBJECT
+    return item->object_id != O_CLAW_MUTANT
+        && !Object_IsType(item->object_id, g_ShatterableObjects)
         && !Object_IsType(item->object_id, g_HeavyShatterableObjects);
 }
 

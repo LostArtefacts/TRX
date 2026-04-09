@@ -1771,6 +1771,9 @@
         "civilian": {
             "name": "Civile",
         },
+        "claw_mutant": {
+            "name": "\\{review}Mutante Artigliato",
+        },
         "clock_chimes": {
             "name": "Orologio Covo di Bartoli",
         },

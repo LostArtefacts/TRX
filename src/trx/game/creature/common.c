@@ -1126,8 +1126,7 @@ bool Creature_Animate(
             case O_TREX:
             case O_TREX_ALPHA:
             case O_SHIVA:
-                // TODO
-                // case O_MUTANT_2:
+            case O_CLAW_MUTANT:
                 min_y = STEP_L * 3;
                 break;
             default:

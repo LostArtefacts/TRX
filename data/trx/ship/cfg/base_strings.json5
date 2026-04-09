@@ -1771,6 +1771,9 @@
         "civilian": {
             "name": "Civilian",
         },
+        "claw_mutant": {
+            "name": "Claw Mutant",
+        },
         "clock_chimes": {
             "name": "Bartoli Hideout clock",
         },

@@ -1771,6 +1771,9 @@
         "civilian": {
             "name": "\\{review}Zivilist",
         },
+        "claw_mutant": {
+            "name": "\\{review}Klauenmutant",
+        },
         "clock_chimes": {
             "name": "Bartoli Hideout clock",
         },
