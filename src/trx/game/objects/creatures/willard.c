@@ -54,6 +54,7 @@ typedef enum {
 } M_STATE;
 
 typedef enum {
+    M_ANIM_BIG_KILL = 6,
     M_ANIM_STUNNED = 7,
 } M_ANIM;
 
@@ -804,7 +805,7 @@ static void M_Control(const int16_t item_num)
 
         if (lara_was_alive && lara_item->hit_points <= 0) {
             Creature_SpecialKill(
-                item, 6, M_STATE_BIG_KILL, LS_EXTRA_WILLARD_KILL);
+                item, M_ANIM_BIG_KILL, M_STATE_BIG_KILL, LS_EXTRA_WILLARD_KILL);
             creature->maximum_turn = 0;
             return;
         }
