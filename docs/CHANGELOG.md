@@ -41,6 +41,7 @@
 - fixed being able to re-use switches that are intended to only be used once (#5328, regression from 1.1)
 - fixed capitalization of the "Empty Slot" text in passport
 - fixed the second boulder at the beginning of Reunion stopping too early (regression from 1.2)
+- fixed Willard increasing the kill count each time he collapses (OG bug)
 
 
 
