@@ -408,6 +408,8 @@ common_sources = [
   'trx/game/objects/creatures/centaur.c',
   'trx/game/objects/creatures/centaur_statue.c',
   'trx/game/objects/creatures/civilian.c',
+  'trx/game/objects/creatures/claw_mutant.c',
+  'trx/game/objects/creatures/claw_mutant_plasma_ball.c',
   'trx/game/objects/creatures/cobra.c',
   'trx/game/objects/creatures/compy.c',
   'trx/game/objects/creatures/cowboy.c',

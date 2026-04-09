@@ -1771,6 +1771,9 @@
         "civilian": {
             "name": "\\{review}Civil",
         },
+        "claw_mutant": {
+            "name": "\\{review}Mutant Griffu",
+        },
         "clock_chimes": {
             "name": "\\{review}Horloge de la cachette de Bartoli",
         },

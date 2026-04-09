@@ -28,6 +28,7 @@
   "O_CIVILIAN":               { "status": "fully implemented" },
   "O_COBRA":                  { "status": "fully implemented" },
   "O_ALLIGATOR":              { "status": "fully implemented" },
+  "O_CLAW_MUTANT":            { "status": "fully implemented" },
   "O_CRAWLER_MUTANT":         { "status": "fully implemented" },
   "O_CROW":                   { "status": "fully implemented" },
   "O_DESERT_EAGLE_AMMO_ITEM": { "status": "fully implemented" },

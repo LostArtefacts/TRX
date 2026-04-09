@@ -1774,6 +1774,9 @@
         "civilian": {
             "name": "\\{review}Cywil",
         },
+        "claw_mutant": {
+            "name": "\\{review}Szponiasty Mutant",
+        },
         "clock_chimes": {
             "name": "Zegar kryjówki Bartoliego",
         },
