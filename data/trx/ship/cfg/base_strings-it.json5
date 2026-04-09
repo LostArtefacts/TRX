@@ -1906,6 +1906,9 @@
         "dying_monk": {
             "name": "Monaco Morente",
         },
+        "dying_mutant": {
+            "name": "\\{review}Mutante Morente",
+        },
         "eagle": {
             "name": "Aquila",
         },

@@ -281,7 +281,7 @@ static void M_CalculateEnemy(ITEM *const item)
     }
 }
 
-static void M_Control(const int16_t item_num)
+static void M_ControlCrawler(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
         return;
@@ -444,14 +444,25 @@ static void M_HandleEvent(
     p->burn_timer++;
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_ControlDying(const int16_t item_num)
+{
+    ITEM *const item = Item_Get(item_num);
+    if (item->status != IS_ACTIVE) {
+        return;
+    }
+
+    M_GasDeath(item);
+    Item_Animate(item);
+}
+
+static void M_SetupCrawler(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
 
     obj->collision_func = Creature_Collision;
-    obj->control_func = M_Control;
+    obj->control_func = M_ControlCrawler;
     obj->event_func = M_HandleEvent;
 
     obj->priv_size = sizeof(M_PRIV);
@@ -473,4 +484,18 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 9)->rot.y = true;
 }
 
-REGISTER_OBJECT(O_CRAWLER_MUTANT, M_Setup)
+static void M_SetupDying(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    obj->control_func = M_ControlDying;
+
+    obj->save_position = true;
+    obj->save_flags = true;
+    obj->save_anim = true;
+}
+
+REGISTER_OBJECT(O_CRAWLER_MUTANT, M_SetupCrawler)
+REGISTER_OBJECT(O_DYING_MUTANT, M_SetupDying)

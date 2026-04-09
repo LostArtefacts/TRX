@@ -1909,6 +1909,9 @@
         "dying_monk": {
             "name": "Manach a' Bàsachadh",
         },
+        "dying_mutant": {
+            "name": "Mùtant a' Bàsachadh",
+        },
         "eagle": {
             "name": "Iolaire",
         },
