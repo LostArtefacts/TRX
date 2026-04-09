@@ -672,8 +672,8 @@ void Output_CalculateObjectLightingAt(
     const ITEM *const item, const GAME_VECTOR sample_pos)
 {
     int16_t room_num = sample_pos.room_num;
-    Room_GetSector(sample_pos.pos, &room_num);
     if (g_TRVersion >= 3) {
+        Room_GetSector(sample_pos.pos, &room_num);
         M_TR3_CalculateLightSmoothed(item, sample_pos.pos, Room_Get(room_num));
     } else {
         Output_CalculateLight(sample_pos.pos, room_num);
