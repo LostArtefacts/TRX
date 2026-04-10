@@ -1855,6 +1855,36 @@
         "disc_emitter": {
             "name": "Emiter dysków",
         },
+        "disposable_animating_1": {
+            "name": "\\{review}Jednorazowa Animacja 1",
+        },
+        "disposable_animating_10": {
+            "name": "\\{review}Jednorazowa Animacja 10",
+        },
+        "disposable_animating_2": {
+            "name": "\\{review}Jednorazowa Animacja 2",
+        },
+        "disposable_animating_3": {
+            "name": "\\{review}Jednorazowa Animacja 3",
+        },
+        "disposable_animating_4": {
+            "name": "\\{review}Jednorazowa Animacja 4",
+        },
+        "disposable_animating_5": {
+            "name": "\\{review}Jednorazowa Animacja 5",
+        },
+        "disposable_animating_6": {
+            "name": "\\{review}Jednorazowa Animacja 6",
+        },
+        "disposable_animating_7": {
+            "name": "\\{review}Jednorazowa Animacja 7",
+        },
+        "disposable_animating_8": {
+            "name": "\\{review}Jednorazowa Animacja 8",
+        },
+        "disposable_animating_9": {
+            "name": "\\{review}Jednorazowa Animacja 9",
+        },
         "diver": {
             "name": "Nurek",
         },

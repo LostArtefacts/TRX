@@ -1849,6 +1849,36 @@
         "disc_emitter": {
             "name": "\\{review}Émetteur de Disque",
         },
+        "disposable_animating_1": {
+            "name": "\\{review}Objet Animé Jetable 1",
+        },
+        "disposable_animating_10": {
+            "name": "\\{review}Objet Animé Jetable 10",
+        },
+        "disposable_animating_2": {
+            "name": "\\{review}Objet Animé Jetable 2",
+        },
+        "disposable_animating_3": {
+            "name": "\\{review}Objet Animé Jetable 3",
+        },
+        "disposable_animating_4": {
+            "name": "\\{review}Objet Animé Jetable 4",
+        },
+        "disposable_animating_5": {
+            "name": "\\{review}Objet Animé Jetable 5",
+        },
+        "disposable_animating_6": {
+            "name": "\\{review}Objet Animé Jetable 6",
+        },
+        "disposable_animating_7": {
+            "name": "\\{review}Objet Animé Jetable 7",
+        },
+        "disposable_animating_8": {
+            "name": "\\{review}Objet Animé Jetable 8",
+        },
+        "disposable_animating_9": {
+            "name": "\\{review}Objet Animé Jetable 9",
+        },
         "diver": {
             "name": "\\{review}Plongeur",
         },

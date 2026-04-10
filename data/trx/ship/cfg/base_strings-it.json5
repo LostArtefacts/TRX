@@ -1849,6 +1849,36 @@
         "disc_emitter": {
             "name": "Emettitore di Dischi",
         },
+        "disposable_animating_1": {
+            "name": "\\{review}Animazione Usa e Getta 1",
+        },
+        "disposable_animating_10": {
+            "name": "\\{review}Animazione Usa e Getta 10",
+        },
+        "disposable_animating_2": {
+            "name": "\\{review}Animazione Usa e Getta 2",
+        },
+        "disposable_animating_3": {
+            "name": "\\{review}Animazione Usa e Getta 3",
+        },
+        "disposable_animating_4": {
+            "name": "\\{review}Animazione Usa e Getta 4",
+        },
+        "disposable_animating_5": {
+            "name": "\\{review}Animazione Usa e Getta 5",
+        },
+        "disposable_animating_6": {
+            "name": "\\{review}Animazione Usa e Getta 6",
+        },
+        "disposable_animating_7": {
+            "name": "\\{review}Animazione Usa e Getta 7",
+        },
+        "disposable_animating_8": {
+            "name": "\\{review}Animazione Usa e Getta 8",
+        },
+        "disposable_animating_9": {
+            "name": "\\{review}Animazione Usa e Getta 9",
+        },
         "diver": {
             "name": "Subacqueo",
         },

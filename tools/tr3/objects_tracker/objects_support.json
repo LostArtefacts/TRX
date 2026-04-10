@@ -79,6 +79,7 @@
   "O_KILL_ALL_TRIGGERED":     { "status": "fully implemented" },
   "O_LARA":                   { "status": "fully implemented" },
   "O_LARGE_MEDIPACK_ITEM":    { "status": "fully implemented" },
+  "O_DISPOSABLE_ANIMATING_1": { "status": "fully implemented" },
   "O_MINE_CART":              { "status": "fully implemented" },
   "O_MONKEY":                 { "status": "fully implemented" },
   "O_MOUNTED_GUN":            { "status": "fully implemented" },
