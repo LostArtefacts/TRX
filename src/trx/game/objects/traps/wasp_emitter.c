@@ -13,6 +13,8 @@
 
 typedef struct {
     int32_t cooldown;
+    int32_t spawn_count;
+    int32_t spawn_total;
     int16_t slots[M_MAX_SLOTS];
 } M_PRIV;
 
@@ -20,6 +22,8 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     JSON_OPTIONAL(JSON_READ(io, "cooldown", &p->cooldown));
+    JSON_OPTIONAL(JSON_READ(io, "spawn_count", &p->spawn_count));
+    JSON_OPTIONAL(JSON_READ(io, "spawn_total", &p->spawn_total));
     if (JSON_SHOULD(JSON_PUSH(io, "slots"))) {
         for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
             JSON_SHOULD(JSON_READ_A(io, i, &p->slots[i]));
@@ -32,6 +36,8 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "cooldown", p->cooldown);
+    JSONW_WRITE(io, "spawn_count", p->spawn_count);
+    JSONW_WRITE(io, "spawn_total", p->spawn_total);
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
         JSONW_PUSH_VALUE(io, p->slots[i]);
@@ -118,14 +124,30 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
     LOT_EnableBaddieAI(p->slots[slot_idx], true);
 }
 
+static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+{
+    if (trigger == nullptr || trigger->type == TT_ANTITRIGGER
+        || trigger->type == TT_ANTIPAD) {
+        return true;
+    }
+
+    item->timer = 0;
+    item->flags |= IF_ONE_SHOT;
+
+    M_PRIV *const p = item->priv;
+    p->spawn_total = trigger->timer;
+    p->spawn_count = 0;
+    return true;
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    if (!item->active || item->timer <= 0) {
+    M_PRIV *const p = item->priv;
+    if (!item->active || p->spawn_count >= p->spawn_total) {
         return;
     }
 
-    M_PRIV *const p = item->priv;
     if (p->slots[0] == NO_ITEM) {
         M_PopulateSlots(p);
         return;
@@ -150,13 +172,13 @@ static void M_Control(const int16_t item_num)
     }
 
     p->cooldown = M_COOLDOWN;
-    item->timer -= LOGIC_FPS;
 
     const int32_t active_count = M_GetActiveCount(item->priv);
     if (active_count >= M_MAX_ACTIVE) {
         return;
     }
-    
+
+    p->spawn_count++;
     M_SpawnWasp(item, m_EmptySlot);
 }
 
@@ -167,6 +189,7 @@ static void M_Setup(OBJECT *const obj)
     }
 
     obj->initialise_func = M_Initialise;
+    obj->trigger_func = M_Trigger;
     obj->control_func = M_Control;
     obj->draw_func = nullptr;
 

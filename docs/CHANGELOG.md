@@ -48,6 +48,7 @@
 - fixed capitalization of the "Empty Slot" text in passport
 - fixed the second boulder at the beginning of Reunion stopping too early (regression from 1.2)
 - fixed Willard increasing the kill count each time he collapses (OG bug)
+- fixed Wasp Emitters generating too many spawns if activated from non one-shot triggers and the player stands for too long on the trigger
 
 
 
