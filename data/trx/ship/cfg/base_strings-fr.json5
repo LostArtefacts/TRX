@@ -2012,6 +2012,9 @@
         "falling_ceiling_2": {
             "name": "Plafond tombant 2",
         },
+        "fire_head": {
+            "name": "\\{review}Tête de Feu",
+        },
         "fish_mutant": {
             "name": "Poisson-mutant",
         },

@@ -580,6 +580,7 @@ common_sources = [
   'trx/game/objects/traps/ember_emitter.c',
   'trx/game/objects/traps/falling_block.c',
   'trx/game/objects/traps/falling_ceiling.c',
+  'trx/game/objects/traps/fire_head.c',
   'trx/game/objects/traps/flame_emitter.c',
   'trx/game/objects/traps/gondola.c',
   'trx/game/objects/traps/hook.c',

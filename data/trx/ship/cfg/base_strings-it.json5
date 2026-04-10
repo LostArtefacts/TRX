@@ -2012,6 +2012,9 @@
         "falling_ceiling_2": {
             "name": "Soffitto Cedevole 2",
         },
+        "fire_head": {
+            "name": "\\{review}Testa di Fuoco",
+        },
         "fish_mutant": {
             "name": "Pesce Mutante",
         },
