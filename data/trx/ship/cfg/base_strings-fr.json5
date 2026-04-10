@@ -1597,6 +1597,9 @@
         "animating_1": {
             "name": "\\{review}Animation de l'objet 1",
         },
+        "animating_10": {
+            "name": "\\{review}Animation de l'objet 10",
+        },
         "animating_2": {
             "name": "\\{review}Animation de l'objet 2",
         },
@@ -1611,6 +1614,15 @@
         },
         "animating_6": {
             "name": "\\{review}Animation de l'objet 6",
+        },
+        "animating_7": {
+            "name": "\\{review}Animation de l'objet 7",
+        },
+        "animating_8": {
+            "name": "\\{review}Animation de l'objet 8",
+        },
+        "animating_9": {
+            "name": "\\{review}Animation de l'objet 9",
         },
         "ape": {
             "name": "Singe",
@@ -2032,6 +2044,9 @@
         },
         "flares_box": {
             "name": "\\{review}Boîte de fusées éclairantes",
+        },
+        "flickering_light": {
+            "name": "\\{review}Lumière Vacillante",
         },
         "fuse_box": {
             "name": "\\{review}Boîte à fusibles",
