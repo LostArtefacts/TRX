@@ -2011,6 +2011,9 @@
         "falling_ceiling_2": {
             "name": "Падающий потолок 2",
         },
+        "fire_head": {
+            "name": "\\{review}Огненная Голова",
+        },
         "fish_mutant": {
             "name": "Рыба-мутант",
         },

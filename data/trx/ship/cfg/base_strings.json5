@@ -2011,6 +2011,9 @@
         "falling_ceiling_2": {
             "name": "Falling Ceiling 2",
         },
+        "fire_head": {
+            "name": "Fire Head",
+        },
         "fish_mutant": {
             "name": "Mutant Fish",
         },

@@ -270,6 +270,7 @@ X_OBJ_NAME_DEFINE(O_FALLING_BLOCK_2,       "falling_block_2",       X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_FALLING_BLOCK_3,       "falling_block_3",       X_OBJ_NAMES("Falling Block 3", "Collapsible Floor 3", "Collapsible Tiles 3"))
 X_OBJ_NAME_DEFINE(O_FALLING_CEILING_1,     "falling_ceiling_1",     X_OBJ_NAMES("Falling Ceiling 1"))
 X_OBJ_NAME_DEFINE(O_FALLING_CEILING_2,     "falling_ceiling_2",     X_OBJ_NAMES("Falling Ceiling 2"))
+X_OBJ_NAME_DEFINE(O_FIRE_HEAD,             "fire_head",             X_OBJ_NAMES("Fire Head"))
 X_OBJ_NAME_DEFINE(O_FLAME,                 "flame",                 X_OBJ_NAMES("Flame", "Fire"))
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER,         "flame_emitter",         X_OBJ_NAMES("Flame Emitter", "Fire Emitter"))
 X_OBJ_NAME_DEFINE(O_FLAME_EMITTER_BIG,     "flame_emitter_big",     X_OBJ_NAMES("Flame Emitter (Big)", "Fire Emitter (Big)"))

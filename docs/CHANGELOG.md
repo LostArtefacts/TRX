@@ -31,6 +31,7 @@
 - added Wasp Mutant control
 - added Wasp Mutant Emitter control
 - added Claw Mutant control
+- added Fire Head control
 - added Disposable Animating control (Tinnos light shaft)
 - changed Sophia's final height to follow the level setup instead of using a fixed value
 - restored the animated mine cart tracks in RX-Tech Mines
