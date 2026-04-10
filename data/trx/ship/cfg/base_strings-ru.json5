@@ -1849,6 +1849,36 @@
         "disc_emitter": {
             "name": "\\{review}Излучатель дисков",
         },
+        "disposable_animating_1": {
+            "name": "\\{review}Одноразовый Аниматор 1",
+        },
+        "disposable_animating_10": {
+            "name": "\\{review}Одноразовый Аниматор 10",
+        },
+        "disposable_animating_2": {
+            "name": "\\{review}Одноразовый Аниматор 2",
+        },
+        "disposable_animating_3": {
+            "name": "\\{review}Одноразовый Аниматор 3",
+        },
+        "disposable_animating_4": {
+            "name": "\\{review}Одноразовый Аниматор 4",
+        },
+        "disposable_animating_5": {
+            "name": "\\{review}Одноразовый Аниматор 5",
+        },
+        "disposable_animating_6": {
+            "name": "\\{review}Одноразовый Аниматор 6",
+        },
+        "disposable_animating_7": {
+            "name": "\\{review}Одноразовый Аниматор 7",
+        },
+        "disposable_animating_8": {
+            "name": "\\{review}Одноразовый Аниматор 8",
+        },
+        "disposable_animating_9": {
+            "name": "\\{review}Одноразовый Аниматор 9",
+        },
         "diver": {
             "name": "\\{review}Водолаз",
         },

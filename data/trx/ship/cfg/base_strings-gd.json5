@@ -1852,6 +1852,36 @@
         "disc_emitter": {
             "name": "Sgaoiladair Sgian-cruinnte",
         },
+        "disposable_animating_1": {
+            "name": "Beòthaladh 1",
+        },
+        "disposable_animating_10": {
+            "name": "Beòthaladh 10",
+        },
+        "disposable_animating_2": {
+            "name": "Beòthaladh 2",
+        },
+        "disposable_animating_3": {
+            "name": "Beòthaladh 3",
+        },
+        "disposable_animating_4": {
+            "name": "Beòthaladh 4",
+        },
+        "disposable_animating_5": {
+            "name": "Beòthaladh 5",
+        },
+        "disposable_animating_6": {
+            "name": "Beòthaladh 6",
+        },
+        "disposable_animating_7": {
+            "name": "Beòthaladh 7",
+        },
+        "disposable_animating_8": {
+            "name": "Beòthaladh 8",
+        },
+        "disposable_animating_9": {
+            "name": "Beòthaladh 9",
+        },
         "diver": {
             "name": "Sgùba-dhaibhear",
         },
