@@ -17,6 +17,7 @@
 - fixed first-time keyboard keybindings conflicting after switching to a different mod (regression from 1.4)
 - fixed boulders stopping too soon on some slopes with low ceilings (#5337, regression from 1.2)
 - fixed persistent damage restoring Lara to full health after inter-level cutscenes (#5364, regression from 1.2)
+- fixed missing default object names for `O_ANIMATING_7`...`O_ANIMATING_10` and `O_FLICKERING_LIGHT` (regression from 1.4)
 
 **TR3**:
 - added Mine Cart control

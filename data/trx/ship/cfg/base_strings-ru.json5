@@ -1597,6 +1597,9 @@
         "animating_1": {
             "name": "\\{review}Анимация объекта 1",
         },
+        "animating_10": {
+            "name": "\\{review}Анимация объекта 10",
+        },
         "animating_2": {
             "name": "\\{review}Анимация объекта 2",
         },
@@ -1611,6 +1614,15 @@
         },
         "animating_6": {
             "name": "\\{review}Анимация объекта 6",
+        },
+        "animating_7": {
+            "name": "\\{review}Анимация объекта 7",
+        },
+        "animating_8": {
+            "name": "\\{review}Анимация объекта 8",
+        },
+        "animating_9": {
+            "name": "\\{review}Анимация объекта 9",
         },
         "ape": {
             "name": "Обезьяна",
@@ -2031,6 +2043,9 @@
         },
         "flares_box": {
             "name": "\\{review}Коробка вспышки",
+        },
+        "flickering_light": {
+            "name": "\\{review}Мерцающий Свет",
         },
         "fuse_box": {
             "name": "\\{review}Коробка предохранителей",

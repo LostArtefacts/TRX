@@ -1597,6 +1597,9 @@
         "animating_1": {
             "name": "\\{review}Objekt 1 wird animiert",
         },
+        "animating_10": {
+            "name": "\\{review}Objekt 10 wird animiert",
+        },
         "animating_2": {
             "name": "\\{review}Objekt 2 wird animiert",
         },
@@ -1611,6 +1614,15 @@
         },
         "animating_6": {
             "name": "\\{review}Objekt 6 wird animiert",
+        },
+        "animating_7": {
+            "name": "\\{review}Objekt 7 wird animiert",
+        },
+        "animating_8": {
+            "name": "\\{review}Objekt 8 wird animiert",
+        },
+        "animating_9": {
+            "name": "\\{review}Objekt 9 wird animiert",
         },
         "ape": {
             "name": "Affe",
@@ -2032,6 +2044,9 @@
         },
         "flares_box": {
             "name": "Flares Box",
+        },
+        "flickering_light": {
+            "name": "\\{review}Flackerndes Licht",
         },
         "fuse_box": {
             "name": "\\{review}Sicherungskasten",

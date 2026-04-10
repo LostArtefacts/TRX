@@ -1597,6 +1597,9 @@
         "animating_1": {
             "name": "Oggetto Animato 1",
         },
+        "animating_10": {
+            "name": "\\{review}Oggetto Animato 10",
+        },
         "animating_2": {
             "name": "Oggetto Animato 2",
         },
@@ -1611,6 +1614,15 @@
         },
         "animating_6": {
             "name": "Oggetto Animato 6",
+        },
+        "animating_7": {
+            "name": "\\{review}Oggetto Animato 7",
+        },
+        "animating_8": {
+            "name": "\\{review}Oggetto Animato 8",
+        },
+        "animating_9": {
+            "name": "\\{review}Oggetto Animato 9",
         },
         "ape": {
             "name": "Scimmia",
@@ -2044,6 +2056,9 @@
         },
         "flares_box": {
             "name": "Scatola Razzi",
+        },
+        "flickering_light": {
+            "name": "\\{review}Luce Tremolante",
         },
         "fuse_box": {
             "name": "Scatola Fusibili",
