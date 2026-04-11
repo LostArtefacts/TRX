@@ -25,7 +25,8 @@
 **TR1**:
 - added savegame crystals to Unfinished Business (#1525)
 
-**TR2**
+**TR2**:
+- added savegame crystals to base levels and The Golden Mask
 - added an option to disable body bag triggers, so that killed enemies will always be visible
 
 **TR3**:
