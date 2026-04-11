@@ -159,9 +159,13 @@ static void M_Reset(M_PRIV *const p)
 
 static bool M_TestFireRange(const ITEM *const item, const XYZ_32 pos)
 {
+    // Originally, item->pos.y was used as the baseline here, but this fails for
+    // the alternate model used in the gold expansion. The following produces
+    // the same baseline as the original base game.
     const XYZ_32 lara_pos = Lara_GetItem()->pos;
-    if (lara_pos.y <= item->pos.y - WALL_L
-        || lara_pos.y >= item->pos.y + STEP_L) {
+    const int32_t y_pos = ROUND_TO_CLICK_UP(pos.y);
+    if (lara_pos.y <= y_pos - (WALL_L / 2)
+        || lara_pos.y >= y_pos + (STEP_L * 3)) {
         return false;
     }
 
