@@ -616,6 +616,7 @@ common_sources = [
   'trx/game/objects/vehicles/mine_cart.c',
   'trx/game/objects/vehicles/mounted_gun.c',
   'trx/game/objects/vehicles/quad_bike.c',
+  'trx/game/objects/vehicles/rib.c',
   'trx/game/objects/vehicles/skidoo_armed.c',
   'trx/game/objects/vehicles/skidoo_common.c',
   'trx/game/objects/vehicles/skidoo_fast.c',

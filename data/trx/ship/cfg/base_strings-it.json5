@@ -2588,6 +2588,9 @@
         "red_light": {
             "name": "Luce Rossa",
         },
+        "rib": {
+            "name": "\\{review}RIB",
+        },
         "ricochet": {
             "name": "Rimbalzo",
         },

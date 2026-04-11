@@ -2562,6 +2562,9 @@
         "red_light": {
             "name": "\\{review}Красный свет",
         },
+        "rib": {
+            "name": "\\{review}RIB",
+        },
         "ricochet": {
             "name": "Рикошет",
         },

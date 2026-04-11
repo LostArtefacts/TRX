@@ -2552,6 +2552,9 @@
         "red_light": {
             "name": "\\{review}Lumière Rouge",
         },
+        "rib": {
+            "name": "\\{review}RIB",
+        },
         "ricochet": {
             "name": "\\{review}Ricochet",
         },

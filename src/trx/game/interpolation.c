@@ -66,6 +66,7 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
     case O_DART:
     case O_DISC:
     case O_BOAT:
+    case O_RIB:
     case O_SKIDOO_ARMED:
     case O_SKIDOO_TRACK:
     case O_SKIDOO_FAST:

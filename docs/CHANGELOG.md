@@ -20,6 +20,7 @@
 - fixed missing default object names for `O_ANIMATING_7`...`O_ANIMATING_10` and `O_FLICKERING_LIGHT` (regression from 1.4)
 
 **TR3**:
+- added Boat (RIB) control
 - added Mine Cart control
 - added Willard control
 - added RX-Tech Worker 1 control
