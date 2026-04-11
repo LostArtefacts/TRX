@@ -2587,6 +2587,12 @@
         "red_light": {
             "name": "Red Light",
         },
+        "rib": {
+            "name": [
+                "Rigid Inflatable Boat",
+                "RIB",
+            ]
+        },
         "ricochet": {
             "name": "Ricochet",
         },

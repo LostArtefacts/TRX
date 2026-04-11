@@ -2558,6 +2558,9 @@
         "red_light": {
             "name": "\\{review}Rotes Licht",
         },
+        "rib": {
+            "name": "\\{review}RIB",
+        },
         "ricochet": {
             "name": "Querschläger",
         },

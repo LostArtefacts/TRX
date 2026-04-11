@@ -2551,6 +2551,9 @@
         "red_light": {
             "name": "Czerwone światło",
         },
+        "rib": {
+            "name": "\\{review}RIB",
+        },
         "ricochet": {
             "name": "Odbicie",
         },
