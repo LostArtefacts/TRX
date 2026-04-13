@@ -63,15 +63,11 @@ static void M_Initialise2(const int16_t item_num)
 
 static void M_Control(const int16_t item_num)
 {
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->status == IS_INVISIBLE) {
-        if (!LOT_EnableBaddieAI(item_num, 0)) {
-            return;
-        }
-        item->status = IS_ACTIVE;
+    if (!Creature_Activate(item_num)) {
+        return;
     }
 
+    ITEM *const item = Item_Get(item_num);
     CREATURE *const flyer = item->creature_data;
     int16_t head = 0;
     int16_t angle = 0;

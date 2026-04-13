@@ -88,11 +88,8 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (item->status == IS_INVISIBLE) {
-        if (!LOT_EnableBaddieAI(item_num, 0)) {
-            return;
-        }
-        item->status = IS_ACTIVE;
+    if (!Creature_Activate(item_num)) {
+        return;
     }
 
     CREATURE *const pierre = item->creature_data;

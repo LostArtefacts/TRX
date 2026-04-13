@@ -64,15 +64,11 @@ static void M_KillLara(ITEM *const item)
 
 static void M_Control(const int16_t item_num)
 {
-    ITEM *const item = Item_Get(item_num);
-
-    if (item->status == IS_INVISIBLE) {
-        if (!LOT_EnableBaddieAI(item_num, 0)) {
-            return;
-        }
-        item->status = IS_ACTIVE;
+    if (!Creature_Activate(item_num)) {
+        return;
     }
 
+    ITEM *const item = Item_Get(item_num);
     CREATURE *const torso = item->creature_data;
     int16_t head = 0;
     ITEM *const lara_item = Lara_GetItem();
