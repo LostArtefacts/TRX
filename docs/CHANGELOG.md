@@ -58,6 +58,7 @@
 - fixed Wasp Emitters generating too many spawns if activated from non one-shot triggers and the player stands for too long on the trigger
 - fixed Lara being unable to pull up on specific ledges near walls that have invalid triangles within them (regression from 1.1)
 - fixed potential crashes when using grenades on enemies in levels that use the body bag feature (#5378, regression from 1.1)
+- fixed activated one-shot antitriggers not being remembered when loading a save (regression from 1.2)
 
 
 
