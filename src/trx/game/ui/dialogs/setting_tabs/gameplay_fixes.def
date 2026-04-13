@@ -13,6 +13,7 @@ X_UI_CFG(gameplay.fix_m16_accuracy,         .custom_handler = { .is_available = 
 
 X_UI_CFG(gameplay.fix_descending_glitch)
 
+X_UI_CFG(gameplay.fix_wall_geometry)
 X_UI_CFG_ENUM(gameplay.wall_glitch_mode,    .misc = UI_Settings_WallGlitchEnumEntries)
 
 X_UI_CFG(gameplay.fix_wade_wall_hit,        .custom_handler = { .is_available = UI_Settings_FixWadeWallHit_IsAvailable })

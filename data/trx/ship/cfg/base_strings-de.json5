@@ -1113,6 +1113,10 @@
             "title": "Fix: Gehen-Laufen-Sprung",
             "description": "Fixt, dass Lara manchmal nicht sofort springen kann, direkt nachdem sie von ihrer Gehen-Animation zur Laufen-Animation wechselt.",
         },
+        "gameplay.fix_wall_geometry": {
+            "title": "\\{review}Behebt Wandgeometrie",
+            "description": "\\{review}Behebt Fälle in der OG-Levelgeometrie, bei denen Neigungen innerhalb von Wänden zu ungenauen Höhenberechnungen führen können.",
+        },
         "gameplay.fix_water_exit": {
             "title": "Wasser Ausstieg",
             "description": "Fixt dass Lara direkt in einen angrenzenden, trockenen Raum oder in einen trockenen Raum unterhalb gelangen kann. Zusätzlich verhindert es, dass Lara aus dem Wasser heraus auf nicht begehbare Schrägen klettern kann.",

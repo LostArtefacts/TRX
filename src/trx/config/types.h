@@ -281,6 +281,7 @@ typedef struct {
         bool fix_lara_pickup_embed;
         bool fix_water_exit;
         WALL_GLITCH_MODE wall_glitch_mode;
+        bool fix_wall_geometry;
         bool fix_alligator_ai;
         bool disable_trex_collision;
         bool change_pierre_spawn;

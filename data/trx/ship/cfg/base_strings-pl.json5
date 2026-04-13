@@ -1113,6 +1113,10 @@
             "title": "Napraw skakanie podczas biegu",
             "description": "Naprawia problem, w którym Lara czasami nie może skoczyć natychmiast po przejściu z animacji chodzenia do biegu.",
         },
+        "gameplay.fix_wall_geometry": {
+            "title": "\\{review}Naprawa geometrii ścian",
+            "description": "\\{review}Naprawia przypadki w geometrii poziomów OG, w których nachylenia wewnątrz ścian mogą prowadzić do niedokładnych obliczeń wysokości.",
+        },
         "gameplay.fix_water_exit": {
             "title": "Napraw wyjście z wody",
             "description": "Naprawia problem, w którym Lara może przejść bezpośrednio z zatopionego pomieszczenia do sąsiadującego suchego pomieszczenia. Dodatkowo, opcja zapobiega Larze wchodzeniu z wody na nachylone powierzchnie, na których nie można stać.",
