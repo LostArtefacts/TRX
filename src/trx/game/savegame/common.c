@@ -195,9 +195,6 @@ static void M_LoadPostprocess(void)
             item->floor = Room_GetHeight(sector, item->pos);
         }
 
-        if (obj->save_flags != 0) {
-            item->flags &= 0xFF00;
-        }
         // TODO: make this engine-agnostic
         if (g_TRVersion == 1 && obj->handle_save_func != nullptr) {
             obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
