@@ -5,6 +5,7 @@
 - added the ability to pause FMVs with the Pause input (#1754)
 - added an option to stop the game from advancing when the window loses focus (Gameplay Options → General → Pause when focus lost) (#3978)
 - added `O_DISPOSABLE_ANIMATING_1`...`O_DISPOSABLE_ANIMATING_10`, which will behave like regular animating objects but are removed from being drawn when deactivated
+- added an option to fix inaccurate wall geometry in original levels (Gameplay Options → Fixes → Fix wall geometry)
 - improved weapon setup so picking up a weapon can now give a different amount of ammo than picking up its matching ammo item (#5352)
 - improved `--level PATH` so it accepts relative paths and reports clearer startup errors when the level cannot be launched
 - fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
@@ -55,6 +56,7 @@
 - fixed the second boulder at the beginning of Reunion stopping too early (regression from 1.2)
 - fixed Willard increasing the kill count each time he collapses (OG bug)
 - fixed Wasp Emitters generating too many spawns if activated from non one-shot triggers and the player stands for too long on the trigger
+- fixed Lara being unable to pull up on specific ledges near walls that have invalid triangles within them (regression from 1.1)
 
 
 

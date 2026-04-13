@@ -1,5 +1,6 @@
 #include <trx/game/rooms/geometry.h>
 
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -16,11 +17,10 @@ static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
 static int32_t M_GetUnsplitSurfaceHeight(
-    const SURFACE surface, const int32_t x, const int32_t z,
-    const bool fix_tilts)
+    const SURFACE surface, const int32_t x, const int32_t z)
 {
     int32_t height = surface.height;
-    if (surface.tilt == 0 || (height == NO_HEIGHT && fix_tilts)) {
+    if (surface.tilt == 0) {
         return height;
     }
 
@@ -149,9 +149,12 @@ static int32_t M_GetSurfaceHeight(
     const SURFACE surface, const int32_t x, const int32_t z,
     const bool fix_tilts)
 {
-    return surface.is_split
-        ? M_GetSplitSurfaceHeight(surface, x, z)
-        : M_GetUnsplitSurfaceHeight(surface, x, z, fix_tilts);
+    if (surface.height == NO_HEIGHT && (surface.is_split || fix_tilts)) {
+        return NO_HEIGHT;
+    }
+
+    return surface.is_split ? M_GetSplitSurfaceHeight(surface, x, z)
+                            : M_GetUnsplitSurfaceHeight(surface, x, z);
 }
 
 static int16_t M_GetSplitTiltType(
@@ -413,7 +416,8 @@ int16_t Room_GetTiltType(const SECTOR *sector, const XYZ_32 pos)
 
 int32_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)
 {
-    return Room_GetHeightEx(sector, pos, false, NO_ITEM);
+    return Room_GetHeightEx(
+        sector, pos, g_Config.gameplay.fix_wall_geometry, NO_ITEM);
 }
 
 int32_t Room_GetFloorHeightForSector(
@@ -470,7 +474,7 @@ int32_t Room_GetHeightEx(
 
 int32_t Room_GetCeiling(const SECTOR *const sector, const XYZ_32 pos)
 {
-    return Room_GetCeilingEx(sector, pos, false);
+    return Room_GetCeilingEx(sector, pos, g_Config.gameplay.fix_wall_geometry);
 }
 
 int32_t Room_GetCeilingEx(
@@ -494,9 +498,10 @@ int32_t Room_GetCeilingEx(
     return height;
 }
 
-int32_t Room_GetWaterHeight(const XYZ_32 pos, int16_t room_num)
+int32_t Room_GetWaterHeight(const XYZ_32 pos, const int16_t room_num)
 {
-    return Room_GetWaterHeightEx(pos, room_num, true);
+    return Room_GetWaterHeightEx(
+        pos, room_num, g_Config.gameplay.fix_wall_geometry);
 }
 
 int32_t Room_GetWaterHeightEx(

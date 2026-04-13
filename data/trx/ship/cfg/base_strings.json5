@@ -1113,6 +1113,10 @@
             "title": "Fix walk run jump",
             "description": "Fixes Lara at times not being able to jump immediately after going from her walking to running animation.",
         },
+        "gameplay.fix_wall_geometry": {
+            "title": "Fix wall geometry",
+            "description": "Fixes cases in OG level geometry where tilts inside walls can lead to inaccurate height calculations.",
+        },
         "gameplay.fix_water_exit": {
             "title": "Fix water exit",
             "description": "Fixes Lara being able to go directly from a water room to an adjacent dry room, or to a dry room below. Additionally, this will prevent Lara from being able to climb out of water onto non-standable slopes.",

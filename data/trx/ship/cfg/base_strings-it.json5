@@ -1113,6 +1113,10 @@
             "title": "Correggi cammina-corsa-salto",
             "description": "Risolve il problema per cui a volte Lara non riesce a saltare immediatamente dopo essere passata dall'animazione di camminata a quella di corsa.",
         },
+        "gameplay.fix_wall_geometry": {
+            "title": "\\{review}Corregge la geometria dei muri",
+            "description": "\\{review}Corregge i casi nella geometria dei livelli OG in cui inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi.",
+        },
         "gameplay.fix_water_exit": {
             "title": "Correggi uscita dall'acqua",
             "description": "Risolve il problema che permette a Lara di passare direttamente da una stanza con acqua ad una senza acqua adiacente o sottostante. Inoltre, questo impedirà a Lara di uscire dall'acqua su pendii non calpestabili.",

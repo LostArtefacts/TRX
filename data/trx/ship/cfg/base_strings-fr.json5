@@ -1113,6 +1113,10 @@
             "title": "Corriger le saut après marche",
             "description": "Corrige le fait que Lara ne peut parfois pas sauter tout de suite après être passée de son animation de marche à celle de course.",
         },
+        "gameplay.fix_wall_geometry": {
+            "title": "\\{review}Corriger la géométrie des murs",
+            "description": "\\{review}Corrige les cas dans la géométrie des niveaux OG où des inclinaisons à l'intérieur des murs peuvent entraîner des calculs de hauteur inexacts.",
+        },
         "gameplay.fix_water_exit": {
             "title": "\\{review}Corriger la sortie de l'eau",
             "description": "\\{review}Corrige le fait que Lara puisse passer directement d'une pièce d'eau à une pièce sèche adjacente, ou à une pièce sèche en dessous. De plus, cela empêchera Lara de pouvoir sortir de l'eau sur des pentes non praticables.",

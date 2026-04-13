@@ -1113,6 +1113,10 @@
             "title": "Càraich leum às dèidh ruith",
             "description": "Cuiridh seo ceartachadh air cùis far nach urrainn do Lara leum dìreach às dèidh gluasad bho choiseachd gu ruith.",
         },
+        "gameplay.fix_wall_geometry": {
+            "title": "Càradh geoimeatraidh bhallachan",
+            "description": "Càraichidh seo cùisean ann an geoimeatraidh ìrean OG far am faod claonaidhean taobh a-staigh bhallachan leantainn gu àireamhachadh àirde mearachdach.",
+        },
         "gameplay.fix_water_exit": {
             "title": "Càraich fàgail à seòmar uisge",
             "description": "Cuiridh seo casg air Lara a bhith comasach air a dhol gu seòmraichean tioram fodha neo ri taobh an seomair làithreach. Cuiridh seo cuideachd casg oirre a sreap air sleamhnagan nach gabh seasamh orra.",
