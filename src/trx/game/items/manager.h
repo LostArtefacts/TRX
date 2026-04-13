@@ -12,8 +12,6 @@ int32_t Item_GetLevelCount(void);
 int32_t Item_GetTotalCount(void);
 
 int16_t Item_GetNextActive(void);
-int16_t Item_GetPrevActive(void);
-void Item_SetPrevActive(int16_t item_num);
 
 int16_t Item_Create(void);
 int16_t Item_CreateLevelItem(void);

@@ -418,11 +418,6 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
         } else if (obj->intelligent) {
             item->creature_data = nullptr;
             item->extra_rotations = nullptr;
-            if (item->clear_body && item->hit_points <= 0
-                && (item->flags & IF_KILLED) == 0) {
-                item->next_active = Item_GetPrevActive();
-                Item_SetPrevActive(item_num);
-            }
         }
     }
 skip_flags:

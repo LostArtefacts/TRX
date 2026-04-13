@@ -20,7 +20,6 @@ static int32_t m_LevelItemCount = 0;
 static int16_t m_MaxUsedItemCount = 0;
 static ITEM *m_Items = nullptr;
 static int16_t m_NextItemActive = NO_ITEM;
-static int16_t m_PrevItemActive = NO_ITEM;
 static int16_t m_NextItemFree = NO_ITEM;
 
 static inline bool M_ItemBoundsIntersectsPortal(
@@ -63,7 +62,6 @@ void Item_InitialiseItems(const int32_t num_items)
     m_MaxUsedItemCount = num_items;
     m_NextItemFree = num_items;
     m_NextItemActive = NO_ITEM;
-    m_PrevItemActive = NO_ITEM;
 
     for (int32_t i = m_NextItemFree; i < MAX_ITEMS - 1; i++) {
         ITEM *const item = &m_Items[i];
@@ -147,16 +145,6 @@ int32_t Item_GetTotalCount(void)
 int16_t Item_GetNextActive(void)
 {
     return m_NextItemActive;
-}
-
-int16_t Item_GetPrevActive(void)
-{
-    return m_PrevItemActive;
-}
-
-void Item_SetPrevActive(const int16_t item_num)
-{
-    m_PrevItemActive = item_num;
 }
 
 int16_t Item_Create(void)
@@ -406,14 +394,14 @@ void Item_ClearKilled(void)
 {
     // Remove corpses and other killed items. Part of OG performance
     // improvements, generously used in Opera House and Barkhang Monastery
-    int16_t link_num = Item_GetPrevActive();
-    while (link_num != NO_ITEM) {
-        ITEM *const item = Item_Get(link_num);
-        Item_Kill(link_num);
-        link_num = item->next_active;
-        item->next_active = NO_ITEM;
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (obj->intelligent && item->clear_body && item->hit_points <= 0
+            && (item->flags & IF_KILLED) == 0) {
+            Item_Kill(i);
+        }
     }
-    Item_SetPrevActive(NO_ITEM);
 }
 
 void Item_AddActive(const int16_t item_num)
