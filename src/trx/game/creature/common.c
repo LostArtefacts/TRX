@@ -1276,11 +1276,6 @@ void Creature_Die(const int16_t item_num, const bool explode)
     }
     item->flags |= IF_ONE_SHOT;
 
-    if (item->clear_body) {
-        item->next_active = Item_GetPrevActive();
-        Item_SetPrevActive(item_num);
-    }
-
     Carrier_TestItemDrops(item_num);
 }
 
