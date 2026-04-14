@@ -166,6 +166,7 @@
                 "coastal_animating_bounds.bin",
                 "lara_guns.bin",
             ],
+            "unobtainable_pickups": 1,
         },
 
         // 6. Crash Site
@@ -456,6 +457,7 @@
                 "tinnos_cameras.bin",
                 "tinnos_flames.bin",
             ],
+            "unobtainable_pickups": 1,
         },
 
         // 19. Meteorite Cavern
