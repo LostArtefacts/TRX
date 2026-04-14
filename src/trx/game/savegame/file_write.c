@@ -63,6 +63,11 @@ static void M_WriteItem(
     JSON_WRITE_IO *const io, const ITEM *const item,
     const M_FX_ORDER *const fx_order)
 {
+    JSONW_WRITE(io, "index", Item_GetIndex(item));
+    if (item->name != nullptr) {
+        JSONW_WRITE(io, "name", item->name);
+    }
+
     const OBJECT *const obj = Object_Get(item->object_id);
     JSONW_WRITE(io, "object_id", Object_ToGameID(item->object_id));
 
