@@ -188,5 +188,6 @@
         "ally_hostility_policy",
         "fix_pipeman_aim",
         "enable_cinematics",
+        "enable_body_bags",
     ],
 }

@@ -258,6 +258,7 @@ typedef struct {
         bool enable_enemy_rotation;
         bool enable_killer_pushblocks;
         bool enable_boulder_shake;
+        bool enable_body_bags;
         ALLY_HOSTILITY_POLICY ally_hostility_policy;
 
         bool enable_timer_in_inventory;

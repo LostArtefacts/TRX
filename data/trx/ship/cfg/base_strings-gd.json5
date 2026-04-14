@@ -849,6 +849,10 @@
             "title": "Tuiseal air leathad air chùl",
             "description": "Bheir seo air Lara tuisleadh ma leumas i air ais agus nuair a tha leathad air a cùlaibh (TR3). Ma tha e à comas, stadaidh Lara gu cruaidh an aghaidh an leathaid (TR1/2).",
         },
+        "gameplay.enable_body_bags": {
+            "title": "Pocannan-cuirp",
+            "description": "Cuirish seo an comas a chuir às ri nàimhdean a chaidh a mharbhadh nuair a thèid Lara thairis air brosnachaidhean sònraichte ann an cuid de dh'ìrean. Ma tha e à comas, bidh nàimhdean marbh air an taisbeanadh an-còmhnaidh.",
+        },
         "gameplay.enable_boulder_shake": {
             "title": "Crathadh ulpagan",
             "description": "Crathaidh an camara nuair a bhios ulpagan a' gluasad.",
