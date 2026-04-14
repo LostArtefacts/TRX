@@ -22,6 +22,9 @@
 - fixed missing default object names for `O_ANIMATING_7`...`O_ANIMATING_10` and `O_FLICKERING_LIGHT` (regression from 1.4)
 - fixed empty centaur statues incorrectly referencing other level items when the centaur object is not loaded
 
+**TR1**:
+- added savegame crystals to Unfinished Business (#1525)
+
 **TR2**
 - added an option to disable body bag triggers, so that killed enemies will always be visible
 
