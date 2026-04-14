@@ -849,6 +849,10 @@
             "title": "Potknięcia na spadach do tyłu",
             "description": "Powoduje, że Lara potyka się, gdy się cofa, a za nią znajduje się pochylnia (TR3). Przy wyłączonej opcji, Lara zatrzymuje się gwałtownie na pochylniach (TR1/2).",
         },
+        "gameplay.enable_body_bags": {
+            "title": "\\{review}Wyzwalacze worków na ciała",
+            "description": "\\{review}Umożliwia usuwanie zabitych przeciwników, gdy Lara przekracza określone wyzwalacze na niektórych poziomach. Jeśli wyłączone, martwi przeciwnicy będą zawsze wyświetlani.",
+        },
         "gameplay.enable_boulder_shake": {
             "title": "Wstrząsy kamery od głazów",
             "description": "Włączenie opcji spowoduje wstrząsy kamery, kiedy w pobliżu Lary toczą się głazy.",

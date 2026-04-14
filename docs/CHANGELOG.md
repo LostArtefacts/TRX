@@ -20,6 +20,9 @@
 - fixed persistent damage restoring Lara to full health after inter-level cutscenes (#5364, regression from 1.2)
 - fixed missing default object names for `O_ANIMATING_7`...`O_ANIMATING_10` and `O_FLICKERING_LIGHT` (regression from 1.4)
 
+**TR2**
+- added an option to disable body bag triggers, so that killed enemies will always be visible
+
 **TR3**:
 - added Boat (RIB) control
 - added Mine Cart control
@@ -35,6 +38,7 @@
 - added Claw Mutant control
 - added Fire Head control
 - added Disposable Animating control (Tinnos light shaft)
+- added an option to disable body bag triggers, so that killed enemies will always be visible
 - changed Sophia's final height to follow the level setup instead of using a fixed value
 - restored the animated mine cart tracks in RX-Tech Mines
 - restored the missing flamethrower blast sound effect in RX-Tech Mines and Meteorite Cavern

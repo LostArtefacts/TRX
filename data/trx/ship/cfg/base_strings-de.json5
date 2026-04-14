@@ -849,6 +849,10 @@
             "title": "\\{review}Stolpern an rückwärtiger Schräge",
             "description": "\\{review}Lässt Lara stolpern, wenn sie rückwärts springt und sich hinter ihr eine Schräge befindet (TR3). Wenn deaktiviert, kommt Lara abrupt an der Schräge zum Stehen (TR1/2).",
         },
+        "gameplay.enable_body_bags": {
+            "title": "\\{review}Leichensack-Auslöser",
+            "description": "\\{review}Ermöglicht das Entfernen getöteter Gegner, wenn Lara in bestimmten Levels bestimmte Auslöser überquert. Wenn deaktiviert, werden tote Gegner immer angezeigt.",
+        },
         "gameplay.enable_boulder_shake": {
             "title": "\\{review}Felskamerawackeln aktivieren",
             "description": "\\{review}Wenn aktiviert, wackelt die Kamera, sobald sich ein Fels bewegt.",

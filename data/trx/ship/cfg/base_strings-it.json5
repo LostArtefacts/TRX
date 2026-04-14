@@ -849,6 +849,10 @@
             "title": "Inciampo su pendenza",
             "description": "Fa in modo che Lara inciampi se effettua un salto all'indietro e, alle sue spalle, c'è una pendenza (TR3). Se disabilitato, Lara si fermerà bruscamente contro la pendenza (TR1/2).",
         },
+        "gameplay.enable_body_bags": {
+            "title": "\\{review}Trigger dei sacchi per cadaveri",
+            "description": "\\{review}Consente la rimozione dei nemici uccisi quando Lara attraversa specifici trigger in determinati livelli. Se disabilitato, i nemici morti verranno sempre visualizzati.",
+        },
         "gameplay.enable_boulder_shake": {
             "title": "Vibrazione massi",
             "description": "Se abilitata, la telecamera trema quando un masso è in movimento.",

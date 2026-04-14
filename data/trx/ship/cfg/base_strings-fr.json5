@@ -849,6 +849,10 @@
             "title": "\\{review}Trébuchement en pente arrière",
             "description": "\\{review}Fait trébucher Lara si elle saute en arrière et qu’il y a une pente derrière elle (TR3). Si désactivé, Lara s’arrête net contre la pente (TR1/2).",
         },
+        "gameplay.enable_body_bags": {
+            "title": "\\{review}Déclencheurs de sacs mortuaires",
+            "description": "\\{review}Permet la suppression des ennemis tués lorsque Lara traverse certains déclencheurs dans certains niveaux. Si désactivé, les ennemis morts seront toujours affichés.",
+        },
         "gameplay.enable_boulder_shake": {
             "title": "\\{review}Activer le tremblement des rochers",
             "description": "\\{review}Si activé, la caméra tremblera lorsqu’un rocher est en mouvement.",

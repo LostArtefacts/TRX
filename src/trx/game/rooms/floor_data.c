@@ -756,7 +756,9 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         }
 
         case TO_BODY_BAG:
-            Item_ClearKilled();
+            if (g_Config.gameplay.enable_body_bags) {
+                Item_ClearKilled();
+            }
             break;
 
         default:
