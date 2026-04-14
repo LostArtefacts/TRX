@@ -13,6 +13,8 @@ typedef enum {
     INJ_VERSION_4 = 4,
     INJ_VERSION_5 = 5,
     INJ_VERSION_6 = 6,
+    INJ_VERSION_7 = 7,
+    INJ_CURRENT_VERSION = INJ_VERSION_7,
 } INJECTION_VERSION;
 
 typedef enum {

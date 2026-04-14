@@ -208,7 +208,6 @@ void Item_Initialise(const int16_t item_num)
     item->extra_rotations = nullptr;
     item->priv = nullptr;
     item->carried_item = nullptr;
-    item->name = nullptr;
 
     item->active = false;
     item->status = IS_INACTIVE;
