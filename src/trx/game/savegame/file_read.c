@@ -292,8 +292,43 @@ static bool M_IsValidItemObject(
     // clang-format on
 }
 
-static bool M_ReadItem(JSON_READ_IO *const io, const int16_t item_num)
+static int16_t M_ResolveItem(JSON_READ_IO *const io, const int16_t read_index)
 {
+    const char *item_name = nullptr;
+    if (M_OPTIONAL(JSON_READ(io, "name", &item_name))) {
+        const ITEM *const item = Item_GetByName(item_name);
+        if (item == nullptr) {
+            LOG_WARNING(
+                "invalid item name '%s' (read index %d)", item_name,
+                read_index);
+            return NO_ITEM;
+        }
+
+        return Item_GetIndex(item);
+    }
+
+    int16_t item_num;
+    if (!M_SHOULD(JSON_READ(io, "index", &item_num))) {
+        item_num = read_index; // TODO: remove after TRX 2.0
+    }
+
+    if (item_num < 0 || item_num >= Item_GetLevelCount()) {
+        LOG_WARNING(
+            "invalid item index %d (read index %d)", item_num, read_index);
+        return NO_ITEM;
+    }
+
+    return item_num;
+}
+
+static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
+{
+    const int16_t item_num = M_ResolveItem(io, read_index);
+    if (item_num == NO_ITEM) {
+        // soft exit for unresolvable items
+        return true;
+    }
+
     ITEM *const item = Item_Get(item_num);
 
     OBJECT_ID object_id = NO_OBJECT;
@@ -874,11 +909,6 @@ bool SG_File_LoadItems(JSON_READ_IO *const io)
 {
     M_MUST(JSON_PUSH(io, "items"));
     const int32_t count = JSON_ARRAY_LEN(io);
-    if (count != Item_GetLevelCount()) {
-        JSON_ReadIO_SetError(
-            io, "expected %d items, got %d", Item_GetLevelCount(), count);
-        M_FAIL();
-    }
 
     Savegame_ProcessItemsBeforeLoad();
 
