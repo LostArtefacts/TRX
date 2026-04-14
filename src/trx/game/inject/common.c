@@ -15,7 +15,6 @@
 #include <string.h>
 #include <zlib.h>
 
-#define M_INJECTION_CURRENT_VERSION 6
 #define M_VIRTUAL_NAME "virtual_injection"
 
 typedef struct {
@@ -217,7 +216,7 @@ static void M_ReadVFile(
 
     injection->version = VFile_ReadS32(file);
     if (injection->version < INJ_VERSION_2
-        || injection->version > M_INJECTION_CURRENT_VERSION) {
+        || injection->version > INJ_CURRENT_VERSION) {
         LOG_WARNING(
             "%s uses unsupported version %d", inj_name, injection->version);
         goto cleanup;

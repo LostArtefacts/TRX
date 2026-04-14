@@ -214,6 +214,27 @@ static void M_TriggeredItem(const INJECTION *const injection)
         item->shade.value_2 = item->shade.value_1;
     }
     item->flags = VFile_ReadU16(injection->fp);
+
+    if (injection->version < INJ_VERSION_7) {
+        return;
+    }
+
+    const int32_t name_length = VFile_ReadS32(injection->fp);
+    if (name_length <= 0) {
+        return;
+    }
+
+    if (name_length > 4096) {
+        LOG_WARNING("Item name too long %d", name_length);
+        VFile_Skip(injection->fp, name_length);
+        return;
+    }
+
+    char *name = Memory_Alloc((size_t)(name_length + 1));
+    VFile_Read(injection->fp, name, name_length);
+    name[name_length] = '\0';
+    Item_SetName(item_num, name);
+    Memory_FreePointer(&name);
 }
 
 static void M_RoomProperties(
