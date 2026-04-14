@@ -30,7 +30,6 @@
     "convert_dropped_guns": false,
 
     "enforced_config": {
-        "enable_save_crystals": false,
         "fix_water_exit": false,
     },
 
@@ -71,6 +70,8 @@
                 "egypt_meshfixes.bin",
                 "egypt_textures.bin",
                 "panther_sfx.bin",
+                "egypt_crystals.bin",
+                "purple_crystal.bin",
             ],
             "unobtainable_kills": 1,
         },
@@ -93,6 +94,8 @@
                 "cat_meshfixes.bin",
                 "cat_textures.bin",
                 "panther_sfx.bin",
+                "cat_crystals.bin",
+                "purple_crystal.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -113,6 +116,8 @@
                 "stronghold_fd.bin",
                 "stronghold_itemrots.bin",
                 "stronghold_textures.bin",
+                "stronghold_crystals.bin",
+                "purple_crystal.bin",
             ],
             "unobtainable_kills": 1,
         },
@@ -139,6 +144,8 @@
                 "hive_fd.bin",
                 "hive_itemrots.bin",
                 "hive_textures.bin",
+                "hive_crystals.bin",
+                "purple_crystal.bin",
             ],
         },
 
@@ -163,8 +170,6 @@
     "hidden_config": [
         "enable_cutscenes",       // UB has no cutscenes
         "enable_demo",            // UB has no demos
-        "enable_save_crystals",   // UB has no save crystals
-        "enable_ps1_crystals",    // UB has no save crystals
         "enable_item_examining",  // UB has no special item descriptions
         "healthbar_poison_color",
         "healthbar_poison_color_ps1",
