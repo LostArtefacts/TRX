@@ -15,14 +15,14 @@ typedef struct {
 
 static void M_Initialise(const int16_t item_num)
 {
-    OBJECT *const obj = Object_Get(O_CENTAUR);
-    if (!obj->loaded) {
-        return;
-    }
-
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    p->centaur_item_num = NO_ITEM;
+
+    OBJECT *const obj = Object_Get(O_CENTAUR);
+    if (!obj->loaded) {
+        p->centaur_item_num = NO_ITEM;
+        return;
+    }
 
     const int16_t centaur_item_num = Item_CreateLevelItem();
     ASSERT(centaur_item_num != NO_ITEM);

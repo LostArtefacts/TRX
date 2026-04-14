@@ -19,6 +19,7 @@
 - fixed boulders stopping too soon on some slopes with low ceilings (#5337, regression from 1.2)
 - fixed persistent damage restoring Lara to full health after inter-level cutscenes (#5364, regression from 1.2)
 - fixed missing default object names for `O_ANIMATING_7`...`O_ANIMATING_10` and `O_FLICKERING_LIGHT` (regression from 1.4)
+- fixed empty centaur statues incorrectly referencing other level items when the centaur object is not loaded
 
 **TR2**
 - added an option to disable body bag triggers, so that killed enemies will always be visible
