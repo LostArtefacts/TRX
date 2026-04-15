@@ -150,6 +150,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── braid.bin
 │   │   ├── bubbles.bin
 │   │   ├── cat_cameras.bin
+│   │   ├── cat_crystals.bin
 │   │   ├── cat_fd.bin
 │   │   ├── cat_itemrots.bin
 │   │   ├── cat_meshfixes.bin
@@ -178,6 +179,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── door60_frames.bin
 │   │   ├── door61_sfx.bin
 │   │   ├── egypt_cameras.bin
+│   │   ├── egypt_crystals.bin
 │   │   ├── egypt_fd.bin
 │   │   ├── egypt_itemrots.bin
 │   │   ├── egypt_meshfixes.bin
@@ -190,6 +192,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── font.bin
 │   │   ├── gun_glow.bin
 │   │   ├── gym_textures.bin
+│   │   ├── hive_crystals.bin
 │   │   ├── hive_fd.bin
 │   │   ├── hive_itemrots.bin
 │   │   ├── hive_textures.bin
@@ -240,6 +243,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── scion_collision.bin
 │   │   ├── skate_kid_sfx.bin
 │   │   ├── sprite_alignment.bin
+│   │   ├── stronghold_crystals.bin
 │   │   ├── stronghold_fd.bin
 │   │   ├── stronghold_itemrots.bin
 │   │   ├── stronghold_textures.bin
@@ -489,6 +493,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── braid.bin
     │   │   │   ├── bubbles.bin
     │   │   │   ├── cat_cameras.bin
+    │   │   │   ├── cat_crystals.bin
     │   │   │   ├── cat_fd.bin
     │   │   │   ├── cat_itemrots.bin
     │   │   │   ├── cat_meshfixes.bin
@@ -517,6 +522,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── door60_frames.bin
     │   │   │   ├── door61_sfx.bin
     │   │   │   ├── egypt_cameras.bin
+    │   │   │   ├── egypt_crystals.bin
     │   │   │   ├── egypt_fd.bin
     │   │   │   ├── egypt_itemrots.bin
     │   │   │   ├── egypt_meshfixes.bin
@@ -529,6 +535,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── font.bin
     │   │   │   ├── gun_glow.bin
     │   │   │   ├── gym_textures.bin
+    │   │   │   ├── hive_crystals.bin
     │   │   │   ├── hive_fd.bin
     │   │   │   ├── hive_itemrots.bin
     │   │   │   ├── hive_textures.bin
@@ -579,6 +586,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── scion_collision.bin
     │   │   │   ├── skate_kid_sfx.bin
     │   │   │   ├── sprite_alignment.bin
+    │   │   │   ├── stronghold_crystals.bin
     │   │   │   ├── stronghold_fd.bin
     │   │   │   ├── stronghold_itemrots.bin
     │   │   │   ├── stronghold_textures.bin

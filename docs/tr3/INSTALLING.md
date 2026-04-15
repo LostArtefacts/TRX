@@ -91,6 +91,27 @@ If you install everything correctly, your game directory should look more or les
 │   └── cut12.tr2
 ├── data
 │   ├── images
+│   │   ├── 3x2
+│   │   │   ├── antarc.webp
+│   │   │   ├── credit01.webp
+│   │   │   ├── credit02.webp
+│   │   │   ├── credit03.webp
+│   │   │   ├── credit04.webp
+│   │   │   ├── credit05.webp
+│   │   │   ├── credit06.webp
+│   │   │   ├── credit07.webp
+│   │   │   ├── credit08.webp
+│   │   │   ├── credit09.webp
+│   │   │   ├── house.webp
+│   │   │   ├── india.webp
+│   │   │   ├── legal_eu.webp
+│   │   │   ├── legal_us.webp
+│   │   │   ├── london.webp
+│   │   │   ├── nevada.webp
+│   │   │   ├── southpac.webp
+│   │   │   ├── theend2.webp
+│   │   │   ├── title_eu.webp
+│   │   │   └── title_us.webp
 │   │   ├── 4x3
 │   │   │   ├── antarc.webp
 │   │   │   ├── credit01.webp
@@ -228,6 +249,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── crash.lua
 │   │   ├── cut8.lua
 │   │   ├── jungle.lua
+│   │   ├── mines.lua
 │   │   ├── tower.lua
 │   │   └── zoo.lua
 │   ├── antarc.tr2
@@ -367,6 +389,27 @@ If you install everything correctly, your game directory should look more or les
     │   │   └── cut12.tr2
     │   ├── data
     │   │   ├── images
+    │   │   │   ├── 3x2
+    │   │   │   │   ├── antarc.webp
+    │   │   │   │   ├── credit01.webp
+    │   │   │   │   ├── credit02.webp
+    │   │   │   │   ├── credit03.webp
+    │   │   │   │   ├── credit04.webp
+    │   │   │   │   ├── credit05.webp
+    │   │   │   │   ├── credit06.webp
+    │   │   │   │   ├── credit07.webp
+    │   │   │   │   ├── credit08.webp
+    │   │   │   │   ├── credit09.webp
+    │   │   │   │   ├── house.webp
+    │   │   │   │   ├── india.webp
+    │   │   │   │   ├── legal_eu.webp
+    │   │   │   │   ├── legal_us.webp
+    │   │   │   │   ├── london.webp
+    │   │   │   │   ├── nevada.webp
+    │   │   │   │   ├── southpac.webp
+    │   │   │   │   ├── theend2.webp
+    │   │   │   │   ├── title_eu.webp
+    │   │   │   │   └── title_us.webp
     │   │   │   ├── 4x3
     │   │   │   │   ├── antarc.webp
     │   │   │   │   ├── credit01.webp
@@ -465,6 +508,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── cut9_setup.bin
     │   │   │   ├── cut11_setup.bin
     │   │   │   ├── cut12_setup.bin
+    │   │   │   ├── drill_collision.bin
     │   │   │   ├── flamethrower_sfx.bin
     │   │   │   ├── font.bin
     │   │   │   ├── ganges_door131_frames.bin
@@ -503,6 +547,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── crash.lua
     │   │   │   ├── cut8.lua
     │   │   │   ├── jungle.lua
+    │   │   │   ├── mines.lua
     │   │   │   ├── tower.lua
     │   │   │   └── zoo.lua
     │   │   ├── antarc.tr2
