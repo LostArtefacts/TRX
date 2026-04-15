@@ -225,7 +225,7 @@
             ],
             "injections": [
                 "lara_guns.bin",
-                "ora_dagger.bin",
+                "puna_pickup_meshes.bin",
                 "globe_model.bin",
             ],
         },
@@ -489,7 +489,7 @@
             "injections": [
                 "cavern_sky.bin",
                 "lara_guns.bin",
-                "ora_dagger.bin",
+                "cavern_pickup_meshes.bin",
                 "cavern_door131_frames.bin",
                 "flamethrower_sfx.bin",
             ],
