@@ -70,7 +70,8 @@ void Game_End(void)
 
 GF_COMMAND Game_Control(const bool demo_mode)
 {
-    if (g_Passport.ask_for_save) {
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Passport.ask_for_save && !lara->extra_anim) {
         // ask for a save at the start of a level for the save crystals mode
         const GF_COMMAND gf_cmd = GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
         g_Passport.ask_for_save = false;
@@ -79,7 +80,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
         }
     }
 
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
     Interpolation_Remember();
     if (!Game_IsInGym() || Gym_TrackManager_IsTimerActive(GYM_TRACK_ASSAULT)
         || Gym_TrackManager_IsTimerActive(GYM_TRACK_QUAD)
