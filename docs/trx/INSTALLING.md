@@ -151,6 +151,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── braid.bin
 │   │   │   ├── bubbles.bin
 │   │   │   ├── cat_cameras.bin
+│   │   │   ├── cat_crystals.bin
 │   │   │   ├── cat_fd.bin
 │   │   │   ├── cat_itemrots.bin
 │   │   │   ├── cat_meshfixes.bin
@@ -179,6 +180,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── door60_frames.bin
 │   │   │   ├── door61_sfx.bin
 │   │   │   ├── egypt_cameras.bin
+│   │   │   ├── egypt_crystals.bin
 │   │   │   ├── egypt_fd.bin
 │   │   │   ├── egypt_itemrots.bin
 │   │   │   ├── egypt_meshfixes.bin
@@ -191,6 +193,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── font.bin
 │   │   │   ├── gun_glow.bin
 │   │   │   ├── gym_textures.bin
+│   │   │   ├── hive_crystals.bin
 │   │   │   ├── hive_fd.bin
 │   │   │   ├── hive_itemrots.bin
 │   │   │   ├── hive_textures.bin
@@ -241,6 +244,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── scion_collision.bin
 │   │   │   ├── skate_kid_sfx.bin
 │   │   │   ├── sprite_alignment.bin
+│   │   │   ├── stronghold_crystals.bin
 │   │   │   ├── stronghold_fd.bin
 │   │   │   ├── stronghold_itemrots.bin
 │   │   │   ├── stronghold_textures.bin
@@ -487,20 +491,24 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   └── venice.webp
 │   │   ├── injections
 │   │   │   ├── barkhang_cameras.bin
+│   │   │   ├── barkhang_crystals.bin
 │   │   │   ├── barkhang_fd.bin
 │   │   │   ├── barkhang_itemrots.bin
 │   │   │   ├── barkhang_music_tracks.bin
 │   │   │   ├── barkhang_pickup_meshes.bin
 │   │   │   ├── barkhang_textures.bin
+│   │   │   ├── bartoli_crystals.bin
 │   │   │   ├── bartoli_music_tracks.bin
 │   │   │   ├── bartoli_secret_fd.bin
 │   │   │   ├── bartoli_textures.bin
 │   │   │   ├── boat_bits.bin
 │   │   │   ├── breakable_tile_sfx.bin
+│   │   │   ├── catacombs_crystals.bin
 │   │   │   ├── catacombs_fd.bin
 │   │   │   ├── catacombs_itemrots.bin
 │   │   │   ├── catacombs_music_tracks.bin
 │   │   │   ├── catacombs_textures.bin
+│   │   │   ├── coldwar_crystals.bin
 │   │   │   ├── coldwar_fd.bin
 │   │   │   ├── coldwar_itemrots.bin
 │   │   │   ├── coldwar_music_tracks.bin
@@ -516,6 +524,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut4_textures.bin
 │   │   │   ├── dagger_sprite.bin
 │   │   │   ├── deck_cameras.bin
+│   │   │   ├── deck_crystals.bin
 │   │   │   ├── deck_fd.bin
 │   │   │   ├── deck_itemrots.bin
 │   │   │   ├── deck_music_tracks.bin
@@ -525,6 +534,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── deck_textures.bin
 │   │   │   ├── detonator_lights.bin
 │   │   │   ├── diving_cameras.bin
+│   │   │   ├── diving_crystals.bin
 │   │   │   ├── diving_itemrots.bin
 │   │   │   ├── diving_music_tracks.bin
 │   │   │   ├── diving_pickup_meshes.bin
@@ -536,22 +546,26 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── door110_sfx.bin
 │   │   │   ├── door111_sfx.bin
 │   │   │   ├── explosion.bin
+│   │   │   ├── fathoms_crystals.bin
 │   │   │   ├── fathoms_goon_sfx.bin
 │   │   │   ├── fathoms_itemrots.bin
 │   │   │   ├── fathoms_music_tracks.bin
 │   │   │   ├── fathoms_plants.bin
 │   │   │   ├── fathoms_secret_fd.bin
 │   │   │   ├── fathoms_textures.bin
+│   │   │   ├── floating_crystals.bin
 │   │   │   ├── floating_fd.bin
 │   │   │   ├── floating_itemrots.bin
 │   │   │   ├── floating_music_tracks.bin
 │   │   │   ├── floating_pickup_meshes.bin
 │   │   │   ├── floating_textures.bin
 │   │   │   ├── font.bin
+│   │   │   ├── fools_crystals.bin
 │   │   │   ├── fools_itemrots.bin
 │   │   │   ├── fools_music_tracks.bin
 │   │   │   ├── fools_pickup_meshes.bin
 │   │   │   ├── fools_textures.bin
+│   │   │   ├── furnace_crystals.bin
 │   │   │   ├── furnace_itemrots.bin
 │   │   │   ├── furnace_music_tracks.bin
 │   │   │   ├── furnace_objects.bin
@@ -569,10 +583,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── house_textures.bin
 │   │   │   ├── inv_background.bin
 │   │   │   ├── kingdom_cameras.bin
+│   │   │   ├── kingdom_crystals.bin
 │   │   │   ├── kingdom_itemrots.bin
 │   │   │   ├── kingdom_music_tracks.bin
 │   │   │   ├── kingdom_textures.bin
 │   │   │   ├── lair_bartolipos.bin
+│   │   │   ├── lair_crystals.bin
 │   │   │   ├── lair_music_tracks.bin
 │   │   │   ├── lair_textures.bin
 │   │   │   ├── lara_animations.bin
@@ -583,6 +599,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── lara_rifle_sfx.bin
 │   │   │   ├── lara_vegas_guns.bin
+│   │   │   ├── living_crystals.bin
 │   │   │   ├── living_deck_goon_sfx.bin
 │   │   │   ├── living_fd.bin
 │   │   │   ├── living_itemrots.bin
@@ -593,11 +610,13 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── living_textures.bin
 │   │   │   ├── loose_boards_sfx.bin
 │   │   │   ├── misc_sprites.bin
+│   │   │   ├── opera_crystals.bin
 │   │   │   ├── opera_fd.bin
 │   │   │   ├── opera_itemrots.bin
 │   │   │   ├── opera_music_tracks.bin
 │   │   │   ├── opera_sfx.bin
 │   │   │   ├── opera_textures.bin
+│   │   │   ├── palace_crystals.bin
 │   │   │   ├── palace_fd.bin
 │   │   │   ├── palace_itemrots.bin
 │   │   │   ├── palace_music_tracks.bin
@@ -608,6 +627,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── pickup_aid.bin
 │   │   │   ├── portcullis_sfx.bin
 │   │   │   ├── purple_crystal.bin
+│   │   │   ├── rig_crystals.bin
 │   │   │   ├── rig_itemrots.bin
 │   │   │   ├── rig_music_tracks.bin
 │   │   │   ├── rig_pickup_meshes.bin
@@ -617,25 +637,30 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── secret_models_gm.bin
 │   │   │   ├── secret_models_og.bin
 │   │   │   ├── shark_sfx.bin
+│   │   │   ├── tibet_crystals.bin
 │   │   │   ├── tibet_fd.bin
 │   │   │   ├── tibet_itemrots.bin
 │   │   │   ├── tibet_music_tracks.bin
 │   │   │   ├── tibet_textures.bin
 │   │   │   ├── title_textures.bin
+│   │   │   ├── vegas_crystals.bin
 │   │   │   ├── vegas_fd.bin
 │   │   │   ├── vegas_itemrots.bin
 │   │   │   ├── vegas_music_tracks.bin
 │   │   │   ├── vegas_textures.bin
+│   │   │   ├── venice_crystals.bin
 │   │   │   ├── venice_fd.bin
 │   │   │   ├── venice_itemrots.bin
 │   │   │   ├── venice_music_tracks.bin
 │   │   │   ├── venice_textures.bin
 │   │   │   ├── wall_cameras.bin
+│   │   │   ├── wall_crystals.bin
 │   │   │   ├── wall_itemrots.bin
 │   │   │   ├── wall_music_tracks.bin
 │   │   │   ├── wall_textures.bin
 │   │   │   ├── winston_model.bin
 │   │   │   ├── wreck_cameras.bin
+│   │   │   ├── wreck_crystals.bin
 │   │   │   ├── wreck_fd.bin
 │   │   │   ├── wreck_goon_sfx.bin
 │   │   │   ├── wreck_itemrots.bin
@@ -644,6 +669,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── wreck_plants.bin
 │   │   │   ├── wreck_secret_fd.bin
 │   │   │   ├── wreck_textures.bin
+│   │   │   ├── xian_crystals.bin
 │   │   │   ├── xian_fd.bin
 │   │   │   ├── xian_itemrots.bin
 │   │   │   ├── xian_music_tracks.bin
@@ -849,6 +875,27 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── logo.rpl
 │   │   │   └── sail_eng.rpl
 │   │   ├── images
+│   │   │   ├── 3x2
+│   │   │   │   ├── antarc.webp
+│   │   │   │   ├── credit01.webp
+│   │   │   │   ├── credit02.webp
+│   │   │   │   ├── credit03.webp
+│   │   │   │   ├── credit04.webp
+│   │   │   │   ├── credit05.webp
+│   │   │   │   ├── credit06.webp
+│   │   │   │   ├── credit07.webp
+│   │   │   │   ├── credit08.webp
+│   │   │   │   ├── credit09.webp
+│   │   │   │   ├── house.webp
+│   │   │   │   ├── india.webp
+│   │   │   │   ├── legal_eu.webp
+│   │   │   │   ├── legal_us.webp
+│   │   │   │   ├── london.webp
+│   │   │   │   ├── nevada.webp
+│   │   │   │   ├── southpac.webp
+│   │   │   │   ├── theend2.webp
+│   │   │   │   ├── title_eu.webp
+│   │   │   │   └── title_us.webp
 │   │   │   ├── 4x3
 │   │   │   │   ├── antarc.webp
 │   │   │   │   ├── credit01.webp
@@ -947,6 +994,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut9_setup.bin
 │   │   │   ├── cut11_setup.bin
 │   │   │   ├── cut12_setup.bin
+│   │   │   ├── drill_collision.bin
 │   │   │   ├── flamethrower_sfx.bin
 │   │   │   ├── font.bin
 │   │   │   ├── ganges_door131_frames.bin
@@ -1008,6 +1056,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── crash.lua
 │   │   │   ├── cut8.lua
 │   │   │   ├── jungle.lua
+│   │   │   ├── mines.lua
 │   │   │   ├── tower.lua
 │   │   │   └── zoo.lua
 │   │   ├── catalog_item_actions.csv
