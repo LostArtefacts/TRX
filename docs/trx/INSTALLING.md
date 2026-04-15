@@ -970,6 +970,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── area51_sky.bin
 │   │   │   ├── area51_textures.bin
 │   │   │   ├── cavern_door131_frames.bin
+│   │   │   ├── cavern_pickup_meshes.bin
 │   │   │   ├── cavern_sky.bin
 │   │   │   ├── city_textures.bin
 │   │   │   ├── cliff_door132_frames.bin
@@ -1013,9 +1014,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── misc_sprites.bin
 │   │   │   ├── nevada_door132_frames.bin
 │   │   │   ├── nevada_sky.bin
-│   │   │   ├── ora_dagger.bin
 │   │   │   ├── pda_model.bin
 │   │   │   ├── pickup_aid.bin
+│   │   │   ├── puna_pickup_meshes.bin
 │   │   │   ├── rapids_sky.bin
 │   │   │   ├── reunion_flames.bin
 │   │   │   ├── scotland_sky.bin
