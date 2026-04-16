@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.5...develop) - ××××-××-××
+- added on-screen touch controls with a virtual D-pad and action buttons, configurable opacity/scale/deadzone, dynamic button glyphs, and full remap support including button macros (Gameplay Options → Controls → Touch controls)
 - added the ability to do a forward roll without releasing sprint first (#5270)
 - added the ability to turn off or censor blood effects (Graphic Options → Visuals → Blood effects)
 - added the ability to delete saves directly from the passport save and load screens (#5309)

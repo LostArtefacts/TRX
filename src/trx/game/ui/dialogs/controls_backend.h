@@ -1,12 +1,15 @@
 #pragma once
 
-// A control backend (keyboard/controller) choice dialog.
+// A control backend (keyboard/controller/touch) choice dialog.
 
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/elements/requester.h>
 
+#define UI_CONTROLS_BACKEND_MAX_OPTIONS 8
+
 typedef struct {
     UI_REQUESTER_STATE req;
+    int32_t visible_indices[UI_CONTROLS_BACKEND_MAX_OPTIONS];
 } UI_CONTROLS_BACKEND_STATE;
 
 // state functions

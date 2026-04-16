@@ -44,6 +44,7 @@ typedef struct {
             struct {
                 int32_t keyboard_layout;
                 int32_t controller_layout;
+                int32_t touch_layout;
             };
             int32_t layout[INPUT_BACKEND_NUMBER_OF];
         };
@@ -51,6 +52,11 @@ typedef struct {
         bool enable_responsive_passport;
         bool enable_buffering_func_keys;
         bool enable_buffering_inventory;
+        bool enable_touch_controls;
+        float touch_opacity;
+        float touch_button_scale;
+        float touch_dpad_scale;
+        float touch_dpad_deadzone;
         QUICK_GUNS_MODE quick_guns_mode;
     } input;
 

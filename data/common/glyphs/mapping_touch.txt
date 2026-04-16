@@ -1,0 +1,15 @@
+# --------------------------------------------------
+# Touch overlay sprites
+# --------------------------------------------------
+"\\{touch jump}"         0 I manual_sprite("touch_glyphs.png",  0,  0,  15,  15, index=782) translate(y=1)
+"\\{touch crouch}"       0 I manual_sprite("touch_glyphs.png", 16,  0,  15,  15, index=783) translate(y=1)
+"\\{touch walk}"         0 I manual_sprite("touch_glyphs.png", 32,  0,  15,  15, index=784) translate(y=1)
+"\\{touch run}"          0 I manual_sprite("touch_glyphs.png", 48,  0,  15,  15, index=785) translate(y=1)
+"\\{touch draw weapon}"  0 I manual_sprite("touch_glyphs.png", 64,  0,  15,  15, index=786) translate(y=1)
+"\\{touch look}"         0 I manual_sprite("touch_glyphs.png", 80,  0,  15,  15, index=787) translate(y=1)
+"\\{touch action}"       0 I manual_sprite("touch_glyphs.png", 96,  0,  15,  15, index=788) translate(y=1)
+"\\{touch roll}"         0 I manual_sprite("touch_glyphs.png",  0, 16,  15,  15, index=789) translate(y=1)
+"\\{touch menu}"         0 I manual_sprite("touch_glyphs.png", 16, 16,  15,  15, index=790) translate(y=1)
+"\\{touch pause}"        0 I manual_sprite("touch_glyphs.png", 32, 16,  15,  15, index=791) translate(y=1)
+"\\{touch bullet}"       0 I manual_sprite("touch_glyphs.png", 48, 16,  15,  15, index=792) translate(y=1)
+"\\{touch swim}"         0 I manual_sprite("touch_glyphs.png", 64, 16,  15,  15, index=793) translate(y=1)

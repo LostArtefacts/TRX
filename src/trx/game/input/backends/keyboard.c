@@ -623,6 +623,17 @@ static bool M_AssignToJSONObject(
 static bool m_PrefixWasHeld[SDL_NUM_SCANCODES];
 static bool m_PrefixComboFired[SDL_NUM_SCANCODES];
 
+// Per-scancode press-tick table. Records the tick each key most recently
+// transitioned from released to held, so combos that start on keys the
+// user was already holding can be rejected.
+static uint32_t m_KeyDownTick[SDL_NUM_SCANCODES];
+static uint32_t m_Tick;
+
+static uint32_t M_GetPressTick(const void *const key)
+{
+    return m_KeyDownTick[*(const SDL_Scancode *)key];
+}
+
 // Combo adapter functions for the shared combo layer.
 static INPUT_COMBO_BINDING M_GetComboBinding(
     const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
@@ -668,6 +679,15 @@ static bool m_RoleLongerFired[INPUT_ROLE_NUMBER_OF];
 static void M_ResolveCombos(
     const INPUT_LAYOUT layout, INPUT_STATE *const result)
 {
+    // Update press-tick tracking: record the tick each key most recently
+    // transitioned from released to held.
+    m_Tick++;
+    for (SDL_Scancode sc = 0; sc < SDL_NUM_SCANCODES; sc++) {
+        if (KEY_DOWN(sc) && !m_PrefixWasHeld[sc]) {
+            m_KeyDownTick[sc] = m_Tick;
+        }
+    }
+
     // Phase 1: Collect active bindings.
     const KEYBOARD_BINDING *active[INPUT_ROLE_NUMBER_OF] = {};
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
@@ -682,6 +702,20 @@ static void M_ResolveCombos(
             && Input_ComboSustainedHasImmediate(
                 layout, M_ToCombo(active[role]), M_GetComboBinding,
                 M_ComboKeysEqual)) {
+            InputState_ClearRole(result, role);
+            active[role] = nullptr;
+        }
+    }
+
+    // Suppress combos that appear to ride on top of ongoing movement:
+    // if the earliest-pressed key in the combo is bound to an immediate
+    // role, the user was already performing that action when they pressed
+    // the remaining combo keys.
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (active[role] != nullptr
+            && Input_ComboEarliestKeyIsImmediate(
+                layout, M_ToCombo(active[role]), M_GetPressTick,
+                M_GetComboBinding, M_ComboKeysEqual)) {
             InputState_ClearRole(result, role);
             active[role] = nullptr;
         }

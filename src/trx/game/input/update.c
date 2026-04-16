@@ -4,6 +4,7 @@
 #include <trx/game/input/backends/base.h>
 #include <trx/game/input/backends/controller.h>
 #include <trx/game/input/backends/keyboard.h>
+#include <trx/game/input/backends/touch.h>
 #include <trx/game/input/common.h>
 #include <trx/game/lara.h>
 #include <trx/version.h>
@@ -23,14 +24,21 @@ void Input_Update(void)
     InputState_Clear(&g_Input);
 
     M_UpdateFromBackend(
-        &g_Input, &g_Input_Keyboard, g_Config.input.keyboard_layout);
+        &g_Input, &g_Input_Keyboard,
+        g_Config.input.layout[INPUT_BACKEND_KEYBOARD]);
     M_UpdateFromBackend(
-        &g_Input, &g_Input_Controller, g_Config.input.controller_layout);
+        &g_Input, &g_Input_Controller,
+        g_Config.input.layout[INPUT_BACKEND_CONTROLLER]);
+    M_UpdateFromBackend(
+        &g_Input, &g_Input_Touch, g_Config.input.layout[INPUT_BACKEND_TOUCH]);
 
     // Suppress roles whose bindings are subsets of longer active combos.
-    g_Input_Keyboard.resolve_combos(g_Config.input.keyboard_layout, &g_Input);
+    g_Input_Keyboard.resolve_combos(
+        g_Config.input.layout[INPUT_BACKEND_KEYBOARD], &g_Input);
     g_Input_Controller.resolve_combos(
-        g_Config.input.controller_layout, &g_Input);
+        g_Config.input.layout[INPUT_BACKEND_CONTROLLER], &g_Input);
+    g_Input_Touch.resolve_combos(
+        g_Config.input.layout[INPUT_BACKEND_TOUCH], &g_Input);
 
     g_Input.camera_reset |= g_Input.look;
     g_Input.menu_up |= g_Input.forward;

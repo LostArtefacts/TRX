@@ -211,6 +211,7 @@
                 "backend": {
                     "controller": "Rianadair",
                     "keyboard": "Meur-chlàr",
+                    "touch": "\\{review}Smachd beantachaidh",
                 },
                 "customize": "Gnàthaich na Smachdan",
                 "layout": {
@@ -1202,6 +1203,10 @@
             "title": "Pasport freagairteach",
             "description": "Cuiridh seo às do bhacadh cuir a-steach le brath ro-luath air tionndadh duilleagan a' phasport; leigidh e leutha bhith air an clàradh an àite a bhith air an stad.",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}Smachd beantachaidh",
+            "description": "\\{review}Seallaidh seo tar-chòmhdach smachd beantachaidh air an sgrìn airson innealan le sgrìn-suathaidh.",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Ceumannan-taoibh leasaichte",
             "description": "Cuiridh seo ceumannan-taoibh stoidhle TR3+ an comas, m.e. coisich + saigheadan. Bidh na putanan sònraichte fhathast ag obair.",
@@ -1209,6 +1214,22 @@
         "input.quick_guns_mode": {
             "title": "Iuchraichean luatha armachd",
             "description": "Smachd air mar a dh'èireas na h-iuchraichean uidheamachaidh armachd luatha.\n\n- Tarraing a-mhàin: bheir iuchair teth air Lara an arm ainmichte a tharraing.\n- Tarraing/falach: mar roimhe, ach bheir seo cuideachd air Lara an arm a chur air falach ma tha i ga ghiùlan.",
+        },
+        "input.touch_button_scale": {
+            "title": "\\{review}Meud nam putanan beantachaidh",
+            "description": "\\{review}Atharraichidh seo meud nam putanan smachd beantachaidh air an sgrìn.",
+        },
+        "input.touch_dpad_deadzone": {
+            "title": "\\{review}Sòn marbh an D-pad beantachaidh",
+            "description": "\\{review}Atharraichidh seo an sòn marbh aig an D-pad air an sgrìn. Feumaidh sòn marbh nas motha barrachd gluasaid mus tèid ion-chur stiùiridh a chlàradh.",
+        },
+        "input.touch_dpad_scale": {
+            "title": "\\{review}Meud an D-pad beantachaidh",
+            "description": "\\{review}Atharraichidh seo meud an D-pad air an sgrìn.",
+        },
+        "input.touch_opacity": {
+            "title": "\\{review}Trìd-shoilleireachd beantachaidh",
+            "description": "\\{review}Atharraichidh seo trìd-shoilleireachd nam putanan smachd beantachaidh air an sgrìn.",
         },
         "language": {
             "title": "Cànan",

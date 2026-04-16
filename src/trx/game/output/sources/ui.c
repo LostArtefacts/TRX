@@ -1,6 +1,7 @@
 #include <trx/game/output/sources/ui.h>
 
 #include <trx/config.h>
+#include <trx/core/math/const.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
@@ -11,6 +12,8 @@
 #include <trx/game/viewport.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
+
+#include <math.h>
 
 // GL attribute mapping in the shader
 typedef enum {
@@ -431,6 +434,85 @@ void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
         const int32_t j = OUTPUT_QUAD_TO_FAN(i);
         Vector_Add(p->vertices, &vertices[j]);
     }
+}
+
+// Emit a ring band from r_inner to r_outer with per-edge vertex colors.
+// inner_color is applied to the vertices at r_inner, outer_color to r_outer.
+// Fading inner/outer colors to alpha=0 produces antialiased edges.
+static void M_StageRingBand(
+    M_PRIV *const p, const float cx, const float cy, const float ri,
+    const float ro, const float z, const RGBA_F inner_color,
+    const RGBA_F outer_color)
+{
+    const int32_t n = 32;
+    for (int32_t i = 0; i < n; i++) {
+        const float a0 = (float)(2.0 * M_PI) * i / n;
+        const float a1 = (float)(2.0 * M_PI) * (i + 1) / n;
+        const float cos0 = cosf(a0);
+        const float sin0 = sinf(a0);
+        const float cos1 = cosf(a1);
+        const float sin1 = sinf(a1);
+
+        // v[0]/v[1] = outer edge, v[2]/v[3] = inner edge
+        M_VERTEX v[4] = {};
+        v[0].pos = (XYZW_F) { cx + ro * cos0, cy + ro * sin0, z, 0.0f };
+        v[1].pos = (XYZW_F) { cx + ro * cos1, cy + ro * sin1, z, 0.0f };
+        v[2].pos = (XYZW_F) { cx + ri * cos0, cy + ri * sin0, z, 0.0f };
+        v[3].pos = (XYZW_F) { cx + ri * cos1, cy + ri * sin1, z, 0.0f };
+        v[0].flags = VERT_FLAT_SHADED;
+        v[1].flags = VERT_FLAT_SHADED;
+        v[2].flags = VERT_FLAT_SHADED;
+        v[3].flags = VERT_FLAT_SHADED;
+        v[0].color = outer_color;
+        v[1].color = outer_color;
+        v[2].color = inner_color;
+        v[3].color = inner_color;
+
+        Vector_Add(p->vertices, &v[0]);
+        Vector_Add(p->vertices, &v[1]);
+        Vector_Add(p->vertices, &v[2]);
+        Vector_Add(p->vertices, &v[2]);
+        Vector_Add(p->vertices, &v[1]);
+        Vector_Add(p->vertices, &v[3]);
+    }
+}
+
+void OutputSource_UI_StageCircle(const OUTPUT_UI_CIRCLE circle)
+{
+    M_PRIV *const p = &m_Priv;
+    const float ri = (float)circle.r_inner;
+    const float ro = (float)circle.r_outer;
+    if (ro <= ri) {
+        return;
+    }
+
+    const RGBA_F col = M_ToRGBA_F(circle.color);
+    // Transparent edge color for antialiasing (same hue, zero alpha)
+    const RGBA_F col_0 = { .r = col.r, .g = col.g, .b = col.b, .a = 0.0f };
+    const float cx = (float)circle.cx;
+    const float cy = (float)circle.cy;
+    const float z = (float)circle.z;
+
+    // Feather band width — creates the smooth edge via vertex alpha
+    // interpolation
+    const float feather = 1.5f;
+    const float half_w = (ro - ri) * 0.5f;
+    const float fw = feather < half_w ? feather : half_w;
+
+    // Inner feather: ri → ri+fw, transparent→solid (rings only, not discs)
+    if (ri > 0.0f) {
+        M_StageRingBand(p, cx, cy, ri, ri + fw, z, col_0, col);
+    }
+
+    // Solid body: (ri+fw or ri) → ro-fw
+    const float r_body_inner = ri > 0.0f ? ri + fw : ri;
+    const float r_body_outer = ro - fw;
+    if (r_body_inner < r_body_outer) {
+        M_StageRingBand(p, cx, cy, r_body_inner, r_body_outer, z, col, col);
+    }
+
+    // Outer feather: ro-fw → ro, solid→transparent
+    M_StageRingBand(p, cx, cy, ro - fw, ro, z, col, col_0);
 }
 
 void OutputSource_UI_StagePhotoModeFrame(

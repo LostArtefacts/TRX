@@ -264,9 +264,10 @@ static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
     if (glyph->role != GLYPH_INPUT) {
         return glyph;
     }
-    const char *const key_name = Input_GetKeyName(
-        g_Config.input.backend, g_Config.input.layout[g_Config.input.backend],
-        glyph->input_role, 0);
+    const INPUT_BACKEND backend = g_Config.input.backend;
+    const INPUT_LAYOUT layout = g_Config.input.layout[backend];
+    const char *const key_name =
+        Input_GetKeyName(backend, layout, glyph->input_role, 0);
     // NOTE: this aliasing approach assumes that Input_GetKeyName returns
     // text that resolves to a single glyph.
     M_GLYPH_MAP_ENTRY *entry = nullptr;

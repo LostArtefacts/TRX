@@ -75,6 +75,7 @@ RUN apt-get install -y \
     libglu1-mesa-dev \
     libpulse-dev \
     libasound2-dev \
+    libudev-dev \
     libxkbcommon-dev \
     libwayland-client0 \
     libwayland-cursor0 \
@@ -82,6 +83,7 @@ RUN apt-get install -y \
     libwayland-egl1 \
     automake \
     gcc \
+    libxi-dev \
     libxrandr-dev \
     libxext-dev
 RUN cd SDL \

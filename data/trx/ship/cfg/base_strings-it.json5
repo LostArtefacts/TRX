@@ -211,6 +211,7 @@
                 "backend": {
                     "controller": "Controller",
                     "keyboard": "Tastiera",
+                    "touch": "\\{review}Controlli touch",
                 },
                 "customize": "Personalizza comandi",
                 "layout": {
@@ -1202,6 +1203,10 @@
             "title": "Passaporto reattivo",
             "description": "Fa in modo che sfogliare le pagine del passaporto sia più istantaneo, tenendo conto dei tasti premuti dell'utente",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}Controlli touch",
+            "description": "\\{review}Mostra una sovrapposizione di controlli touch sullo schermo per i dispositivi con touchscreen.",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Passi laterali migliorati",
             "description": "Abilita i passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare.",
@@ -1209,6 +1214,22 @@
         "input.quick_guns_mode": {
             "title": "Equipaggiamento rapido armi",
             "description": "Controlla il comportamento dei tasti per l'equipaggiamento rapido delle armi.\n\n- Solo equipaggia: premendo il tasto, Lara equipaggerà l'arma assegnata.\n- Equipaggia o riponi: premendo il tasto, Lara equipaggerà l'arma assegnata. In aggiunta, con lo stesso tasto, la riporrà se la sta attualmente tenendo in mano.",
+        },
+        "input.touch_button_scale": {
+            "title": "\\{review}Dimensione dei pulsanti touch",
+            "description": "\\{review}Regola la dimensione dei pulsanti di controllo touch sullo schermo.",
+        },
+        "input.touch_dpad_deadzone": {
+            "title": "\\{review}Zona morta del D-pad touch",
+            "description": "\\{review}Regola la zona morta del D-pad sullo schermo. Una zona morta più ampia richiede un movimento maggiore prima che l'input direzionale venga registrato.",
+        },
+        "input.touch_dpad_scale": {
+            "title": "\\{review}Dimensione del D-pad touch",
+            "description": "\\{review}Regola la dimensione del D-pad sullo schermo.",
+        },
+        "input.touch_opacity": {
+            "title": "\\{review}Opacità touch",
+            "description": "\\{review}Regola la trasparenza dei pulsanti di controllo touch sullo schermo.",
         },
         "language": {
             "title": "Lingua",

@@ -21,6 +21,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/touch_overlay.h>
 #include <trx/game/viewport.h>
 
 #include <string.h>
@@ -299,7 +300,9 @@ static bool M_Play(const char *const file_name)
                     M_FADE_TIME);
             }
         } else if (
-            (!paused && (g_InputDB.menu_back || g_InputDB.menu_confirm))
+            (!paused
+             && (g_InputDB.menu_back || g_InputDB.menu_confirm
+                 || TouchOverlay_HasAnyFingerDown()))
             || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
             Video_Stop(video);
             break;

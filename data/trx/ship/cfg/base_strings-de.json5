@@ -211,6 +211,7 @@
                 "backend": {
                     "controller": "Kontroller",
                     "keyboard": "Tastatur",
+                    "touch": "\\{review}Touch-Steuerung",
                 },
                 "customize": "Steuerung anpassen",
                 "layout": {
@@ -1202,6 +1203,10 @@
             "title": "Reaktionsfähiger Ausweis",
             "description": "Deaktiviert, dass man die Umblättern-Animation des Ausweises abwarten muss, sie können nun so schnell umblättern, wie sie wollen.",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}Touch-Steuerung",
+            "description": "\\{review}Zeigt eine Bildschirm-Touch-Steuerung für Touchscreen-Geräte an.",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Erweiterte Seit-Schritte",
             "description": "Aktiviert Seitschritte im Stil von TR3+, e. g. Shift + Richtungspfeile. Deaktiviert die Seitschritt-Tasten.",
@@ -1209,6 +1214,22 @@
         "input.quick_guns_mode": {
             "title": "Schnell-Zieh-Tasten",
             "description": "Bestimmt das Verhalten der Schnell-Zieh-Tasten.\n\n- Nur ziehen: eine der Tasten zu drücken sorgt dafür, dass Lara die zugewiesene Waffe ausrüstet.\n- Ziehen oder wegstecken: das selbe wie bei 'Nur Ziehen', zusätzlich wird Lara die zugewiesene Waffe, die sie gerade benutzt, wegstecken.",
+        },
+        "input.touch_button_scale": {
+            "title": "\\{review}Größe der Touch-Tasten",
+            "description": "\\{review}Passt die Größe der Touch-Tasten auf dem Bildschirm an.",
+        },
+        "input.touch_dpad_deadzone": {
+            "title": "\\{review}Touch-Steuerkreuz-Totzone",
+            "description": "\\{review}Passt die Totzone des Bildschirm-Steuerkreuzes an. Eine größere Totzone erfordert mehr Bewegung, bevor Richtungseingaben registriert werden.",
+        },
+        "input.touch_dpad_scale": {
+            "title": "\\{review}Größe des Touch-Steuerkreuzes",
+            "description": "\\{review}Passt die Größe des Bildschirm-Steuerkreuzes an.",
+        },
+        "input.touch_opacity": {
+            "title": "\\{review}Touch-Deckkraft",
+            "description": "\\{review}Passt die Transparenz der Touch-Tasten auf dem Bildschirm an.",
         },
         "language": {
             "title": "Sprache",
