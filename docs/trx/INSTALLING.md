@@ -168,6 +168,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── colosseum_itemrots.bin
 │   │   │   ├── colosseum_skybox.bin
 │   │   │   ├── colosseum_textures.bin
+│   │   │   ├── crystal.bin
 │   │   │   ├── cut1_setup.bin
 │   │   │   ├── cut2_setup.bin
 │   │   │   ├── cut3_setup.bin
@@ -229,7 +230,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── pda_model.bin
 │   │   │   ├── photo.bin
 │   │   │   ├── pickup_aid.bin
-│   │   │   ├── purple_crystal.bin
 │   │   │   ├── pyramid_fd.bin
 │   │   │   ├── pyramid_itemrots.bin
 │   │   │   ├── pyramid_textures.bin
@@ -516,6 +516,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── coldwar_textures.bin
 │   │   │   ├── common_pickup_meshes.bin
 │   │   │   ├── common_pickup_meshes_gm.bin
+│   │   │   ├── crystal.bin
 │   │   │   ├── cut2_setup.bin
 │   │   │   ├── cut2_textures.bin
 │   │   │   ├── cut3_setup.bin
@@ -626,7 +627,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── photo.bin
 │   │   │   ├── pickup_aid.bin
 │   │   │   ├── portcullis_sfx.bin
-│   │   │   ├── purple_crystal.bin
 │   │   │   ├── rig_crystals.bin
 │   │   │   ├── rig_itemrots.bin
 │   │   │   ├── rig_music_tracks.bin
