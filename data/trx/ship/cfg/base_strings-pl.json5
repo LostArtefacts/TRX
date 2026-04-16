@@ -568,6 +568,11 @@
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "TR3",
         },
+        "CREATURE_DROWN_POLICY": {
+            "CREATURE_DROWN_POLICY_DEFAULT": "\\{review}Domyślne",
+            "CREATURE_DROWN_POLICY_NEVER": "\\{review}Nigdy",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Zanurzone",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "\\{review}Kontroler",
             "INPUT_BACKEND_KEYBOARD": "\\{review}Klawiatura",
@@ -820,6 +825,10 @@
         "gameplay.change_pierre_spawn": {
             "title": "Zmień tryb pojawiania się Pierre'a",
             "description": "Włączenie tej opcji sprawi, że podczas przechodzenia przez określone miejsca Pierre pojawi się bliżej. Jeśli opcja jest wyłączona, nic się nie zmieni. Dotyczy tylko sytuacji, gdzie nie Lara nie przegoniła Pierre'a.",
+        },
+        "gameplay.creature_drown_policy": {
+            "title": "\\{review}Zasady tonięcia stworzeń",
+            "description": "\\{review}Określa zachowanie stworzeń lądowych w pomieszczeniach z wodą.\n\n- Nigdy: stworzenia lądowe nigdy nie toną (styl TR1).\n- Domyślne: stworzenia lądowe toną w wodzie o głębokości 2 klików lub większej (styl TR2/3).\n- Zanurzone: stworzenia lądowe toną tylko wtedy, gdy są całkowicie zanurzone.",
         },
         "gameplay.disable_extra_guns": {
             "title": "Wyłącz dodatkowe bronie",

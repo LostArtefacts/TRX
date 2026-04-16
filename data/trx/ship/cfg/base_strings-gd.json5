@@ -568,6 +568,11 @@
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "TR3",
         },
+        "CREATURE_DROWN_POLICY": {
+            "CREATURE_DROWN_POLICY_DEFAULT": "Bunaiteach",
+            "CREATURE_DROWN_POLICY_NEVER": "A-riamh",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "Fo uisge",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "\\{review}Smachdair",
             "INPUT_BACKEND_KEYBOARD": "\\{review}Meur-chlàr",
@@ -820,6 +825,10 @@
         "gameplay.change_pierre_spawn": {
             "title": "Atharraich modh nochdaidh Pierre",
             "description": "Leigidh seo le Pierre ùr a thigeas am bàrr a chuir an àite Pierre eile a tha fhathast beò.",
+        },
+        "gameplay.creature_drown_policy": {
+            "title": "Poileasaidh bàthadh chreutairean",
+            "description": "Bheir buaidh air an doigh anns a bhios creutairean tìreil gan giùlan fhèin ann an seòmraichean uisge.\n\n- A-riamh: cha bhàsaichidh creutairean tìreil gu bràth (stoidhle TR1).\n- Bunaiteach: bàsaichidh creutairean tìreil ann an uisge 2 chlic no nas doimhne (stoidhle TR2/3).\n- Fo uisge: bàsaichidh creutairean tìreil a-mhàin nuair a tha iad gu tur fon uisge.",
         },
         "gameplay.disable_extra_guns": {
             "title": "Thoir air falbh armachd a bharrachd",

@@ -127,6 +127,13 @@ const UI_SETTINGS_ENUM_ENTRY UI_Settings_AllyHostilityPolicyEnumEntries[] = {
     { -1 },
 };
 
+const UI_SETTINGS_ENUM_ENTRY UI_Settings_CreatureDrownPolicyEnumEntries[] = {
+    { CREATURE_DROWN_POLICY_NEVER },
+    { CREATURE_DROWN_POLICY_DEFAULT },
+    { CREATURE_DROWN_POLICY_SUBMERGED },
+    { -1 },
+};
+
 const UI_SETTINGS_ENUM_ENTRY UI_Settings_ProjectileAreaDamageEnumEntries[] = {
     { PROJECTILE_AREA_DAMAGE_SINGLE_SWEEP },
     { PROJECTILE_AREA_DAMAGE_MULTI_SWEEP },

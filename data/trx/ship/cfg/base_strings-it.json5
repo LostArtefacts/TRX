@@ -568,6 +568,11 @@
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "TR3",
         },
+        "CREATURE_DROWN_POLICY": {
+            "CREATURE_DROWN_POLICY_DEFAULT": "\\{review}Predefinito",
+            "CREATURE_DROWN_POLICY_NEVER": "\\{review}Mai",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Sommerso",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Controller",
             "INPUT_BACKEND_KEYBOARD": "Tastiera",
@@ -820,6 +825,10 @@
         "gameplay.change_pierre_spawn": {
             "title": "Modifica generazione Pierre",
             "description": "Fa in modo che, alla sua generazione, un Pierre (in fuga) sostituisca un altro Pierre (in fuga) già esistente.",
+        },
+        "gameplay.creature_drown_policy": {
+            "title": "\\{review}Comportamento di annegamento delle creature",
+            "description": "\\{review}Controlla come le creature terrestri si comportano nelle stanze d’acqua.\n\n- Mai: le creature terrestri non annegano mai (stile TR1).\n- Predefinito: le creature terrestri annegano in acqua profonda 2 clic o più (stile TR2/3).\n- Sommerso: le creature terrestri annegano solo quando sono completamente sommerse.",
         },
         "gameplay.disable_extra_guns": {
             "title": "Rimuovi armi extra",

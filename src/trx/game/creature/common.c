@@ -264,6 +264,26 @@ const ITEM *M_GetBaddieOverlap(const int16_t item_num)
     return nullptr;
 }
 
+static bool M_TestDrowned(
+    const ITEM *const item, const BOUNDS_16 *const bounds,
+    const int16_t room_num)
+{
+    if (item->hit_points <= 0) {
+        return false;
+    }
+
+    switch (g_Config.gameplay.creature_drown_policy) {
+    case CREATURE_DROWN_POLICY_DEFAULT:
+        return Room_Get(room_num)->flags.underwater;
+    case CREATURE_DROWN_POLICY_SUBMERGED:
+        const int32_t water_height = Room_GetWaterHeight(item->pos, room_num);
+        return water_height != NO_HEIGHT
+            && water_height + STEP_L <= item->pos.y - ABS(bounds->min.y);
+    default:
+        return false;
+    }
+}
+
 void Creature_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -1157,7 +1177,7 @@ bool Creature_Animate(
         Room_GetSector(
             (XYZ_32) { item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z },
             &room_num);
-        if (g_TRVersion >= 2 && Room_Get(room_num)->flags.underwater) {
+        if (M_TestDrowned(item, bounds, room_num)) {
             item->hit_points = 0;
         }
     }

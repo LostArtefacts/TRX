@@ -568,6 +568,11 @@
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "TR3",
         },
+        "CREATURE_DROWN_POLICY": {
+            "CREATURE_DROWN_POLICY_DEFAULT": "Default",
+            "CREATURE_DROWN_POLICY_NEVER": "Never",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "Submerged",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Controller",
             "INPUT_BACKEND_KEYBOARD": "Keyboard",
@@ -820,6 +825,10 @@
         "gameplay.change_pierre_spawn": {
             "title": "Change Pierre spawn mode",
             "description": "Makes a freshly triggered (runaway) Pierre replace an already existing (runaway) Pierre.",
+        },
+        "gameplay.creature_drown_policy": {
+            "title": "Creature drown policy",
+            "description": "Controls how land creatures behave in water rooms.\n\n- Never: land creatures will never drown (TR1 style).\n- Default: land creatures will drown in 2-click or deeper water (TR2/3 style).\n- Submerged: land creatures will drown only when fully submerged.",
         },
         "gameplay.disable_extra_guns": {
             "title": "Remove extra guns",

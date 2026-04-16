@@ -568,6 +568,11 @@
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "\\{review}TR3",
         },
+        "CREATURE_DROWN_POLICY": {
+            "CREATURE_DROWN_POLICY_DEFAULT": "\\{review}По умолчанию",
+            "CREATURE_DROWN_POLICY_NEVER": "\\{review}Никогда",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Погружены",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "\\{review}Контроллер",
             "INPUT_BACKEND_KEYBOARD": "\\{review}Клавиатура",
@@ -820,6 +825,10 @@
         "gameplay.change_pierre_spawn": {
             "title": "Изменить режим возрождения Пьера",
             "description": "Заставляет только что возродившегося (убегающего) Пьера заменить уже существующего (убегающего) Пьера.",
+        },
+        "gameplay.creature_drown_policy": {
+            "title": "\\{review}Поведение утопления существ",
+            "description": "\\{review}Определяет поведение наземных существ в водных помещениях.\n\n- Никогда: наземные существа никогда не тонут (стиль TR1).\n- По умолчанию: наземные существа тонут в воде глубиной 2 клика и более (стиль TR2/3).\n- Погружены: наземные существа тонут только при полном погружении.",
         },
         "gameplay.disable_extra_guns": {
             "title": "\\{review}Удалить лишнее оружие",
