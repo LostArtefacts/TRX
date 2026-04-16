@@ -109,6 +109,14 @@ static void M_LoadInputConfig(JSON_OBJECT *const root_obj)
             M_LoadInputLayout(controller_obj, INPUT_BACKEND_CONTROLLER, layout);
         }
     }
+
+    JSON_OBJECT *const touch_obj = JSON_ObjectGetObject(input_obj, "touch");
+    if (touch_obj != nullptr) {
+        for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+             layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+            M_LoadInputLayout(touch_obj, INPUT_BACKEND_TOUCH, layout);
+        }
+    }
 }
 
 static void M_DumpInputLayout(
@@ -152,6 +160,13 @@ static void M_DumpInputConfig(JSON_OBJECT *const root_obj)
          layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
         M_DumpInputLayout(keyboard_obj, INPUT_BACKEND_KEYBOARD, layout);
         M_DumpInputLayout(controller_obj, INPUT_BACKEND_CONTROLLER, layout);
+    }
+
+    JSON_OBJECT *const touch_obj = JSON_ObjectNew();
+    JSON_ObjectAppendObject(input_obj, "touch", touch_obj);
+    for (INPUT_LAYOUT layout = INPUT_LAYOUT_CUSTOM_1;
+         layout < INPUT_LAYOUT_NUMBER_OF; layout++) {
+        M_DumpInputLayout(touch_obj, INPUT_BACKEND_TOUCH, layout);
     }
 }
 
@@ -557,6 +572,7 @@ void Config_Sanitize(void)
     CLAMP(g_Config.audio.fmv_volume, 0.0f, 1.0f);
     CLAMP(g_Config.input.keyboard_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
     CLAMP(g_Config.input.controller_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
+    CLAMP(g_Config.input.touch_layout, 0, INPUT_LAYOUT_NUMBER_OF - 1);
     CLAMP(
         g_Config.gameplay.turbo_speed, CLOCK_TURBO_SPEED_MIN,
         CLOCK_TURBO_SPEED_MAX);

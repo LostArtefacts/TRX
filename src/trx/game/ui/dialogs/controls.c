@@ -48,8 +48,7 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
             return false;
         case UI_REQUESTER_CANCEL:
             return true;
-        case INPUT_BACKEND_KEYBOARD:
-        case INPUT_BACKEND_CONTROLLER:
+        default:
             s->backend = choice;
             s->phase = M_PHASE_EDITOR;
             g_Config.input.backend = s->backend;
@@ -60,8 +59,13 @@ bool UI_Controls_Control(UI_CONTROLS_STATE *const s)
     }
 
     case M_PHASE_EDITOR: {
-        const UI_CONTROLS_CHOICE choice =
-            UI_ControlsEditor_Control(&s->editor_state[s->backend]);
+        UI_CONTROLS_EDITOR_STATE *const editor = &s->editor_state[s->backend];
+        const UI_CONTROLS_CHOICE choice = UI_ControlsEditor_Control(editor);
+
+        // Sync the editor's selected layout tab back to config so
+        // Input_Update uses the layout the user is editing.
+        g_Config.input.layout[s->backend] = editor->active_layout;
+
         switch (choice) {
         case UI_CONTROLS_CHOICE_NOOP:
             break;

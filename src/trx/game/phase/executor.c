@@ -16,6 +16,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/touch_overlay.h>
 #include <trx/gl/context.h>
 #include <trx/gl/track.h>
 
@@ -68,6 +69,7 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     Output_Overlay_DrawBlackRectangle(opacity, false);
 
     Overlay_Draw();
+    TouchOverlay_Draw();
     Console_Draw();
     UI_EndScene();
 
@@ -179,6 +181,7 @@ static void M_Draw(PHASE *const phase)
     }
 
     Overlay_Draw();
+    TouchOverlay_Draw();
     Console_Draw();
     UI_EndScene();
 

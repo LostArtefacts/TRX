@@ -710,6 +710,10 @@ static bool M_AssignToJSONObject(
 static bool m_PrefixWasHeld[M_PREFIX_SLOTS];
 static bool m_PrefixComboFired[M_PREFIX_SLOTS];
 
+// Per-input press-tick table, indexed the same way as the prefix arrays.
+static uint32_t m_InputDownTick[M_PREFIX_SLOTS];
+static uint32_t m_Tick;
+
 static int32_t M_MapToPrefixIdx(const CONTROLLER_MAP *const map)
 {
     if (map->type == BT_BUTTON) {
@@ -717,6 +721,11 @@ static int32_t M_MapToPrefixIdx(const CONTROLLER_MAP *const map)
     }
     return SDL_CONTROLLER_BUTTON_MAX + map->bind.axis * 2
         + (map->axis_dir == 1 ? 1 : 0);
+}
+
+static uint32_t M_GetPressTick(const void *const key)
+{
+    return m_InputDownTick[M_MapToPrefixIdx((const CONTROLLER_MAP *)key)];
 }
 
 static bool M_IsInputHeld(const CONTROLLER_MAP *const map)
@@ -797,6 +806,28 @@ static bool m_RoleLongerFired[INPUT_ROLE_NUMBER_OF];
 static void M_ResolveCombos(
     const INPUT_LAYOUT layout, INPUT_STATE *const result)
 {
+    // Update press-tick tracking for every input, mirroring the prefix
+    // tables' index layout.
+    m_Tick++;
+    for (SDL_GameControllerButton btn = 0; btn < SDL_CONTROLLER_BUTTON_MAX;
+         btn++) {
+        const CONTROLLER_MAP map = { BT_BUTTON, { .button = btn }, 0 };
+        const int32_t idx = M_MapToPrefixIdx(&map);
+        if (M_JoyBtn(btn) && !m_PrefixWasHeld[idx]) {
+            m_InputDownTick[idx] = m_Tick;
+        }
+    }
+    for (SDL_GameControllerAxis axis = 0; axis < SDL_CONTROLLER_AXIS_MAX;
+         axis++) {
+        for (int16_t dir = -1; dir <= 1; dir += 2) {
+            const CONTROLLER_MAP map = { BT_AXIS, { .axis = axis }, dir };
+            const int32_t idx = M_MapToPrefixIdx(&map);
+            if (M_JoyAxis(axis) == dir && !m_PrefixWasHeld[idx]) {
+                m_InputDownTick[idx] = m_Tick;
+            }
+        }
+    }
+
     // Phase 1: Collect active bindings.
     const CONTROLLER_BINDING *active[INPUT_ROLE_NUMBER_OF] = {};
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
@@ -811,6 +842,20 @@ static void M_ResolveCombos(
             && Input_ComboSustainedHasImmediate(
                 layout, M_ToCombo(active[role]), M_GetComboBinding,
                 M_ComboKeysEqual)) {
+            InputState_ClearRole(result, role);
+            active[role] = nullptr;
+        }
+    }
+
+    // Suppress combos that appear to ride on top of ongoing movement:
+    // if the earliest-pressed key in the combo is bound to an immediate
+    // role, the user was already performing that action when they pressed
+    // the remaining combo keys.
+    for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
+        if (active[role] != nullptr
+            && Input_ComboEarliestKeyIsImmediate(
+                layout, M_ToCombo(active[role]), M_GetPressTick,
+                M_GetComboBinding, M_ComboKeysEqual)) {
             InputState_ClearRole(result, role);
             active[role] = nullptr;
         }

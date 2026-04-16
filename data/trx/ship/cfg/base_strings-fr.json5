@@ -211,6 +211,7 @@
                 "backend": {
                     "controller": "Manette",
                     "keyboard": "Clavier",
+                    "touch": "\\{review}Contrôles tactiles",
                 },
                 "customize": "Personnaliser les contrôles",
                 "layout": {
@@ -1206,6 +1207,10 @@
             "title": "Passeport plus réactif",
             "description": "Evite de bloquer complètement les contrôles pendant que les pages tournent : à la place, repousse simplement leur effet.",
         },
+        "input.enable_touch_controls": {
+            "title": "\\{review}Contrôles tactiles",
+            "description": "\\{review}Affiche une superposition de contrôles tactiles à l'écran pour les appareils à écran tactile.",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Pas de côtés améliorés",
             "description": "Permet d'effectuer des pas de côtés comme à partir de TR3 (exemple : Maj + touches directionelles). Les touches dédiées restent fonctionnelles.",
@@ -1213,6 +1218,22 @@
         "input.quick_guns_mode": {
             "title": "\\{review}Touches de l'arme rapide",
             "description": "\\{review}Contrôle le comportement des touches d'équipement de l'arme rapide.\n\n- Tirer seulement : appuyer sur une touche fera en sorte que Lara équipe l'arme assignée.\n- Tirer ou ranger : identique à ce qui précède, de plus Lara rangera l'arme assignée si elle la porte actuellement.",
+        },
+        "input.touch_button_scale": {
+            "title": "\\{review}Taille des boutons tactiles",
+            "description": "\\{review}Ajuste la taille des boutons de contrôle tactile à l'écran.",
+        },
+        "input.touch_dpad_deadzone": {
+            "title": "\\{review}Zone morte du D-pad tactile",
+            "description": "\\{review}Ajuste la zone morte du D-pad à l'écran. Une zone morte plus grande nécessite plus de mouvement avant que l'entrée directionnelle soit enregistrée.",
+        },
+        "input.touch_dpad_scale": {
+            "title": "\\{review}Taille du D-pad tactile",
+            "description": "\\{review}Ajuste la taille du D-pad à l'écran.",
+        },
+        "input.touch_opacity": {
+            "title": "\\{review}Opacité tactile",
+            "description": "\\{review}Ajuste la transparence des boutons de contrôle tactile à l'écran.",
         },
         "language": {
             "title": "Langue",

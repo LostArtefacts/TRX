@@ -21,6 +21,35 @@ static bool M_IsKeyNonCapturingSustained(
     return false;
 }
 
+bool Input_ComboEarliestKeyIsImmediate(
+    const INPUT_LAYOUT layout, const INPUT_COMBO_BINDING bind,
+    const INPUT_COMBO_GET_PRESS_TICK get_press_tick,
+    const INPUT_COMBO_GET_BINDING get_binding,
+    const INPUT_COMBO_KEYS_EQUAL keys_equal)
+{
+    if (bind.key_count < 2) {
+        return false;
+    }
+    uint32_t earliest = get_press_tick(Input_ComboKeyAt(&bind, 0));
+    for (int32_t k = 1; k < bind.key_count; k++) {
+        const uint32_t t = get_press_tick(Input_ComboKeyAt(&bind, k));
+        if (t < earliest) {
+            earliest = t;
+        }
+    }
+    // Any key pressed at that tick counts; if one of them is bound to an
+    // immediate role, the combo appears to ride on top of ongoing motion.
+    for (int32_t k = 0; k < bind.key_count; k++) {
+        const void *const key = Input_ComboKeyAt(&bind, k);
+        if (get_press_tick(key) == earliest
+            && Input_ComboIsKeyImmediate(
+                layout, key, get_binding, keys_equal)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Input_ComboIsProperSubset(
     const INPUT_COMBO_BINDING sub, const INPUT_COMBO_BINDING super,
     const INPUT_COMBO_KEYS_EQUAL keys_equal)

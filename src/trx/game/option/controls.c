@@ -81,3 +81,12 @@ void Option_Controls_Shutdown(void)
     M_PRIV *const p = &m_Priv;
     M_Shutdown(p);
 }
+
+void Option_Controls_RefreshBackendPicker(void)
+{
+    M_PRIV *const p = &m_Priv;
+    if (!p->ui.is_ready) {
+        return;
+    }
+    UI_ControlsBackend_Init(&p->ui.state.backend_state);
+}
