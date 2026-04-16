@@ -11,6 +11,9 @@
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
+#define M_PC_MESH 0b00000000'00000001
+#define M_PS_MESH 0b00000000'00000010
+
 typedef struct {
     bool initialised;
     bool counted_for_stats;
@@ -175,6 +178,10 @@ static void M_ControlHeal(const int16_t item_num)
 static void M_ControlSave(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    item->mesh_bits = g_Config.visuals.enable_ps1_crystals
+            && Object_Get(item->object_id)->mesh_count > 1
+        ? M_PS_MESH
+        : M_PC_MESH;
     Item_Animate(item);
 }
 

@@ -41,6 +41,7 @@
         "secret_models_gm.bin",
         "misc_sprites.bin",
         "lara_outfits.bin",
+        "crystal.bin",
     ],
 
     "levels": [
@@ -75,7 +76,6 @@
                 "shark_sfx.bin",
                 "winston_model.bin",
                 "coldwar_crystals.bin",
-                "purple_crystal.bin",
             ],
         },
 
@@ -101,7 +101,6 @@
                 "lara_guns.bin",
                 "winston_model.bin",
                 "fools_crystals.bin",
-                "purple_crystal.bin",
             ],
         },
 
@@ -127,7 +126,6 @@
                 "furnace_textures.bin",
                 "winston_model.bin",
                 "furnace_crystals.bin",
-                "purple_crystal.bin",
             ],
             "unobtainable_ally_kills": 2,
         },
@@ -167,7 +165,6 @@
                 "kingdom_textures.bin",
                 "winston_model.bin",
                 "kingdom_crystals.bin",
-                "purple_crystal.bin",
             ],
         },
 
@@ -199,7 +196,6 @@
                 "vegas_music_tracks.bin",
                 "vegas_textures.bin",
                 "vegas_crystals.bin",
-                "purple_crystal.bin",
             ],
         },
     ],

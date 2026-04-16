@@ -75,10 +75,6 @@ static bool M_IsRelevant(
     case IFT_ALTER_ANIM_SPRITE:
         return g_Config.visuals.fix_animated_sprites == (g_TRVersion >= 2);
 
-    case IFT_PS1_CRYSTAL:
-        return g_Config.gameplay.enable_save_crystals
-            && g_Config.visuals.enable_ps1_crystals;
-
     case IFT_PS1_SFX:
         return g_Config.audio.enable_ps1_sfx;
 
