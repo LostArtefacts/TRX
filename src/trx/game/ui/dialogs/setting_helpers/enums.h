@@ -26,6 +26,8 @@ extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_AspectModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_ScreenshotFormatEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY
     UI_Settings_AllyHostilityPolicyEnumEntries[];
+extern const UI_SETTINGS_ENUM_ENTRY
+    UI_Settings_CreatureDrownPolicyEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_LoadingScreensModeEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_MusicLoadConditionEnumEntries[];
 extern const UI_SETTINGS_ENUM_ENTRY UI_Settings_ShadowTypeEnumEntries[];

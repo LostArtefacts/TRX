@@ -568,6 +568,11 @@
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "\\{review}TR3",
         },
+        "CREATURE_DROWN_POLICY": {
+            "CREATURE_DROWN_POLICY_DEFAULT": "\\{review}Standard",
+            "CREATURE_DROWN_POLICY_NEVER": "\\{review}Nie",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Untergetaucht",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "\\{review}Controller",
             "INPUT_BACKEND_KEYBOARD": "\\{review}Tastatur",
@@ -820,6 +825,10 @@
         "gameplay.change_pierre_spawn": {
             "title": "Ändere Pierre Spawn-Modus",
             "description": "Erstellt einen gerade erst ausgelösten (flüchtenden) Pierre und ersetzt einen bereits existierenden (flüchtenden) Pierre.",
+        },
+        "gameplay.creature_drown_policy": {
+            "title": "\\{review}Kreaturen-Ertrinkverhalten",
+            "description": "\\{review}Steuert, wie sich Landkreaturen in Wasserräumen verhalten.\n\n- Nie: Landkreaturen ertrinken niemals (TR1-Stil).\n- Standard: Landkreaturen ertrinken in Wasser mit einer Tiefe von 2 Klicks oder mehr (TR2/3-Stil).\n- Untergetaucht: Landkreaturen ertrinken nur, wenn sie vollständig untergetaucht sind.",
         },
         "gameplay.disable_extra_guns": {
             "title": "\\{review}Entferne zusätzliche Waffen",

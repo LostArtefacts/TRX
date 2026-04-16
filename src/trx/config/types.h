@@ -260,6 +260,7 @@ typedef struct {
         bool enable_boulder_shake;
         bool enable_body_bags;
         ALLY_HOSTILITY_POLICY ally_hostility_policy;
+        CREATURE_DROWN_POLICY creature_drown_policy;
 
         bool enable_timer_in_inventory;
         LOOK_MODE look_mode;

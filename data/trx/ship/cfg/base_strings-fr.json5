@@ -568,6 +568,11 @@
             "CAMERA_MODE_TR2": "TR2",
             "CAMERA_MODE_TR3": "\\{review}TR3",
         },
+        "CREATURE_DROWN_POLICY": {
+            "CREATURE_DROWN_POLICY_DEFAULT": "\\{review}Par défaut",
+            "CREATURE_DROWN_POLICY_NEVER": "\\{review}Jamais",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Submergé",
+        },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "\\{review}Manette",
             "INPUT_BACKEND_KEYBOARD": "\\{review}Clavier",
@@ -820,6 +825,10 @@
         "gameplay.change_pierre_spawn": {
             "title": "Modifier le comportement d'apparition de Pierre",
             "description": "Fait en sorte que l'apparition d'un nouveau Pierre (qui s'échappe) remplace l'éventuel Pierre (qui s'échappe) déjà existant.",
+        },
+        "gameplay.creature_drown_policy": {
+            "title": "\\{review}Comportement de noyade des créatures",
+            "description": "\\{review}Contrôle le comportement des créatures terrestres dans les zones d’eau.\n\n- Jamais: les créatures terrestres ne se noient jamais (style TR1).\n- Par défaut: les créatures terrestres se noient dans une eau d’une profondeur de 2 clics ou plus (style TR2/3).\n- Submergé: les créatures terrestres se noient uniquement lorsqu’elles sont entièrement immergées.",
         },
         "gameplay.disable_extra_guns": {
             "title": "\\{review}Supprimer les armes supplémentaires",

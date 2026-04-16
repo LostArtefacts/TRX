@@ -6,6 +6,7 @@
 - added an option to stop the game from advancing when the window loses focus (Gameplay Options → General → Pause when focus lost) (#3978)
 - added `O_DISPOSABLE_ANIMATING_1`...`O_DISPOSABLE_ANIMATING_10`, which will behave like regular animating objects but are removed from being drawn when deactivated
 - added an option to fix inaccurate wall geometry in original levels (Gameplay Options → Fixes → Fix wall geometry)
+- added an option to control how land creatures behave in water (Gameplay Options → General → Creature drown policy) (#5387)
 - changed the PS1 crystal tint option to take effect without having to reload the level
 - improved weapon setup so picking up a weapon can now give a different amount of ammo than picking up its matching ammo item (#5352)
 - improved `--level PATH` so it accepts relative paths and reports clearer startup errors when the level cannot be launched
