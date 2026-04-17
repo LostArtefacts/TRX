@@ -49,7 +49,7 @@ static void M_Flood(ITEM *const item)
         pos.y += 100 * (LOGIC_FPS - flip_timer);
     }
 
-    Sound_Effect(SFX_FLOOD, &pos, SPM_NORMAL);
+    Sound_Effect(SFX_FLOOD, &pos, SPM_ALWAYS);
     Room_IncrementFlipTimer(1);
 }
 
