@@ -73,6 +73,7 @@
 - fixed potential crashes when using grenades on enemies in levels that use the body bag feature (#5378, regression from 1.1)
 - fixed activated one-shot antitriggers not being remembered when loading a save (regression from 1.2)
 - fixed the Ora Dagger appearing too low in the inventory in Meteorite Cavern (regression from 1.2)
+- fixed quest item pickup counts incrementing if the item cheat is used and then save/load is repeatedly used (regression from 1.2)
 
 
 
