@@ -835,7 +835,9 @@ bool SG_File_LoadInventory(JSON_READ_IO *const io)
     for (int32_t i = 0; objects[i].key != nullptr; i++) {
         int16_t qty;
         if (JSON_READ(io, objects[i].key, &qty)) {
-            Inv_RemoveItem(objects[i].object_id);
+            while (Inv_RequestItem(objects[i].object_id) != 0) {
+                Inv_RemoveItem(objects[i].object_id);
+            }
             Inv_AddItemNTimes(objects[i].object_id, qty);
         }
     }
