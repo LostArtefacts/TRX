@@ -1659,6 +1659,15 @@
         "assault_target": {
             "name": "Targaid Ionnsaigh",
         },
+        "atlantean_ground": {
+            "name": "Atlantach Talmhainn",
+        },
+        "atlantean_shooter": {
+            "name": "Atlantach le Gunna",
+        },
+        "atlantean_winged": {
+            "name": "Atlantach Sgiathach",
+        },
         "autos": {
             "name": "Piostalan Fèin-obrachail",
         },
@@ -2382,15 +2391,6 @@
         },
         "mummy": {
             "name": "Spaoileadan",
-        },
-        "mutant_1": {
-            "name": "Mùthaidh 1",
-        },
-        "mutant_2": {
-            "name": "Mùthaidh 2",
-        },
-        "mutant_3": {
-            "name": "Mùthaidh 3",
         },
         "natla": {
             "name": "Natla",

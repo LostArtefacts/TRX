@@ -8,7 +8,7 @@
 #include <trx/game/level.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/creatures/mutant.h>
+#include <trx/game/objects/creatures/atlantean.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell/paths.h>
 #include <trx/game/sound.h>
@@ -150,7 +150,7 @@ static void M_CompleteSetup(
     // We inject explosions sprites and sounds, although in the original game,
     // some levels lack them, resulting in no audio or visual effects when
     // killing mutants. This is to maintain that feature.
-    Mutant_ToggleExplosions(Object_Get(O_EXPLOSION_1)->loaded);
+    Atlantean_ToggleExplosions(Object_Get(O_EXPLOSION_1)->loaded);
 
     Inject_AllInjections();
 

@@ -125,15 +125,15 @@ OBJECT_ID Pod_GetBugObjectID(const ITEM *const item)
 {
     switch ((item->flags & IF_CODE_BITS) >> 9) {
     case 1:
-        return O_WARRIOR_2;
+        return O_ATLANTEAN_SHOOTER;
     case 2:
         return O_CENTAUR;
     case 4:
         return O_TORSO;
     case 8:
-        return O_WARRIOR_3;
+        return O_ATLANTEAN_GROUND;
     default:
-        return O_WARRIOR_1;
+        return O_ATLANTEAN_WINGED;
     }
 }
 

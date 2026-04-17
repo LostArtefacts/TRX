@@ -1662,6 +1662,15 @@
         "assault_target": {
             "name": "Tarcza",
         },
+        "atlantean_ground": {
+            "name": "\\{review}Atlantydczyk Naziemny",
+        },
+        "atlantean_shooter": {
+            "name": "\\{review}Atlantydczyk (Strzelający)",
+        },
+        "atlantean_winged": {
+            "name": "\\{review}Skrzydlaty Atlantydczyk",
+        },
         "autos": {
             "name": "Pistolety automatyczne",
         },
@@ -2366,15 +2375,6 @@
         },
         "mummy": {
             "name": "Mumia",
-        },
-        "mutant_1": {
-            "name": "Mutant 1",
-        },
-        "mutant_2": {
-            "name": "Mutant 2",
-        },
-        "mutant_3": {
-            "name": "Mutant 3",
         },
         "natla": {
             "name": "Natla",

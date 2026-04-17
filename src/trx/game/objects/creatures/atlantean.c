@@ -1,4 +1,4 @@
-#include <trx/game/objects/creatures/mutant.h>
+#include <trx/game/objects/creatures/atlantean.h>
 
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
@@ -31,7 +31,7 @@
 #define FLYER_RADIUS (WALL_L / 3) // = 341
 #define FLYER_SMARTNESS 0x7FFF
 
-#define WARRIOR2_SMARTNESS 0x2000
+#define M_SHOOTING_SMARTNESS 0x2000
 
 typedef enum {
     MUTANT_STATE_EMPTY = 0,
@@ -51,11 +51,11 @@ typedef enum {
 } MUTANT_STATE;
 
 static bool m_EnableExplosions = true;
-static BITE m_WarriorBite = { .pos = { -27, 98, 0 }, .mesh_num = 10 };
-static BITE m_WarriorRocket = { .pos = { 51, 213, 0 }, .mesh_num = 14 };
-static BITE m_WarriorShard = { .pos = { -35, 269, 0 }, .mesh_num = 9 };
+static BITE m_Bite = { .pos = { -27, 98, 0 }, .mesh_num = 10 };
+static BITE m_Rocket = { .pos = { 51, 213, 0 }, .mesh_num = 14 };
+static BITE m_Shard = { .pos = { -35, 269, 0 }, .mesh_num = 9 };
 
-static void M_Initialise2(const int16_t item_num)
+static void M_InitialiseGround(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     Item_Get(item_num)->mesh_bits = 0xFFE07FFF;
@@ -92,7 +92,7 @@ static void M_Control(const int16_t item_num)
 
         int32_t shoot1 = 0;
         int32_t shoot2 = 0;
-        if (item->object_id != O_WARRIOR_3
+        if (item->object_id != O_ATLANTEAN_GROUND
             && Creature_CanTargetEnemy(item, &info)
             && (info.zone_num != info.enemy_zone_num
                 || info.distance > FLYER_ATTACK_RANGE)) {
@@ -103,7 +103,7 @@ static void M_Control(const int16_t item_num)
             }
         }
 
-        if (item->object_id == O_WARRIOR_1) {
+        if (item->object_id == O_ATLANTEAN_WINGED) {
             if (item->current_anim_state == MUTANT_STATE_FLY) {
                 if ((flyer->flags & FLYER_FLYMODE) && flyer->mood != MOOD_ESCAPE
                     && info.zone_num == info.enemy_zone_num) {
@@ -233,7 +233,7 @@ static void M_Control(const int16_t item_num)
         case MUTANT_STATE_ATTACK_1:
             if (item->required_anim_state == MUTANT_STATE_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                Creature_Effect(item, &m_WarriorBite, Spawn_Blood);
+                Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Lara_TakeDamage(FLYER_LUNGE_DAMAGE, true);
                 item->required_anim_state = MUTANT_STATE_STOP;
             }
@@ -242,7 +242,7 @@ static void M_Control(const int16_t item_num)
         case MUTANT_STATE_ATTACK_2:
             if (item->required_anim_state == MUTANT_STATE_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                Creature_Effect(item, &m_WarriorBite, Spawn_Blood);
+                Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Lara_TakeDamage(FLYER_CHARGE_DAMAGE, true);
                 item->required_anim_state = MUTANT_STATE_RUN;
             }
@@ -251,7 +251,7 @@ static void M_Control(const int16_t item_num)
         case MUTANT_STATE_ATTACK_3:
             if (item->required_anim_state == MUTANT_STATE_EMPTY
                 && (item->touch_bits & FLYER_TOUCH)) {
-                Creature_Effect(item, &m_WarriorBite, Spawn_Blood);
+                Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Lara_TakeDamage(FLYER_PUNCH_DAMAGE, true);
                 item->required_anim_state = MUTANT_STATE_STOP;
             }
@@ -279,10 +279,10 @@ static void M_Control(const int16_t item_num)
         case MUTANT_STATE_SHOOT:
             if (flyer->flags & FLYER_BULLET1) {
                 flyer->flags &= ~FLYER_BULLET1;
-                Creature_Effect(item, &m_WarriorShard, Spawn_AtlanteanShard);
+                Creature_Effect(item, &m_Shard, Spawn_AtlanteanShard);
             } else if (flyer->flags & FLYER_BULLET2) {
                 flyer->flags &= ~FLYER_BULLET2;
-                Creature_Effect(item, &m_WarriorRocket, Spawn_AtlanteanBomb);
+                Creature_Effect(item, &m_Rocket, Spawn_AtlanteanBomb);
             }
             break;
 
@@ -310,7 +310,7 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupWinged(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
@@ -333,34 +333,34 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 2)->rot.y = true;
 }
 
-static void M_Setup2(OBJECT *const obj)
+static void M_SetupShooting(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    *obj = *Object_Get(O_WARRIOR_1);
-    obj->setup_func = M_Setup2;
-    obj->initialise_func = M_Initialise2;
-    obj->smartness = WARRIOR2_SMARTNESS;
+    *obj = *Object_Get(O_ATLANTEAN_WINGED);
+    obj->setup_func = M_SetupShooting;
+    obj->initialise_func = M_InitialiseGround;
+    obj->smartness = M_SHOOTING_SMARTNESS;
     obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
 }
 
-static void M_Setup3(OBJECT *const obj)
+static void M_SetupGround(OBJECT *const obj)
 {
     if (!obj->loaded) {
         return;
     }
-    *obj = *Object_Get(O_WARRIOR_1);
-    obj->setup_func = M_Setup3;
-    obj->initialise_func = M_Initialise2;
+    *obj = *Object_Get(O_ATLANTEAN_WINGED);
+    obj->setup_func = M_SetupGround;
+    obj->initialise_func = M_InitialiseGround;
     obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
 }
 
-void Mutant_ToggleExplosions(bool enable)
+void Atlantean_ToggleExplosions(bool enable)
 {
     m_EnableExplosions = enable;
 }
 
-REGISTER_OBJECT(O_WARRIOR_1, M_Setup)
-REGISTER_OBJECT(O_WARRIOR_2, M_Setup2)
-REGISTER_OBJECT(O_WARRIOR_3, M_Setup3)
+REGISTER_OBJECT(O_ATLANTEAN_WINGED, M_SetupWinged)
+REGISTER_OBJECT(O_ATLANTEAN_SHOOTER, M_SetupShooting)
+REGISTER_OBJECT(O_ATLANTEAN_GROUND, M_SetupGround)
