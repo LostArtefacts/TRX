@@ -8,6 +8,7 @@
 - added an option to fix inaccurate wall geometry in original levels (Gameplay Options → Fixes → Fix wall geometry)
 - added an option to control how land creatures behave in water (Gameplay Options → General → Creature drown policy) (#5387)
 - changed the PS1 crystal tint option to take effect without having to reload the level
+- changed the `ITEM_ACTION_FLOOD` sound effect to play when underwater rather than only when above water
 - improved weapon setup so picking up a weapon can now give a different amount of ammo than picking up its matching ammo item (#5352)
 - improved `--level PATH` so it accepts relative paths and reports clearer startup errors when the level cannot be launched
 - improved savegame loading if item counts have changed between making the save and loading it
@@ -26,6 +27,7 @@
 
 **TR1**:
 - added savegame crystals to Unfinished Business (#1525)
+- fixed not being able to hear the flood/drain sound effect when using the lever in Tomb of Tihocan room 23
 
 **TR2**:
 - added savegame crystals to base levels and The Golden Mask
