@@ -1659,6 +1659,15 @@
         "assault_target": {
             "name": "\\{review}Цель атаки",
         },
+        "atlantean_ground": {
+            "name": "\\{review}Наземный Атлант",
+        },
+        "atlantean_shooter": {
+            "name": "\\{review}Атлант (Стреляющий)",
+        },
+        "atlantean_winged": {
+            "name": "\\{review}Крылатый Атлант",
+        },
         "autos": {
             "name": "\\{review}Автоматические пистолеты",
         },
@@ -2378,15 +2387,6 @@
         },
         "mummy": {
             "name": "Мумия",
-        },
-        "mutant_1": {
-            "name": "Мутант 1",
-        },
-        "mutant_2": {
-            "name": "Мутант 2",
-        },
-        "mutant_3": {
-            "name": "Мутант 3",
         },
         "natla": {
             "name": "Натла",

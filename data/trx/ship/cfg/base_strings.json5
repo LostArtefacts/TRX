@@ -1659,6 +1659,15 @@
         "assault_target": {
             "name": "Assault Target",
         },
+        "atlantean_ground": {
+            "name": "Ground Atlantean",
+        },
+        "atlantean_shooter": {
+            "name": "Shooting Atlantean",
+        },
+        "atlantean_winged": {
+            "name": "Winged Atlantean",
+        },
         "autos": {
             "name": "Automatic Pistols",
         },
@@ -2397,15 +2406,6 @@
         },
         "mummy": {
             "name": "Mummy",
-        },
-        "mutant_1": {
-            "name": "Mutant 1",
-        },
-        "mutant_2": {
-            "name": "Mutant 2",
-        },
-        "mutant_3": {
-            "name": "Mutant 3",
         },
         "natla": {
             "name": "Natla",

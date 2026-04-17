@@ -7,36 +7,36 @@ order: 14
 
 ### Tomb Raider 1
 
-| Game ID | TRX ID          | Hit points |
-| ------- | --------------- | ---------- |
-| `7`     | O_WOLF          | `6`        |
-| `8`     | O_BEAR          | `20`       |
-| `9`     | O_BAT           | `1`        |
-| `10`    | O_CROCODILE     | `20`       |
-| `11`    | O_ALLIGATOR     | `20`       |
-| `12`    | O_LION          | `30`       |
-| `13`    | O_LIONESS       | `25`       |
-| `14`    | O_PUMA          | `45`       |
-| `15`    | O_APE           | `22`       |
-| `16`    | O_RAT           | `5`        |
-| `17`    | O_VOLE          | `5`        |
-| `18`    | O_TREX          | `100`      |
-| `19`    | O_RAPTOR        | `20`       |
-| `20`    | O_WARRIOR_1     | `50`       |
-| `21`    | O_WARRIOR_2     | `50`       |
-| `22`    | O_WARRIOR_3     | `50`       |
-| `23`    | O_CENTAUR       | `120`      |
-| `24`    | O_MUMMY         | `18`       |
-| `25`    | O_DINO_WARRIOR  | `100`      |
-| `26`    | O_FISH          | `12`       |
-| `27`    | O_LARSON        | `50`       |
-| `28`    | O_PIERRE        | `70`       |
-| `30`    | O_SKATEKID      | `125`      |
-| `31`    | O_COWBOY        | `150`      |
-| `32`    | O_BALDY         | `200`      |
-| `33`    | O_NATLA         | `400`      |
-| `34`    | O_TORSO         | `500`      |
-| `145`   | O_SCION_ITEM_3  | `5`        |
+| Game ID | TRX ID              | Hit points |
+| ------- | ------------------- | ---------- |
+| `7`     | O_WOLF              | `6`        |
+| `8`     | O_BEAR              | `20`       |
+| `9`     | O_BAT               | `1`        |
+| `10`    | O_CROCODILE         | `20`       |
+| `11`    | O_ALLIGATOR         | `20`       |
+| `12`    | O_LION              | `30`       |
+| `13`    | O_LIONESS           | `25`       |
+| `14`    | O_PUMA              | `45`       |
+| `15`    | O_APE               | `22`       |
+| `16`    | O_RAT               | `5`        |
+| `17`    | O_VOLE              | `5`        |
+| `18`    | O_TREX              | `100`      |
+| `19`    | O_RAPTOR            | `20`       |
+| `20`    | O_ATLANTEAN_WINGED  | `50`       |
+| `21`    | O_ATLANTEAN_SHOOTER | `50`       |
+| `22`    | O_ATLANTEAN_GROUND  | `50`       |
+| `23`    | O_CENTAUR           | `120`      |
+| `24`    | O_MUMMY             | `18`       |
+| `25`    | O_DINO_WARRIOR      | `100`      |
+| `26`    | O_FISH              | `12`       |
+| `27`    | O_LARSON            | `50`       |
+| `28`    | O_PIERRE            | `70`       |
+| `30`    | O_SKATEKID          | `125`      |
+| `31`    | O_COWBOY            | `150`      |
+| `32`    | O_BALDY             | `200`      |
+| `33`    | O_NATLA             | `400`      |
+| `34`    | O_TORSO             | `500`      |
+| `145`   | O_SCION_ITEM_3      | `5`        |
 
 ### Tomb Raider 2
 

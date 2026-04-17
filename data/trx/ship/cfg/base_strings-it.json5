@@ -1659,6 +1659,15 @@
         "assault_target": {
             "name": "Obiettivo Corso di Addestramento",
         },
+        "atlantean_ground": {
+            "name": "\\{review}Atlantideo Alato",
+        },
+        "atlantean_shooter": {
+            "name": "\\{review}Atlantideo (Che Spara)",
+        },
+        "atlantean_winged": {
+            "name": "\\{review}Atlantideo Terrestre",
+        },
         "autos": {
             "name": "Pistole Automatiche",
         },
@@ -2398,15 +2407,6 @@
         },
         "mummy": {
             "name": "Mummia",
-        },
-        "mutant_1": {
-            "name": "Mutante 1",
-        },
-        "mutant_2": {
-            "name": "Mutante 2",
-        },
-        "mutant_3": {
-            "name": "Mutante 3",
         },
         "natla": {
             "name": "Natla",

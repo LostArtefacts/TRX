@@ -32,6 +32,17 @@ order: 3
       - Move that value into `ammo.pickup_qty_alt`.
    4. Remove the old `pickup_qty` and `pickup_qty_alt` fields.
 
+3. **TR1 Atlantean catalog names were changed**:
+   In `cfg/catalog_objects.csv`, update old symbols to the new names:
+    - `O_WARRIOR_1` → `O_ATLANTEAN_WINGED`
+    - `O_WARRIOR_2` → `O_ATLANTEAN_SHOOTER`
+    - `O_WARRIOR_3` → `O_ATLANTEAN_GROUND`
+
+    This also affects catalog-derived Lua names (`trx.catalog.objects`):
+    - `warrior_1` → `atlantean_winged`
+    - `warrior_2` → `atlantean_shooter`
+    - `warrior_3` → `atlantean_ground`
+
 ### Version 1.4 to 1.5
 
 1. **Update TR2 detonator box**
