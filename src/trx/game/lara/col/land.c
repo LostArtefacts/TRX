@@ -127,10 +127,10 @@ static bool M_CanControlDrop(
     switch (old_coll.quadrant) {
     case DIR_NORTH:
     case DIR_SOUTH:
-        return ABS(old_coll.tilt_x) < 2;
+        return ABS(old_coll.tilt.x) < MAX_SLOPE;
     case DIR_EAST:
     case DIR_WEST:
-        return ABS(old_coll.tilt_z) < 2;
+        return ABS(old_coll.tilt.z) < MAX_SLOPE;
     default:
         return false;
     }
@@ -162,7 +162,7 @@ bool Lara_Col_Fallen(ITEM *const item, const COLL_INFO *const coll)
 
 bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
 {
-    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
+    if (ABS(coll->tilt.x) <= MAX_SLOPE && ABS(coll->tilt.z) <= MAX_SLOPE) {
         return false;
     }
 
@@ -172,15 +172,15 @@ bool Lara_Col_TestSlide(ITEM *const item, COLL_INFO *const coll)
     }
 
     int16_t angle = 0;
-    if (coll->tilt_x > 2) {
+    if (coll->tilt.x > MAX_SLOPE) {
         angle = -DEG_90;
-    } else if (coll->tilt_x < -2) {
+    } else if (coll->tilt.x < -MAX_SLOPE) {
         angle = DEG_90;
     }
 
-    if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x)) {
+    if (coll->tilt.z > 2 && coll->tilt.z > ABS(coll->tilt.x)) {
         angle = -DEG_180;
-    } else if (coll->tilt_z < -2 && -coll->tilt_z > ABS(coll->tilt_x)) {
+    } else if (coll->tilt.z < -2 && -coll->tilt.z > ABS(coll->tilt.x)) {
         angle = 0;
     }
 
@@ -711,7 +711,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_TestSlide(item, coll);
     item->pos.y += coll->side_mid.floor;
-    if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2) {
+    if (ABS(coll->tilt.x) <= MAX_SLOPE && ABS(coll->tilt.z) <= MAX_SLOPE) {
         item->goal_anim_state = LS(LS_STOP);
     }
 }

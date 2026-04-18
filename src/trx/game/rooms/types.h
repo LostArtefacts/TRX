@@ -61,7 +61,7 @@ typedef struct {
     int32_t height;
     bool is_split;
     union {
-        int16_t tilt;
+        XZ_16 tilt;
         SPLIT split;
     };
 } SURFACE;
