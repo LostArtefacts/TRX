@@ -15,7 +15,7 @@ void Room_SetAbyssHeight(int16_t height);
 bool Room_IsAbyssHeight(int32_t height);
 
 HEIGHT_TYPE Room_GetHeightType(void);
-int16_t Room_GetTiltType(const SECTOR *sector, XYZ_32 pos);
+XZ_16 Room_GetTiltType(const SECTOR *sector, XYZ_32 pos);
 
 int32_t Room_GetHeight(const SECTOR *sector, XYZ_32 pos);
 int32_t Room_GetHeightEx(
