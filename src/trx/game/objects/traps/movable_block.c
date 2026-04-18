@@ -470,7 +470,8 @@ static bool M_IsAgainstFloor(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-    return sector->floor.tilt == 0 && sector->floor.height == item->pos.y;
+    return sector->floor.tilt.x == 0 && sector->floor.tilt.z == 0
+        && sector->floor.height == item->pos.y;
 }
 
 static bool M_IsAgainstCeiling(const ITEM *const item)
@@ -479,7 +480,7 @@ static bool M_IsAgainstCeiling(const ITEM *const item)
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
     const SECTOR *const sky_sector =
         Room_GetSkySector(sector, item->pos.x, item->pos.z);
-    return sky_sector->ceiling.tilt == 0
+    return sky_sector->ceiling.tilt.x == 0 && sky_sector->ceiling.tilt.z == 0
         && sky_sector->ceiling.height == item->pos.y - WALL_L;
 }
 

@@ -231,8 +231,8 @@ void Room_PopulateSectorData(
 {
     sector->floor.type = SURFACE_FLOOR;
     sector->ceiling.type = SURFACE_CEILING;
-    sector->floor.tilt = 0;
-    sector->ceiling.tilt = 0;
+    sector->floor.tilt = (XZ_16) {};
+    sector->ceiling.tilt = (XZ_16) {};
     sector->floor.split.type = SPLIT_NONE;
     sector->ceiling.split.type = SPLIT_NONE;
     sector->floor.is_split = false;
@@ -247,6 +247,13 @@ void Room_PopulateSectorData(
         return;
     }
 
+#define L_TILT(tilt)                                                           \
+    do {                                                                       \
+        const int16_t tilt_value = *data++;                                    \
+        tilt.x = (int8_t)tilt_value;                                           \
+        tilt.z = tilt_value >> 8;                                              \
+    } while (false)
+
     const int16_t *data = &floor_data[start_index];
     int16_t fd_entry;
     do {
@@ -254,11 +261,11 @@ void Room_PopulateSectorData(
 
         switch (M_ENTRY_TYPE(fd_entry)) {
         case FT_TILT:
-            sector->floor.tilt = *data++;
+            L_TILT(sector->floor.tilt);
             break;
 
         case FT_ROOF:
-            sector->ceiling.tilt = *data++;
+            L_TILT(sector->ceiling.tilt);
             break;
 
         case FT_DOOR:
@@ -316,6 +323,8 @@ void Room_PopulateSectorData(
             break;
         }
     } while (!M_IS_DONE(fd_entry));
+
+#undef L_TILT
 }
 
 void Room_ReadTriangulation(

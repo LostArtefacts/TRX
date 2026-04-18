@@ -16,52 +16,100 @@ static int16_t m_AbyssMinHeight = 0;
 static int32_t m_AbyssMaxHeight = 0;
 static HEIGHT_TYPE m_HeightType = HT_WALL;
 
+static inline int32_t M_GetTiltShift(
+    const XZ_16 tilt, const int32_t x, const int32_t z, const bool is_ceiling)
+{
+    int32_t shift = 0;
+    if (is_ceiling) {
+        if (tilt.z < 0) {
+            shift += M_NEG_TILT(tilt.z, z);
+        } else {
+            shift -= M_POS_TILT(tilt.z, z);
+        }
+
+        if (tilt.x < 0) {
+            shift += M_POS_TILT(tilt.x, x);
+        } else {
+            shift -= M_NEG_TILT(tilt.x, x);
+        }
+    } else {
+        if (tilt.z < 0) {
+            shift -= M_NEG_TILT(tilt.z, z);
+        } else {
+            shift += M_POS_TILT(tilt.z, z);
+        }
+
+        if (tilt.x < 0) {
+            shift -= M_NEG_TILT(tilt.x, x);
+        } else {
+            shift += M_POS_TILT(tilt.x, x);
+        }
+    }
+
+    return shift;
+}
+
 static int32_t M_GetUnsplitSurfaceHeight(
     const SURFACE surface, const int32_t x, const int32_t z)
 {
     int32_t height = surface.height;
-    if (surface.tilt == 0) {
+    if (surface.tilt.x == 0 && surface.tilt.z == 0) {
         return height;
     }
 
-    const int32_t z_off = surface.tilt >> 8;
-    const int32_t x_off = (int8_t)surface.tilt;
-
     const HEIGHT_TYPE slope_type =
-        (ABS(z_off) > 2 || ABS(x_off) > 2) ? HT_BIG_SLOPE : HT_SMALL_SLOPE;
+        (ABS(surface.tilt.z) > 2 || ABS(surface.tilt.x) > 2) ? HT_BIG_SLOPE
+                                                             : HT_SMALL_SLOPE;
     if (Camera_IsChunky() && slope_type == HT_BIG_SLOPE) {
         return height;
     }
 
-    if (surface.type == SURFACE_CEILING) {
-        if (z_off < 0) {
-            height += (int16_t)M_NEG_TILT(z_off, z);
-        } else {
-            height -= (int16_t)M_POS_TILT(z_off, z);
-        }
+    const bool is_ceiling = surface.type == SURFACE_CEILING;
+    height += M_GetTiltShift(surface.tilt, x, z, is_ceiling);
 
-        if (x_off < 0) {
-            height += (int16_t)M_POS_TILT(x_off, x);
-        } else {
-            height -= (int16_t)M_NEG_TILT(x_off, x);
-        }
-    } else {
+    if (!is_ceiling) {
         m_HeightType = slope_type;
-
-        if (z_off < 0) {
-            height -= (int16_t)M_NEG_TILT(z_off, z);
-        } else {
-            height += (int16_t)M_POS_TILT(z_off, z);
-        }
-
-        if (x_off < 0) {
-            height -= (int16_t)M_NEG_TILT(x_off, x);
-        } else {
-            height += (int16_t)M_POS_TILT(x_off, x);
-        }
     }
 
     return height;
+}
+
+static inline XZ_16 M_GetSplitTilt(
+    const SURFACE *const surface, const int32_t x, const int32_t z,
+    int32_t *const shift)
+{
+    const bool is_ceiling = surface->type == SURFACE_CEILING;
+    const SPLIT split = surface->split;
+    const int32_t dx = x & M_WALL_MASK;
+    const int32_t dz = z & M_WALL_MASK;
+    const int16_t t0 = split.tilts[0];
+    const int16_t t1 = split.tilts[1];
+    const int16_t t2 = split.tilts[2];
+    const int16_t t3 = split.tilts[3];
+    XZ_16 tilt = {};
+
+    if (split.type == SPLIT_NWSE_SOLID || split.type == SPLIT_NWSE_PORTAL_SW
+        || split.type == SPLIT_NWSE_PORTAL_NE) {
+        if (dx > WALL_L - dz) {
+            tilt.x = is_ceiling ? (t0 - t1) : (t3 - t2);
+            tilt.z = t3 - t0;
+            *shift = split.h1;
+        } else {
+            tilt.x = is_ceiling ? (t3 - t2) : (t0 - t1);
+            tilt.z = t2 - t1;
+            *shift = split.h2;
+        }
+    } else if (dx > dz) {
+        tilt.x = is_ceiling ? (t3 - t2) : (t0 - t1);
+        tilt.z = t3 - t0;
+        *shift = split.h1;
+    } else {
+        tilt.x = is_ceiling ? (t0 - t1) : (t3 - t2);
+        tilt.z = t2 - t1;
+        *shift = split.h2;
+    }
+
+    return tilt;
 }
 
 static int16_t M_GetSplitSurfaceHeight(
@@ -74,71 +122,21 @@ static int16_t M_GetSplitSurfaceHeight(
         return is_ceiling ? MAX(ch1, ch2) : MIN(ch1, ch2);
     }
 
-    const int32_t dx = x & M_WALL_MASK;
-    const int32_t dz = z & M_WALL_MASK;
-    const int16_t t0 = surface.split.tilts[0];
-    const int16_t t1 = surface.split.tilts[1];
-    const int16_t t2 = surface.split.tilts[2];
-    const int16_t t3 = surface.split.tilts[3];
-
     int16_t height = surface.height;
-    int16_t x_off;
-    int16_t z_off;
     if (!is_ceiling) {
         m_HeightType = HT_SPLIT_TRI;
     }
 
-    if (surface.split.type == SPLIT_NWSE_SOLID
-        || surface.split.type == SPLIT_NWSE_PORTAL_SW
-        || surface.split.type == SPLIT_NWSE_PORTAL_NE) {
-        if (dx <= WALL_L - dz) {
-            height += surface.split.h2;
-            x_off = t2 - t1;
-            z_off = is_ceiling ? (t3 - t2) : (t0 - t1);
-        } else {
-            height += surface.split.h1;
-            x_off = t3 - t0;
-            z_off = is_ceiling ? (t0 - t1) : (t3 - t2);
-        }
-    } else if (dx <= dz) {
-        height += surface.split.h2;
-        x_off = t2 - t1;
-        z_off = is_ceiling ? (t0 - t1) : (t3 - t2);
-    } else {
-        height += surface.split.h1;
-        x_off = t3 - t0;
-        z_off = is_ceiling ? (t3 - t2) : (t0 - t1);
-    }
+    int32_t shift = 0;
+    const XZ_16 tilt = M_GetSplitTilt(&surface, x, z, &shift);
+    shift += M_GetTiltShift(tilt, x, z, is_ceiling);
+    height += shift;
 
-    if (is_ceiling) {
-        if (x_off < 0) {
-            height += M_NEG_TILT(x_off, z);
-        } else {
-            height -= M_POS_TILT(x_off, z);
-        }
-
-        if (z_off < 0) {
-            height += M_POS_TILT(z_off, x);
-        } else {
-            height -= M_NEG_TILT(z_off, x);
-        }
-    } else {
-        if (ABS(x_off) > 2 || ABS(z_off) > 2) {
+    if (!is_ceiling) {
+        if (ABS(tilt.x) > 2 || ABS(tilt.z) > 2) {
             m_HeightType = HT_DIAGONAL;
         } else if (m_HeightType != HT_SPLIT_TRI) {
             m_HeightType = HT_SMALL_SLOPE;
-        }
-
-        if (x_off < 0) {
-            height -= M_NEG_TILT(x_off, z);
-        } else {
-            height += M_POS_TILT(x_off, z);
-        }
-
-        if (z_off < 0) {
-            height -= M_NEG_TILT(z_off, x);
-        } else {
-            height += M_POS_TILT(z_off, x);
         }
     }
 
@@ -155,37 +153,6 @@ static int32_t M_GetSurfaceHeight(
 
     return surface.is_split ? M_GetSplitSurfaceHeight(surface, x, z)
                             : M_GetUnsplitSurfaceHeight(surface, x, z);
-}
-
-static int16_t M_GetSplitTiltType(
-    const SECTOR *const sector, const int32_t x, const int32_t z)
-{
-    const SPLIT split = sector->floor.split;
-    const int32_t dx = x & M_WALL_MASK;
-    const int32_t dz = z & M_WALL_MASK;
-    int32_t x_off;
-    int32_t z_off;
-
-    if (split.type == SPLIT_NWSE_SOLID || split.type == SPLIT_NWSE_PORTAL_SW
-        || split.type == SPLIT_NWSE_PORTAL_NE) {
-        if (dx > WALL_L - dz) {
-            x_off = split.tilts[3] - split.tilts[0];
-            z_off = split.tilts[3] - split.tilts[2];
-        } else {
-            x_off = split.tilts[2] - split.tilts[1];
-            z_off = split.tilts[0] - split.tilts[1];
-        }
-    } else {
-        if (dx > dz) {
-            x_off = split.tilts[3] - split.tilts[0];
-            z_off = split.tilts[0] - split.tilts[1];
-        } else {
-            x_off = split.tilts[2] - split.tilts[1];
-            z_off = split.tilts[3] - split.tilts[2];
-        }
-    }
-
-    return ((uint8_t)x_off << 8) | (z_off & 0xFF);
 }
 
 static bool M_IsPortalSolid(
@@ -402,16 +369,20 @@ HEIGHT_TYPE Room_GetHeightType(void)
     return m_HeightType;
 }
 
-int16_t Room_GetTiltType(const SECTOR *sector, const XYZ_32 pos)
+XZ_16 Room_GetTiltType(const SECTOR *sector, const XYZ_32 pos)
 {
     sector = Room_GetPitSector(sector, pos.x, pos.z);
 
     if ((pos.y + STEP_L * 2) < sector->floor.height) {
-        return 0;
+        return (XZ_16) {};
     }
 
-    return sector->floor.is_split ? M_GetSplitTiltType(sector, pos.x, pos.z)
-                                  : sector->floor.tilt;
+    if (!sector->floor.is_split) {
+        return sector->floor.tilt;
+    }
+
+    int32_t shift = 0;
+    return M_GetSplitTilt(&sector->floor, pos.x, pos.z, &shift);
 }
 
 int32_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)

@@ -47,7 +47,8 @@ static void M_FillSide(
     const int32_t room_height = height;
     const int32_t room_ceiling = ceiling;
     const bool sim_wall = room_height == ceiling && room_height != NO_HEIGHT
-        && sector->ceiling.tilt == 0 && sector->floor.tilt == 0;
+        && sector->ceiling.tilt.x == 0 && sector->ceiling.tilt.z == 0
+        && sector->floor.tilt.x == 0 && sector->floor.tilt.z == 0;
     if (height != NO_HEIGHT) {
         height -= pos.y;
     }
@@ -332,14 +333,11 @@ void Collide_GetCollisionInfo(
 
     bool is_on_walkable = M_IsOnWalkable(sector, sample_pos, room_height);
     if (is_on_walkable) {
-        coll->tilt_z = 0;
-        coll->tilt_x = 0;
+        coll->tilt = (XZ_16) {};
     } else {
         const ITEM *const lara_item = Lara_GetItem();
-        const int16_t tilt =
+        coll->tilt =
             Room_GetTiltType(sector, (XYZ_32) { x, lara_item->pos.y, z });
-        coll->tilt_z = tilt >> 8;
-        coll->tilt_x = (int8_t)tilt;
     }
 
     XZ_32 probe_left = {};
@@ -766,24 +764,22 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
             && oldheight < height) {
             yang = (uint16_t)item->rot.y;
 
-            const int16_t tilt = Room_GetTiltType(sector, item->pos);
-            const int8_t tiltxoff = tilt >> 8;
-            const int8_t tiltyoff = (int8_t)tilt;
-            if (tiltyoff < 0) {
+            const XZ_16 tilt = Room_GetTiltType(sector, item->pos);
+            if (tilt.x < 0) {
                 if (yang >= DEG_180) {
                     bs = 1;
                 }
-            } else if (tiltyoff > 0) {
+            } else if (tilt.x > 0) {
                 if (yang <= DEG_180) {
                     bs = 1;
                 }
             }
 
-            if (tiltxoff < 0) {
+            if (tilt.z < 0) {
                 if (yang >= DEG_90 && yang <= DEG_270) {
                     bs = 1;
                 }
-            } else if (tiltxoff > 0) {
+            } else if (tilt.z > 0) {
                 if (yang <= DEG_90 || yang >= DEG_270) {
                     bs = 1;
                 }
@@ -833,10 +829,8 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
         } else {
             item->speed -= item->speed >> 2;
 
-            const int16_t tilt = Room_GetTiltType(sector, item->pos);
-            const int8_t tiltxoff = tilt >> 8;
-            const int8_t tiltyoff = (int8_t)tilt;
-            if (tiltyoff < 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2) {
+            const XZ_16 tilt = Room_GetTiltType(sector, item->pos);
+            if (tilt.x < 0 && ABS(tilt.x) - ABS(tilt.z) >= 2) {
                 if ((uint16_t)item->rot.y > DEG_180) {
                     item->rot.y = -1 - item->rot.y;
 
@@ -845,7 +839,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed -= tiltyoff << 1;
+                        item->speed -= tilt.x << 1;
 
                         if ((uint16_t)item->rot.y > DEG_90
                             && (uint16_t)item->rot.y < DEG_270) {
@@ -866,7 +860,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tiltyoff > 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2) {
+            } else if (tilt.x > 0 && ABS(tilt.x) - ABS(tilt.z) >= 2) {
                 if ((uint16_t)item->rot.y < DEG_180) {
                     item->rot.y = -1 - item->rot.y;
 
@@ -875,7 +869,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed += tiltyoff << 1;
+                        item->speed += tilt.x << 1;
 
                         if ((uint16_t)item->rot.y > DEG_270
                             || (uint16_t)item->rot.y < DEG_90) {
@@ -896,7 +890,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tiltxoff < 0 && ABS(tiltxoff) - ABS(tiltyoff) >= 2) {
+            } else if (tilt.z < 0 && ABS(tilt.z) - ABS(tilt.x) >= 2) {
                 if ((uint16_t)item->rot.y > DEG_90
                     && (uint16_t)item->rot.y < DEG_270) {
                     item->rot.y = 0x7FFF - item->rot.y;
@@ -906,7 +900,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed -= tiltxoff << 1;
+                        item->speed -= tilt.z << 1;
 
                         if ((uint16_t)item->rot.y < DEG_180) {
                             item->rot.y -= DEG_90;
@@ -926,7 +920,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tiltxoff > 0 && ABS(tiltxoff) - ABS(tiltyoff) >= 2) {
+            } else if (tilt.z > 0 && ABS(tilt.z) - ABS(tilt.x) >= 2) {
                 if ((uint16_t)item->rot.y > DEG_270
                     || (uint16_t)item->rot.y < DEG_90) {
                     item->rot.y = 0x7FFF - item->rot.y;
@@ -936,7 +930,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed += tiltxoff << 1;
+                        item->speed += tilt.z << 1;
 
                         if ((uint16_t)item->rot.y > DEG_180) {
                             item->rot.y -= 0x1000;
@@ -956,7 +950,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tiltyoff < 0 && tiltxoff < 0) {
+            } else if (tilt.x < 0 && tilt.z < 0) {
                 if ((uint16_t)item->rot.y > DEG_135
                     && (uint16_t)item->rot.y < DEG_315) {
                     item->rot.y = -(DEG_90 + 1) - item->rot.y;
@@ -966,7 +960,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed -= tiltxoff + tiltyoff;
+                        item->speed -= tilt.z + tilt.x;
 
                         if ((uint16_t)item->rot.y > DEG_45
                             && (uint16_t)item->rot.y < DEG_225) {
@@ -987,7 +981,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tiltyoff < 0 && tiltxoff > 0) {
+            } else if (tilt.x < 0 && tilt.z > 0) {
                 if ((uint16_t)item->rot.y > DEG_225
                     || (uint16_t)item->rot.y < DEG_45) {
                     item->rot.y = DEG_90 - 1 - item->rot.y;
@@ -997,7 +991,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed += tiltxoff - tiltyoff;
+                        item->speed += tilt.z - tilt.x;
 
                         if ((uint16_t)item->rot.y < DEG_315
                             && (uint16_t)item->rot.y > DEG_135) {
@@ -1018,7 +1012,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tiltyoff > 0 && tiltxoff > 0) {
+            } else if (tilt.x > 0 && tilt.z > 0) {
                 if ((uint16_t)item->rot.y > DEG_315
                     || (uint16_t)item->rot.y < DEG_135) {
                     item->rot.y = -(DEG_90 + 1) - item->rot.y;
@@ -1028,7 +1022,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed += tiltxoff + tiltyoff;
+                        item->speed += tilt.z + tilt.x;
 
                         if ((uint16_t)item->rot.y < DEG_45
                             || (uint16_t)item->rot.y > DEG_225) {
@@ -1049,7 +1043,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tiltyoff > 0 && tiltxoff < 0) {
+            } else if (tilt.x > 0 && tilt.z < 0) {
                 if ((uint16_t)item->rot.y > DEG_45
                     && (uint16_t)item->rot.y < DEG_225) {
                     item->rot.y = DEG_90 - 1 - item->rot.y;
@@ -1059,7 +1053,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     }
                 } else {
                     if (item->speed < 32) {
-                        item->speed += tiltyoff - tiltxoff;
+                        item->speed += tilt.x - tilt.z;
 
                         if ((uint16_t)item->rot.y < DEG_135
                             || (uint16_t)item->rot.y > DEG_315) {

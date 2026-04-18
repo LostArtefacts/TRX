@@ -331,7 +331,7 @@ static void M_SetSectorTriangulation(
             const int16_t func_data = VFile_ReadS16(injection->fp);            \
             const int16_t tilt_data = VFile_ReadS16(injection->fp);            \
             if (sector != nullptr) {                                           \
-                sector->surface.tilt = 0;                                      \
+                sector->surface.tilt = (XZ_16) {};                             \
                 Room_ReadTriangulation(                                        \
                     &sector->surface, func_data, tilt_data);                   \
             }                                                                  \

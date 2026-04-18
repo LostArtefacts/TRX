@@ -40,8 +40,7 @@ typedef struct {
     int16_t facing;
     DIRECTION quadrant;
     int16_t coll_type;
-    int8_t tilt_x;
-    int8_t tilt_z;
+    XZ_16 tilt;
     int8_t hit_by_baddie;
     int8_t hit_static;
     // clang-format off
