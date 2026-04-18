@@ -313,6 +313,14 @@ static void M_Default(ITEM *const item, COLL_INFO *const coll)
     Lara_Col_GetInfo(item, coll);
 }
 
+static void M_Pickup(ITEM *const item, COLL_INFO *const coll)
+{
+    M_Default(item, coll);
+    if (Item_TestAnimEqual(item, LA(LA_CRAWL_PICKUP))) {
+        Lara_Col_CrawlTilt(item);
+    }
+}
+
 static void M_PullUp(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
@@ -935,7 +943,7 @@ static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
 REGISTER_LARA_COL(LS_PUSH_BLOCK,   M_Default)
 REGISTER_LARA_COL(LS_PULL_BLOCK,   M_Default)
 REGISTER_LARA_COL(LS_PP_READY,     M_Default)
-REGISTER_LARA_COL(LS_PICKUP,       M_Default)
+REGISTER_LARA_COL(LS_PICKUP,       M_Pickup)
 REGISTER_LARA_COL(LS_SWITCH_ON,    M_Default)
 REGISTER_LARA_COL(LS_SWITCH_OFF,   M_Default)
 REGISTER_LARA_COL(LS_USE_KEY,      M_Default)

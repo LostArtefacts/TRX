@@ -894,6 +894,10 @@
             "title": "Crawl exit jump",
             "description": "Allows Lara to jump out of crawlspaces.",
         },
+        "gameplay.enable_crawl_tilt": {
+            "title": "Crawl tilt",
+            "description": "Aligns Lara's rotation to the floor geometry when crawling.",
+        },
         "gameplay.enable_crawling": {
             "title": "Crawling",
             "description": "Allows Lara to crouch and crawl.",

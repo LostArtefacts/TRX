@@ -21,6 +21,10 @@
 #define M_CRAWL_TO_HANG_FALL_SPEED 512
 #define M_CRAWL_TO_HANG_BAD_CEILING ((STEP_L * 3) / 4) // = 192
 #define M_CRAWL_TO_HANG_FALL_FRAME 9
+#define M_CRAWL_TILT_RADIUS        140
+#define M_CRAWL_TILT_HEIGHT        238
+#define M_CRAWL_TILT_RATE          (DEG_1 * 3)         // = 546
+#define M_CRAWL_TILT_MAX           DEG_45
 // clang-format on
 
 static bool M_DeflectEdgeCrawl(ITEM *const item, COLL_INFO *const coll)
@@ -210,6 +214,7 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
         LARA_HEIGHT_CROUCH);
+    Lara_Col_CrawlTilt(item);
 
     if (Lara_Col_Fallen(item, coll)) {
         lara->gun_status = LGS_ARMLESS;
@@ -329,6 +334,7 @@ static void M_CrawlForward(ITEM *const item, COLL_INFO *const coll)
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
         -LARA_HEIGHT_CROUCH);
+    Lara_Col_CrawlTilt(item);
 
     if (M_DeflectEdgeCrawl(item, coll)) {
         item->current_anim_state = LS(LS_CRAWL_IDLE);
@@ -349,6 +355,7 @@ static void M_CrawlTurn(ITEM *const item, COLL_INFO *const coll)
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
         LARA_HEIGHT_CROUCH);
+    Lara_Col_CrawlTilt(item);
 }
 
 static void M_CrawlBack(ITEM *const item, COLL_INFO *const coll)
@@ -371,6 +378,7 @@ static void M_CrawlBack(ITEM *const item, COLL_INFO *const coll)
     Collide_GetCollisionInfo(
         coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
         -LARA_HEIGHT_CROUCH);
+    Lara_Col_CrawlTilt(item);
 
     if (M_DeflectEdgeCrawl(item, coll)) {
         item->current_anim_state = LS(LS_CRAWL_IDLE);
@@ -490,6 +498,105 @@ static void M_CrawlToClimb(ITEM *const item, COLL_INFO *const coll)
     item->fall_speed = 1;
     item->gravity = true;
     lara->gun_status = LGS_HANDS_BUSY;
+}
+
+static XZ_32 M_GetWalkableTilt(const ITEM *const item, const int32_t y_pos)
+{
+    const int32_t base_x = ROUND_TO_SECTOR(item->pos.x);
+    const int32_t base_z = ROUND_TO_SECTOR(item->pos.z);
+    const XZ_32 offsets[3] = {
+        { 1, 1 },
+        { 3, 1 },
+        { 1, 3 },
+    };
+
+    int32_t heights[3] = {};
+    for (int32_t i = 0; i < 3; i++) {
+        const XYZ_32 off_pos = {
+            .x = base_x | (offsets[i].x * STEP_L - 1),
+            .z = base_z | (offsets[i].z * STEP_L - 1),
+            .y = y_pos,
+        };
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector = Room_GetSector(off_pos, &room_num);
+        heights[i] = Room_GetHeight(sector, off_pos);
+    }
+
+    return (XZ_32) { heights[1] - heights[0], heights[2] - heights[0] };
+}
+
+static int16_t M_GetTilt(const int32_t delta, const int32_t radius)
+{
+    int16_t rot = Math_Atan(2 * radius, delta);
+    if ((delta > 0 && rot > 0) || (delta < 0 && rot < 0)) {
+        rot = -rot;
+    }
+    return rot;
+}
+
+static void M_ApproachTilt(const int16_t target, int16_t *const current)
+{
+    if (ABS(target - *current) < M_CRAWL_TILT_RATE) {
+        *current = target;
+    } else if (target > *current) {
+        *current += M_CRAWL_TILT_RATE;
+    } else {
+        *current -= M_CRAWL_TILT_RATE;
+    }
+    CLAMP(*current, -M_CRAWL_TILT_MAX, M_CRAWL_TILT_MAX);
+}
+
+void Lara_Col_CrawlTilt(ITEM *const item)
+{
+    if (!g_Config.gameplay.enable_crawl_tilt) {
+        return;
+    }
+
+    const XYZ_32 pos = {
+        .x = item->pos.x,
+        .y = item->pos.y - M_CRAWL_TILT_HEIGHT,
+        .z = item->pos.z,
+    };
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+
+    XYZ_F plane = {};
+    if (Room_IsOnWalkable(sector, pos, height, NO_ITEM)) {
+        const XZ_32 tilt = M_GetWalkableTilt(item, pos.y);
+        plane.x = tilt.x * 2.0f / WALL_L;
+        plane.z = tilt.z * 2.0f / WALL_L;
+    } else {
+        const XZ_16 tilt = Room_GetTiltType(sector, pos);
+        plane.x = -tilt.x / 4.0f;
+        plane.z = -tilt.z / 4.0f;
+    }
+
+    plane.y = item->pos.y - plane.x * item->pos.x - plane.z * item->pos.z;
+
+    int32_t heights[4] = {};
+    for (int32_t i = 0; i < 4; i++) {
+        const XYZ_32 test_pos = XYZ_32_OffsetYaw(
+            pos, item->rot.y + DEG_90 * i, M_CRAWL_TILT_RADIUS);
+        room_num = item->room_num;
+        const SECTOR *const test_sector = Room_GetSector(test_pos, &room_num);
+        heights[i] = Room_GetHeight(test_sector, test_pos);
+
+        if (ABS(height - heights[i]) > M_CRAWL_TILT_RADIUS / 2) {
+            heights[i] = plane.x * test_pos.x + plane.z * test_pos.z + plane.y;
+        }
+    }
+
+    const XZ_32 delta = {
+        .x = heights[0] - heights[2],
+        .z = heights[3] - heights[1],
+    };
+    const XZ_16 rot = {
+        .x = M_GetTilt(delta.x, M_CRAWL_TILT_RADIUS),
+        .z = M_GetTilt(delta.z, M_CRAWL_TILT_RADIUS),
+    };
+    M_ApproachTilt(rot.x, &item->rot.x);
+    M_ApproachTilt(rot.z, &item->rot.z);
 }
 
 // clang-format off

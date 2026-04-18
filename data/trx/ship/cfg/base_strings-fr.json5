@@ -894,6 +894,10 @@
             "title": "\\{review}Saut en sortie de conduit",
             "description": "\\{review}Permet à Lara de sauter hors des passages étroits.",
         },
+        "gameplay.enable_crawl_tilt": {
+            "title": "\\{review}Inclinaison en rampant",
+            "description": "\\{review}Aligne la rotation de Lara sur la géométrie du sol lorsqu'elle rampe.",
+        },
         "gameplay.enable_crawling": {
             "title": "\\{review}Ramper",
             "description": "\\{review}Permet à Lara de s’accroupir et de ramper.",
