@@ -62,6 +62,7 @@
 - fixed an incorrect window texture in High Security Compound room 105
 - fixed the satellite dish in High Security Compound room 44 being clipped out of view too soon (missing animation bounds) (#5297, regression from 1.1)
 - fixed It's a Madhouse! street lamps being too bright
+- fixed menu artefacts not appearing in consistent positions between levels
 - fixed TR3:LA playing TR3 intro FMV
 - fixed Coastal Village and Lost City of Tinnos having the wrong pickup count
 - fixed Willard's Lair having wrong kill count

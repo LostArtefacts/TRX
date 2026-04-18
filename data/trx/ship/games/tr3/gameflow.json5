@@ -247,6 +247,7 @@
             ],
             "injections": [
                 "lara_guns.bin",
+                "menu_artefacts.bin",
             ],
         },
 
@@ -269,6 +270,7 @@
                 "aldwych_fd.bin",
                 "aldwych_pickup_meshes.bin",
                 "aldwych_textures.bin",
+                "menu_artefacts.bin",
             ],
         },
 
@@ -291,6 +293,7 @@
                 "lara_guns.bin",
                 "luds_diver_animation.bin",
                 "luds_textures.bin",
+                "menu_artefacts.bin",
             ],
         },
 
@@ -313,6 +316,7 @@
                 "lara_guns.bin",
                 "globe_model.bin",
                 "city_textures.bin",
+                "menu_artefacts.bin",
             ],
         },
 
@@ -413,6 +417,7 @@
                 "antarc_sky.bin",
                 "lara_guns.bin",
                 "antarc_door134_frames.bin",
+                "menu_artefacts.bin",
             ],
         },
 
@@ -492,6 +497,7 @@
                 "cavern_pickup_meshes.bin",
                 "cavern_door131_frames.bin",
                 "flamethrower_sfx.bin",
+                "menu_artefacts.bin",
             ],
         },
 
@@ -514,6 +520,7 @@
                 "lara_guns.bin",
                 "stpaul_animating_bounds.bin",
                 "stpaul_textures.bin",
+                "menu_artefacts.bin",
             ],
             "unobtainable_pickups": 9,
         },
