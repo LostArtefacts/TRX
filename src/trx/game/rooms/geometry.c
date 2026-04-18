@@ -58,8 +58,9 @@ static int32_t M_GetUnsplitSurfaceHeight(
     }
 
     const HEIGHT_TYPE slope_type =
-        (ABS(surface.tilt.z) > 2 || ABS(surface.tilt.x) > 2) ? HT_BIG_SLOPE
-                                                             : HT_SMALL_SLOPE;
+        (ABS(surface.tilt.z) > MAX_SLOPE || ABS(surface.tilt.x) > MAX_SLOPE)
+        ? HT_BIG_SLOPE
+        : HT_SMALL_SLOPE;
     if (Camera_IsChunky() && slope_type == HT_BIG_SLOPE) {
         return height;
     }
@@ -133,7 +134,7 @@ static int16_t M_GetSplitSurfaceHeight(
     height += shift;
 
     if (!is_ceiling) {
-        if (ABS(tilt.x) > 2 || ABS(tilt.z) > 2) {
+        if (ABS(tilt.x) > MAX_SLOPE || ABS(tilt.z) > MAX_SLOPE) {
             m_HeightType = HT_DIAGONAL;
         } else if (m_HeightType != HT_SPLIT_TRI) {
             m_HeightType = HT_SMALL_SLOPE;
