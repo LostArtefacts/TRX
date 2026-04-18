@@ -45,3 +45,4 @@ void Lara_Col_ItemPush(
     const ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
 void Lara_Col_Static3DPush(const STATIC_MESH *mesh, COLL_INFO *coll);
 void Lara_Col_WadeSplash(ITEM *item);
+void Lara_Col_CrawlTilt(ITEM *item);

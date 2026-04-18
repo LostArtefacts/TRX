@@ -894,6 +894,10 @@
             "title": "Salto uscita cunicolo",
             "description": "Permette a Lara di saltare fuori dagli spazi angusti.",
         },
+        "gameplay.enable_crawl_tilt": {
+            "title": "\\{review}Inclinazione in strisciamento",
+            "description": "\\{review}Allinea la rotazione di Lara alla geometria del pavimento durante lo strisciamento.",
+        },
         "gameplay.enable_crawling": {
             "title": "Strisciamento",
             "description": "Permette a Lara di accovacciarsi e strisciare.",

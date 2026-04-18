@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.5...develop) - ××××-××-××
 - added the ability to do a forward roll without releasing sprint first (#5270)
+- added the ability for Lara to align herself with floor tilts when crawling (Gameplay Options → Controls → Crawl tilt) (#4945)
 - added the ability to turn off or censor blood effects (Graphic Options → Visuals → Blood effects)
 - added the ability to delete saves directly from the passport save and load screens (#5309)
 - added the ability to pause FMVs with the Pause input (#1754)

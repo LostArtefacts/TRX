@@ -238,6 +238,7 @@ typedef struct {
         bool enable_crawling;
         bool enable_responsive_crawl;
         bool enable_crawl_jump;
+        bool enable_crawl_tilt;
         bool enable_sprint;
         bool enable_responsive_sprint;
         bool enable_toggle_crouch;

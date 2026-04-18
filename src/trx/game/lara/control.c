@@ -575,6 +575,17 @@ static void M_UpdateEnvironment(void)
     }
 }
 
+static void M_UndoRot(int16_t *const rot, const int16_t rate)
+{
+    if (*rot < -rate) {
+        *rot += rate;
+    } else if (*rot > rate) {
+        *rot -= rate;
+    } else {
+        *rot = 0;
+    }
+}
+
 static void M_HandleAboveWater(COLL_INFO *const coll)
 {
     ITEM *const item = Lara_GetItem();
@@ -655,21 +666,9 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     lara_info->is_crouched = false;
     Lara_State_Update(item, coll);
 
-    if (item->rot.z < -LARA_LEAN_UNDO) {
-        item->rot.z += LARA_LEAN_UNDO;
-    } else if (item->rot.z > LARA_LEAN_UNDO) {
-        item->rot.z -= LARA_LEAN_UNDO;
-    } else {
-        item->rot.z = 0;
-    }
-
-    if (lara_info->turn_rate < -LARA_TURN_UNDO) {
-        lara_info->turn_rate += LARA_TURN_UNDO;
-    } else if (lara_info->turn_rate > LARA_TURN_UNDO) {
-        lara_info->turn_rate -= LARA_TURN_UNDO;
-    } else {
-        lara_info->turn_rate = 0;
-    }
+    M_UndoRot(&item->rot.x, LARA_LEAN_UNDO);
+    M_UndoRot(&item->rot.z, LARA_LEAN_UNDO);
+    M_UndoRot(&lara_info->turn_rate, LARA_TURN_UNDO);
     item->rot.y += lara_info->turn_rate;
 
     Lara_Animate(item);
