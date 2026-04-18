@@ -14,7 +14,7 @@
         "config_presets": {
             "applied": "Profilo applicato.",
             "confirm_description": "Verranno modificate le seguenti impostazioni:",
-            "confirm_restart_note": "Nota: per avere effetto, alcune impostazioni potrebbero richiedere il riavvio del gioco.",
+            "confirm_restart_note": "Nota: per avere effetto, alcune impostazioni\n         potrebbero richiedere il riavvio del gioco.",
             "empty": "Nessun profilo trovato.",
             "no_changes": "Nessuna modifica da applicare.",
             "title_fmt": "Applicare il profilo %s?",
