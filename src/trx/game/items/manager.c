@@ -209,6 +209,9 @@ void Item_Initialise(const int16_t item_num)
     item->priv = nullptr;
     item->carried_item = nullptr;
 
+    item->interp.result.pos = item->pos;
+    item->interp.result.rot = item->rot;
+
     item->active = false;
     item->status = IS_INACTIVE;
     item->gravity = false;

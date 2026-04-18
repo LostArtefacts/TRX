@@ -577,7 +577,11 @@ static XYZ_32 M_GetHeadPos(const int32_t x, const int32_t y, const int32_t z)
         .y = y,
         .z = z,
     };
-    Lara_GetMeshPos(LM_HEAD, &pos);
+    if (!Lara_GetMeshPos(LM_HEAD, &pos)) {
+        // If look is held while loading a level, Lara won't have been drawn yet
+        // so ensure a valid fallback position is used.
+        Collide_GetJointAbsPosition(Lara_GetItem(), &pos, LM_HEAD);
+    }
     return pos;
 }
 
