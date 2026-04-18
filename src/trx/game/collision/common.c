@@ -831,7 +831,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
             item->speed -= item->speed >> 2;
 
             const XZ_16 tilt = Room_GetTiltType(sector, item->pos);
-            if (tilt.x < 0 && ABS(tilt.x) - ABS(tilt.z) >= 2) {
+            if (tilt.x < 0 && ABS(tilt.x) - ABS(tilt.z) >= MAX_SLOPE) {
                 if ((uint16_t)item->rot.y > DEG_180) {
                     item->rot.y = -1 - item->rot.y;
 
@@ -861,7 +861,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tilt.x > 0 && ABS(tilt.x) - ABS(tilt.z) >= 2) {
+            } else if (tilt.x > 0 && ABS(tilt.x) - ABS(tilt.z) >= MAX_SLOPE) {
                 if ((uint16_t)item->rot.y < DEG_180) {
                     item->rot.y = -1 - item->rot.y;
 
@@ -891,7 +891,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tilt.z < 0 && ABS(tilt.z) - ABS(tilt.x) >= 2) {
+            } else if (tilt.z < 0 && ABS(tilt.z) - ABS(tilt.x) >= MAX_SLOPE) {
                 if ((uint16_t)item->rot.y > DEG_90
                     && (uint16_t)item->rot.y < DEG_270) {
                     item->rot.y = 0x7FFF - item->rot.y;
@@ -921,7 +921,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
                     item->fall_speed =
                         item->fall_speed > 0 ? -(item->fall_speed >> 1) : 0;
                 }
-            } else if (tilt.z > 0 && ABS(tilt.z) - ABS(tilt.x) >= 2) {
+            } else if (tilt.z > 0 && ABS(tilt.z) - ABS(tilt.x) >= MAX_SLOPE) {
                 if ((uint16_t)item->rot.y > DEG_270
                     || (uint16_t)item->rot.y < DEG_90) {
                     item->rot.y = 0x7FFF - item->rot.y;

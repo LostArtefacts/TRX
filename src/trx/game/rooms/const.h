@@ -5,5 +5,6 @@
 
 #define NO_ROOM (-1)
 
+#define MAX_SLOPE 2
 #define NO_HEIGHT (-32512)
 #define MAX_HEIGHT 32000
