@@ -47,6 +47,7 @@ static void M_FillSide(
     const int32_t room_height = height;
     const int32_t room_ceiling = ceiling;
     const bool sim_wall = room_height == ceiling && room_height != NO_HEIGHT
+        && !sector->ceiling.is_split && !sector->floor.is_split
         && sector->ceiling.tilt.x == 0 && sector->ceiling.tilt.z == 0
         && sector->floor.tilt.x == 0 && sector->floor.tilt.z == 0;
     if (height != NO_HEIGHT) {
