@@ -896,12 +896,12 @@
             "description": "Permette a Lara di saltare fuori dagli spazi angusti.",
         },
         "gameplay.enable_crawl_tilt": {
-            "title": "\\{review}Inclinazione in strisciamento",
-            "description": "\\{review}Allinea la rotazione di Lara alla geometria del pavimento durante lo strisciamento.",
+            "title": "Strisciare su pendenza",
+            "description": "Permette a Lara di gattonare seguendo l'inclinazione del pavimento.",
         },
         "gameplay.enable_crawling": {
-            "title": "Strisciamento",
-            "description": "Permette a Lara di accovacciarsi e strisciare.",
+            "title": "Strisciare",
+            "description": "Permette a Lara di accovacciarsi e gattonare.",
         },
         "gameplay.enable_credits": {
             "title": "Titoli di coda",
@@ -984,8 +984,8 @@
             "description": "Abilita le opzioni \"Gioca livelli precedenti\" e \"Un po' di storia...\" nella schermata di selezione Nuova Partita.",
         },
         "gameplay.enable_responsive_crawl": {
-            "title": "Strisciamento reattivo",
-            "description": "Abilita miglioramenti rispetto alle meccaniche originali.\n\n- Consente di riprendere a strisciare più rapidamente dopo essersi fermati.\n- Consente di passare dalla corsa/scatto allo strisciare senza prima fermarsi.\n- Consente di passare dallo strisciare alla capriola da accovacciata (se abilitata) senza doversi prima accovacciare manualmente.\n- Consente di girarsi mentre si è accovacciati.\n- Ripristina l’animazione di Lara di raccolta degli oggetti mentre lei striscia (esclusi i razzi).",
+            "title": "Strisciare migliorato",
+            "description": "Abilita miglioramenti rispetto alle meccaniche originali.\n\n- Consente di riprendere a gattonare più rapidamente dopo essersi fermati.\n- Consente di passare dalla corsa/scatto al gattonare senza prima fermarsi.\n- Consente di passare dal gattonare alla capriola da accovacciata (se abilitata) senza doversi prima accovacciare manualmente.\n- Consente di girarsi mentre si è accovacciati.\n- Ripristina l’animazione di Lara di raccolta degli oggetti mentre va a carponi (esclusi i razzi).",
         },
         "gameplay.enable_responsive_sprint": {
             "title": "Scatto migliorato",
@@ -1153,7 +1153,7 @@
         },
         "gameplay.loading_screens": {
             "title": "Schermate di caricamento",
-            "description": "Controlla il comportamento delle schermate di caricamento dei livelli.\n\n- Disattivato: non mostra mai le schermate di caricamento.\n- Sempre: mostra le schermate di caricamento.\n- Nuovo livello: non mostra le schermate di caricamento quando si carica un salvataggio.",
+            "description": "Controlla il comportamento delle schermate di caricamento dei livelli.\n\n- Disattivato: non mostra mai le schermate di caricamento.\n- Sempre: mostra le schermate di caricamento ogni volta che si avvia o carica un livello.\n- Nuovo livello: mostra le schermate di caricamento solo al primo avvio di un livello.",
         },
         "gameplay.look_mode": {
             "title": "Modalità osservazione",
