@@ -405,10 +405,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 
     const OBJECT *const obj = Object_Get(item->object_id);
     const XYZ_16 old_rot = item->rot;
-
-    item->rot.x = 0;
-    item->rot.y = lara_item->rot.y;
-    item->rot.z = 0;
+    item->rot = lara_item->rot;
 
     if (!Lara_TestPosition(item, obj->bounds_func())) {
         goto cleanup;

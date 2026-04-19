@@ -138,6 +138,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
     lara_info->poison_timer = 0;
     lara_info->tr3_smoke_count_l = 0;
     lara_info->tr3_smoke_count_r = 0;
+    lara_info->mesh_pos_matrices_valid = false;
 
     LOT_InitialiseLOT(&lara_info->lot);
     lara_info->lot.setup.step = WALL_L * 20;

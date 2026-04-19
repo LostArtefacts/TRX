@@ -894,6 +894,10 @@
             "title": "\\{review}Crawl-Absprung",
             "description": "\\{review}Ermöglicht es Lara, aus Kriechgängen herauszuspringen.",
         },
+        "gameplay.enable_crawl_tilt": {
+            "title": "\\{review}Krabbelneigung",
+            "description": "\\{review}Richtet Laras Rotation beim Krabbeln an der Bodengeometrie aus.",
+        },
         "gameplay.enable_crawling": {
             "title": "\\{review}Kriechen",
             "description": "\\{review}Ermöglicht es Lara, sich zu ducken und zu kriechen.",

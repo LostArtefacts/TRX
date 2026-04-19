@@ -894,6 +894,10 @@
             "title": "Skok z wąskich przestrzeni",
             "description": "Umożliwia Larze wyskoczenie przy krawędziach w wąskich przestrzeniach, kiedy porusza się na czworaka.",
         },
+        "gameplay.enable_crawl_tilt": {
+            "title": "\\{review}Nachylenie podczas czołgania",
+            "description": "\\{review}Dopasowuje rotację Lary do geometrii podłoża podczas czołgania.",
+        },
         "gameplay.enable_crawling": {
             "title": "Kucanie",
             "description": "Pozwala Larze kucać i chodzić na czwroaka.",

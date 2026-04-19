@@ -894,6 +894,10 @@
             "title": "\\{review}Прыжок при выходе из лазов",
             "description": "\\{review}Позволяет Ларе выпрыгивать из лазов.",
         },
+        "gameplay.enable_crawl_tilt": {
+            "title": "\\{review}Наклон при ползании",
+            "description": "\\{review}Выравнивает поворот Лары по геометрии пола при ползании.",
+        },
         "gameplay.enable_crawling": {
             "title": "\\{review}Ползание",
             "description": "\\{review}Позволяет Ларе приседать и ползать.",

@@ -894,6 +894,10 @@
             "title": "Leum às snàg",
             "description": "Leigidh le Lara leum a-mach à àiteachan snàgaidh.",
         },
+        "gameplay.enable_crawl_tilt": {
+            "title": "Claonadh snàgail",
+            "description": "Nì seo co-thaobhadh air cuairteachadh Lara a-reir geoimeatraidh an làir nuair a tha i a' snàgail.",
+        },
         "gameplay.enable_crawling": {
             "title": "Snàgail",
             "description": "Leigidh seo le Lara cromadh sìos agus snàgail.",
