@@ -32,11 +32,13 @@
 - added savegame crystals to Unfinished Business (#1525)
 - fixed not being able to hear the flood/drain sound effect when using the lever in Tomb of Tihocan room 23
 - fixed Lara not stopping against one-click raised slopes (#5400, regression from 1.4)
+- fixed Lara attempting to vault onto steep slopes when running into them with action held (#5400, regression from 1.4)
 
 **TR2**:
 - added savegame crystals to base levels and The Golden Mask
 - added an option to disable body bag triggers, so that killed enemies will always be visible
 - fixed Lara not stopping against one-click raised slopes (#5400, regression from 1.4)
+- fixed Lara attempting to vault onto steep slopes when running into them with action held (#5400, regression from 1.4)
 
 **TR3**:
 - added Boat (RIB) control
@@ -77,6 +79,7 @@
 - fixed the second boulder at the beginning of Reunion stopping too early (regression from 1.2)
 - fixed Willard increasing the kill count each time he collapses (OG bug)
 - fixed Wasp Emitters generating too many spawns if activated from non one-shot triggers and the player stands for too long on the trigger
+- fixed Lara attempting to vault onto steep slopes when running into them with action held (#5400)
 - fixed Lara being unable to pull up on specific ledges near walls that have invalid triangles within them (regression from 1.1)
 - fixed potential crashes when using grenades on enemies in levels that use the body bag feature (#5378, regression from 1.1)
 - fixed activated one-shot antitriggers not being remembered when loading a save (regression from 1.2)

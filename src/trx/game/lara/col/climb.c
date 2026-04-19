@@ -933,6 +933,15 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     const int32_t mid = STEP_L / 2;
     const ROOM *const room = Room_Get(item->room_num);
 
+    // Prevent Lara vaulting onto a slope when action is held while running
+    // into it. This is consistent with not vaulting when at a stop.
+    if (item->speed != 0) {
+        Lara_FloorFront(item, angle, STEP_L);
+        if (Room_GetHeightType() == HT_BIG_SLOPE) {
+            return false;
+        }
+    }
+
     if (front_floor >= -STEP_L * 2 - mid && front_floor <= -STEP_L * 2 + mid) {
         if (slope || front_floor - front_ceiling < 0
             || left_floor - left_ceiling < 0 || right_floor - right_ceiling < 0
