@@ -63,8 +63,8 @@ static void M_FillSide(
 
     const bool is_on_walkable = M_IsOnWalkable(sector, sample_pos, room_height);
 
-    const bool is_front = side == &coll->side_front;
-    if (is_front) {
+    const bool retest_front = side == &coll->side_front && g_TRVersion >= 3;
+    if (retest_front) {
         XYZ_32 front_probe_pos = sample_pos;
         front_probe_pos.x += probe.x;
         front_probe_pos.z += probe.z;
@@ -79,14 +79,14 @@ static void M_FillSide(
         if (coll->slopes_are_walls
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
             && side->floor < 0
-            && (!is_front
+            && (!retest_front
                 || (side->floor < coll->side_mid.floor
                     && height < side->floor))) {
             side->floor = -32767;
         } else if (
             coll->slopes_are_pits
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
-            && side->floor > (is_front ? coll->side_mid.floor : 0)) {
+            && side->floor > (retest_front ? coll->side_mid.floor : 0)) {
             side->floor = STEP_L * 2;
         } else if (
             coll->lava_is_pit && side->floor > 0
