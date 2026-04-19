@@ -66,6 +66,17 @@ static bool M_HasStaticBehind(const ITEM *const item, const int16_t angle)
         &test, x, item->pos.y, z, item->room_num, 300);
 }
 
+static bool M_IsBadDestination(const ITEM *const item, const int16_t angle)
+{
+    XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, angle, STEP_L);
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    pos.y = Room_GetHeight(sector, pos) - STEP_L;
+    Room_GetSector(pos, &room_num);
+    const ROOM *const room = Room_Get(room_num);
+    return room->flags.swamp || room->flags.underwater;
+}
+
 static void M_Crouch(ITEM *const item, COLL_INFO *const coll)
 {
     item->gravity = false;
@@ -139,7 +150,8 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
             coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
 
         if (coll->side_mid.floor < coll->bad_neg
-            || coll->side_front.floor > coll->bad_pos) {
+            || coll->side_front.floor > coll->bad_pos
+            || M_IsBadDestination(item, lara->move_angle)) {
             item->pos = coll->old;
             return;
         }
@@ -336,7 +348,8 @@ static void M_CrawlForward(ITEM *const item, COLL_INFO *const coll)
         -LARA_HEIGHT_CROUCH);
     Lara_Col_CrawlTilt(item);
 
-    if (M_DeflectEdgeCrawl(item, coll)) {
+    if (M_DeflectEdgeCrawl(item, coll)
+        || M_IsBadDestination(item, lara->move_angle)) {
         item->current_anim_state = LS(LS_CRAWL_IDLE);
         item->goal_anim_state = LS(LS_CRAWL_IDLE);
         if (!Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))) {
@@ -380,7 +393,8 @@ static void M_CrawlBack(ITEM *const item, COLL_INFO *const coll)
         -LARA_HEIGHT_CROUCH);
     Lara_Col_CrawlTilt(item);
 
-    if (M_DeflectEdgeCrawl(item, coll)) {
+    if (M_DeflectEdgeCrawl(item, coll)
+        || M_IsBadDestination(item, lara->move_angle)) {
         item->current_anim_state = LS(LS_CRAWL_IDLE);
         item->goal_anim_state = LS(LS_CRAWL_IDLE);
         if (!Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))) {
