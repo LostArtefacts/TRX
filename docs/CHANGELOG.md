@@ -15,6 +15,7 @@
 - improved savegame loading if item counts have changed between making the save and loading it
 - fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)
+- fixed Lara being able to crawl and crouch-roll too far into water from land
 - fixed incorrect transparent and yellow pixels on TR2 and TR3 outfit heads when bilinear filtering is enabled (#5300)
 - fixed rotating 3D pickup notifications following the UI filter setting instead of the in-game texture filter
 - fixed climbing issues on ladders that are against walls that (incorrectly) contain tilt data within them (#5304, regression from 1.1)
