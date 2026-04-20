@@ -518,26 +518,33 @@ static void M_Move(const GAME_VECTOR *const target, const int32_t speed)
         }
     }
 
-    height -= STEP_L;
+    if (height != NO_HEIGHT) {
+        height -= STEP_L;
+    }
     if (pos.y >= height && target->y >= height) {
         LOS_Check(&g_Camera.target, &pos, false);
         sector = Room_GetSector(pos.pos, &pos.room_num);
-        height = Room_GetHeight(sector, pos.pos) - STEP_L;
+        height = Room_GetHeight(sector, pos.pos);
+        if (height != NO_HEIGHT) {
+            height -= STEP_L;
+        }
     }
 
-    g_Camera.pos = pos;
-
-    int32_t ceiling = Room_GetCeiling(sector, pos.pos) + STEP_L;
-    if (height < ceiling) {
+    int32_t ceiling = Room_GetCeiling(sector, pos.pos);
+    if (ceiling != NO_HEIGHT) {
+        ceiling += STEP_L;
+    }
+    if (height != NO_HEIGHT && ceiling != NO_HEIGHT && height < ceiling) {
         ceiling = (height + ceiling) >> 1;
         height = ceiling;
     }
 
+    g_Camera.pos = pos;
     Camera_ApplyBounce();
 
-    if (g_Camera.pos.y > height) {
+    if (height != NO_HEIGHT && g_Camera.pos.y > height) {
         g_Camera.shift = height - g_Camera.pos.y;
-    } else if (g_Camera.pos.y < ceiling) {
+    } else if (ceiling != NO_HEIGHT && g_Camera.pos.y < ceiling) {
         g_Camera.shift = ceiling - g_Camera.pos.y;
     } else {
         g_Camera.shift = 0;

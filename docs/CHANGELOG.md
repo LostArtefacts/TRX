@@ -14,6 +14,7 @@
 - improved `--level PATH` so it accepts relative paths and reports clearer startup errors when the level cannot be launched
 - improved savegame loading if item counts have changed between making the save and loading it
 - fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
+- fixed TR1 and TR2 camera modes potentially going out of bounds in some rare scenarios
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)
 - fixed Lara being able to crawl and crouch-roll too far into water from land
 - fixed incorrect transparent and yellow pixels on TR2 and TR3 outfit heads when bilinear filtering is enabled (#5300)
