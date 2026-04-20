@@ -59,11 +59,8 @@ static bool M_HasStaticBehind(const ITEM *const item, const int16_t angle)
     COLL_INFO test = {
         .radius = 50,
     };
-
-    const int32_t x = item->pos.x + ((Math_Sin(angle) * 512) >> W2V_SHIFT);
-    const int32_t z = item->pos.z + ((Math_Cos(angle) * 512) >> W2V_SHIFT);
-    return Collide_CollideStaticObjects(
-        &test, x, item->pos.y, z, item->room_num, 300);
+    const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, angle, STEP_L * 2);
+    return Collide_CollideStaticObjects(&test, pos, item->room_num, 300);
 }
 
 static bool M_IsBadDestination(const ITEM *const item, const int16_t angle)
