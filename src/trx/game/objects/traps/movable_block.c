@@ -248,8 +248,7 @@ static bool M_TestPush(
         .quadrant = quadrant,
         .radius = 500,
     };
-    if (Collide_CollideStaticObjects(
-            &coll, base_pos.x, base_pos.y, base_pos.z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(&coll, base_pos, room_num, 1000)) {
         return false;
     }
 
@@ -311,8 +310,7 @@ static bool M_TestPull(
         .quadrant = quadrant,
         .radius = 500,
     };
-    if (Collide_CollideStaticObjects(
-            &coll, base_pos.x, base_pos.y, base_pos.z, room_num, 1000)) {
+    if (Collide_CollideStaticObjects(&coll, base_pos, room_num, 1000)) {
         return false;
     }
 
@@ -353,8 +351,7 @@ static bool M_TestPull(
     sector = Room_GetSector(base_pos, &room_num);
     coll.radius = LARA_RADIUS;
     coll.quadrant = (quadrant + 2) & 3;
-    if (Collide_CollideStaticObjects(
-            &coll, base_pos.x, base_pos.y, base_pos.z, room_num, LARA_HEIGHT)) {
+    if (Collide_CollideStaticObjects(&coll, base_pos, room_num, LARA_HEIGHT)) {
         return false;
     }
 

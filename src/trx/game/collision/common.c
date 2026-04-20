@@ -402,8 +402,7 @@ void Collide_GetCollisionInfo(
         coll, &coll->side_right2, pos, probe_right, obj_height, &room_num);
 
     const int16_t static_room_num = g_TRVersion >= 3 ? prev_room_num : room_num;
-    if (Collide_CollideStaticObjects(
-            coll, pos.x, pos.y, pos.z, static_room_num, obj_height)) {
+    if (Collide_CollideStaticObjects(coll, pos, static_room_num, obj_height)) {
         const XYZ_32 test_pos = {
             .x = pos.x + coll->shift.x,
             .y = pos.y,
@@ -536,21 +535,20 @@ void Collide_GetCollisionInfo(
 }
 
 bool Collide_CollideStaticObjects(
-    COLL_INFO *const coll, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t room_num, const int32_t height)
+    COLL_INFO *const coll, const XYZ_32 pos, const int16_t room_num,
+    const int32_t height)
 {
     coll->hit_static = 0;
 
-    const int32_t in_x_min = x - coll->radius;
-    const int32_t in_x_max = x + coll->radius;
-    const int32_t in_y_min = y - height;
-    const int32_t in_y_max = y;
-    const int32_t in_z_min = z - coll->radius;
-    const int32_t in_z_max = z + coll->radius;
+    const int32_t in_x_min = pos.x - coll->radius;
+    const int32_t in_x_max = pos.x + coll->radius;
+    const int32_t in_y_min = pos.y - height;
+    const int32_t in_y_max = pos.y;
+    const int32_t in_z_min = pos.z - coll->radius;
+    const int32_t in_z_max = pos.z + coll->radius;
     XYZ_32 shifter = { .x = 0, .z = 0 };
 
-    Room_GetNearbyRooms(
-        (XYZ_32) { x, y, z }, coll->radius + 50, height + 50, room_num);
+    Room_GetNearbyRooms(pos, coll->radius + 50, height + 50, room_num);
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
         const ROOM *const room = Room_Get(Room_DrawGetRoom(i));
@@ -631,7 +629,7 @@ bool Collide_CollideStaticObjects(
             case DIR_NORTH:
                 if (shifter.x > coll->radius || shifter.x < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
-                    coll->shift.x = coll->old.x - x;
+                    coll->shift.x = coll->old.x - pos.x;
                     coll->shift.z = shifter.z;
                 } else if (shifter.x > 0) {
                     coll->coll_type = COLL_LEFT;
@@ -648,7 +646,7 @@ bool Collide_CollideStaticObjects(
                 if (shifter.z > coll->radius || shifter.z < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
                     coll->shift.x = shifter.x;
-                    coll->shift.z = coll->old.z - z;
+                    coll->shift.z = coll->old.z - pos.z;
                 } else if (shifter.z > 0) {
                     coll->coll_type = COLL_RIGHT;
                     coll->shift.x = 0;
@@ -663,7 +661,7 @@ bool Collide_CollideStaticObjects(
             case DIR_SOUTH:
                 if (shifter.x > coll->radius || shifter.x < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
-                    coll->shift.x = coll->old.x - x;
+                    coll->shift.x = coll->old.x - pos.x;
                     coll->shift.z = shifter.z;
                 } else if (shifter.x > 0) {
                     coll->coll_type = COLL_RIGHT;
@@ -680,7 +678,7 @@ bool Collide_CollideStaticObjects(
                 if (shifter.z > coll->radius || shifter.z < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
                     coll->shift.x = shifter.x;
-                    coll->shift.z = coll->old.z - z;
+                    coll->shift.z = coll->old.z - pos.z;
                 } else if (shifter.z > 0) {
                     coll->coll_type = COLL_LEFT;
                     coll->shift.x = 0;
