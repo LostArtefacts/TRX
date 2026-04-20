@@ -344,8 +344,7 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
         coll->facing += DEG_180;
     }
 
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num, 870);
+    Collide_GetCollisionInfo(coll, item->pos, item->room_num, 870);
     if (M_TestHangJumpUp(item, coll)) {
         return;
     }

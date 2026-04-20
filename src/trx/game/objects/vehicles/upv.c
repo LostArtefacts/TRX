@@ -698,9 +698,9 @@ static void M_BackgroundCollision(
     CLAMPL(h, 200);
 
     coll.bad_neg = -h;
-    Collide_GetCollisionInfo(
-        &coll, item->pos.x, item->pos.y + h / 2, item->pos.z, item->room_num,
-        h);
+    XYZ_32 coll_pos = item->pos;
+    coll_pos.y += h / 2;
+    Collide_GetCollisionInfo(&coll, coll_pos, item->room_num, h);
     Collide_ShiftItem(item, &coll);
 
     switch (coll.coll_type) {

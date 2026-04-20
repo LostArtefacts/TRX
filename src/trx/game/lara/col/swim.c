@@ -157,9 +157,9 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
     if (g_Config.gameplay.enable_wading) {
         obj_height += 100;
     }
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + M_HEIGHT_SURF, item->pos.z,
-        item->room_num, obj_height);
+    XYZ_32 coll_pos = item->pos;
+    coll_pos.y += M_HEIGHT_SURF;
+    Collide_GetCollisionInfo(coll, coll_pos, item->room_num, obj_height);
 
     Lara_Col_Shift(coll);
 
@@ -250,9 +250,9 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
         height = LARA_HEIGHT_UW;
     }
 
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + height / 2, item->pos.z,
-        item->room_num, height);
+    XYZ_32 coll_pos = item->pos;
+    coll_pos.y += height / 2;
+    Collide_GetCollisionInfo(coll, coll_pos, item->room_num, height);
     Lara_Col_Shift(coll);
 
     switch (coll->coll_type) {

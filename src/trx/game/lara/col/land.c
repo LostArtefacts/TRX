@@ -110,9 +110,7 @@ static bool M_CanControlDrop(
         .slopes_are_pits = 1,
         .slopes_are_walls = 1,
     };
-    Collide_GetCollisionInfo(
-        &old_coll, coll->old.x, coll->old.y, coll->old.z, item->room_num,
-        LARA_HEIGHT);
+    Collide_GetCollisionInfo(&old_coll, coll->old, item->room_num, LARA_HEIGHT);
 
     if (old_coll.side_mid.floor != 0) {
         return false;
