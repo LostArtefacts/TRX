@@ -110,7 +110,8 @@ static bool M_CanControlDrop(
         .slopes_are_pits = 1,
         .slopes_are_walls = 1,
     };
-    Collide_GetCollisionInfo(&old_coll, coll->old, item->room_num, LARA_HEIGHT);
+    Collide_GetCollisionInfo(
+        &old_coll, coll->old_pos, item->room_num, LARA_HEIGHT);
 
     if (old_coll.side_mid.floor != 0) {
         return false;
@@ -256,7 +257,7 @@ bool Lara_Col_TestCeiling(ITEM *const item, const COLL_INFO *const coll)
     lara->sprinting = false;
     lara->crouching = false;
 
-    item->pos = coll->old;
+    item->pos = coll->old_pos;
     item->goal_anim_state = LS(LS_STOP);
     item->current_anim_state = LS(LS_STOP);
     Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);

@@ -417,17 +417,17 @@ void Collide_GetCollisionInfo(
     }
 
     if (coll->side_mid.floor == NO_HEIGHT) {
-        coll->shift.x = coll->old.x - pos.x;
-        coll->shift.y = coll->old.y - pos.y;
-        coll->shift.z = coll->old.z - pos.z;
+        coll->shift.x = coll->old_pos.x - pos.x;
+        coll->shift.y = coll->old_pos.y - pos.y;
+        coll->shift.z = coll->old_pos.z - pos.z;
         coll->coll_type = COLL_FRONT;
         return;
     }
 
     if (coll->side_mid.floor - coll->side_mid.ceiling <= 0) {
-        coll->shift.x = coll->old.x - pos.x;
-        coll->shift.y = coll->old.y - pos.y;
-        coll->shift.z = coll->old.z - pos.z;
+        coll->shift.x = coll->old_pos.x - pos.x;
+        coll->shift.y = coll->old_pos.y - pos.y;
+        coll->shift.z = coll->old_pos.z - pos.z;
         coll->coll_type = COLL_CLAMP;
         return;
     }
@@ -442,13 +442,13 @@ void Collide_GetCollisionInfo(
         || coll->side_front.ceiling > coll->bad_ceiling) {
         if (coll->side_front.type == HT_DIAGONAL
             || coll->side_front.type == HT_SPLIT_TRI) {
-            coll->shift.x = coll->old.x - pos.x;
-            coll->shift.z = coll->old.z - pos.z;
+            coll->shift.x = coll->old_pos.x - pos.x;
+            coll->shift.z = coll->old_pos.z - pos.z;
         } else {
             switch (coll->quadrant) {
             case DIR_NORTH:
             case DIR_SOUTH:
-                coll->shift.x = coll->old.x - pos.x;
+                coll->shift.x = coll->old_pos.x - pos.x;
                 coll->shift.z =
                     Room_FindGridShift(pos.z + probe_front.z, pos.z);
                 break;
@@ -457,7 +457,7 @@ void Collide_GetCollisionInfo(
             case DIR_WEST:
                 coll->shift.x =
                     Room_FindGridShift(pos.x + probe_front.x, pos.x);
-                coll->shift.z = coll->old.z - pos.z;
+                coll->shift.z = coll->old_pos.z - pos.z;
                 break;
 
             default:
@@ -470,9 +470,9 @@ void Collide_GetCollisionInfo(
     }
 
     if (coll->side_front.ceiling >= coll->bad_ceiling) {
-        coll->shift.x = coll->old.x - pos.x;
-        coll->shift.y = coll->old.y - pos.y;
-        coll->shift.z = coll->old.z - pos.z;
+        coll->shift.x = coll->old_pos.x - pos.x;
+        coll->shift.y = coll->old_pos.y - pos.y;
+        coll->shift.z = coll->old_pos.z - pos.z;
         coll->coll_type = COLL_TOP_FRONT;
         return;
     }
@@ -480,8 +480,8 @@ void Collide_GetCollisionInfo(
     if (coll->side_left.floor > coll->bad_pos
         || coll->side_left.floor < coll->bad_neg) {
         if (coll->side_left.type == HT_SPLIT_TRI) {
-            coll->shift.x = coll->old.x - pos.x;
-            coll->shift.z = coll->old.z - pos.z;
+            coll->shift.x = coll->old_pos.x - pos.x;
+            coll->shift.z = coll->old_pos.z - pos.z;
         } else {
             switch (coll->quadrant) {
             case DIR_NORTH:
@@ -508,8 +508,8 @@ void Collide_GetCollisionInfo(
     if (coll->side_right.floor > coll->bad_pos
         || coll->side_right.floor < coll->bad_neg) {
         if (coll->side_right.type == HT_SPLIT_TRI) {
-            coll->shift.x = coll->old.x - pos.x;
-            coll->shift.z = coll->old.z - pos.z;
+            coll->shift.x = coll->old_pos.x - pos.x;
+            coll->shift.z = coll->old_pos.z - pos.z;
         } else {
             switch (coll->quadrant) {
             case DIR_NORTH:
@@ -629,7 +629,7 @@ bool Collide_CollideStaticObjects(
             case DIR_NORTH:
                 if (shifter.x > coll->radius || shifter.x < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
-                    coll->shift.x = coll->old.x - pos.x;
+                    coll->shift.x = coll->old_pos.x - pos.x;
                     coll->shift.z = shifter.z;
                 } else if (shifter.x > 0) {
                     coll->coll_type = COLL_LEFT;
@@ -646,7 +646,7 @@ bool Collide_CollideStaticObjects(
                 if (shifter.z > coll->radius || shifter.z < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
                     coll->shift.x = shifter.x;
-                    coll->shift.z = coll->old.z - pos.z;
+                    coll->shift.z = coll->old_pos.z - pos.z;
                 } else if (shifter.z > 0) {
                     coll->coll_type = COLL_RIGHT;
                     coll->shift.x = 0;
@@ -661,7 +661,7 @@ bool Collide_CollideStaticObjects(
             case DIR_SOUTH:
                 if (shifter.x > coll->radius || shifter.x < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
-                    coll->shift.x = coll->old.x - pos.x;
+                    coll->shift.x = coll->old_pos.x - pos.x;
                     coll->shift.z = shifter.z;
                 } else if (shifter.x > 0) {
                     coll->coll_type = COLL_RIGHT;
@@ -678,7 +678,7 @@ bool Collide_CollideStaticObjects(
                 if (shifter.z > coll->radius || shifter.z < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
                     coll->shift.x = shifter.x;
-                    coll->shift.z = coll->old.z - pos.z;
+                    coll->shift.z = coll->old_pos.z - pos.z;
                 } else if (shifter.z > 0) {
                     coll->coll_type = COLL_LEFT;
                     coll->shift.x = 0;

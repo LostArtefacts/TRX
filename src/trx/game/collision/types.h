@@ -33,7 +33,7 @@ typedef struct {
     int32_t bad_neg;
     int32_t bad_ceiling;
     XYZ_32 shift;
-    XYZ_32 old;
+    XYZ_32 old_pos;
     int16_t old_anim_state;
     int16_t old_anim_num;
     int16_t old_frame_num;

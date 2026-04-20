@@ -147,14 +147,14 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
         if (coll->side_mid.floor < coll->bad_neg
             || coll->side_front.floor > coll->bad_pos
             || M_IsBadDestination(item, lara->move_angle)) {
-            item->pos = coll->old;
+            item->pos = coll->old_pos;
             return;
         }
 
         Lara_Col_Shift(coll);
 
         if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_CLAMP) {
-            item->pos = coll->old;
+            item->pos = coll->old_pos;
             item->speed = 0;
         } else {
             item->pos.y += coll->side_mid.floor;
