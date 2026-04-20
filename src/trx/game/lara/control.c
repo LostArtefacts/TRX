@@ -110,9 +110,9 @@ static void M_WaterCurrent_TR12(COLL_INFO *const coll)
     lara->current.active = 0;
     coll->facing = Math_Atan(
         lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
-    Collide_GetCollisionInfo(
-        coll, lara_item->pos.x, lara_item->pos.y + LARA_HEIGHT_UW / 2,
-        lara_item->pos.z, room_num, LARA_HEIGHT_UW);
+    XYZ_32 coll_pos = lara_item->pos;
+    coll_pos.y += LARA_HEIGHT_UW / 2;
+    Collide_GetCollisionInfo(coll, coll_pos, room_num, LARA_HEIGHT_UW);
 
     switch (coll->coll_type) {
     case COLL_FRONT:
@@ -213,9 +213,10 @@ static void M_WaterCurrent_TR3(COLL_INFO *const coll)
     lara->current.active = 0;
     coll->facing = Math_Atan(
         lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
+    XYZ_32 coll_pos = lara_item->pos;
+    coll_pos.y += LARA_HEIGHT_UW / 2;
     Collide_GetCollisionInfo(
-        coll, lara_item->pos.x, lara_item->pos.y + 200, lara_item->pos.z,
-        lara_item->room_num, 400);
+        coll, coll_pos, lara_item->room_num, LARA_HEIGHT_UW);
 
     switch (coll->coll_type) {
     case COLL_FRONT:

@@ -94,8 +94,7 @@ static void M_Crouch(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_walls = 1;
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        -LARA_HEIGHT_CROUCH);
+        coll, item->pos, item->room_num, -LARA_HEIGHT_CROUCH);
 
     if (Lara_Col_Fallen(item, coll)) {
         lara->gun_status = LGS_ARMLESS;
@@ -140,8 +139,7 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_walls = 1;
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        -LARA_HEIGHT_CROUCH);
+        coll, item->pos, item->room_num, -LARA_HEIGHT_CROUCH);
 
     if (Lara_Col_Fallen(item, coll)) {
         lara->gun_status = LGS_ARMLESS;
@@ -184,8 +182,7 @@ static void M_CrouchTurn(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_walls = 1;
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT_CROUCH);
+        coll, item->pos, item->room_num, LARA_HEIGHT_CROUCH);
 
     if (Lara_Col_Fallen(item, coll)) {
         lara->gun_status = LGS_ARMLESS;
@@ -224,8 +221,7 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
     coll->slopes_are_pits = 1;
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT_CROUCH);
+        coll, item->pos, item->room_num, LARA_HEIGHT_CROUCH);
     Lara_Col_CrawlTilt(item);
 
     if (Lara_Col_Fallen(item, coll)) {
@@ -344,8 +340,7 @@ static void M_CrawlForward(ITEM *const item, COLL_INFO *const coll)
     coll->facing = lara->move_angle;
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        -LARA_HEIGHT_CROUCH);
+        coll, item->pos, item->room_num, -LARA_HEIGHT_CROUCH);
     Lara_Col_CrawlTilt(item);
 
     if (M_DeflectEdgeCrawl(item, coll)
@@ -366,8 +361,7 @@ static void M_CrawlForward(ITEM *const item, COLL_INFO *const coll)
 static void M_CrawlTurn(ITEM *const item, COLL_INFO *const coll)
 {
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT_CROUCH);
+        coll, item->pos, item->room_num, LARA_HEIGHT_CROUCH);
     Lara_Col_CrawlTilt(item);
 }
 
@@ -389,8 +383,7 @@ static void M_CrawlBack(ITEM *const item, COLL_INFO *const coll)
     coll->facing = lara->move_angle;
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        -LARA_HEIGHT_CROUCH);
+        coll, item->pos, item->room_num, -LARA_HEIGHT_CROUCH);
     Lara_Col_CrawlTilt(item);
 
     if (M_DeflectEdgeCrawl(item, coll)
@@ -428,8 +421,7 @@ static void M_CrawlToClimb(ITEM *const item, COLL_INFO *const coll)
     coll->facing = lara->move_angle;
 
     Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        M_CRAWL_TO_HANG_HEIGHT);
+        coll, item->pos, item->room_num, M_CRAWL_TO_HANG_HEIGHT);
 
     int32_t edge = 0;
     const EDGE_CATCH edge_catch = Lara_Col_TestEdgeCatch(item, coll, &edge);

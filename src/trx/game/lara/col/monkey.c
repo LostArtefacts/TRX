@@ -77,9 +77,7 @@ static void M_GetMonkeyCollisionInfo(
     coll->radius = M_MONKEY_RADIUS;
     coll->slopes_are_walls = slopes_are_walls;
 
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        M_MONKEY_HEIGHT);
+    Collide_GetCollisionInfo(coll, item->pos, item->room_num, M_MONKEY_HEIGHT);
 }
 
 static bool M_IsDirOctant(const int16_t rot)
