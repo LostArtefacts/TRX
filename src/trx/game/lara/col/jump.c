@@ -299,7 +299,7 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
         item->gravity = false;
         item->speed = 0;
         item->fall_speed = 0;
-        item->pos = coll->old;
+        item->pos = coll->old_pos;
     }
 
     if (g_TRVersion >= 2 && coll->side_mid.floor > -STEP_L
@@ -323,7 +323,7 @@ static void M_NeutralJumpRoll(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_STOP);
         item->current_anim_state = LS(LS_STOP);
         item->speed = 0;
-        item->pos = coll->old;
+        item->pos = coll->old_pos;
     }
 }
 
