@@ -327,6 +327,7 @@ common_sources = [
   'trx/game/lara/col/land.c',
   'trx/game/lara/col/monkey.c',
   'trx/game/lara/col/swim.c',
+  'trx/game/lara/col/vault.c',
   'trx/game/lara/common.c',
   'trx/game/lara/control.c',
   'trx/game/lara/draw.c',
