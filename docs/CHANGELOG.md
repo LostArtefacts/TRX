@@ -8,6 +8,7 @@
     - `O_LARA_MINE_CART`
 - added Lara's Antarctica beta outfit (#5190)
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
+- improved vaulting logic for Lara, allowing her to grab the lowest reachable ledge in front of her when only action is held, regardless of room layout (#5205)
 - changed `/set` to refuse level-enforced settings unless `--force` is used
 - changed the underwater crawling fix to be optional (Gameplay Options → Fixes → Fix underwater crawling)
 - fixed `trx.game.current_level` in Lua being offset by one (#5444)

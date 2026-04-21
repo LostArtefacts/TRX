@@ -11,8 +11,6 @@
 #define M_CLIMB_WIDTH_LEFT       80
 #define M_CLIMB_WIDTH_RIGHT      120
 #define M_CLIMB_HEIGHT           (WALL_L / 2) // = 512
-#define M_VAULT_ANGLE            (30 * DEG_1) // = 5460
-#define M_VAULT_GAP              (-LARA_HEIGHT + STEP_L / 8) // = -730
 #define M_LF_HANG                21
 #define M_LF_STOP_HANG           9
 #define M_LF_CLIMB_L_SHIFT_START 28
@@ -192,48 +190,6 @@ static M_CLIMB_RESULT M_TestClimbPos(
     return hang ? CLIMB_RESULT_NEG : CLIMB_RESULT_NONE;
 }
 
-static bool M_TestClimbStance(ITEM *const item, COLL_INFO *const coll)
-{
-    int32_t shift_r;
-    const M_CLIMB_RESULT result_r = M_TestClimbPos(
-        item, coll->radius, coll->radius + M_CLIMB_WIDTH_RIGHT, -700,
-        STEP_L * 2, &shift_r);
-    if (result_r != CLIMB_RESULT_POS) {
-        return false;
-    }
-
-    int32_t shift_l;
-    const M_CLIMB_RESULT result_l = M_TestClimbPos(
-        item, coll->radius, -(coll->radius + M_CLIMB_WIDTH_LEFT), -700,
-        STEP_L * 2, &shift_l);
-    if (result_l != CLIMB_RESULT_POS) {
-        return false;
-    }
-
-    int32_t shift = 0;
-    if (shift_r) {
-        if (shift_l) {
-            if ((shift_r < 0) != (shift_l < 0)) {
-                return false;
-            }
-            if (shift_r < 0 && shift_l < shift_r) {
-                shift = shift_l;
-            } else if (shift_r > 0 && shift_l > shift_r) {
-                shift = shift_l;
-            } else {
-                shift = shift_r;
-            }
-        } else {
-            shift = shift_r;
-        }
-    } else if (shift_l) {
-        shift = shift_l;
-    }
-
-    item->pos.y += shift;
-    return true;
-}
-
 static bool M_TestHangStop(
     const ITEM *const item, const COLL_INFO *const coll, const bool front_floor,
     int32_t *const height_diff)
@@ -322,7 +278,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
 
         if (Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
             && Item_TestFrameEqual(item, M_LF_HANG)
-            && M_TestClimbStance(item, coll)) {
+            && Lara_Col_TestClimbStance(item, coll)) {
             item->goal_anim_state = LS(LS_CLIMB_STANCE);
         }
         return;
@@ -909,115 +865,6 @@ static void M_DownLadder(ITEM *const item, COLL_INFO *const coll)
     item->pos.y -= yshift;
 }
 
-bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
-{
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (coll->coll_type != COLL_FRONT || !g_Input.action
-        || lara->gun_status != LGS_ARMLESS) {
-        return false;
-    }
-
-    const DIRECTION dir = Math_GetDirectionCone(item->rot.y, M_VAULT_ANGLE);
-    if (dir == DIR_UNKNOWN) {
-        return false;
-    }
-    const int16_t angle = Math_DirectionToAngle(dir);
-
-    const int32_t left_floor = coll->side_left2.floor;
-    const int32_t left_ceiling = coll->side_left2.ceiling;
-    const int32_t right_floor = coll->side_right2.floor;
-    const int32_t right_ceiling = coll->side_right2.ceiling;
-    const int32_t front_floor = coll->side_front.floor;
-    const int32_t front_ceiling = coll->side_front.ceiling;
-    const bool slope = ABS(left_floor - right_floor) >= SLOPE_DIF;
-    const int32_t mid = STEP_L / 2;
-    const ROOM *const room = Room_Get(item->room_num);
-
-    // Prevent Lara vaulting onto a slope when action is held while running
-    // into it. This is consistent with not vaulting when at a stop.
-    if (item->speed != 0) {
-        Lara_FloorFront(item, angle, STEP_L);
-        if (Room_GetHeightType() == HT_BIG_SLOPE) {
-            return false;
-        }
-    }
-
-    if (front_floor >= -STEP_L * 2 - mid && front_floor <= -STEP_L * 2 + mid) {
-        if (slope || front_floor - front_ceiling < 0
-            || left_floor - left_ceiling < 0 || right_floor - right_ceiling < 0
-            || (room->flags.swamp && lara->water_surface_dist < -768)) {
-            return false;
-        }
-        item->goal_anim_state = LS(LS_STOP);
-        item->current_anim_state = LS(LS_PULL_UP);
-        Item_SwitchToAnim(item, LA(LA_CLIMB_2CLICK), 0);
-        item->pos.y += front_floor + STEP_L * 2;
-        lara->gun_status = LGS_HANDS_BUSY;
-    } else if (
-        front_floor >= -STEP_L * 3 - mid && front_floor <= -STEP_L * 3 + mid) {
-        if (slope || front_floor - front_ceiling < 0
-            || left_floor - left_ceiling < 0 || right_floor - right_ceiling < 0
-            || (room->flags.swamp && lara->water_surface_dist < -768)) {
-            return false;
-        }
-        item->goal_anim_state = LS(LS_STOP);
-        item->current_anim_state = LS(LS_PULL_UP);
-        Item_SwitchToAnim(item, LA(LA_CLIMB_3CLICK), 0);
-        item->pos.y += front_floor + STEP_L * 3;
-        lara->gun_status = LGS_HANDS_BUSY;
-    } else if (
-        !lara->climb_status
-        && front_floor - coll->side_mid.ceiling < M_VAULT_GAP) {
-        return false;
-    } else if (
-        !slope && front_floor >= -STEP_L * 7 - mid
-        && front_floor <= -STEP_L * 4 + mid) {
-        if (room->flags.swamp) {
-            return false;
-        }
-        item->goal_anim_state = LS(LS_JUMP_UP);
-        item->current_anim_state = LS(LS_STOP);
-        Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
-        lara->calc_fall_speed =
-            -(Math_Sqrt(-2 * GRAVITY * (front_floor + 800)) + 3);
-        Lara_Animate(item);
-    } else if (
-        lara->climb_status && front_floor <= -1920
-        && lara->water_status != LWS_WADE && left_floor <= -STEP_L * 8 + mid
-        && right_floor <= -STEP_L * 8
-        && coll->side_mid.ceiling <= -STEP_L * 8 + mid + LARA_HEIGHT) {
-        item->goal_anim_state = LS(LS_JUMP_UP);
-        item->current_anim_state = LS(LS_STOP);
-        Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
-        lara->calc_fall_speed = -116;
-        Lara_Animate(item);
-    } else if (
-        lara->climb_status
-        && (front_floor < -STEP_L * 4 || front_ceiling >= LARA_HEIGHT - STEP_L)
-        && coll->side_mid.ceiling <= -STEP_L * 5 + LARA_HEIGHT) {
-        Lara_Col_Shift(coll);
-        if (M_TestClimbStance(item, coll)) {
-            item->goal_anim_state = LS(LS_CLIMB_STANCE);
-            item->current_anim_state = LS(LS_STOP);
-            Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
-            Lara_Animate(item);
-            item->rot.y = angle;
-            lara->gun_status = LGS_HANDS_BUSY;
-            lara->sprinting = false;
-            return true;
-        }
-        return false;
-    } else {
-        return false;
-    }
-
-    item->rot.y = angle;
-    Lara_Col_Shift(coll);
-    lara->sprinting = false;
-    lara->crouching = false;
-    return true;
-}
-
 bool Lara_Col_TestLadderHang(ITEM *const item, const COLL_INFO *const coll)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -1062,6 +909,48 @@ bool Lara_Col_TestLadderHang(ITEM *const item, const COLL_INFO *const coll)
         item->pos.y += shift;
     }
     return result != CLIMB_RESULT_NONE;
+}
+
+bool Lara_Col_TestClimbStance(ITEM *const item, const COLL_INFO *const coll)
+{
+    int32_t shift_r;
+    const M_CLIMB_RESULT result_r = M_TestClimbPos(
+        item, coll->radius, coll->radius + M_CLIMB_WIDTH_RIGHT, -700,
+        STEP_L * 2, &shift_r);
+    if (result_r != CLIMB_RESULT_POS) {
+        return false;
+    }
+
+    int32_t shift_l;
+    const M_CLIMB_RESULT result_l = M_TestClimbPos(
+        item, coll->radius, -(coll->radius + M_CLIMB_WIDTH_LEFT), -700,
+        STEP_L * 2, &shift_l);
+    if (result_l != CLIMB_RESULT_POS) {
+        return false;
+    }
+
+    int32_t shift = 0;
+    if (shift_r != 0) {
+        if (shift_l) {
+            if ((shift_r < 0) != (shift_l < 0)) {
+                return false;
+            }
+            if (shift_r < 0 && shift_l < shift_r) {
+                shift = shift_l;
+            } else if (shift_r > 0 && shift_l > shift_r) {
+                shift = shift_l;
+            } else {
+                shift = shift_r;
+            }
+        } else {
+            shift = shift_r;
+        }
+    } else if (shift_l != 0) {
+        shift = shift_l;
+    }
+
+    item->pos.y += shift;
+    return true;
 }
 
 // clang-format off
