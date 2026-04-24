@@ -415,6 +415,10 @@ void GF_InventoryModifier_Apply(
     M_ModifyInventory_Item(type, O_LEADBAR_ITEM);
     M_ModifyInventory_Item(type, O_SCION_ITEM_1);
     M_ModifyInventory_Item(type, O_SCION_ITEM_2);
+    M_ModifyInventory_Item(type, O_QUEST_ITEM_1);
+    M_ModifyInventory_Item(type, O_QUEST_ITEM_2);
+    M_ModifyInventory_Item(type, O_QUEST_ITEM_3);
+    M_ModifyInventory_Item(type, O_QUEST_ITEM_4);
 
     if (type == GF_INV_SECRET) {
         M_ModifyInventory_Item(type, O_SMALL_MEDIPACK_ITEM);
