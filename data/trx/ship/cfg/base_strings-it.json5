@@ -14,7 +14,7 @@
         "config_presets": {
             "applied": "Profilo applicato.",
             "confirm_description": "Verranno modificate le seguenti impostazioni:",
-            "confirm_restart_note": "Nota: per avere effetto, alcune impostazioni potrebbero richiedere il riavvio del gioco.",
+            "confirm_restart_note": "Nota: per avere effetto, alcune impostazioni\n         potrebbero richiedere il riavvio del gioco.",
             "empty": "Nessun profilo trovato.",
             "no_changes": "Nessuna modifica da applicare.",
             "title_fmt": "Applicare il profilo %s?",
@@ -144,11 +144,11 @@
             "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
-            "delete_save": "\\{review}Elimina",
-            "delete_save_confirm": "\\{review}Eliminare questo salvataggio?",
-            "delete_save_failed": "\\{review}Impossibile eliminare il salvataggio selezionato.",
-            "delete_save_no": "\\{review}No",
-            "delete_save_yes": "\\{review}Sì",
+            "delete_save": "Elimina",
+            "delete_save_confirm": "Eliminare questo salvataggio?",
+            "delete_save_failed": "Impossibile eliminare il salvataggio selezionato.",
+            "delete_save_no": "No",
+            "delete_save_yes": "Sì",
             "exit_game": "Esci dal Gioco",
             "exit_to_title": "Torna al Menu",
             "load_game": "Carica Partita",
@@ -211,7 +211,7 @@
                 "backend": {
                     "controller": "Controller",
                     "keyboard": "Tastiera",
-                    "touch": "\\{review}Controlli touch",
+                    "touch": "Comandi Tattili",
                 },
                 "customize": "Personalizza comandi",
                 "layout": {
@@ -560,9 +560,9 @@
             "BILLBOARD_LOCK_ROLL_PITCH": "Rotaz. e inclinaz.",
         },
         "BLOOD_EFFECTS": {
-            "BLOOD_EFFECTS_DISABLED": "\\{review}Disabilitato",
-            "BLOOD_EFFECTS_PINK": "\\{review}Rosa",
-            "BLOOD_EFFECTS_RED": "\\{review}Rosso",
+            "BLOOD_EFFECTS_DISABLED": "Disabilitato",
+            "BLOOD_EFFECTS_PINK": "Rosa",
+            "BLOOD_EFFECTS_RED": "Rosso",
         },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
@@ -570,9 +570,9 @@
             "CAMERA_MODE_TR3": "TR3",
         },
         "CREATURE_DROWN_POLICY": {
-            "CREATURE_DROWN_POLICY_DEFAULT": "\\{review}Predefinito",
-            "CREATURE_DROWN_POLICY_NEVER": "\\{review}Mai",
-            "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Sommerso",
+            "CREATURE_DROWN_POLICY_DEFAULT": "Predefinito",
+            "CREATURE_DROWN_POLICY_NEVER": "Mai",
+            "CREATURE_DROWN_POLICY_SUBMERGED": "Sommerso",
         },
         "INPUT_BACKEND": {
             "INPUT_BACKEND_CONTROLLER": "Controller",
@@ -828,8 +828,8 @@
             "description": "Fa in modo che, alla sua generazione, un Pierre (in fuga) sostituisca un altro Pierre (in fuga) già esistente.",
         },
         "gameplay.creature_drown_policy": {
-            "title": "\\{review}Comportamento di annegamento delle creature",
-            "description": "\\{review}Controlla come le creature terrestri si comportano nelle stanze d’acqua.\n\n- Mai: le creature terrestri non annegano mai (stile TR1).\n- Predefinito: le creature terrestri annegano in acqua profonda 2 clic o più (stile TR2/3).\n- Sommerso: le creature terrestri annegano solo quando sono completamente sommerse.",
+            "title": "Annegamento creature",
+            "description": "Gestisce il comportamento delle creature terrestri nelle stanze con acqua.\n\n- Mai: le creature terrestri non annegano mai (come in TR1).\n- Predefinito: le creature terrestri annegano in acque di media profondità o più (come in TR2/3).\n- Sommerso: le creature terrestri annegano solo se completamente sott'acqua.",
         },
         "gameplay.disable_extra_guns": {
             "title": "Rimuovi armi extra",
@@ -860,8 +860,8 @@
             "description": "Fa in modo che Lara inciampi se effettua un salto all'indietro e, alle sue spalle, c'è una pendenza (TR3). Se disabilitato, Lara si fermerà bruscamente contro la pendenza (TR1/2).",
         },
         "gameplay.enable_body_bags": {
-            "title": "\\{review}Trigger dei sacchi per cadaveri",
-            "description": "\\{review}Consente la rimozione dei nemici uccisi quando Lara attraversa specifici trigger in determinati livelli. Se disabilitato, i nemici morti verranno sempre visualizzati.",
+            "title": "Rimozione cadaveri",
+            "description": "Consente la rimozione dei nemici uccisi quando Lara attraversa specifici punti di attivazione in determinati livelli. Se disabilitato, i nemici morti non saranno rimossi.",
         },
         "gameplay.enable_boulder_shake": {
             "title": "Vibrazione massi",
@@ -896,12 +896,12 @@
             "description": "Permette a Lara di saltare fuori dagli spazi angusti.",
         },
         "gameplay.enable_crawl_tilt": {
-            "title": "\\{review}Inclinazione in strisciamento",
-            "description": "\\{review}Allinea la rotazione di Lara alla geometria del pavimento durante lo strisciamento.",
+            "title": "Strisciare su pendenza",
+            "description": "Permette a Lara di gattonare seguendo l'inclinazione del pavimento.",
         },
         "gameplay.enable_crawling": {
-            "title": "Strisciamento",
-            "description": "Permette a Lara di accovacciarsi e strisciare.",
+            "title": "Strisciare",
+            "description": "Permette a Lara di accovacciarsi e gattonare.",
         },
         "gameplay.enable_credits": {
             "title": "Titoli di coda",
@@ -984,8 +984,8 @@
             "description": "Abilita le opzioni \"Gioca livelli precedenti\" e \"Un po' di storia...\" nella schermata di selezione Nuova Partita.",
         },
         "gameplay.enable_responsive_crawl": {
-            "title": "Strisciamento reattivo",
-            "description": "Abilita miglioramenti rispetto alle meccaniche originali.\n\n- Consente di riprendere a strisciare più rapidamente dopo essersi fermati.\n- Consente di passare dalla corsa/scatto allo strisciare senza prima fermarsi.\n- Consente di passare dallo strisciare alla capriola da accovacciata (se abilitata) senza doversi prima accovacciare manualmente.\n- Consente di girarsi mentre si è accovacciati.\n- Ripristina l’animazione di Lara di raccolta degli oggetti mentre lei striscia (esclusi i razzi).",
+            "title": "Strisciare migliorato",
+            "description": "Abilita miglioramenti rispetto alle meccaniche originali.\n\n- Consente di riprendere a gattonare più rapidamente dopo essersi fermati.\n- Consente di passare dalla corsa/scatto al gattonare senza prima fermarsi.\n- Consente di passare dal gattonare alla capriola da accovacciata (se abilitata) senza doversi prima accovacciare manualmente.\n- Consente di girarsi mentre si è accovacciati.\n- Ripristina l’animazione di Lara di raccolta degli oggetti mentre va a carponi (esclusi i razzi).",
         },
         "gameplay.enable_responsive_sprint": {
             "title": "Scatto migliorato",
@@ -1089,7 +1089,7 @@
         },
         "gameplay.fix_floor_data_issues": {
             "title": "Correggi dati livelli",
-            "description": "Risolve i problemi dei livelli originali relativi a dati/eventi.",
+            "description": "Risolve i problemi dei livelli originali relativi a dati/punti di attivazione.",
         },
         "gameplay.fix_free_flare_glitch": {
             "title": "Correggi errore dei razzi",
@@ -1132,8 +1132,8 @@
             "description": "Risolve il problema per cui a volte Lara non riesce a saltare immediatamente dopo essere passata dall'animazione di camminata a quella di corsa.",
         },
         "gameplay.fix_wall_geometry": {
-            "title": "\\{review}Corregge la geometria dei muri",
-            "description": "\\{review}Corregge i casi nella geometria dei livelli OG in cui inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi.",
+            "title": "Correggi geometria muri",
+            "description": "Risolve il problema per cui, nei livelli originali, le inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi.",
         },
         "gameplay.fix_water_exit": {
             "title": "Correggi uscita dall'acqua",
@@ -1153,7 +1153,7 @@
         },
         "gameplay.loading_screens": {
             "title": "Schermate di caricamento",
-            "description": "Controlla il comportamento delle schermate di caricamento dei livelli.\n\n- Disattivato: non mostra mai le schermate di caricamento.\n- Sempre: mostra le schermate di caricamento.\n- Nuovo livello: non mostra le schermate di caricamento quando si carica un salvataggio.",
+            "description": "Controlla il comportamento delle schermate di caricamento dei livelli.\n\n- Disattivato: non mostra mai le schermate di caricamento.\n- Sempre: mostra le schermate di caricamento ogni volta che si avvia o carica un livello.\n- Nuovo livello: mostra le schermate di caricamento solo al primo avvio di un livello.",
         },
         "gameplay.look_mode": {
             "title": "Modalità osservazione",
@@ -1168,8 +1168,8 @@
             "description": "Modifica il numero di slot di salvataggio disponibili.",
         },
         "gameplay.pause_on_focus_lost": {
-            "title": "\\{review}Pausa quando si perde il focus",
-            "description": "\\{review}Interrompe il progresso del gioco quando la finestra del gioco perde il focus.",
+            "title": "Pausa se in secondo piano",
+            "description": "Mette in pausa la partita quando la finestra del gioco passa in secondo piano.",
         },
         "gameplay.projectile_area_damage": {
             "title": "Area danni proiettile",
@@ -1208,8 +1208,8 @@
             "description": "Fa in modo che sfogliare le pagine del passaporto sia più istantaneo, tenendo conto dei tasti premuti dell'utente",
         },
         "input.enable_touch_controls": {
-            "title": "\\{review}Controlli touch",
-            "description": "\\{review}Mostra una sovrapposizione di controlli touch sullo schermo per i dispositivi con touchscreen.",
+            "title": "Comandi tattili",
+            "description": "Mostra i comandi tattili per i dispositivi con schermo sensibile al tocco",
         },
         "input.enable_tr3_sidesteps": {
             "title": "Passi laterali migliorati",
@@ -1220,20 +1220,20 @@
             "description": "Controlla il comportamento dei tasti per l'equipaggiamento rapido delle armi.\n\n- Solo equipaggia: premendo il tasto, Lara equipaggerà l'arma assegnata.\n- Equipaggia o riponi: premendo il tasto, Lara equipaggerà l'arma assegnata. In aggiunta, con lo stesso tasto, la riporrà se la sta attualmente tenendo in mano.",
         },
         "input.touch_button_scale": {
-            "title": "\\{review}Dimensione dei pulsanti touch",
-            "description": "\\{review}Regola la dimensione dei pulsanti di controllo touch sullo schermo.",
+            "title": "Dimensione comandi tattili",
+            "description": "Regola le dimensioni dei comandi tattili visualizzati sullo schermo.",
         },
         "input.touch_dpad_deadzone": {
-            "title": "\\{review}Zona morta del D-pad touch",
-            "description": "\\{review}Regola la zona morta del D-pad sullo schermo. Una zona morta più ampia richiede un movimento maggiore prima che l'input direzionale venga registrato.",
+            "title": "Zona morta D-pad tattile",
+            "description": "Regola la zona morta della croce direzionale visualizzata sullo schermo. Una zona morta più ampia richiede un movimento maggiore prima che il comando venga registrato.",
         },
         "input.touch_dpad_scale": {
-            "title": "\\{review}Dimensione del D-pad touch",
-            "description": "\\{review}Regola la dimensione del D-pad sullo schermo.",
+            "title": "Dimensione D-pad tattile",
+            "description": "Regola le dimensioni della croce direzionale visualizzata sullo schermo.",
         },
         "input.touch_opacity": {
-            "title": "\\{review}Opacità touch",
-            "description": "\\{review}Regola la trasparenza dei pulsanti di controllo touch sullo schermo.",
+            "title": "Opacità comandi tattili",
+            "description": "Regola il livello di trasparenza dei comandi tattili visualizzati sullo schermo.",
         },
         "language": {
             "title": "Lingua",
@@ -1404,7 +1404,7 @@
             "description": "Abilita o disabilita l'effetto di dissolvenza nella schermata di pausa. Per funzionare, è necessario che l'opzione \"Effetti di dissolvenza\" sia abilitata.",
         },
         "ui.pickup_scale": {
-            "title": "Scala oggetti raccolti",
+            "title": "Dimensione oggetti",
             "description": "Modifica la dimensione degli oggetti animati visualizzati nell'interfaccia utente quando Lara raccoglie qualcosa.",
         },
         "ui.show_bars": {
@@ -1488,12 +1488,12 @@
             "description": "Abilita o disabilita l'effetto di dissolvenza nella schermata delle statistiche di fine livello. Per funzionare, è necessario che l'opzione \"Effetti di dissolvenza\" sia abilitata.",
         },
         "ui.text_scale": {
-            "title": "Scala testo",
+            "title": "Dimensione testo",
             "description": "Modifica la dimensione del testo dell'interfaccia utente.",
         },
         "visuals.blood_effects": {
-            "title": "\\{review}Effetti sangue",
-            "description": "\\{review}Controlla i colori delle scintille di sangue.\n\n- Disabilitato: nessuna scintilla di sangue viene mostrata.\n- Rosa: il default nelle versioni tedesche per PC di TR3.\n- Rosso: il default in tutte le altre versioni retail.",
+            "title": "Effetti sangue",
+            "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disabilitato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",
         },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
@@ -1508,7 +1508,7 @@
             "description": "Abilita la treccia di Lara.",
         },
         "visuals.enable_breeze": {
-            "title": "Brezza",
+            "title": "Effetto brezza",
             "description": "Abilita l'effetto brezza sulla treccia di Lara nelle stanze appropriate.",
         },
         "visuals.enable_exit_fade_effects": {
@@ -1640,7 +1640,7 @@
             "name": "Oggetto Animato 1",
         },
         "animating_10": {
-            "name": "\\{review}Oggetto Animato 10",
+            "name": "Oggetto Animato 10",
         },
         "animating_2": {
             "name": "Oggetto Animato 2",
@@ -1658,13 +1658,13 @@
             "name": "Oggetto Animato 6",
         },
         "animating_7": {
-            "name": "\\{review}Oggetto Animato 7",
+            "name": "Oggetto Animato 7",
         },
         "animating_8": {
-            "name": "\\{review}Oggetto Animato 8",
+            "name": "Oggetto Animato 8",
         },
         "animating_9": {
-            "name": "\\{review}Oggetto Animato 9",
+            "name": "Oggetto Animato 9",
         },
         "ape": {
             "name": "Scimmia",
@@ -1685,13 +1685,13 @@
             "name": "Obiettivo Corso di Addestramento",
         },
         "atlantean_ground": {
-            "name": "\\{review}Atlantideo Alato",
+            "name": "Atlantideo Terrestre",
         },
         "atlantean_shooter": {
-            "name": "\\{review}Atlantideo (Che Spara)",
+            "name": "Atlantideo Armato",
         },
         "atlantean_winged": {
-            "name": "\\{review}Atlantideo Terrestre",
+            "name": "Atlantideo Alato",
         },
         "autos": {
             "name": "Pistole Automatiche",
@@ -1769,10 +1769,10 @@
             "name": "Lama a Parete",
         },
         "blood": {
-            "name": "\\{review}Sangue",
+            "name": "Sangue",
         },
         "blood_pink": {
-            "name": "\\{review}Sangue (censurato)",
+            "name": "Sangue (censurato)",
         },
         "blue_light": {
             "name": "Luce Blu",
@@ -1823,7 +1823,7 @@
             "name": "Civile",
         },
         "claw_mutant": {
-            "name": "\\{review}Mutante Artigliato",
+            "name": "Mutante con Artigli",
         },
         "clock_chimes": {
             "name": "Orologio Covo di Bartoli",
@@ -1856,7 +1856,7 @@
             "name": "Il Cowboy",
         },
         "crawler_mutant": {
-            "name": "\\{review}Mutante Strisciante",
+            "name": "Mutante Strisciante",
         },
         "crocodile": {
             "name": "Coccodrillo",
@@ -1916,34 +1916,34 @@
             "name": "Emettitore di Dischi",
         },
         "disposable_animating_1": {
-            "name": "\\{review}Animazione Usa e Getta 1",
+            "name": "Oggetto Animato Monouso 1",
         },
         "disposable_animating_10": {
-            "name": "\\{review}Animazione Usa e Getta 10",
+            "name": "Oggetto Animato Monouso 10",
         },
         "disposable_animating_2": {
-            "name": "\\{review}Animazione Usa e Getta 2",
+            "name": "Oggetto Animato Monouso 2",
         },
         "disposable_animating_3": {
-            "name": "\\{review}Animazione Usa e Getta 3",
+            "name": "Oggetto Animato Monouso 3",
         },
         "disposable_animating_4": {
-            "name": "\\{review}Animazione Usa e Getta 4",
+            "name": "Oggetto Animato Monouso 4",
         },
         "disposable_animating_5": {
-            "name": "\\{review}Animazione Usa e Getta 5",
+            "name": "Oggetto Animato Monouso 5",
         },
         "disposable_animating_6": {
-            "name": "\\{review}Animazione Usa e Getta 6",
+            "name": "Oggetto Animato Monouso 6",
         },
         "disposable_animating_7": {
-            "name": "\\{review}Animazione Usa e Getta 7",
+            "name": "Oggetto Animato Monouso 7",
         },
         "disposable_animating_8": {
-            "name": "\\{review}Animazione Usa e Getta 8",
+            "name": "Oggetto Animato Monouso 8",
         },
         "disposable_animating_9": {
-            "name": "\\{review}Animazione Usa e Getta 9",
+            "name": "Oggetto Animato Monouso 9",
         },
         "diver": {
             "name": "Subacqueo",
@@ -2003,7 +2003,7 @@
             "name": "Monaco Morente",
         },
         "dying_mutant": {
-            "name": "\\{review}Mutante Morente",
+            "name": "Mutante Morente",
         },
         "eagle": {
             "name": "Aquila",
@@ -2064,7 +2064,7 @@
             "name": "Soffitto Cedevole 2",
         },
         "fire_head": {
-            "name": "\\{review}Testa di Fuoco",
+            "name": "Testa Sputafuoco",
         },
         "fish_mutant": {
             "name": "Pesce Mutante",
@@ -2115,7 +2115,7 @@
             "name": "Scatola Razzi",
         },
         "flickering_light": {
-            "name": "\\{review}Luce Tremolante",
+            "name": "Luce Tremolante",
         },
         "fuse_box": {
             "name": "Scatola Fusibili",
@@ -2194,7 +2194,7 @@
             ]
         },
         "hybrid_mutant": {
-            "name": "\\{review}Mutante Ibrido",
+            "name": "Mutante Ibrido",
         },
         "icicle": {
             "name": "Ghiaccioli",
@@ -2353,7 +2353,7 @@
             "name": "Miniera Acquatica",
         },
         "mine_cart": {
-            "name": "\\{review}Vagoncino da miniera",
+            "name": "Carrello da Miniera",
         },
         "mini_copter": {
             "name": "Elicottero 2",
@@ -2631,7 +2631,7 @@
             "name": "Luce Rossa",
         },
         "rib": {
-            "name": "\\{review}RIB",
+            "name": "Gommone a Motore",
         },
         "ricochet": {
             "name": "Rimbalzo",
@@ -2673,13 +2673,13 @@
             "name": "Laser rotante",
         },
         "rx_worker_1": {
-            "name": "\\{review}RX Operaio 1",
+            "name": "Operaio RX 1",
         },
         "rx_worker_2": {
-            "name": "\\{review}RX Operaio 2",
+            "name": "Operaio RX 2",
         },
         "rx_worker_3": {
-            "name": "\\{review}RX Operaio 3",
+            "name": "Operaio RX 3",
         },
         "save_crystal": {
             "name": "Cristallo di Salvataggio",
@@ -2955,10 +2955,10 @@
             "name": "Avvoltoio",
         },
         "wasp_mutant": {
-            "name": "\\{review}Mutante Vespa",
+            "name": "Vespa Mutante",
         },
         "wasp_mutant_emitter": {
-            "name": "\\{review}Emettitore di Mutante Vespa",
+            "name": "Emettitore di Vespe Mutanti",
         },
         "water_sprite": {
             "name": "Scia Barca",
@@ -2970,7 +2970,7 @@
             "name": "Luce Bianca",
         },
         "willard": {
-            "name": "\\{review}Willard",
+            "name": "Willard",
         },
         "winston": {
             "name": "Winston",
