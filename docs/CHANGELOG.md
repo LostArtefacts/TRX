@@ -87,6 +87,7 @@
 - fixed activated one-shot antitriggers not being remembered when loading a save (regression from 1.2)
 - fixed the Ora Dagger appearing too low in the inventory in Meteorite Cavern (regression from 1.2)
 - fixed quest item pickup counts incrementing if the item cheat is used and then save/load is repeatedly used (regression from 1.2)
+- fixed not being able to give quest items to Lara on level start via the game flow
 
 
 
