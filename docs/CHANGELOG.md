@@ -29,6 +29,7 @@
 - fixed missing default object names for `O_ANIMATING_7`...`O_ANIMATING_10` and `O_FLICKERING_LIGHT` (regression from 1.4)
 - fixed empty centaur statues incorrectly referencing other level items when the centaur object is not loaded
 - fixed TR3 camera mode potentially behaving erratically when loading a level and the look input is held (regression from 1.1)
+- fixed Lara being able to go from run or sprint to crouch while holding a rifle-type weapon (regression from 1.3)
 
 **TR1**:
 - added savegame crystals to Unfinished Business (#1525)

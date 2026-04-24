@@ -147,6 +147,12 @@ static bool M_RequestDuck(LARA_INFO *const lara)
     }
 }
 
+static bool M_RequestRunToCrouch(LARA_INFO *const lara)
+{
+    return (lara->gun_status == LGS_ARMLESS || !Gun_IsRifleType(lara->gun_type))
+        && M_RequestDuck(lara);
+}
+
 static void M_Run(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -179,7 +185,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_RequestDuck(lara)) {
+    if (M_RequestRunToCrouch(lara)) {
         item->goal_anim_state = M_GetRunToCrouchState();
         return;
     }
@@ -745,7 +751,7 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (M_RequestDuck(lara)) {
+    if (M_RequestRunToCrouch(lara)) {
         item->goal_anim_state = M_GetRunToCrouchState();
         return;
     }
