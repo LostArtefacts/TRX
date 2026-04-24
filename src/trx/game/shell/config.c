@@ -3,11 +3,13 @@
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
+#include <trx/game/option/controls.h>
 #include <trx/game/output.h>
 #include <trx/game/replay/test_replay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
+#include <trx/game/ui/touch_overlay.h>
 #include <trx/game/viewport.h>
 
 #include <SDL2/SDL_timer.h>
@@ -201,6 +203,11 @@ void Shell_HandleConfigChange(const CONFIG *const old, const CONFIG *const new)
         Savegame_Shutdown();
         Savegame_Init();
         Savegame_ScanSavedGames();
+    }
+
+    if (L_CHANGED(input.enable_touch_controls)) {
+        TouchOverlay_SetVisible(new->input.enable_touch_controls);
+        Option_Controls_RefreshBackendPicker();
     }
 #undef L_CHANGED
 }

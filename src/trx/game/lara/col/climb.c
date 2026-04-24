@@ -312,7 +312,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
             if ((item->current_anim_state != LS(LS_SHIMMY_LEFT)
                  && item->current_anim_state != LS(LS_SHIMMY_RIGHT))
                 || M_TestHangStop(item, coll, flag, &height_diff)) {
-                item->pos = coll->old;
+                item->pos = coll->old_pos;
                 item->goal_anim_state = LS(LS_HANG);
                 item->current_anim_state = LS(LS_HANG);
                 Item_SwitchToAnim(item, LA(LA_REACH_TO_HANG), M_LF_HANG);
@@ -350,7 +350,7 @@ void Lara_Col_HangTest(ITEM *const item, COLL_INFO *const coll)
 
     int32_t height_diff = 0;
     if (M_TestHangStop(item, coll, flag, &height_diff)) {
-        item->pos = coll->old;
+        item->pos = coll->old_pos;
         if (item->current_anim_state == LS(LS_SHIMMY_LEFT)
             || item->current_anim_state == LS(LS_SHIMMY_RIGHT)) {
             item->goal_anim_state = LS(LS_HANG);
@@ -751,13 +751,13 @@ static void M_SideLadder(ITEM *const item, COLL_INFO *const coll)
         do {
             Item_Animate(item);
         } while (item->current_anim_state != LS(LS_HANG));
-        item->pos.x = coll->old.x;
-        item->pos.z = coll->old.z;
+        item->pos.x = coll->old_pos.x;
+        item->pos.z = coll->old_pos.z;
         return;
     }
 
-    item->pos.x = coll->old.x;
-    item->pos.z = coll->old.z;
+    item->pos.x = coll->old_pos.x;
+    item->pos.z = coll->old_pos.z;
     item->goal_anim_state = LS(LS_CLIMB_STANCE);
     item->current_anim_state = LS(LS_CLIMB_STANCE);
     if (coll->old_anim_state == LS(LS_CLIMB_STANCE)) {
@@ -932,6 +932,15 @@ bool Lara_Col_TestVault(ITEM *const item, COLL_INFO *const coll)
     const bool slope = ABS(left_floor - right_floor) >= SLOPE_DIF;
     const int32_t mid = STEP_L / 2;
     const ROOM *const room = Room_Get(item->room_num);
+
+    // Prevent Lara vaulting onto a slope when action is held while running
+    // into it. This is consistent with not vaulting when at a stop.
+    if (item->speed != 0) {
+        Lara_FloorFront(item, angle, STEP_L);
+        if (Room_GetHeightType() == HT_BIG_SLOPE) {
+            return false;
+        }
+    }
 
     if (front_floor >= -STEP_L * 2 - mid && front_floor <= -STEP_L * 2 + mid) {
         if (slope || front_floor - front_ceiling < 0

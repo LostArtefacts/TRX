@@ -636,8 +636,7 @@ static void M_UserControl(ITEM *const item)
             .quadrant = Math_GetDirection(item->rot.y),
         };
         if (Collide_CollideStaticObjects(
-                &coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-                STEP_L * 3)) {
+                &coll, item->pos, item->room_num, STEP_L * 3)) {
             Item_SwitchToObjAnim(
                 lara_item, M_ANIM_HIT_BEAM, 0, O_LARA_VEHICLE_ANIM);
             lara_item->current_anim_state = M_STATE_HIT_BEAM;

@@ -34,12 +34,20 @@ typedef struct {
     RGBA_8888 tl, tr, bl, br;
 } OUTPUT_UI_QUAD;
 
+typedef struct {
+    int32_t cx, cy;
+    int32_t r_inner, r_outer;
+    int32_t z;
+    RGBA_8888 color;
+} OUTPUT_UI_CIRCLE;
+
 void OutputSource_UI_Init(void);
 void OutputSource_UI_Shutdown(void);
 
 void OutputSource_UI_StagePickup(OUTPUT_UI_PICKUP pickup);
 void OutputSource_UI_StageSprite(OUTPUT_UI_SPRITE sprite);
 void OutputSource_UI_StageQuad(OUTPUT_UI_QUAD quad);
+void OutputSource_UI_StageCircle(OUTPUT_UI_CIRCLE circle);
 void OutputSource_UI_StagePhotoModeFrame(
     VIEWPORT_RECT rect, RGBA_8888 color, int32_t thickness);
 

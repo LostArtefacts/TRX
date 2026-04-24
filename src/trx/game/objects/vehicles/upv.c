@@ -677,7 +677,7 @@ static void M_BackgroundCollision(
         .bad_pos = -NO_HEIGHT,
         .bad_neg = -400,
         .bad_ceiling = 400,
-        .old = item->pos,
+        .old_pos = item->pos,
         .radius = 300,
         .slopes_are_walls = false,
         .slopes_are_pits = false,
@@ -698,9 +698,9 @@ static void M_BackgroundCollision(
     CLAMPL(h, 200);
 
     coll.bad_neg = -h;
-    Collide_GetCollisionInfo(
-        &coll, item->pos.x, item->pos.y + h / 2, item->pos.z, item->room_num,
-        h);
+    XYZ_32 coll_pos = item->pos;
+    coll_pos.y += h / 2;
+    Collide_GetCollisionInfo(&coll, coll_pos, item->room_num, h);
     Collide_ShiftItem(item, &coll);
 
     switch (coll.coll_type) {
@@ -733,7 +733,7 @@ static void M_BackgroundCollision(
         break;
 
     case COLL_CLAMP:
-        item->pos = coll.old;
+        item->pos = coll.old_pos;
         p->vel = 0;
         return;
     }

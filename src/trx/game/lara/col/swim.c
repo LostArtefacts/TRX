@@ -126,7 +126,7 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
         Lara_GetWaterDepth(item->pos.x, item->pos.y, item->pos.z, room_num);
 
     if (g_Config.gameplay.fix_water_exit && water_depth == NO_HEIGHT) {
-        item->pos = coll->old;
+        item->pos = coll->old_pos;
         item->fall_speed = 0;
         return;
     }
@@ -157,9 +157,9 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
     if (g_Config.gameplay.enable_wading) {
         obj_height += 100;
     }
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + M_HEIGHT_SURF, item->pos.z,
-        item->room_num, obj_height);
+    XYZ_32 coll_pos = item->pos;
+    coll_pos.y += M_HEIGHT_SURF;
+    Collide_GetCollisionInfo(coll, coll_pos, item->room_num, obj_height);
 
     Lara_Col_Shift(coll);
 
@@ -173,7 +173,7 @@ static void M_CommonSurface(ITEM *const item, COLL_INFO *const coll)
             && (coll->side_mid.type == HT_BIG_SLOPE
                 || coll->side_mid.type == HT_DIAGONAL))) {
         item->fall_speed = 0;
-        item->pos = coll->old;
+        item->pos = coll->old_pos;
     }
 
     const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
@@ -250,9 +250,9 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
         height = LARA_HEIGHT_UW;
     }
 
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y + height / 2, item->pos.z,
-        item->room_num, height);
+    XYZ_32 coll_pos = item->pos;
+    coll_pos.y += height / 2;
+    Collide_GetCollisionInfo(coll, coll_pos, item->room_num, height);
     Lara_Col_Shift(coll);
 
     switch (coll->coll_type) {
@@ -285,7 +285,7 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
         break;
 
     case COLL_CLAMP:
-        item->pos = coll->old;
+        item->pos = coll->old_pos;
         item->fall_speed = 0;
         return;
     }

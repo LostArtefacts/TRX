@@ -63,8 +63,8 @@ static void M_FillSide(
 
     const bool is_on_walkable = M_IsOnWalkable(sector, sample_pos, room_height);
 
-    const bool is_front = side == &coll->side_front;
-    if (is_front) {
+    const bool retest_front = side == &coll->side_front && g_TRVersion >= 3;
+    if (retest_front) {
         XYZ_32 front_probe_pos = sample_pos;
         front_probe_pos.x += probe.x;
         front_probe_pos.z += probe.z;
@@ -79,14 +79,14 @@ static void M_FillSide(
         if (coll->slopes_are_walls
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
             && side->floor < 0
-            && (!is_front
+            && (!retest_front
                 || (side->floor < coll->side_mid.floor
                     && height < side->floor))) {
             side->floor = -32767;
         } else if (
             coll->slopes_are_pits
             && (side->type == HT_BIG_SLOPE || side->type == HT_DIAGONAL)
-            && side->floor > (is_front ? coll->side_mid.floor : 0)) {
+            && side->floor > (retest_front ? coll->side_mid.floor : 0)) {
             side->floor = STEP_L * 2;
         } else if (
             coll->lava_is_pit && side->floor > 0
@@ -295,8 +295,8 @@ void Collide_GetJointAbsPosition(
 }
 
 void Collide_GetCollisionInfo(
-    COLL_INFO *const coll, const int32_t x_pos, const int32_t y_pos,
-    const int32_t z_pos, int16_t room_num, int32_t obj_height)
+    COLL_INFO *const coll, const XYZ_32 pos, int16_t room_num,
+    int32_t obj_height)
 {
     coll->coll_type = COLL_NONE;
     coll->shift.x = 0;
@@ -311,17 +311,15 @@ void Collide_GetCollisionInfo(
         obj_height = -obj_height;
     }
 
-    int32_t x = x_pos;
-    int32_t z = z_pos;
-    const int32_t y = y_pos - obj_height;
+    const int32_t y = pos.y - obj_height;
     const int32_t y_top = y - M_HEADROOM;
 
-    const XYZ_32 sample_pos = { .x = x, .y = y_top, .z = z };
+    const XYZ_32 sample_pos = { .x = pos.x, .y = y_top, .z = pos.z };
     const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
     int32_t height = Room_GetHeight(sector, sample_pos);
-    int32_t room_height = height;
+    const int32_t room_height = height;
     if (height != NO_HEIGHT) {
-        height -= y_pos;
+        height -= pos.y;
     }
     int32_t ceiling = Room_GetCeiling(sector, sample_pos);
     if (ceiling != NO_HEIGHT) {
@@ -337,8 +335,8 @@ void Collide_GetCollisionInfo(
         coll->tilt = (XZ_16) {};
     } else {
         const ITEM *const lara_item = Lara_GetItem();
-        coll->tilt =
-            Room_GetTiltType(sector, (XYZ_32) { x, lara_item->pos.y, z });
+        coll->tilt = Room_GetTiltType(
+            sector, (XYZ_32) { pos.x, lara_item->pos.y, pos.z });
     }
 
     XZ_32 probe_left = {};
@@ -389,33 +387,26 @@ void Collide_GetCollisionInfo(
         room_num = prev_room_num;
     }
 
-    const XYZ_32 probe_base = { x_pos, y_pos, z_pos };
     M_FillSide(
-        coll, &coll->side_front, probe_base, probe_front, obj_height,
-        &room_num);
+        coll, &coll->side_front, pos, probe_front, obj_height, &room_num);
 
     int16_t room_num2;
     room_num2 = prev_room_num;
-    M_FillSide(
-        coll, &coll->side_left, probe_base, probe_left, obj_height, &room_num2);
+    M_FillSide(coll, &coll->side_left, pos, probe_left, obj_height, &room_num2);
     room_num2 = prev_room_num;
     M_FillSide(
-        coll, &coll->side_right, probe_base, probe_right, obj_height,
-        &room_num2);
+        coll, &coll->side_right, pos, probe_right, obj_height, &room_num2);
 
+    M_FillSide(coll, &coll->side_left2, pos, probe_left, obj_height, &room_num);
     M_FillSide(
-        coll, &coll->side_left2, probe_base, probe_left, obj_height, &room_num);
-    M_FillSide(
-        coll, &coll->side_right2, probe_base, probe_right, obj_height,
-        &room_num);
+        coll, &coll->side_right2, pos, probe_right, obj_height, &room_num);
 
     const int16_t static_room_num = g_TRVersion >= 3 ? prev_room_num : room_num;
-    if (Collide_CollideStaticObjects(
-            coll, x_pos, y_pos, z_pos, static_room_num, obj_height)) {
+    if (Collide_CollideStaticObjects(coll, pos, static_room_num, obj_height)) {
         const XYZ_32 test_pos = {
-            .x = x_pos + coll->shift.x,
-            .y = y_pos,
-            .z = z_pos + coll->shift.z,
+            .x = pos.x + coll->shift.x,
+            .y = pos.y,
+            .z = pos.z + coll->shift.z,
         };
         sector = Room_GetSector(test_pos, &room_num);
         if (Room_GetHeight(sector, test_pos) < test_pos.y - WALL_L / 2
@@ -426,17 +417,17 @@ void Collide_GetCollisionInfo(
     }
 
     if (coll->side_mid.floor == NO_HEIGHT) {
-        coll->shift.x = coll->old.x - x_pos;
-        coll->shift.y = coll->old.y - y_pos;
-        coll->shift.z = coll->old.z - z_pos;
+        coll->shift.x = coll->old_pos.x - pos.x;
+        coll->shift.y = coll->old_pos.y - pos.y;
+        coll->shift.z = coll->old_pos.z - pos.z;
         coll->coll_type = COLL_FRONT;
         return;
     }
 
     if (coll->side_mid.floor - coll->side_mid.ceiling <= 0) {
-        coll->shift.x = coll->old.x - x_pos;
-        coll->shift.y = coll->old.y - y_pos;
-        coll->shift.z = coll->old.z - z_pos;
+        coll->shift.x = coll->old_pos.x - pos.x;
+        coll->shift.y = coll->old_pos.y - pos.y;
+        coll->shift.z = coll->old_pos.z - pos.z;
         coll->coll_type = COLL_CLAMP;
         return;
     }
@@ -451,22 +442,22 @@ void Collide_GetCollisionInfo(
         || coll->side_front.ceiling > coll->bad_ceiling) {
         if (coll->side_front.type == HT_DIAGONAL
             || coll->side_front.type == HT_SPLIT_TRI) {
-            coll->shift.x = coll->old.x - x;
-            coll->shift.z = coll->old.z - z;
+            coll->shift.x = coll->old_pos.x - pos.x;
+            coll->shift.z = coll->old_pos.z - pos.z;
         } else {
             switch (coll->quadrant) {
             case DIR_NORTH:
             case DIR_SOUTH:
-                coll->shift.x = coll->old.x - x_pos;
+                coll->shift.x = coll->old_pos.x - pos.x;
                 coll->shift.z =
-                    Room_FindGridShift(z_pos + probe_front.z, z_pos);
+                    Room_FindGridShift(pos.z + probe_front.z, pos.z);
                 break;
 
             case DIR_EAST:
             case DIR_WEST:
                 coll->shift.x =
-                    Room_FindGridShift(x_pos + probe_front.x, x_pos);
-                coll->shift.z = coll->old.z - z_pos;
+                    Room_FindGridShift(pos.x + probe_front.x, pos.x);
+                coll->shift.z = coll->old_pos.z - pos.z;
                 break;
 
             default:
@@ -479,9 +470,9 @@ void Collide_GetCollisionInfo(
     }
 
     if (coll->side_front.ceiling >= coll->bad_ceiling) {
-        coll->shift.x = coll->old.x - x_pos;
-        coll->shift.y = coll->old.y - y_pos;
-        coll->shift.z = coll->old.z - z_pos;
+        coll->shift.x = coll->old_pos.x - pos.x;
+        coll->shift.y = coll->old_pos.y - pos.y;
+        coll->shift.z = coll->old_pos.z - pos.z;
         coll->coll_type = COLL_TOP_FRONT;
         return;
     }
@@ -489,20 +480,20 @@ void Collide_GetCollisionInfo(
     if (coll->side_left.floor > coll->bad_pos
         || coll->side_left.floor < coll->bad_neg) {
         if (coll->side_left.type == HT_SPLIT_TRI) {
-            coll->shift.x = coll->old.x - x;
-            coll->shift.z = coll->old.z - z;
+            coll->shift.x = coll->old_pos.x - pos.x;
+            coll->shift.z = coll->old_pos.z - pos.z;
         } else {
             switch (coll->quadrant) {
             case DIR_NORTH:
             case DIR_SOUTH:
                 coll->shift.x = Room_FindGridShift(
-                    x_pos + probe_left.x, x_pos + probe_front.x);
+                    pos.x + probe_left.x, pos.x + probe_front.x);
                 break;
 
             case DIR_EAST:
             case DIR_WEST:
                 coll->shift.z = Room_FindGridShift(
-                    z_pos + probe_left.z, z_pos + probe_front.z);
+                    pos.z + probe_left.z, pos.z + probe_front.z);
                 break;
 
             default:
@@ -517,20 +508,20 @@ void Collide_GetCollisionInfo(
     if (coll->side_right.floor > coll->bad_pos
         || coll->side_right.floor < coll->bad_neg) {
         if (coll->side_right.type == HT_SPLIT_TRI) {
-            coll->shift.x = coll->old.x - x;
-            coll->shift.z = coll->old.z - z;
+            coll->shift.x = coll->old_pos.x - pos.x;
+            coll->shift.z = coll->old_pos.z - pos.z;
         } else {
             switch (coll->quadrant) {
             case DIR_NORTH:
             case DIR_SOUTH:
                 coll->shift.x = Room_FindGridShift(
-                    x_pos + probe_right.x, x_pos + probe_front.x);
+                    pos.x + probe_right.x, pos.x + probe_front.x);
                 break;
 
             case DIR_EAST:
             case DIR_WEST:
                 coll->shift.z = Room_FindGridShift(
-                    z_pos + probe_right.z, z_pos + probe_front.z);
+                    pos.z + probe_right.z, pos.z + probe_front.z);
                 break;
 
             default:
@@ -544,21 +535,20 @@ void Collide_GetCollisionInfo(
 }
 
 bool Collide_CollideStaticObjects(
-    COLL_INFO *const coll, const int32_t x, const int32_t y, const int32_t z,
-    const int16_t room_num, const int32_t height)
+    COLL_INFO *const coll, const XYZ_32 pos, const int16_t room_num,
+    const int32_t height)
 {
     coll->hit_static = 0;
 
-    const int32_t in_x_min = x - coll->radius;
-    const int32_t in_x_max = x + coll->radius;
-    const int32_t in_y_min = y - height;
-    const int32_t in_y_max = y;
-    const int32_t in_z_min = z - coll->radius;
-    const int32_t in_z_max = z + coll->radius;
+    const int32_t in_x_min = pos.x - coll->radius;
+    const int32_t in_x_max = pos.x + coll->radius;
+    const int32_t in_y_min = pos.y - height;
+    const int32_t in_y_max = pos.y;
+    const int32_t in_z_min = pos.z - coll->radius;
+    const int32_t in_z_max = pos.z + coll->radius;
     XYZ_32 shifter = { .x = 0, .z = 0 };
 
-    Room_GetNearbyRooms(
-        (XYZ_32) { x, y, z }, coll->radius + 50, height + 50, room_num);
+    Room_GetNearbyRooms(pos, coll->radius + 50, height + 50, room_num);
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
         const ROOM *const room = Room_Get(Room_DrawGetRoom(i));
@@ -639,7 +629,7 @@ bool Collide_CollideStaticObjects(
             case DIR_NORTH:
                 if (shifter.x > coll->radius || shifter.x < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
-                    coll->shift.x = coll->old.x - x;
+                    coll->shift.x = coll->old_pos.x - pos.x;
                     coll->shift.z = shifter.z;
                 } else if (shifter.x > 0) {
                     coll->coll_type = COLL_LEFT;
@@ -656,7 +646,7 @@ bool Collide_CollideStaticObjects(
                 if (shifter.z > coll->radius || shifter.z < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
                     coll->shift.x = shifter.x;
-                    coll->shift.z = coll->old.z - z;
+                    coll->shift.z = coll->old_pos.z - pos.z;
                 } else if (shifter.z > 0) {
                     coll->coll_type = COLL_RIGHT;
                     coll->shift.x = 0;
@@ -671,7 +661,7 @@ bool Collide_CollideStaticObjects(
             case DIR_SOUTH:
                 if (shifter.x > coll->radius || shifter.x < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
-                    coll->shift.x = coll->old.x - x;
+                    coll->shift.x = coll->old_pos.x - pos.x;
                     coll->shift.z = shifter.z;
                 } else if (shifter.x > 0) {
                     coll->coll_type = COLL_RIGHT;
@@ -688,7 +678,7 @@ bool Collide_CollideStaticObjects(
                 if (shifter.z > coll->radius || shifter.z < -coll->radius) {
                     coll->coll_type = COLL_FRONT;
                     coll->shift.x = shifter.x;
-                    coll->shift.z = coll->old.z - z;
+                    coll->shift.z = coll->old_pos.z - pos.z;
                 } else if (shifter.z > 0) {
                     coll->coll_type = COLL_LEFT;
                     coll->shift.x = 0;

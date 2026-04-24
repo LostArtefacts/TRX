@@ -109,10 +109,10 @@ static void M_WaterCurrent_TR12(COLL_INFO *const coll)
 
     lara->current.active = 0;
     coll->facing = Math_Atan(
-        lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
-    Collide_GetCollisionInfo(
-        coll, lara_item->pos.x, lara_item->pos.y + LARA_HEIGHT_UW / 2,
-        lara_item->pos.z, room_num, LARA_HEIGHT_UW);
+        lara_item->pos.z - coll->old_pos.z, lara_item->pos.x - coll->old_pos.x);
+    XYZ_32 coll_pos = lara_item->pos;
+    coll_pos.y += LARA_HEIGHT_UW / 2;
+    Collide_GetCollisionInfo(coll, coll_pos, room_num, LARA_HEIGHT_UW);
 
     switch (coll->coll_type) {
     case COLL_FRONT:
@@ -151,7 +151,7 @@ static void M_WaterCurrent_TR12(COLL_INFO *const coll)
     }
     Lara_Col_Shift(coll);
 
-    coll->old = lara_item->pos;
+    coll->old_pos = lara_item->pos;
 }
 
 static void M_WaterCurrent_TR3(COLL_INFO *const coll)
@@ -212,10 +212,11 @@ static void M_WaterCurrent_TR3(COLL_INFO *const coll)
     lara_item->pos.z += lara->current.vel.z >> 8;
     lara->current.active = 0;
     coll->facing = Math_Atan(
-        lara_item->pos.z - coll->old.z, lara_item->pos.x - coll->old.x);
+        lara_item->pos.z - coll->old_pos.z, lara_item->pos.x - coll->old_pos.x);
+    XYZ_32 coll_pos = lara_item->pos;
+    coll_pos.y += LARA_HEIGHT_UW / 2;
     Collide_GetCollisionInfo(
-        coll, lara_item->pos.x, lara_item->pos.y + 200, lara_item->pos.z,
-        lara_item->room_num, 400);
+        coll, coll_pos, lara_item->room_num, LARA_HEIGHT_UW);
 
     switch (coll->coll_type) {
     case COLL_FRONT:
@@ -250,7 +251,7 @@ static void M_WaterCurrent_TR3(COLL_INFO *const coll)
     }
 
     Lara_Col_Shift(coll);
-    coll->old = lara_item->pos;
+    coll->old_pos = lara_item->pos;
 }
 
 static void M_WaterCurrent(COLL_INFO *const coll)
@@ -591,7 +592,7 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     ITEM *const item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
-    coll->old = item->pos;
+    coll->old_pos = item->pos;
     coll->old_anim_state = item->current_anim_state;
     coll->old_anim_num = item->anim_num;
     coll->old_frame_num = item->frame_num;
@@ -691,7 +692,7 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
     ITEM *const item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
-    coll->old = item->pos;
+    coll->old_pos = item->pos;
     coll->radius = M_RADIUS_UW;
 
     coll->bad_pos = NO_BAD_POS;
@@ -779,7 +780,7 @@ static void M_HandleSurface(COLL_INFO *const coll)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     g_Camera.target_elevation = CAM_WADE_ELEVATION;
 
-    coll->old = item->pos;
+    coll->old_pos = item->pos;
     coll->radius = M_RADIUS_SURF;
 
     coll->bad_pos = NO_BAD_POS;

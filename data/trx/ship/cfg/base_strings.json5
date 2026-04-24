@@ -211,6 +211,7 @@
                 "backend": {
                     "controller": "Controller",
                     "keyboard": "Keyboard",
+                    "touch": "Touch Controls",
                 },
                 "customize": "Customize Controls",
                 "layout": {
@@ -1206,6 +1207,10 @@
             "title": "Responsive passport",
             "description": "Disables blocking user input when passport flips pages, scheduling the page flips instead.",
         },
+        "input.enable_touch_controls": {
+            "title": "Touch controls",
+            "description": "Shows an on-screen touch control overlay for touchscreen devices.",
+        },
         "input.enable_tr3_sidesteps": {
             "title": "Enhanced sidesteps",
             "description": "Enables TR3+ style sidesteps, e.g. shift+directional arrows. Dedicated sidestep buttons will still work.",
@@ -1213,6 +1218,22 @@
         "input.quick_guns_mode": {
             "title": "Quick gun keys",
             "description": "Controls the behavior of the quick gun equip keys.\n\n- Draw only: pressing a key will cause Lara to equip the assigned gun.\n- Draw or holster: same as above, plus Lara will undraw the assigned gun if she's currently carrying it.",
+        },
+        "input.touch_button_scale": {
+            "title": "Touch button scale",
+            "description": "Adjusts the size of the on-screen touch control buttons.",
+        },
+        "input.touch_dpad_deadzone": {
+            "title": "Touch D-pad deadzone",
+            "description": "Adjusts the deadzone of the on-screen D-pad. A larger deadzone requires more movement before directional input is registered.",
+        },
+        "input.touch_dpad_scale": {
+            "title": "Touch D-pad scale",
+            "description": "Adjusts the size of the on-screen D-pad.",
+        },
+        "input.touch_opacity": {
+            "title": "Touch opacity",
+            "description": "Adjusts the transparency of the on-screen touch control buttons.",
         },
         "language": {
             "title": "Language",

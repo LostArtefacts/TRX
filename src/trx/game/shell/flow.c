@@ -18,6 +18,7 @@
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
+#include <trx/game/input/backends/touch.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/items/walkable.h>
 #include <trx/game/lara/pose.h>
@@ -39,6 +40,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui/settings.h>
+#include <trx/game/ui/touch_overlay.h>
 #include <trx/gl/context.h>
 #include <trx/version.h>
 
@@ -295,6 +297,12 @@ static void M_PrepareSystem(void)
         }
     }
     Config_SubscribeChanges(M_HandleConfigChange, nullptr);
+
+    // Auto-enable touch controls on first run if touch hardware is present.
+    if (!g_Config.loaded && Touch_HasHardwareSupport()) {
+        g_Config.input.enable_touch_controls = true;
+    }
+    TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
 
     Clock_SetSimSpeed(Clock_GetSpeedMultiplier());
     if (!s->args->headless) {

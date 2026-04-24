@@ -16,6 +16,9 @@ typedef struct {
 typedef bool (*INPUT_COMBO_KEYS_EQUAL)(const void *a, const void *b);
 typedef INPUT_COMBO_BINDING (*INPUT_COMBO_GET_BINDING)(
     INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
+// Returns the tick at which the given key most recently transitioned to
+// being held. The absolute value is opaque; only relative ordering matters.
+typedef uint32_t (*INPUT_COMBO_GET_PRESS_TICK)(const void *key);
 
 static inline const void *Input_ComboKeyAt(
     const INPUT_COMBO_BINDING *b, int32_t idx)
@@ -27,6 +30,16 @@ static inline const void *Input_ComboKeyAt(
 bool Input_ComboIsProperSubset(
     INPUT_COMBO_BINDING sub, INPUT_COMBO_BINDING super,
     INPUT_COMBO_KEYS_EQUAL keys_equal);
+
+// Returns true if the combo's earliest-pressed key (by tick) is bound to
+// an immediate role. Such combos look unintentional: the user was already
+// performing a direct action (e.g. running forward, jumping) when the
+// remaining combo keys came down, so we don't want the combo shortcut to
+// fire on top of ongoing movement. Single-key bindings are never flagged.
+bool Input_ComboEarliestKeyIsImmediate(
+    INPUT_LAYOUT layout, INPUT_COMBO_BINDING bind,
+    INPUT_COMBO_GET_PRESS_TICK get_press_tick,
+    INPUT_COMBO_GET_BINDING get_binding, INPUT_COMBO_KEYS_EQUAL keys_equal);
 
 // Check if any binding in the layout is a longer combo that shares the
 // same starter key (keys[0]) as bind.

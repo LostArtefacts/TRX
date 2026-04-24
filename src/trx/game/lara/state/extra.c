@@ -219,9 +219,7 @@ static void M_WillardKill(ITEM *const item, COLL_INFO *const coll)
 
 static void M_RapidsDrown(ITEM *const item, COLL_INFO *const coll)
 {
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT);
+    Collide_GetCollisionInfo(coll, item->pos, item->room_num, LARA_HEIGHT);
 
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);

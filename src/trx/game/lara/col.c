@@ -73,17 +73,17 @@ static void M_Push(
     coll->bad_neg = -STEPUP_HEIGHT;
     coll->bad_ceiling = 0;
     coll->facing = Math_Atan(
-        target_item->pos.z - coll->old.z, target_item->pos.x - coll->old.x);
+        target_item->pos.z - coll->old_pos.z,
+        target_item->pos.x - coll->old_pos.x);
     Collide_GetCollisionInfo(
-        coll, target_item->pos.x, target_item->pos.y, target_item->pos.z,
-        target_item->room_num, LARA_HEIGHT);
+        coll, target_item->pos, target_item->room_num, LARA_HEIGHT);
     coll->facing = old_facing;
 
     if (coll->coll_type != COLL_NONE) {
-        target_item->pos.x = coll->old.x;
-        target_item->pos.z = coll->old.z;
+        target_item->pos.x = coll->old_pos.x;
+        target_item->pos.z = coll->old_pos.z;
     } else {
-        coll->old = target_item->pos;
+        coll->old_pos = target_item->pos;
         Lara_UpdateRoomToHeight(-10);
     }
 
@@ -116,9 +116,7 @@ void Lara_Col_GetInfo(const ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     coll->facing = lara->move_angle;
-    Collide_GetCollisionInfo(
-        coll, item->pos.x, item->pos.y, item->pos.z, item->room_num,
-        LARA_HEIGHT);
+    Collide_GetCollisionInfo(coll, item->pos, item->room_num, LARA_HEIGHT);
 }
 
 void Lara_Col_Shift(COLL_INFO *const coll)
