@@ -295,6 +295,7 @@
                 "luds_textures.bin",
                 "menu_artefacts.bin",
             ],
+            "unobtainable_pickups": 2,
         },
 
         // 12. City
