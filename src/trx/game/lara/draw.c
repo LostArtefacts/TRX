@@ -17,14 +17,22 @@
 static bool m_CacheMatrices = false;
 static bool m_IsLara = true;
 
-static GAME_VECTOR M_GetLaraLightSample(const ITEM *const item)
+static void M_CalculateLight(
+    const ITEM *const item, const ANIM_FRAME *const frame)
 {
-    GAME_VECTOR sample_pos = {
-        .pos = { 0, 0, 0 },
-        .room_num = item->room_num,
-    };
-    Lara_GetJointAbsPosition(&sample_pos.pos, LM_TORSO);
-    return sample_pos;
+    if (g_TRVersion >= 3) {
+        GAME_VECTOR sample_pos = {
+            .pos = { 0, 0, 0 },
+            .room_num = item->room_num,
+        };
+        if (!Lara_GetMeshPos(LM_TORSO, &sample_pos.pos)) {
+            Lara_GetJointAbsPosition(&sample_pos.pos, LM_TORSO);
+        }
+        Room_GetSector(sample_pos.pos, &sample_pos.room_num);
+        Output_CalculateObjectLightingAt(item, sample_pos);
+    } else {
+        Output_CalculateObjectLighting(item, &frame->bounds);
+    }
 }
 
 static void M_CacheMatrix(const LARA_MESH mesh)
@@ -164,12 +172,11 @@ static bool M_Draw_I(
     }
 
     m_CacheMatrices = m_IsLara;
+    Matrix_Push();
+    M_CalculateLight(item, frame1);
     if (m_CacheMatrices) {
         lara->mesh_pos_matrices_valid = false;
     }
-
-    Matrix_Push();
-    Output_CalculateObjectLightingAt(item, M_GetLaraLightSample(item));
 
     const ANIM_BONE *const bone =
         m_IsLara ? Lara_Skin_GetBoneBase() : Object_GetBone(obj, 0);
@@ -455,12 +462,11 @@ bool Lara_Draw(const ITEM *const item)
     }
 
     m_CacheMatrices = m_IsLara;
+    Matrix_Push();
+    M_CalculateLight(item, frame);
     if (m_CacheMatrices) {
         lara->mesh_pos_matrices_valid = false;
     }
-
-    Matrix_Push();
-    Output_CalculateObjectLightingAt(item, M_GetLaraLightSample(item));
 
     const ANIM_BONE *const bone =
         m_IsLara ? Lara_Skin_GetBoneBase() : Object_GetBone(obj, 0);
