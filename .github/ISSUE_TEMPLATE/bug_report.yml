@@ -34,12 +34,6 @@ body:
     validations:
       required: true
 
-  - type: markdown
-    attributes:
-      value: |
-        If your report is about TR3, please note that current support is limited to Lara's Home, India, and South Pacific.
-        Reports for other TR3 areas are still out of scope while that work is in progress, so those issues are not being accepted yet.
-
   - type: input
     id: trx_version
     attributes:
