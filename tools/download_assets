@@ -74,7 +74,10 @@ def main() -> None:
             "https://lostartefacts.dev/aux/tr2x/main.zip",
             "https://lostartefacts.dev/aux/tr2x/trgm.zip",
         ],
-        3: ["https://lostartefacts.dev/aux/tr3x/main.zip"],
+        3: [
+            "https://lostartefacts.dev/aux/tr3x/main.zip",
+            "https://lostartefacts.dev/aux/tr3x/trla.zip",
+        ],
     }
     combined_asset_urls_map: dict[int, list[str]] = {
         1: [
@@ -86,7 +89,10 @@ def main() -> None:
             "https://lostartefacts.dev/aux/trx/tr2.zip",
             "https://lostartefacts.dev/aux/trx/tr2-gm.zip",
         ],
-        3: ["https://lostartefacts.dev/aux/trx/tr3.zip"],
+        3: [
+            "https://lostartefacts.dev/aux/trx/tr3.zip",
+            "https://lostartefacts.dev/aux/trx/tr3-la.zip"
+        ],
     }
 
     versions = {"1": [1], "2": [2], "3": [3], "all": [1, 2, 3]}[
