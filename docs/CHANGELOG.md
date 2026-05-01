@@ -63,6 +63,8 @@
 - restored the animated mine cart tracks in RX-Tech Mines
 - restored the missing flamethrower blast sound effect in RX-Tech Mines and Meteorite Cavern
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
+- removed the need to define Wasp items near to Wasp Emitters
+- fixed Wasp Emitters not spawning items if previously spawned Wasps are still active and unreachable
 - fixed letterboxing of images on 16:10 resolution
 - fixed TR3:LA images missing from release zips and the installer (#5390, regression from 1.5)
 - fixed Fire Lighting option having no effect
