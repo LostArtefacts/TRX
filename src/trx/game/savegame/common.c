@@ -629,56 +629,37 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->large_medipacks = Inv_RequestItem(O_LARGE_MEDIPACK_ITEM);
 
     resume->pistol_ammo = 1000;
-    if (Inv_RequestItem(O_PISTOL_ITEM)) {
-        resume->flags.has_pistols = true;
-    } else {
-        resume->flags.has_pistols = false;
-    }
+    resume->flags.has_pistols = Inv_RequestItem(O_PISTOL_ITEM) > 0;
 
-    if (Inv_RequestItem(O_SHOTGUN_ITEM)) {
-        resume->flags.has_shotgun = true;
-        resume->shotgun_ammo = lara->shotgun_ammo.ammo;
-    } else {
-        resume->flags.has_shotgun = false;
-        resume->shotgun_ammo = Inv_RequestItem(O_SHOTGUN_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_SHOTGUN);
-    }
+    resume->flags.has_shotgun = Inv_RequestItem(O_SHOTGUN_ITEM) > 0;
+    resume->shotgun_ammo = lara->shotgun_ammo.ammo;
 
-    if (Inv_RequestItem(O_MAGNUM_ITEM)) {
-        resume->flags.has_magnums = true;
-        resume->magnum_ammo = lara->magnum_ammo.ammo;
-    } else {
-        resume->flags.has_magnums = false;
-        resume->magnum_ammo = Inv_RequestItem(O_MAGNUM_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_MAGNUMS);
-    }
+    resume->flags.has_magnums = Inv_RequestItem(O_MAGNUM_ITEM) > 0;
+    resume->magnum_ammo = lara->magnum_ammo.ammo;
 
-    if (Inv_RequestItem(O_AUTOS_ITEM)) {
-        resume->flags.has_autos = true;
-        resume->autos_ammo = lara->autos_ammo.ammo;
-    } else {
-        resume->flags.has_autos = false;
-        resume->autos_ammo = Inv_RequestItem(O_AUTOS_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_AUTOS);
-    }
+    resume->flags.has_autos = Inv_RequestItem(O_AUTOS_ITEM) > 0;
+    resume->autos_ammo = lara->autos_ammo.ammo;
 
-    if (Inv_RequestItem(O_DESERT_EAGLE_ITEM)) {
-        resume->flags.has_desert_eagle = true;
-        resume->desert_eagle_ammo = lara->desert_eagle_ammo.ammo;
-    } else {
-        resume->flags.has_desert_eagle = false;
-        resume->desert_eagle_ammo = Inv_RequestItem(O_DESERT_EAGLE_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_DESERT_EAGLE);
-    }
+    resume->flags.has_desert_eagle = Inv_RequestItem(O_DESERT_EAGLE_ITEM) > 0;
+    resume->desert_eagle_ammo = lara->desert_eagle_ammo.ammo;
 
-    if (Inv_RequestItem(O_UZI_ITEM)) {
-        resume->flags.has_uzis = true;
-        resume->uzi_ammo = lara->uzi_ammo.ammo;
-    } else {
-        resume->flags.has_uzis = false;
-        resume->uzi_ammo = Inv_RequestItem(O_UZI_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_UZIS);
-    }
+    resume->flags.has_uzis = Inv_RequestItem(O_UZI_ITEM) > 0;
+    resume->uzi_ammo = lara->uzi_ammo.ammo;
+
+    resume->flags.has_m16 = Inv_RequestItem(O_M16_ITEM) > 0;
+    resume->m16_ammo = lara->m16_ammo.ammo;
+
+    resume->flags.has_mp5 = Inv_RequestItem(O_MP5_ITEM) > 0;
+    resume->mp5_ammo = lara->mp5_ammo.ammo;
+
+    resume->flags.has_harpoon = Inv_RequestItem(O_HARPOON_ITEM) > 0;
+    resume->harpoon_ammo = lara->harpoon_ammo.ammo;
+
+    resume->flags.has_grenade = Inv_RequestItem(O_GRENADE_GUN_ITEM) > 0;
+    resume->grenade_ammo = lara->grenade_ammo.ammo;
+
+    resume->flags.has_rocket = Inv_RequestItem(O_ROCKET_GUN_ITEM) > 0;
+    resume->rocket_ammo = lara->rocket_ammo.ammo;
 
     resume->flares = Inv_RequestItem(O_FLARE_ITEM);
     resume->num_scions = Inv_RequestItem(O_SCION_ITEM_1);
@@ -686,51 +667,6 @@ void Savegame_PersistGameToCurrentInfo(const GF_LEVEL *const level)
     resume->num_quest_item_2 = Inv_RequestItem(O_QUEST_ITEM_2);
     resume->num_quest_item_3 = Inv_RequestItem(O_QUEST_ITEM_3);
     resume->num_quest_item_4 = Inv_RequestItem(O_QUEST_ITEM_4);
-
-    if (Inv_RequestItem(O_M16_ITEM)) {
-        resume->flags.has_m16 = true;
-        resume->m16_ammo = lara->m16_ammo.ammo;
-    } else {
-        resume->flags.has_m16 = false;
-        resume->m16_ammo = Inv_RequestItem(O_M16_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_M16);
-    }
-
-    if (Inv_RequestItem(O_MP5_ITEM)) {
-        resume->flags.has_mp5 = true;
-        resume->mp5_ammo = lara->mp5_ammo.ammo;
-    } else {
-        resume->flags.has_mp5 = false;
-        resume->mp5_ammo = Inv_RequestItem(O_MP5_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_MP5);
-    }
-
-    if (Inv_RequestItem(O_HARPOON_ITEM)) {
-        resume->flags.has_harpoon = true;
-        resume->harpoon_ammo = lara->harpoon_ammo.ammo;
-    } else {
-        resume->flags.has_harpoon = false;
-        resume->harpoon_ammo = Inv_RequestItem(O_HARPOON_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_HARPOON);
-    }
-
-    if (Inv_RequestItem(O_GRENADE_GUN_ITEM)) {
-        resume->flags.has_grenade = true;
-        resume->grenade_ammo = lara->grenade_ammo.ammo;
-    } else {
-        resume->flags.has_grenade = false;
-        resume->grenade_ammo = Inv_RequestItem(O_GRENADE_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_GRENADE);
-    }
-
-    if (Inv_RequestItem(O_ROCKET_GUN_ITEM)) {
-        resume->flags.has_rocket = true;
-        resume->rocket_ammo = lara->rocket_ammo.ammo;
-    } else {
-        resume->flags.has_rocket = false;
-        resume->rocket_ammo = Inv_RequestItem(O_ROCKET_AMMO_ITEM)
-            * Gun_GetAmmoPickupQuantity(LGT_ROCKET);
-    }
 
     resume->equipped_gun_type = lara->last_gun_type;
     resume->holsters_gun_type = lara->holsters_gun_type;

@@ -85,7 +85,6 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
     LARA_INFO *const lara = Lara_GetLaraInfo();
     for (int32_t i = Inv_RequestItem(ammo_object); i > 0; i--) {
         Inv_RemoveItem(ammo_object);
-        M_IncreaseAmmo(gun_type, Gun_GetAmmoPickupQuantity(gun_type));
     }
     M_IncreaseAmmo(gun_type, Gun_GetAmmoInitialQuantity(gun_type));
     Inv_InsertItem(M_GetGunInvItem(gun_type));
@@ -98,9 +97,8 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
 static void M_AddAmmo(const LARA_GUN_TYPE gun_type)
 {
     const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-    if (Inv_RequestItem(gun_object)) {
-        M_IncreaseAmmo(gun_type, Gun_GetAmmoPickupQuantity(gun_type));
-    } else {
+    M_IncreaseAmmo(gun_type, Gun_GetAmmoPickupQuantity(gun_type));
+    if (!Inv_RequestItem(gun_object)) {
         Inv_InsertItem(M_GetAmmoInvItem(gun_type));
     }
 }
@@ -253,6 +251,13 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         INV_RING_SOURCE *const source = &g_InvRing_Source[ring_type];
         for (int32_t i = 0; i < source->count; i++) {
             if (source->items[i]->object_id == inv_object_id) {
+                if (Object_IsType(pickup_object_id, g_GunAmmoObjects)) {
+                    const LARA_GUN_TYPE gun_type =
+                        Gun_GetType(Object_GetCognateInverse(
+                            pickup_object_id, g_GunAmmoObjectMap));
+                    M_IncreaseAmmo(
+                        gun_type, Gun_GetAmmoPickupQuantity(gun_type));
+                }
                 source->qtys[i] += qty;
                 CLAMPG(source->qtys[i], MAX_QTY);
                 return true;

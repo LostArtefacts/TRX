@@ -37,6 +37,7 @@
         "ammo": {
             "initial_qty": 32,
             "pickup_qty": 32,
+            "inventory_qty": 2,
         },
         "target_dist": 8.0,
         "recoil_frame": 9,
@@ -64,6 +65,7 @@
         "ammo": {
             "initial_qty": 50,
             "pickup_qty": 50,
+            "inventory_qty": 2,
         },
         "target_dist": 8.0,
         "recoil_frame": 9,
@@ -92,6 +94,7 @@
         "ammo": {
             "initial_qty": 40,
             "pickup_qty": 40,
+            "inventory_qty": 2,
         },
         "target_dist": 8.0,
         "recoil_frame": 9,
@@ -119,6 +122,7 @@
         "ammo": {
             "initial_qty": 10,
             "pickup_qty": 10,
+            "inventory_qty": 2,
         },
         "target_dist": 8.0,
         "recoil_frame": 16,
@@ -144,6 +148,7 @@
         "ammo": {
             "initial_qty": 80,
             "pickup_qty": 80,
+            "inventory_qty": 2,
         },
         "target_dist": 8.0,
         "recoil_frame": 3,
@@ -171,6 +176,7 @@
         "ammo": {
             "initial_qty": 2,
             "pickup_qty": 2,
+            "inventory_qty": 2,
         },
         "target_dist": 8.0,
         "equip_anim_idx": 1,
@@ -200,6 +206,7 @@
         "ammo": {
             "initial_qty": 40,
             "pickup_qty": 40,
+            "inventory_qty": 2,
         },
         "target_dist": 12.0,
         "equip_anim_idx": 1,
@@ -230,6 +237,7 @@
         "ammo": {
             "initial_qty": 60,
             "pickup_qty": 60,
+            "inventory_qty": 2,
         },
         "target_dist": 12.0,
         "equip_anim_idx": 1,
@@ -261,6 +269,7 @@
         "ammo": {
             "initial_qty": 1,
             "pickup_qty": 1,
+            "inventory_qty": 1,
         },
         "target_dist": 8.0,
         "equip_anim_idx": 1,
@@ -284,6 +293,7 @@
         "ammo": {
             "initial_qty": 2,
             "pickup_qty": 2,
+            "inventory_qty": 1,
         },
         "target_dist": 8.0,
         "equip_anim_idx": 0,
@@ -306,6 +316,7 @@
         "ammo": {
             "initial_qty": 3,
             "pickup_qty": 3,
+            "inventory_qty": 3,
         },
         "target_dist": 8.0,
         "equip_anim_idx": 1,
