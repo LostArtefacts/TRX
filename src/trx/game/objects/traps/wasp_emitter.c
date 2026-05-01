@@ -51,32 +51,33 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
-        p->slots[i] = NO_ITEM;
-    }
-}
-
-static void M_PopulateSlots(M_PRIV *const p)
-{
-    int32_t count = 0;
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
-        ITEM *const item = Item_Get(i);
-        if (item->object_id != O_WASP_MUTANT
-            || (item->ai_bits & AI_MODIFY) == 0) {
+        const int16_t wasp_item_num = Item_CreateLevelItem();
+        p->slots[i] = wasp_item_num;
+        if (wasp_item_num == NO_ITEM) {
             continue;
         }
 
-        p->slots[count++] = i;
-        if (count >= M_MAX_SLOTS) {
-            break;
-        }
+        ITEM *const wasp_item = Item_Get(wasp_item_num);
+        wasp_item->object_id = O_WASP_MUTANT;
+        wasp_item->room_num = item->room_num;
+        wasp_item->pos = item->pos;
+        wasp_item->rot = item->rot;
+        wasp_item->status = IS_INVISIBLE;
+        Item_Initialise(wasp_item_num);
     }
+}
+
+static const ITEM *M_GetWaspItem(const M_PRIV *const p, const int32_t slot_idx)
+{
+    const int16_t item_num = p->slots[slot_idx];
+    return item_num == NO_ITEM ? nullptr : Item_Get(item_num);
 }
 
 static int32_t M_GetEmptySlot(const M_PRIV *const p)
 {
     for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
-        const ITEM *const item = Item_Get(p->slots[i]);
-        if (item->creature_data == nullptr) {
+        const ITEM *const item = M_GetWaspItem(p, i);
+        if (item != nullptr && item->creature_data == nullptr) {
             return i;
         }
     }
@@ -87,8 +88,8 @@ static int32_t M_GetActiveCount(const M_PRIV *const p)
 {
     int32_t count = 0;
     for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
-        const ITEM *const item = Item_Get(p->slots[i]);
-        if (item->active) {
+        const ITEM *const item = M_GetWaspItem(p, i);
+        if (item != nullptr && item->active) {
             count++;
         }
     }
@@ -145,11 +146,6 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     if (!item->active || p->spawn_count >= p->spawn_total) {
-        return;
-    }
-
-    if (p->slots[0] == NO_ITEM) {
-        M_PopulateSlots(p);
         return;
     }
 
