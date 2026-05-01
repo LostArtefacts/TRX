@@ -142,14 +142,14 @@ int32_t Gun_GetAmmoPickupQuantity(const LARA_GUN_TYPE gun_type)
     return M_GetAmmoQuantity(gun_type, g_Weapons[gun_type].ammo.pickup_qty);
 }
 
+int32_t Gun_GetAmmoInventoryQuantity(const LARA_GUN_TYPE gun_type)
+{
+    return g_Weapons[gun_type].ammo.inventory_qty;
+}
+
 int32_t Gun_GetAmmoClipCount(const LARA_GUN_TYPE gun_type)
 {
     return gun_type == LGT_SHOTGUN ? M_SHOTGUN_AMMO_CLIP : 1;
-}
-
-int32_t Gun_GetAmmoShellCount(const LARA_GUN_TYPE gun_type)
-{
-    return Gun_GetAmmoPickupQuantity(gun_type) / Gun_GetAmmoClipCount(gun_type);
 }
 
 AMMO_INFO *Gun_GetAmmoInfo(const LARA_GUN_TYPE gun_type)

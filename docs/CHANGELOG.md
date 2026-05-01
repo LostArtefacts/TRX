@@ -44,6 +44,7 @@
 - added an option to disable body bag triggers, so that killed enemies will always be visible
 - fixed Lara not stopping against one-click raised slopes (#5400, regression from 1.4)
 - fixed Lara attempting to vault onto steep slopes when running into them with action held (#5400, regression from 1.4)
+- fixed loose Harpoon ammo count displaying 2 for each pickup instead of 3 (OG bug)
 
 **TR3**:
 - added Boat (RIB) control
@@ -99,6 +100,8 @@
 - fixed friendly Punk behaviour when looking at Lara (regression from 1.4)
 - fixed Punks leaving AI Guard positions when hostility policy is set to individual and Lara hurts a different Punk (regression from 1.4)
 - fixed patrolling Monkeys becoming agitated when Lara hurts a different Monkey, but remaining fixated on their AI targets instead of Lara (regression from 1.2)
+- fixed UPVs not being able to fire if Lara has harpoons but has not picked up the Harpoon Gun yet (#228, regression from 1.4)
+- fixed loose Harpoon ammo count displaying 2 for each pickup instead of 3 (TRX bug)
 
 
 

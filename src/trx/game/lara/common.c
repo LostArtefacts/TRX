@@ -169,60 +169,105 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
             Inv_AddItem(O_PISTOL_ITEM);
         }
 
+        lara_info->magnum_ammo.ammo = resume->magnum_ammo;
         if (resume->flags.has_magnums) {
             Inv_AddItem(O_MAGNUM_ITEM);
-            lara_info->magnum_ammo.ammo = resume->magnum_ammo;
             Item_GlobalReplace(O_MAGNUM_ITEM, O_MAGNUM_AMMO_ITEM);
         } else {
             Inv_AddItemNTimes(
                 O_MAGNUM_AMMO_ITEM,
                 resume->magnum_ammo / Gun_GetAmmoPickupQuantity(LGT_MAGNUMS));
-            lara_info->magnum_ammo.ammo = 0;
         }
 
+        lara_info->autos_ammo.ammo = resume->autos_ammo;
         if (resume->flags.has_autos) {
             Inv_AddItem(O_AUTOS_ITEM);
-            lara_info->autos_ammo.ammo = resume->autos_ammo;
             Item_GlobalReplace(O_AUTOS_ITEM, O_AUTOS_AMMO_ITEM);
         } else {
             Inv_AddItemNTimes(
                 O_AUTOS_AMMO_ITEM,
                 resume->autos_ammo / Gun_GetAmmoPickupQuantity(LGT_AUTOS));
-            lara_info->autos_ammo.ammo = 0;
         }
 
+        lara_info->desert_eagle_ammo.ammo = resume->desert_eagle_ammo;
         if (resume->flags.has_desert_eagle) {
             Inv_AddItem(O_DESERT_EAGLE_ITEM);
-            lara_info->desert_eagle_ammo.ammo = resume->desert_eagle_ammo;
             Item_GlobalReplace(O_DESERT_EAGLE_ITEM, O_DESERT_EAGLE_AMMO_ITEM);
         } else {
             Inv_AddItemNTimes(
                 O_DESERT_EAGLE_AMMO_ITEM,
                 resume->desert_eagle_ammo
                     / Gun_GetAmmoPickupQuantity(LGT_DESERT_EAGLE));
-            lara_info->desert_eagle_ammo.ammo = 0;
         }
 
+        lara_info->uzi_ammo.ammo = resume->uzi_ammo;
         if (resume->flags.has_uzis) {
             Inv_AddItem(O_UZI_ITEM);
-            lara_info->uzi_ammo.ammo = resume->uzi_ammo;
             Item_GlobalReplace(O_UZI_ITEM, O_UZI_AMMO_ITEM);
         } else {
             Inv_AddItemNTimes(
                 O_UZI_AMMO_ITEM,
                 resume->uzi_ammo / Gun_GetAmmoPickupQuantity(LGT_UZIS));
-            lara_info->uzi_ammo.ammo = 0;
         }
 
+        lara_info->shotgun_ammo.ammo = resume->shotgun_ammo;
         if (resume->flags.has_shotgun) {
             Inv_AddItem(O_SHOTGUN_ITEM);
-            lara_info->shotgun_ammo.ammo = resume->shotgun_ammo;
             Item_GlobalReplace(O_SHOTGUN_ITEM, O_SHOTGUN_AMMO_ITEM);
         } else {
             Inv_AddItemNTimes(
                 O_SHOTGUN_AMMO_ITEM,
                 resume->shotgun_ammo / Gun_GetAmmoPickupQuantity(LGT_SHOTGUN));
-            lara_info->shotgun_ammo.ammo = 0;
+        }
+
+        lara_info->m16_ammo.ammo = resume->m16_ammo;
+        if (resume->flags.has_m16) {
+            Inv_AddItem(O_M16_ITEM);
+            Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_M16_AMMO_ITEM,
+                resume->m16_ammo / Gun_GetAmmoPickupQuantity(LGT_M16));
+        }
+
+        lara_info->mp5_ammo.ammo = resume->mp5_ammo;
+        if (resume->flags.has_mp5) {
+            Inv_AddItem(O_MP5_ITEM);
+            Item_GlobalReplace(O_MP5_ITEM, O_MP5_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_MP5_AMMO_ITEM,
+                resume->mp5_ammo / Gun_GetAmmoPickupQuantity(LGT_MP5));
+        }
+
+        lara_info->grenade_ammo.ammo = resume->grenade_ammo;
+        if (resume->flags.has_grenade) {
+            Inv_AddItem(O_GRENADE_GUN_ITEM);
+            Item_GlobalReplace(O_GRENADE_GUN_ITEM, O_GRENADE_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_GRENADE_AMMO_ITEM,
+                resume->grenade_ammo / Gun_GetAmmoPickupQuantity(LGT_GRENADE));
+        }
+
+        lara_info->rocket_ammo.ammo = resume->rocket_ammo;
+        if (resume->flags.has_rocket) {
+            Inv_AddItem(O_ROCKET_GUN_ITEM);
+            Item_GlobalReplace(O_ROCKET_GUN_ITEM, O_ROCKET_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_ROCKET_AMMO_ITEM,
+                resume->rocket_ammo / Gun_GetAmmoPickupQuantity(LGT_ROCKET));
+        }
+
+        lara_info->harpoon_ammo.ammo = resume->harpoon_ammo;
+        if (resume->flags.has_harpoon) {
+            Inv_AddItem(O_HARPOON_ITEM);
+            Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
+        } else {
+            Inv_AddItemNTimes(
+                O_HARPOON_AMMO_ITEM,
+                resume->harpoon_ammo / Gun_GetAmmoPickupQuantity(LGT_HARPOON));
         }
 
         Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, resume->small_medipacks);
@@ -233,60 +278,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
         Inv_AddItemNTimes(O_QUEST_ITEM_2, resume->num_quest_item_2);
         Inv_AddItemNTimes(O_QUEST_ITEM_3, resume->num_quest_item_3);
         Inv_AddItemNTimes(O_QUEST_ITEM_4, resume->num_quest_item_4);
-        if (resume->flags.has_m16) {
-            Inv_AddItem(O_M16_ITEM);
-            lara_info->m16_ammo.ammo = resume->m16_ammo;
-            Item_GlobalReplace(O_M16_ITEM, O_M16_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_M16_AMMO_ITEM,
-                resume->m16_ammo / Gun_GetAmmoPickupQuantity(LGT_M16));
-            lara_info->m16_ammo.ammo = 0;
-        }
-
-        if (resume->flags.has_mp5) {
-            Inv_AddItem(O_MP5_ITEM);
-            lara_info->mp5_ammo.ammo = resume->mp5_ammo;
-            Item_GlobalReplace(O_MP5_ITEM, O_MP5_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_MP5_AMMO_ITEM,
-                resume->mp5_ammo / Gun_GetAmmoPickupQuantity(LGT_MP5));
-            lara_info->mp5_ammo.ammo = 0;
-        }
-
-        if (resume->flags.has_grenade) {
-            Inv_AddItem(O_GRENADE_GUN_ITEM);
-            lara_info->grenade_ammo.ammo = resume->grenade_ammo;
-            Item_GlobalReplace(O_GRENADE_GUN_ITEM, O_GRENADE_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_GRENADE_AMMO_ITEM,
-                resume->grenade_ammo / Gun_GetAmmoPickupQuantity(LGT_GRENADE));
-            lara_info->grenade_ammo.ammo = 0;
-        }
-
-        if (resume->flags.has_rocket) {
-            Inv_AddItem(O_ROCKET_GUN_ITEM);
-            lara_info->rocket_ammo.ammo = resume->rocket_ammo;
-            Item_GlobalReplace(O_ROCKET_GUN_ITEM, O_ROCKET_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_ROCKET_AMMO_ITEM,
-                resume->rocket_ammo / Gun_GetAmmoPickupQuantity(LGT_ROCKET));
-            lara_info->rocket_ammo.ammo = 0;
-        }
-
-        if (resume->flags.has_harpoon) {
-            Inv_AddItem(O_HARPOON_ITEM);
-            lara_info->harpoon_ammo.ammo = resume->harpoon_ammo;
-            Item_GlobalReplace(O_HARPOON_ITEM, O_HARPOON_AMMO_ITEM);
-        } else {
-            Inv_AddItemNTimes(
-                O_HARPOON_AMMO_ITEM,
-                resume->harpoon_ammo / Gun_GetAmmoPickupQuantity(LGT_HARPOON));
-            lara_info->harpoon_ammo.ammo = 0;
-        }
 
         if (g_Config.gameplay.remember_gun_status) {
             lara_info->gun_status = resume->gun_status;

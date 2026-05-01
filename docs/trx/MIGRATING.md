@@ -28,6 +28,7 @@ order: 3
       - Create a nested `ammo` object if it doesn't already exist.
       - Move the value from `pickup_qty` into both `ammo.initial_qty` and
         `ammo.pickup_qty` fields.
+      - Fill `ammo.inventory_qty` field.
    3. If the weapon had a `pickup_qty_alt` field (e.g. flares):
       - Move that value into `ammo.pickup_qty_alt`.
    4. Remove the old `pickup_qty` and `pickup_qty_alt` fields.

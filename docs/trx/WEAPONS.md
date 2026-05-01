@@ -142,6 +142,11 @@ described in the table below.
     <td>As per <code>ammo.pickup_qty</code>, but this applies exclusively to flares when playing Japanese NG.</td>
   </tr>
   <tr valign="top">
+    <td><code>ammo.inventory_alt</code></td>
+    <td>Integer</td>
+    <td>Multiplier used in the inventory ring for each loose ammo pickup.</td>
+  </tr>
+  <tr valign="top">
     <td><code>recoil_frame</code></td>
     <td>Integer</td>
     <td>For pistol type weapons, this value determines when Lara should snap back to the aiming frame after the weapon is fired i.e. Uzis have a lower value than Pistols for faster fire rate.</td>

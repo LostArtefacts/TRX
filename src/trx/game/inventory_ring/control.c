@@ -16,6 +16,7 @@
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
+#include <trx/game/objects.h>
 #include <trx/game/option.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/globe_select.h>
@@ -110,8 +111,6 @@ static void M_RingNotActive(
         break;
 
     case O_SHOTGUN_AMMO_OPTION:
-        M_ShowAmmoQuantity("%d", qty * Gun_GetAmmoShellCount(LGT_SHOTGUN));
-        break;
     case O_MAGNUM_AMMO_OPTION:
     case O_AUTOS_AMMO_OPTION:
     case O_DESERT_EAGLE_AMMO_OPTION:
@@ -119,10 +118,15 @@ static void M_RingNotActive(
     case O_HARPOON_AMMO_OPTION:
     case O_M16_AMMO_OPTION:
     case O_MP5_AMMO_OPTION:
-        M_ShowAmmoQuantity("%d", qty * 2);
-        break;
     case O_GRENADE_AMMO_OPTION:
-    case O_ROCKET_AMMO_OPTION:
+    case O_ROCKET_AMMO_OPTION: {
+        const OBJECT_ID ammo_object_id = Inv_GetItemPickup(inv_item->object_id);
+        const LARA_GUN_TYPE gun_type = Gun_GetType(
+            Object_GetCognateInverse(ammo_object_id, g_GunAmmoObjectMap));
+        M_ShowAmmoQuantity("%d", qty * Gun_GetAmmoInventoryQuantity(gun_type));
+        break;
+    }
+
     case O_FLAREBOX_OPTION:
         M_ShowAmmoQuantity("%d", qty);
         break;
