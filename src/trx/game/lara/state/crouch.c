@@ -116,7 +116,7 @@ static bool M_CanJumpDown(const ITEM *const item, const LARA_INFO *const lara)
 
 static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
 {
-    coll->enable_hit = 0;
+    coll->enable_hit = 1;
     coll->enable_baddie_push = 1;
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
