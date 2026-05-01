@@ -5,7 +5,17 @@
 # artifacts (binaries, includes etc.) from previous stages and installs all the
 # tools necessary to build TRX.
 
-FROM ubuntu:latest AS base
+FROM debian:bookworm AS base
+
+# enable backports
+RUN echo "deb http://deb.debian.org/debian bookworm-backports main" > /etc/apt/sources.list.d/backports.list
+
+# LLVM repo for clang-20
+RUN apt-get update && apt-get install -y --no-install-recommends wget gnupg ca-certificates && \
+    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null && \
+    echo "deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm main" >> /etc/apt/sources.list.d/llvm.list && \
+    echo "deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-20 main" >> /etc/apt/sources.list.d/llvm.list && \
+    apt-get update
 
 # don't prompt during potential installation/update of tzinfo
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,8 +25,9 @@ RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
         git \
-        make
-
+        make \
+        clang-20 \
+        lld-20
 
 
 # pcre2
@@ -75,7 +86,6 @@ RUN apt-get install -y \
     libglu1-mesa-dev \
     libpulse-dev \
     libasound2-dev \
-    libudev-dev \
     libxkbcommon-dev \
     libwayland-client0 \
     libwayland-cursor0 \
@@ -83,7 +93,6 @@ RUN apt-get install -y \
     libwayland-egl1 \
     automake \
     gcc \
-    libxi-dev \
     libxrandr-dev \
     libxext-dev
 RUN cd SDL \
@@ -166,7 +175,7 @@ RUN apt-get install -y \
         ninja
 # Regular dependencies
 RUN apt-get install -y \
-    upx \
+    upx-ucl/bookworm-backports \
     uthash-dev
 
 ## manually built dependencies
@@ -181,6 +190,6 @@ ENV PYTHONPATH=/app/tools/
 ENV CCACHE_BASEDIR=/app/
 ENV CCACHE_COMPILERCHECK=content
 ENV CCACHE_DIR=/app/.cache/ccache/linux
-ENV CC="ccache gcc"
-ENV CXX="ccache g++"
+ENV CC="clang-20"
+ENV CXX="clang++-20"
 ENTRYPOINT ["/app/tools/shared/docker/game-linux/entrypoint.sh"]

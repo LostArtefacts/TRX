@@ -31,6 +31,7 @@
 - fixed TR3 camera mode potentially behaving erratically when loading a level and the look input is held (regression from 1.1)
 - fixed Lara being able to go from run or sprint to crouch while holding a rifle-type weapon (regression from 1.3)
 - fixed Lara not using hit animations when she is struck while in the crouch idle state (regression from 1.1)
+- fixed compatibility of Linux releases with Debian-based distros
 
 **TR1**:
 - added savegame crystals to Unfinished Business (#1525)
