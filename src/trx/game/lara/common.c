@@ -690,10 +690,10 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)
     LARA_ANIMATION anim_idx;
     if (lara->is_crouched) {
         switch (lara->hit_direction) {
-        case DIR_EAST:  anim_idx = LA(LA_CROUCH_HIT_LEFT); break;
-        case DIR_SOUTH: anim_idx = LA(LA_CROUCH_HIT_BACK); break;
-        case DIR_WEST:  anim_idx = LA(LA_CROUCH_HIT_RIGHT); break;
-        default:        anim_idx = LA(LA_CROUCH_HIT_FRONT); break;
+        case DIR_EAST:  anim_idx = LA(LA_CROUCH_HIT_RIGHT); break;
+        case DIR_SOUTH: anim_idx = LA(LA_CROUCH_HIT_FRONT); break;
+        case DIR_WEST:  anim_idx = LA(LA_CROUCH_HIT_LEFT); break;
+        default:        anim_idx = LA(LA_CROUCH_HIT_BACK); break;
         }
     } else {
         switch (lara->hit_direction) {
