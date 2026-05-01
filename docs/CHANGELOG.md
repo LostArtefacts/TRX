@@ -64,6 +64,7 @@
 - restored the missing flamethrower blast sound effect in RX-Tech Mines and Meteorite Cavern
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
 - fixed letterboxing of images on 16:10 resolution
+- fixed TR3:LA images missing from release zips and the installer (#5390, regression from 1.5)
 - fixed Fire Lighting option having no effect
 - fixed missing conveyor belt animations in High Security Compound
 - fixed delayed lighting updates on Lara during movement, particularly noticeable on ladders (regression from 1.1)
