@@ -91,6 +91,7 @@
 - fixed quest item pickup counts incrementing if the item cheat is used and then save/load is repeatedly used (regression from 1.2)
 - fixed not being able to give quest items to Lara on level start via the game flow
 - fixed inaccurate maximum pickup count in Lud's Gate
+- fixed the Assault Course timer not stopping after playing the Race Track Course first (regression from 1.1)
 
 
 
