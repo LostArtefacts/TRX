@@ -195,9 +195,25 @@ static void M_Control(const int16_t item_num)
             item->mesh_bits = -1;
         }
     } else {
+        if (Creature_IsHostile(item)) {
+            creature->alerted = true;
+        } else if (
+            Creature_IsAlly(item) && creature->alerted
+            && !creature->hurt_by_lara
+            && g_Config.gameplay.ally_hostility_policy
+                == ALLY_HOSTILITY_POLICY_INDIVIDUAL) {
+            creature->alerted = false;
+        }
+
         Creature_GetAITarget(creature);
         if (creature->hurt_by_lara
             && g_Config.gameplay.fix_monkey_pickup_priority) {
+            creature->enemy = lara_item;
+        }
+
+        if (Creature_IsHostile(item) && creature->enemy != nullptr
+            && (creature->enemy->object_id == O_AI_PATROL_1
+                || creature->enemy->object_id == O_AI_PATROL_2)) {
             creature->enemy = lara_item;
         }
 
