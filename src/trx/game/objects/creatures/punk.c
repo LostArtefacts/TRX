@@ -276,6 +276,14 @@ static void M_Control(const int16_t item_num)
         goto finish;
     }
 
+    if (creature->alerted && !creature->hurt_by_lara
+        && g_Config.gameplay.ally_hostility_policy
+            == ALLY_HOSTILITY_POLICY_INDIVIDUAL) {
+        // Avoid Creature_GetAITarget removing AI_GUARD flag outside of shared
+        // hostility.
+        creature->alerted = false;
+    }
+
     ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->ai_bits != 0) {
