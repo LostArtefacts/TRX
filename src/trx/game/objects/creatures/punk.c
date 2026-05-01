@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/creature.h>
@@ -283,8 +284,29 @@ static void M_Control(const int16_t item_num)
         creature->enemy = lara_item;
     }
 
+    const bool hurt_by_lara = creature->hurt_by_lara;
+    if (creature->alerted
+        && g_Config.gameplay.ally_hostility_policy
+            == ALLY_HOSTILITY_POLICY_SHARED) {
+        creature->enemy = lara_item;
+    } else if (!hurt_by_lara && creature->enemy == lara_item) {
+        creature->enemy = nullptr;
+    }
+
+    // Enforce the following state to avoid Creature_AIInfo resetting ahead,
+    // bite and distance when the creature is friendly.
+    // TODO: this is common with prisoner behaviour, aim to unify this.
+    ITEM *const enemy = creature->enemy;
+    if (enemy == nullptr) {
+        creature->enemy = lara_item;
+        creature->hurt_by_lara = true;
+    }
+
     AI_INFO info = {};
     Creature_AIInfo(item, &info);
+
+    creature->enemy = enemy;
+    creature->hurt_by_lara = hurt_by_lara;
 
     AI_INFO lara_info = {};
     if (creature->enemy == lara_item) {
@@ -297,14 +319,9 @@ static void M_Control(const int16_t item_num)
         lara_info.distance = XYZ_32_GetLength2((XYZ_32) { dx, 0, dz });
     }
 
-    if (!creature->alerted && creature->enemy == lara_item) {
-        creature->enemy = nullptr;
-    }
-
     Creature_Mood(item, &info, true);
     angle = Creature_Turn(item, creature->maximum_turn);
 
-    ITEM *const enemy = creature->enemy;
     creature->enemy = lara_item;
     if (item->hit_status
         || ((lara_info.distance < M_ALERT_DIST
