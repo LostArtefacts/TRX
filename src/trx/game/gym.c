@@ -354,6 +354,10 @@ void Gym_TrackManager_Start(const GYM_TRACK_TYPE track)
 
     switch (track) {
     case GYM_TRACK_ASSAULT: {
+        p->quad_course.timer_active = false;
+        p->quad_course.timer_display = false;
+        p->quad_course.lap_time_display_timer = 0;
+
         p->assault_course.timer_active = true;
         p->assault_course.timer_display = true;
         p->assault_course.penalty_frames = 0;
@@ -371,12 +375,22 @@ void Gym_TrackManager_Start(const GYM_TRACK_TYPE track)
             return;
         }
 
+        p->assault_course.timer_active = false;
+        p->assault_course.timer_display = false;
+        p->assault_course.penalty_frames = 0;
+        p->assault_course.target_penalty_frames = 0;
+        p->assault_course.penalty_display_timer = 0;
+        p->assault_course.timer_auto_hide_timer = 0;
+        p->assault_course.pad_touched_this_frame = false;
+        p->assault_course.pad_lock = false;
+
         p->quad_course.timer_active = true;
         p->quad_course.timer_display = true;
         break;
+    }
+
     default:
         break;
-    }
     }
 }
 
