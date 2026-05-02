@@ -47,6 +47,11 @@
 **TR2**:
 - added savegame crystals to base levels and The Golden Mask
 - added an option to disable body bag triggers, so that killed enemies will always be visible
+- fixed missing faces on the lanterns in Venice
+- fixed z-fighting on static meshes in Opera House room 105
+- fixed texture inconsistencies on the Airplane Propeller between Opera House and Offshore Rig
+- fixed misaligned ice static meshes in Tibetan Foothills room 130
+- fixed an incorrect texture in The Cold War room 6
 - fixed Lara not stopping against one-click raised slopes (#5400, regression from 1.4)
 - fixed Lara attempting to vault onto steep slopes when running into them with action held (#5400, regression from 1.4)
 - fixed loose Harpoon ammo count displaying 2 for each pickup instead of 3 (OG bug)
