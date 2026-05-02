@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.5...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.6...develop) - ××××-××-××
+
+## [1.6](https://github.com/LostArtefacts/TRX/compare/trx-1.5...trx-1.6) - 2026-05-02
+Showcase: https://youtu.be/yTW99iecK3U
 - added on-screen touch controls with a virtual D-pad and action buttons, configurable opacity/scale/deadzone, dynamic button glyphs, and full remap support including button macros (Gameplay Options → Controls → Touch controls)
 - added the ability to do a forward roll without releasing sprint first (#5270)
 - added the ability for Lara to align herself with floor tilts when crawling (Gameplay Options → Controls → Crawl tilt) (#4945)
