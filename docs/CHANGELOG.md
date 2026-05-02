@@ -36,6 +36,11 @@
 **TR1**:
 - added savegame crystals to Unfinished Business (#1525)
 - fixed not being able to hear the flood/drain sound effect when using the lever in Tomb of Tihocan room 23
+- fixed transparent pixels on Lara's pistols
+- fixed missing textures in Tomb of Qualopec rooms 42 and 12, and similarly in cutscene 1 rooms 3 and 6
+- fixed z-fighting and transparent pixels on static meshes in Palace Midas room 69
+- fixed an incorrect texture in City of Khamoon room 69
+- fixed vertex shading in Obelisk of Khamoon room 19
 - fixed Lara not stopping against one-click raised slopes (#5400, regression from 1.4)
 - fixed Lara attempting to vault onto steep slopes when running into them with action held (#5400, regression from 1.4)
 

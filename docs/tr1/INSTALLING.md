@@ -169,6 +169,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── colosseum_textures.bin
 │   │   ├── crystal.bin
 │   │   ├── cut1_setup.bin
+│   │   ├── cut1_textures.bin
 │   │   ├── cut2_setup.bin
 │   │   ├── cut3_setup.bin
 │   │   ├── cut3_textures.bin
@@ -512,6 +513,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── colosseum_textures.bin
     │   │   │   ├── crystal.bin
     │   │   │   ├── cut1_setup.bin
+    │   │   │   ├── cut1_textures.bin
     │   │   │   ├── cut2_setup.bin
     │   │   │   ├── cut3_setup.bin
     │   │   │   ├── cut3_textures.bin

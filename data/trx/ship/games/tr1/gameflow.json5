@@ -481,6 +481,7 @@
             "inherit_injections": false,
             "injections": [
                 "cut1_setup.bin",
+                "cut1_textures.bin",
                 "braid.bin",
                 "photo.bin",
                 "pda_model.bin",
