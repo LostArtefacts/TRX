@@ -233,6 +233,16 @@ const OBJECT_ID g_SecretObjects[] = {
     // clang-format on
 };
 
+const OBJECT_ID g_QuestObjects[] = {
+    // clang-format off
+    O_QUEST_ITEM_1,
+    O_QUEST_ITEM_2,
+    O_QUEST_ITEM_3,
+    O_QUEST_ITEM_4,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const OBJECT_ID g_PickupObjects[] = {
     // clang-format off
     O_PISTOL_ITEM,
