@@ -1,4 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.6...develop) - ××××-××-××
+**TR3**:
+- fixed Hand of Rathmore rotating in Sleeping with the Fishes
+
+
 
 ## [1.6](https://github.com/LostArtefacts/TRX/compare/trx-1.5...trx-1.6) - 2026-05-02
 Showcase: https://youtu.be/yTW99iecK3U

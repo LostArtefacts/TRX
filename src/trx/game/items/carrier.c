@@ -38,6 +38,16 @@ static bool M_ShouldCenterDrop(const OBJECT_ID obj_id)
     }
 }
 
+static void M_Drop(ITEM *const pickup)
+{
+    if (Object_IsType(pickup->object_id, g_QuestObjects)) {
+        pickup->status = IS_ACTIVE;
+        Item_AddActive(Item_GetIndex(pickup));
+    } else {
+        pickup->status = IS_INACTIVE;
+    }
+}
+
 static OBJECT_ID M_ConvertDroppedGun(const OBJECT_ID obj_id)
 {
     if (g_GameFlow.convert_dropped_guns && Object_IsType(obj_id, g_GunObjects)
@@ -138,7 +148,7 @@ static void M_AnimateDrop(CARRIED_ITEM *const item)
 
     if (sector->portal_room.pit == NO_ROOM && pickup->pos.y >= height) {
         item->status = DS_DROPPED;
-        pickup->status = IS_INACTIVE;
+        M_Drop(pickup);
         pickup->pos.y = height;
         pickup->fall_speed = 0;
         m_AnimatingCount--;
@@ -351,7 +361,7 @@ void Carrier_SyncItem(
         pickup_item->rot.y = carried_item->rot.y;
         pickup_item->fall_speed = carried_item->fall_speed;
         if (carried_item->status == DS_DROPPED) {
-            pickup_item->status = IS_INACTIVE;
+            M_Drop(pickup_item);
         } else {
             m_AnimatingCount++;
         }
@@ -394,7 +404,7 @@ void Carrier_TestItemDrops(const int16_t item_num)
             ITEM *const pickup = Item_Get(item->spawn_num);
             pickup->pos = carrier->pos;
             pickup->rot = carrier->rot;
-            pickup->status = IS_INACTIVE;
+            M_Drop(pickup);
         }
 
         ITEM *const pickup = Item_Get(item->spawn_num);

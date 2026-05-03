@@ -71,16 +71,6 @@ static const OBJECT_BOUNDS m_PickUpBoundsUW = {
 static const XYZ_32 m_PickupPosition = { .x = 0, .y = 0, .z = -100 };
 static const XYZ_32 m_PickupPositionUW = { .x = 0, .y = -200, .z = -350 };
 
-static const OBJECT_ID m_QuestObjects[] = {
-    // clang-format off
-    O_QUEST_ITEM_1,
-    O_QUEST_ITEM_2,
-    O_QUEST_ITEM_3,
-    O_QUEST_ITEM_4,
-    NO_OBJECT,
-    // clang-format on
-};
-
 typedef struct {
     int32_t aid_timer;
     uint32_t secret_mask;
@@ -135,11 +125,12 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
     if ((item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
         item->status = IS_INVISIBLE;
         item->flags |= IF_KILLED;
-    } else if (item->status == IS_INVISIBLE) {
+    } else if (
+        item->status == IS_INVISIBLE
+        || Object_IsType(item->object_id, g_QuestObjects)) {
         item->touch_bits = 0;
         item->status = IS_ACTIVE;
-        const int16_t item_num = Item_GetIndex(item);
-        Item_AddActive(item_num);
+        Item_AddActive(Item_GetIndex(item));
     }
 
     return false;
@@ -233,9 +224,11 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (g_TRVersion == 3 && Object_IsType(item->object_id, m_QuestObjects)) {
-        item->rot.y += 1024;
-        M_ControlPickupLights(item);
+    if (Object_IsType(item->object_id, g_QuestObjects)) {
+        if (item->status != IS_INACTIVE) {
+            item->rot.y += 1024;
+            M_ControlPickupLights(item);
+        }
     } else if (g_Config.gameplay.enable_pickup_aids) {
         M_ControlPickupAids(item);
     }
@@ -257,7 +250,7 @@ static void M_DoPickup(const int16_t item_num)
     item->status = IS_INVISIBLE;
     item->flags |= IF_KILLED;
 
-    if (g_TRVersion == 3 && Object_IsType(item->object_id, m_QuestObjects)) {
+    if (Object_IsType(item->object_id, g_QuestObjects)) {
         if (GF_BadGetLevelNum() == 19
             || (GF_BadIsMod("tr3-la") && GF_BadGetLevelNum() == 4)) {
             Item_Kill(item_num);
