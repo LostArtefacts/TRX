@@ -120,6 +120,7 @@
                 "lara_guns.bin",
                 "undersea_animating_bounds.bin",
                 "undersea_train.bin",
+                "undersea_pickup_meshes.bin",
             ],
         },
 
