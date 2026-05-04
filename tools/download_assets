@@ -29,6 +29,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Also download assets for the combined data/trx/ship hierarchy.",
     )
+    parser.add_argument(
+        "--combined-only",
+        action="store_true",
+        help="Download only assets for the combined data/trx/ship hierarchy.",
+    )
     return parser.parse_args()
 
 
@@ -99,11 +104,12 @@ def main() -> None:
         args.game_version
     ]
     for version in versions:
-        download_assets(
-            legacy_asset_urls_map[version],
-            target_dir=PROJECT_PATHS[version].shipped_data_dir,
-        )
-        if args.combined:
+        if not args.combined_only:
+            download_assets(
+                legacy_asset_urls_map[version],
+                target_dir=PROJECT_PATHS[version].shipped_data_dir,
+            )
+        if args.combined or args.combined_only:
             download_assets(
                 combined_asset_urls_map[version],
                 target_dir=DATA_DIR / "trx" / "ship",

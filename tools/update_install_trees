@@ -442,7 +442,7 @@ def build_legacy_win_paths(config: dict[str, Any]) -> Iterable[Path]:
 def build_legacy_mac_paths(config: dict[str, Any]) -> Iterable[Path]:
     yield Path("Contents/_CodeSignature")
     yield Path("Contents/Frameworks")
-    yield Path("Contents/info.plist")
+    yield Path("Contents/Info.plist")
     yield Path("Contents/MacOS")
     yield from (
         Path("Contents/Resources") / sub
@@ -467,6 +467,19 @@ def build_trx_win_paths() -> Iterable[Path]:
         yield from remap_og_paths(OG_FILE_GROUPS[group_name], group_name)
 
 
+def build_trx_mac_paths() -> Iterable[Path]:
+    yield Path("Contents/_CodeSignature")
+    yield Path("Contents/Frameworks")
+    yield Path("Contents/Info.plist")
+    yield Path("Contents/MacOS")
+    yield from (
+        Path("Contents/Resources") / sub
+        for sub in build_trx_win_paths()
+        if sub != Path("TRX.exe")
+    )
+    yield Path("Contents/Resources/icon.icns")
+
+
 def build_doc_trees() -> Iterable[tuple[Path, str, list[Path]]]:
     for config in LEGACY_DOC_CONFIGS:
         yield (
@@ -480,6 +493,7 @@ def build_doc_trees() -> Iterable[tuple[Path, str, list[Path]]]:
             list(build_legacy_mac_paths(config)),
         )
     yield (DOCS_DIR / "trx/INSTALLING.md", "win", list(build_trx_win_paths()))
+    yield (DOCS_DIR / "trx/INSTALLING.md", "mac", list(build_trx_mac_paths()))
 
 
 
