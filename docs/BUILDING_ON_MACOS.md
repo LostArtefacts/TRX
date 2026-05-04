@@ -20,13 +20,11 @@ sudo port install sdl2 ffmpeg uthash pkgconfig glew meson python@3.14
 
 ## Building TRX
 
-1. Download the shipped game assets for the game you want to build:
+1. Download the shipped assets for the combined build:
 
     ```bash
-    ./tools/download_assets X
+    ./tools/download_assets --combined-only
     ```
-
-    Replace `X` with the TR version.
 
 2. Configure the build:
 
@@ -45,7 +43,7 @@ sudo port install sdl2 ffmpeg uthash pkgconfig glew meson python@3.14
 3. Build the project:
 
     ```bash
-    meson compile -C build
+    meson install -C build --tags trx,common
     ```
 
 ## Other build methods
@@ -60,14 +58,12 @@ official build workflow.
 
 To prepare the game directory:
 
-1. Copy the built files from `build/`.
-2. Copy the contents of `data/X/ship/`.
-3. Copy the original game files from your game installation.
-
-Replace `X` with the TR version you built.
+1. Use the installed app bundle from your Meson prefix.
+2. Copy the original game files from your game installations into
+   `Contents/Resources/games/<game-id>/`.
 
 Once the files are in place, run:
 
 ```bash
-./TRX
+./TRX.app/Contents/MacOS/TRX
 ```

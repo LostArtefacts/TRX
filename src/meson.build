@@ -858,16 +858,8 @@ executable(
 if host_machine.system() == 'darwin'
   mac_install_tree = files('../tools/shared/mac/install_tree')
 
-  foreach game_id : ['tr1', 'tr2', 'tr3']
-    meson.add_install_script(mac_install_tree, '--source', '../data/@0@/ship/cfg'.format(game_id), '--dest', 'Contents/Resources/cfg', install_tag: game_id)
-    meson.add_install_script(mac_install_tree, '--source', '../data/@0@/ship/data'.format(game_id), '--dest', 'Contents/Resources/data', install_tag: game_id)
-    meson.add_install_script(mac_install_tree, '--source', '../data/common/ship/cfg', '--dest', 'Contents/Resources/cfg', install_tag: game_id)
-    meson.add_install_script(mac_install_tree, '--source', '../data/common/ship/shaders', '--dest', 'Contents/Resources/shaders', install_tag: game_id)
-    install_data('../data/@0@/mac/icon.icns'.format(game_id), install_dir: 'Contents/Resources', install_tag: game_id)
-    install_data('../data/@0@/mac/Info.plist'.format(game_id), install_dir: 'Contents', install_tag: game_id)
-  endforeach
-
-  meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR1X', install_tag: 'tr1')
-  meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR2X', install_tag: 'tr2')
-  meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TR3X', install_tag: 'tr3')
+  meson.add_install_script(mac_install_tree, '--source', '../data/trx/ship', '--dest', 'Contents/Resources', install_tag: 'trx')
+  install_data('../data/trx/mac/icon.icns', install_dir: 'Contents/Resources', install_tag: 'trx')
+  install_data('../data/trx/mac/Info.plist', install_dir: 'Contents', install_tag: 'trx')
+  meson.add_install_script('../tools/shared/mac/bundle_dylibs', '-a', 'TRX', install_tag: 'trx')
 endif

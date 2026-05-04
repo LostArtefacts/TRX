@@ -24,13 +24,6 @@ env:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        game:
-          - { version: 1 }
-          - { version: 2 }
-          - { version: 3 }
-
     name: Build release assets
     runs-on: macos-14
     continue-on-error: ${{ inputs.let_mac_fail == true || inputs.let_mac_fail == 'true' }}
@@ -62,9 +55,9 @@ jobs:
         name: Prepare variables
         run: |
           echo "version=$(tools/get_version)" >> $GITHUB_OUTPUT
-          echo "tag=tr${{matrix.game.version}}" >> $GITHUB_OUTPUT
-          echo "name=TR${{matrix.game.version}}X" >> $GITHUB_OUTPUT
-          echo "asset_name=$(tools/output_package_name --game ${{matrix.game.version}} --platform mac)" >> $GITHUB_OUTPUT
+          echo "tag=trx" >> $GITHUB_OUTPUT
+          echo "name=TRX" >> $GITHUB_OUTPUT
+          echo "asset_name=$(tools/output_package_name --platform mac)" >> $GITHUB_OUTPUT
 
       - name: Extend PATH for MacPorts
         run: |
@@ -109,7 +102,7 @@ jobs:
 
       - name: Download large assets
         #if: ${{ inputs.target == 'release' }}
-        run: tools/download_assets ${{ matrix.game.version }}
+        run: tools/download_assets --combined-only
 
       - name: Build arm64 and create app bundle
         env:
@@ -118,7 +111,7 @@ jobs:
           BUILD_DIR=build-arm64
           BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --buildtype ${{ inputs.target }}"
           meson setup $BUILD_DIR $BUILD_OPTIONS
-          meson install -C $BUILD_DIR --tags "${{ steps.vars.outputs.tag }},common"
+          meson install -C $BUILD_DIR --tags "trx,common"
 
       - name: Build x86-64
         env:
@@ -156,7 +149,7 @@ jobs:
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           IDENTITY=$(security find-identity -v -p codesigning $KEYCHAIN_PATH | awk -F'"' '{print $2}')
           DMG_NAME="${{ steps.vars.outputs.asset_name }}.dmg"
-          tools/shared/mac/create_installer -a ${{ steps.vars.outputs.name }} -i "data/${{ steps.vars.outputs.tag }}/mac/icon.icns" -d "${DMG_NAME}"
+          tools/shared/mac/create_installer -a ${{ steps.vars.outputs.name }} -i "data/trx/mac/icon.icns" -d "${DMG_NAME}"
           xattr -cr "${DMG_NAME}"
           /usr/bin/codesign --force --options runtime -s "${IDENTITY}" --keychain $KEYCHAIN_PATH -v "${DMG_NAME}"
           xcrun notarytool submit --wait --apple-id "$MACOS_APPLEID" --password "$MACOS_APP_PWD" --team-id "$MACOS_TEAMID" "${DMG_NAME}"
