@@ -163,7 +163,8 @@ static void M_Control(const int16_t item_num)
             XYZ_32_OffsetYaw(item->pos, bits + info.angle + DEG_180, WALL_L);
         int16_t room_num = item->room_num;
         SECTOR *const sector = Room_GetSector(creature->target, &room_num);
-        if (ABS(Box_GetBox(sector->box)->height - item->pos.y) > STEP_L) {
+        const BOX_INFO *const box = Box_GetBox(sector->box);
+        if (box != nullptr && ABS(box->height - item->pos.y) > STEP_L) {
             creature->mood = MOOD_BORED;
             p->scared_timer = p->shared->scared_timer;
         }

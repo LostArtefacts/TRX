@@ -65,9 +65,9 @@ int32_t Box_GetCount(void)
 
 BOX_INFO *Box_GetBox(const int32_t box_idx)
 {
-    // TODO: in many cases, NO_BOX is blindly passed here and goes unchecked.
-    // Update each instance to handle NO_BOX safely.
-    return m_Boxes == nullptr ? nullptr : &m_Boxes[box_idx];
+    return m_Boxes == nullptr || box_idx < 0 || box_idx >= m_BoxCount
+        ? nullptr
+        : &m_Boxes[box_idx];
 }
 
 int16_t Box_GetOverlap(const int32_t overlap_idx)
@@ -177,7 +177,8 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 
 bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
 {
-    if (lot->required_box == NO_BOX || lot->required_box == lot->target_box) {
+    if (Box_GetBox(lot->required_box) == nullptr
+        || lot->required_box == lot->target_box) {
         goto end;
     }
 
@@ -202,6 +203,9 @@ void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
 {
     box_num &= BOX_NUMBER_BITS;
     const BOX_INFO *const box = Box_GetBox(box_num);
+    if (box == nullptr) {
+        return;
+    }
 
     // TODO: determine if the shift is essential
     const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
@@ -227,6 +231,9 @@ bool Box_StalkBox(
     }
 
     const BOX_INFO *const box = Box_GetBox(box_num);
+    if (box == nullptr) {
+        return false;
+    }
 
     // TODO: determine if the shift is essential
     const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
@@ -260,6 +267,9 @@ bool Box_EscapeBox(
     const ITEM *item, const ITEM *const enemy, const int16_t box_num)
 {
     const BOX_INFO *const box = Box_GetBox(box_num);
+    if (box == nullptr) {
+        return false;
+    }
 
     // TODO: determine if the shift is essential
     const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
@@ -286,7 +296,8 @@ bool Box_ValidBox(
     }
 
     const BOX_INFO *const box = Box_GetBox(box_num);
-    if ((box->overlap_index & creature->lot.setup.block_mask) != 0) {
+    if (box == nullptr
+        || (box->overlap_index & creature->lot.setup.block_mask) != 0) {
         return false;
     }
 

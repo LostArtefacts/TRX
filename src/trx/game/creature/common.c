@@ -347,7 +347,8 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     const BOX_INFO *const enemy_box = Box_GetBox(enemy->box_num);
     // TODO: TR3 defines non-LOT creatures, like cobras and handles them
     // differently here and in LOT initialisation.
-    if (((enemy_box->overlap_index & creature->lot.setup.block_mask) != 0)
+    if ((enemy_box != nullptr
+         && (enemy_box->overlap_index & creature->lot.setup.block_mask) != 0)
         || (creature->lot.node[item->box_num].search_num
             == (creature->lot.search_num | BOX_BLOCKED_SEARCH))) {
         info->enemy_zone_num |= BOX_BLOCKED;
@@ -898,14 +899,17 @@ bool Creature_Animate(
     sample_pos.x = item->pos.x;
     sample_pos.z = item->pos.z;
     const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
-    int32_t height = Box_GetBox(sector->box)->height;
-    int16_t next_box = lot->node[sector->box].exit_box;
+    int32_t height =
+        sector->box == NO_BOX ? NO_HEIGHT : Box_GetBox(sector->box)->height;
+    int16_t next_box =
+        sector->box == NO_BOX ? NO_BOX : lot->node[sector->box].exit_box;
     int32_t next_height =
         next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
 
     const bool fly_check = g_TRVersion < 3 || lot->setup.fly == 0;
 
-    const int32_t box_height = Box_GetBox(item->box_num)->height;
+    const int32_t box_height =
+        item->box_num == NO_BOX ? NO_HEIGHT : Box_GetBox(item->box_num)->height;
     if (sector->box == NO_BOX
         || (fly_check && zone[item->box_num] != zone[sector->box])
         || box_height - height > lot->setup.step
@@ -933,8 +937,10 @@ bool Creature_Animate(
         sample_pos.y = y;
         sample_pos.z = item->pos.z;
         sector = Room_GetSector(sample_pos, &room_num);
-        height = Box_GetBox(sector->box)->height;
-        next_box = lot->node[sector->box].exit_box;
+        height =
+            sector->box == NO_BOX ? NO_HEIGHT : Box_GetBox(sector->box)->height;
+        next_box =
+            sector->box == NO_BOX ? NO_BOX : lot->node[sector->box].exit_box;
         next_height =
             next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
     }
