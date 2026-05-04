@@ -2,6 +2,7 @@
 **TR3**:
 - fixed Hand of Rathmore rotating in Sleeping with the Fishes
 - fixed the Circuit Bulbs in Sleeping with the Fishes not rotating on a central axis in the inventory
+- fixed the inactive seaweed at the start of Sleeping with the Fishes
 
 
 

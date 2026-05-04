@@ -121,6 +121,7 @@
                 "undersea_animating_bounds.bin",
                 "undersea_train.bin",
                 "undersea_pickup_meshes.bin",
+                "undersea_fd.bin",
             ],
         },
 

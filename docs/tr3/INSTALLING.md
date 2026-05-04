@@ -242,6 +242,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── tinnos_cameras.bin
 │   │   ├── tinnos_flames.bin
 │   │   ├── undersea_animating_bounds.bin
+│   │   ├── undersea_fd.bin
 │   │   ├── undersea_pickup_meshes.bin
 │   │   ├── undersea_train.bin
 │   │   ├── willsden_heli.bin
@@ -543,6 +544,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── tinnos_cameras.bin
     │   │   │   ├── tinnos_flames.bin
     │   │   │   ├── undersea_animating_bounds.bin
+    │   │   │   ├── undersea_fd.bin
     │   │   │   ├── undersea_pickup_meshes.bin
     │   │   │   ├── undersea_train.bin
     │   │   │   ├── willsden_heli.bin
