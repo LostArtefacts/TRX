@@ -23,15 +23,14 @@ static void M_LaserSplitterToggle(ITEM *const item)
     int16_t room_num = item->room_num;
     SECTOR *sector = Room_GetSector(item->pos, &room_num);
 
-    if ((Box_GetBox(sector->box)->overlap_index & BOX_BLOCKED_SEARCH) == 0) {
+    const BOX_INFO *const box = Box_GetBox(sector->box);
+    if (box == nullptr || (box->overlap_index & BOX_BLOCKED_SEARCH) == 0) {
         return;
     }
 
     const bool is_active = Item_IsTriggerActive(item);
 
-    if (is_active
-        == ((Box_GetBox(sector->box)->overlap_index & BOX_BLOCKED)
-            == BOX_BLOCKED)) {
+    if (is_active == ((box->overlap_index & BOX_BLOCKED) == BOX_BLOCKED)) {
         return;
     }
 
@@ -53,15 +52,15 @@ static void M_LaserSplitterToggle(ITEM *const item)
 
     int32_t x = item->pos.x;
     int32_t z = item->pos.z;
-    while (sector->box != NO_BOX
-           && (Box_GetBox(sector->box)->overlap_index & BOX_BLOCKED_SEARCH)
-               != 0) {
-        if (is_active) {
-            Box_GetBox(sector->box)->overlap_index |= BOX_BLOCKED;
-        } else {
-            Box_GetBox(sector->box)->overlap_index &= ~BOX_BLOCKED;
+    BOX_INFO *next_box;
+    while (sector->box != NO_BOX) {
+        next_box = Box_GetBox(sector->box);
+        if (next_box == nullptr
+            || (next_box->overlap_index & BOX_BLOCKED_SEARCH) == 0) {
+            break;
         }
 
+        TOGGLE_BIT(next_box->overlap_index, BOX_BLOCKED, is_active);
         x += step.x;
         z += step.z;
         sector = Room_GetSector((XYZ_32) { x, item->pos.y, z }, &room_num);

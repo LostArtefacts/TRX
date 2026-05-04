@@ -273,9 +273,9 @@ static void M_Control(const int16_t item_num)
                     const SECTOR *const sector =
                         Room_GetSector(offset, &room_num);
 
-                    if (creature->flags != 0 || sector->box == 0x7FF
-                        || Box_GetBox(sector->box)->overlap_index
-                            & BOX_BLOCKABLE) {
+                    const BOX_INFO *const box = Box_GetBox(sector->box);
+                    if (creature->flags != 0 || box == nullptr
+                        || (box->overlap_index & BOX_BLOCKABLE) != 0) {
                         item->goal_anim_state = M_STATE_WAIT_DEF;
                     } else {
                         item->goal_anim_state = M_STATE_WALK_BACK;

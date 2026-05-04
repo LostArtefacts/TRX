@@ -121,12 +121,9 @@ static const BOX_INFO *M_GetBox(
     const SECTOR *const sector, const int32_t x, const int32_t z,
     const bool generate_box)
 {
-    if (sector->box != NO_BOX) {
-        return Box_GetBox(sector->box);
-    }
-
-    if (!generate_box) {
-        return nullptr;
+    const BOX_INFO *const box = Box_GetBox(sector->box);
+    if (box != nullptr || !generate_box) {
+        return box;
     }
 
     // A level may have blocked specific sector or room pathfinding, so create a

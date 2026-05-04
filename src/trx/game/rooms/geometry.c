@@ -589,12 +589,8 @@ void Room_AlterFloorHeight(const ITEM *const item, const int32_t height)
     }
 
     BOX_INFO *const box = Box_GetBox(sector->box);
-    if (box->overlap_index & BOX_BLOCKABLE) {
-        if (height < 0) {
-            box->overlap_index |= BOX_BLOCKED;
-        } else {
-            box->overlap_index &= ~BOX_BLOCKED;
-        }
+    if (box != nullptr && (box->overlap_index & BOX_BLOCKABLE) != 0) {
+        TOGGLE_BIT(box->overlap_index, BOX_BLOCKED, height < 0);
     }
 }
 

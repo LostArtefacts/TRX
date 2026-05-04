@@ -213,6 +213,20 @@ static int16_t M_TriggerGasThrower(
     return effect_num;
 }
 
+static bool M_IsEnemyBoxSearchable(const ITEM *const enemy)
+{
+    if (enemy == nullptr) {
+        return false;
+    }
+
+    const BOX_INFO *const box = Box_GetBox(enemy->box_num);
+    if (box == nullptr) {
+        return false;
+    }
+
+    return (box->overlap_index & BOX_BLOCKED_SEARCH) != 0;
+}
+
 static void M_Control(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -238,8 +252,7 @@ static void M_Control(const int16_t item_num)
         Creature_AIInfo(item, &info);
         Creature_Mood(item, &info, true);
 
-        if (Box_GetBox(creature->enemy->box_num)->overlap_index
-            & BOX_BLOCKED_SEARCH) {
+        if (M_IsEnemyBoxSearchable(creature->enemy)) {
             creature->mood = MOOD_ATTACK;
         }
 
@@ -271,8 +284,7 @@ static void M_Control(const int16_t item_num)
                 Creature_CanTargetEnemy(item, &info) && info.bite
                 && info.distance < M_ATTACK_0_RANGE
                 && (lara_info->poison_timer < 256
-                    || (Box_GetBox(creature->enemy->box_num)->overlap_index
-                        & BOX_BLOCKED_SEARCH))) {
+                    || M_IsEnemyBoxSearchable(creature->enemy))) {
                 item->goal_anim_state = M_STATE_AIM_0;
             } else {
                 item->goal_anim_state = M_STATE_RUN;
@@ -306,8 +318,7 @@ static void M_Control(const int16_t item_num)
                 Creature_CanTargetEnemy(item, &info)
                 && info.distance < M_ATTACK_0_RANGE
                 && (lara_info->poison_timer < 256
-                    || (Box_GetBox(creature->enemy->box_num)->overlap_index
-                        & BOX_BLOCKED_SEARCH))) {
+                    || M_IsEnemyBoxSearchable(creature->enemy))) {
                 item->goal_anim_state = M_STATE_STOP;
             } else if (info.distance > M_WALK_RANGE) {
                 item->goal_anim_state = M_STATE_RUN;
@@ -379,8 +390,7 @@ static void M_Control(const int16_t item_num)
 
             if (info.bite && info.distance < M_ATTACK_0_RANGE
                 && (lara_info->poison_timer < 256
-                    || (Box_GetBox(creature->enemy->box_num)->overlap_index
-                        & BOX_BLOCKED_SEARCH))) {
+                    || M_IsEnemyBoxSearchable(creature->enemy))) {
                 item->goal_anim_state = M_STATE_PUNCH_B;
             } else {
                 item->goal_anim_state = M_STATE_STOP;
@@ -454,8 +464,7 @@ static void M_Control(const int16_t item_num)
                     Creature_CanTargetEnemy(item, &info)
                     && info.distance < M_ATTACK_0_RANGE
                     && (lara_info->poison_timer < 256
-                        || (Box_GetBox(creature->enemy->box_num)->overlap_index
-                            & BOX_BLOCKED_SEARCH))) {
+                        || M_IsEnemyBoxSearchable(creature->enemy))) {
                     item->goal_anim_state = M_STATE_STOP;
                 } else if (info.ahead && info.distance < M_WALK_RANGE) {
                     item->goal_anim_state = M_STATE_WALK;

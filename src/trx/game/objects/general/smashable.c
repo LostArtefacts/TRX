@@ -14,6 +14,9 @@ static void M_SetBoxBlocked(const ITEM *const item, const bool blocked)
     const SECTOR *const sector =
         Room_GetWorldSector(room, item->pos.x, item->pos.z);
     BOX_INFO *const box = Box_GetBox(sector->box);
+    if (box == nullptr) {
+        return;
+    }
 
     if (blocked && (box->overlap_index & BOX_BLOCKABLE) != 0) {
         box->overlap_index |= BOX_BLOCKED;

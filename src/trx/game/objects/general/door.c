@@ -123,7 +123,7 @@ static void M_InitialisePortal(
 
     int16_t box_num = sector->box;
     const BOX_INFO *const box = Box_GetBox(box_num);
-    if ((box->overlap_index & BOX_BLOCKABLE) == 0) {
+    if (box != nullptr && (box->overlap_index & BOX_BLOCKABLE) == 0) {
         box_num = NO_BOX;
     }
     door_pos->box_num = box_num;
