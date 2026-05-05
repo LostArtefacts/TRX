@@ -252,13 +252,23 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
             room->portals = GameBuf_Alloc(
                 sizeof(PORTAL) * num_portals + sizeof(PORTALS),
                 GBUF_ROOM_PORTALS);
-            room->portals->count = num_portals;
+            room->portals->count = 0;
             for (int32_t j = 0; j < num_portals; j++) {
-                PORTAL *const portal = &room->portals->portal[j];
+                PORTAL *const portal =
+                    &room->portals->portal[room->portals->count];
                 portal->room_num = VFile_ReadS16(file);
                 M_ReadVertex(&portal->normal, file);
                 for (int32_t k = 0; k < 4; k++) {
                     M_ReadVertex(&portal->vertex[k], file);
+                }
+
+                if (portal->room_num >= 0 && portal->room_num < num_rooms) {
+                    room->portals->count++;
+                } else {
+                    LOG_WARNING(
+                        "Ignoring invalid portal from room %d to %d", i,
+                        portal->room_num);
+                    *portal = (PORTAL) {};
                 }
             }
         }
