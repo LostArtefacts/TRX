@@ -8,6 +8,7 @@
 - fixed the inactive seaweed at the start of Sleeping with the Fishes
 - fixed the light beams in the cutscene before Meteorite Cavern being clipped with low draw distance values (#5440, #5372)
 - fixed missing and misaligned ropes in RX-Tech Mines where the submarine is lowered (#5432)
+- fixed several incorrect and missing textures in RX-Tech Mines rooms 2, 7, 22, 32, 69 and 70
 
 
 
