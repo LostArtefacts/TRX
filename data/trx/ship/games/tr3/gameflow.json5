@@ -61,6 +61,7 @@
             ],
             "injections": [
                 "gym_sky.bin",
+                "gym_textures.bin",
                 "lara_gym_guns.bin",
             ],
         },
@@ -125,6 +126,7 @@
                 "india_sky.bin",
                 "lara_guns.bin",
                 "ganges_door131_frames.bin",
+                "ganges_textures.bin",
             ],
         },
 
@@ -165,6 +167,7 @@
                 "coastal_sky.bin",
                 "coastal_animating_bounds.bin",
                 "lara_guns.bin",
+                "coastal_textures.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -208,6 +211,7 @@
             "injections": [
                 "lara_guns.bin",
                 "rapids_sky.bin",
+                "madubu_textures.bin",
             ],
         },
 
@@ -227,6 +231,7 @@
                 "lara_guns.bin",
                 "puna_pickup_meshes.bin",
                 "globe_model.bin",
+                "puna_textures.bin",
             ],
         },
 
@@ -248,6 +253,7 @@
             "injections": [
                 "lara_guns.bin",
                 "menu_artefacts.bin",
+                "thames_textures.bin",
             ],
         },
 
@@ -419,6 +425,7 @@
                 "lara_guns.bin",
                 "antarc_door134_frames.bin",
                 "menu_artefacts.bin",
+                "antarc_textures.bin",
             ],
         },
 
@@ -442,6 +449,7 @@
                 "drill_collision.bin",
                 "mines_textures.bin",
                 "flamethrower_sfx.bin",
+                "mines_textures.bin",
             ],
         },
 
@@ -500,6 +508,7 @@
                 "cavern_door131_frames.bin",
                 "flamethrower_sfx.bin",
                 "menu_artefacts.bin",
+                "cavern_textures.bin",
             ],
         },
 
