@@ -11,6 +11,8 @@
 - fixed missing and misaligned ropes in RX-Tech Mines where the submarine is lowered (#5432)
 - fixed several incorrect and missing textures in RX-Tech Mines rooms 2, 7, 22, 32, 69 and 70
 - fixed the camera being cut off early after placing the Oceanic Masks in Lost City of Tinnos (OG bug)
+- fixed the push button mesh being offset too far from the wall in each level it appears (OG bug)
+- fixed a missing face on the push button in Antarctica (#5428)
 
 
 

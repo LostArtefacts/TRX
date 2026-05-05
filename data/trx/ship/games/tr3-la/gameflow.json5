@@ -122,6 +122,7 @@
                 "undersea_train.bin",
                 "undersea_pickup_meshes.bin",
                 "undersea_fd.bin",
+                "undersea_textures.bin",
             ],
         },
 
