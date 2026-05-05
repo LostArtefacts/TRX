@@ -1,5 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.6...develop) - ××××-××-××
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
+- fixed `trx.game.current_level` in Lua being offset by one (#5444)
 
 **TR3**:
 - fixed Hand of Rathmore rotating in Sleeping with the Fishes
