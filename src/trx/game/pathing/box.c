@@ -125,6 +125,9 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
             }
 
             const BOX_INFO *const box = Box_GetBox(box_num);
+            if (box == nullptr) {
+                continue;
+            }
             const int32_t change = box->height - head_box->height;
             if (change > lot->setup.step || change < lot->setup.drop) {
                 continue;
