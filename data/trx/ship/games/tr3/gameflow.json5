@@ -462,6 +462,7 @@
                 "lara_guns.bin",
                 "tinnos_cameras.bin",
                 "tinnos_flames.bin",
+                "tinnos_fd.bin",
             ],
             "unobtainable_pickups": 1,
         },

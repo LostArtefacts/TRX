@@ -240,6 +240,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── stpaul_animating_bounds.bin
 │   │   ├── stpaul_textures.bin
 │   │   ├── tinnos_cameras.bin
+│   │   ├── tinnos_fd.bin
 │   │   ├── tinnos_flames.bin
 │   │   ├── undersea_animating_bounds.bin
 │   │   ├── undersea_fd.bin
@@ -542,6 +543,7 @@ If you install everything correctly, your game directory should look more or les
     │   │   │   ├── stpaul_animating_bounds.bin
     │   │   │   ├── stpaul_textures.bin
     │   │   │   ├── tinnos_cameras.bin
+    │   │   │   ├── tinnos_fd.bin
     │   │   │   ├── tinnos_flames.bin
     │   │   │   ├── undersea_animating_bounds.bin
     │   │   │   ├── undersea_fd.bin
