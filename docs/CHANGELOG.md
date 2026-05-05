@@ -7,6 +7,7 @@
 - fixed the Circuit Bulbs in Sleeping with the Fishes not rotating on a central axis in the inventory
 - fixed the inactive seaweed at the start of Sleeping with the Fishes
 - fixed the light beams in the cutscene before Meteorite Cavern being clipped with low draw distance values (#5440, #5372)
+- fixed missing and misaligned ropes in RX-Tech Mines where the submarine is lowered (#5432)
 
 
 
