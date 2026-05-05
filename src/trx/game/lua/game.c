@@ -84,7 +84,7 @@ static int M_L_GameLevelGetCurrentLevelTable(lua_State *const L)
 static int M_L_GameLevelGetCurrentLevelIndex(lua_State *const L)
 {
     const GF_LEVEL *const lvl = GF_GetCurrentLevel();
-    lua_pushinteger(L, lvl != nullptr ? lvl->num : -1);
+    lua_pushinteger(L, lvl != nullptr ? lvl->num + 1 : -1);
     return 1;
 }
 
