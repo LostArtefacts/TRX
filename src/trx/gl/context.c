@@ -208,7 +208,7 @@ void TRX_GL_Context_Clear(void)
 
 void TRX_GL_Context_SwapBuffers(void)
 {
-    glFinish();
+    glFlush();
     TRX_GL_CheckError();
 
     if (m_Context.renderer != nullptr

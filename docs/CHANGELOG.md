@@ -2,6 +2,7 @@
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
 - fixed `trx.game.current_level` in Lua being offset by one (#5444)
 - fixed potential crashes in old custom levels that contain invalid room visibility portals (#5447)
+- fixed stutters on certain levels with VSync off on some GPUs (#4975, regression from 1.0)
 
 **TR3**:
 - fixed Hand of Rathmore rotating in Sleeping with the Fishes
