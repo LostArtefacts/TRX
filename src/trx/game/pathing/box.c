@@ -25,9 +25,18 @@
 
 static int32_t m_BoxCount = 0;
 static BOX_INFO *m_Boxes = nullptr;
+static int32_t m_OverlapCount = 0;
 static int16_t *m_Overlaps = nullptr;
 static int16_t *m_FlyZone[2] = {};
 static int16_t *m_GroundZone[MAX_ZONES][2] = {};
+
+static int16_t M_GetOverlap(const int32_t overlap_idx)
+{
+    return m_Overlaps == nullptr || overlap_idx < 0
+            || overlap_idx >= m_OverlapCount
+        ? NO_BOX
+        : m_Overlaps[overlap_idx];
+}
 
 void Box_InitialiseBoxes(const int32_t num_boxes)
 {
@@ -52,6 +61,7 @@ void Box_InitialiseBoxes(const int32_t num_boxes)
 
 int16_t *Box_InitialiseOverlaps(const int32_t num_overlaps)
 {
+    m_OverlapCount = num_overlaps;
     m_Overlaps = num_overlaps == 0
         ? nullptr
         : GameBuf_Alloc(sizeof(int16_t) * num_overlaps, GBUF_OVERLAPS);
@@ -68,11 +78,6 @@ BOX_INFO *Box_GetBox(const int32_t box_idx)
     return m_Boxes == nullptr || box_idx < 0 || box_idx >= m_BoxCount
         ? nullptr
         : &m_Boxes[box_idx];
-}
-
-int16_t Box_GetOverlap(const int32_t overlap_idx)
-{
-    return m_Overlaps == nullptr ? -1 : m_Overlaps[overlap_idx];
 }
 
 int16_t *Box_GetFlyZone(const bool flip_status)
@@ -114,20 +119,25 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
         bool done = false;
         int32_t index = head_box->overlap_index & BOX_OVERLAP_BITS;
         while (!done) {
-            int16_t box_num = Box_GetOverlap(index++);
+            int16_t box_num = M_GetOverlap(index++);
+            if (box_num == NO_BOX) {
+                break;
+            }
+
             if ((box_num & BOX_END_BIT) != 0) {
                 done = true;
                 box_num &= BOX_NUMBER_BITS;
-            }
-
-            if (!use_fixed_fly_zone && search_zone != zone[box_num]) {
-                continue;
             }
 
             const BOX_INFO *const box = Box_GetBox(box_num);
             if (box == nullptr) {
                 continue;
             }
+
+            if (!use_fixed_fly_zone && search_zone != zone[box_num]) {
+                continue;
+            }
+
             const int32_t change = box->height - head_box->height;
             if (change > lot->setup.step || change < lot->setup.drop) {
                 continue;
