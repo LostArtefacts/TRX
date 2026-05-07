@@ -18,10 +18,19 @@
 #define M_ENFORCED_KEY "enforced_config"
 #define M_HIDDEN_KEY "hidden_config"
 
+typedef bool (*M_OPTION_VALUE_ACTION)(
+    const CONFIG_OPTION *option, const void *value);
+
+static bool M_ProcessOptionValue(
+    const CONFIG_OPTION *option, const JSON_VALUE *value,
+    M_OPTION_VALUE_ACTION action);
+static bool M_SetOptionValue(const CONFIG_OPTION *option, const void *value);
+static bool M_PushOptionOverride(
+    const CONFIG_OPTION *option, const void *value);
+
 static bool M_ReadFromJSON(
     const char *const default_path, const char *const enforced_path,
-    void (*load)(JSON_OBJECT *root_obj), VECTOR *const enforced_targets,
-    VECTOR *const hidden_targets)
+    void (*load)(JSON_OBJECT *root_obj), VECTOR *const hidden_targets)
 {
     bool result = false;
 
@@ -39,24 +48,9 @@ static bool M_ReadFromJSON(
     JSON_OBJECT *cfg_root_obj = JSON_ValueAsObject(cfg_root);
     JSON_OBJECT *enf_root_obj = JSON_ValueAsObject(enf_root);
 
-    // Merge settings from the game flow file.
+    // Record settings enforced by the game flow file.
     JSON_OBJECT *const enforced_config =
         JSON_ObjectGetObject(enf_root_obj, M_ENFORCED_KEY);
-    if (enforced_config != nullptr && enforced_targets != nullptr) {
-        Vector_ClearRealloc(enforced_targets);
-        const JSON_OBJECT_ELEMENT *elem = enforced_config->start;
-        while (elem != nullptr) {
-            const char *const name = elem->name->string;
-            const CONFIG_OPTION *const opt = Config_GetOptionByPath(name);
-            if (opt != nullptr) {
-                Vector_Add(enforced_targets, &opt->target);
-            }
-            elem = elem->next;
-        }
-    }
-    if (enforced_config != nullptr) {
-        JSON_ObjectMerge(cfg_root_obj, enforced_config);
-    }
 
     // Record hidden settings from the game flow file.
     JSON_ARRAY *const hidden_config_arr =
@@ -81,6 +75,21 @@ static bool M_ReadFromJSON(
 
     load(cfg_root_obj);
 
+    if (enforced_config != nullptr) {
+        const JSON_OBJECT_ELEMENT *elem = enforced_config->start;
+        while (elem != nullptr) {
+            const char *const name = elem->name->string;
+            const CONFIG_OPTION *const opt = Config_GetOptionByPath(name);
+            if (opt != nullptr) {
+                if (!M_ProcessOptionValue(
+                        opt, elem->value, M_PushOptionOverride)) {
+                    LOG_WARNING("Failed to enforce config option '%s'", name);
+                }
+            }
+            elem = elem->next;
+        }
+    }
+
     if (cfg_root) {
         JSON_ValueFree(cfg_root);
     }
@@ -91,37 +100,129 @@ static bool M_ReadFromJSON(
     return result;
 }
 
-static void M_PreserveEnforcedState(
-    JSON_OBJECT *const root_obj, JSON_VALUE *const old_root,
-    JSON_VALUE *const enf_root)
+static bool M_SetOptionValue(
+    const CONFIG_OPTION *const option, const void *const value)
 {
-    if (old_root == nullptr || enf_root == nullptr) {
-        return;
+    ASSERT(option != nullptr);
+    ASSERT(value != nullptr);
+
+    switch (option->type) {
+    case COT_BOOL:
+        *(bool *)option->target = *(const bool *)value;
+        return true;
+    case COT_INT32:
+        *(int32_t *)option->target = *(const int32_t *)value;
+        return true;
+    case COT_FLOAT:
+    case COT_FLOAT_PERCENT:
+        *(float *)option->target = *(const float *)value;
+        return true;
+    case COT_DOUBLE:
+        *(double *)option->target = *(const double *)value;
+        return true;
+    case COT_ENUM:
+        *(int *)option->target = *(const int *)value;
+        return true;
+    case COT_STRING:
+    case COT_DYNAMIC_ENUM: {
+        char **const p = (char **)option->target;
+        char *const old = *p;
+        const char *const new_value = *(const char *const *)value;
+        *p = new_value != nullptr ? Memory_DupStr(new_value) : nullptr;
+        Memory_Free(old);
+        return true;
+    }
+    case COT_RGB888:
+        *(RGB_888 *)option->target = *(const RGB_888 *)value;
+        return true;
+    }
+    return false;
+}
+
+static bool M_PushOptionOverride(
+    const CONFIG_OPTION *const option, const void *const value)
+{
+    ASSERT(option != nullptr);
+    return Config_PushOptionOverride(option->target, value);
+}
+
+static bool M_ProcessOptionValue(
+    const CONFIG_OPTION *const option, const JSON_VALUE *const value,
+    const M_OPTION_VALUE_ACTION action)
+{
+    ASSERT(option != nullptr);
+    ASSERT(action != nullptr);
+
+    switch (option->type) {
+    case COT_BOOL: {
+        const bool parsed =
+            JSON_ValueGetBool(value, *(bool *)option->default_value);
+        return action(option, &parsed);
     }
 
-    JSON_OBJECT *old_root_obj = JSON_ValueAsObject(old_root);
-    JSON_OBJECT *enf_root_obj = JSON_ValueAsObject(enf_root);
-    JSON_OBJECT *enforced_obj =
-        JSON_ObjectGetObject(enf_root_obj, M_ENFORCED_KEY);
-    if (enforced_obj == nullptr) {
-        return;
-    }
-
-    // Restore the original values for any enforced settings, provided they were
-    // defined.
-    JSON_OBJECT_ELEMENT *elem = enforced_obj->start;
-    while (elem != nullptr) {
-        const char *const name = elem->name->string;
-        elem = elem->next;
-
-        JSON_ObjectEvictKey(root_obj, name);
-        if (!JSON_ObjectContainsKey(old_root_obj, name)) {
-            continue;
+    case COT_INT32: {
+        int32_t parsed = *(int32_t *)option->default_value;
+        if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
+            parsed = JSON_ValueGetInt(value, *(int32_t *)option->default_value);
+        } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
+            String_ParseInteger(JSON_ValueGetString(value, ""), &parsed);
         }
-
-        JSON_VALUE *const old_value = JSON_ObjectGetValue(old_root_obj, name);
-        JSON_ObjectAppend(root_obj, name, old_value);
+        return action(option, &parsed);
     }
+
+    case COT_FLOAT:
+    case COT_FLOAT_PERCENT: {
+        const float parsed =
+            JSON_ValueGetDouble(value, *(float *)option->default_value);
+        return action(option, &parsed);
+    }
+
+    case COT_DOUBLE: {
+        const double parsed =
+            JSON_ValueGetDouble(value, *(double *)option->default_value);
+        return action(option, &parsed);
+    }
+
+    case COT_ENUM: {
+        const char *const str_value = JSON_ValueGetString(value, nullptr);
+        const int parsed = str_value != nullptr
+            ? EnumMap_Get(
+                  option->param, str_value, *(int *)option->default_value)
+            : *(int *)option->default_value;
+        return action(option, &parsed);
+    }
+
+    case COT_STRING:
+    case COT_DYNAMIC_ENUM: {
+        const char *const parsed =
+            JSON_ValueGetString(value, (const char *)option->default_value);
+        return action(option, &parsed);
+    }
+
+    case COT_RGB888: {
+        RGB_888 parsed;
+        bool success = false;
+        if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
+            const uint32_t rgb_value =
+                JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
+            ASSERT(rgb_value != JSON_INVALID_NUMBER);
+            parsed.r = (rgb_value >> 0) & 0xFF;
+            parsed.g = (rgb_value >> 8) & 0xFF;
+            parsed.b = (rgb_value >> 16) & 0xFF;
+            success = true;
+        } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
+            const char *str_value =
+                JSON_ValueGetString(value, JSON_INVALID_STRING);
+            ASSERT(str_value != JSON_INVALID_STRING);
+            success = String_ParseRGB888(str_value, &parsed);
+        }
+        if (!success) {
+            parsed = *(RGB_888 *)option->default_value;
+        }
+        return action(option, &parsed);
+    }
+    }
+    return false;
 }
 
 bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
@@ -129,27 +230,19 @@ bool ConfigFile_Read(const CONFIG_IO_ARGS *const args)
     ASSERT(args->default_path != nullptr);
     return M_ReadFromJSON(
         args->default_path, args->enforced_path, args->action,
-        args->enforced_targets, args->hidden_targets);
+        args->hidden_targets);
 }
 
 bool ConfigFile_Write(const CONFIG_IO_ARGS *const args)
 {
     ASSERT(args->default_path != nullptr);
-    JSON_VALUE *const old_root = JSONFile_Read(args->default_path);
-    JSON_VALUE *const enf_root = args->enforced_path != nullptr
-        ? JSONFile_Read(args->enforced_path)
-        : nullptr;
-
     JSON_OBJECT *const root_obj = JSON_ObjectNew();
     args->action(root_obj);
-    M_PreserveEnforcedState(root_obj, old_root, enf_root);
 
     JSON_VALUE *const new_root = JSON_ValueFromObject(root_obj);
     const bool updated = JSONFile_Write(args->default_path, new_root);
 
     JSON_ValueFree(new_root);
-    JSON_ValueFree(old_root);
-    JSON_ValueFree(enf_root);
     return updated;
 }
 
@@ -157,92 +250,9 @@ void ConfigFile_LoadOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
 {
     const CONFIG_OPTION *opt = options;
     while (opt->target != nullptr) {
-        switch (opt->type) {
-        case COT_BOOL:
-            *(bool *)opt->target = JSON_ObjectGetBool(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(bool *)opt->default_value);
-            break;
-
-        case COT_INT32: {
-            JSON_VALUE *const value = JSON_ObjectGetValue(
-                root_obj, Config_ResolveOptionName(opt->name));
-            bool success = false;
-            if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
-                *(int32_t *)opt->target =
-                    JSON_ValueGetInt(value, *(int32_t *)opt->default_value);
-                success = true;
-            } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
-                success = String_ParseInteger(
-                    JSON_ValueGetString(value, ""), (int32_t *)opt->target);
-            }
-            if (!success) {
-                *(int32_t *)opt->target = *(int32_t *)opt->default_value;
-            }
-            break;
-        }
-
-        case COT_FLOAT:
-        case COT_FLOAT_PERCENT:
-            *(float *)opt->target = JSON_ObjectGetDouble(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(float *)opt->default_value);
-            break;
-
-        case COT_DOUBLE:
-            *(double *)opt->target = JSON_ObjectGetDouble(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(double *)opt->default_value);
-            break;
-
-        case COT_ENUM:
-            *(int *)opt->target = ConfigFile_ReadEnum(
-                root_obj, Config_ResolveOptionName(opt->name),
-                *(int *)opt->default_value, opt->param);
-            break;
-
-        case COT_STRING:
-        case COT_DYNAMIC_ENUM: {
-            const char *const val = JSON_ObjectGetString(
-                root_obj, Config_ResolveOptionName(opt->name),
-                (const char *)opt->default_value);
-            char **const p = (char **)opt->target;
-            Memory_FreePointer(p);
-            if (val != nullptr) {
-                *p = Memory_DupStr(val);
-            } else if (opt->default_value != nullptr) {
-                *p = Memory_DupStr(opt->default_value);
-            } else {
-                *p = nullptr;
-            }
-            break;
-        }
-
-        case COT_RGB888: {
-            RGB_888 *const target = (RGB_888 *)opt->target;
-            JSON_VALUE *const value = JSON_ObjectGetValue(
-                root_obj, Config_ResolveOptionName(opt->name));
-            bool success = false;
-            if (value != nullptr && value->type == JSON_TYPE_NUMBER) {
-                const uint32_t rgb_value =
-                    JSON_ValueGetInt(value, JSON_INVALID_NUMBER);
-                ASSERT(rgb_value != JSON_INVALID_NUMBER);
-                target->r = (rgb_value >> 0) & 0xFF;
-                target->g = (rgb_value >> 8) & 0xFF;
-                target->b = (rgb_value >> 16) & 0xFF;
-                success = true;
-            } else if (value != nullptr && value->type == JSON_TYPE_STRING) {
-                const char *str_value =
-                    JSON_ValueGetString(value, JSON_INVALID_STRING);
-                ASSERT(str_value != JSON_INVALID_STRING);
-                success = String_ParseRGB888(str_value, target);
-            }
-            if (!success) {
-                *(RGB_888 *)opt->target = *(RGB_888 *)opt->default_value;
-            }
-            break;
-        }
-        }
+        JSON_VALUE *const value =
+            JSON_ObjectGetValue(root_obj, Config_ResolveOptionName(opt->name));
+        M_ProcessOptionValue(opt, value, M_SetOptionValue);
         opt++;
     }
 }
@@ -285,13 +295,15 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
             break;
 
         case COT_STRING:
-        case COT_DYNAMIC_ENUM:
-            if (*(char *const *)value != nullptr) {
+        case COT_DYNAMIC_ENUM: {
+            const char *const string_value = *(const char *const *)value;
+            if (string_value != nullptr) {
                 JSON_ObjectAppendString(
                     root_obj, Config_ResolveOptionName(opt->name),
-                    *(char *const *)value);
+                    string_value);
             }
             break;
+        }
 
         case COT_RGB888: {
             const RGB_888 *const color = (const RGB_888 *)value;

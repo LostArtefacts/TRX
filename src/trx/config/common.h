@@ -35,6 +35,7 @@ bool Config_IsOptionAtDefault(const void *target);
 
 // Restores the given setting's default value.
 bool Config_RestoreOptionDefault(const void *target);
+bool Config_RestoreOptionDefaultForce(const void *target);
 
 // Get a flat string name of an option.
 const char *Config_ResolveOptionName(const char *option_name);
@@ -61,4 +62,6 @@ char *Config_NormalizeOptionValueString(
 
 // Updates the given setting's value from string.
 bool Config_SetOptionValueFromString(
+    const CONFIG_OPTION *option, const char *new_value);
+bool Config_SetOptionValueFromStringForce(
     const CONFIG_OPTION *option, const char *new_value);

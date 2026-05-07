@@ -612,7 +612,8 @@ bool UI_SettingsEditor_Control(
     }
     if (g_InputDB.menu_confirm && sel_row >= 0) {
         const UI_SETTINGS_OPTION *const option = M_GetOptionByRow(s, sel_row);
-        if (M_IsColorEditorOption(option)) {
+        if (M_IsColorEditorOption(option)
+            && !Config_IsOptionEnforced(option->target)) {
             UI_ColorEditorDialog_Open(s->color_editor, option);
             return true;
         }
@@ -807,7 +808,8 @@ void UI_SettingsEditor_DrawFooter(
 
     const bool can_edit_value = dialog_phase == UI_SETTINGS_PHASE_EDIT_SETTINGS
         && row_idx >= 0 && option != nullptr
-        && M_GetConfigOption(option)->type == COT_RGB888;
+        && M_GetConfigOption(option)->type == COT_RGB888
+        && !Config_IsOptionEnforced(option->target);
     const bool can_examine = dialog_phase == UI_SETTINGS_PHASE_EDIT_SETTINGS
         && row_idx >= 0 && option != nullptr
         && M_GetOptionDescription(option) != nullptr

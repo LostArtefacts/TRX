@@ -13,6 +13,56 @@
 #include <stdio.h>
 #include <string.h>
 
+static COMMAND_RESULT M_ConfigHelper(
+    const CONFIG_OPTION *option, const char *new_value, bool force);
+
+static bool M_IsForceFlag(const char *const start, const size_t len)
+{
+    return (len == 2 && strncmp(start, "-f", len) == 0)
+        || (len == 7 && strncmp(start, "--force", len) == 0);
+}
+
+static bool M_ExtractForceFlag(char *const args)
+{
+    ASSERT(args != nullptr);
+
+    bool force = false;
+    bool need_space = false;
+    char *read = args;
+    char *write = args;
+
+    while (*read != '\0') {
+        while (*read == ' ') {
+            read++;
+        }
+        if (*read == '\0') {
+            break;
+        }
+
+        const char *const token = read;
+        while (*read != '\0' && *read != ' ') {
+            read++;
+        }
+
+        const size_t len = read - token;
+        if (M_IsForceFlag(token, len)) {
+            force = true;
+            continue;
+        }
+
+        if (need_space) {
+            *write = ' ';
+            write++;
+        }
+        memmove(write, token, len);
+        write += len;
+        need_space = true;
+    }
+
+    *write = '\0';
+    return force;
+}
+
 static char *M_NormalizeValue(const char *const value)
 {
     if (value == nullptr) {
@@ -149,12 +199,15 @@ static char *M_GetValueForConsole(const CONFIG_OPTION *const option)
 }
 
 static bool M_TryApplyOptionValue(
-    const CONFIG_OPTION *const option, const char *const new_value)
+    const CONFIG_OPTION *const option, const char *const new_value,
+    const bool force)
 {
     if (strcmp(new_value, "-") == 0) {
-        return Config_RestoreOptionDefault(option->target);
+        return force ? Config_RestoreOptionDefaultForce(option->target)
+                     : Config_RestoreOptionDefault(option->target);
     }
-    if (Config_SetOptionValueFromString(option, new_value)) {
+    if (force ? Config_SetOptionValueFromStringForce(option, new_value)
+              : Config_SetOptionValueFromString(option, new_value)) {
         return true;
     }
 
@@ -165,7 +218,9 @@ static bool M_TryApplyOptionValue(
     char *normalized = M_NormalizeValue(new_value);
     if (normalized != nullptr) {
         const bool different = strcmp(normalized, new_value) != 0;
-        if (different && Config_SetOptionValueFromString(option, normalized)) {
+        if (different
+            && (force ? Config_SetOptionValueFromStringForce(option, normalized)
+                      : Config_SetOptionValueFromString(option, normalized))) {
             Memory_FreePointer(&normalized);
             return true;
         }
@@ -180,7 +235,9 @@ static bool M_TryApplyOptionValue(
             different = true;
         }
     }
-    if (different && Config_SetOptionValueFromString(option, underscore)) {
+    if (different
+        && (force ? Config_SetOptionValueFromStringForce(option, underscore)
+                  : Config_SetOptionValueFromString(option, underscore))) {
         Memory_FreePointer(&underscore);
         return true;
     }
@@ -220,6 +277,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     COMMAND_RESULT result = CR_BAD_INVOCATION;
 
     char *key = Memory_DupStr(ctx->args);
+    const bool force = M_ExtractForceFlag(key);
     char *const space = strchr(key, ' ');
     const char *new_value = nullptr;
     if (space != nullptr) {
@@ -231,7 +289,7 @@ static COMMAND_RESULT M_Entrypoint(const COMMAND_CONTEXT *const ctx)
     if (option == nullptr) {
         result = CR_FAILURE;
     } else {
-        result = Console_Cmd_Config_Helper(option, new_value);
+        result = M_ConfigHelper(option, new_value, force);
     }
 
 cleanup:
@@ -309,8 +367,9 @@ const CONFIG_OPTION *Console_Cmd_Config_GetOptionFromTarget(
     return nullptr;
 }
 
-COMMAND_RESULT Console_Cmd_Config_Helper(
-    const CONFIG_OPTION *const option, const char *const new_value)
+static COMMAND_RESULT M_ConfigHelper(
+    const CONFIG_OPTION *const option, const char *const new_value,
+    const bool force)
 {
     ASSERT(option != nullptr);
 
@@ -330,7 +389,11 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
         goto cleanup;
     }
 
-    if (M_TryApplyOptionValue(option, new_value)) {
+    if (!force && Config_IsOptionEnforced(option->target)) {
+        Console_LogError(
+            GS("general/osd/config_option_enforced"), normalized_name);
+        result = CR_FAILURE;
+    } else if (M_TryApplyOptionValue(option, new_value, force)) {
         Config_Update();
         char *value_str = M_GetValueForConsole(option);
         ASSERT(value_str != nullptr);
@@ -353,6 +416,12 @@ COMMAND_RESULT Console_Cmd_Config_Helper(
 cleanup:
     Memory_FreePointer(&normalized_name);
     return result;
+}
+
+COMMAND_RESULT Console_Cmd_Config_Helper(
+    const CONFIG_OPTION *const option, const char *const new_value)
+{
+    return M_ConfigHelper(option, new_value, false);
 }
 
 VECTOR *Console_Cmd_Config_GetOptionsFromKey(const char *const key)
