@@ -10,8 +10,12 @@ void Config_ApplyDefaultSettings(void);
 bool Config_Read(const char *default_path, const char *enforced_path);
 bool Config_Write(void);
 bool Config_Update(void);
+bool Config_PushOptionOverride(const void *target, const void *value);
+bool Config_PopOptionOverride(const void *target);
+bool Config_IsOptionOverridden(const void *target);
 
 const CONFIG_OPTION *Config_GetOptionMap(void);
+const void *Config_GetOptionValueForSave(const CONFIG_OPTION *option);
 
 int32_t Config_SubscribeChanges(EVENT_LISTENER listener, void *user_data);
 void Config_UnsubscribeChanges(int32_t listener_id);
