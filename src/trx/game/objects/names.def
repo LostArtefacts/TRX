@@ -135,6 +135,12 @@ X_OBJ_NAME_DEFINE(O_LARA_FLARE,            "lara_flare",            X_OBJ_NAMES(
 X_OBJ_NAME_DEFINE(O_LARA_EXTRA,            "lara_extra",            X_OBJ_NAMES("Lara's Extra Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_SKIDOO,           "lara_skidoo",           X_OBJ_NAMES("Snowmobile Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_BOAT,             "lara_boat",             X_OBJ_NAMES("Boat Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_QUAD_BIKE,        "lara_quad_bike",        X_OBJ_NAMES("Quad Bike Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_MOUNTED_GUN,      "lara_mounted_gun",      X_OBJ_NAMES("Mounted Gun Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_KAYAK,            "lara_kayak",            X_OBJ_NAMES("Kayak Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_UPV,              "lara_upv",              X_OBJ_NAMES("UPV Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_RIB,              "lara_rib",              X_OBJ_NAMES("RIB Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_MINE_CART,        "lara_mine_cart",        X_OBJ_NAMES("Mine Cart Animation"))
 
 // Vehicles
 X_OBJ_NAME_DEFINE(O_SKIDOO_FAST,           "skidoo_fast",           X_OBJ_NAMES("Red Snowmobile"))

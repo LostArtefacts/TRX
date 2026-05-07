@@ -2256,17 +2256,32 @@
         "lara_harpoon": {
             "name": "Beòthalachd Harpùn",
         },
+        "lara_kayak": {
+            "name": "Beòthalachd Càbaig",
+        },
         "lara_m16": {
             "name": "Beòthalachd M16",
         },
         "lara_magnums": {
             "name": "Beòthalachd Magnuman",
         },
+        "lara_mine_cart": {
+            "name": "Beòthalachd Cairt-mhèinne",
+        },
+        "lara_mounted_gun": {
+            "name": "Beòthalachd Gunna Stèidhichte",
+        },
         "lara_mp5": {
             "name": "Beòthalachd MP5",
         },
         "lara_pistols": {
             "name": "Beòthalachd Piostalan",
+        },
+        "lara_quad_bike": {
+            "name": "Beòthalachd Quad-baidhsagal",
+        },
+        "lara_rib": {
+            "name": "Beòthalachd RIB",
         },
         "lara_rocket": {
             "name": "Beòthalachd Lannsair Rocaid",
@@ -2276,6 +2291,9 @@
         },
         "lara_skidoo": {
             "name": "Beòthalachd Cairt-shneachda",
+        },
+        "lara_upv": {
+            "name": "Beòthalachd Carbad fon uisge",
         },
         "lara_uzis": {
             "name": "Beòthalachd Uzis",

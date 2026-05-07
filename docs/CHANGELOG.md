@@ -1,4 +1,11 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.6...develop) - ××××-××-××
+- added the ability for custom levels to use more than one of TR3's vehicle types in the same level; define the following animation objects for Lara:
+    - `O_LARA_QUAD_BIKE`
+    - `O_LARA_MOUNTED_GUN`
+    - `O_LARA_KAYAK`
+    - `O_LARA_UPV`
+    - `O_LARA_RIB`
+    - `O_LARA_MINE_CART`
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
 - changed `/set` to refuse level-enforced settings unless `--force` is used
 - fixed `trx.game.current_level` in Lua being offset by one (#5444)

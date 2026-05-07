@@ -2253,17 +2253,32 @@
         "lara_harpoon": {
             "name": "Harpunen-Animation",
         },
+        "lara_kayak": {
+            "name": "\\{review}Kajak-Animation",
+        },
         "lara_m16": {
             "name": "M16-Animation",
         },
         "lara_magnums": {
             "name": "Magnum-Animation",
         },
+        "lara_mine_cart": {
+            "name": "\\{review}Grubenwagen-Animation",
+        },
+        "lara_mounted_gun": {
+            "name": "\\{review}Montiertes Geschütz-Animation",
+        },
         "lara_mp5": {
             "name": "\\{review}MP5-Animation",
         },
         "lara_pistols": {
             "name": "Pistolen-Animation",
+        },
+        "lara_quad_bike": {
+            "name": "\\{review}Quad-Animation",
+        },
+        "lara_rib": {
+            "name": "\\{review}RIB-Animation",
         },
         "lara_rocket": {
             "name": "\\{review}Animation des Raketenwerfers",
@@ -2273,6 +2288,9 @@
         },
         "lara_skidoo": {
             "name": "Schneeemobil-Animation",
+        },
+        "lara_upv": {
+            "name": "\\{review}Mini-U-Boot-Animation",
         },
         "lara_uzis": {
             "name": "Uzi-Animation",
