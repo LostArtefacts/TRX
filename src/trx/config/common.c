@@ -17,8 +17,6 @@
 
 #define CONFIG_OVERRIDE_MAX_DEPTH 3
 
-// In-memory list of pointers to config options enforced by the game flow.
-static VECTOR *m_EnforcedOptions = nullptr;
 // In-memory list of pointers to config options hidden by the game flow.
 static VECTOR *m_HiddenOptions = nullptr;
 // In-memory list of runtime config overrides.
@@ -71,11 +69,12 @@ static void M_CopyOptionValue(
         dst->rgb888_value = *(const RGB_888 *)src;
         break;
     case COT_STRING:
-    case COT_DYNAMIC_ENUM:
-        dst->string_value = *(char *const *)src != nullptr
-            ? Memory_DupStr(*(char *const *)src)
-            : nullptr;
+    case COT_DYNAMIC_ENUM: {
+        const char *const src_value = *(const char *const *)src;
+        dst->string_value =
+            src_value != nullptr ? Memory_DupStr(src_value) : nullptr;
         break;
+    }
     }
 }
 
@@ -180,6 +179,19 @@ static void M_FreeOverride(M_CONFIG_OVERRIDE *const override)
     }
 }
 
+static void M_ClearOverrides(void)
+{
+    if (m_OverrideOptions == nullptr) {
+        return;
+    }
+
+    for (int32_t i = 0; i < m_OverrideOptions->count; i++) {
+        M_CONFIG_OVERRIDE *const override = Vector_Get(m_OverrideOptions, i);
+        M_FreeOverride(override);
+    }
+    Vector_Clear(m_OverrideOptions);
+}
+
 static void M_FreeStringOptionValues(void)
 {
     const CONFIG_OPTION *option = Config_GetOptionMap();
@@ -205,20 +217,12 @@ __attribute__((destructor)) static void M_Shutdown(void)
     Memory_FreePointer(&g_Config.default_path);
     Memory_FreePointer(&g_Config.enforced_path);
 
-    if (m_EnforcedOptions != nullptr) {
-        Vector_Free(m_EnforcedOptions);
-        m_EnforcedOptions = nullptr;
-    }
     if (m_HiddenOptions != nullptr) {
         Vector_Free(m_HiddenOptions);
         m_HiddenOptions = nullptr;
     }
     if (m_OverrideOptions != nullptr) {
-        for (int32_t i = 0; i < m_OverrideOptions->count; i++) {
-            M_CONFIG_OVERRIDE *const override =
-                Vector_Get(m_OverrideOptions, i);
-            M_FreeOverride(override);
-        }
+        M_ClearOverrides();
         Vector_Free(m_OverrideOptions);
         m_OverrideOptions = nullptr;
     }
@@ -243,15 +247,11 @@ bool Config_Read(
     g_Config.default_path = Memory_DupStr(default_path);
     g_Config.enforced_path = Memory_DupStr(enforced_path);
     g_Config.loaded = true;
+    M_ClearOverrides();
 
     LOG_DEBUG("Reading config");
     LOG_DEBUG("  default_path=%s", g_Config.default_path);
     LOG_DEBUG("  enforced_path=%s", g_Config.enforced_path);
-    if (m_EnforcedOptions == nullptr) {
-        m_EnforcedOptions = Vector_Create(sizeof(void *));
-    } else {
-        Vector_ClearRealloc(m_EnforcedOptions);
-    }
     if (m_HiddenOptions == nullptr) {
         m_HiddenOptions = Vector_Create(sizeof(void *));
     } else {
@@ -261,7 +261,6 @@ bool Config_Read(
         .default_path = g_Config.default_path,
         .enforced_path = g_Config.enforced_path,
         .action = &Config_LoadFromJSON,
-        .enforced_targets = m_EnforcedOptions,
         .hidden_targets = m_HiddenOptions,
     };
     const bool result = ConfigFile_Read(&args);
@@ -306,26 +305,17 @@ bool Config_Write(void)
     return ConfigFile_Write(&args);
 }
 
-bool Config_PushOptionOverride(
-    const void *const target, const void *const value)
+static bool M_PushOptionOverride(
+    const CONFIG_OPTION *const option, const void *const value)
 {
-    ASSERT(target != nullptr);
+    ASSERT(option != nullptr);
     ASSERT(value != nullptr);
-
-    const CONFIG_OPTION *const option = Config_GetOption(target);
-    if (option == nullptr) {
-        return false;
-    }
-    if (option->type == COT_DYNAMIC_ENUM
-        && !Config_DynamicEnum_IsValidValue(option, *(char *const *)value)) {
-        return false;
-    }
 
     if (m_OverrideOptions == nullptr) {
         m_OverrideOptions = Vector_Create(sizeof(M_CONFIG_OVERRIDE));
     }
 
-    int32_t override_idx = M_GetOverrideIndex(target);
+    int32_t override_idx = M_GetOverrideIndex(option->target);
     if (override_idx == -1) {
         M_CONFIG_OVERRIDE override = {
             .option = option,
@@ -348,6 +338,18 @@ bool Config_PushOptionOverride(
     override->depth++;
     M_ApplyOptionValue(option, override_value);
     return true;
+}
+
+bool Config_PushOptionOverride(
+    const void *const target, const void *const value)
+{
+    ASSERT(target != nullptr);
+
+    const CONFIG_OPTION *const option = Config_GetOption(target);
+    if (option == nullptr) {
+        return false;
+    }
+    return M_PushOptionOverride(option, value);
 }
 
 bool Config_PopOptionOverride(const void *const target)
@@ -430,8 +432,7 @@ const void *Config_GetOptionValueForSave(const CONFIG_OPTION *const option)
 
 bool Config_IsOptionEnforced(const void *const target)
 {
-    return m_EnforcedOptions != nullptr
-        && Vector_Contains(m_EnforcedOptions, &target);
+    return Config_IsOptionOverridden(target);
 }
 
 bool Config_IsOptionHidden(const void *const target)
@@ -480,10 +481,16 @@ bool Config_IsOptionAtDefault(const void *const target)
     return true;
 }
 
-bool Config_RestoreOptionDefault(const void *const target)
+static bool M_RestoreOptionDefault(const void *const target, const bool force)
 {
-    const CONFIG_OPTION *option = Config_GetOption(target);
     if (target == nullptr) {
+        return false;
+    }
+    const CONFIG_OPTION *option = Config_GetOption(target);
+    if (option == nullptr) {
+        return false;
+    }
+    if (!force && Config_IsOptionEnforced(target)) {
         return false;
     }
     switch (option->type) {
@@ -520,6 +527,16 @@ bool Config_RestoreOptionDefault(const void *const target)
     }
     }
     return false;
+}
+
+bool Config_RestoreOptionDefault(const void *const target)
+{
+    return M_RestoreOptionDefault(target, false);
+}
+
+bool Config_RestoreOptionDefaultForce(const void *const target)
+{
+    return M_RestoreOptionDefault(target, true);
 }
 
 static bool M_ParseBool(const char *const value, bool *const result)
@@ -748,11 +765,15 @@ char *Config_NormalizeOptionValueString(
     return Memory_DupStr(input);
 }
 
-bool Config_SetOptionValueFromString(
-    const CONFIG_OPTION *const option, const char *const new_value)
+static bool M_SetOptionValueFromString(
+    const CONFIG_OPTION *const option, const char *const new_value,
+    const bool force)
 {
     ASSERT(option != nullptr);
     ASSERT(option->target != nullptr);
+    if (!force && Config_IsOptionEnforced(option->target)) {
+        return false;
+    }
     switch (option->type) {
     case COT_BOOL: {
         bool parsed;
@@ -835,4 +856,16 @@ bool Config_SetOptionValueFromString(
     }
 
     return false;
+}
+
+bool Config_SetOptionValueFromString(
+    const CONFIG_OPTION *const option, const char *const new_value)
+{
+    return M_SetOptionValueFromString(option, new_value, false);
+}
+
+bool Config_SetOptionValueFromStringForce(
+    const CONFIG_OPTION *const option, const char *const new_value)
+{
+    return M_SetOptionValueFromString(option, new_value, true);
 }

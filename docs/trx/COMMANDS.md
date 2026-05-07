@@ -99,11 +99,16 @@ whichever key you have bound, and not include it as part of the command itself.
 
 ## Configuration commands
 
-- `/set {option}`  
-  `/set {option} {value}`  
-  `/set {option} -`  
+- `/set {option}`<br>
+  `/set {option} {value}`<br>
+  `/set {option} {value} -f`<br>
+  `/set {option} {value} --force`<br>
+  `/set {option} -`<br>
   Retrieve or change specific configuration options, like a tech-savvy wizard.
   - use `-` as `{value}` to restore the option to default.
+  - level-enforced options cannot be changed unless `--force` or `-f` is used.
+  - the force flag can appear anywhere in the command.
+  - forced changes to level-enforced options last for the current session and are not saved while the option remains enforced.
   - some options need a game or level re-launch to apply.
   - option names use `-`, not `_`, because reasons.
 

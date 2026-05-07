@@ -12,7 +12,6 @@ typedef struct {
     const char *default_path;
     const char *enforced_path;
     void (*action)(JSON_OBJECT *root_obj);
-    VECTOR *enforced_targets;
     VECTOR *hidden_targets;
 } CONFIG_IO_ARGS;
 

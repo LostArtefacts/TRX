@@ -61,6 +61,7 @@
             "command_unavailable": "Cette commande n'est pas disponible pour l'instant",
             "command_valid_values": "Valeurs acceptées : %s",
             "complete_level": "Niveau terminé !",
+            "config_option_enforced": "\\{review}%s est appliqué et ne peut pas être modifié",
             "config_option_get": "%s est actuellement réglé sur %s",
             "config_option_set": "%s réglé sur %s",
             "config_option_unknown_option": "Option inconnue : %s",
@@ -395,7 +396,7 @@
                 "help": "\\{review}Enregistre une capture d'écran sur le disque, avec un chemin optionnel.",
             },
             "set": {
-                "help": "Affiche ou met à jour le paramètre de configuration donné.",
+                "help": "\\{review}Affiche ou met à jour le paramètre de configuration donné. Utilisez --force pour modifier les paramètres appliqués au niveau pour la session en cours.",
             },
             "sfx": {
                 "help": "Joue un effet sonore avec l'identifiant donné.",

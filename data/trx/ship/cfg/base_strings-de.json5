@@ -61,6 +61,7 @@
             "command_unavailable": "Dieses Kommando ist momentan nicht ausführbar",
             "command_valid_values": "Zulässige Werte: %s",
             "complete_level": "Level abgeschlossen!",
+            "config_option_enforced": "\\{review}%s ist verbindlich und kann nicht geändert werden",
             "config_option_get": "%s ist momentan eingestellt auf %s",
             "config_option_set": "%s geändert zu %s",
             "config_option_unknown_option": "Unbekannte Option: %s",
@@ -395,7 +396,7 @@
                 "help": "\\{review}Speichert einen Screenshot auf der Festplatte, mit optionalem Pfad.",
             },
             "set": {
-                "help": "Aktualisiert oder zeigt die angegebene Konfigurations-Einstellung an.",
+                "help": "\\{review}Zeigt die angegebene Konfigurationseinstellung an oder aktualisiert sie. Verwenden Sie --force, um für die aktuelle Sitzung verbindliche Einstellungen zu ändern.",
             },
             "sfx": {
                 "help": "Spielt einen Sound-Effekt mit der angegebenen ID ab.",

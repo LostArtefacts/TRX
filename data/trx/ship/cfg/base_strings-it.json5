@@ -61,6 +61,7 @@
             "command_unavailable": "Questo comando non è attualmente disponibile",
             "command_valid_values": "Valori validi: %s",
             "complete_level": "Livello completato!",
+            "config_option_enforced": "\\{review}%s è applicato e non può essere modificato",
             "config_option_get": "%s è attualmente impostato su %s",
             "config_option_set": "%s è stato modificato in %s",
             "config_option_unknown_option": "Opzione sconosciuta: %s",
@@ -395,7 +396,7 @@
                 "help": "Salva un'istantanea dello schermo su disco in un percorso facoltativo.",
             },
             "set": {
-                "help": "Visualizza o aggiorna l'impostazione di configurazione specificata.",
+                "help": "\\{review}Visualizza o aggiorna l'impostazione di configurazione fornita. Usa --force per modificare le impostazioni applicate a livello di livello per la sessione corrente.",
             },
             "sfx": {
                 "help": "Riproduce un effetto sonoro con l'ID specificato.",

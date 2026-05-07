@@ -61,6 +61,7 @@
             "command_unavailable": "Ta komenda nie jest obecnie dostępna",
             "command_valid_values": "Dopuszczalne wartości: %s",
             "complete_level": "Poziom ukończony!",
+            "config_option_enforced": "\\{review}%s jest wymuszony i nie może zostać zmieniony",
             "config_option_get": "%s jest obecnie ustawione na %s",
             "config_option_set": "Zmieniono %s na %s",
             "config_option_unknown_option": "Nieznana opcja: %s",
@@ -395,7 +396,7 @@
                 "help": "Zapisuje zrzut ekranu na dysku w opcjonalnej lokalizacji.",
             },
             "set": {
-                "help": "Wyświetla lub aktualizuje dane ustawienie.",
+                "help": "\\{review}Wyświetla lub aktualizuje podaną konfigurację. Użyj --force, aby zmienić ustawienia wymuszane na poziomie sesji dla bieżącej sesji.",
             },
             "sfx": {
                 "help": "Odtwarza efekt dźwiękowy o podanym numerze.",

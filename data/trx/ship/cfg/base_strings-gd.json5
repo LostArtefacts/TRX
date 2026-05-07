@@ -61,6 +61,7 @@
             "command_unavailable": "Chan eil an àithne seo ri làimh an-dràsta",
             "command_valid_values": "Luachan dligheach: %s",
             "complete_level": "Ìre deiseil!",
+            "config_option_enforced": "\\{review}Tha %s air a chur an gnìomh agus chan urrainnear atharrachadh",
             "config_option_get": "Tha %s air a rèiteachadh gu %s",
             "config_option_set": "%s air atharrachadh gu %s",
             "config_option_unknown_option": "Roghainn neo-aithnichte: %s",
@@ -395,7 +396,7 @@
                 "help": "Sàbhail glacadh-sgrìn gu diosc, le slighe fhaidhle roghainneil.",
             },
             "set": {
-                "help": "Seall neo ùraich roghainn rèiteachaidh ainmichte.",
+                "help": "\\{review}A’ taisbeanadh no a’ ùrachadh an rèiteachaidh a chaidh a thoirt seachad. Cleachd --force gus atharrachadh a dhèanamh air na rèiteachaidhean a tha air an cur an gnìomh aig ìre airson an t-seisean làithreach.",
             },
             "sfx": {
                 "help": "Cluich buaidh-fuaime leis an ID ainmichte.",

@@ -61,6 +61,7 @@
             "command_unavailable": "This command is not currently available",
             "command_valid_values": "Valid values: %s",
             "complete_level": "Level complete!",
+            "config_option_enforced": "%s is enforced and cannot be changed",
             "config_option_get": "%s is currently set to %s",
             "config_option_set": "%s changed to %s",
             "config_option_unknown_option": "Unknown option: %s",
@@ -395,7 +396,7 @@
                 "help": "Saves a screenshot to disk at optional location.",
             },
             "set": {
-                "help": "Displays or updates the given configuration setting.",
+                "help": "Displays or updates the given configuration setting. Use --force to change level-enforced settings for the current session.",
             },
             "sfx": {
                 "help": "Plays a sound effect with the given id.",
