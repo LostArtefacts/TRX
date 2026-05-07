@@ -288,11 +288,11 @@ static void M_Collision(
         - item->rot.y;
 
     if (angle > -0x1FFE && angle < 0x5FFA) {
-        Item_SwitchToObjAnim(lara_item, 23, 0, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(23, 0); // TODO: define anim enum
         lara_item->current_anim_state = M_STATE_GET_ON_L;
         lara_item->goal_anim_state = M_STATE_GET_ON_L;
     } else {
-        Item_SwitchToObjAnim(lara_item, 9, 0, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(9, 0);
         lara_item->current_anim_state = M_STATE_GET_ON_R;
         lara_item->goal_anim_state = M_STATE_GET_ON_R;
     }
@@ -982,12 +982,8 @@ static void M_AnimateQuadBike(
 
     if (item->pos.y != item->floor && state != M_STATE_FALL
         && state != M_STATE_LAND && state != M_STATE_FALL_OFF && !killed) {
-        if (quad->velocity < 0) {
-            Item_SwitchToObjAnim(lara_item, 6, 0, O_LARA_VEHICLE_ANIM);
-        } else {
-            Item_SwitchToObjAnim(lara_item, 25, 0, O_LARA_VEHICLE_ANIM);
-        }
-
+        const int16_t anim_idx = quad->velocity < 0 ? 6 : 25;
+        Lara_Vehicle_SwitchToAnim(anim_idx, 0);
         lara_item->current_anim_state = M_STATE_FALL;
         lara_item->goal_anim_state = M_STATE_FALL;
     } else if (
@@ -996,25 +992,25 @@ static void M_AnimateQuadBike(
         && state != M_STATE_FALL_OFF && quad->velocity > 0x3555 && !killed) {
         switch (hit_wall) {
         case 13:
-            Item_SwitchToObjAnim(lara_item, 12, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(12, 0);
             lara_item->current_anim_state = M_STATE_HIT_FRONT;
             lara_item->goal_anim_state = M_STATE_HIT_FRONT;
             break;
 
         case 14:
-            Item_SwitchToObjAnim(lara_item, 11, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(11, 0);
             lara_item->current_anim_state = M_STATE_HIT_BACK;
             lara_item->goal_anim_state = M_STATE_HIT_BACK;
             break;
 
         case 11:
-            Item_SwitchToObjAnim(lara_item, 14, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(14, 0);
             lara_item->current_anim_state = M_STATE_HIT_LEFT;
             lara_item->goal_anim_state = M_STATE_HIT_LEFT;
             break;
 
         default:
-            Item_SwitchToObjAnim(lara_item, 13, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(13, 0);
             lara_item->current_anim_state = M_STATE_HIT_RIGHT;
             lara_item->goal_anim_state = M_STATE_HIT_RIGHT;
             break;
@@ -1051,7 +1047,7 @@ static void M_AnimateQuadBike(
             if (!(quad->velocity & 0xFFFFFF00)) {
                 lara_item->goal_anim_state = M_STATE_STOP;
             } else if (g_Input.right) {
-                Item_SwitchToObjAnim(lara_item, 20, 0, O_LARA_VEHICLE_ANIM);
+                Lara_Vehicle_SwitchToAnim(20, 0);
                 lara_item->current_anim_state = M_STATE_TURN_R;
                 lara_item->goal_anim_state = M_STATE_TURN_R;
             } else if (!g_Input.left) {
@@ -1108,7 +1104,7 @@ static void M_AnimateQuadBike(
             if (!(quad->velocity & 0xFFFFFF00)) {
                 lara_item->goal_anim_state = M_STATE_STOP;
             } else if (g_Input.left) {
-                Item_SwitchToObjAnim(lara_item, 3, 0, O_LARA_VEHICLE_ANIM);
+                Lara_Vehicle_SwitchToAnim(3, 0);
                 lara_item->current_anim_state = M_STATE_TURN_L;
                 lara_item->goal_anim_state = M_STATE_TURN_L;
             } else if (!g_Input.right) {

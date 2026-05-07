@@ -234,7 +234,7 @@ void Skidoo_Collision(
 
     const LARA_ANIM_SKIDOO anim_idx =
         get_on == SKIDOO_GET_ON_LEFT ? LA_SKIDOO_GET_ON_L : LA_SKIDOO_GET_ON_R;
-    Item_SwitchToObjAnim(lara_item, anim_idx, 0, O_LARA_SKIDOO);
+    Lara_Vehicle_SwitchToAnim(anim_idx, 0);
     lara_item->current_anim_state = LARA_STATE_SKIDOO_GET_ON;
     lara->gun_status = LGS_ARMLESS;
     lara->hit_direction = DIR_UNKNOWN;
@@ -581,7 +581,7 @@ void Skidoo_Animation(
 
     if (skidoo->pos.y != skidoo->floor && skidoo->fall_speed > 0
         && lara_item->current_anim_state != LARA_STATE_SKIDOO_FALL && !dead) {
-        Item_SwitchToObjAnim(lara_item, LA_SKIDOO_FALL, 0, O_LARA_SKIDOO);
+        Lara_Vehicle_SwitchToAnim(LA_SKIDOO_FALL, 0);
         lara_item->goal_anim_state = LARA_STATE_SKIDOO_FALL;
         lara_item->current_anim_state = LARA_STATE_SKIDOO_FALL;
         return;
@@ -595,7 +595,7 @@ void Skidoo_Animation(
             } else {
                 Sound_Effect(SFX_CLATTER_1, &skidoo->pos, SPM_NORMAL);
             }
-            Item_SwitchToObjAnim(lara_item, collide, 0, O_LARA_SKIDOO);
+            Lara_Vehicle_SwitchToAnim(collide, 0);
             lara_item->goal_anim_state = LARA_STATE_SKIDOO_HIT;
             lara_item->current_anim_state = LARA_STATE_SKIDOO_HIT;
         }

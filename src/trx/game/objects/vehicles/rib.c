@@ -235,7 +235,7 @@ static void M_Collision(
         break;
     }
 
-    Item_SwitchToObjAnim(lara_item, boat_anim_idx, 0, O_LARA_VEHICLE_ANIM);
+    Lara_Vehicle_SwitchToAnim(boat_anim_idx, 0);
     lara_item->current_anim_state = M_STATE_MOUNT;
     lara_item->goal_anim_state = M_STATE_MOUNT;
 
@@ -353,8 +353,7 @@ static void M_Animate(const ITEM *const item, const M_ANIM collide_anim)
 
     if (lara_item->hit_points <= 0) {
         if (lara_item->current_anim_state != M_STATE_DEATH) {
-            Item_SwitchToObjAnim(
-                lara_item, M_ANIM_DEATH, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_DEATH, 0);
             lara_item->current_anim_state = M_STATE_DEATH;
             lara_item->goal_anim_state = M_STATE_DEATH;
         }
@@ -363,8 +362,7 @@ static void M_Animate(const ITEM *const item, const M_ANIM collide_anim)
 
     if (item->pos.y < p->water - STEP_L / 2 && item->fall_speed > 0) {
         if (lara_item->current_anim_state != M_STATE_FALL) {
-            Item_SwitchToObjAnim(
-                lara_item, M_ANIM_FALL, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_FALL, 0);
             lara_item->current_anim_state = M_STATE_FALL;
             lara_item->goal_anim_state = M_STATE_FALL;
         }
@@ -373,8 +371,7 @@ static void M_Animate(const ITEM *const item, const M_ANIM collide_anim)
 
     if (collide_anim != 0) {
         if (lara_item->current_anim_state != M_STATE_HIT) {
-            Item_SwitchToObjAnim(
-                lara_item, collide_anim, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(collide_anim, 0);
             lara_item->current_anim_state = M_STATE_HIT;
             lara_item->goal_anim_state = M_STATE_HIT;
         }

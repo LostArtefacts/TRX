@@ -522,7 +522,7 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
         if (lara_item->current_anim_state == BOAT_STATE_DEATH) {
             return;
         }
-        Item_SwitchToObjAnim(lara_item, BOAT_DEATH_ANIM, 0, O_LARA_BOAT);
+        Lara_Vehicle_SwitchToAnim(BOAT_DEATH_ANIM, 0);
         lara_item->goal_anim_state = BOAT_STATE_DEATH;
         lara_item->current_anim_state = BOAT_STATE_DEATH;
         return;
@@ -532,7 +532,7 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
         if (lara_item->current_anim_state == BOAT_STATE_FALL) {
             return;
         }
-        Item_SwitchToObjAnim(lara_item, BOAT_FALL_ANIM, 0, O_LARA_BOAT);
+        Lara_Vehicle_SwitchToAnim(BOAT_FALL_ANIM, 0);
         lara_item->goal_anim_state = BOAT_STATE_FALL;
         lara_item->current_anim_state = BOAT_STATE_FALL;
         return;
@@ -542,7 +542,7 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
         if (lara_item->current_anim_state == BOAT_STATE_HIT) {
             return;
         }
-        Item_SwitchToObjAnim(lara_item, collide, 0, O_LARA_BOAT);
+        Lara_Vehicle_SwitchToAnim(collide, 0);
         lara_item->goal_anim_state = BOAT_STATE_HIT;
         lara_item->current_anim_state = BOAT_STATE_HIT;
         return;
@@ -626,7 +626,7 @@ static void M_Collision(
         break;
     }
 
-    Item_SwitchToObjAnim(lara_item, boat_anim_idx, 0, O_LARA_BOAT);
+    Lara_Vehicle_SwitchToAnim(boat_anim_idx, 0);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->water_status = LWS_ABOVE_WATER;

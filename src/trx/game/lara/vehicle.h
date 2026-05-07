@@ -8,4 +8,9 @@ void Lara_Vehicle_SetIndex(int16_t item_num);
 int16_t Lara_Vehicle_GetIndex(void);
 ITEM *Lara_Vehicle_GetItem(void);
 
+OBJECT_ID Lara_Vehicle_GetAnimationObject(void);
+void Lara_Vehicle_SwitchToAnim(int16_t anim_idx, int16_t frame_idx);
+int16_t Lara_Vehicle_GetRelativeAnim(void);
+bool Lara_Vehicle_TestAnimEqual(int16_t anim_idx);
+
 void Lara_Vehicle_Dismount(void);

@@ -4,7 +4,28 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/common.h>
 
+static const GAME_OBJECT_PAIR m_AnimMap[] = {
+    { O_BOAT, O_LARA_BOAT },
+    { O_SKIDOO_FAST, O_LARA_SKIDOO },
+    { NO_OBJECT, NO_OBJECT },
+};
+
 static int16_t m_VehicleItemNum = NO_ITEM;
+static OBJECT_ID m_AnimationObject = NO_OBJECT;
+
+static void M_UpdateAnimationObject(void)
+{
+    if (!Lara_Vehicle_IsMounted()) {
+        m_AnimationObject = NO_OBJECT;
+        return;
+    }
+
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
+    const OBJECT_ID obj_id = Object_GetCognate(vehicle->object_id, m_AnimMap);
+    m_AnimationObject = obj_id != NO_OBJECT && Object_Get(obj_id)->loaded
+        ? obj_id
+        : O_LARA_VEHICLE_ANIM;
+}
 
 bool Lara_Vehicle_IsMounted(void)
 {
@@ -24,6 +45,7 @@ bool Lara_Vehicle_IsOnType(const OBJECT_ID obj_id)
 void Lara_Vehicle_SetIndex(const int16_t item_num)
 {
     m_VehicleItemNum = item_num;
+    M_UpdateAnimationObject();
 }
 
 int16_t Lara_Vehicle_GetIndex(void)
@@ -34,6 +56,29 @@ int16_t Lara_Vehicle_GetIndex(void)
 ITEM *Lara_Vehicle_GetItem(void)
 {
     return m_VehicleItemNum == NO_ITEM ? nullptr : Item_Get(m_VehicleItemNum);
+}
+
+OBJECT_ID Lara_Vehicle_GetAnimationObject(void)
+{
+    return m_AnimationObject;
+}
+
+void Lara_Vehicle_SwitchToAnim(const int16_t anim_idx, const int16_t frame_idx)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    Item_SwitchToObjAnim(lara_item, anim_idx, frame_idx, m_AnimationObject);
+}
+
+int16_t Lara_Vehicle_GetRelativeAnim(void)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    return Item_GetRelativeObjAnim(lara_item, m_AnimationObject);
+}
+
+bool Lara_Vehicle_TestAnimEqual(const int16_t anim_idx)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    return Item_TestObjAnimEqual(lara_item, anim_idx, m_AnimationObject);
 }
 
 void Lara_Vehicle_Dismount(void)
