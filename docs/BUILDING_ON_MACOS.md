@@ -23,7 +23,7 @@ sudo port install sdl2 ffmpeg uthash pkgconfig glew meson python@3.14
 1. Download the shipped assets for the combined build:
 
     ```bash
-    ./tools/download_assets --combined-only
+    ./tools/download_assets
     ```
 
 2. Configure the build:

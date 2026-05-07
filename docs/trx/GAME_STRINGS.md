@@ -346,18 +346,18 @@ The document is organized as follows:
 
 To provide localized translations, place language-specific overrides alongside
 each base file using the naming pattern `<basename>-<lang>.json5`. Translation
-files must live in the same directory as their base (e.g. `cfg/`). For example,
-to add French translations:
+files must live in the same directory as their base (e.g. `cfg/`, or
+`games/<game-id>/`). For example, to add French translations:
 
 ```text
-cfg/base_strings-fr.json5          # common strings
-cfg/tr1/strings-fr.json5           # base game strings
-cfg/tr1-demo-pc/strings-fr.json5   # TR1 demo overrides
-cfg/tr1-level/strings-fr.json5     # custom-level pack overrides
-cfg/tr1-ub/strings-fr.json5        # Unfinished Business overrides
-cfg/tr2/strings-fr.json5           # base game strings
-cfg/tr2-gm/strings-fr.json5        # Golden Mask TR2 overrides
-cfg/tr2-level/strings-fr.json5     # custom-level pack overrides
+cfg/base_strings-fr.json5            # common strings
+games/tr1/strings-fr.json5           # TR1 base game strings
+games/tr1-demo-pc/strings-fr.json5   # TR1 demo overrides
+games/tr1-level/strings-fr.json5     # TR1 custom-level pack overrides
+games/tr1-ub/strings-fr.json5        # TR1: Unfinished Business overrides
+games/tr2/strings-fr.json5           # TR2 base game strings
+games/tr2-level/strings-fr.json5     # TR2 custom-level pack overrides
+games/tr2-gm/strings-fr.json5        # TR2: Golden Mask overrides
 ```
 
 When the game starts, TRX will detect these files and load them in place of the

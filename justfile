@@ -54,10 +54,6 @@ image-win-installer force="1": (_docker_build "tools/shared/docker/installer/Doc
 push-image-linux: (image-linux "0") (_docker_push "rrdash/trx-linux")
 push-image-win: (image-win "0") (_docker_push "rrdash/trx-win")
 
-import "justfile.tr1"
-import "justfile.tr2"
-import "justfile.tr3"
-
 download-assets tr_version='all':
     tools/download_assets {{tr_version}}
 
@@ -96,10 +92,10 @@ trx-build-win-installer target='release' *args: \
     (trx-build-win target) \
     (_docker_run "rrdash/trx-win" "package" "-o" "tools/installer/TRX_Installer/Resources/release.zip") \
     (image-win-installer "0") \
-    (_docker_run "rrdash/trx-installer" "trx")
+    (_docker_run "rrdash/trx-installer")
 
-trx-package-linux target='debug' *args: (trx-build-linux target) (_docker_run "rrdash/trx-linux" "package-all" args)
-trx-package-win target='debug' *args: (trx-build-win target) (_docker_run "rrdash/trx-win" "package-all" args)
+trx-package-linux target='debug' *args: (trx-build-linux target) (_docker_run "rrdash/trx-linux" "package" args)
+trx-package-win target='debug' *args: (trx-build-win target) (_docker_run "rrdash/trx-win" "package" args)
 trx-package-win-installer target='release' *args: \
     (trx-build-win-installer target args) \
     (_docker_run "rrdash/trx-win" "package" "--platform" "win-installer" args)

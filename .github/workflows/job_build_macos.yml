@@ -102,7 +102,7 @@ jobs:
 
       - name: Download large assets
         #if: ${{ inputs.target == 'release' }}
-        run: tools/download_assets --combined-only
+        run: tools/download_assets
 
       - name: Build arm64 and create app bundle
         env:

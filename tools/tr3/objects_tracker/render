@@ -301,7 +301,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    catalog = load_catalog(REPO_DIR / "data/tr3/ship/cfg/catalog_objects.csv")
+    catalog = load_catalog(REPO_DIR / "data/trx/ship/games/tr3/catalog_objects.csv")
     support_status = load_support_status(args.support)
     levels, object_ids, data = parse_objects_dump(args.dump)
     if args.todo:

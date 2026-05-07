@@ -71,33 +71,28 @@ Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1**, **
 </table>
 
 ## Download
-Download the latest TRX release for TR1-TR3:
+
+Download the latest TRX release:
 
 <a href="https://github.com/LostArtefacts/TRX/releases?q=prerelease%3Afalse&expanded=true">
     <img src="data/download_trx.svg"/>
 </a>
 
 ### Installation instructions
-* [Tomb Raider 1](docs/tr1/INSTALLING.md).
-* [Tomb Raider 2](docs/tr2/INSTALLING.md).
-* [Tomb Raider 3](docs/tr3/INSTALLING.md).
-* [Combined directory tree](docs/trx/INSTALLING.md).
+
+Please refer to [this document](docs/trx/INSTALLING.md).
+
 
 ### Changelog
 
-For the changelog for all of the games (TRX uses a unified engine capable of
-running all 3 games), please refer to [this document](docs/CHANGELOG.md).
+Please refer to [this document](docs/CHANGELOG.md).
 
 
 ## Q&A
 
 1. **Are all three games fully playable from beginning to end?**
 
-    TR1 and TR2 – yes, by all means! If you encounter a bug, please file a
-    ticket.
-
-    TR3 is still in the works, though, and the team is hard at work to make
-    this happen!
+    Yes! If you encounter a bug, please file a ticket.
 
 2. **Can we get HD textures? What about other visual updates?**
 
@@ -120,12 +115,6 @@ running all 3 games), please refer to [this document](docs/CHANGELOG.md).
     Multi-key combo shortcuts (up to 3 keys) and two binding slots per
     action are also supported.
 
-6. **What about TR3 support?**
-
-    TR3 work is well underway! Thanks to *TOMB3* serving as the backbone
-    for many of its core systems, tons of native systems are already in
-    place – new triangle geometry logic, new rendering effects, and
-    more. Still early, but we're moving _fast_.
 
 ## Website
 The Lost Artefacts team is a small, passionate community of developers and

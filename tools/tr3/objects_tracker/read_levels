@@ -428,8 +428,8 @@ def main() -> None:
     )
     args: Args = parse_args()
 
-    gf_path = REPO_ROOT / "data/tr3/ship/cfg/tr3/gameflow.json5"
-    strings_path = REPO_ROOT / "data/tr3/ship/cfg/tr3/strings.json5"
+    gf_path = REPO_ROOT / "data/trx/ship/games/tr3/gameflow.json5"
+    strings_path = REPO_ROOT / "data/trx/ship/games/tr3/strings.json5"
     data = pyjson5.loads(gf_path.read_text())
     strings = pyjson5.loads(strings_path.read_text())
 
