@@ -963,10 +963,7 @@ static void M_Control(const int16_t item_num)
         Item_Animate(lara_item);
 
         if (lara_item->hit_points > 0) {
-            const int16_t anim_idx =
-                Item_GetRelativeObjAnim(lara_item, O_LARA_VEHICLE_ANIM);
-            const int16_t frame_idx = Item_GetRelativeFrame(lara_item);
-            Item_SwitchToAnim(item, anim_idx, frame_idx);
+            Lara_Vehicle_SyncItemAnim();
         }
 
         g_Camera.target_elevation = M_CAM_ELEVATION;

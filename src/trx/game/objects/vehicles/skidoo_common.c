@@ -910,11 +910,7 @@ bool Skidoo_Control(void)
     if (dead) {
         Item_SwitchToObjAnim(skidoo, LA_SKIDOO_DEAD, 0, O_SKIDOO_FAST);
     } else {
-        const int16_t lara_anim_num =
-            Item_GetRelativeObjAnim(lara_item, O_LARA_SKIDOO);
-        const int16_t lara_frame_num = Item_GetRelativeFrame(lara_item);
-        Item_SwitchToObjAnim(
-            skidoo, lara_anim_num, lara_frame_num, O_SKIDOO_FAST);
+        Lara_Vehicle_SyncItemAnim();
     }
 
     if (skidoo->speed != 0 && skidoo->floor == skidoo->pos.y) {

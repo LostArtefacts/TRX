@@ -81,6 +81,20 @@ bool Lara_Vehicle_TestAnimEqual(const int16_t anim_idx)
     return Item_TestObjAnimEqual(lara_item, anim_idx, m_AnimationObject);
 }
 
+void Lara_Vehicle_SyncItemAnim(void)
+{
+    if (!Lara_Vehicle_IsMounted()) {
+        return;
+    }
+
+    const ITEM *const lara_item = Lara_GetItem();
+    const int16_t anim_idx = Lara_Vehicle_GetRelativeAnim();
+    const int16_t frame_idx = Item_GetRelativeFrame(lara_item);
+
+    ITEM *const vehicle_item = Lara_Vehicle_GetItem();
+    Item_SwitchToAnim(vehicle_item, anim_idx, frame_idx);
+}
+
 void Lara_Vehicle_Dismount(void)
 {
     if (!Lara_Vehicle_IsMounted()) {

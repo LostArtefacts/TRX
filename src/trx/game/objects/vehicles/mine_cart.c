@@ -583,10 +583,7 @@ static void M_UserControl(ITEM *const item)
 
     if (Lara_Vehicle_IsMounted() && !p->flags.suppress_anim) {
         Item_Animate(lara_item);
-        const int16_t lara_anim_num =
-            Item_GetRelativeObjAnim(lara_item, O_LARA_VEHICLE_ANIM);
-        const int16_t lara_frame_num = Item_GetRelativeFrame(lara_item);
-        Item_SwitchToAnim(item, lara_anim_num, lara_frame_num);
+        Lara_Vehicle_SyncItemAnim();
     }
 
     if (lara_item->current_anim_state == M_STATE_DEATH

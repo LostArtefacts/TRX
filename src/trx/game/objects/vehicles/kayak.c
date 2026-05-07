@@ -1204,10 +1204,7 @@ bool Kayak_Control(void)
         lara_item->rot.y = item->rot.y;
         lara_item->rot.z = item->rot.z >> 1;
         Item_Animate(lara_item);
-        item->anim_num = lara_item->anim_num + Object_Get(O_KAYAK)->anim_idx
-            - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx;
-        item->frame_num = lara_item->frame_num + Item_GetAnim(item)->frame_base
-            - Item_GetAnim(lara_item)->frame_base;
+        Lara_Vehicle_SyncItemAnim();
         Item_UpdateRoom(Lara_Vehicle_GetIndex(), room_num);
         Item_UpdateRoom(lara_info->item_num, room_num);
         Room_TestTriggers(lara_item);

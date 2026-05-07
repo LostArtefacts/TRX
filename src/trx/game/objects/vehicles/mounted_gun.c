@@ -301,11 +301,7 @@ bool MountedGun_Control(void)
     case M_STATE_MOUNT:
     case M_STATE_DISMOUNT:
         Item_Animate(lara_item);
-        const ANIM *const anim = Item_GetAnim(lara_item);
-        const int16_t anim_num =
-            lara_item->anim_num - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx;
-        const int16_t frame_num = lara_item->frame_num - anim->frame_base;
-        Item_SwitchToAnim(gun_item, anim_num, frame_num);
+        Lara_Vehicle_SyncItemAnim();
 
         if (p->state == M_GUN_STATE_WAIT_END
             && Item_TestFrameEqual(gun_item, -1)) {
