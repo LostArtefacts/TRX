@@ -24,7 +24,7 @@ class ProjectPaths(BasePaths):
         self.folder_name = folder_name
 
         self.data_dir = DATA_DIR / folder_name
-        self.shipped_data_dir = self.data_dir / "ship"
+        self.shipped_data_dir = DATA_DIR / "trx" / "ship" / "games" / folder_name
         self.tools_dir = TOOLS_DIR / folder_name
         self.docs_dir = DOCS_DIR / folder_name
         self.changelog_path = self.docs_dir / "CHANGELOG.md"
@@ -36,7 +36,7 @@ TR3Paths = ProjectPaths(folder_name="tr3")
 
 CommonPaths = BasePaths()
 CommonPaths.data_dir = DATA_DIR / "common"
-CommonPaths.shipped_data_dir = CommonPaths.data_dir / "ship"
+CommonPaths.shipped_data_dir = DATA_DIR / "trx" / "ship"
 CommonPaths.src_dir = SHARED_SRC_DIR
 CommonPaths.changelog_path = DOCS_DIR / "CHANGELOG.md"
 CommonPaths.docs_dir = DOCS_DIR

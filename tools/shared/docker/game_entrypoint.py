@@ -35,57 +35,35 @@ class BaseOptions:
 
 @dataclass
 class PackageOptions(BaseOptions):
-    tr_version: int | None
     platform: str
 
     @property
-    def default_stem(self) -> Path:
+    def default_stem(self) -> str:
         return generate_package_name(
             engine_version=self.version,
             platform=self.platform,
-            game_version=self.tr_version,
         )
 
     @property
     def ship_dirs(self) -> list[Path]:
         if self.platform == "win-installer":
             return []
-        elif self.tr_version is None:
-            return [Path(f"/app/data/trx/ship/")]
-        else:
-            return [
-                Path(f"/app/data/common/ship/"),
-                Path(f"/app/data/tr{self.tr_version}/ship/"),
-            ]
+        return [Path("/app/data/trx/ship/")]
 
     @property
     def release_zip_files(self) -> list[tuple[Path, str]]:
         if self.platform == "linux":
-            return [(self.build_root / f"TRX", f"TRX")]
+            return [(self.build_root / "TRX", "TRX")]
 
         elif self.platform == "win":
-            return [(self.build_root / f"TRX.exe", f"TRX.exe")]
+            return [(self.build_root / "TRX.exe", "TRX.exe")]
         elif self.platform == "win-installer":
-            if self.tr_version is None:
-                return [
-                    (
-                        TOOLS_DIR / "installer/out/TRX_Installer.exe",
-                        generate_package_name(
-                            engine_version=self.version,
-                            platform=self.platform,
-                            game_version=self.tr_version,
-                        )
-                        + ".exe",
-                    )
-                ]
             return [
                 (
-                    TOOLS_DIR
-                    / f"installer/out/TR{self.tr_version}X_Installer.exe",
+                    TOOLS_DIR / "installer/out/TRX_Installer.exe",
                     generate_package_name(
                         engine_version=self.version,
                         platform=self.platform,
-                        game_version=self.tr_version,
                     )
                     + ".exe",
                 )
@@ -188,33 +166,12 @@ class PackageCommand(BaseCommand):
 
     def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument("--platform")
-        parser.add_argument("--tr-version", type=int)
         parser.add_argument("-o", "--output", type=Path)
         parser.add_argument("--no-zip", action="store_true")
 
     def run(self, args: argparse.Namespace) -> None:
         options = PackageOptions.from_args(args)
         run_package(options=options, output=args.output, no_zip=args.no_zip)
-
-
-class PackageAllCommand(BaseCommand):
-    name = "package-all"
-
-    def decorate_parser(self, parser: argparse.ArgumentParser) -> None:
-        parser.add_argument("--platform")
-        parser.add_argument("-o", "--output-root", type=Path)
-        parser.add_argument("--no-zip", action="store_true")
-
-    def run(self, args: argparse.Namespace) -> None:
-        for tr_version in [1, 2, 3, None]:
-            options = PackageOptions(platform=args.platform, tr_version=tr_version)
-            output = None
-            if args.output_root:
-                if tr_version is not None:
-                    output = args.output_root / f"tr{tr_version}"
-                else:
-                    output = args.output_root / "trx"
-            run_package(options=options, output=output, no_zip=args.no_zip)
 
 
 def run_package(
@@ -230,7 +187,6 @@ def run_package(
             zip_path /= options.default_stem
         else:
             zip_path /= options.default_stem + ".zip"
-
 
     source_files: list[tuple[Path, str] | Path] = []
 

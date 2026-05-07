@@ -23,7 +23,7 @@
 
 ## Installing (manual)
 
-1. Download the combined TRX zip file (without the `tr1-3` suffix).
+1. Download the combined TRX zip file.
 2. Extract the zip file into a directory of your choice.
    Make sure you choose to overwrite existing directories and files.
 3. Copy your original game files into the new combined hierarchy. Please refer

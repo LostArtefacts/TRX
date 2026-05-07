@@ -8,14 +8,14 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 from zipfile import ZipFile
 
-from shared.paths import DATA_DIR, PROJECT_PATHS
+from shared.paths import DATA_DIR
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Downloads large binary assets for both the legacy per-game "
-            "ship layouts and the combined data/trx/ship hierarchy."
+            "Downloads large binary assets for the combined data/trx/ship "
+            "hierarchy."
         )
     )
     parser.add_argument(
@@ -23,16 +23,6 @@ def parse_args() -> argparse.Namespace:
         choices=["1", "2", "3", "all"],
         default="all",
         nargs="?",
-    )
-    parser.add_argument(
-        "--combined",
-        action="store_true",
-        help="Also download assets for the combined data/trx/ship hierarchy.",
-    )
-    parser.add_argument(
-        "--combined-only",
-        action="store_true",
-        help="Download only assets for the combined data/trx/ship hierarchy.",
     )
     return parser.parse_args()
 
@@ -70,21 +60,7 @@ def download_assets(asset_urls: list[str], target_dir: Path) -> None:
 
 def main() -> None:
     args = parse_args()
-    legacy_asset_urls_map: dict[int, list[str]] = {
-        1: [
-            "https://lostartefacts.dev/aux/tr1x/main.zip",
-            "https://lostartefacts.dev/aux/tr1x/trub.zip",
-        ],
-        2: [
-            "https://lostartefacts.dev/aux/tr2x/main.zip",
-            "https://lostartefacts.dev/aux/tr2x/trgm.zip",
-        ],
-        3: [
-            "https://lostartefacts.dev/aux/tr3x/main.zip",
-            "https://lostartefacts.dev/aux/tr3x/trla.zip",
-        ],
-    }
-    combined_asset_urls_map: dict[int, list[str]] = {
+    asset_urls_map: dict[int, list[str]] = {
         1: [
             "https://lostartefacts.dev/aux/trx/tr1.zip",
             "https://lostartefacts.dev/aux/trx/tr1-ub.zip",
@@ -96,7 +72,7 @@ def main() -> None:
         ],
         3: [
             "https://lostartefacts.dev/aux/trx/tr3.zip",
-            "https://lostartefacts.dev/aux/trx/tr3-la.zip"
+            "https://lostartefacts.dev/aux/trx/tr3-la.zip",
         ],
     }
 
@@ -104,16 +80,10 @@ def main() -> None:
         args.game_version
     ]
     for version in versions:
-        if not args.combined_only:
-            download_assets(
-                legacy_asset_urls_map[version],
-                target_dir=PROJECT_PATHS[version].shipped_data_dir,
-            )
-        if args.combined or args.combined_only:
-            download_assets(
-                combined_asset_urls_map[version],
-                target_dir=DATA_DIR / "trx" / "ship",
-            )
+        download_assets(
+            asset_urls_map[version],
+            target_dir=DATA_DIR / "trx" / "ship",
+        )
 
 
 if __name__ == "__main__":

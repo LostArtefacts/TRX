@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from shared.paths import PROJECT_PATHS, CommonPaths
+from shared.paths import DATA_DIR, CommonPaths
 
 # enable importing translation_utils from this directory
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -155,12 +155,13 @@ def lint_game_flow_schema(context: LintContext):
     schema = load_json5(schema_path)
     validator_cls = jsonschema.validators.validator_for(schema)
     validator = validator_cls(schema=schema)
-    for project, paths in PROJECT_PATHS.items():
-        game_flow_paths = paths.shipped_data_dir.rglob("**/gameflow.json5")
-        for game_flow_path in game_flow_paths:
-            data = load_json5(game_flow_path)
-            for error in validator.iter_errors(instance=data):
-                yield LintWarning(game_flow_path, error)
+    game_flow_paths = (DATA_DIR / "trx" / "ship" / "games").rglob(
+        "gameflow.json5"
+    )
+    for game_flow_path in game_flow_paths:
+        data = load_json5(game_flow_path)
+        for error in validator.iter_errors(instance=data):
+            yield LintWarning(game_flow_path, error)
 
 
 def _get_known_config_keys(config_map_paths: list[Path]) -> set[str]:

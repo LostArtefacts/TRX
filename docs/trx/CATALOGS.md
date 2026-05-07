@@ -22,8 +22,8 @@ maps numeric slots to these name keys, so when the engine references an entity,
 it can grab the correct sample or resource tied to that slot.
 
 Catalogs are just comma‑separated value (CSV) files you can edit with any text
-editor, including Notepad or Excel. They live in the `cfg/` folder and must be
-present for the game to function properly.
+editor, including Notepad or Excel. They live in the `games/<game-id>/` folder
+and must be present for the game to function properly.
 
 TRX catalogs only include data that's directly referenced by the game's code.
 Entries used *only* in animation commands or other editor‑controlled behaviors

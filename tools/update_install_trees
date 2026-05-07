@@ -6,7 +6,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from shared.paths import DATA_DIR, DOCS_DIR, PROJECT_PATHS, REPO_DIR
+from shared.paths import DATA_DIR, DOCS_DIR, REPO_DIR
 from shared.vfs import VirtualFilesystem
 
 DATA_REPO_ROOT_DIR = REPO_DIR.parent / "TRX-data"
@@ -332,41 +332,6 @@ OG_FILE_OVERRIDES: dict[str, dict[Path, Path]] = {
     },
 }
 
-LEGACY_DOC_CONFIGS = [
-    {
-        "doc": PROJECT_PATHS[1].docs_dir / "INSTALLING.md",
-        "config": "TR1X",
-        "ship_roots": [
-            DATA_DIR / "common/ship",
-            PROJECT_PATHS[1].data_dir / "ship",
-            DATA_REPO_ROOT_DIR / "tr1/ship",
-            DATA_REPO_ROOT_DIR / "tr1-ub/ship",
-        ],
-        "og_groups": ["tr1", "tr1-ub"],
-    },
-    {
-        "doc": PROJECT_PATHS[2].docs_dir / "INSTALLING.md",
-        "config": "TR2X",
-        "ship_roots": [
-            DATA_DIR / "common/ship",
-            PROJECT_PATHS[2].data_dir / "ship",
-            DATA_REPO_ROOT_DIR / "tr2/ship",
-            DATA_REPO_ROOT_DIR / "tr2-gm/ship",
-        ],
-        "og_groups": ["tr2", "tr2-gm"],
-    },
-    {
-        "doc": PROJECT_PATHS[3].docs_dir / "INSTALLING.md",
-        "config": "TR3X",
-        "ship_roots": [
-            DATA_DIR / "common/ship",
-            PROJECT_PATHS[3].data_dir / "ship",
-            DATA_REPO_ROOT_DIR / "tr3/ship",
-        ],
-        "og_groups": ["tr3", "tr3-la"],
-    },
-]
-
 TRX_IMAGE_ROOTS = {
     "tr1": DATA_REPO_ROOT_DIR / "tr1/ship/data/images",
     "tr1-ub": DATA_REPO_ROOT_DIR / "tr1-ub/ship/data/images",
@@ -416,43 +381,10 @@ def remap_og_paths(paths: Iterable[Path], game: str) -> Iterable[Path]:
             yield mapped
 
 
-def collect_many(root_dirs: Iterable[Path]) -> Iterable[Path]:
-    for root_dir in root_dirs:
-        yield from collect(root_dir)
-
-
-def iter_og_groups(group_names: Iterable[str]) -> Iterable[Path]:
-    for group_name in group_names:
-        yield from OG_FILE_GROUPS[group_name]
-
-
 def iter_trx_image_paths() -> Iterable[Path]:
     for game, root_dir in TRX_IMAGE_ROOTS.items():
         for path in collect(root_dir):
             yield Path("games") / game / "images" / path
-
-
-def build_legacy_win_paths(config: dict[str, Any]) -> Iterable[Path]:
-    yield Path("TRX.exe")
-    yield Path(f"cfg/{config['config']}.json5*")
-    yield from iter_og_groups(config["og_groups"])
-    yield from collect_many(config["ship_roots"])
-
-
-def build_legacy_mac_paths(config: dict[str, Any]) -> Iterable[Path]:
-    yield Path("Contents/_CodeSignature")
-    yield Path("Contents/Frameworks")
-    yield Path("Contents/Info.plist")
-    yield Path("Contents/MacOS")
-    yield from (
-        Path("Contents/Resources") / sub
-        for sub in collect_many(config["ship_roots"])
-    )
-    yield from (
-        Path("Contents/Resources") / sub
-        for sub in iter_og_groups(config["og_groups"])
-    )
-    yield Path("Contents/Resources/icon.icns")
 
 
 def build_trx_win_paths() -> Iterable[Path]:
@@ -481,17 +413,6 @@ def build_trx_mac_paths() -> Iterable[Path]:
 
 
 def build_doc_trees() -> Iterable[tuple[Path, str, list[Path]]]:
-    for config in LEGACY_DOC_CONFIGS:
-        yield (
-            config["doc"],
-            "win",
-            list(build_legacy_win_paths(config)),
-        )
-        yield (
-            config["doc"],
-            "mac",
-            list(build_legacy_mac_paths(config)),
-        )
     yield (DOCS_DIR / "trx/INSTALLING.md", "win", list(build_trx_win_paths()))
     yield (DOCS_DIR / "trx/INSTALLING.md", "mac", list(build_trx_mac_paths()))
 
