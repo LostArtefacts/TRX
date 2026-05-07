@@ -251,49 +251,50 @@ void ConfigFile_DumpOptions(JSON_OBJECT *root_obj, const CONFIG_OPTION *options)
 {
     const CONFIG_OPTION *opt = options;
     while (opt->target != nullptr) {
+        const void *const value = Config_GetOptionValueForSave(opt);
         switch (opt->type) {
         case COT_BOOL:
             JSON_ObjectAppendBool(
                 root_obj, Config_ResolveOptionName(opt->name),
-                *(bool *)opt->target);
+                *(const bool *)value);
             break;
 
         case COT_INT32:
             JSON_ObjectAppendInt(
                 root_obj, Config_ResolveOptionName(opt->name),
-                *(int32_t *)opt->target);
+                *(const int32_t *)value);
             break;
 
         case COT_FLOAT:
         case COT_FLOAT_PERCENT:
             JSON_ObjectAppendDouble(
                 root_obj, Config_ResolveOptionName(opt->name),
-                *(float *)opt->target);
+                *(const float *)value);
             break;
 
         case COT_DOUBLE:
             JSON_ObjectAppendDouble(
                 root_obj, Config_ResolveOptionName(opt->name),
-                *(double *)opt->target);
+                *(const double *)value);
             break;
 
         case COT_ENUM:
             ConfigFile_WriteEnum(
                 root_obj, Config_ResolveOptionName(opt->name),
-                *(int *)opt->target, (const char *)opt->param);
+                *(const int32_t *)value, (const char *)opt->param);
             break;
 
         case COT_STRING:
         case COT_DYNAMIC_ENUM:
-            if (*(char **)opt->target != nullptr) {
+            if (*(char *const *)value != nullptr) {
                 JSON_ObjectAppendString(
                     root_obj, Config_ResolveOptionName(opt->name),
-                    *(char **)opt->target);
+                    *(char *const *)value);
             }
             break;
 
         case COT_RGB888: {
-            const RGB_888 *const color = (RGB_888 *)opt->target;
+            const RGB_888 *const color = (const RGB_888 *)value;
             char tmp[10];
             sprintf(tmp, "#%02X%02X%02X", color->r, color->g, color->b);
             JSON_ObjectAppendString(

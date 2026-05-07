@@ -41,10 +41,7 @@
 typedef struct {
     const uint32_t *demo_ptr;
     const GF_LEVEL *level;
-    struct {
-        CONFIG config;
-        GAME_BONUS_FLAG bonus_flag;
-    } old_config;
+    GAME_BONUS_FLAG old_bonus_flag;
     uint32_t *data;
 } M_PRIV;
 
@@ -55,20 +52,23 @@ static void M_PrepareConfig(M_PRIV *const p)
 {
     // Changing certains settings affects negatively the original game demo
     // data, so temporarily turn off all relevant enhancements.
-    p->old_config.config = g_Config;
-    p->old_config.bonus_flag = Game_GetBonusFlag();
+    p->old_bonus_flag = Game_GetBonusFlag();
     Game_SetBonusFlag(GBF_NONE);
-#define X_PROCESS_CONFIG(var, value) g_Config.var = value;
+#define X_PROCESS_CONFIG(var, value)                                           \
+    ASSERT(Config_PushOptionOverride(                                          \
+        &g_Config.var, &(typeof(g_Config.var)) { value }));
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
 }
 
 static void M_RestoreConfig(M_PRIV *const p)
 {
-    Game_SetBonusFlag(p->old_config.bonus_flag);
-#define X_PROCESS_CONFIG(var, value) g_Config.var = p->old_config.config.var;
+    Game_SetBonusFlag(p->old_bonus_flag);
+#define X_PROCESS_CONFIG(var, value)                                           \
+    ASSERT(Config_PopOptionOverride(&g_Config.var));
     L_MODIFY_CONFIG();
 #undef X_PROCESS_CONFIG
+    Config_Update();
 }
 
 void Demo_LoadData(VFILE *const file, const size_t size)
@@ -170,6 +170,7 @@ bool Demo_Start(const int32_t level_num)
 
     if (p->data == nullptr) {
         LOG_ERROR("Level '%s' has no demo data", p->level->path);
+        M_RestoreConfig(p);
         return false;
     }
 
