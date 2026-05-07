@@ -12,5 +12,6 @@ OBJECT_ID Lara_Vehicle_GetAnimationObject(void);
 void Lara_Vehicle_SwitchToAnim(int16_t anim_idx, int16_t frame_idx);
 int16_t Lara_Vehicle_GetRelativeAnim(void);
 bool Lara_Vehicle_TestAnimEqual(int16_t anim_idx);
+void Lara_Vehicle_SyncItemAnim(void);
 
 void Lara_Vehicle_Dismount(void);

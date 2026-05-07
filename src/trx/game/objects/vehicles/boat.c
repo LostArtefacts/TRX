@@ -769,10 +769,7 @@ static void M_Control(const int16_t item_num)
         Item_Animate(lara_item);
 
         if (lara_item->hit_points > 0) {
-            const int16_t lara_anim_num =
-                Item_GetRelativeObjAnim(lara_item, O_LARA_BOAT);
-            const int16_t lara_frame_num = Item_GetRelativeFrame(lara_item);
-            Item_SwitchToAnim(boat_item, lara_anim_num, lara_frame_num);
+            Lara_Vehicle_SyncItemAnim();
         }
 
         g_Camera.target_elevation = -20 * DEG_1;

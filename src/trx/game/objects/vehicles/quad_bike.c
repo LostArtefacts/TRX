@@ -1418,18 +1418,11 @@ bool QuadBike_Control(void)
             Item_UpdateRoom(lara->item_num, room_num);
         }
 
-        lara_item->pos.x = item->pos.x;
-        lara_item->pos.y = item->pos.y;
-        lara_item->pos.z = item->pos.z;
-        lara_item->rot.x = item->rot.x;
-        lara_item->rot.y = item->rot.y;
-        lara_item->rot.z = item->rot.z;
+        lara_item->pos = item->pos;
+        lara_item->rot = item->rot;
         M_AnimateQuadBike(item, hit_wall, killed);
         Item_Animate(lara_item);
-        item->anim_num = lara_item->anim_num + Object_Get(O_QUAD_BIKE)->anim_idx
-            - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx;
-        item->frame_num = lara_item->frame_num + Item_GetAnim(item)->frame_base
-            - Item_GetAnim(lara_item)->frame_base;
+        Lara_Vehicle_SyncItemAnim();
         g_Camera.target_elevation = -5460;
 
         if (quad->flags & 0x40 && item->pos.y == item->floor) {
