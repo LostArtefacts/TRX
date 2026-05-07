@@ -276,7 +276,7 @@ static void M_Control(const int16_t item_num)
         goto finish;
     }
 
-    if (creature->alerted && !creature->hurt_by_lara
+    if (creature->alerted && !creature->hurt_by_lara && Creature_IsAlly(item)
         && g_Config.gameplay.ally_hostility_policy
             == ALLY_HOSTILITY_POLICY_INDIVIDUAL) {
         // Avoid Creature_GetAITarget removing AI_GUARD flag outside of shared
@@ -293,11 +293,12 @@ static void M_Control(const int16_t item_num)
     }
 
     const bool hurt_by_lara = creature->hurt_by_lara;
-    if (creature->alerted
+    if (creature->alerted && Creature_IsHostile(item)
         && g_Config.gameplay.ally_hostility_policy
             == ALLY_HOSTILITY_POLICY_SHARED) {
         creature->enemy = lara_item;
-    } else if (!hurt_by_lara && creature->enemy == lara_item) {
+    } else if (
+        !hurt_by_lara && !creature->alerted && creature->enemy == lara_item) {
         creature->enemy = nullptr;
     }
 
