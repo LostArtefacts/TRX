@@ -14,7 +14,12 @@
 
 <hr/>
 
-Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1**, **Tomb Raider 2** and **Tomb Raider 3**. TRX aims to enhance these classic games through decompilation and the implementation of open-source alternatives to proprietary components. TRX is a single engine capable of running TR1, TR2, and custom levels respecting each of the distinct, classic engines' mechanics.
+Welcome to **TRX** – an open-source reimplementation of **Tomb Raider 1**,
+**Tomb Raider 2** and **Tomb Raider 3**. TRX aims to enhance these classic
+games through decompilation and the implementation of open-source alternatives
+to proprietary components. TRX is a single engine capable of running TR1, TR2,
+TR3, and custom levels respecting each of the distinct, classic engines'
+mechanics.
 
 ## Showcase
 <table>
