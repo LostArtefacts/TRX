@@ -202,11 +202,8 @@ static void M_Collision(
         lara_info->request_gun_type = LGT_UNARMED;
     }
 
-    if (lr > 0) {
-        Item_SwitchToObjAnim(l, 3, 0, O_LARA_VEHICLE_ANIM);
-    } else {
-        Item_SwitchToObjAnim(l, 28, 0, O_LARA_VEHICLE_ANIM);
-    }
+    const int16_t anim_idx = lr > 0 ? 3 : 28; // TODO: define anim enum
+    Lara_Vehicle_SwitchToAnim(anim_idx, 0);
     l->current_anim_state = M_STATE_CLIMB_IN;
     l->goal_anim_state = M_STATE_CLIMB_IN;
     lara_info->water_status = LWS_ABOVE_WATER;
@@ -286,11 +283,12 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     if (l->hit_points <= 0 && l->current_anim_state != M_STATE_DEATH_IN) {
-        Item_SwitchToObjAnim(l, 5, 0, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(5, 0);
         l->current_anim_state = M_STATE_DEATH_IN;
         l->goal_anim_state = M_STATE_DEATH_IN;
     }
 
+    const int16_t anim = Lara_Vehicle_GetRelativeAnim();
     const int16_t frame = Item_GetRelativeFrame(l);
 
     const int32_t time4 = Output_GetTimeInGame() * 4;
@@ -300,7 +298,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
             l->goal_anim_state = M_STATE_POSE;
         }
 
-        if (l->anim_num - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx == 2) {
+        if (anim == 2) {
             if (frame == 8) {
                 p->rot += 0x800000;
                 p->vel -= 0x180000;
@@ -465,8 +463,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_CLIMB_IN:
-        if (l->anim_num == Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 4
-            && frame == 24 && !p->paddle.equipped) {
+        if (anim == 4 && frame == 24 && !p->paddle.equipped) {
             Lara_Skin_SetExtraEquipment(LM_HAND_R, EXTRA_MESH_OAR);
             Item_SetMeshVisibleMask(l, m_KayakHiddenBodyMeshes, false);
             p->paddle.equipped = true;
@@ -474,8 +471,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_JUMP_OUT:
-        if (l->anim_num == Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 14
-            && frame == 27 && p->paddle.equipped) {
+        if (anim == 14 && frame == 27 && p->paddle.equipped) {
             Lara_Skin_ClearEquipment(LM_HAND_R);
             Item_SetMeshVisibleMask(l, m_KayakHiddenBodyMeshes, true);
             p->paddle.equipped = false;
@@ -488,8 +484,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
             || (!p->vel && !lara_info->current.vel.x
                 && !lara_info->current.vel.z)) {
             l->goal_anim_state = M_STATE_POSE;
-        } else if (
-            l->anim_num - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx == 26) {
+        } else if (anim == 26) {
             if (p->vel >= 0) {
                 p->rot -= 0x200000;
                 CLAMPL(p->rot, -0x1000000);
@@ -514,8 +509,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
             || (!p->vel && !lara_info->current.vel.x
                 && !lara_info->current.vel.z)) {
             l->goal_anim_state = M_STATE_POSE;
-        } else if (
-            l->anim_num - Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx == 27) {
+        } else if (anim == 27) {
             if (p->vel >= 0) {
                 p->rot += 0x200000;
                 CLAMPG(p->rot, 0x1000000);
@@ -536,8 +530,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_CLIMB_OUT_L:
-        if (l->anim_num == Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 24
-            && frame == 83) {
+        if (anim == 24 && frame == 83) {
             XYZ_32 pos = { .x = 0, .y = 350, .z = 500 };
             Lara_GetMeshPos(LM_HIPS, &pos);
             l->pos = pos;
@@ -555,8 +548,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_CLIMB_OUT_R:
-        if (l->anim_num == Object_Get(O_LARA_VEHICLE_ANIM)->anim_idx + 32
-            && frame == 83) {
+        if (anim == 32 && frame == 83) {
             XYZ_32 pos = { .x = 0, .y = 350, .z = 500 };
             Lara_GetMeshPos(LM_HIPS, &pos);
             l->pos = pos;

@@ -246,7 +246,7 @@ static void M_Collision(
 
     const M_ANIM anim_idx =
         mount_side == M_SIDE_LEFT ? M_ANIM_MOUNT_LEFT : M_ANIM_MOUNT_RIGHT;
-    Item_SwitchToObjAnim(lara_item, anim_idx, 0, O_LARA_VEHICLE_ANIM);
+    Lara_Vehicle_SwitchToAnim(anim_idx, 0);
     lara_item->current_anim_state = M_STATE_MOUNT;
     lara_item->goal_anim_state = M_STATE_MOUNT;
     lara_item->pos = item->pos;
@@ -276,7 +276,7 @@ static void M_CheckStrikeSwitch(ITEM *const item)
 
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item->current_anim_state != M_STATE_SWIPE
-        || !Item_TestObjAnimEqual(lara_item, M_ANIM_SWIPE, O_LARA_VEHICLE_ANIM)
+        || !Lara_Vehicle_TestAnimEqual(M_ANIM_SWIPE)
         || !Item_TestFrameRange(lara_item, 12, 22)) {
         return;
     }
@@ -383,16 +383,14 @@ static void M_UserControl(ITEM *const item)
 
     switch (lara_item->current_anim_state) {
     case M_STATE_MOUNT:
-        if (Item_TestObjAnimEqual(
-                lara_item, M_ANIM_PREPARE_RIDE, O_LARA_VEHICLE_ANIM)
+        if (Lara_Vehicle_TestAnimEqual(M_ANIM_PREPARE_RIDE)
             && Item_TestFrameEqual(lara_item, M_MESH_FRAME)) {
             Lara_Skin_SetExtraEquipment(LM_HAND_R, EXTRA_MESH_SPANNER);
         }
         break;
 
     case M_STATE_STOP:
-        if (Item_TestObjAnimEqual(
-                lara_item, M_ANIM_PREPARE_DISMOUNT, O_LARA_VEHICLE_ANIM)) {
+        if (Lara_Vehicle_TestAnimEqual(M_ANIM_PREPARE_DISMOUNT)) {
             if (Item_TestFrameEqual(lara_item, M_MESH_FRAME)) {
                 Lara_Skin_ClearEquipment(LM_HAND_R);
             }
@@ -540,9 +538,7 @@ static void M_UserControl(ITEM *const item)
                 Sound_Effect(SFX_QUAD_FRONT_IMPACT, &item->pos, SPM_ALWAYS);
             }
             item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, STEP_L / 2);
-        } else if (
-            Item_TestObjAnimEqual(
-                lara_item, M_ANIM_TOPPLED, O_LARA_VEHICLE_ANIM)) {
+        } else if (Lara_Vehicle_TestAnimEqual(M_ANIM_TOPPLED)) {
             p->flags.suppress_anim = true;
             lara_item->hit_points = -1;
         }
@@ -600,8 +596,7 @@ static void M_UserControl(ITEM *const item)
     }
 
     if (item->rot.z > M_MAX_ROLL || item->rot.z < -M_MAX_ROLL) {
-        Item_SwitchToObjAnim(
-            lara_item, M_ANIM_TOPPLE_START, 0, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_TOPPLE_START, 0);
         lara_item->current_anim_state = M_STATE_DEATH;
         lara_item->goal_anim_state = M_STATE_DEATH;
         p->flags.control = false;
@@ -617,7 +612,7 @@ static void M_UserControl(ITEM *const item)
         M_GetCollision(item, item->rot.y, STEP_L * 2, &ceiling);
 
     if (height < -STEP_L * 2) {
-        Item_SwitchToObjAnim(lara_item, M_ANIM_CRASH, 0, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_CRASH, 0);
         lara_item->current_anim_state = M_STATE_CRASH;
         lara_item->goal_anim_state = M_STATE_CRASH;
         p->flags.control = false;
@@ -637,8 +632,7 @@ static void M_UserControl(ITEM *const item)
         };
         if (Collide_CollideStaticObjects(
                 &coll, item->pos, item->room_num, STEP_L * 3)) {
-            Item_SwitchToObjAnim(
-                lara_item, M_ANIM_HIT_BEAM, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_HIT_BEAM, 0);
             lara_item->current_anim_state = M_STATE_HIT_BEAM;
             lara_item->goal_anim_state = M_STATE_HIT_BEAM;
             Spawn_BloodBath(

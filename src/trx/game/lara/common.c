@@ -519,19 +519,11 @@ OBJECT_ID Lara_GetAnimationObject(void)
         return O_LARA_EXTRA;
     }
 
-    const ITEM *const vehicle = Lara_Vehicle_GetItem();
-    if (vehicle == nullptr) {
-        return O_LARA;
+    if (Lara_Vehicle_IsMounted()) {
+        return Lara_Vehicle_GetAnimationObject();
     }
 
-    switch (vehicle->object_id) {
-    case O_BOAT:
-        return O_LARA_BOAT;
-    case O_SKIDOO_FAST:
-        return O_LARA_SKIDOO;
-    default:
-        return O_LARA_VEHICLE_ANIM;
-    }
+    return O_LARA;
 }
 
 void Lara_Animate(ITEM *const item)

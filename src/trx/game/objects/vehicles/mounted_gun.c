@@ -125,7 +125,7 @@ static void M_Collision(
     lara->gun_status = LGS_HANDS_BUSY;
     lara_item->pos = item->pos;
     lara_item->rot = item->rot;
-    Item_SwitchToObjAnim(lara_item, M_ANIM_MOUNT, 0, O_LARA_VEHICLE_ANIM);
+    Lara_Vehicle_SwitchToAnim(M_ANIM_MOUNT, 0);
     lara_item->current_anim_state = M_STATE_MOUNT;
     lara_item->goal_anim_state = M_STATE_MOUNT;
 
@@ -290,8 +290,7 @@ bool MountedGun_Control(void)
         } else if (p->tilt > M_NEUTRAL_TILT) {
             p->tilt--;
         } else {
-            Item_SwitchToObjAnim(
-                lara_item, M_ANIM_DISMOUNT, 0, O_LARA_VEHICLE_ANIM);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_DISMOUNT, 0);
             lara_item->current_anim_state = M_STATE_DISMOUNT;
             lara_item->goal_anim_state = M_STATE_DISMOUNT;
             p->state = M_GUN_STATE_WAIT_END;
@@ -316,8 +315,7 @@ bool MountedGun_Control(void)
         break;
 
     case M_STATE_TILT:
-        Item_SwitchToObjAnim(
-            lara_item, M_ANIM_TILT, p->tilt, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_TILT, p->tilt);
         Item_SwitchToAnim(gun_item, M_ANIM_TILT, p->tilt);
 
         if (p->fire_count != 0) {

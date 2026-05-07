@@ -205,10 +205,9 @@ static void M_GetOn(ITEM *const item)
 
     if (lara_item->current_anim_state == LS(LS_SURF_TREAD)
         || lara_item->current_anim_state == LS(LS_SURF_SWIM)) {
-        Item_SwitchToObjAnim(
-            lara_item, M_ANIM_GET_ON_SURFACE, 0, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_GET_ON_SURFACE, 0);
     } else {
-        Item_SwitchToObjAnim(lara_item, M_ANIM_GET_ON, 0, O_LARA_VEHICLE_ANIM);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_GET_ON, 0);
     }
 
     lara_item->goal_anim_state = M_STATE_GET_ON;
@@ -338,7 +337,7 @@ static void M_UserInput(
     int16_t anim, frame;
 
     M_CanGetOff(item);
-    anim = Item_GetRelativeObjAnim(lara_item, O_LARA_VEHICLE_ANIM);
+    anim = Lara_Vehicle_GetRelativeAnim();
     frame = Item_GetRelativeFrame(lara_item);
 
     switch (lara_item->current_anim_state) {
