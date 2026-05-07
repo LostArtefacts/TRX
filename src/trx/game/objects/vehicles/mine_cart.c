@@ -207,7 +207,11 @@ static bool M_CheckDismount(const M_SIDE side)
     const HEIGHT_TYPE height_type = Room_GetHeightType();
 
     if (height_type == HT_BIG_SLOPE || height_type == HT_DIAGONAL
-        || height == NO_HEIGHT || ABS(height) <= WALL_L / 2) {
+        || height == NO_HEIGHT) {
+        return false;
+    }
+
+    if (ABS(height - item->pos.y) > WALL_L / 2) {
         return false;
     }
 
