@@ -24,6 +24,7 @@
 - fixed the push button mesh being offset too far from the wall in each level it appears (OG bug)
 - fixed a missing face on the push button in Antarctica (#5428)
 - fixed Punks repeating their alert sounds and not targeting Lara in all cases (#5456, regression from 1.6)
+- fixed height checks that could make Lara refuse to dismount the Mine Cart in custom levels
 
 
 
