@@ -2252,17 +2252,32 @@
         "lara_harpoon": {
             "name": "\\{review}Анимация гарпуна",
         },
+        "lara_kayak": {
+            "name": "\\{review}Каяк",
+        },
         "lara_m16": {
             "name": "\\{review}Анимация M16",
         },
         "lara_magnums": {
             "name": "Анимация магнумов",
         },
+        "lara_mine_cart": {
+            "name": "\\{review}Анимация Шахтная Вагонетка",
+        },
+        "lara_mounted_gun": {
+            "name": "\\{review}Анимация Установленный пулемёт",
+        },
         "lara_mp5": {
             "name": "\\{review}Анимация MP5",
         },
         "lara_pistols": {
             "name": "Анимация пистолетов",
+        },
+        "lara_quad_bike": {
+            "name": "\\{review}Анимация Квадроцикл",
+        },
+        "lara_rib": {
+            "name": "\\{review}Анимация RIB",
         },
         "lara_rocket": {
             "name": "\\{review}Анимация ракетной установки",
@@ -2272,6 +2287,9 @@
         },
         "lara_skidoo": {
             "name": "\\{review}Анимация снегохода",
+        },
+        "lara_upv": {
+            "name": "\\{review}Анимация Минисуб",
         },
         "lara_uzis": {
             "name": "Анимация узи",

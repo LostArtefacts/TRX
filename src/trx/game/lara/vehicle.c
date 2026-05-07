@@ -7,6 +7,12 @@
 static const GAME_OBJECT_PAIR m_AnimMap[] = {
     { O_BOAT, O_LARA_BOAT },
     { O_SKIDOO_FAST, O_LARA_SKIDOO },
+    { O_QUAD_BIKE, O_LARA_QUAD_BIKE },
+    { O_MOUNTED_GUN, O_LARA_MOUNTED_GUN },
+    { O_KAYAK, O_LARA_KAYAK },
+    { O_UPV, O_LARA_UPV },
+    { O_RIB, O_LARA_RIB },
+    { O_MINE_CART, O_LARA_MINE_CART },
     { NO_OBJECT, NO_OBJECT },
 };
 
