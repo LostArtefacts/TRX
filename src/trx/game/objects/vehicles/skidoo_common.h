@@ -23,8 +23,8 @@ typedef struct {
     int32_t pitch;
 } SKIDOO_INFO;
 
-extern BITE g_Skidoo_LeftGun;
-extern BITE g_Skidoo_RightGun;
+extern const BITE g_Skidoo_LeftGun;
+extern const BITE g_Skidoo_RightGun;
 
 void Skidoo_Initialise(int16_t item_num);
 int32_t Skidoo_CheckGetOn(int16_t item_num, COLL_INFO *coll);
