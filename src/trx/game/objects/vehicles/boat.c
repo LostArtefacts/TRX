@@ -18,36 +18,42 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
-#define BOAT_RADIUS 500
-#define BOAT_SIDE 300
-#define BOAT_FRONT 750
-#define BOAT_TIP (BOAT_FRONT + 250)
-#define BOAT_MIN_SPEED 20
-#define BOAT_MAX_SPEED 90
-#define BOAT_SLOW_SPEED (BOAT_MAX_SPEED / 3) // = 30
-#define BOAT_FAST_SPEED (BOAT_MAX_SPEED + 50) // = 140
-#define BOAT_MAX_BACK (-20)
-#define BOAT_ACCELERATION 5
-#define BOAT_BRAKE 5
-#define BOAT_REVERSE (-5)
-#define BOAT_SLOWDOWN 1
-#define BOAT_WAKE 700
-#define BOAT_UNDO_TURN (DEG_1 / 4) // = 45
-#define BOAT_TURN (DEG_1 / 8) // = 22
-#define BOAT_MAX_TURN (DEG_1 * 4) // = 728
-#define BOAT_SOUND_CEILING (WALL_L * 5) // = 5120
-#define BOAT_SHIFT_Y (-5)
+// clang-format off
+#define M_RADIUS        500
+#define M_SIDE          300
+#define M_FRONT         750
+#define M_TIP           (M_FRONT + 250)
+#define M_MIN_SPEED     20
+#define M_MAX_SPEED     90
+#define M_SLOW_SPEED    (M_MAX_SPEED / 3)  // = 30
+#define M_FAST_SPEED    (M_MAX_SPEED + 50) // = 140
+#define M_MAX_BACK      (-20)
+#define M_ACCELERATION  5
+#define M_BRAKE         5
+#define M_REVERSE       (-5)
+#define M_SLOWDOWN      1
+#define M_WAKE_SIZE     700
+#define M_UNDO_TURN     (DEG_1 / 4)        // = 45
+#define M_TURN          (DEG_1 / 8)        // = 22
+#define M_MAX_TURN      (DEG_1 * 4)        // = 728
+#define M_SOUND_CEILING (WALL_L * 5)       // = 5120
+#define M_SHIFT_Y       (-5)
+#define M_CAM_ELEVATION (DEG_1 * -20)      // = -3640
+#define M_CAM_DISTANCE  (WALL_L * 2)       // = 2048
+// clang-format on
 
 typedef enum {
-    BOAT_STATE_GET_ON = 0,
-    BOAT_STATE_STILL = 1,
-    BOAT_STATE_MOVING = 2,
-    BOAT_STATE_JUMP_R = 3,
-    BOAT_STATE_JUMP_L = 4,
-    BOAT_STATE_HIT = 5,
-    BOAT_STATE_FALL = 6,
-    BOAT_STATE_DEATH = 8,
-} BOAT_STATE;
+    // clang-format off
+    M_STATE_MOUNT  = 0,
+    M_STATE_STILL  = 1,
+    M_STATE_MOVING = 2,
+    M_STATE_JUMP_R = 3,
+    M_STATE_JUMP_L = 4,
+    M_STATE_HIT    = 5,
+    M_STATE_FALL   = 6,
+    M_STATE_DEATH  = 8,
+    // clang-format on
+} M_STATE;
 
 typedef enum {
     // clang-format off
@@ -184,7 +190,7 @@ static int32_t M_TestWaterHeight(
         }
     }
 
-    return height + BOAT_SHIFT_Y;
+    return height + M_SHIFT_Y;
 }
 
 static void M_DoWakeEffect(const ITEM *const boat_item)
@@ -209,8 +215,8 @@ static void M_DoWakeEffect(const ITEM *const boat_item)
 
         const int32_t c = Math_Cos(boat_item->rot.y);
         const int32_t s = Math_Sin(boat_item->rot.y);
-        const int32_t w = (1 - i) * BOAT_SIDE;
-        const int32_t h = BOAT_WAKE;
+        const int32_t w = (1 - i) * M_SIDE;
+        const int32_t h = M_WAKE_SIZE;
         effect->pos.x = boat_item->pos.x + ((-c * w - s * h) >> W2V_SHIFT);
         effect->pos.y = boat_item->pos.y;
         effect->pos.z = boat_item->pos.z + ((-c * h + s * w) >> W2V_SHIFT);
@@ -244,11 +250,11 @@ static void M_DoShift(const int32_t boat_num)
             const int32_t dz = item->pos.z - boat_item->pos.z;
             const int32_t dist = SQUARE(dx) + SQUARE(dz);
 
-            if (dist < SQUARE(BOAT_RADIUS * 2)) {
+            if (dist < SQUARE(M_RADIUS * 2)) {
                 boat_item->pos.x =
-                    item->pos.x - SQUARE(BOAT_RADIUS * 2) * dx / dist;
+                    item->pos.x - SQUARE(M_RADIUS * 2) * dx / dist;
                 boat_item->pos.z =
-                    item->pos.z - SQUARE(BOAT_RADIUS * 2) * dz / dist;
+                    item->pos.z - SQUARE(M_RADIUS * 2) * dz / dist;
             }
             break;
         }
@@ -263,10 +269,10 @@ static void M_DoShift(const int32_t boat_num)
             const int32_t dz = iz - boat_item->pos.z;
             const int32_t dist = SQUARE(dx) + SQUARE(dz);
 
-            if (dist < SQUARE(BOAT_RADIUS * 2)) {
-                if (boat_item->speed < BOAT_MAX_SPEED - 10) {
-                    boat_item->pos.x = ix - SQUARE(BOAT_RADIUS * 2) * dx / dist;
-                    boat_item->pos.z = iz - SQUARE(BOAT_RADIUS * 2) * dz / dist;
+            if (dist < SQUARE(M_RADIUS * 2)) {
+                if (boat_item->speed < M_MAX_SPEED - 10) {
+                    boat_item->pos.x = ix - SQUARE(M_RADIUS * 2) * dx / dist;
+                    boat_item->pos.z = iz - SQUARE(M_RADIUS * 2) * dz / dist;
                 } else if (item->pos.y - boat_item->pos.y < WALL_L * 2) {
                     Sound_Effect(SFX_BOAT_INTO_WATER, &item->pos, SPM_NORMAL);
                     item->goal_anim_state = GONDOLA_STATE_CRASH;
@@ -310,14 +316,14 @@ static int32_t M_Dynamics(const int16_t boat_num)
     XYZ_32 br_old;
     XYZ_32 f_old;
     const int32_t hfl_old =
-        M_TestWaterHeight(boat_item, BOAT_FRONT, -BOAT_SIDE, &fl_old);
+        M_TestWaterHeight(boat_item, M_FRONT, -M_SIDE, &fl_old);
     const int32_t hfr_old =
-        M_TestWaterHeight(boat_item, BOAT_FRONT, BOAT_SIDE, &fr_old);
+        M_TestWaterHeight(boat_item, M_FRONT, M_SIDE, &fr_old);
     const int32_t hbl_old =
-        M_TestWaterHeight(boat_item, -BOAT_FRONT, -BOAT_SIDE, &bl_old);
+        M_TestWaterHeight(boat_item, -M_FRONT, -M_SIDE, &bl_old);
     const int32_t hbr_old =
-        M_TestWaterHeight(boat_item, -BOAT_FRONT, BOAT_SIDE, &br_old);
-    const int32_t hf_old = M_TestWaterHeight(boat_item, BOAT_TIP, 0, &f_old);
+        M_TestWaterHeight(boat_item, -M_FRONT, M_SIDE, &br_old);
+    const int32_t hf_old = M_TestWaterHeight(boat_item, M_TIP, 0, &f_old);
     XYZ_32 old = boat_item->pos;
     CLAMPG(bl_old.y, hbl_old);
     CLAMPG(br_old.y, hbr_old);
@@ -359,36 +365,32 @@ static int32_t M_Dynamics(const int16_t boat_num)
     int32_t rot = 0;
 
     XYZ_32 bl;
-    const int32_t hbl =
-        M_TestWaterHeight(boat_item, -BOAT_FRONT, -BOAT_SIDE, &bl);
+    const int32_t hbl = M_TestWaterHeight(boat_item, -M_FRONT, -M_SIDE, &bl);
     if (hbl < bl_old.y - STEP_L / 2) {
         rot = Vehicle_DoShift(boat_item, &bl, &bl_old);
     }
 
     XYZ_32 br;
-    const int32_t hbr =
-        M_TestWaterHeight(boat_item, -BOAT_FRONT, BOAT_SIDE, &br);
+    const int32_t hbr = M_TestWaterHeight(boat_item, -M_FRONT, M_SIDE, &br);
     if (hbr < br_old.y - STEP_L / 2) {
         rot += Vehicle_DoShift(boat_item, &br, &br_old);
     }
 
     XYZ_32 fl;
-    const int32_t hfl =
-        M_TestWaterHeight(boat_item, BOAT_FRONT, -BOAT_SIDE, &fl);
+    const int32_t hfl = M_TestWaterHeight(boat_item, M_FRONT, -M_SIDE, &fl);
     if (hfl < fl_old.y - STEP_L / 2) {
         rot += Vehicle_DoShift(boat_item, &fl, &fl_old);
     }
 
     XYZ_32 fr;
-    const int32_t hfr =
-        M_TestWaterHeight(boat_item, BOAT_FRONT, BOAT_SIDE, &fr);
+    const int32_t hfr = M_TestWaterHeight(boat_item, M_FRONT, M_SIDE, &fr);
     if (hfr < fr_old.y - STEP_L / 2) {
         rot += Vehicle_DoShift(boat_item, &fr, &fr_old);
     }
 
     if (!slip) {
         XYZ_32 f;
-        const int32_t hf = M_TestWaterHeight(boat_item, BOAT_TIP, 0, &f);
+        const int32_t hf = M_TestWaterHeight(boat_item, M_TIP, 0, &f);
         if (hf < f_old.y - STEP_L / 2) {
             Vehicle_DoShift(boat_item, &f, &f_old);
         }
@@ -416,7 +418,7 @@ static int32_t M_Dynamics(const int16_t boat_num)
         // clang-format on
 
         if (Lara_Vehicle_GetIndex() == boat_num) {
-            if (boat_item->speed > BOAT_MAX_SPEED + BOAT_ACCELERATION
+            if (boat_item->speed > M_MAX_SPEED + M_ACCELERATION
                 && new_speed < boat_item->speed - 10) {
                 Lara_TakeDamage((boat_item->speed - new_speed) / 2, true);
                 Sound_Effect(SFX_LARA_INJURY, &Lara_GetItem()->pos, SPM_NORMAL);
@@ -424,7 +426,7 @@ static int32_t M_Dynamics(const int16_t boat_num)
         }
 
         if (slip) {
-            if (boat_item->speed <= BOAT_MAX_SPEED + 10) {
+            if (boat_item->speed <= M_MAX_SPEED + 10) {
                 boat_item->speed = new_speed;
             }
         } else {
@@ -435,7 +437,7 @@ static int32_t M_Dynamics(const int16_t boat_num)
             }
         }
 
-        CLAMPL(boat_item->speed, BOAT_MAX_BACK);
+        CLAMPL(boat_item->speed, M_MAX_BACK);
     }
 
     return collide;
@@ -466,48 +468,48 @@ static int32_t M_UserControl(ITEM *const boat_item)
 
     if ((left_input && !g_Input.back) || (right_input && g_Input.back)) {
         if (p->boat_turn > 0) {
-            p->boat_turn -= BOAT_UNDO_TURN;
+            p->boat_turn -= M_UNDO_TURN;
         } else {
-            p->boat_turn -= BOAT_TURN;
-            CLAMPL(p->boat_turn, -BOAT_MAX_TURN);
+            p->boat_turn -= M_TURN;
+            CLAMPL(p->boat_turn, -M_MAX_TURN);
         }
         no_turn = 0;
     } else if ((right_input && !g_Input.back) || (left_input && g_Input.back)) {
         if (p->boat_turn < 0) {
-            p->boat_turn += BOAT_UNDO_TURN;
+            p->boat_turn += M_UNDO_TURN;
         } else {
-            p->boat_turn += BOAT_TURN;
-            CLAMPG(p->boat_turn, BOAT_MAX_TURN);
+            p->boat_turn += M_TURN;
+            CLAMPG(p->boat_turn, M_MAX_TURN);
         }
         no_turn = 0;
     }
 
     if (g_Input.back) {
         if (boat_item->speed > 0) {
-            boat_item->speed -= BOAT_BRAKE;
-        } else if (boat_item->speed > BOAT_MAX_BACK) {
-            boat_item->speed += BOAT_REVERSE;
+            boat_item->speed -= M_BRAKE;
+        } else if (boat_item->speed > M_MAX_BACK) {
+            boat_item->speed += M_REVERSE;
         }
     } else if (g_Input.forward) {
         int32_t max_speed;
         if (g_Input.action) {
-            max_speed = BOAT_FAST_SPEED;
+            max_speed = M_FAST_SPEED;
         } else {
-            max_speed = g_Input.slow ? BOAT_SLOW_SPEED : BOAT_MAX_SPEED;
+            max_speed = g_Input.slow ? M_SLOW_SPEED : M_MAX_SPEED;
         }
 
         if (boat_item->speed < max_speed) {
-            boat_item->speed += BOAT_ACCELERATION / 2
-                + BOAT_ACCELERATION * boat_item->speed / (2 * max_speed);
-        } else if (boat_item->speed > max_speed + BOAT_SLOWDOWN) {
-            boat_item->speed -= BOAT_SLOWDOWN;
+            boat_item->speed += M_ACCELERATION / 2
+                + M_ACCELERATION * boat_item->speed / (2 * max_speed);
+        } else if (boat_item->speed > max_speed + M_SLOWDOWN) {
+            boat_item->speed -= M_SLOWDOWN;
         }
     } else if (
-        boat_item->speed >= 0 && boat_item->speed < BOAT_MIN_SPEED
+        boat_item->speed >= 0 && boat_item->speed < M_MIN_SPEED
         && (left_input || right_input)) {
-        boat_item->speed = BOAT_MIN_SPEED;
-    } else if (boat_item->speed > BOAT_SLOWDOWN) {
-        boat_item->speed -= BOAT_SLOWDOWN;
+        boat_item->speed = M_MIN_SPEED;
+    } else if (boat_item->speed > M_SLOWDOWN) {
+        boat_item->speed -= M_SLOWDOWN;
     } else {
         boat_item->speed = 0;
     }
@@ -521,64 +523,64 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
     const M_PRIV *const p = boat_item->priv;
 
     if (lara_item->hit_points <= 0) {
-        if (lara_item->current_anim_state == BOAT_STATE_DEATH) {
+        if (lara_item->current_anim_state == M_STATE_DEATH) {
             return;
         }
         Lara_Vehicle_SwitchToAnim(M_ANIM_DEATH, 0);
-        lara_item->goal_anim_state = BOAT_STATE_DEATH;
-        lara_item->current_anim_state = BOAT_STATE_DEATH;
+        lara_item->goal_anim_state = M_STATE_DEATH;
+        lara_item->current_anim_state = M_STATE_DEATH;
         return;
     }
 
     if (boat_item->pos.y < p->water - STEP_L / 2 && boat_item->fall_speed > 0) {
-        if (lara_item->current_anim_state == BOAT_STATE_FALL) {
+        if (lara_item->current_anim_state == M_STATE_FALL) {
             return;
         }
         Lara_Vehicle_SwitchToAnim(M_ANIM_FALL, 0);
-        lara_item->goal_anim_state = BOAT_STATE_FALL;
-        lara_item->current_anim_state = BOAT_STATE_FALL;
+        lara_item->goal_anim_state = M_STATE_FALL;
+        lara_item->current_anim_state = M_STATE_FALL;
         return;
     }
 
     if (collide) {
-        if (lara_item->current_anim_state == BOAT_STATE_HIT) {
+        if (lara_item->current_anim_state == M_STATE_HIT) {
             return;
         }
         Lara_Vehicle_SwitchToAnim(collide, 0);
-        lara_item->goal_anim_state = BOAT_STATE_HIT;
-        lara_item->current_anim_state = BOAT_STATE_HIT;
+        lara_item->goal_anim_state = M_STATE_HIT;
+        lara_item->current_anim_state = M_STATE_HIT;
         return;
     }
 
     switch (lara_item->current_anim_state) {
-    case BOAT_STATE_STILL:
+    case M_STATE_STILL:
         if (g_Input.jump) {
             if (g_Input.right) {
-                lara_item->goal_anim_state = BOAT_STATE_JUMP_R;
+                lara_item->goal_anim_state = M_STATE_JUMP_R;
             } else if (g_Input.left) {
-                lara_item->goal_anim_state = BOAT_STATE_JUMP_L;
+                lara_item->goal_anim_state = M_STATE_JUMP_L;
             }
         }
 
         if (boat_item->speed > 0) {
-            lara_item->goal_anim_state = BOAT_STATE_MOVING;
+            lara_item->goal_anim_state = M_STATE_MOVING;
         }
         break;
 
-    case BOAT_STATE_MOVING:
+    case M_STATE_MOVING:
         if (g_Input.jump) {
             if (g_Input.right) {
-                lara_item->goal_anim_state = BOAT_STATE_JUMP_R;
+                lara_item->goal_anim_state = M_STATE_JUMP_R;
             } else if (g_Input.left) {
-                lara_item->goal_anim_state = BOAT_STATE_JUMP_L;
+                lara_item->goal_anim_state = M_STATE_JUMP_L;
             }
         } else if (boat_item->speed <= 0) {
-            lara_item->goal_anim_state = BOAT_STATE_STILL;
+            lara_item->goal_anim_state = M_STATE_STILL;
         }
         break;
 
-    case BOAT_STATE_FALL:
-        lara_item->goal_anim_state = BOAT_STATE_MOVING;
+    case M_STATE_FALL:
+        lara_item->goal_anim_state = M_STATE_MOVING;
         break;
     }
 }
@@ -637,7 +639,7 @@ static void M_Collision(
     ITEM *const boat_item = Item_Get(item_num);
 
     lara_item->pos.x = boat_item->pos.x;
-    lara_item->pos.y = boat_item->pos.y + BOAT_SHIFT_Y;
+    lara_item->pos.y = boat_item->pos.y + M_SHIFT_Y;
     lara_item->pos.z = boat_item->pos.z;
     lara_item->gravity = false;
     lara_item->rot.x = 0;
@@ -671,16 +673,14 @@ static void M_Control(const int16_t item_num)
 
     XYZ_32 fl;
     XYZ_32 fr;
-    const int32_t hfl =
-        M_TestWaterHeight(boat_item, BOAT_FRONT, -BOAT_SIDE, &fl);
-    const int32_t hfr =
-        M_TestWaterHeight(boat_item, BOAT_FRONT, BOAT_SIDE, &fr);
+    const int32_t hfl = M_TestWaterHeight(boat_item, M_FRONT, -M_SIDE, &fl);
+    const int32_t hfr = M_TestWaterHeight(boat_item, M_FRONT, M_SIDE, &fr);
 
     int16_t room_num = boat_item->room_num;
     const SECTOR *sector = Room_GetSector(
         (XYZ_32) {
             boat_item->pos.x,
-            boat_item->pos.y + BOAT_SHIFT_Y,
+            boat_item->pos.y + M_SHIFT_Y,
             boat_item->pos.z,
         },
         &room_num);
@@ -692,9 +692,9 @@ static void M_Control(const int16_t item_num)
 
     if (Lara_Vehicle_GetIndex() == item_num && lara_item->hit_points > 0) {
         switch (lara_item->current_anim_state) {
-        case BOAT_STATE_GET_ON:
-        case BOAT_STATE_JUMP_R:
-        case BOAT_STATE_JUMP_L:
+        case M_STATE_MOUNT:
+        case M_STATE_JUMP_R:
+        case M_STATE_JUMP_L:
             break;
 
         default:
@@ -702,23 +702,23 @@ static void M_Control(const int16_t item_num)
             no_turn = M_UserControl(boat_item);
             break;
         }
-    } else if (boat_item->speed > BOAT_SLOWDOWN) {
-        boat_item->speed -= BOAT_SLOWDOWN;
+    } else if (boat_item->speed > M_SLOWDOWN) {
+        boat_item->speed -= M_SLOWDOWN;
     } else {
         boat_item->speed = 0;
     }
 
     if (no_turn) {
-        if (p->boat_turn < -BOAT_UNDO_TURN) {
-            p->boat_turn += BOAT_UNDO_TURN;
-        } else if (p->boat_turn > BOAT_UNDO_TURN) {
-            p->boat_turn -= BOAT_UNDO_TURN;
+        if (p->boat_turn < -M_UNDO_TURN) {
+            p->boat_turn += M_UNDO_TURN;
+        } else if (p->boat_turn > M_UNDO_TURN) {
+            p->boat_turn -= M_UNDO_TURN;
         } else {
             p->boat_turn = 0;
         }
     }
 
-    boat_item->floor = height + BOAT_SHIFT_Y;
+    boat_item->floor = height + M_SHIFT_Y;
     if (p->water == NO_HEIGHT) {
         p->water = height;
     } else {
@@ -732,8 +732,8 @@ static void M_Control(const int16_t item_num)
 
     height = (fr.y + fl.y) / 2;
 
-    const int16_t x_rot = Math_Atan(BOAT_FRONT, boat_item->pos.y - height);
-    const int16_t z_rot = Math_Atan(BOAT_SIDE, height - fl.y);
+    const int16_t x_rot = Math_Atan(M_FRONT, boat_item->pos.y - height);
+    const int16_t z_rot = Math_Atan(M_SIDE, height - fl.y);
     boat_item->rot.x += (x_rot - boat_item->rot.x) / 2;
     boat_item->rot.z += (z_rot - boat_item->rot.z) / 2;
 
@@ -762,7 +762,7 @@ static void M_Control(const int16_t item_num)
         sector = Room_GetSector(
             (XYZ_32) {
                 lara_item->pos.x,
-                lara_item->pos.y + BOAT_SHIFT_Y,
+                lara_item->pos.y + M_SHIFT_Y,
                 lara_item->pos.z,
             },
             &room_num);
@@ -774,33 +774,32 @@ static void M_Control(const int16_t item_num)
             Lara_Vehicle_SyncItemAnim();
         }
 
-        g_Camera.target_elevation = -20 * DEG_1;
-        g_Camera.target_distance = 2 * WALL_L;
+        g_Camera.target_elevation = M_CAM_ELEVATION;
+        g_Camera.target_distance = M_CAM_DISTANCE;
     } else {
         Item_UpdateRoom(item_num, room_num);
         boat_item->rot.z += p->tilt_angle;
     }
 
-    const int32_t pitch = water_height - ceiling < BOAT_SOUND_CEILING
-        ? boat_item->speed * (water_height - ceiling) / BOAT_SOUND_CEILING
+    const int32_t pitch = water_height - ceiling < M_SOUND_CEILING
+        ? boat_item->speed * (water_height - ceiling) / M_SOUND_CEILING
         : boat_item->speed;
 
     p->pitch += ((pitch - p->pitch) >> 2);
-    if (boat_item->speed != 0
-        && water_height + BOAT_SHIFT_Y != boat_item->pos.y) {
+    if (boat_item->speed != 0 && water_height + M_SHIFT_Y != boat_item->pos.y) {
         Sound_Effect(SFX_BOAT_ENGINE, &boat_item->pos, SPM_NORMAL);
     } else if (boat_item->speed > 20) {
         Sound_Effect(
             SFX_BOAT_MOVING, &boat_item->pos,
-            SPM_PITCH | ((0x10000 - (BOAT_MAX_SPEED - p->pitch) * 100) << 8));
+            SPM_PITCH | ((0x10000 - (M_MAX_SPEED - p->pitch) * 100) << 8));
 
     } else if (drive) {
         Sound_Effect(
             SFX_BOAT_IDLE, &boat_item->pos,
-            SPM_PITCH | ((0x10000 - (BOAT_MAX_SPEED - p->pitch) * 100) << 8));
+            SPM_PITCH | ((0x10000 - (M_MAX_SPEED - p->pitch) * 100) << 8));
     }
 
-    if (boat_item->speed && water_height + BOAT_SHIFT_Y == boat_item->pos.y) {
+    if (boat_item->speed && water_height + M_SHIFT_Y == boat_item->pos.y) {
         M_DoWakeEffect(boat_item);
     }
 
@@ -808,10 +807,10 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if ((lara_item->current_anim_state == BOAT_STATE_JUMP_R
-         || lara_item->current_anim_state == BOAT_STATE_JUMP_L)
+    if ((lara_item->current_anim_state == M_STATE_JUMP_R
+         || lara_item->current_anim_state == M_STATE_JUMP_L)
         && Item_TestFrameEqual(lara_item, -1)) {
-        if (lara_item->current_anim_state == BOAT_STATE_JUMP_L) {
+        if (lara_item->current_anim_state == M_STATE_JUMP_L) {
             lara_item->rot.y -= DEG_90;
         } else {
             lara_item->rot.y += DEG_90;
