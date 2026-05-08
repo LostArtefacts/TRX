@@ -18,15 +18,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
-#define BOAT_FALL_ANIM 15
-#define BOAT_DEATH_ANIM 18
-#define BOAT_GET_ON_LW_ANIM 0
-#define BOAT_GET_ON_RW_ANIM 8
-#define BOAT_GET_ON_J_ANIM 6
-#define BOAT_GET_ON_START 1
-
-#define LF_BOAT_EXIT_END 24
-
 #define BOAT_RADIUS 500
 #define BOAT_SIDE 300
 #define BOAT_FRONT 750
@@ -57,6 +48,17 @@ typedef enum {
     BOAT_STATE_FALL = 6,
     BOAT_STATE_DEATH = 8,
 } BOAT_STATE;
+
+typedef enum {
+    // clang-format off
+    M_ANIM_MOUNT_LEFT  = 0,
+    M_ANIM_MOUNT_START = 1,
+    M_ANIM_MOUNT_JUMP  = 6,
+    M_ANIM_MOUNT_RIGHT = 8,
+    M_ANIM_FALL        = 15,
+    M_ANIM_DEATH       = 18,
+    // clang-format on
+} M_ANIM;
 
 typedef struct {
     int32_t boat_turn;
@@ -522,7 +524,7 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
         if (lara_item->current_anim_state == BOAT_STATE_DEATH) {
             return;
         }
-        Lara_Vehicle_SwitchToAnim(BOAT_DEATH_ANIM, 0);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_DEATH, 0);
         lara_item->goal_anim_state = BOAT_STATE_DEATH;
         lara_item->current_anim_state = BOAT_STATE_DEATH;
         return;
@@ -532,7 +534,7 @@ static void M_Animation(const ITEM *const boat_item, const int32_t collide)
         if (lara_item->current_anim_state == BOAT_STATE_FALL) {
             return;
         }
-        Lara_Vehicle_SwitchToAnim(BOAT_FALL_ANIM, 0);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_FALL, 0);
         lara_item->goal_anim_state = BOAT_STATE_FALL;
         lara_item->current_anim_state = BOAT_STATE_FALL;
         return;
@@ -613,16 +615,16 @@ static void M_Collision(
     int16_t boat_anim_idx;
     switch (get_on) {
     case 1:
-        boat_anim_idx = BOAT_GET_ON_RW_ANIM;
+        boat_anim_idx = M_ANIM_MOUNT_RIGHT;
         break;
     case 2:
-        boat_anim_idx = BOAT_GET_ON_LW_ANIM;
+        boat_anim_idx = M_ANIM_MOUNT_LEFT;
         break;
     case 3:
-        boat_anim_idx = BOAT_GET_ON_J_ANIM;
+        boat_anim_idx = M_ANIM_MOUNT_JUMP;
         break;
     default:
-        boat_anim_idx = BOAT_GET_ON_START;
+        boat_anim_idx = M_ANIM_MOUNT_START;
         break;
     }
 
@@ -808,7 +810,7 @@ static void M_Control(const int16_t item_num)
 
     if ((lara_item->current_anim_state == BOAT_STATE_JUMP_R
          || lara_item->current_anim_state == BOAT_STATE_JUMP_L)
-        && Item_TestFrameEqual(lara_item, LF_BOAT_EXIT_END)) {
+        && Item_TestFrameEqual(lara_item, -1)) {
         if (lara_item->current_anim_state == BOAT_STATE_JUMP_L) {
             lara_item->rot.y -= DEG_90;
         } else {
