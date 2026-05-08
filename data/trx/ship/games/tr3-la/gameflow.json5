@@ -157,7 +157,7 @@
                 {"type": "play_music", "music_track": 14},
                 {"type": "level_stats"},
                 {"type": "play_music", "music_track": 121},
-                {"type": "display_picture", "credit": true, "path": "theend2_la.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "display_picture", "credit": true, "path": "theend_la.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "credit01_eu_la.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "credit02_la.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
                 {"type": "display_picture", "credit": true, "path": "credit03_la.webp", "display_time": 5, "fade_in_time": 1.0, "fade_out_time": 1.0},
