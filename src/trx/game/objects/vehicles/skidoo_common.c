@@ -19,75 +19,70 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 
-#define M_RADIUS 500
-#define M_SIDE 260
-#define M_FRONT 550
-#define M_SNOW 500
-#define M_GET_OFF_DIST 330
-#define M_TARGET_DIST (WALL_L * 2) // = 2048
-
-#define M_ACCELERATION 10
-#define M_SLOWDOWN 2
-
-#define M_SLIP 100
-#define M_SLIP_SIDE 50
-
-#define M_MAX_BACK -30
-#define M_BRAKE 5
-#define M_REVERSE (-5)
-#define M_UNDO_TURN (DEG_1 * 2) // = 364
-#define M_TURN (DEG_1 / 2 + M_UNDO_TURN) // = 455
-#define M_MOMENTUM_TURN (DEG_1 * 3) // = 546
-#define M_MAX_MOMENTUM_TURN (DEG_1 * 150) // = 27300
-#define M_MIN_BOUNCE 50
-#define M_MAX_KICK -80
-
-#define LF_SKIDOO_EXIT_END 59
-#define LF_SKIDOO_LET_GO_END 17
+// clang-format off
+#define M_RADIUS            500
+#define M_SIDE              260
+#define M_FRONT             550
+#define M_SNOW              500
+#define M_GET_OFF_DIST      330
+#define M_TARGET_DIST       (WALL_L * 2)              // = 2048
+#define M_ACCELERATION      10
+#define M_SLOWDOWN          2
+#define M_SLIP              100
+#define M_SLIP_SIDE         50
+#define M_MAX_BACK          (-30)
+#define M_BRAKE             5
+#define M_REVERSE           (-5)
+#define M_UNDO_TURN         (DEG_1 * 2)               // = 364
+#define M_TURN              (DEG_1 / 2 + M_UNDO_TURN) // = 455
+#define M_MOMENTUM_TURN     (DEG_1 * 3)               // = 546
+#define M_MAX_MOMENTUM_TURN (DEG_1 * 150)             // = 27300
+#define M_MIN_BOUNCE        50
+#define M_MAX_KICK          (-80)
+// clang-format on
 
 typedef enum {
-    M_GET_ON_NONE = 0,
-    SKIDOO_GET_ON_LEFT = 1,
-    M_GET_ON_RIGHT = 2,
+    M_GET_ON_NONE,
+    M_GET_ON_LEFT,
+    M_GET_ON_RIGHT,
 } M_GET_ON_SIDE;
 
 typedef enum {
-    // clang-format off
-    LARA_STATE_SKIDOO_SIT       = 0,
-    LARA_STATE_SKIDOO_GET_ON    = 1,
-    LARA_STATE_SKIDOO_LEFT      = 2,
-    LARA_STATE_SKIDOO_RIGHT     = 3,
-    LARA_STATE_SKIDOO_FALL      = 4,
-    LARA_STATE_SKIDOO_HIT       = 5,
-    LARA_STATE_SKIDOO_GET_ON_L  = 6,
-    LARA_STATE_SKIDOO_GET_OFF_L = 7,
-    LARA_STATE_SKIDOO_STILL     = 8,
-    LARA_STATE_SKIDOO_GET_OFF_R = 9,
-    LARA_STATE_SKIDOO_LET_GO    = 10,
-    LARA_STATE_SKIDOO_DEATH     = 11,
-    LARA_STATE_SKIDOO_FALLOFF   = 12,
+    M_STATE_SIT,
+    M_STATE_GET_ON,
+    M_STATE_LEFT,
+    M_STATE_RIGHT,
+    M_STATE_FALL,
+    M_STATE_HIT,
+    M_STATE_GET_ON_L,
+    M_STATE_GET_OFF_L,
+    M_STATE_STILL,
+    M_STATE_GET_OFF_R,
+    M_STATE_LET_GO,
+    M_STATE_DEATH,
+    M_STATE_FALLOFF,
     // clang-format on
-} LARA_SKIDOO_STATE;
+} M_STATE;
 
 typedef enum {
     // clang-format off
-    LA_SKIDOO_GET_ON_L = 1,
-    LA_SKIDOO_FALL = 8,
-    LA_SKIDOO_HIT_LEFT = 11,
-    LA_SKIDOO_HIT_RIGHT = 12,
-    LA_SKIDOO_HIT_FRONT = 13,
-    LA_SKIDOO_HIT_BACK = 14,
-    LA_SKIDOO_DEAD = 15,
-    LA_SKIDOO_GET_ON_R = 18,
+    M_ANIM_GET_ON_L  = 1,
+    M_ANIM_FALL      = 8,
+    M_ANIM_HIT_LEFT  = 11,
+    M_ANIM_HIT_RIGHT = 12,
+    M_ANIM_HIT_FRONT = 13,
+    M_ANIM_HIT_BACK  = 14,
+    M_ANIM_DEAD      = 15,
+    M_ANIM_GET_ON_R  = 18,
     // clang-format on
-} LARA_ANIM_SKIDOO;
+} M_ANIM;
 
-BITE g_Skidoo_LeftGun = {
+const BITE g_Skidoo_LeftGun = {
     .pos = { .x = 219, .y = -71, .z = M_FRONT },
     .mesh_num = 0,
 };
 
-BITE g_Skidoo_RightGun = {
+const BITE g_Skidoo_RightGun = {
     .pos = { .x = -235, .y = -71, .z = M_FRONT },
     .mesh_num = 0,
 };
@@ -188,7 +183,7 @@ int32_t Skidoo_CheckGetOn(const int16_t item_num, COLL_INFO *const coll)
 
     M_GET_ON_SIDE get_on = M_GET_ON_NONE;
     if (angle > DEG_45 && angle < DEG_135) {
-        get_on = SKIDOO_GET_ON_LEFT;
+        get_on = M_GET_ON_LEFT;
     } else if (angle > -DEG_135 && angle < -DEG_45) {
         get_on = M_GET_ON_RIGHT;
     }
@@ -232,10 +227,10 @@ void Skidoo_Collision(
         lara->request_gun_type = LGT_UNARMED;
     }
 
-    const LARA_ANIM_SKIDOO anim_idx =
-        get_on == SKIDOO_GET_ON_LEFT ? LA_SKIDOO_GET_ON_L : LA_SKIDOO_GET_ON_R;
+    const M_ANIM anim_idx =
+        get_on == M_GET_ON_LEFT ? M_ANIM_GET_ON_L : M_ANIM_GET_ON_R;
     Lara_Vehicle_SwitchToAnim(anim_idx, 0);
-    lara_item->current_anim_state = LARA_STATE_SKIDOO_GET_ON;
+    lara_item->current_anim_state = M_STATE_GET_ON;
     lara->gun_status = LGS_ARMLESS;
     lara->hit_direction = DIR_UNKNOWN;
 
@@ -540,7 +535,7 @@ int32_t Skidoo_CheckGetOffOK(int32_t direction)
     ITEM *const skidoo = Lara_Vehicle_GetItem();
 
     int16_t rot;
-    if (direction == LARA_STATE_SKIDOO_GET_OFF_L) {
+    if (direction == M_STATE_GET_OFF_L) {
         rot = skidoo->rot.y + DEG_90;
     } else {
         rot = skidoo->rot.y - DEG_90;
@@ -580,65 +575,65 @@ void Skidoo_Animation(
     ITEM *const lara_item = Lara_GetItem();
 
     if (skidoo->pos.y != skidoo->floor && skidoo->fall_speed > 0
-        && lara_item->current_anim_state != LARA_STATE_SKIDOO_FALL && !dead) {
-        Lara_Vehicle_SwitchToAnim(LA_SKIDOO_FALL, 0);
-        lara_item->goal_anim_state = LARA_STATE_SKIDOO_FALL;
-        lara_item->current_anim_state = LARA_STATE_SKIDOO_FALL;
+        && lara_item->current_anim_state != M_STATE_FALL && !dead) {
+        Lara_Vehicle_SwitchToAnim(M_ANIM_FALL, 0);
+        lara_item->goal_anim_state = M_STATE_FALL;
+        lara_item->current_anim_state = M_STATE_FALL;
         return;
     }
 
     if (collide != 0 && !dead
-        && lara_item->current_anim_state != LARA_STATE_SKIDOO_FALL) {
-        if (lara_item->current_anim_state != LARA_STATE_SKIDOO_HIT) {
-            if (collide == LA_SKIDOO_HIT_FRONT) {
+        && lara_item->current_anim_state != M_STATE_FALL) {
+        if (lara_item->current_anim_state != M_STATE_HIT) {
+            if (collide == M_ANIM_HIT_FRONT) {
                 Sound_Effect(SFX_CLATTER_2, &skidoo->pos, SPM_NORMAL);
             } else {
                 Sound_Effect(SFX_CLATTER_1, &skidoo->pos, SPM_NORMAL);
             }
             Lara_Vehicle_SwitchToAnim(collide, 0);
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_HIT;
-            lara_item->current_anim_state = LARA_STATE_SKIDOO_HIT;
+            lara_item->goal_anim_state = M_STATE_HIT;
+            lara_item->current_anim_state = M_STATE_HIT;
         }
         return;
     }
 
     switch (lara_item->current_anim_state) {
-    case LARA_STATE_SKIDOO_SIT:
+    case M_STATE_SIT:
         if (skidoo->speed == 0) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_STILL;
+            lara_item->goal_anim_state = M_STATE_STILL;
         }
         if (dead) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_FALLOFF;
+            lara_item->goal_anim_state = M_STATE_FALLOFF;
         } else if (g_Input.left) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_LEFT;
+            lara_item->goal_anim_state = M_STATE_LEFT;
         } else if (g_Input.right) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_RIGHT;
+            lara_item->goal_anim_state = M_STATE_RIGHT;
         }
         break;
 
-    case LARA_STATE_SKIDOO_LEFT:
+    case M_STATE_LEFT:
         if (!g_Input.left) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+            lara_item->goal_anim_state = M_STATE_SIT;
         }
         break;
 
-    case LARA_STATE_SKIDOO_RIGHT:
+    case M_STATE_RIGHT:
         if (!g_Input.right) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+            lara_item->goal_anim_state = M_STATE_SIT;
         }
         break;
 
-    case LARA_STATE_SKIDOO_FALL:
+    case M_STATE_FALL:
         if (skidoo->fall_speed <= 0 || skidoo_data->left_fallspeed <= 0
             || skidoo_data->right_fallspeed <= 0) {
             Sound_Effect(SFX_CLATTER_3, &skidoo->pos, SPM_NORMAL);
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+            lara_item->goal_anim_state = M_STATE_SIT;
         } else if (skidoo->fall_speed > DAMAGE_START + DAMAGE_LENGTH) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_LET_GO;
+            lara_item->goal_anim_state = M_STATE_LET_GO;
         }
         break;
 
-    case LARA_STATE_SKIDOO_STILL: {
+    case M_STATE_STILL: {
         const int32_t music_track = Music_ToGameID(
             M_IsArmed(skidoo_data) ? MX_BATTLE_THEME : MX_SKIDOO_THEME);
         const uint16_t music_flags = Music_GetTrackFlags(music_track);
@@ -648,29 +643,27 @@ void Skidoo_Animation(
         }
 
         if (dead) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_DEATH;
+            lara_item->goal_anim_state = M_STATE_DEATH;
             return;
         }
 
-        lara_item->goal_anim_state = LARA_STATE_SKIDOO_STILL;
+        lara_item->goal_anim_state = M_STATE_STILL;
 
         if (g_Input.jump) {
-            if (g_Input.right
-                && Skidoo_CheckGetOffOK(LARA_STATE_SKIDOO_GET_OFF_R)) {
-                lara_item->goal_anim_state = LARA_STATE_SKIDOO_GET_OFF_R;
+            if (g_Input.right && Skidoo_CheckGetOffOK(M_STATE_GET_OFF_R)) {
+                lara_item->goal_anim_state = M_STATE_GET_OFF_R;
                 skidoo->speed = 0;
             } else if (
-                g_Input.left
-                && Skidoo_CheckGetOffOK(LARA_STATE_SKIDOO_GET_OFF_L)) {
-                lara_item->goal_anim_state = LARA_STATE_SKIDOO_GET_OFF_L;
+                g_Input.left && Skidoo_CheckGetOffOK(M_STATE_GET_OFF_L)) {
+                lara_item->goal_anim_state = M_STATE_GET_OFF_L;
                 skidoo->speed = 0;
             }
         } else if (g_Input.left) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_LEFT;
+            lara_item->goal_anim_state = M_STATE_LEFT;
         } else if (g_Input.right) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_RIGHT;
+            lara_item->goal_anim_state = M_STATE_RIGHT;
         } else if (g_Input.back || g_Input.forward) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_SIT;
+            lara_item->goal_anim_state = M_STATE_SIT;
         }
         break;
     }
@@ -705,10 +698,10 @@ bool Skidoo_CheckGetOff(void)
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if ((lara_item->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_R
-         || lara_item->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_L)
-        && Item_TestFrameEqual(lara_item, LF_SKIDOO_EXIT_END)) {
-        if (lara_item->current_anim_state == LARA_STATE_SKIDOO_GET_OFF_L) {
+    if ((lara_item->current_anim_state == M_STATE_GET_OFF_R
+         || lara_item->current_anim_state == M_STATE_GET_OFF_L)
+        && Item_TestFrameEqual(lara_item, -1)) {
+        if (lara_item->current_anim_state == M_STATE_GET_OFF_L) {
             lara_item->rot.y += DEG_90;
         } else {
             lara_item->rot.y -= DEG_90;
@@ -727,18 +720,18 @@ bool Skidoo_CheckGetOff(void)
         return true;
     }
 
-    if (lara_item->current_anim_state == LARA_STATE_SKIDOO_LET_GO
+    if (lara_item->current_anim_state == M_STATE_LET_GO
         && (skidoo->pos.y == skidoo->floor
-            || Item_TestFrameEqual(lara_item, LF_SKIDOO_LET_GO_END))) {
+            || Item_TestFrameEqual(lara_item, -1))) {
         Item_SwitchToAnim(lara_item, LA(LA_FREEFALL), 0);
-        lara_item->current_anim_state = LARA_STATE_SKIDOO_GET_OFF_R;
+        lara_item->current_anim_state = M_STATE_GET_OFF_R;
         if (skidoo->pos.y == skidoo->floor) {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_STILL;
+            lara_item->goal_anim_state = M_STATE_STILL;
             lara_item->fall_speed = DAMAGE_START + DAMAGE_LENGTH;
             lara_item->speed = 0;
             Skidoo_Explode(skidoo);
         } else {
-            lara_item->goal_anim_state = LARA_STATE_SKIDOO_GET_OFF_R;
+            lara_item->goal_anim_state = M_STATE_GET_OFF_R;
             lara_item->pos.y -= 200;
             lara_item->fall_speed = skidoo->fall_speed;
             lara_item->speed = skidoo->speed;
@@ -810,7 +803,7 @@ bool Skidoo_Control(void)
         g_Input.forward = 0;
         g_Input.left = 0;
         g_Input.right = 0;
-    } else if (lara_item->current_anim_state == LARA_STATE_SKIDOO_LET_GO) {
+    } else if (lara_item->current_anim_state == M_STATE_LET_GO) {
         dead = true;
         collide = 0;
     }
@@ -822,10 +815,10 @@ bool Skidoo_Control(void)
         collide = 0;
     } else {
         switch (lara_item->current_anim_state) {
-        case LARA_STATE_SKIDOO_GET_ON:
-        case LARA_STATE_SKIDOO_GET_OFF_L:
-        case LARA_STATE_SKIDOO_GET_OFF_R:
-        case LARA_STATE_SKIDOO_LET_GO:
+        case M_STATE_GET_ON:
+        case M_STATE_GET_OFF_L:
+        case M_STATE_GET_OFF_R:
+        case M_STATE_LET_GO:
             drive = -1;
             collide = 0;
             break;
@@ -884,7 +877,7 @@ bool Skidoo_Control(void)
     Item_UpdateRoom(Item_GetIndex(skidoo), room_num);
     Item_UpdateRoom(Item_GetIndex(lara_item), room_num);
 
-    if (lara_item->current_anim_state == LARA_STATE_SKIDOO_FALLOFF) {
+    if (lara_item->current_anim_state == M_STATE_FALLOFF) {
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
     } else {
@@ -908,7 +901,7 @@ bool Skidoo_Control(void)
     }
 
     if (dead) {
-        Item_SwitchToObjAnim(skidoo, LA_SKIDOO_DEAD, 0, O_SKIDOO_FAST);
+        Item_SwitchToObjAnim(skidoo, M_ANIM_DEAD, 0, O_SKIDOO_FAST);
     } else {
         Lara_Vehicle_SyncItemAnim();
     }
