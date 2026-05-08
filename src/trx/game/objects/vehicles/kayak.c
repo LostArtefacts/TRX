@@ -21,22 +21,37 @@
 #include <trx/game/spawn.h>
 
 typedef enum {
-    M_STATE_BACK = 0,
-    M_STATE_POSE = 1,
-    M_STATE_LEFT = 2,
-    M_STATE_RIGHT = 3,
-    M_STATE_CLIMB_IN = 4,
-    M_STATE_DEATH_IN = 5,
-    M_STATE_FORWARD = 6,
-    M_STATE_ROLL = 7,
-    M_STATE_DROWN_IN = 8,
-    M_STATE_JUMP_OUT = 9,
-    M_STATE_TURN_L = 10,
-    M_STATE_TURN_R = 11,
-    M_STATE_CLIMB_IN_R = 12,
-    M_STATE_CLIMB_OUT_L = 13,
-    M_STATE_CLIMB_OUT_R = 14,
+    M_STATE_BACK,
+    M_STATE_POSE,
+    M_STATE_LEFT,
+    M_STATE_RIGHT,
+    M_STATE_CLIMB_IN,
+    M_STATE_DEATH_IN,
+    M_STATE_FORWARD,
+    M_STATE_ROLL,
+    M_STATE_DROWN_IN,
+    M_STATE_JUMP_OUT,
+    M_STATE_TURN_L,
+    M_STATE_TURN_R,
+    M_STATE_CLIMB_IN_R,
+    M_STATE_CLIMB_OUT_L,
+    M_STATE_CLIMB_OUT_R,
 } M_STATE;
+
+typedef enum {
+    // clang-format off
+    M_ANIM_BACK           = 2,
+    M_ANIM_MOUNT_RIGHT    = 3,
+    M_ANIM_PREPARE_RIDE   = 4,
+    M_ANIM_DEATH          = 5,
+    M_ANIM_PREPARE_EXIT   = 14,
+    M_ANIM_DISMOUNT_LEFT  = 24,
+    M_ANIM_HOLD_LEFT      = 26,
+    M_ANIM_HOLD_RIGHT     = 27,
+    M_ANIM_MOUNT_LEFT     = 28,
+    M_ANIM_DISMOUNT_RIGHT = 32,
+    // clang-format on
+} M_ANIM;
 
 typedef struct {
     struct {
@@ -202,7 +217,7 @@ static void M_Collision(
         lara_info->request_gun_type = LGT_UNARMED;
     }
 
-    const int16_t anim_idx = lr > 0 ? 3 : 28; // TODO: define anim enum
+    const M_ANIM anim_idx = lr > 0 ? M_ANIM_MOUNT_RIGHT : M_ANIM_MOUNT_LEFT;
     Lara_Vehicle_SwitchToAnim(anim_idx, 0);
     l->current_anim_state = M_STATE_CLIMB_IN;
     l->goal_anim_state = M_STATE_CLIMB_IN;
@@ -283,7 +298,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
 
     if (l->hit_points <= 0 && l->current_anim_state != M_STATE_DEATH_IN) {
-        Lara_Vehicle_SwitchToAnim(5, 0);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_DEATH, 0);
         l->current_anim_state = M_STATE_DEATH_IN;
         l->goal_anim_state = M_STATE_DEATH_IN;
     }
@@ -298,7 +313,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
             l->goal_anim_state = M_STATE_POSE;
         }
 
-        if (anim == 2) {
+        if (anim == M_ANIM_BACK) {
             if (frame == 8) {
                 p->rot += 0x800000;
                 p->vel -= 0x180000;
@@ -463,7 +478,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_CLIMB_IN:
-        if (anim == 4 && frame == 24 && !p->paddle.equipped) {
+        if (anim == M_ANIM_PREPARE_RIDE && frame == 24 && !p->paddle.equipped) {
             Lara_Skin_SetExtraEquipment(LM_HAND_R, EXTRA_MESH_OAR);
             Item_SetMeshVisibleMask(l, m_KayakHiddenBodyMeshes, false);
             p->paddle.equipped = true;
@@ -471,7 +486,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_JUMP_OUT:
-        if (anim == 14 && frame == 27 && p->paddle.equipped) {
+        if (anim == M_ANIM_PREPARE_EXIT && frame == 27 && p->paddle.equipped) {
             Lara_Skin_ClearEquipment(LM_HAND_R);
             Item_SetMeshVisibleMask(l, m_KayakHiddenBodyMeshes, true);
             p->paddle.equipped = false;
@@ -484,7 +499,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
             || (!p->vel && !lara_info->current.vel.x
                 && !lara_info->current.vel.z)) {
             l->goal_anim_state = M_STATE_POSE;
-        } else if (anim == 26) {
+        } else if (anim == M_ANIM_HOLD_LEFT) {
             if (p->vel >= 0) {
                 p->rot -= 0x200000;
                 CLAMPL(p->rot, -0x1000000);
@@ -509,7 +524,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
             || (!p->vel && !lara_info->current.vel.x
                 && !lara_info->current.vel.z)) {
             l->goal_anim_state = M_STATE_POSE;
-        } else if (anim == 27) {
+        } else if (anim == M_ANIM_HOLD_RIGHT) {
             if (p->vel >= 0) {
                 p->rot += 0x200000;
                 CLAMPG(p->rot, 0x1000000);
@@ -530,7 +545,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_CLIMB_OUT_L:
-        if (anim == 24 && frame == 83) {
+        if (anim == M_ANIM_DISMOUNT_LEFT && frame == 83) {
             XYZ_32 pos = { .x = 0, .y = 350, .z = 500 };
             Lara_GetMeshPos(LM_HIPS, &pos);
             l->pos = pos;
@@ -548,7 +563,7 @@ static void M_KayakUserInput(ITEM *const item, ITEM *const l, M_PRIV *const p)
         break;
 
     case M_STATE_CLIMB_OUT_R:
-        if (anim == 32 && frame == 83) {
+        if (anim == M_ANIM_DISMOUNT_RIGHT && frame == 83) {
             XYZ_32 pos = { .x = 0, .y = 350, .z = 500 };
             Lara_GetMeshPos(LM_HIPS, &pos);
             l->pos = pos;
