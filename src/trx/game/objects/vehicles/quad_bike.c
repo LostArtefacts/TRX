@@ -57,6 +57,21 @@ typedef enum {
     M_STATE_GET_OFF_L,
 } M_STATE;
 
+typedef enum {
+    // clang-format off
+    M_ANIM_TURN_LEFT   = 3,
+    M_ANIM_FALL_FRONT  = 6,
+    M_ANIM_MOUNT_RIGHT = 9,
+    M_ANIM_HIT_BACK    = 11,
+    M_ANIM_HIT_FRONT   = 12,
+    M_ANIM_HIT_RIGHT   = 13,
+    M_ANIM_HIT_LEFT    = 14,
+    M_ANIM_TURN_RIGHT  = 20,
+    M_ANIM_MOUNT_LEFT  = 23,
+    M_ANIM_FALL_BACK   = 25,
+    // clang-format on
+} M_ANIM;
+
 static bool m_DontExitQuad;
 static bool m_HandbrakeStarting;
 static bool m_CanHandbrakeStart;
@@ -288,11 +303,11 @@ static void M_Collision(
         - item->rot.y;
 
     if (angle > -0x1FFE && angle < 0x5FFA) {
-        Lara_Vehicle_SwitchToAnim(23, 0); // TODO: define anim enum
+        Lara_Vehicle_SwitchToAnim(M_ANIM_MOUNT_LEFT, 0);
         lara_item->current_anim_state = M_STATE_GET_ON_L;
         lara_item->goal_anim_state = M_STATE_GET_ON_L;
     } else {
-        Lara_Vehicle_SwitchToAnim(9, 0);
+        Lara_Vehicle_SwitchToAnim(M_ANIM_MOUNT_RIGHT, 0);
         lara_item->current_anim_state = M_STATE_GET_ON_R;
         lara_item->goal_anim_state = M_STATE_GET_ON_R;
     }
@@ -309,7 +324,7 @@ static void M_Collision(
     Item_Animate(lara_item);
 
     // TODO: do not hardcode this
-    if (g_TRVersion == 3 && GF_GetCurrentLevel()->num == 3) {
+    if (g_TRVersion == 3 && GF_BadGetLevelNum() == 3) {
         const bool is_ambient =
             Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
         const MUSIC_ID tunes[4] = { 9, 12, 4, 12 };
@@ -982,7 +997,8 @@ static void M_AnimateQuadBike(
 
     if (item->pos.y != item->floor && state != M_STATE_FALL
         && state != M_STATE_LAND && state != M_STATE_FALL_OFF && !killed) {
-        const int16_t anim_idx = quad->velocity < 0 ? 6 : 25;
+        const int16_t anim_idx =
+            quad->velocity < 0 ? M_ANIM_FALL_FRONT : M_ANIM_FALL_BACK;
         Lara_Vehicle_SwitchToAnim(anim_idx, 0);
         lara_item->current_anim_state = M_STATE_FALL;
         lara_item->goal_anim_state = M_STATE_FALL;
@@ -992,25 +1008,25 @@ static void M_AnimateQuadBike(
         && state != M_STATE_FALL_OFF && quad->velocity > 0x3555 && !killed) {
         switch (hit_wall) {
         case 13:
-            Lara_Vehicle_SwitchToAnim(12, 0);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_HIT_FRONT, 0);
             lara_item->current_anim_state = M_STATE_HIT_FRONT;
             lara_item->goal_anim_state = M_STATE_HIT_FRONT;
             break;
 
         case 14:
-            Lara_Vehicle_SwitchToAnim(11, 0);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_HIT_BACK, 0);
             lara_item->current_anim_state = M_STATE_HIT_BACK;
             lara_item->goal_anim_state = M_STATE_HIT_BACK;
             break;
 
         case 11:
-            Lara_Vehicle_SwitchToAnim(14, 0);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_HIT_LEFT, 0);
             lara_item->current_anim_state = M_STATE_HIT_LEFT;
             lara_item->goal_anim_state = M_STATE_HIT_LEFT;
             break;
 
         default:
-            Lara_Vehicle_SwitchToAnim(13, 0);
+            Lara_Vehicle_SwitchToAnim(M_ANIM_HIT_RIGHT, 0);
             lara_item->current_anim_state = M_STATE_HIT_RIGHT;
             lara_item->goal_anim_state = M_STATE_HIT_RIGHT;
             break;
@@ -1043,11 +1059,11 @@ static void M_AnimateQuadBike(
             }
             break;
 
-        case 2:
+        case M_STATE_TURN_L:
             if (!(quad->velocity & 0xFFFFFF00)) {
                 lara_item->goal_anim_state = M_STATE_STOP;
             } else if (g_Input.right) {
-                Lara_Vehicle_SwitchToAnim(20, 0);
+                Lara_Vehicle_SwitchToAnim(M_ANIM_TURN_RIGHT, 0);
                 lara_item->current_anim_state = M_STATE_TURN_R;
                 lara_item->goal_anim_state = M_STATE_TURN_R;
             } else if (!g_Input.left) {
@@ -1055,9 +1071,9 @@ static void M_AnimateQuadBike(
             }
             break;
 
-        case 5:
-        case 6:
-        case 18:
+        case M_STATE_SLOW:
+        case M_STATE_BRAKE:
+        case M_STATE_STOP_SLOWLY:
             if (!(quad->velocity & 0xFFFFFF00)) {
                 lara_item->goal_anim_state = M_STATE_STOP;
             } else if (g_Input.left) {
@@ -1067,7 +1083,7 @@ static void M_AnimateQuadBike(
             }
             break;
 
-        case 8:
+        case M_STATE_FALL:
             if (item->pos.y == item->floor) {
                 lara_item->goal_anim_state = M_STATE_LAND;
             } else if (item->fall_speed > 240 && !Game_IsInGym()) {
@@ -1075,16 +1091,16 @@ static void M_AnimateQuadBike(
             }
             break;
 
-        case 11:
-        case 12:
-        case 13:
-        case 14:
+        case M_STATE_HIT_BACK:
+        case M_STATE_HIT_FRONT:
+        case M_STATE_HIT_LEFT:
+        case M_STATE_HIT_RIGHT:
             if (g_Input.jump || g_Input.action) {
                 lara_item->goal_anim_state = M_STATE_DRIVE;
             }
             break;
 
-        case 15:
+        case M_STATE_STOP:
             if (killed) {
                 lara_item->goal_anim_state = M_STATE_BIKE_DEATH;
                 break;
@@ -1100,11 +1116,11 @@ static void M_AnimateQuadBike(
             }
             break;
 
-        case 22:
+        case M_STATE_TURN_R:
             if (!(quad->velocity & 0xFFFFFF00)) {
                 lara_item->goal_anim_state = M_STATE_STOP;
             } else if (g_Input.left) {
-                Lara_Vehicle_SwitchToAnim(3, 0);
+                Lara_Vehicle_SwitchToAnim(M_ANIM_TURN_LEFT, 0);
                 lara_item->current_anim_state = M_STATE_TURN_L;
                 lara_item->goal_anim_state = M_STATE_TURN_L;
             } else if (!g_Input.right) {
