@@ -812,6 +812,19 @@ static char *M_SkipWhitespace(char *const line)
     return start;
 }
 
+static char *M_SkipUTF8BOM(char *const line)
+{
+    if (strlen(line) < 3) {
+        return line;
+    }
+
+    const unsigned char *const bytes = (const unsigned char *)line;
+    if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
+        return line + 3;
+    }
+    return line;
+}
+
 static bool M_IsFrameMarkerLine(const char *const line)
 {
     int32_t delta = 0;
@@ -852,6 +865,8 @@ SHELL_ARGS *TestReplay_Open(const char *path)
         char *const next_line = line + strlen(line) + 1;
         M_StripInlineComment(line);
         char *start = M_SkipWhitespace(line);
+        start = M_SkipUTF8BOM(start);
+        start = M_SkipWhitespace(start);
         if (*start != '\0') {
             Vector_Add(lines, &start);
         }
