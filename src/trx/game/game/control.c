@@ -45,6 +45,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     g_OverlayFlag = 1;
     Camera_Initialise();
     Interpolation_Remember();
+    Interpolation_Interpolate();
 
     Sound_StopAll();
     const bool is_cutscene = level->type == GFL_CUTSCENE;

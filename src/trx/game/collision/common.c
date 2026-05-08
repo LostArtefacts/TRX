@@ -733,46 +733,42 @@ bool Collide_TestBoundsCollide(
 
 void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
 {
-    int32_t ceiling;
-    int32_t height;
-    int32_t oldonobj;
-    int32_t bs;
-    int32_t yang;
 
     int16_t room_num = item->room_num;
     const SECTOR *sector = Room_GetSector(old_pos, &room_num);
-    int32_t oldheight = Room_GetHeight(sector, old_pos);
-    int32_t oldtype = Room_GetHeightType();
+    const int32_t old_height = Room_GetHeight(sector, old_pos);
+    const HEIGHT_TYPE old_type = Room_GetHeightType();
 
     room_num = item->room_num;
     sector = Room_GetSector(item->pos, &room_num);
-    height = Room_GetHeight(sector, item->pos);
+    int32_t height = Room_GetHeight(sector, item->pos);
 
+    bool bs;
     if (item->pos.y >= height) {
-        bs = 0;
+        bs = false;
 
-        if ((oldtype == HT_BIG_SLOPE || oldtype == HT_DIAGONAL)
-            && oldheight < height) {
-            yang = (uint16_t)item->rot.y;
+        if ((old_type == HT_BIG_SLOPE || old_type == HT_DIAGONAL)
+            && old_height < height) {
+            int32_t y_ang = (uint16_t)item->rot.y;
 
             const XZ_16 tilt = Room_GetTiltType(sector, item->pos);
             if (tilt.x < 0) {
-                if (yang >= DEG_180) {
-                    bs = 1;
+                if (y_ang >= DEG_180) {
+                    bs = true;
                 }
             } else if (tilt.x > 0) {
-                if (yang <= DEG_180) {
-                    bs = 1;
+                if (y_ang <= DEG_180) {
+                    bs = true;
                 }
             }
 
             if (tilt.z < 0) {
-                if (yang >= DEG_90 && yang <= DEG_270) {
-                    bs = 1;
+                if (y_ang >= DEG_90 && y_ang <= DEG_270) {
+                    bs = true;
                 }
             } else if (tilt.z > 0) {
-                if (yang <= DEG_90 || yang >= DEG_270) {
-                    bs = 1;
+                if (y_ang <= DEG_90 || y_ang >= DEG_270) {
+                    bs = true;
                 }
             }
         }
@@ -786,7 +782,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
             item->rot.y = x_cross && xs ? -item->rot.y : -DEG_180 - item->rot.y;
             item->pos = old_pos;
             item->speed >>= 1;
-        } else if (oldtype != HT_BIG_SLOPE && oldtype != HT_DIAGONAL) {
+        } else if (old_type != HT_BIG_SLOPE && old_type != HT_DIAGONAL) {
             if (item->fall_speed > 0) {
                 if (item->fall_speed > 16) {
                     if (item->object_id == O_GRENADE) {
@@ -1107,7 +1103,7 @@ void Collide_DoProperDetection(ITEM *const item, const XYZ_32 old_pos)
 
         room_num = item->room_num;
         sector = Room_GetSector(item->pos, &room_num);
-        ceiling = Room_GetCeiling(sector, item->pos);
+        int32_t ceiling = Room_GetCeiling(sector, item->pos);
 
         if (item->pos.y < ceiling) {
             const bool x_cross = ROUND_TO_SECTOR(item->pos.x ^ old_pos.x) != 0;

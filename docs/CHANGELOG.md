@@ -13,6 +13,7 @@
 - fixed stutters on certain levels with VSync off on some GPUs (#4975, regression from 1.0)
 - fixed demos being able to overwrite gameplay settings when changing other options during playback (regression from TR1X 4.14 / TR2X 1.4)
 - fixed replay scenario files saved with a UTF-8 signature not being read correctly
+- fixed Lara getting stuck in void after loading saves made while hanging from ladders (regression from TRX 1.2)
 
 **TR3**:
 - fixed Hand of Rathmore rotating in Sleeping with the Fishes
