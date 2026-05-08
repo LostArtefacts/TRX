@@ -1,5 +1,5 @@
 <div align="center">
-<h1>TRX – Tomb Raider I & II: Community Edition</h1>
+<h1>TRX – Tomb Raider I-III: Community Edition</h1>
 
 <p align="center">
   <a href="https://lostartefacts.dev/">
