@@ -66,6 +66,10 @@ static bool M_HasStaticBehind(const ITEM *const item, const int16_t angle)
 
 static bool M_IsBadDestination(const ITEM *const item, const int16_t angle)
 {
+    if (!g_Config.gameplay.fix_underwater_crawl) {
+        return false;
+    }
+
     XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, angle, STEP_L);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);

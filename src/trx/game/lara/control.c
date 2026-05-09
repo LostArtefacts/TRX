@@ -567,6 +567,11 @@ static void M_UpdateEnvironment(void)
             lara_info->head_rot.y = 0;
             lara_info->head_rot.x = 0;
             Lara_UpdateRoomToHeight(-LARA_HEIGHT / 2);
+            lara_info->is_crouched = false;
+            lara_info->crouching = false;
+            if (lara_info->gun_status == LGS_HANDS_BUSY) {
+                lara_info->gun_status = LGS_ARMLESS;
+            }
         }
         break;
     }
