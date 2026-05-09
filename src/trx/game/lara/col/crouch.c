@@ -25,6 +25,7 @@
 #define M_CRAWL_TILT_HEIGHT        238
 #define M_CRAWL_TILT_RATE          (DEG_1 * 3)         // = 546
 #define M_CRAWL_TILT_MAX           DEG_45
+#define M_MAX_WATER_DEPTH          (LARA_HEIGHT_CROUCH - STEP_L / 2) // = 272
 // clang-format on
 
 static bool M_DeflectEdgeCrawl(ITEM *const item, COLL_INFO *const coll)
@@ -68,7 +69,7 @@ static bool M_IsBadDestination(const ITEM *const item, const int16_t angle)
     XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, angle, STEP_L);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    pos.y = Room_GetHeight(sector, pos) - STEP_L;
+    pos.y = Room_GetHeight(sector, pos) - M_MAX_WATER_DEPTH;
     Room_GetSector(pos, &room_num);
     const ROOM *const room = Room_Get(room_num);
     return room->flags.swamp || room->flags.underwater;

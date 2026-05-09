@@ -14,6 +14,7 @@
 - fixed demos being able to overwrite gameplay settings when changing other options during playback (regression from TR1X 4.14 / TR2X 1.4)
 - fixed replay scenario files saved with a UTF-8 signature not being read correctly
 - fixed Lara getting stuck in void after loading saves made while hanging from ladders (regression from TRX 1.2)
+- fixed Lara not being able to crawl in one-click water rooms (regression from TRX 1.6)
 
 **TR3**:
 - fixed missing "The End" text in the first end credit image (#5441)
