@@ -1124,6 +1124,10 @@
             "title": "Càraich glitch ceumannan",
             "description": "Càradh far am bi Lara uaireannan air a putadh tro bhalla ri taobh ceuman nuair a ruitheas i suas orra.",
         },
+        "gameplay.fix_underwater_crawl": {
+            "title": "Càraich snàgadh fon uisge",
+            "description": "Càraichidh seo duilgheadas far am b' urrainn do Lara snàgadh bho thìr gu seòmraichean uisge no boglaich de dhoimhneachd sam bith. Ma tha seo an comas, chan urrainn do Lara snàgadh ach gu doimhneachd beagan nas motha na aon bhriog.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Càraich buille tro uisge eu-dhomhain",
             "description": "Cuiridh seo ceartachadh air freagairt Lara nuair a bhuail i balla fhad 's a tha i a' coiseachd tro uisge eu-dhomhain.",

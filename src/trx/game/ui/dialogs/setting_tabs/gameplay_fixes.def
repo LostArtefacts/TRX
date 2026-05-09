@@ -18,6 +18,7 @@ X_UI_CFG_ENUM(gameplay.wall_glitch_mode,    .misc = UI_Settings_WallGlitchEnumEn
 
 X_UI_CFG(gameplay.fix_wade_wall_hit,        .custom_handler = { .is_available = UI_Settings_FixWadeWallHit_IsAvailable })
 X_UI_CFG(gameplay.fix_water_exit)
+X_UI_CFG(gameplay.fix_underwater_crawl,     .custom_handler = { .is_available = UI_Settings_Crawl_IsAvailable })
 X_UI_CFG(gameplay.fix_qwop_glitch)
 X_UI_CFG(gameplay.fix_step_glitch,          .custom_handler = { .is_available = UI_Settings_FixStepGlitch_IsAvailable })
 X_UI_CFG(gameplay.fix_item_duplication_glitch)

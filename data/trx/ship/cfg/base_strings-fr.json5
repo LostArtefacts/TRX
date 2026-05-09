@@ -1124,6 +1124,10 @@
             "title": "Corriger le glitch des petites marches",
             "description": "Corrige le fait que Lara est parfois aspirée dans des murs adjacents à des petites marches lorsqu'elle monte dessus d'une manière spécifique.",
         },
+        "gameplay.fix_underwater_crawl": {
+            "title": "\\{review}Corriger le rampement sous l’eau",
+            "description": "\\{review}Corrige le problème permettant à Lara de ramper depuis la terre vers des salles d’eau ou de marécage de n’importe quelle profondeur. Si activé, Lara ne pourra ramper que jusqu’à une profondeur légèrement supérieure à un clic.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "\\{review}Corriger le coup de mur en marchant",
             "description": "\\{review}Corrige le fait que Lara ne réagisse pas lorsqu'elle heurte un mur en marchant.",

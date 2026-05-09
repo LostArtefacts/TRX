@@ -1124,6 +1124,10 @@
             "title": "Correggi errore gradini",
             "description": "Risolve il problema per cui a volte Lara viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo.",
         },
+        "gameplay.fix_underwater_crawl": {
+            "title": "\\{review}Correggi il movimento carponi sott’acqua",
+            "description": "\\{review}Corregge il problema che permetteva a Lara di strisciare dalla terraferma in stanze d’acqua o palude di qualsiasi profondità. Se abilitato, Lara potrà strisciare solo fino a una profondità leggermente superiore a un clic.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Correggi impatto muro",
             "description": "Risolve il problema per cui Lara non reagisce quando urta un muro mentre guada.",

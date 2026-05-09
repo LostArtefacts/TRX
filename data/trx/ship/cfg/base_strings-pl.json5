@@ -1124,6 +1124,10 @@
             "title": "Napraw glitch ze schodami",
             "description": "Naprawia problem, w którym Lara czasami jest popychana w ściany przylegające do małych stopni, kiedy biegnie po nich w określony sposób.",
         },
+        "gameplay.fix_underwater_crawl": {
+            "title": "\\{review}Napraw czołganie pod wodą",
+            "description": "\\{review}Naprawia błąd pozwalający Larze czołgać się z lądu do pomieszczeń z wodą lub bagnem o dowolnej głębokości. Po włączeniu Lara będzie mogła czołgać się jedynie do głębokości nieco większej niż jeden klik.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Zderzenia w wodzie po pas",
             "description": "Naprawia problem, w którym Lara nie reaguje na uderzenie w ścianę podczas brodzenia w wodzie po pas.",

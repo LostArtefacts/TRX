@@ -1124,6 +1124,10 @@
             "title": "Fix step glitch",
             "description": "Fixes Lara sometimes being pushed into walls adjacent to steps when running up them in a specific way.",
         },
+        "gameplay.fix_underwater_crawl": {
+            "title": "Fix underwater crawling",
+            "description": "Fixes Lara being able to crawl from land into water or swamp rooms of any depth. If enabled, Lara will only be able to crawl to a depth of slightly over one click.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Fix wading wall hit",
             "description": "Fixes Lara not responding to hitting a wall while wading.",

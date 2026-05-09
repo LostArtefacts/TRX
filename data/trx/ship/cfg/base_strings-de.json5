@@ -1124,6 +1124,10 @@
             "title": "Fix: Stufen-Glitch",
             "description": "Fixt, dass Lara manchmal in Wände, die an Treppen angrenzen, gedrückt wird, wenn sie auf eine bestimmte Weise an ihnen entlangläuft.",
         },
+        "gameplay.fix_underwater_crawl": {
+            "title": "\\{review}Unterwasser-Kriechen korrigieren",
+            "description": "\\{review}Behebt den Fehler, durch den Lara vom Land in Wasser- oder Sumpfräume beliebiger Tiefe kriechen kann. Wenn aktiviert, kann Lara nur bis zu einer Tiefe von etwas mehr als einem Klick kriechen.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Fix: Wand-Treffer beim Waten",
             "description": "Fixt, dass Lara beim waten nicht reagiert, wenn sie eine Wand trifft.",
