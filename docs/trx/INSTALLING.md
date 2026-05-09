@@ -919,6 +919,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── title_eu.webp
 │   │   │   └── title_us.webp
 │   │   ├── injections
+│   │   │   ├── aldwych_animating_bounds.bin
 │   │   │   ├── aldwych_fd.bin
 │   │   │   ├── aldwych_pickup_meshes.bin
 │   │   │   ├── aldwych_textures.bin
@@ -926,6 +927,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── antarc_door134_frames.bin
 │   │   │   ├── antarc_sky.bin
 │   │   │   ├── antarc_textures.bin
+│   │   │   ├── area51_animating_bounds.bin
 │   │   │   ├── area51_sky.bin
 │   │   │   ├── area51_textures.bin
 │   │   │   ├── cavern_door131_frames.bin
@@ -933,6 +935,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cavern_sky.bin
 │   │   │   ├── cavern_textures.bin
 │   │   │   ├── city_textures.bin
+│   │   │   ├── cliff_animating_bounds.bin
 │   │   │   ├── cliff_door132_frames.bin
 │   │   │   ├── coastal_airlock.bin
 │   │   │   ├── coastal_animating_bounds.bin
@@ -941,6 +944,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── compound_animating_bounds.bin
 │   │   │   ├── compound_cine.bin
 │   │   │   ├── compound_textures.bin
+│   │   │   ├── crash_animating_bounds.bin
 │   │   │   ├── crash_pickup_meshes.bin
 │   │   │   ├── crash_sky.bin
 │   │   │   ├── cut1_setup.bin
@@ -971,6 +975,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_gym_guns.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── london_sky.bin
+│   │   │   ├── luds_animating_bounds.bin
 │   │   │   ├── luds_diver_animation.bin
 │   │   │   ├── luds_textures.bin
 │   │   │   ├── madubu_textures.bin
@@ -988,6 +993,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── scotland_sky.bin
 │   │   │   ├── stpaul_animating_bounds.bin
 │   │   │   ├── stpaul_textures.bin
+│   │   │   ├── thames_animating_bounds.bin
 │   │   │   ├── thames_textures.bin
 │   │   │   ├── tinnos_cameras.bin
 │   │   │   ├── tinnos_fd.bin
@@ -2052,6 +2058,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── title_eu.webp
     │   │   │   │   └── title_us.webp
     │   │   │   ├── injections
+    │   │   │   │   ├── aldwych_animating_bounds.bin
     │   │   │   │   ├── aldwych_fd.bin
     │   │   │   │   ├── aldwych_pickup_meshes.bin
     │   │   │   │   ├── aldwych_textures.bin
@@ -2059,6 +2066,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── antarc_door134_frames.bin
     │   │   │   │   ├── antarc_sky.bin
     │   │   │   │   ├── antarc_textures.bin
+    │   │   │   │   ├── area51_animating_bounds.bin
     │   │   │   │   ├── area51_sky.bin
     │   │   │   │   ├── area51_textures.bin
     │   │   │   │   ├── cavern_door131_frames.bin
@@ -2066,6 +2074,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cavern_sky.bin
     │   │   │   │   ├── cavern_textures.bin
     │   │   │   │   ├── city_textures.bin
+    │   │   │   │   ├── cliff_animating_bounds.bin
     │   │   │   │   ├── cliff_door132_frames.bin
     │   │   │   │   ├── coastal_airlock.bin
     │   │   │   │   ├── coastal_animating_bounds.bin
@@ -2074,6 +2083,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── compound_animating_bounds.bin
     │   │   │   │   ├── compound_cine.bin
     │   │   │   │   ├── compound_textures.bin
+    │   │   │   │   ├── crash_animating_bounds.bin
     │   │   │   │   ├── crash_pickup_meshes.bin
     │   │   │   │   ├── crash_sky.bin
     │   │   │   │   ├── cut1_setup.bin
@@ -2104,6 +2114,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lara_gym_guns.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   ├── london_sky.bin
+    │   │   │   │   ├── luds_animating_bounds.bin
     │   │   │   │   ├── luds_diver_animation.bin
     │   │   │   │   ├── luds_textures.bin
     │   │   │   │   ├── madubu_textures.bin
@@ -2121,6 +2132,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── scotland_sky.bin
     │   │   │   │   ├── stpaul_animating_bounds.bin
     │   │   │   │   ├── stpaul_textures.bin
+    │   │   │   │   ├── thames_animating_bounds.bin
     │   │   │   │   ├── thames_textures.bin
     │   │   │   │   ├── tinnos_cameras.bin
     │   │   │   │   ├── tinnos_fd.bin
