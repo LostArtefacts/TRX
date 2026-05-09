@@ -100,6 +100,7 @@
             "injections": [
                 "lara_guns.bin",
                 "cliff_door132_frames.bin",
+                "cliff_animating_bounds.bin",
             ],
         },
 

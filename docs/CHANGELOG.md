@@ -28,6 +28,7 @@
 - fixed a missing face on the push button in Antarctica (#5428)
 - fixed Punks repeating their alert sounds and not targeting Lara in all cases (#5456, regression from 1.6)
 - fixed height checks that could make Lara refuse to dismount the Mine Cart in custom levels
+- fixed the Strobe Light being clipped out of view too soon in several levels (missing animation bounds) (regression from 1.2)
 
 
 
