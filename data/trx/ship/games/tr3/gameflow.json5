@@ -191,6 +191,7 @@
                 "crash_sky.bin",
                 "crash_pickup_meshes.bin",
                 "lara_guns.bin",
+                "crash_animating_bounds.bin",
             ],
         },
 
@@ -254,6 +255,7 @@
                 "lara_guns.bin",
                 "menu_artefacts.bin",
                 "thames_textures.bin",
+                "thames_animating_bounds.bin",
             ],
         },
 
@@ -277,6 +279,7 @@
                 "aldwych_pickup_meshes.bin",
                 "aldwych_textures.bin",
                 "menu_artefacts.bin",
+                "aldwych_animating_bounds.bin",
             ],
         },
 
@@ -300,6 +303,7 @@
                 "luds_diver_animation.bin",
                 "luds_textures.bin",
                 "menu_artefacts.bin",
+                "luds_animating_bounds.bin",
             ],
             "unobtainable_pickups": 2,
         },
@@ -400,6 +404,7 @@
                 "lara_guns.bin",
                 "globe_model.bin",
                 "area51_textures.bin",
+                "area51_animating_bounds.bin",
             ],
         },
 
