@@ -19,6 +19,7 @@
 - fixed Lara getting stuck in void after loading saves made while hanging from ladders (regression from 1.2)
 - fixed Lara not being able to crawl in one-click water rooms (regression from 1.6)
 - fixed water height checks when `Fix wall geometry` is not enabled (regression from 1.6)
+- fixed level music tracks continuing to play when returning to the main menu if the option not to play the title music is enabled (#5470, regression from TR1X 4.13 / TR2X 1.3)
 
 **TR3**:
 - fixed missing "The End" text in the first end credit image (#5441)
