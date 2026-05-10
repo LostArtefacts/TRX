@@ -476,6 +476,7 @@
                 "tinnos_cameras.bin",
                 "tinnos_flames.bin",
                 "tinnos_fd.bin",
+                "tinnos_textures.bin",
             ],
             "unobtainable_pickups": 1,
         },
