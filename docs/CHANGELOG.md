@@ -15,6 +15,7 @@
 - fixed potential crashes in old custom levels that contain invalid room visibility portals (#5447)
 - fixed transparent pixels on TR3 outfit heads when bilinear filtering is enabled (#5438)
 - fixed transparent pixels on the TR2 Bomber Jacket outfit sleeve
+- fixed passport dialog appearing off-center when showing long save names (#249)
 - fixed stutters on certain levels with VSync off on some GPUs (#4975, regression from 1.0)
 - fixed demos being able to overwrite gameplay settings when changing other options during playback (regression from TR1X 4.14 / TR2X 1.4)
 - fixed replay scenario files saved with a UTF-8 signature not being read correctly

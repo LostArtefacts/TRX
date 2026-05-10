@@ -46,7 +46,11 @@ void UI_BeginBasePassportDialog(void)
 {
     const float modal_y = g_Inv_Mode == INV_TITLE_MODE ? 0.81f : 0.62f;
     UI_BeginModal(0.5f, modal_y);
-    UI_BeginResize(300.0f, -1.0f);
+    UI_BeginResizeEx((UI_RESIZE_SETTINGS) {
+        .w = 300.0f,
+        .h = -1.0f,
+        .align_h = 0.5f,
+    });
 }
 
 void UI_EndBasePassportDialog(void)
