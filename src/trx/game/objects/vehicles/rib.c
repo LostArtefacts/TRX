@@ -872,7 +872,13 @@ static void M_Control(const int16_t item_num)
     const int32_t hfr = M_TestWaterHeight(item, M_FRONT, M_SIDE, &fr);
 
     int16_t room_num = item->room_num;
-    const SECTOR *sector = Room_GetSector(item->pos, &room_num);
+    const SECTOR *sector = Room_GetSector(
+        (XYZ_32) {
+            item->pos.x,
+            item->pos.y + M_SHIFT_Y,
+            item->pos.z,
+        },
+        &room_num);
     int32_t height = Room_GetHeight(sector, item->pos);
     Room_GetCeiling(sector, item->pos);
 
