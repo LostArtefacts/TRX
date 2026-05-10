@@ -355,6 +355,12 @@ static bool M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
             && item->anim_num < LARA_ORIGINAL_ANIM_COUNT) {
             item->anim_num += obj->anim_idx;
         }
+
+        // TODO: remove after 1.9
+        if (g_TRVersion == 3 && item->object_id == O_SWITCH_TYPE_BUTTON
+            && item->anim_num < obj->anim_idx) {
+            Item_SwitchToAnim(item, item->current_anim_state == 1 ? 0 : 1, 0);
+        }
     }
 
     if (obj->save_hitpoints) {
