@@ -1,22 +1,51 @@
 #include <trx/game/ui/elements/resize.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/ui/helpers.h>
 
 typedef struct {
-    float x;
-    float y;
+    float w;
+    float h;
+    float align_h;
+    float align_v;
 } M_DATA;
 
 static void M_Measure(UI_NODE *const node)
 {
     UI_MeasureWrapper(node);
     const M_DATA *const data = node->data;
-    if (data->x >= 0.0f) {
-        node->measure_w = data->x;
+    if (data->w >= 0.0f) {
+        node->measure_w = data->w;
     }
-    if (data->y >= 0.0f) {
-        node->measure_h = data->y;
+    if (data->h >= 0.0f) {
+        node->measure_h = data->h;
+    }
+}
+
+static void M_Layout(
+    UI_NODE *const node, const float x, const float y, const float w,
+    const float h)
+{
+    UI_LayoutBasic(node, x, y, w, h);
+    const M_DATA *const data = node->data;
+    UI_NODE *child = node->first_child;
+    while (child != nullptr) {
+        float child_w = w;
+        float child_h = h;
+        if (data->w >= 0.0f && data->align_h != 0.0f) {
+            child_w = MAX(child->measure_w, w);
+        }
+        if (data->h >= 0.0f && data->align_v != 0.0f) {
+            child_h = MAX(child->measure_h, h);
+        }
+
+        const float child_x = x + (w - child_w) * data->align_h;
+        const float child_y = y + (h - child_h) * data->align_v;
+        if (child->ops.layout != nullptr) {
+            child->ops.layout(child, child_x, child_y, child_w, child_h);
+        }
+        child = child->next_sibling;
     }
 }
 
@@ -28,20 +57,30 @@ static void M_Draw(const UI_NODE *const node)
     UI_DrawWrapper(node);
 }
 
-void UI_BeginResize(const float x, const float y)
+void UI_BeginResizeEx(const UI_RESIZE_SETTINGS settings)
 {
     UI_NODE *const node = UI_AllocNode(
         &(UI_WIDGET_OPS) {
             .measure = M_Measure,
-            .layout = UI_LayoutWrapper,
+            .layout = M_Layout,
             .draw = M_Draw,
         },
         sizeof(M_DATA));
     M_DATA *const data = node->data;
-    data->x = x * g_Config.ui.text_scale;
-    data->y = y * g_Config.ui.text_scale;
+    data->w = settings.w * g_Config.ui.text_scale;
+    data->h = settings.h * g_Config.ui.text_scale;
+    data->align_h = settings.align_h;
+    data->align_v = settings.align_v;
     UI_AddChild(node);
     UI_PushCurrent(node);
+}
+
+void UI_BeginResize(const float w, const float h)
+{
+    UI_BeginResizeEx((UI_RESIZE_SETTINGS) {
+        .w = w,
+        .h = h,
+    });
 }
 
 void UI_EndResize(void)
