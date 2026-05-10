@@ -490,6 +490,30 @@
             },
         },
 
+        // Antarctica Beta
+        "tr3_antarctica_beta": {
+            "name_gs": "dynamic/enums/lara_outfit/tr3_antarctica_beta",
+            "mesh_object": "O_LARA_SKIN_SWAP_25",
+            "gun_map": 4,
+            "combat_face_offset": 3,
+            "braid": {
+                "mesh_offset": 22,
+                "gold_offset": 28,
+                "hair_pos": {
+                    "x": 0,
+                    "y": -23,
+                    "z": -55,
+                },
+            },
+            "no_holster_offsets": {
+                "thigh_r": 27,
+                "thigh_l": 28,
+            },
+            "extra_outfits": {
+                "LS_EXTRA_MIDAS_KILL": "tr23_golden_lara",
+            },
+        },
+
         // Sophia Leigh
         "sophia": {
             "name_gs": "dynamic/enums/lara_outfit/sophia",
