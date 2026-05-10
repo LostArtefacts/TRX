@@ -32,6 +32,16 @@ typedef struct {
 } TRIGGER;
 
 typedef struct {
+    ITEM *camera_item;
+    bool switch_off;
+    bool flip_map;
+    bool flip_available;
+    int32_t new_effect;
+    bool flip_status;
+    bool is_heavy;
+} TRIGGER_STATUS;
+
+typedef struct {
     int16_t room_num;
     XYZ_16 normal;
     XYZ_16 vertex[4];

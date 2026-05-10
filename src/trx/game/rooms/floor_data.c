@@ -2,19 +2,15 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
-#include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/gym.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/level/settings.h>
-#include <trx/game/music.h>
 #include <trx/game/objects/general/keyhole.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/general/switch.h>
-#include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
-#include <trx/game/stats.h>
 #include <trx/version.h>
 
 #define M_NULL_INDEX 0
@@ -30,20 +26,9 @@
 #define M_TRIG_CAM_GLIDE(t) ((t & 0x3E00) >> 6)
 #define M_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
 
-static bool M_IsSpeechTrack(const MUSIC_ID track_id)
-{
-    switch (Music_FromGameID(track_id)) {
-    case MX_BALDY_SPEECH:
-    case MX_COWBOY_SPEECH:
-    case MX_LARSON_SPEECH:
-    case MX_NATLA_SPEECH:
-    case MX_PIERRE_SPEECH:
-    case MX_SKATEKID_SPEECH:
-        return true;
-    default:
-        return false;
-    }
-}
+static void (*m_Handlers[TO_NUMBER_OF])(
+    const TRIGGER *trigger, const TRIGGER_CMD *cmd,
+    TRIGGER_STATUS *status) = {};
 
 static const int16_t *M_ReadTrigger(
     const int16_t *data, const int16_t fd_entry, SECTOR *const sector)
@@ -129,87 +114,6 @@ static bool M_TestLava(const ITEM *const item)
     const SECTOR *const sector = Room_GetSector(
         (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
     return sector->is_death_sector;
-}
-
-static void M_TriggerMusicTrack(MUSIC_ID track_id, const TRIGGER *const trigger)
-{
-    if (track_id == (MUSIC_ID)0
-        && (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER)) {
-        Music_Stop();
-        return;
-    }
-
-    if (track_id <= Music_ToGameID(MX_UNUSED_1) || track_id >= MAX_MUSIC_TRACKS
-        || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track_id))) {
-        return;
-    }
-
-    uint16_t flags = Music_GetTrackFlags(track_id);
-    MUSIC_PLAY_MODE play_mode = MPM_NO_REPEAT;
-    if (g_Config.audio.fix_speeches_killing_music
-        && M_IsSpeechTrack(track_id)) {
-        play_mode = MPM_OVERLAY;
-    }
-
-    // TODO: consolidate
-    if (g_TRVersion == 1) {
-        if ((flags & IF_ONE_SHOT) != 0) {
-            return;
-        }
-
-        if (trigger->type == TT_SWITCH) {
-            flags ^= trigger->mask;
-        } else if (
-            trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
-            flags &= -1 - trigger->mask;
-        } else if (trigger->mask) {
-            flags |= trigger->mask;
-        }
-
-        if ((flags & IF_CODE_BITS) == IF_CODE_BITS) {
-            if (trigger->one_shot) {
-                flags |= IF_ONE_SHOT;
-            }
-            Music_Play_Direct(track_id, play_mode);
-        } else {
-            Music_StopTrack_Direct(track_id);
-        }
-    } else {
-        if (trigger->type != TT_SWITCH) {
-            const int32_t code = trigger->mask;
-            if ((flags & code) != 0) {
-                return;
-            }
-            if (trigger->one_shot) {
-                flags |= code;
-            }
-        }
-
-        if (trigger->timer == 0 || g_TRVersion != 2) {
-            Music_Play_Direct(track_id, play_mode);
-            goto finish;
-        }
-
-        if (track_id != Music_GetDelayedTrack()) {
-            Music_Play_Direct(track_id, MPM_DELAY);
-            flags = (flags & 0xFF00) | ((LOGIC_FPS * trigger->timer) & 0xFF);
-            goto finish;
-        }
-
-        int32_t timer = flags & 0xFF;
-        if (timer == 0) {
-            goto finish;
-        }
-
-        timer--;
-        if (timer == 0) {
-            Music_Play_Direct(track_id, play_mode);
-        }
-        flags = (flags & 0xFF00) | (timer & 0xFF);
-    }
-
-finish:
-    Music_SetTrackFlags(track_id, flags);
 }
 
 void Room_ParseFloorData(const int16_t *floor_data)
@@ -378,6 +282,14 @@ void Room_ReadTriangulation(
     }
 }
 
+void Room_RegisterTriggerHandler(
+    const TRIGGER_OBJECT type,
+    void (*const handle_func)(
+        const TRIGGER *trigger, const TRIGGER_CMD *cmd, TRIGGER_STATUS *status))
+{
+    m_Handlers[type] = handle_func;
+}
+
 bool Room_TestTriggers(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
@@ -432,12 +344,15 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         Camera_RefreshFromTrigger(trigger);
     }
 
-    ITEM *camera_item = nullptr;
-    bool switch_off = false;
-    bool flip_map = false;
-    bool flip_available = false;
-    int32_t new_effect = -1;
-    const bool flip_status = Room_GetFlipStatus();
+    TRIGGER_STATUS status = {
+        .is_heavy = is_heavy,
+        .camera_item = nullptr,
+        .switch_off = false,
+        .flip_map = false,
+        .flip_status = Room_GetFlipStatus(),
+        .flip_available = false,
+        .new_effect = -1,
+    };
 
     if (is_heavy) {
         if (trigger->type != TT_HEAVY) {
@@ -469,7 +384,8 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             if (!switch_result) {
                 return false;
             }
-            switch_off = switch_item->current_anim_state == SWITCH_STATE_OFF;
+            status.switch_off =
+                switch_item->current_anim_state == SWITCH_STATE_OFF;
             break;
         }
 
@@ -502,276 +418,25 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         }
     }
 
-    const TRIGGER_CMD *cmd = trigger->command;
-    for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        switch (cmd->type) {
-        case TO_ITEM: {
-            const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
-            ITEM *const trig_item = Item_Get(item_num);
-
-            bool one_shot = false;
-            if (g_TRVersion == 3) {
-                switch (trigger->type) {
-                case TT_SWITCH:
-                    one_shot = trig_item->flags & IF_ONE_SHOT_SWITCH;
-                    break;
-                case TT_ANTIPAD:
-                case TT_ANTITRIGGER:
-                    one_shot = trig_item->flags & IF_ONE_SHOT_ANTITRIGGER;
-                    break;
-                default:
-                    one_shot = trig_item->flags & IF_ONE_SHOT;
-                    break;
-                }
-            } else {
-                one_shot = trig_item->flags & IF_ONE_SHOT;
-            }
-            if (one_shot) {
-                break;
-            }
-
-            trig_item->timer = trigger->timer;
-            if (trig_item->timer != 1) {
-                trig_item->timer *= LOGIC_FPS;
-            }
-
-            const OBJECT *const obj = Object_Get(trig_item->object_id);
-            if (obj->trigger_func != nullptr) {
-                const bool use_default_handling =
-                    obj->trigger_func(trig_item, trigger);
-                if (!use_default_handling) {
-                    break;
-                }
-            }
-
-            if (trigger->type == TT_SWITCH) {
-                trig_item->flags ^= trigger->mask;
-                if (trigger->one_shot && g_TRVersion == 3) {
-                    trig_item->flags |= IF_ONE_SHOT_SWITCH;
-                }
-            } else if (
-                trigger->type == TT_ANTIPAD
-                || trigger->type == TT_ANTITRIGGER) {
-                // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
-                if (g_TRVersion >= 3) {
-                    trig_item->flags &= ~(IF_CODE_BITS | IF_REVERSE);
-                } else {
-                    trig_item->flags &= ~trigger->mask;
-                }
-                if (trigger->one_shot) {
-                    if (g_TRVersion == 3) {
-                        trig_item->flags |= IF_ONE_SHOT_ANTITRIGGER;
-                    } else {
-                        trig_item->flags |= IF_ONE_SHOT;
-                    }
-                }
-            } else {
-                trig_item->flags |= trigger->mask;
-            }
-
-            if ((trig_item->flags & IF_CODE_BITS) != IF_CODE_BITS) {
-                break;
-            }
-
-            if (trigger->one_shot) {
-                trig_item->flags |= IF_ONE_SHOT;
-            }
-
-            if (trig_item->active) {
-                break;
-            }
-
-            if (obj->activate_func != nullptr) {
-                obj->activate_func(trig_item);
-            } else if (obj->intelligent) {
-                if (trig_item->status == IS_INACTIVE) {
-                    trig_item->touch_bits = 0;
-                    trig_item->status = IS_ACTIVE;
-                    Item_AddActive(item_num);
-                    LOT_EnableBaddieAI(item_num, true);
-                } else if (trig_item->status == IS_INVISIBLE) {
-                    trig_item->touch_bits = 0;
-                    if (LOT_EnableBaddieAI(item_num, false)) {
-                        trig_item->status = IS_ACTIVE;
-                    } else {
-                        trig_item->status = IS_INVISIBLE;
-                    }
-                    Item_AddActive(item_num);
-                }
-            } else {
-                trig_item->touch_bits = 0;
-                trig_item->status = IS_ACTIVE;
-                Item_AddActive(item_num);
-            }
-
-            break;
-        }
-
-        case TO_CAMERA: {
-            const TRIGGER_CAMERA_DATA *const cam_data =
-                (TRIGGER_CAMERA_DATA *)cmd->parameter;
-            OBJECT_VECTOR *const camera =
-                Camera_GetFixedObject(cam_data->camera_num);
-            if ((camera->flags & IF_ONE_SHOT) != 0) {
-                break;
-            }
-
-            g_Camera.num = cam_data->camera_num;
-
-            if ((g_Camera.type == CAM_LOOK || g_Camera.type == CAM_COMBAT)
-                && !Camera_IsLocked(g_Camera.num)) {
-                break;
-            }
-
-            if (trigger->type == TT_COMBAT) {
-                break;
-            }
-
-            if (trigger->type == TT_SWITCH && trigger->timer != 0
-                && switch_off) {
-                break;
-            }
-
-            if (g_Camera.num == g_Camera.last && trigger->type != TT_SWITCH) {
-                break;
-            }
-
-            g_Camera.timer = LOGIC_FPS * cam_data->timer;
-
-            if (cam_data->one_shot) {
-                camera->flags |= IF_ONE_SHOT;
-            }
-
-            g_Camera.speed = 1;
-            if (g_Config.visuals.enable_glide_cameras) {
-                g_Camera.speed += cam_data->glide;
-            }
-            g_Camera.type = is_heavy ? CAM_HEAVY : CAM_FIXED;
-            break;
-        }
-
-        case TO_SINK: {
-            if (g_TRVersion == 3) {
-                lara_info->current.active =
-                    1 + (int16_t)(intptr_t)cmd->parameter;
-            } else {
-                const OBJECT_VECTOR *const sink =
-                    Camera_GetFixedObject((int16_t)(intptr_t)cmd->parameter);
-
-                if (g_TRVersion == 2
-                    || lara_info->lot.required_box != sink->flags) {
-                    lara_info->lot.target = sink->pos;
-                    lara_info->lot.required_box = sink->flags;
-                }
-                lara_info->current.active = sink->data * 6;
-            }
-            break;
-        }
-
-        case TO_FLIP_MAP: {
-            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-            int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
-            flip_available = true;
-
-            if (slot_flags & IF_ONE_SHOT) {
-                break;
-            }
-
-            if (trigger->type == TT_SWITCH) {
-                slot_flags ^= trigger->mask;
-            } else {
-                slot_flags |= trigger->mask;
-            }
-
-            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS) {
-                if (trigger->one_shot) {
-                    slot_flags |= IF_ONE_SHOT;
-                }
-
-                if (!flip_status) {
-                    flip_map = true;
-                }
-            } else if (flip_status) {
-                flip_map = true;
-            }
-
-            Room_SetFlipSlotFlags(flip_slot, slot_flags);
-            break;
-        }
-
-        case TO_FLIP_ON: {
-            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
-            flip_available = true;
-
-            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && !flip_status) {
-                flip_map = true;
-            }
-            break;
-        }
-
-        case TO_FLIP_OFF: {
-            const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
-            const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
-            flip_available = true;
-
-            if ((slot_flags & IF_CODE_BITS) == IF_CODE_BITS && flip_status) {
-                flip_map = true;
-            }
-            break;
-        }
-
-        case TO_TARGET: {
-            const int16_t target_num = (int16_t)(intptr_t)cmd->parameter;
-            camera_item = Item_Get(target_num);
-            break;
-        }
-
-        case TO_FINISH:
-            Game_SetIsLevelComplete(true);
-            break;
-
-        case TO_FLIP_EFFECT:
-            new_effect = (int16_t)(intptr_t)cmd->parameter;
-            break;
-
-        case TO_MUSIC:
-            M_TriggerMusicTrack((MUSIC_ID)(intptr_t)cmd->parameter, trigger);
-            break;
-
-        case TO_SECRET: {
-            const int16_t secret_num = (int16_t)(intptr_t)cmd->parameter;
-            if (Stats_AddSecret(secret_num)) {
-                const MUSIC_PLAY_MODE mode =
-                    g_Config.audio.fix_secrets_killing_music ? MPM_OVERLAY
-                                                             : MPM_ONCE;
-                Music_Play(MX_SECRET, mode);
-            }
-            break;
-        }
-
-        case TO_BODY_BAG:
-            if (g_Config.gameplay.enable_body_bags) {
-                Item_ClearKilled();
-            }
-            break;
-
-        default:
-            break;
+    for (const TRIGGER_CMD *cmd = trigger->command; cmd != nullptr;
+         cmd = cmd->next_cmd) {
+        if (m_Handlers[cmd->type] != nullptr) {
+            m_Handlers[cmd->type](trigger, cmd, &status);
         }
     }
 
-    if (camera_item != nullptr
+    if (status.camera_item != nullptr
         && (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_HEAVY)) {
-        g_Camera.item = camera_item;
+        g_Camera.item = status.camera_item;
     }
 
-    if (flip_map) {
+    if (status.flip_map) {
         Room_FlipMap();
     }
 
-    if (new_effect != -1 && (flip_map || !flip_available)) {
-        Room_SetFlipEffect(new_effect);
+    if (status.new_effect != -1
+        && (status.flip_map || !status.flip_available)) {
+        Room_SetFlipEffect(status.new_effect);
         Room_SetFlipTimer(0);
     }
 

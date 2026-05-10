@@ -9,5 +9,17 @@ void Room_PopulateSectorData(
 void Room_ReadTriangulation(
     SURFACE *surface, int16_t func_data, int16_t tilt_data);
 
+void Room_RegisterTriggerHandler(
+    TRIGGER_OBJECT type,
+    void (*handle_func)(
+        const TRIGGER *trigger, const TRIGGER_CMD *cmd,
+        TRIGGER_STATUS *status));
 bool Room_TestTriggers(const ITEM *item);
 bool Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
+
+#define REGISTER_TRIGGER_HANDLER(cmd_type, handle_func)                        \
+    __attribute__((constructor)) static void                                   \
+    M_RegisterTriggerHandler##cmd_type(void)                                   \
+    {                                                                          \
+        Room_RegisterTriggerHandler(cmd_type, handle_func);                    \
+    }
