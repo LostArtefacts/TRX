@@ -722,7 +722,7 @@ static void M_Control(const int16_t item_num)
     if (p->water == NO_HEIGHT) {
         p->water = height;
     } else {
-        p->water -= 5;
+        p->water += M_SHIFT_Y;
     }
 
     p->left_fallspeed = M_DoDynamics(hfl, p->left_fallspeed, &fl.y);
