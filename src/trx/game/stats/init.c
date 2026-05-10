@@ -19,6 +19,7 @@
 #include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/rooms.h>
 #include <trx/game/stats.h>
 
@@ -351,6 +352,13 @@ void Stats_CalculateMaxStats(void)
                 Inject_AllInjections();
                 M_SetupStatsFullInitObjects();
 
+                for (int32_t item_num = 0; item_num < Item_GetLevelCount();
+                     item_num++) {
+                    ObjectProperty_ResetItem(Item_Get(item_num));
+                }
+
+                Lua_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, level->num);
+
                 const int32_t item_count = Item_GetLevelCount();
                 for (int32_t item_num = 0; item_num < item_count; item_num++) {
                     ITEM *const item = Item_Get(item_num);
@@ -362,8 +370,10 @@ void Stats_CalculateMaxStats(void)
                         room->item_num = item_num;
                     }
                 }
-                Carrier_InitialiseLevel(level);
 
+                Lua_FireEventInt32(LUA_EVENT_AFTER_ITEM_SETUP, level->num);
+
+                Carrier_InitialiseLevel(level);
                 Stats_ScanLevel(level);
             }
             Inject_Cleanup();

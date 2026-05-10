@@ -7,6 +7,14 @@ order: 3
 
 ## TRX
 
+### Version 1.6 to 1.7
+
+1. **Update Lua item maximum HP access**:
+   The direct `item.max_hit_points` Lua field has been removed. Use item
+   properties instead:
+   - Before: `item.max_hit_points = 20`
+   - After: `item.properties.max_hit_points = 20`
+
 ### Version 1.5 to 1.6
 
 1. **TR1 and TR2 blood catalog names were renamed**:

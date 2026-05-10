@@ -149,7 +149,7 @@ static void M_Setup(OBJECT *const obj)
     obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = 8;
+
     obj->radius = 102;
 
     // obj->non_lot = true; // TODO(TR3)
@@ -161,6 +161,8 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 0)->rot.y = true;
     Object_GetBone(obj, 6)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 8, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_COBRA, M_Setup)

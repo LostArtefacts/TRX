@@ -197,7 +197,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->priv_size = sizeof(M_PRIV);
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = SKATE_KID_HITPOINTS;
+
     obj->radius = SKATE_KID_RADIUS;
     obj->smartness = SKATE_KID_SMARTNESS;
     obj->intelligent = true;
@@ -213,6 +213,10 @@ static void M_Setup(OBJECT *const obj)
             "Skateboard object (%d) is not loaded and so will not be drawn.",
             O_SKATEBOARD);
     }
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", SKATE_KID_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupSkateboard(OBJECT *const obj)

@@ -363,7 +363,6 @@ static void M_Setup(OBJECT *const obj)
 
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->radius = M_RADIUS;
-    obj->hit_points = M_HIT_POINTS;
 
     obj->intelligent = true;
     obj->save_anim = true;
@@ -374,6 +373,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 0)->rot.x = true;
     Object_GetBone(obj, 0)->rot.y = true;
     Object_GetBone(obj, 7)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SWAT_1, M_Setup)

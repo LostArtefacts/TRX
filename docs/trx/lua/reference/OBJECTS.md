@@ -7,7 +7,34 @@ order: 14
 
 Module for controlling game objects.
 
+### Structures
+
+- [lua]`trx.objects.Object`
+
+    Represents a moveable object type.
+
+    Properties:
+    - **`properties`**: Table of typed object properties. Values written here
+      become defaults for future item initialization and spawns; existing items
+      are not changed retroactively.
+
+    Properties are object-specific; see [Objects](../../OBJECTS.md) for the
+    documented properties on each object. Property tables can be iterated with
+    `pairs()`.
+
 ### Functions
+
+- [lua]`trx.objects[object_id]`
+
+  Retrieves an object proxy for the given object ID.
+
+  Example:
+  ```lua
+  trx.objects[trx.catalog.objects.wolf].properties.max_hit_points = 30
+  for name, value in pairs(trx.objects[trx.catalog.objects.wolf].properties) do
+    trx.log.info(name .. " = " .. tostring(value))
+  end
+  ```
 
 - [lua]`trx.objects.swap_mesh(obj1_id, obj2_id, mesh1_num, mesh2_num)`  
     Swaps the given meshes of the given objects.  

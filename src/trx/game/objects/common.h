@@ -6,6 +6,7 @@
 #include <trx/game/items.h>
 #include <trx/game/objects/draw.h>
 #include <trx/game/objects/ids.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/types.h>
 
 void Object_Reset(void);

@@ -92,6 +92,7 @@ static void M_WriteItem(
         JSONW_WRITE(io, "hitpoints", item->hit_points);
         JSONW_WRITE(io, "max_hitpoints", item->max_hit_points);
     }
+    ObjectProperty_WriteItemOverrides(io, item, "properties");
 
     if (obj->save_flags) {
         JSONW_WRITE(io, "flags", item->flags);

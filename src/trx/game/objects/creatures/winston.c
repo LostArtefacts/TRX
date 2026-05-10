@@ -110,7 +110,6 @@ static void M_Setup(OBJECT *const obj)
     obj->can_take_damage_func = M_CanTakeDamage;
     obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
 
-    obj->hit_points = 1;
     obj->radius = M_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 4;
     obj->smartness = -1;
@@ -119,6 +118,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 1, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_WINSTON, M_Setup)

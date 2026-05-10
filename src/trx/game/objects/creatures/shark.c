@@ -153,7 +153,6 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = Object_DrawUnclippedItem;
     obj->collision_func = Creature_Collision;
 
-    obj->hit_points = SHARK_HITPOINTS;
     obj->radius = SHARK_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 200;
@@ -167,6 +166,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
 
     Object_GetBone(obj, 9)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", SHARK_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SHARK, M_Setup)

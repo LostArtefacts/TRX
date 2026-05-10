@@ -72,9 +72,11 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->can_take_damage_func = M_CanTakeDamage;
     obj->should_spawn_blood_func = M_ShouldSpawnBlood;
-    obj->hit_points = 5;
+
     obj->save_flags = true;
     obj->save_hitpoints = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 5, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SCION_ITEM_3, M_Setup)

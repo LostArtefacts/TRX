@@ -128,7 +128,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = BAT_HITPOINTS;
+
     obj->radius = BAT_RADIUS;
     obj->smartness = BAT_SMARTNESS;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
@@ -137,6 +137,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_anim = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", BAT_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_BAT, M_Setup)

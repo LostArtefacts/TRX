@@ -63,6 +63,10 @@ void Item_InitialiseItems(const int32_t num_items)
     m_NextItemFree = num_items;
     m_NextItemActive = NO_ITEM;
 
+    for (int32_t i = 0; i < MAX_ITEMS; i++) {
+        m_Items[i].properties = (ITEM_PROPERTY_SET) {};
+    }
+
     for (int32_t i = m_NextItemFree; i < MAX_ITEMS - 1; i++) {
         ITEM *const item = &m_Items[i];
         item->active = false;
@@ -152,6 +156,7 @@ int16_t Item_Create(void)
     const int16_t item_num = m_NextItemFree;
     if (item_num != NO_ITEM) {
         m_Items[item_num].flags = 0;
+        ObjectProperty_ResetItem(&m_Items[item_num]);
         m_NextItemFree = m_Items[item_num].next_item;
     }
     m_MaxUsedItemCount = MAX(m_MaxUsedItemCount, item_num + 1);
@@ -196,8 +201,10 @@ void Item_Initialise(const int16_t item_num)
     item->rot.z = 0;
     item->speed = 0;
     item->fall_speed = 0;
-    item->hit_points = obj->hit_points;
-    item->max_hit_points = obj->hit_points;
+    OBJECT_PROPERTY_VALUE max_hit_points = {};
+    ObjectProperty_GetItemValue(item, "max_hit_points", &max_hit_points);
+    item->hit_points = max_hit_points.as_int;
+    item->max_hit_points = max_hit_points.as_int;
     item->timer = 0;
     item->mesh_bits = 0xFFFFFFFF;
     item->touch_bits = 0;

@@ -222,7 +222,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->initialise_func = Creature_Initialise;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = RAT_HITPOINTS;
+
     obj->pivot_length = 200;
     obj->radius = RAT_RADIUS;
     obj->smartness = RAT_SMARTNESS;
@@ -242,6 +242,10 @@ static void M_SetupRat(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlRat;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", RAT_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupVole(OBJECT *const obj)
@@ -251,6 +255,10 @@ static void M_SetupVole(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlVole;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", RAT_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_RAT, M_SetupRat)

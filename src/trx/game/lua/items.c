@@ -146,11 +146,61 @@ static int M_L_ItemGetHitPoints(lua_State *const L)
     return 1;
 }
 
-// trxc.items.get_max_hit_points(index) → int or nil
-static int M_L_ItemGetMaxHitPoints(lua_State *const L)
+static void M_PushPropertyValue(
+    lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
+{
+    switch (value->type) {
+    case OBJECT_PROPERTY_TYPE_INT:
+        lua_pushinteger(L, value->as_int);
+        break;
+    case OBJECT_PROPERTY_TYPE_FLOAT:
+        lua_pushnumber(L, value->as_float);
+        break;
+    case OBJECT_PROPERTY_TYPE_DOUBLE:
+        lua_pushnumber(L, value->as_double);
+        break;
+    case OBJECT_PROPERTY_TYPE_BOOL:
+        lua_pushboolean(L, value->as_bool);
+        break;
+    }
+}
+
+static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
+    lua_State *const L, const int idx)
+{
+    if (lua_type(L, idx) == LUA_TBOOLEAN) {
+        return (OBJECT_PROPERTY_VALUE) {
+            .type = OBJECT_PROPERTY_TYPE_BOOL,
+            .as_bool = lua_toboolean(L, idx),
+        };
+    }
+    if (lua_type(L, idx) == LUA_TNUMBER) {
+        if (lua_isinteger(L, idx)) {
+            return (OBJECT_PROPERTY_VALUE) {
+                .type = OBJECT_PROPERTY_TYPE_INT,
+                .as_int = lua_tointeger(L, idx),
+            };
+        }
+        return (OBJECT_PROPERTY_VALUE) {
+            .type = OBJECT_PROPERTY_TYPE_DOUBLE,
+            .as_double = lua_tonumber(L, idx),
+        };
+    }
+    luaL_error(L, "property value must be a number or boolean");
+    return (OBJECT_PROPERTY_VALUE) {};
+}
+
+// trxc.items.get_property(index, name) → typed value or nil
+static int M_L_ItemGetProperty(lua_State *const L)
 {
     M_ITEM_GETTER(L);
-    lua_pushinteger(L, item->max_hit_points);
+    const char *const name = luaL_checkstring(L, 2);
+    OBJECT_PROPERTY_VALUE value = {};
+    if (!ObjectProperty_GetItemValue(item, name, &value)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    M_PushPropertyValue(L, &value);
     return 1;
 }
 
@@ -236,16 +286,41 @@ static int M_L_ItemSetHitPoints(lua_State *const L)
 {
     M_ITEM_SETTER(L);
     item->hit_points = luaL_checkinteger(L, 2);
-    item->max_hit_points = MAX(item->hit_points, item->max_hit_points);
+    if (item->hit_points > item->max_hit_points) {
+        ObjectProperty_SetItemValueRaw(
+            item, "max_hit_points",
+            (OBJECT_PROPERTY_VALUE) {
+                .type = OBJECT_PROPERTY_TYPE_INT,
+                .as_int = item->hit_points,
+            });
+        item->max_hit_points = item->hit_points;
+    }
     return 0;
 }
 
-// trxc.items.set_max_hit_points(index, max_hp)
-static int M_L_ItemSetMaxHitPoints(lua_State *const L)
+// trxc.items.set_property(index, name, value)
+static int M_L_ItemSetProperty(lua_State *const L)
 {
     M_ITEM_SETTER(L);
-    item->max_hit_points = luaL_checkinteger(L, 2);
+    const char *const name = luaL_checkstring(L, 2);
+    const OBJECT_PROPERTY_VALUE value = M_CheckPropertyValue(L, 3);
+    if (!ObjectProperty_SetItemValueRaw(item, name, value)) {
+        return luaL_error(L, "unknown item property '%s'", name);
+    }
     return 0;
+}
+
+// trxc.items.get_property_names(index) → table
+static int M_L_ItemGetPropertyNames(lua_State *const L)
+{
+    M_ITEM_GETTER(L);
+    lua_newtable(L);
+    for (int32_t i = 0; i < ObjectProperty_GetItemNameCount(item); i++) {
+        lua_pushinteger(L, i + 1);
+        lua_pushstring(L, ObjectProperty_GetItemName(item, i));
+        lua_settable(L, -3);
+    }
+    return 1;
 }
 
 // trxc.items.set_rot(index, {x,y,z})
@@ -305,8 +380,8 @@ void LUA_CreateItems(lua_State *const L)
     lua_setfield(L, -2, "get_object_id");
     lua_pushcfunction(L, M_L_ItemGetHitPoints);
     lua_setfield(L, -2, "get_hit_points");
-    lua_pushcfunction(L, M_L_ItemGetMaxHitPoints);
-    lua_setfield(L, -2, "get_max_hit_points");
+    lua_pushcfunction(L, M_L_ItemGetProperty);
+    lua_setfield(L, -2, "get_property");
     lua_pushcfunction(L, M_L_ItemGetName);
     lua_setfield(L, -2, "get_name");
     lua_pushcfunction(L, M_L_ItemSetPos);
@@ -319,10 +394,12 @@ void LUA_CreateItems(lua_State *const L)
     lua_setfield(L, -2, "set_frame");
     lua_pushcfunction(L, M_L_ItemSetHitPoints);
     lua_setfield(L, -2, "set_hit_points");
-    lua_pushcfunction(L, M_L_ItemSetMaxHitPoints);
-    lua_setfield(L, -2, "set_max_hit_points");
+    lua_pushcfunction(L, M_L_ItemSetProperty);
+    lua_setfield(L, -2, "set_property");
     lua_pushcfunction(L, M_L_ItemSetName);
     lua_setfield(L, -2, "set_name");
+    lua_pushcfunction(L, M_L_ItemGetPropertyNames);
+    lua_setfield(L, -2, "get_property_names");
     lua_setfield(L, -2, "items");
     lua_pop(L, 1);
 }

@@ -176,6 +176,10 @@ void LUA_CreateEvents(lua_State *const L)
     lua_setfield(L, -2, "BEFORE_LEVEL_FILE");
     lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_FILE);
     lua_setfield(L, -2, "AFTER_LEVEL_FILE");
+    lua_pushinteger(L, LUA_EVENT_BEFORE_ITEM_SETUP);
+    lua_setfield(L, -2, "BEFORE_ITEM_SETUP");
+    lua_pushinteger(L, LUA_EVENT_AFTER_ITEM_SETUP);
+    lua_setfield(L, -2, "AFTER_ITEM_SETUP");
     lua_pushinteger(L, LUA_EVENT_AFTER_LEVEL_STATE);
     lua_setfield(L, -2, "AFTER_LEVEL_STATE");
     lua_pushinteger(L, LUA_EVENT_GAME_START);

@@ -3,6 +3,7 @@
 #include <trx/core/math.h>
 #include <trx/game/items/enum.h>
 #include <trx/game/objects/ids.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/output/types.h>
 
 typedef struct CARRIED_ITEM {
@@ -19,7 +20,7 @@ typedef struct CARRIED_ITEM {
 typedef struct TRAP_DATA TRAP_DATA;
 typedef struct CREATURE CREATURE;
 
-typedef struct {
+typedef struct ITEM {
     int32_t floor;
     uint32_t touch_bits;
     uint32_t mesh_bits;
@@ -43,6 +44,7 @@ typedef struct {
     uint16_t flags;
     uint8_t ai_bits;
     int16_t ai_tag;
+    ITEM_PROPERTY_SET properties;
 
     SHADE shade;
     union {

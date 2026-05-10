@@ -256,7 +256,7 @@ static void M_Setup(OBJECT *const obj)
     obj->can_drop_items_func = M_CanDropItems;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = PIERRE_HITPOINTS;
+
     obj->radius = PIERRE_RADIUS;
     obj->smartness = PIERRE_SMARTNESS;
 
@@ -269,6 +269,10 @@ static void M_Setup(OBJECT *const obj)
     m_PierreItemNum = NO_ITEM;
 
     Object_GetBone(obj, 6)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", PIERRE_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_PIERRE, M_Setup)

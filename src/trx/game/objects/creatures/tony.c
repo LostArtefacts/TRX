@@ -618,7 +618,7 @@ static void M_Setup(OBJECT *const obj)
     obj->can_be_exploded_func = M_CanBeExploded;
 
     obj->shadow_size = 0;
-    obj->hit_points = 100;
+
     obj->pivot_length = 50;
     obj->radius = 102;
 
@@ -631,6 +631,8 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.x = true;
     Object_GetBone(obj, 6)->rot.y = true;
     Object_GetBone(obj, 13)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 100, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_TONY, M_Setup)

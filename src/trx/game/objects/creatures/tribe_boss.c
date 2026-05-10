@@ -1423,7 +1423,7 @@ static void M_Setup(OBJECT *const obj)
     obj->can_be_exploded_func = M_CanBeExploded;
 
     obj->shadow_size = 0;
-    obj->hit_points = 200;
+
     obj->pivot_length = 50;
     obj->radius = 102;
 
@@ -1436,6 +1436,8 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 4)->rot.y = true;
     Object_GetBone(obj, 7)->rot.y = true;
     Object_GetBone(obj, 7)->rot.x = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 200, "Maximum hit points."));
 }
 
 bool TribeBoss_IsLizardActive(void)

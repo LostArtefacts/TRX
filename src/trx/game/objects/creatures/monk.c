@@ -224,7 +224,6 @@ static void M_SetupBase(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->hit_points = MONK_HITPOINTS;
     obj->radius = MONK_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
 
@@ -244,6 +243,10 @@ static void M_Setup1(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->pivot_length = 0;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", MONK_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_Setup2(OBJECT *const obj)
@@ -252,6 +255,10 @@ static void M_Setup2(OBJECT *const obj)
         return;
     }
     M_SetupBase(obj);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", MONK_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_Setup3(OBJECT *const obj)
@@ -262,6 +269,10 @@ static void M_Setup3(OBJECT *const obj)
     M_SetupBase(obj);
     obj->pivot_length = 0;
     obj->shadow_size = 0;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", MONK_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_MONK_1, M_Setup1)

@@ -316,10 +316,13 @@ static void M_Setup(OBJECT *const obj)
     obj->draw_func = M_DrawLaser;
     obj->is_targetable_func = M_IsTargetable;
     obj->trigger_func = M_Trigger;
-    obj->hit_points = m_DefaultBeamCount;
 
     obj->save_hitpoints = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", m_DefaultBeamCount, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SECURITY_LASER_ALARM, M_Setup)

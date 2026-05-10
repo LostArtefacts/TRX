@@ -251,7 +251,6 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->hit_points = XIAN_KNIGHT_HITPOINTS;
     obj->radius = XIAN_KNIGHT_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
@@ -264,6 +263,10 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 6)->rot.y = true;
     Object_GetBone(obj, 16)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", XIAN_KNIGHT_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_XIAN_KNIGHT, M_Setup)

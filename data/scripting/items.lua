@@ -1,5 +1,31 @@
 local raw = trxc.items
 
+local function make_properties(idx)
+  return setmetatable({ idx = idx }, {
+    __index = function(self, key)
+      if type(key) ~= "string" then
+        return nil
+      end
+      return raw.get_property(self.idx, key)
+    end,
+    __newindex = function(self, key, value)
+      raw.set_property(self.idx, key, value)
+    end,
+    __pairs = function(self)
+      local property_names = raw.get_property_names(self.idx)
+      local i = 0
+      return function()
+        i = i + 1
+        local name = property_names[i]
+        if name == nil then
+          return nil
+        end
+        return name, raw.get_property(self.idx, name)
+      end
+    end,
+  })
+end
+
 -- Item proxy metatable
 local getters = {
   pos = raw.get_pos,
@@ -15,7 +41,9 @@ local getters = {
   timer = raw.get_timer,
   object_id = raw.get_object_id,
   hit_points = raw.get_hit_points,
-  max_hit_points = raw.get_max_hit_points,
+  properties = function(idx)
+    return make_properties(idx)
+  end,
   name = raw.get_name,
 }
 
@@ -25,7 +53,6 @@ local setters = {
   anim = raw.set_anim,
   frame = raw.set_frame,
   hit_points = raw.set_hit_points,
-  max_hit_points = raw.set_max_hit_points,
   name = raw.set_name,
   object_id = raw.set_object_id,
 }

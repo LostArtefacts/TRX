@@ -519,7 +519,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = 36;
+
     obj->radius = 204;
     obj->pivot_length = 0;
     obj->lot_setup = LOT_Setup(LOT_SETUP_CLIMBER);
@@ -532,6 +532,8 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 1)->rot.z = true;
     Object_GetBone(obj, 9)->rot.z = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 36, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_LIZARD, M_Setup)

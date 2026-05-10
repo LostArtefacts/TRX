@@ -311,7 +311,10 @@ static void M_Setup3(OBJECT *const obj)
     }
 
     M_SetupBase(obj);
-    obj->hit_points = WORKER_3_HITPOINTS;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", WORKER_3_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_Setup4(OBJECT *const obj)
@@ -321,7 +324,10 @@ static void M_Setup4(OBJECT *const obj)
     }
 
     M_SetupBase(obj);
-    obj->hit_points = WORKER_4_HITPOINTS;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", WORKER_4_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_WORKER_3, M_Setup3)

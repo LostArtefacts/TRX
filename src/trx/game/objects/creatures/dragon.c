@@ -540,7 +540,6 @@ static void M_SetupFront(OBJECT *const obj)
     obj->control_func = M_ControlFront;
     obj->collision_func = M_Collision;
 
-    obj->hit_points = M_HITPOINTS;
     obj->radius = M_RADIUS;
     obj->pivot_length = 300;
 
@@ -551,6 +550,10 @@ static void M_SetupFront(OBJECT *const obj)
     obj->save_anim = true;
 
     Object_GetBone(obj, 10)->rot.z = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupBack(OBJECT *const obj)

@@ -236,7 +236,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = M_HITPOINTS;
+
     obj->radius = M_RADIUS;
     obj->smartness = M_SMARTNESS;
     obj->intelligent = true;
@@ -246,6 +246,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
 
     Object_GetBone(obj, 1)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_TORSO, M_Setup)

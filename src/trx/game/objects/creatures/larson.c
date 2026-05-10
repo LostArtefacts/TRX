@@ -169,7 +169,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = LARSON_HITPOINTS;
+
     obj->radius = LARSON_RADIUS;
     obj->smartness = LARSON_SMARTNESS;
     obj->intelligent = true;
@@ -179,6 +179,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
 
     Object_GetBone(obj, 6)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", LARSON_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_LARSON, M_Setup)

@@ -1,0 +1,415 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import ast
+import csv
+import re
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+OBJECT_SOURCE = ROOT / "src/trx/game/objects"
+OBJECT_SETUP_SOURCE = ROOT / "src/trx/game/objects/setup.c"
+OUTPUT = ROOT / "docs/trx/OBJECTS.md"
+HEADER_SOURCE = ROOT / "src/trx/game"
+
+GAMES = [
+    ("Tomb Raider 1", 1, ROOT / "data/trx/ship/games/tr1/catalog_objects.csv"),
+    ("Tomb Raider 2", 2, ROOT / "data/trx/ship/games/tr2/catalog_objects.csv"),
+    ("Tomb Raider 3", 3, ROOT / "data/trx/ship/games/tr3/catalog_objects.csv"),
+]
+
+PropertyInfo = dict[str, str]
+PropertyMap = dict[str, PropertyInfo | dict[str, str]]
+
+
+def strip_comments(source: str) -> str:
+    source = re.sub(r"//.*", "", source)
+    return re.sub(r"/\*.*?\*/", "", source, flags=re.DOTALL)
+
+
+def read_local_constants(source: str) -> dict[str, str]:
+    constants: dict[str, str] = {
+        "NO_ITEM": "-1",
+    }
+    define_pattern = re.compile(r"^\s*#define\s+(\w+)\s+(.+)$", re.MULTILINE)
+    for name, value in define_pattern.findall(source):
+        if "(" in name:
+            continue
+        constants[name] = value.strip()
+
+    const_pattern = re.compile(
+        r"^\s*static\s+const\s+\w+(?:_t)?\s+(\w+)\s*=\s*([^;]+);",
+        re.MULTILINE,
+    )
+    for name, value in const_pattern.findall(source):
+        constants[name] = value.strip()
+    return constants
+
+
+def read_global_constants() -> dict[str, str]:
+    constants: dict[str, str] = {}
+    for path in HEADER_SOURCE.rglob("*.h"):
+        constants.update(read_local_constants(strip_comments(path.read_text())))
+    return constants
+
+
+def split_args(args: str) -> list[str]:
+    parts: list[str] = []
+    part_start = 0
+    paren_depth = 0
+    brace_depth = 0
+    bracket_depth = 0
+    in_string = False
+    escaped = False
+    for offset, char in enumerate(args):
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+        elif char == '"':
+            in_string = True
+        elif char == "(":
+            paren_depth += 1
+        elif char == ")":
+            paren_depth -= 1
+        elif char == "{":
+            brace_depth += 1
+        elif char == "}":
+            brace_depth -= 1
+        elif char == "[":
+            bracket_depth += 1
+        elif char == "]":
+            bracket_depth -= 1
+        elif (
+            char == ","
+            and paren_depth == 0
+            and brace_depth == 0
+            and bracket_depth == 0
+        ):
+            parts.append(args[part_start:offset].strip())
+            part_start = offset + 1
+    parts.append(args[part_start:].strip())
+    return parts
+
+
+def iter_macro_calls(source: str, macro_name: str) -> list[str]:
+    calls: list[str] = []
+    pattern = f"{macro_name}("
+    pos = 0
+    while True:
+        start = source.find(pattern, pos)
+        if start == -1:
+            break
+
+        args_start = start + len(pattern)
+        depth = 1
+        in_string = False
+        escaped = False
+        idx = args_start
+        while idx < len(source) and depth != 0:
+            char = source[idx]
+            if in_string:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    in_string = False
+            elif char == '"':
+                in_string = True
+            elif char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+            idx += 1
+
+        args = source[args_start : idx - 1]
+        calls.append(args)
+        pos = idx
+    return calls
+
+
+def iter_object_property_declarations(source: str) -> list[PropertyInfo]:
+    declarations: list[PropertyInfo] = []
+    pattern = re.compile(
+        r"\bOBJECT_PROPERTY_(?:INT|FLOAT|DOUBLE|BOOL)\(",
+        re.MULTILINE,
+    )
+    pos = 0
+    while True:
+        match = pattern.search(source, pos)
+        if match is None:
+            return declarations
+
+        args_start = match.end()
+        depth = 1
+        in_string = False
+        escaped = False
+        idx = args_start
+        while idx < len(source) and depth != 0:
+            char = source[idx]
+            if in_string:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    in_string = False
+            elif char == '"':
+                in_string = True
+            elif char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+            idx += 1
+
+        parts = split_args(source[args_start : idx - 1])
+        if len(parts) == 3:
+            name, value, description = parts
+            declarations.append(
+                {
+                    "name": ast.literal_eval(name),
+                    "value": " ".join(value.split()),
+                    "description": ast.literal_eval(description),
+                }
+            )
+        pos = idx
+
+
+def read_source_files() -> list[Path]:
+    return [
+        OBJECT_SETUP_SOURCE,
+        *(
+            path for path in OBJECT_SOURCE.rglob("*.c")
+            if path != OBJECT_SETUP_SOURCE
+        ),
+    ]
+
+
+def find_function_body(source: str, func_name: str) -> str | None:
+    pattern = re.compile(
+        rf"\b{re.escape(func_name)}\s*\([^)]*\)\s*\{{",
+        re.MULTILINE,
+    )
+    match = pattern.search(source)
+    if match is None:
+        return None
+    body_start = match.end()
+    depth = 1
+    in_string = False
+    escaped = False
+    idx = body_start
+    while idx < len(source) and depth != 0:
+        char = source[idx]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+        elif char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+        idx += 1
+    return source[body_start : idx - 1]
+
+
+def read_registered_properties() -> dict[str, PropertyMap]:
+    result: dict[str, PropertyMap] = {}
+    global_constants = read_global_constants()
+    for path in read_source_files():
+        source = strip_comments(path.read_text())
+        constants = global_constants | read_local_constants(source)
+        registrations: list[tuple[str, list[PropertyInfo]]] = []
+
+        # map func_name -> [object_id, ...] from REGISTER_OBJECT(id, func) calls
+        func_to_objects: dict[str, list[str]] = {}
+        for args in iter_macro_calls(source, "REGISTER_OBJECT"):
+            parts = split_args(args)
+            if len(parts) != 2:
+                continue
+            object_id, func_name = parts[0].strip(), parts[1].strip()
+            func_to_objects.setdefault(func_name, []).append(object_id)
+
+        for func_name, object_ids in func_to_objects.items():
+            body = find_function_body(source, func_name)
+            if body is None:
+                continue
+            declarations: list[PropertyInfo] = []
+            for props_args in iter_macro_calls(body, "OBJECT_PROPERTIES"):
+                props_parts = split_args(props_args)
+                if len(props_parts) < 2:
+                    continue
+                # args: obj, prop1, prop2, ... — join everything after obj
+                decl_text = "{" + ", ".join(props_parts[1:]) + "}"
+                declarations.extend(iter_object_property_declarations(decl_text))
+            for object_id in object_ids:
+                registrations.append((object_id, declarations))
+
+        for object_id, declarations in registrations:
+            for declaration in declarations:
+                name = declaration["name"]
+                result.setdefault(object_id, {})[name] = declaration
+                result[object_id][f"__constants__:{name}"] = constants
+    return result
+
+
+def read_catalog(path: Path) -> list[tuple[str, str]]:
+    rows: list[tuple[str, str]] = []
+    with path.open(newline="") as fh:
+        for row in csv.reader(fh, skipinitialspace=True):
+            if len(row) < 2:
+                continue
+            game_id, object_id = row[:2]
+            rows.append((game_id.strip(), object_id.strip()))
+    return rows
+
+
+def resolve_identifiers(expr: str, constants: dict[str, str], game_version: int) -> str:
+    expr = expr.replace("g_TRVersion", str(game_version))
+    for _ in range(16):
+        changed = False
+        for name, value in constants.items():
+            next_expr = re.sub(rf"\b{re.escape(name)}\b", f"({value})", expr)
+            if next_expr != expr:
+                expr = next_expr
+                changed = True
+        if not changed:
+            break
+    return expr.replace("g_TRVersion", str(game_version))
+
+
+def convert_ternary(expr: str) -> str:
+    ternary_pattern = re.compile(r"\(([^()?:]+)\?\s*([^():]+)\s*:\s*([^()]+)\)")
+    while True:
+        match = ternary_pattern.search(expr)
+        if match is None:
+            return expr
+        condition, true_value, false_value = match.groups()
+        expr = (
+            expr[: match.start()]
+            + f"({true_value.strip()} if {condition.strip()} else {false_value.strip()})"
+            + expr[match.end() :]
+        )
+
+
+def evaluate_expression(
+    expr: str, constants: dict[str, str], game_version: int
+) -> str:
+    expr = convert_ternary(resolve_identifiers(expr, constants, game_version))
+    try:
+        tree = ast.parse(expr, mode="eval")
+    except SyntaxError:
+        return expr
+
+    allowed_nodes = (
+        ast.Expression,
+        ast.Constant,
+        ast.UnaryOp,
+        ast.BinOp,
+        ast.BoolOp,
+        ast.Compare,
+        ast.IfExp,
+        ast.USub,
+        ast.UAdd,
+        ast.Add,
+        ast.Sub,
+        ast.Mult,
+        ast.Div,
+        ast.FloorDiv,
+        ast.Mod,
+        ast.Eq,
+        ast.NotEq,
+        ast.Lt,
+        ast.LtE,
+        ast.Gt,
+        ast.GtE,
+        ast.And,
+        ast.Or,
+    )
+    if not all(isinstance(node, allowed_nodes) for node in ast.walk(tree)):
+        return expr
+
+    try:
+        value = eval(compile(tree, "<object-property>", "eval"), {"__builtins__": {}})
+    except Exception:
+        return expr
+    if isinstance(value, float) and value.is_integer():
+        value = int(value)
+    return str(value)
+
+
+def format_value(
+    object_properties: PropertyMap, name: str, game_version: int
+) -> str | None:
+    if name not in object_properties:
+        return None
+    constants = object_properties.get(f"__constants__:{name}")
+    if not isinstance(constants, dict):
+        constants = {}
+    info = object_properties[name]
+    if not isinstance(info, dict):
+        return None
+    expr = info["value"]
+    value = evaluate_expression(expr, constants, game_version)
+    return value
+
+
+def format_property(
+    object_properties: PropertyMap, name: str, game_version: int
+) -> str | None:
+    value = format_value(object_properties, name, game_version)
+    info = object_properties[name]
+    if value is None or not isinstance(info, dict):
+        return None
+    return f"- `{name} = {value}` — {info['description']}"
+
+
+def main() -> None:
+    registered_properties = read_registered_properties()
+
+    lines = [
+        "---",
+        "title: Objects",
+        "order: 14",
+        "---",
+        "",
+        "# Objects",
+        "",
+        "This page lists documented moveable object properties.",
+    ]
+
+    for game_name, game_version, catalog_path in GAMES:
+        lines.extend(["", f"## {game_name}"])
+        for game_id, object_id in read_catalog(catalog_path):
+            object_properties = registered_properties.get(object_id)
+            if object_properties is None:
+                continue
+            property_names = [
+                name
+                for name in object_properties.keys()
+                if not name.startswith("__constants__:")
+            ]
+            property_lines = [
+                line
+                for name in property_names
+                if (line := format_property(object_properties, name, game_version))
+                is not None
+            ]
+            if not property_lines:
+                continue
+            lines.extend(["", f"### `{game_id}` {object_id}", *property_lines])
+
+    OUTPUT.write_text("\n".join(lines) + "\n")
+
+
+if __name__ == "__main__":
+    main()

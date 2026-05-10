@@ -222,7 +222,7 @@ static void M_Setup(OBJECT *const obj)
     obj->event_func = M_HandleEvent;
 
     obj->shadow_size = 0;
-    obj->hit_points = 100;
+
     obj->radius = 102;
 
     obj->intelligent = true;
@@ -233,6 +233,8 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 0)->rot.y = true;
     Object_GetBone(obj, 1)->rot.x = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 100, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_SENTRY_GUN, M_Setup)

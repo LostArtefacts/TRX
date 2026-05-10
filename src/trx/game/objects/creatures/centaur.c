@@ -138,7 +138,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = CENTAUR_HITPOINTS;
+
     obj->pivot_length = 400;
     obj->radius = CENTAUR_RADIUS;
     obj->smartness = CENTAUR_SMARTNESS;
@@ -151,6 +151,10 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 10)->rot.x = true;
     Object_GetBone(obj, 10)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", CENTAUR_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_CENTAUR, M_Setup)

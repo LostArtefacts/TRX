@@ -297,7 +297,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
 
     obj->shadow_size = 128;
-    obj->hit_points = 16;
+
     obj->pivot_length = 300;
     obj->radius = 341;
 
@@ -309,6 +309,8 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 2)->rot.y = true;
     Object_GetBone(obj, 2)->rot.x = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 16, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_PATROL_DOG, M_Setup)

@@ -321,7 +321,7 @@ static void M_SetupWinged(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 3;
-    obj->hit_points = M_HITPOINTS;
+
     obj->pivot_length = 150;
     obj->radius = M_RADIUS;
     obj->smartness = M_DEFAULT_SMARTNESS;
@@ -333,6 +333,10 @@ static void M_SetupWinged(OBJECT *const obj)
     obj->save_flags = true;
     Object_GetBone(obj, 0)->rot.y = true;
     Object_GetBone(obj, 2)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupShooter(OBJECT *const obj)
@@ -345,6 +349,10 @@ static void M_SetupShooter(OBJECT *const obj)
     obj->initialise_func = M_InitialiseGround;
     obj->smartness = M_SHOOTER_SMARTNESS;
     obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupGround(OBJECT *const obj)
@@ -356,6 +364,10 @@ static void M_SetupGround(OBJECT *const obj)
     obj->setup_func = M_SetupGround;
     obj->initialise_func = M_InitialiseGround;
     obj->lot_setup = LOT_Setup(LOT_SETUP_DEFAULT);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
 }
 
 void Atlantean_ToggleExplosions(bool enable)
