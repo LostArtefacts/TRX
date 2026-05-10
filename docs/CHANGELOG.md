@@ -6,6 +6,7 @@
     - `O_LARA_UPV`
     - `O_LARA_RIB`
     - `O_LARA_MINE_CART`
+- added Lara's Antarctica beta outfit (#5190)
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
 - changed `/set` to refuse level-enforced settings unless `--force` is used
 - changed the underwater crawling fix to be optional (Gameplay Options → Fixes → Fix underwater crawling)
