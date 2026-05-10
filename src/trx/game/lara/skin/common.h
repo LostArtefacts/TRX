@@ -31,5 +31,3 @@ void Lara_Skin_SetExtraEquipment(
 const LARA_SKIN_EQUIPMENT *Lara_Skin_GetEquipment(LARA_MESH mesh);
 
 SAMPLE_ID Lara_Skin_GetAnimSFX(SAMPLE_ID sample_id);
-
-void Lara_Skin_ExtractLegacyEquipment(const OBJECT_MESH **meshes);

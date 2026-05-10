@@ -628,32 +628,3 @@ SAMPLE_ID Lara_Skin_GetAnimSFX(const SAMPLE_ID sample_id)
 
     return Sound_ToGameID(outfit->footstep_sample_id);
 }
-
-// TODO: remove in TRX 1.5.
-void Lara_Skin_ExtractLegacyEquipment(const OBJECT_MESH **const meshes)
-{
-#define L_DETERMINE_EQUIPMENT(mesh)                                            \
-    do {                                                                       \
-        if (meshes[mesh] == nullptr) {                                         \
-            break;                                                             \
-        }                                                                      \
-        for (int32_t i = 0; i < NUM_WEAPONS; i++) {                            \
-            if (i == LGT_SKIDOO) {                                             \
-                continue;                                                      \
-            }                                                                  \
-            const OBJECT *const obj = Object_Get(Gun_GetWeaponAnim(i));        \
-            if (obj->loaded                                                    \
-                && Object_GetMesh(obj->mesh_idx + mesh) == meshes[mesh]) {     \
-                Lara_Skin_SetGunEquipment(mesh, i);                            \
-                break;                                                         \
-            }                                                                  \
-        }                                                                      \
-    } while (0)
-
-    L_DETERMINE_EQUIPMENT(LM_THIGH_L);
-    L_DETERMINE_EQUIPMENT(LM_THIGH_R);
-    L_DETERMINE_EQUIPMENT(LM_HAND_L);
-    L_DETERMINE_EQUIPMENT(LM_HAND_R);
-
-#undef L_DETERMINE_EQUIPMENT
-}

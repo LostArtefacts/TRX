@@ -136,68 +136,46 @@ static bool M_ReadLara(JSON_READ_IO *const io)
     M_MUST(JSON_READ(io, "flare_frame", &lara->flare.frame_num));
     M_MUST(JSON_READ(io, "flare_control_left", &lara->flare.control));
 
-    // < TRX 1.2
-    if (JSON_ReadIO_GetVersion(io) < SG_VERSION_15) {
-        // TODO: remove in TRX 1.5.
-        M_MUST(JSON_PUSH(io, "meshes"));
-        const int32_t mesh_count = JSON_ARRAY_LEN(io);
-        if (mesh_count != LM_NUMBER_OF) {
-            JSON_ReadIO_SetError(
-                io, "expected %d Lara meshes, got %d", LM_NUMBER_OF,
-                mesh_count);
-            M_FAIL();
-        }
-        const OBJECT_MESH *meshes[LM_NUMBER_OF] = {};
-        for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-            int32_t idx = 0;
-            M_MUST(JSON_READ_A(io, i, &idx));
-            meshes[i] = Object_FindMesh(idx);
-        }
-        M_MUST(JSON_POP(io));
-
-        Lara_Skin_ExtractLegacyEquipment(meshes);
-    } else {
-        M_MUST(JSON_PUSH(io, "skin"));
-        LARA_SKIN_TYPE skin_type = LARA_SKIN_TYPE_DEFAULT;
-        bool skin_is_default = false;
-        M_MUST(JSON_READ(io, "skin_type", &skin_type));
-        M_MUST(JSON_READ(io, "skin_is_default", &skin_is_default));
-        if (!skin_is_default) {
-            Lara_Skin_SetType(skin_type);
-        }
-
-        bool holsters_visible = true;
-        M_MUST(JSON_READ(io, "holsters_visible", &holsters_visible));
-        Lara_Skin_SetHolstersVisible(holsters_visible);
-
-        M_MUST(JSON_PUSH(io, "equipment"));
-        const int32_t mesh_count = JSON_ARRAY_LEN(io);
-        if (mesh_count != LM_NUMBER_OF) {
-            JSON_ReadIO_SetError(
-                io, "expected %d equipment meshes, got %d", LM_NUMBER_OF,
-                mesh_count);
-            M_FAIL();
-        }
-        for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-            LARA_SKIN_EQUIPMENT_TYPE type = EQUIPMENT_TYPE_NONE;
-            int32_t data = -1;
-            M_MUST(JSON_PUSH_INDEX(io, i));
-            M_MUST(JSON_READ(io, "type", &type));
-            M_MUST(JSON_READ(io, "data", &data));
-            M_MUST(JSON_POP(io));
-
-            if (type == EQUIPMENT_TYPE_WEAPON) {
-                Lara_Skin_SetGunEquipment(i, data);
-            } else if (type == EQUIPMENT_TYPE_EXTRA) {
-                Lara_Skin_SetExtraEquipment(i, data);
-            } else {
-                Lara_Skin_ClearEquipment(i);
-            }
-        }
-        M_MUST(JSON_POP(io));
-        M_MUST(JSON_POP(io));
-        Lara_Skin_ApplyOutfit();
+    M_MUST(JSON_PUSH(io, "skin"));
+    LARA_SKIN_TYPE skin_type = LARA_SKIN_TYPE_DEFAULT;
+    bool skin_is_default = false;
+    M_MUST(JSON_READ(io, "skin_type", &skin_type));
+    M_MUST(JSON_READ(io, "skin_is_default", &skin_is_default));
+    if (!skin_is_default) {
+        Lara_Skin_SetType(skin_type);
     }
+
+    bool holsters_visible = true;
+    M_MUST(JSON_READ(io, "holsters_visible", &holsters_visible));
+    Lara_Skin_SetHolstersVisible(holsters_visible);
+
+    M_MUST(JSON_PUSH(io, "equipment"));
+    const int32_t mesh_count = JSON_ARRAY_LEN(io);
+    if (mesh_count != LM_NUMBER_OF) {
+        JSON_ReadIO_SetError(
+            io, "expected %d equipment meshes, got %d", LM_NUMBER_OF,
+            mesh_count);
+        M_FAIL();
+    }
+    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+        LARA_SKIN_EQUIPMENT_TYPE type = EQUIPMENT_TYPE_NONE;
+        int32_t data = -1;
+        M_MUST(JSON_PUSH_INDEX(io, i));
+        M_MUST(JSON_READ(io, "type", &type));
+        M_MUST(JSON_READ(io, "data", &data));
+        M_MUST(JSON_POP(io));
+
+        if (type == EQUIPMENT_TYPE_WEAPON) {
+            Lara_Skin_SetGunEquipment(i, data);
+        } else if (type == EQUIPMENT_TYPE_EXTRA) {
+            Lara_Skin_SetExtraEquipment(i, data);
+        } else {
+            Lara_Skin_ClearEquipment(i);
+        }
+    }
+    M_MUST(JSON_POP(io));
+    M_MUST(JSON_POP(io));
+    Lara_Skin_ApplyOutfit();
 
     lara->target = nullptr;
     M_MUST(JSON_READ(io, "target_angle1", &lara->target_angles[0]));
@@ -490,10 +468,6 @@ skip_flags:
             prev_item = carried_item;
             carried_item = carried_item->next_item;
             M_MUST(JSON_POP(io));
-        }
-        // TODO: remove legacy branch in TRX 1.5.
-        if (JSON_ReadIO_GetVersion(io) < SG_VERSION_17) {
-            Carrier_TestItemDrops(item_num);
         }
         M_MUST(JSON_POP(io));
     }
