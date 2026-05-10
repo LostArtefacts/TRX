@@ -279,7 +279,6 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->hit_points = CULTIST_3_HITPOINTS;
     obj->radius = CULTIST_RADIUS;
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->pivot_length = 0;
@@ -289,6 +288,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", CULTIST_3_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_CULT_3, M_Setup)

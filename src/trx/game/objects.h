@@ -5,6 +5,7 @@
 #include <trx/game/objects/draw.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/objects/names.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/setup.h>
 #include <trx/game/objects/types.h>
 #include <trx/game/objects/vars.h>

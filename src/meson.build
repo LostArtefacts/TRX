@@ -569,6 +569,7 @@ common_sources = [
   'trx/game/objects/general/waterfall.c',
   'trx/game/objects/general/zipline.c',
   'trx/game/objects/names.c',
+  'trx/game/objects/property.c',
   'trx/game/objects/setup.c',
   'trx/game/objects/traps/blade.c',
   'trx/game/objects/traps/bubble_emitter.c',

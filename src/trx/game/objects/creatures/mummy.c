@@ -80,13 +80,15 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->can_drop_items_func = M_CanDropItems;
 
-    obj->hit_points = MUMMY_HITPOINTS;
-
     obj->save_flags = true;
     obj->save_hitpoints = true;
     obj->save_anim = true;
 
     Object_GetBone(obj, 2)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", MUMMY_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_MUMMY, M_Setup)

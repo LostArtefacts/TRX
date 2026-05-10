@@ -166,7 +166,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = COWBOY_HITPOINTS;
+
     obj->radius = COWBOY_RADIUS;
     obj->smartness = COWBOY_SMARTNESS;
     obj->intelligent = true;
@@ -176,6 +176,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
 
     Object_GetBone(obj, 0)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", COWBOY_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_COWBOY, M_Setup)

@@ -174,8 +174,10 @@ static void M_SetupEagle(OBJECT *const obj)
     if (!M_SetupCommon(obj)) {
         return;
     }
-
-    obj->hit_points = M_EAGLE_HITPOINTS;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_EAGLE_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupCrow(OBJECT *const obj)
@@ -183,8 +185,10 @@ static void M_SetupCrow(OBJECT *const obj)
     if (!M_SetupCommon(obj)) {
         return;
     }
-
-    obj->hit_points = M_CROW_HITPOINTS;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_CROW_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupVulture(OBJECT *const obj)
@@ -192,8 +196,10 @@ static void M_SetupVulture(OBJECT *const obj)
     if (!M_SetupCommon(obj)) {
         return;
     }
-
-    obj->hit_points = M_VULTURE_HITPOINTS;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_VULTURE_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_EAGLE, M_SetupEagle)

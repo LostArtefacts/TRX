@@ -475,7 +475,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->radius = M_RADIUS;
-    obj->hit_points = M_HIT_POINTS;
+
     obj->lot_setup = LOT_Setup(LOT_SETUP_CLIMBER);
 
     obj->intelligent = true;
@@ -487,6 +487,10 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.x = true;
     Object_GetBone(obj, 6)->rot.y = true;
     Object_GetBone(obj, 13)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_PRISONER, M_Setup)

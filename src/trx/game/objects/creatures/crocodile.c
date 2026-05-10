@@ -320,9 +320,13 @@ static void M_SetupCrocodile(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlCrocodile;
-    obj->hit_points = M_CROCODILE_HITPOINTS;
+
     obj->radius = M_CROCODILE_RADIUS;
     obj->smartness = M_CROCODILE_SMARTNESS;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_CROCODILE_HITPOINTS, "Maximum hit points."));
 }
 
 static void M_SetupAlligator(OBJECT *const obj)
@@ -332,10 +336,14 @@ static void M_SetupAlligator(OBJECT *const obj)
     }
     M_SetupBase(obj);
     obj->control_func = M_ControlAlligator;
-    obj->hit_points = M_ALLIGATOR_HITPOINTS;
+
     obj->radius = M_ALLIGATOR_RADIUS;
     obj->smartness = M_ALLIGATOR_SMARTNESS;
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_ALLIGATOR_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_ALLIGATOR, M_SetupAlligator)

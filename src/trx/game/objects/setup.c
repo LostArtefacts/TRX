@@ -1,25 +1,34 @@
 #include <trx/config.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 
 #define M_DEFAULT_RADIUS 10
 
-static void M_SetupLara(void)
+static void M_SetupLara(OBJECT *const obj)
 {
-    OBJECT *const obj = Object_Get(O_LARA);
     obj->initialise_func = Lara_InitialiseLoad;
     obj->can_interpolate_func = Lara_CanInterpolate;
     obj->draw_func = nullptr;
     obj->get_mesh_index_func = Lara_GetMeshIndex;
 
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
-    obj->hit_points = g_Config.gameplay.start_lara_hitpoints;
 
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."));
+    ObjectProperty_SetObjectValueRaw(
+        obj, "max_hit_points",
+        (OBJECT_PROPERTY_VALUE) {
+            .type = OBJECT_PROPERTY_TYPE_INT,
+            .as_int = g_Config.gameplay.start_lara_hitpoints,
+        });
 }
 
 void Object_SetupAllObjects(void)
@@ -58,11 +67,13 @@ void Object_SetupAllObjects(void)
         obj->intelligent = false;
         obj->smartness = -1;
 
+        ObjectProperty_ResetObject(obj);
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);
         }
     }
 
-    M_SetupLara();
     Lara_Hair_Initialise();
 }
+
+REGISTER_OBJECT(O_LARA, M_SetupLara)

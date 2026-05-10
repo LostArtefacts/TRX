@@ -393,12 +393,14 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
     obj->save_flags = true;
 
-    obj->hit_points = M_HITPOINTS;
-
     Object_GetBone(obj, 9)->rot.y = true;
     Object_GetBone(obj, 11)->rot.y = true;
     Object_GetBone(obj, 20)->rot.y = true;
     Object_GetBone(obj, 22)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_TREX_ALPHA, M_Setup)

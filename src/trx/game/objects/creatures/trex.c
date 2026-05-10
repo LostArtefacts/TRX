@@ -174,7 +174,6 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = M_Collision;
 
-    obj->hit_points = M_HITPOINTS;
     obj->radius = M_RADIUS;
     obj->shadow_size = M_SHADOW_SIZE;
     obj->pivot_length = M_PIVOT_LENGTH;
@@ -189,6 +188,10 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 10)->rot.y = true;
     Object_GetBone(obj, 11)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_TREX, M_Setup)

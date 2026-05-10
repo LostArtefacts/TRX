@@ -11,6 +11,8 @@ Lua scripts can listen for game events using the global `events` API.
 
 - [lua]`trx.events.before_level_file(callback)`
 - [lua]`trx.events.after_level_file(callback)`
+- [lua]`trx.events.before_item_setup(callback)`
+- [lua]`trx.events.after_item_setup(callback)`
 - [lua]`trx.events.after_level_state(callback)`
 - [lua]`trx.events.on_game_start(callback)`
 - [lua]`trx.events.on_pickup(callback)`  
@@ -31,6 +33,19 @@ Arguments:
 #### `after_level_file`
 Happens after the level finishes loading, prior to loading information from a
 savegame.
+
+Arguments:
+- `level_num`
+
+#### `before_item_setup`
+Happens after level items exist, before they are initialized. Use this to set
+object or item properties that item initialization reads.
+
+Arguments:
+- `level_num`
+
+#### `after_item_setup`
+Happens after level items exist, after they are initialized.
 
 Arguments:
 - `level_num`

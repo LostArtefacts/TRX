@@ -285,7 +285,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->radius = M_RADIUS;
-    obj->hit_points = M_HIT_POINTS;
+
     obj->lot_setup = LOT_Setup(LOT_SETUP_FLYER);
 
     obj->intelligent = true;
@@ -293,6 +293,10 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_WASP_MUTANT, M_Setup)

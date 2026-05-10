@@ -24,7 +24,8 @@ Module for controlling all moveables behavior.
     - **`flags`**: Integer representing the item's trigger-related flags.
     - **`timer`**: Integer representing the item's trigger-related timer value.
     - **`hit_points`**: Integer representing the item's hit points.
-    - **`max_hit_points`**: Integer representing the item's hit points.
+    - **`properties`**: Table of typed item properties. Values written here
+      override the object's property defaults for this item only.
     - **`object_id`**: Integer ID of the item's object type.
     - **`name`**: String name of the item, or `nil` if none.
 
@@ -33,9 +34,14 @@ Module for controlling all moveables behavior.
     - `rot`
     - `anim`
     - `frame`
-    - `hit_points` (updating this also may increase `max_hit_points`)
-    - `max_hit_points`
+    - `hit_points` (updating this also may increase `properties.max_hit_points`)
+    - object-specific `properties.*`
     - `name` (string identifier; setting duplicates raises an error)
+
+    Properties are object-specific; see [Objects](../../OBJECTS.md) for the
+    documented properties on each object. If a property is not set on the item,
+    reads fall back to the owning object's matching property. Property tables
+    can be iterated with `pairs()`.
 
 ### Functions
 

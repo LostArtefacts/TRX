@@ -51,7 +51,8 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->control_func = M_Control;
-    obj->hit_points = 1;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 1, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_PLAYER_1, M_Setup)

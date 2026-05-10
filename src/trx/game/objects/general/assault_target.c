@@ -243,10 +243,12 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
-    obj->hit_points = 8;
+
     obj->shadow_size = 128;
     obj->radius = 102;
     obj->intelligent = false;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 8, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_ASSAULT_TARGET, M_Setup)

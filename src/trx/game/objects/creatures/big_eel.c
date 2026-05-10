@@ -110,11 +110,13 @@ static void M_Setup(OBJECT *const obj)
     obj->is_targetable_func = M_IsTargetable;
     obj->priv_size = sizeof(M_PRIV);
 
-    obj->hit_points = BIG_EEL_HITPOINTS;
-
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", BIG_EEL_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_BIG_EEL, M_Setup)

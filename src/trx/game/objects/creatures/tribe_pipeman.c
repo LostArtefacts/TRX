@@ -358,7 +358,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = 28;
+
     obj->radius = 102;
 
     obj->intelligent = true;
@@ -371,6 +371,8 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.x = true;
     Object_GetBone(obj, 13)->rot.y = true;
     Object_GetBone(obj, 13)->rot.x = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 28, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_TRIBE_PIPEMAN, M_Setup)

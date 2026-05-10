@@ -471,7 +471,6 @@ static void M_SetupCrawler(OBJECT *const obj)
 
     obj->shadow_size = UNIT_SHADOW / 2;
     obj->radius = M_RADIUS;
-    obj->hit_points = M_HIT_POINTS;
 
     obj->intelligent = true;
     obj->save_position = true;
@@ -482,6 +481,10 @@ static void M_SetupCrawler(OBJECT *const obj)
     Object_GetBone(obj, 8)->rot.x = true;
     Object_GetBone(obj, 8)->rot.z = true;
     Object_GetBone(obj, 9)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", M_HIT_POINTS, "Maximum hit points."));
 }
 
 static void M_SetupDying(OBJECT *const obj)

@@ -330,7 +330,7 @@ static void M_Setup(OBJECT *const obj)
     obj->is_targetable_func = M_IsTargetable;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-    obj->hit_points = NATLA_HITPOINTS;
+
     obj->radius = NATLA_RADIUS;
     obj->smartness = NATLA_SMARTNESS;
 
@@ -342,6 +342,10 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 2)->rot.x = true;
     Object_GetBone(obj, 2)->rot.z = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", NATLA_HITPOINTS, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_NATLA, M_Setup)

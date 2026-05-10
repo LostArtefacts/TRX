@@ -256,7 +256,6 @@ static void M_Setup(OBJECT *const obj)
     obj->should_spawn_blood_func = M_ShouldSpawnBlood;
     obj->can_be_exploded_func = M_CanBeExploded;
 
-    obj->hit_points = 20;
     obj->shadow_size = UNIT_SHADOW / 4;
     obj->radius = M_RADIUS;
 
@@ -265,6 +264,8 @@ static void M_Setup(OBJECT *const obj)
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 20, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_WINSTON_ARMY, M_Setup)

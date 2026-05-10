@@ -7,27 +7,23 @@ order: 1
 
 ### Adjusting enemy HP
 
-This example sets all bats to start with 20 hitpoints, and all wolves to start
-with 30 hitpoints. Simply adjust the lookup table to fit your needs. Refer to
-[this section](../../ENEMY_DEFAULTS.md) as a reference for original values.
+This example sets all bats to start with random amount of hitpoints ranging
+from 5 to 10, and all wolves to start with 30 hitpoints. Refer to [this
+section](../../OBJECTS.md) as a reference for original values.
 
 ```lua
--- Lookup table mapping object IDs to HP
-local hp_lut = {
-  [trx.catalog.objects.wolf] = 30,
-  [trx.catalog.objects.bat] = 20,
-}
-
--- Adjust HP of enemies when the level loads
-trx.events.after_level_file(function(level)
+-- Adjust HP of certain enemies
+trx.events.before_item_setup(function(level)
+  -- Randomize bats HP
   for i = 1, #trx.items do
     local item = trx.items[i]
-    local hp = hp_lut[item.object_id]
-    if hp ~= nil then
-      item.hit_points = hp
-      item.max_hit_points = hp
+    if item.object_id == trx.catalog.objects.bat then
+      item.properties.max_hit_points = math.random(5, 10)
     end
   end
+
+  -- Boost all wolves HP
+  trx.objects[trx.catalog.objects.wolf].properties.max_hit_points = 30
 end)
 ```
 

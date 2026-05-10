@@ -734,10 +734,13 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->is_targetable_func = M_IsTargetable;
     obj->draw_func = M_Draw;
-    obj->hit_points = NO_ITEM;
+
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT("max_hit_points", NO_ITEM, "Maximum hit points."));
 }
 
 void Shoal_TriggerActivate(ITEM *const item, const int16_t trigger_timer)

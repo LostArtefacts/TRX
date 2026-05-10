@@ -276,7 +276,7 @@ static void M_Setup(OBJECT *const obj)
 
     obj->radius = 102;
     obj->shadow_size = 85;
-    obj->hit_points = 10;
+
     obj->pivot_length = 50;
 
     // obj->non_lot = true; // TODO(TR3)
@@ -288,6 +288,8 @@ static void M_Setup(OBJECT *const obj)
 
     Object_GetBone(obj, 1)->rot.y = true;
     Object_GetBone(obj, 2)->rot.y = true;
+    OBJECT_PROPERTIES(
+        obj, OBJECT_PROPERTY_INT("max_hit_points", 10, "Maximum hit points."));
 }
 
 REGISTER_OBJECT(O_COMPY, M_Setup)

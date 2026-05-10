@@ -3,7 +3,9 @@
 #include <trx/game/items/walkable.h>
 #include <trx/game/lara.h>
 #include <trx/game/level/finalize.h>
+#include <trx/game/lua.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/rooms.h>
 #include <trx/version.h>
 
@@ -61,6 +63,12 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
     // initialisations may increment the total item count.
     Object_SetupAllObjects();
     Walkable_ResetLevel();
+
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ObjectProperty_ResetItem(Item_Get(i));
+    }
+
+    Lua_FireEventInt32(LUA_EVENT_BEFORE_ITEM_SETUP, GF_GetCurrentLevel()->num);
 
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {

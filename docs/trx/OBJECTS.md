@@ -1,0 +1,476 @@
+---
+title: Objects
+order: 14
+---
+
+# Objects
+
+This page lists documented moveable object properties.
+
+## Tomb Raider 1
+
+### `0` O_LARA
+- `max_hit_points = 1000` — Maximum hit points.
+
+### `6` O_BACON_LARA
+- `max_hit_points = 1000` — Maximum hit points.
+
+### `7` O_WOLF
+- `max_hit_points = 6` — Maximum hit points.
+
+### `8` O_BEAR
+- `max_hit_points = 20` — Maximum hit points.
+
+### `9` O_BAT
+- `max_hit_points = 1` — Maximum hit points.
+
+### `10` O_CROCODILE
+- `max_hit_points = 20` — Maximum hit points.
+
+### `11` O_ALLIGATOR
+- `max_hit_points = 20` — Maximum hit points.
+
+### `12` O_LION
+- `max_hit_points = 30` — Maximum hit points.
+
+### `13` O_LIONESS
+- `max_hit_points = 25` — Maximum hit points.
+
+### `14` O_PUMA
+- `max_hit_points = 45` — Maximum hit points.
+
+### `15` O_APE
+- `max_hit_points = 22` — Maximum hit points.
+
+### `16` O_RAT
+- `max_hit_points = 5` — Maximum hit points.
+
+### `17` O_VOLE
+- `max_hit_points = 5` — Maximum hit points.
+
+### `18` O_TREX
+- `max_hit_points = 100` — Maximum hit points.
+
+### `19` O_RAPTOR
+- `max_hit_points = 20` — Maximum hit points.
+
+### `20` O_ATLANTEAN_WINGED
+- `max_hit_points = 50` — Maximum hit points.
+
+### `21` O_ATLANTEAN_SHOOTER
+- `max_hit_points = 50` — Maximum hit points.
+
+### `22` O_ATLANTEAN_GROUND
+- `max_hit_points = 50` — Maximum hit points.
+
+### `23` O_CENTAUR
+- `max_hit_points = 120` — Maximum hit points.
+
+### `24` O_MUMMY
+- `max_hit_points = 18` — Maximum hit points.
+
+### `25` O_DINO_WARRIOR
+- `max_hit_points = 100` — Maximum hit points.
+
+### `26` O_FISH
+- `max_hit_points = 12` — Maximum hit points.
+
+### `27` O_LARSON
+- `max_hit_points = 50` — Maximum hit points.
+
+### `28` O_PIERRE
+- `max_hit_points = 70` — Maximum hit points.
+
+### `30` O_SKATEKID
+- `max_hit_points = 125` — Maximum hit points.
+
+### `31` O_COWBOY
+- `max_hit_points = 150` — Maximum hit points.
+
+### `32` O_BALDY
+- `max_hit_points = 200` — Maximum hit points.
+
+### `33` O_NATLA
+- `max_hit_points = 400` — Maximum hit points.
+
+### `34` O_TORSO
+- `max_hit_points = 500` — Maximum hit points.
+
+### `77` O_PLAYER_1
+- `max_hit_points = 1` — Maximum hit points.
+
+### `78` O_PLAYER_2
+- `max_hit_points = 1` — Maximum hit points.
+
+### `79` O_PLAYER_3
+- `max_hit_points = 1` — Maximum hit points.
+
+### `80` O_PLAYER_4
+- `max_hit_points = 1` — Maximum hit points.
+
+### `145` O_SCION_ITEM_3
+- `max_hit_points = 5` — Maximum hit points.
+
+### `191` O_WINSTON
+- `max_hit_points = 1` — Maximum hit points.
+
+## Tomb Raider 2
+
+### `0` O_LARA
+- `max_hit_points = 1000` — Maximum hit points.
+
+### `15` O_DOG
+- `max_hit_points = 10` — Maximum hit points.
+
+### `16` O_CULT_1
+- `max_hit_points = 25` — Maximum hit points.
+
+### `17` O_CULT_1A
+- `max_hit_points = 25` — Maximum hit points.
+
+### `18` O_CULT_1B
+- `max_hit_points = 25` — Maximum hit points.
+
+### `19` O_CULT_2
+- `max_hit_points = 60` — Maximum hit points.
+
+### `20` O_CULT_3
+- `max_hit_points = 150` — Maximum hit points.
+
+### `21` O_MOUSE
+- `max_hit_points = 4` — Maximum hit points.
+
+### `22` O_DRAGON_FRONT
+- `max_hit_points = 300` — Maximum hit points.
+
+### `25` O_SHARK
+- `max_hit_points = 30` — Maximum hit points.
+
+### `26` O_EEL
+- `max_hit_points = 5` — Maximum hit points.
+
+### `27` O_BIG_EEL
+- `max_hit_points = 20` — Maximum hit points.
+
+### `28` O_BARRACUDA
+- `max_hit_points = 12` — Maximum hit points.
+
+### `29` O_DIVER
+- `max_hit_points = 20` — Maximum hit points.
+
+### `30` O_WORKER_1
+- `max_hit_points = 25` — Maximum hit points.
+
+### `31` O_WORKER_2
+- `max_hit_points = 20` — Maximum hit points.
+
+### `32` O_WORKER_3
+- `max_hit_points = 27` — Maximum hit points.
+
+### `33` O_WORKER_4
+- `max_hit_points = 27` — Maximum hit points.
+
+### `34` O_WORKER_5
+- `max_hit_points = 20` — Maximum hit points.
+
+### `35` O_JELLY
+- `max_hit_points = 10` — Maximum hit points.
+
+### `36` O_SPIDER
+- `max_hit_points = 5` — Maximum hit points.
+
+### `37` O_BIG_SPIDER
+- `max_hit_points = 40` — Maximum hit points.
+
+### `38` O_CROW
+- `max_hit_points = 15` — Maximum hit points.
+
+### `39` O_TIGER
+- `max_hit_points = 20` — Maximum hit points.
+
+### `41` O_XIAN_SPEARMAN
+- `max_hit_points = 100` — Maximum hit points.
+
+### `43` O_XIAN_KNIGHT
+- `max_hit_points = 80` — Maximum hit points.
+
+### `45` O_YETI
+- `max_hit_points = 30` — Maximum hit points.
+
+### `46` O_BIRD_GUARDIAN
+- `max_hit_points = 200` — Maximum hit points.
+
+### `47` O_EAGLE
+- `max_hit_points = 20` — Maximum hit points.
+
+### `48` O_BANDIT_1
+- `max_hit_points = 45` — Maximum hit points.
+
+### `49` O_BANDIT_2
+- `max_hit_points = 50` — Maximum hit points.
+
+### `50` O_BANDIT_2B
+- `max_hit_points = 50` — Maximum hit points.
+
+### `51` O_SKIDOO_ARMED
+- `max_hit_points = 100` — Maximum hit points.
+
+### `52` O_SKIDOO_DRIVER
+- `max_hit_points = 1` — Maximum hit points.
+
+### `53` O_MONK_1
+- `max_hit_points = 30` — Maximum hit points.
+
+### `54` O_MONK_2
+- `max_hit_points = 30` — Maximum hit points.
+
+### `123` O_PLAYER_1
+- `max_hit_points = 1` — Maximum hit points.
+
+### `124` O_PLAYER_2
+- `max_hit_points = 1` — Maximum hit points.
+
+### `125` O_PLAYER_3
+- `max_hit_points = 1` — Maximum hit points.
+
+### `126` O_PLAYER_4
+- `max_hit_points = 1` — Maximum hit points.
+
+### `127` O_PLAYER_5
+- `max_hit_points = 1` — Maximum hit points.
+
+### `128` O_PLAYER_6
+- `max_hit_points = 1` — Maximum hit points.
+
+### `129` O_PLAYER_7
+- `max_hit_points = 1` — Maximum hit points.
+
+### `130` O_PLAYER_8
+- `max_hit_points = 1` — Maximum hit points.
+
+### `131` O_PLAYER_9
+- `max_hit_points = 1` — Maximum hit points.
+
+### `132` O_PLAYER_10
+- `max_hit_points = 1` — Maximum hit points.
+
+### `214` O_TREX
+- `max_hit_points = 100` — Maximum hit points.
+
+### `260` O_WINSTON
+- `max_hit_points = 1` — Maximum hit points.
+
+### `265` O_BEAR
+- `max_hit_points = 30` — Maximum hit points.
+
+### `266` O_WOLF
+- `max_hit_points = 10` — Maximum hit points.
+
+### `267` O_MONK_3
+- `max_hit_points = 30` — Maximum hit points.
+
+## Tomb Raider 3
+
+### `0` O_LARA
+- `max_hit_points = 1000` — Maximum hit points.
+
+### `20` O_TRIBE_AXEMAN
+- `max_hit_points = 28` — Maximum hit points.
+
+### `21` O_TRIBE_PIPEMAN
+- `max_hit_points = 28` — Maximum hit points.
+
+### `22` O_PATROL_DOG
+- `max_hit_points = 16` — Maximum hit points.
+
+### `23` O_MOUSE
+- `max_hit_points = 4` — Maximum hit points.
+
+### `26` O_DIVER
+- `max_hit_points = 20` — Maximum hit points.
+
+### `27` O_CROW
+- `max_hit_points = 8` — Maximum hit points.
+
+### `28` O_TIGER
+- `max_hit_points = 24` — Maximum hit points.
+
+### `29` O_VULTURE
+- `max_hit_points = 18` — Maximum hit points.
+
+### `30` O_ASSAULT_TARGET
+- `max_hit_points = 8` — Maximum hit points.
+
+### `32` O_ALLIGATOR
+- `max_hit_points = 42` — Maximum hit points.
+
+### `34` O_COMPY
+- `max_hit_points = 10` — Maximum hit points.
+
+### `35` O_LIZARD
+- `max_hit_points = 36` — Maximum hit points.
+
+### `36` O_TRIBE_BOSS
+- `max_hit_points = 200` — Maximum hit points.
+
+### `37` O_STHPAC_MERCENARY
+- `max_hit_points = 30` — Maximum hit points.
+
+### `39` O_RX_WORKER_1
+- `max_hit_points = 34` — Maximum hit points.
+
+### `40` O_RX_WORKER_2
+- `max_hit_points = 30` — Maximum hit points.
+
+### `41` O_HUSKIE
+- `max_hit_points = 16` — Maximum hit points.
+
+### `42` O_CRAWLER_MUTANT
+- `max_hit_points = 50` — Maximum hit points.
+
+### `44` O_WASP_MUTANT
+- `max_hit_points = 24` — Maximum hit points.
+
+### `45` O_CLAW_MUTANT
+- `max_hit_points = 130` — Maximum hit points.
+
+### `46` O_HYBRID_MUTANT
+- `max_hit_points = 90` — Maximum hit points.
+
+### `49` O_WILLARD
+- `max_hit_points = 200` — Maximum hit points.
+
+### `50` O_RX_WORKER_3
+- `max_hit_points = 36` — Maximum hit points.
+
+### `51` O_SWAT_1
+- `max_hit_points = 45` — Maximum hit points.
+
+### `52` O_SWAT_2
+- `max_hit_points = 45` — Maximum hit points.
+
+### `53` O_PUNK_1
+- `max_hit_points = 20` — Maximum hit points.
+
+### `54` O_PUNK_2
+- `max_hit_points = 20` — Maximum hit points.
+
+### `56` O_SECURITY_GUARD
+- `max_hit_points = 28` — Maximum hit points.
+
+### `57` O_SOPHIA
+- `max_hit_points = 300` — Maximum hit points.
+
+### `60` O_MP_1
+- `max_hit_points = 25` — Maximum hit points.
+
+### `61` O_MP_2
+- `max_hit_points = 28` — Maximum hit points.
+
+### `62` O_PRISONER
+- `max_hit_points = 20` — Maximum hit points.
+
+### `63` O_SWAT_3
+- `max_hit_points = 45` — Maximum hit points.
+
+### `64` O_SENTRY_GUN
+- `max_hit_points = 100` — Maximum hit points.
+
+### `65` O_CIVILIAN
+- `max_hit_points = 15` — Maximum hit points.
+
+### `66` O_SECURITY_LASER_ALARM
+- `max_hit_points = 1` — Maximum hit points.
+
+### `67` O_SECURITY_LASER_DEADLY
+- `max_hit_points = 1` — Maximum hit points.
+
+### `68` O_SECURITY_LASER_KILLER
+- `max_hit_points = 1` — Maximum hit points.
+
+### `69` O_COBRA
+- `max_hit_points = 8` — Maximum hit points.
+
+### `70` O_SHIVA
+- `max_hit_points = 100` — Maximum hit points.
+
+### `71` O_MONKEY
+- `max_hit_points = 8` — Maximum hit points.
+
+### `73` O_TONY
+- `max_hit_points = 100` — Maximum hit points.
+
+### `74` O_AI_GUARD
+- `max_hit_points = 0` — Maximum hit points.
+
+### `75` O_AI_AMBUSH
+- `max_hit_points = 0` — Maximum hit points.
+
+### `76` O_AI_PATROL_1
+- `max_hit_points = 0` — Maximum hit points.
+
+### `77` O_AI_MODIFY
+- `max_hit_points = 0` — Maximum hit points.
+
+### `78` O_AI_FOLLOW
+- `max_hit_points = 0` — Maximum hit points.
+
+### `79` O_AI_PATROL_2
+- `max_hit_points = 0` — Maximum hit points.
+
+### `80` O_AI_X1
+- `max_hit_points = 0` — Maximum hit points.
+
+### `81` O_AI_X2
+- `max_hit_points = 0` — Maximum hit points.
+
+### `82` O_AI_X3
+- `max_hit_points = 0` — Maximum hit points.
+
+### `148` O_PLAYER_1
+- `max_hit_points = 1` — Maximum hit points.
+
+### `149` O_PLAYER_2
+- `max_hit_points = 1` — Maximum hit points.
+
+### `150` O_PLAYER_3
+- `max_hit_points = 1` — Maximum hit points.
+
+### `151` O_PLAYER_4
+- `max_hit_points = 1` — Maximum hit points.
+
+### `152` O_PLAYER_5
+- `max_hit_points = 1` — Maximum hit points.
+
+### `153` O_PLAYER_6
+- `max_hit_points = 1` — Maximum hit points.
+
+### `154` O_PLAYER_7
+- `max_hit_points = 1` — Maximum hit points.
+
+### `155` O_PLAYER_8
+- `max_hit_points = 1` — Maximum hit points.
+
+### `156` O_PLAYER_9
+- `max_hit_points = 1` — Maximum hit points.
+
+### `157` O_PLAYER_10
+- `max_hit_points = 1` — Maximum hit points.
+
+### `287` O_TREX_ALPHA
+- `max_hit_points = 800` — Maximum hit points.
+
+### `288` O_RAPTOR
+- `max_hit_points = 90` — Maximum hit points.
+
+### `338` O_PIRAHNAS
+- `max_hit_points = -1` — Maximum hit points.
+
+### `339` O_TROPICAL_FISH
+- `max_hit_points = -1` — Maximum hit points.
+
+### `360` O_WINSTON
+- `max_hit_points = 1` — Maximum hit points.
+
+### `361` O_WINSTON_ARMY
+- `max_hit_points = 20` — Maximum hit points.

@@ -109,6 +109,7 @@ typedef struct OBJECT {
     int16_t radius;
     int16_t shadow_size;
     int16_t smartness;
+    OBJECT_PROPERTY_SET properties;
     XYZ_BOOL base_rot;
     LOT_SETUP lot_setup;
 

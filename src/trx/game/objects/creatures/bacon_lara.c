@@ -150,12 +150,16 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
     obj->priv_save_func = M_SavePriv;
-    obj->hit_points = LARA_MAX_HITPOINTS;
+
     obj->shadow_size = (UNIT_SHADOW * 10) / 16;
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
     obj->save_anim = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "max_hit_points", LARA_MAX_HITPOINTS, "Maximum hit points."));
 }
 
 bool BaconLara_InitialiseAnchor(const int32_t room_index)
