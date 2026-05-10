@@ -472,8 +472,7 @@ int32_t Room_GetCeilingEx(
 
 int32_t Room_GetWaterHeight(const XYZ_32 pos, const int16_t room_num)
 {
-    return Room_GetWaterHeightEx(
-        pos, room_num, g_Config.gameplay.fix_wall_geometry);
+    return Room_GetWaterHeightEx(pos, room_num, true);
 }
 
 int32_t Room_GetWaterHeightEx(
