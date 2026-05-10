@@ -852,6 +852,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── nevada.webp
 │   │   │   │   ├── southpac.webp
 │   │   │   │   ├── theend2.webp
+│   │   │   │   ├── theend.webp
 │   │   │   │   ├── title_eu.webp
 │   │   │   │   └── title_us.webp
 │   │   │   ├── 4x3
@@ -873,6 +874,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── nevada.webp
 │   │   │   │   ├── southpac.webp
 │   │   │   │   ├── theend2.webp
+│   │   │   │   ├── theend.webp
 │   │   │   │   ├── title_eu.webp
 │   │   │   │   └── title_us.webp
 │   │   │   ├── og
@@ -916,6 +918,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── nevada.webp
 │   │   │   ├── southpac.webp
 │   │   │   ├── theend2.webp
+│   │   │   ├── theend.webp
 │   │   │   ├── title_eu.webp
 │   │   │   └── title_us.webp
 │   │   ├── injections
@@ -1991,6 +1994,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── nevada.webp
     │   │   │   │   │   ├── southpac.webp
     │   │   │   │   │   ├── theend2.webp
+    │   │   │   │   │   ├── theend.webp
     │   │   │   │   │   ├── title_eu.webp
     │   │   │   │   │   └── title_us.webp
     │   │   │   │   ├── 4x3
@@ -2012,6 +2016,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── nevada.webp
     │   │   │   │   │   ├── southpac.webp
     │   │   │   │   │   ├── theend2.webp
+    │   │   │   │   │   ├── theend.webp
     │   │   │   │   │   ├── title_eu.webp
     │   │   │   │   │   └── title_us.webp
     │   │   │   │   ├── og
@@ -2055,6 +2060,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── nevada.webp
     │   │   │   │   ├── southpac.webp
     │   │   │   │   ├── theend2.webp
+    │   │   │   │   ├── theend.webp
     │   │   │   │   ├── title_eu.webp
     │   │   │   │   └── title_us.webp
     │   │   │   ├── injections

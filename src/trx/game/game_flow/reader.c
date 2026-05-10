@@ -348,15 +348,7 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
     ctx->gf->main_menu_background_path =
         Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
 
-    if (!JSON_READ(io, "savegame_file_fmt", &tmp_s) || tmp_s == nullptr) {
-        if (!JSON_READ(io, "savegame_fmt_bson", &tmp_s) || tmp_s == nullptr) {
-            JSON_FAIL();
-        }
-        // TODO: remove in TRX 1.5.
-        LOG_WARNING(
-            "%s: 'savegame_fmt_bson' is deprecated; use 'savegame_file_fmt'",
-            ctx->script_path);
-    }
+    JSON_MUST(JSON_READ(io, "savegame_file_fmt", &tmp_s));
     ctx->gf->savegame_file_fmt = Memory_DupStr(tmp_s);
 
     tmp_s = nullptr;
