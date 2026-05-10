@@ -33,10 +33,7 @@
     "convert_dropped_guns": false,
 
     "title": {
-        "path": [
-            "data_demo_pc/title.phd",
-            "title.phd",
-        ],
+        "path": "title.phd",
         "music_track": 0,
         "inherit_injections": false,
         "sequence": [
@@ -53,10 +50,7 @@
     "levels": [
         // Level 2: City of Vilcabamba
         {
-            "path": [
-                "data_demo_pc/level2.phd",
-                "level2.phd",
-            ],
+            "path": "level2.phd",
             "music_track": 0,
             "lara_outfit": "tr1_classic",
             "sequence": [
