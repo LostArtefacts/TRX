@@ -11,6 +11,7 @@
 - improved vaulting logic for Lara, allowing her to grab the lowest reachable ledge in front of her when only action is held, regardless of room layout (#5205)
 - changed `/set` to refuse level-enforced settings unless `--force` is used
 - changed the underwater crawling fix to be optional (Gameplay Options → Fixes → Fix underwater crawling)
+- changed max upscaling factor from 8 to 10 (#5347)
 - fixed `trx.game.current_level` in Lua being offset by one (#5444)
 - fixed potential crashes in old custom levels that contain invalid room visibility portals (#5447)
 - fixed transparent pixels on TR3 outfit heads when bilinear filtering is enabled (#5438)

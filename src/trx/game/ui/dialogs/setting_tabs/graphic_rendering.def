@@ -13,7 +13,7 @@ X_UI_CFG_ENUM(rendering.sprite_lock_mode,  .misc = UI_Settings_SpriteLockModeEnu
 
 X_UI_CFG_ENUM(rendering.aspect_mode,       .misc = UI_Settings_AspectModeEnumEntries)
 X_UI_CFG_ENUM(rendering.upscaling_filter,  .misc = UI_Settings_TextureFilterEnumEntries)
-X_UI_CFG(rendering.upscaling_factor,       .min_value = 1, .max_value = 8, .delta_slow = 1, .delta_fast = 1)
+X_UI_CFG(rendering.upscaling_factor,       .min_value = 1, .max_value = 10, .delta_slow = 1, .delta_fast = 1)
 X_UI_CFG(rendering.borders,                .min_value = 0, .max_value = 45, .delta_slow = 1, .delta_fast = 5)
 
 X_UI_CFG_ENUM(rendering.screenshot_format, .misc = UI_Settings_ScreenshotFormatEnumEntries)
