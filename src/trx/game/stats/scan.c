@@ -100,7 +100,7 @@ static void M_CheckTriggers(
         if (cmd->type == TO_SECRET) {
             const uint16_t secret_num = (uint16_t)(intptr_t)cmd->parameter;
             M_ReserveSecretConcreteBit(stats, NO_OBJECT, secret_num);
-        } else if (cmd->type == TO_OBJECT) {
+        } else if (cmd->type == TO_ITEM) {
             const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
             if (m_KillableItems[item_num]) {
                 continue;

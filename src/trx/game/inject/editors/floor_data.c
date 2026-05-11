@@ -62,7 +62,7 @@ static void M_SetMusicOneShot(const SECTOR *const sector)
 
     const TRIGGER_CMD *cmd = sector->trigger->command;
     for (; cmd != nullptr; cmd = cmd->next_cmd) {
-        if (cmd->type == TO_CD) {
+        if (cmd->type == TO_MUSIC) {
             sector->trigger->one_shot = true;
             break;
         }
