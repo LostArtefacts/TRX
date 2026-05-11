@@ -25,6 +25,9 @@
 - fixed water height checks when `Fix wall geometry` is not enabled (regression from 1.6)
 - fixed level music tracks continuing to play when returning to the main menu if the option not to play the title music is enabled (#5470, regression from TR1X 4.13 / TR2X 1.3)
 
+**TR2**:
+- fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.0)
+
 **TR3**:
 - added support for the `/teatime` console command
 - fixed a missing texture on Winston's nose
@@ -43,6 +46,7 @@
 - fixed the boat (RIB) briefly having an underwater hue when Lara first climbs on (OG bug)
 - fixed height checks that could make Lara refuse to dismount the Mine Cart in custom levels
 - fixed the Strobe Light being clipped out of view too soon in several levels (missing animation bounds) (regression from 1.2)
+- fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.1)
 
 
 

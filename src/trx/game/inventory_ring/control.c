@@ -592,7 +592,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 break;
 
             case O_CONTROL_OPTION:
-                Sound_Effect(SFX_MENU_GAMEBOY, nullptr, SPM_ALWAYS);
+                Sound_Effect(
+                    g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPININ,
+                    nullptr, SPM_ALWAYS);
                 break;
 
             case O_PISTOL_OPTION:
