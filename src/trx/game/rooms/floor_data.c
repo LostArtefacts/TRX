@@ -505,7 +505,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     const TRIGGER_CMD *cmd = trigger->command;
     for (; cmd != nullptr; cmd = cmd->next_cmd) {
         switch (cmd->type) {
-        case TO_OBJECT: {
+        case TO_ITEM: {
             const int16_t item_num = (int16_t)(intptr_t)cmd->parameter;
             ITEM *const trig_item = Item_Get(item_num);
 
@@ -668,7 +668,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
         }
 
-        case TO_FLIPMAP: {
+        case TO_FLIP_MAP: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
             flip_available = true;
@@ -699,7 +699,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
         }
 
-        case TO_FLIPON: {
+        case TO_FLIP_ON: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
             flip_available = true;
@@ -710,7 +710,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             break;
         }
 
-        case TO_FLIPOFF: {
+        case TO_FLIP_OFF: {
             const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
             const int32_t slot_flags = Room_GetFlipSlotFlags(flip_slot);
             flip_available = true;
@@ -731,11 +731,11 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             Game_SetIsLevelComplete(true);
             break;
 
-        case TO_FLIPEFFECT:
+        case TO_FLIP_EFFECT:
             new_effect = (int16_t)(intptr_t)cmd->parameter;
             break;
 
-        case TO_CD:
+        case TO_MUSIC:
             M_TriggerMusicTrack((MUSIC_ID)(intptr_t)cmd->parameter, trigger);
             break;
 
