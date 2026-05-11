@@ -36,6 +36,7 @@
         "misc_sprites.bin",
         "lara_outfits.bin",
         "pickup_aid.bin",
+        "winston_model.bin",
     ],
 
     "globe_select_entries": [
@@ -59,7 +60,15 @@
                 {"type": "loop_game"},
                 {"type": "level_stats"},
             ],
+            "inherit_injections": false,
             "injections": [
+                "font.bin",
+                "lara_animations.bin",
+                "pda_model.bin",
+                "lara_extra.bin",
+                "misc_sprites.bin",
+                "lara_outfits.bin",
+                "pickup_aid.bin",
                 "gym_sky.bin",
                 "gym_textures.bin",
                 "lara_gym_guns.bin",

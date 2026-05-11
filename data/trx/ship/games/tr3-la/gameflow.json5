@@ -37,6 +37,7 @@
         "misc_sprites.bin",
         "lara_outfits.bin",
         "pickup_aid.bin",
+        "winston_model.bin",
     ],
 
     "levels": [
