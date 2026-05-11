@@ -1001,12 +1001,14 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tinnos_cameras.bin
 │   │   │   ├── tinnos_fd.bin
 │   │   │   ├── tinnos_flames.bin
+│   │   │   ├── tinnos_textures.bin
 │   │   │   ├── undersea_animating_bounds.bin
 │   │   │   ├── undersea_fd.bin
 │   │   │   ├── undersea_pickup_meshes.bin
 │   │   │   ├── undersea_textures.bin
 │   │   │   ├── undersea_train.bin
 │   │   │   ├── willsden_heli.bin
+│   │   │   ├── winston_model.bin
 │   │   │   └── zoo_train.bin
 │   │   ├── levels
 │   │   │   ├── antarc.tr2
@@ -2143,12 +2145,14 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tinnos_cameras.bin
     │   │   │   │   ├── tinnos_fd.bin
     │   │   │   │   ├── tinnos_flames.bin
+    │   │   │   │   ├── tinnos_textures.bin
     │   │   │   │   ├── undersea_animating_bounds.bin
     │   │   │   │   ├── undersea_fd.bin
     │   │   │   │   ├── undersea_pickup_meshes.bin
     │   │   │   │   ├── undersea_textures.bin
     │   │   │   │   ├── undersea_train.bin
     │   │   │   │   ├── willsden_heli.bin
+    │   │   │   │   ├── winston_model.bin
     │   │   │   │   └── zoo_train.bin
     │   │   │   ├── levels
     │   │   │   │   ├── antarc.tr2

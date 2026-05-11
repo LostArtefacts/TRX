@@ -26,6 +26,8 @@
 - fixed level music tracks continuing to play when returning to the main menu if the option not to play the title music is enabled (#5470, regression from TR1X 4.13 / TR2X 1.3)
 
 **TR3**:
+- added support for the `/teatime` console command
+- fixed a missing texture on Winston's nose
 - fixed missing "The End" text in the first end credit image (#5441)
 - fixed Hand of Rathmore rotating in Sleeping with the Fishes
 - fixed the Circuit Bulbs in Sleeping with the Fishes not rotating on a central axis in the inventory
