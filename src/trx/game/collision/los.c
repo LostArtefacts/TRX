@@ -2,6 +2,7 @@
 
 #include <trx/core/utils.h>
 #include <trx/game/items.h>
+#include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
 
@@ -37,6 +38,28 @@ static inline bool M_RoomInLOSRooms(const int16_t room_num)
         }
     }
     return false;
+}
+
+static XYZ_32 M_GetMidPos(const ITEM *const item)
+{
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    const XYZ_32 mid = {
+        .x = (bounds->min.x + bounds->max.x) / 2,
+        .y = (bounds->min.y + bounds->max.y) / 2,
+        .z = (bounds->min.z + bounds->max.z) / 2,
+    };
+
+    Matrix_PushUnit();
+    Matrix_Rot16(item->rot);
+    Matrix_TranslateRel32(mid);
+    const XYZ_32 pos = {
+        .x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT),
+        .y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT),
+        .z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT),
+    };
+    Matrix_Pop();
+
+    return pos;
 }
 
 // This routine transforms the world-space LOS segment [start,target] into the
@@ -172,7 +195,7 @@ int32_t LOS_CheckSmashable(
         {
             GAME_VECTOR start_tmp = start;
             GAME_VECTOR target_tmp = {
-                .pos = item->pos,
+                .pos = M_GetMidPos(item),
             };
             if (!LOS_Check(&start_tmp, &target_tmp, false)) {
                 continue;
