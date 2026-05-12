@@ -311,8 +311,6 @@ remains distinct for each game.
     "main_menu_picture": "data/images/title_eu.webp",
     "savegame_file_fmt": "save_tr2_%02d.dat",
 
-    "demo_version": false,
-
     "title": {
         "path": "data/title.tr2",
         "music_track": 60,

@@ -1,0 +1,58 @@
+{
+    // NOTE: bad changes to this file may result in crashes.
+    // Lines starting with double slashes are comments and are ignored.
+
+    "engine": 1,
+    "name": "Tomb Raider I Custom Level",
+
+    "main_menu_picture": "title.webp",
+    "savegame_file_fmt": "save_tr1_%02d.dat",
+
+    "injections": [
+        "crystal.bin",
+        "font.bin",
+        "gun_glow.bin",
+        "lara_animations.bin",
+        "lara_extra.bin",
+        "lara_guns.bin",
+        "lara_outfits.bin",
+        "misc_sprites.bin",
+        "pda_model.bin",
+        "photo.bin",
+        "pickup_aid.bin",
+        "uzi_sfx.bin",
+    ],
+
+    "enable_tr2_item_drops": false,
+    "convert_dropped_guns": false,
+
+    "title": {
+        "path": "title.phd",
+        "music_track": 1,
+        "sequence": [
+            {"type": "display_picture", "path": "legal.webp", "legal": true, "display_time": 1, "fade_in_time": 1.0, "fade_out_time": 1.0},
+            {"type": "exit_to_title"},
+        ],
+        "injections": [],
+    },
+
+    "levels": [
+        // Level 1: First level
+        {
+            "path": "level1.phd",
+            "music_track": 2,
+            "lara_outfit": "tr1_classic",
+            "sequence": [
+                {"type": "loop_game"},
+                {"type": "level_stats"},
+                {"type": "level_complete"},
+            ],
+            "injections": [],
+        },
+    ],
+
+    "demos": [],
+    "cutscenes": [],
+    "fmvs": [],
+    "hidden_config": [],
+}

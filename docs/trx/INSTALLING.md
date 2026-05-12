@@ -894,7 +894,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── legal_us.webp
 │   │   │   │   ├── london.webp
 │   │   │   │   ├── nevada.webp
-│   │   │   │   ├── nevadafff.webp
 │   │   │   │   ├── southpac.webp
 │   │   │   │   ├── theend2.webp
 │   │   │   │   ├── theend.webp
@@ -2106,7 +2105,6 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── legal_us.webp
     │   │   │   │   │   ├── london.webp
     │   │   │   │   │   ├── nevada.webp
-    │   │   │   │   │   ├── nevadafff.webp
     │   │   │   │   │   ├── southpac.webp
     │   │   │   │   │   ├── theend2.webp
     │   │   │   │   │   ├── theend.webp

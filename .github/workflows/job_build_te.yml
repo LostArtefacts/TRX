@@ -1,0 +1,61 @@
+name: Build Tomb Editor bundle
+
+on:
+  workflow_call:
+    inputs:
+      target:
+        type: string
+        description: "Target to build for"
+        required: true
+      zip:
+        type: boolean
+        description: "Pack the artifacts into zip"
+        required: true
+      windows_artifact_name:
+        type: string
+        description: "Windows artifact name to consume"
+        required: true
+
+jobs:
+  build_te:
+    name: Build Tomb Editor bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install dependencies
+        uses: taiki-e/install-action@just
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Resolve artifact names
+        id: vars
+        run: |
+          echo "win_asset=${{ inputs.windows_artifact_name }}" >> $GITHUB_OUTPUT
+          echo "te_asset=TRX-$(just output-current-version)-TombEditor" >> $GITHUB_OUTPUT
+          echo "te_dir=build/artifacts/te/" >> $GITHUB_OUTPUT
+
+      - name: Download windows build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.win_asset }}
+          path: build/artifacts/trx/
+
+      - name: Package Tomb Editor bundle
+        run: |
+          if [ "${{ inputs.zip }}" = "1" ] || [ "${{ inputs.zip }}" = "true" ]; then
+            just trx-package-win-te "build/artifacts/trx/${{ steps.vars.outputs.win_asset }}.zip" "${{ steps.vars.outputs.te_dir }}"
+          else
+            just trx-package-win-te "build/artifacts/trx/" "${{ steps.vars.outputs.te_dir }}" --no-zip
+          fi
+
+      - name: Upload TE bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.vars.outputs.te_asset }}
+          path: ${{ steps.vars.outputs.te_dir }}
+          compression-level: 9

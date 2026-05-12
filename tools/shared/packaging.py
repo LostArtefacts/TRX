@@ -5,9 +5,16 @@ from pathlib import Path
 
 
 def create_zip(
-    output_path: Path, source_files: Iterable[tuple[Path, str]]
+    output_path: Path,
+    source_files: Iterable[tuple[Path, str]],
+    *,
+    compresslevel: int | None = None,
 ) -> None:
-    with zipfile.ZipFile(output_path, "w") as handle:
+    kwargs = {}
+    if compresslevel is not None:
+        kwargs["compression"] = zipfile.ZIP_DEFLATED
+        kwargs["compresslevel"] = compresslevel
+    with zipfile.ZipFile(output_path, "w", **kwargs) as handle:
         for source_path, archive_name in source_files:
             if not source_path.exists():
                 print(
