@@ -25,6 +25,7 @@
 - fixed water height checks when `Fix wall geometry` is not enabled (regression from 1.6)
 - fixed level music tracks continuing to play when returning to the main menu if the option not to play the title music is enabled (#5470, regression from TR1X 4.13 / TR2X 1.3)
 - fixed being unable to smash items that are placed inside geometry but have bounds that extend into regular space (#5483, regression from 1.3)
+- fixed a potential crash when colliding with items that have no animation data (#5488)
 
 **TR2**:
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.0)
