@@ -95,6 +95,8 @@ typedef struct {
 
 typedef struct {
     M_QUAD_BIKE_INFO quad;
+    MUSIC_ID music_tracks[4];
+    int32_t music_track_count;
     int16_t *extra_rotation;
     int32_t extra_rotation_count;
     int32_t rear_rot_x_idx[2];
@@ -210,6 +212,15 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
 
     p->quad.momentum_angle = item->rot.y;
+    p->music_track_count = 0;
+    const char *const keys[4] = { "track_1", "track_2", "track_3", "track_4" };
+    for (int32_t i = 0; i < 4; i++) {
+        OBJECT_PROPERTY_VALUE val = {};
+        ObjectProperty_GetItemValue(item, keys[i], &val);
+        if (val.as_int >= 0) {
+            p->music_tracks[p->music_track_count++] = val.as_int;
+        }
+    }
 
     const OBJECT *const obj = Object_Get(item->object_id);
     M_CalcExtraRotationLayout(obj, p);
@@ -323,14 +334,13 @@ static void M_Collision(
     lara->hit_direction = DIR_UNKNOWN;
     Item_Animate(lara_item);
 
-    // TODO: do not hardcode this
-    if (g_TRVersion == 3 && GF_BadGetLevelNum() == 3) {
+    {
         const bool is_ambient =
             Music_GetCurrentPlayingTrack() == Music_GetCurrentLoopedTrack();
-        const MUSIC_ID tunes[4] = { 9, 12, 4, 12 };
-        if (is_ambient) {
+        if (is_ambient && p->music_track_count > 0) {
             Music_Play_Direct(
-                tunes[Random_GetControl() % ARRAY_SIZE(tunes)], MPM_ONCE);
+                p->music_tracks[Random_GetControl() % p->music_track_count],
+                MPM_ONCE);
         }
     }
 
@@ -1514,6 +1524,17 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
 
     M_EnableWheelExtraRotations(obj);
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_INT(
+            "track_1", -1, "Random music track pool, slot 1. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_3", -1, "Random music track pool, slot 3. -1 = disabled."),
+        OBJECT_PROPERTY_INT(
+            "track_4", -1, "Random music track pool, slot 4. -1 = disabled."));
 }
 
 REGISTER_OBJECT(O_QUAD_BIKE, M_Setup)

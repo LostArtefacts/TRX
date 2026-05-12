@@ -121,6 +121,7 @@
         // 3. The River Ganges
         {
             "path": "quadchas.tr2",
+            "script": "ganges.lua",
             "music_track": 34,
             "lara_outfit": "tr3_classic",
             "weather_type": "rain",
