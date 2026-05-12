@@ -34,6 +34,7 @@
 
 **TR3**:
 - added support for the `/teatime` console command
+- changed Quad Bike level 3 (The River Ganges) music tracks to be no longer hardcoded; moved the setup to LUA
 - fixed a missing texture on Winston's nose
 - fixed missing "The End" text in the first end credit image (#5441)
 - fixed Hand of Rathmore rotating in Sleeping with the Fishes

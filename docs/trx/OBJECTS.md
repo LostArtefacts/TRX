@@ -274,6 +274,12 @@ This page lists documented moveable object properties.
 ### `0` O_LARA
 - `max_hit_points = 1000` — Maximum hit points.
 
+### `16` O_QUAD_BIKE
+- `track_1 = -1` — Random music track pool, slot 1. -1 = disabled.
+- `track_2 = -1` — Random music track pool, slot 2. -1 = disabled.
+- `track_3 = -1` — Random music track pool, slot 3. -1 = disabled.
+- `track_4 = -1` — Random music track pool, slot 4. -1 = disabled.
+
 ### `20` O_TRIBE_AXEMAN
 - `max_hit_points = 28` — Maximum hit points.
 
