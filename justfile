@@ -96,6 +96,9 @@ trx-build-win-installer target='release' *args: \
 
 trx-package-linux target='debug' *args: (trx-build-linux target) (_docker_run "rrdash/trx-linux" "package" args)
 trx-package-win target='debug' *args: (trx-build-win target) (_docker_run "rrdash/trx-win" "package" args)
+trx-package-win-te artifact_path output *args:
+    python3 tools/update_te_symlinks
+    python3 tools/package_te_bundle.py --artifact {{artifact_path}} --output {{output}} {{args}}
 trx-package-win-installer target='release' *args: \
     (trx-build-win-installer target args) \
     (_docker_run "rrdash/trx-win" "package" "--platform" "win-installer" args)

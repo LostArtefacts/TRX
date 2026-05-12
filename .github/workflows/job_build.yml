@@ -15,11 +15,17 @@ on:
         type: boolean
         description: "Pack the artifacts into zip"
         required: true
+    outputs:
+      trx_asset:
+        description: "Uploaded artifact name"
+        value: ${{ jobs.build.outputs.trx_asset }}
 
 jobs:
   build:
     name: Build release assets
     runs-on: ubuntu-latest
+    outputs:
+      trx_asset: ${{ steps.vars.outputs.trx_asset }}
 
     steps:
       - name: Install dependencies

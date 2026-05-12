@@ -9,7 +9,6 @@
     "main_menu_picture": "title_eu_gm.webp",
     "savegame_file_fmt": "save_trgm_%02d.dat",
 
-    "demo_version": false,
     "enable_tr2_item_drops": true,
     "convert_dropped_guns": true,
 

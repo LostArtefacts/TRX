@@ -29,6 +29,17 @@ jobs:
       zip: false
     secrets: inherit
 
+  package_win_te:
+    name: Build Tomb Editor bundle
+    needs:
+      - package_win
+    uses: ./.github/workflows/job_build_te.yml
+    with:
+      target: debug
+      zip: false
+      windows_artifact_name: ${{ needs.package_win.outputs.trx_asset }}
+    secrets: inherit
+
   # package_mac:
   #   name: Mac
   #   if: vars.MACOS_ENABLE == 'true'

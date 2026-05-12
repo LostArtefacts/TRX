@@ -29,6 +29,18 @@ jobs:
       zip: true
     secrets: inherit
 
+  package_win_te:
+    name: Build Tomb Editor bundle
+    if: vars.PRERELEASE_ENABLE == 'true'
+    needs:
+      - package_win
+    uses: ./.github/workflows/job_build_te.yml
+    with:
+      target: debug
+      zip: true
+      windows_artifact_name: ${{ needs.package_win.outputs.trx_asset }}
+    secrets: inherit
+
   # package_win_installer:
   #   name: Build Windows installer
   #   if: vars.PRERELEASE_ENABLE == 'true'
@@ -57,6 +69,7 @@ jobs:
       - package_linux
       - package_mac
       - package_win
+      - package_win_te
       # - package_win_installer
     with:
       draft: false

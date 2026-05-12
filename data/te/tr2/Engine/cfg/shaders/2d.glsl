@@ -1,0 +1,1 @@
+../../../../../trx/ship/cfg/shaders/2d.glsl
