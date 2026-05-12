@@ -1038,6 +1038,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── compound.lua
 │   │   │   ├── crash.lua
 │   │   │   ├── cut8.lua
+│   │   │   ├── ganges.lua
 │   │   │   ├── jungle.lua
 │   │   │   ├── mines.lua
 │   │   │   ├── tower.lua
@@ -1058,6 +1059,73 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── tombpc.dat
 │   │   └── weapons.json5
 │   ├── tr3-la
+│   │   ├── images
+│   │   │   ├── 3x2
+│   │   │   │   ├── chunnel.webp
+│   │   │   │   ├── credit01_eu_la.webp
+│   │   │   │   ├── credit01_us_la.webp
+│   │   │   │   ├── credit02_la.webp
+│   │   │   │   ├── credit03_la.webp
+│   │   │   │   ├── credit04_la.webp
+│   │   │   │   ├── credit05_la.webp
+│   │   │   │   ├── credit06_la.webp
+│   │   │   │   ├── credit07_la.webp
+│   │   │   │   ├── credit08_la.webp
+│   │   │   │   ├── credit09_la.webp
+│   │   │   │   ├── highland.webp
+│   │   │   │   ├── legal_eu_la.webp
+│   │   │   │   ├── legal_us_la.webp
+│   │   │   │   ├── slinc.webp
+│   │   │   │   ├── theend2_la.webp
+│   │   │   │   ├── theend_la.webp
+│   │   │   │   ├── title_eu_la.webp
+│   │   │   │   ├── title_us_la.webp
+│   │   │   │   ├── undersea.webp
+│   │   │   │   ├── willard.webp
+│   │   │   │   └── zoo.webp
+│   │   │   ├── 4x3
+│   │   │   │   ├── chunnel.webp
+│   │   │   │   ├── credit01_eu_la.webp
+│   │   │   │   ├── credit01_us_la.webp
+│   │   │   │   ├── credit02_la.webp
+│   │   │   │   ├── credit03_la.webp
+│   │   │   │   ├── credit04_la.webp
+│   │   │   │   ├── credit05_la.webp
+│   │   │   │   ├── credit06_la.webp
+│   │   │   │   ├── credit07_la.webp
+│   │   │   │   ├── credit08_la.webp
+│   │   │   │   ├── credit09_la.webp
+│   │   │   │   ├── highland.webp
+│   │   │   │   ├── legal_eu_la.webp
+│   │   │   │   ├── legal_us_la.webp
+│   │   │   │   ├── slinc.webp
+│   │   │   │   ├── title_eu_la.webp
+│   │   │   │   ├── title_us_la.webp
+│   │   │   │   ├── undersea.webp
+│   │   │   │   ├── willard.webp
+│   │   │   │   └── zoo.webp
+│   │   │   ├── chunnel.webp
+│   │   │   ├── credit01_eu_la.webp
+│   │   │   ├── credit01_us_la.webp
+│   │   │   ├── credit02_la.webp
+│   │   │   ├── credit03_la.webp
+│   │   │   ├── credit04_la.webp
+│   │   │   ├── credit05_la.webp
+│   │   │   ├── credit06_la.webp
+│   │   │   ├── credit07_la.webp
+│   │   │   ├── credit08_la.webp
+│   │   │   ├── credit09_la.webp
+│   │   │   ├── highland.webp
+│   │   │   ├── legal_eu_la.webp
+│   │   │   ├── legal_us_la.webp
+│   │   │   ├── slinc.webp
+│   │   │   ├── theend2_la.webp
+│   │   │   ├── theend_la.webp
+│   │   │   ├── title_eu_la.webp
+│   │   │   ├── title_us_la.webp
+│   │   │   ├── undersea.webp
+│   │   │   ├── willard.webp
+│   │   │   └── zoo.webp
 │   │   ├── levels
 │   │   │   ├── chunnel.tr2
 │   │   │   ├── scotland.tr2
@@ -2182,6 +2250,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── compound.lua
     │   │   │   │   ├── crash.lua
     │   │   │   │   ├── cut8.lua
+    │   │   │   │   ├── ganges.lua
     │   │   │   │   ├── jungle.lua
     │   │   │   │   ├── mines.lua
     │   │   │   │   ├── tower.lua
@@ -2202,6 +2271,73 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── tombpc.dat
     │   │   │   └── weapons.json5
     │   │   ├── tr3-la
+    │   │   │   ├── images
+    │   │   │   │   ├── 3x2
+    │   │   │   │   │   ├── chunnel.webp
+    │   │   │   │   │   ├── credit01_eu_la.webp
+    │   │   │   │   │   ├── credit01_us_la.webp
+    │   │   │   │   │   ├── credit02_la.webp
+    │   │   │   │   │   ├── credit03_la.webp
+    │   │   │   │   │   ├── credit04_la.webp
+    │   │   │   │   │   ├── credit05_la.webp
+    │   │   │   │   │   ├── credit06_la.webp
+    │   │   │   │   │   ├── credit07_la.webp
+    │   │   │   │   │   ├── credit08_la.webp
+    │   │   │   │   │   ├── credit09_la.webp
+    │   │   │   │   │   ├── highland.webp
+    │   │   │   │   │   ├── legal_eu_la.webp
+    │   │   │   │   │   ├── legal_us_la.webp
+    │   │   │   │   │   ├── slinc.webp
+    │   │   │   │   │   ├── theend2_la.webp
+    │   │   │   │   │   ├── theend_la.webp
+    │   │   │   │   │   ├── title_eu_la.webp
+    │   │   │   │   │   ├── title_us_la.webp
+    │   │   │   │   │   ├── undersea.webp
+    │   │   │   │   │   ├── willard.webp
+    │   │   │   │   │   └── zoo.webp
+    │   │   │   │   ├── 4x3
+    │   │   │   │   │   ├── chunnel.webp
+    │   │   │   │   │   ├── credit01_eu_la.webp
+    │   │   │   │   │   ├── credit01_us_la.webp
+    │   │   │   │   │   ├── credit02_la.webp
+    │   │   │   │   │   ├── credit03_la.webp
+    │   │   │   │   │   ├── credit04_la.webp
+    │   │   │   │   │   ├── credit05_la.webp
+    │   │   │   │   │   ├── credit06_la.webp
+    │   │   │   │   │   ├── credit07_la.webp
+    │   │   │   │   │   ├── credit08_la.webp
+    │   │   │   │   │   ├── credit09_la.webp
+    │   │   │   │   │   ├── highland.webp
+    │   │   │   │   │   ├── legal_eu_la.webp
+    │   │   │   │   │   ├── legal_us_la.webp
+    │   │   │   │   │   ├── slinc.webp
+    │   │   │   │   │   ├── title_eu_la.webp
+    │   │   │   │   │   ├── title_us_la.webp
+    │   │   │   │   │   ├── undersea.webp
+    │   │   │   │   │   ├── willard.webp
+    │   │   │   │   │   └── zoo.webp
+    │   │   │   │   ├── chunnel.webp
+    │   │   │   │   ├── credit01_eu_la.webp
+    │   │   │   │   ├── credit01_us_la.webp
+    │   │   │   │   ├── credit02_la.webp
+    │   │   │   │   ├── credit03_la.webp
+    │   │   │   │   ├── credit04_la.webp
+    │   │   │   │   ├── credit05_la.webp
+    │   │   │   │   ├── credit06_la.webp
+    │   │   │   │   ├── credit07_la.webp
+    │   │   │   │   ├── credit08_la.webp
+    │   │   │   │   ├── credit09_la.webp
+    │   │   │   │   ├── highland.webp
+    │   │   │   │   ├── legal_eu_la.webp
+    │   │   │   │   ├── legal_us_la.webp
+    │   │   │   │   ├── slinc.webp
+    │   │   │   │   ├── theend2_la.webp
+    │   │   │   │   ├── theend_la.webp
+    │   │   │   │   ├── title_eu_la.webp
+    │   │   │   │   ├── title_us_la.webp
+    │   │   │   │   ├── undersea.webp
+    │   │   │   │   ├── willard.webp
+    │   │   │   │   └── zoo.webp
     │   │   │   ├── levels
     │   │   │   │   ├── chunnel.tr2
     │   │   │   │   ├── scotland.tr2
