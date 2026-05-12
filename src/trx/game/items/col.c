@@ -48,13 +48,19 @@ bool Item_TestBoundsCollide(
     const ITEM *const src_item, const ITEM *const dst_item,
     const int32_t radius)
 {
+    const ANIM_FRAME *const src_frame = Item_GetBestFrame(src_item);
+    const ANIM_FRAME *const dst_frame = Item_GetBestFrame(dst_item);
+    if (src_frame == nullptr || dst_frame == nullptr) {
+        return false;
+    }
+
     const COLL_ITEM src = {
-        .bounds = Item_GetBestFrame(src_item)->bounds,
+        .bounds = src_frame->bounds,
         .pos = src_item->pos,
         .rot = src_item->rot,
     };
     const COLL_ITEM dst = {
-        .bounds = Item_GetBestFrame(dst_item)->bounds,
+        .bounds = dst_frame->bounds,
         .pos = dst_item->pos,
         .rot = dst_item->rot,
     };
