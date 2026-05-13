@@ -77,6 +77,10 @@ static const char *m_FMVExtensions[] = {
     ".mp4", ".mkv", ".mpeg", ".avi", ".webm", ".ogv", ".rpl", ".fmv", nullptr,
 };
 
+static const char *m_ImageExtensions[] = {
+    ".webp", ".png", ".jpg", ".jpeg", ".pcx", ".bmp", nullptr,
+};
+
 static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = {
     [TRX_DYNAMIC_PATH_COMMON_CONFIG] = {
         .patterns = {
@@ -133,6 +137,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
             "%trx_dir%/%rel%",
             nullptr,
         },
+        .extensions = m_ImageExtensions,
         .check_exists = true,
     },
     [TRX_DYNAMIC_PATH_INJECTION_FILE] = {
