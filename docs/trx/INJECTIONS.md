@@ -86,6 +86,7 @@ TRX provides asset packs intended for WadTool import:
 
 - `https://lostartefacts.dev/pub/tr1-assets.zip`
 - `https://lostartefacts.dev/pub/tr2-assets.zip`
+- `https://lostartefacts.dev/pub/tr3-assets.zip`
 
 The zips also include Tomb Editor catalogs (`Moveables.xml` /
 `SpriteSequences.xml`) so TRX object names show up (and to enable cross-game
