@@ -33,6 +33,7 @@
 
 **TR2**:
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.0)
+- fixed Lara entering fast fall speed slightly later than OG when dropping from a ledge (regression from TR2X 1.2)
 
 **TR3**:
 - added support for the `/teatime` console command
@@ -54,6 +55,7 @@
 - fixed height checks that could make Lara refuse to dismount the Mine Cart in custom levels
 - fixed the Strobe Light being clipped out of view too soon in several levels (missing animation bounds) (regression from 1.2)
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.1)
+- fixed Lara entering fast fall speed slightly later than OG when dropping from a ledge (regression from 1.1)
 
 
 
