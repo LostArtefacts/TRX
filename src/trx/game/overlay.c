@@ -605,8 +605,13 @@ void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
         const INVENTORY_ITEM *const inv_item = InvRing_GetInvItem(obj_id);
         pickup->phase = DPP_EASE_IN;
         pickup->object_id = obj_id;
-        pickup->display.object =
-            inv_object_id != NO_OBJECT ? Object_Get(inv_object_id) : nullptr;
+        pickup->display.object = nullptr;
+        if (inv_object_id != NO_OBJECT) {
+            const OBJECT *const obj = Object_Get(inv_object_id);
+            if (obj->loaded && obj->anim_idx != NO_ANIM) {
+                pickup->display.object = obj;
+            }
+        }
         pickup->display.grid_x = grid_x;
         pickup->display.grid_y = grid_y;
         pickup->start_rot = inv_item != nullptr ? inv_item->y_rot_sel : 0;

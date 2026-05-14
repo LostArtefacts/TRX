@@ -145,6 +145,9 @@ static void M_Draw3DPickups(const M_PRIV *const p)
             Vector_Get(p->scheduled_pickups, i);
         const ANIM_FRAME *const frame =
             Object_GetAnim(pickup->object, 0)->frame_ptr;
+        if (frame == nullptr) {
+            continue;
+        }
 
         const VIEWPORT_RECT pickup_rect = OutputSource_UI_GetPickupRect(pickup);
         const XYZ_32 origin = {
