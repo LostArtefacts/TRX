@@ -30,6 +30,7 @@
 - fixed being unable to smash items that are placed inside geometry but have bounds that extend into regular space (#5483, regression from 1.3)
 - fixed a potential crash when colliding with items that have no animation data (#5488)
 - fixed image files not falling back to other supported formats
+- fixed Lara not being able to use keys/puzzles if animated interactions are enabled and previous pickup attempts have failed due to other object collision (#5496)
 
 **TR2**:
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.0)

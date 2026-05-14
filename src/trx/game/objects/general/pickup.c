@@ -335,6 +335,11 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
         }
 
         goto cleanup;
+    } else if (
+        lara_item->current_anim_state != LS(LS_PICKUP)
+        && !lara->interact_target.is_moving
+        && lara->interact_target.item_num == item_num) {
+        lara->interact_target.item_num = NO_ITEM;
     }
 
     if (lara->interact_target.item_num != item_num) {
