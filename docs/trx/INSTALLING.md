@@ -2364,6 +2364,31 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     └── MacOS</code></pre>
 </details>
 
+# Extracting GOG / Steam disk images
+
+Some digital releases still package the original games as disc images or
+installer payloads instead of a ready-to-copy folder tree. If your purchase
+contains files such as `.bin`, `.cue`, `.iso`, `GAME.BIN`, or `GAME.GOG`,
+extract those first, then copy the resulting `data/`, `fmv/`, `music/`,
+`audio/`, or `cuts/` folders into TRX using the mapping below.
+
+- **On Windows**
+  - For `.iso` images, mount them in Explorer or open them with 7-Zip and copy
+    the files out.
+  - For `.bin` / `.cue` images, use a disc-image tool such as UltraISO or
+    WinCDEmu to open or mount the image, then copy the files out.
+  - For GOG installer payloads such as `GAME.GOG`, tools like UniExtract can
+    unpack the contents without running the original installer.
+- **On Linux**
+  - For GOG installers, `innoextract` can unpack the files directly.
+  - For `.iso` images, mount them or open them with an archive tool and copy
+    the files out.
+  - For `.bin` / `.cue` images, first convert or mount the image with a tool
+    such as `bchunk` or `bin2iso`, then extract the files from the resulting
+    image.
+
+Once extracted, use the folder mapping below.
+
 # Manually copying original game files
 
 Please do not copy your original files into top-level `data/`, `fmv/`,
