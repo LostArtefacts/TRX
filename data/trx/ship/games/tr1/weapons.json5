@@ -235,7 +235,7 @@
         "aim_speed": 10,
         "shot_accuracy": 8,
         "gun_height": 500,
-        "damage": 3,
+        "damage": 4,
         "ammo": {
             "initial_qty": 60,
             "pickup_qty": 60,
