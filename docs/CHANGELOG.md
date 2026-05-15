@@ -35,10 +35,12 @@
 
 **TR1**:
 - added support for reverb in custom levels
+- added support for the Mine Cart in custom levels
 - fixed a stray face on the Magnums model (#2073)
 
 **TR2**:
 - added support for reverb in custom levels
+- added support for the Mine Cart in custom levels
 - fixed transparent pixels on the CD player in each level (#4072)
 - fixed a stray face on the Automatic Pistols and Uzis models (#2073)
 - fixed transparent pixels on the Automatic Pistols in Golden Mask levels (#2073)
