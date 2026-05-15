@@ -347,6 +347,17 @@ static void M_SetSectorTriangulation(
 #undef L_TRIANGULATE
 }
 
+static void M_SetMineCart(
+    const INJECTION *const injection, SECTOR *const sector)
+{
+    const MINE_CART_TYPE type = VFile_ReadS32(injection->fp);
+    if (type < 0 || type >= NUM_MINE_CART_TYPES) {
+        LOG_WARNING("Invalid mine cart type: %d", type);
+        return;
+    }
+    sector->mine_cart_type = type;
+}
+
 static void M_FloorDataEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
@@ -414,6 +425,9 @@ static void M_FloorDataEdits(
                 break;
             case FET_TRIANGULATE:
                 M_SetSectorTriangulation(injection, sector);
+                break;
+            case FET_MINE_CART:
+                M_SetMineCart(injection, sector);
                 break;
             case FET_DELETE_TRIGGER:
                 if (sector != nullptr) {
