@@ -943,6 +943,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── coastal_animating_bounds.bin
 │   │   │   ├── coastal_sky.bin
 │   │   │   ├── coastal_textures.bin
+│   │   │   ├── common_pickup_meshes.bin
 │   │   │   ├── compound_animating_bounds.bin
 │   │   │   ├── compound_cine.bin
 │   │   │   ├── compound_textures.bin
@@ -2154,6 +2155,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── coastal_animating_bounds.bin
     │   │   │   │   ├── coastal_sky.bin
     │   │   │   │   ├── coastal_textures.bin
+    │   │   │   │   ├── common_pickup_meshes.bin
     │   │   │   │   ├── compound_animating_bounds.bin
     │   │   │   │   ├── compound_cine.bin
     │   │   │   │   ├── compound_textures.bin

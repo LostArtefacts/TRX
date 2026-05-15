@@ -34,6 +34,7 @@
 - fixed a potential crash if 3D pickups are enabled but an item's 3D model isn't loaded or contains no animation data
 
 **TR2**:
+- fixed transparent pixels on the CD player in each level (#4072)
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.0)
 - fixed Lara entering fast fall speed slightly later than OG when dropping from a ledge (regression from TR2X 1.2)
 
@@ -50,6 +51,7 @@
 - fixed several incorrect and missing textures in RX-Tech Mines rooms 2, 7, 22, 32, 69 and 70
 - fixed the camera being cut off early after placing the Oceanic Masks in Lost City of Tinnos (OG bug)
 - fixed the push button mesh being offset too far from the wall in each level it appears (OG bug)
+- fixed transparent pixels on the CD player in each level (#4072)
 - fixed a missing face on the push button in Antarctica (#5428)
 - fixed the push buttons in Lost City of Tinnos rotating oddly when used
 - fixed several missing, stretched and misaligned textures in Lara's Home (#4890)

@@ -20,6 +20,9 @@
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
+        "injections": [
+            "common_pickup_meshes.bin",
+        ]
     },
 
     "ambient_tracks": [
@@ -71,6 +74,7 @@
                 "pickup_aid.bin",
                 "gym_sky.bin",
                 "gym_textures.bin",
+                "common_pickup_meshes.bin",
                 "lara_gym_guns.bin",
             ],
         },
@@ -96,6 +100,7 @@
             "injections": [
                 "india_sky.bin",
                 "lara_guns.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -115,6 +120,7 @@
             "injections": [
                 "india_sky.bin",
                 "lara_guns.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -137,6 +143,7 @@
                 "lara_guns.bin",
                 "ganges_door131_frames.bin",
                 "ganges_textures.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -156,6 +163,7 @@
             "injections": [
                 "lara_guns.bin",
                 "globe_model.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -178,6 +186,7 @@
                 "coastal_animating_bounds.bin",
                 "lara_guns.bin",
                 "coastal_textures.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -223,6 +232,7 @@
                 "lara_guns.bin",
                 "rapids_sky.bin",
                 "madubu_textures.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -266,6 +276,7 @@
                 "menu_artefacts.bin",
                 "thames_textures.bin",
                 "thames_animating_bounds.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -314,6 +325,7 @@
                 "luds_textures.bin",
                 "menu_artefacts.bin",
                 "luds_animating_bounds.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_pickups": 2,
         },
@@ -338,6 +350,7 @@
                 "globe_model.bin",
                 "city_textures.bin",
                 "menu_artefacts.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -359,6 +372,7 @@
                 "lara_guns.bin",
                 "nevada_sky.bin",
                 "nevada_door132_frames.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -389,6 +403,7 @@
                 "compound_cine.bin",
                 "compound_animating_bounds.bin",
                 "compound_textures.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_kills": 9,
             "unobtainable_ally_kills": 8,
@@ -415,6 +430,7 @@
                 "globe_model.bin",
                 "area51_textures.bin",
                 "area51_animating_bounds.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -441,6 +457,7 @@
                 "antarc_door134_frames.bin",
                 "menu_artefacts.bin",
                 "antarc_textures.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -465,6 +482,7 @@
                 "mines_textures.bin",
                 "flamethrower_sfx.bin",
                 "mines_textures.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -487,6 +505,7 @@
                 "tinnos_flames.bin",
                 "tinnos_fd.bin",
                 "tinnos_textures.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -548,6 +567,7 @@
                 "stpaul_animating_bounds.bin",
                 "stpaul_textures.bin",
                 "menu_artefacts.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_pickups": 9,
         },

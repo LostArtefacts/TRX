@@ -27,6 +27,7 @@
             "pda_model.bin",
             "title_textures.bin",
             "misc_sprites.bin",
+            "common_pickup_meshes.bin",
         ]
     },
 
@@ -65,6 +66,7 @@
                 "gym_sfx.bin",
                 "gym_music_tracks.bin",
                 "gym_textures.bin",
+                "common_pickup_meshes.bin",
                 "lara_gym_guns.bin",
                 "lara_animations.bin",
                 "pda_model.bin",
