@@ -33,8 +33,13 @@
 - fixed Lara not being able to use keys/puzzles if animated interactions are enabled and previous pickup attempts have failed due to other object collision (#5496)
 - fixed a potential crash if 3D pickups are enabled but an item's 3D model isn't loaded or contains no animation data
 
+**TR1**:
+- fixed a stray face on the Magnums model (#2073)
+
 **TR2**:
 - fixed transparent pixels on the CD player in each level (#4072)
+- fixed a stray face on the Automatic Pistols and Uzis models (#2073)
+- fixed transparent pixels on the Automatic Pistols in Golden Mask levels (#2073)
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.0)
 - fixed Lara entering fast fall speed slightly later than OG when dropping from a ledge (regression from TR2X 1.2)
 
