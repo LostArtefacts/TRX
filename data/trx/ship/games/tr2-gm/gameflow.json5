@@ -26,6 +26,7 @@
             "pda_model.bin",
             "title_textures.bin",
             "misc_sprites.bin",
+            "common_pickup_meshes_gm.bin",
         ]
     },
 

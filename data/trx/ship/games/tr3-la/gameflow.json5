@@ -21,6 +21,9 @@
             {"type": "play_fmv", "fmv_id": 1},
             {"type": "exit_to_title"},
         ],
+        "injections": [
+            "common_pickup_meshes.bin",
+        ]
     },
 
     "ambient_tracks": [
@@ -63,6 +66,7 @@
             "injections": [
                 "lara_guns.bin",
                 "scotland_sky.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -82,6 +86,7 @@
                 "lara_guns.bin",
                 "scotland_sky.bin",
                 "willsden_heli.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_kills": 1,
         },
@@ -102,6 +107,7 @@
                 "lara_guns.bin",
                 "cliff_door132_frames.bin",
                 "cliff_animating_bounds.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -145,6 +151,7 @@
             "injections": [
                 "lara_guns.bin",
                 "zoo_train.bin",
+                "common_pickup_meshes.bin",
             ],
         },
 
@@ -175,6 +182,7 @@
             "injections": [
                 "lara_guns.bin",
                 "reunion_flames.bin",
+                "common_pickup_meshes.bin",
             ],
             "unobtainable_pickups": 1,
             "unobtainable_secrets": 1,
