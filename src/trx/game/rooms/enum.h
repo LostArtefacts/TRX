@@ -91,6 +91,7 @@ typedef enum {
     TT_ANTITRIGGER,
     TT_HEAVY_SWITCH,
     TT_HEAVY_ANTITRIGGER,
+    TT_MONKEY,
 } TRIGGER_TYPE;
 
 typedef enum {
