@@ -26,6 +26,19 @@
 #define M_TRIG_CAM_GLIDE(t) ((t & 0x3E00) >> 6)
 #define M_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
 
+static const LARA_TRX_STATE m_MonkeyStates[] = {
+    // clang-format off
+    LS_MONKEY_IDLE,
+    LS_MONKEY_FORWARD,
+    LS_MONKEY_LEFT,
+    LS_MONKEY_RIGHT,
+    LS_MONKEY_ROLL,
+    LS_MONKEY_TURN_LEFT,
+    LS_MONKEY_TURN_RIGHT,
+    LS_TRX_INVALID, // sentinel
+    // clang-format on
+};
+
 static void (*m_Handlers[TO_NUMBER_OF])(
     const TRIGGER *trigger, const TRIGGER_CMD *cmd,
     TRIGGER_STATUS *status) = {};
@@ -428,6 +441,12 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TT_COMBAT:
             if (lara_info->gun_status != LGS_READY) {
+                return false;
+            }
+            break;
+
+        case TT_MONKEY:
+            if (!Lara_HasState(m_MonkeyStates)) {
                 return false;
             }
             break;
