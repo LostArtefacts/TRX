@@ -11,7 +11,6 @@
 #include <trx/game/music.h>
 #include <trx/game/objects/general/keyhole.h>
 #include <trx/game/objects/general/pickup.h>
-#include <trx/game/objects/general/shoal.h>
 #include <trx/game/objects/general/switch.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -531,26 +530,17 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
                 break;
             }
 
+            trig_item->timer = trigger->timer;
+            if (trig_item->timer != 1) {
+                trig_item->timer *= LOGIC_FPS;
+            }
+
             const OBJECT *const obj = Object_Get(trig_item->object_id);
-
-            const bool is_shoal_object =
-                Object_IsType(trig_item->object_id, g_ShoalObjects);
-
-            if (is_shoal_object && trigger->type != TT_ANTIPAD
-                && trigger->type != TT_ANTITRIGGER) {
-                Shoal_TriggerActivate(trig_item, trigger->timer);
-            } else {
-                trig_item->timer = trigger->timer;
-                if (trig_item->timer != 1) {
-                    trig_item->timer *= LOGIC_FPS;
-                }
-
-                if (obj->trigger_func != nullptr) {
-                    const bool use_default_handling =
-                        obj->trigger_func(trig_item, trigger);
-                    if (!use_default_handling) {
-                        break;
-                    }
+            if (obj->trigger_func != nullptr) {
+                const bool use_default_handling =
+                    obj->trigger_func(trig_item, trigger);
+                if (!use_default_handling) {
+                    break;
                 }
             }
 
@@ -562,10 +552,6 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
             } else if (
                 trigger->type == TT_ANTIPAD
                 || trigger->type == TT_ANTITRIGGER) {
-                if (is_shoal_object) {
-                    Shoal_TriggerDeactivate(trig_item);
-                }
-
                 // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
                 if (g_TRVersion >= 3) {
                     trig_item->flags &= ~(IF_CODE_BITS | IF_REVERSE);

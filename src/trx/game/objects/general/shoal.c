@@ -1,3 +1,5 @@
+#include <trx/game/objects/general/shoal.h>
+
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/game_buf.h>
@@ -251,6 +253,30 @@ static void M_FindCarcass(const ITEM *const shoal_item)
 static bool M_IsTargetable(const ITEM *const item)
 {
     return false;
+}
+
+static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
+{
+    if (trigger == nullptr) {
+        return false;
+    }
+
+    item->timer = 0;
+
+    if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
+        Shoal_TriggerDeactivate(item);
+    } else {
+        const int32_t leader_num = trigger->timer & 7;
+        item->hit_points = leader_num;
+
+        if (M_IsValidShoalNum(leader_num) && item->priv != nullptr) {
+            M_PRIV *const p = item->priv;
+            p->leader_num = leader_num;
+            M_SetupShoal(p, leader_num);
+        }
+    }
+
+    return true;
 }
 
 static void M_Control(const int16_t item_num)
@@ -731,6 +757,7 @@ static void M_Initialise(const int16_t item_num)
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
+    obj->trigger_func = M_Trigger;
     obj->control_func = M_Control;
     obj->is_targetable_func = M_IsTargetable;
     obj->draw_func = M_Draw;
@@ -741,21 +768,6 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_INT("max_hit_points", NO_ITEM, "Maximum hit points."));
-}
-
-void Shoal_TriggerActivate(ITEM *const item, const int16_t trigger_timer)
-{
-    // TO_OBJECT handling stores (timer & 7) in hit_points and clears timer so
-    // it does not count down as a trigger delay.
-    const int32_t leader_num = trigger_timer & 7;
-    item->hit_points = leader_num;
-    item->timer = 0;
-
-    if (M_IsValidShoalNum(leader_num) && item->priv != nullptr) {
-        M_PRIV *const p = item->priv;
-        p->leader_num = leader_num;
-        M_SetupShoal(p, leader_num);
-    }
 }
 
 void Shoal_TriggerDeactivate(const ITEM *const item)
