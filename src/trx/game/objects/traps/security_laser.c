@@ -277,7 +277,8 @@ static void M_Control(const int16_t item_num)
 static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
 {
     if (trigger != nullptr && trigger->type != TT_ANTIPAD
-        && trigger->type != TT_ANTITRIGGER) {
+        && trigger->type != TT_ANTITRIGGER
+        && trigger->type != TT_HEAVY_ANTITRIGGER) {
         item->hit_points = trigger->timer & 7;
         if (item->hit_points == 0) {
             item->hit_points = 1;
