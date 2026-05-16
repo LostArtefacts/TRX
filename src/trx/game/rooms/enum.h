@@ -92,6 +92,9 @@ typedef enum {
     TT_HEAVY_SWITCH,
     TT_HEAVY_ANTITRIGGER,
     TT_MONKEY,
+    // TR5 uses TT_SKELETON and TT_TIGHTROPE. Numbering reserved to align with
+    // level compilers.
+    TT_CROUCH = 15,
 } TRIGGER_TYPE;
 
 typedef enum {

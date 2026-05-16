@@ -39,6 +39,20 @@ static const LARA_TRX_STATE m_MonkeyStates[] = {
     // clang-format on
 };
 
+static const LARA_TRX_STATE m_CrouchStates[] = {
+    // clang-format off
+    LS_CROUCH_IDLE,
+    LS_CROUCH_ROLL,
+    LS_CROUCH_TURN_LEFT,
+    LS_CROUCH_TURN_RIGHT,
+    LS_CRAWL_IDLE,
+    LS_CRAWL_FORWARD,
+    LS_CRAWL_TURN_LEFT,
+    LS_CRAWL_TURN_RIGHT,
+    LS_TRX_INVALID, // sentinel
+    // clang-format on
+};
+
 static void (*m_Handlers[TO_NUMBER_OF])(
     const TRIGGER *trigger, const TRIGGER_CMD *cmd,
     TRIGGER_STATUS *status) = {};
@@ -447,6 +461,12 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TT_MONKEY:
             if (!Lara_HasState(m_MonkeyStates)) {
+                return false;
+            }
+            break;
+
+        case TT_CROUCH:
+            if (!Lara_HasState(m_CrouchStates)) {
                 return false;
             }
             break;
