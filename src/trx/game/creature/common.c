@@ -899,17 +899,24 @@ bool Creature_Animate(
     sample_pos.x = item->pos.x;
     sample_pos.z = item->pos.z;
     const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
-    int32_t height =
-        sector->box == NO_BOX ? NO_HEIGHT : Box_GetBox(sector->box)->height;
-    int16_t next_box =
-        sector->box == NO_BOX ? NO_BOX : lot->node[sector->box].exit_box;
+    int32_t height;
+    int16_t next_box;
+    if (sector->box == NO_BOX) {
+        // Flyers may be placed on slopes which have no box data, but they
+        // should still have free reign to move.
+        height = Room_GetHeight(sector, sample_pos);
+        next_box = NO_BOX;
+    } else {
+        height = Box_GetBox(sector->box)->height;
+        next_box = lot->node[sector->box].exit_box;
+    }
     int32_t next_height =
         next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
 
     const bool fly_check = g_TRVersion < 3 || lot->setup.fly == 0;
 
     const int32_t box_height =
-        item->box_num == NO_BOX ? NO_HEIGHT : Box_GetBox(item->box_num)->height;
+        item->box_num == NO_BOX ? height : Box_GetBox(item->box_num)->height;
     if (sector->box == NO_BOX
         || (fly_check && zone[item->box_num] != zone[sector->box])
         || box_height - height > lot->setup.step
@@ -937,10 +944,13 @@ bool Creature_Animate(
         sample_pos.y = y;
         sample_pos.z = item->pos.z;
         sector = Room_GetSector(sample_pos, &room_num);
-        height =
-            sector->box == NO_BOX ? NO_HEIGHT : Box_GetBox(sector->box)->height;
-        next_box =
-            sector->box == NO_BOX ? NO_BOX : lot->node[sector->box].exit_box;
+        if (sector->box == NO_BOX) {
+            height = Room_GetHeight(sector, sample_pos);
+            next_box = NO_BOX;
+        } else {
+            height = Box_GetBox(sector->box)->height;
+            next_box = lot->node[sector->box].exit_box;
+        }
         next_height =
             next_box != NO_BOX ? Box_GetBox(next_box)->height : height;
     }
