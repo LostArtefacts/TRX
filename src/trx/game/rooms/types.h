@@ -39,6 +39,7 @@ typedef struct {
     int32_t new_effect;
     bool flip_status;
     bool is_heavy;
+    int32_t heavy_mask;
 } TRIGGER_STATUS;
 
 typedef struct {

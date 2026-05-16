@@ -346,6 +346,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     TRIGGER_STATUS status = {
         .is_heavy = is_heavy,
+        .heavy_mask = trigger->mask,
         .camera_item = nullptr,
         .switch_off = false,
         .flip_map = false,
@@ -355,7 +356,22 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     };
 
     if (is_heavy) {
-        if (trigger->type != TT_HEAVY) {
+        switch (trigger->type) {
+        case TT_HEAVY:
+            break;
+        case TT_HEAVY_SWITCH:
+            const int32_t item_flags = item->flags & IF_CODE_BITS;
+            if (item_flags == 0) {
+                return false;
+            }
+
+            if (item_flags < 0) {
+                status.heavy_mask += item_flags;
+            } else if (item_flags != status.heavy_mask) {
+                return false;
+            }
+            break;
+        default:
             return false;
         }
     } else {
@@ -405,6 +421,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TT_HEAVY:
         case TT_DUMMY:
+        case TT_HEAVY_SWITCH:
             return false;
 
         case TT_COMBAT:

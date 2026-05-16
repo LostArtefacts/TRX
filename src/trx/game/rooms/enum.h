@@ -89,6 +89,7 @@ typedef enum {
     TT_COMBAT,
     TT_DUMMY,
     TT_ANTITRIGGER,
+    TT_HEAVY_SWITCH,
 } TRIGGER_TYPE;
 
 typedef enum {
