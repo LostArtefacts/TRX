@@ -26,9 +26,7 @@ static void M_Handle(
 {
     MUSIC_ID track_id = (MUSIC_ID)(intptr_t)cmd->parameter;
 
-    if (track_id == (MUSIC_ID)0
-        && (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER
-            || trigger->type == TT_HEAVY_ANTITRIGGER)) {
+    if (track_id == (MUSIC_ID)0 && Room_IsAntiTrigger(trigger->type)) {
         Music_Stop();
         return;
     }
@@ -53,9 +51,7 @@ static void M_Handle(
 
         if (trigger->type == TT_SWITCH) {
             flags ^= trigger->mask;
-        } else if (
-            trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER
-            || trigger->type == TT_HEAVY_ANTITRIGGER) {
+        } else if (Room_IsAntiTrigger(trigger->type)) {
             flags &= -1 - trigger->mask;
         } else if (trigger->mask) {
             flags |= trigger->mask;

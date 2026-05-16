@@ -139,9 +139,7 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
         return true;
     }
 
-    if (trigger == nullptr || trigger->type == TT_ANTITRIGGER
-        || trigger->type == TT_ANTIPAD
-        || trigger->type == TT_HEAVY_ANTITRIGGER) {
+    if (trigger == nullptr || Room_IsAntiTrigger(trigger->type)) {
         return true;
     }
 

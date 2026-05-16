@@ -461,3 +461,9 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
     return true;
 }
+
+bool Room_IsAntiTrigger(const TRIGGER_TYPE type)
+{
+    return type == TT_ANTIPAD || type == TT_ANTITRIGGER
+        || type == TT_HEAVY_ANTITRIGGER;
+}

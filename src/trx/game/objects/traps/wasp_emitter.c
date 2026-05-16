@@ -3,6 +3,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/pathing.h>
+#include <trx/game/rooms.h>
 
 // clang-format off
 #define M_MAX_SLOTS  3
@@ -127,9 +128,7 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
 
 static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
 {
-    if (trigger == nullptr || trigger->type == TT_ANTITRIGGER
-        || trigger->type == TT_ANTIPAD
-        || trigger->type == TT_HEAVY_ANTITRIGGER) {
+    if (trigger == nullptr || Room_IsAntiTrigger(trigger->type)) {
         return true;
     }
 

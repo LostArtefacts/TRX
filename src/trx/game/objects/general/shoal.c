@@ -11,6 +11,7 @@
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
@@ -263,8 +264,7 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
 
     item->timer = 0;
 
-    if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER
-        || trigger->type == TT_HEAVY_ANTITRIGGER) {
+    if (Room_IsAntiTrigger(trigger->type)) {
         Shoal_TriggerDeactivate(item);
     } else {
         const int32_t leader_num = trigger->timer & 7;
