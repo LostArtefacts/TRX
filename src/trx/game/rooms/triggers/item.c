@@ -46,8 +46,12 @@ static void M_Handle(
         }
     }
 
-    if (trigger->type == TT_SWITCH) {
-        item->flags ^= trigger->mask;
+    if (trigger->type == TT_SWITCH || trigger->type == TT_HEAVY_SWITCH) {
+        if (trigger->type == TT_HEAVY_SWITCH) {
+            item->flags ^= status->heavy_mask;
+        } else {
+            item->flags ^= trigger->mask;
+        }
         if (trigger->one_shot && g_TRVersion == 3) {
             item->flags |= IF_ONE_SHOT_SWITCH;
         }
