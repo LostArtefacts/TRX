@@ -37,6 +37,7 @@
 - added support for reverb in custom levels
 - added support for the Mine Cart in custom levels
 - fixed a stray face on the Magnums model (#2073)
+- fixed the game freezing if Lara tries to pick up a flare while crouched (#5512, regression from 1.3)
 
 **TR2**:
 - added support for reverb in custom levels
