@@ -13,6 +13,7 @@ static bool M_IsOneShot(const TRIGGER *const trigger, const ITEM *const item)
             return (item->flags & IF_ONE_SHOT_SWITCH) != 0;
         case TT_ANTIPAD:
         case TT_ANTITRIGGER:
+        case TT_HEAVY_ANTITRIGGER:
             return (item->flags & IF_ONE_SHOT_ANTITRIGGER) != 0;
         default:
             break;
@@ -55,7 +56,9 @@ static void M_Handle(
         if (trigger->one_shot && g_TRVersion == 3) {
             item->flags |= IF_ONE_SHOT_SWITCH;
         }
-    } else if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
+    } else if (
+        trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER
+        || trigger->type == TT_HEAVY_ANTITRIGGER) {
         // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
         if (g_TRVersion >= 3) {
             item->flags &= ~(IF_CODE_BITS | IF_REVERSE);

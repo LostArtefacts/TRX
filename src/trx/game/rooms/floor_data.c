@@ -358,6 +358,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
     if (is_heavy) {
         switch (trigger->type) {
         case TT_HEAVY:
+        case TT_HEAVY_ANTITRIGGER:
             break;
         case TT_HEAVY_SWITCH:
             const int32_t item_flags = item->flags & IF_CODE_BITS;
@@ -422,6 +423,7 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
         case TT_HEAVY:
         case TT_DUMMY:
         case TT_HEAVY_SWITCH:
+        case TT_HEAVY_ANTITRIGGER:
             return false;
 
         case TT_COMBAT:

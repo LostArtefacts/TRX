@@ -263,7 +263,8 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
 
     item->timer = 0;
 
-    if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER) {
+    if (trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER
+        || trigger->type == TT_HEAVY_ANTITRIGGER) {
         Shoal_TriggerDeactivate(item);
     } else {
         const int32_t leader_num = trigger->timer & 7;
