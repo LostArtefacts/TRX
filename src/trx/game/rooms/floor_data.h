@@ -16,6 +16,7 @@ void Room_RegisterTriggerHandler(
         TRIGGER_STATUS *status));
 bool Room_TestTriggers(const ITEM *item);
 bool Room_TestSectorTrigger(const ITEM *item, const SECTOR *sector);
+bool Room_IsAntiTrigger(TRIGGER_TYPE type);
 
 #define REGISTER_TRIGGER_HANDLER(cmd_type, handle_func)                        \
     __attribute__((constructor)) static void                                   \

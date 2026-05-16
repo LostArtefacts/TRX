@@ -56,9 +56,7 @@ static void M_Handle(
         if (trigger->one_shot && g_TRVersion == 3) {
             item->flags |= IF_ONE_SHOT_SWITCH;
         }
-    } else if (
-        trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER
-        || trigger->type == TT_HEAVY_ANTITRIGGER) {
+    } else if (Room_IsAntiTrigger(trigger->type)) {
         // TODO investigate unifying as ~(trigger->mask | IF_REVERSE)
         if (g_TRVersion >= 3) {
             item->flags &= ~(IF_CODE_BITS | IF_REVERSE);

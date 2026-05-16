@@ -116,9 +116,7 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
     }
     if (trigger->type == TT_SWITCH) {
         item->flags ^= trigger->mask;
-    } else if (
-        trigger->type == TT_ANTIPAD || trigger->type == TT_ANTITRIGGER
-        || trigger->type == TT_HEAVY_ANTITRIGGER) {
+    } else if (Room_IsAntiTrigger(trigger->type)) {
         item->flags &= ~trigger->mask;
     } else {
         item->flags |= trigger->mask;
