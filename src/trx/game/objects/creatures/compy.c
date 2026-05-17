@@ -164,7 +164,7 @@ static void M_Control(const int16_t item_num)
         int16_t room_num = item->room_num;
         SECTOR *const sector = Room_GetSector(creature->target, &room_num);
         const BOX_INFO *const box = Box_GetBox(sector->box);
-        if (box != nullptr && ABS(box->height - item->pos.y) > STEP_L) {
+        if (box == nullptr || ABS(box->height - item->pos.y) > STEP_L) {
             creature->mood = MOOD_BORED;
             p->scared_timer = p->shared->scared_timer;
         }
