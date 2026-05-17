@@ -10,6 +10,7 @@
     - `O_LARA_MINE_CART`
 - added Lara's Antarctica beta outfit (#5190)
 - added support for heavy switch, heavy antitrigger, crouch, climb, and monkeyswing trigger types in custom levels
+- changed weather to spawn at the camera's position when fixed cameras are in use (#5516)
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
 - improved vaulting logic for Lara, allowing her to grab the lowest reachable ledge in front of her when only action is held, regardless of room layout (#5205)
 - changed `/set` to refuse level-enforced settings unless `--force` is used

@@ -22,7 +22,7 @@
 #define M_MAX_WEATHER_ALIVE 16
 
 #define M_RAIN_MAX_DISTANCE 6000
-#define M_RAIN_BASE_Y_OFF (-1024)
+#define M_RAIN_BASE_Y_OFF (-WALL_L)
 #define M_RAIN_BASE_YV 16
 #define M_RAIN_YV_RND_MASK 7
 #define M_RAIN_SPAWN_DIST_MASK 0xFFF
@@ -84,15 +84,23 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
         return false;
     }
 
-    XYZ_32 lara_pos = {};
-    if (!Lara_GetMeshPos(LM_HIPS, &lara_pos)) {
-        lara_pos = lara_item->pos;
+    XYZ_32 base_pos = {};
+    if (g_Camera.type == CAM_FIXED) {
+        base_pos = g_Camera.pos.pos;
+        if (g_Camera.target.y < g_Camera.pos.y) {
+            base_pos.y += M_RAIN_BASE_Y_OFF;
+        }
+    } else {
+        if (!Lara_GetMeshPos(LM_HIPS, &base_pos)) {
+            base_pos = lara_item->pos;
+        }
+        base_pos.y += M_RAIN_BASE_Y_OFF;
     }
 
     const int32_t dist = Random_GetDraw() & M_RAIN_SPAWN_DIST_MASK;
     const int32_t angle = (Random_GetDraw() & M_RAIN_SPAWN_ANGLE_MASK) * 8;
-    *pos = XYZ_32_OffsetYaw(lara_pos, angle, dist);
-    pos->y += M_RAIN_BASE_Y_OFF - (Random_GetDraw() & M_RAIN_Y_RND_MASK);
+    *pos = XYZ_32_OffsetYaw(base_pos, angle, dist);
+    pos->y -= (Random_GetDraw() & M_RAIN_Y_RND_MASK);
 
     int16_t room_num = NO_ROOM;
     if (Room_GetOutsideStatus(*pos, &room_num) != 1) {
