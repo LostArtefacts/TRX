@@ -67,6 +67,7 @@
 - fixed a missing face on the push button in Antarctica (#5428)
 - fixed the push buttons in Lost City of Tinnos rotating oddly when used
 - fixed several missing, stretched and misaligned textures in Lara's Home (#4890)
+- fixed the briefcase in the cutscene following Antarctica jumping positions at various points in the scene (#5430)
 - fixed Punks repeating their alert sounds and not targeting Lara in all cases (#5456, regression from 1.6)
 - fixed the boat (RIB) briefly having an underwater hue when Lara first climbs on (OG bug)
 - fixed height checks that could make Lara refuse to dismount the Mine Cart in custom levels
