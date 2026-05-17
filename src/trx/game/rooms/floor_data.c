@@ -53,6 +53,20 @@ static const LARA_TRX_STATE m_CrouchStates[] = {
     // clang-format on
 };
 
+static const LARA_TRX_STATE m_ClimbStates[] = {
+    // clang-format off
+    LS_HANG,
+    LS_CLIMB_STANCE,
+    LS_CLIMBING,
+    LS_CLIMB_LEFT,
+    LS_CLIMB_END,
+    LS_CLIMB_RIGHT,
+    LS_CLIMB_DOWN,
+    LS_MONKEY_IDLE,
+    LS_TRX_INVALID, // sentinel
+    // clang-format on
+};
+
 static void (*m_Handlers[TO_NUMBER_OF])(
     const TRIGGER *trigger, const TRIGGER_CMD *cmd,
     TRIGGER_STATUS *status) = {};
@@ -467,6 +481,12 @@ bool Room_TestSectorTrigger(const ITEM *const item, const SECTOR *const sector)
 
         case TT_CROUCH:
             if (!Lara_HasState(m_CrouchStates)) {
+                return false;
+            }
+            break;
+
+        case TT_CLIMB:
+            if (!Lara_HasState(m_ClimbStates)) {
                 return false;
             }
             break;
