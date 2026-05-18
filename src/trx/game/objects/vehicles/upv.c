@@ -935,7 +935,7 @@ bool UPV_Control(void)
             lara->air--;
             if (lara->air < 0) {
                 lara->air = -1;
-                lara_item->hit_points -= 5;
+                Lara_TakeDamage(5, false);
             }
         }
     }

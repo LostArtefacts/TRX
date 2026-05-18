@@ -34,7 +34,7 @@ static void M_Collision(
         return;
     }
 
-    lara_item->hit_points -= M_DAMAGE;
+    Lara_TakeDamage(M_DAMAGE, false);
     for (int32_t i = 0; i < blood_spawn_count; i++) {
         const XYZ_32 pos = {
             .x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256,

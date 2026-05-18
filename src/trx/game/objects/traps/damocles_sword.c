@@ -86,7 +86,7 @@ static void M_Collision(
         Lara_Col_ItemPush(item, coll, false, true);
     }
     if (item->gravity) {
-        lara_item->hit_points -= M_DAMAGE;
+        Lara_TakeDamage(M_DAMAGE, false);
         int32_t x = lara_item->pos.x + (Random_GetControl() - 0x4000) / 256;
         int32_t z = lara_item->pos.z + (Random_GetControl() - 0x4000) / 256;
         int32_t y = lara_item->pos.y - Random_GetControl() / 44;
