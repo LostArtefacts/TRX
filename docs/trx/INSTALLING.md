@@ -921,6 +921,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── title_eu.webp
 │   │   │   └── title_us.webp
 │   │   ├── injections
+│   │   │   ├── alarm_sfx.bin
 │   │   │   ├── aldwych_animating_bounds.bin
 │   │   │   ├── aldwych_fd.bin
 │   │   │   ├── aldwych_pickup_meshes.bin
@@ -2134,6 +2135,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── title_eu.webp
     │   │   │   │   └── title_us.webp
     │   │   │   ├── injections
+    │   │   │   │   ├── alarm_sfx.bin
     │   │   │   │   ├── aldwych_animating_bounds.bin
     │   │   │   │   ├── aldwych_fd.bin
     │   │   │   │   ├── aldwych_pickup_meshes.bin

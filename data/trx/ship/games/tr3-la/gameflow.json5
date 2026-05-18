@@ -108,6 +108,7 @@
                 "cliff_door132_frames.bin",
                 "cliff_animating_bounds.bin",
                 "common_pickup_meshes.bin",
+                "alarm_sfx.bin",
             ],
         },
 
