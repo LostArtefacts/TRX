@@ -940,6 +940,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── city_textures.bin
 │   │   │   ├── cliff_animating_bounds.bin
 │   │   │   ├── cliff_door132_frames.bin
+│   │   │   ├── cliff_textures.bin
 │   │   │   ├── coastal_airlock.bin
 │   │   │   ├── coastal_animating_bounds.bin
 │   │   │   ├── coastal_sky.bin
@@ -2154,6 +2155,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── city_textures.bin
     │   │   │   │   ├── cliff_animating_bounds.bin
     │   │   │   │   ├── cliff_door132_frames.bin
+    │   │   │   │   ├── cliff_textures.bin
     │   │   │   │   ├── coastal_airlock.bin
     │   │   │   │   ├── coastal_animating_bounds.bin
     │   │   │   │   ├── coastal_sky.bin

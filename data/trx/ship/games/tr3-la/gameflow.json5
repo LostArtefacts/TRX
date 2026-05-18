@@ -109,6 +109,7 @@
                 "cliff_animating_bounds.bin",
                 "common_pickup_meshes.bin",
                 "alarm_sfx.bin",
+                "cliff_textures.bin",
             ],
         },
 
