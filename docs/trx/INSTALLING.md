@@ -1009,6 +1009,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── undersea_train.bin
 │   │   │   ├── willsden_heli.bin
 │   │   │   ├── winston_model.bin
+│   │   │   ├── zoo_textures.bin
 │   │   │   └── zoo_train.bin
 │   │   ├── levels
 │   │   │   ├── antarc.tr2
@@ -2221,6 +2222,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── undersea_train.bin
     │   │   │   │   ├── willsden_heli.bin
     │   │   │   │   ├── winston_model.bin
+    │   │   │   │   ├── zoo_textures.bin
     │   │   │   │   └── zoo_train.bin
     │   │   │   ├── levels
     │   │   │   │   ├── antarc.tr2
