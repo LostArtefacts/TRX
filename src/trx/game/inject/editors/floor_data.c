@@ -358,6 +358,12 @@ static void M_SetMineCart(
     sector->mine_cart_type = type;
 }
 
+static void M_SetMaterial(
+    const INJECTION *const injection, SECTOR *const sector)
+{
+    sector->fx = VFile_ReadU8(injection->fp);
+}
+
 static void M_FloorDataEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
@@ -433,6 +439,9 @@ static void M_FloorDataEdits(
                 if (sector != nullptr) {
                     sector->trigger = nullptr;
                 }
+                break;
+            case FET_MATERIAL:
+                M_SetMaterial(injection, sector);
                 break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);

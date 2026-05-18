@@ -152,6 +152,7 @@
                 "lara_guns.bin",
                 "zoo_train.bin",
                 "common_pickup_meshes.bin",
+                "zoo_textures.bin",
             ],
         },
 
