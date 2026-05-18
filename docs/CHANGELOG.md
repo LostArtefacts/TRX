@@ -17,6 +17,7 @@
 - changed the underwater crawling fix to be optional (Gameplay Options → Fixes → Fix underwater crawling)
 - changed max upscaling factor from 8 to 10 (#5347)
 - changed Lua item maximum HP setup to use `item.properties.max_hit_points` instead of `item.max_hit_points`
+- changed flooding and drowning enemies to contribute towards kill count
 - fixed `trx.game.current_level` in Lua being offset by one (#5444)
 - fixed potential crashes in old custom levels that contain invalid room visibility portals (#5447)
 - fixed transparent pixels on TR3 outfit heads when bilinear filtering is enabled (#5438)
