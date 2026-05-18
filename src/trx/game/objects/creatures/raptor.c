@@ -146,8 +146,7 @@ static void M_Attack(ITEM *const item, const AI_INFO *const info)
     raptor->flags |= 1;
     Creature_Effect(item, &m_RaptorBite, Spawn_Blood);
 
-    raptor->enemy->hit_points -= damage / 4;
-    raptor->enemy->hit_status = true;
+    Item_TakeDamage(raptor->enemy, damage / 4, true);
     if (raptor->enemy->hit_points <= 0) {
         raptor->flags |= 2;
     }

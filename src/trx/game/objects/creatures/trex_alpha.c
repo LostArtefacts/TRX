@@ -171,8 +171,7 @@ static void M_Attack(ITEM *const item, ITEM *const target)
         M_KillLara(item);
     } else if (target->object_id == O_RAPTOR) {
         Creature_Effect(item, &m_Bite, Spawn_Blood);
-        target->hit_points -= M_RAPTOR_DAMAGE;
-        target->hit_status = true;
+        Item_TakeDamage(target, M_RAPTOR_DAMAGE, true);
     } else if (target->object_id == O_FLARE_ITEM) {
         target->hit_points = M_FLARE_SEEN;
     }
