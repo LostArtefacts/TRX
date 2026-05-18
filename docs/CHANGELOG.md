@@ -35,6 +35,7 @@
 - fixed image files not falling back to other supported formats
 - fixed Lara not being able to use keys/puzzles if animated interactions are enabled and previous pickup attempts have failed due to other object collision (#5496)
 - fixed a potential crash if 3D pickups are enabled but an item's 3D model isn't loaded or contains no animation data
+- fixed certain traps triggering Lara's healthbar when she's invulnerable
 
 **TR1**:
 - added support for reverb in custom levels

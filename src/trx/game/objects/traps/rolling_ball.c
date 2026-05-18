@@ -194,9 +194,7 @@ static void M_Collision(
         if (coll->enable_baddie_push) {
             Lara_Col_ItemPush(item, coll, coll->enable_hit, true);
         }
-        if (!g_Config.debug.enable_invulnerability) {
-            lara_item->hit_points -= M_DAMAGE_AIR;
-        }
+        Lara_TakeDamage(M_DAMAGE_AIR, false);
 
         // TODO: handle overflows
         const int32_t dx = lara_item->pos.x - item->pos.x;

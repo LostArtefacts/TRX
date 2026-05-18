@@ -976,9 +976,7 @@ static int32_t M_SkidooDynamics(ITEM *const item)
 
         if (Lara_Vehicle_GetItem() == item && quad->velocity == 0xA000
             && speed2 < 0x9FF6) {
-            ITEM *const lara_item = Lara_GetItem();
-            lara_item->hit_points -= (0xA000 - speed2) >> 7;
-            lara_item->hit_status = 1;
+            Lara_TakeDamage((0xA000 - speed2) >> 7, true);
         }
 
         if (quad->velocity > 0 && speed2 < quad->velocity) {
