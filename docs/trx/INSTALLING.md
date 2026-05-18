@@ -996,6 +996,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── rapids_sky.bin
 │   │   │   ├── reunion_flames.bin
 │   │   │   ├── scotland_sky.bin
+│   │   │   ├── scotland_textures.bin
 │   │   │   ├── stpaul_animating_bounds.bin
 │   │   │   ├── stpaul_textures.bin
 │   │   │   ├── thames_animating_bounds.bin
@@ -2211,6 +2212,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── rapids_sky.bin
     │   │   │   │   ├── reunion_flames.bin
     │   │   │   │   ├── scotland_sky.bin
+    │   │   │   │   ├── scotland_textures.bin
     │   │   │   │   ├── stpaul_animating_bounds.bin
     │   │   │   │   ├── stpaul_textures.bin
     │   │   │   │   ├── thames_animating_bounds.bin
