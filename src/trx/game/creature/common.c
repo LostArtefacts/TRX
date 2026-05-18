@@ -1252,8 +1252,8 @@ void Creature_TestBoxDamage(const int16_t item_num)
         return;
     }
 
-    item->hit_points -= M_BOX_DAMAGE;
-    if (item->hit_points <= 0) {
+    Item_TakeDamage(item, M_BOX_DAMAGE, false);
+    if (item->hit_points <= 0 && item->include_in_kill_stats) {
         Stats_AddKill();
     }
 }
