@@ -75,6 +75,7 @@
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.1)
 - fixed Lara entering fast fall speed slightly later than OG when dropping from a ledge (regression from 1.1)
 - fixed the MP5 dealing slightly less damage than OG (regression from 1.1)
+- fixed RX Worker 1 not firing at Lara when starting to walk towards her (OG bug)
 
 
 
