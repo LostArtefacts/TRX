@@ -82,6 +82,7 @@
 - fixed incorrect texture sounds in It's a Madhouse rooms 66, 69 and 133
 - fixed floating spikes in It's a Madhouse! (#5520)
 - fixed a missing alarm sound in Shakespeare Cliff (#5517)
+- fixed incorrectly rotated textures in Shakespeare Cliff rooms 22/23
 
 
 
