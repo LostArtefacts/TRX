@@ -83,6 +83,7 @@
 - fixed floating spikes in It's a Madhouse! (#5520)
 - fixed a missing alarm sound in Shakespeare Cliff (#5517)
 - fixed incorrectly rotated textures in Shakespeare Cliff rooms 22/23
+- fixed moving geometry in Highland Fling room 128
 
 
 
