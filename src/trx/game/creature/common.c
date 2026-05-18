@@ -1195,6 +1195,9 @@ bool Creature_Animate(
             &room_num);
         if (M_TestDrowned(item, bounds, room_num)) {
             item->hit_points = 0;
+            if (item->include_in_kill_stats) {
+                Stats_AddKill();
+            }
         }
     }
 
