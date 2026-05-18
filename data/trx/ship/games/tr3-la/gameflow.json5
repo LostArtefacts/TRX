@@ -88,6 +88,7 @@
                 "scotland_sky.bin",
                 "willsden_heli.bin",
                 "common_pickup_meshes.bin",
+                "willsden_textures.bin",
             ],
             "unobtainable_kills": 1,
         },
