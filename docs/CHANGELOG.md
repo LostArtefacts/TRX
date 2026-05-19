@@ -36,6 +36,7 @@
 - fixed Lara not being able to use keys/puzzles if animated interactions are enabled and previous pickup attempts have failed due to other object collision (#5496)
 - fixed a potential crash if 3D pickups are enabled but an item's 3D model isn't loaded or contains no animation data
 - fixed certain traps triggering Lara's healthbar when she's invulnerable
+- fixed Lara's right arm twitching at the end of the crouch roll animation (#5531)
 
 **TR1**:
 - added support for reverb in custom levels
