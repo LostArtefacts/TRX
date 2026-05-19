@@ -13,6 +13,7 @@
 - changed weather to spawn at the camera's position when fixed cameras are in use (#5516)
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
 - improved vaulting logic for Lara, allowing her to grab the lowest reachable ledge in front of her when only action is held, regardless of room layout (#5205)
+- improved crouch turning for Lara to allow for more responsive transitions to crouch idle, crouch roll, and crawl idle states
 - changed `/set` to refuse level-enforced settings unless `--force` is used
 - changed the underwater crawling fix to be optional (Gameplay Options → Fixes → Fix underwater crawling)
 - changed max upscaling factor from 8 to 10 (#5347)
