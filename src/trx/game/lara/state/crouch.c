@@ -63,6 +63,8 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
         }
     } else if (
         !Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))
+        && !Item_TestAnimEqual(item, LA(LA_CROUCH_TURN_LEFT))
+        && !Item_TestAnimEqual(item, LA(LA_CROUCH_TURN_RIGHT))
         && !Item_TestAnimEqual(item, LA(LA_STAND_TO_CROUCH_END))) {
         return false;
     }
@@ -176,10 +178,35 @@ static void M_CrouchTurn(ITEM *const item, COLL_INFO *const coll)
 
     coll->enable_hit = 0;
 
-    const bool left_turn = item->current_anim_state == LS(LS_CROUCH_TURN_LEFT);
-    item->rot.y += left_turn ? -M_CRAWL_TURN_SLOW : M_CRAWL_TURN_SLOW;
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
+        ? lara->crouching || lara->keep_crouched
+        : g_Input.crouch || lara->keep_crouched;
+    if (!crouch_active) {
+        item->goal_anim_state = LS(LS_STOP);
+        return;
+    }
 
-    if (!(left_turn ? g_Input.left : g_Input.right)) {
+    if (M_CanCrouchRoll(item, lara)) {
+        item->goal_anim_state = LS(LS_CROUCH_ROLL);
+        return;
+    }
+
+    if ((g_Input.forward || g_Input.back) && crouch_active
+        && lara->gun_status == LGS_ARMLESS) {
+        lara->torso_rot.x = 0;
+        lara->torso_rot.y = 0;
+        item->goal_anim_state = LS(LS_CRAWL_IDLE);
+        return;
+    }
+
+    const bool left_turn = item->current_anim_state == LS(LS_CROUCH_TURN_LEFT);
+    const bool continue_turn = left_turn ? g_Input.left : g_Input.right;
+    if (continue_turn) {
+        item->rot.y += left_turn ? -M_CRAWL_TURN_SLOW : M_CRAWL_TURN_SLOW;
+        item->goal_anim_state =
+            LS(left_turn ? LS_CROUCH_TURN_LEFT : LS_CROUCH_TURN_RIGHT);
+    } else {
         item->goal_anim_state = LS(LS_CROUCH_IDLE);
     }
 }
