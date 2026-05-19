@@ -380,7 +380,7 @@ static void M_Control(const int16_t item_num)
             torso_x = info.x_angle;
         }
 
-        if ((anim_idx == M_ANIM_AIM_4A && frame_idx == 17)
+        if ((anim_idx == M_ANIM_AIM_4A && frame_idx == 16)
             || (anim_idx == M_ANIM_AIM_4B && frame_idx == 6)) {
             if (!Creature_Shoot(item, &info, &m_Gun, torso_y, M_DAMAGE)) {
                 item->required_anim_state = M_STATE_WALK;

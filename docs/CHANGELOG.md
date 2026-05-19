@@ -77,7 +77,7 @@
 - fixed the menu SFX not playing when opening the Controls option (#5476, regression from 1.1)
 - fixed Lara entering fast fall speed slightly later than OG when dropping from a ledge (regression from 1.1)
 - fixed the MP5 dealing slightly less damage than OG (regression from 1.1)
-- fixed RX Worker 1 not firing at Lara when starting to walk towards her (OG bug)
+- fixed MP 2 and RX Worker 1 not firing at Lara when starting to walk towards her (OG bug)
 - fixed incorrect textures in It's a Madhouse! room 97 and missing/incorrect textures on lamps and orbs
 - fixed incorrect texture sounds in It's a Madhouse rooms 66, 69 and 133
 - fixed floating spikes in It's a Madhouse! (#5520)
