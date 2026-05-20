@@ -61,7 +61,7 @@
             "command_unavailable": "Questo comando non è attualmente disponibile",
             "command_valid_values": "Valori validi: %s",
             "complete_level": "Livello completato!",
-            "config_option_enforced": "\\{review}%s è applicato e non può essere modificato",
+            "config_option_enforced": "%s è stato applicato e non può essere modificato",
             "config_option_get": "%s è attualmente impostato su %s",
             "config_option_set": "%s è stato modificato in %s",
             "config_option_unknown_option": "Opzione sconosciuta: %s",
@@ -396,7 +396,7 @@
                 "help": "Salva un'istantanea dello schermo su disco in un percorso facoltativo.",
             },
             "set": {
-                "help": "\\{review}Visualizza o aggiorna l'impostazione di configurazione fornita. Usa --force per modificare le impostazioni applicate a livello di livello per la sessione corrente.",
+                "help": "Visualizza o aggiorna l'impostazione di configurazione specificata. Utilizzare --force per modificare le impostazioni predefinite del livello per la sessione corrente.",
             },
             "sfx": {
                 "help": "Riproduce un effetto sonoro con l'ID specificato.",
@@ -494,8 +494,8 @@
                 "tr2_gym": "Allenamento TR2",
                 "tr2_robe": "Vestaglia",
                 "tr2_vegas": "Las Vegas",
-                "tr3_antarctica": "\\{review}Antartide 1",
-                "tr3_antarctica_beta": "\\{review}Antartide 2",
+                "tr3_antarctica": "Antartide 1",
+                "tr3_antarctica_beta": "Antartide 2",
                 "tr3_catsuit": "Tuta aderente",
                 "tr3_classic": "Classico TR3",
                 "tr3_gym": "Allenamento TR3",
@@ -1126,8 +1126,8 @@
             "description": "Risolve il problema per cui a volte Lara viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo.",
         },
         "gameplay.fix_underwater_crawl": {
-            "title": "\\{review}Correggi il movimento carponi sott’acqua",
-            "description": "\\{review}Corregge il problema che permetteva a Lara di strisciare dalla terraferma in stanze d’acqua o palude di qualsiasi profondità. Se abilitato, Lara potrà strisciare solo fino a una profondità leggermente superiore a un clic.",
+            "title": "Correggi strisciare sott’acqua",
+            "description": "Risolve il problema che permette a Lara di gattonare dalla terraferma in acque di qualsiasi profondità. Se abilitato, Lara potrà gattonare solo fino ad una determinata profondità dell'acqua.",
         },
         "gameplay.fix_wade_wall_hit": {
             "title": "Correggi impatto muro",
@@ -2275,7 +2275,7 @@
             "name": "Animazione Fucile Subacqueo",
         },
         "lara_kayak": {
-            "name": "\\{review}Animazione Kayak",
+            "name": "Animazione Kayak",
         },
         "lara_m16": {
             "name": "Animazione M16",
@@ -2284,10 +2284,10 @@
             "name": "Animazione Magnum",
         },
         "lara_mine_cart": {
-            "name": "\\{review}Animazione Carrello da Miniera",
+            "name": "Animazione Carrello da Miniera",
         },
         "lara_mounted_gun": {
-            "name": "\\{review}Animazione Mitragliatrice Fissa",
+            "name": "Animazione Mitragliatrice Fissa",
         },
         "lara_mp5": {
             "name": "Animazione MP5",
@@ -2296,10 +2296,10 @@
             "name": "Animazione Pistole",
         },
         "lara_quad_bike": {
-            "name": "\\{review}Animazione Quad",
+            "name": "Animazione Quad",
         },
         "lara_rib": {
-            "name": "\\{review}Animazione Gommone a Motore",
+            "name": "Animazione Gommone a Motore",
         },
         "lara_rocket": {
             "name": "Animazione Lanciarazzi",
@@ -2311,7 +2311,7 @@
             "name": "Animazione Motoslitta",
         },
         "lara_upv": {
-            "name": "\\{review}Animazione Mini Sottomarino",
+            "name": "Animazione Mini Sottomarino",
         },
         "lara_uzis": {
             "name": "Animazione Uzi",
