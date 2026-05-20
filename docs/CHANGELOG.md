@@ -88,6 +88,7 @@
 - fixed moving geometry in Highland Fling room 128
 - fixed incorrect textures in Willard's Lair rooms 11, 52 and 56
 - fixed being unable to obtain the final secret in Aldwych due to Punk behaviour (#5533, regression from 1.6)
+- fixed Punks 190 and 199 having swapped fire sticks (#5533, regression from 1.4)
 
 
 
