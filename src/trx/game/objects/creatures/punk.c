@@ -295,7 +295,8 @@ static void M_Control(const int16_t item_num)
     const bool hurt_by_lara = creature->hurt_by_lara;
     if (creature->alerted && Creature_IsHostile(item)
         && g_Config.gameplay.ally_hostility_policy
-            == ALLY_HOSTILITY_POLICY_SHARED) {
+            == ALLY_HOSTILITY_POLICY_SHARED
+        && (item->ai_bits & AI_AMBUSH) == 0) {
         creature->enemy = lara_item;
     } else if (
         !hurt_by_lara && !creature->alerted && creature->enemy == lara_item) {
