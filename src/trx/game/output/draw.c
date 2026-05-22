@@ -286,10 +286,7 @@ void Output_DrawObjectMesh_I(const OBJECT_MESH *const mesh, const CLIP clip)
 
 void Output_DrawSkybox(const OBJECT_MESH *const mesh)
 {
-    float sunset_progress = Output_GetTimeInGame() / Output_GetSunsetDuration();
-    CLAMP(sunset_progress, 0.0f, 1.0f);
-    OutputSource_Objects_StageSkyboxMesh(
-        mesh, SHADE_NEUTRAL + SHADE_SUNSET * sunset_progress);
+    OutputSource_Objects_StageObjectMesh(mesh);
     SceneCompositor_Flush();
 }
 

@@ -17,7 +17,6 @@ typedef struct {
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
     MESH_BATCHER *batcher;
-    int16_t skybox_shade;
     size_t mesh_count;
     M_MESH *meshes;
 } M_PRIV;
@@ -155,26 +154,6 @@ static void M_FreeMeshes(M_PRIV *const p)
     Memory_ArenaReset(&p->alloc);
 }
 
-static void M_UpdateShadesSkybox(
-    MESH_INSTANCE *const inst, void *const user_data)
-{
-    const OBJECT_MESH *const mesh = user_data;
-    const M_PRIV *const p = &m_Priv;
-
-    M_MESH *const batch = &p->meshes[Object_GetMeshIndex(mesh)];
-    if (batch->mesh_batch == nullptr) {
-        return;
-    }
-    OUTPUT_MESH_VERTEX *const vertices =
-        Vector_GetData(batch->mesh_batch->vertices);
-
-    const int16_t shade =
-        g_Config.rendering.enable_lighting ? p->skybox_shade : SHADE_NEUTRAL;
-    for (int32_t i = 0; i < batch->mesh_batch->vertices->count; i++) {
-        vertices[i].shade = shade;
-    }
-}
-
 static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
 {
     uint16_t mask = VERT_REFLECTIVE | VERT_NO_LIGHTING;
@@ -274,14 +253,6 @@ void OutputSource_Objects_ObserveObjectMeshUpdate(const int32_t mesh_idx)
     }
     M_UpdateFlags(Object_GetMesh(mesh_idx), batch);
     MeshBatcher_UpdateMeshGeometry(p->batcher, batch->mesh_batch);
-}
-
-void OutputSource_Objects_StageSkyboxMesh(
-    const OBJECT_MESH *const mesh, const int16_t shade)
-{
-    M_PRIV *const p = &m_Priv;
-    p->skybox_shade = shade;
-    M_Stage(mesh);
 }
 
 void OutputSource_Objects_StageObjectMesh(const OBJECT_MESH *const mesh)
