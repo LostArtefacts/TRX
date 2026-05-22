@@ -849,6 +849,10 @@
             "title": "Supprimer la colision du le cadavre du T-Rex",
             "description": "Supprime toutes les collisions avec le cadavre T-Rex. Cela aide lorsque son cadavre bloque un passage.",
         },
+        "gameplay.enable_ally_kill_count": {
+            "title": "\\{review}Compter les éliminations alliées",
+            "description": "\\{review}Compte les éliminations d'ennemis réalisées par les alliés de Lara dans le total des éliminations.",
+        },
         "gameplay.enable_ally_targeting": {
             "title": "\\{review}Autoriser le ciblage des alliés",
             "description": "\\{review}Permet à Lara de cibler des alliés, tels que des moines. Si désactivé, les alliés seront immunisés contre les munitions de Lara.",
@@ -928,6 +932,10 @@
         "gameplay.enable_enhanced_saves": {
             "title": "Sauvegarde les effets",
             "description": "Améliore les sauvegardes afin que les effets graphiques, la brume des cascades, les émetteurs de flammes, etc. soient sauvegardés au lieu de disparaître au chargement.",
+        },
+        "gameplay.enable_environment_kill_count": {
+            "title": "\\{review}Compter les éliminations par l'environnement",
+            "description": "\\{review}Compte les ennemis achevés par l'environnement, tels que les lasers de sécurité ou la noyade, dans le total des éliminations.",
         },
         "gameplay.enable_fmv": {
             "title": "Activer les FMV",

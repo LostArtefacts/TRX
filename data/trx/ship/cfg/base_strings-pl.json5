@@ -849,6 +849,10 @@
             "title": "Usuń kolizję z ubitym T-Rexem",
             "description": "Usuwa wszelką kolizję z tyranozaurem po jego śmierci, co pomaga w sytuacjach, gdy jego cielsko uniemożliwia przejście.",
         },
+        "gameplay.enable_ally_kill_count": {
+            "title": "\\{review}Zlicz zabójstwa sojuszników",
+            "description": "\\{review}Zlicza zabójstwa wrogów dokonane przez sojuszników Lary do łącznej liczby zabójstw.",
+        },
         "gameplay.enable_ally_targeting": {
             "title": "Pozwól na celowanie w sojuszników",
             "description": "Pozwala Larze celować w sojuszników, np. mnichów. Jeśli opcja jest wyłączona, sojusznicy będą całkowicie odporni na amunicję Lary.",
@@ -928,6 +932,10 @@
         "gameplay.enable_enhanced_saves": {
             "title": "Zapis efektów",
             "description": "Zapisuje efekty graficzne, mgłę wodospadu, emitery płomieni itp., dzięki czemu nie znikają już po wczytaniu.",
+        },
+        "gameplay.enable_environment_kill_count": {
+            "title": "\\{review}Zlicz zabójstwa środowiskowe",
+            "description": "\\{review}Zlicza wrogów wykończonych przez środowisko, takie jak lasery ochronne lub utonięcie, do łącznej liczby zabójstw.",
         },
         "gameplay.enable_fmv": {
             "title": "Filmy",

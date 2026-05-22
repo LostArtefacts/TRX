@@ -202,7 +202,8 @@ static void M_Control(const int16_t item_num)
                 if (dx < MONK_HIT_RANGE && dy < MONK_HIT_RANGE
                     && dz < MONK_HIT_RANGE) {
                     Item_TakeDamage(
-                        creature->enemy, MONK_BIFF_ENEMY_DAMAGE, true);
+                        creature->enemy, MONK_BIFF_ENEMY_DAMAGE, IDF_NONE,
+                        item);
                     Sound_Effect(SFX_MONK_CRUNCH, &item->pos, SPM_NORMAL);
                     creature->flags |= 0x1000;
                 }

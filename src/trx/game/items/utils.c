@@ -4,11 +4,13 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
+#include <trx/game/lara.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/stats.h>
 #include <trx/version.h>
 
 static bool M_UseTR3ExplodingEffects(const ITEM *const item)
@@ -96,18 +98,48 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
     return Item_IsTargetable(item);
 }
 
+static bool M_ShouldCountKill(
+    const ITEM *const item, const ITEM_DAMAGE_FLAGS flags,
+    const ITEM *const sender)
+{
+    if (!item->include_in_kill_stats) {
+        return false;
+    }
+
+    if (item == Lara_GetItem()) {
+        return false;
+    }
+    if (sender == Lara_GetItem()) {
+        return true;
+    }
+    if (sender != nullptr && Creature_IsAlly(sender)) {
+        return g_Config.gameplay.enable_ally_kill_count;
+    }
+    if (sender != nullptr && Creature_IsHostile(sender)) {
+        return false;
+    }
+    return g_Config.gameplay.enable_environment_kill_count;
+}
+
 void Item_TakeDamage(
-    ITEM *const item, const int16_t damage, const bool hit_status)
+    ITEM *const item, const int16_t damage, const ITEM_DAMAGE_FLAGS flags,
+    const ITEM *const sender)
 {
     if (!Item_CanTakeDamage(item)) {
         return;
     }
 
+    const bool was_alive = item->hit_points > 0;
     item->hit_points -= damage;
     CLAMPL(item->hit_points, 0);
 
-    if (hit_status) {
+    if ((flags & IDF_NO_HIT_STATUS) == 0) {
         item->hit_status = true;
+    }
+
+    if (was_alive && item->hit_points <= 0
+        && M_ShouldCountKill(item, flags, sender)) {
+        Stats_AddKill();
     }
 }
 

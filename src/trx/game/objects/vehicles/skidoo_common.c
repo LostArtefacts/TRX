@@ -146,7 +146,9 @@ static bool M_CheckBaddieCollision(ITEM *const item, ITEM *const skidoo)
                 item->pos.x, skidoo->pos.y - STEP_L, item->pos.z, skidoo->speed,
                 skidoo->rot.y, item->room_num, 3);
         }
-        Gun_HitTarget(item, nullptr, nullptr, item->hit_points);
+        if (item->hit_points > 0) {
+            Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, skidoo);
+        }
     }
     return true;
 }

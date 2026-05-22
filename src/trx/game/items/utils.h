@@ -21,7 +21,8 @@ bool Item_IsTargetable(const ITEM *item);
 bool Item_CanTakeDamage(const ITEM *item);
 bool Item_CanBeProjectileTarget(const ITEM *item);
 
-void Item_TakeDamage(ITEM *item, int16_t damage, bool hit_status);
+void Item_TakeDamage(
+    ITEM *item, int16_t damage, ITEM_DAMAGE_FLAGS flags, const ITEM *sender);
 
 bool Item_IsMeshVisible(const ITEM *item, int32_t mesh_num);
 void Item_SetMeshVisible(ITEM *item, int32_t mesh_num, bool visible);

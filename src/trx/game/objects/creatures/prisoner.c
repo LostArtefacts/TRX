@@ -381,7 +381,7 @@ static void M_Control(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < STEP_L
                 && ABS(enemy->pos.y - item->pos.y) <= STEP_L
                 && ABS(enemy->pos.z - item->pos.z) < STEP_L) {
-                Item_TakeDamage(enemy, M_PUNCH_1_DAMAGE / 2, true);
+                Item_TakeDamage(enemy, M_PUNCH_1_DAMAGE / 2, IDF_NONE, item);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 creature->flags = 1;
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
@@ -408,7 +408,7 @@ static void M_Control(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < STEP_L
                 && ABS(enemy->pos.y - item->pos.y) <= STEP_L
                 && ABS(enemy->pos.z - item->pos.z) < STEP_L) {
-                Item_TakeDamage(enemy, M_PUNCH_1_DAMAGE / 2, true);
+                Item_TakeDamage(enemy, M_PUNCH_1_DAMAGE / 2, IDF_NONE, item);
                 creature->flags = 1;
                 Creature_Effect(item, &m_Bite, Spawn_Blood);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
@@ -440,7 +440,7 @@ static void M_Control(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < STEP_L
                 && ABS(enemy->pos.y - item->pos.y) <= STEP_L
                 && ABS(enemy->pos.z - item->pos.z) < STEP_L) {
-                Item_TakeDamage(enemy, M_PUNCH_3_DAMAGE / 2, true);
+                Item_TakeDamage(enemy, M_PUNCH_3_DAMAGE / 2, IDF_NONE, item);
                 Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 creature->flags = 2;
                 Creature_Effect(item, &m_Bite, Spawn_Blood);

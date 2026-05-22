@@ -11,8 +11,6 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/game/stats.h>
-
 // clang-format off
 #define M_MOUNT_DIST          200000
 #define M_DISMOUNT_DIST       330
@@ -325,10 +323,7 @@ static void M_CheckObjectCollision(ITEM *const item, ITEM *const cart)
             cart->rot.y, item->room_num, 3);
     }
     if (item->hit_points > 0) {
-        item->hit_points = 0;
-        if (item->include_in_kill_stats) {
-            Stats_AddKill();
-        }
+        Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, cart);
     }
 }
 

@@ -78,7 +78,7 @@ static void M_Bite(ITEM *const item, ITEM *const enemy, const int32_t dmg)
         if (ABS(enemy->pos.x - item->pos.x) < STEP_L
             && ABS(enemy->pos.y - item->pos.y) <= STEP_L
             && ABS(enemy->pos.z - item->pos.z) < STEP_L) {
-            Item_TakeDamage(enemy, dmg / 2, true);
+            Item_TakeDamage(enemy, dmg / 2, IDF_NONE, item);
             creature->flags = 1;
             Creature_Effect(item, &m_MonkeyBite, Spawn_Blood);
         }

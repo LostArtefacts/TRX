@@ -16,7 +16,6 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
-#include <trx/game/stats.h>
 #include <trx/version.h>
 
 // clang-format off
@@ -1194,10 +1193,7 @@ bool Creature_Animate(
             (XYZ_32) { item->pos.x, item->pos.y - (STEP_L * 2), item->pos.z },
             &room_num);
         if (M_TestDrowned(item, bounds, room_num)) {
-            item->hit_points = 0;
-            if (item->include_in_kill_stats) {
-                Stats_AddKill();
-            }
+            Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, nullptr);
         }
     }
 
@@ -1252,10 +1248,7 @@ void Creature_TestBoxDamage(const int16_t item_num)
         return;
     }
 
-    Item_TakeDamage(item, M_BOX_DAMAGE, false);
-    if (item->hit_points <= 0 && item->include_in_kill_stats) {
-        Stats_AddKill();
-    }
+    Item_TakeDamage(item, M_BOX_DAMAGE, IDF_NO_HIT_STATUS, nullptr);
 }
 
 void Creature_Die(const int16_t item_num, const bool explode)

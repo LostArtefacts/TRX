@@ -17,7 +17,6 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
-#include <trx/game/stats.h>
 #include <trx/version.h>
 
 static const BITE m_QuadBites[6] = {
@@ -735,10 +734,8 @@ static void M_SkidooBaddieCollision(ITEM *const quad)
                         quad->speed, quad->rot.y, item->room_num, 3);
                 }
                 if (item->hit_points > 0) {
-                    item->hit_points = 0;
-                    if (item->include_in_kill_stats) {
-                        Stats_AddKill();
-                    }
+                    Item_TakeDamage(
+                        item, item->hit_points, IDF_NO_HIT_STATUS, quad);
                 }
             }
 

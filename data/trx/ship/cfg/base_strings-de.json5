@@ -849,6 +849,10 @@
             "title": "Enferne die Kollision des toten T-Rex",
             "description": "Enfernt jegliche Kollision vom T-Rex sobald er stirbt. Dies ist sehr hilfreich, wenn die Leiche eines T-Rex den Ausgang blockiert.",
         },
+        "gameplay.enable_ally_kill_count": {
+            "title": "\\{review}Verbündeten-Kills zählen",
+            "description": "\\{review}Zählt die von Laras Verbündeten erzielten Feind-Kills zur Gesamtzahl der Kills.",
+        },
         "gameplay.enable_ally_targeting": {
             "title": "Erlaube das ziehlen auf freundliche Einheiten",
             "description": "Erlaubt Lara, auf freundliche Einheiten zu ziehlen, wie zum Beispiel Mönche. Wenn diese Option deaktiviert ist, sind freundliche Einheiten immun gegen Laras Munition.",
@@ -928,6 +932,10 @@
         "gameplay.enable_enhanced_saves": {
             "title": "Speichere Effekte",
             "description": "Erweitert Spielstände so das Grafikeffekte, Wasserfall-Nebel, Flammenerzeuger und mehr gespeichert werden, anstatt beim Laden zu verschwinden.",
+        },
+        "gameplay.enable_environment_kill_count": {
+            "title": "\\{review}Umwelt-Kills zählen",
+            "description": "\\{review}Zählt Feinde, die von der Umgebung erledigt wurden, wie z.B. Sicherheitslaser oder Ertrinken, zur Gesamtzahl der Kills.",
         },
         "gameplay.enable_fmv": {
             "title": "FMVs",

@@ -262,6 +262,8 @@ typedef struct {
         bool enable_walk_to_items;
         bool restore_ps1_enemies;
         bool enable_ally_targeting;
+        bool enable_ally_kill_count;
+        bool enable_environment_kill_count;
         bool enable_enemy_rotation;
         bool enable_killer_pushblocks;
         bool enable_boulder_shake;

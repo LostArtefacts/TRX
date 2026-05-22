@@ -18,7 +18,6 @@
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
-#include <trx/game/stats.h>
 
 #define M_NEAR_ANGLE (DEG_1 * 15) // = 2730
 
@@ -439,17 +438,11 @@ void Gun_HitTarget(
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const bool was_alive = item->hit_points > 0;
-    const bool clears_target = was_alive && damage >= item->hit_points;
-    if (clears_target) {
-        if (item->include_in_kill_stats) {
-            Stats_AddKill();
-        }
-        if (g_Config.gameplay.target_mode == TARGET_LOCK_MODE_SEMI) {
-            lara->target = nullptr;
-        }
+    Item_TakeDamage(item, damage, IDF_NONE, Lara_GetItem());
+    if (was_alive && item->hit_points <= 0
+        && g_Config.gameplay.target_mode == TARGET_LOCK_MODE_SEMI) {
+        lara->target = nullptr;
     }
-
-    Item_TakeDamage(item, damage, true);
     if (item->creature_data != nullptr
         && Object_Get(item->object_id)->intelligent) {
         Creature_Hurt(item, damage);

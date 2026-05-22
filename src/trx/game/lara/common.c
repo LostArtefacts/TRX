@@ -698,7 +698,9 @@ void Lara_TakeDamage(const int16_t damage, const bool hit_status)
     if (g_Config.debug.enable_invulnerability) {
         return;
     }
-    Item_TakeDamage(Lara_GetItem(), damage, hit_status);
+    Item_TakeDamage(
+        Lara_GetItem(), damage, hit_status ? IDF_NONE : IDF_NO_HIT_STATUS,
+        nullptr);
 }
 
 // TODO: This does the same thing in principle as Lara_GetJointAbsPosition().
