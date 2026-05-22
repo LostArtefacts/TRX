@@ -2,6 +2,13 @@
 
 typedef enum {
     // clang-format off
+    IDF_NONE          = 0,
+    IDF_NO_HIT_STATUS = 1 << 0,
+    // clang-format on
+} ITEM_DAMAGE_FLAGS;
+
+typedef enum {
+    // clang-format off
     DS_CARRIED   = 0,
     DS_FALLING   = 1,
     DS_DROPPED   = 2,

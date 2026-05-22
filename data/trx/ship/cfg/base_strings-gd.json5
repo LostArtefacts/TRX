@@ -849,6 +849,10 @@
             "title": "Cuir às ri buaidh T-Rex marbh",
             "description": "Cuiridh seo às ri buaidh-bhualaidh corp T-Rex às deidh bàs, gus casg a chur air bacadh slighe a-mach.",
         },
+        "gameplay.enable_ally_kill_count": {
+            "title": "\\{review}Àireamhachadh murtan a' chom-pàirtiche",
+            "description": "\\{review}A' cunntadh murtan nàmhaid a chaidh a dhèanamh le com-pàirtichean Lara a dh'ionnsaigh an àireamh iomlan de mhurtan.",
+        },
         "gameplay.enable_ally_targeting": {
             "title": "Targaidich air càirdean",
             "description": "Leigidh seo le Lara a targaidich air càirdean - manaich, 's a leithid. Mura tèid seo a chur an comas, bidh iad dìonach air peilearan Lara.",
@@ -928,6 +932,10 @@
         "gameplay.enable_enhanced_saves": {
             "title": "Buaidhean sàbhalaidh",
             "description": "Leasaichidh sàbhaladh geama gus am bi buaidhean grafaigeach, ceò easan, sgaoiladairean lasraidh, agus tuilleadh, air an sàbhaladh an àite a dhol à sealladh nuair a luchdaichear iad.",
+        },
+        "gameplay.enable_environment_kill_count": {
+            "title": "\\{review}Àireamhachadh murtan àrainneachd",
+            "description": "\\{review}A' cunntadh nàmhaid a chaidh a chrìochnachadh leis an àrainneachd, leithid lasers tèarainteachd no fulang, a dh'ionnsaigh an àireamh iomlan de mhurtan.",
         },
         "gameplay.enable_fmv": {
             "title": "Bhideothan",

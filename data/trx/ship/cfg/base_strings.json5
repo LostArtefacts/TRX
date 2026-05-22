@@ -849,6 +849,10 @@
             "title": "Remove dead T-Rex collision",
             "description": "Removes all collision with T-Rex upon death. This helps when the T-Rex's body blocks the passage out.",
         },
+        "gameplay.enable_ally_kill_count": {
+            "title": "Count ally kills",
+            "description": "Counts enemy kills made by Lara's allies towards the kill total.",
+        },
         "gameplay.enable_ally_targeting": {
             "title": "Allow targeting allies",
             "description": "Allows Lara to target allies, such as monks. If disabled, allies will be immune to Lara's ammunition.",
@@ -928,6 +932,10 @@
         "gameplay.enable_enhanced_saves": {
             "title": "Save effects",
             "description": "Enhances savegames so that graphic effects, waterfall mist, flame emitters, and more are saved instead of disappearing on load.",
+        },
+        "gameplay.enable_environment_kill_count": {
+            "title": "Count environment kills",
+            "description": "Counts enemies finished off by the environment, such as security lasers or drowning, towards the kill total.",
         },
         "gameplay.enable_fmv": {
             "title": "FMVs",

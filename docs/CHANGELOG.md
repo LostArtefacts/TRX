@@ -15,6 +15,8 @@
 - improved vaulting logic for Lara, allowing her to grab the lowest reachable ledge in front of her when only action is held, regardless of room layout (#5205)
 - improved crouch turning for Lara to allow for more responsive transitions to crouch idle, crouch roll, and crawl idle states
 - changed `/set` to refuse level-enforced settings unless `--force` is used
+- changed ally kills to optionally count towards the kill total (Gameplay Options → General → Count ally kills)
+- changed environment kills counting towards the kill total to be optional (Gameplay Options → General → Count environment kills)
 - changed the underwater crawling fix to be optional (Gameplay Options → Fixes → Fix underwater crawling)
 - changed max upscaling factor from 8 to 10 (#5347)
 - changed Lua item maximum HP setup to use `item.properties.max_hit_points` instead of `item.max_hit_points`

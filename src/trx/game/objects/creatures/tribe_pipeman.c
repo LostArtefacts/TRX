@@ -288,7 +288,7 @@ static void M_Control(const int16_t item_num)
                 }
             } else if (!(creature->flags & 0xF000) && enemy != nullptr) {
                 if (Item_IsNearby(enemy, item, M_HIT_RANGE)) {
-                    Item_TakeDamage(enemy, M_BIFF_ENEMY_DAMAGE, true);
+                    Item_TakeDamage(enemy, M_BIFF_ENEMY_DAMAGE, IDF_NONE, item);
                     creature->flags |= 0x1000;
                     Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                 }

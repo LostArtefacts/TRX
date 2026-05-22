@@ -849,6 +849,10 @@
             "title": "Rimuovi collisione T-Rex morto",
             "description": "Rimuove tutte le collisioni con il T-Rex dopo la sua dipartita. Utile quando il corpo del T-Rex blocca il passaggio.",
         },
+        "gameplay.enable_ally_kill_count": {
+            "title": "\\{review}Conta le uccisioni degli alleati",
+            "description": "\\{review}Conta le uccisioni nemiche effettuate dagli alleati di Lara nel totale delle uccisioni.",
+        },
         "gameplay.enable_ally_targeting": {
             "title": "Consenti fuoco amico",
             "description": "Permette a Lara di colpire gli alleati, come i monaci. Se disabilitato, gli alleati saranno immuni ai proiettili di Lara.",
@@ -928,6 +932,10 @@
         "gameplay.enable_enhanced_saves": {
             "title": "Salva gli effetti",
             "description": "Migliora il sistema di salvataggio in modo che gli effetti grafici, la foschia delle cascate, gli emettitori di fiamme e altro vengano salvati invece di scomparire dopo il caricamento della partita.",
+        },
+        "gameplay.enable_environment_kill_count": {
+            "title": "\\{review}Conta le uccisioni ambientali",
+            "description": "\\{review}Conta i nemici eliminati dall'ambiente, come laser di sicurezza o annegamento, nel totale delle uccisioni.",
         },
         "gameplay.enable_fmv": {
             "title": "FMV",

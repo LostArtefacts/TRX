@@ -247,7 +247,7 @@ static void M_Control(const int16_t item_num)
                 if (Item_IsNearby(enemy, item, M_HIT_RANGE)) {
                     if (creature->flags >= hit_frame->start_frame
                         && creature->flags <= hit_frame->end_frame) {
-                        Item_TakeDamage(enemy, 2, true);
+                        Item_TakeDamage(enemy, 2, IDF_NONE, item);
                         Creature_Effect(item, &m_AxeHit, Spawn_Blood);
                         Sound_Effect(SFX_LARA_THUD, &item->pos, SPM_NORMAL);
                     }

@@ -141,14 +141,14 @@ bool Creature_Shoot(
     if (target_item == lara_item) {
         if (is_hit) {
             effect_num = Creature_Effect(item, &gun->muzzle, Spawn_GunHit);
-            Item_TakeDamage(target_item, damage, true);
+            Item_TakeDamage(target_item, damage, IDF_NONE, item);
         } else if (is_targetable) {
             effect_num = Creature_Effect(item, &gun->muzzle, Spawn_GunMiss);
         }
     } else {
         effect_num = Creature_Effect(item, &gun->muzzle, Spawn_GunShot);
         if (is_hit) {
-            Item_TakeDamage(target_item, damage / 10, true);
+            Item_TakeDamage(target_item, damage / 10, IDF_NONE, item);
 
             const OBJECT *const target_obj = Object_Get(target_item->object_id);
             int32_t joint = Random_GetControl() & 0xF;
