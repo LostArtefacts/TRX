@@ -179,7 +179,7 @@ static void M_Stage(const OBJECT_MESH *const mesh)
 
     OUTPUT_LIGHT_INFO light_info = Output_GetLightInfo();
     if (g_TRVersion >= 3 && M_IsMeshSkybox(Object_GetMeshIndex(mesh))) {
-        light_info.tr3_ambient = COLOR_RGB_F_WHITE;
+        light_info.tr3_ambient = (RGB_F) { 0.5f, 0.5f, 0.5f };
         for (int32_t i = 0; i < 3; i++) {
             light_info.tr3_light_color[i] = (RGB_F) { 0.0f, 0.0f, 0.0f };
             light_info.tr3_light_dir_view[i] = (XYZ_32) { 0, 0, 0 };
