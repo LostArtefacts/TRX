@@ -593,7 +593,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
             case O_CONTROL_OPTION:
                 Sound_Effect(
-                    g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_SPININ,
+                    g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_CHOOSE,
                     nullptr, SPM_ALWAYS);
                 break;
 
