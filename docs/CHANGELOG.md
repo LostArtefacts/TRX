@@ -92,6 +92,7 @@
 - fixed incorrect textures in Willard's Lair rooms 11, 52 and 56
 - fixed being unable to obtain the final secret in Aldwych due to Punk behaviour (#5533, regression from 1.6)
 - fixed Punks 190 and 199 having swapped fire sticks (#5533, regression from 1.4)
+- fixed incorrectly defined dummy triggers in certain old custom levels conflicting with normal triggers (#5537, regression from TR1X 4.8)
 
 
 

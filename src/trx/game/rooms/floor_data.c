@@ -93,23 +93,24 @@ static const int16_t *M_ReadTrigger(
         }
     }
 
-    TRIGGER_CMD *cmd;
-    if (sector->trigger == nullptr) {
-        sector->trigger = trigger;
-        sector->trigger->command =
-            GameBuf_Alloc(sizeof(TRIGGER_CMD), GBUF_FLOOR_DATA);
-        cmd = sector->trigger->command;
-    } else {
+    if (sector->trigger != nullptr) {
         // Some old TRLEs have incorrectly formatted floor data, with multiple
-        // trigger entries defined where regular triggers overlap dummies. In
-        // this case we link the new commands onto the old.
-        cmd = sector->trigger->command;
-        while (cmd->next_cmd != nullptr) {
-            cmd = cmd->next_cmd;
-        }
-        cmd->next_cmd = GameBuf_Alloc(sizeof(TRIGGER_CMD), GBUF_FLOOR_DATA);
-        cmd = cmd->next_cmd;
+        // trigger entries defined where regular triggers overlap dummies.
+        // Ignore the data as dummy triggers are no longer essential.
+        int16_t command;
+        do {
+            command = *data++;
+            if (M_TRIG_CMD_TYPE(command) == TO_CAMERA) {
+                command = *data++;
+            }
+        } while (!M_IS_DONE(command));
+        goto finish;
     }
+
+    sector->trigger = trigger;
+    sector->trigger->command =
+        GameBuf_Alloc(sizeof(TRIGGER_CMD), GBUF_FLOOR_DATA);
+    TRIGGER_CMD *cmd = sector->trigger->command;
 
     while (true) {
         int16_t command = *data++;
@@ -138,6 +139,7 @@ static const int16_t *M_ReadTrigger(
         cmd = cmd->next_cmd;
     }
 
+finish:
     return data;
 }
 
