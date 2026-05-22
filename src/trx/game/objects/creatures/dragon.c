@@ -330,7 +330,6 @@ static void M_ControlBack(const int16_t item_num)
     int16_t angle = 0;
     int16_t head = 0;
     CREATURE *const creature = dragon_front_item->creature_data;
-    const OBJECT *const front_obj = Object_Get(O_DRAGON_FRONT);
     const bool is_two_phase = M_IsTwoPhaseMode(dragon_back_item);
 
     if (dragon_front_item->hit_points <= 0) {
@@ -347,7 +346,8 @@ static void M_ControlBack(const int16_t item_num)
                     dragon_front_item->goal_anim_state = M_STATE_STOP;
                 }
                 if (creature->flags > M_LIVE_TIME + M_ALMOST_LIVE) {
-                    dragon_front_item->hit_points = front_obj->hit_points / 2;
+                    dragon_front_item->hit_points =
+                        dragon_front_item->max_hit_points / 2;
                 }
             } else if (creature->flags == M_ONE_PHASE_TIME) {
                 M_MarkDragonDead(dragon_back_item);

@@ -110,7 +110,7 @@ static void M_SpawnWasp(const ITEM *const spawner_item, const int32_t slot_idx)
     wasp_item->required_anim_state = 0;
     wasp_item->flags &= ~(IF_INVISIBLE | IF_KILLED | 3);
     wasp_item->creature_data = nullptr;
-    wasp_item->hit_points = Object_Get(wasp_item->object_id)->hit_points;
+    wasp_item->hit_points = wasp_item->max_hit_points;
     wasp_item->mesh_bits = -1;
     wasp_item->status = IS_ACTIVE;
     wasp_item->collidable = true;

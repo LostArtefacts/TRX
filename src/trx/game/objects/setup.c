@@ -52,7 +52,6 @@ void Object_SetupAllObjects(void)
         obj->can_be_projectile_target_func = nullptr;
         obj->can_be_exploded_func = nullptr;
         obj->get_mesh_index_func = nullptr;
-        obj->hit_points = 0;
         obj->pivot_length = 0;
         obj->radius = M_DEFAULT_RADIUS;
         obj->shadow_size = 0;

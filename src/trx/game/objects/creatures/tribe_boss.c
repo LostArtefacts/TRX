@@ -311,7 +311,7 @@ static void M_TriggerLizard(M_PRIV *const p)
     item->flags = 0;
     item->creature_data = nullptr;
     item->mesh_bits = -1;
-    item->hit_points = Object_Get(O_LIZARD)->hit_points;
+    item->hit_points = item->max_hit_points;
     item->active = 0;
     item->status = IS_ACTIVE;
     item->collidable = 1;
