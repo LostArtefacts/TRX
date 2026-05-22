@@ -519,7 +519,6 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
 
     obj->shadow_size = UNIT_SHADOW / 2;
-
     obj->radius = 204;
     obj->pivot_length = 0;
     obj->lot_setup = LOT_Setup(LOT_SETUP_CLIMBER);

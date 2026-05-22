@@ -46,7 +46,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "targetable", p->targetable);
 }
 
-static void M_ResetItemState(ITEM *const item, const OBJECT *const obj)
+static void M_ResetItemState(ITEM *const item)
 {
     Item_SwitchToAnim(item, 0, 0);
     const ANIM *const anim = Item_GetAnim(item);
@@ -57,14 +57,12 @@ static void M_ResetItemState(ITEM *const item, const OBJECT *const obj)
     item->rot.x = 0;
     item->rot.z = 0;
     item->timer = 0;
-    item->hit_points = obj->hit_points;
-    item->max_hit_points = obj->hit_points;
+    item->hit_points = item->max_hit_points;
 }
 
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    const OBJECT *const obj = Object_Get(item->object_id);
 
     if (item->active) {
         Item_RemoveActive(item_num);
@@ -85,7 +83,7 @@ static void M_Initialise(const int16_t item_num)
     item->flags = 0;
     item->collidable = true;
 
-    M_ResetItemState(item, obj);
+    M_ResetItemState(item);
 }
 
 static void M_Control(const int16_t item_num)

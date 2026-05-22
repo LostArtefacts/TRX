@@ -104,7 +104,6 @@ typedef struct OBJECT {
 
     int16_t anim_idx;
     int16_t anim_count;
-    int16_t hit_points;
     int16_t pivot_length;
     int16_t radius;
     int16_t shadow_size;
