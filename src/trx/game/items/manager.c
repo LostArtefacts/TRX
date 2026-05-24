@@ -194,8 +194,13 @@ void Item_Initialise(const int16_t item_num)
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Item_SwitchToAnim(item, 0, 0);
-    item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
-    item->current_anim_state = item->goal_anim_state;
+    if (item->anim_num != NO_ANIM) {
+        item->goal_anim_state = Item_GetAnim(item)->current_anim_state;
+        item->current_anim_state = item->goal_anim_state;
+    } else {
+        item->goal_anim_state = 0;
+        item->current_anim_state = 0;
+    }
     item->required_anim_state = 0;
     item->rot.x = 0;
     item->rot.z = 0;

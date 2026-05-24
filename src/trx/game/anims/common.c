@@ -13,6 +13,19 @@ static ANIM_RANGE *m_Ranges = nullptr;
 static ANIM_BONE *m_Bones = nullptr;
 static ANIM m_NullAnim = {};
 
+void Anim_Reset(void)
+{
+    m_AnimCount = 0;
+    m_ChangeCount = 0;
+    m_RangeCount = 0;
+    m_BoneCount = 0;
+    m_Anims = nullptr;
+    m_Changes = nullptr;
+    m_Ranges = nullptr;
+    m_Bones = nullptr;
+    m_NullAnim = (ANIM) {};
+}
+
 void Anim_InitialiseAnims(const int32_t num_anims)
 {
     m_AnimCount = num_anims;
