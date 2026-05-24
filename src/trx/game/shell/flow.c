@@ -25,6 +25,7 @@
 #include <trx/game/lara/skin.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
+#include <trx/game/objects.h>
 #include <trx/game/option.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>

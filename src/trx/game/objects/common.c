@@ -22,6 +22,7 @@ static int32_t m_MeshCount = 0;
 void Object_Reset(void)
 {
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+        ObjectProperty_ResetObject(&m_Objects[i]);
         m_Objects[i].loaded = false;
     }
 
