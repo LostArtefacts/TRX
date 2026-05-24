@@ -14,6 +14,13 @@ struct OBJECT_PROPERTY_ENTRY {
     OBJECT_PROPERTY_VALUE value;
 };
 
+__attribute__((destructor)) static void M_Shutdown(void)
+{
+    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+        ObjectProperty_ResetObject(Object_Get(i));
+    }
+}
+
 static OBJECT_PROPERTY_ENTRY *M_GetEntry(
     const OBJECT_PROPERTY_SET *const properties, const char *const name)
 {
