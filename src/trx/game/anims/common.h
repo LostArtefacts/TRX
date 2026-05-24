@@ -5,6 +5,7 @@
 
 #define NO_ANIM (-1)
 
+void Anim_Reset(void);
 void Anim_InitialiseAnims(int32_t num_anims);
 void Anim_InitialiseChanges(int32_t num_changes);
 void Anim_InitialiseRanges(int32_t num_ranges);

@@ -32,6 +32,7 @@ void Level_Unload(void)
     Gym_TrackManager_Reset(GYM_TRACK_ASSAULT);
     Gym_TrackManager_Reset(GYM_TRACK_QUAD);
     Creature_Reset();
+    Anim_Reset();
     Object_Reset();
     Camera_Reset();
     Walkable_Reset();

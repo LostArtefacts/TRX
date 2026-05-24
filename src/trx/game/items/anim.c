@@ -82,6 +82,8 @@ void Item_SwitchToObjAnim(
     const OBJECT *const obj = Object_Get(obj_id);
     if (obj->anim_idx == NO_ANIM) {
         item->anim_num = NO_ANIM;
+        item->frame_num = 0;
+        return;
     } else {
         item->anim_num = obj->anim_idx + anim_idx;
     }
