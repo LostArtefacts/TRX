@@ -150,6 +150,18 @@ static void M_SpawnPickupAid(const ITEM *const item)
         return;
     }
 
+    bool item_visible = false;
+    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
+        const int16_t draw_room_num = Room_DrawGetRoom(i);
+        if (draw_room_num == item->room_num) {
+            item_visible = true;
+            break;
+        }
+    }
+    if (!item_visible) {
+        return;
+    }
+
     const GAME_VECTOR pos = {
         .x = item->pos.x + 20 * (Random_GetDraw() - 0x4000) / 0x4000,
         .y = item->pos.y - ABS(frame->bounds.max.y - frame->bounds.min.y)
