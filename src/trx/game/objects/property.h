@@ -54,6 +54,14 @@ typedef OBJECT_PROPERTY_SET ITEM_PROPERTY_SET;
         }                                                                      \
     }
 
+#define OBJECT_PROPERTY_DOUBLE(name_, value_, description_)                    \
+    {                                                                          \
+        .name = name_, .description = description_, .value = {                 \
+            .type = OBJECT_PROPERTY_TYPE_DOUBLE,                               \
+            .as_double = value_                                                \
+        }                                                                      \
+    }
+
 void ObjectProperty_ResetObject(OBJECT *obj);
 void ObjectProperty_ResetItem(ITEM *item);
 void ObjectProperty_ApplyDeclarations(
