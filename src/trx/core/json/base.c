@@ -248,7 +248,7 @@ const char *JSON_ValueGetString(
     const JSON_VALUE *const value, const char *const d)
 {
     if (value == nullptr || value->type != JSON_TYPE_STRING) {
-        return nullptr;
+        return d;
     }
     const JSON_STRING *const string = value->payload;
     return string != nullptr ? string->string : d;
