@@ -62,6 +62,9 @@ static void M_CameraEdits(
         };
         const int16_t room_num = VFile_ReadS16(injection->fp);
         const int16_t flags = VFile_ReadS16(injection->fp);
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            continue;
+        }
 
         if (camera_num < 0 || camera_num >= Camera_GetFixedObjectCount()) {
             LOG_WARNING(
