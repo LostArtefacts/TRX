@@ -1,5 +1,10 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7...develop) - ××××-××-××
 
+**TR3**:
+- fixed pickup aids appearing from hidden overlapping rooms
+
+
+
 ## [1.7](https://github.com/LostArtefacts/TRX/compare/trx-1.6...trx-1.7) - 2026-05-25
 Showcase: https://youtu.be/L1g4tavx23Y
 - added object and item property tables for Lua scripts, including `max_hit_points` defaults

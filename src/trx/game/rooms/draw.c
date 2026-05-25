@@ -440,6 +440,9 @@ void Room_MarkToBeDrawn(const int16_t room_num)
 
 int32_t Room_DrawGetCount(void)
 {
+    if (m_RoomsToDraw == nullptr) {
+        return 0;
+    }
     return m_RoomsToDraw->count;
 }
 
