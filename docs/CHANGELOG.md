@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7...develop) - ××××-××-××
 - fixed string-backed configuration settings having wrong values on first launch
 - fixed Puna crashing if there is no Lizard to summon present in the same room
+- fixed a potential crash when switching to games that have camera edit injections
 
 
 
