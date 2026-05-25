@@ -1,4 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.6...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7...develop) - ××××-××-××
+
+## [1.7](https://github.com/LostArtefacts/TRX/compare/trx-1.6...trx-1.7) - 2026-05-25
+Showcase: https://youtu.be/L1g4tavx23Y
 - added object and item property tables for Lua scripts, including `max_hit_points` defaults
 - added `trx.events.before_item_setup` and `trx.events.after_item_setup` for Lua scripts to adjust item properties before items are initialized
 - added the ability for custom levels to use more than one of TR3's vehicle types in the same level; define the following animation objects for Lara:
