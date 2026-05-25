@@ -286,8 +286,12 @@ static const M_LIZARD_SUMMON_COORDS *M_GetLizardSummonCoords(
     return &p->lizard_summon_coords[p->attack_type == M_ATTACK_HAND_1 ? 0 : 1];
 }
 
-static void M_TriggerLizard(M_PRIV *const p)
+static bool M_TriggerLizard(M_PRIV *const p)
 {
+    if (p->lizard_item_num == NO_ITEM) {
+        return false;
+    }
+
     ITEM *const item = Item_Get(p->lizard_item_num);
     int16_t room_num = p->lizard_room_num;
 
@@ -333,6 +337,7 @@ static void M_TriggerLizard(M_PRIV *const p)
     }
 
     TribeBoss_SetLizardActive(true);
+    return true;
 }
 
 static void M_TriggerElectricSparks(
@@ -1062,7 +1067,10 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
     p->shared = &m_SharedPriv;
     p->lizard_item_num = M_FindLizard(item->room_num);
-    p->lizard_room_num = Item_Get(p->lizard_item_num)->room_num;
+    p->lizard_room_num = NO_ROOM;
+    if (p->lizard_item_num != NO_ITEM) {
+        p->lizard_room_num = Item_Get(p->lizard_item_num)->room_num;
+    }
 
     for (int32_t i = 0; i < 2; i++) {
         const int32_t sign = i == 0 ? -1 : 1;
@@ -1192,7 +1200,8 @@ static void M_Control(const int16_t item_num)
             if (item->goal_anim_state != M_STATE_ATTACK_HEAD
                 && info.angle > -128 && info.angle < 128
                 && lara_item->hit_points > 0
-                && p->attack_head_count < M_MAX_HEAD_ATTACKS
+                && (p->lizard_item_num == NO_ITEM
+                    || p->attack_head_count < M_MAX_HEAD_ATTACKS)
                 && !p->shared->lizard_active && !p->shield_active) {
                 XYZ_32 pos = {};
                 Collide_GetJointAbsPosition(lara_item, &pos, 0);
@@ -1206,7 +1215,8 @@ static void M_Control(const int16_t item_num)
 
             if (item->goal_anim_state == M_STATE_ATTACK_HAND
                 || p->attack_head_count < M_MAX_HEAD_ATTACKS
-                || lara_item->hit_points <= 0) {
+                || lara_item->hit_points <= 0
+                || p->lizard_item_num == NO_ITEM) {
                 break;
             }
 
