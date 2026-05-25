@@ -114,6 +114,9 @@ This page lists documented moveable object properties.
 ### `191` O_WINSTON
 - `max_hit_points = 1` — Maximum hit points.
 
+### `193` O_FLARE_ITEM
+- `burn_time = 60` — How long the flare burns for, in seconds.
+
 ## Tomb Raider 2
 
 ### `0` O_LARA
@@ -253,6 +256,9 @@ This page lists documented moveable object properties.
 
 ### `132` O_PLAYER_10
 - `max_hit_points = 1` — Maximum hit points.
+
+### `152` O_FLARE_ITEM
+- `burn_time = 60` — How long the flare burns for, in seconds.
 
 ### `214` O_TREX
 - `max_hit_points = 100` — Maximum hit points.
@@ -462,6 +468,9 @@ This page lists documented moveable object properties.
 
 ### `157` O_PLAYER_10
 - `max_hit_points = 1` — Maximum hit points.
+
+### `179` O_FLARE_ITEM
+- `burn_time = 30` — How long the flare burns for, in seconds.
 
 ### `287` O_TREX_ALPHA
 - `max_hit_points = 800` — Maximum hit points.
