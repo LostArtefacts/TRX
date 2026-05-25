@@ -1,4 +1,5 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7...develop) - ××××-××-××
+- fixed string-backed configuration settings having wrong values on first launch
 
 ## [1.7](https://github.com/LostArtefacts/TRX/compare/trx-1.6...trx-1.7) - 2026-05-25
 Showcase: https://youtu.be/L1g4tavx23Y
