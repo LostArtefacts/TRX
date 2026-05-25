@@ -25,12 +25,14 @@ Module for controlling game objects.
 ### Functions
 
 - [lua]`trx.objects[object_id]`
+- [lua]`trx.objects.object_name`
 
-  Retrieves an object proxy for the given object ID.
+  Retrieves an object proxy for the given object ID or catalog object name.
 
   Example:
   ```lua
   trx.objects[trx.catalog.objects.wolf].properties.max_hit_points = 30
+  trx.objects.flare_item.properties.burn_time = 1
   for name, value in pairs(trx.objects[trx.catalog.objects.wolf].properties) do
     trx.log.info(name .. " = " .. tostring(value))
   end

@@ -23,7 +23,7 @@ trx.events.before_item_setup(function(level)
   end
 
   -- Boost all wolves HP
-  trx.objects[trx.catalog.objects.wolf].properties.max_hit_points = 30
+  trx.objects.wolf.properties.max_hit_points = 30
 end)
 ```
 

@@ -44,6 +44,11 @@ trx.objects = setmetatable(objects, {
   __index = function(_, key)
     if type(key) == "number" then
       return setmetatable({ object_id = key }, Object)
+    elseif type(key) == "string" then
+      local object_id = trx.catalog.objects[key]
+      if object_id ~= nil then
+        return setmetatable({ object_id = object_id }, Object)
+      end
     end
     return nil
   end,
