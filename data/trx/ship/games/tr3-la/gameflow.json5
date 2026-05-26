@@ -195,7 +195,7 @@
     ],
 
     "fmvs": [
-        {"path": "logo.rpl", "legal": true},
+        {"path": "logo.avi", "legal": true},
     ],
 
     "hidden_config": [

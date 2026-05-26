@@ -763,11 +763,11 @@
     ],
 
     "fmvs": [
-        {"path": "logo.rpl", "legal": true},
-        {"path": "intr_eng.rpl"},
-        {"path": "sail_eng.rpl"},
-        {"path": "crsh_eng.rpl"},
-        {"path": "endgame.rpl"},
+        {"path": "logo.avi", "legal": true},
+        {"path": "intr_eng.avi"},
+        {"path": "sail_eng.avi"},
+        {"path": "crsh_eng.avi"},
+        {"path": "endgame.avi"},
     ],
 
     "hidden_config": [

@@ -7,7 +7,11 @@
 - fixed Puna crashing if there is no Lizard to summon present in the same room
 - fixed a potential crash when switching to games that have camera edit injections
 
+**TR2**:
+- changed the FMV path resolution to prioritize .avi over .rpl
+
 **TR3**:
+- changed the FMV path resolution to prioritize .avi over .rpl
 - fixed pickup aids appearing from hidden overlapping rooms
 
 

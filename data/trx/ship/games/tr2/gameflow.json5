@@ -740,14 +740,14 @@
     ],
 
     "fmvs": [
-        {"path": "LOGO.RPL", "legal": true},
-        {"path": "ANCIENT.RPL"},
-        {"path": "MODERN.RPL"},
-        {"path": "LANDING.RPL"},
-        {"path": "MS.RPL"},
-        {"path": "CRASH.RPL"},
-        {"path": "JEEP.RPL"},
-        {"path": "END.RPL"},
+        {"path": "LOGO.AVI", "legal": true},
+        {"path": "ANCIENT.AVI"},
+        {"path": "MODERN.AVI"},
+        {"path": "LANDING.AVI"},
+        {"path": "MS.AVI"},
+        {"path": "CRASH.AVI"},
+        {"path": "JEEP.AVI"},
+        {"path": "END.AVI"},
     ],
 
     "hidden_config": [
