@@ -1,4 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7...develop) - ××××-××-××
+- added `O_FLARE_ITEM.burn_time` so custom levels and Lua scripts can change how long flares last (#5544)  
+  Example: `trx.objects[trx.catalog.objects.flare_item].properties.burn_time = 1`
+- changed Lua object and item properties to accept whole numbers for decimal values
+- changed Lua object access to support catalog names such as `trx.objects.flare_item`
 - fixed string-backed configuration settings having wrong values on first launch
 - fixed Puna crashing if there is no Lizard to summon present in the same room
 - fixed a potential crash when switching to games that have camera edit injections

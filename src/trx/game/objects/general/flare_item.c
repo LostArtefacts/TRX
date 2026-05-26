@@ -14,21 +14,33 @@
 #include <trx/version.h>
 
 // clang-format off
-#define M_FLARE_INTENSITY 12
-#define M_FLARE_FALL_OFF  11
+#define M_FLARE_INTENSITY         12
+#define M_FLARE_FALL_OFF          11
 
-#define M_MAX_FLARE_AGE_TR12   (60 * LOGIC_FPS)                       // = 1800
-#define M_FLARE_OLD_AGE_TR12   (M_MAX_FLARE_AGE_TR12 - 2 * LOGIC_FPS) // = 1740
-#define M_FLARE_YOUNG_AGE_TR12 (LOGIC_FPS)                            // = 30
+#define M_DEFAULT_FLARE_TIME      (g_TRVersion >= 3 ? 30.0 : 60.0)
 
-#define M_MAX_FLARE_AGE_TR3   (30 * LOGIC_FPS)         // = 900
-#define M_FLARE_DYING_AGE_TR3 (M_MAX_FLARE_AGE_TR3 - 90) // = 810
-#define M_FLARE_END_AGE_TR3   (M_MAX_FLARE_AGE_TR3 - 24) // = 876
+#define M_FLARE_OLD_TIME_TR12     2.0
+#define M_FLARE_YOUNG_TIME_TR12   1.0
+
+#define M_FLARE_DYING_TIME_TR3    3.0
+#define M_FLARE_END_TIME_TR3      0.8
 // clang-format on
 
 typedef struct {
     int32_t raw_age;
 } M_PRIV;
+
+static double M_GetBurnTimeSeconds(void)
+{
+    OBJECT_PROPERTY_VALUE value = {};
+    if (!ObjectProperty_GetObjectValue(
+            Object_Get(O_FLARE_ITEM), "burn_time", &value)
+        || value.type != OBJECT_PROPERTY_TYPE_DOUBLE
+        || value.as_double <= 0.0) {
+        return M_DEFAULT_FLARE_TIME;
+    }
+    return value.as_double;
+}
 
 static XYZ_32 M_TransformLocalOffset(
     const XYZ_32 pos, const XYZ_16 rot, const XYZ_32 local_offset)
@@ -189,9 +201,15 @@ end:
 
 static bool M_GenerateLight_TR12(const XYZ_32 pos, const int32_t flare_age)
 {
-    if (flare_age >= M_MAX_FLARE_AGE_TR12) {
+    const int32_t max_age = Flare_GetMaxAge();
+    if (flare_age >= max_age) {
         return false;
     }
+
+    const int32_t young_age =
+        MIN(Flare_GetMaxAge(), M_FLARE_YOUNG_TIME_TR12 * LOGIC_FPS);
+    const int32_t old_age =
+        MAX(0, Flare_GetMaxAge() - M_FLARE_OLD_TIME_TR12 * LOGIC_FPS);
 
     const int32_t random = Random_GetDraw();
     const XYZ_32 light_pos = {
@@ -200,16 +218,15 @@ static bool M_GenerateLight_TR12(const XYZ_32 pos, const int32_t flare_age)
         .z = pos.z,
     };
 
-    if (flare_age < M_FLARE_YOUNG_AGE_TR12) {
-        const int32_t intensity = M_FLARE_INTENSITY
-                * (flare_age - M_FLARE_YOUNG_AGE_TR12)
-                / (2 * M_FLARE_YOUNG_AGE_TR12)
+    if (flare_age < young_age) {
+        const int32_t intensity =
+            M_FLARE_INTENSITY * (flare_age - young_age) / (2 * young_age)
             + M_FLARE_INTENSITY;
         Output_AddDynamicLight(light_pos, intensity, M_FLARE_FALL_OFF);
         return true;
     }
 
-    if (flare_age < M_FLARE_OLD_AGE_TR12) {
+    if (flare_age < old_age) {
         Output_AddDynamicLight(light_pos, M_FLARE_INTENSITY, M_FLARE_FALL_OFF);
         return true;
     }
@@ -226,9 +243,15 @@ static bool M_GenerateLight_TR12(const XYZ_32 pos, const int32_t flare_age)
 
 static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
 {
-    if (flare_age >= M_MAX_FLARE_AGE_TR3) {
+    const int32_t max_age = Flare_GetMaxAge();
+    if (flare_age >= max_age) {
         return false;
     }
+
+    const int32_t dying_age =
+        MAX(0, Flare_GetMaxAge() - M_FLARE_DYING_TIME_TR3 * LOGIC_FPS);
+    const int32_t end_age =
+        MAX(0, Flare_GetMaxAge() - M_FLARE_END_TIME_TR3 * LOGIC_FPS);
 
     const int32_t rnd = Random_GetControl();
     const XYZ_32 light_pos = {
@@ -256,12 +279,12 @@ static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
         g = ((rnd >> 4) & 0x1F) + (flare_age << 2) + 64;
         b = ((rnd >> 8) & 0x1F) + (flare_age << 2) + 16;
         falloff = (rnd & 1) + flare_age + 2;
-    } else if (flare_age < M_FLARE_DYING_AGE_TR3) {
+    } else if (flare_age < dying_age) {
         r = (rnd & 0x3F) + 192;
         g = ((rnd >> 4) & 0x1F) + 128;
         b = ((rnd >> 8) & 0x20) + (((rnd >> 6) & 0x10) << 1);
         falloff = 16;
-    } else if (flare_age < M_FLARE_END_AGE_TR3) {
+    } else if (flare_age < end_age) {
         if (rnd > 0x2000) {
             r = (rnd & 0x3F) + 192;
             g = ((rnd >> 4) & 0x1F) + 64;
@@ -286,7 +309,7 @@ static bool M_GenerateLight_TR3(const XYZ_32 pos, const int32_t flare_age)
         r = (rnd2 & 0x3F) + 192;
         g = (rnd3 & 0x3F) + 64;
         b = rnd4 & 0x1F;
-        falloff = 16 - ((flare_age - M_FLARE_END_AGE_TR3) >> 1);
+        falloff = 16 - ((flare_age - end_age) >> 1);
         Output_AddDynamicLightRGB(light_pos, falloff, (RGB_888) { r, g, b });
         return (rnd & 1) != 0;
     }
@@ -320,7 +343,7 @@ bool Flare_GenerateLight(const XYZ_32 pos, const int32_t flare_age)
 
 int32_t Flare_GetMaxAge(void)
 {
-    return g_TRVersion >= 3 ? M_MAX_FLARE_AGE_TR3 : M_MAX_FLARE_AGE_TR12;
+    return MAX(1, M_GetBurnTimeSeconds() * LOGIC_FPS);
 }
 
 int32_t FlareItem_GetAge(const ITEM *const item)
@@ -354,6 +377,11 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
     obj->save_flags = true;
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_DOUBLE(
+            "burn_time", M_DEFAULT_FLARE_TIME,
+            "How long the flare burns for, in seconds."));
 
     if (obj->loaded) {
         for (int32_t i = 0; i < obj->mesh_count; i++) {

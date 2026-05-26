@@ -93,6 +93,62 @@ static void M_ApplyItemValue(
     M_AddEntry(&item->properties, name, object_entry->description, value);
 }
 
+static bool M_CoerceValue(
+    const OBJECT_PROPERTY_VALUE target, const OBJECT_PROPERTY_VALUE input,
+    OBJECT_PROPERTY_VALUE *const out_value)
+{
+    *out_value = input;
+    if (target.type == input.type) {
+        return true;
+    }
+
+    switch (target.type) {
+    case OBJECT_PROPERTY_TYPE_INT:
+        switch (input.type) {
+        case OBJECT_PROPERTY_TYPE_FLOAT:
+            out_value->type = OBJECT_PROPERTY_TYPE_INT;
+            out_value->as_int = input.as_float;
+            return true;
+        case OBJECT_PROPERTY_TYPE_DOUBLE:
+            out_value->type = OBJECT_PROPERTY_TYPE_INT;
+            out_value->as_int = input.as_double;
+            return true;
+        default:
+            return false;
+        }
+    case OBJECT_PROPERTY_TYPE_FLOAT:
+        switch (input.type) {
+        case OBJECT_PROPERTY_TYPE_INT:
+            out_value->type = OBJECT_PROPERTY_TYPE_FLOAT;
+            out_value->as_float = input.as_int;
+            return true;
+        case OBJECT_PROPERTY_TYPE_DOUBLE:
+            out_value->type = OBJECT_PROPERTY_TYPE_FLOAT;
+            out_value->as_float = input.as_double;
+            return true;
+        default:
+            return false;
+        }
+    case OBJECT_PROPERTY_TYPE_DOUBLE:
+        switch (input.type) {
+        case OBJECT_PROPERTY_TYPE_INT:
+            out_value->type = OBJECT_PROPERTY_TYPE_DOUBLE;
+            out_value->as_double = input.as_int;
+            return true;
+        case OBJECT_PROPERTY_TYPE_FLOAT:
+            out_value->type = OBJECT_PROPERTY_TYPE_DOUBLE;
+            out_value->as_double = input.as_float;
+            return true;
+        default:
+            return false;
+        }
+    case OBJECT_PROPERTY_TYPE_BOOL:
+        return false;
+    }
+
+    return false;
+}
+
 void ObjectProperty_ResetObject(OBJECT *const obj)
 {
     Memory_FreePointer(&obj->properties.entries);
@@ -165,10 +221,14 @@ bool ObjectProperty_SetObjectValueRaw(
 {
     OBJECT_PROPERTY_ENTRY *const entry =
         obj == nullptr ? nullptr : M_GetEntry(&obj->properties, name);
-    if (entry == nullptr || entry->value.type != value.type) {
+    if (entry == nullptr) {
         return false;
     }
-    M_ApplyObjectValue(obj, name, &value);
+    OBJECT_PROPERTY_VALUE coerced_value = {};
+    if (!M_CoerceValue(entry->value, value, &coerced_value)) {
+        return false;
+    }
+    M_ApplyObjectValue(obj, name, &coerced_value);
     return true;
 }
 
@@ -198,11 +258,15 @@ bool ObjectProperty_SetItemValueRaw(
 
     const OBJECT_PROPERTY_ENTRY *const object_entry =
         M_GetObjectEntry(Object_TryGet(item->object_id), name);
-    if (object_entry == nullptr || object_entry->value.type != value.type) {
+    if (object_entry == nullptr) {
         return false;
     }
 
-    M_ApplyItemValue(item, name, &value);
+    OBJECT_PROPERTY_VALUE coerced_value = {};
+    if (!M_CoerceValue(object_entry->value, value, &coerced_value)) {
+        return false;
+    }
+    M_ApplyItemValue(item, name, &coerced_value);
     return true;
 }
 
