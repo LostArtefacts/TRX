@@ -162,19 +162,28 @@ static void M_PushPropertyValue(
     case OBJECT_PROPERTY_TYPE_BOOL:
         lua_pushboolean(L, value->as_bool);
         break;
+    case OBJECT_PROPERTY_TYPE_XYZ:
+        lua_newtable(L);
+        lua_pushinteger(L, value->as_xyz.x);
+        lua_setfield(L, -2, "x");
+        lua_pushinteger(L, value->as_xyz.y);
+        lua_setfield(L, -2, "y");
+        lua_pushinteger(L, value->as_xyz.z);
+        lua_setfield(L, -2, "z");
+        break;
     }
 }
 
 static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
     lua_State *const L, const int idx)
 {
-    if (lua_type(L, idx) == LUA_TBOOLEAN) {
+    switch (lua_type(L, idx)) {
+    case LUA_TBOOLEAN:
         return (OBJECT_PROPERTY_VALUE) {
             .type = OBJECT_PROPERTY_TYPE_BOOL,
             .as_bool = lua_toboolean(L, idx),
         };
-    }
-    if (lua_type(L, idx) == LUA_TNUMBER) {
+    case LUA_TNUMBER:
         if (lua_isinteger(L, idx)) {
             return (OBJECT_PROPERTY_VALUE) {
                 .type = OBJECT_PROPERTY_TYPE_INT,
@@ -185,9 +194,27 @@ static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
             .type = OBJECT_PROPERTY_TYPE_DOUBLE,
             .as_double = lua_tonumber(L, idx),
         };
+    case LUA_TTABLE:
+        XYZ_32 vec = {};
+        lua_getfield(L, idx, "x");
+        vec.x = luaL_checkinteger(L, -1);
+        lua_pop(L, 1);
+        lua_getfield(L, idx, "y");
+        vec.y = luaL_checkinteger(L, -1);
+        lua_pop(L, 1);
+        lua_getfield(L, idx, "z");
+        vec.z = luaL_checkinteger(L, -1);
+        lua_pop(L, 1);
+
+        return (OBJECT_PROPERTY_VALUE) {
+            .type = OBJECT_PROPERTY_TYPE_XYZ,
+            .as_xyz = vec,
+        };
+        break;
+    default:
+        luaL_error(L, "property value must be a number, boolean or table");
+        return (OBJECT_PROPERTY_VALUE) {};
     }
-    luaL_error(L, "property value must be a number or boolean");
-    return (OBJECT_PROPERTY_VALUE) {};
 }
 
 // trxc.items.get_property(index, name) → typed value or nil
