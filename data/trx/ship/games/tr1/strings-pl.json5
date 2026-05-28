@@ -6,7 +6,7 @@
             "empty_slot_fmt": "- PUSTY SLOT %d -",
         },
         "stats": {
-            "secrets": "\\{review}Sekrety",
+            "secrets": "Sekrety",
         }
     },
     "settings": {
