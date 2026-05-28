@@ -1058,6 +1058,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── inv_ring.json5
 │   │   ├── main.sfx
 │   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   ├── strings.json5
@@ -1142,11 +1144,15 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── gameflow.json5
 │   │   ├── main.sfx
 │   │   ├── strings-de.json5
+│   │   ├── strings-fr.json5
+│   │   ├── strings-gd.json5
 │   │   ├── strings-it.json5
 │   │   ├── strings-pl.json5
 │   │   └── strings.json5
 │   └── tr3-level
 │       ├── gameflow.json5
+│       ├── strings-fr.json5
+│       ├── strings-gd.json5
 │       ├── strings-it.json5
 │       ├── strings-pl.json5
 │       └── strings.json5
@@ -2275,6 +2281,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── inv_ring.json5
     │   │   │   ├── main.sfx
     │   │   │   ├── strings-de.json5
+    │   │   │   ├── strings-fr.json5
+    │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
     │   │   │   ├── strings.json5
@@ -2359,11 +2367,15 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── gameflow.json5
     │   │   │   ├── main.sfx
     │   │   │   ├── strings-de.json5
+    │   │   │   ├── strings-fr.json5
+    │   │   │   ├── strings-gd.json5
     │   │   │   ├── strings-it.json5
     │   │   │   ├── strings-pl.json5
     │   │   │   └── strings.json5
     │   │   └── tr3-level
     │   │       ├── gameflow.json5
+    │   │       ├── strings-fr.json5
+    │   │       ├── strings-gd.json5
     │   │       ├── strings-it.json5
     │   │       ├── strings-pl.json5
     │   │       └── strings.json5

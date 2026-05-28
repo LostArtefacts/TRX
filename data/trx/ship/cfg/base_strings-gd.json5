@@ -12,12 +12,12 @@
             "use_item": "Cleachd",
         },
         "config_presets": {
-            "applied": "\\{review}Ro-shealladh air a chur an sàs.",
-            "confirm_description": "\\{review}Bidh na suidheachaidhean a leanas air an atharrachadh:",
-            "confirm_restart_note": "\\{review}Nota: dh’fhaodadh gum feum cuid de shuidheachaidhean ath-thòiseachadh a’ gheama airson buaidh fhaighinn.",
-            "empty": "\\{review}Cha deach ro-shealladh sam bith a lorg.",
-            "no_changes": "\\{review}Chan eil atharrachaidhean ri chur an gnìomh.",
-            "title_fmt": "\\{review}Cuir an ro-shealladh %s an sàs?",
+            "applied": "Ro-shealladh air a chur an sàs.",
+            "confirm_description": "Bidh na suidheachaidhean a leanas air an atharrachadh:",
+            "confirm_restart_note": "Nota: dh’fhaodadh gum feum cuid de shuidheachaidhean ath-thòiseachadh a’ gheama airson buaidh fhaighinn.",
+            "empty": "Cha deach ro-shealladh sam bith a lorg.",
+            "no_changes": "Chan eil atharrachaidhean ri chur an gnìomh.",
+            "title_fmt": "Cuir an ro-shealladh %s an sàs?",
         },
         "globe_select": {
             "area_1": "Raon 1",
@@ -61,7 +61,7 @@
             "command_unavailable": "Chan eil an àithne seo ri làimh an-dràsta",
             "command_valid_values": "Luachan dligheach: %s",
             "complete_level": "Ìre deiseil!",
-            "config_option_enforced": "\\{review}Tha %s air a chur an gnìomh agus chan urrainnear atharrachadh",
+            "config_option_enforced": "Tha %s air a chur an gnìomh agus chan urrainnear atharrachadh",
             "config_option_get": "Tha %s air a rèiteachadh gu %s",
             "config_option_set": "%s air atharrachadh gu %s",
             "config_option_unknown_option": "Roghainn neo-aithnichte: %s",
@@ -145,11 +145,11 @@
             "item_count_fmt_ps1": "\\{small}%s",
         },
         "passport": {
-            "delete_save": "\\{review}Sguab às",
-            "delete_save_confirm": "\\{review}A bheil thu airson an t-sàbhail seo a sguabadh às?",
-            "delete_save_failed": "\\{review}Dh'fhàillig an sguabadh às air an t-sàbhail a chaidh a thaghadh.",
-            "delete_save_no": "\\{review}Chan eil",
-            "delete_save_yes": "\\{review}Tha",
+            "delete_save": "Sguab às",
+            "delete_save_confirm": "A bheil thu airson an t-sàbhail seo a sguabadh às?",
+            "delete_save_failed": "Dh'fhàillig an sguabadh às air an t-sàbhail a chaidh a thaghadh.",
+            "delete_save_no": "Chan eil",
+            "delete_save_yes": "Tha",
             "exit_game": "Dùin an Geama",
             "exit_to_title": "Till gu Tiotal",
             "load_game": "Luchdaich Geama",
@@ -163,11 +163,11 @@
             "save_game": "Sàbhail Geama",
             "save_slot_unsupported": "Cha bheir an sàbhaladh seo taic don fheart seo.",
             "select_level": "Tagh Ìre",
-            "select_mod": "\\{review}Tagh Geama",
+            "select_mod": "Tagh Geama",
             "select_mode": "Tagh Modh",
             "select_save": "Tagh Sàbhail",
             "story_so_far": "An sgeul gu ruige seo...",
-            "switch_mod": "\\{review}Atharraich Geama",
+            "switch_mod": "Atharraich Geama",
         },
         "pause": {
             "are_you_sure": "A bheil thu cinnteach?",
@@ -212,7 +212,7 @@
                 "backend": {
                     "controller": "Rianadair",
                     "keyboard": "Meur-chlàr",
-                    "touch": "\\{review}Smachd beantachaidh",
+                    "touch": "Smachd beantachaidh",
                 },
                 "customize": "Gnàthaich na Smachdan",
                 "layout": {
@@ -234,7 +234,7 @@
                     "fixes": "Càradh",
                     "general": "Cumanta",
                     "mods": "Mods",
-                    "presets": "\\{review}Ro-shealladh",
+                    "presets": "Ro-shealladh",
                 },
                 "title": "Roghainnean Cluiche",
             },
@@ -242,7 +242,7 @@
                 "tabs": {
                     "bars": "Bàr",
                     "rendering": "Reandaradh",
-                    "stats": "\\{review}Staitistig",
+                    "stats": "Staitistig",
                     "ui": "Eadar-aghaidh",
                     "visuals": "Lèirsinneachd",
                 },
@@ -267,7 +267,7 @@
             "assault_title": "NA H-ÀMANAN AS FHEÀRR",
             "basic_fmt": "%d",
             "bonus_statistics": "Staitistig a Bharrachd",
-            "crystals": "\\{review}Criostalan",
+            "crystals": "Criostalan",
             "deaths": "Bàsan",
             "detail_fmt": "%d de %d",
             "distance_travelled": "Astar air a Shiubhal",
@@ -364,7 +364,7 @@
                 "syntax_error": "Mearachd sìntacs Lua: %s",
             },
             "mod": {
-                "help": "\\{review}A' gluasad gu am mod sònraichte agus a' tòiseachadh a' gheama a-rithist.",
+                "help": "Ath-thòisich an geama le mod sònraichte.",
             },
             "music": {
                 "help": "Cluich slighe-ciùil leis an ID ainmichte.",
@@ -396,7 +396,7 @@
                 "help": "Sàbhail glacadh-sgrìn gu diosc, le slighe fhaidhle roghainneil.",
             },
             "set": {
-                "help": "\\{review}A’ taisbeanadh no a’ ùrachadh an rèiteachaidh a chaidh a thoirt seachad. Cleachd --force gus atharrachadh a dhèanamh air na rèiteachaidhean a tha air an cur an gnìomh aig ìre airson an t-seisean làithreach.",
+                "help": "Cuir air doigh an rèiteachaidh a chaidh a thoirt seachad. Cleachd --force gus atharrachadh a dhèanamh air na rèiteachaidhean a tha air an cur an gnìomh aig ìre airson an t-seisean làithreach.",
             },
             "sfx": {
                 "help": "Cluich buaidh-fuaime leis an ID ainmichte.",
@@ -459,12 +459,12 @@
     },
     "dynamic": {
         "config_presets": {
-            "tr1_pc": "\\{review}TR1 PC",
-            "tr1_ps1": "\\{review}TR1 PS1",
-            "tr2_pc": "\\{review}TR2 PC",
-            "tr2_ps1": "\\{review}TR2 PS1",
-            "tr3_pc": "\\{review}TR3 PC",
-            "tr3_ps1": "\\{review}TR3 PS1",
+            "tr1_pc": "TR1 PC",
+            "tr1_ps1": "TR1 PS1",
+            "tr2_pc": "TR2 PC",
+            "tr2_ps1": "TR2 PS1",
+            "tr3_pc": "TR3 PC",
+            "tr3_ps1": "TR3 PS1",
         },
         "enums": {
             "bar_look": {
@@ -505,25 +505,25 @@
         },
         "mods": {
             "tr1": {
-                "title": "\\{review}Tomb Raider I",
+                "title": "Tomb Raider I",
             },
             "tr1-demo-pc": {
-                "title": "\\{review}Tomb Raider I Deuchainn",
+                "title": "Tomb Raider I Deuchainn",
             },
             "tr1-ub": {
-                "title": "\\{review}Gnothach Neo-chrìochnaichte",
+                "title": "Gnothach Neo-chrìochnaichte",
             },
             "tr2": {
-                "title": "\\{review}Tomb Raider II",
+                "title": "Tomb Raider II",
             },
             "tr2-gm": {
-                "title": "\\{review}An Masg Òir",
+                "title": "An Masg Òir",
             },
             "tr3": {
-                "title": "\\{review}Tomb Raider III",
+                "title": "Tomb Raider III",
             },
             "tr3-la": {
-                "title": "\\{review}An T-Seann Earraicht",
+                "title": "An t-Innleachdas Caillte",
             }
         }
     },
@@ -539,12 +539,12 @@
             "ASPECT_MODE_ANY": "Gin sam bith",
         },
         "BACKGROUND_TYPE": {
-            "BK_BLACK": "\\{review}Dubh",
-            "BK_IMAGE": "\\{review}Ìomhaigh",
+            "BK_BLACK": "Dubh",
+            "BK_IMAGE": "Ìomhaigh",
             "BK_MONOCHROME": "Aon-dhathach",
-            "BK_MONOCHROME_COOL": "\\{review}Monochrome (fuar)",
-            "BK_MONOCHROME_WARM": "\\{review}Monochrome (blàth)",
-            "BK_NONE": "\\{review}Soilleir",
+            "BK_MONOCHROME_COOL": "Monochrome (fuar)",
+            "BK_MONOCHROME_WARM": "Monochrome (blàth)",
+            "BK_NONE": "Soilleir",
             "BK_PATTERN_STATIC": "Statach",
             "BK_PATTERN_WAVE": "Crathadh",
             "BK_TRANSPARENT_DARK": "Fìor dhorcha",
@@ -562,9 +562,9 @@
             "BILLBOARD_LOCK_ROLL_PITCH": "Rothladh is claonadh",
         },
         "BLOOD_EFFECTS": {
-            "BLOOD_EFFECTS_DISABLED": "\\{review}Ciorramh",
-            "BLOOD_EFFECTS_PINK": "\\{review}Pinc",
-            "BLOOD_EFFECTS_RED": "\\{review}Dearg",
+            "BLOOD_EFFECTS_DISABLED": "Dheth",
+            "BLOOD_EFFECTS_PINK": "Pinc",
+            "BLOOD_EFFECTS_RED": "Dearg",
         },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
@@ -577,8 +577,8 @@
             "CREATURE_DROWN_POLICY_SUBMERGED": "Fo uisge",
         },
         "INPUT_BACKEND": {
-            "INPUT_BACKEND_CONTROLLER": "\\{review}Smachdair",
-            "INPUT_BACKEND_KEYBOARD": "\\{review}Meur-chlàr",
+            "INPUT_BACKEND_CONTROLLER": "Smachdair",
+            "INPUT_BACKEND_KEYBOARD": "Meur-chlàr",
         },
         "INPUT_ROLE": {
             "INPUT_ROLE_ACTION": "Gnìomh",
@@ -685,8 +685,8 @@
             "SHADOW_TYPE_SPRITE": "Spraide",
         },
         "STATS_STYLE": {
-            "STATS_STYLE_BARE": "\\{review}Furasta",
-            "STATS_STYLE_BORDERED": "\\{review}Leacanach",
+            "STATS_STYLE_BARE": "Furasta",
+            "STATS_STYLE_BORDERED": "Leacanach",
         },
         "SUNGLASSES_MODE": {
             "SUNGLASSES_MODE_OFF": "Dheth",
@@ -734,8 +734,8 @@
             "description": "Cuiridh seo am micreofon aig suidheachadh Lara. Ma thèid seo air a chur dheth, bidh e aig suidheachadh a' chamara.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "\\{review}Cluich ceòl anns an stòras",
-            "description": "\\{review}Leig le fuaimean a’ gheama, fuaimean àrainneachd agus ceòl a bhith a’ cluich fhathast air an sgrion clàr-stòraidh.",
+            "title": "Cluich ceòl anns an stòras",
+            "description": "Leig le fuaimean a’ gheama, fuaimean àrainneachd agus ceòl a bhith a’ cluich fhathast air an sgrion clàr-stòraidh.",
         },
         "audio.enable_music_in_menu": {
             "title": "Ceòl sa phrìomh chlàr",
@@ -850,8 +850,8 @@
             "description": "Cuiridh seo às ri buaidh-bhualaidh corp T-Rex às deidh bàs, gus casg a chur air bacadh slighe a-mach.",
         },
         "gameplay.enable_ally_kill_count": {
-            "title": "\\{review}Àireamhachadh murtan a' chom-pàirtiche",
-            "description": "\\{review}A' cunntadh murtan nàmhaid a chaidh a dhèanamh le com-pàirtichean Lara a dh'ionnsaigh an àireamh iomlan de mhurtan.",
+            "title": "Àireamhachadh murtan a' chom-pàirtiche",
+            "description": "A' cunntadh murtan nàmhaid a chaidh a dhèanamh le com-pàirtichean Lara a dh'ionnsaigh an àireamh iomlan de mhurtan.",
         },
         "gameplay.enable_ally_targeting": {
             "title": "Targaidich air càirdean",
@@ -934,8 +934,8 @@
             "description": "Leasaichidh sàbhaladh geama gus am bi buaidhean grafaigeach, ceò easan, sgaoiladairean lasraidh, agus tuilleadh, air an sàbhaladh an àite a dhol à sealladh nuair a luchdaichear iad.",
         },
         "gameplay.enable_environment_kill_count": {
-            "title": "\\{review}Àireamhachadh murtan àrainneachd",
-            "description": "\\{review}A' cunntadh nàmhaid a chaidh a chrìochnachadh leis an àrainneachd, leithid lasers tèarainteachd no fulang, a dh'ionnsaigh an àireamh iomlan de mhurtan.",
+            "title": "Àireamhachadh murtan àrainneachd",
+            "description": "A' cunntadh nàmhaid a chaidh a chrìochnachadh leis an àrainneachd, leithid lasers tèarainteachd no fulang, a dh'ionnsaigh an àireamh iomlan de mhurtan.",
         },
         "gameplay.enable_fmv": {
             "title": "Bhideothan",
@@ -1042,12 +1042,12 @@
             "description": "Leigidh seo leis a' ghleoc a leantainn air adhart fiù 's nuair a tha an clàr-seilbhe fosgailte.",
         },
         "gameplay.enable_toggle_crouch": {
-            "title": "\\{review}Cuir air adhart cromadh",
-            "description": "\\{review}Leigidh seo le Lara fuireach crom às dèidh a bhith a' brùthadh air a' phutan cromadh aon turas. Brùth air a' phutan cromadh a-rithist gus seasamh suas.",
+            "title": "Cuir air adhart cromadh",
+            "description": "Leigidh seo le Lara fuireach crom às dèidh a bhith a' brùthadh air a' phutan cromadh aon turas. Brùth air a' phutan cromadh a-rithist gus seasamh suas.",
         },
         "gameplay.enable_toggle_sprint": {
-            "title": "\\{review}Cuir air adhart ruith gu luath",
-            "description": "\\{review}Leigidh seo le Lara ruith gu luath às dèidh a bhith a' brùthadh air a' phutan ruith gu luath aon turas. Brùth air a' phutan ruith gu luath a-rithist gus stad a chur air ruith gu luath.",
+            "title": "Cuir air adhart ruith gu luath",
+            "description": "Leigidh seo le Lara ruith gu luath às dèidh a bhith a' brùthadh air a' phutan ruith gu luath aon turas. Brùth air a' phutan ruith gu luath a-rithist gus stad a chur air ruith gu luath.",
         },
         "gameplay.enable_total_stats": {
             "title": "Sgrion staitistig deireannach",
@@ -1182,8 +1182,8 @@
             "description": "Atharraichidh seo an àireamh de shloinnean sàbhalaidh a tha rim faotainn.",
         },
         "gameplay.pause_on_focus_lost": {
-            "title": "\\{review}Cuir air fois nuair a chaill thu fòcas",
-            "description": "\\{review}Bidh e a’ stad geama bho bhith a’ dol air adhart nuair a bhios uinneag a’ gheama a’ call fòcas.",
+            "title": "Cuir air fois nuair a chaill thu fòcas",
+            "description": "Bidh e a’ stad geama bho bhith a’ dol air adhart nuair a bhios uinneag a’ gheama a’ call fòcas.",
         },
         "gameplay.projectile_area_damage": {
             "title": "Dàil sgìre pròiseactail",
@@ -1222,8 +1222,8 @@
             "description": "Cuiridh seo às do bhacadh cuir a-steach le brath ro-luath air tionndadh duilleagan a' phasport; leigidh e leutha bhith air an clàradh an àite a bhith air an stad.",
         },
         "input.enable_touch_controls": {
-            "title": "\\{review}Smachd beantachaidh",
-            "description": "\\{review}Seallaidh seo tar-chòmhdach smachd beantachaidh air an sgrìn airson innealan le sgrìn-suathaidh.",
+            "title": "Smachd beantachaidh",
+            "description": "Seallaidh seo tar-chòmhdach smachd beantachaidh air an sgrìn airson innealan le sgrìn-suathaidh.",
         },
         "input.enable_tr3_sidesteps": {
             "title": "Ceumannan-taoibh leasaichte",
@@ -1234,20 +1234,20 @@
             "description": "Smachd air mar a dh'èireas na h-iuchraichean uidheamachaidh armachd luatha.\n\n- Tarraing a-mhàin: bheir iuchair teth air Lara an arm ainmichte a tharraing.\n- Tarraing/falach: mar roimhe, ach bheir seo cuideachd air Lara an arm a chur air falach ma tha i ga ghiùlan.",
         },
         "input.touch_button_scale": {
-            "title": "\\{review}Meud nam putanan beantachaidh",
-            "description": "\\{review}Atharraichidh seo meud nam putanan smachd beantachaidh air an sgrìn.",
+            "title": "Meud nam putanan beantachaidh",
+            "description": "Atharraichidh seo meud nam putanan smachd beantachaidh air an sgrìn.",
         },
         "input.touch_dpad_deadzone": {
-            "title": "\\{review}Sòn marbh an D-pad beantachaidh",
-            "description": "\\{review}Atharraichidh seo an sòn marbh aig an D-pad air an sgrìn. Feumaidh sòn marbh nas motha barrachd gluasaid mus tèid ion-chur stiùiridh a chlàradh.",
+            "title": "Sòn marbh an D-pad beantachaidh",
+            "description": "Atharraichidh seo an sòn marbh aig an D-pad air an sgrìn. Feumaidh sòn marbh nas motha barrachd gluasaid mus tèid ion-chur stiùiridh a chlàradh.",
         },
         "input.touch_dpad_scale": {
-            "title": "\\{review}Meud an D-pad beantachaidh",
-            "description": "\\{review}Atharraichidh seo meud an D-pad air an sgrìn.",
+            "title": "Meud an D-pad beantachaidh",
+            "description": "Atharraichidh seo meud an D-pad air an sgrìn.",
         },
         "input.touch_opacity": {
-            "title": "\\{review}Trìd-shoilleireachd beantachaidh",
-            "description": "\\{review}Atharraichidh seo trìd-shoilleireachd nam putanan smachd beantachaidh air an sgrìn.",
+            "title": "Trìd-shoilleireachd beantachaidh",
+            "description": "Atharraichidh seo trìd-shoilleireachd nam putanan smachd beantachaidh air an sgrìn.",
         },
         "language": {
             "title": "Cànan",
@@ -1318,8 +1318,8 @@
             "description": "Far a nochdas am bàr-èadhair air an sgrion.",
         },
         "ui.ammo_counter_location": {
-            "title": "\\{review}Àite cunntair ammo",
-            "description": "\\{review}Àite far am bi an cunntair ammo air a thaisbeanadh.",
+            "title": "Àite cunntair ammo",
+            "description": "Àite far am bi an cunntair ammo air a thaisbeanadh.",
         },
         "ui.bar_look": {
             "title": "Coltas nam bàraichean",
@@ -1430,8 +1430,8 @@
             "description": "Seallaidh seo togailtean san oisean deas-ìosal nuair a thogas Lara rudeigin.",
         },
         "ui.show_title_version": {
-            "title": "\\{review}Teacsa teacsa dreach",
-            "description": "\\{review}Seallas an sreang teacsa dreach TRX ann an fàinne clàr-stòrais na tiotal.",
+            "title": "Teacsa teacsa dreach",
+            "description": "Seallas an sreang teacsa dreach TRX ann an fàinne clàr-stòrais na tiotal.",
         },
         "ui.sprintbar_color": {
             "title": "Dath bàr ruith luath",
@@ -1446,52 +1446,52 @@
             "description": "Far a nochdas am bàr ruith luath air an sgrion.",
         },
         "ui.stats.show_ammo": {
-            "title": "\\{review}Bualadh ammo / cleachdadh",
-            "description": "\\{review}Seall an loidhne ammo anns na staitistig ìre.",
+            "title": "Bualadh ammo / cleachdadh",
+            "description": "Seall an loidhne ammo anns na staitistig ìre.",
         },
         "ui.stats.show_crystals": {
-            "title": "\\{review}Criostalan",
-            "description": "\\{review}Tha e a’ sealltainn an rìgh criostalan ann an staitistig an ìre.",
+            "title": "Criostalan",
+            "description": "Tha e a’ sealltainn an rìgh criostalan ann an staitistig an ìre.",
         },
         "ui.stats.show_deaths": {
-            "title": "\\{review}Bàs",
-            "description": "\\{review}Seall bàsan Lara anns na staitistig compais agus anns na staitistig ìre. Tha cunntas bàis air ùrachadh anns an sàbhalaidh a tha air a luchdachadh an-dràsta cho luath ‘s a bhàsaich Lara.",
+            "title": "Bàs",
+            "description": "Seall bàsan Lara anns na staitistig compais agus anns na staitistig ìre. Tha cunntas bàis air ùrachadh anns an sàbhalaidh a tha air a luchdachadh an-dràsta cho luath ‘s a bhàsaich Lara.",
         },
         "ui.stats.show_distance_travelled": {
-            "title": "\\{review}Astar air a siubhal",
-            "description": "\\{review}Seall an loidhne astar air a siubhal anns na staitistig ìre.",
+            "title": "Astar air a siubhal",
+            "description": "Seall an loidhne astar air a siubhal anns na staitistig ìre.",
         },
         "ui.stats.show_kills": {
-            "title": "\\{review}Murtan",
-            "description": "\\{review}Seall an loidhne murtan anns na staitistig ìre.",
+            "title": "Murtan",
+            "description": "Seall an loidhne murtan anns na staitistig ìre.",
         },
         "ui.stats.show_level_header": {
-            "title": "\\{review}Àireamh ìre",
-            "description": "\\{review}Seall àireamh an ìre làithreach aig mullach nan staitistig ìre.",
+            "title": "Àireamh ìre",
+            "description": "Seall àireamh an ìre làithreach aig mullach nan staitistig ìre.",
         },
         "ui.stats.show_medipacks_used": {
-            "title": "\\{review}Pacaidean slàinte air an cleachdadh",
-            "description": "\\{review}Seall an loidhne pacaidean slàinte air an cleachdadh anns na staitistig ìre.",
+            "title": "Pacaidean slàinte air an cleachdadh",
+            "description": "Seall an loidhne pacaidean slàinte air an cleachdadh anns na staitistig ìre.",
         },
         "ui.stats.show_pickups": {
-            "title": "\\{review}Togalaichean",
-            "description": "\\{review}Seall an loidhne togalaichean anns na staitistig ìre.",
+            "title": "Togalaichean",
+            "description": "Seall an loidhne togalaichean anns na staitistig ìre.",
         },
         "ui.stats.show_secrets": {
-            "title": "\\{review}Dìomhair air an lorg",
-            "description": "\\{review}Seall an loidhne dìomhair air an lorg anns na staitistig ìre.",
+            "title": "Dìomhair air an lorg",
+            "description": "Seall an loidhne dìomhair air an lorg anns na staitistig ìre.",
         },
         "ui.stats.show_time_taken": {
-            "title": "\\{review}Ùine a ghabh",
-            "description": "\\{review}Seall an loidhne ùine a ghabh anns na staitistig ìre.",
+            "title": "Ùine a ghabh",
+            "description": "Seall an loidhne ùine a ghabh anns na staitistig ìre.",
         },
         "ui.stats.show_totals": {
-            "title": "\\{review}Seall na suimean",
-            "description": "\\{review}Sealltainn iomlanan ri taobh staitistig nuair a tha sin iomchaidh. Chan eil dìomhaireachdan air an toirt buaidh leis an suidheachadh seo.",
+            "title": "Seall na suimean",
+            "description": "Sealltainn iomlanan ri taobh staitistig nuair a tha sin iomchaidh. Chan eil dìomhaireachdan air an toirt buaidh leis an suidheachadh seo.",
         },
         "ui.stats.style": {
-            "title": "\\{review}Stoidhle staitistig",
-            "description": "\\{review}Smachd air mar a thèid an còmhradh staitistig a thaisbeanadh.\n\n- Furasta: seall an cruth nas sìmplidh gun fhrèam.\n- Leacanach: seall an cruth le bogsaichean.",
+            "title": "Stoidhle staitistig",
+            "description": "Smachd air mar a thèid an còmhradh staitistig a thaisbeanadh.\n\n- Furasta: seall an cruth nas sìmplidh gun fhrèam.\n- Leacanach: seall an cruth le bogsaichean.",
         },
         "ui.stats_background_style": {
             "title": "Dealbh-cùil staitistig",
@@ -1506,8 +1506,8 @@
             "description": "Atharraicheas meud an teacsa.",
         },
         "visuals.blood_effects": {
-            "title": "\\{review}Buaidhean fuil",
-            "description": "\\{review}Smachd air dathan spàirn fola.\n\n- Ciorramh: chan eilear a’ sealltainn spàirn fola sam bith.\n- Pinc: an àbhaist ann an sgaoilidhean PC Gearmailteach de TR3.\n- Dearg: an àbhaist anns a h-uile sgaoileadh reic eile.",
+            "title": "Buaidhean fuil",
+            "description": "Smachd air dathan spàirn fola.\n\n- Ciorramh: chan eilear a’ sealltainn spàirn fola sam bith.\n- Pinc: an àbhaist ann an sgaoilidhean PC Gearmailteach de TR3.\n- Dearg: an àbhaist anns a h-uile sgaoileadh reic eile.",
         },
         "visuals.camera_mode": {
             "title": "Modh camara",
@@ -1684,13 +1684,13 @@
             "name": "Apa",
         },
         "area_51_rocket": {
-            "name": "\\{review}Ròcaid Sgìre 51",
+            "name": "Ròcaid Sgìre 51",
         },
         "area_51_rocket_blast": {
-            "name": "\\{review}Spreadh Ròcaid Sgìre 51",
+            "name": "Spreadh Ròcaid Sgìre 51",
         },
         "area_51_rocket_support": {
-            "name": "\\{review}Taic Ròcaid Sgìre 51",
+            "name": "Taic Ròcaid Sgìre 51",
         },
         "assault_digits": {
             "name": "Àireamhan an t-Seòmair-eacarsaich",
@@ -1783,10 +1783,10 @@
             "name": "Iarann air Balla",
         },
         "blood": {
-            "name": "\\{review}Fuil",
+            "name": "Fuil",
         },
         "blood_pink": {
-            "name": "\\{review}Fuil (air a sgaradh)",
+            "name": "Fuil (air a sgaradh)",
         },
         "blue_light": {
             "name": "Solas Gorm",
@@ -2123,7 +2123,7 @@
             "name": "Solas Boillsgeach",
         },
         "fuse_box": {
-            "name": "\\{review}Bogsa Fuse",
+            "name": "Bogsa Fuse",
         },
         "fx_reserved": {
             "name": "Cearcall Glas",
@@ -2192,7 +2192,7 @@
             "name": "Leaghan Teth",
         },
         "huskie": {
-            "name": "\\{review}Cù",
+            "name": "Cù",
         },
         "hybrid_mutant": {
             "name": "Mùtant Hibrid",
@@ -2459,13 +2459,13 @@
             "name": "Solas Air/Dheth",
         },
         "orca": {
-            "name": "\\{review}Orca",
+            "name": "Orca",
         },
         "passport": {
             "name": "Geama",
         },
         "patrol_dog": {
-            "name": "\\{review}Cù",
+            "name": "Cù",
         },
         "pda": {
             "name": "Cluiche",
@@ -2678,7 +2678,7 @@
             ]
         },
         "rotating_laser": {
-            "name": "\\{review}Laser rothlach",
+            "name": "Laser rothlach",
         },
         "rx_worker_1": {
             "name": "Neach-obrach RX 1",
@@ -2687,7 +2687,7 @@
             "name": "Neach-obrach RX 2",
         },
         "rx_worker_3": {
-            "name": "\\{review}Neach-obrach RX 3",
+            "name": "Neach-obrach RX 3",
         },
         "save_crystal": {
             "name": "Criostal Geama Sàbhalaidh",
@@ -2711,16 +2711,16 @@
             "name": "Geàrd Tèarainteachd",
         },
         "security_laser_alarm": {
-            "name": "\\{review}Laser Tèarainteachd (Rabhadh)",
+            "name": "Laser Tèarainteachd (Rabhadh)",
         },
         "security_laser_deadly": {
-            "name": "\\{review}Laser Tèarainteachd (Marbhtach)",
+            "name": "Laser Tèarainteachd (Marbhtach)",
         },
         "security_laser_killer": {
-            "name": "\\{review}Laser Tèarainteachd (Mharbhadh)",
+            "name": "Laser Tèarainteachd (Mharbhadh)",
         },
         "sentry_gun": {
-            "name": "\\{review}Gun Sentry Robot",
+            "name": "Gun Sentry Robot",
         },
         "shadow": {
             "name": "Faileas",
@@ -2789,7 +2789,7 @@
             "name": "Rotal Cairt-shneachda",
         },
         "sophia": {
-            "name": "\\{review}Sophia",
+            "name": "Sophia",
         },
         "sound": {
             "name": "Fuaim",
@@ -2973,7 +2973,7 @@
             "name": "Solas Geal",
         },
         "willard": {
-            "name": "\\{review}Willard",
+            "name": "Willard",
         },
         "winston": {
             "name": "Winston",
