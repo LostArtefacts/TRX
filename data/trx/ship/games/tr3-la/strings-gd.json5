@@ -1,0 +1,95 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "objects": {
+        "orca": {
+            "name": "Leumadair",
+        },
+        "quest_1": {
+            "description": "",
+            "name": "Làmh Rathmore",
+        }
+    },
+    "levels": [
+        {
+            "title": "Dachaigh Lara",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Chùrsa Rèis",
+                }
+            }
+        },
+        {
+            "title": "Air Ghàidhealtachd",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Cròbh-iarainn",
+                },
+                "puzzle_2": {
+                    "name": "Clach an Cluaran",
+                }
+            }
+        },
+        {
+            "title": "Uamh Willard",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Chàirn",
+                },
+                "puzzle_1": {
+                    "name": "Cròbh-iarainn",
+                }
+            }
+        },
+        {
+            "title": "Creag Shakespeare",
+            "objects": {
+                "key_1": {
+                    "name": "Cairt Gnìomhachaidh an Drile",
+                },
+                "puzzle_1": {
+                    "name": "Diosg Inntrigidh a' Phumpa",
+                }
+            }
+        },
+        {
+            "title": "A' Cadal leis na h-Èisg",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Bolgan Cuairte",
+                },
+                "puzzle_2": {
+                    "name": "Sampall Mùthant",
+                },
+                "puzzle_3": {
+                    "name": "Sampall Mùthant",
+                },
+                "puzzle_4": {
+                    "name": "Bolgan Cuairte",
+                }
+            }
+        },
+        {
+            "title": "'S e Taigh-chuthach a th'ann!",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair an Sù",
+                },
+                "key_4": {
+                    "name": "Iuchair Taigh nan Eun",
+                },
+                "puzzle_1": {
+                    "name": "Làmh Rathmore",
+                }
+            }
+        },
+        {
+            "title": "Ath-choinneachadh",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Làmh Rathmore",
+                }
+            }
+        }
+    ]
+}

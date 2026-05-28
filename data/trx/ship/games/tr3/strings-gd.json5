@@ -1,0 +1,317 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "general": {
+        "globe_select": {
+            "area_1": "Na h-Innseachan",
+            "area_2": "Eileanan a' Chuan Sèimh",
+            "area_3": "Nebhada",
+            "area_4": "Raon 4",
+            "area_5": "Lunnainn",
+            "area_6": "An Antartaig",
+        },
+        "inventory_ring": {
+            "heading_fmt": "\\{color 5}%s",
+            "item_count_fmt": "\\{color 3}%s",
+            "object_name_fmt": "\\{color 5}%s",
+        },
+        "misc": {
+            "empty_slot_fmt": "- Slot Falamh -",
+        },
+        "overlay": {
+            "item_count_fmt_pc": "%s",
+            "item_count_fmt_ps1": "\\{color 3}%s",
+        },
+        "pause": {
+            "paused": "\\{color 5}Air a stad",
+        },
+        "stats": {
+            "assault_other_times_fmt": "\\{color 2}%s",
+            "gym_assault_course": "\\{color 5}Cùrsa Ionnsaigh",
+            "gym_racetrack_course": "\\{color 5}Cùrsa Rèis",
+        }
+    },
+    "objects": {
+        "large_medipack": {
+            "name": "Pasgan Mòr Slàinte",
+        },
+        "quest_1": {
+            "description": "",
+            "name": "Clach Infada",
+        },
+        "quest_2": {
+            "description": "",
+            "name": "Bunabhas 115",
+        },
+        "quest_3": {
+            "description": "",
+            "name": "Sùil Isis",
+        },
+        "quest_4": {
+            "description": "",
+            "name": "Biodag Ora",
+        },
+        "small_medipack": {
+            "name": "Pasgan Beag Slàinte",
+        }
+    },
+    "cutscenes": [
+        {
+            "title": "Sealladh-film 1",
+        },
+        {
+            "title": "Sealladh-film 2",
+        },
+        {
+            "title": "Sealladh-film 3",
+        },
+        {
+            "title": "Sealladh-film 4",
+        },
+        {
+            "title": "Sealladh-film 5",
+        },
+        {
+            "title": "Sealladh-film 6",
+        },
+        {
+            "title": "Sealladh-film 7",
+        },
+        {
+            "title": "Sealladh-film 8",
+        },
+        {
+            "title": "Sealladh-film 9",
+        },
+        {
+            "title": "Sealladh-film 10",
+        },
+        {
+            "title": "Sealladh-film 11",
+        }
+    ],
+    "levels": [
+        {
+            "title": "Dachaigh Lara",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Chùrsa Rèis",
+                }
+            }
+        },
+        {
+            "title": "Dlùth-choille",
+            "objects": {
+                "key_4": {
+                    "name": "Iuchair Indra",
+                }
+            }
+        },
+        {
+            "title": "Creachan an Teampaill",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair Ganesha",
+                },
+                "puzzle_1": {
+                    "name": "Claidheamh Crom",
+                },
+                "puzzle_2": {
+                    "name": "Claidheamh Crom",
+                }
+            }
+        },
+        {
+            "title": "Abhainn nan Ganges",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Gheata",
+                }
+            }
+        },
+        {
+            "title": "Uaimhean Kaliya",
+        },
+        {
+            "title": "Baile na h-Oirthire",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Chùl-mhalairtiche",
+                },
+                "puzzle_1": {
+                    "name": "Clach na Nathrach",
+                }
+            }
+        },
+        {
+            "title": "Làrach na Tubaist",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Cheannaird Bishop",
+                },
+                "key_2": {
+                    "name": "Iuchair an Fho-cheannaird Tuckerman",
+                },
+                "pickup_1": {
+                    "name": "Mapa a' Bhoglaich",
+                    "description": "",
+                }
+            }
+        },
+        {
+            "title": "Mòr-ghleann Madubu",
+        },
+        {
+            "title": "Teampall Puna",
+        },
+        {
+            "title": "Cidhe Thames",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair Seòmar an t-Simileir",
+                },
+                "key_2": {
+                    "name": "Iuchair na Cathair-eaglaise",
+                }
+            }
+        },
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Chàraidh",
+                },
+                "key_2": {
+                    "name": "Iuchair Sholaimh",
+                },
+                "key_3": {
+                    "name": "Iuchair Sholaimh",
+                },
+                "puzzle_1": {
+                    "name": "Seann Bhonn-airgid",
+                },
+                "puzzle_2": {
+                    "name": "Tiocaid",
+                },
+                "puzzle_3": {
+                    "name": "Òrd Clachaireachd",
+                },
+                "puzzle_4": {
+                    "name": "Rionnag Sgeadaichte",
+                }
+            }
+        },
+        {
+            "title": "Geata Lud",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair Seòmar a' Ghoileadair",
+                },
+                "puzzle_1": {
+                    "name": "Lionn-spìosrachaidh",
+                }
+            }
+        },
+        {
+            "title": "Am Baile-mòr",
+        },
+        {
+            "title": "Fàsach Nebhada",
+            "objects": {
+                "key_1": {
+                    "name": "Cead-inntrigidh a' Ghineadair",
+                },
+                "key_2": {
+                    "name": "Suidse an Spreadhaidh",
+                }
+            }
+        },
+        {
+            "title": "Ionad Àrd-thèarainteachd",
+            "objects": {
+                "key_1": {
+                    "name": "Cairt-iuchrach A",
+                },
+                "key_2": {
+                    "name": "Cairt-iuchrach B",
+                },
+                "puzzle_1": {
+                    "name": "Pas Tèarainteachd Gorm",
+                },
+                "puzzle_2": {
+                    "name": "Pas Tèarainteachd Buidhe",
+                }
+            }
+        },
+        {
+            "title": "Raon 51",
+            "objects": {
+                "key_1": {
+                    "name": "Pas Còd Cur-air-bhog",
+                },
+                "puzzle_1": {
+                    "name": "Iuchair Inntrigidh an Tùir",
+                },
+                "puzzle_2": {
+                    "name": "Diosg Fuasglaidh Còd",
+                },
+                "puzzle_3": {
+                    "name": "Diosg Fuasglaidh Còd",
+                },
+                "puzzle_4": {
+                    "name": "Iuchair Inntrigidh an Hangair",
+                }
+            }
+        },
+        {
+            "title": "An Antartaig",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair a' Bhothain",
+                },
+                "puzzle_1": {
+                    "name": "Cròbh-iarainn",
+                },
+                "puzzle_2": {
+                    "name": "Iuchair Smachd a' Gheata",
+                }
+            }
+        },
+        {
+            "title": "Mèinnean RX-Tech",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Cròbh-iarainn",
+                },
+                "puzzle_2": {
+                    "name": "Bataraidh Geurag-luaidhe",
+                },
+                "puzzle_3": {
+                    "name": "Tòiseadair na Crangaid",
+                }
+            }
+        },
+        {
+            "title": "Baile Caillte Tinnos",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair Uli",
+                },
+                "puzzle_1": {
+                    "name": "Masg Cuantail",
+                }
+            }
+        },
+        {
+            "title": "Uamh na Dreige",
+        },
+        {
+            "title": "Oidhche nan Naomhaich",
+            "objects": {
+                "key_1": {
+                    "name": "Iuchair an Ionmhais",
+                }
+            }
+        }
+    ]
+}
