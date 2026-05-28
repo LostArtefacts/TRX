@@ -1,0 +1,95 @@
+{
+    // For usage, refer to the documentation here:
+    // https://lostartefacts.dev/trx/docs/stable/game_strings
+    "objects": {
+        "orca": {
+            "name": "Orque",
+        },
+        "quest_1": {
+            "description": "",
+            "name": "Main de Rathmore",
+        }
+    },
+    "levels": [
+        {
+            "title": "La demeure de Lara",
+            "objects": {
+                "key_1": {
+                    "name": "Clé de la piste de course",
+                }
+            }
+        },
+        {
+            "title": "La gigue des Highlands",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Pied-de-biche",
+                },
+                "puzzle_2": {
+                    "name": "Pierre de chardon",
+                }
+            }
+        },
+        {
+            "title": "Le repaire de Willard",
+            "objects": {
+                "key_1": {
+                    "name": "Clé du tumulus",
+                },
+                "puzzle_1": {
+                    "name": "Pied-de-biche",
+                }
+            }
+        },
+        {
+            "title": "La falaise de Shakespeare",
+            "objects": {
+                "key_1": {
+                    "name": "Carte d'activation de la foreuse",
+                },
+                "puzzle_1": {
+                    "name": "Disque d'accès à la pompe",
+                }
+            }
+        },
+        {
+            "title": "Danse avec les loups de mer",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Ampoule témoin",
+                },
+                "puzzle_2": {
+                    "name": "Échantillon de mutant",
+                },
+                "puzzle_3": {
+                    "name": "Échantillon de mutant",
+                },
+                "puzzle_4": {
+                    "name": "Ampoule témoin",
+                }
+            }
+        },
+        {
+            "title": "C'est une maison de fous !",
+            "objects": {
+                "key_1": {
+                    "name": "Clé du zoo",
+                },
+                "key_4": {
+                    "name": "Clé de la volière",
+                },
+                "puzzle_1": {
+                    "name": "Main de Rathmore",
+                }
+            }
+        },
+        {
+            "title": "La réunion",
+            "objects": {
+                "puzzle_1": {
+                    "name": "Main de Rathmore",
+                }
+            }
+        }
+    ]
+}

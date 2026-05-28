@@ -3,75 +3,75 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "levels": [
         {
-            "title": "\\{review}Demeure de Lara",
+            "title": "\\{review}La demeure de Lara",
         },
         {
-            "title": "\\{review}Guerre froide",
+            "title": "\\{review}La guerre froide",
             "objects": {
                 "tiger": {
-                    "name": "\\{review}Léopard des Neiges",
+                    "name": "\\{review}Léopard des neiges",
                 },
                 "key_1": {
-                    "name": "\\{review}Clé de la Salle des Gardiens",
+                    "name": "\\{review}Clé du corps de garde",
                 },
                 "key_2": {
-                    "name": "\\{review}Clé de l'Ascenseur 'B'",
+                    "name": "\\{review}Clé du puits B",
                 }
             }
         },
         {
-            "title": "\\{review}Désillusion",
+            "title": "\\{review}L'or du fou",
             "objects": {
                 "key_1": {
-                    "name": "\\{review}Clé de Carte 1",
+                    "name": "\\{review}Clé d'accès 1",
                 },
                 "key_4": {
-                    "name": "\\{review}Clé de Carte 2",
+                    "name": "\\{review}Clé d'accès 2",
                 },
                 "puzzle_1": {
-                    "name": "\\{review}Carte de Circuit",
+                    "name": "\\{review}Carte de circuits",
                 }
             }
         },
         {
-            "title": "\\{review}Le Fournaise des dieux",
+            "title": "\\{review}La fournaise des dieux",
             "objects": {
                 "big_spider": {
-                    "name": "\\{review}Ours Polaire",
+                    "name": "\\{review}Ours polaire",
                 },
                 "spider": {
                     "name": "\\{review}Loup",
                 },
                 "puzzle_1": {
-                    "name": "\\{review}Masque de Tornarsuk",
+                    "name": "\\{review}Le Masque de Tornarsuk",
                 },
                 "puzzle_2": {
-                    "name": "\\{review}Pépite d'Or",
+                    "name": "\\{review}Pépite d'or",
                 }
             }
         },
         {
-            "title": "\\{review}Royaume",
+            "title": "\\{review}Le royaume",
             "objects": {
                 "tiger": {
-                    "name": "\\{review}Léopard des Neiges",
+                    "name": "\\{review}Léopard des neiges",
                 },
                 "puzzle_1": {
-                    "name": "\\{review}Masque de Tornarsuk",
+                    "name": "\\{review}Le Masque de Tornarsuk",
                 }
             }
         },
         {
-            "title": "\\{review}Cauchemar à Las Vegas",
+            "title": "\\{review}Cauchemar à Vegas",
             "objects": {
                 "key_1": {
-                    "name": "\\{review}Clé d'Hôtel",
+                    "name": "\\{review}Clé de l'hôtel",
                 },
                 "puzzle_1": {
-                    "name": "\\{review}Jonction de l'Ascenseur",
+                    "name": "\\{review}Boitier pour ascenseur",
                 },
                 "puzzle_2": {
-                    "name": "\\{review}Circuit de Porte",
+                    "name": "\\{review}Circuit de la porte",
                 }
             }
         }
