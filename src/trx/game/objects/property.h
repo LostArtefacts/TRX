@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 
 #include <stddef.h>
@@ -20,7 +21,8 @@ typedef enum {
     OBJECT_PROPERTY_TYPE_INT,
     OBJECT_PROPERTY_TYPE_FLOAT,
     OBJECT_PROPERTY_TYPE_DOUBLE,
-    OBJECT_PROPERTY_TYPE_BOOL
+    OBJECT_PROPERTY_TYPE_BOOL,
+    OBJECT_PROPERTY_TYPE_XYZ,
 } OBJECT_PROPERTY_TYPE;
 
 typedef struct {
@@ -30,6 +32,7 @@ typedef struct {
         float as_float;
         double as_double;
         bool as_bool;
+        XYZ_32 as_xyz;
     };
 } OBJECT_PROPERTY_VALUE;
 
@@ -51,6 +54,20 @@ typedef OBJECT_PROPERTY_SET ITEM_PROPERTY_SET;
         .name = name_, .description = description_, .value = {                 \
             .type = OBJECT_PROPERTY_TYPE_INT,                                  \
             .as_int = value_                                                   \
+        }                                                                      \
+    }
+#define OBJECT_PROPERTY_BOOL(name_, value_, description_)                      \
+    {                                                                          \
+        .name = name_, .description = description_, .value = {                 \
+            .type = OBJECT_PROPERTY_TYPE_BOOL,                                 \
+            .as_bool = value_                                                  \
+        }                                                                      \
+    }
+#define OBJECT_PROPERTY_XYZ(name_, value_, description_)                       \
+    {                                                                          \
+        .name = name_, .description = description_, .value = {                 \
+            .type = OBJECT_PROPERTY_TYPE_XYZ,                                  \
+            .as_xyz = value_                                                   \
         }                                                                      \
     }
 

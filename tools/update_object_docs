@@ -136,7 +136,7 @@ def iter_macro_calls(source: str, macro_name: str) -> list[str]:
 def iter_object_property_declarations(source: str) -> list[PropertyInfo]:
     declarations: list[PropertyInfo] = []
     pattern = re.compile(
-        r"\bOBJECT_PROPERTY_(?:INT|FLOAT|DOUBLE|BOOL)\(",
+        r"\bOBJECT_PROPERTY_(?:INT|FLOAT|DOUBLE|BOOL|XYZ)\(",
         re.MULTILINE,
     )
     pos = 0

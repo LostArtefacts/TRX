@@ -143,6 +143,7 @@ static bool M_CoerceValue(
             return false;
         }
     case OBJECT_PROPERTY_TYPE_BOOL:
+    case OBJECT_PROPERTY_TYPE_XYZ:
         return false;
     }
 
@@ -294,6 +295,13 @@ void ObjectProperty_WriteItemOverrides(
         case OBJECT_PROPERTY_TYPE_BOOL:
             JSONW_WRITE(io, entry->name, value->as_bool);
             break;
+        case OBJECT_PROPERTY_TYPE_XYZ:
+            JSONW_PUSH_OBJECT(io);
+            JSONW_WRITE(io, "x", value->as_xyz.x);
+            JSONW_WRITE(io, "y", value->as_xyz.y);
+            JSONW_WRITE(io, "z", value->as_xyz.z);
+            JSONW_POP_AND_SET(io, entry->name);
+            break;
         }
     }
     JSONW_POP_AND_SET(io, key);
@@ -339,6 +347,21 @@ bool ObjectProperty_ReadItemOverrides(JSON_READ_IO *const io, ITEM *const item)
             if (!JSON_READ(io, entry->name, &value.as_bool)) {
                 goto fail;
             }
+            break;
+        case OBJECT_PROPERTY_TYPE_XYZ:
+            if (!JSON_PUSH(io, entry->name)) {
+                goto fail;
+            }
+            if (!JSON_READ(io, "x", &value.as_xyz.x)) {
+                goto fail;
+            }
+            if (!JSON_READ(io, "y", &value.as_xyz.y)) {
+                goto fail;
+            }
+            if (!JSON_READ(io, "z", &value.as_xyz.z)) {
+                goto fail;
+            }
+            JSON_POP(io);
             break;
         }
         M_ApplyItemValue(item, entry->name, &value);
