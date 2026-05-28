@@ -479,10 +479,11 @@ This page lists documented moveable object properties.
 - `max_hit_points = 90` — Maximum hit points.
 
 ### `338` O_PIRAHNAS
-- `max_hit_points = -1` — Maximum hit points.
+- `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
 
 ### `339` O_TROPICAL_FISH
-- `max_hit_points = -1` — Maximum hit points.
+- `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
+- `use_default_uv = true` — Use default UV mapping.
 
 ### `360` O_WINSTON
 - `max_hit_points = 1` — Maximum hit points.
