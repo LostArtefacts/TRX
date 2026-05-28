@@ -159,20 +159,22 @@ static bool M_TestLava(const ITEM *const item)
     return sector->is_death_sector;
 }
 
-void Room_ParseFloorData(const int16_t *floor_data)
+void Room_ParseFloorData(
+    const int16_t *floor_data, const int32_t floor_data_size)
 {
     for (int32_t i = 0; i < Room_GetCount(); i++) {
         const ROOM *const room = Room_Get(i);
         for (int32_t j = 0; j < room->size.x * room->size.z; j++) {
             SECTOR *const sector = &room->sectors[j];
             Room_PopulateSectorData(
-                sector, floor_data, sector->idx, M_NULL_INDEX);
+                sector, floor_data, floor_data_size, sector->idx, M_NULL_INDEX);
         }
     }
 }
 
 void Room_PopulateSectorData(
-    SECTOR *const sector, const int16_t *floor_data, const uint16_t start_index,
+    SECTOR *const sector, const int16_t *floor_data,
+    const int32_t floor_data_size, const uint16_t start_index,
     const uint16_t null_index)
 {
     sector->floor.type = SURFACE_FLOOR;
@@ -189,7 +191,8 @@ void Room_PopulateSectorData(
     sector->ladder = LADDER_NONE;
     sector->mine_cart_type = MINE_CART_NONE;
 
-    if (start_index == null_index || floor_data == nullptr) {
+    if (start_index == null_index || floor_data == nullptr
+        || start_index >= floor_data_size) {
         return;
     }
 

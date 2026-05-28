@@ -2,10 +2,10 @@
 
 #include <trx/game/rooms/types.h>
 
-void Room_ParseFloorData(const int16_t *floor_data);
+void Room_ParseFloorData(const int16_t *floor_data, int32_t floor_data_size);
 void Room_PopulateSectorData(
-    SECTOR *sector, const int16_t *floor_data, uint16_t start_index,
-    uint16_t null_index);
+    SECTOR *sector, const int16_t *floor_data, int32_t floor_data_size,
+    uint16_t start_index, uint16_t null_index);
 void Room_ReadTriangulation(
     SURFACE *surface, int16_t func_data, int16_t tilt_data);
 

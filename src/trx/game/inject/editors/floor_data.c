@@ -123,7 +123,8 @@ static void M_InsertFloorData(
     }
 
     if (data_length == 0) {
-        Room_PopulateSectorData(sector, nullptr, NULL_FD_INDEX, NULL_FD_INDEX);
+        Room_PopulateSectorData(
+            sector, nullptr, 0, NULL_FD_INDEX, NULL_FD_INDEX);
         return;
     }
 
@@ -138,7 +139,7 @@ static void M_InsertFloorData(
     // This will reset all FD properties in the sector based on the raw data
     // imported. We pass a dummy null index to allow it to read from the
     // beginning of the array.
-    Room_PopulateSectorData(sector, data, 0, NULL_FD_INDEX);
+    Room_PopulateSectorData(sector, data, data_length, 0, NULL_FD_INDEX);
     Memory_FreePointer(&data);
 }
 
