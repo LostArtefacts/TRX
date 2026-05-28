@@ -1711,7 +1711,7 @@
             "name": "\\{review}Pistolets automatiques",
         },
         "autos_ammo": {
-            "name": "\\{review}Chargeurs de pistolet automatique",
+            "name": "\\{review}Chargeurs pour pistolets automatiques",
         },
         "bacon_lara": {
             "name": "Bacon-Lara",
@@ -1912,7 +1912,7 @@
             "name": "\\{review}Desert Eagle",
         },
         "desert_eagle_ammo": {
-            "name": "\\{review}Chargeurs du Desert Eagle",
+            "name": "\\{review}Chargeurs pour Desert Eagle",
         },
         "detonator_box": {
             "name": "\\{review}Boîte de détonateur",
@@ -2315,7 +2315,7 @@
             "name": "Coulée de lave",
         },
         "lead_bar": {
-            "name": "Barre de plomb",
+            "name": "Lingot de plomb",
         },
         "lift": {
             "name": "\\{review}Ascenseur",
@@ -2336,7 +2336,7 @@
             "name": "\\{review}M16",
         },
         "m16_ammo": {
-            "name": "\\{review}Chargeurs de M16",
+            "name": "\\{review}Chargeurs pour M16",
         },
         "m16_flash": {
             "name": "\\{review}Éclair de M16",
@@ -2432,7 +2432,7 @@
             "name": "\\{review}MP5",
         },
         "mp5_ammo": {
-            "name": "\\{review}Chargeurs de MP5",
+            "name": "\\{review}Chargeurs pour MP5",
         },
         "mp_1": {
             "name": "\\{review}MP 1",
@@ -2471,7 +2471,7 @@
             "name": "\\{review}Boîte Oscillante",
         },
         "photo": {
-            "name": "\\{review}Maison de Lara",
+            "name": "\\{review}La demeure de Lara",
         },
         "pickup_1": {
             "name": "\\{review}Objet à ramasser 1",
@@ -2492,7 +2492,7 @@
             "name": "\\{review}Pistolets",
         },
         "pistols_ammo": {
-            "name": "\\{review}Chargeurs de pistolet",
+            "name": "\\{review}Chargeurs pour pistolet",
         },
         "player_1": {
             "name": "\\{review}Acteur de cinématique 1",
@@ -2723,7 +2723,7 @@
             "name": "\\{review}Fusil à pompe",
         },
         "shotgun_ammo": {
-            "name": "\\{review}Cartouches de fusil à pompe",
+            "name": "\\{review}Cartouches pour fusil",
         },
         "shotgun_shell": {
             "name": "\\{review}Cartouche de fusil à pompe",
@@ -2925,7 +2925,7 @@
             "name": "\\{review}Uzis",
         },
         "uzis_ammo": {
-            "name": "\\{review}Chargeurs d'Uzi",
+            "name": "\\{review}Chargeurs pour Uzis",
         },
         "vole": {
             "name": "Campagnol",

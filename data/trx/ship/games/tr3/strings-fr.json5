@@ -3,12 +3,12 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "general": {
         "globe_select": {
-            "area_1": "India",
-            "area_2": "South Pacific Islands",
+            "area_1": "Inde",
+            "area_2": "Pacifique Sud",
             "area_3": "Nevada",
             "area_4": " ",
-            "area_5": "London",
-            "area_6": "Antarctica",
+            "area_5": "Londres",
+            "area_6": "Antarctique",
         },
         "inventory_ring": {
             "heading_fmt": "\\{color 5}%s",
@@ -16,43 +16,43 @@
             "object_name_fmt": "\\{color 5}%s",
         },
         "misc": {
-            "empty_slot_fmt": "- Empty Slot -",
+            "empty_slot_fmt": "- EMPLACEMENT VIDE -",
         },
         "overlay": {
             "item_count_fmt_pc": "%s",
             "item_count_fmt_ps1": "\\{color 3}%s",
         },
         "pause": {
-            "paused": "\\{color 5}Paused",
+            "paused": "\\{color 5}En pause",
         },
         "stats": {
             "assault_other_times_fmt": "\\{color 2}%s",
-            "gym_assault_course": "\\{color 5}Assault Course",
-            "gym_racetrack_course": "\\{color 5}Race Track Course",
+            "gym_assault_course": "\\{color 5}Entraînement",
+            "gym_racetrack_course": "\\{color 5}Course de quad",
         }
     },
     "objects": {
         "large_medipack": {
-            "name": "Large Medi Pack",
+            "name": "Grand medipack",
         },
         "quest_1": {
             "description": "",
-            "name": "Infada Stone",
+            "name": "Pierre Infada",
         },
         "quest_2": {
             "description": "",
-            "name": "Element 115",
+            "name": "Objet 115",
         },
         "quest_3": {
             "description": "",
-            "name": "Eye of Isis",
+            "name": "L'Œil d'Isis",
         },
         "quest_4": {
             "description": "",
-            "name": "Ora Dagger",
+            "name": "Dague d'Ora",
         },
         "small_medipack": {
-            "name": "Small Medi Pack",
+            "name": "Petit medipack",
         }
     },
     "cutscenes": [
@@ -92,80 +92,80 @@
     ],
     "levels": [
         {
-            "title": "Lara's Home",
+            "title": "La demeure de Lara",
             "objects": {
                 "key_1": {
-                    "name": "Racetrack Key",
+                    "name": "Clé de la piste de course",
                 }
             }
         },
         {
-            "title": "Jungle",
+            "title": "La jungle",
             "objects": {
                 "key_4": {
-                    "name": "Indra Key",
+                    "name": "Clé d'Indra",
                 }
             }
         },
         {
-            "title": "Temple Ruins",
+            "title": "Les ruines du temple",
             "objects": {
                 "key_1": {
-                    "name": "Key of Ganesha",
+                    "name": "Clé de Ganesha",
                 },
                 "puzzle_1": {
-                    "name": "Scimitar",
+                    "name": "Cimeterre",
                 },
                 "puzzle_2": {
-                    "name": "Scimitar",
+                    "name": "Cimeterre",
                 }
             }
         },
         {
-            "title": "The River Ganges",
+            "title": "Le Gange",
             "objects": {
                 "key_1": {
-                    "name": "Gate Key",
+                    "name": "Clé du portail",
                 }
             }
         },
         {
-            "title": "Caves of Kaliya",
+            "title": "Les grottes de Kaliya",
         },
         {
-            "title": "Coastal Village",
+            "title": "Le village côtier",
             "objects": {
                 "key_1": {
-                    "name": "Smuggler's Key",
+                    "name": "Clé du contrebandier",
                 },
                 "puzzle_1": {
-                    "name": "Serpent Stone",
+                    "name": "Pierre du serpent",
                 }
             }
         },
         {
-            "title": "Crash Site",
+            "title": "Le lieu du crash",
             "objects": {
                 "key_1": {
-                    "name": "Commander Bishop's Key",
+                    "name": "Clé du commandant Bishop",
                 },
                 "key_2": {
-                    "name": "Lt. Tuckerman's Key",
+                    "name": "Clé du Lt. Tuckerman",
                 },
                 "pickup_1": {
-                    "name": "Swamp Map",
+                    "name": "Carte du marais",
                     "description": "",
                 }
             }
         },
         {
-            "title": "Madubu Gorge",
+            "title": "La gorge de Madubu",
         },
         {
-            "title": "Temple of Puna",
+            "title": "Le temple de Puna",
         },
         {
-            "title": "Thames Wharf",
+            "title": "Les quais de la Tamise",
             "objects": {
                 "key_1": {
                     "name": "Flue Room Key",
@@ -179,137 +179,137 @@
             "title": "Aldwych",
             "objects": {
                 "key_1": {
-                    "name": "Maintenance Key",
+                    "name": "Clé de la maintenance",
                 },
                 "key_2": {
-                    "name": "Solomon's Key",
+                    "name": "Clé de Salomon",
                 },
                 "key_3": {
-                    "name": "Solomon's Key",
+                    "name": "Clé de Salomon",
                 },
                 "puzzle_1": {
-                    "name": "Old Penny",
+                    "name": "Vieux penny",
                 },
                 "puzzle_2": {
                     "name": "Ticket",
                 },
                 "puzzle_3": {
-                    "name": "Masonic Mallet",
+                    "name": "Maillet maçonnique",
                 },
                 "puzzle_4": {
-                    "name": "Ornate Star",
+                    "name": "Étoile décorée",
                 }
             }
         },
         {
-            "title": "Lud's Gate",
+            "title": "Le portail du Lude",
             "objects": {
                 "key_1": {
-                    "name": "Boiler Room Key",
+                    "name": "Clé de la chaufferie",
                 },
                 "puzzle_1": {
-                    "name": "Embalming Fluid",
+                    "name": "Fluide d'embaumement",
                 }
             }
         },
         {
-            "title": "City",
+            "title": "La city",
         },
         {
-            "title": "Nevada Desert",
+            "title": "Le désert du Nevada",
             "objects": {
                 "key_1": {
-                    "name": "Generator Access",
+                    "name": "Passe du générateur",
                 },
                 "key_2": {
-                    "name": "Detonator Switch",
+                    "name": "Interrupteur du détonateur",
                 }
             }
         },
         {
-            "title": "High Security Compound",
+            "title": "Le Quartier Haute Sécurité",
             "objects": {
                 "key_1": {
-                    "name": "Keycard Type A",
+                    "name": "Carte de sécurité A",
                 },
                 "key_2": {
-                    "name": "Keycard Type B",
+                    "name": "Carte de sécurité B",
                 },
                 "puzzle_1": {
-                    "name": "Blue Security Pass",
+                    "name": "Passe de sécurité bleu",
                 },
                 "puzzle_2": {
-                    "name": "Yellow Security Pass",
+                    "name": "Passe de sécurité jaune",
                 }
             }
         },
         {
-            "title": "Area 51",
+            "title": "La Zone 51",
             "objects": {
                 "key_1": {
-                    "name": "Launch Code Pass",
+                    "name": "Passe pour mise à feu",
                 },
                 "puzzle_1": {
-                    "name": "Tower Access Key",
+                    "name": "Clé d'accès à la tour",
                 },
                 "puzzle_2": {
-                    "name": "Code Clearance Disk",
+                    "name": "Disque du code d'accès",
                 },
                 "puzzle_3": {
-                    "name": "Code Clearance Disk",
+                    "name": "Disque du code d'accès",
                 },
                 "puzzle_4": {
-                    "name": "Hanger Access Key",
+                    "name": "Clé du hangar",
                 }
             }
         },
         {
-            "title": "Antarctica",
+            "title": "L'Antarctique",
             "objects": {
                 "key_1": {
-                    "name": "Hut Key",
+                    "name": "Clé de la hutte",
                 },
                 "puzzle_1": {
-                    "name": "Crowbar",
+                    "name": "Pied-de-biche",
                 },
                 "puzzle_2": {
-                    "name": "Gate Control Key",
+                    "name": "Clé du portail",
                 }
             }
         },
         {
-            "title": "RX-Tech Mines",
+            "title": "Les mines de RX-Tech",
             "objects": {
                 "puzzle_1": {
-                    "name": "Crowbar",
+                    "name": "Pied-de-biche",
                 },
                 "puzzle_2": {
-                    "name": "Lead Acid Battery",
+                    "name": "Acide de batterie",
                 },
                 "puzzle_3": {
-                    "name": "Winch Starter",
+                    "name": "Démarreur du treuil",
                 }
             }
         },
         {
-            "title": "Lost City of Tinnos",
+            "title": "La cité perdue de Tinos",
             "objects": {
                 "key_1": {
-                    "name": "Uli Key",
+                    "name": "Clé d'Uli",
                 },
                 "puzzle_1": {
-                    "name": "Oceanic Mask",
+                    "name": "Masque océanien",
                 }
             }
         },
         {
-            "title": "Meteorite Cavern",
+            "title": "La caverne du météore",
         },
         {
-            "title": "All Hallows",
+            "title": "L'église Hallows",
             "objects": {
                 "key_1": {
-                    "name": "Vault Key",
+                    "name": "Clé du caveau",
                 }
             }
         }

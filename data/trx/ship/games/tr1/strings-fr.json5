@@ -41,24 +41,24 @@
     ],
     "levels": [
         {
-            "title": "Demeure de Lara",
+            "title": "La demeure de Lara",
         },
         {
-            "title": "Cavernes",
+            "title": "Les cavernes",
         },
         {
-            "title": "Cité de Vilcabamba",
+            "title": "La cité de Vilcabamba",
             "objects": {
                 "key_1": {
-                    "name": "Clé en Argent",
+                    "name": "Clé d'argent",
                 },
                 "puzzle_1": {
-                    "name": "Idole d'Or",
+                    "name": "Idole dorée",
                 }
             }
         },
         {
-            "title": "La Vallée Perdue",
+            "title": "La vallée perdue",
             "objects": {
                 "puzzle_1": {
                     "name": "Roue dentée",
@@ -66,10 +66,10 @@
             }
         },
         {
-            "title": "Tombe de Qualopec",
+            "title": "La tombe de Qualopec",
         },
         {
-            "title": "Monument St Francis",
+            "title": "Le monument St Francis",
             "objects": {
                 "key_1": {
                     "name": "Clé de Neptune",
@@ -89,59 +89,59 @@
             "title": "Colosseum",
             "objects": {
                 "key_1": {
-                    "name": "Clé Rouillée",
+                    "name": "Clé rouillée",
                 }
             }
         },
         {
-            "title": "Palais de Midas",
+            "title": "Le palais de Midas",
             "objects": {
                 "puzzle_1": {
-                    "name": "Lingot d'Or",
+                    "name": "Lingot d'or",
                 }
             }
         },
         {
-            "title": "La Citerne",
+            "title": "La citerne",
             "objects": {
                 "key_1": {
-                    "name": "Clé en Or",
+                    "name": "Clé en or",
                 },
                 "key_2": {
-                    "name": "Clé en Argent",
+                    "name": "Clé d'argent",
                 },
                 "key_3": {
-                    "name": "Clé Rouillée",
+                    "name": "Clé rouillée",
                 }
             }
         },
         {
-            "title": "Tombe de Tihocan",
+            "title": "La tombe de Tihocan",
             "objects": {
                 "key_1": {
-                    "name": "Clé en Or",
+                    "name": "Clé en or",
                 },
                 "key_2": {
-                    "name": "Clé Rouillée",
+                    "name": "Clé rouillée",
                 },
                 "key_3": {
-                    "name": "Clé Rouillée",
+                    "name": "Clé rouillée",
                 }
             }
         },
         {
-            "title": "Cité de Khamoon",
+            "title": "La cité de Khamoon",
             "objects": {
                 "key_1": {
-                    "name": "Clé de Saphir",
+                    "name": "Clé de saphir",
                 }
             }
         },
         {
-            "title": "Obélisque de Khamoon",
+            "title": "L'obélisque de Khamoon",
             "objects": {
                 "key_1": {
-                    "name": "Clé de Saphir",
+                    "name": "Clé de saphir",
                 },
                 "puzzle_1": {
                     "name": "Œil d'Horus",
@@ -158,10 +158,10 @@
             }
         },
         {
-            "title": "Sanctuaire du Scion",
+            "title": "Le sanctuaire du Scion",
             "objects": {
                 "key_1": {
-                    "name": "Clé en Or",
+                    "name": "Clé en or",
                 },
                 "puzzle_1": {
                     "name": "Ankh",
@@ -172,13 +172,13 @@
             }
         },
         {
-            "title": "Mines de Natla",
+            "title": "Les mines de Natla",
             "objects": {
                 "puzzle_1": {
                     "name": "Fusible",
                 },
                 "puzzle_2": {
-                    "name": "Clé de la Pyramide",
+                    "name": "Clé de la pyramide",
                 }
             }
         },
@@ -186,7 +186,7 @@
             "title": "Atlantide",
         },
         {
-            "title": "La Grande Pyramide",
+            "title": "La grande pyramide",
         },
         {
             "title": "Réservé",
@@ -209,18 +209,18 @@
     ],
     "demos": [
         {
-            "title": "Cité de Vilcabamba",
+            "title": "La cité de Vilcabamba",
             "objects": {
                 "key_1": {
-                    "name": "Clé en Argent",
+                    "name": "Clé d'argent",
                 },
                 "puzzle_1": {
-                    "name": "Idole d'Or",
+                    "name": "Idole dorée",
                 }
             }
         },
         {
-            "title": "Vallée perdue",
+            "title": "La vallée perdue",
             "objects": {
                 "puzzle_1": {
                     "name": "Roue dentée",

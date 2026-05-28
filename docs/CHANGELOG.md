@@ -1,4 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7.1...develop) - ××××-××-××
+- added French translation (thanks to Wronschien)
+
+
 
 ## [1.7.1](https://github.com/LostArtefacts/TRX/compare/trx-1.7...trx-1.7.1) - 2026-05-28
 - added `O_FLARE_ITEM.burn_time` so custom levels and Lua scripts can change how long flares last (#5544)  

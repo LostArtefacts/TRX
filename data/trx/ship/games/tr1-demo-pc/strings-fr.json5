@@ -3,13 +3,13 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "levels": [
         {
-            "title": "\\{review}Ville de Vilcabamba",
+            "title": "\\{review}La cité de Vilcabamba",
             "objects": {
                 "key_1": {
-                    "name": "\\{review}Clé en argent",
+                    "name": "\\{review}Clé d'argent",
                 },
                 "puzzle_1": {
-                    "name": "\\{review}Idole en or",
+                    "name": "\\{review}Idole dorée",
                 }
             }
         }
