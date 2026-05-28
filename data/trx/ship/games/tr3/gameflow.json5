@@ -56,6 +56,7 @@
         {
             "type": "gym",
             "path": "house.tr2",
+            "script": "house.lua",
             "music_track": -1,
             "lara_outfit": "tr3_gym",
             "sequence": [
@@ -107,6 +108,7 @@
         // 2. Temple Ruins
         {
             "path": "temple.tr2",
+            "script": "temple.lua",
             "music_track": 34,
             "lara_outfit": "tr3_classic",
             "sequence": [
@@ -170,6 +172,7 @@
         // 5. Coastal Village
         {
             "path": "shore.tr2",
+            "script": "shore.lua",
             "music_track": 32,
             "lara_outfit": "tr3_south_pacific",
             "sequence": [
@@ -217,6 +220,7 @@
         // 7. Madubu Gorge
         {
             "path": "rapids.tr2",
+            "script": "rapids.lua",
             "music_track": 36,
             "death_tile": "rapids",
             "water_particles": true,

@@ -1,5 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7.1...develop) - ××××-××-××
 - added French translation (thanks to Wronschien)
+- removed hard-coded fish and piranha setup and moved to Lua instead
+- removed the limit of at most 8 fish/piranha shoals per level
 
 
 

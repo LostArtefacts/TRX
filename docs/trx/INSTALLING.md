@@ -1044,8 +1044,12 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── crash.lua
 │   │   │   ├── cut8.lua
 │   │   │   ├── ganges.lua
+│   │   │   ├── house.lua
 │   │   │   ├── jungle.lua
 │   │   │   ├── mines.lua
+│   │   │   ├── rapids.lua
+│   │   │   ├── shore.lua
+│   │   │   ├── temple.lua
 │   │   │   ├── tower.lua
 │   │   │   └── zoo.lua
 │   │   ├── catalog_item_actions.csv
@@ -2267,8 +2271,12 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── crash.lua
     │   │   │   │   ├── cut8.lua
     │   │   │   │   ├── ganges.lua
+    │   │   │   │   ├── house.lua
     │   │   │   │   ├── jungle.lua
     │   │   │   │   ├── mines.lua
+    │   │   │   │   ├── rapids.lua
+    │   │   │   │   ├── shore.lua
+    │   │   │   │   ├── temple.lua
     │   │   │   │   ├── tower.lua
     │   │   │   │   └── zoo.lua
     │   │   │   ├── catalog_item_actions.csv

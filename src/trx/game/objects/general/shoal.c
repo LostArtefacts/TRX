@@ -17,11 +17,8 @@
 
 #include <stdint.h>
 
-#define M_SHOAL_COUNT 8
 #define M_FISH_PER_SHOAL 24
-
-#define M_LEVEL_RANGES(id, ...)                                                \
-    { id, sizeof((XYZ_16[])__VA_ARGS__) / sizeof(XYZ_16), __VA_ARGS__ }
+#define M_DEFAULT_RANGE (XYZ_32) { 1, 1, 1 }
 
 typedef struct {
     int16_t angle;
@@ -29,7 +26,7 @@ typedef struct {
     bool on;
     int16_t angle_time;
     int16_t speed_time;
-    XYZ_16 range;
+    XYZ_32 range;
 } M_LEADER;
 
 typedef struct {
@@ -50,79 +47,12 @@ typedef struct {
 } M_FISH;
 
 typedef struct {
-    int32_t leader_num;
     M_FISH fish[M_FISH_PER_SHOAL + 1];
     M_LEADER leader;
     int32_t piranha_hit_wait;
     int16_t carcass_item_num;
+    bool use_default_uv;
 } M_PRIV;
-
-typedef struct {
-    int32_t level_id;
-    int32_t range_count;
-    XYZ_16 ranges[M_SHOAL_COUNT];
-} M_FISH_LEVEL_CONFIG;
-
-static const M_FISH_LEVEL_CONFIG m_FishLevelConfigs[] = {
-    M_LEVEL_RANGES(
-        1,
-        {
-            { .x = 8, .z = 20, .y = 3 },
-        }),
-    M_LEVEL_RANGES(
-        2,
-        {
-            { .x = 4, .z = 4, .y = 2 },
-            { .x = 4, .z = 16, .y = 2 },
-            { .x = 4, .z = 28, .y = 3 },
-        }),
-    M_LEVEL_RANGES(
-        3,
-        {
-            { .x = 4, .z = 12, .y = 1 },
-            { .x = 0, .z = 12, .y = 2 },
-            { .x = 8, .z = 4, .y = 2 },
-            { .x = 4, .z = 8, .y = 1 },
-            { .x = 4, .z = 16, .y = 2 },
-            { .x = 4, .z = 24, .y = 1 },
-            { .x = 12, .z = 4, .y = 1 },
-            { .x = 16, .z = 4, .y = 1 },
-        }),
-    M_LEVEL_RANGES(
-        0,
-        {
-            { .x = 4, .z = 4, .y = 1 },
-            { .x = 16, .z = 8, .y = 2 },
-            { .x = 24, .z = 8, .y = 2 },
-            { .x = 8, .z = 16, .y = 2 },
-            { .x = 8, .z = 12, .y = 1 },
-            { .x = 20, .z = 8, .y = 2 },
-            { .x = 16, .z = 8, .y = 1 },
-        }),
-    M_LEVEL_RANGES(
-        5,
-        {
-            { .x = 12, .z = 12, .y = 6 },
-            { .x = 12, .z = 20, .y = 6 },
-            { .x = 20, .z = 4, .y = 8 },
-        }),
-    M_LEVEL_RANGES(
-        6,
-        {
-            { .x = 20, .z = 4, .y = 6 },
-        }),
-    M_LEVEL_RANGES(
-        7,
-        {
-            { .x = 16, .z = 16, .y = 8 },
-            { .x = 4, .z = 8, .y = 5 },
-        }),
-};
-
-static bool M_IsValidShoalNum(const int32_t shoal_num)
-{
-    return shoal_num >= 0 && shoal_num < M_SHOAL_COUNT;
-}
 
 static uint16_t M_GetFishAngle12(
     const int32_t x1, const int32_t z1, const int32_t x2, const int32_t z2)
@@ -164,39 +94,9 @@ static bool M_FishNearItem(
     return true;
 }
 
-static void M_SetupShoal(M_PRIV *const p, const int32_t shoal_num)
-{
-    if (p == nullptr || !M_IsValidShoalNum(shoal_num)) {
-        return;
-    }
-
-    M_LEADER *const leader = &p->leader;
-
-    if (g_TRVersion < 3) {
-        goto fallback;
-    }
-
-    const int32_t lvl = GF_BadGetLevelNum();
-    for (size_t i = 0; i < ARRAY_SIZE(m_FishLevelConfigs); i++) {
-        const M_FISH_LEVEL_CONFIG *cfg = &m_FishLevelConfigs[i];
-        if (cfg->level_id == lvl && shoal_num < cfg->range_count) {
-            const XYZ_16 *const r = &cfg->ranges[shoal_num];
-            leader->range.x = (r->x + 2) << 8;
-            leader->range.y = r->y << 8;
-            leader->range.z = (r->z + 2) << 8;
-            return;
-        }
-    }
-
-fallback:
-    leader->range.x = 256;
-    leader->range.y = 256;
-    leader->range.z = 256;
-}
-
 static void M_SetupFish(M_PRIV *const p, const ITEM *const item)
 {
-    if (p == nullptr || item == nullptr || !M_IsValidShoalNum(p->leader_num)) {
+    if (p == nullptr || item == nullptr) {
         return;
     }
 
@@ -266,15 +166,6 @@ static bool M_Trigger(ITEM *const item, const TRIGGER *const trigger)
 
     if (Room_IsAntiTrigger(trigger->type)) {
         Shoal_TriggerDeactivate(item);
-    } else {
-        const int32_t leader_num = trigger->timer & 7;
-        item->hit_points = leader_num;
-
-        if (M_IsValidShoalNum(leader_num) && item->priv != nullptr) {
-            M_PRIV *const p = item->priv;
-            p->leader_num = leader_num;
-            M_SetupShoal(p, leader_num);
-        }
     }
 
     return true;
@@ -287,23 +178,13 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    const int32_t leader_num = item->hit_points;
-    if (!M_IsValidShoalNum(leader_num)) {
-        return;
-    }
-
     M_PRIV *const p = item->priv;
     if (p == nullptr) {
         return;
     }
 
-    if (p->leader_num != leader_num) {
-        p->leader_num = leader_num;
-        p->leader.on = false;
-    }
     M_LEADER *const leader = &p->leader;
     if (!leader->on) {
-        M_SetupShoal(p, leader_num);
         M_SetupFish(p, item);
     }
 
@@ -566,21 +447,8 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
-    if (item->hit_points == NO_ITEM) {
-        return false;
-    }
-
-    const int32_t leader_num = item->hit_points;
-    if (!M_IsValidShoalNum(leader_num)) {
-        return false;
-    }
-
     M_PRIV *const p = item->priv;
     if (p == nullptr) {
-        return false;
-    }
-
-    if (p->leader_num != leader_num) {
         return false;
     }
 
@@ -704,7 +572,7 @@ static bool M_Draw(const ITEM *const item)
         if (item->object_id == O_PIRAHNAS) {
             use_default_uv = (i & 1) != 0;
         } else {
-            use_default_uv = (leader_num & 1) != 0;
+            use_default_uv = p->use_default_uv;
         }
 
         if (use_default_uv) {
@@ -750,12 +618,27 @@ static void M_Initialise(const int16_t item_num)
 
     M_PRIV *const p = item->priv;
     p->leader.on = false;
-    p->leader_num = NO_ITEM;
     p->piranha_hit_wait = 0;
     p->carcass_item_num = NO_ITEM;
+
+    OBJECT_PROPERTY_VALUE range_val = {};
+    if (ObjectProperty_GetItemValue(item, "range", &range_val)) {
+        p->leader.range = range_val.as_xyz;
+    } else {
+        p->leader.range = M_DEFAULT_RANGE;
+    }
+
+    p->leader.range.x = MAX(1, p->leader.range.x) * STEP_L;
+    p->leader.range.y = MAX(1, p->leader.range.y) * STEP_L;
+    p->leader.range.z = MAX(1, p->leader.range.z) * STEP_L;
+
+    OBJECT_PROPERTY_VALUE uv_val = {};
+    if (ObjectProperty_GetItemValue(item, "use_default_uv", &uv_val)) {
+        p->use_default_uv = uv_val.as_bool;
+    }
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupCommon(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
     obj->trigger_func = M_Trigger;
@@ -766,20 +649,38 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
     obj->save_hitpoints = true;
     obj->save_flags = true;
+}
+
+static void M_SetupTropicalFish(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_INT("max_hit_points", NO_ITEM, "Maximum hit points."));
+        OBJECT_PROPERTY_XYZ(
+            "range", M_DEFAULT_RANGE, "Swim range, in quarter tiles."));
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_BOOL(
+            "use_default_uv", true, "Use default UV mapping."));
+}
+
+static void M_SetupPiranhas(OBJECT *const obj)
+{
+    M_SetupCommon(obj);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_XYZ(
+            "range", M_DEFAULT_RANGE, "Swim range, in quarter tiles."));
 }
 
 void Shoal_TriggerDeactivate(const ITEM *const item)
 {
     // Anti-trigger turns the leader off to force a re-setup.
-    const int32_t leader_num = item->hit_points;
-    if (M_IsValidShoalNum(leader_num) && item->priv != nullptr) {
+    if (item->priv != nullptr) {
         M_PRIV *const p = item->priv;
         p->leader.on = false;
     }
 }
 
-REGISTER_OBJECT(O_TROPICAL_FISH, M_Setup)
-REGISTER_OBJECT(O_PIRAHNAS, M_Setup)
+REGISTER_OBJECT(O_TROPICAL_FISH, M_SetupTropicalFish)
+REGISTER_OBJECT(O_PIRAHNAS, M_SetupPiranhas)

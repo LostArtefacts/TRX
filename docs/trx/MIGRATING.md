@@ -7,6 +7,13 @@ order: 3
 
 ## TRX
 
+### Version 1.7 to 1.8
+
+1. **Update fish/piranha setup**:
+   Fish and piranha objects no longer require a timer field to be set in
+   triggers, and instead their swim range needs to be defined in Lua. Refer to
+   the OG TR3 level scripts for reference.
+
 ### Version 1.6 to 1.7
 
 1. **Update Lua item maximum HP access**:
