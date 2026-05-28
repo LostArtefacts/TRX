@@ -1,4 +1,6 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.7.1...develop) - ××××-××-××
+
+## [1.7.1](https://github.com/LostArtefacts/TRX/compare/trx-1.7...trx-1.7.1) - 2026-05-28
 - added `O_FLARE_ITEM.burn_time` so custom levels and Lua scripts can change how long flares last (#5544)  
   Example: `trx.objects[trx.catalog.objects.flare_item].properties.burn_time = 1`
 - changed Lua object and item properties to accept whole numbers for decimal values
