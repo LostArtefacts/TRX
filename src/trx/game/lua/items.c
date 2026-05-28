@@ -2,10 +2,8 @@
 #include <trx/debug.h>
 #include <trx/game/items.h>
 #include <trx/game/lua/common.h>
-#include <trx/game/objects.h>
+#include <trx/game/lua/utils.h>
 #include <trx/game/rooms.h>
-
-#include <lauxlib.h>
 
 #define M_ITEM_GETTER(L)                                                       \
     const int idx = luaL_checkinteger(L, 1);                                   \
@@ -174,49 +172,6 @@ static void M_PushPropertyValue(
     }
 }
 
-static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
-    lua_State *const L, const int idx)
-{
-    switch (lua_type(L, idx)) {
-    case LUA_TBOOLEAN:
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_BOOL,
-            .as_bool = lua_toboolean(L, idx),
-        };
-    case LUA_TNUMBER:
-        if (lua_isinteger(L, idx)) {
-            return (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_INT,
-                .as_int = lua_tointeger(L, idx),
-            };
-        }
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_DOUBLE,
-            .as_double = lua_tonumber(L, idx),
-        };
-    case LUA_TTABLE:
-        XYZ_32 vec = {};
-        lua_getfield(L, idx, "x");
-        vec.x = luaL_checkinteger(L, -1);
-        lua_pop(L, 1);
-        lua_getfield(L, idx, "y");
-        vec.y = luaL_checkinteger(L, -1);
-        lua_pop(L, 1);
-        lua_getfield(L, idx, "z");
-        vec.z = luaL_checkinteger(L, -1);
-        lua_pop(L, 1);
-
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_XYZ,
-            .as_xyz = vec,
-        };
-        break;
-    default:
-        luaL_error(L, "property value must be a number, boolean or table");
-        return (OBJECT_PROPERTY_VALUE) {};
-    }
-}
-
 // trxc.items.get_property(index, name) → typed value or nil
 static int M_L_ItemGetProperty(lua_State *const L)
 {
@@ -330,7 +285,7 @@ static int M_L_ItemSetProperty(lua_State *const L)
 {
     M_ITEM_SETTER(L);
     const char *const name = luaL_checkstring(L, 2);
-    const OBJECT_PROPERTY_VALUE value = M_CheckPropertyValue(L, 3);
+    const OBJECT_PROPERTY_VALUE value = LUA_CheckPropertyValue(L, 3);
     if (!ObjectProperty_SetItemValueRaw(item, name, value)) {
         return luaL_error(L, "unknown item property '%s'", name);
     }

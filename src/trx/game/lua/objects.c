@@ -1,6 +1,4 @@
-#include <trx/game/objects.h>
-
-#include <lauxlib.h>
+#include <trx/game/lua/utils.h>
 
 static void M_PushPropertyValue(
     lua_State *const L, const OBJECT_PROPERTY_VALUE *const value)
@@ -27,49 +25,6 @@ static void M_PushPropertyValue(
         lua_pushinteger(L, value->as_xyz.z);
         lua_setfield(L, -2, "z");
         break;
-    }
-}
-
-static OBJECT_PROPERTY_VALUE M_CheckPropertyValue(
-    lua_State *const L, const int idx)
-{
-    switch (lua_type(L, idx)) {
-    case LUA_TBOOLEAN:
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_BOOL,
-            .as_bool = lua_toboolean(L, idx),
-        };
-    case LUA_TNUMBER:
-        if (lua_isinteger(L, idx)) {
-            return (OBJECT_PROPERTY_VALUE) {
-                .type = OBJECT_PROPERTY_TYPE_INT,
-                .as_int = lua_tointeger(L, idx),
-            };
-        }
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_DOUBLE,
-            .as_double = lua_tonumber(L, idx),
-        };
-    case LUA_TTABLE:
-        XYZ_32 vec = {};
-        lua_getfield(L, idx, "x");
-        vec.x = luaL_checkinteger(L, -1);
-        lua_pop(L, 1);
-        lua_getfield(L, idx, "y");
-        vec.y = luaL_checkinteger(L, -1);
-        lua_pop(L, 1);
-        lua_getfield(L, idx, "z");
-        vec.z = luaL_checkinteger(L, -1);
-        lua_pop(L, 1);
-
-        return (OBJECT_PROPERTY_VALUE) {
-            .type = OBJECT_PROPERTY_TYPE_XYZ,
-            .as_xyz = vec,
-        };
-        break;
-    default:
-        luaL_error(L, "property value must be a number, boolean or table");
-        return (OBJECT_PROPERTY_VALUE) {};
     }
 }
 
@@ -113,7 +68,7 @@ static int M_L_ObjectsSetProperty(lua_State *const L)
     if (obj == nullptr) {
         return luaL_error(L, "invalid object id %d", object_id);
     }
-    const OBJECT_PROPERTY_VALUE value = M_CheckPropertyValue(L, 3);
+    const OBJECT_PROPERTY_VALUE value = LUA_CheckPropertyValue(L, 3);
     if (!ObjectProperty_SetObjectValueRaw(obj, name, value)) {
         return luaL_error(L, "unknown object property '%s'", name);
     }
