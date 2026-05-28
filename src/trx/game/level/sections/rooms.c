@@ -431,7 +431,7 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
     int16_t *floor_data = Memory_Alloc(sizeof(int16_t) * floor_data_size);
     VFile_Read(file, floor_data, sizeof(int16_t) * floor_data_size);
 
-    Room_ParseFloorData(floor_data);
+    Room_ParseFloorData(floor_data, floor_data_size);
     Memory_FreePointer(&floor_data);
 
     Room_BuildOutsideTable();
