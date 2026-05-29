@@ -3,7 +3,6 @@
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/game_buf.h>
-#include <trx/game/game_flow/util.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -13,7 +12,6 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
-#include <trx/version.h>
 
 #include <stdint.h>
 
