@@ -34,3 +34,11 @@ body:
       placeholder: Add any extra context here that helps.
     validations:
       required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before submitting
+      options:
+        - label: This report covers exactly one feature request.
+          required: true
