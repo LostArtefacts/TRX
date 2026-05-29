@@ -12,9 +12,11 @@
 
 **TR1**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
+- added the abilty to use animated spikes
 
 **TR2**:
 - added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
+- added the abilty to use animated spikes
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 
 **TR3**:
@@ -25,6 +27,7 @@
 - removed the hard-coded longer interval on `O_FLAME_EMITTER_SIDE` in level sequence 7 and moved to Lua instead
 - removed the hard-coded strobe light alarm behaviour in Area 51 and moved it to Lua instead
 - removed hard-coded level sequence specific sound effects for animated spikes and moved to animation commands instead
+- removed the hard-coded constraint of only being able to use animated spikes in levels 5 and 7
 - fixed texture bleeding and missized textures on piranhas and tropical fish
 
 

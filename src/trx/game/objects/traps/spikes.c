@@ -61,20 +61,13 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    const int32_t level_num = GF_BadGetLevelNum();
-    if (level_num != 5 && level_num != 7) {
-        return;
-    }
-
     Item_Animate(item);
 }
 
 static void M_Setup(OBJECT *const obj)
 {
     obj->collision_func = M_Collision;
-    if (g_TRVersion == 3) {
-        obj->control_func = M_Control;
-    }
+    obj->control_func = M_Control;
 }
 
 REGISTER_OBJECT(O_SPIKES, M_Setup)
