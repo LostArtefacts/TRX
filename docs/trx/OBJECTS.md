@@ -402,6 +402,9 @@ This page lists documented moveable object properties.
 
 ### `69` O_COBRA
 - `max_hit_points = 8` — Maximum hit points.
+- `alert_radius = 1.5` — Alert radius, in sectors.
+- `attack_radius = 1` — Attack radius, in sectors.
+- `forget_radius = 3` — Forget radius, in sectors.
 
 ### `70` O_SHIVA
 - `max_hit_points = 100` — Maximum hit points.
