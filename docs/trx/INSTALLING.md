@@ -944,6 +944,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── coastal_airlock.bin
 │   │   │   ├── coastal_animating_bounds.bin
 │   │   │   ├── coastal_sky.bin
+│   │   │   ├── coastal_spike_sfx.bin
 │   │   │   ├── coastal_textures.bin
 │   │   │   ├── common_pickup_meshes.bin
 │   │   │   ├── compound_animating_bounds.bin
@@ -984,6 +985,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── luds_animating_bounds.bin
 │   │   │   ├── luds_diver_animation.bin
 │   │   │   ├── luds_textures.bin
+│   │   │   ├── madubu_spike_sfx.bin
 │   │   │   ├── madubu_textures.bin
 │   │   │   ├── menu_artefacts.bin
 │   │   │   ├── mines_textures.bin
@@ -2177,6 +2179,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── coastal_airlock.bin
     │   │   │   │   ├── coastal_animating_bounds.bin
     │   │   │   │   ├── coastal_sky.bin
+    │   │   │   │   ├── coastal_spike_sfx.bin
     │   │   │   │   ├── coastal_textures.bin
     │   │   │   │   ├── common_pickup_meshes.bin
     │   │   │   │   ├── compound_animating_bounds.bin
@@ -2217,6 +2220,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── luds_animating_bounds.bin
     │   │   │   │   ├── luds_diver_animation.bin
     │   │   │   │   ├── luds_textures.bin
+    │   │   │   │   ├── madubu_spike_sfx.bin
     │   │   │   │   ├── madubu_textures.bin
     │   │   │   │   ├── menu_artefacts.bin
     │   │   │   │   ├── mines_textures.bin
