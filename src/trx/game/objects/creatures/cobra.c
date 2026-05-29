@@ -9,31 +9,31 @@
 static BITE m_CobraBite = { .pos = { 0, 0, 0 }, .mesh_num = 13 };
 
 typedef enum {
-    COBRA_STATE_WAKING_UP = 0,
-    COBRA_STATE_ALERT = 1,
-    COBRA_STATE_BITE = 2,
-    COBRA_STATE_SLEEP = 3,
-    COBRA_STATE_DEATH = 4,
-} M_COBRA_STATE;
+    M_STATE_WAKING_UP,
+    M_STATE_ALERT,
+    M_STATE_BITE,
+    M_STATE_SLEEP,
+    M_STATE_DEATH,
+} M_STATE;
 
 typedef enum {
-    COBRA_ANIM_SLEEP = 2,
-    COBRA_ANIM_DEATH = 4,
-} M_COBRA_ANIM;
+    M_ANIM_SLEEP = 2,
+    M_ANIM_DEATH = 4,
+} M_ANIM;
 
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     Creature_Initialise(item_num);
-    Item_SwitchToAnim(item, COBRA_ANIM_SLEEP, 45);
-    item->current_anim_state = COBRA_STATE_SLEEP;
-    item->goal_anim_state = COBRA_STATE_SLEEP;
+    Item_SwitchToAnim(item, M_ANIM_SLEEP, 45);
+    item->current_anim_state = M_STATE_SLEEP;
+    item->goal_anim_state = M_STATE_SLEEP;
 }
 
 static bool M_IsTargetable(const ITEM *const item)
 {
     return item->hit_points > 0 && item->status == IS_ACTIVE
-        && item->current_anim_state != COBRA_STATE_SLEEP;
+        && item->current_anim_state != M_STATE_SLEEP;
 }
 
 static bool M_CanTakeDamage(const ITEM *const item)
@@ -72,9 +72,9 @@ static void M_Control(const int16_t item_num)
 
     int16_t angle = 0;
     if (item->hit_points <= 0) {
-        if (item->current_anim_state != COBRA_STATE_DEATH) {
-            Item_SwitchToAnim(item, COBRA_ANIM_DEATH, 0);
-            item->current_anim_state = COBRA_ANIM_DEATH;
+        if (item->current_anim_state != M_STATE_DEATH) {
+            Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
+            item->current_anim_state = M_ANIM_DEATH;
         }
 
         goto finish;
@@ -99,22 +99,22 @@ static void M_Control(const int16_t item_num)
     }
 
     switch (item->current_anim_state) {
-    case COBRA_STATE_WAKING_UP:
+    case M_STATE_WAKING_UP:
         break;
 
-    case COBRA_STATE_ALERT:
+    case M_STATE_ALERT:
         creature->flags = 0;
         if (info.distance > forget_radius) {
-            item->goal_anim_state = COBRA_STATE_SLEEP;
+            item->goal_anim_state = M_STATE_SLEEP;
         } else if (
             lara_item->hit_points > 0
             && ((info.ahead && info.distance < attack_radius)
                 || item->hit_status || lara_item->speed > 15)) {
-            item->goal_anim_state = COBRA_STATE_BITE;
+            item->goal_anim_state = M_STATE_BITE;
         }
         break;
 
-    case COBRA_STATE_BITE:
+    case M_STATE_BITE:
         if (creature->flags != 1 && (item->touch_bits & 0x2000) != 0) {
             creature->flags = 1;
             Lara_TakeDamage(80, true);
@@ -123,10 +123,10 @@ static void M_Control(const int16_t item_num)
         }
         break;
 
-    case COBRA_STATE_SLEEP:
+    case M_STATE_SLEEP:
         creature->flags = 0;
         if (info.distance < alert_radius && lara_item->hit_points > 0) {
-            item->goal_anim_state = COBRA_STATE_WAKING_UP;
+            item->goal_anim_state = M_STATE_WAKING_UP;
         }
         break;
     }
