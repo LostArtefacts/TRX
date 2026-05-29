@@ -25,6 +25,7 @@
 - removed hard-coded level sequence checks to keep Lara burning when she enters a lava swamp room
 - removed the hard-coded longer interval on `O_FLAME_EMITTER_SIDE` in level sequence 7 and moved to Lua instead
 - removed the hard-coded strobe light alarm behaviour in Area 51 and moved it to Lua instead
+- removed hard-coded level sequence specific sound effects for animated spikes and moved to animation commands instead
 - fixed texture bleeding and missized textures on piranhas and tropical fish
 
 

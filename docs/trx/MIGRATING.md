@@ -32,6 +32,11 @@ order: 3
    interval in level sequence 7; all instances will default to 2 seconds. Refer
    to the Madubu Gorge Lua script to alter the interval.
 
+5. **Update spikes sound effects**:
+   Animated spikes in TR3 are no longer hard-coded to play specific sound
+   effects in levels 5 and 7 only. Regular animation commands can be used
+   instead to play in any level.
+
 ### Version 1.6 to 1.7
 
 1. **Update Lua item maximum HP access**:

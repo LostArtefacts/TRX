@@ -66,14 +66,6 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (Item_GetRelativeFrame(item) == 0) {
-        if (level_num == 5) {
-            Sound_Effect(SFX_SHIVA_SWORD_2, &item->pos, SPM_ALWAYS);
-        } else {
-            Sound_Effect(SFX_LARA_GET_OUT, &item->pos, SPM_ALWAYS);
-        }
-    }
-
     Item_Animate(item);
 }
 

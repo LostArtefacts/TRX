@@ -196,6 +196,7 @@
                 "coastal_textures.bin",
                 "common_pickup_meshes.bin",
                 "fish_sprites.bin",
+                "coastal_spike_sfx.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -245,6 +246,7 @@
                 "madubu_textures.bin",
                 "common_pickup_meshes.bin",
                 "fish_sprites.bin",
+                "madubu_spike_sfx.bin",
             ],
         },
 
