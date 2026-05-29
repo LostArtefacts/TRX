@@ -14,6 +14,10 @@ order: 3
    triggers, and instead their swim range needs to be defined in Lua. Refer to
    the OG TR3 level scripts for reference.
 
+2. **Update Cobra setup**:
+   Cobras in level sequence 9 and above are no longer hard-coded to have a small
+   attack, forget and alert radius. Use Lua to specify this setup if required.
+
 ### Version 1.6 to 1.7
 
 1. **Update Lua item maximum HP access**:

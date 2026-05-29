@@ -1,10 +1,15 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
-#include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/spawn.h>
-#include <trx/version.h>
+
+// clang-format off
+#define M_DEFAULT_ALERT   1.5
+#define M_DEFAULT_ATTACK  1
+#define M_DEFAULT_FORGET  3
+#define M_SETUP_RADIUS(r) (SQUARE(WALL_L * r))
+// clang-format on
 
 static BITE m_CobraBite = { .pos = { 0, 0, 0 }, .mesh_num = 13 };
 
@@ -21,6 +26,14 @@ typedef enum {
     M_ANIM_DEATH = 4,
 } M_ANIM;
 
+typedef struct {
+    struct {
+        int32_t alert;
+        int32_t attack;
+        int32_t forget;
+    } radius;
+} M_PRIV;
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -28,6 +41,22 @@ static void M_Initialise(const int16_t item_num)
     Item_SwitchToAnim(item, M_ANIM_SLEEP, 45);
     item->current_anim_state = M_STATE_SLEEP;
     item->goal_anim_state = M_STATE_SLEEP;
+
+    M_PRIV *const p = item->priv;
+    p->radius.alert = M_SETUP_RADIUS(M_DEFAULT_ALERT);
+    p->radius.attack = M_SETUP_RADIUS(M_DEFAULT_ATTACK);
+    p->radius.forget = M_SETUP_RADIUS(M_DEFAULT_FORGET);
+
+    OBJECT_PROPERTY_VALUE radius_val = {};
+    if (ObjectProperty_GetItemValue(item, "alert_radius", &radius_val)) {
+        p->radius.alert = M_SETUP_RADIUS(radius_val.as_double);
+    }
+    if (ObjectProperty_GetItemValue(item, "attack_radius", &radius_val)) {
+        p->radius.attack = M_SETUP_RADIUS(radius_val.as_double);
+    }
+    if (ObjectProperty_GetItemValue(item, "forget_radius", &radius_val)) {
+        p->radius.forget = M_SETUP_RADIUS(radius_val.as_double);
+    }
 }
 
 static bool M_IsTargetable(const ITEM *const item)
@@ -52,18 +81,8 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    int32_t forget_radius = SQUARE(3 * WALL_L);
-    int32_t alert_radius = SQUARE(1.5 * WALL_L);
-    int32_t attack_radius = SQUARE(WALL_L);
-
-    // TODO: do not hardcode this
-    if (g_TRVersion == 3 && GF_BadGetLevelNum() >= 9) {
-        forget_radius = SQUARE(2.5 * WALL_L);
-        alert_radius = SQUARE(1.25 * WALL_L);
-        attack_radius = SQUARE(682);
-    }
-
     ITEM *const item = Item_Get(item_num);
+    const M_PRIV *const p = item->priv;
     CREATURE *const creature = item->creature_data;
 
     if (creature == nullptr) {
@@ -104,11 +123,11 @@ static void M_Control(const int16_t item_num)
 
     case M_STATE_ALERT:
         creature->flags = 0;
-        if (info.distance > forget_radius) {
+        if (info.distance > p->radius.forget) {
             item->goal_anim_state = M_STATE_SLEEP;
         } else if (
             lara_item->hit_points > 0
-            && ((info.ahead && info.distance < attack_radius)
+            && ((info.ahead && info.distance < p->radius.attack)
                 || item->hit_status || lara_item->speed > 15)) {
             item->goal_anim_state = M_STATE_BITE;
         }
@@ -125,7 +144,7 @@ static void M_Control(const int16_t item_num)
 
     case M_STATE_SLEEP:
         creature->flags = 0;
-        if (info.distance < alert_radius && lara_item->hit_points > 0) {
+        if (info.distance < p->radius.alert && lara_item->hit_points > 0) {
             item->goal_anim_state = M_STATE_WAKING_UP;
         }
         break;
@@ -148,8 +167,8 @@ static void M_Setup(OBJECT *const obj)
     obj->can_take_damage_func = M_CanTakeDamage;
     obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
 
+    obj->priv_size = sizeof(M_PRIV);
     obj->shadow_size = UNIT_SHADOW / 2;
-
     obj->radius = 102;
 
     // obj->non_lot = true; // TODO(TR3)
@@ -163,6 +182,18 @@ static void M_Setup(OBJECT *const obj)
     Object_GetBone(obj, 6)->rot.y = true;
     OBJECT_PROPERTIES(
         obj, OBJECT_PROPERTY_INT("max_hit_points", 8, "Maximum hit points."));
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_DOUBLE(
+            "alert_radius", M_DEFAULT_ALERT, "Alert radius, in sectors."));
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_DOUBLE(
+            "attack_radius", M_DEFAULT_ATTACK, "Attack radius, in sectors."));
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_DOUBLE(
+            "forget_radius", M_DEFAULT_FORGET, "Forget radius, in sectors."));
 }
 
 REGISTER_OBJECT(O_COBRA, M_Setup)

@@ -1047,6 +1047,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── house.lua
 │   │   │   ├── jungle.lua
 │   │   │   ├── mines.lua
+│   │   │   ├── nevada.lua
 │   │   │   ├── rapids.lua
 │   │   │   ├── shore.lua
 │   │   │   ├── temple.lua
@@ -2274,6 +2275,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── house.lua
     │   │   │   │   ├── jungle.lua
     │   │   │   │   ├── mines.lua
+    │   │   │   │   ├── nevada.lua
     │   │   │   │   ├── rapids.lua
     │   │   │   │   ├── shore.lua
     │   │   │   │   ├── temple.lua
