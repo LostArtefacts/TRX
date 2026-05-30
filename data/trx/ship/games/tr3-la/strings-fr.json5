@@ -2,9 +2,6 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
-        "orca": {
-            "name": "Orque",
-        },
         "quest_1": {
             "description": "",
             "name": "Main de Rathmore",
@@ -55,6 +52,9 @@
         {
             "title": "Danse avec les loups de mer",
             "objects": {
+                "orca": {
+                    "name": "\\{review}Dauphin",
+                },
                 "puzzle_1": {
                     "name": "Ampoule témoin",
                 },

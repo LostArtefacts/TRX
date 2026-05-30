@@ -1972,6 +1972,9 @@
                 "\\{review}Doberman",
             ]
         },
+        "dolphin": {
+            "name": "\\{review}Dauphin",
+        },
         "door_1": {
             "name": "Porte 1",
         },

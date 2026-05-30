@@ -1112,6 +1112,7 @@ bool Creature_Animate(
                 break;
             case O_SHARK:
             case O_ORCA:
+            case O_DOLPHIN:
                 min_y = 128;
                 break;
             default:

@@ -52,6 +52,9 @@
         {
             "title": "Na dnie z rybami",
             "objects": {
+                "orca": {
+                    "name": "\\{review}Delfin",
+                },
                 "puzzle_1": {
                     "name": "Żarówka układu",
                 },

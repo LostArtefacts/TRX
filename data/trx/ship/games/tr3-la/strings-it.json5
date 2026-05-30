@@ -46,6 +46,9 @@
         {
             "title": "Dormire con i Pesci",
             "objects": {
+                "orca": {
+                    "name": "\\{review}Delfino",
+                },
                 "puzzle_1": {
                     "name": "Lampadina",
                 },

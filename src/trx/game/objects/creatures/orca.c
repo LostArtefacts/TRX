@@ -141,14 +141,9 @@ static void M_Control(int16_t item_num)
     }
 }
 
-static void M_Collision(
+static void M_CollisionDolphin(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
-    if (!GF_BadIsMod("tr3-la")) {
-        Creature_Collision(item_num, lara_item, coll);
-        return;
-    }
-
     ITEM *const item = Item_Get(item_num);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (!Lara_TestBoundsCollide(item, coll->radius)) {
@@ -161,14 +156,9 @@ static void M_Collision(
     Lara_Col_ItemPush(item, coll, coll->enable_hit, false);
 }
 
-static void M_Setup(OBJECT *const obj)
+static void M_SetupCommon(OBJECT *const obj)
 {
-    if (!obj->loaded) {
-        return;
-    }
-
     obj->control_func = M_Control;
-    obj->collision_func = M_Collision;
     obj->is_targetable_func = M_IsTargetable;
     obj->can_be_projectile_target_func = M_CanBeProjectileTarget;
 
@@ -185,4 +175,25 @@ static void M_Setup(OBJECT *const obj)
     obj->save_anim = true;
 }
 
-REGISTER_OBJECT(O_ORCA, M_Setup)
+static void M_SetupOrca(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    M_SetupCommon(obj);
+    obj->collision_func = Creature_Collision;
+}
+
+static void M_SetupDolphin(OBJECT *const obj)
+{
+    if (!obj->loaded) {
+        return;
+    }
+
+    M_SetupCommon(obj);
+    obj->collision_func = M_CollisionDolphin;
+}
+
+REGISTER_OBJECT(O_ORCA, M_SetupOrca)
+REGISTER_OBJECT(O_DOLPHIN, M_SetupDolphin)

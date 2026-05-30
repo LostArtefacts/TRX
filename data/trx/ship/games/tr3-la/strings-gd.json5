@@ -2,9 +2,6 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
-        "orca": {
-            "name": "Leumadair",
-        },
         "quest_1": {
             "description": "",
             "name": "Làmh Rathmore",
@@ -55,6 +52,9 @@
         {
             "title": "A' Cadal leis na h-Èisg",
             "objects": {
+                "orca": {
+                    "name": "Leumadair",
+                },
                 "puzzle_1": {
                     "name": "Bolgan Cuairte",
                 },
