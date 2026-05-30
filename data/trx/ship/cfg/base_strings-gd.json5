@@ -937,6 +937,10 @@
             "title": "Àireamhachadh murtan àrainneachd",
             "description": "A' cunntadh nàmhaid a chaidh a chrìochnachadh leis an àrainneachd, leithid lasers tèarainteachd no fulang, a dh'ionnsaigh an àireamh iomlan de mhurtan.",
         },
+        "gameplay.enable_fast_pickups": {
+            "title": "Togail gu luath",
+            "description": "Leigidh seo le Lara nithean a thogail nas luaithe, coltach ri TR4+.",
+        },
         "gameplay.enable_fmv": {
             "title": "Bhideothan",
             "description": "Cuiridh seo cluich bhideothan an comas.",

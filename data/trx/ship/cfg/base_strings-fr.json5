@@ -937,6 +937,10 @@
             "title": "\\{review}Compter les éliminations par l'environnement",
             "description": "\\{review}Compte les ennemis achevés par l'environnement, tels que les lasers de sécurité ou la noyade, dans le total des éliminations.",
         },
+        "gameplay.enable_fast_pickups": {
+            "title": "\\{review}Ramassage rapide",
+            "description": "\\{review}Permet à Lara de ramasser les objets plus rapidement, comme dans TR4+.",
+        },
         "gameplay.enable_fmv": {
             "title": "Activer les FMV",
             "description": "Active les FMV en jeu.",

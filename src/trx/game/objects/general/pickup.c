@@ -21,6 +21,7 @@
 
 // clang-format off
 #define M_LF_PICKUP_ERASE        42
+#define M_LF_FAST_PICKUP_ERASE   15
 #define M_LF_PICKUP_FLARE        58
 #define M_LF_PICKUP_FLARE_UW     20
 #define M_LF_PICKUP_UW           18
@@ -246,6 +247,32 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+static bool M_IsPickupEraseFrame(const ITEM *const lara_item)
+{
+    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const int16_t frame = Item_GetRelativeFrame(lara_item);
+    switch (anim) {
+    case LA_PICKUP:
+        return frame == M_LF_PICKUP_ERASE;
+    case LA_FAST_PICKUP:
+        return frame == M_LF_FAST_PICKUP_ERASE;
+    case LA_CROUCH_PICKUP:
+        return frame == M_LF_PICKUP_CROUCH_1 || frame == M_LF_PICKUP_CROUCH_2;
+    case LA_CRAWL_PICKUP:
+        return frame == M_LF_PICKUP_CRAWL;
+    case LA_UNDERWATER_PICKUP:
+        return frame == M_LF_PICKUP_UW;
+    case LA_FLARE_PICKUP:
+        return frame == M_LF_PICKUP_FLARE;
+    case LA_CROUCH_PICKUP_FLARE:
+        return frame == M_LF_PICKUP_CROUCH_FLARE;
+    case LA_UNDERWATER_FLARE_PICKUP:
+        return frame == M_LF_PICKUP_FLARE_UW;
+    default:
+        return false;
+    }
+}
+
 static void M_DoPickup(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -328,7 +355,10 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
                 .z = m_PickupPosition.z,
             };
             if (Lara_MovePosition(item, &pos)) {
-                Item_SwitchToAnim(lara_item, LA(LA_PICKUP), 0);
+                const LARA_TRX_ANIMATION pickup_anim =
+                    g_Config.gameplay.enable_fast_pickups ? LA_FAST_PICKUP
+                                                          : LA_PICKUP;
+                Item_SwitchToAnim(lara_item, LA(pickup_anim), 0);
                 lara_item->current_anim_state = LS(LS_PICKUP);
                 lara->head_rot.y = 0;
                 lara->head_rot.x = 0;
@@ -359,7 +389,7 @@ static void M_DoControlled(const int16_t item_num, ITEM *const lara_item)
     }
 
     if (lara_item->current_anim_state == LS(LS_PICKUP)) {
-        if (Item_TestFrameEqual(lara_item, M_LF_PICKUP_ERASE)) {
+        if (M_IsPickupEraseFrame(lara_item)) {
             M_GetAllAtLaraPos(item);
             lara->interact_target.item_num = NO_ITEM;
         }
@@ -422,14 +452,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
     }
 
     if (lara_item->current_anim_state == LS(LS_PICKUP)) {
-        const int16_t rel_frame = Item_GetRelativeFrame(lara_item);
-        const bool pickup_now =
-            (anim == LA_PICKUP && rel_frame == M_LF_PICKUP_ERASE)
-            || (anim == LA_CROUCH_PICKUP
-                && (rel_frame == M_LF_PICKUP_CROUCH_1
-                    || rel_frame == M_LF_PICKUP_CROUCH_2))
-            || (anim == LA_CRAWL_PICKUP && rel_frame == M_LF_PICKUP_CRAWL);
-        if (pickup_now) {
+        if (M_IsPickupEraseFrame(lara_item)) {
             M_DoPickup(item_num);
         }
         goto cleanup;
@@ -437,12 +460,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
-        const int16_t rel_frame = Item_GetRelativeFrame(lara_item);
-        const bool pickup_now =
-            Item_TestFrameEqual(lara_item, M_LF_PICKUP_FLARE)
-            || (anim == LA_CROUCH_PICKUP_FLARE
-                && rel_frame == M_LF_PICKUP_CROUCH_FLARE);
-        if (pickup_now && item->object_id == O_FLARE_ITEM
+        if (M_IsPickupEraseFrame(lara_item) && item->object_id == O_FLARE_ITEM
             && lara->gun_type != LGT_FLARE) {
             M_DoFlarePickup(item_num);
         }
@@ -464,7 +482,14 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
             Lara_AnimateUntil(lara_item, LS(LS_FLARE_PICKUP));
         } else {
             Lara_AlignPosition(item, &m_PickupPosition);
-            Lara_AnimateUntil(lara_item, LS(LS_PICKUP));
+            const LARA_TRX_STATE goal_state =
+                g_Config.gameplay.enable_fast_pickups && !is_ducked
+                ? LS_FAST_PICKUP
+                : LS_PICKUP;
+            lara_item->goal_anim_state = LS(goal_state);
+            do {
+                Lara_Animate(lara_item);
+            } while (lara_item->current_anim_state != LS(LS_PICKUP));
         }
         if (is_ducked) {
             lara_item->goal_anim_state =
@@ -499,7 +524,7 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
     }
 
     if (lara_item->current_anim_state == LS(LS_PICKUP)) {
-        if (Item_TestFrameEqual(lara_item, M_LF_PICKUP_UW)) {
+        if (M_IsPickupEraseFrame(lara_item)) {
             M_DoPickup(item_num);
         }
         goto cleanup;
@@ -507,8 +532,8 @@ static void M_DoUnderwater(const int16_t item_num, ITEM *const lara_item)
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     if (lara_item->current_anim_state == LS(LS_FLARE_PICKUP)) {
-        if (Item_TestFrameEqual(lara_item, M_LF_PICKUP_FLARE_UW)
-            && item->object_id == O_FLARE_ITEM && lara->gun_type != LGT_FLARE) {
+        if (M_IsPickupEraseFrame(lara_item) && item->object_id == O_FLARE_ITEM
+            && lara->gun_type != LGT_FLARE) {
             M_DoFlarePickup(item_num);
             Lara_Flare_DrawMeshes();
         }

@@ -206,7 +206,8 @@ static bool M_CanUseFlareControl(void)
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item->current_anim_state == LS(LS_PICKUP)) {
         const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
-        return anim != LA_CROUCH_PICKUP && anim != LA_CRAWL_PICKUP;
+        return anim != LA_CROUCH_PICKUP && anim != LA_CRAWL_PICKUP
+            && anim != LA_FAST_PICKUP;
     }
     return Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates);
 }
