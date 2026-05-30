@@ -8,7 +8,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/sources/poly_fx.h>
-#include <trx/game/output/textures.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
@@ -454,19 +453,10 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
-    const OBJECT *const explosion_obj = Object_Get(O_EXPLOSION_1);
-    if (explosion_obj == nullptr || !explosion_obj->loaded) {
-        return false;
-    }
-
-    int32_t sprite_idx = explosion_obj->mesh_idx;
-    if (item->object_id == O_PIRAHNAS) {
-        sprite_idx += 10;
-    } else {
-        sprite_idx += 11;
-    }
-
-    if (sprite_idx < 0 || sprite_idx >= Output_GetSpriteTextureCount()) {
+    const OBJECT *const sprite_obj = Object_Get(
+        item->object_id == O_PIRAHNAS ? O_PIRAHNA_GFX : O_TROPICAL_FISH_GFX);
+    if (sprite_obj == nullptr || !sprite_obj->loaded
+        || sprite_obj->mesh_count == 0) {
         return false;
     }
 
@@ -566,31 +556,19 @@ static bool M_Draw(const ITEM *const item)
 
         // OG flips the UV mapping depending on the shoal number (tropical
         // fish) or the fish index (piranhas).
-        bool use_default_uv = false;
+        int32_t sprite_offset = 0;
         if (item->object_id == O_PIRAHNAS) {
-            use_default_uv = (i & 1) != 0;
-        } else {
-            use_default_uv = p->use_default_uv;
-        }
-
-        if (use_default_uv) {
-            OutputSource_PolyFX_StageSpriteTriWorld(
-                sprite_idx, tri_world, tri_color, DRAW_BLEND);
-        } else {
-            const int32_t sprite_corners[3] = { 2, 3, 1 }; // u2v2, u1v2, u2v1
-            OUTPUT_UVW uvw[3];
-            OUTPUT_TEXTURE_SIZE texture_size[3];
-            for (int32_t j = 0; j < 3; j++) {
-                const int32_t uvw_idx = Output_Textures_GetSpriteUVWIndex(
-                    sprite_idx, sprite_corners[j]);
-                uvw[j] = Output_Textures_GetUVW(uvw_idx);
-                texture_size[j] = Output_Textures_GetAtlasSize(uvw_idx / 4);
+            if ((i & 1) == 0) {
+                sprite_offset = 1;
             }
-
-            OutputSource_PolyFX_StageTriExtUV(
-                tri_world, uvw, texture_size, nullptr, tri_color,
-                VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND);
+        } else if (!p->use_default_uv) {
+            sprite_offset = 1;
         }
+
+        CLAMP(sprite_offset, 0, ABS(sprite_obj->mesh_count) - 1);
+        const int32_t sprite_idx = sprite_obj->mesh_idx + sprite_offset;
+        OutputSource_PolyFX_StageSpriteTriWorld(
+            sprite_idx, tri_world, tri_color, DRAW_BLEND);
     }
 
     if (Interpolation_IsActive() && ratio >= 1.0) {

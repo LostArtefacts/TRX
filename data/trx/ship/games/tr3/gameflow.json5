@@ -77,6 +77,7 @@
                 "gym_textures.bin",
                 "common_pickup_meshes.bin",
                 "lara_gym_guns.bin",
+                "fish_sprites.bin",
             ],
         },
 
@@ -102,6 +103,7 @@
                 "india_sky.bin",
                 "lara_guns.bin",
                 "common_pickup_meshes.bin",
+                "fish_sprites.bin",
             ],
         },
 
@@ -123,6 +125,7 @@
                 "india_sky.bin",
                 "lara_guns.bin",
                 "common_pickup_meshes.bin",
+                "fish_sprites.bin",
             ],
         },
 
@@ -146,6 +149,7 @@
                 "ganges_door131_frames.bin",
                 "ganges_textures.bin",
                 "common_pickup_meshes.bin",
+                "fish_sprites.bin",
             ],
         },
 
@@ -191,6 +195,7 @@
                 "lara_guns.bin",
                 "coastal_textures.bin",
                 "common_pickup_meshes.bin",
+                "fish_sprites.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -215,6 +220,7 @@
                 "crash_pickup_meshes.bin",
                 "lara_guns.bin",
                 "crash_animating_bounds.bin",
+                "fish_sprites.bin",
             ],
         },
 
@@ -238,6 +244,7 @@
                 "rapids_sky.bin",
                 "madubu_textures.bin",
                 "common_pickup_meshes.bin",
+                "fish_sprites.bin",
             ],
         },
 

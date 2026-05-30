@@ -966,6 +966,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut11_setup.bin
 │   │   │   ├── cut12_setup.bin
 │   │   │   ├── drill_collision.bin
+│   │   │   ├── fish_sprites.bin
 │   │   │   ├── flamethrower_sfx.bin
 │   │   │   ├── font.bin
 │   │   │   ├── ganges_door131_frames.bin
@@ -2198,6 +2199,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cut11_setup.bin
     │   │   │   │   ├── cut12_setup.bin
     │   │   │   │   ├── drill_collision.bin
+    │   │   │   │   ├── fish_sprites.bin
     │   │   │   │   ├── flamethrower_sfx.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── ganges_door131_frames.bin

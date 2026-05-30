@@ -8,7 +8,11 @@
 - removed hard-coded small Cobra radius setup and moved to Lua instead
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 
+**TR1**:
+- added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
+
 **TR2**:
+- added support for fish and piranhas without sacrificing explosion sprites (refer to notes in migration guide) (#4358)
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 
 **TR3**:
@@ -17,6 +21,7 @@
 - removed hard-coded collision differences for `O_ORCA` in `Sleeping with the Fishes` by using `O_DOLPHIN` instead
 - removed hard-coded level sequence checks to keep Lara burning when she enters a lava swamp room
 - removed the hard-coded longer interval on `O_FLAME_EMITTER_SIDE` in level sequence 7 and moved to Lua instead
+- fixed texture bleeding and missized textures on piranhas and tropical fish
 
 
 
