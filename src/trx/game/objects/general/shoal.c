@@ -48,7 +48,7 @@ typedef struct {
     M_LEADER leader;
     int32_t piranha_hit_wait;
     int16_t carcass_item_num;
-    bool use_default_uv;
+    int32_t sprite_offset;
 } M_PRIV;
 
 static uint16_t M_GetFishAngle12(
@@ -557,11 +557,9 @@ static bool M_Draw(const ITEM *const item)
         // OG flips the UV mapping depending on the shoal number (tropical
         // fish) or the fish index (piranhas).
         int32_t sprite_offset = 0;
-        if (item->object_id == O_PIRAHNAS) {
-            if ((i & 1) == 0) {
-                sprite_offset = 1;
-            }
-        } else if (!p->use_default_uv) {
+        if (item->object_id == O_TROPICAL_FISH) {
+            sprite_offset = p->sprite_offset;
+        } else if ((i & 1) == 0) {
             sprite_offset = 1;
         }
 
@@ -608,9 +606,9 @@ static void M_Initialise(const int16_t item_num)
     p->leader.range.y = MAX(1, p->leader.range.y) * STEP_L;
     p->leader.range.z = MAX(1, p->leader.range.z) * STEP_L;
 
-    OBJECT_PROPERTY_VALUE uv_val = {};
-    if (ObjectProperty_GetItemValue(item, "use_default_uv", &uv_val)) {
-        p->use_default_uv = uv_val.as_bool;
+    OBJECT_PROPERTY_VALUE sprite_val = {};
+    if (ObjectProperty_GetItemValue(item, "sprite_offset", &sprite_val)) {
+        p->sprite_offset = sprite_val.as_int;
     }
 }
 
@@ -636,8 +634,8 @@ static void M_SetupTropicalFish(OBJECT *const obj)
             "range", M_DEFAULT_RANGE, "Swim range, in quarter tiles."));
     OBJECT_PROPERTIES(
         obj,
-        OBJECT_PROPERTY_BOOL(
-            "use_default_uv", true, "Use default UV mapping."));
+        OBJECT_PROPERTY_INT(
+            "sprite_offset", 0, "Texture offset in `O_TROPICAL_FISH_GFX`."));
 }
 
 static void M_SetupPiranhas(OBJECT *const obj)
