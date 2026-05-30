@@ -260,6 +260,7 @@ typedef struct {
         bool enable_item_examining;
         bool enable_target_change;
         bool enable_walk_to_items;
+        bool enable_fast_pickups;
         bool restore_ps1_enemies;
         bool enable_ally_targeting;
         bool enable_ally_kill_count;

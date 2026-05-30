@@ -937,6 +937,10 @@
             "title": "Zliczaj śmierci zadane przez środowisko",
             "description": "Uwzględnia zabójstwa wrogów przez środowisko, takie jak lasery ochronne lub utonięcie, do łącznej liczby pokonanych przeciwników.",
         },
+        "gameplay.enable_fast_pickups": {
+            "title": "\\{review}Szybkie podnoszenie",
+            "description": "\\{review}Pozwala Larze szybciej podnosić przedmioty, podobnie jak w TR4+.",
+        },
         "gameplay.enable_fmv": {
             "title": "Filmy",
             "description": "Włącza odtwarzanie filmów.",

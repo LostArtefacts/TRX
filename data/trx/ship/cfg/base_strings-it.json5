@@ -937,6 +937,10 @@
             "title": "\\{review}Conta le uccisioni ambientali",
             "description": "\\{review}Conta i nemici eliminati dall'ambiente, come laser di sicurezza o annegamento, nel totale delle uccisioni.",
         },
+        "gameplay.enable_fast_pickups": {
+            "title": "\\{review}Raccolta rapida",
+            "description": "\\{review}Permette a Lara di raccogliere gli oggetti più rapidamente, in modo simile a TR4+.",
+        },
         "gameplay.enable_fmv": {
             "title": "FMV",
             "description": "Abilita la riproduzione dei filmati.",

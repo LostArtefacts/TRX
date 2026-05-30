@@ -937,6 +937,10 @@
             "title": "Count environment kills",
             "description": "Counts enemies finished off by the environment, such as security lasers or drowning, towards the kill total.",
         },
+        "gameplay.enable_fast_pickups": {
+            "title": "Fast pickups",
+            "description": "Allows Lara to pick items up more quickly, similar to TR4+.",
+        },
         "gameplay.enable_fmv": {
             "title": "FMVs",
             "description": "Enables FMVs playing.",

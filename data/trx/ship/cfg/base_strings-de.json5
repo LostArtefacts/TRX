@@ -937,6 +937,10 @@
             "title": "\\{review}Umwelt-Kills zählen",
             "description": "\\{review}Zählt Feinde, die von der Umgebung erledigt wurden, wie z.B. Sicherheitslaser oder Ertrinken, zur Gesamtzahl der Kills.",
         },
+        "gameplay.enable_fast_pickups": {
+            "title": "\\{review}Schnelles Aufheben",
+            "description": "\\{review}Ermöglicht es Lara, Gegenstände schneller aufzuheben, ähnlich wie in TR4+.",
+        },
         "gameplay.enable_fmv": {
             "title": "FMVs",
             "description": "Aktiviert das Abspielen von FMVs.",
