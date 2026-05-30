@@ -46,6 +46,9 @@
         {
             "title": "Mit den Fischen schlafen",
             "objects": {
+                "orca": {
+                    "name": "\\{review}Delfin",
+                },
                 "puzzle_1": {
                     "name": "Blaue Stromkreis-Glühbirne",
                 },

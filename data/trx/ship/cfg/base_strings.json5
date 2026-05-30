@@ -1972,6 +1972,9 @@
                 "Doberman",
             ]
         },
+        "dolphin": {
+            "name": "Dolphin",
+        },
         "door_1": {
             "name": "Door 1",
         },

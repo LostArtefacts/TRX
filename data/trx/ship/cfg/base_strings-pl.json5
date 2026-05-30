@@ -1978,6 +1978,9 @@
                 "Doberman",
             ]
         },
+        "dolphin": {
+            "name": "\\{review}Delfin",
+        },
         "door_1": {
             "name": "Drzwi 1",
         },

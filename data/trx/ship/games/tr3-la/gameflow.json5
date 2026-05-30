@@ -135,6 +135,7 @@
                 "undersea_pickup_meshes.bin",
                 "undersea_fd.bin",
                 "undersea_textures.bin",
+                "undersea_objects.bin",
             ],
         },
 
