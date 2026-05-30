@@ -4,6 +4,9 @@
 - removed the limit of at most 8 fish/piranha shoals per level
 - fixed a crash with old custom levels that have sectors pointing to invalid floor data (#5568)
 
+**TR2**:
+- fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
+
 
 
 ## [1.7.1](https://github.com/LostArtefacts/TRX/compare/trx-1.7...trx-1.7.1) - 2026-05-28
