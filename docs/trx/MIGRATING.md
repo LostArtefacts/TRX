@@ -18,6 +18,11 @@ order: 3
    Cobras in level sequence 9 and above are no longer hard-coded to have a small
    attack, forget and alert radius. Use Lua to specify this setup if required.
 
+3. **Update quest item end-level handling**:
+   TR3's quest items will no longer end the level by default when picked up. Use
+   Lua or regular pickup triggers instead; refer to the OG TR3 level scripts for
+   reference.
+
 ### Version 1.6 to 1.7
 
 1. **Update Lua item maximum HP access**:

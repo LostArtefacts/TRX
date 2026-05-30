@@ -287,19 +287,7 @@ static void M_DoPickup(const int16_t item_num)
     Lua_FireEventInt32(LUA_EVENT_PICKUP, item_num); // LUA uses 1-indexing
 
     item->status = IS_INVISIBLE;
-    item->flags |= IF_KILLED;
-
-    if (Object_IsType(item->object_id, g_QuestObjects)) {
-        if (GF_BadGetLevelNum() == 19
-            || (GF_BadIsMod("tr3-la") && GF_BadGetLevelNum() == 4)) {
-            Item_Kill(item_num);
-        } else {
-            Game_SetIsLevelComplete(true);
-        }
-    } else {
-        Item_RemoveDrawn(item_num);
-        Item_RemoveActive(item_num);
-    }
+    Item_Kill(item_num);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->interact_target.is_moving = false;

@@ -9,6 +9,9 @@
 **TR2**:
 - fixed Lara wading in shallower water compared to OG (#5574, regression from 1.3)
 
+**TR3**:
+- removed the hard-coded end-level behaviour when picking up artefacts in specific levels and moved to Lua instead
+
 
 
 ## [1.7.1](https://github.com/LostArtefacts/TRX/compare/trx-1.7...trx-1.7.1) - 2026-05-28
