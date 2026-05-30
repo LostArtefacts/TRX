@@ -489,7 +489,7 @@ This page lists documented moveable object properties.
 
 ### `339` O_TROPICAL_FISH
 - `range = ((XYZ_32) { 1, 1, 1 })` — Swim range, in quarter tiles.
-- `use_default_uv = true` — Use default UV mapping.
+- `sprite_offset = 0` — Texture offset in `O_TROPICAL_FISH_GFX`.
 
 ### `360` O_WINSTON
 - `max_hit_points = 1` — Maximum hit points.
