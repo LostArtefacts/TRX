@@ -13,6 +13,10 @@ order: 3
    Fish and piranha objects no longer require a timer field to be set in
    triggers, and instead their swim range needs to be defined in Lua. Refer to
    the OG TR3 level scripts for reference.
+   The `O_EXPLOSION_1` sprite sequence is no longer used for these objects. Use
+   `fish_sprites.bin` for TR3 levels, or define `O_PIRAHNA_GFX` and
+   `O_TROPICAL_FISH_GFX` in your level WAD. The TRX assets WAD for TR3 contains
+   the default setup.
 
 2. **Update Cobra setup**:
    Cobras in level sequence 9 and above are no longer hard-coded to have a small
